@@ -1,0 +1,687 @@
+2003-05-15 00:49  azurazu
+
+	* inc/footer.inc.php: Changed the version id + did some HTML code
+	layouting.. a bit just
+
+2003-05-15 00:48  azurazu
+
+	* edit_record.php: Really stupid bug.. we also have to be able to
+	modify records...
+
+2003-05-10 22:21  azurazu
+
+	* inc/record.inc.php: Fixed a bug in the delete_record which didnt
+	make it update the SOA serial thanks to Dolphin for reporting
+
+2003-05-10 22:20  azurazu
+
+	* index.php: Fixed a minimum pass length when a user changes his
+	pass. Min length is chosen to be 4
+
+2003-05-10 22:10  azurazu
+
+	* edit.php, edit_record.php: Fixed the bugs as sent in by Mario
+	Peschel, thanks a lot
+
+2003-05-04 23:38  azurazu
+
+	* inc/: record.inc.php, error.inc.php: Bug fixes
+
+2003-03-03 23:14  azurazu
+
+	* inc/record.inc.php: Search modifications to allow wild searches
+
+2003-02-25 02:46  azurazu
+
+	* docs/README: Cyberkid is our documentation god! Thanks for making
+	it all perfect! We love you :)
+
+2003-02-24 17:10  azurazu
+
+	* inc/config-block.inc.php: Small changes to increase the
+	understandability
+
+2003-02-24 17:08  azurazu
+
+	* docs/README: Updated for 1.2.4
+
+2003-02-24 17:08  azurazu
+
+	* docs/TODO: Minor changes
+
+2003-02-24 02:46  azurazu
+
+	* inc/toolkit.inc.php: If I say I fixed I should fix it, doh. 4 ->
+	6 was left out. Broken
+
+2003-02-24 00:32  azurazu
+
+	* inc/record.inc.php: SOA Fixed
+
+2003-02-23 22:32  azurazu
+
+	* edit.php: Removed the add or remove users gimmics for level1
+	users
+
+2003-02-23 22:31  azurazu
+
+	* inc/dns.inc.php: MX Fixme
+
+2003-02-23 22:30  azurazu
+
+	* inc/record.inc.php: SOA fix
+
+2003-02-23 22:29  azurazu
+
+	* inc/toolkit.inc.php: Email check had an error.. long live .museum
+	tld's
+
+2003-02-14 23:58  azurazu
+
+	* seq_update.php: hit me please.
+
+2003-02-14 23:11  azurazu
+
+	* seq_update.php: fixed the _seq table problem
+
+2003-02-14 23:01  azurazu
+
+	* inc/dns.inc.php: dmnd noticed some bugs with SOA, thanks a lot :)
+
+2003-02-06 00:23  azurazu
+
+	* inc/header.inc.php: removed some blank lines
+
+2003-02-06 00:22  azurazu
+
+	* users.php: removed header error after adding users
+
+2003-02-05 23:24  azurazu
+
+	* inc/dns.inc.php: Allowed '-' in urls useful for cgi-bin or so:)
+
+2003-02-05 23:22  azurazu
+
+	* index.php: operator && should be || on line 67..
+
+2003-02-05 16:25  azurazu
+
+	* add_record.php: Dynamically updating of TTL or DEFAULT_TTL was
+	borked
+
+2003-01-13 23:08  azurazu
+
+	* inc/auth.inc.php: DOS Format..
+
+2003-01-13 00:03  azurazu
+
+	* users.php: Cosmetics, moved the active to the middle
+
+2003-01-12 23:43  azurazu
+
+	* edit.php, index.php: Added the MASTER/SLAVE information and
+	cleaned up code
+
+2003-01-12 23:42  azurazu
+
+	* inc/config-block.inc.php: New toggle
+
+2003-01-12 23:39  azurazu
+
+	* inc/record.inc.php: A lot of changes, it might really screw up :/
+
+2003-01-12 21:20  azurazu
+
+	* style/style.css.php: New style added to override the table
+
+2003-01-10 00:26  azurazu
+
+	* index.php, seq_update.php, users.php: Added navigation and
+	navigation checks, also changed layout here and there a tiny bit
+
+2003-01-10 00:25  azurazu
+
+	* inc/footer.inc.php: New version, new footer :)
+
+2003-01-10 00:24  azurazu
+
+	* inc/record.inc.php: Added search_record function to support the
+	search of records or domains
+
+2003-01-10 00:23  azurazu
+
+	* search.php: search.php, to allow you too search through your
+	files, thanks to DeViCeD
+
+2003-01-09 17:23  azurazu
+
+	* docs/ChangeLog: Changes, as usual :)
+
+2003-01-09 17:15  azurazu
+
+	* edit.php: Fixed two stupid bugs in edit.php, you couldnt add
+	users
+
+2003-01-08 01:40  azurazu
+
+	* test_setup.php: Kicked out the nice binary stuff, ah well.. hehe
+	and changed ti to a variable array, just as handy I would say, also
+	removed the _seq table checks which arent needed if this is ran the
+	first time or alike, thanks to our bug reporters
+
+2003-01-08 00:46  azurazu
+
+	* migrator.php-pa: Heavily modified, build in check so that if your
+	domains tablei s filled already it will nicely work etc.
+
+2003-01-08 00:41  lyon
+
+	* inc/: footer.inc.php, toolkit.inc.php: added a check for
+	install.php and migrator .php. error if the exist( security) added
+	a little "$db is actually an object" check in the footer
+
+2003-01-08 00:29  lyon
+
+	* install.php: added a config check
+
+2003-01-08 00:20  lyon
+
+	* install.php: Did some addslashes/stripslashes magic.	made the
+	warning to delete the install.php a bit clearer.  Fixed the error
+	function (first commit by me, w00t)
+
+2003-01-02 00:13  azurazu
+
+	* inc/footer.inc.php: New version
+
+2003-01-01 23:39  azurazu
+
+	* docs/TODO: removed some issues
+
+2003-01-01 23:36  azurazu
+
+	* edit.php, edit_record.php, index.php, inc/header.inc.php: Made
+	w3c happier :)
+
+2003-01-01 23:34  azurazu
+
+	* users.php: Added some features on the TODO (Name validation etc.)
+
+2003-01-01 23:33  azurazu
+
+	* delete_user.php, inc/users.inc.php: Fixed the deletion of users
+	and cleaned up the source
+
+2002-12-31 18:35  azurazu
+
+	* users.php: Added that password, fullname, email and username MUST
+	BE filled in
+
+2002-12-31 04:23  azurazu
+
+	* install.php: New installer
+
+2002-12-31 04:13  azurazu
+
+	* inc/toolkit.inc.php: Small bug in xs, thanks neetmans
+
+2002-12-31 02:17  azurazu
+
+	* docs/: CHANGELOG, ChangeLog: Updated the ChangeLog
+
+2002-12-31 01:59  azurazu
+
+	* migrator.php-pa: Added the migrator tool
+
+2002-12-31 01:56  azurazu
+
+	* index.php: Build in security check to see if a database is
+	converted or not
+
+2002-12-31 01:55  azurazu
+
+	* seq_update.php: Removed a newbie string
+
+2002-12-31 01:53  azurazu
+
+	* docs/README-Sequence: Sequence updater documentation
+
+2002-12-31 01:53  azurazu
+
+	* docs/README: Changes for 1.2
+
+2002-12-31 01:47  azurazu
+
+	* migrator.php-pa: migration tool
+
+2002-12-30 20:06  azurazu
+
+	* install.php: Changed it for the new version
+
+2002-12-27 03:48  azurazu
+
+	* delete_user.php: Function rename
+
+2002-12-27 03:48  azurazu
+
+	* edit.php: Fixed it so you can assign owners to a domain and also
+	delete them
+
+2002-12-27 03:47  azurazu
+
+	* seq_update.php: Removed an echo, sloppy
+
+2002-12-27 03:45  azurazu
+
+	* inc/auth.inc.php: Added some functions to make error reporting
+	happier
+
+2002-12-27 03:45  azurazu
+
+	* inc/database.inc.php: Some formatting probs
+
+2002-12-27 03:41  azurazu
+
+	* inc/footer.inc.php: This will be version 1.2 not 1.1.3
+
+2002-12-27 03:40  azurazu
+
+	* inc/record.inc.php: added delete_owner and changed change_owner
+	to add_owner to support multi ownage features and domains table
+
+2002-12-27 03:16  azurazu
+
+	* inc/toolkit.inc.php: Error handling in xs removed
+
+2002-12-24 21:33  azurazu
+
+	* edit.php, users.php: Inserted domains table
+
+2002-12-24 20:46  azurazu
+
+	* inc/: db.inc.php, record.inc.php: File is totally deprecated
+
+2002-12-21 01:50  azurazu
+
+	* seq_update.php: It was one big bug! How the heck could this
+	happen
+
+2002-12-20 20:17  azurazu
+
+	* inc/auth.inc.php: Dirty QUERY_STRING bug
+
+2002-12-18 02:13  azurazu
+
+	* delete_domain.php: Quickly added a ERROR define
+
+2002-12-18 02:09  azurazu
+
+	* index.php, seq_update.php: Added sequene number updater. Fixed
+	your database in case you do manual inserts
+
+2002-12-18 02:08  azurazu
+
+	* test_setup.php: Build a better test_setup
+
+2002-12-18 01:37  azurazu
+
+	* style/style.css.php: Added two style definitions: message and
+	messagetable
+
+2002-12-18 01:36  azurazu
+
+	* inc/toolkit.inc.php: Added message function
+
+2002-12-17 16:20  sjeemz
+
+	* inc/footer.inc.php: Changed our website (again)
+
+2002-12-17 16:17  sjeemz
+
+	* inc/footer.inc.php: Changed our website
+
+2002-12-17 16:16  azurazu
+
+	* docs/README: Added a story about PEAR
+
+2002-12-17 00:16  azurazu
+
+	* inc/footer.inc.php: CVS version
+
+2002-12-17 00:01  azurazu
+
+	* inc/dns.inc.php: MAJOR, really MAJOR regexp changes
+
+2002-12-16 01:42  azurazu
+
+	* inc/toolkit.inc.php: Added footer to error
+
+2002-12-16 01:38  azurazu
+
+	* docs/ChangeLog: GNU Style ChangeLog
+
+2002-12-16 01:26  azurazu
+
+	* edit_record.php: Fixed TTL bug
+
+2002-12-16 01:20  azurazu
+
+	* inc/toolkit.inc.php: Fixed a cough small cough is_valid_email
+	return bug
+
+2002-12-16 01:09  azurazu
+
+	* inc/dns.inc.php: Geez dumb bug, left a var_dump
+
+2002-12-16 00:43  azurazu
+
+	* install.php: Small bug, thanks l0ngb0ng
+
+2002-12-14 17:32  azurazu
+
+	* inc/dns.inc.php: Typo..
+
+2002-12-14 17:26  azurazu
+
+	* inc/dns.inc.php: Added wildcard records functionality, thanks
+	oscar
+
+2002-12-14 02:27  azurazu
+
+	* docs/REDHAT-README: Dirty Fix + BUG Description for RedHat 8.0
+
+2002-12-14 02:26  azurazu
+
+	* inc/dns.inc.php: is_valid_mx was borking with prio modifications,
+	thanks to oscar
+
+2002-12-14 01:52  azurazu
+
+	* install.php: RedHat BUG
+
+2002-12-14 01:07  azurazu
+
+	* install.php: Newline error?
+
+2002-12-10 02:30  azurazu
+
+	* style/style.css.php: Headers etc
+
+2002-12-10 02:28  azurazu
+
+	* test_setup.php: Changed it for PEAR, headers added aswell
+
+2002-12-10 02:27  azurazu
+
+	* users.php, add_record.php, delete_domain.php, delete_record.php,
+	delete_user.php, edit.php, edit_record.php, edit_user.php,
+	index.php, install.php: And made an error, DOH
+
+2002-12-10 02:26  azurazu
+
+	* add_record.php, delete_domain.php, delete_record.php,
+	delete_user.php, edit.php, edit_record.php, edit_user.php,
+	index.php, install.php, users.php: And added ID
+
+2002-12-10 02:24  azurazu
+
+	* add_record.php, delete_domain.php, delete_record.php,
+	delete_user.php, edit.php, edit_record.php, edit_user.php,
+	index.php, install.php: Added license and headers
+
+2002-12-10 01:55  azurazu
+
+	* inc/: auth.inc.php, database.inc.php, dns.inc.php, error.inc.php,
+	footer.inc.php, header.inc.php, record.inc.php, toolkit.inc.php,
+	users.inc.php: Added license information and headers
+
+2002-12-10 01:45  azurazu
+
+	* inc/auth.inc.php: Added fancy header (test:P)
+
+2002-12-10 01:31  azurazu
+
+	* inc/error.inc.php: Added errors
+
+2002-12-10 01:31  azurazu
+
+	* inc/dns.inc.php: Changed is_valid_hostname and is_valid_soa
+
+2002-12-09 23:52  azurazu
+
+	* inc/dns.inc.php: DNS Function enhancements (return values)
+
+2002-12-09 23:51  azurazu
+
+	* inc/error.inc.php: Added errors
+
+2002-12-09 22:19  azurazu
+
+	* inc/users.inc.php: Typo
+
+2002-12-04 02:51  azurazu
+
+	* install.php: Modifications all over... the script was weak in
+	general. Added some sort of support for pgsql but its not
+	implemented, just queries are there
+
+2002-12-03 23:12  azurazu
+
+	* docs/TODO: Changed the layout and added a few things
+
+2002-12-03 23:11  azurazu
+
+	* inc/users.inc.php: Removed is_valid_email and changed
+	implementation
+
+2002-12-03 23:11  azurazu
+
+	* inc/dns.inc.php: changed the function order and added some
+	comments
+
+2002-12-03 23:10  azurazu
+
+	* inc/toolkit.inc.php: moved is_valid_email to toolkit
+
+2002-12-03 01:04  azurazu
+
+	* inc/dns.inc.php: Finalized a big part of the checking.
+
+2002-12-03 01:03  azurazu
+
+	* inc/users.inc.php: Build is_valid_email functionality
+
+2002-12-02 22:05  azurazu
+
+	* inc/config-block.inc.php: Added fancy records toggle
+
+2002-12-02 21:41  azurazu
+
+	* docs/TODO: Changes
+
+2002-11-30 02:16  azurazu
+
+	* inc/toolkit.inc.php: Another newline bug.. bah
+
+2002-11-30 00:11  azurazu
+
+	* inc/dns.inc.php: Newline problems and NS validation added
+
+2002-11-29 23:32  azurazu
+
+	* inc/dns.inc.php: Splitted up and worked stuff out not bug free
+	yet I think
+
+2002-11-29 23:18  azurazu
+
+	* inc/record.inc.php: Bug Fix
+
+2002-11-26 01:09  azurazu
+
+	* users.php: Added ERR_LEVEL_10
+
+2002-11-26 01:05  azurazu
+
+	* inc/dns.inc.php: Removed a bug
+
+2002-11-26 01:05  azurazu
+
+	* inc/footer.inc.php: Added URL
+
+2002-11-26 01:04  azurazu
+
+	* inc/record.inc.php: Removed two bugs
+
+2002-11-26 01:02  azurazu
+
+	* inc/config-block.inc.php: Added 3 fields and removed deprecated
+	stuff
+
+2002-11-25 22:01  azurazu
+
+	* delete_user.php, edit_user.php: Changed the name of
+	get_name_from_userid to get_fullname_from_userid
+
+2002-11-25 22:00  azurazu
+
+	* inc/error.inc.php: Fixed a DUMB error in error.. d'oh and added
+	some more
+
+2002-11-25 21:59  azurazu
+
+	* inc/users.inc.php: Implemented comments and error handling in
+	users.inc.php
+
+2002-11-25 21:11  azurazu
+
+	* inc/: error.inc.php, toolkit.inc.php: Added error define
+	functionality
+
+2002-11-25 21:09  azurazu
+
+	* inc/record.inc.php: Added documentation for each function and
+	changed the error processing to a file called error.inc.php
+
+2002-11-25 19:16  azurazu
+
+	* docs/TODO: [no log message]
+
+2002-11-25 18:35  azurazu
+
+	* inc/dns.inc.php: Allow the notation of
+	12.8/123.123.123.123.in-addr.arpa in the validators. Thanks to mijo
+	for reporting this bug
+
+2002-11-25 18:30  azurazu
+
+	* inc/: record.inc.php, users.inc.php: Major modifications and bug
+	fixes. Also added comments
+
+2002-11-21 23:40  azurazu
+
+	* inc/record.inc.php: Removed some comment crap
+
+2002-11-21 23:39  azurazu
+
+	* inc/dns.inc.php: Fixed some prio bugs
+
+2002-11-21 23:26  azurazu
+
+	* inc/: dns.inc.php, record.inc.php: Build in basic record
+	validation, not totally done yet. Moved the validation function to
+	dns.inc.php
+
+2002-11-05 00:57  azurazu
+
+	* inc/record.inc.php: I dont get the errors (one e ok) but the rest
+	is just stupid Windows probly :/
+
+2002-11-05 00:38  azurazu
+
+	* delete_user.php, index.php: Small bug fixes and enhancements
+
+2002-11-05 00:35  azurazu
+
+	* inc/record.inc.php: Heavy modifications and _STUPID_ bugfixes,
+	really checkout the CVS
+
+2002-11-03 16:07  azurazu
+
+	* inc/dns.inc.php: Fixed a nasty bug in is_valid_hostname
+
+2002-10-30 01:04  azurazu
+
+	* inc/: dns.inc.php, record.inc.php: A lot of changes for
+	validation. Has to be split up still but testing purposes first.
+	Not done yet
+
+2002-10-28 13:45  sjeemz
+
+	* docs/TODO: modified TODO file
+
+2002-10-28 02:57  azurazu
+
+	* inc/record.inc.php: Fixed several small bugs
+
+2002-10-28 02:56  azurazu
+
+	* inc/dns.inc.php: Fixed even better ipv4 check (oneliner) and
+	added function validate_record
+
+2002-10-27 23:00  azurazu
+
+	* docs/TODO: Removed database changes - see changelog
+
+2002-10-27 20:22  azurazu
+
+	* add_record.php, delete_domain.php, delete_record.php,
+	delete_user.php, edit.php, edit_record.php, edit_user.php,
+	index.php, users.php: Changing because of db.inc.php to
+	toolkit.inc.php
+
+2002-10-27 20:20  azurazu
+
+	* inc/footer.inc.php: Changed closing database system
+
+2002-10-27 20:19  azurazu
+
+	* inc/: auth.inc.php, dns.inc.php, record.inc.php, toolkit.inc.php,
+	users.inc.php: Clean up of db.inc.php
+
+2002-10-27 20:18  azurazu
+
+	* inc/: dal.inc.php, database.inc.php: Database Abstraction Layer
+	and implementation
+
+2002-10-27 20:17  azurazu
+
+	* inc/config-block.inc.php: Changed mysql fields to db fields
+
+2002-10-27 20:12  azurazu
+
+	* docs/CHANGELOG: Changed a few things
+
+2002-10-26 23:38  azurazu
+
+	* docs/TODO: Added 2 remarks
+
+2002-10-25 22:20  azurazu
+
+	* add_record.php, delete_domain.php, delete_record.php,
+	delete_user.php, edit.php, edit_record.php, edit_user.php,
+	index.php, install.php, test_setup.php, users.php, docs/CHANGELOG,
+	docs/README, docs/TODO, images/background.jpg, images/delete.gif,
+	images/edit.gif, inc/config-block.inc.php, inc/db.inc.php,
+	inc/footer.inc.php, inc/header.inc.php, style/style.css.php:
+	PowerAdmin initial source code submit
+
+2002-10-25 22:20  azurazu
+
+	* add_record.php, delete_domain.php, delete_record.php,
+	delete_user.php, edit.php, edit_record.php, edit_user.php,
+	index.php, install.php, test_setup.php, users.php, docs/CHANGELOG,
+	docs/README, docs/TODO, images/background.jpg, images/delete.gif,
+	images/edit.gif, inc/config-block.inc.php, inc/db.inc.php,
+	inc/footer.inc.php, inc/header.inc.php, style/style.css.php:
+	Initial revision
+

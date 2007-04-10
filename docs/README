@@ -1,0 +1,178 @@
+1. What is PowerAdmin
+------------------------------
+
+PowerAdmin is a non commercial front-end for the PowerDNS (www.powerdns.com) nameserver.
+The goal of PowerAdmin is to manage the (MySQL) database behind PowerDNS, which contains
+the DNS records.
+
+There have been some changes in this release, both of major and minor importance.
+Please read the following document to familiarize yourself with them. You are also
+requested to report any bugs should you encounter them.
+
+
+
+2. Where to get PowerAdmin
+------------------------------
+
+The main location of PowerAdmin is http://www.poweradmin.org
+
+
+
+3. Notes
+------------------------------
+
+
+3.1 Migrating
+------------------------------
+
+If you are running a stone-age version of PowerAdmin read the following information!
+
+Due to some major changes in this release the current version of PowerAdmin
+supports gmysql backend. You are strongly advised to backup your data before running the
+migrator.php tool in your poweradmin directory. This is to protect you against any data
+loss should anything go wrong. We assume it all works properly, but due to a limited
+number of betatesters we cannot guarantee our tool is 100% bug free.
+
+!! Please be sure you have a working backup of your data !! 
+
+Do the following to migrate: 
+- rename the file migrator.php-pa in your webdir to migrator.php.
+- Go here to migrate it.
+It is recommended to synchronize your database aswell after the update
+
+
+3.2 DB Information
+------------------------------
+
+For now on PowerAdmin supports PowerDNS' MySQL back-end only. If there is demand for other
+database layers support will be added in the near future. Of course, since the code is opensource,
+everyone who cannot wait is encouraged to plug in their own database layer (and if you dare, send the 
+code to us so we can evaluate it and maybe integrate it with the current PowerAdmin).
+We are still busy with PostGreSQL, but the experience needs a bit more tweaking for us.
+Time will release it, we cannot yet.
+
+By using PEAR::DB we are bound to have some way to keep track of indexes. This is done by using seperate
+tables called users_seq and zones_seq. Also records_seq will be there. This means that if you manually
+insert a record, chances are 90% that you will have corrupted workings of PowerAdmin (because the ID is
+not in order.) The problem can be solved by running the Synchronize Database tool (select it or use the
+seq_update.php url). This will let you resynch your indexes. It is also useful if you are migrating
+from 1.0 to 1.1 or higher.
+
+Read more about this in README-Sequence
+
+
+4. Documentation
+------------------------------
+
+PowerAdmin has the following core features:
+
+- User Level dependant editing of domains. For example an administrator
+  can edit all domains, while a user can for example only edit the domain(s)
+  owned by him/her.
+
+- Simple administration of users that can access PowerAdmin.
+
+- Easy creating of domains. Next of that, the proper assignment of rights
+  is simply and done within a few clicks.
+
+- Ability to apply a record-template when creating domains. For now, the template
+  can only be configured in the config file, but this will be moved to a nice
+  database-table soon.
+
+- Editting records in existing zones.
+
+
+5. Installation
+------------------------------
+
+!! If you are updating, you should necessarily read paragraph 3 !!
+
+What you need:
+- PowerDNS (Duh!) (Versions 2.1 through 2.6 have been tested, others might work aswell)
+  http://www.powerdns.com/
+- MySQL
+  http://www.mysql.com/
+- An (Apache) webserver that supports php4 and php4-mysql. The PHP version must be at least 4.2.1.
+  http://www.apache.org/
+  http://www.php.net/
+
+First of all, install PowerDNS with it's MySQL Generic back-end.
+
+Next to the MySQL user you created for PowerDNS, you need a MySQL user for PowerAdmin that can do
+the following actions on the PowerDNS database you created: SELECT, INSERT, DELETE, UPDATE, CREATE.
+
+Untar/gzip poweradmin-VERSION.tar.gz in your webdir. This will create a directory called
+poweradmin-VERSION.
+
+In the 'inc' subdirectory of your newly created directory, you'll find a file called
+config-block.inc.php. Edit this file to suit your environment. Then rename it to
+config.inc.php to be able to load the site. The website will not work properly without a config,
+so pay attention to your configuration!
+
+Next, go to http://www.yourdomain.com/poweradmin-VERSION/install.php
+
+Fill in the required information to make an administrator login for your
+PowerAdmin. If all goes well, the user is made, and you can log in using that username.
+WARNING! Be sure to remove install.php from the webdir!
+
+After you are done, run http://www.yourdomain.com/poweradmin-VERSION/test_setup.php to see if
+everything is set up well.
+This test also includes the functionality testing of your PowerDNS records (whether you
+have read/write access or not)
+
+
+6. User levels explained
+------------------------------
+User levels explained:
+
+[x] = yes
+[ ] = no
+
+User        Permission to           Permission to           Permission to           Permission to
+Level       change own              change other            create domains          add/modify
+            domain(s)               domain(s)                                       users
+
+ 1               [x]                     [ ]                     [ ]                     [ ]
+ 5               [x]                     [x]                     [x]                     [ ]
+ 10              [x]                     [x]                     [x]                     [x]
+
+
+7. Further Info && Bugs
+------------------------------
+
+The latest contact information can always be found at http://www.poweradmin.org .
+
+
+8. Links and more information
+------------------------------
+
+http://www.poweradmin.org   Our main site
+http://www.powerdns.com		PowerDNS
+http://www.ietf.org		Information about DNS
+http://poweradmin.sf.net	PowerAdmin @ SourceForge
+http://www.apache.org/          The Apache Webserver
+http://www.php.net/             PHP programming language
+http://www.mysql.com/           MySQL database server
+
+9. Changes
+------------------------------
+
+Changes for this version are:
+- Many many many bug fixes!
+- Enhanced sequence updater that is now smarter.
+- SOA Fields fixed.
+- Automatically SOA serial updating after each change in the DNS.
+- MASTER/SLAVE Functionality but that stays untested at the moment of writing. 
+  Use the toggles with care, see the config-block.inc.php for more information.
+- Search abilities added thanks to DeViCeD
+- A lot of other stuff and minor details not worth mentioning that much.
+
+
+--------------------------------------------------------------------------
+Enjoy!
+
+There are some major changes, we would like feedback!
+See paragraph 7 for contact information.
+
+Regards,
+The PowerAdmin Team
