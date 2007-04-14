@@ -35,26 +35,26 @@ if (isset($_POST['s_submit']) || isset($_POST['q']))
 // we will continue after the search form ... 
 include_once('inc/header.inc.php');
 ?>
-<P><H2>Search zones or records</H2></P>
+<P><H2><? echo _('Search zones or records'); ?></H2></P>
 <P CLASS="nav">
-<A HREF="index.php">DNS Admin</A> 
+<A HREF="index.php"><? echo _('DNS Admin'); ?></A> 
 <?
 if (level(10))
 {
-	?><A HREF="users.php">User Admin</A> <A HREF="seq_update.php">Synchronize Database</A><?
+	?><A HREF="users.php"><? echo _('User Admin'); ?></A> <A HREF="seq_update.php"><? echo _('Synchronize Database'); ?></A><?
 }
 ?>
 </P><BR>
-Type a hostname or a record in the box below and press search to see if the record exists in the system.
+<? echo _('Type a hostname or a record in the box below and press search to see if the record exists in the system.'); ?>
 	<table border = "0" cellspacing = "4">
 	<form method = "post" action="<?=$_SERVER['PHP_SELF']?>">
 		<tr>
-			<td class = "tdbg"><b>Enter a hostname or IP address</b></td>
+			<td class = "tdbg"><b><? echo _('Enter a hostname or IP address'); ?></b></td>
 			<td width = "510" class = "tdbg"><input type = "text" class = "input" name = "q"></td>
 		</tr>
 		<tr>
 			<td class = "tdbg">&nbsp;</td>
-			<td class = "tdbg"><input type = "submit" class = "button" name = "s_submit" value = "Search"></td>
+			<td class = "tdbg"><input type = "submit" class = "button" name = "s_submit" value = "<? echo _('Search'); ?>"></td>
 		</tr>
 	</form>
 	</table>
@@ -70,14 +70,14 @@ if ($submitted)
 	if (count($search_result) == 2 && count($search_result['domains']))
   	{
 	?>
-	<b>Domains found:</b>
+	<b><? echo _('Domains found'); ?>:</b>
 	<p>
 	<table border = "0" cellspacing = "4">
 		<tr style = "font-weight: Bold;">
 			<td class = "tdbg">&nbsp;</td>
-			<td class = "tdbg">Name</td>
-			<td class = "tdbg">Records</td>
-			<td class = "tdbg">Owner</td>
+			<td class = "tdbg"><? echo _('Name'); ?></td>
+			<td class = "tdbg"><? echo _('Records'); ?></td>
+			<td class = "tdbg"><? echo _('Owner'); ?></td>
 		</tr>
 		<?php
 		foreach($search_result['domains'] as $d)
@@ -88,7 +88,7 @@ if ($submitted)
 			<?php 
 			if (level(5))
 			{
-				echo '<a href = "delete_domain.php?id='.$d['id'].'"><img src = "images/delete.gif" alt = "[ delete zone ]" border = "0"></a>';
+				echo '<a href = "delete_domain.php?id='.$d['id'].'"><img src = "images/delete.gif" alt = "[ ' .  _('delete zone') . ' ]" border = "0"></a>';
 			}
 			else 
 			{
@@ -113,16 +113,16 @@ if ($submitted)
 	if(count($search_result['records']))
 	{
 		?>
-		<b>Records found:</b>
+		<b><? echo _('Records found'); ?>:</b>
 		<p>
 		<table border = "0" cellspacing = "4">
 			<tr style = "font-weight: Bold;">
 				<td class = "tdbg">&nbsp;</td>
-				<td class = "tdbg">Name</td>
-				<td class = "tdbg">Type</td>
-				<td class = "tdbg">Content</td>
-				<td class = "tdbg">Priority</td>
-				<td class = "tdbg">TTL</td>
+				<td class = "tdbg"><? echo _('Name'); ?></td>
+				<td class = "tdbg"><? echo _('Type'); ?></td>
+				<td class = "tdbg"><? echo _('Content'); ?></td>
+				<td class = "tdbg"><? echo _('Priority'); ?></td>
+				<td class = "tdbg"><? echo _('TTL'); ?></td>
 			</tr>
 		<?php
 		foreach($search_result['records'] as $r)
@@ -138,8 +138,8 @@ if ($submitted)
 			  $GLOBALS["ALLOW_NS_EDIT"] != 1))
 			{
 				?>
-				<a href = "edit_record.php?id=<?=$r['id']?>&amp;domain=<?=$r['domain_id']?>"><img src = "images/edit.gif" alt = "[ edit record ]" border = "0"></a>
-				<a href = "delete_record.php?id=<?=$r['id']?>&amp;domain=<?=$r['domain_id']?>"><img src = "images/delete.gif" alt = "[ delete record ]" border = "0"></a>
+				<a href = "edit_record.php?id=<?=$r['id']?>&amp;domain=<?=$r['domain_id']?>"><img src = "images/edit.gif" alt = "[ <? echo _('edit record'); ?> ]" border = "0"></a>
+				<a href = "delete_record.php?id=<?=$r['id']?>&amp;domain=<?=$r['domain_id']?>"><img src = "images/delete.gif" alt = "[ <? echo _('delete record'); ?> ]" border = "0"></a>
 				<?php 
 			} // big if ;-)
 			?>
@@ -170,7 +170,7 @@ if ($submitted)
 		<table border = "0" cellspacing = "4">
 			<tr>
 				<td width = "510" class = "tdbg">
-				Nothing found for query "<?=$_POST['q']?>"
+				<? echo _('Nothing found for query'); ?> "<?=$_POST['q']?>"
 				</td>
 			</tr>
 		</table>

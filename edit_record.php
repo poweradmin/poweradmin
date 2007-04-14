@@ -57,14 +57,14 @@ if ($_POST["commit"])
 include_once("inc/header.inc.php");
 
 ?>
-<H2>Edit record in zone "<?= get_domain_name_from_id($_GET["domain"]) ?>"</H2>
-<FONT CLASS="nav"><BR><A HREF="index.php">DNS Admin</A> &gt;&gt; <A HREF="edit.php?id=<?= $_GET["domain"] ?>"><?= get_domain_name_from_id($_GET["domain"]) ?></A> &gt;&gt; Edit record<BR><BR></FONT>
+<H2><? echo _('Edit record in zone'); ?> "<?= get_domain_name_from_id($_GET["domain"]) ?>"</H2>
+<FONT CLASS="nav"><BR><A HREF="index.php"><? echo _('DNS Admin'); ?></A> &gt;&gt; <A HREF="edit.php?id=<?= $_GET["domain"] ?>"><?= get_domain_name_from_id($_GET["domain"]) ?></A> &gt;&gt; <? echo _('Edit record'); ?><BR><BR></FONT>
 
 <FORM METHOD="post" ACTION="edit_record.php">
 <INPUT TYPE="hidden" NAME="recordid" VALUE="<?= $_GET["id"] ?>">
 <INPUT TYPE="hidden" NAME="domainid" VALUE="<?= $_GET["domain"] ?>">
 <TABLE BORDER="0" CELLSPACING="4">
-<TR STYLE="font-weight: Bold"><TD CLASS="tdbg">Name</TD><TD CLASS="tdbg">&nbsp;</TD><TD CLASS="tdbg">Type</TD><TD CLASS="tdbg">Priority</TD><TD CLASS="tdbg">Content</TD><TD CLASS="tdbg">TimeToLive</TD></TR>
+<TR STYLE="font-weight: Bold"><TD CLASS="tdbg"><? echo _('Name'); ?></TD><TD CLASS="tdbg">&nbsp;</TD><TD CLASS="tdbg"><? echo _('Type'); ?></TD><TD CLASS="tdbg"><? echo _('Priority'); ?></TD><TD CLASS="tdbg"><? echo _('Content'); ?></TD><TD CLASS="tdbg"><? echo _('TimeToLive'); ?></TD></TR>
 
 <?
 	$rec = get_record_from_id($_GET["id"]);
@@ -101,18 +101,18 @@ foreach (get_record_types() as $c)
 ?>
 </SELECT></TD><TD CLASS="tdbg"><INPUT TYPE="text" NAME="prio" VALUE="<?= $rec["prio"] ?>" CLASS="sinput"></TD><TD CLASS="tdbg"><INPUT TYPE="text" NAME="content" VALUE="<?= $rec["content"] ?>" CLASS="input"></TD><TD CLASS="tdbg"><INPUT TYPE="text" NAME="ttl" VALUE="<?= $rec["ttl"] ?>" CLASS="sinput"></TD></TR>
 </TABLE>
-<BR><INPUT TYPE="submit" NAME="commit" VALUE="Commit changes" CLASS="button">&nbsp;&nbsp;<INPUT TYPE="reset" NAME="reset" VALUE="Reset changes" CLASS="button">
+<BR><INPUT TYPE="submit" NAME="commit" VALUE="<? echo _('Commit changes'); ?>" CLASS="button">&nbsp;&nbsp;<INPUT TYPE="reset" NAME="reset" VALUE="<? echo _('Reset changes'); ?>" CLASS="button">
 </FORM>
 
 <?if (level(10)) { ?>
 <table style="width:140px">
-<tr><td CLASS="tdbg"><b>Sub-users</b></td><td CLASS="tdbg"> </td></tr>
+<tr><td CLASS="tdbg"><b><? echo _('Sub-users'); ?></b></td><td CLASS="tdbg"> </td></tr>
 <?
 $x_result = $db->query("SELECT r.id,u.username FROM record_owners as r, users as u WHERE r.record_id='".$_GET['id']."' AND u.id=r.user_id");
 while ($x_r = $x_result->fetchRow()) {
    echo "<tr><td CLASS=\"tdbg\">".$x_r["username"]."</td><td CLASS=\"tdbg\">";
    echo "<a href=\"".$_SERVER["PHP_SELF"]."?id=".$_GET["id"]."&domain=".$_GET["domain"]."&delid=".$x_r["id"]."\">";
-   echo "<img src=\"images/delete.gif\" alt=\"trash\" border=\"0\"/></a></td></tr>";
+   echo "<img src=\"images/delete.gif\" alt=\"" . _('trash') . "\" border=\"0\"/></a></td></tr>";
 }
 ?>
 </table>

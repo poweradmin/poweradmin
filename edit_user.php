@@ -51,12 +51,12 @@ if (!level(10))
 }
 
 ?>
-<H2>Edit user "<?= get_fullname_from_userid($_GET["id"]) ?>"</H2>
+<H2><? echo _('Edit user'); ?> "<?= get_fullname_from_userid($_GET["id"]) ?>"</H2>
 <?
 if (level(10))
 {
 ?>
-<FONT CLASS="nav"><BR><A HREF="users.php">User Admin</A> >> Edit User</FONT><BR><BR>
+<FONT CLASS="nav"><BR><A HREF="users.php"><? echo _('User Admin'); ?></A> &gt;&gt; <? echo _('Edit User'); ?></FONT><BR><BR>
 <?
 }
 
@@ -66,14 +66,14 @@ $r = get_user_info($_GET["id"]);
 ?>
 <FORM  METHOD="post">
 <TABLE BORDER="0" CELLSPACING="4">
-<TR><TD CLASS="tdbg">User name:</TD><TD WIDTH="510" CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="username" VALUE="<?=$r["username"]?>"></TD></TR>
-<TR><TD CLASS="tdbg">Full name:</TD><TD CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="fullname" VALUE="<?=$r["fullname"]?>"></TD></TR>
-<TR><TD CLASS="tdbg">Password:</TD><TD CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="password" VALUE=""></TD></TR>
-<TR><TD CLASS="tdbg">E-mail:</TD><TD CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="email" VALUE="<?=$r["email"]?>"></TD></TR>
-<TR><TD CLASS="tdbg">User level:</TD><TD CLASS="tdbg"><SELECT NAME="level"><OPTION VALUE="1" <? if($r["level"] == 1) { echo "SELECTED"; } ?>>1 (Normal user)</OPTION><OPTION VALUE="5" <? if($r["level"] == 5) { echo "SELECTED"; } ?>>5 (Administrator)</OPTION><OPTION VALUE="10" <? if($r["level"] == 10) { echo "SELECTED"; } ?>>10 (Administrator w/ user admin rights)</OPTION></SELECT></TD></TR>
-<TR><TD CLASS="tdbg">Description:</TD><TD CLASS="tdbg"><TEXTAREA ROWS="6" COLS="30" CLASS="inputarea" NAME="description"><?=$r["description"]?></TEXTAREA></TD></TR>
-<TR><TD CLASS="tdbg">Active:</TD><TD CLASS="tdbg"><INPUT TYPE="checkbox" NAME="active" VALUE="1" <? if($r["active"]) { ?>CHECKED<? } ?>></TD></TR>
-<TR><TD CLASS="tdbg">&nbsp;</TD><TD CLASS="tdbg"><INPUT TYPE="submit" CLASS="button" NAME="commit" VALUE="Commit changes"></TD></TR>
+<TR><TD CLASS="tdbg"><? echo _('User name'); ?>:</TD><TD WIDTH="510" CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="username" VALUE="<?=$r["username"]?>"></TD></TR>
+<TR><TD CLASS="tdbg"><? echo _('Full name'); ?>:</TD><TD CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="fullname" VALUE="<?=$r["fullname"]?>"></TD></TR>
+<TR><TD CLASS="tdbg"><? echo _('Password'); ?>:</TD><TD CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="password" VALUE=""></TD></TR>
+<TR><TD CLASS="tdbg"><? echo _('E-mail'); ?>:</TD><TD CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="email" VALUE="<?=$r["email"]?>"></TD></TR>
+<TR><TD CLASS="tdbg"><? echo _('User level'); ?>:</TD><TD CLASS="tdbg"><SELECT NAME="level"><OPTION VALUE="1" <? if($r["level"] == 1) { echo "SELECTED"; } ?>>1 (<? echo _('Normal user'); ?>)</OPTION><OPTION VALUE="5" <? if($r["level"] == 5) { echo "SELECTED"; } ?>>5 (<? echo _('Administrator'); ?>)</OPTION><OPTION VALUE="10" <? if($r["level"] == 10) { echo "SELECTED"; } ?>>10 (<? echo _('Administrator w/ user admin rights'); ?>)</OPTION></SELECT></TD></TR>
+<TR><TD CLASS="tdbg"><? echo _('Description'); ?>:</TD><TD CLASS="tdbg"><TEXTAREA ROWS="6" COLS="30" CLASS="inputarea" NAME="description"><?=$r["description"]?></TEXTAREA></TD></TR>
+<TR><TD CLASS="tdbg"><? echo _('Active'); ?>:</TD><TD CLASS="tdbg"><INPUT TYPE="checkbox" NAME="active" VALUE="1" <? if($r["active"]) { ?>CHECKED<? } ?>></TD></TR>
+<TR><TD CLASS="tdbg">&nbsp;</TD><TD CLASS="tdbg"><INPUT TYPE="submit" CLASS="button" NAME="commit" VALUE="<? echo _('Commit changes'); ?>"></TD></TR>
 <INPUT TYPE="HIDDEN" NAME="number" VALUE="<?= $_GET["id"] ?>">
 </TABLE>
 </FORM>

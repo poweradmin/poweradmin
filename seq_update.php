@@ -23,7 +23,7 @@ require_once("inc/header.inc.php");
 // Ok we have to synch it all.
 // What to do? Find the MAX(id) on each table and set it to the _seq table.
 
-echo "<P><B>Synching databases. This is useful if you did manual insertions (in case you havent been here yet)</B></P>";
+echo "<P><B>" . _('Synching databases. This is useful if you did manual insertions (in case you havent been here yet).') . "</B></P>";
 
 if(!level(10))
 {

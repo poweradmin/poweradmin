@@ -51,13 +51,13 @@ if(isset($id))
                 clean_page($BASE_URL . $BASE_PATH . "users.php");
         }
         include_once("inc/header.inc.php");
-        ?><H2>Delete user "<?= get_fullname_from_userid($id) ?>"</H2>
+        ?><H2><? echo _('Delete user'); ?> "<?= get_fullname_from_userid($id) ?>"</H2>
         <FORM METHOD="post">
         <?
         $domains = get_domains_from_userid($id);
         if (count($domains) > 0) 
         {
-        	?>This user has access to the following domain(s):<BR><?
+        	echo _('This user has access to the following domain(s)'); ?> :<BR><?
                 $users = show_users($id);
                 if(count($users) < 1) 
                 {
@@ -90,17 +90,17 @@ if(isset($id))
                 ?></TABLE><?
         }
         
-        $message = "You are going to delete this user, are you sure?";
+        $message = _('You are going to delete this user, are you sure?');
         if(($numrows = $db->getOne("select count(id) from zones where owner=$id")) != 0)
         {
-        	$message .= " This user has access to $numrows domain(s), by deleting him you will also delete these domains";
+        	$message .= " " . _('This user has access to $numrows domain(s), by deleting him you will also delete these domains');
         }
 
         ?>
         <BR><FONT CLASS="warning"><?= $message ?></FONT><BR><BR>
         <INPUT TYPE="hidden" NAME="id" VALUE="<?=$id ?>">
         <INPUT TYPE="hidden" NAME="confirm" VALUE="1">
-        <INPUT TYPE="submit" CLASS="button" VALUE="Yes"> <INPUT TYPE="button" CLASS="button" OnClick="location.href='users.php'" VALUE="No"></FORM>
+        <INPUT TYPE="submit" CLASS="button" VALUE="<? echo _('Yes'); ?>"> <INPUT TYPE="button" CLASS="button" OnClick="location.href='users.php'" VALUE="<? echo _('No'); ?>"></FORM>
         <?
         include_once("inc/footer.inc.php");
 } 

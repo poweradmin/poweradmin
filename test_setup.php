@@ -55,11 +55,11 @@ echo "<P>";
 
 if($bad)
 {
-	?><TABLE CLASS="error"><TR><TD CLASS="error"><H2>Not all tables are ok!</H2><?
+	?><TABLE CLASS="error"><TR><TD CLASS="error"><H2><? echo _('Not all tables are ok!'); ?></H2><?
 }
 else
 {
-	?><TABLE CLASS="messagetable"><TR><TD CLASS="message"><H2>Successful!</H2><?
+	?><TABLE CLASS="messagetable"><TR><TD CLASS="message"><H2><? echo _('Successful!'); ?></H2><?
 }
 ?>
 <BR>
@@ -67,16 +67,16 @@ else
 <?
 if($bad)
 {
-	?>Sorry, but there are error(s) found in the following table(s):<?
+	echo _('Sorry, but there are error(s) found in the following table(s):'); 
 	foreach($bad_array as $table)
 	{
 		echo " '$table'";
 		}
-		?>.</P><P>Please fix these errors and run the script again.</P><?
+		?>.</P><P><? echo _('Please fix these errors and run the script again.'); ?></P><?
 	}
 	else
 	{
-		echo "Successful! Everything is set up ok, you can rumble!";
+		echo _('Successful! Everything is set up ok, you can rumble!"');
 	}
 ?>
 <BR></TD></TR></TABLE></P>

@@ -35,11 +35,11 @@ if ($_GET["id"]) {
         }
         include_once("inc/header.inc.php");
         $info = get_domain_info_from_id($_GET["id"]);
-        ?><H2>Delete domain "<?= $info["name"] ?>"</H2>
-        Owner: <?= $info["owner"] ?><BR>
-        Number of records in zone: <?= $info["numrec"] ?><BR><BR>
-        <FONT CLASS="warning">Are you sure?</FONT><BR><BR>
-        <INPUT TYPE="button" CLASS="button" OnClick="location.href='<?= $_SERVER["REQUEST_URI"] ?>&confirm=1'" VALUE="Yes"> <INPUT TYPE="button" CLASS="button" OnClick="location.href='<?= $_SERVER["REQUEST_URI"] ?>&confirm=0'" VALUE="No">
+        ?><H2><? echo _('Delete domain'); ?> "<?= $info["name"] ?>"</H2>
+        <? echo _('Owner'); ?>: <?= $info["owner"] ?><BR>
+        <? echo _('Number of records in zone'); ?>: <?= $info["numrec"] ?><BR><BR>
+        <FONT CLASS="warning"><? echo _('Are you sure'); ?>?</FONT><BR><BR>
+        <INPUT TYPE="button" CLASS="button" OnClick="location.href='<?= $_SERVER["REQUEST_URI"] ?>&confirm=1'" VALUE="<? echo _('Yes'); ?>"> <INPUT TYPE="button" CLASS="button" OnClick="location.href='<?= $_SERVER["REQUEST_URI"] ?>&confirm=0'" VALUE="<? echo _('No'); ?>">
         <?
 } elseif ($_GET["edit"]) {
         include_once("inc/header.inc.php");

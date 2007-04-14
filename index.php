@@ -108,33 +108,33 @@ include_once("inc/header.inc.php");
 <?
 if (level(10))
 {
-	?><A HREF="users.php">User Admin</A> <A HREF="seq_update.php">Synchronize Database</A><?
+	?><A HREF="users.php"><? echo _('User Admin'); ?></A> <A HREF="seq_update.php"><? echo _('Synchronize Database'); ?></A><?
 }
 ?>
- <A HREF="search.php">Search records</A>
+ <A HREF="search.php"><? echo _('Search records'); ?></A>
 </P>
 
 <BR>
-Welcome, <?= $_SESSION["name"] ?>.
+<? echo _('Welcome'); ?>, <?= $_SESSION["name"] ?>.
 <BR>
 
-Your userlevel is: <?= $_SESSION["level"] ?> (<?= leveldescription($_SESSION["level"]) ?>)
+<? echo _('Your userlevel is'); ?>: <?= $_SESSION["level"] ?> (<?= leveldescription($_SESSION["level"]) ?>)
 <BR><BR>
 
 <?
 if ($error != "")
 {
-	?><H3><FONT COLOR="red">Error: <?= $error ?></FONT></H3><?
+	?><H3><FONT COLOR="red"><? echo _('Error'); ?>: <?= $error ?></FONT></H3><?
 }
 ?>
 
-<B>Current domains in DNS (click to view or edit):</B>
+<B><? echo _('Current domains in DNS (click to view or edit)'); ?>:</B>
 <BR>
 
 <?
 $doms = get_domains(0);
 $num_domains = count($doms);
-echo "<br /><small><b>Number of domains: </b>".$num_domains."<br />";
+echo "<br /><small><b><? echo _('Number of domains'); ?>: </b>".$num_domains."<br />";
 
 if ($num_domains > ROWAMOUNT) {
    show_letters(LETTERSTART,$doms);
@@ -148,7 +148,7 @@ show_pages(count($doms),ROWAMOUNT);
 
 <br />
 <TABLE BORDER="0" CELLSPACING="4">
-<TR STYLE="font-weight: Bold;"><TD CLASS="tdbg">&nbsp;</TD><TD CLASS="tdbg">Name</TD><TD CLASS="tdbg">Records</TD><TD CLASS="tdbg">Owner</TD></TR>
+<TR STYLE="font-weight: Bold;"><TD CLASS="tdbg">&nbsp;</TD><TD CLASS="tdbg"><? echo _('Name'); ?></TD><TD CLASS="tdbg"><? echo _('Records'); ?></TD><TD CLASS="tdbg"><? echo _('Owner'); ?></TD></TR>
 <?
 
 if ($num_domains < ROWAMOUNT) {
@@ -160,7 +160,7 @@ if ($num_domains < ROWAMOUNT) {
 // If the user doesnt have any domains print a message saying so
 if ($doms < 0)
 {
-	?><TR><TD CLASS="tdbg">&nbsp;</TD><TD CLASS="tdbg" COLSPAN="4"><b>No domains in this listing, sorry.</b></FONT></TD></TR><?
+	?><TR><TD CLASS="tdbg">&nbsp;</TD><TD CLASS="tdbg" COLSPAN="4"><b><? echo _('No domains in this listing, sorry.'); ?></b></FONT></TD></TR><?
 }
 
 // If he has domains, dump them (duh)
@@ -172,7 +172,7 @@ else
 		<? if (level(5))
 		{
 			?>
-			<A HREF="delete_domain.php?id=<?= $c["id"] ?>"><IMG SRC="images/delete.gif" ALT="[ delete zone ]" BORDER="0"></A><?
+			<A HREF="delete_domain.php?id=<?= $c["id"] ?>"><IMG SRC="images/delete.gif" ALT="[ <? echo _('delete zone'); ?> ]" BORDER="0"></A><?
 		}
 		else
 		{
@@ -187,7 +187,7 @@ else
 ?>
 </TABLE>
 
-<small>You only administer some records of domains marked with an (*)</small>
+<small><? echo _('You only administer some records of domains marked with an (*).'); ?></small>
 
 <?
 if (level(5))
@@ -198,12 +198,12 @@ if (level(5))
 	?>
 	<BR><BR>
 	<FORM METHOD="post" ACTION="index.php">
-	<B>Create new domain:</B><BR>
+	<B><? echo _('Create new domain'); ?>:</B><BR>
 	<TABLE BORDER="0" CELLSPACING="4">
-	<TR><TD CLASS="tdbg">Domain name:</TD><TD WIDTH="510" CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="domain" VALUE="<? if ($error) print $_POST["domain"]; ?>"></TD></TR>
-	<TR><TD CLASS="tdbg">Web IP:</TD><TD CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="webip" VALUE="<? if ($error) print $_POST["webip"]; ?>"></TD></TR>
-	<TR><TD CLASS="tdbg">Mail IP:</TD><TD CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="mailip" VALUE="<? if ($error) print $_POST["mailip"]; ?>"></TD></TR>
-	<TR><TD CLASS="tdbg">Owner:</TD><TD CLASS="tdbg">
+	<TR><TD CLASS="tdbg"><? echo _('Domain name'); ?>:</TD><TD WIDTH="510" CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="domain" VALUE="<? if ($error) print $_POST["domain"]; ?>"></TD></TR>
+	<TR><TD CLASS="tdbg"><? echo _('Web IP'); ?>:</TD><TD CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="webip" VALUE="<? if ($error) print $_POST["webip"]; ?>"></TD></TR>
+	<TR><TD CLASS="tdbg"><? echo _('Mail IP'); ?>:</TD><TD CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="mailip" VALUE="<? if ($error) print $_POST["mailip"]; ?>"></TD></TR>
+	<TR><TD CLASS="tdbg"><? echo _('Owner'); ?>:</TD><TD CLASS="tdbg">
 	<SELECT NAME="owner">
 	<?
 	foreach ($users as $u)
@@ -217,7 +217,7 @@ if (level(5))
 	if($MASTER_SLAVE_FUNCTIONS == true)
 	{
 	?>
-	<TR><TD CLASS="tdbg">Domain type:</TD><TD CLASS="tdbg">
+	<TR><TD CLASS="tdbg"><? echo _('Domain type'); ?>:</TD><TD CLASS="tdbg">
 	<SELECT NAME="dom_type">
 	<?
 	foreach($server_types as $s)
@@ -228,8 +228,8 @@ if (level(5))
 	</SELECT>
 	</TD></TR>
 	<? } ?>
-	<TR><TD CLASS="tdbg">Create zone without<BR>applying records-template:</TD><TD CLASS="tdbg"><INPUT TYPE="checkbox" NAME="empty" VALUE="1"></TD></TR>
-	<TR><TD CLASS="tdbg">&nbsp;</TD><TD CLASS="tdbg"><INPUT TYPE="submit" CLASS="button" NAME="submit" VALUE="Add domain"></TD></TR>
+	<TR><TD CLASS="tdbg"><? echo _('Create zone without'); ?><BR><? echo _('applying records-template'); ?>:</TD><TD CLASS="tdbg"><INPUT TYPE="checkbox" NAME="empty" VALUE="1"></TD></TR>
+	<TR><TD CLASS="tdbg">&nbsp;</TD><TD CLASS="tdbg"><INPUT TYPE="submit" CLASS="button" NAME="submit" VALUE="<? echo _('Add domain'); ?>"></TD></TR>
 	</TABLE>
 	</FORM>
 <?
@@ -238,12 +238,12 @@ if (level(5))
 
 <BR><BR>
 <FORM METHOD="post" ACTION="index.php">
-<B>Change your password:</B><BR>
+<B><? echo _('Change your password'); ?>:</B><BR>
 <TABLE BORDER="0" CELLSPACING="4">
-<TR><TD CLASS="tdbg">Current password:</TD><TD WIDTH="510" CLASS="tdbg"><INPUT TYPE="password" CLASS="input" NAME="currentpass" VALUE=""></TD></TR>
-<TR><TD CLASS="tdbg">New Password:</TD><TD WIDTH="510" CLASS="tdbg"><INPUT TYPE="password" CLASS="input" NAME="newpass" VALUE=""></TD></TR>
-<TR><TD CLASS="tdbg">New Password:</TD><TD WIDTH="510" CLASS="tdbg"><INPUT TYPE="password" CLASS="input" NAME="newpass2" VALUE=""></TD></TR>
-<TR><TD CLASS="tdbg">&nbsp;</TD><TD CLASS="tdbg"><INPUT TYPE="submit" CLASS="button" NAME="passchange" VALUE="Change password"></TD></TR>
+<TR><TD CLASS="tdbg"><? echo _('Current password'); ?>:</TD><TD WIDTH="510" CLASS="tdbg"><INPUT TYPE="password" CLASS="input" NAME="currentpass" VALUE=""></TD></TR>
+<TR><TD CLASS="tdbg"><? echo _('New Password'); ?>:</TD><TD WIDTH="510" CLASS="tdbg"><INPUT TYPE="password" CLASS="input" NAME="newpass" VALUE=""></TD></TR>
+<TR><TD CLASS="tdbg"><? echo _('New Password'); ?>:</TD><TD WIDTH="510" CLASS="tdbg"><INPUT TYPE="password" CLASS="input" NAME="newpass2" VALUE=""></TD></TR>
+<TR><TD CLASS="tdbg">&nbsp;</TD><TD CLASS="tdbg"><INPUT TYPE="submit" CLASS="button" NAME="passchange" VALUE="<? echo _('Change password'); ?>"></TD></TR>
 </TABLE>
 </FORM>
 <?

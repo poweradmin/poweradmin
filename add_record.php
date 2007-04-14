@@ -28,13 +28,13 @@ if ($_POST["commit"]) {
 }
 include_once("inc/header.inc.php");
 ?>
-<H2>Add record to zone "<?= get_domain_name_from_id($_GET["id"]) ?>"</H2>
-<FONT CLASS="nav"><BR><A HREF="index.php">DNS Admin</A> &gt;&gt; <A HREF="edit.php?id=<?= $_GET["id"] ?>"><?= get_domain_name_from_id($_GET["id"]) ?></A> &gt;&gt; Add record<BR><BR></FONT>
+<H2><? echo _('Add record to zone'); ?> "<?= get_domain_name_from_id($_GET["id"]) ?>"</H2>
+<FONT CLASS="nav"><BR><A HREF="index.php"><? echo _('DNS Admin'); ?></A> &gt;&gt; <A HREF="edit.php?id=<?= $_GET["id"] ?>"><?= get_domain_name_from_id($_GET["id"]) ?></A> &gt;&gt; <? echo _('Add record'); ?><BR><BR></FONT>
 
 <FORM METHOD="post">
 <INPUT TYPE="hidden" NAME="zoneid" VALUE="<?= $_GET["id"] ?>">
 <TABLE BORDER="0" CELLSPACING="4">
-<TR STYLE="font-weight: Bold"><TD CLASS="tdbg">Name</TD><TD CLASS="tdbg">&nbsp;</TD><TD CLASS="tdbg">Type</TD><TD CLASS="tdbg">Priority</TD><TD CLASS="tdbg">Content</TD><TD CLASS="tdbg">TimeToLive</TD></TR>
+<TR STYLE="font-weight: Bold"><TD CLASS="tdbg"><? echo _('Name'); ?></TD><TD CLASS="tdbg">&nbsp;</TD><TD CLASS="tdbg"><? echo _('Type'); ?></TD><TD CLASS="tdbg"><? echo _('Priority'); ?></TD><TD CLASS="tdbg"><? echo _('Content'); ?></TD><TD CLASS="tdbg"><? echo _('TimeToLive'); ?></TD></TR>
 <TR><TD CLASS="tdbg"><INPUT TYPE="text" NAME="name" CLASS="input">.<?= get_domain_name_from_id($_GET["id"]) ?></TD><TD CLASS="tdbg">IN</TD><TD CLASS="tdbg"><SELECT NAME="type">
 <?
 $dname = get_domain_name_from_id($_GET["id"]);
@@ -50,7 +50,7 @@ foreach (get_record_types() as $c) {
 }
 ?></SELECT></TD><TD CLASS="tdbg"><INPUT TYPE="text" NAME="prio" CLASS="sinput"></TD><TD CLASS="tdbg"><INPUT TYPE="text" NAME="content" CLASS="input"></TD><TD CLASS="tdbg"><INPUT TYPE="text" NAME="ttl" CLASS="sinput" VALUE="<?=$DEFAULT_TTL?>"></TD></TR>
 </TABLE>
-<BR><INPUT TYPE="submit" NAME="commit" VALUE="Add record" CLASS="button">
+<BR><INPUT TYPE="submit" NAME="commit" VALUE="<? echo _('Add record'); ?>" CLASS="button">
 </FORM>
 
 <? include_once("inc/footer.inc.php"); ?>

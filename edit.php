@@ -49,13 +49,13 @@ if(isset($_POST["del_user"]) && is_numeric($_POST["del_user"]) && level(5))
 
 include_once("inc/header.inc.php");
 ?>
-<H2>Edit domain "<?= get_domain_name_from_id($_GET["id"]) ?>"</H2>
+<H2><? echo _('Edit domain'); ?> "<?= get_domain_name_from_id($_GET["id"]) ?>"</H2>
 <?
 $info = get_domain_info_from_id($_GET["id"]);
 if(!isset($info["ownerid"]))
 {
 	?>
-	<P CLASS="warning">This domain isnt owned by anyone yet, please assign someone</P>
+	<P CLASS="warning"><? echo _('This domain isnt owned by anyone yet, please assign someone.'); ?></P>
 	<?
 }
 ?>
@@ -66,7 +66,7 @@ if(!isset($info["ownerid"]))
 	<TR>
 		<FORM METHOD="post" ACTION="edit.php?id=<?=$_GET['id']?>">
 		<TD CLASS="none" VALIGN="middle" style="width: 250px;">
-			<B>Add an owner:</B>
+			<B><? echo _('Add an owner'); ?>:</B>
 			<INPUT TYPE="hidden" NAME="domain" VALUE="<?= $_GET["id"] ?>">
 			<SELECT NAME="newowner">
 			<?
@@ -85,7 +85,7 @@ if(!isset($info["ownerid"]))
 			</SELECT>
 		</TD>
 		<TD CLASS="none" VALIGN="middle"  align="right">
-			<INPUT TYPE="submit" CLASS="sbutton" NAME="co" VALUE="add">
+			<INPUT TYPE="submit" CLASS="sbutton" NAME="co" VALUE="<? echo _('add'); ?>">
 		</TD>
 		</FORM>
 	</TR>
@@ -98,7 +98,7 @@ if(isset($info["ownerid"]))
 {?>
 	<TR>
 		<TD CLASS="text" ALIGN="left" COLSPAN="2" style="width:150px;">
-			<B>Current listed owners:</B>
+			<B><? echo _('Current listed owners'); ?>:</B>
 		</TD>
 	</TR>
 	<?
@@ -112,7 +112,7 @@ if(isset($info["ownerid"]))
 			</TD>
 			<TD CLASS="text" align="right">
 				<INPUT TYPE="hidden" NAME="del_user" VALUE="<?=$user["id"]?>">
-				<INPUT TYPE="submit" CLASS="sbutton" NAME="co" VALUE="delete">
+				<INPUT TYPE="submit" CLASS="sbutton" NAME="co" VALUE="<? echo _('delete'); ?>">
 			</TD>
 			</FORM>
 		</TR>
@@ -129,11 +129,11 @@ if(isset($info["ownerid"]))
             <TD CLASS="text">&nbsp;</TD>
         </TR>
 		<TR>
-			<TD CLASS="text" COLSPAN="2"><B>Type of this domain: </B><?=$domain_type?></TD>
+			<TD CLASS="text" COLSPAN="2"><B><? echo _('Type of this domain'); ?>: </B><?=$domain_type?></TD>
 		</TR>
 		<FORM ACTION="<?=$_SERVER['PHP_SELF']?>?&amp;id=<?=$_GET['id']?>" METHOD="post">
 		<TR>
-            <TD CLASS="text"><B>Change type: </B>
+            <TD CLASS="text"><B><? echo _('Change type'); ?>: </B>
                 <SELECT NAME="newtype">
                 <?
                 foreach($server_types as $s)
@@ -149,7 +149,7 @@ if(isset($info["ownerid"]))
                 </SELECT>
             </TD>
             <TD CLASS="text">
-                <INPUT TYPE="submit" CLASS="sbutton" NAME="type_change" VALUE="change">
+                <INPUT TYPE="submit" CLASS="sbutton" NAME="type_change" VALUE="<? echo _('change'); ?>">
             </TD>
         </TR>
         </FORM>
@@ -157,9 +157,9 @@ if(isset($info["ownerid"]))
 </TABLE>
 <br />
 <FONT CLASS="nav">
-<A HREF="index.php">DNS Admin</A> &gt;&gt; <?= get_domain_name_from_id($_GET["id"]) ?>
+<A HREF="index.php"><? echo _('DNS Admin'); ?></A> &gt;&gt; <?= get_domain_name_from_id($_GET["id"]) ?>
 </FONT>
-<br /><br /><small><b>Number of records:</b> <?= $info["numrec"] ?>
+<br /><br /><small><b><? echo _('Number of records'); ?>:</b> <?= $info["numrec"] ?>
 
 <?
 show_pages($info["numrec"],ROWAMOUNT,$_GET["id"]);
@@ -182,12 +182,12 @@ if($rec_result != -1)
 	?>
 	<TR STYLE="font-weight: Bold;">
 	<TD CLASS="tdbg">&nbsp;</TD>
-	<? if (level(10)) { echo "<TD CLASS=\"tdbg\">Sub-Owners</TD>"; } ?>
-	<TD CLASS="tdbg">Name</TD>
-	<TD CLASS="tdbg">Type</TD>
-	<TD CLASS="tdbg">Content</TD>
-	<TD CLASS="tdbg">Priority</TD>
-	<TD CLASS="tdbg">TTL</TD>
+	<? if (level(10)) { echo "<TD CLASS=\"tdbg\">" . _('Sub-Owners') . "</TD>"; } ?>
+	<TD CLASS="tdbg"><? echo _('Name'); ?></TD>
+	<TD CLASS="tdbg"><? echo _('Type'); ?></TD>
+	<TD CLASS="tdbg"><? echo _('Content'); ?></TD>
+	<TD CLASS="tdbg"><? echo _('Priority'); ?></TD>
+	<TD CLASS="tdbg"><? echo _('TTL'); ?></TD>
 	</TR>
 	<?
 	$recs = sort_zone($rec_result);
@@ -199,8 +199,8 @@ if($rec_result != -1)
 	        {
                 // get_name_from_record_id($r["id"]) != get_domain_name_from_id(recid_to_domid($r["id"])) <-- hmm..
                 ?>
-	            <A HREF="edit_record.php?id=<?= $r['id'] ?>&amp;domain=<?= $_GET["id"] ?>"><IMG SRC="images/edit.gif" ALT="[ edit record ]" BORDER="0"></A>
-	            <A HREF="delete_record.php?id=<?= $r['id'] ?>&amp;domain=<?= $_GET["id"] ?>"><IMG SRC="images/delete.gif" ALT="[ delete record ]" BORDER="0"></A>
+	            <A HREF="edit_record.php?id=<?= $r['id'] ?>&amp;domain=<?= $_GET["id"] ?>"><IMG SRC="images/edit.gif" ALT="[ <? echo _('edit record'); ?> ]" BORDER="0"></A>
+	            <A HREF="delete_record.php?id=<?= $r['id'] ?>&amp;domain=<?= $_GET["id"] ?>"><IMG SRC="images/delete.gif" ALT="[ <? echo _('delete record'); ?> ]" BORDER="0"></A>
 	            <?
 	        }
 
@@ -238,7 +238,7 @@ else
 {
 	?>
 	<TR>
-	<TD CLASS="tdbg"><DIV CLASS="warning">No records for this domain</DIV></TD>
+	<TD CLASS="tdbg"><DIV CLASS="warning"><? echo _('No records for this domain.'); ?></DIV></TD>
 	</TR>
 	<?
 }
@@ -259,7 +259,7 @@ foreach ($users as $user) {
 ?>
 </select>
 
-<input type="submit" class="button" value="Assign to user">
+<input type="submit" class="button" value="<? echo _('Assign to user'); ?>">
 </form>
 <? } ?>
 
@@ -268,12 +268,12 @@ foreach ($users as $user) {
 <?
 if ($_SESSION[$_GET["id"]."_ispartial"] != 1)  {
 ?>
-<INPUT TYPE="button" CLASS="button" OnClick="location.href='add_record.php?id=<?= $_GET["id"] ?>'" VALUE="Add record">
+<INPUT TYPE="button" CLASS="button" OnClick="location.href='add_record.php?id=<?= $_GET["id"] ?>'" VALUE="<? echo _('Add record'); ?>">
 <?
 }
 ?>
 
-<? if (level(5)) { ?>&nbsp;&nbsp;<INPUT TYPE="button" CLASS="button" OnClick="location.href='delete_domain.php?id=<?= $_GET["id"] ?>'" VALUE="Delete zone"><?
+<? if (level(5)) { ?>&nbsp;&nbsp;<INPUT TYPE="button" CLASS="button" OnClick="location.href='delete_domain.php?id=<?= $_GET["id"] ?>'" VALUE="<? echo _('Delete zone'); ?>"><?
 }
 include_once("inc/footer.inc.php");
 ?>
