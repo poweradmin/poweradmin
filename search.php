@@ -41,7 +41,7 @@ include_once('inc/header.inc.php');
 <?
 if (level(10))
 {
-	?><A HREF="users.php"><? echo _('User Admin'); ?></A> <A HREF="seq_update.php"><? echo _('Synchronize Database'); ?></A><?
+	?><A HREF="users.php"><? echo _('User admin'); ?></A> <A HREF="seq_update.php"><? echo _('Synchronize database'); ?></A><?
 }
 ?>
 </P><BR>
@@ -88,7 +88,7 @@ if ($submitted)
 			<?php 
 			if (level(5))
 			{
-				echo '<a href = "delete_domain.php?id='.$d['id'].'"><img src = "images/delete.gif" alt = "[ ' .  _('delete zone') . ' ]" border = "0"></a>';
+				echo '<a href = "delete_domain.php?id='.$d['id'].'"><img src = "images/delete.gif" alt = "[ ' .  _('Delete zone') . ' ]" border = "0"></a>';
 			}
 			else 
 			{
@@ -138,8 +138,8 @@ if ($submitted)
 			  $GLOBALS["ALLOW_NS_EDIT"] != 1))
 			{
 				?>
-				<a href = "edit_record.php?id=<?=$r['id']?>&amp;domain=<?=$r['domain_id']?>"><img src = "images/edit.gif" alt = "[ <? echo _('edit record'); ?> ]" border = "0"></a>
-				<a href = "delete_record.php?id=<?=$r['id']?>&amp;domain=<?=$r['domain_id']?>"><img src = "images/delete.gif" alt = "[ <? echo _('delete record'); ?> ]" border = "0"></a>
+				<a href = "edit_record.php?id=<?=$r['id']?>&amp;domain=<?=$r['domain_id']?>"><img src = "images/edit.gif" alt = "[ <? echo _('Edit record'); ?> ]" border = "0"></a>
+				<a href = "delete_record.php?id=<?=$r['id']?>&amp;domain=<?=$r['domain_id']?>"><img src = "images/delete.gif" alt = "[ <? echo _('Delete record'); ?> ]" border = "0"></a>
 				<?php 
 			} // big if ;-)
 			?>

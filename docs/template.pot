@@ -1,0 +1,399 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-04-15 00:21+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: add_record.php:31
+msgid "Add record to zone"
+msgstr ""
+
+#: add_record.php:32 edit.php:160 edit_record.php:61 search.php:40
+#: users.php:49
+msgid "DNS Admin"
+msgstr ""
+
+#: add_record.php:32 add_record.php:53 edit.php:271
+msgid "Add record"
+msgstr ""
+
+#: add_record.php:37 edit.php:186 edit_record.php:67 index.php:151
+#: search.php:78 search.php:121 users.php:78
+msgid "Name"
+msgstr ""
+
+#: add_record.php:37 edit.php:187 edit_record.php:67 search.php:122
+msgid "Type"
+msgstr ""
+
+#: add_record.php:37 edit.php:189 edit_record.php:67 search.php:124
+msgid "Priority"
+msgstr ""
+
+#: add_record.php:37 edit.php:188 edit_record.php:67 search.php:123
+msgid "Content"
+msgstr ""
+
+#: add_record.php:37 edit.php:190 edit_record.php:67 search.php:125
+msgid "TTL"
+msgstr ""
+
+#: delete_domain.php:38 users.php:93
+msgid "Delete domain"
+msgstr ""
+
+#: delete_domain.php:39 index.php:151 index.php:206 search.php:80
+msgid "Owner"
+msgstr ""
+
+#: delete_domain.php:40
+msgid "Number of records in zone"
+msgstr ""
+
+#: delete_domain.php:41 delete_record.php:38
+msgid "Are you sure?"
+msgstr ""
+
+#: delete_domain.php:42 delete_record.php:39 delete_user.php:103
+msgid "Yes"
+msgstr ""
+
+#: delete_domain.php:42 delete_record.php:39 delete_user.php:103
+msgid "No"
+msgstr ""
+
+#: delete_record.php:31 edit.php:203 search.php:142
+msgid "Delete record"
+msgstr ""
+
+#: delete_user.php:54 users.php:85
+msgid "Delete user"
+msgstr ""
+
+#: delete_user.php:60
+msgid "This user has access to the following domain(s)"
+msgstr ""
+
+#: delete_user.php:93
+msgid "You are going to delete this user, are you sure?"
+msgstr ""
+
+#: delete_user.php:96
+msgid "This user has access to "
+msgstr ""
+
+#: delete_user.php:96
+msgid "domain(s), by deleting him you will also delete these domains"
+msgstr ""
+
+#: edit.php:52
+msgid "Edit domain"
+msgstr ""
+
+#: edit.php:58
+msgid "This domain isn't owned by anyone yet, please assign someone."
+msgstr ""
+
+#: edit.php:69
+msgid "Add an owner"
+msgstr ""
+
+#: edit.php:88
+msgid "Add"
+msgstr ""
+
+#: edit.php:101
+msgid "Current listed owners"
+msgstr ""
+
+#: edit.php:115
+msgid "Delete"
+msgstr ""
+
+#: edit.php:132
+msgid "Type of this domain"
+msgstr ""
+
+#: edit.php:136
+msgid "Change type"
+msgstr ""
+
+#: edit.php:152
+msgid "Change"
+msgstr ""
+
+#: edit.php:162
+msgid "Number of records"
+msgstr ""
+
+#: edit.php:185
+msgid "Sub-owners"
+msgstr ""
+
+#: edit.php:202 edit_record.php:61 search.php:141
+msgid "Edit record"
+msgstr ""
+
+#: edit.php:241
+msgid "No records for this domain."
+msgstr ""
+
+#: edit.php:262
+msgid "Assign to user"
+msgstr ""
+
+#: edit.php:276 index.php:175 search.php:91
+msgid "Delete zone"
+msgstr ""
+
+#: edit_record.php:60
+msgid "Edit record in zone"
+msgstr ""
+
+#: edit_record.php:104 edit_user.php:76
+msgid "Commit changes"
+msgstr ""
+
+#: edit_record.php:104
+msgid "Reset changes"
+msgstr ""
+
+#: edit_record.php:109
+msgid "Sub-users"
+msgstr ""
+
+#: edit_record.php:115
+msgid "trash"
+msgstr ""
+
+#: edit_user.php:54 edit_user.php:59
+msgid "Edit user"
+msgstr ""
+
+#: edit_user.php:59 index.php:111 search.php:44 users.php:47
+msgid "User admin"
+msgstr ""
+
+#: edit_user.php:69 users.php:105
+msgid "User name"
+msgstr ""
+
+#: edit_user.php:70 users.php:106
+msgid "Full name"
+msgstr ""
+
+#: edit_user.php:71 users.php:107
+msgid "Password"
+msgstr ""
+
+#: edit_user.php:72 users.php:108
+msgid "E-mail"
+msgstr ""
+
+#: edit_user.php:73 users.php:109
+msgid "User level"
+msgstr ""
+
+#: edit_user.php:73
+msgid "Normal user"
+msgstr ""
+
+#: edit_user.php:73
+msgid "Administrator"
+msgstr ""
+
+#: edit_user.php:73
+msgid "Administrator w/ user admin rights"
+msgstr ""
+
+#: edit_user.php:74 users.php:110
+msgid "Description"
+msgstr ""
+
+#: edit_user.php:75 users.php:111
+msgid "Active"
+msgstr ""
+
+#: index.php:111 search.php:44 users.php:53
+msgid "Synchronize database"
+msgstr ""
+
+#: index.php:114 users.php:55
+msgid "Search records"
+msgstr ""
+
+#: index.php:118
+msgid "Welcome"
+msgstr ""
+
+#: index.php:121
+msgid "Your userlevel is"
+msgstr ""
+
+#: index.php:127 users.php:65
+msgid "Error"
+msgstr ""
+
+#: index.php:131
+msgid "Current domains in DNS (click to view or edit)"
+msgstr ""
+
+#: index.php:151 search.php:79
+msgid "Records"
+msgstr ""
+
+#: index.php:163
+msgid "No domains in this listing, sorry."
+msgstr ""
+
+#: index.php:190
+msgid "You only administer some records of domains marked with an (*)."
+msgstr ""
+
+#: index.php:201
+msgid "Create new domain"
+msgstr ""
+
+#: index.php:203
+msgid "Domain name"
+msgstr ""
+
+#: index.php:204
+msgid "Web IP"
+msgstr ""
+
+#: index.php:205
+msgid "Mail IP"
+msgstr ""
+
+#: index.php:220
+msgid "Domain type"
+msgstr ""
+
+#: index.php:231
+msgid "Create zone without"
+msgstr ""
+
+#: index.php:231
+msgid "applying records-template"
+msgstr ""
+
+#: index.php:232
+msgid "Add domain"
+msgstr ""
+
+#: index.php:241 index.php:246
+msgid "Change password"
+msgstr ""
+
+#: index.php:243
+msgid "Current password"
+msgstr ""
+
+#: index.php:244 index.php:245
+msgid "New password"
+msgstr ""
+
+#: search.php:38
+msgid "Search zones or records"
+msgstr ""
+
+#: search.php:48
+msgid "Type a hostname or a record in the box below and press search to see if the record exists in the system."
+msgstr ""
+
+#: search.php:52
+msgid "Enter a hostname or IP address"
+msgstr ""
+
+#: search.php:57
+msgid "Search"
+msgstr ""
+
+#: search.php:73
+msgid "Domains found"
+msgstr ""
+
+#: search.php:116
+msgid "Records found"
+msgstr ""
+
+#: search.php:173
+msgid "Nothing found for query"
+msgstr ""
+
+#: seq_update.php:26
+msgid "Synching databases. This is useful if you did manual insertions (in case you havent been here yet)."
+msgstr ""
+
+#: test_setup.php:58
+msgid "Not all tables are ok!"
+msgstr ""
+
+#: test_setup.php:62
+msgid "Successful!"
+msgstr ""
+
+#: test_setup.php:70
+msgid "Sorry, but there are error(s) found in the following table(s):"
+msgstr ""
+
+#: test_setup.php:75
+msgid "Please fix these errors and run the script again."
+msgstr ""
+
+#: test_setup.php:79
+msgid "Successful! Everything is set up ok, you can rumble!"
+msgstr ""
+
+#: users.php:36
+msgid "Usernames can't contain spaces"
+msgstr ""
+
+#: users.php:41
+msgid "Please fill in all fields"
+msgstr ""
+
+#: users.php:68
+msgid "Current users (click to edit)"
+msgstr ""
+
+#: users.php:72
+msgid "Number of users"
+msgstr ""
+
+#: users.php:78
+msgid "Domains"
+msgstr ""
+
+#: users.php:78
+msgid "Domain list"
+msgstr ""
+
+#: users.php:78
+msgid "Level"
+msgstr ""
+
+#: users.php:78
+msgid "Status"
+msgstr ""
+
+#: users.php:103
+msgid "Create new user"
+msgstr ""
+
+#: users.php:112
+msgid "Add user"
+msgstr ""

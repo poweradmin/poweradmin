@@ -93,7 +93,7 @@ if(isset($id))
         $message = _('You are going to delete this user, are you sure?');
         if(($numrows = $db->getOne("select count(id) from zones where owner=$id")) != 0)
         {
-        	$message .= " " . _('This user has access to $numrows domain(s), by deleting him you will also delete these domains');
+        	$message .= " " . _('This user has access to ') . $numrows . _('domain(s), by deleting him you will also delete these domains');
         }
 
         ?>

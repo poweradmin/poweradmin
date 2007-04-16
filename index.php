@@ -37,7 +37,7 @@ function check_updated()
 		The gmysql users another table and other fields though, therefore we had to change the layout of the zones table. In this version thats fully done, but before this we have to migrate it. 
 		
 		Please be sure you have a working backup of your data! 
-		we assume it all works but cant guarantuee it for 100% because we dont have 
+		we assume it all works but can't guarantuee it for 100% because we dont have 
 		too many betatesters.<BR>
 		
 		Do the following to migrate: 
@@ -108,7 +108,7 @@ include_once("inc/header.inc.php");
 <?
 if (level(10))
 {
-	?><A HREF="users.php"><? echo _('User Admin'); ?></A> <A HREF="seq_update.php"><? echo _('Synchronize Database'); ?></A><?
+	?><A HREF="users.php"><? echo _('User admin'); ?></A> <A HREF="seq_update.php"><? echo _('Synchronize database'); ?></A><?
 }
 ?>
  <A HREF="search.php"><? echo _('Search records'); ?></A>
@@ -172,7 +172,7 @@ else
 		<? if (level(5))
 		{
 			?>
-			<A HREF="delete_domain.php?id=<?= $c["id"] ?>"><IMG SRC="images/delete.gif" ALT="[ <? echo _('delete zone'); ?> ]" BORDER="0"></A><?
+			<A HREF="delete_domain.php?id=<?= $c["id"] ?>"><IMG SRC="images/delete.gif" ALT="[ <? echo _('Delete zone'); ?> ]" BORDER="0"></A><?
 		}
 		else
 		{
@@ -238,11 +238,11 @@ if (level(5))
 
 <BR><BR>
 <FORM METHOD="post" ACTION="index.php">
-<B><? echo _('Change your password'); ?>:</B><BR>
+<B><? echo _('Change password'); ?>:</B><BR>
 <TABLE BORDER="0" CELLSPACING="4">
 <TR><TD CLASS="tdbg"><? echo _('Current password'); ?>:</TD><TD WIDTH="510" CLASS="tdbg"><INPUT TYPE="password" CLASS="input" NAME="currentpass" VALUE=""></TD></TR>
-<TR><TD CLASS="tdbg"><? echo _('New Password'); ?>:</TD><TD WIDTH="510" CLASS="tdbg"><INPUT TYPE="password" CLASS="input" NAME="newpass" VALUE=""></TD></TR>
-<TR><TD CLASS="tdbg"><? echo _('New Password'); ?>:</TD><TD WIDTH="510" CLASS="tdbg"><INPUT TYPE="password" CLASS="input" NAME="newpass2" VALUE=""></TD></TR>
+<TR><TD CLASS="tdbg"><? echo _('New password'); ?>:</TD><TD WIDTH="510" CLASS="tdbg"><INPUT TYPE="password" CLASS="input" NAME="newpass" VALUE=""></TD></TR>
+<TR><TD CLASS="tdbg"><? echo _('New password'); ?>:</TD><TD WIDTH="510" CLASS="tdbg"><INPUT TYPE="password" CLASS="input" NAME="newpass2" VALUE=""></TD></TR>
 <TR><TD CLASS="tdbg">&nbsp;</TD><TD CLASS="tdbg"><INPUT TYPE="submit" CLASS="button" NAME="passchange" VALUE="<? echo _('Change password'); ?>"></TD></TR>
 </TABLE>
 </FORM>

@@ -56,7 +56,7 @@ if (!level(10))
 if (level(10))
 {
 ?>
-<FONT CLASS="nav"><BR><A HREF="users.php"><? echo _('User Admin'); ?></A> &gt;&gt; <? echo _('Edit User'); ?></FONT><BR><BR>
+<FONT CLASS="nav"><BR><A HREF="users.php"><? echo _('User admin'); ?></A> &gt;&gt; <? echo _('Edit user'); ?></FONT><BR><BR>
 <?
 }
 

@@ -33,7 +33,7 @@ if($_POST["submit"]
         }
         else
         {
-        	$error = _('Usernames cant contain spaces');
+        	$error = _('Usernames can\'t contain spaces');
         }
 }
 elseif($_POST["submit"])
@@ -44,13 +44,13 @@ elseif($_POST["submit"])
 // Dirty hack, maybe revise?
 include_once("inc/header.inc.php");
 ?>
-<H2><? echo _('User Admin'); ?></H2>
+<H2><? echo _('User admin'); ?></H2>
 <P CLASS="nav">
 <A HREF="index.php"><? echo _('DNS Admin'); ?></A>
 <?
 if (level(10))
 {
-	?> <A HREF="seq_update.php"><? echo _('Synchronize Database'); ?></A> <?
+	?> <A HREF="seq_update.php"><? echo _('Synchronize database'); ?></A> <?
 }
 ?><A HREF="search.php"><? echo _('Search records'); ?></A></P><BR><?
 // End
@@ -82,7 +82,7 @@ foreach ($users as $c)
 {
         ?>
         <TR>
-        <TD VALIGN="top" CLASS="tdbg"><A HREF="delete_user.php?id=<?= $c["id"] ?>"><IMG SRC="images/delete.gif" ALT="[ <? echo _('delete user'); ?> ]" BORDER="0"></A></TD>
+        <TD VALIGN="top" CLASS="tdbg"><A HREF="delete_user.php?id=<?= $c["id"] ?>"><IMG SRC="images/delete.gif" ALT="[ <? echo _('Delete user'); ?> ]" BORDER="0"></A></TD>
         <TD VALIGN="top" CLASS="tdbg"><A HREF="edit_user.php?id=<?= $c["id"] ?>"><?= $c["fullname"] ?></A> (<?= $c["username"] ?>)</TD>
         <TD VALIGN="top" CLASS="tdbg"><?= $c["numdomains"] ?></TD>
         <TD CLASS="tdbg">
@@ -90,7 +90,7 @@ foreach ($users as $c)
         $domains = get_domains_from_userid($c["id"]);
         foreach ($domains as $d)
         {
-                ?><A HREF="delete_domain.php?id=<?= $d["id"] ?>"><IMG SRC="images/delete.gif" ALT="[ <? echo _('delete domain'); ?> ]" BORDER="0"></A>&nbsp;<A HREF="edit.php?id=<?= $d["id"] ?>"><?= $d["name"] ?></A><BR><?
+                ?><A HREF="delete_domain.php?id=<?= $d["id"] ?>"><IMG SRC="images/delete.gif" ALT="[ <? echo _('Delete domain'); ?> ]" BORDER="0"></A>&nbsp;<A HREF="edit.php?id=<?= $d["id"] ?>"><?= $d["name"] ?></A><BR><?
         }
         ?></TD><TD CLASS="tdbg"><?= $c["level"] ?></TD><TD VALIGN="middle" CLASS="tdbg"><?= get_status($c["active"]) ?></TD></TR><?
         print "\n";

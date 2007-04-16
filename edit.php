@@ -55,7 +55,7 @@ $info = get_domain_info_from_id($_GET["id"]);
 if(!isset($info["ownerid"]))
 {
 	?>
-	<P CLASS="warning"><? echo _('This domain isnt owned by anyone yet, please assign someone.'); ?></P>
+	<P CLASS="warning"><? echo _('This domain isn\'t owned by anyone yet, please assign someone.'); ?></P>
 	<?
 }
 ?>
@@ -85,12 +85,12 @@ if(!isset($info["ownerid"]))
 			</SELECT>
 		</TD>
 		<TD CLASS="none" VALIGN="middle"  align="right">
-			<INPUT TYPE="submit" CLASS="sbutton" NAME="co" VALUE="<? echo _('add'); ?>">
+			<INPUT TYPE="submit" CLASS="sbutton" NAME="co" VALUE="<? echo _('Add'); ?>">
 		</TD>
 		</FORM>
 	</TR>
 	<TR>
-		<TD CLASS="text">&nbsp;</TD>
+		<TD CLASS="text" COLSPAN="2">&nbsp;</TD>
 	</TR>
 <? 
 
@@ -112,7 +112,7 @@ if(isset($info["ownerid"]))
 			</TD>
 			<TD CLASS="text" align="right">
 				<INPUT TYPE="hidden" NAME="del_user" VALUE="<?=$user["id"]?>">
-				<INPUT TYPE="submit" CLASS="sbutton" NAME="co" VALUE="<? echo _('delete'); ?>">
+				<INPUT TYPE="submit" CLASS="sbutton" NAME="co" VALUE="<? echo _('Delete'); ?>">
 			</TD>
 			</FORM>
 		</TR>
@@ -149,7 +149,7 @@ if(isset($info["ownerid"]))
                 </SELECT>
             </TD>
             <TD CLASS="text">
-                <INPUT TYPE="submit" CLASS="sbutton" NAME="type_change" VALUE="<? echo _('change'); ?>">
+                <INPUT TYPE="submit" CLASS="sbutton" NAME="type_change" VALUE="<? echo _('Change'); ?>">
             </TD>
         </TR>
         </FORM>
@@ -182,7 +182,7 @@ if($rec_result != -1)
 	?>
 	<TR STYLE="font-weight: Bold;">
 	<TD CLASS="tdbg">&nbsp;</TD>
-	<? if (level(10)) { echo "<TD CLASS=\"tdbg\">" . _('Sub-Owners') . "</TD>"; } ?>
+	<? if (level(10)) { echo "<TD CLASS=\"tdbg\">" . _('Sub-owners') . "</TD>"; } ?>
 	<TD CLASS="tdbg"><? echo _('Name'); ?></TD>
 	<TD CLASS="tdbg"><? echo _('Type'); ?></TD>
 	<TD CLASS="tdbg"><? echo _('Content'); ?></TD>
@@ -199,8 +199,8 @@ if($rec_result != -1)
 	        {
                 // get_name_from_record_id($r["id"]) != get_domain_name_from_id(recid_to_domid($r["id"])) <-- hmm..
                 ?>
-	            <A HREF="edit_record.php?id=<?= $r['id'] ?>&amp;domain=<?= $_GET["id"] ?>"><IMG SRC="images/edit.gif" ALT="[ <? echo _('edit record'); ?> ]" BORDER="0"></A>
-	            <A HREF="delete_record.php?id=<?= $r['id'] ?>&amp;domain=<?= $_GET["id"] ?>"><IMG SRC="images/delete.gif" ALT="[ <? echo _('delete record'); ?> ]" BORDER="0"></A>
+	            <A HREF="edit_record.php?id=<?= $r['id'] ?>&amp;domain=<?= $_GET["id"] ?>"><IMG SRC="images/edit.gif" ALT="[ <? echo _('Edit record'); ?> ]" BORDER="0"></A>
+	            <A HREF="delete_record.php?id=<?= $r['id'] ?>&amp;domain=<?= $_GET["id"] ?>"><IMG SRC="images/delete.gif" ALT="[ <? echo _('Delete record'); ?> ]" BORDER="0"></A>
 	            <?
 	        }
 

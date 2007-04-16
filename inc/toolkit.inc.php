@@ -70,6 +70,7 @@ require_once("database.inc.php");
 
 require_once("error.inc.php");
 require_once("auth.inc.php");
+require_once("i18n.inc.php");
 require_once("users.inc.php");
 require_once("dns.inc.php");
 require_once("record.inc.php");

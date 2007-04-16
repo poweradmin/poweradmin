@@ -34,7 +34,7 @@ include_once("inc/header.inc.php");
 <FORM METHOD="post">
 <INPUT TYPE="hidden" NAME="zoneid" VALUE="<?= $_GET["id"] ?>">
 <TABLE BORDER="0" CELLSPACING="4">
-<TR STYLE="font-weight: Bold"><TD CLASS="tdbg"><? echo _('Name'); ?></TD><TD CLASS="tdbg">&nbsp;</TD><TD CLASS="tdbg"><? echo _('Type'); ?></TD><TD CLASS="tdbg"><? echo _('Priority'); ?></TD><TD CLASS="tdbg"><? echo _('Content'); ?></TD><TD CLASS="tdbg"><? echo _('TimeToLive'); ?></TD></TR>
+<TR STYLE="font-weight: Bold"><TD CLASS="tdbg"><? echo _('Name'); ?></TD><TD CLASS="tdbg">&nbsp;</TD><TD CLASS="tdbg"><? echo _('Type'); ?></TD><TD CLASS="tdbg"><? echo _('Priority'); ?></TD><TD CLASS="tdbg"><? echo _('Content'); ?></TD><TD CLASS="tdbg"><? echo _('TTL'); ?></TD></TR>
 <TR><TD CLASS="tdbg"><INPUT TYPE="text" NAME="name" CLASS="input">.<?= get_domain_name_from_id($_GET["id"]) ?></TD><TD CLASS="tdbg">IN</TD><TD CLASS="tdbg"><SELECT NAME="type">
 <?
 $dname = get_domain_name_from_id($_GET["id"]);

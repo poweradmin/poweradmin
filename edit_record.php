@@ -64,7 +64,7 @@ include_once("inc/header.inc.php");
 <INPUT TYPE="hidden" NAME="recordid" VALUE="<?= $_GET["id"] ?>">
 <INPUT TYPE="hidden" NAME="domainid" VALUE="<?= $_GET["domain"] ?>">
 <TABLE BORDER="0" CELLSPACING="4">
-<TR STYLE="font-weight: Bold"><TD CLASS="tdbg"><? echo _('Name'); ?></TD><TD CLASS="tdbg">&nbsp;</TD><TD CLASS="tdbg"><? echo _('Type'); ?></TD><TD CLASS="tdbg"><? echo _('Priority'); ?></TD><TD CLASS="tdbg"><? echo _('Content'); ?></TD><TD CLASS="tdbg"><? echo _('TimeToLive'); ?></TD></TR>
+<TR STYLE="font-weight: Bold"><TD CLASS="tdbg"><? echo _('Name'); ?></TD><TD CLASS="tdbg">&nbsp;</TD><TD CLASS="tdbg"><? echo _('Type'); ?></TD><TD CLASS="tdbg"><? echo _('Priority'); ?></TD><TD CLASS="tdbg"><? echo _('Content'); ?></TD><TD CLASS="tdbg"><? echo _('TTL'); ?></TD></TR>
 
 <?
 	$rec = get_record_from_id($_GET["id"]);

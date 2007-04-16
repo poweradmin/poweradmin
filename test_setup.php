@@ -76,7 +76,7 @@ if($bad)
 	}
 	else
 	{
-		echo _('Successful! Everything is set up ok, you can rumble!"');
+		echo _('Successful! Everything is set up ok, you can rumble!');
 	}
 ?>
 <BR></TD></TR></TABLE></P>

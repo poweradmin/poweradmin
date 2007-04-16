@@ -1,0 +1,399 @@
+# poweradmin dutch translation
+# Copyright (C) 2007, Rejo Zenger 
+# This file is distributed under the same license as the poweradmin package.
+# Rejo Zenger <rejo@zenger.nl>, 2007.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: poweradmin 1.2.7-patched\n"
+"Report-Msgid-Bugs-To: rejo@zenger.nl\n"
+"POT-Creation-Date: 2007-04-15 00:21+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Rejo Zenger <rejo@zenger.nl>\n"
+"Language-Team: Rutch\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: add_record.php:31
+msgid "Add record to zone"
+msgstr "Toevoegen record aan zone"
+
+#: add_record.php:32 edit.php:160 edit_record.php:61 search.php:40
+#: users.php:49
+msgid "DNS Admin"
+msgstr "DNS Admin"
+
+#: add_record.php:32 add_record.php:53 edit.php:271
+msgid "Add record"
+msgstr "Toevoegen record"
+
+#: add_record.php:37 edit.php:186 edit_record.php:67 index.php:151
+#: search.php:78 search.php:121 users.php:78
+msgid "Name"
+msgstr "Naam"
+
+#: add_record.php:37 edit.php:187 edit_record.php:67 search.php:122
+msgid "Type"
+msgstr "Type"
+
+#: add_record.php:37 edit.php:189 edit_record.php:67 search.php:124
+msgid "Priority"
+msgstr "Priority"
+
+#: add_record.php:37 edit.php:188 edit_record.php:67 search.php:123
+msgid "Content"
+msgstr "Content"
+
+#: add_record.php:37 edit.php:190 edit_record.php:67 search.php:125
+msgid "TTL"
+msgstr "TTL"
+
+#: delete_domain.php:38 users.php:93
+msgid "Delete domain"
+msgstr "Verwijderen zone"
+
+#: delete_domain.php:39 index.php:151 index.php:206 search.php:80
+msgid "Owner"
+msgstr "Gebruiker"
+
+#: delete_domain.php:40
+msgid "Number of records in zone"
+msgstr "Aantal records in zone"
+
+#: delete_domain.php:41 delete_record.php:38
+msgid "Are you sure?"
+msgstr "Weet u het zeker?"
+
+#: delete_domain.php:42 delete_record.php:39 delete_user.php:103
+msgid "Yes"
+msgstr "Ja"
+
+#: delete_domain.php:42 delete_record.php:39 delete_user.php:103
+msgid "No"
+msgstr "Nee"
+
+#: delete_record.php:31 edit.php:203 search.php:142
+msgid "Delete record"
+msgstr "Verwijderen record"
+
+#: delete_user.php:54 users.php:85
+msgid "Delete user"
+msgstr "Verwijderen beheerder"
+
+#: delete_user.php:60
+msgid "This user has access to the following domain(s)"
+msgstr "Deze beheerder beschikt over de volgende zone(s)"
+
+#: delete_user.php:93
+msgid "You are going to delete this user, are you sure?"
+msgstr "U gaat deze beheerder verwijderen, klopt dat?"
+
+#: delete_user.php:96
+msgid "This user has access to "
+msgstr "Deze beheerder heeft toegang to "
+
+#: delete_user.php:96
+msgid "domain(s), by deleting him you will also delete these domains"
+msgstr "zone(s). Door deze beheerder te verwijderen, verwijdert u ook deze zone(s)."
+
+#: edit.php:52
+msgid "Edit domain"
+msgstr "Wijzigen zone"
+
+#: edit.php:58
+msgid "This domain isn't owned by anyone yet, please assign someone."
+msgstr "Deze zone heeft geen beheerder, wijst u een beheerder aan."
+
+#: edit.php:69
+msgid "Add an owner"
+msgstr "Toevoegen beheerder"
+
+#: edit.php:88
+msgid "Add"
+msgstr "Toevoegen"
+
+#: edit.php:101
+msgid "Current listed owners"
+msgstr "Huidige beheerders"
+
+#: edit.php:115
+msgid "Delete"
+msgstr "Verwijderen"
+
+#: edit.php:132
+msgid "Type of this domain"
+msgstr "Type zone"
+
+#: edit.php:136
+msgid "Change type"
+msgstr "Wijzig type"
+
+#: edit.php:152
+msgid "Change"
+msgstr "Wijzig"
+
+#: edit.php:162
+msgid "Number of records"
+msgstr "Aantal records"
+
+#: edit.php:185
+msgid "Sub-owners"
+msgstr "Sub-beheerders"
+
+#: edit.php:202 edit_record.php:61 search.php:141
+msgid "Edit record"
+msgstr "Wijzig record"
+
+#: edit.php:241
+msgid "No records for this domain."
+msgstr "Geen records in deze zone."
+
+#: edit.php:262
+msgid "Assign to user"
+msgstr "Selecteer beheerder"
+
+#: edit.php:276 index.php:175 search.php:91
+msgid "Delete zone"
+msgstr "Verwijderen zone"
+
+#: edit_record.php:60
+msgid "Edit record in zone"
+msgstr "Wijzig record in zone"
+
+#: edit_record.php:104 edit_user.php:76
+msgid "Commit changes"
+msgstr "Wijzigingen doorvoeren"
+
+#: edit_record.php:104
+msgid "Reset changes"
+msgstr "Wijzigingen ongedaan maken"
+
+#: edit_record.php:109
+msgid "Sub-users"
+msgstr "Sub-gebruikers"
+
+#: edit_record.php:115
+msgid "trash"
+msgstr "verwijderen"
+
+#: edit_user.php:54 edit_user.php:59
+msgid "Edit user"
+msgstr "Wijzigigen gebruiker"
+
+#: edit_user.php:59 index.php:111 search.php:44 users.php:47
+msgid "User admin"
+msgstr "Gebruikersbeheer"
+
+#: edit_user.php:69 users.php:105
+msgid "User name"
+msgstr "Gebruikersnaam"
+
+#: edit_user.php:70 users.php:106
+msgid "Full name"
+msgstr "Volledige naam"
+
+#: edit_user.php:71 users.php:107
+msgid "Password"
+msgstr "Wachtwoord"
+
+#: edit_user.php:72 users.php:108
+msgid "E-mail"
+msgstr "E-mail"
+
+#: edit_user.php:73 users.php:109
+msgid "User level"
+msgstr "Toegangsrechten"
+
+#: edit_user.php:73
+msgid "Normal user"
+msgstr "Normale gebruiker"
+
+#: edit_user.php:73
+msgid "Administrator"
+msgstr "Beheerder"
+
+#: edit_user.php:73
+msgid "Administrator w/ user admin rights"
+msgstr "Beheer met gebruikersbeheer rechten"
+
+#: edit_user.php:74 users.php:110
+msgid "Description"
+msgstr "Omschrijvingen"
+
+#: edit_user.php:75 users.php:111
+msgid "Active"
+msgstr "Actief"
+
+#: index.php:111 search.php:44 users.php:53
+msgid "Synchronize database"
+msgstr "Synchroniseer database"
+
+#: index.php:114 users.php:55
+msgid "Search records"
+msgstr "Zoek records"
+
+#: index.php:118
+msgid "Welcome"
+msgstr "Welkom"
+
+#: index.php:121
+msgid "Your userlevel is"
+msgstr "Je toegangsnivo is"
+
+#: index.php:127 users.php:65
+msgid "Error"
+msgstr "Fout"
+
+#: index.php:131
+msgid "Current domains in DNS (click to view or edit)"
+msgstr "Huidige zones in de DNS (aanklikken om in te zien of te wijzigen)"
+
+#: index.php:151 search.php:79
+msgid "Records"
+msgstr "Records"
+
+#: index.php:163
+msgid "No domains in this listing, sorry."
+msgstr "Er zijn geen zones om te tonen."
+
+#: index.php:190
+msgid "You only administer some records of domains marked with an (*)."
+msgstr "U beheert enkel een deel van de records in zones gemarkeerd met een (*)."
+
+#: index.php:201
+msgid "Create new domain"
+msgstr "Nieuwe zone aanmaken"
+
+#: index.php:203
+msgid "Domain name"
+msgstr "Domeinnaam"
+
+#: index.php:204
+msgid "Web IP"
+msgstr "Web IP"
+
+#: index.php:205
+msgid "Mail IP"
+msgstr "Mail IP"
+
+#: index.php:220
+msgid "Domain type"
+msgstr "Domein type"
+
+#: index.php:231
+msgid "Create zone without"
+msgstr "Maak zone aan zonder"
+
+#: index.php:231
+msgid "applying records-template"
+msgstr "het records-template te gebruiken."
+
+#: index.php:232
+msgid "Add domain"
+msgstr "Toevoegen zone"
+
+#: index.php:241 index.php:246
+msgid "Change password"
+msgstr "Wijzig wachtwoord"
+
+#: index.php:243
+msgid "Current password"
+msgstr "Huidige wachtwoord"
+
+#: index.php:244 index.php:245
+msgid "New password"
+msgstr "Nieuw wachtwoord"
+
+#: search.php:38
+msgid "Search zones or records"
+msgstr "Zoek zones of records"
+
+#: search.php:48
+msgid "Type a hostname or a record in the box below and press search to see if the record exists in the system."
+msgstr "Geef een hostname of record op in het zoekveld hieronder om te zien of er records voor bekend zijn in de database."
+
+#: search.php:52
+msgid "Enter a hostname or IP address"
+msgstr "Geef een hostname of IP adres"
+
+#: search.php:57
+msgid "Search"
+msgstr "Zoek"
+
+#: search.php:73
+msgid "Domains found"
+msgstr "Gevonden zones"
+
+#: search.php:116
+msgid "Records found"
+msgstr "Gevonden records"
+
+#: search.php:173
+msgid "Nothing found for query."
+msgstr "Er is niets gevonden voor zoekopdracht"
+
+#: seq_update.php:26
+msgid "Synching databases. This is useful if you did manual insertions (in case you havent been here yet)."
+msgstr "Synchronisatie databases. Dit is handig als er handmatige toevoegingen hebben p;aatsgevonden."
+
+#: test_setup.php:58
+msgid "Not all tables are ok!"
+msgstr "Niet alle tables zijn op orde!"
+
+#: test_setup.php:62
+msgid "Successful!"
+msgstr "Succesvol uitgevoerd!"
+
+#: test_setup.php:70
+msgid "Sorry, but there are error(s) found in the following table(s):"
+msgstr "Sorry, er zijn fouten gevonden in de volgende tabel(len):"
+
+#: test_setup.php:75
+msgid "Please fix these errors and run the script again."
+msgstr "Vriendelijk verzoek deze fouten te herstellen en script nog eens uit te voeren."
+
+#: test_setup.php:79
+msgid "Successful! Everything is set up ok, you can rumble!"
+msgstr "Gelukt! Alles is correct voorebereid, you can rumble!"
+
+#: users.php:36
+msgid "Usernames can't contain spaces"
+msgstr "Gebruikersnamen mogen geen spaties bevatten"
+
+#: users.php:41
+msgid "Please fill in all fields"
+msgstr "Vult u alle velden in"
+
+#: users.php:68
+msgid "Current users (click to edit)"
+msgstr "Huidige gebruikers (aanklikken om te wijzigen)."
+
+#: users.php:72
+msgid "Number of users"
+msgstr "Aantal gebruikers"
+
+#: users.php:78
+msgid "Domains"
+msgstr "Zones"
+
+#: users.php:78
+msgid "Domain list"
+msgstr "Zone overzicht"
+
+#: users.php:78
+msgid "Level"
+msgstr "Gebruikersnivo"
+
+#: users.php:78
+msgid "Status"
+msgstr "Status"
+
+#: users.php:103
+msgid "Create new user"
+msgstr "Aanmaken nieuwe gebruiker"
+
+#: users.php:112
+msgid "Add user"
+msgstr "Toevoegen gebruiker"
