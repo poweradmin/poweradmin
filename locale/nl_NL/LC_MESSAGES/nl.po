@@ -167,7 +167,7 @@ msgstr "Wijzigingen doorvoeren"
 
 #: edit_record.php:104
 msgid "Reset changes"
-msgstr "Wijzigingen annuleren"
+msgstr "Herstellen"
 
 #: edit_record.php:109
 msgid "Sub-users"
@@ -367,7 +367,7 @@ msgstr "Gebruikersnaam mag geen spaties bevatten"
 
 #: users.php:41
 msgid "Please fill in all fields"
-msgstr "Vult u alle velden in"
+msgstr "u dient alle velden in te vullen"
 
 #: users.php:68
 msgid "Current users (click to edit)"

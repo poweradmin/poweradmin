@@ -126,7 +126,7 @@ if(isset($info["ownerid"]))
     // Let the user change the domain type.
 ?>
         <TR>
-            <TD CLASS="text">&nbsp;</TD>
+            <TD CLASS="text" COLSPAN="2">&nbsp;</TD>
         </TR>
 		<TR>
 			<TD CLASS="text" COLSPAN="2"><B><? echo _('Type of this domain'); ?>: </B><?=$domain_type?></TD>

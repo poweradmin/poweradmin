@@ -1054,7 +1054,7 @@ function search_record($question)
 			break;
 	    
 		case '1' :
-			$sqlq = "SELECT `domains`.*, count(`records`.`id`) AS `numrec`, `zones`.`owner`  
+			$sqlq = "SELECT `domains`.*, count(`records`.`id`) AS `numrec`, `zones`.`owner`, `records`.`domain_id`
 					FROM `domains`, `records`, `zones`  
 					WHERE `domains`.`id` = `records`.`domain_id` 
 					AND `zones`.`domain_id` = `domains`.`id` 
