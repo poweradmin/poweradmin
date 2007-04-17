@@ -25,7 +25,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <HEAD>
-<TITLE>PowerAdmin</TITLE>
+<TITLE><? echo _('PowerAdmin'); ?></TITLE>
 <LINK REL=StyleSheet HREF="style/style.css.php" TYPE="text/css">
 </HEAD>
 <BODY>

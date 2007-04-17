@@ -88,7 +88,7 @@ function show_pages($amount,$rowamount,$id='')
 {
    if ($amount > $rowamount) {
       if (!isset($_GET["start"])) $_GET["start"]=1;
-      echo "<br /><br />Show page ";
+      echo "<br /><br />" . _('Show page') . " ";
       for ($i=1;$i<=ceil($amount / $rowamount);$i++) {
          if ($_GET["start"] == $i) {
             echo "[ <b>".$i."</b> ] ";
@@ -116,7 +116,7 @@ function show_letters($letterstart,$doms)
       }
    }
 
-   echo "Show domains beginning with: <br />";
+   echo _('Show domains beginning with:') . "<br />";
    if ($letterstart == 1) {
       echo "[ <b>0-9</b> ] ";
    } elseif ($letter_taken["0"] != 1) {
@@ -146,9 +146,9 @@ function error($msg)
 	{
 		include_once("header.inc.php");
 	?>
-	<P><TABLE CLASS="error"><TR><TD CLASS="error"><H2>Oops! An error occured!</H2>
+	<P><TABLE CLASS="error"><TR><TD CLASS="error"><H2><? echo _('Oops! An error occured!'); ?></H2>
 	<BR>
-	<FONT STYLE="font-weight: Bold"><?= nl2br($msg) ?><BR><BR><a href="javascript:history.go(-1)">&lt;&lt; back</a></FONT><BR></TD></TR></TABLE></P>
+	<FONT STYLE="font-weight: Bold"><?= nl2br($msg) ?><BR><BR><a href="javascript:history.go(-1)">&lt;&lt; <? echo _('back'); ?></a></FONT><BR></TD></TR></TABLE></P>
 	<?
 		include_once("footer.inc.php");
 		die();
@@ -167,7 +167,7 @@ function message($msg)
 {
     include_once("header.inc.php");
     ?>
-    <P><TABLE CLASS="messagetable"><TR><TD CLASS="message"><H2>Success!</H2>
+    <P><TABLE CLASS="messagetable"><TR><TD CLASS="message"><H2><? echo _('Success!'); ?></H2>
     <BR>
 	<FONT STYLE="font-weight: Bold">
 	<P>
@@ -178,13 +178,13 @@ function message($msg)
     }
     else
     {
-        echo "Successful!";
+        echo _('Successful!');
     }
     ?>
     </P>
     <BR>
     <P>
-    <a href="javascript:history.go(-1)">&lt;&lt; back</a></FONT>
+    <a href="javascript:history.go(-1)">&lt;&lt; <? echo _('back'); ?></a></FONT>
     </P>
     </TD></TR></TABLE></P>
     <?
@@ -263,11 +263,11 @@ function get_status($res)
 {
 	if ($res == '0')
 	{
-		return "<FONT CLASS=\"inactive\">Inactive</FONT>";
+		return "<FONT CLASS=\"inactive\">" . _('Inactive') . "</FONT>";
 	}
 	elseif ($res == '1')
 	{
-		return "<FONT CLASS=\"active\">Active</FONT>";
+		return "<FONT CLASS=\"active\">" . _('Active') . "</FONT>";
 	}
 }
 

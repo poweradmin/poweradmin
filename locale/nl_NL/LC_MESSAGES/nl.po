@@ -1,5 +1,4 @@
-# poweradmin dutch translation
-# Copyright (C) 2007, Rejo Zenger 
+# poweradmin dutch translation # Copyright (C) 2007, Rejo Zenger 
 # This file is distributed under the same license as the poweradmin package.
 # Rejo Zenger <rejo@zenger.nl>, 2007.
 #
@@ -20,8 +19,8 @@ msgstr ""
 msgid "Add record to zone"
 msgstr "Toevoegen record aan zone"
 
-#: add_record.php:32 edit.php:160 edit_record.php:61 search.php:40
-#: users.php:49
+#: add_record.php:32 edit.php:160 edit_record.php:61 index.php:105
+#: search.php:40 users.php:49
 msgid "DNS Admin"
 msgstr "DNS Admin"
 
@@ -32,7 +31,7 @@ msgstr "Toevoegen record"
 #: add_record.php:37 edit.php:186 edit_record.php:67 index.php:151
 #: search.php:78 search.php:121 users.php:78
 msgid "Name"
-msgstr "Naam"
+msgstr "Label"
 
 #: add_record.php:37 edit.php:187 edit_record.php:67 search.php:122
 msgid "Type"
@@ -56,7 +55,7 @@ msgstr "Verwijderen zone"
 
 #: delete_domain.php:39 index.php:151 index.php:206 search.php:80
 msgid "Owner"
-msgstr "Gebruiker"
+msgstr "Beheerder"
 
 #: delete_domain.php:40
 msgid "Number of records in zone"
@@ -80,23 +79,23 @@ msgstr "Verwijderen record"
 
 #: delete_user.php:54 users.php:85
 msgid "Delete user"
-msgstr "Verwijderen beheerder"
+msgstr "Verwijderen gebruiker"
 
 #: delete_user.php:60
 msgid "This user has access to the following domain(s)"
-msgstr "Deze beheerder beschikt over de volgende zone(s)"
+msgstr "Deze gebruiker heeft rechten voor de volgende zone(s)"
 
 #: delete_user.php:93
 msgid "You are going to delete this user, are you sure?"
-msgstr "U gaat deze beheerder verwijderen, klopt dat?"
+msgstr "U gaat deze gebruiker verwijderen, wilt u dat inderdaad?"
 
 #: delete_user.php:96
 msgid "This user has access to "
-msgstr "Deze beheerder heeft toegang to "
+msgstr "Deze gebruiker heeft rechten voor "
 
 #: delete_user.php:96
 msgid "domain(s), by deleting him you will also delete these domains"
-msgstr "zone(s). Door deze beheerder te verwijderen, verwijdert u ook deze zone(s)."
+msgstr "zone(s). Met het verwijderen van de gebruiker verwijdert u ook deze zone(s)"
 
 #: edit.php:52
 msgid "Edit domain"
@@ -104,7 +103,7 @@ msgstr "Wijzigen zone"
 
 #: edit.php:58
 msgid "This domain isn't owned by anyone yet, please assign someone."
-msgstr "Deze zone heeft geen beheerder, wijst u een beheerder aan."
+msgstr "Deze zone wordt door niemand beheerd, wijst u een beheerder aan."
 
 #: edit.php:69
 msgid "Add an owner"
@@ -132,7 +131,7 @@ msgstr "Wijzig type"
 
 #: edit.php:152
 msgid "Change"
-msgstr "Wijzig"
+msgstr "Wijzigen"
 
 #: edit.php:162
 msgid "Number of records"
@@ -144,7 +143,7 @@ msgstr "Sub-beheerders"
 
 #: edit.php:202 edit_record.php:61 search.php:141
 msgid "Edit record"
-msgstr "Wijzig record"
+msgstr "Wijzig records"
 
 #: edit.php:241
 msgid "No records for this domain."
@@ -168,19 +167,19 @@ msgstr "Wijzigingen doorvoeren"
 
 #: edit_record.php:104
 msgid "Reset changes"
-msgstr "Wijzigingen ongedaan maken"
+msgstr "Wijzigingen annuleren"
 
 #: edit_record.php:109
 msgid "Sub-users"
-msgstr "Sub-gebruikers"
+msgstr "Sub-beheerders"
 
 #: edit_record.php:115
 msgid "trash"
-msgstr "verwijderen"
+msgstr "Verwijderen"
 
 #: edit_user.php:54 edit_user.php:59
 msgid "Edit user"
-msgstr "Wijzigigen gebruiker"
+msgstr "Wijzigen gebruiker"
 
 #: edit_user.php:59 index.php:111 search.php:44 users.php:47
 msgid "User admin"
@@ -194,35 +193,35 @@ msgstr "Gebruikersnaam"
 msgid "Full name"
 msgstr "Volledige naam"
 
-#: edit_user.php:71 users.php:107
+#: edit_user.php:71 users.php:107 inc/auth.inc.php:97
 msgid "Password"
 msgstr "Wachtwoord"
 
 #: edit_user.php:72 users.php:108
 msgid "E-mail"
-msgstr "E-mail"
+msgstr "E-mailadres"
 
 #: edit_user.php:73 users.php:109
 msgid "User level"
-msgstr "Toegangsrechten"
+msgstr "Gebruikersnivo"
 
-#: edit_user.php:73
+#: edit_user.php:73 inc/config.inc.php:84
 msgid "Normal user"
 msgstr "Normale gebruiker"
 
-#: edit_user.php:73
+#: edit_user.php:73 inc/config.inc.php:85
 msgid "Administrator"
-msgstr "Beheerder"
+msgstr "Site beheerder"
 
-#: edit_user.php:73
+#: edit_user.php:73 inc/config.inc.php:86
 msgid "Administrator w/ user admin rights"
-msgstr "Beheer met gebruikersbeheer rechten"
+msgstr "Site beheerder met gebruikersbeheer rechten"
 
 #: edit_user.php:74 users.php:110
 msgid "Description"
-msgstr "Omschrijvingen"
+msgstr "Omschrijving"
 
-#: edit_user.php:75 users.php:111
+#: edit_user.php:75 users.php:111 inc/toolkit.inc.php:270
 msgid "Active"
 msgstr "Actief"
 
@@ -240,7 +239,7 @@ msgstr "Welkom"
 
 #: index.php:121
 msgid "Your userlevel is"
-msgstr "Je toegangsnivo is"
+msgstr "Uw gebruikersnivo is"
 
 #: index.php:127 users.php:65
 msgid "Error"
@@ -248,7 +247,11 @@ msgstr "Fout"
 
 #: index.php:131
 msgid "Current domains in DNS (click to view or edit)"
-msgstr "Huidige zones in de DNS (aanklikken om in te zien of te wijzigen)"
+msgstr "Huidige zones in DNS (aanklikken om in te zien of te wijzigen)"
+
+#: index.php:137
+msgid "Number of domains"
+msgstr "Aantal zones"
 
 #: index.php:151 search.php:79
 msgid "Records"
@@ -264,31 +267,31 @@ msgstr "U beheert enkel een deel van de records in zones gemarkeerd met een (*).
 
 #: index.php:201
 msgid "Create new domain"
-msgstr "Nieuwe zone aanmaken"
+msgstr "Toevoegen nieuwe zone"
 
 #: index.php:203
 msgid "Domain name"
-msgstr "Domeinnaam"
+msgstr "Naam van de zone"
 
 #: index.php:204
 msgid "Web IP"
-msgstr "Web IP"
+msgstr "IP adres webserver"
 
 #: index.php:205
 msgid "Mail IP"
-msgstr "Mail IP"
+msgstr "IP adres mailserver"
 
 #: index.php:220
 msgid "Domain type"
-msgstr "Domein type"
+msgstr "Type zone"
 
 #: index.php:231
 msgid "Create zone without"
-msgstr "Maak zone aan zonder"
+msgstr "Zone aanmaken zonder"
 
 #: index.php:231
 msgid "applying records-template"
-msgstr "het records-template te gebruiken."
+msgstr "het record template te gebruiken"
 
 #: index.php:232
 msgid "Add domain"
@@ -304,11 +307,11 @@ msgstr "Huidige wachtwoord"
 
 #: index.php:244 index.php:245
 msgid "New password"
-msgstr "Nieuw wachtwoord"
+msgstr "Nieuwe wachtwoord"
 
 #: search.php:38
 msgid "Search zones or records"
-msgstr "Zoek zones of records"
+msgstr "Zones of records zoeken"
 
 #: search.php:48
 msgid "Type a hostname or a record in the box below and press search to see if the record exists in the system."
@@ -316,7 +319,7 @@ msgstr "Geef een hostname of record op in het zoekveld hieronder om te zien of e
 
 #: search.php:52
 msgid "Enter a hostname or IP address"
-msgstr "Geef een hostname of IP adres"
+msgstr "Geef een hosntmae of een IP adres"
 
 #: search.php:57
 msgid "Search"
@@ -324,31 +327,31 @@ msgstr "Zoek"
 
 #: search.php:73
 msgid "Domains found"
-msgstr "Gevonden zones"
+msgstr "Zones gevonden"
 
 #: search.php:116
 msgid "Records found"
-msgstr "Gevonden records"
+msgstr "Records gevonden"
 
 #: search.php:173
-msgid "Nothing found for query."
-msgstr "Er is niets gevonden voor zoekopdracht"
+msgid "Nothing found for query"
+msgstr "Niets gevonden voor criterium"
 
 #: seq_update.php:26
 msgid "Synching databases. This is useful if you did manual insertions (in case you havent been here yet)."
-msgstr "Synchronisatie databases. Dit is handig als er handmatige toevoegingen hebben p;aatsgevonden."
+msgstr "Synchroniseren databases. Dit is noodzakelijk als er handmatige toevoegingen hebben plaatsgevonden."
 
 #: test_setup.php:58
 msgid "Not all tables are ok!"
-msgstr "Niet alle tables zijn op orde!"
+msgstr "Niet alle tabellen zijn op orde!"
 
-#: test_setup.php:62
+#: test_setup.php:62 inc/toolkit.inc.php:181
 msgid "Successful!"
-msgstr "Succesvol uitgevoerd!"
+msgstr "Gelukt!"
 
 #: test_setup.php:70
 msgid "Sorry, but there are error(s) found in the following table(s):"
-msgstr "Sorry, er zijn fouten gevonden in de volgende tabel(len):"
+msgstr "Er zijn fouten gevonden in de volgende tabel(len):"
 
 #: test_setup.php:75
 msgid "Please fix these errors and run the script again."
@@ -356,11 +359,11 @@ msgstr "Vriendelijk verzoek deze fouten te herstellen en script nog eens uit te 
 
 #: test_setup.php:79
 msgid "Successful! Everything is set up ok, you can rumble!"
-msgstr "Gelukt! Alles is correct voorebereid, you can rumble!"
+msgstr "Gelukt! Voorbereiding is volledig uitgevoerd. You can rumble!"
 
 #: users.php:36
 msgid "Usernames can't contain spaces"
-msgstr "Gebruikersnamen mogen geen spaties bevatten"
+msgstr "Gebruikersnaam mag geen spaties bevatten"
 
 #: users.php:41
 msgid "Please fill in all fields"
@@ -368,7 +371,7 @@ msgstr "Vult u alle velden in"
 
 #: users.php:68
 msgid "Current users (click to edit)"
-msgstr "Huidige gebruikers (aanklikken om te wijzigen)."
+msgstr "Huidige gebruikers (aanklikken om te wijzigen)"
 
 #: users.php:72
 msgid "Number of users"
@@ -392,8 +395,175 @@ msgstr "Status"
 
 #: users.php:103
 msgid "Create new user"
-msgstr "Aanmaken nieuwe gebruiker"
+msgstr "Toevoegen nieuwe gebruiker"
 
 #: users.php:112
 msgid "Add user"
 msgstr "Toevoegen gebruiker"
+
+#: inc/auth.inc.php:42
+msgid "Session expired, please login again."
+msgstr "Sessie is verlopen, u dient opnieuw in te loggen."
+
+#: inc/auth.inc.php:69
+msgid "Authentication failed!"
+msgstr "Authenticatie mislukt!"
+
+#: inc/auth.inc.php:86
+msgid "PowerAdmin for PowerDNS"
+msgstr "PowerAdmin voor PowerDNS"
+
+#: inc/auth.inc.php:86
+msgid "Please login"
+msgstr "Inloggen"
+
+#: inc/auth.inc.php:96 inc/auth.inc.php:98
+msgid "Login"
+msgstr "Inloggen"
+
+#: inc/database.inc.php:31 inc/toolkit.inc.php:149
+msgid "Oops! An error occured!"
+msgstr "Oops! Er ging iets mis!"
+
+#: inc/database.inc.php:33 inc/toolkit.inc.php:151 inc/toolkit.inc.php:187
+msgid "back"
+msgstr "terug"
+
+#: inc/error.inc.php:31
+msgid "You need user level 5 for this operation"
+msgstr "U heeft minimaal gebruiksnivo 5 nodig voor deze handeling"
+
+#: inc/error.inc.php:32
+msgid "You need user level 10 for this operation"
+msgstr "U heeft minimaal gebruiksnivo 10 nodig voor deze handeling"
+
+#: inc/error.inc.php:35
+msgid "Your content field is empty"
+msgstr "Het content veld is leeg"
+
+#: inc/error.inc.php:36
+msgid "Access denied, you do not have access to that record"
+msgstr "Toegang geweigerd, u heeft onvoldoende rechten voor dat record"
+
+#: inc/error.inc.php:37
+#, php-format
+msgid "You are not allowed to delete %s records"
+msgstr "U heeft onnvoldoende rechten voor verwijderen van %s records."
+
+#: inc/error.inc.php:40
+msgid "This is an invalid domain name"
+msgstr "This is een ongeldige domeinnaam"
+
+#: inc/error.inc.php:43
+msgid "Username exist already, please choose another one"
+msgstr "Gebruikersnaam bestaat al, kiest u een andere naam."
+
+#: inc/error.inc.php:44
+msgid "User doesnt exist"
+msgstr "De gebruiker bestaat niet."
+
+#: inc/error.inc.php:45
+msgid "You didnt enter the correct current password"
+msgstr "U heeft niet het correcte wachtwoord gegeven."
+
+#: inc/error.inc.php:46
+msgid "The two new password fields do not match"
+msgstr "De twee wachtwoorden waren niet identiek."
+
+#: inc/error.inc.php:47
+msgid "Error editting user"
+msgstr "Fout wijzigen gebruiker"
+
+#: inc/error.inc.php:50
+#, php-format
+msgid "Invalid argument(s) given to function %s"
+msgstr "Er zijn ongeldige opties meegegeven aan functie %s"
+
+#: inc/error.inc.php:51
+#, php-format
+msgid "Invalid argument(s) given to function %s %s"
+msgstr "Er zijn ongeldige opties meegegeven aan functie %s %s"
+
+#: inc/error.inc.php:52
+msgid "unknown error"
+msgstr "onbekende fout"
+
+#: inc/error.inc.php:53
+msgid "Enter a valid email address"
+msgstr "Geef een geldig e-mailadres"
+
+#: inc/error.inc.php:56
+msgid "Your content field doesnt have a legit value"
+msgstr "Het content veld heeft geen valide waarde."
+
+#: inc/error.inc.php:57
+msgid "Invalid hostname"
+msgstr "Incorrecte hostname"
+
+#: inc/error.inc.php:58
+msgid "Invalid record type! You shouldnt even been able to get that here"
+msgstr "Foutief record type! U hoort niet eens hier te kunnen komen."
+
+#: inc/error.inc.php:59
+msgid "This is not a valid IPv6 ip."
+msgstr "Dit is geen valide IPv6 adres."
+
+#: inc/error.inc.php:60
+msgid "This is not a valid IPv4 ip."
+msgstr "Dit is geen valide IPv4 adres."
+
+#: inc/error.inc.php:61
+msgid "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
+msgstr "Dit is geen valide CNAME. Heeft u een MX of NS record hiernaar verwijzen?"
+
+#: inc/error.inc.php:62
+msgid "You can not point a NS record to a CNAME record. Remove/rename the CNAME record first or take another name."
+msgstr "Een NS record kan niet naar een CNAME record verwijzen. Verwijder of hernoem eerst het CNAME record of gebruik een andere naam."
+
+#: inc/error.inc.php:63
+msgid "IN NS fields must be a hostnames."
+msgstr "Het NS veld moet een hostname bevatten."
+
+#: inc/error.inc.php:64
+msgid "You can not point a MX record to a CNAME record. Remove/rename the CNAME record first or take another name."
+msgstr "Een MX record kan niet naar een CNAME record verwijzen. Verwijder of hernoem eerst het CNAME record of gebruik een andere naam."
+
+#: inc/error.inc.php:65
+msgid "A prio field should be numeric."
+msgstr "Het priority veld moet numeriek zijn."
+
+#: inc/error.inc.php:66
+msgid "One of your SOA data fields is not numeric!"
+msgstr "Een van de SOA data velden is niet numeriek!"
+
+#: inc/error.inc.php:67
+msgid "You can only have 5 numeric fields"
+msgstr "Er kunnen enkel 5 numerieke velden voorkomen in het SOA record"
+
+#: inc/error.inc.php:68
+msgid "The first part of your SOA record does not contain a valid hostname for a DNS Server"
+msgstr "Het eerste deel van het SOA record bevat niet een valide hostname voor een DNS server."
+
+#: inc/footer.inc.php:34
+msgid "logout"
+msgstr "Uitloggen"
+
+#: inc/header.inc.php:28
+msgid "PowerAdmin"
+msgstr "PowerAdmin"
+
+#: inc/toolkit.inc.php:91
+msgid "Show page"
+msgstr "Toon pagina"
+
+#: inc/toolkit.inc.php:119
+msgid "Show domains beginning with:"
+msgstr "Toon zones die beginnen met:"
+
+#: inc/toolkit.inc.php:170
+msgid "Success!"
+msgstr "Gelukt!"
+
+#: inc/toolkit.inc.php:266
+msgid "Inactive"
+msgstr "Inactief"

@@ -28,9 +28,9 @@ function dbError($msg)
         // General function for printing critical errors.
         include_once("header.inc.php");
         ?>
-        <P><TABLE CLASS="error"><TR><TD CLASS="error"><H2>Oops! An error occured!</H2>
+        <P><TABLE CLASS="error"><TR><TD CLASS="error"><H2><? echo _('Oops! An error occured!'); ?></H2>
         <BR>
-        <FONT STYLE="font-weight: Bold"><?= $msg->getDebugInfo(); ?><BR><BR><a href="javascript:history.go(-1)">&lt;&lt; back</a></FONT><BR></TD></TR></TABLE></P>
+        <FONT STYLE="font-weight: Bold"><?= $msg->getDebugInfo(); ?><BR><BR><a href="javascript:history.go(-1)">&lt;&lt; <? echo _('back'); ?></a></FONT><BR></TD></TR></TABLE></P>
         <?
         die();
 }

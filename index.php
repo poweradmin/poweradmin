@@ -102,7 +102,7 @@ if($_POST["passchange"])
 
 include_once("inc/header.inc.php");
 ?>
-<H2>DNS Admin</H2>
+<H2><? echo _('DNS Admin'); ?></H2>
 
 <P FONT CLASS="nav">
 <?
@@ -134,7 +134,7 @@ if ($error != "")
 <?
 $doms = get_domains(0);
 $num_domains = count($doms);
-echo "<br /><small><b><? echo _('Number of domains'); ?>: </b>".$num_domains."<br />";
+echo "<br /><small><b>" . _('Number of domains') . ": </b>".$num_domains."<br />";
 
 if ($num_domains > ROWAMOUNT) {
    show_letters(LETTERSTART,$doms);

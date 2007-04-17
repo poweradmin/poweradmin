@@ -39,7 +39,7 @@ if(isset($_POST["authenticate"]))
 // Check if the session hasnt expired yet.
 if ((isset($_SESSION["userid"])) && ($_SESSION["lastmod"] != "") && ((time() - $_SESSION["lastmod"]) > $EXPIRE))
 {
-	logout("Session expired, please login again.");
+	logout( _('Session expired, please login again.') );
 }
 
 // If the session hasn't expired yet, give our session a fresh new timestamp.
@@ -66,7 +66,7 @@ if(isset($_SESSION["userlogin"]) && isset($_SESSION["userpwd"]))
     	else
     	{
         	//Authentication failed, retry.
-	        auth("Authentication failed!");
+	        auth( _('Authentication failed!') );
 	}
 }
 else
@@ -83,7 +83,7 @@ function auth($msg="")
 {
 	include_once('inc/header.inc.php');
 	?>
-	<H2>PowerAdmin for PowerDNS</H2><H3>Please login:</H3>
+	<H2><? echo _('PowerAdmin for PowerDNS'); ?></H2><H3><? echo _('Please login'); ?>:</H3>
 	<?
 	if($msg)
 	{
@@ -93,9 +93,9 @@ function auth($msg="")
 	?>
 	<FORM METHOD="post" ACTION="<?= $_SERVER["PHP_SELF"] ?>">
 	<TABLE BORDER="0">
-	<TR><TD STYLE="background-color: #FCC229;">Login:</TD><TD STYLE="background-color: #FCC229;"><INPUT TYPE="text" CLASS="input" NAME="username"></TD></TR>
-	<TR><TD STYLE="background-color: #FCC229;">Password:</TD><TD STYLE="background-color: #FCC229;"><INPUT TYPE="password" CLASS="input" NAME="password"></TD></TR>
-	<TR><TD STYLE="background-color: #FCC229;">&nbsp;</TD><TD STYLE="background-color: #FCC229;"><INPUT TYPE="submit" NAME="authenticate" CLASS="button" VALUE=" Login "></TD></TR>
+	<TR><TD STYLE="background-color: #FCC229;"><? echo _('Login'); ?>:</TD><TD STYLE="background-color: #FCC229;"><INPUT TYPE="text" CLASS="input" NAME="username"></TD></TR>
+	<TR><TD STYLE="background-color: #FCC229;"><? echo _('Password'); ?>:</TD><TD STYLE="background-color: #FCC229;"><INPUT TYPE="password" CLASS="input" NAME="password"></TD></TR>
+	<TR><TD STYLE="background-color: #FCC229;">&nbsp;</TD><TD STYLE="background-color: #FCC229;"><INPUT TYPE="submit" NAME="authenticate" CLASS="button" VALUE=" <? echo _('Login'); ?> "></TD></TR>
 	</TABLE>
 	<?
 	include_once('inc/footer.inc.php');

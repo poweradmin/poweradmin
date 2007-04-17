@@ -31,7 +31,7 @@ if(is_object($db))
 
 ?>
 <BR><BR>
-<FONT CLASS="footer">[ <A HREF="index.php?logout">logout</A> ]&nbsp;<B>PowerAdmin v1.2.7</B> :: Copyright &copy;
+<FONT CLASS="footer">[ <A HREF="index.php?logout"><? echo _('logout'); ?></A> ]&nbsp;<B>PowerAdmin v1.2.7</B> :: Copyright &copy;
 <?= date("Y") ?> The PowerAdmin Team :: <a href="http://poweradmin.org" target="_blank">http://poweradmin.org</a>
 </FONT>
 </BODY>

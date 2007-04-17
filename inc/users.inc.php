@@ -21,7 +21,9 @@
 // $Id: users.inc.php,v 1.8 2003/01/01 22:33:47 azurazu Exp $
 //
 
-
+// Added next line to enable i18n on following definitions. Don't know 
+// if this is the best (or at least a proper) location for this. /RZ.
+require_once("inc/i18n.inc.php");
 
 /*
  * Retrieve all users.
@@ -108,8 +110,6 @@ function show_users($id='',$rowstart=0,$rowamount=9999999)
  */
 function leveldescription($id)
 {
-	// Fixed descriptions for each user level (feel free to edit, anyway..)
-	// Will get moved to the config file soon.
 	switch($id)
 	{
 		case 1:
@@ -149,7 +149,7 @@ function user_exists($user)
 	}
         else
         {
-        	error(ERR_UNKOWN);
+        	error(ERR_UNKNOWN);
 	}
 }
 

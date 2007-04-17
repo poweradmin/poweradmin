@@ -81,9 +81,9 @@ $DEFAULT_TTL = 3600;      // (3600 seconds / 1 hour by default)
 
 // $NAME_LEVEL_X
 // These directives allow you to change the statusnames of users on the system.
-$NAME_LEVEL_1 = "Normal user";
-$NAME_LEVEL_5 = "Administrator";
-$NAME_LEVEL_10 = "Administrator w/ user admin rights";
+$NAME_LEVEL_1 = _('Normal user');
+$NAME_LEVEL_5 = _('Administrator');
+$NAME_LEVEL_10 = _('Administrator w/ user admin rights');
 
 // Enable fancy records or not (http://doc.powerdns.com/fancy-records.html)? true/false
 $FANCY_RECORDS = true;
