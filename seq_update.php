@@ -50,6 +50,6 @@ $tables = array('users', 'zones', 'records', 'domains');
 
 array_walk($tables, 'seq_update');
 
-message("All tables are successfully synchronized.");
+message( _('All tables are successfully synchronized.') );
 
 php?>

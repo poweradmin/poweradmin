@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-04-17 21:09+0200\n"
+"POT-Creation-Date: 2007-04-18 22:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 msgid "Add record to zone"
 msgstr ""
 
-#: add_record.php:32 edit.php:160 edit_record.php:61 index.php:105
+#: add_record.php:32 edit.php:160 edit_record.php:61 index.php:106
 #: search.php:40 users.php:49
 msgid "DNS Admin"
 msgstr ""
@@ -29,7 +29,7 @@ msgstr ""
 msgid "Add record"
 msgstr ""
 
-#: add_record.php:37 edit.php:186 edit_record.php:67 index.php:151
+#: add_record.php:37 edit.php:186 edit_record.php:67 index.php:152
 #: search.php:78 search.php:121 users.php:78
 msgid "Name"
 msgstr ""
@@ -54,7 +54,7 @@ msgstr ""
 msgid "Delete domain"
 msgstr ""
 
-#: delete_domain.php:39 index.php:151 index.php:206 search.php:80
+#: delete_domain.php:39 index.php:152 index.php:207 search.php:80
 msgid "Owner"
 msgstr ""
 
@@ -154,7 +154,7 @@ msgstr ""
 msgid "Assign to user"
 msgstr ""
 
-#: edit.php:276 index.php:175 search.php:91
+#: edit.php:276 index.php:176 search.php:91
 msgid "Delete zone"
 msgstr ""
 
@@ -182,7 +182,7 @@ msgstr ""
 msgid "Edit user"
 msgstr ""
 
-#: edit_user.php:59 index.php:111 search.php:44 users.php:47
+#: edit_user.php:59 index.php:112 search.php:44 users.php:47
 msgid "User admin"
 msgstr ""
 
@@ -226,87 +226,87 @@ msgstr ""
 msgid "Active"
 msgstr ""
 
-#: index.php:111 search.php:44 users.php:53
+#: index.php:112 search.php:44 users.php:53
 msgid "Synchronize database"
 msgstr ""
 
-#: index.php:114 users.php:55
+#: index.php:115 users.php:55
 msgid "Search records"
 msgstr ""
 
-#: index.php:118
+#: index.php:119
 msgid "Welcome"
 msgstr ""
 
-#: index.php:121
+#: index.php:122
 msgid "Your userlevel is"
 msgstr ""
 
-#: index.php:127 users.php:65
+#: index.php:128 users.php:65
 msgid "Error"
 msgstr ""
 
-#: index.php:131
+#: index.php:132
 msgid "Current domains in DNS (click to view or edit)"
 msgstr ""
 
-#: index.php:137
+#: index.php:138
 msgid "Number of domains"
 msgstr ""
 
-#: index.php:151 search.php:79
+#: index.php:152 search.php:79
 msgid "Records"
 msgstr ""
 
-#: index.php:163
+#: index.php:164
 msgid "No domains in this listing, sorry."
 msgstr ""
 
-#: index.php:190
+#: index.php:191
 msgid "You only administer some records of domains marked with an (*)."
 msgstr ""
 
-#: index.php:201
+#: index.php:202
 msgid "Create new domain"
 msgstr ""
 
-#: index.php:203
+#: index.php:204
 msgid "Domain name"
 msgstr ""
 
-#: index.php:204
+#: index.php:205
 msgid "Web IP"
 msgstr ""
 
-#: index.php:205
+#: index.php:206
 msgid "Mail IP"
 msgstr ""
 
-#: index.php:220
+#: index.php:221
 msgid "Domain type"
 msgstr ""
 
-#: index.php:231
+#: index.php:232
 msgid "Create zone without"
 msgstr ""
 
-#: index.php:231
+#: index.php:232
 msgid "applying records-template"
 msgstr ""
 
-#: index.php:232
+#: index.php:233
 msgid "Add domain"
 msgstr ""
 
-#: index.php:241 index.php:246
+#: index.php:242 index.php:247
 msgid "Change password"
 msgstr ""
 
-#: index.php:243
+#: index.php:244
 msgid "Current password"
 msgstr ""
 
-#: index.php:244 index.php:245
+#: index.php:245 index.php:246
 msgid "New password"
 msgstr ""
 
@@ -340,6 +340,10 @@ msgstr ""
 
 #: seq_update.php:26
 msgid "Synching databases. This is useful if you did manual insertions (in case you havent been here yet)."
+msgstr ""
+
+#: seq_update.php:53
+msgid "All tables are successfully synchronized."
 msgstr ""
 
 #: test_setup.php:58
@@ -422,12 +426,20 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
+#: inc/auth.inc.php:113
+msgid "You have logged out."
+msgstr ""
+
 #: inc/database.inc.php:31 inc/toolkit.inc.php:149
 msgid "Oops! An error occured!"
 msgstr ""
 
 #: inc/database.inc.php:33 inc/toolkit.inc.php:151 inc/toolkit.inc.php:187
 msgid "back"
+msgstr ""
+
+#: inc/dns.inc.php:204
+msgid "If you specify an MX record it must be a hostname."
 msgstr ""
 
 #: inc/error.inc.php:31
@@ -551,6 +563,18 @@ msgstr ""
 
 #: inc/header.inc.php:28
 msgid "PowerAdmin"
+msgstr ""
+
+#: inc/toolkit.inc.php:49
+msgid "You have to create a config.inc.php!"
+msgstr ""
+
+#: inc/toolkit.inc.php:54
+msgid "You have to remove install.php before this program will run"
+msgstr ""
+
+#: inc/toolkit.inc.php:59
+msgid "You have to remove migrator.php before this program will run"
 msgstr ""
 
 #: inc/toolkit.inc.php:91

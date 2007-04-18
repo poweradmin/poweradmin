@@ -107,8 +107,11 @@ function auth($msg="")
  * Logout the user and kickback to login form.
  */
 
-function logout($msg="You have logged out.")
+function logout($msg="")
 {
+	if ( $msg == "" ) {
+		$msg=_('You have logged out.');
+	};
 	session_destroy();
 	session_write_close();
 	auth($msg);

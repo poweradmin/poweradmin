@@ -18,6 +18,7 @@ session_start();
 // $Id: index.php,v 1.13 2003/05/10 20:20:05 azurazu Exp $
 //
 
+require_once("inc/i18n.inc.php");
 require_once("inc/toolkit.inc.php");
 
 /*

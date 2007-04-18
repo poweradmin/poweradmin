@@ -1,4 +1,5 @@
-# poweradmin dutch translation # Copyright (C) 2007, Rejo Zenger 
+# poweradmin dutch translation 
+# Copyright (C) 2007, Rejo Zenger 
 # This file is distributed under the same license as the poweradmin package.
 # Rejo Zenger <rejo@zenger.nl>, 2007.
 #
@@ -8,9 +9,9 @@ msgstr ""
 "Project-Id-Version: poweradmin 1.2.7-patched\n"
 "Report-Msgid-Bugs-To: rejo@zenger.nl\n"
 "POT-Creation-Date: 2007-04-15 00:21+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2007-04-18 22:47+0200\n"
 "Last-Translator: Rejo Zenger <rejo@zenger.nl>\n"
-"Language-Team: Rutch\n"
+"Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,7 +20,7 @@ msgstr ""
 msgid "Add record to zone"
 msgstr "Toevoegen record aan zone"
 
-#: add_record.php:32 edit.php:160 edit_record.php:61 index.php:105
+#: add_record.php:32 edit.php:160 edit_record.php:61 index.php:106
 #: search.php:40 users.php:49
 msgid "DNS Admin"
 msgstr "DNS Admin"
@@ -53,7 +54,7 @@ msgstr "TTL"
 msgid "Delete domain"
 msgstr "Verwijderen zone"
 
-#: delete_domain.php:39 index.php:151 index.php:206 search.php:80
+#: delete_domain.php:39 index.php:151 index.php:207 search.php:80
 msgid "Owner"
 msgstr "Beheerder"
 
@@ -153,7 +154,7 @@ msgstr "Geen records in deze zone."
 msgid "Assign to user"
 msgstr "Selecteer beheerder"
 
-#: edit.php:276 index.php:175 search.php:91
+#: edit.php:276 index.php:176 search.php:91
 msgid "Delete zone"
 msgstr "Verwijderen zone"
 
@@ -181,7 +182,7 @@ msgstr "Verwijderen"
 msgid "Edit user"
 msgstr "Wijzigen gebruiker"
 
-#: edit_user.php:59 index.php:111 search.php:44 users.php:47
+#: edit_user.php:59 index.php:112 search.php:44 users.php:47
 msgid "User admin"
 msgstr "Gebruikersbeheer"
 
@@ -225,55 +226,55 @@ msgstr "Omschrijving"
 msgid "Active"
 msgstr "Actief"
 
-#: index.php:111 search.php:44 users.php:53
+#: index.php:112 search.php:44 users.php:53
 msgid "Synchronize database"
 msgstr "Synchroniseer database"
 
-#: index.php:114 users.php:55
+#: index.php:115 users.php:55
 msgid "Search records"
 msgstr "Zoek records"
 
-#: index.php:118
+#: index.php:119
 msgid "Welcome"
 msgstr "Welkom"
 
-#: index.php:121
+#: index.php:122
 msgid "Your userlevel is"
 msgstr "Uw gebruikersnivo is"
 
-#: index.php:127 users.php:65
+#: index.php:128 users.php:65
 msgid "Error"
 msgstr "Fout"
 
-#: index.php:131
+#: index.php:132
 msgid "Current domains in DNS (click to view or edit)"
 msgstr "Huidige zones in DNS (aanklikken om in te zien of te wijzigen)"
 
-#: index.php:137
+#: index.php:138
 msgid "Number of domains"
 msgstr "Aantal zones"
 
-#: index.php:151 search.php:79
+#: index.php:152 search.php:79
 msgid "Records"
 msgstr "Records"
 
-#: index.php:163
+#: index.php:164
 msgid "No domains in this listing, sorry."
 msgstr "Er zijn geen zones om te tonen."
 
-#: index.php:190
+#: index.php:199
 msgid "You only administer some records of domains marked with an (*)."
 msgstr "U beheert enkel een deel van de records in zones gemarkeerd met een (*)."
 
-#: index.php:201
+#: index.php:202
 msgid "Create new domain"
 msgstr "Toevoegen nieuwe zone"
 
-#: index.php:203
+#: index.php:204
 msgid "Domain name"
 msgstr "Naam van de zone"
 
-#: index.php:204
+#: index.php:205
 msgid "Web IP"
 msgstr "IP adres webserver"
 
@@ -281,31 +282,31 @@ msgstr "IP adres webserver"
 msgid "Mail IP"
 msgstr "IP adres mailserver"
 
-#: index.php:220
+#: index.php:221
 msgid "Domain type"
 msgstr "Type zone"
 
-#: index.php:231
+#: index.php:232
 msgid "Create zone without"
 msgstr "Zone aanmaken zonder"
 
-#: index.php:231
+#: index.php:232
 msgid "applying records-template"
 msgstr "het record template te gebruiken"
 
-#: index.php:232
+#: index.php:233
 msgid "Add domain"
 msgstr "Toevoegen zone"
 
-#: index.php:241 index.php:246
+#: index.php:242 index.php:247
 msgid "Change password"
 msgstr "Wijzig wachtwoord"
 
-#: index.php:243
+#: index.php:244
 msgid "Current password"
 msgstr "Huidige wachtwoord"
 
-#: index.php:244 index.php:245
+#: index.php:245 index.php:246
 msgid "New password"
 msgstr "Nieuwe wachtwoord"
 
@@ -319,7 +320,7 @@ msgstr "Geef een hostname of record op in het zoekveld hieronder om te zien of e
 
 #: search.php:52
 msgid "Enter a hostname or IP address"
-msgstr "Geef een hosntmae of een IP adres"
+msgstr "Geef een hostname of een IP adres"
 
 #: search.php:57
 msgid "Search"
@@ -340,6 +341,10 @@ msgstr "Niets gevonden voor criterium"
 #: seq_update.php:26
 msgid "Synching databases. This is useful if you did manual insertions (in case you havent been here yet)."
 msgstr "Synchroniseren databases. Dit is noodzakelijk als er handmatige toevoegingen hebben plaatsgevonden."
+
+#: seq_update.php:53
+msgid "All tables are successfully synchronized."
+msgstr "Alle tabellen zijn succesvol gesynchroniseerd."
 
 #: test_setup.php:58
 msgid "Not all tables are ok!"
@@ -417,6 +422,10 @@ msgstr "PowerAdmin voor PowerDNS"
 msgid "Please login"
 msgstr "Inloggen"
 
+#: inc/auth.inc.php:113
+msgid "You have logged out."
+msgstr "U bent uitgelogd."
+
 #: inc/auth.inc.php:96 inc/auth.inc.php:98
 msgid "Login"
 msgstr "Inloggen"
@@ -428,6 +437,10 @@ msgstr "Oops! Er ging iets mis!"
 #: inc/database.inc.php:33 inc/toolkit.inc.php:151 inc/toolkit.inc.php:187
 msgid "back"
 msgstr "terug"
+
+#: inc/dns.inc.php:204
+msgid "If you specify an MX record it must be a hostname."
+msgstr "Een MX record dient naar een hostname te verwijzen."
 
 #: inc/error.inc.php:31
 msgid "You need user level 5 for this operation"
@@ -551,6 +564,18 @@ msgstr "Uitloggen"
 #: inc/header.inc.php:28
 msgid "PowerAdmin"
 msgstr "PowerAdmin"
+
+#: inc/toolkit.inc.php:49
+msgid "You have to create a config.inc.php!"
+msgstr "U dient een config.inc.php file aan te maken!"
+
+#: inc/toolkit.inc.php:54
+msgid "You have to remove install.php before this program will run"
+msgstr "U dient install.php te verwijderen alvorens u deze applicatie kunt gebruiken."
+
+#: inc/toolkit.inc.php:59
+msgid "You have to remove migrator.php before this program will run"
+msgstr "U dient migrator.php te verwijderen alvorens u deze applicatie kunt gebruiken."
 
 #: inc/toolkit.inc.php:91
 msgid "Show page"

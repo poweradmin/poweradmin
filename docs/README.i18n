@@ -13,7 +13,9 @@ If you want to use a translation, say the nl_NL, all you have to do is
 edit inc/i18n.php file and change the $language variable to the desired
 language, for example "nl_NL".
 
-If this doesn't work, your system isn't setup properly.
+If this doesn't work, most likely your system itself is not setup 
+properly. See <https://rejo.zenger.nl/misc/1176630442.php> maybe of 
+some help.
 
 
 Adding a new translation

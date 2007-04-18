@@ -46,17 +46,17 @@ if (isset($_GET["letter"])) {
 
 if(!@include_once("config.inc.php"))
 {
-	error("You have to create a config.inc.php!");
+	error( _('You have to create a config.inc.php!') );
 }
 
 if(is_file( dirname(__FILE__) . '/../install.php'))
 {
-	error("You have to remove install.php before this program will run");
+	error( _('You have to remove install.php before this program will run') );
 }
 
 if(is_file( dirname(__FILE__) . '/../migrator.php'))
 {
-        error("You have to remove migrator.php before this program will run");
+        error( _('You have to remove migrator.php before this program will run') );
 }
 
 /* Database connection */

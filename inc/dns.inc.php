@@ -201,7 +201,7 @@ function validate_input($recordid, $zoneid, $type, &$content, &$name, &$prio, &$
 		}
 		else
 		{
-			error("If you specify an MX record it must be a hostname");
+			error( _('If you specify an MX record it must be a hostname.') );
 		}
 	}
 	else
