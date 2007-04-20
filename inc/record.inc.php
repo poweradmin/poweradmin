@@ -322,8 +322,7 @@ function add_domain($domain, $owner, $webip, $mailip, $empty, $type)
 						$ttl = $GLOBALS["DEFAULT_TTL"];
 					}
 
-					// Retrieve new record id;
-					$sql = "INSERT INTO records (domain_id, name, content, type, ttl, prio, change_date) VALUES ('$iddomains', '$name','$content','$type','$ttl','$prio','$now')";
+					$sql = "INSERT INTO records (domain_id, name, content, type, ttl, prio, change_date) VALUES ('$iddomain', '$name','$content','$type','$ttl','$prio','$now')";
 					$db->query($sql);
 				}
 			}
@@ -459,6 +458,7 @@ function add_owner($domain, $newowner)
 
 	if (is_numeric($domain) && is_numeric($newowner) && is_valid_user($newowner))
 	{
+		// TOFIX sequence
 		$iid = $db->nextID('zones');
 		if($db->queryOne("SELECT COUNT(id) FROM zones WHERE owner=$newowner AND domain_id=$domain") == 0)
 		{
