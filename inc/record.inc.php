@@ -458,11 +458,9 @@ function add_owner($domain, $newowner)
 
 	if (is_numeric($domain) && is_numeric($newowner) && is_valid_user($newowner))
 	{
-		// TOFIX sequence
-		$iid = $db->nextID('zones');
 		if($db->queryOne("SELECT COUNT(id) FROM zones WHERE owner=$newowner AND domain_id=$domain") == 0)
 		{
-			$db->query("INSERT INTO zones(id, domain_id, owner) VALUES($iid, $domain, $newowner)");
+			$db->query("INSERT INTO zones (domain_id, owner) VALUES($domain, $newowner)");
 		}
 		return true;
 	}

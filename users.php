@@ -46,13 +46,7 @@ include_once("inc/header.inc.php");
 ?>
 <H2><? echo _('User admin'); ?></H2>
 <P CLASS="nav">
-<A HREF="index.php"><? echo _('DNS Admin'); ?></A>
-<?
-if (level(10))
-{
-	?> <A HREF="seq_update.php"><? echo _('Synchronize database'); ?></A> <?
-}
-?><A HREF="search.php"><? echo _('Search records'); ?></A></P><BR><?
+<A HREF="index.php"><? echo _('DNS Admin'); ?></A> <A HREF="search.php"><? echo _('Search records'); ?></A></P><BR><?
 // End
 
 if (!level(10)) 

@@ -21,39 +21,6 @@ session_start();
 require_once("inc/i18n.inc.php");
 require_once("inc/toolkit.inc.php");
 
-/*
-// Checks if the user migrated his database, can be deprecated in the future
-function check_updated()
-{
-	global $db;
-	$checkzone = $db->query("select * from zones");
-	$zonetables = $checkzone->tableInfo();
-	//var_dump($zonetables[1]);
-	if(strcmp($zonetables[1]["name"], "name") == 0)
-	{
-		include_once("inc/header.inc.php");
-		error("You have to migrate your database first! 
-		
-		The reason for this migration is that PowerAdmin wasnt supporting the gmysql backend yet. Now it fully does we have to support it aswell. 
-		The gmysql users another table and other fields though, therefore we had to change the layout of the zones table. In this version thats fully done, but before this we have to migrate it. 
-		
-		Please be sure you have a working backup of your data! 
-		we assume it all works but can't guarantuee it for 100% because we dont have 
-		too many betatesters.<BR>
-		
-		Do the following to migrate: 
-		- rename the file migrator.php-pa in your webdir to migrator.php.
-	 	- Go <A HREF='migrator.php'>here</A> to migrate it.
-		
-		It is recommended to synchronize your database aswell after the update");
-		die();
-	}
-}
-
-// Call above function
-check_updated();
-*/
-
 if ($_POST["submit"])
 {
 	$domain = trim($_POST["domain"]);
@@ -109,7 +76,7 @@ include_once("inc/header.inc.php");
 <?
 if (level(10))
 {
-	?><A HREF="users.php"><? echo _('User admin'); ?></A> <A HREF="seq_update.php"><? echo _('Synchronize database'); ?></A><?
+	?><A HREF="users.php"><? echo _('User admin'); ?></A> <?
 }
 ?>
  <A HREF="search.php"><? echo _('Search records'); ?></A>
