@@ -46,10 +46,10 @@ function update_soa_serial($domain_id)
 	 */
 
 	$sqlq = "SELECT `notified_serial` FROM `domains` WHERE `id` = '".$domain_id."'";
-	$notified_serial = $db->getOne($sqlq);
+	$notified_serial = $db->queryOne($sqlq);
 
 	$sqlq = "SELECT `content` FROM `records` WHERE `type` = 'SOA' AND `domain_id` = '".$domain_id."'";
-	$content = $db->getOne($sqlq);
+	$content = $db->queryOne($sqlq);
     $need_to_update = false;
 	
 	// Getting the serial field.
@@ -171,17 +171,14 @@ function add_record($zoneid, $name, $type, $content, $ttl, $prio)
 	}
 	if (is_numeric($zoneid))
 	{
-
-		// Get the Insert ID, we can not rely on auto_increment
-		$idrecords = $db->nextID('records');
-
 		// Check the user input.
-		validate_input($idrecords, $zoneid, $type, $content, $name, $prio, $ttl);
+		validate_input($zoneid, $type, $content, $name, $prio, $ttl);
 
-		// Generate new timestamp for the Daemon
+		// Generate new timestamp for the daemon
 		$change = time();
+		
 		// Execute query.
-		$db->query("INSERT INTO records (id, domain_id, name, type, content, ttl, prio, change_date) VALUES ($idrecords, $zoneid, '$name', '$type', '$content', $ttl, '$prio', $change)");
+		$db->query("INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) VALUES ($zoneid, '$name', '$type', '$content', $ttl, '$prio', $change)");
 		if ($type != 'SOA')
 		{
 			update_soa_serial($zoneid);
@@ -270,40 +267,38 @@ function add_domain($domain, $owner, $webip, $mailip, $empty, $type)
 	// Continue this function
 	if (($domain && $owner && $webip && $mailip) || ($empty && $owner && $domain) || (eregi('in-addr.arpa', $domain) && $owner))
 	{
-		// Retrieve next zones id.
-		$idzones = $db->nextID('zones');
-		$iddomains = $db->nextID('domains');
+                
+                // First insert zone into domain table
+                $db->query("INSERT INTO domains (name, type) VALUES ('$domain', '$type')");
 
-		$db->query("INSERT INTO zones (id, domain_id, owner) VALUES ('$idzones', '$iddomains', $owner)");
+                // Determine id of insert zone (in other words, find domain_id)
+                $iddomain = $db->lastInsertId('domains', 'id');
+                if (PEAR::isError($iddomain)) {
+                        die($id->getMessage());
+                }
 
-		/*
-		 * TODO : NATIVE OPERATION ONLY FOR NOW
-		 */
+                // Second, insert into zones tables
+                $db->query("INSERT INTO zones (domain_id, owner) VALUES ('$iddomain', $owner)");
 
-		$db->query("INSERT INTO domains (id, name, type) VALUES ('$iddomains', '$domain', '$type')");
+                // Generate new timestamp. We need this one anyhow.
+                $now = time();
 
-		// Generate new timestamp. We need this one anyhow.
-		$now = time();
-
-		if ($empty && $iddomains)
+		if ($empty && $iddomain)
 		{
-			// If we come into this if statement we dont want to apply templates.
-			// Retrieve configuration settings.
-			$ns1 = $GLOBALS["NS1"];
-			$hm  = $GLOBALS["HOSTMASTER"];
-			$ttl = $GLOBALS["DEFAULT_TTL"];
+                        // If we come into this if statement we dont want to apply templates.
+                        // Retrieve configuration settings.
+                        $ns1 = $GLOBALS["NS1"];
+                        $hm  = $GLOBALS["HOSTMASTER"];
+                        $ttl = $GLOBALS["DEFAULT_TTL"];
 
-			// Retrieve next records id
-			$idrecords = $db->nextID('records');
+                        // Build and execute query
+                        $sql = "INSERT INTO records (domain_id, name, content, type, ttl, prio, change_date) VALUES ('$iddomain', '$domain', '$ns1 $hm 1', 'SOA', $ttl, '', '$now')";
+                        $db->query($sql);
 
-			// Build and execute query
-			$sql = "INSERT INTO records (id, domain_id, name, content, type, ttl, prio, change_date) VALUES ('$idrecords', '$iddomains', '$domain', '$ns1 $hm 1', 'SOA', $ttl, '', '$now')";
-			$db->query($sql);
-
-			// Done
-			return true;
+                        // Done
+                        return true;
 		}
-		elseif ($iddomains)
+		elseif ($iddomain)
 		{
 			// If we are here we want to apply templates.
 			global $template;
@@ -328,8 +323,7 @@ function add_domain($domain, $owner, $webip, $mailip, $empty, $type)
 					}
 
 					// Retrieve new record id;
-					$idrecords = $db->nextID('records');
-					$sql = "INSERT INTO records (id, domain_id, name, content, type, ttl, prio, change_date) VALUES ('$idrecords', '$iddomains', '$name','$content','$type','$ttl','$prio','$now')";
+					$sql = "INSERT INTO records (domain_id, name, content, type, ttl, prio, change_date) VALUES ('$iddomains', '$name','$content','$type','$ttl','$prio','$now')";
 					$db->query($sql);
 				}
 			}
@@ -466,7 +460,7 @@ function add_owner($domain, $newowner)
 	if (is_numeric($domain) && is_numeric($newowner) && is_valid_user($newowner))
 	{
 		$iid = $db->nextID('zones');
-		if($db->getOne("SELECT COUNT(id) FROM zones WHERE owner=$newowner AND domain_id=$domain") == 0)
+		if($db->queryOne("SELECT COUNT(id) FROM zones WHERE owner=$newowner AND domain_id=$domain") == 0)
 		{
 			$db->query("INSERT INTO zones(id, domain_id, owner) VALUES($iid, $domain, $newowner)");
 		}
@@ -482,7 +476,7 @@ function add_owner($domain, $newowner)
 function delete_owner($domain, $owner)
 {
 	global $db;
-	if($db->getOne("SELECT COUNT(id) FROM zones WHERE owner=$owner AND domain_id=$domain") != 0)
+	if($db->queryOne("SELECT COUNT(id) FROM zones WHERE owner=$owner AND domain_id=$domain") != 0)
 	{
 		$db->query("DELETE FROM zones WHERE owner=$owner AND domain_id=$domain");
 	}
@@ -655,7 +649,7 @@ function get_domain_info_from_id($id)
 	GROUP BY name, owner, users.fullname
 	ORDER BY name";
 	
-	$result = $db->getRow($sqlq);
+	$result = $db->queryRow($sqlq);
 
 	$ret = array(
 	"name"          =>              $result["name"],
@@ -682,9 +676,9 @@ function get_domain_info_from_id($id)
 			ORDER BY zones.id";
 
 		// Put the first occurence in an array and return it.
-		$result = $db->getRow($sqlq);
+		$result = $db->queryRow($sqlq);
 
-		//$result["ownerid"] = ($result["ownerid"] == NULL) ? $db->getOne("select min(id) from users where users.level=10") : $result["ownerid"];
+		//$result["ownerid"] = ($result["ownerid"] == NULL) ? $db->queryOne("select min(id) from users where users.level=10") : $result["ownerid"];
 
 		$ret = array(
 		"name"          =>              $result["name"],
@@ -829,7 +823,7 @@ if ($letterstart!=all && $letterstart!=1) {
 
 	while($r = $result->fetchRow())
 	{
-		$r["owner"] = ($r["owner"] == NULL) ? $db->getOne("select min(id) from users where users.level=10") : $r["owner"];
+		$r["owner"] = ($r["owner"] == NULL) ? $db->queryOne("select min(id) from users where users.level=10") : $r["owner"];
 	     	$ret[$r["domainname"]] = array(
 		"name"          =>              $r["domainname"],
 		"id"            =>              $r["domain_id"],
@@ -992,11 +986,11 @@ function get_records_from_domain_id($id,$rowstart=0,$rowamount=999999)
 function get_users_from_domain_id($id)
 {
 	global $db;
-	$result = $db->getCol("SELECT owner FROM zones WHERE domain_id=$id");
+	$result = $db->queryCol("SELECT owner FROM zones WHERE domain_id=$id");
 	$ret = array();
 	foreach($result as $uid)
 	{
-		$fullname = $db->getOne("SELECT fullname FROM users WHERE id=$uid");
+		$fullname = $db->queryOne("SELECT fullname FROM users WHERE id=$uid");
 		$ret[] = array(
 		"id" 		=> 	$uid,
 		"fullname"	=>	$fullname		
@@ -1105,7 +1099,7 @@ function search_record($question)
 function get_domain_type($id)
 {
 	global $db;
-	$type = $db->getOne("SELECT `type` FROM `domains` WHERE `id` = '".$id."'");
+	$type = $db->queryOne("SELECT `type` FROM `domains` WHERE `id` = '".$id."'");
 	if($type == "")
 	{
 		$type = "NATIVE";
