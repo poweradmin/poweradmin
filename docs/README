@@ -40,7 +40,7 @@ Requirements
   the mysql or pgsql extension, as well has PEAR. 
 
 - PEAR::MDB2 (2.4.0 has been tested) and PEAR::MDB2_Driver_mysql
-  (1.4.0 has been tested) or PEAR::MDB2_Driver_pgsql. Tested 
+  (1.4.0 has been tested) or PEAR::MDB2_Driver_pgsql.
 
 
 Installing

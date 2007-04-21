@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-04-18 22:44+0200\n"
+"POT-Creation-Date: 2007-04-21 19:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 msgid "Add record to zone"
 msgstr ""
 
-#: add_record.php:32 edit.php:160 edit_record.php:61 index.php:106
+#: add_record.php:32 edit.php:160 edit_record.php:61 index.php:73
 #: search.php:40 users.php:49
 msgid "DNS Admin"
 msgstr ""
@@ -29,8 +29,8 @@ msgstr ""
 msgid "Add record"
 msgstr ""
 
-#: add_record.php:37 edit.php:186 edit_record.php:67 index.php:152
-#: search.php:78 search.php:121 users.php:78
+#: add_record.php:37 edit.php:186 edit_record.php:67 index.php:119
+#: search.php:78 search.php:121 users.php:72
 msgid "Name"
 msgstr ""
 
@@ -50,11 +50,11 @@ msgstr ""
 msgid "TTL"
 msgstr ""
 
-#: delete_domain.php:38 users.php:93
+#: delete_domain.php:38 users.php:87
 msgid "Delete domain"
 msgstr ""
 
-#: delete_domain.php:39 index.php:152 index.php:207 search.php:80
+#: delete_domain.php:39 index.php:119 index.php:174 search.php:80
 msgid "Owner"
 msgstr ""
 
@@ -78,7 +78,7 @@ msgstr ""
 msgid "Delete record"
 msgstr ""
 
-#: delete_user.php:54 users.php:85
+#: delete_user.php:54 users.php:79
 msgid "Delete user"
 msgstr ""
 
@@ -154,7 +154,7 @@ msgstr ""
 msgid "Assign to user"
 msgstr ""
 
-#: edit.php:276 index.php:176 search.php:91
+#: edit.php:276 index.php:143 search.php:91
 msgid "Delete zone"
 msgstr ""
 
@@ -182,132 +182,190 @@ msgstr ""
 msgid "Edit user"
 msgstr ""
 
-#: edit_user.php:59 index.php:112 search.php:44 users.php:47
+#: edit_user.php:59 index.php:79 search.php:44 users.php:47
 msgid "User admin"
 msgstr ""
 
-#: edit_user.php:69 users.php:105
+#: edit_user.php:69 users.php:99
 msgid "User name"
 msgstr ""
 
-#: edit_user.php:70 users.php:106
+#: edit_user.php:70 install.php:204 users.php:100
 msgid "Full name"
 msgstr ""
 
-#: edit_user.php:71 users.php:107 inc/auth.inc.php:97
+#: edit_user.php:71 install.php:203 users.php:101 inc/auth.inc.php:97
 msgid "Password"
 msgstr ""
 
-#: edit_user.php:72 users.php:108
+#: edit_user.php:72 users.php:102
 msgid "E-mail"
 msgstr ""
 
-#: edit_user.php:73 users.php:109
+#: edit_user.php:73 users.php:103
 msgid "User level"
 msgstr ""
 
-#: edit_user.php:73 inc/config.inc.php:84
+#: edit_user.php:73 inc/config-me.inc.php:84
 msgid "Normal user"
 msgstr ""
 
-#: edit_user.php:73 inc/config.inc.php:85
+#: edit_user.php:73 inc/config-me.inc.php:85
 msgid "Administrator"
 msgstr ""
 
-#: edit_user.php:73 inc/config.inc.php:86
+#: edit_user.php:73 inc/config-me.inc.php:86
 msgid "Administrator w/ user admin rights"
 msgstr ""
 
-#: edit_user.php:74 users.php:110
+#: edit_user.php:74 install.php:206 users.php:104
 msgid "Description"
 msgstr ""
 
-#: edit_user.php:75 users.php:111 inc/toolkit.inc.php:270
+#: edit_user.php:75 users.php:105 inc/toolkit.inc.php:270
 msgid "Active"
 msgstr ""
 
-#: index.php:112 search.php:44 users.php:53
-msgid "Synchronize database"
-msgstr ""
-
-#: index.php:115 users.php:55
+#: index.php:82 users.php:49
 msgid "Search records"
 msgstr ""
 
-#: index.php:119
+#: index.php:86
 msgid "Welcome"
 msgstr ""
 
-#: index.php:122
+#: index.php:89
 msgid "Your userlevel is"
 msgstr ""
 
-#: index.php:128 users.php:65
+#: index.php:95 users.php:59
 msgid "Error"
 msgstr ""
 
-#: index.php:132
+#: index.php:99
 msgid "Current domains in DNS (click to view or edit)"
 msgstr ""
 
-#: index.php:138
+#: index.php:105
 msgid "Number of domains"
 msgstr ""
 
-#: index.php:152 search.php:79
+#: index.php:119 search.php:79
 msgid "Records"
 msgstr ""
 
-#: index.php:164
+#: index.php:131
 msgid "No domains in this listing, sorry."
 msgstr ""
 
-#: index.php:191
+#: index.php:158
 msgid "You only administer some records of domains marked with an (*)."
 msgstr ""
 
-#: index.php:202
+#: index.php:169
 msgid "Create new domain"
 msgstr ""
 
-#: index.php:204
+#: index.php:171
 msgid "Domain name"
 msgstr ""
 
-#: index.php:205
+#: index.php:172
 msgid "Web IP"
 msgstr ""
 
-#: index.php:206
+#: index.php:173
 msgid "Mail IP"
 msgstr ""
 
-#: index.php:221
+#: index.php:188
 msgid "Domain type"
 msgstr ""
 
-#: index.php:232
+#: index.php:199
 msgid "Create zone without"
 msgstr ""
 
-#: index.php:232
+#: index.php:199
 msgid "applying records-template"
 msgstr ""
 
-#: index.php:233
+#: index.php:200
 msgid "Add domain"
 msgstr ""
 
-#: index.php:242 index.php:247
+#: index.php:209 index.php:214
 msgid "Change password"
 msgstr ""
 
-#: index.php:244
+#: index.php:211
 msgid "Current password"
 msgstr ""
 
-#: index.php:245 index.php:246
+#: index.php:212 index.php:213
 msgid "New password"
+msgstr ""
+
+#: install.php:63 inc/database.inc.php:31 inc/toolkit.inc.php:149
+msgid "Oops! An error occured!"
+msgstr ""
+
+#: install.php:171
+msgid "PowerAdmin has succesfully been installed."
+msgstr ""
+
+#: install.php:173
+msgid "Remove this file (install.php) from your webdir."
+msgstr ""
+
+#: install.php:174
+msgid "WARNING"
+msgstr ""
+
+#: install.php:174
+msgid "PowerAdmin will not work until you delete install.php"
+msgstr ""
+
+#: install.php:176
+msgid "You can click"
+msgstr ""
+
+#: install.php:176
+msgid "to start using PowerAdmin"
+msgstr ""
+
+#: install.php:185
+msgid "You didnt fill in one of the required fields!"
+msgstr ""
+
+#: install.php:193 inc/auth.inc.php:86
+msgid "PowerAdmin for PowerDNS"
+msgstr ""
+
+#: install.php:195
+msgid ""
+"This config file will setup your database to be ready for PowerAdmin. Please fill in the next fields which will create an\n"
+"administrator login."
+msgstr ""
+
+#: install.php:197
+msgid "Fields marked with a"
+msgstr ""
+
+#: install.php:197
+msgid "are required."
+msgstr ""
+
+#: install.php:202
+msgid "Login Name"
+msgstr ""
+
+#: install.php:205
+msgid "Email"
+msgstr ""
+
+#: install.php:207
+msgid "Make Account"
 msgstr ""
 
 #: search.php:38
@@ -338,14 +396,6 @@ msgstr ""
 msgid "Nothing found for query"
 msgstr ""
 
-#: seq_update.php:26
-msgid "Synching databases. This is useful if you did manual insertions (in case you havent been here yet)."
-msgstr ""
-
-#: seq_update.php:53
-msgid "All tables are successfully synchronized."
-msgstr ""
-
 #: test_setup.php:58
 msgid "Not all tables are ok!"
 msgstr ""
@@ -374,35 +424,35 @@ msgstr ""
 msgid "Please fill in all fields"
 msgstr ""
 
-#: users.php:68
+#: users.php:62
 msgid "Current users (click to edit)"
 msgstr ""
 
-#: users.php:72
+#: users.php:66
 msgid "Number of users"
 msgstr ""
 
-#: users.php:78
+#: users.php:72
 msgid "Domains"
 msgstr ""
 
-#: users.php:78
+#: users.php:72
 msgid "Domain list"
 msgstr ""
 
-#: users.php:78
+#: users.php:72
 msgid "Level"
 msgstr ""
 
-#: users.php:78
+#: users.php:72
 msgid "Status"
 msgstr ""
 
-#: users.php:103
+#: users.php:97
 msgid "Create new user"
 msgstr ""
 
-#: users.php:112
+#: users.php:106
 msgid "Add user"
 msgstr ""
 
@@ -415,10 +465,6 @@ msgid "Authentication failed!"
 msgstr ""
 
 #: inc/auth.inc.php:86
-msgid "PowerAdmin for PowerDNS"
-msgstr ""
-
-#: inc/auth.inc.php:86
 msgid "Please login"
 msgstr ""
 
@@ -428,10 +474,6 @@ msgstr ""
 
 #: inc/auth.inc.php:113
 msgid "You have logged out."
-msgstr ""
-
-#: inc/database.inc.php:31 inc/toolkit.inc.php:149
-msgid "Oops! An error occured!"
 msgstr ""
 
 #: inc/database.inc.php:33 inc/toolkit.inc.php:151 inc/toolkit.inc.php:187
