@@ -13,9 +13,14 @@ If you want to use a translation, say the nl_NL, all you have to do is
 edit inc/i18n.php file and change the $language variable to the desired
 language, for example "nl_NL".
 
-If this doesn't work, most likely your system itself is not setup 
-properly. See <https://rejo.zenger.nl/misc/1176630442.php> maybe of 
-some help.
+If this doesn't work, please try to do the following:
+
+ - cd /path/to/poweradmin/locale/$lang/LC_MESSAGES/
+ - msgfmt $lang.po -o message.mo 
+
+If that doesn't help either, most likely your system itself is not
+setup properly. See <https://rejo.zenger.nl/misc/1176630442.php> maybe
+of some help.
 
 
 Adding a new translation
