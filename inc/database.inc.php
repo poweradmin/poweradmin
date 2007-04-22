@@ -21,7 +21,7 @@
 // $Id: database.inc.php,v 1.3 2002/12/27 02:45:08 azurazu Exp $
 //
 
-require_once("dal.inc.php");
+require_once("MDB2.php");
 
 function dbError($msg)
 {
@@ -35,22 +35,19 @@ function dbError($msg)
         die();
 }
 
-// Setup error handling.
 PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, 'dbError');
 
-//$dsn = "mysql://padev:blapadev@localhost/padev" ;
 $dsn = "$dbdsntype://$dbuser:$dbpass@$dbhost/$dbdatabase";
-$db = DB::connect($dsn);
+$db = MDB2::connect($dsn);
 
-if (DB::isError($db))
+if (MDB2::isError($db))
 {
 	// Error handling should be put.
         error(MYSQL_ERROR_FATAL, $db->getMessage());
 }
 
 // Do an ASSOC fetch. Gives us the ability to use ["id"] fields.
-$db->setFetchMode(DB_FETCHMODE_ASSOC);
-
+$db->setFetchMode(MDB2_FETCHMODE_ASSOC);
 
 /* erase info */
 $mysql_pass = $dsn = '';

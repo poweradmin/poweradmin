@@ -41,7 +41,7 @@ include_once('inc/header.inc.php');
 <?
 if (level(10))
 {
-	?><A HREF="users.php"><? echo _('User admin'); ?></A> <A HREF="seq_update.php"><? echo _('Synchronize database'); ?></A><?
+	?><A HREF="users.php"><? echo _('User admin'); ?></A> <?
 }
 ?>
 </P><BR>

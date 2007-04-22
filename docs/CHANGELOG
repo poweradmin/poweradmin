@@ -1,0 +1,29 @@
+CHANGES between 1.3.0 and 1.2.7-patched
+-----------------------------------------------------------------------
+
+- Updated the "database abstraction layer" from an outdated version of
+  the unmaintained PEAR::DB module to the most recent version of
+  PEAR::MDB2 (which is currently 2.4.0). Please read the README file
+  for important information about upgrading from 1.2.7-patched. It
+  will not break anything if you don't, but it won't work either. :)
+
+- Added multi-language support, using php's gettext functionality. A 
+  first Dutch translation has been added, along with English. See for
+  more details docs/README.i18n.
+
+- Removed the so-called "sequence updater". The code has been changed
+  to use the auto increment functionalitiy in both mysql ang pgsql. It 
+  is only tested on these backends, other backends are untested and
+  may be unsupported. See docs/README.sequence for more details on
+  inserting records and zones into the powerdns database when using
+  other tools than poweradmin as well.
+
+- Fixed a bug in search.php. When searching for a string it would
+  return matching records, not the matching domains.
+
+- Started cleanup code and files. For example, remove code and files
+  related to "migration from a stone-age version of poweradmin",
+  removal of the file called "BAKrecords.php", removal of code
+  comments of already implemented todo's, etc.
+
+

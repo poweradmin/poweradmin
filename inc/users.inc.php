@@ -221,9 +221,7 @@ function add_user($user, $password, $fullname, $email, $level, $description, $ac
 		$fullname = mysql_escape_string($fullname);
 		is_valid_email($email);
 
-		// Get id and insert information.
-		$idusers= $db->nextID('users');
-		$db->query("INSERT INTO users (id, username, password, fullname, email, description, level, active) VALUES ($idusers, '$user', '" . md5($password) . "', '$fullname', '$email', '$description', '$level', '$active')");
+		$db->query("INSERT INTO users (username, password, fullname, email, description, level, active) VALUES ('$user', '" . md5($password) . "', '$fullname', '$email', '$description', '$level', '$active')");
 		return true;
 	}
 	else

@@ -1,0 +1,88 @@
+README.sequence - Additional documentation on manual inserts (using
+poweradmin along with other interfaces to the powerdns database).
+
+
+Removal of "sequence updater"
+-----------------------------------------------------------------------
+
+Up to poweradmin version 1.2.7-patched, the code included the so
+called "sequence updater". It was written to synchronize poweradmin
+with the database after manual inserts of zones and records. This
+happens if you insert new zones or records by hand, or have other
+interfaces than poweradmin talking to the database as well.
+
+The 1.2.7-patched version of poweradmin was using the PEAR::DB module,
+using it's nextID() function. It tells the application what will be
+the next ID for insertion. However, mysql has "auto_increment" and
+pgsql has "serial". Both allow to do insert with ID's created on the
+run, without the need of seperate sequence numbers.
+
+In order to get rid of the incidental errors and the need to hit the
+"synchronize database" from time to time, the "sequence updater" has
+been removed and the code has been updated to use the "auto_increment"
+and "serial" functionality. As long as you do manual inserts the
+correct way, this will not cause any problems.
+
+
+Insert new records and zones the correct way (using other tools)
+-----------------------------------------------------------------------
+
+According to the documentation of powerdns (2.9.20), the id column of
+the tables domains and records in a mysql setup are created using the
+"auto_increment" option and in a pgsql setup using the "serial"
+option. [1] 
+
+This will allow for auto increments of the id field, as long as no one
+does a manual insert, specifying the id. So, let's say we have created
+a table, one in mysql, one in pgsql:
+
+  CREATE TABLE xmpl_tbl (id INT auto_increment, text TEXT);
+  CREATE TABLE xmpl_tbl (id SERIAL PRIMARY KEY, text TEXT);
+
+This insert will work in pgsql only:
+
+  INSERT INTO xmpl_tbl VALUES (DEFAULT,'First insert test");
+
+These inserts will work in mysql only:
+
+  INSERT INTO xmpl_tbl VALUES (NULL,'Third insert test"); 
+  INSERT INTO xmpl_tbl VALUES ('','Fourth insert test"); 
+
+This will work in both mysql and pgsql (as long as id didn't exist
+already), but it will break "auto increment" feature in pgsql [2] (can
+be fixed using setval() functionality in pgsql):
+
+  INSERT INTO xmpl_tbl VALUES (42,'Fifth insert test");
+
+This will work in both mysql and pgsql:
+
+  INSERT INTO xmpl_tbl (text) VALUES ('Second insert test");
+
+So, in other words: if you want to insert records and zones into the
+powerdns database using other tools and interfaces than poweradmin,
+you should make sure you are using the correct syntax.
+
+
+Limitations
+-----------------------------------------------------------------------
+
+Removing the "sequence updater" removes the possibilty to use the
+poweradmin code against other databases than mysql and pgsql (or at
+least, it is untested).
+
+
+More information
+-----------------------------------------------------------------------
+
+More information can be found here:
+
+ - PowerDNS manual, section backends in detail
+   <http://downloads.powerdns.com/documentation/html/generic-mypgsql-backends.html>
+
+ - Postgresql documentation, section Operational Questions 
+   <http://www.postgresql.org/files/documentation/books/aw_pgsql/node196.html#SECTION0029916000000000000000>
+
+ - pgsql-bugs mailinglist archive
+   <http://archives.postgresql.org/pgsql-bugs/2004-11/msg00340.php>
+   <http://archives.postgresql.org/pgsql-bugs/2004-11/msg00344.php>
+
