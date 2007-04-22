@@ -37,6 +37,10 @@ $BASE_URL = "http://";
 // For instance: "/admin/"
 $BASE_PATH = "/admin/";
 
+// $LANG
+// Which language should be used for the web interface?
+$LANG = "en_EN";
+
 
 /* DNS Record information */
 
