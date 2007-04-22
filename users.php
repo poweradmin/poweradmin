@@ -79,14 +79,14 @@ foreach ($users as $c)
         <TD VALIGN="top" CLASS="tdbg"><A HREF="delete_user.php?id=<?= $c["id"] ?>"><IMG SRC="images/delete.gif" ALT="[ <? echo _('Delete user'); ?> ]" BORDER="0"></A></TD>
         <TD VALIGN="top" CLASS="tdbg"><A HREF="edit_user.php?id=<?= $c["id"] ?>"><?= $c["fullname"] ?></A> (<?= $c["username"] ?>)</TD>
         <TD VALIGN="top" CLASS="tdbg"><?= $c["numdomains"] ?></TD>
-        <TD CLASS="tdbg">
+        <TD VALIGN="top" CLASS="tdbg">
         <?
         $domains = get_domains_from_userid($c["id"]);
         foreach ($domains as $d)
         {
                 ?><A HREF="delete_domain.php?id=<?= $d["id"] ?>"><IMG SRC="images/delete.gif" ALT="[ <? echo _('Delete domain'); ?> ]" BORDER="0"></A>&nbsp;<A HREF="edit.php?id=<?= $d["id"] ?>"><?= $d["name"] ?></A><BR><?
         }
-        ?></TD><TD CLASS="tdbg"><?= $c["level"] ?></TD><TD VALIGN="middle" CLASS="tdbg"><?= get_status($c["active"]) ?></TD></TR><?
+        ?></TD><TD VALIGN="top" CLASS="tdbg"><?= $c["level"] ?></TD><TD VALIGN="top" CLASS="tdbg"><?= get_status($c["active"]) ?></TD></TR><?
         print "\n";
 }
 ?>

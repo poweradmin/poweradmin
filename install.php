@@ -142,13 +142,10 @@ if(isset($_POST["submit"]))
 			error("Can not create zones table in $dbdatabase");
 		}
 
-		$id = $db->nextID('users');
-
-		/* TODO next version: fix the strip_slashes. might give trouble upgrading :/ -Lyon */
 		$sqlinsert =	"INSERT INTO 
 					users 
+					(username, password, fullname, email, description, level, active)
 				VALUES (
-					$id,
 					'". $_POST['login'] ."', 
 					'". md5(stripslashes($_POST['password'])) ."',
 					'". $_POST["fullname"] ."',
