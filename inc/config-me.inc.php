@@ -14,7 +14,7 @@ $dbhost = 'localhost';
 $dbuser = '';
 
 //
-// Youe password, the password for $dbuser
+// Your password, the password for $dbuser
 $dbpass = '';
 
 // Your database, the database you want to use for PowerDNS (or are already using)
