@@ -64,6 +64,11 @@ if(is_file( dirname(__FILE__) . '/../migrator.php'))
 require_once("database.inc.php");
 // Generates $db variable to access database.
 
+
+// Array of the available zone types
+$server_types = array("MASTER", "SLAVE", "NATIVE");
+
+
 /*************
  * Includes  *
  *************/

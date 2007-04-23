@@ -161,7 +161,6 @@ else
 if (level(5))
 {
 	// Get some data.
-	$server_types = array("MASTER", "SLAVE", "NATIVE");
 	$users = show_users();
 	?>
 	<BR><BR>

@@ -1097,18 +1097,71 @@ function search_record($question)
 function get_domain_type($id)
 {
 	global $db;
-	$type = $db->queryOne("SELECT `type` FROM `domains` WHERE `id` = '".$id."'");
-	if($type == "")
+        if (is_numeric($id))
 	{
-		$type = "NATIVE";
-	}
-	return $type;
-    
+		$type = $db->queryOne("SELECT `type` FROM `domains` WHERE `id` = '".$id."'");
+		if($type == "")
+		{
+			$type = "NATIVE";
+		}
+		return $type;
+        }
+        else
+        {
+                error(sprintf(ERR_INV_ARG, "get_record_from_id", "no or no valid zoneid given"));
+        }
+}
+
+function get_domain_slave_master($id)
+{
+	global $db;
+        if (is_numeric($id))
+	{
+		$slave_master = $db->queryOne("SELECT `master` FROM `domains` WHERE `type` = 'SLAVE' and `id` = '".$id."'");
+		if($slave_master == "")
+		{
+			$slave_master = "no master set";
+		}
+		return $slave_master;
+        }
+        else
+        {
+                error(sprintf(ERR_INV_ARG, "get_domain_slave_master", "no or no valid zoneid given"));
+        }
 }
 
 function change_domain_type($type, $id)
 {
-    global $db;
-    $result = $db->query("UPDATE `domains` SET `type` = '" .$type. "' WHERE `id` = '".$id."'");
+	global $db;
+        if (is_numeric($id))
+	{
+        	$result = $db->query("UPDATE `domains` SET `type` = '" .$type. "' WHERE `id` = '".$id."'");
+        }
+        else
+        {
+                error(sprintf(ERR_INV_ARG, "change_domain_type", "no or no valid zoneid given"));
+        }
 }
+
+function change_domain_slave_master($id, $slave_master)
+{
+	global $db;
+        if (is_numeric($id))
+	{
+       		if (is_valid_ip($slave_master) || is_valid_ip6($slave_master))
+		{
+			$result = $db->query("UPDATE `domains` SET `master` = '" .$slave_master. "' WHERE `id` = '".$id."'");
+		}
+		else
+		{
+			error(sprintf(ERR_INV_ARGC, "change_domain_slave_master", "This is not a valid IPv4 or IPv6 address: $slave_master"));
+		}
+	}
+        else
+        {
+                error(sprintf(ERR_INV_ARG, "change_domain_type", "no or no valid zoneid given"));
+        }
+}
+
+
 ?>

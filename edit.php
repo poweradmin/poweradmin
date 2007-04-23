@@ -31,8 +31,10 @@ if (isset($_POST["action"]) && $_POST["action"]=="record-user") {
    }
 }
 
-$server_types = array("MASTER", "SLAVE", "NATIVE");
-
+if(isset($_POST['change_slave_master']) && is_numeric($_POST["domain"]) && level(5))
+{
+        change_domain_slave_master($_POST['domain'], $_POST['slave_master']);
+}
 if(isset($_POST['type_change']) && in_array($_POST['newtype'], $server_types))
 {
     change_domain_type($_POST['newtype'], $_GET['id']);
@@ -119,41 +121,72 @@ if(isset($info["ownerid"]))
 	<? }
 }} ?>
 
-
-<? if(level(5) && $MASTER_SLAVE_FUNCTIONS)
+<?
+if (level(5))
 {
-    $domain_type=get_domain_type($_GET['id']);
-    // Let the user change the domain type.
+  $domain_type=get_domain_type($_GET['id']);
 ?>
-        <TR>
-            <TD CLASS="text" COLSPAN="2">&nbsp;</TD>
-        </TR>
-		<TR>
-			<TD CLASS="text" COLSPAN="2"><B><? echo _('Type of this domain'); ?>: </B><?=$domain_type?></TD>
-		</TR>
-		<FORM ACTION="<?=$_SERVER['PHP_SELF']?>?&amp;id=<?=$_GET['id']?>" METHOD="post">
-		<TR>
-            <TD CLASS="text"><B><? echo _('Change type'); ?>: </B>
-                <SELECT NAME="newtype">
-                <?
-                foreach($server_types as $s)
-                {
-                    unset($add);
-				    if ($s == $domain_type)
-				    {
-					   $add = " SELECTED";
-				    }
-                    ?><OPTION<?=$add ?> VALUE="<?=$s?>"><?=$s?></OPTION><?
-                }
-                ?>
-                </SELECT>
-            </TD>
-            <TD CLASS="text">
-                <INPUT TYPE="submit" CLASS="sbutton" NAME="type_change" VALUE="<? echo _('Change'); ?>">
-            </TD>
-        </TR>
-        </FORM>
-<? } ?>
+ <tr>
+  <td class="text" colspan="2">
+   &nbsp;
+  </td>
+ </tr>
+ <tr>
+  <td class="text" colspan="2">
+   <b><? echo _('Type of this domain'); ?>: </b><?=$domain_type?> 
+  </td>
+ </tr>
+ <form action="<?=$_SERVER['PHP_SELF']?>?&amp;id=<?=$_GET['id']?>" method="post">
+  <input type="hidden" name="domain" value="<?= $_GET["id"] ?>">
+  <tr>
+   <td class="text">
+    <b><? echo _('Change type'); ?>: </b>
+    <select name="newtype">
+ 	 <?
+ 	 foreach($server_types as $s)
+ 	 {
+ 	     unset($add);
+ 			  if ($s == $domain_type)
+ 			  {
+ 				 $add = " SELECTED";
+ 			  }
+ 	     ?><OPTION<?=$add ?> VALUE="<?=$s?>"><?=$s?></OPTION><?
+ 	 }
+ 	 ?>
+    </select>
+   </td>
+   <td class="text">
+    <input type="submit" class="sbutton" name="type_change" value="<? echo _('Change'); ?>">
+   </td>
+  </tr>
+ </form>
+ <?
+ if ($domain_type == "SLAVE" ) 
+ { 
+   $slave_master=get_domain_slave_master($_GET['id']);
+   ?>
+   <tr>
+    <td class="text" colspan="2">
+     <b><? echo _('Master NS'); ?>: </b>
+    </td> 
+   </tr>
+   <form action="<?=$_SERVER['PHP_SELF']?>?&amp;id=<?=$_GET['id']?>" method="post">
+   <input type="hidden" name="domain" value="<?= $_GET["id"] ?>">
+    <tr>
+     <td class="text" colspan="1">
+      <input type="text" name="slave_master" value="<? echo $slave_master; ?>" class="input">
+     </td>
+     <td class="text">
+      <input type="submit" class="sbutton" name="change_slave_master" value="<? echo _('Change'); ?>">
+     </td>
+    </tr>
+   </form>
+   <?
+  }
+}
+?>
+
+
 </TABLE>
 <br />
 <FONT CLASS="nav">
