@@ -29,6 +29,7 @@ if ($_POST["submit"])
 	$mailip = $_POST["mailip"];
 	$empty = $_POST["empty"];
 	$dom_type = isset($_POST["dom_type"]) ? $_POST["dom_type"] : "NATIVE";
+	$slave_master = $_POST["slave_master"];
 	if(!$empty)
 	{
 		$empty = 0;
@@ -47,14 +48,19 @@ if ($_POST["submit"])
 		{
 			$error = "Domain already exists!";
 		}
+		elseif ($dom_type == "SLAVE" && !is_valid_ip($slave_master))
+		{
+			$error = "IP of master NS for slave domain is not valid!";
+		}
 		//elseif (isset($mailip) && is_valid_ip(
 		else
 		{
-			add_domain($domain, $owner, $webip, $mailip, $empty, $dom_type);
+			add_domain($domain, $owner, $webip, $mailip, $empty, $dom_type, $slave_master);
 			clean_page();
 		}
 	}
 }
+
 
 if($_POST["passchange"])
 {
@@ -116,7 +122,13 @@ show_pages(count($doms),ROWAMOUNT);
 
 <br />
 <TABLE BORDER="0" CELLSPACING="4">
-<TR STYLE="font-weight: Bold;"><TD CLASS="tdbg">&nbsp;</TD><TD CLASS="tdbg"><? echo _('Name'); ?></TD><TD CLASS="tdbg"><? echo _('Records'); ?></TD><TD CLASS="tdbg"><? echo _('Owner'); ?></TD></TR>
+<TR STYLE="font-weight: Bold;">
+ <TD CLASS="tdbg">&nbsp;</TD>
+ <TD CLASS="tdbg"><? echo _('Name'); ?></TD>
+ <TD CLASS="tdbg"><? echo _('Type'); ?></TD>
+ <TD CLASS="tdbg"><? echo _('Records'); ?></TD>
+ <TD CLASS="tdbg"><? echo _('Owner'); ?></TD>
+</TR>
 <?
 
 if ($num_domains < ROWAMOUNT) {
@@ -128,7 +140,7 @@ if ($num_domains < ROWAMOUNT) {
 // If the user doesnt have any domains print a message saying so
 if ($doms < 0)
 {
-	?><TR><TD CLASS="tdbg">&nbsp;</TD><TD CLASS="tdbg" COLSPAN="4"><b><? echo _('No domains in this listing, sorry.'); ?></b></FONT></TD></TR><?
+	?><TR><TD CLASS="tdbg">&nbsp;</TD><TD CLASS="tdbg" COLSPAN="5"><b><? echo _('No domains in this listing, sorry.'); ?></b></FONT></TD></TR><?
 }
 
 // If he has domains, dump them (duh)
@@ -147,7 +159,12 @@ else
 			print "&nbsp;";
 		}
 		?>
-		</TD><TD CLASS="tdbg"><A HREF="edit.php?id=<?= $c["id"] ?>"><?= $c["name"] ?></A></TD><TD CLASS="tdbg"><?= $c["numrec"] ?></TD><TD CLASS="tdbg"><?= get_owner_from_id($c["owner"]) ?></TD></TR><?
+		</TD>
+		<TD CLASS="tdbg"><A HREF="edit.php?id=<?= $c["id"] ?>"><?= $c["name"] ?></A></TD>
+		<TD CLASS="tdbg"><?= get_domain_type( $c["id"]) ?></TD>
+		<TD CLASS="tdbg"><?= $c["numrec"] ?></TD>
+		<TD CLASS="tdbg"><?= get_owner_from_id($c["owner"]) ?></TD>
+		</TR><?
 		print "\n";
 	}
 }
@@ -160,45 +177,77 @@ else
 <?
 if (level(5))
 {
-	// Get some data.
-	$users = show_users();
-	?>
-	<BR><BR>
-	<FORM METHOD="post" ACTION="index.php">
-	<B><? echo _('Create new domain'); ?>:</B><BR>
-	<TABLE BORDER="0" CELLSPACING="4">
-	<TR><TD CLASS="tdbg"><? echo _('Domain name'); ?>:</TD><TD WIDTH="510" CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="domain" VALUE="<? if ($error) print $_POST["domain"]; ?>"></TD></TR>
-	<TR><TD CLASS="tdbg"><? echo _('Web IP'); ?>:</TD><TD CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="webip" VALUE="<? if ($error) print $_POST["webip"]; ?>"></TD></TR>
-	<TR><TD CLASS="tdbg"><? echo _('Mail IP'); ?>:</TD><TD CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="mailip" VALUE="<? if ($error) print $_POST["mailip"]; ?>"></TD></TR>
-	<TR><TD CLASS="tdbg"><? echo _('Owner'); ?>:</TD><TD CLASS="tdbg">
-	<SELECT NAME="owner">
-	<?
-	foreach ($users as $u)
-	{
-        	?><OPTION VALUE="<?= $u['id'] ?>"><?= $u['fullname'] ?></OPTION><?
-	}
-	?>
-	</SELECT>
-	</TD></TR>
-	<?
-	if($MASTER_SLAVE_FUNCTIONS == true)
-	{
-	?>
-	<TR><TD CLASS="tdbg"><? echo _('Domain type'); ?>:</TD><TD CLASS="tdbg">
-	<SELECT NAME="dom_type">
-	<?
-	foreach($server_types as $s)
-	{
-		?><OPTION VALUE="<?=$s?>"><?=$s ?></OPTION><?
-	}
-	?>
-	</SELECT>
-	</TD></TR>
-	<? } ?>
-	<TR><TD CLASS="tdbg"><? echo _('Create zone without'); ?><BR><? echo _('applying records-template'); ?>:</TD><TD CLASS="tdbg"><INPUT TYPE="checkbox" NAME="empty" VALUE="1"></TD></TR>
-	<TR><TD CLASS="tdbg">&nbsp;</TD><TD CLASS="tdbg"><INPUT TYPE="submit" CLASS="button" NAME="submit" VALUE="<? echo _('Add domain'); ?>"></TD></TR>
-	</TABLE>
-	</FORM>
+        // Get some data.
+        $users = show_users();
+        ?>
+        <BR><BR>
+        <FORM METHOD="post" ACTION="index.php">
+        <B><? echo _('Create new master domain'); ?>:</B><BR>
+        <TABLE BORDER="0" CELLSPACING="4">
+        <TR><TD CLASS="tdbg"><? echo _('Domain name'); ?>:</TD><TD WIDTH="510" CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="domain" VALUE="<? if ($error) print $_POST["domain"]; ?>"></TD></TR>
+        <TR><TD CLASS="tdbg"><? echo _('Web IP'); ?>:</TD><TD CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="webip" VALUE="<? if ($error) print $_POST["webip"]; ?>"></TD></TR>
+        <TR><TD CLASS="tdbg"><? echo _('Mail IP'); ?>:</TD><TD CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="mailip" VALUE="<? if ($error) print $_POST["mailip"]; ?>"></TD></TR>
+        <TR><TD CLASS="tdbg"><? echo _('Owner'); ?>:</TD><TD CLASS="tdbg">
+        <SELECT NAME="owner">
+        <?
+        foreach ($users as $u)
+        {
+                ?><OPTION VALUE="<?= $u['id'] ?>"><?= $u['fullname'] ?></OPTION><?
+        }
+        ?>
+        </SELECT>
+        </TD></TR>
+        <TR><TD CLASS="tdbg"><? echo _('Domain type'); ?>:</TD><TD CLASS="tdbg">
+        <SELECT NAME="dom_type">
+        <OPTION VALUE="MASTER">master</OPTION>
+        <OPTION VALUE="NATIVE">native</OPTION>
+        </SELECT>
+        </TD></TR>
+        <TR><TD CLASS="tdbg"><? echo _('Create zone without'); ?><BR><? echo _('applying records-template'); ?>:</TD><TD CLASS="tdbg"><INPUT TYPE="checkbox" NAME="empty" VALUE="1"></TD></TR>
+        <TR><TD CLASS="tdbg">&nbsp;</TD><TD CLASS="tdbg"><INPUT TYPE="submit" CLASS="button" NAME="submit" VALUE="<? echo _('Add domain'); ?>"></TD></TR>
+        </TABLE>
+        </FORM>
+
+        <br><br>
+        <form method="post" action="index.php">
+	<input type="hidden" name="empty" value="1">
+	<input type="hidden" name="dom_type" value="SLAVE">
+         <b><? echo _('Create new slave domain'); ?></b>
+         <table border="0" cellspacing="4">
+          <tr>
+           <td class="tdbg"><? echo _('Domain name'); ?>:</td>
+           <td width="510" class="tdbg">
+            <input type="text" class="input" name="domain" value="<? if ($error) print $_POST["domain"]; ?>">
+           </td>
+          </tr>
+          <tr>
+           <td class="tdbg"><? echo _('IP of master NS'); ?>:</td>
+           <td width="510" class="tdbg">
+            <input type="text" class="input" name="slave_master" value="<? if ($error) print $_POST["slave_master"]; ?>">
+           </td>
+          </tr>
+          <tr>
+           <td class="tdbg"><? echo _('Owner'); ?>:</td>
+           <td width="510" class="tdbg">
+            <select name="owner">
+             <? 
+             foreach ($users as $u)
+             {
+               ?><option value="<?= $u['id'] ?>"><?= $u['fullname'] ?></option><?
+             }  
+            ?>
+            </select>
+           </td>
+          </tr>
+          <tr>
+           <td class="tdbg">&nbsp;</td>
+           <td class="tdbg">
+            <input type="submit" class="button" name="submit" value="<? echo _('Add domain'); ?>">
+           </td>
+          </tr>
+         </table>
+        </form>
+
 <?
 }
 ?>

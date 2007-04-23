@@ -248,7 +248,7 @@ function delete_record($id)
  * remember to request nextID's from the database to be able to insert record.
  * if anything is invalid the function will error
  */
-function add_domain($domain, $owner, $webip, $mailip, $empty, $type)
+function add_domain($domain, $owner, $webip, $mailip, $empty, $type, $slave_master)
 {
 
 	global $db;
@@ -263,11 +263,12 @@ function add_domain($domain, $owner, $webip, $mailip, $empty, $type)
 	// empty is given and owner and domain
 	// OR
 	// the domain is an arpa record and owner is given
+	// OR
+	// the type is slave, domain, owner and slave_master are given
 	// THAN
 	// Continue this function
-	if (($domain && $owner && $webip && $mailip) || ($empty && $owner && $domain) || (eregi('in-addr.arpa', $domain) && $owner))
+	if (($domain && $owner && $webip && $mailip) || ($empty && $owner && $domain) || (eregi('in-addr.arpa', $domain) && $owner) || $type=="SLAVE" && $domain && $owner && $slave_master)
 	{
-                
                 // First insert zone into domain table
                 $db->query("INSERT INTO domains (name, type) VALUES ('$domain', '$type')");
 
@@ -280,59 +281,69 @@ function add_domain($domain, $owner, $webip, $mailip, $empty, $type)
                 // Second, insert into zones tables
                 $db->query("INSERT INTO zones (domain_id, owner) VALUES ('$iddomain', $owner)");
 
-                // Generate new timestamp. We need this one anyhow.
-                $now = time();
-
-		if ($empty && $iddomain)
+		if ($type == "SLAVE")
 		{
-                        // If we come into this if statement we dont want to apply templates.
-                        // Retrieve configuration settings.
-                        $ns1 = $GLOBALS["NS1"];
-                        $hm  = $GLOBALS["HOSTMASTER"];
-                        $ttl = $GLOBALS["DEFAULT_TTL"];
-
-                        // Build and execute query
-                        $sql = "INSERT INTO records (domain_id, name, content, type, ttl, prio, change_date) VALUES ('$iddomain', '$domain', '$ns1 $hm 1', 'SOA', $ttl, '', '$now')";
-                        $db->query($sql);
-
-                        // Done
-                        return true;
-		}
-		elseif ($iddomain)
-		{
-			// If we are here we want to apply templates.
-			global $template;
-
-			// Iterate over the template and apply it for each field.
-			foreach ($template as $r)
-			{
-				// Same type of if statement as previous.
-				if ((eregi('in-addr.arpa', $domain) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!eregi('in-addr.arpa', $domain)))
-				{
-					// Parse the template.
-					$name     = parse_template_value($r["name"], $domain, $webip, $mailip);
-					$type     = $r["type"];
-					$content  = parse_template_value($r["content"], $domain, $webip, $mailip);
-					$ttl      = $r["ttl"];
-					$prio     = $r["prio"];
-
-					// If no ttl is given, use the default.
-					if (!$ttl)
-					{
-						$ttl = $GLOBALS["DEFAULT_TTL"];
-					}
-
-					$sql = "INSERT INTO records (domain_id, name, content, type, ttl, prio, change_date) VALUES ('$iddomain', '$name','$content','$type','$ttl','$prio','$now')";
-					$db->query($sql);
-				}
-			}
-			// All done.
+			$db->query("UPDATE domains SET master = '$slave_master' WHERE id = '$iddomain';");
+			
+			// Done
 			return true;
-                 }
-                 else
-                 {
-			error(sprintf(ERR_INV_ARGC, "add_domain", "could not create zone"));
-                 }
+		}
+		else
+		{
+			// Generate new timestamp. We need this one anyhow.
+			$now = time();
+
+			if ($empty && $iddomain)
+			{
+				// If we come into this if statement we dont want to apply templates.
+				// Retrieve configuration settings.
+				$ns1 = $GLOBALS["NS1"];
+				$hm  = $GLOBALS["HOSTMASTER"];
+				$ttl = $GLOBALS["DEFAULT_TTL"];
+
+				// Build and execute query
+				$sql = "INSERT INTO records (domain_id, name, content, type, ttl, prio, change_date) VALUES ('$iddomain', '$domain', '$ns1 $hm 1', 'SOA', $ttl, '', '$now')";
+				$db->query($sql);
+
+				// Done
+				return true;
+			}
+			elseif ($iddomain)
+			{
+				// If we are here we want to apply templates.
+				global $template;
+
+				// Iterate over the template and apply it for each field.
+				foreach ($template as $r)
+				{
+					// Same type of if statement as previous.
+					if ((eregi('in-addr.arpa', $domain) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!eregi('in-addr.arpa', $domain)))
+					{
+						// Parse the template.
+						$name     = parse_template_value($r["name"], $domain, $webip, $mailip);
+						$type     = $r["type"];
+						$content  = parse_template_value($r["content"], $domain, $webip, $mailip);
+						$ttl      = $r["ttl"];
+						$prio     = $r["prio"];
+
+						// If no ttl is given, use the default.
+						if (!$ttl)
+						{
+							$ttl = $GLOBALS["DEFAULT_TTL"];
+						}
+
+						$sql = "INSERT INTO records (domain_id, name, content, type, ttl, prio, change_date) VALUES ('$iddomain', '$name','$content','$type','$ttl','$prio','$now')";
+						$db->query($sql);
+					}
+				}
+				// All done.
+				return true;
+			 }
+			 else
+			 {
+				error(sprintf(ERR_INV_ARGC, "add_domain", "could not create zone"));
+			 }
+		}
 	}
 	else
 	{
