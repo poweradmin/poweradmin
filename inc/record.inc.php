@@ -1118,10 +1118,6 @@ function get_domain_slave_master($id)
         if (is_numeric($id))
 	{
 		$slave_master = $db->queryOne("SELECT `master` FROM `domains` WHERE `type` = 'SLAVE' and `id` = '".$id."'");
-		if($slave_master == "")
-		{
-			$slave_master = "no master set";
-		}
 		return $slave_master;
         }
         else
@@ -1133,10 +1129,18 @@ function get_domain_slave_master($id)
 function change_domain_type($type, $id)
 {
 	global $db;
+	unset($add);
         if (is_numeric($id))
 	{
-        	$result = $db->query("UPDATE `domains` SET `type` = '" .$type. "' WHERE `id` = '".$id."'");
-        }
+		// It is not really neccesary to clear the master field if a 
+		// zone is not of the type "slave" as powerdns will ignore that
+		// fiedl, but it is cleaner anyway.
+		if ($type != "SLAVE")
+		{
+			$add = ", master=''";
+		}
+		$result = $db->query("UPDATE `domains` SET `type` = '" .$type. "'".$add." WHERE `id` = '".$id."'");
+	}
         else
         {
                 error(sprintf(ERR_INV_ARG, "change_domain_type", "no or no valid zoneid given"));

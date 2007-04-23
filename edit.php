@@ -60,6 +60,28 @@ if(!isset($info["ownerid"]))
 	<P CLASS="warning"><? echo _('This domain isn\'t owned by anyone yet, please assign someone.'); ?></P>
 	<?
 }
+if (level(5))
+{
+  $domain_type=get_domain_type($_GET['id']);
+  if ($domain_type == "SLAVE" )
+  {
+    $slave_master=get_domain_slave_master($_GET['id']);
+    if ($slave_master == "" )
+    {
+    	?>
+	<p class="warning"><? echo _('Type of this domain is \"slave\", but there is no IP address for it\'s master given. Please specify!'); ?></p>
+	<?
+    }
+  }
+}
+
+$info = get_domain_info_from_id($_GET["id"]);
+if(!isset($info["ownerid"]))
+{
+	?>
+	<P CLASS="warning"><? echo _('This domain isn\'t owned by anyone yet, please assign someone.'); ?></P>
+	<?
+}
 ?>
 
 <TABLE class="text" cellspacing="0" style="width: 280px">
