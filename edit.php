@@ -75,15 +75,6 @@ if (level(5))
   }
 }
 
-$info = get_domain_info_from_id($_GET["id"]);
-if(!isset($info["ownerid"]))
-{
-	?>
-	<P CLASS="warning"><? echo _('This domain isn\'t owned by anyone yet, please assign someone.'); ?></P>
-	<?
-}
-?>
-
 <TABLE class="text" cellspacing="0" style="width: 280px">
 <? if (level(5)) 
 { ?>	
