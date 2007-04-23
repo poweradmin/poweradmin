@@ -69,12 +69,12 @@ if (level(5))
     if ($slave_master == "" )
     {
     	?>
-	<p class="warning"><? echo _('Type of this domain is \"slave\", but there is no IP address for it\'s master given. Please specify!'); ?></p>
+	<p class="warning"><? echo _('Type of this domain is "slave", but there is no IP address for it\'s master given. Please specify!'); ?></p>
 	<?
     }
   }
 }
-
+?>
 <TABLE class="text" cellspacing="0" style="width: 280px">
 <? if (level(5)) 
 { ?>	
@@ -180,7 +180,7 @@ if (level(5))
    ?>
    <tr>
     <td class="text" colspan="2">
-     <b><? echo _('Master NS'); ?>: </b>
+     <b><? echo _('IP address of master NS'); ?>: </b>
     </td> 
    </tr>
    <form action="<?=$_SERVER['PHP_SELF']?>?&amp;id=<?=$_GET['id']?>" method="post">
