@@ -240,17 +240,17 @@ if($rec_result != -1)
 	foreach($recs as $r)
 	{
 	        ?><TR><TD CLASS="tdbg"><?
-
-	        if(level(5) || (!($r["type"] == "SOA" && !$GLOBALS["ALLOW_SOA_EDIT"]) && !($r["type"] == "NS" && !$GLOBALS["ALLOW_NS_EDIT"])))
-	        {
-                // get_name_from_record_id($r["id"]) != get_domain_name_from_id(recid_to_domid($r["id"])) <-- hmm..
-                ?>
-	            <A HREF="edit_record.php?id=<?= $r['id'] ?>&amp;domain=<?= $_GET["id"] ?>"><IMG SRC="images/edit.gif" ALT="[ <? echo _('Edit record'); ?> ]" BORDER="0"></A>
-	            <A HREF="delete_record.php?id=<?= $r['id'] ?>&amp;domain=<?= $_GET["id"] ?>"><IMG SRC="images/delete.gif" ALT="[ <? echo _('Delete record'); ?> ]" BORDER="0"></A>
-	            <?
-	        }
-
-if(level(10)) { ?>
+	        if ($domain_type != "SLAVE" )
+                {	
+			if(level(5) || (!($r["type"] == "SOA" && !$GLOBALS["ALLOW_SOA_EDIT"]) && !($r["type"] == "NS" && !$GLOBALS["ALLOW_NS_EDIT"])))
+			{
+			?>
+			    <A HREF="edit_record.php?id=<?= $r['id'] ?>&amp;domain=<?= $_GET["id"] ?>"><IMG SRC="images/edit.gif" ALT="[ <? echo _('Edit record'); ?> ]" BORDER="0"></A>
+			    <A HREF="delete_record.php?id=<?= $r['id'] ?>&amp;domain=<?= $_GET["id"] ?>"><IMG SRC="images/delete.gif" ALT="[ <? echo _('Delete record'); ?> ]" BORDER="0"></A>
+			    <?
+			}
+		}
+if(level(10) && $domain_type != "SLAVE") { ?>
 
 <input type="checkbox" name="rowid[<?=$countinput++?>]" value="<?=$r['id']?>" />
 
@@ -258,7 +258,7 @@ if(level(10)) { ?>
 		
 	        ?></TD>
 		
-<? if (level(10)) { ?>
+<? if (level(10) && $domain_type != "SLAVE") { ?>
 		<TD STYLE="border: 1px solid #000;width:120px">
 <?
 $x_result = $db->query("SELECT r.user_id,u.username FROM record_owners as r, users as u WHERE r.record_id='".$r['id']."' AND u.id=r.user_id");
@@ -270,7 +270,9 @@ echo "</select>";
 ?>
 		</TD>
 <? } ?>
-		<TD STYLE="border: 1px solid #000000;"><?= $r['name'] ?></TD><TD STYLE="border: 1px solid #000000;"><?= $r['type'] ?></TD><TD STYLE="border: 1px solid #000000;"><?= $r['content'] ?></TD><?
+		<TD STYLE="border: 1px solid #000000;"><?= $r['name'] ?></TD>
+		<TD STYLE="border: 1px solid #000000;"><?= $r['type'] ?></TD>
+		<TD STYLE="border: 1px solid #000000;"><?= $r['content'] ?></TD><?
 	        if ($r['prio'] != 0) {
 	                ?><TD STYLE="border: 1px solid #000000;"><?= $r['prio']; ?></TD><?
 	        } else {
@@ -292,34 +294,39 @@ else
 
 </TABLE>
 
-<? if (level(10)) { ?>
-<br>
-
-<img src="images/arrow.png" alt="arrow" style="margin-left:47px"/>
-<select name="userid">
 <?
-$users = show_users();
-foreach ($users as $user) {
-	echo "<option value=\"".$user[id]."\">".$user[fullname]."</option>";
+if ($domain_type != "SLAVE")
+{
+	if (level(10)) { ?>
+		<br>
+
+		<img src="images/arrow.png" alt="arrow" style="margin-left:47px"/>
+		<select name="userid">
+		<?
+		$users = show_users();
+		foreach ($users as $user) {
+			echo "<option value=\"".$user[id]."\">".$user[fullname]."</option>";
+		}
+		?>
+		</select>
+
+		<input type="submit" class="button" value="<? echo _('Assign to user'); ?>">
+		</form>
+	<? } ?>
+
+	<BR><BR>
+
+	<?
+	if ($_SESSION[$_GET["id"]."_ispartial"] != 1 && $domain_type != "SLAVE" )  {
+		?>
+		<INPUT TYPE="button" CLASS="button" OnClick="location.href='add_record.php?id=<?= $_GET["id"] ?>'" VALUE="<? echo _('Add record'); ?>">
+	<?
+	}
 }
-?>
-</select>
 
-<input type="submit" class="button" value="<? echo _('Assign to user'); ?>">
-</form>
-<? } ?>
-
-<BR><BR>
-
-<?
-if ($_SESSION[$_GET["id"]."_ispartial"] != 1)  {
-?>
-<INPUT TYPE="button" CLASS="button" OnClick="location.href='add_record.php?id=<?= $_GET["id"] ?>'" VALUE="<? echo _('Add record'); ?>">
-<?
-}
-?>
-
-<? if (level(5)) { ?>&nbsp;&nbsp;<INPUT TYPE="button" CLASS="button" OnClick="location.href='delete_domain.php?id=<?= $_GET["id"] ?>'" VALUE="<? echo _('Delete zone'); ?>"><?
+if (level(5)) 
+{ ?>
+	&nbsp;&nbsp;<INPUT TYPE="button" CLASS="button" OnClick="location.href='delete_domain.php?id=<?= $_GET["id"] ?>'" VALUE="<? echo _('Delete zone'); ?>"><?
 }
 include_once("inc/footer.inc.php");
 ?>
