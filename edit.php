@@ -228,7 +228,7 @@ if($rec_result != -1)
 	?>
 	<TR STYLE="font-weight: Bold;">
 	<TD CLASS="tdbg">&nbsp;</TD>
-	<? if (level(10)) { echo "<TD CLASS=\"tdbg\">" . _('Sub-owners') . "</TD>"; } ?>
+	<? if (level(10) && $domain_type != "SLAVE") { echo "<TD CLASS=\"tdbg\">" . _('Sub-owners') . "</TD>"; } ?>
 	<TD CLASS="tdbg"><? echo _('Name'); ?></TD>
 	<TD CLASS="tdbg"><? echo _('Type'); ?></TD>
 	<TD CLASS="tdbg"><? echo _('Content'); ?></TD>

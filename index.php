@@ -61,6 +61,29 @@ if ($_POST["submit"])
 	}
 }
 
+if($_POST["add_supermaster"])
+{
+	$master_ip = $_POST["master_ip"];
+	$ns_name =   $_POST["ns_name"];
+	$account = $_POST["account"];
+	if (!is_valid_ip($master_ip) && !is_valid_ip6($master_ip))
+        {
+        	error('Given master IP address is not valid IPv4 or IPv6.');
+	}
+        if (!is_valid_hostname($ns_name))
+        {
+                error('Given hostname for NS record not valid.');
+        }
+	if (!validate_account($account))
+	{
+		error('Given account name is not valid (may contain only alpha chars).');
+	}
+	else
+	{
+		add_supermaster($master_ip, $ns_name, $account);
+
+	}
+}
 
 if($_POST["passchange"])
 {
@@ -161,7 +184,7 @@ else
 		?>
 		</TD>
 		<TD CLASS="tdbg"><A HREF="edit.php?id=<?= $c["id"] ?>"><?= $c["name"] ?></A></TD>
-		<TD CLASS="tdbg"><?= get_domain_type( $c["id"]) ?></TD>
+		<TD CLASS="tdbg"><?= strtolower(get_domain_type( $c["id"])) ?></TD>
 		<TD CLASS="tdbg"><?= $c["numrec"] ?></TD>
 		<TD CLASS="tdbg"><?= get_owner_from_id($c["owner"]) ?></TD>
 		</TR><?
@@ -248,6 +271,85 @@ if (level(5))
          </table>
         </form>
 
+<?
+}
+
+if (level(5))
+{ 
+	$supermasters = get_supermasters();
+	$num_supermasters = count($supermasters);
+?>
+
+	<br><br>
+	<b><? echo _('Current supermasters'); ?>:</b><br>
+	<small><b><? echo _('Number of supermasters'); ?>: </b><? echo $num_supermasters; ?></b></small>
+	<table border="0" cellspacing="4">
+	 <tr style="font-weight: bold;">
+	  <td class="tdbg">&nbsp;</td>
+	  <td class="tdbg"><? echo _('IP address of supermaster'); ?></td>
+	  <td class="tdbg"><? echo _('My hostname in NS record'); ?></td>
+	  <td class="tdbg"><? echo _('Account'); ?></td>
+	 </tr>
+<?
+	if ($supermasters < 0)
+	{
+?>
+         <tr>
+	  <td class="tdbg">&nbsp;</td>
+	  <td class="tdbg" colspan="3">
+	   <b><? echo _('No supermasters in this listing, sorry.'); ?></b>
+	  </td>
+	 </tr>
+<?
+	}
+	else
+	{
+		foreach ($supermasters as $c)
+		{
+?>
+	 <tr>
+	  <td class="tdbg">
+	   <a href="delete_supermaster.php?master_ip=<?= $c["master_ip"] ?>"><IMG SRC="images/delete.gif" ALT="[ <? echo _('Delete supermaster'); ?> ]" BORDER="0"></A></td>
+	  <td class="tdbg"><?= $c["master_ip"] ?></td>
+	  <td class="tdbg"><?= $c["ns_name"] ?></td>
+	  <td class="tdbg"><?= $c["account"] ?></td>
+	 </tr>
+<?
+		}
+	}
+?>
+	</table>
+		
+	<br><br>
+	<form method="post" action="index.php">
+	 <b><? echo _('Add supermaster'); ?>:</b><br>
+	 <table border="0" cellspacing="4">
+ 	  <tr>
+ 	   <td class="tdbg"><? echo _('IP address of supermaster'); ?>:</td>
+ 	   <td width="510" class="tdbg">
+ 	    <input type="text" class="input" name="master_ip" value="<? if ($error) print $_POST["master_ip"]; ?>">
+ 	   </td>
+ 	  </tr>
+ 	  <tr>
+ 	   <td class="tdbg"><? echo _('My hostname in NS record'); ?>:</td>
+ 	   <td width="510" class="tdbg">
+ 	    <input type="text" class="input" name="ns_name" value="<? if ($error) print $_POST["ns_name"]; ?>">
+ 	   </td>
+ 	  </tr>
+ 	  <tr>
+ 	   <td class="tdbg"><? echo _('Account'); ?>:</td>
+ 	   <td width="510" class="tdbg">
+ 	    <input type="text" class="input" name="account" value="<? if ($error) print $_POST["account"]; ?>">
+ 	   </td>
+ 	  </tr>
+          <tr>
+           <td class="tdbg">&nbsp;</td>
+           <td class="tdbg">
+            <input type="submit" class="button" name="add_supermaster" value="<? echo _('Add supermaster'); ?>">
+           </td>
+          </tr>
+         </table>
+        </form>
 <?
 }
 ?>

@@ -192,6 +192,76 @@ function add_record($zoneid, $name, $type, $content, $ttl, $prio)
 }
 
 
+function add_supermaster($master_ip, $ns_name, $account)
+{
+        global $db;
+        if (!is_valid_ip($master_ip) && !is_valid_ip6($master_ip))
+        {
+                error(sprintf(ERR_INV_ARGC, "add_supermaster", "No or no valid ipv4 or ipv6 address given."));
+        }
+        if (!is_valid_hostname($ns_name))
+        {
+                error(ERR_DNS_HOSTNAME);
+        }
+	if (!validate_account($account))
+	{
+		error(sprintf(ERR_INV_ARGC, "add_supermaster", "given account name is invalid (alpha chars only)"));
+	}
+        if (supermaster_exists($master_ip))
+        {
+                error(sprintf(ERR_INV_ARGC, "add_supermaster", "supermaster already exists"));
+        }
+        else
+        {
+                $db->query("INSERT INTO supermasters VALUES ('$master_ip', '$ns_name', '$account')");
+                return true;
+        }
+}
+
+function delete_supermaster($master_ip)
+{
+        global $db;
+        if (!level(5))
+        {
+                error(ERR_LEVEL_5);
+        }
+        if (is_valid_ip($master_ip) || is_valid_ip6($master_ip))
+        {
+                $db->query("DELETE FROM supermasters WHERE ip = '$master_ip'");
+                return true;
+        }
+        else
+        {
+                error(sprintf(ERR_INV_ARGC, "delete_supermaster", "No or no valid ipv4 or ipv6 address given."));
+        }
+}
+
+function get_supermaster_info_from_ip($master_ip)
+{
+	global $db;
+        if (!level(5))
+        {
+                error(ERR_LEVEL_5);
+        }
+        if (is_valid_ip($master_ip) || is_valid_ip6($master_ip))
+	{
+	        $result = $db->queryRow("SELECT ip,nameserver,account FROM supermasters WHERE ip = '$master_ip'");
+
+		$ret = array(
+		"master_ip"	=>              $result["ip"],
+		"ns_name"	=>              $result["nameserver"],
+		"account"	=>              $result["account"]
+		);
+
+		return $ret;	
+	}
+        else
+	{
+                error(sprintf(ERR_INV_ARGC, "get_supermaster_info_from_ip", "No or no valid ipv4 or ipv6 address given."));
+        }
+}
+
+
 /*
  * Delete a record by a given id.
  * return values: true, this function is always succesful.
@@ -646,7 +716,9 @@ function get_domain_info_from_id($id)
 
 	if ($_SESSION[$id."_ispartial"] == 1) {
 	
-	$sqlq = "SELECT domains.name AS name,
+	$sqlq = "SELECT 
+	domains.type AS type,
+	domains.name AS name,
 	users.fullname AS owner,
 	count(record_owners.id) AS aantal
 	FROM domains, users, record_owners, records
@@ -664,6 +736,7 @@ function get_domain_info_from_id($id)
 	"name"          =>              $result["name"],
 	"ownerid"       =>              $_SESSION["userid"],
 	"owner"         =>              $result["owner"],
+	"type"		=>		$result["type"],
 	"numrec"        =>              $result["aantal"]
 	);
 
@@ -672,7 +745,9 @@ function get_domain_info_from_id($id)
 	} else{
 	
 		// Query that retrieves the information we need.
-		$sqlq = "SELECT domains.name AS name,
+		$sqlq = "SELECT 
+			domains.type AS type,
+			domains.name AS name,
 			min(zones.owner) AS ownerid,
 			users.fullname AS owner,
 			count(records.domain_id) AS aantal
@@ -693,6 +768,7 @@ function get_domain_info_from_id($id)
 		"name"          =>              $result["name"],
 		"ownerid"       =>              $result["ownerid"],
 		"owner"         =>              $result["owner"],
+		"type"          =>              $result["type"],
 		"numrec"        =>              $result["aantal"]
 		);
 		return $ret;
@@ -736,9 +812,58 @@ function domain_exists($domain)
 	}
 }
 
+function get_supermasters()
+{
+        global $db;
+        $result = $db->query("SELECT ip, nameserver, account FROM supermasters");
+        $ret = array();
+
+        if($result->numRows() == 0)
+        {
+                return -1;
+        }
+        else
+        {
+                while ($r = $result->fetchRow())
+                {
+                        $ret[] = array(
+                        "master_ip"     => $r["ip"],
+                        "ns_name"       => $r["nameserver"],
+                        "account"       => $r["account"],
+                        );
+                        return $ret;
+                }
+        }
+}
+
+function supermaster_exists($master_ip)
+{
+        global $db;
+        if (!level(5))
+        {
+                error(ERR_LEVEL_5);
+        }
+        if (is_valid_ip($master_ip) || is_valid_ip6($master_ip))
+        {
+                $result = $db->query("SELECT ip FROM supermasters WHERE ip = '$master_ip'");
+                if ($result->numRows() == 0)
+                {
+                        return false;
+                }
+                elseif ($result->numRows() >= 1)
+                {
+                        return true;
+                }
+        }
+        else
+        {
+                error(sprintf(ERR_INV_ARGC, "supermaster_exists", "No or no valid IPv4 or IPv6 address given."));
+        }
+}
+
 
 /*
- * Get all domains from the database.
+ * Get all domains from the database 
  * This function gets all the domains from the database unless a user id is below 5.
  * if a user id is below 5 this function will only retrieve records for that user.
  * return values: the array of domains or -1 if nothing is found.
@@ -1179,4 +1304,16 @@ function change_domain_slave_master($id, $slave_master)
 }
 
 
+function validate_account($account)
+{
+	
+  	if(preg_match("/^[A-Z0-9._-]+$/i",$account))
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
 ?>
