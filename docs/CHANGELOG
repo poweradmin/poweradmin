@@ -12,7 +12,7 @@ CHANGES between 1.3.0 and 1.2.7-patched
   more details docs/README.i18n.
 
 - Removed the so-called "sequence updater". The code has been changed
-  to use the auto increment functionalitiy in both mysql ang pgsql. It 
+  to use the auto increment functionalitiy in both mysql and pgsql. It 
   is only tested on these backends, other backends are untested and
   may be unsupported. See docs/README.sequence for more details on
   inserting records and zones into the powerdns database when using
