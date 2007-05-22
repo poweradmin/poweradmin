@@ -1,23 +1,5 @@
 <?php
 
-// +--------------------------------------------------------------------+
-// | PowerAdmin								|
-// +--------------------------------------------------------------------+
-// | Copyright (c) 1997-2002 The PowerAdmin Team			|
-// +--------------------------------------------------------------------+
-// | This source file is subject to the license carried by the overal	|
-// | program PowerAdmin as found on http://poweradmin.sf.net		|
-// | The PowerAdmin program falls under the QPL License:		|
-// | http://www.trolltech.com/developer/licensing/qpl.html		|
-// +--------------------------------------------------------------------+
-// | Authors: Roeland Nieuwenhuis <trancer <AT> trancer <DOT> nl>	|
-// |          Sjeemz <sjeemz <AT> sjeemz <DOT> nl>			|
-// +--------------------------------------------------------------------+
-
-//
-// $Id: delete_record.php,v 1.5 2002/12/10 01:29:47 azurazu Exp $
-//
-
 require_once("inc/toolkit.inc.php");
 
 if ($_GET["id"]) {
@@ -28,15 +10,18 @@ if ($_GET["id"]) {
                 clean_page("edit.php?id=".$_GET["domain"]);
         }
         include_once("inc/header.inc.php");
-        ?><H2><? echo _('Delete record'); ?> "<?
+        ?>
+	
+	<h2><? echo _('Delete record'); ?> "<?
         $data = get_record_from_id($_GET["id"]);
         print $data["name"]." IN ".$data["type"]." ".$data["content"];
-        ?>"</H2><?
+        ?>"</h2><?
         if (($data["type"] == "NS" && $data["name"] == get_domain_name_from_id($_GET["domain"])) || $data["type"] == "SOA") {
-                print "<FONT CLASS=\"warning\">" . ('You are trying to delete a record that is needed for this zone to work.') . "</FONT><BR>";
+                print "<font class=\"warning\">" . _('You are trying to delete a record that is needed for this zone to work.') . "</font><br>";
         }
-        ?><BR><FONT CLASS="warning"><? echo _('Are you sure?'); ?></FONT><BR><BR>
-        <INPUT TYPE="button" CLASS="button" OnClick="location.href='<?= $_SERVER["REQUEST_URI"] ?>&confirm=1'" VALUE="<? echo _('Yes'); ?>"> <INPUT TYPE="button" CLASS="button" OnClick="location.href='<?= $_SERVER["REQUEST_URI"] ?>&confirm=0'" VALUE="<? echo _('No'); ?>">
+        ?><br><font class="warning"><? echo _('Are you sure?'); ?></font><br><br>
+        <input type="button" class="button" OnClick="location.href='<?= $_SERVER["REQUEST_URI"] ?>&confirm=1'" value="<? echo _('Yes'); ?>"> 
+	<input type="button" class="button" OnClick="location.href='<?= $_SERVER["REQUEST_URI"] ?>&confirm=0'" value="<? echo _('No'); ?>">
         <?
 } else {
         include_once("inc/header.inc.php");

@@ -93,7 +93,7 @@ function show_pages($amount,$rowamount,$id='')
 {
    if ($amount > $rowamount) {
       if (!isset($_GET["start"])) $_GET["start"]=1;
-      echo "<br /><br />" . _('Show page') . " ";
+      echo _('Show page') . "<br>";
       for ($i=1;$i<=ceil($amount / $rowamount);$i++) {
          if ($_GET["start"] == $i) {
             echo "[ <b>".$i."</b> ] ";
@@ -103,7 +103,6 @@ function show_pages($amount,$rowamount,$id='')
 	    echo "\">".$i."</a> ] ";
          }
       }
-      echo "</small>";
    }
 }
 
@@ -121,7 +120,7 @@ function show_letters($letterstart,$doms)
       }
    }
 
-   echo _('Show domains beginning with:') . "<br />";
+   echo _('Show domains beginning with:') . "<br>";
    if ($letterstart == 1) {
       echo "[ <b>0-9</b> ] ";
    } elseif ($letter_taken["0"] != 1) {
@@ -132,9 +131,9 @@ function show_letters($letterstart,$doms)
    
    foreach (range('a','z') as $letter) {
       if ($letterstart === $letter) {
-         echo "[ <b>".$letter."</b> ] ";
+         echo "[ <span class=\"lettertaken\">".$letter."</span> ] ";
       } elseif ($letter_taken[$letter] != 1) {
-         echo "[ <span style=\"color:#999\">".$letter."</span> ] ";
+         echo "[ <span class=\"letternotavailble\">".$letter."</span> ] ";
       } else {
           echo "[ <a href=\"".$_SERVER["PHP_SELF"]."?letter=".$letter."\">".$letter."</a> ] ";
       }
@@ -151,9 +150,8 @@ function error($msg)
 	{
 		include_once("header.inc.php");
 	?>
-	<P><TABLE CLASS="error"><TR><TD CLASS="error"><H2><? echo _('Oops! An error occured!'); ?></H2>
-	<BR>
-	<FONT STYLE="font-weight: Bold"><?= nl2br($msg) ?><BR><BR><a href="javascript:history.go(-1)">&lt;&lt; <? echo _('back'); ?></a></FONT><BR></TD></TR></TABLE></P>
+	<p><? echo _('Oops! An error occured!'); ?></p>
+	<p><? echo nl2br($msg) ?></p>
 	<?
 		include_once("footer.inc.php");
 		die();

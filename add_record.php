@@ -1,24 +1,7 @@
 <?php
 
-// +--------------------------------------------------------------------+
-// | PowerAdmin								|
-// +--------------------------------------------------------------------+
-// | Copyright (c) 1997-2002 The PowerAdmin Team			|
-// +--------------------------------------------------------------------+
-// | This source file is subject to the license carried by the overal	|
-// | program PowerAdmin as found on http://poweradmin.sf.net		|
-// | The PowerAdmin program falls under the QPL License:		|
-// | http://www.trolltech.com/developer/licensing/qpl.html		|
-// +--------------------------------------------------------------------+
-// | Authors: Roeland Nieuwenhuis <trancer <AT> trancer <DOT> nl>	|
-// |          Sjeemz <sjeemz <AT> sjeemz <DOT> nl>			|
-// +--------------------------------------------------------------------+
-
-//
-// $Id: add_record.php,v 1.6 2003/02/05 15:25:01 azurazu Exp $
-//
-
 require_once("inc/toolkit.inc.php");
+
 if ($_POST["commit"]) {
         $ret = add_record($_POST["zoneid"], $_POST["name"], $_POST["type"], $_POST["content"], $_POST["ttl"], $_POST["prio"]);
         if ($ret != '1') {
@@ -26,16 +9,28 @@ if ($_POST["commit"]) {
         }
         clean_page("edit.php?id=".$_POST["zoneid"]);
 }
+
 include_once("inc/header.inc.php");
 ?>
-<H2><? echo _('Add record to zone'); ?> "<?= get_domain_name_from_id($_GET["id"]) ?>"</H2>
-<FONT CLASS="nav"><BR><A HREF="index.php"><? echo _('DNS Admin'); ?></A> &gt;&gt; <A HREF="edit.php?id=<?= $_GET["id"] ?>"><?= get_domain_name_from_id($_GET["id"]) ?></A> &gt;&gt; <? echo _('Add record'); ?><BR><BR></FONT>
 
-<FORM METHOD="post">
-<INPUT TYPE="hidden" NAME="zoneid" VALUE="<?= $_GET["id"] ?>">
-<TABLE BORDER="0" CELLSPACING="4">
-<TR STYLE="font-weight: Bold"><TD CLASS="tdbg"><? echo _('Name'); ?></TD><TD CLASS="tdbg">&nbsp;</TD><TD CLASS="tdbg"><? echo _('Type'); ?></TD><TD CLASS="tdbg"><? echo _('Priority'); ?></TD><TD CLASS="tdbg"><? echo _('Content'); ?></TD><TD CLASS="tdbg"><? echo _('TTL'); ?></TD></TR>
-<TR><TD CLASS="tdbg"><INPUT TYPE="text" NAME="name" CLASS="input">.<?= get_domain_name_from_id($_GET["id"]) ?></TD><TD CLASS="tdbg">IN</TD><TD CLASS="tdbg"><SELECT NAME="type">
+    <h2><? echo _('Add record to zone'); ?> "<? echo get_domain_name_from_id($_GET["id"]) ?>"</H2>
+
+    <form method="post">
+     <input type="hidden" name="zoneid" value="<?= $_GET["id"] ?>">
+     <table border="0" cellspacing="4">
+      <tr>
+       <td class="n"><? echo _('Name'); ?></td>
+       <td class="n">&nbsp;</td>
+       <td class="n"><? echo _('Type'); ?></td>
+       <td class="n"><? echo _('Priority'); ?></td>
+       <td class="n"><? echo _('Content'); ?></td>
+       <td class="n"><? echo _('TTL'); ?></td>
+      </tr>
+      <tr>
+       <td class="n"><input type="text" name="name" class="input">.<?= get_domain_name_from_id($_GET["id"]) ?></td>
+       <td class="n">IN</td>
+       <td class="n">
+        <select name="type">
 <?
 $dname = get_domain_name_from_id($_GET["id"]);
 foreach (get_record_types() as $c) {
@@ -46,11 +41,18 @@ foreach (get_record_types() as $c) {
         } else {
                 unset($add);
         }
-        ?><OPTION<?= $add ?> VALUE="<?= $c ?>"><?= $c ?></OPTION><?
+        ?><option<?= $add ?> value="<?= $c ?>"><?= $c ?></option><?
 }
-?></SELECT></TD><TD CLASS="tdbg"><INPUT TYPE="text" NAME="prio" CLASS="sinput"></TD><TD CLASS="tdbg"><INPUT TYPE="text" NAME="content" CLASS="input"></TD><TD CLASS="tdbg"><INPUT TYPE="text" NAME="ttl" CLASS="sinput" VALUE="<?=$DEFAULT_TTL?>"></TD></TR>
-</TABLE>
-<BR><INPUT TYPE="submit" NAME="commit" VALUE="<? echo _('Add record'); ?>" CLASS="button">
-</FORM>
+?>
+        </select>
+       </td>
+       <td class="n"><input type="text" name="prio" class="sinput"></td>
+       <td class="n"><input type="text" name="content" class="input"></td>
+       <td class="n"><input type="text" name="ttl" class="sinput" value="<?=$DEFAULT_TTL?>"></td>
+      </tr>
+     </table>
+     <br>
+     <input type="submit" name="commit" value="<? echo _('Add record'); ?>" class="button">
+    </form>
 
 <? include_once("inc/footer.inc.php"); ?>

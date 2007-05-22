@@ -1,22 +1,5 @@
 <?php
 
-// +--------------------------------------------------------------------+
-// | PowerAdmin								|
-// +--------------------------------------------------------------------+
-// | Copyright (c) 1997-2002 The PowerAdmin Team			|
-// +--------------------------------------------------------------------+
-// | This source file is subject to the license carried by the overal	|
-// | program PowerAdmin as found on http://poweradmin.sf.net		|
-// | The PowerAdmin program falls under the QPL License:		|
-// | http://www.trolltech.com/developer/licensing/qpl.html		|
-// +--------------------------------------------------------------------+
-// | Authors: Roeland Nieuwenhuis <trancer <AT> trancer <DOT> nl>	|
-// |          Sjeemz <sjeemz <AT> sjeemz <DOT> nl>			|
-// +--------------------------------------------------------------------+
-//
-// $Id: users.php,v 1.11 2003/02/05 23:22:33 azurazu Exp $
-//
-
 require_once("inc/toolkit.inc.php");
 
 if($_POST["submit"]
@@ -44,11 +27,8 @@ elseif($_POST["submit"])
 // Dirty hack, maybe revise?
 include_once("inc/header.inc.php");
 ?>
-<H2><? echo _('User admin'); ?></H2>
-<P CLASS="nav">
-<A HREF="index.php"><? echo _('DNS Admin'); ?></A> <A HREF="search.php"><? echo _('Search records'); ?></A></P><BR><?
-// End
-
+    <h2><? echo _('User admin'); ?></h2>
+<?
 if (!level(10)) 
 {
 	error(ERR_LEVEL_10);
@@ -56,56 +36,98 @@ if (!level(10))
 
 if ($error != "") 
 {
-        ?><H3><FONT COLOR="red"><? echo _('Error'); ?>: <?= $error ?></FONT></H3><?
+?>
+	<H3><FONT COLOR="red"><? echo _('Error'); ?>: <?= $error ?></FONT></H3><?
 }
-
-echo "<B>" . _('Current users (click to edit)') . ":</B>";
-
+?>
+     <h3><? echo _('Current users (click to edit)'); ?></h3>
+<?
 $users = show_users('');
-
-echo "<br /><br /><small><b>" . _('Number of users') . ":</b> ".count($users);
-
+?>  
+      <p><? echo _('Number of users') ;?>: <? echo count($users); ?>.</p>
+      <div class="showmax">
+<?
 show_pages(count($users),ROWAMOUNT);
 ?>
+      </div> <? // eo div showmax ?>
 
-<br /><br /><TABLE BORDER="0" CELLSPACING="4">
-<TR STYLE="font-weight: Bold;"><TD CLASS="tdbg">&nbsp;</TD><TD CLASS="tdbg"><? echo _('Name'); ?></TD><TD CLASS="tdbg"><? echo _('Domains'); ?></TD><TD CLASS="tdbg"><? echo _('Domain list'); ?></TD><TD CLASS="tdbg"><? echo _('Level'); ?></TD><TD CLASS="tdbg"><? echo _('Status'); ?></TD></TR>
+      <table>
+       <tr>
+        <td class="n">&nbsp;</td>
+        <td class="n"><? echo _('Name'); ?></td>
+        <td class="n"><? echo _('Domains'); ?></td>
+        <td class="n"><? echo _('Domain list'); ?></td>
+        <td class="n"><? echo _('Level'); ?></td>
+        <td class="n"><? echo _('Status'); ?></td>
+       </tr>
 <?
 $users = show_users('',ROWSTART,ROWAMOUNT);
 foreach ($users as $c)
 {
-        ?>
-        <TR>
-        <TD VALIGN="top" CLASS="tdbg"><A HREF="delete_user.php?id=<?= $c["id"] ?>"><IMG SRC="images/delete.gif" ALT="[ <? echo _('Delete user'); ?> ]" BORDER="0"></A></TD>
-        <TD VALIGN="top" CLASS="tdbg"><A HREF="edit_user.php?id=<?= $c["id"] ?>"><?= $c["fullname"] ?></A> (<?= $c["username"] ?>)</TD>
-        <TD VALIGN="top" CLASS="tdbg"><?= $c["numdomains"] ?></TD>
-        <TD VALIGN="top" CLASS="tdbg">
+?>
+       <tr>
+        <td class="n"><a href="delete_user.php?id=<?= $c["id"] ?>"><img src="images/delete.gif" alt="[ <? echo _('Delete user'); ?> ]"></a></td>
+        <td class="n"><a href="edit_user.php?id=<?= $c["id"] ?>"><?= $c["fullname"] ?></A> (<?= $c["username"] ?>)</td>
+        <td class="n"><?= $c["numdomains"] ?></td>
+        <td class="n">
         <?
         $domains = get_domains_from_userid($c["id"]);
         foreach ($domains as $d)
         {
-                ?><A HREF="delete_domain.php?id=<?= $d["id"] ?>"><IMG SRC="images/delete.gif" ALT="[ <? echo _('Delete domain'); ?> ]" BORDER="0"></A>&nbsp;<A HREF="edit.php?id=<?= $d["id"] ?>"><?= $d["name"] ?></A><BR><?
+                ?><a href="delete_domain.php?id=<?= $d["id"] ?>"><img src="images/delete.gif" alt="[ <? echo _('Delete domain'); ?> ]"></a>&nbsp;<a href="edit.php?id=<?= $d["id"] ?>"><?= $d["name"] ?></a><br><?
         }
-        ?></TD><TD VALIGN="top" CLASS="tdbg"><?= $c["level"] ?></TD><TD VALIGN="top" CLASS="tdbg"><?= get_status($c["active"]) ?></TD></TR><?
+        ?></td>
+	<td class="n"><?= $c["level"] ?></td>
+	<td class="n"><?= get_status($c["active"]) ?></td>
+       </tr><?
         print "\n";
 }
 ?>
-</TABLE>
-<BR><BR>
+      </table>
 
-<FORM METHOD="post" action="users.php">
-<B><? echo _('Create new user'); ?>:</B><BR>
-<TABLE BORDER="0" CELLSPACING="4">
-<TR><TD CLASS="tdbg"><? echo _('User name'); ?>:</TD><TD WIDTH="510" CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="username" VALUE="<? if ($error) print $_POST["username"]; ?>"></TD></TR>
-<TR><TD CLASS="tdbg"><? echo _('Full name'); ?>:</TD><TD CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="fullname" VALUE="<? if ($error) print $_POST["fullname"]; ?>"></TD></TR>
-<TR><TD CLASS="tdbg"><? echo _('Password'); ?>:</TD><TD CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="password" VALUE="<? if ($error) print $_POST["password"]; ?>"></TD></TR>
-<TR><TD CLASS="tdbg"><? echo _('E-mail'); ?>:</TD><TD CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="email" VALUE="<? if ($error) print $_POST["email"]; ?>"></TD></TR>
-<TR><TD CLASS="tdbg"><? echo _('User level'); ?>:</TD><TD CLASS="tdbg"><SELECT NAME="level"><OPTION VALUE="1">1 (<?= leveldescription(1) ?>)</OPTION><OPTION VALUE="5">5 (<?= leveldescription(5) ?>)</OPTION><OPTION VALUE="10">10 (<?= leveldescription(10) ?>)</OPTION></SELECT></TD></TR>
-<TR><TD CLASS="tdbg"><? echo _('Description'); ?>:</TD><TD CLASS="tdbg"><TEXTAREA ROWS="6" COLS="30" CLASS="inputarea" NAME="description"><? if ($error) print $_POST["description"]; ?></TEXTAREA></TD></TR>
-<TR><TD CLASS="tdbg"><? echo _('Active'); ?>:</TD><TD CLASS="tdbg"><INPUT TYPE="checkbox" NAME="active" VALUE="1" CHECKED></TD></TR>
-<TR><TD CLASS="tdbg">&nbsp;</TD><TD CLASS="tdbg"><INPUT TYPE="submit" CLASS="button" NAME="submit" VALUE="<? echo _('Add user'); ?>"></TD></TR>
-</TABLE>
-</FORM>
+      <h3><? echo _('Create new user'); ?></h3>
+      <form method="post" action="users.php">
+       <table>
+        <tr>
+         <td class="n"><? echo _('User name'); ?>:</td>
+         <td class="n"><input type="text" class="input" name="username" value="<? if ($error) print $_POST["username"]; ?>"></td>
+	</tr>
+	<tr>
+	 <td class="n"><? echo _('Full name'); ?>:</td>
+	 <td class="n"><input type="text" class="input" NAME="fullname" VALUE="<? if ($error) print $_POST["fullname"]; ?>"></td>
+	</tr>
+	<tr>
+	 <td class="n"><? echo _('Password'); ?>:</td>
+	 <td class="n"><input type="text" class="input" NAME="password" VALUE="<? if ($error) print $_POST["password"]; ?>"></td>
+	</tr>
+	<tr>
+	 <td class="n"><? echo _('E-mail'); ?>:</td>
+	 <td class="n"><input type="text" class="input" NAME="email" VALUE="<? if ($error) print $_POST["email"]; ?>"></td>
+	</tr>
+	<tr>
+	 <td class="n"><? echo _('User level'); ?>:</td>
+	 <td class="n">
+	  <select name="level">
+	   <option value="1">1 (<?= leveldescription(1) ?>)</option>
+	   <option value="5">5 (<?= leveldescription(5) ?>)</option>
+	   <option value="10">10 (<?= leveldescription(10) ?>)</option>
+	  </select>
+	 </td>
+	</tr>
+        <tr>
+	 <td class="n"><? echo _('Description'); ?>:</td>
+	 <td class="n"><textarea rows="6" cols="30" class="inputarea" name="description"><? if ($error) print $_POST["description"]; ?></textarea></td>
+	</tr>
+	<tr>
+	 <td class="n"><? echo _('Active'); ?>:</td>
+	 <td class="n"><input type="checkbox" name="active" value="1" checked></td>
+	</tr>
+	<tr>
+	 <td class="n">&nbsp;</td>
+	 <td class="n"><input type="submit" class="button" name="submit" value="<? echo _('Add user'); ?>"></td>
+	</tr>
+       </table>
+      </form>
 <?
 include_once("inc/footer.inc.php");
 ?>

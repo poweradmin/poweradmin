@@ -28,7 +28,7 @@
  * Validates an IPv4 IP.
  * returns true if valid.
  */
-function validate_input($recordid, $zoneid, $type, &$content, &$name, &$prio, &$ttl)
+function validate_input($zoneid, $type, &$content, &$name, &$prio, &$ttl)
 {
 	global $db;
 

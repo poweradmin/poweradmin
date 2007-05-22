@@ -1,332 +1,325 @@
 <?php
 
-// +--------------------------------------------------------------------+
-// | PowerAdmin								|
-// +--------------------------------------------------------------------+
-// | Copyright (c) 1997-2002 The PowerAdmin Team			|
-// +--------------------------------------------------------------------+
-// | This source file is subject to the license carried by the overal	|
-// | program PowerAdmin as found on http://poweradmin.sf.net		|
-// | The PowerAdmin program falls under the QPL License:		|
-// | http://www.trolltech.com/developer/licensing/qpl.html		|
-// +--------------------------------------------------------------------+
-// | Authors: Roeland Nieuwenhuis <trancer <AT> trancer <DOT> nl>	|
-// |          Sjeemz <sjeemz <AT> sjeemz <DOT> nl>			|
-// +--------------------------------------------------------------------+
-
-//
-// $Id: edit.php,v 1.12 2003/05/10 20:10:47 azurazu Exp $
-//
-
 require_once("inc/toolkit.inc.php");
 
 // Assigning records to user: Check for records owned by user
 
 if (isset($_POST["action"]) && $_POST["action"]=="record-user") {
-   foreach ($_POST["rowid"] as $x_user => $x_value){
-      $x_userid = $db->getOne("SELECT id FROM record_owners WHERE user_id = '".$_POST["userid"]."' AND record_id='".$x_value."'");
-      if (empty($x_userid)) {
-         $db->query("INSERT INTO record_owners SET user_id = '".$_POST["userid"]."',record_id='".$x_value."'");
-      }
-   }
+	foreach ($_POST["rowid"] as $x_user => $x_value){
+		$x_userid = $db->getOne("SELECT id FROM record_owners WHERE user_id = '".$_POST["userid"]."' AND record_id='".$x_value."'");
+		if (empty($x_userid)) {
+			$db->query("INSERT INTO record_owners SET user_id = '".$_POST["userid"]."',record_id='".$x_value."'");
+		}
+	}
 }
-
 if(isset($_POST['change_slave_master']) && is_numeric($_POST["domain"]) && level(5))
 {
-        change_domain_slave_master($_POST['domain'], $_POST['slave_master']);
+	change_domain_slave_master($_POST['domain'], $_POST['slave_master']);
 }
 if(isset($_POST['type_change']) && in_array($_POST['newtype'], $server_types))
 {
-    change_domain_type($_POST['newtype'], $_GET['id']);
+	change_domain_type($_POST['newtype'], $_GET['id']);
 }
 if(isset($_POST["newowner"]) && is_numeric($_POST["domain"]) && is_numeric($_POST["newowner"]))
 {
 	add_owner($_POST["domain"], $_POST["newowner"]);
 }
-
 if(isset($_POST["del_user"]) && is_numeric($_POST["del_user"]) && level(5))
 {
 	delete_owner($_GET["id"], $_POST["del_user"]);
 }
-
-include_once("inc/header.inc.php");
-?>
-<H2><? echo _('Edit domain'); ?> "<?= get_domain_name_from_id($_GET["id"]) ?>"</H2>
-<?
 $info = get_domain_info_from_id($_GET["id"]);
-if(!isset($info["ownerid"]))
-{
-	?>
-	<P CLASS="warning"><? echo _('This domain isn\'t owned by anyone yet, please assign someone.'); ?></P>
-	<?
-}
+include_once("inc/header.inc.php");
+
 if (level(5))
 {
-  $domain_type=get_domain_type($_GET['id']);
-  if ($domain_type == "SLAVE" )
-  {
-    $slave_master=get_domain_slave_master($_GET['id']);
-    if ($slave_master == "" )
-    {
-    	?>
-	<p class="warning"><? echo _('Type of this domain is "slave", but there is no IP address for it\'s master given. Please specify!'); ?></p>
+	if(!isset($info["ownerid"]))
+	{
+	?>
+	    <div class="error"><? echo _('Error'); ?>: <? echo ('There is no owner for this zone, please assign someone.'); ?></div>
 	<?
-    }
-  }
-}
+	}
+	$domain_type=get_domain_type($_GET['id']);
+	if ($domain_type == "SLAVE" )
+	{
+		$slave_master=get_domain_slave_master($_GET['id']);
+		if ($slave_master == "" )
+		{
 ?>
-<TABLE class="text" cellspacing="0" style="width: 280px">
-<? if (level(5)) 
+            <div class="error"><? echo _('Type of this domain is "slave", but there is no IP address for it\'s master given. Please specify!'); ?></div>
+<?
+		}
+	}
+}
+
+?>
+    <h2><? echo _('Edit domain'); ?> "<? echo get_domain_name_from_id($_GET["id"]) ?>"</h2>
+<?
+
+if (level(5)) 
 { ?>	
-	<TR>
-		<FORM METHOD="post" ACTION="edit.php?id=<?=$_GET['id']?>">
-		<TD CLASS="none" VALIGN="middle" style="width: 250px;">
-			<B><? echo _('Add an owner'); ?>:</B>
-			<INPUT TYPE="hidden" NAME="domain" VALUE="<?= $_GET["id"] ?>">
-			<SELECT NAME="newowner">
-			<?
-			$users = show_users();
-			foreach ($users as $u)
-			{
-				unset($add);
-				if ($u["id"] == $info["ownerid"])
-				{
-					$add = " SELECTED";
-				}
-				?>
-				<OPTION<?= $add ?> VALUE="<?= $u["id"] ?>"><?= $u["fullname"] ?></OPTION><?
-			}
-			?>
-			</SELECT>
-		</TD>
-		<TD CLASS="none" VALIGN="middle"  align="right">
-			<INPUT TYPE="submit" CLASS="sbutton" NAME="co" VALUE="<? echo _('Add'); ?>">
-		</TD>
-		</FORM>
-	</TR>
-	<TR>
-		<TD CLASS="text" COLSPAN="2">&nbsp;</TD>
-	</TR>
-<? 
-
-if(isset($info["ownerid"]))
-{?>
-	<TR>
-		<TD CLASS="text" ALIGN="left" COLSPAN="2" style="width:150px;">
-			<B><? echo _('Current listed owners'); ?>:</B>
-		</TD>
-	</TR>
-	<?
-	$userRes = get_users_from_domain_id($_GET["id"]);
-	foreach($userRes as $user)
-	{ ?>
-		<TR>
-			<FORM METHOD="post" ACTION="edit.php?id=<?=$_GET['id']?>">
-			<TD CLASS="text" ALIGN="left" style="width:150px;">
-				<?=$user["fullname"]?>
-			</TD>
-			<TD CLASS="text" align="right">
-				<INPUT TYPE="hidden" NAME="del_user" VALUE="<?=$user["id"]?>">
-				<INPUT TYPE="submit" CLASS="sbutton" NAME="co" VALUE="<? echo _('Delete'); ?>">
-			</TD>
-			</FORM>
-		</TR>
-	<? }
-}} ?>
-
+       <div id="meta">
+        <div id="meta-left">
+	 <table>
+   	  <tr>
+  	   <th colspan="2"><? echo _('Owner of zone'); ?></th>
+  	  </tr>
+<?
+	if(isset($info["ownerid"]))
+	{
+		$userRes = get_users_from_domain_id($_GET["id"]);
+		foreach($userRes as $user)
+		{ ?>
+  	  <tr>
+  	   <form method="post" action="edit.php?id=<? echo$_GET['id']?>">
+  	    <td>
+	     <? echo$user["fullname"]?>
+	    </td>
+            <td>
+  	     <input type="hidden" name="del_user" value="<? echo$user["id"]?>">
+             <input type="submit" class="sbutton" name="co" value="<? echo _('Delete'); ?>">
+  	    </td>
+           </form>
+  	  </tr>
+<?
+		}
+	}
+	else
+	{
+?>
+	  <tr>
+	   <td><? echo _('No owner set or this domain!'); ?></td>
+	  </tr>
+<?
+	}
+}
+  ?>
+          <tr>
+  	   <form method="post" action="edit.php?id=<? echo$_GET['id']?>">
+  	    <td>
+  	     <input type="hidden" name="domain" value="<? echo $_GET["id"] ?>">
+  	     <select name="newowner">
+  			<?
+  			$users = show_users();
+  			foreach ($users as $u)
+  			{
+  				unset($add);
+  				if ($u["id"] == $info["ownerid"])
+  				{
+  					$add = " SELECTED";
+  				}
+  				?>
+  				<option<? echo $add ?> value="<?= $u["id"] ?>"><?= $u["fullname"] ?></option><?
+  			}
+  			?>
+  			</select>
+  	    </td>
+  	    <td>
+     	     <input type="submit" class="sbutton" name="co" value="<? echo _('Add'); ?>">
+            </td>
+  	   </form>
+  	  </tr>
+         </table>
+	</div> <? // eo div meta-left ?>
+ 
 <?
 if (level(5))
 {
-  $domain_type=get_domain_type($_GET['id']);
+	$domain_type=get_domain_type($_GET['id']);
 ?>
- <tr>
-  <td class="text" colspan="2">
-   &nbsp;
-  </td>
- </tr>
- <tr>
-  <td class="text" colspan="2">
-   <b><? echo _('Type of this domain'); ?>: </b><?=$domain_type?> 
-  </td>
- </tr>
- <form action="<?=$_SERVER['PHP_SELF']?>?&amp;id=<?=$_GET['id']?>" method="post">
-  <input type="hidden" name="domain" value="<?= $_GET["id"] ?>">
-  <tr>
-   <td class="text">
-    <b><? echo _('Change type'); ?>: </b>
-    <select name="newtype">
- 	 <?
- 	 foreach($server_types as $s)
- 	 {
- 	     unset($add);
- 			  if ($s == $domain_type)
- 			  {
- 				 $add = " SELECTED";
- 			  }
- 	     ?><OPTION<?=$add ?> VALUE="<?=$s?>"><?=$s?></OPTION><?
- 	 }
- 	 ?>
-    </select>
-   </td>
-   <td class="text">
-    <input type="submit" class="sbutton" name="type_change" value="<? echo _('Change'); ?>">
-   </td>
-  </tr>
- </form>
- <?
- if ($domain_type == "SLAVE" ) 
- { 
-   $slave_master=get_domain_slave_master($_GET['id']);
-   ?>
-   <tr>
-    <td class="text" colspan="2">
-     <b><? echo _('IP address of master NS'); ?>: </b>
-    </td> 
-   </tr>
-   <form action="<?=$_SERVER['PHP_SELF']?>?&amp;id=<?=$_GET['id']?>" method="post">
-   <input type="hidden" name="domain" value="<?= $_GET["id"] ?>">
-    <tr>
-     <td class="text" colspan="1">
-      <input type="text" name="slave_master" value="<? echo $slave_master; ?>" class="input">
-     </td>
-     <td class="text">
-      <input type="submit" class="sbutton" name="change_slave_master" value="<? echo _('Change'); ?>">
-     </td>
-    </tr>
-   </form>
-   <?
-  }
+        <div id="meta-right">
+         <table>
+	  <tr>
+	   <th colspan="2"><? echo _('Type of zone'); ?></th>
+	  </tr>
+	  <form action="<? echo $_SERVER['PHP_SELF']?>?&amp;id=<? echo$_GET['id']?>" method="post">
+	   <input type="hidden" name="domain" value="<? echo $_GET["id"] ?>">
+	   <tr>
+	    <td>
+	     <select name="newtype">
+<?
+	foreach($server_types as $s)
+	{
+		unset($add);
+		if ($s == $domain_type)
+		{
+			$add = " SELECTED";
+		}
+?>
+              <option<? echo$add ?> value="<?=$s?>"><?=$s?></option><?
+	}
+?>
+             </select>
+            </td>
+	    <td>
+	     <input type="submit" class="sbutton" name="type_change" value="<? echo _('Change'); ?>">
+	    </td>
+	   </tr>
+	  </form>
+
+<?
+	if ($domain_type == "SLAVE" ) 
+	{ 
+		$slave_master=get_domain_slave_master($_GET['id']);
+?>
+          <tr>
+	   <th colspan="2">
+	    <? echo _('IP address of master NS'); ?>
+	   </th>
+	  </tr>
+	  <form action="<? echo $_SERVER['PHP_SELF']?>?&amp;id=<? echo $_GET['id']?>" method="post">
+	   <input type="hidden" name="domain" value="<? echo $_GET["id"] ?>">
+	   <tr>
+	    <td>
+	     <input type="text" name="slave_master" value="<? echo $slave_master; ?>" class="input">
+            </td>
+            <td>
+	     <input type="submit" class="sbutton" name="change_slave_master" value="<? echo _('Change'); ?>">
+            </td>
+           </tr>
+          </form>
+<?
+	}
 }
 ?>
-
-
-</TABLE>
-<br />
-<FONT CLASS="nav">
-<A HREF="index.php"><? echo _('DNS Admin'); ?></A> &gt;&gt; <?= get_domain_name_from_id($_GET["id"]) ?>
-</FONT>
-<br /><br /><small><b><? echo _('Number of records'); ?>:</b> <?= $info["numrec"] ?>
-
+         </table>  
+	</div> <? // eo div meta-right ?>
+       </div> <? // eo div meta ?>
+       <div id="meta">
+<?
+	if ($_SESSION[$_GET["id"]."_ispartial"] != 1 && $domain_type != "SLAVE" )
+	{
+?>
+        <input type="button" class="button" OnClick="location.href='add_record.php?id=<? echo $_GET["id"] ?>'" value="<? echo _('Add record'); ?>">&nbsp;&nbsp;
+<?
+	}
+	if (level(5))
+	{
+?>
+	<input type="button" class="button" OnClick="location.href='delete_domain.php?id=<? echo $_GET["id"] ?>'" value="<? echo _('Delete zone'); ?>">
+<?
+	}
+?>
+        </div> <? // eo div meta-center ?>
+       <div class="showmax">
 <?
 show_pages($info["numrec"],ROWAMOUNT,$_GET["id"]);
 ?>
-
-<br /><br />
-
-<form action="<?=$_SERVER["PHP_SELF"]?>?id=<?=$_GET["id"]?>" method="post">
-<input type="hidden" name="action" value="record-user" />
-
-<TABLE BORDER="0" CELLSPACING="4">
+        </div> <? // eo div showmax ?>
+         <form action="<? echo $_SERVER["PHP_SELF"]?>?id=<? echo $_GET["id"]?>" method="post">
+          <input type="hidden" name="action" value="record-user">
+          <table>
 <?
-
 $countinput=0;
-
 $rec_result = get_records_from_domain_id($_GET["id"],ROWSTART,ROWAMOUNT);
-
 if($rec_result != -1)
 {
-	?>
-	<TR STYLE="font-weight: Bold;">
-	<TD CLASS="tdbg">&nbsp;</TD>
-	<? if (level(10) && $domain_type != "SLAVE") { echo "<TD CLASS=\"tdbg\">" . _('Sub-owners') . "</TD>"; } ?>
-	<TD CLASS="tdbg"><? echo _('Name'); ?></TD>
-	<TD CLASS="tdbg"><? echo _('Type'); ?></TD>
-	<TD CLASS="tdbg"><? echo _('Content'); ?></TD>
-	<TD CLASS="tdbg"><? echo _('Priority'); ?></TD>
-	<TD CLASS="tdbg"><? echo _('TTL'); ?></TD>
-	</TR>
-	<?
-	$recs = sort_zone($rec_result);
-	foreach($recs as $r)
-	{
-	        ?><TR><TD CLASS="tdbg"><?
-	        if ($domain_type != "SLAVE" )
-                {	
+?>
+           <tr>
+	    <td class="n">&nbsp;</td>
+<? 
+	if (level(10) && $domain_type != "SLAVE") 
+	{ 
+		echo "<td class=\"n\">" . _('Sub-owners') . "</td>"; 
+	} 
+?>
+	    <td class="n"><? echo _('Name'); ?></td>
+	    <td class="n"><? echo _('Type'); ?></td>
+	    <td class="n"><? echo _('Content'); ?></td>
+	    <td class="n"><? echo _('Priority'); ?></td>
+	    <td class="n"><? echo _('TTL'); ?></td>
+           </tr>
+<?
+  	$recs = sort_zone($rec_result);
+  	foreach($recs as $r)
+  	{
+?>
+           <tr>
+	    <td class="n">
+<?
+		if ($domain_type != "SLAVE" )
+		{	
 			if(level(5) || (!($r["type"] == "SOA" && !$GLOBALS["ALLOW_SOA_EDIT"]) && !($r["type"] == "NS" && !$GLOBALS["ALLOW_NS_EDIT"])))
 			{
-			?>
-			    <A HREF="edit_record.php?id=<?= $r['id'] ?>&amp;domain=<?= $_GET["id"] ?>"><IMG SRC="images/edit.gif" ALT="[ <? echo _('Edit record'); ?> ]" BORDER="0"></A>
-			    <A HREF="delete_record.php?id=<?= $r['id'] ?>&amp;domain=<?= $_GET["id"] ?>"><IMG SRC="images/delete.gif" ALT="[ <? echo _('Delete record'); ?> ]" BORDER="0"></A>
-			    <?
+?>
+             <a href="edit_record.php?id=<? echo $r['id'] ?>&amp;domain=<? echo $_GET["id"] ?>"><img src="images/edit.gif" alt="[ <? echo _('Edit record'); ?> ]"></a>
+             <a href="delete_record.php?id=<? echo $r['id'] ?>&amp;domain=<? echo $_GET["id"] ?>"><img src="images/delete.gif" ALT="[ <? echo _('Delete record'); ?> ]" BORDER="0"></a>
+<?
 			}
 		}
-if(level(10) && $domain_type != "SLAVE") { ?>
-
-<input type="checkbox" name="rowid[<?=$countinput++?>]" value="<?=$r['id']?>" />
-
-<? }
-		
-	        ?></TD>
-		
-<? if (level(10) && $domain_type != "SLAVE") { ?>
-		<TD STYLE="border: 1px solid #000;width:120px">
-<?
-$x_result = $db->query("SELECT r.user_id,u.username FROM record_owners as r, users as u WHERE r.record_id='".$r['id']."' AND u.id=r.user_id");
-echo "<select style=\"width:120px;font-size:9px\">";
-while ($x_r = $x_result->fetchRow()) {
-   echo "<option>".$x_r["username"]."</option>";
-}
-echo "</select>";
+		if(level(10) && $domain_type != "SLAVE") 
+		{ 
 ?>
-		</TD>
-<? } ?>
-		<TD STYLE="border: 1px solid #000000;"><?= $r['name'] ?></TD>
-		<TD STYLE="border: 1px solid #000000;"><?= $r['type'] ?></TD>
-		<TD STYLE="border: 1px solid #000000;"><?= $r['content'] ?></TD><?
-	        if ($r['prio'] != 0) {
-	                ?><TD STYLE="border: 1px solid #000000;"><?= $r['prio']; ?></TD><?
-	        } else {
-	                ?><TD CLASS="tdbg"></TD><?
-	        }
-	        ?><TD STYLE="border: 1px solid #000000;"><?= $r['ttl'] ?></TD></TR>
-	        <?
+	     <input type="checkbox" name="rowid[<? echo$countinput++?>]" value="<?=$r['id']?>" />
+<? 
+		}
+?>
+            </td>
+<? 
+		if (level(10) && $domain_type != "SLAVE") 
+		{ 
+?>
+            <td class="n">
+<? // RZ TODO remove CSS
+			$x_result = $db->query("SELECT r.user_id,u.username FROM record_owners as r, users as u WHERE r.record_id='".$r['id']."' AND u.id=r.user_id");
+			echo "<select style=\"width:120px;font-size:9px\">";
+			while ($x_r = $x_result->fetchRow()) {
+				echo "<option>".$x_r["username"]."</option>";
+			}
+			echo "</select>";
+?>
+            </td>
+<? 
+		} 
+?>
+	    <td class="y"><? echo $r['name'] ?></td>
+	    <td class="y"><? echo $r['type'] ?></td>
+	    <td class="y"><? echo $r['content'] ?></td>
+<?
+		if ($r['prio'] != 0) 
+		{
+?>
+            <td class="y"><? echo $r['prio']; ?></td>
+<?
+		} else {
+?>
+            <td class="n"></td><?
+		}
+?>
+            <td class="y"><? echo $r['ttl'] ?></td>
+	   </tr>
+<?
 	}
 }
 else
 {
-	?>
-	<TR>
-	<TD CLASS="tdbg"><DIV CLASS="warning"><? echo _('No records for this domain.'); ?></DIV></TD>
-	</TR>
-	<?
+?>
+           <tr>
+            <td class="tdbg">
+	     <div class="warning"><? echo _('No records for this domain.'); ?></div>
+	    </td>
+           </tr>
+<?
 }
 ?>
-
-</TABLE>
+          </table>
 
 <?
 if ($domain_type != "SLAVE")
 {
-	if (level(10)) { ?>
-		<br>
-
-		<img src="images/arrow.png" alt="arrow" style="margin-left:47px"/>
-		<select name="userid">
+	if (level(10)) { // RZ TODO remove css ?>
+	   <img src="images/arrow.png" alt="arrow" style="margin-left:47px">
+	   <select name="userid">
 		<?
 		$users = show_users();
 		foreach ($users as $user) {
 			echo "<option value=\"".$user[id]."\">".$user[fullname]."</option>";
 		}
 		?>
-		</select>
-
-		<input type="submit" class="button" value="<? echo _('Assign to user'); ?>">
-		</form>
-	<? } ?>
-
-	<BR><BR>
-
-	<?
-	if ($_SESSION[$_GET["id"]."_ispartial"] != 1 && $domain_type != "SLAVE" )  {
-		?>
-		<INPUT TYPE="button" CLASS="button" OnClick="location.href='add_record.php?id=<?= $_GET["id"] ?>'" VALUE="<? echo _('Add record'); ?>">
-	<?
-	}
-}
-
-if (level(5)) 
-{ ?>
-	&nbsp;&nbsp;<INPUT TYPE="button" CLASS="button" OnClick="location.href='delete_domain.php?id=<?= $_GET["id"] ?>'" VALUE="<? echo _('Delete zone'); ?>"><?
+           </select>
+	   <input type="submit" class="button" value="<? echo _('Assign to user'); ?>">
+<? 
+	} 
 }
 include_once("inc/footer.inc.php");
 ?>

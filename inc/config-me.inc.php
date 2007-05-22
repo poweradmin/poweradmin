@@ -26,7 +26,6 @@ $dbdsntype = 'mysql';
 
 /* URI Configuration */
 
-
 // $BASE_URL
 // This will be the main URI you will use to connect to PowerAdmin.
 // For instance: "http://poweradmin.sjeemz.nl"
@@ -41,6 +40,10 @@ $BASE_PATH = "/admin/";
 // Which language should be used for the web interface?
 $LANG = "en_EN";
 
+// $STYLE
+// Define skin of web frontend. This should be the basename of the CSS file that
+// will be included, it will be used like: "style/$STYLE.css.php".
+$STYLE = "example";
 
 /* DNS Record information */
 
