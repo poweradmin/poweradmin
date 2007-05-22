@@ -65,7 +65,7 @@ td.y	{
 }
 
 .success	{
-	background:		#00ff00;
+	background:		#00cc33;
 	padding:		3px;
 	font-size:		90%;
 }
