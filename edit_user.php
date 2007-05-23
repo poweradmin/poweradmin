@@ -42,11 +42,11 @@ $r = get_user_info($_GET["id"]);
      <table>
       <tr>
        <td class="n"><? echo _('User name'); ?>:</td>
-       <td class="n"><input type="text" class="input" name="username" value="<?=$r["username"]?>"></td>
+       <td class="n"><input type="text" class="input" name="username" value="<? echo $r["username"]?>"></td>
       </tr>
       <tr>
        <td class="n"><? echo _('Full name'); ?>:</td>
-       <td class="n"><input type="text" class="input" name="fullname" value="<?=$r["fullname"]?>"></td>
+       <td class="n"><input type="text" class="input" name="fullname" value="<? echo $r["fullname"]?>"></td>
       </tr>
       <tr>
        <td class="n"><? echo _('Password'); ?>:</td>
@@ -54,7 +54,7 @@ $r = get_user_info($_GET["id"]);
       </tr>
       <tr>
        <td class="n"><? echo _('E-mail'); ?>:</td>
-       <td class="n"><input type="text" class="input" name="email" value="<?=$r["email"]?>"></td>
+       <td class="n"><input type="text" class="input" name="email" value="<? echo $r["email"]?>"></td>
       </tr>
       <tr>
        <td class="n"><? echo _('User level'); ?>:</td>
@@ -69,7 +69,7 @@ $r = get_user_info($_GET["id"]);
       <tr>
        <td class="n"><? echo _('Description'); ?>:</td>
        <td class="n">
-        <textarea rows="6" cols="30" class="inputarea" name="description"><?=$r["description"]?></textarea>
+        <textarea rows="6" cols="30" class="inputarea" name="description"><? echo $r["description"]?></textarea>
        </td>
       </tr>
       <tr>

@@ -8,7 +8,7 @@ function dbError($msg)
         include_once("header.inc.php");
         ?>
 	<h2><? echo _('Oops! An error occured!'); ?></h2>
-	<p class="error"><?= $msg->getDebugInfo(); ?></p>
+	<p class="error"><? echo $msg->getDebugInfo(); ?></p>
 	<?        
 	include_once("footer.inc.php");
         die();

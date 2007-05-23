@@ -34,7 +34,7 @@ if(isset($id))
         include_once("inc/header.inc.php");
         ?>
 	
-    <h3><? echo _('Delete user'); ?> "<?= get_fullname_from_userid($id) ?>"</h3>
+    <h3><? echo _('Delete user'); ?> "<? echo get_fullname_from_userid($id) ?>"</h3>
      <form method="post">
         <?
         $domains = get_domains_from_userid($id);
@@ -64,15 +64,15 @@ if(isset($id))
 		  <td class="n" align="center"><?
                         if ($no_users) 
                      	{ 
-                     		?><INPUT type="hidden" NAME="delete[]" value="<?= $d["id"] ?>"><?
+                     		?><INPUT type="hidden" NAME="delete[]" value="<? echo $d["id"] ?>"><?
                         } 
-                        ?><INPUT type="checkbox"<?= $add ?> NAME="delete[]" value="<?= $d["id"] ?>"></td><td class="n"><?= $d["name"] ?></td><td class="n"><? 
+                        ?><INPUT type="checkbox"<? echo $add ?> NAME="delete[]" value="<? echo $d["id"] ?>"></td><td class="n"><? echo $d["name"] ?></td><td class="n"><? 
                         if (!$no_users) 
                         { 
-                        	?><SELECT NAME="domain[<?= $d["id"] ?>]"><?
+                        	?><SELECT NAME="domain[<? echo $d["id"] ?>]"><?
                         	foreach($users as $u) 
                         	{
-                        	        ?><OPTION value="<?= $u["id"] ?>"><?= $u["fullname"] ?></OPTION><?
+                        	        ?><OPTION value="<? echo $u["id"] ?>"><? echo $u["fullname"] ?></OPTION><?
                         	}
                         	?></SELECT></td><? 
                         } 
@@ -84,12 +84,12 @@ if(isset($id))
         $message = _('You are going to delete this user, are you sure?');
         if(($numrows = $db->queryOne("select count(id) from zones where owner=$id")) != 0)
         {
-        	$message .= " " . _('This user has access to ') . $numrows . _('domain(s), by deleting him you will also delete these domains');
+        	$message .= " " . _('This user has access to ') . $numrows . _(' zones, by deleting him you will also delete these zones.');
         }
 
         ?>
-        <BR><FONT class="warning"><?= $message ?></FONT><BR><BR>
-        <INPUT type="hidden" NAME="id" value="<?=$id ?>">
+        <BR><FONT class="warning"><? echo $message ?></FONT><BR><BR>
+        <INPUT type="hidden" NAME="id" value="<? echo $id ?>">
         <INPUT type="hidden" NAME="confirm" value="1">
         <INPUT type="submit" class="button" value="<? echo _('Yes'); ?>"> <INPUT type="button" class="button" OnClick="location.href='users.php'" value="<? echo _('No'); ?>"></FORM>
         <?

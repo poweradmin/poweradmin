@@ -17,7 +17,7 @@ if ($_GET["id"]) {
         }
         include_once("inc/header.inc.php");
         $info = get_domain_info_from_id($_GET["id"]);
-        ?><h2><? echo _('Delete domain'); ?> "<?= $info["name"] ?>"</h2>
+        ?><h2><? echo _('Delete domain'); ?> "<? echo $info["name"] ?>"</h2>
         <?
 	if($info["owner"])
 	{
@@ -38,8 +38,8 @@ if ($_GET["id"]) {
 	?>
 	<font class="warning"><? echo _('Are you sure?'); ?></font>
 	<br><br>
-	<input type="button" class="button" OnClick="location.href='<?= $_SERVER["REQUEST_URI"] ?>&confirm=1'" value="<? echo _('Yes'); ?>">
-	<input type="button" class="button" OnClick="location.href='<?= $_SERVER["REQUEST_URI"] ?>&confirm=0'" value="<? echo _('No'); ?>">
+	<input type="button" class="button" OnClick="location.href='<? echo $_SERVER["REQUEST_URI"] ?>&confirm=1'" value="<? echo _('Yes'); ?>">
+	<input type="button" class="button" OnClick="location.href='<? echo $_SERVER["REQUEST_URI"] ?>&confirm=0'" value="<? echo _('No'); ?>">
 	<?
 } elseif ($_GET["edit"]) {
         include_once("inc/header.inc.php");

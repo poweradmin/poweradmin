@@ -53,11 +53,11 @@ else
 	?>
 	    <tr>
 	     <td class="n">
-	      <a href="delete_supermaster.php?master_ip=<?= $c["master_ip"] ?>"><img src="images/delete.gif" title="<? print _('Delete supermaster') . ' ' . $c["master_ip"]; ?>" alt="[ <? echo _('Delete supermaster'); ?> ]"></a>
+	      <a href="delete_supermaster.php?master_ip=<? echo $c["master_ip"] ?>"><img src="images/delete.gif" title="<? print _('Delete supermaster') . ' ' . $c["master_ip"]; ?>" alt="[ <? echo _('Delete supermaster'); ?> ]"></a>
 	     </td>
-	     <td class="y"><?= $c["master_ip"] ?></td>
-	     <td class="y"><?= $c["ns_name"] ?></td>
-	     <td class="y"><?= $c["account"] ?></td>
+	     <td class="y"><? echo $c["master_ip"] ?></td>
+	     <td class="y"><? echo $c["ns_name"] ?></td>
+	     <td class="y"><? echo $c["account"] ?></td>
 	    </tr>
 	<?
 		   }

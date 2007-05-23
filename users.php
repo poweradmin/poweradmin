@@ -66,19 +66,19 @@ foreach ($users as $c)
 {
 ?>
        <tr>
-        <td class="n"><a href="delete_user.php?id=<?= $c["id"] ?>"><img src="images/delete.gif" alt="[ <? echo _('Delete user'); ?> ]"></a></td>
-        <td class="n"><a href="edit_user.php?id=<?= $c["id"] ?>"><?= $c["fullname"] ?></A> (<?= $c["username"] ?>)</td>
-        <td class="n"><?= $c["numdomains"] ?></td>
+        <td class="n"><a href="delete_user.php?id=<? echo $c["id"] ?>"><img src="images/delete.gif" alt="[ <? echo _('Delete user'); ?> ]"></a></td>
+        <td class="n"><a href="edit_user.php?id=<? echo $c["id"] ?>"><? echo $c["fullname"] ?></A> (<? echo $c["username"] ?>)</td>
+        <td class="n"><? echo $c["numdomains"] ?></td>
         <td class="n">
         <?
         $domains = get_domains_from_userid($c["id"]);
         foreach ($domains as $d)
         {
-                ?><a href="delete_domain.php?id=<?= $d["id"] ?>"><img src="images/delete.gif" alt="[ <? echo _('Delete domain'); ?> ]"></a>&nbsp;<a href="edit.php?id=<?= $d["id"] ?>"><?= $d["name"] ?></a><br><?
+                ?><a href="delete_domain.php?id=<? echo $d["id"] ?>"><img src="images/delete.gif" alt="[ <? echo _('Delete domain'); ?> ]"></a>&nbsp;<a href="edit.php?id=<? echo $d["id"] ?>"><? echo $d["name"] ?></a><br><?
         }
         ?></td>
-	<td class="n"><?= $c["level"] ?></td>
-	<td class="n"><?= get_status($c["active"]) ?></td>
+	<td class="n"><? echo $c["level"] ?></td>
+	<td class="n"><? echo get_status($c["active"]) ?></td>
        </tr><?
         print "\n";
 }
@@ -114,9 +114,9 @@ show_pages(count($users),ROWAMOUNT);
 	 <td class="n"><? echo _('User level'); ?>:</td>
 	 <td class="n">
 	  <select name="level">
-	   <option value="1">1 (<?= leveldescription(1) ?>)</option>
-	   <option value="5">5 (<?= leveldescription(5) ?>)</option>
-	   <option value="10">10 (<?= leveldescription(10) ?>)</option>
+	   <option value="1">1 (<? echo leveldescription(1) ?>)</option>
+	   <option value="5">5 (<? echo leveldescription(5) ?>)</option>
+	   <option value="10">10 (<? echo leveldescription(10) ?>)</option>
 	  </select>
 	 </td>
 	</tr>

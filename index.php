@@ -4,7 +4,7 @@ require_once("inc/i18n.inc.php");
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 ?>
-   <h3><? echo _('Welcome'); ?>, <?= $_SESSION["name"] ?></h3>
+   <h3><? echo _('Welcome'); ?>, <? echo $_SESSION["name"] ?></h3>
    <ul>
     <li><a href="search.php"><? echo _('Search zones or records'); ?></a></li>
     <li><a href="list_zones.php"><? echo _('List all zones'); ?></a></li>

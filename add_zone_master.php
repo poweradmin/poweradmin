@@ -90,7 +90,7 @@ include_once("inc/header.inc.php");
         <?
         foreach ($users as $u)
         {
-           ?><option value="<?= $u['id'] ?>"><?= $u['fullname'] ?></option><?
+           ?><option value="<? echo $u['id'] ?>"><? echo $u['fullname'] ?></option><?
         }
         ?>
             </select>
@@ -103,7 +103,7 @@ include_once("inc/header.inc.php");
         <?
         foreach($zone_types as $s)
         {
-           ?><option value="<?=$s?>"><?=$s ?></option><?
+           ?><option value="<? echo $s?>"><? echo $s ?></option><?
         }
         ?>
             </select>

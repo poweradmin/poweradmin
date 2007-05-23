@@ -20,8 +20,8 @@ if ($_GET["id"]) {
                 print "<font class=\"warning\">" . _('You are trying to delete a record that is needed for this zone to work.') . "</font><br>";
         }
         ?><br><font class="warning"><? echo _('Are you sure?'); ?></font><br><br>
-        <input type="button" class="button" OnClick="location.href='<?= $_SERVER["REQUEST_URI"] ?>&confirm=1'" value="<? echo _('Yes'); ?>"> 
-	<input type="button" class="button" OnClick="location.href='<?= $_SERVER["REQUEST_URI"] ?>&confirm=0'" value="<? echo _('No'); ?>">
+        <input type="button" class="button" OnClick="location.href='<? echo $_SERVER["REQUEST_URI"] ?>&confirm=1'" value="<? echo _('Yes'); ?>"> 
+	<input type="button" class="button" OnClick="location.href='<? echo $_SERVER["REQUEST_URI"] ?>&confirm=0'" value="<? echo _('No'); ?>">
         <?
 } else {
         include_once("inc/header.inc.php");

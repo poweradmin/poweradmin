@@ -68,7 +68,7 @@ function auth($msg="",$type="success")
 	<h2><? echo _('Login'); ?></h2>
 	<?
 	?>
-	<form method="post" action="<?= $_SERVER["PHP_SELF"] ?>">
+	<form method="post" action="<? echo $_SERVER["PHP_SELF"] ?>">
 	 <table border="0">
 	  <tr>
 	   <td class="n"><? echo _('Login'); ?>:</td>

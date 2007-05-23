@@ -74,7 +74,7 @@ include_once("inc/header.inc.php");
 	         <? 
 	         foreach ($users as $u)
 	         {
-	           ?><option value="<?= $u['id'] ?>"><?= $u['fullname'] ?></option><?
+	           ?><option value="<? echo $u['id'] ?>"><? echo $u['fullname'] ?></option><?
 	         } 
 	        ?>
 	        </select>

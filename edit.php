@@ -109,7 +109,7 @@ if (level(5))
   					$add = " SELECTED";
   				}
   				?>
-  				<option<? echo $add ?> value="<?= $u["id"] ?>"><?= $u["fullname"] ?></option><?
+  				<option<? echo $add ?> value="<? echo $u["id"] ?>"><? echo $u["fullname"] ?></option><?
   			}
   			?>
   			</select>
@@ -250,7 +250,7 @@ if($rec_result != -1)
 		if(level(10) && $domain_type != "SLAVE") 
 		{ 
 ?>
-	     <input type="checkbox" name="rowid[<? echo $countinput++?>]" value="<?=$r['id']?>" />
+	     <input type="checkbox" name="rowid[<? echo $countinput++?>]" value="<? echo $r['id']?>" />
 <? 
 		}
 ?>
@@ -295,7 +295,7 @@ else
 {
 ?>
            <tr>
-            <td class="tdbg">
+            <td class="n">
 	     <div class="warning"><? echo _('No records for this domain.'); ?></div>
 	    </td>
            </tr>
