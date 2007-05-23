@@ -216,18 +216,18 @@ if($rec_result != -1)
 {
 ?>
            <tr>
-	    <td class="n">&nbsp;</td>
+	    <th>&nbsp;</th>
 <? 
 	if (level(10) && $domain_type != "SLAVE") 
 	{ 
-		echo "<td class=\"n\">" . _('Sub-owners') . "</td>"; 
+		echo "<th class=\"n\">" . _('Sub-owners') . "</td>"; 
 	} 
 ?>
-	    <td class="n"><? echo _('Name'); ?></td>
-	    <td class="n"><? echo _('Type'); ?></td>
-	    <td class="n"><? echo _('Content'); ?></td>
-	    <td class="n"><? echo _('Priority'); ?></td>
-	    <td class="n"><? echo _('TTL'); ?></td>
+	    <th><? echo _('Name'); ?></th>
+	    <th><? echo _('Type'); ?></th>
+	    <th><? echo _('Content'); ?></th>
+	    <th><? echo _('Priority'); ?></th>
+	    <th><? echo _('TTL'); ?></th>
            </tr>
 <?
   	$recs = sort_zone($rec_result);
