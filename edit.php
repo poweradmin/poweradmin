@@ -262,7 +262,7 @@ if($rec_result != -1)
             <td class="n">
 <? 
 			$x_result = $db->query("SELECT r.user_id,u.username FROM record_owners as r, users as u WHERE r.record_id='".$r['id']."' AND u.id=r.user_id");
-			echo "<select>";
+			echo "<select style=\"width:120px;\">";
 			while ($x_r = $x_result->fetchRow()) {
 				echo "<option>".$x_r["username"]."</option>";
 			}
