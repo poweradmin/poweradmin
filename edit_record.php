@@ -48,8 +48,8 @@ if (level(10) && ($count > 0) )
 	}
 ?>
       </table>
-     </div>
-    </div>
+     </div>  <? // eo div meta-left ?>
+    </div> <? // eo div meta ?>
 <? }
 ?>
     <form method="post" action="edit_record.php">
