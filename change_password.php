@@ -6,7 +6,7 @@ if($_POST["submit"])
 {
 	if(strlen($_POST["newpass"]) < 8)
 	{
-		error('Length of the pass should be at least 8 characters.');
+		error('Password length should be at least 8 characters.');
 	}
 	else
 	{

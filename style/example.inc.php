@@ -57,6 +57,7 @@ img .edit-assign-to-user	{
 
 td	{
         padding:                0px 2px 0px 2px;
+	vertical-align: 	top;
 }
 
 td.y	{

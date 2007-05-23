@@ -11,9 +11,16 @@ if($_POST["submit"]
 {
 	if(substr_count($_POST["username"], " ") == 0)
 	{
-		add_user($_POST["username"], $_POST["password"], $_POST["fullname"], $_POST["email"], $_POST["level"], $_POST["description"], $_POST["active"]);
-        	clean_page($BASE_URL . $BASE_PATH . "users.php");
-        }
+		if(strlen($_POST["password"]) < 8)
+		{
+		$error = _('Password length should be at least 8 characters.');
+		}
+		else
+		{
+			add_user($_POST["username"], $_POST["password"], $_POST["fullname"], $_POST["email"], $_POST["level"], $_POST["description"], $_POST["active"]);
+			clean_page($BASE_URL . $BASE_PATH . "users.php");
+		}
+	}
         else
         {
         	$error = _('Usernames can\'t contain spaces');
@@ -24,8 +31,13 @@ elseif($_POST["submit"])
 	$error = _('Please fill in all fields');
 }
 
-// Dirty hack, maybe revise?
 include_once("inc/header.inc.php");
+if ($error != "") 
+{
+?>
+	<div class="error"><? echo $error ; ?></div>
+<?
+}
 ?>
     <h2><? echo _('User admin'); ?></h2>
 <?
@@ -33,32 +45,20 @@ if (!level(10))
 {
 	error(ERR_LEVEL_10);
 }
-
-if ($error != "") 
-{
 ?>
-	<H3><FONT COLOR="red"><? echo _('Error'); ?>: <?= $error ?></FONT></H3><?
-}
-?>
-     <h3><? echo _('Current users (click to edit)'); ?></h3>
+     <h3><? echo _('Current users'); ?></h3>
 <?
 $users = show_users('');
 ?>  
-      <p><? echo _('Number of users') ;?>: <? echo count($users); ?>.</p>
-      <div class="showmax">
-<?
-show_pages(count($users),ROWAMOUNT);
-?>
-      </div> <? // eo div showmax ?>
 
       <table>
        <tr>
-        <td class="n">&nbsp;</td>
-        <td class="n"><? echo _('Name'); ?></td>
-        <td class="n"><? echo _('Domains'); ?></td>
-        <td class="n"><? echo _('Domain list'); ?></td>
-        <td class="n"><? echo _('Level'); ?></td>
-        <td class="n"><? echo _('Status'); ?></td>
+        <th>&nbsp;</th>
+        <th><? echo _('Name'); ?></th>
+        <th><? echo _('Domains'); ?></th>
+        <th><? echo _('Domain list'); ?></th>
+        <th><? echo _('Level'); ?></th>
+        <th><? echo _('Status'); ?></th>
        </tr>
 <?
 $users = show_users('',ROWSTART,ROWAMOUNT);
@@ -84,6 +84,12 @@ foreach ($users as $c)
 }
 ?>
       </table>
+      <p><? echo _('Number of users') ;?>: <? echo count($users); ?>.</p>
+      <div class="showmax">
+<?
+show_pages(count($users),ROWAMOUNT);
+?>
+      </div> <? // eo div showmax ?>
 
       <h3><? echo _('Create new user'); ?></h3>
       <form method="post" action="users.php">
