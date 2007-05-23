@@ -184,8 +184,6 @@ if (level(5))
 ?>
          </table>  
 	</div> <? // eo div meta-right ?>
-       </div> <? // eo div meta ?>
-       <div id="meta">
 <?
 	if ($_SESSION[$_GET["id"]."_ispartial"] != 1 && $domain_type != "SLAVE" )
 	{
@@ -200,7 +198,7 @@ if (level(5))
 <?
 	}
 ?>
-        </div> <? // eo div meta-center ?>
+        </div> <? // eo div meta ?>
        <div class="showmax">
 <?
 show_pages($info["numrec"],ROWAMOUNT,$_GET["id"]);
