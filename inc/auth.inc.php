@@ -17,7 +17,7 @@ if(isset($_POST["authenticate"]))
 // Check if the session hasnt expired yet.
 if ((isset($_SESSION["userid"])) && ($_SESSION["lastmod"] != "") && ((time() - $_SESSION["lastmod"]) > $EXPIRE))
 {
-	logout( _('Session expired, please login again.') );
+	logout( _('Session expired, please login again.'),"error");
 }
 
 // If the session hasn't expired yet, give our session a fresh new timestamp.
@@ -44,7 +44,7 @@ if(isset($_SESSION["userlogin"]) && isset($_SESSION["userpwd"]))
     	else
     	{
         	//Authentication failed, retry.
-	        auth( _('Authentication failed!') );
+	        auth( _('Authentication failed!'),"error");
 	}
 }
 else
@@ -57,17 +57,16 @@ else
  * Print the login form.
  */
 
-function auth($msg="")
+function auth($msg="",$type="success")
 {
 	include_once('inc/header.inc.php');
-	?>
-	<h3><? echo _('Login'); ?></h3>
-	<?
-	if($msg)
+	if ( $msg )
 	{
-		print "<font class=\"warning\">$msg</font>\n";
-
+		print "<div class=\"$type\">$msg</div>\n";
 	}
+	?>
+	<h2><? echo _('Login'); ?></h2>
+	<?
 	?>
 	<form method="post" action="<?= $_SERVER["PHP_SELF"] ?>">
 	 <table border="0">
@@ -101,10 +100,11 @@ function logout($msg="")
 {
 	if ( $msg == "" ) {
 		$msg = _('You have logged out.');
+		$type = "success";
 	};
 	session_destroy();
 	session_write_close();
-	auth($msg);
+	auth($msg, $type);
 	exit;
 }
 
