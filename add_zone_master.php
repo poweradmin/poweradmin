@@ -38,16 +38,12 @@ if ($_POST["submit"])
                 else
                 {
                         add_domain($domain, $owner, $webip, $mailip, $empty, $dom_type, '');
-			$success = _('Successfully added slave zone.');
+			$success = _('Successfully added master zone.');
                 }
         }
 }
 
 include_once("inc/header.inc.php");
-
-	?>
-	<h2>Add master zone</h2>
-	<?
 
 	if ($error != "")
 	{
@@ -57,6 +53,10 @@ include_once("inc/header.inc.php");
 	{
 		?><div class="success"><? echo $success; ?></div><?
 	}
+
+	?>
+	<h2>Add master zone</h2>
+	<?
 
 	// Zone type set to master and native only, slave zones are created
 	// on a different page. 
