@@ -183,7 +183,9 @@ if (level(5))
 }
 ?>
          </table>  
-	</div> <? // eo div meta-right ?>
+        </div> <? // eo div meta-right ?>
+       </div> <? // eo div meta ?>
+       <div id="meta">
 <?
 	if ($_SESSION[$_GET["id"]."_ispartial"] != 1 && $domain_type != "SLAVE" )
 	{
