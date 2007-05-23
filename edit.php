@@ -6,7 +6,7 @@ require_once("inc/toolkit.inc.php");
 
 if (isset($_POST["action"]) && $_POST["action"]=="record-user") {
 	foreach ($_POST["rowid"] as $x_user => $x_value){
-		$x_userid = $db->getOne("SELECT id FROM record_owners WHERE user_id = '".$_POST["userid"]."' AND record_id='".$x_value."'");
+		$x_userid = $db->queryOne("SELECT id FROM record_owners WHERE user_id = '".$_POST["userid"]."' AND record_id='".$x_value."'");
 		if (empty($x_userid)) {
 			$db->query("INSERT INTO record_owners SET user_id = '".$_POST["userid"]."',record_id='".$x_value."'");
 		}

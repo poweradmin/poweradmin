@@ -37,7 +37,7 @@ if (level(10) && ($count > 0) )
      <div id="meta-left">
       <table>
        <tr>
-        <th><? echo _('Sub-users'); ?></th>
+        <th><? echo _('Sub-owner(s)'); ?></th>
         <th>&nbsp;</th>
        </tr>
 <?
