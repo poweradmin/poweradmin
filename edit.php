@@ -71,12 +71,12 @@ if (level(5))
 		foreach($userRes as $user)
 		{ ?>
   	  <tr>
-  	   <form method="post" action="edit.php?id=<? echo$_GET['id']?>">
+  	   <form method="post" action="edit.php?id=<? echo $_GET['id']?>">
   	    <td>
-	     <? echo$user["fullname"]?>
+	     <? echo $user["fullname"]?>
 	    </td>
             <td>
-  	     <input type="hidden" name="del_user" value="<? echo$user["id"]?>">
+  	     <input type="hidden" name="del_user" value="<? echo $user["id"]?>">
              <input type="submit" class="sbutton" name="co" value="<? echo _('Delete'); ?>">
   	    </td>
            </form>
@@ -95,7 +95,7 @@ if (level(5))
 }
   ?>
           <tr>
-  	   <form method="post" action="edit.php?id=<? echo$_GET['id']?>">
+  	   <form method="post" action="edit.php?id=<? echo $_GET['id']?>">
   	    <td>
   	     <input type="hidden" name="domain" value="<? echo $_GET["id"] ?>">
   	     <select name="newowner">
@@ -132,7 +132,7 @@ if (level(5))
 	  <tr>
 	   <th colspan="2"><? echo _('Type of zone'); ?></th>
 	  </tr>
-	  <form action="<? echo $_SERVER['PHP_SELF']?>?&amp;id=<? echo$_GET['id']?>" method="post">
+	  <form action="<? echo $_SERVER['PHP_SELF']?>?id=<? echo $_GET['id']?>" method="post">
 	   <input type="hidden" name="domain" value="<? echo $_GET["id"] ?>">
 	   <tr>
 	    <td>
@@ -146,7 +146,7 @@ if (level(5))
 			$add = " SELECTED";
 		}
 ?>
-              <option<? echo$add ?> value="<?=$s?>"><?=$s?></option><?
+              <option<? echo $add ?> value="<? echo $s?>"><? echo $s?></option><?
 	}
 ?>
              </select>
@@ -250,7 +250,7 @@ if($rec_result != -1)
 		if(level(10) && $domain_type != "SLAVE") 
 		{ 
 ?>
-	     <input type="checkbox" name="rowid[<? echo$countinput++?>]" value="<?=$r['id']?>" />
+	     <input type="checkbox" name="rowid[<? echo $countinput++?>]" value="<?=$r['id']?>" />
 <? 
 		}
 ?>
@@ -260,9 +260,9 @@ if($rec_result != -1)
 		{ 
 ?>
             <td class="n">
-<? // RZ TODO remove CSS
+<? 
 			$x_result = $db->query("SELECT r.user_id,u.username FROM record_owners as r, users as u WHERE r.record_id='".$r['id']."' AND u.id=r.user_id");
-			echo "<select style=\"width:120px;font-size:9px\">";
+			echo "<select>";
 			while ($x_r = $x_result->fetchRow()) {
 				echo "<option>".$x_r["username"]."</option>";
 			}
@@ -307,8 +307,8 @@ else
 <?
 if ($domain_type != "SLAVE")
 {
-	if (level(10)) { // RZ TODO remove css ?>
-	   <img src="images/arrow.png" alt="arrow" style="margin-left:47px">
+	if (level(10)) { ?>
+	   <img src="images/arrow.png" alt="arrow" class="edit-assign-to-user">
 	   <select name="userid">
 		<?
 		$users = show_users();
@@ -318,6 +318,7 @@ if ($domain_type != "SLAVE")
 		?>
            </select>
 	   <input type="submit" class="button" value="<? echo _('Assign to user'); ?>">
+	  </form>
 <? 
 	} 
 }

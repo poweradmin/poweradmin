@@ -32,6 +32,9 @@ table	{
 img	{
 	border:			0px;
 }
+img .edit-assign-to-user	{
+	margin-left:		47px;
+}
 
 #meta {
         width:                  100%;
