@@ -28,29 +28,34 @@ include_once("inc/header.inc.php");
 ?>
     <h2><? echo _('Edit record in zone'); ?> "<? echo  get_domain_name_from_id($_GET["domain"]) ?>"</h2>
 <?
-$x_result = $db->query("SELECT r.id,u.username FROM record_owners as r, users as u WHERE r.record_id='".$_GET['id']."' AND u.id=r.user_id");
-$count = count($x_result->fetchAll());
-if (level(10) && ($count > 0) ) 
-{ 
+
+$x_result = $db->query("SELECT r.id,u.fullname FROM record_owners as r, users as u WHERE r.record_id='".$_GET['id']."' AND u.id=r.user_id");
+if (level(10) && ($x_result->numRows() > 0)) 
+{
 ?>
     <div id="meta">
      <div id="meta-left">
       <table>
        <tr>
-        <th><? echo _('Sub-owner(s)'); ?></th>
-        <th>&nbsp;</th>
+        <th><? echo _('Sub-owners'); ?></td>
+        <th>&nbsp;</td>
        </tr>
 <?
-	while ($x_r = $x_result->fetchRow()) {
-   echo "<tr><td class=\"y\">".$x_r["username"]."</td><td class=\"n\">";
-   echo "<a href=\"".$_SERVER["PHP_SELF"]."?id=".$_GET["id"]."&domain=".$_GET["domain"]."&delid=".$x_r["id"]."\">";
-   echo "<img src=\"images/delete.gif\" alt=\"" . _('trash') . "\" border=\"0\"/></a></td></tr>";
+	while ($x_r = $x_result->fetchRow()) 
+	{
+?>
+        <tr>
+	 <td class="tdbg"><? echo $x_r["fullname"]; ?></td>
+	 <td class="tdbg"><a href="<? echo $_SERVER["PHP_SELF"]; ?>?id=<? echo $_GET["id"]; ?>&amp;domain=<? echo $_GET["domain"]; ?>&amp;delid=<? echo $x_r["id"]; ?>"><img src="images/delete.gif" alt="trash"></a></td>
+	</tr>
+<?
 	}
 ?>
-      </table>
-     </div>  <? // eo div meta-left ?>
-    </div> <? // eo div meta ?>
-<? }
+       </table>
+      </div>
+     </div>
+<? 
+}
 ?>
     <form method="post" action="edit_record.php">
      <input type="hidden" name="recordid" value="<? echo  $_GET["id"] ?>">

@@ -64,17 +64,17 @@ if(isset($id))
 		  <td class="n" align="center"><?
                         if ($no_users) 
                      	{ 
-                     		?><INPUT type="hidden" NAME="delete[]" value="<? echo $d["id"] ?>"><?
+                     		?><input type="hidden" name="delete[]" value="<? echo $d["id"] ?>"><?
                         } 
-                        ?><INPUT type="checkbox"<? echo $add ?> NAME="delete[]" value="<? echo $d["id"] ?>"></td><td class="n"><? echo $d["name"] ?></td><td class="n"><? 
+                        ?><input type="checkbox"<? echo $add ?> name="delete[]" value="<? echo $d["id"] ?>"></td><td class="n"><? echo $d["name"] ?></td><td class="n"><? 
                         if (!$no_users) 
                         { 
-                        	?><SELECT NAME="domain[<? echo $d["id"] ?>]"><?
+                        	?><select name="domain[<? echo $d["id"] ?>]"><?
                         	foreach($users as $u) 
                         	{
-                        	        ?><OPTION value="<? echo $u["id"] ?>"><? echo $u["fullname"] ?></OPTION><?
+                        	        ?><option value="<? echo $u["id"] ?>"><? echo $u["fullname"] ?></option><?
                         	}
-                        	?></SELECT></td><? 
+                        	?></select></td><? 
                         } 
                         ?></tr><?
                 }
@@ -88,10 +88,10 @@ if(isset($id))
         }
 
         ?>
-        <BR><FONT class="warning"><? echo $message ?></FONT><BR><BR>
-        <INPUT type="hidden" NAME="id" value="<? echo $id ?>">
-        <INPUT type="hidden" NAME="confirm" value="1">
-        <INPUT type="submit" class="button" value="<? echo _('Yes'); ?>"> <INPUT type="button" class="button" OnClick="location.href='users.php'" value="<? echo _('No'); ?>"></FORM>
+        <font class="warning"><? echo $message ?></font><br>
+        <input type="hidden" name="id" value="<? echo $id ?>">
+        <input type="hidden" name="confirm" value="1">
+        <input type="submit" class="button" value="<? echo _('Yes'); ?>"> <input type="button" class="button" OnClick="location.href='users.php'" value="<? echo _('No'); ?>"></FORM>
         <?
         include_once("inc/footer.inc.php");
 } 
