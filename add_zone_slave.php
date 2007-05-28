@@ -52,11 +52,11 @@ include_once("inc/header.inc.php");
 	$users = show_users();
 	
 	?>
-	    <h2><? echo _('Add new slave zone'); ?></h2>
+	    <h2><? echo _('Add slave zone'); ?></h2>
 	    <form method="post" action="add_zone_slave.php">
 	     <table>
 	      <tr>
-	       <td class="n"><? echo _('Domain name'); ?>:</td>
+	       <td class="n"><? echo _('Zone name'); ?>:</td>
 	       <td class="n">
 	        <input type="text" class="input" name="domain" value="<? if ($error) print $_POST["domain"]; ?>">
 	       </td>

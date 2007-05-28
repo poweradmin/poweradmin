@@ -1,28 +1,5 @@
 <?
 
-// +--------------------------------------------------------------------+
-// | PowerAdmin                                                         |
-// +--------------------------------------------------------------------+
-// | Copyright (c) 1997-2002 The PowerAdmin Team                        |
-// +--------------------------------------------------------------------+
-// | This source file is subject to the license carried by the overal   |
-// | program PowerAdmin as found on http://poweradmin.sf.net            |
-// | The PowerAdmin program falls under the QPL License:                |
-// | http://www.trolltech.com/developer/licensing/qpl.html              |
-// +--------------------------------------------------------------------+
-// | Authors: Roeland Nieuwenhuis <trancer <AT> trancer <DOT> nl>       |
-// |          Sjeemz <sjeemz <AT> sjeemz <DOT> nl>                      |
-// +--------------------------------------------------------------------+
-
-// Filename: error.inc.php
-// Startdate: 25-11-2002
-// Description: all error defines should be put in here.
-// All errors have to use an ERR_ prefix to distinguish them from other constants.
-// All errors should be placed in the appropriate group.
-//
-// $Id: error.inc.php,v 1.6 2003/05/04 21:38:37 azurazu Exp $
-//
-
 // Added next line to enable i18n on following definitions. Not sure
 // if this is the best (or at least a proper) location for this. /RZ.
 require_once("inc/i18n.inc.php");
@@ -37,7 +14,7 @@ define("ERR_RECORD_ACCESS_DENIED", _('Access denied, you do not have access to t
 define("ERR_RECORD_DELETE_TYPE_DENIED", _('You are not allowed to delete %s records'));
 
 /* DOMAIN STUFF */
-define("ERR_DOMAIN_INVALID", _('This is an invalid domain name'));
+define("ERR_DOMAIN_INVALID", _('This is an invalid zone name'));
 
 /* USER STUFF */
 define("ERR_USER_EXIST", _('Username exist already, please choose another one'));

@@ -46,14 +46,14 @@ if (level(5))
 		if ($slave_master == "" )
 		{
 ?>
-            <div class="error"><? echo _('Type of this domain is "slave", but there is no IP address for it\'s master given. Please specify!'); ?></div>
+            <div class="error"><? echo _('Type of this zone is "slave", but there is no IP address for it\'s master given.'); ?></div>
 <?
 		}
 	}
 }
 
 ?>
-    <h2><? echo _('Edit domain'); ?> "<? echo get_domain_name_from_id($_GET["id"]) ?>"</h2>
+    <h2><? echo _('Edit zone'); ?> "<? echo get_domain_name_from_id($_GET["id"]) ?>"</h2>
 <?
 
 if (level(5)) 
@@ -88,7 +88,7 @@ if (level(5))
 	{
 ?>
 	  <tr>
-	   <td><? echo _('No owner set or this domain!'); ?></td>
+	   <td><? echo _('No owner set or this zone!'); ?></td>
 	  </tr>
 <?
 	}
@@ -296,7 +296,7 @@ else
 ?>
            <tr>
             <td class="n">
-	     <div class="warning"><? echo _('No records for this domain.'); ?></div>
+	     <div class="warning"><? echo _('No records for this zone.'); ?></div>
 	    </td>
            </tr>
 <?

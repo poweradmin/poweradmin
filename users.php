@@ -55,8 +55,8 @@ $users = show_users('');
        <tr>
         <th>&nbsp;</th>
         <th><? echo _('Name'); ?></th>
-        <th><? echo _('Domains'); ?></th>
-        <th><? echo _('Domain list'); ?></th>
+        <th><? echo _('Zones'); ?></th>
+        <th><? echo _('Zone list'); ?></th>
         <th><? echo _('Level'); ?></th>
         <th><? echo _('Status'); ?></th>
        </tr>

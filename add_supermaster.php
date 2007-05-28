@@ -48,7 +48,7 @@ include_once("inc/header.inc.php");
     }
     
     ?>
-    <h2><? echo _('Add new supermaster'); ?></h2>
+    <h2><? echo _('Add supermaster'); ?></h2>
     <form method="post" action="add_supermaster.php">
      <table>
       <tr>

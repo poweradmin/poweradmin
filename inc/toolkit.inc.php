@@ -98,7 +98,7 @@ function show_letters($letterstart,$doms)
       }
    }
 
-   echo _('Show domains beginning with:') . "<br>";
+   echo _('Show zones beginning with:') . "<br>";
    if ($letterstart == 1) {
       echo "[ <b>0-9</b> ] ";
    } elseif ($letter_taken["0"] != 1) {

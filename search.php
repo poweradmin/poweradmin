@@ -38,7 +38,7 @@ if ($submitted)
 	if (count($search_result) == 2 && count($search_result['domains']))
   	{
 	?>
-	<h4><? echo _('Domains found'); ?>:</h4>
+	<h4><? echo _('Zones found'); ?>:</h4>
 	<table>
 	 <tr>
 	  <th>&nbsp;</th>

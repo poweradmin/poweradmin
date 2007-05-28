@@ -17,7 +17,7 @@ if ($_GET["id"]) {
         }
         include_once("inc/header.inc.php");
         $info = get_domain_info_from_id($_GET["id"]);
-        ?><h2><? echo _('Delete domain'); ?> "<? echo $info["name"] ?>"</h2>
+        ?><h2><? echo _('Delete zone'); ?> "<? echo $info["name"] ?>"</h2>
         <?
 	if($info["owner"])
 	{
@@ -31,7 +31,7 @@ if ($_GET["id"]) {
 		if(supermaster_exists($slave_master))
 		{
 			print ("<font class=\"warning\">");
-			printf(_('You are about to delete a slave domain of which the master nameserver, %s, is a supermaster. Deleting the zone now, will result in temporary removal only. Whenever the supermaster sends a notification for this zone, it will be added again!'), $slave_master);
+			printf(_('You are about to delete a slave zone of which the master nameserver, %s, is a supermaster. Deleting the zone now, will result in temporary removal only. Whenever the supermaster sends a notification for this zone, it will be added again!'), $slave_master);
 			print ("</font><br>");
 		}
 	}

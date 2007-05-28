@@ -28,11 +28,11 @@ if ($_POST["submit"])
         {
                 if (!is_valid_domain($domain))
                 {
-                        $error = "Domain name is invalid!";
+                        $error = "Zone name is invalid!";
                 }
                 elseif (domain_exists($domain))
                 {
-                        $error = "Domain already exists!";
+                        $error = "Zone already exists!";
                 }
                 //elseif (isset($mailip) && is_valid_ip(
                 else
@@ -66,7 +66,7 @@ include_once("inc/header.inc.php");
         <form method="post" action="add_zone_master.php">
          <table>
           <tr>
-           <td class="n"><? echo _('Domain name'); ?>:</td>
+           <td class="n"><? echo _('Zone name'); ?>:</td>
            <td class="n">
             <input type="text" class="input" name="domain" value="<? if ($error) print $_POST["domain"]; ?>">
            </td>
@@ -97,7 +97,7 @@ include_once("inc/header.inc.php");
            </td>
           </tr>
           <tr>
-           <td class="n"><? echo _('Domain type'); ?>:</td>
+           <td class="n"><? echo _('Zone type'); ?>:</td>
            <td class="n">
             <select name="dom_type">
         <?
