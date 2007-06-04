@@ -1,3 +1,27 @@
+CHANGES between 1.4.0 and 1.3.0
+-----------------------------------------------------------------------
+
+- Removed a few bugs in the 1.3.0 release.
+
+- Moved language setting to config file.
+
+- Added support for all PowerDNS zone types: slave, master and native.
+
+- Added support for supermasters.
+
+- Added basic support for skins. All html markup tags are now removed
+  from the code. One example CSS file has been added. The CSS and HTML
+  has been made as flexible as possible, so one is free to position a
+  menu in a left bar instead of inline with other elements, etc.
+
+- Changed all visible occurrences of "domain" to "zone".
+
+- Updated i18n related files, Dutch translation fully updated.
+
+- Added a page with credits to the original authors.
+
+- Removed all PHP shorttags.
+
 CHANGES between 1.3.0 and 1.2.7-patched
 -----------------------------------------------------------------------
 
