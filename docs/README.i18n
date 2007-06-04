@@ -6,8 +6,8 @@ Using a translation
 
 All available translations can be found in the locale directory in the
 poweradmin base directory. The Dutch translation for example, can be
-found in nl_NL. To review the status of the translation, you can have a
-look at the nl.po file in the LC_MESSAGE directory.
+found in locale/nl_NL. To review the status of the translation, you 
+can have a look at the nl.po file in the LC_MESSAGE directory.
 
 If you want to use a translation, say the nl_NL, all you have to do is 
 edit inc/i18n.php file and change the $language variable to the desired

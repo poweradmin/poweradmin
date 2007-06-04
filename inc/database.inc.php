@@ -1,26 +1,5 @@
 <?
 
-// +--------------------------------------------------------------------+
-// | PowerAdmin								|
-// +--------------------------------------------------------------------+
-// | Copyright (c) 1997-2002 The PowerAdmin Team			|
-// +--------------------------------------------------------------------+
-// | This source file is subject to the license carried by the overal	|
-// | program PowerAdmin as found on http://poweradmin.sf.net		|
-// | The PowerAdmin program falls under the QPL License:		|
-// | http://www.trolltech.com/developer/licensing/qpl.html		|
-// +--------------------------------------------------------------------+
-// | Authors: Roeland Nieuwenhuis <trancer <AT> trancer <DOT> nl>	|
-// |          Sjeemz <sjeemz <AT> sjeemz <DOT> nl>			|
-// +--------------------------------------------------------------------+
-
-// Filename: auth.inc.php
-// Startdate: 26-10-2002
-// Description: Constructs the database class.
-//
-// $Id: database.inc.php,v 1.3 2002/12/27 02:45:08 azurazu Exp $
-//
-
 require_once("MDB2.php");
 
 function dbError($msg)
@@ -28,10 +7,10 @@ function dbError($msg)
         // General function for printing critical errors.
         include_once("header.inc.php");
         ?>
-        <P><TABLE CLASS="error"><TR><TD CLASS="error"><H2><? echo _('Oops! An error occured!'); ?></H2>
-        <BR>
-        <FONT STYLE="font-weight: Bold"><?= $msg->getDebugInfo(); ?><BR><BR><a href="javascript:history.go(-1)">&lt;&lt; <? echo _('back'); ?></a></FONT><BR></TD></TR></TABLE></P>
-        <?
+	<h2><? echo _('Oops! An error occured!'); ?></h2>
+	<p class="error"><? echo $msg->getDebugInfo(); ?></p>
+	<?        
+	include_once("footer.inc.php");
         die();
 }
 

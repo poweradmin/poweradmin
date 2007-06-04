@@ -1,27 +1,5 @@
 <?
 
-// +--------------------------------------------------------------------+
-// | PowerAdmin								|
-// +--------------------------------------------------------------------+
-// | Copyright (c) 1997-2002 The PowerAdmin Team			|
-// +--------------------------------------------------------------------+
-// | This source file is subject to the license carried by the overal	|
-// | program PowerAdmin as found on http://poweradmin.sf.net		|
-// | The PowerAdmin program falls under the QPL License:		|
-// | http://www.trolltech.com/developer/licensing/qpl.html		|
-// +--------------------------------------------------------------------+
-// | Authors: Roeland Nieuwenhuis <trancer <AT> trancer <DOT> nl>	|
-// |          Sjeemz <sjeemz <AT> sjeemz <DOT> nl>			|
-// +--------------------------------------------------------------------+
-
-// Filename: auth.inc.php
-// Startdate: 26-10-2002
-// Description: file is supposed to validate users and check whether they are authorized.
-// If they are authorized this code handles that they can access stuff.
-//
-// $Id: auth.inc.php,v 1.6 2003/01/13 22:08:52 azurazu Exp $
-//
-
 session_start();
 
 if (isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] == "logout")
@@ -39,7 +17,7 @@ if(isset($_POST["authenticate"]))
 // Check if the session hasnt expired yet.
 if ((isset($_SESSION["userid"])) && ($_SESSION["lastmod"] != "") && ((time() - $_SESSION["lastmod"]) > $EXPIRE))
 {
-	logout( _('Session expired, please login again.') );
+	logout( _('Session expired, please login again.'),"error");
 }
 
 // If the session hasn't expired yet, give our session a fresh new timestamp.
@@ -66,7 +44,7 @@ if(isset($_SESSION["userlogin"]) && isset($_SESSION["userpwd"]))
     	else
     	{
         	//Authentication failed, retry.
-	        auth( _('Authentication failed!') );
+	        auth( _('Authentication failed!'),"error");
 	}
 }
 else
@@ -79,24 +57,35 @@ else
  * Print the login form.
  */
 
-function auth($msg="")
+function auth($msg="",$type="success")
 {
 	include_once('inc/header.inc.php');
-	?>
-	<H2><? echo _('PowerAdmin for PowerDNS'); ?></H2><H3><? echo _('Please login'); ?>:</H3>
-	<?
-	if($msg)
+	if ( $msg )
 	{
-		print "<font class=\"warning\">$msg</font>\n";
-
+		print "<div class=\"$type\">$msg</div>\n";
 	}
 	?>
-	<FORM METHOD="post" ACTION="<?= $_SERVER["PHP_SELF"] ?>">
-	<TABLE BORDER="0">
-	<TR><TD STYLE="background-color: #FCC229;"><? echo _('Login'); ?>:</TD><TD STYLE="background-color: #FCC229;"><INPUT TYPE="text" CLASS="input" NAME="username"></TD></TR>
-	<TR><TD STYLE="background-color: #FCC229;"><? echo _('Password'); ?>:</TD><TD STYLE="background-color: #FCC229;"><INPUT TYPE="password" CLASS="input" NAME="password"></TD></TR>
-	<TR><TD STYLE="background-color: #FCC229;">&nbsp;</TD><TD STYLE="background-color: #FCC229;"><INPUT TYPE="submit" NAME="authenticate" CLASS="button" VALUE=" <? echo _('Login'); ?> "></TD></TR>
-	</TABLE>
+	<h2><? echo _('Login'); ?></h2>
+	<?
+	?>
+	<form method="post" action="<? echo $_SERVER["PHP_SELF"] ?>">
+	 <table border="0">
+	  <tr>
+	   <td class="n"><? echo _('Login'); ?>:</td>
+	   <td class="n"><input type="text" class="input" name="username"></td>
+	  </tr>
+	  <tr>
+	   <td class="n"><? echo _('Password'); ?>:</td>
+	   <td class="n"><input type="password" class="input" name="password"></td>
+	  </tr>
+	  <tr>
+	   <td class="n">&nbsp;</td>
+	   <td class="n">
+	    <input type="submit" name="authenticate" class="button" value=" <? echo _('Login'); ?> ">
+	   </td>
+	  </tr>
+	 </table>
+	</form>
 	<?
 	include_once('inc/footer.inc.php');
 	exit;
@@ -110,11 +99,12 @@ function auth($msg="")
 function logout($msg="")
 {
 	if ( $msg == "" ) {
-		$msg=_('You have logged out.');
+		$msg = _('You have logged out.');
+		$type = "success";
 	};
 	session_destroy();
 	session_write_close();
-	auth($msg);
+	auth($msg, $type);
 	exit;
 }
 

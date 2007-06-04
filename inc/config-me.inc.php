@@ -26,7 +26,6 @@ $dbdsntype = 'mysql';
 
 /* URI Configuration */
 
-
 // $BASE_URL
 // This will be the main URI you will use to connect to PowerAdmin.
 // For instance: "http://poweradmin.sjeemz.nl"
@@ -37,6 +36,14 @@ $BASE_URL = "http://";
 // For instance: "/admin/"
 $BASE_PATH = "/admin/";
 
+// $LANG
+// Which language should be used for the web interface?
+$LANG = "en_EN";
+
+// $STYLE
+// Define skin of web frontend. This should be the basename of the CSS file that
+// will be included, it will be used like: "style/$STYLE.css.php".
+$STYLE = "example";
 
 /* DNS Record information */
 
@@ -87,13 +94,6 @@ $NAME_LEVEL_10 = _('Administrator w/ user admin rights');
 
 // Enable fancy records or not (http://doc.powerdns.com/fancy-records.html)? true/false
 $FANCY_RECORDS = true;
-
-// Master or slave functionality. Set this to either true or false.
-// This field indicates if you are running in a MASTER/SLAVE setup or in a NATIVE setup.
-// By toggling this function you will get some more selection features.
-// Default is false.
-// Use these features with care, they havent been tested much yet.
-$MASTER_SLAVE_FUNCTIONS = false;
 
 
 /* ------------------------------------------ */

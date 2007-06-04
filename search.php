@@ -1,65 +1,33 @@
 <?php
 
-// +--------------------------------------------------------------------+
-// | PowerAdmin                                                         |
-// +--------------------------------------------------------------------+
-// | Copyright (c) 1997-2002 The PowerAdmin Team                        |
-// +--------------------------------------------------------------------+
-// | This source file is subject to the license carried by the overal   |
-// | program PowerAdmin as found on http://poweradmin.sf.net            |
-// | The PowerAdmin program falls under the QPL License:                |
-// | http://www.trolltech.com/developer/licensing/qpl.html              |
-// +--------------------------------------------------------------------+
-// | Authors: Roeland Nieuwenhuis <trancer <AT> trancer <DOT> nl>       |
-// |          Sjeemz <sjeemz <AT> sjeemz <DOT> nl>                      |
-// +--------------------------------------------------------------------+
-
-// Filename: search.php
-// Startdate: 9-01-2003
-// Searches the database for corresponding records or domains.
-//
-// The sourecode for this program was donated by DeViCeD, THANKS!
-//
-// $Id: search.php,v 1.1 2003/01/09 23:23:39 azurazu Exp $
-//
-
+require_once("inc/i18n.inc.php");
 require_once('inc/toolkit.inc.php');
 
 if (isset($_POST['s_submit']) || isset($_POST['q']))
 {
-	$submitted = true;
-	$search_result = search_record($_POST['q']);
+	$submitted=true;
+	$search_result=search_record($_POST['q']);
 }
-
 
 // we will continue after the search form ... 
 include_once('inc/header.inc.php');
 ?>
-<P><H2><? echo _('Search zones or records'); ?></H2></P>
-<P CLASS="nav">
-<A HREF="index.php"><? echo _('DNS Admin'); ?></A> 
-<?
-if (level(10))
-{
-	?><A HREF="users.php"><? echo _('User admin'); ?></A> <?
-}
-?>
-</P><BR>
-<? echo _('Type a hostname or a record in the box below and press search to see if the record exists in the system.'); ?>
-	<table border = "0" cellspacing = "4">
-	<form method = "post" action="<?=$_SERVER['PHP_SELF']?>">
-		<tr>
-			<td class = "tdbg"><b><? echo _('Enter a hostname or IP address'); ?></b></td>
-			<td width = "510" class = "tdbg"><input type = "text" class = "input" name = "q"></td>
-		</tr>
-		<tr>
-			<td class = "tdbg">&nbsp;</td>
-			<td class = "tdbg"><input type = "submit" class = "button" name = "s_submit" value = "<? echo _('Search'); ?>"></td>
-		</tr>
-	</form>
-	</table>
 
-
+    <h2><? echo _('Search zones or records'); ?></h2>
+    <h3>Query</h3>
+    <table>
+     <form method="post" action="<? echo $_SERVER['PHP_SELF']?>">
+      <tr>
+       <td class="n"><? echo _('Enter a hostname or IP address'); ?></td>
+       <td class="n"><input type="text" class="input" name="q"></td>
+      </tr>
+      <tr>
+       <td class="n">&nbsp;</td>
+       <td class="n"><input type="submit" class="button" name="s_submit" value="<? echo _('Search'); ?>"></td>
+      </tr>
+     </form>
+    </table>
+      
 <?php
 // results
 if ($submitted)
@@ -70,36 +38,42 @@ if ($submitted)
 	if (count($search_result) == 2 && count($search_result['domains']))
   	{
 	?>
-	<b><? echo _('Domains found'); ?>:</b>
-	<p>
-	<table border = "0" cellspacing = "4">
-		<tr style = "font-weight: Bold;">
-			<td class = "tdbg">&nbsp;</td>
-			<td class = "tdbg"><? echo _('Name'); ?></td>
-			<td class = "tdbg"><? echo _('Records'); ?></td>
-			<td class = "tdbg"><? echo _('Owner'); ?></td>
-		</tr>
-		<?php
-		foreach($search_result['domains'] as $d)
-		{
-			?>	
-			<tr>
-			<td class = "tdbg">
-			<?php 
-			if (level(5))
-			{
-				echo '<a href = "delete_domain.php?id='.$d['id'].'"><img src = "images/delete.gif" alt = "[ ' .  _('Delete zone') . ' ]" border = "0"></a>';
-			}
-			else 
-			{
-				echo '&nbsp;';
-			}
-			?>
-			</td>
-			<td class = "tdbg"><a href = "edit.php?id=<?=$d['id']?>"><?=$d['name']?></a></td>
-			<td class = "tdbg"><?=$d['numrec']?></td>
-			<td class = "tdbg"><?=get_owner_from_id($d['owner'])?></td>
-			</tr>
+	<h4><? echo _('Zones found'); ?>:</h4>
+	<table>
+	 <tr>
+	  <th>&nbsp;</th>
+	  <th><? echo _('Name'); ?></th>
+	  <th><? echo _('Records'); ?></th>
+	  <th><? echo _('Owner'); ?></th>
+         </tr>
+<?php
+foreach($search_result['domains'] as $d)
+{
+?>
+         <tr>
+<?
+  if (level(5))
+  {
+  ?>
+     <td class="n">
+      <a href="edit.php?id=<? echo $d["id"] ?>"><img src="images/edit.gif" title="<? echo _('Edit zone') . " " . $d['name']; ?>" alt="[ <? echo _('Edit zone') . " " . $d['name']; ?> ]"></a>
+      <a href="delete_domain.php?id=<? echo $d["id"] ?>"><img src="images/delete.gif" title="<? print _('Delete zone') . " " . $d['name']; ?>" alt="[<? echo _('Delete zone') . " " . $d['name']; ?>]"></a>
+     </td>
+<?
+}
+else
+{
+?>
+     <td class="n">
+      &nbsp;
+     </td>
+<?
+}
+?>
+     <td class="y"><? echo $d['name']?></td>
+     <td class="y"><? echo $d['numrec']?></td>
+     <td class="y"><? echo get_owner_from_id($d['owner'])?></td>
+    </tr>
 			<?php
 		} // end foreach ...
 		?>
@@ -108,6 +82,10 @@ if ($submitted)
 	<?php
 	} // end if
 	
+
+
+
+
 	
 	// any records ?!
 	if(count($search_result['records']))
@@ -115,21 +93,21 @@ if ($submitted)
 		?>
 		<b><? echo _('Records found'); ?>:</b>
 		<p>
-		<table border = "0" cellspacing = "4">
-			<tr style = "font-weight: Bold;">
-				<td class = "tdbg">&nbsp;</td>
-				<td class = "tdbg"><? echo _('Name'); ?></td>
-				<td class = "tdbg"><? echo _('Type'); ?></td>
-				<td class = "tdbg"><? echo _('Content'); ?></td>
-				<td class = "tdbg"><? echo _('Priority'); ?></td>
-				<td class = "tdbg"><? echo _('TTL'); ?></td>
+		<table>
+			<tr>
+				<td class="n">&nbsp;</td>
+				<td class="n"><? echo _('Name'); ?></td>
+				<td class="n"><? echo _('Type'); ?></td>
+				<td class="n"><? echo _('Content'); ?></td>
+				<td class="n"><? echo _('Priority'); ?></td>
+				<td class="n"><? echo _('TTL'); ?></td>
 			</tr>
 		<?php
 		foreach($search_result['records'] as $r)
 		{
 		?>
 			<tr>
-				<td class = "tdbg">
+				<td class="n">
 			<?php
 			if (($r["type"] != "SOA" && $r["type"] != "NS") ||
 			  ($GLOBALS["ALLOW_SOA_EDIT"] && $r["type"] == "SOA") ||
@@ -138,25 +116,25 @@ if ($submitted)
 			  $GLOBALS["ALLOW_NS_EDIT"] != 1))
 			{
 				?>
-				<a href = "edit_record.php?id=<?=$r['id']?>&amp;domain=<?=$r['domain_id']?>"><img src = "images/edit.gif" alt = "[ <? echo _('Edit record'); ?> ]" border = "0"></a>
-				<a href = "delete_record.php?id=<?=$r['id']?>&amp;domain=<?=$r['domain_id']?>"><img src = "images/delete.gif" alt = "[ <? echo _('Delete record'); ?> ]" border = "0"></a>
+				<a href="edit_record.php?id=<? echo $r['id']?>&amp;domain=<? echo $r['domain_id']?>"><img src="images/edit.gif" alt="[ <? echo _('Edit record'); ?> ]" border="0"></a>
+				<a href="delete_record.php?id=<? echo $r['id']?>&amp;domain=<? echo $r['domain_id']?>"><img src="images/delete.gif" alt="[ <? echo _('Delete record'); ?> ]" border="0"></a>
 				<?php 
 			} // big if ;-)
 			?>
 			</td>
-			<td style = "border: 1px solid #000000;"><?=$r['name']?></td>
-			<td style = "border: 1px solid #000000;"><?=$r['type']?></td>
-			<td style = "border: 1px solid #000000;"><?=$r['content']?></td>
+			<td class="y"><? echo $r['name']?></td>
+			<td class="y"><? echo $r['type']?></td>
+			<td class="y"><? echo $r['content']?></td>
 			<?php
 			if ($r['prio'] != 0)
 			{
-				?><td style = "border: 1px solid #000000;"><?=$r['prio']?></td><?php
+				?><td class="y"><? echo $r['prio']?></td><?php
 			}
 			else 
 			{
-			?><td class = "tdbg"></td><?php
+			?><td class="n"></td><?php
 			} // else
-			?><td style = "border: 1px solid #000000;"><?=$r['ttl']?></td>
+			?><td class="y"><? echo $r['ttl']?></td>
 			</tr>
 			<?php
 		} // foreach
@@ -167,10 +145,10 @@ if ($submitted)
 	if(count($search_result['domains']) == 0 && count($search_result['records']) == 0)
 	{
 	?>
-		<table border = "0" cellspacing = "4">
+		<table border="0" cellspacing="4">
 			<tr>
-				<td width = "510" class = "tdbg">
-				<? echo _('Nothing found for query'); ?> "<?=$_POST['q']?>"
+				<td width="510" class="n">
+				<? echo _('Nothing found for query'); ?> "<? echo $_POST['q']?>"
 				</td>
 			</tr>
 		</table>

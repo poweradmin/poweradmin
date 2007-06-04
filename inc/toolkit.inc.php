@@ -1,27 +1,5 @@
 <?
 session_start();
-// +--------------------------------------------------------------------+
-// | PowerAdmin                                                         |
-// +--------------------------------------------------------------------+
-// | Copyright (c) 1997-2002 The PowerAdmin Team                        |
-// +--------------------------------------------------------------------+
-// | This source file is subject to the license carried by the overal   |
-// | program PowerAdmin as found on http://poweradmin.sf.net            |
-// | The PowerAdmin program falls under the QPL License:                |
-// | http://www.trolltech.com/developer/licensing/qpl.html              |
-// +--------------------------------------------------------------------+
-// | Authors: Roeland Nieuwenhuis <trancer <AT> trancer <DOT> nl>       |
-// |          Sjeemz <sjeemz <AT> sjeemz <DOT> nl>                      |
-// +--------------------------------------------------------------------+
-
-// Filename: toolkit.inc.php
-// Startdate: 26-10-2002
-// Description: general functions needed on a large variety of locations.
-// Kills the db.inc.php.
-// If you include this file you include the whole 'backend'
-//
-// $Id: toolkit.inc.php,v 1.13 2003/02/24 01:46:31 azurazu Exp $
-//
 
 /*************
  * Constants  *
@@ -64,6 +42,11 @@ if(is_file( dirname(__FILE__) . '/../migrator.php'))
 require_once("database.inc.php");
 // Generates $db variable to access database.
 
+
+// Array of the available zone types
+$server_types = array("MASTER", "SLAVE", "NATIVE");
+
+
 /*************
  * Includes  *
  *************/
@@ -88,7 +71,7 @@ function show_pages($amount,$rowamount,$id='')
 {
    if ($amount > $rowamount) {
       if (!isset($_GET["start"])) $_GET["start"]=1;
-      echo "<br /><br />" . _('Show page') . " ";
+      echo _('Show page') . "<br>";
       for ($i=1;$i<=ceil($amount / $rowamount);$i++) {
          if ($_GET["start"] == $i) {
             echo "[ <b>".$i."</b> ] ";
@@ -98,7 +81,6 @@ function show_pages($amount,$rowamount,$id='')
 	    echo "\">".$i."</a> ] ";
          }
       }
-      echo "</small>";
    }
 }
 
@@ -116,7 +98,7 @@ function show_letters($letterstart,$doms)
       }
    }
 
-   echo _('Show domains beginning with:') . "<br />";
+   echo _('Show zones beginning with:') . "<br>";
    if ($letterstart == 1) {
       echo "[ <b>0-9</b> ] ";
    } elseif ($letter_taken["0"] != 1) {
@@ -127,9 +109,9 @@ function show_letters($letterstart,$doms)
    
    foreach (range('a','z') as $letter) {
       if ($letterstart === $letter) {
-         echo "[ <b>".$letter."</b> ] ";
+         echo "[ <span class=\"lettertaken\">".$letter."</span> ] ";
       } elseif ($letter_taken[$letter] != 1) {
-         echo "[ <span style=\"color:#999\">".$letter."</span> ] ";
+         echo "[ <span class=\"letternotavailble\">".$letter."</span> ] ";
       } else {
           echo "[ <a href=\"".$_SERVER["PHP_SELF"]."?letter=".$letter."\">".$letter."</a> ] ";
       }
@@ -146,9 +128,8 @@ function error($msg)
 	{
 		include_once("header.inc.php");
 	?>
-	<P><TABLE CLASS="error"><TR><TD CLASS="error"><H2><? echo _('Oops! An error occured!'); ?></H2>
-	<BR>
-	<FONT STYLE="font-weight: Bold"><?= nl2br($msg) ?><BR><BR><a href="javascript:history.go(-1)">&lt;&lt; <? echo _('back'); ?></a></FONT><BR></TD></TR></TABLE></P>
+	<p><? echo _('Oops! An error occured!'); ?></p>
+	<p><? echo nl2br($msg) ?></p>
 	<?
 		include_once("footer.inc.php");
 		die();

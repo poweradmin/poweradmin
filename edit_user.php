@@ -1,23 +1,5 @@
 <?php
 
-// +--------------------------------------------------------------------+
-// | PowerAdmin								|
-// +--------------------------------------------------------------------+
-// | Copyright (c) 1997-2002 The PowerAdmin Team			|
-// +--------------------------------------------------------------------+
-// | This source file is subject to the license carried by the overal	|
-// | program PowerAdmin as found on http://poweradmin.sf.net		|
-// | The PowerAdmin program falls under the QPL License:		|
-// | http://www.trolltech.com/developer/licensing/qpl.html		|
-// +--------------------------------------------------------------------+
-// | Authors: Roeland Nieuwenhuis <trancer <AT> trancer <DOT> nl>	|
-// |          Sjeemz <sjeemz <AT> sjeemz <DOT> nl>			|
-// +--------------------------------------------------------------------+
-
-//
-// $Id: edit_user.php,v 1.6 2002/12/10 01:29:47 azurazu Exp $
-//
-
 require_once("inc/toolkit.inc.php");
 
 if($_POST["commit"])
@@ -47,36 +29,59 @@ include_once("inc/header.inc.php");
 
 if (!level(10))
 {
-	error("You need user level 10 to view this page... How did you get here, anyway?");
+	error("You do not have the required access level.");
 }
-
 ?>
-<H2><? echo _('Edit user'); ?> "<?= get_fullname_from_userid($_GET["id"]) ?>"</H2>
+    <h2><? echo _('Edit user'); ?> "<? echo get_fullname_from_userid($_GET["id"]) ?>"</h2>
 <?
-if (level(10))
-{
-?>
-<FONT CLASS="nav"><BR><A HREF="users.php"><? echo _('User admin'); ?></A> &gt;&gt; <? echo _('Edit user'); ?></FONT><BR><BR>
-<?
-}
-
 $r = array();
 $r = get_user_info($_GET["id"]);
-
 ?>
-<FORM  METHOD="post">
-<TABLE BORDER="0" CELLSPACING="4">
-<TR><TD CLASS="tdbg"><? echo _('User name'); ?>:</TD><TD WIDTH="510" CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="username" VALUE="<?=$r["username"]?>"></TD></TR>
-<TR><TD CLASS="tdbg"><? echo _('Full name'); ?>:</TD><TD CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="fullname" VALUE="<?=$r["fullname"]?>"></TD></TR>
-<TR><TD CLASS="tdbg"><? echo _('Password'); ?>:</TD><TD CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="password" VALUE=""></TD></TR>
-<TR><TD CLASS="tdbg"><? echo _('E-mail'); ?>:</TD><TD CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="email" VALUE="<?=$r["email"]?>"></TD></TR>
-<TR><TD CLASS="tdbg"><? echo _('User level'); ?>:</TD><TD CLASS="tdbg"><SELECT NAME="level"><OPTION VALUE="1" <? if($r["level"] == 1) { echo "SELECTED"; } ?>>1 (<? echo _('Normal user'); ?>)</OPTION><OPTION VALUE="5" <? if($r["level"] == 5) { echo "SELECTED"; } ?>>5 (<? echo _('Administrator'); ?>)</OPTION><OPTION VALUE="10" <? if($r["level"] == 10) { echo "SELECTED"; } ?>>10 (<? echo _('Administrator w/ user admin rights'); ?>)</OPTION></SELECT></TD></TR>
-<TR><TD CLASS="tdbg"><? echo _('Description'); ?>:</TD><TD CLASS="tdbg"><TEXTAREA ROWS="6" COLS="30" CLASS="inputarea" NAME="description"><?=$r["description"]?></TEXTAREA></TD></TR>
-<TR><TD CLASS="tdbg"><? echo _('Active'); ?>:</TD><TD CLASS="tdbg"><INPUT TYPE="checkbox" NAME="active" VALUE="1" <? if($r["active"]) { ?>CHECKED<? } ?>></TD></TR>
-<TR><TD CLASS="tdbg">&nbsp;</TD><TD CLASS="tdbg"><INPUT TYPE="submit" CLASS="button" NAME="commit" VALUE="<? echo _('Commit changes'); ?>"></TD></TR>
-<INPUT TYPE="HIDDEN" NAME="number" VALUE="<?= $_GET["id"] ?>">
-</TABLE>
-</FORM>
+    <form method="post">
+     <input type="HIDDEN" name="number" value="<? echo $_GET["id"] ?>">
+     <table>
+      <tr>
+       <td class="n"><? echo _('User name'); ?>:</td>
+       <td class="n"><input type="text" class="input" name="username" value="<? echo $r["username"]?>"></td>
+      </tr>
+      <tr>
+       <td class="n"><? echo _('Full name'); ?>:</td>
+       <td class="n"><input type="text" class="input" name="fullname" value="<? echo $r["fullname"]?>"></td>
+      </tr>
+      <tr>
+       <td class="n"><? echo _('Password'); ?>:</td>
+       <td class="n"><input type="text" class="input" name="password" value=""></td>
+      </tr>
+      <tr>
+       <td class="n"><? echo _('E-mail'); ?>:</td>
+       <td class="n"><input type="text" class="input" name="email" value="<? echo $r["email"]?>"></td>
+      </tr>
+      <tr>
+       <td class="n"><? echo _('User level'); ?>:</td>
+       <td class="n">
+        <select name="level">
+	 <option value="1" <? if($r["level"] == 1) { echo "selectED"; } ?>>1 (<? echo _('Normal user'); ?>)</option>
+	 <option value="5" <? if($r["level"] == 5) { echo "selectED"; } ?>>5 (<? echo _('Administrator'); ?>)</option>
+	 <option value="10" <? if($r["level"] == 10) { echo "selectED"; } ?>>10 (<? echo _('Administrator w/ user admin rights'); ?>)</option>
+	</select>
+       </td>
+      </tr>
+      <tr>
+       <td class="n"><? echo _('Description'); ?>:</td>
+       <td class="n">
+        <textarea rows="6" cols="30" class="inputarea" name="description"><? echo $r["description"]?></textarea>
+       </td>
+      </tr>
+      <tr>
+       <td class="n"><? echo _('Active'); ?>:</td>
+       <td class="n"><input type="checkbox" name="active" value="1" <? if($r["active"]) { ?>CHECKED<? } ?>></td>
+      </tr>
+      <tr>
+       <td class="n">&nbsp;</td>
+       <td class="n"><input type="submit" class="button" name="commit" value="<? echo _('Commit changes'); ?>"></td>
+      </tr>
+     </table>
+    </form>
 <?
 
 include_once("inc/footer.inc.php");

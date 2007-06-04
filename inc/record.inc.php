@@ -192,6 +192,76 @@ function add_record($zoneid, $name, $type, $content, $ttl, $prio)
 }
 
 
+function add_supermaster($master_ip, $ns_name, $account)
+{
+        global $db;
+        if (!is_valid_ip($master_ip) && !is_valid_ip6($master_ip))
+        {
+                error(sprintf(ERR_INV_ARGC, "add_supermaster", "No or no valid ipv4 or ipv6 address given."));
+        }
+        if (!is_valid_hostname($ns_name))
+        {
+                error(ERR_DNS_HOSTNAME);
+        }
+	if (!validate_account($account))
+	{
+		error(sprintf(ERR_INV_ARGC, "add_supermaster", "given account name is invalid (alpha chars only)"));
+	}
+        if (supermaster_exists($master_ip))
+        {
+                error(sprintf(ERR_INV_ARGC, "add_supermaster", "supermaster already exists"));
+        }
+        else
+        {
+                $db->query("INSERT INTO supermasters VALUES ('$master_ip', '$ns_name', '$account')");
+                return true;
+        }
+}
+
+function delete_supermaster($master_ip)
+{
+        global $db;
+        if (!level(5))
+        {
+                error(ERR_LEVEL_5);
+        }
+        if (is_valid_ip($master_ip) || is_valid_ip6($master_ip))
+        {
+                $db->query("DELETE FROM supermasters WHERE ip = '$master_ip'");
+                return true;
+        }
+        else
+        {
+                error(sprintf(ERR_INV_ARGC, "delete_supermaster", "No or no valid ipv4 or ipv6 address given."));
+        }
+}
+
+function get_supermaster_info_from_ip($master_ip)
+{
+	global $db;
+        if (!level(5))
+        {
+                error(ERR_LEVEL_5);
+        }
+        if (is_valid_ip($master_ip) || is_valid_ip6($master_ip))
+	{
+	        $result = $db->queryRow("SELECT ip,nameserver,account FROM supermasters WHERE ip = '$master_ip'");
+
+		$ret = array(
+		"master_ip"	=>              $result["ip"],
+		"ns_name"	=>              $result["nameserver"],
+		"account"	=>              $result["account"]
+		);
+
+		return $ret;	
+	}
+        else
+	{
+                error(sprintf(ERR_INV_ARGC, "get_supermaster_info_from_ip", "No or no valid ipv4 or ipv6 address given."));
+        }
+}
+
+
 /*
  * Delete a record by a given id.
  * return values: true, this function is always succesful.
@@ -248,7 +318,7 @@ function delete_record($id)
  * remember to request nextID's from the database to be able to insert record.
  * if anything is invalid the function will error
  */
-function add_domain($domain, $owner, $webip, $mailip, $empty, $type)
+function add_domain($domain, $owner, $webip, $mailip, $empty, $type, $slave_master)
 {
 
 	global $db;
@@ -263,11 +333,12 @@ function add_domain($domain, $owner, $webip, $mailip, $empty, $type)
 	// empty is given and owner and domain
 	// OR
 	// the domain is an arpa record and owner is given
+	// OR
+	// the type is slave, domain, owner and slave_master are given
 	// THAN
 	// Continue this function
-	if (($domain && $owner && $webip && $mailip) || ($empty && $owner && $domain) || (eregi('in-addr.arpa', $domain) && $owner))
+	if (($domain && $owner && $webip && $mailip) || ($empty && $owner && $domain) || (eregi('in-addr.arpa', $domain) && $owner) || $type=="SLAVE" && $domain && $owner && $slave_master)
 	{
-                
                 // First insert zone into domain table
                 $db->query("INSERT INTO domains (name, type) VALUES ('$domain', '$type')");
 
@@ -280,59 +351,69 @@ function add_domain($domain, $owner, $webip, $mailip, $empty, $type)
                 // Second, insert into zones tables
                 $db->query("INSERT INTO zones (domain_id, owner) VALUES ('$iddomain', $owner)");
 
-                // Generate new timestamp. We need this one anyhow.
-                $now = time();
-
-		if ($empty && $iddomain)
+		if ($type == "SLAVE")
 		{
-                        // If we come into this if statement we dont want to apply templates.
-                        // Retrieve configuration settings.
-                        $ns1 = $GLOBALS["NS1"];
-                        $hm  = $GLOBALS["HOSTMASTER"];
-                        $ttl = $GLOBALS["DEFAULT_TTL"];
-
-                        // Build and execute query
-                        $sql = "INSERT INTO records (domain_id, name, content, type, ttl, prio, change_date) VALUES ('$iddomain', '$domain', '$ns1 $hm 1', 'SOA', $ttl, '', '$now')";
-                        $db->query($sql);
-
-                        // Done
-                        return true;
-		}
-		elseif ($iddomain)
-		{
-			// If we are here we want to apply templates.
-			global $template;
-
-			// Iterate over the template and apply it for each field.
-			foreach ($template as $r)
-			{
-				// Same type of if statement as previous.
-				if ((eregi('in-addr.arpa', $domain) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!eregi('in-addr.arpa', $domain)))
-				{
-					// Parse the template.
-					$name     = parse_template_value($r["name"], $domain, $webip, $mailip);
-					$type     = $r["type"];
-					$content  = parse_template_value($r["content"], $domain, $webip, $mailip);
-					$ttl      = $r["ttl"];
-					$prio     = $r["prio"];
-
-					// If no ttl is given, use the default.
-					if (!$ttl)
-					{
-						$ttl = $GLOBALS["DEFAULT_TTL"];
-					}
-
-					$sql = "INSERT INTO records (domain_id, name, content, type, ttl, prio, change_date) VALUES ('$iddomain', '$name','$content','$type','$ttl','$prio','$now')";
-					$db->query($sql);
-				}
-			}
-			// All done.
+			$db->query("UPDATE domains SET master = '$slave_master' WHERE id = '$iddomain';");
+			
+			// Done
 			return true;
-                 }
-                 else
-                 {
-			error(sprintf(ERR_INV_ARGC, "add_domain", "could not create zone"));
-                 }
+		}
+		else
+		{
+			// Generate new timestamp. We need this one anyhow.
+			$now = time();
+
+			if ($empty && $iddomain)
+			{
+				// If we come into this if statement we dont want to apply templates.
+				// Retrieve configuration settings.
+				$ns1 = $GLOBALS["NS1"];
+				$hm  = $GLOBALS["HOSTMASTER"];
+				$ttl = $GLOBALS["DEFAULT_TTL"];
+
+				// Build and execute query
+				$sql = "INSERT INTO records (domain_id, name, content, type, ttl, prio, change_date) VALUES ('$iddomain', '$domain', '$ns1 $hm 1', 'SOA', $ttl, '', '$now')";
+				$db->query($sql);
+
+				// Done
+				return true;
+			}
+			elseif ($iddomain)
+			{
+				// If we are here we want to apply templates.
+				global $template;
+
+				// Iterate over the template and apply it for each field.
+				foreach ($template as $r)
+				{
+					// Same type of if statement as previous.
+					if ((eregi('in-addr.arpa', $domain) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!eregi('in-addr.arpa', $domain)))
+					{
+						// Parse the template.
+						$name     = parse_template_value($r["name"], $domain, $webip, $mailip);
+						$type     = $r["type"];
+						$content  = parse_template_value($r["content"], $domain, $webip, $mailip);
+						$ttl      = $r["ttl"];
+						$prio     = $r["prio"];
+
+						// If no ttl is given, use the default.
+						if (!$ttl)
+						{
+							$ttl = $GLOBALS["DEFAULT_TTL"];
+						}
+
+						$sql = "INSERT INTO records (domain_id, name, content, type, ttl, prio, change_date) VALUES ('$iddomain', '$name','$content','$type','$ttl','$prio','$now')";
+						$db->query($sql);
+					}
+				}
+				// All done.
+				return true;
+			 }
+			 else
+			 {
+				error(sprintf(ERR_INV_ARGC, "add_domain", "could not create zone"));
+			 }
+		}
 	}
 	else
 	{
@@ -635,7 +716,9 @@ function get_domain_info_from_id($id)
 
 	if ($_SESSION[$id."_ispartial"] == 1) {
 	
-	$sqlq = "SELECT domains.name AS name,
+	$sqlq = "SELECT 
+	domains.type AS type,
+	domains.name AS name,
 	users.fullname AS owner,
 	count(record_owners.id) AS aantal
 	FROM domains, users, record_owners, records
@@ -653,6 +736,7 @@ function get_domain_info_from_id($id)
 	"name"          =>              $result["name"],
 	"ownerid"       =>              $_SESSION["userid"],
 	"owner"         =>              $result["owner"],
+	"type"		=>		$result["type"],
 	"numrec"        =>              $result["aantal"]
 	);
 
@@ -661,7 +745,9 @@ function get_domain_info_from_id($id)
 	} else{
 	
 		// Query that retrieves the information we need.
-		$sqlq = "SELECT domains.name AS name,
+		$sqlq = "SELECT 
+			domains.type AS type,
+			domains.name AS name,
 			min(zones.owner) AS ownerid,
 			users.fullname AS owner,
 			count(records.domain_id) AS aantal
@@ -682,6 +768,7 @@ function get_domain_info_from_id($id)
 		"name"          =>              $result["name"],
 		"ownerid"       =>              $result["ownerid"],
 		"owner"         =>              $result["owner"],
+		"type"          =>              $result["type"],
 		"numrec"        =>              $result["aantal"]
 		);
 		return $ret;
@@ -725,9 +812,58 @@ function domain_exists($domain)
 	}
 }
 
+function get_supermasters()
+{
+        global $db;
+        $result = $db->query("SELECT ip, nameserver, account FROM supermasters");
+        $ret = array();
+
+        if($result->numRows() == 0)
+        {
+                return -1;
+        }
+        else
+        {
+                while ($r = $result->fetchRow())
+                {
+                        $ret[] = array(
+                        "master_ip"     => $r["ip"],
+                        "ns_name"       => $r["nameserver"],
+                        "account"       => $r["account"],
+                        );
+                        return $ret;
+                }
+        }
+}
+
+function supermaster_exists($master_ip)
+{
+        global $db;
+        if (!level(5))
+        {
+                error(ERR_LEVEL_5);
+        }
+        if (is_valid_ip($master_ip) || is_valid_ip6($master_ip))
+        {
+                $result = $db->query("SELECT ip FROM supermasters WHERE ip = '$master_ip'");
+                if ($result->numRows() == 0)
+                {
+                        return false;
+                }
+                elseif ($result->numRows() >= 1)
+                {
+                        return true;
+                }
+        }
+        else
+        {
+                error(sprintf(ERR_INV_ARGC, "supermaster_exists", "No or no valid IPv4 or IPv6 address given."));
+        }
+}
+
 
 /*
- * Get all domains from the database.
+ * Get all domains from the database 
  * This function gets all the domains from the database unless a user id is below 5.
  * if a user id is below 5 this function will only retrieve records for that user.
  * return values: the array of domains or -1 if nothing is found.
@@ -1097,18 +1233,87 @@ function search_record($question)
 function get_domain_type($id)
 {
 	global $db;
-	$type = $db->queryOne("SELECT `type` FROM `domains` WHERE `id` = '".$id."'");
-	if($type == "")
+        if (is_numeric($id))
 	{
-		$type = "NATIVE";
-	}
-	return $type;
-    
+		$type = $db->queryOne("SELECT `type` FROM `domains` WHERE `id` = '".$id."'");
+		if($type == "")
+		{
+			$type = "NATIVE";
+		}
+		return $type;
+        }
+        else
+        {
+                error(sprintf(ERR_INV_ARG, "get_record_from_id", "no or no valid zoneid given"));
+        }
+}
+
+function get_domain_slave_master($id)
+{
+	global $db;
+        if (is_numeric($id))
+	{
+		$slave_master = $db->queryOne("SELECT `master` FROM `domains` WHERE `type` = 'SLAVE' and `id` = '".$id."'");
+		return $slave_master;
+        }
+        else
+        {
+                error(sprintf(ERR_INV_ARG, "get_domain_slave_master", "no or no valid zoneid given"));
+        }
 }
 
 function change_domain_type($type, $id)
 {
-    global $db;
-    $result = $db->query("UPDATE `domains` SET `type` = '" .$type. "' WHERE `id` = '".$id."'");
+	global $db;
+	unset($add);
+        if (is_numeric($id))
+	{
+		// It is not really neccesary to clear the master field if a 
+		// zone is not of the type "slave" as powerdns will ignore that
+		// fiedl, but it is cleaner anyway.
+		if ($type != "SLAVE")
+		{
+			$add = ", master=''";
+		}
+		$result = $db->query("UPDATE `domains` SET `type` = '" .$type. "'".$add." WHERE `id` = '".$id."'");
+	}
+        else
+        {
+                error(sprintf(ERR_INV_ARG, "change_domain_type", "no or no valid zoneid given"));
+        }
+}
+
+function change_domain_slave_master($id, $slave_master)
+{
+	global $db;
+        if (is_numeric($id))
+	{
+       		if (is_valid_ip($slave_master) || is_valid_ip6($slave_master))
+		{
+			$result = $db->query("UPDATE `domains` SET `master` = '" .$slave_master. "' WHERE `id` = '".$id."'");
+		}
+		else
+		{
+			error(sprintf(ERR_INV_ARGC, "change_domain_slave_master", "This is not a valid IPv4 or IPv6 address: $slave_master"));
+		}
+	}
+        else
+        {
+                error(sprintf(ERR_INV_ARG, "change_domain_type", "no or no valid zoneid given"));
+        }
+}
+
+
+function validate_account($account)
+{
+	
+  	if(preg_match("/^[A-Z0-9._-]+$/i",$account))
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 ?>

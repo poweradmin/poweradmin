@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-04-21 19:20+0200\n"
+"POT-Creation-Date: 2007-05-01 21:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,33 +20,34 @@ msgstr ""
 msgid "Add record to zone"
 msgstr ""
 
-#: add_record.php:32 edit.php:160 edit_record.php:61 index.php:73
+#: add_record.php:32 edit.php:206 edit_record.php:61 index.php:102
 #: search.php:40 users.php:49
 msgid "DNS Admin"
 msgstr ""
 
-#: add_record.php:32 add_record.php:53 edit.php:271
+#: add_record.php:32 add_record.php:53 edit.php:322
 msgid "Add record"
 msgstr ""
 
-#: add_record.php:37 edit.php:186 edit_record.php:67 index.php:119
+#: add_record.php:37 edit.php:232 edit_record.php:67 index.php:150
 #: search.php:78 search.php:121 users.php:72
 msgid "Name"
 msgstr ""
 
-#: add_record.php:37 edit.php:187 edit_record.php:67 search.php:122
+#: add_record.php:37 delete_domain.php:44 edit.php:233 edit_record.php:67
+#: index.php:151 search.php:122
 msgid "Type"
 msgstr ""
 
-#: add_record.php:37 edit.php:189 edit_record.php:67 search.php:124
+#: add_record.php:37 edit.php:235 edit_record.php:67 search.php:124
 msgid "Priority"
 msgstr ""
 
-#: add_record.php:37 edit.php:188 edit_record.php:67 search.php:123
+#: add_record.php:37 edit.php:234 edit_record.php:67 search.php:123
 msgid "Content"
 msgstr ""
 
-#: add_record.php:37 edit.php:190 edit_record.php:67 search.php:125
+#: add_record.php:37 edit.php:236 edit_record.php:67 search.php:125
 msgid "TTL"
 msgstr ""
 
@@ -54,28 +55,48 @@ msgstr ""
 msgid "Delete domain"
 msgstr ""
 
-#: delete_domain.php:39 index.php:119 index.php:174 search.php:80
+#: delete_domain.php:42 index.php:153 index.php:213 index.php:253
+#: search.php:80
 msgid "Owner"
 msgstr ""
 
-#: delete_domain.php:40
+#: delete_domain.php:45
 msgid "Number of records in zone"
 msgstr ""
 
-#: delete_domain.php:41 delete_record.php:38
+#: delete_domain.php:52
+#, php-format
+msgid "You are about to delete a slave domain of which the master nameserver, %s, is a supermaster. Deleting the zone now, will result in temporary removal only. Whenever the supermaster sends a notification for this zone, it will be added again!"
+msgstr ""
+
+#: delete_domain.php:57 delete_record.php:38 delete_supermaster.php:23
 msgid "Are you sure?"
 msgstr ""
 
-#: delete_domain.php:42 delete_record.php:39 delete_user.php:103
+#: delete_domain.php:59 delete_record.php:39 delete_supermaster.php:24
+#: delete_user.php:103
 msgid "Yes"
 msgstr ""
 
-#: delete_domain.php:42 delete_record.php:39 delete_user.php:103
+#: delete_domain.php:60 delete_record.php:39 delete_supermaster.php:24
+#: delete_user.php:103
 msgid "No"
 msgstr ""
 
-#: delete_record.php:31 edit.php:203 search.php:142
+#: delete_record.php:31 edit.php:249 search.php:142
 msgid "Delete record"
+msgstr ""
+
+#: delete_supermaster.php:20 index.php:312
+msgid "Delete supermaster"
+msgstr ""
+
+#: delete_supermaster.php:21 index.php:290 index.php:334
+msgid "My hostname in NS record"
+msgstr ""
+
+#: delete_supermaster.php:22 index.php:291 index.php:340
+msgid "Account"
 msgstr ""
 
 #: delete_user.php:54 users.php:79
@@ -98,63 +119,71 @@ msgstr ""
 msgid "domain(s), by deleting him you will also delete these domains"
 msgstr ""
 
-#: edit.php:52
+#: edit.php:54
 msgid "Edit domain"
 msgstr ""
 
-#: edit.php:58
+#: edit.php:60
 msgid "This domain isn't owned by anyone yet, please assign someone."
 msgstr ""
 
-#: edit.php:69
+#: edit.php:72
+msgid "Type of this domain is \"slave\", but there is no IP address for it's master given. Please specify!"
+msgstr ""
+
+#: edit.php:84
 msgid "Add an owner"
 msgstr ""
 
-#: edit.php:88
+#: edit.php:103
 msgid "Add"
 msgstr ""
 
-#: edit.php:101
+#: edit.php:116
 msgid "Current listed owners"
 msgstr ""
 
-#: edit.php:115
+#: edit.php:130
 msgid "Delete"
 msgstr ""
 
-#: edit.php:132
+#: edit.php:149
 msgid "Type of this domain"
 msgstr ""
 
-#: edit.php:136
+#: edit.php:156
 msgid "Change type"
 msgstr ""
 
-#: edit.php:152
+#: edit.php:172 edit.php:193
 msgid "Change"
 msgstr ""
 
-#: edit.php:162
+#: edit.php:183
+msgid "IP address of master NS"
+msgstr ""
+
+#: edit.php:208
 msgid "Number of records"
 msgstr ""
 
-#: edit.php:185
+#: edit.php:231
 msgid "Sub-owners"
 msgstr ""
 
-#: edit.php:202 edit_record.php:61 search.php:141
+#: edit.php:248 edit_record.php:61 search.php:141
 msgid "Edit record"
 msgstr ""
 
-#: edit.php:241
+#: edit.php:289
 msgid "No records for this domain."
 msgstr ""
 
-#: edit.php:262
+#: edit.php:313
 msgid "Assign to user"
 msgstr ""
 
-#: edit.php:276 index.php:143 search.php:91
+#: edit.php:329 index.php:178 search.php:91
 msgid "Delete zone"
 msgstr ""
 
@@ -182,7 +211,7 @@ msgstr ""
 msgid "Edit user"
 msgstr ""
 
-#: edit_user.php:59 index.php:79 search.php:44 users.php:47
+#: edit_user.php:59 index.php:108 search.php:44 users.php:47
 msgid "User admin"
 msgstr ""
 
@@ -190,11 +219,11 @@ msgstr ""
 msgid "User name"
 msgstr ""
 
-#: edit_user.php:70 install.php:204 users.php:100
+#: edit_user.php:70 install.php:201 users.php:100
 msgid "Full name"
 msgstr ""
 
-#: edit_user.php:71 install.php:203 users.php:101 inc/auth.inc.php:97
+#: edit_user.php:71 install.php:200 users.php:101 inc/auth.inc.php:97
 msgid "Password"
 msgstr ""
 
@@ -206,165 +235,193 @@ msgstr ""
 msgid "User level"
 msgstr ""
 
-#: edit_user.php:73 inc/config-me.inc.php:84
+#: edit_user.php:73 inc/config-me.inc.php:88
 msgid "Normal user"
 msgstr ""
 
-#: edit_user.php:73 inc/config-me.inc.php:85
+#: edit_user.php:73 inc/config-me.inc.php:89
 msgid "Administrator"
 msgstr ""
 
-#: edit_user.php:73 inc/config-me.inc.php:86
+#: edit_user.php:73 inc/config-me.inc.php:90
 msgid "Administrator w/ user admin rights"
 msgstr ""
 
-#: edit_user.php:74 install.php:206 users.php:104
+#: edit_user.php:74 install.php:203 users.php:104
 msgid "Description"
 msgstr ""
 
-#: edit_user.php:75 users.php:105 inc/toolkit.inc.php:270
+#: edit_user.php:75 users.php:105 inc/toolkit.inc.php:275
 msgid "Active"
 msgstr ""
 
-#: index.php:82 users.php:49
+#: index.php:111 users.php:49
 msgid "Search records"
 msgstr ""
 
-#: index.php:86
+#: index.php:115
 msgid "Welcome"
 msgstr ""
 
-#: index.php:89
+#: index.php:118
 msgid "Your userlevel is"
 msgstr ""
 
-#: index.php:95 users.php:59
+#: index.php:124 users.php:59
 msgid "Error"
 msgstr ""
 
-#: index.php:99
+#: index.php:128
 msgid "Current domains in DNS (click to view or edit)"
 msgstr ""
 
-#: index.php:105
+#: index.php:134
 msgid "Number of domains"
 msgstr ""
 
-#: index.php:119 search.php:79
+#: index.php:152 search.php:79
 msgid "Records"
 msgstr ""
 
-#: index.php:131
+#: index.php:166
 msgid "No domains in this listing, sorry."
 msgstr ""
 
-#: index.php:158
+#: index.php:198
 msgid "You only administer some records of domains marked with an (*)."
 msgstr ""
 
-#: index.php:169
-msgid "Create new domain"
+#: index.php:208
+msgid "Create new master domain"
 msgstr ""
 
-#: index.php:171
+#: index.php:210 index.php:241
 msgid "Domain name"
 msgstr ""
 
-#: index.php:172
+#: index.php:211
 msgid "Web IP"
 msgstr ""
 
-#: index.php:173
+#: index.php:212
 msgid "Mail IP"
 msgstr ""
 
-#: index.php:188
+#: index.php:223
 msgid "Domain type"
 msgstr ""
 
-#: index.php:199
+#: index.php:229
 msgid "Create zone without"
 msgstr ""
 
-#: index.php:199
+#: index.php:229
 msgid "applying records-template"
 msgstr ""
 
-#: index.php:200
+#: index.php:230 index.php:268
 msgid "Add domain"
 msgstr ""
 
-#: index.php:209 index.php:214
+#: index.php:238
+msgid "Create new slave domain"
+msgstr ""
+
+#: index.php:247
+msgid "IP of master NS"
+msgstr ""
+
+#: index.php:284
+msgid "Current supermasters"
+msgstr ""
+
+#: index.php:285
+msgid "Number of supermasters"
+msgstr ""
+
+#: index.php:289 index.php:328
+msgid "IP address of supermaster"
+msgstr ""
+
+#: index.php:300
+msgid "No supermasters in this listing, sorry."
+msgstr ""
+
+#: index.php:325 index.php:348
+msgid "Add supermaster"
+msgstr ""
+
+#: index.php:359 index.php:364
 msgid "Change password"
 msgstr ""
 
-#: index.php:211
+#: index.php:361
 msgid "Current password"
 msgstr ""
 
-#: index.php:212 index.php:213
+#: index.php:362 index.php:363
 msgid "New password"
 msgstr ""
 
-#: install.php:63 inc/database.inc.php:31 inc/toolkit.inc.php:149
+#: install.php:63 inc/database.inc.php:31 inc/toolkit.inc.php:154
 msgid "Oops! An error occured!"
 msgstr ""
 
-#: install.php:171
+#: install.php:168
 msgid "PowerAdmin has succesfully been installed."
 msgstr ""
 
-#: install.php:173
+#: install.php:170
 msgid "Remove this file (install.php) from your webdir."
 msgstr ""
 
-#: install.php:174
+#: install.php:171
 msgid "WARNING"
 msgstr ""
 
-#: install.php:174
+#: install.php:171
 msgid "PowerAdmin will not work until you delete install.php"
 msgstr ""
 
-#: install.php:176
+#: install.php:173
 msgid "You can click"
 msgstr ""
 
-#: install.php:176
+#: install.php:173
 msgid "to start using PowerAdmin"
 msgstr ""
 
-#: install.php:185
+#: install.php:182
 msgid "You didnt fill in one of the required fields!"
 msgstr ""
 
-#: install.php:193 inc/auth.inc.php:86
+#: install.php:190 inc/auth.inc.php:86
 msgid "PowerAdmin for PowerDNS"
 msgstr ""
 
-#: install.php:195
+#: install.php:192
 msgid ""
 "This config file will setup your database to be ready for PowerAdmin. Please fill in the next fields which will create an\n"
 "administrator login."
 msgstr ""
 
-#: install.php:197
+#: install.php:194
 msgid "Fields marked with a"
 msgstr ""
 
-#: install.php:197
+#: install.php:194
 msgid "are required."
 msgstr ""
 
-#: install.php:202
+#: install.php:199
 msgid "Login Name"
 msgstr ""
 
-#: install.php:205
+#: install.php:202
 msgid "Email"
 msgstr ""
 
-#: install.php:207
+#: install.php:204
 msgid "Make Account"
 msgstr ""
 
@@ -400,7 +457,7 @@ msgstr ""
 msgid "Not all tables are ok!"
 msgstr ""
 
-#: test_setup.php:62 inc/toolkit.inc.php:181
+#: test_setup.php:62 inc/toolkit.inc.php:186
 msgid "Successful!"
 msgstr ""
 
@@ -476,7 +533,7 @@ msgstr ""
 msgid "You have logged out."
 msgstr ""
 
-#: inc/database.inc.php:33 inc/toolkit.inc.php:151 inc/toolkit.inc.php:187
+#: inc/database.inc.php:33 inc/toolkit.inc.php:156 inc/toolkit.inc.php:192
 msgid "back"
 msgstr ""
 
@@ -619,18 +676,18 @@ msgstr ""
 msgid "You have to remove migrator.php before this program will run"
 msgstr ""
 
-#: inc/toolkit.inc.php:91
+#: inc/toolkit.inc.php:96
 msgid "Show page"
 msgstr ""
 
-#: inc/toolkit.inc.php:119
+#: inc/toolkit.inc.php:124
 msgid "Show domains beginning with:"
 msgstr ""
 
-#: inc/toolkit.inc.php:170
+#: inc/toolkit.inc.php:175
 msgid "Success!"
 msgstr ""
 
-#: inc/toolkit.inc.php:266
+#: inc/toolkit.inc.php:271
 msgid "Inactive"
 msgstr ""
