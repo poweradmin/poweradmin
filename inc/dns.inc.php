@@ -1,34 +1,10 @@
 <?
 
-// +--------------------------------------------------------------------+
-// | PowerAdmin                                                         |
-// +--------------------------------------------------------------------+
-// | Copyright (c) 1997-2002 The PowerAdmin Team                        |
-// +--------------------------------------------------------------------+
-// | This source file is subject to the license carried by the overal   |
-// | program PowerAdmin as found on http://poweradmin.sf.net            |
-// | The PowerAdmin program falls under the QPL License:                |
-// | http://www.trolltech.com/developer/licensing/qpl.html              |
-// +--------------------------------------------------------------------+
-// | Authors: Roeland Nieuwenhuis <trancer <AT> trancer <DOT> nl>       |
-// |          Sjeemz <sjeemz <AT> sjeemz <DOT> nl>                      |
-// +--------------------------------------------------------------------+
-
-// Filename: dns.inc.php
-// Startdate: 26-10-2002
-// Description: checks whether a given content is valid.
-// A lot of DNS Record features are found to be here and also are to be placed here.
-// If they are authorized this code handles that they can access stuff.
-//
-// $Id: dns.inc.php,v 1.23 2003/02/23 21:31:13 azurazu Exp $
-//
-
-
 /*
  * Validates an IPv4 IP.
  * returns true if valid.
  */
-function validate_input($recordid, $zoneid, $type, &$content, &$name, &$prio, &$ttl)
+function validate_input($zoneid, $type, &$content, &$name, &$prio, &$ttl)
 {
 	global $db;
 
