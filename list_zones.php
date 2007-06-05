@@ -4,7 +4,7 @@ require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
 $all_doms = get_domains(0);
-$num_all_domains = count($all_doms);
+$num_all_domains = ($all_doms == -1) ? 0 : count($all_doms);
 $doms = get_domains(0,LETTERSTART);
 show_pages(count($doms),ROWAMOUNT);
 ?>

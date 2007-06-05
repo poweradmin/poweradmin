@@ -14,16 +14,7 @@ else
 {
 
 	$supermasters = get_supermasters(0);
-	$num_supermasters = count($supermasters);
-	if ($supermasters < 0)
-	{
-		$num_supermasters = "0";
-	}
-	else
-	{
-		$num_supermasters = count($supermasters);
-	}
-
+	$num_supermasters = ($supermasters == -1) ? 0 : count($supermasters);
 	?>
 
 	   <h3><? printf(_('List all %s supermasters'), $num_supermasters); ?></h3>
