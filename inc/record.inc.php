@@ -134,7 +134,7 @@ function edit_record($recordid, $zoneid, $name, $type, $content, $ttl, $prio)
 	}
 	if (is_numeric($zoneid))
 	{
-		validate_input($recordid, $zoneid, $type, $content, $name, $prio, $ttl);
+		validate_input($zoneid, $type, $content, $name, $prio, $ttl);
                 $change = time();
                 $db->query("UPDATE records set name='$name', type='$type', content='$content', ttl='$ttl', prio='$prio', change_date='$change' WHERE id=$recordid");
 		
