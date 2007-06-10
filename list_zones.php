@@ -6,10 +6,13 @@ include_once("inc/header.inc.php");
 $all_doms = get_domains(0);
 $num_all_domains = ($all_doms == -1) ? 0 : count($all_doms);
 $doms = get_domains(0,LETTERSTART);
-show_pages(count($doms),ROWAMOUNT);
 ?>
    <h2><? echo _('List zones'); ?></h2>
 <?
+	echo "<div class=\"showmax\">";
+	show_pages(count($doms),ROWAMOUNT);
+	echo "</div>";
+
 if ($num_all_domains > ROWAMOUNT) 
 {
 	echo "<div class=\"showmax\">";
