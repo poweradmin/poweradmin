@@ -889,71 +889,70 @@ function get_domains($userid=true,$letterstart=all,$rowstart=0,$rowamount=999999
 	LEFT JOIN records ON records.domain_id=domains.id
 	WHERE 1 $add ";
 	if ($letterstart!=all && $letterstart!=1) {
-	   $sqlq.=" AND domains.name LIKE '".$letterstart."%' ";
+	   $sqlq.=" AND substring(domains.name,1,1) REGEXP '^".$letterstart."' ";
 	} elseif ($letterstart==1) {
-	      $sqlq.=" AND ";
-	   for ($i=0;$i<=9;$i++) {
-	      $sqlq.="domains.name LIKE '".$i."%'";
-	      if ($i!=9) $sqlq.=" OR ";
-	   }
+	   $sqlq.=" AND substring(domains.name,1,1) REGEXP '^[[:digit:]]'";
 	}
 	$sqlq.=" GROUP BY domainname, domain_id
 	ORDER BY domainname
 	LIMIT $rowstart,$rowamount";
 
 	$result = $db->query($sqlq);
-	$result2 = $db->query($sqlq);
-
-	$andnot="";
-	while($r = $result2->fetchRow()) {
-	   $andnot.=" AND domains.id!= '".$r["domain_id"]."' ";
+	$result2 = $db->query($sqlq); 
+	
+	$numrows = $result2->numRows();
+	$i=1;
+	if ($numrows > 0) {
+		$andnot=" AND NOT domains.id IN (";
+		while($r = $result2->fetchRow()) {
+			$andnot.=$r["domain_id"];
+			if ($i < $numrows) {
+				$andnot.=",";
+				$i++;
+			}
+		}
+		$andnot.=")";
 	}
-
-if ($letterstart!=all && $letterstart!=1) {
-
-	$sqlq = "SELECT domains.id AS domain_id,
-	count(DISTINCT record_owners.record_id) AS aantal,
-	domains.name AS domainname
-	FROM domains, record_owners,records, zones
-	WHERE record_owners.user_id = '".$_SESSION["userid"]."'
-	AND (records.id = record_owners.record_id
-	AND domains.id = records.domain_id)
-	$andnot 
-	AND domains.name LIKE '".$letterstart."%' 
-	AND (zones.domain_id != records.domain_id AND zones.owner!='".$_SESSION["userid"]."')
-	GROUP BY domainname, domain_id
-	ORDER BY domainname";
-
-	$result_extra = $db->query($sqlq);
-
-} else {
-
-   for ($i=0;$i<=9;$i++) {
-        $sqlq = "SELECT domains.id AS domain_id,
-        count(DISTINCT record_owners.record_id) AS aantal,
-        domains.name AS domainname
-        FROM domains, record_owners,records, zones
-        WHERE record_owners.user_id = '".$_SESSION["userid"]."'
-        AND (records.id = record_owners.record_id
-        AND domains.id = records.domain_id)
-        $andnot 
-        AND domains.name LIKE '".$i."%' 
-        AND (zones.domain_id != records.domain_id AND zones.owner!='".$_SESSION["userid"]."')
-        GROUP BY domainname, domain_id
-        ORDER BY domainname";
-
-        $result_extra[$i] = $db->query($sqlq);
-   }
-
-}
-
-/*
-	if ($result->numRows() == 0)
+	else
 	{
-		// Nothing found.
-		return -1;
+		$andnot="";
 	}
-*/
+
+	if ($letterstart!=all && $letterstart!=1) {
+
+		$sqlq = "SELECT domains.id AS domain_id,
+		count(DISTINCT record_owners.record_id) AS aantal,
+		domains.name AS domainname
+		FROM domains, record_owners,records, zones
+		WHERE record_owners.user_id = '".$_SESSION["userid"]."'
+		AND (records.id = record_owners.record_id
+		AND domains.id = records.domain_id)
+		$andnot 
+		AND domains.name LIKE '".$letterstart."%' 
+		AND (zones.domain_id != records.domain_id AND zones.owner!='".$_SESSION["userid"]."')
+		GROUP BY domainname, domain_id
+		ORDER BY domainname";
+
+		$result_extra = $db->query($sqlq);
+
+	} else {
+
+		$sqlq = "SELECT domains.id AS domain_id,
+		count(DISTINCT record_owners.record_id) AS aantal,
+		domains.name AS domainname
+		FROM domains, record_owners,records, zones
+		WHERE record_owners.user_id = '".$_SESSION["userid"]."'
+		AND (records.id = record_owners.record_id
+		AND domains.id = records.domain_id)
+		$andnot 
+		AND substring(domains.name,1,1) REGEXP '^[[:digit:]]'
+		AND (zones.domain_id != records.domain_id AND zones.owner!='".$_SESSION["userid"]."')
+		GROUP BY domainname, domain_id
+		ORDER BY domainname";
+
+		$result_extra[$i] = $db->query($sqlq);
+
+	}
 
 	while($r = $result->fetchRow())
 	{
@@ -967,42 +966,42 @@ if ($letterstart!=all && $letterstart!=1) {
 	}
 
 
-if ($letterstart!=all && $letterstart!=1) {
+	if ($letterstart!=all && $letterstart!=1) {
 
-	while($r = $result_extra->fetchRow())
-        {
-               $ret[$r["domainname"]] = array(
-	       "name"          =>              $r["domainname"]."*",
-               "id"            =>              $r["domain_id"],
-               "owner"         =>              $_SESSION["userid"],
-               "numrec"        =>              $r["aantal"]
-               );
-	       $_SESSION["partial_".$r["domainname"]] = 1;
-        }
+		while($r = $result_extra->fetchRow())
+		{
+		       $ret[$r["domainname"]] = array(
+		       "name"          =>              $r["domainname"]."*",
+		       "id"            =>              $r["domain_id"],
+		       "owner"         =>              $_SESSION["userid"],
+		       "numrec"        =>              $r["aantal"]
+		       );
+		       $_SESSION["partial_".$r["domainname"]] = 1;
+		}
 
-} else {
+	} else {
 
-	foreach ($result_extra as $result_e) {
-        while($r = $result_e->fetchRow())
-        {
-               $ret[$r["domainname"]] = array(
-               "name"          =>              $r["domainname"]."*",
-               "id"            =>              $r["domain_id"],
-               "owner"         =>              $_SESSION["userid"],
-               "numrec"        =>              $r["aantal"]
-               );
-	       $_SESSION["partial_".$r["domainname"]] = 1;
-        }
+		foreach ($result_extra as $result_e) {
+		while($r = $result_e->fetchRow())
+		{
+		       $ret[$r["domainname"]] = array(
+		       "name"          =>              $r["domainname"]."*",
+		       "id"            =>              $r["domain_id"],
+		       "owner"         =>              $_SESSION["userid"],
+		       "numrec"        =>              $r["aantal"]
+		       );
+		       $_SESSION["partial_".$r["domainname"]] = 1;
+		}
+		}
+
 	}
 
-}
-
-if (empty($ret)) {
-   return -1;
-} else {
-   sort($ret);
-   return $ret;
-}
+	if (empty($ret)) {
+	   return -1;
+	} else {
+	   sort($ret);
+	   return $ret;
+	}
 
 }
 
