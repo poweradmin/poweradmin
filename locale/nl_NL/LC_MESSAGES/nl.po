@@ -25,7 +25,7 @@ msgstr "Record toevoegen aan zone"
 msgid "Name"
 msgstr "Naam"
 
-#: add_record.php:24 delete_domain.php:26 edit.php:227 edit_record.php:67
+#: add_record.php:24 delete_zone.php:26 edit.php:227 edit_record.php:67
 #: list_zones.php:24 search.php:100
 msgid "Type"
 msgstr "Type"
@@ -99,7 +99,7 @@ msgstr "IP adres van webserver"
 msgid "Mail IP"
 msgstr "IP adres van mailserver"
 
-#: add_zone_master.php:87 add_zone_slave.php:71 delete_domain.php:24
+#: add_zone_master.php:87 add_zone_slave.php:71 delete_zone.php:24
 #: list_zones.php:26 search.php:47
 msgid "Owner"
 msgstr "Eigenaar"
@@ -144,29 +144,29 @@ msgstr "Wijzig wachtwoord"
 msgid "Credits"
 msgstr "Credits"
 
-#: delete_domain.php:20 users.php:77
+#: delete_zone.php:20 users.php:77
 msgid "Delete zone"
 msgstr "Verwijder zone"
 
-#: delete_domain.php:27
+#: delete_zone.php:27
 msgid "Number of records in zone"
 msgstr "Aantal records in zone"
 
-#: delete_domain.php:34
+#: delete_zone.php:34
 #, php-format
 msgid "You are about to delete a slave zone of which the master nameserver, %s, is a supermaster. Deleting the zone now, will result in temporary removal only. Whenever the supermaster sends a notification for this zone, it will be added again!"
 msgstr "U wilt een slave zone verwijderen waarvan de master nameserver, %s, een supermaster is. Verwijdering van de zone zal enkel tot tijdelijke verwijdering leiden. Zodra de supermaster een notificatie stuurt, wordt deze zone opnieuw toegevoegd."
 
-#: delete_domain.php:39 delete_record.php:22 delete_supermaster.php:24
+#: delete_zone.php:39 delete_record.php:22 delete_supermaster.php:24
 msgid "Are you sure?"
 msgstr "Weet u het zeker?"
 
-#: delete_domain.php:41 delete_record.php:23 delete_supermaster.php:25
+#: delete_zone.php:41 delete_record.php:23 delete_supermaster.php:25
 #: delete_user.php:94
 msgid "Yes"
 msgstr "Ja"
 
-#: delete_domain.php:42 delete_record.php:24 delete_supermaster.php:26
+#: delete_zone.php:42 delete_record.php:24 delete_supermaster.php:26
 #: delete_user.php:94
 msgid "No"
 msgstr "Nee"
@@ -204,7 +204,7 @@ msgid " zones, by deleting him you will also delete these zones."
 msgstr " zones. Met het verwijderen van de gebruiker verwijdert u ook deze zones."
 
 #: edit.php:49
-msgid "Type of this domain is \"slave\", but there is no IP address for it's master given."
+msgid "Type of this zone is \"slave\", but there is no IP address for it's master given."
 msgstr "Het type van deze zone is \"slave\", maar er is geen IP adres voor de master opgegeven."
 
 #: edit.php:56
@@ -447,7 +447,7 @@ msgid "Search"
 msgstr "Zoek"
 
 #: search.php:41
-msgid "Domains found"
+msgid "Zones found"
 msgstr "Gevonden zones"
 
 #: search.php:94
@@ -499,7 +499,7 @@ msgid "Current users"
 msgstr "Huidige gebruikers"
 
 #: users.php:58
-msgid "Domains"
+msgid "Zones"
 msgstr "Zones"
 
 #: users.php:59
@@ -568,7 +568,7 @@ msgid "You are not allowed to delete %s records"
 msgstr "U heeft onvoldoende rechten voor verwijderen van %s records."
 
 #: inc/error.inc.php:40
-msgid "This is an invalid domain name"
+msgid "This is an invalid zone name"
 msgstr "Dit is een ongeldige zone naam."
 
 #: inc/error.inc.php:43
@@ -690,7 +690,7 @@ msgid "Show page"
 msgstr "Toon pagina"
 
 #: inc/toolkit.inc.php:101
-msgid "Show domains beginning with:"
+msgid "Show zones beginning with:"
 msgstr "Toon zones beginnend met:"
 
 #: inc/toolkit.inc.php:151

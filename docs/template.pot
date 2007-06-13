@@ -117,7 +117,7 @@ msgid "Create zone without applying records-template"
 msgstr ""
 
 #: add_zone_master.php:119 add_zone_slave.php:86
-msgid "Add domain"
+msgid "Add zone"
 msgstr ""
 
 #: add_zone_slave.php:35
@@ -465,7 +465,7 @@ msgid "Search"
 msgstr ""
 
 #: search.php:41
-msgid "Domains found"
+msgid "Zones found"
 msgstr ""
 
 #: search.php:94
@@ -517,7 +517,7 @@ msgid "Current users"
 msgstr ""
 
 #: users.php:58
-msgid "Domains"
+msgid "Zones"
 msgstr ""
 
 #: users.php:59

@@ -116,7 +116,7 @@ include_once("inc/header.inc.php");
           <tr>
 	   <td class="n">&nbsp;</td>
 	   <td class="n">
-	    <input type="submit" class="button" name="submit" value="<? echo _('Add domain'); ?>">
+	    <input type="submit" class="button" name="submit" value="<? echo _('Add zone'); ?>">
 	   </td>
 	  </tr>
          </table>
@@ -124,4 +124,4 @@ include_once("inc/header.inc.php");
 <?
 
 include_once("inc/footer.inc.php");
-?>
+>
