@@ -77,9 +77,9 @@ else
 }
 ?>
      <td class="y"><? echo $c["name"] ?></td>
-     <td class="y"><? echo strtolower(get_domain_type( $c["id"])) ?></td>
+     <td class="y"><? echo strtolower(get_domain_type($c["id"])) ?></td>
      <td class="y"><? echo $c["numrec"] ?></td>
-     <td class="y"><? echo get_owner_from_id($c["owner"]) ?></td>
+     <td class="y"><? echo get_owners_from_domainid($c["id"]) ?></td>
     </tr><?
 		print "\n";
 	}

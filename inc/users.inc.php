@@ -364,4 +364,32 @@ function get_owner_from_id($id)
 	}
 	error(ERR_INV_ARG);
 }
+
+/**
+ * get_owners_from_domainid
+ *
+ * @todo also fetch the subowners
+ * @param $id integer the id of the domain
+ * @return String the list of owners for this domain
+ */
+function get_owners_from_domainid($id) {
+      
+      global $db;
+      if (is_numeric($id))
+      {
+              $result = $db->query("SELECT users.id, users.fullname FROM users, zones WHERE zones.domain_id=$id AND zones.owner=users.id ORDER by fullname");
+              if ($result->numRows() == 0)
+              {
+                      error(ERR_USER_NOT_EXIST);
+              } else {
+                      $names = array();
+                      while ($r = $result->fetchRow()) {
+                              $names[] = $r['fullname'];
+                      }
+                      return implode(', ', $names);
+              }
+      }
+      error(ERR_INV_ARG);
+}
+
 ?>
