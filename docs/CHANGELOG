@@ -1,4 +1,12 @@
-CHANGES between 1.4.0 and 1.3.0
+CHANGES between current revision and revision 62
+-----------------------------------------------------------------------
+
+For the time being, please check:
+
+  https://rejo.zenger.nl/poweradmin/svn-log.txt
+
+
+CHANGES between revision 61 and orginal 1.2.7-patched
 -----------------------------------------------------------------------
 
 - Removed a few bugs in the 1.3.0 release.
@@ -21,9 +29,6 @@ CHANGES between 1.4.0 and 1.3.0
 - Added a page with credits to the original authors.
 
 - Removed all PHP shorttags.
-
-CHANGES between 1.3.0 and 1.2.7-patched
------------------------------------------------------------------------
 
 - Updated the "database abstraction layer" from an outdated version of
   the unmaintained PEAR::DB module to the most recent version of
