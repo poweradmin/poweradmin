@@ -83,7 +83,7 @@ $ALLOW_NS_EDIT = 1;
 // $DEFAULT_TTL
 // Default TTL for records.
 // Default time to live for all records. This notation is in seconds.
-$DEFAULT_TTL = 3600;      // (3600 seconds / 1 hour by default)
+$DEFAULT_TTL = 86400;      // (3600 seconds / 1 hour by default)
 
 
 // $NAME_LEVEL_X

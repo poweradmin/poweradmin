@@ -9,7 +9,7 @@ if(is_object($db))
 ?>
   </div> <!-- /content -->
   <div class="footer">
-   <strong>poweradmin</strong> version 1.4.0 - <a href="credits.php"><? echo _('credits'); ?></a>
+   <strong>poweradmin</strong> revision $LastChangedRevision$ (changed by $LastChangedBy$) - <a href="credits.php"><? echo _('credits'); ?></a>
   </div>
 <?
 if(file_exists('inc/custom_footer.inc.php')) 

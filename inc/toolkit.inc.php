@@ -5,7 +5,7 @@ session_start();
  * Constants  *
   *************/
 
-define(ROWAMOUNT, 500);
+define(ROWAMOUNT, 50);
 
 if (isset($_GET["start"])) {
    define(ROWSTART, (($_GET["start"] - 1) * ROWAMOUNT));
