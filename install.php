@@ -1,26 +1,5 @@
 <?php
 
-// +--------------------------------------------------------------------+
-// | PowerAdmin								|
-// +--------------------------------------------------------------------+
-// | Copyright (c) 1997-2002 The PowerAdmin Team			|
-// +--------------------------------------------------------------------+
-// | This source file is subject to the license carried by the overal	|
-// | program PowerAdmin as found on http://poweradmin.sf.net		|
-// | The PowerAdmin program falls under the QPL License:		|
-// | http://www.trolltech.com/developer/licensing/qpl.html		|
-// +--------------------------------------------------------------------+
-// | Authors: Roeland Nieuwenhuis <trancer <AT> trancer <DOT> nl>	|
-// |          Sjeemz <sjeemz <AT> sjeemz <DOT> nl>			|
-// | Add-ons: Wim Mostrey <wim <AT> mostrey <DOT> be>                   |
-// +--------------------------------------------------------------------+
-
-// Filename: install.php
-// Description: installs your PowerAdmin
-//
-// $Id: install.php,v 1.12 2003/01/07 23:29:24 lyon Exp $
-//
-
 // addslashes to vars if magic_quotes_gpc is off
 function slash_input_data(&$data)
 {
@@ -97,6 +76,12 @@ if(isset($_POST["submit"]))
 				  comment text,
 				  PRIMARY KEY  (id)
 				) TYPE=InnoDB";
+                $sqlrecowns =   "CREATE TABLE record_owners (
+                                  id int(11) NOT NULL auto_increment,
+                                  user_id int(11) NOT NULL default '0',
+                                  record_id int(11) NOT NULL default '0',
+                                  PRIMARY KEY  (id)
+                                ) TYPE=InnoDB";
 	}
 
 	// PGSQL Is trivial still, the relations are different.
@@ -118,6 +103,11 @@ if(isset($_POST["submit"]))
 				owner smallint NOT NULL,
 				comment text NULL
 				)";
+                $sqlrecowns =   "CREATE TABLE record_owners (
+                                id SERIAL PRIMARY KEY,
+                                user_id smallint NOT NULL,
+                                record_id smallint NOT NULL
+                                )";
 	}
 
 	if(!empty($_POST['login']) && !empty($_POST['password']) && !empty($_POST['fullname']) && !empty($_POST['email']))
@@ -141,7 +131,13 @@ if(isset($_POST["submit"]))
 		{
 			error("Can not create zones table in $dbdatabase");
 		}
+                $reszones = $db->query($sqlrecowns);
 
+                if($db->isError($reszones))
+                {
+                        error("Can not create record_owners table in $dbdatabase");
+                }
+		
 		$sqlinsert =	"INSERT INTO 
 					users 
 					(username, password, fullname, email, description, level, active)
