@@ -1007,6 +1007,37 @@ function get_domains($userid=true,$letterstart=all,$rowstart=0,$rowamount=999999
 
 
 /*
+ * zone_count
+ * Does a select query to count how many zones we have in the database
+ *
+ * @todo: see whether or not it is possible to add the records
+ * @param $userid integer The userid of the current user
+ * @return integer the number of zones
+ */
+
+function zone_count($userid=true, $letterstart=all) {
+        global $db;
+        if((!level(5) || !$userid) && !level(10) && !level(5))
+        {
+                $add = " AND zones.owner=".$_SESSION["userid"];
+        }
+        else
+        {
+                $add = "";
+        }
+
+        if ($letterstart!=all && $letterstart!=1) {
+           $add .=" AND domains.name LIKE '".$letterstart."%' ";
+        } elseif ($letterstart==1) {
+           $add .=" AND substring(domains.name,1,1) REGEXP '^[[:digit:]]'";
+        }
+
+        $query = 'SELECT count(distinct zones.domain_id) as zone_count FROM zones, domains WHERE zones.domain_id = domains.id '.$add;
+        $numRows = $db->queryOne($query);
+        return $numRows;
+}
+
+/*
  * Get a record from an id.
  * Retrieve all fields of the record and send it back to the function caller.
  * return values: the array with information, or -1 is nothing is found.
