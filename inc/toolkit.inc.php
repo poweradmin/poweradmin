@@ -99,7 +99,7 @@ function show_letters($letterstart,$userid=true)
 	}
 	elseif (zone_letter_start($letter,$userid))
 	{
-		echo "[ <a href=\"".$_SERVER["PHP_SELF"]."?letter=0\">0-9</a> ] ";
+		echo "[ <a href=\"".$_SERVER["PHP_SELF"]."?letter=1\">0-9</a> ] ";
 	}
 	else
 	{
