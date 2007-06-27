@@ -3,21 +3,20 @@ require_once("inc/i18n.inc.php");
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
-$all_doms = get_domains(0);
-$num_all_domains = ($all_doms == -1) ? 0 : count($all_doms);
-$doms = get_domains(0,LETTERSTART);
+$num_all_domains = zone_count(0);
+$doms = zone_count(0, LETTERSTART);
 ?>
    <h2><? echo _('List zones'); ?></h2>
 <?
-	echo "<div class=\"showmax\">";
-	show_pages(count($doms),ROWAMOUNT);
-	echo "</div>";
+        echo "<div class=\"showmax\">";
+        show_pages($doms,ROWAMOUNT);
+        echo "</div>";
 
-if ($num_all_domains > ROWAMOUNT) 
+if ($num_all_domains > ROWAMOUNT)
 {
-	echo "<div class=\"showmax\">";
-	show_letters(LETTERSTART,$all_doms);
-	echo "</div>";
+        echo "<div class=\"showmax\">";
+        show_letters(LETTERSTART);
+        echo "</div>";
 }
 ?>
    <table>

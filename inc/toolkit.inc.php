@@ -88,34 +88,67 @@ function show_pages($amount,$rowamount,$id='')
  * Display the alphabetic option: [0-9] [a] [b] .. [z]
  */
 
-function show_letters($letterstart,$doms)
+function show_letters($letterstart,$userid=true)
 {
-   foreach ($doms as $dom) {
-      if (is_numeric($dom["name"][0])) {
-         $letter_taken["0"] = 1;
-      } else {
-         $letter_taken[$dom["name"][0]] = 1;
-      }
-   }
+        echo _('Show zones beginning with:') . "<br>";
 
-   echo _('Show zones beginning with:') . "<br>";
-   if ($letterstart == 1) {
-      echo "[ <b>0-9</b> ] ";
-   } elseif ($letter_taken["0"] != 1) {
-      echo "[ 0-9 ] ";
-   } else {
-      echo "[ <a href=\"".$_SERVER["PHP_SELF"]."?letter=1\">0-9</a> ] ";
-   }
-   
-   foreach (range('a','z') as $letter) {
-      if ($letterstart === $letter) {
-         echo "[ <span class=\"lettertaken\">".$letter."</span> ] ";
-      } elseif ($letter_taken[$letter] != 1) {
-         echo "[ <span class=\"letternotavailble\">".$letter."</span> ] ";
-      } else {
-          echo "[ <a href=\"".$_SERVER["PHP_SELF"]."?letter=".$letter."\">".$letter."</a> ] ";
-      }
-   }
+	$letter = "[[:digit:]]";
+	if ($letterstart == "0")
+	{
+		echo "[ <span class=\"lettertaken\">0-9</span> ] ";
+	}
+	elseif (zone_letter_start($letter,$userid))
+	{
+		echo "[ <a href=\"".$_SERVER["PHP_SELF"]."?letter=0\">0-9</a> ] ";
+	}
+	else
+	{
+		echo "[ <span class=\"letternotavailble\">0-9</span> ] ";
+	}
+
+        foreach (range('a','z') as $letter)
+        {
+                if ($letter == $letterstart)
+                {
+                        echo "[ <span class=\"lettertaken\">".$letter."</span> ] ";
+                }
+                elseif (zone_letter_start($letter,$userid))
+                {
+                        echo "[ <a href=\"".$_SERVER["PHP_SELF"]."?letter=".$letter."\">".$letter."</a> ] ";
+                }
+                else
+                {
+                        echo "[ <span class=\"letternotavailble\">".$letter."</span> ] ";
+                }
+        }
+}
+
+function zone_letter_start($letter,$userid=true)
+{
+        global $db;
+        $sqlq = "SELECT domains.id AS domain_id,
+        zones.owner,
+        records.id,
+        domains.name AS domainname
+        FROM domains
+        LEFT JOIN zones ON domains.id=zones.domain_id 
+        LEFT JOIN records ON records.domain_id=domains.id
+        WHERE 1";
+        if((!level(5) || !$userid) && !level(10) && !level(5))
+        {
+                $sqlq .= " AND zones.owner=".$_SESSION["userid"];
+        }
+        $sqlq .= " AND substring(domains.name,1,1) REGEXP '^".$letter."' LIMIT 1";
+        $result = $db->query($sqlq);
+        $numrows = $result->numRows();
+        if ( $numrows == "1" ) 
+        {
+                return 1;
+        }
+        else
+        {
+                return 0;
+        }
 }
 
 /*
