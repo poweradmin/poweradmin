@@ -34,7 +34,7 @@ if ($num_all_domains < ROWAMOUNT) {
    $doms = get_domains(0,"all",ROWSTART,ROWAMOUNT);
 } else {
    $doms = get_domains(0,LETTERSTART,ROWSTART,ROWAMOUNT);
-   $num_show_domains = count($doms);
+   $num_show_domains = ($doms == -1) ? 0 : count($doms);
 }
 
 // If the user doesnt have any domains print a message saying so
