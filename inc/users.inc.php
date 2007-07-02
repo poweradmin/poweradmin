@@ -380,10 +380,13 @@ function get_owners_from_domainid($id) {
               $result = $db->query("SELECT users.id, users.fullname FROM users, zones WHERE zones.domain_id=$id AND zones.owner=users.id ORDER by fullname");
               if ($result->numRows() == 0)
               {
-                      error(ERR_USER_NOT_EXIST);
-              } else {
+		      return "";
+              } 
+	      else 
+	      {
                       $names = array();
-                      while ($r = $result->fetchRow()) {
+                      while ($r = $result->fetchRow()) 
+		      {
                               $names[] = $r['fullname'];
                       }
                       return implode(', ', $names);

@@ -1,18 +1,5 @@
 <?
 
-// +--------------------------------------------------------------------+
-// | PowerAdmin                                                         |
-// +--------------------------------------------------------------------+
-// | Copyright (c) 1997-2002 The PowerAdmin Team                        |
-// +--------------------------------------------------------------------+
-// | This source file is subject to the license carried by the overal   |
-// | program PowerAdmin as found on http://poweradmin.sf.net            |
-// | The PowerAdmin program falls under the QPL License:                |
-// | http://www.trolltech.com/developer/licensing/qpl.html              |
-// +--------------------------------------------------------------------+
-// | Authors: Roeland Nieuwenhuis <trancer <AT> trancer <DOT> nl>       |
-// |          Sjeemz <sjeemz <AT> sjeemz <DOT> nl>                      |
-// +--------------------------------------------------------------------+
 
 // Filename: record.inc.php
 // Startdate: 26-10-2002
@@ -831,8 +818,8 @@ function get_supermasters()
                         "ns_name"       => $r["nameserver"],
                         "account"       => $r["account"],
                         );
-                        return $ret;
                 }
+		return $ret;
         }
 }
 

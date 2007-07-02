@@ -57,30 +57,39 @@ else
 		
     <tr>
 <?
-if (level(5))
-{
+		if (level(5))
+		{
 ?>
      <td>
       <a href="edit.php?id=<? echo $c["id"] ?>"><img src="images/edit.gif" title="<? echo _('Edit zone') . " " . $c['name']; ?>" alt="[ <? echo _('Edit zone') . " " . $c['name']; ?> ]"></a>
       <a href="delete_domain.php?id=<? echo $c["id"] ?>"><img src="images/delete.gif" title="<? print _('Delete zone') . " " . $c['name']; ?>" alt="[<? echo _('Delete zone') . " " . $c['name']; ?>]"></a>
      </td>
 <?
-}
-else
-{
+		}
+		else
+		{
 ?>
      <td class="n">
       &nbsp;
      </td>
 <?
-}
+		}
 ?>
      <td class="y"><? echo $c["name"] ?></td>
      <td class="y"><? echo strtolower(get_domain_type($c["id"])) ?></td>
      <td class="y"><? echo $c["numrec"] ?></td>
-     <td class="y"><? echo get_owners_from_domainid($c["id"]) ?></td>
-    </tr><?
-		print "\n";
+
+<?
+		$zone_owners = get_owners_from_domainid($c["id"]);
+		if ($zone_owners == "")
+		{
+			echo "<td class=\"n\"></td>";
+		}
+		else
+		{
+			print "<td class=\"y\">".$zone_owners."</td>";
+		}
+		print "<tr>\n";
 	}
 }
 
