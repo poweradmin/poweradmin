@@ -19,7 +19,7 @@ if ($_POST["commit"])
         clean_page("edit.php?id=".$_POST["domainid"]);
 } elseif($_SESSION["partial_".get_domain_name_from_id($_GET["domain"])] == 1)
 {
-    $checkPartial = $db->getOne("SELECT id FROM record_owners WHERE record_id='".$_GET["id"]."' AND user_id='".$_SESSION["userid"]."' LIMIT 1");
+    $checkPartial = $db->queryOne("SELECT id FROM record_owners WHERE record_id='".$_GET["id"]."' AND user_id='".$_SESSION["userid"]."' LIMIT 1");
     if (empty($checkPartial)) {
         error(ERR_RECORD_ACCESS_DENIED);
     }

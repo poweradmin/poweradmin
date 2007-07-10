@@ -92,7 +92,6 @@ if (level(5))
 	  </tr>
 <?
 	}
-}
   ?>
           <tr>
   	   <form method="post" action="edit.php?id=<? echo $_GET['id']?>">
@@ -123,8 +122,6 @@ if (level(5))
 	</div> <? // eo div meta-left ?>
  
 <?
-if (level(5))
-{
 	$domain_type=get_domain_type($_GET['id']);
 ?>
         <div id="meta-right">

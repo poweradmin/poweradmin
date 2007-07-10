@@ -56,25 +56,17 @@ else
 		?>
 		
     <tr>
+     <td>
+      <a href="edit.php?id=<? echo $c["id"] ?>"><img src="images/edit.gif" title="<? echo _('Edit zone') . " " . $c['name']; ?>" alt="[ <? echo _('Edit zone') . " " . $c['name']; ?> ]"></a>
 <?
 		if (level(5))
 		{
 ?>
-     <td>
-      <a href="edit.php?id=<? echo $c["id"] ?>"><img src="images/edit.gif" title="<? echo _('Edit zone') . " " . $c['name']; ?>" alt="[ <? echo _('Edit zone') . " " . $c['name']; ?> ]"></a>
       <a href="delete_domain.php?id=<? echo $c["id"] ?>"><img src="images/delete.gif" title="<? print _('Delete zone') . " " . $c['name']; ?>" alt="[<? echo _('Delete zone') . " " . $c['name']; ?>]"></a>
-     </td>
-<?
-		}
-		else
-		{
-?>
-     <td class="n">
-      &nbsp;
-     </td>
 <?
 		}
 ?>
+     </td>
      <td class="y"><? echo $c["name"] ?></td>
      <td class="y"><? echo strtolower(get_domain_type($c["id"])) ?></td>
      <td class="y"><? echo $c["numrec"] ?></td>

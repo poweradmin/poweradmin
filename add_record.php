@@ -2,6 +2,11 @@
 
 require_once("inc/toolkit.inc.php");
 
+$xsid = (isset($_GET['id'])) ? $_GET['id'] : $_POST['zoneid'];
+if ((!level(5)) && ((!xs($xsid) || ($_SESSION[$xsid.'_ispartial'])))) {
+	error(ERR_RECORD_ACCESS_DENIED);
+}
+
 if ($_POST["commit"]) {
         $ret = add_record($_POST["zoneid"], $_POST["name"], $_POST["type"], $_POST["content"], $_POST["ttl"], $_POST["prio"]);
         if ($ret != '1') {

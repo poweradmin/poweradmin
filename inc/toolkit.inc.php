@@ -136,7 +136,20 @@ function zone_letter_start($letter,$userid=true)
         WHERE 1";
         if((!level(5) || !$userid) && !level(10) && !level(5))
         {
-                $sqlq .= " AND zones.owner=".$_SESSION["userid"];
+		// First select the zones for which we have ownership on one or more records.
+		$query = 'SELECT records.domain_id FROM records, record_owners WHERE user_id = '.$_SESSION['userid'].' AND records.id = record_owners.record_id';
+		$result = $db->query($query);
+		$zones = array();
+		if (!PEAR::isError($result)) {
+			$zones = $result->fetchCol();
+		}
+	
+                $sqlq .= " AND (zones.owner=".$_SESSION["userid"];
+		if (count($zones) > 0) {
+			$sqlq .= ' OR zones.domain_id IN ('.implode(',', $zones).') '; 
+
+		}
+		$sqlq .= ')';
         }
         $sqlq .= " AND substring(domains.name,1,1) REGEXP '^".$letter."' LIMIT 1";
         $result = $db->query($sqlq);

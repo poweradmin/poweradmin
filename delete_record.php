@@ -3,6 +3,17 @@
 require_once("inc/toolkit.inc.php");
 
 if ($_GET["id"]) {
+	// check if we have access to the given id
+	$zoneId = recid_to_domid($_GET['id']);
+	if ((!level(5)) && (!xs($zoneId))) {
+    		error(ERR_RECORD_ACCESS_DENIED);
+	}
+	if ((!level(5)) && ($_SESSION[$zoneId.'_ispartial'] == 1)) {
+		$checkPartial = $db->queryOne("SELECT id FROM record_owners WHERE record_id='".$_GET["id"]."' AND user_id='".$_SESSION["userid"]."' LIMIT 1");
+		if (empty($checkPartial)) {
+			error(ERR_RECORD_ACCESS_DENIED);
+		}
+	}
         if ($_GET["confirm"] == '0') {
                 clean_page("edit.php?id=".$_GET["domain"]);
         } elseif ($_GET["confirm"] == '1') {
@@ -25,6 +36,6 @@ if ($_GET["id"]) {
         <?
 } else {
         include_once("inc/header.inc.php");
-        die("Nothing to do!");
+        echo _("Nothing to do!");
 }
 include_once("inc/footer.inc.php");

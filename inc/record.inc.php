@@ -1006,7 +1006,20 @@ function zone_count($userid=true, $letterstart=all) {
         global $db;
         if((!level(5) || !$userid) && !level(10) && !level(5))
         {
-                $add = " AND zones.owner=".$_SESSION["userid"];
+		// First select the zones for which we have ownership on one or more records.
+		$query = 'SELECT records.domain_id FROM records, record_owners WHERE user_id = '.$_SESSION['userid'].' AND records.id = record_owners.record_id';
+		$result = $db->query($query);
+		$zones = array();
+		if (!PEAR::isError($result)) {
+			$zones = $result->fetchCol();
+		}
+	
+                $add = " AND (zones.owner=".$_SESSION["userid"];
+		if (count($zones) > 0) {
+			$add .= ' OR zones.domain_id IN ('.implode(',', $zones).') '; 
+
+		}
+		$add .= ')';
         }
         else
         {
