@@ -30,32 +30,25 @@ if(isset($_POST["del_user"]) && is_numeric($_POST["del_user"]) && level(5))
 }
 $info = get_domain_info_from_id($_GET["id"]);
 include_once("inc/header.inc.php");
+	
+$domain_type=get_domain_type($_GET['id']);
+if ($domain_type == "SLAVE" ) { $slave_master=get_domain_slave_master($_GET['id']); };
 
-if (level(5))
+if(!isset($info["ownerid"]) && $domain_type != "SLAVE")
 {
-	if(!isset($info["ownerid"]))
-	{
-	?>
-	    <div class="error"><? echo _('Error'); ?>: <? echo ('There is no owner for this zone, please assign someone.'); ?></div>
-	<?
-	}
-	$domain_type=get_domain_type($_GET['id']);
-	if ($domain_type == "SLAVE" )
-	{
-		$slave_master=get_domain_slave_master($_GET['id']);
-		if ($slave_master == "" )
-		{
 ?>
-            <div class="error"><? echo _('Type of this zone is "slave", but there is no IP address for it\'s master given.'); ?></div>
+    <div class="error"><? echo _('Error'); ?>: <? echo ('There is no owner for this zone, please assign someone.'); ?></div>
 <?
-		}
-	}
 }
-
+if ($domain_type == "SLAVE" && $slave_master )
+{
+?>
+    <div class="error"><? echo _('Error'); ?>: <? echo _('Type of this zone is "slave", but there is no IP address for it\'s master given.'); ?></div>
+<?
+}
 ?>
     <h2><? echo _('Edit zone'); ?> "<? echo get_domain_name_from_id($_GET["id"]) ?>"</h2>
 <?
-
 if (level(5)) 
 { ?>	
        <div id="meta">
@@ -120,10 +113,6 @@ if (level(5))
   	  </tr>
          </table>
 	</div> <? // eo div meta-left ?>
- 
-<?
-	$domain_type=get_domain_type($_GET['id']);
-?>
         <div id="meta-right">
          <table>
 	  <tr>
@@ -177,11 +166,35 @@ if (level(5))
           </form>
 <?
 	}
-}
 ?>
          </table>  
         </div> <? // eo div meta-right ?>
-       </div> <? // eo div meta ?>
+       </div> <? // eo div meta 
+}
+else
+{
+?>
+       <div id="meta">
+        <div id="meta-right">
+         <table>
+ 	  <tr>
+ 	   <th><? echo _('Type of zone'); ?></th><td class="y"><? echo $domain_type; ?></td>
+	  </tr>
+<?
+	if ($domain_type == "SLAVE" &&  $slave_master )
+	{
+?>
+	  <tr>
+	   <th><? echo _('IP address of master NS'); ?></th><td class="y"><? echo $slave_master; ?></td>
+	  </tr>
+<?
+	}
+?>
+         </table>
+        </div> <? //eo div meta-right ?>
+        </div> <? // eo div meta
+}
+?>
        <div id="meta">
 <?
 	if ($_SESSION[$_GET["id"]."_ispartial"] != 1 && $domain_type != "SLAVE" )
@@ -239,15 +252,15 @@ if($rec_result != -1)
 			if(level(5) || (!($r["type"] == "SOA" && !$GLOBALS["ALLOW_SOA_EDIT"]) && !($r["type"] == "NS" && !$GLOBALS["ALLOW_NS_EDIT"])))
 			{
 ?>
-             <a href="edit_record.php?id=<? echo $r['id'] ?>&amp;domain=<? echo $_GET["id"] ?>"><img src="images/edit.gif" alt="[ <? echo _('Edit record'); ?> ]"></a>
-             <a href="delete_record.php?id=<? echo $r['id'] ?>&amp;domain=<? echo $_GET["id"] ?>"><img src="images/delete.gif" ALT="[ <? echo _('Delete record'); ?> ]" BORDER="0"></a>
+			     <a href="edit_record.php?id=<? echo $r['id'] ?>&amp;domain=<? echo $_GET["id"] ?>"><img src="images/edit.gif" alt="[ <? echo _('Edit record'); ?> ]"></a>
+			     <a href="delete_record.php?id=<? echo $r['id'] ?>&amp;domain=<? echo $_GET["id"] ?>"><img src="images/delete.gif" ALT="[ <? echo _('Delete record'); ?> ]" BORDER="0"></a>
 <?
 			}
 		}
 		if(level(10) && $domain_type != "SLAVE") 
 		{ 
 ?>
-	     <input type="checkbox" name="rowid[<? echo $countinput++?>]" value="<? echo $r['id']?>" />
+		     <input type="checkbox" name="rowid[<? echo $countinput++?>]" value="<? echo $r['id']?>" />
 <? 
 		}
 ?>
