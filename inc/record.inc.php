@@ -1032,7 +1032,14 @@ function zone_count($userid=true, $letterstart=all) {
            $add .=" AND substring(domains.name,1,1) REGEXP '^[[:digit:]]'";
         }
 
-        $query = 'SELECT count(distinct zones.domain_id) as zone_count FROM zones, domains WHERE zones.domain_id = domains.id '.$add;
+        if (level(5))
+        {
+                $query = 'SELECT count(distinct domains.id) as zone_count FROM domains WHERE 1 '.$add;
+        }
+        else
+        {
+                $query = 'SELECT count(distinct zones.domain_id) as zone_count FROM zones, domains WHERE zones.domain_id = domains.id '.$add;
+        }
         $numRows = $db->queryOne($query);
         return $numRows;
 }
