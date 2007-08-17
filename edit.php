@@ -40,7 +40,7 @@ if(!isset($info["ownerid"]) && $domain_type != "SLAVE")
     <div class="error"><? echo _('Error'); ?>: <? echo ('There is no owner for this zone, please assign someone.'); ?></div>
 <?
 }
-if ($domain_type == "SLAVE" && $slave_master )
+if ($domain_type == "SLAVE" && ! $slave_master )
 {
 ?>
     <div class="error"><? echo _('Error'); ?>: <? echo _('Type of this zone is "slave", but there is no IP address for it\'s master given.'); ?></div>
