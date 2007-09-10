@@ -7,7 +7,7 @@ Using a translation
 All available translations can be found in the locale directory in the
 poweradmin base directory. The Dutch translation for example, can be
 found in locale/nl_NL. To review the status of the translation, you 
-can have a look at the nl.po file in the LC_MESSAGE directory.
+can have a look at the nl.po file in the LC_MESSAGES directory.
 
 If you want to use a translation, say the nl_NL, all you have to do is 
 edit inc/i18n.php file and change the $language variable to the desired
@@ -16,7 +16,7 @@ language, for example "nl_NL".
 If this doesn't work, please try to do the following:
 
  - cd /path/to/poweradmin/locale/$lang/LC_MESSAGES/
- - msgfmt $lang.po -o message.mo 
+ - msgfmt $lang.po -o messages.mo 
 
 If that doesn't help either, most likely your system itself is not
 setup properly. See <https://rejo.zenger.nl/misc/1176630442.php> maybe
@@ -34,7 +34,7 @@ example, if you want to create a Dutch translation:
  - cp docs/template.pot locale/nl_NL/LC_MESSAGES/nl.po
  - cd locale/nl_NL/LC_MESSAGES/
  - vim nl.po
- - msgfmt nl.po -o message.mo
+ - msgfmt nl.po -o messages.mo
 
 
 Updating the translation template file
