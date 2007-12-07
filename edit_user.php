@@ -50,7 +50,7 @@ $r = get_user_info($_GET["id"]);
       </tr>
       <tr>
        <td class="n"><? echo _('Password'); ?>:</td>
-       <td class="n"><input type="text" class="input" name="password" value=""></td>
+       <td class="n"><input type="password" class="input" name="password" value=""></td>
       </tr>
       <tr>
        <td class="n"><? echo _('E-mail'); ?>:</td>
