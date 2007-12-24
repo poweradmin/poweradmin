@@ -320,11 +320,11 @@ msgid "Search zones or records"
 msgstr "Zone en records zoeken"
 
 #: index.php:10 inc/header.inc.php:26
-msgid "List zones"
+msgid "List all zones"
 msgstr "Overzicht zones"
 
 #: index.php:15 inc/header.inc.php:31
-msgid "List supermasters"
+msgid "List all supermasters"
 msgstr "Overzicht supermasters"
 
 #: index.php:16 inc/header.inc.php:32

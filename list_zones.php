@@ -6,7 +6,7 @@ include_once("inc/header.inc.php");
 $num_all_domains = zone_count(0);
 $doms = zone_count(0, LETTERSTART);
 ?>
-   <h2><? echo _('List zones'); ?></h2>
+   <h2><? echo _('List all zones'); ?></h2>
 <?
         echo "<div class=\"showmax\">";
         show_pages($doms,ROWAMOUNT);
