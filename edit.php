@@ -3,12 +3,16 @@
 require_once("inc/toolkit.inc.php");
 
 // Assigning records to user: Check for records owned by user
-
+$recordOwnerError = '';
 if (isset($_POST["action"]) && $_POST["action"]=="record-user") {
-	foreach ($_POST["rowid"] as $x_user => $x_value){
-		$x_userid = $db->queryOne("SELECT id FROM record_owners WHERE user_id = '".$_POST["userid"]."' AND record_id='".$x_value."'");
-		if (empty($x_userid)) {
-			$db->query("INSERT INTO record_owners SET user_id = '".$_POST["userid"]."',record_id='".$x_value."'");
+	if (!is_array($_POST['rowid'])) {
+		$recordOwnerError = 'No records where selected to assign an sub-owner.';
+	} else {
+		foreach ($_POST["rowid"] as $x_user => $x_value){
+			$x_userid = $db->queryOne("SELECT id FROM record_owners WHERE user_id = '".$_POST["userid"]."' AND record_id='".$x_value."'");
+			if (empty($x_userid)) {
+				$db->query("INSERT INTO record_owners SET user_id = '".$_POST["userid"]."',record_id='".$x_value."'");
+			}
 		}
 	}
 }
@@ -33,6 +37,12 @@ include_once("inc/header.inc.php");
 	
 $domain_type=get_domain_type($_GET['id']);
 if ($domain_type == "SLAVE" ) { $slave_master=get_domain_slave_master($_GET['id']); };
+
+if (strlen($recordOwnerError)) {
+?>
+  <div class="error"><?php echo _('Error'); ?>: <?php echo _($recordOwnerError); ?></div>
+<?php	
+}
 
 if(!isset($info["ownerid"]) && $domain_type != "SLAVE")
 {

@@ -16,6 +16,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: edit.php:9
+msgid "No records where selected to assign an sub-owner."
+msgstr "Er waren geen records geselecteerd om toe te wijzen aan een beheerder."
+
 #: add_record.php:16
 msgid "Add record to zone"
 msgstr "Record toevoegen aan zone"
