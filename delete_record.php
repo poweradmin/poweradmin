@@ -55,6 +55,6 @@ if ($_GET["id"]) {
         <?
 } else {
         include_once("inc/header.inc.php");
-        echo _("Nothing to do!");
+        echo _('Nothing to do!');
 }
 include_once("inc/footer.inc.php");
