@@ -20,7 +20,6 @@
  */
 
 session_start();
-require_once("inc/i18n.inc.php");
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 ?>

@@ -19,7 +19,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once("inc/i18n.inc.php");
 require_once("inc/toolkit.inc.php");
 
 if (!level(5))
