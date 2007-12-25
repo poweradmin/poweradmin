@@ -35,7 +35,7 @@ if($_POST["submit"])
 
 include_once("inc/header.inc.php");
 ?>
-    <h2>Change password</h2>
+    <h2><? echo _('Change password'); ?></h2>
     <form method="post" action="change_password.php">
      <table border="0" CELLSPACING="4">
       <tr>
