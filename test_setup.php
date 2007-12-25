@@ -1,27 +1,23 @@
 <?php
 
-// +--------------------------------------------------------------------+
-// | PowerAdmin								|
-// +--------------------------------------------------------------------+
-// | Copyright (c) 1997-2002 The PowerAdmin Team			|
-// +--------------------------------------------------------------------+
-// | This source file is subject to the license carried by the overal	|
-// | program PowerAdmin as found on http://poweradmin.sf.net		|
-// | The PowerAdmin program falls under the QPL License:		|
-// | http://www.trolltech.com/developer/licensing/qpl.html		|
-// +--------------------------------------------------------------------+
-// | Authors: Roeland Nieuwenhuis <trancer <AT> trancer <DOT> nl>	|
-// |          Sjeemz <sjeemz <AT> sjeemz <DOT> nl>			|
-// +--------------------------------------------------------------------+
-
-// Filename: test_setup.php
-// Description: tests your PowerAdmin install.
-// Adding tables? Increase the total count to (2^numberoftables)-1
-// Substract its binary value and put it in the last failure close.
-// Yes this is binary, why? Because thats cool! Squeeky geeky stuff!
-//
-// $Id: test_setup.php,v 1.4 2003/01/08 00:40:08 azurazu Exp $
-//
+/*  PowerAdmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://rejo.zenger.nl/poweradmin> for more details.
+ *
+ *  Copyright 2007, 2008  Rejo Zenger <rejo@zenger.nl>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 include_once("inc/header.inc.php");
 require_once("inc/config.inc.php");

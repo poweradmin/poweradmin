@@ -1,18 +1,23 @@
 <?
 
-
-// Filename: record.inc.php
-// Startdate: 26-10-2002
-// This file is ought to edit the records in the database.
-// Records are domains aswell, they also belong here.
-// All database functions are associative.
-// use nextID first to get a new id. Then insert it into the database.
-// do not rely on auto_increment (see above).
-// use dns.inc.php for validation functions.
-//
-// $Id: record.inc.php,v 1.21 2003/05/10 20:21:01 azurazu Exp $
-//
-
+/*  PowerAdmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://rejo.zenger.nl/poweradmin> for more details.
+ *
+ *  Copyright 2007, 2008  Rejo Zenger <rejo@zenger.nl>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 function update_soa_serial($domain_id)
 {
