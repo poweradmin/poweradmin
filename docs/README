@@ -1,28 +1,25 @@
-What is Poweradmin?
+What is PowerAdmin?
 -----------------------------------------------------------------------
 
-Poweradmin is a non-commercial front-end for the PowerDNS nameserver,
-see <http://www.powerdns.com>. The goal of Poweradmin is to provide a
-friendly management interface to the database backend of PowerDNS
-which actually holds the DNS records. At this moment, both the mysql
-and pgsql are supported. The interface allows add, modify and deletion
-of both forward and reverse zones and has full IPv6 support.
+The project's purpose is to create and maintain a friendly web-based DNS
+administration tool for the PowerDNS DNS server. The most recent version
+has full support for all zone types, support for supermasters, multi-
+language support and more.
 
-Poweradmin is written by Roeland Nieuwenhuis <trancer@trancer.nl>
-and Sjeemz <sjeemz@sjeemz.nl>. It contains patches of Wim Moistry and
-Dennis Roos.
+See <https://code.krikkit.nl/trac/poweradmin/wiki/Features> for a list
+of features.
 
-Please see CHANGES for a list of changes, CHANGES.pre-1.3.0 for a list
-of changes prior to 1.3.0 release, README.i18n for information on the
-multi language support, README.sequence for information the "sequence
-updater" and the insertion of records and zones using other interfaces
-than poweradmin.
+The original PowerAdmin code was written by Trancer and Sjeemz. This
+version ("a complete(r) PowerAdmin) is an adaption by Rejo Zenger. Many
+people have contributed to the current code. For a list of contributors,
+please see <https://code.krikkit.nl/trac/poweradmin/wiki/Credits>.
 
 
-Where to get Poweradmin?
+Where to get PowerAdmin?
 -----------------------------------------------------------------------
 
-The Poweradmin website can be found at <http://www.poweradmin.org>.
+At <https://code.krikkit.nl/trac/poweradmin> you can download the most
+recent version. 
 
 
 Requirements
@@ -54,8 +51,8 @@ Upgrading? See section "Upgrading".
   PEAR. You can install PEAR on a Debian-based server by installing
   the package php-pear. Make sure php-cli can access the mysql module
   (uncomment the line "extension=mysql.so" in /etc/php5/cli/php.ini).
-  The addional PEAR packages can be installed using the "pear install"
-  command (e.g. "pear install MDB2 ; pear install MDB2_Driver_mysql").
+  The additional PEAR packages can be installed using the "pear 
+  install" command.
 
 - Add a SQL user for poweradmin that is granted SELECT, INSERT,
   DELETE, UPDATE and CREATE actions.
