@@ -57,7 +57,7 @@ function show_users($id='',$rowstart=0,$rowamount=9999999)
 			users.active
 		ORDER BY
 			users.fullname
-	 	LIMIT $rowstart,$rowamount";
+	 	LIMIT $rowamount OFFSET $rowstart";
 
 	// Execute the huge query.
 	$result = $db->query($sqlq);

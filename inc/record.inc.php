@@ -37,10 +37,10 @@ function update_soa_serial($domain_id)
 	 * YYYYMMDDnn
 	 */
 
-	$sqlq = "SELECT `notified_serial` FROM `domains` WHERE `id` = '".$domain_id."'";
+	$sqlq = "SELECT notified_serial FROM domains WHERE id = '".$domain_id."'";
 	$notified_serial = $db->queryOne($sqlq);
 
-	$sqlq = "SELECT `content` FROM `records` WHERE `type` = 'SOA' AND `domain_id` = '".$domain_id."'";
+	$sqlq = "SELECT content FROM records WHERE type = 'SOA' AND domain_id = '".$domain_id."'";
 	$content = $db->queryOne($sqlq);
     $need_to_update = false;
 	
@@ -101,7 +101,7 @@ function update_soa_serial($domain_id)
 		{	
 			$new_soa .= $soa[$i] . " "; 
 		}
-		$sqlq = "UPDATE `records` SET `content` = '".$new_soa."' WHERE `domain_id` = '".$domain_id."' AND `type` = 'SOA' LIMIT 1";
+		$sqlq = "UPDATE records SET content = '".$new_soa."' WHERE domain_id = '".$domain_id."' AND type = 'SOA'";
 		$db->Query($sqlq);
 		return true;
 	}
@@ -284,7 +284,7 @@ function delete_record($id)
 	if (is_numeric($id))
 	{
 	    $did = recid_to_domid($id);
-		$db->query('DELETE FROM records WHERE id=' . $id . ' LIMIT 1');
+		$db->query('DELETE FROM records WHERE id=' . $id );
 		if ($type != 'SOA')
 		{
 			update_soa_serial($did);
@@ -364,7 +364,7 @@ function add_domain($domain, $owner, $webip, $mailip, $empty, $type, $slave_mast
 				$ttl = $GLOBALS["DEFAULT_TTL"];
 
 				// Build and execute query
-				$sql = "INSERT INTO records (domain_id, name, content, type, ttl, prio, change_date) VALUES ('$iddomain', '$domain', '$ns1 $hm 1', 'SOA', $ttl, '', '$now')";
+				$sql = "INSERT INTO records (domain_id, name, content, type, ttl, prio, change_date) VALUES ('$iddomain', '$domain', '$ns1 $hm 1', 'SOA', $ttl, 0, '$now')";
 				$db->query($sql);
 
 				// Done
@@ -386,7 +386,7 @@ function add_domain($domain, $owner, $webip, $mailip, $empty, $type, $slave_mast
 						$type     = $r["type"];
 						$content  = parse_template_value($r["content"], $domain, $webip, $mailip);
 						$ttl      = $r["ttl"];
-						$prio     = $r["prio"];
+						$prio     = intval($r["prio"]);
 
 						// If no ttl is given, use the default.
 						if (!$ttl)
@@ -719,8 +719,8 @@ function get_domain_info_from_id($id)
         AND record_owners.record_id = records.id
 	AND records.domain_id = ".$id."
 
-	GROUP BY name, owner, users.fullname
-	ORDER BY name";
+	GROUP BY domains.name, owner, users.fullname, domains.type
+	ORDER BY domains.name";
 	
 	$result = $db->queryRow($sqlq);
 
@@ -748,7 +748,7 @@ function get_domain_info_from_id($id)
 			LEFT JOIN zones ON domains.id=zones.domain_id
 			LEFT JOIN users ON zones.owner=users.id
 			WHERE domains.id=$id
-			GROUP BY name, owner, users.fullname
+			GROUP BY domains.name, owner, users.fullname, domains.type, zones.id
 			ORDER BY zones.id";
 
 		// Put the first occurence in an array and return it.
@@ -863,6 +863,7 @@ function supermaster_exists($master_ip)
 function get_domains($userid=true,$letterstart=all,$rowstart=0,$rowamount=999999)
 {
 	global $db;
+	global $sql_regexp;
 	if((!level(5) || !$userid) && !level(10) && !level(5))
 	{
 		$add = " AND zones.owner=".$_SESSION["userid"];
@@ -879,15 +880,15 @@ function get_domains($userid=true,$letterstart=all,$rowstart=0,$rowamount=999999
 	FROM domains
 	LEFT JOIN zones ON domains.id=zones.domain_id 
 	LEFT JOIN records ON records.domain_id=domains.id
-	WHERE 1 $add ";
+	WHERE 1=1 $add ";
 	if ($letterstart!=all && $letterstart!=1) {
-	   $sqlq.=" AND substring(domains.name,1,1) REGEXP '^".$letterstart."' ";
+	   $sqlq.=" AND substring(domains.name,1,1) ".$sql_regexp." '^".$letterstart."' ";
 	} elseif ($letterstart==1) {
-	   $sqlq.=" AND substring(domains.name,1,1) REGEXP '^[[:digit:]]'";
+	   $sqlq.=" AND substring(domains.name,1,1) ".$sql_regexp." '^[[:digit:]]'";
 	}
-	$sqlq.=" GROUP BY domainname, domain_id
+	$sqlq.=" GROUP BY domainname, domains.id
 	ORDER BY domainname
-	LIMIT $rowstart,$rowamount";
+	LIMIT $rowamount OFFSET $rowstart";
 
 	$result = $db->query($sqlq);
 	$result2 = $db->query($sqlq); 
@@ -922,7 +923,7 @@ function get_domains($userid=true,$letterstart=all,$rowstart=0,$rowamount=999999
 		$andnot 
 		AND domains.name LIKE '".$letterstart."%' 
 		AND (zones.domain_id != records.domain_id AND zones.owner!='".$_SESSION["userid"]."')
-		GROUP BY domainname, domain_id
+		GROUP BY domainname, domains.id
 		ORDER BY domainname";
 
 		$result_extra = $db->query($sqlq);
@@ -937,9 +938,9 @@ function get_domains($userid=true,$letterstart=all,$rowstart=0,$rowamount=999999
 		AND (records.id = record_owners.record_id
 		AND domains.id = records.domain_id)
 		$andnot 
-		AND substring(domains.name,1,1) REGEXP '^[[:digit:]]'
+		AND substring(domains.name,1,1) ".$sql_regexp." '^[[:digit:]]'
 		AND (zones.domain_id != records.domain_id AND zones.owner!='".$_SESSION["userid"]."')
-		GROUP BY domainname, domain_id
+		GROUP BY domainname, domains.id
 		ORDER BY domainname";
 
 		$result_extra[$i] = $db->query($sqlq);
@@ -1009,6 +1010,7 @@ function get_domains($userid=true,$letterstart=all,$rowstart=0,$rowamount=999999
 
 function zone_count($userid=true, $letterstart=all) {
         global $db;
+	global $sql_regexp;
         if((!level(5) || !$userid) && !level(10) && !level(5))
         {
 		// First select the zones for which we have ownership on one or more records.
@@ -1034,12 +1036,12 @@ function zone_count($userid=true, $letterstart=all) {
         if ($letterstart!=all && $letterstart!=1) {
            $add .=" AND domains.name LIKE '".$letterstart."%' ";
         } elseif ($letterstart==1) {
-           $add .=" AND substring(domains.name,1,1) REGEXP '^[[:digit:]]'";
+           $add .=" AND substring(domains.name,1,1) ".$sql_regexp." '^[[:digit:]]'";
         }
 
         if (level(5))
         {
-                $query = 'SELECT count(distinct domains.id) as zone_count FROM domains WHERE 1 '.$add;
+                $query = 'SELECT count(distinct domains.id) as zone_count FROM domains WHERE 1=1 '.$add;
         }
         else
         {
@@ -1109,7 +1111,7 @@ function get_records_from_domain_id($id,$rowstart=0,$rowamount=999999)
 		AND record_owners.record_id = records.id
 		AND records.domain_id = ".$id."
 		GROUP bY record_owners.record_id
-		LIMIT $rowstart,$rowamount");
+		LIMIT $rowamount OFFSET $rowstart");
 
 		$ret = array();
 		if($result->numRows() == 0)
@@ -1131,7 +1133,7 @@ function get_records_from_domain_id($id,$rowstart=0,$rowamount=999999)
 
 		} else {
 
-		$result = $db->query("SELECT id FROM records WHERE domain_id=$id LIMIT $rowstart,$rowamount");
+		$result = $db->query("SELECT id FROM records WHERE domain_id=$id LIMIT $rowamount OFFSET $rowstart");
 		$ret = array();
 		if($result->numRows() == 0)
 		{
@@ -1202,7 +1204,7 @@ function search_record($question)
 	switch($S_INPUT_TYPE)
 	{
 		case '0': 
-			$sqlq = "SELECT * FROM `records` WHERE `content` = '".$question."' ORDER BY `type` DESC";
+			$sqlq = "SELECT * FROM records WHERE content = '".$question."' ORDER BY type DESC";
 			$result = $db->query($sqlq);
 			$ret_r = array();
 			while ($r = $result->fetchRow())
@@ -1224,12 +1226,12 @@ function search_record($question)
 			break;
 	    
 		case '1' :
-			$sqlq = "SELECT `domains`.*, count(`records`.`id`) AS `numrec`, `zones`.`owner`, `records`.`domain_id`
-					FROM `domains`, `records`, `zones`  
-					WHERE `domains`.`id` = `records`.`domain_id` 
-					AND `zones`.`domain_id` = `domains`.`id` 
-					AND `domains`.`name` = '".$question."' 
-					GROUP BY (`domains`.`id`)";
+			$sqlq = "SELECT domains.id, domains.name, count(records.id) AS numrec, zones.owner, records.domain_id
+					FROM domains, records, zones  
+					WHERE domains.id = records.domain_id 
+					AND zones.domain_id = domains.id 
+					AND domains.name = '".$question."' 
+					GROUP BY domains.id, domains.name, zones.owner, records.domain_id";
 
 			$result = $db->query($sqlq);
 			$ret_d = array();
@@ -1246,7 +1248,7 @@ function search_record($question)
 				}
 			}
 
-			$sqlq = "SELECT * FROM `records` WHERE `name` = '".$question."' OR `content` = '".$question."' ORDER BY `type` DESC";
+			$sqlq = "SELECT * FROM records WHERE name = '".$question."' OR content = '".$question."' ORDER BY type DESC";
 			$result = $db->query($sqlq);
 			while ($r = $result->fetchRow())
 			{
@@ -1277,7 +1279,7 @@ function get_domain_type($id)
 	global $db;
         if (is_numeric($id))
 	{
-		$type = $db->queryOne("SELECT `type` FROM `domains` WHERE `id` = '".$id."'");
+		$type = $db->queryOne("SELECT type FROM domains WHERE id = '".$id."'");
 		if($type == "")
 		{
 			$type = "NATIVE";
@@ -1295,7 +1297,7 @@ function get_domain_slave_master($id)
 	global $db;
         if (is_numeric($id))
 	{
-		$slave_master = $db->queryOne("SELECT `master` FROM `domains` WHERE `type` = 'SLAVE' and `id` = '".$id."'");
+		$slave_master = $db->queryOne("SELECT master FROM domains WHERE type = 'SLAVE' and id = '".$id."'");
 		return $slave_master;
         }
         else
@@ -1317,7 +1319,7 @@ function change_domain_type($type, $id)
 		{
 			$add = ", master=''";
 		}
-		$result = $db->query("UPDATE `domains` SET `type` = '" .$type. "'".$add." WHERE `id` = '".$id."'");
+		$result = $db->query("UPDATE domains SET type = '" .$type. "'".$add." WHERE id = '".$id."'");
 	}
         else
         {
@@ -1332,7 +1334,7 @@ function change_domain_slave_master($id, $slave_master)
 	{
        		if (is_valid_ip($slave_master) || is_valid_ip6($slave_master))
 		{
-			$result = $db->query("UPDATE `domains` SET `master` = '" .$slave_master. "' WHERE `id` = '".$id."'");
+			$result = $db->query("UPDATE domains SET master = '" .$slave_master. "' WHERE id = '".$id."'");
 		}
 		else
 		{

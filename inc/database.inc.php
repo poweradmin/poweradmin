@@ -50,5 +50,18 @@ $db->setFetchMode(MDB2_FETCHMODE_ASSOC);
 /* erase info */
 $mysql_pass = $dsn = '';
 
+// Add support for regular expressions in both MySQL and PostgreSQL
+if ( $dbdsntype == "mysql" ) 
+{
+	$sql_regexp = "REGEXP";
+} 
+elseif ( $dbdsntype == "pgsql" ) 
+{
+	$sql_regexp = "~";
+}
+else
+{
+	error(_('Unknown database type in inc/config.inc.php.'));
+};
 
 ?>

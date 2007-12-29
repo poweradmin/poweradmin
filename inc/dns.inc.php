@@ -201,7 +201,7 @@ function validate_input($zoneid, $type, &$content, &$name, &$prio, &$ttl)
 	}
 	else
 	{
-		$prio='';
+		$prio=0;
 	}
 	// Validate the TTL, it has to be numeric.
 	$ttl = (!isset($ttl) || !is_numeric($ttl)) ? $DEFAULT_TTL : $ttl;

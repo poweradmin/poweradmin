@@ -146,6 +146,7 @@ function show_letters($letterstart,$userid=true)
 function zone_letter_start($letter,$userid=true)
 {
         global $db;
+	global $sql_regexp;
         $sqlq = "SELECT domains.id AS domain_id,
         zones.owner,
         records.id,
@@ -153,7 +154,7 @@ function zone_letter_start($letter,$userid=true)
         FROM domains
         LEFT JOIN zones ON domains.id=zones.domain_id 
         LEFT JOIN records ON records.domain_id=domains.id
-        WHERE 1";
+        WHERE 1=1";
         if((!level(5) || !$userid) && !level(10) && !level(5))
         {
 		// First select the zones for which we have ownership on one or more records.
@@ -171,7 +172,7 @@ function zone_letter_start($letter,$userid=true)
 		}
 		$sqlq .= ')';
         }
-        $sqlq .= " AND substring(domains.name,1,1) REGEXP '^".$letter."' LIMIT 1";
+        $sqlq .= " AND substring(domains.name,1,1) ".$sql_regexp." '^".$letter."' LIMIT 1";
         $result = $db->query($sqlq);
         $numrows = $result->numRows();
         if ( $numrows == "1" ) 
