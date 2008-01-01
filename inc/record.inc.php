@@ -153,7 +153,6 @@ function add_record_owner($zoneid,$userid,$recordid)
 	global $db;
 	if (!xs($zoneid))
 	{
-		echo "debug: $zoneid";
 		error(ERR_RECORD_ACCESS_DENIED);
 	}
 	if (is_numeric($zoneid) || is_numeric($userid) || is_numeric($recordid))
@@ -164,6 +163,24 @@ function add_record_owner($zoneid,$userid,$recordid)
 	else
 	{
 		error(sprintf(ERR_INV_ARGC, "add_record_owner", "at least one of the arguments is not numeric"));
+	}
+}
+
+function delete_record_owner($zoneid,$rowid,$recordid)
+{
+	global $db;
+	if (!xs($zoneid))
+	{
+		error(ERR_RECORD_ACCESS_DENIED);
+	}
+	if (is_numeric($zoneid) || is_numeric($rowid) || is_numeric($recordid))
+	{
+		$db->query("DELETE FROM record_owners WHERE id='".$rowid."' AND record_id='".$recordid."'");
+		return true;
+	}
+	else
+	{
+		error(sprintf(ERR_INV_ARGC, "delete_record_owner", "at least one of the arguments is not numeric"));
 	}
 }
 

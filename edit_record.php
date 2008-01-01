@@ -22,7 +22,7 @@
 require_once("inc/toolkit.inc.php");
 
 if (isset($_GET["delid"])) {
-   $db->query("DELETE FROM record_owners WHERE id='".$_GET["delid"]."'");
+   delete_record_owner($_GET["domain"],$_GET["delid"],$_GET["id"]);
 }
 
 $xsid = (isset($_GET['id'])) ? $_GET['id'] : $_POST['recordid'];
