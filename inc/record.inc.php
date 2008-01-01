@@ -148,6 +148,25 @@ function edit_record($recordid, $zoneid, $name, $type, $content, $ttl, $prio)
 }
 
 
+function add_record_owner($zoneid,$userid,$recordid)
+{
+	global $db;
+	if (!xs($zoneid))
+	{
+		echo "debug: $zoneid";
+		error(ERR_RECORD_ACCESS_DENIED);
+	}
+	if (is_numeric($zoneid) || is_numeric($userid) || is_numeric($recordid))
+	{
+		$db->query("INSERT INTO record_owners (user_id, record_id) VALUES ('".$userid."','".$recordid."')");
+		return true;
+	}
+	else
+	{
+		error(sprintf(ERR_INV_ARGC, "add_record_owner", "at least one of the arguments is not numeric"));
+	}
+}
+
 /*
  * Adds a record.
  * This function validates it if correct it inserts it into the database.
