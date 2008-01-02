@@ -19,9 +19,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Added next line to enable i18n on following definitions. Don't know 
-// if this is the best (or at least a proper) location for this. /RZ.
-require_once("inc/i18n.inc.php");
+require_once("inc/toolkit.inc.php");
 
 /*
  * Retrieve all users.
