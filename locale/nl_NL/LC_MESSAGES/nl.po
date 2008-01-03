@@ -472,7 +472,7 @@ msgstr "Gevonden records"
 
 #: search.php:151
 msgid "Nothing found for query"
-msgstr "Niets gevonden voor deze zoekopdracht"
+msgstr "Niets gevonden voor zoekopdracht"
 
 #: test_setup.php:58
 msgid "Not all tables are ok!"

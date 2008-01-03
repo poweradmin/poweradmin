@@ -1276,97 +1276,63 @@ function search_record($question)
 {
 	global $db;
 	$question = trim($question);
-	if (empty($question)) 
-	{
-		$S_INPUT_TYPE = -1;
-	}
 
-	/* now for some input-type searching */
-	if (is_valid_ip($question) || is_valid_ip6($question))
+	if (is_valid_search($question))
 	{
-		$S_INPUT_TYPE = 0;
-	}
-	elseif(is_valid_domain($question) || 
-		is_valid_hostname($question) ||
-		is_valid_mboxfw($question)) // I guess this one can appear in records table too (content?!)
-	{
-		$S_INPUT_TYPE = 1;
-	}	  
-	else 
-	{
-		$S_INPUT_TYPE = -1;
-	}
-	switch($S_INPUT_TYPE)
-	{
-		case '0': 
-			$sqlq = "SELECT * FROM records WHERE content = '".$question."' ORDER BY type DESC";
-			$result = $db->query($sqlq);
-			$ret_r = array();
-			while ($r = $result->fetchRow())
-			{
-			    if(xs($r['domain_id']))
-			    {
-    				$ret_r[] = array(
-    				  'id'			=>	$r['id'],
-    				  'domain_id'		=>	$r['domain_id'],
-    				  'name'		=>	$r['name'],
-    				  'type'		=>	$r['type'],
-    				  'content'		=>	$r['content'],
-    				  'ttl'			=>	$r['ttl'],
-    				  'prio'		=>	$r['prio'],
-    				  'change_date'		=>	$r['change_date']
-    				);
-				}
+		$sqlq = "SELECT * 
+				FROM records 
+				WHERE content LIKE '".$question."' 
+				OR name LIKE '".$question."' 
+				ORDER BY type DESC";
+		echo " $sqlq ";
+		$result = $db->query($sqlq);
+		$ret_r = array();
+		while ($r = $result->fetchRow())
+		{
+		    if(xs($r['domain_id']))
+		    {
+			$ret_r[] = array(
+			  'id'			=>	$r['id'],
+			  'domain_id'		=>	$r['domain_id'],
+			  'name'		=>	$r['name'],
+			  'type'		=>	$r['type'],
+			  'content'		=>	$r['content'],
+			  'ttl'			=>	$r['ttl'],
+			  'prio'		=>	$r['prio'],
+			  'change_date'		=>	$r['change_date']
+			);
 			}
-			break;
-	    
-		case '1' :
-			$sqlq = "SELECT domains.id, domains.name, count(records.id) AS numrec, zones.owner, records.domain_id
-					FROM domains, records, zones  
-					WHERE domains.id = records.domain_id 
-					AND zones.domain_id = domains.id 
-					AND domains.name = '".$question."' 
-					GROUP BY domains.id, domains.name, zones.owner, records.domain_id";
+		}
 
-			$result = $db->query($sqlq);
-			$ret_d = array();
-			while ($r = $result->fetchRow())
-			{
-			    if(xs($r['domain_id']))
-			    {
-				    $ret_d[] = array(
-    					'id'			=>	$r['id'],
-    					'name'		=>	$r['name'],
-    					'numrec'		=>	$r['numrec'],
-    					'owner'		=>	$r['owner']
-    				);
-				}
-			}
+		$sqlq = "SELECT domains.id, domains.name, count(records.id) AS numrec, zones.owner, records.domain_id
+				FROM domains, records, zones  
+				WHERE domains.id = records.domain_id 
+				AND zones.domain_id = domains.id 
+				AND domains.name LIKE '".$question."' 
+				GROUP BY domains.id, domains.name, zones.owner, records.domain_id";
 
-			$sqlq = "SELECT * FROM records WHERE name = '".$question."' OR content = '".$question."' ORDER BY type DESC";
-			$result = $db->query($sqlq);
-			while ($r = $result->fetchRow())
-			{
-			    if(xs($r['domain_id']))
-			    {
-    				$ret_r[] = array(
-    					'id'			=>	$r['id'],
-    					'domain_id'		=>	$r['domain_id'],
-    					'name'		=>	$r['name'],
-    					'type'		=>	$r['type'],
-    					'content'		=>	$r['content'],
-    					'ttl'			=>	$r['ttl'],
-    					'prio'		=>	$r['prio'],
-    				);
-    			}
+		echo "<br> $sqlq ";
+		$result = $db->query($sqlq);
+		$ret_d = array();
+		while ($r = $result->fetchRow())
+		{
+		    if(xs($r['domain_id']))
+		    {
+			    $ret_d[] = array(
+				'id'			=>	$r['id'],
+				'name'		=>	$r['name'],
+				'numrec'		=>	$r['numrec'],
+				'owner'		=>	$r['owner']
+			);
 			}
-			break;
-	}
-	if($S_INPUT_TYPE == 1)
-	{
+		}
 		return array('domains' => $ret_d, 'records' => $ret_r);
 	}
-	return array('records' => $ret_r);
+	else
+	{
+		error(sprintf(ERR_INV_ARGC, "search_record", "Invalid searchstring: $question"));
+	}
+
 }
 
 function get_domain_type($id)

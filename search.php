@@ -100,11 +100,6 @@ else
 	<?php
 	} // end if
 	
-
-
-
-
-	
 	// any records ?!
 	if(count($search_result['records']))
 	{
@@ -166,7 +161,7 @@ else
 		<table border="0" cellspacing="4">
 			<tr>
 				<td width="510" class="n">
-				<? echo _('Nothing found for query'); ?> "<? echo $_POST['q']?>"
+				<? echo _('Nothing found for query'); ?> "<? echo $_POST['q']?>".
 				</td>
 			</tr>
 		</table>

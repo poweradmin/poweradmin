@@ -518,9 +518,14 @@ function is_valid_url($url)
 	return preg_match('!^(http://)(([A-Z\d]|[A-Z\d][A-Z\d-]*[A-Z\d])\.)*[A-Z\d]+([//]([0-9a-z//~#%&\'_\-+=:?.]*))?$!i',  $url);
 }
 
-		/****************************************
-		 *					*
-		 *    END OF RECORD VALIDATING PART.	*
-		 *					*
-		 ***************************************/
+function is_valid_search($holygrail)
+{
+	// Only allow for alphanumeric, numeric, dot, dash, underscore and 
+	// percent in search string. The last two are wildcards for SQL.
+	// Needs extension probably for more usual record types.
+
+	return preg_match('/^[a-z0-9.\-%_]+$/i', $holygrail);
+}
+
+
 ?>
