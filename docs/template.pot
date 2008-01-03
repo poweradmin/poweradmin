@@ -16,6 +16,22 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: users.php:110
+msgid "Users may only change some of the records of zones marked with an (*)."
+msgstr ""
+
+#: users.php:77
+msgid "access"
+msgstr ""
+
+#: users.php:78
+msgid "owner"
+msgstr ""
+
+#: edit.php:9
+msgid "No records where selected to assign an sub-owner."
+msgstr ""
+
 #: add_record.php:16
 msgid "Add record to zone"
 msgstr ""

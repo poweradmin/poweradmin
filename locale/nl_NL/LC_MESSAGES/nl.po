@@ -16,6 +16,18 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: users.php:110
+msgid "Users may only change some of the records of zones marked with an (*)."
+msgstr "Gebruikers kunnen slechts enkele records uit een zones gemarkeerd met een (*) wijzigen."
+
+#: users.php:77
+msgid "access"
+msgstr "toegangelijk"
+
+#: users.php:78
+msgid "owner"
+msgstr "eigenaar"
+
 #: edit.php:9
 msgid "No records where selected to assign an sub-owner."
 msgstr "Er waren geen records geselecteerd om toe te wijzen aan een beheerder."

@@ -675,19 +675,78 @@ function get_domains_from_userid($id)
 	global $db;
 	if (is_numeric($id))
 	{
-		$result = $db->query("SELECT domains.id AS domain_id, domains.name AS name FROM domains LEFT JOIN zones ON domains.id=zones.domain_id WHERE owner=$id");
+		$a_zones = array();
 
-		$ret = array();
+		// Check for zones the user has full access for (the 
+		// user is owner of the zone.
 
-		// Put all the information in a big array.
-		while ($r = $result->fetchRow())
+		$res_full = $db->query("SELECT 
+					domains.id AS domain_id, 
+					domains.name AS name 
+					FROM domains 
+					LEFT JOIN zones ON domains.id=zones.domain_id 
+					WHERE owner=$id"); 
+		
+		// Process the output.
+
+		$numrows = $res_full->numRows();
+		$i=1;
+		if ($numrows > 0) 
 		{
-			$ret[] = array(
+			$andnot=" AND NOT domains.id IN (";
+			while($r = $res_full->fetchRow()) {
+				
+				// Create array of zone id's and name's the owner
+				// has full access to.
+
+				$a_zones[] = array(
+				"id"            =>              $r["domain_id"],
+				"name"          =>              $r["name"],
+				"partial"	=>		"0"
+				);
+
+				// Create AND NOT for query of zones the user has 
+				// only partial access to. In that query we just 
+				// want to see the zones he has not full access to 
+				// as well.
+
+				$andnot.=$r["domain_id"];
+				if ($i < $numrows) {
+					$andnot.=",";
+					$i++;
+				}
+
+			}
+			$andnot.=")";
+		}
+		else
+		{
+			$andnot="";
+		}
+
+		// Check for zones the user has partial access only to.
+
+		$res_partial = $db->query("SELECT DISTINCT 
+					records.domain_id, 
+					domains.name 
+					FROM records, record_owners, domains 
+					WHERE record_owners.user_id = '".$id."' 
+					AND records.id = record_owners.record_id 
+					AND domains.id = records.domain_id
+					".$andnot.";");
+		
+		// Add these zones to the array as well.
+
+		while ($r = $res_partial->fetchRow())
+		{
+			$a_zones[] = array(
 			"id"            =>              $r["domain_id"],
-			"name"          =>              $r["name"]
+			"name"          =>              $r["name"],
+			"partial"	=>		"1"
 			);
 		}
-		return $ret;
+
+		return $a_zones;
 	}
 	else
 	{

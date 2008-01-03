@@ -74,7 +74,8 @@ $users = show_users('');
        <tr>
         <th>&nbsp;</th>
         <th><? echo _('Name'); ?></th>
-        <th><? echo _('Zones'); ?></th>
+        <th><? echo _('Zones'); ?> (<? echo _('access'); ?>)</th>
+        <th><? echo _('Zones'); ?> (<? echo _('owner'); ?>)</th>
         <th><? echo _('Zone list'); ?></th>
         <th><? echo _('Level'); ?></th>
         <th><? echo _('Status'); ?></th>
@@ -83,17 +84,19 @@ $users = show_users('');
 $users = show_users('',ROWSTART,ROWAMOUNT);
 foreach ($users as $c)
 {
+        $domains = get_domains_from_userid($c["id"]);
+	$num_zones_access = count($domains);
 ?>
        <tr>
         <td class="n"><a href="delete_user.php?id=<? echo $c["id"] ?>"><img src="images/delete.gif" alt="[ <? echo _('Delete user'); ?> ]"></a></td>
         <td class="n"><a href="edit_user.php?id=<? echo $c["id"] ?>"><? echo $c["fullname"] ?></A> (<? echo $c["username"] ?>)</td>
+        <td class="n"><? echo $num_zones_access ?></td>
         <td class="n"><? echo $c["numdomains"] ?></td>
         <td class="n">
         <?
-        $domains = get_domains_from_userid($c["id"]);
         foreach ($domains as $d)
         {
-                ?><a href="delete_domain.php?id=<? echo $d["id"] ?>"><img src="images/delete.gif" alt="[ <? echo _('Delete domain'); ?> ]"></a>&nbsp;<a href="edit.php?id=<? echo $d["id"] ?>"><? echo $d["name"] ?></a><br><?
+                ?><a href="delete_domain.php?id=<? echo $d["id"] ?>"><img src="images/delete.gif" alt="[ <? echo _('Delete domain'); ?> ]"></a>&nbsp;<a href="edit.php?id=<? echo $d["id"] ?>"><? echo $d["name"] ?><? if ($d["partial"] == "1") { echo " *"; } ; ?></a><br><?
         }
         ?></td>
 	<td class="n"><? echo $c["level"] ?></td>
@@ -102,7 +105,9 @@ foreach ($users as $c)
         print "\n";
 }
 ?>
+       
       </table>
+      <p><? echo _('Users may only change some of the records of zones marked with an (*).'); ?></p>
       <p><? echo _('Number of users') ;?>: <? echo count($users); ?>.</p>
       <div class="showmax">
 <?
