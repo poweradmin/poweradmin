@@ -109,7 +109,7 @@ if(isset($_POST["submit"]))
 		$sqlusers =	"CREATE TABLE users (
 				id SERIAL PRIMARY KEY,
 				username varchar(16) NOT NULL,
-				password varchar(255) NOT NULL,
+				password varchar(34) NOT NULL,
 				fullname varchar(255) NOT NULL,
 				email varchar(255) NOT NULL,
 				description text NOT NULL,
@@ -118,14 +118,14 @@ if(isset($_POST["submit"]))
 				)";
 		$sqlzones =	"CREATE TABLE zones (
 				id SERIAL PRIMARY KEY,
-				name varchar(255) NOT NULL,
-				owner smallint NOT NULL,
+				domain_id integer NOT NULL,
+				owner integer NOT NULL,
 				comment text NULL
 				)";
                 $sqlrecowns =   "CREATE TABLE record_owners (
                                 id SERIAL PRIMARY KEY,
-                                user_id smallint NOT NULL,
-                                record_id smallint NOT NULL
+                                user_id integer NOT NULL,
+                                record_id integer NOT NULL
                                 )";
 	}
 
