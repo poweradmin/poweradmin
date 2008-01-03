@@ -6,8 +6,8 @@ administration tool for the PowerDNS DNS server. The most recent version
 has full support for all zone types, support for supermasters, multi-
 language support and more.
 
-See <https://code.krikkit.nl/trac/poweradmin/wiki/Features> for a list
-of features.
+See <https://code.krikkit.nl/poweradmin/wiki/Features> for a list of 
+features.
 
 The original PowerAdmin code was written by Trancer and Sjeemz. This
 version ("a complete(r) PowerAdmin) is an adaption by Rejo Zenger. Many
@@ -15,92 +15,13 @@ people have contributed to the current code. For a list of contributors,
 please see <https://code.krikkit.nl/trac/poweradmin/wiki/Credits>.
 
 
-Where to get PowerAdmin?
+Where can I find more information?
 -----------------------------------------------------------------------
 
-At <https://code.krikkit.nl/trac/poweradmin> you can download the most
-recent version. 
+The site at <http://code.krikkit.nl/poweradmin/wiki> is the project's 
+home and the central place for information. You'll find download and 
+installation instructions, ticket system, support, mailinglists and
+more. 
 
-
-Requirements
------------------------------------------------------------------------
-
-- PowerDNS, versions 2.1 through 2.9.19 have been tested, others might
-  work as well. See <http://www.powerdns.com>.
-
-- MySQL or PostgreSQL. Both MySQL versions 4 and 5 have been reported
-  to work, 5.0.22 has been tested.
-  
-- A webserver that support PHP 4 or 5. Apache 2.0.55 has been tested.
-
-- PHP. At least version 4.2.1. Version 5.1.2 has been tested. It needs
-  the mysql or pgsql extension, as well has PEAR. 
-
-- PEAR::MDB2 (2.4.0 has been tested) and PEAR::MDB2_Driver_mysql
-  (1.4.0 has been tested) or PEAR::MDB2_Driver_pgsql.
-
-
-Installing
------------------------------------------------------------------------
-
-Upgrading? See section "Upgrading". 
-
-- Install PowerDNS with a mysql or pgsql backend.
-
-- Install MDB2 and MDB2_Driver_mysql (or pgsql equivalent) packages of
-  PEAR. You can install PEAR on a Debian-based server by installing
-  the package php-pear. Make sure php-cli can access the mysql module
-  (uncomment the line "extension=mysql.so" in /etc/php5/cli/php.ini).
-  The additional PEAR packages can be installed using the "pear 
-  install" command.
-
-- Add a SQL user for poweradmin that is granted SELECT, INSERT,
-  DELETE, UPDATE and CREATE actions.
-
-- Untar and gunzip the poweradmin package in your web dir. This will
-  create a directory "poweradmin-VERSION", we will refer to this
-  directory as "poweradmin/".
-
-- In the 'poweradmin/inc" directory the file "config-me.inc.php".
-  Edit this file to suit your environment. Then rename this file to
-  config.inc.php to be able to load the site. The website will not
-  work properly without a config, so pay attention to your config!
-
-- Next, go to <http://yourserver/poweradmin/install.php>
-
-- Fill in the required information to make an administrator login for
-  your PowerAdmin. If all goes well, the user is added, and you can
-  log in using that username. Do not forget to remove install.php from
-  the webdir!
-
-- Finaly, run <http://yourserver/poweradmin/test_setup.php> to see if
-  everything is setup correctly. This test also includes the
-  functionality testing of your PowerDNS records (whether you
-  have read/write access or not).
-
-
-Upgrading from 1.2.7-patched
------------------------------------------------------------------------
-
-If you are upgrading from 1.2.7-patched, there is not much you need to
-do. The only thing that is needed is install PEAR packages MDB2 and
-MDB2_Driver_mysql (or MDB2_Driver_pgsql). This can be done by running
-the commands "pear install MDB2 ; pear install MDB2_Driver_mysql".
-Make sure php-cli can access the mysql extension by uncommenting the
-line "extension=mysql.so" in /etc/php5/cli/php.ini
-
-
-User levels explained
------------------------------------------------------------------------
-
-[x] = yes   [ ] = no
-
-User    Permission to   Permission to  Permission to    Permission to
-Level   change own      change other   create domains   add/modify
-        domain(s)       domain(s)                       users
-
- 1           [x]             [ ]            [ ]              [ ]
- 5           [x]             [x]            [x]              [ ]
- 10          [x]             [x]            [x]              [x]
 
 
