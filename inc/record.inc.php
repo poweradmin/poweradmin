@@ -1284,7 +1284,6 @@ function search_record($question)
 				WHERE content LIKE '".$question."' 
 				OR name LIKE '".$question."' 
 				ORDER BY type DESC";
-		echo " $sqlq ";
 		$result = $db->query($sqlq);
 		$ret_r = array();
 		while ($r = $result->fetchRow())
@@ -1310,8 +1309,6 @@ function search_record($question)
 				AND zones.domain_id = domains.id 
 				AND domains.name LIKE '".$question."' 
 				GROUP BY domains.id, domains.name, zones.owner, records.domain_id";
-
-		echo "<br> $sqlq ";
 		$result = $db->query($sqlq);
 		$ret_d = array();
 		while ($r = $result->fetchRow())
