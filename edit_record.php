@@ -38,7 +38,8 @@ if ($_POST["commit"])
         clean_page("edit.php?id=".$_POST["domainid"]);
 } elseif($_SESSION["partial_".get_domain_name_from_id($_GET["domain"])] == 1)
 {
-    $checkPartial = $db->queryOne("SELECT id FROM record_owners WHERE record_id='".$_GET["id"]."' AND user_id='".$_SESSION["userid"]."' LIMIT 1");
+	$db->setLimit(1);
+    $checkPartial = $db->queryOne("SELECT id FROM record_owners WHERE record_id=".$db->quote($_GET["id"])." AND user_id=".$db->quote($_SESSION["userid"]));
     if (empty($checkPartial)) {
         error(ERR_RECORD_ACCESS_DENIED);
     }
@@ -48,7 +49,7 @@ include_once("inc/header.inc.php");
     <h2><? echo _('Edit record in zone'); ?> "<? echo  get_domain_name_from_id($_GET["domain"]) ?>"</h2>
 <?
 
-$x_result = $db->query("SELECT r.id,u.fullname FROM record_owners as r, users as u WHERE r.record_id='".$_GET['id']."' AND u.id=r.user_id");
+$x_result = $db->query("SELECT r.id,u.fullname FROM record_owners as r, users as u WHERE r.record_id=".$db->quote($_GET['id'])." AND u.id=r.user_id");
 if (level(10) && ($x_result->numRows() > 0)) 
 {
 ?>

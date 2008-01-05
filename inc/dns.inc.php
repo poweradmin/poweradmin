@@ -245,7 +245,7 @@ function is_valid_cname($dest)
 	// P.S. we might add CNAME to block CNAME recursion and chains.
 	$blockedtypes = " AND (type='MX' OR type='NS')";
 
-	$cnamec = "SELECT type, content FROM records WHERE content='$dest'" . $blockedtypes;
+	$cnamec = "SELECT type, content FROM records WHERE content=".$db->quote($dest) . $blockedtypes;
 	$result = $db->query($cnamec);
 
 	if($result->numRows() > 0)
@@ -382,7 +382,7 @@ function is_valid_mx($content, &$prio)
 	global $db;
 	// See if the destination to which this MX is pointing is NOT a CNAME record.
 	// Check inside our dns server.
-	if($db->queryOne("SELECT count(id) FROM records WHERE name='$content' AND type='CNAME'") > 0)
+	if($db->queryOne("SELECT count(id) FROM records WHERE name=".$db->quote($content)." AND type='CNAME'") > 0)
 	{
 		return -1;
 	}
@@ -425,7 +425,7 @@ function is_valid_ns($content, $hostname)
 		// "an IN NS field must be a hostname."
 	}
 
-	if($db->queryOne("SELECT count(id) FROM records WHERE name='$content' AND type='CNAME'") > 0)
+	if($db->queryOne("SELECT count(id) FROM records WHERE name=".$db->quote($content)." AND type='CNAME'") > 0)
 	{
 		return -2;
 		// "You can not point a NS record to a CNAME record. Remove/rename the CNAME record first or take another name."

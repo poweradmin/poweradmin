@@ -102,7 +102,7 @@ if(isset($id))
         }
         
         $message = _('You are going to delete this user, are you sure?');
-        if(($numrows = $db->queryOne("select count(id) from zones where owner=$id")) != 0)
+        if(($numrows = $db->queryOne("SELECT count(id) FROM zones WHERE owner=".$db->quote($id))) != 0)
         {
         	$message .= " " . _('This user has access to ') . $numrows . _(' zones, by deleting him you will also delete these zones.');
         }

@@ -28,7 +28,7 @@ if (isset($_POST["action"]) && $_POST["action"]=="record-user") {
 		$recordOwnerError = 'No records where selected to assign an sub-owner.';
 	} else {
 		foreach ($_POST["rowid"] as $x_user => $recordid){
-			$x_userid = $db->queryOne("SELECT id FROM record_owners WHERE user_id = '".$_POST["userid"]."' AND record_id='".$recordid."'");
+			$x_userid = $db->queryOne("SELECT id FROM record_owners WHERE user_id = ".$db->quote($_POST["userid"])." AND record_id=".$db->quote($recordid));
 			if (empty($x_userid)) {
 				add_record_owner($_GET["id"],$_POST["userid"],$recordid);
 			}
@@ -300,7 +300,7 @@ if($rec_result != -1)
 ?>
             <td class="n">
 <? 
-			$x_result = $db->query("SELECT r.user_id,u.username,u.fullname FROM record_owners as r, users as u WHERE r.record_id='".$r['id']."' AND u.id=r.user_id");
+			$x_result = $db->query("SELECT r.user_id,u.username,u.fullname FROM record_owners as r, users as u WHERE r.record_id=".$db->quote($r['id'])." AND u.id=r.user_id");
 			echo "<select style=\"width:120px;\">";
 			while ($x_r = $x_result->fetchRow()) {
 				echo "<option value=\"".$x_r["username"]."\">".$x_r["fullname"]."</option>";

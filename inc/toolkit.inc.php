@@ -158,21 +158,22 @@ function zone_letter_start($letter,$userid=true)
         if((!level(5) || !$userid) && !level(10) && !level(5))
         {
 		// First select the zones for which we have ownership on one or more records.
-		$query = 'SELECT records.domain_id FROM records, record_owners WHERE user_id = '.$_SESSION['userid'].' AND records.id = record_owners.record_id';
+		$query = 'SELECT records.domain_id FROM records, record_owners WHERE user_id = '.$db->quote($_SESSION['userid']).' AND records.id = record_owners.record_id';
 		$result = $db->query($query);
 		$zones = array();
 		if (!PEAR::isError($result)) {
 			$zones = $result->fetchCol();
 		}
 	
-                $sqlq .= " AND (zones.owner=".$_SESSION["userid"];
+                $sqlq .= " AND (zones.owner=".$db->quote($_SESSION["userid"]);
 		if (count($zones) > 0) {
 			$sqlq .= ' OR zones.domain_id IN ('.implode(',', $zones).') '; 
 
 		}
 		$sqlq .= ')';
         }
-        $sqlq .= " AND substring(domains.name,1,1) ".$sql_regexp." '^".$letter."' LIMIT 1";
+        $sqlq .= " AND substring(domains.name,1,1) ".$sql_regexp." ".$db->quote("^".$letter);
+		$db->setLimit(1);
         $result = $db->query($sqlq);
         $numrows = $result->numRows();
         if ( $numrows == "1" ) 
@@ -283,8 +284,9 @@ function xs($zoneid)
 	global $db;
 	if (is_numeric($zoneid) && is_numeric($_SESSION["level"]))
 	{
-		$result = $db->query("SELECT id FROM zones WHERE owner=".$_SESSION["userid"]." AND domain_id=$zoneid");
-		$result_extra = $db->query("SELECT record_owners.id FROM record_owners,records WHERE record_owners.user_id=".$_SESSION["userid"]." AND records.domain_id = $zoneid AND records.id = record_owners.record_id LIMIT 1");
+		$result = $db->query("SELECT id FROM zones WHERE owner=".$db->quote($_SESSION["userid"])." AND domain_id=".$db->quote($zoneid));
+		$db->setLimit(1);
+		$result_extra = $db->query("SELECT record_owners.id FROM record_owners,records WHERE record_owners.user_id=".$db->quote($_SESSION["userid"])." AND records.domain_id = ".$db->quote($zoneid)." AND records.id = record_owners.record_id");
 
                 if ($result->numRows() == 1 || $_SESSION["level"] >= 5)
                 {

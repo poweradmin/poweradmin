@@ -28,7 +28,8 @@ if ($_GET["id"]) {
     		error(ERR_RECORD_ACCESS_DENIED);
 	}
 	if ((!level(5)) && ($_SESSION[$zoneId.'_ispartial'] == 1)) {
-		$checkPartial = $db->queryOne("SELECT id FROM record_owners WHERE record_id='".$_GET["id"]."' AND user_id='".$_SESSION["userid"]."' LIMIT 1");
+		$db->setLimit(1);
+		$checkPartial = $db->queryOne("SELECT id FROM record_owners WHERE record_id=".$db->quote($_GET["id"])." AND user_id=".$db->quote($_SESSION["userid"]));
 		if (empty($checkPartial)) {
 			error(ERR_RECORD_ACCESS_DENIED);
 		}

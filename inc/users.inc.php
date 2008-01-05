@@ -29,10 +29,11 @@ require_once("inc/toolkit.inc.php");
 function show_users($id='',$rowstart=0,$rowamount=9999999)
 {
  	global $db;
+	$add = '';
  	if(is_numeric($id))
  	{
                  //When a user id is given, it is excluded from the userlist returned.
-                 $add = " WHERE users.id!=$id";
+                 $add = " WHERE users.id!=".$db->quote($id);
 	}
 
 	// Make a huge query.
@@ -54,10 +55,10 @@ function show_users($id='',$rowstart=0,$rowamount=9999999)
 			users.level,
 			users.active
 		ORDER BY
-			users.fullname
-	 	LIMIT $rowamount OFFSET $rowstart";
+			users.fullname";
 
 	// Execute the huge query.
+	$db->setLimit($rowstart, $rowamount);
 	$result = $db->query($sqlq);
 	$ret = array();
 	$retcount = 0;
@@ -87,7 +88,7 @@ function show_users($id='',$rowstart=0,$rowamount=9999999)
 	global $db;
 	if(is_numeric($id))
 	{
-		$result = $db->query("SELECT id FROM users WHERE id=$id");
+		$result = $db->query("SELECT id FROM users WHERE id=".$db->quote($id));
 		if ($result->numRows() == 1)
 		{
 			return true;
@@ -134,7 +135,7 @@ function leveldescription($id)
 function user_exists($user)
 {
 	global $db;
-	$result = $db->query("SELECT id FROM users WHERE username='$user'");
+	$result = $db->query("SELECT id FROM users WHERE username=".$db->quote($user));
 	if ($result->numRows() == 0)
 	{
                  return false;
@@ -159,7 +160,7 @@ function get_user_info($id)
 	global $db;
 	if (is_numeric($id))
 	{
-		$result = $db->query("SELECT id, username, fullname, email, description, level, active from users where id=$id");
+		$result = $db->query("SELECT id, username, fullname, email, description, level, active from users where id=".$db->quote($id));
 		$r = $result->fetchRow();
 		return $r;
 	}
@@ -183,8 +184,8 @@ function delete_user($id)
 	}
 	if (is_numeric($id))
 	{
-        	$db->query("DELETE FROM users WHERE id=$id");
-        	$db->query("DELETE FROM zones WHERE owner=$id");
+        	$db->query("DELETE FROM users WHERE id=".$db->quote($id));
+        	$db->query("DELETE FROM zones WHERE owner=".$db->quote($id));
         	return true;
         	// No need to check the affected rows. If the affected rows would be 0,
         	// the user isnt in the dbase, just as we want.
@@ -209,15 +210,12 @@ function add_user($user, $password, $fullname, $email, $level, $description, $ac
 	}
 	if (!user_exists($user))
 	{
-		// Might have to be changed.
-		// TODO probably.
-		$description = mysql_escape_string($description);
+		if (!is_valid_email($email)) 
+		{
+			error(ERR_INV_EMAIL);
+		}
 
-		// Clean up the fullname
-		$fullname = mysql_escape_string($fullname);
-		is_valid_email($email);
-
-		$db->query("INSERT INTO users (username, password, fullname, email, description, level, active) VALUES ('$user', '" . md5($password) . "', '$fullname', '$email', '$description', '$level', '$active')");
+		$db->query("INSERT INTO users (username, password, fullname, email, description, level, active) VALUES (".$db->quote($user).", '" . md5($password) . "', ".$db->quote($fullname).", ".$db->quote($email).", ".$db->quote($description).", ".$db->quote($level).", ".$db->quote($active).")");
 		return true;
 	}
 	else
@@ -238,23 +236,22 @@ function edit_user($id, $user, $fullname, $email, $level, $description, $active,
 		error(ERR_LEVEL_10);
 	}
 
-  	// Might have to be changed.
-  	// TODO
-	$description = mysql_escape_string($description);
-	$fullname = mysql_escape_string($fullname);
-	is_valid_email($email);
+	if (!is_valid_email($email)) 
+	{
+		error(ERR_INV_EMAIL);
+	}
 
-	$sqlquery = "UPDATE users set username='$user', fullname='$fullname', email='$email', level=$level, description='$description', active=$active ";
+	$sqlquery = "UPDATE users set username=".$db->quote($user).", fullname=".$db->quote($fullname).", email=".$db->quote($email).", level=".$db->quote($level).", description=".$db->quote($description).", active=".$db->quote($active);
 
 	if($password != "")
 	{
 		$sqlquery .= ", password= '" . md5($password) . "' ";
 	}
 
-	$sqlquery .= "where id=$id" ;
+	$sqlquery .= " WHERE id=".$db->quote($id) ;
 
   	// Search the username that right now goes with this ID.
-	$result = $db->query("SELECT username from users where id=$id");
+	$result = $db->query("SELECT username from users where id=".$db->quote($id));
 	$r = array();
 	$r = $result->fetchRow();
 
@@ -268,7 +265,7 @@ function edit_user($id, $user, $fullname, $email, $level, $description, $active,
 
   	// Its not.. so the user wants to change.
   	// Find if there is an id that has the wished username.
-  	$otheruser = $db->query("SELECT id from users where username='$user'");
+  	$otheruser = $db->query("SELECT id from users where username=".$db->query($user));
   	if($otheruser->numRows() > 0)
   	{
   		error(ERR_USER_EXIST);
@@ -299,7 +296,7 @@ function change_user_pass($currentpass, $newpass, $newpass2)
 	}
 
 	// Retrieve the users password.
-	$result = $db->query("SELECT password, id FROM users WHERE username='". $_SESSION["userlogin"]  ."'");
+	$result = $db->query("SELECT password, id FROM users WHERE username=".$db->quote($_SESSION["userlogin"]));
 	$rinfo = $result->fetchRow();
 
 	// Check the current password versus the database password and execute the update.
@@ -327,7 +324,7 @@ function get_fullname_from_userid($id)
 	global $db;
 	if (is_numeric($id))
 	{
-		$result = $db->query("SELECT fullname FROM users WHERE id=$id");
+		$result = $db->query("SELECT fullname FROM users WHERE id=".$db->quote($id));
 		$r = $result->fetchRow();
 		return $r["fullname"];
 	}
@@ -347,7 +344,7 @@ function get_owner_from_id($id)
 	global $db;
 	if (is_numeric($id))
 	{
-		$result = $db->query("SELECT fullname FROM users WHERE id=$id");
+		$result = $db->query("SELECT fullname FROM users WHERE id=".$db->quote($id));
 		if ($result->numRows() == 1)
 		{
 			$r = $result->fetchRow();
@@ -373,7 +370,7 @@ function get_owners_from_domainid($id) {
       global $db;
       if (is_numeric($id))
       {
-              $result = $db->query("SELECT users.id, users.fullname FROM users, zones WHERE zones.domain_id=$id AND zones.owner=users.id ORDER by fullname");
+              $result = $db->query("SELECT users.id, users.fullname FROM users, zones WHERE zones.domain_id=".$db->quote($id)." AND zones.owner=users.id ORDER by fullname");
               if ($result->numRows() == 0)
               {
 		      return "";
