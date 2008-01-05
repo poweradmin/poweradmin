@@ -128,7 +128,7 @@ show_pages(count($users),ROWAMOUNT);
 	</tr>
 	<tr>
 	 <td class="n"><? echo _('Password'); ?>:</td>
-	 <td class="n"><input type="text" class="input" NAME="password" VALUE="<? if ($error) print $_POST["password"]; ?>"></td>
+	 <td class="n"><input type="password" class="input" NAME="password" VALUE="<? if ($error) print $_POST["password"]; ?>"></td>
 	</tr>
 	<tr>
 	 <td class="n"><? echo _('E-mail'); ?>:</td>
