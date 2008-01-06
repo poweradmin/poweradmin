@@ -100,7 +100,7 @@ else
 		{
 			print "<td class=\"y\">".$zone_owners."</td>";
 		}
-		print "<tr>\n";
+		print "</tr>\n";
 	}
 }
 
