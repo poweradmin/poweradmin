@@ -37,6 +37,7 @@ PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, 'dbError');
 
 $dsn = "$dbdsntype://$dbuser:$dbpass@$dbhost/$dbdatabase";
 $db = MDB2::connect($dsn);
+$db->setOption('portability', MDB2_PORTABILITY_ALL ^ MDB2_PORTABILITY_EMPTY_TO_NULL);
 
 if (MDB2::isError($db))
 {

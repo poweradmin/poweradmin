@@ -214,7 +214,9 @@ function add_user($user, $password, $fullname, $email, $level, $description, $ac
 		{
 			error(ERR_INV_EMAIL);
 		}
-
+		if ($active != 1) {
+			$active = 0;
+		}
 		$db->query("INSERT INTO users (username, password, fullname, email, description, level, active) VALUES (".$db->quote($user).", '" . md5($password) . "', ".$db->quote($fullname).", ".$db->quote($email).", ".$db->quote($description).", ".$db->quote($level).", ".$db->quote($active).")");
 		return true;
 	}
@@ -240,7 +242,9 @@ function edit_user($id, $user, $fullname, $email, $level, $description, $active,
 	{
 		error(ERR_INV_EMAIL);
 	}
-
+	if ($active != 1) {
+		$active = 0;
+	}
 	$sqlquery = "UPDATE users set username=".$db->quote($user).", fullname=".$db->quote($fullname).", email=".$db->quote($email).", level=".$db->quote($level).", description=".$db->quote($description).", active=".$db->quote($active);
 
 	if($password != "")
