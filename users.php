@@ -37,7 +37,7 @@ if($_POST["submit"]
 		else
 		{
 			add_user($_POST["username"], $_POST["password"], $_POST["fullname"], $_POST["email"], $_POST["level"], $_POST["description"], $_POST["active"]);
-			clean_page($BASE_URL . $BASE_PATH . "users.php");
+			clean_page("users.php");
 		}
 	}
         else
