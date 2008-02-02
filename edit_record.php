@@ -1,4 +1,4 @@
-<?
+<?php
 
 /*  PowerAdmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://rejo.zenger.nl/poweradmin> for more details.
@@ -46,8 +46,8 @@ if ($_POST["commit"])
 }
 include_once("inc/header.inc.php");
 ?>
-    <h2><? echo _('Edit record in zone'); ?> "<? echo  get_domain_name_from_id($_GET["domain"]) ?>"</h2>
-<?
+    <h2><?php echo _('Edit record in zone'); ?> "<?php echo  get_domain_name_from_id($_GET["domain"]) ?>"</h2>
+<?php
 
 $x_result = $db->query("SELECT r.id,u.fullname FROM record_owners as r, users as u WHERE r.record_id=".$db->quote($_GET['id'])." AND u.id=r.user_id");
 if (level(10) && ($x_result->numRows() > 0)) 
@@ -57,65 +57,65 @@ if (level(10) && ($x_result->numRows() > 0))
      <div id="meta-left">
       <table>
        <tr>
-        <th><? echo _('Sub-owners'); ?></td>
+        <th><?php echo _('Sub-owners'); ?></td>
         <th>&nbsp;</td>
        </tr>
-<?
+<?php
 	while ($x_r = $x_result->fetchRow()) 
 	{
 ?>
         <tr>
-	 <td class="tdbg"><? echo $x_r["fullname"]; ?></td>
-	 <td class="tdbg"><a href="<? echo $_SERVER["PHP_SELF"]; ?>?id=<? echo $_GET["id"]; ?>&amp;domain=<? echo $_GET["domain"]; ?>&amp;delid=<? echo $x_r["id"]; ?>"><img src="images/delete.gif" alt="trash"></a></td>
+	 <td class="tdbg"><?php echo $x_r["fullname"]; ?></td>
+	 <td class="tdbg"><a href="<?php echo $_SERVER["PHP_SELF"]; ?>?id=<?php echo $_GET["id"]; ?>&amp;domain=<?php echo $_GET["domain"]; ?>&amp;delid=<?php echo $x_r["id"]; ?>"><img src="images/delete.gif" alt="trash"></a></td>
 	</tr>
-<?
+<?php
 	}
 ?>
        </table>
       </div>
      </div>
-<? 
+<?php 
 }
 ?>
     <form method="post" action="edit_record.php">
-     <input type="hidden" name="recordid" value="<? echo  $_GET["id"] ?>">
-     <input type="hidden" name="domainid" value="<? echo  $_GET["domain"] ?>">
+     <input type="hidden" name="recordid" value="<?php echo  $_GET["id"] ?>">
+     <input type="hidden" name="domainid" value="<?php echo  $_GET["domain"] ?>">
      <table>
       <tr>
-       <th><? echo _('Name'); ?></td>
+       <th><?php echo _('Name'); ?></td>
        <th>&nbsp;</td>
-       <th><? echo _('Type'); ?></td>
-       <th><? echo _('Priority'); ?></td>
-       <th><? echo _('Content'); ?></td>
-       <th><? echo _('TTL'); ?></td>
+       <th><?php echo _('Type'); ?></td>
+       <th><?php echo _('Priority'); ?></td>
+       <th><?php echo _('Content'); ?></td>
+       <th><?php echo _('TTL'); ?></td>
       </tr>
-<?
+<?php
 	$rec = get_record_from_id($_GET["id"]);
 ?>
        <tr>
         <td>
-<? 
+<?php 
 if ($_SESSION[$_GET["domain"]."_ispartial"] == 1)  
 {
 ?>
-         <input type="hidden" name="name" value="<? echo  trim(str_replace(get_domain_name_from_id($_GET["domain"]), '', $rec["name"]), '.')?>" class="input">
+         <input type="hidden" name="name" value="<?php echo  trim(str_replace(get_domain_name_from_id($_GET["domain"]), '', $rec["name"]), '.')?>" class="input">
 
-<? echo  trim(str_replace(get_domain_name_from_id($_GET["domain"]), '', $rec["name"]), '.') ?>
-<? 
+<?php echo  trim(str_replace(get_domain_name_from_id($_GET["domain"]), '', $rec["name"]), '.') ?>
+<?php 
 } 
 else 
 { 
 ?>
-         <input type="text" name="name" value="<? echo  trim(str_replace(get_domain_name_from_id($_GET["domain"]), '', $rec["name"]), '.') ?>" class="input">
-<? 
+         <input type="text" name="name" value="<?php echo  trim(str_replace(get_domain_name_from_id($_GET["domain"]), '', $rec["name"]), '.') ?>" class="input">
+<?php 
 } 
 ?>
-.<? echo  get_domain_name_from_id($_GET["domain"]) ?>
+.<?php echo  get_domain_name_from_id($_GET["domain"]) ?>
         </td>
 	<td class="n">IN</td>
 	<td>
 	 <select name="type">
-<?
+<?php
 foreach (get_record_types() as $c)
 {
 	if ($c == $rec["type"])
@@ -127,22 +127,22 @@ foreach (get_record_types() as $c)
 		$add = "";
 	}
 	?>
-	<option<? echo  $add ?> value="<? echo  $c ?>"><? echo  $c ?></option><?
+	<option<?php echo  $add ?> value="<?php echo  $c ?>"><?php echo  $c ?></option><?php
 }
 
 ?>
          </select>
 	</td>
-	<td><input type="text" name="prio" value="<? echo  $rec["prio"] ?>" class="sinput"></td>
-	<td><input type="text" name="content" value="<? echo  $rec["content"] ?>" class="input"></td>
-	<td><input type="text" name="ttl" value="<? echo  $rec["ttl"] ?>" class="sinput"></td>
+	<td><input type="text" name="prio" value="<?php echo  $rec["prio"] ?>" class="sinput"></td>
+	<td><input type="text" name="content" value="<?php echo  $rec["content"] ?>" class="input"></td>
+	<td><input type="text" name="ttl" value="<?php echo  $rec["ttl"] ?>" class="sinput"></td>
        </tr>
       </table>
       <p>
-       <input type="submit" name="commit" value="<? echo _('Commit changes'); ?>" class="button">&nbsp;&nbsp;
-       <input type="reset" name="reset" value="<? echo _('Reset changes'); ?>" class="button">
+       <input type="submit" name="commit" value="<?php echo _('Commit changes'); ?>" class="button">&nbsp;&nbsp;
+       <input type="reset" name="reset" value="<?php echo _('Reset changes'); ?>" class="button">
       </p>
      </form>
-<?
+<?php
 include_once("inc/footer.inc.php");
 ?>

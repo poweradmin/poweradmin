@@ -1,4 +1,4 @@
-<?
+<?php
 
 /*  PowerAdmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://rejo.zenger.nl/poweradmin> for more details.
@@ -84,28 +84,28 @@ function auth($msg="",$type="success")
 		print "<div class=\"$type\">$msg</div>\n";
 	}
 	?>
-	<h2><? echo _('Login'); ?></h2>
-	<?
+	<h2><?php echo _('Login'); ?></h2>
+	<?php
 	?>
-	<form method="post" action="<? echo $_SERVER["PHP_SELF"] ?>">
+	<form method="post" action="<?php echo $_SERVER["PHP_SELF"] ?>">
 	 <table border="0">
 	  <tr>
-	   <td class="n"><? echo _('Login'); ?>:</td>
+	   <td class="n"><?php echo _('Login'); ?>:</td>
 	   <td class="n"><input type="text" class="input" name="username"></td>
 	  </tr>
 	  <tr>
-	   <td class="n"><? echo _('Password'); ?>:</td>
+	   <td class="n"><?php echo _('Password'); ?>:</td>
 	   <td class="n"><input type="password" class="input" name="password"></td>
 	  </tr>
 	  <tr>
 	   <td class="n">&nbsp;</td>
 	   <td class="n">
-	    <input type="submit" name="authenticate" class="button" value=" <? echo _('Login'); ?> ">
+	    <input type="submit" name="authenticate" class="button" value=" <?php echo _('Login'); ?> ">
 	   </td>
 	  </tr>
 	 </table>
 	</form>
-	<?
+	<?php
 	include_once('inc/footer.inc.php');
 	exit;
 }

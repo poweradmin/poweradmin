@@ -35,30 +35,30 @@ if($_POST["submit"])
 
 include_once("inc/header.inc.php");
 ?>
-    <h2><? echo _('Change password'); ?></h2>
+    <h2><?php echo _('Change password'); ?></h2>
     <form method="post" action="change_password.php">
      <table border="0" CELLSPACING="4">
       <tr>
-       <td class="n"><? echo _('Current password'); ?>:</td>
+       <td class="n"><?php echo _('Current password'); ?>:</td>
        <td class="n"><input type="password" class="input" NAME="currentpass" value=""></td>
       </tr>
       <tr>
-       <td class="n"><? echo _('New password'); ?>:</td>
+       <td class="n"><?php echo _('New password'); ?>:</td>
        <td class="n"><input type="password" class="input" NAME="newpass" value=""></td>
       </tr>
       <tr>
-       <td class="n"><? echo _('New password'); ?>:</td>
+       <td class="n"><?php echo _('New password'); ?>:</td>
        <td class="n"><input type="password" class="input" NAME="newpass2" value=""></td>
       </tr>
       <tr>
        <td class="n">&nbsp;</td>
        <td class="n">
-        <input type="submit" class="button" NAME="submit" value="<? echo _('Change password'); ?>">
+        <input type="submit" class="button" NAME="submit" value="<?php echo _('Change password'); ?>">
        </td>
       </tr>
      </table>
     </form>
 
-<?
+<?php
 include_once("inc/footer.inc.php");
 ?>

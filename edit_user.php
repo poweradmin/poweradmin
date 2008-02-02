@@ -51,57 +51,57 @@ if (!level(10))
 	error("You do not have the required access level.");
 }
 ?>
-    <h2><? echo _('Edit user'); ?> "<? echo get_fullname_from_userid($_GET["id"]) ?>"</h2>
-<?
+    <h2><?php echo _('Edit user'); ?> "<?php echo get_fullname_from_userid($_GET["id"]) ?>"</h2>
+<?php
 $r = array();
 $r = get_user_info($_GET["id"]);
 ?>
     <form method="post">
-     <input type="HIDDEN" name="number" value="<? echo $_GET["id"] ?>">
+     <input type="HIDDEN" name="number" value="<?php echo $_GET["id"] ?>">
      <table>
       <tr>
-       <td class="n"><? echo _('User name'); ?>:</td>
-       <td class="n"><input type="text" class="input" name="username" value="<? echo $r["username"]?>"></td>
+       <td class="n"><?php echo _('User name'); ?>:</td>
+       <td class="n"><input type="text" class="input" name="username" value="<?php echo $r["username"]?>"></td>
       </tr>
       <tr>
-       <td class="n"><? echo _('Full name'); ?>:</td>
-       <td class="n"><input type="text" class="input" name="fullname" value="<? echo $r["fullname"]?>"></td>
+       <td class="n"><?php echo _('Full name'); ?>:</td>
+       <td class="n"><input type="text" class="input" name="fullname" value="<?php echo $r["fullname"]?>"></td>
       </tr>
       <tr>
-       <td class="n"><? echo _('Password'); ?>:</td>
+       <td class="n"><?php echo _('Password'); ?>:</td>
        <td class="n"><input type="password" class="input" name="password" value=""></td>
       </tr>
       <tr>
-       <td class="n"><? echo _('E-mail'); ?>:</td>
-       <td class="n"><input type="text" class="input" name="email" value="<? echo $r["email"]?>"></td>
+       <td class="n"><?php echo _('E-mail'); ?>:</td>
+       <td class="n"><input type="text" class="input" name="email" value="<?php echo $r["email"]?>"></td>
       </tr>
       <tr>
-       <td class="n"><? echo _('User level'); ?>:</td>
+       <td class="n"><?php echo _('User level'); ?>:</td>
        <td class="n">
         <select name="level">
-	 <option value="1" <? if($r["level"] == 1) { echo "selectED"; } ?>>1 (<? echo _('Normal user'); ?>)</option>
-	 <option value="5" <? if($r["level"] == 5) { echo "selectED"; } ?>>5 (<? echo _('Administrator'); ?>)</option>
-	 <option value="10" <? if($r["level"] == 10) { echo "selectED"; } ?>>10 (<? echo _('Administrator w/ user admin rights'); ?>)</option>
+	 <option value="1" <?php if($r["level"] == 1) { echo "selectED"; } ?>>1 (<?php echo _('Normal user'); ?>)</option>
+	 <option value="5" <?php if($r["level"] == 5) { echo "selectED"; } ?>>5 (<?php echo _('Administrator'); ?>)</option>
+	 <option value="10" <?php if($r["level"] == 10) { echo "selectED"; } ?>>10 (<?php echo _('Administrator w/ user admin rights'); ?>)</option>
 	</select>
        </td>
       </tr>
       <tr>
-       <td class="n"><? echo _('Description'); ?>:</td>
+       <td class="n"><?php echo _('Description'); ?>:</td>
        <td class="n">
-        <textarea rows="6" cols="30" class="inputarea" name="description"><? echo $r["description"]?></textarea>
+        <textarea rows="6" cols="30" class="inputarea" name="description"><?php echo $r["description"]?></textarea>
        </td>
       </tr>
       <tr>
-       <td class="n"><? echo _('Active'); ?>:</td>
-       <td class="n"><input type="checkbox" name="active" value="1" <? if($r["active"]) { ?>CHECKED<? } ?>></td>
+       <td class="n"><?php echo _('Active'); ?>:</td>
+       <td class="n"><input type="checkbox" name="active" value="1" <?php if($r["active"]) { ?>CHECKED<?php } ?>></td>
       </tr>
       <tr>
        <td class="n">&nbsp;</td>
-       <td class="n"><input type="submit" class="button" name="commit" value="<? echo _('Commit changes'); ?>"></td>
+       <td class="n"><input type="submit" class="button" name="commit" value="<?php echo _('Commit changes'); ?>"></td>
       </tr>
      </table>
     </form>
-<?
+<?php
 
 include_once("inc/footer.inc.php");
 

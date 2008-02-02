@@ -25,9 +25,9 @@ include_once("inc/header.inc.php");
 if (!level(5))
 {
 ?>
-     <h3><? echo _('Oops!'); ?></h3>
-     <p><? echo _('You are not allowed to add supermasters with your current access level!'); ?></p>
-<?
+     <h3><?php echo _('Oops!'); ?></h3>
+     <p><?php echo _('You are not allowed to add supermasters with your current access level!'); ?></p>
+<?php
 } 
 else
 {
@@ -36,25 +36,25 @@ else
 	$num_supermasters = ($supermasters == -1) ? 0 : count($supermasters);
 	?>
 
-	   <h3><? printf(_('List all %s supermasters'), $num_supermasters); ?></h3>
+	   <h3><?php printf(_('List all %s supermasters'), $num_supermasters); ?></h3>
 	   <table>
 	    <tr>
 	     <th>&nbsp;</td>
-	     <th><? echo _('IP address of supermaster'); ?></td>
-	     <th><? echo _('Hostname in NS record'); ?></td>
-	     <th><? echo _('Account'); ?></td>
+	     <th><?php echo _('IP address of supermaster'); ?></td>
+	     <th><?php echo _('Hostname in NS record'); ?></td>
+	     <th><?php echo _('Account'); ?></td>
 	    </tr>
-	<?
+	<?php
 	   if ($num_supermasters == 0)
 	   {
 	?>
 	    <tr>
 	     <td class="n">&nbsp;</td>
 	     <td class="n" colspan="3">
-	      <? echo _('No supermasters in this listing, sorry.'); ?>
+	      <?php echo _('No supermasters in this listing, sorry.'); ?>
 	     </td>
 	    </tr>
-	<?
+	<?php
 	   }
 	   else
 	   {
@@ -63,18 +63,18 @@ else
 	?>
 	    <tr>
 	     <td class="n">
-	      <a href="delete_supermaster.php?master_ip=<? echo $c["master_ip"] ?>"><img src="images/delete.gif" title="<? print _('Delete supermaster') . ' ' . $c["master_ip"]; ?>" alt="[ <? echo _('Delete supermaster'); ?> ]"></a>
+	      <a href="delete_supermaster.php?master_ip=<?php echo $c["master_ip"] ?>"><img src="images/delete.gif" title="<?php print _('Delete supermaster') . ' ' . $c["master_ip"]; ?>" alt="[ <?php echo _('Delete supermaster'); ?> ]"></a>
 	     </td>
-	     <td class="y"><? echo $c["master_ip"] ?></td>
-	     <td class="y"><? echo $c["ns_name"] ?></td>
-	     <td class="y"><? echo $c["account"] ?></td>
+	     <td class="y"><?php echo $c["master_ip"] ?></td>
+	     <td class="y"><?php echo $c["ns_name"] ?></td>
+	     <td class="y"><?php echo $c["account"] ?></td>
 	    </tr>
-	<?
+	<?php
 		   }
 	   }
 	?>
 	   </table>
-<?
+<?php
 }
 
 include_once("inc/footer.inc.php");

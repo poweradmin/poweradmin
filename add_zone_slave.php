@@ -61,39 +61,39 @@ include_once("inc/header.inc.php");
 
 	if ($error != "")
 	{
-	        ?><div class="error"><? echo _('Error'); ?>: <? echo $error; ?></div><?
+	        ?><div class="error"><?php echo _('Error'); ?>: <?php echo $error; ?></div><?php
 	}
 	elseif ($success != "")
 	{
-		?><div class="success"><? echo $success; ?></div><?
+		?><div class="success"><?php echo $success; ?></div><?php
 	}
 	
 	$users = show_users();
 	
 	?>
-	    <h2><? echo _('Add slave zone'); ?></h2>
+	    <h2><?php echo _('Add slave zone'); ?></h2>
 	    <form method="post" action="add_zone_slave.php">
 	     <table>
 	      <tr>
-	       <td class="n"><? echo _('Zone name'); ?>:</td>
+	       <td class="n"><?php echo _('Zone name'); ?>:</td>
 	       <td class="n">
-	        <input type="text" class="input" name="domain" value="<? if ($error) print $_POST["domain"]; ?>">
+	        <input type="text" class="input" name="domain" value="<?php if ($error) print $_POST["domain"]; ?>">
 	       </td>
 	      </tr>
 	      <tr>
-	       <td class="n"><? echo _('IP of master NS'); ?>:</td>
+	       <td class="n"><?php echo _('IP of master NS'); ?>:</td>
 	       <td class="n">
-	        <input type="text" class="input" name="slave_master" value="<? if ($error) print $_POST["slave_master"]; ?>">
+	        <input type="text" class="input" name="slave_master" value="<?php if ($error) print $_POST["slave_master"]; ?>">
 	       </td>
 	      </tr>
 	      <tr>
-	       <td class="n"><? echo _('Owner'); ?>:</td>
+	       <td class="n"><?php echo _('Owner'); ?>:</td>
 	       <td class="n">
 	        <select name="owner">
-	         <? 
+	         <?php 
 	         foreach ($users as $u)
 	         {
-	           ?><option value="<? echo $u['id'] ?>"><? echo $u['fullname'] ?></option><?
+	           ?><option value="<?php echo $u['id'] ?>"><?php echo $u['fullname'] ?></option><?php
 	         } 
 	        ?>
 	        </select>
@@ -102,11 +102,11 @@ include_once("inc/header.inc.php");
 	      <tr>
 	       <td class="n">&nbsp;</td>
 	       <td class="n">
-	        <input type="submit" class="button" name="submit" value="<? echo _('Add domain'); ?>">
+	        <input type="submit" class="button" name="submit" value="<?php echo _('Add domain'); ?>">
 	       </td>
 	      </tr>
 	     </table>
 	    </form>
-<?
+<?php
 include_once("inc/footer.inc.php");
 ?>

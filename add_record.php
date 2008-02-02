@@ -37,25 +37,25 @@ if ($_POST["commit"]) {
 include_once("inc/header.inc.php");
 ?>
 
-    <h2><? echo _('Add record to zone'); ?> "<? echo get_domain_name_from_id($_GET["id"]) ?>"</H2>
+    <h2><?php echo _('Add record to zone'); ?> "<?php echo get_domain_name_from_id($_GET["id"]) ?>"</H2>
 
     <form method="post">
-     <input type="hidden" name="zoneid" value="<? echo $_GET["id"] ?>">
+     <input type="hidden" name="zoneid" value="<?php echo $_GET["id"] ?>">
      <table border="0" cellspacing="4">
       <tr>
-       <td class="n"><? echo _('Name'); ?></td>
+       <td class="n"><?php echo _('Name'); ?></td>
        <td class="n">&nbsp;</td>
-       <td class="n"><? echo _('Type'); ?></td>
-       <td class="n"><? echo _('Priority'); ?></td>
-       <td class="n"><? echo _('Content'); ?></td>
-       <td class="n"><? echo _('TTL'); ?></td>
+       <td class="n"><?php echo _('Type'); ?></td>
+       <td class="n"><?php echo _('Priority'); ?></td>
+       <td class="n"><?php echo _('Content'); ?></td>
+       <td class="n"><?php echo _('TTL'); ?></td>
       </tr>
       <tr>
-       <td class="n"><input type="text" name="name" class="input">.<? echo get_domain_name_from_id($_GET["id"]) ?></td>
+       <td class="n"><input type="text" name="name" class="input">.<?php echo get_domain_name_from_id($_GET["id"]) ?></td>
        <td class="n">IN</td>
        <td class="n">
         <select name="type">
-<?
+<?php
 $dname = get_domain_name_from_id($_GET["id"]);
 foreach (get_record_types() as $c) {
         if (eregi('in-addr.arpa', $dname) && strtoupper($c) == 'PTR') {
@@ -65,18 +65,18 @@ foreach (get_record_types() as $c) {
         } else {
                 unset($add);
         }
-        ?><option<? echo $add ?> value="<? echo $c ?>"><? echo $c ?></option><?
+        ?><option<?php echo $add ?> value="<?php echo $c ?>"><?php echo $c ?></option><?php
 }
 ?>
         </select>
        </td>
        <td class="n"><input type="text" name="prio" class="sinput"></td>
        <td class="n"><input type="text" name="content" class="input"></td>
-       <td class="n"><input type="text" name="ttl" class="sinput" value="<? echo $DEFAULT_TTL?>"></td>
+       <td class="n"><input type="text" name="ttl" class="sinput" value="<?php echo $DEFAULT_TTL?>"></td>
       </tr>
      </table>
      <br>
-     <input type="submit" name="commit" value="<? echo _('Add record'); ?>" class="button">
+     <input type="submit" name="commit" value="<?php echo _('Add record'); ?>" class="button">
     </form>
 
-<? include_once("inc/footer.inc.php"); ?>
+<?php include_once("inc/footer.inc.php"); ?>

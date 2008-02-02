@@ -58,10 +58,10 @@ function error($msg=false)
         if ($msg)
 	    {
 		?>
-                <P><TABLE CLASS="error"><TR><TD CLASS="error"><H2><? echo _('Oops! An error occured!'); ?></H2>
+                <P><TABLE CLASS="error"><TR><TD CLASS="error"><H2><?php echo _('Oops! An error occured!'); ?></H2>
        	        <BR>
-               	<FONT STYLE="font-weight: Bold"><?= nl2br($msg) ?><BR><BR><a href="javascript:history.go(-1)">&lt;&lt; back</a></FONT><BR></TABLE>
-                <?
+               	<FONT STYLE="font-weight: Bold"><?php nl2br($msg) ?><BR><BR><a href="javascript:history.go(-1)">&lt;&lt; back</a></FONT><BR></TABLE>
+                <?php
       	        die();
         }
 	    else
@@ -180,12 +180,12 @@ if(isset($_POST["submit"]))
 		{
 
 			?>
-<h2><? echo _('PowerAdmin has succesfully been installed.'); ?></h2>
+<h2><?php echo _('PowerAdmin has succesfully been installed.'); ?></h2>
 <br />
-<? echo _('Remove this file (install.php) from your webdir.'); ?><br />
-<b><? echo _('WARNING'); ?>:</b> <? echo _('PowerAdmin will not work until you delete install.php'); ?><br />
+<?php echo _('Remove this file (install.php) from your webdir.'); ?><br />
+<b><?php echo _('WARNING'); ?>:</b> <?php echo _('PowerAdmin will not work until you delete install.php'); ?><br />
 <br />
-<? echo _('You can click'); ?> <a href="index.php">here</a> <? echo _('to start using PowerAdmin'); ?>
+<?php echo _('You can click'); ?> <a href="index.php">here</a> <?php echo _('to start using PowerAdmin'); ?>
 </BODY></HTML>
 <?php
 			die();
@@ -202,24 +202,24 @@ else
 {
 ?>
 
-<H2><? echo _('PowerAdmin for PowerDNS'); ?></H2>
+<H2><?php echo _('PowerAdmin for PowerDNS'); ?></H2>
 <BR>
-<B><? echo _('This config file will setup your database to be ready for PowerAdmin. Please fill in the next fields which will create an
+<B><?php echo _('This config file will setup your database to be ready for PowerAdmin. Please fill in the next fields which will create an
 administrator login.'); ?><BR>
-<? echo _('Fields marked with a'); ?> <FONT COLOR="#FF0000">*</FONT> <? echo _('are required.'); ?>
+<?php echo _('Fields marked with a'); ?> <FONT COLOR="#FF0000">*</FONT> <?php echo _('are required.'); ?>
 </B><BR><BR>
 
 <FORM METHOD="post">
 <TABLE BORDER="0" CELLSPACING="4">
-<TR><TD CLASS="tdbg"><? echo _('Login Name'); ?>:</TD><TD WIDTH="510" CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="login" VALUE=""> <FONT COLOR="#FF0000">*</FONT> </TD></TR>
-<TR><TD CLASS="tdbg"><? echo _('Password'); ?>:</TD><TD WIDTH="510" CLASS="tdbg"><INPUT TYPE="password" CLASS="input" NAME="password" VALUE=""> <FONT COLOR="#FF0000">*</FONT> </TD></TR>
-<TR><TD CLASS="tdbg"><? echo _('Full name'); ?>:</TD><TD WIDTH="510" CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="fullname" VALUE=""> <FONT COLOR="#FF0000">*</FONT> </TD></TR>
-<TR><TD CLASS="tdbg"><? echo _('Email'); ?>:</TD><TD CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="email" VALUE=""> <FONT COLOR="#FF0000">*</FONT> </TD></TR>
-<TR><TD CLASS="tdbg"><? echo _('Description'); ?>:</TD><TD CLASS="tdbg"><TEXTAREA ROWS="6" COLS="30" CLASS="inputarea" NAME="description"></TEXTAREA></TD></TR>
-<TR><TD CLASS="tdbg">&nbsp;</TD><TD CLASS="tdbg"><INPUT TYPE="submit" CLASS="button" NAME="submit" VALUE="<? echo _('Make Account'); ?>"></TD></TR>
+<TR><TD CLASS="tdbg"><?php echo _('Login Name'); ?>:</TD><TD WIDTH="510" CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="login" VALUE=""> <FONT COLOR="#FF0000">*</FONT> </TD></TR>
+<TR><TD CLASS="tdbg"><?php echo _('Password'); ?>:</TD><TD WIDTH="510" CLASS="tdbg"><INPUT TYPE="password" CLASS="input" NAME="password" VALUE=""> <FONT COLOR="#FF0000">*</FONT> </TD></TR>
+<TR><TD CLASS="tdbg"><?php echo _('Full name'); ?>:</TD><TD WIDTH="510" CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="fullname" VALUE=""> <FONT COLOR="#FF0000">*</FONT> </TD></TR>
+<TR><TD CLASS="tdbg"><?php echo _('Email'); ?>:</TD><TD CLASS="tdbg"><INPUT TYPE="text" CLASS="input" NAME="email" VALUE=""> <FONT COLOR="#FF0000">*</FONT> </TD></TR>
+<TR><TD CLASS="tdbg"><?php echo _('Description'); ?>:</TD><TD CLASS="tdbg"><TEXTAREA ROWS="6" COLS="30" CLASS="inputarea" NAME="description"></TEXTAREA></TD></TR>
+<TR><TD CLASS="tdbg">&nbsp;</TD><TD CLASS="tdbg"><INPUT TYPE="submit" CLASS="button" NAME="submit" VALUE="<?php echo _('Make Account'); ?>"></TD></TR>
 </TABLE>
 </FORM>
 
 <BR><BR>
 <FONT CLASS="footer"><B>PowerAdmin v1.0</B>&nbsp;Copyright &copy;2002 The
-PowerAdmin Team</FONT></BODY></HTML><? } ?>
+PowerAdmin Team</FONT></BODY></HTML><?php } ?>

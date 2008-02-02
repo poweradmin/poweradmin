@@ -43,17 +43,17 @@ if ($_GET["id"]) {
         include_once("inc/header.inc.php");
         ?>
 	
-	<h2><? echo _('Delete record'); ?> "<?
+	<h2><?php echo _('Delete record'); ?> "<?php
         $data = get_record_from_id($_GET["id"]);
         print $data["name"]." IN ".$data["type"]." ".$data["content"];
-        ?>"</h2><?
+        ?>"</h2><?php
         if (($data["type"] == "NS" && $data["name"] == get_domain_name_from_id($_GET["domain"])) || $data["type"] == "SOA") {
                 print "<font class=\"warning\">" . _('You are trying to delete a record that is needed for this zone to work.') . "</font><br>";
         }
-        ?><br><font class="warning"><? echo _('Are you sure?'); ?></font><br><br>
-        <input type="button" class="button" OnClick="location.href='<? echo $_SERVER["REQUEST_URI"] ?>&confirm=1'" value="<? echo _('Yes'); ?>"> 
-	<input type="button" class="button" OnClick="location.href='<? echo $_SERVER["REQUEST_URI"] ?>&confirm=0'" value="<? echo _('No'); ?>">
-        <?
+        ?><br><font class="warning"><?php echo _('Are you sure?'); ?></font><br><br>
+        <input type="button" class="button" OnClick="location.href='<?php echo $_SERVER["REQUEST_URI"] ?>&confirm=1'" value="<?php echo _('Yes'); ?>"> 
+	<input type="button" class="button" OnClick="location.href='<?php echo $_SERVER["REQUEST_URI"] ?>&confirm=0'" value="<?php echo _('No'); ?>">
+        <?php
 } else {
         include_once("inc/header.inc.php");
         echo _('Nothing to do!');

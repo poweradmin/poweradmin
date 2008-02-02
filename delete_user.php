@@ -54,13 +54,13 @@ if(isset($id))
         include_once("inc/header.inc.php");
         ?>
 	
-    <h3><? echo _('Delete user'); ?> "<? echo get_fullname_from_userid($id) ?>"</h3>
+    <h3><?php echo _('Delete user'); ?> "<?php echo get_fullname_from_userid($id) ?>"</h3>
      <form method="post">
-        <?
+        <?php
         $domains = get_domains_from_userid($id);
         if (count($domains) > 0) 
         {
-        	echo _('This user has access to the following zone(s)'); ?> :<BR><?
+        	echo _('This user has access to the following zone(s)'); ?> :<BR><?php
                 $users = show_users($id);
                 if(count($users) < 1) 
                 {
@@ -72,33 +72,33 @@ if(isset($id))
                  <tr>
 		  <td class="n">Delete</td>
 		  <td class="n">Name</td>
-		<? if (!$no_users) { ?>
+		<?php if (!$no_users) { ?>
 		  <td class="n">New owner</td>
-		<? } ?>
+		<?php } ?>
 		 </tr>
-                <?
+                <?php
                 foreach ($domains as $d) 
                 {
                         ?>
                  <tr>
-		  <td class="n" align="center"><?
+		  <td class="n" align="center"><?php
                         if ($no_users) 
                      	{ 
-                     		?><input type="hidden" name="delete[]" value="<? echo $d["id"] ?>"><?
+                     		?><input type="hidden" name="delete[]" value="<?php echo $d["id"] ?>"><?php
                         } 
-                        ?><input type="checkbox"<? echo $add ?> name="delete[]" value="<? echo $d["id"] ?>"></td><td class="n"><? echo $d["name"] ?></td><td class="n"><? 
+                        ?><input type="checkbox"<?php echo $add ?> name="delete[]" value="<?php echo $d["id"] ?>"></td><td class="n"><?php echo $d["name"] ?></td><td class="n"><?php 
                         if (!$no_users) 
                         { 
-                        	?><select name="domain[<? echo $d["id"] ?>]"><?
+                        	?><select name="domain[<?php echo $d["id"] ?>]"><?php
                         	foreach($users as $u) 
                         	{
-                        	        ?><option value="<? echo $u["id"] ?>"><? echo $u["fullname"] ?></option><?
+                        	        ?><option value="<?php echo $u["id"] ?>"><?php echo $u["fullname"] ?></option><?php
                         	}
-                        	?></select></td><? 
+                        	?></select></td><?php 
                         } 
-                        ?></tr><?
+                        ?></tr><?php
                 }
-                ?></table><?
+                ?></table><?php
         }
         
         $message = _('You are going to delete this user, are you sure?');
@@ -108,11 +108,11 @@ if(isset($id))
         }
 
         ?>
-        <font class="warning"><? echo $message ?></font><br>
-        <input type="hidden" name="id" value="<? echo $id ?>">
+        <font class="warning"><?php echo $message ?></font><br>
+        <input type="hidden" name="id" value="<?php echo $id ?>">
         <input type="hidden" name="confirm" value="1">
-        <input type="submit" class="button" value="<? echo _('Yes'); ?>"> <input type="button" class="button" OnClick="location.href='users.php'" value="<? echo _('No'); ?>"></FORM>
-        <?
+        <input type="submit" class="button" value="<?php echo _('Yes'); ?>"> <input type="button" class="button" OnClick="location.href='users.php'" value="<?php echo _('No'); ?>"></FORM>
+        <?php
         include_once("inc/footer.inc.php");
 } 
 else 

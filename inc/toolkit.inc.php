@@ -1,4 +1,4 @@
-<?
+<?php
 
 /*  PowerAdmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://rejo.zenger.nl/poweradmin> for more details.
@@ -196,9 +196,9 @@ function error($msg)
 	{
 		include_once("header.inc.php");
 	?>
-	<p><? echo _('Oops! An error occured!'); ?></p>
-	<p><? echo nl2br($msg) ?></p>
-	<?
+	<p><?php echo _('Oops! An error occured!'); ?></p>
+	<p><?php echo nl2br($msg) ?></p>
+	<?php
 		include_once("footer.inc.php");
 		die();
 	}
@@ -216,11 +216,11 @@ function message($msg)
 {
     include_once("header.inc.php");
     ?>
-    <P><TABLE CLASS="messagetable"><TR><TD CLASS="message"><H2><? echo _('Success!'); ?></H2>
+    <P><TABLE CLASS="messagetable"><TR><TD CLASS="message"><H2><?php echo _('Success!'); ?></H2>
     <BR>
 	<FONT STYLE="font-weight: Bold">
 	<P>
-	<?
+	<?php
     if($msg)
     {
         echo nl2br($msg);
@@ -233,10 +233,10 @@ function message($msg)
     </P>
     <BR>
     <P>
-    <a href="javascript:history.go(-1)">&lt;&lt; <? echo _('back'); ?></a></FONT>
+    <a href="javascript:history.go(-1)">&lt;&lt; <?php echo _('back'); ?></a></FONT>
     </P>
     </TD></TR></TABLE></P>
-    <?
+    <?php
     include_once("footer.inc.php");
 }
 

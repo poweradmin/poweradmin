@@ -31,17 +31,17 @@ if (isset($_POST['s_submit']) || isset($_POST['q']))
 include_once('inc/header.inc.php');
 ?>
 
-    <h2><? echo _('Search zones or records'); ?></h2>
+    <h2><?php echo _('Search zones or records'); ?></h2>
     <h3>Query</h3>
     <table>
-     <form method="post" action="<? echo $_SERVER['PHP_SELF']?>">
+     <form method="post" action="<?php echo $_SERVER['PHP_SELF']?>">
       <tr>
-       <td class="n"><? echo _('Enter a hostname or IP address'); ?></td>
+       <td class="n"><?php echo _('Enter a hostname or IP address'); ?></td>
        <td class="n"><input type="text" class="input" name="q"></td>
       </tr>
       <tr>
        <td class="n">&nbsp;</td>
-       <td class="n"><input type="submit" class="button" name="s_submit" value="<? echo _('Search'); ?>"></td>
+       <td class="n"><input type="submit" class="button" name="s_submit" value="<?php echo _('Search'); ?>"></td>
       </tr>
      </form>
     </table>
@@ -56,28 +56,28 @@ if ($submitted)
 	if (count($search_result) == 2 && count($search_result['domains']))
   	{
 	?>
-	<h4><? echo _('Zones found'); ?>:</h4>
+	<h4><?php echo _('Zones found'); ?>:</h4>
 	<table>
 	 <tr>
 	  <th>&nbsp;</th>
-	  <th><? echo _('Name'); ?></th>
-	  <th><? echo _('Records'); ?></th>
-	  <th><? echo _('Owner'); ?></th>
+	  <th><?php echo _('Name'); ?></th>
+	  <th><?php echo _('Records'); ?></th>
+	  <th><?php echo _('Owner'); ?></th>
          </tr>
 <?php
 foreach($search_result['domains'] as $d)
 {
 ?>
          <tr>
-<?
+<?php
   if (level(5))
   {
   ?>
      <td class="n">
-      <a href="edit.php?id=<? echo $d["id"] ?>"><img src="images/edit.gif" title="<? echo _('Edit zone') . " " . $d['name']; ?>" alt="[ <? echo _('Edit zone') . " " . $d['name']; ?> ]"></a>
-      <a href="delete_domain.php?id=<? echo $d["id"] ?>"><img src="images/delete.gif" title="<? print _('Delete zone') . " " . $d['name']; ?>" alt="[<? echo _('Delete zone') . " " . $d['name']; ?>]"></a>
+      <a href="edit.php?id=<?php echo $d["id"] ?>"><img src="images/edit.gif" title="<?php echo _('Edit zone') . " " . $d['name']; ?>" alt="[ <?php echo _('Edit zone') . " " . $d['name']; ?> ]"></a>
+      <a href="delete_domain.php?id=<?php echo $d["id"] ?>"><img src="images/delete.gif" title="<?php print _('Delete zone') . " " . $d['name']; ?>" alt="[<?php echo _('Delete zone') . " " . $d['name']; ?>]"></a>
      </td>
-<?
+<?php
 }
 else
 {
@@ -85,12 +85,12 @@ else
      <td class="n">
       &nbsp;
      </td>
-<?
+<?php
 }
 ?>
-     <td class="y"><? echo $d['name']?></td>
-     <td class="y"><? echo $d['numrec']?></td>
-     <td class="y"><? echo get_owner_from_id($d['owner'])?></td>
+     <td class="y"><?php echo $d['name']?></td>
+     <td class="y"><?php echo $d['numrec']?></td>
+     <td class="y"><?php echo get_owner_from_id($d['owner'])?></td>
     </tr>
 			<?php
 		} // end foreach ...
@@ -104,16 +104,16 @@ else
 	if(count($search_result['records']))
 	{
 		?>
-		<b><? echo _('Records found'); ?>:</b>
+		<b><?php echo _('Records found'); ?>:</b>
 		<p>
 		<table>
 			<tr>
 				<td class="n">&nbsp;</td>
-				<td class="n"><? echo _('Name'); ?></td>
-				<td class="n"><? echo _('Type'); ?></td>
-				<td class="n"><? echo _('Content'); ?></td>
-				<td class="n"><? echo _('Priority'); ?></td>
-				<td class="n"><? echo _('TTL'); ?></td>
+				<td class="n"><?php echo _('Name'); ?></td>
+				<td class="n"><?php echo _('Type'); ?></td>
+				<td class="n"><?php echo _('Content'); ?></td>
+				<td class="n"><?php echo _('Priority'); ?></td>
+				<td class="n"><?php echo _('TTL'); ?></td>
 			</tr>
 		<?php
 		foreach($search_result['records'] as $r)
@@ -129,25 +129,25 @@ else
 			  $GLOBALS["ALLOW_NS_EDIT"] != 1))
 			{
 				?>
-				<a href="edit_record.php?id=<? echo $r['id']?>&amp;domain=<? echo $r['domain_id']?>"><img src="images/edit.gif" alt="[ <? echo _('Edit record'); ?> ]" border="0"></a>
-				<a href="delete_record.php?id=<? echo $r['id']?>&amp;domain=<? echo $r['domain_id']?>"><img src="images/delete.gif" alt="[ <? echo _('Delete record'); ?> ]" border="0"></a>
+				<a href="edit_record.php?id=<?php echo $r['id']?>&amp;domain=<?php echo $r['domain_id']?>"><img src="images/edit.gif" alt="[ <?php echo _('Edit record'); ?> ]" border="0"></a>
+				<a href="delete_record.php?id=<?php echo $r['id']?>&amp;domain=<?php echo $r['domain_id']?>"><img src="images/delete.gif" alt="[ <?php echo _('Delete record'); ?> ]" border="0"></a>
 				<?php 
 			} // big if ;-)
 			?>
 			</td>
-			<td class="y"><? echo $r['name']?></td>
-			<td class="y"><? echo $r['type']?></td>
-			<td class="y"><? echo $r['content']?></td>
+			<td class="y"><?php echo $r['name']?></td>
+			<td class="y"><?php echo $r['type']?></td>
+			<td class="y"><?php echo $r['content']?></td>
 			<?php
 			if ($r['prio'] != 0)
 			{
-				?><td class="y"><? echo $r['prio']?></td><?php
+				?><td class="y"><?php echo $r['prio']?></td><?php
 			}
 			else 
 			{
 			?><td class="n"></td><?php
 			} // else
-			?><td class="y"><? echo $r['ttl']?></td>
+			?><td class="y"><?php echo $r['ttl']?></td>
 			</tr>
 			<?php
 		} // foreach
@@ -161,11 +161,11 @@ else
 		<table border="0" cellspacing="4">
 			<tr>
 				<td width="510" class="n">
-				<? echo _('Nothing found for query'); ?> "<? echo $_POST['q']?>".
+				<?php echo _('Nothing found for query'); ?> "<?php echo $_POST['q']?>".
 				</td>
 			</tr>
 		</table>
-	<?
+	<?php
 	}
 		
 }

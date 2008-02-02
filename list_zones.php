@@ -25,8 +25,8 @@ include_once("inc/header.inc.php");
 $num_all_domains = zone_count(0);
 $doms = zone_count(0, LETTERSTART);
 ?>
-   <h2><? echo _('List all zones'); ?></h2>
-<?
+   <h2><?php echo _('List all zones'); ?></h2>
+<?php
         echo "<div class=\"showmax\">";
         show_pages($doms,ROWAMOUNT);
         echo "</div>";
@@ -41,14 +41,14 @@ if ($num_all_domains > ROWAMOUNT)
    <table>
     <tr>
      <th>&nbsp;</th>
-     <th><? echo _('Name'); ?></th>
-     <th><? echo _('Type'); ?></th>
-     <th><? echo _('Records'); ?></th>
-     <th><? echo _('Owner'); ?></th>
+     <th><?php echo _('Name'); ?></th>
+     <th><?php echo _('Type'); ?></th>
+     <th><?php echo _('Records'); ?></th>
+     <th><?php echo _('Owner'); ?></th>
     </tr>
     <tr>
 
-<?
+<?php
 if ($num_all_domains < ROWAMOUNT) {
    $doms = get_domains(0,"all",ROWSTART,ROWAMOUNT);
 } else {
@@ -62,9 +62,9 @@ if ($doms < 0)
 	?>
     <tr>
      <td>&nbsp;</td>
-     <td colspan="4"><? echo _('There are no zones.'); ?></td>
+     <td colspan="4"><?php echo _('There are no zones.'); ?></td>
     </tr>
-<?
+<?php
 }
 
 // If he has domains, dump them (duh)
@@ -76,21 +76,21 @@ else
 		
     <tr>
      <td>
-      <a href="edit.php?id=<? echo $c["id"] ?>"><img src="images/edit.gif" title="<? echo _('Edit zone') . " " . $c['name']; ?>" alt="[ <? echo _('Edit zone') . " " . $c['name']; ?> ]"></a>
-<?
+      <a href="edit.php?id=<?php echo $c["id"] ?>"><img src="images/edit.gif" title="<?php echo _('Edit zone') . " " . $c['name']; ?>" alt="[ <?php echo _('Edit zone') . " " . $c['name']; ?> ]"></a>
+<?php
 		if (level(5))
 		{
 ?>
-      <a href="delete_domain.php?id=<? echo $c["id"] ?>"><img src="images/delete.gif" title="<? print _('Delete zone') . " " . $c['name']; ?>" alt="[<? echo _('Delete zone') . " " . $c['name']; ?>]"></a>
-<?
+      <a href="delete_domain.php?id=<?php echo $c["id"] ?>"><img src="images/delete.gif" title="<?php print _('Delete zone') . " " . $c['name']; ?>" alt="[<?php echo _('Delete zone') . " " . $c['name']; ?>]"></a>
+<?php
 		}
 ?>
      </td>
-     <td class="y"><? echo $c["name"] ?></td>
-     <td class="y"><? echo strtolower(get_domain_type($c["id"])) ?></td>
-     <td class="y"><? echo $c["numrec"] ?></td>
+     <td class="y"><?php echo $c["name"] ?></td>
+     <td class="y"><?php echo strtolower(get_domain_type($c["id"])) ?></td>
+     <td class="y"><?php echo $c["numrec"] ?></td>
 
-<?
+<?php
 		$zone_owners = get_owners_from_domainid($c["id"]);
 		if ($zone_owners == "")
 		{
@@ -107,25 +107,25 @@ else
 ?>
    </table>
 
-<?
+<?php
 if ($num_all_domains < ROWAMOUNT) {
 ?>
-   <p><? printf(_('This lists shows all %s zones(s) you have access to.'), $num_all_domains); ?></p>
-<?
+   <p><?php printf(_('This lists shows all %s zones(s) you have access to.'), $num_all_domains); ?></p>
+<?php
 }
 else
 {
 ?>
-   <p><? printf(_('This lists shows %s out of %s zones you have access to.'), $num_show_domains, $num_all_domains); ?></p>
-<?
+   <p><?php printf(_('This lists shows %s out of %s zones you have access to.'), $num_show_domains, $num_all_domains); ?></p>
+<?php
 }
 ?>
 
 
-<? // RZ TODO Check next, does it work? 
+<?php // RZ TODO Check next, does it work? 
 //  <small> echo _('You only administer some records of domains marked with an (*).'); </small>
 ?>
 
-<?
+<?php
 include_once("inc/footer.inc.php");
 ?>

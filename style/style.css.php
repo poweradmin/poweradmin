@@ -28,12 +28,12 @@ A:link { color: #000000}
 A:visited { color: #000000}
 A:active { color: #000000}
 A:hover {text-decoration: none}
-BODY {font-family: Verdana, Arial, Helvetica; background-image: url("<?= $GLOBALS["BASE_URL"].$GLOBALS["BASE_PATH"] ?>images/background.jpg");}
-TABLE {background-color: <?= $bgcolor ?>; border: 1px solid #000000; width: 900px;}
+BODY {font-family: Verdana, Arial, Helvetica; background-image: url("<?php echo $GLOBALS["BASE_URL"].$GLOBALS["BASE_PATH"]; ?>images/background.jpg");}
+TABLE {background-color: <?php echo $bgcolor; ?>; border: 1px solid #000000; width: 900px;}
 TD {background-color: White; font-size: 12px;}
-TR {background-color: <?= $bgcolor ?>}
+TR {background-color: <?php echo $bgcolor; ?>}
 .TDBG {
-        background-color: <?= $bgcolor ?>;
+        background-color: <?php echo $bgcolor; ?>;
 }
 .ERROR {
         background-color: #FF0000;
@@ -41,13 +41,13 @@ TR {background-color: <?= $bgcolor ?>}
         width: 600px;
 }
 .MESSAGETABLE {
-        background-color: <?= $bgcolor ?>;
+        background-color: <?php echo $bgcolor; ?>;
         border: 1px solid;
         width: 600px;
 }
 
 .MESSAGE {
-        background-color: <?= $bgcolor ?>;
+        background-color: <?php echo $bgcolor; ?>;
         width: 600px;
 }
 .NONE {
@@ -64,7 +64,7 @@ TR {background-color: <?= $bgcolor ?>}
         BORDER-LEFT: #999999 1px solid;
         BORDER-RIGHT: #999999 1px solid;
         BORDER-TOP: #999999 1px solid;
-        BACKGROUND-COLOR: <?= $bgcolor ?>;
+        BACKGROUND-COLOR: <?php echo $bgcolor; ?>;
         COLOR: #000000;
         BORDER-COLOR: #000000;
         FONT-FAMILY: Verdana;
@@ -77,7 +77,7 @@ TR {background-color: <?= $bgcolor ?>}
         BORDER-LEFT: #999999 1px solid;
         BORDER-RIGHT: #999999 1px solid;
         BORDER-TOP: #999999 1px solid;
-        BACKGROUND-COLOR: <?= $bgcolor ?>;
+        BACKGROUND-COLOR: <?php echo $bgcolor; ?>;
         COLOR: #000000;
         BORDER-COLOR: #000000;
         FONT-FAMILY: Verdana;

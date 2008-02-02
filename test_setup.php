@@ -51,16 +51,16 @@ echo "<P>";
 
 if($bad)
 {
-	?><TABLE CLASS="error"><TR><TD CLASS="error"><H2><? echo _('Not all tables are ok!'); ?></H2><?
+	?><TABLE CLASS="error"><TR><TD CLASS="error"><H2><?php echo _('Not all tables are ok!'); ?></H2><?php
 }
 else
 {
-	?><TABLE CLASS="messagetable"><TR><TD CLASS="message"><H2><? echo _('Successful!'); ?></H2><?
+	?><TABLE CLASS="messagetable"><TR><TD CLASS="message"><H2><?php echo _('Successful!'); ?></H2><?php
 }
 ?>
 <BR>
 <FONT STYLE="font-weight: Bold">
-<?
+<?php
 if($bad)
 {
 	echo _('Sorry, but there are error(s) found in the following table(s):'); 
@@ -68,7 +68,7 @@ if($bad)
 	{
 		echo " '$table'";
 		}
-		?>.</P><P><? echo _('Please fix these errors and run the script again.'); ?></P><?
+		?>.</P><P><?php echo _('Please fix these errors and run the script again.'); ?></P><?php
 	}
 	else
 	{
@@ -76,6 +76,6 @@ if($bad)
 	}
 ?>
 <BR></TD></TR></TABLE></P>
-<?
+<?php
 	include_once("inc/footer.inc.php");
 ?>

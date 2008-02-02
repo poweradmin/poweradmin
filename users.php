@@ -54,33 +54,33 @@ include_once("inc/header.inc.php");
 if ($error != "") 
 {
 ?>
-	<div class="error"><? echo $error ; ?></div>
-<?
+	<div class="error"><?php echo $error ; ?></div>
+<?php
 }
 ?>
-    <h2><? echo _('User admin'); ?></h2>
-<?
+    <h2><?php echo _('User admin'); ?></h2>
+<?php
 if (!level(10)) 
 {
 	error(ERR_LEVEL_10);
 }
 ?>
-     <h3><? echo _('Current users'); ?></h3>
-<?
+     <h3><?php echo _('Current users'); ?></h3>
+<?php
 $users = show_users('');
 ?>  
 
       <table>
        <tr>
         <th>&nbsp;</th>
-        <th><? echo _('Name'); ?></th>
-        <th><? echo _('Zones'); ?> (<? echo _('access'); ?>)</th>
-        <th><? echo _('Zones'); ?> (<? echo _('owner'); ?>)</th>
-        <th><? echo _('Zone list'); ?></th>
-        <th><? echo _('Level'); ?></th>
-        <th><? echo _('Status'); ?></th>
+        <th><?php echo _('Name'); ?></th>
+        <th><?php echo _('Zones'); ?> (<?php echo _('access'); ?>)</th>
+        <th><?php echo _('Zones'); ?> (<?php echo _('owner'); ?>)</th>
+        <th><?php echo _('Zone list'); ?></th>
+        <th><?php echo _('Level'); ?></th>
+        <th><?php echo _('Status'); ?></th>
        </tr>
-<?
+<?php
 $users = show_users('',ROWSTART,ROWAMOUNT);
 foreach ($users as $c)
 {
@@ -88,76 +88,76 @@ foreach ($users as $c)
 	$num_zones_access = count($domains);
 ?>
        <tr>
-        <td class="n"><a href="delete_user.php?id=<? echo $c["id"] ?>"><img src="images/delete.gif" alt="[ <? echo _('Delete user'); ?> ]"></a></td>
-        <td class="n"><a href="edit_user.php?id=<? echo $c["id"] ?>"><? echo $c["fullname"] ?></A> (<? echo $c["username"] ?>)</td>
-        <td class="n"><? echo $num_zones_access ?></td>
-        <td class="n"><? echo $c["numdomains"] ?></td>
+        <td class="n"><a href="delete_user.php?id=<?php echo $c["id"] ?>"><img src="images/delete.gif" alt="[ <?php echo _('Delete user'); ?> ]"></a></td>
+        <td class="n"><a href="edit_user.php?id=<?php echo $c["id"] ?>"><?php echo $c["fullname"] ?></A> (<?php echo $c["username"] ?>)</td>
+        <td class="n"><?php echo $num_zones_access ?></td>
+        <td class="n"><?php echo $c["numdomains"] ?></td>
         <td class="n">
-        <?
+        <?php
         foreach ($domains as $d)
         {
-                ?><a href="delete_domain.php?id=<? echo $d["id"] ?>"><img src="images/delete.gif" alt="[ <? echo _('Delete domain'); ?> ]"></a>&nbsp;<a href="edit.php?id=<? echo $d["id"] ?>"><? echo $d["name"] ?><? if ($d["partial"] == "1") { echo " *"; } ; ?></a><br><?
+                ?><a href="delete_domain.php?id=<?php echo $d["id"] ?>"><img src="images/delete.gif" alt="[ <?php echo _('Delete domain'); ?> ]"></a>&nbsp;<a href="edit.php?id=<?php echo $d["id"] ?>"><?php echo $d["name"] ?><?php if ($d["partial"] == "1") { echo " *"; } ; ?></a><br><?php
         }
         ?></td>
-	<td class="n"><? echo $c["level"] ?></td>
-	<td class="n"><? echo get_status($c["active"]) ?></td>
-       </tr><?
+	<td class="n"><?php echo $c["level"] ?></td>
+	<td class="n"><?php echo get_status($c["active"]) ?></td>
+       </tr><?php
         print "\n";
 }
 ?>
        
       </table>
-      <p><? echo _('Users may only change some of the records of zones marked with an (*).'); ?></p>
-      <p><? echo _('Number of users') ;?>: <? echo count($users); ?>.</p>
+      <p><?php echo _('Users may only change some of the records of zones marked with an (*).'); ?></p>
+      <p><?php echo _('Number of users') ;?>: <?php echo count($users); ?>.</p>
       <div class="showmax">
-<?
+<?php
 show_pages(count($users),ROWAMOUNT);
 ?>
-      </div> <? // eo div showmax ?>
+      </div> <?php // eo div showmax ?>
 
-      <h3><? echo _('Create new user'); ?></h3>
+      <h3><?php echo _('Create new user'); ?></h3>
       <form method="post" action="users.php">
        <table>
         <tr>
-         <td class="n"><? echo _('User name'); ?>:</td>
-         <td class="n"><input type="text" class="input" name="username" value="<? if ($error) print $_POST["username"]; ?>"></td>
+         <td class="n"><?php echo _('User name'); ?>:</td>
+         <td class="n"><input type="text" class="input" name="username" value="<?php if ($error) print $_POST["username"]; ?>"></td>
 	</tr>
 	<tr>
-	 <td class="n"><? echo _('Full name'); ?>:</td>
-	 <td class="n"><input type="text" class="input" NAME="fullname" VALUE="<? if ($error) print $_POST["fullname"]; ?>"></td>
+	 <td class="n"><?php echo _('Full name'); ?>:</td>
+	 <td class="n"><input type="text" class="input" NAME="fullname" VALUE="<?php if ($error) print $_POST["fullname"]; ?>"></td>
 	</tr>
 	<tr>
-	 <td class="n"><? echo _('Password'); ?>:</td>
-	 <td class="n"><input type="password" class="input" NAME="password" VALUE="<? if ($error) print $_POST["password"]; ?>"></td>
+	 <td class="n"><?php echo _('Password'); ?>:</td>
+	 <td class="n"><input type="password" class="input" NAME="password" VALUE="<?php if ($error) print $_POST["password"]; ?>"></td>
 	</tr>
 	<tr>
-	 <td class="n"><? echo _('E-mail'); ?>:</td>
-	 <td class="n"><input type="text" class="input" NAME="email" VALUE="<? if ($error) print $_POST["email"]; ?>"></td>
+	 <td class="n"><?php echo _('E-mail'); ?>:</td>
+	 <td class="n"><input type="text" class="input" NAME="email" VALUE="<?php if ($error) print $_POST["email"]; ?>"></td>
 	</tr>
 	<tr>
-	 <td class="n"><? echo _('User level'); ?>:</td>
+	 <td class="n"><?php echo _('User level'); ?>:</td>
 	 <td class="n">
 	  <select name="level">
-	   <option value="1">1 (<? echo leveldescription(1) ?>)</option>
-	   <option value="5">5 (<? echo leveldescription(5) ?>)</option>
-	   <option value="10">10 (<? echo leveldescription(10) ?>)</option>
+	   <option value="1">1 (<?php echo leveldescription(1) ?>)</option>
+	   <option value="5">5 (<?php echo leveldescription(5) ?>)</option>
+	   <option value="10">10 (<?php echo leveldescription(10) ?>)</option>
 	  </select>
 	 </td>
 	</tr>
         <tr>
-	 <td class="n"><? echo _('Description'); ?>:</td>
-	 <td class="n"><textarea rows="6" cols="30" class="inputarea" name="description"><? if ($error) print $_POST["description"]; ?></textarea></td>
+	 <td class="n"><?php echo _('Description'); ?>:</td>
+	 <td class="n"><textarea rows="6" cols="30" class="inputarea" name="description"><?php if ($error) print $_POST["description"]; ?></textarea></td>
 	</tr>
 	<tr>
-	 <td class="n"><? echo _('Active'); ?>:</td>
+	 <td class="n"><?php echo _('Active'); ?>:</td>
 	 <td class="n"><input type="checkbox" name="active" value="1" checked></td>
 	</tr>
 	<tr>
 	 <td class="n">&nbsp;</td>
-	 <td class="n"><input type="submit" class="button" name="submit" value="<? echo _('Add user'); ?>"></td>
+	 <td class="n"><input type="submit" class="button" name="submit" value="<?php echo _('Add user'); ?>"></td>
 	</tr>
        </table>
       </form>
-<?
+<?php
 include_once("inc/footer.inc.php");
 ?>

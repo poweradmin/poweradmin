@@ -59,43 +59,43 @@ include_once("inc/header.inc.php");
     
     if ($error != "")
     {
-    	?><div class="error"><? echo _('Error'); ?>: <? echo $error; ?></div><?
+    	?><div class="error"><?php echo _('Error'); ?>: <?php echo $error; ?></div><?php
     }
     elseif ($success != "")
     {
-    	?><div class="success"><? echo $success; ?></div><?
+    	?><div class="success"><?php echo $success; ?></div><?php
     }
     
     ?>
-    <h2><? echo _('Add supermaster'); ?></h2>
+    <h2><?php echo _('Add supermaster'); ?></h2>
     <form method="post" action="add_supermaster.php">
      <table>
       <tr>
-       <td class="n"><? echo _('IP address of supermaster'); ?>:</td>
+       <td class="n"><?php echo _('IP address of supermaster'); ?>:</td>
        <td class="n">
-        <input type="text" class="input" name="master_ip" value="<? if ($error) print $_POST["master_ip"]; ?>">
+        <input type="text" class="input" name="master_ip" value="<?php if ($error) print $_POST["master_ip"]; ?>">
        </td>
       </tr>
       <tr>
-       <td class="n"><? echo _('Hostname in NS record'); ?>:</td>
+       <td class="n"><?php echo _('Hostname in NS record'); ?>:</td>
        <td class="n">
-        <input type="text" class="input" name="ns_name" value="<? if ($error) print $_POST["ns_name"]; ?>">
+        <input type="text" class="input" name="ns_name" value="<?php if ($error) print $_POST["ns_name"]; ?>">
        </td>
       </tr>
       <tr>
-       <td class="n"><? echo _('Account'); ?>:</td>
+       <td class="n"><?php echo _('Account'); ?>:</td>
        <td class="n">
-        <input type="text" class="input" name="account" value="<? if ($error) print $_POST["account"]; ?>">
+        <input type="text" class="input" name="account" value="<?php if ($error) print $_POST["account"]; ?>">
        </td>
       </tr>
       <tr>
        <td class="n">&nbsp;</td>
        <td class="n">
-        <input type="submit" class="button" name="submit" value="<? echo _('Add supermaster'); ?>">
+        <input type="submit" class="button" name="submit" value="<?php echo _('Add supermaster'); ?>">
        </td>
       </tr>
      </table>
     </form>
-<?
+<?php
 include_once("inc/footer.inc.php");
 ?>

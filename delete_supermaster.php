@@ -37,13 +37,13 @@ if ($_GET["master_ip"]) {
         include_once("inc/header.inc.php");
 	$info = get_supermaster_info_from_ip($_GET["master_ip"]);
         ?>
-	<h2><? echo _('Delete supermaster'); ?> "<? echo $_GET["master_ip"] ?>"</h2>
-	<? echo _('Hostname in NS record'); ?>: <? echo $info["ns_name"] ?><br>
-	<? echo _('Account'); ?>: <? echo $info["account"] ?><br><br>
-        <font class="warning"><? echo _('Are you sure?'); ?></font><br><br>
-        <input type="button" class="button" OnClick="location.href='<? echo $_SERVER["REQUEST_URI"] ?>&confirm=1'" value="<? echo _('Yes'); ?>"> 
-	<input type="button" class="button" OnClick="location.href='<? echo $_SERVER["REQUEST_URI"] ?>&confirm=0'" value="<? echo _('No'); ?>">
-        <?
+	<h2><?php echo _('Delete supermaster'); ?> "<?php echo $_GET["master_ip"] ?>"</h2>
+	<?php echo _('Hostname in NS record'); ?>: <?php echo $info["ns_name"] ?><br>
+	<?php echo _('Account'); ?>: <?php echo $info["account"] ?><br><br>
+        <font class="warning"><?php echo _('Are you sure?'); ?></font><br><br>
+        <input type="button" class="button" OnClick="location.href='<?php echo $_SERVER["REQUEST_URI"] ?>&confirm=1'" value="<?php echo _('Yes'); ?>"> 
+	<input type="button" class="button" OnClick="location.href='<?php echo $_SERVER["REQUEST_URI"] ?>&confirm=0'" value="<?php echo _('No'); ?>">
+        <?php
 } else {
         include_once("inc/header.inc.php");
         echo _('Nothing to do!');

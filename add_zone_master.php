@@ -66,16 +66,16 @@ include_once("inc/header.inc.php");
 
 	if ($error != "")
 	{
-	        ?><div class="error"><? echo _('Error'); ?>: <? echo $error; ?></div><?
+	        ?><div class="error"><?php echo _('Error'); ?>: <?php echo $error; ?></div><?php
 	}
 	elseif ($success != "")
 	{
-		?><div class="success"><? echo $success; ?></div><?
+		?><div class="success"><?php echo $success; ?></div><?php
 	}
 
 	?>
 	<h2>Add master zone</h2>
-	<?
+	<?php
 
 	// Zone type set to master and native only, slave zones are created
 	// on a different page. 
@@ -85,61 +85,61 @@ include_once("inc/header.inc.php");
         <form method="post" action="add_zone_master.php">
          <table>
           <tr>
-           <td class="n"><? echo _('Zone name'); ?>:</td>
+           <td class="n"><?php echo _('Zone name'); ?>:</td>
            <td class="n">
-            <input type="text" class="input" name="domain" value="<? if ($error) print $_POST["domain"]; ?>">
+            <input type="text" class="input" name="domain" value="<?php if ($error) print $_POST["domain"]; ?>">
            </td>
           </tr>
           <tr>
-           <td class="n"><? echo _('Web IP'); ?>:</td>
+           <td class="n"><?php echo _('Web IP'); ?>:</td>
            <td class="n">
-            <input type="text" class="input" name="webip" value="<? if ($error) print $_POST["webip"]; ?>">
+            <input type="text" class="input" name="webip" value="<?php if ($error) print $_POST["webip"]; ?>">
            </td>
           </tr>
           <tr>
-           <td class="n"><? echo _('Mail IP'); ?>:</TD>
+           <td class="n"><?php echo _('Mail IP'); ?>:</TD>
            <td class="n">
-            <input type="text" class="input" name="mailip" value="<? if ($error) print $_POST["mailip"]; ?>">
+            <input type="text" class="input" name="mailip" value="<?php if ($error) print $_POST["mailip"]; ?>">
            </td>
           </tr>
           <tr>
-           <td class="n"><? echo _('Owner'); ?>:</td>
+           <td class="n"><?php echo _('Owner'); ?>:</td>
            <td class="n">
             <select name="owner">
-        <?
+        <?php
         foreach ($users as $u)
         {
-           ?><option value="<? echo $u['id'] ?>"><? echo $u['fullname'] ?></option><?
+           ?><option value="<?php echo $u['id'] ?>"><?php echo $u['fullname'] ?></option><?php
         }
         ?>
             </select>
            </td>
           </tr>
           <tr>
-           <td class="n"><? echo _('Zone type'); ?>:</td>
+           <td class="n"><?php echo _('Zone type'); ?>:</td>
            <td class="n">
             <select name="dom_type">
-        <?
+        <?php
         foreach($zone_types as $s)
         {
-           ?><option value="<? echo $s?>"><? echo $s ?></option><?
+           ?><option value="<?php echo $s?>"><?php echo $s ?></option><?php
         }
         ?>
             </select>
            </td>
           </tr>
           <tr>
-           <td class="n"><? echo _('Create zone without applying records-template'); ?>:</td>
+           <td class="n"><?php echo _('Create zone without applying records-template'); ?>:</td>
 	   <td class="n"><input type="checkbox" name="empty" value="1"></td>
 	  </tr>
           <tr>
 	   <td class="n">&nbsp;</td>
 	   <td class="n">
-	    <input type="submit" class="button" name="submit" value="<? echo _('Add zone'); ?>">
+	    <input type="submit" class="button" name="submit" value="<?php echo _('Add zone'); ?>">
 	   </td>
 	  </tr>
          </table>
         </form>
-<?
+<?php
 
 include_once("inc/footer.inc.php");

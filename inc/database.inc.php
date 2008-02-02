@@ -1,4 +1,4 @@
-<?
+<?php
 
 /*  PowerAdmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://rejo.zenger.nl/poweradmin> for more details.
@@ -26,9 +26,9 @@ function dbError($msg)
         // General function for printing critical errors.
         include_once("header.inc.php");
         ?>
-	<h2><? echo _('Oops! An error occured!'); ?></h2>
-	<p class="error"><? echo $msg->getDebugInfo(); ?></p>
-	<?        
+	<h2><?php echo _('Oops! An error occured!'); ?></h2>
+	<p class="error"><?php echo $msg->getDebugInfo(); ?></p>
+	<?php        
 	include_once("footer.inc.php");
         die();
 }
