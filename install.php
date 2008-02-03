@@ -219,7 +219,7 @@ administrator login.'); ?><BR>
 <TR><TD CLASS="tdbg">&nbsp;</TD><TD CLASS="tdbg"><INPUT TYPE="submit" CLASS="button" NAME="submit" VALUE="<?php echo _('Make Account'); ?>"></TD></TR>
 </TABLE>
 </FORM>
-
-<BR><BR>
-<FONT CLASS="footer"><B>PowerAdmin v1.0</B>&nbsp;Copyright &copy;2002 The
-PowerAdmin Team</FONT></BODY></HTML><?php } ?>
+<?php
+}
+include_once('inc/footer.inc.php');
+?>
