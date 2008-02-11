@@ -58,7 +58,7 @@ function show_users($id='',$rowstart=0,$rowamount=9999999)
 			users.fullname";
 
 	// Execute the huge query.
-	$db->setLimit($rowstart, $rowamount);
+	$db->setLimit($rowamount, $rowstart);
 	$result = $db->query($sqlq);
 	$ret = array();
 	$retcount = 0;

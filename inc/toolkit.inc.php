@@ -21,26 +21,7 @@
 
 session_start();
 
-/*************
- * Constants  *
-  *************/
 
-define(ROWAMOUNT, 50);
-
-if (isset($_GET["start"])) {
-   define(ROWSTART, (($_GET["start"] - 1) * ROWAMOUNT));
-   } else {
-   define(ROWSTART, 0);
-}
-
-if (isset($_GET["letter"])) {
-   define(LETTERSTART, $_GET["letter"]);
-   $_SESSION["letter"] = $_GET["letter"];
-} elseif(isset($_SESSION["letter"])) {
-   define(LETTERSTART, $_SESSION["letter"]);
-} else {
-   define(LETTERSTART, "a");
-}
 
 if(!@include_once("config.inc.php"))
 {
@@ -55,6 +36,26 @@ if(is_file( dirname(__FILE__) . '/../install.php'))
 if(is_file( dirname(__FILE__) . '/../migrator.php'))
 {
         error( _('You have to remove migrator.php before this program will run') );
+}
+
+/*************
+ * Constants *
+ *************/
+define(ROWAMOUNT, $ROWAMOUNT);
+
+if (isset($_GET["start"])) {
+   define(ROWSTART, (($_GET["start"] - 1) * ROWAMOUNT));
+   } else {
+   define(ROWSTART, 0);
+}
+
+if (isset($_GET["letter"])) {
+   define(LETTERSTART, $_GET["letter"]);
+   $_SESSION["letter"] = $_GET["letter"];
+} elseif(isset($_SESSION["letter"])) {
+   define(LETTERSTART, $_SESSION["letter"]);
+} else {
+   define(LETTERSTART, "a");
 }
 
 /* Database connection */

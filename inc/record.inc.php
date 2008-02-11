@@ -984,10 +984,10 @@ function get_domains($userid=true,$letterstart=all,$rowstart=0,$rowamount=999999
 	$sqlq.=" GROUP BY domainname, domains.id
 	ORDER BY domainname";
 
-	$db->setLimit($rowstart, $rowamount);
+	$db->setLimit($rowamount, $rowstart);
 	$result = $db->query($sqlq);
 	// Set limit needs to be called before each query
-	$db->setLimit($rowstart, $rowamount);
+	$db->setLimit($rowamount, $rowstart);
 	$result2 = $db->query($sqlq); 
 	
 	$numrows = $result2->numRows();
@@ -1201,7 +1201,7 @@ function get_records_from_domain_id($id,$rowstart=0,$rowamount=999999)
 	if (is_numeric($id))
 	{
 		if ($_SESSION[$id."_ispartial"] == 1) {
-		$db->setLimit($rowstart, $rowamount);
+		$db->setLimit($rowamount, $rowstart);
 		$result = $db->query("SELECT record_owners.record_id as id
 		FROM record_owners,domains,records
 		WHERE record_owners.user_id = ".$db->quote($_SESSION["userid"])."
@@ -1228,7 +1228,7 @@ function get_records_from_domain_id($id,$rowstart=0,$rowamount=999999)
 		}
 
 		} else {
-		$db->setLimit($rowstart, $rowamount);
+		$db->setLimit($rowamount, $rowstart);
 		$result = $db->query("SELECT id FROM records WHERE domain_id=".$db->quote($id));
 		$ret = array();
 		if($result->numRows() == 0)
