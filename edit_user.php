@@ -35,7 +35,7 @@ if($_POST["commit"])
 		}
 		if(edit_user($_POST["number"], $_POST["username"], $_POST["fullname"], $_POST["email"], $_POST["level"], $_POST["description"], $active, $_POST["password"]))
 		{
-			clean_page($BASE_URL . $BASE_PATH . "users.php");
+			clean_page("users.php");
 		}
 		else
 		{

@@ -49,7 +49,7 @@ if(isset($id))
 		}
 		
                 delete_user($id);
-                clean_page($BASE_URL . $BASE_PATH . "users.php");
+                clean_page("users.php");
         }
         include_once("inc/header.inc.php");
         ?>
