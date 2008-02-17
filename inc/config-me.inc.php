@@ -64,9 +64,9 @@ $LANG = "en_EN";
 // will be included, it will be used like: "style/$STYLE.css.php".
 $STYLE = "example";
 
-// $rowamount
+// $ROWAMOUNT
 // Define which rowamount should be used in the listing of records.
-$rowamount = 50;
+$ROWAMOUNT = 50;
 
 /* DNS Record information */
 

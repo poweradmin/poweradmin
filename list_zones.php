@@ -28,10 +28,10 @@ $doms = zone_count(0, LETTERSTART);
    <h2><?php echo _('List all zones'); ?></h2>
 <?php
         echo "<div class=\"showmax\">";
-        show_pages($doms,$rowamount);
+        show_pages($doms,ROWAMOUNT);
         echo "</div>";
 
-if ($num_all_domains > $rowamount)
+if ($num_all_domains > ROWAMOUNT)
 {
         echo "<div class=\"showmax\">";
         show_letters(LETTERSTART);
@@ -49,10 +49,10 @@ if ($num_all_domains > $rowamount)
     <tr>
 
 <?php
-if ($num_all_domains < $rowamount) {
-   $doms = get_domains(0,"all",ROWSTART,$rowamount);
+if ($num_all_domains < ROWAMOUNT) {
+   $doms = get_domains(0,"all",ROWSTART,ROWAMOUNT);
 } else {
-   $doms = get_domains(0,LETTERSTART,ROWSTART,$rowamount);
+   $doms = get_domains(0,LETTERSTART,ROWSTART,ROWAMOUNT);
    $num_show_domains = ($doms == -1) ? 0 : count($doms);
 }
 
@@ -108,7 +108,7 @@ else
    </table>
 
 <?php
-if ($num_all_domains < $rowamount) {
+if ($num_all_domains < ROWAMOUNT) {
 ?>
    <p><?php printf(_('This lists shows all %s zones(s) you have access to.'), $num_all_domains); ?></p>
 <?php

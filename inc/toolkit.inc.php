@@ -41,9 +41,10 @@ if(is_file( dirname(__FILE__) . '/../migrator.php'))
 /*************
  * Constants *
  *************/
+define(ROWAMOUNT, $ROWAMOUNT);
 
 if (isset($_GET["start"])) {
-   define(ROWSTART, (($_GET["start"] - 1) * $rowamount));
+   define(ROWSTART, (($_GET["start"] - 1) * ROWAMOUNT));
    } else {
    define(ROWSTART, 0);
 }

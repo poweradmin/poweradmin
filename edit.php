@@ -242,7 +242,7 @@ else
         </div> <?php // eo div meta ?>
        <div class="showmax">
 <?php
-show_pages($info["numrec"],$rowamount,$_GET["id"]);
+show_pages($info["numrec"],ROWAMOUNT,$_GET["id"]);
 ?>
         </div> <?php // eo div showmax ?>
          <form action="<?php echo $_SERVER["PHP_SELF"]?>?id=<?php echo $_GET["id"]?>" method="post">
@@ -250,7 +250,7 @@ show_pages($info["numrec"],$rowamount,$_GET["id"]);
           <table>
 <?php
 $countinput=0;
-$rec_result = get_records_from_domain_id($_GET["id"],ROWSTART,$rowamount);
+$rec_result = get_records_from_domain_id($_GET["id"],ROWSTART,ROWAMOUNT);
 if($rec_result != -1)
 {
 ?>
