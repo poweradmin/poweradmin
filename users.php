@@ -81,7 +81,7 @@ $users = show_users('');
         <th><?php echo _('Status'); ?></th>
        </tr>
 <?php
-$users = show_users('',ROWSTART,ROWAMOUNT);
+$users = show_users('',ROWSTART,$rowamount);
 foreach ($users as $c)
 {
         $domains = get_domains_from_userid($c["id"]);
@@ -111,7 +111,7 @@ foreach ($users as $c)
       <p><?php echo _('Number of users') ;?>: <?php echo count($users); ?>.</p>
       <div class="showmax">
 <?php
-show_pages(count($users),ROWAMOUNT);
+show_pages(count($users),$rowamount);
 ?>
       </div> <?php // eo div showmax ?>
 
