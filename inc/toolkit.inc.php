@@ -114,7 +114,7 @@ function show_letters($letterstart,$userid=true)
         echo _('Show zones beginning with:') . "<br>";
 
 	$letter = "[[:digit:]]";
-	if ($letterstart == "0")
+	if ($letterstart == "1")
 	{
 		echo "[ <span class=\"lettertaken\">0-9</span> ] ";
 	}
