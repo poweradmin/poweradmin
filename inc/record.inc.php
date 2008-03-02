@@ -19,6 +19,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+function count_zone_records($zone_id) {
+	global $db;
+	$sqlq = "SELECT COUNT(id) FROM records WHERE domain_id = ".$db->quote($zone_id);
+	$record_count = $db->queryOne($sqlq);
+	return $record_count;
+}
+
 function update_soa_serial($domain_id)
 {
     global $db;
@@ -114,37 +121,44 @@ function update_soa_serial($domain_id)
  */
 function edit_record($recordid, $zoneid, $name, $type, $content, $ttl, $prio)
 {
-	global $db;
-  	if($content == "")
-  	{
-  		error(ERR_RECORD_EMPTY_CONTENT);
-  	}
-  	// Edits the given record (validates specific stuff first)
-	if (!xs(recid_to_domid($recordid)))
-	{
-		error(ERR_RECORD_ACCESS_DENIED);
-	}
-	if (is_numeric($zoneid))
-	{
-		validate_input($zoneid, $type, $content, $name, $prio, $ttl);
-                $change = time();
-                $db->query("UPDATE records set name=".$db->quote($name).", type=".$db->quote($type).", content=".$db->quote($content).", ttl=".$db->quote($ttl).", prio=".$db->quote($prio).", change_date=".$db->quote($change)." WHERE id=".$db->quote($recordid));
-		
-		/*
-		 * Added by DeViCeD - Update SOA Serial number
-		 * There should be more checks
-		 */
-		if ($type != 'SOA')
-		{
-			update_soa_serial($zoneid);
-		}
-		return true;
-	}
-	else
-	{
-		error(sprintf(ERR_INV_ARGC, "edit_record", "no zoneid given"));
-	}
+	if (verify_permission(zone_content_edit_others)) { $perm_content_edit = "all" ; }
+	elseif (verify_permission(zone_content_edit_own)) { $perm_content_edit = "own" ; }
+	else { $perm_content_edit = "none" ; }
 
+	$user_is_zone_owner = verify_user_is_owner_zoneid($zoneid);
+	$zone_type = get_domain_type($zoneid);
+
+	if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
+		return _("You are not allowed to edit this record.") ; //TODO i18n
+	} else {
+		global $db;
+		if($content == "") {
+			return _("Error: content field may not be empty.") ; //TODO i18n
+		}
+		// TODO: no need to check for numeric-ness of zone id if we check with validate_input as well?
+		if (is_numeric($zoneid)) {
+			validate_input($zoneid, $type, $content, $name, $prio, $ttl);
+			$change = time();
+			$db->query("UPDATE records SET name=".$db->quote($name).", 
+							type=".$db->quote($type).", 
+							content=".$db->quote($content).", 
+							ttl=".$db->quote($ttl).", 
+							prio=".$db->quote($prio).", 
+							change_date=".$db->quote($change)." 
+							WHERE id=".$db->quote($recordid));
+			// TODO check for query error
+			if ($type != 'SOA') {
+				update_soa_serial($zoneid);
+			}
+			return true;
+		}
+		else
+		{
+			// TODO change to error style as above (returning directly)
+			error(sprintf(ERR_INV_ARGC, "edit_record", "no zoneid given"));
+		}
+	}
+	return true;
 }
 
 
@@ -553,32 +567,50 @@ function sort_zone($records)
 
 /*
  * Change owner of a domain.
- * Function should actually be in users.inc.php. But its more of a record modification than a user modification
  * return values: true when succesful.
  */
-function add_owner($domain, $newowner)
+function add_owner_to_zone($zone_id, $user_id)
 {
 	global $db;
-
-	if (!level(5))
-	{
-		error(ERR_LEVEL_5);
-	}
-
-	if (is_numeric($domain) && is_numeric($newowner) && is_valid_user($newowner))
-	{
-		if($db->queryOne("SELECT COUNT(id) FROM zones WHERE owner=".$db->quote($newowner)." AND domain_id=".$db->quote($domain)) == 0)
+	if ( (verify_permission(zone_meta_edit_others)) || (verify_permission(zone_meta_edit_own)) && verify_user_is_owner_zoneid($_GET["id"])) {
+		// User is allowed to make change to meta data of this zone.
+		if (is_numeric($zone_id) && is_numeric($user_id) && is_valid_user($user_id))
 		{
-			$db->query("INSERT INTO zones (domain_id, owner) VALUES(".$db->quote($domain).", ".$db->quote($newowner).")");
+			if($db->queryOne("SELECT COUNT(id) FROM zones WHERE owner=".$db->quote($user_id)." AND domain_id=".$db->quote($zone_id)) == 0)
+			{
+				$db->query("INSERT INTO zones (domain_id, owner) VALUES(".$db->quote($zone_id).", ".$db->quote($user_id).")");
+			}
+			return true;
+		} else {
+			error(sprintf(ERR_INV_ARGC, "add_owner_to_zone", "$zone_id / $user_id"));
 		}
-		return true;
-	}
-	else
-	{
-		error(sprintf(ERR_INV_ARGC, "change_owner", "$domain / $newowner"));
+	} else {
+		return false;
 	}
 }
 
+
+function delete_owner_from_zone($zone_id, $user_id)
+{
+	global $db;
+	if ( (verify_permission(zone_meta_edit_others)) || (verify_permission(zone_meta_edit_own)) && verify_user_is_owner_zoneid($_GET["id"])) {
+		// User is allowed to make change to meta data of this zone.
+		if (is_numeric($zone_id) && is_numeric($user_id) && is_valid_user($user_id))
+		{
+			// TODO: Next if() required, why not just execute DELETE query?
+			if($db->queryOne("SELECT COUNT(id) FROM zones WHERE owner=".$db->quote($user_id)." AND domain_id=".$db->quote($zone_id)) != 0)
+			{
+				$db->query("DELETE FROM zones WHERE owner=".$db->quote($user_id)." AND domain_id=".$db->quote($zone_id));
+			}
+			return true;
+		} else {
+			error(sprintf(ERR_INV_ARGC, "delete_owner_from_zone", "$zone_id / $user_id"));
+		}
+	} else {
+		return false;
+	}
+	
+}
 
 function delete_owner($domain, $owner)
 {
@@ -762,10 +794,11 @@ function get_domains_from_userid($id)
 function get_domain_name_from_id($id)
 {
 	global $db;
-	if (!xs($id))
-	{
-		error(ERR_RECORD_ACCESS_DENIED);
-	}
+
+//	if (!xs($id))
+//	{
+//		error(ERR_RECORD_ACCESS_DENIED);
+//	}
 	if (is_numeric($id))
 	{
 		$result = $db->query("SELECT name FROM domains WHERE id=".$db->quote($id));
@@ -949,6 +982,53 @@ function supermaster_exists($master_ip)
 }
 
 
+function get_zones($perm,$userid=true,$letterstart=all,$rowstart=0,$rowamount=999999) 
+{
+	global $db;
+	global $sql_regexp;
+	if ($perm != "own" && $perm != "all") {
+		// TODO: this should not be possible, but will need some error message
+	}
+	else
+	{
+		if ($perm == "own") {
+			$sql_add = " AND zones.domain_id = domains.id
+				AND zones.owner = ".$db->quote($_SESSION['userid']);
+		}
+		if ($letterstart!=all && $letterstart!=1) {
+			$sql_add .=" AND domains.name LIKE ".$db->quote($letterstart."%")." ";
+		} elseif ($letterstart==1) {
+			$sql_add .=" AND substring(domains.name,1,1) ".$sql_regexp." '^[[:digit:]]'";
+		}
+	}
+	
+	$sqlq = "SELECT domains.id, 
+			domains.name,
+			domains.type,
+			COUNT(DISTINCT records.id) AS count_records
+			FROM domains
+			LEFT JOIN zones ON domains.id=zones.domain_id 
+			LEFT JOIN records ON records.domain_id=domains.id
+			WHERE 1=1".$sql_add." 
+			GROUP BY domains.name, domains.id
+			ORDER BY domains.name;";
+
+	$db->setLimit($rowamount, $rowstart);
+	$result = $db->query($sqlq);
+
+	while($r = $result->fetchRow())
+	{
+		$ret[$r["name"]] = array(
+		"id"		=>	$r["id"],
+		"name"		=>	$r["name"],
+		"type"		=>	$r["type"],
+		"count_records"	=>	$r["count_records"]
+		);	
+	}
+	return $ret;
+}
+
+
 /*
  * Get all domains from the database 
  * This function gets all the domains from the database unless a user id is below 5.
@@ -1094,6 +1174,37 @@ function get_domains($userid=true,$letterstart=all,$rowstart=0,$rowamount=999999
 	}
 
 }
+
+
+// TODO: letterstart limitation and userid permission limitiation should be applied at the same time?
+function zone_count_ng($perm, $letterstart=all) {
+	global $db;
+	global $sql_regexp;
+	if ($perm != "own" && $perm != "all") {
+		$zone_count = "0";
+	} 
+	else 
+	{
+		if ($perm == "own") {
+			$sql_add = " AND zones.domain_id = domains.id
+					AND zones.owner = ".$db->quote($_SESSION['userid']);
+		}
+		if ($letterstart!=all && $letterstart!=1) {
+			$sql_add .=" AND domains.name LIKE ".$db->quote($letterstart."%")." ";
+		} elseif ($letterstart==1) {
+			$sql_add .=" AND substring(domains.name,1,1) ".$sql_regexp." '^[[:digit:]]'";
+		}
+
+		$sqlq = "SELECT COUNT(distinct domains.id) AS count_zones 
+			FROM domains,zones 
+			WHERE 1=1
+			".$sql_add.";";
+
+		$zone_count = $db->queryOne($sqlq);
+	}
+	return $zone_count;
+}
+
 
 
 /*
@@ -1257,21 +1368,48 @@ function get_records_from_domain_id($id,$rowstart=0,$rowamount=999999)
 }
 
 
-function get_users_from_domain_id($id)
-{
+function get_users_from_domain_id($id) {
 	global $db;
-	$result = $db->queryCol("SELECT owner FROM zones WHERE domain_id=".$db->quote($id));
-	$ret = array();
-	foreach($result as $uid)
-	{
-		$fullname = $db->queryOne("SELECT fullname FROM users WHERE id=".$db->quote($uid));
-		$ret[] = array(
-		"id" 		=> 	$uid,
-		"fullname"	=>	$fullname		
-		);		
+	$sqlq = "SELECT owner FROM zones WHERE domain_id =" .$db->quote($id);
+	$id_owners = $db->query($sqlq);
+	if ($id_owners->numRows() == 0) {
+		return -1;
+	} else {
+		while ($r = $id_owners->fetchRow()) {
+			$fullname = $db->queryOne("SELECT fullname FROM users WHERE id=".$r['owner']);
+			$owners[] = array(
+				"id" 		=> 	$r['owner'],
+				"fullname"	=>	$fullname		
+			);		
+		}
 	}
-	return $ret;	
+	return $owners;	
 }
+
+//function get_users_from_domain_id($id)
+//{
+//	global $db;
+//	$result = $db->query("SELECT owner FROM zones WHERE domain_id=".$db->quote($id));
+//	print_r($result);
+//	$owners = array();
+//	if($result->numRows() == 0)
+//	{
+//		return -1;
+//	}
+//	else
+//	{
+//		foreach($result as $uid) {
+//			echo "E:$uid -- ";
+//			$fullname = $db->queryOne("SELECT fullname FROM users WHERE id=".$db->quote($uid));
+//			echo "D:$uid:$fullname-";
+//			$owners[] = array(
+//				"id" 		=> 	$uid,
+//				"fullname"	=>	$fullname		
+//			);		
+//		}
+//	}
+//	return $owners;	
+//}
 
 function search_record($question)
 {
@@ -1365,15 +1503,16 @@ function get_domain_slave_master($id)
         }
 }
 
-function change_domain_type($type, $id)
+function change_zone_type($type, $id)
 {
 	global $db;
 	unset($add);
         if (is_numeric($id))
 	{
-		// It is not really neccesary to clear the master field if a 
-		// zone is not of the type "slave" as powerdns will ignore that
-		// fiedl, but it is cleaner anyway.
+		// It is not really neccesary to clear the field that contains the IP address 
+		// of the master if the type changes from slave to something else. PowerDNS will
+		// ignore the field if the type isn't something else then slave. But then again,
+		// it's much clearer this way.
 		if ($type != "SLAVE")
 		{
 			$add = ", master=''";
@@ -1386,18 +1525,18 @@ function change_domain_type($type, $id)
         }
 }
 
-function change_domain_slave_master($id, $slave_master)
+function change_zone_slave_master($zone_id, $ip_slave_master)
 {
 	global $db;
-        if (is_numeric($id))
+        if (is_numeric($zone_id))
 	{
-       		if (is_valid_ip($slave_master) || is_valid_ip6($slave_master))
+       		if (is_valid_ip($ip_slave_master) || is_valid_ip6($ip_slave_master))
 		{
-			$result = $db->query("UPDATE domains SET master = " .$db->quote($slave_master). " WHERE id = ".$db->quote($id));
+			$result = $db->query("UPDATE domains SET master = " .$db->quote($ip_slave_master). " WHERE id = ".$db->quote($zone_id));
 		}
 		else
 		{
-			error(sprintf(ERR_INV_ARGC, "change_domain_slave_master", "This is not a valid IPv4 or IPv6 address: $slave_master"));
+			error(sprintf(ERR_INV_ARGC, "change_domain_ip_slave_master", "This is not a valid IPv4 or IPv6 address: $ip_slave_master"));
 		}
 	}
         else

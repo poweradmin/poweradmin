@@ -92,7 +92,7 @@ function show_pages($amount,$rowamount,$id='')
 {
    if ($amount > $rowamount) {
       if (!isset($_GET["start"])) $_GET["start"]=1;
-      echo _('Show page') . "<br>";
+      echo _('Show page') . ":<br>";
       for ($i=1;$i<=ceil($amount / $rowamount);$i++) {
          if ($_GET["start"] == $i) {
             echo "[ <b>".$i."</b> ] ";
@@ -111,7 +111,7 @@ function show_pages($amount,$rowamount,$id='')
 
 function show_letters($letterstart,$userid=true)
 {
-        echo _('Show zones beginning with:') . "<br>";
+        echo _('Show zones beginning with') . ":<br>";
 
 	$letter = "[[:digit:]]";
 	if ($letterstart == "1")
@@ -280,6 +280,8 @@ function level($l)
 	}
 }
 
+
+// TODO needs rewriting as well
 function xs($zoneid)
 {
 	global $db;

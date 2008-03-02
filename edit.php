@@ -20,346 +20,209 @@
  */
 
 require_once("inc/toolkit.inc.php");
-
-// Assigning records to user: Check for records owned by user
-$recordOwnerError = '';
-if (isset($_POST["action"]) && $_POST["action"]=="record-user") {
-	if (!is_array($_POST['rowid'])) {
-		$recordOwnerError = 'No records where selected to assign an sub-owner.';
-	} else {
-		foreach ($_POST["rowid"] as $x_user => $recordid){
-			$x_userid = $db->queryOne("SELECT id FROM record_owners WHERE user_id = ".$db->quote($_POST["userid"])." AND record_id=".$db->quote($recordid));
-			if (empty($x_userid)) {
-				add_record_owner($_GET["id"],$_POST["userid"],$recordid);
-			}
-		}
-	}
-}
-if(isset($_POST['change_slave_master']) && is_numeric($_POST["domain"]) && level(5))
-{
-	change_domain_slave_master($_POST['domain'], $_POST['slave_master']);
-}
-if(isset($_POST['type_change']) && in_array($_POST['newtype'], $server_types))
-{
-	change_domain_type($_POST['newtype'], $_GET['id']);
-}
-if(isset($_POST["newowner"]) && is_numeric($_POST["domain"]) && is_numeric($_POST["newowner"]))
-{
-	add_owner($_POST["domain"], $_POST["newowner"]);
-}
-if(isset($_POST["del_user"]) && is_numeric($_POST["del_user"]) && level(5))
-{
-	delete_owner($_GET["id"], $_POST["del_user"]);
-}
-$info = get_domain_info_from_id($_GET["id"]);
 include_once("inc/header.inc.php");
-	
+
+if (verify_permission(zone_content_view_others)) { $perm_view = "all" ; } 
+elseif (verify_permission(zone_content_view_own)) { $perm_view = "own" ; } 
+else { $perm_view = "none" ; }
+
+if (verify_permission(zone_content_edit_others)) { $perm_content_edit = "all" ; } 
+elseif (verify_permission(zone_content_edit_own)) { $perm_content_edit = "own" ; } 
+else { $perm_content_edit = "none" ; }
+
+if (verify_permission(zone_content_edit_others)) { $perm_content_edit = "all" ; } 
+elseif (verify_permission(zone_content_edit_own)) { $perm_content_edit = "own" ; } 
+else { $perm_content_edit = "none" ; }
+
+if (verify_permission(zone_meta_edit_others)) { $perm_meta_edit = "all" ; } 
+elseif (verify_permission(zone_meta_edit_own)) { $perm_meta_edit = "own" ; } 
+else { $perm_meta_edit = "none" ; }
+
+$user_is_zone_owner = verify_user_is_owner_zoneid($_GET["id"]);
+if ( $perm_meta_edit == "all" || ( $perm_meta_edit == "own" && $user_is_zone_owner == "1") ) {
+	$meta_edit = "1";
+}
+
+if(isset($_POST['slave_master_change']) && is_numeric($_POST["domain"]) ) {
+	change_zone_slave_master($_POST['domain'], $_POST['new_master']);
+}
+if(isset($_POST['type_change']) && in_array($_POST['newtype'], $server_types)) {
+	change_zone_type($_POST['newtype'], $_GET['id']);
+}
+if(isset($_POST["newowner"]) && is_numeric($_POST["domain"]) && is_numeric($_POST["newowner"])) {
+	add_owner_to_zone($_POST["domain"], $_POST["newowner"]);
+}
+if(isset($_POST["delete_owner"]) && is_numeric($_POST["delete_owner"]) ) {
+	delete_owner_from_zone($_GET["id"], $_POST["delete_owner"]);
+}
+
 $domain_type=get_domain_type($_GET['id']);
-if ($domain_type == "SLAVE" ) { $slave_master=get_domain_slave_master($_GET['id']); };
+$record_count=count_zone_records($_GET['id']);
 
-if (strlen($recordOwnerError)) {
-?>
-  <div class="error"><?php echo _('Error'); ?>: <?php echo _($recordOwnerError); ?></div>
-<?php
-}
+echo "   <h2>" . _('Edit zone') . " \"" . get_domain_name_from_id($_GET["id"]) . "\"</h2>\n";
 
-if(!isset($info["ownerid"]) && $domain_type != "SLAVE")
-{
-?>
-    <div class="error"><?php echo _('Error'); ?>: <?php echo ('There is no owner for this zone, please assign someone.'); ?></div>
-<?php
-}
-if ($domain_type == "SLAVE" && ! $slave_master )
-{
-?>
-    <div class="error"><?php echo _('Error'); ?>: <?php echo _('Type of this zone is "slave", but there is no IP address for it\'s master given.'); ?></div>
-<?php
-}
-?>
-    <h2><?php echo _('Edit zone'); ?> "<?php echo get_domain_name_from_id($_GET["id"]) ?>"</h2>
-<?php
-if (level(5)) 
-{ ?>	
-       <div id="meta">
-        <div id="meta-left">
-	 <table>
-   	  <tr>
-  	   <th colspan="2"><?php echo _('Owner of zone'); ?></th>
-  	  </tr>
-<?php
-	if(isset($info["ownerid"]))
-	{
-		$userRes = get_users_from_domain_id($_GET["id"]);
-		foreach($userRes as $user)
-		{ ?>
-  	  <tr>
-  	   <form method="post" action="edit.php?id=<?php echo $_GET['id']?>">
-  	    <td>
-	     <?php echo $user["fullname"]?>
-	    </td>
-            <td>
-  	     <input type="hidden" name="del_user" value="<?php echo $user["id"]?>">
-             <input type="submit" class="sbutton" name="co" value="<?php echo _('Delete'); ?>">
-  	    </td>
-           </form>
-  	  </tr>
-<?php
-		}
-	}
-	else
-	{
-?>
-	  <tr>
-	   <td><?php echo _('No owner set or this zone!'); ?></td>
-	  </tr>
-<?php
-	}
-  ?>
-          <tr>
-  	   <form method="post" action="edit.php?id=<?php echo $_GET['id']?>">
-  	    <td>
-  	     <input type="hidden" name="domain" value="<?php echo $_GET["id"] ?>">
-  	     <select name="newowner">
-  			<?php
-  			$users = show_users();
-  			foreach ($users as $u)
-  			{
-  				unset($add);
-  				if ($u["id"] == $info["ownerid"])
-  				{
-  					$add = " SELECTED";
-  				}
-  				?>
-  				<option<?php echo $add ?> value="<?php echo $u["id"] ?>"><?php echo $u["fullname"] ?></option><?php
-  			}
-  			?>
-  			</select>
-  	    </td>
-  	    <td>
-     	     <input type="submit" class="sbutton" name="co" value="<?php echo _('Add'); ?>">
-            </td>
-  	   </form>
-  	  </tr>
-         </table>
-	</div> <?php // eo div meta-left ?>
-        <div id="meta-right">
-         <table>
-	  <tr>
-	   <th colspan="2"><?php echo _('Type of zone'); ?></th>
-	  </tr>
-	  <form action="<?php echo $_SERVER['PHP_SELF']?>?id=<?php echo $_GET['id']?>" method="post">
-	   <input type="hidden" name="domain" value="<?php echo $_GET["id"] ?>">
-	   <tr>
-	    <td>
-	     <select name="newtype">
-<?php
-	foreach($server_types as $s)
-	{
-		unset($add);
-		if ($s == $domain_type)
-		{
-			$add = " SELECTED";
-		}
-?>
-              <option<?php echo $add ?> value="<?php echo $s?>"><?php echo $s?></option><?php
-	}
-?>
-             </select>
-            </td>
-	    <td>
-	     <input type="submit" class="sbutton" name="type_change" value="<?php echo _('Change'); ?>">
-	    </td>
-	   </tr>
-	  </form>
+if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" ) {
+	echo "<p>" . _("You do not have the permission to see this zone.") . "</p>\n"; // TODO i18n
+} else {
+	echo "   <div id=\"meta\">\n";
+	echo "    <div id=\"meta-left\">\n";
+	echo "     <table>\n";
+	echo "      <tr>\n";
+	echo "       <th colspan=\"2\">" . _('Owner of zone') . "</th>\n";
+	echo "      </tr>\n";
 
-<?php
-	if ($domain_type == "SLAVE" ) 
-	{ 
-		$slave_master=get_domain_slave_master($_GET['id']);
-?>
-          <tr>
-	   <th colspan="2">
-	    <?php echo _('IP address of master NS'); ?>
-	   </th>
-	  </tr>
-	  <form action="<?php echo $_SERVER['PHP_SELF']?>?&amp;id=<?php echo $_GET['id']?>" method="post">
-	   <input type="hidden" name="domain" value="<?php echo $_GET["id"] ?>">
-	   <tr>
-	    <td>
-	     <input type="text" name="slave_master" value="<?php echo $slave_master; ?>" class="input">
-            </td>
-            <td>
-	     <input type="submit" class="sbutton" name="change_slave_master" value="<?php echo _('Change'); ?>">
-            </td>
-           </tr>
-          </form>
-<?php
-	}
-?>
-         </table>  
-        </div> <?php // eo div meta-right ?>
-       </div> <?php // eo div meta 
-}
-else
-{
-?>
-       <div id="meta">
-        <div id="meta-right">
-         <table>
- 	  <tr>
- 	   <th><?php echo _('Type of zone'); ?></th><td class="y"><?php echo $domain_type; ?></td>
-	  </tr>
-<?php
-	if ($domain_type == "SLAVE" &&  $slave_master )
-	{
-?>
-	  <tr>
-	   <th><?php echo _('IP address of master NS'); ?></th><td class="y"><?php echo $slave_master; ?></td>
-	  </tr>
-<?php
-	}
-?>
-         </table>
-        </div> <?php //eo div meta-right ?>
-        </div> <?php // eo div meta
-}
-?>
-       <div id="meta">
-<?php
-	if ($_SESSION[$_GET["id"]."_ispartial"] != 1 && $domain_type != "SLAVE" )
-	{
-?>
-        <input type="button" class="button" OnClick="location.href='add_record.php?id=<?php echo $_GET["id"] ?>'" value="<?php echo _('Add record'); ?>">&nbsp;&nbsp;
-<?php
-	}
-	if (level(5))
-	{
-?>
-	<input type="button" class="button" OnClick="location.href='delete_domain.php?id=<?php echo $_GET["id"] ?>'" value="<?php echo _('Delete zone'); ?>">
-<?php
-	}
-?>
-        </div> <?php // eo div meta ?>
-       <div class="showmax">
-<?php
-show_pages($info["numrec"],ROWAMOUNT,$_GET["id"]);
-?>
-        </div> <?php // eo div showmax ?>
-         <form action="<?php echo $_SERVER["PHP_SELF"]?>?id=<?php echo $_GET["id"]?>" method="post">
-          <input type="hidden" name="action" value="record-user">
-          <table>
-<?php
-$countinput=0;
-$rec_result = get_records_from_domain_id($_GET["id"],ROWSTART,ROWAMOUNT);
-if($rec_result != -1)
-{
-?>
-           <tr>
-	    <th>&nbsp;</th>
-<?php 
-	if (level(10) && $domain_type != "SLAVE") 
-	{ 
-		echo "<th class=\"n\">" . _('Sub-owners') . "</td>"; 
-	} 
-?>
-	    <th><?php echo _('Name'); ?></th>
-	    <th><?php echo _('Type'); ?></th>
-	    <th><?php echo _('Content'); ?></th>
-	    <th><?php echo _('Priority'); ?></th>
-	    <th><?php echo _('TTL'); ?></th>
-           </tr>
-<?php
-  	$recs = sort_zone($rec_result);
-  	foreach($recs as $r)
-  	{
-?>
-           <tr>
-	    <td class="n">
-<?php
-		if ($domain_type != "SLAVE" )
-		{	
-			if(level(5) || (!($r["type"] == "SOA" && !$GLOBALS["ALLOW_SOA_EDIT"]) && !($r["type"] == "NS" && !$GLOBALS["ALLOW_NS_EDIT"])))
-			{
-?>
-			     <a href="edit_record.php?id=<?php echo $r['id'] ?>&amp;domain=<?php echo $_GET["id"] ?>"><img src="images/edit.gif" alt="[ <?php echo _('Edit record'); ?> ]"></a>
-			     <a href="delete_record.php?id=<?php echo $r['id'] ?>&amp;domain=<?php echo $_GET["id"] ?>"><img src="images/delete.gif" ALT="[ <?php echo _('Delete record'); ?> ]" BORDER="0"></a>
-<?php
+	$owners = get_users_from_domain_id($_GET["id"]);
+
+	if ($owners == "-1") {
+		echo "      <tr><td>" . _('No owner set or this zone!') . "</td></tr>";
+	} else {
+		if ($meta_edit) {
+			foreach ($owners as $owner) {
+				echo "      <form method=\"post\" action=\"edit.php?id=" . $_GET['id'] . "\">\n";
+				echo "       <tr>\n";
+				echo "        <td>" . $owner["fullname"] . "</td>\n";
+				echo "        <td>\n";
+				echo "         <input type=\"hidden\" name=\"delete_owner\" value=\"" . $owner["id"] . "\">\n";
+				echo "         <input type=\"submit\" class=\"sbutton\" name=\"co\" value=\"" . _('Delete') . "\">\n";
+				echo "        </td>\n";
+				echo "       </tr>\n";
+				echo "      </form>\n";
 			}
-		}
-		if(level(10) && $domain_type != "SLAVE") 
-		{ 
-?>
-		     <input type="checkbox" name="rowid[<?php echo $countinput++?>]" value="<?php echo $r['id']?>" />
-<?php 
-		}
-?>
-            </td>
-<?php 
-		if (level(10) && $domain_type != "SLAVE") 
-		{ 
-?>
-            <td class="n">
-<?php 
-			$x_result = $db->query("SELECT r.user_id,u.username,u.fullname FROM record_owners as r, users as u WHERE r.record_id=".$db->quote($r['id'])." AND u.id=r.user_id");
-			echo "<select style=\"width:120px;\">";
-			while ($x_r = $x_result->fetchRow()) {
-				echo "<option value=\"".$x_r["username"]."\">".$x_r["fullname"]."</option>";
-			}
-			echo "</select>";
-?>
-            </td>
-<?php 
-		} 
-?>
-	    <td class="y"><?php echo $r['name'] ?></td>
-	    <td class="y"><?php echo $r['type'] ?></td>
-	    <td class="y"><?php echo $r['content'] ?></td>
-<?php
-		if ($r['prio'] != 0) 
-		{
-?>
-            <td class="y"><?php echo $r['prio']; ?></td>
-<?php
 		} else {
-?>
-            <td class="n"></td><?php
+			foreach ($owners as $owner) {
+				echo "    <tr><td>" . $owner["fullname"] . "</td><td>&nbsp;</td></tr>";
+			}
 		}
-?>
-            <td class="y"><?php echo $r['ttl'] ?></td>
-	   </tr>
-<?php
-	}
-}
-else
-{
-?>
-           <tr>
-            <td class="n">
-	     <div class="warning"><?php echo _('No records for this zone.'); ?></div>
-	    </td>
-           </tr>
-<?php
-}
-?>
-          </table>
 
-<?php
-if ($domain_type != "SLAVE")
-{
-	if (level(10)) { ?>
-	   <img src="images/arrow.png" alt="arrow" class="edit-assign-to-user">
-	   <select name="userid">
-		<?php
+	}
+	if ($meta_edit) {
+		echo "      <form method=\"post\" action=\"edit.php?id=" . $_GET['id'] . "\">\n";
+		echo "       <input type=\"hidden\" name=\"domain\" value=\"" . $_GET["id"] . "\">\n";
+		echo "       <tr>\n";
+		echo "        <td>\n";
+		echo "         <select name=\"newowner\">\n";
 		$users = show_users();
 		foreach ($users as $user) {
-			echo "<option value=\"".$user[id]."\">".$user[fullname]."</option>";
+			unset($add);
+			if ($user["id"] == $_SESSION["userid"])
+			{
+				$add = " SELECTED";
+			}
+			echo "          <option" . $add . " value=\"" . $user["id"] . "\">" . $user["fullname"] . "</option>\n";
 		}
-		?>
-           </select>
-	   <input type="submit" class="button" value="<?php echo _('Assign to user'); ?>">
-	  </form>
-<?php 
-	} 
+		echo "         </select>\n";
+		echo "        </td>\n";
+		echo "        <td>\n";
+		echo "         <input type=\"submit\" class=\"sbutton\" name=\"co\" value=\"" . _('Add') . "\">\n";
+		echo "        </td>\n";
+		echo "       </tr>\n";
+		echo "      </form>\n";
+	}
+ 	echo "     </table>\n";
+	echo "    </div>\n"; // eo div meta-left
+	echo "    <div id=\"meta-right\">\n";
+	echo "     <table>\n";
+	echo "      <tr>\n";
+	echo "       <th colspan=\"2\">" . _('Type of zone') . "</th>\n";
+	echo "      </tr>\n";
+
+	if ($meta_edit) {
+		echo "      <form action=\"" . $_SERVER['PHP_SELF'] . "?id=" . $_GET['id'] . "\" method=\"post\">\n";
+		echo "       <input type=\"hidden\" name=\"domain\" value=\"" . $_GET["id"] . "\">\n";
+		echo "       <tr>\n";
+		echo "        <td>\n";
+		echo "         <select name=\"newtype\">\n";
+		foreach($server_types as $type) {
+			unset($add);
+			if ($type == $domain_type) {
+				$add = " SELECTED";
+			}
+			echo "          <option" .  $add . " value=\"" . $type . "\">" .  strtolower($type) . "</option>\n";
+		}
+		echo "         </select>\n";
+		echo "        </td>\n";
+		echo "        <td>\n";
+		echo "         <input type=\"submit\" class=\"sbutton\" name=\"type_change\" value=\"" . _('Change') . "\">\n";
+		echo "        </td>\n";
+		echo "       </tr>\n";
+		echo "      </form>\n";
+	} else {
+		echo "      <tr><td>" . strtolower($domain_type) . "</td><td>&nbsp;</td></tr>\n";
+	}
+
+	if ($domain_type == "SLAVE" ) { 
+		$slave_master=get_domain_slave_master($_GET['id']);
+		echo "      <tr>\n";
+		echo "       <th colspan=\"2\">" . _('IP address of master NS') . "</th>\n";
+		echo "      </tr>\n";
+
+		if ($meta_edit) {
+			echo "      <form action=\"" . $_SERVER['PHP_SELF'] . "?id=" . $_GET['id'] . "\" method=\"post\">\n";
+			echo "       <input type=\"hidden\" name=\"domain\" value=\"" . $_GET["id"] . "\">\n";
+			echo "       <tr>\n";
+			echo "        <td>\n";
+			echo "         <input type=\"text\" name=\"new_master\" value=\"" . $slave_master . "\" class=\"input\">\n";
+			echo "        </td>\n";
+			echo "        <td>\n";
+			echo "         <input type=\"submit\" class=\"sbutton\" name=\"slave_master_change\" value=\"" . _('Change') . "\">\n";
+			echo "        </td>\n";
+			echo "       </tr>\n";
+			echo "      </form>\n";
+		} else {
+			echo "      <tr><td>" . $slave_master . "</td><td>&nbsp;</td></tr>\n";
+		}
+	}
+	echo "     </table>\n";
+	echo "    </div>\n";	// eo div meta-right
+	echo "   </div>\n";	// eo div meta 
+
+	if ( $domain_type != "SLAVE" || $perm_content_edit != "none" || $perm_content_edit == "own" && $user_is_zone_owner == "1" ) {
+		echo "    <input type=\"button\" class=\"button\" OnClick=\"location.href='add_record.php?id=" . $_GET["id"] . "'\" value=\"" . _('Add record') . "\">&nbsp;&nbsp\n";
+		echo "    <input type=\"button\" class=\"button\" OnClick=\"location.href='delete_domain.php?id=" . $_GET["id"] . "'\" value=\"" . _('Delete zone') . "\">\n";
+	}
+
+	echo "   <div class=\"showmax\">\n";
+	show_pages($record_count,ROWAMOUNT,$_GET["id"]);
+	echo "   </div>\n";
+
+	$records = get_records_from_domain_id($_GET["id"],ROWSTART,ROWAMOUNT);
+	if ( $records == "-1" ) { 
+		echo " <p>" .  _("This zone does not have any records. Weird.") . "</p>\n";  // TODO i18n
+	} else {
+		echo "   <table>\n";
+		echo "    <tr>\n";
+		echo "     <th>&nbsp;</th>\n";
+		echo "     <th>" . _('Name') . "</th>\n";
+		echo "     <th>" . _('Type') . "</th>\n";
+		echo "     <th>" . _('Content') . "</th>\n";
+		echo "     <th>" . _('Priority') . "</th>\n";
+		echo "     <th>" . _('TTL') . "</th>\n";
+		echo "    </tr>\n";
+		foreach ($records as $r) {
+			echo "    <tr>\n";
+			if ( $domain_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
+				echo "     <td class=\"n\">&nbsp;</td>\n";
+			} else {
+				echo "     <td class=\"n\">\n";
+				echo "      <a href=\"edit_record.php?id=" . $r['id'] . "&amp;domain=" . $_GET["id"] . "\">
+						<img src=\"images/edit.gif\" alt=\"[ ". _('Edit record') . " ]\"></a>\n";
+				echo "      <a href=\"delete_record.php?id=" . $r['id'] . "&amp;domain=" . $_GET["id"] . "\">
+						<img src=\"images/delete.gif\" ALT=\"[ " . _('Delete record') . " ]\" BORDER=\"0\"></a>\n";
+				echo "     </td>\n";
+			}
+			echo "      <td class=\"u\">" . $r['name'] . "</td>\n";
+			echo "      <td class=\"u\">" . $r['type'] . "</td>\n";
+			echo "      <td class=\"u\">" . $r['content'] . "</td>\n";
+			if ($r['type'] == "MX") { 
+				echo "      <td class=\"u\">" .  $r['prio'] . "</td>\n";
+			} else {
+				echo "      <td class=\"n\">&nbsp;</td>\n";
+			}
+			echo "      <td class=\"u\">" . $r['ttl'] . "</td>\n";
+			echo "     </tr>\n";
+		}
+		echo "    </table>\n";
+	}
 }
 include_once("inc/footer.inc.php");
 ?>

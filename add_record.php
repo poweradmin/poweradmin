@@ -20,63 +20,84 @@
  */
 
 require_once("inc/toolkit.inc.php");
+include_once("inc/header.inc.php");
 
-$xsid = (isset($_GET['id'])) ? $_GET['id'] : $_POST['zoneid'];
-if ((!level(5)) && ((!xs($xsid) || ($_SESSION[$xsid.'_ispartial'])))) {
-	error(ERR_RECORD_ACCESS_DENIED);
-}
+if (verify_permission(zone_content_view_others)) { $perm_view = "all" ; }
+elseif (verify_permission(zone_content_view_own)) { $perm_view = "own" ; }
+else { $perm_view = "none" ; }
+
+if (verify_permission(zone_content_edit_others)) { $perm_content_edit = "all" ; }
+elseif (verify_permission(zone_content_edit_own)) { $perm_content_edit = "own" ; }
+else { $perm_content_edit = "none" ; }
+
+if (verify_permission(zone_content_edit_others)) { $perm_content_edit = "all" ; }
+elseif (verify_permission(zone_content_edit_own)) { $perm_content_edit = "own" ; }
+else { $perm_content_edit = "none" ; }
+
+if (verify_permission(zone_meta_edit_others)) { $perm_meta_edit = "all" ; }
+elseif (verify_permission(zone_meta_edit_own)) { $perm_meta_edit = "own" ; }
+else { $perm_meta_edit = "none" ; }
+
+$user_is_zone_owner = verify_user_is_owner_zoneid($_GET["id"]);
+$zone_type = get_domain_type($_GET["id"]);
+$zone_name = get_domain_name_from_id($_GET["id"]);
 
 if ($_POST["commit"]) {
-        $ret = add_record($_POST["zoneid"], $_POST["name"], $_POST["type"], $_POST["content"], $_POST["ttl"], $_POST["prio"]);
-        if ($ret != '1') {
-                die("$ret");
-        }
-        clean_page("edit.php?id=".$_POST["zoneid"]);
+	if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
+		echo "     <p>" . _("You do not have the permission to add a record to this zone.") . "</p>\n"; // TODO i18n
+	} else {
+		$ret_val = add_record($_POST["domain"], $_POST["name"], $_POST["type"], $_POST["content"], $_POST["ttl"], $_POST["prio"]);
+		if ( $ret_val == "1" ) {
+			echo "     <div class=\"success\">" .  _('The record was succesfully added.') . "</div>\n";
+		} else {
+			echo "     <div class=\"error\">" . $ret_val . "</div>\n";  //TODO i18n
+		}
+	}
 }
 
-include_once("inc/header.inc.php");
-?>
+echo "    <h2>" . _('Add record in zone') . " " .  $zone_name . "</h2>\n";
 
-    <h2><?php echo _('Add record to zone'); ?> "<?php echo get_domain_name_from_id($_GET["id"]) ?>"</H2>
-
-    <form method="post">
-     <input type="hidden" name="zoneid" value="<?php echo $_GET["id"] ?>">
-     <table border="0" cellspacing="4">
-      <tr>
-       <td class="n"><?php echo _('Name'); ?></td>
-       <td class="n">&nbsp;</td>
-       <td class="n"><?php echo _('Type'); ?></td>
-       <td class="n"><?php echo _('Priority'); ?></td>
-       <td class="n"><?php echo _('Content'); ?></td>
-       <td class="n"><?php echo _('TTL'); ?></td>
-      </tr>
-      <tr>
-       <td class="n"><input type="text" name="name" class="input">.<?php echo get_domain_name_from_id($_GET["id"]) ?></td>
-       <td class="n">IN</td>
-       <td class="n">
-        <select name="type">
-<?php
-$dname = get_domain_name_from_id($_GET["id"]);
-foreach (get_record_types() as $c) {
-        if (eregi('in-addr.arpa', $dname) && strtoupper($c) == 'PTR') {
-                $add = " SELECTED";
-        } elseif (strtoupper($c) == 'A') {
-                $add = " SELECTED";
-        } else {
-                unset($add);
-        }
-        ?><option<?php echo $add ?> value="<?php echo $c ?>"><?php echo $c ?></option><?php
+if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
+        echo "     <p>" . _("You do not have the permission to add a record to this zone.") . "</p>\n"; // TODO i18n
+} else {
+	echo "     <form method=\"post\">\n";
+	echo "      <input type=\"hidden\" name=\"domain\" value=\"" . $_GET["id"] . "\">\n";
+	echo "      <table border=\"0\" cellspacing=\"4\">\n";
+	echo "       <tr>\n";
+	echo "        <td class=\"n\">" . _('Name') . "</td>\n";
+	echo "        <td class=\"n\">&nbsp;</td>\n";
+	echo "        <td class=\"n\">" . _('Type') . "</td>\n";
+	echo "        <td class=\"n\">" . _('Priority') .  "</td>\n";
+	echo "        <td class=\"n\">" . _('Content') . "</td>\n";
+	echo "        <td class=\"n\">" . _('TTL') . "</td>\n";
+	echo "       </tr>\n";
+	echo "       <tr>\n";
+	echo "        <td class=\"n\"><input type=\"text\" name=\"name\" class=\"input\">." . $zone_name . "</td>\n";
+	echo "        <td class=\"n\">IN</td>\n";
+	echo "        <td class=\"n\">\n";
+	echo "         <select name=\"type\">\n";
+	foreach (get_record_types() as $record_type) {
+		if (eregi('in-addr.arpa', $zone_name) && strtoupper($record_type) == 'PTR') {
+			$add = " SELECTED";
+		} elseif (strtoupper($record_type) == 'A') {
+			$add = " SELECTED";
+		} else {
+			unset($add);
+		}
+		echo "          <option" . $add . " value=\"" . $record_type . "\">" . $record_type . "</option>\n";
+	}
+	echo "         </select>\n";
+	echo "        </td>\n";
+	echo "        <td class=\"n\"><input type=\"text\" name=\"prio\" class=\"sinput\"></td>\n";
+	echo "        <td class=\"n\"><input type=\"text\" name=\"content\" class=\"input\"></td>\n";
+	echo "        <td class=\"n\"><input type=\"text\" name=\"ttl\" class=\"sinput\" value=\"" . $DEFAULT_TTL . "\"</td>\n";
+	echo "       </tr>\n";
+	echo "      </table>\n";
+	echo "      <br>\n";
+	echo "      <input type=\"submit\" name=\"commit\" value=\"" .  _('Add record') . "\" class=\"button\">\n";
+	echo "     </form>\n";
 }
-?>
-        </select>
-       </td>
-       <td class="n"><input type="text" name="prio" class="sinput"></td>
-       <td class="n"><input type="text" name="content" class="input"></td>
-       <td class="n"><input type="text" name="ttl" class="sinput" value="<?php echo $DEFAULT_TTL?>"></td>
-      </tr>
-     </table>
-     <br>
-     <input type="submit" name="commit" value="<?php echo _('Add record'); ?>" class="button">
-    </form>
 
-<?php include_once("inc/footer.inc.php"); ?>
+include_once("inc/footer.inc.php"); 
+
+?>

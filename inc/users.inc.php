@@ -21,6 +21,57 @@
 
 require_once("inc/toolkit.inc.php");
 
+
+/* 
+ *  Function to see if user has right to do something. It will check if
+ *  user has "ueberuser" bit set. If it isn't, it will check if the user has
+ *  the specific permission. It returns "false" if the user doesn't have the
+ *  right, and "true" if the user has. 
+ */
+
+function verify_permission($permission) {
+
+        global $db;
+
+        // Set current user ID.
+        $userid=$_SESSION["userid"];
+
+        // Find the template ID that this user has been assigned.
+        $query = "SELECT `perm_templ`
+			FROM users 
+			WHERE `id` = " . $db->quote($userid) . ";";
+        $templ_id = $db->queryOne($query);
+
+        // Does this user have ueberuser rights?
+        $query = "SELECT `id` 
+			FROM perm_templ_items 
+			WHERE `templ_id` = " . $db->quote($templ_id) . " 
+			AND `perm_id` = '30';";
+        $result = $db->query($query);
+        if ( $result->numRows() > 0 ) {
+                return 1;
+        }
+
+        // Find the permission ID for the requested permission.
+        $query = "SELECT `id` 
+			FROM perm_items 
+			WHERE `name` = " . $db->quote($permission) . ";";
+        $perm_id = $db->queryOne($query);
+
+        // Check if the permission ID is assigned to the template ID. 
+        $query = "SELECT `id` 
+			FROM perm_templ_items 
+			WHERE `templ_id` = " . $db->quote($templ_id) . " 
+			AND `perm_id` = " . $db->quote($perm_id) . ";";
+        $result = $db->query($query);
+        if ( $result->numRows() > 0 ) {
+                return 1;
+        } else {
+                return 0;
+        }
+}
+
+
 /*
  * Retrieve all users.
  * Its to show_users therefore the odd name. Has to be changed.
@@ -369,7 +420,7 @@ function get_owner_from_id($id)
  * @param $id integer the id of the domain
  * @return String the list of owners for this domain
  */
-function get_owners_from_domainid($id) {
+function get_fullnames_owners_from_domainid($id) {
       
       global $db;
       if (is_numeric($id))
@@ -391,5 +442,28 @@ function get_owners_from_domainid($id) {
       }
       error(ERR_INV_ARG);
 }
+
+
+
+function verify_user_is_owner_zoneid($zoneid) {
+	global $db;
+
+	$userid=$_SESSION["userid"];
+
+	if (is_numeric($zoneid)) {
+		$result = $db->query("SELECT zones.id 
+				FROM zones 
+				WHERE zones.owner = " . $db->quote($userid) . "
+				AND zones.domain_id = ". $db->quote($zoneid)) ;
+		if ($result->numRows() == 0) {
+			return "0";
+		} else {
+			return "1";
+		}
+	}
+	error(ERR_INV_ARG);
+}
+
+
 
 ?>
