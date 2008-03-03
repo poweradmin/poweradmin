@@ -49,7 +49,7 @@ function update_soa_serial($domain_id)
 
 	$sqlq = "SELECT content FROM records WHERE type = 'SOA' AND domain_id = ".$db->quote($domain_id);
 	$content = $db->queryOne($sqlq);
-    $need_to_update = false;
+        $need_to_update = false;
 	
 	// Getting the serial field.
 	$soa = explode(" ", $content);
@@ -237,24 +237,22 @@ function add_record($zoneid, $name, $type, $content, $ttl, $prio)
 function add_supermaster($master_ip, $ns_name, $account)
 {
         global $db;
-        if (!is_valid_ip($master_ip) && !is_valid_ip6($master_ip))
-        {
-                error(sprintf(ERR_INV_ARGC, "add_supermaster", "No or no valid ipv4 or ipv6 address given."));
+        if (!is_valid_ip($master_ip) && !is_valid_ip6($master_ip)) {
+                error(ERR_DNS_IP);
+		return false;
         }
-        if (!is_valid_hostname($ns_name))
-        {
+        if (!is_valid_hostname($ns_name)) {
                 error(ERR_DNS_HOSTNAME);
+		return false;
         }
-	if (!validate_account($account))
-	{
+	if (!validate_account($account)) {
 		error(sprintf(ERR_INV_ARGC, "add_supermaster", "given account name is invalid (alpha chars only)"));
+		return false;
 	}
-        if (supermaster_exists($master_ip))
-        {
-                error(sprintf(ERR_INV_ARGC, "add_supermaster", "supermaster already exists"));
-        }
-        else
-        {
+        if (supermaster_exists($master_ip)) {
+                error(ERR_SM_EXISTS);
+		return false;
+        } else {
                 $db->query("INSERT INTO supermasters VALUES (".$db->quote($master_ip).", ".$db->quote($ns_name).", ".$db->quote($account).")");
                 return true;
         }
@@ -959,10 +957,6 @@ function get_supermasters()
 function supermaster_exists($master_ip)
 {
         global $db;
-        if (!level(5))
-        {
-                error(ERR_LEVEL_5);
-        }
         if (is_valid_ip($master_ip) || is_valid_ip6($master_ip))
         {
                 $result = $db->query("SELECT ip FROM supermasters WHERE ip = ".$db->quote($master_ip));

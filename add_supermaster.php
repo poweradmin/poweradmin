@@ -20,82 +20,68 @@
  */
 
 require_once("inc/toolkit.inc.php");
+include_once("inc/header.inc.php");
 
-if (!level(5))
-{
-	 error(ERR_LEVEL_5);
-}
+if (verify_permission(supermaster_add)) { $supermasters_add = "1" ; }
 
 if($_POST["submit"])
 {
 	$master_ip = $_POST["master_ip"];
 	$ns_name = $_POST["ns_name"];
 	$account = $_POST["account"];
-	if (!$error)
-	{
-		if (!is_valid_ip($master_ip) && !is_valid_ip6($master_ip))
-		{
-			$error = _('Given master IP address is not valid IPv4 or IPv6.');
-		}
-		elseif (!is_valid_hostname($ns_name))
-		{
-			$error = _('Given hostname for NS record not valid.');
-		}
-		elseif (!validate_account($account))
-		{
-			$error = _('Account name is not valid (may contain only alpha chars).');
-		}
-		else    
-		{
-			if(add_supermaster($master_ip, $ns_name, $account))
-			{
-				$success = _('Successfully added supermaster.');
-			}
-		}
+
+	if (add_supermaster($master_ip, $ns_name, $account)) {
+		echo "     <div class=\"success\">" .  _('Successfully added supermaster.') . "</div>\n";
+	} else {
+		$error = "1";
 	}
 }
 
-include_once("inc/header.inc.php");
-    
-    if ($error != "")
-    {
-    	?><div class="error"><?php echo _('Error'); ?>: <?php echo $error; ?></div><?php
-    }
-    elseif ($success != "")
-    {
-    	?><div class="success"><?php echo $success; ?></div><?php
-    }
-    
-    ?>
-    <h2><?php echo _('Add supermaster'); ?></h2>
-    <form method="post" action="add_supermaster.php">
-     <table>
-      <tr>
-       <td class="n"><?php echo _('IP address of supermaster'); ?>:</td>
-       <td class="n">
-        <input type="text" class="input" name="master_ip" value="<?php if ($error) print $_POST["master_ip"]; ?>">
-       </td>
-      </tr>
-      <tr>
-       <td class="n"><?php echo _('Hostname in NS record'); ?>:</td>
-       <td class="n">
-        <input type="text" class="input" name="ns_name" value="<?php if ($error) print $_POST["ns_name"]; ?>">
-       </td>
-      </tr>
-      <tr>
-       <td class="n"><?php echo _('Account'); ?>:</td>
-       <td class="n">
-        <input type="text" class="input" name="account" value="<?php if ($error) print $_POST["account"]; ?>">
-       </td>
-      </tr>
-      <tr>
-       <td class="n">&nbsp;</td>
-       <td class="n">
-        <input type="submit" class="button" name="submit" value="<?php echo _('Add supermaster'); ?>">
-       </td>
-      </tr>
-     </table>
-    </form>
-<?php
+echo "     <h2>" . _('Add supermaster') . "</h2>\n";
+
+if ( $supermasters_add != "1" ) {
+	echo "     <p>" . _("You do not have the permission to add a new supermaster.") . "</p>\n"; // TODO i18n
+} else {
+	echo "     <form method=\"post\" action=\"add_supermaster.php\">\n";
+	echo "      <table>\n";
+	echo "       <tr>\n";
+	echo "        <td class=\"n\">" . _('IP address of supermaster') . "</td>\n";
+	echo "        <td class=\"n\">\n";
+	if ($error) {
+		echo "         <input type=\"text\" class=\"input\" name=\"master_ip\" value=\"" . $_POST["master_ip"] . "\">\n";
+	} else {
+		echo "         <input type=\"text\" class=\"input\" name=\"master_ip\" value=\"\">\n";
+	}
+	echo "        </td>\n";
+	echo "       </tr>\n";
+	echo "       <tr>\n";
+	echo "        <td class=\"n\">" . _('Hostname in NS record') . "</td>\n";
+	echo "        <td class=\"n\">\n";
+	if ($error) {
+		echo "         <input type=\"text\" class=\"input\" name=\"ns_name\" value=\"" . $_POST["ns_name"] . "\">\n";
+	} else {
+		echo "         <input type=\"text\" class=\"input\" name=\"ns_name\" value=\"\">\n";
+	}
+	echo "        </td>\n";
+	echo "       </tr>\n";
+	echo "       <tr>\n";
+	echo "        <td class=\"n\">" . _('Account') . "</td>\n";
+	echo "        <td class=\"n\">\n";
+	if ($error) {
+		echo "         <input type=\"text\" class=\"input\" name=\"account\" value=\"" . $_POST["account"] . "\">\n";
+	} else {
+		echo "         <input type=\"text\" class=\"input\" name=\"account\" value=\"\">\n";
+	}
+	echo "        </td>\n";
+	echo "       </tr>\n";
+	echo "       <tr>\n";
+	echo "        <td class=\"n\">&nbsp;</td>\n";
+	echo "        <td class=\"n\">\n";
+	echo "         <input type=\"submit\" class=\"button\" name=\"submit\" value=\"" . _('Add supermaster') . "\">\n";
+	echo "        </td>\n";
+	echo "       </tr>\n";
+	echo "      </table>\n";
+	echo "     </form>\n";
+}
 include_once("inc/footer.inc.php");
 ?>

@@ -187,28 +187,14 @@ function zone_letter_start($letter,$userid=true)
         }
 }
 
-/*
- * Print a nice useraimed error.
- */
-function error($msg)
-{
-	// General function for printing critical errors.
-	if ($msg)
-	{
-		include_once("header.inc.php");
-	?>
-	<p><?php echo _('Oops! An error occured!'); ?></p>
-	<p><?php echo nl2br($msg) ?></p>
-	<?php
-		include_once("footer.inc.php");
-		die();
-	}
-	else
-	{
-		include_once("footer.inc.php");
-		die("No error specified!");
+function error($msg) {
+	if ($msg) {
+		echo "     <div class=\"error\">Error: " . $msg . "</div>\n";
+	} else {
+		echo "     <div class=\"error\">" . _('An unknown error has occurred.') . "</div>\n"; // TODO i18n
 	}
 }
+
 
 /*
  * Something has been done nicely, display a message and a back button.

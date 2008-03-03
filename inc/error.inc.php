@@ -24,6 +24,7 @@
 require_once("inc/i18n.inc.php");
 
 /* USER LEVELS */
+// TODO should be removed after rewrite user management.
 define("ERR_LEVEL_5", _('You need user level 5 for this operation'));
 define("ERR_LEVEL_10", _('You need user level 10 for this operation'));
 
@@ -34,6 +35,7 @@ define("ERR_RECORD_DELETE_TYPE_DENIED", _('You are not allowed to delete %s reco
 
 /* DOMAIN STUFF */
 define("ERR_DOMAIN_INVALID", _('This is an invalid zone name'));
+define("ERR_SM_EXISTS", _('There is already a supermaster with this IP address.')); // TODO i18n
 
 /* USER STUFF */
 define("ERR_USER_EXIST", _('Username exist already, please choose another one'));
@@ -52,6 +54,7 @@ define("ERR_INV_EMAIL", _('Enter a valid email address'));
 define("ERR_DNS_CONTENT", _('Your content field doesnt have a legit value'));
 define("ERR_DNS_HOSTNAME", _('Invalid hostname'));
 define("ERR_DNS_RECORDTYPE", _('Invalid record type! You shouldnt even been able to get that here'));
+define("ERR_DNS_IP", _('This is not a valid IPv4 or IPv6 address.')); // TODO i18n
 define("ERR_DNS_IPV6", _('This is not a valid IPv6 ip.'));
 define("ERR_DNS_IPV4", _('This is not a valid IPv4 ip.'));
 define("ERR_DNS_CNAME", _('This is not a valid CNAME. Did you assign an MX or NS record to the record?'));
