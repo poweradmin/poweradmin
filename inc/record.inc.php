@@ -1437,16 +1437,15 @@ function search_record($question)
 		}
 
 		$sqlq = "SELECT domains.id, domains.name, count(records.id) AS numrec, zones.owner, records.domain_id
-				FROM domains, records, zones  
-				WHERE domains.id = records.domain_id 
-				AND zones.domain_id = domains.id 
+				FROM domains LEFT JOIN records ON domains.id = records.domain_id, zones  
+				WHERE zones.domain_id = domains.id 
 				AND domains.name LIKE ".$db->quote($question)." 
 				GROUP BY domains.id, domains.name, zones.owner, records.domain_id";
 		$result = $db->query($sqlq);
 		$ret_d = array();
 		while ($r = $result->fetchRow())
 		{
-		    if(xs($r['domain_id']))
+		    if(xs($r['id']))
 		    {
 			    $ret_d[] = array(
 				'id'			=>	$r['id'],
