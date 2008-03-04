@@ -42,15 +42,16 @@ $user_is_zone_owner = verify_user_is_owner_zoneid($_GET["id"]);
 $zone_type = get_domain_type($_GET["id"]);
 $zone_name = get_domain_name_from_id($_GET["id"]);
 
+unset($error);
+
 if ($_POST["commit"]) {
 	if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
-		echo "     <p>" . _("You do not have the permission to add a record to this zone.") . "</p>\n"; // TODO i18n
+		error(ERR_PERM_ADD_RECORD);
 	} else {
-		$ret_val = add_record($_POST["domain"], $_POST["name"], $_POST["type"], $_POST["content"], $_POST["ttl"], $_POST["prio"]);
-		if ( $ret_val == "1" ) {
-			echo "     <div class=\"success\">" .  _('The record was succesfully added.') . "</div>\n";
+		if ( add_record($_POST["domain"], $_POST["name"], $_POST["type"], $_POST["content"], $_POST["ttl"], $_POST["prio"]) ) {
+			success(_('The record was succesfully added.'));
 		} else {
-			echo "     <div class=\"error\">" . $ret_val . "</div>\n";  //TODO i18n
+			$error = "1";
 		}
 	}
 }
@@ -58,7 +59,7 @@ if ($_POST["commit"]) {
 echo "    <h2>" . _('Add record in zone') . " " .  $zone_name . "</h2>\n";
 
 if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
-        echo "     <p>" . _("You do not have the permission to add a record to this zone.") . "</p>\n"; // TODO i18n
+	error(ERR_PERM_ADD_RECORD); 
 } else {
 	echo "     <form method=\"post\">\n";
 	echo "      <input type=\"hidden\" name=\"domain\" value=\"" . $_GET["id"] . "\">\n";
@@ -72,7 +73,11 @@ if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit
 	echo "        <td class=\"n\">" . _('TTL') . "</td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
-	echo "        <td class=\"n\"><input type=\"text\" name=\"name\" class=\"input\">." . $zone_name . "</td>\n";
+	if ($error) {
+		echo "        <td class=\"n\"><input type=\"text\" name=\"name\" class=\"input\" value=\"" . $_POST["name"] . "\">." . $zone_name . "</td>\n";
+	} else {
+		echo "        <td class=\"n\"><input type=\"text\" name=\"name\" class=\"input\">." . $zone_name . "</td>\n";
+	}
 	echo "        <td class=\"n\">IN</td>\n";
 	echo "        <td class=\"n\">\n";
 	echo "         <select name=\"type\">\n";
@@ -88,9 +93,15 @@ if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit
 	}
 	echo "         </select>\n";
 	echo "        </td>\n";
-	echo "        <td class=\"n\"><input type=\"text\" name=\"prio\" class=\"sinput\"></td>\n";
-	echo "        <td class=\"n\"><input type=\"text\" name=\"content\" class=\"input\"></td>\n";
-	echo "        <td class=\"n\"><input type=\"text\" name=\"ttl\" class=\"sinput\" value=\"" . $DEFAULT_TTL . "\"</td>\n";
+	if ($error) {
+		echo "        <td class=\"n\"><input type=\"text\" name=\"prio\" class=\"sinput\" value=\"" . $_POST["prio"] . "\"></td>\n";
+		echo "        <td class=\"n\"><input type=\"text\" name=\"content\" class=\"input\" value=\"" . $_POST["content"] . "\"></td>\n";
+		echo "        <td class=\"n\"><input type=\"text\" name=\"ttl\" class=\"sinput\" value=\"" . $_POST["ttl"] . "\"</td>\n";
+	} else {
+		echo "        <td class=\"n\"><input type=\"text\" name=\"prio\" class=\"sinput\"></td>\n";
+		echo "        <td class=\"n\"><input type=\"text\" name=\"content\" class=\"input\"></td>\n";
+		echo "        <td class=\"n\"><input type=\"text\" name=\"ttl\" class=\"sinput\" value=\"" . $DEFAULT_TTL . "\"</td>\n";
+	}
 	echo "       </tr>\n";
 	echo "      </table>\n";
 	echo "      <br>\n";

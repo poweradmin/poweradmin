@@ -28,6 +28,9 @@ require_once("inc/i18n.inc.php");
 define("ERR_LEVEL_5", _('You need user level 5 for this operation'));
 define("ERR_LEVEL_10", _('You need user level 10 for this operation'));
 
+/* PERMISSIONS */
+define("ERR_PERM_ADD_RECORD", _("You do not have the permission to add a record to this zone.")); // TODO i18n
+
 /* RECORD STUFF */
 define("ERR_RECORD_EMPTY_CONTENT", _('Your content field is empty'));
 define("ERR_RECORD_ACCESS_DENIED", _('Access denied, you do not have access to that record'));

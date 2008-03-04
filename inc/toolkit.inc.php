@@ -195,6 +195,14 @@ function error($msg) {
 	}
 }
 
+function success($msg) {
+	if ($msg) {
+		echo "     <div class=\"success\">" . $msg . "</div>\n";
+	} else {
+		echo "     <div class=\"success\">" . _('Something has been successfully performed. What exactly, however, will remain a mystery.') . "</div>\n"; // TODO i18n
+	}
+}
+
 
 /*
  * Something has been done nicely, display a message and a back button.

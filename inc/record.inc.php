@@ -203,34 +203,42 @@ function delete_record_owner($zoneid,$rowid,$recordid)
  * This function validates it if correct it inserts it into the database.
  * return values: true if succesful.
  */
-function add_record($zoneid, $name, $type, $content, $ttl, $prio)
-{
-
+function add_record($zoneid, $name, $type, $content, $ttl, $prio) {
 	global $db;
-	if (!xs($zoneid))
-	{
-		error(ERR_RECORD_ACCESS_DENIED);
-	}
-	if (is_numeric($zoneid))
-	{
-		// Check the user input.
-		validate_input($zoneid, $type, $content, $name, $prio, $ttl);
 
-		// Generate new timestamp for the daemon
-		$change = time();
-		
-		// Execute query.
-		$db->query("INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) VALUES (".$db->quote($zoneid).", ".$db->quote($name).", ".$db->quote($type).", ".$db->quote($content).", ".$db->quote($ttl).", ".$db->quote($prio).", ".$db->quote($change).")");
-		if ($type != 'SOA')
-		{
-			update_soa_serial($zoneid);
+	if (verify_permission(zone_content_edit_others)) { $perm_content_edit = "all" ; }
+	elseif (verify_permission(zone_content_edit_own)) { $perm_content_edit = "own" ; }
+	else { $perm_content_edit = "none" ; }
+
+	$user_is_zone_owner = verify_user_is_owner_zoneid($zoneid);
+	$zone_type = get_domain_type($zoneid);
+
+        if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
+		error(ERR_PERM_ADD_RECORD);
+		return false;
+	} else {
+		if ($valid = validate_input($zoneid, $type, $content, $name, $prio, $ttl) ) {
+			$change = time();
+			$query = "INSERT INTO records VALUES ('',"
+						. $db->quote($zoneid) . ","
+						. $db->quote($name) . "," 
+						. $db->quote($type) . "," 
+						. $db->quote($content) . ","
+						. $db->quote($ttl) . ","
+						. $db->quote($prio) . ","
+						. $db->quote($change) . ")";
+			$response = $db->query($query);
+			if (PEAR::isError($response)) {
+				error($response->getMessage());
+				return false;
+			} else {
+				if ($type != 'SOA') { update_soa_serial($zoneid); }
+			}
+		} else {
+			return false;
 		}
-		return true;
 	}
-	else
-	{
-		error(sprintf(ERR_INV_ARG, "add_record"));
-	}
+	return true;
 }
 
 

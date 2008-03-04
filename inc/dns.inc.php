@@ -43,44 +43,33 @@ function validate_input($zoneid, $type, &$content, &$name, &$prio, &$ttl)
 	$ip4 = false;
 	$ip6 = false;
 
-	if(!in_array(strtoupper($type), $nocheck))
-	{
-
-		if(!is_valid_ip6($content))
-		{
-			if(!is_valid_ip($content))
-			{
-				if(!is_valid_hostname($content))
-				{
+	if(!in_array(strtoupper($type), $nocheck)) {
+		if(!is_valid_ip6($content)) {
+			if(!is_valid_ip($content)) {
+				if(!is_valid_hostname($content)) {
 					error(ERR_DNS_CONTENT);
-				}
-				else
-				{
+					return false;
+				} else {
 					$hostname = true;
 				}
-			}
-			else
-			{
+			} else {
 				$ip4 = true;
 			}
-		}
-		else
-		{
+		} else {
 			$ip6 = true;
 		}
 	}
 
 	// Prepare total hostname.
 
-	if($name == '*')
-	{
+	if ($name == '*') {
 		$wildcard = true;
 	}
 
 	if ($name=="0") {
-	   $name=$name.".".$domain;
+		$name=$name.".".$domain;
 	} else {
-	   $name = ($name) ? $name.".".$domain : $domain;
+		$name = ($name) ? $name.".".$domain : $domain;
 	}
 
 	if (preg_match('!@\.!i', $name))
@@ -88,82 +77,72 @@ function validate_input($zoneid, $type, &$content, &$name, &$prio, &$ttl)
 		$name = str_replace('@.', '@', $name);
 	}
 
-	if(!$wildcard)
-	{
-		if(!is_valid_hostname($name))
-		{
+	if(!$wildcard) {
+		if(!is_valid_hostname($name)) {
 			error(ERR_DNS_HOSTNAME);
+			return false;
 		}
 	}
 
 	// Check record type (if it exists in our allowed list.
-	if (!in_array(strtoupper($type), get_record_types()))
-	{
+	if (!in_array(strtoupper($type), get_record_types())) {
 		error(ERR_DNS_RECORDTYPE);
+		return false;
 	}
 
 	// Start handling the demands for the functions.
 	// Validation for IN A records. Can only have an IP. Nothing else.
-	if ($type == 'A' && !$ip4)
-	{
+	if ($type == 'A' && !$ip4) {
 		error(ERR_DNS_IPV4);
+		return false;
 	}
 
-	if ($type == 'AAAA' && !$ip6)
-	{
+	if ($type == 'AAAA' && !$ip6) {
 		error(ERR_DNS_IPV6);
+		return false;
 	}
 
-	if ($type == 'CNAME' && $hostname)
-	{
-		if(!is_valid_cname($name))
-		{
+	if ($type == 'CNAME' && $hostname) {
+		if(!is_valid_cname($name)) {
 			error(ERR_DNS_CNAME);
+			return false;
 		}
 	}
 
-	if ($type == 'NS')
-	{
+	if ($type == 'NS') {
 		$status = is_valid_ns($content, $hostname);
-		if($status == -1)
-		{
+		if($status == -1) {
 			error(ERR_DNS_NS_HNAME);
+			return false;
 		}
-		elseif($status == -2)
-		{
+		elseif($status == -2) {
 			error(ERR_DNS_NS_CNAME);
+			return false;
 		}
-		// Otherwise its ok
 	}
 
-	if ($type == 'SOA')
-	{
+	if ($type == 'SOA') {
 		$status = is_valid_soa($content, $zoneid);
-		if($status == -1)
-		{
+		if($status == -1) {
 			error(ERR_DNS_SOA_UNIQUE);
-			// Make nicer error
-		}
-		elseif($status == -2)
-		{
+		} elseif($status == -2) {
 			error(ERR_DNS_SOA_NUMERIC);
+			return false;
 		}
 	}
 
 	// HINFO and TXT require no validation.
 
-	if ($type == 'URL')
-	{
-		if(!is_valid_url($content))
-		{
+	if ($type == 'URL') {
+		if(!is_valid_url($content)) {
 			error(ERR_INV_URL);
+			return false;
 		}
 	}
-	if ($type == 'MBOXFW')
-	{
-		if(!is_valid_mboxfw($content))
-		{
+	if ($type == 'MBOXFW') 	{
+		if(!is_valid_mboxfw($content)) {
 			error(ERR_INV_EMAIL);
+			return false;
 		}
 	}
 
@@ -175,32 +154,26 @@ function validate_input($zoneid, $type, &$content, &$name, &$prio, &$ttl)
 
 	// See if the prio field is valid and if we have one.
 	// If we dont have one and the type is MX record, give it value '10'
-	if($type == 'NAPTR')
-	{
+	if($type == 'NAPTR') {
 
 	}
 	
-	if($type == 'MX')
-	{
-		if($hostname)
-		{
+	if($type == 'MX') {
+		if($hostname) {
 			$status = is_valid_mx($content, $prio);
-			if($status == -1)
-			{
+			if($status == -1) {
 				error(ERR_DNS_MX_CNAME);
+				return false;
 			}
-			elseif($status == -2)
-			{
+			elseif($status == -2) {
 				error(ERR_DNS_MX_PRIO);
+				return false;
 			}
+		} else {
+			error( _('If you specify an MX record it must be a hostname.') ); // TODO make error
+			return false;
 		}
-		else
-		{
-			error( _('If you specify an MX record it must be a hostname.') );
-		}
-	}
-	else
-	{
+	} else {
 		$prio=0;
 	}
 	// Validate the TTL, it has to be numeric.
