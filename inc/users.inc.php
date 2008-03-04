@@ -37,32 +37,32 @@ function verify_permission($permission) {
         $userid=$_SESSION["userid"];
 
         // Find the template ID that this user has been assigned.
-        $query = "SELECT `perm_templ`
+        $query = "SELECT perm_templ
 			FROM users 
-			WHERE `id` = " . $db->quote($userid) . ";";
+			WHERE id = " . $db->quote($userid) . ";";
         $templ_id = $db->queryOne($query);
 
         // Does this user have ueberuser rights?
-        $query = "SELECT `id` 
+        $query = "SELECT id 
 			FROM perm_templ_items 
-			WHERE `templ_id` = " . $db->quote($templ_id) . " 
-			AND `perm_id` = '30';";
+			WHERE templ_id = " . $db->quote($templ_id) . " 
+			AND perm_id = '30';";
         $result = $db->query($query);
         if ( $result->numRows() > 0 ) {
                 return 1;
         }
 
         // Find the permission ID for the requested permission.
-        $query = "SELECT `id` 
+        $query = "SELECT id 
 			FROM perm_items 
-			WHERE `name` = " . $db->quote($permission) . ";";
+			WHERE name = " . $db->quote($permission) . ";";
         $perm_id = $db->queryOne($query);
 
         // Check if the permission ID is assigned to the template ID. 
-        $query = "SELECT `id` 
+        $query = "SELECT id 
 			FROM perm_templ_items 
-			WHERE `templ_id` = " . $db->quote($templ_id) . " 
-			AND `perm_id` = " . $db->quote($perm_id) . ";";
+			WHERE templ_id = " . $db->quote($templ_id) . " 
+			AND perm_id = " . $db->quote($perm_id) . ";";
         $result = $db->query($query);
         if ( $result->numRows() > 0 ) {
                 return 1;
