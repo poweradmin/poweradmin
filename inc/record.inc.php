@@ -217,7 +217,7 @@ function add_record($zoneid, $name, $type, $content, $ttl, $prio) {
 		error(ERR_PERM_ADD_RECORD);
 		return false;
 	} else {
-		if ($valid = validate_input($zoneid, $type, $content, $name, $prio, $ttl) ) {
+		if (validate_input($zoneid, $type, $content, $name, $prio, $ttl) ) {
 			$change = time();
 			$query = "INSERT INTO records VALUES ('',"
 						. $db->quote($zoneid) . ","
@@ -232,13 +232,14 @@ function add_record($zoneid, $name, $type, $content, $ttl, $prio) {
 				error($response->getMessage());
 				return false;
 			} else {
-				if ($type != 'SOA') { update_soa_serial($zoneid); }
+				//if ($type != 'SOA') { update_soa_serial($zoneid); }
+				return true;
 			}
 		} else {
 			return false;
 		}
+		return true;
 	}
-	return true;
 }
 
 

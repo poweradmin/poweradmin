@@ -42,14 +42,22 @@ $user_is_zone_owner = verify_user_is_owner_zoneid($_GET["id"]);
 $zone_type = get_domain_type($_GET["id"]);
 $zone_name = get_domain_name_from_id($_GET["id"]);
 
+$zone_id = $_POST['domain'];
+$name = $_POST['name'];
+$type = $_POST['type'];
+$content = $_POST['content'];
+($_POST['ttl']) ? $ttl = $_POST['ttl'] : $ttl = $DEFAULT_TTL;
+$prio = $_POST['prio'];
+
 unset($error);
 
 if ($_POST["commit"]) {
 	if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
 		error(ERR_PERM_ADD_RECORD);
 	} else {
-		if ( add_record($_POST["domain"], $_POST["name"], $_POST["type"], $_POST["content"], $_POST["ttl"], $_POST["prio"]) ) {
+		if ( add_record($zone_id, $name, $type, $content, $ttl, $prio)) {
 			success(_('The record was succesfully added.'));
+			unset($zone_id, $name, $type, $content, $ttl, $prio);
 		} else {
 			$error = "1";
 		}
@@ -73,11 +81,7 @@ if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit
 	echo "        <td class=\"n\">" . _('TTL') . "</td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
-	if ($error) {
-		echo "        <td class=\"n\"><input type=\"text\" name=\"name\" class=\"input\" value=\"" . $_POST["name"] . "\">." . $zone_name . "</td>\n";
-	} else {
-		echo "        <td class=\"n\"><input type=\"text\" name=\"name\" class=\"input\">." . $zone_name . "</td>\n";
-	}
+	echo "        <td class=\"n\"><input type=\"text\" name=\"name\" class=\"input\" value=\"" . $name . "\">." . $zone_name . "</td>\n";
 	echo "        <td class=\"n\">IN</td>\n";
 	echo "        <td class=\"n\">\n";
 	echo "         <select name=\"type\">\n";
@@ -93,15 +97,9 @@ if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit
 	}
 	echo "         </select>\n";
 	echo "        </td>\n";
-	if ($error) {
-		echo "        <td class=\"n\"><input type=\"text\" name=\"prio\" class=\"sinput\" value=\"" . $_POST["prio"] . "\"></td>\n";
-		echo "        <td class=\"n\"><input type=\"text\" name=\"content\" class=\"input\" value=\"" . $_POST["content"] . "\"></td>\n";
-		echo "        <td class=\"n\"><input type=\"text\" name=\"ttl\" class=\"sinput\" value=\"" . $_POST["ttl"] . "\"</td>\n";
-	} else {
-		echo "        <td class=\"n\"><input type=\"text\" name=\"prio\" class=\"sinput\"></td>\n";
-		echo "        <td class=\"n\"><input type=\"text\" name=\"content\" class=\"input\"></td>\n";
-		echo "        <td class=\"n\"><input type=\"text\" name=\"ttl\" class=\"sinput\" value=\"" . $DEFAULT_TTL . "\"</td>\n";
-	}
+	echo "        <td class=\"n\"><input type=\"text\" name=\"prio\" class=\"sinput\" value=\"" . $prio . "\"></td>\n";
+	echo "        <td class=\"n\"><input type=\"text\" name=\"content\" class=\"input\" value=\"" . $content . "\"></td>\n";
+	echo "        <td class=\"n\"><input type=\"text\" name=\"ttl\" class=\"sinput\" value=\"" . $ttl . "\"</td>\n";
 	echo "       </tr>\n";
 	echo "      </table>\n";
 	echo "      <br>\n";

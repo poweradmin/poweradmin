@@ -76,7 +76,6 @@ function validate_input($zoneid, $type, &$content, &$name, &$prio, &$ttl)
 	{
 		$name = str_replace('@.', '@', $name);
 	}
-
 	if(!$wildcard) {
 		if(!is_valid_hostname($name)) {
 			error(ERR_DNS_HOSTNAME);
@@ -178,6 +177,8 @@ function validate_input($zoneid, $type, &$content, &$name, &$prio, &$ttl)
 	}
 	// Validate the TTL, it has to be numeric.
 	$ttl = (!isset($ttl) || !is_numeric($ttl)) ? $DEFAULT_TTL : $ttl;
+	
+	return true;
 }
 
 
