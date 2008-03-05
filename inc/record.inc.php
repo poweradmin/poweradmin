@@ -462,24 +462,23 @@ function delete_domain($id)
 {
 	global $db;
 
-	if (!level(5))
-	{
-		error(ERR_LEVEL_5);
-	}
+	if (verify_permission(zone_content_edit_others)) { $perm_edit = "all" ; }
+	elseif (verify_permission(zone_content_edit_own)) { $perm_edit = "own" ; }
+	else { $perm_edit = "none" ; }
+	$user_is_zone_owner = verify_user_is_owner_zoneid($id);
 
-	// See if the ID is numeric.
-	if (is_numeric($id))
-	{
-		$db->query("DELETE FROM zones WHERE domain_id=".$db->quote($id));
-		$db->query("DELETE FROM domains WHERE id=".$db->quote($id));
-		$db->query("DELETE FROM records WHERE domain_id=".$db->quote($id));
-		// Nothing in the database. If the delete deleted 0 records it means the id is just not there.
-		// therefore the is no need to check the affectedRows values.
-		return true;
-	}
-	else
-	{
-		error(sprintf(ERR_INV_ARGC, "delete_domain", "id must be a number"));
+        if ( $perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1") ) {    
+		if (is_numeric($id)) {
+			$db->query("DELETE FROM zones WHERE domain_id=".$db->quote($id));
+			$db->query("DELETE FROM domains WHERE id=".$db->quote($id));
+			$db->query("DELETE FROM records WHERE domain_id=".$db->quote($id));
+			return true;
+		} else {
+			error(sprintf(ERR_INV_ARGC, "delete_domain", "id must be a number"));
+			return false;
+		}
+	} else {
+		error(ERR_PERM_DEL_ZONE);
 	}
 }
 
@@ -807,6 +806,38 @@ function get_domain_name_from_id($id)
 		error(sprintf(ERR_INV_ARGC, "get_domain_name_from_id", "Not a valid domainid: $id"));
 	}
 }
+
+function get_zone_info_from_id($zone_id) {
+
+	if (verify_permission(zone_content_view_others)) { $perm_view = "all" ; } 
+	elseif (verify_permission(zone_content_view_own)) { $perm_view = "own" ; }
+	else { $perm_view = "none" ;}
+
+	if ($perm_view == "none") { 
+		error(ERR_PERM_VIEW_ZONE);
+	} else {
+		global $db;
+
+		$query = "SELECT 	domains.type AS type, 
+					domains.name AS name, 
+					domains.master AS master_ip,
+					count(records.domain_id) AS record_count
+					FROM domains, records 
+					WHERE domains.id = " . $db->quote($zone_id) . "
+					AND domains.id = records.domain_id 
+					GROUP BY domains.id";
+
+		$response = $db->queryRow($query);
+		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+		$return = array(
+			"name"		=>	$response['name'],
+			"type"		=>	$response['type'],
+			"master_ip"	=>	$response['master_ip'],
+			"record_count"	=>	$response['record_count']);
+		return $return;
+	}
+}
+
 
 
 /*

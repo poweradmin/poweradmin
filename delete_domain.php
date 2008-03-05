@@ -20,50 +20,48 @@
  */
 
 require_once("inc/toolkit.inc.php");
+include_once("inc/header.inc.php");
 
-if (!level(5))
-{
-        error(ERR_LEVEL_5);
-        
-}
+if (verify_permission(zone_content_edit_others)) { $perm_edit = "all" ; }
+elseif (verify_permission(zone_content_edit_own)) { $perm_edit = "own" ;}
+else { $perm_edit = "none" ; }
 
-if ($_GET["id"]) {
-        if ($_GET["confirm"] == '0') {
-                clean_page("index.php");
-        } elseif ($_GET["confirm"] == '1') {
-                delete_domain($_GET["id"]);
-                clean_page("index.php");
-        }
-        include_once("inc/header.inc.php");
-        $info = get_domain_info_from_id($_GET["id"]);
-        ?><h2><?php echo _('Delete zone'); ?> "<?php echo $info["name"] ?>"</h2>
-        <?php
-	if($info["owner"])
-	{
-		print (_('Owner') . ": " . $info["owner"] . "<br>"); 
+is_numeric($_GET['id']) ? $zone_id = $_GET['id'] : $zone_id = "-1";
+is_numeric($_GET['confirm']) ? $confirm = $_GET['confirm'] : $confirm = "-1";
+$zone_info = get_zone_info_from_id($zone_id);
+$zone_owners = get_fullnames_owners_from_domainid($zone_id);
+$user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
+
+echo "     <h2>" . _('Delete zone') . " \"" . $zone_info['name']. "\"</h2>\n";
+
+if ($confirm == '0') {
+	// TODO redirect not working?
+	clean_page("index.php");
+} elseif ($confirm == '1') {
+	if ( delete_domain($zone_id) ) {
+		success(SUC_ZONE_DEL);
 	}
-	print (_('Type') . ": " . strtolower($info["type"]) . "<br>");
-	print (_('Number of records in zone') . ": " . $info["numrec"] . "<br>");
-	if($info["type"] == "SLAVE")
-	{
-		$slave_master = get_domain_slave_master($_GET["id"]);
-		if(supermaster_exists($slave_master))
-		{
-			print ("<font class=\"warning\">");
-			printf(_('You are about to delete a slave zone of which the master nameserver, %s, is a supermaster. Deleting the zone now, will result in temporary removal only. Whenever the supermaster sends a notification for this zone, it will be added again!'), $slave_master);
-			print ("</font><br>");
-		}
-	}
-	?>
-	<font class="warning"><?php echo _('Are you sure?'); ?></font>
-	<br><br>
-	<input type="button" class="button" OnClick="location.href='<?php echo $_SERVER["REQUEST_URI"] ?>&confirm=1'" value="<?php echo _('Yes'); ?>">
-	<input type="button" class="button" OnClick="location.href='<?php echo $_SERVER["REQUEST_URI"] ?>&confirm=0'" value="<?php echo _('No'); ?>">
-	<?php
-} elseif ($_GET["edit"]) {
-        include_once("inc/header.inc.php");
 } else {
-        include_once("inc/header.inc.php");
-        echo _('Nothing to do!');
+	if ( $perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1") ) {	
+		echo "      " . _('Owner') . ": " . $zone_owners . "<br>\n";
+		echo "      " . _('Type') . ": " . $zone_info['type'] . "\n";
+		if ( $zone_info['type'] == "SLAVE" ) {
+			$slave_master = get_domain_slave_master($zone_id);
+			if(supermaster_exists($slave_master)) {
+				echo "        <p>         \n";
+				printf (_('You are about to delete a slave zone of which the master nameserver, %s, is a supermaster. Deleting the zone now, will result in temporary removal only. Whenever the supermaster sends a notification for this zone, it will be added again!'), $slave_master);
+				echo "        </p>\n";
+			}
+		}
+		echo "     <p>" . _('Are you sure?') . "</p>\n";
+		echo "     <br><br>\n";
+		echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='" . $_SERVER["REQUEST_URI"] . "&confirm=1'\" value=\"" . _('Yes') . "\">\n";
+		echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='" . $_SERVER["REQUEST_URI"] . "&confirm=0'\" value=\"" . _('No') . "\">\n";
+	} else {
+		error(ERR_PERM_DEL_ZONE);
+	}
 }
+
 include_once("inc/footer.inc.php");
+
+?>
