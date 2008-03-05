@@ -784,21 +784,19 @@ function get_domain_name_from_id($id)
 {
 	global $db;
 
-//	if (!xs($id))
-//	{
-//		error(ERR_RECORD_ACCESS_DENIED);
-//	}
 	if (is_numeric($id))
 	{
 		$result = $db->query("SELECT name FROM domains WHERE id=".$db->quote($id));
-		if ($result->numRows() == 1)
-		{
+		$rows = $result->numRows() ;
+		if ($rows == 1) {
  			$r = $result->fetchRow();
  			return $r["name"];
-		}
-		else
-		{
+		} elseif ($rows == "0") {
+			error(sprintf("Zone does not exist."));
+			return false;
+		} else {
 	 		error(sprintf(ERR_INV_ARGC, "get_domain_name_from_id", "more than one domain found?! whaaa! BAD! BAD! Contact admin!"));
+			return false;
 		}
 	}
 	else
