@@ -232,7 +232,7 @@ function add_record($zoneid, $name, $type, $content, $ttl, $prio) {
 				error($response->getMessage());
 				return false;
 			} else {
-				//if ($type != 'SOA') { update_soa_serial($zoneid); }
+				if ($type != 'SOA') { update_soa_serial($zoneid); }
 				return true;
 			}
 		} else {
