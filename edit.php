@@ -58,7 +58,7 @@ $record_count=count_zone_records($_GET['id']);
 echo "   <h2>" . _('Edit zone') . " \"" . get_domain_name_from_id($_GET["id"]) . "\"</h2>\n";
 
 if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" ) {
-	echo "<p>" . _("You do not have the permission to see this zone.") . "</p>\n"; // TODO i18n
+	error(ERR_PERM_VIEW_ZONE);
 } else {
 	echo "   <div id=\"meta\">\n";
 	echo "    <div id=\"meta-left\">\n";
