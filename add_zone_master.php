@@ -24,7 +24,7 @@ include_once("inc/header.inc.php");
 
 if(verify_permission(zone_master_add)) { $zone_master_add = "1" ; } ;
 
-if ($_POST["submit"]) {
+if ($_POST['submit'] && $zone_master_add == "1" ) {
 
 	// Boy. I will be happy when I have found the time to replace
 	// this "template wanabee" code with something that is really 
