@@ -79,5 +79,6 @@ define("ERR_DNS_SOA_HOSTNAME", _('The first part of your SOA record does not con
 define("SUC_ZONE_ADD", _('Zone has been added succesfully.')); // TODO i18n
 define("SUC_ZONE_DEL", _('Zone has been deleted succesfully.')); // TODO i18n
 define("SUC_RECORD_UPD", _('The record has been updated succesfully.')); // TODO i18n
+define("SUC_RECORD_DEL", _('The record has been deleted succesfully.')); // TODO i18n
 
 ?>
