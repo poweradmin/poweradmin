@@ -49,8 +49,6 @@ $content = $_POST['content'];
 ($_POST['ttl']) ? $ttl = $_POST['ttl'] : $ttl = $DEFAULT_TTL;
 $prio = $_POST['prio'];
 
-unset($error);
-
 if ($_POST["commit"]) {
 	if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
 		error(ERR_PERM_ADD_RECORD);
@@ -58,8 +56,6 @@ if ($_POST["commit"]) {
 		if ( add_record($zone_id, $name, $type, $content, $ttl, $prio)) {
 			success(_('The record was succesfully added.'));
 			unset($zone_id, $name, $type, $content, $ttl, $prio);
-		} else {
-			$error = "1";
 		}
 	}
 }
@@ -86,12 +82,20 @@ if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit
 	echo "        <td class=\"n\">\n";
 	echo "         <select name=\"type\">\n";
 	foreach (get_record_types() as $record_type) {
-		if (eregi('in-addr.arpa', $zone_name) && strtoupper($record_type) == 'PTR') {
-			$add = " SELECTED";
-		} elseif (strtoupper($record_type) == 'A') {
-			$add = " SELECTED";
+		if ($type) {
+			if ($type == $record_type) {
+				$add = " SELECTED";
+			} else {
+				unset ($add);
+			}
 		} else {
-			unset($add);
+			if (eregi('in-addr.arpa', $zone_name) && strtoupper($record_type) == 'PTR') {
+				$add = " SELECTED";
+			} elseif (strtoupper($record_type) == 'A') {
+				$add = " SELECTED";
+			} else {
+				unset($add);
+			}
 		}
 		echo "          <option" . $add . " value=\"" . $record_type . "\">" . $record_type . "</option>\n";
 	}
