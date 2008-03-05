@@ -30,6 +30,8 @@ define("ERR_LEVEL_10", _('You need user level 10 for this operation'));
 
 /* PERMISSIONS */
 define("ERR_PERM_ADD_RECORD", _("You do not have the permission to add a record to this zone.")); // TODO i18n
+define("ERR_PERM_EDIT_RECORD", _("You do not have the permission to edit this record.")); // TODO i18n
+define("ERR_PERM_VIEW_RECORD", _("You do not have the permission to view this record.")); // TODO i18n
 define("ERR_PERM_ADD_ZONE_MASTER", _("You do not have the permission to add a master zone.")); // TODO i18n
 define("ERR_PERM_DEL_ZONE", _("You do not have the permission to delete a zone.")); // TODO i18n
 define("ERR_PERM_VIEW_ZONE", _("You do not have the permission to view this zone.")); // TODO i18n
@@ -74,8 +76,8 @@ define("ERR_DNS_SOA_NUMERIC_FIELDS", _('You can only have 5 numeric fields'));
 define("ERR_DNS_SOA_HOSTNAME", _('The first part of your SOA record does not contain a valid hostname for a DNS Server'));
 
 /* GOOD! */
-define("SUC_ZONE_ADD", _('Zone has been added succesfully.'));
-define("SUC_ZONE_DEL", _('Zone has been deleted succesfully.'));
-
+define("SUC_ZONE_ADD", _('Zone has been added succesfully.')); // TODO i18n
+define("SUC_ZONE_DEL", _('Zone has been deleted succesfully.')); // TODO i18n
+define("SUC_RECORD_UPD", _('The record has been updated succesfully.')); // TODO i18n
 
 ?>

@@ -40,11 +40,11 @@ $zone_name = get_domain_name_from_id($_GET["domain"]);
 
 if ($_POST["commit"]) {
 	if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
-		echo "     <p>" . _("You do not have the permission to edit this record.") . "</p>\n"; // TODO i18n
+		error(ERR_PERM_EDIT_RECORD);
 	} else {
 		$ret_val = edit_record($_POST["recordid"], $_POST["domainid"], $_POST["name"], $_POST["type"], $_POST["content"], $_POST["ttl"], $_POST["prio"]);
 		if ( $ret_val == "1" ) {
-			echo "     <div class=\"success\">" .  _('This record was succesfully updated.') . "</div>\n";
+			success(SUC_RECORD_UPD);
 		} else {
 			echo "     <div class=\"error\">" . $ret_val . "</div>\n";  //TODO i18n
 		}
@@ -54,7 +54,7 @@ if ($_POST["commit"]) {
 echo "    <h2>" . _('Edit record in zone') . " " .  $zone_name . "</h2>\n";
 
 if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" ) {
-	echo "     <p>" . _("You do not have the permission to view this record.") . "</p>\n"; // TODO i18n
+	error(ERR_PERM_VIEW_RECORD);
 } else {
 	$record = get_record_from_id($_GET["id"]);
 	echo "     <form method=\"post\" action=\"edit_record.php?domain=" . $_GET["domain"] . "&id=" . $_GET["id"] . "\">\n";
