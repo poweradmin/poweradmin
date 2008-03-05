@@ -20,126 +20,123 @@
  */
 
 require_once("inc/toolkit.inc.php");
+include_once("inc/header.inc.php");
 
-if (!level(5))
-{
-        error(ERR_LEVEL_5);
+if(verify_permission(zone_master_add)) { $zone_master_add = "1" ; } ;
 
-}
+if ($_POST["submit"]) {
 
-if ($_POST["submit"])
-{
+	// Boy. I will be happy when I have found the time to replace
+	// this "template wanabee" code with something that is really 
+	// worth to be called "templating". Whoever wrote this should 
+	// be... should be... how can I say this politicaly correct?
+	// 20080303/RZ
+
         $domain = trim($_POST["domain"]);
         $owner = $_POST["owner"];
         $webip = $_POST["webip"];
         $mailip = $_POST["mailip"];
         $empty = $_POST["empty"];
+
         $dom_type = isset($_POST["dom_type"]) ? $_POST["dom_type"] : "NATIVE";
-        if(!$empty)
-        {
+
+        if(!$empty) {
                 $empty = 0;
-                if(!eregi('in-addr.arpa', $domain) && (!is_valid_ip($webip) || !is_valid_ip($mailip)) )
-                {
-                        $error = "Web or Mail ip is invalid!";
+                if(!eregi('in-addr.arpa', $domain) && (!is_valid_ip($webip) || !is_valid_ip($mailip)) ) {
+                        error(_('Web or mail ip is invalid!')); // TODO i18n
+			$error = "1";
                 }
         }
-        if (!$error)
-        {
-                if (!is_valid_domain($domain))
-                {
-                        $error = "Zone name is invalid!";
-                }
-                elseif (domain_exists($domain))
-                {
-                        $error = "Zone already exists!";
-                }
-                //elseif (isset($mailip) && is_valid_ip(
-                else
-                {
-                        add_domain($domain, $owner, $webip, $mailip, $empty, $dom_type, '');
-			$success = _('Successfully added master zone.');
+
+        if (!$error) {
+                if (!is_valid_domain($domain)) {
+                        error(_('Zone name is invalid!')); // TODO i18n
+			$error = "1";
+                } elseif (domain_exists($domain)) {
+                        error(_('Zone already exists!!')); // TODO i18n
+			$error = "1";
+                } else {
+                        if (add_domain($domain, $owner, $webip, $mailip, $empty, $dom_type, '')) {
+				success(_('Successfully added master zone.')); // TODO i18n ?
+			} else {
+				$error = "1";
+			}
                 }
         }
 }
 
-include_once("inc/header.inc.php");
+echo "     <h2>" . _('Add master zone') . "</h2>\n"; // TODO i18n
 
-	if ($error != "")
-	{
-	        ?><div class="error"><?php echo _('Error'); ?>: <?php echo $error; ?></div><?php
+if ( $zone_master_add != "1" ) {
+	echo "     <p>" . _("You do not have the permission to add a new master zone.") . "</p>\n"; // TODO i18n
+} else {
+	$available_zone_types = array("MASTER", "NATIVE");
+	$users = show_users();
+
+	echo "     <form method=\"post\" action=\"add_zone_master.php\">\n";
+	echo "      <table>\n";
+	echo "       <tr>\n";
+	echo "        <td class=\"n\">" . _('Zone name') . ":</td>\n";
+	echo "        <td class=\"n\">\n";
+	if ($error) {
+		echo "         <input type=\"text\" class=\"input\" name=\"domain\" value=\"" .  $_POST['domain'] . "\">\n";
+	} else {
+		echo "         <input type=\"text\" class=\"input\" name=\"domain\">\n";
 	}
-	elseif ($success != "")
-	{
-		?><div class="success"><?php echo $success; ?></div><?php
+	echo "        </td>\n";
+	echo "       </tr>\n";
+	echo "       <tr>\n";
+	echo "        <td class=\"n\">" . _('Web IP') . ":</td>\n";
+	echo "        <td class=\"n\">\n";
+	if ($error) {
+		echo "         <input type=\"text\" class=\"input\" name=\"webip\" value=\"" . $_POST['webip'] . "\">\n";
+	} else {
+		echo "         <input type=\"text\" class=\"input\" name=\"webip\">\n";
 	}
-
-	?>
-	<h2>Add master zone</h2>
-	<?php
-
-	// Zone type set to master and native only, slave zones are created
-	// on a different page. 
-        $zone_types = array("MASTER", "NATIVE");
-        $users = show_users();
-        ?>
-        <form method="post" action="add_zone_master.php">
-         <table>
-          <tr>
-           <td class="n"><?php echo _('Zone name'); ?>:</td>
-           <td class="n">
-            <input type="text" class="input" name="domain" value="<?php if ($error) print $_POST["domain"]; ?>">
-           </td>
-          </tr>
-          <tr>
-           <td class="n"><?php echo _('Web IP'); ?>:</td>
-           <td class="n">
-            <input type="text" class="input" name="webip" value="<?php if ($error) print $_POST["webip"]; ?>">
-           </td>
-          </tr>
-          <tr>
-           <td class="n"><?php echo _('Mail IP'); ?>:</TD>
-           <td class="n">
-            <input type="text" class="input" name="mailip" value="<?php if ($error) print $_POST["mailip"]; ?>">
-           </td>
-          </tr>
-          <tr>
-           <td class="n"><?php echo _('Owner'); ?>:</td>
-           <td class="n">
-            <select name="owner">
-        <?php
-        foreach ($users as $u)
-        {
-           ?><option value="<?php echo $u['id'] ?>"><?php echo $u['fullname'] ?></option><?php
+	echo "        </td>\n";
+	echo "       </tr>\n";
+	echo "       <tr>\n";
+	echo "        <td class=\"n\">" . _('Mail IP') . ":</td>\n";
+	echo "        <td class=\"n\">\n";
+	if ($error) {
+		echo "         <input type=\"text\" class=\"input\" name=\"mailip\" value=\"" . $_POST['mailip'] . "\">\n";
+	} else {
+		echo "         <input type=\"text\" class=\"input\" name=\"mailip\">\n";
+	}
+	echo "        </td>\n";
+	echo "       </tr>\n";
+	echo "       <tr>\n";
+	echo "        <td class=\"n\">" . _('Owner') . ":</td>\n";
+	echo "        <td class=\"n\">\n";
+	echo "         <select name=\"owner\">\n";
+        foreach ($users as $user) {
+		echo "          <option value=\"" . $user['id'] . "\">" . $user['fullname'] . "</option>\n";
         }
-        ?>
-            </select>
-           </td>
-          </tr>
-          <tr>
-           <td class="n"><?php echo _('Zone type'); ?>:</td>
-           <td class="n">
-            <select name="dom_type">
-        <?php
-        foreach($zone_types as $s)
-        {
-           ?><option value="<?php echo $s?>"><?php echo $s ?></option><?php
+	echo "         </select>\n";
+	echo "        </td>\n";
+	echo "       </tr>\n";
+	echo "       <tr>\n";
+	echo "        <td class=\"n\">" . _('Zone type') . ":</td>\n";
+	echo "        <td class=\"n\">\n";
+	echo "         <select name=\"dom_type\">\n";
+        foreach($available_zone_types as $type) {
+		echo "          <option value=\"" . $type . "\">" . strtolower($type) . "</option>\n";
         }
-        ?>
-            </select>
-           </td>
-          </tr>
-          <tr>
-           <td class="n"><?php echo _('Create zone without applying records-template'); ?>:</td>
-	   <td class="n"><input type="checkbox" name="empty" value="1"></td>
-	  </tr>
-          <tr>
-	   <td class="n">&nbsp;</td>
-	   <td class="n">
-	    <input type="submit" class="button" name="submit" value="<?php echo _('Add zone'); ?>">
-	   </td>
-	  </tr>
-         </table>
-        </form>
-<?php
+	echo "         </select>\n";
+	echo "        </td>\n";
+	echo "       </tr>\n";
+	echo "       <tr>\n";
+	echo "        <td class=\"n\">" . _('Create zone without applying records-template') . "</td>\n";
+	echo "        <td class=\"n\"><input type=\"checkbox\" name=\"empty\" value=\"1\"></td>\n";
+	echo "       </tr>\n";
+	echo "       <tr>\n";
+	echo "        <td class=\"n\">&nbsp;</td>\n";
+	echo "        <td class=\"n\">\n";
+	echo "         <input type=\"submit\" class=\"button\" name=\"submit\" value=\"" . _('Add zone') . "\">\n";
+	echo "        </td>\n";
+	echo "       </tr>\n";
+	echo "      </table>\n";
+	echo "     </form>\n";
+} 
 
 include_once("inc/footer.inc.php");

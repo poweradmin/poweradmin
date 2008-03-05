@@ -355,6 +355,11 @@ function delete_record($id)
 }
 
 
+
+
+// RZ TODO HIER
+
+
 /*
  * Add a domain to the database.
  * A domain is name obligatory, so is an owner.
@@ -369,103 +374,83 @@ function delete_record($id)
 function add_domain($domain, $owner, $webip, $mailip, $empty, $type, $slave_master)
 {
 
-	global $db;
+	if(verify_permission(zone_master_add)) {
 
-	if (!level(5))
-	{
-		error(ERR_LEVEL_5);
-	}
+		global $db;
 
-	// If domain, owner and mailip are given
-	// OR
-	// empty is given and owner and domain
-	// OR
-	// the domain is an arpa record and owner is given
-	// OR
-	// the type is slave, domain, owner and slave_master are given
-	// THAN
-	// Continue this function
-	if (($domain && $owner && $webip && $mailip) || ($empty && $owner && $domain) || (eregi('in-addr.arpa', $domain) && $owner) || $type=="SLAVE" && $domain && $owner && $slave_master)
-	{
-                // First insert zone into domain table
-                $db->query("INSERT INTO domains (name, type) VALUES (".$db->quote($domain).", ".$db->quote($type).")");
+		if (($domain && $owner && $webip && $mailip) || 
+				($empty && $owner && $domain) || 
+				(eregi('in-addr.arpa', $domain) && $owner) || 
+				$type=="SLAVE" && $domain && $owner && $slave_master) {
 
-                // Determine id of insert zone (in other words, find domain_id)
-                $iddomain = $db->lastInsertId('domains', 'id');
-                if (PEAR::isError($iddomain)) {
-                        die($id->getMessage());
-                }
+			$response = $db->query("INSERT INTO domains (name, type) VALUES (".$db->quote($domain).", ".$db->quote($type).")");
+			if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
-                // Second, insert into zones tables
-                $db->query("INSERT INTO zones (domain_id, owner) VALUES (".$db->quote($iddomain).", ".$db->quote($owner).")");
+			$domain_id = $db->lastInsertId('domains', 'id');
+			if (PEAR::isError($domain_id)) { error($id->getMessage()); return false; }
 
-		if ($type == "SLAVE")
-		{
-			$db->query("UPDATE domains SET master = ".$db->quote($slave_master)." WHERE id = ".$db->quote($iddomain));
-			
-			// Done
-			return true;
-		}
-		else
-		{
-			// Generate new timestamp. We need this one anyhow.
-			$now = time();
+			$response = $db->query("INSERT INTO zones (domain_id, owner) VALUES (".$db->quote($domain_id).", ".$db->quote($owner).")");
+			if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
-			if ($empty && $iddomain)
-			{
-				// If we come into this if statement we dont want to apply templates.
-				// Retrieve configuration settings.
-				$ns1 = $GLOBALS["NS1"];
-				$hm  = $GLOBALS["HOSTMASTER"];
-				$ttl = $GLOBALS["DEFAULT_TTL"];
+			if ($type == "SLAVE") {
+				$response = $db->query("UPDATE domains SET master = ".$db->quote($slave_master)." WHERE id = ".$db->quote($domain_id));
+				if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+			} else {
+				$now = time();
+				if ($empty && $domain_id) {
+					$ns1 = $GLOBALS['NS1'];
+					$hm  = $GLOBALS['HOSTMASTER'];
+					$ttl = $GLOBALS['DEFAULT_TTL'];
 
-				// Build and execute query
-				$sql = "INSERT INTO records (domain_id, name, content, type, ttl, prio, change_date) VALUES (".$db->quote($iddomain).", ".$db->quote($domain).", ".$db->quote($ns1.' '.$hm.' 1').", 'SOA', ".$db->quote($ttl).", 0, ".$db->quote($now).")";
-				$db->query($sql);
+					$query = "INSERT INTO records VALUES (''," 
+							. $db->quote($domain_id) . "," 
+							. $db->quote($domain) . "," 
+							. $db->quote($ns1.' '.$hm.' 1') 
+							. ",'SOA',"
+							. $db->quote($ttl) 
+							. ", 0, "
+							. $db->quote($now).")";
+					$response = $db->query($query);
+					if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+				} elseif ($domain_id) {
+					global $template;
 
-				// Done
-				return true;
-			}
-			elseif ($iddomain)
-			{
-				// If we are here we want to apply templates.
-				global $template;
-
-				// Iterate over the template and apply it for each field.
-				foreach ($template as $r)
-				{
-					// Same type of if statement as previous.
-					if ((eregi('in-addr.arpa', $domain) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!eregi('in-addr.arpa', $domain)))
-					{
-						// Parse the template.
-						$name     = parse_template_value($r["name"], $domain, $webip, $mailip);
-						$type     = $r["type"];
-						$content  = parse_template_value($r["content"], $domain, $webip, $mailip);
-						$ttl      = $r["ttl"];
-						$prio     = intval($r["prio"]);
-
-						// If no ttl is given, use the default.
-						if (!$ttl)
+					foreach ($template as $r) {
+						if ((eregi('in-addr.arpa', $domain) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!eregi('in-addr.arpa', $domain)))
 						{
-							$ttl = $GLOBALS["DEFAULT_TTL"];
-						}
+							$name     = parse_template_value($r["name"], $domain, $webip, $mailip);
+							$type     = $r["type"];
+							$content  = parse_template_value($r["content"], $domain, $webip, $mailip);
+							$ttl      = $r["ttl"];
+							$prio     = intval($r["prio"]);
 
-						$sql = "INSERT INTO records (domain_id, name, content, type, ttl, prio, change_date) VALUES (".$db->quote($iddomain).", ".$db->quote($name).", ".$db->quote($content).", ".$db->quote($type).", ".$db->quote($ttl).", ".$db->quote($prio).", ".$db->quote($now).")";
-						$db->query($sql);
+							if (!$ttl) {
+								$ttl = $GLOBALS["DEFAULT_TTL"];
+							}
+
+							$query = "INSERT INTO records VALUES (''," 
+									. $db->quote($domain_id) . ","
+									. $db->quote($name) . ","
+									. $db->quote($content) . ","
+									. $db->quote($type) . ","
+									. $db->quote($ttl) . ","
+									. $db->quote($prio) . ","
+									. $db->quote($now) . ")";
+							$response = $db->query($query);
+							if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+						}
 					}
-				}
-				// All done.
-				return true;
-			 }
-			 else
-			 {
-				error(sprintf(ERR_INV_ARGC, "add_domain", "could not create zone"));
-			 }
+					return true;
+				 } else {
+					error(sprintf(ERR_INV_ARGC, "add_domain", "could not create zone"));
+				 }
+			}
+		} else {
+			error(sprintf(ERR_INV_ARG, "add_domain"));
 		}
-	}
-	else
-	{
-		error(sprintf(ERR_INV_ARG, "add_domain"));
+	} else {
+		error(ERR_PERM_ADD_ZONE_MASTER);
+		return false;
 	}
 }
 
@@ -916,24 +901,14 @@ function domain_exists($domain)
 {
 	global $db;
 
-	if (!level(5))
-	{
-		error(ERR_LEVEL_5);
-	}
-	if (is_valid_domain($domain))
-	{
+	if (is_valid_domain($domain)) {
 		$result = $db->query("SELECT id FROM domains WHERE name=".$db->quote($domain));
-		if ($result->numRows() == 0)
-		{
+		if ($result->numRows() == 0) {
 			return false;
-		}
-		elseif ($result->numRows() >= 1)
-		{
+		} elseif ($result->numRows() >= 1) {
 			return true;
 		}
-	}
-	else
-	{
+	} else {
 		error(ERR_DOMAIN_INVALID);
 	}
 }
