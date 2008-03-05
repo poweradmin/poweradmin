@@ -58,6 +58,7 @@ if ($_POST["submit"]) {
                 } else {
                         if (add_domain($domain, $owner, $webip, $mailip, $empty, $dom_type, '')) {
 				success(_('Successfully added master zone.')); // TODO i18n ?
+				unset($domain, $owner, $webip, $mailip, $empty, $dom_type);
 			} else {
 				$error = "1";
 			}
@@ -78,31 +79,19 @@ if ( $zone_master_add != "1" ) {
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">" . _('Zone name') . ":</td>\n";
 	echo "        <td class=\"n\">\n";
-	if ($error) {
-		echo "         <input type=\"text\" class=\"input\" name=\"domain\" value=\"" .  $_POST['domain'] . "\">\n";
-	} else {
-		echo "         <input type=\"text\" class=\"input\" name=\"domain\">\n";
-	}
+	echo "         <input type=\"text\" class=\"input\" name=\"domain\" value=\"" .  $domain . "\">\n";
 	echo "        </td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">" . _('Web IP') . ":</td>\n";
 	echo "        <td class=\"n\">\n";
-	if ($error) {
-		echo "         <input type=\"text\" class=\"input\" name=\"webip\" value=\"" . $_POST['webip'] . "\">\n";
-	} else {
-		echo "         <input type=\"text\" class=\"input\" name=\"webip\">\n";
-	}
+	echo "         <input type=\"text\" class=\"input\" name=\"webip\" value=\"" . $webip . "\">\n";
 	echo "        </td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">" . _('Mail IP') . ":</td>\n";
 	echo "        <td class=\"n\">\n";
-	if ($error) {
-		echo "         <input type=\"text\" class=\"input\" name=\"mailip\" value=\"" . $_POST['mailip'] . "\">\n";
-	} else {
-		echo "         <input type=\"text\" class=\"input\" name=\"mailip\">\n";
-	}
+	echo "         <input type=\"text\" class=\"input\" name=\"mailip\" value=\"" . $mailip . "\">\n";
 	echo "        </td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
