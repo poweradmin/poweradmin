@@ -57,7 +57,7 @@ if ($_POST["submit"]) {
 			$error = "1";
                 } else {
                         if (add_domain($domain, $owner, $webip, $mailip, $empty, $dom_type, '')) {
-				success(_('Successfully added master zone.')); // TODO i18n ?
+				success(SUC_ZONE_ADD);
 				unset($domain, $owner, $webip, $mailip, $empty, $dom_type);
 			} else {
 				$error = "1";
