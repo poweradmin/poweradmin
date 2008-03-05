@@ -356,11 +356,6 @@ function delete_record($id)
 }
 
 
-
-
-// RZ TODO HIER
-
-
 /*
  * Add a domain to the database.
  * A domain is name obligatory, so is an owner.
@@ -374,11 +369,13 @@ function delete_record($id)
  */
 function add_domain($domain, $owner, $webip, $mailip, $empty, $type, $slave_master)
 {
+	if(verify_permission(zone_master_add)) { $zone_master_add = "1" ; } ;
+	if(verify_permission(zone_slave_add)) { $zone_slave_add = "1" ; } ;
 
-	if(verify_permission(zone_master_add)) {
+	// TODO: make sure only one is possible if only one is enabled
+	if($zone_master_add == "1" || $zone_master_add == "1") {
 
 		global $db;
-
 		if (($domain && $owner && $webip && $mailip) || 
 				($empty && $owner && $domain) || 
 				(eregi('in-addr.arpa', $domain) && $owner) || 
@@ -396,6 +393,7 @@ function add_domain($domain, $owner, $webip, $mailip, $empty, $type, $slave_mast
 			if ($type == "SLAVE") {
 				$response = $db->query("UPDATE domains SET master = ".$db->quote($slave_master)." WHERE id = ".$db->quote($domain_id));
 				if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+				return true;
 			} else {
 				$now = time();
 				if ($empty && $domain_id) {

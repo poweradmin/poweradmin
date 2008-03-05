@@ -40,6 +40,7 @@ define("ERR_RECORD_DELETE_TYPE_DENIED", _('You are not allowed to delete %s reco
 /* DOMAIN STUFF */
 define("ERR_DOMAIN_INVALID", _('This is an invalid zone name'));
 define("ERR_SM_EXISTS", _('There is already a supermaster with this IP address.')); // TODO i18n
+define("ERR_DOMAIN_EXISTS", _('There is already a zone with this name.')); // TODO i18n
 
 /* USER STUFF */
 define("ERR_USER_EXIST", _('Username exist already, please choose another one'));
@@ -69,4 +70,9 @@ define("ERR_DNS_MX_PRIO", _('A prio field should be numeric.'));
 define("ERR_DNS_SOA_NUMERIC", _('One of your SOA data fields is not numeric!'));
 define("ERR_DNS_SOA_NUMERIC_FIELDS", _('You can only have 5 numeric fields'));
 define("ERR_DNS_SOA_HOSTNAME", _('The first part of your SOA record does not contain a valid hostname for a DNS Server'));
+
+/* GOOD! */
+define("SUC_ZONE_ADD", _('Zone has been added succesfully.'));
+
+
 ?>
