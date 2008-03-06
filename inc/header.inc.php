@@ -20,57 +20,57 @@
  */
 
 global $STYLE;
-?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<html>
- <head>
-  <title><?php echo _('Poweradmin'); ?></title>
-  <link rel=stylesheet href="style/<?php echo $STYLE; ?>.inc.php" type="text/css">
- </head>
- <body>
-<?php
-if(file_exists('inc/custom_header.inc.php')) 
-{
+
+echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n";
+echo "<html>\n";
+echo " <head>\n";
+echo "  <title>PowerAdmin')</title>\n";
+echo "  <link rel=stylesheet href=\"style/" . $STYLE . ".inc.php\" type=\"text/css\">\n";
+echo " </head>\n";
+echo " <body>\n";
+
+if(file_exists('inc/custom_header.inc.php')) {
 	include('inc/custom_header.inc.php');
 }
-?>
-  <h1><?php echo _('Poweradmin'); ?></h1> 
-<?php
-if (isset($_SESSION["userid"]))
-{
-?>
-  
-	  <div class="menu">
-	   <span class="menuitem"><a href="index.php"><?php echo _('Index'); ?></a></span>
-	   <span class="menuitem"><a href="search.php"><?php echo _('Search zones or records'); ?></a></span>
-	   <span class="menuitem"><a href="list_zones.php"><?php echo _('List all zones'); ?></a></span>
-	<?php
-	if (level(5))
-	{
-	?>
-	   <span class="menuitem"><a href="list_supermasters.php"><?php echo _('List all supermasters'); ?></a></span>
-	   <span class="menuitem"><a href="add_zone_master.php"><?php echo _('Add master zone'); ?></a></span>
-	   <span class="menuitem"><a href="add_zone_slave.php"><?php echo _('Add slave zone'); ?></a></span>
-	   <span class="menuitem"><a href="add_supermaster.php"><?php echo _('Add supermaster'); ?></a></span>
-	<?php
-	}
-	?>
-	   <span class="menuitem"><a href="change_password.php"><?php echo _('Change password'); ?></a></span>
-	<?php
-	if (level(10))
-	{
-	?>
-	   <span class="menuitem"><a href="users.php"><?php echo _('User administration'); ?></a></span>
-	<?php
-	}
-	?>
-	   <span class="menuitem"><a href="index.php?logout"><?php echo _('Logout'); ?></a></span>
 
-	  </div> <!-- /menu -->
-<?php
+echo "  <h1>PowerAdmin</h1>\n";
+
+if (isset($_SESSION["userid"])) {
+
+	verify_permission(search) ? $perm_search = "1" : $perm_search = "0" ;
+	verify_permission(zone_content_view_own) ? $perm_view_zone_own = "1" : $perm_view_zone_own = "0" ;
+	verify_permission(zone_content_view_other) ? $perm_view_zone_other = "1" : $perm_view_zone_other = "0" ;
+	verify_permission(supermaster_view) ? $perm_supermaster_view = "1" : $perm_supermaster_view = "0" ;
+	verify_permission(zone_master_add) ? $perm_zone_master_add = "1" : $perm_zone_master_add = "0" ;
+	verify_permission(zone_slave_add) ? $perm_zone_slave_add = "1" : $perm_zone_slave_add = "0" ;
+	verify_permission(supermaster_add) ? $perm_supermaster_add = "1" : $perm_supermaster_add = "0" ;
+
+	echo "    <div class=\"menu\">\n";
+	echo "    <span class=\"menuitem\"><a href=\"index.php\">" . _('Index') . "</a></span>\n";
+	if ( $perm_search == "1" ) { 
+		echo "    <span class=\"menuitem\"><a href=\"search.php\">" . _('Search zones or records') . "</a></span>\n"; 
+	}
+	if ( $perm_view_zone_own == "1" || $perm_view_zone_other == "1" ) { 
+		echo "    <span class=\"menuitem\"><a href=\"list_zones.php\">" . _('List all zones') . "</a></span>\n"; 
+	}
+	if ( $perm_supermaster_view ) { 
+		echo "    <span class=\"menuitem\"><a href=\"list_supermasters.php\">" . _('List all supermasters') . "</a></span>\n"; 
+	}
+	if (  $perm_zone_master_add ) { 
+		echo "    <span class=\"menuitem\"><a href=\"add_zone_master.php\">" . _('Add master zone') . "</a></span>\n"; 
+	}
+	if ( $perm_zone_slave_add ) { 
+		echo "    <span class=\"menuitem\"><a href=\"add_zone_slave.php\">" . _('Add slave zone') . "</a></span>\n"; 
+	}
+	if ( $supermaster_add ) { 
+		echo "    <span class=\"menuitem\"><a href=\"add_supermaster.php\">" . _('Add supermaster') . "</a></span>\n"; 
+	}
+	echo "    <span class=\"menuitem\"><a href=\"change_password.php\">" . _('Change password') . "</a></span>\n";
+	echo "    <span class=\"menuitem\"><a href=\"users.php\">" . _('User administration') . "</a></span>\n";
+	echo "    <span class=\"menuitem\"><a href=\"index.php?logout\">" . _('Logout') . "</a></span>\n";
+	echo "    </div> <!-- /menu -->\n";
 }
-?>
-  <div class="content">
+echo "    <div class=\"content\">\n";
 
   
 

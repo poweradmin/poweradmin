@@ -34,7 +34,7 @@ function verify_permission($permission) {
         global $db;
 
         // Set current user ID.
-        $userid=$_SESSION["userid"];
+        $userid=$_SESSION['userid'];
 
         // Find the template ID that this user has been assigned.
         $query = "SELECT perm_templ
