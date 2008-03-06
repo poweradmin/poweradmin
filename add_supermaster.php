@@ -22,14 +22,14 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
+$master_ip = mysql_real_escape_string($_POST["master_ip"]);
+$ns_name = mysql_real_escape_string($_POST["ns_name"]);
+$account = mysql_real_escape_string($_POST["account"]);
+
 if (verify_permission(supermaster_add)) { $supermasters_add = "1" ; }
 
 if($_POST["submit"])
 {
-	$master_ip = $_POST["master_ip"];
-	$ns_name = $_POST["ns_name"];
-	$account = $_POST["account"];
-
 	if (add_supermaster($master_ip, $ns_name, $account)) {
 		echo "     <div class=\"success\">" .  _('Successfully added supermaster.') . "</div>\n";
 	} else {
@@ -48,7 +48,7 @@ if ( $supermasters_add != "1" ) {
 	echo "        <td class=\"n\">" . _('IP address of supermaster') . "</td>\n";
 	echo "        <td class=\"n\">\n";
 	if ($error) {
-		echo "         <input type=\"text\" class=\"input\" name=\"master_ip\" value=\"" . $_POST["master_ip"] . "\">\n";
+		echo "         <input type=\"text\" class=\"input\" name=\"master_ip\" value=\"" . $master_ip . "\">\n";
 	} else {
 		echo "         <input type=\"text\" class=\"input\" name=\"master_ip\" value=\"\">\n";
 	}
@@ -58,7 +58,7 @@ if ( $supermasters_add != "1" ) {
 	echo "        <td class=\"n\">" . _('Hostname in NS record') . "</td>\n";
 	echo "        <td class=\"n\">\n";
 	if ($error) {
-		echo "         <input type=\"text\" class=\"input\" name=\"ns_name\" value=\"" . $_POST["ns_name"] . "\">\n";
+		echo "         <input type=\"text\" class=\"input\" name=\"ns_name\" value=\"" . $ns_name . "\">\n";
 	} else {
 		echo "         <input type=\"text\" class=\"input\" name=\"ns_name\" value=\"\">\n";
 	}
@@ -68,7 +68,7 @@ if ( $supermasters_add != "1" ) {
 	echo "        <td class=\"n\">" . _('Account') . "</td>\n";
 	echo "        <td class=\"n\">\n";
 	if ($error) {
-		echo "         <input type=\"text\" class=\"input\" name=\"account\" value=\"" . $_POST["account"] . "\">\n";
+		echo "         <input type=\"text\" class=\"input\" name=\"account\" value=\"" . $account . "\">\n";
 	} else {
 		echo "         <input type=\"text\" class=\"input\" name=\"account\" value=\"\">\n";
 	}

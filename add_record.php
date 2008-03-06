@@ -30,24 +30,26 @@ if (verify_permission(zone_content_edit_others)) { $perm_content_edit = "all" ; 
 elseif (verify_permission(zone_content_edit_own)) { $perm_content_edit = "own" ; }
 else { $perm_content_edit = "none" ; }
 
-if (verify_permission(zone_content_edit_others)) { $perm_content_edit = "all" ; }
-elseif (verify_permission(zone_content_edit_own)) { $perm_content_edit = "own" ; }
-else { $perm_content_edit = "none" ; }
-
 if (verify_permission(zone_meta_edit_others)) { $perm_meta_edit = "all" ; }
 elseif (verify_permission(zone_meta_edit_own)) { $perm_meta_edit = "own" ; }
 else { $perm_meta_edit = "none" ; }
 
-$user_is_zone_owner = verify_user_is_owner_zoneid($_GET["id"]);
-$zone_type = get_domain_type($_GET["id"]);
-$zone_name = get_domain_name_from_id($_GET["id"]);
+v_num($_GET['id']) ? $zone_id = $_GET['id'] : $zone_id = "-1";
+v_num($_POST['ttl']) ? $ttl = $_POST['ttl'] : $ttl = $DEFAULT_TTL;
+v_num($_POST['prio']) ? $prio = $_POST['prio'] : $prio = "10";
+$name = mysql_real_escape_string($_POST['name']);
+$type = mysql_real_escape_string($_POST['type']);
+$content = mysql_real_escape_string($_POST['content']);
 
-$zone_id = $_POST['domain'];
-$name = $_POST['name'];
-$type = $_POST['type'];
-$content = $_POST['content'];
-($_POST['ttl']) ? $ttl = $_POST['ttl'] : $ttl = $DEFAULT_TTL;
-$prio = $_POST['prio'];
+if ($zone_id == "-1") {
+	error(ERR_INV_INPUT);
+	include_once("inc/footer.inc.php");
+	exit;
+}
+
+$user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
+$zone_type = get_domain_type($zone_id);
+$zone_name = get_domain_name_from_id($zone_id);
 
 if ($_POST["commit"]) {
 	if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
@@ -66,7 +68,7 @@ if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit
 	error(ERR_PERM_ADD_RECORD); 
 } else {
 	echo "     <form method=\"post\">\n";
-	echo "      <input type=\"hidden\" name=\"domain\" value=\"" . $_GET["id"] . "\">\n";
+	echo "      <input type=\"hidden\" name=\"domain\" value=\"" . $zone_id . "\">\n";
 	echo "      <table border=\"0\" cellspacing=\"4\">\n";
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">" . _('Name') . "</td>\n";

@@ -340,4 +340,15 @@ function is_valid_email($email)
 	}
 	return true;
 }
+
+
+function v_num($string) {
+	if (!eregi("^[0-9]+$", $string)) { 
+		return false ;
+	} else {
+		return true ;
+	}
+}
+
+
 ?>

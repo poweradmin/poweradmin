@@ -24,9 +24,9 @@ include_once("inc/header.inc.php");
 
 if(verify_permission(zone_slave_add)) { $zone_slave_add = "1" ; } ;
 
-$zone = trim($_POST['domain']);
-$owner = $_POST['owner'];
-$master = $_POST['slave_master'];
+v_num($_POST['owner']) ? $owner = $_POST['owner'] : $owner = "-1" ;
+$zone = mysql_real_escape_string(trim($_POST['domain']));
+$master = mysql_real_escape_string($_POST['slave_master']);
 $type = "SLAVE";
 
 if ($_POST['submit'] && $zone_slave_add == "1") {

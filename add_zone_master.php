@@ -22,6 +22,13 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
+v_num($_POST["owner"]) ? $owner = $_POST["owner"] : $owner = "-1";
+$domain = mysql_real_escape_string(trim($_POST["domain"]));
+$webip = mysql_real_escape_string($_POST["webip"]);
+$mailip = mysql_real_escape_string($_POST["mailip"]);
+$empty = mysql_real_escape_string($_POST["empty"]);
+$dom_type = isset($_POST["dom_type"]) ? mysql_real_escape_string($_POST["dom_type"]) : "NATIVE";
+
 if(verify_permission(zone_master_add)) { $zone_master_add = "1" ; } ;
 
 if ($_POST['submit'] && $zone_master_add == "1" ) {
@@ -31,14 +38,6 @@ if ($_POST['submit'] && $zone_master_add == "1" ) {
 	// worth to be called "templating". Whoever wrote this should 
 	// be... should be... how can I say this politicaly correct?
 	// 20080303/RZ
-
-        $domain = trim($_POST["domain"]);
-        $owner = $_POST["owner"];
-        $webip = $_POST["webip"];
-        $mailip = $_POST["mailip"];
-        $empty = $_POST["empty"];
-
-        $dom_type = isset($_POST["dom_type"]) ? $_POST["dom_type"] : "NATIVE";
 
         if(!$empty) {
                 $empty = 0;

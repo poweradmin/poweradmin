@@ -54,6 +54,7 @@ define("ERR_USER_MATCH_NEW_PASS", _('The two new password fields do not match'))
 define("ERR_USER_EDIT", _('Error editting user'));
 
 /* OTHER */
+define("ERR_INV_INPUT", _('Invalid or unexpected input given.'));  // TODO i18n
 define("ERR_INV_ARG", _('Invalid argument(s) given to function %s'));
 define("ERR_INV_ARGC", _('Invalid argument(s) given to function %s %s'));
 define("ERR_UNKNOWN", _('unknown error'));

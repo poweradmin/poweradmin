@@ -21,9 +21,8 @@
 
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
-// TODO move if(@record_id) naar boven, voor confirm.
-is_numeric($_GET['id']) ? $record_id = $_GET['id'] : $record_id = "-1";
-is_numeric($_GET['confirm']) ? $confirm = $_GET['confirm'] : $confirm = "-1";
+v_num($_GET['id']) ? $record_id = $_GET['id'] : $record_id = "-1";
+v_num($_GET['confirm']) ? $confirm = $_GET['confirm'] : $confirm = "-1";
 
 if (verify_permission(zone_content_edit_others)) { $perm_content_edit = "all" ; }
 elseif (verify_permission(zone_content_edit_own)) { $perm_content_edit = "own" ; }
@@ -31,7 +30,7 @@ else { $perm_content_edit = "none" ; }
 
 $user_is_zone_owner = verify_user_is_owner_zoneid($_GET["domain"]);
 
-if ($record_id) {
+if ($record_id == "-1" ) {
 	if ($confirm == '0') {
 		// TODO redirect not working?
 		clean_page("index.php");
@@ -75,6 +74,6 @@ if ($record_id) {
 		}
         }
 } else {
-        echo _('Nothing to do!');
+	error(ERR_INV_INPUT);
 }
 include_once("inc/footer.inc.php");
