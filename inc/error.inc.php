@@ -34,6 +34,7 @@ define("ERR_PERM_EDIT_RECORD", _("You do not have the permission to edit this re
 define("ERR_PERM_VIEW_RECORD", _("You do not have the permission to view this record.")); // TODO i18n
 define("ERR_PERM_ADD_ZONE_MASTER", _("You do not have the permission to add a master zone.")); // TODO i18n
 define("ERR_PERM_DEL_ZONE", _("You do not have the permission to delete a zone.")); // TODO i18n
+define("ERR_PERM_DEL_SM", _("You do not have the permission to delete a supermaster.")); // TODO i18n
 define("ERR_PERM_VIEW_ZONE", _("You do not have the permission to view this zone.")); // TODO i18n
 
 /* RECORD STUFF */
@@ -81,5 +82,6 @@ define("SUC_ZONE_ADD", _('Zone has been added succesfully.')); // TODO i18n
 define("SUC_ZONE_DEL", _('Zone has been deleted succesfully.')); // TODO i18n
 define("SUC_RECORD_UPD", _('The record has been updated succesfully.')); // TODO i18n
 define("SUC_RECORD_DEL", _('The record has been deleted succesfully.')); // TODO i18n
+define("SUC_SM_DEL", _('The supermaster has been deleted succesfully.')); // TODO i18n
 
 ?>

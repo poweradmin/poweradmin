@@ -267,13 +267,8 @@ function add_supermaster($master_ip, $ns_name, $account)
         }
 }
 
-function delete_supermaster($master_ip)
-{
-        global $db;
-        if (!level(5))
-        {
-                error(ERR_LEVEL_5);
-        }
+function delete_supermaster($master_ip) {
+	global $db;
         if (is_valid_ip($master_ip) || is_valid_ip6($master_ip))
         {
                 $db->query("DELETE FROM supermasters WHERE ip = ".$db->quote($master_ip));
@@ -288,10 +283,6 @@ function delete_supermaster($master_ip)
 function get_supermaster_info_from_ip($master_ip)
 {
 	global $db;
-        if (!level(5))
-        {
-                error(ERR_LEVEL_5);
-        }
         if (is_valid_ip($master_ip) || is_valid_ip6($master_ip))
 	{
 	        $result = $db->queryRow("SELECT ip,nameserver,account FROM supermasters WHERE ip = ".$db->quote($master_ip));
@@ -944,17 +935,16 @@ function domain_exists($domain)
 function get_supermasters()
 {
         global $db;
-        $result = $db->query("SELECT ip, nameserver, account FROM supermasters");
+        
+	$result = $db->query("SELECT ip, nameserver, account FROM supermasters");
+	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+
         $ret = array();
 
-        if($result->numRows() == 0)
-        {
+        if($result->numRows() == 0) {
                 return -1;
-        }
-        else
-        {
-                while ($r = $result->fetchRow())
-                {
+        } else {
+                while ($r = $result->fetchRow()) {
                         $ret[] = array(
                         "master_ip"     => $r["ip"],
                         "ns_name"       => $r["nameserver"],
