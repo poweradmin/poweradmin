@@ -24,7 +24,7 @@ global $STYLE;
 echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n";
 echo "<html>\n";
 echo " <head>\n";
-echo "  <title>PowerAdmin')</title>\n";
+echo "  <title>PowerAdmin</title>\n";
 echo "  <link rel=stylesheet href=\"style/" . $STYLE . ".inc.php\" type=\"text/css\">\n";
 echo " </head>\n";
 echo " <body>\n";
