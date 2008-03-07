@@ -464,6 +464,40 @@ function verify_user_is_owner_zoneid($zoneid) {
 	error(ERR_INV_ARG);
 }
 
+function get_user_list() {
 
+	global $db;
+	$userid=$_SESSION['userid'];
+	(verify_permission(user_view_others)) ? $sql_add = "" :  $sql_add = "AND users.id = " . $db->quote($userid) ;
+	$query = "SELECT users.id AS uid, 
+			username, 
+			fullname, 
+			email, 
+			description AS descr,
+			active,
+			perm_templ.id AS tpl_id,
+			perm_templ.name AS tpl_name 
+			FROM users, perm_templ 
+			WHERE users.perm_templ = perm_templ.id " 
+			. $sql_add . "
+			ORDER BY username";
+
+	$result = $db->query($query);
+	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+	$userlist = array();
+	while ($user = $result->fetchRow()) {
+		$userlist[] = array(
+			"uid"		=>	$user['uid'],
+			"username"	=>	$user['username'],
+			"fullname"	=>	$user['fullname'],
+			"email"		=>	$user['email'],
+			"descr"		=>	$user['descr'],
+			"active"	=>	$user['active'],
+			"tpl_id"	=>	$user['tpl_id'],
+			"tpl_name"	=>	$user['tpl_name']
+			);
+	}
+	return $userlist;
+}
 
 ?>

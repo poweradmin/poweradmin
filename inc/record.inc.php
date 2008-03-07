@@ -1200,6 +1200,15 @@ function zone_count_ng($perm, $letterstart=all) {
 	return $zone_count;
 }
 
+function zone_count_for_uid($uid) {
+	global $db;
+	$query = "SELECT COUNT(domain_id) 
+			FROM zones 
+			WHERE owner = " . $db->quote($uid) . " 
+			ORDER BY domain_id";
+	$zone_count = $db->queryOne($query);
+	return $zone_count;
+}
 
 
 /*
