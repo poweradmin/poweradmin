@@ -105,6 +105,11 @@ function auth($msg="",$type="success")
 	  </tr>
 	 </table>
 	</form>
+        <script type="text/javascript">
+         <!--
+          document.login.username.focus();
+         //-->
+        </script>
 	<?php
 	include_once('inc/footer.inc.php');
 	exit;
