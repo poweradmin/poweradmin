@@ -138,7 +138,9 @@ a:hover 	{
 
 
 
-
+textarea {
+	width: 			100%;
+}
 
 
 

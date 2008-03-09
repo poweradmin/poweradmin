@@ -71,6 +71,23 @@ function verify_permission($permission) {
         }
 }
 
+function list_permission_templates() {
+	global $db;
+	$query = "SELECT * FROM perm_templ";
+	$result = $db->query($query);
+	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+
+	$template_list = array();
+	while ($template= $result->fetchRow()) {
+		$tempate_list[] = array(
+			"id"	=>	$template['id'],
+			"name"	=>	$template['name'],
+			"desc"	=>	$template['desc']
+			);
+	}
+	return $tempate_list;
+}
+
 
 /*
  * Retrieve all users.
@@ -282,57 +299,81 @@ function add_user($user, $password, $fullname, $email, $level, $description, $ac
  * Edit the information of an user.. sloppy implementation with too many queries.. (2) :)
  * return values: true if succesful
  */
-function edit_user($id, $user, $fullname, $email, $level, $description, $active, $password)
+function edit_user($id, $user, $fullname, $email, $perm_templ, $description, $active, $password)
 {
 	global $db;
-	if(!level(10)) {
-		error(ERR_LEVEL_10);
+
+	verify_permission(user_edit_own) ? $perm_edit_own = "1" : $perm_edit_own = "0" ;
+	verify_permission(user_edit_others) ? $perm_edit_others = "1" : $perm_edit_others = "0" ;
+
+	if (($id == $_SESSION["userid"] && $perm_edit_own == "1") || ($id != $_SESSION["userid"] && $perm_edit_others == "1" )) {
+
+		if (!is_valid_email($email)) {
+			error(ERR_INV_EMAIL);
+			return false;
+		}
+
+		if ($active != 1) {
+			$active = 0;
+		}
+		
+		// Before updating the database we need to check whether the user wants to 
+		// change the username. If the user wants to change the username, we need 
+		// to make sure it doesn't already exists. 
+		//
+		// First find the current username of the user ID we want to change. If the 
+		// current username is not the same as the username that was given by the 
+		// user, the username should apparantly changed. If so, check if the "new" 
+		// username already exists.
+
+		$query = "SELECT username FROM users WHERE id = " . $db->quote($id);
+		$result = $db->query($query);
+		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+
+		$usercheck = array();
+		$usercheck = $result->fetchRow();
+
+		if ($usercheck['username'] != $user) {
+			
+			// Username of user ID in the database is different from the name
+			// we have been given. User wants a change of username. Now, make
+			// sure it doesn't already exist.
+			
+			$query = "SELECT id FROM users WHERE username = " . $db->query($user);
+			$result = $db->query($query);
+			if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+
+			if($result->numRows() > 0) {
+				error(ERR_USER_EXIST);
+				return false;
+			}
+		}
+
+		// So, user doesn't want to change username or, if he wants, there is not
+		// another user that goes by the wanted username. So, go ahead!
+
+		$query = "UPDATE users SET
+				username = " . $db->quote($user) . ",
+				fullname = " . $db->quote($fullname) . ",
+				email = " . $db->quote($email) . ",
+				level = " . $db->quote($level) . ",
+				description = " . $db->quote($description) . ", 
+				active = " . $db->quote($active) ;
+
+		if($password != "") {
+			$query .= ", password = '" . md5($password) . "' ";
+		}
+
+		$query .= " WHERE id = " . $db->quote($id) ;
+
+		$result = $db->query($query);
+		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+		
+	} else {
+		error(ERR_PERM_EDIT_USER);
+		return false;
 	}
-
-	if (!is_valid_email($email)) 
-	{
-		error(ERR_INV_EMAIL);
-	}
-	if ($active != 1) {
-		$active = 0;
-	}
-	$sqlquery = "UPDATE users set username=".$db->quote($user).", fullname=".$db->quote($fullname).", email=".$db->quote($email).", level=".$db->quote($level).", description=".$db->quote($description).", active=".$db->quote($active);
-
-	if($password != "")
-	{
-		$sqlquery .= ", password= '" . md5($password) . "' ";
-	}
-
-	$sqlquery .= " WHERE id=".$db->quote($id) ;
-
-  	// Search the username that right now goes with this ID.
-	$result = $db->query("SELECT username from users where id=".$db->quote($id));
-	$r = array();
-	$r = $result->fetchRow();
-
-  	// If the found username with this ID is the given username with the command.. execute.
-
-	if($r["username"] == $user)
-	{
-		$db->query($sqlquery);
-  		return true;
-  	}
-
-  	// Its not.. so the user wants to change.
-  	// Find if there is an id that has the wished username.
-  	$otheruser = $db->query("SELECT id from users where username=".$db->query($user));
-  	if($otheruser->numRows() > 0)
-  	{
-  		error(ERR_USER_EXIST);
-  	}
-
-  	// Its fine it seems.. :)
-  	// Lets execute it.
-  	else
-  	{
-		$db->query($sqlquery);
-		return true;
-	}
+	return true;
 }
 
 /*
@@ -464,11 +505,22 @@ function verify_user_is_owner_zoneid($zoneid) {
 	error(ERR_INV_ARG);
 }
 
-function get_user_list() {
+function get_user_detail_list($specific) {
 
 	global $db;
 	$userid=$_SESSION['userid'];
-	(verify_permission(user_view_others)) ? $sql_add = "" :  $sql_add = "AND users.id = " . $db->quote($userid) ;
+
+
+	if (v_num($specific)) {
+		$sql_add = "AND users.id = " . $db->quote($specific) ;
+	} else {
+		if (verify_permission(user_view_others)) {
+			$sql_add = "";
+		} else {
+			$sql_add = "AND users.id = " . $db->quote($userid) ;
+		}
+	}
+
 	$query = "SELECT users.id AS uid, 
 			username, 
 			fullname, 
@@ -476,7 +528,8 @@ function get_user_list() {
 			description AS descr,
 			active,
 			perm_templ.id AS tpl_id,
-			perm_templ.name AS tpl_name 
+			perm_templ.name AS tpl_name,
+			perm_templ.desc AS tpl_descr
 			FROM users, perm_templ 
 			WHERE users.perm_templ = perm_templ.id " 
 			. $sql_add . "
@@ -484,7 +537,7 @@ function get_user_list() {
 
 	$result = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
-	$userlist = array();
+	
 	while ($user = $result->fetchRow()) {
 		$userlist[] = array(
 			"uid"		=>	$user['uid'],
@@ -494,10 +547,35 @@ function get_user_list() {
 			"descr"		=>	$user['descr'],
 			"active"	=>	$user['active'],
 			"tpl_id"	=>	$user['tpl_id'],
-			"tpl_name"	=>	$user['tpl_name']
+			"tpl_name"	=>	$user['tpl_name'],
+			"tpl_descr"	=>	$user['tpl_descr']
 			);
 	}
 	return $userlist;
+}
+
+function get_permissions_by_template_id($templ_id) {
+	global $db;
+	
+	$query = "SELECT perm_items.id AS id, 
+			perm_items.name AS name, 
+			perm_items.desc AS descr
+			FROM perm_items, perm_templ_items 
+			WHERE perm_templ_items.templ_id = " . $db->quote($templ_id) . "
+			AND perm_templ_items.perm_id = perm_items.id 
+			ORDER BY descr";
+	$result = $db->query($query);
+	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+
+	$permission_list = array();
+	while ($permission = $result->fetchRow()) {
+		$permission_list[] = array(
+			"id"	=>	$permission['id'],
+			"name"	=>	$permission['name'],
+			"descr"	=>	$permission['descr']
+			);
+	}
+	return $permission_list;
 }
 
 ?>
