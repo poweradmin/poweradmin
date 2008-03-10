@@ -26,7 +26,7 @@ if ((!level(5)) && ((!xs($xsid) || ($_SESSION[$xsid.'_ispartial'])))) {
 	error(ERR_RECORD_ACCESS_DENIED);
 }
 
-if ($_POST["commit"]) {
+if (isset($_POST["commit"]) && isset($_POST['zoneid']) && isset($_POST['name']) && isset($_POST['type']) && isset($_POST['content']) && isset($_POST['ttl']) && isset($_POST['prio']) ) {
         $ret = add_record($_POST["zoneid"], $_POST["name"], $_POST["type"], $_POST["content"], $_POST["ttl"], $_POST["prio"]);
         if ($ret != '1') {
                 die("$ret");
@@ -63,7 +63,7 @@ foreach (get_record_types() as $c) {
         } elseif (strtoupper($c) == 'A') {
                 $add = " SELECTED";
         } else {
-                unset($add);
+                $add = '';
         }
         ?><option<?php echo $add ?> value="<?php echo $c ?>"><?php echo $c ?></option><?php
 }

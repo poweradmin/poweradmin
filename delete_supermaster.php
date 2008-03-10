@@ -27,10 +27,10 @@ if (!level(5))
         
 }
 
-if ($_GET["master_ip"]) {
-        if ($_GET["confirm"] == '0') {
+if (isset($_GET["master_ip"])) {
+        if ((isset($_GET['confirm'])) && ($_GET["confirm"] == '0')) {
                 clean_page("index.php");
-        } elseif ($_GET["confirm"] == '1') {
+        } elseif ((isset($_GET["confirm"])) && ($_GET['confirm'] == '1')) {
                 delete_supermaster($_GET["master_ip"]);
                 clean_page("index.php");
         }

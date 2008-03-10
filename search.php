@@ -25,6 +25,8 @@ if (isset($_POST['s_submit']) || isset($_POST['q']))
 {
 	$submitted=true;
 	$search_result=search_record($_POST['q']);
+} else {
+	$submitted = false;
 }
 
 // we will continue after the search form ... 
@@ -48,6 +50,7 @@ include_once('inc/header.inc.php');
       
 <?php
 // results
+
 if ($submitted)
 {
 	echo '<br><br>';

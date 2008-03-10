@@ -21,9 +21,9 @@
 
 require_once("inc/toolkit.inc.php");
 
-if($_POST["submit"])
+if(isset($_POST["submit"]))
 {
-	if(strlen($_POST["newpass"]) < 8)
+	if((!isset($_POST['newpass'])) || (strlen($_POST["newpass"]) < 8))
 	{
 		error('Password length should be at least 8 characters.');
 	}

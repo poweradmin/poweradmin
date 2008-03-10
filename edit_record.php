@@ -21,7 +21,7 @@
 
 require_once("inc/toolkit.inc.php");
 
-if (isset($_GET["delid"])) {
+if (isset($_GET["delid"]) && isset($_GET['delid']) && isset($_GET['id'])) {
    delete_record_owner($_GET["domain"],$_GET["delid"],$_GET["id"]);
 }
 
@@ -32,11 +32,14 @@ if(!xs(recid_to_domid($xsid)))
     error(ERR_RECORD_ACCESS_DENIED);
 }
 
-if ($_POST["commit"])
+if (isset($_GET['domain'])) {
+	$domain_name = get_domain_name_from_id($_GET['domain']);
+}
+if (isset($_POST["commit"]) && isset($_POST['recordid']) && isset($_POST['domainid']) && isset($_POST['name']) && isset($_POST['type']) && isset($_POST['content']) && isset($_POST['ttl']) && isset($_POST['prio']))
 {
         edit_record($_POST["recordid"], $_POST["domainid"], $_POST["name"], $_POST["type"], $_POST["content"], $_POST["ttl"], $_POST["prio"]);
         clean_page("edit.php?id=".$_POST["domainid"]);
-} elseif($_SESSION["partial_".get_domain_name_from_id($_GET["domain"])] == 1)
+} elseif(isset($_SESSION['partial_'.$domain_name]) && ($_SESSION["partial_".$domain_name] == 1))
 {
 	$db->setLimit(1);
     $checkPartial = $db->queryOne("SELECT id FROM record_owners WHERE record_id=".$db->quote($_GET["id"])." AND user_id=".$db->quote($_SESSION["userid"]));
@@ -46,7 +49,7 @@ if ($_POST["commit"])
 }
 include_once("inc/header.inc.php");
 ?>
-    <h2><?php echo _('Edit record in zone'); ?> "<?php echo  get_domain_name_from_id($_GET["domain"]) ?>"</h2>
+    <h2><?php echo _('Edit record in zone'); ?> "<?php echo  $domain_name ?>"</h2>
 <?php
 
 $x_result = $db->query("SELECT r.id,u.fullname FROM record_owners as r, users as u WHERE r.record_id=".$db->quote($_GET['id'])." AND u.id=r.user_id");
@@ -98,19 +101,19 @@ if (level(10) && ($x_result->numRows() > 0))
 if ($_SESSION[$_GET["domain"]."_ispartial"] == 1)  
 {
 ?>
-         <input type="hidden" name="name" value="<?php echo  trim(str_replace(get_domain_name_from_id($_GET["domain"]), '', $rec["name"]), '.')?>" class="input">
+         <input type="hidden" name="name" value="<?php echo  trim(str_replace($domain_name, '', $rec["name"]), '.')?>" class="input">
 
-<?php echo  trim(str_replace(get_domain_name_from_id($_GET["domain"]), '', $rec["name"]), '.') ?>
+<?php echo  trim(str_replace($domain_name, '', $rec["name"]), '.') ?>
 <?php 
 } 
 else 
 { 
 ?>
-         <input type="text" name="name" value="<?php echo  trim(str_replace(get_domain_name_from_id($_GET["domain"]), '', $rec["name"]), '.') ?>" class="input">
+         <input type="text" name="name" value="<?php echo  trim(str_replace($domain_name, '', $rec["name"]), '.') ?>" class="input">
 <?php 
 } 
 ?>
-.<?php echo  get_domain_name_from_id($_GET["domain"]) ?>
+.<?php echo  $domain_name ?>
         </td>
 	<td class="n">IN</td>
 	<td>

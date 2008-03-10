@@ -27,14 +27,14 @@ if (!level(5))
 
 }
 
-if ($_POST["submit"])
+if (isset($_POST["submit"]))
 {
-        $domain = trim($_POST["domain"]);
-        $owner = $_POST["owner"];
-        $webip = $_POST["webip"];
-        $mailip = $_POST["mailip"];
-        $empty = $_POST["empty"];
-        $dom_type = isset($_POST["dom_type"]) ? $_POST["dom_type"] : "NATIVE";
+        $domain = (isset($_POST['domain']) ? trim($_POST["domain"]) : '');
+        $owner = (isset($_POST['owner']) ? $_POST["owner"] : 0 );
+        $webip = (isset($_POST["webip"]) ? $_POST['webip'] : '');
+        $mailip = (isset($_POST["mailip"]) ? $_POST['mailip'] : '');
+        $empty = (isset($_POST["empty"]) ? $_POST['empty'] : 0);
+        $dom_type = (isset($_POST["dom_type"]) ? $_POST["dom_type"] : "NATIVE");
         if(!$empty)
         {
                 $empty = 0;
@@ -43,7 +43,7 @@ if ($_POST["submit"])
                         $error = "Web or Mail ip is invalid!";
                 }
         }
-        if (!$error)
+        if (!isset($error))
         {
                 if (!is_valid_domain($domain))
                 {
@@ -64,11 +64,11 @@ if ($_POST["submit"])
 
 include_once("inc/header.inc.php");
 
-	if ($error != "")
+	if ((isset($error)) && ($error != ""))
 	{
 	        ?><div class="error"><?php echo _('Error'); ?>: <?php echo $error; ?></div><?php
 	}
-	elseif ($success != "")
+	elseif ((isset($success)) && ($success != ""))
 	{
 		?><div class="success"><?php echo $success; ?></div><?php
 	}
@@ -87,19 +87,19 @@ include_once("inc/header.inc.php");
           <tr>
            <td class="n"><?php echo _('Zone name'); ?>:</td>
            <td class="n">
-            <input type="text" class="input" name="domain" value="<?php if ($error) print $_POST["domain"]; ?>">
+            <input type="text" class="input" name="domain" value="<?php if (isset($error)) print $_POST["domain"]; ?>">
            </td>
           </tr>
           <tr>
            <td class="n"><?php echo _('Web IP'); ?>:</td>
            <td class="n">
-            <input type="text" class="input" name="webip" value="<?php if ($error) print $_POST["webip"]; ?>">
+            <input type="text" class="input" name="webip" value="<?php if (isset($error)) print $_POST["webip"]; ?>">
            </td>
           </tr>
           <tr>
            <td class="n"><?php echo _('Mail IP'); ?>:</TD>
            <td class="n">
-            <input type="text" class="input" name="mailip" value="<?php if ($error) print $_POST["mailip"]; ?>">
+            <input type="text" class="input" name="mailip" value="<?php if (isset($error)) print $_POST["mailip"]; ?>">
            </td>
           </tr>
           <tr>

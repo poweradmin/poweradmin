@@ -27,13 +27,13 @@ if (!level(5))
 
 }
 
-if ($_POST["submit"])
+if (isset($_POST["submit"]))
 {
      $domain = trim($_POST["domain"]);
      $owner = $_POST["owner"];
      $slave_master = $_POST["slave_master"];
      $dom_type = "SLAVE";
-     if (!$error)
+     if (!isset($error))
      {
              if (!is_valid_domain($domain))
              {
@@ -49,7 +49,7 @@ if ($_POST["submit"])
              }
              else
              {
-                     if(add_domain($domain, $owner, $webip, $mailip, $empty, $dom_type, $slave_master))
+                     if(add_domain($domain, $owner, '', '', 1, $dom_type, $slave_master))
 		     {
                                 $success = _('Successfully added slave zone.');
 		     }
@@ -59,11 +59,11 @@ if ($_POST["submit"])
 
 include_once("inc/header.inc.php");
 
-	if ($error != "")
+	if ((isset($error)) && ($error != ""))
 	{
 	        ?><div class="error"><?php echo _('Error'); ?>: <?php echo $error; ?></div><?php
 	}
-	elseif ($success != "")
+	elseif ((isset($success)) && ($success != ""))
 	{
 		?><div class="success"><?php echo $success; ?></div><?php
 	}
@@ -77,13 +77,13 @@ include_once("inc/header.inc.php");
 	      <tr>
 	       <td class="n"><?php echo _('Zone name'); ?>:</td>
 	       <td class="n">
-	        <input type="text" class="input" name="domain" value="<?php if ($error) print $_POST["domain"]; ?>">
+	        <input type="text" class="input" name="domain" value="<?php if (isset($error)) print $_POST["domain"]; ?>">
 	       </td>
 	      </tr>
 	      <tr>
 	       <td class="n"><?php echo _('IP of master NS'); ?>:</td>
 	       <td class="n">
-	        <input type="text" class="input" name="slave_master" value="<?php if ($error) print $_POST["slave_master"]; ?>">
+	        <input type="text" class="input" name="slave_master" value="<?php if (isset($error)) print $_POST["slave_master"]; ?>">
 	       </td>
 	      </tr>
 	      <tr>

@@ -75,6 +75,8 @@ function validate_input($zoneid, $type, &$content, &$name, &$prio, &$ttl)
 	if($name == '*')
 	{
 		$wildcard = true;
+	} else {
+		$wildcard = false;
 	}
 
 	if ($name=="0") {

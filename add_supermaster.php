@@ -26,12 +26,12 @@ if (!level(5))
 	 error(ERR_LEVEL_5);
 }
 
-if($_POST["submit"])
+if(isset($_POST["submit"]))
 {
-	$master_ip = $_POST["master_ip"];
-	$ns_name = $_POST["ns_name"];
-	$account = $_POST["account"];
-	if (!$error)
+	$master_ip = (isset($_POST['master_ip']) ? $_POST["master_ip"] : '');
+	$ns_name = (isset($_POST['ns_name']) ? $_POST["ns_name"] : '');
+	$account = (isset($_POST["account"]) ? $_POST['account'] : '');
+	if (!isset($error))
 	{
 		if (!is_valid_ip($master_ip) && !is_valid_ip6($master_ip))
 		{
@@ -57,11 +57,11 @@ if($_POST["submit"])
 
 include_once("inc/header.inc.php");
     
-    if ($error != "")
+    if ((isset($error)) && ($error != ""))
     {
     	?><div class="error"><?php echo _('Error'); ?>: <?php echo $error; ?></div><?php
     }
-    elseif ($success != "")
+    elseif ((isset($success)) && ($success != ""))
     {
     	?><div class="success"><?php echo $success; ?></div><?php
     }
@@ -73,19 +73,19 @@ include_once("inc/header.inc.php");
       <tr>
        <td class="n"><?php echo _('IP address of supermaster'); ?>:</td>
        <td class="n">
-        <input type="text" class="input" name="master_ip" value="<?php if ($error) print $_POST["master_ip"]; ?>">
+        <input type="text" class="input" name="master_ip" value="<?php if (isset($error)) print $_POST["master_ip"]; ?>">
        </td>
       </tr>
       <tr>
        <td class="n"><?php echo _('Hostname in NS record'); ?>:</td>
        <td class="n">
-        <input type="text" class="input" name="ns_name" value="<?php if ($error) print $_POST["ns_name"]; ?>">
+        <input type="text" class="input" name="ns_name" value="<?php if (isset($error)) print $_POST["ns_name"]; ?>">
        </td>
       </tr>
       <tr>
        <td class="n"><?php echo _('Account'); ?>:</td>
        <td class="n">
-        <input type="text" class="input" name="account" value="<?php if ($error) print $_POST["account"]; ?>">
+        <input type="text" class="input" name="account" value="<?php if (isset($error)) print $_POST["account"]; ?>">
        </td>
       </tr>
       <tr>

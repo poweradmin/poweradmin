@@ -21,12 +21,12 @@
 
 require_once("inc/toolkit.inc.php");
 
-if($_POST["submit"]
-&& $_POST["username"] != ""
-&& $_POST["password"] != "" 
-&& $_POST["fullname"] != ""
-&& $_POST["email"] != ""
-&& $_POST["level"] > 0)
+if(isset($_POST["submit"])
+&& isset($_POST['username']) && $_POST["username"] != ""
+&& isset($_POST['password']) && $_POST["password"] != "" 
+&& isset($_POST['fullname']) && $_POST["fullname"] != ""
+&& isset($_POST['email']) && $_POST["email"] != ""
+&& isset($_POST['level']) && $_POST["level"] > 0)
 {
 	if(substr_count($_POST["username"], " ") == 0)
 	{
@@ -45,13 +45,13 @@ if($_POST["submit"]
         	$error = _('Usernames can\'t contain spaces');
         }
 }
-elseif($_POST["submit"])
+elseif(isset($_POST["submit"]))
 {
 	$error = _('Please fill in all fields');
 }
 
 include_once("inc/header.inc.php");
-if ($error != "") 
+if (isset($error) && $error != "") 
 {
 ?>
 	<div class="error"><?php echo $error ; ?></div>
@@ -120,19 +120,19 @@ show_pages(count($users),ROWAMOUNT);
        <table>
         <tr>
          <td class="n"><?php echo _('User name'); ?>:</td>
-         <td class="n"><input type="text" class="input" name="username" value="<?php if ($error) print $_POST["username"]; ?>"></td>
+         <td class="n"><input type="text" class="input" name="username" value="<?php if (isset($error)) print $_POST["username"]; ?>"></td>
 	</tr>
 	<tr>
 	 <td class="n"><?php echo _('Full name'); ?>:</td>
-	 <td class="n"><input type="text" class="input" NAME="fullname" VALUE="<?php if ($error) print $_POST["fullname"]; ?>"></td>
+	 <td class="n"><input type="text" class="input" NAME="fullname" VALUE="<?php if (isset($error)) print $_POST["fullname"]; ?>"></td>
 	</tr>
 	<tr>
 	 <td class="n"><?php echo _('Password'); ?>:</td>
-	 <td class="n"><input type="password" class="input" NAME="password" VALUE="<?php if ($error) print $_POST["password"]; ?>"></td>
+	 <td class="n"><input type="password" class="input" NAME="password" VALUE="<?php if (isset($error)) print $_POST["password"]; ?>"></td>
 	</tr>
 	<tr>
 	 <td class="n"><?php echo _('E-mail'); ?>:</td>
-	 <td class="n"><input type="text" class="input" NAME="email" VALUE="<?php if ($error) print $_POST["email"]; ?>"></td>
+	 <td class="n"><input type="text" class="input" NAME="email" VALUE="<?php if (isset($error)) print $_POST["email"]; ?>"></td>
 	</tr>
 	<tr>
 	 <td class="n"><?php echo _('User level'); ?>:</td>
@@ -146,7 +146,7 @@ show_pages(count($users),ROWAMOUNT);
 	</tr>
         <tr>
 	 <td class="n"><?php echo _('Description'); ?>:</td>
-	 <td class="n"><textarea rows="6" cols="30" class="inputarea" name="description"><?php if ($error) print $_POST["description"]; ?></textarea></td>
+	 <td class="n"><textarea rows="6" cols="30" class="inputarea" name="description"><?php if (isset($error)) print $_POST["description"]; ?></textarea></td>
 	</tr>
 	<tr>
 	 <td class="n"><?php echo _('Active'); ?>:</td>

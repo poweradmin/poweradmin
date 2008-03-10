@@ -124,7 +124,7 @@ if (level(5))
   			$users = show_users();
   			foreach ($users as $u)
   			{
-  				unset($add);
+  				$add = '';
   				if ($u["id"] == $info["ownerid"])
   				{
   					$add = " SELECTED";
@@ -155,7 +155,7 @@ if (level(5))
 <?php
 	foreach($server_types as $s)
 	{
-		unset($add);
+		$add = '';
 		if ($s == $domain_type)
 		{
 			$add = " SELECTED";

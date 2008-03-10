@@ -19,7 +19,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-session_start();
+//session_start();
 
 if (isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] == "logout")
 {
@@ -52,7 +52,7 @@ if(isset($_SESSION["userlogin"]) && isset($_SESSION["userpwd"]))
 		$_SESSION["userid"] = $rowObj["id"];
 		$_SESSION["name"] = $rowObj["fullname"];
 		$_SESSION["level"] = $rowObj["level"];
-        	if($_POST["authenticate"])
+        	if(isset($_POST["authenticate"]))
         	{
             		//If a user has just authenticated, redirect him to index with timestamp, so post-data gets lost.
             		session_write_close();
@@ -117,6 +117,7 @@ function auth($msg="",$type="success")
 
 function logout($msg="")
 {
+	$type = '';
 	if ( $msg == "" ) {
 		$msg = _('You have logged out.');
 		$type = "success";
