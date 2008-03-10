@@ -37,6 +37,7 @@ define("ERR_PERM_DEL_ZONE", _("You do not have the permission to delete a zone."
 define("ERR_PERM_DEL_SM", _("You do not have the permission to delete a supermaster.")); // TODO i18n
 define("ERR_PERM_VIEW_ZONE", _("You do not have the permission to view this zone.")); // TODO i18n
 define("ERR_PERM_EDIT_USER", _("You do not have the permission to edit this user.")); // TODO i18n
+define("ERR_PERM_EDIT_PERM_TEMPL", _("You do not have the permission to edit permission templates.")); // TODO i18n
 
 /* RECORD STUFF */
 define("ERR_RECORD_EMPTY_CONTENT", _('Your content field is empty'));

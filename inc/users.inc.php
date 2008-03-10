@@ -554,7 +554,7 @@ function get_user_detail_list($specific) {
 	return $userlist;
 }
 
-function get_permissions_by_template_id($templ_id) {
+function get_permissions_by_template_id($templ_id,$return_id_only=false) {
 	global $db;
 	
 	$query = "SELECT perm_items.id AS id, 
@@ -569,13 +569,36 @@ function get_permissions_by_template_id($templ_id) {
 
 	$permission_list = array();
 	while ($permission = $result->fetchRow()) {
-		$permission_list[] = array(
-			"id"	=>	$permission['id'],
-			"name"	=>	$permission['name'],
-			"descr"	=>	$permission['descr']
-			);
+		if ($return_id_only == false) {
+			$permission_list[] = array(
+				"id"	=>	$permission['id'],
+				"name"	=>	$permission['name'],
+				"descr"	=>	$permission['descr']
+				);
+		} else {
+			$permission_list[] = $permission['name'];
+		}
 	}
 	return $permission_list;
 }
+
+function get_list_permission_templates() {
+	global $db;
+
+	$query = "SELECT * FROM perm_templ";
+	$result = $db->query($query);
+	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+
+	$perm_templ_list = array();
+	while ($perm_templ = $result->fetchRow()) {
+		$perm_templ_list[] = array(
+			"id"	=>	$perm_templ['id'],
+			"name"	=>	$perm_templ['name'],
+			"desc"	=>	$perm_templ['desc']
+			);
+	}
+	return $perm_templ_list;
+}
+
 
 ?>
