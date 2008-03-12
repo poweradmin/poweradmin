@@ -1034,9 +1034,11 @@ function get_domains($userid=true,$letterstart='all',$rowstart=0,$rowamount=9999
 		WHERE record_owners.user_id = ".$db->quote($_SESSION["userid"])."
 		AND (records.id = record_owners.record_id
 		AND domains.id = records.domain_id)
-		$andnot 
-		AND substring(domains.name,1,1) ".$sql_regexp." '^[[:digit:]]'
-		AND (zones.domain_id != records.domain_id AND zones.owner!=".$db->quote($_SESSION["userid"]).")
+		$andnot";
+		if ($letterstart != 'all') { 
+			$sqlq .= " AND substring(domains.name,1,1) ".$sql_regexp." '^[[:digit:]]'";
+		}
+		$sqlq .= "AND (zones.domain_id != records.domain_id AND zones.owner!=".$db->quote($_SESSION["userid"]).")
 		GROUP BY domainname, domains.id
 		ORDER BY domainname";
 
