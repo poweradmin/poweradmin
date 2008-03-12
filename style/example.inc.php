@@ -38,7 +38,7 @@ img .edit-assign-to-user	{
 
 #meta {
         width:                  100%;
-	clear:			left;
+	clear:			both;
 }
 
 #meta .button	{

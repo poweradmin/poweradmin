@@ -80,6 +80,8 @@ if (level(10) && ($x_result->numRows() > 0))
 <?php 
 }
 ?>
+	<div id="meta">&nbsp;</div>
+	<div>
     <form method="post" action="edit_record.php">
      <input type="hidden" name="recordid" value="<?php echo  $_GET["id"] ?>">
      <input type="hidden" name="domainid" value="<?php echo  $_GET["domain"] ?>">
@@ -146,6 +148,7 @@ foreach (get_record_types() as $c)
        <input type="reset" name="reset" value="<?php echo _('Reset changes'); ?>" class="button">
       </p>
      </form>
+	</div>
 <?php
 include_once("inc/footer.inc.php");
 ?>
