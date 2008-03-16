@@ -1030,7 +1030,7 @@ function get_zones($perm,$userid=true,$letterstart=all,$rowstart=0,$rowamount=99
  * if a user id is below 5 this function will only retrieve records for that user.
  * return values: the array of domains or -1 if nothing is found.
  */
-function get_domains($userid=true,$letterstart=all,$rowstart=0,$rowamount=999999)
+function get_domains($userid=true,$letterstart='all',$rowstart=0,$rowamount=999999)
 {
 	global $db;
 	global $sql_regexp;
@@ -1051,7 +1051,7 @@ function get_domains($userid=true,$letterstart=all,$rowstart=0,$rowamount=999999
 	LEFT JOIN zones ON domains.id=zones.domain_id 
 	LEFT JOIN records ON records.domain_id=domains.id
 	WHERE 1=1 $add ";
-	if ($letterstart!=all && $letterstart!=1) {
+	if ($letterstart!='all' && $letterstart!=1) {
 	   $sqlq.=" AND substring(domains.name,1,1) ".$sql_regexp." ".$db->quote("^".$letterstart);
 	} elseif ($letterstart==1) {
 	   $sqlq.=" AND substring(domains.name,1,1) ".$sql_regexp." '^[[:digit:]]'";
@@ -1083,7 +1083,7 @@ function get_domains($userid=true,$letterstart=all,$rowstart=0,$rowamount=999999
 		$andnot="";
 	}
 
-	if ($letterstart!=all && $letterstart!=1) {
+	if ($letterstart!='all' && $letterstart!=1) {
 
 		$sqlq = "SELECT domains.id AS domain_id,
 		count(DISTINCT record_owners.record_id) AS aantal,
@@ -1131,7 +1131,7 @@ function get_domains($userid=true,$letterstart=all,$rowstart=0,$rowamount=999999
 	}
 
 
-	if ($letterstart!=all && $letterstart!=1) {
+	if ($letterstart!='all' && $letterstart!=1) {
 
 		while($r = $result_extra->fetchRow())
 		{
@@ -1220,7 +1220,7 @@ function zone_count_for_uid($uid) {
  * @return integer the number of zones
  */
 
-function zone_count($userid=true, $letterstart=all) {
+function zone_count($userid=true, $letterstart='all') {
         global $db;
 	global $sql_regexp;
         if((!level(5) || !$userid) && !level(10) && !level(5))
@@ -1245,7 +1245,7 @@ function zone_count($userid=true, $letterstart=all) {
                 $add = "";
         }
 
-        if ($letterstart!=all && $letterstart!=1) {
+        if ($letterstart!='all' && $letterstart!=1) {
            $add .=" AND domains.name LIKE ".$db->quote($letterstart."%")." ";
         } elseif ($letterstart==1) {
            $add .=" AND substring(domains.name,1,1) ".$sql_regexp." '^[[:digit:]]'";
@@ -1509,7 +1509,7 @@ function get_domain_slave_master($id)
 function change_zone_type($type, $id)
 {
 	global $db;
-	unset($add);
+	$add = '';
         if (is_numeric($id))
 	{
 		// It is not really neccesary to clear the field that contains the IP address 

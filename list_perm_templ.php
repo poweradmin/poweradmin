@@ -34,7 +34,7 @@ if ($perm_templ_perm_edit == "0") {
 	echo "       <th>&nbsp;</th>\n";
 	echo "       <th>" . _('Name') . "</th>\n";
 	echo "       <th>" . _('Description') . "</th>\n";
-	echo "       <th>" . _('Permissions') . "</th>\n";
+//	echo "       <th>" . _('Permissions') . "</th>\n";
 	echo "      </tr>\n";
 
 	foreach ($permission_templates as $template) {
@@ -43,10 +43,17 @@ if ($perm_templ_perm_edit == "0") {
 		$perm_items = implode(', ', $perm_item_list);
 
 		echo "      <tr>\n";
-		echo "       <td>&nbsp;</td>\n";
-		echo "       <td>" . $template['name'] . "</td>\n";
-		echo "       <td>" . $template['desc'] . "</td>\n";
-		echo "       <td>$perm_items</td>\n";
+		if ($perm_templ_perm_edit == "1") {
+			echo "       <td>\n";
+			echo "        <a href=\"edit_perm_templ.php?id=" . $template["id"] . "\"><img src=\"images/edit.gif\" alt=\"[ " . _('Edit template') . "\" ]></a>\n";
+			echo "        <a href=\"delete_perm_templ.php?id=" . $template["id"] . "\"><img src=\"images/delete.gif\" alt=\"[ " . _('Delete template') . "\" ]></a>\n";
+			echo "       </td>\n";
+		} else {
+			echo "       <td>&nbsp;</td>\n";
+		}
+		echo "       <td class=\"y\">" . $template['name'] . "</td>\n";
+		echo "       <td class=\"y\">" . $template['desc'] . "</td>\n";
+//		echo "       <td class=\"y\">$perm_items</td>\n";
 		echo "      </tr>\n";
 	}
 

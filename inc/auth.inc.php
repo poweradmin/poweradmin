@@ -19,7 +19,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-session_start();
+//session_start();
 
 function doAuthenticate() {
 	global $db;
@@ -125,6 +125,7 @@ function auth($msg="",$type="success")
 
 function logout($msg="")
 {
+	$type = '';
 	if ( $msg == "" ) {
 		$msg = _('You have logged out.');
 		$type = "success";

@@ -509,6 +509,7 @@ function verify_user_is_owner_zoneid($zoneid) {
 	error(ERR_INV_ARG);
 }
 
+
 function get_user_detail_list($specific) {
 
 	global $db;
@@ -558,22 +559,33 @@ function get_user_detail_list($specific) {
 	return $userlist;
 }
 
-function get_permissions_by_template_id($templ_id,$return_id_only=false) {
+
+// Get a list of permissions that are available. If first argument is "0", it
+// should return all available permissions. If the first argument is > "0", it
+// should return the permissions assigned to that particular template only. If
+// second argument is true, only the permission names are returned.
+
+function get_permissions_by_template_id($templ_id=0,$return_name_only=false) {
 	global $db;
 	
+	if ($templ_id > 0) {
+		$limit = ", perm_templ_items 
+			WHERE perm_templ_items.templ_id = " . $db->quote($templ_id) . "
+			AND perm_templ_items.perm_id = perm_items.id";
+	}
+
 	$query = "SELECT perm_items.id AS id, 
 			perm_items.name AS name, 
 			perm_items.desc AS descr
-			FROM perm_items, perm_templ_items 
-			WHERE perm_templ_items.templ_id = " . $db->quote($templ_id) . "
-			AND perm_templ_items.perm_id = perm_items.id 
+			FROM perm_items" 
+			. $limit . "
 			ORDER BY descr";
 	$result = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
 	$permission_list = array();
 	while ($permission = $result->fetchRow()) {
-		if ($return_id_only == false) {
+		if ($return_name_only == false) {
 			$permission_list[] = array(
 				"id"	=>	$permission['id'],
 				"name"	=>	$permission['name'],
@@ -585,6 +597,31 @@ function get_permissions_by_template_id($templ_id,$return_id_only=false) {
 	}
 	return $permission_list;
 }
+
+
+// Get name and description of template based on template ID.
+
+function get_permission_template_details($templ_id) {
+	global $db;
+
+	$query = "SELECT *
+			FROM perm_templ
+			WHERE perm_templ.id = " . $db->quote($templ_id);
+
+	$result = $db->query($query);
+	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+
+	while($details = $result->fetchRow()) {
+		$detail_list[] = array (
+			"name"	=>	$details['name'],
+			"descr"	=>	$details['desc']
+			);
+	}
+	return $detail_list;
+}	
+
+
+// Get a list of all available permission templates.
 
 function get_list_permission_templates() {
 	global $db;

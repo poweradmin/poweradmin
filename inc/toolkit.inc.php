@@ -41,21 +41,21 @@ if(is_file( dirname(__FILE__) . '/../migrator.php'))
 /*************
  * Constants *
  *************/
-define(ROWAMOUNT, $ROWAMOUNT);
+define('ROWAMOUNT', $ROWAMOUNT);
 
 if (isset($_GET["start"])) {
-   define(ROWSTART, (($_GET["start"] - 1) * ROWAMOUNT));
+   define('ROWSTART', (($_GET["start"] - 1) * ROWAMOUNT));
    } else {
-   define(ROWSTART, 0);
+   define('ROWSTART', 0);
 }
 
 if (isset($_GET["letter"])) {
-   define(LETTERSTART, $_GET["letter"]);
+   define('LETTERSTART', $_GET["letter"]);
    $_SESSION["letter"] = $_GET["letter"];
 } elseif(isset($_SESSION["letter"])) {
-   define(LETTERSTART, $_SESSION["letter"]);
+   define('LETTERSTART', $_SESSION["letter"]);
 } else {
-   define(LETTERSTART, "a");
+   define('LETTERSTART', "a");
 }
 
 /* Database connection */
