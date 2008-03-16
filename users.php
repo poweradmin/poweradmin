@@ -24,6 +24,7 @@ include_once("inc/header.inc.php");
 verify_permission(user_view_others) ? $perm_view_others = "1" : $perm_view_others = "0" ;
 verify_permission(user_edit_own) ? $perm_edit_own = "1" : $perm_edit_own = "0" ;
 verify_permission(user_edit_others) ? $perm_edit_others = "1" : $perm_edit_others = "0" ;
+verify_permission(templ_perm_edit) ? $perm_templ_perm_edit = "1" : $perm_templ_perm_edit = "0" ;
 verify_permission(is_ueberuser) ? $perm_is_godlike = "1" : $perm_is_godlike = "0" ; 
 
 $users = get_user_detail_list("");
@@ -67,6 +68,10 @@ foreach ($users as $user) {
 }
 
 echo "     </table>\n";
+
+if ($perm_templ_perm_edit == "1") {
+	echo "     <p>" . _('Edit') . " <a href=\"list_perm_templ.php\">" . _('permission templates') . "</a>.</p>\n";
+}
 
 include_once("inc/footer.inc.php");
 ?>
