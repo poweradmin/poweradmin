@@ -21,55 +21,58 @@
 
 session_start();
 
-if (isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] == "logout")
-{
-	logout();
-}
-
-// If a user had just entered his/her login && password, store them in our session.
-if(isset($_POST["authenticate"]))
-{
-    	$_SESSION["userpwd"] = $_POST["password"];
-    	$_SESSION["userlogin"] = $_POST["username"];
-}
-
-// Check if the session hasnt expired yet.
-if ((isset($_SESSION["userid"])) && ($_SESSION["lastmod"] != "") && ((time() - $_SESSION["lastmod"]) > $EXPIRE))
-{
-	logout( _('Session expired, please login again.'),"error");
-}
-
-// If the session hasn't expired yet, give our session a fresh new timestamp.
-$_SESSION["lastmod"] = time();
-
-if(isset($_SESSION["userlogin"]) && isset($_SESSION["userpwd"]))
-{
-    //Username and password are set, lets try to authenticate.
-	$result = $db->query("SELECT id, fullname, level FROM users WHERE username=". $db->quote($_SESSION["userlogin"])  ." AND password=". $db->quote(md5($_SESSION["userpwd"]))  ." AND active=1");
-	if($result->numRows() == 1)
-	{
-        	$rowObj = $result->fetchRow();
-		$_SESSION["userid"] = $rowObj["id"];
-		$_SESSION["name"] = $rowObj["fullname"];
-		$_SESSION["level"] = $rowObj["level"];
-        	if($_POST["authenticate"])
-        	{
-            		//If a user has just authenticated, redirect him to index with timestamp, so post-data gets lost.
-            		session_write_close();
-            		clean_page("index.php");
-            		exit;
-        	}
-    	}
-    	else
-    	{
-        	//Authentication failed, retry.
-	        auth( _('Authentication failed!'),"error");
+function doAuthenticate() {
+	global $db;
+	global $EXPIRE;
+	if (isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] == "logout") {
+		logout();
 	}
-}
-else
-{
-	//No username and password set, show auth form (again).
-	auth();
+
+	// If a user had just entered his/her login && password, store them in our session.
+	if(isset($_POST["authenticate"]))
+	{
+			$_SESSION["userpwd"] = $_POST["password"];
+			$_SESSION["userlogin"] = $_POST["username"];
+	}
+
+	// Check if the session hasnt expired yet.
+	if ((isset($_SESSION["userid"])) && ($_SESSION["lastmod"] != "") && ((time() - $_SESSION["lastmod"]) > $EXPIRE))
+	{
+		logout( _('Session expired, please login again.'),"error");
+	}
+
+	// If the session hasn't expired yet, give our session a fresh new timestamp.
+	$_SESSION["lastmod"] = time();
+
+	if(isset($_SESSION["userlogin"]) && isset($_SESSION["userpwd"]))
+	{
+		//Username and password are set, lets try to authenticate.
+		$result = $db->query("SELECT id, fullname, level FROM users WHERE username=". $db->quote($_SESSION["userlogin"])  ." AND password=". $db->quote(md5($_SESSION["userpwd"]))  ." AND active=1");
+		if($result->numRows() == 1)
+		{
+			$rowObj = $result->fetchRow();
+			$_SESSION["userid"] = $rowObj["id"];
+			$_SESSION["name"] = $rowObj["fullname"];
+			$_SESSION["level"] = $rowObj["level"];
+			if($_POST["authenticate"])
+			{
+				//If a user has just authenticated, redirect him to index with timestamp, so post-data gets lost.
+				session_write_close();
+				clean_page("index.php");
+				exit;
+			}
+		}
+		else
+		{
+			//Authentication failed, retry.
+			auth( _('Authentication failed!'),"error");
+		}
+	}
+	else
+	{
+		//No username and password set, show auth form (again).
+		auth();
+	}
 }
 
 /*

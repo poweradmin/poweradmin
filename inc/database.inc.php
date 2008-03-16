@@ -35,34 +35,42 @@ function dbError($msg)
 
 PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, 'dbError');
 
-$dsn = "$dbdsntype://$dbuser:$dbpass@$dbhost/$dbdatabase";
-$db = MDB2::connect($dsn);
-$db->setOption('portability', MDB2_PORTABILITY_ALL ^ MDB2_PORTABILITY_EMPTY_TO_NULL);
+function dbConnect() {
+	global $dbdsntype;
+	global $dbuser;
+	global $dbpass;
+	global $dbhost;
+	global $dbdatabase;
 
-if (MDB2::isError($db))
-{
-	// Error handling should be put.
-        error(MYSQL_ERROR_FATAL, $db->getMessage());
+	$dsn = "$dbdsntype://$dbuser:$dbpass@$dbhost/$dbdatabase";
+	$db = MDB2::connect($dsn);
+	$db->setOption('portability', MDB2_PORTABILITY_ALL ^ MDB2_PORTABILITY_EMPTY_TO_NULL);
+
+	if (MDB2::isError($db))
+	{
+		// Error handling should be put.
+		error(MYSQL_ERROR_FATAL, $db->getMessage());
+	}
+
+	// Do an ASSOC fetch. Gives us the ability to use ["id"] fields.
+	$db->setFetchMode(MDB2_FETCHMODE_ASSOC);
+
+	/* erase info */
+	$mysql_pass = $dsn = '';
+
+	// Add support for regular expressions in both MySQL and PostgreSQL
+	if ( $dbdsntype == "mysql" ) 
+	{
+		$sql_regexp = "REGEXP";
+	} 
+	elseif ( $dbdsntype == "pgsql" ) 
+	{
+		$sql_regexp = "~";
+	}
+	else
+	{
+		error(_('Unknown database type in inc/config.inc.php.'));
+	};
+	return $db;
 }
-
-// Do an ASSOC fetch. Gives us the ability to use ["id"] fields.
-$db->setFetchMode(MDB2_FETCHMODE_ASSOC);
-
-/* erase info */
-$mysql_pass = $dsn = '';
-
-// Add support for regular expressions in both MySQL and PostgreSQL
-if ( $dbdsntype == "mysql" ) 
-{
-	$sql_regexp = "REGEXP";
-} 
-elseif ( $dbdsntype == "pgsql" ) 
-{
-	$sql_regexp = "~";
-}
-else
-{
-	error(_('Unknown database type in inc/config.inc.php.'));
-};
-
 ?>

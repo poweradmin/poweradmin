@@ -33,6 +33,10 @@ function verify_permission($permission) {
 
         global $db;
 
+		if ((!isset($_SESSION['userid'])) || (!is_object($db))) {
+			return 0;
+		}
+
         // Set current user ID.
         $userid=$_SESSION['userid'];
 

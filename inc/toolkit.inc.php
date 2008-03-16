@@ -79,6 +79,9 @@ require_once("users.inc.php");
 require_once("dns.inc.php");
 require_once("record.inc.php");
 
+$db = dbConnect();
+doAuthenticate();
+
 
 /*************
  * Functions *
