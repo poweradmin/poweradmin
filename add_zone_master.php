@@ -22,14 +22,22 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
-v_num($_POST["owner"]) ? $owner = $_POST["owner"] : $owner = "-1";
-$domain = mysql_real_escape_string(trim($_POST["domain"]));
-$webip = mysql_real_escape_string($_POST["webip"]);
-$mailip = mysql_real_escape_string($_POST["mailip"]);
-$empty = mysql_real_escape_string($_POST["empty"]);
-$dom_type = isset($_POST["dom_type"]) ? mysql_real_escape_string($_POST["dom_type"]) : "NATIVE";
+$owner = "-1";
+if ((isset($_POST['owner'])) && (v_num($_POST['owner']))) {
+        $owner = $_POST['owner'];
+}
 
-if(verify_permission(zone_master_add)) { $zone_master_add = "1" ; } ;
+$dom_type = "NATIVE";
+if (isset($_POST["dom_type"]) && (in_array($_POST['dom_type'], $server_types))) {
+	$dom_type = $_POST["dom_type"];
+}
+
+$domain = trim($_POST["domain"]);
+$webip = $_POST["webip"];
+$mailip = $_POST["mailip"];
+$empty = $_POST["empty"];
+
+(verify_permission(zone_master_add)) ? $zone_master_add = "1" : $zone_master_add = "0" ;
 
 if ($_POST['submit'] && $zone_master_add == "1" ) {
 

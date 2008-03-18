@@ -34,12 +34,24 @@ if (verify_permission(zone_meta_edit_others)) { $perm_meta_edit = "all" ; }
 elseif (verify_permission(zone_meta_edit_own)) { $perm_meta_edit = "own" ; }
 else { $perm_meta_edit = "none" ; }
 
-v_num($_GET['id']) ? $zone_id = $_GET['id'] : $zone_id = "-1";
-v_num($_POST['ttl']) ? $ttl = $_POST['ttl'] : $ttl = $DEFAULT_TTL;
-v_num($_POST['prio']) ? $prio = $_POST['prio'] : $prio = "10";
-$name = mysql_real_escape_string($_POST['name']);
-$type = mysql_real_escape_string($_POST['type']);
-$content = mysql_real_escape_string($_POST['content']);
+$zone_id = "-1";
+if ((isset($_GET['id'])) && (v_num($_GET['id']))) {
+	$zone_id = $_GET['id'];
+}
+
+$ttl = $DEFAULT_TTL;
+if ((isset($_POST['ttl'])) && (v_num($_POST['ttl']))) {
+	$ttl = $_POST['ttl'];
+}
+
+$prio = "10";
+if ((isset($_GET['prio'])) && (v_num($_GET['prio']))) {
+	$prio = $_GET['prio'];
+}
+
+$name = $_POST['name'];
+$type = $_POST['type'];
+$content = $_POST['content'];
 
 if ($zone_id == "-1") {
 	error(ERR_INV_INPUT);

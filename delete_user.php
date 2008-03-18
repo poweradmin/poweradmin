@@ -21,7 +21,10 @@
 
 require_once("inc/toolkit.inc.php");
 
-$id = ($_POST["id"]) ? $_POST["id"] : $_GET["id"];
+$id = "-1";
+if (isset($_POST['id']) && v_num($_POST['id'])) {
+	$id = $_GET['id'];
+}
 
 if(isset($id)) 
 {

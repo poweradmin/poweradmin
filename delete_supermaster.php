@@ -22,8 +22,15 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
-(is_valid_ip($_GET['master_ip']) || is_valid_ip6($_GET['master_ip'])) ? $master_ip = $_GET['master_ip'] : $master_ip = "-1" ;
-v_num($_GET['confirm']) ? $confirm = $_GET['confirm'] : $confirm = "-1";
+$master_ip = "-1"
+if (isset($_GET['master_ip']) && (is_valid_ip($_GET['master_ip']) || is_valid_ip6($_GET['master_ip']))) {
+	 $master_ip = $_GET['master_ip'];
+}
+
+$confirm = "-1";
+if ((isset($_GET['confirm']) && v_num($_GET['confirm'])
+        $confirm = $_GET['confirm'];
+}
 
 if ($master_ip == "-1"){
 	error(ERR_INV_INPUT);

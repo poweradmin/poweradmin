@@ -22,12 +22,16 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
-if(verify_permission(zone_slave_add)) { $zone_slave_add = "1" ; } ;
+$owner = "-1";
+if ((isset($_POST['owner'])) && (v_num($_POST['owner']))) {
+        $owner = $_POST['owner'];
+}
 
-v_num($_POST['owner']) ? $owner = $_POST['owner'] : $owner = "-1" ;
-$zone = mysql_real_escape_string(trim($_POST['domain']));
-$master = mysql_real_escape_string($_POST['slave_master']);
+$zone = trim($_POST['domain']);
+$master = $_POST['slave_master'];
 $type = "SLAVE";
+
+(verify_permission(zone_slave_add)) ? $zone_slave_add = "1" : $zone_slave_add = "0" ;
 
 if ($_POST['submit'] && $zone_slave_add == "1") {
 	if (!is_valid_domain($zone)) {

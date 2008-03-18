@@ -22,11 +22,11 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
-$master_ip = mysql_real_escape_string($_POST["master_ip"]);
-$ns_name = mysql_real_escape_string($_POST["ns_name"]);
-$account = mysql_real_escape_string($_POST["account"]);
+$master_ip = $_POST["master_ip"];
+$ns_name = $_POST["ns_name"];
+$account = $_POST["account"];
 
-if (verify_permission(supermaster_add)) { $supermasters_add = "1" ; }
+(verify_permission(supermaster_add)) ? $supermasters_add = "1" :  $supermasters_add = "0";
 
 if($_POST["submit"])
 {

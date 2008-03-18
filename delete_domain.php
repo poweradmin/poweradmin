@@ -26,8 +26,16 @@ if (verify_permission(zone_content_edit_others)) { $perm_edit = "all" ; }
 elseif (verify_permission(zone_content_edit_own)) { $perm_edit = "own" ;}
 else { $perm_edit = "none" ; }
 
-v_num($_GET['id']) ? $zone_id = $_GET['id'] : $zone_id = "-1";
-v_num($_GET['confirm']) ? $confirm = $_GET['confirm'] : $confirm = "-1";
+$zone_id = "-1";
+if ((isset($_GET['id']) && v_num($_GET['id']) {
+	$zone_id = $_GET['id']
+}
+
+$confirm = "-1";
+if ((isset($_GET['confirm']) && v_num($_GET['confirm'])
+	$confirm = $_GET['confirm'];
+}
+
 $zone_info = get_zone_info_from_id($zone_id);
 $zone_owners = get_fullnames_owners_from_domainid($zone_id);
 $user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);

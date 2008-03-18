@@ -19,6 +19,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
+// TODO rewrite
+
 require_once("inc/toolkit.inc.php");
 
 if($_POST["submit"])

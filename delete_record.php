@@ -21,8 +21,17 @@
 
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
-v_num($_GET['id']) ? $record_id = $_GET['id'] : $record_id = "-1";
-v_num($_GET['confirm']) ? $confirm = $_GET['confirm'] : $confirm = "-1";
+
+$record_id = "-1";
+if (isset($_GET['id']) && v_num($_GET['id'])) {
+	$record_id = $_GET['id'];
+}
+
+
+$confirm = "-1";
+if ((isset($_GET['confirm']) && v_num($_GET['confirm'])
+        $confirm = $_GET['confirm'];
+}
 
 if (verify_permission(zone_content_edit_others)) { $perm_content_edit = "all" ; }
 elseif (verify_permission(zone_content_edit_own)) { $perm_content_edit = "own" ; }
