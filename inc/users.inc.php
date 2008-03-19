@@ -642,4 +642,40 @@ function get_list_permission_templates() {
 }
 
 
+// Update all details of a permission template.
+
+function update_perm_templ_details($details) {
+	global $db;
+
+	// Fix permission template name and description first. 
+
+	$query = "UPDATE perm_templ 
+			SET `name` = " . $db->quote($details['templ_name']) . ",
+			`desc` = " . $db->quote($details['templ_descr']) . "
+			WHERE id = " . $db->quote($details['templ_id']) ;
+	
+	$result = $db->query($query);
+	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+
+	// Now, update list of permissions assigned to this template. We could do 
+	// this The Correct Way [tm] by comparing the list of permissions that is 
+	// currently assigned with a list of permissions that should be assigned and
+	// apply the difference between these two lists to the database. That sounds 
+	// like to much work. Just delete all the permissions currently assigned to 
+	// the template, than assign all the permessions the template should have.
+
+	$query = "DELETE FROM perm_templ_items WHERE templ_id = " . $details['templ_id'] ;
+	$result = $db->query($query);
+	if (pear::iserror($response)) { error($response->getmessage()); return false; }
+
+	foreach ($details['perm_id'] AS $perm_id) {
+		$r_insert_values[] = "(''," . $db->quote($details['templ_id']) . "," . $db->quote($perm_id) . ")";
+	}
+	$query = "INSERT INTO perm_templ_items VALUES " . implode(',', $r_insert_values) ;
+	$result = $db->query($query);
+	if (pear::iserror($response)) { error($response->getmessage()); return false; }
+
+	return true;
+}
+
 ?>

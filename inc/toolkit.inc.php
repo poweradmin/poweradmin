@@ -22,7 +22,6 @@
 session_start();
 
 
-
 if(!@include_once("config.inc.php"))
 {
 	error( _('You have to create a config.inc.php!') );
@@ -353,5 +352,10 @@ function v_num($string) {
 	}
 }
 
+function debug_r($array) {
+	echo "<pre>\n";
+	print_r($array);
+	echo "</pre>\n";
+}
 
 ?>
