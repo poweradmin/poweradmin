@@ -41,6 +41,7 @@ function dbConnect() {
 	global $dbpass;
 	global $dbhost;
 	global $dbdatabase;
+	global $sql_regexp;
 
 	$dsn = "$dbdsntype://$dbuser:$dbpass@$dbhost/$dbdatabase";
 	$db = MDB2::connect($dsn);
