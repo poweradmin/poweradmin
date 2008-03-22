@@ -365,7 +365,7 @@ function edit_user($id, $user, $fullname, $email, $perm_templ, $description, $ac
 				active = " . $db->quote($active) ;
 
 		if($password != "") {
-			$query .= ", password = '" . md5($db->quote($password)) . "' ";
+			$query .= ", password = " . $db->quote(md5($password)) ;
 		}
 
 		$query .= " WHERE id = " . $db->quote($id) ;
