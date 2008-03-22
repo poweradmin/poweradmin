@@ -47,13 +47,12 @@ function doAuthenticate() {
 	if(isset($_SESSION["userlogin"]) && isset($_SESSION["userpwd"]))
 	{
 		//Username and password are set, lets try to authenticate.
-		$result = $db->query("SELECT id, fullname, level FROM users WHERE username=". $db->quote($_SESSION["userlogin"])  ." AND password=". $db->quote(md5($_SESSION["userpwd"]))  ." AND active=1");
+		$result = $db->query("SELECT id, fullname FROM users WHERE username=". $db->quote($_SESSION["userlogin"])  ." AND password=". $db->quote(md5($_SESSION["userpwd"]))  ." AND active=1");
 		if($result->numRows() == 1)
 		{
 			$rowObj = $result->fetchRow();
 			$_SESSION["userid"] = $rowObj["id"];
 			$_SESSION["name"] = $rowObj["fullname"];
-			$_SESSION["level"] = $rowObj["level"];
 			if($_POST["authenticate"])
 			{
 				//If a user has just authenticated, redirect him to index with timestamp, so post-data gets lost.

@@ -755,4 +755,44 @@ function update_user_details($details) {
 	}
 	return true;		
 }
+
+// Add a new user
+
+function add_new_user($details) {
+	global $db;
+
+	if (!verify_permission(user_add_new)) {
+		error(ERR_PERM_ADD_USER);
+
+	} elseif (user_exists($details['username'])) {
+		error(ERR_USER_EXISTS);
+
+	} elseif (!is_valid_email($details['email'])) {
+		error(ERR_INV_EMAIL);
+	
+	} elseif ($details['active'] == 1) {
+		$active = 1;
+	} else {
+		$active = 0;
+	}
+
+	$query = "INSERT INTO users VALUES ( "
+			. "'', "
+			. $db->quote($details['username']) . ", "
+			. $db->quote(md5($details['password'])) . ", "
+			. $db->quote($details['fullname']) . ", "
+			. $db->quote($details['email']) . ", "
+			. $db->quote($details['descr']) . ", "
+			. $db->quote($details['perm_templ']) . ", "
+			. $db->quote($active) 
+			. ")";
+
+	$result = $db->query($query);
+	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+	
+	return true;
+}
+
+			
+
 ?>
