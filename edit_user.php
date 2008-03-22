@@ -35,18 +35,46 @@ if ($edit_id == "-1") {
 } elseif (($edit_id == $_SESSION["userid"] && $perm_edit_own == "1") || ($edit_id != $_SESSION["userid"] && $perm_edit_others == "1" )) {
 
 	if($_POST["commit"]) {
-		(mysql_real_escape_string($_POST["username"])) ? $i_username = $_POST["username"] : $i_username = "-1";
-		(mysql_real_escape_string($_POST["fullname"])) ? $i_fullname = $_POST["fullname"] : $i_fullname = "-1";
-		(mysql_real_escape_string($_POST["email"])) ? $i_email = $_POST["email"] : $i_email = "-1";
-		(mysql_real_escape_string($_POST["description"])) ? $i_description = $_POST["description"] : $i_description = "-1";
-		if ($_POST["password"] != "" ){
-			(mysql_real_escape_string($_POST["password"])) ? $i_password = $_POST["password"] : $i_password = "-1";
-		}
-		(v_num($_POST["active"])) ? $i_active = $_POST["active"] : $i_active = "0";
-		(v_num($_POST["perm_templ"])) ? $i_perm_templ = $_POST["perm_templ"] : $i_perm_templ = "0";
 
+		debug_r($_POST);
+
+		$i_username = "-1";
+		$i_fullname = "-1";
+		$i_email = "-1";
+		$i_description = "-1";
+		$i_password = "-1";
+		$i_perm_templ = "0";
+		$i_active = "0";
+
+		if (isset($_POST['username'])) {
+			$i_username = $_POST['username'];
+		}
+
+		if (isset($_POST['fullname'])) {
+			$i_fullname = $_POST['fullname'];
+		}
+
+		if (isset($_POST['email'])) {
+			$i_email = $_POST['email'];
+		}
+
+		if (isset($_POST['description'])) {
+			$i_description = $_POST['description'];
+		}
+
+		if (isset($_POST['password'])) {
+			$i_password = $_POST['password'];
+		}
+		
+		if (isset($_POST['perm_templ']) && v_num($_POST['perm_templ'])) {
+			$i_perm_templ = $_POST['perm_templ'];
+		}
+		
+		if (isset($_POST['active']) && v_num($_POST['active'])) {
+			$i_active = $_POST['active'];
+		}
+		
 		if ( $i_username == "-1" || $i_fullname == "-1" || $i_email < "1" || $i_description == "-1" || $i_password == "-1" ) {
-			echo "DEBUG " . $i_username . "." . $i_fullname . ".". $i_email .".". $i_description .".". $i_password;
 			error(ERR_INV_INPUT);
 		} else {
 			if($i_username != "" && $i_perm_templ > "0" && $i_fullname) {

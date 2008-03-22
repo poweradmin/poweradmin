@@ -119,36 +119,40 @@ function update_soa_serial($domain_id)
  * This function validates it if correct it inserts it into the database.
  * return values: true if succesful.
  */
-function edit_record($recordid, $zoneid, $name, $type, $content, $ttl, $prio)
-{
+function edit_record($record) {
+
 	if (verify_permission(zone_content_edit_others)) { $perm_content_edit = "all" ; }
 	elseif (verify_permission(zone_content_edit_own)) { $perm_content_edit = "own" ; }
 	else { $perm_content_edit = "none" ; }
 
-	$user_is_zone_owner = verify_user_is_owner_zoneid($zoneid);
-	$zone_type = get_domain_type($zoneid);
+
+	$user_is_zone_owner = verify_user_is_owner_zoneid($record['zid']);
+	$zone_type = get_domain_type($record['zid']);
 
 	if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
 		return _("You are not allowed to edit this record.") ; //TODO i18n
 	} else {
-		global $db;
-		if($content == "") {
+		if($record['content'] == "") {
 			return _("Error: content field may not be empty.") ; //TODO i18n
 		}
+		global $db;
 		// TODO: no need to check for numeric-ness of zone id if we check with validate_input as well?
-		if (is_numeric($zoneid)) {
-			validate_input($zoneid, $type, $content, $name, $prio, $ttl);
-			$change = time();
-			$db->query("UPDATE records SET name=".$db->quote($name).", 
-							type=".$db->quote($type).", 
-							content=".$db->quote($content).", 
-							ttl=".$db->quote($ttl).", 
-							prio=".$db->quote($prio).", 
-							change_date=".$db->quote($change)." 
-							WHERE id=".$db->quote($recordid));
-			// TODO check for query error
-			if ($type != 'SOA') {
-				update_soa_serial($zoneid);
+		if (is_numeric($record['zid'])) {
+			validate_input($record['zid'], $record['type'], $record['content'], $record['name'], $record['prio'], $record['ttl']);
+			$query = "UPDATE records 
+					SET name=".$db->quote($record['name']).", 
+					type=".$db->quote($record['type']).", 
+					content=".$db->quote($record['content']).", 
+					ttl=".$db->quote($record['ttl']).", 
+					prio=".$db->quote($record['prio']).", 
+					change_date=".$db->quote(time())." 
+					WHERE id=".$db->quote($record['rid']);
+			$result = $db->Query($query);
+			if (PEAR::isError($result)) {
+				error($result->getMessage());
+				return false;
+			} elseif ($record['type'] != 'SOA') {
+				update_soa_serial($record['zid']);
 			}
 			return true;
 		}
@@ -1390,30 +1394,6 @@ function get_users_from_domain_id($id) {
 	return $owners;	
 }
 
-//function get_users_from_domain_id($id)
-//{
-//	global $db;
-//	$result = $db->query("SELECT owner FROM zones WHERE domain_id=".$db->quote($id));
-//	print_r($result);
-//	$owners = array();
-//	if($result->numRows() == 0)
-//	{
-//		return -1;
-//	}
-//	else
-//	{
-//		foreach($result as $uid) {
-//			echo "E:$uid -- ";
-//			$fullname = $db->queryOne("SELECT fullname FROM users WHERE id=".$db->quote($uid));
-//			echo "D:$uid:$fullname-";
-//			$owners[] = array(
-//				"id" 		=> 	$uid,
-//				"fullname"	=>	$fullname		
-//			);		
-//		}
-//	}
-//	return $owners;	
-//}
 
 function search_record($question)
 {

@@ -353,7 +353,7 @@ function v_num($string) {
 }
 
 function debug_r($array) {
-	echo "<pre>\n";
+	echo "<pre style=\"border: 2px solid blue;\">\n";
 	print_r($array);
 	echo "</pre>\n";
 }

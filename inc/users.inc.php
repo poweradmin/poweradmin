@@ -33,9 +33,9 @@ function verify_permission($permission) {
 
         global $db;
 
-		if ((!isset($_SESSION['userid'])) || (!is_object($db))) {
-			return 0;
-		}
+	if ((!isset($_SESSION['userid'])) || (!is_object($db))) {
+		return 0;
+	}
 
         // Set current user ID.
         $userid=$_SESSION['userid'];
@@ -50,7 +50,7 @@ function verify_permission($permission) {
         $query = "SELECT id 
 			FROM perm_templ_items 
 			WHERE templ_id = " . $db->quote($templ_id) . " 
-			AND perm_id = '30'";
+			AND perm_id = '53'";
         $result = $db->query($query);
         if ( $result->numRows() > 0 ) {
                 return 1;
@@ -365,7 +365,7 @@ function edit_user($id, $user, $fullname, $email, $perm_templ, $description, $ac
 				active = " . $db->quote($active) ;
 
 		if($password != "") {
-			$query .= ", password = '" . md5($password) . "' ";
+			$query .= ", password = '" . md5($db->quote($password)) . "' ";
 		}
 
 		$query .= " WHERE id = " . $db->quote($id) ;
@@ -658,7 +658,7 @@ function update_perm_templ_details($details) {
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
 	// Now, update list of permissions assigned to this template. We could do 
-	// this The Correct Way [tm] by comparing the list of permissions that is 
+	// this The Correct Way [tm] by comparing the list of permissions that are
 	// currently assigned with a list of permissions that should be assigned and
 	// apply the difference between these two lists to the database. That sounds 
 	// like to much work. Just delete all the permissions currently assigned to 
@@ -678,4 +678,85 @@ function update_perm_templ_details($details) {
 	return true;
 }
 
+function update_user_details($details) {
+
+	global $db;
+
+	verify_permission(user_edit_own) ? $perm_edit_own = "1" : $perm_edit_own = "0" ;
+	verify_permission(user_edit_others) ? $perm_edit_others = "1" : $perm_edit_others = "0" ;
+
+	if (($details['uid'] == $_SESSION["userid"] && $perm_edit_own == "1") || 
+		($details['uid'] != $_SESSION["userid"] && $perm_edit_others == "1" )) {
+
+                if (!is_valid_email($details['email'])) {
+                        error(ERR_INV_EMAIL);
+                        return false;
+                }
+
+                if (!isset($details['active']) || $details['active'] != "on" ) {
+                        $active = 0;
+                } else {
+			$active = 1;
+		}
+
+                // Before updating the database we need to check whether the user wants to 
+                // change the username. If the user wants to change the username, we need 
+                // to make sure it doesn't already exists. 
+                //
+                // First find the current username of the user ID we want to change. If the 
+                // current username is not the same as the username that was given by the 
+                // user, the username should apparantly changed. If so, check if the "new" 
+                // username already exists.
+
+                $query = "SELECT username FROM users WHERE id = " . $db->quote($details['uid']);
+                $result = $db->query($query);
+                if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+
+                $usercheck = array();
+                $usercheck = $result->fetchRow();
+
+                if ($usercheck['username'] != $details['username']) {
+
+                        // Username of user ID in the database is different from the name
+                        // we have been given. User wants a change of username. Now, make
+                        // sure it doesn't already exist.
+
+                        $query = "SELECT id FROM users WHERE username = " . $db->query($details['username']);
+                        $result = $db->query($query);
+                        if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+
+                        if($result->numRows() > 0) {
+                                error(ERR_USER_EXIST);
+                                return false;
+                        }
+                }
+
+                // So, user doesn't want to change username or, if he wants, there is not
+                // another user that goes by the wanted username. So, go ahead!
+
+                $query = "UPDATE users SET
+                                username = " . $db->quote($details['username']) . ",
+                                fullname = " . $db->quote($details['fullname']) . ",
+                                email = " . $db->quote($details['email']) . ",
+                                perm_templ = " . $db->quote($details['templ_id']) . ",
+                                description = " . $db->quote($details['descr']) . ", 
+                                active = " . $db->quote($active) ;
+
+		// TODO Check if function works if password is set too.
+
+                if($details['password'] != "") {
+                        $query .= ", password = '" . md5($db->quote($details['password'])) . "' ";
+                }
+
+                $query .= " WHERE id = " . $db->quote($details['uid']) ;
+
+                $result = $db->query($query);
+                if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+
+	} else {
+                error(ERR_PERM_EDIT_USER);
+                return false;
+        }
+        return true;		
+}
 ?>
