@@ -686,77 +686,73 @@ function update_user_details($details) {
 	verify_permission(user_edit_others) ? $perm_edit_others = "1" : $perm_edit_others = "0" ;
 
 	if (($details['uid'] == $_SESSION["userid"] && $perm_edit_own == "1") || 
-		($details['uid'] != $_SESSION["userid"] && $perm_edit_others == "1" )) {
+			($details['uid'] != $_SESSION["userid"] && $perm_edit_others == "1" )) {
 
-                if (!is_valid_email($details['email'])) {
-                        error(ERR_INV_EMAIL);
-                        return false;
-                }
+		if (!is_valid_email($details['email'])) {
+			error(ERR_INV_EMAIL);
+			return false;
+		}
 
-                if (!isset($details['active']) || $details['active'] != "on" ) {
-                        $active = 0;
-                } else {
+		if (!isset($details['active']) || $details['active'] != "on" ) {
+			$active = 0;
+		} else {
 			$active = 1;
 		}
 
-                // Before updating the database we need to check whether the user wants to 
-                // change the username. If the user wants to change the username, we need 
-                // to make sure it doesn't already exists. 
-                //
-                // First find the current username of the user ID we want to change. If the 
-                // current username is not the same as the username that was given by the 
-                // user, the username should apparantly changed. If so, check if the "new" 
-                // username already exists.
+		// Before updating the database we need to check whether the user wants to 
+		// change the username. If the user wants to change the username, we need 
+		// to make sure it doesn't already exists. 
+		//
+		// First find the current username of the user ID we want to change. If the 
+		// current username is not the same as the username that was given by the 
+		// user, the username should apparantly changed. If so, check if the "new" 
+		// username already exists.
+		$query = "SELECT username FROM users WHERE id = " . $db->quote($details['uid']);
+		$result = $db->query($query);
+		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
-                $query = "SELECT username FROM users WHERE id = " . $db->quote($details['uid']);
-                $result = $db->query($query);
-                if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+		$usercheck = array();
+		$usercheck = $result->fetchRow();
 
-                $usercheck = array();
-                $usercheck = $result->fetchRow();
+		if ($usercheck['username'] != $details['username']) {
+			// Username of user ID in the database is different from the name
+			// we have been given. User wants a change of username. Now, make
+			// sure it doesn't already exist.
+			$query = "SELECT id FROM users WHERE username = " . $db->quote($details['username']);
+			$result = $db->query($query);
+			if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
-                if ($usercheck['username'] != $details['username']) {
+			if($result->numRows() > 0) {
+				error(ERR_USER_EXIST);
+				return false;
+			}
+		}
 
-                        // Username of user ID in the database is different from the name
-                        // we have been given. User wants a change of username. Now, make
-                        // sure it doesn't already exist.
+		// So, user doesn't want to change username or, if he wants, there is not
+		// another user that goes by the wanted username. So, go ahead!
 
-                        $query = "SELECT id FROM users WHERE username = " . $db->query($details['username']);
-                        $result = $db->query($query);
-                        if (PEAR::isError($response)) { error($response->getMessage()); return false; }
-
-                        if($result->numRows() > 0) {
-                                error(ERR_USER_EXIST);
-                                return false;
-                        }
-                }
-
-                // So, user doesn't want to change username or, if he wants, there is not
-                // another user that goes by the wanted username. So, go ahead!
-
-                $query = "UPDATE users SET
-                                username = " . $db->quote($details['username']) . ",
-                                fullname = " . $db->quote($details['fullname']) . ",
-                                email = " . $db->quote($details['email']) . ",
-                                perm_templ = " . $db->quote($details['templ_id']) . ",
-                                description = " . $db->quote($details['descr']) . ", 
-                                active = " . $db->quote($active) ;
+		$query = "UPDATE users SET
+				username = " . $db->quote($details['username']) . ",
+				fullname = " . $db->quote($details['fullname']) . ",
+				email = " . $db->quote($details['email']) . ",
+				perm_templ = " . $db->quote($details['templ_id']) . ",
+				description = " . $db->quote($details['descr']) . ", 
+				active = " . $db->quote($active) ;
 
 		// TODO Check if function works if password is set too.
+		if($details['password'] != "") {
+			$query .= ", password = '" . md5($db->quote($details['password'])) . "' ";
+		}
 
-                if($details['password'] != "") {
-                        $query .= ", password = '" . md5($db->quote($details['password'])) . "' ";
-                }
+		$query .= " WHERE id = " . $db->quote($details['uid']) ;
 
-                $query .= " WHERE id = " . $db->quote($details['uid']) ;
-
-                $result = $db->query($query);
-                if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+		$result = $db->query($query);
+		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
 	} else {
-                error(ERR_PERM_EDIT_USER);
-                return false;
-        }
-        return true;		
+		error(ERR_PERM_EDIT_USER);
+		return false;
+	}
+	return true;		
 }
 ?>
