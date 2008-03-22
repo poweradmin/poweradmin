@@ -36,8 +36,6 @@ if ($edit_id == "-1") {
 
 	if($_POST["commit"]) {
 
-		debug_r($_POST);
-
 		$i_username = "-1";
 		$i_fullname = "-1";
 		$i_email = "-1";
