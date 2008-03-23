@@ -770,7 +770,6 @@ function get_domains_from_userid($id)
 	}
 }
 
-
 /*
  * Get domain name from a given id
  * return values: the name of the domain associated with the id.
@@ -981,7 +980,7 @@ function supermaster_exists($master_ip)
 }
 
 
-function get_zones($perm,$userid=true,$letterstart=all,$rowstart=0,$rowamount=999999) 
+function get_zones($perm,$userid=0,$letterstart=all,$rowstart=0,$rowamount=999999) 
 {
 	global $db;
 	global $sql_regexp;
@@ -992,7 +991,7 @@ function get_zones($perm,$userid=true,$letterstart=all,$rowstart=0,$rowamount=99
 	{
 		if ($perm == "own") {
 			$sql_add = " AND zones.domain_id = domains.id
-				AND zones.owner = ".$db->quote($_SESSION['userid']);
+				AND zones.owner = ".$db->quote($userid);
 		}
 		if ($letterstart!=all && $letterstart!=1) {
 			$sql_add .=" AND domains.name LIKE ".$db->quote($letterstart."%")." ";
@@ -1010,8 +1009,8 @@ function get_zones($perm,$userid=true,$letterstart=all,$rowstart=0,$rowamount=99
 			LEFT JOIN records ON records.domain_id=domains.id
 			WHERE 1=1".$sql_add." 
 			GROUP BY domains.name, domains.id
-			ORDER BY domains.name;";
-
+			ORDER BY domains.name";
+	
 	$db->setLimit($rowamount, $rowstart);
 	$result = $db->query($sqlq);
 
@@ -1034,6 +1033,7 @@ function get_zones($perm,$userid=true,$letterstart=all,$rowstart=0,$rowamount=99
  * if a user id is below 5 this function will only retrieve records for that user.
  * return values: the array of domains or -1 if nothing is found.
  */
+// TODO Should be removed.
 function get_domains($userid=true,$letterstart='all',$rowstart=0,$rowamount=999999)
 {
 	global $db;

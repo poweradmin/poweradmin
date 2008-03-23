@@ -114,8 +114,8 @@ function show_users($id='',$rowstart=0,$rowamount=9999999)
 		users.fullname AS fullname,
 		users.email AS email,
 		users.description AS description,
-		users.level AS level,
 		users.active AS active,
+		users.perm_templ AS perm_templ,
 		count(zones.owner) AS aantal FROM users
 		LEFT JOIN zones ON users.id=zones.owner$add
 		GROUP BY
@@ -124,7 +124,7 @@ function show_users($id='',$rowstart=0,$rowamount=9999999)
 			users.fullname,
 			users.email,
 			users.description,
-			users.level,
+			users.perm_templ,
 			users.active
 		ORDER BY
 			users.fullname";
@@ -416,18 +416,15 @@ function change_user_pass($details) {
  * Get a fullname when you have a userid.
  * return values: gives the fullname from a userid.
  */
-function get_fullname_from_userid($id)
-{
+function get_fullname_from_userid($id) {
 	global $db;
-	if (is_numeric($id))
-	{
+	if (is_numeric($id)) {
 		$result = $db->query("SELECT fullname FROM users WHERE id=".$db->quote($id));
 		$r = $result->fetchRow();
 		return $r["fullname"];
-	}
-	else
-	{
+	} else {
 		error(ERR_INV_ARG);
+		return false;
 	}
 }
 
