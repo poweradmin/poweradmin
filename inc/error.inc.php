@@ -39,6 +39,7 @@ define("ERR_PERM_VIEW_ZONE", _("You do not have the permission to view this zone
 define("ERR_PERM_EDIT_USER", _("You do not have the permission to edit this user.")); // TODO i18n
 define("ERR_PERM_EDIT_PERM_TEMPL", _("You do not have the permission to edit permission templates.")); // TODO i18n
 define("ERR_PERM_ADD_USER", _("You do not have the permission to add a new user.")); // TODO i18n
+define("ERR_PERM_DEL_USER", _("You do not have the permission to delete this user.")); // TODO i18n
 
 /* RECORD STUFF */
 define("ERR_RECORD_EMPTY_CONTENT", _('Your content field is empty'));
@@ -85,6 +86,7 @@ define("SUC_ZONE_ADD", _('Zone has been added succesfully.')); // TODO i18n
 define("SUC_ZONE_DEL", _('Zone has been deleted succesfully.')); // TODO i18n
 define("SUC_USER_UPD", _('The user has been updated succesfully.')); // TODO i18n
 define("SUC_USER_ADD", _('The user has been created succesfully.')); // TODO i18n
+define("SUC_USER_DEL", _('The user has been deleted succesfully.')); // TODO i18n
 define("SUC_RECORD_UPD", _('The record has been updated succesfully.')); // TODO i18n
 define("SUC_RECORD_DEL", _('The record has been deleted succesfully.')); // TODO i18n
 define("SUC_SM_DEL", _('The supermaster has been deleted succesfully.')); // TODO i18n

@@ -247,25 +247,34 @@ function get_user_info($id)
  * Delete a user from the system
  * return values: true if user doesnt exist.
  */
-function delete_user($id)
+function delete_user($uid,$zones)
 {
 	global $db;
-	if (!level(10))
-	{
-		error(ERR_LEVEL_10);
+
+	if (($uid != $_SESSION['userid'] && !verify_permission(user_edit_others)) || ($uid == $_SESSION['userid'] && !verify_permission(user_edit_own))) {
+		 error(ERR_PERM_DEL_USER);
+		 return false;
+	} else {
+
+		if (is_array($zones)) {
+			foreach ($zones as $zone) {
+				if ($zone['target'] == "delete") {
+					delete_domain($zone['zid']);
+				} elseif ($zone['target'] == "new_owner") {
+					add_owner_to_zone($zone['zid'], $zone['newowner']);
+				}
+			}
+		}
+
+		$query = "DELETE FROM zones WHERE owner = " . $db->quote($uid) ;
+		$result = $db->query($query);
+		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+
+		$query = "DELETE FROM users WHERE id = " . $db->quote($uid) ;
+		$result = $db->query($query);
+		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 	}
-	if (is_numeric($id))
-	{
-        	$db->query("DELETE FROM users WHERE id=".$db->quote($id));
-        	$db->query("DELETE FROM zones WHERE owner=".$db->quote($id));
-        	return true;
-        	// No need to check the affected rows. If the affected rows would be 0,
-        	// the user isnt in the dbase, just as we want.
-        }
-	else
-	{
-		error(ERR_INV_ARG);
-	}
+	return true;
 }
 
 

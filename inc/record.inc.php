@@ -686,88 +686,27 @@ function get_name_from_record_id($id)
  * Get all the domains from a database of which the user is the owner.
  * return values: an array with the id of the domain and its name.
  */
+
+// TODO Should be removed? Has been replaced by extentions of get_zones?
 function get_domains_from_userid($id)
 {
 	global $db;
-	if (is_numeric($id))
-	{
-		$a_zones = array();
+	
+	$query = "SELECT domains.id, domains.name 
+			FROM domains, zones 
+			WHERE domains.id = zones.domain_id 
+			AND zones.owner = " . $db->quote($id);
 
-		// Check for zones the user has full access for (the 
-		// user is owner of the zone.
+	$response = $db->query($query);
+	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
-		$res_full = $db->query("SELECT 
-					domains.id AS domain_id, 
-					domains.name AS name 
-					FROM domains 
-					LEFT JOIN zones ON domains.id=zones.domain_id 
-					WHERE owner=".$db->quote($id)); 
-		
-		// Process the output.
-
-		$numrows = $res_full->numRows();
-		$i=1;
-		if ($numrows > 0) 
-		{
-			$andnot=" AND NOT domains.id IN (";
-			while($r = $res_full->fetchRow()) {
-				
-				// Create array of zone id's and name's the owner
-				// has full access to.
-
-				$a_zones[] = array(
-				"id"            =>              $r["domain_id"],
-				"name"          =>              $r["name"],
-				"partial"	=>		"0"
-				);
-
-				// Create AND NOT for query of zones the user has 
-				// only partial access to. In that query we just 
-				// want to see the zones he has not full access to 
-				// as well.
-
-				$andnot.=$db->quote($r["domain_id"]);
-				if ($i < $numrows) {
-					$andnot.=",";
-					$i++;
-				}
-
-			}
-			$andnot.=")";
-		}
-		else
-		{
-			$andnot="";
-		}
-
-		// Check for zones the user has partial access only to.
-
-		$res_partial = $db->query("SELECT DISTINCT 
-					records.domain_id, 
-					domains.name 
-					FROM records, record_owners, domains 
-					WHERE record_owners.user_id = ".$db->quote($id)." 
-					AND records.id = record_owners.record_id 
-					AND domains.id = records.domain_id
-					".$andnot);
-		
-		// Add these zones to the array as well.
-
-		while ($r = $res_partial->fetchRow())
-		{
-			$a_zones[] = array(
-			"id"            =>              $r["domain_id"],
-			"name"          =>              $r["name"],
-			"partial"	=>		"1"
-			);
-		}
-
-		return $a_zones;
+	while ($r = $response->fetchRow()) {
+		$return[] = array(
+			"id"		=>	$r['id'],
+			"name"		=>	$r['name']);
 	}
-	else
-	{
-		error(sprintf(ERR_INV_ARGC, "get_domains_from_userid", "This is not a valid userid: $id"));
-	}
+
+	return $return;
 }
 
 /*

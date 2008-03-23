@@ -20,106 +20,87 @@
  */
 
 require_once("inc/toolkit.inc.php");
+include_once("inc/header.inc.php");
 
-$id = "-1";
-if (isset($_POST['id']) && v_num($_POST['id'])) {
-	$id = $_GET['id'];
+verify_permission(user_edit_own) ? $perm_edit_own = "1" : $perm_edit_own = "0" ;
+verify_permission(user_edit_others) ? $perm_edit_others = "1" : $perm_edit_others = "0" ;
+
+if (!(isset($_GET['id']) && v_num($_GET['id']))) {
+	error(ERR_INV_INPUT);
+	include_once("inc/footer.inc.php");
+	exit;
+} else {
+	$uid = $_GET['id'];
 }
 
-if(isset($id)) 
-{
-	if($_POST["confirm"] == '1') 
-	{                
-                $domain = is_array($_POST["domain"]) ? $_POST["domain"] : $domain = array();
-                $delete = is_array($_POST["delete"]) ? $_POST["delete"] : $delete = array();
-                
-		if(count($domain) > 0) 
-		{
-			foreach ($domain as $dom => $newowner) 
-			{
-				if (!in_array($dom, $delete)) 
-				{
-					add_owner($dom, $newowner);
-                                }
-                        }
-                }
-                if(count($delete) > 0) 
-                {
-                	foreach ($delete as $del) 
-                	{
-                		delete_domain($del);
+if ($_POST['commit']) {
+	if (delete_user($uid,$_POST['zone'])) {
+		success(SUC_USER_DEL);	
+	}
+} else {
+
+	if (($uid != $_SESSION['userid'] && !verify_permission(user_edit_others)) || ($uid == $_SESSION['userid'] && !verify_permission(user_edit_own))) {
+		error(ERR_PERM_DEL_USER);
+		include_once("inc/footer.inc.php");
+		exit;
+	} else {
+		$fullname = get_fullname_from_userid($uid);
+		$zones = get_zones("own",$uid);
+
+		echo "     <h2>" . _('Delete user') . " \"" . $fullname . "\"</h2>\n";
+		echo "     <form method=\"post\">\n";
+		echo "      <table>\n";
+
+		if (count($zones) > 0) {
+
+			$users = show_users();
+
+			echo "       <tr>\n";
+			echo "        <td colspan=\"5\">\n";
+
+			echo "         " . _('You are about to delete a user. This user is owner for a number of zones. Please decide what to do with these zones.') . "\n";
+			echo "        </td>\n";
+			echo "       </tr>\n";
+
+			echo "       <tr>\n";
+			echo "        <th>" . _('Zone') . "</th>\n";
+			echo "        <th>" . _('Delete') . "</th>\n";
+			echo "        <th>" . _('Leave') . "</th>\n";
+			echo "        <th>" . _('Add new owner') . "</th>\n";
+			echo "        <th>" . _('Owner to be added') . "</th>\n";
+			echo "       </tr>\n";
+
+			foreach ($zones as $zone) {
+				echo "       <input type=\"hidden\" name=\"zone[" . $zone['id'] . "][zid]\" value=\"" . $zone['id'] . "\">\n";
+				echo "       <tr>\n";
+				echo "        <td>" . $zone['name'] . "</td>\n";
+				echo "        <td><input type=\"radio\" name=\"zone[" . $zone['id'] . "][target]\" value=\"delete\"></td>\n";
+				echo "        <td><input type=\"radio\" name=\"zone[" . $zone['id'] . "][target]\" value=\"leave\" CHECKED></td>\n";
+				echo "        <td><input type=\"radio\" name=\"zone[" . $zone['id'] . "][target]\" value=\"new_owner\"></td>\n";
+				echo "        <td>\n";
+				echo "         <select name=\"zone[" . $zone['id'] . "][newowner]\">\n";
+
+				foreach ($users as $user) {
+					echo "          <option value=\"" . $user["id"] . "\">" . $user["fullname"] . "</option>\n";
+				}
+
+				echo "         </select>\n";
+				echo "        </td>\n";
+				echo "       </tr>\n";
+
 			}
 		}
-		
-                delete_user($id);
-                clean_page("users.php");
-        }
-        include_once("inc/header.inc.php");
-        ?>
-	
-    <h3><?php echo _('Delete user'); ?> "<?php echo get_fullname_from_userid($id) ?>"</h3>
-     <form method="post">
-        <?php
-        $domains = get_domains_from_userid($id);
-        if (count($domains) > 0) 
-        {
-        	echo _('This user has access to the following zone(s)'); ?> :<BR><?php
-                $users = show_users($id);
-                if(count($users) < 1) 
-                {
-                        $add = " CHECKED DISABLED";
-                        $no_users = 1;
-                }
-                ?>
-                <table>
-                 <tr>
-		  <td class="n">Delete</td>
-		  <td class="n">Name</td>
-		<?php if (!$no_users) { ?>
-		  <td class="n">New owner</td>
-		<?php } ?>
-		 </tr>
-                <?php
-                foreach ($domains as $d) 
-                {
-                        ?>
-                 <tr>
-		  <td class="n" align="center"><?php
-                        if ($no_users) 
-                     	{ 
-                     		?><input type="hidden" name="delete[]" value="<?php echo $d["id"] ?>"><?php
-                        } 
-                        ?><input type="checkbox"<?php echo $add ?> name="delete[]" value="<?php echo $d["id"] ?>"></td><td class="n"><?php echo $d["name"] ?></td><td class="n"><?php 
-                        if (!$no_users) 
-                        { 
-                        	?><select name="domain[<?php echo $d["id"] ?>]"><?php
-                        	foreach($users as $u) 
-                        	{
-                        	        ?><option value="<?php echo $u["id"] ?>"><?php echo $u["fullname"] ?></option><?php
-                        	}
-                        	?></select></td><?php 
-                        } 
-                        ?></tr><?php
-                }
-                ?></table><?php
-        }
-        
-        $message = _('You are going to delete this user, are you sure?');
-        if(($numrows = $db->queryOne("SELECT count(id) FROM zones WHERE owner=".$db->quote($id))) != 0)
-        {
-        	$message .= " " . _('This user has access to ') . $numrows . _(' zones, by deleting him you will also delete these zones.');
-        }
+		echo "       <tr>\n";
+		echo "        <td colspan=\"5\">\n";
 
-        ?>
-        <font class="warning"><?php echo $message ?></font><br>
-        <input type="hidden" name="id" value="<?php echo $id ?>">
-        <input type="hidden" name="confirm" value="1">
-        <input type="submit" class="button" value="<?php echo _('Yes'); ?>"> <input type="button" class="button" OnClick="location.href='users.php'" value="<?php echo _('No'); ?>"></FORM>
-        <?php
-        include_once("inc/footer.inc.php");
-} 
-else 
-{
-        message("Nothing to do!");
+		echo "         " . _('Really delete this user?') . "\n";
+		echo "        </td>\n";
+		echo "       </tr>\n";
+
+		echo "      </table>\n";
+		echo "     <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Comit changes') . "\">\n";
+		echo "     </form>\n";
+	}
 }
-
+include_once("inc/footer.inc.php");
+?>
