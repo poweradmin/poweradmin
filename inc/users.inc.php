@@ -385,32 +385,29 @@ function edit_user($id, $user, $fullname, $email, $perm_templ, $description, $ac
  * The user is automatically logged out after the pass change.
  * return values: none.
  */
-function change_user_pass($currentpass, $newpass, $newpass2)
-{
+function change_user_pass($details) {
 	global $db;
-
-	// Check if the passwords are equal.
-	if($newpass != $newpass2)
-	{
+	
+	if ($details['newpass'] != $details['newpass2']) {
 		error(ERR_USER_MATCH_NEW_PASS);
+		return false;
 	}
 
-	// Retrieve the users password.
-	$result = $db->query("SELECT password, id FROM users WHERE username=".$db->quote($_SESSION["userlogin"]));
+	$query = "SELECT id, password FROM users WHERE username = " . $db->quote($_SESSION["userlogin"]);
+	$result = $db->query($query);
+	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+
 	$rinfo = $result->fetchRow();
 
-	// Check the current password versus the database password and execute the update.
-	if(md5($currentpass) == $rinfo["password"])
-	{
-		$sqlquery = "update users set password='" . md5($newpass) . "' where id='" . $rinfo["id"] . "'";
-		$db->query($sqlquery);
+	if(md5($details['currentpass']) == $rinfo['password']) {
+		$query = "UPDATE users SET password = " . $db->quote(md5($details['newpass'])) . " WHERE id = " . $db->quote($rinfo['id']) ;
+		$result = $db->query($query);
+		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
-		// Logout the user.
-		logout("Pass changed please re-login");
-	}
-	else
-	{
+		logout( _('Password has been changed, please login.')); // TODO i18n
+	} else {
 		error(ERR_USER_WRONG_CURRENT_PASS);
+		return false;
 	}
 }
 
