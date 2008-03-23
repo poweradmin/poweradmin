@@ -1216,58 +1216,6 @@ function zone_count_for_uid($uid) {
 
 
 /*
- * zone_count
- * Does a select query to count how many zones we have in the database
- *
- * @todo: see whether or not it is possible to add the records
- * @param $userid integer The userid of the current user
- * @return integer the number of zones
- */
-
-function zone_count($userid=true, $letterstart='all') {
-        global $db;
-	global $sql_regexp;
-        if((!level(5) || !$userid) && !level(10) && !level(5))
-        {
-		// First select the zones for which we have ownership on one or more records.
-		$query = 'SELECT records.domain_id FROM records, record_owners WHERE user_id = '.$db->quote($_SESSION['userid']).' AND records.id = record_owners.record_id';
-		$result = $db->query($query);
-		$zones = array();
-		if (!PEAR::isError($result)) {
-			$zones = $result->fetchCol();
-		}
-	
-                $add = " AND (zones.owner=".$db->quote($_SESSION["userid"]);
-		if (count($zones) > 0) {
-			$add .= ' OR zones.domain_id IN ('.implode(',', $zones).') '; 
-
-		}
-		$add .= ')';
-        }
-        else
-        {
-                $add = "";
-        }
-
-        if ($letterstart!='all' && $letterstart!=1) {
-           $add .=" AND domains.name LIKE ".$db->quote($letterstart."%")." ";
-        } elseif ($letterstart==1) {
-           $add .=" AND substring(domains.name,1,1) ".$sql_regexp." '^[[:digit:]]'";
-        }
-
-        if (level(5))
-        {
-                $query = 'SELECT count(distinct domains.id) as zone_count FROM domains WHERE 1=1 '.$add;
-        }
-        else
-        {
-                $query = 'SELECT count(distinct zones.domain_id) as zone_count FROM zones, domains WHERE zones.domain_id = domains.id '.$add;
-        }
-        $numRows = $db->queryOne($query);
-        return $numRows;
-}
-
-/*
  * Get a record from an id.
  * Retrieve all fields of the record and send it back to the function caller.
  * return values: the array with information, or -1 is nothing is found.

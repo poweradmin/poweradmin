@@ -35,7 +35,7 @@ $count_zones_all_letterstart = zone_count_ng("all",LETTERSTART);
 $count_zones_view = zone_count_ng($perm_view);
 $count_zones_edit = zone_count_ng($perm_edit);
 
-echo "    <h2>" . _('Edit record in zone') . " " .  $zone_name . "</h2>\n";
+echo "    <h2>" . _('List zones') . "</h2>\n";
 
 if ($perm_view == "none") { 
 	echo "     <p>" . _("You do not have the permission to see any zones.") . "</p>\n";
