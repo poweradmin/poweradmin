@@ -34,7 +34,6 @@ if ($perm_templ_perm_edit == "0") {
 	echo "       <th>&nbsp;</th>\n";
 	echo "       <th>" . _('Name') . "</th>\n";
 	echo "       <th>" . _('Description') . "</th>\n";
-//	echo "       <th>" . _('Permissions') . "</th>\n";
 	echo "      </tr>\n";
 
 	foreach ($permission_templates as $template) {
@@ -52,8 +51,7 @@ if ($perm_templ_perm_edit == "0") {
 			echo "       <td>&nbsp;</td>\n";
 		}
 		echo "       <td class=\"y\">" . $template['name'] . "</td>\n";
-		echo "       <td class=\"y\">" . $template['desc'] . "</td>\n";
-//		echo "       <td class=\"y\">$perm_items</td>\n";
+		echo "       <td class=\"y\">" . $template['descr'] . "</td>\n";
 		echo "      </tr>\n";
 	}
 

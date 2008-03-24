@@ -86,7 +86,7 @@ function list_permission_templates() {
 		$tempate_list[] = array(
 			"id"	=>	$template['id'],
 			"name"	=>	$template['name'],
-			"desc"	=>	$template['desc']
+			"descr"	=>	$template['descr']
 			);
 	}
 	return $tempate_list;
@@ -169,33 +169,6 @@ function show_users($id='',$rowstart=0,$rowamount=9999999)
 		{
 			return false;
 		}
-	}
-}
-
-
-/*
- * Gives a textdescribed value of the given levelid
- * return values: the text associated with the level
- */
-function leveldescription($id)
-{
-	switch($id)
-	{
-		case 1:
-			global $NAME_LEVEL_1;
-			return $NAME_LEVEL_1;
-			break;
-		case 5:
-			global $NAME_LEVEL_5;
-			return $NAME_LEVEL_5;
-			break;
-		case 10:
-			global $NAME_LEVEL_10;
-			return $NAME_LEVEL_10;
-			break;
-		default:
-			return "Unknown";
-			break;
 	}
 }
 
@@ -537,7 +510,7 @@ function get_user_detail_list($specific) {
 			active,
 			perm_templ.id AS tpl_id,
 			perm_templ.name AS tpl_name,
-			perm_templ.desc AS tpl_descr
+			perm_templ.descr AS tpl_descr
 			FROM users, perm_templ 
 			WHERE users.perm_templ = perm_templ.id " 
 			. $sql_add . "
@@ -579,7 +552,7 @@ function get_permissions_by_template_id($templ_id=0,$return_name_only=false) {
 
 	$query = "SELECT perm_items.id AS id, 
 			perm_items.name AS name, 
-			perm_items.desc AS descr
+			perm_items.descr AS descr
 			FROM perm_items" 
 			. $limit . "
 			ORDER BY descr";
@@ -617,7 +590,7 @@ function get_permission_template_details($templ_id) {
 	while($details = $result->fetchRow()) {
 		$detail_list[] = array (
 			"name"	=>	$details['name'],
-			"descr"	=>	$details['desc']
+			"descr"	=>	$details['descr']
 			);
 	}
 	return $detail_list;
@@ -638,7 +611,7 @@ function get_list_permission_templates() {
 		$perm_templ_list[] = array(
 			"id"	=>	$perm_templ['id'],
 			"name"	=>	$perm_templ['name'],
-			"desc"	=>	$perm_templ['desc']
+			"descr"	=>	$perm_templ['descr']
 			);
 	}
 	return $perm_templ_list;
@@ -653,8 +626,8 @@ function update_perm_templ_details($details) {
 	// Fix permission template name and description first. 
 
 	$query = "UPDATE perm_templ 
-			SET `name` = " . $db->quote($details['templ_name']) . ",
-			`desc` = " . $db->quote($details['templ_descr']) . "
+			SET name = " . $db->quote($details['templ_name']) . ",
+			descr = " . $db->quote($details['templ_descr']) . "
 			WHERE id = " . $db->quote($details['templ_id']) ;
 	
 	$result = $db->query($query);
