@@ -71,7 +71,7 @@ if ($perm_view == "none") {
 
 		echo "         <tr>\n";
 		echo "          <td>\n";
-		echo "           <a href=\"edit.php?id=" . $zone["id"] . "\"><img src=\"images/edit.gif\" title=\"" . _('Edit zone') . " " . $zone['name'] . "\" alt=\"[ " . _('Edit zone') . " " . $zone['name'] . " ]\"></a>\n";
+		echo "           <a href=\"edit.php?id=" . $zone['id'] . "\"><img src=\"images/edit.gif\" title=\"" . _('Edit zone') . " " . $zone['name'] . "\" alt=\"[ " . _('Edit zone') . " " . $zone['name'] . " ]\"></a>\n";
 		if ( $perm_edit != "all" || $perm_edit != "none") {
 			$user_is_zone_owner = verify_user_is_owner_zoneid($zone["id"]);
 		}

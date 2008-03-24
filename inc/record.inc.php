@@ -1282,63 +1282,80 @@ function get_users_from_domain_id($id) {
 }
 
 
-function search_record($question)
-{
+function search_zone_and_record($holy_grail,$perm) {
+	
 	global $db;
-	$question = trim($question);
 
-	if (is_valid_search($question))
-	{
-		$sqlq = "SELECT * 
-				FROM records 
-				WHERE content LIKE ".$db->quote($question)." 
-				OR name LIKE ".$db->quote($question)."
-				ORDER BY type DESC";
-		$result = $db->query($sqlq);
-		$ret_r = array();
-		while ($r = $result->fetchRow())
-		{
-		    if(xs($r['domain_id']))
-		    {
-			$ret_r[] = array(
-			  'id'			=>	$r['id'],
-			  'domain_id'		=>	$r['domain_id'],
-			  'name'		=>	$r['name'],
-			  'type'		=>	$r['type'],
-			  'content'		=>	$r['content'],
-			  'ttl'			=>	$r['ttl'],
-			  'prio'		=>	$r['prio'],
-			  'change_date'		=>	$r['change_date']
-			);
-			}
-		}
+	$holy_grail = trim($holy_grail);
 
-		$sqlq = "SELECT domains.id, domains.name, count(records.id) AS numrec, zones.owner, records.domain_id
-				FROM domains LEFT JOIN records ON domains.id = records.domain_id, zones  
-				WHERE zones.domain_id = domains.id 
-				AND domains.name LIKE ".$db->quote($question)." 
-				GROUP BY domains.id, domains.name, zones.owner, records.domain_id";
-		$result = $db->query($sqlq);
-		$ret_d = array();
-		while ($r = $result->fetchRow())
-		{
-		    if(xs($r['id']))
-		    {
-			    $ret_d[] = array(
-				'id'			=>	$r['id'],
-				'name'		=>	$r['name'],
-				'numrec'		=>	$r['numrec'],
-				'owner'		=>	$r['owner']
-			);
-			}
-		}
-		return array('domains' => $ret_d, 'records' => $ret_r);
+	if (verify_permission(zone_content_view_others)) { $perm_view = "all" ; }
+	elseif (verify_permission(zone_content_view_own)) { $perm_view = "own" ; }
+	else { $perm_view = "none" ; }
+
+	if (verify_permission(zone_content_edit_others)) { $perm_content_edit = "all" ; }
+	elseif (verify_permission(zone_content_edit_own)) { $perm_content_edit = "own" ; }
+	else { $perm_content_edit = "none" ; }
+
+	// Search for matching domains
+
+	if ($perm == "own") {
+		$sql_add_from = ", zones ";
+		$sql_add_where = " AND zones.domain_id = domains.id AND zones.owner = " . $db->quote($userid);
 	}
-	else
-	{
-		error(sprintf(ERR_INV_ARGC, "search_record", "Invalid searchstring: $question"));
+	
+	$query = "SELECT 
+			domains.id AS zid,
+			domains.name AS name,
+			domains.type AS type,
+			domains.master AS master
+			FROM domains" . $sql_add_from . "
+			WHERE domains.name LIKE " . $db->quote($holy_grail)
+			. $sql_add_where ;
+	
+	$response = $db->query($query);
+	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+
+	while ($r = $response->fetchRow()) {
+		$return_zones[] = array(
+			"zid"		=>	$r['zid'],
+			"name"		=>	$r['name'],
+			"type"		=>	$r['type'],
+			"master"	=>	$r['master']);
 	}
 
+	// Search for matching records
+
+	if ($perm == "own") {
+		$sql_add_from = ", zones ";
+		$sql_add_where = " AND zones.domain_id = record.id AND zones.owner = " . $db->quote($userid);
+	}
+
+	$query = "SELECT
+			records.id AS rid,
+			records.name AS name,
+			records.type AS type,
+			records.content AS content,
+			records.ttl AS ttl,
+			records.prio AS prio,
+			records.domain_id AS zid
+			FROM records" . $sql_add_from . "
+			WHERE (records.name LIKE " . $db->quote($holy_grail) . " OR records.content LIKE " . $db->quote($holy_grail) . ")"
+			. $sql_add_where ;
+
+	$response = $db->query($query);
+	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+
+	while ($r = $response->fetchRow()) {
+		$return_records[] = array(
+			"rid"		=>	$r['rid'],
+			"name"		=>	$r['name'],
+			"type"		=>	$r['type'],
+			"content"	=>	$r['content'],
+			"ttl"		=>	$r['ttl'],
+			"zid"		=>	$r['zid'],
+			"prio"		=>	$r['prio']);
+	}
+	return array('zones' => $return_zones, 'records' => $return_records);
 }
 
 function get_domain_type($id)

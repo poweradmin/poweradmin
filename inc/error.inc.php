@@ -29,6 +29,7 @@ define("ERR_LEVEL_5", _('You need user level 5 for this operation'));
 define("ERR_LEVEL_10", _('You need user level 10 for this operation'));
 
 /* PERMISSIONS */
+define("ERR_PERM_SEARCH", _("You do not have the permission to perform searches.")); // TODO i18n
 define("ERR_PERM_ADD_RECORD", _("You do not have the permission to add a record to this zone.")); // TODO i18n
 define("ERR_PERM_EDIT_RECORD", _("You do not have the permission to edit this record.")); // TODO i18n
 define("ERR_PERM_VIEW_RECORD", _("You do not have the permission to view this record.")); // TODO i18n
