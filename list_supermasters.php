@@ -27,7 +27,7 @@ include_once("inc/header.inc.php");
 
 $supermasters = get_supermasters();
 
-echo "     <h2>" . _('List all supermasters') . "</h2>\n";  // TODO i18n
+echo "     <h2>" . _('List all supermasters') . "</h2>\n";  
 echo "     <table>\n";
 echo "      <tr>\n";
 echo "       <th>&nbsp;</th>\n";

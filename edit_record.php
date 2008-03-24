@@ -46,7 +46,7 @@ if ($_POST["commit"]) {
 		if ( $ret_val == "1" ) {
 			success(SUC_RECORD_UPD);
 		} else {
-			echo "     <div class=\"error\">" . $ret_val . "</div>\n";  //TODO i18n
+			echo "     <div class=\"error\">" . $ret_val . "</div>\n";  
 		}
 	}
 }

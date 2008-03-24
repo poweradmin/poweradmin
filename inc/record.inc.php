@@ -28,84 +28,50 @@ function count_zone_records($zone_id) {
 
 function update_soa_serial($domain_id)
 {
-    global $db;
-	/*
-	 * THIS CODE ISNT TESTED THROUGH MUCH YET!
-	 * !!!!!!! BETACODE !!!!!!!!!!
-	 * Code committed by DeViCeD, Thanks a lot!
-	 * Heavily hax0red by Trancer/azurazu
-	 *
-	 * First we have to check, wheather current searial number 
-	 * was already updated on the other nameservers.
-	 * If field 'notified_serial' is NULL, then I guess domain is
-	 * NATIVE and we don't have any secondary nameservers for this domain.
-	 * NOTICE: Serial number *will* be RFC1912 compilant after update 
-	 * NOTICE: This function will allow only 100 DNS zone transfers ;-)
-	 * YYYYMMDDnn
-	 */
+	global $db;
 
 	$sqlq = "SELECT notified_serial FROM domains WHERE id = ".$db->quote($domain_id);
 	$notified_serial = $db->queryOne($sqlq);
 
 	$sqlq = "SELECT content FROM records WHERE type = 'SOA' AND domain_id = ".$db->quote($domain_id);
 	$content = $db->queryOne($sqlq);
-        $need_to_update = false;
-	
+	$need_to_update = false;
+
 	// Getting the serial field.
 	$soa = explode(" ", $content);
-	
-	if(empty($notified_serial))
-    {
-        // Ok native replication, so we have to update.
-        $need_to_update = true;
-    }
-    elseif($notified_serial >= $soa[2])
-    {
-        $need_to_update = true;
-    }
-    elseif(strlen($soa[2]) != 10)
-    {
-        $need_to_update = true;
-    }
-    else
-    {
-        $need_to_update = false;
-    }
-    if($need_to_update)
-    {
-        // Ok so we have to update it seems.
-        $current_serial = $soa[2];
-        
-		/*
-		 * What we need here (for RFC1912) is YEAR, MONTH and DAY
-		 * so let's get it ...
-		 */
+
+	if(empty($notified_serial)) {
+		// Ok native replication, so we have to update.
+		$need_to_update = true;
+	} elseif($notified_serial >= $soa[2]) {
+		$need_to_update = true;
+	} elseif(strlen($soa[2]) != 10) {
+		$need_to_update = true;
+	} else {
+		$need_to_update = false;
+	}
+
+	if($need_to_update) {
+		// Ok so we have to update it seems.
+		$current_serial = $soa[2];
 		$new_serial = date('Ymd'); // we will add revision number later
 
-		if(strncmp($new_serial, $current_serial, 8) === 0)
-		{
-            /*
-             * Ok, so we already made updates tonight
-             * let's just increase the revision number
-             */				
-            $revision_number = (int) substr($current_serial, -2);
-            if ($revision_number == 99) return false; // ok, we cannot update anymore tonight
-            ++$revision_number;
-            // here it is ... same date, new revision
-            $new_serial .= str_pad($revision_number, 2, "0", STR_PAD_LEFT);	
-		}
- 		else
-		{
-            /*
+		if(strncmp($new_serial, $current_serial, 8) === 0) {
+			$revision_number = (int) substr($current_serial, -2);
+			if ($revision_number == 99) return false; // ok, we cannot update anymore tonight
+			++$revision_number;
+			// here it is ... same date, new revision
+			$new_serial .= str_pad($revision_number, 2, "0", STR_PAD_LEFT);	
+		} else {
+			/*
 			 * Current serial is not RFC1912 compilant, so let's make a new one
 			 */
- 			$new_serial .= '00';
+			$new_serial .= '00';
 		}
-        $soa[2] = $new_serial; // change serial in SOA array
+		$soa[2] = $new_serial; // change serial in SOA array
 		$new_soa = "";		
 		// build new soa and update SQL after that
-		for ($i = 0; $i < count($soa); $i++) 
-		{	
+		for ($i = 0; $i < count($soa); $i++) {	
 			$new_soa .= $soa[$i] . " "; 
 		}
 		$sqlq = "UPDATE records SET content = ".$db->quote($new_soa)." WHERE domain_id = ".$db->quote($domain_id)." AND type = 'SOA'";
@@ -125,15 +91,14 @@ function edit_record($record) {
 	elseif (verify_permission(zone_content_edit_own)) { $perm_content_edit = "own" ; }
 	else { $perm_content_edit = "none" ; }
 
-
 	$user_is_zone_owner = verify_user_is_owner_zoneid($record['zid']);
 	$zone_type = get_domain_type($record['zid']);
 
 	if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
-		return _("You are not allowed to edit this record.") ; //TODO i18n
+		return _("You are not allowed to edit this record.") ; 
 	} else {
 		if($record['content'] == "") {
-			return _("Error: content field may not be empty.") ; //TODO i18n
+			return _("Error: content field may not be empty.") ; 
 		}
 		global $db;
 		// TODO: no need to check for numeric-ness of zone id if we check with validate_input as well?
@@ -165,42 +130,6 @@ function edit_record($record) {
 	return true;
 }
 
-
-function add_record_owner($zoneid,$userid,$recordid)
-{
-	global $db;
-	if (!xs($zoneid))
-	{
-		error(ERR_RECORD_ACCESS_DENIED);
-	}
-	if (is_numeric($zoneid) || is_numeric($userid) || is_numeric($recordid))
-	{
-		$db->query("INSERT INTO record_owners (user_id, record_id) VALUES (".$db->quote($userid).", ".$db->quote($recordid).")");
-		return true;
-	}
-	else
-	{
-		error(sprintf(ERR_INV_ARGC, "add_record_owner", "at least one of the arguments is not numeric"));
-	}
-}
-
-function delete_record_owner($zoneid,$rowid,$recordid)
-{
-	global $db;
-	if (!xs($zoneid))
-	{
-		error(ERR_RECORD_ACCESS_DENIED);
-	}
-	if (is_numeric($zoneid) || is_numeric($rowid) || is_numeric($recordid))
-	{
-		$db->query("DELETE FROM record_owners WHERE id=".$db->quote($rowid)." AND record_id=".$db->quote($recordid));
-		return true;
-	}
-	else
-	{
-		error(sprintf(ERR_INV_ARGC, "delete_record_owner", "at least one of the arguments is not numeric"));
-	}
-}
 
 /*
  * Adds a record.
@@ -305,48 +234,57 @@ function get_supermaster_info_from_ip($master_ip)
         }
 }
 
+function get_record_details_from_record_id($rid) {
+
+	global $db;
+
+	$query = "SELECT * FROM records WHERE id = " . $db->quote($rid) ;
+
+	$response = $db->query($query);
+	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+
+	while ($r = $response->fetchRow()) {
+		$return[] = array(
+			"rid"		=>	$r['id'],
+			"zid"		=>	$r['domain_id'],
+			"name"		=>	$r['name'],
+			"type"		=>	$r['type'],
+			"content"	=>	$r['content'],
+			"ttl"		=>	$r['ttl'],
+			"prio"		=>	$r['prio'],
+			"change_date"	=>	$r['change_date']);
+	}
+	return $return;
+}
 
 /*
  * Delete a record by a given id.
  * return values: true, this function is always succesful.
  */
-function delete_record($id)
+function delete_record($rid)
 {
 	global $db;
 
-	// Check if the user has access.
-	if (!xs(recid_to_domid($id)))
-	{
-		error(ERR_RECORD_ACCESS_DENIED);
-	}
+	if (verify_permission(zone_content_edit_others)) { $perm_content_edit = "all" ; } 
+	elseif (verify_permission(zone_content_edit_own)) { $perm_content_edit = "own" ; } 
+	else { $perm_content_edit = "none" ; }
 
-	// Retrieve the type of record to see if we can actually remove it.
-	$recordtype = get_recordtype_from_id($id);
+	// Determine ID of zone first.
+	$record = get_record_details_from_record_id($rid);
+	$user_is_zone_owner = verify_user_is_owner_zoneid($record['zid']);
 
-	// If the record type is NS and the user tries to delete it while ALLOW_NS_EDIT is set to 0
-	// OR
-	// check if the name of the record isnt the domain name (if so it should delete all records)
-	// OR
-	// check if we are dealing with a SOA field (same story as NS)
-	if (($recordtype == "NS" && $GLOBALS["ALLOW_NS_EDIT"] != 1 && (get_name_from_record_id($id) == get_domain_name_from_id(recid_to_domid($id)))) || ($recordtype == "SOA" && $GLOBALS["ALLOW_SOA_EDIT"] != 1))
-	{
-		error(sprintf(ERR_RECORD_DELETE_TYPE_DENIED, $recordtype));
-
-	}
-	if (is_numeric($id))
-	{
-	    $did = recid_to_domid($id);
-		$db->query('DELETE FROM records WHERE id=' . $db->quote($id) );
-		if ($type != 'SOA')
-		{
-			update_soa_serial($did);
+	if ( $perm_content_edit == "all" || ($perm_content_edit == "own" && $user_is_zone_owner == "0" )) {
+		if ($record['type'] == "SOA") {
+			error(_('You are trying to delete the SOA record. If are not allowed to remove it, unless you remove the entire zone.'));
+		} else {
+			$quote = "DELETE FROM records WHERE id = " . $db->quote($rid);
+			$response = $db->query($query);
+			if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+			return true;
 		}
-        // $id doesnt exist in database anymore so its deleted or just not there which means "true"	
-		return true;
-	}
-	else
-	{
-		error(sprintf(ERR_INV_ARG, "delete_record"));
+	} else {
+		error(ERR_PERM_DEL_RECORD);
+		return false;
 	}
 }
 
@@ -499,57 +437,6 @@ function recid_to_domid($id)
 
 
 /*
- * Sorts a zone by records.
- * return values: the sorted zone.
- */
-function sort_zone($records)
-{
-	$ar_so = array();
-	$ar_ns = array();
-	$ar_mx = array();
-	$ar_mb = array();
-	$ar_ur = array();
-	$ar_ov = array();
-	foreach ($records as $c)
-	{
-		switch(strtoupper($c['type']))
-		{
-			case "SOA":
-				$ar_so[] = $c;
-				break;
-			case "NS":
-				$ar_ns[] = $c;
-				break;
-			case "MX":
-				$ar_mx[] = $c;
-				break;
-			case "MBOXFW":
-				$ar_mb[] = $c;
-				break;
-			case "URL":
-				$ar_ur[] = $c;
-				break;
-			default:
-				$ar_ov[] = $c;
-				break;
-		}
-	}
-
-	$res = array_merge($ar_so, $ar_ns, $ar_mx, $ar_mb, $ar_ur, $ar_ov);
-
-	if (count($records) == count($res))
-	{
-		$records = $res;
-	}
-	else
-	{
-		error(sprintf(ERR_INV_ARGC, "sort_zone", "records sorting failed!"));
-	}
-	return $records;
-}
-
-
-/*
  * Change owner of a domain.
  * return values: true when succesful.
  */
@@ -594,16 +481,6 @@ function delete_owner_from_zone($zone_id, $user_id)
 		return false;
 	}
 	
-}
-
-function delete_owner($domain, $owner)
-{
-	global $db;
-	if($db->queryOne("SELECT COUNT(id) FROM zones WHERE owner=".$db->quote($owner)." AND domain_id=".$db->quote($domain)) != 0)
-	{
-		$db->query("DELETE FROM zones WHERE owner=".$db->quote($owner)." AND domain_id=".$db->quote($domain));
-	}
-	return true;
 }
 
 /*
@@ -669,45 +546,15 @@ function get_recordtype_from_id($id)
 function get_name_from_record_id($id)
 {
 	global $db;
-	if (is_numeric($id))
-	{
+	if (is_numeric($id)) {
 		$result = $db->query("SELECT name FROM records WHERE id=".$db->quote($id));
 		$r = $result->fetchRow();
 		return $r["name"];
-	}
-	else
-	{
+	} else {
 		error(sprintf(ERR_INV_ARG, "get_name_from_record_id"));
 	}
 }
 
-
-/*
- * Get all the domains from a database of which the user is the owner.
- * return values: an array with the id of the domain and its name.
- */
-
-// TODO Should be removed? Has been replaced by extentions of get_zones?
-function get_domains_from_userid($id)
-{
-	global $db;
-	
-	$query = "SELECT domains.id, domains.name 
-			FROM domains, zones 
-			WHERE domains.id = zones.domain_id 
-			AND zones.owner = " . $db->quote($id);
-
-	$response = $db->query($query);
-	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
-
-	while ($r = $response->fetchRow()) {
-		$return[] = array(
-			"id"		=>	$r['id'],
-			"name"		=>	$r['name']);
-	}
-
-	return $return;
-}
 
 /*
  * Get domain name from a given id
@@ -766,90 +613,6 @@ function get_zone_info_from_id($zone_id) {
 			"master_ip"	=>	$response['master_ip'],
 			"record_count"	=>	$response['record_count']);
 		return $return;
-	}
-}
-
-
-
-/*
- * Get information about a domain name from a given domain id.
- * the function looks up the domainname, the owner of the domain and the number of records in it.
- * return values: an array containing the information.
- */
-function get_domain_info_from_id($id)
-{
-	global $db;
-	if (!xs($id))
-	{
-		error(ERR_RECORD_ACCESS_DENIED);
-	}
-	if (is_numeric($id))
-	{
-
-	if ($_SESSION[$id."_ispartial"] == 1) {
-	
-	$sqlq = "SELECT 
-	domains.type AS type,
-	domains.name AS name,
-	users.fullname AS owner,
-	count(record_owners.id) AS aantal
-	FROM domains, users, record_owners, records
-	
-        WHERE record_owners.user_id = ".$db->quote($_SESSION["userid"])."
-        AND record_owners.record_id = records.id
-	AND records.domain_id = ".$db->quote($id)."
-
-	GROUP BY domains.name, owner, users.fullname, domains.type
-	ORDER BY domains.name";
-	
-	$result = $db->queryRow($sqlq);
-
-	$ret = array(
-	"name"          =>              $result["name"],
-	"ownerid"       =>              $_SESSION["userid"],
-	"owner"         =>              $result["owner"],
-	"type"		=>		$result["type"],
-	"numrec"        =>              $result["aantal"]
-	);
-
-	return $ret;
-
-	} else{
-	
-		// Query that retrieves the information we need.
-		$sqlq = "SELECT 
-			domains.type AS type,
-			domains.name AS name,
-			min(zones.owner) AS ownerid,
-			users.fullname AS owner,
-			count(records.domain_id) AS aantal
-			FROM domains
-			LEFT JOIN records ON domains.id=records.domain_id
-			LEFT JOIN zones ON domains.id=zones.domain_id
-			LEFT JOIN users ON zones.owner=users.id
-			WHERE domains.id=$id
-			GROUP BY domains.name, owner, users.fullname, domains.type, zones.id
-			ORDER BY zones.id";
-
-		// Put the first occurence in an array and return it.
-		$result = $db->queryRow($sqlq);
-
-		//$result["ownerid"] = ($result["ownerid"] == NULL) ? $db->queryOne("select min(id) from users where users.level=10") : $result["ownerid"];
-
-		$ret = array(
-		"name"          =>              $result["name"],
-		"ownerid"       =>              $result["ownerid"],
-		"owner"         =>              $result["owner"],
-		"type"          =>              $result["type"],
-		"numrec"        =>              $result["aantal"]
-		);
-		return $ret;
-	}
-
-	}
-	else
-	{
-		error(sprintf(ERR_INV_ARGC, "get_domain_num_records_from_id", "This is not a valid domainid: $id"));
 	}
 }
 
@@ -924,7 +687,8 @@ function get_zones($perm,$userid=0,$letterstart=all,$rowstart=0,$rowamount=99999
 	global $db;
 	global $sql_regexp;
 	if ($perm != "own" && $perm != "all") {
-		// TODO: this should not be possible, but will need some error message
+		error(ERR_PERM_VIEW_ZONE);
+		return false;
 	}
 	else
 	{
@@ -964,155 +728,6 @@ function get_zones($perm,$userid=0,$letterstart=all,$rowstart=0,$rowamount=99999
 	}
 	return $ret;
 }
-
-
-/*
- * Get all domains from the database 
- * This function gets all the domains from the database unless a user id is below 5.
- * if a user id is below 5 this function will only retrieve records for that user.
- * return values: the array of domains or -1 if nothing is found.
- */
-// TODO Should be removed.
-function get_domains($userid=true,$letterstart='all',$rowstart=0,$rowamount=999999)
-{
-	global $db;
-	global $sql_regexp;
-	if((!level(5) || !$userid) && !level(10) && !level(5))
-	{
-		$add = " AND zones.owner=".$db->quote($_SESSION["userid"]);
-	}
-	else
-	{
-		$add = "";
-	}
-
-	$sqlq = "SELECT domains.id AS domain_id,
-	min(zones.owner) AS owner,
-	count(DISTINCT records.id) AS aantal,
-	domains.name AS domainname
-	FROM domains
-	LEFT JOIN zones ON domains.id=zones.domain_id 
-	LEFT JOIN records ON records.domain_id=domains.id
-	WHERE 1=1 $add ";
-	if ($letterstart!='all' && $letterstart!=1) {
-	   $sqlq.=" AND substring(domains.name,1,1) ".$sql_regexp." ".$db->quote("^".$letterstart);
-	} elseif ($letterstart==1) {
-	   $sqlq.=" AND substring(domains.name,1,1) ".$sql_regexp." '^[[:digit:]]'";
-	}
-	$sqlq.=" GROUP BY domainname, domains.id
-	ORDER BY domainname";
-
-	$db->setLimit($rowamount, $rowstart);
-	$result = $db->query($sqlq);
-	// Set limit needs to be called before each query
-	$db->setLimit($rowamount, $rowstart);
-	$result2 = $db->query($sqlq); 
-	
-	$numrows = $result2->numRows();
-	$i=1;
-	if ($numrows > 0) {
-		$andnot=" AND NOT domains.id IN (";
-		while($r = $result2->fetchRow()) {
-			$andnot.=$db->quote($r["domain_id"]);
-			if ($i < $numrows) {
-				$andnot.=",";
-				$i++;
-			}
-		}
-		$andnot.=")";
-	}
-	else
-	{
-		$andnot="";
-	}
-
-	if ($letterstart!='all' && $letterstart!=1) {
-
-		$sqlq = "SELECT domains.id AS domain_id,
-		count(DISTINCT record_owners.record_id) AS aantal,
-		domains.name AS domainname
-		FROM domains, record_owners,records, zones
-		WHERE record_owners.user_id = ".$db->quote($_SESSION["userid"])."
-		AND (records.id = record_owners.record_id
-		AND domains.id = records.domain_id)
-		$andnot 
-		AND domains.name LIKE ".$db->quote($letterstart."%")." 
-		AND (zones.domain_id != records.domain_id AND zones.owner!=".$db->quote($_SESSION["userid"]).")
-		GROUP BY domainname, domains.id
-		ORDER BY domainname";
-
-		$result_extra = $db->query($sqlq);
-
-	} else {
-
-		$sqlq = "SELECT domains.id AS domain_id,
-		count(DISTINCT record_owners.record_id) AS aantal,
-		domains.name AS domainname
-		FROM domains, record_owners,records, zones
-		WHERE record_owners.user_id = ".$db->quote($_SESSION["userid"])."
-		AND (records.id = record_owners.record_id
-		AND domains.id = records.domain_id)
-		$andnot 
-		AND substring(domains.name,1,1) ".$sql_regexp." '^[[:digit:]]'
-		AND (zones.domain_id != records.domain_id AND zones.owner!=".$db->quote($_SESSION["userid"]).")
-		GROUP BY domainname, domains.id
-		ORDER BY domainname";
-
-		$result_extra[$i] = $db->query($sqlq);
-
-	}
-
-	while($r = $result->fetchRow())
-	{
-		$r["owner"] = ($r["owner"] == NULL) ? $db->queryOne("select min(id) from users where users.level=10") : $r["owner"];
-	     	$ret[$r["domainname"]] = array(
-		"name"          =>              $r["domainname"],
-		"id"            =>              $r["domain_id"],
-		"owner"         =>              $r["owner"],
-		"numrec"        =>              $r["aantal"]
-		);
-	}
-
-
-	if ($letterstart!='all' && $letterstart!=1) {
-
-		while($r = $result_extra->fetchRow())
-		{
-		       $ret[$r["domainname"]] = array(
-		       "name"          =>              $r["domainname"]."*",
-		       "id"            =>              $r["domain_id"],
-		       "owner"         =>              $_SESSION["userid"],
-		       "numrec"        =>              $r["aantal"]
-		       );
-		       $_SESSION["partial_".$r["domainname"]] = 1;
-		}
-
-	} else {
-
-		foreach ($result_extra as $result_e) {
-		while($r = $result_e->fetchRow())
-		{
-		       $ret[$r["domainname"]] = array(
-		       "name"          =>              $r["domainname"]."*",
-		       "id"            =>              $r["domain_id"],
-		       "owner"         =>              $_SESSION["userid"],
-		       "numrec"        =>              $r["aantal"]
-		       );
-		       $_SESSION["partial_".$r["domainname"]] = 1;
-		}
-		}
-
-	}
-
-	if (empty($ret)) {
-	   return -1;
-	} else {
-	   sort($ret);
-	   return $ret;
-	}
-
-}
-
 
 // TODO: letterstart limitation and userid permission limitiation should be applied at the same time?
 function zone_count_ng($perm, $letterstart=all) {
@@ -1173,15 +788,15 @@ function get_record_from_id($id)
 		{
 			$r = $result->fetchRow();
 			$ret = array(
-			"id"            =>      $r["id"],
-			"domain_id"     =>      $r["domain_id"],
-			"name"          =>      $r["name"],
-			"type"          =>      $r["type"],
-			"content"       =>      $r["content"],
-			"ttl"           =>      $r["ttl"],
-			"prio"          =>      $r["prio"],
-			"change_date"   =>      $r["change_date"]
-			);
+				"id"            =>      $r["id"],
+				"domain_id"     =>      $r["domain_id"],
+				"name"          =>      $r["name"],
+				"type"          =>      $r["type"],
+				"content"       =>      $r["content"],
+				"ttl"           =>      $r["ttl"],
+				"prio"          =>      $r["prio"],
+				"change_date"   =>      $r["change_date"]
+				);
 			return $ret;
 		}
 		else
@@ -1201,58 +816,53 @@ function get_record_from_id($id)
  * Retrieve all fields of the records and send it back to the function caller.
  * return values: the array with information, or -1 is nothing is found.
  */
-function get_records_from_domain_id($id,$rowstart=0,$rowamount=999999)
-{
+function get_records_from_domain_id($id,$rowstart=0,$rowamount=999999) {
 	global $db;
-	if (is_numeric($id))
-	{
+	if (is_numeric($id)) {
 		if ($_SESSION[$id."_ispartial"] == 1) {
-		$db->setLimit($rowamount, $rowstart);
-		$result = $db->query("SELECT record_owners.record_id as id
-		FROM record_owners,domains,records
-		WHERE record_owners.user_id = ".$db->quote($_SESSION["userid"])."
-		AND record_owners.record_id = records.id
-		AND records.domain_id = ".$db->quote($id)."
-		GROUP bY record_owners.record_id");
+			$db->setLimit($rowamount, $rowstart);
+			$result = $db->query("SELECT record_owners.record_id as id
+					FROM record_owners,domains,records
+					WHERE record_owners.user_id = " . $db->quote($_SESSION["userid"]) . "
+					AND record_owners.record_id = records.id
+					AND records.domain_id = " . $db->quote($id) . "
+					GROUP BY record_owners.record_id");
 
-		$ret = array();
-		if($result->numRows() == 0)
-		{
-		return -1;
-		}
-		else
-		{
-		$ret[] = array();
-		$retcount = 0;
-		while($r = $result->fetchRow())
-		{
-		// Call get_record_from_id for each row.
-		$ret[$retcount] = get_record_from_id($r["id"]);
-		$retcount++;
-		}
-		return $ret;
-		}
+			$ret = array();
+			if($result->numRows() == 0) {
+				return -1;
+			} else {
+				$ret[] = array();
+				$retcount = 0;
+				while($r = $result->fetchRow())
+				{
+					// Call get_record_from_id for each row.
+					$ret[$retcount] = get_record_from_id($r["id"]);
+					$retcount++;
+				}
+				return $ret;
+			}
 
 		} else {
-		$db->setLimit($rowamount, $rowstart);
-		$result = $db->query("SELECT id FROM records WHERE domain_id=".$db->quote($id));
-		$ret = array();
-		if($result->numRows() == 0)
-		{
-			return -1;
-		}
-		else
-		{
-			$ret[] = array();
-			$retcount = 0;
-			while($r = $result->fetchRow())
+			$db->setLimit($rowamount, $rowstart);
+			$result = $db->query("SELECT id FROM records WHERE domain_id=".$db->quote($id));
+			$ret = array();
+			if($result->numRows() == 0)
 			{
-				// Call get_record_from_id for each row.
-				$ret[$retcount] = get_record_from_id($r["id"]);
-				$retcount++;
+				return -1;
 			}
-			return $ret;
-		}
+			else
+			{
+				$ret[] = array();
+				$retcount = 0;
+				while($r = $result->fetchRow())
+				{
+					// Call get_record_from_id for each row.
+					$ret[$retcount] = get_record_from_id($r["id"]);
+					$retcount++;
+				}
+				return $ret;
+			}
 
 		}
 	}
@@ -1358,34 +968,25 @@ function search_zone_and_record($holy_grail,$perm) {
 	return array('zones' => $return_zones, 'records' => $return_records);
 }
 
-function get_domain_type($id)
-{
+function get_domain_type($id) {
 	global $db;
-        if (is_numeric($id))
-	{
+        if (is_numeric($id)) {
 		$type = $db->queryOne("SELECT type FROM domains WHERE id = ".$db->quote($id));
-		if($type == "")
-		{
+		if ($type == "") {
 			$type = "NATIVE";
 		}
 		return $type;
-        }
-        else
-        {
+        } else {
                 error(sprintf(ERR_INV_ARG, "get_record_from_id", "no or no valid zoneid given"));
         }
 }
 
-function get_domain_slave_master($id)
-{
+function get_domain_slave_master($id){
 	global $db;
-        if (is_numeric($id))
-	{
+        if (is_numeric($id)) {
 		$slave_master = $db->queryOne("SELECT master FROM domains WHERE type = 'SLAVE' and id = ".$db->quote($id));
 		return $slave_master;
-        }
-        else
-        {
+        } else {
                 error(sprintf(ERR_INV_ARG, "get_domain_slave_master", "no or no valid zoneid given"));
         }
 }
@@ -1400,49 +1001,36 @@ function change_zone_type($type, $id)
 		// of the master if the type changes from slave to something else. PowerDNS will
 		// ignore the field if the type isn't something else then slave. But then again,
 		// it's much clearer this way.
-		if ($type != "SLAVE")
-		{
+		if ($type != "SLAVE") {
 			$add = ", master=''";
 		}
-		$result = $db->query("UPDATE domains SET type = " .$db->quote($type). $add." WHERE id = ".$db->quote($id));
-	}
-        else
-        {
+		$result = $db->query("UPDATE domains SET type = " . $db->quote($type) . $add . " WHERE id = ".$db->quote($id));
+	} else {
                 error(sprintf(ERR_INV_ARG, "change_domain_type", "no or no valid zoneid given"));
         }
 }
 
-function change_zone_slave_master($zone_id, $ip_slave_master)
-{
+function change_zone_slave_master($zone_id, $ip_slave_master) {
 	global $db;
-        if (is_numeric($zone_id))
-	{
-       		if (is_valid_ip($ip_slave_master) || is_valid_ip6($ip_slave_master))
-		{
+        if (is_numeric($zone_id)) {
+       		if (is_valid_ip($ip_slave_master) || is_valid_ip6($ip_slave_master)) {
 			$result = $db->query("UPDATE domains SET master = " .$db->quote($ip_slave_master). " WHERE id = ".$db->quote($zone_id));
-		}
-		else
-		{
+		} else {
 			error(sprintf(ERR_INV_ARGC, "change_domain_ip_slave_master", "This is not a valid IPv4 or IPv6 address: $ip_slave_master"));
 		}
-	}
-        else
-        {
+	} else {
                 error(sprintf(ERR_INV_ARG, "change_domain_type", "no or no valid zoneid given"));
         }
 }
 
 
-function validate_account($account)
-{
-	
-  	if(preg_match("/^[A-Z0-9._-]+$/i",$account))
-	{
+function validate_account($account) {
+  	if(preg_match("/^[A-Z0-9._-]+$/i",$account)) {
 		return true;
-	}
-	else
-	{
+	} else {
 		return false;
 	}
 }
+
+
 ?>

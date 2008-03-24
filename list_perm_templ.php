@@ -28,7 +28,7 @@ $permission_templates = get_list_permission_templates() ;
 if ($perm_templ_perm_edit == "0") {
 	error(ERR_PERM_EDIT_PERM_TEMPL);
 } else {
-	echo "    <h2>" . _('Permission templates') . "</h2>\n"; // TODO i18n
+	echo "    <h2>" . _('Permission templates') . "</h2>\n"; 
 	echo "     <table>\n";
 	echo "      <tr>\n";
 	echo "       <th>&nbsp;</th>\n";

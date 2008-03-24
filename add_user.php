@@ -34,11 +34,11 @@ if (!verify_permission(user_add_new)) {
 	echo "     <form method=\"post\">\n";
 	echo "      <table>\n";
 	echo "       <tr>\n";
-	echo "        <td class=\"n\">" . _('Username') . "</td>\n"; // TODO i18n
+	echo "        <td class=\"n\">" . _('Username') . "</td>\n"; 
 	echo "        <td class=\"n\"><input type=\"text\" class=\"input\" name=\"username\" value=\"\"></td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
-	echo "        <td class=\"n\">" . _('Fullname') . "</td>\n"; // TODO i18n
+	echo "        <td class=\"n\">" . _('Fullname') . "</td>\n"; 
 	echo "        <td class=\"n\"><input type=\"text\" class=\"input\" name=\"fullname\" value=\"\"></td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
@@ -50,7 +50,7 @@ if (!verify_permission(user_add_new)) {
 	echo "        <td class=\"n\"><input type=\"text\" class=\"input\" name=\"email\" value=\"\"></td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
-	echo "        <td class=\"n\">" . _('Permission template') . "</td>\n"; // TODO i18n
+	echo "        <td class=\"n\">" . _('Permission template') . "</td>\n"; 
 	echo "        <td class=\"n\">\n";
 	echo "         <select name=\"perm_templ\">\n";
 	foreach (list_permission_templates() as $template) {

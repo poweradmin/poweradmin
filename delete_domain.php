@@ -27,12 +27,12 @@ elseif (verify_permission(zone_content_edit_own)) { $perm_edit = "own" ;}
 else { $perm_edit = "none" ; }
 
 $zone_id = "-1";
-if ((isset($_GET['id']) && v_num($_GET['id']) {
-	$zone_id = $_GET['id']
+if (isset($_GET['id']) && v_num($_GET['id'])) {
+	$zone_id = $_GET['id'];
 }
 
 $confirm = "-1";
-if ((isset($_GET['confirm']) && v_num($_GET['confirm'])
+if (isset($_GET['confirm']) && v_num($_GET['confirm'])) {
 	$confirm = $_GET['confirm'];
 }
 
@@ -48,10 +48,7 @@ if ($zone_id == "-1"){
 
 echo "     <h2>" . _('Delete zone') . " \"" . $zone_info['name']. "\"</h2>\n";
 
-if ($confirm == '0') {
-	// TODO redirect not working?
-	clean_page("index.php");
-} elseif ($confirm == '1') {
+if ($confirm == '1') {
 	if ( delete_domain($zone_id) ) {
 		success(SUC_ZONE_DEL);
 	}
@@ -70,7 +67,7 @@ if ($confirm == '0') {
 		echo "     <p>" . _('Are you sure?') . "</p>\n";
 		echo "     <br><br>\n";
 		echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='" . $_SERVER["REQUEST_URI"] . "&confirm=1'\" value=\"" . _('Yes') . "\">\n";
-		echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='" . $_SERVER["REQUEST_URI"] . "&confirm=0'\" value=\"" . _('No') . "\">\n";
+		echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
 	} else {
 		error(ERR_PERM_DEL_ZONE);
 	}

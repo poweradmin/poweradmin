@@ -40,10 +40,7 @@ else { $perm_content_edit = "none" ; }
 $user_is_zone_owner = verify_user_is_owner_zoneid($_GET["domain"]);
 
 if ($record_id == "-1" ) {
-	if ($confirm == '0') {
-		// TODO redirect not working?
-		clean_page("index.php");
-	} elseif ($confirm == '1') {
+	if ($confirm == '1') {
 		if ( delete_record($record_id) ) {
 			success(SUC_RECORD_DEL);
 		}
@@ -79,7 +76,7 @@ if ($record_id == "-1" ) {
 			}
 			echo "     <p>" . _('Are you sure?') . "</p>\n";
 			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='" . $_SERVER["REQUEST_URI"] . "&confirm=1'\" value=\"" . _('Yes') . "\">\n";
-			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='" . $_SERVER["REQUEST_URI"] . "&confirm=0'\" value=\"" . _('No') . "\">\n";
+			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
 		}
         }
 } else {

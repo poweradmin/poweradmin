@@ -83,7 +83,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 
 	$records = get_records_from_domain_id($zone_id,ROWSTART,ROWAMOUNT);
 	if ( $records == "-1" ) { 
-		echo " <p>" .  _("This zone does not have any records. Weird.") . "</p>\n";  // TODO i18n
+		echo " <p>" .  _("This zone does not have any records. Weird.") . "</p>\n";
 	} else {
 		echo "   <form method=\"post\">\n";
 		echo "   <table>\n";

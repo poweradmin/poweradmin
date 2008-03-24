@@ -95,25 +95,10 @@ $NS2 = "";
 // After this $EXPIRE you are automatically logged out from the system.
 $EXPIRE = 1800;
 
-// $ALLOW_SOA_EDIT
-// Allow users with level 1 to edit/delete SOA records?
-$ALLOW_SOA_EDIT = 0;
-
-// $ALLOW_NS_EDIT
-// Allow users with level 1 to edit/delete pre-set NS records for their domain.
-$ALLOW_NS_EDIT = 1;
-
 // $DEFAULT_TTL
 // Default TTL for records.
 // Default time to live for all records. This notation is in seconds.
 $DEFAULT_TTL = 86400;      // (3600 seconds / 1 hour by default)
-
-
-// $NAME_LEVEL_X
-// These directives allow you to change the statusnames of users on the system.
-$NAME_LEVEL_1 = _('Normal user');
-$NAME_LEVEL_5 = _('Administrator');
-$NAME_LEVEL_10 = _('Administrator w/ user admin rights');
 
 // Enable fancy records or not (http://doc.powerdns.com/fancy-records.html)? true/false
 $FANCY_RECORDS = true;

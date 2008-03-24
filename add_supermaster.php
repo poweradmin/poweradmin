@@ -40,7 +40,7 @@ if($_POST["submit"])
 echo "     <h2>" . _('Add supermaster') . "</h2>\n";
 
 if ( $supermasters_add != "1" ) {
-	echo "     <p>" . _("You do not have the permission to add a new supermaster.") . "</p>\n"; // TODO i18n
+	echo "     <p>" . _("You do not have the permission to add a new supermaster.") . "</p>\n"; 
 } else {
 	echo "     <form method=\"post\" action=\"add_supermaster.php\">\n";
 	echo "      <table>\n";

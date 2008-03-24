@@ -23,24 +23,20 @@
 // if this is the best (or at least a proper) location for this. /RZ.
 require_once("inc/i18n.inc.php");
 
-/* USER LEVELS */
-// TODO should be removed after rewrite user management.
-define("ERR_LEVEL_5", _('You need user level 5 for this operation'));
-define("ERR_LEVEL_10", _('You need user level 10 for this operation'));
-
 /* PERMISSIONS */
-define("ERR_PERM_SEARCH", _("You do not have the permission to perform searches.")); // TODO i18n
-define("ERR_PERM_ADD_RECORD", _("You do not have the permission to add a record to this zone.")); // TODO i18n
-define("ERR_PERM_EDIT_RECORD", _("You do not have the permission to edit this record.")); // TODO i18n
-define("ERR_PERM_VIEW_RECORD", _("You do not have the permission to view this record.")); // TODO i18n
-define("ERR_PERM_ADD_ZONE_MASTER", _("You do not have the permission to add a master zone.")); // TODO i18n
-define("ERR_PERM_DEL_ZONE", _("You do not have the permission to delete a zone.")); // TODO i18n
-define("ERR_PERM_DEL_SM", _("You do not have the permission to delete a supermaster.")); // TODO i18n
-define("ERR_PERM_VIEW_ZONE", _("You do not have the permission to view this zone.")); // TODO i18n
-define("ERR_PERM_EDIT_USER", _("You do not have the permission to edit this user.")); // TODO i18n
-define("ERR_PERM_EDIT_PERM_TEMPL", _("You do not have the permission to edit permission templates.")); // TODO i18n
-define("ERR_PERM_ADD_USER", _("You do not have the permission to add a new user.")); // TODO i18n
-define("ERR_PERM_DEL_USER", _("You do not have the permission to delete this user.")); // TODO i18n
+define("ERR_PERM_SEARCH", _("You do not have the permission to perform searches.")); 
+define("ERR_PERM_ADD_RECORD", _("You do not have the permission to add a record to this zone.")); 
+define("ERR_PERM_EDIT_RECORD", _("You do not have the permission to edit this record.")); 
+define("ERR_PERM_VIEW_RECORD", _("You do not have the permission to view this record.")); 
+define("ERR_PERM_DEL_RECORD", _("You do not have the permission to delete this record.")); 
+define("ERR_PERM_ADD_ZONE_MASTER", _("You do not have the permission to add a master zone.")); 
+define("ERR_PERM_DEL_ZONE", _("You do not have the permission to delete a zone.")); 
+define("ERR_PERM_DEL_SM", _("You do not have the permission to delete a supermaster.")); 
+define("ERR_PERM_VIEW_ZONE", _("You do not have the permission to view this zone.")); 
+define("ERR_PERM_EDIT_USER", _("You do not have the permission to edit this user.")); 
+define("ERR_PERM_EDIT_PERM_TEMPL", _("You do not have the permission to edit permission templates.")); 
+define("ERR_PERM_ADD_USER", _("You do not have the permission to add a new user.")); 
+define("ERR_PERM_DEL_USER", _("You do not have the permission to delete this user.")); 
 
 /* RECORD STUFF */
 define("ERR_RECORD_EMPTY_CONTENT", _('Your content field is empty'));
@@ -49,8 +45,8 @@ define("ERR_RECORD_DELETE_TYPE_DENIED", _('You are not allowed to delete %s reco
 
 /* DOMAIN STUFF */
 define("ERR_DOMAIN_INVALID", _('This is an invalid zone name'));
-define("ERR_SM_EXISTS", _('There is already a supermaster with this IP address.')); // TODO i18n
-define("ERR_DOMAIN_EXISTS", _('There is already a zone with this name.')); // TODO i18n
+define("ERR_SM_EXISTS", _('There is already a supermaster with this IP address.')); 
+define("ERR_DOMAIN_EXISTS", _('There is already a zone with this name.')); 
 
 /* USER STUFF */
 define("ERR_USER_EXIST", _('Username exist already, please choose another one'));
@@ -60,7 +56,7 @@ define("ERR_USER_MATCH_NEW_PASS", _('The two new password fields do not match'))
 define("ERR_USER_EDIT", _('Error editting user'));
 
 /* OTHER */
-define("ERR_INV_INPUT", _('Invalid or unexpected input given.'));  // TODO i18n
+define("ERR_INV_INPUT", _('Invalid or unexpected input given.'));  
 define("ERR_INV_ARG", _('Invalid argument(s) given to function %s'));
 define("ERR_INV_ARGC", _('Invalid argument(s) given to function %s %s'));
 define("ERR_UNKNOWN", _('unknown error'));
@@ -70,7 +66,7 @@ define("ERR_INV_EMAIL", _('Enter a valid email address'));
 define("ERR_DNS_CONTENT", _('Your content field doesnt have a legit value'));
 define("ERR_DNS_HOSTNAME", _('Invalid hostname'));
 define("ERR_DNS_RECORDTYPE", _('Invalid record type! You shouldnt even been able to get that here'));
-define("ERR_DNS_IP", _('This is not a valid IPv4 or IPv6 address.')); // TODO i18n
+define("ERR_DNS_IP", _('This is not a valid IPv4 or IPv6 address.')); 
 define("ERR_DNS_IPV6", _('This is not a valid IPv6 ip.'));
 define("ERR_DNS_IPV4", _('This is not a valid IPv4 ip.'));
 define("ERR_DNS_CNAME", _('This is not a valid CNAME. Did you assign an MX or NS record to the record?'));
@@ -83,13 +79,13 @@ define("ERR_DNS_SOA_NUMERIC_FIELDS", _('You can only have 5 numeric fields'));
 define("ERR_DNS_SOA_HOSTNAME", _('The first part of your SOA record does not contain a valid hostname for a DNS Server'));
 
 /* GOOD! */
-define("SUC_ZONE_ADD", _('Zone has been added succesfully.')); // TODO i18n
-define("SUC_ZONE_DEL", _('Zone has been deleted succesfully.')); // TODO i18n
-define("SUC_USER_UPD", _('The user has been updated succesfully.')); // TODO i18n
-define("SUC_USER_ADD", _('The user has been created succesfully.')); // TODO i18n
-define("SUC_USER_DEL", _('The user has been deleted succesfully.')); // TODO i18n
-define("SUC_RECORD_UPD", _('The record has been updated succesfully.')); // TODO i18n
-define("SUC_RECORD_DEL", _('The record has been deleted succesfully.')); // TODO i18n
-define("SUC_SM_DEL", _('The supermaster has been deleted succesfully.')); // TODO i18n
+define("SUC_ZONE_ADD", _('Zone has been added succesfully.')); 
+define("SUC_ZONE_DEL", _('Zone has been deleted succesfully.')); 
+define("SUC_USER_UPD", _('The user has been updated succesfully.')); 
+define("SUC_USER_ADD", _('The user has been created succesfully.')); 
+define("SUC_USER_DEL", _('The user has been deleted succesfully.')); 
+define("SUC_RECORD_UPD", _('The record has been updated succesfully.')); 
+define("SUC_RECORD_DEL", _('The record has been deleted succesfully.')); 
+define("SUC_SM_DEL", _('The supermaster has been deleted succesfully.')); 
 
 ?>

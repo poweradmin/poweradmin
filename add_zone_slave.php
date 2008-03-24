@@ -48,10 +48,10 @@ if ($_POST['submit'] && $zone_slave_add == "1") {
 	}
 }
 
-echo "     <h2>" . _('Add slave zone') . "</h2>\n"; // TODO i18n
+echo "     <h2>" . _('Add slave zone') . "</h2>\n"; 
 
 if ( $zone_slave_add != "1" ) {
-	echo "     <p>" . _("You do not have the permission to add a new slave zone.") . "</p>\n"; // TODO i18n
+	echo "     <p>" . _("You do not have the permission to add a new slave zone.") . "</p>\n"; 
 } else {
 	$users = show_users();
 	echo "     <form method=\"post\" action=\"add_zone_slave.php\">\n";

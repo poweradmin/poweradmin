@@ -131,7 +131,6 @@ function logout($msg="")
 	};
 	unset($_SESSION["userid"]);
 	unset($_SESSION["name"]);
-	unset($_SESSION["level"]);;
 	session_destroy();
 	session_write_close();
 	auth($msg, $type);

@@ -99,11 +99,11 @@ if ($edit_id == "-1") {
 		echo "      <input type=\"hidden\" name=\"number\" value=\"" . $edit_id . "\">\n";
 		echo "      <table>\n";
 		echo "       <tr>\n";
-		echo "        <td class=\"n\">" . _('Username') . "</td>\n"; // TODO i18n
+		echo "        <td class=\"n\">" . _('Username') . "</td>\n"; 
 		echo "        <td class=\"n\"><input type=\"text\" class=\"input\" name=\"username\" value=\"" . $user['username'] . "\"></td>\n";
 		echo "       </tr>\n";
 		echo "       <tr>\n";
-		echo "        <td class=\"n\">" . _('Fullname') . "</td>\n"; // TODO i18n
+		echo "        <td class=\"n\">" . _('Fullname') . "</td>\n"; 
 		echo "        <td class=\"n\"><input type=\"text\" class=\"input\" name=\"fullname\" value=\"" . $user['fullname'] . "\"></td>\n";
 		echo "       </tr>\n";
 		echo "       <tr>\n";
@@ -115,7 +115,7 @@ if ($edit_id == "-1") {
 		echo "        <td class=\"n\"><input type=\"text\" class=\"input\" name=\"email\" value=\"" . $user['email'] . "\"></td>\n";
 		echo "       </tr>\n";
 		echo "       <tr>\n";
-		echo "        <td class=\"n\">" . _('Permission template') . "</td>\n"; // TODO i18n
+		echo "        <td class=\"n\">" . _('Permission template') . "</td>\n"; 
 		echo "        <td class=\"n\">\n";
 		echo "         <select name=\"perm_templ\">\n";
 		foreach (list_permission_templates() as $template) {

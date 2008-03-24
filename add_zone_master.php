@@ -50,17 +50,17 @@ if ($_POST['submit'] && $zone_master_add == "1" ) {
         if(!$empty) {
                 $empty = 0;
                 if(!eregi('in-addr.arpa', $domain) && (!is_valid_ip($webip) || !is_valid_ip($mailip)) ) {
-                        error(_('Web or mail ip is invalid!')); // TODO i18n
+                        error(_('Web or mail ip is invalid!')); 
 			$error = "1";
                 }
         }
 
         if (!$error) {
                 if (!is_valid_domain($domain)) {
-                        error(_('Zone name is invalid!')); // TODO i18n
+                        error(_('Zone name is invalid!')); 
 			$error = "1";
                 } elseif (domain_exists($domain)) {
-                        error(_('Zone already exists!!')); // TODO i18n
+                        error(_('Zone already exists!!')); 
 			$error = "1";
                 } else {
                         if (add_domain($domain, $owner, $webip, $mailip, $empty, $dom_type, '')) {
@@ -73,10 +73,10 @@ if ($_POST['submit'] && $zone_master_add == "1" ) {
         }
 }
 
-echo "     <h2>" . _('Add master zone') . "</h2>\n"; // TODO i18n
+echo "     <h2>" . _('Add master zone') . "</h2>\n"; 
 
 if ( $zone_master_add != "1" ) {
-	echo "     <p>" . _("You do not have the permission to add a new master zone.") . "</p>\n"; // TODO i18n
+	echo "     <p>" . _("You do not have the permission to add a new master zone.") . "</p>\n"; 
 } else {
 	$available_zone_types = array("MASTER", "NATIVE");
 	$users = show_users();

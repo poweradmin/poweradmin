@@ -173,7 +173,7 @@ function error($msg) {
 	if ($msg) {
 		echo "     <div class=\"error\">Error: " . $msg . "</div>\n";
 	} else {
-		echo "     <div class=\"error\">" . _('An unknown error has occurred.') . "</div>\n"; // TODO i18n
+		echo "     <div class=\"error\">" . _('An unknown error has occurred.') . "</div>\n"; 
 	}
 }
 
@@ -181,7 +181,7 @@ function success($msg) {
 	if ($msg) {
 		echo "     <div class=\"success\">" . $msg . "</div>\n";
 	} else {
-		echo "     <div class=\"success\">" . _('Something has been successfully performed. What exactly, however, will remain a mystery.') . "</div>\n"; // TODO i18n
+		echo "     <div class=\"success\">" . _('Something has been successfully performed. What exactly, however, will remain a mystery.') . "</div>\n"; 
 	}
 }
 
@@ -244,49 +244,6 @@ function clean_page($arg='')
 	}
 }
 
-function level($l)
-{
-	if ($_SESSION["level"] >= $l)
-	{
-		return 1;
-	}
-	else
-	{
-		return 0;
-	}
-}
-
-
-// TODO needs rewriting as well
-function xs($zoneid)
-{
-	global $db;
-	if (is_numeric($zoneid) && is_numeric($_SESSION["level"]))
-	{
-		$result = $db->query("SELECT id FROM zones WHERE owner=".$db->quote($_SESSION["userid"])." AND domain_id=".$db->quote($zoneid));
-		$db->setLimit(1);
-		$result_extra = $db->query("SELECT record_owners.id FROM record_owners,records WHERE record_owners.user_id=".$db->quote($_SESSION["userid"])." AND records.domain_id = ".$db->quote($zoneid)." AND records.id = record_owners.record_id");
-
-                if ($result->numRows() == 1 || $_SESSION["level"] >= 5)
-                {
-			$_SESSION[$zoneid."_ispartial"] = 0;
-			return true;
-		}
-		elseif ($result_extra->numRows() == 1)
-		{
-			$_SESSION[$zoneid."_ispartial"] = 1;
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	else
-	{
-        	return false;
-        }
-}
 
 function get_status($res)
 {

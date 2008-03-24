@@ -92,7 +92,6 @@ function list_permission_templates() {
 	return $tempate_list;
 }
 
-
 /*
  * Retrieve all users.
  * Its to show_users therefore the odd name. Has to be changed.
@@ -196,25 +195,6 @@ function user_exists($user)
 }
 
 
-/*
- * Get all user info for the given user in an array.
- * return values: the database style array with the information about the user.
- */
-function get_user_info($id)
-{
-	global $db;
-	if (is_numeric($id))
-	{
-		$result = $db->query("SELECT id, username, fullname, email, description, level, active from users where id=".$db->quote($id));
-		$r = $result->fetchRow();
-		return $r;
-	}
-	else
-	{
-		error(sprintf(ERR_INV_ARGC,"get_user_info", "you gave illegal arguments: $id"));
-	}
-}
-
 
 /*
  * Delete a user from the system
@@ -248,36 +228,6 @@ function delete_user($uid,$zones)
 		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 	}
 	return true;
-}
-
-
-/*
- * Adds a user to the system.
- * return values: true if succesfully added.
- */
-function add_user($user, $password, $fullname, $email, $level, $description, $active)
-{
-	global $db;
-	if (!level(10))
-	{
-		error(ERR_LEVEL_10);
-	}
-	if (!user_exists($user))
-	{
-		if (!is_valid_email($email)) 
-		{
-			error(ERR_INV_EMAIL);
-		}
-		if ($active != 1) {
-			$active = 0;
-		}
-		$db->query("INSERT INTO users (username, password, fullname, email, description, level, active) VALUES (".$db->quote($user).", '" . md5($password) . "', ".$db->quote($fullname).", ".$db->quote($email).", ".$db->quote($description).", ".$db->quote($level).", ".$db->quote($active).")");
-		return true;
-	}
-	else
-	{
-		error(ERR_USER_EXISTS);
-	}
 }
 
 
@@ -342,7 +292,7 @@ function edit_user($id, $user, $fullname, $email, $perm_templ, $description, $ac
 				username = " . $db->quote($user) . ",
 				fullname = " . $db->quote($fullname) . ",
 				email = " . $db->quote($email) . ",
-				level = " . $db->quote($level) . ",
+				perm_templ = " . $db->quote($perm_templ) . ",
 				description = " . $db->quote($description) . ", 
 				active = " . $db->quote($active) ;
 
@@ -386,7 +336,7 @@ function change_user_pass($details) {
 		$result = $db->query($query);
 		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
-		logout( _('Password has been changed, please login.')); // TODO i18n
+		logout( _('Password has been changed, please login.')); 
 	} else {
 		error(ERR_USER_WRONG_CURRENT_PASS);
 		return false;
