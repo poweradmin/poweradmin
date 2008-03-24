@@ -136,8 +136,10 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 		echo "    </form>";
 	}
 	
-	if ( $domain_type != "SLAVE" || $perm_content_edit != "none" || $perm_content_edit == "own" && $user_is_zone_owner == "1" ) {
-		echo "    <input type=\"button\" class=\"button\" OnClick=\"location.href='add_record.php?id=" . $zone_id . "'\" value=\"" . _('Add record') . "\">&nbsp;&nbsp\n";
+	if ( $perm_content_edit == "all" || $perm_content_edit == "own" && $user_is_zone_owner == "1" ) {
+		if ( $domain_type != "SLAVE")
+			echo "    <input type=\"button\" class=\"button\" OnClick=\"location.href='add_record.php?id=" . $zone_id . "'\" value=\"" . _('Add record') . "\">&nbsp;&nbsp\n";
+		}
 		echo "    <input type=\"button\" class=\"button\" OnClick=\"location.href='delete_domain.php?id=" . $zone_id . "'\" value=\"" . _('Delete zone') . "\">\n";
 	}
 
