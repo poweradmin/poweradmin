@@ -20,93 +20,73 @@
  */
 
 require_once("inc/toolkit.inc.php");
-
-if (!level(5))
-{
-        error(ERR_LEVEL_5);
-
-}
-
-if (isset($_POST["submit"]))
-{
-     $domain = trim($_POST["domain"]);
-     $owner = $_POST["owner"];
-     $slave_master = $_POST["slave_master"];
-     $dom_type = "SLAVE";
-     if (!isset($error))
-     {
-             if (!is_valid_domain($domain))
-             {
-                     $error = "Zone name is invalid!";
-             }
-             elseif (domain_exists($domain))
-             {
-                     $error = "Zone already exists!";
-             }
-             elseif (!is_valid_ip($slave_master))
-             {
-                     $error = "IP of master NS for slave zone is not valid!";
-             }
-             else
-             {
-                     if(add_domain($domain, $owner, '', '', 1, $dom_type, $slave_master))
-		     {
-                                $success = _('Successfully added slave zone.');
-		     }
-             }
-     }
-}
-
 include_once("inc/header.inc.php");
 
-	if ((isset($error)) && ($error != ""))
-	{
-	        ?><div class="error"><?php echo _('Error'); ?>: <?php echo $error; ?></div><?php
+$owner = "-1";
+if ((isset($_POST['owner'])) && (v_num($_POST['owner']))) {
+        $owner = $_POST['owner'];
+}
+
+$zone = trim($_POST['domain']);
+$master = $_POST['slave_master'];
+$type = "SLAVE";
+
+(verify_permission(zone_slave_add)) ? $zone_slave_add = "1" : $zone_slave_add = "0" ;
+
+if ($_POST['submit'] && $zone_slave_add == "1") {
+	if (!is_valid_domain($zone)) {
+		error(ERR_DNS_HOSTNAME);
+	} elseif (domain_exists($zone)) {
+		error(ERR_DOMAIN_EXISTS);
+	} elseif (!is_valid_ip($master)) {
+		error(ERR_DNS_IP);
+	} else {
+		if(add_domain($zone, $owner, $webip, $mailip, $empty, $type, $master)) {
+			success(SUC_ZONE_ADD);
+			unset($zone, $owner, $webip, $mailip, $empty, $type, $master);
+		}
 	}
-	elseif ((isset($success)) && ($success != ""))
-	{
-		?><div class="success"><?php echo $success; ?></div><?php
-	}
-	
+}
+
+echo "     <h2>" . _('Add slave zone') . "</h2>\n"; 
+
+if ( $zone_slave_add != "1" ) {
+	echo "     <p>" . _("You do not have the permission to add a new slave zone.") . "</p>\n"; 
+} else {
 	$users = show_users();
-	
-	?>
-	    <h2><?php echo _('Add slave zone'); ?></h2>
-	    <form method="post" action="add_zone_slave.php">
-	     <table>
-	      <tr>
-	       <td class="n"><?php echo _('Zone name'); ?>:</td>
-	       <td class="n">
-	        <input type="text" class="input" name="domain" value="<?php if (isset($error)) print $_POST["domain"]; ?>">
-	       </td>
-	      </tr>
-	      <tr>
-	       <td class="n"><?php echo _('IP of master NS'); ?>:</td>
-	       <td class="n">
-	        <input type="text" class="input" name="slave_master" value="<?php if (isset($error)) print $_POST["slave_master"]; ?>">
-	       </td>
-	      </tr>
-	      <tr>
-	       <td class="n"><?php echo _('Owner'); ?>:</td>
-	       <td class="n">
-	        <select name="owner">
-	         <?php 
-	         foreach ($users as $u)
-	         {
-	           ?><option value="<?php echo $u['id'] ?>"><?php echo $u['fullname'] ?></option><?php
-	         } 
-	        ?>
-	        </select>
-	       </td>
-	      </tr>
-	      <tr>
-	       <td class="n">&nbsp;</td>
-	       <td class="n">
-	        <input type="submit" class="button" name="submit" value="<?php echo _('Add domain'); ?>">
-	       </td>
-	      </tr>
-	     </table>
-	    </form>
-<?php
+	echo "     <form method=\"post\" action=\"add_zone_slave.php\">\n";
+	echo "      <table>\n";
+	echo "       <tr>\n";
+	echo "        <td class=\"n\">" . _('Zone name') . "</td>\n";
+	echo "        <td class=\"n\">\n";
+	echo "         <input type=\"text\" class=\"input\" name=\"domain\" value=\"" . $zone . "\">\n";
+	echo "        </td>\n";
+	echo "       </tr>\n";
+	echo "       <tr>\n";
+	echo "        <td class=\"n\">" . _('IP of master NS') . ":</td>\n";
+	echo "        <td class=\"n\">\n";
+	echo "         <input type=\"text\" class=\"input\" name=\"slave_master\" value=\"" . $master . "\">\n";
+	echo "        </td>\n";
+	echo "       </tr>\n";
+	echo "       <tr>\n";
+	echo "        <td class=\"n\">" . _('Owner') . ":</td>\n";
+	echo "        <td class=\"n\">\n";
+	echo "         <select name=\"owner\">\n";
+	foreach ($users as $user) {
+		echo "          <option value=\"" . $user['id'] . "\">" . $user['fullname'] . "</option>\n";
+	}
+	echo "         </select>\n";
+	echo "        </td>\n";
+	echo "       </tr>\n";
+	echo "       <tr>\n";
+	echo "        <td class=\"n\">&nbsp;</td>\n";
+	echo "        <td class=\"n\">\n";
+	echo "         <input type=\"submit\" class=\"button\" name=\"submit\" value=\"" .  _('Add domain') . "\">\n";
+	echo "        </td>\n";
+	echo "       </tr>\n";
+	echo "      </table>\n";
+	echo "     </form>\n";
+}
+
 include_once("inc/footer.inc.php");
 ?>

@@ -1,0 +1,62 @@
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL auto_increment,
+  `username` varchar(16) NOT NULL default '',
+  `password` varchar(34) NOT NULL default '',
+  `fullname` varchar(255) NOT NULL default '',
+  `email` varchar(255) NOT NULL default '',
+  `description` text NOT NULL,
+  `perm_templ` tinyint(11) NOT NULL default '0',
+  `active` tinyint(1) NOT NULL default '0',
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+LOCK TABLES `users` WRITE;
+INSERT INTO `users` VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3','Administrator','admin@example.net','Administrator with full rights.',1,1);
+UNLOCK TABLES;
+
+DROP TABLE IF EXISTS `perm_items`;
+CREATE TABLE `perm_items` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(64) NOT NULL,
+  `descr` text NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=62 DEFAULT CHARSET=latin1;
+
+LOCK TABLES `perm_items` WRITE;
+INSERT INTO `perm_items` VALUES (41,'zone_master_add','User is allowed to add new master zones.'),(42,'zone_slave_add','User is allowed to add new slave zones.'),(43,'zone_content_view_own','User is allowed to see the content and meta data of zones he owns.'),(44,'zone_content_edit_own','User is allowed to edit the content of zones he owns.'),(45,'zone_meta_edit_own','User is allowed to edit the meta data of zones he owns.'),(46,'zone_content_view_others','User is allowed to see the content and meta data of zones he does not own.'),(47,'zone_content_edit_others','User is allowed to edit the content of zones he does not own.'),(48,'zone_meta_edit_others','User is allowed to edit the meta data of zones he does not own.'),(49,'search','User is allowed to perform searches.'),(50,'supermaster_view','User is allowed to add view supermasters.'),(51,'supermaster_add','User is allowed to add new supermasters.'),(52,'supermaster_edit','User is allowed to edit new supermasters.'),(53,'user_is_ueberuser','User has full access. God-like. Redeemer.'),(54,'user_view_others','User is allowed to see other users and their details.'),(55,'user_add_new','User is allowed to add new users.'),(56,'user_edit_own','User is allowed to edit their own details.'),(57,'user_edit_others','User is allowed to edit other users.'),(58,'user_passwd_edit_others','User is allowed to edit the password of other users.'),(59,'user_edit_templ_perm','User is allowed to change the permission template that is assigned to a user.'),(60,'templ_perm_add','User is allowed to add new permission templates.'),(61,'templ_perm_edit','User is allowed to edit existing permission templates.');
+UNLOCK TABLES;
+
+DROP TABLE IF EXISTS `perm_templ`;
+CREATE TABLE `perm_templ` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(128) NOT NULL,
+  `descr` text NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+
+LOCK TABLES `perm_templ` WRITE;
+INSERT INTO `perm_templ` VALUES (1,'Administrator','Administrator template with full rights.');
+UNLOCK TABLES;
+
+DROP TABLE IF EXISTS `perm_templ_items`;
+CREATE TABLE `perm_templ_items` (
+  `id` int(11) NOT NULL auto_increment,
+  `templ_id` int(11) NOT NULL,
+  `perm_id` int(11) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=269 DEFAULT CHARSET=latin1;
+
+LOCK TABLES `perm_templ_items` WRITE;
+INSERT INTO `perm_templ_items` VALUES (58,2,43),(268,1,43),(267,1,46),(266,1,54),(265,1,56),(264,1,58),(263,1,45),(262,1,48),(261,1,44),(260,1,47),(259,1,57),(258,1,52),(257,1,61),(57,2,51),(56,2,42),(55,2,60),(54,2,41),(256,1,59),(255,1,50),(156,3,56),(155,3,58),(254,1,55),(253,1,51),(252,1,42),(251,1,60),(250,1,41),(249,1,53);
+UNLOCK TABLES;
+
+DROP TABLE IF EXISTS `zones`;
+CREATE TABLE `zones` (
+  `id` int(11) NOT NULL auto_increment,
+  `domain_id` int(11) NOT NULL default '0',
+  `owner` int(11) NOT NULL default '0',
+  `comment` text,
+  PRIMARY KEY  (`id`),
+  KEY `owner` (`owner`)
+) ENGINE=MyISAM AUTO_INCREMENT=22001 DEFAULT CHARSET=latin1;

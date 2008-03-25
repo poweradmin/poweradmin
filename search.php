@@ -20,157 +20,117 @@
  */
 
 require_once('inc/toolkit.inc.php');
-
-if (isset($_POST['s_submit']) || isset($_POST['q']))
-{
-	$submitted=true;
-	$search_result=search_record($_POST['q']);
-} else {
-	$submitted = false;
-}
-
-// we will continue after the search form ... 
 include_once('inc/header.inc.php');
-?>
 
-    <h2><?php echo _('Search zones or records'); ?></h2>
-    <h3>Query</h3>
-    <table>
-     <form method="post" action="<?php echo $_SERVER['PHP_SELF']?>">
-      <tr>
-       <td class="n"><?php echo _('Enter a hostname or IP address'); ?></td>
-       <td class="n"><input type="text" class="input" name="q"></td>
-      </tr>
-      <tr>
-       <td class="n">&nbsp;</td>
-       <td class="n"><input type="submit" class="button" name="s_submit" value="<?php echo _('Search'); ?>"></td>
-      </tr>
-     </form>
-    </table>
-      
-<?php
-// results
-
-if ($submitted)
-{
-	echo '<br><br>';
-
-  	// let's check if we found any domains ...
-	if (count($search_result) == 2 && count($search_result['domains']))
-  	{
-	?>
-	<h4><?php echo _('Zones found'); ?>:</h4>
-	<table>
-	 <tr>
-	  <th>&nbsp;</th>
-	  <th><?php echo _('Name'); ?></th>
-	  <th><?php echo _('Records'); ?></th>
-	  <th><?php echo _('Owner'); ?></th>
-         </tr>
-<?php
-foreach($search_result['domains'] as $d)
-{
-?>
-         <tr>
-<?php
-  if (level(5))
-  {
-  ?>
-     <td class="n">
-      <a href="edit.php?id=<?php echo $d["id"] ?>"><img src="images/edit.gif" title="<?php echo _('Edit zone') . " " . $d['name']; ?>" alt="[ <?php echo _('Edit zone') . " " . $d['name']; ?> ]"></a>
-      <a href="delete_domain.php?id=<?php echo $d["id"] ?>"><img src="images/delete.gif" title="<?php print _('Delete zone') . " " . $d['name']; ?>" alt="[<?php echo _('Delete zone') . " " . $d['name']; ?>]"></a>
-     </td>
-<?php
-}
-else
-{
-?>
-     <td class="n">
-      &nbsp;
-     </td>
-<?php
-}
-?>
-     <td class="y"><?php echo $d['name']?></td>
-     <td class="y"><?php echo $d['numrec']?></td>
-     <td class="y"><?php echo get_owner_from_id($d['owner'])?></td>
-    </tr>
-			<?php
-		} // end foreach ...
-		?>
-	</table>
-	<br><br>
-	<?php
-	} // end if
+if (!(verify_permission(search))) {
+	error(ERR_PERM_SEARCH);
+	include_once('inc/footer.inc.php');
+	exit;
 	
-	// any records ?!
-	if(count($search_result['records']))
-	{
-		?>
-		<b><?php echo _('Records found'); ?>:</b>
-		<p>
-		<table>
-			<tr>
-				<td class="n">&nbsp;</td>
-				<td class="n"><?php echo _('Name'); ?></td>
-				<td class="n"><?php echo _('Type'); ?></td>
-				<td class="n"><?php echo _('Content'); ?></td>
-				<td class="n"><?php echo _('Priority'); ?></td>
-				<td class="n"><?php echo _('TTL'); ?></td>
-			</tr>
-		<?php
-		foreach($search_result['records'] as $r)
-		{
-		?>
-			<tr>
-				<td class="n">
-			<?php
-			if (($r["type"] != "SOA" && $r["type"] != "NS") ||
-			  ($GLOBALS["ALLOW_SOA_EDIT"] && $r["type"] == "SOA") ||
-			  ($GLOBALS["ALLOW_NS_EDIT"] && $r["type"] == "NS") ||
-			  ($r["type"] == "NS" && get_name_from_record_id($r["id"]) != get_domain_name_from_id(recid_to_domid($r["id"])) && 
-			  $GLOBALS["ALLOW_NS_EDIT"] != 1))
-			{
-				?>
-				<a href="edit_record.php?id=<?php echo $r['id']?>&amp;domain=<?php echo $r['domain_id']?>"><img src="images/edit.gif" alt="[ <?php echo _('Edit record'); ?> ]" border="0"></a>
-				<a href="delete_record.php?id=<?php echo $r['id']?>&amp;domain=<?php echo $r['domain_id']?>"><img src="images/delete.gif" alt="[ <?php echo _('Delete record'); ?> ]" border="0"></a>
-				<?php 
-			} // big if ;-)
-			?>
-			</td>
-			<td class="y"><?php echo $r['name']?></td>
-			<td class="y"><?php echo $r['type']?></td>
-			<td class="y"><?php echo $r['content']?></td>
-			<?php
-			if ($r['prio'] != 0)
-			{
-				?><td class="y"><?php echo $r['prio']?></td><?php
+} else {
+	echo "     <h2>" . _('Search zones and records') . "</h2>\n";
+
+	if ($_POST['submit']) {
+
+		if (verify_permission(zone_content_view_others)) { $perm_view = "all" ; }
+		elseif (verify_permission(zone_content_view_own)) { $perm_view = "own" ; }
+		else { $perm_view = "none" ; }
+
+		if (verify_permission(zone_content_edit_others)) { $perm_edit = "all" ; }
+		elseif (verify_permission(zone_content_edit_own)) { $perm_edit = "own" ; }
+		else { $perm_edit = "none" ; }
+	
+		$holy_grail = $_POST['query'];
+
+		$result = search_zone_and_record($holy_grail,$perm_view);
+
+		if (is_array($result['zones'])) {
+			echo "     <h3>" . _('Zones found') . ":</h3>\n";
+			echo "     <table>\n";
+			echo "      <tr>\n";
+			echo "       <th>&nbsp;</th>\n";
+			echo "       <th>" . _('Name') . "</th>\n";
+			echo "       <th>" . _('Type') . "</th>\n";
+			echo "       <th>" . _('Master') . "</th>\n";
+			echo "      </tr>\n";
+
+			foreach ($result['zones'] as $zone) {
+				echo "      <tr>\n";
+				echo "          <td>\n";
+				echo "           <a href=\"edit.php?id=" . $zone['zid'] . "\"><img src=\"images/edit.gif\" title=\"" . _('Edit zone') . " " . $zone['name'] . "\" alt=\"[ " . _('Edit zone') . " " . $zone['name'] . " ]\"></a>\n";
+				if ( $perm_edit != "all" || $perm_edit != "none") {
+					$user_is_zone_owner = verify_user_is_owner_zoneid($zone['zid']);
+				}
+				if ( $perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1") ) {
+					echo "           <a href=\"delete_domain.php?id=" . $zone['zid'] . "\"><img src=\"images/delete.gif\" title=\"" . _('Delete zone') . " " . $zone['name'] . "\" alt=\"[ ". _('Delete zone') . " " . $zone['name'] . " ]\"></a>\n";
+				}
+				echo "          </td>\n";
+				echo "       <td>" . $zone['name'] . "</td>\n";
+				echo "       <td>" . $zone['type'] . "</td>\n";
+				if ($zone['type'] == "SLAVE") {
+					echo "       <td>" . $zone['master'] . "</td>\n";
+				} else {
+					echo "       <td>&nbsp;</td>\n";
+				}
+				echo "      </tr>\n";
 			}
-			else 
-			{
-			?><td class="n"></td><?php
-			} // else
-			?><td class="y"><?php echo $r['ttl']?></td>
-			</tr>
-			<?php
-		} // foreach
-	?>
-	</table>
-	<?php
-	} // if
-	if(count($search_result['domains']) == 0 && count($search_result['records']) == 0)
-	{
-	?>
-		<table border="0" cellspacing="4">
-			<tr>
-				<td width="510" class="n">
-				<?php echo _('Nothing found for query'); ?> "<?php echo $_POST['q']?>".
-				</td>
-			</tr>
-		</table>
-	<?php
+			echo "     </table>\n";
+		}
+
+		if (is_array($result['records'])) {
+			echo "     <h3>" . _('Records found') . ":</h3>\n";
+			echo "     <table>\n";
+			echo "      <tr>\n";
+			echo "       <th>&nbsp;</th>\n";
+			echo "       <th>" . _('Name') . "</th>\n";
+			echo "       <th>" . _('Type') . "</th>\n";
+			echo "       <th>" . _('Prio') . "</th>\n";
+			echo "       <th>" . _('Content') . "</th>\n";
+			echo "       <th>" . _('TTL') . "</th>\n";
+			echo "      </tr>\n";
+
+			foreach ($result['records'] as $record) {
+
+				echo "      <tr>\n";
+				echo "          <td>\n";
+				echo "           <a href=\"edit_record.php?id=" . $record['rid'] . "\"><img src=\"images/edit.gif\" title=\"" . _('Edit record') . " " . $record['name'] . "\" alt=\"[ " . _('Edit record') . " " . $record['name'] . " ]\"></a>\n";
+				if ( $perm_edit != "all" || $perm_edit != "none") {
+					$user_is_zone_owner = verify_user_is_owner_zoneid($record['zid']);
+				}
+				if ( $perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1") ) {
+					echo "           <a href=\"delete_record.php?id=" . $record['rid'] . "\"><img src=\"images/delete.gif\" title=\"" . _('Delete record') . " " . $record['name'] . "\" alt=\"[ ". _('Delete record') . " " . $record['name'] . " ]\"></a>\n";
+				}
+				echo "          </td>\n";
+				echo "       <td>" . $record['name'] . "</td>\n";
+				echo "       <td>" . $record['type'] . "</td>\n";
+				if ($record['type'] == "MX") {
+					echo "       <td>" . $record['prio'] . "</td>\n";
+				} else {
+					echo "       <td>&nbsp;</td>\n";
+				}
+				echo "       <td>" . $record['content'] . "</td>\n";
+				echo "       <td>" . $record['ttl'] . "</td>\n";
+				echo "      </tr>\n";
+			}
+			echo "     </table>\n";
+		}
+
 	}
-		
+
+	echo "     <h3>" . _('Query') . ":</h3>\n";
+	echo "     <table>\n";
+	echo "      <form method=\"post\" action=\"" . $_SERVER['PHP_SELF'] . "\">\n";
+	echo "       <tr>\n";
+	echo "        <td class=\"n\">" . _('Enter a hostname or IP address') . "</td>\n";
+	echo "        <td class=\"n\"><input type=\"text\" class=\"input\" name=\"query\" value=\"" . $holy_grail . "\"></td>\n";
+	echo "       </tr>\n";
+	echo "       <tr>\n";
+	echo "        <td class=\"n\">&nbsp;</td>\n";
+	echo "        <td class=\"n\"><input type=\"submit\" class=\"button\" name=\"submit\" value=\"" . _('Search') . "\"></td>\n";
+	echo "       </tr>\n";
+	echo "      </form>\n";
+	echo "     </table>\n";
+
 }
 include_once('inc/footer.inc.php');
 ?>

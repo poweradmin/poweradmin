@@ -20,135 +20,94 @@
  */
 
 require_once("inc/toolkit.inc.php");
-
-if (isset($_GET["delid"]) && isset($_GET['delid']) && isset($_GET['id'])) {
-   delete_record_owner($_GET["domain"],$_GET["delid"],$_GET["id"]);
-}
-
-$xsid = (isset($_GET['id'])) ? $_GET['id'] : $_POST['recordid'];
-
-if(!xs(recid_to_domid($xsid)))
-{
-    error(ERR_RECORD_ACCESS_DENIED);
-}
-
-if (isset($_GET['domain'])) {
-	$domain_name = get_domain_name_from_id($_GET['domain']);
-}
-if (isset($_POST["commit"]) && isset($_POST['recordid']) && isset($_POST['domainid']) && isset($_POST['name']) && isset($_POST['type']) && isset($_POST['content']) && isset($_POST['ttl']) && isset($_POST['prio']))
-{
-        edit_record($_POST["recordid"], $_POST["domainid"], $_POST["name"], $_POST["type"], $_POST["content"], $_POST["ttl"], $_POST["prio"]);
-        clean_page("edit.php?id=".$_POST["domainid"]);
-} elseif(isset($_SESSION['partial_'.$domain_name]) && ($_SESSION["partial_".$domain_name] == 1))
-{
-	$db->setLimit(1);
-    $checkPartial = $db->queryOne("SELECT id FROM record_owners WHERE record_id=".$db->quote($_GET["id"])." AND user_id=".$db->quote($_SESSION["userid"]));
-    if (empty($checkPartial)) {
-        error(ERR_RECORD_ACCESS_DENIED);
-    }
-}
 include_once("inc/header.inc.php");
-?>
-    <h2><?php echo _('Edit record in zone'); ?> "<?php echo  $domain_name ?>"</h2>
-<?php
 
-$x_result = $db->query("SELECT r.id,u.fullname FROM record_owners as r, users as u WHERE r.record_id=".$db->quote($_GET['id'])." AND u.id=r.user_id");
-if (level(10) && ($x_result->numRows() > 0)) 
-{
-?>
-    <div id="meta">
-     <div id="meta-left">
-      <table>
-       <tr>
-        <th><?php echo _('Sub-owners'); ?></td>
-        <th>&nbsp;</td>
-       </tr>
-<?php
-	while ($x_r = $x_result->fetchRow()) 
-	{
-?>
-        <tr>
-	 <td class="tdbg"><?php echo $x_r["fullname"]; ?></td>
-	 <td class="tdbg"><a href="<?php echo $_SERVER["PHP_SELF"]; ?>?id=<?php echo $_GET["id"]; ?>&amp;domain=<?php echo $_GET["domain"]; ?>&amp;delid=<?php echo $x_r["id"]; ?>"><img src="images/delete.gif" alt="trash"></a></td>
-	</tr>
-<?php
-	}
-?>
-       </table>
-      </div>
-     </div>
-<?php 
-}
-?>
-	<div id="meta">&nbsp;</div>
-	<div>
-    <form method="post" action="edit_record.php">
-     <input type="hidden" name="recordid" value="<?php echo  $_GET["id"] ?>">
-     <input type="hidden" name="domainid" value="<?php echo  $_GET["domain"] ?>">
-     <table>
-      <tr>
-       <th><?php echo _('Name'); ?></td>
-       <th>&nbsp;</td>
-       <th><?php echo _('Type'); ?></td>
-       <th><?php echo _('Priority'); ?></td>
-       <th><?php echo _('Content'); ?></td>
-       <th><?php echo _('TTL'); ?></td>
-      </tr>
-<?php
-	$rec = get_record_from_id($_GET["id"]);
-?>
-       <tr>
-        <td>
-<?php 
-if ($_SESSION[$_GET["domain"]."_ispartial"] == 1)  
-{
-?>
-         <input type="hidden" name="name" value="<?php echo  trim(str_replace($domain_name, '', $rec["name"]), '.')?>" class="input">
+if (verify_permission(zone_content_view_others)) { $perm_view = "all" ; }
+elseif (verify_permission(zone_content_view_own)) { $perm_view = "own" ; }
+else { $perm_view = "none" ; }
 
-<?php echo  trim(str_replace($domain_name, '', $rec["name"]), '.') ?>
-<?php 
-} 
-else 
-{ 
-?>
-         <input type="text" name="name" value="<?php echo  trim(str_replace($domain_name, '', $rec["name"]), '.') ?>" class="input">
-<?php 
-} 
-?>
-.<?php echo  $domain_name ?>
-        </td>
-	<td class="n">IN</td>
-	<td>
-	 <select name="type">
-<?php
-foreach (get_record_types() as $c)
-{
-	if ($c == $rec["type"])
-	{
-		$add = " SELECTED";
+if (verify_permission(zone_content_edit_others)) { $perm_content_edit = "all" ; }
+elseif (verify_permission(zone_content_edit_own)) { $perm_content_edit = "own" ; }
+else { $perm_content_edit = "none" ; }
+
+if (verify_permission(zone_meta_edit_others)) { $perm_meta_edit = "all" ; }
+elseif (verify_permission(zone_meta_edit_own)) { $perm_meta_edit = "own" ; }
+else { $perm_meta_edit = "none" ; }
+
+$user_is_zone_owner = verify_user_is_owner_zoneid($_GET["domain"]);
+$zone_type = get_domain_type($_GET["domain"]);
+$zone_name = get_domain_name_from_id($_GET["domain"]);
+
+if ($_POST["commit"]) {
+	if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
+		error(ERR_PERM_EDIT_RECORD);
+	} else {
+		$ret_val = edit_record($_POST["recordid"], $_POST["domainid"], $_POST["name"], $_POST["type"], $_POST["content"], $_POST["ttl"], $_POST["prio"]);
+		if ( $ret_val == "1" ) {
+			success(SUC_RECORD_UPD);
+		} else {
+			echo "     <div class=\"error\">" . $ret_val . "</div>\n";  
+		}
 	}
-	else
-	{
-		$add = "";
-	}
-	?>
-	<option<?php echo  $add ?> value="<?php echo  $c ?>"><?php echo  $c ?></option><?php
 }
 
-?>
-         </select>
-	</td>
-	<td><input type="text" name="prio" value="<?php echo  $rec["prio"] ?>" class="sinput"></td>
-	<td><input type="text" name="content" value="<?php echo  $rec["content"] ?>" class="input"></td>
-	<td><input type="text" name="ttl" value="<?php echo  $rec["ttl"] ?>" class="sinput"></td>
-       </tr>
-      </table>
-      <p>
-       <input type="submit" name="commit" value="<?php echo _('Commit changes'); ?>" class="button">&nbsp;&nbsp;
-       <input type="reset" name="reset" value="<?php echo _('Reset changes'); ?>" class="button">
-      </p>
-     </form>
-	</div>
-<?php
+echo "    <h2>" . _('Edit record in zone') . " " .  $zone_name . "</h2>\n";
+
+if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" ) {
+	error(ERR_PERM_VIEW_RECORD);
+} else {
+	$record = get_record_from_id($_GET["id"]);
+	echo "     <form method=\"post\" action=\"edit_record.php?domain=" . $_GET["domain"] . "&id=" . $_GET["id"] . "\">\n";
+	echo "      <table>\n";
+	echo "       <tr>\n";
+	echo "        <th>" . _('Name') . "</td>\n";
+	echo "        <th>&nbsp;</td>\n";
+	echo "        <th>" . _('Type') . "</td>\n";
+	echo "        <th>" . _('Priority') . "</td>\n";
+	echo "        <th>" . _('Content') . "</td>\n";
+	echo "        <th>" . _('TTL') . "</td>\n";
+	echo "       </tr>\n";
+
+	if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
+		echo "      <tr>\n";
+		echo "       <td>" . $record["name"] . "</td>\n";
+		echo "       <td>IN</td>\n";
+		echo "       <td>" . $record["type"] . "</td>\n";
+		echo "       <td>" . $record["content"] . "</td>\n";
+		echo "       <td>" . $record["prio"] . "</td>\n";
+		echo "       <td>" . $record["ttl"] . "</td>\n";
+		echo "      </tr>\n";
+	} else {
+		echo "      <input type=\"hidden\" name=\"recordid\" value=\"" . $_GET["id"] . "\">\n";
+		echo "      <input type=\"hidden\" name=\"domainid\" value=\"" . $_GET["domain"] . "\">\n";
+		echo "      <tr>\n";
+		echo "       <td><input type=\"text\" name=\"name\" value=\"" . trim(str_replace($zone_name, '', $record["name"]), '.') . "\" class=\"input\">." . $zone_name . "</td>\n";
+		echo "       <td>IN</td>\n";
+		echo "       <td>\n";
+		echo "        <select name=\"type\">\n";
+		foreach (get_record_types() as $type_available) {
+			if ($type_available == $record["type"]) {
+				$add = " SELECTED";
+			} else {
+				$add = "";
+			}
+			echo "         <option" . $add . " value=\"" . $type_available . "\" >" . $type_available . "</option>\n";
+		}
+		echo "        </select>\n";
+		echo "       </td>\n";
+		echo "       <td><input type=\"text\" name=\"prio\" value=\"" .  $record["prio"] . "\" class=\"sinput\"></td>\n";
+		echo "       <td><input type=\"text\" name=\"content\" value=\"" .  $record["content"] . "\" class=\"input\"></td>\n";
+		echo "       <td><input type=\"text\" name=\"ttl\" value=\"" . $record["ttl"] . "\" class=\"sinput\"></td>\n";
+		echo "      </tr>\n";
+	}
+	echo "      </table>\n";
+	echo "      <p>\n";
+	echo "       <input type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\" class=\"button\">&nbsp;&nbsp;\n";
+	echo "      </p>\n";
+	echo "     </form>\n";
+}
+
+
 include_once("inc/footer.inc.php");
 ?>
+

@@ -138,12 +138,12 @@ a:hover 	{
 
 
 
-
-
-
-
-
-
+textarea {
+	width: 			100%;
+}
+input.wide {
+	width: 			100%;
+}
 
 
 <?php

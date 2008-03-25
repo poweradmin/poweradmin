@@ -20,32 +20,43 @@
  */
 
 require_once("inc/toolkit.inc.php");
+include_once("inc/header.inc.php");
 
-if (!level(5))
-{
-        error(ERR_LEVEL_5);
-        
+$master_ip = "-1"
+if (isset($_GET['master_ip']) && (is_valid_ip($_GET['master_ip']) || is_valid_ip6($_GET['master_ip']))) {
+	 $master_ip = $_GET['master_ip'];
 }
 
-if (isset($_GET["master_ip"])) {
-        if ((isset($_GET['confirm'])) && ($_GET["confirm"] == '0')) {
-                clean_page("index.php");
-        } elseif ((isset($_GET["confirm"])) && ($_GET['confirm'] == '1')) {
-                delete_supermaster($_GET["master_ip"]);
-                clean_page("index.php");
-        }
-        include_once("inc/header.inc.php");
-	$info = get_supermaster_info_from_ip($_GET["master_ip"]);
-        ?>
-	<h2><?php echo _('Delete supermaster'); ?> "<?php echo $_GET["master_ip"] ?>"</h2>
-	<?php echo _('Hostname in NS record'); ?>: <?php echo $info["ns_name"] ?><br>
-	<?php echo _('Account'); ?>: <?php echo $info["account"] ?><br><br>
-        <font class="warning"><?php echo _('Are you sure?'); ?></font><br><br>
-        <input type="button" class="button" OnClick="location.href='<?php echo $_SERVER["REQUEST_URI"] ?>&confirm=1'" value="<?php echo _('Yes'); ?>"> 
-	<input type="button" class="button" OnClick="location.href='<?php echo $_SERVER["REQUEST_URI"] ?>&confirm=0'" value="<?php echo _('No'); ?>">
-        <?php
+$confirm = "-1";
+if ((isset($_GET['confirm']) && v_num($_GET['confirm'])
+        $confirm = $_GET['confirm'];
+}
+
+if ($master_ip == "-1"){
+	error(ERR_INV_INPUT);
 } else {
-        include_once("inc/header.inc.php");
-        echo _('Nothing to do!');
+	(verify_permission(supermaster_edit)) ? $perm_sm_edit = "1" :  $perm_sm_edit = "0" ;
+	if ($perm_sm_edit == "0") {
+		error(ERR_PERM_DEL_SM);
+	} else {
+		$info = get_supermaster_info_from_ip($master_ip);
+
+		echo "     <h2>" . _('Delete supermaster') . " \"" . $master_ip . "\"</h2>\n";
+
+		if ($_GET["confirm"] == '1') {
+			if (delete_supermaster($master_ip)) {
+				success(SUC_ZONE_DEL);
+			}
+		} else {
+			echo "     <p>\n";
+			echo "      " . _('Hostname in NS record') . ": " . $info['ns_name'] . "<br>\n";
+			echo "      " . _('Account') . ": " . $info['account'] . "\n";
+			echo "     </p>\n";
+			echo "     <p>" . _('Are you sure?') . "</p>\n";
+			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='" . $_SERVER['REQUEST_URI'] . "&confirm=1'\" value=\"" . _('Yes') . "\">\n"; 
+			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
+		}
+	}
 }
+
 include_once("inc/footer.inc.php");

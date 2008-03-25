@@ -22,7 +22,6 @@
 session_start();
 
 
-
 if(!@include_once("config.inc.php"))
 {
 	error( _('You have to create a config.inc.php!') );
@@ -79,6 +78,9 @@ require_once("users.inc.php");
 require_once("dns.inc.php");
 require_once("record.inc.php");
 
+$db = dbConnect();
+doAuthenticate();
+
 
 /*************
  * Functions *
@@ -92,7 +94,7 @@ function show_pages($amount,$rowamount,$id='')
 {
    if ($amount > $rowamount) {
       if (!isset($_GET["start"])) $_GET["start"]=1;
-      echo _('Show page') . "<br>";
+      echo _('Show page') . ":<br>";
       for ($i=1;$i<=ceil($amount / $rowamount);$i++) {
          if ($_GET["start"] == $i) {
             echo "[ <b>".$i."</b> ] ";
@@ -111,7 +113,7 @@ function show_pages($amount,$rowamount,$id='')
 
 function show_letters($letterstart,$userid=true)
 {
-        echo _('Show zones beginning with:') . "<br>";
+        echo _('Show zones beginning with') . ":<br>";
 
 	$letter = "[[:digit:]]";
 	if ($letterstart == "1")
@@ -148,67 +150,41 @@ function zone_letter_start($letter,$userid=true)
 {
         global $db;
 	global $sql_regexp;
-        $sqlq = "SELECT domains.id AS domain_id,
-        zones.owner,
-        records.id,
-        domains.name AS domainname
-        FROM domains
-        LEFT JOIN zones ON domains.id=zones.domain_id 
-        LEFT JOIN records ON records.domain_id=domains.id
-        WHERE 1=1";
-        if((!level(5) || !$userid) && !level(10) && !level(5))
-        {
-		// First select the zones for which we have ownership on one or more records.
-		$query = 'SELECT records.domain_id FROM records, record_owners WHERE user_id = '.$db->quote($_SESSION['userid']).' AND records.id = record_owners.record_id';
-		$result = $db->query($query);
-		$zones = array();
-		if (!PEAR::isError($result)) {
-			$zones = $result->fetchCol();
-		}
-	
-                $sqlq .= " AND (zones.owner=".$db->quote($_SESSION["userid"]);
-		if (count($zones) > 0) {
-			$sqlq .= ' OR zones.domain_id IN ('.implode(',', $zones).') '; 
-
-		}
-		$sqlq .= ')';
-        }
-        $sqlq .= " AND substring(domains.name,1,1) ".$sql_regexp." ".$db->quote("^".$letter);
-		$db->setLimit(1);
-        $result = $db->query($sqlq);
+        $query = "SELECT 
+			domains.id AS domain_id,
+			zones.owner,
+			records.id,
+			domains.name AS domainname
+			FROM domains
+			LEFT JOIN zones ON domains.id=zones.domain_id 
+			LEFT JOIN records ON records.domain_id=domains.id
+			AND substring(domains.name,1,1) ".$sql_regexp." ".$db->quote("^".$letter);
+	$db->setLimit(1);
+        $result = $db->query($query);
         $numrows = $result->numRows();
-        if ( $numrows == "1" ) 
-        {
+        if ( $numrows == "1" ) {
                 return 1;
-        }
-        else
-        {
+        } else {
                 return 0;
         }
 }
 
-/*
- * Print a nice useraimed error.
- */
-function error($msg)
-{
-	// General function for printing critical errors.
-	if ($msg)
-	{
-		include_once("header.inc.php");
-	?>
-	<p><?php echo _('Oops! An error occured!'); ?></p>
-	<p><?php echo nl2br($msg) ?></p>
-	<?php
-		include_once("footer.inc.php");
-		die();
-	}
-	else
-	{
-		include_once("footer.inc.php");
-		die("No error specified!");
+function error($msg) {
+	if ($msg) {
+		echo "     <div class=\"error\">Error: " . $msg . "</div>\n";
+	} else {
+		echo "     <div class=\"error\">" . _('An unknown error has occurred.') . "</div>\n"; 
 	}
 }
+
+function success($msg) {
+	if ($msg) {
+		echo "     <div class=\"success\">" . $msg . "</div>\n";
+	} else {
+		echo "     <div class=\"success\">" . _('Something has been successfully performed. What exactly, however, will remain a mystery.') . "</div>\n"; 
+	}
+}
+
 
 /*
  * Something has been done nicely, display a message and a back button.
@@ -268,47 +244,6 @@ function clean_page($arg='')
 	}
 }
 
-function level($l)
-{
-	if ($_SESSION["level"] >= $l)
-	{
-		return 1;
-	}
-	else
-	{
-		return 0;
-	}
-}
-
-function xs($zoneid)
-{
-	global $db;
-	if (is_numeric($zoneid) && is_numeric($_SESSION["level"]))
-	{
-		$result = $db->query("SELECT id FROM zones WHERE owner=".$db->quote($_SESSION["userid"])." AND domain_id=".$db->quote($zoneid));
-		$db->setLimit(1);
-		$result_extra = $db->query("SELECT record_owners.id FROM record_owners,records WHERE record_owners.user_id=".$db->quote($_SESSION["userid"])." AND records.domain_id = ".$db->quote($zoneid)." AND records.id = record_owners.record_id");
-
-                if ($result->numRows() == 1 || $_SESSION["level"] >= 5)
-                {
-			$_SESSION[$zoneid."_ispartial"] = 0;
-			return true;
-		}
-		elseif ($result_extra->numRows() == 1)
-		{
-			$_SESSION[$zoneid."_ispartial"] = 1;
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	else
-	{
-        	return false;
-        }
-}
 
 function get_status($res)
 {
@@ -344,4 +279,20 @@ function is_valid_email($email)
 	}
 	return true;
 }
+
+
+function v_num($string) {
+	if (!eregi("^[0-9]+$", $string)) { 
+		return false ;
+	} else {
+		return true ;
+	}
+}
+
+function debug_r($array) {
+	echo "<pre style=\"border: 2px solid blue;\">\n";
+	print_r($array);
+	echo "</pre>\n";
+}
+
 ?>

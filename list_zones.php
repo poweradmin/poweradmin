@@ -22,110 +22,72 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
-$num_all_domains = zone_count(0);
-$doms = zone_count(0, LETTERSTART);
-?>
-   <h2><?php echo _('List all zones'); ?></h2>
-<?php
-        echo "<div class=\"showmax\">";
-        show_pages($doms,ROWAMOUNT);
-        echo "</div>";
+if (verify_permission(zone_content_view_others)) { $perm_view = "all" ; } 
+elseif (verify_permission(zone_content_view_own)) { $perm_view = "own" ; }
+else { $perm_view = "none" ;}
 
-if ($num_all_domains > ROWAMOUNT)
-{
-        echo "<div class=\"showmax\">";
-        show_letters(LETTERSTART);
-        echo "</div>";
-}
-?>
-   <table>
-    <tr>
-     <th>&nbsp;</th>
-     <th><?php echo _('Name'); ?></th>
-     <th><?php echo _('Type'); ?></th>
-     <th><?php echo _('Records'); ?></th>
-     <th><?php echo _('Owner'); ?></th>
-    </tr>
-    <tr>
+if (verify_permission(zone_content_edit_others)) { $perm_edit = "all" ; } 
+elseif (verify_permission(zone_content_edit_own)) { $perm_edit = "own" ;} 
+else { $perm_edit = "none" ; }
 
-<?php
-if ($num_all_domains < ROWAMOUNT) {
-   $doms = get_domains(0,"all",ROWSTART,ROWAMOUNT);
+$count_zones_all = zone_count_ng("all");
+$count_zones_all_letterstart = zone_count_ng($perm_view,LETTERSTART); 
+$count_zones_view = zone_count_ng($perm_view);
+$count_zones_edit = zone_count_ng($perm_edit);
+
+echo "    <h2>" . _('List zones') . "</h2>\n";
+
+if ($perm_view == "none") { 
+	echo "     <p>" . _("You do not have the permission to see any zones.") . "</p>\n";
 } else {
-   $doms = get_domains(0,LETTERSTART,ROWSTART,ROWAMOUNT);
-   $num_show_domains = ($doms == -1) ? 0 : count($doms);
-}
+	echo "     <div class=\"showmax\">\n";
+	show_pages($count_zones_all_letterstart,ROWAMOUNT);
+	echo "     </div>\n";
 
-// If the user doesnt have any domains print a message saying so
-if ($doms < 0)
-{
-	?>
-    <tr>
-     <td>&nbsp;</td>
-     <td colspan="4"><?php echo _('There are no zones.'); ?></td>
-    </tr>
-<?php
-}
-
-// If he has domains, dump them (duh)
-else
-{
-	foreach ($doms as $c)
-	{
-		?>
-		
-    <tr>
-     <td>
-      <a href="edit.php?id=<?php echo $c["id"] ?>"><img src="images/edit.gif" title="<?php echo _('Edit zone') . " " . $c['name']; ?>" alt="[ <?php echo _('Edit zone') . " " . $c['name']; ?> ]"></a>
-<?php
-		if (level(5))
-		{
-?>
-      <a href="delete_domain.php?id=<?php echo $c["id"] ?>"><img src="images/delete.gif" title="<?php print _('Delete zone') . " " . $c['name']; ?>" alt="[<?php echo _('Delete zone') . " " . $c['name']; ?>]"></a>
-<?php
-		}
-?>
-     </td>
-     <td class="y"><?php echo $c["name"] ?></td>
-     <td class="y"><?php echo strtolower(get_domain_type($c["id"])) ?></td>
-     <td class="y"><?php echo $c["numrec"] ?></td>
-
-<?php
-		$zone_owners = get_owners_from_domainid($c["id"]);
-		if ($zone_owners == "")
-		{
-			echo "<td class=\"n\"></td>";
-		}
-		else
-		{
-			print "<td class=\"y\">".$zone_owners."</td>";
-		}
-		print "</tr>\n";
+	if ($count_zones_view > ROWAMOUNT) {
+		echo "<div class=\"showmax\">";
+		show_letters(LETTERSTART);
+		echo "</div>";
 	}
+	echo "     <table>\n";
+	echo "      <tr>\n";
+	echo "       <th>&nbsp;</th>\n";
+	echo "       <th>" . _('Name') . "</th>\n";
+	echo "       <th>" . _('Type') . "</th>\n";
+	echo "       <th>" . _('Records') . "</th>\n";
+	echo "       <th>" . _('Owner') . "</th>\n";
+	echo "      </tr>\n";
+	echo "      <tr>\n";
+
+	if ($count_zones_view < ROWAMOUNT) {
+		$zones = get_zones($perm_view,$_SESSION['userid'],"all",ROWSTART,ROWAMOUNT);
+	} else {
+		$zones = get_zones($perm_view,$_SESSION['userid'],LETTERSTART,ROWSTART,ROWAMOUNT);
+		$count_zones_shown = ($zones == -1) ? 0 : count($zones);
+	}
+	foreach ($zones as $zone)
+	{
+		$zone_owners = get_fullnames_owners_from_domainid($zone["id"]);
+
+		echo "         <tr>\n";
+		echo "          <td>\n";
+		echo "           <a href=\"edit.php?id=" . $zone['id'] . "\"><img src=\"images/edit.gif\" title=\"" . _('View zone') . " " . $zone['name'] . "\" alt=\"[ " . _('View zone') . " " . $zone['name'] . " ]\"></a>\n";
+		if ( $perm_edit != "all" || $perm_edit != "none") {
+			$user_is_zone_owner = verify_user_is_owner_zoneid($zone["id"]);
+		}
+		if ( $perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1") ) {
+      			echo "           <a href=\"delete_domain.php?id=" . $zone["id"] . "\"><img src=\"images/delete.gif\" title=\"" . _('Delete zone') . " " . $zone['name'] . "\" alt=\"[ ". _('Delete zone') . " " . $zone['name'] . " ]\"></a>\n";
+		}
+		echo "          </td>\n";
+		echo "          <td class=\"y\">" . $zone["name"] . "</td>\n";
+		echo "          <td class=\"y\">" . strtolower($zone["type"]) . "</td>\n";
+		echo "          <td class=\"y\">" . $zone["count_records"] . "</td>\n";
+		echo "          <td class=\"y\">" . $zone_owners . "</td>\n";
+	}
+	echo "           </tr>\n";
+	echo "          </table>\n";
+
 }
 
-?>
-   </table>
-
-<?php
-if ($num_all_domains < ROWAMOUNT) {
-?>
-   <p><?php printf(_('This lists shows all %s zones(s) you have access to.'), $num_all_domains); ?></p>
-<?php
-}
-else
-{
-?>
-   <p><?php printf(_('This lists shows %s out of %s zones you have access to.'), $num_show_domains, $num_all_domains); ?></p>
-<?php
-}
-?>
-
-
-<?php // RZ TODO Check next, does it work? 
-//  <small> echo _('You only administer some records of domains marked with an (*).'); </small>
-?>
-
-<?php
 include_once("inc/footer.inc.php");
 ?>

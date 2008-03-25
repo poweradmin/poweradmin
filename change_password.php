@@ -20,45 +20,35 @@
  */
 
 require_once("inc/toolkit.inc.php");
+include_once("inc/header.inc.php");
 
-if(isset($_POST["submit"]))
-{
-	if((!isset($_POST['newpass'])) || (strlen($_POST["newpass"]) < 8))
-	{
-		error('Password length should be at least 8 characters.');
-	}
-	else
-	{
-		change_user_pass($_POST["currentpass"], $_POST["newpass"], $_POST["newpass2"]);
-	}
+if($_POST["submit"]) {
+	change_user_pass($_POST);
 }
 
-include_once("inc/header.inc.php");
-?>
-    <h2><?php echo _('Change password'); ?></h2>
-    <form method="post" action="change_password.php">
-     <table border="0" CELLSPACING="4">
-      <tr>
-       <td class="n"><?php echo _('Current password'); ?>:</td>
-       <td class="n"><input type="password" class="input" NAME="currentpass" value=""></td>
-      </tr>
-      <tr>
-       <td class="n"><?php echo _('New password'); ?>:</td>
-       <td class="n"><input type="password" class="input" NAME="newpass" value=""></td>
-      </tr>
-      <tr>
-       <td class="n"><?php echo _('New password'); ?>:</td>
-       <td class="n"><input type="password" class="input" NAME="newpass2" value=""></td>
-      </tr>
-      <tr>
-       <td class="n">&nbsp;</td>
-       <td class="n">
-        <input type="submit" class="button" NAME="submit" value="<?php echo _('Change password'); ?>">
-       </td>
-      </tr>
-     </table>
-    </form>
+echo "    <h2>" . _('Change password') . "</h2>\n";
+echo "    <form method=\"post\" action=\"change_password.php\">\n";
+echo "     <table border=\"0\" CELLSPACING=\"4\">\n";
+echo "      <tr>\n";
+echo "       <td class=\"n\">" . _('Current password') . ":</td>\n";
+echo "       <td class=\"n\"><input type=\"password\" class=\"input\" NAME=\"currentpass\" value=\"\"></td>\n";
+echo "      </tr>\n";
+echo "      <tr>\n";
+echo "       <td class=\"n\">" . _('New password') . ":</td>\n";
+echo "       <td class=\"n\"><input type=\"password\" class=\"input\" NAME=\"newpass\" value=\"\"></td>\n";
+echo "      </tr>\n";
+echo "      <tr>\n";
+echo "       <td class=\"n\">" . _('New password') . ":</td>\n";
+echo "       <td class=\"n\"><input type=\"password\" class=\"input\" NAME=\"newpass2\" value=\"\"></td>\n";
+echo "      </tr>\n";
+echo "      <tr>\n";
+echo "       <td class=\"n\">&nbsp;</td>\n";
+echo "       <td class=\"n\">\n";
+echo "        <input type=\"submit\" class=\"button\" NAME=\"submit\" value=\"" . _('Change password') . "\">\n";
+echo "       </td>\n";
+echo "      </tr>\n";
+echo "     </table>\n";
+echo "    </form>\n";
 
-<?php
 include_once("inc/footer.inc.php");
 ?>

@@ -20,88 +20,141 @@
  */
 
 require_once("inc/toolkit.inc.php");
-
-if($_POST["commit"])
-{
-	if($_POST["username"] && $_POST["level"] && $_POST["fullname"])
-	{
-		if(!isset($_POST["active"]))
-		{
-			$active = 0;
-		}
-		else
-		{
-			$active = 1;
-		}
-		if(edit_user($_POST["number"], $_POST["username"], $_POST["fullname"], $_POST["email"], $_POST["level"], $_POST["description"], $active, $_POST["password"]))
-		{
-			clean_page("users.php");
-		}
-		else
-		{
-			error("Error editting user!");
-		}
-	}
-}
-
 include_once("inc/header.inc.php");
 
-if (!level(10))
-{
-	error("You do not have the required access level.");
+$edit_id = "-1";
+if (isset($_GET['id']) && v_num($_GET['id'])) {
+	$edit_id = $_GET['id'];
 }
-?>
-    <h2><?php echo _('Edit user'); ?> "<?php echo get_fullname_from_userid($_GET["id"]) ?>"</h2>
-<?php
-$r = array();
-$r = get_user_info($_GET["id"]);
-?>
-    <form method="post">
-     <input type="HIDDEN" name="number" value="<?php echo $_GET["id"] ?>">
-     <table>
-      <tr>
-       <td class="n"><?php echo _('User name'); ?>:</td>
-       <td class="n"><input type="text" class="input" name="username" value="<?php echo $r["username"]?>"></td>
-      </tr>
-      <tr>
-       <td class="n"><?php echo _('Full name'); ?>:</td>
-       <td class="n"><input type="text" class="input" name="fullname" value="<?php echo $r["fullname"]?>"></td>
-      </tr>
-      <tr>
-       <td class="n"><?php echo _('Password'); ?>:</td>
-       <td class="n"><input type="password" class="input" name="password" value=""></td>
-      </tr>
-      <tr>
-       <td class="n"><?php echo _('E-mail'); ?>:</td>
-       <td class="n"><input type="text" class="input" name="email" value="<?php echo $r["email"]?>"></td>
-      </tr>
-      <tr>
-       <td class="n"><?php echo _('User level'); ?>:</td>
-       <td class="n">
-        <select name="level">
-	 <option value="1" <?php if($r["level"] == 1) { echo "selectED"; } ?>>1 (<?php echo _('Normal user'); ?>)</option>
-	 <option value="5" <?php if($r["level"] == 5) { echo "selectED"; } ?>>5 (<?php echo _('Administrator'); ?>)</option>
-	 <option value="10" <?php if($r["level"] == 10) { echo "selectED"; } ?>>10 (<?php echo _('Administrator w/ user admin rights'); ?>)</option>
-	</select>
-       </td>
-      </tr>
-      <tr>
-       <td class="n"><?php echo _('Description'); ?>:</td>
-       <td class="n">
-        <textarea rows="6" cols="30" class="inputarea" name="description"><?php echo $r["description"]?></textarea>
-       </td>
-      </tr>
-      <tr>
-       <td class="n"><?php echo _('Active'); ?>:</td>
-       <td class="n"><input type="checkbox" name="active" value="1" <?php if($r["active"]) { ?>CHECKED<?php } ?>></td>
-      </tr>
-      <tr>
-       <td class="n">&nbsp;</td>
-       <td class="n"><input type="submit" class="button" name="commit" value="<?php echo _('Commit changes'); ?>"></td>
-      </tr>
-     </table>
-    </form>
-<?php
+
+verify_permission(user_edit_own) ? $perm_edit_own = "1" : $perm_edit_own = "0" ;
+verify_permission(user_edit_others) ? $perm_edit_others = "1" : $perm_edit_others = "0" ;
+
+if ($edit_id == "-1") {
+	error(ERR_INV_INPUT);
+} elseif (($edit_id == $_SESSION["userid"] && $perm_edit_own == "1") || ($edit_id != $_SESSION["userid"] && $perm_edit_others == "1" )) {
+
+	if($_POST["commit"]) {
+
+		$i_username = "-1";
+		$i_fullname = "-1";
+		$i_email = "-1";
+		$i_description = "-1";
+		$i_password = "-1";
+		$i_perm_templ = "0";
+		$i_active = "0";
+
+		if (isset($_POST['username'])) {
+			$i_username = $_POST['username'];
+		}
+
+		if (isset($_POST['fullname'])) {
+			$i_fullname = $_POST['fullname'];
+		}
+
+		if (isset($_POST['email'])) {
+			$i_email = $_POST['email'];
+		}
+
+		if (isset($_POST['description'])) {
+			$i_description = $_POST['description'];
+		}
+
+		if (isset($_POST['password'])) {
+			$i_password = $_POST['password'];
+		}
+		
+		if (isset($_POST['perm_templ']) && v_num($_POST['perm_templ'])) {
+			$i_perm_templ = $_POST['perm_templ'];
+		}
+		
+		if (isset($_POST['active']) && v_num($_POST['active'])) {
+			$i_active = $_POST['active'];
+		}
+		
+		if ( $i_username == "-1" || $i_fullname == "-1" || $i_email < "1" || $i_description == "-1" || $i_password == "-1" ) {
+			error(ERR_INV_INPUT);
+		} else {
+			if($i_username != "" && $i_perm_templ > "0" && $i_fullname) {
+				if(!isset($i_active)) {
+					$active = 0;
+				} else {
+					$active = 1;
+				}
+				if(edit_user($edit_id, $i_username, $i_fullname, $i_email, $i_perm_templ, $i_description, $active, $i_password)) {
+					success(SUC_USER_UPD);
+				} 
+			}
+		}
+	}
+
+	$users = get_user_detail_list($edit_id)	;
+
+	foreach ($users as $user) {
+		
+		(($user['active']) == "1") ? $check = " CHECKED" : $check = "" ;
+
+		echo "     <h2>" . _('Edit user') . " \"" . $user['fullname'] . "\"</h2>\n";
+		echo "     <form method=\"post\">\n";
+		echo "      <input type=\"hidden\" name=\"number\" value=\"" . $edit_id . "\">\n";
+		echo "      <table>\n";
+		echo "       <tr>\n";
+		echo "        <td class=\"n\">" . _('Username') . "</td>\n"; 
+		echo "        <td class=\"n\"><input type=\"text\" class=\"input\" name=\"username\" value=\"" . $user['username'] . "\"></td>\n";
+		echo "       </tr>\n";
+		echo "       <tr>\n";
+		echo "        <td class=\"n\">" . _('Fullname') . "</td>\n"; 
+		echo "        <td class=\"n\"><input type=\"text\" class=\"input\" name=\"fullname\" value=\"" . $user['fullname'] . "\"></td>\n";
+		echo "       </tr>\n";
+		echo "       <tr>\n";
+		echo "        <td class=\"n\">" . _('Password') . "</td>\n";
+		echo "        <td class=\"n\"><input type=\"text\" class=\"input\" name=\"password\"></td>\n";
+		echo "       </tr>\n";
+		echo "       <tr>\n";
+		echo "        <td class=\"n\">" . _('Email') . "</td>\n"; 
+		echo "        <td class=\"n\"><input type=\"text\" class=\"input\" name=\"email\" value=\"" . $user['email'] . "\"></td>\n";
+		echo "       </tr>\n";
+		echo "       <tr>\n";
+		echo "        <td class=\"n\">" . _('Permission template') . "</td>\n"; 
+		echo "        <td class=\"n\">\n";
+		echo "         <select name=\"perm_templ\">\n";
+		foreach (list_permission_templates() as $template) {
+			($template['id'] == $user['tpl_id']) ? $select = " SELECTED" : $select = "" ;
+			echo "          <option value=\"" . $template['id'] . "\"" . $select . ">" . $template['name'] . "</option>\n";
+		}
+		echo "         </select>\n";
+		echo "       </td>\n";
+		echo "       </tr>\n";
+		echo "       <tr>\n";
+		echo "        <td class=\"n\">" . _('Description') . "</td>\n"; 
+		echo "        <td class=\"n\"><textarea rows=\"4\" cols=\"30\" class=\"inputarea\" name=\"description\">" . $user['descr'] . "</textarea></td>\n";
+		echo "       </tr>\n";
+		echo "       <tr>\n";
+		echo "        <td class=\"n\">" . _('Enabled') . "</td>\n"; 
+		echo "        <td class=\"n\"><input type=\"checkbox\" class=\"input\" name=\"active\" value=\"1\"" . $check . "></td>\n";
+		echo "       </tr>\n";
+		echo "       <tr>\n";
+	echo "        <td class=\"n\">&nbsp;</td>\n"; 
+		echo "        <td class=\"n\"><input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Commit changes') . "\"></td>\n"; 
+		echo "      </table>\n";
+		echo "     </form>\n";
+
+		echo "     <p>\n";
+		printf("      This user has been assigned the \"%s\" permission template.", $user['tpl_name']);
+		if ($user['tpl_descr'] != "") { 
+			echo " The description for this template is: \"" . $user['tpl_descr'] . "\".";
+		}
+		echo " Based on this template, this user has the following permissions:";
+		echo "     </p>\n";
+		echo "     <ul>\n";
+		foreach (get_permissions_by_template_id($user['tpl_id']) as $item) {
+			echo "      <li>" . $item['descr'] . " (" . $item['name'] . ")</li>\n";
+		}
+		echo "     </ul>\n";
+	}
+} else {
+	error(ERR_PERM_EDIT_USER);
+}
 
 include_once("inc/footer.inc.php");
 

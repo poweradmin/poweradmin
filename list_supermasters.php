@@ -22,60 +22,41 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
-if (!level(5))
-{
-?>
-     <h3><?php echo _('Oops!'); ?></h3>
-     <p><?php echo _('You are not allowed to add supermasters with your current access level!'); ?></p>
-<?php
-} 
-else
-{
+(verify_permission(supermaster_view)) ? $perm_sm_view = "1" :  $perm_sm_view = "0" ;
+(verify_permission(supermaster_edit)) ? $perm_sm_edit = "1" :  $perm_sm_edit = "0" ;
 
-	$supermasters = get_supermasters(0);
-	$num_supermasters = ($supermasters == -1) ? 0 : count($supermasters);
-	?>
+$supermasters = get_supermasters();
 
-	   <h3><?php printf(_('List all %s supermasters'), $num_supermasters); ?></h3>
-	   <table>
-	    <tr>
-	     <th>&nbsp;</td>
-	     <th><?php echo _('IP address of supermaster'); ?></td>
-	     <th><?php echo _('Hostname in NS record'); ?></td>
-	     <th><?php echo _('Account'); ?></td>
-	    </tr>
-	<?php
-	   if ($num_supermasters == 0)
-	   {
-	?>
-	    <tr>
-	     <td class="n">&nbsp;</td>
-	     <td class="n" colspan="3">
-	      <?php echo _('No supermasters in this listing, sorry.'); ?>
-	     </td>
-	    </tr>
-	<?php
-	   }
-	   else
-	   {
-		   foreach ($supermasters as $c)
-		   {
-	?>
-	    <tr>
-	     <td class="n">
-	      <a href="delete_supermaster.php?master_ip=<?php echo $c["master_ip"] ?>"><img src="images/delete.gif" title="<?php print _('Delete supermaster') . ' ' . $c["master_ip"]; ?>" alt="[ <?php echo _('Delete supermaster'); ?> ]"></a>
-	     </td>
-	     <td class="y"><?php echo $c["master_ip"] ?></td>
-	     <td class="y"><?php echo $c["ns_name"] ?></td>
-	     <td class="y"><?php echo $c["account"] ?></td>
-	    </tr>
-	<?php
-		   }
-	   }
-	?>
-	   </table>
-<?php
+echo "     <h2>" . _('List all supermasters') . "</h2>\n";  
+echo "     <table>\n";
+echo "      <tr>\n";
+echo "       <th>&nbsp;</th>\n";
+echo "       <th>" . _('IP address of supermaster') . "</th>\n";
+echo "       <th>" . _('Hostname in NS record') . "</th>\n";
+echo "       <th>" . _('Account') . "</th>\n";
+echo "      </tr>\n";
+if ($num_supermasters == "0") {
+	echo "      <tr>\n";
+	echo "       <td class=\"n\">&nbsp;</td>\n";
+	echo "       <td class=\"n\" colspan=\"3\">\n";
+	echo "        " . _('No supermasters in this listing, sorry.') . "\n";
+	echo "       </td>\n";
+	echo "      </tr>\n";
+} else {
+	foreach ($supermasters as $c) {
+		echo "      <tr>\n";
+		if ($perm_sm_edit == "1") {
+			echo "        <td class=\"n\"><a href=\"delete_supermaster.php?master_ip=" .  $c['master_ip'] . "\"><img src=\"images/delete.gif\" title=\"" . _('Delete supermaster') . ' ' . $c['master_ip'] . "\" alt=\"[  " . _('Delete supermaster') . " ]\"></a></td>\n";
+		} else {
+			echo "<td>&nbsp;</td>\n";
+		}
+		echo "       <td class=\"y\">" . $c['master_ip'] . "</td>\n";
+		echo "       <td class=\"y\">" . $c['ns_name'] . "</td>\n";
+		echo "       <td class=\"y\">" . $c['account'] . "</td>\n";
+		echo "      </tr>\n";
+	}
 }
+echo "     </table>\n";
 
 include_once("inc/footer.inc.php");
 ?>
