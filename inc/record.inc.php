@@ -337,11 +337,12 @@ function add_domain($domain, $owner, $webip, $mailip, $empty, $type, $slave_mast
 					$query = "INSERT INTO records VALUES (''," 
 							. $db->quote($domain_id) . "," 
 							. $db->quote($domain) . "," 
-							. $db->quote($ns1.' '.$hm.' 1') 
-							. ",'SOA',"
+							. "'SOA',"
+							. $db->quote($ns1.' '.$hm.' 1') . ","
 							. $db->quote($ttl) 
 							. ", 0, "
 							. $db->quote($now).")";
+					echo "<pre>" . $query . "</pre>";
 					$response = $db->query($query);
 					if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 				} elseif ($domain_id) {
@@ -363,11 +364,12 @@ function add_domain($domain, $owner, $webip, $mailip, $empty, $type, $slave_mast
 							$query = "INSERT INTO records VALUES (''," 
 									. $db->quote($domain_id) . ","
 									. $db->quote($name) . ","
-									. $db->quote($content) . ","
 									. $db->quote($type) . ","
+									. $db->quote($content) . ","
 									. $db->quote($ttl) . ","
 									. $db->quote($prio) . ","
 									. $db->quote($now) . ")";
+							echo "<pre>" . $query . "</pre>";
 							$response = $db->query($query);
 							if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 						}
