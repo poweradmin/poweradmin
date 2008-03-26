@@ -306,7 +306,7 @@ function add_domain($domain, $owner, $webip, $mailip, $empty, $type, $slave_mast
 	if(verify_permission(zone_slave_add)) { $zone_slave_add = "1" ; } ;
 
 	// TODO: make sure only one is possible if only one is enabled
-	if($zone_master_add == "1" || $zone_master_add == "1") {
+	if($zone_master_add == "1" || $zone_slave_add == "1") {
 
 		global $db;
 		if (($domain && $owner && $webip && $mailip) || 
