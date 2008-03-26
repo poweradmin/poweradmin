@@ -35,6 +35,7 @@ define("ERR_PERM_DEL_SM", _("You do not have the permission to delete a supermas
 define("ERR_PERM_VIEW_ZONE", _("You do not have the permission to view this zone.")); 
 define("ERR_PERM_EDIT_USER", _("You do not have the permission to edit this user.")); 
 define("ERR_PERM_EDIT_PERM_TEMPL", _("You do not have the permission to edit permission templates.")); 
+define("ERR_PERM_DEL_PERM_TEMPL", _("You do not have the permission to delete permission templates.")); 
 define("ERR_PERM_ADD_USER", _("You do not have the permission to add a new user.")); 
 define("ERR_PERM_DEL_USER", _("You do not have the permission to delete this user.")); 
 
@@ -54,6 +55,7 @@ define("ERR_USER_NOT_EXIST", _('User doesnt exist'));
 define("ERR_USER_WRONG_CURRENT_PASS", _('You didnt enter the correct current password'));
 define("ERR_USER_MATCH_NEW_PASS", _('The two new password fields do not match'));
 define("ERR_USER_EDIT", _('Error editting user'));
+define("ERR_PERM_TEMPL_ASSIGNED", _('This template is assigned to at least one user'));
 
 /* OTHER */
 define("ERR_INV_INPUT", _('Invalid or unexpected input given.'));  
@@ -87,5 +89,6 @@ define("SUC_USER_DEL", _('The user has been deleted succesfully.'));
 define("SUC_RECORD_UPD", _('The record has been updated succesfully.')); 
 define("SUC_RECORD_DEL", _('The record has been deleted succesfully.')); 
 define("SUC_SM_DEL", _('The supermaster has been deleted succesfully.')); 
+define("SUC_PERM_TEMPL_DEL", _('The permission template has been deleted succesfully.')); 
 
 ?>

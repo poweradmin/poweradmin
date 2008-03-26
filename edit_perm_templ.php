@@ -38,7 +38,7 @@ if ($id == "-1") {
 		update_perm_templ_details($_POST);	
 	}
 
-	$templ_details = get_permission_template_details($id);
+	$templ = get_permission_template_details($id);
 	$perms_templ = get_permissions_by_template_id($id);
 	$perms_avail = get_permissions_by_template_id();
 
@@ -46,18 +46,16 @@ if ($id == "-1") {
         echo "    <form method=\"post\">\n";
 	echo "    <input type=\"hidden\" name=\"templ_id\" value=\"" . $id . "\">\n";
 
-	foreach ($templ_details as $templ) {
-		echo "     <table>\n";
-		echo "      <tr>\n";
-		echo "       <th>" . _('Name') . "</th>\n"; 
-		echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_name\" value=\"" . $templ['name'] . "\"></td>\n";
-		echo "      </tr>\n";
-		echo "      <tr>\n";
-		echo "       <th>" . _('Description') . "</th>\n"; 
-		echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_descr\" value=\"" . $templ['descr'] . "\"></td>\n";
-		echo "      </tr>\n";
-		echo "     </table>\n";
-	}
+	echo "     <table>\n";
+	echo "      <tr>\n";
+	echo "       <th>" . _('Name') . "</th>\n"; 
+	echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_name\" value=\"" . $templ['name'] . "\"></td>\n";
+	echo "      </tr>\n";
+	echo "      <tr>\n";
+	echo "       <th>" . _('Description') . "</th>\n"; 
+	echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_descr\" value=\"" . $templ['descr'] . "\"></td>\n";
+	echo "      </tr>\n";
+	echo "     </table>\n";
 
 	echo "     <table>\n";
 	echo "      <tr>\n";

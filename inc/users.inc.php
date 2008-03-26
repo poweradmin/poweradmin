@@ -230,6 +230,32 @@ function delete_user($uid,$zones)
 	return true;
 }
 
+function delete_perm_templ($ptid) {
+
+	global $db;
+	if (!(verify_permission(user_edit_templ_perm))) {
+		error(ERR_PERM_DEL_PERM_TEMPL);
+	} else {
+		$query = "SELECT id FROM users WHERE perm_templ = " . $ptid;
+		$result = $db->query($query);
+		if (PEAR::isError($result)) { error($response->getMessage()); return false; }
+
+		if($result->numRows() > 0) {
+			error(ERR_PERM_TEMPL_ASSIGNED);
+			return false;
+		} else {
+			$query = "DELETE FROM perm_templ_items WHERE templ_id = " . $ptid;
+			$result = $db->query($query);
+			if (PEAR::isError($result)) { error($response->getMessage()); return false; }
+
+			$query = "DELETE FROM perm_templ WHERE id = " . $ptid;
+			$result = $db->query($query);
+			if (PEAR::isError($result)) { error($response->getMessage()); return false; }
+
+			return true;
+		}
+	}
+}
 
 /*
  * Edit the information of an user.. sloppy implementation with too many queries.. (2) :)
@@ -537,13 +563,8 @@ function get_permission_template_details($templ_id) {
 	$result = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
-	while($details = $result->fetchRow()) {
-		$detail_list[] = array (
-			"name"	=>	$details['name'],
-			"descr"	=>	$details['descr']
-			);
-	}
-	return $detail_list;
+	$details = $result->fetchRow(); 
+	return $details;
 }	
 
 
