@@ -275,7 +275,7 @@ function edit_user($id, $user, $fullname, $email, $perm_templ, $description, $ac
 			// we have been given. User wants a change of username. Now, make
 			// sure it doesn't already exist.
 			
-			$query = "SELECT id FROM users WHERE username = " . $db->query($user);
+			$query = "SELECT id FROM users WHERE username = " . $db->quote($user);
 			$result = $db->query($query);
 			if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
