@@ -568,6 +568,34 @@ function get_list_permission_templates() {
 }
 
 
+// Add a permission template.
+
+function add_perm_templ($details) {
+	global $db;
+
+	// Fix permission template name and description first. 
+
+	$query = "INSERT INTO perm_templ 
+			VALUES (
+				'', " 
+				. $db->quote($details['templ_name']) . ", " 
+				. $db->quote($details['templ_descr']) . ")";
+
+	$result = $db->query($query);
+	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+
+	$perm_templ_id = $db->lastInsertId('perm_templ', 'id');
+
+	foreach ($details['perm_id'] AS $perm_id) {
+		$r_insert_values[] = "(''," . $db->quote($perm_templ_id) . "," . $db->quote($perm_id) . ")";
+	}
+	$query = "INSERT INTO perm_templ_items VALUES " . implode(',', $r_insert_values) ;
+	$result = $db->query($query);
+	if (pear::iserror($response)) { error($response->getmessage()); return false; }
+
+	return true;
+}
+
 // Update all details of a permission template.
 
 function update_perm_templ_details($details) {
