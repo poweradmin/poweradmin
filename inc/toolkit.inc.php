@@ -290,9 +290,9 @@ function v_num($string) {
 }
 
 // Debug print
-function dp($var) {
+function debug_print($var) {
 	echo "<pre style=\"border: 2px solid blue;\">\n";
-	is_array($var) ? print_r($var) : echo $var ;
+	if (is_array($var)) { print_r($var) ; } else { echo $var ; } 
 	echo "</pre>\n";
 }
 
