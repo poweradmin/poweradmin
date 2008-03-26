@@ -606,14 +606,21 @@ function get_zone_info_from_id($zone_id) {
 					WHERE domains.id = " . $db->quote($zone_id) . "
 					AND domains.id = records.domain_id 
 					GROUP BY domains.id";
+		$result = $db->query($query);
+		if (PEAR::isError($result)) { error($result->getMessage()); return false; }
 
-		$response = $db->queryRow($query);
-		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
-		$return = array(
-			"name"		=>	$response['name'],
-			"type"		=>	$response['type'],
-			"master_ip"	=>	$response['master_ip'],
-			"record_count"	=>	$response['record_count']);
+		if($result->numRows() != 1) {
+			error(_('Function returned an error (multiple zones matching this zone ID).'));
+			return false;
+		} else {
+			$r = $result->fetchRow();
+			$return = array(
+				"name"		=>	$r['name'],
+				"type"		=>	$r['type'],
+				"master_ip"	=>	$r['master_ip'],
+				"record_count"	=>	$r['record_count']
+				);
+		}
 		return $return;
 	}
 }
