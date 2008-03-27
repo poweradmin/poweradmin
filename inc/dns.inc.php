@@ -61,26 +61,25 @@ function validate_input($zoneid, $type, &$content, &$name, &$prio, &$ttl)
 	}
 
 	// Prepare total hostname.
-
 	if ($name == '*') {
 		$wildcard = true;
 	} else {
 		$wildcard = false;
 	}
 
-	if (preg_match('!@\.!i', $name))
-	{
-		$name = str_replace('@.', '@', $name);
-	}
-	
-	if ($name == "" || $name == "@") {
-		$test_name = $domain;
-	} else {
-		$test_name = $name . "." . $domain ;
+	if (preg_match("/@/", $name)) {
+		$name = $domain ;
+	} elseif ( !(preg_match("/$domain$/i", $name))) {
+
+		if ( isset($name) && $name != "" ) {
+			$name = $name . "." . $domain ;
+		} else {
+			$name = $domain ;
+		}
 	}
 
 	if(!$wildcard) {
-		if(!is_valid_hostname($test_name)) {
+		if(!is_valid_hostname($name)) {
 			error(ERR_DNS_HOSTNAME);
 			return false;
 		}
