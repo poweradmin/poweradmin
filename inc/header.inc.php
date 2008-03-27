@@ -62,7 +62,7 @@ if (isset($_SESSION["userid"])) {
 	if ( $perm_zone_slave_add ) { 
 		echo "    <span class=\"menuitem\"><a href=\"add_zone_slave.php\">" . _('Add slave zone') . "</a></span>\n"; 
 	}
-	if ( $supermaster_add ) { 
+	if ( $perm_supermaster_add ) { 
 		echo "    <span class=\"menuitem\"><a href=\"add_supermaster.php\">" . _('Add supermaster') . "</a></span>\n"; 
 	}
 	echo "    <span class=\"menuitem\"><a href=\"change_password.php\">" . _('Change password') . "</a></span>\n";
