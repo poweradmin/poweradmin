@@ -68,18 +68,19 @@ function validate_input($zoneid, $type, &$content, &$name, &$prio, &$ttl)
 		$wildcard = false;
 	}
 
-	if ($name == "" || $name == "@") {
-		$name = $domain;
-	} else {
-		$name = $name . "." . $domain ;
-	}
-
 	if (preg_match('!@\.!i', $name))
 	{
 		$name = str_replace('@.', '@', $name);
 	}
+	
+	if ($name == "" || $name == "@") {
+		$test_name = $domain;
+	} else {
+		$test_name = $name . "." . $domain ;
+	}
+
 	if(!$wildcard) {
-		if(!is_valid_hostname($name)) {
+		if(!is_valid_hostname($test_name)) {
 			error(ERR_DNS_HOSTNAME);
 			return false;
 		}
