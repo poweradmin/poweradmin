@@ -27,6 +27,8 @@ verify_permission(user_edit_others) ? $perm_edit_others = "1" : $perm_edit_other
 verify_permission(templ_perm_edit) ? $perm_templ_perm_edit = "1" : $perm_templ_perm_edit = "0" ;
 verify_permission(is_ueberuser) ? $perm_is_godlike = "1" : $perm_is_godlike = "0" ; 
 
+unset($commit_button);
+
 if (isset($_POST['commit'])) {
 	foreach ($_POST['user'] as $user) {
 		update_user_details($user);
@@ -53,35 +55,54 @@ foreach ($users as $user) {
 	} else {
 		$active = "";
 	}
-	echo "      <input type=\"hidden\" name=\"user[" . $user['uid'] . "][uid]\" value=\"" . $user['uid'] . "\">\n";
-	echo "      <tr>\n";
-	echo "       <td>\n";
 	if (($user['uid'] == $_SESSION["userid"] && $perm_edit_own == "1") || ($user['uid'] != $_SESSION["userid"] && $perm_edit_others == "1" )) {
+		$commit_button = "1";
+
+		echo "      <input type=\"hidden\" name=\"user[" . $user['uid'] . "][uid]\" value=\"" . $user['uid'] . "\">\n";
+		echo "      <tr>\n";
+		echo "       <td>\n";
 		echo "        <a href=\"edit_user.php?id=" . $user['uid'] . "\"><img src=\"images/edit.gif\" alt=\"[ " . _('Edit user') . "\" ]></a>\n";
 		echo "        <a href=\"delete_user.php?id=" . $user['uid'] . "\"><img src=\"images/delete.gif\" alt=\"[ " . _('Delete user') . "\" ]></a>\n";
+		echo "       </td>\n";
+		echo "       <td><input type=\"text\" name=\"user[" . $user['uid'] . "][username]\" value=\"" . $user['username'] . "\"></td>\n";
+		echo "       <td><input type=\"text\" name=\"user[" . $user['uid'] . "][fullname]\" value=\"" . $user['fullname'] . "\"></td>\n";
+		echo "       <td><input type=\"text\" name=\"user[" . $user['uid'] . "][descr]\" value=\"" . $user['descr'] . "\"></td>\n";
+		echo "       <td><input type=\"text\" name=\"user[" . $user['uid'] . "][email]\" value=\"" . $user['email'] . "\"></td>\n";
+		echo "       <td>\n";
+		if ($perm_templ_perm_edit == "1") {
+			echo "        <select name=\"user[" . $user['uid'] . "][templ_id]\">\n";
+			foreach (list_permission_templates() as $template) {
+				($template['id'] == $user['tpl_id']) ? $select = " SELECTED" : $select = "" ;
+				echo "          <option value=\"" . $template['id'] . "\"" . $select . ">" . $template['name'] . "</option>\n";
+			}
+			echo "         </select>\n";
+		} else {
+			echo $user['tpl_name'];
+		}
+		echo "       </td>\n";
+		echo "       <td><input type=\"checkbox\" name=\"user[" . $user['uid'] . "][active]\"" . $active . "></td>\n";
+		echo "      </tr>\n";
 	} else {
-		echo "        &nbsp;\n";
+		echo "      <tr>\n";
+		echo "       <td>&nbsp;</td>\n";
+		echo "       <td>" . $user['username'] . "</td>\n";
+		echo "       <td>" . $user['fullname'] . "</td>\n";
+		echo "       <td>" . $user['descr'] . "</td>\n";
+		echo "       <td>" . $user['email'] . "</td>\n";
+		echo "       <td>" . $user['tpl_name'] . "</td>\n";
+		if ($active == " checked") {
+			echo "       <td>Yes</td>\n";
+		} else {
+			echo "       <td>No</td>\n";
+		}
+		echo "      </tr>\n";
 	}
-	echo "       </td>\n";
-	echo "       <td><input type=\"text\" name=\"user[" . $user['uid'] . "][username]\" value=\"" . $user['username'] . "\"></td>\n";
-	echo "       <td><input type=\"text\" name=\"user[" . $user['uid'] . "][fullname]\" value=\"" . $user['fullname'] . "\"></td>\n";
-	echo "       <td><input type=\"text\" name=\"user[" . $user['uid'] . "][descr]\" value=\"" . $user['descr'] . "\"></td>\n";
-	echo "       <td><input type=\"text\" name=\"user[" . $user['uid'] . "][email]\" value=\"" . $user['email'] . "\"></td>\n";
-	echo "       <td>\n";
-	echo "        <select name=\"user[" . $user['uid'] . "][templ_id]\">\n";
-
-	foreach (list_permission_templates() as $template) {
-		($template['id'] == $user['tpl_id']) ? $select = " SELECTED" : $select = "" ;
-		echo "          <option value=\"" . $template['id'] . "\"" . $select . ">" . $template['name'] . "</option>\n";
-	}
-	echo "         </select>\n";
-	echo "       </td>\n";
-	echo "       <td><input type=\"checkbox\" name=\"user[" . $user['uid'] . "][active]\"" . $active . "></td>\n";
-	echo "      </tr>\n";
 }
 
 echo "     </table>\n";
-echo "     <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
+if ($commit_button) {
+	echo "     <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
+}
 echo "    </form>\n";
 
 echo "    <ul>\n";
