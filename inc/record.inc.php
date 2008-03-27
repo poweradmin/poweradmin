@@ -342,7 +342,6 @@ function add_domain($domain, $owner, $webip, $mailip, $empty, $type, $slave_mast
 							. $db->quote($ttl) 
 							. ", 0, "
 							. $db->quote($now).")";
-					echo "<pre>" . $query . "</pre>";
 					$response = $db->query($query);
 					if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 				} elseif ($domain_id) {
