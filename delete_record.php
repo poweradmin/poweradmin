@@ -27,9 +27,8 @@ if (isset($_GET['id']) && v_num($_GET['id'])) {
 	$record_id = $_GET['id'];
 }
 
-
 $confirm = "-1";
-if ((isset($_GET['confirm']) && v_num($_GET['confirm'])
+if (isset($_GET['confirm']) && v_num($_GET['confirm'])) {
         $confirm = $_GET['confirm'];
 }
 
@@ -40,6 +39,8 @@ else { $perm_content_edit = "none" ; }
 $user_is_zone_owner = verify_user_is_owner_zoneid($_GET["domain"]);
 
 if ($record_id == "-1" ) {
+	error(ERR_INV_INPUT);
+} else {
 	if ($confirm == '1') {
 		if ( delete_record($record_id) ) {
 			success(SUC_RECORD_DEL);
@@ -79,7 +80,5 @@ if ($record_id == "-1" ) {
 			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
 		}
         }
-} else {
-	error(ERR_INV_INPUT);
 }
 include_once("inc/footer.inc.php");

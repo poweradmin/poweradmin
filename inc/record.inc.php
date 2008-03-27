@@ -238,22 +238,12 @@ function get_record_details_from_record_id($rid) {
 
 	global $db;
 
-	$query = "SELECT * FROM records WHERE id = " . $db->quote($rid) ;
+	$query = "SELECT id AS rid, domain_id AS zid, name, type, content, ttl, prio, change_date FROM records WHERE id = " . $db->quote($rid) ;
 
 	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
-
-	while ($r = $response->fetchRow()) {
-		$return[] = array(
-			"rid"		=>	$r['id'],
-			"zid"		=>	$r['domain_id'],
-			"name"		=>	$r['name'],
-			"type"		=>	$r['type'],
-			"content"	=>	$r['content'],
-			"ttl"		=>	$r['ttl'],
-			"prio"		=>	$r['prio'],
-			"change_date"	=>	$r['change_date']);
-	}
+	
+	$return = $response->fetchRow();
 	return $return;
 }
 
@@ -277,7 +267,7 @@ function delete_record($rid)
 		if ($record['type'] == "SOA") {
 			error(_('You are trying to delete the SOA record. If are not allowed to remove it, unless you remove the entire zone.'));
 		} else {
-			$quote = "DELETE FROM records WHERE id = " . $db->quote($rid);
+			$query = "DELETE FROM records WHERE id = " . $db->quote($rid);
 			$response = $db->query($query);
 			if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 			return true;
