@@ -84,15 +84,15 @@ echo "     </table>\n";
 echo "     <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
 echo "    </form>\n";
 
-echo "    <p>\n";
+echo "    <ul>\n";
 if ($perm_templ_perm_edit == "1") {
-	echo _('Edit') . " <a href=\"list_perm_templ.php\">" . _('permission templates') . "</a>. \n";
+	echo "<li><a href=\"list_perm_templ.php\">" . _('Edit permission templates') . "</a>.</li>\n";
 }
 
 if (verify_permission(user_add_new)) {
-	echo _('Add') . " <a href=\"add_user.php\">" . _('user') . "</a>. \n";
+	echo "<li><a href=\"add_user.php\">" . _('Add user') . "</a>.</li>\n";
 }
-echo "    </p>\n";
+echo "    </ul>\n";
 
 
 include_once("inc/footer.inc.php");
