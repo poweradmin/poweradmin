@@ -43,7 +43,7 @@ if (!verify_permission(user_add_new)) {
 	echo "       </tr>\n";
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">" . _('Password') . "</td>\n";
-	echo "        <td class=\"n\"><input type=\"text\" class=\"input\" name=\"password\"></td>\n";
+	echo "        <td class=\"n\"><input type=\"password\" class=\"input\" name=\"password\"></td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">" . _('Email') . "</td>\n"; 
