@@ -70,6 +70,8 @@ function validate_input($zoneid, $type, &$content, &$name, &$prio, &$ttl)
 
 	if ($name == "" || $name == "@") {
 		$name = $domain;
+	} else {
+		$name = $name . "." . $domain ;
 	}
 
 	if (preg_match('!@\.!i', $name))
