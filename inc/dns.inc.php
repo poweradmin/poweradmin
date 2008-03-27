@@ -68,14 +68,9 @@ function validate_input($zoneid, $type, &$content, &$name, &$prio, &$ttl)
 		$wildcard = false;
 	}
 
-// TODO:	Needs to be checked what this is good for. Since we started insert an array
-//		in functions like edit_record, "name"'s like "sub-fqdn.example.net" became 
-//		"sub-fqdn.example.net.example.net". 
-//	if ($name=="0") {
-//		$name=$name.".".$domain;
-//	} else {
-//		$name = ($name) ? $name.".".$domain : $domain;
-//	}
+	if ($name == "" || $name == "@") {
+		$name = $domain;
+	}
 
 	if (preg_match('!@\.!i', $name))
 	{
