@@ -152,7 +152,7 @@ function add_record($zoneid, $name, $type, $content, $ttl, $prio) {
 	} else {
 		if (validate_input($zoneid, $type, $content, $name, $prio, $ttl) ) {
 			$change = time();
-			$query = "INSERT INTO records VALUES ('',"
+			$query = "INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) VALUES ("
 						. $db->quote($zoneid) . ","
 						. $db->quote($name) . "," 
 						. $db->quote($type) . "," 
@@ -324,10 +324,10 @@ function add_domain($domain, $owner, $webip, $mailip, $empty, $type, $slave_mast
 					$hm  = $GLOBALS['HOSTMASTER'];
 					$ttl = $GLOBALS['DEFAULT_TTL'];
 
-					$query = "INSERT INTO records VALUES (''," 
+					$query = "INSERT INTO records (domain_id, name, content, type, ttl, prio, change_date) VALUES (" 
 							. $db->quote($domain_id) . "," 
 							. $db->quote($domain) . "," 
-							. "'SOA',"
+							. $db->quote('SOA').","
 							. $db->quote($ns1.' '.$hm.' 1') . ","
 							. $db->quote($ttl) 
 							. ", 0, "
@@ -350,7 +350,7 @@ function add_domain($domain, $owner, $webip, $mailip, $empty, $type, $slave_mast
 								$ttl = $GLOBALS["DEFAULT_TTL"];
 							}
 
-							$query = "INSERT INTO records VALUES (''," 
+							$query = "INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) VALUES (" 
 									. $db->quote($domain_id) . ","
 									. $db->quote($name) . ","
 									. $db->quote($type) . ","
@@ -358,7 +358,6 @@ function add_domain($domain, $owner, $webip, $mailip, $empty, $type, $slave_mast
 									. $db->quote($ttl) . ","
 									. $db->quote($prio) . ","
 									. $db->quote($now) . ")";
-							echo "<pre>" . $query . "</pre>";
 							$response = $db->query($query);
 							if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 						}
@@ -709,7 +708,7 @@ function get_zones($perm,$userid=0,$letterstart=all,$rowstart=0,$rowamount=99999
 			LEFT JOIN zones ON domains.id=zones.domain_id 
 			LEFT JOIN records ON records.domain_id=domains.id
 			WHERE 1=1".$sql_add." 
-			GROUP BY domains.name, domains.id
+			GROUP BY domains.name, domains.id, domains.type
 			ORDER BY domains.name";
 	
 	$db->setLimit($rowamount, $rowstart);
