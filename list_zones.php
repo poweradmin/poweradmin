@@ -38,7 +38,9 @@ $count_zones_edit = zone_count_ng($perm_edit);
 echo "    <h2>" . _('List zones') . "</h2>\n";
 
 if ($perm_view == "none") { 
-	echo "     <p>" . _("You do not have the permission to see any zones.") . "</p>\n";
+	echo "     <p>" . _('You do not have the permission to see any zones.') . "</p>\n";
+} elseif ($count_zones_view > ROWAMOUNT && $count_zones_all_letterstart == "0") {
+	echo "     <p>" . _('There are no zones to show in this listing.') . "</p>\n";
 } else {
 	echo "     <div class=\"showmax\">\n";
 	show_pages($count_zones_all_letterstart,ROWAMOUNT);
