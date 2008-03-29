@@ -596,9 +596,8 @@ function add_perm_templ($details) {
 
 	// Fix permission template name and description first. 
 
-	$query = "INSERT INTO perm_templ 
-			VALUES (
-				'', " 
+	$query = "INSERT INTO perm_templ (name, descr)
+			VALUES (" 
 				. $db->quote($details['templ_name']) . ", " 
 				. $db->quote($details['templ_descr']) . ")";
 
@@ -608,9 +607,9 @@ function add_perm_templ($details) {
 	$perm_templ_id = $db->lastInsertId('perm_templ', 'id');
 
 	foreach ($details['perm_id'] AS $perm_id) {
-		$r_insert_values[] = "(''," . $db->quote($perm_templ_id) . "," . $db->quote($perm_id) . ")";
+		$r_insert_values[] = "(" . $db->quote($perm_templ_id) . "," . $db->quote($perm_id) . ")";
 	}
-	$query = "INSERT INTO perm_templ_items VALUES " . implode(',', $r_insert_values) ;
+	$query = "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES " . implode(',', $r_insert_values) ;
 	$result = $db->query($query);
 	if (pear::iserror($response)) { error($response->getmessage()); return false; }
 
@@ -644,9 +643,9 @@ function update_perm_templ_details($details) {
 	if (pear::iserror($response)) { error($response->getmessage()); return false; }
 
 	foreach ($details['perm_id'] AS $perm_id) {
-		$r_insert_values[] = "(''," . $db->quote($details['templ_id']) . "," . $db->quote($perm_id) . ")";
+		$r_insert_values[] = "(" . $db->quote($details['templ_id']) . "," . $db->quote($perm_id) . ")";
 	}
-	$query = "INSERT INTO perm_templ_items VALUES " . implode(',', $r_insert_values) ;
+	$query = "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES " . implode(',', $r_insert_values) ;
 	$result = $db->query($query);
 	if (pear::iserror($response)) { error($response->getmessage()); return false; }
 
@@ -751,8 +750,7 @@ function add_new_user($details) {
 		$active = 0;
 	}
 
-	$query = "INSERT INTO users VALUES ( "
-			. "'', "
+	$query = "INSERT INTO users (username, password, fullname, email, description, perm_templ, active) VALUES ("
 			. $db->quote($details['username']) . ", "
 			. $db->quote(md5($details['password'])) . ", "
 			. $db->quote($details['fullname']) . ", "
