@@ -40,6 +40,9 @@ function verify_permission($permission) {
         // Set current user ID.
         $userid=$_SESSION['userid'];
 
+		$query = 'SELECT id FROM perm_items WHERE name='.$db->quote('user_is_ueberuser');
+		$ueberUserId = $db->queryOne($query);
+
         // Find the template ID that this user has been assigned.
         $query = "SELECT perm_templ
 			FROM users 
@@ -50,7 +53,7 @@ function verify_permission($permission) {
         $query = "SELECT id 
 			FROM perm_templ_items 
 			WHERE templ_id = " . $db->quote($templ_id) . " 
-			AND perm_id = '53'";
+			AND perm_id = ".$ueberUserId;
         $result = $db->query($query);
         if ( $result->numRows() > 0 ) {
                 return 1;
