@@ -81,7 +81,7 @@ if ( $zone_slave_add != "1" ) {
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">&nbsp;</td>\n";
 	echo "        <td class=\"n\">\n";
-	echo "         <input type=\"submit\" class=\"button\" name=\"submit\" value=\"" .  _('Add domain') . "\">\n";
+	echo "         <input type=\"submit\" class=\"button\" name=\"submit\" value=\"" .  _('Add zone') . "\">\n";
 	echo "        </td>\n";
 	echo "       </tr>\n";
 	echo "      </table>\n";

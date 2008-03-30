@@ -95,10 +95,12 @@ function edit_record($record) {
 	$zone_type = get_domain_type($record['zid']);
 
 	if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
-		return _("You are not allowed to edit this record.") ; 
+		error(ERR_PERM_EDIT_RECORD);
+		return false;
 	} else {
 		if($record['content'] == "") {
-			return _("Error: content field may not be empty.") ; 
+			error(ERR_DNS_CONTENT);
+			return false;
 		}
 		global $db;
 		// TODO: no need to check for numeric-ness of zone id if we check with validate_input as well?

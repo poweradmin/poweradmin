@@ -152,7 +152,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 	$owners = get_users_from_domain_id($zone_id);
 
 	if ($owners == "-1") {
-		echo "      <tr><td>" . _('No owner set or this zone.') . "</td></tr>";
+		echo "      <tr><td>" . _('No owner set for this zone.') . "</td></tr>";
 	} else {
 		if ($meta_edit) {
 			foreach ($owners as $owner) {
@@ -196,7 +196,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 		echo "      </form>\n";
 	}
 	echo "      <tr>\n";
-	echo "       <th colspan=\"2\">" . _('Type of zone') . "</th>\n";
+	echo "       <th colspan=\"2\">" . _('Type') . "</th>\n";
 	echo "      </tr>\n";
 
 	if ($meta_edit) {

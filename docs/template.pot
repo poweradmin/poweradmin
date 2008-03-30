@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-29 09:33+0100\n"
+"POT-Creation-Date: 2008-03-30 12:50+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: add_perm_templ.php:35
+#: add_perm_templ.php:35 list_perm_templ.php:60
 msgid "Add permission template"
 msgstr ""
 
@@ -33,8 +33,9 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-#: add_perm_templ.php:63 add_user.php:72 edit_perm_templ.php:84 edit.php:135
-#: edit_record.php:105 edit_user.php:138 users.php:104
+#: add_perm_templ.php:63 add_user.php:72 delete_user.php:101
+#: edit_perm_templ.php:84 edit.php:135 edit_record.php:105 edit_user.php:138
+#: users.php:104
 msgid "Commit changes"
 msgstr ""
 
@@ -43,15 +44,16 @@ msgid "The record was succesfully added."
 msgstr ""
 
 #: add_record.php:77
-msgid "Add record in zone"
+msgid "Add record to zone"
 msgstr ""
 
-#: add_record.php:88 delete_domain.php:58 edit.php:93 edit_record.php:65
-#: list_zones.php:58 search.php:53 search.php:86
+#: add_record.php:88 add_zone_master.php:115 delete_domain.php:58 edit.php:93
+#: edit.php:199 edit_record.php:65 list_zones.php:58 search.php:53
+#: search.php:86
 msgid "Type"
 msgstr ""
 
-#: add_record.php:89 edit.php:95 edit_record.php:66
+#: add_record.php:89 edit.php:95 edit_record.php:66 search.php:87
 msgid "Priority"
 msgstr ""
 
@@ -65,10 +67,6 @@ msgstr ""
 
 #: add_record.php:124 edit.php:141
 msgid "Add record"
-msgstr ""
-
-#: add_supermaster.php:34
-msgid "Successfully added supermaster."
 msgstr ""
 
 #: add_supermaster.php:40 add_supermaster.php:80 index.php:54
@@ -92,8 +90,8 @@ msgstr ""
 msgid "Account"
 msgstr ""
 
-#: add_user.php:33
-msgid "Add a  user"
+#: add_user.php:33 users.php:114
+msgid "Add user"
 msgstr ""
 
 #: add_user.php:37 edit_user.php:102 users.php:44
@@ -108,8 +106,8 @@ msgstr ""
 msgid "Password"
 msgstr ""
 
-#: add_user.php:49 edit_user.php:114
-msgid "Email"
+#: add_user.php:49 edit_user.php:114 users.php:47
+msgid "Emailaddress"
 msgstr ""
 
 #: add_user.php:53 edit_user.php:118
@@ -121,23 +119,11 @@ msgid "Enabled"
 msgstr ""
 
 #: add_zone_master.php:53
-msgid "Web or mail ip is invalid!"
+msgid "IP address of web- or mailserver is invalid."
 msgstr ""
 
-#: add_zone_master.php:60
-msgid "Zone name is invalid!"
-msgstr ""
-
-#: add_zone_master.php:63
-msgid "Zone already exists!!"
-msgstr ""
-
-#: add_zone_master.php:76 index.php:48 inc/header.inc.php:60
+#: add_zone_master.php:79 index.php:48 inc/header.inc.php:60
 msgid "Add master zone"
-msgstr ""
-
-#: add_zone_master.php:79
-msgid "You do not have the permission to add a new master zone."
 msgstr ""
 
 #: add_zone_master.php:87 add_zone_slave.php:60
@@ -145,11 +131,11 @@ msgid "Zone name"
 msgstr ""
 
 #: add_zone_master.php:93
-msgid "Web IP"
+msgid "IP address of webserver"
 msgstr ""
 
 #: add_zone_master.php:99
-msgid "Mail IP"
+msgid "IP address of mailserver"
 msgstr ""
 
 #: add_zone_master.php:105 add_zone_slave.php:72 delete_domain.php:57
@@ -157,32 +143,20 @@ msgstr ""
 msgid "Owner"
 msgstr ""
 
-#: add_zone_master.php:115
-msgid "Zone type"
-msgstr ""
-
 #: add_zone_master.php:125
 msgid "Create zone without applying records-template"
 msgstr ""
 
-#: add_zone_master.php:131
+#: add_zone_master.php:131 add_zone_slave.php:84
 msgid "Add zone"
 msgstr ""
 
-#: add_zone_slave.php:51 index.php:51 inc/header.inc.php:63
+#: add_zone_slave.php:54 index.php:51 inc/header.inc.php:63
 msgid "Add slave zone"
 msgstr ""
 
-#: add_zone_slave.php:54
-msgid "You do not have the permission to add a new slave zone."
-msgstr ""
-
-#: add_zone_slave.php:66
-msgid "IP of master NS"
-msgstr ""
-
-#: add_zone_slave.php:84
-msgid "Add domain"
+#: add_zone_slave.php:66 edit.php:229
+msgid "IP address of master NS"
 msgstr ""
 
 #: change_password.php:29 change_password.php:47 index.php:56
@@ -269,11 +243,7 @@ msgstr ""
 msgid "Really delete this user?"
 msgstr ""
 
-#: delete_user.php:101
-msgid "Comit changes"
-msgstr ""
-
-#: edit_perm_templ.php:45
+#: edit_perm_templ.php:45 users.php:110
 msgid "Edit permission template"
 msgstr ""
 
@@ -294,23 +264,15 @@ msgid "Owner of zone"
 msgstr ""
 
 #: edit.php:155
-msgid "No owner set or this zone!"
+msgid "No owner set for this zone."
 msgstr ""
 
-#: edit.php:193 list_perm_templ.php:59
+#: edit.php:193
 msgid "Add"
-msgstr ""
-
-#: edit.php:199
-msgid "Type of zone"
 msgstr ""
 
 #: edit.php:218 edit.php:240
 msgid "Change"
-msgstr ""
-
-#: edit.php:229
-msgid "IP address of master NS"
 msgstr ""
 
 #: edit_record.php:54
@@ -329,19 +291,19 @@ msgstr ""
 msgid "Index"
 msgstr ""
 
-#: index.php:39 inc/header.inc.php:51
-msgid "Search zones or records"
+#: index.php:39 search.php:31 inc/header.inc.php:51
+msgid "Search zones and records"
 msgstr ""
 
-#: index.php:42 inc/header.inc.php:54
-msgid "List all zones"
+#: index.php:42 list_zones.php:38 inc/header.inc.php:54
+msgid "List zones"
 msgstr ""
 
 #: index.php:45 list_supermasters.php:30 inc/header.inc.php:57
-msgid "List all supermasters"
+msgid "List supermasters"
 msgstr ""
 
-#: index.php:57 inc/header.inc.php:69
+#: index.php:57 users.php:39 inc/header.inc.php:69
 msgid "User administration"
 msgstr ""
 
@@ -361,24 +323,12 @@ msgstr ""
 msgid "Delete template"
 msgstr ""
 
-#: list_perm_templ.php:59
-msgid "permission template"
-msgstr ""
-
-#: list_supermasters.php:42
-msgid "No supermasters in this listing, sorry."
-msgstr ""
-
-#: list_zones.php:38
-msgid "List zones"
+#: list_supermasters.php:42 list_zones.php:43
+msgid "There are no zones to show in this listing."
 msgstr ""
 
 #: list_zones.php:41
 msgid "You do not have the permission to see any zones."
-msgstr ""
-
-#: list_zones.php:43
-msgid "There are no zones to show in this listing."
 msgstr ""
 
 #: list_zones.php:59
@@ -387,10 +337,6 @@ msgstr ""
 
 #: list_zones.php:76
 msgid "View zone"
-msgstr ""
-
-#: search.php:31
-msgid "Search zones and records"
 msgstr ""
 
 #: search.php:48
@@ -405,10 +351,6 @@ msgstr ""
 msgid "Records found"
 msgstr ""
 
-#: search.php:87
-msgid "Prio"
-msgstr ""
-
 #: search.php:120
 msgid "Query"
 msgstr ""
@@ -421,44 +363,8 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
-#: test_setup.php:54
-msgid "Not all tables are ok!"
-msgstr ""
-
-#: test_setup.php:58 inc/toolkit.inc.php:205
-msgid "Successful!"
-msgstr ""
-
-#: test_setup.php:66
-msgid "Sorry, but there are error(s) found in the following table(s):"
-msgstr ""
-
-#: test_setup.php:71
-msgid "Please fix these errors and run the script again."
-msgstr ""
-
-#: test_setup.php:75
-msgid "Successful! Everything is set up ok, you can rumble!"
-msgstr ""
-
-#: users.php:39
-msgid "User admin"
-msgstr ""
-
-#: users.php:47
-msgid "Emailaddress"
-msgstr ""
-
 #: users.php:48
 msgid "Template"
-msgstr ""
-
-#: users.php:110
-msgid "Edit permission templates"
-msgstr ""
-
-#: users.php:114
-msgid "Add user"
 msgstr ""
 
 #: inc/auth.inc.php:41
@@ -514,213 +420,196 @@ msgid "You do not have the permission to add a master zone."
 msgstr ""
 
 #: inc/error.inc.php:33
-msgid "You do not have the permission to delete a zone."
+msgid "You do not have the permission to add a slave zone."
 msgstr ""
 
 #: inc/error.inc.php:34
-msgid "You do not have the permission to delete a supermaster."
+msgid "You do not have the permission to delete a zone."
 msgstr ""
 
 #: inc/error.inc.php:35
-msgid "You do not have the permission to view this zone."
+msgid "You do not have the permission to delete a supermaster."
 msgstr ""
 
 #: inc/error.inc.php:36
-msgid "You do not have the permission to edit this user."
+msgid "You do not have the permission to view this zone."
 msgstr ""
 
 #: inc/error.inc.php:37
-msgid "You do not have the permission to edit permission templates."
+msgid "You do not have the permission to edit this user."
 msgstr ""
 
 #: inc/error.inc.php:38
-msgid "You do not have the permission to delete permission templates."
+msgid "You do not have the permission to edit permission templates."
 msgstr ""
 
 #: inc/error.inc.php:39
-msgid "You do not have the permission to add a new user."
+msgid "You do not have the permission to delete permission templates."
 msgstr ""
 
 #: inc/error.inc.php:40
+msgid "You do not have the permission to add a new user."
+msgstr ""
+
+#: inc/error.inc.php:41
 msgid "You do not have the permission to delete this user."
 msgstr ""
 
-#: inc/error.inc.php:43
-msgid "Your content field is empty."
-msgstr ""
-
 #: inc/error.inc.php:44
-msgid "Access denied, you do not have access to that record."
-msgstr ""
-
-#: inc/error.inc.php:45
-#, php-format
-msgid "You are not allowed to delete %s records."
-msgstr ""
-
-#: inc/error.inc.php:48
 msgid "This is an invalid zone name."
 msgstr ""
 
-#: inc/error.inc.php:49
+#: inc/error.inc.php:45
 msgid "There is already a supermaster with this IP address."
 msgstr ""
 
-#: inc/error.inc.php:50
+#: inc/error.inc.php:46
 msgid "There is already a zone with this name."
 msgstr ""
 
-#: inc/error.inc.php:53
+#: inc/error.inc.php:49
 msgid "Username exist already, please choose another one."
 msgstr ""
 
-#: inc/error.inc.php:54
+#: inc/error.inc.php:50
 msgid "User does not exist."
 msgstr ""
 
-#: inc/error.inc.php:55
+#: inc/error.inc.php:51
 msgid "You did not enter the correct current password."
 msgstr ""
 
-#: inc/error.inc.php:56
+#: inc/error.inc.php:52
 msgid "The two new password fields do not match."
 msgstr ""
 
-#: inc/error.inc.php:57
-msgid "Error editting user."
+#: inc/error.inc.php:53
+msgid "This template is assigned to at least one user."
 msgstr ""
 
-#: inc/error.inc.php:58
-msgid "This template is assigned to at least one user"
-msgstr ""
-
-#: inc/error.inc.php:61
+#: inc/error.inc.php:56
 msgid "Invalid or unexpected input given."
 msgstr ""
 
-#: inc/error.inc.php:62
+#: inc/error.inc.php:57
 #, php-format
 msgid "Invalid argument(s) given to function %s"
 msgstr ""
 
-#: inc/error.inc.php:63
+#: inc/error.inc.php:58
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr ""
 
-#: inc/error.inc.php:64
+#: inc/error.inc.php:59
 msgid "Unknown error."
 msgstr ""
 
-#: inc/error.inc.php:65
+#: inc/error.inc.php:60
 msgid "Enter a valid email address."
 msgstr ""
 
-#: inc/error.inc.php:68
+#: inc/error.inc.php:63
 msgid "Your content field doesnt have a legit value."
 msgstr ""
 
-#: inc/error.inc.php:69
+#: inc/error.inc.php:64
 msgid "Invalid hostname."
 msgstr ""
 
-#: inc/error.inc.php:70
+#: inc/error.inc.php:65
 msgid "Invalid record type! You should not even been able to get that here."
 msgstr ""
 
-#: inc/error.inc.php:71
+#: inc/error.inc.php:66
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr ""
 
-#: inc/error.inc.php:72
-msgid "This is not a valid IPv6 ip."
+#: inc/error.inc.php:67
+msgid "This is not a valid IPv6 address."
 msgstr ""
 
-#: inc/error.inc.php:73
-msgid "This is not a valid IPv4 ip."
+#: inc/error.inc.php:68
+msgid "This is not a valid IPv4 address."
 msgstr ""
 
-#: inc/error.inc.php:74
+#: inc/error.inc.php:69
 msgid "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
 msgstr ""
 
-#: inc/error.inc.php:75
-msgid "You can not point a NS record to a CNAME record. Remove/rename the CNAME record first or take another name."
+#: inc/error.inc.php:70
+msgid "You can not point a NS record to a CNAME record. Remove or rename the CNAME record first or take another name."
 msgstr ""
 
-#: inc/error.inc.php:76
-msgid "IN NS fields must be a hostnames."
+#: inc/error.inc.php:71
+msgid "NS records must be a hostnames."
 msgstr ""
 
-#: inc/error.inc.php:77
-msgid "You can not point a MX record to a CNAME record. Remove/rename the CNAME record first or take another name."
+#: inc/error.inc.php:72
+msgid "You can not point a MX record to a CNAME record. Remove or rename the CNAME record first or take another name."
 msgstr ""
 
-#: inc/error.inc.php:78
+#: inc/error.inc.php:73
 msgid "A prio field should be numeric."
 msgstr ""
 
+#: inc/error.inc.php:74
+msgid "At least one of the five last SOA data fields is not numeric."
+msgstr ""
+
+#: inc/error.inc.php:75
+msgid "You can only have five numeric fields in the SOA record."
+msgstr ""
+
+#: inc/error.inc.php:76
+msgid "The first part of your SOA record does not contain a valid hostname for a DNS server."
+msgstr ""
+
 #: inc/error.inc.php:79
-msgid "One of your SOA data fields is not numeric!"
-msgstr ""
-
-#: inc/error.inc.php:80
-msgid "You can only have 5 numeric fields"
-msgstr ""
-
-#: inc/error.inc.php:81
-msgid "The first part of your SOA record does not contain a valid hostname for a DNS Server"
-msgstr ""
-
-#: inc/error.inc.php:84
 msgid "Zone has been added succesfully."
 msgstr ""
 
-#: inc/error.inc.php:85
+#: inc/error.inc.php:80
 msgid "Zone has been deleted succesfully."
 msgstr ""
 
-#: inc/error.inc.php:86
+#: inc/error.inc.php:81
 msgid "The user has been updated succesfully."
 msgstr ""
 
-#: inc/error.inc.php:87
+#: inc/error.inc.php:82
 msgid "The user has been created succesfully."
 msgstr ""
 
-#: inc/error.inc.php:88
+#: inc/error.inc.php:83
 msgid "The user has been deleted succesfully."
 msgstr ""
 
-#: inc/error.inc.php:89
+#: inc/error.inc.php:84
 msgid "The record has been updated succesfully."
 msgstr ""
 
-#: inc/error.inc.php:90
+#: inc/error.inc.php:85
 msgid "The record has been deleted succesfully."
 msgstr ""
 
-#: inc/error.inc.php:91
+#: inc/error.inc.php:86
 msgid "The supermaster has been deleted succesfully."
 msgstr ""
 
-#: inc/error.inc.php:92
+#: inc/error.inc.php:87
+msgid "The supermaster has been added succesfully."
+msgstr ""
+
+#: inc/error.inc.php:88
 msgid "The permission template has been deleted succesfully."
 msgstr ""
 
-#: inc/record.inc.php:98
-msgid "You are not allowed to edit this record."
-msgstr ""
-
-#: inc/record.inc.php:101
-msgid "Error: content field may not be empty."
-msgstr ""
-
-#: inc/record.inc.php:268
+#: inc/record.inc.php:270
 msgid "You are trying to delete the SOA record. If are not allowed to remove it, unless you remove the entire zone."
 msgstr ""
 
-#: inc/record.inc.php:601
+#: inc/record.inc.php:603
 msgid "Function returned an error (multiple zones matching this zone ID)."
 msgstr ""
 
@@ -728,43 +617,39 @@ msgstr ""
 msgid "You have to create a config.inc.php!"
 msgstr ""
 
-#: inc/toolkit.inc.php:32
-msgid "You have to remove install.php before this program will run"
-msgstr ""
-
-#: inc/toolkit.inc.php:37
-msgid "You have to remove migrator.php before this program will run"
-msgstr ""
-
-#: inc/toolkit.inc.php:97
+#: inc/toolkit.inc.php:87
 msgid "Show page"
 msgstr ""
 
-#: inc/toolkit.inc.php:116
+#: inc/toolkit.inc.php:106
 msgid "Show zones beginning with"
 msgstr ""
 
-#: inc/toolkit.inc.php:174
+#: inc/toolkit.inc.php:164
 msgid "An unknown error has occurred."
 msgstr ""
 
-#: inc/toolkit.inc.php:182
+#: inc/toolkit.inc.php:172
 msgid "Something has been successfully performed. What exactly, however, will remain a mystery."
 msgstr ""
 
-#: inc/toolkit.inc.php:194
+#: inc/toolkit.inc.php:184
 msgid "Success!"
 msgstr ""
 
-#: inc/toolkit.inc.php:211
+#: inc/toolkit.inc.php:195
+msgid "Successful!"
+msgstr ""
+
+#: inc/toolkit.inc.php:201
 msgid "back"
 msgstr ""
 
-#: inc/toolkit.inc.php:250
+#: inc/toolkit.inc.php:240
 msgid "Inactive"
 msgstr ""
 
-#: inc/toolkit.inc.php:254
+#: inc/toolkit.inc.php:244
 msgid "Active"
 msgstr ""
 

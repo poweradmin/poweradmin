@@ -112,7 +112,7 @@ if ( $zone_master_add != "1" ) {
 	echo "        </td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
-	echo "        <td class=\"n\">" . _('Zone type') . ":</td>\n";
+	echo "        <td class=\"n\">" . _('Type') . ":</td>\n";
 	echo "        <td class=\"n\">\n";
 	echo "         <select name=\"dom_type\">\n";
         foreach($available_zone_types as $type) {

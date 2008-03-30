@@ -48,13 +48,13 @@ if (isset($_SESSION["userid"])) {
 	echo "    <div class=\"menu\">\n";
 	echo "    <span class=\"menuitem\"><a href=\"index.php\">" . _('Index') . "</a></span>\n";
 	if ( $perm_search == "1" ) { 
-		echo "    <span class=\"menuitem\"><a href=\"search.php\">" . _('Search zones or records') . "</a></span>\n"; 
+		echo "    <span class=\"menuitem\"><a href=\"search.php\">" . _('Search zones and records') . "</a></span>\n"; 
 	}
 	if ( $perm_view_zone_own == "1" || $perm_view_zone_other == "1" ) { 
-		echo "    <span class=\"menuitem\"><a href=\"list_zones.php\">" . _('List all zones') . "</a></span>\n"; 
+		echo "    <span class=\"menuitem\"><a href=\"list_zones.php\">" . _('List zones') . "</a></span>\n"; 
 	}
 	if ( $perm_supermaster_view ) { 
-		echo "    <span class=\"menuitem\"><a href=\"list_supermasters.php\">" . _('List all supermasters') . "</a></span>\n"; 
+		echo "    <span class=\"menuitem\"><a href=\"list_supermasters.php\">" . _('List supermasters') . "</a></span>\n"; 
 	}
 	if (  $perm_zone_master_add ) { 
 		echo "    <span class=\"menuitem\"><a href=\"add_zone_master.php\">" . _('Add master zone') . "</a></span>\n"; 

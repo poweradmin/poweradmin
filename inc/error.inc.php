@@ -40,11 +40,6 @@ define("ERR_PERM_DEL_PERM_TEMPL", _("You do not have the permission to delete pe
 define("ERR_PERM_ADD_USER", _("You do not have the permission to add a new user.")); 
 define("ERR_PERM_DEL_USER", _("You do not have the permission to delete this user.")); 
 
-/* RECORD STUFF */
-define("ERR_RECORD_EMPTY_CONTENT", _('Your content field is empty.'));
-define("ERR_RECORD_ACCESS_DENIED", _('Access denied, you do not have access to that record.'));
-define("ERR_RECORD_DELETE_TYPE_DENIED", _('You are not allowed to delete %s records.'));
-
 /* DOMAIN STUFF */
 define("ERR_DOMAIN_INVALID", _('This is an invalid zone name.'));
 define("ERR_SM_EXISTS", _('There is already a supermaster with this IP address.')); 
@@ -55,7 +50,6 @@ define("ERR_USER_EXIST", _('Username exist already, please choose another one.')
 define("ERR_USER_NOT_EXIST", _('User does not exist.'));
 define("ERR_USER_WRONG_CURRENT_PASS", _('You did not enter the correct current password.'));
 define("ERR_USER_MATCH_NEW_PASS", _('The two new password fields do not match.'));
-define("ERR_USER_EDIT", _('Error editting user.'));
 define("ERR_PERM_TEMPL_ASSIGNED", _('This template is assigned to at least one user.'));
 
 /* OTHER */
@@ -77,7 +71,7 @@ define("ERR_DNS_NS_CNAME", _('You can not point a NS record to a CNAME record. R
 define("ERR_DNS_NS_HNAME", _('NS records must be a hostnames.'));
 define("ERR_DNS_MX_CNAME", _('You can not point a MX record to a CNAME record. Remove or rename the CNAME record first or take another name.'));
 define("ERR_DNS_MX_PRIO", _('A prio field should be numeric.'));
-define("ERR_DNS_SOA_NUMERIC", _('One of your SOA data fields is not numeric.'));
+define("ERR_DNS_SOA_NUMERIC", _('At least one of the five last SOA data fields is not numeric.'));
 define("ERR_DNS_SOA_NUMERIC_FIELDS", _('You can only have five numeric fields in the SOA record.'));
 define("ERR_DNS_SOA_HOSTNAME", _('The first part of your SOA record does not contain a valid hostname for a DNS server.'));
 
