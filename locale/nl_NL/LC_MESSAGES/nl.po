@@ -282,6 +282,19 @@ msgstr "Wijzigen record in zone"
 msgid "Edit user"
 msgstr "Wijzigen gebruiker"
 
+#: edit_user.php:143
+#, php-format
+msgid "This user has been assigned the permission template \"%s\"."
+msgstr "Aan deze gebruiker is permissie template \"%s\" toegewezen."
+
+#: edit_user.php:145
+msgid "The description for this template is"
+msgstr "De omschrijving van dit template is"
+
+#: edit_user.php:147
+msgid "Based on this template, this user has the following permissions"
+msgstr "Gebaseerd op dit template heeft de gebruiker de volgende rechten"
+
 #: index.php:26
 msgid "Welcome"
 msgstr "Welkom"

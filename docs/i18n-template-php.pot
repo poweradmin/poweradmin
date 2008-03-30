@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-30 12:50+0200\n"
+"POT-Creation-Date: 2008-03-30 17:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,6 +31,10 @@ msgstr ""
 #: edit_perm_templ.php:55 edit_perm_templ.php:64 edit_user.php:129
 #: list_perm_templ.php:36 users.php:46
 msgid "Description"
+msgstr ""
+
+#: add_perm_templ.php:59 edit_perm_templ.php:80 edit_user.php:151
+msgid "descr"
 msgstr ""
 
 #: add_perm_templ.php:63 add_user.php:72 delete_user.php:101
@@ -281,6 +285,19 @@ msgstr ""
 
 #: edit_user.php:97 users.php:64
 msgid "Edit user"
+msgstr ""
+
+#: edit_user.php:143
+#, php-format
+msgid "This user has been assigned the permission template \"%s\"."
+msgstr ""
+
+#: edit_user.php:145
+msgid "The description for this template is"
+msgstr ""
+
+#: edit_user.php:147
+msgid "Based on this template, this user has the following permissions"
 msgstr ""
 
 #: index.php:26
@@ -653,6 +670,6 @@ msgstr ""
 msgid "Active"
 msgstr ""
 
-#: inc/users.inc.php:365
+#: inc/users.inc.php:368
 msgid "Password has been changed, please login."
 msgstr ""

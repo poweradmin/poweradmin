@@ -140,11 +140,11 @@ if ($edit_id == "-1") {
 		echo "     </form>\n";
 
 		echo "     <p>\n";
-		printf("      This user has been assigned the \"%s\" permission template.", $user['tpl_name']);
+		printf(_('This user has been assigned the permission template "%s".'), $user['tpl_name']);
 		if ($user['tpl_descr'] != "") { 
-			echo " The description for this template is: \"" . $user['tpl_descr'] . "\".";
+			echo " " . _('The description for this template is') . ": \"" . $user['tpl_descr'] . "\".";
 		}
-		echo " Based on this template, this user has the following permissions:";
+		echo " " . _('Based on this template, this user has the following permissions') . ":";
 		echo "     </p>\n";
 		echo "     <ul>\n";
 		foreach (get_permissions_by_template_id($user['tpl_id']) as $item) {
