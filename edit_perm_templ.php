@@ -77,7 +77,7 @@ if ($id == "-1") {
 
 		echo "       <td><input type=\"checkbox\" name=\"perm_id[]\" value=\"" . $perm_a['id'] . "\" " . $has_perm . "></td>\n";
 		echo "       <td>" . $perm_a['name'] . "</td>\n";
-		echo "       <td>" . $perm_a['descr'] . "</td>\n";
+		echo "       <td>" . _($perm_a['descr']) . "</td>\n";
 		echo "      </tr>\n";
 	}
 	echo "     </table>\n";

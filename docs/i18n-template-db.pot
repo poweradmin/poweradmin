@@ -1,0 +1,71 @@
+
+# The following is a list of strings that are not hard-code in the PHP 
+# files, but which are listed in the poweradmin database. Because of 
+# this, tools like xgettext will not notice these strings.
+# 
+# See also <https://www.poweradmin.org/wiki/TranslationContribution>.
+#
+
+msgid "User is allowed to add new master zones."
+msgstr ""
+
+msgid "User is allowed to add new slave zones."
+msgstr ""
+
+msgid "User is allowed to see the content and meta data of zones he owns."
+msgstr ""
+
+msgid "User is allowed to edit the content of zones he owns."
+msgstr ""
+
+msgid "User is allowed to edit the meta data of zones he owns."
+msgstr ""
+
+msgid "User is allowed to see the content and meta data of zones he does not own."
+msgstr ""
+
+msgid "User is allowed to edit the content of zones he does not own."
+msgstr ""
+
+msgid "User is allowed to edit the meta data of zones he does not own."
+msgstr ""
+
+msgid "User is allowed to perform searches."
+msgstr ""
+
+msgid "User is allowed to view supermasters."
+msgstr ""
+
+msgid "User is allowed to add new supermasters."
+msgstr ""
+
+msgid "User is allowed to edit new supermasters."
+msgstr ""
+
+msgid "User has full access. God-like. Redeemer."
+msgstr ""
+
+msgid "User is allowed to see other users and their details."
+msgstr ""
+
+msgid "User is allowed to add new users."
+msgstr ""
+
+msgid "User is allowed to edit their own details."
+msgstr ""
+
+msgid "User is allowed to edit other users."
+msgstr ""
+
+msgid "User is allowed to edit the password of other users."
+msgstr ""
+
+msgid "User is allowed to change the permission template that is assigned to a user."
+msgstr ""
+
+msgid "User is allowed to add new permission templates."
+msgstr ""
+
+msgid "User is allowed to edit existing permission templates."
+msgstr ""
+

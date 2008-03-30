@@ -148,7 +148,7 @@ if ($edit_id == "-1") {
 		echo "     </p>\n";
 		echo "     <ul>\n";
 		foreach (get_permissions_by_template_id($user['tpl_id']) as $item) {
-			echo "      <li>" . $item['descr'] . " (" . $item['name'] . ")</li>\n";
+			echo "      <li>" . _($item['descr']) . " (" . $item['name'] . ")</li>\n";
 		}
 		echo "     </ul>\n";
 	}

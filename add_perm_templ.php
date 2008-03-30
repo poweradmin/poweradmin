@@ -56,7 +56,7 @@ if (!verify_permission(templ_perm_edit)) {
 		echo "      <tr>\n";
 		echo "       <td><input type=\"checkbox\" name=\"perm_id[]\" value=\"" . $perm_a['id'] . "\"></td>\n";
 		echo "       <td>" . $perm_a['name'] . "</td>\n";
-		echo "       <td>" . $perm_a['descr'] . "</td>\n";
+		echo "       <td>" . _($perm_a['descr']) . "</td>\n";
 		echo "      </tr>\n";
 	}
 	echo "     </table>\n";

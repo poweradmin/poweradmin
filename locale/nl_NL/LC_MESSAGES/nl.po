@@ -651,3 +651,74 @@ msgstr "Actief"
 #: inc/users.inc.php:365
 msgid "Password has been changed, please login."
 msgstr "Het wachtwoord is gewijzigd. Log opnieuw in."
+
+# The following is a list of strings that are not hard-code in the PHP 
+# files, but which are listed in the poweradmin database. Because of 
+# this, tools like xgettext will not notice these strings.
+# 
+# See also <https://www.poweradmin.org/wiki/TranslationContribution>.
+#
+
+msgid "User is allowed to add new master zones."
+msgstr "Gebruiker mag master zones aanmaken."
+
+msgid "User is allowed to add new slave zones."
+msgstr "Gebruiker mag slave zones aanmaken."
+
+msgid "User is allowed to see the content and meta data of zones he owns."
+msgstr "Gebruiker mag eigen zones inzien."
+
+msgid "User is allowed to edit the content of zones he owns."
+msgstr "Gebruiker mag records van eigen zones wijzigen."
+
+msgid "User is allowed to edit the meta data of zones he owns."
+msgstr "Gebruiker mag meta gegevens van eigen zones wijzigen."
+
+msgid "User is allowed to see the content and meta data of zones he does not own."
+msgstr "Gebruiker mag zones van anderen inzien."
+
+msgid "User is allowed to edit the content of zones he does not own."
+msgstr "Gebruiker mag record van zones van anderen wijzigen."
+
+msgid "User is allowed to edit the meta data of zones he does not own."
+msgstr "Gebruiker mag meta gegevens van zones van anderen wijzigen."
+
+msgid "User is allowed to perform searches."
+msgstr "Gebruiker mag zoekopdrachten uitvoeren."
+
+msgid "User is allowed to view supermasters."
+msgstr "Gebruiker mag supermasters inzien."
+
+msgid "User is allowed to add new supermasters."
+msgstr "Gebruiker mag supermasters toevoegen."
+
+msgid "User is allowed to edit supermasters."
+msgstr "Gebruiker mag supermasters wijzigen."
+
+msgid "User has full access. God-like. Redeemer."
+msgstr "Gebruiker heeft alle rechten en kan zich even een god wanen."
+
+msgid "User is allowed to see other users and their details."
+msgstr "Gebruiker mag andere gebruikersgegevens inzien."
+
+msgid "User is allowed to add new users."
+msgstr "Gebruiker mag nieuwe gebruikers toevoegen."
+
+msgid "User is allowed to edit their own details."
+msgstr "Gebruiker mag eigen gegevens wijzigen."
+
+msgid "User is allowed to edit other users."
+msgstr "Gebruiker mag gegevens van andere gebruikers wijzigen."
+
+msgid "User is allowed to edit the password of other users."
+msgstr "Gebruiker mag het wachtwoord van andere gebruikers wijzigen."
+
+msgid "User is allowed to change the permission template that is assigned to a user."
+msgstr "Gebruiker mag het aan een gebruiker toegewezen permissie template wijzigen."
+
+msgid "User is allowed to add new permission templates."
+msgstr "Gebruiker mag nieuwe permissie templates toevoegen."
+
+msgid "User is allowed to edit existing permission templates."
+msgstr "Gebruiker mag permissie templates wijzigen."
+
