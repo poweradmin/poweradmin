@@ -732,6 +732,9 @@ function get_zones($perm,$userid=0,$letterstart=all,$rowstart=0,$rowamount=99999
 function zone_count_ng($perm, $letterstart=all) {
 	global $db;
 	global $sql_regexp;
+
+	$fromTable = 'domains';
+
 	if ($perm != "own" && $perm != "all") {
 		$zone_count = "0";
 	} 
@@ -740,6 +743,7 @@ function zone_count_ng($perm, $letterstart=all) {
 		if ($perm == "own") {
 			$sql_add = " AND zones.domain_id = domains.id
 					AND zones.owner = ".$db->quote($_SESSION['userid']);
+			$fromTable .= ',zones';
 		}
 		if ($letterstart!=all && $letterstart!=1) {
 			$sql_add .=" AND domains.name LIKE ".$db->quote($letterstart."%")." ";
@@ -748,8 +752,7 @@ function zone_count_ng($perm, $letterstart=all) {
 		}
 
 		$sqlq = "SELECT COUNT(distinct domains.id) AS count_zones 
-			FROM domains,zones 
-			WHERE 1=1
+			FROM ".$fromTable."	WHERE 1=1
 			".$sql_add.";";
 
 		$zone_count = $db->queryOne($sqlq);
