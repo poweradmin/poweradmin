@@ -111,7 +111,7 @@ if ($edit_id == "-1") {
 		echo "        <td class=\"n\"><input type=\"password\" class=\"input\" name=\"password\"></td>\n";
 		echo "       </tr>\n";
 		echo "       <tr>\n";
-		echo "        <td class=\"n\">" . _('Email') . "</td>\n"; 
+		echo "        <td class=\"n\">" . _('Emailaddress') . "</td>\n"; 
 		echo "        <td class=\"n\"><input type=\"text\" class=\"input\" name=\"email\" value=\"" . $user['email'] . "\"></td>\n";
 		echo "       </tr>\n";
 		echo "       <tr>\n";

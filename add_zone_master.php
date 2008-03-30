@@ -50,17 +50,17 @@ if ($_POST['submit'] && $zone_master_add == "1" ) {
         if(!$empty) {
                 $empty = 0;
                 if(!eregi('in-addr.arpa', $domain) && (!is_valid_ip($webip) || !is_valid_ip($mailip)) ) {
-                        error(_('Web or mail ip is invalid!')); 
+                        error(_('IP address of web- or mailserver is invalid.')); 
 			$error = "1";
                 }
         }
 
         if (!$error) {
                 if (!is_valid_domain($domain)) {
-                        error(_('Zone name is invalid!')); 
+                        error(ERR_DOMAIN_INVALID); 
 			$error = "1";
                 } elseif (domain_exists($domain)) {
-                        error(_('Zone already exists!!')); 
+                        error(ERR_DOMAIN_EXISTS); 
 			$error = "1";
                 } else {
                         if (add_domain($domain, $owner, $webip, $mailip, $empty, $dom_type, '')) {
@@ -73,11 +73,11 @@ if ($_POST['submit'] && $zone_master_add == "1" ) {
         }
 }
 
-echo "     <h2>" . _('Add master zone') . "</h2>\n"; 
-
 if ( $zone_master_add != "1" ) {
-	echo "     <p>" . _("You do not have the permission to add a new master zone.") . "</p>\n"; 
+	error(ERR_PERM_ADD_ZONE_MASTER); 
 } else {
+	echo "     <h2>" . _('Add master zone') . "</h2>\n"; 
+
 	$available_zone_types = array("MASTER", "NATIVE");
 	$users = show_users();
 
@@ -90,13 +90,13 @@ if ( $zone_master_add != "1" ) {
 	echo "        </td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
-	echo "        <td class=\"n\">" . _('Web IP') . ":</td>\n";
+	echo "        <td class=\"n\">" . _('IP address of webserver') . ":</td>\n";
 	echo "        <td class=\"n\">\n";
 	echo "         <input type=\"text\" class=\"input\" name=\"webip\" value=\"" . $webip . "\">\n";
 	echo "        </td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
-	echo "        <td class=\"n\">" . _('Mail IP') . ":</td>\n";
+	echo "        <td class=\"n\">" . _('IP address of mailserver') . ":</td>\n";
 	echo "        <td class=\"n\">\n";
 	echo "         <input type=\"text\" class=\"input\" name=\"mailip\" value=\"" . $mailip . "\">\n";
 	echo "        </td>\n";

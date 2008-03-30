@@ -98,7 +98,7 @@ if ($_POST['commit']) {
 		echo "       </tr>\n";
 
 		echo "      </table>\n";
-		echo "     <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Comit changes') . "\">\n";
+		echo "     <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
 		echo "     </form>\n";
 	}
 }

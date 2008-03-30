@@ -36,13 +36,13 @@ verify_permission(supermaster_add) ? $perm_supermaster_add = "1" : $perm_superma
 echo "    <ul>\n";
 echo "    <li><a href=\"index.php\">" . _('Index') . "</a></li>\n";
 if ( $perm_search == "1" ) {
-	echo "    <li><a href=\"search.php\">" . _('Search zones or records') . "</a></li>\n";
+	echo "    <li><a href=\"search.php\">" . _('Search zones and records') . "</a></li>\n";
 }
 if ( $perm_view_zone_own == "1" || $perm_view_zone_other == "1" ) {
-	echo "    <li><a href=\"list_zones.php\">" . _('List all zones') . "</a></li>\n";
+	echo "    <li><a href=\"list_zones.php\">" . _('List zones') . "</a></li>\n";
 }
 if ( $perm_supermaster_view ) {
-	echo "    <li><a href=\"list_supermasters.php\">" . _('List all supermasters') . "</a></li>\n";
+	echo "    <li><a href=\"list_supermasters.php\">" . _('List supermasters') . "</a></li>\n";
 }
 if (  $perm_zone_master_add ) {
 	echo "    <li><a href=\"add_zone_master.php\">" . _('Add master zone') . "</a></li>\n";

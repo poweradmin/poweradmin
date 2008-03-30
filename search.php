@@ -84,7 +84,7 @@ if (!(verify_permission(search))) {
 			echo "       <th>&nbsp;</th>\n";
 			echo "       <th>" . _('Name') . "</th>\n";
 			echo "       <th>" . _('Type') . "</th>\n";
-			echo "       <th>" . _('Prio') . "</th>\n";
+			echo "       <th>" . _('Priority') . "</th>\n";
 			echo "       <th>" . _('Content') . "</th>\n";
 			echo "       <th>" . _('TTL') . "</th>\n";
 			echo "      </tr>\n";

@@ -31,7 +31,7 @@ $account = $_POST["account"];
 if($_POST["submit"])
 {
 	if (add_supermaster($master_ip, $ns_name, $account)) {
-		echo "     <div class=\"success\">" .  _('Successfully added supermaster.') . "</div>\n";
+		success(SUC_SM_ADD);
 	} else {
 		$error = "1";
 	}

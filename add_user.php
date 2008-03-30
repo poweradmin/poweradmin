@@ -30,7 +30,7 @@ if (!verify_permission(user_add_new)) {
 		success(SUC_USER_ADD);
 	}
 
-	echo "     <h2>" . _('Add a  user') . "</h2>\n";
+	echo "     <h2>" . _('Add user') . "</h2>\n";
 	echo "     <form method=\"post\">\n";
 	echo "      <table>\n";
 	echo "       <tr>\n";
@@ -46,7 +46,7 @@ if (!verify_permission(user_add_new)) {
 	echo "        <td class=\"n\"><input type=\"password\" class=\"input\" name=\"password\"></td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
-	echo "        <td class=\"n\">" . _('Email') . "</td>\n"; 
+	echo "        <td class=\"n\">" . _('Emailaddress') . "</td>\n"; 
 	echo "        <td class=\"n\"><input type=\"text\" class=\"input\" name=\"email\" value=\"\"></td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";

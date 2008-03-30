@@ -48,11 +48,11 @@ if ($_POST['submit'] && $zone_slave_add == "1") {
 	}
 }
 
-echo "     <h2>" . _('Add slave zone') . "</h2>\n"; 
-
 if ( $zone_slave_add != "1" ) {
-	echo "     <p>" . _("You do not have the permission to add a new slave zone.") . "</p>\n"; 
+	error(ERR_PERM_ADD_ZONE_SLAVE);
 } else {
+	echo "     <h2>" . _('Add slave zone') . "</h2>\n"; 
+
 	$users = show_users();
 	echo "     <form method=\"post\" action=\"add_zone_slave.php\">\n";
 	echo "      <table>\n";
@@ -63,7 +63,7 @@ if ( $zone_slave_add != "1" ) {
 	echo "        </td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
-	echo "        <td class=\"n\">" . _('IP of master NS') . ":</td>\n";
+	echo "        <td class=\"n\">" . _('IP address of master NS') . ":</td>\n";
 	echo "        <td class=\"n\">\n";
 	echo "         <input type=\"text\" class=\"input\" name=\"slave_master\" value=\"" . $master . "\">\n";
 	echo "        </td>\n";

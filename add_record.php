@@ -74,7 +74,7 @@ if ($_POST["commit"]) {
 	}
 }
 
-echo "    <h2>" . _('Add record in zone') . " " .  $zone_name . "</h2>\n";
+echo "    <h2>" . _('Add record to zone') . " " .  $zone_name . "</h2>\n";
 
 if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
 	error(ERR_PERM_ADD_RECORD); 

@@ -56,7 +56,9 @@ if ($perm_templ_perm_edit == "0") {
 	}
 
 	echo "     </table>\n";
-        echo "     <p>" . _('Add') . " <a href=\"add_perm_templ.php\">" . _('permission template') . "</a>.</p>\n";
+	echo "     <ul>\n";
+        echo "      <li><a href=\"add_perm_templ.php\">" . _('Add permission template') . "</a>.</li>\n";
+	echo "     </ul>\n";
 }
 
 include_once("inc/footer.inc.php");

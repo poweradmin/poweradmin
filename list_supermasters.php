@@ -27,7 +27,7 @@ include_once("inc/header.inc.php");
 
 $supermasters = get_supermasters();
 
-echo "     <h2>" . _('List all supermasters') . "</h2>\n";  
+echo "     <h2>" . _('List supermasters') . "</h2>\n";  
 echo "     <table>\n";
 echo "      <tr>\n";
 echo "       <th>&nbsp;</th>\n";
@@ -39,7 +39,7 @@ if ($num_supermasters == "0") {
 	echo "      <tr>\n";
 	echo "       <td class=\"n\">&nbsp;</td>\n";
 	echo "       <td class=\"n\" colspan=\"3\">\n";
-	echo "        " . _('No supermasters in this listing, sorry.') . "\n";
+	echo "        " . _('There are no zones to show in this listing.') . "\n";
 	echo "       </td>\n";
 	echo "      </tr>\n";
 } else {

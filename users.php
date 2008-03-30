@@ -36,7 +36,7 @@ if (isset($_POST['commit'])) {
 }
 
 $users = get_user_detail_list("");
-echo "    <h2>" . _('User admin') . "</h2>\n";
+echo "    <h2>" . _('User administration') . "</h2>\n";
 echo "    <form method=\"post\">\n";
 echo "     <table>\n";
 echo "      <tr>\n";
@@ -107,7 +107,7 @@ echo "    </form>\n";
 
 echo "    <ul>\n";
 if ($perm_templ_perm_edit == "1") {
-	echo "<li><a href=\"list_perm_templ.php\">" . _('Edit permission templates') . "</a>.</li>\n";
+	echo "<li><a href=\"list_perm_templ.php\">" . _('Edit permission template') . "</a>.</li>\n";
 }
 
 if (verify_permission(user_add_new)) {
