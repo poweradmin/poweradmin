@@ -17,7 +17,27 @@ CREATE TABLE perm_items (
   descr text NOT NULL
 );
 
-INSERT INTO perm_items (name, descr) VALUES ('user_is_ueberuser','User has full access. God-like. Redeemer.'),('zone_master_add','User is allowed to add new master zones.'),('zone_slave_add','User is allowed to add new slave zones.'),('zone_content_view_own','User is allowed to see the content and meta data of zones he owns.'),('zone_content_edit_own','User is allowed to edit the content of zones he owns.'),('zone_meta_edit_own','User is allowed to edit the meta data of zones he owns.'),('zone_content_view_others','User is allowed to see the content and meta data of zones he does not own.'),('zone_content_edit_others','User is allowed to edit the content of zones he does not own.'),('zone_meta_edit_others','User is allowed to edit the meta data of zones he does not own.'),('search','User is allowed to perform searches.'),('supermaster_view','User is allowed to view supermasters.'),('supermaster_add','User is allowed to add new supermasters.'),('supermaster_edit','User is allowed to edit supermasters.'),('user_view_others','User is allowed to see other users and their details.'),('user_add_new','User is allowed to add new users.'),('user_edit_own','User is allowed to edit their own details.'),('user_edit_others','User is allowed to edit other users.'),('user_passwd_edit_others','User is allowed to edit the password of other users.'),('user_edit_templ_perm','User is allowed to change the permission template that is assigned to a user.'),('templ_perm_add','User is allowed to add new permission templates.'),('templ_perm_edit','User is allowed to edit existing permission templates.');
+INSERT INTO perm_items (name, descr) VALUES ('user_is_ueberuser','User has full access. God-like. Redeemer.');
+INSERT INTO perm_items (name, descr) VALUES ('zone_master_add','User is allowed to add new master zones.');
+INSERT INTO perm_items (name, descr) VALUES ('zone_slave_add','User is allowed to add new slave zones.');
+INSERT INTO perm_items (name, descr) VALUES ('zone_content_view_own','User is allowed to see the content and meta data of zones he owns.');
+INSERT INTO perm_items (name, descr) VALUES ('zone_content_edit_own','User is allowed to edit the content of zones he owns.');
+INSERT INTO perm_items (name, descr) VALUES ('zone_meta_edit_own','User is allowed to edit the meta data of zones he owns.');
+INSERT INTO perm_items (name, descr) VALUES ('zone_content_view_others','User is allowed to see the content and meta data of zones he does not own.');
+INSERT INTO perm_items (name, descr) VALUES ('zone_content_edit_others','User is allowed to edit the content of zones he does not own.');
+INSERT INTO perm_items (name, descr) VALUES ('zone_meta_edit_others','User is allowed to edit the meta data of zones he does not own.');
+INSERT INTO perm_items (name, descr) VALUES ('search','User is allowed to perform searches.');
+INSERT INTO perm_items (name, descr) VALUES ('supermaster_view','User is allowed to view supermasters.');
+INSERT INTO perm_items (name, descr) VALUES ('supermaster_add','User is allowed to add new supermasters.');
+INSERT INTO perm_items (name, descr) VALUES ('supermaster_edit','User is allowed to edit supermasters.');
+INSERT INTO perm_items (name, descr) VALUES ('user_view_others','User is allowed to see other users and their details.');
+INSERT INTO perm_items (name, descr) VALUES ('user_add_new','User is allowed to add new users.');
+INSERT INTO perm_items (name, descr) VALUES ('user_edit_own','User is allowed to edit their own details.');
+INSERT INTO perm_items (name, descr) VALUES ('user_edit_others','User is allowed to edit other users.');
+INSERT INTO perm_items (name, descr) VALUES ('user_passwd_edit_others','User is allowed to edit the password of other users.');
+INSERT INTO perm_items (name, descr) VALUES ('user_edit_templ_perm','User is allowed to change the permission template that is assigned to a user.');
+INSERT INTO perm_items (name, descr) VALUES ('templ_perm_add','User is allowed to add new permission templates.');
+INSERT INTO perm_items (name, descr) VALUES ('templ_perm_edit','User is allowed to edit existing permission templates.');
 
 CREATE TABLE perm_templ (
   id SERIAL PRIMARY KEY,
@@ -41,3 +61,5 @@ CREATE TABLE zones (
   owner integer default 0,
   comment text
 );
+
+CREATE INDEX zone_domain_owner ON zones(domain_id, owner);
