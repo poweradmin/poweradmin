@@ -244,7 +244,7 @@ msgstr "Wilt u deze gebruiker echt verwijderen?"
 
 #: edit_perm_templ.php:45 users.php:110
 msgid "Edit permission template"
-msgstr "Wijzigingen permissie template"
+msgstr "Wijzigen permissie template"
 
 #: edit.php:75 search.php:60
 msgid "Edit zone"
