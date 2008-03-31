@@ -1,6 +1,6 @@
 <?php
 
-/*  PowerAdmin, a friendly web-based admin tool for PowerDNS.
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://rejo.zenger.nl/poweradmin> for more details.
  *
  *  Copyright 2007, 2008  Rejo Zenger <rejo@zenger.nl>
@@ -24,7 +24,7 @@ global $STYLE;
 echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n";
 echo "<html>\n";
 echo " <head>\n";
-echo "  <title>PowerAdmin</title>\n";
+echo "  <title>Poweradmin</title>\n";
 echo "  <link rel=stylesheet href=\"style/" . $STYLE . ".inc.php\" type=\"text/css\">\n";
 echo " </head>\n";
 echo " <body>\n";
@@ -33,7 +33,7 @@ if(file_exists('inc/custom_header.inc.php')) {
 	include('inc/custom_header.inc.php');
 }
 
-echo "  <h1>PowerAdmin</h1>\n";
+echo "  <h1>Poweradmin</h1>\n";
 
 if (isset($_SESSION["userid"])) {
 

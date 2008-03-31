@@ -1,6 +1,6 @@
 <?php
 
-/*  PowerAdmin, a friendly web-based admin tool for PowerDNS.
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://rejo.zenger.nl/poweradmin> for more details.
  *
  *  Copyright 2007, 2008  Rejo Zenger <rejo@zenger.nl>

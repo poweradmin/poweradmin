@@ -1,6 +1,6 @@
 <?php
 
-/*  PowerAdmin, a friendly web-based admin tool for PowerDNS.
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://rejo.zenger.nl/poweradmin> for more details.
  *
  *  Copyright 2007, 2008  Rejo Zenger <rejo@zenger.nl>
@@ -46,12 +46,12 @@ $dbdsntype = 'mysql';
 /* URI Configuration */
 
 // $BASE_URL
-// This will be the main URI you will use to connect to PowerAdmin.
+// This will be the main URI you will use to connect to Poweradmin.
 // For instance: "http://poweradmin.sjeemz.nl"
 $BASE_URL = "http://";
 
 // $BASE_PATH
-// If PowerAdmin is in a subdir. Specify this here
+// If Poweradmin is in a subdir. Specify this here
 // For instance: "/admin/"
 $BASE_PATH = "/admin/";
 
