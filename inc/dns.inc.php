@@ -419,69 +419,44 @@ function is_valid_soa(&$content, $zoneid)
 {
 
 	/*
-	 * SOA (start of authority)
-	 * there is only _ONE_ SOA record allowed in every zone.
-	 * Validate SOA record
-	 * The Start of Authority record is one of the most complex available. It specifies a lot
-	 * about a domain: the name of the master nameserver ('the primary'), the hostmaster and
-	 * a set of numbers indicating how the data in this domain expires and how often it needs
-	 * to be checked. Further more, it contains a serial number which should rise on each change
-	 * of the domain.
-	 					    2002120902 28800 7200 604800 10800
 	 * The stored format is: primary hostmaster serial refresh retry expire default_ttl
-	 * From the powerdns documentation.
 	 */
 
-
-	// Check if there already is an occurence of a SOA, if so see if its not the one we are currently changing
 	$return = get_records_by_type_from_domid("SOA", $zoneid);
-	if($return->numRows() > 1)
-	{
+	if($return->numRows() > 1) {
 		return -1;
 	}
 
+	$soacontent = preg_split("/\s+/", $content);
+	debug_print($soacontent);
+	
+	if(is_valid_hostname($soacontent[0])) {
 
-	$soacontent = explode(" ", $content);
-	// Field is at least one otherwise it wouldnt even get here.
-	if(is_valid_hostname($soacontent[0]))
-	{
 		$totalsoa = $soacontent[0];
 		// It doesnt matter what field 2 contains, but lets check if its there
 		// We assume the 2nd field wont have numbers, otherwise its a TTL field
-		if(count($soacontent) > 1)
-		{
-			if(is_numeric($soacontent[1]))
-			{
+
+		if(count($soacontent) > 1) {
+			if(is_numeric($soacontent[1])) {
 				// its a TTL field, or at least not hostmaster or alike
 				// Set final string to the default hostmaster addy
 				global $HOSTMASTER;
 				$totalsoa .= " ". $HOSTMASTER;
-			}
-			else
-			{
+			} else {
 				$totalsoa .= " ".$soacontent[1];
 			}
 			// For loop to iterate over the numbers
 			$imax = count($soacontent);
-			for($i = 2; ($i < $imax) && ($i < 7); $i++)
-			{
-				if(!is_numeric($soacontent[$i]))
-				{
+			for($i = 2; ($i < $imax) && ($i < 7); $i++) {
+				if(!is_numeric($soacontent[$i])) {
 					return -2;
-				}
-				else
-				{
+				} else {
 					$totalsoa .= " ".$soacontent[$i];
 				}
 			}
-			if($i > 7)
-			{
-				error(ERR_DNS_SOA_NUMERIC_FIELDS);
-			}
+			// if($i > 7) --> SOA contained too many fields, should we provide error?
 		}
-	}
-	else
-	{
+	} else {
 		error(ERR_DNS_SOA_HOSTNAME);
 	}
 	$content = $totalsoa;
