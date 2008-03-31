@@ -34,9 +34,11 @@ if (verify_permission(zone_meta_edit_others)) { $perm_meta_edit = "all" ; }
 elseif (verify_permission(zone_meta_edit_own)) { $perm_meta_edit = "own" ; }
 else { $perm_meta_edit = "none" ; }
 
-$user_is_zone_owner = verify_user_is_owner_zoneid($_GET["domain"]);
-$zone_type = get_domain_type($_GET["domain"]);
-$zone_name = get_domain_name_from_id($_GET["domain"]);
+$zid = get_zone_id_from_record_id($_GET["id"]);
+
+$user_is_zone_owner = verify_user_is_owner_zoneid($zid);
+$zone_type = get_domain_type($zid);
+$zone_name = get_domain_name_from_id($zid);
 
 if ($_POST["commit"]) {
 	if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
@@ -57,7 +59,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 	error(ERR_PERM_VIEW_RECORD);
 } else {
 	$record = get_record_from_id($_GET["id"]);
-	echo "     <form method=\"post\" action=\"edit_record.php?domain=" . $_GET["domain"] . "&id=" . $_GET["id"] . "\">\n";
+	echo "     <form method=\"post\" action=\"edit_record.php?domain=" . $zid . "&id=" . $_GET["id"] . "\">\n";
 	echo "      <table>\n";
 	echo "       <tr>\n";
 	echo "        <th>" . _('Name') . "</td>\n";
@@ -79,7 +81,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 		echo "      </tr>\n";
 	} else {
 		echo "      <input type=\"hidden\" name=\"recordid\" value=\"" . $_GET["id"] . "\">\n";
-		echo "      <input type=\"hidden\" name=\"domainid\" value=\"" . $_GET["domain"] . "\">\n";
+		echo "      <input type=\"hidden\" name=\"domainid\" value=\"" . $zid . "\">\n";
 		echo "      <tr>\n";
 		echo "       <td><input type=\"text\" name=\"name\" value=\"" . trim(str_replace($zone_name, '', $record["name"]), '.') . "\" class=\"input\">." . $zone_name . "</td>\n";
 		echo "       <td>IN</td>\n";

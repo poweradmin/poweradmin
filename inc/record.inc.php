@@ -19,6 +19,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+function get_zone_id_from_record_id($rid) {
+	global $db;
+	$query = "SELECT domain_id FROM records WHERE id = " . $db->quote($rid);
+	$zid = $db->queryOne($query);
+	return $zid;
+}
+
 function count_zone_records($zone_id) {
 	global $db;
 	$sqlq = "SELECT COUNT(id) FROM records WHERE domain_id = ".$db->quote($zone_id);
