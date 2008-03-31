@@ -428,7 +428,6 @@ function is_valid_soa(&$content, $zoneid)
 	}
 
 	$soacontent = preg_split("/\s+/", $content);
-	debug_print($soacontent);
 	
 	if(is_valid_hostname($soacontent[0])) {
 
