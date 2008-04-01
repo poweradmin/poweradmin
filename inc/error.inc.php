@@ -59,6 +59,13 @@ define("ERR_INV_ARGC", _('Invalid argument(s) given to function %s %s'));
 define("ERR_UNKNOWN", _('Unknown error.'));
 define("ERR_INV_EMAIL", _('Enter a valid email address.'));
 
+/* DATABASE */
+define("ERR_DB_NO_DB_NAME", _('No database name has been set in config.inc.php.'));
+define("ERR_DB_NO_DB_HOST", _('No database host has been set in config.inc.php.'));
+define("ERR_DB_NO_DB_USER", _('No database username has been set in config.inc.php.'));
+define("ERR_DB_NO_DB_PASS", _('No database password has been set in config.inc.php.'));
+define("ERR_DB_NO_DB_TYPE", _('No or unknown database type has been set in config.inc.php.'));
+
 /* DNS */
 define("ERR_DNS_CONTENT", _('Your content field doesnt have a legit value.'));
 define("ERR_DNS_HOSTNAME", _('Invalid hostname.'));

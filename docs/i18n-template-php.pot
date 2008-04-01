@@ -673,3 +673,19 @@ msgstr ""
 #: inc/users.inc.php:368
 msgid "Password has been changed, please login."
 msgstr ""
+
+msgid "No database name has been set in config.inc.php."
+msgstr ""
+
+msgid "No database host has been set in config.inc.php."
+msgstr ""
+
+msgid "No database username has been set in config.inc.php."
+msgstr ""
+
+msgid "No database password has been set in config.inc.php."
+msgstr ""
+
+msgid "No or unknown database type has been set in config.inc.php."
+msgstr ""
+

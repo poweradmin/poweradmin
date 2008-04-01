@@ -42,13 +42,47 @@ function dbConnect() {
 	global $dbhost;
 	global $dbdatabase;
 	global $sql_regexp;
-
+	
+	if (!(isset($dbuser) && $dbuser != "")) {
+		include_once("header.inc.php");
+		error(ERR_DB_NO_DB_USER);
+		include_once("footer.inc.php");
+		exit;
+	}
+		
+	if (!(isset($dbpass) && $dbpass != "")) {
+		include_once("header.inc.php");
+		error(ERR_DB_NO_DB_PASS);
+		include_once("footer.inc.php");
+		exit;
+	}
+		
+	if (!(isset($dbhost) && $dbhost != "")) {
+		include_once("header.inc.php");
+		error(ERR_DB_NO_DB_HOST);
+		include_once("footer.inc.php");
+		exit;
+	}
+		
+	if (!(isset($dbdatabase) && $dbdatabase != "")) {
+		include_once("header.inc.php");
+		error(ERR_DB_NO_DB_NAME);
+		include_once("footer.inc.php");
+		exit;
+	}
+		
+	if ((!isset($dbdsntype)) || (!($dbdsntype == "mysql" || $dbdsntype == "pgsql"))) {
+		include_once("header.inc.php");
+		error(ERR_DB_NO_DB_TYPE);
+		include_once("footer.inc.php");
+		exit;
+	}
+		
 	$dsn = "$dbdsntype://$dbuser:$dbpass@$dbhost/$dbdatabase";
 	$db = MDB2::connect($dsn);
 	$db->setOption('portability', MDB2_PORTABILITY_ALL ^ MDB2_PORTABILITY_EMPTY_TO_NULL);
 
-	if (MDB2::isError($db))
-	{
+	if (MDB2::isError($db)) {
 		// Error handling should be put.
 		error(MYSQL_ERROR_FATAL, $db->getMessage());
 	}
@@ -60,17 +94,12 @@ function dbConnect() {
 	$mysql_pass = $dsn = '';
 
 	// Add support for regular expressions in both MySQL and PostgreSQL
-	if ( $dbdsntype == "mysql" ) 
-	{
+	if ( $dbdsntype == "mysql" ) {
 		$sql_regexp = "REGEXP";
-	} 
-	elseif ( $dbdsntype == "pgsql" ) 
-	{
+	} elseif ( $dbdsntype == "pgsql" ) {
 		$sql_regexp = "~";
-	}
-	else
-	{
-		error(_('Unknown database type in inc/config.inc.php.'));
+	} else {
+		error(ERR_DB_NO_DB_TYPE);
 	};
 	return $db;
 }

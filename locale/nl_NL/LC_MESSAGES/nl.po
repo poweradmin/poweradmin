@@ -735,3 +735,17 @@ msgstr "Gebruiker mag nieuwe permissie templates toevoegen."
 msgid "User is allowed to edit existing permission templates."
 msgstr "Gebruiker mag permissie templates wijzigen."
 
+msgid "No database name has been set in config.inc.php."
+msgstr "Er is geen database naam opgegeven in config.inc.php."
+
+msgid "No database host has been set in config.inc.php."
+msgstr "Er is geen database hostnaam opgegeven in config.inc.php."
+
+msgid "No database username has been set in config.inc.php."
+msgstr "Er is geen database gebruikersnaam opgegeven in config.inc.php."
+
+msgid "No database password has been set in config.inc.php."
+msgstr "Er is geen database wachtwoord opgegeven in config.inc.php."
+
+msgid "No or unknown database type has been set in config.inc.php."
+msgstr "Er is geen of een onbekend database type opgegeven in config.inc.php."
