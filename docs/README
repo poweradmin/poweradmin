@@ -1,27 +1,5 @@
-What is PowerAdmin?
------------------------------------------------------------------------
-
-The project's purpose is to create and maintain a friendly web-based DNS
-administration tool for the PowerDNS DNS server. The most recent version
-has full support for all zone types, support for supermasters, multi-
-language support and more.
-
-See <https://code.krikkit.nl/poweradmin/wiki/Features> for a list of 
-features.
-
-The original PowerAdmin code was written by Trancer and Sjeemz. This
-version ("a complete(r) PowerAdmin) is an adaption by Rejo Zenger. Many
-people have contributed to the current code. For a list of contributors,
-please see <https://code.krikkit.nl/trac/poweradmin/wiki/Credits>.
 
 
-Where can I find more information?
------------------------------------------------------------------------
-
-The site at <http://code.krikkit.nl/poweradmin/wiki> is the project's 
-home and the central place for information. You'll find download and 
-installation instructions, ticket system, support, mailinglists and
-more. 
-
+See <https://code.krikkit.nl/trac/poweradmin/wiki/ReleaseNotes/2.0.0>.
 
 
