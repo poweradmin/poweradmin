@@ -112,7 +112,6 @@ function edit_record($record) {
 		global $db;
 		// TODO: no need to check for numeric-ness of zone id if we check with validate_input as well?
 		if (is_numeric($record['zid'])) {
-			debug_print($record['type']);
 			validate_input($record['zid'], $record['type'], $record['content'], $record['name'], $record['prio'], $record['ttl']);
 			$query = "UPDATE records 
 					SET name=".$db->quote($record['name']).", 
