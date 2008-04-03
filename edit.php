@@ -113,7 +113,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 			echo "      <td class=\"u\">\n";
 			echo "       <select name=\"record[" . $r['id'] . "][type]\">\n";
 			foreach (get_record_types() as $type_available) {
-				if ($type_available == $r["type"]) {
+				if ($type_available == $r['type']) {
 					$add = " SELECTED";
 				} else {
 					$add = "";
