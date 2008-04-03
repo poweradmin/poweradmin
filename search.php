@@ -22,22 +22,22 @@
 require_once('inc/toolkit.inc.php');
 include_once('inc/header.inc.php');
 
-if (!(verify_permission(search))) {
+if (!(verify_permission('search'))) {
 	error(ERR_PERM_SEARCH);
 	include_once('inc/footer.inc.php');
 	exit;
 	
 } else {
 	echo "     <h2>" . _('Search zones and records') . "</h2>\n";
+	$holy_grail = '';
+	if (isset($_POST['submit'])) {
 
-	if ($_POST['submit']) {
-
-		if (verify_permission(zone_content_view_others)) { $perm_view = "all" ; }
-		elseif (verify_permission(zone_content_view_own)) { $perm_view = "own" ; }
+		if (verify_permission('zone_content_view_others')) { $perm_view = "all" ; }
+		elseif (verify_permission('zone_content_view_own')) { $perm_view = "own" ; }
 		else { $perm_view = "none" ; }
 
-		if (verify_permission(zone_content_edit_others)) { $perm_edit = "all" ; }
-		elseif (verify_permission(zone_content_edit_own)) { $perm_edit = "own" ; }
+		if (verify_permission('zone_content_edit_others')) { $perm_edit = "all" ; }
+		elseif (verify_permission('zone_content_edit_own')) { $perm_edit = "own" ; }
 		else { $perm_edit = "none" ; }
 	
 		$holy_grail = $_POST['query'];

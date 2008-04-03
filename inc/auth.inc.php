@@ -53,7 +53,7 @@ function doAuthenticate() {
 			$rowObj = $result->fetchRow();
 			$_SESSION["userid"] = $rowObj["id"];
 			$_SESSION["name"] = $rowObj["fullname"];
-			if($_POST["authenticate"])
+			if(isset($_POST["authenticate"]))
 			{
 				//If a user has just authenticated, redirect him to index with timestamp, so post-data gets lost.
 				session_write_close();

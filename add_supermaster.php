@@ -26,7 +26,7 @@ $master_ip = $_POST["master_ip"];
 $ns_name = $_POST["ns_name"];
 $account = $_POST["account"];
 
-(verify_permission(supermaster_add)) ? $supermasters_add = "1" :  $supermasters_add = "0";
+(verify_permission('supermaster_add')) ? $supermasters_add = "1" :  $supermasters_add = "0";
 
 if($_POST["submit"])
 {

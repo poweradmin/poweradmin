@@ -35,7 +35,7 @@ if ((isset($_GET['confirm'])) && v_num($_GET['confirm'])) {
 if ($perm_templ == "-1"){
 	error(ERR_INV_INPUT);
 } else {
-	if (!(verify_permission(user_edit_templ_perm))) {
+	if (!(verify_permission('user_edit_templ_perm'))) {
 		error(ERR_PERM_DEL_PERM_TEMPL);
 	} else {
 		$templ_details = get_permission_template_details($perm_templ);

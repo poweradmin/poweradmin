@@ -144,7 +144,7 @@ function show_users($id='',$rowstart=0,$rowamount=9999999)
 		 "fullname"              =>              $r["fullname"],
 		 "email"                 =>              $r["email"],
 		 "description"           =>              $r["description"],
-		 "level"                 =>              $r["level"],
+//		 "level"                 =>              $r["level"],
 		 "active"                =>              $r["active"],
 		 "numdomains"            =>              $r["aantal"]
 		);
@@ -207,7 +207,7 @@ function delete_user($uid,$zones)
 {
 	global $db;
 
-	if (($uid != $_SESSION['userid'] && !verify_permission(user_edit_others)) || ($uid == $_SESSION['userid'] && !verify_permission(user_edit_own))) {
+	if (($uid != $_SESSION['userid'] && !verify_permission('user_edit_others')) || ($uid == $_SESSION['userid'] && !verify_permission('user_edit_own'))) {
 		 error(ERR_PERM_DEL_USER);
 		 return false;
 	} else {
@@ -236,7 +236,7 @@ function delete_user($uid,$zones)
 function delete_perm_templ($ptid) {
 
 	global $db;
-	if (!(verify_permission(user_edit_templ_perm))) {
+	if (!(verify_permission('user_edit_templ_perm'))) {
 		error(ERR_PERM_DEL_PERM_TEMPL);
 	} else {
 		$query = "SELECT id FROM users WHERE perm_templ = " . $ptid;
@@ -268,8 +268,8 @@ function edit_user($id, $user, $fullname, $email, $perm_templ, $description, $ac
 {
 	global $db;
 
-	verify_permission(user_edit_own) ? $perm_edit_own = "1" : $perm_edit_own = "0" ;
-	verify_permission(user_edit_others) ? $perm_edit_others = "1" : $perm_edit_others = "0" ;
+	verify_permission('user_edit_own') ? $perm_edit_own = "1" : $perm_edit_own = "0" ;
+	verify_permission('user_edit_others') ? $perm_edit_others = "1" : $perm_edit_others = "0" ;
 
 	if (($id == $_SESSION["userid"] && $perm_edit_own == "1") || ($id != $_SESSION["userid"] && $perm_edit_others == "1" )) {
 
@@ -474,7 +474,7 @@ function get_user_detail_list($specific) {
 	if (v_num($specific)) {
 		$sql_add = "AND users.id = " . $db->quote($specific) ;
 	} else {
-		if (verify_permission(user_view_others)) {
+		if (verify_permission('user_view_others')) {
 			$sql_add = "";
 		} else {
 			$sql_add = "AND users.id = " . $db->quote($userid) ;
@@ -659,8 +659,8 @@ function update_user_details($details) {
 
 	global $db;
 
-	verify_permission(user_edit_own) ? $perm_edit_own = "1" : $perm_edit_own = "0" ;
-	verify_permission(user_edit_others) ? $perm_edit_others = "1" : $perm_edit_others = "0" ;
+	verify_permission('user_edit_own') ? $perm_edit_own = "1" : $perm_edit_own = "0" ;
+	verify_permission('user_edit_others') ? $perm_edit_others = "1" : $perm_edit_others = "0" ;
 
 	if (($details['uid'] == $_SESSION["userid"] && $perm_edit_own == "1") || 
 			($details['uid'] != $_SESSION["userid"] && $perm_edit_others == "1" )) {
@@ -738,7 +738,7 @@ function update_user_details($details) {
 function add_new_user($details) {
 	global $db;
 
-	if (!verify_permission(user_add_new)) {
+	if (!verify_permission('user_add_new')) {
 		error(ERR_PERM_ADD_USER);
 
 	} elseif (user_exists($details['username'])) {

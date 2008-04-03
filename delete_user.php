@@ -22,8 +22,8 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
-verify_permission(user_edit_own) ? $perm_edit_own = "1" : $perm_edit_own = "0" ;
-verify_permission(user_edit_others) ? $perm_edit_others = "1" : $perm_edit_others = "0" ;
+verify_permission('user_edit_own') ? $perm_edit_own = "1" : $perm_edit_own = "0" ;
+verify_permission('user_edit_others') ? $perm_edit_others = "1" : $perm_edit_others = "0" ;
 
 if (!(isset($_GET['id']) && v_num($_GET['id']))) {
 	error(ERR_INV_INPUT);
@@ -39,7 +39,7 @@ if ($_POST['commit']) {
 	}
 } else {
 
-	if (($uid != $_SESSION['userid'] && !verify_permission(user_edit_others)) || ($uid == $_SESSION['userid'] && !verify_permission(user_edit_own))) {
+	if (($uid != $_SESSION['userid'] && !verify_permission('user_edit_others')) || ($uid == $_SESSION['userid'] && !verify_permission('user_edit_own'))) {
 		error(ERR_PERM_DEL_USER);
 		include_once("inc/footer.inc.php");
 		exit;

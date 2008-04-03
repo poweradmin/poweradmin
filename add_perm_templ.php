@@ -22,7 +22,7 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
-if (!verify_permission(templ_perm_edit)) {
+if (!verify_permission('templ_perm_edit')) {
 	error(ERR_PERM_EDIT_PERM_TEMPL);
 } else {
 

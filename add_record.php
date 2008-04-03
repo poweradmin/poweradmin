@@ -22,16 +22,16 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
-if (verify_permission(zone_content_view_others)) { $perm_view = "all" ; }
-elseif (verify_permission(zone_content_view_own)) { $perm_view = "own" ; }
+if (verify_permission('zone_content_view_others')) { $perm_view = "all" ; }
+elseif (verify_permission('zone_content_view_own')) { $perm_view = "own" ; }
 else { $perm_view = "none" ; }
 
-if (verify_permission(zone_content_edit_others)) { $perm_content_edit = "all" ; }
-elseif (verify_permission(zone_content_edit_own)) { $perm_content_edit = "own" ; }
+if (verify_permission('zone_content_edit_others')) { $perm_content_edit = "all" ; }
+elseif (verify_permission('zone_content_edit_own')) { $perm_content_edit = "own" ; }
 else { $perm_content_edit = "none" ; }
 
-if (verify_permission(zone_meta_edit_others)) { $perm_meta_edit = "all" ; }
-elseif (verify_permission(zone_meta_edit_own)) { $perm_meta_edit = "own" ; }
+if (verify_permission('zone_meta_edit_others')) { $perm_meta_edit = "all" ; }
+elseif (verify_permission('zone_meta_edit_own')) { $perm_meta_edit = "own" ; }
 else { $perm_meta_edit = "none" ; }
 
 $zone_id = "-1";

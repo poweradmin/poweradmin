@@ -37,13 +37,13 @@ echo "  <h1>Poweradmin</h1>\n";
 
 if (isset($_SESSION["userid"])) {
 
-	verify_permission(search) ? $perm_search = "1" : $perm_search = "0" ;
-	verify_permission(zone_content_view_own) ? $perm_view_zone_own = "1" : $perm_view_zone_own = "0" ;
-	verify_permission(zone_content_view_other) ? $perm_view_zone_other = "1" : $perm_view_zone_other = "0" ;
-	verify_permission(supermaster_view) ? $perm_supermaster_view = "1" : $perm_supermaster_view = "0" ;
-	verify_permission(zone_master_add) ? $perm_zone_master_add = "1" : $perm_zone_master_add = "0" ;
-	verify_permission(zone_slave_add) ? $perm_zone_slave_add = "1" : $perm_zone_slave_add = "0" ;
-	verify_permission(supermaster_add) ? $perm_supermaster_add = "1" : $perm_supermaster_add = "0" ;
+	verify_permission('search') ? $perm_search = "1" : $perm_search = "0" ;
+	verify_permission('zone_content_view_own') ? $perm_view_zone_own = "1" : $perm_view_zone_own = "0" ;
+	verify_permission('zone_content_view_other') ? $perm_view_zone_other = "1" : $perm_view_zone_other = "0" ;
+	verify_permission('supermaster_view') ? $perm_supermaster_view = "1" : $perm_supermaster_view = "0" ;
+	verify_permission('zone_master_add') ? $perm_zone_master_add = "1" : $perm_zone_master_add = "0" ;
+	verify_permission('zone_slave_add') ? $perm_zone_slave_add = "1" : $perm_zone_slave_add = "0" ;
+	verify_permission('supermaster_add') ? $perm_supermaster_add = "1" : $perm_supermaster_add = "0" ;
 
 	echo "    <div class=\"menu\">\n";
 	echo "    <span class=\"menuitem\"><a href=\"index.php\">" . _('Index') . "</a></span>\n";

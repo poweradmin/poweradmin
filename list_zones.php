@@ -22,12 +22,12 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
-if (verify_permission(zone_content_view_others)) { $perm_view = "all" ; } 
-elseif (verify_permission(zone_content_view_own)) { $perm_view = "own" ; }
+if (verify_permission('zone_content_view_others')) { $perm_view = "all" ; } 
+elseif (verify_permission('zone_content_view_own')) { $perm_view = "own" ; }
 else { $perm_view = "none" ;}
 
-if (verify_permission(zone_content_edit_others)) { $perm_edit = "all" ; } 
-elseif (verify_permission(zone_content_edit_own)) { $perm_edit = "own" ;} 
+if (verify_permission('zone_content_edit_others')) { $perm_edit = "all" ; } 
+elseif (verify_permission('zone_content_edit_own')) { $perm_edit = "own" ;} 
 else { $perm_edit = "none" ; }
 
 $count_zones_all = zone_count_ng("all");

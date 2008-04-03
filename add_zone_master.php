@@ -37,7 +37,7 @@ $webip = $_POST["webip"];
 $mailip = $_POST["mailip"];
 $empty = $_POST["empty"];
 
-(verify_permission(zone_master_add)) ? $zone_master_add = "1" : $zone_master_add = "0" ;
+(verify_permission('zone_master_add')) ? $zone_master_add = "1" : $zone_master_add = "0" ;
 
 if ($_POST['submit'] && $zone_master_add == "1" ) {
 

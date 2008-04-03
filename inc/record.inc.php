@@ -94,8 +94,8 @@ function update_soa_serial($domain_id)
  */
 function edit_record($record) {
 
-	if (verify_permission(zone_content_edit_others)) { $perm_content_edit = "all" ; }
-	elseif (verify_permission(zone_content_edit_own)) { $perm_content_edit = "own" ; }
+	if (verify_permission('zone_content_edit_others')) { $perm_content_edit = "all" ; }
+	elseif (verify_permission('zone_content_edit_own')) { $perm_content_edit = "own" ; }
 	else { $perm_content_edit = "none" ; }
 
 	$user_is_zone_owner = verify_user_is_owner_zoneid($record['zid']);
@@ -148,8 +148,8 @@ function edit_record($record) {
 function add_record($zoneid, $name, $type, $content, $ttl, $prio) {
 	global $db;
 
-	if (verify_permission(zone_content_edit_others)) { $perm_content_edit = "all" ; }
-	elseif (verify_permission(zone_content_edit_own)) { $perm_content_edit = "own" ; }
+	if (verify_permission('zone_content_edit_others')) { $perm_content_edit = "all" ; }
+	elseif (verify_permission('zone_content_edit_own')) { $perm_content_edit = "own" ; }
 	else { $perm_content_edit = "none" ; }
 
 	$user_is_zone_owner = verify_user_is_owner_zoneid($zoneid);
@@ -264,8 +264,8 @@ function delete_record($rid)
 {
 	global $db;
 
-	if (verify_permission(zone_content_edit_others)) { $perm_content_edit = "all" ; } 
-	elseif (verify_permission(zone_content_edit_own)) { $perm_content_edit = "own" ; } 
+	if (verify_permission('zone_content_edit_others')) { $perm_content_edit = "all" ; } 
+	elseif (verify_permission('zone_content_edit_own')) { $perm_content_edit = "own" ; } 
 	else { $perm_content_edit = "none" ; }
 
 	// Determine ID of zone first.
@@ -301,8 +301,8 @@ function delete_record($rid)
  */
 function add_domain($domain, $owner, $webip, $mailip, $empty, $type, $slave_master)
 {
-	if(verify_permission(zone_master_add)) { $zone_master_add = "1" ; } ;
-	if(verify_permission(zone_slave_add)) { $zone_slave_add = "1" ; } ;
+	if(verify_permission('zone_master_add')) { $zone_master_add = "1" ; } ;
+	if(verify_permission('zone_slave_add')) { $zone_slave_add = "1" ; } ;
 
 	// TODO: make sure only one is possible if only one is enabled
 	if($zone_master_add == "1" || $zone_slave_add == "1") {
@@ -394,8 +394,8 @@ function delete_domain($id)
 {
 	global $db;
 
-	if (verify_permission(zone_content_edit_others)) { $perm_edit = "all" ; }
-	elseif (verify_permission(zone_content_edit_own)) { $perm_edit = "own" ; }
+	if (verify_permission('zone_content_edit_others')) { $perm_edit = "all" ; }
+	elseif (verify_permission('zone_content_edit_own')) { $perm_edit = "own" ; }
 	else { $perm_edit = "none" ; }
 	$user_is_zone_owner = verify_user_is_owner_zoneid($id);
 
@@ -442,7 +442,7 @@ function recid_to_domid($id)
 function add_owner_to_zone($zone_id, $user_id)
 {
 	global $db;
-	if ( (verify_permission(zone_meta_edit_others)) || (verify_permission(zone_meta_edit_own)) && verify_user_is_owner_zoneid($_GET["id"])) {
+	if ( (verify_permission('zone_meta_edit_others')) || (verify_permission('zone_meta_edit_own')) && verify_user_is_owner_zoneid($_GET["id"])) {
 		// User is allowed to make change to meta data of this zone.
 		if (is_numeric($zone_id) && is_numeric($user_id) && is_valid_user($user_id))
 		{
@@ -463,7 +463,7 @@ function add_owner_to_zone($zone_id, $user_id)
 function delete_owner_from_zone($zone_id, $user_id)
 {
 	global $db;
-	if ( (verify_permission(zone_meta_edit_others)) || (verify_permission(zone_meta_edit_own)) && verify_user_is_owner_zoneid($_GET["id"])) {
+	if ( (verify_permission('zone_meta_edit_others')) || (verify_permission('zone_meta_edit_own')) && verify_user_is_owner_zoneid($_GET["id"])) {
 		// User is allowed to make change to meta data of this zone.
 		if (is_numeric($zone_id) && is_numeric($user_id) && is_valid_user($user_id))
 		{
@@ -586,8 +586,8 @@ function get_domain_name_from_id($id)
 
 function get_zone_info_from_id($zone_id) {
 
-	if (verify_permission(zone_content_view_others)) { $perm_view = "all" ; } 
-	elseif (verify_permission(zone_content_view_own)) { $perm_view = "own" ; }
+	if (verify_permission('zone_content_view_others')) { $perm_view = "all" ; } 
+	elseif (verify_permission('zone_content_view_own')) { $perm_view = "own" ; }
 	else { $perm_view = "none" ;}
 
 	if ($perm_view == "none") { 
@@ -688,10 +688,11 @@ function supermaster_exists($master_ip)
 }
 
 
-function get_zones($perm,$userid=0,$letterstart=all,$rowstart=0,$rowamount=999999) 
+function get_zones($perm,$userid=0,$letterstart='all',$rowstart=0,$rowamount=999999) 
 {
 	global $db;
 	global $sql_regexp;
+	$sql_add = '';
 	if ($perm != "own" && $perm != "all") {
 		error(ERR_PERM_VIEW_ZONE);
 		return false;
@@ -702,7 +703,7 @@ function get_zones($perm,$userid=0,$letterstart=all,$rowstart=0,$rowamount=99999
 			$sql_add = " AND zones.domain_id = domains.id
 				AND zones.owner = ".$db->quote($userid);
 		}
-		if ($letterstart!=all && $letterstart!=1) {
+		if ($letterstart!='all' && $letterstart!=1) {
 			$sql_add .=" AND domains.name LIKE ".$db->quote($letterstart."%")." ";
 		} elseif ($letterstart==1) {
 			$sql_add .=" AND substring(domains.name,1,1) ".$sql_regexp." '^[[:digit:]]'";
@@ -736,11 +737,12 @@ function get_zones($perm,$userid=0,$letterstart=all,$rowstart=0,$rowamount=99999
 }
 
 // TODO: letterstart limitation and userid permission limitiation should be applied at the same time?
-function zone_count_ng($perm, $letterstart=all) {
+function zone_count_ng($perm, $letterstart='all') {
 	global $db;
 	global $sql_regexp;
 
 	$fromTable = 'domains';
+	$sql_add = '';
 
 	if ($perm != "own" && $perm != "all") {
 		$zone_count = "0";
@@ -752,7 +754,7 @@ function zone_count_ng($perm, $letterstart=all) {
 					AND zones.owner = ".$db->quote($_SESSION['userid']);
 			$fromTable .= ',zones';
 		}
-		if ($letterstart!=all && $letterstart!=1) {
+		if ($letterstart!='all' && $letterstart!=1) {
 			$sql_add .=" AND domains.name LIKE ".$db->quote($letterstart."%")." ";
 		} elseif ($letterstart==1) {
 			$sql_add .=" AND substring(domains.name,1,1) ".$sql_regexp." '^[[:digit:]]'";
@@ -828,7 +830,7 @@ function get_record_from_id($id)
 function get_records_from_domain_id($id,$rowstart=0,$rowamount=999999) {
 	global $db;
 	if (is_numeric($id)) {
-		if ($_SESSION[$id."_ispartial"] == 1) {
+		if ((isset($_SESSION[$id."_ispartial"])) && ($_SESSION[$id."_ispartial"] == 1)) {
 			$db->setLimit($rowamount, $rowstart);
 			$result = $db->query("SELECT record_owners.record_id as id
 					FROM record_owners,domains,records
@@ -907,16 +909,21 @@ function search_zone_and_record($holy_grail,$perm) {
 
 	$holy_grail = trim($holy_grail);
 
-	if (verify_permission(zone_content_view_others)) { $perm_view = "all" ; }
-	elseif (verify_permission(zone_content_view_own)) { $perm_view = "own" ; }
+	$sql_add_from = '';
+	$sql_add_where = '';
+
+	$return_zones = array();
+	$return_records = array();
+
+	if (verify_permission('zone_content_view_others')) { $perm_view = "all" ; }
+	elseif (verify_permission('zone_content_view_own')) { $perm_view = "own" ; }
 	else { $perm_view = "none" ; }
 
-	if (verify_permission(zone_content_edit_others)) { $perm_content_edit = "all" ; }
-	elseif (verify_permission(zone_content_edit_own)) { $perm_content_edit = "own" ; }
+	if (verify_permission('zone_content_edit_others')) { $perm_content_edit = "all" ; }
+	elseif (verify_permission('zone_content_edit_own')) { $perm_content_edit = "own" ; }
 	else { $perm_content_edit = "none" ; }
 
 	// Search for matching domains
-
 	if ($perm == "own") {
 		$sql_add_from = ", zones ";
 		$sql_add_where = " AND zones.domain_id = domains.id AND zones.owner = " . $db->quote($userid);

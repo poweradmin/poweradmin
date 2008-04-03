@@ -29,7 +29,7 @@ if ((isset($_GET['id'])) || (v_num($_GET['id']))) {
 
 if ($id == "-1") {
 	error(ERR_INV_INPUT);
-} elseif (!verify_permission(templ_perm_edit)) {
+} elseif (!verify_permission('templ_perm_edit')) {
 	error(ERR_PERM_EDIT_PERM_TEMPL);
 } else {
 	$id = $_GET['id'];

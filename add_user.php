@@ -22,7 +22,7 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
-if (!verify_permission(user_add_new)) {
+if (!verify_permission('user_add_new')) {
 	error(ERR_PERM_ADD_USER);
 } else {
 	if($_POST["commit"]) {

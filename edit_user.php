@@ -27,8 +27,8 @@ if (isset($_GET['id']) && v_num($_GET['id'])) {
 	$edit_id = $_GET['id'];
 }
 
-verify_permission(user_edit_own) ? $perm_edit_own = "1" : $perm_edit_own = "0" ;
-verify_permission(user_edit_others) ? $perm_edit_others = "1" : $perm_edit_others = "0" ;
+verify_permission('user_edit_own') ? $perm_edit_own = "1" : $perm_edit_own = "0" ;
+verify_permission('user_edit_others') ? $perm_edit_others = "1" : $perm_edit_others = "0" ;
 
 if ($edit_id == "-1") {
 	error(ERR_INV_INPUT);

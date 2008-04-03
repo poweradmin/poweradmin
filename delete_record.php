@@ -32,8 +32,8 @@ if (isset($_GET['confirm']) && v_num($_GET['confirm'])) {
         $confirm = $_GET['confirm'];
 }
 
-if (verify_permission(zone_content_edit_others)) { $perm_content_edit = "all" ; }
-elseif (verify_permission(zone_content_edit_own)) { $perm_content_edit = "own" ; }
+if (verify_permission('zone_content_edit_others')) { $perm_content_edit = "all" ; }
+elseif (verify_permission('zone_content_edit_own')) { $perm_content_edit = "own" ; }
 else { $perm_content_edit = "none" ; }
 
 $user_is_zone_owner = verify_user_is_owner_zoneid($_GET["domain"]);

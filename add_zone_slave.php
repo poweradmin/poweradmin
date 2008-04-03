@@ -31,7 +31,7 @@ $zone = trim($_POST['domain']);
 $master = $_POST['slave_master'];
 $type = "SLAVE";
 
-(verify_permission(zone_slave_add)) ? $zone_slave_add = "1" : $zone_slave_add = "0" ;
+(verify_permission('zone_slave_add')) ? $zone_slave_add = "1" : $zone_slave_add = "0" ;
 
 if ($_POST['submit'] && $zone_slave_add == "1") {
 	if (!is_valid_domain($zone)) {

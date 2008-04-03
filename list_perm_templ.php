@@ -21,7 +21,7 @@
 
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
-verify_permission(templ_perm_edit) ? $perm_templ_perm_edit = "1" : $perm_templ_perm_edit = "0" ;
+verify_permission('templ_perm_edit') ? $perm_templ_perm_edit = "1" : $perm_templ_perm_edit = "0" ;
 
 $permission_templates = get_list_permission_templates() ;
 

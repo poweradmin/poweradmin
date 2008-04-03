@@ -39,16 +39,16 @@ if (isset($_POST['commit'])) {
 	}
 }
 
-if (verify_permission(zone_content_view_others)) { $perm_view = "all" ; } 
-elseif (verify_permission(zone_content_view_own)) { $perm_view = "own" ; } 
+if (verify_permission('zone_content_view_others')) { $perm_view = "all" ; } 
+elseif (verify_permission('zone_content_view_own')) { $perm_view = "own" ; } 
 else { $perm_view = "none" ; }
 
-if (verify_permission(zone_content_edit_others)) { $perm_content_edit = "all" ; } 
-elseif (verify_permission(zone_content_edit_own)) { $perm_content_edit = "own" ; } 
+if (verify_permission('zone_content_edit_others')) { $perm_content_edit = "all" ; } 
+elseif (verify_permission('zone_content_edit_own')) { $perm_content_edit = "own" ; } 
 else { $perm_content_edit = "none" ; }
 
-if (verify_permission(zone_meta_edit_others)) { $perm_meta_edit = "all" ; } 
-elseif (verify_permission(zone_meta_edit_own)) { $perm_meta_edit = "own" ; } 
+if (verify_permission('zone_meta_edit_others')) { $perm_meta_edit = "all" ; } 
+elseif (verify_permission('zone_meta_edit_own')) { $perm_meta_edit = "own" ; } 
 else { $perm_meta_edit = "none" ; }
 
 $user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
@@ -181,7 +181,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 		echo "         <select name=\"newowner\">\n";
 		$users = show_users();
 		foreach ($users as $user) {
-			unset($add);
+			$add = '';
 			if ($user["id"] == $_SESSION["userid"]) {
 				$add = " SELECTED";
 			}
@@ -206,7 +206,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 		echo "        <td>\n";
 		echo "         <select name=\"newtype\">\n";
 		foreach($server_types as $type) {
-			unset($add);
+			$add = '';
 			if ($type == $domain_type) {
 				$add = " SELECTED";
 			}
