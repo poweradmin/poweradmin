@@ -26,6 +26,7 @@ include_once("inc/header.inc.php");
 (verify_permission('supermaster_edit')) ? $perm_sm_edit = "1" :  $perm_sm_edit = "0" ;
 
 $supermasters = get_supermasters();
+$num_supermasters = ($supermasters == -1) ? 0 : count($supermasters);
 
 echo "     <h2>" . _('List supermasters') . "</h2>\n";  
 echo "     <table>\n";
