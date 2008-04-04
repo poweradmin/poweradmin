@@ -61,7 +61,7 @@ if ($perm_view == "none") {
 	echo "      </tr>\n";
 	echo "      <tr>\n";
 
-	if ($count_zones_view < ROWAMOUNT) {
+	if ($count_zones_view <= ROWAMOUNT) {
 		$zones = get_zones($perm_view,$_SESSION['userid'],"all",ROWSTART,ROWAMOUNT);
 	} else {
 		$zones = get_zones($perm_view,$_SESSION['userid'],LETTERSTART,ROWSTART,ROWAMOUNT);
