@@ -40,7 +40,7 @@ msgid "Commit changes"
 msgstr "Wijzigingen doorvoeren"
 
 #: add_record.php:71
-msgid "The record was succesfully added."
+msgid "The record was successfully added."
 msgstr "Record succesvol toegevoegd."
 
 #: add_record.php:77
@@ -578,43 +578,43 @@ msgid "The first part of your SOA record does not contain a valid hostname for a
 msgstr "Het eerste deel van het SOA record bevat geen geldige hostname voor een DNS server."
 
 #: inc/error.inc.php:85
-msgid "Zone has been added succesfully."
+msgid "Zone has been added successfully."
 msgstr "Zone is succesvol toegevoegd."
 
 #: inc/error.inc.php:86
-msgid "Zone has been deleted succesfully."
+msgid "Zone has been deleted successfully."
 msgstr "Zone is succesvol verwijderd."
 
 #: inc/error.inc.php:87
-msgid "The user has been updated succesfully."
+msgid "The user has been updated successfully."
 msgstr "Gegevens van de gebruiker zijn succesvol gewijzigd."
 
 #: inc/error.inc.php:88
-msgid "The user has been created succesfully."
+msgid "The user has been created successfully."
 msgstr "De gebruiker is succesvol aangemaakt."
 
 #: inc/error.inc.php:89
-msgid "The user has been deleted succesfully."
+msgid "The user has been deleted successfully."
 msgstr "De gebruiker is succesvol verwijderd."
 
 #: inc/error.inc.php:90
-msgid "The record has been updated succesfully."
+msgid "The record has been updated successfully."
 msgstr "Het record is succesvol gewijzigd."
 
 #: inc/error.inc.php:91
-msgid "The record has been deleted succesfully."
+msgid "The record has been deleted successfully."
 msgstr "Het record is succesvol verwijderd."
 
 #: inc/error.inc.php:92
-msgid "The supermaster has been deleted succesfully."
+msgid "The supermaster has been deleted successfully."
 msgstr "De supermaster is succesvol verwijderd."
 
 #: inc/error.inc.php:93
-msgid "The supermaster has been added succesfully."
+msgid "The supermaster has been added successfully."
 msgstr "De supermaster is succesvol toegevoegd."
 
 #: inc/error.inc.php:94
-msgid "The permission template has been deleted succesfully."
+msgid "The permission template has been deleted successfully."
 msgstr "Het permissie template is succesvol verwijderd."
 
 #: inc/record.inc.php:268

@@ -83,15 +83,15 @@ define("ERR_DNS_SOA_NUMERIC_FIELDS", _('You can only have five numeric fields in
 define("ERR_DNS_SOA_HOSTNAME", _('The first part of your SOA record does not contain a valid hostname for a DNS server.'));
 
 /* GOOD! */
-define("SUC_ZONE_ADD", _('Zone has been added succesfully.')); 
-define("SUC_ZONE_DEL", _('Zone has been deleted succesfully.')); 
-define("SUC_USER_UPD", _('The user has been updated succesfully.')); 
-define("SUC_USER_ADD", _('The user has been created succesfully.')); 
-define("SUC_USER_DEL", _('The user has been deleted succesfully.')); 
-define("SUC_RECORD_UPD", _('The record has been updated succesfully.')); 
-define("SUC_RECORD_DEL", _('The record has been deleted succesfully.')); 
-define("SUC_SM_DEL", _('The supermaster has been deleted succesfully.')); 
-define("SUC_SM_ADD", _('The supermaster has been added succesfully.')); 
-define("SUC_PERM_TEMPL_DEL", _('The permission template has been deleted succesfully.')); 
+define("SUC_ZONE_ADD", _('Zone has been added successfully.')); 
+define("SUC_ZONE_DEL", _('Zone has been deleted successfully.')); 
+define("SUC_USER_UPD", _('The user has been updated successfully.')); 
+define("SUC_USER_ADD", _('The user has been created successfully.')); 
+define("SUC_USER_DEL", _('The user has been deleted successfully.')); 
+define("SUC_RECORD_UPD", _('The record has been updated successfully.')); 
+define("SUC_RECORD_DEL", _('The record has been deleted successfully.')); 
+define("SUC_SM_DEL", _('The supermaster has been deleted successfully.')); 
+define("SUC_SM_ADD", _('The supermaster has been added successfully.')); 
+define("SUC_PERM_TEMPL_DEL", _('The permission template has been deleted successfully.')); 
 
 ?>

@@ -68,7 +68,7 @@ if ($_POST["commit"]) {
 		error(ERR_PERM_ADD_RECORD);
 	} else {
 		if ( add_record($zone_id, $name, $type, $content, $ttl, $prio)) {
-			success(_('The record was succesfully added.'));
+			success(_('The record was successfully added.'));
 			unset($zone_id, $name, $type, $content, $ttl, $prio);
 		}
 	}
