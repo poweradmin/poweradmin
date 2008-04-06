@@ -336,8 +336,8 @@ function add_domain($domain, $owner, $webip, $mailip, $empty, $type, $slave_mast
 					$query = "INSERT INTO records (domain_id, name, content, type, ttl, prio, change_date) VALUES (" 
 							. $db->quote($domain_id) . "," 
 							. $db->quote($domain) . "," 
-							. $db->quote('SOA').","
 							. $db->quote($ns1.' '.$hm.' 1') . ","
+							. $db->quote('SOA').","
 							. $db->quote($ttl) 
 							. ", 0, "
 							. $db->quote($now).")";
