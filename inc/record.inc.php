@@ -599,10 +599,9 @@ function get_zone_info_from_id($zone_id) {
 					domains.name AS name, 
 					domains.master AS master_ip,
 					count(records.domain_id) AS record_count
-					FROM domains, records 
+					FROM domains LEFT OUTER JOIN records ON domains.id = records.domain_id 
 					WHERE domains.id = " . $db->quote($zone_id) . "
-					AND domains.id = records.domain_id 
-					GROUP BY domains.id";
+					GROUP BY domains.id, domains.type, domains.name, domains.master";
 		$result = $db->query($query);
 		if (PEAR::isError($result)) { error($result->getMessage()); return false; }
 
