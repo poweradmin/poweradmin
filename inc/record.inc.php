@@ -112,8 +112,8 @@ function edit_record($record) {
 		global $db;
 		// TODO: no need to check for numeric-ness of zone id if we check with validate_input as well?
 		if (is_numeric($record['zid'])) {
-			validate_input($record['zid'], $record['type'], $record['content'], $record['name'], $record['prio'], $record['ttl']);
-			$query = "UPDATE records 
+			if (validate_input($record['zid'], $record['type'], $record['content'], $record['name'], $record['prio'], $record['ttl'])) {
+				$query = "UPDATE records 
 					SET name=".$db->quote($record['name']).", 
 					type=".$db->quote($record['type']).", 
 					content=".$db->quote($record['content']).", 
@@ -121,14 +121,16 @@ function edit_record($record) {
 					prio=".$db->quote($record['prio']).", 
 					change_date=".$db->quote(time())." 
 					WHERE id=".$db->quote($record['rid']);
-			$result = $db->Query($query);
-			if (PEAR::isError($result)) {
-				error($result->getMessage());
-				return false;
-			} elseif ($record['type'] != 'SOA') {
-				update_soa_serial($record['zid']);
+				$result = $db->Query($query);
+				if (PEAR::isError($result)) {
+					error($result->getMessage());
+					return false;
+				} elseif ($record['type'] != 'SOA') {
+					update_soa_serial($record['zid']);
+				}
+				return true;
 			}
-			return true;
+			return false;
 		}
 		else
 		{
