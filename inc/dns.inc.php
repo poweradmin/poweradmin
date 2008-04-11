@@ -19,25 +19,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
- * Validates an IPv4 IP.
- * returns true if valid.
- */
-function validate_input($zoneid, $type, &$content, &$name, &$prio, &$ttl)
+function validate_input($zid, $type, &$content, &$name, &$prio, &$ttl)
 {
 	global $db;
-
-	// Has to validate content first then it can do the rest
-	// Since if content is invalid already it can aswell be just removed
-	// Check first if content is IPv4, IPv6 or Hostname
-	// We accomplish this by just running all tests over it
-	// We start with IPv6 since its not able to have these ip's in domains.
-	//
-	// <TODO>
-	// The nocheck has to move to the configuration file
-	// </TODO>
-	//
-	$domain = get_domain_name_from_id($zoneid);
+	$domain = get_domain_name_from_id($zid);
 	$nocheck = array('SOA', 'HINFO', 'NAPTR', 'URL', 'MBOXFW', 'TXT');
 	$hostname = false;
 	$ip4 = false;
@@ -122,14 +107,8 @@ function validate_input($zoneid, $type, &$content, &$name, &$prio, &$ttl)
 		}
 	}
 
-	if ($type == 'SOA') {
-		$status = is_valid_soa($content, $zoneid);
-		if($status == -1) {
-			error(ERR_DNS_SOA_UNIQUE);
-		} elseif($status == -2) {
-			error(ERR_DNS_SOA_NUMERIC);
-			return false;
-		}
+	if ($type == 'SOA' && !is_valid_rr_soa($content)) {
+		return false;
 	}
 
 	// HINFO and TXT require no validation.
@@ -182,18 +161,6 @@ function validate_input($zoneid, $type, &$content, &$name, &$prio, &$ttl)
 	
 	return true;
 }
-
-
-
-		/****************************************
-		 *					*
-		 * RECORD VALIDATING PART.		*
-		 * CHANGES HERE SHOULD BE CONSIDERED	*
-		 * THEY REQUIRE KNOWLEDGE ABOUT THE 	*
-		 * DNS SPECIFICATIONS			*
-		 *					*
-		 ***************************************/
-
 
 /*
  * Validatis a CNAME record by the name it will have and its destination
@@ -411,55 +378,113 @@ function is_valid_ns($content, $hostname)
 }
 
 
-/*
- * Function to check the validity of SOA records.
- * return values: true if succesful
- */
-function is_valid_soa(&$content, $zoneid)
-{
+function is_valid_hostname_label($hostname_label) {
 
-	/*
-	 * The stored format is: primary hostmaster serial refresh retry expire default_ttl
-	 */
+        // See <https://www.poweradmin.org/trac/wiki/Documentation/DNS-hostnames>.
+        if (!preg_match('/^[a-z\d]([a-z\d-]*[a-z\d])*$/i',$hostname_label)) {
+		return false;
+        } elseif (preg_match('/^[\d]+$/i',$hostname_label)) {
+                return false;
+        } elseif ((strlen($hostname_label) < 2) || (strlen($hostname_label) > 63)) {
+                return false;
+        }
+        return true;
+}
 
-	$return = get_records_by_type_from_domid("SOA", $zoneid);
-	if($return->numRows() > 1) {
-		return -1;
+function is_valid_hostname_fqdn($hostname) {
+
+        // See <https://www.poweradmin.org/trac/wiki/Documentation/DNS-hostnames>.
+	global $dns_strict_tld_check;
+	global $valid_tlds;
+
+	$hostname = ereg_replace("\.$","",$hostname);
+
+	if (strlen($hostname) > 255) {
+		error(ERR_DNS_HN_TOO_LONG);
+		return false;
 	}
 
-	$soacontent = preg_split("/\s+/", $content);
-	
-	if(is_valid_hostname($soacontent[0])) {
+        $hostname_labels = explode ('.', $hostname);
+        $label_count = count($hostname_labels);
 
-		$totalsoa = $soacontent[0];
-		// It doesnt matter what field 2 contains, but lets check if its there
-		// We assume the 2nd field wont have numbers, otherwise its a TTL field
+	if ($dns_strict_tld_check == "1" && !in_array($hostname_labels[$label_count-1], $valid_tlds)) {
+		error(ERR_DNS_INV_TLD);
+		return false;
+	}
 
-		if(count($soacontent) > 1) {
-			if(is_numeric($soacontent[1])) {
-				// its a TTL field, or at least not hostmaster or alike
-				// Set final string to the default hostmaster addy
-				global $dns_hostmaster;
-				$totalsoa .= " ". $dns_hostmaster;
-			} else {
-				$totalsoa .= " ".$soacontent[1];
+	if ($hostname_labels[$label_count-1] == "arpa") {
+		// FIXME
+	} else {
+		foreach ($hostname_labels as $hostname_label) {
+			if (!is_valid_hostname_label($hostname_label)) {
+				error(ERR_DNS_HOSTNAME);
+				return false;
 			}
-			// For loop to iterate over the numbers
-			$imax = count($soacontent);
-			for($i = 2; ($i < $imax) && ($i < 7); $i++) {
-				if(!is_numeric($soacontent[$i])) {
-					return -2;
+		}
+	}
+	return true;
+}
+
+function is_valid_rr_soa(&$content) {
+
+	// TODO move to appropiate location
+//	$return = get_records_by_type_from_domid("SOA", $zid);
+//	if($return->numRows() > 1) {
+//		return false;
+//	}
+
+	$fields = preg_split("/\s+/", trim($content));
+        $field_count = count($fields);
+
+	if ($field_count == 0 || $field_count > 7) {
+		return false;
+	} else {
+		if (!is_valid_hostname_fqdn($fields[0]) || preg_match('/\.arpa\.?$/',$fields[0])) {
+			return false;
+		}
+		$final_soa = $fields[0];
+
+		if (isset($fields[1])) {
+			$addr_input = $fields[1];
+		} else {
+			global $dns_hostmaster;
+			$addr_input = $dns_hostmaster;
+		}
+		if (!preg_match("/@/", $addr_input)) {
+			$addr_input = preg_split('/(?<!\\\)\./', $addr_input, 2);
+			$addr_to_check = str_replace("\\", "", $addr_input[0]) . "@" . $addr_input[1];
+		} else {
+			$addr_to_check = $addr_input;
+		}
+		
+		if (!is_valid_email($addr_to_check)) {
+			return false;
+		} else {
+			$addr_final = explode('@', $addr_to_check, 2);
+			$final_soa .= " " . str_replace(".", "\\.", $addr_final[0]) . "." . $addr_final[1];
+		}
+
+		if (isset($fields[2])) {
+			if (!is_numeric($fields[2])) {
+				return false;
+			}
+			$final_soa .= " " . $fields[2];
+		} else {
+			$final_soa .= " 0";
+		}
+		
+		if ($field_count == 7) {
+			for ($i = 3; ($i < 7); $i++) {
+				if (!is_numeric($fields[$i])) {
+					return false;
 				} else {
-					$totalsoa .= " ".$soacontent[$i];
+					$final_soa .= " " . $fields[$i];
 				}
 			}
-			// if($i > 7) --> SOA contained too many fields, should we provide error?
 		}
-	} else {
-		error(ERR_DNS_SOA_HOSTNAME);
 	}
-	$content = $totalsoa;
-	return 1;
+	$content = $final_soa;
+	return true;
 }
 
 

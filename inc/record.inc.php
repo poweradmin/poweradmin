@@ -116,7 +116,7 @@ function edit_record($record) {
 				$query = "UPDATE records 
 					SET name=".$db->quote($record['name']).", 
 					type=".$db->quote($record['type']).", 
-					content=".$db->quote($record['content']).", 
+					content='" . $record['content'] . "', 
 					ttl=".$db->quote($record['ttl']).", 
 					prio=".$db->quote($record['prio']).", 
 					change_date=".$db->quote(time())." 

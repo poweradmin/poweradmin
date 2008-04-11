@@ -665,6 +665,15 @@ msgstr "Actief"
 msgid "Password has been changed, please login."
 msgstr "Het wachtwoord is gewijzigd. Log opnieuw in."
 
+msgid "You have an error in the MNAME field of the SOA record."
+msgstr "Het MNAME veld van het SOA record is ongeldig."
+
+msgid "Too many characters in the hostname."
+msgstr "De hostnaam bestaat uit teveel tekens."
+
+msgid "You are using an invalid top level domain."
+msgstr "De hostnaam heeft een niet-officiele TLD."
+
 # The following is a list of strings that are not hard-code in the PHP 
 # files, but which are listed in the poweradmin database. Because of 
 # this, tools like xgettext will not notice these strings.
@@ -749,3 +758,5 @@ msgstr "Er is geen database wachtwoord opgegeven in config.inc.php."
 
 msgid "No or unknown database type has been set in config.inc.php."
 msgstr "Er is geen of een onbekend database type opgegeven in config.inc.php."
+
+

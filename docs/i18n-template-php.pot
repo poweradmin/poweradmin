@@ -689,3 +689,12 @@ msgstr ""
 msgid "No or unknown database type has been set in config.inc.php."
 msgstr ""
 
+msgid "You have an error in the MNAME field of the SOA record."
+msgstr ""
+
+msgid "Too many characters in the hostname."
+msgstr ""
+
+msgid "You are using an invalid top level domain."
+msgstr ""
+

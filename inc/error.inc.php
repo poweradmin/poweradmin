@@ -78,9 +78,9 @@ define("ERR_DNS_NS_CNAME", _('You can not point a NS record to a CNAME record. R
 define("ERR_DNS_NS_HNAME", _('NS records must be a hostnames.'));
 define("ERR_DNS_MX_CNAME", _('You can not point a MX record to a CNAME record. Remove or rename the CNAME record first or take another name.'));
 define("ERR_DNS_MX_PRIO", _('A prio field should be numeric.'));
-define("ERR_DNS_SOA_NUMERIC", _('At least one of the five last SOA data fields is not numeric.'));
-define("ERR_DNS_SOA_NUMERIC_FIELDS", _('You can only have five numeric fields in the SOA record.'));
-define("ERR_DNS_SOA_HOSTNAME", _('The first part of your SOA record does not contain a valid hostname for a DNS server.'));
+define("ERR_DNS_SOA_MNAME", _('You have an error in the MNAME field of the SOA record.'));
+define("ERR_DNS_HN_TOO_LONG", _('The hostname is too long.'));
+define("ERR_DNS_INV_TLD", _('You are using an invalid top level domain.'));
 
 /* GOOD! */
 define("SUC_ZONE_ADD", _('Zone has been added successfully.')); 
