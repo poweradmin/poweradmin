@@ -19,13 +19,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-global $STYLE;
+global $iface_style;
 
 echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n";
 echo "<html>\n";
 echo " <head>\n";
 echo "  <title>Poweradmin</title>\n";
-echo "  <link rel=stylesheet href=\"style/" . $STYLE . ".inc.php\" type=\"text/css\">\n";
+echo "  <link rel=stylesheet href=\"style/" . $iface_style . ".inc.php\" type=\"text/css\">\n";
 echo " </head>\n";
 echo " <body>\n";
 

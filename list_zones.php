@@ -39,14 +39,14 @@ echo "    <h2>" . _('List zones') . "</h2>\n";
 
 if ($perm_view == "none") { 
 	echo "     <p>" . _('You do not have the permission to see any zones.') . "</p>\n";
-} elseif ($count_zones_view > ROWAMOUNT && $count_zones_all_letterstart == "0") {
+} elseif ($count_zones_view > $iface_rowamount && $count_zones_all_letterstart == "0") {
 	echo "     <p>" . _('There are no zones to show in this listing.') . "</p>\n";
 } else {
 	echo "     <div class=\"showmax\">\n";
-	show_pages($count_zones_all_letterstart,ROWAMOUNT);
+	show_pages($count_zones_all_letterstart,$iface_rowamount);
 	echo "     </div>\n";
 
-	if ($count_zones_view > ROWAMOUNT) {
+	if ($count_zones_view > $iface_rowamount) {
 		echo "<div class=\"showmax\">";
 		show_letters(LETTERSTART);
 		echo "</div>";
@@ -61,10 +61,10 @@ if ($perm_view == "none") {
 	echo "      </tr>\n";
 	echo "      <tr>\n";
 
-	if ($count_zones_view <= ROWAMOUNT) {
-		$zones = get_zones($perm_view,$_SESSION['userid'],"all",ROWSTART,ROWAMOUNT);
+	if ($count_zones_view <= $iface_rowamount) {
+		$zones = get_zones($perm_view,$_SESSION['userid'],"all",ROWSTART,$iface_rowamount);
 	} else {
-		$zones = get_zones($perm_view,$_SESSION['userid'],LETTERSTART,ROWSTART,ROWAMOUNT);
+		$zones = get_zones($perm_view,$_SESSION['userid'],LETTERSTART,ROWSTART,$iface_rowamount);
 		$count_zones_shown = ($zones == -1) ? 0 : count($zones);
 	}
 	foreach ($zones as $zone)

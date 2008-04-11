@@ -178,7 +178,7 @@ function validate_input($zoneid, $type, &$content, &$name, &$prio, &$ttl)
 		$prio=0;
 	}
 	// Validate the TTL, it has to be numeric.
-	$ttl = (!isset($ttl) || !is_numeric($ttl)) ? $DEFAULT_TTL : $ttl;
+	$ttl = (!isset($ttl) || !is_numeric($ttl)) ? $dns_ttl : $ttl;
 	
 	return true;
 }
@@ -439,8 +439,8 @@ function is_valid_soa(&$content, $zoneid)
 			if(is_numeric($soacontent[1])) {
 				// its a TTL field, or at least not hostmaster or alike
 				// Set final string to the default hostmaster addy
-				global $HOSTMASTER;
-				$totalsoa .= " ". $HOSTMASTER;
+				global $dns_hostmaster;
+				$totalsoa .= " ". $dns_hostmaster;
 			} else {
 				$totalsoa .= " ".$soacontent[1];
 			}

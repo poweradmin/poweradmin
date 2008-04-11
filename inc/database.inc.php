@@ -36,49 +36,49 @@ function dbError($msg)
 PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, 'dbError');
 
 function dbConnect() {
-	global $dbdsntype;
-	global $dbuser;
-	global $dbpass;
-	global $dbhost;
-	global $dbdatabase;
+	global $db_type;
+	global $db_user;
+	global $db_pass;
+	global $db_host;
+	global $db_name;
 	global $sql_regexp;
 	
-	if (!(isset($dbuser) && $dbuser != "")) {
+	if (!(isset($db_user) && $db_user != "")) {
 		include_once("header.inc.php");
 		error(ERR_DB_NO_DB_USER);
 		include_once("footer.inc.php");
 		exit;
 	}
 		
-	if (!(isset($dbpass) && $dbpass != "")) {
+	if (!(isset($db_pass) && $db_pass != "")) {
 		include_once("header.inc.php");
 		error(ERR_DB_NO_DB_PASS);
 		include_once("footer.inc.php");
 		exit;
 	}
 		
-	if (!(isset($dbhost) && $dbhost != "")) {
+	if (!(isset($db_host) && $db_host != "")) {
 		include_once("header.inc.php");
 		error(ERR_DB_NO_DB_HOST);
 		include_once("footer.inc.php");
 		exit;
 	}
 		
-	if (!(isset($dbdatabase) && $dbdatabase != "")) {
+	if (!(isset($db_name) && $db_name != "")) {
 		include_once("header.inc.php");
 		error(ERR_DB_NO_DB_NAME);
 		include_once("footer.inc.php");
 		exit;
 	}
 		
-	if ((!isset($dbdsntype)) || (!($dbdsntype == "mysql" || $dbdsntype == "pgsql"))) {
+	if ((!isset($db_type)) || (!($db_type == "mysql" || $db_type == "pgsql"))) {
 		include_once("header.inc.php");
 		error(ERR_DB_NO_DB_TYPE);
 		include_once("footer.inc.php");
 		exit;
 	}
 		
-	$dsn = "$dbdsntype://$dbuser:$dbpass@$dbhost/$dbdatabase";
+	$dsn = "$db_type://$db_user:$db_pass@$db_host/$db_name";
 	$db = MDB2::connect($dsn);
 	$db->setOption('portability', MDB2_PORTABILITY_ALL ^ MDB2_PORTABILITY_EMPTY_TO_NULL);
 
@@ -94,9 +94,9 @@ function dbConnect() {
 	$mysql_pass = $dsn = '';
 
 	// Add support for regular expressions in both MySQL and PostgreSQL
-	if ( $dbdsntype == "mysql" ) {
+	if ( $db_type == "mysql" ) {
 		$sql_regexp = "REGEXP";
-	} elseif ( $dbdsntype == "pgsql" ) {
+	} elseif ( $db_type == "pgsql" ) {
 		$sql_regexp = "~";
 	} else {
 		error(ERR_DB_NO_DB_TYPE);

@@ -21,11 +21,10 @@
 
 include_once("inc/config.inc.php");
 
-$language = $LANG;
-setlocale(LC_ALL, $language);
+setlocale(LC_ALL, $iface_lang);
 $gettext_domain = 'messages';
 bindtextdomain($gettext_domain, "./locale");
 textdomain($gettext_domain);
-@putenv('LANG='.$language);
-@putenv('LANGUAGE='.$language);
+@putenv('LANG='.$iface_lang);
+@putenv('LANGUAGE='.$iface_lang);
 ?>

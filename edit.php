@@ -78,10 +78,10 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 	error(ERR_PERM_VIEW_ZONE);
 } else {
 	echo "   <div class=\"showmax\">\n";
-	show_pages($record_count,ROWAMOUNT,$zone_id);
+	show_pages($record_count,$iface_rowamount,$zone_id);
 	echo "   </div>\n";
 
-	$records = get_records_from_domain_id($zone_id,ROWSTART,ROWAMOUNT);
+	$records = get_records_from_domain_id($zone_id,ROWSTART,$iface_rowamount);
 	if ( $records == "-1" ) { 
 		echo " <p>" .  _("This zone does not have any records. Weird.") . "</p>\n";
 	} else {

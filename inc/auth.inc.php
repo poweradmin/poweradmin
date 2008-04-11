@@ -23,7 +23,7 @@
 
 function doAuthenticate() {
 	global $db;
-	global $EXPIRE;
+	global $iface_expire;
 	if (isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] == "logout") {
 		logout();
 	}
@@ -36,7 +36,7 @@ function doAuthenticate() {
 	}
 
 	// Check if the session hasnt expired yet.
-	if ((isset($_SESSION["userid"])) && ($_SESSION["lastmod"] != "") && ((time() - $_SESSION["lastmod"]) > $EXPIRE))
+	if ((isset($_SESSION["userid"])) && ($_SESSION["lastmod"] != "") && ((time() - $_SESSION["lastmod"]) > $iface_expire))
 	{
 		logout( _('Session expired, please login again.'),"error");
 	}

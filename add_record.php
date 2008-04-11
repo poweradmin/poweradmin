@@ -39,7 +39,7 @@ if ((isset($_GET['id'])) && (v_num($_GET['id']))) {
 	$zone_id = $_GET['id'];
 }
 
-$ttl = $DEFAULT_TTL;
+$ttl = $dns_ttl;
 if ((isset($_POST['ttl'])) && (v_num($_POST['ttl']))) {
 	$ttl = $_POST['ttl'];
 }

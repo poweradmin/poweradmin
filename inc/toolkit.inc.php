@@ -30,10 +30,9 @@ if(!@include_once("config.inc.php"))
 /*************
  * Constants *
  *************/
-define('ROWAMOUNT', $ROWAMOUNT);
 
 if (isset($_GET["start"])) {
-   define('ROWSTART', (($_GET["start"] - 1) * ROWAMOUNT));
+   define('ROWSTART', (($_GET["start"] - 1) * $iface_rowamount));
    } else {
    define('ROWSTART', 0);
 }
@@ -55,6 +54,76 @@ require_once("database.inc.php");
 
 // Array of the available zone types
 $server_types = array("MASTER", "SLAVE", "NATIVE");
+
+// $rtypes - array of possible record types
+$rtypes = array('A', 'AAAA', 'CNAME', 'HINFO', 'MX', 'NAPTR', 'NS', 'PTR', 'SOA', 'TXT');
+
+// If fancy records is enabled, extend this field.
+if($dns_fancy) {
+        $rtypes[10] = 'URL';
+        $rtypes[11] = 'MBOXFW';
+}
+
+// $template - array of records that will be applied when adding a new zone file
+$template = array(
+                array(
+
+                                "name"          =>              "##DOMAIN##",
+                                "type"          =>              "SOA",
+                                "content"       =>              "$dns_ns1 $dns_hostmaster 0",
+                                "ttl"           =>              "$dns_ttl",
+                                "prio"          =>              ""
+                ),
+                array(
+                                "name"          =>              "##DOMAIN##",
+                                "type"          =>              "NS",
+                                "content"       =>              "$dns_ns1",
+                                "ttl"           =>              "$dns_ttl",
+                                "prio"          =>              ""
+                ),
+                array(
+                                "name"          =>              "##DOMAIN##",
+                                "type"          =>              "NS",
+                                "content"       =>              "$dns_ns2",
+                                "ttl"           =>              "$dns_ttl",
+                                "prio"          =>              ""
+                ),
+                array(
+                                "name"          =>              "www.##DOMAIN##",
+                                "type"          =>              "A",
+                                "content"       =>              "##WEBIP##",
+                                "ttl"           =>              "$dns_ttl",
+                                "prio"          =>              ""
+                ),
+                array(
+                                "name"          =>              "##DOMAIN##",
+                                "type"          =>              "A",
+                                "content"       =>              "##WEBIP##",
+                                "ttl"           =>              "$dns_ttl",
+                                "prio"          =>              ""
+                ),
+                array(
+                                "name"          =>              "mail.##DOMAIN##",
+                                "type"          =>              "A",
+                                "content"       =>              "##MAILIP##",
+                                "ttl"           =>              "$dns_ttl",
+                                "prio"          =>              ""
+                ),
+                array(
+                                "name"          =>              "localhost.##DOMAIN##",
+                                "type"          =>              "A",
+                                "content"       =>              "127.0.0.1",
+                                "ttl"           =>              "$dns_ttl",
+                                "prio"          =>              ""
+                ),
+                array(
+                                "name"          =>              "##DOMAIN##",
+                                "type"          =>              "MX",
+                                "content"       =>              "mail.##DOMAIN##",
+                                "ttl"           =>              "$dns_ttl",
+                                "prio"          =>              "10"
+                )
+);
 
 
 /*************

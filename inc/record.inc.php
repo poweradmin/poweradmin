@@ -310,6 +310,9 @@ function add_domain($domain, $owner, $webip, $mailip, $empty, $type, $slave_mast
 	if($zone_master_add == "1" || $zone_slave_add == "1") {
 
 		global $db;
+		global $dns_ns1;
+		global $dns_hostmaster;
+		global $dns_ttl;
 		if (($domain && $owner && $webip && $mailip) || 
 				($empty && $owner && $domain) || 
 				(eregi('in-addr.arpa', $domain) && $owner) || 
@@ -331,9 +334,9 @@ function add_domain($domain, $owner, $webip, $mailip, $empty, $type, $slave_mast
 			} else {
 				$now = time();
 				if ($empty && $domain_id) {
-					$ns1 = $GLOBALS['NS1'];
-					$hm  = $GLOBALS['HOSTMASTER'];
-					$ttl = $GLOBALS['DEFAULT_TTL'];
+					$ns1 = $dns_ns1;
+					$hm  = $dns_hostmaster;
+					$ttl = $dns_ttl;
 
 					$query = "INSERT INTO records (domain_id, name, content, type, ttl, prio, change_date) VALUES (" 
 							. $db->quote($domain_id) . "," 
@@ -347,6 +350,7 @@ function add_domain($domain, $owner, $webip, $mailip, $empty, $type, $slave_mast
 					if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 				} elseif ($domain_id) {
 					global $template;
+					global $dns_ttl;
 
 					foreach ($template as $r) {
 						if ((eregi('in-addr.arpa', $domain) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!eregi('in-addr.arpa', $domain)))
@@ -358,7 +362,7 @@ function add_domain($domain, $owner, $webip, $mailip, $empty, $type, $slave_mast
 							$prio     = intval($r["prio"]);
 
 							if (!$ttl) {
-								$ttl = $GLOBALS["DEFAULT_TTL"];
+								$ttl = $dns_ttl;
 							}
 
 							$query = "INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) VALUES (" 
