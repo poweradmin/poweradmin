@@ -21,6 +21,7 @@
 
 session_start();
 
+include_once("config-me.inc.php");
 
 if(!@include_once("config.inc.php"))
 {
