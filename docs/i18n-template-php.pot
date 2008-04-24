@@ -534,8 +534,20 @@ msgstr ""
 msgid "Invalid hostname."
 msgstr ""
 
-#: inc/error.inc.php:65
-msgid "Invalid record type! You should not even been able to get that here."
+
+msgid "You have invalid characters in your hostname."
+msgstr ""
+
+msgid "A hostname can not start or end with a dash."
+msgstr ""
+
+msgid "Given hostname or one of the labels is too short or too long."
+msgstr ""
+
+msgid "Given hostname has too many slashes."
+msgstr ""
+
+msgid "Unknown record type."
 msgstr ""
 
 #: inc/error.inc.php:66
@@ -554,16 +566,26 @@ msgstr ""
 msgid "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
 msgstr ""
 
-#: inc/error.inc.php:70
-msgid "You can not point a NS record to a CNAME record. Remove or rename the CNAME record first or take another name."
+msgid "You can not point a NS or MX record to a CNAME record. Remove or rame the CNAME record first, or take another name."
+msgstr ""
+
+msgid "Invalid value for name field of SOA record. It should be the name of the zone."
+msgstr ""
+
+msgid "Invalid value for content field of HINFO record."
+msgstr ""
+
+msgid "Invalid value for content field of TXT record."
+msgstr ""
+
+msgid "Invalid value for TTL field. It should be numeric."
+msgstr ""
+
+msgid "Invalid value for prio field. It should be numeric."
 msgstr ""
 
 #: inc/error.inc.php:71
 msgid "NS records must be a hostnames."
-msgstr ""
-
-#: inc/error.inc.php:72
-msgid "You can not point a MX record to a CNAME record. Remove or rename the CNAME record first or take another name."
 msgstr ""
 
 #: inc/error.inc.php:73

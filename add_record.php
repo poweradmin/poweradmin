@@ -61,7 +61,7 @@ if ($zone_id == "-1") {
 
 $user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
 $zone_type = get_domain_type($zone_id);
-$zone_name = get_domain_name_from_id($zone_id);
+$zone_name = get_zone_name_from_id($zone_id);
 
 if ($_POST["commit"]) {
 	if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {

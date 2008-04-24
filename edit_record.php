@@ -38,7 +38,7 @@ $zid = get_zone_id_from_record_id($_GET['id']);
 
 $user_is_zone_owner = verify_user_is_owner_zoneid($zid);
 $zone_type = get_domain_type($zid);
-$zone_name = get_domain_name_from_id($zid);
+$zone_name = get_zone_name_from_id($zid);
 
 if ($_POST["commit"]) {
 	if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {

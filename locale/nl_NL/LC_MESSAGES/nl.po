@@ -530,8 +530,20 @@ msgid "Invalid hostname."
 msgstr "Ongeldige hostname."
 
 #: inc/error.inc.php:71
-msgid "Invalid record type! You should not even been able to get that here."
-msgstr "Ongeldig record type. In theorie had u deze foutmelding nooit kunnen zien."
+msgid "You have invalid characters in your hostname."
+msgstr "Er staan ongeldige characters in de hostname."
+
+msgid "A hostname can not start or end with a dash."
+msgstr "Een hostname kan niet met een streepje beginnen of eindigen."
+
+msgid "Given hostname or one of the labels is too short or too long."
+msgstr "De opgegeven hostname of een van de componenten is te kort of te lang."
+
+msgid "Given hostname has too many slashes."
+msgstr "De opgegeven hostname bevat teveel slashes."
+
+msgid "Unknown record type."
+msgstr "Onbekend record type."
 
 #: inc/error.inc.php:72
 msgid "This is not a valid IPv4 or IPv6 address."
@@ -550,16 +562,27 @@ msgid "This is not a valid CNAME. Did you assign an MX or NS record to the recor
 msgstr "Dit is geen geldige CNAME. Heeft u een MX of NS record hiernaar verwijzen?"
 
 #: inc/error.inc.php:76
-msgid "You can not point a NS record to a CNAME record. Remove or rename the CNAME record first or take another name."
-msgstr "Een NS record mag niet naar een CNAME record verwijzen. Verwijder of hernoem het CNAME record eerst, of verwijs naar ene ander record."
+msgid "You can not point a NS or MX record to a CNAME record. Remove or rame the CNAME record first, or take another name."
+msgstr "Een NS of MX record mag niet naar een CNAME record verwijzen. Verwijder of hernoem het CNAME record eerst, of verwijs naar een ander record."
+
+msgid "Invalid value for name field of SOA record. It should be the name of the zone."
+msgstr "Ongeldige waarde voor het naam veld van het SOA record. Het moet de naam van de zone zijn."
+
+msgid "Invalid value for content field of HINFO record."
+msgstr "Ongeldige waarde voor het Content veld van het HINFO record."
+
+msgid "Invalid value for content field of TXT record."
+msgstr "Ongeldige waarde voor het content veld van het TXT record."
+
+msgid "Invalid value for TTL field. It should be numeric."
+msgstr "Ongeldige waarde het TTL veld. Het moet numeriek zijn."
+
+msgid "Invalid value for prio field. It should be numeric."
+msgstr "Ongeldige waarde het prio veld. Het moet numeriek zijn."
 
 #: inc/error.inc.php:77
 msgid "NS records must be a hostnames."
 msgstr "De waarde van een NS record moet een hostname zijn."
-
-#: inc/error.inc.php:78
-msgid "You can not point a MX record to a CNAME record. Remove or rename the CNAME record first or take another name."
-msgstr "Een MX record mag niet naar een CNAME record verwijzen. Verwijder of hernoem het CNAME record eerst, of verwijs naar ene ander record."
 
 #: inc/error.inc.php:79
 msgid "A prio field should be numeric."

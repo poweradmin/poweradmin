@@ -48,7 +48,7 @@ if ($record_id == "-1" ) {
 		}
 	} else {
 		$zone_id = recid_to_domid($record_id);
-		$zone_name = get_domain_name_from_id($zone_id);
+		$zone_name = get_zone_name_from_id($zone_id);
 		$user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
 		$record_info = get_record_from_id($record_id);
 	

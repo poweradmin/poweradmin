@@ -69,18 +69,26 @@ define("ERR_DB_NO_DB_TYPE", _('No or unknown database type has been set in confi
 /* DNS */
 define("ERR_DNS_CONTENT", _('Your content field doesnt have a legit value.'));
 define("ERR_DNS_HOSTNAME", _('Invalid hostname.'));
-define("ERR_DNS_RECORDTYPE", _('Invalid record type! You should not even been able to get that here.'));
+define("ERR_DNS_HN_INV_CHARS", _('You have invalid characters in your hostname.'));
+define("ERR_DNS_HN_DASH", _('A hostname can not start or end with a dash.'));
+define("ERR_DNS_HN_LENGTH", _('Given hostname or one of the labels is too short or too long.'));
+define("ERR_DNS_HN_SLASH", _('Given hostname has too many slashes.'));
+define("ERR_DNS_RR_TYPE", _('Unknown record type.'));
 define("ERR_DNS_IP", _('This is not a valid IPv4 or IPv6 address.')); 
 define("ERR_DNS_IPV6", _('This is not a valid IPv6 address.'));
 define("ERR_DNS_IPV4", _('This is not a valid IPv4 address.'));
 define("ERR_DNS_CNAME", _('This is not a valid CNAME. Did you assign an MX or NS record to the record?'));
-define("ERR_DNS_NS_CNAME", _('You can not point a NS record to a CNAME record. Remove or rename the CNAME record first or take another name.'));
+define("ERR_DNS_MX_NS_TO_CNAME", _('You can not point a NS or MX record to a CNAME record. Remove or rame the CNAME record first, or take another name.'));
 define("ERR_DNS_NS_HNAME", _('NS records must be a hostnames.'));
-define("ERR_DNS_MX_CNAME", _('You can not point a MX record to a CNAME record. Remove or rename the CNAME record first or take another name.'));
 define("ERR_DNS_MX_PRIO", _('A prio field should be numeric.'));
+define("ERR_DNS_SOA_NAME", _('Invalid value for name field of SOA record. It should be the name of the zone.'));
 define("ERR_DNS_SOA_MNAME", _('You have an error in the MNAME field of the SOA record.'));
+define("ERR_DNS_HINFO_INV_CONTENT", _('Invalid value for content field of HINFO record.'));
+define("ERR_DNS_TXT_INV_CONTENT", _('Invalid value for content field of TXT record.'));
 define("ERR_DNS_HN_TOO_LONG", _('The hostname is too long.'));
 define("ERR_DNS_INV_TLD", _('You are using an invalid top level domain.'));
+define("ERR_DNS_INV_TTL", _('Invalid value for TTL field. It should be numeric.'));
+define("ERR_DNS_INV_PRIO", _('Invalid value for prio field. It should be numeric.'));
 
 /* GOOD! */
 define("SUC_ZONE_ADD", _('Zone has been added successfully.')); 

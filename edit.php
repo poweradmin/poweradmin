@@ -72,7 +72,7 @@ if(isset($_POST["delete_owner"]) && is_numeric($_POST["delete_owner"]) ) {
 $domain_type=get_domain_type($zone_id);
 $record_count=count_zone_records($zone_id);
 
-echo "   <h2>" . _('Edit zone') . " \"" . get_domain_name_from_id($zone_id) . "\"</h2>\n";
+echo "   <h2>" . _('Edit zone') . " \"" . get_zone_name_from_id($zone_id) . "\"</h2>\n";
 
 if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" ) {
 	error(ERR_PERM_VIEW_ZONE);

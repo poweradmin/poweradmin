@@ -561,17 +561,13 @@ function get_name_from_record_id($id)
 }
 
 
-/*
- * Get domain name from a given id
- * return values: the name of the domain associated with the id.
- */
-function get_domain_name_from_id($id)
+function get_zone_name_from_id($zid)
 {
 	global $db;
 
-	if (is_numeric($id))
+	if (is_numeric($zid))
 	{
-		$result = $db->query("SELECT name FROM domains WHERE id=".$db->quote($id));
+		$result = $db->query("SELECT name FROM domains WHERE id=".$db->quote($zid));
 		$rows = $result->numRows() ;
 		if ($rows == 1) {
  			$r = $result->fetchRow();
@@ -580,17 +576,17 @@ function get_domain_name_from_id($id)
 			error(sprintf("Zone does not exist."));
 			return false;
 		} else {
-	 		error(sprintf(ERR_INV_ARGC, "get_domain_name_from_id", "more than one domain found?! whaaa! BAD! BAD! Contact admin!"));
+	 		error(sprintf(ERR_INV_ARGC, "get_zone_name_from_id", "more than one domain found?! whaaa! BAD! BAD! Contact admin!"));
 			return false;
 		}
 	}
 	else
 	{
-		error(sprintf(ERR_INV_ARGC, "get_domain_name_from_id", "Not a valid domainid: $id"));
+		error(sprintf(ERR_INV_ARGC, "get_zone_name_from_id", "Not a valid domainid: $id"));
 	}
 }
 
-function get_zone_info_from_id($zone_id) {
+function get_zone_info_from_id($zid) {
 
 	if (verify_permission('zone_content_view_others')) { $perm_view = "all" ; } 
 	elseif (verify_permission('zone_content_view_own')) { $perm_view = "own" ; }
@@ -606,7 +602,7 @@ function get_zone_info_from_id($zone_id) {
 					domains.master AS master_ip,
 					count(records.domain_id) AS record_count
 					FROM domains LEFT OUTER JOIN records ON domains.id = records.domain_id 
-					WHERE domains.id = " . $db->quote($zone_id) . "
+					WHERE domains.id = " . $db->quote($zid) . "
 					GROUP BY domains.id, domains.type, domains.name, domains.master";
 		$result = $db->query($query);
 		if (PEAR::isError($result)) { error($result->getMessage()); return false; }
