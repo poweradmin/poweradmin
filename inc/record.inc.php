@@ -19,6 +19,15 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+function zone_id_exists($zid) {
+	global $db;
+	$query = "SELECT COUNT(id) FROM domains WHERE id = " . $db->quote($zid);
+	$count = $db->queryOne($query);
+	if (PEAR::isError($result)) { error($result->getMessage()); return false; }
+	return $count;
+}
+
+
 function get_zone_id_from_record_id($rid) {
 	global $db;
 	$query = "SELECT domain_id FROM records WHERE id = " . $db->quote($rid);

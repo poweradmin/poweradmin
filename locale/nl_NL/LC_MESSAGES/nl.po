@@ -16,6 +16,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+msgid "There is no zone with this ID."
+msgstr "Er bestaat geen zone met dit ID."
+
 #: add_perm_templ.php:35 list_perm_templ.php:60
 msgid "Add permission template"
 msgstr "Permissie template toevoegen"
