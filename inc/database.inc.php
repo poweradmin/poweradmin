@@ -23,12 +23,7 @@ require_once("MDB2.php");
 
 function dbError($msg)
 {
-        // General function for printing critical errors.
-        include_once("header.inc.php");
-        ?>
-	<h2><?php echo _('Oops! An error occured!'); ?></h2>
-	<p class="error"><?php echo $msg->getDebugInfo(); ?></p>
-	<?php        
+	echo "     <div class=\"error\">Error: " . $msg->getDebugInfo() . "</div>\n";
 	include_once("footer.inc.php");
         die();
 }
