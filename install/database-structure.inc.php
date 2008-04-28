@@ -53,7 +53,7 @@ $def_tables =
 					    'flags' 		=> 'primary_keynot_null'
 					),
 				    'name' => array(
-				    	    'type'		=> 'integer',
+				    	    'type'		=> 'text',
 					    'notnull' 		=> 1,
 					    'length' 		=> 128,
 					    'fixed' 		=> 0,
