@@ -41,6 +41,7 @@ switch($step) {
 		echo "<tr><td>Password</td><td><input type=\"password\" name=\"pass\" value=\"\"></td><td>The password for this username.</td></tr>\n";
 		echo "<tr><td>Hostname</td><td><input type=\"text\" name=\"host\" value=\"\"></td><td>The hostname on which the PowerDNS database resides. Frequently, this will be \"localhost\".</td></tr>\n";
 		echo "<tr><td>Database</td><td><input type=\"text\" name=\"name\" value=\"\"></td><td>The name of the PowerDNS database.</td></tr>\n";
+		echo "<tr><td>Database type</td><td><select name=\"type\"><option value=\"mysql\">MySQL</option><option value=\"pgsql\">PostgreSQL</option></td><td>The type PowerDNS database.</td></tr>\n";
 		echo "</table>\n";
 		echo "<input type=\"hidden\" name=\"step\" value=\"" . $step . "\">";
 		echo "<input type=\"submit\" name=\"submit\" value=\"Go to step " . $step . "\">";
@@ -56,7 +57,7 @@ switch($step) {
 		$db_pass = $_POST['pass'];
 		$db_host = $_POST['host'];
 		$db_name = $_POST['name'];
-		$db_type = "mysql";
+		$db_type = $_POST['type'];
 		require_once("../inc/database.inc.php");
 		$db = dbConnect();
 		$db->loadModule('Manager');
@@ -79,10 +80,14 @@ switch($step) {
 
 		echo "done!</p>";
 
-		echo "<p>We have now updated the PowerDNS database to work with Poweradmin. You now want to give limited rights to Poweraadmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert and update records in the PowerDNS database. In MySQL should now perform the following command:</p>";
-		echo "<p><tt>GRANT SELECT, INSERT, UPDATE, DELETE<BR>ON powerdns-database.*<br>TO 'poweradmin-user'@'localhost'<br>IDENTIFIED BY 'poweradmin-password';</tt></p>";
-		echo "<p>On PgSQL you would use:</p>";
-		echo "<p><tt>$ createuser poweradmin-user<br>Shall the new role be a superuser? (y/n) n<br>Shall the new user be allowed to create databases? (y/n) n<br>Shall the new user be allowed to create more new users? (y/n) n<br>CREATE USER<br>$ psql powerdns-database<br>psql> GRANT  SELECT, INSERT, DELETE, UPDATE<br>ON powerdns-database<br>TO poweradmin-user;</tt></p>";
+		echo "<p>We have now updated the PowerDNS database to work with Poweradmin. You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert and update records in the PowerDNS database. ";
+		if ($db_type=='mysql') {
+			echo "In MySQL should now perform the following command:</p>";
+			echo "<p><tt>GRANT SELECT, INSERT, UPDATE, DELETE<BR>ON powerdns-database.*<br>TO 'poweradmin-user'@'localhost'<br>IDENTIFIED BY 'poweradmin-password';</tt></p>";
+		} elseif ($db_type == 'pgsql') {
+			echo "<p>On PgSQL you would use:</p>";
+			echo "<p><tt>$ createuser poweradmin-user<br>Shall the new role be a superuser? (y/n) n<br>Shall the new user be allowed to create databases? (y/n) n<br>Shall the new user be allowed to create more new users? (y/n) n<br>CREATE USER<br>$ psql powerdns-database<br>psql> GRANT  SELECT, INSERT, DELETE, UPDATE<br>ON powerdns-database<br>TO poweradmin-user;</tt></p>";
+		}
 		echo "<p>After you have added the new user, proceed with this installation procedure.</p>\n";
 		echo "<form method=\"post\">";
 		echo "<input type=\"hidden\" name=\"host\" value=\"" . $db_host . "\">";
