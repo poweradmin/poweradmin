@@ -16,6 +16,9 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+msgid "The install/ directory exists, you must remove it first before proceeding."
+msgstr ""
+
 msgid "There is no zone with this ID."
 msgstr ""
 

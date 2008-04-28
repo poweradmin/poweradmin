@@ -16,6 +16,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+
+msgid "The install/ directory exists, you must remove it first before proceeding."
+msgstr "De install/ directory bestaat (nog), deze moet verwijderd worden voordat Poweradmin gebruikt kan worden."
+
 msgid "There is no zone with this ID."
 msgstr "Er bestaat geen zone met dit ID."
 
