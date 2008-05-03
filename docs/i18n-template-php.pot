@@ -379,7 +379,7 @@ msgid "Query"
 msgstr ""
 
 #: search.php:124
-msgid "Enter a hostname or IP address"
+msgid "Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) in pattern matches any single character, a percent sign (%) matches any string of zero or more characters."
 msgstr ""
 
 #: search.php:129

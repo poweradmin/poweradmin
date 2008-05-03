@@ -118,18 +118,21 @@ if (!(verify_permission('search'))) {
 	}
 
 	echo "     <h3>" . _('Query') . ":</h3>\n";
-	echo "     <table>\n";
 	echo "      <form method=\"post\" action=\"" . $_SERVER['PHP_SELF'] . "\">\n";
-	echo "       <tr>\n";
-	echo "        <td class=\"n\">" . _('Enter a hostname or IP address') . "</td>\n";
-	echo "        <td class=\"n\"><input type=\"text\" class=\"input\" name=\"query\" value=\"" . $holy_grail . "\"></td>\n";
-	echo "       </tr>\n";
-	echo "       <tr>\n";
-	echo "        <td class=\"n\">&nbsp;</td>\n";
-	echo "        <td class=\"n\"><input type=\"submit\" class=\"button\" name=\"submit\" value=\"" . _('Search') . "\"></td>\n";
-	echo "       </tr>\n";
+	echo "       <table>\n";
+	echo "        <tr>\n";
+	echo "         <td>\n";
+	echo "          <input type=\"text\" class=\"input\" name=\"query\" value=\"" . $holy_grail . "\">&nbsp;\n";
+	echo "          <input type=\"submit\" class=\"button\" name=\"submit\" value=\"" . _('Search') . "\">\n";
+	echo "         </td>\n";
+	echo "        </tr>\n";
+	echo "        <tr>\n";
+	echo "         <td>\n";
+	echo "          " . _('Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) in pattern matches any single character, a percent sign (%) matches any string of zero or more characters.') . "\n";
+	echo "         </td>\n";
+	echo "        </tr>\n";
+	echo "       </table>\n";
 	echo "      </form>\n";
-	echo "     </table>\n";
 
 }
 include_once('inc/footer.inc.php');
