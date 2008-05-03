@@ -1,5 +1,7 @@
 <?php
 
+$local_config_file = "../inc/config.inc.php";
+
 echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n";
 echo "<html>\n";
 echo " <head>\n";
