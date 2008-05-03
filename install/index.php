@@ -25,7 +25,7 @@ switch($step) {
 		echo "<p>This installer expects you to have a PowerDNS database accessable from this server. This installer also expects you to have never ran Poweradmin before, or that you want to overwrite the Poweradmin part of the database. If you have had Poweradmin running before, any data in the following tables will be destroyed:</p>\n";
 		echo "<ul><li>perm_items</li><li>perm_templ</li><li>perm_templ_items</li><li>users</li><li>zones</li></ul>\n";
 		echo "<p>This installer will, of course, not touch the data in the PowerDNS tables of the database. However, it is, of course, recommended you create a backup of your database before proceeding.</p>";
-		echo "<p>Finaly, if you see any errors during the installation process, a problem report would be. You can report problems (and ask for help) on the <a href=\"https://www.poweradmin.org/trac/wiki/Mailinglists\">poweradmin-users</a> mailinglist or you can create <a href=\"https://www.poweradmin.org/trac/newticket\">a ticket</a> in the ticketsystem.</p>";
+		echo "<p>Finally, if you see any errors during the installation process, a problem report would be. You can report problems (and ask for help) on the <a href=\"https://www.poweradmin.org/trac/wiki/Mailinglists\">poweradmin-users</a> mailinglist or you can create <a href=\"https://www.poweradmin.org/trac/newticket\">a ticket</a> in the ticketsystem.</p>";
 		echo "<p>Do you want to proceed now?</p>\n";
 		echo "<form method=\"post\">";
 		echo "<input type=\"hidden\" name=\"step\" value=\"" . $step . "\">";
@@ -124,10 +124,8 @@ switch($step) {
 
 	case 5:
 		$step++;
-		echo "<p>The configuration is printed here. You should now create the file " . $local_config_file . " in the Poweradmin root directory yourself. It should contain the following few lines:</p>";
-
-		echo "<pre>";
-		echo "\$db_host\t\t= \"" . $_POST['db_host'] . "\";\n" .
+		$config = "<?\n\n" .
+			"\$db_host\t\t= \"" . $_POST['db_host'] . "\";\n" .
 			"\$db_user\t\t= \"" . $_POST['db_user'] . "\";\n" .
 			"\$db_pass\t\t= \"" . $_POST['db_pass'] . "\";\n" .
 			"\$db_name\t\t= \"" . $_POST['db_name'] . "\";\n" .
@@ -136,8 +134,19 @@ switch($step) {
 			"\$dns_hostmaster\t\t= \"" . $_POST['dns_hostmaster'] . "\";\n" .
 			"\$dns_ns1\t\t= \"" . $_POST['dns_ns1'] . "\";\n" .
 			"\$dns_ns2\t\t= \"" . $_POST['dns_ns2'] . "\";\n" .
-			"\n";
-		echo "</pre>";
+			"\n?>\n";
+
+		if (is_writeable($local_config_file)) {
+			$h_config = fopen($local_config_file, "w");
+			fwrite($h_config, $config);
+			fclose($h_config);
+			echo "<p>The installer was able to write to the file \"" . $local_config_file . "\". A basic configuration, based on the details you have given, has been created.</p>\n";
+		} else {
+			echo "<p>The installer is unable to write to the file \"" . $local_config_file . "\" (which is in itself good). The configuration is printed here. You should now create the file " . $local_config_file . " in the Poweradmin root directory yourself. It should contain the following few lines:</p>\n";
+			echo "<pre>";
+			echo $config;
+			echo "</pre>";
+		};
 		echo "<form method=\"post\">";
 		echo "<input type=\"hidden\" name=\"step\" value=\"" . $step . "\">";
 		echo "<input type=\"submit\" name=\"submit\" value=\"Go to step " . $step . "\">";
@@ -146,7 +155,7 @@ switch($step) {
 
 	case 6:
 		$step++;
-		echo "<p>Now we have finished the configuration, you should remove the directory \"install/\" from the Poweradmin root directory. You will not be able to use the file if it exists. Do it now.</p>";
+		echo "<p>Now we have finished the configuration, you should (must!) remove the directory \"install/\" from the Poweradmin root directory. You will not be able to use the file if it exists. Do it now.</p>";
 		echo "<p>After you have removed the file, you can login to <a href=\"index.php\">Poweradmin</a> with username \"admin\" and password \"admin\". You are highly encouraged to change these as soon as you are logged in.</p>";
 		break;
 
