@@ -84,7 +84,7 @@ require_once("database.inc.php");
 $server_types = array("MASTER", "SLAVE", "NATIVE");
 
 // $rtypes - array of possible record types
-$rtypes = array('A', 'AAAA', 'CNAME', 'HINFO', 'MX', 'NAPTR', 'NS', 'PTR', 'SOA', 'TXT');
+$rtypes = array('A', 'AAAA', 'CNAME', 'HINFO', 'MX', 'NAPTR', 'NS', 'PTR', 'SOA', 'SRV', 'TXT');
 
 // If fancy records is enabled, extend this field.
 if($dns_fancy) {

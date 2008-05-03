@@ -75,6 +75,7 @@ function validate_input($zid, $type, &$content, &$name, &$prio, &$ttl) {
 
 		case "MBOXFW":
 		case "NAPTR":
+		case "SRV":
 		case "URL":
 			// These types are supported by PowerDNS, but there is not
 			// yet code for validation. Validation needs to be added 
