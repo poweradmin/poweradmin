@@ -233,7 +233,7 @@ switch($step) {
 		} else {
 			echo "<p>" . _('The installer is unable to write to the file "') . $local_config_file . _('" (which is in itself good). The configuration is printed here. You should now create the file "') . $local_config_file . _('" in the Poweradmin root directory yourself. It should contain the following few lines:') . "</p>\n";
 			echo "<pre>";
-			echo $config;
+			echo htmlentities($config);
 			echo "</pre>";
 		};
 		echo "<form method=\"post\">";
