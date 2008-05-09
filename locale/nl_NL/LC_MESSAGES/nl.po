@@ -919,7 +919,7 @@ msgstr "\". Een minimale configuratie, gebaseerd op de door u opgegeven details,
 
 #: index.php:199
 msgid "The installer is unable to write to the file \""
-msgstr "Het installatie script kon niet schtijven naar het bestand \""
+msgstr "Het installatie script kon niet schrijven naar het bestand \""
 
 #: index.php:199
 msgid "\" (which is in itself good). The configuration is printed here. You should now create the file \""
