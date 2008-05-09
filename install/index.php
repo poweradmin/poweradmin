@@ -211,7 +211,7 @@ switch($step) {
 
 	case 6:
 		$step++;
-		$config = "<?\n\n" .
+		$config = "<?php\n\n" .
 			"\$db_host\t\t= \"" . $_POST['db_host'] . "\";\n" .
 			"\$db_user\t\t= \"" . $_POST['db_user'] . "\";\n" .
 			"\$db_pass\t\t= \"" . $_POST['db_pass'] . "\";\n" .
