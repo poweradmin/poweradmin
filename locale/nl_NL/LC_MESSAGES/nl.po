@@ -823,7 +823,7 @@ msgstr "Om dit te kunnen doen heeft het script toegang tot de database nodig met
 
 #: index.php:52
 msgid "The username to use to connect to the database, make sure the username has sufficient rights to perform administrative task to the PowerDNS database (the installer wants to drop, create and fill tables to the database)."
-msgstr "De gebruikersname voor de database. Zorgt u er voor dat deze gebruiker voldoende rechten heeft voor het uitvoeren van administratieve taken op de PowerDNS database (het installatie script moet tabellen kunnen verwijderen, toevoegen en vullen)."
+msgstr "De gebruikersnaam voor de database. Zorgt u er voor dat deze gebruiker voldoende rechten heeft voor het uitvoeren van administratieve taken op de PowerDNS database (het installatie script moet tabellen kunnen verwijderen, toevoegen en vullen)."
 
 #: index.php:57 index.php:153
 msgid "The password for this username."
@@ -862,8 +862,8 @@ msgid "done!"
 msgstr "gedaan!"
 
 #: index.php:111
-msgid "We have now updated the PowerDNS database to work with Poweradmin. You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert and update records in the PowerDNS database."
-msgstr "De PowerDNS database is nu voorbereid op het gebruik met Poweradmin. U zult nu een database gebruiker moeten toevoegen met beperkte rechten. Deze gebruiker moet de rechten voor SELECT, DELETE, INSERT en UPDATE van records in de PowerDNS database hebben."
+msgid "You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert and update records in the PowerDNS database."
+msgstr "U zult nu voor Poweradmin een database gebruiker moeten toevoegen met beperkte rechten. Deze gebruiker moet de rechten voor SELECT, DELETE, INSERT en UPDATE van records in de PowerDNS database hebben."
 
 #: index.php:113
 msgid "In MySQL you should now perform the following command:"
@@ -878,12 +878,12 @@ msgid "After you have added the new user, proceed with this installation procedu
 msgstr "Als u de nieuwe gebruiker heeft toegevoegd, gaat u verder met de installatie procedure."
 
 #: index.php:142
-msgid "Now we will put together the configuration. To do so, the installer needs some details:"
-msgstr "De volgende stap is het samenstellen van de configuratie. Het installatie script heeft daarvoor enkele details nodig:"
+msgid "Now we will gather all details for the configuration itself."
+msgstr "De volgende stap is het samenstellen van de configuratie van Poweradmin."
 
 #: index.php:148
-msgid "The username as created in the previous step."
-msgstr "De gebruikersnaam zoals aangemaakt in de vorige stap."
+msgid "The username for Poweradmin. This new user will have limited rights only."
+msgstr "De gebruikersnaam voor Poweradmin. Deze nieuwe database gebruiker heeft slechts beperkte rechten."
 
 #: index.php:156
 msgid "Hostmaster"

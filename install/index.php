@@ -1,5 +1,13 @@
 <?php
 
+if (!isset($_POST['language'])) {
+	$language = "en_EN";
+} else {
+	$step = $_POST['step'];
+}
+
+
+
 $language = $_POST['language'];
 setlocale(LC_ALL, $language);
 $gettext_domain = 'messages';
@@ -139,45 +147,13 @@ switch($step) {
 		}
 		echo _('done!') . "</p>";
 
-		echo "<p>" . _('We have now updated the PowerDNS database to work with Poweradmin. You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert and update records in the PowerDNS database.') . " ";
-		if ($db_type=='mysql') {
-			echo _('In MySQL you should now perform the following command:') . "</p>";
-			echo "<p><tt>GRANT SELECT, INSERT, UPDATE, DELETE<BR>ON powerdns-database.*<br>TO 'poweradmin-user'@'localhost'<br>IDENTIFIED BY 'poweradmin-password';</tt></p>";
-		} elseif ($db_type == 'pgsql') {
-			echo _('On PgSQL you would use:') . "</p>";
-			echo "<p><tt>$ createuser poweradmin-user<br>" .
-				"Shall the new role be a superuser? (y/n) n<br>" . 
-				"Shall the new user be allowed to create databases? (y/n) n<br>" . 
-				"Shall the new user be allowed to create more new users? (y/n) n<br>" . 
-				"CREATE USER<br>" . 
-				"$ psql powerdns-database<br>" .
-				"psql> GRANT  SELECT, INSERT, DELETE, UPDATE<br>" . 
-				"ON powerdns-database<br>" .
-				"TO poweradmin-user;</tt></p>\n";
-		}
-		echo "<p>" . _('After you have added the new user, proceed with this installation procedure.') . "</p>\n";
-		echo "<form method=\"post\">";
-		echo "<input type=\"hidden\" name=\"host\" value=\"" . $db_host . "\">";
-		echo "<input type=\"hidden\" name=\"name\" value=\"" . $db_name . "\">";
-		echo "<input type=\"hidden\" name=\"type\" value=\"" . $db_type . "\">";
-		echo "<input type=\"hidden\" name=\"step\" value=\"" . $step . "\">";
-		echo "<input type=\"hidden\" name=\"language\" value=\"" . $language . "\">";
-		echo "<input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $step . "\">";
-		echo "</form>";
-		break;
-	
-	case 5:
-		$step++;
-		$db_host = $_POST['host'];
-		$db_name = $_POST['name'];
-		$db_type = $_POST['type'];
-		echo "<p>" . _('Now we will put together the configuration. To do so, the installer needs some details:') . "</p>\n";
+		echo "<p>" . _('Now we will gather all details for the configuration itself.') . "</p>\n";
 		echo "<form method=\"post\">";
 		echo " <table>";
 		echo "  <tr>";
 		echo "   <td>" . _('Username') . "</td>\n";
 		echo "   <td><input type=\"text\" name=\"db_user\" value=\"\"></td>\n";
-		echo "   <td>" . _('The username as created in the previous step.') . "</td>\n";
+		echo "   <td>" . _('The username for Poweradmin. This new user will have limited rights only.') . "</td>\n";
 		echo "  </tr>\n";
 		echo "  <tr>\n";
 		echo "   <td>" . _('Password') . "</td>\n";
@@ -209,6 +185,49 @@ switch($step) {
 		echo "</form>";
 		break;
 
+	case 5:
+		$step++;
+		$db_user = $_POST['db_user'];
+		$db_pass = $_POST['db_pass'];
+		$db_host = $_POST['db_host'];
+		$db_name = $_POST['db_name'];
+		$db_type = $_POST['db_type'];
+		$dns_hostmaster = $_POST['dns_hostmaster'];
+		$dns_ns1 = $_POST['dns_ns1'];
+		$dns_ns2 = $_POST['dns_ns2'];
+
+		echo "<p>" . _('You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert and update records in the PowerDNS database.') . " ";
+		if ($db_type == 'mysql') {
+			echo _('In MySQL you should now perform the following command:') . "</p>";
+			echo "<p><tt>GRANT SELECT, INSERT, UPDATE, DELETE<BR>ON " . $db_name . ".*<br>TO '" . $db_user . "'@'" . $db_host . "'<br>IDENTIFIED BY '" . $db_pass . "';</tt></p>";
+		} elseif ($db_type == 'pgsql') {
+			echo _('On PgSQL you would use:') . "</p>";
+			echo "<p><tt>$ createuser " . $db_user . "<br>" .
+				"Shall the new role be a superuser? (y/n) n<br>" . 
+				"Shall the new user be allowed to create databases? (y/n) n<br>" . 
+				"Shall the new user be allowed to create more new users? (y/n) n<br>" . 
+				"CREATE USER<br>" . 
+				"$ psql " . $db_name . "<br>" .
+				"psql> GRANT SELECT, INSERT, DELETE, UPDATE<br>" . 
+				"ON " . $db_name . "<br>" .
+				"TO " . $db_user . ";</tt></p>\n";
+		}
+		echo "<p>" . _('After you have added the new user, proceed with this installation procedure.') . "</p>\n";
+		echo "<form method=\"post\">";
+		echo "<input type=\"hidden\" name=\"db_host\" value=\"" . $db_host . "\">";
+		echo "<input type=\"hidden\" name=\"db_name\" value=\"" . $db_name . "\">";
+		echo "<input type=\"hidden\" name=\"db_type\" value=\"" . $db_type . "\">";
+		echo "<input type=\"hidden\" name=\"db_user\" value=\"" . $db_user . "\">";
+		echo "<input type=\"hidden\" name=\"db_pass\" value=\"" . $db_pass . "\">";
+		echo "<input type=\"hidden\" name=\"dns_hostmaster\" value=\"" . $dns_hostmaster . "\">";
+		echo "<input type=\"hidden\" name=\"dns_ns1\" value=\"" . $dns_ns1 . "\">";
+		echo "<input type=\"hidden\" name=\"dns_ns2\" value=\"" . $dns_ns2 . "\">";
+		echo "<input type=\"hidden\" name=\"step\" value=\"" . $step . "\">";
+		echo "<input type=\"hidden\" name=\"language\" value=\"" . $language . "\">";
+		echo "<input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $step . "\">";
+		echo "</form>";
+		break;
+	
 	case 6:
 		$step++;
 		$config = "<?php\n\n" .

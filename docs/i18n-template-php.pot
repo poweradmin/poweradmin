@@ -800,7 +800,7 @@ msgid "done!"
 msgstr ""
 
 #: index.php:111
-msgid "We have now updated the PowerDNS database to work with Poweradmin. You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert and update records in the PowerDNS database."
+msgid "You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert and update records in the PowerDNS database."
 msgstr ""
 
 #: index.php:113
@@ -816,11 +816,11 @@ msgid "After you have added the new user, proceed with this installation procedu
 msgstr ""
 
 #: index.php:142
-msgid "Now we will put together the configuration. To do so, the installer needs some details:"
+msgid "Now we will gather all details for the configuration itself."
 msgstr ""
 
 #: index.php:148
-msgid "The username as created in the previous step."
+msgid "The username for Poweradmin. This new user will have limited rights only."
 msgstr ""
 
 #: index.php:156
