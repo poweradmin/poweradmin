@@ -789,4 +789,150 @@ msgstr "Er is geen database wachtwoord opgegeven in config.inc.php."
 msgid "No or unknown database type has been set in config.inc.php."
 msgstr "Er is geen of een onbekend database type opgegeven in config.inc.php."
 
+#: index.php:20
+msgid "Installation step"
+msgstr "Installatie stap"
 
+#: index.php:26
+msgid "This installer expects you to have a PowerDNS database accessable from this server. This installer also expects you to have never ran Poweradmin before, or that you want to overwrite the Poweradmin part of the database. If you have had Poweradmin running before, any data in the following tables will be destroyed: perm_items, perm_templ, perm_templ_items, users and zones. This installer will, of course, not touch the data in the PowerDNS tables of the database. However, it is recommended that you create a backup of your database before proceeding."
+msgstr "Het installatie script verwacht dat u een PowerDNS database beschikbaar heeft, welke bereikbaar is vanaf deze server. Het installatie script verwacht bovendien dat u niet eerder Poweradmin voor deze database gebruikt heeft, of dat u geen problemen heeft met het overschrijven van dat deel van de database. Als u Poweradmin eerder heeft gebruikt, dan wordt alle informatie in de volgende database tabellen overschreven: perm_items, perm_templ, perm_templ_items, users en zones. Het installatie script zal uiteraard de data in de PowerDNS tabellen in de database ongemoeid laten. Desondanks wordt u aangeraden eerst een backup van de database te maken."
+
+#: index.php:28
+msgid "The alternative for this installer is a manual installation. Refer to the poweradmin.org website if you want to go down that road."
+msgstr "Het alternatief voor dit installatie script is een handmatige installatie. Kijk op de website poweradmin.org voor meer informatie daarover."
+
+#: index.php:30
+msgid "Finally, if you see any errors during the installation process, a problem report would be appreciated. You can report problems (and ask for help) on the poweradmin-users mailinglist."
+msgstr "Tenslotte, mocht u onverhoopt problemen tijdens het installatie proces tegenkomen, zou een beschrijving daarvan welkom zijn. U kunt op de poweradmin-users mailinglist terecht voor hulp."
+
+#: index.php:33
+msgid "Do you want to proceed now?"
+msgstr "Wilt u nu doorgaan?"
+
+#: index.php:37 index.php:80 index.php:133 index.php:175 index.php:206
+msgid "Go to step"
+msgstr "Ga naar stap"
+
+#: index.php:43
+msgid "To prepare the database for using Poweradmin, the installer needs to modify the PowerDNS database. It will add a number of tables and it will fill these tables with some data. If the tables are already present, the installer will drop them first."
+msgstr "Om de database voor te bereiden op Poweradmin moet het installatie script enkele wijzigingen in de PowerDNS database maken. Het script zal een aantal tabellen toevoegen en deze vullen met data. Als deze tabellen al bestaan, zullen ze eerst worden verwijderd."
+
+#: index.php:45
+msgid "To do all of this, the installer needs to access the database with an account which has sufficient rights. If you trust the installer, you may give it the username and password of the database user root. Otherwise, make sure the user has enough rights, before actually proceeding."
+msgstr "Om dit te kunnen doen heeft het script toegang tot de database nodig met een account dat voldoende rechten heeft. Indien u het script vertrouwt, dan kunt u hier de gebruikersnaam en wachtwoord van de database gebruiker root opgeven. In andere gevallen dient u vooraf zeker te weten dat de opgegeven gebruiker voldoende rechten heeft, alvorens verder te gaan. "
+
+#: index.php:52
+msgid "The username to use to connect to the database, make sure the username has sufficient rights to perform administrative task to the PowerDNS database (the installer wants to drop, create and fill tables to the database)."
+msgstr "De gebruikersname voor de database. Zorgt u er voor dat deze gebruiker voldoende rechten heeft voor het uitvoeren van administratieve taken op de PowerDNS database (het installatie script moet tabellen kunnen verwijderen, toevoegen en vullen)."
+
+#: index.php:57 index.php:153
+msgid "The password for this username."
+msgstr "Het wachtwoord voor deze gebruikersnaam."
+
+#: index.php:60
+msgid "Hostname"
+msgstr "Hostnaam"
+
+#: index.php:62
+msgid "The hostname on which the PowerDNS database resides. Frequently, this will be \"localhost\"."
+msgstr "De hostnaam waarop de PowerDNS database gevonden kan worden. Vaak is dit \"localhost\"."
+
+#: index.php:65
+msgid "Database"
+msgstr "Database"
+
+#: index.php:67
+msgid "The name of the PowerDNS database."
+msgstr "De naam van de PowerDNS database."
+
+#: index.php:70
+msgid "Database type"
+msgstr "Database type"
+
+#: index.php:76
+msgid "The type of the PowerDNS database."
+msgstr "Het type van de PowerDNS database"
+
+#: index.php:86
+msgid "Updating database..."
+msgstr "Doorvoeren van wijziging in de database..."
+
+#: index.php:109
+msgid "done!"
+msgstr "gedaan!"
+
+#: index.php:111
+msgid "We have now updated the PowerDNS database to work with Poweradmin. You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert and update records in the PowerDNS database."
+msgstr "De PowerDNS database is nu voorbereid op het gebruik met Poweradin. U zult nu een database gebruiker moeten toevoegen met beperkte rechten. Deze gebruiker moet de rechten voor SELECT, DELETE, INSERT en UPDATE van records in de PowerDNS database hebben."
+
+#: index.php:113
+msgid "In MySQL you should now perform the following command:"
+msgstr "In MySQL voert u het volgende commando uit:"
+
+#: index.php:116
+msgid "On PgSQL you would use:"
+msgstr "In PgSQL kunt u de volgende commandos gebruiken:"
+
+#: index.php:127
+msgid "After you have added the new user, proceed with this installation procedure."
+msgstr "Als u de nieuwe gebruiker heeft toegevoegd, gaat u verder met de installatie procedure."
+
+#: index.php:142
+msgid "Now we will put together the configuration. To do so, the installer needs some details:"
+msgstr "De volgende stap is het samenstellen van de configuratie. Het installatie script heeft daarvoor enkele details nodig:"
+
+#: index.php:148
+msgid "The username as created in the previous step."
+msgstr "De gebruikersnaam zoals aangemaakt in de vorige stap."
+
+#: index.php:156
+msgid "Hostmaster"
+msgstr "Hostmaster"
+
+#: index.php:158
+msgid "When creating SOA records and no hostmaster is provided, this value here will be used. Should be in the form \"hostmaster.example.net\"."
+msgstr "Als u een SOA record aanmaakt en u geen hostmaster opgeeft, wordt deze waarde gebruikt. Voorbeeld: \"hostmaster.example.net\"."
+
+#: index.php:161
+msgid "Primary nameserver"
+msgstr "Primaire nameserver"
+
+#: index.php:163
+msgid "When creating new zones using the template, this value will be used as primary nameserver. Should be like \"ns1.example.net\"."
+msgstr "Als u een nieuwe zone aanmaakt met het zone template, dan wordt deze nameserver als primaire nameserber gebruikt. Voorbeeld: \"ns1.example.net\"."
+
+#: index.php:166
+msgid "Secondary nameserver"
+msgstr "Secundaire nameserver"
+
+#: index.php:168
+msgid "When creating new zones using the template, this value will be used as secondary nameserver. Should be like \"ns2.example.net\"."
+msgstr "Als u een nieuwe zone aanmaakt met het zone template, dan wordt deze nameserver als secundaire nameserber gebruikt. Voorbeeld: \"ns2.example.net\"."
+
+#: index.php:197
+msgid "The installer was able to write to the file \""
+msgstr "Het installatie script kon schrijven naar het bestand \""
+
+#: index.php:197
+msgid "\". A basic configuration, based on the details you have given, has been created."
+msgstr "\". Een minimale configuratie, gebaseerd op de door u opgegeven details, is aangemaakt."
+
+#: index.php:199
+msgid "The installer is unable to write to the file \""
+msgstr "Het installatie script kon niet schtijven naar het bestand \""
+
+#: index.php:199
+msgid "\" (which is in itself good). The configuration is printed here. You should now create the file \""
+msgstr "\" (wat op zichzelf wel goed is). De configuratie is hieronder weergegeven. U moet nu het bestand \""
+
+#: index.php:199
+msgid "\" in the Poweradmin root directory yourself. It should contain the following few lines:"
+msgstr "\" in de Poweradmin hoofd directory zelf aanmaken. Het moet de volgende regels bevatten:"
+
+#: index.php:212
+msgid "Now we have finished the configuration, you should (must!) remove the directory \"install/\" from the Poweradmin root directory. You will not be able to use Poweradmin if it exists. Do it now."
+msgstr "De configuratie is afgerond. U moet nu de directory \"install/\" uit de Poweradmin hoofd directory verwijderen. U kunt geen gebruik maken van Poweradmin als deze directory bestaat."
+
+#: index.php:213
+msgid "After you have removed the directory, you can login to <a href=\"index.php\">Poweradmin</a> with username \"admin\" and password \"admin\". You are highly encouraged to change these as soon as you are logged in."
+msgstr "Nadat u de directory hebt verwijderd kunt u op <a href=\"index.php\">Poweradmin</a> inloggen met gebruikersnaam \"admin\" en het wachtwoord \"admin\". U wordt zeer aangeraden deze direct te wijzigen."
