@@ -863,7 +863,7 @@ msgstr "gedaan!"
 
 #: index.php:111
 msgid "We have now updated the PowerDNS database to work with Poweradmin. You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert and update records in the PowerDNS database."
-msgstr "De PowerDNS database is nu voorbereid op het gebruik met Poweradin. U zult nu een database gebruiker moeten toevoegen met beperkte rechten. Deze gebruiker moet de rechten voor SELECT, DELETE, INSERT en UPDATE van records in de PowerDNS database hebben."
+msgstr "De PowerDNS database is nu voorbereid op het gebruik met Poweradmin. U zult nu een database gebruiker moeten toevoegen met beperkte rechten. Deze gebruiker moet de rechten voor SELECT, DELETE, INSERT en UPDATE van records in de PowerDNS database hebben."
 
 #: index.php:113
 msgid "In MySQL you should now perform the following command:"
