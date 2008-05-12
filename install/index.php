@@ -202,8 +202,10 @@ switch($step) {
 			echo "<p><tt>GRANT SELECT, INSERT, UPDATE, DELETE<BR>ON " . $db_name . ".*<br>TO '" . $db_user . "'@'" . $db_host . "'<br>IDENTIFIED BY '" . $db_pass . "';</tt></p>";
 		} elseif ($db_type == 'pgsql') {
 			echo _('On PgSQL you would use:') . "</p>";
-			echo "<p><tt>$ createuser " . $db_user . "<br>" .
-				"Shall the new role be a superuser? (y/n) n<br>" . 
+			echo "<p><tt>$ createuser -E -P " . $db_user . "<br>" .
+				"Enter password for new role: " . $db_pass . "<br>" .
+				"Enter it again: " . $db_pass . "<br>" . 
+				"Shall the new role be a superuser? (y/n) n<br>" . A
 				"Shall the new user be allowed to create databases? (y/n) n<br>" . 
 				"Shall the new user be allowed to create more new users? (y/n) n<br>" . 
 				"CREATE USER<br>" . 
