@@ -49,7 +49,7 @@ if ($_POST['submit'] && $zone_master_add == "1" ) {
 
         if(!$empty) {
                 $empty = 0;
-                if(!eregi('in-addr.arpa', $domain) && (!is_valid_ip($webip) || !is_valid_ip($mailip)) ) {
+                if(!eregi('in-addr.arpa', $domain) && (!is_valid_ipv4($webip) || !is_valid_ipv4($mailip)) ) {
                         error(_('IP address of web- or mailserver is invalid.')); 
 			$error = "1";
                 }

@@ -199,7 +199,7 @@ function add_record($zoneid, $name, $type, $content, $ttl, $prio) {
 function add_supermaster($master_ip, $ns_name, $account)
 {
         global $db;
-        if (!is_valid_ipv4$master_ip) && !is_valid_ipv6($master_ip)) {
+        if (!is_valid_ipv4($master_ip) && !is_valid_ipv6($master_ip)) {
                 error(ERR_DNS_IP);
 		return false;
         }
@@ -222,7 +222,7 @@ function add_supermaster($master_ip, $ns_name, $account)
 
 function delete_supermaster($master_ip) {
 	global $db;
-        if (is_valid_ipv4$master_ip) || is_valid_ipv6($master_ip))
+        if (is_valid_ipv4($master_ip) || is_valid_ipv6($master_ip))
         {
                 $db->query("DELETE FROM supermasters WHERE ip = ".$db->quote($master_ip));
                 return true;
@@ -236,7 +236,7 @@ function delete_supermaster($master_ip) {
 function get_supermaster_info_from_ip($master_ip)
 {
 	global $db;
-        if (is_valid_ipv4$master_ip) || is_valid_ipv6($master_ip))
+        if (is_valid_ipv4($master_ip) || is_valid_ipv6($master_ip))
 	{
 	        $result = $db->queryRow("SELECT ip,nameserver,account FROM supermasters WHERE ip = ".$db->quote($master_ip));
 
@@ -679,7 +679,7 @@ function get_supermasters()
 function supermaster_exists($master_ip)
 {
         global $db;
-        if (is_valid_ipv4$master_ip) || is_valid_ipv6($master_ip))
+        if (is_valid_ipv4($master_ip) || is_valid_ipv6($master_ip))
         {
                 $result = $db->query("SELECT ip FROM supermasters WHERE ip = ".$db->quote($master_ip));
                 if ($result->numRows() == 0)
@@ -1039,7 +1039,7 @@ function change_zone_type($type, $id)
 function change_zone_slave_master($zone_id, $ip_slave_master) {
 	global $db;
         if (is_numeric($zone_id)) {
-       		if (is_valid_ipv4$ip_slave_master) || is_valid_ipv6($ip_slave_master)) {
+       		if (is_valid_ipv4($ip_slave_master) || is_valid_ipv6($ip_slave_master)) {
 			$result = $db->query("UPDATE domains SET master = " .$db->quote($ip_slave_master). " WHERE id = ".$db->quote($zone_id));
 		} else {
 			error(sprintf(ERR_INV_ARGC, "change_domain_ip_slave_master", "This is not a valid IPv4 or IPv6 address: $ip_slave_master"));
