@@ -51,7 +51,7 @@ function validate_input($zid, $type, &$content, &$name, &$prio, &$ttl) {
 			break;
 
 		case "MX":
-			if (!is_valid_hostname_fqdn($contenti,0)) return false;
+			if (!is_valid_hostname_fqdn($content,0)) return false;
 			if (!is_valid_mx_or_ns_target($content)) return false;
 			break;
 
