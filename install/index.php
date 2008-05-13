@@ -205,7 +205,7 @@ switch($step) {
 			echo "<p><tt>$ createuser -E -P " . $db_user . "<br>" .
 				"Enter password for new role: " . $db_pass . "<br>" .
 				"Enter it again: " . $db_pass . "<br>" . 
-				"Shall the new role be a superuser? (y/n) n<br>" . A
+				"Shall the new role be a superuser? (y/n) n<br>" .
 				"Shall the new user be allowed to create databases? (y/n) n<br>" . 
 				"Shall the new user be allowed to create more new users? (y/n) n<br>" . 
 				"CREATE USER<br>" . 
