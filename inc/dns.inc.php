@@ -151,7 +151,7 @@ function is_valid_ipv4($ipv4) {
 //		error(ERR_DNS_IPV4); return false;
 //	}
 
-	if (preg_match("/^[0-9\.]{7,15}$/", $ipv4)) {
+	if (!preg_match("/^[0-9\.]{7,15}$/", $ipv4)) {
 		error(ERR_DNS_IPV4); return false;
 	}
 
@@ -181,7 +181,7 @@ function is_valid_ipv6($ipv6) {
 //		error(ERR_DNS_IPV6); return false;
 //	}
 
-	if (preg_match("/^[0-9a-f]{0,4}:([0-9a-f]{0,4}:){0,6}[0-9a-f]{0,4}$/i", $ipv6)) {
+	if (!preg_match("/^[0-9a-f]{0,4}:([0-9a-f]{0,4}:){0,6}[0-9a-f]{0,4}$/i", $ipv6)) {
 		error(ERR_DNS_IPV6); return false;
 	}
 
