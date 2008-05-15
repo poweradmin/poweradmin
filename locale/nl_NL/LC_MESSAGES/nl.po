@@ -936,3 +936,22 @@ msgstr "De configuratie is afgerond. U moet nu de directory \"install/\" uit de 
 #: index.php:213
 msgid "After you have removed the directory, you can login to <a href=\"index.php\">Poweradmin</a> with username \"admin\" and password \"admin\". You are highly encouraged to change these as soon as you are logged in."
 msgstr "Nadat u de directory hebt verwijderd kunt u op <a href=\"index.php\">Poweradmin</a> inloggen met gebruikersnaam \"admin\" en het wachtwoord \"admin\". U wordt zeer aangeraden deze direct te wijzigen."
+
+
+msgid "Invalid value for name field of SRV record."
+msgstr "U heeft een ongeldige waarde voor het name veld van het SRV record opgegeven."
+
+msgid "Invalid value for the weight field of the SRV record."
+msgstr "U heeft een ongeldige waarde voor het weight veld van het SRV record opgegeven."
+
+msgid "Invalid value for the port field of the SRV record."
+msgstr "U heeft een ongeldige waarde voor het port veld van het SRV record opgegeven."
+
+msgid "Invalid SRV target."
+msgstr "Ongeldig SRV target."
+
+msgid "Invalid characters have been used in this record."
+msgstr "U heeft ongeldige characters gebruikt in het record."
+
+
+
