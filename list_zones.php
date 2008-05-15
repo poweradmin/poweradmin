@@ -59,7 +59,6 @@ if ($perm_view == "none") {
 	echo "       <th>" . _('Records') . "</th>\n";
 	echo "       <th>" . _('Owner') . "</th>\n";
 	echo "      </tr>\n";
-	echo "      <tr>\n";
 
 	if ($count_zones_view <= $iface_rowamount) {
 		$zones = get_zones($perm_view,$_SESSION['userid'],"all",ROWSTART,$iface_rowamount);
@@ -85,8 +84,8 @@ if ($perm_view == "none") {
 		echo "          <td class=\"y\">" . strtolower($zone["type"]) . "</td>\n";
 		echo "          <td class=\"y\">" . $zone["count_records"] . "</td>\n";
 		echo "          <td class=\"y\">" . $zone_owners . "</td>\n";
+		echo "           </tr>\n";
 	}
-	echo "           </tr>\n";
 	echo "          </table>\n";
 
 }
