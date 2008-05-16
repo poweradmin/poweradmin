@@ -80,7 +80,7 @@ define("ERR_DNS_IP", _('This is not a valid IPv4 or IPv6 address.'));
 define("ERR_DNS_IPV6", _('This is not a valid IPv6 address.'));
 define("ERR_DNS_IPV4", _('This is not a valid IPv4 address.'));
 define("ERR_DNS_CNAME", _('This is not a valid CNAME. Did you assign an MX or NS record to the record?'));
-define("ERR_DNS_MX_NS_TO_CNAME", _('You can not point a NS or MX record to a CNAME record. Remove or rame the CNAME record first, or take another name.'));
+define("ERR_DNS_NON_ALIAS_TARGET", _('You can not point a NS or MX record to a CNAME record. Remove or rame the CNAME record first, or take another name.'));
 define("ERR_DNS_NS_HNAME", _('NS records must be a hostnames.'));
 define("ERR_DNS_MX_PRIO", _('A prio field should be numeric.'));
 define("ERR_DNS_SOA_NAME", _('Invalid value for name field of SOA record. It should be the name of the zone.'));

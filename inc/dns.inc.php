@@ -254,7 +254,7 @@ function is_valid_non_alias_target($target) {
 	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; };
 	if ($response->numRows() > 0) {
-		error(ERR_DNS_MX_NS_TO_CNAME); return false;
+		error(ERR_DNS_NON_ALIAS_TARGET); return false;
 	}
 	return true;
 }
