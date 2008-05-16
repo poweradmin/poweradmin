@@ -872,7 +872,10 @@ msgid "Now we have finished the configuration, you should (must!) remove the dir
 msgstr ""
 
 #: index.php:213
-msgid "After you have removed the directory, you can login to <a href=\"index.php\">Poweradmin</a> with username \"admin\" and password \"admin\". You are highly encouraged to change these as soon as you are logged in."
+msgid "After you have removed the directory, you can login to <a href=\"index.php\">Poweradmin</a> with username \"admin\" and password \""
+msgstr ""
+
+msgid "\". You are highly encouraged to change these as soon as you are logged in."
 msgstr ""
 
 msgid "Invalid value for name field of SRV record."
@@ -889,5 +892,12 @@ msgstr ""
 
 msgid "Invalid characters have been used in this record."
 msgstr ""
+
+msgid "Poweradmin administrator password"
+msgstr ""
+
+msgid "The password of the Poweradmin administrator. This administrator has full rights to Poweradmin using the web interface."
+msgstr ""
+
 
 

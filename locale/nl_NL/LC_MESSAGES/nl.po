@@ -934,8 +934,12 @@ msgid "Now we have finished the configuration, you should (must!) remove the dir
 msgstr "De configuratie is afgerond. U moet nu de directory \"install/\" uit de Poweradmin hoofd directory verwijderen. U kunt geen gebruik maken van Poweradmin als deze directory bestaat."
 
 #: index.php:213
-msgid "After you have removed the directory, you can login to <a href=\"index.php\">Poweradmin</a> with username \"admin\" and password \"admin\". You are highly encouraged to change these as soon as you are logged in."
-msgstr "Nadat u de directory hebt verwijderd kunt u op <a href=\"index.php\">Poweradmin</a> inloggen met gebruikersnaam \"admin\" en het wachtwoord \"admin\". U wordt zeer aangeraden deze direct te wijzigen."
+msgid "After you have removed the directory, you can login to <a href=\"index.php\">Poweradmin</a> with username \"admin\" and password \""
+msgstr "Nadat u de directory hebt verwijderd kunt u op <a href=\"index.php\">Poweradmin</a> inloggen met gebruikersnaam \"admin\" en het wachtwoord \""
+
+#: index.php:213
+msgid "\". You are highly encouraged to change these as soon as you are logged in."
+msgstr "\". U wordt zeer aangeraden deze direct te wijzigen."
 
 
 msgid "Invalid value for name field of SRV record."
@@ -953,5 +957,8 @@ msgstr "Ongeldig SRV target."
 msgid "Invalid characters have been used in this record."
 msgstr "U heeft ongeldige characters gebruikt in het record."
 
+msgid "Poweradmin administrator password"
+msgstr "Wachtwoord van Poweradmin beheerder"
 
-
+msgid "The password of the Poweradmin administrator. This administrator has full rights to Poweradmin using the web interface."
+msgstr "Het wachtwoord van de Poweradmin beheerder. Deze beheerder heeft via de web interface alle rechten in Poweradmin."
