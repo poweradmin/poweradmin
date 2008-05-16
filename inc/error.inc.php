@@ -86,7 +86,6 @@ define("ERR_DNS_MX_PRIO", _('A prio field should be numeric.'));
 define("ERR_DNS_SOA_NAME", _('Invalid value for name field of SOA record. It should be the name of the zone.'));
 define("ERR_DNS_SOA_MNAME", _('You have an error in the MNAME field of the SOA record.'));
 define("ERR_DNS_HINFO_INV_CONTENT", _('Invalid value for content field of HINFO record.'));
-define("ERR_DNS_TXT_INV_CONTENT", _('Invalid value for content field of TXT record.'));
 define("ERR_DNS_HN_TOO_LONG", _('The hostname is too long.'));
 define("ERR_DNS_INV_TLD", _('You are using an invalid top level domain.'));
 define("ERR_DNS_INV_TTL", _('Invalid value for TTL field. It should be numeric.'));
