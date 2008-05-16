@@ -88,8 +88,8 @@ $rtypes = array('A', 'AAAA', 'CNAME', 'HINFO', 'MX', 'NAPTR', 'NS', 'PTR', 'SOA'
 
 // If fancy records is enabled, extend this field.
 if($dns_fancy) {
-        $rtypes[10] = 'URL';
-        $rtypes[11] = 'MBOXFW';
+        $rtypes[12] = 'URL';
+        $rtypes[13] = 'MBOXFW';
 }
 
 // $template - array of records that will be applied when adding a new zone file

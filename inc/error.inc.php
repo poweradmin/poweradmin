@@ -80,17 +80,21 @@ define("ERR_DNS_IP", _('This is not a valid IPv4 or IPv6 address.'));
 define("ERR_DNS_IPV6", _('This is not a valid IPv6 address.'));
 define("ERR_DNS_IPV4", _('This is not a valid IPv4 address.'));
 define("ERR_DNS_CNAME", _('This is not a valid CNAME. Did you assign an MX or NS record to the record?'));
-define("ERR_DNS_MX_NS_TO_CNAME", _('You can not point a NS or MX record to a CNAME record. Remove or rame the CNAME record first, or take another name.'));
+define("ERR_DNS_NON_ALIAS_TARGET", _('You can not point a NS or MX record to a CNAME record. Remove or rame the CNAME record first, or take another name.'));
 define("ERR_DNS_NS_HNAME", _('NS records must be a hostnames.'));
 define("ERR_DNS_MX_PRIO", _('A prio field should be numeric.'));
 define("ERR_DNS_SOA_NAME", _('Invalid value for name field of SOA record. It should be the name of the zone.'));
 define("ERR_DNS_SOA_MNAME", _('You have an error in the MNAME field of the SOA record.'));
 define("ERR_DNS_HINFO_INV_CONTENT", _('Invalid value for content field of HINFO record.'));
-define("ERR_DNS_TXT_INV_CONTENT", _('Invalid value for content field of TXT record.'));
 define("ERR_DNS_HN_TOO_LONG", _('The hostname is too long.'));
 define("ERR_DNS_INV_TLD", _('You are using an invalid top level domain.'));
 define("ERR_DNS_INV_TTL", _('Invalid value for TTL field. It should be numeric.'));
 define("ERR_DNS_INV_PRIO", _('Invalid value for prio field. It should be numeric.'));
+define("ERR_DNS_SRV_NAME", _('Invalid value for name field of SRV record.'));
+define("ERR_DNS_SRV_WGHT", _('Invalid value for the priority field of the SRV record.'));
+define("ERR_DNS_SRV_PORT", _('Invalid value for the weight field of the SRV record.'));
+define("ERR_DNS_SRV_TRGT", _('Invalid SRV target.'));
+define("ERR_DNS_PRINTABLE", _('Invalid characters have been used in this record.'));
 
 /* GOOD! */
 define("SUC_ZONE_ADD", _('Zone has been added successfully.')); 

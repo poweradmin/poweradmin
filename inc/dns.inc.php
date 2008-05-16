@@ -35,47 +35,60 @@ function validate_input($zid, $type, &$content, &$name, &$prio, &$ttl) {
 
 		case "A":
 			if (!is_valid_ipv4($content)) return false;
+			if (!is_valid_hostname_fqdn($name,1)) return false;
 			break;
 
 		case "AAAA":
 			if (!is_valid_ipv6($content)) return false;
+			if (!is_valid_hostname_fqdn($name,1)) return false;
 			break;
 
 		case "CNAME":
 			if (!is_valid_rr_cname_name($name)) return false;
+			if (!is_valid_hostname_fqdn($name,1)) return false;
 			if (!is_valid_hostname_fqdn($content,0)) return false;
 			break;
 
 		case "HINFO":
 			if (!is_valid_rr_hinfo_content($content)) return false;
+			if (!is_valid_hostname_fqdn($name,1)) return false;
 			break;
 
 		case "MX":
 			if (!is_valid_hostname_fqdn($content,0)) return false;
-			if (!is_valid_mx_or_ns_target($content)) return false;
+			if (!is_valid_hostname_fqdn($name,1)) return false;
+			if (!is_valid_non_alias_target($content)) return false;
 			break;
 
 		case "NS":
 			if (!is_valid_hostname_fqdn($content,0)) return false;
-			if (!is_valid_mx_or_ns_target($content)) return false;
+			if (!is_valid_hostname_fqdn($name,1)) return false;
+			if (!is_valid_non_alias_target($content)) return false;
 			break;
 
 		case "PTR":
 			if (!is_valid_hostname_fqdn($content,0)) return false;
+			if (!is_valid_hostname_fqdn($name,1)) return false;
 			break;
 
 		case "SOA":
 			if (!is_valid_rr_soa_name($name,$zone)) return false;
+			if (!is_valid_hostname_fqdn($name,1)) return false;
 			if (!is_valid_rr_soa_content($content)) return false;
+			break;
+		
+		case "SRV":
+			if (!is_valid_rr_srv_name($name)) return false;
+			if (!is_valid_rr_srv_content($content)) return false;
 			break;
 
 		case "TXT":
-			if (!is_valid_rr_txt_content($content)) return false;
+			if (!is_valid_printable($name)) return false;
+			if (!is_valid_printable($content)) return false;
 			break;
 
 		case "MBOXFW":
 		case "NAPTR":
-		case "SRV":
 		case "URL":
 			// These types are supported by PowerDNS, but there is not
 			// yet code for validation. Validation needs to be added 
@@ -87,7 +100,6 @@ function validate_input($zid, $type, &$content, &$name, &$prio, &$ttl) {
 			return false;
 	}
 
-	if (!is_valid_hostname_fqdn($name,1)) return false;
 	if (!is_valid_rr_prio($prio,$type)) return false;
 	if (!is_valid_rr_ttl($ttl)) return false;
 
@@ -208,6 +220,11 @@ function is_valid_ipv6($ipv6) {
 	return true;
 }
 
+function is_valid_printable($string) {
+	if (!ereg('^[[:print:]]+$', trim($string))) { error(ERR_DNS_PRINTABLE); return false; }
+	return true;
+}
+
 function is_valid_rr_cname_name($name) {
 	global $db;
 
@@ -226,30 +243,19 @@ function is_valid_rr_cname_name($name) {
 	return true;
 }
 
-function is_valid_mx_or_ns_target($content) {
+function is_valid_non_alias_target($target) {
 	global $db;
 	
 	$query = "SELECT type, name
 			FROM records
-			WHERE name = " . $db->quote($content) . "
+			WHERE name = " . $db->quote($target) . "
 			AND TYPE = 'CNAME'";
 
 	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; };
-
 	if ($response->numRows() > 0) {
-		error(ERR_DNS_MX_NS_TO_CNAME); return false;
+		error(ERR_DNS_NON_ALIAS_TARGET); return false;
 	}
-
-	return true;
-}
-
-function is_valid_rr_txt_content($content) {
-
-	if (!preg_match("/^([^\s]{1,1000}|\"([^\"]{1,998}\"))$/i", $content)) {
-		error(ERR_DNS_TXT_INV_CONTENT); return false;
-	}
-
 	return true;
 }
 
@@ -334,8 +340,7 @@ function is_valid_rr_soa_name($name, $zone) {
 }
 
 function is_valid_rr_prio(&$prio, $type) {
-
-	if ($type == "MX" ) {
+	if ($type == "MX" || $type == "SRV" ) {
 		if (!is_numeric($prio) || $prio < 0 || $prio > 65535 ) {
 			error(ERR_DNS_INV_PRIO); return false;
 		}
@@ -343,6 +348,24 @@ function is_valid_rr_prio(&$prio, $type) {
 		$prio = "";
 	}
 
+	return true;
+}
+
+function is_valid_rr_srv_name($name){
+	$fields = explode('.', $name, 3);
+	if (!preg_match('/^_[a-z0-9]+$/i', $fields[0])) { error(ERR_DNS_SRV_NAME) ; return false; }
+	if (!preg_match('/^_[a-z0-9]+$/i', $fields[1])) { error(ERR_DNS_SRV_NAME) ; return false; }
+	if (!is_valid_hostname_fqdn($fields[2],0)) { error(ERR_DNS_SRV_NAME) ; return false ; }
+	return true ;
+}
+
+function is_valid_rr_srv_content($content) {
+	$fields = preg_split("/\s+/", trim($content), 3);
+	if (!is_numeric($fields[0]) || $fields[0] < 0 || $fields[0] > 65535) { error(ERR_DNS_SRV_WGHT) ; return false; } 
+	if (!is_numeric($fields[1]) || $fields[1] < 0 || $fields[1] > 65535) { error(ERR_DNS_SRV_PORT) ; return false; } 
+	if ($fields[2] == "" || ($fields[2] != "." && !is_valid_hostname_fqdn($fields[2],0))) {
+		error(ERR_DNS_SRV_TRGT) ; return false; 
+	} 
 	return true;
 }
 

@@ -113,6 +113,11 @@ switch($step) {
 			"</td>\n";
 		echo "  <td>" . _('The type of the PowerDNS database.') . "</td>\n";
 		echo " </tr>\n";
+                echo "  <tr>\n";
+		echo "   <td>" . _('Poweradmin administrator password') . "</td>\n";
+		echo "   <td><input type=\"text\" name=\"pa_pass\" value=\"\"></td>\n";
+		echo "   <td>" . _('The password of the Poweradmin administrator. This administrator has full rights to Poweradmin using the web interface.') . "</td>\n";
+		echo "  </tr>\n";
 		echo "</table>\n";
 		echo "<input type=\"hidden\" name=\"step\" value=\"" . $step . "\">";
 		echo "<input type=\"hidden\" name=\"language\" value=\"" . $language . "\">";
@@ -124,16 +129,17 @@ switch($step) {
 		$step++;
 		echo "<p>" . _('Updating database...') . " ";
 		include_once("../inc/config-me.inc.php");
-		include_once("database-structure.inc.php");
 		$db_user = $_POST['user'];
 		$db_pass = $_POST['pass'];
 		$db_host = $_POST['host'];
 		$db_name = $_POST['name'];
 		$db_type = $_POST['type'];
+		$pa_pass = $_POST['pa_pass'];
 		require_once("../inc/database.inc.php");
 		$db = dbConnect();
 		$db->loadModule('Manager');
 		$db->loadModule('Extended');
+		include_once("database-structure.inc.php");
 		$current_tables = $db->listTables();
 		foreach ($def_tables as $table) {
 			if (in_array($table['table_name'], $current_tables)) $db->dropTable($table['table_name']);
@@ -179,6 +185,7 @@ switch($step) {
 		echo "<input type=\"hidden\" name=\"db_host\" value=\"" . $db_host . "\">";
 		echo "<input type=\"hidden\" name=\"db_name\" value=\"" . $db_name . "\">";
 		echo "<input type=\"hidden\" name=\"db_type\" value=\"" . $db_type . "\">";
+		echo "<input type=\"hidden\" name=\"pa_pass\" value=\"" . $pa_pass . "\">";
 		echo "<input type=\"hidden\" name=\"step\" value=\"" . $step . "\">";
 		echo "<input type=\"hidden\" name=\"language\" value=\"" . $language . "\">";
 		echo "<input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $step . "\">";
@@ -192,6 +199,7 @@ switch($step) {
 		$db_host = $_POST['db_host'];
 		$db_name = $_POST['db_name'];
 		$db_type = $_POST['db_type'];
+		$pa_pass = $_POST['pa_pass'];
 		$dns_hostmaster = $_POST['dns_hostmaster'];
 		$dns_ns1 = $_POST['dns_ns1'];
 		$dns_ns2 = $_POST['dns_ns2'];
@@ -221,6 +229,7 @@ switch($step) {
 		echo "<input type=\"hidden\" name=\"db_type\" value=\"" . $db_type . "\">";
 		echo "<input type=\"hidden\" name=\"db_user\" value=\"" . $db_user . "\">";
 		echo "<input type=\"hidden\" name=\"db_pass\" value=\"" . $db_pass . "\">";
+		echo "<input type=\"hidden\" name=\"pa_pass\" value=\"" . $pa_pass . "\">";
 		echo "<input type=\"hidden\" name=\"dns_hostmaster\" value=\"" . $dns_hostmaster . "\">";
 		echo "<input type=\"hidden\" name=\"dns_ns1\" value=\"" . $dns_ns1 . "\">";
 		echo "<input type=\"hidden\" name=\"dns_ns2\" value=\"" . $dns_ns2 . "\">";
@@ -232,6 +241,7 @@ switch($step) {
 	
 	case 6:
 		$step++;
+		$pa_pass = $_POST['pa_pass'];
 		$config = "<?php\n\n" .
 			"\$db_host\t\t= \"" . $_POST['db_host'] . "\";\n" .
 			"\$db_user\t\t= \"" . $_POST['db_user'] . "\";\n" .
@@ -258,6 +268,7 @@ switch($step) {
 			echo "</pre>";
 		};
 		echo "<form method=\"post\">";
+		echo "<input type=\"hidden\" name=\"pa_pass\" value=\"" . $pa_pass . "\">";
 		echo "<input type=\"hidden\" name=\"step\" value=\"" . $step . "\">";
 		echo "<input type=\"hidden\" name=\"language\" value=\"" . $language . "\">";
 		echo "<input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $step . "\">";
@@ -267,7 +278,7 @@ switch($step) {
 	case 7:
 		$step++;
 		echo "<p>" . _('Now we have finished the configuration, you should (must!) remove the directory "install/" from the Poweradmin root directory. You will not be able to use Poweradmin if it exists. Do it now.') . "</p>";
-		echo "<p>" . _('After you have removed the directory, you can login to <a href="index.php">Poweradmin</a> with username "admin" and password "admin". You are highly encouraged to change these as soon as you are logged in.') . "</p>";
+		echo "<p>" . _('After you have removed the directory, you can login to <a href="index.php">Poweradmin</a> with username "admin" and password "') . $_POST['pa_pass'] . _('". You are highly encouraged to change these as soon as you are logged in.') . "</p>";
 		break;
 
 	default:
