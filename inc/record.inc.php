@@ -1049,6 +1049,19 @@ function change_zone_slave_master($zone_id, $ip_slave_master) {
         }
 }
 
+function get_serial_by_zid($zid) {
+	global $db;
+	if (is_numeric($zid)) {
+		$query = "SELECT content FROM records where TYPE = 'SOA' and domain_id = " . $db->quote($zid);
+		$rr_soa = $db->queryOne($query);
+		if (PEAR::isError($rr_soa)) { error($rr_soa->getMessage()); return false; }
+		$rr_soa_fields = explode(" ", $rr_soa);
+	} else {
+		error(sprintf(ERR_INV_ARGC, "get_serial_by_zid", "id must be a number"));
+		return false;
+	}
+	return $rr_soa_fields[2];
+}
 
 function validate_account($account) {
   	if(preg_match("/^[A-Z0-9._-]+$/i",$account)) {

@@ -12,6 +12,7 @@ $iface_lang		= "en_EN";
 $iface_style		= "example";
 $iface_rowamount	= "50";
 $iface_expire		= "1800";
+$iface_zonelist_serial	= "0";
 
 $dns_hostmaster		= "";
 $dns_ns1		= "";
