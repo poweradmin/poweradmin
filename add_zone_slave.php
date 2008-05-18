@@ -34,7 +34,7 @@ $type = "SLAVE";
 (verify_permission('zone_slave_add')) ? $zone_slave_add = "1" : $zone_slave_add = "0" ;
 
 if ($_POST['submit'] && $zone_slave_add == "1") {
-	if (!is_valid_domain($zone)) {
+	if (!is_valid_hostname_fqdn($zone)) {
 		error(ERR_DNS_HOSTNAME);
 	} elseif (domain_exists($zone)) {
 		error(ERR_DOMAIN_EXISTS);

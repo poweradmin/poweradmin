@@ -641,7 +641,7 @@ function domain_exists($domain)
 {
 	global $db;
 
-	if (is_valid_domain($domain)) {
+	if (is_valid_hostname_fqdn($domain)) {
 		$result = $db->query("SELECT id FROM domains WHERE name=".$db->quote($domain));
 		if ($result->numRows() == 0) {
 			return false;
