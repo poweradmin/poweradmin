@@ -936,7 +936,7 @@ function search_zone_and_record($holy_grail,$perm) {
 	// Search for matching domains
 	if ($perm == "own") {
 		$sql_add_from = ", zones ";
-		$sql_add_where = " AND zones.domain_id = domains.id AND zones.owner = " . $db->quote($userid);
+		$sql_add_where = " AND zones.domain_id = domains.id AND zones.owner = " . $db->quote($_SESSION['userid']);
 	}
 	
 	$query = "SELECT 
@@ -963,7 +963,7 @@ function search_zone_and_record($holy_grail,$perm) {
 
 	if ($perm == "own") {
 		$sql_add_from = ", zones ";
-		$sql_add_where = " AND zones.domain_id = record.id AND zones.owner = " . $db->quote($userid);
+		$sql_add_where = " AND zones.domain_id = record.id AND zones.owner = " . $db->quote($_SESSION['userid']);
 	}
 
 	$query = "SELECT
