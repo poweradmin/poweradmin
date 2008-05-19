@@ -284,7 +284,7 @@ function is_valid_rr_soa_content(&$content) {
 	if ($field_count == 0 || $field_count > 7) {
 		return false;
 	} else {
-		if (!is_valid_hostname_fqdn($fields[0]) || preg_match('/\.arpa\.?$/',$fields[0])) {
+		if (!is_valid_hostname_fqdn($fields[0],0) || preg_match('/\.arpa\.?$/',$fields[0])) {
 			return false;
 		}
 		$final_soa = $fields[0];
