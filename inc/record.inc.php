@@ -203,7 +203,7 @@ function add_supermaster($master_ip, $ns_name, $account)
                 error(ERR_DNS_IP);
 		return false;
         }
-        if (!is_valid_hostname($ns_name)) {
+        if (!is_valid_hostname($ns_name,0)) {
                 error(ERR_DNS_HOSTNAME);
 		return false;
         }
@@ -641,7 +641,7 @@ function domain_exists($domain)
 {
 	global $db;
 
-	if (is_valid_hostname_fqdn($domain)) {
+	if (is_valid_hostname_fqdn($domain,0)) {
 		$result = $db->query("SELECT id FROM domains WHERE name=".$db->quote($domain));
 		if ($result->numRows() == 0) {
 			return false;

@@ -56,7 +56,7 @@ if ($_POST['submit'] && $zone_master_add == "1" ) {
         }
 
         if (!$error) {
-                if (!is_valid_hostname_fqdn($domain)) {
+                if (!is_valid_hostname_fqdn($domain,0)) {
                         error(ERR_DOMAIN_INVALID); 
 			$error = "1";
                 } elseif (domain_exists($domain)) {
