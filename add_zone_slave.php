@@ -38,7 +38,7 @@ if ($_POST['submit'] && $zone_slave_add == "1") {
 		error(ERR_DNS_HOSTNAME);
 	} elseif (domain_exists($zone)) {
 		error(ERR_DOMAIN_EXISTS);
-	} elseif (!is_valid_ipv4($master) || !is_valid_ipv6($master)) {
+	} elseif (!is_valid_ipv4($master) && !is_valid_ipv6($master)) {
 		error(ERR_DNS_IP);
 	} else {
 		if(add_domain($zone, $owner, $webip, $mailip, $empty, $type, $master)) {
