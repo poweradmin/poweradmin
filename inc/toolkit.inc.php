@@ -351,14 +351,9 @@ function parse_template_value($val, $domain, $webip, $mailip)
 }
 
 
-/*
- * Validates an email address.
- * Checks if there is something before the at '@' sign and its followed by a domain and a tld of minimum 2
- * and maximum of 4 characters.
- */
-function is_valid_email($email)
-{
-	if(!eregi("^[0-9a-z]([-_.]?[0-9a-z])*@[0-9a-z]([-.]?[0-9a-z])*\\.([a-z]{2,6}$)", $email)) {
+function is_valid_email($address) {
+	$fields = split("@", $address, 2);
+	if((!eregi("^[0-9a-z]([-_.]?[0-9a-z])*$", $fields[0])) || !is_valid_hostname_fqdn($fields[1], 0)) {
 		return false;
 	}
 	return true;
