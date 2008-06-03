@@ -203,7 +203,7 @@ function add_supermaster($master_ip, $ns_name, $account)
                 error(ERR_DNS_IP);
 		return false;
         }
-        if (!is_valid_hostname($ns_name,0)) {
+        if (!is_valid_hostname_fqdn($ns_name,0)) {
                 error(ERR_DNS_HOSTNAME);
 		return false;
         }
