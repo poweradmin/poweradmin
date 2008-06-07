@@ -78,7 +78,7 @@ if ( $zone_master_add != "1" ) {
 } else {
 	echo "     <h2>" . _('Add master zone') . "</h2>\n"; 
 
-	$available_zone_types = array("MASTER", "NATIVE");
+	$available_zone_types = array("NATIVE", "MASTER");
 	$users = show_users();
 
 	echo "     <form method=\"post\" action=\"add_zone_master.php\">\n";
