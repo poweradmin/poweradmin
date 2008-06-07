@@ -278,7 +278,7 @@ switch($step) {
 	case 7:
 		$step++;
 		echo "<p>" . _('Now we have finished the configuration, you should (must!) remove the directory "install/" from the Poweradmin root directory. You will not be able to use Poweradmin if it exists. Do it now.') . "</p>";
-		echo "<p>" . _('After you have removed the directory, you can login to <a href="index.php">Poweradmin</a> with username "admin" and password "') . $_POST['pa_pass'] . _('". You are highly encouraged to change these as soon as you are logged in.') . "</p>";
+		echo "<p>" . _('After you have removed the directory, you can login to <a href="../index.php">Poweradmin</a> with username "admin" and password "') . $_POST['pa_pass'] . _('". You are highly encouraged to change these as soon as you are logged in.') . "</p>";
 		break;
 
 	default:
