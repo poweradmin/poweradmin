@@ -127,7 +127,7 @@ function edit_record($record) {
 					type=".$db->quote($record['type']).", 
 					content='" . $record['content'] . "', 
 					ttl=".$db->quote($record['ttl']).", 
-					prio=".$db->quote($record['prio']).", 
+					prio=".$db->quote($record['prio'], 'integer').", 
 					change_date=".$db->quote(time())." 
 					WHERE id=".$db->quote($record['rid']);
 				$result = $db->Query($query);
@@ -178,7 +178,7 @@ function add_record($zoneid, $name, $type, $content, $ttl, $prio) {
 						. $db->quote($type) . "," 
 						. $db->quote($content) . ","
 						. $db->quote($ttl) . ","
-						. $db->quote($prio) . ","
+						. $db->quote($prio, 'integer') . ","
 						. $db->quote($change) . ")";
 			$response = $db->query($query);
 			if (PEAR::isError($response)) {
@@ -380,7 +380,7 @@ function add_domain($domain, $owner, $webip, $mailip, $empty, $type, $slave_mast
 									. $db->quote($type) . ","
 									. $db->quote($content) . ","
 									. $db->quote($ttl) . ","
-									. $db->quote($prio) . ","
+									. $db->quote($prio, 'integer') . ","
 									. $db->quote($now) . ")";
 							$response = $db->query($query);
 							if (PEAR::isError($response)) { error($response->getMessage()); return false; }
