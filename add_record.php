@@ -49,9 +49,23 @@ if ((isset($_GET['prio'])) && (v_num($_GET['prio']))) {
 	$prio = $_GET['prio'];
 }
 
-$name = $_POST['name'];
-$type = $_POST['type'];
-$content = $_POST['content'];
+if (isset($_POST['name'])) {
+	$name = $_POST['name'];
+} else {
+	$name = "";
+}
+
+if (isset($_POST['type'])) { 
+	$type = $_POST['type'];
+} else {
+	$type = "";
+}
+
+if (isset($_POST['content'])) { 
+	$content = $_POST['content'];
+} else {
+	$content = "";
+}
 
 if ($zone_id == "-1") {
 	error(ERR_INV_INPUT);
@@ -63,13 +77,13 @@ $user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
 $zone_type = get_domain_type($zone_id);
 $zone_name = get_zone_name_from_id($zone_id);
 
-if ($_POST["commit"]) {
+if (isset($_POST["commit"])) {
 	if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
 		error(ERR_PERM_ADD_RECORD);
 	} else {
 		if ( add_record($zone_id, $name, $type, $content, $ttl, $prio)) {
 			success(_('The record was successfully added.'));
-			unset($zone_id, $name, $type, $content, $ttl, $prio);
+			$name = $type = $content = $ttl = $prio = "";
 		}
 	}
 }
@@ -100,7 +114,7 @@ if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit
 			if ($type == $record_type) {
 				$add = " SELECTED";
 			} else {
-				unset ($add);
+				$add = "";
 			}
 		} else {
 			if (eregi('in-addr.arpa', $zone_name) && strtoupper($record_type) == 'PTR') {
@@ -108,7 +122,7 @@ if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit
 			} elseif (strtoupper($record_type) == 'A') {
 				$add = " SELECTED";
 			} else {
-				unset($add);
+				$add = "";
 			}
 		}
 		echo "          <option" . $add . " value=\"" . $record_type . "\">" . $record_type . "</option>\n";

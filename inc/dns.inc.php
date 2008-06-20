@@ -376,7 +376,7 @@ function is_valid_rr_ttl(&$ttl) {
 		$ttl = $dns_ttl;
 	}
 	
-	if (!is_numeric($ttl) ||  $prio < 0 || $prio > 2147483647 ) {
+	if (!is_numeric($ttl) ||  $ttl < 0 || $ttl > 2147483647 ) {
 		error(ERR_DNS_INV_TTL);	return false;
 	}
 

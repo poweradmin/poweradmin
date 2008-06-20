@@ -23,7 +23,7 @@ function zone_id_exists($zid) {
 	global $db;
 	$query = "SELECT COUNT(id) FROM domains WHERE id = " . $db->quote($zid);
 	$count = $db->queryOne($query);
-	if (PEAR::isError($result)) { error($result->getMessage()); return false; }
+	if (PEAR::isError($count)) { error($result->getMessage()); return false; }
 	return $count;
 }
 
