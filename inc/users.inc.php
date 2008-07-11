@@ -712,9 +712,14 @@ function update_user_details($details) {
 				username = " . $db->quote($details['username']) . ",
 				fullname = " . $db->quote($details['fullname']) . ",
 				email = " . $db->quote($details['email']) . ",
-				perm_templ = " . $db->quote($details['templ_id']) . ",
 				description = " . $db->quote($details['descr']) . ", 
 				active = " . $db->quote($active) ;
+
+		// If the user is alllowed to change the permission template, set it.
+		if ($perm_templ_perm_edit == "1") {
+			$query .= ", perm_templ = " . $db->quote($details['templ_id']) ;
+
+		}
 
 		// TODO Check if function works if password is set too.
 		if($details['password'] != "") {

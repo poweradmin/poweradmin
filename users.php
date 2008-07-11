@@ -77,7 +77,8 @@ foreach ($users as $user) {
 			}
 			echo "         </select>\n";
 		} else {
-			echo $user['tpl_name'];
+			echo "         <input type=\"hidden\" name=\"user[" . $user['uid'] . "][templ_id]\" value=\"" . $user['tpl_id'] . "\">\n";
+			echo "         " . $user['tpl_name'] . "\n";
 		}
 		echo "       </td>\n";
 		echo "       <td><input type=\"checkbox\" name=\"user[" . $user['uid'] . "][active]\"" . $active . "></td>\n";
