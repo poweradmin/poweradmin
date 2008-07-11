@@ -40,7 +40,7 @@ $user_is_zone_owner = verify_user_is_owner_zoneid($zid);
 $zone_type = get_domain_type($zid);
 $zone_name = get_zone_name_from_id($zid);
 
-if ($_POST["commit"]) {
+if (isset($_POST["commit"])) {
 	if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
 		error(ERR_PERM_EDIT_RECORD);
 	} else {

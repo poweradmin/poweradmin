@@ -33,7 +33,7 @@ if (!(isset($_GET['id']) && v_num($_GET['id']))) {
 	$uid = $_GET['id'];
 }
 
-if ($_POST['commit']) {
+if (isset($_POST['commit'])) {
 	if (delete_user($uid,$_POST['zone'])) {
 		success(SUC_USER_DEL);	
 	}

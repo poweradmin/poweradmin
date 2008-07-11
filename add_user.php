@@ -25,7 +25,7 @@ include_once("inc/header.inc.php");
 if (!verify_permission('user_add_new')) {
 	error(ERR_PERM_ADD_USER);
 } else {
-	if($_POST["commit"]) {
+	if(isset($_POST["commit"])) {
 		add_new_user($_POST);
 		success(SUC_USER_ADD);
 	}
