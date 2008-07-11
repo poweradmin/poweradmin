@@ -34,7 +34,7 @@ if ($edit_id == "-1") {
 	error(ERR_INV_INPUT);
 } elseif (($edit_id == $_SESSION["userid"] && $perm_edit_own == "1") || ($edit_id != $_SESSION["userid"] && $perm_edit_others == "1" )) {
 
-	if($_POST["commit"]) {
+	if(isset($_POST["commit"])) {
 
 		$i_username = "-1";
 		$i_fullname = "-1";

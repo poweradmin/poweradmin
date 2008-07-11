@@ -81,11 +81,11 @@ function verify_permission($permission) {
 function list_permission_templates() {
 	global $db;
 	$query = "SELECT * FROM perm_templ";
-	$result = $db->query($query);
+	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
 	$template_list = array();
-	while ($template= $result->fetchRow()) {
+	while ($template= $response->fetchRow()) {
 		$tempate_list[] = array(
 			"id"	=>	$template['id'],
 			"name"	=>	$template['name'],
@@ -292,11 +292,11 @@ function edit_user($id, $user, $fullname, $email, $perm_templ, $description, $ac
 		// username already exists.
 
 		$query = "SELECT username FROM users WHERE id = " . $db->quote($id);
-		$result = $db->query($query);
+		$response = $db->query($query);
 		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
 		$usercheck = array();
-		$usercheck = $result->fetchRow();
+		$usercheck = $response->fetchRow();
 
 		if ($usercheck['username'] != $user) {
 			
@@ -331,7 +331,7 @@ function edit_user($id, $user, $fullname, $email, $perm_templ, $description, $ac
 
 		$query .= " WHERE id = " . $db->quote($id) ;
 
-		$result = $db->query($query);
+		$response = $db->query($query);
 		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 		
 	} else {
@@ -495,10 +495,10 @@ function get_user_detail_list($specific) {
 			. $sql_add . "
 			ORDER BY username";
 
-	$result = $db->query($query);
+	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 	
-	while ($user = $result->fetchRow()) {
+	while ($user = $response->fetchRow()) {
 		$userlist[] = array(
 			"uid"		=>	$user['uid'],
 			"username"	=>	$user['username'],
@@ -535,11 +535,11 @@ function get_permissions_by_template_id($templ_id=0,$return_name_only=false) {
 			FROM perm_items" 
 			. $limit . "
 			ORDER BY descr";
-	$result = $db->query($query);
+	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
 	$permission_list = array();
-	while ($permission = $result->fetchRow()) {
+	while ($permission = $response->fetchRow()) {
 		if ($return_name_only == false) {
 			$permission_list[] = array(
 				"id"	=>	$permission['id'],
@@ -661,6 +661,7 @@ function update_user_details($details) {
 
 	verify_permission('user_edit_own') ? $perm_edit_own = "1" : $perm_edit_own = "0" ;
 	verify_permission('user_edit_others') ? $perm_edit_others = "1" : $perm_edit_others = "0" ;
+	verify_permission('templ_perm_edit') ? $perm_templ_perm_edit = "1" : $perm_templ_perm_edit = "0" ;
 
 	if (($details['uid'] == $_SESSION["userid"] && $perm_edit_own == "1") || 
 			($details['uid'] != $_SESSION["userid"] && $perm_edit_others == "1" )) {
@@ -721,8 +722,7 @@ function update_user_details($details) {
 
 		}
 
-		// TODO Check if function works if password is set too.
-		if($details['password'] != "") {
+		if(isset($details['password']) && $details['password'] != "") {
 			$query .= ", password = '" . md5($db->quote($details['password'])) . "' ";
 		}
 
