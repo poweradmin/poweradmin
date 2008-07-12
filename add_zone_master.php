@@ -32,14 +32,31 @@ if (isset($_POST["dom_type"]) && (in_array($_POST['dom_type'], $server_types))) 
 	$dom_type = $_POST["dom_type"];
 }
 
-$domain = trim($_POST["domain"]);
-$webip = $_POST["webip"];
-$mailip = $_POST["mailip"];
-$empty = $_POST["empty"];
+if (isset($_POST['domain'])) {
+	$domain = trim($_POST['domain']);
+} else {
+	$domain = "";
+}
+
+if (isset($_POST['webip'])) {
+	$webip = $_POST['webip'];
+} else {
+	$webip = "";
+}
+
+if (isset($_POST['mailip'])) {
+	$mailip = $_POST['mailip'];
+} else {
+	$mailip = "";
+}
+
+if (isset($_POST['empty'])) {
+	$empty = $_POST['empty'];
+}
 
 (verify_permission('zone_master_add')) ? $zone_master_add = "1" : $zone_master_add = "0" ;
 
-if ($_POST['submit'] && $zone_master_add == "1" ) {
+if (isset($_POST['submit']) && $zone_master_add == "1" ) {
 
 	// Boy. I will be happy when I have found the time to replace
 	// this "template wanabee" code with something that is really 
