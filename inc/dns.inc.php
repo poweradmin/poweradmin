@@ -352,9 +352,15 @@ function is_valid_rr_prio(&$prio, $type) {
 }
 
 function is_valid_rr_srv_name($name){
+
+	if (strlen($name) > 255) {
+		error(ERR_DNS_HN_TOO_LONG);
+		return false;
+	}
+
 	$fields = explode('.', $name, 3);
-	if (!preg_match('/^_[a-z0-9]+$/i', $fields[0])) { error(ERR_DNS_SRV_NAME) ; return false; }
-	if (!preg_match('/^_[a-z0-9]+$/i', $fields[1])) { error(ERR_DNS_SRV_NAME) ; return false; }
+	if (!preg_match('/^_[\w-]+$/i', $fields[0])) { error(ERR_DNS_SRV_NAME) ; return false; }
+	if (!preg_match('/^_[\w]+$/i', $fields[1])) { error(ERR_DNS_SRV_NAME) ; return false; }
 	if (!is_valid_hostname_fqdn($fields[2],0)) { error(ERR_DNS_SRV_NAME) ; return false ; }
 	return true ;
 }
