@@ -610,11 +610,10 @@ function add_perm_templ($details) {
 	$perm_templ_id = $db->lastInsertId('perm_templ', 'id');
 
 	foreach ($details['perm_id'] AS $perm_id) {
-		$r_insert_values[] = "(" . $db->quote($perm_templ_id) . "," . $db->quote($perm_id) . ")";
+		$query = "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . $db->quote($perm_templ_id) . "," . $db->quote($perm_id) . ")";
+		$result = $db->query($query);
+		if (pear::iserror($response)) { error($response->getmessage()); return false; }
 	}
-	$query = "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES " . implode(',', $r_insert_values) ;
-	$result = $db->query($query);
-	if (pear::iserror($response)) { error($response->getmessage()); return false; }
 
 	return true;
 }
@@ -646,11 +645,10 @@ function update_perm_templ_details($details) {
 	if (pear::iserror($response)) { error($response->getmessage()); return false; }
 
 	foreach ($details['perm_id'] AS $perm_id) {
-		$r_insert_values[] = "(" . $db->quote($details['templ_id']) . "," . $db->quote($perm_id) . ")";
+		$query = "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . $db->quote($details['templ_id']) . "," . $db->quote($perm_id) . ")";
+		$result = $db->query($query);
+		if (pear::iserror($response)) { error($response->getmessage()); return false; }
 	}
-	$query = "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES " . implode(',', $r_insert_values) ;
-	$result = $db->query($query);
-	if (pear::iserror($response)) { error($response->getmessage()); return false; }
 
 	return true;
 }
