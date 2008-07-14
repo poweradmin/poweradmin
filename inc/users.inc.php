@@ -54,8 +54,9 @@ function verify_permission($permission) {
 			FROM perm_templ_items 
 			WHERE templ_id = " . $db->quote($templ_id) . " 
 			AND perm_id = ".$ueberUserId;
-        $result = $db->query($query);
-        if ( $result->numRows() > 0 ) {
+        $response = $db->query($query);
+	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+        if ( $response->numRows() > 0 ) {
                 return 1;
         }
 
@@ -70,8 +71,9 @@ function verify_permission($permission) {
 			FROM perm_templ_items 
 			WHERE templ_id = " . $db->quote($templ_id) . " 
 			AND perm_id = " . $db->quote($perm_id) ;
-        $result = $db->query($query);
-        if ( $result->numRows() > 0 ) {
+	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+        $response = $db->query($query);
+        if ( $response->numRows() > 0 ) {
                 return 1;
         } else {
                 return 0;
@@ -104,14 +106,13 @@ function show_users($id='',$rowstart=0,$rowamount=9999999)
 {
  	global $db;
 	$add = '';
- 	if(is_numeric($id))
- 	{
+ 	if(is_numeric($id)) {
                  //When a user id is given, it is excluded from the userlist returned.
                  $add = " WHERE users.id!=".$db->quote($id);
 	}
 
 	// Make a huge query.
-	$sqlq = "SELECT users.id AS id,
+	$query = "SELECT users.id AS id,
 		users.username AS username,
 		users.fullname AS fullname,
 		users.email AS email,
@@ -133,18 +134,17 @@ function show_users($id='',$rowstart=0,$rowamount=9999999)
 
 	// Execute the huge query.
 	$db->setLimit($rowamount, $rowstart);
-	$result = $db->query($sqlq);
+	$response = $db->query($query);
+	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 	$ret = array();
 	$retcount = 0;
-	while ($r = $result->fetchRow())
-	{
+	while ($r = $response->fetchRow()) {
 		$ret[] = array(
 		 "id"                    =>              $r["id"],
 		 "username"              =>              $r["username"],
 		 "fullname"              =>              $r["fullname"],
 		 "email"                 =>              $r["email"],
 		 "description"           =>              $r["description"],
-//		 "level"                 =>              $r["level"],
 		 "active"                =>              $r["active"],
 		 "numdomains"            =>              $r["aantal"]
 		);
@@ -160,15 +160,12 @@ function show_users($id='',$rowstart=0,$rowamount=9999999)
  function is_valid_user($id)
 {
 	global $db;
-	if(is_numeric($id))
-	{
-		$result = $db->query("SELECT id FROM users WHERE id=".$db->quote($id));
-		if ($result->numRows() == 1)
-		{
+	if(is_numeric($id)) {
+		$response = $db->query("SELECT id FROM users WHERE id=".$db->quote($id));
+		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+		if ($response->numRows() == 1) {
 			return true;
-		}
-		else
-		{
+		} else {
 			return false;
 		}
 	}
@@ -182,17 +179,13 @@ function show_users($id='',$rowstart=0,$rowamount=9999999)
 function user_exists($user)
 {
 	global $db;
-	$result = $db->query("SELECT id FROM users WHERE username=".$db->quote($user));
-	if ($result->numRows() == 0)
-	{
+	$response = $db->query("SELECT id FROM users WHERE username=".$db->quote($user));
+	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+	if ($response->numRows() == 0) {
                  return false;
-	}
-	elseif($result->numRows() == 1)
-	{
+	} elseif ($response->numRows() == 1) {
         	return true;
-	}
-        else
-        {
+	} else {
         	error(ERR_UNKNOWN);
 	}
 }
@@ -223,11 +216,11 @@ function delete_user($uid,$zones)
 		}
 
 		$query = "DELETE FROM zones WHERE owner = " . $db->quote($uid) ;
-		$result = $db->query($query);
+		$response = $db->query($query);
 		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
 		$query = "DELETE FROM users WHERE id = " . $db->quote($uid) ;
-		$result = $db->query($query);
+		$response = $db->query($query);
 		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 	}
 	return true;
@@ -240,20 +233,20 @@ function delete_perm_templ($ptid) {
 		error(ERR_PERM_DEL_PERM_TEMPL);
 	} else {
 		$query = "SELECT id FROM users WHERE perm_templ = " . $ptid;
-		$result = $db->query($query);
-		if (PEAR::isError($result)) { error($response->getMessage()); return false; }
+		$response = $db->query($query);
+		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
-		if($result->numRows() > 0) {
+		if($response->numRows() > 0) {
 			error(ERR_PERM_TEMPL_ASSIGNED);
 			return false;
 		} else {
 			$query = "DELETE FROM perm_templ_items WHERE templ_id = " . $ptid;
-			$result = $db->query($query);
-			if (PEAR::isError($result)) { error($response->getMessage()); return false; }
+			$response = $db->query($query);
+			if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
 			$query = "DELETE FROM perm_templ WHERE id = " . $ptid;
-			$result = $db->query($query);
-			if (PEAR::isError($result)) { error($response->getMessage()); return false; }
+			$response = $db->query($query);
+			if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
 			return true;
 		}
@@ -305,10 +298,10 @@ function edit_user($id, $user, $fullname, $email, $perm_templ, $description, $ac
 			// sure it doesn't already exist.
 			
 			$query = "SELECT id FROM users WHERE username = " . $db->quote($user);
-			$result = $db->query($query);
+			$response = $db->query($query);
 			if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
-			if($result->numRows() > 0) {
+			if($response->numRows() > 0) {
 				error(ERR_USER_EXIST);
 				return false;
 			}
@@ -355,14 +348,14 @@ function change_user_pass($details) {
 	}
 
 	$query = "SELECT id, password FROM users WHERE username = " . $db->quote($_SESSION["userlogin"]);
-	$result = $db->query($query);
+	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
-	$rinfo = $result->fetchRow();
+	$rinfo = $response->fetchRow();
 
 	if(md5($details['currentpass']) == $rinfo['password']) {
 		$query = "UPDATE users SET password = " . $db->quote(md5($details['newpass'])) . " WHERE id = " . $db->quote($rinfo['id']) ;
-		$result = $db->query($query);
+		$response = $db->query($query);
 		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
 		logout( _('Password has been changed, please login.')); 
@@ -380,8 +373,9 @@ function change_user_pass($details) {
 function get_fullname_from_userid($id) {
 	global $db;
 	if (is_numeric($id)) {
-		$result = $db->query("SELECT fullname FROM users WHERE id=".$db->quote($id));
-		$r = $result->fetchRow();
+		$response = $db->query("SELECT fullname FROM users WHERE id=".$db->quote($id));
+		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+		$r = $response->fetchRow();
 		return $r["fullname"];
 	} else {
 		error(ERR_INV_ARG);
@@ -399,10 +393,11 @@ function get_owner_from_id($id)
 	global $db;
 	if (is_numeric($id))
 	{
-		$result = $db->query("SELECT fullname FROM users WHERE id=".$db->quote($id));
-		if ($result->numRows() == 1)
+		$response = $db->query("SELECT fullname FROM users WHERE id=".$db->quote($id));
+		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+		if ($response->numRows() == 1)
 		{
-			$r = $result->fetchRow();
+			$r = $response->fetchRow();
 			return $r["fullname"];
 		}
 		else
@@ -421,26 +416,22 @@ function get_owner_from_id($id)
  * @return String the list of owners for this domain
  */
 function get_fullnames_owners_from_domainid($id) {
-      
-      global $db;
-      if (is_numeric($id))
-      {
-              $result = $db->query("SELECT users.id, users.fullname FROM users, zones WHERE zones.domain_id=".$db->quote($id)." AND zones.owner=users.id ORDER by fullname");
-              if ($result->numRows() == 0)
-              {
-		      return "";
-              } 
-	      else 
-	      {
-                      $names = array();
-                      while ($r = $result->fetchRow()) 
-		      {
-                              $names[] = $r['fullname'];
-                      }
-                      return implode(', ', $names);
-              }
-      }
-      error(ERR_INV_ARG);
+
+	global $db;
+	if (is_numeric($id)) {
+		$response = $db->query("SELECT users.id, users.fullname FROM users, zones WHERE zones.domain_id=".$db->quote($id)." AND zones.owner=users.id ORDER by fullname");
+		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+		if ($response->numRows() == 0) {
+			return "";
+		} else {
+			$names = array();
+			while ($r = $response->fetchRow()) {
+				$names[] = $r['fullname'];
+			}
+			return implode(', ', $names);
+		}
+	}
+	error(ERR_INV_ARG);
 }
 
 
@@ -451,11 +442,12 @@ function verify_user_is_owner_zoneid($zoneid) {
 	$userid=$_SESSION["userid"];
 
 	if (is_numeric($zoneid)) {
-		$result = $db->query("SELECT zones.id 
+		$response = $db->query("SELECT zones.id 
 				FROM zones 
 				WHERE zones.owner = " . $db->quote($userid) . "
 				AND zones.domain_id = ". $db->quote($zoneid)) ;
-		if ($result->numRows() == 0) {
+		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+		if ($response->numRows() == 0) {
 			return "0";
 		} else {
 			return "1";
@@ -563,10 +555,10 @@ function get_permission_template_details($templ_id) {
 			FROM perm_templ
 			WHERE perm_templ.id = " . $db->quote($templ_id);
 
-	$result = $db->query($query);
+	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
-	$details = $result->fetchRow(); 
+	$details = $response->fetchRow(); 
 	return $details;
 }	
 
@@ -577,11 +569,11 @@ function get_list_permission_templates() {
 	global $db;
 
 	$query = "SELECT * FROM perm_templ";
-	$result = $db->query($query);
+	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
 	$perm_templ_list = array();
-	while ($perm_templ = $result->fetchRow()) {
+	while ($perm_templ = $response->fetchRow()) {
 		$perm_templ_list[] = array(
 			"id"	=>	$perm_templ['id'],
 			"name"	=>	$perm_templ['name'],
@@ -604,15 +596,15 @@ function add_perm_templ($details) {
 				. $db->quote($details['templ_name']) . ", " 
 				. $db->quote($details['templ_descr']) . ")";
 
-	$result = $db->query($query);
+	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
 	$perm_templ_id = $db->lastInsertId('perm_templ', 'id');
 
 	foreach ($details['perm_id'] AS $perm_id) {
 		$query = "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . $db->quote($perm_templ_id) . "," . $db->quote($perm_id) . ")";
-		$result = $db->query($query);
-		if (pear::iserror($response)) { error($response->getmessage()); return false; }
+		$response = $db->query($query);
+		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 	}
 
 	return true;
@@ -629,25 +621,24 @@ function update_perm_templ_details($details) {
 			SET name = " . $db->quote($details['templ_name']) . ",
 			descr = " . $db->quote($details['templ_descr']) . "
 			WHERE id = " . $db->quote($details['templ_id']) ;
-	
-	$result = $db->query($query);
+	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
 	// Now, update list of permissions assigned to this template. We could do 
 	// this The Correct Way [tm] by comparing the list of permissions that are
 	// currently assigned with a list of permissions that should be assigned and
 	// apply the difference between these two lists to the database. That sounds 
-	// like to much work. Just delete all the permissions currently assigned to 
+	// like too much work. Just delete all the permissions currently assigned to 
 	// the template, than assign all the permessions the template should have.
 
 	$query = "DELETE FROM perm_templ_items WHERE templ_id = " . $details['templ_id'] ;
-	$result = $db->query($query);
-	if (pear::iserror($response)) { error($response->getmessage()); return false; }
+	$response = $db->query($query);
+	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
 	foreach ($details['perm_id'] AS $perm_id) {
 		$query = "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . $db->quote($details['templ_id']) . "," . $db->quote($perm_id) . ")";
-		$result = $db->query($query);
-		if (pear::iserror($response)) { error($response->getmessage()); return false; }
+		$response = $db->query($query);
+		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 	}
 
 	return true;
@@ -684,21 +675,21 @@ function update_user_details($details) {
 		// user, the username should apparantly changed. If so, check if the "new" 
 		// username already exists.
 		$query = "SELECT username FROM users WHERE id = " . $db->quote($details['uid']);
-		$result = $db->query($query);
+		$response = $db->query($query);
 		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
 		$usercheck = array();
-		$usercheck = $result->fetchRow();
+		$usercheck = $response->fetchRow();
 
 		if ($usercheck['username'] != $details['username']) {
 			// Username of user ID in the database is different from the name
 			// we have been given. User wants a change of username. Now, make
 			// sure it doesn't already exist.
 			$query = "SELECT id FROM users WHERE username = " . $db->quote($details['username']);
-			$result = $db->query($query);
+			$response = $db->query($query);
 			if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
-			if($result->numRows() > 0) {
+			if($response->numRows() > 0) {
 				error(ERR_USER_EXIST);
 				return false;
 			}
@@ -726,7 +717,7 @@ function update_user_details($details) {
 
 		$query .= " WHERE id = " . $db->quote($details['uid']) ;
 
-		$result = $db->query($query);
+		$response = $db->query($query);
 		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
 	} else {
@@ -766,7 +757,7 @@ function add_new_user($details) {
 			. $db->quote($active) 
 			. ")";
 
-	$result = $db->query($query);
+	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 	
 	return true;
