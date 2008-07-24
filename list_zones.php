@@ -40,6 +40,11 @@ echo "    <h2>" . _('List zones') . "</h2>\n";
 if ($perm_view == "none") { 
 	echo "     <p>" . _('You do not have the permission to see any zones.') . "</p>\n";
 } elseif (($count_zones_view > $iface_rowamount && $count_zones_all_letterstart == "0") || $count_zones_view == 0) {
+	if ($count_zones_view > $iface_rowamount) {
+		echo "<div class=\"showmax\">";
+		show_letters(LETTERSTART);
+		echo "</div>";
+	}
 	echo "     <p>" . _('There are no zones to show in this listing.') . "</p>\n";
 } else {
 	echo "     <div class=\"showmax\">\n";
