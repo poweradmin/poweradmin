@@ -21,7 +21,7 @@
 
 function zone_id_exists($zid) {
 	global $db;
-	$query = "SELECT COUNT(id) FROM domains WHERE id = " . $db->quote($zid);
+	$query = "SELECT COUNT(id) FROM domains WHERE id = " . $db->quote($zid, 'integer');
 	$count = $db->queryOne($query);
 	if (PEAR::isError($count)) { error($result->getMessage()); return false; }
 	return $count;
@@ -30,14 +30,14 @@ function zone_id_exists($zid) {
 
 function get_zone_id_from_record_id($rid) {
 	global $db;
-	$query = "SELECT domain_id FROM records WHERE id = " . $db->quote($rid);
+	$query = "SELECT domain_id FROM records WHERE id = " . $db->quote($rid, 'integer');
 	$zid = $db->queryOne($query);
 	return $zid;
 }
 
 function count_zone_records($zone_id) {
 	global $db;
-	$sqlq = "SELECT COUNT(id) FROM records WHERE domain_id = ".$db->quote($zone_id);
+	$sqlq = "SELECT COUNT(id) FROM records WHERE domain_id = ".$db->quote($zone_id, 'integer');
 	$record_count = $db->queryOne($sqlq);
 	return $record_count;
 }
@@ -46,10 +46,10 @@ function update_soa_serial($domain_id)
 {
 	global $db;
 
-	$sqlq = "SELECT notified_serial FROM domains WHERE id = ".$db->quote($domain_id);
+	$sqlq = "SELECT notified_serial FROM domains WHERE id = ".$db->quote($domain_id, 'integer');
 	$notified_serial = $db->queryOne($sqlq);
 
-	$sqlq = "SELECT content FROM records WHERE type = 'SOA' AND domain_id = ".$db->quote($domain_id);
+	$sqlq = "SELECT content FROM records WHERE type = ".$db->quote('SOA', 'text')." AND domain_id = ".$db->quote($domain_id, 'integer');
 	$content = $db->queryOne($sqlq);
 	$need_to_update = false;
 
@@ -90,7 +90,7 @@ function update_soa_serial($domain_id)
 		for ($i = 0; $i < count($soa); $i++) {	
 			$new_soa .= $soa[$i] . " "; 
 		}
-		$sqlq = "UPDATE records SET content = ".$db->quote($new_soa)." WHERE domain_id = ".$db->quote($domain_id)." AND type = 'SOA'";
+		$sqlq = "UPDATE records SET content = ".$db->quote($new_soa, 'text')." WHERE domain_id = ".$db->quote($domain_id, 'integer')." AND type = ".$db->quote('SOA', 'text');
 		$db->Query($sqlq);
 		return true;
 	}
@@ -123,13 +123,13 @@ function edit_record($record) {
 		if (is_numeric($record['zid'])) {
 			if (validate_input($record['zid'], $record['type'], $record['content'], $record['name'], $record['prio'], $record['ttl'])) {
 				$query = "UPDATE records 
-					SET name=".$db->quote($record['name']).", 
-					type=".$db->quote($record['type']).", 
-					content='" . $record['content'] . "', 
-					ttl=".$db->quote($record['ttl']).", 
+					SET name=".$db->quote($record['name'], 'text').", 
+					type=".$db->quote($record['type'], 'text').", 
+					content=" . $db->quote($record['content'], 'text') . ", 
+					ttl=".$db->quote($record['ttl'], 'integer').", 
 					prio=".$db->quote($record['prio'], 'integer').", 
-					change_date=".$db->quote(time())." 
-					WHERE id=".$db->quote($record['rid']);
+					change_date=".$db->quote(time(), 'integer')." 
+					WHERE id=".$db->quote($record['rid'], 'integer');
 				$result = $db->Query($query);
 				if (PEAR::isError($result)) {
 					error($result->getMessage());
@@ -173,13 +173,13 @@ function add_record($zoneid, $name, $type, $content, $ttl, $prio) {
 		if (validate_input($zoneid, $type, $content, $name, $prio, $ttl) ) {
 			$change = time();
 			$query = "INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) VALUES ("
-						. $db->quote($zoneid) . ","
-						. $db->quote($name) . "," 
-						. $db->quote($type) . "," 
-						. $db->quote($content) . ","
-						. $db->quote($ttl) . ","
+						. $db->quote($zoneid, 'integer') . ","
+						. $db->quote($name, 'text') . "," 
+						. $db->quote($type, 'text') . "," 
+						. $db->quote($content, 'text') . ","
+						. $db->quote($ttl, 'integer') . ","
 						. $db->quote($prio, 'integer') . ","
-						. $db->quote($change) . ")";
+						. $db->quote($change, 'integer') . ")";
 			$response = $db->query($query);
 			if (PEAR::isError($response)) {
 				error($response->getMessage());
@@ -215,7 +215,7 @@ function add_supermaster($master_ip, $ns_name, $account)
                 error(ERR_SM_EXISTS);
 		return false;
         } else {
-                $db->query("INSERT INTO supermasters VALUES (".$db->quote($master_ip).", ".$db->quote($ns_name).", ".$db->quote($account).")");
+                $db->query("INSERT INTO supermasters VALUES (".$db->quote($master_ip, 'text').", ".$db->quote($ns_name, 'text').", ".$db->quote($account, 'text').")");
                 return true;
         }
 }
@@ -224,7 +224,7 @@ function delete_supermaster($master_ip) {
 	global $db;
         if (is_valid_ipv4($master_ip) || is_valid_ipv6($master_ip))
         {
-                $db->query("DELETE FROM supermasters WHERE ip = ".$db->quote($master_ip));
+                $db->query("DELETE FROM supermasters WHERE ip = ".$db->quote($master_ip, 'text'));
                 return true;
         }
         else
@@ -238,7 +238,7 @@ function get_supermaster_info_from_ip($master_ip)
 	global $db;
         if (is_valid_ipv4($master_ip) || is_valid_ipv6($master_ip))
 	{
-	        $result = $db->queryRow("SELECT ip,nameserver,account FROM supermasters WHERE ip = ".$db->quote($master_ip));
+	        $result = $db->queryRow("SELECT ip,nameserver,account FROM supermasters WHERE ip = ".$db->quote($master_ip, 'text'));
 
 		$ret = array(
 		"master_ip"	=>              $result["ip"],
@@ -258,7 +258,7 @@ function get_record_details_from_record_id($rid) {
 
 	global $db;
 
-	$query = "SELECT id AS rid, domain_id AS zid, name, type, content, ttl, prio, change_date FROM records WHERE id = " . $db->quote($rid) ;
+	$query = "SELECT id AS rid, domain_id AS zid, name, type, content, ttl, prio, change_date FROM records WHERE id = " . $db->quote($rid, 'integer') ;
 
 	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
@@ -287,7 +287,7 @@ function delete_record($rid)
 		if ($record['type'] == "SOA") {
 			error(_('You are trying to delete the SOA record. If are not allowed to remove it, unless you remove the entire zone.'));
 		} else {
-			$query = "DELETE FROM records WHERE id = " . $db->quote($rid);
+			$query = "DELETE FROM records WHERE id = " . $db->quote($rid, 'integer');
 			$response = $db->query($query);
 			if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 			return true;
@@ -327,17 +327,17 @@ function add_domain($domain, $owner, $webip, $mailip, $empty, $type, $slave_mast
 				(eregi('in-addr.arpa', $domain) && $owner) || 
 				$type=="SLAVE" && $domain && $owner && $slave_master) {
 
-			$response = $db->query("INSERT INTO domains (name, type) VALUES (".$db->quote($domain).", ".$db->quote($type).")");
+			$response = $db->query("INSERT INTO domains (name, type) VALUES (".$db->quote($domain, 'text').", ".$db->quote($type, 'text').")");
 			if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
 			$domain_id = $db->lastInsertId('domains', 'id');
 			if (PEAR::isError($domain_id)) { error($id->getMessage()); return false; }
 
-			$response = $db->query("INSERT INTO zones (domain_id, owner) VALUES (".$db->quote($domain_id).", ".$db->quote($owner).")");
+			$response = $db->query("INSERT INTO zones (domain_id, owner) VALUES (".$db->quote($domain_id, 'integer').", ".$db->quote($owner, 'integer').")");
 			if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
 			if ($type == "SLAVE") {
-				$response = $db->query("UPDATE domains SET master = ".$db->quote($slave_master)." WHERE id = ".$db->quote($domain_id));
+				$response = $db->query("UPDATE domains SET master = ".$db->quote($slave_master, 'text')." WHERE id = ".$db->quote($domain_id, 'integer'));
 				if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 				return true;
 			} else {
@@ -348,13 +348,13 @@ function add_domain($domain, $owner, $webip, $mailip, $empty, $type, $slave_mast
 					$ttl = $dns_ttl;
 
 					$query = "INSERT INTO records (domain_id, name, content, type, ttl, prio, change_date) VALUES (" 
-							. $db->quote($domain_id) . "," 
-							. $db->quote($domain) . "," 
-							. $db->quote($ns1.' '.$hm.' 1') . ","
-							. $db->quote('SOA').","
-							. $db->quote($ttl) 
-							. ", 0, "
-							. $db->quote($now).")";
+							. $db->quote($domain_id, 'integer') . "," 
+							. $db->quote($domain, 'text') . "," 
+							. $db->quote($ns1.' '.$hm.' 1', 'text') . ","
+							. $db->quote('SOA', 'text').","
+							. $db->quote($ttl, 'integer')."," 
+							. $db->quote(0, 'integer'). ","
+							. $db->quote($now, 'integer').")";
 					$response = $db->query($query);
 					if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 				} elseif ($domain_id) {
@@ -375,13 +375,13 @@ function add_domain($domain, $owner, $webip, $mailip, $empty, $type, $slave_mast
 							}
 
 							$query = "INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) VALUES (" 
-									. $db->quote($domain_id) . ","
-									. $db->quote($name) . ","
-									. $db->quote($type) . ","
-									. $db->quote($content) . ","
-									. $db->quote($ttl) . ","
+									. $db->quote($domain_id, 'integer') . ","
+									. $db->quote($name, 'text') . ","
+									. $db->quote($type, 'text') . ","
+									. $db->quote($content, 'text') . ","
+									. $db->quote($ttl, 'integer') . ","
 									. $db->quote($prio, 'integer') . ","
-									. $db->quote($now) . ")";
+									. $db->quote($now, 'integer') . ")";
 							$response = $db->query($query);
 							if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 						}
@@ -416,9 +416,9 @@ function delete_domain($id)
 
         if ( $perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1") ) {    
 		if (is_numeric($id)) {
-			$db->query("DELETE FROM zones WHERE domain_id=".$db->quote($id));
-			$db->query("DELETE FROM domains WHERE id=".$db->quote($id));
-			$db->query("DELETE FROM records WHERE domain_id=".$db->quote($id));
+			$db->query("DELETE FROM zones WHERE domain_id=".$db->quote($id, 'integer'));
+			$db->query("DELETE FROM domains WHERE id=".$db->quote($id, 'integer'));
+			$db->query("DELETE FROM records WHERE domain_id=".$db->quote($id, 'integer'));
 			return true;
 		} else {
 			error(sprintf(ERR_INV_ARGC, "delete_domain", "id must be a number"));
@@ -439,7 +439,7 @@ function recid_to_domid($id)
 	global $db;
 	if (is_numeric($id))
 	{
-		$result = $db->query("SELECT domain_id FROM records WHERE id=".$db->quote($id));
+		$result = $db->query("SELECT domain_id FROM records WHERE id=".$db->quote($id, 'integer'));
 		$r = $result->fetchRow();
 		return $r["domain_id"];
 	}
@@ -461,9 +461,9 @@ function add_owner_to_zone($zone_id, $user_id)
 		// User is allowed to make change to meta data of this zone.
 		if (is_numeric($zone_id) && is_numeric($user_id) && is_valid_user($user_id))
 		{
-			if($db->queryOne("SELECT COUNT(id) FROM zones WHERE owner=".$db->quote($user_id)." AND domain_id=".$db->quote($zone_id)) == 0)
+			if($db->queryOne("SELECT COUNT(id) FROM zones WHERE owner=".$db->quote($user_id, 'integer')." AND domain_id=".$db->quote($zone_id, 'integer')) == 0)
 			{
-				$db->query("INSERT INTO zones (domain_id, owner) VALUES(".$db->quote($zone_id).", ".$db->quote($user_id).")");
+				$db->query("INSERT INTO zones (domain_id, owner) VALUES(".$db->quote($zone_id, 'integer').", ".$db->quote($user_id, 'integer').")");
 			}
 			return true;
 		} else {
@@ -483,9 +483,9 @@ function delete_owner_from_zone($zone_id, $user_id)
 		if (is_numeric($zone_id) && is_numeric($user_id) && is_valid_user($user_id))
 		{
 			// TODO: Next if() required, why not just execute DELETE query?
-			if($db->queryOne("SELECT COUNT(id) FROM zones WHERE owner=".$db->quote($user_id)." AND domain_id=".$db->quote($zone_id)) != 0)
+			if($db->queryOne("SELECT COUNT(id) FROM zones WHERE owner=".$db->quote($user_id, 'integer')." AND domain_id=".$db->quote($zone_id, 'integer')) != 0)
 			{
-				$db->query("DELETE FROM zones WHERE owner=".$db->quote($user_id)." AND domain_id=".$db->quote($zone_id));
+				$db->query("DELETE FROM zones WHERE owner=".$db->quote($user_id, 'integer')." AND domain_id=".$db->quote($zone_id, 'integer'));
 			}
 			return true;
 		} else {
@@ -528,7 +528,7 @@ function get_records_by_type_from_domid($type, $recid)
 	// Get the domain id.
 	$domid = recid_to_domid($recid);
 
-	$result = $db->query("select id, type from records where domain_id=".$db->quote($recid)." and type=".$db->quote($type));
+	$result = $db->query("select id, type from records where domain_id=".$db->quote($recid, 'integer')." and type=".$db->quote($type, 'text'));
 	return $result;
 }
 
@@ -542,7 +542,7 @@ function get_recordtype_from_id($id)
 	global $db;
 	if (is_numeric($id))
 	{
-		$result = $db->query("SELECT type FROM records WHERE id=".$db->quote($id));
+		$result = $db->query("SELECT type FROM records WHERE id=".$db->quote($id, 'integer'));
 		$r = $result->fetchRow();
 		return $r["type"];
 	}
@@ -561,7 +561,7 @@ function get_name_from_record_id($id)
 {
 	global $db;
 	if (is_numeric($id)) {
-		$result = $db->query("SELECT name FROM records WHERE id=".$db->quote($id));
+		$result = $db->query("SELECT name FROM records WHERE id=".$db->quote($id, 'integer'));
 		$r = $result->fetchRow();
 		return $r["name"];
 	} else {
@@ -576,7 +576,7 @@ function get_zone_name_from_id($zid)
 
 	if (is_numeric($zid))
 	{
-		$result = $db->query("SELECT name FROM domains WHERE id=".$db->quote($zid));
+		$result = $db->query("SELECT name FROM domains WHERE id=".$db->quote($zid, 'integer'));
 		$rows = $result->numRows() ;
 		if ($rows == 1) {
  			$r = $result->fetchRow();
@@ -611,7 +611,7 @@ function get_zone_info_from_id($zid) {
 					domains.master AS master_ip,
 					count(records.domain_id) AS record_count
 					FROM domains LEFT OUTER JOIN records ON domains.id = records.domain_id 
-					WHERE domains.id = " . $db->quote($zid) . "
+					WHERE domains.id = " . $db->quote($zid, 'integer') . "
 					GROUP BY domains.id, domains.type, domains.name, domains.master";
 		$result = $db->query($query);
 		if (PEAR::isError($result)) { error($result->getMessage()); return false; }
@@ -642,7 +642,7 @@ function domain_exists($domain)
 	global $db;
 
 	if (is_valid_hostname_fqdn($domain,0)) {
-		$result = $db->query("SELECT id FROM domains WHERE name=".$db->quote($domain));
+		$result = $db->query("SELECT id FROM domains WHERE name=".$db->quote($domain, 'text'));
 		if ($result->numRows() == 0) {
 			return false;
 		} elseif ($result->numRows() >= 1) {
@@ -681,7 +681,7 @@ function supermaster_exists($master_ip)
         global $db;
         if (is_valid_ipv4($master_ip) || is_valid_ipv6($master_ip))
         {
-                $result = $db->query("SELECT ip FROM supermasters WHERE ip = ".$db->quote($master_ip));
+                $result = $db->query("SELECT ip FROM supermasters WHERE ip = ".$db->quote($master_ip, 'text'));
                 if ($result->numRows() == 0)
                 {
                         return false;
@@ -711,10 +711,10 @@ function get_zones($perm,$userid=0,$letterstart='all',$rowstart=0,$rowamount=999
 	{
 		if ($perm == "own") {
 			$sql_add = " AND zones.domain_id = domains.id
-				AND zones.owner = ".$db->quote($userid);
+				AND zones.owner = ".$db->quote($userid, 'integer');
 		}
 		if ($letterstart!='all' && $letterstart!=1) {
-			$sql_add .=" AND domains.name LIKE ".$db->quote($letterstart."%")." ";
+			$sql_add .=" AND domains.name LIKE ".$db->quote($db->quote($letterstart, 'text', false, true)."%", 'text')." ";
 		} elseif ($letterstart==1) {
 			$sql_add .=" AND substring(domains.name,1,1) ".$sql_regexp." '^[[:digit:]]'";
 		}
@@ -761,11 +761,11 @@ function zone_count_ng($perm, $letterstart='all') {
 	{
 		if ($perm == "own") {
 			$sql_add = " AND zones.domain_id = domains.id
-					AND zones.owner = ".$db->quote($_SESSION['userid']);
+					AND zones.owner = ".$db->quote($_SESSION['userid'], 'integer');
 			$fromTable .= ',zones';
 		}
 		if ($letterstart!='all' && $letterstart!=1) {
-			$sql_add .=" AND domains.name LIKE ".$db->quote($letterstart."%")." ";
+			$sql_add .=" AND domains.name LIKE ".$db->quote($db->quote($letterstart, 'text', false, true)."%", 'text')." ";
 		} elseif ($letterstart==1) {
 			$sql_add .=" AND substring(domains.name,1,1) ".$sql_regexp." '^[[:digit:]]'";
 		}
@@ -783,7 +783,7 @@ function zone_count_for_uid($uid) {
 	global $db;
 	$query = "SELECT COUNT(domain_id) 
 			FROM zones 
-			WHERE owner = " . $db->quote($uid) . " 
+			WHERE owner = " . $db->quote($uid, 'integer') . " 
 			ORDER BY domain_id";
 	$zone_count = $db->queryOne($query);
 	return $zone_count;
@@ -800,7 +800,7 @@ function get_record_from_id($id)
 	global $db;
 	if (is_numeric($id))
 	{
-		$result = $db->query("SELECT id, domain_id, name, type, content, ttl, prio, change_date FROM records WHERE id=".$db->quote($id));
+		$result = $db->query("SELECT id, domain_id, name, type, content, ttl, prio, change_date FROM records WHERE id=".$db->quote($id, 'integer'));
 		if($result->numRows() == 0)
 		{
 			return -1;
@@ -844,9 +844,9 @@ function get_records_from_domain_id($id,$rowstart=0,$rowamount=999999) {
 			$db->setLimit($rowamount, $rowstart);
 			$result = $db->query("SELECT record_owners.record_id as id
 					FROM record_owners,domains,records
-					WHERE record_owners.user_id = " . $db->quote($_SESSION["userid"]) . "
+					WHERE record_owners.user_id = " . $db->quote($_SESSION["userid"], 'integer') . "
 					AND record_owners.record_id = records.id
-					AND records.domain_id = " . $db->quote($id) . "
+					AND records.domain_id = " . $db->quote($id, 'integer') . "
 					GROUP BY record_owners.record_id");
 
 			$ret = array();
@@ -866,7 +866,7 @@ function get_records_from_domain_id($id,$rowstart=0,$rowamount=999999) {
 
 		} else {
 			$db->setLimit($rowamount, $rowstart);
-			$result = $db->query("SELECT id FROM records WHERE domain_id=".$db->quote($id));
+			$result = $db->query("SELECT id FROM records WHERE domain_id=".$db->quote($id, 'integer'));
 			$ret = array();
 			if($result->numRows() == 0)
 			{
@@ -896,7 +896,7 @@ function get_records_from_domain_id($id,$rowstart=0,$rowamount=999999) {
 
 function get_users_from_domain_id($id) {
 	global $db;
-	$sqlq = "SELECT owner FROM zones WHERE domain_id =" .$db->quote($id);
+	$sqlq = "SELECT owner FROM zones WHERE domain_id =" .$db->quote($id, 'integer');
 	$id_owners = $db->query($sqlq);
 	if ($id_owners->numRows() == 0) {
 		return -1;
@@ -936,7 +936,7 @@ function search_zone_and_record($holy_grail,$perm) {
 	// Search for matching domains
 	if ($perm == "own") {
 		$sql_add_from = ", zones ";
-		$sql_add_where = " AND zones.domain_id = domains.id AND zones.owner = " . $db->quote($_SESSION['userid']);
+		$sql_add_where = " AND zones.domain_id = domains.id AND zones.owner = " . $db->quote($_SESSION['userid'], 'integer');
 	}
 	
 	$query = "SELECT 
@@ -945,7 +945,7 @@ function search_zone_and_record($holy_grail,$perm) {
 			domains.type AS type,
 			domains.master AS master
 			FROM domains" . $sql_add_from . "
-			WHERE domains.name LIKE " . $db->quote($holy_grail)
+			WHERE domains.name LIKE " . $db->quote($holy_grail, 'text')
 			. $sql_add_where ;
 	
 	$response = $db->query($query);
@@ -963,7 +963,7 @@ function search_zone_and_record($holy_grail,$perm) {
 
 	if ($perm == "own") {
 		$sql_add_from = ", zones ";
-		$sql_add_where = " AND zones.domain_id = records.domain_id AND zones.owner = " . $db->quote($_SESSION['userid']);
+		$sql_add_where = " AND zones.domain_id = records.domain_id AND zones.owner = " . $db->quote($_SESSION['userid'], 'integer');
 	}
 
 	$query = "SELECT
@@ -975,7 +975,7 @@ function search_zone_and_record($holy_grail,$perm) {
 			records.prio AS prio,
 			records.domain_id AS zid
 			FROM records" . $sql_add_from . "
-			WHERE (records.name LIKE " . $db->quote($holy_grail) . " OR records.content LIKE " . $db->quote($holy_grail) . ")"
+			WHERE (records.name LIKE " . $db->quote($holy_grail, 'text') . " OR records.content LIKE " . $db->quote($holy_grail, 'text') . ")"
 			. $sql_add_where ;
 
 	$response = $db->query($query);
@@ -997,7 +997,7 @@ function search_zone_and_record($holy_grail,$perm) {
 function get_domain_type($id) {
 	global $db;
         if (is_numeric($id)) {
-		$type = $db->queryOne("SELECT type FROM domains WHERE id = ".$db->quote($id));
+		$type = $db->queryOne("SELECT type FROM domains WHERE id = ".$db->quote($id, 'integer'));
 		if ($type == "") {
 			$type = "NATIVE";
 		}
@@ -1010,7 +1010,7 @@ function get_domain_type($id) {
 function get_domain_slave_master($id){
 	global $db;
         if (is_numeric($id)) {
-		$slave_master = $db->queryOne("SELECT master FROM domains WHERE type = 'SLAVE' and id = ".$db->quote($id));
+		$slave_master = $db->queryOne("SELECT master FROM domains WHERE type = 'SLAVE' and id = ".$db->quote($id, 'integer'));
 		return $slave_master;
         } else {
                 error(sprintf(ERR_INV_ARG, "get_domain_slave_master", "no or no valid zoneid given"));
@@ -1028,9 +1028,9 @@ function change_zone_type($type, $id)
 		// ignore the field if the type isn't something else then slave. But then again,
 		// it's much clearer this way.
 		if ($type != "SLAVE") {
-			$add = ", master=''";
+			$add = ", master=".$db->quote('', 'text');
 		}
-		$result = $db->query("UPDATE domains SET type = " . $db->quote($type) . $add . " WHERE id = ".$db->quote($id));
+		$result = $db->query("UPDATE domains SET type = " . $db->quote($type, 'text') . $add . " WHERE id = ".$db->quote($id, 'integer'));
 	} else {
                 error(sprintf(ERR_INV_ARG, "change_domain_type", "no or no valid zoneid given"));
         }
@@ -1040,7 +1040,7 @@ function change_zone_slave_master($zone_id, $ip_slave_master) {
 	global $db;
         if (is_numeric($zone_id)) {
        		if (is_valid_ipv4($ip_slave_master) || is_valid_ipv6($ip_slave_master)) {
-			$result = $db->query("UPDATE domains SET master = " .$db->quote($ip_slave_master). " WHERE id = ".$db->quote($zone_id));
+			$result = $db->query("UPDATE domains SET master = " .$db->quote($ip_slave_master, 'text'). " WHERE id = ".$db->quote($zone_id, 'integer'));
 		} else {
 			error(sprintf(ERR_INV_ARGC, "change_domain_ip_slave_master", "This is not a valid IPv4 or IPv6 address: $ip_slave_master"));
 		}
@@ -1052,7 +1052,7 @@ function change_zone_slave_master($zone_id, $ip_slave_master) {
 function get_serial_by_zid($zid) {
 	global $db;
 	if (is_numeric($zid)) {
-		$query = "SELECT content FROM records where TYPE = 'SOA' and domain_id = " . $db->quote($zid);
+		$query = "SELECT content FROM records where TYPE = ".$db->quote('SOA', 'text')." and domain_id = " . $db->quote($zid, 'integer');
 		$rr_soa = $db->queryOne($query);
 		if (PEAR::isError($rr_soa)) { error($rr_soa->getMessage()); return false; }
 		$rr_soa_fields = explode(" ", $rr_soa);

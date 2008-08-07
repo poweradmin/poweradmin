@@ -243,7 +243,7 @@ function zone_letter_start($letter,$userid=true)
 			domains.name AS domainname
 			FROM domains
 			LEFT JOIN zones ON domains.id=zones.domain_id 
-			WHERE substring(domains.name,1,1) ".$sql_regexp." ".$db->quote("^".$letter);
+			WHERE substring(domains.name,1,1) ".$sql_regexp." ".$db->quote("^".$letter, 'text');
 	$db->setLimit(1);
         $result = $db->query($query);
         $numrows = $result->numRows();
