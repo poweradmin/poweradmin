@@ -256,6 +256,13 @@ $def_tables =
 			)
 		);
 
+// Tables from PowerDNS
+$grantTables = array('supermasters', 'domains', 'records');
+// Include PowerAdmin tables
+foreach($def_tables as $table) {
+	$grantTables[] = $table['table_name'];
+}
+
 $def_permissions = array(
 			array(41,'zone_master_add','User is allowed to add new master zones.'),
 			array(42,'zone_slave_add','User is allowed to add new slave zones.'),

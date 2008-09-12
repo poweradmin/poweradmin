@@ -89,6 +89,8 @@ function validate_input($zid, $type, &$content, &$name, &$prio, &$ttl) {
 
 		case "MBOXFW":
 		case "NAPTR":
+		case "SPF":
+		case "SSHFP":
 		case "URL":
 			// These types are supported by PowerDNS, but there is not
 			// yet code for validation. Validation needs to be added 
@@ -230,8 +232,8 @@ function is_valid_rr_cname_name($name) {
 
 	$query = "SELECT type, content 
 			FROM records 
-			WHERE content = " . $db->quote($name) . "
-			AND (type = 'MX' OR type = 'NS')";
+			WHERE content = " . $db->quote($name, 'text') . "
+			AND (type = ".$db->quote('MX', 'text')." OR type = ".$db->quote('NS', 'text').")";
 	
 	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; };
@@ -248,8 +250,8 @@ function is_valid_non_alias_target($target) {
 	
 	$query = "SELECT type, name
 			FROM records
-			WHERE name = " . $db->quote($target) . "
-			AND TYPE = 'CNAME'";
+			WHERE name = " . $db->quote($target, 'text') . "
+			AND TYPE = ".$db->quote('CNAME', 'text');
 
 	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; };

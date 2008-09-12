@@ -86,12 +86,12 @@ require_once("database.inc.php");
 $server_types = array("MASTER", "SLAVE", "NATIVE");
 
 // $rtypes - array of possible record types
-$rtypes = array('A', 'AAAA', 'CNAME', 'HINFO', 'MX', 'NAPTR', 'NS', 'PTR', 'SOA', 'SRV', 'TXT');
+$rtypes = array('A', 'AAAA', 'CNAME', 'HINFO', 'MX', 'NAPTR', 'NS', 'PTR', 'SOA', 'SPF', 'SRV', 'SSHFP', 'TXT');
 
 // If fancy records is enabled, extend this field.
 if($dns_fancy) {
-        $rtypes[12] = 'URL';
-        $rtypes[13] = 'MBOXFW';
+        $rtypes[14] = 'URL';
+        $rtypes[15] = 'MBOXFW';
 }
 
 // $template - array of records that will be applied when adding a new zone file
@@ -235,7 +235,7 @@ function zone_letter_start($letter,$userid=true)
 			domains.name AS domainname
 			FROM domains
 			LEFT JOIN zones ON domains.id=zones.domain_id 
-			WHERE substring(domains.name,1,1) ".$sql_regexp." ".$db->quote("^".$letter);
+			WHERE substring(domains.name,1,1) ".$sql_regexp." ".$db->quote("^".$letter, 'text');
 	$db->setLimit(1);
         $response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }

@@ -47,7 +47,7 @@ function doAuthenticate() {
 	if(isset($_SESSION["userlogin"]) && isset($_SESSION["userpwd"]))
 	{
 		//Username and password are set, lets try to authenticate.
-		$result = $db->query("SELECT id, fullname FROM users WHERE username=". $db->quote($_SESSION["userlogin"])  ." AND password=". $db->quote(md5($_SESSION["userpwd"]))  ." AND active=1");
+		$result = $db->query("SELECT id, fullname FROM users WHERE username=". $db->quote($_SESSION["userlogin"], 'text')  ." AND password=". $db->quote(md5($_SESSION["userpwd"]), 'text')  ." AND active=1");
 		if($result->numRows() == 1)
 		{
 			$rowObj = $result->fetchRow();

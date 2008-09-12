@@ -205,6 +205,10 @@ switch($step) {
 		$dns_ns1 = $_POST['dns_ns1'];
 		$dns_ns2 = $_POST['dns_ns2'];
 
+		require_once("../inc/database.inc.php");
+		$db = dbConnect();
+		include_once("database-structure.inc.php");
+
 		echo "<p>" . _('You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert and update records in the PowerDNS database.') . " ";
 		if ($db_type == 'mysql') {
 			echo _('In MySQL you should now perform the following command:') . "</p>";
@@ -218,10 +222,12 @@ switch($step) {
 				"Shall the new user be allowed to create databases? (y/n) n<br>" . 
 				"Shall the new user be allowed to create more new users? (y/n) n<br>" . 
 				"CREATE USER<br>" . 
-				"$ psql " . $db_name . "<br>" .
-				"psql> GRANT SELECT, INSERT, DELETE, UPDATE<br>" . 
-				"ON " . $db_name . "<br>" .
-				"TO " . $db_user . ";</tt></p>\n";
+				"$ psql " . $db_name . "<br>";
+				foreach ($grantTables as $tableName) {
+					echo "psql> GRANT SELECT, INSERT, DELETE, UPDATE ON " . $tableName . " TO " . $db_user . ";<br />";
+					echo "GRANT<br />";
+				}
+				echo "</tt></p>\n";
 		}
 		echo "<p>" . _('After you have added the new user, proceed with this installation procedure.') . "</p>\n";
 		echo "<form method=\"post\">";
