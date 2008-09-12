@@ -22,28 +22,25 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
-$owner = "-1";
-if ((isset($_POST['owner'])) && (v_num($_POST['owner']))) {
-        $owner = $_POST['owner'];
-}
+$owner = (isset($post['owner'])) ? $post['owner'] : "-1" ;
 
-$zone = trim($_POST['domain']);
-$master = $_POST['slave_master'];
-$type = "SLAVE";
+$zone_name = trim($post['zone_name']);
+$ip_master = $post['ip_master'];
+$zone_type = "SLAVE";
 
 (verify_permission('zone_slave_add')) ? $zone_slave_add = "1" : $zone_slave_add = "0" ;
 
-if ($_POST['submit'] && $zone_slave_add == "1") {
-	if (!is_valid_hostname_fqdn($zone,0)) {
+if ($post['commit'] && $zone_slave_add == "1") {
+	if (!is_valid_hostname_fqdn($zone_name,0)) {
 		error(ERR_DNS_HOSTNAME);
-	} elseif (domain_exists($zone)) {
+	} elseif (domain_exists($zone_name)) {
 		error(ERR_DOMAIN_EXISTS);
-	} elseif (!is_valid_ipv4($master) && !is_valid_ipv6($master)) {
+	} elseif (!is_valid_ipv4($ip_master) && !is_valid_ipv6($ip_master)) {
 		error(ERR_DNS_IP);
 	} else {
-		if(add_domain($zone, $owner, $webip, $mailip, $empty, $type, $master)) {
+		if(add_domain($zone_name, $owner, $webip, $mailip, $empty, $zone_type, $ip_master)) {
 			success(SUC_ZONE_ADD);
-			unset($zone, $owner, $webip, $mailip, $empty, $type, $master);
+			unset($zone_name, $owner, $webip, $mailip, $empty, $zone_type, $ip_master);
 		}
 	}
 }
@@ -59,13 +56,13 @@ if ( $zone_slave_add != "1" ) {
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">" . _('Zone name') . "</td>\n";
 	echo "        <td class=\"n\">\n";
-	echo "         <input type=\"text\" class=\"input\" name=\"domain\" value=\"" . $zone . "\">\n";
+	echo "         <input type=\"text\" class=\"input\" name=\"zone_name\" value=\"" . $zone_name . "\">\n";
 	echo "        </td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">" . _('IP address of master NS') . ":</td>\n";
 	echo "        <td class=\"n\">\n";
-	echo "         <input type=\"text\" class=\"input\" name=\"slave_master\" value=\"" . $master . "\">\n";
+	echo "         <input type=\"text\" class=\"input\" name=\"ip_master\" value=\"" . $ip_master . "\">\n";
 	echo "        </td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
@@ -81,7 +78,7 @@ if ( $zone_slave_add != "1" ) {
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">&nbsp;</td>\n";
 	echo "        <td class=\"n\">\n";
-	echo "         <input type=\"submit\" class=\"button\" name=\"submit\" value=\"" .  _('Add zone') . "\">\n";
+	echo "         <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" .  _('Add zone') . "\">\n";
 	echo "        </td>\n";
 	echo "       </tr>\n";
 	echo "      </table>\n";

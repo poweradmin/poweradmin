@@ -22,29 +22,21 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
-$id = "-1";
-if ((isset($_GET['id'])) || (v_num($_GET['id']))) {
-	$id = $_GET['id'] ;
-}
-
-if ($id == "-1") {
-	error(ERR_INV_INPUT);
-} elseif (!verify_permission('templ_perm_edit')) {
+if (!verify_permission('templ_perm_edit')) {
 	error(ERR_PERM_EDIT_PERM_TEMPL);
 } else {
-	$id = $_GET['id'];
 
-	if (isset($_POST['commit'])) {
-		update_perm_templ_details($_POST);	
+	if (isset($post['commit'])) {
+		update_perm_templ_details($post);	
 	}
 
-	$templ = get_permission_template_details($id);
-	$perms_templ = get_permissions_by_template_id($id);
-	$perms_avail = get_permissions_by_template_id();
+	$templ = get_permission_template_details($pid);
+	$perms_templ = get_permissions_by_template_id($pid);
+	$perms_avail = get_permissions_by_template_id($pid);
 
 	echo "    <h2>" . _('Edit permission template') . "</h2>\n"; 
         echo "    <form method=\"post\">\n";
-	echo "    <input type=\"hidden\" name=\"templ_id\" value=\"" . $id . "\">\n";
+	echo "    <input type=\"hidden\" name=\"templ_id\" value=\"" . $pid . "\">\n";
 
 	echo "     <table>\n";
 	echo "      <tr>\n";

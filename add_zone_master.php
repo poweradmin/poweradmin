@@ -22,24 +22,17 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
-$owner = "-1";
-if ((isset($_POST['owner'])) && (v_num($_POST['owner']))) {
-        $owner = $_POST['owner'];
-}
+$owner = (isset($post['owner'])) ? $post['owner'] : "-1" ;
+$zone_type = (isset($post['zone_type'])) ? $post['zone_type'] : "NATIVE";
 
-$dom_type = "NATIVE";
-if (isset($_POST["dom_type"]) && (in_array($_POST['dom_type'], $server_types))) {
-	$dom_type = $_POST["dom_type"];
-}
-
-$domain = trim($_POST["domain"]);
-$webip = $_POST["webip"];
-$mailip = $_POST["mailip"];
-$empty = $_POST["empty"];
+$zone_name = trim($post['zone_name']);
+$ip_web = $post['ip_web'];
+$ip_mail = $post['ip_mail'];
+$empty = $post['empty'];
 
 (verify_permission('zone_master_add')) ? $zone_master_add = "1" : $zone_master_add = "0" ;
 
-if ($_POST['submit'] && $zone_master_add == "1" ) {
+if ($post['commit'] && $zone_master_add == "1" ) {
 
 	// Boy. I will be happy when I have found the time to replace
 	// this "template wanabee" code with something that is really 
@@ -49,23 +42,23 @@ if ($_POST['submit'] && $zone_master_add == "1" ) {
 
         if(!$empty) {
                 $empty = 0;
-                if(!eregi('in-addr.arpa', $domain) && (!is_valid_ipv4($webip) || !is_valid_ipv4($mailip)) ) {
+                if(!eregi('in-addr.arpa', $zone_name) && (!is_valid_ipv4($ip_web) || !is_valid_ipv4($ip_mail)) ) {
                         error(_('IP address of web- or mailserver is invalid.')); 
 			$error = "1";
                 }
         }
 
         if (!$error) {
-                if (!is_valid_hostname_fqdn($domain,0)) {
+                if (!is_valid_hostname_fqdn($zone_name,0)) {
                         error(ERR_DOMAIN_INVALID); 
 			$error = "1";
-                } elseif (domain_exists($domain)) {
+                } elseif (domain_exists($zone_name)) {
                         error(ERR_DOMAIN_EXISTS); 
 			$error = "1";
                 } else {
-                        if (add_domain($domain, $owner, $webip, $mailip, $empty, $dom_type, '')) {
+                        if (add_domain($zone_name, $owner, $ip_web, $ip_mail, $empty, $zone_type, '')) {
 				success(SUC_ZONE_ADD);
-				unset($domain, $owner, $webip, $mailip, $empty, $dom_type);
+				unset($zone_name, $owner, $ip_web, $ip_mail, $empty, $zone_type);
 			} else {
 				$error = "1";
 			}
@@ -86,19 +79,19 @@ if ( $zone_master_add != "1" ) {
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">" . _('Zone name') . ":</td>\n";
 	echo "        <td class=\"n\">\n";
-	echo "         <input type=\"text\" class=\"input\" name=\"domain\" value=\"" .  $domain . "\">\n";
+	echo "         <input type=\"text\" class=\"input\" name=\"domain\" value=\"" .  $zone_name . "\">\n";
 	echo "        </td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">" . _('IP address of webserver') . ":</td>\n";
 	echo "        <td class=\"n\">\n";
-	echo "         <input type=\"text\" class=\"input\" name=\"webip\" value=\"" . $webip . "\">\n";
+	echo "         <input type=\"text\" class=\"input\" name=\"ip_web\" value=\"" . $ip_web . "\">\n";
 	echo "        </td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">" . _('IP address of mailserver') . ":</td>\n";
 	echo "        <td class=\"n\">\n";
-	echo "         <input type=\"text\" class=\"input\" name=\"mailip\" value=\"" . $mailip . "\">\n";
+	echo "         <input type=\"text\" class=\"input\" name=\"ip_mail\" value=\"" . $ip_mail . "\">\n";
 	echo "        </td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
@@ -114,7 +107,7 @@ if ( $zone_master_add != "1" ) {
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">" . _('Type') . ":</td>\n";
 	echo "        <td class=\"n\">\n";
-	echo "         <select name=\"dom_type\">\n";
+	echo "         <select name=\"zone_type\">\n";
         foreach($available_zone_types as $type) {
 		echo "          <option value=\"" . $type . "\">" . strtolower($type) . "</option>\n";
         }
@@ -128,7 +121,7 @@ if ( $zone_master_add != "1" ) {
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">&nbsp;</td>\n";
 	echo "        <td class=\"n\">\n";
-	echo "         <input type=\"submit\" class=\"button\" name=\"submit\" value=\"" . _('Add zone') . "\">\n";
+	echo "         <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Add zone') . "\">\n";
 	echo "        </td>\n";
 	echo "       </tr>\n";
 	echo "      </table>\n";

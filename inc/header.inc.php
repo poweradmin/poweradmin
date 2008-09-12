@@ -75,4 +75,14 @@ if (file_exists('install')) {
 }
 echo "    <div class=\"content\">\n";
 
-  
+debug_print($_POST);
+debug_print($_GET);
+
+if (!empty($_POST)) $post = validate_variables($_POST, $valid_vars_post);
+if (!empty($_GET)) $get = validate_variables($_GET, $valid_vars_get);
+if (isset($post['var_err']) || isset($get['var_err'])) {
+	$var_err = 1;
+	error('One or more variables has an incorrect syntax.');
+}
+
+?>

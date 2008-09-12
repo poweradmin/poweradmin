@@ -22,15 +22,10 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
-$master_ip = $_POST["master_ip"];
-$ns_name = $_POST["ns_name"];
-$account = $_POST["account"];
-
 (verify_permission('supermaster_add')) ? $supermasters_add = "1" :  $supermasters_add = "0";
 
-if($_POST["submit"])
-{
-	if (add_supermaster($master_ip, $ns_name, $account)) {
+if(isset($post['commit']) && !isset($var_err)) {
+	if (add_supermaster($post['ip_superm'], $post['ns_name'], $post['sm_owner'])) {
 		success(SUC_SM_ADD);
 	} else {
 		$error = "1";
@@ -39,45 +34,34 @@ if($_POST["submit"])
 
 echo "     <h2>" . _('Add supermaster') . "</h2>\n";
 
+
 if ( $supermasters_add != "1" ) {
 	echo "     <p>" . _("You do not have the permission to add a new supermaster.") . "</p>\n"; 
 } else {
 	echo "     <form method=\"post\" action=\"add_supermaster.php\">\n";
 	echo "      <table>\n";
 	echo "       <tr>\n";
-	echo "        <td class=\"n\">" . _('IP address of supermaster') . "</td>\n";
+	echo "        <td class=\"n" . ( in_array("ip_superm",$post['var_err']) ? "-err" : "" ) . "\">" . _('IP address of supermaster') . "</td>\n";
 	echo "        <td class=\"n\">\n";
-	if ($error) {
-		echo "         <input type=\"text\" class=\"input\" name=\"master_ip\" value=\"" . $master_ip . "\">\n";
-	} else {
-		echo "         <input type=\"text\" class=\"input\" name=\"master_ip\" value=\"\">\n";
-	}
+	echo "         <input type=\"text\" class=\"input\" name=\"ip_superm\" value=\"" . ( isset($var_err) ? $post['ip_superm'] : "" ) . "\">\n";
 	echo "        </td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
-	echo "        <td class=\"n\">" . _('Hostname in NS record') . "</td>\n";
+	echo "        <td class=\"n" . ( in_array("ns_name",$post['var_err']) ? "-err" : "" ) . "\">" . _('Hostname in NS record') . "</td>\n";
 	echo "        <td class=\"n\">\n";
-	if ($error) {
-		echo "         <input type=\"text\" class=\"input\" name=\"ns_name\" value=\"" . $ns_name . "\">\n";
-	} else {
-		echo "         <input type=\"text\" class=\"input\" name=\"ns_name\" value=\"\">\n";
-	}
+	echo "         <input type=\"text\" class=\"input\" name=\"ns_name\" value=\"" . ( isset($var_err) ? $post['ns_name'] : "" ) . "\">\n";
 	echo "        </td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
-	echo "        <td class=\"n\">" . _('Account') . "</td>\n";
+	echo "        <td class=\"n" . ( in_array("sm_owner",$post['var_err']) ? "-err" : "" ) . "\">" . _('Account') . "</td>\n";
 	echo "        <td class=\"n\">\n";
-	if ($error) {
-		echo "         <input type=\"text\" class=\"input\" name=\"account\" value=\"" . $account . "\">\n";
-	} else {
-		echo "         <input type=\"text\" class=\"input\" name=\"account\" value=\"\">\n";
-	}
+	echo "         <input type=\"text\" class=\"input\" name=\"sm_owner\" value=\"" . ( isset($var_err) ? $post['sm_owner'] : "" ) . "\">\n";
 	echo "        </td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">&nbsp;</td>\n";
 	echo "        <td class=\"n\">\n";
-	echo "         <input type=\"submit\" class=\"button\" name=\"submit\" value=\"" . _('Add supermaster') . "\">\n";
+	echo "         <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Add supermaster') . "\">\n";
 	echo "        </td>\n";
 	echo "       </tr>\n";
 	echo "      </table>\n";

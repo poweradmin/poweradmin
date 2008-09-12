@@ -26,8 +26,8 @@ if (!verify_permission('templ_perm_edit')) {
 	error(ERR_PERM_EDIT_PERM_TEMPL);
 } else {
 
-	if (isset($_POST['commit'])) {
-		add_perm_templ($_POST);	
+	if (isset($post['commit'])) {
+		add_perm_templ($post);	
 	}
 
 	$perms_avail = get_permissions_by_template_id();
@@ -60,7 +60,7 @@ if (!verify_permission('templ_perm_edit')) {
 		echo "      </tr>\n";
 	}
 	echo "     </table>\n";
-	echo "     <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
+	echo "     <input type=\"commit\" class=\"button\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
 	echo "     </form>\n";
 
 }

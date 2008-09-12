@@ -34,54 +34,16 @@ if (verify_permission('zone_meta_edit_others')) { $perm_meta_edit = "all" ; }
 elseif (verify_permission('zone_meta_edit_own')) { $perm_meta_edit = "own" ; }
 else { $perm_meta_edit = "none" ; }
 
-$zone_id = "-1";
-if ((isset($_GET['id'])) && (v_num($_GET['id']))) {
-	$zone_id = $_GET['id'];
-}
 
-$ttl = $dns_ttl;
-if ((isset($_POST['ttl'])) && (v_num($_POST['ttl']))) {
-	$ttl = $_POST['ttl'];
-}
+$user_is_zone_owner = verify_user_is_owner_zoneid($get['zid']);
+$zone_type = get_domain_type($get['zid']);
+$zone_name = get_zone_name_from_id($get['zid']);
 
-$prio = "10";
-if ((isset($_GET['prio'])) && (v_num($_GET['prio']))) {
-	$prio = $_GET['prio'];
-}
-
-if (isset($_POST['name'])) {
-	$name = $_POST['name'];
-} else {
-	$name = "";
-}
-
-if (isset($_POST['type'])) { 
-	$type = $_POST['type'];
-} else {
-	$type = "";
-}
-
-if (isset($_POST['content'])) { 
-	$content = $_POST['content'];
-} else {
-	$content = "";
-}
-
-if ($zone_id == "-1") {
-	error(ERR_INV_INPUT);
-	include_once("inc/footer.inc.php");
-	exit;
-}
-
-$user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
-$zone_type = get_domain_type($zone_id);
-$zone_name = get_zone_name_from_id($zone_id);
-
-if (isset($_POST["commit"])) {
+if (isset($post['commit'])) {
 	if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
 		error(ERR_PERM_ADD_RECORD);
 	} else {
-		if ( add_record($zone_id, $name, $type, $content, $ttl, $prio)) {
+		if ( add_record($post['zid'], $post['label'], $post['type'], $post['content'], $post['ttl'], $post['prio'])) {
 			success(_('The record was successfully added.'));
 			$name = $type = $content = $ttl = $prio = "";
 		}
@@ -94,7 +56,7 @@ if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit
 	error(ERR_PERM_ADD_RECORD); 
 } else {
 	echo "     <form method=\"post\">\n";
-	echo "      <input type=\"hidden\" name=\"domain\" value=\"" . $zone_id . "\">\n";
+	echo "      <input type=\"hidden\" name=\"zid\" value=\"" . $get['zid'] . "\">\n";
 	echo "      <table border=\"0\" cellspacing=\"4\">\n";
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">" . _('Name') . "</td>\n";
@@ -105,12 +67,12 @@ if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit
 	echo "        <td class=\"n\">" . _('TTL') . "</td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
-	echo "        <td class=\"n\"><input type=\"text\" name=\"name\" class=\"input\" value=\"" . $name . "\">." . $zone_name . "</td>\n";
+	echo "        <td class=\"n\"><input type=\"text\" name=\"label\" class=\"input\" value=\"" . ( isset($post['name']) ? isset($post['name']) : "" ) . "\">." . $zone_name . "</td>\n";
 	echo "        <td class=\"n\">IN</td>\n";
 	echo "        <td class=\"n\">\n";
 	echo "         <select name=\"type\">\n";
 	foreach (get_record_types() as $record_type) {
-		if ($type) {
+		if (isset($type)) {
 			if ($type == $record_type) {
 				$add = " SELECTED";
 			} else {
@@ -129,9 +91,9 @@ if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit
 	}
 	echo "         </select>\n";
 	echo "        </td>\n";
-	echo "        <td class=\"n\"><input type=\"text\" name=\"prio\" class=\"sinput\" value=\"" . $prio . "\"></td>\n";
-	echo "        <td class=\"n\"><input type=\"text\" name=\"content\" class=\"input\" value=\"" . $content . "\"></td>\n";
-	echo "        <td class=\"n\"><input type=\"text\" name=\"ttl\" class=\"sinput\" value=\"" . $ttl . "\"</td>\n";
+	echo "        <td class=\"n\"><input type=\"text\" name=\"prio\" class=\"sinput\" value=\"" . ( isset($post['prio']) ? isset($post['prio']) : "10" ) . "\"></td>\n";
+	echo "        <td class=\"n\"><input type=\"text\" name=\"content\" class=\"input\" value=\"" . ( isset($post['content']) ? isset($post['content']) : "" ) . "\"></td>\n";
+	echo "        <td class=\"n\"><input type=\"text\" name=\"ttl\" class=\"sinput\" value=\"" . ( isset($post['ttl']) ? isset($post['ttl']) : $dns_ttl ) . "\"</td>\n";
 	echo "       </tr>\n";
 	echo "      </table>\n";
 	echo "      <br>\n";

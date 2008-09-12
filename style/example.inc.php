@@ -65,6 +65,11 @@ td.y	{
 	border:			1px solid #000000;
 }
 
+td.n-err	{
+	color:			#ff0000;
+}
+
+
 .menu 	{
 	font-size:		80%;
 }

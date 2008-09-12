@@ -22,6 +22,12 @@
 require_once('inc/toolkit.inc.php');
 include_once('inc/header.inc.php');
 
+if (!empty($_POST)) $post = validate_variables($_POST, $valid_vars_post);
+if (isset($post) && $post == false) {
+        include_once("inc/footer.inc.php"); exit;
+}
+
+
 if (!(verify_permission('search'))) {
 	error(ERR_PERM_SEARCH);
 	include_once('inc/footer.inc.php');
@@ -29,8 +35,8 @@ if (!(verify_permission('search'))) {
 	
 } else {
 	echo "     <h2>" . _('Search zones and records') . "</h2>\n";
-	$holy_grail = '';
-	if (isset($_POST['submit'])) {
+
+	if (isset($post['commit'])) {
 
 		if (verify_permission('zone_content_view_others')) { $perm_view = "all" ; }
 		elseif (verify_permission('zone_content_view_own')) { $perm_view = "own" ; }
@@ -40,9 +46,7 @@ if (!(verify_permission('search'))) {
 		elseif (verify_permission('zone_content_edit_own')) { $perm_edit = "own" ; }
 		else { $perm_edit = "none" ; }
 	
-		$holy_grail = $_POST['query'];
-
-		$result = search_zone_and_record($holy_grail,$perm_view);
+		$result = search_zone_and_record($post['holy_grail'],$perm_view);
 
 		if (is_array($result['zones'])) {
 			echo "     <h3>" . _('Zones found') . ":</h3>\n";
@@ -57,7 +61,7 @@ if (!(verify_permission('search'))) {
 			foreach ($result['zones'] as $zone) {
 				echo "      <tr>\n";
 				echo "          <td>\n";
-				echo "           <a href=\"edit.php?id=" . $zone['zid'] . "\"><img src=\"images/edit.gif\" title=\"" . _('Edit zone') . " " . $zone['name'] . "\" alt=\"[ " . _('Edit zone') . " " . $zone['name'] . " ]\"></a>\n";
+				echo "           <a href=\"edit.php?zid=" . $zone['zid'] . "\"><img src=\"images/edit.gif\" title=\"" . _('Edit zone') . " " . $zone['name'] . "\" alt=\"[ " . _('Edit zone') . " " . $zone['name'] . " ]\"></a>\n";
 				if ( $perm_edit != "all" || $perm_edit != "none") {
 					$user_is_zone_owner = verify_user_is_owner_zoneid($zone['zid']);
 				}
@@ -122,8 +126,8 @@ if (!(verify_permission('search'))) {
 	echo "       <table>\n";
 	echo "        <tr>\n";
 	echo "         <td>\n";
-	echo "          <input type=\"text\" class=\"input\" name=\"query\" value=\"" . $holy_grail . "\">&nbsp;\n";
-	echo "          <input type=\"submit\" class=\"button\" name=\"submit\" value=\"" . _('Search') . "\">\n";
+	echo "          <input type=\"text\" class=\"input\" name=\"holy_grail\" value=\"" . ( isset($post['holy_grail']) ? $post['holy_grail'] : "") . "\">&nbsp;\n";
+	echo "          <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Search') . "\">\n";
 	echo "         </td>\n";
 	echo "        </tr>\n";
 	echo "        <tr>\n";

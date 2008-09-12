@@ -22,19 +22,14 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
-$zone_id = "-1";
-if (isset($_GET['id']) && v_num($_GET['id'])) {
-	$zone_id = $_GET['id'];
-}
-
-if ($zone_id == "-1") {
+if (!isset($get['zid'])) {
 	error(ERR_INV_INPUT);
 	include_once("inc/footer.inc.php");
 	exit;
 }
 
-if (isset($_POST['commit'])) {
-	foreach ($_POST['record'] as $record) {
+if (isset($post['commit'])) {
+	foreach ($post['record'] as $record) {
 		edit_record($record);
 	}
 }
@@ -51,41 +46,33 @@ if (verify_permission('zone_meta_edit_others')) { $perm_meta_edit = "all" ; }
 elseif (verify_permission('zone_meta_edit_own')) { $perm_meta_edit = "own" ; } 
 else { $perm_meta_edit = "none" ; }
 
-$user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
+$user_is_zone_owner = verify_user_is_owner_zoneid($get['zid']);
 if ( $perm_meta_edit == "all" || ( $perm_meta_edit == "own" && $user_is_zone_owner == "1") ) {
 	$meta_edit = "1";
 }
 
-if(isset($_POST['slave_master_change']) && is_numeric($_POST["domain"]) ) {
-	change_zone_slave_master($_POST['domain'], $_POST['new_master']);
-}
-if(isset($_POST['type_change']) && in_array($_POST['newtype'], $server_types)) {
-	change_zone_type($_POST['newtype'], $zone_id);
-}
-if(isset($_POST["newowner"]) && is_numeric($_POST["domain"]) && is_numeric($_POST["newowner"])) {
-	add_owner_to_zone($_POST["domain"], $_POST["newowner"]);
-}
-if(isset($_POST["delete_owner"]) && is_numeric($_POST["delete_owner"]) ) {
-	delete_owner_from_zone($zone_id, $_POST["delete_owner"]);
-}
+if(isset($post['slave_master_change']) && is_numeric($post['domain'])) change_zone_slave_master($post['domain'], $post['new_master']);
+if(isset($post['type_change']) && in_array($post['newtype'], $server_types)) change_zone_type($post['newtype'], $get['zid']);
+if(isset($post['newowner']) && is_numeric($post['domain']) && is_numeric($post['newowner'])) add_owner_to_zone($post['domain'], $post['newowner']);
+if(isset($post['delete_owner']) && is_numeric($post['delete_owner']) ) delete_owner_from_zone($get['zid'], $post['delete_owner']);
 
 if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" ) {
 	error(ERR_PERM_VIEW_ZONE);
 } else {
 
-	if (zone_id_exists($zone_id) == "0") {
+	if (zone_id_exists($get['zid']) == "0") {
 		error(ERR_ZONE_NOT_EXIST);
 	} else  {	
-		$domain_type=get_domain_type($zone_id);
-		$record_count=count_zone_records($zone_id);
+		$domain_type=get_domain_type($get['zid']);
+		$record_count=count_zone_records($get['zid']);
 
-		echo "   <h2>" . _('Edit zone') . " \"" . get_zone_name_from_id($zone_id) . "\"</h2>\n";
+		echo "   <h2>" . _('Edit zone') . " \"" . get_zone_name_from_id($get['zid']) . "\"</h2>\n";
 
 		echo "   <div class=\"showmax\">\n";
-		show_pages($record_count,$iface_rowamount,$zone_id);
+		show_pages($record_count,$iface_rowamount,$get['zid']);
 		echo "   </div>\n";
 
-		$records = get_records_from_domain_id($zone_id,ROWSTART,$iface_rowamount);
+		$records = get_records_from_domain_id($get['zid'],ROWSTART,$iface_rowamount);
 		if ( $records == "-1" ) { 
 			echo " <p>" .  _("This zone does not have any records. Weird.") . "</p>\n";
 		} else {
@@ -100,20 +87,21 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 			echo "     <th>" . _('TTL') . "</th>\n";
 			echo "    </tr>\n";
 			foreach ($records as $r) {
+
 				echo "    <input type=\"hidden\" name=\"record[" . $r['id'] . "][rid]\" value=\"" . $r['id'] . "\">\n";
-				echo "    <input type=\"hidden\" name=\"record[" . $r['id'] . "][zid]\" value=\"" . $zone_id . "\">\n";
+				echo "    <input type=\"hidden\" name=\"record[" . $r['id'] . "][zid]\" value=\"" . $get['zid'] . "\">\n";
 				echo "    <tr>\n";
 				if ( $domain_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
 					echo "     <td class=\"n\">&nbsp;</td>\n";
 				} else {
 					echo "     <td class=\"n\">\n";
-					echo "      <a href=\"edit_record.php?id=" . $r['id'] . "&amp;domain=" . $zone_id . "\">
+					echo "      <a href=\"edit_record.php?rid=" . $r['id'] . "&amp;zid=" . $get['zid'] . "\">
 							<img src=\"images/edit.gif\" alt=\"[ ". _('Edit record') . " ]\"></a>\n";
-					echo "      <a href=\"delete_record.php?id=" . $r['id'] . "&amp;domain=" . $zone_id . "\">
+					echo "      <a href=\"delete_record.php?id=" . $r['id'] . "&amp;zid=" . $get['zid'] . "\">
 							<img src=\"images/delete.gif\" ALT=\"[ " . _('Delete record') . " ]\" BORDER=\"0\"></a>\n";
 					echo "     </td>\n";
 				}
-				echo "      <td class=\"u\"><input class=\"wide\" name=\"record[" . $r['id'] . "][name]\" value=\"" . $r['name'] . "\"></td>\n";
+				echo "      <td class=\"u\"><input class=\"wide\" name=\"record[" . $r['id'] . "][label]\" value=\"" . $r['name'] . "\"></td>\n";
 				echo "      <td class=\"u\">\n";
 				echo "       <select name=\"record[" . $r['id'] . "][type]\">\n";
 				foreach (get_record_types() as $type_available) {
@@ -142,9 +130,9 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 		
 		if ( $perm_content_edit == "all" || $perm_content_edit == "own" && $user_is_zone_owner == "1" ) {
 			if ( $domain_type != "SLAVE") {
-				echo "    <input type=\"button\" class=\"button\" OnClick=\"location.href='add_record.php?id=" . $zone_id . "'\" value=\"" . _('Add record') . "\">&nbsp;&nbsp\n";
+				echo "    <input type=\"button\" class=\"button\" OnClick=\"location.href='add_record.php?zid=" . $get['zid'] . "'\" value=\"" . _('Add record') . "\">&nbsp;&nbsp\n";
 			}
-			echo "    <input type=\"button\" class=\"button\" OnClick=\"location.href='delete_domain.php?id=" . $zone_id . "'\" value=\"" . _('Delete zone') . "\">\n";
+			echo "    <input type=\"button\" class=\"button\" OnClick=\"location.href='delete_domain.php?zid=" . $get['zid'] . "'\" value=\"" . _('Delete zone') . "\">\n";
 		}
 
 		echo "   <div id=\"meta\">\n";
@@ -153,14 +141,14 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 		echo "      <th colspan=\"2\">" . _('Owner of zone') . "</th>\n";
 		echo "     </tr>\n";
 
-		$owners = get_users_from_domain_id($zone_id);
+		$owners = get_users_from_domain_id($get['zid']);
 
 		if ($owners == "-1") {
 			echo "      <tr><td>" . _('No owner set for this zone.') . "</td></tr>";
 		} else {
 			if ($meta_edit) {
 				foreach ($owners as $owner) {
-					echo "      <form method=\"post\" action=\"edit.php?id=" . $zone_id . "\">\n";
+					echo "      <form method=\"post\" action=\"edit.php?zid=" . $get['zid'] . "\">\n";
 					echo "       <tr>\n";
 					echo "        <td>" . $owner["fullname"] . "</td>\n";
 					echo "        <td>\n";
@@ -178,8 +166,8 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 
 		}
 		if ($meta_edit) {
-			echo "      <form method=\"post\" action=\"edit.php?id=" . $zone_id . "\">\n";
-			echo "       <input type=\"hidden\" name=\"domain\" value=\"" . $zone_id . "\">\n";
+			echo "      <form method=\"post\" action=\"edit.php?zid=" . $get['zid'] . "\">\n";
+			echo "       <input type=\"hidden\" name=\"domain\" value=\"" . $get['zid'] . "\">\n";
 			echo "       <tr>\n";
 			echo "        <td>\n";
 			echo "         <select name=\"newowner\">\n";
@@ -204,8 +192,8 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 		echo "      </tr>\n";
 
 		if ($meta_edit) {
-			echo "      <form action=\"" . $_SERVER['PHP_SELF'] . "?id=" . $zone_id . "\" method=\"post\">\n";
-			echo "       <input type=\"hidden\" name=\"domain\" value=\"" . $zone_id . "\">\n";
+			echo "      <form action=\"" . $_SERVER['PHP_SELF'] . "?id=" . $get['zid'] . "\" method=\"post\">\n";
+			echo "       <input type=\"hidden\" name=\"domain\" value=\"" . $get['zid'] . "\">\n";
 			echo "       <tr>\n";
 			echo "        <td>\n";
 			echo "         <select name=\"newtype\">\n";
@@ -228,14 +216,14 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 		}
 
 		if ($domain_type == "SLAVE" ) { 
-			$slave_master=get_domain_slave_master($zone_id);
+			$slave_master=get_domain_slave_master($get['zid']);
 			echo "      <tr>\n";
 			echo "       <th colspan=\"2\">" . _('IP address of master NS') . "</th>\n";
 			echo "      </tr>\n";
 
 			if ($meta_edit) {
-				echo "      <form action=\"" . $_SERVER['PHP_SELF'] . "?id=" . $zone_id . "\" method=\"post\">\n";
-				echo "       <input type=\"hidden\" name=\"domain\" value=\"" . $zone_id . "\">\n";
+				echo "      <form action=\"" . $_SERVER['PHP_SELF'] . "?id=" . $get['zid'] . "\" method=\"post\">\n";
+				echo "       <input type=\"hidden\" name=\"domain\" value=\"" . $get['zid'] . "\">\n";
 				echo "       <tr>\n";
 				echo "        <td>\n";
 				echo "         <input type=\"text\" name=\"new_master\" value=\"" . $slave_master . "\" class=\"input\">\n";

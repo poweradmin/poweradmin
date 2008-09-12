@@ -121,9 +121,9 @@ function edit_record($record) {
 		global $db;
 		// TODO: no need to check for numeric-ness of zone id if we check with validate_input as well?
 		if (is_numeric($record['zid'])) {
-			if (validate_input($record['zid'], $record['type'], $record['content'], $record['name'], $record['prio'], $record['ttl'])) {
+			if (validate_input($record['zid'], $record['type'], $record['content'], $record['label'], $record['prio'], $record['ttl'])) {
 				$query = "UPDATE records 
-					SET name=".$db->quote($record['name']).", 
+					SET name=".$db->quote($record['label']).", 
 					type=".$db->quote($record['type']).", 
 					content='" . $record['content'] . "', 
 					ttl=".$db->quote($record['ttl']).", 
@@ -916,6 +916,8 @@ function get_users_from_domain_id($id) {
 function search_zone_and_record($holy_grail,$perm) {
 	
 	global $db;
+
+	debug_print($holy_grail);
 
 	$holy_grail = trim($holy_grail);
 

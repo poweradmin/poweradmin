@@ -32,6 +32,8 @@ if(!@include_once("config.inc.php"))
  * Constants *
  *************/
 
+$err_var[] = "";
+
 if (isset($_GET["start"])) {
    define('ROWSTART', (($_GET["start"] - 1) * $iface_rowamount));
    } else {
@@ -164,6 +166,7 @@ require_once("i18n.inc.php");
 require_once("users.inc.php");
 require_once("dns.inc.php");
 require_once("record.inc.php");
+require_once("validation-user-input.php");
 
 $db = dbConnect();
 doAuthenticate();
@@ -203,31 +206,20 @@ function show_letters($letterstart,$userid=true)
         echo _('Show zones beginning with') . ":<br>";
 
 	$letter = "[[:digit:]]";
-	if ($letterstart == "1")
-	{
+	if ($letterstart == "1") {
 		echo "[ <span class=\"lettertaken\">0-9</span> ] ";
-	}
-	elseif (zone_letter_start($letter,$userid))
-	{
+	} elseif (zone_letter_start($letter,$userid)) {
 		echo "[ <a href=\"".$_SERVER["PHP_SELF"]."?letter=1\">0-9</a> ] ";
-	}
-	else
-	{
+	} else {
 		echo "[ <span class=\"letternotavailble\">0-9</span> ] ";
 	}
 
-        foreach (range('a','z') as $letter)
-        {
-                if ($letter == $letterstart)
-                {
+        foreach (range('a','z') as $letter) {
+                if ($letter == $letterstart) {
                         echo "[ <span class=\"lettertaken\">".$letter."</span> ] ";
-                }
-                elseif (zone_letter_start($letter,$userid))
-                {
+                } elseif (zone_letter_start($letter,$userid)) {
                         echo "[ <a href=\"".$_SERVER["PHP_SELF"]."?letter=".$letter."\">".$letter."</a> ] ";
-                }
-                else
-                {
+                } else {
                         echo "[ <span class=\"letternotavailble\">".$letter."</span> ] ";
                 }
         }
@@ -245,8 +237,9 @@ function zone_letter_start($letter,$userid=true)
 			LEFT JOIN zones ON domains.id=zones.domain_id 
 			WHERE substring(domains.name,1,1) ".$sql_regexp." ".$db->quote("^".$letter);
 	$db->setLimit(1);
-        $result = $db->query($query);
-        $numrows = $result->numRows();
+        $response = $db->query($query);
+	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+        $numrows = $response->numRows();
         if ( $numrows == "1" ) {
                 return 1;
         } else {
@@ -374,5 +367,6 @@ function debug_print($var) {
 	if (is_array($var)) { print_r($var) ; } else { echo $var ; } 
 	echo "</pre>\n";
 }
+
 
 ?>
