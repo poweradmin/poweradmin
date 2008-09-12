@@ -342,7 +342,7 @@ function edit_user($id, $user, $fullname, $email, $perm_templ, $description, $ac
 function change_user_pass($details) {
 	global $db;
 	
-	if ($details['newpass'] != $details['newpass2']) {
+	if ($details['password_new1'] != $details['password_new2']) {
 		error(ERR_USER_MATCH_NEW_PASS);
 		return false;
 	}
@@ -353,8 +353,8 @@ function change_user_pass($details) {
 
 	$rinfo = $response->fetchRow();
 
-	if(md5($details['currentpass']) == $rinfo['password']) {
-		$query = "UPDATE users SET password = " . $db->quote(md5($details['newpass']), 'text') . " WHERE id = " . $db->quote($rinfo['id'], 'integer') ;
+	if(md5($details['password_now']) == $rinfo['password']) {
+		$query = "UPDATE users SET password = " . $db->quote(md5($details['password_new1']), 'text') . " WHERE id = " . $db->quote($rinfo['id'], 'integer') ;
 		$response = $db->query($query);
 		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 

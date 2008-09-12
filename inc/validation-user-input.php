@@ -40,9 +40,12 @@ $valid_vars_post = array(
 	"ip_web"	=> "valodate_ip_address",		# ip addeess of a web server
 	"label"		=> "validate_sql_safe",			# label field of a record
 	"ns_name"	=> "validate_sql_safe",			# hostname of supermaster slave in zone
+	"owner"		=> "validate_sql_safe",			# owner of an object
+	"password_now"	=> "validate_sql_safe",			# current password
+	"password_new1"	=> "validate_sql_safe",			# new password, first try
+	"password_new2"	=> "validate_sql_safe",			# new password, second try
 	"pid"		=> "validate_positive_number",		# permission template idVy
 	"prio"		=> "validate_positive_number",		# prio field of a record
-	"owner"		=> "validate_sql_safe",			# owner of an object
 	"rid"		=> "validate_positive_number",		# record id
 	"sm_owner"	=> "validate_sql_safe",			# reference to supermaster owner
 	"ttl"		=> "validate_positive_number",		# ttl field of a record
@@ -90,7 +93,9 @@ function validate_alphanumeric($string) {
 	return preg_match('/^[a-z0-9]+$/i', $string);
 }
 
-
+function validate_ip_address($string) {
+	return (is_valid_ipv4($string) || is_valid_ipv6($string));
+}
 
 
 
