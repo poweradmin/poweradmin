@@ -26,6 +26,7 @@ echo "<html>\n";
 echo " <head>\n";
 echo "  <title>Poweradmin</title>\n";
 echo "  <link rel=stylesheet href=\"style/" . $iface_style . ".inc.php\" type=\"text/css\">\n";
+echo "  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
 echo " </head>\n";
 echo " <body>\n";
 
