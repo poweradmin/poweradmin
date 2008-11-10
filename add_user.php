@@ -49,16 +49,18 @@ if (!verify_permission('user_add_new')) {
 	echo "        <td class=\"n\">" . _('Emailaddress') . "</td>\n"; 
 	echo "        <td class=\"n\"><input type=\"text\" class=\"input\" name=\"email\" value=\"\"></td>\n";
 	echo "       </tr>\n";
-	echo "       <tr>\n";
-	echo "        <td class=\"n\">" . _('Permission template') . "</td>\n"; 
-	echo "        <td class=\"n\">\n";
-	echo "         <select name=\"perm_templ\">\n";
-	foreach (list_permission_templates() as $template) {
-		echo "          <option value=\"" . $template['id'] . "\">" . $template['name'] . "</option>\n";
+	if (verify_permission('user_edit_templ_perm')) {
+		echo "       <tr>\n";
+		echo "        <td class=\"n\">" . _('Permission template') . "</td>\n"; 
+		echo "        <td class=\"n\">\n";
+		echo "         <select name=\"perm_templ\">\n";
+		foreach (list_permission_templates() as $template) {
+			echo "          <option value=\"" . $template['id'] . "\">" . $template['name'] . "</option>\n";
+		}
+		echo "         </select>\n";
+		echo "       </td>\n";
+		echo "       </tr>\n";
 	}
-	echo "         </select>\n";
-	echo "       </td>\n";
-	echo "       </tr>\n";
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">" . _('Description') . "</td>\n"; 
 	echo "        <td class=\"n\"><textarea rows=\"4\" cols=\"30\" class=\"inputarea\" name=\"descr\"></textarea></td>\n";
