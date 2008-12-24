@@ -313,9 +313,11 @@ function edit_user($id, $user, $fullname, $email, $perm_templ, $description, $ac
 		$query = "UPDATE users SET
 				username = " . $db->quote($user, 'text') . ",
 				fullname = " . $db->quote($fullname, 'text') . ",
-				email = " . $db->quote($email, 'text') . ",
-				perm_templ = " . $db->quote($perm_templ, 'integer') . ",
-				description = " . $db->quote($description, 'text') . ", 
+				email = " . $db->quote($email, 'text') . ",";
+		if (verify_permission('user_edit_templ_perm')) {
+			$query .= "perm_templ = " . $db->quote($perm_templ, 'integer') . ",";
+		}
+		$query .= "description = " . $db->quote($description, 'text') . ", 
 				active = " . $db->quote($active, 'integer') ;
 
 		if($password != "") {
@@ -734,29 +736,34 @@ function add_new_user($details) {
 
 	if (!verify_permission('user_add_new')) {
 		error(ERR_PERM_ADD_USER);
-
+		return false;
 	} elseif (user_exists($details['username'])) {
 		error(ERR_USER_EXISTS);
-
+		return false;
 	} elseif (!is_valid_email($details['email'])) {
 		error(ERR_INV_EMAIL);
-	
+		return false;
 	} elseif ($details['active'] == 1) {
 		$active = 1;
 	} else {
 		$active = 0;
 	}
 
-	$query = "INSERT INTO users (username, password, fullname, email, description, perm_templ, active) VALUES ("
+	$query = "INSERT INTO users (username, password, fullname, email, description,";
+	if (verify_permission('user_edit_templ_perm')) {
+		$query .= ' perm_templ,';
+	}
+	$query .= " active) VALUES ("
 			. $db->quote($details['username'], 'text') . ", "
 			. $db->quote(md5($details['password']), 'text') . ", "
 			. $db->quote($details['fullname'], 'text') . ", "
 			. $db->quote($details['email'], 'text') . ", "
-			. $db->quote($details['descr'], 'text') . ", "
-			. $db->quote($details['perm_templ'], 'integer') . ", "
-			. $db->quote($active, 'integer') 
+			. $db->quote($details['descr'], 'text') . ", ";
+	if (verify_permission('user_edit_templ_perm')) {
+		$query .= $db->quote($details['perm_templ'], 'integer') . ", ";
+	}
+	$query .= $db->quote($active, 'integer') 
 			. ")";
-
 	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 	

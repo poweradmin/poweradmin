@@ -87,6 +87,7 @@ function validate_input($zid, $type, &$content, &$name, &$prio, &$ttl) {
 			if (!is_valid_printable($content)) return false;
 			break;
 
+		case "CURL":
 		case "MBOXFW":
 		case "NAPTR":
 		case "SPF":

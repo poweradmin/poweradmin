@@ -114,16 +114,18 @@ if ($edit_id == "-1") {
 		echo "        <td class=\"n\">" . _('Emailaddress') . "</td>\n"; 
 		echo "        <td class=\"n\"><input type=\"text\" class=\"input\" name=\"email\" value=\"" . $user['email'] . "\"></td>\n";
 		echo "       </tr>\n";
-		echo "       <tr>\n";
-		echo "        <td class=\"n\">" . _('Permission template') . "</td>\n"; 
-		echo "        <td class=\"n\">\n";
-		echo "         <select name=\"perm_templ\">\n";
-		foreach (list_permission_templates() as $template) {
-			($template['id'] == $user['tpl_id']) ? $select = " SELECTED" : $select = "" ;
-			echo "          <option value=\"" . $template['id'] . "\"" . $select . ">" . $template['name'] . "</option>\n";
+		if (verify_permission('user_edit_templ_perm')) {
+			echo "       <tr>\n";
+			echo "        <td class=\"n\">" . _('Permission template') . "</td>\n"; 
+			echo "        <td class=\"n\">\n";
+			echo "         <select name=\"perm_templ\">\n";
+			foreach (list_permission_templates() as $template) {
+				($template['id'] == $user['tpl_id']) ? $select = " SELECTED" : $select = "" ;
+				echo "          <option value=\"" . $template['id'] . "\"" . $select . ">" . $template['name'] . "</option>\n";
+			}
+			echo "         </select>\n";
+			echo "       </td>\n";
 		}
-		echo "         </select>\n";
-		echo "       </td>\n";
 		echo "       </tr>\n";
 		echo "       <tr>\n";
 		echo "        <td class=\"n\">" . _('Description') . "</td>\n"; 
