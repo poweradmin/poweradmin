@@ -90,6 +90,7 @@ $rtypes = array('A', 'AAAA', 'CNAME', 'HINFO', 'MX', 'NAPTR', 'NS', 'PTR', 'SOA'
 if($dns_fancy) {
         $rtypes[14] = 'URL';
         $rtypes[15] = 'MBOXFW';
+	$rtypes[16] = 'CURL';
 }
 
 // $template - array of records that will be applied when adding a new zone file
