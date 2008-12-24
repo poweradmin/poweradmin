@@ -110,7 +110,7 @@ function edit_record($record) {
 	$user_is_zone_owner = verify_user_is_owner_zoneid($record['zid']);
 	$zone_type = get_domain_type($record['zid']);
 
-	if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
+	if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" && $user_is_zone_owner == "0") ) {
 		error(ERR_PERM_EDIT_RECORD);
 		return false;
 	} else {
@@ -166,7 +166,7 @@ function add_record($zoneid, $name, $type, $content, $ttl, $prio) {
 	$user_is_zone_owner = verify_user_is_owner_zoneid($zoneid);
 	$zone_type = get_domain_type($zoneid);
 
-        if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
+        if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" && $user_is_zone_owner == "0") ) {
 		error(ERR_PERM_ADD_RECORD);
 		return false;
 	} else {
