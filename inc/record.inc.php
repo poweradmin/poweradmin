@@ -283,7 +283,7 @@ function delete_record($rid)
 	$record = get_record_details_from_record_id($rid);
 	$user_is_zone_owner = verify_user_is_owner_zoneid($record['zid']);
 
-	if ( $perm_content_edit == "all" || ($perm_content_edit == "own" && $user_is_zone_owner == "0" )) {
+	if ( $perm_content_edit == "all" || ($perm_content_edit == "own" && $user_is_zone_owner == "1" )) {
 		if ($record['type'] == "SOA") {
 			error(_('You are trying to delete the SOA record. If are not allowed to remove it, unless you remove the entire zone.'));
 		} else {
