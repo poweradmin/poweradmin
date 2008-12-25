@@ -19,35 +19,24 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+$variables_required_get = array('pid');
+$variables_required_post = array();
+
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
-$perm_templ = "-1";
-if (isset($_GET['id']) && (v_num($_GET['id']))) {
-	 $perm_templ = $_GET['id'];
-}
-
-$confirm = "-1";
-if ((isset($_GET['confirm'])) && v_num($_GET['confirm'])) {
-        $confirm = $_GET['confirm'];
-}
-
-if ($perm_templ == "-1"){
-	error(ERR_INV_INPUT);
+if (!(verify_permission('user_edit_templ_perm'))) {
+	error(ERR_PERM_DEL_PERM_TEMPL);
 } else {
-	if (!(verify_permission('user_edit_templ_perm'))) {
-		error(ERR_PERM_DEL_PERM_TEMPL);
-	} else {
-		$templ_details = get_permission_template_details($perm_templ);
-		echo "     <h2>" . _('Delete permission template') . " \"" . $templ_details['name'] . "\"</h2>\n";
+	$templ_details = get_permission_template_details($get['pid']);
+	echo "     <h2>" . _('Delete permission template') . " \"" . $templ_details['name'] . "\"</h2>\n";
 
-		if ($_GET["confirm"] == '1') {
-			delete_perm_templ($perm_templ);
-			success(SUC_PERM_TEMPL_DEL);
-		} else {
-			echo "     <p>" . _('Are you sure?') . "</p>\n";
-			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='" . $_SERVER['REQUEST_URI'] . "&confirm=1'\" value=\"" . _('Yes') . "\">\n"; 
-		}
+	if ($get['confirm'] == '1') {
+		delete_perm_templ($get['pid']);
+		success(SUC_PERM_TEMPL_DEL);
+	} else {
+		echo "     <p>" . _('Are you sure?') . "</p>\n";
+		echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='" . $_SERVER['REQUEST_URI'] . "&confirm=1'\" value=\"" . _('Yes') . "\">\n"; 
 	}
 }
 

@@ -19,6 +19,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+$variables_required_get = array('pid');
+$variables_required_post = array();
+
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
@@ -30,13 +33,13 @@ if (!verify_permission('templ_perm_edit')) {
 		update_perm_templ_details($post);	
 	}
 
-	$templ = get_permission_template_details($pid);
-	$perms_templ = get_permissions_by_template_id($pid);
-	$perms_avail = get_permissions_by_template_id($pid);
+	$templ = get_permission_template_details($get['pid']);
+	$perms_templ = get_permissions_by_template_id($get['pid']);
+	$perms_avail = get_permissions_by_template_id($get['pid']);
 
 	echo "    <h2>" . _('Edit permission template') . "</h2>\n"; 
         echo "    <form method=\"post\">\n";
-	echo "    <input type=\"hidden\" name=\"templ_id\" value=\"" . $pid . "\">\n";
+	echo "    <input type=\"hidden\" name=\"templ_id\" value=\"" . $get['pid'] . "\">\n";
 
 	echo "     <table>\n";
 	echo "      <tr>\n";

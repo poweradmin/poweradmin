@@ -19,6 +19,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+$variables_required_get = array();
+$variables_required_post = array();
+
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
@@ -56,7 +59,7 @@ if (!verify_permission('templ_perm_edit')) {
 		echo "      <tr>\n";
 		echo "       <td><input type=\"checkbox\" name=\"perm_id[]\" value=\"" . $perm_a['id'] . "\"></td>\n";
 		echo "       <td>" . $perm_a['name'] . "</td>\n";
-		echo "       <td>" . _($perm_a['descr']) . "</td>\n";
+		echo "       <td>" . $perm_a['descr'] . "</td>\n";
 		echo "      </tr>\n";
 	}
 	echo "     </table>\n";

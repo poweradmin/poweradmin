@@ -21,6 +21,7 @@
 
 //session_start();
 
+
 function doAuthenticate() {
 	global $db;
 	global $iface_expire;
@@ -29,7 +30,7 @@ function doAuthenticate() {
 	}
 
 	// If a user had just entered his/her login && password, store them in our session.
-	if(isset($_POST["authenticate"]))
+	if(isset($_POST["commit"]))
 	{
 			$_SESSION["userpwd"] = $_POST["password"];
 			$_SESSION["userlogin"] = $_POST["username"];
@@ -53,7 +54,7 @@ function doAuthenticate() {
 			$rowObj = $result->fetchRow();
 			$_SESSION["userid"] = $rowObj["id"];
 			$_SESSION["name"] = $rowObj["fullname"];
-			if(isset($_POST["authenticate"]))
+			if(isset($_POST["commit"]))
 			{
 				//If a user has just authenticated, redirect him to index with timestamp, so post-data gets lost.
 				session_write_close();
@@ -102,7 +103,7 @@ function auth($msg="",$type="success")
 	  <tr>
 	   <td class="n">&nbsp;</td>
 	   <td class="n">
-	    <input type="submit" name="authenticate" class="button" value=" <?php echo _('Login'); ?> ">
+	    <input type="submit" name="commit" class="button" value=" <?php echo _('Login'); ?> ">
 	   </td>
 	  </tr>
 	 </table>

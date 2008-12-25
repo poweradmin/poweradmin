@@ -19,14 +19,11 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+$variables_required_get = array('zid');
+$variables_required_post = array();
+
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
-
-if (!isset($get['zid'])) {
-	error(ERR_INV_INPUT);
-	include_once("inc/footer.inc.php");
-	exit;
-}
 
 if (isset($post['commit'])) {
 	foreach ($post['record'] as $record) {
@@ -97,7 +94,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 					echo "     <td class=\"n\">\n";
 					echo "      <a href=\"edit_record.php?rid=" . $r['id'] . "&amp;zid=" . $get['zid'] . "\">
 							<img src=\"images/edit.gif\" alt=\"[ ". _('Edit record') . " ]\"></a>\n";
-					echo "      <a href=\"delete_record.php?id=" . $r['id'] . "&amp;zid=" . $get['zid'] . "\">
+					echo "      <a href=\"delete_record.php?rid=" . $r['id'] . "&amp;zid=" . $get['zid'] . "\">
 							<img src=\"images/delete.gif\" ALT=\"[ " . _('Delete record') . " ]\" BORDER=\"0\"></a>\n";
 					echo "     </td>\n";
 				}

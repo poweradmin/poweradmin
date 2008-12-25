@@ -19,67 +19,55 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+$variables_required_get = array('rid');
+$variables_required_post = array();
+
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
-
-$record_id = "-1";
-if (isset($_GET['id']) && v_num($_GET['id'])) {
-	$record_id = $_GET['id'];
-}
-
-$confirm = "-1";
-if (isset($_GET['confirm']) && v_num($_GET['confirm'])) {
-        $confirm = $_GET['confirm'];
-}
 
 if (verify_permission('zone_content_edit_others')) { $perm_content_edit = "all" ; }
 elseif (verify_permission('zone_content_edit_own')) { $perm_content_edit = "own" ; }
 else { $perm_content_edit = "none" ; }
 
-$zid = get_zone_id_from_record_id($_GET['id']);
+$zid = get_zone_id_from_record_id($get['rid']);
 $user_is_zone_owner = verify_user_is_owner_zoneid($zid);
 
-if ($record_id == "-1" ) {
-	error(ERR_INV_INPUT);
+if ($get['commit'] == '1') {
+	if ( delete_record($get['rid']) ) {
+		success(SUC_RECORD_DEL);
+	}
 } else {
-	if ($confirm == '1') {
-		if ( delete_record($record_id) ) {
-			success(SUC_RECORD_DEL);
-		}
-	} else {
-		$zone_id = recid_to_domid($record_id);
-		$zone_name = get_zone_name_from_id($zone_id);
-		$user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
-		$record_info = get_record_from_id($record_id);
-	
-		echo "     <h2>" . _('Delete record') . " in zone \"" . $zone_name . "\"</h2>\n";
+	$zone_name = get_zone_name_from_id($zid);
+	$user_is_zone_owner = verify_user_is_owner_zoneid($zid);
+	$record_info = get_record_from_id($get['rid']);
 
-		if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
-			error(ERR_PERM_EDIT_RECORD);
-		} else {
-			echo "     <table>\n";
-			echo "      <tr>\n";
-			echo "       <th>Name</th>\n";
-			echo "       <th>Type</th>\n";
-			echo "       <th>Content</th>\n";
-			echo "       <th>Priority</th>\n";
-			echo "       <th>TTL</th>\n";
-			echo "      </tr>\n";
-			echo "      <tr>\n";
-			echo "       <td>" . $record_info['name'] . "</td>\n";
-			echo "       <td>" . $record_info['type'] . "</td>\n";
-			echo "       <td>" . $record_info['content'] . "</td>\n";
-			echo "       <td>" . $record_info['priority'] . "</td>\n";
-			echo "       <td>" . $record_info['ttl'] . "</td>\n";
-			echo "      </tr>\n";
-			echo "     </table>\n";
-			if (($record_info['type'] == 'NS' && $record_info['name'] == $zone_name) || $record_info['type'] == 'SOA') {
-				echo "     <p>" . _('You are trying to delete a record that is needed for this zone to work.') . "</p>\n";
-			}
-			echo "     <p>" . _('Are you sure?') . "</p>\n";
-			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='" . $_SERVER["REQUEST_URI"] . "&confirm=1'\" value=\"" . _('Yes') . "\">\n";
-			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
+	echo "     <h2>" . _('Delete record') . " in zone \"" . $zone_name . "\"</h2>\n";
+
+	if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
+		error(ERR_PERM_EDIT_RECORD);
+	} else {
+		echo "     <table>\n";
+		echo "      <tr>\n";
+		echo "       <th>Name</th>\n";
+		echo "       <th>Type</th>\n";
+		echo "       <th>Content</th>\n";
+		echo "       <th>Priority</th>\n";
+		echo "       <th>TTL</th>\n";
+		echo "      </tr>\n";
+		echo "      <tr>\n";
+		echo "       <td>" . $record_info['name'] . "</td>\n";
+		echo "       <td>" . $record_info['type'] . "</td>\n";
+		echo "       <td>" . $record_info['content'] . "</td>\n";
+		echo "       <td>" . $record_info['priority'] . "</td>\n";
+		echo "       <td>" . $record_info['ttl'] . "</td>\n";
+		echo "      </tr>\n";
+		echo "     </table>\n";
+		if (($record_info['type'] == 'NS' && $record_info['name'] == $zone_name) || $record_info['type'] == 'SOA') {
+			echo "     <p>" . _('You are trying to delete a record that is needed for this zone to work.') . "</p>\n";
 		}
-        }
+		echo "     <p>" . _('Are you sure?') . "</p>\n";
+		echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='" . $_SERVER["REQUEST_URI"] . "&commit=1'\" value=\"" . _('Yes') . "\">\n";
+		echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
+	}
 }
 include_once("inc/footer.inc.php");

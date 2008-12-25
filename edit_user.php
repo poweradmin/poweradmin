@@ -19,76 +19,37 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+$variables_required_get = array('uid');
+$variables_required_post = array();
+
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
-
-$edit_id = "-1";
-if (isset($_GET['id']) && v_num($_GET['id'])) {
-	$edit_id = $_GET['id'];
-}
 
 verify_permission('user_edit_own') ? $perm_edit_own = "1" : $perm_edit_own = "0" ;
 verify_permission('user_edit_others') ? $perm_edit_others = "1" : $perm_edit_others = "0" ;
 
-if ($edit_id == "-1") {
-	error(ERR_INV_INPUT);
-} elseif (($edit_id == $_SESSION["userid"] && $perm_edit_own == "1") || ($edit_id != $_SESSION["userid"] && $perm_edit_others == "1" )) {
+if (($get['uid'] == $_SESSION["userid"] && $perm_edit_own == "1") || ($get['uid'] != $_SESSION["userid"] && $perm_edit_others == "1" )) {
 
-	if(isset($_POST["commit"])) {
+	if(isset($post['commit'])) {
 
-		$i_username = "-1";
-		$i_fullname = "-1";
-		$i_email = "-1";
-		$i_description = "-1";
-		$i_password = "-1";
-		$i_perm_templ = "0";
-		$i_active = "0";
-
-		if (isset($_POST['username'])) {
-			$i_username = $_POST['username'];
-		}
-
-		if (isset($_POST['fullname'])) {
-			$i_fullname = $_POST['fullname'];
-		}
-
-		if (isset($_POST['email'])) {
-			$i_email = $_POST['email'];
-		}
-
-		if (isset($_POST['description'])) {
-			$i_description = $_POST['description'];
-		}
-
-		if (isset($_POST['password'])) {
-			$i_password = $_POST['password'];
-		}
-		
-		if (isset($_POST['perm_templ']) && v_num($_POST['perm_templ'])) {
-			$i_perm_templ = $_POST['perm_templ'];
-		}
-		
-		if (isset($_POST['active']) && v_num($_POST['active'])) {
-			$i_active = $_POST['active'];
-		}
-		
-		if ( $i_username == "-1" || $i_fullname == "-1" || $i_email < "1" || $i_description == "-1" || $i_password == "-1" ) {
-			error(ERR_INV_INPUT);
+		// TODO What to do if pid and/active are not set.
+		$variables_required_post = array('username','fullname','email','descr','password');
+		if (!minimum_variable_set($variables_required_get, $get)) {
+			include_once("inc/footer.inc.php");
+			exit;
 		} else {
-			if($i_username != "" && $i_perm_templ > "0" && $i_fullname) {
-				if(!isset($i_active)) {
-					$active = 0;
-				} else {
-					$active = 1;
+			if($post['username'] != "" && $post['pid'] > "0" && $post['fullname']) {
+				if(!isset($post['active'])) {
+					$post['active'] = 0;
 				}
-				if(edit_user($edit_id, $i_username, $i_fullname, $i_email, $i_perm_templ, $i_description, $active, $i_password)) {
+				if(edit_user($get['uid'], $post['username'], $post['fullname'], $post['email'], $post['pid'], $post['descr'], $post['active'], $post['password'])) {
 					success(SUC_USER_UPD);
 				} 
 			}
 		}
 	}
 
-	$users = get_user_detail_list($edit_id)	;
+	$users = get_user_detail_list($get['uid'])	;
 
 	foreach ($users as $user) {
 		
@@ -96,7 +57,7 @@ if ($edit_id == "-1") {
 
 		echo "     <h2>" . _('Edit user') . " \"" . $user['fullname'] . "\"</h2>\n";
 		echo "     <form method=\"post\">\n";
-		echo "      <input type=\"hidden\" name=\"number\" value=\"" . $edit_id . "\">\n";
+		echo "      <input type=\"hidden\" name=\"number\" value=\"" . $get['uid'] . "\">\n";
 		echo "      <table>\n";
 		echo "       <tr>\n";
 		echo "        <td class=\"n\">" . _('Username') . "</td>\n"; 
@@ -118,7 +79,7 @@ if ($edit_id == "-1") {
 			echo "       <tr>\n";
 			echo "        <td class=\"n\">" . _('Permission template') . "</td>\n"; 
 			echo "        <td class=\"n\">\n";
-			echo "         <select name=\"perm_templ\">\n";
+			echo "         <select name=\"pid\">\n";
 			foreach (list_permission_templates() as $template) {
 				($template['id'] == $user['tpl_id']) ? $select = " SELECTED" : $select = "" ;
 				echo "          <option value=\"" . $template['id'] . "\"" . $select . ">" . $template['name'] . "</option>\n";

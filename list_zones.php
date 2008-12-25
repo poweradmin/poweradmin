@@ -84,7 +84,7 @@ if ($perm_view == "none") {
 			$user_is_zone_owner = verify_user_is_owner_zoneid($zone["id"]);
 		}
 		if ( $perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1") ) {
-      			echo "           <a href=\"delete_domain.php?id=" . $zone["id"] . "\"><img src=\"images/delete.gif\" title=\"" . _('Delete zone') . " " . $zone['name'] . "\" alt=\"[ ". _('Delete zone') . " " . $zone['name'] . " ]\"></a>\n";
+      			echo "           <a href=\"delete_domain.php?zid=" . $zone["id"] . "\"><img src=\"images/delete.gif\" title=\"" . _('Delete zone') . " " . $zone['name'] . "\" alt=\"[ ". _('Delete zone') . " " . $zone['name'] . " ]\"></a>\n";
 		}
 		echo "          </td>\n";
 		echo "          <td class=\"y\">" . $zone["name"] . "</td>\n";

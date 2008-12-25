@@ -19,6 +19,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+$variables_required_get = array();
+$variables_required_post = array();
+
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
@@ -53,7 +56,7 @@ if (!verify_permission('user_add_new')) {
 		echo "       <tr>\n";
 		echo "        <td class=\"n\">" . _('Permission template') . "</td>\n"; 
 		echo "        <td class=\"n\">\n";
-		echo "         <select name=\"perm_templ\">\n";
+		echo "         <select name=\"pid\">\n";
 		foreach (list_permission_templates() as $template) {
 			echo "          <option value=\"" . $template['id'] . "\">" . $template['name'] . "</option>\n";
 		}

@@ -19,7 +19,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
 $valid_vars_get = array(
+	"commit"	=> "validate_true",			# commit a change, value unused
+	"ip_master"	=> "validate_ip_address",		# ip address of a master (of slave)
 	"start"		=> "validate_positive_number",		# number for show_page 
 	"time"		=> "validate_positive_number",		# session related?
 	"letter"	=> "validate_alphanumeric",		# letter for show_letter
@@ -30,8 +33,9 @@ $valid_vars_get = array(
 	);
 
 $valid_vars_post = array(
-	"commit"	=> "validate_true",			# commit a change, value unused
 	"content"	=> "validate_sql_safe",			# content field of a record
+	"descr"		=> "validate_sql_safe",			# description of a user 
+	"email"		=> "validate_sql_safe",			# email address of a user
 	"empty"		=> "validate_positive_number",		# prio field of a record
 	"holy_grail"	=> "validate_holy_grail",		# string to do a search for
 	"ip_mail"	=> "validate_ip_address",		# ip address of a mail server
@@ -41,16 +45,19 @@ $valid_vars_post = array(
 	"label"		=> "validate_sql_safe",			# label field of a record
 	"ns_name"	=> "validate_sql_safe",			# hostname of supermaster slave in zone
 	"owner"		=> "validate_sql_safe",			# owner of an object
+	"password"	=> "validate_sql_safe",			# password at login
 	"password_now"	=> "validate_sql_safe",			# current password
 	"password_new1"	=> "validate_sql_safe",			# new password, first try
 	"password_new2"	=> "validate_sql_safe",			# new password, second try
-	"pid"		=> "validate_positive_number",		# permission template idVy
+	"pid"		=> "validate_positive_number",		# permission template id
 	"prio"		=> "validate_positive_number",		# prio field of a record
 	"rid"		=> "validate_positive_number",		# record id
+	"sid"		=> "validate_positive_number",		# supermaster id
 	"sm_owner"	=> "validate_sql_safe",			# reference to supermaster owner
 	"ttl"		=> "validate_positive_number",		# ttl field of a record
 	"type"		=> "validate_sql_safe",			# type field of a record
 	"uid"		=> "validate_positive_number",		# user id
+	"username"	=> "validate_sql_safe",			# username at login
 	"zid"		=> "validate_positive_number",		# zone id
 	"zone_name"	=> "validate_sql_safe",			# name of the zone
 	"zone_type"	=> "validate_sql_safe"			# type of the zone
@@ -63,7 +70,7 @@ function validate_variables($input, $valid_vars) {
 		} else {
 			if (array_key_exists($key,$valid_vars)) {
 				if (!$valid_vars[$key]($val)) {
-					$input['var_err'][] = $key;
+					$input['var_err_val'][] = $key;
 				}
 			} else {
 				error("An unknown variable (\"" . $key . "\") was defined.");
@@ -97,6 +104,19 @@ function validate_ip_address($string) {
 	return (is_valid_ipv4($string) || is_valid_ipv6($string));
 }
 
-
+function minimum_variable_set($required_keys,$input) {
+        foreach ($required_keys as $key) {
+                if (!array_key_exists($key, $input)) {
+                        error("Variable \"" . $key ."\" was not defined, but this variable is required.");
+                        $false = "1";
+                }
+	}
+	if (isset($false)) {
+		return false ;
+	} else {
+		return true ;
+	}
+	
+}
 
 ?>

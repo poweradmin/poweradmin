@@ -19,33 +19,28 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+$variables_required_get = array('uid');
+$variables_required_post = array();
+
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
 verify_permission('user_edit_own') ? $perm_edit_own = "1" : $perm_edit_own = "0" ;
 verify_permission('user_edit_others') ? $perm_edit_others = "1" : $perm_edit_others = "0" ;
 
-if (!(isset($_GET['id']) && v_num($_GET['id']))) {
-	error(ERR_INV_INPUT);
-	include_once("inc/footer.inc.php");
-	exit;
-} else {
-	$uid = $_GET['id'];
-}
-
-if (isset($_POST['commit'])) {
-	if (delete_user($uid,$_POST['zone'])) {
+if (isset($post['commit'])) {
+	if (delete_user($get['uid'],$post['zone'])) {
 		success(SUC_USER_DEL);	
 	}
 } else {
 
-	if (($uid != $_SESSION['userid'] && !verify_permission('user_edit_others')) || ($uid == $_SESSION['userid'] && !verify_permission('user_edit_own'))) {
+	if (($get['uid'] != $_SESSION['userid'] && !verify_permission('user_edit_others')) || ($get['uid'] == $_SESSION['userid'] && !verify_permission('user_edit_own'))) {
 		error(ERR_PERM_DEL_USER);
 		include_once("inc/footer.inc.php");
 		exit;
 	} else {
-		$fullname = get_fullname_from_userid($uid);
-		$zones = get_zones("own",$uid);
+		$fullname = get_fullname_from_userid($get['uid']);
+		$zones = get_zones("own",$get['uid']);
 
 		echo "     <h2>" . _('Delete user') . " \"" . $fullname . "\"</h2>\n";
 		echo "     <form method=\"post\">\n";

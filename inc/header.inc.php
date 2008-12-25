@@ -79,11 +79,50 @@ echo "    <div class=\"content\">\n";
 debug_print($_POST);
 debug_print($_GET);
 
-if (!empty($_POST)) $post = validate_variables($_POST, $valid_vars_post);
-if (!empty($_GET)) $get = validate_variables($_GET, $valid_vars_get);
-if (isset($post['var_err']) || isset($get['var_err'])) {
-	$var_err = 1;
-	error('One or more variables has an incorrect syntax.');
+
+// Validation of $_POST
+if (!empty($_POST)) {
+	$post = validate_variables($_POST, $valid_vars_post);
+	if (isset($post['var_err_val'])) {
+		foreach ($post['var_err_val'] as $key) {
+			error('Value for variable "' . $key . '" has invalid syntax.');
+		}
+		$var_err = 1;
+	}
+} else {
+	$post[] = NULL;
 }
+
+// Validation of $_GET
+if (!empty($_GET)) {
+	$get = validate_variables($_GET, $valid_vars_get);
+	if (isset($get['var_err_val'])) {
+		foreach ($get['var_err_val'] as $key) {
+			error('Value for variable "' . $key . '" has invalid syntax.');
+		}
+		$var_err = 1;
+	}
+} else {
+	$get[] = NULL;
+}
+
+// Check if minimum set of variables is present.
+if (!empty($variables_required_get)) {
+	if (!minimum_variable_set($variables_required_get, $get)) {
+		$var_err = 1 ;
+	}
+}
+if (!empty($variables_required_post)) {
+	if (!minimum_variable_set($variables_required_post, $post)) {
+		$var_err = 1 ;
+	}
+}
+
+// Bail out if basic variable validation failed.
+if (isset($var_err) && $var_err == 1 ) {
+        include_once("inc/footer.inc.php");
+ 	exit;
+}
+
 
 ?>

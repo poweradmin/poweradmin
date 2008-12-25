@@ -19,43 +19,32 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+$variables_required_get = array('ip_master');
+$variables_required_post = array();
+
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
-$master_ip = "-1";
-if (isset($_GET['master_ip']) && (is_valid_ipv4($_GET['master_ip']) || is_valid_ipv6($_GET['master_ip']))) {
-	 $master_ip = $_GET['master_ip'];
-}
-
-$confirm = "-1";
-if ((isset($_GET['confirm'])) && (v_num($_GET['confirm']))) {
-        $confirm = $_GET['confirm'];
-}
-
-if ($master_ip == "-1"){
-	error(ERR_INV_INPUT);
+(verify_permission('supermaster_edit')) ? $perm_sm_edit = "1" :  $perm_sm_edit = "0" ;
+if ($perm_sm_edit == "0") {
+	error(ERR_PERM_DEL_SM);
 } else {
-	(verify_permission('supermaster_edit')) ? $perm_sm_edit = "1" :  $perm_sm_edit = "0" ;
-	if ($perm_sm_edit == "0") {
-		error(ERR_PERM_DEL_SM);
-	} else {
-		$info = get_supermaster_info_from_ip($master_ip);
+	$info = get_supermaster_info_from_ip($get['ip_master']);
 
-		echo "     <h2>" . _('Delete supermaster') . " \"" . $master_ip . "\"</h2>\n";
+	echo "     <h2>" . _('Delete supermaster') . " \"" . $get['ip_master'] . "\"</h2>\n";
 
-		if ($_GET["confirm"] == '1') {
-			if (delete_supermaster($master_ip)) {
-				success(SUC_ZONE_DEL);
-			}
-		} else {
-			echo "     <p>\n";
-			echo "      " . _('Hostname in NS record') . ": " . $info['ns_name'] . "<br>\n";
-			echo "      " . _('Account') . ": " . $info['account'] . "\n";
-			echo "     </p>\n";
-			echo "     <p>" . _('Are you sure?') . "</p>\n";
-			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='" . $_SERVER['REQUEST_URI'] . "&confirm=1'\" value=\"" . _('Yes') . "\">\n"; 
-			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
+	if ($_GET["confirm"] == '1') {
+		if (delete_supermaster($get['ip_master'])) {
+			success(SUC_ZONE_DEL);
 		}
+	} else {
+		echo "     <p>\n";
+		echo "      " . _('Hostname in NS record') . ": " . $info['ns_name'] . "<br>\n";
+		echo "      " . _('Account') . ": " . $info['account'] . "\n";
+		echo "     </p>\n";
+		echo "     <p>" . _('Are you sure?') . "</p>\n";
+		echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='" . $_SERVER['REQUEST_URI'] . "&confirm=1'\" value=\"" . _('Yes') . "\">\n"; 
+		echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
 	}
 }
 
