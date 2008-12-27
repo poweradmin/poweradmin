@@ -89,7 +89,7 @@ function list_permission_templates() {
 	$template_list = array();
 	while ($template= $response->fetchRow()) {
 		$tempate_list[] = array(
-			"id"	=>	$template['id'],
+			"pid"	=>	$template['pid'],
 			"name"	=>	$template['name'],
 			"descr"	=>	$template['descr']
 			);
@@ -226,13 +226,13 @@ function delete_user($uid,$zones)
 	return true;
 }
 
-function delete_perm_templ($ptid) {
+function delete_perm_templ($pid) {
 
 	global $db;
 	if (!(verify_permission('user_edit_templ_perm'))) {
 		error(ERR_PERM_DEL_PERM_TEMPL);
 	} else {
-		$query = "SELECT id FROM users WHERE perm_templ = " . $ptid;
+		$query = "SELECT id FROM users WHERE perm_templ = " . $pid;
 		$response = $db->query($query);
 		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
@@ -240,11 +240,11 @@ function delete_perm_templ($ptid) {
 			error(ERR_PERM_TEMPL_ASSIGNED);
 			return false;
 		} else {
-			$query = "DELETE FROM perm_templ_items WHERE templ_id = " . $ptid;
+			$query = "DELETE FROM perm_templ_items WHERE templ_id = " . $pid;
 			$response = $db->query($query);
 			if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
-			$query = "DELETE FROM perm_templ WHERE id = " . $ptid;
+			$query = "DELETE FROM perm_templ WHERE id = " . $pid;
 			$response = $db->query($query);
 			if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
@@ -257,14 +257,14 @@ function delete_perm_templ($ptid) {
  * Edit the information of an user.. sloppy implementation with too many queries.. (2) :)
  * return values: true if succesful
  */
-function edit_user($id, $user, $fullname, $email, $perm_templ, $description, $active, $password)
+function edit_user($uid, $user, $fullname, $email, $pid, $descr, $active, $password)
 {
 	global $db;
 
 	verify_permission('user_edit_own') ? $perm_edit_own = "1" : $perm_edit_own = "0" ;
 	verify_permission('user_edit_others') ? $perm_edit_others = "1" : $perm_edit_others = "0" ;
 
-	if (($id == $_SESSION["userid"] && $perm_edit_own == "1") || ($id != $_SESSION["userid"] && $perm_edit_others == "1" )) {
+	if (($uid == $_SESSION["userid"] && $perm_edit_own == "1") || ($uid != $_SESSION["userid"] && $perm_edit_others == "1" )) {
 
 		if (!is_valid_email($email)) {
 			error(ERR_INV_EMAIL);
@@ -284,7 +284,7 @@ function edit_user($id, $user, $fullname, $email, $perm_templ, $description, $ac
 		// user, the username should apparantly changed. If so, check if the "new" 
 		// username already exists.
 
-		$query = "SELECT username FROM users WHERE id = " . $db->quote($id, 'integer');
+		$query = "SELECT username FROM users WHERE id = " . $db->quote($uid, 'integer');
 		$response = $db->query($query);
 		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
@@ -315,16 +315,16 @@ function edit_user($id, $user, $fullname, $email, $perm_templ, $description, $ac
 				fullname = " . $db->quote($fullname, 'text') . ",
 				email = " . $db->quote($email, 'text') . ",";
 		if (verify_permission('user_edit_templ_perm')) {
-			$query .= "perm_templ = " . $db->quote($perm_templ, 'integer') . ",";
+			$query .= "perm_templ = " . $db->quote($pid, 'integer') . ",";
 		}
-		$query .= "description = " . $db->quote($description, 'text') . ", 
+		$query .= "description = " . $db->quote($descr, 'text') . ", 
 				active = " . $db->quote($active, 'integer') ;
 
-		if($password != "") {
+		if(!empty($password)) {
 			$query .= ", password = " . $db->quote(md5($password), 'text') ;
 		}
 
-		$query .= " WHERE id = " . $db->quote($id, 'integer') ;
+		$query .= " WHERE id = " . $db->quote($uid, 'integer') ;
 
 		$response = $db->query($query);
 		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
@@ -372,10 +372,10 @@ function change_user_pass($details) {
  * Get a fullname when you have a userid.
  * return values: gives the fullname from a userid.
  */
-function get_fullname_from_userid($id) {
+function get_fullname_from_userid($uid) {
 	global $db;
-	if (is_numeric($id)) {
-		$response = $db->query("SELECT fullname FROM users WHERE id=".$db->quote($id, 'integer'));
+	if (is_numeric($uid)) {
+		$response = $db->query("SELECT fullname FROM users WHERE id=".$db->quote($uid, 'integer'));
 		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 		$r = $response->fetchRow();
 		return $r["fullname"];
@@ -390,12 +390,12 @@ function get_fullname_from_userid($id) {
  * Get a fullname when you have a userid.
  * return values: gives the fullname from a userid.
  */
-function get_owner_from_id($id)
+function get_owner_from_id($uid)
 {
 	global $db;
-	if (is_numeric($id))
+	if (is_numeric($uid))
 	{
-		$response = $db->query("SELECT fullname FROM users WHERE id=".$db->quote($id, 'integer'));
+		$response = $db->query("SELECT fullname FROM users WHERE id=".$db->quote($uid, 'integer'));
 		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 		if ($response->numRows() == 1)
 		{
@@ -417,11 +417,11 @@ function get_owner_from_id($id)
  * @param $id integer the id of the domain
  * @return String the list of owners for this domain
  */
-function get_fullnames_owners_from_domainid($id) {
+function get_fullnames_owners_from_domainid($did) {
 
 	global $db;
-	if (is_numeric($id)) {
-		$response = $db->query("SELECT users.id, users.fullname FROM users, zones WHERE zones.domain_id=".$db->quote($id, 'integer')." AND zones.owner=users.id ORDER by fullname");
+	if (is_numeric($did)) {
+		$response = $db->query("SELECT users.id, users.fullname FROM users, zones WHERE zones.domain_id=".$db->quote($did, 'integer')." AND zones.owner=users.id ORDER by fullname");
 		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 		if ($response->numRows() == 0) {
 			return "";
@@ -438,16 +438,16 @@ function get_fullnames_owners_from_domainid($id) {
 
 
 
-function verify_user_is_owner_zoneid($zoneid) {
+function verify_user_is_owner_zoneid($zid) {
 	global $db;
 
-	$userid=$_SESSION["userid"];
+	$uid=$_SESSION["userid"];
 
 	if (is_numeric($zoneid)) {
 		$response = $db->query("SELECT zones.id 
 				FROM zones 
-				WHERE zones.owner = " . $db->quote($userid, 'integer') . "
-				AND zones.domain_id = ". $db->quote($zoneid, 'integer')) ;
+				WHERE zones.owner = " . $db->quote($uid, 'integer') . "
+				AND zones.domain_id = ". $db->quote($zid, 'integer')) ;
 		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 		if ($response->numRows() == 0) {
 			return "0";
@@ -462,8 +462,7 @@ function verify_user_is_owner_zoneid($zoneid) {
 function get_user_detail_list($specific) {
 
 	global $db;
-	$userid=$_SESSION['userid'];
-
+	$uid=$_SESSION['userid'];
 
 	if (v_num($specific)) {
 		$sql_add = "AND users.id = " . $db->quote($specific, 'integer') ;
@@ -471,7 +470,7 @@ function get_user_detail_list($specific) {
 		if (verify_permission('user_view_others')) {
 			$sql_add = "";
 		} else {
-			$sql_add = "AND users.id = " . $db->quote($userid, 'integer') ;
+			$sql_add = "AND users.id = " . $db->quote($uid, 'integer') ;
 		}
 	}
 
@@ -481,7 +480,7 @@ function get_user_detail_list($specific) {
 			email, 
 			description AS descr,
 			active,
-			perm_templ.id AS tpl_id,
+			perm_templ.id AS pid,
 			perm_templ.name AS tpl_name,
 			perm_templ.descr AS tpl_descr
 			FROM users, perm_templ 
@@ -500,7 +499,7 @@ function get_user_detail_list($specific) {
 			"email"		=>	$user['email'],
 			"descr"		=>	$user['descr'],
 			"active"	=>	$user['active'],
-			"tpl_id"	=>	$user['tpl_id'],
+			"pid"		=>	$user['pid'],
 			"tpl_name"	=>	$user['tpl_name'],
 			"tpl_descr"	=>	$user['tpl_descr']
 			);
@@ -514,16 +513,16 @@ function get_user_detail_list($specific) {
 // should return the permissions assigned to that particular template only. If
 // second argument is true, only the permission names are returned.
 
-function get_permissions_by_template_id($templ_id=0,$return_name_only=false) {
+function get_permissions_by_template_id($pid=0,$return_name_only=false) {
 	global $db;
 	
-	if ($templ_id > 0) {
+	if ($pid > 0) {
 		$limit = ", perm_templ_items 
-			WHERE perm_templ_items.templ_id = " . $db->quote($templ_id, 'integer') . "
+			WHERE perm_templ_items.templ_id = " . $db->quote($pid, 'integer') . "
 			AND perm_templ_items.perm_id = perm_items.id";
 	}
 
-	$query = "SELECT perm_items.id AS id, 
+	$query = "SELECT perm_items.id AS pid, 
 			perm_items.name AS name, 
 			perm_items.descr AS descr
 			FROM perm_items" 
@@ -536,7 +535,7 @@ function get_permissions_by_template_id($templ_id=0,$return_name_only=false) {
 	while ($permission = $response->fetchRow()) {
 		if ($return_name_only == false) {
 			$permission_list[] = array(
-				"id"	=>	$permission['id'],
+				"pid"	=>	$permission['pid'],
 				"name"	=>	$permission['name'],
 				"descr"	=>	$permission['descr']
 				);
@@ -550,12 +549,12 @@ function get_permissions_by_template_id($templ_id=0,$return_name_only=false) {
 
 // Get name and description of template based on template ID.
 
-function get_permission_template_details($templ_id) {
+function get_permission_template_details($pid) {
 	global $db;
 
 	$query = "SELECT *
 			FROM perm_templ
-			WHERE perm_templ.id = " . $db->quote($templ_id, 'integer');
+			WHERE perm_templ.id = " . $db->quote($pid, 'integer');
 
 	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
@@ -577,7 +576,7 @@ function get_list_permission_templates() {
 	$perm_templ_list = array();
 	while ($perm_templ = $response->fetchRow()) {
 		$perm_templ_list[] = array(
-			"id"	=>	$perm_templ['id'],
+			"pid"	=>	$perm_templ['id'],
 			"name"	=>	$perm_templ['name'],
 			"descr"	=>	$perm_templ['descr']
 			);
@@ -595,16 +594,17 @@ function add_perm_templ($details) {
 
 	$query = "INSERT INTO perm_templ (name, descr)
 			VALUES (" 
-				. $db->quote($details['templ_name'], 'text') . ", " 
-				. $db->quote($details['templ_descr'], 'text') . ")";
+				. $db->quote($details['pt_name'], 'text') . ", " 
+				. $db->quote($details['pt_descr'], 'text') . ")";
+	echo "debug: $query  <--";
 
 	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
-	$perm_templ_id = $db->lastInsertId('perm_templ', 'id');
-
+	$pid = $db->lastInsertId('perm_templ', 'id');
+	echo "debug: $pid<---";
 	foreach ($details['perm_id'] AS $perm_id) {
-		$query = "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . $db->quote($perm_templ_id, 'integer') . "," . $db->quote($perm_id, 'integer') . ")";
+		$query = "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . $db->quote($pid, 'integer') . "," . $db->quote($perm_id, 'integer') . ")";
 		$response = $db->query($query);
 		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 	}
@@ -617,12 +617,14 @@ function add_perm_templ($details) {
 function update_perm_templ_details($details) {
 	global $db;
 
+	debug_print($details);
 	// Fix permission template name and description first. 
 
 	$query = "UPDATE perm_templ 
-			SET name = " . $db->quote($details['templ_name'], 'text') . ",
-			descr = " . $db->quote($details['templ_descr'], 'text') . "
-			WHERE id = " . $db->quote($details['templ_id'], 'integer') ;
+			SET name = " . $db->quote($details['pt_name'], 'text') . ",
+			descr = " . $db->quote($details['pt_descr'], 'text') . "
+			WHERE id = " . $db->quote($details['pid'], 'integer') ;
+
 	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
@@ -633,12 +635,11 @@ function update_perm_templ_details($details) {
 	// like too much work. Just delete all the permissions currently assigned to 
 	// the template, than assign all the permessions the template should have.
 
-	$query = "DELETE FROM perm_templ_items WHERE templ_id = " . $details['templ_id'] ;
+	$query = "DELETE FROM perm_templ_items WHERE templ_id = " . $details['pid'] ;
 	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
-
 	foreach ($details['perm_id'] AS $perm_id) {
-		$query = "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . $db->quote($details['templ_id'], 'integer') . "," . $db->quote($perm_id, 'integer') . ")";
+		$query = "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . $db->quote($details['pid'], 'integer') . "," . $db->quote($perm_id, 'integer') . ")";
 		$response = $db->query($query);
 		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 	}
@@ -709,7 +710,7 @@ function update_user_details($details) {
 
 		// If the user is alllowed to change the permission template, set it.
 		if ($perm_templ_perm_edit == "1") {
-			$query .= ", perm_templ = " . $db->quote($details['templ_id'], 'integer') ;
+			$query .= ", perm_templ = " . $db->quote($details['pid'], 'integer') ;
 
 		}
 
@@ -760,7 +761,7 @@ function add_new_user($details) {
 			. $db->quote($details['email'], 'text') . ", "
 			. $db->quote($details['descr'], 'text') . ", ";
 	if (verify_permission('user_edit_templ_perm')) {
-		$query .= $db->quote($details['perm_templ'], 'integer') . ", ";
+		$query .= $db->quote($details['pid'], 'integer') . ", ";
 	}
 	$query .= $db->quote($active, 'integer') 
 			. ")";

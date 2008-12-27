@@ -29,8 +29,14 @@ if (!verify_permission('user_add_new')) {
 	error(ERR_PERM_ADD_USER);
 } else {
 	if (isset($post['commit'])) {
-		add_new_user($post);
-		success(SUC_USER_ADD);
+		$variables_required_post = array('username','fullname','email','descr','password','pid');
+		if (!minimum_variable_set($variables_required_post, $post)) {
+			include_once("inc/footer.inc.php");
+			exit;
+		} else {
+			add_new_user($post);
+			success(SUC_USER_ADD);
+		}
 	}
 
 	echo "     <h2>" . _('Add user') . "</h2>\n";

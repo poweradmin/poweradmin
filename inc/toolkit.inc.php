@@ -172,7 +172,6 @@ require_once("validation-user-input.php");
 $db = dbConnect();
 doAuthenticate();
 
-
 /*************
  * Functions *
  *************/

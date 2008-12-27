@@ -70,14 +70,14 @@ foreach ($users as $user) {
 		echo "       <td><input type=\"text\" name=\"user[" . $user['uid'] . "][email]\" value=\"" . $user['email'] . "\"></td>\n";
 		echo "       <td>\n";
 		if ($perm_templ_perm_edit == "1") {
-			echo "        <select name=\"user[" . $user['uid'] . "][templ_id]\">\n";
+			echo "        <select name=\"user[" . $user['uid'] . "][pid]\">\n";
 			foreach (list_permission_templates() as $template) {
-				($template['id'] == $user['tpl_id']) ? $select = " SELECTED" : $select = "" ;
-				echo "          <option value=\"" . $template['id'] . "\"" . $select . ">" . $template['name'] . "</option>\n";
+				($template['pid'] == $user['pid']) ? $select = " SELECTED" : $select = "" ;
+				echo "          <option value=\"" . $template['pid'] . "\"" . $select . ">" . $template['name'] . "</option>\n";
 			}
 			echo "         </select>\n";
 		} else {
-			echo "         <input type=\"hidden\" name=\"user[" . $user['uid'] . "][templ_id]\" value=\"" . $user['tpl_id'] . "\">\n";
+			echo "         <input type=\"hidden\" name=\"user[" . $user['uid'] . "][pid]\" value=\"" . $user['pid'] . "\">\n";
 			echo "         " . $user['tpl_name'] . "\n";
 		}
 		echo "       </td>\n";

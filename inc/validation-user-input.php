@@ -23,20 +23,24 @@
 $valid_vars_get = array(
 	"commit"	=> "validate_true",			# commit a change, value unused
 	"ip_master"	=> "validate_ip_address",		# ip address of a master (of slave)
-	"start"		=> "validate_positive_number",		# number for show_page 
-	"time"		=> "validate_positive_number",		# session related?
 	"letter"	=> "validate_alphanumeric",		# letter for show_letter
 	"pid"		=> "validate_positive_number",		# permission template id
 	"rid"		=> "validate_positive_number",		# record id
+	"start"		=> "validate_positive_number",		# number for show_page 
+	"time"		=> "validate_positive_number",		# session related?
 	"uid"		=> "validate_positive_number",		# user id
 	"zid"		=> "validate_positive_number"		# zone id
 	);
 
 $valid_vars_post = array(
+	"active"	=> "validate_positive_number",		# switch active status of user
+	"authenticate"	=> "validate_sql_safe",			# commit at authentication 
+	"commit"	=> "validate_true",			# commit a change, value unused
 	"content"	=> "validate_sql_safe",			# content field of a record
 	"descr"		=> "validate_sql_safe",			# description of a user 
 	"email"		=> "validate_sql_safe",			# email address of a user
 	"empty"		=> "validate_positive_number",		# prio field of a record
+	"fullname"	=> "validate_sql_safe",			# fullname of a user
 	"holy_grail"	=> "validate_holy_grail",		# string to do a search for
 	"ip_mail"	=> "validate_ip_address",		# ip address of a mail server
 	"ip_master"	=> "validate_ip_address",		# ip address of a master (of slave)
@@ -49,6 +53,8 @@ $valid_vars_post = array(
 	"password_now"	=> "validate_sql_safe",			# current password
 	"password_new1"	=> "validate_sql_safe",			# new password, first try
 	"password_new2"	=> "validate_sql_safe",			# new password, second try
+	"pt_name"	=> "validate_sql_safe",			# permission template name
+	"pt_descr"	=> "validate_sql_safe",			# permission template description
 	"pid"		=> "validate_positive_number",		# permission template id
 	"prio"		=> "validate_positive_number",		# prio field of a record
 	"rid"		=> "validate_positive_number",		# record id
@@ -65,13 +71,23 @@ $valid_vars_post = array(
 
 function validate_variables($input, $valid_vars) {
 	foreach ($input as $key => $val) {
+
+		// Check if given value is an array in itself. If so, start from the beginning 
+		// with given value as a key.
 		if (is_array($val)) {
 			validate_variables($val, $valid_vars);
 		} else {
+
+			// Check if the given key exists in the list of valid variables.
 			if (array_key_exists($key,$valid_vars)) {
 				if (!$valid_vars[$key]($val)) {
 					$input['var_err_val'][] = $key;
 				}
+			
+			// If it wasn't in the list of valid variables, check if the key
+			// is just a positive number. We are using auto-generated id's.
+			} elseif (validate_positive_number($key)) {
+				// Do nothing. It's OK.
 			} else {
 				error("An unknown variable (\"" . $key . "\") was defined.");
 			}
@@ -93,7 +109,7 @@ function validate_true($string) {
 }
 
 function validate_sql_safe($string) {
-	return preg_match('/^[a-z0-9.\-\\/%_]+$/i', $string);
+	return preg_match('/^[a-z0-9.\-\\/%_@ ]+$/i', $string);
 }
 
 function validate_alphanumeric($string) {

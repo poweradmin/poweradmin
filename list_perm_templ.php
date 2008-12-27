@@ -19,6 +19,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+$variables_required_get = array();
+$variables_required_post = array();
+
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 verify_permission('templ_perm_edit') ? $perm_templ_perm_edit = "1" : $perm_templ_perm_edit = "0" ;
@@ -38,14 +41,14 @@ if ($perm_templ_perm_edit == "0") {
 
 	foreach ($permission_templates as $template) {
 
-		$perm_item_list = get_permissions_by_template_id($template['id'], true);
+		$perm_item_list = get_permissions_by_template_id($template['pid'], true);
 		$perm_items = implode(', ', $perm_item_list);
 
 		echo "      <tr>\n";
 		if ($perm_templ_perm_edit == "1") {
 			echo "       <td>\n";
-			echo "        <a href=\"edit_perm_templ.php?pid=" . $template["id"] . "\"><img src=\"images/edit.gif\" alt=\"[ " . _('Edit template') . "\" ]></a>\n";
-			echo "        <a href=\"delete_perm_templ.php?pid=" . $template["id"] . "\"><img src=\"images/delete.gif\" alt=\"[ " . _('Delete template') . "\" ]></a>\n";
+			echo "        <a href=\"edit_perm_templ.php?pid=" . $template['pid'] . "\"><img src=\"images/edit.gif\" alt=\"[ " . _('Edit template') . "\" ]></a>\n";
+			echo "        <a href=\"delete_perm_templ.php?pid=" . $template['pid'] . "\"><img src=\"images/delete.gif\" alt=\"[ " . _('Delete template') . "\" ]></a>\n";
 			echo "       </td>\n";
 		} else {
 			echo "       <td>&nbsp;</td>\n";

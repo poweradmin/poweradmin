@@ -32,17 +32,17 @@ if (($get['uid'] == $_SESSION["userid"] && $perm_edit_own == "1") || ($get['uid'
 
 	if(isset($post['commit'])) {
 
-		// TODO What to do if pid and/active are not set.
-		$variables_required_post = array('username','fullname','email','descr','password');
-		if (!minimum_variable_set($variables_required_get, $get)) {
+		if(!isset($post['active'])) {
+			$post['active'] = 0;
+		}
+
+		$variables_required_post = array('username','fullname','email','descr','password','active','pid');
+		if (!minimum_variable_set($variables_required_post, $post)) {
 			include_once("inc/footer.inc.php");
 			exit;
 		} else {
 			if($post['username'] != "" && $post['pid'] > "0" && $post['fullname']) {
-				if(!isset($post['active'])) {
-					$post['active'] = 0;
-				}
-				if(edit_user($get['uid'], $post['username'], $post['fullname'], $post['email'], $post['pid'], $post['descr'], $post['active'], $post['password'])) {
+				if(edit_user($get['uid'], $post['username'], $post['fullname'], $post['email'], $post['pid'], $post['descr'], $active, $post['password'])) {
 					success(SUC_USER_UPD);
 				} 
 			}
@@ -57,7 +57,7 @@ if (($get['uid'] == $_SESSION["userid"] && $perm_edit_own == "1") || ($get['uid'
 
 		echo "     <h2>" . _('Edit user') . " \"" . $user['fullname'] . "\"</h2>\n";
 		echo "     <form method=\"post\">\n";
-		echo "      <input type=\"hidden\" name=\"number\" value=\"" . $get['uid'] . "\">\n";
+		echo "      <input type=\"hidden\" name=\"uid\" value=\"" . $get['uid'] . "\">\n";
 		echo "      <table>\n";
 		echo "       <tr>\n";
 		echo "        <td class=\"n\">" . _('Username') . "</td>\n"; 
@@ -90,7 +90,7 @@ if (($get['uid'] == $_SESSION["userid"] && $perm_edit_own == "1") || ($get['uid'
 		echo "       </tr>\n";
 		echo "       <tr>\n";
 		echo "        <td class=\"n\">" . _('Description') . "</td>\n"; 
-		echo "        <td class=\"n\"><textarea rows=\"4\" cols=\"30\" class=\"inputarea\" name=\"description\">" . $user['descr'] . "</textarea></td>\n";
+		echo "        <td class=\"n\"><textarea rows=\"4\" cols=\"30\" class=\"inputarea\" name=\"descr\">" . $user['descr'] . "</textarea></td>\n";
 		echo "       </tr>\n";
 		echo "       <tr>\n";
 		echo "        <td class=\"n\">" . _('Enabled') . "</td>\n"; 

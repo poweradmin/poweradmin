@@ -30,54 +30,54 @@ if (!verify_permission('templ_perm_edit')) {
 } else {
 
 	if (isset($post['commit'])) {
-		update_perm_templ_details($post);	
+		$variables_required_post = array('pid','pt_name','pt_descr');
+		if (!minimum_variable_set($variables_required_post, $post)) {
+			include_once("inc/footer.inc.php");
+			exit;
+		} else {
+			update_perm_templ_details($post);
+		}
 	}
 
 	$templ = get_permission_template_details($get['pid']);
 	$perms_templ = get_permissions_by_template_id($get['pid']);
-	$perms_avail = get_permissions_by_template_id($get['pid']);
+	$perms_avail = get_permissions_by_template_id();
 
 	echo "    <h2>" . _('Edit permission template') . "</h2>\n"; 
         echo "    <form method=\"post\">\n";
-	echo "    <input type=\"hidden\" name=\"templ_id\" value=\"" . $get['pid'] . "\">\n";
-
+	echo "    <input type=\"hidden\" name=\"pid\" value=\"" . $get['pid'] . "\">\n";
 	echo "     <table>\n";
 	echo "      <tr>\n";
 	echo "       <th>" . _('Name') . "</th>\n"; 
-	echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_name\" value=\"" . $templ['name'] . "\"></td>\n";
+	echo "       <td><input class=\"wide\" type=\"text\" name=\"pt_name\" value=\"" . $templ['name'] . "\"></td>\n";
 	echo "      </tr>\n";
 	echo "      <tr>\n";
 	echo "       <th>" . _('Description') . "</th>\n"; 
-	echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_descr\" value=\"" . $templ['descr'] . "\"></td>\n";
+	echo "       <td><input class=\"wide\" type=\"text\" name=\"pt_descr\" value=\"" . $templ['descr'] . "\"></td>\n";
 	echo "      </tr>\n";
 	echo "     </table>\n";
-
 	echo "     <table>\n";
 	echo "      <tr>\n";
 	echo "       <th>&nbsp;</th>\n";
 	echo "       <th>" . _('Name') . "</th>\n"; 
 	echo "       <th>" . _('Description') . "</th>\n"; 
 	echo "      </tr>\n";
-
 	foreach ($perms_avail as $perm_a) {
-
 		echo "      <tr>\n";
-
 		$has_perm = "";
 		foreach ($perms_templ as $perm_t) {
-			if (in_array( $perm_a['id'], $perm_t )) {
+			if (in_array( $perm_a['pid'], $perm_t )) {
 				$has_perm = "checked";
 			}
 		}
-
-		echo "       <td><input type=\"checkbox\" name=\"perm_id[]\" value=\"" . $perm_a['id'] . "\" " . $has_perm . "></td>\n";
+		echo "       <td><input type=\"checkbox\" name=\"perm_id[]\" value=\"" . $perm_a['pid'] . "\" " . $has_perm . "></td>\n";
 		echo "       <td>" . $perm_a['name'] . "</td>\n";
 		echo "       <td>" . _($perm_a['descr']) . "</td>\n";
 		echo "      </tr>\n";
 	}
 	echo "     </table>\n";
 	echo "     <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
-	echo "     </form>\n";
+	echo "    </form>\n";
 }
 
 include_once("inc/footer.inc.php");

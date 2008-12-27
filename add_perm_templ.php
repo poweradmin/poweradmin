@@ -30,7 +30,13 @@ if (!verify_permission('templ_perm_edit')) {
 } else {
 
 	if (isset($post['commit'])) {
-		add_perm_templ($post);	
+		$variables_required_post = array('pt_name','pt_descr');
+		if (!minimum_variable_set($variables_required_post, $post)) {
+			include_once("inc/footer.inc.php");
+			exit;
+		} else {
+			add_perm_templ($post);	
+		}
 	}
 
 	$perms_avail = get_permissions_by_template_id();
@@ -40,11 +46,11 @@ if (!verify_permission('templ_perm_edit')) {
 	echo "     <table>\n";
 	echo "      <tr>\n";
 	echo "       <th>" . _('Name') . "</th>\n"; 
-	echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_name\" value=\"\"></td>\n";
+	echo "       <td><input class=\"wide\" type=\"text\" name=\"pt_name\" value=\"\"></td>\n";
 	echo "      </tr>\n";
 	echo "      <tr>\n";
 	echo "       <th>" . _('Description') . "</th>\n"; 
-	echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_descr\" value=\"\"></td>\n";
+	echo "       <td><input class=\"wide\" type=\"text\" name=\"pt_descr\" value=\"\"></td>\n";
 	echo "      </tr>\n";
 	echo "     </table>\n";
 	echo "     <table>\n";
@@ -57,14 +63,14 @@ if (!verify_permission('templ_perm_edit')) {
 	foreach ($perms_avail as $perm_a) {
 
 		echo "      <tr>\n";
-		echo "       <td><input type=\"checkbox\" name=\"perm_id[]\" value=\"" . $perm_a['id'] . "\"></td>\n";
+		echo "       <td><input type=\"checkbox\" name=\"pid[]\" value=\"" . $perm_a['pid'] . "\"></td>\n";
 		echo "       <td>" . $perm_a['name'] . "</td>\n";
 		echo "       <td>" . $perm_a['descr'] . "</td>\n";
 		echo "      </tr>\n";
 	}
 	echo "     </table>\n";
-	echo "     <input type=\"commit\" class=\"button\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
-	echo "     </form>\n";
+	echo "     <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
+	echo "    </form>\n";
 
 }
 

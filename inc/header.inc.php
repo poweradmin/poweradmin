@@ -76,8 +76,10 @@ if (file_exists('install')) {
 }
 echo "    <div class=\"content\">\n";
 
-debug_print($_POST);
+print("GET");
 debug_print($_GET);
+print("POST");
+debug_print($_POST);
 
 
 // Validation of $_POST
