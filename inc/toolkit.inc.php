@@ -161,7 +161,7 @@ $template = array(
  * Includes  *
  *************/
 
-require_once("validation-user-input.php");
+require_once("validation-user-input.inc.php");
 require_once("error.inc.php");
 require_once("auth.inc.php");
 require_once("i18n.inc.php");
