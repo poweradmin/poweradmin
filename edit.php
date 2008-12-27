@@ -84,10 +84,12 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 			echo "     <th>" . _('TTL') . "</th>\n";
 			echo "    </tr>\n";
 			foreach ($records as $r) {
-
-				echo "    <input type=\"hidden\" name=\"record[" . $r['id'] . "][rid]\" value=\"" . $r['id'] . "\">\n";
-				echo "    <input type=\"hidden\" name=\"record[" . $r['id'] . "][zid]\" value=\"" . $get['zid'] . "\">\n";
+				if ($r['type'] != "SOA") {
+					echo "    <input type=\"hidden\" name=\"record[" . $r['id'] . "][rid]\" value=\"" . $r['id'] . "\">\n";
+					echo "    <input type=\"hidden\" name=\"record[" . $r['id'] . "][zid]\" value=\"" . $zone_id . "\">\n";
+				}
 				echo "    <tr>\n";
+				
 				if ( $domain_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
 					echo "     <td class=\"n\">&nbsp;</td>\n";
 				} else {
@@ -98,26 +100,34 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 							<img src=\"images/delete.gif\" ALT=\"[ " . _('Delete record') . " ]\" BORDER=\"0\"></a>\n";
 					echo "     </td>\n";
 				}
-				echo "      <td class=\"u\"><input class=\"wide\" name=\"record[" . $r['id'] . "][label]\" value=\"" . $r['name'] . "\"></td>\n";
-				echo "      <td class=\"u\">\n";
-				echo "       <select name=\"record[" . $r['id'] . "][type]\">\n";
-				foreach (get_record_types() as $type_available) {
-					if ($type_available == $r['type']) {
-						$add = " SELECTED";
-					} else {
-						$add = "";
-					}
-					echo "         <option" . $add . " value=\"" . $type_available . "\" >" . $type_available . "</option>\n";
-				}
-				echo "       </select>\n";
-				echo "      </td>\n";
-				echo "      <td class=\"u\"><input class=\"wide\" name=\"record[" . $r['id'] . "][content]\" value=\"" . $r['content'] . "\"></td>\n";
-				if ($r['type'] == "MX") { 
-					echo "      <td class=\"u\"><input name=\"record[" . $r['id'] . "][prio]\" value=\"" .  $r['prio'] . "\"></td>\n";
+				if ($r['type'] == "SOA") {
+					echo "     <td class=\"n\">" . $r['name'] . "</td>\n";
+					echo "     <td class=\"n\">" . $r['type'] . "</td>\n";
+					echo "     <td class=\"n\">" . $r['content'] . "</td>\n";
+					echo "     <td class=\"n\">&nbsp;</td>\n";
+					echo "     <td class=\"n\">" . $r['ttl'] . "</td>\n";
 				} else {
-					echo "      <td class=\"n\">&nbsp;</td>\n";
+					echo "      <td class=\"u\"><input class=\"wide\" name=\"record[" . $r['id'] . "][name]\" value=\"" . $r['name'] . "\"></td>\n";
+					echo "      <td class=\"u\">\n";
+					echo "       <select name=\"record[" . $r['id'] . "][type]\">\n";
+					foreach (get_record_types() as $type_available) {
+						if ($type_available == $r['type']) {
+							$add = " SELECTED";
+						} else {
+							$add = "";
+						}
+						echo "         <option" . $add . " value=\"" . $type_available . "\" >" . $type_available . "</option>\n";
+					}
+					echo "       </select>\n";
+					echo "      </td>\n";
+					echo "      <td class=\"u\"><input class=\"wide\" name=\"record[" . $r['id'] . "][content]\" value=\"" . $r['content'] . "\"></td>\n";
+					if ($r['type'] == "MX") { 
+						echo "      <td class=\"u\"><input name=\"record[" . $r['id'] . "][prio]\" value=\"" .  $r['prio'] . "\"></td>\n";
+					} else {
+						echo "      <td class=\"n\">&nbsp;</td>\n";
+					}
+					echo "      <td class=\"u\"><input name=\"record[" . $r['id'] . "][ttl]\" value=\"" . $r['ttl'] . "\"></td>\n";
 				}
-				echo "      <td class=\"u\"><input name=\"record[" . $r['id'] . "][ttl]\" value=\"" . $r['ttl'] . "\"></td>\n";
 				echo "     </tr>\n";
 			}
 			echo "    </table>\n";

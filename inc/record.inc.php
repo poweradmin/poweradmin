@@ -49,48 +49,55 @@ function update_soa_serial($zid) {
 	$notified_serial = $db->queryOne($sqlq);
 
 	$sqlq = "SELECT content FROM records WHERE type = ".$db->quote('SOA', 'text')." AND domain_id = ".$db->quote($zid, 'integer');
-	$content = $db->queryOne($sqlq);
-	$need_to_update = false;
+	$result = $db->queryOne($sqlq);
 
-	// Getting the serial field.
-	$soa = explode(" ", $content);
+	// Split content of current SOA record into an array. 
+	$soa = explode(" ", $result);
 
-	if(empty($notified_serial)) {
-		// Ok native replication, so we have to update.
-		$need_to_update = true;
-	} elseif($notified_serial >= $soa[2]) {
-		$need_to_update = true;
-	} elseif(strlen($soa[2]) != 10) {
-		$need_to_update = true;
+	// Check if we have to update the serial field. 
+	// 
+	// The serial should be updated, unless:
+	//  - the serial is set to "0", see /Documentation/DNS-SOA#PowerDNSspecifics on
+	//    the Poweradmin website
+	//  - the serial is set to YYYYMMDD99, it's RFC 1912 style already and has 
+	//    reached it limit of revisions for today
+	
+	if ($soa[2] == "0") {
+		return true;
+	} elseif ($soa[2] == date('Ymd') . "99") {
+		return true;
 	} else {
-		$need_to_update = false;
-	}
+		$today = date('Ymd');
 
-	if($need_to_update) {
-		// Ok so we have to update it seems.
-		$current_serial = $soa[2];
-		$new_serial = date('Ymd'); // we will add revision number later
-
-		if(strncmp($new_serial, $current_serial, 8) === 0) {
-			$revision_number = (int) substr($current_serial, -2);
-			if ($revision_number == 99) return false; // ok, we cannot update anymore tonight
-			++$revision_number;
-			// here it is ... same date, new revision
-			$new_serial .= str_pad($revision_number, 2, "0", STR_PAD_LEFT);	
+		// Determine revision.
+		if (strncmp($today, $soa[2], 8) === 0) {
+			// Current serial starts with date of today, so we need to update
+			// the revision only. To do so, determine current revision first, 
+			// then update counter.
+			$revision = (int) substr($soa[2], -2);
+			++$revision;
 		} else {
-			/*
-			 * Current serial is not RFC1912 compilant, so let's make a new one
-			 */
-			$new_serial .= '00';
+			// Current serial did not start of today, so it's either an older 
+			// serial or a serial that does not adhere the recommended syntax
+			// of RFC-1912. In either way, set a fresh serial
+			$revision = "00";
 		}
-		$soa[2] = $new_serial; // change serial in SOA array
-		$new_soa = "";		
-		// build new soa and update SQL after that
+
+		// TODO padding if revision < 10
+		$serial = $today . $revision;
+		
+		// Change serial in SOA array.
+		$soa[2] = $serial;
+		
+		// Build new SOA record content and update the database.
+		$content = "";		
 		for ($i = 0; $i < count($soa); $i++) {	
-			$new_soa .= $soa[$i] . " "; 
+			$content .= $soa[$i] . " "; 
 		}
-		$sqlq = "UPDATE records SET content = ".$db->quote($new_soa, 'text')." WHERE domain_id = ".$db->quote($zid, 'integer')." AND type = ".$db->quote('SOA', 'text');
-		$db->Query($sqlq);
+		// TODO Query not executed?
+		$sqlq = "UPDATE records SET content = ".$db->quote($content, 'text')." WHERE domain_id = ".$db->quote($zid, 'integer')." AND type = ".$db->quote('SOA', 'text');
+		$response = $db->query($sqlq);
+		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 		return true;
 	}
 }  
@@ -101,7 +108,7 @@ function update_soa_serial($zid) {
  * return values: true if succesful.
  */
 function edit_record($record) {
-
+	
 	if (verify_permission('zone_content_edit_others')) { $perm_content_edit = "all" ; }
 	elseif (verify_permission('zone_content_edit_own')) { $perm_content_edit = "own" ; }
 	else { $perm_content_edit = "none" ; }
@@ -113,11 +120,8 @@ function edit_record($record) {
 		error(ERR_PERM_EDIT_RECORD);
 		return false;
 	} else {
-		if($record['content'] == "") {
-			error(ERR_DNS_CONTENT);
-			return false;
-		}
 		global $db;
+<<<<<<< .working
 		// TODO: no need to check for numeric-ness of zone id if we check with validate_input as well?
 		if (is_numeric($record['zid'])) {
 			if (validate_input($record['zid'], $record['type'], $record['content'], $record['label'], $record['prio'], $record['ttl'])) {
@@ -137,14 +141,25 @@ function edit_record($record) {
 					update_soa_serial($record['zid']);
 				}
 				return true;
+=======
+		if (validate_input($record['zid'], $record['type'], $record['content'], $record['name'], $record['prio'], $record['ttl'])) {
+			$query = "UPDATE records 
+				SET name=".$db->quote($record['name'], 'text').", 
+				type=".$db->quote($record['type'], 'text').", 
+				content=" . $db->quote($record['content'], 'text') . ", 
+				ttl=".$db->quote($record['ttl'], 'integer').", 
+				prio=".$db->quote($record['prio'], 'integer').", 
+				change_date=".$db->quote(time(), 'integer')." 
+				WHERE id=".$db->quote($record['rid'], 'integer');
+			$result = $db->query($query);
+			if (PEAR::isError($result)) { error($result->getMessage()); return false; }
+			if ($record['type'] != 'SOA') {
+				update_soa_serial($record['zid']);
+>>>>>>> .merge-right.r320
 			}
-			return false;
+			return true;
 		}
-		else
-		{
-			// TODO change to error style as above (returning directly)
-			error(sprintf(ERR_INV_ARGC, "edit_record", "no zoneid given"));
-		}
+		return false;
 	}
 	return true;
 }
