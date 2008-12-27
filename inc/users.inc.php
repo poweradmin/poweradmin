@@ -460,7 +460,7 @@ function get_user_detail_list($specific) {
 	global $db;
 	$uid=$_SESSION['userid'];
 
-	if (v_num($specific)) {
+	if (validate_positive_number($specific)) {
 		$sql_add = "AND users.id = " . $db->quote($specific, 'integer') ;
 	} else {
 		if (verify_permission('user_view_others')) {

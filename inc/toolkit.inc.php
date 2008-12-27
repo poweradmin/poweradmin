@@ -353,14 +353,6 @@ function is_valid_email($address) {
 }
 
 
-function v_num($string) {
-	if (!eregi("^[0-9]+$", $string)) { 
-		return false ;
-	} else {
-		return true ;
-	}
-}
-
 // Debug print
 function debug_print($var) {
 	echo "<pre style=\"border: 2px solid blue;\">\n";
