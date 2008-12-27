@@ -19,14 +19,11 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+$variables_required_get = array();
+$variables_required_post = array();
+
 require_once('inc/toolkit.inc.php');
 include_once('inc/header.inc.php');
-
-if (!empty($_POST)) $post = validate_variables($_POST, $valid_vars_post);
-if (isset($post) && $post == false) {
-        include_once("inc/footer.inc.php"); exit;
-}
-
 
 if (!(verify_permission('search'))) {
 	error(ERR_PERM_SEARCH);
@@ -46,79 +43,84 @@ if (!(verify_permission('search'))) {
 		elseif (verify_permission('zone_content_edit_own')) { $perm_edit = "own" ; }
 		else { $perm_edit = "none" ; }
 	
-		$result = search_zone_and_record($post['holy_grail'],$perm_view);
+		$variables_required_post = array('holy_grail');
+		if (!minimum_variable_set($variables_required_post, $post)) {
+			include_once("inc/footer.inc.php");
+			exit;
+		} else {
+			$result = search_zone_and_record($post['holy_grail'],$perm_view);
 
-		if (is_array($result['zones'])) {
-			echo "     <h3>" . _('Zones found') . ":</h3>\n";
-			echo "     <table>\n";
-			echo "      <tr>\n";
-			echo "       <th>&nbsp;</th>\n";
-			echo "       <th>" . _('Name') . "</th>\n";
-			echo "       <th>" . _('Type') . "</th>\n";
-			echo "       <th>" . _('Master') . "</th>\n";
-			echo "      </tr>\n";
-
-			foreach ($result['zones'] as $zone) {
+			if (is_array($result['zones'])) {
+				echo "     <h3>" . _('Zones found') . ":</h3>\n";
+				echo "     <table>\n";
 				echo "      <tr>\n";
-				echo "          <td>\n";
-				echo "           <a href=\"edit.php?zid=" . $zone['zid'] . "\"><img src=\"images/edit.gif\" title=\"" . _('Edit zone') . " " . $zone['name'] . "\" alt=\"[ " . _('Edit zone') . " " . $zone['name'] . " ]\"></a>\n";
-				if ( $perm_edit != "all" || $perm_edit != "none") {
-					$user_is_zone_owner = verify_user_is_owner_zoneid($zone['zid']);
-				}
-				if ( $perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1") ) {
-					echo "           <a href=\"delete_domain.php?id=" . $zone['zid'] . "\"><img src=\"images/delete.gif\" title=\"" . _('Delete zone') . " " . $zone['name'] . "\" alt=\"[ ". _('Delete zone') . " " . $zone['name'] . " ]\"></a>\n";
-				}
-				echo "          </td>\n";
-				echo "       <td>" . $zone['name'] . "</td>\n";
-				echo "       <td>" . $zone['type'] . "</td>\n";
-				if ($zone['type'] == "SLAVE") {
-					echo "       <td>" . $zone['master'] . "</td>\n";
-				} else {
-					echo "       <td>&nbsp;</td>\n";
-				}
+				echo "       <th>&nbsp;</th>\n";
+				echo "       <th>" . _('Name') . "</th>\n";
+				echo "       <th>" . _('Type') . "</th>\n";
+				echo "       <th>" . _('Master') . "</th>\n";
 				echo "      </tr>\n";
+
+				foreach ($result['zones'] as $zone) {
+					echo "      <tr>\n";
+					echo "          <td>\n";
+					echo "           <a href=\"edit.php?zid=" . $zone['zid'] . "\"><img src=\"images/edit.gif\" title=\"" . _('Edit zone') . " " . $zone['name'] . "\" alt=\"[ " . _('Edit zone') . " " . $zone['name'] . " ]\"></a>\n";
+					if ( $perm_edit != "all" || $perm_edit != "none") {
+						$user_is_zone_owner = verify_user_is_owner_zoneid($zone['zid']);
+					}
+					if ( $perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1") ) {
+						echo "           <a href=\"delete_domain.php?id=" . $zone['zid'] . "\"><img src=\"images/delete.gif\" title=\"" . _('Delete zone') . " " . $zone['name'] . "\" alt=\"[ ". _('Delete zone') . " " . $zone['name'] . " ]\"></a>\n";
+					}
+					echo "          </td>\n";
+					echo "       <td>" . $zone['name'] . "</td>\n";
+					echo "       <td>" . $zone['type'] . "</td>\n";
+					if ($zone['type'] == "SLAVE") {
+						echo "       <td>" . $zone['master'] . "</td>\n";
+					} else {
+						echo "       <td>&nbsp;</td>\n";
+					}
+					echo "      </tr>\n";
+				}
+				echo "     </table>\n";
 			}
-			echo "     </table>\n";
-		}
 
-		if (is_array($result['records'])) {
-			echo "     <h3>" . _('Records found') . ":</h3>\n";
-			echo "     <table>\n";
-			echo "      <tr>\n";
-			echo "       <th>&nbsp;</th>\n";
-			echo "       <th>" . _('Name') . "</th>\n";
-			echo "       <th>" . _('Type') . "</th>\n";
-			echo "       <th>" . _('Priority') . "</th>\n";
-			echo "       <th>" . _('Content') . "</th>\n";
-			echo "       <th>" . _('TTL') . "</th>\n";
-			echo "      </tr>\n";
-
-			foreach ($result['records'] as $record) {
-
+			if (is_array($result['records'])) {
+				echo "     <h3>" . _('Records found') . ":</h3>\n";
+				echo "     <table>\n";
 				echo "      <tr>\n";
-				echo "          <td>\n";
-				echo "           <a href=\"edit_record.php?id=" . $record['rid'] . "\"><img src=\"images/edit.gif\" title=\"" . _('Edit record') . " " . $record['name'] . "\" alt=\"[ " . _('Edit record') . " " . $record['name'] . " ]\"></a>\n";
-				if ( $perm_edit != "all" || $perm_edit != "none") {
-					$user_is_zone_owner = verify_user_is_owner_zoneid($record['zid']);
-				}
-				if ( $perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1") ) {
-					echo "           <a href=\"delete_record.php?id=" . $record['rid'] . "\"><img src=\"images/delete.gif\" title=\"" . _('Delete record') . " " . $record['name'] . "\" alt=\"[ ". _('Delete record') . " " . $record['name'] . " ]\"></a>\n";
-				}
-				echo "          </td>\n";
-				echo "       <td>" . $record['name'] . "</td>\n";
-				echo "       <td>" . $record['type'] . "</td>\n";
-				if ($record['type'] == "MX") {
-					echo "       <td>" . $record['prio'] . "</td>\n";
-				} else {
-					echo "       <td>&nbsp;</td>\n";
-				}
-				echo "       <td>" . $record['content'] . "</td>\n";
-				echo "       <td>" . $record['ttl'] . "</td>\n";
+				echo "       <th>&nbsp;</th>\n";
+				echo "       <th>" . _('Name') . "</th>\n";
+				echo "       <th>" . _('Type') . "</th>\n";
+				echo "       <th>" . _('Priority') . "</th>\n";
+				echo "       <th>" . _('Content') . "</th>\n";
+				echo "       <th>" . _('TTL') . "</th>\n";
 				echo "      </tr>\n";
-			}
-			echo "     </table>\n";
-		}
 
+				foreach ($result['records'] as $record) {
+
+					echo "      <tr>\n";
+					echo "          <td>\n";
+					echo "           <a href=\"edit_record.php?id=" . $record['rid'] . "\"><img src=\"images/edit.gif\" title=\"" . _('Edit record') . " " . $record['name'] . "\" alt=\"[ " . _('Edit record') . " " . $record['name'] . " ]\"></a>\n";
+					if ( $perm_edit != "all" || $perm_edit != "none") {
+						$user_is_zone_owner = verify_user_is_owner_zoneid($record['zid']);
+					}
+					if ( $perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1") ) {
+						echo "           <a href=\"delete_record.php?id=" . $record['rid'] . "\"><img src=\"images/delete.gif\" title=\"" . _('Delete record') . " " . $record['name'] . "\" alt=\"[ ". _('Delete record') . " " . $record['name'] . " ]\"></a>\n";
+					}
+					echo "          </td>\n";
+					echo "       <td>" . $record['name'] . "</td>\n";
+					echo "       <td>" . $record['type'] . "</td>\n";
+					if ($record['type'] == "MX") {
+						echo "       <td>" . $record['prio'] . "</td>\n";
+					} else {
+						echo "       <td>&nbsp;</td>\n";
+					}
+					echo "       <td>" . $record['content'] . "</td>\n";
+					echo "       <td>" . $record['ttl'] . "</td>\n";
+					echo "      </tr>\n";
+				}
+				echo "     </table>\n";
+			}
+		}
 	}
 
 	echo "     <h3>" . _('Query') . ":</h3>\n";

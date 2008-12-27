@@ -24,6 +24,7 @@ $valid_vars_get = array(
 	"commit"	=> "validate_true",			# commit a change, value unused
 	"ip_master"	=> "validate_ip_address",		# ip address of a master (of slave)
 	"letter"	=> "validate_alphanumeric",		# letter for show_letter
+	"logout"	=> "validate_true",			# commit a logout
 	"pid"		=> "validate_positive_number",		# permission template id
 	"rid"		=> "validate_positive_number",		# record id
 	"start"		=> "validate_positive_number",		# number for show_page 

@@ -89,7 +89,7 @@ function list_permission_templates() {
 	$template_list = array();
 	while ($template= $response->fetchRow()) {
 		$tempate_list[] = array(
-			"pid"	=>	$template['pid'],
+			"pid"	=>	$template['id'],
 			"name"	=>	$template['name'],
 			"descr"	=>	$template['descr']
 			);
@@ -439,23 +439,19 @@ function get_fullnames_owners_from_domainid($did) {
 
 
 function verify_user_is_owner_zoneid($zid) {
+
 	global $db;
 
-	$uid=$_SESSION["userid"];
-
-	if (is_numeric($zoneid)) {
-		$response = $db->query("SELECT zones.id 
-				FROM zones 
-				WHERE zones.owner = " . $db->quote($uid, 'integer') . "
-				AND zones.domain_id = ". $db->quote($zid, 'integer')) ;
-		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
-		if ($response->numRows() == 0) {
-			return "0";
-		} else {
-			return "1";
-		}
+	$response = $db->query("SELECT zones.id 
+			FROM zones 
+			WHERE zones.owner = " . $db->quote($_SESSION['userid'], 'integer') . "
+			AND zones.domain_id = ". $db->quote($zid, 'integer')) ;
+	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+	if ($response->numRows() == 0) {
+		return "0";
+	} else {
+		return "1";
 	}
-	error(ERR_INV_ARG);
 }
 
 
@@ -596,13 +592,10 @@ function add_perm_templ($details) {
 			VALUES (" 
 				. $db->quote($details['pt_name'], 'text') . ", " 
 				. $db->quote($details['pt_descr'], 'text') . ")";
-	echo "debug: $query  <--";
-
 	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
 	$pid = $db->lastInsertId('perm_templ', 'id');
-	echo "debug: $pid<---";
 	foreach ($details['perm_id'] AS $perm_id) {
 		$query = "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . $db->quote($pid, 'integer') . "," . $db->quote($perm_id, 'integer') . ")";
 		$response = $db->query($query);
@@ -617,9 +610,7 @@ function add_perm_templ($details) {
 function update_perm_templ_details($details) {
 	global $db;
 
-	debug_print($details);
 	// Fix permission template name and description first. 
-
 	$query = "UPDATE perm_templ 
 			SET name = " . $db->quote($details['pt_name'], 'text') . ",
 			descr = " . $db->quote($details['pt_descr'], 'text') . "
@@ -741,13 +732,8 @@ function add_new_user($details) {
 	} elseif (user_exists($details['username'])) {
 		error(ERR_USER_EXISTS);
 		return false;
-	} elseif (!is_valid_email($details['email'])) {
-		error(ERR_INV_EMAIL);
-		return false;
-	} elseif ($details['active'] == 1) {
-		$active = 1;
-	} else {
-		$active = 0;
+	} elseif (!isset($details['active'])) {
+		$active= 0;
 	}
 
 	$query = "INSERT INTO users (username, password, fullname, email, description,";

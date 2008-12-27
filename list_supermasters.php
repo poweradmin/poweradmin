@@ -19,6 +19,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+$variables_required_get = array();
+$variables_required_post = array();
+
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
@@ -40,7 +43,7 @@ if ($num_supermasters == "0") {
 	echo "      <tr>\n";
 	echo "       <td class=\"n\">&nbsp;</td>\n";
 	echo "       <td class=\"n\" colspan=\"3\">\n";
-	echo "        " . _('There are no zones to show in this listing.') . "\n";
+	echo "        " . _('There are no supermasters to show in this listing.') . "\n";
 	echo "       </td>\n";
 	echo "      </tr>\n";
 } else {

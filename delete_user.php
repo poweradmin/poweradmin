@@ -66,12 +66,12 @@ if (isset($post['commit'])) {
 			echo "       </tr>\n";
 
 			foreach ($zones as $zone) {
-				echo "       <input type=\"hidden\" name=\"zone[" . $zone['id'] . "][zid]\" value=\"" . $zone['id'] . "\">\n";
+				echo "       <input type=\"hidden\" name=\"zone[" . $zone['zid'] . "][zid]\" value=\"" . $zone['id'] . "\">\n";
 				echo "       <tr>\n";
 				echo "        <td>" . $zone['name'] . "</td>\n";
-				echo "        <td><input type=\"radio\" name=\"zone[" . $zone['id'] . "][target]\" value=\"delete\"></td>\n";
-				echo "        <td><input type=\"radio\" name=\"zone[" . $zone['id'] . "][target]\" value=\"leave\" CHECKED></td>\n";
-				echo "        <td><input type=\"radio\" name=\"zone[" . $zone['id'] . "][target]\" value=\"new_owner\"></td>\n";
+				echo "        <td><input type=\"radio\" name=\"zone[" . $zone['zid'] . "][target]\" value=\"delete\"></td>\n";
+				echo "        <td><input type=\"radio\" name=\"zone[" . $zone['zid'] . "][target]\" value=\"leave\" CHECKED></td>\n";
+				echo "        <td><input type=\"radio\" name=\"zone[" . $zone['zid'] . "][target]\" value=\"new_owner\"></td>\n";
 				echo "        <td>\n";
 				echo "         <select name=\"zone[" . $zone['id'] . "][newowner]\">\n";
 

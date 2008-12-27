@@ -18,6 +18,8 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+$variables_required_get = array();
+$variables_required_post = array();
 
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
@@ -72,19 +74,18 @@ if ($perm_view == "none") {
 		$zones = get_zones($perm_view,$_SESSION['userid'],LETTERSTART,ROWSTART,$iface_rowamount);
 		$count_zones_shown = ($zones == -1) ? 0 : count($zones);
 	}
-	foreach ($zones as $zone)
-	{
-		$zone_owners = get_fullnames_owners_from_domainid($zone['id']);
-		if ($iface_zonelist_serial == "1") $serial = get_serial_by_zid($zone['id']);
+	foreach ($zones as $zone) {
+		$zone_owners = get_fullnames_owners_from_domainid($zone['zid']);
+		if ($iface_zonelist_serial == "1") $serial = get_serial_by_zid($zone['zid']);
 
 		echo "         <tr>\n";
 		echo "          <td>\n";
-		echo "           <a href=\"edit.php?zid=" . $zone['id'] . "\"><img src=\"images/edit.gif\" title=\"" . _('View zone') . " " . $zone['name'] . "\" alt=\"[ " . _('View zone') . " " . $zone['name'] . " ]\"></a>\n";
+		echo "           <a href=\"edit.php?zid=" . $zone['zid'] . "\"><img src=\"images/edit.gif\" title=\"" . _('View zone') . " " . $zone['name'] . "\" alt=\"[ " . _('View zone') . " " . $zone['name'] . " ]\"></a>\n";
 		if ( $perm_edit != "all" || $perm_edit != "none") {
-			$user_is_zone_owner = verify_user_is_owner_zoneid($zone["id"]);
+			$user_is_zone_owner = verify_user_is_owner_zoneid($zone['zid']);
 		}
 		if ( $perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1") ) {
-      			echo "           <a href=\"delete_domain.php?zid=" . $zone["id"] . "\"><img src=\"images/delete.gif\" title=\"" . _('Delete zone') . " " . $zone['name'] . "\" alt=\"[ ". _('Delete zone') . " " . $zone['name'] . " ]\"></a>\n";
+      			echo "           <a href=\"delete_domain.php?zid=" . $zone['zid'] . "\"><img src=\"images/delete.gif\" title=\"" . _('Delete zone') . " " . $zone['name'] . "\" alt=\"[ ". _('Delete zone') . " " . $zone['name'] . " ]\"></a>\n";
 		}
 		echo "          </td>\n";
 		echo "          <td class=\"y\">" . $zone["name"] . "</td>\n";

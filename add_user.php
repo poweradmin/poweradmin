@@ -64,7 +64,7 @@ if (!verify_permission('user_add_new')) {
 		echo "        <td class=\"n\">\n";
 		echo "         <select name=\"pid\">\n";
 		foreach (list_permission_templates() as $template) {
-			echo "          <option value=\"" . $template['id'] . "\">" . $template['name'] . "</option>\n";
+			echo "          <option value=\"" . $template['pid'] . "\">" . $template['name'] . "</option>\n";
 		}
 		echo "         </select>\n";
 		echo "       </td>\n";

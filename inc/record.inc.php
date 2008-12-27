@@ -737,7 +737,7 @@ function get_zones($perm,$userid=0,$letterstart='all',$rowstart=0,$rowamount=999
 	while($r = $result->fetchRow())
 	{
 		$ret[$r["name"]] = array(
-		"id"		=>	$r["id"],
+		"zid"		=>	$r["id"],
 		"name"		=>	$r["name"],
 		"type"		=>	$r["type"],
 		"count_records"	=>	$r["count_records"]
@@ -916,8 +916,6 @@ function get_users_from_domain_id($id) {
 function search_zone_and_record($holy_grail,$perm) {
 	
 	global $db;
-
-	debug_print($holy_grail);
 
 	$holy_grail = trim($holy_grail);
 
