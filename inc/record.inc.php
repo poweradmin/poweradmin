@@ -35,21 +35,20 @@ function get_zone_id_from_record_id($rid) {
 	return $zid;
 }
 
-function count_zone_records($zone_id) {
+function count_zone_records($zid) {
 	global $db;
-	$sqlq = "SELECT COUNT(id) FROM records WHERE domain_id = ".$db->quote($zone_id, 'integer');
+	$sqlq = "SELECT COUNT(id) FROM records WHERE domain_id = ".$db->quote($zid, 'integer');
 	$record_count = $db->queryOne($sqlq);
 	return $record_count;
 }
 
-function update_soa_serial($domain_id)
-{
+function update_soa_serial($zid) {
 	global $db;
 
-	$sqlq = "SELECT notified_serial FROM domains WHERE id = ".$db->quote($domain_id, 'integer');
+	$sqlq = "SELECT notified_serial FROM domains WHERE id = ".$db->quote($zid, 'integer');
 	$notified_serial = $db->queryOne($sqlq);
 
-	$sqlq = "SELECT content FROM records WHERE type = ".$db->quote('SOA', 'text')." AND domain_id = ".$db->quote($domain_id, 'integer');
+	$sqlq = "SELECT content FROM records WHERE type = ".$db->quote('SOA', 'text')." AND domain_id = ".$db->quote($zid, 'integer');
 	$content = $db->queryOne($sqlq);
 	$need_to_update = false;
 
@@ -90,7 +89,7 @@ function update_soa_serial($domain_id)
 		for ($i = 0; $i < count($soa); $i++) {	
 			$new_soa .= $soa[$i] . " "; 
 		}
-		$sqlq = "UPDATE records SET content = ".$db->quote($new_soa, 'text')." WHERE domain_id = ".$db->quote($domain_id, 'integer')." AND type = ".$db->quote('SOA', 'text');
+		$sqlq = "UPDATE records SET content = ".$db->quote($new_soa, 'text')." WHERE domain_id = ".$db->quote($zid, 'integer')." AND type = ".$db->quote('SOA', 'text');
 		$db->Query($sqlq);
 		return true;
 	}

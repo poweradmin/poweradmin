@@ -174,7 +174,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 				if ($user["id"] == $_SESSION["userid"]) {
 					$add = " SELECTED";
 				}
-				echo "          <option" . $add . " value=\"" . $user["id"] . "\">" . $user["fullname"] . "</option>\n";
+				echo "          <option" . $add . " value=\"" . $user["uid"] . "\">" . $user["fullname"] . "</option>\n";
 			}
 			echo "         </select>\n";
 			echo "        </td>\n";

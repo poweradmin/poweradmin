@@ -76,7 +76,7 @@ if (isset($post['commit'])) {
 				echo "         <select name=\"zone[" . $zone['id'] . "][newowner]\">\n";
 
 				foreach ($users as $user) {
-					echo "          <option value=\"" . $user["id"] . "\">" . $user["fullname"] . "</option>\n";
+					echo "          <option value=\"" . $user["uid"] . "\">" . $user["fullname"] . "</option>\n";
 				}
 
 				echo "         </select>\n";

@@ -102,17 +102,17 @@ function list_permission_templates() {
  * Its to show_users therefore the odd name. Has to be changed.
  * return values: an array with all users in it.
  */
-function show_users($id='',$rowstart=0,$rowamount=9999999)
+function show_users($uid='',$rowstart=0,$rowamount=9999999)
 {
  	global $db;
 	$add = '';
- 	if(is_numeric($id)) {
+ 	if(is_numeric($uid)) {
                  //When a user id is given, it is excluded from the userlist returned.
-                 $add = " WHERE users.id!=".$db->quote($id, 'integer');
+                 $add = " WHERE users.id!=".$db->quote($uid, 'integer');
 	}
 
 	// Make a huge query.
-	$query = "SELECT users.id AS id,
+	$query = "SELECT users.id AS uid,
 		users.username AS username,
 		users.fullname AS fullname,
 		users.email AS email,
@@ -140,13 +140,13 @@ function show_users($id='',$rowstart=0,$rowamount=9999999)
 	$retcount = 0;
 	while ($r = $response->fetchRow()) {
 		$ret[] = array(
-		 "id"                    =>              $r["id"],
-		 "username"              =>              $r["username"],
-		 "fullname"              =>              $r["fullname"],
-		 "email"                 =>              $r["email"],
-		 "description"           =>              $r["description"],
-		 "active"                =>              $r["active"],
-		 "numdomains"            =>              $r["aantal"]
+		 "uid"		=>	$r["uid"],
+		 "username"	=>	$r["username"],
+		 "fullname"	=>	$r["fullname"],
+		 "email"	=>	$r["email"],
+		 "description"	=>	$r["description"],
+		 "active"	=>	$r["active"],
+		 "numdomains"	=>	$r["aantal"]
 		);
 	}
 	return $ret;
