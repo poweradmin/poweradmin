@@ -83,7 +83,7 @@ function update_soa_serial($zid) {
 			$revision = "00";
 		}
 
-		$serial = $today . tr_pad($revision, 2, "0", STR_PAD_LEFT);
+		$serial = $today . str_pad($revision, 2, "0", STR_PAD_LEFT);
 		
 		// Change serial in SOA array.
 		$soa[2] = $serial;

@@ -181,7 +181,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 			$users = show_users();
 			foreach ($users as $user) {
 				$add = '';
-				if ($user["id"] == $_SESSION["userid"]) {
+				if ($user["uid"] == $_SESSION["userid"]) {
 					$add = " SELECTED";
 				}
 				echo "          <option" . $add . " value=\"" . $user["uid"] . "\">" . $user["fullname"] . "</option>\n";
