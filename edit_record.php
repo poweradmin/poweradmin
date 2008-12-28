@@ -49,6 +49,7 @@ if (isset($post['commit'])) {
 	} else {
 		$ret_val = edit_record($post);
 		if ( $ret_val == "1" ) {
+			update_soa_serial($zid);
 			success(SUC_RECORD_UPD);
 		} else {
 			// TODO Fix inconsistent error reporting?

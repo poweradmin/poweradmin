@@ -130,9 +130,6 @@ function edit_record($record) {
 				WHERE id=".$db->quote($record['rid'], 'integer');
 			$result = $db->query($query);
 			if (PEAR::isError($result)) { error($result->getMessage()); return false; }
-			if ($record['type'] != 'SOA') {
-				update_soa_serial($record['zid']);
-			}
 			return true;
 		}
 		return false;
