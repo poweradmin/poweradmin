@@ -84,8 +84,7 @@ function update_soa_serial($did) {
 			$revision = "00";
 		}
 
-		// TODO padding if revision < 10
-		$serial = $today . $revision;
+		$serial = $today . str_pad($revision, 2, "0", STR_PAD_LEFT);;
 		
 		// Change serial in SOA array.
 		$soa[2] = $serial;
@@ -95,7 +94,6 @@ function update_soa_serial($did) {
 		for ($i = 0; $i < count($soa); $i++) {	
 			$content .= $soa[$i] . " "; 
 		}
-		// TODO Query not executed?
 		$sqlq = "UPDATE records SET content = ".$db->quote($content, 'text')." WHERE domain_id = ".$db->quote($did, 'integer')." AND type = ".$db->quote('SOA', 'text');
 		$response = $db->query($sqlq);
 		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
@@ -133,9 +131,6 @@ function edit_record($record) {
 				WHERE id=".$db->quote($record['rid'], 'integer');
 			$result = $db->query($query);
 			if (PEAR::isError($result)) { error($result->getMessage()); return false; }
-			if ($record['type'] != 'SOA') {
-				update_soa_serial($record['zid']);
-			}
 			return true;
 		}
 		return false;

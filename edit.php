@@ -37,6 +37,7 @@ if (isset($_POST['commit'])) {
 	foreach ($_POST['record'] as $record) {
 		edit_record($record);
 	}
+	update_soa_serial($_GET['id']);
 }
 
 if (verify_permission('zone_content_view_others')) { $perm_view = "all" ; } 
