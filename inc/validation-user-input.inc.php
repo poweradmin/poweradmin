@@ -48,6 +48,7 @@ $valid_vars_post = array(
 	"ip_superm"	=> "validate_ip_address",		# ip address of a supermaster
 	"ip_web"	=> "valodate_ip_address",		# ip addeess of a web server
 	"label"		=> "validate_sql_safe",			# label field of a record
+	"name"		=> "validate_sql_safe",			# name of the zone
 	"ns_name"	=> "validate_sql_safe",			# hostname of supermaster slave in zone
 	"owner"		=> "validate_sql_safe",			# owner of an object
 	"password"	=> "validate_sql_safe",			# password at login

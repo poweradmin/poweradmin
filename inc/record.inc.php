@@ -83,8 +83,7 @@ function update_soa_serial($zid) {
 			$revision = "00";
 		}
 
-		// TODO padding if revision < 10
-		$serial = $today . $revision;
+		$serial = $today . tr_pad($revision, 2, "0", STR_PAD_LEFT);
 		
 		// Change serial in SOA array.
 		$soa[2] = $serial;
@@ -94,7 +93,6 @@ function update_soa_serial($zid) {
 		for ($i = 0; $i < count($soa); $i++) {	
 			$content .= $soa[$i] . " "; 
 		}
-		// TODO Query not executed?
 		$sqlq = "UPDATE records SET content = ".$db->quote($content, 'text')." WHERE domain_id = ".$db->quote($zid, 'integer')." AND type = ".$db->quote('SOA', 'text');
 		$response = $db->query($sqlq);
 		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
@@ -121,27 +119,6 @@ function edit_record($record) {
 		return false;
 	} else {
 		global $db;
-<<<<<<< .working
-		// TODO: no need to check for numeric-ness of zone id if we check with validate_input as well?
-		if (is_numeric($record['zid'])) {
-			if (validate_input($record['zid'], $record['type'], $record['content'], $record['label'], $record['prio'], $record['ttl'])) {
-				$query = "UPDATE records 
-					SET name=".$db->quote($record['label'], 'text').", 
-					type=".$db->quote($record['type'], 'text').", 
-					content='" . $db->quote($record['content'], 'text') . "', 
-					ttl=".$db->quote($record['ttl'], 'integer').", 
-					prio=".$db->quote($record['prio'], 'integer').", 
-					change_date=".$db->quote(time(), 'integer')." 
-					WHERE id=".$db->quote($record['rid'], 'integer');
-				$result = $db->Query($query);
-				if (PEAR::isError($result)) {
-					error($result->getMessage());
-					return false;
-				} elseif ($record['type'] != 'SOA') {
-					update_soa_serial($record['zid']);
-				}
-				return true;
-=======
 		if (validate_input($record['zid'], $record['type'], $record['content'], $record['name'], $record['prio'], $record['ttl'])) {
 			$query = "UPDATE records 
 				SET name=".$db->quote($record['name'], 'text').", 
@@ -155,7 +132,6 @@ function edit_record($record) {
 			if (PEAR::isError($result)) { error($result->getMessage()); return false; }
 			if ($record['type'] != 'SOA') {
 				update_soa_serial($record['zid']);
->>>>>>> .merge-right.r320
 			}
 			return true;
 		}
@@ -809,40 +785,26 @@ function zone_count_for_uid($uid) {
  * Retrieve all fields of the record and send it back to the function caller.
  * return values: the array with information, or -1 is nothing is found.
  */
-function get_record_from_id($id)
-{
+function get_record_from_id($rid) {
 	global $db;
-	if (is_numeric($id))
-	{
-		$result = $db->query("SELECT id, domain_id, name, type, content, ttl, prio, change_date FROM records WHERE id=".$db->quote($id, 'integer'));
-		if($result->numRows() == 0)
-		{
-			return -1;
-		}
-		elseif ($result->numRows() == 1)
-		{
-			$r = $result->fetchRow();
-			$ret = array(
-				"id"            =>      $r["id"],
-				"domain_id"     =>      $r["domain_id"],
-				"name"          =>      $r["name"],
-				"type"          =>      $r["type"],
-				"content"       =>      $r["content"],
-				"ttl"           =>      $r["ttl"],
-				"prio"          =>      $r["prio"],
-				"change_date"   =>      $r["change_date"]
-				);
-			return $ret;
-		}
-		else
-		{
-			error(sprintf(ERR_INV_ARGC, "get_record_from_id", "More than one row returned! This is bad!"));
-		}
-	}
-	else
-	{
-		error(sprintf(ERR_INV_ARG, "get_record_from_id"));
-	}
+	$result = $db->query("SELECT id AS rid, domain_id AS zid, name, type, content, ttl, prio, change_date FROM records WHERE id=".$db->quote($rid, 'integer'));
+	if($result->numRows() == 0) {
+		return -1;
+	} elseif ($result->numRows() == 1) {
+		$r = $result->fetchRow();
+		$ret = array(
+			"rid"            =>      $r["rid"],
+			"zid"     =>      $r["zid"],
+			"name"          =>      $r["name"],
+			"type"          =>      $r["type"],
+			"content"       =>      $r["content"],
+			"ttl"           =>      $r["ttl"],
+			"prio"          =>      $r["prio"],
+			"change_date"   =>      $r["change_date"]
+			);
+		return $ret;
+	} 
+	return false;
 }
 
 
@@ -851,59 +813,47 @@ function get_record_from_id($id)
  * Retrieve all fields of the records and send it back to the function caller.
  * return values: the array with information, or -1 is nothing is found.
  */
-function get_records_from_domain_id($id,$rowstart=0,$rowamount=999999) {
+function get_records_from_domain_id($zid,$rowstart=0,$rowamount=999999) {
 	global $db;
-	if (is_numeric($id)) {
-		if ((isset($_SESSION[$id."_ispartial"])) && ($_SESSION[$id."_ispartial"] == 1)) {
-			$db->setLimit($rowamount, $rowstart);
-			$result = $db->query("SELECT record_owners.record_id as id
-					FROM record_owners,domains,records
-					WHERE record_owners.user_id = " . $db->quote($_SESSION["userid"], 'integer') . "
-					AND record_owners.record_id = records.id
-					AND records.domain_id = " . $db->quote($id, 'integer') . "
-					GROUP BY record_owners.record_id");
+	if ((isset($_SESSION[$zid."_ispartial"])) && ($_SESSION[$zid."_ispartial"] == 1)) {
+		$db->setLimit($rowamount, $rowstart);
+		$result = $db->query("SELECT record_owners.record_id AS rid
+				FROM record_owners,domains,records
+				WHERE record_owners.user_id = " . $db->quote($_SESSION["userid"], 'integer') . "
+				AND record_owners.record_id = records.id
+				AND records.domain_id = " . $db->quote($zid, 'integer') . "
+				GROUP BY record_owners.record_id");
 
-			$ret = array();
-			if($result->numRows() == 0) {
-				return -1;
-			} else {
-				$ret[] = array();
-				$retcount = 0;
-				while($r = $result->fetchRow())
-				{
-					// Call get_record_from_id for each row.
-					$ret[$retcount] = get_record_from_id($r["id"]);
-					$retcount++;
-				}
-				return $ret;
-			}
-
+		$ret = array();
+		if($result->numRows() == 0) {
+			return -1;
 		} else {
-			$db->setLimit($rowamount, $rowstart);
-			$result = $db->query("SELECT id FROM records WHERE domain_id=".$db->quote($id, 'integer'));
-			$ret = array();
-			if($result->numRows() == 0)
-			{
-				return -1;
+			$ret[] = array();
+			$retcount = 0;
+			while($r = $result->fetchRow()) {
+				// Call get_record_from_id for each row.
+				$ret[$retcount] = get_record_from_id($r["rid"]);
+				$retcount++;
 			}
-			else
-			{
-				$ret[] = array();
-				$retcount = 0;
-				while($r = $result->fetchRow())
-				{
-					// Call get_record_from_id for each row.
-					$ret[$retcount] = get_record_from_id($r["id"]);
-					$retcount++;
-				}
-				return $ret;
-			}
-
+			return $ret;
 		}
-	}
-	else
-	{
-		error(sprintf(ERR_INV_ARG, "get_records_from_domain_id"));
+	} else {
+		$db->setLimit($rowamount, $rowstart);
+		$result = $db->query("SELECT id AS rid FROM records WHERE domain_id=".$db->quote($zid, 'integer'));
+		$ret = array();
+		if($result->numRows() == 0) {
+			return -1;
+		} else {
+			$ret[] = array();
+			$retcount = 0;
+			while($r = $result->fetchRow()) {
+				// Call get_record_from_id for each row.
+				$ret[$retcount] = get_record_from_id($r["rid"]);
+				$retcount++;
+			}
+			return $ret;
+		}
+
 	}
 }
 
