@@ -47,6 +47,7 @@ if (isset($post['commit'])) {
 	if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
 		error(ERR_PERM_EDIT_RECORD);
 	} else {
+		// TODO check minimum variables present
 		$ret_val = edit_record($post);
 		if ( $ret_val == "1" ) {
 			update_soa_serial($zid);

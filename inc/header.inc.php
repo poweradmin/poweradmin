@@ -76,6 +76,8 @@ if (file_exists('install')) {
 }
 echo "    <div class=\"content\">\n";
 
+debug_print($_POST);
+
 // Validation of $_POST
 if (!empty($_POST)) {
 	$post = validate_variables($_POST, $valid_vars_post);

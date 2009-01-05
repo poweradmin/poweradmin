@@ -81,8 +81,8 @@ if (($get['uid'] == $_SESSION["userid"] && $perm_edit_own == "1") || ($get['uid'
 			echo "        <td class=\"n\">\n";
 			echo "         <select name=\"pid\">\n";
 			foreach (list_permission_templates() as $template) {
-				($template['id'] == $user['tpl_id']) ? $select = " SELECTED" : $select = "" ;
-				echo "          <option value=\"" . $template['id'] . "\"" . $select . ">" . $template['name'] . "</option>\n";
+				($template['pid'] == $user['pid']) ? $select = " SELECTED" : $select = "" ;
+				echo "          <option value=\"" . $template['pid'] . "\"" . $select . ">" . $template['name'] . "</option>\n";
 			}
 			echo "         </select>\n";
 			echo "       </td>\n";

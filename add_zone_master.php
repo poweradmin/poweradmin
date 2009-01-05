@@ -82,7 +82,7 @@ if ( $zone_master_add != "1" ) {
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">" . _('Zone name') . ":</td>\n";
 	echo "        <td class=\"n\">\n";
-	echo "         <input type=\"text\" class=\"input\" name=\"domain\" value=\"" .  $zone_name . "\">\n";
+	echo "         <input type=\"text\" class=\"input\" name=\"zone_name\" value=\"" .  $zone_name . "\">\n";
 	echo "        </td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
