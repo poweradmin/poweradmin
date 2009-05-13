@@ -79,7 +79,9 @@ if ($record_id == "-1" ) {
 			echo "     <p>" . _('Are you sure?') . "</p>\n";
 			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='" . $_SERVER["REQUEST_URI"] . "&confirm=1'\" value=\"" . _('Yes') . "\">\n";
 			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
-		}
+		}	
+		// Update serial when a record is removed.
+		update_soa_serial($zone_id);
         }
 }
 include_once("inc/footer.inc.php");
