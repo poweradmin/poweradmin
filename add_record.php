@@ -22,6 +22,9 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
+/*
+Get permissions
+*/
 if (verify_permission('zone_content_view_others')) { $perm_view = "all" ; }
 elseif (verify_permission('zone_content_view_own')) { $perm_view = "own" ; }
 else { $perm_view = "none" ; }
@@ -34,6 +37,11 @@ if (verify_permission('zone_meta_edit_others')) { $perm_meta_edit = "all" ; }
 elseif (verify_permission('zone_meta_edit_own')) { $perm_meta_edit = "own" ; }
 else { $perm_meta_edit = "none" ; }
 
+
+/*
+Check and make sure all post values have made it through
+if not set them.
+*/
 $zone_id = "-1";
 if ((isset($_GET['id'])) && (v_num($_GET['id']))) {
 	$zone_id = $_GET['id'];
@@ -73,10 +81,18 @@ if ($zone_id == "-1") {
 	exit;
 }
 
+/*
+Check and see if the user is the zone owner
+Check the sone type and get the zone name
+*/
 $user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
 $zone_type = get_domain_type($zone_id);
 $zone_name = get_zone_name_from_id($zone_id);
 
+/*
+If the form as been submitted
+process it!
+*/
 if (isset($_POST["commit"])) {
 	if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
 		error(ERR_PERM_ADD_RECORD);
@@ -88,6 +104,9 @@ if (isset($_POST["commit"])) {
 	}
 }
 
+/*
+Display form to add a record
+*/
 echo "    <h2>" . _('Add record to zone') . " " .  $zone_name . "</h2>\n";
 
 if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {

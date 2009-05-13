@@ -32,6 +32,10 @@ if (!verify_permission('templ_perm_edit')) {
 
 	$perms_avail = get_permissions_by_template_id();
 
+	/* 
+	Display new permission form
+	*/
+
 	echo "    <h2>" . _('Add permission template') . "</h2>\n"; 
         echo "    <form method=\"post\">\n";
 	echo "     <table>\n";
@@ -51,6 +55,10 @@ if (!verify_permission('templ_perm_edit')) {
 	echo "       <th>" . _('Description') . "</th>\n"; 
 	echo "      </tr>\n";
 
+	/*
+	Display available permissions settings for inclusion
+	in the new permission
+	*/
 	foreach ($perms_avail as $perm_a) {
 
 		echo "      <tr>\n";
