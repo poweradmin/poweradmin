@@ -54,7 +54,11 @@ if (isset($_POST['empty'])) {
 	$empty = $_POST['empty'];
 }
 
+/*
+Check user permissions
+*/
 (verify_permission('zone_master_add')) ? $zone_master_add = "1" : $zone_master_add = "0" ;
+(verify_permission('user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0" ; 
 
 if (isset($_POST['submit']) && $zone_master_add == "1" ) {
 
@@ -122,8 +126,16 @@ if ( $zone_master_add != "1" ) {
 	echo "        <td class=\"n\">" . _('Owner') . ":</td>\n";
 	echo "        <td class=\"n\">\n";
 	echo "         <select name=\"owner\">\n";
-        foreach ($users as $user) {
-		echo "          <option value=\"" . $user['id'] . "\">" . $user['fullname'] . "</option>\n";
+ 		/*
+		Display list of users to assign zone to if creating
+		user has the proper permission to do so.
+		*/
+	       foreach ($users as $user) { 
+ 	       if ($user['id'] === $_SESSION['userid']) { 
+ 	       echo "          <option value=\"" . $user['id'] . "\" selected>" . $user['fullname'] . "</option>\n"; 
+ 	       } elseif ( $perm_view_others == "1" ) { 
+ 	       echo "          <option value=\"" . $user['id'] . "\">" . $user['fullname'] . "</option>\n"; 
+ 	       } 
         }
 	echo "         </select>\n";
 	echo "        </td>\n";

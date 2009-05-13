@@ -31,7 +31,11 @@ $zone = trim($_POST['domain']);
 $master = $_POST['slave_master'];
 $type = "SLAVE";
 
+/*
+Check permissions
+*/
 (verify_permission('zone_slave_add')) ? $zone_slave_add = "1" : $zone_slave_add = "0" ;
+(verify_permission('user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0" ; 
 
 if ($_POST['submit'] && $zone_slave_add == "1") {
 	if (!is_valid_hostname_fqdn($zone,0)) {
@@ -72,8 +76,17 @@ if ( $zone_slave_add != "1" ) {
 	echo "        <td class=\"n\">" . _('Owner') . ":</td>\n";
 	echo "        <td class=\"n\">\n";
 	echo "         <select name=\"owner\">\n";
+	/*
+	Display list of users to assign slave zone to if the
+	editing user has the permissions to, otherise just
+	display the adding users name
+	*/
 	foreach ($users as $user) {
-		echo "          <option value=\"" . $user['id'] . "\">" . $user['fullname'] . "</option>\n";
+		if ($user['id'] === $_SESSION['userid']) { 
+ 	                       echo "          <option value=\"" . $user['id'] . "\" selected>" . $user['fullname'] . "</option>\n"; 
+ 	               } elseif ( $perm_view_others == "1" ) { 
+ 	                       echo "          <option value=\"" . $user['id'] . "\">" . $user['fullname'] . "</option>\n"; 
+ 	               }        
 	}
 	echo "         </select>\n";
 	echo "        </td>\n";

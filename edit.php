@@ -40,6 +40,9 @@ if (isset($_POST['commit'])) {
 	update_soa_serial($_GET['id']);
 }
 
+/*
+Check permissions
+*/
 if (verify_permission('zone_content_view_others')) { $perm_view = "all" ; } 
 elseif (verify_permission('zone_content_view_own')) { $perm_view = "own" ; } 
 else { $perm_view = "none" ; }
@@ -56,6 +59,8 @@ $user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
 if ( $perm_meta_edit == "all" || ( $perm_meta_edit == "own" && $user_is_zone_owner == "1") ) {
 	$meta_edit = "1";
 }
+
+(verify_permission('user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0" ; 
 
 if(isset($_POST['slave_master_change']) && is_numeric($_POST["domain"]) ) {
 	change_zone_slave_master($_POST['domain'], $_POST['new_master']);
@@ -195,13 +200,16 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 			echo "       <tr>\n";
 			echo "        <td>\n";
 			echo "         <select name=\"newowner\">\n";
+			/*
+			Show list of users to add as owners of this domain, only if we have permission to do so.
+			*/
 			$users = show_users();
 			foreach ($users as $user) {
 				$add = '';
 				if ($user["id"] == $_SESSION["userid"]) {
-					$add = " SELECTED";
-				}
-				echo "          <option" . $add . " value=\"" . $user["id"] . "\">" . $user["fullname"] . "</option>\n";
+					echo "          <option" . $add . " value=\"" . $user["id"] . "\">" . $user["fullname"] . "</option>\n"; 
+				} elseif ( $perm_view_others == "1" ) { 
+				echo "          <option  value=\"" . $user["id"] . "\">" . $user["fullname"] . "</option>\n";
 			}
 			echo "         </select>\n";
 			echo "        </td>\n";
