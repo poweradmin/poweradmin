@@ -19,7 +19,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function validate_input($zid, $type, &$content, &$name, &$prio, &$ttl) {
+function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) { 
 
 	$zone = get_zone_name_from_id($zid);				// TODO check for return
 
@@ -35,16 +35,19 @@ function validate_input($zid, $type, &$content, &$name, &$prio, &$ttl) {
 
 		case "A":
 			if (!is_valid_ipv4($content)) return false;
+                        if (!is_valid_rr_cname_exists($name,$rid)) return false; 
 			if (!is_valid_hostname_fqdn($name,1)) return false;
 			break;
 
 		case "AAAA":
 			if (!is_valid_ipv6($content)) return false;
+                        if (!is_valid_rr_cname_exists($name,$rid)) return false; 
 			if (!is_valid_hostname_fqdn($name,1)) return false;
 			break;
 
 		case "CNAME":
 			if (!is_valid_rr_cname_name($name)) return false;
+                        if (!is_valid_rr_cname_unique($name,$rid)) return false; 
 			if (!is_valid_hostname_fqdn($name,1)) return false;
 			if (!is_valid_hostname_fqdn($content,0)) return false;
 			break;
@@ -245,6 +248,55 @@ function is_valid_rr_cname_name($name) {
 
 	return true;
 }
+
+/*
+Check and see if the CNAME exists already
+*/
+function is_valid_rr_cname_exists($name,$rid) { 
+        global $db; 
+ 
+        if ($rid > 0) { 
+                $where = " AND id != " .$db->quote($rid); 
+        } else { 
+                $where = ''; 
+        } 
+        $query = "SELECT type, name 
+                        FROM records 
+                        WHERE name = " . $db->quote($name) . $where . " 
+                        AND TYPE = 'CNAME'"; 
+ 
+        $response = $db->query($query); 
+        if (PEAR::isError($response)) { error($response->getMessage()); return false; }; 
+        if ($response->numRows() > 0) { 
+                error(ERR_DNS_CNAME_EXISTS); return false; 
+        } 
+        return true; 
+} 
+
+/*
+Check and see if this CNAME is unique (doesn't overlap A/AAAA
+*/	 
+function is_valid_rr_cname_unique($name,$rid) { 
+        global $db; 
+ 
+        if ($rid > 0) { 
+                $where = " AND id != " .$db->quote($rid); 
+        } else { 
+                $where = ''; 
+        } 
+        $query = "SELECT type, name 
+                        FROM records 
+                        WHERE name = " . $db->quote($name) . $where . " 
+                        AND TYPE IN ('A', 'AAAA', 'CNAME')"; 
+ 
+        $response = $db->query($query); 
+        if (PEAR::isError($response)) { error($response->getMessage()); return false; }; 
+        if ($response->numRows() > 0) { 
+                error(ERR_DNS_CNAME_UNIQUE); return false; 
+        } 
+        return true; 
+} 
+
 
 function is_valid_non_alias_target($target) {
 	global $db;

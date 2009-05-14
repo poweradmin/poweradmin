@@ -120,8 +120,8 @@ function edit_record($record) {
 		return false;
 	} else {
 		global $db;
-		if (validate_input($record['zid'], $record['type'], $record['content'], $record['name'], $record['prio'], $record['ttl'])) {
-			if($record['type'] == "SPF"){
+			if (validate_input($record['rid'], $record['zid'], $record['type'], $record['content'], $record['name'], $record['prio'], $record['ttl'])) {
+				if($record['type'] == "SPF"){
                                 $content = $db->quote(stripslashes('\"'.$record['content'].'\"'), 'text');
                                 }else{
                                 $content = $db->quote($record['content'], 'text');
@@ -163,7 +163,7 @@ function add_record($zoneid, $name, $type, $content, $ttl, $prio) {
 		error(ERR_PERM_ADD_RECORD);
 		return false;
 	} else {
-		if (validate_input($zoneid, $type, $content, $name, $prio, $ttl) ) {
+		if (validate_input(-1, $zoneid, $type, $content, $name, $prio, $ttl) ) { 
 			$change = time();
 				if($type == "SPF"){
                                                 $content = $db->quote(stripslashes('\"'.$content.'\"'), 'text');
