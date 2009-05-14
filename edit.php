@@ -210,6 +210,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 					echo "          <option" . $add . " value=\"" . $user["id"] . "\">" . $user["fullname"] . "</option>\n"; 
 				} elseif ( $perm_view_others == "1" ) { 
 				echo "          <option  value=\"" . $user["id"] . "\">" . $user["fullname"] . "</option>\n";
+				}
 			}
 			echo "         </select>\n";
 			echo "        </td>\n";
