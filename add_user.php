@@ -67,7 +67,7 @@ if (!verify_permission('user_add_new')) {
 	echo "       </tr>\n";
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">" . _('Enabled') . "</td>\n"; 
-	echo "        <td class=\"n\"><input type=\"checkbox\" class=\"input\" name=\"active\" value=\"1\"></td>\n";
+	echo "        <td class=\"n\"><input type=\"checkbox\" class=\"input\" name=\"active\" value=\"1\" CHECKED></td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">&nbsp;</td>\n"; 
