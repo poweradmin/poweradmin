@@ -124,7 +124,7 @@ function edit_record($record) {
 			$query = "UPDATE records 
 				SET name=".$db->quote($record['name'], 'text').", 
 				type=".$db->quote($record['type'], 'text').", 
-				content=" . $db->quote($record['content'], 'text') . ", 
+				content=" . $db->quote(stripslashes('\"'.$record['content'].'\"'), 'text') . ", 
 				ttl=".$db->quote($record['ttl'], 'integer').", 
 				prio=".$db->quote($record['prio'], 'integer').", 
 				change_date=".$db->quote(time(), 'integer')." 
@@ -164,7 +164,7 @@ function add_record($zoneid, $name, $type, $content, $ttl, $prio) {
 						. $db->quote($zoneid, 'integer') . ","
 						. $db->quote($name, 'text') . "," 
 						. $db->quote($type, 'text') . "," 
-						. $db->quote($content, 'text') . ","
+						. $db->quote(stripslashes('\"'.$content.'\"'), 'text') . ","
 						. $db->quote($ttl, 'integer') . ","
 						. $db->quote($prio, 'integer') . ","
 						. $db->quote($change, 'integer') . ")";
