@@ -121,14 +121,15 @@ function edit_record($record) {
 	} else {
 		global $db;
 		if (validate_input($record['zid'], $record['type'], $record['content'], $record['name'], $record['prio'], $record['ttl'])) {
+			if($record['type'] == "SPF"){
+                                $content = $db->quote(stripslashes('\"'.$record['content'].'\"'), 'text');
+                                }else{
+                                $content = $db->quote($record['content'], 'text');
+                                }
 			$query = "UPDATE records 
 				SET name=".$db->quote($record['name'], 'text').", 
 				type=".$db->quote($record['type'], 'text').", 
-				if($type == "SPF"){
-				content=" . $db->quote(stripslashes('\"'.$record['content'].'\"'), 'text') . ", 
-				}else{
-				content=" . $db->quote($record['content']), 'text') . ",
-				}
+				content=".$content.",
 				ttl=".$db->quote($record['ttl'], 'integer').", 
 				prio=".$db->quote($record['prio'], 'integer').", 
 				change_date=".$db->quote(time(), 'integer')." 
@@ -164,15 +165,16 @@ function add_record($zoneid, $name, $type, $content, $ttl, $prio) {
 	} else {
 		if (validate_input($zoneid, $type, $content, $name, $prio, $ttl) ) {
 			$change = time();
+				if($type == "SPF"){
+                                                $content = $db->quote(stripslashes('\"'.$content.'\"'), 'text');
+                                                }else{
+                                                $content = $db->quote($content, 'text');
+                                                }
 			$query = "INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) VALUES ("
 						. $db->quote($zoneid, 'integer') . ","
 						. $db->quote($name, 'text') . "," 
-						. $db->quote($type, 'text') . "," 
-						if($type == "SPF"){
-						. $db->quote(stripslashes('\"'.$content.'\"'), 'text') . ","
-						}else{
-						. $db->quote($content, 'text') . ","
-						}
+						. $db->quote($type, 'text') . ","
+						. $content . ","
 						. $db->quote($ttl, 'integer') . ","
 						. $db->quote($prio, 'integer') . ","
 						. $db->quote($change, 'integer') . ")";
