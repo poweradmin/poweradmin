@@ -103,7 +103,7 @@ if (!(verify_permission('search'))) {
 				echo "          </td>\n";
 				echo "       <td>" . $record['name'] . "</td>\n";
 				echo "       <td>" . $record['type'] . "</td>\n";
-				if ($record['type'] == "MX") {
+				if ($record['type'] == "MX" || $record['type'] == "SRV") {
 					echo "       <td>" . $record['prio'] . "</td>\n";
 				} else {
 					echo "       <td>&nbsp;</td>\n";
