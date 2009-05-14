@@ -143,10 +143,10 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 						/*
 						Sanitize content due to SPF record quoting in PowerDNS
 						*/
-						$clean_content = trim($r['content'], "\x22\x22");
+						$clean_content = trim($r['content'], "\x22\x27");
 					echo "       </select>\n";
 					echo "      </td>\n";
-					echo "      <td class=\"u\"><input class=\"wide\" name=\"record[" . $r['id'] . "][content]\" value=" . $clean_content . "></td>\n";
+					echo "      <td class=\"u\"><input class=\"wide\" name=\"record[" . $r['id'] . "][content]\" value=\"" . $clean_content . "\"></td>\n";
 					if ($r['type'] == "MX") { 
 						echo "      <td class=\"u\"><input name=\"record[" . $r['id'] . "][prio]\" value=\"" .  $r['prio'] . "\"></td>\n";
 					} else {
