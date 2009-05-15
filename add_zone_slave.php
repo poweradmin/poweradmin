@@ -46,7 +46,7 @@ if ($_POST['submit'] && $zone_slave_add == "1") {
 		error(ERR_DNS_IP);
 	} else {
 		if(add_domain($zone, $owner, $webip, $mailip, $empty, $type, $master)) {
-			success(SUC_ZONE_ADD);
+			success("<a href=\"edit.php?id=" . get_zone_id_from_name($zone) . "\">".SUC_ZONE_ADD.'</a>');
 			unset($zone, $owner, $webip, $mailip, $empty, $type, $master);
 		}
 	}
