@@ -84,12 +84,12 @@ if (isset($_POST['submit']) && $zone_master_add == "1" ) {
                         error(ERR_DOMAIN_EXISTS); 
 			$error = "1";
                 } else {
-                        if (add_domain($domain, $owner, $webip, $mailip, $empty, $dom_type, '')) {
-				success(SUC_ZONE_ADD);
-				unset($domain, $owner, $webip, $mailip, $empty, $dom_type);
-			} else {
-				$error = "1";
-			}
+                        if (add_domain($domain, $owner, $webip, $mailip, $empty, $dom_type, '')) {	
+	                       success("<a href=\"edit.php?id=" . get_zone_id_from_name($domain) . "\">".SUC_ZONE_ADD.'</a>');
+                               unset($domain, $owner, $webip, $mailip, $empty, $dom_type);
+                        } else {
+                               $error = "1";
+                        }
                 }
         }
 }

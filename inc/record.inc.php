@@ -593,6 +593,33 @@ function get_zone_name_from_id($zid)
 	}
 }
 
+/*
+Get zone id from name
+*/
+function get_zone_id_from_name($zname) {
+        global $db;
+      
+        if (!empty($zname))
+        {
+                $result = $db->query("SELECT id FROM domains WHERE name=".$db->quote($zname, 'text'));
+                $rows = $result->numRows() ;
+                if ($rows == 1) {
+                        $r = $result->fetchRow();
+                        return $r["id"];
+                } elseif ($rows == "0") {
+                        error(sprintf("Zone does not exist."));
+                        return false;
+                } else {
+                        error(sprintf(ERR_INV_ARGC, "get_zone_id_from_name", "more than one domain found?! whaaa! BAD! BAD! Contact admin!"));
+                        return false;
+                }
+        }
+        else
+        {
+                error(sprintf(ERR_INV_ARGC, "get_zone_id_from_name", "Not a valid domainname: $id"));
+        }
+}
+
 function get_zone_info_from_id($zid) {
 
 	if (verify_permission('zone_content_view_others')) { $perm_view = "all" ; } 
