@@ -53,8 +53,8 @@ if ((isset($_POST['ttl'])) && (v_num($_POST['ttl']))) {
 }
 
 $prio = "10";
-if ((isset($_GET['prio'])) && (v_num($_GET['prio']))) {
-	$prio = $_GET['prio'];
+if ((isset($_POST['prio'])) && (v_num($_POST['prio']))) {
+	$prio = $_POST['prio'];
 }
 
 if (isset($_POST['name'])) {
