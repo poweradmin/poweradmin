@@ -103,6 +103,7 @@ foreach ($users as $user) {
 echo "     </table>\n";
 if ($commit_button) {
 	echo "     <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
+	echo "     <input type=\"reset\" class=\"button\" name=\"reset\" value=\"" . _('Reset changes') . "\">\n"; 
 }
 echo "    </form>\n";
 

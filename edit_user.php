@@ -136,8 +136,9 @@ if ($edit_id == "-1") {
 		echo "        <td class=\"n\"><input type=\"checkbox\" class=\"input\" name=\"active\" value=\"1\"" . $check . "></td>\n";
 		echo "       </tr>\n";
 		echo "       <tr>\n";
-	echo "        <td class=\"n\">&nbsp;</td>\n"; 
+                echo "        <td class=\"n\">&nbsp;</td>\n";  
 		echo "        <td class=\"n\"><input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Commit changes') . "\"></td>\n"; 
+		echo "        <input type=\"reset\" class=\"button\" name=\"reset\" value=\"" . _('Reset changes') . "\"></td>\n";
 		echo "      </table>\n";
 		echo "     </form>\n";
 
