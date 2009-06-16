@@ -1,0 +1,979 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: poweradmin 2.0.3\n"
+"Report-Msgid-Bugs-To: Georg K&auml;fer <gkaefer@backbone.co.at>\n"
+"POT-Creation-Date: 2009-06-10 14:42+0200\n"
+"PO-Revision-Date: 2009-06-10 14:42+0200\n"
+"Last-Translator: Georg K&auml;fer <gkaefer@backbone.co.at>\n"
+"Language-Team: poweradmin german\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "The install/ directory exists, you must remove it first before proceeding."
+msgstr "Das install/ Verzeichnis existiert, Sie m&uuml;ssen es zuerst entfernen um fortfahren zu k&ouml;nnen."
+
+msgid "There is no zone with this ID."
+msgstr "Es existiert keine Zone mit dieser ID"
+
+#: add_perm_templ.php:35 list_perm_templ.php:60
+msgid "Add permission template"
+msgstr "Berechtigungs-Vorlage hinzuf&uuml;gen"
+
+#: add_perm_templ.php:39 add_perm_templ.php:50 add_record.php:86
+#: edit_perm_templ.php:51 edit_perm_templ.php:63 edit.php:92
+#: edit_record.php:63 list_perm_templ.php:35 list_zones.php:57 search.php:52
+#: search.php:85
+msgid "Name"
+msgstr "Name"
+
+#: add_perm_templ.php:43 add_perm_templ.php:51 add_user.php:63
+#: edit_perm_templ.php:55 edit_perm_templ.php:64 edit_user.php:129
+#: list_perm_templ.php:36 users.php:46
+msgid "Description"
+msgstr "Beschreibung"
+
+#: add_perm_templ.php:59 edit_perm_templ.php:80 edit_user.php:151
+msgid "descr"
+msgstr "descr"
+
+#: add_perm_templ.php:63 add_user.php:72 delete_user.php:101
+#: edit_perm_templ.php:84 edit.php:135 edit_record.php:105 edit_user.php:138
+#: users.php:104
+msgid "Commit changes"
+msgstr "&Auml;nderungen durchf&uuml;hren"
+
+#: edit.php:104
+msgid "Reset changes"
+msgstr "&Auml;nderungen r&uuml;cksetzen"
+
+#: add_record.php:71
+msgid "The record was successfully added."
+msgstr "Der Eintrag wurde erfolgreich hinzugef&uuml;gt."
+
+#: add_record.php:77
+msgid "Add record to zone"
+msgstr "Eintrag zur Zone hinzuf&uuml;gen"
+
+#: add_record.php:88 add_zone_master.php:115 delete_domain.php:58 edit.php:93
+#: edit.php:199 edit_record.php:65 list_zones.php:58 search.php:53
+#: search.php:86
+msgid "Type"
+msgstr "Typ"
+
+#: add_record.php:89 edit.php:95 edit_record.php:66 search.php:87
+msgid "Priority"
+msgstr "Priorit&auml;t"
+
+#: add_record.php:90 edit.php:94 edit_record.php:67 search.php:88
+msgid "Content"
+msgstr "Inhalt"
+
+#: add_record.php:91 edit.php:96 edit_record.php:68 search.php:89
+msgid "TTL"
+msgstr "TTL"
+
+#: add_record.php:124 edit.php:141
+msgid "Add record"
+msgstr "Eintrag hinzuf&uuml;gen"
+
+#: add_supermaster.php:40 add_supermaster.php:80 index.php:54
+#: inc/header.inc.php:66
+msgid "Add supermaster"
+msgstr "Supermaster hinzuf&uuml;gen"
+
+#: add_supermaster.php:43
+msgid "You do not have the permission to add a new supermaster."
+msgstr "Sie haben nicht die Berechtigung einen Supermaster hinzuzuf&uuml;gen."
+
+#: add_supermaster.php:48 list_supermasters.php:34
+msgid "IP address of supermaster"
+msgstr "IP Adresse des Supermaster"
+
+#: add_supermaster.php:58 delete_supermaster.php:52 list_supermasters.php:35
+msgid "Hostname in NS record"
+msgstr "Hostname im NS Eintrag"
+
+#: add_supermaster.php:68 delete_supermaster.php:53 list_supermasters.php:36
+msgid "Account"
+msgstr "Benutzerkonto"
+
+#: add_user.php:33 users.php:114
+msgid "Add user"
+msgstr "Benutzer hinzuf&uuml;gen"
+
+#: add_user.php:37 edit_user.php:102 users.php:44
+msgid "Username"
+msgstr "Benutzername"
+
+#: add_user.php:41 edit_user.php:106 users.php:45
+msgid "Fullname"
+msgstr "Vollst&auml;ndiger Name"
+
+#: add_user.php:45 edit_user.php:110 inc/auth.inc.php:99
+msgid "Password"
+msgstr "Passwort"
+
+#: add_user.php:49 edit_user.php:114 users.php:47
+msgid "Emailaddress"
+msgstr "Email Adresse"
+
+#: add_user.php:53 edit_user.php:118
+msgid "Permission template"
+msgstr "Berechtigungs Template"
+
+#: add_user.php:67 edit_user.php:133 users.php:49
+msgid "Enabled"
+msgstr "Aktiviert"
+
+#: add_zone_master.php:53
+msgid "IP address of web- or mailserver is invalid."
+msgstr "IP Adresse des Web- oder Mailservers ist ung&uuml;ltig."
+
+#: add_zone_master.php:79 index.php:48 inc/header.inc.php:60
+msgid "Add master zone"
+msgstr "Master Zone hinzuf&uuml;gen"
+
+#: add_zone_master.php:87 add_zone_slave.php:60
+msgid "Zone name"
+msgstr "Name der Zone"
+
+#: add_zone_master.php:93
+msgid "IP address of webserver"
+msgstr "IP Adresse des Webservers"
+
+#: add_zone_master.php:99
+msgid "IP address of mailserver"
+msgstr "IP Adresse des Mailservers"
+
+#: add_zone_master.php:105 add_zone_slave.php:72 delete_domain.php:57
+#: list_zones.php:60
+msgid "Owner"
+msgstr "Besitzer"
+
+#: add_zone_master.php:125
+msgid "Create zone without applying records-template"
+msgstr "Erstelle Zone ohne Zuhilfenahme der Datensatzvorlage"
+
+#: add_zone_master.php:131 add_zone_slave.php:84
+msgid "Add zone"
+msgstr "Zone hinzuf&uuml;gen"
+
+#: add_zone_slave.php:54 index.php:51 inc/header.inc.php:63
+msgid "Add slave zone"
+msgstr "Slave Zone hinzuf&uuml;gen"
+
+#: add_zone_slave.php:66 edit.php:229
+msgid "IP address of master NS"
+msgstr "IP Adresse des Master NS"
+
+#: change_password.php:29 change_password.php:47 index.php:56
+#: inc/header.inc.php:68
+msgid "Change password"
+msgstr "Passwort &auml;ndern"
+
+#: change_password.php:33
+msgid "Current password"
+msgstr "Bestehendes Passwort"
+
+#: change_password.php:37 change_password.php:41
+msgid "New password"
+msgstr "Neues Passwort"
+
+#: delete_domain.php:49 edit.php:143 list_zones.php:81 search.php:65
+msgid "Delete zone"
+msgstr "Zone l&ouml;schen"
+
+#: delete_domain.php:63
+#, php-format
+msgid "You are about to delete a slave zone of which the master nameserver, %s, is a supermaster. Deleting the zone now, will result in temporary removal only. Whenever the supermaster sends a notification for this zone, it will be added again!"
+msgstr "Sie sind dabei die Slave Zone zu l&ouml;schen, von der der Master Nameserver, %s, der Supermaster ist. Das l&ouml;schen der Zone bewirkt nur ein tempor&auml;res L&uuml;schen. Wann immer der Supermaster eine Notification sended, wird die Zone wieder hinzugef&uuml;gt!"
+
+#: delete_domain.php:67 delete_perm_templ.php:48 delete_record.php:78
+#: delete_supermaster.php:55
+msgid "Are you sure?"
+msgstr "Sind Sie sicher?"
+
+#: delete_domain.php:69 delete_perm_templ.php:49 delete_record.php:79
+#: delete_supermaster.php:56
+msgid "Yes"
+msgstr "Ja"
+
+#: delete_domain.php:70 delete_record.php:80 delete_supermaster.php:57
+msgid "No"
+msgstr "Nein"
+
+#: delete_perm_templ.php:42
+msgid "Delete permission template"
+msgstr "Berechtigungsvorlage l&ouml;schen"
+
+#: delete_record.php:54 edit.php:109 search.php:101
+msgid "Delete record"
+msgstr "Eintrag l&ouml;schen"
+
+#: delete_record.php:76
+msgid "You are trying to delete a record that is needed for this zone to work."
+msgstr "Sie versuchen einen Eintrag zu l&ouml;schen, der f&uuml;r den einwandfreien Betrieb der Zone zwingend notwendig ist."
+
+#: delete_supermaster.php:44 list_supermasters.php:49
+msgid "Delete supermaster"
+msgstr "Supermaster l&ouml;schen"
+
+#: delete_user.php:50 users.php:65
+msgid "Delete user"
+msgstr "Benutzer l&ouml;schen"
+
+#: delete_user.php:61
+msgid "You are about to delete a user. This user is owner for a number of zones. Please decide what to do with these zones."
+msgstr "Sie sind dabei einen Benutzer zu l&ouml;schen. Dieser Benutzer ist Besitzer diverser Zonen. Bitte entscheiden Sie, wie mit diesen Zonen zu verfahren ist."
+
+#: delete_user.php:66
+msgid "Zone"
+msgstr "Zone"
+
+#: delete_user.php:67 edit.php:164
+msgid "Delete"
+msgstr "L&ouml;schen"
+
+#: delete_user.php:68
+msgid "Leave"
+msgstr "Belassen"
+
+#: delete_user.php:69
+msgid "Add new owner"
+msgstr "Neuen Besitzer hinzuf&uuml;gen"
+
+#: delete_user.php:70
+msgid "Owner to be added"
+msgstr "Eigent&uuml;mer hinzugef&uuml;gt werden"
+
+#: delete_user.php:96
+msgid "Really delete this user?"
+msgstr "Wirklich diesen Benutzer l&ouml;schen?"
+
+#: edit_perm_templ.php:45 users.php:110
+msgid "Edit permission template"
+msgstr "Berechtigungsvorlage bearbeiten"
+
+#: edit.php:75 search.php:60
+msgid "Edit zone"
+msgstr "Zone editieren"
+
+#: edit.php:86
+msgid "This zone does not have any records. Weird."
+msgstr "Diese Zone hat keine Eintr&auml;ge. Schr&auml;g."
+
+#: edit.php:107 search.php:96
+msgid "Edit record"
+msgstr "Datensatz editieren"
+
+#: edit.php:149
+msgid "Owner of zone"
+msgstr "Besitzer der Zone"
+
+#: edit.php:155
+msgid "No owner set for this zone."
+msgstr "F&uuml;r diese Zone ist kein Besitzer festgelegt."
+
+#: edit.php:193
+msgid "Add"
+msgstr "Hinzuf&uuml;gen"
+
+#: edit.php:218 edit.php:240
+msgid "Change"
+msgstr "&Auml;ndern"
+
+#: edit_record.php:54
+msgid "Edit record in zone"
+msgstr "Eintrag der Zone editieren"
+
+#: edit_user.php:97 users.php:64
+msgid "Edit user"
+msgstr "Benutzer editieren"
+
+#: edit_user.php:143
+#, php-format
+msgid "This user has been assigned the permission template \"%s\"."
+msgstr "Diesem Benutzer wurde die Berechtigungsvorlage \"%s\" zugewiesen."
+
+#: edit_user.php:145
+msgid "The description for this template is"
+msgstr "Die Beschreibung f&uuml;r diese Vorlage ist"
+
+#: edit_user.php:147
+msgid "Based on this template, this user has the following permissions"
+msgstr "Basierend auf dieser Vorlage hat der Benutzer folgende Berechtigungen"
+
+#: index.php:26
+msgid "Welcome"
+msgstr "Willkommen"
+
+#: index.php:37 inc/header.inc.php:49
+msgid "Index"
+msgstr "Index"
+
+#: index.php:39 search.php:31 inc/header.inc.php:51
+msgid "Search zones and records"
+msgstr "Zonen und Eintr&auml;ge suchen"
+
+#: index.php:42 list_zones.php:38 inc/header.inc.php:54
+msgid "List zones"
+msgstr "Zonen auflisten"
+
+#: index.php:45 list_supermasters.php:30 inc/header.inc.php:57
+msgid "List supermasters"
+msgstr "Supermaster auflisten"
+
+#: index.php:57 users.php:39 inc/header.inc.php:69
+msgid "User administration"
+msgstr "Benutzeradministration"
+
+#: index.php:58 inc/header.inc.php:70
+msgid "Logout"
+msgstr "Ausloggen"
+
+#: list_perm_templ.php:31
+msgid "Permission templates"
+msgstr "Berechtigungsvorlagen"
+
+#: list_perm_templ.php:47
+msgid "Edit template"
+msgstr "Vorlagen bearbeiten"
+
+#: list_perm_templ.php:48
+msgid "Delete template"
+msgstr "Vorlage l&ouml;schen"
+
+#: list_supermasters.php:42 list_zones.php:43
+msgid "There are no zones to show in this listing."
+msgstr "In dieser Auflistung gibt es keine Zonen zum Anzeigen"
+
+#: list_zones.php:41
+msgid "You do not have the permission to see any zones."
+msgstr "Sie haben nicht die Berechtigung zum Anzeigen von Zonen."
+
+#: list_zones.php:59
+msgid "Records"
+msgstr "Eintr&auml;ge"
+
+#: list_zones.php:76
+msgid "View zone"
+msgstr "Zone anzeigen"
+
+#: search.php:48
+msgid "Zones found"
+msgstr "Zonen gefunden"
+
+#: search.php:54
+msgid "Master"
+msgstr "Master"
+
+#: search.php:81
+msgid "Records found"
+msgstr "Eintr&auml;ge gefunden"
+
+#: search.php:120
+msgid "Query"
+msgstr "Abfrage"
+
+#: search.php:124
+msgid "Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) in pattern matches any single character, a percent sign (%) matches any string of zero or more characters."
+msgstr "Tragen Sie einen Hostnamen oder IP Adresse ein. SQL like Syntax wird unterst&uuml;tzt: ein Unterstrich (_) im Suchbegriff steht f&uuml;r ein beliebiges einzelnes Zeichen, ein Prozentzeichen (%) steht f&uuml;r ein oder mehrere beliebige Zeichen."
+
+#: search.php:129
+msgid "Search"
+msgstr "Suche"
+
+#: users.php:48
+msgid "Template"
+msgstr "Vorlage"
+
+#: inc/auth.inc.php:41
+msgid "Session expired, please login again."
+msgstr "Session ist abgelaufen, bitte erneut einloggen."
+
+#: inc/auth.inc.php:67
+msgid "Authentication failed!"
+msgstr "Authentifizierung fehlgeschlagen!"
+
+#: inc/auth.inc.php:89 inc/auth.inc.php:95 inc/auth.inc.php:105
+msgid "Login"
+msgstr "Anmeldung"
+
+#: inc/auth.inc.php:129
+msgid "You have logged out."
+msgstr "Sie sind nun abgemeldet."
+
+#: inc/database.inc.php:29
+msgid "Oops! An error occured!"
+msgstr "Uups! Ein Fehler ist aufgetreten!"
+
+#: inc/database.inc.php:73
+msgid "Unknown database type in inc/config.inc.php."
+msgstr "Unbekannter Datenbank Typ in inc/config.inc.php."
+
+#: inc/dns.inc.php:174
+msgid "If you specify an MX record it must be a hostname."
+msgstr "Wenn Sie einen MX Eintrag definieren, dann muzlig; es ein Hostname sein."
+
+#: inc/error.inc.php:27
+msgid "You do not have the permission to perform searches."
+msgstr "Sie haben nicht die Berechtigung zum Suchen."
+
+#: inc/error.inc.php:28
+msgid "You do not have the permission to add a record to this zone."
+msgstr "Sie haben f&uuml;r diese Zone nicht die Berechtigung zum hinzuf&uuml;gen eines Eintrages."
+
+#: inc/error.inc.php:29
+msgid "You do not have the permission to edit this record."
+msgstr "Sie haben nicht die Berechtigung zum Editieren dieses Datensatzes."
+
+#: inc/error.inc.php:30
+msgid "You do not have the permission to view this record."
+msgstr "Sie haben nicht die Berechtigung zum Ansehen dieses Eintrages."
+
+#: inc/error.inc.php:31
+msgid "You do not have the permission to delete this record."
+msgstr "Sie haben nicht die Berechtigung diesen Eintrag l&ouml;schen zu k&ouml;nnen."
+
+#: inc/error.inc.php:32
+msgid "You do not have the permission to add a master zone."
+msgstr "Sie haben nicht die Berechtigung zum Hinzuf&uuml;gen einer Master Zone."
+
+#: inc/error.inc.php:33
+msgid "You do not have the permission to add a slave zone."
+msgstr "Sie haben nicht die Berechtigung zum Hinzuf&uuml;gen einer Slave Zone"
+
+#: inc/error.inc.php:34
+msgid "You do not have the permission to delete a zone."
+msgstr "Sie haben nicht die Berechtigung zum L&ouml;schen einer Zone."
+
+#: inc/error.inc.php:35
+msgid "You do not have the permission to delete a supermaster."
+msgstr "Sie haben nicht die Berechtigung zum L&ouml;schen eines Supermasters."
+
+#: inc/error.inc.php:36
+msgid "You do not have the permission to view this zone."
+msgstr "Sie haben nicht die Berechtigung zum Anzeigen dieser Zone."
+
+#: inc/error.inc.php:37
+msgid "You do not have the permission to edit this user."
+msgstr "Sie haben nicht die Berechtigung zur Bearbeitung dieses Benutzers."
+
+#: inc/error.inc.php:38
+msgid "You do not have the permission to edit permission templates."
+msgstr "Sie haben nicht die Berechtigung zum Editieren von Berechtigungsvorlagen."
+
+#: inc/error.inc.php:39
+msgid "You do not have the permission to delete permission templates."
+msgstr "Sie haben nicht die Berechtigung zum L&ouml;schen von Berechtigungsvorlagen."
+
+#: inc/error.inc.php:40
+msgid "You do not have the permission to add a new user."
+msgstr "Sie haben nicht die Berechtigung zum Hinzuf&uuml;gen eines neuen Benutzers."
+
+#: inc/error.inc.php:41
+msgid "You do not have the permission to delete this user."
+msgstr "Sie haben nicht die Berechtigung zum L&ouml;schen dieses Benutzers."
+
+#: inc/error.inc.php:44
+msgid "This is an invalid zone name."
+msgstr "Dies ist ein ung&uuml;ltiger Zonenname."
+
+#: inc/error.inc.php:45
+msgid "There is already a supermaster with this IP address."
+msgstr "Es existiert bereits ein Supermaster mit dieser IP Adresse."
+
+#: inc/error.inc.php:46
+msgid "There is already a zone with this name."
+msgstr "Es existiert bereits eine Zone mit diesem Namen."
+
+#: inc/error.inc.php:49
+msgid "Username exist already, please choose another one."
+msgstr "Benutzername existiert bereits, bitte w&auml;hlen Sie einen anderen..."
+
+#: inc/error.inc.php:50
+msgid "User does not exist."
+msgstr "Benutzer existiert nicht."
+
+#: inc/error.inc.php:51
+msgid "You did not enter the correct current password."
+msgstr "Sie haben nicht das korrekte Passwort eingegeben."
+
+#: inc/error.inc.php:52
+msgid "The two new password fields do not match."
+msgstr "Die zwei Passw&ouml;rter stimmen nicht &uuml;berein."
+
+#: inc/error.inc.php:53
+msgid "This template is assigned to at least one user."
+msgstr "Diese Vorlage ist zumindest einem Benutzer zugewiesen."
+
+#: inc/error.inc.php:56
+msgid "Invalid or unexpected input given."
+msgstr "Ung&uuml;ltiger bzw. unerwarteter Input."
+
+#: inc/error.inc.php:57
+#, php-format
+msgid "Invalid argument(s) given to function %s"
+msgstr "Ung&uuml;ltige(s) Argument(e) zur Funktion %s angegeben"
+
+#: inc/error.inc.php:58
+#, php-format
+msgid "Invalid argument(s) given to function %s %s"
+msgstr "Ung&uuml;ltige(s) Argument(e) zur Funktion %s $s angegeben"
+
+#: inc/error.inc.php:59
+msgid "Unknown error."
+msgstr "Unbekannter Fehler."
+
+#: inc/error.inc.php:60
+msgid "Enter a valid email address."
+msgstr "Geben Sie eine g&uuml;ltige Email-Adresse ein."
+
+#: inc/error.inc.php:63
+msgid "Your content field doesnt have a legit value."
+msgstr "Ihr Eingabefeld besitzt keinen g&uuml;ltigen Wert."
+
+#: inc/error.inc.php:64
+msgid "Invalid hostname."
+msgstr "Ung&uuml;ltiger Hostname."
+
+msgid "You have invalid characters in your hostname."
+msgstr "Sie verwenden ung&uuml;ltige Zeichen in Ihrem Hostnamen."
+
+msgid "A hostname can not start or end with a dash."
+msgstr "Ein Hostname kann nicht mit einem Bindestrich beginnen bzw. enden."
+
+msgid "Given hostname or one of the labels is too short or too long."
+msgstr "Der angegeben Hostname oder eines der Labels ist zu kurz bzw. zu lang."
+
+msgid "Given hostname has too many slashes."
+msgstr "Der angegebene Hostname beinhaltet zu viele Schr&auml;gstriche."
+
+msgid "Unknown record type."
+msgstr "Unbekannter Datensatz-Typ."
+
+#: inc/error.inc.php:66
+msgid "This is not a valid IPv4 or IPv6 address."
+msgstr "Dies ist keine g&uuml;ltige IPv4 bzw. IPv6 Adresse."
+
+#: inc/error.inc.php:67
+msgid "This is not a valid IPv6 address."
+msgstr "Dies ist keine g&uuml;ltige IPv6 Adresse."
+
+#: inc/error.inc.php:68
+msgid "This is not a valid IPv4 address."
+msgstr "Dies ist keine g&uuml;ltige IPv4 Adresse."
+
+#: inc/error.inc.php:69
+msgid "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
+msgstr "Dies ist kein g&uuml;ltiger CNAME. Haben Sie diesem Eintrag einen MX oder NS Eintrag zugewiesen?"
+
+msgid "You can not point a NS or MX record to a CNAME record. Remove or rame the CNAME record first, or take another name."
+msgstr "Sie k&ouml;nnen keinen NS bzw. MX Eintrag auf einen CNAME Eintrag zeigen lassen. Entfernen Sie den CNAME Eintrag zuerst bzw. benennen Sie den CNAME Eintrag um oder w&auml;hlen Sie einen anderen Namen."
+
+msgid "Invalid value for name field of SOA record. It should be the name of the zone."
+msgstr "Ung&uuml;ltiger Wert f&uuml;r den Namen des SOA Eintrags. Es sollte der Name der Zone sein."
+
+msgid "Invalid value for content field of HINFO record."
+msgstr "Ung&uuml;ltiger Wert f&uuml;r das Inhalts-Feld des HINFO Eintrags."
+
+msgid "Invalid value for content field of TXT record."
+msgstr "Ung&uuml;ltiger Wert f&uuml;r das Inhalts-Feld des TXT Eintrags."
+
+msgid "Invalid value for TTL field. It should be numeric."
+msgstr "Ung&uuml;ltiger Wert f&uuml;r das TTL Feld. Es sollte ein numerischer Wert sein."
+
+msgid "Invalid value for prio field. It should be numeric."
+msgstr "Ung&uuml;ltiger Wert f&uuml;r das Priorit&auml;ts Feld. Es sollte ein numerischer Wert sein."
+
+#: inc/error.inc.php:71
+msgid "NS records must be a hostnames."
+msgstr "NS Eintr&auml;ge m&uuml;ssen Hostnamen sein."
+
+#: inc/error.inc.php:73
+msgid "A prio field should be numeric."
+msgstr "Ein Priorit&auml;ts Feld sollte numerisch sein."
+
+#: inc/error.inc.php:74
+msgid "At least one of the five last SOA data fields is not numeric."
+msgstr "Zumindest eines der f&uuml;nf letzten SOA Daten Felder ist nicht numerisch."
+
+#: inc/error.inc.php:75
+msgid "You can only have five numeric fields in the SOA record."
+msgstr "Ein SOA Eintrag kann nur f&uuml;nf numerische Felder beinhalten."
+
+#: inc/error.inc.php:76
+msgid "The first part of your SOA record does not contain a valid hostname for a DNS server."
+msgstr "Der erste Teil Ihres SOA Eintrags beinhaltet f&uuml;r einen DNS Server keinen g&uuml;ltigen Hostnamen."
+
+#: inc/error.inc.php:79
+msgid "Zone has been added successfully."
+msgstr "Die Zone wurde erfolgreich hinzugef&uuml;gt."
+
+#: inc/error.inc.php:80
+msgid "Zone has been deleted successfully."
+msgstr "Die Zone wurde erfolgreich gel&ouml;scht."
+
+#: inc/error.inc.php:81
+msgid "The user has been updated successfully."
+msgstr "Der Benutzer wurde erfolgreich ge&auml;ndert."
+
+#: inc/error.inc.php:82
+msgid "The user has been created successfully."
+msgstr "Der Benutzer wurde erfolgreich hinzugef&uuml;gt."
+
+#: inc/error.inc.php:83
+msgid "The user has been deleted successfully."
+msgstr "Der Benutzer wurde erfolgreich gel&ouml;scht."
+
+#: inc/error.inc.php:84
+msgid "The record has been updated successfully."
+msgstr "Der Eintrag wurde erfolgreich ge&auml;ndert."
+
+#: inc/error.inc.php:85
+msgid "The record has been deleted successfully."
+msgstr "Der Eintrag wurde erfolgreich gel&ouml;scht."
+
+#: inc/error.inc.php:85
+msgid "The supermaster has been deleted successfully."
+msgstr "Der Supermaster wurde erfolgreich gel&ouml;scht."
+
+#: inc/error.inc.php:87
+msgid "The supermaster has been added successfully."
+msgstr "Der Supermaster wurde erfolgreich hinzugef&uuml;gt."
+
+#: inc/error.inc.php:88
+msgid "The permission template has been deleted successfully."
+msgstr "Die Berechtigungsvorlage wurde erfolgreich gel&ouml;scht."
+
+#: inc/record.inc.php:270
+msgid "You are trying to delete the SOA record. If are not allowed to remove it, unless you remove the entire zone."
+msgstr "Sie versuchen den SOA Eintrag zu l&ouml;schen. Solange Sie nicht die gesamte Zone l&ouml;schen, sind Sie hierf&uuml;r nicht berechtigt."
+
+#: inc/record.inc.php:603
+msgid "Function returned an error (multiple zones matching this zone ID)."
+msgstr "Funktion gab einen Fehler zur&uuml;ck (mehrere Zonen sind mit dieser Zonen ID &uuml;bereinstimmend)."
+
+#: inc/toolkit.inc.php:27
+msgid "You have to create a config.inc.php!"
+msgstr "Sie m&uuml;ssen die Datei config.inc.php erstellen!"
+
+#: inc/toolkit.inc.php:87
+msgid "Show page"
+msgstr "Seite anzeigen"
+
+#: inc/toolkit.inc.php:106
+msgid "Show zones beginning with"
+msgstr "Domains anzeigen - beginnend mit"
+
+#: inc/toolkit.inc.php:164
+msgid "An unknown error has occurred."
+msgstr "Ein unbekannter Fehler ist aufgetreten."
+
+#: inc/toolkit.inc.php:172
+msgid "Something has been successfully performed. What exactly, however, will remain a mystery."
+msgstr "Etwas wurde erfolgreich ausgef&uuml;hrt. Was genau -  wie auch immer - bleibt ein R&auml;tsel."
+
+#: inc/toolkit.inc.php:184
+msgid "Success!"
+msgstr "Erfolg!"
+
+#: inc/toolkit.inc.php:195
+msgid "Successful!"
+msgstr "Erfolgreich!"
+
+#: inc/toolkit.inc.php:201
+msgid "back"
+msgstr "zur&uuml;ck"
+
+#: inc/toolkit.inc.php:240
+msgid "Inactive"
+msgstr "Inaktiv"
+
+#: inc/toolkit.inc.php:244
+msgid "Active"
+msgstr "Aktiv"
+
+#: inc/users.inc.php:368
+msgid "Password has been changed, please login."
+msgstr "Passwort wurde erfolgreoch ge&auml;ndert, bitte loggen Sie sich ein."
+
+msgid "No database name has been set in config.inc.php."
+msgstr "Kein Datenbankname wurde in der Datei config.inc.php definiert."
+
+msgid "No database host has been set in config.inc.php."
+msgstr "Kein Datenbankhost wurde in der Datei config.inc.php definiert."
+
+msgid "No database username has been set in config.inc.php."
+msgstr "Es wurde kein Benutzername f&uuml;r die Datenbank in der Datei config.inc.php definiert."
+
+msgid "No database password has been set in config.inc.php."
+msgstr "Kein Datenbankpasswort wurde in der Datei config.inc.php definiert."
+
+msgid "No or unknown database type has been set in config.inc.php."
+msgstr "Kein oder ein ubekannter Datenbank-Typ wurde in der Datei config.inc.php definiert."
+
+msgid "You have an error in the MNAME field of the SOA record."
+msgstr "Sie haben einen Fehler im MNAME Feld des SOA Eintrags."
+
+msgid "Too many characters in the hostname."
+msgstr "Der Hostname beinhaltet zu viele Zeichen."
+
+msgid "You are using an invalid top level domain."
+msgstr "Sie verwenden eine ung&uuml;ltige Toplevel Domain."
+
+#: index.php:20
+msgid "Installation step"
+msgstr "Installationsschritt"
+
+#: index.php:26
+msgid "This installer expects you to have a PowerDNS database accessable from this server. This installer also expects you to have never ran Poweradmin before, or that you want to overwrite the Poweradmin part of the database. If you have had Poweradmin running before, any data in the following tables will be destroyed: perm_items, perm_templ, perm_templ_items, users and zones. This installer will, of course, not touch the data in the PowerDNS tables of the database. However, it is recommended that you create a backup of your database before proceeding."
+msgstr "Dieser Installer geht davon aus, dass von diesem Server aus auf eine PowerDNS Datenbank zugegriffen werden kann. Es wird ebenfalls davon ausgegangen, dass Poweradmin noch nie zuvor ausgef&uuml;hrt wurde bzw. dass Sie keine bestehende Poweradmin Datenbank &uuml;berschreiben wollen. Falls Poweradmin zuvor schon installiert war, dann werden die Daten folgender Tabellen gel&ouml;scht: perm_items, perm_templ, perm_templ_items, users and zones. Dieser Installer wird selbstverst&auml;ndlich keine &Auml;nderungen an den PowerDNS Tabellen Ihrer Datenbank vornehmen. Jedoch wird dringend empfohlen, ein Backup Ihrer Datenbank anzufertigen, bevor Sie an dieser Stelle fortfahren."
+
+#: index.php:28
+msgid "The alternative for this installer is a manual installation. Refer to the poweradmin.org website if you want to go down that road."
+msgstr "Die ALternative zu diesem Installer ist die manuelle Installation. Folgen Sie in diesem Fall den entsprechenden Anweisungen auf der Webseite poweradmin.org."
+
+#: index.php:30
+msgid "Finally, if you see any errors during the installation process, a problem report would be appreciated. You can report problems (and ask for help) on the poweradmin-users mailinglist."
+msgstr "Abschlie&szlig;end eine Bitte: Wenn Sie w&auml;hrend der Installation einen Fehler feststellen sollten, dann w&auml;re ein entsprechender Fehlerreport begr&uuml;&szlig;enswert. Sie k&ouml;nnen Problemberichte und Hilfe-Anfragen in der poweradmin-users Mailingliste berichten bzw. stellen."
+
+#: index.php:33
+msgid "Do you want to proceed now?"
+msgstr "Wollen Sie jetzt fortfahren?"
+
+#: index.php:37 index.php:80 index.php:133 index.php:175 index.php:206
+msgid "Go to step"
+msgstr "Gehen Sie zu Schritt"
+
+#: index.php:43
+msgid "To prepare the database for using Poweradmin, the installer needs to modify the PowerDNS database. It will add a number of tables and it will fill these tables with some data. If the tables are already present, the installer will drop them first."
+msgstr "Um die Datenbank f&uuml;r Poweradmin vorbereiten zu k&ouml;nnen, muss der Installer die PowerDNS Datenbank anpassen. Es werden eine Reihe von Tabellen hinzugef&uuml;gt und diese mit Daten bef&uuml;llt. Wenn diese Tabellen bereits existieren sollten, dann wird der Installer diese Tabellen zuerst l&ouml;schen."
+
+#: index.php:45
+msgid "To do all of this, the installer needs to access the database with an account which has sufficient rights. If you trust the installer, you may give it the username and password of the database user root. Otherwise, make sure the user has enough rights, before actually proceeding."
+msgstr "Um dies alles durchf&uuml;hren zu k&ouml;nnen, ben&ouml;tigt der Installer Zugriff auf die Datenbank mit einem Account, der &uuml;ber ausreichend Rechte verf&uuml;gt. Wenn Sie dem Installer vertrauen, k&ouml;nnen Sie den Benutzernamen und das Passwort des Datenbank-Benutzers root verwenden. Andernfalls stellen Sie bevor Sie fortfahren sicher, dass der Benutzer &uuml;ber ausreichend Rechte verf&uuml;gt."
+
+#: index.php:52
+msgid "The username to use to connect to the database, make sure the username has sufficient rights to perform administrative task to the PowerDNS database (the installer wants to drop, create and fill tables to the database)."
+msgstr "Stellen Sie sicher, dass der f&uuml;r die Datenbankverbindung verwendete Benutzername &uuml;ber ausreichend Rechte verf&uuml;gt, um administrative Aufgaben an der PowerDNS Datenbank durchf&uuml;hren zu k&ouml;nnen (der Installer will Tabellen anlegen, l&ouml;schen und mit Daten bef&uuml;llen)."
+
+#: index.php:57 index.php:153
+msgid "The password for this username."
+msgstr "Das Passwort f&uuml;r diesen Benutzernamen."
+
+#: index.php:60
+msgid "Hostname"
+msgstr "Hostname"
+
+#: index.php:62
+msgid "The hostname on which the PowerDNS database resides. Frequently, this will be \"localhost\"."
+msgstr "Der Hostname jenes Servers mit der PowerDNS Datenbank. H&auml;ufig ist dies \"localhost\"."
+
+#: index.php:65
+msgid "Database"
+msgstr "Datenbank"
+
+#: index.php:67
+msgid "The name of the PowerDNS database."
+msgstr "Der Name der PowerDNS Datenbank."
+
+#: index.php:70
+msgid "Database type"
+msgstr "Datenbank-Typ"
+
+#: index.php:76
+msgid "The type of the PowerDNS database."
+msgstr "Der Typ der PowerDNS Datenbank."
+
+#: index.php:86
+msgid "Updating database..."
+msgstr "Datenbank wird aktualisiert..."
+
+#: index.php:109
+msgid "done!"
+msgstr "erledigt!"
+
+#: index.php:111
+msgid "You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert and update records in the PowerDNS database."
+msgstr "Um Daten in den Tabellen aktualisieren zu k&ouml;nnen, vergeben Sie nun eingeschr&auml;nkte Rechte an Poweradmin. Um dies zu erreichen, sollten Sie einen neuen Benutzer anlegen und diesem in der PowerDNS Datenbank folgende Rechte zuweisen: select, delete, insert und update records."
+
+#: index.php:113
+msgid "In MySQL you should now perform the following command:"
+msgstr "In MySQL sollten Sie nun folgenden Befehl ausf&uuml;hren:"
+
+#: index.php:116
+msgid "On PgSQL you would use:"
+msgstr "Mit PgSQL sollten Sie verwenden:"
+
+#: index.php:127
+msgid "After you have added the new user, proceed with this installation procedure."
+msgstr "Fahren Sie mit dieser Installationsroutine fort, nachdem Sie einen neuen Benutzer hinzugef&uuml;gt haben."
+
+#: index.php:142
+msgid "Now we will gather all details for the configuration itself."
+msgstr "Nun sammeln wir alle Details f&uuml;r die Konfiguration."
+
+#: index.php:148
+msgid "The username for Poweradmin. This new user will have limited rights only."
+msgstr "Der Benutzername f&uuml;r Poweradmin. Dieser neue Benutzer wird nur eingeschr&auml;nkte Rechte besitzen."
+
+#: index.php:156
+msgid "Hostmaster"
+msgstr "Hostmaster"
+
+#: index.php:158
+msgid "When creating SOA records and no hostmaster is provided, this value here will be used. Should be in the form \"hostmaster.example.net\"."
+msgstr "Wenn SOA Eintr&auml;ge erstellt werden und kein Hostmaster angegeben wird, dann wird folgender Wert per default verwendet. In Form von \"hostmaster.example.net\"."
+
+#: index.php:161
+msgid "Primary nameserver"
+msgstr "Prim&auml;rer Nameserver"
+
+#: index.php:163
+msgid "When creating new zones using the template, this value will be used as primary nameserver. Should be like \"ns1.example.net\"."
+msgstr "Bei der Anlage neuer Zonen mit diesem Template wird dieser Wert als Prim&auml;rer Nameserver verwendet. Wie z.B. \"ns1.example.net\"."
+
+#: index.php:166
+msgid "Secondary nameserver"
+msgstr "Sekund&auml;rer Nameserver"
+
+#: index.php:168
+msgid "When creating new zones using the template, this value will be used as secondary nameserver. Should be like \"ns2.example.net\"."
+msgstr "Bei der Anlage neuer Zonen mit diesem Template wird dieser Wert als Sekund&auml;rer Nameserver verwendet. Wie z.B. \ns2.example.net\"."
+
+#: index.php:197
+msgid "The installer was able to write to the file \""
+msgstr "Der Installer konnte die Datei beschreiben \""
+
+#: index.php:197
+msgid "\". A basic configuration, based on the details you have given, has been created."
+msgstr "\". Ein Konfiguration basierend auf Ihren Angaben wurde erstellt."
+
+#: index.php:199
+msgid "The installer is unable to write to the file \""
+msgstr "Der Installer kann die Datei nicht beschreiben \""
+
+#: index.php:199
+msgid "\" (which is in itself good). The configuration is printed here. You should now create the file \""
+msgstr "\" (was ansich gut ist). Die Konfiguration wird hier angezeigt. Sie sollten nun die Datei \""
+
+#: index.php:199
+msgid "\" in the Poweradmin root directory yourself. It should contain the following few lines:"
+msgstr "\" im Poweradmin root Verzeichnis erstellen. Sie sollte folgende Zeilen beinhalten:"
+
+#: index.php:212
+msgid "Now we have finished the configuration, you should (must!) remove the directory \"install/\" from the Poweradmin root directory. You will not be able to use Poweradmin if it exists. Do it now."
+msgstr "Die Konfiguration ist nun beendet. Sie sollten (m&uuml;ssen!) das Verzeichnis \"install/\" aus dem Poweradmin root Verzeichnis l&ouml;schen. Wenn das Verzeichnis existiert, k&ouml;nnen Sie Poweradmin nicht verwenden. L&ouml;schen Sie das Verzeichnis jetzt."
+
+#: index.php:213
+msgid "After you have removed the directory, you can login to <a href=\"index.php\">Poweradmin</a> with username \"admin\" and password \""
+msgstr "Nachdem Sie das Verzeichnis gel&ouml;scht haben, k&ouml;nnen sie sich einloggen unter: <a href=\"index.php\">Poweradmin</a> Benutzername \"admin\" und Passwort \""
+
+msgid "\". You are highly encouraged to change these as soon as you are logged in."
+msgstr "\". Sobald Sie eingeloggt sind wird empfohlen, diese Daten zu &auml;ndern."
+
+msgid "Invalid value for name field of SRV record."
+msgstr "Ung&uuml;ltiger Wert im Namensfeld des SRV Eintrags."
+
+msgid "Invalid value for the weight field of the SRV record."
+msgstr "Ung&uuml;ltiger Wert im Weight field des SRV Eintrags."
+
+msgid "Invalid value for the port field of the SRV record."
+msgstr "Ung&uuml;ltige Port-Angabe im SRV Eintrag."
+
+msgid "Invalid SRV target."
+msgstr "Ung&uuml;ltiges SRV Ziel."
+
+msgid "Invalid characters have been used in this record."
+msgstr "Ung&uuml;ltige Zeichen wurden in diesem Eintrag verwendet."
+
+msgid "Poweradmin administrator password"
+msgstr "Poweradmin Administrator Passwort"
+
+msgid "The password of the Poweradmin administrator. This administrator has full rights to Poweradmin using the web interface."
+msgstr "Das Passwort des Poweradmin Administrators. Dieser Admin hat alle Rechte im Poweradmin Web Interface."
+
+
+
+
+# The following is a list of strings that are not hard-code in the PHP 
+# files, but which are listed in the poweradmin database. Because of 
+# this, tools like xgettext will not notice these strings.
+# 
+# See also <https://www.poweradmin.org/wiki/TranslationContribution>.
+#
+
+msgid "User is allowed to add new master zones."
+msgstr "Benutzer ist berechtigt neue Master Zonen hinzuzuf&uuml;gen."
+
+msgid "User is allowed to add new slave zones."
+msgstr "Benutzer ist berechtigt neue Salve Zonen hinzuzuf&uuml;gen."
+
+msgid "User is allowed to see the content and meta data of zones he owns."
+msgstr "Benutzer ist berechtigt den Inhalt und die Meta Daten seiner Zonen anzuzeigen."
+
+msgid "User is allowed to edit the content of zones he owns."
+msgstr "Benutzer ist berechtigt den Inhalt seiner Zonen zu editieren."
+
+msgid "User is allowed to edit the meta data of zones he owns."
+msgstr "Benutzer ist berechtigt die Meta Daten seiner Zonen zu editieren."
+
+msgid "User is allowed to see the content and meta data of zones he does not own."
+msgstr "Benutzer ist berechtigt den Inhalt und die Meta Daten jener Zonen anzuzeigen, die er nicht besitzt."
+
+msgid "User is allowed to edit the content of zones he does not own."
+msgstr "Benutzer ist berechtigt den Inhalt und die Meta Daten jener Zonen zu editieren, die er nicht besitzt."
+
+msgid "User is allowed to edit the meta data of zones he does not own."
+msgstr "Benutzer ist berechtigt die Meta Daten jener Zonen zu editieren, die er nicht besitzt."
+
+msgid "User is allowed to perform searches."
+msgstr "Benutzer ist berechtigt Suchanfragen zu stellen."
+
+msgid "User is allowed to view supermasters."
+msgstr "Benutzer ist berechtigt Supermasters anzuzeigen."
+
+msgid "User is allowed to add new supermasters."
+msgstr "Benutzer ist berechtigt neue Supermasters hinzuzuf&uuml;gen."
+
+msgid "User is allowed to edit new supermasters."
+msgstr "Benutzer ist berechtigt neue Supermasters zu editieren."
+
+msgid "User is allowed to edit supermasters."
+msgstr "Benutzer ist berechtigt Supermasters zu editieren."
+
+msgid "User has full access. God-like. Redeemer."
+msgstr "Benutzer hat uneingeschr&auml;nkten Zugriff. Gottgleich..."
+
+msgid "User is allowed to see other users and their details."
+msgstr "Benutzer ist berechtigt andere Benutzer und deren Details anzuzeigen."
+
+msgid "User is allowed to add new users."
+msgstr "Benutzer ist berechtigt neue Benutzer hinzuzuf&uuml;gen."
+
+msgid "User is allowed to edit their own details."
+msgstr "Benutzer ist berechtigt seine eigenen Details zu editieren."
+
+msgid "User is allowed to edit other users."
+msgstr "Benutzer ist berechtigt andere Benutzer zu editieren."
+
+msgid "User is allowed to edit the password of other users."
+msgstr "Benutzer ist berechtigt das Passwort anderer Benutzer zu editieren."
+
+msgid "User is allowed to change the permission template that is assigned to a user."
+msgstr "Benutzer ist berechtigt die einem Benutzer zugewiesene Berechtigungs-Vorlage zu wechseln."
+
+msgid "User is allowed to add new permission templates."
+msgstr "Benutzer ist berechtigt eine neue Berechtigungs-Vorlage hinzuzuf&uuml;gen."
+
+msgid "User is allowed to edit existing permission templates."
+msgstr "Benutzer ist berechtigt eine bestehende Berechtigungs-Vorlage zu editieren."
+
