@@ -45,6 +45,10 @@ if ($record_id == "-1" ) {
 	if ($confirm == '1') {
 		if ( delete_record($record_id) ) {
 			success(SUC_RECORD_DEL);
+			/*
+			update serial after record deletion
+			*/
+			update_soa_serial($zid);
 		}
 	} else {
 		$zone_id = recid_to_domid($record_id);
