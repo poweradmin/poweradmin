@@ -1,5 +1,5 @@
 <?php
-
+ob_start();
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://rejo.zenger.nl/poweradmin> for more details.
  *
