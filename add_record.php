@@ -98,7 +98,7 @@ if (isset($_POST["commit"])) {
 		error(ERR_PERM_ADD_RECORD);
 	} else {
 		if ( add_record($zone_id, $name, $type, $content, $ttl, $prio)) {
-			success(_('The record was successfully added.'));
+			success(" <a href=\"edit.php?id=".$zone_id."\"> " ._('The record was successfully added.')."</a>");
 			$name = $type = $content = $ttl = $prio = "";
 		}
 	}
@@ -107,7 +107,7 @@ if (isset($_POST["commit"])) {
 /*
 Display form to add a record
 */
-echo "    <h2>" . _('Add record to zone') . " " .  $zone_name . "</h2>\n";
+echo "    <h2>" . _('Add record to zone') . " <a href=\"edit.php?id=".$zone_id."\"> " .  $zone_name . "</a></h2>\n";
 
 if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
 	error(ERR_PERM_ADD_RECORD); 
