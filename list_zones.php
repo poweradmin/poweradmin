@@ -59,17 +59,17 @@ if ($perm_view == "none") {
 	echo "     <table>\n";
 	echo "      <tr>\n";
 	echo "       <th>&nbsp;</th>\n";
-	echo "       <th>" . _('Name') . "</th>\n";
-	echo "       <th>" . _('Type') . "</th>\n";
-	echo "       <th>" . _('Records') . "</th>\n";
+	echo "       <th><a href=\"list_zones.php?zone_sort_by=name\">" . _('Name') . "</a></th>\n";
+	echo "       <th><a href=\"list_zones.php?zone_sort_by=type\">" . _('Type') . "</a></th>\n";
+	echo "       <th><a href=\"list_zones.php?zone_sort_by=count_records\">" . _('Records') . "</a></th>\n";
 	echo "       <th>" . _('Owner') . "</th>\n";
 	if ($iface_zonelist_serial == "1") echo "       <th>" . _('Serial') . "</th>\n";
 	echo "      </tr>\n";
 
 	if ($count_zones_view <= $iface_rowamount) {
-		$zones = get_zones($perm_view,$_SESSION['userid'],"all",ROWSTART,$iface_rowamount);
+		$zones = get_zones($perm_view,$_SESSION['userid'],"all",ROWSTART,$iface_rowamount,ZONE_SORT_BY);
 	} else {
-		$zones = get_zones($perm_view,$_SESSION['userid'],LETTERSTART,ROWSTART,$iface_rowamount);
+		$zones = get_zones($perm_view,$_SESSION['userid'],LETTERSTART,ROWSTART,$iface_rowamount,ZONE_SORT_BY);
 		$count_zones_shown = ($zones == -1) ? 0 : count($zones);
 	}
 	foreach ($zones as $zone)

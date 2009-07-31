@@ -37,6 +37,7 @@ if (isset($_POST['commit'])) {
 	foreach ($_POST['record'] as $record) {
 		edit_record($record);
 	}
+	edit_zone_comment($_GET['id'],$_POST['comment']);
 	update_soa_serial($_GET['id']);
 }
 
@@ -91,7 +92,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 		show_pages($record_count,$iface_rowamount,$zone_id);
 		echo "   </div>\n";
 
-		$records = get_records_from_domain_id($zone_id,ROWSTART,$iface_rowamount);
+		$records = get_records_from_domain_id($zone_id,ROWSTART,$iface_rowamount,RECORD_SORT_BY);
 		if ( $records == "-1" ) { 
 			echo " <p>" .  _("This zone does not have any records. Weird.") . "</p>\n";
 		} else {
@@ -99,11 +100,11 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 			echo "   <table>\n";
 			echo "    <tr>\n";
 			echo "     <th>&nbsp;</th>\n";
-			echo "     <th>" . _('Name') . "</th>\n";
-			echo "     <th>" . _('Type') . "</th>\n";
-			echo "     <th>" . _('Content') . "</th>\n";
-			echo "     <th>" . _('Priority') . "</th>\n";
-			echo "     <th>" . _('TTL') . "</th>\n";
+			echo "     <th><a href=\"edit.php?id=" . $zone_id . "&record_sort_by=name\">" . _('Name') . "</a></th>\n";
+			echo "     <th><a href=\"edit.php?id=" . $zone_id . "&record_sort_by=type\">" . _('Type') . "</a></th>\n";
+			echo "     <th><a href=\"edit.php?id=" . $zone_id . "&record_sort_by=content\">" . _('Content') . "</a></th>\n";
+			echo "     <th><a href=\"edit.php?id=" . $zone_id . "&record_sort_by=prio\">" . _('Priority') . "</a></th>\n";
+			echo "     <th><a href=\"edit.php?id=" . $zone_id . "&record_sort_by=ttl\">" . _('TTL') . "</a></th>\n";
 			echo "    </tr>\n";
 			foreach ($records as $r) {
 				if ($r['type'] != "SOA") {
@@ -160,9 +161,23 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 				}
 				echo "     </tr>\n";
 			}
+			echo "    <tr>\n";
+			echo "     <td colspan=\"6\">&nbsp;</td>\n";
+			echo "    </tr>\n";
+			echo "    <tr>\n";
+			echo "     <td>&nbsp;</td><td colspan=\"5\">Comments:</td>\n";
+			echo "    </tr>\n";
+			echo "    <tr>\n";
+			echo "     <td class=\"n\">\n";
+			echo "      <a href=\"edit_comment.php?domain=" . $zone_id . "\">
+                                    <img src=\"images/edit.gif\" alt=\"[ ". _('Edit comment') . " ]\"></a>\n";
+			echo "     </td>\n";
+			echo "     <td colspan=\"4\"><textarea rows=\"15\" name=\"comment\">" . get_zone_comment($zone_id) . "</textarea></td>\n";
+			echo "     <td>&nbsp;</td>\n";
+			echo "    </tr>\n";
 			echo "    </table>\n";
 			echo "     <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
-                       echo "     <input type=\"reset\" class=\"button\" name=\"reset\" value=\"" . _('Reset changes') . "\">\n"; 
+			echo "     <input type=\"reset\" class=\"button\" name=\"reset\" value=\"" . _('Reset changes') . "\">\n"; 
 			echo "    </form>";
 		}
 		

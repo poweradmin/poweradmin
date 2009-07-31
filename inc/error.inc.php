@@ -32,6 +32,8 @@ define("ERR_PERM_DEL_RECORD", _("You do not have the permission to delete this r
 define("ERR_PERM_ADD_ZONE_MASTER", _("You do not have the permission to add a master zone.")); 
 define("ERR_PERM_ADD_ZONE_SLAVE", _("You do not have the permission to add a slave zone.")); 
 define("ERR_PERM_DEL_ZONE", _("You do not have the permission to delete a zone.")); 
+define("ERR_PERM_VIEW_COMMENT", _("You do not have the permission to view this comment.")); 
+define("ERR_PERM_EDIT_COMMENT", _("You do not have the permission to edit this comment.")); 
 define("ERR_PERM_DEL_SM", _("You do not have the permission to delete a supermaster.")); 
 define("ERR_PERM_VIEW_ZONE", _("You do not have the permission to view this zone.")); 
 define("ERR_PERM_EDIT_USER", _("You do not have the permission to edit this user.")); 
@@ -106,6 +108,7 @@ define("SUC_USER_ADD", _('The user has been created successfully.'));
 define("SUC_USER_DEL", _('The user has been deleted successfully.')); 
 define("SUC_RECORD_UPD", _('The record has been updated successfully.')); 
 define("SUC_RECORD_DEL", _('The record has been deleted successfully.')); 
+define("SUC_COMMENT_UPD", _('The comment has been updated successfully.')); 
 define("SUC_SM_DEL", _('The supermaster has been deleted successfully.')); 
 define("SUC_SM_ADD", _('The supermaster has been added successfully.')); 
 define("SUC_PERM_TEMPL_DEL", _('The permission template has been deleted successfully.')); 

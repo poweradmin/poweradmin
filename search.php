@@ -30,7 +30,7 @@ if (!(verify_permission('search'))) {
 } else {
 	echo "     <h2>" . _('Search zones and records') . "</h2>\n";
 	$holy_grail = '';
-	if (isset($_POST['submit'])) {
+	if (isset($_POST['query'])) {
 
 		if (verify_permission('zone_content_view_others')) { $perm_view = "all" ; }
 		elseif (verify_permission('zone_content_view_own')) { $perm_view = "own" ; }
@@ -41,18 +41,31 @@ if (!(verify_permission('search'))) {
 		else { $perm_edit = "none" ; }
 	
 		$holy_grail = $_POST['query'];
-
-		$result = search_zone_and_record($holy_grail,$perm_view);
+		
+		$result = search_zone_and_record($holy_grail,$perm_view,ZONE_SORT_BY,RECORD_SORT_BY);
 
 		if (is_array($result['zones'])) {
+			echo "     <script language=\"JavaScript\" type=\"text/javascript\">\n";
+			echo "     <!--\n";
+			echo "     function zone_sort_by ( sortbytype )\n";
+			echo "     {\n";
+			echo "       document.sortby_zone_form.zone_sort_by.value = sortbytype ;\n";
+			echo "       document.sortby_zone_form.submit() ;\n";
+			echo "     }\n";
+			echo "     -->\n";
+			echo "     </script>\n";
+			echo "     <form name=\"sortby_zone_form\" method=\"post\" action=\"search.php\">\n";
+			echo "     <input type=\"hidden\" name=\"query\" value=\"" . $_POST['query'] . "\" />\n";
+			echo "     <input type=\"hidden\" name=\"zone_sort_by\" />\n";
 			echo "     <h3>" . _('Zones found') . ":</h3>\n";
 			echo "     <table>\n";
 			echo "      <tr>\n";
 			echo "       <th>&nbsp;</th>\n";
-			echo "       <th>" . _('Name') . "</th>\n";
-			echo "       <th>" . _('Type') . "</th>\n";
-			echo "       <th>" . _('Master') . "</th>\n";
+			echo "       <th><a href=\"javascript:zone_sort_by('name')\">" . _('Name') . "</a></th>\n";
+			echo "       <th><a href=\"javascript:zone_sort_by('type')\">" . _('Type') . "</a></th>\n";
+			echo "       <th><a href=\"javascript:zone_sort_by('master')\">" . _('Master') . "</a></th>\n";
 			echo "      </tr>\n";
+			echo "      </form>\n";
 
 			foreach ($result['zones'] as $zone) {
 				echo "      <tr>\n";
@@ -78,16 +91,29 @@ if (!(verify_permission('search'))) {
 		}
 
 		if (is_array($result['records'])) {
+			echo "     <script language=\"JavaScript\" type=\"text/javascript\">\n";
+			echo "     <!--\n";
+			echo "     function record_sort_by ( sortbytype )\n";
+			echo "     {\n";
+			echo "       document.sortby_record_form.record_sort_by.value = sortbytype ;\n";
+			echo "       document.sortby_record_form.submit() ;\n";
+			echo "     }\n";
+			echo "     -->\n";
+			echo "     </script>\n";
+			echo "     <form name=\"sortby_record_form\" method=\"post\" action=\"search.php\">\n";
+			echo "     <input type=\"hidden\" name=\"query\" value=\"" . $_POST['query'] . "\" />\n";
+			echo "     <input type=\"hidden\" name=\"record_sort_by\" />\n";
 			echo "     <h3>" . _('Records found') . ":</h3>\n";
 			echo "     <table>\n";
 			echo "      <tr>\n";
 			echo "       <th>&nbsp;</th>\n";
-			echo "       <th>" . _('Name') . "</th>\n";
-			echo "       <th>" . _('Type') . "</th>\n";
-			echo "       <th>" . _('Priority') . "</th>\n";
-			echo "       <th>" . _('Content') . "</th>\n";
-			echo "       <th>" . _('TTL') . "</th>\n";
+			echo "       <th><a href=\"javascript:record_sort_by('name')\">" . _('Name') . "</a></th>\n";
+			echo "       <th><a href=\"javascript:record_sort_by('type')\">" . _('Type') . "</a></th>\n";
+			echo "       <th><a href=\"javascript:record_sort_by('priority')\">" . _('Priority') . "</a></th>\n";
+			echo "       <th><a href=\"javascript:record_sort_by('content')\">" . _('Content') . "</a></th>\n";
+			echo "       <th><a href=\"javascript:record_sort_by('ttl')\">" . _('TTL') . "</a></th>\n";
 			echo "      </tr>\n";
+			echo "      </form>\n";
 
 			foreach ($result['records'] as $record) {
 

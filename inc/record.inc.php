@@ -101,6 +101,51 @@ function update_soa_serial($did) {
 	}
 }  
 
+function get_zone_comment($zone_id) {
+	global $db;
+	$query = "SELECT comment FROM zones WHERE owner = 1 AND domain_id = " . $db->quote($zone_id, 'integer');
+	$comment = $db->queryOne($query);
+	return $comment;
+}
+
+/*
+ * Edit the zone comment.
+ * This function validates it if correct it inserts it into the database.
+ * return values: true if succesful.
+ */
+function edit_zone_comment($zone_id,$comment) {
+	
+	if (verify_permission('zone_content_edit_others')) { $perm_content_edit = "all" ; }
+	elseif (verify_permission('zone_content_edit_own')) { $perm_content_edit = "own" ; }
+	else { $perm_content_edit = "none" ; }
+
+	$user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
+	$zone_type = get_domain_type($zone_id);
+
+	if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" && $user_is_zone_owner == "0") ) {
+		error(ERR_PERM_EDIT_COMMENT);
+		return false;
+	} else {
+		global $db;
+		$query = "SELECT COUNT(*) FROM zones WHERE owner = 1 AND domain_id=".$db->quote($zone_id, 'integer');
+		$count = $db->queryOne($query);
+
+		if ($count > 0) {
+			$query = "UPDATE zones 
+				SET comment=".$db->quote($comment, 'text')."
+				WHERE owner = 1 AND domain_id=".$db->quote($zone_id, 'integer');
+			$result = $db->query($query);
+			if (PEAR::isError($result)) { error($result->getMessage()); return false; }
+		} else {
+			$query = "INSERT INTO zones 
+				VALUES('',".$db->quote($zone_id, 'integer').",1,".$db->quote($comment, 'text').")";
+			$result = $db->query($query);
+			if (PEAR::isError($result)) { error($result->getMessage()); return false; }
+		}
+	}
+	return true;
+}
+
 /*
  * Edit a record.
  * This function validates it if correct it inserts it into the database.
@@ -723,7 +768,7 @@ function supermaster_exists($master_ip)
 }
 
 
-function get_zones($perm,$userid=0,$letterstart='all',$rowstart=0,$rowamount=999999) 
+function get_zones($perm,$userid=0,$letterstart='all',$rowstart=0,$rowamount=999999,$sortby='name') 
 {
 	global $db;
 	global $sql_regexp;
@@ -745,6 +790,9 @@ function get_zones($perm,$userid=0,$letterstart='all',$rowstart=0,$rowamount=999
 		}
 	}
 	
+	if ($sortby != 'count_records') {
+		$sortby = "domains.".$sortby;
+	}
 	$sqlq = "SELECT domains.id, 
 			domains.name,
 			domains.type,
@@ -754,7 +802,7 @@ function get_zones($perm,$userid=0,$letterstart='all',$rowstart=0,$rowamount=999
 			LEFT JOIN records ON records.domain_id=domains.id
 			WHERE 1=1".$sql_add." 
 			GROUP BY domains.name, domains.id, domains.type
-			ORDER BY domains.name";
+			ORDER BY " . $sortby;
 	
 	$db->setLimit($rowamount, $rowstart);
 	$result = $db->query($sqlq);
@@ -862,7 +910,7 @@ function get_record_from_id($id)
  * Retrieve all fields of the records and send it back to the function caller.
  * return values: the array with information, or -1 is nothing is found.
  */
-function get_records_from_domain_id($id,$rowstart=0,$rowamount=999999) {
+function get_records_from_domain_id($id,$rowstart=0,$rowamount=999999,$sortby='name') {
 	global $db;
 	if (is_numeric($id)) {
 		if ((isset($_SESSION[$id."_ispartial"])) && ($_SESSION[$id."_ispartial"] == 1)) {
@@ -872,7 +920,7 @@ function get_records_from_domain_id($id,$rowstart=0,$rowamount=999999) {
 					WHERE record_owners.user_id = " . $db->quote($_SESSION["userid"], 'integer') . "
 					AND record_owners.record_id = records.id
 					AND records.domain_id = " . $db->quote($id, 'integer') . "
-					GROUP BY record_owners.record_id");
+					GROUP BY record_owners.record_id ORDER BY records.".$sortby);
 
 			$ret = array();
 			if($result->numRows() == 0) {
@@ -891,7 +939,7 @@ function get_records_from_domain_id($id,$rowstart=0,$rowamount=999999) {
 
 		} else {
 			$db->setLimit($rowamount, $rowstart);
-			$result = $db->query("SELECT id FROM records WHERE domain_id=".$db->quote($id, 'integer'));
+			$result = $db->query("SELECT id FROM records WHERE domain_id=".$db->quote($id, 'integer')." ORDER BY records.".$sortby);
 			$ret = array();
 			if($result->numRows() == 0)
 			{
@@ -938,7 +986,7 @@ function get_users_from_domain_id($id) {
 }
 
 
-function search_zone_and_record($holy_grail,$perm) {
+function search_zone_and_record($holy_grail,$perm,$zone_sortby='name',$record_sortby='name') {
 	
 	global $db;
 
@@ -971,7 +1019,8 @@ function search_zone_and_record($holy_grail,$perm) {
 			domains.master AS master
 			FROM domains" . $sql_add_from . "
 			WHERE domains.name LIKE " . $db->quote($holy_grail, 'text')
-			. $sql_add_where ;
+			. $sql_add_where . "
+                        ORDER BY " . $zone_sortby;
 	
 	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
@@ -1001,7 +1050,8 @@ function search_zone_and_record($holy_grail,$perm) {
 			records.domain_id AS zid
 			FROM records" . $sql_add_from . "
 			WHERE (records.name LIKE " . $db->quote($holy_grail, 'text') . " OR records.content LIKE " . $db->quote($holy_grail, 'text') . ")"
-			. $sql_add_where ;
+			. $sql_add_where . "
+			ORDER BY " . $record_sortby; 
 
 	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
