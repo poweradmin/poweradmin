@@ -54,7 +54,7 @@ if (isset($_POST["commit"])) {
 	}
 }
 
-echo "    <h2>" . _('Edit record in zone') . " " .  $zone_name . "</h2>\n";
+echo "    <h2>" . _('Edit record in zone') . " \"" .  $zone_name . "\"</h2>\n";
 
 if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" ) {
 	error(ERR_PERM_VIEW_RECORD);
@@ -114,4 +114,3 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 
 include_once("inc/footer.inc.php");
 ?>
-

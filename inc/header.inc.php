@@ -57,10 +57,13 @@ if (file_exists('install')) {
 	if ( $perm_view_zone_own == "1" || $perm_view_zone_other == "1" ) { 
 		echo "    <span class=\"menuitem\"><a href=\"list_zones.php\">" . _('List zones') . "</a></span>\n"; 
 	}
+	if ( $perm_zone_master_add ) { 
+		echo "    <span class=\"menuitem\"><a href=\"list_zone_templ.php\">" . _('List zone templates') . "</a></span>\n"; 
+	}
 	if ( $perm_supermaster_view ) { 
 		echo "    <span class=\"menuitem\"><a href=\"list_supermasters.php\">" . _('List supermasters') . "</a></span>\n"; 
 	}
-	if (  $perm_zone_master_add ) { 
+	if ( $perm_zone_master_add ) { 
 		echo "    <span class=\"menuitem\"><a href=\"add_zone_master.php\">" . _('Add master zone') . "</a></span>\n"; 
 	}
 	if ( $perm_zone_slave_add ) { 
@@ -75,5 +78,4 @@ if (file_exists('install')) {
 	echo "    </div> <!-- /menu -->\n";
 }
 echo "    <div class=\"content\">\n";
-
-  
+?>

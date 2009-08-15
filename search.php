@@ -163,4 +163,3 @@ if (!(verify_permission('search'))) {
 }
 include_once('inc/footer.inc.php');
 ?>
-

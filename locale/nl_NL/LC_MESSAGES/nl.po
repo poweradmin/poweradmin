@@ -3,19 +3,17 @@
 # This file is distributed under the same license as the poweradmin package.
 # Rejo Zenger <rejo@zenger.nl>, 2007-2008.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: poweradmin 2.0.0\n"
 "Report-Msgid-Bugs-To: Rejo Zenger <rejo@zenger.nl>\n"
 "POT-Creation-Date: 2008-03-30 09:33+0200\n"
-"PO-Revision-Date: 2008-03-30 09:33+0200\n"
-"Last-Translator: Rejo Zenger <rejo@zenger.nl>\n"
+"PO-Revision-Date: 2009-08-06 17:14+0100\n"
+"Last-Translator: Jeroen Nijhof <jeroen@nijhofnet.nl>\n"
 "Language-Team: poweradmin dutch\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
 
 msgid "The install/ directory exists, you must remove it first before proceeding."
 msgstr "De install/ directory bestaat (nog), deze moet verwijderd worden voordat Poweradmin gebruikt kan worden."
@@ -23,25 +21,43 @@ msgstr "De install/ directory bestaat (nog), deze moet verwijderd worden voordat
 msgid "There is no zone with this ID."
 msgstr "Er bestaat geen zone met dit ID."
 
-#: add_perm_templ.php:35 list_perm_templ.php:60
+#: add_perm_templ.php:35
+#: list_perm_templ.php:60
 msgid "Add permission template"
 msgstr "Permissie template toevoegen"
 
-#: add_perm_templ.php:39 add_perm_templ.php:50 add_record.php:86
-#: edit_perm_templ.php:51 edit_perm_templ.php:63 edit.php:92
-#: edit_record.php:63 list_perm_templ.php:35 list_zones.php:57 search.php:52
+#: add_perm_templ.php:39
+#: add_perm_templ.php:50
+#: add_record.php:86
+#: edit_perm_templ.php:51
+#: edit_perm_templ.php:63
+#: edit.php:92
+#: edit_record.php:63
+#: list_perm_templ.php:35
+#: list_zones.php:57
+#: search.php:52
 #: search.php:85
 msgid "Name"
 msgstr "Naam"
 
-#: add_perm_templ.php:43 add_perm_templ.php:51 add_user.php:63
-#: edit_perm_templ.php:55 edit_perm_templ.php:64 edit_user.php:129
-#: list_perm_templ.php:36 users.php:46
+#: add_perm_templ.php:43
+#: add_perm_templ.php:51
+#: add_user.php:63
+#: edit_perm_templ.php:55
+#: edit_perm_templ.php:64
+#: edit_user.php:129
+#: list_perm_templ.php:36
+#: users.php:46
 msgid "Description"
 msgstr "Omschrijving"
 
-#: add_perm_templ.php:63 add_user.php:72 delete_user.php:101
-#: edit_perm_templ.php:84 edit.php:135 edit_record.php:105 edit_user.php:138
+#: add_perm_templ.php:63
+#: add_user.php:72
+#: delete_user.php:101
+#: edit_perm_templ.php:84
+#: edit.php:135
+#: edit_record.php:105
+#: edit_user.php:138
 #: users.php:104
 msgid "Commit changes"
 msgstr "Wijzigingen doorvoeren"
@@ -54,28 +70,45 @@ msgstr "Record succesvol toegevoegd."
 msgid "Add record to zone"
 msgstr "Record toevoegen aan zone"
 
-#: add_record.php:88 delete_domain.php:58 edit.php:93 edit_record.php:65
-#: list_zones.php:58 search.php:53 search.php:86
+#: add_record.php:88
+#: delete_domain.php:58
+#: edit.php:93
+#: edit_record.php:65
+#: list_zones.php:58
+#: search.php:53
+#: search.php:86
 msgid "Type"
 msgstr "Type"
 
-#: add_record.php:89 edit.php:95 edit_record.php:66 search.php:87
+#: add_record.php:89
+#: edit.php:95
+#: edit_record.php:66
+#: search.php:87
 msgid "Priority"
 msgstr "Prioriteit"
 
-#: add_record.php:90 edit.php:94 edit_record.php:67 search.php:88
+#: add_record.php:90
+#: edit.php:94
+#: edit_record.php:67
+#: search.php:88
 msgid "Content"
 msgstr "Content"
 
-#: add_record.php:91 edit.php:96 edit_record.php:68 search.php:89
+#: add_record.php:91
+#: edit.php:96
+#: edit_record.php:68
+#: search.php:89
 msgid "TTL"
 msgstr "TTL"
 
-#: add_record.php:124 edit.php:141
+#: add_record.php:124
+#: edit.php:141
 msgid "Add record"
 msgstr "Record toevoegen"
 
-#: add_supermaster.php:40 add_supermaster.php:80 index.php:54
+#: add_supermaster.php:40
+#: add_supermaster.php:80
+#: index.php:54
 #: inc/header.inc.php:66
 msgid "Add supermaster"
 msgstr "Supermaster toevoegen"
@@ -84,43 +117,60 @@ msgstr "Supermaster toevoegen"
 msgid "You do not have the permission to add a new supermaster."
 msgstr "U heeft onvoldoende rechten voor het toevoegen van een supermaster."
 
-#: add_supermaster.php:48 list_supermasters.php:34
+#: add_supermaster.php:48
+#: list_supermasters.php:34
 msgid "IP address of supermaster"
 msgstr "IP adres van de supermaster"
 
-#: add_supermaster.php:58 delete_supermaster.php:52 list_supermasters.php:35
+#: add_supermaster.php:58
+#: delete_supermaster.php:52
+#: list_supermasters.php:35
 msgid "Hostname in NS record"
 msgstr "Hostname in NS record"
 
-#: add_supermaster.php:68 delete_supermaster.php:53 list_supermasters.php:36
+#: add_supermaster.php:68
+#: delete_supermaster.php:53
+#: list_supermasters.php:36
 msgid "Account"
 msgstr "Account"
 
-#: add_user.php:33 users.php:114
+#: add_user.php:33
+#: users.php:114
 msgid "Add user"
 msgstr "Gebruiker toevoegen"
 
-#: add_user.php:37 edit_user.php:102 users.php:44
+#: add_user.php:37
+#: edit_user.php:102
+#: users.php:44
 msgid "Username"
 msgstr "Gebruikersnaam"
 
-#: add_user.php:41 edit_user.php:106 users.php:45
+#: add_user.php:41
+#: edit_user.php:106
+#: users.php:45
 msgid "Fullname"
 msgstr "Volledige naam"
 
-#: add_user.php:45 edit_user.php:110 inc/auth.inc.php:99
+#: add_user.php:45
+#: edit_user.php:110
+#: inc/auth.inc.php:99
 msgid "Password"
 msgstr "Wachtwoord"
 
-#: add_user.php:49 edit_user.php:114 users.php:47
+#: add_user.php:49
+#: edit_user.php:114
+#: users.php:47
 msgid "Emailaddress"
 msgstr "E-mailadres"
 
-#: add_user.php:53 edit_user.php:118
+#: add_user.php:53
+#: edit_user.php:118
 msgid "Permission template"
 msgstr "Permissie template"
 
-#: add_user.php:67 edit_user.php:133 users.php:49
+#: add_user.php:67
+#: edit_user.php:133
+#: users.php:49
 msgid "Enabled"
 msgstr "Actief"
 
@@ -128,11 +178,14 @@ msgstr "Actief"
 msgid "IP address of web- or mailserver is invalid."
 msgstr "IP adres van web- of mailserver is ongeldig."
 
-#: add_zone_master.php:79 index.php:48 inc/header.inc.php:60
+#: add_zone_master.php:79
+#: index.php:48
+#: inc/header.inc.php:60
 msgid "Add master zone"
 msgstr "Master zone toevoegen"
 
-#: add_zone_master.php:87 add_zone_slave.php:60
+#: add_zone_master.php:87
+#: add_zone_slave.php:60
 msgid "Zone name"
 msgstr "Zone naam"
 
@@ -144,7 +197,9 @@ msgstr "IP adres van webserver"
 msgid "IP address of mailserver"
 msgstr "IP adres van mailserver"
 
-#: add_zone_master.php:105 add_zone_slave.php:72 delete_domain.php:57
+#: add_zone_master.php:105
+#: add_zone_slave.php:72
+#: delete_domain.php:57
 #: list_zones.php:60
 msgid "Owner"
 msgstr "Eigenaar"
@@ -157,15 +212,20 @@ msgstr "Zone aanmaken zonder het records-template te gebruiken"
 msgid "Add zone"
 msgstr "Zone toevoegen"
 
-#: add_zone_slave.php:54 index.php:51 inc/header.inc.php:63
+#: add_zone_slave.php:54
+#: index.php:51
+#: inc/header.inc.php:63
 msgid "Add slave zone"
 msgstr "Slave zone toevoegen"
 
-#: add_zone_slave.php:66 edit.php:229
+#: add_zone_slave.php:66
+#: edit.php:229
 msgid "IP address of master NS"
 msgstr "IP adres van master NS"
 
-#: change_password.php:29 change_password.php:47 index.php:56
+#: change_password.php:29
+#: change_password.php:47
+#: index.php:56
 #: inc/header.inc.php:68
 msgid "Change password"
 msgstr "Wachtwoord wijzigen"
@@ -174,11 +234,15 @@ msgstr "Wachtwoord wijzigen"
 msgid "Current password"
 msgstr "Huidige wachtwoord"
 
-#: change_password.php:37 change_password.php:41
+#: change_password.php:37
+#: change_password.php:41
 msgid "New password"
 msgstr "Nieuw wachtwoord"
 
-#: delete_domain.php:49 edit.php:143 list_zones.php:81 search.php:65
+#: delete_domain.php:49
+#: edit.php:143
+#: list_zones.php:81
+#: search.php:65
 msgid "Delete zone"
 msgstr "Verwijderen zone"
 
@@ -187,17 +251,23 @@ msgstr "Verwijderen zone"
 msgid "You are about to delete a slave zone of which the master nameserver, %s, is a supermaster. Deleting the zone now, will result in temporary removal only. Whenever the supermaster sends a notification for this zone, it will be added again!"
 msgstr "U wilt een slave zone verwijderen waarvan de master nameserver, %s, een supermaster is. Verwijdering van de zone zal enkel tot tijdelijke verwijdering leiden. Zodra de supermaster een notificatie stuurt, wordt deze zone opnieuw toegevoegd."
 
-#: delete_domain.php:67 delete_perm_templ.php:48 delete_record.php:78
+#: delete_domain.php:67
+#: delete_perm_templ.php:48
+#: delete_record.php:78
 #: delete_supermaster.php:55
 msgid "Are you sure?"
 msgstr "Weet u het zeker?"
 
-#: delete_domain.php:69 delete_perm_templ.php:49 delete_record.php:79
+#: delete_domain.php:69
+#: delete_perm_templ.php:49
+#: delete_record.php:79
 #: delete_supermaster.php:56
 msgid "Yes"
 msgstr "Ja"
 
-#: delete_domain.php:70 delete_record.php:80 delete_supermaster.php:57
+#: delete_domain.php:70
+#: delete_record.php:80
+#: delete_supermaster.php:57
 msgid "No"
 msgstr "Nee"
 
@@ -205,7 +275,9 @@ msgstr "Nee"
 msgid "Delete permission template"
 msgstr "Verwijderen permissie template"
 
-#: delete_record.php:54 edit.php:109 search.php:101
+#: delete_record.php:54
+#: edit.php:109
+#: search.php:101
 msgid "Delete record"
 msgstr "Verwijderen record"
 
@@ -213,11 +285,13 @@ msgstr "Verwijderen record"
 msgid "You are trying to delete a record that is needed for this zone to work."
 msgstr "U gaat een record verwijderen dat nodig is voor het functioneren van deze zone."
 
-#: delete_supermaster.php:44 list_supermasters.php:49
+#: delete_supermaster.php:44
+#: list_supermasters.php:49
 msgid "Delete supermaster"
 msgstr "Verwijderen supermaster"
 
-#: delete_user.php:50 users.php:65
+#: delete_user.php:50
+#: users.php:65
 msgid "Delete user"
 msgstr "Verwijderen gebruiker"
 
@@ -229,7 +303,8 @@ msgstr "U wilt een gebruiker verwijderen. Deze gebruiker is eigenaar van (een) e
 msgid "Zone"
 msgstr "Zone"
 
-#: delete_user.php:67 edit.php:164
+#: delete_user.php:67
+#: edit.php:164
 msgid "Delete"
 msgstr "Verwijderen"
 
@@ -249,11 +324,13 @@ msgstr "Toe te voegen eigenaar"
 msgid "Really delete this user?"
 msgstr "Wilt u deze gebruiker echt verwijderen?"
 
-#: edit_perm_templ.php:45 users.php:110
+#: edit_perm_templ.php:45
+#: users.php:110
 msgid "Edit permission template"
 msgstr "Wijzigen permissie template"
 
-#: edit.php:75 search.php:60
+#: edit.php:75
+#: search.php:60
 msgid "Edit zone"
 msgstr "Wijzigen zone"
 
@@ -261,7 +338,8 @@ msgstr "Wijzigen zone"
 msgid "This zone does not have any records. Weird."
 msgstr "Deze zone heeft geen enkele records. Gek."
 
-#: edit.php:107 search.php:96
+#: edit.php:107
+#: search.php:96
 msgid "Edit record"
 msgstr "Wijzigen record"
 
@@ -277,7 +355,8 @@ msgstr "Geen eigenaar voor deze zone."
 msgid "Add"
 msgstr "Toevoegen"
 
-#: edit.php:218 edit.php:240
+#: edit.php:218
+#: edit.php:240
 msgid "Change"
 msgstr "Wijzigen"
 
@@ -285,7 +364,8 @@ msgstr "Wijzigen"
 msgid "Edit record in zone"
 msgstr "Wijzigen record in zone"
 
-#: edit_user.php:97 users.php:64
+#: edit_user.php:97
+#: users.php:64
 msgid "Edit user"
 msgstr "Wijzigen gebruiker"
 
@@ -306,27 +386,34 @@ msgstr "Gebaseerd op dit template heeft de gebruiker de volgende rechten"
 msgid "Welcome"
 msgstr "Welkom"
 
-#: index.php:37 inc/header.inc.php:49
+#: index.php:37
+#: inc/header.inc.php:49
 msgid "Index"
 msgstr "Index"
 
-#: index.php:39 search.php:31
+#: index.php:39
+#: search.php:31
 msgid "Search zones and records"
 msgstr "Zone en records zoeken"
 
-#: index.php:42 list_zones.php:38
+#: index.php:42
+#: list_zones.php:38
 msgid "List zones"
 msgstr "Overzicht zones"
 
-#: index.php:45 list_supermasters.php:30
+#: index.php:45
+#: list_supermasters.php:30
 msgid "List supermasters"
 msgstr "Overzicht supermasters"
 
-#: index.php:57 users.php:39 inc/header.inc.php:69
+#: index.php:57
+#: users.php:39
+#: inc/header.inc.php:69
 msgid "User administration"
 msgstr "Gebruikersbeheer"
 
-#: index.php:58 inc/header.inc.php:70
+#: index.php:58
+#: inc/header.inc.php:70
 msgid "Logout"
 msgstr "Uitloggen"
 
@@ -342,7 +429,8 @@ msgstr "Wijzigen template"
 msgid "Delete template"
 msgstr "Verwijderen template"
 
-#: list_supermasters.php:42 list_zones.php:43
+#: list_supermasters.php:42
+#: list_zones.php:43
 msgid "There are no zones to show in this listing."
 msgstr "Er zijn geen zones om te tonen in dit overzicht."
 
@@ -394,7 +482,9 @@ msgstr "Sessie verlopen, u moet opnieuw inloggen."
 msgid "Authentication failed!"
 msgstr "Authenticatie mislukt!"
 
-#: inc/auth.inc.php:89 inc/auth.inc.php:95 inc/auth.inc.php:105
+#: inc/auth.inc.php:89
+#: inc/auth.inc.php:95
+#: inc/auth.inc.php:105
 msgid "Login"
 msgstr "Login"
 
@@ -704,13 +794,12 @@ msgstr "De hostnaam bestaat uit teveel tekens."
 msgid "You are using an invalid top level domain."
 msgstr "De hostnaam heeft een niet-officiele TLD."
 
-# The following is a list of strings that are not hard-code in the PHP 
-# files, but which are listed in the poweradmin database. Because of 
+# The following is a list of strings that are not hard-code in the PHP
+# files, but which are listed in the poweradmin database. Because of
 # this, tools like xgettext will not notice these strings.
-# 
+#
 # See also <https://www.poweradmin.org/wiki/TranslationContribution>.
 #
-
 msgid "User is allowed to add new master zones."
 msgstr "Gebruiker mag master zones aanmaken."
 
@@ -809,7 +898,11 @@ msgstr "Tenslotte, mocht u onverhoopt problemen tijdens het installatie proces t
 msgid "Do you want to proceed now?"
 msgstr "Wilt u nu doorgaan?"
 
-#: index.php:37 index.php:80 index.php:133 index.php:175 index.php:206
+#: index.php:37
+#: index.php:80
+#: index.php:133
+#: index.php:175
+#: index.php:206
 msgid "Go to step"
 msgstr "Ga naar stap"
 
@@ -825,7 +918,8 @@ msgstr "Om dit te kunnen doen heeft het script toegang tot de database nodig met
 msgid "The username to use to connect to the database, make sure the username has sufficient rights to perform administrative task to the PowerDNS database (the installer wants to drop, create and fill tables to the database)."
 msgstr "De gebruikersnaam voor de database. Zorgt u er voor dat deze gebruiker voldoende rechten heeft voor het uitvoeren van administratieve taken op de PowerDNS database (het installatie script moet tabellen kunnen verwijderen, toevoegen en vullen)."
 
-#: index.php:57 index.php:153
+#: index.php:57
+#: index.php:153
 msgid "The password for this username."
 msgstr "Het wachtwoord voor deze gebruikersnaam."
 
@@ -941,7 +1035,6 @@ msgstr "Nadat u de directory hebt verwijderd kunt u op <a href=\"index.php\">Pow
 msgid "\". You are highly encouraged to change these as soon as you are logged in."
 msgstr "\". U wordt zeer aangeraden deze direct te wijzigen."
 
-
 msgid "Invalid value for name field of SRV record."
 msgstr "U heeft een ongeldige waarde voor het name veld van het SRV record opgegeven."
 
@@ -962,3 +1055,37 @@ msgstr "Wachtwoord van Poweradmin beheerder"
 
 msgid "The password of the Poweradmin administrator. This administrator has full rights to Poweradmin using the web interface."
 msgstr "Het wachtwoord van de Poweradmin beheerder. Deze beheerder heeft via de web interface alle rechten in Poweradmin."
+
+msgid "Add zone template"
+msgstr "Zone template toevoegen"
+
+msgid "List zone templates"
+msgstr "Overzicht zone templates"
+
+msgid "Zone templates for"
+msgstr "Zone templates voor"
+
+msgid "Add zone template for"
+msgstr "Zone template toevoegen voor"
+
+msgid "Add record to zone template"
+msgstr "Record toevoegen aan zone template"
+
+msgid "The following placeholders can be used in template records"
+msgstr "De volgende items kunnen in de template records gebruikt worden"
+
+msgid "substituted with current zone name"
+msgstr "wordt vervangen door de huidige zone naam"
+
+msgid "substituted with current date and 2 numbers"
+msgstr "wordt vervangen door de huidige datum en 2 cijfers"
+
+msgid "Delete zone template"
+msgstr "Verwijder zone template"
+
+msgid "Edit zone template"
+msgstr "Wijzigen zone template"
+
+msgid "Edit record in zone template"
+msgstr "Wijzigen record in zone template"
+

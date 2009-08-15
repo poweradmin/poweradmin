@@ -41,6 +41,9 @@ define("ERR_PERM_EDIT_PERM_TEMPL", _("You do not have the permission to edit per
 define("ERR_PERM_DEL_PERM_TEMPL", _("You do not have the permission to delete permission templates.")); 
 define("ERR_PERM_ADD_USER", _("You do not have the permission to add a new user.")); 
 define("ERR_PERM_DEL_USER", _("You do not have the permission to delete this user.")); 
+define("ERR_PERM_EDIT_ZONE_TEMPL", _("You do not have the permission to edit zone templates.")); 
+define("ERR_PERM_DEL_ZONE_TEMPL", _("You do not have the permission to delete zone templates.")); 
+define("ERR_PERM_ADD_ZONE_TEMPL", _("You do not have the permission to add a zone templates.")); 
 
 /* DOMAIN STUFF */
 define("ERR_DOMAIN_INVALID", _('This is an invalid zone name.'));
@@ -112,5 +115,8 @@ define("SUC_COMMENT_UPD", _('The comment has been updated successfully.'));
 define("SUC_SM_DEL", _('The supermaster has been deleted successfully.')); 
 define("SUC_SM_ADD", _('The supermaster has been added successfully.')); 
 define("SUC_PERM_TEMPL_DEL", _('The permission template has been deleted successfully.')); 
+define("SUC_ZONE_TEMPL_ADD", _('Zone template has been added successfully.')); 
+define("SUC_ZONE_TEMPL_UPD", _('Zone template has been updated successfully.')); 
+define("SUC_ZONE_TEMPL_DEL", _('Zone template has been deleted successfully.')); 
 
 ?>

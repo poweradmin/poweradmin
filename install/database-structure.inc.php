@@ -253,6 +253,139 @@ $def_tables =
 					    'flags' 		=> ''
 					)
 				)
+			),
+		array(
+                        'table_name'    =>      'zone_templ',
+                        'fields'        =>      array(
+                                    'id' => array
+                                        (
+                                            'notnull'           => 1,
+                                            'length'            => 11,
+                                            'unsigned'          => 0,
+                                            'default'           => 0,
+                                            'autoincrement'     => 1,
+                                            'type'              => 'integer',
+                                            'name'              => 'id',
+                                            'table'             => 'zone_templ',
+                                            'flags'             => 'primary_keynot_null'
+                                        ),
+                                    'name' => array
+                                        (
+                                            'notnull'           => 1,
+                                            'length'            => 128,
+                                            'fixed'             => 0,
+                                            'default'           => 0,
+                                            'type'              => 'varchar',
+                                            'name'              => 'name',
+                                            'table'             => 'zone_templ',
+                                            'flags'             => 'not_null'
+                                        ),
+				     'descr' => array
+                                        (
+                                            'notnull'           => 1,
+                                            'length'            => 1024,
+                                            'fixed'             => 0,
+                                            'default'           => 0,
+                                            'type'              => 'varchar',
+                                            'name'              => 'descr',
+                                            'table'             => 'zone_templ',
+                                            'flags'             => 'not_null'
+                                        ),
+				     'owner' => array
+                                        (
+                                            'notnull'           => 1,
+                                            'length'            => 11,
+                                            'fixed'             => 0,
+                                            'default'           => 0,
+                                            'type'              => 'integer',
+                                            'name'              => 'owner',
+                                            'table'             => 'zone_templ',
+                                            'flags'             => 'not_null'
+                                        )
+				)
+			),
+		array(
+                        'table_name'    =>      'zone_templ_records',
+                        'fields'        =>      array(
+                                    'id' => array
+                                        (
+                                            'notnull'           => 1,
+                                            'length'            => 11,
+                                            'unsigned'          => 0,
+                                            'default'           => 0,
+                                            'autoincrement'     => 1,
+                                            'type'              => 'integer',
+                                            'name'              => 'id',
+                                            'table'             => 'zone_templ_records',
+                                            'flags'             => 'primary_keynot_null'
+                                        ),
+                                    'zone_templ_id' => array
+                                        (
+                                            'notnull'           => 1,
+                                            'length'            => 11,
+                                            'fixed'             => 0,
+                                            'default'           => 0,
+                                            'type'              => 'integer',
+                                            'name'              => 'zone_templ_id',
+                                            'table'             => 'zone_templ_records',
+                                            'flags'             => 'not_null'
+                                        ),
+				    'name' => array
+                                        (
+                                            'notnull'           => 1,
+                                            'length'            => 255,
+                                            'fixed'             => 0,
+                                            'default'           => 0,
+                                            'type'              => 'varchar',
+                                            'name'              => 'name',
+                                            'table'             => 'zone_templ_records',
+                                            'flags'             => ''
+                                        ),
+				    'type' => array
+                                        (
+                                            'notnull'           => 1,
+                                            'length'            => 6,
+                                            'fixed'             => 0,
+                                            'default'           => 0,
+                                            'type'              => 'varchar',
+                                            'name'              => 'type',
+                                            'table'             => 'zone_templ_records',
+                                            'flags'             => ''
+                                        ),
+				    'content' => array
+                                        (
+                                            'notnull'           => 1,
+                                            'length'            => 255,
+                                            'fixed'             => 0,
+                                            'default'           => 0,
+                                            'type'              => 'varchar',
+                                            'name'              => 'content',
+                                            'table'             => 'zone_templ_records',
+                                            'flags'             => ''
+                                        ),
+				    'ttl' => array
+                                        (
+                                            'notnull'           => 1,
+                                            'length'            => 11,
+                                            'fixed'             => 0,
+                                            'default'           => 0,
+                                            'type'              => 'integer',
+                                            'name'              => 'ttl',
+                                            'table'             => 'zone_templ_records',
+                                            'flags'             => ''
+                                        ),
+				    'prio' => array
+                                        (
+                                            'notnull'           => 1,
+                                            'length'            => 11,
+                                            'fixed'             => 0,
+                                            'default'           => 0,
+                                            'type'              => 'integer',
+                                            'name'              => 'prio',
+                                            'table'             => 'zone_templ_records',
+                                            'flags'             => ''
+                                        )
+				)
 			)
 		);
 

@@ -41,10 +41,13 @@ if ( $perm_search == "1" ) {
 if ( $perm_view_zone_own == "1" || $perm_view_zone_other == "1" ) {
 	echo "    <li><a href=\"list_zones.php\">" . _('List zones') . "</a></li>\n";
 }
+if ( $perm_zone_master_add ) {
+	echo "    <li><a href=\"list_zone_templ.php\">" . _('List zone templates') . "</a></li>\n";
+}
 if ( $perm_supermaster_view ) {
 	echo "    <li><a href=\"list_supermasters.php\">" . _('List supermasters') . "</a></li>\n";
 }
-if (  $perm_zone_master_add ) {
+if ( $perm_zone_master_add ) {
 	echo "    <li><a href=\"add_zone_master.php\">" . _('Add master zone') . "</a></li>\n";
 }
 if ( $perm_zone_slave_add ) { 

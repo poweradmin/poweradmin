@@ -222,6 +222,8 @@ function delete_user($uid,$zones)
 		$query = "DELETE FROM users WHERE id = " . $db->quote($uid, 'integer') ;
 		$response = $db->query($query);
 		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+
+		delete_zone_templ_userid($uid);
 	}
 	return true;
 }

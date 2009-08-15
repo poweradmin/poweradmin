@@ -353,7 +353,7 @@ function delete_record($rid)
  * remember to request nextID's from the database to be able to insert record.
  * if anything is invalid the function will error
  */
-function add_domain($domain, $owner, $webip, $mailip, $empty, $type, $slave_master)
+function add_domain($domain, $owner, $type, $slave_master, $zone_template)
 {
 	if(verify_permission('zone_master_add')) { $zone_master_add = "1" ; } ;
 	if(verify_permission('zone_slave_add')) { $zone_slave_add = "1" ; } ;
@@ -365,9 +365,8 @@ function add_domain($domain, $owner, $webip, $mailip, $empty, $type, $slave_mast
 		global $dns_ns1;
 		global $dns_hostmaster;
 		global $dns_ttl;
-		if (($domain && $owner && $webip && $mailip) || 
-				($empty && $owner && $domain) || 
-				(eregi('in-addr.arpa', $domain) && $owner) || 
+		if (($domain && $owner && $zone_template) || 
+				(eregi('in-addr.arpa', $domain) && $owner && $zone_template) || 
 				$type=="SLAVE" && $domain && $owner && $slave_master) {
 
 			$response = $db->query("INSERT INTO domains (name, type) VALUES (".$db->quote($domain, 'text').", ".$db->quote($type, 'text').")");
@@ -385,31 +384,34 @@ function add_domain($domain, $owner, $webip, $mailip, $empty, $type, $slave_mast
 				return true;
 			} else {
 				$now = time();
-				if ($empty && $domain_id) {
+				if ($zone_template == "none" && $domain_id) {
 					$ns1 = $dns_ns1;
 					$hm  = $dns_hostmaster;
 					$ttl = $dns_ttl;
+					$serial = date("Ymd");
+					$serial .= "00";
 
 					$query = "INSERT INTO records (domain_id, name, content, type, ttl, prio, change_date) VALUES (" 
 							. $db->quote($domain_id, 'integer') . "," 
 							. $db->quote($domain, 'text') . "," 
-							. $db->quote($ns1.' '.$hm.' 1', 'text') . ","
+							. $db->quote($ns1.' '.$hm.' '.$serial.' 28800 7200 604800 86400', 'text') . ","
 							. $db->quote('SOA', 'text').","
 							. $db->quote($ttl, 'integer')."," 
 							. $db->quote(0, 'integer'). ","
 							. $db->quote($now, 'integer').")";
 					$response = $db->query($query);
 					if (PEAR::isError($response)) { error($response->getMessage()); return false; }
-				} elseif ($domain_id) {
-					global $template;
+					return true;
+				} elseif ($domain_id && is_numeric($zone_template)) {
 					global $dns_ttl;
 
-					foreach ($template as $r) {
+					$templ_records = get_zone_templ_records($zone_template);
+					foreach ($templ_records as $r) {
 						if ((eregi('in-addr.arpa', $domain) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!eregi('in-addr.arpa', $domain)))
 						{
-							$name     = parse_template_value($r["name"], $domain, $webip, $mailip);
+							$name     = parse_template_value($r["name"], $domain);
 							$type     = $r["type"];
-							$content  = parse_template_value($r["content"], $domain, $webip, $mailip);
+							$content  = parse_template_value($r["content"], $domain);
 							$ttl      = $r["ttl"];
 							$prio     = intval($r["prio"]);
 

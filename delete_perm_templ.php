@@ -52,3 +52,4 @@ if ($perm_templ == "-1"){
 }
 
 include_once("inc/footer.inc.php");
+?>

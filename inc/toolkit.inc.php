@@ -141,67 +141,6 @@ if($dns_fancy) {
 	$rtypes[16] = 'CURL';
 }
 
-// $template - array of records that will be applied when adding a new zone file
-$template = array(
-                array(
-
-                                "name"          =>              "##DOMAIN##",
-                                "type"          =>              "SOA",
-                                "content"       =>              "$dns_ns1 $dns_hostmaster 0",
-                                "ttl"           =>              "$dns_ttl",
-                                "prio"          =>              ""
-                ),
-                array(
-                                "name"          =>              "##DOMAIN##",
-                                "type"          =>              "NS",
-                                "content"       =>              "$dns_ns1",
-                                "ttl"           =>              "$dns_ttl",
-                                "prio"          =>              ""
-                ),
-                array(
-                                "name"          =>              "##DOMAIN##",
-                                "type"          =>              "NS",
-                                "content"       =>              "$dns_ns2",
-                                "ttl"           =>              "$dns_ttl",
-                                "prio"          =>              ""
-                ),
-                array(
-                                "name"          =>              "www.##DOMAIN##",
-                                "type"          =>              "A",
-                                "content"       =>              "##WEBIP##",
-                                "ttl"           =>              "$dns_ttl",
-                                "prio"          =>              ""
-                ),
-                array(
-                                "name"          =>              "##DOMAIN##",
-                                "type"          =>              "A",
-                                "content"       =>              "##WEBIP##",
-                                "ttl"           =>              "$dns_ttl",
-                                "prio"          =>              ""
-                ),
-                array(
-                                "name"          =>              "mail.##DOMAIN##",
-                                "type"          =>              "A",
-                                "content"       =>              "##MAILIP##",
-                                "ttl"           =>              "$dns_ttl",
-                                "prio"          =>              ""
-                ),
-                array(
-                                "name"          =>              "localhost.##DOMAIN##",
-                                "type"          =>              "A",
-                                "content"       =>              "127.0.0.1",
-                                "ttl"           =>              "$dns_ttl",
-                                "prio"          =>              ""
-                ),
-                array(
-                                "name"          =>              "##DOMAIN##",
-                                "type"          =>              "MX",
-                                "content"       =>              "mail.##DOMAIN##",
-                                "ttl"           =>              "$dns_ttl",
-                                "prio"          =>              "10"
-                )
-);
-
 
 /*************
  * Includes  *
@@ -213,6 +152,7 @@ require_once("i18n.inc.php");
 require_once("users.inc.php");
 require_once("dns.inc.php");
 require_once("record.inc.php");
+require_once("templates.inc.php");
 
 $db = dbConnect();
 doAuthenticate();
@@ -391,11 +331,13 @@ function get_status($res)
 	}
 }
 
-function parse_template_value($val, $domain, $webip, $mailip)
+function parse_template_value($val, $domain)
 {
-	$val = str_replace('##DOMAIN##', $domain, $val);
-	$val = str_replace('##WEBIP##', $webip, $val);
-	$val = str_replace('##MAILIP##', $mailip, $val);
+	$serial = date("Ymd");
+	$serial .= "00";
+
+	$val = str_replace('[ZONE]', $domain, $val);
+	$val = str_replace('[SERIAL]', $serial, $val);
 	return $val;
 }
 

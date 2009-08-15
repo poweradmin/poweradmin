@@ -38,20 +38,10 @@ if (isset($_POST['domain'])) {
 	$domain = "";
 }
 
-if (isset($_POST['webip'])) {
-	$webip = $_POST['webip'];
+if (isset($_POST['zone_template'])) {
+	$zone_template = $_POST['zone_template'];
 } else {
-	$webip = "";
-}
-
-if (isset($_POST['mailip'])) {
-	$mailip = $_POST['mailip'];
-} else {
-	$mailip = "";
-}
-
-if (isset($_POST['empty'])) {
-	$empty = $_POST['empty'];
+	$zone_template = "none";
 }
 
 /*
@@ -61,37 +51,10 @@ Check user permissions
 (verify_permission('user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0" ; 
 
 if (isset($_POST['submit']) && $zone_master_add == "1" ) {
-
-	// Boy. I will be happy when I have found the time to replace
-	// this "template wanabee" code with something that is really 
-	// worth to be called "templating". Whoever wrote this should 
-	// be... should be... how can I say this politicaly correct?
-	// 20080303/RZ
-
-        if(!$empty) {
-                $empty = 0;
-                if(!eregi('in-addr.arpa', $domain) && (!is_valid_ipv4($webip) || !is_valid_ipv4($mailip)) ) {
-                        error(_('IP address of web- or mailserver is invalid.')); 
-			$error = "1";
-                }
-        }
-
-        if (!$error) {
-                if (!is_valid_hostname_fqdn($domain,0)) {
-                        error(ERR_DOMAIN_INVALID); 
-			$error = "1";
-                } elseif (domain_exists($domain)) {
-                        error(ERR_DOMAIN_EXISTS); 
-			$error = "1";
-                } else {
-                        if (add_domain($domain, $owner, $webip, $mailip, $empty, $dom_type, '')) {	
-	                       success("<a href=\"edit.php?id=" . get_zone_id_from_name($domain) . "\">".SUC_ZONE_ADD.'</a>');
-                               unset($domain, $owner, $webip, $mailip, $empty, $dom_type);
-                        } else {
-                               $error = "1";
-                        }
-                }
-        }
+	if (add_domain($domain, $owner, $dom_type, '', $zone_template)) {	
+		success("<a href=\"edit.php?id=" . get_zone_id_from_name($domain) . "\">".SUC_ZONE_ADD.'</a>');
+		unset($domain, $owner, $dom_type, $zone_template);
+	}
 }
 
 if ( $zone_master_add != "1" ) {
@@ -111,32 +74,20 @@ if ( $zone_master_add != "1" ) {
 	echo "        </td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
-	echo "        <td class=\"n\">" . _('IP address of webserver') . ":</td>\n";
-	echo "        <td class=\"n\">\n";
-	echo "         <input type=\"text\" class=\"input\" name=\"webip\" value=\"" . $webip . "\">\n";
-	echo "        </td>\n";
-	echo "       </tr>\n";
-	echo "       <tr>\n";
-	echo "        <td class=\"n\">" . _('IP address of mailserver') . ":</td>\n";
-	echo "        <td class=\"n\">\n";
-	echo "         <input type=\"text\" class=\"input\" name=\"mailip\" value=\"" . $mailip . "\">\n";
-	echo "        </td>\n";
-	echo "       </tr>\n";
-	echo "       <tr>\n";
 	echo "        <td class=\"n\">" . _('Owner') . ":</td>\n";
 	echo "        <td class=\"n\">\n";
 	echo "         <select name=\"owner\">\n";
- 		/*
-		Display list of users to assign zone to if creating
-		user has the proper permission to do so.
-		*/
-	       foreach ($users as $user) { 
- 	       if ($user['id'] === $_SESSION['userid']) { 
- 	       echo "          <option value=\"" . $user['id'] . "\" selected>" . $user['fullname'] . "</option>\n"; 
- 	       } elseif ( $perm_view_others == "1" ) { 
- 	       echo "          <option value=\"" . $user['id'] . "\">" . $user['fullname'] . "</option>\n"; 
- 	       } 
-        }
+ 	/*
+	Display list of users to assign zone to if creating
+	user has the proper permission to do so.
+	*/
+	foreach ($users as $user) { 
+		if ($user['id'] === $_SESSION['userid']) { 
+			echo "          <option value=\"" . $user['id'] . "\" selected>" . $user['fullname'] . "</option>\n"; 
+		} elseif ( $perm_view_others == "1" ) { 
+			echo "          <option value=\"" . $user['id'] . "\">" . $user['fullname'] . "</option>\n"; 
+		} 
+	}
 	echo "         </select>\n";
 	echo "        </td>\n";
 	echo "       </tr>\n";
@@ -151,8 +102,16 @@ if ( $zone_master_add != "1" ) {
 	echo "        </td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
-	echo "        <td class=\"n\">" . _('Create zone without applying records-template') . "</td>\n";
-	echo "        <td class=\"n\"><input type=\"checkbox\" name=\"empty\" value=\"1\"></td>\n";
+	echo "        <td class=\"n\">" . _('Template') . ":</td>\n";
+	echo "        <td class=\"n\">\n";
+	echo "         <select name=\"zone_template\">\n";
+	echo "          <option value=\"none\">none</option>\n";
+	$zone_templates = get_list_zone_templ($_SESSION['userid']);
+        foreach($zone_templates as $zone_template) {
+		echo "          <option value=\"" . $zone_template['id'] . "\">" . $zone_template['name'] . "</option>\n";
+        }
+	echo "         </select>\n";
+	echo "        </td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">&nbsp;</td>\n";
@@ -165,3 +124,4 @@ if ( $zone_master_add != "1" ) {
 } 
 
 include_once("inc/footer.inc.php");
+?>
