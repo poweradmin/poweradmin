@@ -21,4 +21,5 @@ $dns_ttl		= "86400";
 $dns_fancy		= "false";
 $dns_strict_tld_check	= "1";
 
+$style = "default";
 ?>

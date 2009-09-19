@@ -80,39 +80,16 @@ function doAuthenticate() {
 
 function auth($msg="",$type="success")
 {
-	include_once('inc/header.inc.php');
-	if ( $msg )
-	{
-		print "<div class=\"$type\">$msg</div>\n";
-	}
-	?>
-	<h2><?php echo _('Login'); ?></h2>
-	<?php
-	?>
-	<form method="post" action="<?php echo $_SERVER["PHP_SELF"] ?>" name="login">
-	 <table border="0">
-	  <tr>
-	   <td class="n"><?php echo _('Login'); ?>:</td>
-	   <td class="n"><input type="text" class="input" name="username"></td>
-	  </tr>
-	  <tr>
-	   <td class="n"><?php echo _('Password'); ?>:</td>
-	   <td class="n"><input type="password" class="input" name="password"></td>
-	  </tr>
-	  <tr>
-	   <td class="n">&nbsp;</td>
-	   <td class="n">
-	    <input type="submit" name="authenticate" class="button" value=" <?php echo _('Login'); ?> ">
-	   </td>
-	  </tr>
-	 </table>
-	</form>
-        <script type="text/javascript">
-         <!--
-          document.login.username.focus();
-         //-->
-        </script>
-	<?php
+	global $tpl;
+	
+	$tpl->assign(array(
+		"D_MSG"	=>	$msg,
+		"D_TYPE"	=>	$type,
+		"L_LOGIN"	=>	_('Login'),
+		"L_PASSWORD"	=>	_('Password'),
+		"S_PHP_SELF"	=>	$_SERVER['PHP_SELF'],
+	));
+	$tpl->display("login.tpl");
 	include_once('inc/footer.inc.php');
 	exit;
 }

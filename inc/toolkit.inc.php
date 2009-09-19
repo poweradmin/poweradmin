@@ -19,8 +19,6 @@ ob_start();
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-session_start();
-
 include_once("config-me.inc.php");
 
 if(!@include_once("config.inc.php"))
