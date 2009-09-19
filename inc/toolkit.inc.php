@@ -97,31 +97,6 @@ $valid_tlds = array(
   "xn--hgbk6aj7f53bba", "xn--hlcj6aya9esc7a", "xn--jxalpdlp", "xn--kgbechtv",
   "xn--zckzah", "ye", "yt", "yu", "za", "zm", "zw");
 
-if (isset($_GET["zone_sort_by"])) {
-   define('ZONE_SORT_BY', $_GET["zone_sort_by"]);
-   $_SESSION["zone_sort_by"] = $_GET["zone_sort_by"];
-} elseif(isset($_POST["zone_sort_by"])) {
-   define('ZONE_SORT_BY', $_POST["zone_sort_by"]);
-   $_SESSION["zone_sort_by"] = $_POST["zone_sort_by"];
-} elseif(isset($_SESSION["zone_sort_by"])) {
-   define('ZONE_SORT_BY', $_SESSION["zone_sort_by"]);
-} else {
-   define('ZONE_SORT_BY', "name");
-}
-
-if (isset($_GET["record_sort_by"])) {
-   define('RECORD_SORT_BY', $_GET["record_sort_by"]);
-   $_SESSION["record_sort_by"] = $_GET["record_sort_by"];
-} elseif(isset($_POST["record_sort_by"])) {
-   define('RECORD_SORT_BY', $_POST["record_sort_by"]);
-   $_SESSION["record_sort_by"] = $_POST["record_sort_by"];
-} elseif(isset($_SESSION["record_sort_by"])) {
-   define('RECORD_SORT_BY', $_SESSION["record_sort_by"]);
-} else {
-   define('RECORD_SORT_BY', "name");
-}
-
-
 /* Database connection */
 
 require_once("database.inc.php");

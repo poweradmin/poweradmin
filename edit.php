@@ -100,11 +100,11 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 			echo "   <table>\n";
 			echo "    <tr>\n";
 			echo "     <th>&nbsp;</th>\n";
-			echo "     <th><a href=\"edit.php?id=" . $zone_id . "&record_sort_by=name\">" . _('Name') . "</a></th>\n";
-			echo "     <th><a href=\"edit.php?id=" . $zone_id . "&record_sort_by=type\">" . _('Type') . "</a></th>\n";
-			echo "     <th><a href=\"edit.php?id=" . $zone_id . "&record_sort_by=content\">" . _('Content') . "</a></th>\n";
-			echo "     <th><a href=\"edit.php?id=" . $zone_id . "&record_sort_by=prio\">" . _('Priority') . "</a></th>\n";
-			echo "     <th><a href=\"edit.php?id=" . $zone_id . "&record_sort_by=ttl\">" . _('TTL') . "</a></th>\n";
+			echo "     <th><a href=\"edit.php?id=" . $zone_id . "&amp;record_sort_by=name\">" . _('Name') . "</a></th>\n";
+			echo "     <th><a href=\"edit.php?id=" . $zone_id . "&amp;record_sort_by=type\">" . _('Type') . "</a></th>\n";
+			echo "     <th><a href=\"edit.php?id=" . $zone_id . "&amp;record_sort_by=content\">" . _('Content') . "</a></th>\n";
+			echo "     <th><a href=\"edit.php?id=" . $zone_id . "&amp;record_sort_by=prio\">" . _('Priority') . "</a></th>\n";
+			echo "     <th><a href=\"edit.php?id=" . $zone_id . "&amp;record_sort_by=ttl\">" . _('TTL') . "</a></th>\n";
 			echo "    </tr>\n";
 			foreach ($records as $r) {
 				if ($r['type'] != "SOA") {
@@ -183,9 +183,61 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 		
 		if ( $perm_content_edit == "all" || $perm_content_edit == "own" && $user_is_zone_owner == "1" ) {
 			if ( $domain_type != "SLAVE") {
-				echo "    <input type=\"button\" class=\"button\" OnClick=\"location.href='add_record.php?id=" . $zone_id . "'\" value=\"" . _('Add record') . "\">&nbsp;&nbsp\n";
+				$zone_name = get_zone_name_from_id($zone_id);
+				echo "     <form method=\"post\" action=\"add_record.php?id=".$zone_id."\">\n";
+				echo "      <input type=\"hidden\" name=\"domain\" value=\"" . $zone_id . "\">\n";
+				echo "      <table border=\"0\" cellspacing=\"4\">\n";
+				echo "       <tr>\n";
+				echo "        <td class=\"n\">" . _('Name') . "</td>\n";
+				echo "        <td class=\"n\">&nbsp;</td>\n";
+	            echo "        <td class=\"n\">" . _('Type') . "</td>\n";
+	            echo "        <td class=\"n\">" . _('Content') . "</td>\n";
+	            echo "        <td class=\"n\">" . _('Priority') .  "</td>\n";
+	            echo "        <td class=\"n\">" . _('TTL') . "</td>\n";
+	            echo "       </tr>\n";
+	            echo "       <tr>\n";
+	            echo "        <td class=\"n\"><input type=\"text\" name=\"name\" class=\"input\" value=\"\">." . $zone_name . "</td>\n";
+	            echo "        <td class=\"n\">IN</td>\n";
+	            echo "        <td class=\"n\">\n";
+	            echo "         <select name=\"type\">\n";
+	            foreach (get_record_types() as $record_type) {
+	            	if (isset($type) && $type) {
+	                	if ($type == $record_type) {
+	                    	$add = " SELECTED";
+	                    }
+						else
+						{
+	                    	$add = "";
+	                    }
+	                }
+					else
+					{
+	                	if (eregi('in-addr.arpa', $zone_name) && strtoupper($record_type) == 'PTR')
+						{
+	                    	$add = " SELECTED";
+	                    }
+						else if (strtoupper($record_type) == 'A')
+						{
+	                    	$add = " SELECTED";
+	                    }
+						else
+						{
+	                    	$add = "";
+	                    }
+	                 }
+	                 echo "          <option" . $add . " value=\"" . $record_type . "\">" . $record_type . "</option>\n";
+				}
+	            echo "         </select>\n";
+	            echo "        </td>\n";
+	            echo "        <td class=\"n\"><input type=\"text\" name=\"content\" class=\"input\" value=\"\"></td>\n";
+	            echo "        <td class=\"n\"><input type=\"text\" name=\"prio\" class=\"sinput\" value=\"\"></td>\n";
+	            echo "        <td class=\"n\"><input type=\"text\" name=\"ttl\" class=\"sinput\" value=\"\"</td>\n";
+	            echo "       </tr>\n";
+	            echo "      </table>\n";
+	            echo "      <br>\n";
+	            echo "      <input type=\"submit\" name=\"commit\" value=\"" .  _('Add record') . "\" class=\"button\">\n";
+	            echo "     </form>\n";
 			}
-			echo "    <input type=\"button\" class=\"button\" OnClick=\"location.href='delete_domain.php?id=" . $zone_id . "'\" value=\"" . _('Delete zone') . "\">\n";
 		}
 
 		echo "   <div id=\"meta\">\n";
