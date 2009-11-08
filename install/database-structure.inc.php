@@ -1,5 +1,4 @@
-<?
-
+<?php
 
 $def_tables = 
 	array(
