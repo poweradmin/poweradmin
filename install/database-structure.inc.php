@@ -1,5 +1,4 @@
-<?
-
+<?php
 
 $def_tables = 
 	array(
@@ -275,7 +274,7 @@ $def_tables =
                                             'length'            => 128,
                                             'fixed'             => 0,
                                             'default'           => 0,
-                                            'type'              => 'varchar',
+                                            'type'              => 'text',
                                             'name'              => 'name',
                                             'table'             => 'zone_templ',
                                             'flags'             => 'not_null'
@@ -286,7 +285,7 @@ $def_tables =
                                             'length'            => 1024,
                                             'fixed'             => 0,
                                             'default'           => 0,
-                                            'type'              => 'varchar',
+                                            'type'              => 'text',
                                             'name'              => 'descr',
                                             'table'             => 'zone_templ',
                                             'flags'             => 'not_null'
@@ -336,7 +335,7 @@ $def_tables =
                                             'length'            => 255,
                                             'fixed'             => 0,
                                             'default'           => 0,
-                                            'type'              => 'varchar',
+                                            'type'              => 'text',
                                             'name'              => 'name',
                                             'table'             => 'zone_templ_records',
                                             'flags'             => ''
@@ -347,7 +346,7 @@ $def_tables =
                                             'length'            => 6,
                                             'fixed'             => 0,
                                             'default'           => 0,
-                                            'type'              => 'varchar',
+                                            'type'              => 'text',
                                             'name'              => 'type',
                                             'table'             => 'zone_templ_records',
                                             'flags'             => ''
@@ -358,7 +357,7 @@ $def_tables =
                                             'length'            => 255,
                                             'fixed'             => 0,
                                             'default'           => 0,
-                                            'type'              => 'varchar',
+                                            'type'              => 'text',
                                             'name'              => 'content',
                                             'table'             => 'zone_templ_records',
                                             'flags'             => ''
