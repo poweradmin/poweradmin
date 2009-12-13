@@ -18,9 +18,9 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-require_once("inc/toolkit.inc.php");
-include_once("inc/header.inc.php");
+session_start();
+$root_path = dirname(__FILE__)."/";
+require_once("common.php");
 verify_permission('user_view_others') ? $perm_view_others = "1" : $perm_view_others = "0" ;
 verify_permission('user_edit_own') ? $perm_edit_own = "1" : $perm_edit_own = "0" ;
 verify_permission('user_edit_others') ? $perm_edit_others = "1" : $perm_edit_others = "0" ;
@@ -36,18 +36,17 @@ if (isset($_POST['commit'])) {
 }
 
 $users = get_user_detail_list("");
-echo "    <h2>" . _('User administration') . "</h2>\n";
-echo "    <form method=\"post\">\n";
-echo "     <table>\n";
-echo "      <tr>\n";
-echo "       <th>&nbsp;</th>\n";
-echo "       <th>" . _('Username') . "</th>\n";
-echo "       <th>" . _('Fullname') . "</th>\n";
-echo "       <th>" . _('Description') . "</th>\n";
-echo "       <th>" . _('Emailaddress') . "</th>\n";
-echo "       <th>" . _('Template') . "</th>\n";
-echo "       <th>" . _('Enabled') . "</th>\n";
-echo "      </tr>\n";
+$tpl->assign(array(
+	"L_USER_ADMINISTRATION"	=>	_('User administration'),
+	"L_USERNAME"	=>	_('Username'),
+	"L_FULLNAME"	=>	_('Fullname'),
+	"L_DESCRIPTION"	=>	_('Description'),
+	"L_EMAILADDRESS"	=>	_('Emailaddress'),
+	"L_TEMPLATE"	=>	_('Template'),
+	"L_ENABLED"	=>	_('Enabled'),
+));
+
+$tpl->display("users.tpl");
 
 foreach ($users as $user) {
 	if ($user['active'] == "1" ) {
