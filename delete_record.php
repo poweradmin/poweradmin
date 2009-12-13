@@ -44,7 +44,7 @@ if ($record_id == "-1" ) {
 } else {
 	if ($confirm == '1') {
 		if ( delete_record($record_id) ) {
-			success(SUC_RECORD_DEL);
+			success("<a href=\"edit.php?id=".$zid."\">".SUC_RECORD_DEL."</a>");
 			/*
 			update serial after record deletion
 			*/
