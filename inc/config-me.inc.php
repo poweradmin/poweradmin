@@ -2,11 +2,11 @@
 
 // See <https://www.poweradmin.org/trac/wiki/Documentation/ConfigurationFile> for help.
 
-$db_host		= "localhost";
-$db_user		= "mgob";
-$db_pass		= "cheese";
-$db_name		= "poweradmin";
-$db_type		= "mysql";
+$db_host		= "";
+$db_user		= "";
+$db_pass		= "";
+$db_name		= "";
+$db_type		= "";
 
 $iface_lang		= "en_EN";
 $iface_style		= "example";
