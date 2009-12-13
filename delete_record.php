@@ -39,6 +39,8 @@ else { $perm_content_edit = "none" ; }
 $zid = get_zone_id_from_record_id($_GET['id']);
 $user_is_zone_owner = verify_user_is_owner_zoneid($zid);
 
+$zone_info = get_zone_info_from_id($zid);
+
 if ($record_id == "-1" ) {
 	error(ERR_INV_INPUT);
 } else {
@@ -58,7 +60,7 @@ if ($record_id == "-1" ) {
 	
 		echo "     <h2>" . _('Delete record') . " in zone \"" . $zone_name . "\"</h2>\n";
 
-		if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
+		if ( $zone_info['type'] == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
 			error(ERR_PERM_EDIT_RECORD);
 		} else {
 			echo "     <table>\n";
@@ -66,14 +68,18 @@ if ($record_id == "-1" ) {
 			echo "       <th>Name</th>\n";
 			echo "       <th>Type</th>\n";
 			echo "       <th>Content</th>\n";
+			if(isset($record_info['priority'])){
 			echo "       <th>Priority</th>\n";
+			}
 			echo "       <th>TTL</th>\n";
 			echo "      </tr>\n";
 			echo "      <tr>\n";
 			echo "       <td>" . $record_info['name'] . "</td>\n";
 			echo "       <td>" . $record_info['type'] . "</td>\n";
 			echo "       <td>" . $record_info['content'] . "</td>\n";
+			if(isset($record_info['priority'])){
 			echo "       <td>" . $record_info['priority'] . "</td>\n";
+			}
 			echo "       <td>" . $record_info['ttl'] . "</td>\n";
 			echo "      </tr>\n";
 			echo "     </table>\n";
