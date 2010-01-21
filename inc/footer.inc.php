@@ -28,7 +28,7 @@ if(is_object($db))
 ?>
   </div> <!-- /content -->
   <div class="footer">
-   <a href="https://www.poweradmin.org/">a complete(r) <strong>poweradmin</strong></a> - <a href="https://www.poweradmin.org/trac/wiki/Credits">credits</a>
+   <a href="https://www.poweradmin.org/">a complete(r) <strong>poweradmin</strong><?echo $VERSION;?></a> - <a href="https://www.poweradmin.org/trac/wiki/Credits">credits</a>
   </div>
 <?php
 if(file_exists('inc/custom_footer.inc.php')) 
