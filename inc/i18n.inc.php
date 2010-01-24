@@ -19,7 +19,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once("inc/config.inc.php");
+if(file_exists('inc/config.inc.php')) {
+	include_once("inc/config.inc.php");
+}
 
 setlocale(LC_ALL, $iface_lang);
 $gettext_domain = 'messages';

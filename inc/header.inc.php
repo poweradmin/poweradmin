@@ -34,6 +34,8 @@ if(file_exists('inc/custom_header.inc.php')) {
 	include('inc/custom_header.inc.php');
 }
 
+$VERSION = "2.1.4";
+
 echo "  <h1>Poweradmin</h1>\n";
 
 if (file_exists('install')) {

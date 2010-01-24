@@ -32,8 +32,6 @@ if(!@include_once("config.inc.php"))
  * Constants *
  *************/
 
-$VERSION = "2.1.4";
-
 if (isset($_GET["start"])) {
    define('ROWSTART', (($_GET["start"] - 1) * $iface_rowamount));
    } else {
