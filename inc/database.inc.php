@@ -19,7 +19,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once("MDB2.php");
 (@include_once "MDB2.php") or die (error('You have to install MDB2 library!')); 
 
 function dbError($msg)
