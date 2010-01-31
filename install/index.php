@@ -1,14 +1,11 @@
 <?php
 
-if (!isset($_POST['language'])) {
-	$language = "en_EN";
+if (isset($_POST['language'])) {
+	$language = $_POST['language'];
 } else {
-	$step = $_POST['step'];
+	$language = "en_EN";
 }
 
-
-
-$language = $_POST['language'];
 setlocale(LC_ALL, $language);
 $gettext_domain = 'messages';
 bindtextdomain($gettext_domain, "./../locale");
