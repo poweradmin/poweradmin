@@ -66,7 +66,7 @@ function dbConnect() {
 		exit;
 	}
 		
-	if ((!isset($db_type)) || (!($db_type == "mysql" || $db_type == "pgsql"))) {
+	if ((!isset($db_type)) || (!($db_type == "mysql" || $db_type == "mysqli" || $db_type == "pgsql"))) {		
 		include_once("header.inc.php");
 		error(ERR_DB_NO_DB_TYPE);
 		include_once("footer.inc.php");
@@ -89,7 +89,7 @@ function dbConnect() {
 	$mysql_pass = $dsn = '';
 
 	// Add support for regular expressions in both MySQL and PostgreSQL
-	if ( $db_type == "mysql" ) {
+	if ( $db_type == "mysql" || $db_type == "mysqli" ) {
 		$sql_regexp = "REGEXP";
 	} elseif ( $db_type == "pgsql" ) {
 		$sql_regexp = "~";
