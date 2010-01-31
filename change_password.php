@@ -22,29 +22,29 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
-if($_POST["submit"]) {
+if(isset($_POST['submit']) && $_POST['submit']) {
 	change_user_pass($_POST);
 }
 
 echo "    <h2>" . _('Change password') . "</h2>\n";
 echo "    <form method=\"post\" action=\"change_password.php\">\n";
-echo "     <table border=\"0\" CELLSPACING=\"4\">\n";
+echo "     <table border=\"0\" cellspacing=\"4\">\n";
 echo "      <tr>\n";
 echo "       <td class=\"n\">" . _('Current password') . ":</td>\n";
-echo "       <td class=\"n\"><input type=\"password\" class=\"input\" NAME=\"currentpass\" value=\"\"></td>\n";
+echo "       <td class=\"n\"><input type=\"password\" class=\"input\" name=\"currentpass\" value=\"\"></td>\n";
 echo "      </tr>\n";
 echo "      <tr>\n";
 echo "       <td class=\"n\">" . _('New password') . ":</td>\n";
-echo "       <td class=\"n\"><input type=\"password\" class=\"input\" NAME=\"newpass\" value=\"\"></td>\n";
+echo "       <td class=\"n\"><input type=\"password\" class=\"input\" name=\"newpass\" value=\"\"></td>\n";
 echo "      </tr>\n";
 echo "      <tr>\n";
 echo "       <td class=\"n\">" . _('New password') . ":</td>\n";
-echo "       <td class=\"n\"><input type=\"password\" class=\"input\" NAME=\"newpass2\" value=\"\"></td>\n";
+echo "       <td class=\"n\"><input type=\"password\" class=\"input\" name=\"newpass2\" value=\"\"></td>\n";
 echo "      </tr>\n";
 echo "      <tr>\n";
 echo "       <td class=\"n\">&nbsp;</td>\n";
 echo "       <td class=\"n\">\n";
-echo "        <input type=\"submit\" class=\"button\" NAME=\"submit\" value=\"" . _('Change password') . "\">\n";
+echo "        <input type=\"submit\" class=\"button\" name=\"submit\" value=\"" . _('Change password') . "\">\n";
 echo "       </td>\n";
 echo "      </tr>\n";
 echo "     </table>\n";
