@@ -97,7 +97,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 		if ( $records == "-1" ) { 
 			echo " <p>" .  _("This zone does not have any records. Weird.") . "</p>\n";
 		} else {
-			echo "   <form method=\"post\">\n";
+			echo "   <form method=\"post\" action=\"\">\n";
 			echo "   <table>\n";
 			echo "    <tr>\n";
 			echo "     <th>&nbsp;</th>\n";
@@ -173,7 +173,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 			echo "      <a href=\"edit_comment.php?domain=" . $zone_id . "\">
                                     <img src=\"images/edit.gif\" alt=\"[ ". _('Edit comment') . " ]\"></a>\n";
 			echo "     </td>\n";
-			echo "     <td colspan=\"4\"><textarea rows=\"15\" name=\"comment\">" . get_zone_comment($zone_id) . "</textarea></td>\n";
+			echo "     <td colspan=\"4\"><textarea rows=\"15\" cols=\"80\" name=\"comment\">" . get_zone_comment($zone_id) . "</textarea></td>\n";
 			echo "     <td>&nbsp;</td>\n";
 			echo "    </tr>\n";
 			echo "    </table>\n";
@@ -232,7 +232,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 	            echo "        </td>\n";
 	            echo "        <td class=\"n\"><input type=\"text\" name=\"content\" class=\"input\" value=\"\"></td>\n";
 	            echo "        <td class=\"n\"><input type=\"text\" name=\"prio\" class=\"sinput\" value=\"\"></td>\n";
-	            echo "        <td class=\"n\"><input type=\"text\" name=\"ttl\" class=\"sinput\" value=\"\"</td>\n";
+	            echo "        <td class=\"n\"><input type=\"text\" name=\"ttl\" class=\"sinput\" value=\"\"></td>\n";
 	            echo "       </tr>\n";
 	            echo "      </table>\n";
 	            echo "      <br>\n";
@@ -254,15 +254,15 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 		} else {
 			if ($meta_edit) {
 				foreach ($owners as $owner) {
-					echo "      <form method=\"post\" action=\"edit.php?id=" . $zone_id . "\">\n";
 					echo "       <tr>\n";
+					echo "        <form method=\"post\" action=\"edit.php?id=" . $zone_id . "\">\n";
 					echo "        <td>" . $owner["fullname"] . "</td>\n";
 					echo "        <td>\n";
 					echo "         <input type=\"hidden\" name=\"delete_owner\" value=\"" . $owner["id"] . "\">\n";
 					echo "         <input type=\"submit\" class=\"sbutton\" name=\"co\" value=\"" . _('Delete') . "\">\n";
 					echo "        </td>\n";
+					echo "        </form>\n";
 					echo "       </tr>\n";
-					echo "      </form>\n";
 				}
 			} else {
 				foreach ($owners as $owner) {

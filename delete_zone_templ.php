@@ -47,7 +47,7 @@ if ($zone_templ_id == "-1"){
 			success(SUC_ZONE_TEMPL_DEL);
 		} else {
 			echo "     <p>" . _('Are you sure?') . "</p>\n";
-			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='" . $_SERVER['REQUEST_URI'] . "&confirm=1'\" value=\"" . _('Yes') . "\">\n";
+			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='" . $_SERVER['REQUEST_URI'] . "&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
 			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
 		}
 	}

@@ -48,7 +48,7 @@ if (isset($_POST['commit'])) {
 		$zones = get_zones("own",$uid);
 
 		echo "     <h2>" . _('Delete user') . " \"" . $fullname . "\"</h2>\n";
-		echo "     <form method=\"post\">\n";
+		echo "     <form method=\"post\" action=\"\">\n";
 		echo "      <table>\n";
 
 		if (count($zones) > 0) {

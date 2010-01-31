@@ -37,7 +37,7 @@ if (isset($_POST['commit'])) {
 
 $users = get_user_detail_list("");
 echo "    <h2>" . _('User administration') . "</h2>\n";
-echo "    <form method=\"post\">\n";
+echo "    <form method=\"post\" action=\"\">\n";
 echo "     <table>\n";
 echo "      <tr>\n";
 echo "       <th>&nbsp;</th>\n";
@@ -58,11 +58,11 @@ foreach ($users as $user) {
 	if (($user['uid'] == $_SESSION["userid"] && $perm_edit_own == "1") || ($user['uid'] != $_SESSION["userid"] && $perm_edit_others == "1" )) {
 		$commit_button = "1";
 
-		echo "      <input type=\"hidden\" name=\"user[" . $user['uid'] . "][uid]\" value=\"" . $user['uid'] . "\">\n";
 		echo "      <tr>\n";
 		echo "       <td>\n";
-		echo "        <a href=\"edit_user.php?id=" . $user['uid'] . "\"><img src=\"images/edit.gif\" alt=\"[ " . _('Edit user') . "\" ]></a>\n";
-		echo "        <a href=\"delete_user.php?id=" . $user['uid'] . "\"><img src=\"images/delete.gif\" alt=\"[ " . _('Delete user') . "\" ]></a>\n";
+		echo "        <input type=\"hidden\" name=\"user[" . $user['uid'] . "][uid]\" value=\"" . $user['uid'] . "\">\n";
+		echo "        <a href=\"edit_user.php?id=" . $user['uid'] . "\"><img src=\"images/edit.gif\" alt=\"[ " . _('Edit user') . " ]\"></a>\n";
+		echo "        <a href=\"delete_user.php?id=" . $user['uid'] . "\"><img src=\"images/delete.gif\" alt=\"[ " . _('Delete user') . " ]\"></a>\n";
 		echo "       </td>\n";
 		echo "       <td><input type=\"text\" name=\"user[" . $user['uid'] . "][username]\" value=\"" . $user['username'] . "\"></td>\n";
 		echo "       <td><input type=\"text\" name=\"user[" . $user['uid'] . "][fullname]\" value=\"" . $user['fullname'] . "\"></td>\n";

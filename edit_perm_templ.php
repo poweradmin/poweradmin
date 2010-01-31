@@ -43,7 +43,7 @@ if ($id == "-1") {
 	$perms_avail = get_permissions_by_template_id();
 
 	echo "    <h2>" . _('Edit permission template') . "</h2>\n"; 
-        echo "    <form method=\"post\">\n";
+        echo "    <form method=\"post\" action=\"\">\n";
 	echo "    <input type=\"hidden\" name=\"templ_id\" value=\"" . $id . "\">\n";
 
 	echo "     <table>\n";

@@ -71,7 +71,7 @@ if ($record_id == "-1" || $zone_templ_id == "-1") {
 			echo "      </tr>\n";
 			echo "     </table>\n";
 			echo "     <p>" . _('Are you sure?') . "</p>\n";
-			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='" . $_SERVER["REQUEST_URI"] . "&confirm=1'\" value=\"" . _('Yes') . "\">\n";
+			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='" . $_SERVER["REQUEST_URI"] . "&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
 			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
 		}	
         }

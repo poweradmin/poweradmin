@@ -46,7 +46,7 @@ if ($perm_templ == "-1"){
 			success(SUC_PERM_TEMPL_DEL);
 		} else {
 			echo "     <p>" . _('Are you sure?') . "</p>\n";
-			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='" . $_SERVER['REQUEST_URI'] . "&confirm=1'\" value=\"" . _('Yes') . "\">\n"; 
+			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='" . $_SERVER['REQUEST_URI'] . "&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n"; 
 		}
 	}
 }

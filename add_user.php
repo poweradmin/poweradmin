@@ -31,7 +31,7 @@ if (!verify_permission('user_add_new')) {
 	}
 
 	echo "     <h2>" . _('Add user') . "</h2>\n";
-	echo "     <form method=\"post\">\n";
+	echo "     <form method=\"post\" action=\"add_user.php\">\n";
 	echo "      <table>\n";
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">" . _('Username') . "</td>\n"; 

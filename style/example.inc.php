@@ -42,7 +42,7 @@ img .edit-assign-to-user	{
 }
 
 #meta .button	{
-	margin			0px 5px 0px 0px;
+	margin:			0px 5px 0px 0px;
 }
 
 #meta-left {

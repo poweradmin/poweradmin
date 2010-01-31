@@ -44,8 +44,8 @@ if ($perm_templ_perm_edit == "0") {
 		echo "      <tr>\n";
 		if ($perm_templ_perm_edit == "1") {
 			echo "       <td>\n";
-			echo "        <a href=\"edit_perm_templ.php?id=" . $template["id"] . "\"><img src=\"images/edit.gif\" alt=\"[ " . _('Edit template') . "\" ]></a>\n";
-			echo "        <a href=\"delete_perm_templ.php?id=" . $template["id"] . "\"><img src=\"images/delete.gif\" alt=\"[ " . _('Delete template') . "\" ]></a>\n";
+			echo "        <a href=\"edit_perm_templ.php?id=" . $template["id"] . "\"><img src=\"images/edit.gif\" alt=\"[ " . _('Edit template') . " ]\"></a>\n";
+			echo "        <a href=\"delete_perm_templ.php?id=" . $template["id"] . "\"><img src=\"images/delete.gif\" alt=\"[ " . _('Delete template') . " ]\"></a>\n";
 			echo "       </td>\n";
 		} else {
 			echo "       <td>&nbsp;</td>\n";
