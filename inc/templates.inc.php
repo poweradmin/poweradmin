@@ -193,7 +193,7 @@ function get_zone_templ_records($id,$rowstart=0,$rowamount=999999,$sortby='name'
 			while($r = $result->fetchRow()) {
 				// Call get_record_from_id for each row.
 				$ret[$retcount] = get_zone_templ_record_from_id($r["id"]);
-				$retcount;
+				$retcount++;
 			}
 			return $ret;
 		}
