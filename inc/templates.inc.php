@@ -64,7 +64,6 @@ function add_zone_templ($details, $userid) {
 
 		return true;
 	}
-	return true;
 }
 
 // Get name and description of template based on template ID.
@@ -99,7 +98,6 @@ function delete_zone_templ($zone_templ_id) {
 
 		return true;
 	}
-	return true;
 }
 
 // Delete all zone templates for specific user
@@ -118,7 +116,6 @@ function delete_zone_templ_userid($userid) {
 
 		return true;
 	}
-	return true;
 }
 
 // Count zone template records
@@ -230,7 +227,6 @@ function add_zone_templ_record($zone_templ_id, $name, $type, $content, $ttl, $pr
 		if (PEAR::isError($result)) { error($result->getMessage()); return false; }
 		return true;
 	}
-	return true;
 }
 
 /*
@@ -261,7 +257,6 @@ function edit_zone_templ_record($record) {
 		if (PEAR::isError($result)) { error($result->getMessage()); return false; }
 		return true;
 	}
-	return true;
 }
 
 /*

@@ -185,7 +185,6 @@ function edit_record($record) {
 		}
 		return false;
 	}
-	return true;
 }
 
 
@@ -234,7 +233,6 @@ function add_record($zoneid, $name, $type, $content, $ttl, $prio) {
 		} else {
 			return false;
 		}
-		return true;
 	}
 }
 
