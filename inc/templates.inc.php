@@ -31,7 +31,7 @@ function get_list_zone_templ($userid) {
 					. "WHERE owner = '" . $userid . "' "
 					. "ORDER BY name";
 	$result = $db->query($query);
-	if (PEAR::isError($result)) { error($result->getMessage()); return false; }
+	if (PEAR::isError($result)) { error("Not all tables available in database, please make sure all upgrade/install proceedures were followed"; return false; }
 
 	$zone_templ_list = array();
 	while ($zone_templ = $result->fetchRow()) {
