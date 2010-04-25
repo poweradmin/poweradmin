@@ -1007,14 +1007,10 @@ function search_zone_and_record($holy_grail,$perm,$zone_sortby='name',$record_so
 	else { $perm_content_edit = "none" ; }
 
 	// Search for matching domains
-	if ($perm == "own") {
-		$sql_add_from = ", zones, users ";
-		$sql_add_where = " AND zones.domain_id = domains.id AND users.id = " . $db->quote($_SESSION['userid'], 'integer') . " AND zones.owner = " . $db->quote($_SESSION['userid'], 'integer');
+	if ($perm == "own" || $perm == "all") {
+		$sql_add_from = ", users ";
+		$sql_add_where = " AND users.id = " . $db->quote($_SESSION['userid'], 'integer');
 	}
-	if ($perm == "all") {
-                $sql_add_from = ", zones, users ";
-                $sql_add_where = " AND zones.domain_id = domains.id AND users.id = " . $db->quote($_SESSION['userid'], 'integer') . " AND zones.owner = " . $db->quote($_SESSION['userid'], 'integer');
-        }
 	
 	$query = "SELECT 
 			domains.id AS zid,
