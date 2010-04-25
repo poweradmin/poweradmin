@@ -116,7 +116,7 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
 	return true;
 }
 
-function is_valid_hostname_fqdn($hostname, $wildcard) {
+function is_valid_hostname_fqdn(&$hostname, $wildcard) {
 
 	global $dns_strict_tld_check;
 	global $valid_tlds;
@@ -410,7 +410,7 @@ function is_valid_rr_prio(&$prio, $type) {
 	return true;
 }
 
-function is_valid_rr_srv_name($name){
+function is_valid_rr_srv_name(&$name){
 
 	if (strlen($name) > 255) {
 		error(ERR_DNS_HN_TOO_LONG);
@@ -421,6 +421,7 @@ function is_valid_rr_srv_name($name){
 	if (!preg_match('/^_[\w-]+$/i', $fields[0])) { error(ERR_DNS_SRV_NAME) ; return false; }
 	if (!preg_match('/^_[\w]+$/i', $fields[1])) { error(ERR_DNS_SRV_NAME) ; return false; }
 	if (!is_valid_hostname_fqdn($fields[2],0)) { error(ERR_DNS_SRV_NAME) ; return false ; }
+	$name = join('.', $fields);
 	return true ;
 }
 
@@ -429,8 +430,9 @@ function is_valid_rr_srv_content($content) {
 	if (!is_numeric($fields[0]) || $fields[0] < 0 || $fields[0] > 65535) { error(ERR_DNS_SRV_WGHT) ; return false; } 
 	if (!is_numeric($fields[1]) || $fields[1] < 0 || $fields[1] > 65535) { error(ERR_DNS_SRV_PORT) ; return false; } 
 	if ($fields[2] == "" || ($fields[2] != "." && !is_valid_hostname_fqdn($fields[2],0))) {
-		error(ERR_DNS_SRV_TRGT) ; return false; 
-	} 
+		error(ERR_DNS_SRV_TRGT) ; return false;
+	}
+	$content = join(' ', $fields);
 	return true;
 }
 
