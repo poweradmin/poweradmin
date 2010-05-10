@@ -64,8 +64,7 @@ define("ERR_INV_ARGC", _('Invalid argument(s) given to function %s %s'));
 define("ERR_UNKNOWN", _('Unknown error.'));
 define("ERR_INV_EMAIL", _('Enter a valid email address.'));
 define("ERR_ZONE_NOT_EXIST", _('There is no zone with this ID.'));
-define("ERR_INSTALL_DIR_EXISTS", _('The install/ directory exists, you must remove it first before proceeding.'));
-
+define("ERR_INSTALL_DIR_EXISTS", _('The <a href="install/">install/</a> directory exists, you must remove it first before proceeding.')); 
 /* DATABASE */
 define("ERR_DB_NO_DB_NAME", _('No database name has been set in config.inc.php.'));
 define("ERR_DB_NO_DB_HOST", _('No database host has been set in config.inc.php.'));
