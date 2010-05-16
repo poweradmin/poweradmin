@@ -48,7 +48,7 @@ switch($step) {
 
 		echo "<p>\n";
 		echo " <form method=\"post\">\n";
-		echo "  <input type=\"radio\" name=\"language\" value=\"en_EN\"> I prefer to proceed in english.<br>\n";
+		echo "  <input type=\"radio\" name=\"language\" value=\"en_EN\" checked> I prefer to proceed in english.<br>\n";
 		echo "  <input type=\"radio\" name=\"language\" value=\"nl_NL\"> Ik ga graag verder in het Nederlands.<br>\n";
 		echo "	<input type=\"radio\" name=\"language\" value=\"de_DE\"> Ich ziehe es in Deutsch.<br>\n";
 		echo "  <input type=\"radio\" name=\"language\" value=\"ja_JP\"> 私は続行することを好む日本<br>\n";
