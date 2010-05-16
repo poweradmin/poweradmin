@@ -51,7 +51,8 @@ switch($step) {
 		echo "  <input type=\"radio\" name=\"language\" value=\"en_EN\"> I prefer to proceed in english.<br>\n";
 		echo "  <input type=\"radio\" name=\"language\" value=\"nl_NL\"> Ik ga graag verder in het Nederlands.<br>\n";
 		echo "	<input type=\"radio\" name=\"language\" value=\"de_DE\"> Ich ziehe es in Deutsch.<br>\n";
-		echo "  <input type=\"radio\" name=\"language\" value=\"ja_JP\"> 私は続行することを好む日本<br><br>\n";
+		echo "  <input type=\"radio\" name=\"language\" value=\"ja_JP\"> 私は続行することを好む日本<br>\n";
+		echo "  <input type=\"radio\" name=\"language\" value=\"pl_PL\"> Wolę iść w języku angielskim.<br><br>\n";
 		echo "  <input type=\"hidden\" name=\"step\" value=\"" . $step . "\">";
 		echo "  <input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $step . "\">";
 		echo " </form>\n";
