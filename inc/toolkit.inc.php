@@ -19,6 +19,9 @@ ob_start();
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+if (! function_exists('session_start')) die(error('You have to install PHP session extension!'));
+if (! function_exists('_')) die(error('You have to install PHP gettext extension!'));
+
 session_start();
 
 include_once("config-me.inc.php");
