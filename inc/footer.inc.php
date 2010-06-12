@@ -19,6 +19,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+global $VERSION;
+
 global $db;
 if(is_object($db))
 {

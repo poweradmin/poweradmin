@@ -64,6 +64,7 @@ if ( $zone_master_add != "1" ) {
 
 	$available_zone_types = array("NATIVE", "MASTER");
 	$users = show_users();
+	$zone_templates = get_list_zone_templ($_SESSION['userid']);
 
 	echo "     <form method=\"post\" action=\"add_zone_master.php\">\n";
 	echo "      <table>\n";
@@ -106,7 +107,6 @@ if ( $zone_master_add != "1" ) {
 	echo "        <td class=\"n\">\n";
 	echo "         <select name=\"zone_template\">\n";
 	echo "          <option value=\"none\">none</option>\n";
-	$zone_templates = get_list_zone_templ($_SESSION['userid']);
         foreach($zone_templates as $zone_template) {
 		echo "          <option value=\"" . $zone_template['id'] . "\">" . $zone_template['name'] . "</option>\n";
         }
