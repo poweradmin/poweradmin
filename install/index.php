@@ -160,12 +160,12 @@ switch($step) {
 		echo " <table>";
 		echo "  <tr>";
 		echo "   <td>" . _('Username') . "</td>\n";
-		echo "   <td><input type=\"text\" name=\"db_user\" value=\"\"></td>\n";
+		echo "   <td><input type=\"text\" name=\"pa_db_user\" value=\"\"></td>\n";
 		echo "   <td>" . _('The username for Poweradmin. This new user will have limited rights only.') . "</td>\n";
 		echo "  </tr>\n";
 		echo "  <tr>\n";
 		echo "   <td>" . _('Password') . "</td>\n";
-		echo "   <td><input type=\"text\" name=\"db_pass\" value=\"\"></td>\n";
+		echo "   <td><input type=\"text\" name=\"pa_db_pass\" value=\"\"></td>\n";
 		echo "   <td>" . _('The password for this username.') . "</td>\n";
 		echo "  </tr>\n";
 		echo "  <tr>\n";
@@ -184,6 +184,8 @@ switch($step) {
 		echo "   <td>" . _('When creating new zones using the template, this value will be used as secondary nameserver. Should be like "ns2.example.net".') . "</td>\n";
 		echo "  </tr>\n";
 		echo "</table>";
+		echo "<input type=\"hidden\" name=\"db_user\" value=\"" . $db_user . "\">";
+		echo "<input type=\"hidden\" name=\"db_pass\" value=\"" . $db_pass . "\">";
 		echo "<input type=\"hidden\" name=\"db_host\" value=\"" . $db_host . "\">";
 		echo "<input type=\"hidden\" name=\"db_name\" value=\"" . $db_name . "\">";
 		echo "<input type=\"hidden\" name=\"db_type\" value=\"" . $db_type . "\">";
@@ -201,6 +203,8 @@ switch($step) {
 		$db_host = $_POST['db_host'];
 		$db_name = $_POST['db_name'];
 		$db_type = $_POST['db_type'];
+		$pa_db_user = $_POST['pa_db_user'];
+		$pa_db_pass = $_POST['pa_db_pass'];
 		$pa_pass = $_POST['pa_pass'];
 		$pa_srvr = getenv('SERVER_NAME');
 		$dns_hostmaster = $_POST['dns_hostmaster'];
@@ -214,19 +218,19 @@ switch($step) {
 		echo "<p>" . _('You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert and update records in the PowerDNS database.') . " ";
 		if ($db_type == 'mysql') {
 			echo _('In MySQL you should now perform the following command:') . "</p>";
-			echo "<p><tt>GRANT SELECT, INSERT, UPDATE, DELETE<BR>ON " . $db_name . ".*<br>TO '" . $db_user . "'@'" . $pa_srvr . "'<br>IDENTIFIED BY '" . $db_pass . "';</tt></p>";
+			echo "<p><tt>GRANT SELECT, INSERT, UPDATE, DELETE<BR>ON " . $db_name . ".*<br>TO '" . $pa_db_user . "'@'" . $pa_srvr . "'<br>IDENTIFIED BY '" . $pa_db_pass . "';</tt></p>";
 		} elseif ($db_type == 'pgsql') {
 			echo _('On PgSQL you would use:') . "</p>";
-			echo "<p><tt>$ createuser -E -P " . $db_user . "<br>" .
-				"Enter password for new role: " . $db_pass . "<br>" .
-				"Enter it again: " . $db_pass . "<br>" . 
+			echo "<p><tt>$ createuser -E -P " . $pa_db_user . "<br>" .
+				"Enter password for new role: " . $pa_db_pass . "<br>" .
+				"Enter it again: " . $pa_db_pass . "<br>" . 
 				"Shall the new role be a superuser? (y/n) n<br>" .
 				"Shall the new user be allowed to create databases? (y/n) n<br>" . 
 				"Shall the new user be allowed to create more new users? (y/n) n<br>" . 
 				"CREATE USER<br>" . 
 				"$ psql " . $db_name . "<br>";
 				foreach ($grantTables as $tableName) {
-					echo "psql> GRANT SELECT, INSERT, DELETE, UPDATE ON " . $tableName . " TO " . $db_user . ";<br />";
+					echo "psql> GRANT SELECT, INSERT, DELETE, UPDATE ON " . $tableName . " TO " . $pa_db_user . ";<br />";
 					echo "GRANT<br />";
 				}
 				echo "</tt></p>\n";
@@ -238,6 +242,8 @@ switch($step) {
 		echo "<input type=\"hidden\" name=\"db_type\" value=\"" . $db_type . "\">";
 		echo "<input type=\"hidden\" name=\"db_user\" value=\"" . $db_user . "\">";
 		echo "<input type=\"hidden\" name=\"db_pass\" value=\"" . $db_pass . "\">";
+		echo "<input type=\"hidden\" name=\"pa_db_user\" value=\"" . $pa_db_user . "\">";
+		echo "<input type=\"hidden\" name=\"pa_db_pass\" value=\"" . $pa_db_pass . "\">";
 		echo "<input type=\"hidden\" name=\"pa_pass\" value=\"" . $pa_pass . "\">";
 		echo "<input type=\"hidden\" name=\"dns_hostmaster\" value=\"" . $dns_hostmaster . "\">";
 		echo "<input type=\"hidden\" name=\"dns_ns1\" value=\"" . $dns_ns1 . "\">";
@@ -253,8 +259,8 @@ switch($step) {
 		$pa_pass = $_POST['pa_pass'];
 		$config = "<?php\n\n" .
 			"\$db_host\t\t= \"" . $_POST['db_host'] . "\";\n" .
-			"\$db_user\t\t= \"" . $_POST['db_user'] . "\";\n" .
-			"\$db_pass\t\t= \"" . $_POST['db_pass'] . "\";\n" .
+			"\$db_user\t\t= \"" . $_POST['pa_db_user'] . "\";\n" .
+			"\$db_pass\t\t= \"" . $_POST['pa_db_pass'] . "\";\n" .
 			"\$db_name\t\t= \"" . $_POST['db_name'] . "\";\n" .
 			"\$db_type\t\t= \"" . $_POST['db_type'] . "\";\n" .
 			"\n" .
