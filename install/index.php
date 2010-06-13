@@ -6,7 +6,7 @@ if (isset($_POST['language'])) {
 	$language = "en_EN";
 }
 
-setlocale(LC_ALL, $language);
+setlocale(LC_ALL, $language, $language.'.UTF-8');
 $gettext_domain = 'messages';
 if (! function_exists('bindtextdomain')) die(error('You have to install PHP gettext extension!'));
 bindtextdomain($gettext_domain, "./../locale");
