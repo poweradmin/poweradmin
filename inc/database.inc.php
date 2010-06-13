@@ -35,6 +35,7 @@ function dbConnect() {
 	global $db_user;
 	global $db_pass;
 	global $db_host;
+	global $db_port;
 	global $db_name;
 	global $sql_regexp;
 	
@@ -72,8 +73,16 @@ function dbConnect() {
 		include_once("footer.inc.php");
 		exit;
 	}
+	
+	if (!(isset($db_port))) {
+		if ($db_type == "mysql" || $db_type == "mysqli") {
+			$db_port = 3306;
+		} else {
+			$db_port = 5432;
+		}
+	}
 		
-	$dsn = "$db_type://$db_user:$db_pass@$db_host/$db_name";
+	$dsn = "$db_type://$db_user:$db_pass@$db_host:$db_port/$db_name";
 	$db = MDB2::connect($dsn);
 	$db->setOption('portability', MDB2_PORTABILITY_ALL ^ MDB2_PORTABILITY_EMPTY_TO_NULL);
 

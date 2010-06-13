@@ -3,6 +3,7 @@
 // See <https://www.poweradmin.org/trac/wiki/Documentation/ConfigurationFile> for help.
 
 $db_host		= "";
+$db_port		= "";
 $db_user		= "";
 $db_pass		= "";
 $db_name		= "";
