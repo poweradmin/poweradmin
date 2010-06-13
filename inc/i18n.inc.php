@@ -23,7 +23,7 @@ if(file_exists('inc/config.inc.php')) {
 	include_once("inc/config.inc.php");
 }
 
-setlocale(LC_ALL, $iface_lang);
+setlocale(LC_ALL, $iface_lang, $iface_lang.'.UTF-8');
 $gettext_domain = 'messages';
 bindtextdomain($gettext_domain, "./locale");
 textdomain($gettext_domain);
