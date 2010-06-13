@@ -294,8 +294,9 @@ switch($step) {
 		break;
 }
 
+include_once('../inc/version.inc.php');
 echo "<div class=\"footer\">";
-echo "<a href=\"https://www.poweradmin.org/\">a complete(r) <strong>poweradmin</strong></a> - <a href=\"https://www.poweradmin.org/trac/wiki/Credits\">credits</a>";
+echo "<a href=\"https://www.poweradmin.org/\">a complete(r) <strong>poweradmin</strong>  v$VERSION</a> - <a href=\"https://www.poweradmin.org/trac/wiki/Credits\">credits</a>";
 echo "</div></body></html>";
 
 ?>

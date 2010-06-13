@@ -19,24 +19,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once('version.inc.php');
-
-global $db;
-if(is_object($db))
-{
-	 $db->disconnect();
-}
+$VERSION = "2.1.5";
 
 ?>
-  </div> <!-- /content -->
-  <div class="footer">
-   <a href="https://www.poweradmin.org/">a complete(r) <strong>poweradmin</strong>  v<?php echo $VERSION; ?></a> - <a href="https://www.poweradmin.org/trac/wiki/Credits">credits</a>
-  </div>
-<?php
-if(file_exists('inc/custom_footer.inc.php')) 
-{
-	include('inc/custom_footer.inc.php');
-}
-?>
- </body>
-</html>
