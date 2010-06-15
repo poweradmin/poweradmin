@@ -89,11 +89,11 @@ function auth($msg="",$type="success")
 	<h2><?php echo _('Login'); ?></h2>
 	<?php
 	?>
-	<form method="post" action="<?php echo $_SERVER["PHP_SELF"] ?>" name="login">
+	<form method="post" action="<?php echo $_SERVER["PHP_SELF"] ?>">
 	 <table border="0">
 	  <tr>
 	   <td class="n"><?php echo _('Login'); ?>:</td>
-	   <td class="n"><input type="text" class="input" name="username"></td>
+	   <td class="n"><input type="text" class="input" name="username" id="username"></td>
 	  </tr>
 	  <tr>
 	   <td class="n"><?php echo _('Password'); ?>:</td>
@@ -109,7 +109,7 @@ function auth($msg="",$type="success")
 	</form>
         <script type="text/javascript">
          <!--
-          document.login.username.focus();
+          document.getElementById('username').focus();
          //-->
         </script>
 	<?php
