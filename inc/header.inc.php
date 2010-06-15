@@ -37,6 +37,7 @@ if(file_exists('inc/custom_header.inc.php')) {
 echo "  <h1>Poweradmin</h1>\n";
 
 if (file_exists('install')) {
+	echo "<div>\n";
 	error(ERR_INSTALL_DIR_EXISTS);
 	include('inc/footer.inc.php');
 	exit;
