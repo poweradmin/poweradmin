@@ -1,0 +1,964 @@
+# poweradmin 2.0.0 translation
+# Copyright (C) 2009 Vadim Rybalko
+# This file is distributed under the same license as the poweradmin package.
+# Vadim Rybalko <vadim@bionicman.ru>, 2009.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: poweradmin 2.0.0\n"
+"Report-Msgid-Bugs-To: Vadim Rybalko <vadim@cardcollect.ru>\n"
+"POT-Creation-Date: 2009-12-05 15:50+0300\n"
+"PO-Revision-Date: 2009-12-06 02:40+0300\n"
+"Last-Translator: Vadim Rybalko <vadim@bionicman.ru>\n"
+"Language-Team: Russian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+
+msgid "The install/ directory exists, you must remove it first before proceeding."
+msgstr "Директория install/ существует, для продолжения работы она должна быть удалена."
+
+msgid "There is no zone with this ID."
+msgstr "Нет зон с данный иденитфикатором."
+
+#: add_perm_templ.php:35 list_perm_templ.php:60
+msgid "Add permission template"
+msgstr "Добавить шаблон привилегий"
+
+#: add_perm_templ.php:39 add_perm_templ.php:50 add_record.php:86
+#: edit_perm_templ.php:51 edit_perm_templ.php:63 edit.php:92
+#: edit_record.php:63 list_perm_templ.php:35 list_zones.php:57 search.php:52
+#: search.php:85
+msgid "Name"
+msgstr "Имя"
+
+#: add_perm_templ.php:43 add_perm_templ.php:51 add_user.php:63
+#: edit_perm_templ.php:55 edit_perm_templ.php:64 edit_user.php:129
+#: list_perm_templ.php:36 users.php:46
+msgid "Description"
+msgstr "Описание"
+
+#: add_perm_templ.php:63 add_user.php:72 delete_user.php:101
+#: edit_perm_templ.php:84 edit.php:135 edit_record.php:105 edit_user.php:138
+#: users.php:104
+msgid "Commit changes"
+msgstr "Подтвердить изменения"
+
+#: add_record.php:71
+msgid "The record was successfully added."
+msgstr "Запись успешно добавлена."
+
+#: add_record.php:77
+msgid "Add record to zone"
+msgstr "Добавить запись к зоне"
+
+#: add_record.php:88 delete_domain.php:58 edit.php:93 edit_record.php:65
+#: list_zones.php:58 search.php:53 search.php:86
+msgid "Type"
+msgstr "Тип"
+
+#: add_record.php:89 edit.php:95 edit_record.php:66 search.php:87
+msgid "Priority"
+msgstr "Приоритет"
+
+#: add_record.php:90 edit.php:94 edit_record.php:67 search.php:88
+msgid "Content"
+msgstr "Содержимое"
+
+#: add_record.php:91 edit.php:96 edit_record.php:68 search.php:89
+msgid "TTL"
+msgstr "TTL"
+
+#: add_record.php:124 edit.php:141
+msgid "Add record"
+msgstr "Добавить запись"
+
+#: add_supermaster.php:40 add_supermaster.php:80 index.php:54
+#: inc/header.inc.php:66
+msgid "Add supermaster"
+msgstr "Добавить supermaster"
+
+#: add_supermaster.php:43
+msgid "You do not have the permission to add a new supermaster."
+msgstr "Вы не имеете необходимых привилегий для добавления нового supermaster."
+
+#: add_supermaster.php:48 list_supermasters.php:34
+msgid "IP address of supermaster"
+msgstr "IP-адрес supermaster"
+
+#: add_supermaster.php:58 delete_supermaster.php:52 list_supermasters.php:35
+msgid "Hostname in NS record"
+msgstr "Имя хоста в NS-записи"
+
+#: add_supermaster.php:68 delete_supermaster.php:53 list_supermasters.php:36
+msgid "Account"
+msgstr "Учетная запись"
+
+#: add_user.php:33 users.php:114
+msgid "Add user"
+msgstr "Добавить пользователя"
+
+#: add_user.php:37 edit_user.php:102 users.php:44
+msgid "Username"
+msgstr "Имя пользователя"
+
+#: add_user.php:41 edit_user.php:106 users.php:45
+msgid "Fullname"
+msgstr "Полное имя"
+
+#: add_user.php:45 edit_user.php:110 inc/auth.inc.php:99
+msgid "Password"
+msgstr "Пароль"
+
+#: add_user.php:49 edit_user.php:114 users.php:47
+msgid "Emailaddress"
+msgstr "Адрес e-mail"
+
+#: add_user.php:53 edit_user.php:118
+msgid "Permission template"
+msgstr "Шаблон привилегий"
+
+#: add_user.php:67 edit_user.php:133 users.php:49
+msgid "Enabled"
+msgstr "Активен"
+
+#: add_zone_master.php:53
+msgid "IP address of web- or mailserver is invalid."
+msgstr "IP-адрес web- или почтового сервера некорректно."
+
+#: add_zone_master.php:79 index.php:48 inc/header.inc.php:60
+msgid "Add master zone"
+msgstr "Добавить первичную зону"
+
+#: add_zone_master.php:87 add_zone_slave.php:60
+msgid "Zone name"
+msgstr "Имя зоны"
+
+#: add_zone_master.php:93
+msgid "IP address of webserver"
+msgstr "IP-адрес web-сервера"
+
+#: add_zone_master.php:99
+msgid "IP address of mailserver"
+msgstr "IP-адрес почтового сервера"
+
+#: add_zone_master.php:105 add_zone_slave.php:72 delete_domain.php:57
+#: list_zones.php:60
+msgid "Owner"
+msgstr "Владелец"
+
+#: add_zone_master.php:125
+msgid "Create zone without applying records-template"
+msgstr "Добавить зону без применения шаблонов записей"
+
+#: add_zone_master.php:131
+msgid "Add zone"
+msgstr "Добавить зону"
+
+#: add_zone_slave.php:54 index.php:51 inc/header.inc.php:63
+msgid "Add slave zone"
+msgstr "Добавить вторичную зону"
+
+#: add_zone_slave.php:66 edit.php:229
+msgid "IP address of master NS"
+msgstr "IP-адрес первичного NS"
+
+#: change_password.php:29 change_password.php:47 index.php:56
+#: inc/header.inc.php:68
+msgid "Change password"
+msgstr "Сменить пароль"
+
+#: change_password.php:33
+msgid "Current password"
+msgstr "Текущий пароль"
+
+#: change_password.php:37 change_password.php:41
+msgid "New password"
+msgstr "Новый пароль"
+
+#: delete_domain.php:49 edit.php:143 list_zones.php:81 search.php:65
+msgid "Delete zone"
+msgstr "Удалить зону"
+
+#: delete_domain.php:63
+#, php-format
+msgid "You are about to delete a slave zone of which the master nameserver, %s, is a supermaster. Deleting the zone now, will result in temporary removal only. Whenever the supermaster sends a notification for this zone, it will be added again!"
+msgstr "Вы собираетесь удалить вторичную зону, для которой первичный сервер имён %s является supermaster. Удаля зону, вы добьётесь временного удаления, так как когда первичный сервер имён пошлёт оповещение для этой зоны, она будет добавлена снова."
+
+#: delete_domain.php:67 delete_perm_templ.php:48 delete_record.php:78
+#: delete_supermaster.php:55
+msgid "Are you sure?"
+msgstr "Вы уверены?"
+
+#: delete_domain.php:69 delete_perm_templ.php:49 delete_record.php:79
+#: delete_supermaster.php:56
+msgid "Yes"
+msgstr "Да"
+
+#: delete_domain.php:70 delete_record.php:80 delete_supermaster.php:57
+msgid "No"
+msgstr "Нет"
+
+#: delete_perm_templ.php:42
+msgid "Delete permission template"
+msgstr "Удалить шаблон привилегий"
+
+#: delete_record.php:54 edit.php:109 search.php:101
+msgid "Delete record"
+msgstr "Удалить запись"
+
+#: delete_record.php:76
+msgid "You are trying to delete a record that is needed for this zone to work."
+msgstr "Вы пытаетесь удалить запись, которая необходима данной зоне для работы."
+
+#: delete_supermaster.php:44 list_supermasters.php:49
+msgid "Delete supermaster"
+msgstr "Удалить supermaster"
+
+#: delete_user.php:50 users.php:65
+msgid "Delete user"
+msgstr "Удалить пользователя"
+
+#: delete_user.php:61
+msgid "You are about to delete a user. This user is owner for a number of zones. Please decide what to do with these zones."
+msgstr "Вы собираетесь удалить пользователя. Этот пользователь является владельцем некоторых зон. Пожалуйста, решите, что делать с этими зонами."
+
+#: delete_user.php:66
+msgid "Zone"
+msgstr "Зона"
+
+#: delete_user.php:67 edit.php:164
+msgid "Delete"
+msgstr "Удалить"
+
+#: delete_user.php:68
+msgid "Leave"
+msgstr "Покинуть"
+
+#: delete_user.php:69
+msgid "Add new owner"
+msgstr "Добавить пользователя"
+
+#: delete_user.php:70
+msgid "Owner to be added"
+msgstr "Владелец добавлен"
+
+#: delete_user.php:96
+msgid "Really delete this user?"
+msgstr "Точно удалить этого пользователя?"
+
+#: edit_perm_templ.php:45 users.php:110
+msgid "Edit permission template"
+msgstr "Изменить шаблон привилегий"
+
+#: edit.php:75 search.php:60
+msgid "Edit zone"
+msgstr "Изменить зону"
+
+#: edit.php:86
+msgid "This zone does not have any records. Weird."
+msgstr "Эта зона не имеет каких-либо записей. Странно..."
+
+#: edit.php:107 search.php:96
+msgid "Edit record"
+msgstr "Изменить запись"
+
+#: edit.php:149
+msgid "Owner of zone"
+msgstr "Владелец зоны"
+
+#: edit.php:155
+msgid "No owner set for this zone."
+msgstr "Владелец зоны не установлен."
+
+#: edit.php:193
+msgid "Add"
+msgstr "Добавить"
+
+#: edit.php:218 edit.php:240
+msgid "Change"
+msgstr "Изменить"
+
+#: edit_record.php:54
+msgid "Edit record in zone"
+msgstr "Изменить запись в зоне"
+
+#: edit_user.php:97 users.php:64
+msgid "Edit user"
+msgstr "Изменить данные пользователя"
+
+#: edit_user.php:143
+#, php-format
+msgid "This user has been assigned the permission template \"%s\"."
+msgstr "Данный пользователь связан с шаблоном привилегий \"%s\"."
+
+#: edit_user.php:145
+msgid "The description for this template is"
+msgstr "Описание для этого шаблона"
+
+#: edit_user.php:147
+msgid "Based on this template, this user has the following permissions"
+msgstr "На основании этого шаблона, данный пользователь имеет следующие привилегии"
+
+#: index.php:26
+msgid "Welcome"
+msgstr "Добро пожаловать"
+
+#: index.php:37 inc/header.inc.php:49
+msgid "Index"
+msgstr "Главная"
+
+#: index.php:39 search.php:31
+msgid "Search zones and records"
+msgstr "Поиск зон и записей"
+
+#: index.php:42 list_zones.php:38
+msgid "List zones"
+msgstr "Список зон"
+
+#: index.php:45 list_supermasters.php:30
+msgid "List supermasters"
+msgstr "Список supermaster'ов"
+
+#: index.php:57 users.php:39 inc/header.inc.php:69
+msgid "User administration"
+msgstr "Управление пользователями"
+
+#: index.php:58 inc/header.inc.php:70
+msgid "Logout"
+msgstr "Выход"
+
+#: list_perm_templ.php:31
+msgid "Permission templates"
+msgstr "Шаблоны привилегий"
+
+#: list_perm_templ.php:47
+msgid "Edit template"
+msgstr "Изменить шаблон"
+
+#: list_perm_templ.php:48
+msgid "Delete template"
+msgstr "Удалить шаблон"
+
+#: list_supermasters.php:42 list_zones.php:43
+msgid "There are no zones to show in this listing."
+msgstr "В этом списке нет зон для отображения."
+
+#: list_zones.php:41
+msgid "You do not have the permission to see any zones."
+msgstr "Вы не имеете необходимых привилегий для просмотра каких-либо зон."
+
+#: list_zones.php:59
+msgid "Records"
+msgstr "Записи"
+
+#: list_zones.php:76
+msgid "View zone"
+msgstr "Посмотреть зону"
+
+#: search.php:48
+msgid "Zones found"
+msgstr "Зоны найдены"
+
+#: search.php:54
+msgid "Master"
+msgstr "Первичная"
+
+#: search.php:81
+msgid "Records found"
+msgstr "Записи найдены"
+
+#: search.php:120
+msgid "Query"
+msgstr "Запрос"
+
+#: search.php:124
+msgid "Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) in pattern matches any single character, a percent sign (%) matches any string of zero or more characters."
+msgstr "Введите имя хоста или IP-адрес. Поддерживается синтаксис SQL LIKE: знак подчёркивания (_) в шаблоне запроса соответствует одному символу, а знак процентов (%) соответствует любому значению из нуля или более символов."
+
+#: search.php:129
+msgid "Search"
+msgstr "Поиск"
+
+#: users.php:48
+msgid "Template"
+msgstr "Шаблон"
+
+#: inc/auth.inc.php:41
+msgid "Session expired, please login again."
+msgstr "Сессия истекла, авторизуйтесь заново, пожалуйста."
+
+#: inc/auth.inc.php:67
+msgid "Authentication failed!"
+msgstr "Авторизация не выполнена!"
+
+#: inc/auth.inc.php:89 inc/auth.inc.php:95 inc/auth.inc.php:105
+msgid "Login"
+msgstr "Имя пользователя"
+
+#: inc/auth.inc.php:129
+msgid "You have logged out."
+msgstr "Вы успешно вышли из системы."
+
+#: inc/database.inc.php:29
+msgid "Oops! An error occured!"
+msgstr "Упс! Произошла ошибка!"
+
+#: inc/database.inc.php:73
+msgid "Unknown database type in inc/config.inc.php."
+msgstr "Неизвестный тип БД в inc/config.inc.php."
+
+#: inc/dns.inc.php:174
+msgid "If you specify an MX record it must be a hostname."
+msgstr "Если вы укажете запись MX, она должна содержать имя хоста."
+
+#: inc/error.inc.php:27
+msgid "You do not have the permission to perform searches."
+msgstr "Вы не имеете необходимых привилегий для того, чтобы произвести поиск."
+
+#: inc/error.inc.php:28
+msgid "You do not have the permission to add a record to this zone."
+msgstr "Вы не имеете необходимых привилегий для того, чтобы добавить запись в этой зоне."
+
+#: inc/error.inc.php:29
+msgid "You do not have the permission to edit this record."
+msgstr "Вы не имеете необходимых привилегий для редактирования этой записи."
+
+#: inc/error.inc.php:30
+msgid "You do not have the permission to view this record."
+msgstr "Вы не имеете необходимых привилегий для просмотра этой записи."
+
+#: inc/error.inc.php:31
+msgid "You do not have the permission to delete this record."
+msgstr "Вы не имеете необходимых привилегий для удаления этой записи."
+
+#: inc/error.inc.php:32
+msgid "You do not have the permission to add a master zone."
+msgstr "Вы не имеете необходимых привилегий для добавления первичной зоны."
+
+#: inc/error.inc.php:33
+msgid "You do not have the permission to add a slave zone."
+msgstr "Вы не имеете необходимых привилегий для добавления вторичной зоны."
+
+#: inc/error.inc.php:34
+msgid "You do not have the permission to delete a zone."
+msgstr "Вы не имеете необходимых привилегий для удаления зоны."
+
+#: inc/error.inc.php:35
+msgid "You do not have the permission to delete a supermaster."
+msgstr "Вы не имеете необходимых привилегий для удаления supermaster."
+
+#: inc/error.inc.php:36
+msgid "You do not have the permission to view this zone."
+msgstr "Вы не имеете необходимых привилегий для просмотра этой зоны."
+
+#: inc/error.inc.php:37
+msgid "You do not have the permission to edit this user."
+msgstr "Вы не имеете необходимых привилегий для редактирования данного пользователя."
+
+#: inc/error.inc.php:38
+msgid "You do not have the permission to edit permission templates."
+msgstr "Вы не имеете необходимых привилегий для редактирования шаблона привилегий."
+
+#: inc/error.inc.php:39
+msgid "You do not have the permission to delete permission templates."
+msgstr "Вы не имеете необходимых привилегий для удаления шаблона привилегий."
+
+#: inc/error.inc.php:40
+msgid "You do not have the permission to add a new user."
+msgstr "Вы не имеете необходимых привилегий для добавления нового пользователя."
+
+#: inc/error.inc.php:41
+msgid "You do not have the permission to delete this user."
+msgstr "Вы не имеете необходимых привилегий для удаления данного пользователя."
+
+#: inc/error.inc.php:49
+msgid "This is an invalid zone name."
+msgstr "Это некорректное для имя зоны."
+
+#: inc/error.inc.php:50
+msgid "There is already a supermaster with this IP address."
+msgstr "Уже существует supermaster с аналогичным IP-адресом."
+
+#: inc/error.inc.php:51
+msgid "There is already a zone with this name."
+msgstr "Уже существует зона с аналогичным именем."
+
+#: inc/error.inc.php:54
+msgid "Username exist already, please choose another one."
+msgstr "Указанное имя пользователя уже существует. Пожалуйста, укажите какое-нибудь другое."
+
+#: inc/error.inc.php:55
+msgid "User does not exist."
+msgstr "Пользователь не найден."
+
+#: inc/error.inc.php:56
+msgid "You did not enter the correct current password."
+msgstr "Вы не ввели корректный текущий пароль."
+
+#: inc/error.inc.php:57
+msgid "The two new password fields do not match."
+msgstr "Два новых пароля не совпадают."
+
+#: inc/error.inc.php:59
+msgid "This template is assigned to at least one user."
+msgstr "Этот шаблон связан как минимум с одним пользователем."
+
+#: inc/error.inc.php:62
+msgid "Invalid or unexpected input given."
+msgstr "Введенные данные неверны или неожиданны."
+
+#: inc/error.inc.php:63
+#, php-format
+msgid "Invalid argument(s) given to function %s"
+msgstr "Неверные аргументы переданы функции %s"
+
+#: inc/error.inc.php:64
+#, php-format
+msgid "Invalid argument(s) given to function %s %s"
+msgstr "Неверные аргументы переданы функции %s %s"
+
+#: inc/error.inc.php:65
+msgid "Unknown error."
+msgstr "Аларм, Упячка!"
+
+#: inc/error.inc.php:66
+msgid "Enter a valid email address."
+msgstr "Укажите действующий адрес электронной почты."
+
+#: inc/error.inc.php:69
+msgid "Your content field doesnt have a legit value."
+msgstr "Поле с содержимым не содержит нормального значения."
+
+#: inc/error.inc.php:70
+msgid "Invalid hostname."
+msgstr "Неверное имя хоста."
+
+#: inc/error.inc.php:71
+msgid "You have invalid characters in your hostname."
+msgstr "Введены неверные символы в имени хоста."
+
+msgid "A hostname can not start or end with a dash."
+msgstr "Имя хоста не может начинаться или оканчиваться знаком дефиса (-)."
+
+msgid "Given hostname or one of the labels is too short or too long."
+msgstr "Указанное имя хоста или одно из значений слишком короткое или слишком длинное."
+
+msgid "Given hostname has too many slashes."
+msgstr "Указанное имя хоста содержит слишком много символов косой черты."
+
+msgid "Unknown record type."
+msgstr "Неизвестный тип записи."
+
+#: inc/error.inc.php:72
+msgid "This is not a valid IPv4 or IPv6 address."
+msgstr "Это не правильный адрес IPv4 или IPv6."
+
+#: inc/error.inc.php:73
+msgid "This is not a valid IPv6 address."
+msgstr "Это не правильный адрес IPv6."
+
+#: inc/error.inc.php:74
+msgid "This is not a valid IPv4 address."
+msgstr "Это не правильный адрес IPv4."
+
+#: inc/error.inc.php:75
+msgid "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
+msgstr "Это не правильный алиас. Вы назначили MX- или NS-запись здесь?"
+
+#: inc/error.inc.php:76
+msgid "You can not point a NS or MX record to a CNAME record. Remove or rame the CNAME record first, or take another name."
+msgstr "Вы не можете указать в MX- или NS-записи алиас. Сначала удалите CNAME-запись, или укажите другое имя"
+
+msgid "Invalid value for name field of SOA record. It should be the name of the zone."
+msgstr "Неправильное значение в поле имени в SOA-записи. Оно должно содержать имя зоны."
+
+msgid "Invalid value for content field of HINFO record."
+msgstr "Неправильное содержимое поля в записи HINFO."
+
+msgid "Invalid value for content field of TXT record."
+msgstr "Неправильное содержимое поля в записи TXT."
+
+msgid "Invalid value for TTL field. It should be numeric."
+msgstr "Неправильное значение в поле TTL. Оно должно быть цифровым."
+
+msgid "Invalid value for prio field. It should be numeric."
+msgstr "Неправильное значение приоритета. Оно должно быть цифровым."
+
+#: inc/error.inc.php:77
+msgid "NS records must be a hostnames."
+msgstr "NS-запись должна быть именем хоста."
+
+#: inc/error.inc.php:79
+msgid "A prio field should be numeric."
+msgstr "Поле приоритета должно быть цифровым."
+
+#: inc/error.inc.php:80
+msgid "At least one of the five last SOA data fields is not numeric."
+msgstr "Минимум одно из последних пяти полей SOA-записей не цифровое."
+
+#: inc/error.inc.php:81
+msgid "You can only have five numeric fields in the SOA record."
+msgstr "Имеется только пять цифровых полей в SOA-записи."
+
+#: inc/error.inc.php:82
+msgid "The first part of your SOA record does not contain a valid hostname for a DNS server."
+msgstr "Первая часть вашей SOA-записи не содержит правильного имени хоста для DNS-сервера."
+
+#: inc/error.inc.php:85
+msgid "Zone has been added successfully."
+msgstr "Зона добавлена успешно."
+
+#: inc/error.inc.php:86
+msgid "Zone has been deleted successfully."
+msgstr "Зона удалена успешно."
+
+#: inc/error.inc.php:87
+msgid "The user has been updated successfully."
+msgstr "Данные пользователя успешно обновлены."
+
+#: inc/error.inc.php:88
+msgid "The user has been created successfully."
+msgstr "Пользователь успешно создан."
+
+#: inc/error.inc.php:89
+msgid "The user has been deleted successfully."
+msgstr "Пользователь успешно удалён."
+
+#: inc/error.inc.php:90
+msgid "The record has been updated successfully."
+msgstr "Запись успешно обновлена."
+
+#: inc/error.inc.php:91
+msgid "The record has been deleted successfully."
+msgstr "Запись успешно удалена."
+
+#: inc/error.inc.php:92
+msgid "The supermaster has been deleted successfully."
+msgstr "Supermaster успешно удалён."
+
+#: inc/error.inc.php:93
+msgid "The supermaster has been added successfully."
+msgstr "Supermaster успешно добавлен."
+
+#: inc/error.inc.php:94
+msgid "The permission template has been deleted successfully."
+msgstr "Шаблон привилегий успешно удалён."
+
+#: inc/record.inc.php:268
+msgid "You are trying to delete the SOA record. If are not allowed to remove it, unless you remove the entire zone."
+msgstr "Вы пытаетесь удалить SOA-запись. Её нельзя удалить, пока существует зона."
+
+#: inc/record.inc.php:601
+msgid "Function returned an error (multiple zones matching this zone ID)."
+msgstr "Функция вернула ошибку: несколько зон совпадает с данным идентификатором зоны."
+
+#: inc/toolkit.inc.php:27
+msgid "You have to create a config.inc.php!"
+msgstr "Вы должны создать config.inc.php!"
+
+#: inc/toolkit.inc.php:97
+msgid "Show page"
+msgstr "Посмотреть страницу"
+
+#: inc/toolkit.inc.php:116
+msgid "Show zones beginning with"
+msgstr "Посмотреть зоны начинающиеся на"
+
+#: inc/toolkit.inc.php:174
+msgid "An unknown error has occurred."
+msgstr "Неизвестная ошибка."
+
+#: inc/toolkit.inc.php:182
+msgid "Something has been successfully performed. What exactly, however, will remain a mystery."
+msgstr "Что-то было успешно выполнено. Но, что именно, останется загадкой."
+
+#: inc/toolkit.inc.php:194
+msgid "Success!"
+msgstr "Успешно!"
+
+#: inc/toolkit.inc.php:211
+msgid "back"
+msgstr "назад"
+
+#: inc/toolkit.inc.php:250
+msgid "Inactive"
+msgstr "Не активно"
+
+#: inc/toolkit.inc.php:254
+msgid "Active"
+msgstr "Активно"
+
+#: inc/users.inc.php:365
+msgid "Password has been changed, please login."
+msgstr "Пароль сменён, пожалуйста, войдите снова."
+
+msgid "You have an error in the MNAME field of the SOA record."
+msgstr "Обнаружена ошибка в поле MNAME в SOA-записи."
+
+msgid "Too many characters in the hostname."
+msgstr "Имя хоста слишком длинное."
+
+msgid "You are using an invalid top level domain."
+msgstr "Вы используете некорректный TLD."
+
+# The following is a list of strings that are not hard-code in the PHP 
+# files, but which are listed in the poweradmin database. Because of 
+# this, tools like xgettext will not notice these strings.
+# 
+# See also <https://www.poweradmin.org/wiki/TranslationContribution>.
+#
+
+msgid "User is allowed to add new master zones."
+msgstr "Пользователю разрешено создавать новые первичные зоны."
+
+msgid "User is allowed to add new slave zones."
+msgstr "Пользователю разрешено создавать новые вторичные зоны."
+
+msgid "User is allowed to see the content and meta data of zones he owns."
+msgstr "Пользователю разрешено просматривать содержимое и мета-информацию зон, владельцем которых он является."
+
+msgid "User is allowed to edit the content of zones he owns."
+msgstr "Пользователю разрешено изменять содержимое зон, владельцем которых он является."
+
+msgid "User is allowed to edit the meta data of zones he owns."
+msgstr "Пользователю разрешено изменять мета-информацию зон, владельцем которых он является."
+
+msgid "User is allowed to see the content and meta data of zones he does not own."
+msgstr "Пользователю разрешено просматривать содержимое и мета-информацию зон, владельцем которых он не является."
+
+msgid "User is allowed to edit the content of zones he does not own."
+msgstr "Пользователю разрешено изменять содержимое зон, владельцем которых он не является."
+
+msgid "User is allowed to edit the meta data of zones he does not own."
+msgstr "Пользователю разрешено изменять мета-информацию зон, владельцем которых он не является."
+
+msgid "User is allowed to perform searches."
+msgstr "Пользователю разрешено производить поиск."
+
+msgid "User is allowed to view supermasters."
+msgstr "Пользователю разрешено просматривать supermasters."
+
+msgid "User is allowed to add new supermasters."
+msgstr "Пользователю разрешено добавлять supermasters."
+
+msgid "User is allowed to edit supermasters."
+msgstr "Пользователю разрешено изменять supermasters."
+
+msgid "User has full access. God-like. Redeemer."
+msgstr "Пользователь имеет полный доступ. В стиле \"god\"."
+
+msgid "User is allowed to see other users and their details."
+msgstr "Пользователю разрешено просматривать данные других пользователей."
+
+msgid "User is allowed to add new users."
+msgstr "Пользователю разрешено создавать новых пользователей."
+
+msgid "User is allowed to edit their own details."
+msgstr "Пользователю разрешено изменять свои данные."
+
+msgid "User is allowed to edit other users."
+msgstr "Пользователю разрешено изменять данные других пользователей."
+
+msgid "User is allowed to edit the password of other users."
+msgstr "Пользователю разрешено изменять пароли других пользователей."
+
+msgid "User is allowed to change the permission template that is assigned to a user."
+msgstr "Пользователю разрешено изменять шаблон привилегий, привязанный к нему."
+
+msgid "User is allowed to add new permission templates."
+msgstr "Пользователю разрешено добавлять новые шаблоны привилегий."
+
+msgid "User is allowed to edit existing permission templates."
+msgstr "Пользователю разрешено изменять существующие шаблоны привилегий."
+
+msgid "No database name has been set in config.inc.php."
+msgstr "В config.inc.php не указано имя базы данных."
+
+msgid "No database host has been set in config.inc.php."
+msgstr "В config.inc.php не указан хост базы данных."
+
+msgid "No database username has been set in config.inc.php."
+msgstr "В config.inc.php не указано имя пользователя базы данных."
+
+msgid "No database password has been set in config.inc.php."
+msgstr "В config.inc.php не указан пароль пользователя базы данных."
+
+msgid "No or unknown database type has been set in config.inc.php."
+msgstr "В config.inc.php не указан тип базы данных или указан неизвестный тип."
+
+#: index.php:20
+msgid "Installation step"
+msgstr "Шаг установки"
+
+#: index.php:26
+msgid "This installer expects you to have a PowerDNS database accessable from this server. This installer also expects you to have never ran Poweradmin before, or that you want to overwrite the Poweradmin part of the database. If you have had Poweradmin running before, any data in the following tables will be destroyed: perm_items, perm_templ, perm_templ_items, users and zones. This installer will, of course, not touch the data in the PowerDNS tables of the database. However, it is recommended that you create a backup of your database before proceeding."
+msgstr "Проведение данной инсталляции подразумевает, что у вас уже есть подходящая база данных для PowerDNS. При проведении установки также ожидается, что вы никогда до этого не пользовались Poweradmin,'ом, либо вы хотите перезаписать ту часть базы данных, которая требуется для работы Poweradmin. Если у вас до этого момента уже был установлен Poweradmin, то все данные в следующих таблицах будут потеряны: perm_items, perm_templ, perm_templ_items, users и zones. Естественно, установщик не затронет данные, которые находятся в таблицах, принадлежащих PowerDNS. В любом случае, рекомендуется предварительно создать резервную копию базы данных перед проведением процесса установки."
+
+#: index.php:28
+msgid "The alternative for this installer is a manual installation. Refer to the poweradmin.org website if you want to go down that road."
+msgstr "Альтернативой данному установщику является установка вручную. Обратитесь к сайту poweradmin.org, если вы хотите пойти этим путём."
+
+#: index.php:30
+msgid "Finally, if you see any errors during the installation process, a problem report would be appreciated. You can report problems (and ask for help) on the poweradmin-users mailinglist."
+msgstr "Если вы столкнулись с ошибками в процессе установки, ваш отчёт об ошибках будет изучен. Вы можете разместить отчет и попросить помощи у пользователей в списке рассылки poweradmin."
+
+#: index.php:33
+msgid "Do you want to proceed now?"
+msgstr "Хотите продолжить?"
+
+#: index.php:37 index.php:80 index.php:133 index.php:175 index.php:206
+msgid "Go to step"
+msgstr "На шаг"
+
+#: index.php:43
+msgid "To prepare the database for using Poweradmin, the installer needs to modify the PowerDNS database. It will add a number of tables and it will fill these tables with some data. If the tables are already present, the installer will drop them first."
+msgstr "Чтобы подготовить базу данных для использования Poweradmin, установщик должен изменить базу данных PowerDNS. В неё будет добавить целый ряд таблиц и он заполнит эти таблицы с некоторыми данными. Если таблицы уже существуют, то программа установки сначала очистит их."
+
+#: index.php:45
+msgid "To do all of this, the installer needs to access the database with an account which has sufficient rights. If you trust the installer, you may give it the username and password of the database user root. Otherwise, make sure the user has enough rights, before actually proceeding."
+msgstr "Чтобы сделать все это, программе установки нужен доступ к базе данных с учетной записью, которая имеет достаточные права. Если вы доверяете программе установки, вы можете дать ей имя пользователя и пароль для главного пользователя root базы данных. В противном случае, убедитесь, что пользователь имеет достаточно прав, прежде чем начинать процесс установки."
+
+#: index.php:52
+msgid "The username to use to connect to the database, make sure the username has sufficient rights to perform administrative task to the PowerDNS database (the installer wants to drop, create and fill tables to the database)."
+msgstr "Имя пользователя для подключения к базе данных. Убедитесь, что пользователь имеет достаточно прав для выполнения административных задач с базой данных PowerDNS (установщику нужно удалить, создать и заполнить таблицы в базе данных)."
+
+#: index.php:57 index.php:153
+msgid "The password for this username."
+msgstr "Пароль для этого пользователя."
+
+#: index.php:60
+msgid "Hostname"
+msgstr "Хост"
+
+#: index.php:62
+msgid "The hostname on which the PowerDNS database resides. Frequently, this will be \"localhost\"."
+msgstr "Хост, на котором работает сервер баз данных, обслуживающий PowerDNS. Обычно, это \"localhost\"."
+
+#: index.php:65
+msgid "Database"
+msgstr "База данных"
+
+#: index.php:67
+msgid "The name of the PowerDNS database."
+msgstr "Имя базы данных PowerDNS."
+
+#: index.php:70
+msgid "Database type"
+msgstr "Тип базы данных"
+
+#: index.php:76
+msgid "The type of the PowerDNS database."
+msgstr "Тип базы данных PowerDNS"
+
+#: index.php:86
+msgid "Updating database..."
+msgstr "Обновление базы данных..."
+
+#: index.php:109
+msgid "done!"
+msgstr "выполнено!"
+
+#: index.php:111
+msgid "You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert and update records in the PowerDNS database."
+msgstr "Если вы хотите предоставить ограниченные права для доступа Poweradmin к базе данных, надо учитывать, что он должен иметь права для обновления данных в таблицах. Чтобы сделать это, вам следует создать нового пользователя и дать ему следующие права в базе данных PowerDNS: select, delete, insert и update."
+
+#: index.php:113
+msgid "In MySQL you should now perform the following command:"
+msgstr "В MySQL вы должны выполнить следующие команды:"
+
+#: index.php:116
+msgid "On PgSQL you would use:"
+msgstr "В PgSQL вы должны выполнить следующие команды:"
+
+#: index.php:127
+msgid "After you have added the new user, proceed with this installation procedure."
+msgstr "После того, как вы добавите нового пользователя, продолжите процесс установки."
+
+#: index.php:142
+msgid "Now we will gather all details for the configuration itself."
+msgstr "Теперь будут собраны все необходимые данные для самоконфигурации."
+
+#: index.php:148
+msgid "The username for Poweradmin. This new user will have limited rights only."
+msgstr "Имя пользователя для Poweradmin. Этот новый пользователь будет иметь только ограниченные привилегии."
+
+#: index.php:156
+msgid "Hostmaster"
+msgstr "Hostmaster"
+
+#: index.php:158
+msgid "When creating SOA records and no hostmaster is provided, this value here will be used. Should be in the form \"hostmaster.example.net\"."
+msgstr "Если вы не укажете hostmaster'а при создании SOA-записи, это значение будет подставлено. Пример: \"hostmaster.example.net\"."
+
+#: index.php:161
+msgid "Primary nameserver"
+msgstr "Первичный сервер имён"
+
+#: index.php:163
+msgid "When creating new zones using the template, this value will be used as primary nameserver. Should be like \"ns1.example.net\"."
+msgstr "При создании новой зоны по шаблону, это значение будет подставлено как первичный сервер имён. Пример: \"ns1.example.net\"."
+
+#: index.php:166
+msgid "Secondary nameserver"
+msgstr "Вторичный сервер имён"
+
+#: index.php:168
+msgid "When creating new zones using the template, this value will be used as secondary nameserver. Should be like \"ns2.example.net\"."
+msgstr "При создании новой зоны по шаблону, это значение будет подставлено как вторичный сервер имён. Пример: \"ns2.example.net\"."
+
+#: index.php:197
+msgid "The installer was able to write to the file \""
+msgstr "Программа инсталляции записала конфигурацию в файл \""
+
+#: index.php:197
+msgid "\". A basic configuration, based on the details you have given, has been created."
+msgstr "\". Базовая конфигурация, основанная на данных, которые вы ввели была создана."
+
+#: index.php:199
+msgid "The installer is unable to write to the file \""
+msgstr "Программа инсталляции не может произвести запись в файл \""
+
+#: index.php:199
+msgid "\" (which is in itself good). The configuration is printed here. You should now create the file \""
+msgstr "\" (что само по себе хорошо). Листинг файла конфигурации приведен здесь. Вы должны создать файл \""
+
+#: index.php:199
+msgid "\" in the Poweradmin root directory yourself. It should contain the following few lines:"
+msgstr "\" в корневой директории Poweradmin самостоятельно. Он должен содержать следующие несколько строк:"
+
+#: index.php:212
+msgid "Now we have finished the configuration, you should (must!) remove the directory \"install/\" from the Poweradmin root directory. You will not be able to use Poweradmin if it exists. Do it now."
+msgstr "Конфигурирование окончено. Вы обязательно должны удалить директорию \"install/\" из корневой директории Poweradmin. Вы не сможете использовать Poweradmin не удалив данную директорию."
+
+#: index.php:213
+msgid "After you have removed the directory, you can login to <a href=\"index.php\">Poweradmin</a> with username \"admin\" and password \""
+msgstr "После того, как удалите директорию, вы можете войти в систему <a href=\"index.php\">Poweradmin</a> с именем пользователя \"admin\" и паролем \""
+
+#: index.php:213
+msgid "\". You are highly encouraged to change these as soon as you are logged in."
+msgstr "\". Вам настоятельно рекомендуется сразу поменять их из соображений безопасности."
+
+
+msgid "Invalid value for name field of SRV record."
+msgstr "Недопустимое значение имени записи SRV."
+
+msgid "Invalid value for the weight field of the SRV record."
+msgstr "Недопустимое значение ширины поля записи SRV."
+
+msgid "Invalid value for the port field of the SRV record."
+msgstr "Недопустимое значение поля порта для записи SRV."
+
+msgid "Invalid SRV target."
+msgstr "Неправильная цель SRV."
+
+msgid "Invalid characters have been used in this record."
+msgstr "В данной записи использованы недопустимые символы."
+
+msgid "Poweradmin administrator password"
+msgstr "Пароль администратора Poweradmin"
+
+msgid "The password of the Poweradmin administrator. This administrator has full rights to Poweradmin using the web interface."
+msgstr "Пароль администратора Poweradmin. Он имеет полные права доступа к Poweradmin используя web-интерфейс."
