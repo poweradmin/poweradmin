@@ -22,13 +22,25 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
-$master_ip = $_POST["master_ip"];
-$ns_name = $_POST["ns_name"];
-$account = $_POST["account"];
+$master_ip = "";
+if (isset($_POST["master_ip"])) {
+	$master_ip = $_POST["master_ip"];
+}
+
+$ns_name = "";
+if (isset($_POST["ns_name"])) {
+	$ns_name = $_POST["ns_name"];
+}
+
+$account = "";
+if (isset($_POST["account"])) {
+	$account = $_POST["account"];
+}
 
 (verify_permission('supermaster_add')) ? $supermasters_add = "1" :  $supermasters_add = "0";
 
-if($_POST["submit"])
+$error = 0;
+if(isset($_POST["submit"]))
 {
 	if (add_supermaster($master_ip, $ns_name, $account)) {
 		success(SUC_SM_ADD);
