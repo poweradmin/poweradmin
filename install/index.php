@@ -29,7 +29,7 @@ echo "<html>\n";
 echo " <head>\n";
 echo "  <title>Poweradmin</title>\n";
 echo "  <link rel=stylesheet href=\"../style/example.inc.php\" type=\"text/css\">\n";
-echo "  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n"; 
+echo "  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n"; 
 echo " </head>\n";
 echo " <body>\n";
 
@@ -39,16 +39,15 @@ if (!isset($_POST['step']) || !is_numeric($_POST['step'])) {
 	$step = $_POST['step'];
 }
 
-echo "  <h1>Poweradmin</h1>";
-echo "  <h2>" . _('Installation step') . " " . $step . "</h2>";
+echo "  <h1>Poweradmin</h1>\n";
+echo "  <h2>" . _('Installation step') . " " . $step . "</h2>\n";
 
 switch($step) {
 
 	case 1:
 		$step++;
 
-		echo "<p>\n";
-		echo " <form method=\"post\">\n";
+		echo " <form method=\"post\" action=\"\">\n";
 		echo "  <input type=\"radio\" name=\"language\" value=\"en_EN\" checked> I prefer to proceed in english.<br>\n";
 		echo "  <input type=\"radio\" name=\"language\" value=\"nl_NL\"> Ik ga graag verder in het Nederlands.<br>\n";
 		echo "	<input type=\"radio\" name=\"language\" value=\"de_DE\"> Ich ziehe es in Deutsch.<br>\n";
@@ -57,7 +56,6 @@ switch($step) {
 		echo "  <input type=\"hidden\" name=\"step\" value=\"" . $step . "\">";
 		echo "  <input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $step . "\">";
 		echo " </form>\n";
-		echo "</p>\n";
 		break;
 
 	case 2:
@@ -121,6 +119,7 @@ switch($step) {
 		echo "   <td>" . _('The password of the Poweradmin administrator. This administrator has full rights to Poweradmin using the web interface.') . "</td>\n";
 		echo "  </tr>\n";
 		echo "</table>\n";
+		echo "<br>\n";
 		echo "<input type=\"hidden\" name=\"step\" value=\"" . $step . "\">";
 		echo "<input type=\"hidden\" name=\"language\" value=\"" . $language . "\">";
 		echo "<input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $step . "\">";
@@ -184,6 +183,7 @@ switch($step) {
 		echo "   <td>" . _('When creating new zones using the template, this value will be used as secondary nameserver. Should be like "ns2.example.net".') . "</td>\n";
 		echo "  </tr>\n";
 		echo "</table>";
+		echo "<br>\n";
 		echo "<input type=\"hidden\" name=\"db_user\" value=\"" . $db_user . "\">";
 		echo "<input type=\"hidden\" name=\"db_pass\" value=\"" . $db_pass . "\">";
 		echo "<input type=\"hidden\" name=\"db_host\" value=\"" . $db_host . "\">";
