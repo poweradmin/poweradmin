@@ -728,7 +728,7 @@ function get_supermasters()
         global $db;
         
 	$result = $db->query("SELECT ip, nameserver, account FROM supermasters");
-	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+	if (PEAR::isError($result)) { error($result->getMessage()); return false; }
 
         $ret = array();
 
