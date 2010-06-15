@@ -206,7 +206,6 @@ switch($step) {
 		$pa_db_user = $_POST['pa_db_user'];
 		$pa_db_pass = $_POST['pa_db_pass'];
 		$pa_pass = $_POST['pa_pass'];
-		$pa_srvr = getenv('SERVER_NAME');
 		$dns_hostmaster = $_POST['dns_hostmaster'];
 		$dns_ns1 = $_POST['dns_ns1'];
 		$dns_ns2 = $_POST['dns_ns2'];
@@ -218,7 +217,7 @@ switch($step) {
 		echo "<p>" . _('You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert and update records in the PowerDNS database.') . " ";
 		if ($db_type == 'mysql') {
 			echo _('In MySQL you should now perform the following command:') . "</p>";
-			echo "<p><tt>GRANT SELECT, INSERT, UPDATE, DELETE<BR>ON " . $db_name . ".*<br>TO '" . $pa_db_user . "'@'" . $pa_srvr . "'<br>IDENTIFIED BY '" . $pa_db_pass . "';</tt></p>";
+			echo "<p><tt>GRANT SELECT, INSERT, UPDATE, DELETE<BR>ON " . $db_name . ".*<br>TO '" . $pa_db_user . "'@'" . $db_host . "'<br>IDENTIFIED BY '" . $pa_db_pass . "';</tt></p>";
 		} elseif ($db_type == 'pgsql') {
 			echo _('On PgSQL you would use:') . "</p>";
 			echo "<p><tt>$ createuser -E -P " . $pa_db_user . "<br>" .
