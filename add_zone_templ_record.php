@@ -92,14 +92,14 @@ if (!(verify_permission('zone_master_add')) || !$owner) {
 	error(ERR_PERM_ADD_RECORD); 
 } else {
 	echo "     <form method=\"post\">\n";
-	echo "      <input type=\"hidden\" name=\"domain\" value=\"" . $zone_id . "\">\n";
+	echo "      <input type=\"hidden\" name=\"domain\" value=\"" . $zone_templ_id . "\">\n";
 	echo "      <table border=\"0\" cellspacing=\"4\">\n";
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">" . _('Name') . "</td>\n";
 	echo "        <td class=\"n\">&nbsp;</td>\n";
 	echo "        <td class=\"n\">" . _('Type') . "</td>\n";
-	echo "        <td class=\"n\">" . _('Priority') .  "</td>\n";
 	echo "        <td class=\"n\">" . _('Content') . "</td>\n";
+	echo "        <td class=\"n\">" . _('Priority') .  "</td>\n";
 	echo "        <td class=\"n\">" . _('TTL') . "</td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
@@ -127,8 +127,8 @@ if (!(verify_permission('zone_master_add')) || !$owner) {
 	}
 	echo "         </select>\n";
 	echo "        </td>\n";
-	echo "        <td class=\"n\"><input type=\"text\" name=\"prio\" class=\"sinput\" value=\"" . $prio . "\"></td>\n";
 	echo "        <td class=\"n\"><input type=\"text\" name=\"content\" class=\"input\" value=\"" . $content . "\"></td>\n";
+	echo "        <td class=\"n\"><input type=\"text\" name=\"prio\" class=\"sinput\" value=\"" . $prio . "\"></td>\n";
 	echo "        <td class=\"n\"><input type=\"text\" name=\"ttl\" class=\"sinput\" value=\"" . $ttl . "\"</td>\n";
 	echo "       </tr>\n";
 	echo "     <tr>\n";
