@@ -121,7 +121,7 @@ function is_valid_hostname_fqdn(&$hostname, $wildcard) {
 	global $dns_strict_tld_check;
 	global $valid_tlds;
 
-	$hostname = ereg_replace("\.$","",$hostname);
+	$hostname = preg_replace("/\.$/","",$hostname);
 
 	if (strlen($hostname) > 255) {
 		error(ERR_DNS_HN_TOO_LONG);
@@ -231,7 +231,7 @@ function is_valid_ipv6($ipv6) {
 }
 
 function is_valid_printable($string) {
-	if (!ereg('^[[:print:]]+$', trim($string))) { error(ERR_DNS_PRINTABLE); return false; }
+	if (!preg_match('/^[[:print:]]+$/', trim($string))) { error(ERR_DNS_PRINTABLE); return false; }
 	return true;
 }
 

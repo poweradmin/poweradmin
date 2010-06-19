@@ -364,7 +364,7 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template)
 		global $dns_hostmaster;
 		global $dns_ttl;
 		if (($domain && $owner && $zone_template) || 
-				(eregi('in-addr.arpa', $domain) && $owner && $zone_template) || 
+				(preg_match('/in-addr.arpa/i', $domain) && $owner && $zone_template) || 
 				$type=="SLAVE" && $domain && $owner && $slave_master) {
 
 			$response = $db->query("INSERT INTO domains (name, type) VALUES (".$db->quote($domain, 'text').", ".$db->quote($type, 'text').")");
@@ -405,7 +405,7 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template)
 
 					$templ_records = get_zone_templ_records($zone_template);
 					foreach ($templ_records as $r) {
-						if ((eregi('in-addr.arpa', $domain) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!eregi('in-addr.arpa', $domain)))
+						if ((preg_match('/in-addr.arpa/i', $domain) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $domain)))
 						{
 							$name     = parse_template_value($r["name"], $domain);
 							$type     = $r["type"];

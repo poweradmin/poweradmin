@@ -213,7 +213,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 	                }
 					else
 					{
-	                	if (eregi('in-addr.arpa', $zone_name) && strtoupper($record_type) == 'PTR')
+	                	if (preg_match('/in-addr.arpa/i', $zone_name) && strtoupper($record_type) == 'PTR')
 						{
 	                    	$add = " SELECTED";
 	                    }

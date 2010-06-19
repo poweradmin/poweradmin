@@ -136,7 +136,7 @@ if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit
 				$add = "";
 			}
 		} else {
-			if (eregi('in-addr.arpa', $zone_name) && strtoupper($record_type) == 'PTR') {
+			if (preg_match('/in-addr.arpa/i', $zone_name) && strtoupper($record_type) == 'PTR') {
 				$add = " SELECTED";
 			} elseif (strtoupper($record_type) == 'A') {
 				$add = " SELECTED";
