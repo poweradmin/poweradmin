@@ -518,7 +518,8 @@ function get_user_detail_list($specific) {
 
 function get_permissions_by_template_id($templ_id=0,$return_name_only=false) {
 	global $db;
-	
+
+	$limit = '';
 	if ($templ_id > 0) {
 		$limit = ", perm_templ_items 
 			WHERE perm_templ_items.templ_id = " . $db->quote($templ_id, 'integer') . "
