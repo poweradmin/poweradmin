@@ -160,7 +160,6 @@ function get_zone_templ_record_from_id($id)
 				"content"       =>      $r["content"],
 				"ttl"           =>      $r["ttl"],
 				"prio"          =>      $r["prio"],
-				"change_date"   =>      $r["change_date"]
 				);
 			return $ret;
 		} else {
