@@ -43,7 +43,7 @@ if ($master_ip == "-1"){
 
 		echo "     <h2>" . _('Delete supermaster') . " \"" . $master_ip . "\"</h2>\n";
 
-		if ($_GET["confirm"] == '1') {
+		if (isset($_GET['confirm']) && $_GET["confirm"] == '1') {
 			if (delete_supermaster($master_ip)) {
 				success(SUC_ZONE_DEL);
 			}
@@ -53,7 +53,7 @@ if ($master_ip == "-1"){
 			echo "      " . _('Account') . ": " . $info['account'] . "\n";
 			echo "     </p>\n";
 			echo "     <p>" . _('Are you sure?') . "</p>\n";
-			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='" . $_SERVER['REQUEST_URI'] . "&confirm=1'\" value=\"" . _('Yes') . "\">\n"; 
+			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='delete_supermaster.php?master_ip=" . $master_ip . "&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n"; 
 			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
 		}
 	}

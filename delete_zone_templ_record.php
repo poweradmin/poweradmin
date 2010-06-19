@@ -66,12 +66,12 @@ if ($record_id == "-1" || $zone_templ_id == "-1") {
 			echo "       <td>" . $record_info['name'] . "</td>\n";
 			echo "       <td>" . $record_info['type'] . "</td>\n";
 			echo "       <td>" . $record_info['content'] . "</td>\n";
-			echo "       <td>" . $record_info['priority'] . "</td>\n";
+			echo "       <td>" . $record_info['prio'] . "</td>\n";
 			echo "       <td>" . $record_info['ttl'] . "</td>\n";
 			echo "      </tr>\n";
 			echo "     </table>\n";
 			echo "     <p>" . _('Are you sure?') . "</p>\n";
-			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='" . $_SERVER["REQUEST_URI"] . "&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
+			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='delete_zone_templ_record.php?id=" . $record_id . "&amp;zone_templ_id=" . $zone_templ_id . "&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
 			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
 		}	
         }

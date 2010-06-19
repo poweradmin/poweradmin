@@ -42,12 +42,12 @@ if ($zone_templ_id == "-1"){
 		$templ_details = get_zone_templ_details($zone_templ_id);
 		echo "     <h2>" . _('Delete zone template') . " \"" . $templ_details['name'] . "\"</h2>\n";
 
-		if ($_GET["confirm"] == '1') {
+		if (isset($_GET['confirm']) && $_GET["confirm"] == '1') {
 			delete_zone_templ($zone_templ_id);
 			success(SUC_ZONE_TEMPL_DEL);
 		} else {
 			echo "     <p>" . _('Are you sure?') . "</p>\n";
-			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='" . $_SERVER['REQUEST_URI'] . "&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
+			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='delete_zone_templ.php?id=" . $zone_templ_id . "&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
 			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
 		}
 	}
