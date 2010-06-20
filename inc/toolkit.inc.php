@@ -322,7 +322,7 @@ function parse_template_value($val, $domain)
 
 function is_valid_email($address) {
 	$fields = preg_split("/@/", $address, 2);
-	if((!preg_match("/^[0-9a-z]([-_.]?[0-9a-z])*$/i", $fields[0])) || !is_valid_hostname_fqdn($fields[1], 0)) {
+	if((!preg_match("/^[0-9a-z]([-_.]?[0-9a-z])*$/i", $fields[0])) || (!isset($fields[1]) || $fields[1] == '' || !is_valid_hostname_fqdn($fields[1], 0))) {
 		return false;
 	}
 	return true;

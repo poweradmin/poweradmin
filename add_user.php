@@ -26,8 +26,9 @@ if (!verify_permission('user_add_new')) {
 	error(ERR_PERM_ADD_USER);
 } else {
 	if(isset($_POST["commit"])) {
-		add_new_user($_POST);
-		success(SUC_USER_ADD);
+		if (add_new_user($_POST)) {
+			success(SUC_USER_ADD);
+		}
 	}
 
 	echo "     <h2>" . _('Add user') . "</h2>\n";
