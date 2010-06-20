@@ -65,7 +65,6 @@ if ($confirm == '1') {
 			}
 		}
 		echo "     <p>" . _('Are you sure?') . "</p>\n";
-		echo "     <br><br>\n";
 		echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='delete_domain.php?id=" . $zone_id . "&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
 		echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
 	} else {
