@@ -1,116 +1,97 @@
-
-/* RZ TODO: cleanup code */
+/* sample style sheet file for Poweradmin */
 
 body {
-        padding-left: 		5%;
-        padding-right: 		5%;
-	font-family: 		Verdana, Arial, Helvetica;
+	padding-left:	5%;
+	padding-right:	5%;
+	font-family:	Verdana, Arial, Helvetica;
 	font-size:		85%;
-	text-align: 		left;
-	vertical-align: 	top;
+	text-align:		left;
+	vertical-align:	top;
 	background:		#f4f4f4;
 }
 
-h1, h2, table, .menu, .footer	{
+h1, h2, table, .menu, .footer {
 	border:			1px solid #000000;
 	padding:		3px;
 	background:		#ddeeff;
 }
 
-p       {
-        padding:                3px;
+p {
+	padding:		3px;
 }
 
-table	{
+table {
 	width:			100%;
-	font-family: 		Verdana, Arial, Helvetica;
+	font-family:	Verdana, Arial, Helvetica;
 	font-size:		90%;
-	text-align: 		left;
-	vertical-align: 	top;
+	text-align:		left;
+	vertical-align:	top;
 }
 
-img	{
+img {
 	border:			0px;
-}
-img .edit-assign-to-user	{
-	margin-left:		47px;
 }
 
 #meta {
-        width:                  100%;
+	width:			100%;
 	clear:			both;
 }
 
-#meta .button	{
+#meta .button {
 	margin:			0px 5px 0px 0px;
 }
 
-#meta-left {
-        float:                  left;
-        width:                  49%;
+td {
+	padding:		0px 2px 0px 2px;
+	vertical-align:	top;
 }
 
-#meta-right {
-        float:                  right;
-        width:                  49%;
-}
-
-td	{
-        padding:                0px 2px 0px 2px;
-	vertical-align: 	top;
-}
-
-td.y	{
+td.y {
 	background:		#ffffff;
 	border:			1px solid #000000;
 }
 
-.menu 	{
+.menu {
 	font-size:		80%;
 }
 
-.error	{
+.error {
 	background:		#ff0000;
 	color:			#ffffff;
 	padding:		3px;
 	font-size:		90%;
-	
 }
 
-.success	{
+.success {
 	background:		#00cc33;
 	padding:		3px;
 	font-size:		90%;
 }
 
-.showmax	{
+.showmax {
 	font-size:		80%;
 	margin:			5px 0px 5px 0px;
 	text-align:		center;
 }
 
-.lettertaken	{
+.lettertaken {
 	color:			#000000;
-	font-weight: 		bold;
+	font-weight:	bold;
 }
 
-.letternotavailable	{
-	color:			#999999;
+a:link { 
+	color:			#000000;
 }
 
-a:link 		{ 
-	color: 			#000000;
+a:visited { 
+	color:			#000000;
 }
 
-a:visited 	{ 
-	color: 			#000000;
+a:active { 
+	color:			#000000;
 }
 
-a:active 	{ 
-	color: 			#000000;
-}
-
-a:hover 	{
+a:hover	{
 	text-decoration:	none;
 }
 
@@ -119,34 +100,24 @@ a:hover 	{
 	margin-top:		5px;
 }
 
-
-
-
 .sbutton {
-        border: 		#999999 1px solid;
+	border:			#999999 1px solid;
 }
 
 .button {
-        border:			#999999 1px solid;
+	border:			#999999 1px solid;
 }
 .input {
-        border:			#999999 1px solid;
+	border:			#999999 1px solid;
 }
 .sinput {
-        border: 		#999999 1px solid;
+	border: 		#999999 1px solid;
 }
-
-
 
 textarea {
-	width: 			100%;
+	width:			100%;
 }
+
 input.wide {
-	width: 			100%;
+	width:			100%;
 }
-
-
-<?php
-include_once("../inc/config.inc.php");
-?>
-
