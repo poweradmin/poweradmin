@@ -807,6 +807,7 @@ function get_zones($perm,$userid=0,$letterstart='all',$rowstart=0,$rowamount=999
 	$db->setLimit($rowamount, $rowstart);
 	$result = $db->query($sqlq);
 
+	$ret = array();
 	while($r = $result->fetchRow())
 	{
 		$ret[$r["name"]] = array(
