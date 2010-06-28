@@ -50,10 +50,10 @@ if (isset($_GET["letter"])) {
    define('LETTERSTART', "a");
 }
 
-if (isset($_GET["zone_sort_by"])) {
+if (isset($_GET["zone_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["zone_sort_by"] ) ) {
    define('ZONE_SORT_BY', $_GET["zone_sort_by"]);
    $_SESSION["zone_sort_by"] = $_GET["zone_sort_by"];
-} elseif(isset($_POST["zone_sort_by"])) {
+} elseif(isset($_POST["zone_sort_by"]) && preg_match("/^[a-z_]+$/", $_POST["zone_sort_by"] )) {
    define('ZONE_SORT_BY', $_POST["zone_sort_by"]);
    $_SESSION["zone_sort_by"] = $_POST["zone_sort_by"];
 } elseif(isset($_SESSION["zone_sort_by"])) {
@@ -62,10 +62,10 @@ if (isset($_GET["zone_sort_by"])) {
    define('ZONE_SORT_BY', "name");
 }
 
-if (isset($_GET["record_sort_by"])) {
+if (isset($_GET["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["record_sort_by"] )) {
    define('RECORD_SORT_BY', $_GET["record_sort_by"]);
    $_SESSION["record_sort_by"] = $_GET["record_sort_by"];
-} elseif(isset($_POST["record_sort_by"])) {
+} elseif(isset($_POST["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_POST["record_sort_by"] )) {
    define('RECORD_SORT_BY', $_POST["record_sort_by"]);
    $_SESSION["record_sort_by"] = $_POST["record_sort_by"];
 } elseif(isset($_SESSION["record_sort_by"])) {
