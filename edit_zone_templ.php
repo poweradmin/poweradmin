@@ -62,20 +62,20 @@ if (!(verify_permission('zone_master_add')) || !$owner) {
 		if ( $records == "-1" ) { 
 			echo " <p>" .  _("This template zone does not have any records yet.") . "</p>\n";
 		} else {
-			echo "   <form method=\"post\">\n";
+			echo "   <form method=\"post\" action=\"\">\n";
 			echo "   <table>\n";
 			echo "    <tr>\n";
 			echo "     <th>&nbsp;</th>\n";
-			echo "     <th><a href=\"edit_zone_templ.php?id=" . $zone_templ_id . "&record_sort_by=name\">" . _('Name') . "</a></th>\n";
-			echo "     <th><a href=\"edit_zone_templ.php?id=" . $zone_templ_id . "&record_sort_by=type\">" . _('Type') . "</a></th>\n";
-			echo "     <th><a href=\"edit_zone_templ.php?id=" . $zone_templ_id . "&record_sort_by=content\">" . _('Content') . "</a></th>\n";
-			echo "     <th><a href=\"edit_zone_templ.php?id=" . $zone_templ_id . "&record_sort_by=prio\">" . _('Priority') . "</a></th>\n";
-			echo "     <th><a href=\"edit_zone_templ.php?id=" . $zone_templ_id . "&record_sort_by=ttl\">" . _('TTL') . "</a></th>\n";
+			echo "     <th><a href=\"edit_zone_templ.php?id=" . $zone_templ_id . "&amp;record_sort_by=name\">" . _('Name') . "</a></th>\n";
+			echo "     <th><a href=\"edit_zone_templ.php?id=" . $zone_templ_id . "&amp;record_sort_by=type\">" . _('Type') . "</a></th>\n";
+			echo "     <th><a href=\"edit_zone_templ.php?id=" . $zone_templ_id . "&amp;record_sort_by=content\">" . _('Content') . "</a></th>\n";
+			echo "     <th><a href=\"edit_zone_templ.php?id=" . $zone_templ_id . "&amp;record_sort_by=prio\">" . _('Priority') . "</a></th>\n";
+			echo "     <th><a href=\"edit_zone_templ.php?id=" . $zone_templ_id . "&amp;record_sort_by=ttl\">" . _('TTL') . "</a></th>\n";
 			echo "    </tr>\n";
 			foreach ($records as $r) {
-				echo "    <input type=\"hidden\" name=\"record[" . $r['id'] . "][rid]\" value=\"" . $r['id'] . "\">\n";
 				echo "    <tr>\n";
 				echo "     <td class=\"n\">\n";
+				echo "    <input type=\"hidden\" name=\"record[" . $r['id'] . "][rid]\" value=\"" . $r['id'] . "\">\n";
 				echo "      <a href=\"edit_zone_templ_record.php?id=" . $r['id'] . "&amp;zone_templ_id=" . $zone_templ_id . "\">
 						<img src=\"images/edit.gif\" alt=\"[ ". _('Edit record') . " ]\"></a>\n";
 				echo "      <a href=\"delete_zone_templ_record.php?id=" . $r['id'] . "&amp;zone_templ_id=" . $zone_templ_id . "\">
