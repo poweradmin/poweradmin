@@ -20,11 +20,12 @@
  */
 
 require_once("inc/toolkit.inc.php");
-include_once("inc/header.inc.php");
 
 if(isset($_POST['submit']) && $_POST['submit']) {
 	change_user_pass($_POST);
 }
+
+include_once("inc/header.inc.php");
 
 echo "    <h2>" . _('Change password') . "</h2>\n";
 echo "    <form method=\"post\" action=\"change_password.php\">\n";
