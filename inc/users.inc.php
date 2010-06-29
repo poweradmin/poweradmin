@@ -362,7 +362,7 @@ function change_user_pass($details) {
 		$response = $db->query($query);
 		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
-		logout( _('Password has been changed, please login.')); 
+		logout( _('Password has been changed, please login.'), 'success'); 
 	} else {
 		error(ERR_USER_WRONG_CURRENT_PASS);
 		return false;

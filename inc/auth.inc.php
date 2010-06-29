@@ -25,7 +25,7 @@ function doAuthenticate() {
 	global $db;
 	global $iface_expire;
 	if (isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] == "logout") {
-		logout();
+		logout( _('You have logged out.'), 'success');
 	}
 
 	// If a user had just entered his/her login && password, store them in our session.
@@ -38,7 +38,7 @@ function doAuthenticate() {
 	// Check if the session hasnt expired yet.
 	if ((isset($_SESSION["userid"])) && ($_SESSION["lastmod"] != "") && ((time() - $_SESSION["lastmod"]) > $iface_expire))
 	{
-		logout( _('Session expired, please login again.'),"error");
+		logout( _('Session expired, please login again.'), 'error');
 	}
 
 	// If the session hasn't expired yet, give our session a fresh new timestamp.
@@ -122,13 +122,8 @@ function auth($msg="",$type="success")
  * Logout the user and kickback to login form.
  */
 
-function logout($msg="")
+function logout($msg="",$type="")
 {
-	$type = '';
-	if ( $msg == "" ) {
-		$msg = _('You have logged out.');
-		$type = "success";
-	};
 	unset($_SESSION["userid"]);
 	unset($_SESSION["name"]);
 	session_destroy();
