@@ -640,10 +640,12 @@ function update_perm_templ_details($details) {
 	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
-	foreach ($details['perm_id'] AS $perm_id) {
-		$query = "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . $db->quote($details['templ_id'], 'integer') . "," . $db->quote($perm_id, 'integer') . ")";
-		$response = $db->query($query);
-		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+	if (isset($details['perm_id'])) {
+		foreach ($details['perm_id'] AS $perm_id) {
+			$query = "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . $db->quote($details['templ_id'], 'integer') . "," . $db->quote($perm_id, 'integer') . ")";
+			$response = $db->query($query);
+			if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+		}
 	}
 
 	return true;
@@ -741,7 +743,7 @@ function add_new_user($details) {
 		error(ERR_PERM_ADD_USER);
 		return false;
 	} elseif (user_exists($details['username'])) {
-		error(ERR_USER_EXISTS);
+		error(ERR_USER_EXIST);
 		return false;
 	} elseif (!is_valid_email($details['email'])) {
 		error(ERR_INV_EMAIL);
