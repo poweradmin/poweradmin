@@ -37,7 +37,7 @@ if (!verify_permission('templ_perm_edit')) {
 	*/
 
 	echo "    <h2>" . _('Add permission template') . "</h2>\n"; 
-        echo "    <form method=\"post\">\n";
+   	echo "    <form method=\"post\" action=\"\">\n";
 	echo "     <table>\n";
 	echo "      <tr>\n";
 	echo "       <th>" . _('Name') . "</th>\n"; 

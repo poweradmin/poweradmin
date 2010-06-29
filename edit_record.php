@@ -60,15 +60,15 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 	error(ERR_PERM_VIEW_RECORD);
 } else {
 	$record = get_record_from_id($_GET["id"]);
-	echo "     <form method=\"post\" action=\"edit_record.php?domain=" . $zid . "&id=" . $_GET["id"] . "\">\n";
+	echo "     <form method=\"post\" action=\"edit_record.php?domain=" . $zid . "&amp;id=" . $_GET["id"] . "\">\n";
 	echo "      <table>\n";
 	echo "       <tr>\n";
-	echo "        <th>" . _('Name') . "</td>\n";
-	echo "        <th>&nbsp;</td>\n";
-	echo "        <th>" . _('Type') . "</td>\n";
-	echo "        <th>" . _('Priority') . "</td>\n";
-	echo "        <th>" . _('Content') . "</td>\n";
-	echo "        <th>" . _('TTL') . "</td>\n";
+	echo "        <th>" . _('Name') . "</th>\n";
+	echo "        <th>&nbsp;</th>\n";
+	echo "        <th>" . _('Type') . "</th>\n";
+	echo "        <th>" . _('Priority') . "</th>\n";
+	echo "        <th>" . _('Content') . "</th>\n";
+	echo "        <th>" . _('TTL') . "</th>\n";
 	echo "       </tr>\n";
 
 	if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
@@ -81,10 +81,10 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 		echo "       <td>" . $record["ttl"] . "</td>\n";
 		echo "      </tr>\n";
 	} else {
-		echo "      <input type=\"hidden\" name=\"rid\" value=\"" . $_GET["id"] . "\">\n";
-		echo "      <input type=\"hidden\" name=\"zid\" value=\"" . $zid . "\">\n";
 		echo "      <tr>\n";
-		echo "       <td><input type=\"text\" name=\"name\" value=\"" . trim(str_replace($zone_name, '', $record["name"]), '.') . "\" class=\"input\">." . $zone_name . "</td>\n";
+		echo "       <td><input type=\"hidden\" name=\"rid\" value=\"" . $_GET["id"] . "\">\n";
+		echo "       <input type=\"hidden\" name=\"zid\" value=\"" . $zid . "\">\n";
+		echo "       <input type=\"text\" name=\"name\" value=\"" . trim(str_replace($zone_name, '', $record["name"]), '.') . "\" class=\"input\">." . $zone_name . "</td>\n";
 		echo "       <td>IN</td>\n";
 		echo "       <td>\n";
 		echo "        <select name=\"type\">\n";
