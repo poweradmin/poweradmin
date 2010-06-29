@@ -21,11 +21,13 @@
 
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
+
 verify_permission('user_view_others') ? $perm_view_others = "1" : $perm_view_others = "0" ;
 verify_permission('user_edit_own') ? $perm_edit_own = "1" : $perm_edit_own = "0" ;
 verify_permission('user_edit_others') ? $perm_edit_others = "1" : $perm_edit_others = "0" ;
 verify_permission('templ_perm_edit') ? $perm_templ_perm_edit = "1" : $perm_templ_perm_edit = "0" ;
-verify_permission('is_ueberuser') ? $perm_is_godlike = "1" : $perm_is_godlike = "0" ; 
+verify_permission('is_ueberuser') ? $perm_is_godlike = "1" : $perm_is_godlike = "0" ;
+verify_permission('user_add_new') ? $perm_add_new = "1" : $perm_add_new = "0" ;
 
 unset($commit_button);
 
@@ -107,16 +109,21 @@ if (isset($commit_button) && $commit_button) {
 }
 echo "    </form>\n";
 
-echo "    <ul>\n";
+if ($perm_templ_perm_edit == "1" || $perm_add_new == "1") {
+	echo "    <ul>\n";
+}
+
 if ($perm_templ_perm_edit == "1") {
 	echo "<li><a href=\"list_perm_templ.php\">" . _('Edit permission template') . "</a>.</li>\n";
 }
 
-if (verify_permission('user_add_new')) {
+if ($perm_add_new == "1") {
 	echo "<li><a href=\"add_user.php\">" . _('Add user') . "</a>.</li>\n";
 }
-echo "    </ul>\n";
 
+if ($perm_templ_perm_edit == "1" || $perm_add_new == "1") {
+	echo "    </ul>\n";
+}
 
 include_once("inc/footer.inc.php");
 ?>
