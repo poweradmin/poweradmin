@@ -62,6 +62,8 @@ function update_soa_serial($did) {
 	//    the Poweradmin website
 	//  - the serial is set to YYYYMMDD99, it's RFC 1912 style already and has 
 	//    reached it limit of revisions for today
+
+	set_timezone();
 	
 	if ($soa[2] == "0") {
 		return true;
@@ -386,6 +388,9 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template)
 					$ns1 = $dns_ns1;
 					$hm  = $dns_hostmaster;
 					$ttl = $dns_ttl;
+					
+					set_timezone();
+					
 					$serial = date("Ymd");
 					$serial .= "00";
 

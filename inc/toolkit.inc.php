@@ -344,4 +344,17 @@ function debug_print($var) {
 	echo "</pre>\n";
 }
 
+// Set timezone (required for PHP5)
+function set_timezone() {
+	global $timezone;
+	
+	if (function_exists('date_default_timezone_set')) {
+		if (isset($timezone)) {
+			date_default_timezone_set($timezone);
+		} else if (!ini_get('date.timezone')) {
+			date_default_timezone_set('UTC');	
+		}
+	}
+}
+
 ?>
