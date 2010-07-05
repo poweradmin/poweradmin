@@ -139,8 +139,8 @@ function edit_zone_comment($zone_id,$comment) {
 			$result = $db->query($query);
 			if (PEAR::isError($result)) { error($result->getMessage()); return false; }
 		} else {
-			$query = "INSERT INTO zones 
-				VALUES('',".$db->quote($zone_id, 'integer').",1,".$db->quote($comment, 'text').")";
+			$query = "INSERT INTO zones (domain_id, owner, comment)
+				VALUES(".$db->quote($zone_id, 'integer').",1,".$db->quote($comment, 'text').")";
 			$result = $db->query($query);
 			if (PEAR::isError($result)) { error($result->getMessage()); return false; }
 		}
