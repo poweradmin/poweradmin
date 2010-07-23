@@ -208,6 +208,7 @@ switch($step) {
 		$db_type = $_POST['db_type'];
 		$pa_db_user = $_POST['pa_db_user'];
 		$pa_db_pass = $_POST['pa_db_pass'];
+		$pa_db_host = $db_host;
 		$pa_pass = $_POST['pa_pass'];
 		$dns_hostmaster = $_POST['dns_hostmaster'];
 		$dns_ns1 = $_POST['dns_ns1'];
@@ -217,10 +218,19 @@ switch($step) {
 		$db = dbConnect();
 		include_once("database-structure.inc.php");
 
+		if ($db_type == 'mysql') {
+			$sql = 'SELECT USER()';
+			$result = $db->queryRow($sql);
+			if (isset($result['user()'])) {
+				$current_db_user = $result['user()'];
+				$pa_db_host = substr($current_db_user, strpos($current_db_user, '@')+1);
+			}
+		}
+
 		echo "<p>" . _('You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert and update records in the PowerDNS database.') . " ";
 		if ($db_type == 'mysql') {
 			echo _('In MySQL you should now perform the following command:') . "</p>";
-			echo "<p><tt>GRANT SELECT, INSERT, UPDATE, DELETE<BR>ON " . $db_name . ".*<br>TO '" . $pa_db_user . "'@'" . $db_host . "'<br>IDENTIFIED BY '" . $pa_db_pass . "';</tt></p>";
+			echo "<p><tt>GRANT SELECT, INSERT, UPDATE, DELETE<BR>ON " . $db_name . ".*<br>TO '" . $pa_db_user . "'@'" . $pa_db_host . "'<br>IDENTIFIED BY '" . $pa_db_pass . "';</tt></p>";
 		} elseif ($db_type == 'pgsql') {
 			echo _('On PgSQL you would use:') . "</p>";
 			echo "<p><tt>$ createuser -E -P " . $pa_db_user . "<br>" .
