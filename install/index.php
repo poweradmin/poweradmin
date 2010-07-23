@@ -1,5 +1,8 @@
 <?php
 
+require_once('../inc/i18n.inc.php');
+require_once('../inc/error.inc.php');
+
 if (isset($_POST['language'])) {
 	$language = $_POST['language'];
 } else {

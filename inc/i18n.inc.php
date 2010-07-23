@@ -21,6 +21,8 @@
 
 if(file_exists('inc/config.inc.php')) {
 	include_once("inc/config.inc.php");
+} else {
+	$iface_lang = 'en_EN';
 }
 
 setlocale(LC_ALL, $iface_lang, $iface_lang.'.UTF-8');
