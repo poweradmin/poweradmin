@@ -19,7 +19,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//session_start();
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
@@ -50,10 +49,10 @@ if ( $perm_supermaster_view ) {
 if ( $perm_zone_master_add ) {
 	echo "    <li><a href=\"add_zone_master.php\">" . _('Add master zone') . "</a></li>\n";
 }
-if ( $perm_zone_slave_add ) { 
+if ( $perm_zone_slave_add ) {
 	echo "    <li><a href=\"add_zone_slave.php\">" . _('Add slave zone') . "</a></li>\n";
 }
-if ( $perm_supermaster_add ) { 
+if ( $perm_supermaster_add ) {
 	echo "    <li><a href=\"add_supermaster.php\">" . _('Add supermaster') . "</a></li>\n";
 }
 echo "    <li><a href=\"change_password.php\">" . _('Change password') . "</a></li>\n";
