@@ -74,6 +74,14 @@ td.y {
 	text-align:		center;
 }
 
+.showmax  a {
+	text-decoration:	none;
+}
+
+.showmax a:hover {
+	background-color:	#ddeeff;
+}
+
 .lettertaken {
 	color:			#000000;
 	font-weight:	bold;

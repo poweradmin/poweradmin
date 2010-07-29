@@ -153,9 +153,9 @@ function show_pages($amount,$rowamount,$id='')
          if ($_GET["start"] == $i) {
             echo "[ <b>".$i."</b> ] ";
          } else {
-            echo "[ <a href=\"".$_SERVER["PHP_SELF"]."?start=".$i;
+            echo " <a href=\"".$_SERVER["PHP_SELF"]."?start=".$i;
 	    if ($id!='') echo "&id=".$id;
-	    echo "\">".$i."</a> ] ";
+	    echo "\">[ ".$i." ]</a> ";
          }
       }
    }
@@ -176,7 +176,7 @@ function show_letters($letterstart,$userid=true)
 	}
 	elseif (zone_letter_start($letter,$userid))
 	{
-		echo "[ <a href=\"".$_SERVER["PHP_SELF"]."?letter=1\">0-9</a> ] ";
+		echo "<a href=\"".$_SERVER["PHP_SELF"]."?letter=1\">[ 0-9 ]</a> ";
 	}
 	else
 	{
@@ -191,7 +191,7 @@ function show_letters($letterstart,$userid=true)
                 }
                 elseif (zone_letter_start($letter,$userid))
                 {
-                        echo "[ <a href=\"".$_SERVER["PHP_SELF"]."?letter=".$letter."\">".$letter."</a> ] ";
+                        echo "<a href=\"".$_SERVER["PHP_SELF"]."?letter=".$letter."\">[ ".$letter." ]</a> ";
                 }
                 else
                 {
