@@ -798,15 +798,18 @@ function get_zones($perm,$userid=0,$letterstart='all',$rowstart=0,$rowamount=999
 	if ($sortby != 'count_records') {
 		$sortby = "domains.".$sortby;
 	}
-	$sqlq = "SELECT domains.id, 
+
+	$sqlq = "SELECT domains.id,
 			domains.name,
 			domains.type,
-			COUNT(DISTINCT records.id) AS count_records
+			Record_Count.count_records
 			FROM domains
-			LEFT JOIN zones ON domains.id=zones.domain_id 
-			LEFT JOIN records ON records.domain_id=domains.id
-			WHERE 1=1".$sql_add." 
-			GROUP BY domains.name, domains.id, domains.type
+			LEFT JOIN zones ON domains.id=zones.domain_id
+			LEFT JOIN (
+				SELECT COUNT(domain_id) AS count_records, domain_id FROM records GROUP BY domain_id
+			) Record_Count ON Record_Count.domain_id=domains.id
+			WHERE 1=1".$sql_add."
+			GROUP BY domains.name, domains.id, domains.type, Record_Count.count_records
 			ORDER BY " . $sortby;
 	
 	$db->setLimit($rowamount, $rowstart);
