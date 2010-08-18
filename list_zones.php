@@ -63,7 +63,7 @@ if ($perm_view == "none") {
 	echo "       <th><a href=\"list_zones.php?zone_sort_by=type\">" . _('Type') . "</a></th>\n";
 	echo "       <th><a href=\"list_zones.php?zone_sort_by=count_records\">" . _('Records') . "</a></th>\n";
 	echo "       <th>" . _('Owner') . "</th>\n";
-	if ($iface_zonelist_serial == "1") echo "       <th>" . _('Serial') . "</th>\n";
+	if ($iface_zonelist_serial) echo "       <th>" . _('Serial') . "</th>\n";
 	echo "      </tr>\n";
 
 	if ($count_zones_view <= $iface_rowamount) {
@@ -75,7 +75,7 @@ if ($perm_view == "none") {
 	foreach ($zones as $zone)
 	{
 		$zone_owners = get_fullnames_owners_from_domainid($zone['id']);
-		if ($iface_zonelist_serial == "1") $serial = get_serial_by_zid($zone['id']);
+		if ($iface_zonelist_serial) $serial = get_serial_by_zid($zone['id']);
 
 		echo "         <tr>\n";
 		echo "          <td>\n";
@@ -91,7 +91,7 @@ if ($perm_view == "none") {
 		echo "          <td class=\"y\">" . strtolower($zone["type"]) . "</td>\n";
 		echo "          <td class=\"y\">" . $zone["count_records"] . "</td>\n";
 		echo "          <td class=\"y\">" . $zone_owners . "</td>\n";
-		if ($iface_zonelist_serial == "1") {
+		if ($iface_zonelist_serial) {
 			if ($serial != "") {
 				echo "          <td class=\"y\">" . $serial . "</td>\n";
 			} else {

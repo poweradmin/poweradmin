@@ -269,17 +269,17 @@ switch($step) {
 		$step++;
 		$pa_pass = $_POST['pa_pass'];
 		$config = "<?php\n\n" .
-			"\$db_host\t\t= \"" . $_POST['db_host'] . "\";\n" .
-			"\$db_user\t\t= \"" . $_POST['pa_db_user'] . "\";\n" .
-			"\$db_pass\t\t= \"" . $_POST['pa_db_pass'] . "\";\n" .
-			"\$db_name\t\t= \"" . $_POST['db_name'] . "\";\n" .
-			"\$db_type\t\t= \"" . $_POST['db_type'] . "\";\n" .
+			"\$db_host\t\t= '" . $_POST['db_host'] . "';\n" .
+			"\$db_user\t\t= '" . $_POST['pa_db_user'] . "';\n" .
+			"\$db_pass\t\t= '" . $_POST['pa_db_pass'] . "';\n" .
+			"\$db_name\t\t= '" . $_POST['db_name'] . "';\n" .
+			"\$db_type\t\t= '" . $_POST['db_type'] . "';\n" .
 			"\n" .
-			"\$iface_lang\t\t= \"" . $_POST['language'] . "\";\n" .
+			"\$iface_lang\t\t= '" . $_POST['language'] . "';\n" .
 			"\n" .
-			"\$dns_hostmaster\t\t= \"" . $_POST['dns_hostmaster'] . "\";\n" .
-			"\$dns_ns1\t\t= \"" . $_POST['dns_ns1'] . "\";\n" .
-			"\$dns_ns2\t\t= \"" . $_POST['dns_ns2'] . "\";\n" .
+			"\$dns_hostmaster\t\t= '" . $_POST['dns_hostmaster'] . "';\n" .
+			"\$dns_ns1\t\t= '" . $_POST['dns_ns1'] . "';\n" .
+			"\$dns_ns2\t\t= '" . $_POST['dns_ns2'] . "';\n" .
 			"\n?>\n";
 
 		if (is_writeable($local_config_file)) {

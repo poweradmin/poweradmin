@@ -156,7 +156,7 @@ function is_valid_hostname_fqdn(&$hostname, $wildcard) {
 		if (substr_count($hostname, "/") > 0) { error(ERR_DNS_HN_SLASH) ; return false; }
 	}
 	
-	if ($dns_strict_tld_check == "1" && !in_array($hostname_labels[$label_count-1], $valid_tlds)) {
+	if ($dns_strict_tld_check && !in_array($hostname_labels[$label_count-1], $valid_tlds)) {
 		error(ERR_DNS_INV_TLD); return false;
 	}
 
