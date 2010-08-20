@@ -37,6 +37,10 @@ if (isset($_GET['confirm']) && v_num($_GET['confirm'])) {
 }
 
 $zone_info = get_zone_info_from_id($zone_id);
+if (!$zone_info) {
+	header("Location: list_zones.php");
+	exit;
+}
 $zone_owners = get_fullnames_owners_from_domainid($zone_id);
 $user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
 
