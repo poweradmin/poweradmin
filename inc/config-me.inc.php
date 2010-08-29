@@ -9,6 +9,9 @@ $db_pass		= '';
 $db_name		= '';
 $db_type		= '';
 
+// This should be changed upon install
+$cryptokey		= 'p0w3r4dm1n';
+
 $iface_lang		= 'en_EN';
 $iface_style		= 'example';
 $iface_rowamount	= 50;

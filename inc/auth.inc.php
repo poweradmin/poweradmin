@@ -29,7 +29,7 @@ function doAuthenticate() {
 	// If a user had just entered his/her login && password, store them in our session.
 	if(isset($_POST["authenticate"]))
 	{
-			$_SESSION["userpwd"] = $_POST["password"];
+			$_SESSION["userpwd"] = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($cryptokey), $_POST['password'], MCRYPT_MODE_CBC, md5(md5($cryptokey))));;
 			$_SESSION["userlogin"] = $_POST["username"];
 	}
 
@@ -45,7 +45,8 @@ function doAuthenticate() {
 	if(isset($_SESSION["userlogin"]) && isset($_SESSION["userpwd"]))
 	{
 		//Username and password are set, lets try to authenticate.
-		$result = $db->query("SELECT id, fullname FROM users WHERE username=". $db->quote($_SESSION["userlogin"], 'text')  ." AND password=". $db->quote(md5($_SESSION["userpwd"]), 'text')  ." AND active=1");
+		$session_pass = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($cryptokey), base64_decode($_SESSION["userpwd"]), MCRYPT_MODE_CBC, md5(md5($cryptokey))), "\0");
+		$result = $db->query("SELECT id, fullname FROM users WHERE username=". $db->quote($_SESSION["userlogin"], 'text')  ." AND password=". $db->quote(md5($session_pass), 'text')  ." AND active=1");
 		if($result->numRows() == 1)
 		{
 			$rowObj = $result->fetchRow();
