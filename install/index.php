@@ -103,6 +103,11 @@ switch($step) {
 		echo "  <td>" . _('The hostname on which the PowerDNS database resides. Frequently, this will be "localhost".') . "</td>\n";
 		echo " </tr>\n";
 		echo " <tr>\n";
+		echo "  <td>" . _('DB Port') . "</td>\n";
+                echo "  <td><input type=\"text\" name=\"dbport\" value=\"3306\"></td>\n";
+                echo "  <td>" . _('The port the database server is listening on.') . "</td>\n";
+                echo " </tr>\n";
+		echo " <tr>\n";
 		echo "  <td>" . _('Database') . "</td>\n";
 		echo "  <td><input type=\"text\" name=\"name\" value=\"\"></td>\n";
 		echo "  <td>" . _('The name of the PowerDNS database.') . "</td>\n";
@@ -136,6 +141,7 @@ switch($step) {
 		$db_user = $_POST['user'];
 		$db_pass = $_POST['pass'];
 		$db_host = $_POST['host'];
+		$db_port = $_POST['dbport'];
 		$db_name = $_POST['name'];
 		$db_type = $_POST['type'];
 		$pa_pass = $_POST['pa_pass'];
@@ -190,6 +196,7 @@ switch($step) {
 		echo "<input type=\"hidden\" name=\"db_user\" value=\"" . $db_user . "\">";
 		echo "<input type=\"hidden\" name=\"db_pass\" value=\"" . $db_pass . "\">";
 		echo "<input type=\"hidden\" name=\"db_host\" value=\"" . $db_host . "\">";
+                echo "<input type=\"hidden\" name=\"db_port\" value=\"" . $db_port . "\">";
 		echo "<input type=\"hidden\" name=\"db_name\" value=\"" . $db_name . "\">";
 		echo "<input type=\"hidden\" name=\"db_type\" value=\"" . $db_type . "\">";
 		echo "<input type=\"hidden\" name=\"pa_pass\" value=\"" . $pa_pass . "\">";
@@ -204,6 +211,7 @@ switch($step) {
 		$db_user = $_POST['db_user'];
 		$db_pass = $_POST['db_pass'];
 		$db_host = $_POST['db_host'];
+		$db_port = $_POST['db_port'];
 		$db_name = $_POST['db_name'];
 		$db_type = $_POST['db_type'];
 		$pa_db_user = $_POST['pa_db_user'];
@@ -250,6 +258,7 @@ switch($step) {
 		echo "<form method=\"post\">";
 		echo "<input type=\"hidden\" name=\"db_host\" value=\"" . $db_host . "\">";
 		echo "<input type=\"hidden\" name=\"db_name\" value=\"" . $db_name . "\">";
+		echo "<input type=\"hidden\" name=\"db_port\" value=\"" . $db_port . "\">";
 		echo "<input type=\"hidden\" name=\"db_type\" value=\"" . $db_type . "\">";
 		echo "<input type=\"hidden\" name=\"db_user\" value=\"" . $db_user . "\">";
 		echo "<input type=\"hidden\" name=\"db_pass\" value=\"" . $db_pass . "\">";
@@ -273,6 +282,7 @@ switch($step) {
 			"\$db_user\t\t= '" . $_POST['pa_db_user'] . "';\n" .
 			"\$db_pass\t\t= '" . $_POST['pa_db_pass'] . "';\n" .
 			"\$db_name\t\t= '" . $_POST['db_name'] . "';\n" .
+			"\$db_port\t\t= '" . $_POST['db_port'] . "';\n"
 			"\$db_type\t\t= '" . $_POST['db_type'] . "';\n" .
 			"\n" .
 			"\$iface_lang\t\t= '" . $_POST['language'] . "';\n" .
