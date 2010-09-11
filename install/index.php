@@ -282,7 +282,7 @@ switch($step) {
 			"\$db_user\t\t= '" . $_POST['pa_db_user'] . "';\n" .
 			"\$db_pass\t\t= '" . $_POST['pa_db_pass'] . "';\n" .
 			"\$db_name\t\t= '" . $_POST['db_name'] . "';\n" .
-			"\$db_port\t\t= '" . $_POST['db_port'] . "';\n"
+			"\$db_port\t\t= '" . $_POST['db_port'] . "';\n" .
 			"\$db_type\t\t= '" . $_POST['db_type'] . "';\n" .
 			"\n" .
 			"\$iface_lang\t\t= '" . $_POST['language'] . "';\n" .
