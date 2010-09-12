@@ -3,7 +3,7 @@
 body {
 	padding-left:	5%;
 	padding-right:	5%;
-	font-family:	Verdana, Arial, Helvetica;
+	font-family:	Verdana, Arial, Helvetica, serif;
 	font-size:		85%;
 	text-align:		left;
 	vertical-align:	top;
@@ -22,14 +22,14 @@ p {
 
 table {
 	width:			100%;
-	font-family:	Verdana, Arial, Helvetica;
+	font-family:	Verdana, Arial, Helvetica, serif;
 	font-size:		90%;
 	text-align:		left;
 	vertical-align:	top;
 }
 
 img {
-	border:			0px;
+	border:			0;
 }
 
 #meta {
@@ -38,11 +38,11 @@ img {
 }
 
 #meta .button {
-	margin:			0px 5px 0px 0px;
+	margin:			0 5px 0 0;
 }
 
 td {
-	padding:		0px 2px 0px 2px;
+	padding:		0 2px 0 2px;
 	vertical-align:	top;
 }
 
@@ -70,7 +70,7 @@ td.y {
 
 .showmax {
 	font-size:		80%;
-	margin:			5px 0px 5px 0px;
+	margin:			5px 0 5px 0;
 	text-align:		center;
 }
 
