@@ -32,7 +32,8 @@ echo "<html>\n";
 echo " <head>\n";
 echo "  <title>Poweradmin</title>\n";
 echo "  <link rel=stylesheet href=\"../style/example.css\" type=\"text/css\">\n";
-echo "  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n"; 
+echo "  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n";
+echo "  <script type=\"text/javascript\" src=\"../inc/helper.js\"></script>";
 echo " </head>\n";
 echo " <body>\n";
 
@@ -104,7 +105,7 @@ switch($step) {
 		echo " </tr>\n";
 		echo " <tr>\n";
 		echo "  <td>" . _('DB Port') . "</td>\n";
-                echo "  <td><input type=\"text\" name=\"dbport\" value=\"3306\"></td>\n";
+                echo "  <td><input type=\"text\" id=\"dbport\" name=\"dbport\" value=\"3306\"></td>\n";
                 echo "  <td>" . _('The port the database server is listening on.') . "</td>\n";
                 echo " </tr>\n";
 		echo " <tr>\n";
@@ -115,7 +116,7 @@ switch($step) {
 		echo " <tr>\n";
 		echo "  <td>" . _('Database type') . "</td>\n";
 		echo "  <td>" .
-			"<select name=\"type\">" . 
+			"<select name=\"type\" onChange=\"changePort(this.value)\">" . 
 			"<option value=\"mysql\">MySQL</option>" . 
 			"<option value=\"pgsql\">PostgreSQL</option>" . 
 			"</td>\n";
