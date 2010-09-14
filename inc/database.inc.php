@@ -95,7 +95,7 @@ function dbConnect() {
 	$db->setFetchMode(MDB2_FETCHMODE_ASSOC);
 
 	/* erase info */
-	$mysql_pass = $dsn = '';
+	$dsn = '';
 
 	// Add support for regular expressions in both MySQL and PostgreSQL
 	if ( $db_type == "mysql" || $db_type == "mysqli" ) {

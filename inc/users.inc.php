@@ -88,13 +88,13 @@ function list_permission_templates() {
 
 	$template_list = array();
 	while ($template= $response->fetchRow()) {
-		$tempate_list[] = array(
+		$template_list[] = array(
 			"id"	=>	$template['id'],
 			"name"	=>	$template['name'],
 			"descr"	=>	$template['descr']
 			);
 	}
-	return $tempate_list;
+	return $template_list;
 }
 
 /*
@@ -137,7 +137,6 @@ function show_users($id='',$rowstart=0,$rowamount=9999999)
 	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 	$ret = array();
-	$retcount = 0;
 	while ($r = $response->fetchRow()) {
 		$ret[] = array(
 		 "id"                    =>              $r["id"],
