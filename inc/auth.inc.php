@@ -22,6 +22,8 @@
 function doAuthenticate() {
 	global $db;
 	global $iface_expire;
+	global $cryptokey;
+
 	if (isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] == "logout") {
 		logout( _('You have logged out.'), 'success');
 	}
