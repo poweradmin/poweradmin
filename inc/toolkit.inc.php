@@ -21,6 +21,7 @@ ob_start();
 
 if (! function_exists('session_start')) die(error('You have to install PHP session extension!'));
 if (! function_exists('_')) die(error('You have to install PHP gettext extension!'));
+if (! function_exists('mcrypt_encrypt')) die(error('You have to install PHP mcrypt extension!'));
 
 session_start();
 
