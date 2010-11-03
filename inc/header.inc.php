@@ -20,6 +20,7 @@
  */
 
 global $iface_style;
+global $ignore_install_dir;
 
 echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n";
 echo "<html>\n";
@@ -36,7 +37,8 @@ if(file_exists('inc/custom_header.inc.php')) {
 
 echo "  <h1>Poweradmin</h1>\n";
 
-if (file_exists('install')) {
+// ignore_install_dir config variable is used only for development, do not use it in production
+if ($ignore_install_dir == NULL || $ignore_install_dir == false && file_exists('install')) {
 	echo "<div>\n";
 	error(ERR_INSTALL_DIR_EXISTS);
 	include('inc/footer.inc.php');
