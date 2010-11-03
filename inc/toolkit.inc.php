@@ -115,9 +115,10 @@ $rtypes = array('A', 'AAAA', 'CNAME', 'HINFO', 'MX', 'NAPTR', 'NS', 'PTR', 'SOA'
 
 // If fancy records is enabled, extend this field.
 if($dns_fancy) {
-        $rtypes[14] = 'URL';
-        $rtypes[15] = 'MBOXFW';
+	$rtypes[14] = 'URL';
+	$rtypes[15] = 'MBOXFW';
 	$rtypes[16] = 'CURL';
+	$rtypes[17] = 'LOC';
 }
 
 

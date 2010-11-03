@@ -105,6 +105,11 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
 			// for these types. One Day Real Soon Now. [tm]
 			break;
 
+		case "LOC":
+			if (!is_valid_loc($content)) return false;
+			if (!is_valid_hostname_fqdn($name,1)) return false;
+			break;
+			
 		default:
 			error(ERR_DNS_RR_TYPE);
 			return false;
@@ -472,4 +477,15 @@ function is_valid_spf($content){
           return true;
         }
 }
+
+function is_valid_loc($content){
+	$regex = "^(90|[1-8]\d|0?\d)( ([1-5]\d|0?\d)( ([1-5]\d|0?\d)(\.\d{1,3})?)?)? [NS] (180|1[0-7]\d|[1-9]\d|0?\d)( ([1-5]\d|0?\d)( ([1-5]\d|0?\d)(\.\d{1,3})?)?)? [EW] (-(100000(\.00)?|\d{1,5}(\.\d\d)?)|([1-3]?\d{1,7}(\.\d\d)?|4([01][0-9]{6}|2([0-7][0-9]{5}|8([0-3][0-9]{4}|4([0-8][0-9]{3}|9([0-5][0-9]{2}|6([0-6][0-9]|7[01]))))))(\.\d\d)?|42849672(\.([0-8]\d|9[0-5]))?))[m]?( (\d{1,7}|[1-8]\d{7})(\.\d\d)?[m]?){0,3}$^";
+	if(!preg_match($regex, $content)){
+		return false;
+	}
+	else {
+		return true;
+	}
+}
+
 ?>
