@@ -59,12 +59,16 @@ foreach ($users as $user) {
 	}
 	if (($user['uid'] == $_SESSION["userid"] && $perm_edit_own == "1") || ($user['uid'] != $_SESSION["userid"] && $perm_edit_others == "1" )) {
 		$commit_button = "1";
-
 		echo "      <tr>\n";
 		echo "       <td>\n";
 		echo "        <input type=\"hidden\" name=\"user[" . $user['uid'] . "][uid]\" value=\"" . $user['uid'] . "\">\n";
 		echo "        <a href=\"edit_user.php?id=" . $user['uid'] . "\"><img src=\"images/edit.gif\" alt=\"[ " . _('Edit user') . " ]\"></a>\n";
-		echo "        <a href=\"delete_user.php?id=" . $user['uid'] . "\"><img src=\"images/delete.gif\" alt=\"[ " . _('Delete user') . " ]\"></a>\n";
+
+		// do not allow to delete him- or herself, available to superusers only
+		if($user['uid'] != $_SESSION["userid"] || $perm_is_godlike == "1"){
+			echo "        <a href=\"delete_user.php?id=" . $user['uid'] . "\"><img src=\"images/delete.gif\" alt=\"[ " . _('Delete user') . " ]\"></a>\n";
+		}
+		
 		echo "       </td>\n";
 		echo "       <td><input type=\"text\" name=\"user[" . $user['uid'] . "][username]\" value=\"" . $user['username'] . "\"></td>\n";
 		echo "       <td><input type=\"text\" name=\"user[" . $user['uid'] . "][fullname]\" value=\"" . $user['fullname'] . "\"></td>\n";
