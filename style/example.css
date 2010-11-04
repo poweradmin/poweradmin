@@ -129,3 +129,7 @@ textarea {
 input.wide {
 	width:			100%;
 }
+
+.letternotavailable { 
+	color:			#CCCCCC;
+}

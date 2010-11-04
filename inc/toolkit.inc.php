@@ -182,7 +182,7 @@ function show_letters($letterstart,$userid=true)
 	}
 	else
 	{
-		echo "[ <span class=\"letternotavailble\">0-9</span> ] ";
+		echo "[ <span class=\"letternotavailable\">0-9</span> ] ";
 	}
 
         foreach (range('a','z') as $letter)
@@ -197,7 +197,7 @@ function show_letters($letterstart,$userid=true)
                 }
                 else
                 {
-                        echo "[ <span class=\"letternotavailble\">".$letter."</span> ] ";
+                        echo "[ <span class=\"letternotavailable\">".$letter."</span> ] ";
                 }
         }
 }
