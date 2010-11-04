@@ -156,12 +156,9 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 					echo "       </select>\n";
 					echo "      </td>\n";
 					echo "      <td class=\"u\"><input class=\"wide\" name=\"record[" . $r['id'] . "][content]\" value='" . $clean_content . "'></td>\n";
-					if ($r['type'] == "MX" || $r['type'] == "SRV") {
-						echo "      <td class=\"u\"><input name=\"record[" . $r['id'] . "][prio]\" value=\"" .  $r['prio'] . "\"></td>\n";
-					} else {
-						echo "      <td class=\"n\">&nbsp;</td>\n";
-					}
+					echo "      <td class=\"u\"><input id=\"priority_field_" . $r['id'] . "\" name=\"record[" . $r['id'] . "][prio]\" value=\"" .  $r['prio'] . "\"></td>\n";
 					echo "      <td class=\"u\"><input name=\"record[" . $r['id'] . "][ttl]\" value=\"" . $r['ttl'] . "\"></td>\n";
+					
 				}
 				echo "     </tr>\n";
 			}
