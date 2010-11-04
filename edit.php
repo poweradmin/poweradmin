@@ -57,6 +57,9 @@ if (verify_permission('zone_meta_edit_others')) { $perm_meta_edit = "all" ; }
 elseif (verify_permission('zone_meta_edit_own')) { $perm_meta_edit = "own" ; } 
 else { $perm_meta_edit = "none" ; }
 
+verify_permission('zone_master_add') ? $perm_zone_master_add = "1" : $perm_zone_master_add = "0" ;
+verify_permission('zone_slave_add') ? $perm_zone_slave_add = "1" : $perm_zone_slave_add = "0" ;
+
 $user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
 if ( $perm_meta_edit == "all" || ( $perm_meta_edit == "own" && $user_is_zone_owner == "1") ) {
 	$meta_edit = "1";
@@ -153,7 +156,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 					echo "       </select>\n";
 					echo "      </td>\n";
 					echo "      <td class=\"u\"><input class=\"wide\" name=\"record[" . $r['id'] . "][content]\" value='" . $clean_content . "'></td>\n";
-					if ($r['type'] == "MX" || $r['type'] == "SRV") { 
+					if ($r['type'] == "MX" || $r['type'] == "SRV") {
 						echo "      <td class=\"u\"><input name=\"record[" . $r['id'] . "][prio]\" value=\"" .  $r['prio'] . "\"></td>\n";
 					} else {
 						echo "      <td class=\"n\">&nbsp;</td>\n";
@@ -311,6 +314,10 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 				$add = '';
 				if ($type == $domain_type) {
 					$add = " SELECTED";
+				}
+				
+				if (($perm_zone_master_add == "0" && $type == "MASTER") || ($perm_zone_slave_add == "0" && $type == "SLAVE")) {
+					continue;
 				}
 				echo "          <option" .  $add . " value=\"" . $type . "\">" .  strtolower($type) . "</option>\n";
 			}
