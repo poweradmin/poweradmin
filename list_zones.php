@@ -47,9 +47,11 @@ if ($perm_view == "none") {
 	}
 	echo "     <p>" . _('There are no zones to show in this listing.') . "</p>\n";
 } else {
-	echo "     <div class=\"showmax\">\n";
-	show_pages($count_zones_all_letterstart,$iface_rowamount);
-	echo "     </div>\n";
+	if(LETTERSTART != 'all'){
+		echo "     <div class=\"showmax\">\n";
+		show_pages($count_zones_all_letterstart,$iface_rowamount);
+		echo "     </div>\n";
+	}
 
 	if ($count_zones_view > $iface_rowamount) {
 		echo "<div class=\"showmax\">";
@@ -68,6 +70,8 @@ if ($perm_view == "none") {
 
 	if ($count_zones_view <= $iface_rowamount) {
 		$zones = get_zones($perm_view,$_SESSION['userid'],"all",ROWSTART,$iface_rowamount,ZONE_SORT_BY);
+	} elseif(LETTERSTART == 'all') {
+		 $zones = get_zones($perm_view,$_SESSION['userid'],"all",ROWSTART,'all',ZONE_SORT_BY);
 	} else {
 		$zones = get_zones($perm_view,$_SESSION['userid'],LETTERSTART,ROWSTART,$iface_rowamount,ZONE_SORT_BY);
 		$count_zones_shown = ($zones == -1) ? 0 : count($zones);

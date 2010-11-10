@@ -200,6 +200,13 @@ function show_letters($letterstart,$userid=true)
                         echo "[ <span class=\"letternotavailable\">".$letter."</span> ] ";
                 }
         }
+
+	if ($letterstart == 'all')
+	{
+		echo "[ <span class=\"lettertaken\"> Show all </span> ] ";
+	} else {
+		echo "<a href=\"".$_SERVER["PHP_SELF"]."?letter=all\">[ Show all ]</a> ";
+	}
 }
 
 function zone_letter_start($letter,$userid=true)
