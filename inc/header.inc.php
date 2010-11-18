@@ -25,7 +25,7 @@ global $ignore_install_dir;
 echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n";
 echo "<html>\n";
 echo " <head>\n";
-echo "  <title>Poweradmin</title>\n";
+echo "  <title>" . $iface_title ."</title>\n";
 echo "  <link rel=stylesheet href=\"style/" . $iface_style . ".css\" type=\"text/css\">\n";
 echo "  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n";
 echo " </head>\n";
@@ -35,7 +35,7 @@ if(file_exists('inc/custom_header.inc.php')) {
 	include('inc/custom_header.inc.php');
 }
 
-echo "  <h1>Poweradmin</h1>\n";
+echo "  <h1>" . $iface_title ."</h1>\n";
 
 // this config variable is used only for development, do not use it in production
 //if ($ignore_install_dir == NULL || $ignore_install_dir == false && file_exists('install')) {

@@ -17,6 +17,7 @@ $iface_style		= 'example';
 $iface_rowamount	= 50;
 $iface_expire		= 1800;
 $iface_zonelist_serial	= false;
+$iface_title 		= 'Poweradmin';
 
 $dns_hostmaster		= '';
 $dns_ns1		= '';
