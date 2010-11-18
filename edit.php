@@ -70,6 +70,9 @@ $user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
 if ( $perm_meta_edit == "all" || ( $perm_meta_edit == "own" && $user_is_zone_owner == "1") ) {
 	$meta_edit = "1";
 }
+else {
+        $meta_edit = "0";
+}
 
 (verify_permission('user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0" ; 
 
