@@ -20,6 +20,7 @@
  */
 
 global $iface_style;
+global $iface_title;
 global $ignore_install_dir;
 
 echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n";
