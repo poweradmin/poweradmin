@@ -921,6 +921,8 @@ function get_record_from_id($id)
  */
 function get_records_from_domain_id($id,$rowstart=0,$rowamount=999999,$sortby='name') {
 	global $db;
+
+        $result = array();
 	if (is_numeric($id)) {
 		if ((isset($_SESSION[$id."_ispartial"])) && ($_SESSION[$id."_ispartial"] == 1)) {
 			$db->setLimit($rowamount, $rowstart);
@@ -943,7 +945,7 @@ function get_records_from_domain_id($id,$rowstart=0,$rowamount=999999,$sortby='n
 					$ret[$retcount] = get_record_from_id($r["id"]);
 					$retcount++;
 				}
-				return $ret;
+                                $result = $ret;
 			}
 
 		} else {
@@ -964,9 +966,10 @@ function get_records_from_domain_id($id,$rowstart=0,$rowamount=999999,$sortby='n
 					$ret[$retcount] = get_record_from_id($r["id"]);
 					$retcount++;
 				}
-				return $ret;
+                                $result = $ret;
 			}
-
+			$result = order_domain_results($result, $sortby);
+			return $result;
 		}
 	}
 	else
@@ -975,6 +978,73 @@ function get_records_from_domain_id($id,$rowstart=0,$rowamount=999999,$sortby='n
 	}
 }
 
+function order_domain_results($domains, $sortby) {
+        $results = array();
+        $soa = array();
+        $ns = array();
+        
+        foreach ($domains as $key => $domain) {
+                switch ($domain['type']) {
+                  case 'SOA':
+                    $soa[] = $domain;
+                    unset ($domains[$key]);
+                    break;
+                  case 'NS':
+                    $ns[] = $domain;
+                    unset ($domains[$key]);
+                    break;
+                  default:
+                    continue;
+                }
+        }
+
+        switch ($sortby)
+        {
+          case 'name':
+            usort($domains, 'sort_domain_results_by_name');
+            break;
+          case 'type':
+            usort($domains, 'sort_domain_results_by_type');
+            break;
+          case 'content':
+            usort($domains, 'sort_domain_results_by_content');
+            break;
+          case 'prio':
+            usort($domains, 'sort_domain_results_by_prio');
+            break;
+          case 'ttl':
+            usort($domains, 'sort_domain_results_by_ttl');
+            break;
+          default:
+            usort($domains, 'sort_domain_results_by_name');
+            break;
+        }
+
+        $results = array_merge($soa, $ns);
+        $results = array_merge($results, $domains);
+        
+        return $results;
+}
+
+function sort_domain_results_by_name($a, $b) {
+  return strnatcmp($a['name'], $b['name']);
+}
+
+function sort_domain_results_by_type($a, $b) {
+  return strnatcmp($a['type'], $b['type']);
+}
+
+function sort_domain_results_by_content($a, $b) {
+  return strnatcmp($a['content'], $b['content']);
+}
+
+function sort_domain_results_by_prio($a, $b) {
+  return strnatcmp($a['prio'], $b['prio']);
+}
+
+function sort_domain_results_by_ttl($a, $b) {
+  return strnatcmp($a['ttl'], $b['ttl']);
+}
 
 function get_users_from_domain_id($id) {
 	global $db;
