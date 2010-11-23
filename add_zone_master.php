@@ -51,7 +51,11 @@ Check user permissions
 (verify_permission('user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0" ; 
 
 if (isset($_POST['submit']) && $zone_master_add == "1" ) {
-	if (add_domain($domain, $owner, $dom_type, '', $zone_template)) {	
+	
+	if (domain_exists($domain)) {
+		error(ERR_DOMAIN_EXISTS);
+		// TODO: repopulate domain name
+	} elseif (add_domain($domain, $owner, $dom_type, '', $zone_template)) {	
 		success("<a href=\"edit.php?id=" . get_zone_id_from_name($domain) . "\">".SUC_ZONE_ADD.'</a>');
 		unset($domain, $owner, $dom_type, $zone_template);
 	}

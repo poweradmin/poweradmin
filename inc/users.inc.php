@@ -193,8 +193,7 @@ function user_exists($user)
 
 /*
  * Delete a user from the system
- * return values: true if user doesnt exist.
- */
+s */
 function delete_user($uid,$zones)
 {
 	global $db;
@@ -203,7 +202,7 @@ function delete_user($uid,$zones)
 		 error(ERR_PERM_DEL_USER);
 		 return false;
 	} else {
-
+		
 		if (is_array($zones)) {
 			foreach ($zones as $zone) {
 				if ($zone['target'] == "delete") {
