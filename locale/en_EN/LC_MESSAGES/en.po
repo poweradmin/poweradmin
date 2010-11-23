@@ -656,3 +656,8 @@ msgstr ""
 #: inc/users.inc.php:365
 msgid "Password has been changed, please login."
 msgstr ""
+
+#: inc/error.inc.php:65
+msgid "Zone template with this name already exists, please choose another one."
+msgstr ""
+

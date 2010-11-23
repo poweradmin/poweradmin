@@ -1089,3 +1089,7 @@ msgstr "Wijzigen zone template"
 msgid "Edit record in zone template"
 msgstr "Wijzigen record in zone template"
 
+#: inc/error.inc.php:65
+msgid "Zone template with this name already exists, please choose another one."
+msgstr "Zone template met deze naam bestaat al, kies een andere."
+

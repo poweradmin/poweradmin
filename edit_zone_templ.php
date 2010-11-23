@@ -44,6 +44,10 @@ if (isset($_POST['commit']) && $owner) {
 	}
 }
 
+if (isset($_POST['edit']) && $owner) {
+        edit_zone_templ($_POST, $zone_templ_id);
+}
+
 if (!(verify_permission('zone_master_add')) || !$owner) {
         error(ERR_PERM_EDIT_ZONE_TEMPL);
 } else {
@@ -126,6 +130,20 @@ if (!(verify_permission('zone_master_add')) || !$owner) {
 			echo "     <input type=\"reset\" class=\"button\" name=\"reset\" value=\"" . _('Reset changes') . "\">\n"; 
 			echo "    </form>";
 		}
+
+                echo "    <form method=\"post\" action=\"\">\n";
+                echo "     <table>\n";
+                echo "      <tr>\n";
+                echo "       <th>" . _('Name') . "</th>\n";
+                echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_name\" value=\"" . $templ_details['name']  . "\"></td>\n";
+                echo "      </tr>\n";
+                echo "      <tr>\n";
+                echo "       <th>" . _('Description') . "</th>\n";
+                echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_descr\" value=\"" . $templ_details['descr'] . "\"></td>\n";
+                echo "      </tr>\n";
+                echo "     </table>\n";
+                echo "     <input type=\"submit\" class=\"button\" name=\"edit\" value=\"" . _('Commit changes') . "\">\n";
+                echo "     </form>\n";
 		echo "    <input type=\"button\" class=\"button\" OnClick=\"location.href='add_zone_templ_record.php?id=" . $zone_templ_id . "'\" value=\"" . _('Add record') . "\">&nbsp;&nbsp\n";
 		echo "    <input type=\"button\" class=\"button\" OnClick=\"location.href='delete_zone_templ.php?id=" . $zone_templ_id . "'\" value=\"" . _('Delete zone template') . "\">\n";
 	}

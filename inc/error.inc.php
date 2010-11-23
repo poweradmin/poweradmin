@@ -62,6 +62,7 @@ define("ERR_INV_EMAIL", _('Enter a valid email address.'));
 define("ERR_ZONE_NOT_EXIST", _('There is no zone with this ID.'));
 define("ERR_ZONE_TEMPL_NOT_EXIST", _('There is no zone template with this ID.'));
 define("ERR_INSTALL_DIR_EXISTS", _('The <a href="install/">install/</a> directory exists, you must remove it first before proceeding.'));
+define("ERR_ZONE_TMPL_EXIST", _('Zone template with this name already exists, please choose another one.'));
 
 /* DATABASE */
 define("ERR_DB_NO_DB_NAME", _('No database name has been set in config.inc.php.'));

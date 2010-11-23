@@ -49,9 +49,12 @@ function get_list_zone_templ($userid) {
 function add_zone_templ($details, $userid) {
 	global $db;
 
+    $zone_name_exists = zone_templ_name_exists($details['templ_name']);
 	if (!(verify_permission('zone_master_add'))) {
 		error(ERR_PERM_ADD_ZONE_TEMPL);
 		return false;
+	} elseif ($zone_name_exists != '0') {
+		error(ERR_ZONE_TMPL_EXIST);
 	} else {
 		$query = "INSERT INTO zone_templ (name, descr, owner)
 			VALUES ("
@@ -293,6 +296,47 @@ function get_zone_templ_is_owner($zone_templ_id, $userid) {
 	} else {
 		return false;
 	}
+}
+
+// Edit a zone template.
+
+function edit_zone_templ($details, $zone_templ_id) {
+	global $db;
+        $zone_name_exists = zone_templ_name_exists($details['templ_name'], $zone_templ_id);
+	if (!(verify_permission('zone_master_add'))) {
+		error(ERR_PERM_ADD_ZONE_TEMPL);
+		return false;
+	} elseif ($zone_name_exists != '0') {
+		error(ERR_ZONE_TMPL_EXIST);
+		return false;
+	} else {
+                $query = "UPDATE zone_templ
+			SET name=".$db->quote($details['templ_name'], 'text').",
+			descr=".$db->quote($details['templ_descr'], 'text')."
+			WHERE id=".$db->quote($zone_templ_id, 'integer');
+
+		$result = $db->query($query);
+		if (PEAR::isError($result)) { error($result->getMessage()); return false; }
+
+		return true;
+	}
+}
+
+// Check if zone template name exist
+
+function zone_templ_name_exists($zone_templ_name, $zone_templ_id = null) {
+        global $db;
+        
+        $sql_add = '';
+        if ($zone_templ_id) {
+                $sql_add = " AND id != ".$db->quote($zone_templ_id, 'integer');
+        }
+
+        $query = "SELECT COUNT(id) FROM zone_templ WHERE name = " . $db->quote($zone_templ_name, 'text') . "" . $sql_add;        
+        $count = $db->queryOne($query);
+        if (PEAR::isError($count)) { error($result->getMessage()); return false; }
+        
+        return $count;
 }
 
 ?>

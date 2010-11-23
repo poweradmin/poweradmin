@@ -27,8 +27,9 @@ if (!verify_permission('zone_master_add')) {
 } else {
 
 	if (isset($_POST['commit'])) {
-		add_zone_templ($_POST, $_SESSION['userid']);
-		success(SUC_ZONE_TEMPL_ADD);
+		if (add_zone_templ($_POST, $_SESSION['userid'])) {
+			success(SUC_ZONE_TEMPL_ADD);
+		}
 	}
 
 	/* 
