@@ -35,8 +35,16 @@ if (!(isset($_GET['id']) && v_num($_GET['id']))) {
 }
 
 if (isset($_POST['commit'])) {
-	if (delete_user($uid,$_POST['zone'])) {
-		success(SUC_USER_DEL);
+	
+	if (is_valid_user($uid)) {
+		// TODO: pass all users's zones to delete_user() function
+		$zones = array();
+		if (delete_user($uid, $zones)) {	
+			success(SUC_USER_DEL);
+		}
+	} else {
+		header("Location: users.php");
+		exit;
 	}
 } else {
 

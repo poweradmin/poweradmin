@@ -48,6 +48,12 @@ if (isset($_POST['commit'])) {
         }
 }
 
+if (isset($_POST['save_as'])) {
+        $records = get_records_from_domain_id($zone_id);
+        add_zone_templ_save_as($_POST['templ_name'], $_POST['templ_descr'], $_SESSION['userid'], $records);
+
+}
+
 /*
 Check permissions
 */
@@ -88,6 +94,16 @@ if(isset($_POST["newowner"]) && is_numeric($_POST["domain"]) && is_numeric($_POS
 if(isset($_POST["delete_owner"]) && is_numeric($_POST["delete_owner"]) ) {
 	delete_owner_from_zone($zone_id, $_POST["delete_owner"]);
 }
+if(isset($_POST["template_change"])) {
+        if (!isset($_POST['zone_template']) || "none" == $_POST['zone_template']) {
+                $new_zone_template = 0;
+        } else {
+                $new_zone_template = $_POST['zone_template'];
+        }
+        if ($_POST['current_zone_template'] != $new_zone_template){
+                update_zone_records($zone_id, $new_zone_template);
+        }
+}
 
 if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" ) {
 	error(ERR_PERM_VIEW_ZONE);
@@ -98,6 +114,8 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 	} else  {	
 		$domain_type=get_domain_type($zone_id);
 		$record_count=count_zone_records($zone_id);
+                $zone_templates = get_list_zone_templ($_SESSION['userid']);
+                $zone_template_id = get_zone_template($zone_id);
 
 		echo "   <h2>" . _('Edit zone') . " \"" . get_zone_name_from_id($zone_id) . "\"</h2>\n";
 
@@ -184,10 +202,22 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 			echo "     </td>\n";
 			echo "     <td colspan=\"4\"><textarea rows=\"15\" cols=\"80\" name=\"comment\">" . get_zone_comment($zone_id) . "</textarea></td>\n";
 			echo "     <td>&nbsp;</td>\n";
-			echo "    </tr>\n";
+
+                        echo "     <tr>\n";
+			echo "      <td colspan=\"6\"><br>Save as new template:</td>\n";
+			echo "     </tr>\n";
+                        echo "      <tr>\n";
+                        echo "       <th>" . _('Template Name') . "</th>\n";
+                        echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_name\" value=\"\"></td>\n";
+                        echo "      </tr>\n";
+                        echo "      <tr>\n";
+                        echo "       <th>" . _('Template Description') . "</th>\n";
+                        echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_descr\" value=\"\"></td>\n";
+                        echo "      </tr>\n";
 			echo "    </table>\n";
 			echo "     <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
 			echo "     <input type=\"reset\" class=\"button\" name=\"reset\" value=\"" . _('Reset changes') . "\">\n"; 
+			echo "     <input type=\"submit\" class=\"button\" name=\"save_as\" value=\"" . _('Save as template') . "\">\n";
 			echo "    </form>";
 		}
 		
@@ -261,7 +291,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 		if ($owners == "-1") {
 			echo "      <tr><td>" . _('No owner set for this zone.') . "</td></tr>";
 		} else {
-			if ($meta_edit) {
+                       if ($meta_edit) {
 				foreach ($owners as $owner) {
 					echo "       <tr>\n";
 					echo "        <form method=\"post\" action=\"edit.php?id=" . $zone_id . "\">\n";
@@ -338,6 +368,36 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 			echo "      <tr><td>" . strtolower($domain_type) . "</td><td>&nbsp;</td></tr>\n";
 		}
 
+                echo "      <tr>\n";
+		echo "       <th colspan=\"2\">" . _('Template') . "</th>\n";
+		echo "      </tr>\n";
+
+                if ($meta_edit) {
+                        echo "      <form action=\"" . $_SERVER['PHP_SELF'] . "?id=" . $zone_id . "\" method=\"post\">\n";
+                        echo "       <input type=\"hidden\" name=\"current_zone_template\" value=\"" . $zone_template_id . "\">\n";
+                        echo "       <tr>\n";
+                        echo "        <td>\n";
+                        echo "         <select name=\"zone_template\">\n";
+                        echo "          <option value=\"none\">none</option>\n";
+                        foreach($zone_templates as $zone_template) {
+                                $add = '';
+                                if ($zone_template['id'] == $zone_template_id) {
+                                        $add = " SELECTED";
+                                }
+                                echo "          <option .  $add . value=\"" . $zone_template['id'] . "\">" . $zone_template['name'] . "</option>\n";
+                        }
+                        echo "         </select>\n";
+                        echo "        </td>\n";
+                        echo "        <td>\n";
+                        echo "         <input type=\"submit\" class=\"sbutton\" name=\"template_change\" value=\"" . _('Change') . "\">\n";
+                        echo "        </td>\n";
+                        echo "       </tr>\n";
+                        echo "      </form>\n";
+		} else {
+                  $zone_template_details = get_zone_templ_details($zone_template_id);
+			echo "      <tr><td>" . (isset($zone_template_details) ? strtolower($zone_template_details['name']) : "none" ) . "</td><td>&nbsp;</td></tr>\n";
+		}
+
 		if ($domain_type == "SLAVE" ) { 
 			$slave_master=get_domain_slave_master($zone_id);
 			echo "      <tr>\n";
@@ -361,7 +421,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 			}
 		}
 		echo "     </table>\n";
-		echo "   </div>\n";	// eo div meta 
+		echo "   </div>\n";	// eo div meta
 	}
 }
 

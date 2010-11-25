@@ -375,7 +375,7 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template)
 			$domain_id = $db->lastInsertId('domains', 'id');
 			if (PEAR::isError($domain_id)) { error($id->getMessage()); return false; }
 
-			$response = $db->query("INSERT INTO zones (domain_id, owner) VALUES (".$db->quote($domain_id, 'integer').", ".$db->quote($owner, 'integer').")");
+			$response = $db->query("INSERT INTO zones (domain_id, owner, zone_template_id) VALUES (".$db->quote($domain_id, 'integer').", ".$db->quote($owner, 'integer').", ".$db->quote(($zone_template == "none") ? null : $zone_template, 'integer').")");
 			if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
 			if ($type == "SLAVE") {
@@ -1230,5 +1230,91 @@ function validate_account($account) {
 	}
 }
 
+function get_zone_template($zone_id) {
+	global $db;
+	$query = "SELECT zone_templ_id FROM zones WHERE domain_id = " . $db->quote($zone_id, 'integer');
+	$comment = $db->queryOne($query);
+	return $comment;
+}
+ 
+function update_zone_template($zone_id, $new_zone_template_id) {
+        global $db;
+	$query = "UPDATE zones
+			SET zone_templ_id = " . $db->quote($new_zone_template_id, 'integer') . "
+			WHERE id = " . $db->quote($zone_id, 'integer') ;
+	$response = $db->query($query);
+	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+        return true;
+}
+
+function update_zone_records($zone_id, $zone_template) {
+        global $db;
+        global $dns_ns1;
+        global $dns_hostmaster;
+        global $dns_ttl;
+
+	if (verify_permission('zone_content_edit_others')) { $perm_edit = "all" ; }
+	elseif (verify_permission('zone_content_edit_own')) { $perm_edit = "own" ; }
+	else { $perm_edit = "none" ; }
+
+	$user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
+
+        if(verify_permission('zone_master_add')) { $zone_master_add = "1" ; } ;
+	if(verify_permission('zone_slave_add')) { $zone_slave_add = "1" ; } ;
+
+        $response = $db->beginTransaction();
+
+        if (0 != $zone_template) {
+                        if ( $perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1") ) {
+                                if (is_numeric($zone_id)) {
+                                        $db->exec("DELETE FROM records WHERE domain_id=".$db->quote($zone_id, 'integer'));
+                                } else {
+                                        error(sprintf(ERR_INV_ARGC, "delete_domain", "id must be a number"));
+                                }
+                        } else {
+                                error(ERR_PERM_DEL_ZONE);
+                        }
+
+                        if($zone_master_add == "1" || $zone_slave_add == "1") {
+                                $now = time();
+                                $templ_records = get_zone_templ_records($zone_template);
+                                foreach ($templ_records as $r) {
+                                        if ((preg_match('/in-addr.arpa/i', $zone_id) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $zone_id)))
+                                        {
+                                                $name     = parse_template_value($r["name"], $zone_id);
+                                                $type     = $r["type"];
+                                                $content  = parse_template_value($r["content"], $zone_id);
+                                                $ttl      = $r["ttl"];
+                                                $prio     = intval($r["prio"]);
+
+                                                if (!$ttl) {
+                                                        $ttl = $dns_ttl;
+                                                }
+
+                                                $query = "INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) VALUES ("
+                                                                . $db->quote($zone_id, 'integer') . ","
+                                                                . $db->quote($name, 'text') . ","
+                                                                . $db->quote($type, 'text') . ","
+                                                                . $db->quote($content, 'text') . ","
+                                                                . $db->quote($ttl, 'integer') . ","
+                                                                . $db->quote($prio, 'integer') . ","
+                                                                . $db->quote($now, 'integer') . ")";
+                                                $response = $db->exec($query);
+                                        }
+                                }
+                        }
+        }
+
+        $query = "UPDATE zones
+                    SET zone_templ_id = " . $db->quote($zone_template, 'integer') . "
+                    WHERE id = " . $db->quote($zone_id, 'integer') ;
+	$response = $db->exec($query);
+
+        if (PEAR::isError($response)) {
+            $response = $db->rollback();
+        } else {
+            $response = $db->commit();
+        }
+}
 
 ?>

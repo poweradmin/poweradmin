@@ -48,6 +48,19 @@ if (isset($_POST['edit']) && $owner) {
         edit_zone_templ($_POST, $zone_templ_id);
 }
 
+if (isset($_POST['save_as'])) {
+        $templ_details = get_zone_templ_details($zone_templ_id);
+        add_zone_templ_save_as($_POST['templ_name'], $_POST['templ_descr'], $_SESSION['userid'], $_POST['record']);
+}
+
+if (isset($_POST['update_zones'])) {
+        $records = get_zone_templ_records($zone_templ_id);
+        $zones = get_list_zone_use_templ($zone_templ_id, $_SESSION['userid']);
+        foreach ($zones as $zone) {
+          update_zone_records($zone['id'], $zone_templ_id);
+        }
+}
+
 if (!(verify_permission('zone_master_add')) || !$owner) {
         error(ERR_PERM_EDIT_ZONE_TEMPL);
 } else {
@@ -125,9 +138,22 @@ if (!(verify_permission('zone_master_add')) || !$owner) {
 			echo "      <td colspan=\"6\"><br>&nbsp;&nbsp;&nbsp;&nbsp; * [ZONE] - " . _('substituted with current zone name') . "<br>";
 			echo "&nbsp;&nbsp;&nbsp;&nbsp; * [SERIAL] - " . _('substituted with current date and 2 numbers') . " (YYYYMMDD + 00)</td>\n";
 			echo "     </tr>\n";
+                        echo "     <tr>\n";
+			echo "      <td colspan=\"6\"><br>Save as new template:</td>\n";
+			echo "     </tr>\n";
+                        echo "      <tr>\n";
+                        echo "       <th>" . _('Template Name') . "</th>\n";
+                        echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_name\" value=\"\"></td>\n";
+                        echo "      </tr>\n";
+                        echo "      <tr>\n";
+                        echo "       <th>" . _('Template Description') . "</th>\n";
+                        echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_descr\" value=\"\"></td>\n";
+                        echo "      </tr>\n";
 			echo "    </table>\n";
 			echo "     <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
-			echo "     <input type=\"reset\" class=\"button\" name=\"reset\" value=\"" . _('Reset changes') . "\">\n"; 
+			echo "     <input type=\"reset\" class=\"button\" name=\"reset\" value=\"" . _('Reset changes') . "\">\n";
+                        echo "     <input type=\"submit\" class=\"button\" name=\"save_as\" value=\"" . _('Save as template') . "\">\n";
+                        echo "     <input type=\"submit\" class=\"button\" name=\"update_zones\" value=\"" . _('Update zones') . "\">\n";
 			echo "    </form>";
 		}
 
