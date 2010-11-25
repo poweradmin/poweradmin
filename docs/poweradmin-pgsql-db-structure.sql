@@ -59,7 +59,8 @@ CREATE TABLE zones (
   id SERIAL PRIMARY KEY,
   domain_id integer default 0,
   owner integer default 0,
-  comment text
+  comment text,
+  zone_templ_id integer NOT NULL
 );
 
 CREATE INDEX zone_domain_owner ON zones(domain_id, owner);

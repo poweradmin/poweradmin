@@ -52,9 +52,10 @@ CREATE TABLE `zones` (
   `domain_id` int(11) NOT NULL default '0',
   `owner` int(11) NOT NULL default '0',
   `comment` text,
+  `zone_templ_id` INT(11) NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `owner` (`owner`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE zone_templ (
   `id` int(11) NOT NULL auto_increment,
@@ -62,7 +63,7 @@ CREATE TABLE zone_templ (
   `descr` text NOT NULL,
   `owner` int(11) NOT NULL,
   PRIMARY KEY (id)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE zone_templ_records (
   `id` int(11) NOT NULL auto_increment,
@@ -73,4 +74,5 @@ CREATE TABLE zone_templ_records (
   `ttl` int(11) NOT NULL,
   `prio` int(11) NOT NULL,
   PRIMARY KEY (id)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
