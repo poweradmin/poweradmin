@@ -250,7 +250,17 @@ $def_tables =
 					    'name' 		=> 'comment',
 					    'table' 		=> 'zones',
 					    'flags' 		=> ''
-					)
+					),
+				    'zone_templ_id' => array
+					(
+					    'notnull' 		=> 1,
+					    'length' 		=> 4,
+					    'unsigned' 		=> 0,
+					    'type' 		=> 'integer',
+					    'name' 		=> 'zone_templ_id',
+					    'table' 		=> 'zones',
+					    'flags' 		=> ''
+					),
 				)
 			),
 		array(
