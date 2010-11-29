@@ -133,3 +133,7 @@ input.wide {
 .letternotavailable { 
 	color:			#CCCCCC;
 }
+
+td.checkbox {
+	width:			5px;
+}

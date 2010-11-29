@@ -58,8 +58,10 @@ if ($perm_view == "none") {
 		show_letters(LETTERSTART);
 		echo "</div>";
 	}
+        echo "     <form method=\"post\" action=\"delete_domains.php\">\n";
 	echo "     <table>\n";
 	echo "      <tr>\n";
+	echo "       <th>&nbsp;</th>\n";
 	echo "       <th>&nbsp;</th>\n";
 	echo "       <th><a href=\"list_zones.php?zone_sort_by=name\">" . _('Name') . "</a></th>\n";
 	echo "       <th><a href=\"list_zones.php?zone_sort_by=type\">" . _('Type') . "</a></th>\n";
@@ -81,12 +83,17 @@ if ($perm_view == "none") {
 		$zone_owners = get_fullnames_owners_from_domainid($zone['id']);
 		if ($iface_zonelist_serial) $serial = get_serial_by_zid($zone['id']);
 
-		echo "         <tr>\n";
-		echo "          <td>\n";
-		echo "           <a href=\"edit.php?id=" . $zone['id'] . "\"><img src=\"images/edit.gif\" title=\"" . _('View zone') . " " . $zone['name'] . "\" alt=\"[ " . _('View zone') . " " . $zone['name'] . " ]\"></a>\n";
 		if ( $perm_edit != "all" || $perm_edit != "none") {
 			$user_is_zone_owner = verify_user_is_owner_zoneid($zone["id"]);
 		}
+		echo "         <tr>\n";
+                echo "          <td class=\"checkbox\">\n";
+		if ( $count_zones_edit > 0 && ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) ) {
+      			echo "       <input type=\"checkbox\" name=\"zone_id[]\" value=\"" . $zone['id'] . "\">";
+		}
+                echo "          </td>\n";
+		echo "          <td>\n";
+		echo "           <a href=\"edit.php?id=" . $zone['id'] . "\"><img src=\"images/edit.gif\" title=\"" . _('View zone') . " " . $zone['name'] . "\" alt=\"[ " . _('View zone') . " " . $zone['name'] . " ]\"></a>\n";
 		if ( $perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1") ) {
       			echo "           <a href=\"delete_domain.php?id=" . $zone["id"] . "\"><img src=\"images/delete.gif\" title=\"" . _('Delete zone') . " " . $zone['name'] . "\" alt=\"[ ". _('Delete zone') . " " . $zone['name'] . " ]\"></a>\n";
 		}
@@ -105,6 +112,8 @@ if ($perm_view == "none") {
 		echo "           </tr>\n";
 	}
 	echo "          </table>\n";
+        echo "      <input type=\"submit\" name=\"commit\" value=\"" .  _('Delete zone(s)') . "\" class=\"button\">\n";
+	echo "     </form>\n";
 
 }
 

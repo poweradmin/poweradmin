@@ -375,7 +375,7 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template)
 			$domain_id = $db->lastInsertId('domains', 'id');
 			if (PEAR::isError($domain_id)) { error($id->getMessage()); return false; }
 
-			$response = $db->query("INSERT INTO zones (domain_id, owner, zone_template_id) VALUES (".$db->quote($domain_id, 'integer').", ".$db->quote($owner, 'integer').", ".$db->quote(($zone_template == "none") ? null : $zone_template, 'integer').")");
+			$response = $db->query("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (".$db->quote($domain_id, 'integer').", ".$db->quote($owner, 'integer').", ".$db->quote(($zone_template == "none") ? null : $zone_template, 'integer').")");
 			if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
 			if ($type == "SLAVE") {
@@ -1315,6 +1315,53 @@ function update_zone_records($zone_id, $zone_template) {
         } else {
             $response = $db->commit();
         }
+}
+
+/*
+ * Deletes a domain by a given id.
+ * Function always succeeds. If the field is not found in the database, thats what we want anyway.
+ */
+function delete_domains($domains)
+{
+	global $db;
+        $error = false;
+        $return = false;
+        $response = $db->beginTransaction();
+
+        foreach ($domains as $id) {
+                if (verify_permission('zone_content_edit_others')) { $perm_edit = "all" ; }
+                elseif (verify_permission('zone_content_edit_own')) { $perm_edit = "own" ; }
+                else { $perm_edit = "none" ; }
+                $user_is_zone_owner = verify_user_is_owner_zoneid($id);
+
+                if ( $perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1") ) {
+                        if (is_numeric($id)) {
+                                $db->exec("DELETE FROM zones WHERE domain_id=".$db->quote($id, 'integer'));
+                                $db->exec("DELETE FROM domains WHERE id=".$db->quote($id, 'integer'));
+                                $db->exec("DELETE FROM records WHERE domain_id=".$db->quote($id, 'integer'));
+                        } else {
+                                error(sprintf(ERR_INV_ARGC, "delete_domains", "id must be a number"));
+                                $error = true;
+                        }
+                } else {
+                        error(ERR_PERM_DEL_ZONE);
+                        $error = true;
+                }
+        }
+
+        if (PEAR::isError($response)) {
+            $response = $db->rollback();
+            $commit = false;
+        } else {
+            $response = $db->commit();
+            $commit = true;
+        }
+
+        if (true == $commit && false == $error) {
+            $return = true;
+        }
+
+        return $return;
 }
 
 ?>
