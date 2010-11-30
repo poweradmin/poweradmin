@@ -375,7 +375,7 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template)
 			$domain_id = $db->lastInsertId('domains', 'id');
 			if (PEAR::isError($domain_id)) { error($id->getMessage()); return false; }
 
-			$response = $db->query("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (".$db->quote($domain_id, 'integer').", ".$db->quote($owner, 'integer').", ".$db->quote(($zone_template == "none") ? null : $zone_template, 'integer').")");
+			$response = $db->query("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (".$db->quote($domain_id, 'integer').", ".$db->quote($owner, 'integer').", ".$db->quote(($zone_template == "none") ? 0 : $zone_template, 'integer').")");
 			if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
 			if ($type == "SLAVE") {
