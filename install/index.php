@@ -154,7 +154,7 @@ switch($step) {
 		$current_tables = $db->listTables();
 		foreach ($def_tables as $table) {
 			if (in_array($table['table_name'], $current_tables)) $db->dropTable($table['table_name']);
-			$db->createTable($table['table_name'], $table['fields']);
+			$db->createTable($table['table_name'], $table['fields'], $table['options']);
 		}
 		$fill_perm_items = $db->prepare('INSERT INTO perm_items VALUES (?, ?, ?)');
 		$db->extended->executeMultiple($fill_perm_items, $def_permissions);
