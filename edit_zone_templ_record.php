@@ -67,7 +67,7 @@ if (!(verify_permission('zone_master_add')) || !$owner) {
 	echo "      <input type=\"hidden\" name=\"rid\" value=\"" . $record_id . "\">\n";
 	echo "      <input type=\"hidden\" name=\"zid\" value=\"" . $zone_templ_id . "\">\n";
 	echo "      <tr>\n";
-	echo "       <td><input type=\"text\" name=\"name\" value=\"" . trim(str_replace($zone_name, '', $record["name"]), '.') . "\" class=\"input\">." . $zone_name . "</td>\n";
+	echo "       <td><input type=\"text\" name=\"name\" value=\"" . $record["name"] . "\" class=\"input\"></td>\n";
 	echo "       <td>IN</td>\n";
 	echo "       <td>\n";
 	echo "        <select name=\"type\">\n";
