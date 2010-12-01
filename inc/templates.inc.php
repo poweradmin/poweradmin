@@ -213,21 +213,27 @@ function add_zone_templ_record($zone_templ_id, $name, $type, $content, $ttl, $pr
 		error(ERR_PERM_ADD_RECORD);
 		return false;
 	} else {
-		if($type == "SPF"){
-			$content = $db->quote(stripslashes('\"'.$content.'\"'), 'text');
-		} else {
-			$content = $db->quote($content, 'text');
-		}
-		$query = "INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES ("
-					. $db->quote($zone_templ_id, 'integer') . ","
-					. $db->quote($name, 'text') . "," 
-					. $db->quote($type, 'text') . ","
-					. $content . ","
-					. $db->quote($ttl, 'integer') . ","
-					. $db->quote($prio, 'integer') . ")";
-		$result = $db->query($query);
-		if (PEAR::isError($result)) { error($result->getMessage()); return false; }
-		return true;
+                if ("" != $name) {
+                        if($type == "SPF"){
+                                $content = $db->quote(stripslashes('\"'.$content.'\"'), 'text');
+                        } else {
+                                $content = $db->quote($content, 'text');
+                        }
+                        $query = "INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES ("
+                                                . $db->quote($zone_templ_id, 'integer') . ","
+                                                . $db->quote($name, 'text') . ","
+                                                . $db->quote($type, 'text') . ","
+                                                . $content . ","
+                                                . $db->quote($ttl, 'integer') . ","
+                                                . $db->quote($prio, 'integer') . ")";
+                        $result = $db->query($query);
+                        if (PEAR::isError($result)) { error($result->getMessage()); return false; }
+                        return true;
+                }
+                else {
+                        error(ERR_DNS_HOSTNAME);
+                        return false;
+                }
 	}
 }
 
@@ -243,21 +249,27 @@ function edit_zone_templ_record($record) {
 		error(ERR_PERM_EDIT_RECORD);
 		return false;
 	} else {
-		if($record['type'] == "SPF"){
-			$content = $db->quote(stripslashes('\"'.$record['content'].'\"'), 'text');
-		}else{
-			$content = $db->quote($record['content'], 'text');
-		}
-		$query = "UPDATE zone_templ_records 
-			SET name=".$db->quote($record['name'], 'text').", 
-			type=".$db->quote($record['type'], 'text').", 
-			content=".$content.",
-			ttl=".$db->quote($record['ttl'], 'integer').",
-			prio=".$db->quote(isset($record['prio']) ? $record['prio'] : 0, 'integer')."
-			WHERE id=".$db->quote($record['rid'], 'integer');
-		$result = $db->query($query);
-		if (PEAR::isError($result)) { error($result->getMessage()); return false; }
-		return true;
+                if ("" != $record['name']) {
+                        if($record['type'] == "SPF"){
+                                $content = $db->quote(stripslashes('\"'.$record['content'].'\"'), 'text');
+                        }else{
+                                $content = $db->quote($record['content'], 'text');
+                        }
+                        $query = "UPDATE zone_templ_records
+                                SET name=".$db->quote($record['name'], 'text').",
+                                type=".$db->quote($record['type'], 'text').",
+                                content=".$content.",
+                                ttl=".$db->quote($record['ttl'], 'integer').",
+                                prio=".$db->quote(isset($record['prio']) ? $record['prio'] : 0, 'integer')."
+                                WHERE id=".$db->quote($record['rid'], 'integer');
+                        $result = $db->query($query);
+                        if (PEAR::isError($result)) { error($result->getMessage()); return false; }
+                        return true;
+                }
+                else {
+                        error(ERR_DNS_HOSTNAME);
+                        return false;
+                }
 	}
 }
 
