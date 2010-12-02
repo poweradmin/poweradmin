@@ -54,7 +54,7 @@ if (isset($_POST["commit"])) {
 	}
 }
 
-echo "    <h2>" . _('Edit record in zone') . " \"" .  $zone_name . "\"</h2>\n";
+echo "    <h2>" . _('Edit record in zone') . " \"<a href=\"edit.php?id=".$zid."\">" .  $zone_name . "</a>\"</h2>\n";
 
 if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" ) {
 	error(ERR_PERM_VIEW_RECORD);
