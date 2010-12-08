@@ -36,12 +36,14 @@ if ($zone_id == "-1") {
 
 if (isset($_POST['commit'])) {
         $error = false;
-	foreach ($_POST['record'] as $record) {
-		$edit_record = edit_record($record);
-                if (false === $edit_record) {
-                  $error = true;
+        if (isset($_POST['record'])) {
+                foreach ($_POST['record'] as $record) {
+                        $edit_record = edit_record($record);
+                        if (false === $edit_record) {
+                          $error = true;
+                        }
                 }
-	}
+        }
 	edit_zone_comment($_GET['id'],$_POST['comment']);
 	if (false === $error) {
                 update_soa_serial($_GET['id']);
