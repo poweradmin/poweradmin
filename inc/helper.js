@@ -35,9 +35,11 @@ function addField(area,field,limit) {
 		input.type = "text"; //Type of field - can be any valid input type like text,file,checkbox etc.
 		input.className = "input";
 		li.appendChild(input);
-                var editLink = document.createElement("a");
-                var linkText = document.createTextNode(" Remove field");
-                editLink.appendChild(linkText);
+                var editLink = document.createElement("input");
+		editLink.id = 'remove_button';
+		editLink.type = 'button';
+		editLink.value = 'Remove field';
+		editLink.setAttribute('class','button');
                 editLink.onclick = function() {this.parentNode.parentNode.removeChild(this.parentNode);}
 		li.appendChild(editLink);
 		field_area.appendChild(li);
