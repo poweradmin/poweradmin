@@ -23,7 +23,13 @@
 
 function dbError($msg)
 {
-	echo "     <div class=\"error\">Error: " . $msg->getDebugInfo() . "</div>\n";
+	$debug = $msg->getDebugInfo();
+
+	if (preg_match("/Unknown column 'zone_templ_id'/", $debug)) {
+		$debug = ERR_DB_NO_DB_UPDATE;
+	}
+
+	echo "     <div class=\"error\">Error: " . $debug . "</div>\n";
 	include_once("footer.inc.php");
         die();
 }
