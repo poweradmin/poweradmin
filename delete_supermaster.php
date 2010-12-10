@@ -44,8 +44,13 @@ if ($master_ip == "-1"){
 		echo "     <h2>" . _('Delete supermaster') . " \"" . $master_ip . "\"</h2>\n";
 
 		if (isset($_GET['confirm']) && $_GET["confirm"] == '1') {
+			if (!supermaster_exists($master_ip)) {
+				header("Location: list_supermasters.php");
+				exit;
+			}
+
 			if (delete_supermaster($master_ip)) {
-				success(SUC_ZONE_DEL);
+				success(SUC_SM_DEL);
 			}
 		} else {
 			echo "     <p>\n";
