@@ -38,6 +38,7 @@ if (isset($_POST["account"])) {
 }
 
 (verify_permission('supermaster_add')) ? $supermasters_add = "1" :  $supermasters_add = "0";
+(verify_permission('user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0" ; 
 
 $error = 0;
 if(isset($_POST["submit"]))
@@ -79,11 +80,23 @@ if ( $supermasters_add != "1" ) {
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">" . _('Account') . "</td>\n";
 	echo "        <td class=\"n\">\n";
-	if ($error) {
-		echo "         <input type=\"text\" class=\"input\" name=\"account\" value=\"" . $account . "\">\n";
-	} else {
-		echo "         <input type=\"text\" class=\"input\" name=\"account\" value=\"\">\n";
+
+	echo "         <select name=\"account\">\n";
+	/*
+	Display list of users to assign slave zone to if the
+	editing user has the permissions to, otherise just
+	display the adding users name
+	*/
+	$users = show_users();
+	foreach ($users as $user) {
+		if ($user['id'] === $_SESSION['userid']) { 
+ 	                       echo "          <option value=\"" . $user['username'] . "\" selected>" . $user['fullname'] . "</option>\n"; 
+ 	               } elseif ( $perm_view_others == "1" ) { 
+ 	                       echo "          <option value=\"" . $user['username'] . "\">" . $user['fullname'] . "</option>\n"; 
+ 	               }        
 	}
+	echo "         </select>\n";
+
 	echo "        </td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
