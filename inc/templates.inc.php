@@ -54,7 +54,7 @@ function add_zone_templ($details, $userid) {
 		error(ERR_PERM_ADD_ZONE_TEMPL);
 		return false;
 	} elseif ($zone_name_exists != '0') {
-		error(ERR_ZONE_TMPL_EXIST);
+		error(ERR_ZONE_TEMPL_EXIST);
 	} else {
 		$query = "INSERT INTO zone_templ (name, descr, owner)
 			VALUES ("
@@ -411,7 +411,7 @@ function edit_zone_templ($details, $zone_templ_id) {
 		error(ERR_PERM_ADD_ZONE_TEMPL);
 		return false;
 	} elseif ($zone_name_exists != '0') {
-		error(ERR_ZONE_TMPL_EXIST);
+		error(ERR_ZONE_TEMPL_EXIST);
 		return false;
 	} else {
                 $query = "UPDATE zone_templ

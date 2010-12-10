@@ -62,7 +62,8 @@ define("ERR_INV_EMAIL", _('Enter a valid email address.'));
 define("ERR_ZONE_NOT_EXIST", _('There is no zone with this ID.'));
 define("ERR_ZONE_TEMPL_NOT_EXIST", _('There is no zone template with this ID.'));
 define("ERR_INSTALL_DIR_EXISTS", _('The <a href="install/">install/</a> directory exists, you must remove it first before proceeding.'));
-define("ERR_ZONE_TMPL_EXIST", _('Zone template with this name already exists, please choose another one.'));
+define("ERR_ZONE_TEMPL_EXIST", _('Zone template with this name already exists, please choose another one.'));
+define("ERR_ZONE_TEMPL_IS_EMPTY", _('Template name can\'t be an empty string.'));
 
 /* DATABASE */
 define("ERR_DB_NO_DB_NAME", _('No database name has been set in config.inc.php.'));
@@ -105,6 +106,7 @@ define("ERR_DNS_PRINTABLE", _('Invalid characters have been used in this record.
 /* GOOD! */
 define("SUC_ZONE_ADD", _('Zone has been added successfully.')); 
 define("SUC_ZONE_DEL", _('Zone has been deleted successfully.')); 
+define("SUC_ZONES_UPD", _('Zones have been updated successfully.')); 
 define("SUC_USER_UPD", _('The user has been updated successfully.')); 
 define("SUC_USER_ADD", _('The user has been created successfully.')); 
 define("SUC_USER_DEL", _('The user has been deleted successfully.')); 

@@ -39,6 +39,7 @@ Check permissions
 $owner = get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
 
 if (isset($_POST['commit']) && $owner) {
+	success(SUC_ZONE_TEMPL_UPD);
 	foreach ($_POST['record'] as $record) {
 		edit_zone_templ_record($record);
 	}
@@ -49,13 +50,21 @@ if (isset($_POST['edit']) && $owner) {
 }
 
 if (isset($_POST['save_as'])) {
-        $templ_details = get_zone_templ_details($zone_templ_id);
-        add_zone_templ_save_as($_POST['templ_name'], $_POST['templ_descr'], $_SESSION['userid'], $_POST['record']);
+	if (zone_templ_name_exists($_POST['templ_name'])) {
+		error(ERR_ZONE_TEMPL_EXIST);
+	} elseif ($_POST['templ_name'] == '') {
+		error(ERR_ZONE_TEMPL_IS_EMPTY);
+	} else {
+		success(SUC_ZONE_TEMPL_ADD);
+        	$templ_details = get_zone_templ_details($zone_templ_id);
+        	add_zone_templ_save_as($_POST['templ_name'], $_POST['templ_descr'], $_SESSION['userid'], $_POST['record']);
+	}
 }
 
 if (isset($_POST['update_zones'])) {
         $records = get_zone_templ_records($zone_templ_id);
         $zones = get_list_zone_use_templ($zone_templ_id, $_SESSION['userid']);
+	success(SUC_ZONES_UPD);
         foreach ($zones as $zone) {
           update_zone_records($zone['id'], $zone_templ_id);
         }
