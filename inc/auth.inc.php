@@ -65,7 +65,7 @@ function doAuthenticate() {
 		else
 		{
 			//Authentication failed, retry.
-			auth( _('Authentication failed!'),"error");
+			auth( _('Authentication failed! - <a href="reset_password.php">(forgot password)</a>'),"error");
 		}
 	}
 	else
