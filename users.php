@@ -72,9 +72,11 @@ foreach ($users as $user) {
 		// do not allow to delete him- or herself, available to superusers only
 		if($user['uid'] != $_SESSION["userid"] || $perm_is_godlike == "1"){
 			echo "        <a href=\"delete_user.php?id=" . $user['uid'] . "\"><img src=\"images/delete.gif\" alt=\"[ " . _('Delete user') . " ]\"></a>";
-			echo "		<a href=\"users.php?action=switchuser&username=" . $user['username'] . "\"><img src=\"images/switch_user.png\" alt=\"[ " . _('Switch user') . " ]\"></a>\n";
 		}
-		
+		if ($user['uid'] != $_SESSION["userid"] && $perm_is_godlike == "1") {
+			echo "		<a href=\"users.php?action=switchuser&username=" . $user['username'] . "\"><img src=\"images/switch_user.png\" alt=\"[ " . _('Switch user') . " ]\"></a>\n";
+		}	
+	
 		echo "       </td>\n";
 		echo "       <td><input type=\"text\" name=\"user[" . $user['uid'] . "][username]\" value=\"" . $user['username'] . "\"></td>\n";
 		echo "       <td><input type=\"text\" name=\"user[" . $user['uid'] . "][fullname]\" value=\"" . $user['fullname'] . "\"></td>\n";
