@@ -59,7 +59,7 @@ if (isset($_POST['save_as'])) {
 	} else {
 		success(SUC_ZONE_TEMPL_ADD);
         $records = get_records_from_domain_id($zone_id);
-        add_zone_templ_save_as($_POST['templ_name'], $_POST['templ_descr'], $_SESSION['userid'], $records);
+        add_zone_templ_save_as($_POST['templ_name'], $_POST['templ_descr'], $_SESSION['userid'], $records, get_zone_name_from_id($zone_id));
 	}
 }
 
