@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Ｐoweradmin JP 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-04-21 00:39-0700\n"
-"PO-Revision-Date: 2010-04-22 02:21+0900\n"
+"PO-Revision-Date: 2011-03-09 11:06+0900\n"
 "Last-Translator: Koichi MATSUMOTO <mzch@mac.com>\n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -971,4 +971,164 @@ msgstr "有効"
 #: inc/users.inc.php:365
 msgid "Password has been changed, please login."
 msgstr "パスワードが変更されました。ログインし直して下さい。"
+
+#: install/index.inc.php:47
+msgid "Installation step"
+msgstr "インストールステップ"
+
+#: install/index.inc.php:68
+msgid "This installer expects you to have a PowerDNS database accessable from this server. This installer also expects you to have never ran Poweradmin before, or that you want to overwrite the Poweradmin part of the database. If you have had Poweradmin running before, any data in the following tables will be destroyed: perm_items, perm_templ, perm_templ_items, users and zones. This installer will, of course, not touch the data in the PowerDNS tables of the database. However, it is recommended that you create a backup of your database before proceeding."
+msgstr "このインストーラーは、PowerDNS のデータベースにこのサーバーからアクセスすることができることを前提としています。また、以前に Poweradmin を実行したことがないか、したことがあってもデータベースで Poweradmin が使用した箇所を上書きすることが前提となります。もし、以前に Poweradmin を実行していたのなら、次のテーブルのデータがクリアされます: perm_itemrs、perm_templ、perm_templ_items、users、zones。当然のことながらこのインストーラーはデータベースの PowerDNS のテーブルに変更を加えることはありませんが、念のため処理を始める前にデータベースのバックアップを行うことをお勧めします。"
+
+#: install/index.inc.php:70
+msgid "The alternative for this installer is a manual installation. Refer to the poweradmin.org website if you want to go down that road."
+msgstr "このインストーラーを使わずに、手動でインストールすることもできます。その場合は、poweradmin.org のウェブサイトをご覧下さい。"
+
+#: install/index.inc.php:72
+msgid "Finally, if you see any errors during the installation process, a problem report would be appreciated. You can report problems (and ask for help) on the poweradmin-users mailinglist."
+msgstr "最後に、インストール処理中にエラーが発生した場合、問題を報告していただけるとありがたく思います。poweradmin-users メーリングリストに問題を報告して解決策を尋ねることができます。"
+
+#: install/index.inc.php:74
+msgid "Do you want to proceed now?"
+msgstr "続けてもよろしいですか?"
+
+#: install/index.inc.php:85
+msgid "To prepare the database for using Poweradmin, the installer needs to modify the PowerDNS database. It will add a number of tables and it will fill these tables with some data. If the tables are already present, the installer will drop them first."
+msgstr "Poweradmin で使用するデータベースを準備するために、インストーラーは、PowerDNS データベースを更新する必要があります。インストーラーはテーブルをいくつか追加しデータを設定します。テーブルが既に存在する場合、インストーラーは最初にテーブルをドロップします。"
+
+#: install/index.inc.php:87
+msgid "To do all of this, the installer needs to access the database with an account which has sufficient rights. If you trust the installer, you may give it the username and password of the database user root. Otherwise, make sure the user has enough rights, before actually proceeding."
+msgstr "上記の作業を行うため、インストーラはそれに必要な権限を持つアカウントでデータベースにアクセスする必要があります。インストーラを信頼するなら、データベースの root ユーザーのユーザー名とパスワードを指定して下さい。root でアクセスさせてくなければ、実際に処理を継続する前に、入力したユーザーに必要な権限があることを確認して下さい。"
+
+#: install/index.inc.php:94
+msgid "The username to use to connect to the database, make sure the username has sufficient rights to perform administrative task to the PowerDNS database (the installer wants to drop, create and fill tables to the database)."
+msgstr "データベース接続に使用するユーザー名です。このユーザーには、Poweradmin データベースに対する管理タスクを実行する権限があることを確認して下さい (インストーラは、データベースに対して、テーブルの作成／削除、データの書き込みを行います)。"
+
+#: install/index.inc.php:99
+msgid "The password for this username."
+msgstr "このユーザーに対するパスワード"
+
+#: install/index.inc.php:102
+msgid "Hostname"
+msgstr "ホスト名"
+
+#: install/index.inc.php:104
+msgid "The hostname on which the PowerDNS database resides. Frequently, this will be \"localhost\"."
+msgstr "PowerDNS データベースが存在するホストのホスト名。たいていの場合は、\"localhost\" です。"
+
+#: install/index.inc.php:107
+msgid "DB Port"
+msgstr "DB ポート"
+
+#: install/index.inc.php:109
+msgid "The port the database server is listening on."
+msgstr "データベースサーバーが待機しているポート"
+
+#: install/index.inc.php:112
+msgid "Database"
+msgstr "データベース"
+
+#: install/index.inc.php:114
+msgid "The name of the PowerDNS database."
+msgstr "PowerDNS データベースの名前"
+
+#: install/index.inc.php:117
+msgid "Database type"
+msgstr "データベースタイプ"
+
+#: install/index.inc.php:123
+msgid "The type of the PowerDNS database."
+msgstr "PowerDNS データベースのタイプ"
+
+#: install/index.inc.php:126
+msgid "Poweradmin administrator password"
+msgstr "Poweradmin 管理者のパスワード"
+
+#: install/index.inc.php:128
+msgid "The password of the Poweradmin administrator. This administrator has full rights to Poweradmin using the web interface."
+msgstr "Poweradmin 管理者のパスワードです。この管理者はウェブインターフェースを使って Poweradmin のすべての操作を実行する権限を持ちます。"
+
+#: install/index.inc.php:134
+msgid "Go to step"
+msgstr "ステップ"
+
+#: install/index.inc.php:140
+msgid "Updating database..."
+msgstr "データベースを更新中..."
+
+#: install/index.inc.php:167
+msgid "Now we will gather all details for the configuration itself."
+msgstr "設定に必要な情報をすべて収集します。"
+
+#: install/index.inc.php:173
+msgid "The username for Poweradmin. This new user will have limited rights only."
+msgstr "Poweradmin のユーザー名。この新しいユーザーは権限が制限されます。"
+
+#: install/index.inc.php:181
+msgid "Hostmaster"
+msgstr "ホストマスター"
+
+#: install/index.inc.php:183
+msgid "When creating SOA records and no hostmaster is provided, this value here will be used. Should be in the form \"hostmaster.example.net\"."
+msgstr "SOA レコードを作成する際に hostmaster を設定しなければ、この値が使用されます。\"hostmaster.example.net\" といった形式でなくてはなりません。"
+
+#: install/index.inc.php:186
+msgid "Primary nameserver"
+msgstr "プライマリ・ネームサーバー"
+
+#: install/index.inc.php:188
+msgid "When creating new zones using the template, this value will be used as primary nameserver. Should be like \"ns1.example.net\"."
+msgstr "テンプレートを使用して新しくゾーンを作成する際に、この値がプライマリネームサーバとして使用されます。\"ns1.example.net\" のように指定して下さい。"
+
+#: install/index.inc.php:191
+msgid "Secondary nameserver"
+msgstr "セカンダリ・ネームサーバー"
+
+#: install/index.inc.php:193
+msgid "When creating new zones using the template, this value will be used as secondary nameserver. Should be like \"ns2.example.net\"."
+msgstr "テンプレートを使用して新しくゾーンを作成する際に、この値がセカンダリネームサーバとして使用されます。\"ns2.example.net\" のように指定して下さい。"
+
+#: install/index.inc.php:229
+msgid "You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert and update records in the PowerDNS database."
+msgstr "Poweradmin の権限に制限を加えようとお考えなら、ここでテーブルのデータを更新することができます。そのためには、新しいユーザーを作成して、PowerDNS データベースにレコードを select, insert, update する権限だけを与えるべきです。"
+
+#: install/index.inc.php:241
+msgid "In MySQL you should now perform the following command:"
+msgstr "MySQL で、次のコマンドを実行して下さい:"
+
+#: install/index.inc.php:258
+msgid "After you have added the new user, proceed with this installation procedure."
+msgstr "新しいユーザーを追加した後で、このインストールプロセスを継続します。"
+
+#: install/index.inc.php:300
+msgid "The installer was able to write to the file \""
+msgstr "インストーラは、ファイル \""
+
+#: install/index.inc.php:300
+msgid "\". A basic configuration, based on the details you have given, has been created."
+msgstr "\" へ書き込みを行いました。指定された情報に基づいて基本設定を作成しました。"
+
+#: install/index.inc.php:302
+msgid "The installer is unable to write to the file \""
+msgstr "インストーラは、ファイル \""
+
+#: install/index.inc.php:302
+msgid "\" (which is in itself good). The configuration is printed here. You should now create the file \""
+msgstr "\" に書き込みができません (書き込みができないこと自体は構いません)。設定内容を以下に表示しますので、Poweradmin のルートディレクトリに、ファイル \""
+
+#: install/index.inc.php:302
+msgid "\" in the Poweradmin root directory yourself. It should contain the following few lines"
+msgstr "\" を自分で作成して、表示された行をそのまま入力して下さい。"
+
+#: install/index.inc.php:317
+msgid "Now we have finished the configuration, you should (must!) remove the directory \"install/\" from the Poweradmin root directory. You will not be able to use Poweradmin if it exists. Do it now."
+msgstr "設定が完了しました。ディレクトリ \"install\" を Poweradmin のルートディレクトリから **必ず** 削除して下さい! そのディレクトリがあると、Poweradmin を使うことはできません。今すぐ削除して下さい。"
+
+#: install/index.inc.php:318
+msgid "After you have removed the directory, you can login to <a href=\"../index.php\">Poweradmin</a> with username \"admin\" and password \""
+msgstr "ディレクトリを削除したら、<a href=\"../index.php\">Poweradmin</a> にユーザー \"admin\"、パスワード \""
+
+#: install/index.inc.php:318
+msgid "\". You are highly encouraged to change these as soon as you are logged in."
+msgstr "\" でログインすることができます。ログインしたら、すぐにユーザー名とパスワードを変更することを強くお勧めします。"
 
