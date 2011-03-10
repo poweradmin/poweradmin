@@ -46,9 +46,30 @@ td {
 	vertical-align:	top;
 }
 
-td.y {
+td.actions {
+}
+
+td.name {
 	background:		#ffffff;
 	border:			1px solid #000000;
+}
+
+td.type {
+	background:		#ffffff;
+	border:			1px solid #000000;
+}
+
+td.count {
+	background:		#ffffff;
+	border:			1px solid #000000;
+}
+
+td.owner {
+	background:		#ffffff;
+	border:			1px solid #000000;
+}
+
+td.checkbox {
 }
 
 .menu {

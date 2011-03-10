@@ -93,16 +93,16 @@ if ($perm_view == "none") {
       			echo "       <input type=\"checkbox\" name=\"zone_id[]\" value=\"" . $zone['id'] . "\">";
 		}
                 echo "          </td>\n";
-		echo "          <td>\n";
+		echo "          <td class=\"actions\">\n";
 		echo "           <a href=\"edit.php?id=" . $zone['id'] . "\"><img src=\"images/edit.gif\" title=\"" . _('View zone') . " " . $zone['name'] . "\" alt=\"[ " . _('View zone') . " " . $zone['name'] . " ]\"></a>\n";
 		if ( $perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1") ) {
       			echo "           <a href=\"delete_domain.php?id=" . $zone["id"] . "\"><img src=\"images/delete.gif\" title=\"" . _('Delete zone') . " " . $zone['name'] . "\" alt=\"[ ". _('Delete zone') . " " . $zone['name'] . " ]\"></a>\n";
 		}
 		echo "          </td>\n";
-		echo "          <td class=\"y\">" . $zone["name"] . "</td>\n";
-		echo "          <td class=\"y\">" . strtolower($zone["type"]) . "</td>\n";
-		echo "          <td class=\"y\">" . $zone["count_records"] . "</td>\n";
-		echo "          <td class=\"y\">" . $zone_owners . "</td>\n";
+		echo "          <td class=\"name\">" . $zone["name"] . "</td>\n";
+		echo "          <td class=\"type\">" . strtolower($zone["type"]) . "</td>\n";
+		echo "          <td class=\"count\">" . $zone["count_records"] . "</td>\n";
+		echo "          <td class=\"owner\">" . $zone_owners . "</td>\n";
 		if ($iface_zonelist_serial) {
 			if ($serial != "") {
 				echo "          <td class=\"y\">" . $serial . "</td>\n";
