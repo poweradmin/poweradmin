@@ -91,7 +91,7 @@ function dbConnect() {
 		
 	$dsn = "$db_type://$db_user:$db_pass@$db_host:$db_port/$db_name";
     $options = array(
-        'debug' => 2,
+//        'debug' => 2,
         'portability' => MDB2_PORTABILITY_ALL ^ MDB2_PORTABILITY_EMPTY_TO_NULL,
     );
 	$db = MDB2::connect($dsn, $options);
