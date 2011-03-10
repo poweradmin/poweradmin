@@ -90,10 +90,14 @@ function dbConnect() {
 	}
 		
 	$dsn = "$db_type://$db_user:$db_pass@$db_host:$db_port/$db_name";
-	$db = MDB2::connect($dsn);
-	$db->setOption('portability', MDB2_PORTABILITY_ALL ^ MDB2_PORTABILITY_EMPTY_TO_NULL);
+    $options = array(
+        'debug' => 2,
+        'portability' => MDB2_PORTABILITY_ALL ^ MDB2_PORTABILITY_EMPTY_TO_NULL,
+    );
+	$db = MDB2::connect($dsn, $options);
 
-	if (MDB2::isError($db)) {
+    // FIXME - it's strange, but this doesn't work, perhaps bug in MDB2 library
+	if (PEAR::isError($db)) {
 		// Error handling should be put.
 		error(MYSQL_ERROR_FATAL, $db->getMessage());
 	}
