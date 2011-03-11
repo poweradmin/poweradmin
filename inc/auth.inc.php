@@ -88,13 +88,13 @@ function auth($msg="",$type="success")
 		print "<div class=\"$type\">$msg</div>\n";
 	}
 	?>
-	<h2><?php echo _('Login'); ?></h2>
+	<h2><?php echo _('Log in'); ?></h2>
 	<?php
 	?>
 	<form method="post" action="<?php echo $_SERVER["PHP_SELF"] ?>">
 	 <table border="0">
 	  <tr>
-	   <td class="n"><?php echo _('Login'); ?>:</td>
+	   <td class="n"><?php echo _('Username'); ?>:</td>
 	   <td class="n"><input type="text" class="input" name="username" id="username"></td>
 	  </tr>
 	  <tr>
@@ -104,7 +104,7 @@ function auth($msg="",$type="success")
 	  <tr>
 	   <td class="n">&nbsp;</td>
 	   <td class="n">
-	    <input type="submit" name="authenticate" class="button" value=" <?php echo _('Login'); ?> ">
+	    <input type="submit" name="authenticate" class="button" value=" <?php echo _('Go'); ?> ">
 	   </td>
 	  </tr>
 	 </table>

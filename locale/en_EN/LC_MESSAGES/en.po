@@ -375,8 +375,12 @@ msgstr ""
 msgid "Authentication failed!"
 msgstr ""
 
-#: inc/auth.inc.php:89 inc/auth.inc.php:95 inc/auth.inc.php:105
-msgid "Login"
+#: inc/auth.inc.php:89
+msgid "Log in"
+msgstr ""
+
+#: inc/auth.inc.php:105
+msgid "Go"
 msgstr ""
 
 #: inc/auth.inc.php:129

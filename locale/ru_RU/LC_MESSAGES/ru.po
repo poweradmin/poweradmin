@@ -394,9 +394,13 @@ msgstr "Сессия истекла, авторизуйтесь заново, п
 msgid "Authentication failed!"
 msgstr "Авторизация не выполнена!"
 
-#: inc/auth.inc.php:89 inc/auth.inc.php:95 inc/auth.inc.php:105
-msgid "Login"
-msgstr "Имя пользователя"
+#: inc/auth.inc.php:89
+msgid "Log in"
+msgstr "Авторизация"
+
+#: inc/auth.inc.php:105
+msgid "Go"
+msgstr "OK"
 
 #: inc/auth.inc.php:129
 msgid "You have logged out."

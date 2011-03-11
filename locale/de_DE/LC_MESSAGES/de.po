@@ -402,9 +402,13 @@ msgstr "Session ist abgelaufen, bitte erneut einloggen."
 msgid "Authentication failed!"
 msgstr "Authentifizierung fehlgeschlagen!"
 
-#: inc/auth.inc.php:89 inc/auth.inc.php:95 inc/auth.inc.php:105
-msgid "Login"
+#: inc/auth.inc.php:89
+msgid "Log in"
 msgstr "Anmeldung"
+
+#: inc/auth.inc.php:104
+msgid "Go"
+msgstr "OK"
 
 #: inc/auth.inc.php:129
 msgid "You have logged out."

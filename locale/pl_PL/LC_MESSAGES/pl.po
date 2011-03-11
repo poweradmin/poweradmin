@@ -582,10 +582,12 @@ msgid "Authentication failed!"
 msgstr "Logowanie nieudane!"
 
 #: inc/auth.inc.php:89
-#: inc/auth.inc.php:95
+msgid "Log in"
+msgstr "Login"
+
 #: inc/auth.inc.php:105
-msgid "Login"
-msgstr "Zaloguj"
+msgid "Go"
+msgstr "Wykonaj"
 
 #: inc/auth.inc.php:129
 msgid "You have logged out."

@@ -472,9 +472,13 @@ msgstr "La session a expirée. Vous devez vous reconnecter."
 msgid "Authentication failed!"
 msgstr "L'authentification a échouée !"
 
-#: inc/auth.inc.php:88 inc/auth.inc.php:94 inc/auth.inc.php:104
-msgid "Login"
+#: inc/auth.inc.php:88
+msgid "Log in"
 msgstr "Connexion"
+
+#: inc/auth.inc.php:104
+msgid "Go"
+msgstr "Exécuter"
 
 #: inc/error.inc.php:23
 msgid "You do not have the permission to perform searches."
