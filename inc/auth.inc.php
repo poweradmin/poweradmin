@@ -78,7 +78,7 @@ function doAuthenticate() {
 			if($syslog_use)
 			{
 				openlog($syslog_ident, LOG_PERROR, $syslog_facility);
-				$syslog_message = sprintf('Failed authentication attempt from [%s] for user \'%s\'', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]);
+				$syslog_message = sprintf('Failed authentication attempt from [%s] for user \'%s\'', $_SERVER['REMOTE_ADDR'], substr($_SESSION["userlogin"], 0, 16));
 				syslog(LOG_WARNING, $syslog_message);
 				closelog();
 			}
