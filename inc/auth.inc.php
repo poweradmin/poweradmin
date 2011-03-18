@@ -23,6 +23,7 @@
 function doAuthenticate() {
 	global $db;
 	global $iface_expire;
+	global $syslog_use, $syslog_ident, $syslog_facility;
 	global $cryptokey;
 
 	if (isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] == "logout") {
@@ -57,6 +58,14 @@ function doAuthenticate() {
 			$_SESSION["name"] = $rowObj["fullname"];
 			if(isset($_POST["authenticate"]))
 			{
+				// Log to syslog if it's enabled
+				if($syslog_use)
+				{
+					openlog($syslog_ident, LOG_PERROR, $syslog_facility);
+					$syslog_message = sprintf('Successful authentication attempt from [%s] for user \'%s\'', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]);
+					syslog(LOG_INFO, $syslog_message);
+					closelog();
+				}
 				//If a user has just authenticated, redirect him to index with timestamp, so post-data gets lost.
 				session_write_close();
 				clean_page("index.php");
@@ -65,6 +74,14 @@ function doAuthenticate() {
 		}
 		else
 		{
+			// Log to syslog if it's enabled
+			if($syslog_use)
+			{
+				openlog($syslog_ident, LOG_PERROR, $syslog_facility);
+				$syslog_message = sprintf('Failed authentication attempt from [%s] for user \'%s\'', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]);
+				syslog(LOG_WARNING, $syslog_message);
+				closelog();
+			}
 			//Authentication failed, retry.
 			auth( _('Authentication failed! - <a href="reset_password.php">(forgot password)</a>'),"error");
 		}
