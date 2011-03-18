@@ -33,7 +33,7 @@ $dns_strict_tld_check	= true;
  This facility could be used in combination with fail2ban to
  ban IPs with break-in attempts
 */
-$syslog_use = true;
+$syslog_use = false;
 $syslog_ident = 'poweradmin';
 // On Windows usually only LOG_USER is available
 $syslog_facility = LOG_USER;
