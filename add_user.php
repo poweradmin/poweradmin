@@ -3,7 +3,8 @@
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://rejo.zenger.nl/poweradmin> for more details.
  *
- *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2007-2010  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2011  Poweradmin Development Team <http://www.poweradmin.org/credits>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,12 +27,13 @@ if (!verify_permission('user_add_new')) {
 	error(ERR_PERM_ADD_USER);
 } else {
 	if(isset($_POST["commit"])) {
-		add_new_user($_POST);
-		success(SUC_USER_ADD);
+		if (add_new_user($_POST)) {
+			success(SUC_USER_ADD);
+		}
 	}
 
 	echo "     <h2>" . _('Add user') . "</h2>\n";
-	echo "     <form method=\"post\">\n";
+	echo "     <form method=\"post\" action=\"add_user.php\">\n";
 	echo "      <table>\n";
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">" . _('Username') . "</td>\n"; 

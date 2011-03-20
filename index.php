@@ -3,7 +3,8 @@
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://rejo.zenger.nl/poweradmin> for more details.
  *
- *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2007-2010  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2011  Poweradmin Development Team <http://www.poweradmin.org/credits>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,15 +19,13 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-session_start();
-$root_path = dirname(__FILE__)."/";
 require_once("common.php");
 
-$tpl->assign(array(
-	"L_WELCOME"	=>	_('Welcome'),
-	"D_NAME"	=>	$_SESSION['name'],
+$template->assign(array(
+	"L_Welcome"	=>	_('Welcome'),
+	"D_Name"	=>	$_SESSION['name'],
 ));
-$tpl->display("pdns_index.tpl");
+
+$template->display("index.tpl");
 include_once("inc/footer.inc.php");
 ?>

@@ -4,6 +4,7 @@
  *  See <https://rejo.zenger.nl/poweradmin> for more details.
  *
  *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2011  Poweradmin Development Team <http://www.poweradmin.org/credits>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,9 +20,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once("inc/config.inc.php");
+if(file_exists('inc/config.inc.php')) {
+	include_once("inc/config.inc.php");
+} else {
+	$iface_lang = 'en_EN';
+}
 
-setlocale(LC_ALL, $iface_lang);
+setlocale(LC_ALL, $iface_lang, $iface_lang.'.UTF-8');
 $gettext_domain = 'messages';
 bindtextdomain($gettext_domain, "./locale");
 textdomain($gettext_domain);

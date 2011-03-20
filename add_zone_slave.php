@@ -3,7 +3,8 @@
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://rejo.zenger.nl/poweradmin> for more details.
  *
- *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2007-2010  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2011  Poweradmin Development Team <http://www.poweradmin.org/credits>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,8 +28,16 @@ if ((isset($_POST['owner'])) && (v_num($_POST['owner']))) {
         $owner = $_POST['owner'];
 }
 
-$zone = trim($_POST['domain']);
-$master = $_POST['slave_master'];
+$zone = "";
+if (isset($_POST['domain'])) {
+	$zone = trim($_POST['domain']);
+}
+
+$master = "";
+if (isset($_POST['slave_master'])) {
+	$master = $_POST['slave_master'];
+}
+
 $type = "SLAVE";
 
 /*
@@ -37,7 +46,7 @@ Check permissions
 (verify_permission('zone_slave_add')) ? $zone_slave_add = "1" : $zone_slave_add = "0" ;
 (verify_permission('user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0" ; 
 
-if ($_POST['submit'] && $zone_slave_add == "1") {
+if (isset($_POST['submit']) && $zone_slave_add == "1") {
 	if (!is_valid_hostname_fqdn($zone,0)) {
 		error(ERR_DNS_HOSTNAME);
 	} elseif (domain_exists($zone)) {
@@ -63,13 +72,13 @@ if ( $zone_slave_add != "1" ) {
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">" . _('Zone name') . "</td>\n";
 	echo "        <td class=\"n\">\n";
-	echo "         <input type=\"text\" class=\"input\" name=\"domain\" value=\"" . $zone . "\">\n";
+    echo "         <input type=\"text\" class=\"input\" name=\"domain\" value=\"\">\n";
 	echo "        </td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">" . _('IP address of master NS') . ":</td>\n";
 	echo "        <td class=\"n\">\n";
-	echo "         <input type=\"text\" class=\"input\" name=\"slave_master\" value=\"" . $master . "\">\n";
+	echo "         <input type=\"text\" class=\"input\" name=\"slave_master\" value=\"\">\n";
 	echo "        </td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";

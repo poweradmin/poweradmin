@@ -3,7 +3,8 @@
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://rejo.zenger.nl/poweradmin> for more details.
  *
- *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2007-2010  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2011  Poweradmin Development Team <http://www.poweradmin.org/credits>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -119,8 +120,8 @@ if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit
 	echo "        <td class=\"n\">" . _('Name') . "</td>\n";
 	echo "        <td class=\"n\">&nbsp;</td>\n";
 	echo "        <td class=\"n\">" . _('Type') . "</td>\n";
-	echo "        <td class=\"n\">" . _('Priority') .  "</td>\n";
 	echo "        <td class=\"n\">" . _('Content') . "</td>\n";
+	echo "        <td class=\"n\">" . _('Priority') .  "</td>\n";
 	echo "        <td class=\"n\">" . _('TTL') . "</td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
@@ -136,7 +137,7 @@ if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit
 				$add = "";
 			}
 		} else {
-			if (eregi('in-addr.arpa', $zone_name) && strtoupper($record_type) == 'PTR') {
+			if (preg_match('/in-addr.arpa/i', $zone_name) && strtoupper($record_type) == 'PTR') {
 				$add = " SELECTED";
 			} elseif (strtoupper($record_type) == 'A') {
 				$add = " SELECTED";
@@ -148,8 +149,8 @@ if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit
 	}
 	echo "         </select>\n";
 	echo "        </td>\n";
-	echo "        <td class=\"n\"><input type=\"text\" name=\"prio\" class=\"sinput\" value=\"" . $prio . "\"></td>\n";
 	echo "        <td class=\"n\"><input type=\"text\" name=\"content\" class=\"input\" value=\"" . $content . "\"></td>\n";
+	echo "        <td class=\"n\"><input type=\"text\" name=\"prio\" class=\"sinput\" value=\"" . $prio . "\"></td>\n";
 	echo "        <td class=\"n\"><input type=\"text\" name=\"ttl\" class=\"sinput\" value=\"" . $ttl . "\"</td>\n";
 	echo "       </tr>\n";
 	echo "      </table>\n";

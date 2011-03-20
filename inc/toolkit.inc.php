@@ -4,6 +4,7 @@ ob_start();
  *  See <https://rejo.zenger.nl/poweradmin> for more details.
  *
  *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2011  Poweradmin Development Team <http://www.poweradmin.org/credits>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,6 +19,12 @@ ob_start();
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+if (! function_exists('session_start')) die(error('You have to install PHP session extension!'));
+if (! function_exists('_')) die(error('You have to install PHP gettext extension!'));
+if (! function_exists('mcrypt_encrypt')) die(error('You have to install PHP mcrypt extension!'));
+
+session_start();
 
 include_once("config-me.inc.php");
 
@@ -45,10 +52,10 @@ if (isset($_GET["letter"])) {
    define('LETTERSTART', "a");
 }
 
-if (isset($_GET["zone_sort_by"])) {
+if (isset($_GET["zone_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["zone_sort_by"] ) ) {
    define('ZONE_SORT_BY', $_GET["zone_sort_by"]);
    $_SESSION["zone_sort_by"] = $_GET["zone_sort_by"];
-} elseif(isset($_POST["zone_sort_by"])) {
+} elseif(isset($_POST["zone_sort_by"]) && preg_match("/^[a-z_]+$/", $_POST["zone_sort_by"] )) {
    define('ZONE_SORT_BY', $_POST["zone_sort_by"]);
    $_SESSION["zone_sort_by"] = $_POST["zone_sort_by"];
 } elseif(isset($_SESSION["zone_sort_by"])) {
@@ -57,10 +64,10 @@ if (isset($_GET["zone_sort_by"])) {
    define('ZONE_SORT_BY', "name");
 }
 
-if (isset($_GET["record_sort_by"])) {
+if (isset($_GET["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["record_sort_by"] )) {
    define('RECORD_SORT_BY', $_GET["record_sort_by"]);
    $_SESSION["record_sort_by"] = $_GET["record_sort_by"];
-} elseif(isset($_POST["record_sort_by"])) {
+} elseif(isset($_POST["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_POST["record_sort_by"] )) {
    define('RECORD_SORT_BY', $_POST["record_sort_by"]);
    $_SESSION["record_sort_by"] = $_POST["record_sort_by"];
 } elseif(isset($_SESSION["record_sort_by"])) {
@@ -89,7 +96,7 @@ $valid_tlds = array(
   "rs", "ru", "rw", "sa", "sb", "sc", "sd", "se", "sg", "sh", "si", "sj", "sk",
   "sl", "sm", "sn", "so", "sr", "st", "su", "sv", "sy", "sz", "tc", "td", "tel",
   "tf", "tg", "th", "tj", "tk", "tl", "tm", "tn", "to", "tp", "tr", "travel",
-  "tt", "tv", "tw", "tz", "ua", "ug", "uk", "um", "us", "uy", "uz", "va", "vc",
+  "tt", "tv", "tw", "tz", "ua", "ug", "uk", "us", "uy", "uz", "va", "vc",
   "ve", "vg", "vi", "vn", "vu", "wf", "ws", "xn--0zwm56d", "xn--11b5bs3a9aj6g",
   "xn--80akhbyknj4f", "xn--9t4b11yi5a", "xn--deba0ad", "xn--g6w251d",
   "xn--hgbk6aj7f53bba", "xn--hlcj6aya9esc7a", "xn--jxalpdlp", "xn--kgbechtv",
@@ -105,13 +112,14 @@ require_once("database.inc.php");
 $server_types = array("MASTER", "SLAVE", "NATIVE");
 
 // $rtypes - array of possible record types
-$rtypes = array('A', 'AAAA', 'CNAME', 'HINFO', 'MX', 'NAPTR', 'NS', 'PTR', 'SOA', 'SPF', 'SRV', 'SSHFP', 'TXT');
+$rtypes = array('A', 'AAAA', 'CNAME', 'HINFO', 'MX', 'NAPTR', 'NS', 'PTR', 'SOA', 'SPF', 'SRV', 'SSHFP', 'TXT', 'RP');
 
 // If fancy records is enabled, extend this field.
 if($dns_fancy) {
-        $rtypes[14] = 'URL';
-        $rtypes[15] = 'MBOXFW';
+	$rtypes[14] = 'URL';
+	$rtypes[15] = 'MBOXFW';
 	$rtypes[16] = 'CURL';
+	$rtypes[17] = 'LOC';
 }
 
 
@@ -119,9 +127,9 @@ if($dns_fancy) {
  * Includes  *
  *************/
 
+require_once("i18n.inc.php");
 require_once("error.inc.php");
 require_once("auth.inc.php");
-require_once("i18n.inc.php");
 require_once("users.inc.php");
 require_once("dns.inc.php");
 require_once("record.inc.php");
@@ -148,9 +156,9 @@ function show_pages($amount,$rowamount,$id='')
          if ($_GET["start"] == $i) {
             echo "[ <b>".$i."</b> ] ";
          } else {
-            echo "[ <a href=\"".$_SERVER["PHP_SELF"]."?start=".$i;
+            echo " <a href=\"".$_SERVER["PHP_SELF"]."?start=".$i;
 	    if ($id!='') echo "&id=".$id;
-	    echo "\">".$i."</a> ] ";
+	    echo "\">[ ".$i." ]</a> ";
          }
       }
    }
@@ -171,11 +179,11 @@ function show_letters($letterstart,$userid=true)
 	}
 	elseif (zone_letter_start($letter,$userid))
 	{
-		echo "[ <a href=\"".$_SERVER["PHP_SELF"]."?letter=1\">0-9</a> ] ";
+		echo "<a href=\"".$_SERVER["PHP_SELF"]."?letter=1\">[ 0-9 ]</a> ";
 	}
 	else
 	{
-		echo "[ <span class=\"letternotavailble\">0-9</span> ] ";
+		echo "[ <span class=\"letternotavailable\">0-9</span> ] ";
 	}
 
         foreach (range('a','z') as $letter)
@@ -186,13 +194,20 @@ function show_letters($letterstart,$userid=true)
                 }
                 elseif (zone_letter_start($letter,$userid))
                 {
-                        echo "[ <a href=\"".$_SERVER["PHP_SELF"]."?letter=".$letter."\">".$letter."</a> ] ";
+                        echo "<a href=\"".$_SERVER["PHP_SELF"]."?letter=".$letter."\">[ ".$letter." ]</a> ";
                 }
                 else
                 {
-                        echo "[ <span class=\"letternotavailble\">".$letter."</span> ] ";
+                        echo "[ <span class=\"letternotavailable\">".$letter."</span> ] ";
                 }
         }
+
+	if ($letterstart == 'all')
+	{
+		echo "[ <span class=\"lettertaken\"> Show all </span> ] ";
+	} else {
+		echo "<a href=\"".$_SERVER["PHP_SELF"]."?letter=all\">[ Show all ]</a> ";
+	}
 }
 
 function zone_letter_start($letter,$userid=true)
@@ -316,8 +331,8 @@ function parse_template_value($val, $domain)
 
 
 function is_valid_email($address) {
-	$fields = split("@", $address, 2);
-	if((!eregi("^[0-9a-z]([-_.]?[0-9a-z])*$", $fields[0])) || !is_valid_hostname_fqdn($fields[1], 0)) {
+	$fields = preg_split("/@/", $address, 2);
+	if((!preg_match("/^[0-9a-z]([-_.]?[0-9a-z])*$/i", $fields[0])) || (!isset($fields[1]) || $fields[1] == '' || !is_valid_hostname_fqdn($fields[1], 0))) {
 		return false;
 	}
 	return true;
@@ -325,7 +340,7 @@ function is_valid_email($address) {
 
 
 function v_num($string) {
-	if (!eregi("^[0-9]+$", $string)) { 
+	if (!preg_match("/^[0-9]+$/i", $string)) { 
 		return false ;
 	} else {
 		return true ;
@@ -337,6 +352,19 @@ function debug_print($var) {
 	echo "<pre style=\"border: 2px solid blue;\">\n";
 	if (is_array($var)) { print_r($var) ; } else { echo $var ; } 
 	echo "</pre>\n";
+}
+
+// Set timezone (required for PHP5)
+function set_timezone() {
+	global $timezone;
+	
+	if (function_exists('date_default_timezone_set')) {
+		if (isset($timezone)) {
+			date_default_timezone_set($timezone);
+		} else if (!ini_get('date.timezone')) {
+			date_default_timezone_set('UTC');	
+		}
+	}
 }
 
 ?>

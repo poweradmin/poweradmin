@@ -3,7 +3,8 @@
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://rejo.zenger.nl/poweradmin> for more details.
  *
- *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2007-2010  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2011  Poweradmin Development Team <http://www.poweradmin.org/credits>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -37,11 +38,15 @@ elseif (verify_permission('zone_content_edit_own')) { $perm_content_edit = "own"
 else { $perm_content_edit = "none" ; }
 
 $zid = get_zone_id_from_record_id($_GET['id']);
+if ($zid == NULL) {
+	header("Location: list_zones.php");
+	exit;
+}
 $user_is_zone_owner = verify_user_is_owner_zoneid($zid);
 
 $zone_info = get_zone_info_from_id($zid);
 
-if ($record_id == "-1" ) {
+if ($record_id == "-1") {
 	error(ERR_INV_INPUT);
 } else {
 	if ($confirm == '1') {
@@ -58,7 +63,7 @@ if ($record_id == "-1" ) {
 		$user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
 		$record_info = get_record_from_id($record_id);
 	
-		echo "     <h2>" . _('Delete record') . " in zone \"" . $zone_name . "\"</h2>\n";
+		echo "     <h2>" . _('Delete record') . " in zone \"<a href=\"edit.php?id=".$zid."\">" . $zone_name . "</a>\"</h2>\n";
 
 		if ( $zone_info['type'] == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
 			error(ERR_PERM_EDIT_RECORD);
@@ -87,7 +92,7 @@ if ($record_id == "-1" ) {
 				echo "     <p>" . _('You are trying to delete a record that is needed for this zone to work.') . "</p>\n";
 			}
 			echo "     <p>" . _('Are you sure?') . "</p>\n";
-			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='" . $_SERVER["REQUEST_URI"] . "&confirm=1'\" value=\"" . _('Yes') . "\">\n";
+			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='delete_record.php?id=" . $record_id . "&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
 			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
 		}	
 		// Update serial when a record is removed.

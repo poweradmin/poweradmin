@@ -3,7 +3,8 @@
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://rejo.zenger.nl/poweradmin> for more details.
  *
- *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2007-2010  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2011  Poweradmin Development Team <http://www.poweradmin.org/credits>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,14 +19,21 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-session_start();
-$root_path = dirname(__FILE__)."/";
-require_once("common.php");
+
+require_once("inc/toolkit.inc.php");
+include_once("inc/header.inc.php");
+
 verify_permission('user_view_others') ? $perm_view_others = "1" : $perm_view_others = "0" ;
 verify_permission('user_edit_own') ? $perm_edit_own = "1" : $perm_edit_own = "0" ;
 verify_permission('user_edit_others') ? $perm_edit_others = "1" : $perm_edit_others = "0" ;
 verify_permission('templ_perm_edit') ? $perm_templ_perm_edit = "1" : $perm_templ_perm_edit = "0" ;
-verify_permission('is_ueberuser') ? $perm_is_godlike = "1" : $perm_is_godlike = "0" ; 
+verify_permission('is_ueberuser') ? $perm_is_godlike = "1" : $perm_is_godlike = "0" ;
+verify_permission('user_add_new') ? $perm_add_new = "1" : $perm_add_new = "0" ;
+
+if(isset($_GET['action']) && $_GET['action'] === "switchuser" && $perm_is_godlike === "1"){
+        $_SESSION["userlogin"] = $_GET['username'];
+	echo '<meta http-equiv="refresh" content="1"/>';
+}
 
 unset($commit_button);
 
@@ -36,17 +44,18 @@ if (isset($_POST['commit'])) {
 }
 
 $users = get_user_detail_list("");
-$tpl->assign(array(
-	"L_USER_ADMINISTRATION"	=>	_('User administration'),
-	"L_USERNAME"	=>	_('Username'),
-	"L_FULLNAME"	=>	_('Fullname'),
-	"L_DESCRIPTION"	=>	_('Description'),
-	"L_EMAILADDRESS"	=>	_('Emailaddress'),
-	"L_TEMPLATE"	=>	_('Template'),
-	"L_ENABLED"	=>	_('Enabled'),
-));
-
-$tpl->display("users.tpl");
+echo "    <h2>" . _('User administration') . "</h2>\n";
+echo "    <form method=\"post\" action=\"\">\n";
+echo "     <table>\n";
+echo "      <tr>\n";
+echo "       <th>&nbsp;</th>\n";
+echo "       <th>" . _('Username') . "</th>\n";
+echo "       <th>" . _('Fullname') . "</th>\n";
+echo "       <th>" . _('Description') . "</th>\n";
+echo "       <th>" . _('Emailaddress') . "</th>\n";
+echo "       <th>" . _('Template') . "</th>\n";
+echo "       <th>" . _('Enabled') . "</th>\n";
+echo "      </tr>\n";
 
 foreach ($users as $user) {
 	if ($user['active'] == "1" ) {
@@ -56,12 +65,19 @@ foreach ($users as $user) {
 	}
 	if (($user['uid'] == $_SESSION["userid"] && $perm_edit_own == "1") || ($user['uid'] != $_SESSION["userid"] && $perm_edit_others == "1" )) {
 		$commit_button = "1";
-
-		echo "      <input type=\"hidden\" name=\"user[" . $user['uid'] . "][uid]\" value=\"" . $user['uid'] . "\">\n";
 		echo "      <tr>\n";
 		echo "       <td>\n";
-		echo "        <a href=\"edit_user.php?id=" . $user['uid'] . "\"><img src=\"images/edit.gif\" alt=\"[ " . _('Edit user') . "\" ]></a>\n";
-		echo "        <a href=\"delete_user.php?id=" . $user['uid'] . "\"><img src=\"images/delete.gif\" alt=\"[ " . _('Delete user') . "\" ]></a>\n";
+		echo "        <input type=\"hidden\" name=\"user[" . $user['uid'] . "][uid]\" value=\"" . $user['uid'] . "\">\n";
+		echo "        <a href=\"edit_user.php?id=" . $user['uid'] . "\"><img src=\"images/edit.gif\" alt=\"[ " . _('Edit user') . " ]\"></a>\n";
+
+		// do not allow to delete him- or herself, available to superusers only
+		if($user['uid'] != $_SESSION["userid"] || $perm_is_godlike == "1"){
+			echo "        <a href=\"delete_user.php?id=" . $user['uid'] . "\"><img src=\"images/delete.gif\" alt=\"[ " . _('Delete user') . " ]\"></a>";
+		}
+		if ($user['uid'] != $_SESSION["userid"] && $perm_is_godlike == "1") {
+			echo "		<a href=\"users.php?action=switchuser&username=" . $user['username'] . "\"><img src=\"images/switch_user.png\" alt=\"[ " . _('Switch user') . " ]\"></a>\n";
+		}	
+	
 		echo "       </td>\n";
 		echo "       <td><input type=\"text\" name=\"user[" . $user['uid'] . "][username]\" value=\"" . $user['username'] . "\"></td>\n";
 		echo "       <td><input type=\"text\" name=\"user[" . $user['uid'] . "][fullname]\" value=\"" . $user['fullname'] . "\"></td>\n";
@@ -100,22 +116,27 @@ foreach ($users as $user) {
 }
 
 echo "     </table>\n";
-if ($commit_button) {
+if (isset($commit_button) && $commit_button) {
 	echo "     <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
 	echo "     <input type=\"reset\" class=\"button\" name=\"reset\" value=\"" . _('Reset changes') . "\">\n"; 
 }
 echo "    </form>\n";
 
-echo "    <ul>\n";
+if ($perm_templ_perm_edit == "1" || $perm_add_new == "1") {
+	echo "    <ul>\n";
+}
+
 if ($perm_templ_perm_edit == "1") {
 	echo "<li><a href=\"list_perm_templ.php\">" . _('Edit permission template') . "</a>.</li>\n";
 }
 
-if (verify_permission('user_add_new')) {
+if ($perm_add_new == "1") {
 	echo "<li><a href=\"add_user.php\">" . _('Add user') . "</a>.</li>\n";
 }
-echo "    </ul>\n";
 
+if ($perm_templ_perm_edit == "1" || $perm_add_new == "1") {
+	echo "    </ul>\n";
+}
 
 include_once("inc/footer.inc.php");
 ?>

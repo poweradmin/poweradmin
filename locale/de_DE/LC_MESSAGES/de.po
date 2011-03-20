@@ -402,9 +402,13 @@ msgstr "Session ist abgelaufen, bitte erneut einloggen."
 msgid "Authentication failed!"
 msgstr "Authentifizierung fehlgeschlagen!"
 
-#: inc/auth.inc.php:89 inc/auth.inc.php:95 inc/auth.inc.php:105
-msgid "Login"
+#: inc/auth.inc.php:89
+msgid "Log in"
 msgstr "Anmeldung"
+
+#: inc/auth.inc.php:104
+msgid "Go"
+msgstr "OK"
 
 #: inc/auth.inc.php:129
 msgid "You have logged out."
@@ -874,8 +878,8 @@ msgid "Now we have finished the configuration, you should (must!) remove the dir
 msgstr "Die Konfiguration ist nun beendet. Sie sollten (m&uuml;ssen!) das Verzeichnis \"install/\" aus dem Poweradmin root Verzeichnis l&ouml;schen. Wenn das Verzeichnis existiert, k&ouml;nnen Sie Poweradmin nicht verwenden. L&ouml;schen Sie das Verzeichnis jetzt."
 
 #: index.php:213
-msgid "After you have removed the directory, you can login to <a href=\"index.php\">Poweradmin</a> with username \"admin\" and password \""
-msgstr "Nachdem Sie das Verzeichnis gel&ouml;scht haben, k&ouml;nnen sie sich einloggen unter: <a href=\"index.php\">Poweradmin</a> Benutzername \"admin\" und Passwort \""
+msgid "After you have removed the directory, you can login to <a href=\"../index.php\">Poweradmin</a> with username \"admin\" and password \""
+msgstr "Nachdem Sie das Verzeichnis gel&ouml;scht haben, k&ouml;nnen sie sich einloggen unter: <a href=\"../index.php\">Poweradmin</a> Benutzername \"admin\" und Passwort \""
 
 msgid "\". You are highly encouraged to change these as soon as you are logged in."
 msgstr "\". Sobald Sie eingeloggt sind wird empfohlen, diese Daten zu &auml;ndern."

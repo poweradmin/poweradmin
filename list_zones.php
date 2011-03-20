@@ -3,7 +3,8 @@
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://rejo.zenger.nl/poweradmin> for more details.
  *
- *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2007-2010  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2011  Poweradmin Development Team <http://www.poweradmin.org/credits>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -47,27 +48,33 @@ if ($perm_view == "none") {
 	}
 	echo "     <p>" . _('There are no zones to show in this listing.') . "</p>\n";
 } else {
-	echo "     <div class=\"showmax\">\n";
-	show_pages($count_zones_all_letterstart,$iface_rowamount);
-	echo "     </div>\n";
+	if(LETTERSTART != 'all'){
+		echo "     <div class=\"showmax\">\n";
+		show_pages($count_zones_all_letterstart,$iface_rowamount);
+		echo "     </div>\n";
+	}
 
 	if ($count_zones_view > $iface_rowamount) {
 		echo "<div class=\"showmax\">";
 		show_letters(LETTERSTART);
 		echo "</div>";
 	}
+        echo "     <form method=\"post\" action=\"delete_domains.php\">\n";
 	echo "     <table>\n";
 	echo "      <tr>\n";
+	echo "       <th>&nbsp;</th>\n";
 	echo "       <th>&nbsp;</th>\n";
 	echo "       <th><a href=\"list_zones.php?zone_sort_by=name\">" . _('Name') . "</a></th>\n";
 	echo "       <th><a href=\"list_zones.php?zone_sort_by=type\">" . _('Type') . "</a></th>\n";
 	echo "       <th><a href=\"list_zones.php?zone_sort_by=count_records\">" . _('Records') . "</a></th>\n";
 	echo "       <th>" . _('Owner') . "</th>\n";
-	if ($iface_zonelist_serial == "1") echo "       <th>" . _('Serial') . "</th>\n";
+	if ($iface_zonelist_serial) echo "       <th>" . _('Serial') . "</th>\n";
 	echo "      </tr>\n";
 
 	if ($count_zones_view <= $iface_rowamount) {
 		$zones = get_zones($perm_view,$_SESSION['userid'],"all",ROWSTART,$iface_rowamount,ZONE_SORT_BY);
+	} elseif(LETTERSTART == 'all') {
+		 $zones = get_zones($perm_view,$_SESSION['userid'],"all",ROWSTART,'all',ZONE_SORT_BY);
 	} else {
 		$zones = get_zones($perm_view,$_SESSION['userid'],LETTERSTART,ROWSTART,$iface_rowamount,ZONE_SORT_BY);
 		$count_zones_shown = ($zones == -1) ? 0 : count($zones);
@@ -75,23 +82,28 @@ if ($perm_view == "none") {
 	foreach ($zones as $zone)
 	{
 		$zone_owners = get_fullnames_owners_from_domainid($zone['id']);
-		if ($iface_zonelist_serial == "1") $serial = get_serial_by_zid($zone['id']);
+		if ($iface_zonelist_serial) $serial = get_serial_by_zid($zone['id']);
 
-		echo "         <tr>\n";
-		echo "          <td>\n";
-		echo "           <a href=\"edit.php?id=" . $zone['id'] . "\"><img src=\"images/edit.gif\" title=\"" . _('View zone') . " " . $zone['name'] . "\" alt=\"[ " . _('View zone') . " " . $zone['name'] . " ]\"></a>\n";
 		if ( $perm_edit != "all" || $perm_edit != "none") {
 			$user_is_zone_owner = verify_user_is_owner_zoneid($zone["id"]);
 		}
+		echo "         <tr>\n";
+                echo "          <td class=\"checkbox\">\n";
+		if ( $count_zones_edit > 0 && ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) ) {
+      			echo "       <input type=\"checkbox\" name=\"zone_id[]\" value=\"" . $zone['id'] . "\">";
+		}
+                echo "          </td>\n";
+		echo "          <td class=\"actions\">\n";
+		echo "           <a href=\"edit.php?id=" . $zone['id'] . "\"><img src=\"images/edit.gif\" title=\"" . _('View zone') . " " . $zone['name'] . "\" alt=\"[ " . _('View zone') . " " . $zone['name'] . " ]\"></a>\n";
 		if ( $perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1") ) {
       			echo "           <a href=\"delete_domain.php?id=" . $zone["id"] . "\"><img src=\"images/delete.gif\" title=\"" . _('Delete zone') . " " . $zone['name'] . "\" alt=\"[ ". _('Delete zone') . " " . $zone['name'] . " ]\"></a>\n";
 		}
 		echo "          </td>\n";
-		echo "          <td class=\"y\">" . $zone["name"] . "</td>\n";
-		echo "          <td class=\"y\">" . strtolower($zone["type"]) . "</td>\n";
-		echo "          <td class=\"y\">" . $zone["count_records"] . "</td>\n";
-		echo "          <td class=\"y\">" . $zone_owners . "</td>\n";
-		if ($iface_zonelist_serial == "1") {
+		echo "          <td class=\"name\">" . $zone["name"] . "</td>\n";
+		echo "          <td class=\"type\">" . strtolower($zone["type"]) . "</td>\n";
+		echo "          <td class=\"count\">" . $zone["count_records"] . "</td>\n";
+		echo "          <td class=\"owner\">" . $zone_owners . "</td>\n";
+		if ($iface_zonelist_serial) {
 			if ($serial != "") {
 				echo "          <td class=\"y\">" . $serial . "</td>\n";
 			} else {
@@ -101,6 +113,8 @@ if ($perm_view == "none") {
 		echo "           </tr>\n";
 	}
 	echo "          </table>\n";
+        echo "      <input type=\"submit\" name=\"commit\" value=\"" .  _('Delete zone(s)') . "\" class=\"button\">\n";
+	echo "     </form>\n";
 
 }
 

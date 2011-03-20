@@ -3,7 +3,8 @@
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://rejo.zenger.nl/poweradmin> for more details.
  *
- *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2007-2010  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2011  Poweradmin Development Team <http://www.poweradmin.org/credits>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -95,7 +96,7 @@ if ($edit_id == "-1") {
 		(($user['active']) == "1") ? $check = " CHECKED" : $check = "" ;
 
 		echo "     <h2>" . _('Edit user') . " \"" . $user['fullname'] . "\"</h2>\n";
-		echo "     <form method=\"post\">\n";
+		echo "     <form method=\"post\" action=\"\">\n";
 		echo "      <input type=\"hidden\" name=\"number\" value=\"" . $edit_id . "\">\n";
 		echo "      <table>\n";
 		echo "       <tr>\n";
@@ -137,7 +138,7 @@ if ($edit_id == "-1") {
 		echo "       </tr>\n";
 		echo "       <tr>\n";
                 echo "        <td class=\"n\">&nbsp;</td>\n";  
-		echo "        <td class=\"n\"><input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Commit changes') . "\"></td>\n"; 
+		echo "        <td class=\"n\"><input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n"; 
 		echo "        <input type=\"reset\" class=\"button\" name=\"reset\" value=\"" . _('Reset changes') . "\"></td>\n";
 		echo "      </table>\n";
 		echo "     </form>\n";

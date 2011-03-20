@@ -3,7 +3,8 @@
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://rejo.zenger.nl/poweradmin> for more details.
  *
- *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2007-2010  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2011  Poweradmin Development Team <http://www.poweradmin.org/credits>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,6 +22,7 @@
 
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
+echo "  <script type=\"text/javascript\" src=\"inc/helper.js\"></script>";
 
 $owner = "-1";
 if ((isset($_POST['owner'])) && (v_num($_POST['owner']))) {
@@ -33,9 +35,16 @@ if (isset($_POST["dom_type"]) && (in_array($_POST['dom_type'], $server_types))) 
 }
 
 if (isset($_POST['domain'])) {
-	$domain = trim($_POST['domain']);
+        $temp = array();
+        foreach ($_POST['domain'] as $domain) {
+                if($domain != "")
+                {
+                        $temp[] = trim($domain);
+                }
+        }
+	$domains = $temp;
 } else {
-	$domain = "";
+	$domains = array();
 }
 
 if (isset($_POST['zone_template'])) {
@@ -51,10 +60,20 @@ Check user permissions
 (verify_permission('user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0" ; 
 
 if (isset($_POST['submit']) && $zone_master_add == "1" ) {
-	if (add_domain($domain, $owner, $dom_type, '', $zone_template)) {	
-		success("<a href=\"edit.php?id=" . get_zone_id_from_name($domain) . "\">".SUC_ZONE_ADD.'</a>');
-		unset($domain, $owner, $dom_type, $zone_template);
-	}
+        $error = false;
+        foreach ($domains as $domain) {
+                if (domain_exists($domain)) {
+                        error($domain . " failed - " . ERR_DOMAIN_EXISTS);
+                        // TODO: repopulate domain name
+                        $error = true;
+                } elseif (add_domain($domain, $owner, $dom_type, '', $zone_template)) {
+                        success("<a href=\"edit.php?id=" . get_zone_id_from_name($domain) . "\">".$domain . " - " . SUC_ZONE_ADD.'</a>');
+                }
+        }
+
+        if (false === $error) {
+          unset($domains, $owner, $dom_type, $zone_template);
+        }
 }
 
 if ( $zone_master_add != "1" ) {
@@ -64,13 +83,19 @@ if ( $zone_master_add != "1" ) {
 
 	$available_zone_types = array("NATIVE", "MASTER");
 	$users = show_users();
+	$zone_templates = get_list_zone_templ($_SESSION['userid']);
 
 	echo "     <form method=\"post\" action=\"add_zone_master.php\">\n";
 	echo "      <table>\n";
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">" . _('Zone name') . ":</td>\n";
 	echo "        <td class=\"n\">\n";
-	echo "         <input type=\"text\" class=\"input\" name=\"domain\" value=\"" .  $domain . "\">\n";
+	echo "         <ul id=\"domain_names\" style=\"list-style-type:none; padding:0 \">\n";
+	echo "          <li><input type=\"text\" class=\"input\" name=\"domain[]\" value=\"\" id=\"domain_1\"></li>\n";
+	echo "         </ol>\n";
+	echo "        </td>\n";
+	echo "        <td class=\"n\">\n";
+        echo "         <input class=\"button\" type=\"button\" value=\"Add another domain\" onclick=\"addField('domain_names','domain_',0);\" />\n";
 	echo "        </td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
@@ -90,6 +115,7 @@ if ( $zone_master_add != "1" ) {
 	}
 	echo "         </select>\n";
 	echo "        </td>\n";
+	echo "        <td class=\"n\">&nbsp;</td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">" . _('Type') . ":</td>\n";
@@ -100,24 +126,26 @@ if ( $zone_master_add != "1" ) {
         }
 	echo "         </select>\n";
 	echo "        </td>\n";
+	echo "        <td>&nbsp;</td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">" . _('Template') . ":</td>\n";
 	echo "        <td class=\"n\">\n";
 	echo "         <select name=\"zone_template\">\n";
 	echo "          <option value=\"none\">none</option>\n";
-	$zone_templates = get_list_zone_templ($_SESSION['userid']);
         foreach($zone_templates as $zone_template) {
 		echo "          <option value=\"" . $zone_template['id'] . "\">" . $zone_template['name'] . "</option>\n";
         }
 	echo "         </select>\n";
 	echo "        </td>\n";
+	echo "        <td>&nbsp;</td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">&nbsp;</td>\n";
 	echo "        <td class=\"n\">\n";
-	echo "         <input type=\"submit\" class=\"button\" name=\"submit\" value=\"" . _('Add zone') . "\">\n";
+        echo "         <input type=\"submit\" class=\"button\" name=\"submit\" value=\"" . _('Add zone') . "\" onclick=\"checkDomainFilled();return false;\">\n";
 	echo "        </td>\n";
+	echo "        <td class=\"n\">&nbsp;</td>\n";
 	echo "       </tr>\n";
 	echo "      </table>\n";
 	echo "     </form>\n";

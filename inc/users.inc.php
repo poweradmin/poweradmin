@@ -4,6 +4,7 @@
  *  See <https://rejo.zenger.nl/poweradmin> for more details.
  *
  *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2011  Poweradmin Development Team <http://www.poweradmin.org/credits>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -88,13 +89,13 @@ function list_permission_templates() {
 
 	$template_list = array();
 	while ($template= $response->fetchRow()) {
-		$tempate_list[] = array(
+		$template_list[] = array(
 			"id"	=>	$template['id'],
 			"name"	=>	$template['name'],
 			"descr"	=>	$template['descr']
 			);
 	}
-	return $tempate_list;
+	return $template_list;
 }
 
 /*
@@ -137,7 +138,6 @@ function show_users($id='',$rowstart=0,$rowamount=9999999)
 	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 	$ret = array();
-	$retcount = 0;
 	while ($r = $response->fetchRow()) {
 		$ret[] = array(
 		 "id"                    =>              $r["id"],
@@ -194,8 +194,7 @@ function user_exists($user)
 
 /*
  * Delete a user from the system
- * return values: true if user doesnt exist.
- */
+s */
 function delete_user($uid,$zones)
 {
 	global $db;
@@ -204,7 +203,7 @@ function delete_user($uid,$zones)
 		 error(ERR_PERM_DEL_USER);
 		 return false;
 	} else {
-
+		
 		if (is_array($zones)) {
 			foreach ($zones as $zone) {
 				if ($zone['target'] == "delete") {
@@ -362,7 +361,7 @@ function change_user_pass($details) {
 		$response = $db->query($query);
 		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
-		logout( _('Password has been changed, please login.')); 
+		logout( _('Password has been changed, please login.'), 'success'); 
 	} else {
 		error(ERR_USER_WRONG_CURRENT_PASS);
 		return false;
@@ -518,7 +517,8 @@ function get_user_detail_list($specific) {
 
 function get_permissions_by_template_id($templ_id=0,$return_name_only=false) {
 	global $db;
-	
+
+	$limit = '';
 	if ($templ_id > 0) {
 		$limit = ", perm_templ_items 
 			WHERE perm_templ_items.templ_id = " . $db->quote($templ_id, 'integer') . "
@@ -639,10 +639,12 @@ function update_perm_templ_details($details) {
 	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
-	foreach ($details['perm_id'] AS $perm_id) {
-		$query = "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . $db->quote($details['templ_id'], 'integer') . "," . $db->quote($perm_id, 'integer') . ")";
-		$response = $db->query($query);
-		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+	if (isset($details['perm_id'])) {
+		foreach ($details['perm_id'] AS $perm_id) {
+			$query = "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . $db->quote($details['templ_id'], 'integer') . "," . $db->quote($perm_id, 'integer') . ")";
+			$response = $db->query($query);
+			if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+		}
 	}
 
 	return true;
@@ -740,7 +742,7 @@ function add_new_user($details) {
 		error(ERR_PERM_ADD_USER);
 		return false;
 	} elseif (user_exists($details['username'])) {
-		error(ERR_USER_EXISTS);
+		error(ERR_USER_EXIST);
 		return false;
 	} elseif (!is_valid_email($details['email'])) {
 		error(ERR_INV_EMAIL);

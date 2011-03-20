@@ -4,6 +4,7 @@
  *  See <https://rejo.zenger.nl/poweradmin> for more details.
  *
  *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2011  Poweradmin Development Team <http://www.poweradmin.org/credits>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,26 +20,26 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//session_start();
-
 function doAuthenticate() {
 	global $db;
 	global $iface_expire;
+	global $cryptokey;
+
 	if (isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] == "logout") {
-		logout();
+		logout( _('You have logged out.'), 'success');
 	}
 
 	// If a user had just entered his/her login && password, store them in our session.
 	if(isset($_POST["authenticate"]))
 	{
-			$_SESSION["userpwd"] = $_POST["password"];
+			$_SESSION["userpwd"] = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($cryptokey), $_POST['password'], MCRYPT_MODE_CBC, md5(md5($cryptokey))));;
 			$_SESSION["userlogin"] = $_POST["username"];
 	}
 
 	// Check if the session hasnt expired yet.
 	if ((isset($_SESSION["userid"])) && ($_SESSION["lastmod"] != "") && ((time() - $_SESSION["lastmod"]) > $iface_expire))
 	{
-		logout( _('Session expired, please login again.'),"error");
+		logout( _('Session expired, please login again.'), 'error');
 	}
 
 	// If the session hasn't expired yet, give our session a fresh new timestamp.
@@ -47,7 +48,8 @@ function doAuthenticate() {
 	if(isset($_SESSION["userlogin"]) && isset($_SESSION["userpwd"]))
 	{
 		//Username and password are set, lets try to authenticate.
-		$result = $db->query("SELECT id, fullname FROM users WHERE username=". $db->quote($_SESSION["userlogin"], 'text')  ." AND password=". $db->quote(md5($_SESSION["userpwd"]), 'text')  ." AND active=1");
+		$session_pass = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($cryptokey), base64_decode($_SESSION["userpwd"]), MCRYPT_MODE_CBC, md5(md5($cryptokey))), "\0");
+		$result = $db->query("SELECT id, fullname FROM users WHERE username=". $db->quote($_SESSION["userlogin"], 'text')  ." AND password=". $db->quote(md5($session_pass), 'text')  ." AND active=1");
 		if($result->numRows() == 1)
 		{
 			$rowObj = $result->fetchRow();
@@ -64,7 +66,7 @@ function doAuthenticate() {
 		else
 		{
 			//Authentication failed, retry.
-			auth( _('Authentication failed!'),"error");
+			auth( _('Authentication failed! - <a href="reset_password.php">(forgot password)</a>'),"error");
 		}
 	}
 	else
@@ -80,16 +82,39 @@ function doAuthenticate() {
 
 function auth($msg="",$type="success")
 {
-	global $tpl;
-	
-	$tpl->assign(array(
-		"D_MSG"	=>	$msg,
-		"D_TYPE"	=>	$type,
-		"L_LOGIN"	=>	_('Login'),
-		"L_PASSWORD"	=>	_('Password'),
-		"S_PHP_SELF"	=>	$_SERVER['PHP_SELF'],
-	));
-	$tpl->display("login.tpl");
+	include_once('inc/header.inc.php');
+	if ( $msg )
+	{
+		print "<div class=\"$type\">$msg</div>\n";
+	}
+	?>
+	<h2><?php echo _('Log in'); ?></h2>
+	<?php
+	?>
+	<form method="post" action="<?php echo $_SERVER["PHP_SELF"] ?>">
+	 <table border="0">
+	  <tr>
+	   <td class="n"><?php echo _('Username'); ?>:</td>
+	   <td class="n"><input type="text" class="input" name="username" id="username"></td>
+	  </tr>
+	  <tr>
+	   <td class="n"><?php echo _('Password'); ?>:</td>
+	   <td class="n"><input type="password" class="input" name="password"></td>
+	  </tr>
+	  <tr>
+	   <td class="n">&nbsp;</td>
+	   <td class="n">
+	    <input type="submit" name="authenticate" class="button" value=" <?php echo _('Go'); ?> ">
+	   </td>
+	  </tr>
+	 </table>
+	</form>
+        <script type="text/javascript">
+         <!--
+          document.getElementById('username').focus();
+         //-->
+        </script>
+	<?php
 	include_once('inc/footer.inc.php');
 	exit;
 }
@@ -99,15 +124,11 @@ function auth($msg="",$type="success")
  * Logout the user and kickback to login form.
  */
 
-function logout($msg="")
+function logout($msg="",$type="")
 {
-	$type = '';
-	if ( $msg == "" ) {
-		$msg = _('You have logged out.');
-		$type = "success";
-	};
 	unset($_SESSION["userid"]);
 	unset($_SESSION["name"]);
+	session_unset();
 	session_destroy();
 	session_write_close();
 	auth($msg, $type);

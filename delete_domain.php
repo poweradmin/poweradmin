@@ -3,7 +3,8 @@
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://rejo.zenger.nl/poweradmin> for more details.
  *
- *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2007-2010  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2011  Poweradmin Development Team <http://www.poweradmin.org/credits>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -37,6 +38,10 @@ if (isset($_GET['confirm']) && v_num($_GET['confirm'])) {
 }
 
 $zone_info = get_zone_info_from_id($zone_id);
+if (!$zone_info) {
+	header("Location: list_zones.php");
+	exit;
+}
 $zone_owners = get_fullnames_owners_from_domainid($zone_id);
 $user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
 
@@ -65,8 +70,7 @@ if ($confirm == '1') {
 			}
 		}
 		echo "     <p>" . _('Are you sure?') . "</p>\n";
-		echo "     <br><br>\n";
-		echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='" . $_SERVER["REQUEST_URI"] . "&confirm=1'\" value=\"" . _('Yes') . "\">\n";
+		echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='delete_domain.php?id=" . $zone_id . "&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
 		echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
 	} else {
 		error(ERR_PERM_DEL_ZONE);

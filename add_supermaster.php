@@ -3,7 +3,8 @@
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://rejo.zenger.nl/poweradmin> for more details.
  *
- *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2007-2010  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2011  Poweradmin Development Team <http://www.poweradmin.org/credits>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,13 +23,26 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
-$master_ip = $_POST["master_ip"];
-$ns_name = $_POST["ns_name"];
-$account = $_POST["account"];
+$master_ip = "";
+if (isset($_POST["master_ip"])) {
+	$master_ip = $_POST["master_ip"];
+}
+
+$ns_name = "";
+if (isset($_POST["ns_name"])) {
+	$ns_name = $_POST["ns_name"];
+}
+
+$account = "";
+if (isset($_POST["account"])) {
+	$account = $_POST["account"];
+}
 
 (verify_permission('supermaster_add')) ? $supermasters_add = "1" :  $supermasters_add = "0";
+(verify_permission('user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0" ; 
 
-if($_POST["submit"])
+$error = 0;
+if(isset($_POST["submit"]))
 {
 	if (add_supermaster($master_ip, $ns_name, $account)) {
 		success(SUC_SM_ADD);
@@ -67,11 +81,23 @@ if ( $supermasters_add != "1" ) {
 	echo "       <tr>\n";
 	echo "        <td class=\"n\">" . _('Account') . "</td>\n";
 	echo "        <td class=\"n\">\n";
-	if ($error) {
-		echo "         <input type=\"text\" class=\"input\" name=\"account\" value=\"" . $account . "\">\n";
-	} else {
-		echo "         <input type=\"text\" class=\"input\" name=\"account\" value=\"\">\n";
+
+	echo "         <select name=\"account\">\n";
+	/*
+	Display list of users to assign slave zone to if the
+	editing user has the permissions to, otherise just
+	display the adding users name
+	*/
+	$users = show_users();
+	foreach ($users as $user) {
+		if ($user['id'] === $_SESSION['userid']) { 
+ 	                       echo "          <option value=\"" . $user['username'] . "\" selected>" . $user['fullname'] . "</option>\n"; 
+ 	               } elseif ( $perm_view_others == "1" ) { 
+ 	                       echo "          <option value=\"" . $user['username'] . "\">" . $user['fullname'] . "</option>\n"; 
+ 	               }        
 	}
+	echo "         </select>\n";
+
 	echo "        </td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";

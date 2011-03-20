@@ -3,7 +3,8 @@
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://rejo.zenger.nl/poweradmin> for more details.
  *
- *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2007-2010  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2011  Poweradmin Development Team <http://www.poweradmin.org/credits>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -41,12 +42,13 @@ if ($perm_templ == "-1"){
 		$templ_details = get_permission_template_details($perm_templ);
 		echo "     <h2>" . _('Delete permission template') . " \"" . $templ_details['name'] . "\"</h2>\n";
 
-		if ($_GET["confirm"] == '1') {
+		if (isset($_GET['confirm']) && $_GET["confirm"] == '1') {
 			delete_perm_templ($perm_templ);
 			success(SUC_PERM_TEMPL_DEL);
 		} else {
 			echo "     <p>" . _('Are you sure?') . "</p>\n";
-			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='" . $_SERVER['REQUEST_URI'] . "&confirm=1'\" value=\"" . _('Yes') . "\">\n"; 
+			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='delete_perm_templ.php?id=" . $perm_templ . "&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
+			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
 		}
 	}
 }

@@ -1,16 +1,17 @@
 <?php
 
-if (!isset($_POST['language'])) {
-	$language = "en_EN";
+require_once('../inc/i18n.inc.php');
+require_once('../inc/error.inc.php');
+
+if (isset($_POST['language'])) {
+	$language = $_POST['language'];
 } else {
-	$step = $_POST['step'];
+	$language = "en_EN";
 }
 
-
-
-$language = $_POST['language'];
-setlocale(LC_ALL, $language);
+setlocale(LC_ALL, $language, $language.'.UTF-8');
 $gettext_domain = 'messages';
+if (! function_exists('bindtextdomain')) die(error('You have to install PHP gettext extension!'));
 bindtextdomain($gettext_domain, "./../locale");
 textdomain($gettext_domain);
 @putenv('LANG='.$language);
@@ -30,7 +31,9 @@ echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n";
 echo "<html>\n";
 echo " <head>\n";
 echo "  <title>Poweradmin</title>\n";
-echo "  <link rel=stylesheet href=\"../style/example.inc.php\" type=\"text/css\">\n";
+echo "  <link rel=stylesheet href=\"../style/example.css\" type=\"text/css\">\n";
+echo "  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n";
+echo "  <script type=\"text/javascript\" src=\"../inc/helper.js\"></script>";
 echo " </head>\n";
 echo " <body>\n";
 
@@ -40,23 +43,24 @@ if (!isset($_POST['step']) || !is_numeric($_POST['step'])) {
 	$step = $_POST['step'];
 }
 
-echo "  <h1>Poweradmin</h1>";
-echo "  <h2>" . _('Installation step') . " " . $step . "</h2>";
+echo "  <h1>Poweradmin</h1>\n";
+echo "  <h2>" . _('Installation step') . " " . $step . "</h2>\n";
 
 switch($step) {
 
 	case 1:
 		$step++;
 
-		echo "<p>\n";
-		echo " <form method=\"post\">\n";
-		echo "  <input type=\"radio\" name=\"language\" value=\"en_EN\"> I prefer to proceed in english.<br>\n";
+		echo " <form method=\"post\" action=\"\">\n";
+		echo "  <input type=\"radio\" name=\"language\" value=\"en_EN\" checked> I prefer to proceed in english.<br>\n";
 		echo "  <input type=\"radio\" name=\"language\" value=\"nl_NL\"> Ik ga graag verder in het Nederlands.<br>\n";
-		echo "	<input type=\"radio\" name=\"language\" value=\"de_DE\"> Ich ziehe es in Deutsch.<br><br>\n";
+		echo "	<input type=\"radio\" name=\"language\" value=\"de_DE\"> Ich ziehe es in Deutsch.<br>\n";
+		echo "  <input type=\"radio\" name=\"language\" value=\"ja_JP\"> 日本語で続ける<br>\n";
+		echo "  <input type=\"radio\" name=\"language\" value=\"pl_PL\"> Chcę kontynuować po polsku.<br>\n";
+		echo "  <input type=\"radio\" name=\"language\" value=\"fr_FR\"> Je préfère continuer en français<br><br>\n";
 		echo "  <input type=\"hidden\" name=\"step\" value=\"" . $step . "\">";
 		echo "  <input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $step . "\">";
 		echo " </form>\n";
-		echo "</p>\n";
 		break;
 
 	case 2:
@@ -101,6 +105,11 @@ switch($step) {
 		echo "  <td>" . _('The hostname on which the PowerDNS database resides. Frequently, this will be "localhost".') . "</td>\n";
 		echo " </tr>\n";
 		echo " <tr>\n";
+		echo "  <td>" . _('DB Port') . "</td>\n";
+                echo "  <td><input type=\"text\" id=\"dbport\" name=\"dbport\" value=\"3306\"></td>\n";
+                echo "  <td>" . _('The port the database server is listening on.') . "</td>\n";
+                echo " </tr>\n";
+		echo " <tr>\n";
 		echo "  <td>" . _('Database') . "</td>\n";
 		echo "  <td><input type=\"text\" name=\"name\" value=\"\"></td>\n";
 		echo "  <td>" . _('The name of the PowerDNS database.') . "</td>\n";
@@ -108,7 +117,7 @@ switch($step) {
 		echo " <tr>\n";
 		echo "  <td>" . _('Database type') . "</td>\n";
 		echo "  <td>" .
-			"<select name=\"type\">" . 
+			"<select name=\"type\" onChange=\"changePort(this.value)\">" . 
 			"<option value=\"mysql\">MySQL</option>" . 
 			"<option value=\"pgsql\">PostgreSQL</option>" . 
 			"</td>\n";
@@ -120,6 +129,7 @@ switch($step) {
 		echo "   <td>" . _('The password of the Poweradmin administrator. This administrator has full rights to Poweradmin using the web interface.') . "</td>\n";
 		echo "  </tr>\n";
 		echo "</table>\n";
+		echo "<br>\n";
 		echo "<input type=\"hidden\" name=\"step\" value=\"" . $step . "\">";
 		echo "<input type=\"hidden\" name=\"language\" value=\"" . $language . "\">";
 		echo "<input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $step . "\">";
@@ -133,6 +143,7 @@ switch($step) {
 		$db_user = $_POST['user'];
 		$db_pass = $_POST['pass'];
 		$db_host = $_POST['host'];
+		$db_port = $_POST['dbport'];
 		$db_name = $_POST['name'];
 		$db_type = $_POST['type'];
 		$pa_pass = $_POST['pa_pass'];
@@ -144,7 +155,7 @@ switch($step) {
 		$current_tables = $db->listTables();
 		foreach ($def_tables as $table) {
 			if (in_array($table['table_name'], $current_tables)) $db->dropTable($table['table_name']);
-			$db->createTable($table['table_name'], $table['fields']);
+			$db->createTable($table['table_name'], $table['fields'], $table['options']);
 		}
 		$fill_perm_items = $db->prepare('INSERT INTO perm_items VALUES (?, ?, ?)');
 		$db->extended->executeMultiple($fill_perm_items, $def_permissions);
@@ -159,12 +170,12 @@ switch($step) {
 		echo " <table>";
 		echo "  <tr>";
 		echo "   <td>" . _('Username') . "</td>\n";
-		echo "   <td><input type=\"text\" name=\"db_user\" value=\"\"></td>\n";
+		echo "   <td><input type=\"text\" name=\"pa_db_user\" value=\"\"></td>\n";
 		echo "   <td>" . _('The username for Poweradmin. This new user will have limited rights only.') . "</td>\n";
 		echo "  </tr>\n";
 		echo "  <tr>\n";
 		echo "   <td>" . _('Password') . "</td>\n";
-		echo "   <td><input type=\"text\" name=\"db_pass\" value=\"\"></td>\n";
+		echo "   <td><input type=\"text\" name=\"pa_db_pass\" value=\"\"></td>\n";
 		echo "   <td>" . _('The password for this username.') . "</td>\n";
 		echo "  </tr>\n";
 		echo "  <tr>\n";
@@ -183,7 +194,11 @@ switch($step) {
 		echo "   <td>" . _('When creating new zones using the template, this value will be used as secondary nameserver. Should be like "ns2.example.net".') . "</td>\n";
 		echo "  </tr>\n";
 		echo "</table>";
+		echo "<br>\n";
+		echo "<input type=\"hidden\" name=\"db_user\" value=\"" . $db_user . "\">";
+		echo "<input type=\"hidden\" name=\"db_pass\" value=\"" . $db_pass . "\">";
 		echo "<input type=\"hidden\" name=\"db_host\" value=\"" . $db_host . "\">";
+                echo "<input type=\"hidden\" name=\"db_port\" value=\"" . $db_port . "\">";
 		echo "<input type=\"hidden\" name=\"db_name\" value=\"" . $db_name . "\">";
 		echo "<input type=\"hidden\" name=\"db_type\" value=\"" . $db_type . "\">";
 		echo "<input type=\"hidden\" name=\"pa_pass\" value=\"" . $pa_pass . "\">";
@@ -198,10 +213,12 @@ switch($step) {
 		$db_user = $_POST['db_user'];
 		$db_pass = $_POST['db_pass'];
 		$db_host = $_POST['db_host'];
+		$db_port = $_POST['db_port'];
 		$db_name = $_POST['db_name'];
 		$db_type = $_POST['db_type'];
+		$pa_db_user = $_POST['pa_db_user'];
+		$pa_db_pass = $_POST['pa_db_pass'];
 		$pa_pass = $_POST['pa_pass'];
-		$pa_srvr = getenv('SERVER_NAME');
 		$dns_hostmaster = $_POST['dns_hostmaster'];
 		$dns_ns1 = $_POST['dns_ns1'];
 		$dns_ns2 = $_POST['dns_ns2'];
@@ -212,20 +229,29 @@ switch($step) {
 
 		echo "<p>" . _('You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert and update records in the PowerDNS database.') . " ";
 		if ($db_type == 'mysql') {
+			$pa_db_host = $db_host;
+
+			$sql = 'SELECT USER()';
+			$result = $db->queryRow($sql);
+			if (isset($result['user()'])) {
+				$current_db_user = $result['user()'];
+				$pa_db_host = substr($current_db_user, strpos($current_db_user, '@')+1);
+			}
+			
 			echo _('In MySQL you should now perform the following command:') . "</p>";
-			echo "<p><tt>GRANT SELECT, INSERT, UPDATE, DELETE<BR>ON " . $db_name . ".*<br>TO '" . $db_user . "'@'" . $pa_srvr . "'<br>IDENTIFIED BY '" . $db_pass . "';</tt></p>";
+			echo "<p><tt>GRANT SELECT, INSERT, UPDATE, DELETE<BR>ON " . $db_name . ".*<br>TO '" . $pa_db_user . "'@'" . $pa_db_host . "'<br>IDENTIFIED BY '" . $pa_db_pass . "';</tt></p>";
 		} elseif ($db_type == 'pgsql') {
 			echo _('On PgSQL you would use:') . "</p>";
-			echo "<p><tt>$ createuser -E -P " . $db_user . "<br>" .
-				"Enter password for new role: " . $db_pass . "<br>" .
-				"Enter it again: " . $db_pass . "<br>" . 
+			echo "<p><tt>$ createuser -E -P " . $pa_db_user . "<br>" .
+				"Enter password for new role: " . $pa_db_pass . "<br>" .
+				"Enter it again: " . $pa_db_pass . "<br>" . 
 				"Shall the new role be a superuser? (y/n) n<br>" .
 				"Shall the new user be allowed to create databases? (y/n) n<br>" . 
 				"Shall the new user be allowed to create more new users? (y/n) n<br>" . 
 				"CREATE USER<br>" . 
 				"$ psql " . $db_name . "<br>";
 				foreach ($grantTables as $tableName) {
-					echo "psql> GRANT SELECT, INSERT, DELETE, UPDATE ON " . $tableName . " TO " . $db_user . ";<br />";
+					echo "psql> GRANT SELECT, INSERT, DELETE, UPDATE ON " . $tableName . " TO " . $pa_db_user . ";<br />";
 					echo "GRANT<br />";
 				}
 				echo "</tt></p>\n";
@@ -234,9 +260,12 @@ switch($step) {
 		echo "<form method=\"post\">";
 		echo "<input type=\"hidden\" name=\"db_host\" value=\"" . $db_host . "\">";
 		echo "<input type=\"hidden\" name=\"db_name\" value=\"" . $db_name . "\">";
+		echo "<input type=\"hidden\" name=\"db_port\" value=\"" . $db_port . "\">";
 		echo "<input type=\"hidden\" name=\"db_type\" value=\"" . $db_type . "\">";
 		echo "<input type=\"hidden\" name=\"db_user\" value=\"" . $db_user . "\">";
 		echo "<input type=\"hidden\" name=\"db_pass\" value=\"" . $db_pass . "\">";
+		echo "<input type=\"hidden\" name=\"pa_db_user\" value=\"" . $pa_db_user . "\">";
+		echo "<input type=\"hidden\" name=\"pa_db_pass\" value=\"" . $pa_db_pass . "\">";
 		echo "<input type=\"hidden\" name=\"pa_pass\" value=\"" . $pa_pass . "\">";
 		echo "<input type=\"hidden\" name=\"dns_hostmaster\" value=\"" . $dns_hostmaster . "\">";
 		echo "<input type=\"hidden\" name=\"dns_ns1\" value=\"" . $dns_ns1 . "\">";
@@ -251,17 +280,18 @@ switch($step) {
 		$step++;
 		$pa_pass = $_POST['pa_pass'];
 		$config = "<?php\n\n" .
-			"\$db_host\t\t= \"" . $_POST['db_host'] . "\";\n" .
-			"\$db_user\t\t= \"" . $_POST['db_user'] . "\";\n" .
-			"\$db_pass\t\t= \"" . $_POST['db_pass'] . "\";\n" .
-			"\$db_name\t\t= \"" . $_POST['db_name'] . "\";\n" .
-			"\$db_type\t\t= \"" . $_POST['db_type'] . "\";\n" .
+			"\$db_host\t\t= '" . $_POST['db_host'] . "';\n" .
+			"\$db_user\t\t= '" . $_POST['pa_db_user'] . "';\n" .
+			"\$db_pass\t\t= '" . $_POST['pa_db_pass'] . "';\n" .
+			"\$db_name\t\t= '" . $_POST['db_name'] . "';\n" .
+			"\$db_port\t\t= '" . $_POST['db_port'] . "';\n" .
+			"\$db_type\t\t= '" . $_POST['db_type'] . "';\n" .
 			"\n" .
-			"\$iface_lang\t\t= \"" . $_POST['language'] . "\";\n" .
+			"\$iface_lang\t\t= '" . $_POST['language'] . "';\n" .
 			"\n" .
-			"\$dns_hostmaster\t\t= \"" . $_POST['dns_hostmaster'] . "\";\n" .
-			"\$dns_ns1\t\t= \"" . $_POST['dns_ns1'] . "\";\n" .
-			"\$dns_ns2\t\t= \"" . $_POST['dns_ns2'] . "\";\n" .
+			"\$dns_hostmaster\t\t= '" . $_POST['dns_hostmaster'] . "';\n" .
+			"\$dns_ns1\t\t= '" . $_POST['dns_ns1'] . "';\n" .
+			"\$dns_ns2\t\t= '" . $_POST['dns_ns2'] . "';\n" .
 			"\n?>\n";
 
 		if (is_writeable($local_config_file)) {
@@ -293,8 +323,9 @@ switch($step) {
 		break;
 }
 
+include_once('../inc/version.inc.php');
 echo "<div class=\"footer\">";
-echo "<a href=\"https://www.poweradmin.org/\">a complete(r) <strong>poweradmin</strong></a> - <a href=\"https://www.poweradmin.org/trac/wiki/Credits\">credits</a>";
+echo "<a href=\"https://www.poweradmin.org/\">a complete(r) <strong>poweradmin</strong> v$VERSION</a> - <a href=\"https://www.poweradmin.org/trac/wiki/Credits\">credits</a>";
 echo "</div></body></html>";
 
 ?>

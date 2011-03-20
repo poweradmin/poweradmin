@@ -3,7 +3,8 @@
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://rejo.zenger.nl/poweradmin> for more details.
  *
- *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2007-2010  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2011  Poweradmin Development Team <http://www.poweradmin.org/credits>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,6 +25,7 @@ include_once("inc/header.inc.php");
 
 verify_permission('user_edit_own') ? $perm_edit_own = "1" : $perm_edit_own = "0" ;
 verify_permission('user_edit_others') ? $perm_edit_others = "1" : $perm_edit_others = "0" ;
+verify_permission('is_ueberuser') ? $perm_is_godlike = "1" : $perm_is_godlike = "0" ;
 
 if (!(isset($_GET['id']) && v_num($_GET['id']))) {
 	error(ERR_INV_INPUT);
@@ -34,12 +36,20 @@ if (!(isset($_GET['id']) && v_num($_GET['id']))) {
 }
 
 if (isset($_POST['commit'])) {
-	if (delete_user($uid,$_POST['zone'])) {
-		success(SUC_USER_DEL);	
+	
+	if (is_valid_user($uid)) {
+		// TODO: pass all users's zones to delete_user() function
+		$zones = array();
+		if (delete_user($uid, $zones)) {	
+			success(SUC_USER_DEL);
+		}
+	} else {
+		header("Location: users.php");
+		exit;
 	}
 } else {
 
-	if (($uid != $_SESSION['userid'] && !verify_permission('user_edit_others')) || ($uid == $_SESSION['userid'] && !verify_permission('user_edit_own'))) {
+	if (($uid != $_SESSION['userid'] && $perm_edit_others == "0") || ($uid == $_SESSION['userid'] && $perm_is_godlike == "0")) {
 		error(ERR_PERM_DEL_USER);
 		include_once("inc/footer.inc.php");
 		exit;
@@ -48,7 +58,7 @@ if (isset($_POST['commit'])) {
 		$zones = get_zones("own",$uid);
 
 		echo "     <h2>" . _('Delete user') . " \"" . $fullname . "\"</h2>\n";
-		echo "     <form method=\"post\">\n";
+		echo "     <form method=\"post\" action=\"\">\n";
 		echo "      <table>\n";
 
 		if (count($zones) > 0) {
@@ -102,5 +112,7 @@ if (isset($_POST['commit'])) {
 		echo "     </form>\n";
 	}
 }
+
 include_once("inc/footer.inc.php");
+
 ?>

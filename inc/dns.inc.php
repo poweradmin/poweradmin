@@ -4,6 +4,7 @@
  *  See <https://rejo.zenger.nl/poweradmin> for more details.
  *
  *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2011  Poweradmin Development Team <http://www.poweradmin.org/credits>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -105,6 +106,11 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
 			// for these types. One Day Real Soon Now. [tm]
 			break;
 
+		case "LOC":
+			if (!is_valid_loc($content)) return false;
+			if (!is_valid_hostname_fqdn($name,1)) return false;
+			break;
+			
 		default:
 			error(ERR_DNS_RR_TYPE);
 			return false;
@@ -116,12 +122,12 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
 	return true;
 }
 
-function is_valid_hostname_fqdn($hostname, $wildcard) {
+function is_valid_hostname_fqdn(&$hostname, $wildcard) {
 
 	global $dns_strict_tld_check;
 	global $valid_tlds;
 
-	$hostname = ereg_replace("\.$","",$hostname);
+	$hostname = preg_replace("/\.$/","",$hostname);
 
 	if (strlen($hostname) > 255) {
 		error(ERR_DNS_HN_TOO_LONG);
@@ -156,7 +162,7 @@ function is_valid_hostname_fqdn($hostname, $wildcard) {
 		if (substr_count($hostname, "/") > 0) { error(ERR_DNS_HN_SLASH) ; return false; }
 	}
 	
-	if ($dns_strict_tld_check == "1" && !in_array($hostname_labels[$label_count-1], $valid_tlds)) {
+	if ($dns_strict_tld_check && !in_array(strtolower($hostname_labels[$label_count-1]), $valid_tlds)) {
 		error(ERR_DNS_INV_TLD); return false;
 	}
 
@@ -231,7 +237,7 @@ function is_valid_ipv6($ipv6) {
 }
 
 function is_valid_printable($string) {
-	if (!ereg('^[[:print:]]+$', trim($string))) { error(ERR_DNS_PRINTABLE); return false; }
+	if (!preg_match('/^[[:print:]]+$/', trim($string))) { error(ERR_DNS_PRINTABLE); return false; }
 	return true;
 }
 
@@ -410,7 +416,7 @@ function is_valid_rr_prio(&$prio, $type) {
 	return true;
 }
 
-function is_valid_rr_srv_name($name){
+function is_valid_rr_srv_name(&$name){
 
 	if (strlen($name) > 255) {
 		error(ERR_DNS_HN_TOO_LONG);
@@ -421,16 +427,18 @@ function is_valid_rr_srv_name($name){
 	if (!preg_match('/^_[\w-]+$/i', $fields[0])) { error(ERR_DNS_SRV_NAME) ; return false; }
 	if (!preg_match('/^_[\w]+$/i', $fields[1])) { error(ERR_DNS_SRV_NAME) ; return false; }
 	if (!is_valid_hostname_fqdn($fields[2],0)) { error(ERR_DNS_SRV_NAME) ; return false ; }
+	$name = join('.', $fields);
 	return true ;
 }
 
-function is_valid_rr_srv_content($content) {
+function is_valid_rr_srv_content(&$content) {
 	$fields = preg_split("/\s+/", trim($content), 3);
 	if (!is_numeric($fields[0]) || $fields[0] < 0 || $fields[0] > 65535) { error(ERR_DNS_SRV_WGHT) ; return false; } 
 	if (!is_numeric($fields[1]) || $fields[1] < 0 || $fields[1] > 65535) { error(ERR_DNS_SRV_PORT) ; return false; } 
 	if ($fields[2] == "" || ($fields[2] != "." && !is_valid_hostname_fqdn($fields[2],0))) {
-		error(ERR_DNS_SRV_TRGT) ; return false; 
-	} 
+		error(ERR_DNS_SRV_TRGT) ; return false;
+	}
+	$content = join(' ', $fields);
 	return true;
 }
 
@@ -470,4 +478,15 @@ function is_valid_spf($content){
           return true;
         }
 }
+
+function is_valid_loc($content){
+	$regex = "^(90|[1-8]\d|0?\d)( ([1-5]\d|0?\d)( ([1-5]\d|0?\d)(\.\d{1,3})?)?)? [NS] (180|1[0-7]\d|[1-9]\d|0?\d)( ([1-5]\d|0?\d)( ([1-5]\d|0?\d)(\.\d{1,3})?)?)? [EW] (-(100000(\.00)?|\d{1,5}(\.\d\d)?)|([1-3]?\d{1,7}(\.\d\d)?|4([01][0-9]{6}|2([0-7][0-9]{5}|8([0-3][0-9]{4}|4([0-8][0-9]{3}|9([0-5][0-9]{2}|6([0-6][0-9]|7[01]))))))(\.\d\d)?|42849672(\.([0-8]\d|9[0-5]))?))[m]?( (\d{1,7}|[1-8]\d{7})(\.\d\d)?[m]?){0,3}$^";
+	if(!preg_match($regex, $content)){
+		return false;
+	}
+	else {
+		return true;
+	}
+}
+
 ?>

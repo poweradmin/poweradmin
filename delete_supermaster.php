@@ -3,7 +3,8 @@
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://rejo.zenger.nl/poweradmin> for more details.
  *
- *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2007-2010  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2011  Poweradmin Development Team <http://www.poweradmin.org/credits>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -43,9 +44,14 @@ if ($master_ip == "-1"){
 
 		echo "     <h2>" . _('Delete supermaster') . " \"" . $master_ip . "\"</h2>\n";
 
-		if ($_GET["confirm"] == '1') {
+		if (isset($_GET['confirm']) && $_GET["confirm"] == '1') {
+			if (!supermaster_exists($master_ip)) {
+				header("Location: list_supermasters.php");
+				exit;
+			}
+
 			if (delete_supermaster($master_ip)) {
-				success(SUC_ZONE_DEL);
+				success(SUC_SM_DEL);
 			}
 		} else {
 			echo "     <p>\n";
@@ -53,7 +59,7 @@ if ($master_ip == "-1"){
 			echo "      " . _('Account') . ": " . $info['account'] . "\n";
 			echo "     </p>\n";
 			echo "     <p>" . _('Are you sure?') . "</p>\n";
-			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='" . $_SERVER['REQUEST_URI'] . "&confirm=1'\" value=\"" . _('Yes') . "\">\n"; 
+			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='delete_supermaster.php?master_ip=" . $master_ip . "&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n"; 
 			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
 		}
 	}

@@ -375,8 +375,12 @@ msgstr ""
 msgid "Authentication failed!"
 msgstr ""
 
-#: inc/auth.inc.php:89 inc/auth.inc.php:95 inc/auth.inc.php:105
-msgid "Login"
+#: inc/auth.inc.php:89
+msgid "Log in"
+msgstr ""
+
+#: inc/auth.inc.php:105
+msgid "Go"
 msgstr ""
 
 #: inc/auth.inc.php:129
@@ -656,3 +660,8 @@ msgstr ""
 #: inc/users.inc.php:365
 msgid "Password has been changed, please login."
 msgstr ""
+
+#: inc/error.inc.php:65
+msgid "Zone template with this name already exists, please choose another one."
+msgstr ""
+

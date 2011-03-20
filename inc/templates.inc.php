@@ -4,6 +4,7 @@
  *  See <https://rejo.zenger.nl/poweradmin> for more details.
  *
  *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2011  Poweradmin Development Team <http://www.poweradmin.org/credits>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,7 +32,7 @@ function get_list_zone_templ($userid) {
 					. "WHERE owner = '" . $userid . "' "
 					. "ORDER BY name";
 	$result = $db->query($query);
-	if (PEAR::isError($result)) { error($result->getMessage()); return false; }
+	if (PEAR::isError($result)) { error("Not all tables available in database, please make sure all upgrade/install proceedures were followed"); return false; }
 
 	$zone_templ_list = array();
 	while ($zone_templ = $result->fetchRow()) {
@@ -49,9 +50,12 @@ function get_list_zone_templ($userid) {
 function add_zone_templ($details, $userid) {
 	global $db;
 
+    $zone_name_exists = zone_templ_name_exists($details['templ_name']);
 	if (!(verify_permission('zone_master_add'))) {
 		error(ERR_PERM_ADD_ZONE_TEMPL);
 		return false;
+	} elseif ($zone_name_exists != '0') {
+		error(ERR_ZONE_TEMPL_EXIST);
 	} else {
 		$query = "INSERT INTO zone_templ (name, descr, owner)
 			VALUES ("
@@ -64,7 +68,6 @@ function add_zone_templ($details, $userid) {
 
 		return true;
 	}
-	return true;
 }
 
 // Get name and description of template based on template ID.
@@ -99,7 +102,6 @@ function delete_zone_templ($zone_templ_id) {
 
 		return true;
 	}
-	return true;
 }
 
 // Delete all zone templates for specific user
@@ -118,7 +120,6 @@ function delete_zone_templ_userid($userid) {
 
 		return true;
 	}
-	return true;
 }
 
 // Count zone template records
@@ -163,7 +164,6 @@ function get_zone_templ_record_from_id($id)
 				"content"       =>      $r["content"],
 				"ttl"           =>      $r["ttl"],
 				"prio"          =>      $r["prio"],
-				"change_date"   =>      $r["change_date"]
 				);
 			return $ret;
 		} else {
@@ -193,7 +193,7 @@ function get_zone_templ_records($id,$rowstart=0,$rowamount=999999,$sortby='name'
 			while($r = $result->fetchRow()) {
 				// Call get_record_from_id for each row.
 				$ret[$retcount] = get_zone_templ_record_from_id($r["id"]);
-				$retcount;
+				$retcount++;
 			}
 			return $ret;
 		}
@@ -214,23 +214,28 @@ function add_zone_templ_record($zone_templ_id, $name, $type, $content, $ttl, $pr
 		error(ERR_PERM_ADD_RECORD);
 		return false;
 	} else {
-		if($type == "SPF"){
-			$content = $db->quote(stripslashes('\"'.$content.'\"'), 'text');
-		} else {
-			$content = $db->quote($content, 'text');
-		}
-		$query = "INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES ("
-					. $db->quote($zone_templ_id, 'integer') . ","
-					. $db->quote($name, 'text') . "," 
-					. $db->quote($type, 'text') . ","
-					. $content . ","
-					. $db->quote($ttl, 'integer') . ","
-					. $db->quote($prio, 'integer') . ")";
-		$result = $db->query($query);
-		if (PEAR::isError($result)) { error($result->getMessage()); return false; }
-		return true;
+                if ("" != $name) {
+                        if($type == "SPF"){
+                                $content = $db->quote(stripslashes('\"'.$content.'\"'), 'text');
+                        } else {
+                                $content = $db->quote($content, 'text');
+                        }
+                        $query = "INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES ("
+                                                . $db->quote($zone_templ_id, 'integer') . ","
+                                                . $db->quote($name, 'text') . ","
+                                                . $db->quote($type, 'text') . ","
+                                                . $content . ","
+                                                . $db->quote($ttl, 'integer') . ","
+                                                . $db->quote($prio, 'integer') . ")";
+                        $result = $db->query($query);
+                        if (PEAR::isError($result)) { error($result->getMessage()); return false; }
+                        return true;
+                }
+                else {
+                        error(ERR_DNS_HOSTNAME);
+                        return false;
+                }
 	}
-	return true;
 }
 
 /*
@@ -245,23 +250,28 @@ function edit_zone_templ_record($record) {
 		error(ERR_PERM_EDIT_RECORD);
 		return false;
 	} else {
-		if($record['type'] == "SPF"){
-			$content = $db->quote(stripslashes('\"'.$record['content'].'\"'), 'text');
-		}else{
-			$content = $db->quote($record['content'], 'text');
-		}
-		$query = "UPDATE zone_templ_records 
-			SET name=".$db->quote($record['name'], 'text').", 
-			type=".$db->quote($record['type'], 'text').", 
-			content=".$content.",
-			ttl=".$db->quote($record['ttl'], 'integer').",
-			prio=".$db->quote($record['prio'], 'integer')."
-			WHERE id=".$db->quote($record['rid'], 'integer');
-		$result = $db->query($query);
-		if (PEAR::isError($result)) { error($result->getMessage()); return false; }
-		return true;
+                if ("" != $record['name']) {
+                        if($record['type'] == "SPF"){
+                                $content = $db->quote(stripslashes('\"'.$record['content'].'\"'), 'text');
+                        }else{
+                                $content = $db->quote($record['content'], 'text');
+                        }
+                        $query = "UPDATE zone_templ_records
+                                SET name=".$db->quote($record['name'], 'text').",
+                                type=".$db->quote($record['type'], 'text').",
+                                content=".$content.",
+                                ttl=".$db->quote($record['ttl'], 'integer').",
+                                prio=".$db->quote(isset($record['prio']) ? $record['prio'] : 0, 'integer')."
+                                WHERE id=".$db->quote($record['rid'], 'integer');
+                        $result = $db->query($query);
+                        if (PEAR::isError($result)) { error($result->getMessage()); return false; }
+                        return true;
+                }
+                else {
+                        error(ERR_DNS_HOSTNAME);
+                        return false;
+                }
 	}
-	return true;
 }
 
 /*
@@ -299,6 +309,142 @@ function get_zone_templ_is_owner($zone_templ_id, $userid) {
 	} else {
 		return false;
 	}
+}
+
+// Add a zone template from zone / another template.
+
+function add_zone_templ_save_as($template_name, $description, $userid, $records, $domain = null) {
+	global $db;
+
+	if (!(verify_permission('zone_master_add'))) {
+		error(ERR_PERM_ADD_ZONE_TEMPL);
+		return false;
+	} else {
+                $result = $db->beginTransaction();
+
+		$query = "INSERT INTO zone_templ (name, descr, owner)
+			VALUES ("
+				. $db->quote($template_name, 'text') . ", "
+				. $db->quote($description, 'text') . ", "
+				. $db->quote($userid, 'integer') . ")";
+
+		$result = $db->exec($query);
+
+                $zone_templ_id = $db->lastInsertId('zone_templ', 'id');
+                $owner = get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
+                
+                foreach ($records as $record) {
+                    if($record['type'] == "SPF"){
+                            $content = $db->quote(stripslashes('\"'.$record['content'].'\"'), 'text');
+                    } else {
+                            $content = $db->quote($record['content'], 'text');
+                    }
+
+                    $name = $domain ? preg_replace('/'.$domain.'/', '[ZONE]',$record['name']) : $record['name'];
+                    $content = $domain ? preg_replace('/'.$domain.'/', '[ZONE]',$content) : $content;
+
+                    $query2 = "INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES ("
+                                            . $db->quote($zone_templ_id, 'integer') . ","
+                                            . $db->quote($name, 'text') . ","
+                                            . $db->quote($record['type'], 'text') . ","
+                                            . $content . ","
+                                            . $db->quote($record['ttl'], 'integer') . ","
+                                            . $db->quote(isset($record['prio']) ? $record['prio'] : 0, 'integer') . ")";
+                    $result = $db->exec($query2);
+                }
+
+                if (PEAR::isError($result)) {
+                    $result = $db->rollback();
+                } else {
+                    $result = $db->commit();
+                }
+	}
+	return true;
+}
+
+// Get a list of all zones using the template
+
+function get_list_zone_use_templ($zone_templ_id, $userid) {
+	global $db;
+
+        if (verify_permission('zone_content_edit_others')) { $perm_edit = "all" ; }
+        elseif (verify_permission('zone_content_edit_own')) { $perm_edit = "own" ;}
+        else { $perm_edit = "none" ; }
+
+	$sql_add = '';
+        if  ($perm_edit != "all")
+	{
+			$sql_add = " AND zones.domain_id = domains.id
+				AND zones.owner = ".$db->quote($userid, 'integer');
+	}
+
+	$query = "SELECT domains.id,
+			domains.name,
+			domains.type,
+			Record_Count.count_records
+			FROM domains
+			LEFT JOIN zones ON domains.id=zones.domain_id
+			LEFT JOIN (
+				SELECT COUNT(domain_id) AS count_records, domain_id FROM records GROUP BY domain_id
+			) Record_Count ON Record_Count.domain_id=domains.id
+			WHERE 1=1".$sql_add."
+                        AND zone_templ_id = " . $db->quote($zone_templ_id, 'integer') ."
+			GROUP BY domains.name, domains.id, domains.type, Record_Count.count_records";
+
+	$result = $db->query($query);
+	if (PEAR::isError($result)) { error("Not all tables available in database, please make sure all upgrade/install proceedures were followed"); return false; }
+
+	$zone_list = array();
+	while ($zone = $result->fetchRow()) {
+		$zone_list[] = array(
+		"id"    =>      $zone['id'],
+		"name"  =>      $zone['name'],
+		"type" =>      $zone['type'],
+		"count_records" =>      $zone['count_records']
+		);
+	}
+	return $zone_list;
+}
+
+// Edit a zone template.
+
+function edit_zone_templ($details, $zone_templ_id) {
+	global $db;
+        $zone_name_exists = zone_templ_name_exists($details['templ_name'], $zone_templ_id);
+	if (!(verify_permission('zone_master_add'))) {
+		error(ERR_PERM_ADD_ZONE_TEMPL);
+		return false;
+	} elseif ($zone_name_exists != '0') {
+		error(ERR_ZONE_TEMPL_EXIST);
+		return false;
+	} else {
+                $query = "UPDATE zone_templ
+			SET name=".$db->quote($details['templ_name'], 'text').",
+			descr=".$db->quote($details['templ_descr'], 'text')."
+			WHERE id=".$db->quote($zone_templ_id, 'integer');
+
+		$result = $db->query($query);
+		if (PEAR::isError($result)) { error($result->getMessage()); return false; }
+
+		return true;
+	}
+}
+
+// Check if zone template name exist
+
+function zone_templ_name_exists($zone_templ_name, $zone_templ_id = null) {
+        global $db;
+        
+        $sql_add = '';
+        if ($zone_templ_id) {
+                $sql_add = " AND id != ".$db->quote($zone_templ_id, 'integer');
+        }
+
+        $query = "SELECT COUNT(id) FROM zone_templ WHERE name = " . $db->quote($zone_templ_name, 'text') . "" . $sql_add;        
+        $count = $db->queryOne($query);
+        if (PEAR::isError($count)) { error($result->getMessage()); return false; }
+        
+        return $count;
 }
 
 ?>

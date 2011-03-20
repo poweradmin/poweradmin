@@ -4,6 +4,7 @@
  *  See <https://rejo.zenger.nl/poweradmin> for more details.
  *
  *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2011  Poweradmin Development Team <http://www.poweradmin.org/credits>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,10 +19,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-// Added next line to enable i18n on following definitions. Not sure
-// if this is the best (or at least a proper) location for this. /RZ.
-require_once("inc/i18n.inc.php");
 
 /* PERMISSIONS */
 define("ERR_PERM_SEARCH", _("You do not have the permission to perform searches.")); 
@@ -64,7 +61,10 @@ define("ERR_INV_ARGC", _('Invalid argument(s) given to function %s %s'));
 define("ERR_UNKNOWN", _('Unknown error.'));
 define("ERR_INV_EMAIL", _('Enter a valid email address.'));
 define("ERR_ZONE_NOT_EXIST", _('There is no zone with this ID.'));
-define("ERR_INSTALL_DIR_EXISTS", _('The install/ directory exists, you must remove it first before proceeding.'));
+define("ERR_ZONE_TEMPL_NOT_EXIST", _('There is no zone template with this ID.'));
+define("ERR_INSTALL_DIR_EXISTS", _('The <a href="install/">install/</a> directory exists, you must remove it first before proceeding.'));
+define("ERR_ZONE_TEMPL_EXIST", _('Zone template with this name already exists, please choose another one.'));
+define("ERR_ZONE_TEMPL_IS_EMPTY", _('Template name can\'t be an empty string.'));
 
 /* DATABASE */
 define("ERR_DB_NO_DB_NAME", _('No database name has been set in config.inc.php.'));
@@ -72,6 +72,7 @@ define("ERR_DB_NO_DB_HOST", _('No database host has been set in config.inc.php.'
 define("ERR_DB_NO_DB_USER", _('No database username has been set in config.inc.php.'));
 define("ERR_DB_NO_DB_PASS", _('No database password has been set in config.inc.php.'));
 define("ERR_DB_NO_DB_TYPE", _('No or unknown database type has been set in config.inc.php.'));
+define("ERR_DB_NO_DB_UPDATE", _('It seems that you forgot to update the database after Poweradmin upgrade to new version.'));
 
 /* DNS */
 define("ERR_DNS_CONTENT", _('Your content field doesnt have a legit value.'));
@@ -106,6 +107,7 @@ define("ERR_DNS_PRINTABLE", _('Invalid characters have been used in this record.
 /* GOOD! */
 define("SUC_ZONE_ADD", _('Zone has been added successfully.')); 
 define("SUC_ZONE_DEL", _('Zone has been deleted successfully.')); 
+define("SUC_ZONES_UPD", _('Zones have been updated successfully.')); 
 define("SUC_USER_UPD", _('The user has been updated successfully.')); 
 define("SUC_USER_ADD", _('The user has been created successfully.')); 
 define("SUC_USER_DEL", _('The user has been deleted successfully.')); 

@@ -4,6 +4,7 @@
  *  See <https://rejo.zenger.nl/poweradmin> for more details.
  *
  *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2011  Poweradmin Development Team <http://www.poweradmin.org/credits>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -62,6 +63,8 @@ function update_soa_serial($did) {
 	//    the Poweradmin website
 	//  - the serial is set to YYYYMMDD99, it's RFC 1912 style already and has 
 	//    reached it limit of revisions for today
+
+	set_timezone();
 	
 	if ($soa[2] == "0") {
 		return true;
@@ -137,8 +140,8 @@ function edit_zone_comment($zone_id,$comment) {
 			$result = $db->query($query);
 			if (PEAR::isError($result)) { error($result->getMessage()); return false; }
 		} else {
-			$query = "INSERT INTO zones 
-				VALUES('',".$db->quote($zone_id, 'integer').",1,".$db->quote($comment, 'text').")";
+			$query = "INSERT INTO zones (domain_id, owner, comment)
+				VALUES(".$db->quote($zone_id, 'integer').",1,".$db->quote($comment, 'text').")";
 			$result = $db->query($query);
 			if (PEAR::isError($result)) { error($result->getMessage()); return false; }
 		}
@@ -185,7 +188,6 @@ function edit_record($record) {
 		}
 		return false;
 	}
-	return true;
 }
 
 
@@ -234,7 +236,6 @@ function add_record($zoneid, $name, $type, $content, $ttl, $prio) {
 		} else {
 			return false;
 		}
-		return true;
 	}
 }
 
@@ -366,7 +367,7 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template)
 		global $dns_hostmaster;
 		global $dns_ttl;
 		if (($domain && $owner && $zone_template) || 
-				(eregi('in-addr.arpa', $domain) && $owner && $zone_template) || 
+				(preg_match('/in-addr.arpa/i', $domain) && $owner && $zone_template) || 
 				$type=="SLAVE" && $domain && $owner && $slave_master) {
 
 			$response = $db->query("INSERT INTO domains (name, type) VALUES (".$db->quote($domain, 'text').", ".$db->quote($type, 'text').")");
@@ -375,7 +376,7 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template)
 			$domain_id = $db->lastInsertId('domains', 'id');
 			if (PEAR::isError($domain_id)) { error($id->getMessage()); return false; }
 
-			$response = $db->query("INSERT INTO zones (domain_id, owner) VALUES (".$db->quote($domain_id, 'integer').", ".$db->quote($owner, 'integer').")");
+			$response = $db->query("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (".$db->quote($domain_id, 'integer').", ".$db->quote($owner, 'integer').", ".$db->quote(($zone_template == "none") ? 0 : $zone_template, 'integer').")");
 			if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
 			if ($type == "SLAVE") {
@@ -388,6 +389,9 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template)
 					$ns1 = $dns_ns1;
 					$hm  = $dns_hostmaster;
 					$ttl = $dns_ttl;
+					
+					set_timezone();
+					
 					$serial = date("Ymd");
 					$serial .= "00";
 
@@ -407,7 +411,7 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template)
 
 					$templ_records = get_zone_templ_records($zone_template);
 					foreach ($templ_records as $r) {
-						if ((eregi('in-addr.arpa', $domain) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!eregi('in-addr.arpa', $domain)))
+						if ((preg_match('/in-addr.arpa/i', $domain) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $domain)))
 						{
 							$name     = parse_template_value($r["name"], $domain);
 							$type     = $r["type"];
@@ -730,7 +734,7 @@ function get_supermasters()
         global $db;
         
 	$result = $db->query("SELECT ip, nameserver, account FROM supermasters");
-	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+	if (PEAR::isError($result)) { error($result->getMessage()); return false; }
 
         $ret = array();
 
@@ -795,20 +799,24 @@ function get_zones($perm,$userid=0,$letterstart='all',$rowstart=0,$rowamount=999
 	if ($sortby != 'count_records') {
 		$sortby = "domains.".$sortby;
 	}
-	$sqlq = "SELECT domains.id, 
+
+	$sqlq = "SELECT domains.id,
 			domains.name,
 			domains.type,
-			COUNT(DISTINCT records.id) AS count_records
+			Record_Count.count_records
 			FROM domains
-			LEFT JOIN zones ON domains.id=zones.domain_id 
-			LEFT JOIN records ON records.domain_id=domains.id
-			WHERE 1=1".$sql_add." 
-			GROUP BY domains.name, domains.id, domains.type
+			LEFT JOIN zones ON domains.id=zones.domain_id
+			LEFT JOIN (
+				SELECT COUNT(domain_id) AS count_records, domain_id FROM records GROUP BY domain_id
+			) Record_Count ON Record_Count.domain_id=domains.id
+			WHERE 1=1".$sql_add."
+			GROUP BY domains.name, domains.id, domains.type, Record_Count.count_records
 			ORDER BY " . $sortby;
 	
 	$db->setLimit($rowamount, $rowstart);
 	$result = $db->query($sqlq);
 
+	$ret = array();
 	while($r = $result->fetchRow())
 	{
 		$ret[$r["name"]] = array(
@@ -914,6 +922,8 @@ function get_record_from_id($id)
  */
 function get_records_from_domain_id($id,$rowstart=0,$rowamount=999999,$sortby='name') {
 	global $db;
+
+        $result = array();
 	if (is_numeric($id)) {
 		if ((isset($_SESSION[$id."_ispartial"])) && ($_SESSION[$id."_ispartial"] == 1)) {
 			$db->setLimit($rowamount, $rowstart);
@@ -936,7 +946,7 @@ function get_records_from_domain_id($id,$rowstart=0,$rowamount=999999,$sortby='n
 					$ret[$retcount] = get_record_from_id($r["id"]);
 					$retcount++;
 				}
-				return $ret;
+                                $result = $ret;
 			}
 
 		} else {
@@ -957,9 +967,10 @@ function get_records_from_domain_id($id,$rowstart=0,$rowamount=999999,$sortby='n
 					$ret[$retcount] = get_record_from_id($r["id"]);
 					$retcount++;
 				}
-				return $ret;
+                                $result = $ret;
 			}
-
+			$result = order_domain_results($result, $sortby);
+			return $result;
 		}
 	}
 	else
@@ -968,6 +979,73 @@ function get_records_from_domain_id($id,$rowstart=0,$rowamount=999999,$sortby='n
 	}
 }
 
+function order_domain_results($domains, $sortby) {
+        $results = array();
+        $soa = array();
+        $ns = array();
+        
+        foreach ($domains as $key => $domain) {
+                switch ($domain['type']) {
+                  case 'SOA':
+                    $soa[] = $domain;
+                    unset ($domains[$key]);
+                    break;
+                  case 'NS':
+                    $ns[] = $domain;
+                    unset ($domains[$key]);
+                    break;
+                  default:
+                    continue;
+                }
+        }
+
+        switch ($sortby)
+        {
+          case 'name':
+            usort($domains, 'sort_domain_results_by_name');
+            break;
+          case 'type':
+            usort($domains, 'sort_domain_results_by_type');
+            break;
+          case 'content':
+            usort($domains, 'sort_domain_results_by_content');
+            break;
+          case 'prio':
+            usort($domains, 'sort_domain_results_by_prio');
+            break;
+          case 'ttl':
+            usort($domains, 'sort_domain_results_by_ttl');
+            break;
+          default:
+            usort($domains, 'sort_domain_results_by_name');
+            break;
+        }
+
+        $results = array_merge($soa, $ns);
+        $results = array_merge($results, $domains);
+        
+        return $results;
+}
+
+function sort_domain_results_by_name($a, $b) {
+  return strnatcmp($a['name'], $b['name']);
+}
+
+function sort_domain_results_by_type($a, $b) {
+  return strnatcmp($a['type'], $b['type']);
+}
+
+function sort_domain_results_by_content($a, $b) {
+  return strnatcmp($a['content'], $b['content']);
+}
+
+function sort_domain_results_by_prio($a, $b) {
+  return strnatcmp($a['prio'], $b['prio']);
+}
+
+function sort_domain_results_by_ttl($a, $b) {
+  return strnatcmp($a['ttl'], $b['ttl']);
+}
 
 function get_users_from_domain_id($id) {
 	global $db;
@@ -1009,14 +1087,10 @@ function search_zone_and_record($holy_grail,$perm,$zone_sortby='name',$record_so
 	else { $perm_content_edit = "none" ; }
 
 	// Search for matching domains
-	if ($perm == "own") {
-		$sql_add_from = ", zones, users ";
-		$sql_add_where = " AND zones.domain_id = domains.id AND users.id = " . $db->quote($_SESSION['userid'], 'integer') . " AND zones.owner = " . $db->quote($_SESSION['userid'], 'integer');
+	if ($perm == "own" || $perm == "all") {
+		$sql_add_from = ", users ";
+		$sql_add_where = " AND users.id = " . $db->quote($_SESSION['userid'], 'integer');
 	}
-	if ($perm == "all") {
-                $sql_add_from = ", zones, users ";
-                $sql_add_where = " AND zones.domain_id = domains.id AND users.id = " . $db->quote($_SESSION['userid'], 'integer') . " AND zones.owner = " . $db->quote($_SESSION['userid'], 'integer');
-        }
 	
 	$query = "SELECT 
 			domains.id AS zid,
@@ -1157,5 +1231,139 @@ function validate_account($account) {
 	}
 }
 
+function get_zone_template($zone_id) {
+	global $db;
+	$query = "SELECT zone_templ_id FROM zones WHERE domain_id = " . $db->quote($zone_id, 'integer');
+	$comment = $db->queryOne($query);
+	return $comment;
+}
+ 
+function update_zone_template($zone_id, $new_zone_template_id) {
+        global $db;
+	$query = "UPDATE zones
+			SET zone_templ_id = " . $db->quote($new_zone_template_id, 'integer') . "
+			WHERE id = " . $db->quote($zone_id, 'integer') ;
+	$response = $db->query($query);
+	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+        return true;
+}
+
+function update_zone_records($zone_id, $zone_template) {
+        global $db;
+        global $dns_ns1;
+        global $dns_hostmaster;
+        global $dns_ttl;
+
+	if (verify_permission('zone_content_edit_others')) { $perm_edit = "all" ; }
+	elseif (verify_permission('zone_content_edit_own')) { $perm_edit = "own" ; }
+	else { $perm_edit = "none" ; }
+
+	$user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
+
+        if(verify_permission('zone_master_add')) { $zone_master_add = "1" ; } ;
+	if(verify_permission('zone_slave_add')) { $zone_slave_add = "1" ; } ;
+
+        $response = $db->beginTransaction();
+
+        if (0 != $zone_template) {
+                        if ( $perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1") ) {
+                                if (is_numeric($zone_id)) {
+                                        $db->exec("DELETE FROM records WHERE domain_id=".$db->quote($zone_id, 'integer'));
+                                } else {
+                                        error(sprintf(ERR_INV_ARGC, "delete_domain", "id must be a number"));
+                                }
+                        } else {
+                                error(ERR_PERM_DEL_ZONE);
+                        }
+
+                        if($zone_master_add == "1" || $zone_slave_add == "1") {
+                                $domain = get_zone_name_from_id($zone_id);
+                                $now = time();
+                                $templ_records = get_zone_templ_records($zone_template);
+                                foreach ($templ_records as $r) {
+                                        if ((preg_match('/in-addr.arpa/i', $zone_id) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $zone_id)))
+                                        {
+                                                $name     = parse_template_value($r["name"], $domain);
+                                                $type     = $r["type"];
+                                                $content  = parse_template_value($r["content"], $domain);
+                                                $ttl      = $r["ttl"];
+                                                $prio     = intval($r["prio"]);
+
+                                                if (!$ttl) {
+                                                        $ttl = $dns_ttl;
+                                                }
+
+                                                $query = "INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) VALUES ("
+                                                                . $db->quote($zone_id, 'integer') . ","
+                                                                . $db->quote($name, 'text') . ","
+                                                                . $db->quote($type, 'text') . ","
+                                                                . $db->quote($content, 'text') . ","
+                                                                . $db->quote($ttl, 'integer') . ","
+                                                                . $db->quote($prio, 'integer') . ","
+                                                                . $db->quote($now, 'integer') . ")";
+                                                $response = $db->exec($query);
+                                        }
+                                }
+                        }
+        }
+
+        $query = "UPDATE zones
+                    SET zone_templ_id = " . $db->quote($zone_template, 'integer') . "
+                    WHERE domain_id = " . $db->quote($zone_id, 'integer') ;
+	$response = $db->exec($query);
+
+        if (PEAR::isError($response)) {
+            $response = $db->rollback();
+        } else {
+            $response = $db->commit();
+        }
+}
+
+/*
+ * Deletes a domain by a given id.
+ * Function always succeeds. If the field is not found in the database, thats what we want anyway.
+ */
+function delete_domains($domains)
+{
+	global $db;
+        $error = false;
+        $return = false;
+        $response = $db->beginTransaction();
+
+        foreach ($domains as $id) {
+                if (verify_permission('zone_content_edit_others')) { $perm_edit = "all" ; }
+                elseif (verify_permission('zone_content_edit_own')) { $perm_edit = "own" ; }
+                else { $perm_edit = "none" ; }
+                $user_is_zone_owner = verify_user_is_owner_zoneid($id);
+
+                if ( $perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1") ) {
+                        if (is_numeric($id)) {
+                                $db->exec("DELETE FROM zones WHERE domain_id=".$db->quote($id, 'integer'));
+                                $db->exec("DELETE FROM domains WHERE id=".$db->quote($id, 'integer'));
+                                $db->exec("DELETE FROM records WHERE domain_id=".$db->quote($id, 'integer'));
+                        } else {
+                                error(sprintf(ERR_INV_ARGC, "delete_domains", "id must be a number"));
+                                $error = true;
+                        }
+                } else {
+                        error(ERR_PERM_DEL_ZONE);
+                        $error = true;
+                }
+        }
+
+        if (PEAR::isError($response)) {
+            $response = $db->rollback();
+            $commit = false;
+        } else {
+            $response = $db->commit();
+            $commit = true;
+        }
+
+        if (true == $commit && false == $error) {
+            $return = true;
+        }
+
+        return $return;
+}
 
 ?>
