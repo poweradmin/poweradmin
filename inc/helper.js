@@ -1,7 +1,7 @@
 <!--
 
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
- *  See <https://rejo.zenger.nl/poweradmin> for more details.
+ *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010  Rejo Zenger <rejo@zenger.nl>
  *  Copyright 2010-2011  Poweradmin Development Team <http://www.poweradmin.org/credits>
