@@ -1,5 +1,13 @@
 #!/bin/sh
 
+result=`msgfmt 2>/dev/null`
+
+if [ "$?" = "127" ]
+then
+	echo "Error: can't find <msgfmt> executable!"
+	exit
+fi
+
 # get list of available locales, excluding english
 dirs=`ls ../locale | grep -v en_EN`
 
