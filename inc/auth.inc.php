@@ -111,7 +111,7 @@ function auth($msg="",$type="success")
 	<form method="post" action="<?php echo $_SERVER["PHP_SELF"] ?>">
 	 <table border="0">
 	  <tr>
-	   <td class="n"><?php echo _('Username'); ?>:</td>
+	   <td class="n" width="100"><?php echo _('Username'); ?>:</td>
 	   <td class="n"><input type="text" class="input" name="username" id="username"></td>
 	  </tr>
 	  <tr>
