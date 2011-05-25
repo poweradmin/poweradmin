@@ -28,7 +28,6 @@ function zone_id_exists($zid) {
 	return $count;
 }
 
-
 function get_zone_id_from_record_id($rid) {
 	global $db;
 	$query = "SELECT domain_id FROM records WHERE id = " . $db->quote($rid, 'integer');
@@ -43,42 +42,47 @@ function count_zone_records($zone_id) {
 	return $record_count;
 }
 
-function update_soa_serial($did) {
-
+function get_soa_record($domain_id) {
 	global $db;
-	$sqlq = "SELECT notified_serial FROM domains WHERE id = ".$db->quote($did, 'integer');
-	$notified_serial = $db->queryOne($sqlq);
 
-	$sqlq = "SELECT content FROM records WHERE type = ".$db->quote('SOA', 'text')." AND domain_id = ".$db->quote($did, 'integer');
+	$sqlq = "SELECT content FROM records WHERE type = ".$db->quote('SOA', 'text')." AND domain_id = ".$db->quote($domain_id, 'integer');
 	$result = $db->queryOne($sqlq);
-	$need_to_update = false;
+	
+	return $result;
+}
 
-	// Split content of current SOA record into an array. 
-	$soa = explode(" ", $result);
+function get_soa_serial($soa_rec) {
+	$soa = explode(" ", $soa_rec);
+	return $soa[2];
+}
 
-	// Check if we have to update the serial field. 
-	// 
+function get_next_serial($curr_serial, $today = '') {
+
 	// The serial should be updated, unless:
-	//  - the serial is set to "0", see /Documentation/DNS-SOA#PowerDNSspecifics on
-	//    the Poweradmin website
+	//  - the serial is set to "0", see http://doc.powerdns.com/types.html#id482176
+	//
+	//  - TODO: set a fresh serial ONLY if the existing serial is lower than the current date
+	//
 	//  - the serial is set to YYYYMMDD99, it's RFC 1912 style already and has 
 	//    reached it limit of revisions for today
 
 	set_timezone();
 	
-	if ($soa[2] == "0") {
-		return true;
-	} elseif ($soa[2] == date('Ymd') . "99") {
-		return true;
+	if ($curr_serial == "0") {
+		return $curr_serial;
+	} elseif ($curr_serial == date('Ymd') . "99") {
+		return $curr_serial;
 	} else {
-		$today = date('Ymd');
+		if ($today == '') {
+			$today = date('Ymd');
+		}
 
 		// Determine revision.
-		if (strncmp($today, $soa[2], 8) === 0) {
+		if (strncmp($today, $curr_serial, 8) === 0) {
 			// Current serial starts with date of today, so we need to update
 			// the revision only. To do so, determine current revision first, 
 			// then update counter.
-			$revision = (int) substr($soa[2], -2);
+			$revision = (int) substr($curr_serial, -2);
 			++$revision;
 		} else {
 			// Current serial did not start of today, so it's either an older 
@@ -87,21 +91,47 @@ function update_soa_serial($did) {
 			$revision = "00";
 		}
 
-		$serial = $today . str_pad($revision, 2, "0", STR_PAD_LEFT);;
-		
-		// Change serial in SOA array.
-		$soa[2] = $serial;
-		
-		// Build new SOA record content and update the database.
-		$content = "";		
-		for ($i = 0; $i < count($soa); $i++) {	
-			$content .= $soa[$i] . " "; 
-		}
-		$sqlq = "UPDATE records SET content = ".$db->quote($content, 'text')." WHERE domain_id = ".$db->quote($did, 'integer')." AND type = ".$db->quote('SOA', 'text');
-		$response = $db->query($sqlq);
-		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
-		return true;
+		$serial = $today . str_pad($revision, 2, "0", STR_PAD_LEFT);
+		return $serial;
 	}
+	
+}
+
+function update_soa_record($domain_id, $content) {
+	global $db;
+	
+	$sqlq = "UPDATE records SET content = ".$db->quote($content, 'text')." WHERE domain_id = ".$db->quote($domain_id, 'integer')." AND type = ".$db->quote('SOA', 'text');
+	$response = $db->query($sqlq);
+	
+	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+	
+	return true;
+}
+
+function set_soa_serial($soa_rec, $serial) {
+	// Split content of current SOA record into an array. 
+	$soa = explode(" ", $soa_rec);
+	$soa[2] = $serial;
+	
+	// Build new SOA record content
+	$soa_rec = join(" ", $soa);
+	chop($soa_rec);
+	
+	return $soa_rec;
+}
+
+function update_soa_serial($domain_id) {
+	$soa_rec = get_soa_record($domain_id);
+
+	$curr_serial = get_soa_serial($soa_rec);
+	$new_serial = get_next_serial($curr_serial);
+	
+	if ($curr_serial != $new_serial) {
+		$soa_rec = set_soa_serial($soa_rec, $new_serial);
+		return update_soa_record($domain_id, $soa_rec);
+	}
+
+	return true;
 }  
 
 function get_zone_comment($zone_id) {
