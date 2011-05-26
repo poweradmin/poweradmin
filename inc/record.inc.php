@@ -61,7 +61,7 @@ function get_next_serial($curr_serial, $today = '') {
 	// The serial should be updated, unless:
 	//  - the serial is set to "0", see http://doc.powerdns.com/types.html#id482176
 	//
-	//  - TODO: set a fresh serial ONLY if the existing serial is lower than the current date
+	//  - set a fresh serial ONLY if the existing serial is lower than the current date
 	//
 	//  - the serial is set to YYYYMMDD99, it's RFC 1912 style already and has 
 	//    reached it limit of revisions for today
@@ -75,20 +75,17 @@ function get_next_serial($curr_serial, $today = '') {
 			set_timezone();
 			$today = date('Ymd');
 		}
-
-#		if($soa[2] <= $serial) {
-#			// Change serial in SOA array (to current date).
-#			$soa[2] = $serial;
-#		} else {
-#			// Change serial in SOA array (just add 1).
-#			++$soa[2];
-#		}
 		
 		// Determine revision.
 		if (strncmp($today, $curr_serial, 8) === 0) {
 			// Current serial starts with date of today, so we need to update
 			// the revision only. To do so, determine current revision first, 
 			// then update counter.
+			$revision = (int) substr($curr_serial, -2);
+			++$revision;
+		} elseif (strncmp($today, $curr_serial, 8) === -1) {
+			// Use date from current serial and then update counter
+			$today = substr($curr_serial, 0, 8);
 			$revision = (int) substr($curr_serial, -2);
 			++$revision;
 		} else {
