@@ -65,8 +65,6 @@ function get_next_serial($curr_serial, $today = '') {
 	//
 	//  - the serial is set to YYYYMMDD99, it's RFC 1912 style already and has 
 	//    reached it limit of revisions for today
-
-	set_timezone();
 	
 	if ($curr_serial == "0") {
 		return $curr_serial;
@@ -74,9 +72,18 @@ function get_next_serial($curr_serial, $today = '') {
 		return $curr_serial;
 	} else {
 		if ($today == '') {
+			set_timezone();
 			$today = date('Ymd');
 		}
 
+#		if($soa[2] <= $serial) {
+#			// Change serial in SOA array (to current date).
+#			$soa[2] = $serial;
+#		} else {
+#			// Change serial in SOA array (just add 1).
+#			++$soa[2];
+#		}
+		
 		// Determine revision.
 		if (strncmp($today, $curr_serial, 8) === 0) {
 			// Current serial starts with date of today, so we need to update
@@ -92,6 +99,7 @@ function get_next_serial($curr_serial, $today = '') {
 		}
 
 		$serial = $today . str_pad($revision, 2, "0", STR_PAD_LEFT);
+		
 		return $serial;
 	}
 	
