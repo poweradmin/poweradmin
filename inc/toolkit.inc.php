@@ -367,4 +367,29 @@ function set_timezone() {
 	}
 }
 
+function generate_salt($len = 5) {
+	$valid_characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890@#$%^*()_-!';
+	$valid_len = strlen($valid_characters) - 1;
+	$salt = "";
+
+	for($i = 0; $i < $len; $i++) {
+		$salt .= $valid_characters[rand(0, $valid_len)];
+	}
+
+	return $salt;
+}
+
+function extract_salt($password) {
+	return substr(strchr($password, ':'), 1);
+}
+
+function mix_salt($salt, $pass) {
+	return md5($salt.$pass).':'.$salt;
+}
+
+function gen_mix_salt($pass) {
+	$salt = generate_salt();
+	return mix_salt($salt, $pass);
+}
+
 ?>
