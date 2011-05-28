@@ -533,7 +533,7 @@ function get_user_detail_list($specific) {
 // should return the permissions assigned to that particular template only. If
 // second argument is true, only the permission names are returned.
 
-function get_permissions_by_template_id($templ_id=0,$return_name_only=false) {
+function get_permissions_by_template_id($templ_id=0, $return_name_only=false) {
 	global $db;
 
 	$limit = '';
@@ -548,7 +548,7 @@ function get_permissions_by_template_id($templ_id=0,$return_name_only=false) {
 			perm_items.descr AS descr
 			FROM perm_items" 
 			. $limit . "
-			ORDER BY descr";
+			ORDER BY name";
 	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
