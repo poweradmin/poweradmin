@@ -65,17 +65,17 @@ function get_next_serial($curr_serial, $today = '') {
 	//
 	//  - the serial is set to YYYYMMDD99, it's RFC 1912 style already and has 
 	//    reached it limit of revisions for today
+
+	if ($today == '') {
+		set_timezone();
+		$today = date('Ymd');
+	}
 	
 	if ($curr_serial == "0") {
 		return $curr_serial;
-	} elseif ($curr_serial == date('Ymd') . "99") {
+	} elseif ($curr_serial == $today . "99") {
 		return $curr_serial;
 	} else {
-		if ($today == '') {
-			set_timezone();
-			$today = date('Ymd');
-		}
-		
 		// Determine revision.
 		if (strncmp($today, $curr_serial, 8) === 0) {
 			// Current serial starts with date of today, so we need to update
