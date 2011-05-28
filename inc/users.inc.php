@@ -261,6 +261,7 @@ function delete_perm_templ($ptid) {
 function edit_user($id, $user, $fullname, $email, $perm_templ, $description, $active, $password)
 {
 	global $db;
+	global $password_encryption;
 
 	verify_permission('user_edit_own') ? $perm_edit_own = "1" : $perm_edit_own = "0" ;
 	verify_permission('user_edit_others') ? $perm_edit_others = "1" : $perm_edit_others = "0" ;
@@ -322,7 +323,11 @@ function edit_user($id, $user, $fullname, $email, $perm_templ, $description, $ac
 				active = " . $db->quote($active, 'integer') ;
 
 		if($password != "") {
-			$query .= ", password = " . $db->quote(md5($password), 'text') ;
+			if ($password_encryption == 'md5salt') {
+				$query .= ", password = " . $db->quote(gen_mix_salt($password), 'text') ;
+			} else {
+				$query .= ", password = " . $db->quote(md5($password), 'text') ;
+			}
 		}
 
 		$query .= " WHERE id = " . $db->quote($id, 'integer') ;
@@ -344,6 +349,7 @@ function edit_user($id, $user, $fullname, $email, $perm_templ, $description, $ac
  */
 function change_user_pass($details) {
 	global $db;
+	global $password_encryption; 
 	
 	if ($details['newpass'] != $details['newpass2']) {
 		error(ERR_USER_MATCH_NEW_PASS);
@@ -356,8 +362,20 @@ function change_user_pass($details) {
 
 	$rinfo = $response->fetchRow();
 
-	if(md5($details['currentpass']) == $rinfo['password']) {
-		$query = "UPDATE users SET password = " . $db->quote(md5($details['newpass']), 'text') . " WHERE id = " . $db->quote($rinfo['id'], 'integer') ;
+	if ($password_encryption == 'md5salt') {
+		$extracted_salt = extract_salt($rinfo['password']);
+		$current_password = mix_salt($extracted_salt, $details['currentpass']);
+
+	} else {
+		$current_password = md5($details['currentpass']);
+	}
+
+	if($current_password == $rinfo['password']) {
+		if ($password_encryption == 'md5salt') {
+			$query = "UPDATE users SET password = " . $db->quote(gen_mix_salt($details['newpass']), 'text') . " WHERE id = " . $db->quote($rinfo['id'], 'integer') ;
+		} else {
+			$query = "UPDATE users SET password = " . $db->quote(md5($details['newpass']), 'text') . " WHERE id = " . $db->quote($rinfo['id'], 'integer') ;
+		}
 		$response = $db->query($query);
 		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
@@ -653,6 +671,7 @@ function update_perm_templ_details($details) {
 function update_user_details($details) {
 
 	global $db;
+	global $password_encryption;
 
 	verify_permission('user_edit_own') ? $perm_edit_own = "1" : $perm_edit_own = "0" ;
 	verify_permission('user_edit_others') ? $perm_edit_others = "1" : $perm_edit_others = "0" ;
@@ -718,7 +737,11 @@ function update_user_details($details) {
 		}
 
 		if(isset($details['password']) && $details['password'] != "") {
-			$query .= ", password = " . $db->quote(md5($details['password']), 'text');
+			if ($password_encryption == 'md5salt') {
+				$query .= ", password = " . $db->quote(gen_mix_salt($details['password']), 'text');
+			} else {
+				$query .= ", password = " . $db->quote(md5($details['password']), 'text');
+			}
 		}
 
 		$query .= " WHERE id = " . $db->quote($details['uid'], 'integer') ;
@@ -737,6 +760,7 @@ function update_user_details($details) {
 
 function add_new_user($details) {
 	global $db;
+	global $password_encryption;
 
 	if (!verify_permission('user_add_new')) {
 		error(ERR_PERM_ADD_USER);
@@ -757,9 +781,16 @@ function add_new_user($details) {
 	if (verify_permission('user_edit_templ_perm')) {
 		$query .= ' perm_templ,';
 	}
+
+	if ($password_encryption == 'md5salt') {
+		$password_hash = gen_mix_salt($details['password']);
+	} else {
+		$password_hash = md5($details['password']);
+	}
+	
 	$query .= " active) VALUES ("
 			. $db->quote($details['username'], 'text') . ", "
-			. $db->quote(md5($details['password']), 'text') . ", "
+			. $db->quote($password_hash, 'text') . ", "
 			. $db->quote($details['fullname'], 'text') . ", "
 			. $db->quote($details['email'], 'text') . ", "
 			. $db->quote($details['descr'], 'text') . ", ";
