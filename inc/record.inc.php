@@ -101,11 +101,10 @@ function get_next_serial($curr_serial, $today = '') {
 			// Reuse existing serial date if it's in the future
 			$today = substr($curr_serial, 0, 8);
 
-			// Get next date if revision reaches maximum per day (99) limit
+			// Get next date if revision reaches maximum per day (99) limit otherwise increment the counter
 			if ($revision == 99) {
-				$serial = get_next_date($today) . "00";
-				return $serial;
-
+				$today = get_next_date($today);
+				$revision = "00";
 			} else {
 				++$revision;
 			}
@@ -116,6 +115,7 @@ function get_next_serial($curr_serial, $today = '') {
 			$revision = "00";
 		}
 
+		// Create new serial out of existing/updated date and revision
 		$serial = $today . str_pad($revision, 2, "0", STR_PAD_LEFT);
 	}
 	
