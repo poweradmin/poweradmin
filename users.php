@@ -30,10 +30,10 @@ verify_permission('templ_perm_edit') ? $perm_templ_perm_edit = "1" : $perm_templ
 verify_permission('is_ueberuser') ? $perm_is_godlike = "1" : $perm_is_godlike = "0" ;
 verify_permission('user_add_new') ? $perm_add_new = "1" : $perm_add_new = "0" ;
 
-if(isset($_GET['action']) && $_GET['action'] === "switchuser" && $perm_is_godlike === "1"){
-        $_SESSION["userlogin"] = $_GET['username'];
-	echo '<meta http-equiv="refresh" content="1"/>';
-}
+#if (isset($_GET['action']) && $_GET['action'] === "switchuser" && $perm_is_godlike === "1"){
+#        $_SESSION["userlogin"] = $_GET['username'];
+#	echo '<meta http-equiv="refresh" content="1"/>';
+#}
 
 unset($commit_button);
 
@@ -74,9 +74,10 @@ foreach ($users as $user) {
 		if($user['uid'] != $_SESSION["userid"] || $perm_is_godlike == "1"){
 			echo "        <a href=\"delete_user.php?id=" . $user['uid'] . "\"><img src=\"images/delete.gif\" alt=\"[ " . _('Delete user') . " ]\"></a>";
 		}
-		if ($user['uid'] != $_SESSION["userid"] && $perm_is_godlike == "1") {
-			echo "		<a href=\"users.php?action=switchuser&username=" . $user['username'] . "\"><img src=\"images/switch_user.png\" alt=\"[ " . _('Switch user') . " ]\"></a>\n";
-		}	
+
+#		if ($user['uid'] != $_SESSION["userid"] && $perm_is_godlike == "1") {
+#			echo "		<a href=\"users.php?action=switchuser&username=" . $user['username'] . "\"><img src=\"images/switch_user.png\" alt=\"[ " . _('Switch user') . " ]\"></a>\n";
+#		}	
 	
 		echo "       </td>\n";
 		echo "       <td><input type=\"text\" name=\"user[" . $user['uid'] . "][username]\" value=\"" . $user['username'] . "\"></td>\n";
