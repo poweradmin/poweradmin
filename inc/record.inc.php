@@ -56,15 +56,27 @@ function get_soa_serial($soa_rec) {
 	return $soa[2];
 }
 
+function get_next_date($curr_date) {
+	$next_date = date('Ymd', strtotime('+1 day', strtotime($curr_date)));
+	return $next_date;
+}
+
 function get_next_serial($curr_serial, $today = '') {
+	// Zone transfer to zone slave(s) will occur only if the serial number
+	// of the SOA RR is arithmetically greater that the previous one 
+	// (as defined by RFC-1982).
 
 	// The serial should be updated, unless:
 	//  - the serial is set to "0", see http://doc.powerdns.com/types.html#id482176
 	//
 	//  - set a fresh serial ONLY if the existing serial is lower than the current date
 	//
-	//  - the serial is set to YYYYMMDD99, it's RFC 1912 style already and has 
-	//    reached it limit of revisions for today
+	//	- update date in serial if it reaches limit of revisions for today or do you 
+	//	think that ritual suicide is better in such case?
+	//
+	// "This works unless you will require to make more than 99 changes until the new 
+	// date is reached - in which case perhaps ritual suicide is the best option."
+	// http://www.zytrax.com/books/dns/ch9/serial.html
 
 	if ($today == '') {
 		set_timezone();
@@ -74,7 +86,8 @@ function get_next_serial($curr_serial, $today = '') {
 	if ($curr_serial == "0") {
 		return $curr_serial;
 	} elseif ($curr_serial == $today . "99") {
-		return $curr_serial;
+		$serial = get_next_date($today) . "00";
+		return $serial;
 	} else {
 		// Determine revision.
 		if (strncmp($today, $curr_serial, 8) === 0) {
