@@ -36,7 +36,8 @@ if ($id == "-1") {
 	$id = $_GET['id'];
 
 	if (isset($_POST['commit'])) {
-		update_perm_templ_details($_POST);	
+		update_perm_templ_details($_POST);
+		success(SUC_RECORD_UPD);	
 	}
 
 	$templ = get_permission_template_details($id);

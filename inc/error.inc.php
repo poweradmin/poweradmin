@@ -105,20 +105,21 @@ define("ERR_DNS_SRV_TRGT", _('Invalid SRV target.'));
 define("ERR_DNS_PRINTABLE", _('Invalid characters have been used in this record.'));
 
 /* GOOD! */
-define("SUC_ZONE_ADD", _('Zone has been added successfully.')); 
-define("SUC_ZONE_DEL", _('Zone has been deleted successfully.')); 
-define("SUC_ZONES_UPD", _('Zones have been updated successfully.')); 
-define("SUC_USER_UPD", _('The user has been updated successfully.')); 
-define("SUC_USER_ADD", _('The user has been created successfully.')); 
-define("SUC_USER_DEL", _('The user has been deleted successfully.')); 
-define("SUC_RECORD_UPD", _('The record has been updated successfully.')); 
-define("SUC_RECORD_DEL", _('The record has been deleted successfully.')); 
-define("SUC_COMMENT_UPD", _('The comment has been updated successfully.')); 
-define("SUC_SM_DEL", _('The supermaster has been deleted successfully.')); 
-define("SUC_SM_ADD", _('The supermaster has been added successfully.')); 
-define("SUC_PERM_TEMPL_DEL", _('The permission template has been deleted successfully.')); 
-define("SUC_ZONE_TEMPL_ADD", _('Zone template has been added successfully.')); 
-define("SUC_ZONE_TEMPL_UPD", _('Zone template has been updated successfully.')); 
-define("SUC_ZONE_TEMPL_DEL", _('Zone template has been deleted successfully.')); 
+define("SUC_ZONE_ADD", _('Zone has been added successfully.'));
+define("SUC_ZONE_DEL", _('Zone has been deleted successfully.'));
+define("SUC_ZONES_UPD", _('Zones have been updated successfully.'));
+define("SUC_USER_UPD", _('The user has been updated successfully.'));
+define("SUC_USER_ADD", _('The user has been created successfully.'));
+define("SUC_USER_DEL", _('The user has been deleted successfully.'));
+define("SUC_RECORD_UPD", _('The record has been updated successfully.'));
+define("SUC_RECORD_DEL", _('The record has been deleted successfully.'));
+define("SUC_COMMENT_UPD", _('The comment has been updated successfully.'));
+define("SUC_SM_DEL", _('The supermaster has been deleted successfully.'));
+define("SUC_SM_ADD", _('The supermaster has been added successfully.'));
+define("SUC_PERM_TEMPL_UPD", _('The permission template has been updated successfully.'));
+define("SUC_PERM_TEMPL_DEL", _('The permission template has been deleted successfully.'));
+define("SUC_ZONE_TEMPL_ADD", _('Zone template has been added successfully.'));
+define("SUC_ZONE_TEMPL_UPD", _('Zone template has been updated successfully.'));
+define("SUC_ZONE_TEMPL_DEL", _('Zone template has been deleted successfully.'));
 
 ?>
