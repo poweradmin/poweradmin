@@ -25,6 +25,7 @@ function doAuthenticate() {
 	global $iface_expire;
 	global $syslog_use, $syslog_ident, $syslog_facility;
 	global $cryptokey;
+	global $password_encryption;
 
 	if (isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] == "logout") {
 		logout( _('You have logged out.'), 'success');
@@ -33,8 +34,9 @@ function doAuthenticate() {
 	// If a user had just entered his/her login && password, store them in our session.
 	if(isset($_POST["authenticate"]))
 	{
-			$_SESSION["userpwd"] = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($cryptokey), $_POST['password'], MCRYPT_MODE_CBC, md5(md5($cryptokey))));;
-			$_SESSION["userlogin"] = $_POST["username"];
+		// XXX: LOL, why there are so many md5() ?
+		$_SESSION["userpwd"] = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($cryptokey), $_POST['password'], MCRYPT_MODE_CBC, md5(md5($cryptokey))));;
+		$_SESSION["userlogin"] = $_POST["username"];
 	}
 
 	// Check if the session hasnt expired yet.
@@ -50,30 +52,48 @@ function doAuthenticate() {
 	{
 		//Username and password are set, lets try to authenticate.
 		$session_pass = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($cryptokey), base64_decode($_SESSION["userpwd"]), MCRYPT_MODE_CBC, md5(md5($cryptokey))), "\0");
-		$result = $db->query("SELECT id, fullname FROM users WHERE username=". $db->quote($_SESSION["userlogin"], 'text')  ." AND password=". $db->quote(md5($session_pass), 'text')  ." AND active=1");
+
+		if ($password_encryption == 'md5salt') {
+			$result = $db->query("SELECT id, fullname, password FROM users WHERE username=". $db->quote($_SESSION["userlogin"], 'text')  ." AND active=1");
+		} else {
+			$result = $db->query("SELECT id, fullname, password FROM users WHERE username=". $db->quote($_SESSION["userlogin"], 'text')  ." AND active=1");
+		}
+		
 		if($result->numRows() == 1)
 		{
 			$rowObj = $result->fetchRow();
-			$_SESSION["userid"] = $rowObj["id"];
-			$_SESSION["name"] = $rowObj["fullname"];
-			if(isset($_POST["authenticate"]))
-			{
-				// Log to syslog if it's enabled
-				if($syslog_use)
-				{
-					openlog($syslog_ident, LOG_PERROR, $syslog_facility);
-					$syslog_message = sprintf('Successful authentication attempt from [%s] for user \'%s\'', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]);
-					syslog(LOG_INFO, $syslog_message);
-					closelog();
-				}
-				//If a user has just authenticated, redirect him to index with timestamp, so post-data gets lost.
-				session_write_close();
-				clean_page("index.php");
-				exit;
+			
+			if ($password_encryption == 'md5salt') {
+				$session_password = mix_salt(extract_salt($rowObj["password"]), $session_pass);
+			} else {
+				$session_password = md5($session_pass);
 			}
-		}
-		else
-		{
+
+			if ($session_password == $rowObj["password"]) {
+				
+				$_SESSION["userid"] = $rowObj["id"];
+				$_SESSION["name"] = $rowObj["fullname"];
+				
+				if(isset($_POST["authenticate"]))
+				{
+					// Log to syslog if it's enabled
+					if($syslog_use)
+					{
+						openlog($syslog_ident, LOG_PERROR, $syslog_facility);
+						$syslog_message = sprintf('Successful authentication attempt from [%s] for user \'%s\'', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]);
+						syslog(LOG_INFO, $syslog_message);
+						closelog();
+					}
+					//If a user has just authenticated, redirect him to index with timestamp, so post-data gets lost.
+					session_write_close();
+					clean_page("index.php");
+					exit;
+				}
+			} else {
+				auth( _('Authentication failed!'),"error");
+			}		
+			
+		} else {
 			// Log to syslog if it's enabled
 			if($syslog_use)
 			{
@@ -85,9 +105,8 @@ function doAuthenticate() {
 			//Authentication failed, retry.
 			auth( _('Authentication failed! - <a href="reset_password.php">(forgot password)</a>'),"error");
 		}
-	}
-	else
-	{
+		
+	} else {
 		//No username and password set, show auth form (again).
 		auth();
 	}
