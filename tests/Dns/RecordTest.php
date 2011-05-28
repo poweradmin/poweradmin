@@ -15,7 +15,9 @@ class RecordTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals(get_next_serial(2011052600, 20110526), 2011052601);
 		$this->assertEquals(get_next_serial(2011052699, 20110526), 2011052700);
 		$this->assertEquals(get_next_serial(2011052501, 20110526), 2011052600);
-		$this->assertEquals(get_next_serial(2011052705, 20110526), 2011052706);	
+		$this->assertEquals(get_next_serial(2011052705, 20110526), 2011052706);
+		$this->assertEquals(get_next_serial(2011052999, 20110528), 2011053000);
+		#$this->assertEquals(get_next_serial(2011053199, 20110528), 2011060100);
 	}
 }
 

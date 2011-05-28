@@ -83,6 +83,8 @@ function get_next_serial($curr_serial, $today = '') {
 		$today = date('Ymd');
 	}
 	
+	$revision = (int) substr($curr_serial, -2);
+	
 	if ($curr_serial == "0") {
 		return $curr_serial;
 	} elseif ($curr_serial == $today . "99") {
@@ -94,13 +96,17 @@ function get_next_serial($curr_serial, $today = '') {
 			// Current serial starts with date of today, so we need to update
 			// the revision only. To do so, determine current revision first, 
 			// then update counter.
-			$revision = (int) substr($curr_serial, -2);
 			++$revision;
 		} elseif (strncmp($today, $curr_serial, 8) === -1) {
 			// Use date from current serial and then update counter
 			$today = substr($curr_serial, 0, 8);
-			$revision = (int) substr($curr_serial, -2);
-			++$revision;
+
+			if ($revision == 99) {
+				$serial = get_next_date($today) . "00";
+				return $serial;
+			} else {
+				++$revision;
+			}
 		} else {
 			// Current serial did not start of today, so it's either an older 
 			// serial or a serial that does not adhere the recommended syntax
