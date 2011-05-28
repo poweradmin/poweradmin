@@ -84,41 +84,42 @@ function get_next_serial($curr_serial, $today = '') {
 	}
 	
 	$revision = (int) substr($curr_serial, -2);
+	$ser_date = substr($curr_serial, 0, 8);
 	
-	if ($curr_serial == "0") {
-		return $curr_serial;
-	} elseif ($curr_serial == $today . "99") {
-		$serial = get_next_date($today) . "00";
-		return $serial;
+	if ($curr_serial == '0') {
+		$serial = $curr_serial;
+
+	} elseif ($curr_serial == $today . '99') {
+		$serial = get_next_date($today) . '00';
+	
 	} else {
-		// Determine revision.
-		if (strncmp($today, $curr_serial, 8) === 0) {
-			// Current serial starts with date of today, so we need to update
-			// the revision only. To do so, determine current revision first, 
-			// then update counter.
+		if (strcmp($today, $ser_date) === 0) {
+			// Current serial starts with date of today, so we need to update the revision only.
 			++$revision;
+			
 		} elseif (strncmp($today, $curr_serial, 8) === -1) {
-			// Use date from current serial and then update counter
+			// Reuse existing serial date if it's in the future
 			$today = substr($curr_serial, 0, 8);
 
+			// Get next date if revision reaches maximum per day (99) limit
 			if ($revision == 99) {
 				$serial = get_next_date($today) . "00";
 				return $serial;
+
 			} else {
 				++$revision;
 			}
+			
 		} else {
 			// Current serial did not start of today, so it's either an older 
-			// serial or a serial that does not adhere the recommended syntax
-			// of RFC-1912. In either way, set a fresh serial
+			// serial, therefore set a fresh serial
 			$revision = "00";
 		}
 
 		$serial = $today . str_pad($revision, 2, "0", STR_PAD_LEFT);
-		
-		return $serial;
 	}
 	
+	return $serial;
 }
 
 function update_soa_record($domain_id, $content) {
