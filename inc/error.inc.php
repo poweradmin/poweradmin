@@ -40,7 +40,7 @@ define("ERR_PERM_ADD_USER", _("You do not have the permission to add a new user.
 define("ERR_PERM_DEL_USER", _("You do not have the permission to delete this user.")); 
 define("ERR_PERM_EDIT_ZONE_TEMPL", _("You do not have the permission to edit zone templates.")); 
 define("ERR_PERM_DEL_ZONE_TEMPL", _("You do not have the permission to delete zone templates.")); 
-define("ERR_PERM_ADD_ZONE_TEMPL", _("You do not have the permission to add a zone templates.")); 
+define("ERR_PERM_ADD_ZONE_TEMPL", _("You do not have the permission to add a zone template.")); 
 
 /* DOMAIN STUFF */
 define("ERR_DOMAIN_INVALID", _('This is an invalid zone name.'));
