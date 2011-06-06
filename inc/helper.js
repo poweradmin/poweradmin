@@ -49,7 +49,6 @@ function addField(area,field,limit) {
 }
 
 function getDomainsElements(){
-
     var
         coll=document.getElementsByTagName('input'),
         re=/^domain\[\]$/,
@@ -75,8 +74,8 @@ function checkDomainFilled(){
     var
         domains= new Array(),
         allEmpty=true,
+        domains=getDomainsElements();
 
-    domains=getDomainsElements();
     if (domains.length == 1) {
         if ((domains[0].value.length == 0 || domains[0].value == null || domains[0].value == "")) {
             alert('Zone name cannot be empty');
