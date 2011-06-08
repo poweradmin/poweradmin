@@ -179,7 +179,7 @@ msgstr "删除域"
 #: delete_domain.php:63
 #, php-format
 msgid "You are about to delete a slave zone of which the master nameserver, %s, is a supermaster. Deleting the zone now, will result in temporary removal only. Whenever the supermaster sends a notification for this zone, it will be added again!"
-msgstr "你将删除一个主解析服务器的辅助域，%S，是一个主解析服务器，正在删除域，仅为临时删除，无论这个域的主解析服务器是否发送通告，它将再次被添加。"
+msgstr "你将删除一个主解析服务器的辅助域，%s，是一个主解析服务器，正在删除域，仅为临时删除，无论这个域的主解析服务器是否发送通告，它将再次被添加。"
 
 #: delete_domain.php:67 delete_perm_templ.php:48 delete_record.php:78
 #: delete_supermaster.php:55

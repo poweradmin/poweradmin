@@ -530,7 +530,7 @@ msgstr "Ung&uuml;ltige(s) Argument(e) zur Funktion %s angegeben"
 #: inc/error.inc.php:58
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
-msgstr "Ung&uuml;ltige(s) Argument(e) zur Funktion %s $s angegeben"
+msgstr "Ung&uuml;ltige(s) Argument(e) zur Funktion %s %s angegeben"
 
 #: inc/error.inc.php:59
 msgid "Unknown error."
