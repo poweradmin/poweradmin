@@ -19,7 +19,15 @@ for locale in $dirs; do
 
 	name=`echo $locale | cut -c1-2`
 	msgfmt -c $name.po
-	msgfmt $name.po -o messages.mo
+
+	if [ -f $name"_db.po" ];
+	then
+		msgfmt -c $name"_db.po"
+		msgcat $name.po $name"_db.po" | msgfmt - -o messages.mo
+	else
+		msgfmt $name.po -o messages.mo
+	fi
+
 
 	cd ../../
 done 
