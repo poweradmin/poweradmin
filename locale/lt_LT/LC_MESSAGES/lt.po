@@ -1,0 +1,1164 @@
+# Poweradmin translation.
+# Copyright (C) 2011 Poweradmin Development Team
+# This file is distributed under the same license as the Poweradmin package.
+# Rejo Zenger <rejo@poweradmin.org>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Poweradmin 2.1.6\n"
+"Report-Msgid-Bugs-To: edmondas@poweradmin.org\n"
+"POT-Creation-Date: 2011-06-08 07:11+0300\n"
+"PO-Revision-Date: 2011-06-08 07:25+0300\n"
+"Last-Translator: Edmondas Girkantas <eg@fbsd.lt>\n"
+"Language-Team: Lithuanian\n"
+"Language: lt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n"
+"%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: add_perm_templ.php:40 list_perm_templ.php:61
+msgid "Add permission template"
+msgstr ""
+
+#: add_perm_templ.php:44 add_perm_templ.php:55 add_record.php:120
+#: add_zone_templ.php:45 add_zone_templ_record.php:99 delete_domains.php:56
+#: edit.php:143 edit.php:240 edit_perm_templ.php:53 edit_perm_templ.php:65
+#: edit_record.php:67 edit_zone_templ.php:96 edit_zone_templ.php:173
+#: edit_zone_templ_record.php:61 list_perm_templ.php:36 list_zone_templ.php:37
+#: list_zones.php:67 search.php:65 search.php:119
+msgid "Name"
+msgstr ""
+
+#: add_perm_templ.php:48 add_perm_templ.php:56 add_user.php:67
+#: add_zone_templ.php:49 edit_perm_templ.php:57 edit_perm_templ.php:66
+#: edit_user.php:132 edit_zone_templ.php:177 list_perm_templ.php:37
+#: list_zone_templ.php:38 users.php:54
+msgid "Description"
+msgstr ""
+
+#: add_perm_templ.php:72 add_user.php:76 delete_user.php:111 edit.php:227
+#: edit_comment.php:87 edit_perm_templ.php:86 edit_record.php:109
+#: edit_user.php:141 edit_zone_templ.php:163 edit_zone_templ.php:181
+#: edit_zone_templ_record.php:91 users.php:121
+msgid "Commit changes"
+msgstr ""
+
+#: add_record.php:102 add_zone_templ_record.php:81
+msgid "The record was successfully added."
+msgstr ""
+
+#: add_record.php:111
+msgid "Add record to zone"
+msgstr ""
+
+#: add_record.php:122 add_zone_master.php:121 add_zone_templ_record.php:101
+#: delete_domain.php:63 delete_domains.php:58 edit.php:144 edit.php:242
+#: edit.php:349 edit_record.php:69 edit_zone_templ.php:97
+#: edit_zone_templ_record.php:63 list_zones.php:68 search.php:66
+#: search.php:120
+msgid "Type"
+msgstr ""
+
+#: add_record.php:123 add_zone_templ_record.php:102 edit.php:145 edit.php:243
+#: edit_record.php:71 edit_zone_templ.php:98 edit_zone_templ_record.php:65
+#: search.php:122
+msgid "Content"
+msgstr ""
+
+#: add_record.php:124 add_zone_templ_record.php:103 edit.php:146 edit.php:244
+#: edit_record.php:70 edit_zone_templ.php:99 edit_zone_templ_record.php:64
+#: search.php:121
+msgid "Priority"
+msgstr ""
+
+#: add_record.php:125 add_zone_templ_record.php:104 edit.php:147 edit.php:245
+#: edit_record.php:72 edit_zone_templ.php:100 edit_zone_templ_record.php:66
+#: search.php:123
+msgid "TTL"
+msgstr ""
+
+#: add_record.php:158 add_zone_templ_record.php:147 edit.php:287
+#: edit_zone_templ.php:183
+msgid "Add record"
+msgstr ""
+
+#: add_supermaster.php:54 add_supermaster.php:106 inc/header.inc.php:79
+#: index.php:57
+msgid "Add supermaster"
+msgstr ""
+
+#: add_supermaster.php:57
+msgid "You do not have the permission to add a new supermaster."
+msgstr ""
+
+#: add_supermaster.php:62 list_supermasters.php:36
+msgid "IP address of supermaster"
+msgstr ""
+
+#: add_supermaster.php:72 delete_supermaster.php:58 list_supermasters.php:37
+msgid "Hostname in NS record"
+msgstr ""
+
+#: add_supermaster.php:82 delete_supermaster.php:59 list_supermasters.php:38
+msgid "Account"
+msgstr ""
+
+#: add_user.php:35 users.php:135
+msgid "Add user"
+msgstr ""
+
+#: add_user.php:39 edit_user.php:103 inc/auth.inc.php:133 install/index.php:93
+#: install/index.php:172 users.php:52
+msgid "Username"
+msgstr ""
+
+#: add_user.php:43 edit_user.php:107 users.php:53
+msgid "Fullname"
+msgstr ""
+
+#: add_user.php:47 edit_user.php:111 inc/auth.inc.php:137 install/index.php:98
+#: install/index.php:177
+msgid "Password"
+msgstr ""
+
+#: add_user.php:51 edit_user.php:115 users.php:55
+msgid "Emailaddress"
+msgstr ""
+
+#: add_user.php:56 edit_user.php:120
+msgid "Permission template"
+msgstr ""
+
+#: add_user.php:71 edit_user.php:136 users.php:57
+msgid "Enabled"
+msgstr ""
+
+#: add_zone_master.php:82 inc/header.inc.php:73 index.php:51
+msgid "Add master zone"
+msgstr ""
+
+#: add_zone_master.php:91 add_zone_slave.php:73
+msgid "Zone name"
+msgstr ""
+
+#: add_zone_master.php:102 add_zone_slave.php:85 delete_domain.php:62
+#: delete_domains.php:57 list_zones.php:70 search.php:70
+msgid "Owner"
+msgstr ""
+
+#: add_zone_master.php:132 edit.php:381 users.php:56
+msgid "Template"
+msgstr ""
+
+#: add_zone_master.php:146 add_zone_slave.php:106
+msgid "Add zone"
+msgstr ""
+
+#: add_zone_slave.php:67 inc/header.inc.php:76 index.php:54
+msgid "Add slave zone"
+msgstr ""
+
+#: add_zone_slave.php:79 edit.php:413
+msgid "IP address of master NS"
+msgstr ""
+
+#: add_zone_templ.php:41
+msgid "Add zone template for"
+msgstr ""
+
+#: add_zone_templ.php:53 list_zone_templ.php:59
+msgid "Add zone template"
+msgstr ""
+
+#: add_zone_templ_record.php:90
+msgid "Add record to zone template"
+msgstr ""
+
+#: add_zone_templ_record.php:139 edit_zone_templ.php:145
+msgid "The following placeholders can be used in template records"
+msgstr ""
+
+#: add_zone_templ_record.php:142 edit_zone_templ.php:148
+msgid "substituted with current zone name"
+msgstr ""
+
+#: add_zone_templ_record.php:143 edit_zone_templ.php:149
+msgid "substituted with current date and 2 numbers"
+msgstr ""
+
+#: change_password.php:31 change_password.php:49 inc/header.inc.php:81
+#: index.php:59
+msgid "Change password"
+msgstr ""
+
+#: change_password.php:35
+msgid "Current password"
+msgstr ""
+
+#: change_password.php:39 change_password.php:43
+msgid "New password"
+msgstr ""
+
+#: delete_domain.php:54 list_zones.php:99 search.php:84
+msgid "Delete zone"
+msgstr ""
+
+#: delete_domain.php:68 delete_domains.php:63
+#, php-format
+msgid ""
+"You are about to delete a slave zone of which the master nameserver, %s, is "
+"a supermaster. Deleting the zone now, will result in temporary removal only. "
+"Whenever the supermaster sends a notification for this zone, it will be "
+"added again!"
+msgstr ""
+
+#: delete_domain.php:72 delete_domains.php:72 delete_perm_templ.php:49
+#: delete_record.php:94 delete_supermaster.php:61 delete_zone_templ.php:50
+#: delete_zone_templ_record.php:74
+msgid "Are you sure?"
+msgstr ""
+
+#: delete_domain.php:73 delete_domains.php:73 delete_perm_templ.php:50
+#: delete_record.php:95 delete_supermaster.php:62 delete_zone_templ.php:51
+#: delete_zone_templ_record.php:75
+msgid "Yes"
+msgstr ""
+
+#: delete_domain.php:74 delete_domains.php:74 delete_perm_templ.php:51
+#: delete_record.php:96 delete_supermaster.php:63 delete_zone_templ.php:52
+#: delete_zone_templ_record.php:76
+msgid "No"
+msgstr ""
+
+#: delete_domains.php:41
+msgid "Delete zones"
+msgstr ""
+
+#: delete_perm_templ.php:43
+msgid "Delete permission template"
+msgstr ""
+
+#: delete_record.php:66 delete_zone_templ_record.php:53 edit.php:163
+#: edit_zone_templ.php:109 search.php:136
+msgid "Delete record"
+msgstr ""
+
+#: delete_record.php:92
+msgid "You are trying to delete a record that is needed for this zone to work."
+msgstr ""
+
+#: delete_supermaster.php:45 list_supermasters.php:51
+msgid "Delete supermaster"
+msgstr ""
+
+#: delete_user.php:60 users.php:75
+msgid "Delete user"
+msgstr ""
+
+#: delete_user.php:71
+msgid ""
+"You are about to delete a user. This user is owner for a number of zones. "
+"Please decide what to do with these zones."
+msgstr ""
+
+#: delete_user.php:76
+msgid "Zone"
+msgstr ""
+
+#: delete_user.php:77 edit.php:310
+msgid "Delete"
+msgstr ""
+
+#: delete_user.php:78
+msgid "Leave"
+msgstr ""
+
+#: delete_user.php:79
+msgid "Add new owner"
+msgstr ""
+
+#: delete_user.php:80
+msgid "Owner to be added"
+msgstr ""
+
+#: delete_user.php:106
+msgid "Really delete this user?"
+msgstr ""
+
+#: delete_zone_templ.php:44 edit_zone_templ.php:184
+msgid "Delete zone template"
+msgstr ""
+
+#: edit.php:129 search.php:79
+msgid "Edit zone"
+msgstr ""
+
+#: edit.php:137
+msgid "This zone does not have any records. Weird."
+msgstr ""
+
+#: edit.php:161 edit_zone_templ.php:107 search.php:131
+msgid "Edit record"
+msgstr ""
+
+#: edit.php:210
+msgid "Edit comment"
+msgstr ""
+
+#: edit.php:219 edit_zone_templ.php:155
+msgid "Template Name"
+msgstr ""
+
+#: edit.php:223 edit_zone_templ.php:159
+msgid "Template Description"
+msgstr ""
+
+#: edit.php:228 edit_comment.php:88 edit_record.php:110 edit_user.php:142
+#: edit_zone_templ.php:164 edit_zone_templ_record.php:92 users.php:122
+msgid "Reset changes"
+msgstr ""
+
+#: edit.php:229 edit_zone_templ.php:165
+msgid "Save as template"
+msgstr ""
+
+#: edit.php:295
+msgid "Owner of zone"
+msgstr ""
+
+#: edit.php:301
+msgid "No owner set for this zone."
+msgstr ""
+
+#: edit.php:343
+msgid "Add"
+msgstr ""
+
+#: edit.php:372 edit.php:401 edit.php:424
+msgid "Change"
+msgstr ""
+
+#: edit_comment.php:53
+msgid "Edit comment in zone"
+msgstr ""
+
+#: edit_perm_templ.php:47 users.php:131
+msgid "Edit permission template"
+msgstr ""
+
+#: edit_record.php:58
+msgid "Edit record in zone"
+msgstr ""
+
+#: edit_user.php:98 users.php:71
+msgid "Edit user"
+msgstr ""
+
+#: edit_user.php:147
+#, php-format
+msgid "This user has been assigned the permission template \"%s\"."
+msgstr ""
+
+#: edit_user.php:149
+msgid "The description for this template is"
+msgstr ""
+
+#: edit_user.php:151
+msgid "Based on this template, this user has the following permissions"
+msgstr ""
+
+#: edit_zone_templ.php:82
+msgid "Edit zone template"
+msgstr ""
+
+#: edit_zone_templ.php:90
+msgid "This template zone does not have any records yet."
+msgstr ""
+
+#: edit_zone_templ.php:166
+msgid "Update zones"
+msgstr ""
+
+#: edit_zone_templ_record.php:52
+msgid "Edit record in zone template"
+msgstr ""
+
+#: inc/auth.inc.php:31
+msgid "You have logged out."
+msgstr ""
+
+#: inc/auth.inc.php:45
+msgid "Session expired, please login again."
+msgstr ""
+
+#: inc/auth.inc.php:93
+msgid "Authentication failed!"
+msgstr ""
+
+#: inc/auth.inc.php:106
+msgid ""
+"Authentication failed! - <a href=\"reset_password.php\">(forgot password)</a>"
+msgstr ""
+
+#: inc/auth.inc.php:127
+msgid "Log in"
+msgstr ""
+
+#: inc/auth.inc.php:143
+msgid "Go"
+msgstr ""
+
+#: inc/error.inc.php:24
+msgid "You do not have the permission to perform searches."
+msgstr ""
+
+#: inc/error.inc.php:25
+msgid "You do not have the permission to add a record to this zone."
+msgstr ""
+
+#: inc/error.inc.php:26
+msgid "You do not have the permission to edit this record."
+msgstr ""
+
+#: inc/error.inc.php:27
+msgid "You do not have the permission to view this record."
+msgstr ""
+
+#: inc/error.inc.php:28
+msgid "You do not have the permission to delete this record."
+msgstr ""
+
+#: inc/error.inc.php:29
+msgid "You do not have the permission to add a master zone."
+msgstr ""
+
+#: inc/error.inc.php:30
+msgid "You do not have the permission to add a slave zone."
+msgstr ""
+
+#: inc/error.inc.php:31
+msgid "You do not have the permission to delete a zone."
+msgstr ""
+
+#: inc/error.inc.php:32
+msgid "You do not have the permission to view this comment."
+msgstr ""
+
+#: inc/error.inc.php:33
+msgid "You do not have the permission to edit this comment."
+msgstr ""
+
+#: inc/error.inc.php:34
+msgid "You do not have the permission to delete a supermaster."
+msgstr ""
+
+#: inc/error.inc.php:35
+msgid "You do not have the permission to view this zone."
+msgstr ""
+
+#: inc/error.inc.php:36
+msgid "You do not have the permission to edit this user."
+msgstr ""
+
+#: inc/error.inc.php:37
+msgid "You do not have the permission to edit permission templates."
+msgstr ""
+
+#: inc/error.inc.php:38
+msgid "You do not have the permission to delete permission templates."
+msgstr ""
+
+#: inc/error.inc.php:39
+msgid "You do not have the permission to add a new user."
+msgstr ""
+
+#: inc/error.inc.php:40
+msgid "You do not have the permission to delete this user."
+msgstr ""
+
+#: inc/error.inc.php:41
+msgid "You do not have the permission to edit zone templates."
+msgstr ""
+
+#: inc/error.inc.php:42
+msgid "You do not have the permission to delete zone templates."
+msgstr ""
+
+#: inc/error.inc.php:43
+msgid "You do not have the permission to add a zone template."
+msgstr ""
+
+#: inc/error.inc.php:46
+msgid "This is an invalid zone name."
+msgstr ""
+
+#: inc/error.inc.php:47
+msgid "There is already a supermaster with this IP address."
+msgstr ""
+
+#: inc/error.inc.php:48
+msgid "There is already a zone with this name."
+msgstr ""
+
+#: inc/error.inc.php:51
+msgid "Username exist already, please choose another one."
+msgstr ""
+
+#: inc/error.inc.php:52
+msgid "User does not exist."
+msgstr ""
+
+#: inc/error.inc.php:53
+msgid "You did not enter the correct current password."
+msgstr ""
+
+#: inc/error.inc.php:54
+msgid "The two new password fields do not match."
+msgstr ""
+
+#: inc/error.inc.php:55
+msgid "This template is assigned to at least one user."
+msgstr ""
+
+#: inc/error.inc.php:58
+msgid "Invalid or unexpected input given."
+msgstr ""
+
+#: inc/error.inc.php:59
+#, php-format
+msgid "Invalid argument(s) given to function %s"
+msgstr ""
+
+#: inc/error.inc.php:60
+#, php-format
+msgid "Invalid argument(s) given to function %s %s"
+msgstr ""
+
+#: inc/error.inc.php:61
+msgid "Unknown error."
+msgstr ""
+
+#: inc/error.inc.php:62
+msgid "Enter a valid email address."
+msgstr ""
+
+#: inc/error.inc.php:63
+msgid "There is no zone with this ID."
+msgstr ""
+
+#: inc/error.inc.php:64
+msgid "There is no zone template with this ID."
+msgstr ""
+
+#: inc/error.inc.php:65
+msgid ""
+"The <a href=\"install/\">install/</a> directory exists, you must remove it "
+"first before proceeding."
+msgstr ""
+
+#: inc/error.inc.php:66
+msgid "Zone template with this name already exists, please choose another one."
+msgstr ""
+
+#: inc/error.inc.php:67
+msgid "Template name can't be an empty string."
+msgstr ""
+
+#: inc/error.inc.php:70
+msgid "No database name has been set in config.inc.php."
+msgstr ""
+
+#: inc/error.inc.php:71
+msgid "No database host has been set in config.inc.php."
+msgstr ""
+
+#: inc/error.inc.php:72
+msgid "No database username has been set in config.inc.php."
+msgstr ""
+
+#: inc/error.inc.php:73
+msgid "No database password has been set in config.inc.php."
+msgstr ""
+
+#: inc/error.inc.php:74
+msgid "No or unknown database type has been set in config.inc.php."
+msgstr ""
+
+#: inc/error.inc.php:75
+msgid ""
+"It seems that you forgot to update the database after Poweradmin upgrade to "
+"new version."
+msgstr ""
+
+#: inc/error.inc.php:78
+msgid "Your content field doesnt have a legit value."
+msgstr ""
+
+#: inc/error.inc.php:79
+msgid "Invalid hostname."
+msgstr ""
+
+#: inc/error.inc.php:80
+msgid "You have invalid characters in your hostname."
+msgstr ""
+
+#: inc/error.inc.php:81
+msgid "A hostname can not start or end with a dash."
+msgstr ""
+
+#: inc/error.inc.php:82
+msgid "Given hostname or one of the labels is too short or too long."
+msgstr ""
+
+#: inc/error.inc.php:83
+msgid "Given hostname has too many slashes."
+msgstr ""
+
+#: inc/error.inc.php:84
+msgid "Unknown record type."
+msgstr ""
+
+#: inc/error.inc.php:85
+msgid "This is not a valid IPv4 or IPv6 address."
+msgstr ""
+
+#: inc/error.inc.php:86
+msgid "This is not a valid IPv6 address."
+msgstr ""
+
+#: inc/error.inc.php:87
+msgid "This is not a valid IPv4 address."
+msgstr ""
+
+#: inc/error.inc.php:88
+msgid ""
+"This is not a valid CNAME. Did you assign an MX or NS record to the record?"
+msgstr ""
+
+#: inc/error.inc.php:89
+msgid ""
+"This is not a valid record. There is already exists a CNAME with this name."
+msgstr ""
+
+#: inc/error.inc.php:90
+msgid ""
+"This is not a valid CNAME. There is already exists an A, AAAA or CNAME with "
+"this name."
+msgstr ""
+
+#: inc/error.inc.php:91
+msgid ""
+"You can not point a NS or MX record to a CNAME record. Remove or rame the "
+"CNAME record first, or take another name."
+msgstr ""
+
+#: inc/error.inc.php:92
+msgid "NS records must be a hostnames."
+msgstr ""
+
+#: inc/error.inc.php:93
+msgid "A prio field should be numeric."
+msgstr ""
+
+#: inc/error.inc.php:94
+msgid ""
+"Invalid value for name field of SOA record. It should be the name of the "
+"zone."
+msgstr ""
+
+#: inc/error.inc.php:95
+msgid "You have an error in the MNAME field of the SOA record."
+msgstr ""
+
+#: inc/error.inc.php:96
+msgid "Invalid value for content field of HINFO record."
+msgstr ""
+
+#: inc/error.inc.php:97
+msgid "The hostname is too long."
+msgstr ""
+
+#: inc/error.inc.php:98
+msgid "You are using an invalid top level domain."
+msgstr ""
+
+#: inc/error.inc.php:99
+msgid "Invalid value for TTL field. It should be numeric."
+msgstr ""
+
+#: inc/error.inc.php:100
+msgid "Invalid value for prio field. It should be numeric."
+msgstr ""
+
+#: inc/error.inc.php:101
+msgid "Invalid value for name field of SRV record."
+msgstr ""
+
+#: inc/error.inc.php:102
+msgid "Invalid value for the priority field of the SRV record."
+msgstr ""
+
+#: inc/error.inc.php:103
+msgid "Invalid value for the weight field of the SRV record."
+msgstr ""
+
+#: inc/error.inc.php:104
+msgid "Invalid SRV target."
+msgstr ""
+
+#: inc/error.inc.php:105
+msgid "Invalid characters have been used in this record."
+msgstr ""
+
+#: inc/error.inc.php:108
+msgid "Zone has been added successfully."
+msgstr ""
+
+#: inc/error.inc.php:109
+msgid "Zone has been deleted successfully."
+msgstr ""
+
+#: inc/error.inc.php:110
+msgid "Zones have been updated successfully."
+msgstr ""
+
+#: inc/error.inc.php:111
+msgid "The user has been updated successfully."
+msgstr ""
+
+#: inc/error.inc.php:112
+msgid "The user has been created successfully."
+msgstr ""
+
+#: inc/error.inc.php:113
+msgid "The user has been deleted successfully."
+msgstr ""
+
+#: inc/error.inc.php:114
+msgid "The record has been updated successfully."
+msgstr ""
+
+#: inc/error.inc.php:115
+msgid "The record has been deleted successfully."
+msgstr ""
+
+#: inc/error.inc.php:116
+msgid "The comment has been updated successfully."
+msgstr ""
+
+#: inc/error.inc.php:117
+msgid "The supermaster has been deleted successfully."
+msgstr ""
+
+#: inc/error.inc.php:118
+msgid "The supermaster has been added successfully."
+msgstr ""
+
+#: inc/error.inc.php:119
+msgid "The permission template has been updated successfully."
+msgstr ""
+
+#: inc/error.inc.php:120
+msgid "The permission template has been deleted successfully."
+msgstr ""
+
+#: inc/error.inc.php:121
+msgid "Zone template has been added successfully."
+msgstr ""
+
+#: inc/error.inc.php:122
+msgid "Zone template has been updated successfully."
+msgstr ""
+
+#: inc/error.inc.php:123
+msgid "Zone template has been deleted successfully."
+msgstr ""
+
+#: inc/header.inc.php:59 index.php:37
+msgid "Index"
+msgstr ""
+
+#: inc/header.inc.php:61 index.php:39 search.php:32
+msgid "Search zones and records"
+msgstr ""
+
+#: inc/header.inc.php:64 index.php:42 list_zones.php:39
+msgid "List zones"
+msgstr ""
+
+#: inc/header.inc.php:67 index.php:45
+msgid "List zone templates"
+msgstr ""
+
+#: inc/header.inc.php:70 index.php:48 list_supermasters.php:32
+msgid "List supermasters"
+msgstr ""
+
+#: inc/header.inc.php:82 index.php:60 users.php:47
+msgid "User administration"
+msgstr ""
+
+#: inc/header.inc.php:83 index.php:61
+msgid "Logout"
+msgstr ""
+
+#: inc/record.inc.php:387
+msgid ""
+"You are trying to delete the SOA record. If are not allowed to remove it, "
+"unless you remove the entire zone."
+msgstr ""
+
+#: inc/record.inc.php:751
+msgid "Function returned an error (multiple zones matching this zone ID)."
+msgstr ""
+
+#: inc/toolkit.inc.php:33 reset_password.php:27
+msgid "You have to create a config.inc.php!"
+msgstr ""
+
+#: inc/toolkit.inc.php:154
+msgid "Show page"
+msgstr ""
+
+#: inc/toolkit.inc.php:173
+msgid "Show zones beginning with"
+msgstr ""
+
+#: inc/toolkit.inc.php:238 install/index.php:26
+msgid "An unknown error has occurred."
+msgstr ""
+
+#: inc/toolkit.inc.php:246
+msgid ""
+"Something has been successfully performed. What exactly, however, will "
+"remain a mystery."
+msgstr ""
+
+#: inc/toolkit.inc.php:258
+msgid "Success!"
+msgstr ""
+
+#: inc/toolkit.inc.php:269
+msgid "Successful!"
+msgstr ""
+
+#: inc/toolkit.inc.php:275
+msgid "back"
+msgstr ""
+
+#: inc/toolkit.inc.php:314
+msgid "Inactive"
+msgstr ""
+
+#: inc/toolkit.inc.php:318
+msgid "Active"
+msgstr ""
+
+#: inc/users.inc.php:382
+msgid "Password has been changed, please login."
+msgstr ""
+
+#: index.php:26
+msgid "Welcome"
+msgstr ""
+
+#: install/index.php:47
+msgid "Installation step"
+msgstr ""
+
+#: install/index.php:62 install/index.php:80 install/index.php:135
+#: install/index.php:207 install/index.php:275 install/index.php:312
+msgid "Go to step"
+msgstr ""
+
+#: install/index.php:69
+msgid ""
+"This installer expects you to have a PowerDNS database accessable from this "
+"server. This installer also expects you to have never ran Poweradmin before, "
+"or that you want to overwrite the Poweradmin part of the database. If you "
+"have had Poweradmin running before, any data in the following tables will be "
+"destroyed: perm_items, perm_templ, perm_templ_items, users and zones. This "
+"installer will, of course, not touch the data in the PowerDNS tables of the "
+"database. However, it is recommended that you create a backup of your "
+"database before proceeding."
+msgstr ""
+
+#: install/index.php:71
+msgid ""
+"The alternative for this installer is a manual installation. Refer to the "
+"poweradmin.org website if you want to go down that road."
+msgstr ""
+
+#: install/index.php:73
+msgid ""
+"Finally, if you see any errors during the installation process, a problem "
+"report would be appreciated. You can report problems (and ask for help) on "
+"the poweradmin-users mailinglist."
+msgstr ""
+
+#: install/index.php:75
+msgid "Do you want to proceed now?"
+msgstr ""
+
+#: install/index.php:86
+msgid ""
+"To prepare the database for using Poweradmin, the installer needs to modify "
+"the PowerDNS database. It will add a number of tables and it will fill these "
+"tables with some data. If the tables are already present, the installer will "
+"drop them first."
+msgstr ""
+
+#: install/index.php:88
+msgid ""
+"To do all of this, the installer needs to access the database with an "
+"account which has sufficient rights. If you trust the installer, you may "
+"give it the username and password of the database user root. Otherwise, make "
+"sure the user has enough rights, before actually proceeding."
+msgstr ""
+
+#: install/index.php:95
+msgid ""
+"The username to use to connect to the database, make sure the username has "
+"sufficient rights to perform administrative task to the PowerDNS database "
+"(the installer wants to drop, create and fill tables to the database)."
+msgstr ""
+
+#: install/index.php:100 install/index.php:179
+msgid "The password for this username."
+msgstr ""
+
+#: install/index.php:103
+msgid "Hostname"
+msgstr ""
+
+#: install/index.php:105
+msgid ""
+"The hostname on which the PowerDNS database resides. Frequently, this will "
+"be \"localhost\"."
+msgstr ""
+
+#: install/index.php:108
+msgid "DB Port"
+msgstr ""
+
+#: install/index.php:110
+msgid "The port the database server is listening on."
+msgstr ""
+
+#: install/index.php:113
+msgid "Database"
+msgstr ""
+
+#: install/index.php:115
+msgid "The name of the PowerDNS database."
+msgstr ""
+
+#: install/index.php:118
+msgid "Database type"
+msgstr ""
+
+#: install/index.php:124
+msgid "The type of the PowerDNS database."
+msgstr ""
+
+#: install/index.php:127
+msgid "Poweradmin administrator password"
+msgstr ""
+
+#: install/index.php:129
+msgid ""
+"The password of the Poweradmin administrator. This administrator has full "
+"rights to Poweradmin using the web interface."
+msgstr ""
+
+#: install/index.php:141
+msgid "Updating database..."
+msgstr ""
+
+#: install/index.php:166
+msgid "done!"
+msgstr ""
+
+#: install/index.php:168
+msgid "Now we will gather all details for the configuration itself."
+msgstr ""
+
+#: install/index.php:174
+msgid ""
+"The username for Poweradmin. This new user will have limited rights only."
+msgstr ""
+
+#: install/index.php:182
+msgid "Hostmaster"
+msgstr ""
+
+#: install/index.php:184
+msgid ""
+"When creating SOA records and no hostmaster is provided, this value here "
+"will be used. Should be in the form \"hostmaster.example.net\"."
+msgstr ""
+
+#: install/index.php:187
+msgid "Primary nameserver"
+msgstr ""
+
+#: install/index.php:189
+msgid ""
+"When creating new zones using the template, this value will be used as "
+"primary nameserver. Should be like \"ns1.example.net\"."
+msgstr ""
+
+#: install/index.php:192
+msgid "Secondary nameserver"
+msgstr ""
+
+#: install/index.php:194
+msgid ""
+"When creating new zones using the template, this value will be used as "
+"secondary nameserver. Should be like \"ns2.example.net\"."
+msgstr ""
+
+#: install/index.php:230
+msgid ""
+"You now want to give limited rights to Poweradmin so it can update the data "
+"in the tables. To do this, you should create a new user and give it rights "
+"to select, delete, insert and update records in the PowerDNS database."
+msgstr ""
+
+#: install/index.php:241
+msgid "In MySQL you should now perform the following command:"
+msgstr ""
+
+#: install/index.php:244
+msgid "On PgSQL you would use:"
+msgstr ""
+
+#: install/index.php:259
+msgid ""
+"After you have added the new user, proceed with this installation procedure."
+msgstr ""
+
+#: install/index.php:301
+msgid "The installer was able to write to the file \""
+msgstr ""
+
+#: install/index.php:301
+msgid ""
+"\". A basic configuration, based on the details you have given, has been "
+"created."
+msgstr ""
+
+#: install/index.php:303
+msgid "The installer is unable to write to the file \""
+msgstr ""
+
+#: install/index.php:303
+msgid ""
+"\" (which is in itself good). The configuration is printed here. You should "
+"now create the file \""
+msgstr ""
+
+#: install/index.php:303
+msgid ""
+"\" in the Poweradmin root directory yourself. It should contain the "
+"following few lines:"
+msgstr ""
+
+#: install/index.php:318
+msgid ""
+"Now we have finished the configuration, you should (must!) remove the "
+"directory \"install/\" from the Poweradmin root directory. You will not be "
+"able to use Poweradmin if it exists. Do it now."
+msgstr ""
+
+#: install/index.php:319
+msgid ""
+"After you have removed the directory, you can login to <a href=\"../index.php"
+"\">Poweradmin</a> with username \"admin\" and password \""
+msgstr ""
+
+#: install/index.php:319
+msgid ""
+"\". You are highly encouraged to change these as soon as you are logged in."
+msgstr ""
+
+#: list_perm_templ.php:32
+msgid "Permission templates"
+msgstr ""
+
+#: list_perm_templ.php:48 list_zone_templ.php:46
+msgid "Edit template"
+msgstr ""
+
+#: list_perm_templ.php:49 list_zone_templ.php:47
+msgid "Delete template"
+msgstr ""
+
+#: list_supermasters.php:44 list_zones.php:49
+msgid "There are no zones to show in this listing."
+msgstr ""
+
+#: list_zone_templ.php:33
+msgid "Zone templates for"
+msgstr ""
+
+#: list_zones.php:42
+msgid "You do not have the permission to see any zones."
+msgstr ""
+
+#: list_zones.php:69
+msgid "Records"
+msgstr ""
+
+#: list_zones.php:71
+msgid "Serial"
+msgstr ""
+
+#: list_zones.php:97
+msgid "View zone"
+msgstr ""
+
+#: list_zones.php:116
+msgid "Delete zone(s)"
+msgstr ""
+
+#: reset_password.php:89
+msgid "Reset Password"
+msgstr ""
+
+#: reset_password.php:93
+msgid "Registered Email Address"
+msgstr ""
+
+#: reset_password.php:99
+msgid "Reset password"
+msgstr ""
+
+#: search.php:61
+msgid "Zones found"
+msgstr ""
+
+#: search.php:67
+msgid "Master"
+msgstr ""
+
+#: search.php:115
+msgid "Records found"
+msgstr ""
+
+#: search.php:155
+msgid "Query"
+msgstr ""
+
+#: search.php:161
+msgid "Search"
+msgstr ""
+
+#: search.php:166
+msgid ""
+"Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) "
+"in pattern matches any single character, a percent sign (%) matches any "
+"string of zero or more characters."
+msgstr ""
