@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the poweradmin package.
 # Vadim Rybalko <vadim@bionicman.ru>, 2009.
 #
-#, fuzzy
+
 msgid ""
 msgstr ""
 "Project-Id-Version: poweradmin 2.0.0\n"
@@ -15,7 +15,6 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
 
 msgid "The install/ directory exists, you must remove it first before proceeding."
 msgstr "Директория install/ существует, для продолжения работы она должна быть удалена."

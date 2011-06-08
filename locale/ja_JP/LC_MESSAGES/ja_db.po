@@ -1,20 +1,15 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
+"Project-Id-Version: Ｐoweradmin JP 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-04-21 00:39-0700\n"
+"PO-Revision-Date: 2011-03-09 11:06+0900\n"
 "Last-Translator: Koichi MATSUMOTO <mzch@mac.com>\n"
-"Language-Team: \n"
+"Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-# The following is a list of strings that are not hard-code in the PHP
-# files, but which are listed in the poweradmin database. Because of
-# this, tools like xgettext will not notice these strings.
-#
-# See also <https://www.poweradmin.org/wiki/TranslationContribution>.
-#
 msgid "User is allowed to add new master zones."
 msgstr "新たにマスターゾーンを追加する権限が与えられます。"
 
