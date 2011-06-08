@@ -18,6 +18,7 @@ for locale in $dirs; do
 	cd ../locale/$locale/LC_MESSAGES
 
 	name=`echo $locale | cut -c1-2`
+	msgfmt -c $name.po
 	msgfmt $name.po -o messages.mo
 
 	cd ../../
