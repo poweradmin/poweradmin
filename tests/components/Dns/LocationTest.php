@@ -2,7 +2,7 @@
 
 require_once 'inc/dns.inc.php';
 
-class IsValidLocTest extends PHPUnit_Framework_TestCase
+class LocationTest extends PHPUnit_Framework_TestCase
 {
 	public function testIsValidLoc()
 	{

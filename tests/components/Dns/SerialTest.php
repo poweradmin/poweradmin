@@ -2,7 +2,7 @@
 
 require_once 'inc/record.inc.php';
 
-class RecordTest extends PHPUnit_Framework_TestCase
+class SerialTest extends PHPUnit_Framework_TestCase
 {
 	public function testGetNextDate() {
 		$this->assertEquals(get_next_date(20110526), 20110527);
