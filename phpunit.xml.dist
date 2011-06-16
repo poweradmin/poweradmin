@@ -1,0 +1,14 @@
+<phpunit>
+	<selenium>
+	<browser name="Firefox"
+		browser="*firefox"
+		host="127.0.0.1"
+		port="4444"
+		timeout="30000"/>
+	</selenium>
+
+	<php>
+		<const name="BROWSER_URL" value="http://127.0.0.1/"/>
+		<const name="SERVER_PATH" value="/poweradmin/"/>
+	</php>
+</phpunit>
