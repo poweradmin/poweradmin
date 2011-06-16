@@ -4,7 +4,7 @@ require_once 'inc/dns.inc.php';
 
 class LocationTest extends PHPUnit_Framework_TestCase
 {
-	public function testIsValidLoc()
+	public function testIsValidLocation()
 	{
 		$this->assertTrue(is_valid_loc('37 23 30.900 N 121 59 19.000 W 7.00m 100.00m 100.00m 2.00m'));
 		$this->assertTrue(is_valid_loc('42 21 54 N 71 06 18 W -24m 30m'));
