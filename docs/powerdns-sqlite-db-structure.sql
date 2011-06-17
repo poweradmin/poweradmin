@@ -1,3 +1,5 @@
+BEGIN TRANSACTION;
+
 CREATE TABLE domains (
   id                INTEGER PRIMARY KEY,
   name              VARCHAR(255) NOT NULL COLLATE NOCASE,
@@ -31,3 +33,4 @@ CREATE TABLE supermasters (
   account     VARCHAR(40) DEFAULT NULL
 );
 
+COMMIT;
