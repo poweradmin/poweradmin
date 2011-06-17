@@ -72,6 +72,7 @@ define("ERR_DB_NO_DB_HOST", _('No database host has been set in config.inc.php.'
 define("ERR_DB_NO_DB_USER", _('No database username has been set in config.inc.php.'));
 define("ERR_DB_NO_DB_PASS", _('No database password has been set in config.inc.php.'));
 define("ERR_DB_NO_DB_TYPE", _('No or unknown database type has been set in config.inc.php.'));
+define("ERR_DB_NO_DB_FILE", _('No database file has been set in config.inc.php.'));
 define("ERR_DB_NO_DB_UPDATE", _('It seems that you forgot to update the database after Poweradmin upgrade to new version.'));
 
 /* DNS */

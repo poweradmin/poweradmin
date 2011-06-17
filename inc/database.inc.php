@@ -38,65 +38,81 @@ function dbError($msg)
 PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, 'dbError');
 
 function dbConnect() {
+	// XXX: one day all globals will die, I promise
 	global $db_type;
 	global $db_user;
 	global $db_pass;
 	global $db_host;
 	global $db_port;
 	global $db_name;
+	global $db_file;
+
 	global $sql_regexp;
-	
-	if (!(isset($db_user) && $db_user != "")) {
-		include_once("header.inc.php");
-		error(ERR_DB_NO_DB_USER);
-		include_once("footer.inc.php");
-		exit;
-	}
-		
-	if (!(isset($db_pass) && $db_pass != "")) {
-		include_once("header.inc.php");
-		error(ERR_DB_NO_DB_PASS);
-		include_once("footer.inc.php");
-		exit;
-	}
-		
-	if (!(isset($db_host) && $db_host != "")) {
-		include_once("header.inc.php");
-		error(ERR_DB_NO_DB_HOST);
-		include_once("footer.inc.php");
-		exit;
-	}
-		
-	if (!(isset($db_name) && $db_name != "")) {
-		include_once("header.inc.php");
-		error(ERR_DB_NO_DB_NAME);
-		include_once("footer.inc.php");
-		exit;
-	}
-		
-	if ((!isset($db_type)) || (!($db_type == "mysql" || $db_type == "mysqli" || $db_type == "pgsql"))) {		
+
+	if (!(isset($db_type) && $db_type == 'mysql' || $db_type == 'mysqli' || $db_type == 'pgsql' || $db_type == 'sqlite'))
+	{
 		include_once("header.inc.php");
 		error(ERR_DB_NO_DB_TYPE);
 		include_once("footer.inc.php");
 		exit;
 	}
 	
-	if (!(isset($db_port))) {
+	if ($db_type != 'sqlite' && !(isset($db_user) && $db_user != "")) {
+		include_once("header.inc.php");
+		error(ERR_DB_NO_DB_USER);
+		include_once("footer.inc.php");
+		exit;
+	}
+		
+	if ($db_type != 'sqlite' && !(isset($db_pass) && $db_pass != '')) {
+		include_once("header.inc.php");
+		error(ERR_DB_NO_DB_PASS);
+		include_once("footer.inc.php");
+		exit;
+	}
+		
+	if ($db_type != 'sqlite' && !(isset($db_host) && $db_host != '')) {
+		include_once("header.inc.php");
+		error(ERR_DB_NO_DB_HOST);
+		include_once("footer.inc.php");
+		exit;
+	}
+		
+	if ($db_type != 'sqlite' && !(isset($db_name) && $db_name != '')) {
+		include_once("header.inc.php");
+		error(ERR_DB_NO_DB_NAME);
+		include_once("footer.inc.php");
+		exit;
+	}
+
+	if ($db_type != 'sqlite' && !(isset($db_port))) {
 		if ($db_type == "mysql" || $db_type == "mysqli") {
 			$db_port = 3306;
 		} else {
 			$db_port = 5432;
 		}
 	}
+
+	if ($db_type == 'sqlite' && !(isset($db_file) && $db_file != '')) {
+		include_once("header.inc.php");
+		error(ERR_DB_NO_DB_FILE);
+		include_once("footer.inc.php");
+		exit;
+	} 
 		
-	$dsn = "$db_type://$db_user:$db_pass@$db_host:$db_port/$db_name";
-    $options = array(
-//        'debug' => 2,
-        'portability' => MDB2_PORTABILITY_ALL ^ MDB2_PORTABILITY_EMPTY_TO_NULL,
-    );
+	if ($db_type == 'sqlite') {
+		$dsn = "$db_type:///$db_file";
+	} else {
+		$dsn = "$db_type://$db_user:$db_pass@$db_host:$db_port/$db_name";
+	}
+
+	$options = array(
+//		'debug' => 2,
+		'portability' => MDB2_PORTABILITY_ALL ^ MDB2_PORTABILITY_EMPTY_TO_NULL,
+	);
 	$db = MDB2::connect($dsn, $options);
 
-    // FIXME - it's strange, but this doesn't work, perhaps bug in MDB2 library
+	// FIXME - it's strange, but this doesn't work, perhaps bug in MDB2 library
 	if (PEAR::isError($db)) {
 		// Error handling should be put.
 		error(MYSQL_ERROR_FATAL, $db->getMessage());
@@ -109,7 +125,7 @@ function dbConnect() {
 	$dsn = '';
 
 	// Add support for regular expressions in both MySQL and PostgreSQL
-	if ( $db_type == "mysql" || $db_type == "mysqli" ) {
+	if ( $db_type == 'mysql' || $db_type == 'mysqli' || $db_type == 'sqlite') {
 		$sql_regexp = "REGEXP";
 	} elseif ( $db_type == "pgsql" ) {
 		$sql_regexp = "~";

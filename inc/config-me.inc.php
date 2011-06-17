@@ -16,6 +16,7 @@ $db_user		= '';
 $db_pass		= '';
 $db_name		= '';
 $db_type		= '';
+//$db_file		= '';		# used only for SQLite, provide full path to database file
 
 // Security settings
 // This should be changed upon install
