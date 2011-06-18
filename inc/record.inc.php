@@ -902,13 +902,17 @@ function zone_count_ng($perm, $letterstart='all') {
 					AND zones.owner = ".$db->quote($_SESSION['userid'], 'integer');
 			$fromTable .= ',zones';
 		}
-		if ($letterstart!='all' && $letterstart!=1) {
+
+		if ($letterstart != 'all' && $letterstart != 1) {
 			$sql_add .=" AND domains.name LIKE ".$db->quote($db->quote($letterstart, 'text', false, true)."%", 'text')." ";
-		} elseif ($letterstart==1) {
+		} elseif ($letterstart == 1) {
 			$sql_add .=" AND substring(domains.name,1,1) ".$sql_regexp." '^[[:digit:]]'";
 		}
 
-		$sqlq = "SELECT COUNT(distinct domains.id) AS count_zones 
+# XXX: do we really need this distinct directive as it's unsupported in sqlite)
+#		$sqlq = "SELECT COUNT(distinct domains.id) AS count_zones 
+
+		$sqlq = "SELECT COUNT(domains.id) AS count_zones 
 			FROM ".$fromTable."	WHERE 1=1
 			".$sql_add.";";
 
