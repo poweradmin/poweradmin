@@ -2,7 +2,7 @@
 
 require_once 'PHPUnit/Extensions/SeleniumTestCase.php';
 
-class LoginTest extends PHPUnit_Extensions_SeleniumTestCase {
+class UserTest extends PHPUnit_Extensions_SeleniumTestCase {
 
 	protected function setUp() {
 		$this->setBrowserUrl(BROWSER_URL);
@@ -16,6 +16,15 @@ class LoginTest extends PHPUnit_Extensions_SeleniumTestCase {
 		$this->waitForPageToLoad("30000");
 		$this->verifyTextPresent("Welcome Administrator");
 	} 
+
+	public function testLogout() {
+		$this->testLogin();
+
+		$this->click("link=Logout");
+		$this->waitForPageToLoad("30000");
+		$this->verifyTextPresent("You have logged out.");
+	}	
+
 } 
 
 ?>
