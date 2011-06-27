@@ -9,13 +9,13 @@ class UserTest extends PHPUnit_Extensions_SeleniumTestCase {
 		$this->setBrowserUrl(BROWSER_URL);
 	}
 
-	public function te2stLogin() {
+	public function testLogin() {
 		Common::doLogin();
 
 		$this->verifyTextPresent("Welcome Administrator");
 	} 
 
-	public function te1stLogout() {
+	public function testLogout() {
 		Common::doLogin();
 
 		$this->click("link=Logout");

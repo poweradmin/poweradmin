@@ -20,6 +20,12 @@ class Common extends PHPUnit_Extensions_SeleniumTestCase {
 		$this->type('newpass2', $new);
 		$this->clickAndWait("submit");
 	}
+
+	public function doAddMasterZone($zone) {
+		$this->clickAndWait("link=Add master zone");
+		$this->type('domain_1', $zone);
+		$this->clickAndWait("submit");
+	}
 }
 
 ?>

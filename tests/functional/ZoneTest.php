@@ -11,17 +11,14 @@ class ZoneTest extends PHPUnit_Extensions_SeleniumTestCase {
 
 	public function testAddMasterZone() {
 		Common::doLogin();
-
-		$this->clickAndWait("link=Add master zone");
-		$this->type('domain_1', 'poweradmin.com');
-		$this->clickAndWait("submit");
+		Common::doAddMasterZone('poweradmin.com');
 		$this->verifyTextPresent("poweradmin.com - Zone has been added successfully.");
 	}	
 
 	public function testDeleteZone() {
 		Common::doLogin();
 
-		$this->open('/poweradmin/list_zones.php');
+		$this->open(SERVER_PATH.'list_zones.php');
 		$this->clickAndWait("css=img[alt=[ Delete zone poweradmin.com ]]");
 		$this->clickAndWait("css=input.button");
 		$this->verifyTextPresent("Zone has been deleted successfully.");
