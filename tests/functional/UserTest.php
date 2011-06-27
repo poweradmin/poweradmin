@@ -1,6 +1,7 @@
 <?php
 
 require_once 'PHPUnit/Extensions/SeleniumTestCase.php';
+require_once 'common.php';
 
 class UserTest extends PHPUnit_Extensions_SeleniumTestCase {
 
@@ -9,16 +10,13 @@ class UserTest extends PHPUnit_Extensions_SeleniumTestCase {
 	}
 
 	public function testLogin() {
-		$this->open(SERVER_PATH);
-		$this->type('username', 'admin');
-		$this->type('password', 'admin');
-		$this->click('authenticate');
-		$this->waitForPageToLoad("30000");
+		Common::doLogin();
+
 		$this->verifyTextPresent("Welcome Administrator");
 	} 
 
 	public function testLogout() {
-		$this->testLogin();
+		Common::doLogin();
 
 		$this->click("link=Logout");
 		$this->waitForPageToLoad("30000");
