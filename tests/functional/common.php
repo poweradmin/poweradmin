@@ -29,7 +29,7 @@ class Common extends PHPUnit_Extensions_SeleniumTestCase {
 
 	public function doRemoveZone($zone) {
 		$this->open(SERVER_PATH.'list_zones.php');
-		$this->clickAndWait("css=img[alt=[ Delete zone poweradmin.com ]]");
+		$this->clickAndWait("css=img[alt=[ Delete zone $zone ]]");
 		$this->clickAndWait("css=input.button");
 	}
 }
