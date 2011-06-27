@@ -15,12 +15,9 @@ class ZoneTest extends PHPUnit_Extensions_SeleniumTestCase {
 		$this->verifyTextPresent("poweradmin.com - Zone has been added successfully.");
 	}	
 
-	public function testDeleteZone() {
+	public function testRemoveZone() {
 		Common::doLogin();
-
-		$this->open(SERVER_PATH.'list_zones.php');
-		$this->clickAndWait("css=img[alt=[ Delete zone poweradmin.com ]]");
-		$this->clickAndWait("css=input.button");
+		Common::doRemoveZone('poweradmin.com');
 		$this->verifyTextPresent("Zone has been deleted successfully.");
 	}	
 
