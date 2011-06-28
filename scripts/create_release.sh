@@ -6,6 +6,14 @@
 # ./create_release.sh branches smarty	- uses selected svn branch
 # ./create_release.sh trunk		- uses svn trunk 
 
+# this script doesn't work on Mac OS X
+OS=`uname -s`
+if [ "$OS" = "Darwin" ]
+then
+	echo "Error: this script doesn't work on Mac OS X!" 
+	exit
+fi 
+
 # files and directories to exclude
 EXCLUDE_FILES_DIRS=".todo tests scripts db phpunit.xml.dist config.inc.php \
 	test.sh .orig .rej .patch .diff .new"
