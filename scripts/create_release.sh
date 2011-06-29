@@ -19,6 +19,7 @@ then
 	echo "Usage: ./create_release [trunk|tags x.x.x|branches name]"
 fi
 
+# check if svn executable exists on the system
 if [ $# -ne 0 ]
 then
 	result=`svn --version 2>/dev/null`
@@ -90,7 +91,16 @@ fi
 # get release version if current directory is used
 if [ "$VERSION" = "" ]
 then
-	VERSION=`cat $WORK_DIR/inc/version.inc.php | grep VERSION | cut -d '"' -f2`
+	if [ -e $WORK_DIR"/inc/version.inc.php" ]
+	then
+		VERSION=`cat $WORK_DIR/inc/version.inc.php | grep VERSION | \
+			cut -d '"' -f2`
+	else
+		if [ $# -eq 2 ]
+		then
+			VERSION=$SVN_PROJ_OR_TAG
+		fi
+	fi
 
 	if [ "$VERSION" = "" ]
 	then
@@ -109,7 +119,7 @@ then
 	exit
 fi
 
-# build exclude pattersn
+# build exclude patterns
 for pattern in $EXCLUDE_FILES_DIRS; do
 	OTHER_EXCLUDES=$OTHER_EXCLUDES" --exclude="$pattern
 done 
