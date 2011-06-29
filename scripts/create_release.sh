@@ -6,17 +6,10 @@
 # ./create_release.sh branches smarty	- uses selected svn branch
 # ./create_release.sh trunk		- uses svn trunk 
 
-# this script doesn't work on Mac OS X
-OS=`uname -s`
-if [ "$OS" = "Darwin" ]
-then
-	echo "Error: this script doesn't work on Mac OS X!" 
-	exit
-fi 
-
 # files and directories to exclude
-EXCLUDE_FILES_DIRS=".todo tests scripts db phpunit.xml.dist config.inc.php \
-	test.sh .orig .rej .patch .diff .new"
+EXCLUDE_FILES_DIRS=".svn .todo tests scripts db phpunit.xml.dist \
+	config.inc.php test.sh *.orig *.rej *.patch *.diff *.new scripts \
+	.metadata .settings .buildpath .project *.php.diff"
 
 WORK_DIR=".."
 
@@ -124,11 +117,35 @@ then
 	exit
 fi
 
-# copy all files to new release directory
-cp -r $WORK_DIR/ $RELEASE_NAME
+# copy/move all files to new release directory, deal with recursive copy safely
+if [ "$WORK_DIR" = ".." ]
+then
+	OLDPATH=`pwd`
+
+	cd ../
+	TOPPATH=`pwd`
+	BASENAME=`basename $TOPPATH`
+
+	cd ../
+	CURRDIR=`pwd`
+
+	if [ -e $RELEASE_NAME ]
+	then
+		echo "Error: temporary directory <$CURRDIR/$RELEASE_NAME> \
+already exists"
+		exit
+	fi
+
+	cp -r $CURRDIR/$BASENAME $CURRDIR/$RELEASE_NAME
+	mv $CURRDIR/$RELEASE_NAME $OLDPATH/$RELEASE_NAME
+
+	cd $OLDPATH
+else
+	mv $WORK_DIR/ $RELEASE_NAME
+fi
 
 # create tgz archive, exclude some directories & files
-tar cvzf $RELEASE_FILE $RELEASE_NAME --exclude=$RELEASE_FILE --exclude-vcs $OTHER_EXCLUDES
+tar --exclude=$RELEASE_FILE $OTHER_EXCLUDES -ccvzf $RELEASE_FILE $RELEASE_NAME
 if [ $? -ne 0 ]
 then
 	echo "Error: creation of release failed!"
