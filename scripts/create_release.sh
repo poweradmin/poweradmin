@@ -19,6 +19,16 @@ then
 	echo "Usage: ./create_release [trunk|tags x.x.x|branches name]"
 fi
 
+if [ $# -ne 0 ]
+then
+	result=`svn --version 2>/dev/null`
+	if [ "$?" = "127" ]
+	then
+		echo "Error: can't find <svn> executable!"
+		exit
+	fi
+fi
+
 # check if there is parameter, then checkout from svn specified version
 if [ $# -eq 1 ]
 then 
