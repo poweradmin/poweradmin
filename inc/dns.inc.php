@@ -73,10 +73,6 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
 		case "PTR":
 			if (!is_valid_hostname_fqdn($content,0)) return false;
 			if (!is_valid_hostname_fqdn($name,1)) return false;
-
-			// Change value of name because $zone is wrong in PTR-Record
-			$name = trim(str_replace($zone, '' ,$name), '.');
-
 			break;
 
 		case "SOA":

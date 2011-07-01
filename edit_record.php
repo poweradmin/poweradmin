@@ -85,13 +85,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 		echo "      <tr>\n";
 		echo "       <td><input type=\"hidden\" name=\"rid\" value=\"" . $_GET["id"] . "\">\n";
 		echo "       <input type=\"hidden\" name=\"zid\" value=\"" . $zid . "\">\n";
-
-		if ($record["type"] == "PTR") {   // Change value of name because $zone is wrong in PTR-Record
-			echo "       <input type=\"text\" name=\"name\" value=\"" .$record["name"] ."\">\n";
-		} else {
-			echo "       <input type=\"text\" name=\"name\" value=\"" . trim(str_replace($zone_name, '', $record["name"]), '.') . "\" class=\"input\">." . $zone_name . "</td>\n";
-		}
-
+		echo "       <input type=\"text\" name=\"name\" value=\"" . trim(str_replace($zone_name, '', $record["name"]), '.') . "\" class=\"input\">." . $zone_name . "</td>\n";
 		echo "       <td>IN</td>\n";
 		echo "       <td>\n";
 		echo "        <select name=\"type\">\n";
