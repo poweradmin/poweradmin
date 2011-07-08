@@ -52,7 +52,7 @@ echo "       <th>&nbsp;</th>\n";
 echo "       <th>" . _('Username') . "</th>\n";
 echo "       <th>" . _('Fullname') . "</th>\n";
 echo "       <th>" . _('Description') . "</th>\n";
-echo "       <th>" . _('Emailaddress') . "</th>\n";
+echo "       <th>" . _('Email address') . "</th>\n";
 echo "       <th>" . _('Template') . "</th>\n";
 echo "       <th>" . _('Enabled') . "</th>\n";
 echo "      </tr>\n";
