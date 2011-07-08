@@ -41,3 +41,15 @@ if(file_exists('inc/custom_footer.inc.php'))
 ?>
  </body>
 </html>
+
+<?php 
+if (isset($db_debug) && $db_debug == true) {
+	$debug = $db->getDebugOutput(); 
+	$debug = str_replace("query(1)", "", $debug);
+	$lines = explode(":", $debug);
+
+	foreach ($lines as $line) {
+		echo "$line<br>";
+	}
+}
+?>

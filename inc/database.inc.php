@@ -46,6 +46,7 @@ function dbConnect() {
 	global $db_port;
 	global $db_name;
 	global $db_file;
+	global $db_debug;
 
 	global $sql_regexp;
 
@@ -107,10 +108,13 @@ function dbConnect() {
 	}
 
 	$options = array(
-//		'debug' => 2,
 		'portability' => MDB2_PORTABILITY_ALL ^ MDB2_PORTABILITY_EMPTY_TO_NULL,
 	);
 	$db = MDB2::connect($dsn, $options);
+
+	if (isset($db_debug) && $db_debug) {
+		$db->setOption('debug', 1);
+	}
 
 	// FIXME - it's strange, but this doesn't work, perhaps bug in MDB2 library
 	if (PEAR::isError($db)) {
