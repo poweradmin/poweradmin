@@ -27,14 +27,13 @@ function doAuthenticate() {
 	global $cryptokey;
 	global $password_encryption;
 
-	if (isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] == "logout") {
+	if (isset($_SESSION['userid']) && isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] == "logout") {
 		logout( _('You have logged out.'), 'success');
 	}
 
 	// If a user had just entered his/her login && password, store them in our session.
-	if(isset($_POST["authenticate"]))
+	if (isset($_POST["authenticate"]))
 	{
-		// XXX: LOL, why there are so many md5() ?
 		$_SESSION["userpwd"] = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($cryptokey), $_POST['password'], MCRYPT_MODE_CBC, md5(md5($cryptokey))));;
 		$_SESSION["userlogin"] = $_POST["username"];
 	}
@@ -48,7 +47,7 @@ function doAuthenticate() {
 	// If the session hasn't expired yet, give our session a fresh new timestamp.
 	$_SESSION["lastmod"] = time();
 
-	if(isset($_SESSION["userlogin"]) && isset($_SESSION["userpwd"]))
+	if (isset($_SESSION["userlogin"]) && isset($_SESSION["userpwd"]))
 	{
 		//Username and password are set, lets try to authenticate.
 		$session_pass = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($cryptokey), base64_decode($_SESSION["userpwd"]), MCRYPT_MODE_CBC, md5(md5($cryptokey))), "\0");
@@ -89,21 +88,26 @@ function doAuthenticate() {
 					clean_page("index.php");
 					exit;
 				}
+			} else if (isset($_POST['authenticate'])) {
+				auth( _('Authentication failed! - <a href="reset_password.php">(forgot password)</a>'),"error");
 			} else {
-				auth( _('Authentication failed!'),"error");
+				auth();
 			}		
 			
-		} else {
+		} else if (isset($_POST['authenticate'])) {
 			// Log to syslog if it's enabled
-			if($syslog_use)
+			if ($syslog_use)
 			{
 				openlog($syslog_ident, LOG_PERROR, $syslog_facility);
 				$syslog_message = sprintf('Failed authentication attempt from [%s]', $_SERVER['REMOTE_ADDR']);
 				syslog(LOG_WARNING, $syslog_message);
 				closelog();
 			}
+
 			//Authentication failed, retry.
 			auth( _('Authentication failed! - <a href="reset_password.php">(forgot password)</a>'),"error");
+		} else {
+			auth();
 		}
 		
 	} else {
