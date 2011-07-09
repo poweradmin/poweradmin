@@ -3,7 +3,7 @@
 require_once 'PHPUnit/Extensions/SeleniumTestCase.php';
 require_once 'tests/functional/common.php';
 
-class BUG446_Quote_Escape extends PHPUnit_Extensions_SeleniumTestCase {
+class BUG446_Quote_Escape_Test extends PHPUnit_Extensions_SeleniumTestCase {
 
 	protected function setUp() {
 		$this->setBrowserUrl(BROWSER_URL);
