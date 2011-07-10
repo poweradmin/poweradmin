@@ -1,0 +1,49 @@
+--- inc/config-me.inc.php.orig  2011-07-08 17:04:56.580233002 +0300
++++ inc/config-me.inc.php       2011-07-08 17:05:10.444233002 +0300
+@@ -8,6 +8,7 @@
+ $db_pass               = '';
+ $db_name               = '';
+ $db_type               = '';
++//$db_debug             = false;        # show all SQL queries
+
+ // This should be changed upon install
+ $cryptokey             = 'p0w3r4dm1n';
+--- inc/database.inc.php.orig   2011-07-08 17:04:56.580233002 +0300
++++ inc/database.inc.php        2011-07-08 17:06:03.052233002 +0300
+@@ -43,6 +43,7 @@
+        global $db_host;
+        global $db_port;
+        global $db_name;
++       global $db_debug;
+        global $sql_regexp;
+
+        if (!(isset($db_user) && $db_user != "")) {
+@@ -92,6 +93,10 @@
+        $db = MDB2::connect($dsn);
+        $db->setOption('portability', MDB2_PORTABILITY_ALL ^ MDB2_PORTABILITY_EMPTY_TO_NULL);
+
++       if (isset($db_debug) && $db_debug) { 
++               $db->setOption('debug', 1); 
++       }
++
+        if (MDB2::isError($db)) {
+                // Error handling should be put.
+                error(MYSQL_ERROR_FATAL, $db->getMessage());
+--- inc/footer.inc.php.orig     2011-07-08 17:04:56.580233002 +0300
++++ inc/footer.inc.php  2011-07-08 17:06:39.568233002 +0300
+@@ -40,3 +40,15 @@
+ ?>
+  </body>
+ </html>
++
++<?php  
++if (isset($db_debug) && $db_debug == true) { 
++       $debug = $db->getDebugOutput();  
++       $debug = str_replace("query(1)", "", $debug); 
++       $lines = explode(":", $debug); 
++
++       foreach ($lines as $line) { 
++               echo "$line<br>"; 
++       } 
++} 
++?>
