@@ -9,7 +9,7 @@ class BUG448_PTR_Editing_Test extends PHPUnit_Extensions_SeleniumTestCase {
 		$this->setBrowserUrl(BROWSER_URL);
 	}
 
-	public function testFindZone() {
+	public function testPTREditing() {
 		Common::doLogin();
 		Common::doAddMasterZone('poweradmin.com');
 
@@ -27,7 +27,6 @@ class BUG448_PTR_Editing_Test extends PHPUnit_Extensions_SeleniumTestCase {
 
 		Common::doRemoveZone('poweradmin.com');
 	}	
-
 } 
 
 ?>

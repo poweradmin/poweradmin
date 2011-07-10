@@ -9,7 +9,7 @@ class BUG446_Quote_Escape_Test extends PHPUnit_Extensions_SeleniumTestCase {
 		$this->setBrowserUrl(BROWSER_URL);
 	}
 
-	public function testFindZone() {
+	public function testQuoteEscape() {
 		Common::doLogin();
 		Common::doAddMasterZone('poweradmin.com');
 
@@ -25,7 +25,6 @@ class BUG446_Quote_Escape_Test extends PHPUnit_Extensions_SeleniumTestCase {
 
 		Common::doRemoveZone('poweradmin.com');
 	}	
-
 } 
 
 ?>
