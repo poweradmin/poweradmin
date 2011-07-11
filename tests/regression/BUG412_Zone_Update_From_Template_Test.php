@@ -38,8 +38,14 @@ class BUG446_Zone_Update_From_Template_Test extends PHPUnit_Extensions_SeleniumT
 		$this->verifyValue("record[1][name]", "www.poweradmin.com");
 		$this->verifyValue("record[1][content]", "poweradmin.com");
 
-		# TODO: remove zone template record
-		# TODO: remove zone template
+		$this->clickAndWait("link=List zone templates");	
+		$this->clickAndWait("css=img[alt=[ Edit template ]]");
+		$this->clickAndWait("css=img[alt=[ Delete record ]]");
+		$this->clickAndWait("css=input.button");
+
+		$this->clickAndWait("link=List zone templates");	
+		$this->clickAndWait("css=img[alt=[ Delete template ]]");
+		$this->clickAndWait("css=input.button");
 
 		Common::doRemoveZone('poweradmin.com');
 	}	
