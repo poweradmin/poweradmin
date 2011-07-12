@@ -73,7 +73,7 @@ if (!preg_match('/^((?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0
 if (!strlen($hostname)) return status_exit('notfqdn');
 
 // Don't allow super user to be used for update
-#if ($username == 'admin') return status_exit('badauth');
+if ($username == 'admin') return status_exit('badauth');
 
 $query = "SELECT * FROM users WHERE username='$username' and password='$password'";
 $userdetails = $db->queryRow($query);
