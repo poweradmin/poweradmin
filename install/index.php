@@ -19,6 +19,20 @@ textdomain($gettext_domain);
 
 $local_config_file = "../inc/config.inc.php";
 
+function get_random_key() {
+	$key = '';
+
+	$chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+	$length = 32; 
+
+	$size = strlen($chars);
+	for ($i = 0; $i < $length; $i++) {
+		$key .= $chars[ mt_rand( 0, $size - 1 ) ];
+	}	
+
+	return $key;
+}
+
 function error($msg) {
 	if ($msg) {
 		echo "     <div class=\"error\">Error: " . $msg . "</div>\n";
@@ -286,6 +300,8 @@ switch($step) {
 			"\$db_name\t\t= '" . $_POST['db_name'] . "';\n" .
 			"\$db_port\t\t= '" . $_POST['db_port'] . "';\n" .
 			"\$db_type\t\t= '" . $_POST['db_type'] . "';\n" .
+			"\n" .
+			"\$cryptokey\t\t= '" . get_random_key() . "';\n" .
 			"\n" .
 			"\$iface_lang\t\t= '" . $_POST['language'] . "';\n" .
 			"\n" .
