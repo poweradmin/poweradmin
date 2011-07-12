@@ -30,9 +30,8 @@ else {
 
 print "Updating the IP address ($ipaddress) now ... \n";
 
-# TODO: how it will work with https?
 # insert authentication data to url
-$poweradmin_url =~ s/^http:\/\//http:\/\/$login:$password\@/;
+$poweradmin_url =~ s/^(http[s]?:\/\/)/$1$login:$password\@/;
 my $response =
   LWP::Simple::get( "$poweradmin_url/dynamic_update.php"
       . "?hostname=$domain&myip=$ipaddress&verbose=1" )
