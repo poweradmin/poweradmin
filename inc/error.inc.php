@@ -65,6 +65,7 @@ define("ERR_ZONE_TEMPL_NOT_EXIST", _('There is no zone template with this ID.'))
 define("ERR_INSTALL_DIR_EXISTS", _('The <a href="install/">install/</a> directory exists, you must remove it first before proceeding.'));
 define("ERR_ZONE_TEMPL_EXIST", _('Zone template with this name already exists, please choose another one.'));
 define("ERR_ZONE_TEMPL_IS_EMPTY", _('Template name can\'t be an empty string.'));
+define("ERR_DEFAULT_CRYPTOKEY_USED", _('Default session encryption key is used, please set it in your configuration file.'));
 
 /* DATABASE */
 define("ERR_DB_NO_DB_NAME", _('No database name has been set in config.inc.php.'));
