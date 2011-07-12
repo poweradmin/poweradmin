@@ -50,7 +50,7 @@ function dbConnect() {
 
 	global $sql_regexp;
 
-	if (!(isset($db_type) && $db_type == 'mysql' || $db_type == 'mysqli' || $db_type == 'pgsql' || $db_type == 'sqlite'))
+	if (!(isset($db_type) && $db_type == 'mysql' || $db_type == 'mysqli' || $db_type == 'pgsql' || $db_type == 'sqlite' || $db_type == 'oci8'))
 	{
 		include_once("header.inc.php");
 		error(ERR_DB_NO_DB_TYPE);
@@ -89,6 +89,8 @@ function dbConnect() {
 	if ($db_type != 'sqlite' && !(isset($db_port))) {
 		if ($db_type == "mysql" || $db_type == "mysqli") {
 			$db_port = 3306;
+		} else if ($db_type == 'oci8') {
+			$db_port = 1521;
 		} else {
 			$db_port = 5432;
 		}
@@ -100,10 +102,13 @@ function dbConnect() {
 		include_once("footer.inc.php");
 		exit;
 	} 
-		
+
 	if ($db_type == 'sqlite') {
 		$dsn = "$db_type:///$db_file";
 	} else {
+		if ($db_type == 'oci8') {
+			$db_name = '?service='.$db_name;
+		}
 		$dsn = "$db_type://$db_user:$db_pass@$db_host:$db_port/$db_name";
 	}
 
@@ -131,6 +136,9 @@ function dbConnect() {
 	// Add support for regular expressions in both MySQL and PostgreSQL
 	if ( $db_type == 'mysql' || $db_type == 'mysqli' || $db_type == 'sqlite') {
 		$sql_regexp = "REGEXP";
+	} elseif ( $db_type == "oci8" ) {
+		# TODO: what is regexp syntax in Oracle?
+		$sql_regexp = "";
 	} elseif ( $db_type == "pgsql" ) {
 		$sql_regexp = "~";
 	} else {
