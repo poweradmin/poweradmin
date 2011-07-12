@@ -914,7 +914,7 @@ function zone_count_ng($perm, $letterstart='all') {
 
 		$sqlq = "SELECT COUNT(domains.id) AS count_zones 
 			FROM ".$fromTable."	WHERE 1=1
-			".$sql_add.";";
+			".$sql_add;
 
 		$zone_count = $db->queryOne($sqlq);
 	}
