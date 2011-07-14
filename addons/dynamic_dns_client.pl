@@ -7,17 +7,28 @@ use strict;
 use warnings;
 
 # change these values
-my $login    = 'username';
-my $password = 'password';
-my $domain   = 'mydynamicdns.example.com';
-
-my $verbose = 1;
+my $login             = 'username';
+my $password          = 'password';
+my $domain            = 'mydynamicdns.example.com';
+my $ip_lookup_service = 'whatismyip';                 # or 'hostip'
+my $verbose           = 1;
 
 my $poweradmin_url = 'http://example.com/poweradmin/';
 
 # try to get client ip address using whatismyip service
-my $ipaddress =
-  LWP::Simple::get("http://automation.whatismyip.com/n09230945.asp")
+my $ip_lookup_url;
+if ( $ip_lookup_service eq 'whatismyip' ) {
+    $ip_lookup_url = "http://automation.whatismyip.com/n09230945.asp";
+}
+elsif ( $ip_lookup_service eq 'hostip' ) {
+    $ip_lookup_url = "http://api.hostip.info/get_html.php";
+}
+else {
+    print "Error: unknown global ip address lookup service\n";
+    exit;
+}
+
+my $ipaddress = LWP::Simple::get($ip_lookup_url)
   or die("Error: Could not get your global IP address!\n");
 
 if ( $ipaddress =~ /([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})/ ) {
