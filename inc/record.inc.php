@@ -1325,16 +1325,6 @@ function update_zone_records($zone_id, $zone_template) {
         $response = $db->beginTransaction();
 
         if (0 != $zone_template) {
-                        if ( $perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1") ) {
-                                if (is_numeric($zone_id)) {
-                                        $db->exec("DELETE FROM records WHERE domain_id=".$db->quote($zone_id, 'integer'));
-                                } else {
-                                        error(sprintf(ERR_INV_ARGC, "delete_domain", "id must be a number"));
-                                }
-                        } else {
-                                error(ERR_PERM_DEL_ZONE);
-                        }
-
                         if($zone_master_add == "1" || $zone_slave_add == "1") {
                                 $domain = get_zone_name_from_id($zone_id);
                                 $now = time();
