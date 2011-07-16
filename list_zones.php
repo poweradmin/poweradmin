@@ -81,6 +81,8 @@ if ($perm_view == "none") {
 	}
 	foreach ($zones as $zone)
 	{
+		if ($zone['count_records'] == NULL) { $zone['count_records'] = 0; }
+
 		$zone_owners = get_fullnames_owners_from_domainid($zone['id']);
 		if ($iface_zonelist_serial) $serial = get_serial_by_zid($zone['id']);
 
