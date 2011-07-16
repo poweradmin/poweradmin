@@ -125,7 +125,7 @@ if ( $zone_master_add != "1" ) {
 	echo "        <td class=\"n\">" . _('Zones') . ":</td>\n";
 	echo "        <td class=\"n\">\n";
 	echo "         <ul id=\"domain_names\" style=\"list-style-type:none; padding:0 \">\n";
-	echo "		<li>Type one domaine per line:</li>\n";
+	echo "		<li>" . _('Type one domaine per line') . ":</li>\n";
 	echo "          <li><textarea class=\"input\" name=\"domains\" rows=\"10\" cols=\"30\" style=\"width: 500px;\">";
 	if (isset($error) && isset($_POST['domains'])) {
 		echo $_POST['domains'];
