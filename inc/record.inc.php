@@ -1339,30 +1339,33 @@ function update_zone_records($zone_id, $zone_template) {
                                 $domain = get_zone_name_from_id($zone_id);
                                 $now = time();
                                 $templ_records = get_zone_templ_records($zone_template);
+
+				if ($templ_records == -1) return; 
+
                                 foreach ($templ_records as $r) {
-                                        if ((preg_match('/in-addr.arpa/i', $zone_id) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $zone_id)))
+					if ((preg_match('/in-addr.arpa/i', $zone_id) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $zone_id)))
                                         {
-                                                $name     = parse_template_value($r["name"], $domain);
-                                                $type     = $r["type"];
-                                                $content  = parse_template_value($r["content"], $domain);
-                                                $ttl      = $r["ttl"];
-                                                $prio     = intval($r["prio"]);
+						$name     = parse_template_value($r["name"], $domain);
+						$type     = $r["type"];
+						$content  = parse_template_value($r["content"], $domain);
+						$ttl      = $r["ttl"];
+                                       	        $prio     = intval($r["prio"]);
 
-                                                if (!$ttl) {
-                                                        $ttl = $dns_ttl;
-                                                }
+                       	                        if (!$ttl) {
+                               	                        $ttl = $dns_ttl;
+               	                                }
 
-                                                $query = "INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) VALUES ("
-                                                                . $db->quote($zone_id, 'integer') . ","
-                                                                . $db->quote($name, 'text') . ","
-                                                                . $db->quote($type, 'text') . ","
-                                                                . $db->quote($content, 'text') . ","
-                                                                . $db->quote($ttl, 'integer') . ","
-                                                                . $db->quote($prio, 'integer') . ","
-                                                                . $db->quote($now, 'integer') . ")";
-                                                $response = $db->exec($query);
-                                        }
-                                }
+       	                                        $query = "INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) VALUES ("
+							. $db->quote($zone_id, 'integer') . ","
+							. $db->quote($name, 'text') . ","
+							. $db->quote($type, 'text') . ","
+							. $db->quote($content, 'text') . ","
+							. $db->quote($ttl, 'integer') . ","
+							. $db->quote($prio, 'integer') . ","
+							. $db->quote($now, 'integer') . ")";
+               	                                $response = $db->exec($query);
+					}
+				}
                         }
         }
 
