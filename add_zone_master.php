@@ -81,7 +81,7 @@ if ( $zone_master_add != "1" ) {
 } else {
 	echo "     <h2>" . _('Add master zone') . "</h2>\n"; 
 
-	$available_zone_types = array("NATIVE", "MASTER");
+	$available_zone_types = array("MASTER", "NATIVE");
 	$users = show_users();
 	$zone_templates = get_list_zone_templ($_SESSION['userid']);
 
