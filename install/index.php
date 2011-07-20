@@ -22,8 +22,8 @@ $local_config_file = "../inc/config.inc.php";
 function get_random_key() {
 	$key = '';
 
-	$chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-	$length = 32; 
+	$chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~!@#$%^&*()_+=-][{}';
+	$length = 46; 
 
 	$size = strlen($chars);
 	for ($i = 0; $i < $length; $i++) {
