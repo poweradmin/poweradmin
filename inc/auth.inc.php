@@ -24,7 +24,7 @@ function doAuthenticate() {
 	global $db;
 	global $iface_expire;
 	global $syslog_use, $syslog_ident, $syslog_facility;
-	global $cryptokey;
+	global $session_key;
 	global $password_encryption;
 
 	if (isset($_SESSION['userid']) && isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] == "logout") {
@@ -34,7 +34,7 @@ function doAuthenticate() {
 	// If a user had just entered his/her login && password, store them in our session.
 	if (isset($_POST["authenticate"]))
 	{
-		$_SESSION["userpwd"] = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($cryptokey), $_POST['password'], MCRYPT_MODE_CBC, md5(md5($cryptokey))));;
+		$_SESSION["userpwd"] = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($session_key), $_POST['password'], MCRYPT_MODE_CBC, md5(md5($session_key))));;
 		$_SESSION["userlogin"] = $_POST["username"];
 	}
 
@@ -50,7 +50,7 @@ function doAuthenticate() {
 	if (isset($_SESSION["userlogin"]) && isset($_SESSION["userpwd"]))
 	{
 		//Username and password are set, lets try to authenticate.
-		$session_pass = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($cryptokey), base64_decode($_SESSION["userpwd"]), MCRYPT_MODE_CBC, md5(md5($cryptokey))), "\0");
+		$session_pass = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($session_key), base64_decode($_SESSION["userpwd"]), MCRYPT_MODE_CBC, md5(md5($session_key))), "\0");
 
 		if ($password_encryption == 'md5salt') {
 			$result = $db->query("SELECT id, fullname, password FROM users WHERE username=". $db->quote($_SESSION["userlogin"], 'text')  ." AND active=1");

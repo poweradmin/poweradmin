@@ -21,7 +21,7 @@ $db_type		= '';
 
 // Security settings
 // This should be changed upon install
-$cryptokey		= 'p0w3r4dm1n';
+$session_key		= 'p0w3r4dm1n';
 $password_encryption	= 'md5';	// or md5salt
 
 // Interface settings

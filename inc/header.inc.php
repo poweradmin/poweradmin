@@ -23,7 +23,7 @@
 global $iface_style;
 global $iface_title;
 global $ignore_install_dir;
-global $cryptokey;
+global $session_key;
 
 echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n";
 echo "<html>\n";
@@ -57,7 +57,7 @@ if (file_exists('install')) {
 	verify_permission('supermaster_add') ? $perm_supermaster_add = "1" : $perm_supermaster_add = "0" ;
 	verify_permission('is_ueberuser') ? $perm_is_godlike = "1" : $perm_is_godlike = "0" ;
 
-	if ($perm_is_godlike == 1 && $cryptokey == 'p0w3r4dm1n') {
+	if ($perm_is_godlike == 1 && $session_key == 'p0w3r4dm1n') {
 		error(ERR_DEFAULT_CRYPTOKEY_USED);
 		echo "<br>";
 	}

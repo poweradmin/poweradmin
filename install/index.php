@@ -301,7 +301,7 @@ switch($step) {
 			"\$db_port\t\t= '" . $_POST['db_port'] . "';\n" .
 			"\$db_type\t\t= '" . $_POST['db_type'] . "';\n" .
 			"\n" .
-			"\$cryptokey\t\t= '" . get_random_key() . "';\n" .
+			"\$session_key\t\t= '" . get_random_key() . "';\n" .
 			"\n" .
 			"\$iface_lang\t\t= '" . $_POST['language'] . "';\n" .
 			"\n" .
