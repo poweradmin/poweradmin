@@ -95,12 +95,22 @@ function delete_zone_templ($zone_templ_id) {
 		error(ERR_PERM_DEL_ZONE_TEMPL);
 		return false;
 	} else {
-		$query = "DELETE FROM zone_templ"
-			. " WHERE id = " . $db->quote($zone_templ_id, 'integer');
-		$result = $db->query($query);
-		if (PEAR::isError($result)) { error($result->getMessage()); return false; }
+		 // Delete the zone template
 
-		return true;
+                $query = "DELETE FROM zone_templ"
+                        . " WHERE id = " . $db->quote($zone_templ_id, 'integer');
+                $result = $db->query($query);
+                if (PEAR::isError($result)) { error($result->getMessage()); return false; }
+
+                // Delete the zone template records
+
+                $query = "DELETE FROM zone_templ_records"
+                        . " WHERE zone_templ_id = " . $db->quote($zone_templ_id, 'integer');
+                $result = $db->query($query);
+                if (PEAR::isError($result)) { error($result->getMessage()); return false; }
+
+                return true;
+
 	}
 }
 
