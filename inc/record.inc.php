@@ -1267,7 +1267,11 @@ function update_zone_records($zone_id, $zone_template) {
         if (0 != $zone_template) {
                         if ( $perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1") ) {
                                 if (is_numeric($zone_id)) {
-                                        $db->exec("DELETE FROM records WHERE domain_id=".$db->quote($zone_id, 'integer'));
+					
+					// Get previous soa serial so we can update it.
+					$serial = get_serial_by_zid($zone_id);
+	
+					$db->exec("DELETE FROM records WHERE domain_id=".$db->quote($zone_id, 'integer'));
                                 } else {
                                         error(sprintf(ERR_INV_ARGC, "delete_domain", "id must be a number"));
                                 }
@@ -1284,7 +1288,17 @@ function update_zone_records($zone_id, $zone_template) {
                                         {
                                                 $name     = parse_template_value($r["name"], $domain);
                                                 $type     = $r["type"];
+
+						// If record type is SOA, update zone serial on template/domain update
+						if ( $r["type"] == "SOA" ) {
+							$soa = parse_template_value($r["content"], $domain);
+							$newsoa = explode(" ", $soa);
+							$newsoa[2] = $serial;
+							$newsoa = implode(" ", $newsoa);
+						$content = $newsoa;
+						}else{
                                                 $content  = parse_template_value($r["content"], $domain);
+						}
                                                 $ttl      = $r["ttl"];
                                                 $prio     = intval($r["prio"]);
 
@@ -1292,7 +1306,7 @@ function update_zone_records($zone_id, $zone_template) {
                                                         $ttl = $dns_ttl;
                                                 }
 
-                                                $query = "INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) VALUES ("
+	                                        $query = "INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) VALUES ("
                                                                 . $db->quote($zone_id, 'integer') . ","
                                                                 . $db->quote($name, 'text') . ","
                                                                 . $db->quote($type, 'text') . ","
@@ -1301,6 +1315,9 @@ function update_zone_records($zone_id, $zone_template) {
                                                                 . $db->quote($prio, 'integer') . ","
                                                                 . $db->quote($now, 'integer') . ")";
                                                 $response = $db->exec($query);
+		
+						update_soa_serial($zone_id);
+
                                         }
                                 }
                         }
