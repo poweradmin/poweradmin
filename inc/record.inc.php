@@ -1,10 +1,9 @@
 <?php
 
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
- *  See <https://www.poweradmin.org> for more details.
+ *  See <https://rejo.zenger.nl/poweradmin> for more details.
  *
  *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2011  Poweradmin Development Team <http://www.poweradmin.org/credits>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,6 +27,7 @@ function zone_id_exists($zid) {
 	return $count;
 }
 
+
 function get_zone_id_from_record_id($rid) {
 	global $db;
 	$query = "SELECT domain_id FROM records WHERE id = " . $db->quote($rid, 'integer');
@@ -42,121 +42,65 @@ function count_zone_records($zone_id) {
 	return $record_count;
 }
 
-function get_soa_record($domain_id) {
+function update_soa_serial($did) {
+
 	global $db;
+	$sqlq = "SELECT notified_serial FROM domains WHERE id = ".$db->quote($did, 'integer');
+	$notified_serial = $db->queryOne($sqlq);
 
-	$sqlq = "SELECT content FROM records WHERE type = ".$db->quote('SOA', 'text')." AND domain_id = ".$db->quote($domain_id, 'integer');
+	$sqlq = "SELECT content FROM records WHERE type = ".$db->quote('SOA', 'text')." AND domain_id = ".$db->quote($did, 'integer');
 	$result = $db->queryOne($sqlq);
-	
-	return $result;
-}
+	$need_to_update = false;
 
-function get_soa_serial($soa_rec) {
-	$soa = explode(" ", $soa_rec);
-	return $soa[2];
-}
+	// Split content of current SOA record into an array. 
+	$soa = explode(" ", $result);
 
-function get_next_date($curr_date) {
-	$next_date = date('Ymd', strtotime('+1 day', strtotime($curr_date)));
-	return $next_date;
-}
-
-function get_next_serial($curr_serial, $today = '') {
-	// Zone transfer to zone slave(s) will occur only if the serial number
-	// of the SOA RR is arithmetically greater that the previous one 
-	// (as defined by RFC-1982).
-
+	// Check if we have to update the serial field. 
+	// 
 	// The serial should be updated, unless:
-	//  - the serial is set to "0", see http://doc.powerdns.com/types.html#id482176
-	//
-	//  - set a fresh serial ONLY if the existing serial is lower than the current date
-	//
-	//	- update date in serial if it reaches limit of revisions for today or do you 
-	//	think that ritual suicide is better in such case?
-	//
-	// "This works unless you will require to make more than 99 changes until the new 
-	// date is reached - in which case perhaps ritual suicide is the best option."
-	// http://www.zytrax.com/books/dns/ch9/serial.html
+	//  - the serial is set to "0", see /Documentation/DNS-SOA#PowerDNSspecifics on
+	//    the Poweradmin website
+	//  - the serial is set to YYYYMMDD99, it's RFC 1912 style already and has 
+	//    reached it limit of revisions for today
 
-	if ($today == '') {
-		set_timezone();
-		$today = date('Ymd');
-	}
+	set_timezone();
 	
-	$revision = (int) substr($curr_serial, -2);
-	$ser_date = substr($curr_serial, 0, 8);
-	
-	if ($curr_serial == '0') {
-		$serial = $curr_serial;
-
-	} elseif ($curr_serial == $today . '99') {
-		$serial = get_next_date($today) . '00';
-	
+	if ($soa[2] == "0") {
+		return true;
+	} elseif ($soa[2] == date('Ymd') . "99") {
+		return true;
 	} else {
-		if (strcmp($today, $ser_date) === 0) {
-			// Current serial starts with date of today, so we need to update the revision only.
-			++$revision;
-			
-		} elseif (strncmp($today, $curr_serial, 8) === -1) {
-			// Reuse existing serial date if it's in the future
-			$today = substr($curr_serial, 0, 8);
+		$today = date('Ymd');
 
-			// Get next date if revision reaches maximum per day (99) limit otherwise increment the counter
-			if ($revision == 99) {
-				$today = get_next_date($today);
-				$revision = "00";
-			} else {
-				++$revision;
-			}
-			
+		// Determine revision.
+		if (strncmp($today, $soa[2], 8) === 0) {
+			// Current serial starts with date of today, so we need to update
+			// the revision only. To do so, determine current revision first, 
+			// then update counter.
+			$revision = (int) substr($soa[2], -2);
+			++$revision;
 		} else {
 			// Current serial did not start of today, so it's either an older 
-			// serial, therefore set a fresh serial
+			// serial or a serial that does not adhere the recommended syntax
+			// of RFC-1912. In either way, set a fresh serial
 			$revision = "00";
 		}
 
-		// Create new serial out of existing/updated date and revision
-		$serial = $today . str_pad($revision, 2, "0", STR_PAD_LEFT);
+		$serial = $today . str_pad($revision, 2, "0", STR_PAD_LEFT);;
+		
+		// Change serial in SOA array.
+		$soa[2] = $serial;
+		
+		// Build new SOA record content and update the database.
+		$content = "";		
+		for ($i = 0; $i < count($soa); $i++) {	
+			$content .= $soa[$i] . " "; 
+		}
+		$sqlq = "UPDATE records SET content = ".$db->quote($content, 'text')." WHERE domain_id = ".$db->quote($did, 'integer')." AND type = ".$db->quote('SOA', 'text');
+		$response = $db->query($sqlq);
+		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+		return true;
 	}
-	
-	return $serial;
-}
-
-function update_soa_record($domain_id, $content) {
-	global $db;
-	
-	$sqlq = "UPDATE records SET content = ".$db->quote($content, 'text')." WHERE domain_id = ".$db->quote($domain_id, 'integer')." AND type = ".$db->quote('SOA', 'text');
-	$response = $db->query($sqlq);
-	
-	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
-	
-	return true;
-}
-
-function set_soa_serial($soa_rec, $serial) {
-	// Split content of current SOA record into an array. 
-	$soa = explode(" ", $soa_rec);
-	$soa[2] = $serial;
-	
-	// Build new SOA record content
-	$soa_rec = join(" ", $soa);
-	chop($soa_rec);
-	
-	return $soa_rec;
-}
-
-function update_soa_serial($domain_id) {
-	$soa_rec = get_soa_record($domain_id);
-
-	$curr_serial = get_soa_serial($soa_rec);
-	$new_serial = get_next_serial($curr_serial);
-	
-	if ($curr_serial != $new_serial) {
-		$soa_rec = set_soa_serial($soa_rec, $new_serial);
-		return update_soa_record($domain_id, $soa_rec);
-	}
-
-	return true;
 }  
 
 function get_zone_comment($zone_id) {
@@ -902,19 +846,15 @@ function zone_count_ng($perm, $letterstart='all') {
 					AND zones.owner = ".$db->quote($_SESSION['userid'], 'integer');
 			$fromTable .= ',zones';
 		}
-
-		if ($letterstart != 'all' && $letterstart != 1) {
+		if ($letterstart!='all' && $letterstart!=1) {
 			$sql_add .=" AND domains.name LIKE ".$db->quote($db->quote($letterstart, 'text', false, true)."%", 'text')." ";
-		} elseif ($letterstart == 1) {
+		} elseif ($letterstart==1) {
 			$sql_add .=" AND substring(domains.name,1,1) ".$sql_regexp." '^[[:digit:]]'";
 		}
 
-# XXX: do we really need this distinct directive as it's unsupported in sqlite)
-#		$sqlq = "SELECT COUNT(distinct domains.id) AS count_zones 
-
-		$sqlq = "SELECT COUNT(domains.id) AS count_zones 
+		$sqlq = "SELECT COUNT(distinct domains.id) AS count_zones 
 			FROM ".$fromTable."	WHERE 1=1
-			".$sql_add;
+			".$sql_add.";";
 
 		$zone_count = $db->queryOne($sqlq);
 	}
@@ -1325,37 +1265,61 @@ function update_zone_records($zone_id, $zone_template) {
         $response = $db->beginTransaction();
 
         if (0 != $zone_template) {
+                        if ( $perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1") ) {
+                                if (is_numeric($zone_id)) {
+					
+					// Get previous soa serial so we can update it.
+					$serial = get_serial_by_zid($zone_id);
+	
+					$db->exec("DELETE FROM records WHERE domain_id=".$db->quote($zone_id, 'integer'));
+                                } else {
+                                        error(sprintf(ERR_INV_ARGC, "delete_domain", "id must be a number"));
+                                }
+                        } else {
+                                error(ERR_PERM_DEL_ZONE);
+                        }
+
                         if($zone_master_add == "1" || $zone_slave_add == "1") {
                                 $domain = get_zone_name_from_id($zone_id);
                                 $now = time();
                                 $templ_records = get_zone_templ_records($zone_template);
-
-				if ($templ_records == -1) return; 
-
                                 foreach ($templ_records as $r) {
-					if ((preg_match('/in-addr.arpa/i', $zone_id) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $zone_id)))
+                                        if ((preg_match('/in-addr.arpa/i', $zone_id) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $zone_id)))
                                         {
-						$name     = parse_template_value($r["name"], $domain);
-						$type     = $r["type"];
-						$content  = parse_template_value($r["content"], $domain);
-						$ttl      = $r["ttl"];
-                                       	        $prio     = intval($r["prio"]);
+                                                $name     = parse_template_value($r["name"], $domain);
+                                                $type     = $r["type"];
 
-                       	                        if (!$ttl) {
-                               	                        $ttl = $dns_ttl;
-               	                                }
+						// If record type is SOA, update zone serial on template/domain update
+						if ( $r["type"] == "SOA" ) {
+							$soa = parse_template_value($r["content"], $domain);
+							$newsoa = explode(" ", $soa);
+							$newsoa[2] = $serial;
+							$newsoa = implode(" ", $newsoa);
+						$content = $newsoa;
+						}else{
+                                                $content  = parse_template_value($r["content"], $domain);
+						}
+                                                $ttl      = $r["ttl"];
+                                                $prio     = intval($r["prio"]);
 
-       	                                        $query = "INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) VALUES ("
-							. $db->quote($zone_id, 'integer') . ","
-							. $db->quote($name, 'text') . ","
-							. $db->quote($type, 'text') . ","
-							. $db->quote($content, 'text') . ","
-							. $db->quote($ttl, 'integer') . ","
-							. $db->quote($prio, 'integer') . ","
-							. $db->quote($now, 'integer') . ")";
-               	                                $response = $db->exec($query);
-					}
-				}
+                                                if (!$ttl) {
+                                                        $ttl = $dns_ttl;
+                                                }
+
+	                                        $query = "INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) VALUES ("
+                                                                . $db->quote($zone_id, 'integer') . ","
+                                                                . $db->quote($name, 'text') . ","
+                                                                . $db->quote($type, 'text') . ","
+                                                                . $db->quote($content, 'text') . ","
+                                                                . $db->quote($ttl, 'integer') . ","
+                                                                . $db->quote($prio, 'integer') . ","
+                                                                . $db->quote($now, 'integer') . ")";
+                                                $response = $db->exec($query);
+		
+						update_soa_serial($zone_id);
+
+                                        }
+                                }
                         }
         }
 
