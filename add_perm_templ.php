@@ -28,7 +28,9 @@ if (!verify_permission('templ_perm_edit')) {
 } else {
 
 	if (isset($_POST['commit'])) {
-		add_perm_templ($_POST);	
+		if (add_perm_templ($_POST)) {
+			success(SUC_PERM_TEMPL_ADD);
+		}	
 	}
 
 	$perms_avail = get_permissions_by_template_id();

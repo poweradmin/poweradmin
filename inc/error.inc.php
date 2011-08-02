@@ -118,6 +118,7 @@ define("SUC_RECORD_DEL", _('The record has been deleted successfully.'));
 define("SUC_COMMENT_UPD", _('The comment has been updated successfully.'));
 define("SUC_SM_DEL", _('The supermaster has been deleted successfully.'));
 define("SUC_SM_ADD", _('The supermaster has been added successfully.'));
+define("SUC_PERM_TEMPL_ADD", _('The permission template has been added successfully.'));
 define("SUC_PERM_TEMPL_UPD", _('The permission template has been updated successfully.'));
 define("SUC_PERM_TEMPL_DEL", _('The permission template has been deleted successfully.'));
 define("SUC_ZONE_TEMPL_ADD", _('Zone template has been added successfully.'));

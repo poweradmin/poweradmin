@@ -623,10 +623,12 @@ function add_perm_templ($details) {
 
 	$perm_templ_id = $db->lastInsertId('perm_templ', 'id');
 
-	foreach ($details['perm_id'] AS $perm_id) {
-		$query = "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . $db->quote($perm_templ_id, 'integer') . "," . $db->quote($perm_id, 'integer') . ")";
-		$response = $db->query($query);
-		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+	if (isset($details['perm_id'])) {
+		foreach ($details['perm_id'] AS $perm_id) {
+			$query = "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . $db->quote($perm_templ_id, 'integer') . "," . $db->quote($perm_id, 'integer') . ")";
+			$response = $db->query($query);
+			if (PEAR::isError($response)) { error($response->getMessage()); return false; }
+		}
 	}
 
 	return true;
