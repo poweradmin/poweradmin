@@ -109,6 +109,7 @@ define("ERR_DNS_PRINTABLE", _('Invalid characters have been used in this record.
 /* GOOD! */
 define("SUC_ZONE_ADD", _('Zone has been added successfully.'));
 define("SUC_ZONE_DEL", _('Zone has been deleted successfully.'));
+define("SUC_ZONE_UPD", _('Zone has been updated successfully.'));
 define("SUC_ZONES_UPD", _('Zones have been updated successfully.'));
 define("SUC_USER_UPD", _('The user has been updated successfully.'));
 define("SUC_USER_ADD", _('The user has been created successfully.'));

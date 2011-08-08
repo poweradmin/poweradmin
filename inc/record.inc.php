@@ -163,6 +163,9 @@ function get_zone_comment($zone_id) {
 	global $db;
 	$query = "SELECT comment FROM zones WHERE owner = 1 AND domain_id = " . $db->quote($zone_id, 'integer');
 	$comment = $db->queryOne($query);
+
+	if ($comment == "0") $comment = '';
+
 	return $comment;
 }
 
