@@ -567,7 +567,12 @@ function add_owner_to_zone($zone_id, $user_id)
 		{
 			if($db->queryOne("SELECT COUNT(id) FROM zones WHERE owner=".$db->quote($user_id, 'integer')." AND domain_id=".$db->quote($zone_id, 'integer')) == 0)
 			{
-				$db->query("INSERT INTO zones (domain_id, owner) VALUES(".$db->quote($zone_id, 'integer').", ".$db->quote($user_id, 'integer').")");
+				$zone_templ_id = get_zone_template($zone_id);
+				$db->query("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES("
+					. $db->quote($zone_id, 'integer') . ", "
+					. $db->quote($user_id, 'integer') . ", "
+					. $db->quote($zone_templ_id, 'integer') . ")"
+				);
 			}
 			return true;
 		} else {
