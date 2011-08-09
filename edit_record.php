@@ -104,10 +104,8 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 		echo "      </tr>\n";
 	}
 	echo "      </table>\n";
-	echo "      <p>\n";
 	echo "       <input type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\" class=\"button\">&nbsp;&nbsp;\n";
         echo "       <input type=\"reset\" name=\"reset\" value=\"" . _('Reset changes') . "\" class=\"button\">&nbsp;&nbsp;\n";
-	echo "      </p>\n";
 	echo "     </form>\n";
 }
 
