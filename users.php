@@ -100,7 +100,7 @@ foreach ($users as $user) {
 		if ($user['uid'] != $_SESSION["userid"]) {
 			echo "       <td><input type=\"checkbox\" name=\"user[" . $user['uid'] . "][active]\"" . $active . "></td>\n";
 		} else {
-			echo "       <td><input type=\"checkbox\" disabled=\"disabled\" name=\"user[" . $user['uid'] . "][active]\"" . $active . "></td>\n";
+			echo "       <td><input type=\"hidden\" name=\"user[" . $user['uid'] . "][active]\" value=\"on\"></td>\n";
 		}
 		echo "      </tr>\n";
 	} else {
