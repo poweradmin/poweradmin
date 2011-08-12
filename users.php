@@ -70,8 +70,8 @@ foreach ($users as $user) {
 		echo "        <input type=\"hidden\" name=\"user[" . $user['uid'] . "][uid]\" value=\"" . $user['uid'] . "\">\n";
 		echo "        <a href=\"edit_user.php?id=" . $user['uid'] . "\"><img src=\"images/edit.gif\" alt=\"[ " . _('Edit user') . " ]\"></a>\n";
 
-		// do not allow to delete him- or herself, available to superusers only
-		if($user['uid'] != $_SESSION["userid"] || $perm_is_godlike == "1"){
+		// do not allow to delete him- or herself
+		if ($user['uid'] != $_SESSION["userid"]) {
 			echo "        <a href=\"delete_user.php?id=" . $user['uid'] . "\"><img src=\"images/delete.gif\" alt=\"[ " . _('Delete user') . " ]\"></a>";
 		}
 
@@ -97,7 +97,11 @@ foreach ($users as $user) {
 			echo "         " . $user['tpl_name'] . "\n";
 		}
 		echo "       </td>\n";
-		echo "       <td><input type=\"checkbox\" name=\"user[" . $user['uid'] . "][active]\"" . $active . "></td>\n";
+		if ($user['uid'] != $_SESSION["userid"]) {
+			echo "       <td><input type=\"checkbox\" name=\"user[" . $user['uid'] . "][active]\"" . $active . "></td>\n";
+		} else {
+			echo "       <td><input type=\"checkbox\" disabled=\"disabled\" name=\"user[" . $user['uid'] . "][active]\"" . $active . "></td>\n";
+		}
 		echo "      </tr>\n";
 	} else {
 		echo "      <tr>\n";
