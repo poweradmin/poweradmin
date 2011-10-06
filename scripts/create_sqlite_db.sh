@@ -1,6 +1,6 @@
 #!/bin/sh
 
-DB_PATH="../db"
+DB_PATH="../../db"
 DB_FILE="powerdns.db"
 SQLITE_BIN=sqlite	# for SQLite 2.x
 #SQLITE_BIN=sqlite3
