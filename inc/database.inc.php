@@ -96,7 +96,7 @@ function dbConnect() {
 		}
 	}
 
-	if ($db_type == 'sqlite' || $db_type == 'sqlite3' && !(isset($db_file) && $db_file != '')) {
+	if (($db_type == 'sqlite' || $db_type == 'sqlite3') && (!(isset($db_file) && $db_file != ''))) {
 		include_once("header.inc.php");
 		error(ERR_DB_NO_DB_FILE);
 		include_once("footer.inc.php");
