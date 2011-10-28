@@ -17,7 +17,7 @@ class SearchTest extends PHPUnit_Extensions_SeleniumTestCase {
 		$this->clickAndWait("link=Search zones and records");
 		$this->type('css=td > input[name=query]', 'poweradmin.com');
 		$this->clickAndWait('submit');
-		$this->verifyTextPresent('NATIVE');
+		$this->verifyTextPresent('master');
 
 		Common::doRemoveZone('poweradmin.com');
 	}	
