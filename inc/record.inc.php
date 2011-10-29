@@ -1155,18 +1155,15 @@ function search_zone_and_record($holy_grail,$perm,$zone_sortby='name',$record_so
 	elseif (verify_permission('zone_content_edit_own')) { $perm_content_edit = "own" ; }
 	else { $perm_content_edit = "none" ; }
 
-	// Search for matching domains
-	if ($perm == "own" || $perm == "all") {
-		$sql_add_from = ", users ";
-		$sql_add_where = " AND users.id = " . $db->quote($_SESSION['userid'], 'integer');
+	if ($perm == "own") {
+		$sql_add_from = ", zones ";
+		$sql_add_where = " AND domains.id = zones.domain_id AND zones.owner = " . $db->quote($_SESSION['userid'], 'integer');
 	}
-	
 	$query = "SELECT 
 			domains.id AS zid,
 			domains.name AS name,
 			domains.type AS type,
-			domains.master AS master,
-			users.username AS owner
+			domains.master AS master
 			FROM domains" . $sql_add_from . "
 			WHERE domains.name LIKE " . $db->quote($holy_grail, 'text')
 			. $sql_add_where . "
