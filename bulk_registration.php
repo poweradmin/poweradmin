@@ -37,7 +37,6 @@ if (isset($_POST["dom_type"]) && (in_array($_POST['dom_type'], $server_types))) 
 if (isset($_POST['domains'])) {
 	$domains = split("\r\n", $_POST['domains']);
 	foreach ($domains as $key => $domain) {
-#		echo "<br>$key - $domain END";
 		$domains[$key] = trim($domain);
 	}
 } else {
@@ -76,7 +75,7 @@ if ( $zone_master_add != "1" ) {
 } else {
 	echo "     <h2>" . _('Bulk registration') . "</h2>\n"; 
 
-	$available_zone_types = array("NATIVE", "MASTER");
+	$available_zone_types = array("MASTER", "NATIVE");
 	$users = show_users();
 	$zone_templates = get_list_zone_templ($_SESSION['userid']);
 
