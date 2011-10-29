@@ -84,7 +84,7 @@ function verify_permission($permission) {
 
 function list_permission_templates() {
 	global $db;
-	$query = "SELECT * FROM perm_templ";
+	$query = "SELECT * FROM perm_templ ORDER BY name";
 	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
@@ -591,7 +591,7 @@ function get_permission_template_details($templ_id) {
 function get_list_permission_templates() {
 	global $db;
 
-	$query = "SELECT * FROM perm_templ";
+	$query = "SELECT * FROM perm_templ ORDER BY name";
 	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
