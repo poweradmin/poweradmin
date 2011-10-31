@@ -21,7 +21,18 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-(@include_once "MDB2.php") or die (error('You have to install MDB2 library!')); 
+global $db_layer;
+if (!isset($db_layer)) {
+	$db_layer = 'MDB2';
+}
+
+if ($db_layer == 'MDB2') {
+	(@include_once "MDB2.php") or die (error('You have to install MDB2 library!')); 
+}
+
+if ($db_layer == 'PDO') {
+	include_once "PDOLayer.php";
+}
 
 function dbError($msg)
 {
@@ -36,7 +47,9 @@ function dbError($msg)
         die();
 }
 
-PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, 'dbError');
+if (isset($db_layer) && $db_layer == 'MDB2') {
+	PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, 'dbError');
+}
 
 function dbConnect() {
 	// XXX: one day all globals will die, I promise
@@ -47,6 +60,7 @@ function dbConnect() {
 	global $db_port;
 	global $db_name;
 	global $db_file;
+	global $db_layer;
 	global $db_debug;
 
 	global $sql_regexp;
@@ -104,21 +118,40 @@ function dbConnect() {
 		exit;
 	} 
 
-	if ($db_type == 'sqlite') {
-		$dsn = "$db_type:///$db_file";
-	} else if ($db_type == 'sqlite3') {
-		$dsn = "pdoSqlite:///$db_file";
-	} else {
-		if ($db_type == 'oci8') {
-			$db_name = '?service='.$db_name;
+	if ($db_layer == 'MDB2') {
+		if ($db_type == 'sqlite') {
+			$dsn = "$db_type:///$db_file";
+		} else if ($db_type == 'sqlite3') {
+			$dsn = "pdoSqlite:///$db_file";
+		} else {
+			if ($db_type == 'oci8') {
+				$db_name = '?service='.$db_name;
+			}
+			$dsn = "$db_type://$db_user:$db_pass@$db_host:$db_port/$db_name";
 		}
-		$dsn = "$db_type://$db_user:$db_pass@$db_host:$db_port/$db_name";
 	}
 
-	$options = array(
-		'portability' => MDB2_PORTABILITY_ALL ^ MDB2_PORTABILITY_EMPTY_TO_NULL,
-	);
-	$db = MDB2::connect($dsn, $options);
+	if ($db_layer == 'PDO') {
+		if ($db_type == 'sqlite' || $db_type == 'sqlite3') {
+			$dsn = "$db_type:$db_file";
+		} else {
+			if ($db_type == 'oci8') {
+				$db_name = '?service='.$db_name;
+	                }
+			$dsn = "$db_type:host=$db_host;dbname=$db_name";
+		}
+	}
+
+	if ($db_layer == 'MDB2') {
+		$options = array(
+			'portability' => MDB2_PORTABILITY_ALL ^ MDB2_PORTABILITY_EMPTY_TO_NULL,
+		);
+		$db = MDB2::connect($dsn, $options);
+	}
+
+	if ($db_layer == 'PDO') {
+		$db = new PDOLayer($dsn, $db_user, $db_pass);	
+	}
 
 	if (isset($db_debug) && $db_debug) {
 		$db->setOption('debug', 1);
@@ -131,7 +164,9 @@ function dbConnect() {
 	}
 
 	// Do an ASSOC fetch. Gives us the ability to use ["id"] fields.
-	$db->setFetchMode(MDB2_FETCHMODE_ASSOC);
+	if ($db_layer == 'MDB2') {
+		$db->setFetchMode(MDB2_FETCHMODE_ASSOC);
+	}
 
 	/* erase info */
 	$dsn = '';

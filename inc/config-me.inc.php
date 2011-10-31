@@ -18,6 +18,7 @@ $db_name		= '';
 $db_type		= '';
 //$db_file		= '';		# used only for SQLite, provide full path to database file
 //$db_debug		= false;	# show all SQL queries
+//$db_layer		= 'MDB2';	# or PDO
 
 // Security settings
 // This should be changed upon install
