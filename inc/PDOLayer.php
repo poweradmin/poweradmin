@@ -21,55 +21,16 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+include_once "PDOCommon.class.php";
+
 class PEAR {
 	public function isError() {
-		# FIXME: implement checking for error
 	}
 }
 
-class PDOStatementCommon {
-	private $pdoStatement;
-	
-	public function __construct($obj) {
-		$this->pdoStatement = $obj;
-	}
-
-	public function numRows() {
-		return $this->pdoStatement->rowCount();
-	}
-
-	public function fetch() {
-		return $this->pdoStatement->fetch();
-	}
-
-	public function fetchRow() {
-		$row = $this->pdoStatement->fetch();
-		return $row;
-	}
-}
-
-class PDOLayer extends PDO {
-	private $db;
+class PDOLayer extends PDOCommon {
 	private $debug = false;
 	private $queries = array();
-
-	public function __constructor($dsn, $db_user, $db_pass) {
-		$this->db = new PDO($dsn, $db_user, $db_pass);	
-	}
-
-	public function query($str) {
-		if (!empty($this->limit)) {
-			$str .= " LIMIT ".$this->limit;
-		}
-
-		if ($this->debug) {
-			$this->queries[] = $str;
-		}
-		
-		$obj_pdoStatement = parent::query($str);
-		$obj_pdoStatementCommon = new PDOStatementCommon($obj_pdoStatement);
-		return $obj_pdoStatementCommon;
-	}
 
 	public function quote($str, $type) {
 		if ($type == 'integer') {
@@ -80,26 +41,6 @@ class PDOLayer extends PDO {
 		return parent::quote($str, $type); 
 	}
 
-	public function queryOne($str) {
-		$result = $this->query($str);
-		$row = $result->fetch();
-		return $row[0];
-	}
-
-	public function queryRow($str) {
-		$obj_pdoStatement = parent::query($str);
-		$row = $obj_pdoStatement->fetch();
-		return $row;
-	}
-
-	public function setLimit($limit) {
-		$this->limit = $limit;
-	}
-
-	public function lastInsertId($table, $field) {
-		return parent::lastInsertId(); 
-	}
-
 	public function setOption($option, $value) {
 		if ($option == 'debug' && $value == 1) {
 			$this->debug = true;
@@ -108,6 +49,14 @@ class PDOLayer extends PDO {
 
 	public function getDebugOutput() {
 		echo join("<br>", $this->queries);
+	}
+
+	public function query($str) {
+		if ($this->debug) {
+			$this->queries[] = $str;
+		}
+
+		return parent::query($str);
 	}
 
 	public function disconnect() {
