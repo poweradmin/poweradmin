@@ -50,6 +50,8 @@ class PDOStatementCommon {
 
 class PDOLayer extends PDO {
 	private $db;
+	private $debug = false;
+	private $queries = array();
 
 	public function __constructor($dsn, $db_user, $db_pass) {
 		$this->db = new PDO($dsn, $db_user, $db_pass);	
@@ -60,6 +62,10 @@ class PDOLayer extends PDO {
 			$str .= " LIMIT ".$this->limit;
 		}
 
+		if ($this->debug) {
+			$this->queries[] = $str;
+		}
+		
 		$obj_pdoStatement = parent::query($str);
 		$obj_pdoStatementCommon = new PDOStatementCommon($obj_pdoStatement);
 		return $obj_pdoStatementCommon;
@@ -92,6 +98,16 @@ class PDOLayer extends PDO {
 
 	public function lastInsertId($table, $field) {
 		return parent::lastInsertId(); 
+	}
+
+	public function setOption($option, $value) {
+		if ($option == 'debug' && $value == 1) {
+			$this->debug = true;
+		}
+	}
+
+	public function getDebugOutput() {
+		echo join("<br>", $this->queries);
 	}
 
 	public function disconnect() {
