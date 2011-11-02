@@ -117,7 +117,7 @@ if (!(verify_permission('zone_master_add')) || !$owner) {
 				$add = "";
 			}
 		} else {
-			if (preg_match('/in-addr.arpa/i', $zone_name) && strtoupper($record_type) == 'PTR') {
+			if (preg_match('/i(p6|n-addr).arpa/i', $zone_name) && strtoupper($record_type) == 'PTR') {
 				$add = " SELECTED";
 			} elseif (strtoupper($record_type) == 'A') {
 				$add = " SELECTED";

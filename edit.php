@@ -263,7 +263,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 					$add = "";
 	                    }
 	                } else {
-				if (preg_match('/in-addr.arpa/i', $zone_name) && strtoupper($record_type) == 'PTR') {
+				if (preg_match('/i(p6|n-addr).arpa/i', $zone_name) && strtoupper($record_type) == 'PTR') {
 	                    		$add = " SELECTED";
 				} else if (strtoupper($record_type) == 'A') {
 					$add = " SELECTED";
