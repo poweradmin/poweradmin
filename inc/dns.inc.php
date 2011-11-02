@@ -170,7 +170,7 @@ function is_valid_hostname_fqdn(&$hostname, $wildcard) {
 	return true;
 }
 
-function is_valid_ipv4($ipv4) {
+function is_valid_ipv4($ipv4, $answer=true) {
 
 // 20080424/RZ: The current code may be replaced by the following if() 
 // statement, but it will raise the required PHP version to ">= 5.2.0". 
@@ -181,26 +181,29 @@ function is_valid_ipv4($ipv4) {
 //	}
 
 	if (!preg_match("/^[0-9\.]{7,15}$/", $ipv4)) {
-		error(ERR_DNS_IPV4); return false;
+		if ($answer) { error(ERR_DNS_IPV4); }
+		return false;
 	}
 
 	$quads = explode('.', $ipv4);
 	$numquads = count($quads);
 	
 	if ($numquads != 4) {
-		error(ERR_DNS_IPV4); return false;
+		if ($answer) { error(ERR_DNS_IPV4); }
+		return false;
 	}
 
 	for ($i = 0; $i < 4; $i++) {
 		if ($quads[$i] > 255) {
-			error(ERR_DNS_IPV4); return false;
+			if ($answer) { error(ERR_DNS_IPV4); }
+			return false;
 		}
 	}
 
 	return true;
 }
 
-function is_valid_ipv6($ipv6) {
+function is_valid_ipv6($ipv6, $answer=true) {
 
 // 20080424/RZ: The current code may be replaced by the following if() 
 // statement, but it will raise the required PHP version to ">= 5.2.0". 
@@ -211,14 +214,16 @@ function is_valid_ipv6($ipv6) {
 //	}
 
 	if (!preg_match("/^[0-9a-f]{0,4}:([0-9a-f]{0,4}:){0,6}[0-9a-f]{0,4}$/i", $ipv6)) {
-		error(ERR_DNS_IPV6); return false;
+		if ($answer) { error(ERR_DNS_IPV6); }
+		return false;
 	}
 
 	$quads = explode(':', $ipv6);
 	$numquads = count ($quads);
 
 	if ($numquads > 8 || $numquads < 3) {
-		error(ERR_DNS_IPV6); return false;
+		if ($answer) { error(ERR_DNS_IPV6); }
+		return false;
 	}
 
 	$emptyquads = 0;
@@ -227,14 +232,45 @@ function is_valid_ipv6($ipv6) {
 	}
 
 	if ($emptyquads > 1) {
-		error(ERR_DNS_IPV6); return false;
+		if ($answer) { error(ERR_DNS_IPV6); }
+		return false;
 	}
 
 	if ($emptyquads == 0 && $numquads != 8) {
-		error(ERR_DNS_IPV6); return false;
+		if ($answer) { error(ERR_DNS_IPV6); }
+		return false;
 	}
 
 	return true;
+}
+
+function are_multipe_valid_ips($ips) {
+
+// multiple master NS-records are permitted and must be separated by ,
+// eg. "192.0.0.1, 192.0.0.2, 2001:1::1"
+
+        $are_valid = false;
+	$multiple_ips = explode(",", $ips);
+	if(is_array($multiple_ips)) {
+		foreach ($multiple_ips as $m_ip) {
+			$trimmed_ip = trim($m_ip);
+			if (is_valid_ipv4($trimmed_ip,false) || is_valid_ipv6($trimmed_ip,true)) {
+				$are_valid = true;
+			} else {
+				// as soon there is an invalid ip-addr
+				// exit and return false
+				echo "hin:=$trimmed_ip=";
+				return false;
+			}
+		}
+	} elseif (is_valid_ipv4($ips) || is_valid_ipv6($ips)) {
+		$are_valid = true;
+	}
+	if ($are_valid) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 function is_valid_printable($string) {
