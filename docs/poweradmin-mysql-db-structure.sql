@@ -1,7 +1,7 @@
 CREATE TABLE `users` (
   `id` int(11) NOT NULL auto_increment,
-  `username` varchar(16) NOT NULL default '',
-  `password` varchar(34) NOT NULL default '',
+  `username` varchar(64) NOT NULL default '',
+  `password` varchar(128) NOT NULL default '',
   `fullname` varchar(255) NOT NULL default '',
   `email` varchar(255) NOT NULL default '',
   `description` text NOT NULL,

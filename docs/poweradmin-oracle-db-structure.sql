@@ -1,7 +1,7 @@
 CREATE TABLE users (
   id number(11) NOT NULL,
-  username varchar2(16) DEFAULT '' NOT NULL,
-  password varchar2(34) DEFAULT '' NOT NULL,
+  username varchar2(64) DEFAULT '' NOT NULL,
+  password varchar2(128) DEFAULT '' NOT NULL,
   fullname varchar2(255) DEFAULT '' NOT NULL,
   email varchar2(255) DEFAULT '' NOT NULL,
   description clob NOT NULL,

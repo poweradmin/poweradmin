@@ -2,8 +2,8 @@ BEGIN TRANSACTION;
 
 CREATE TABLE users (
   id INTEGER PRIMARY KEY NOT NULL,
-  username varchar(16) NOT NULL DEFAULT '',
-  password varchar(34) NOT NULL DEFAULT '',
+  username varchar(64) NOT NULL DEFAULT '',
+  password varchar(128) NOT NULL DEFAULT '',
   fullname varchar(255) NOT NULL DEFAULT '',
   email varchar(255) NOT NULL DEFAULT '',
   description text NOT NULL,

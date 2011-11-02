@@ -131,7 +131,7 @@ $def_tables =
 				    'username' => array
 					(
 					    'notnull' 		=> 1,
-					    'length' 		=> 16,
+					    'length' 		=> 64,
 					    'fixed' 		=> 0,
 					    'default' 		=> 0,
 					    'type' 		=> 'text',
@@ -142,7 +142,7 @@ $def_tables =
 				    'password' => array
 					(
 					    'notnull' 		=> 1,
-					    'length' 		=> 34,
+					    'length' 		=> 128,
 					    'fixed' 		=> 0,
 					    'default' 		=> 0,
 					    'type' 		=> 'text',
