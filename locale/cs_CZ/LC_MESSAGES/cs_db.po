@@ -1,0 +1,88 @@
+# Poweradmin translation.
+# Copyright (C) 2011 Poweradmin Development Team
+# This file is distributed under the same license as the Poweradmin package.
+# 
+# Translators:
+#   <quimi@quimi.cz>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: Poweradmin\n"
+"Report-Msgid-Bugs-To: https://www.poweradmin.org/trac/report/1\n"
+"POT-Creation-Date: 2011-07-08 23:45+0300\n"
+"PO-Revision-Date: 2011-11-03 12:59+0000\n"
+"Last-Translator: quimi <quimi@quimi.cz>\n"
+"Language-Team: Czech (http://www.transifex.net/projects/p/poweradmin/team/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2\n"
+
+msgid "User is allowed to add new master zones."
+msgstr "Uživatel má právo přidávat nové master zóny."
+
+msgid "User is allowed to add new slave zones."
+msgstr "Uživatel má právo přidávat nové slave zóny."
+
+msgid "User is allowed to see the content and meta data of zones he owns."
+msgstr "Uživatel má právo vidět obsah a meta data zón, které vlastní."
+
+msgid "User is allowed to edit the content of zones he owns."
+msgstr "Uživatel má právo upravit obsah zón, které vlastní."
+
+msgid "User is allowed to edit the meta data of zones he owns."
+msgstr "Uživatel má právo upravit meta data zón, které vlastní."
+
+msgid ""
+"User is allowed to see the content and meta data of zones he does not own."
+msgstr "Uživatel má právo vidět obsah a meta data zón, které nevlastní."
+
+msgid "User is allowed to edit the content of zones he does not own."
+msgstr "Uživatel má právo upravit obsah zón, které nevlastní."
+
+msgid "User is allowed to edit the meta data of zones he does not own."
+msgstr "Uživatel má právo upravit meta data zón, které nevlastní."
+
+msgid "User is allowed to perform searches."
+msgstr "Uživatel má právo vyhledávat."
+
+msgid "User is allowed to view supermasters."
+msgstr "Uživatel má právo prohlížet supermastery."
+
+msgid "User is allowed to add new supermasters."
+msgstr "Uživatel má právo přidávat nového supermastera."
+
+msgid "User is allowed to edit supermasters."
+msgstr "Uživatel má právo upravit supermastera."
+
+msgid "User has full access. God-like. Redeemer."
+msgstr "Uživatel má plný přístup. Jako bůh. Vykupitel."
+
+msgid "User is allowed to see other users and their details."
+msgstr "Uživatel má právo vidět ostatní uživatele a jejich detaily."
+
+msgid "User is allowed to add new users."
+msgstr "Uživatel má právo přidávat nové uživatele."
+
+msgid "User is allowed to edit their own details."
+msgstr "Uživatel má právo editovat jejich vlastní údaje."
+
+msgid "User is allowed to edit other users."
+msgstr "Uživatel má právo upravovat ostatní uživatele."
+
+msgid "User is allowed to edit the password of other users."
+msgstr "Uživatel má právo editovat hesla ostatních uživatelů."
+
+msgid ""
+"User is allowed to change the permission template that is assigned to a "
+"user."
+msgstr ""
+"Uživatel má právo změnit oprávnění šablonu, která je k němu přiřazena."
+
+msgid "User is allowed to add new permission templates."
+msgstr "Uživatel má právo přidávat novou šablonu oprávnění."
+
+msgid "User is allowed to edit existing permission templates."
+msgstr "Uživatel má právo upravit stávající šablony oprávnění."
+
+
