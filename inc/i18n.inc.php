@@ -28,14 +28,17 @@ if(file_exists('inc/config.inc.php')) {
 	$iface_lang = 'en_EN';
 }
 
-$locale = setlocale(LC_ALL, $iface_lang, $iface_lang.'.UTF-8');
-if ($locale == false) {
-	error(ERR_LOCALE_FAILURE);
+if ($iface_lang != 'en_EN') {
+	$locale = setlocale(LC_ALL, $iface_lang, $iface_lang.'.UTF-8');
+	if ($locale == false) {
+		error(ERR_LOCALE_FAILURE);
+	}
+
+	$gettext_domain = 'messages';
+	bindtextdomain($gettext_domain, "./locale");
+	textdomain($gettext_domain);
+	@putenv('LANG='.$iface_lang);
+	@putenv('LANGUAGE='.$iface_lang);
 }
 
-$gettext_domain = 'messages';
-bindtextdomain($gettext_domain, "./locale");
-textdomain($gettext_domain);
-@putenv('LANG='.$iface_lang);
-@putenv('LANGUAGE='.$iface_lang);
 ?>
