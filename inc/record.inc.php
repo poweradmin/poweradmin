@@ -314,7 +314,7 @@ function add_supermaster($master_ip, $ns_name, $account)
 		error(sprintf(ERR_INV_ARGC, "add_supermaster", "given account name is invalid (alpha chars only)"));
 		return false;
 	}
-        if (supermaster_exists($master_ip)) {
+        if (supermaster_exists($master_ip, $ns_name)) {
                 error(ERR_SM_EXISTS);
 		return false;
         } else {
@@ -817,12 +817,13 @@ function get_supermasters()
         }
 }
 
-function supermaster_exists($master_ip)
+function supermaster_exists($master_ip, $hostname)
 {
         global $db;
-        if (is_valid_ipv4($master_ip) || is_valid_ipv6($master_ip))
+        if ((is_valid_ipv4($master_ip) || is_valid_ipv6($master_ip)) && is_valid_hostname_fqdn($hostname,0))
         {
-                $result = $db->query("SELECT ip FROM supermasters WHERE ip = ".$db->quote($master_ip, 'text'));
+                $result = $db->query("SELECT ip FROM supermasters WHERE ip = ".$db->quote($master_ip, 'text').
+					" AND nameserver = ".$db->quote($hostname, 'text'));
                 if ($result->numRows() == 0)
                 {
                         return false;
