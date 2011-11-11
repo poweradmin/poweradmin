@@ -314,7 +314,7 @@ function add_supermaster($master_ip, $ns_name, $account)
 		error(sprintf(ERR_INV_ARGC, "add_supermaster", "given account name is invalid (alpha chars only)"));
 		return false;
 	}
-        if (supermaster_exists($master_ip, $ns_name)) {
+        if (supermaster_ip_name_exists($master_ip, $ns_name)) {
                 error(ERR_SM_EXISTS);
 		return false;
         } else {
@@ -818,13 +818,12 @@ function get_supermasters()
         }
 }
 
-function supermaster_exists($master_ip, $hostname)
+function supermaster_exists($master_ip)
 {
         global $db;
-        if ((is_valid_ipv4($master_ip) || is_valid_ipv6($master_ip)) && is_valid_hostname_fqdn($hostname,0))
+        if (is_valid_ipv4($master_ip) || is_valid_ipv6($master_ip))
         {
-                $result = $db->query("SELECT ip FROM supermasters WHERE ip = ".$db->quote($master_ip, 'text').
-					" AND nameserver = ".$db->quote($hostname, 'text'));
+                $result = $db->query("SELECT ip FROM supermasters WHERE ip = ".$db->quote($master_ip, 'text'));
                 if ($result->numRows() == 0)
                 {
                         return false;
@@ -840,6 +839,27 @@ function supermaster_exists($master_ip, $hostname)
         }
 }
 
+function supermaster_ip_name_exists($master_ip, $ns_name)
+{
+        global $db;
+        if ((is_valid_ipv4($master_ip) || is_valid_ipv6($master_ip)) && is_valid_hostname_fqdn($ns_name,0))
+        {
+                $result = $db->query("SELECT ip FROM supermasters WHERE ip = ".$db->quote($master_ip, 'text').
+					" AND nameserver = ".$db->quote($ns_name, 'text'));
+                if ($result->numRows() == 0)
+                {
+                        return false;
+                }
+                elseif ($result->numRows() >= 1)
+                {
+                        return true;
+                }
+        }
+        else
+        {
+                error(sprintf(ERR_INV_ARGC, "supermaster_exists", "No or no valid IPv4 or IPv6 address given."));
+        }
+}
 
 function get_zones($perm,$userid=0,$letterstart='all',$rowstart=0,$rowamount=999999,$sortby='name') 
 {

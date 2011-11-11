@@ -51,7 +51,7 @@ if ($master_ip == "-1" || $ns_name == "-1"){
 		echo "     <h2>" . _('Delete supermaster') . " \"" . $master_ip . "\"</h2>\n";
 
 		if (isset($_GET['confirm']) && $_GET["confirm"] == '1') {
-			if (!supermaster_exists($master_ip, $ns_name)) {
+			if (!supermaster_ip_name_exists($master_ip, $ns_name)) {
 				header("Location: list_supermasters.php");
 				exit;
 			}
