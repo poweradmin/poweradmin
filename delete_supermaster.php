@@ -29,12 +29,17 @@ if (isset($_GET['master_ip']) && (is_valid_ipv4($_GET['master_ip']) || is_valid_
 	 $master_ip = $_GET['master_ip'];
 }
 
+$ns_name = "-1";
+if (isset($_GET['ns_name']) && (is_valid_hostname_fqdn($_GET['ns_name'], 0))) {
+	$ns_name = $_GET['ns_name'];
+}
+
 $confirm = "-1";
 if ((isset($_GET['confirm'])) && (v_num($_GET['confirm']))) {
         $confirm = $_GET['confirm'];
 }
 
-if ($master_ip == "-1"){
+if ($master_ip == "-1" || $ns_name == "-1"){
 	error(ERR_INV_INPUT);
 } else {
 	(verify_permission('supermaster_edit')) ? $perm_sm_edit = "1" :  $perm_sm_edit = "0" ;
@@ -46,12 +51,12 @@ if ($master_ip == "-1"){
 		echo "     <h2>" . _('Delete supermaster') . " \"" . $master_ip . "\"</h2>\n";
 
 		if (isset($_GET['confirm']) && $_GET["confirm"] == '1') {
-			if (!supermaster_exists($master_ip)) {
+			if (!supermaster_exists($master_ip, $ns_name)) {
 				header("Location: list_supermasters.php");
 				exit;
 			}
 
-			if (delete_supermaster($master_ip)) {
+			if (delete_supermaster($master_ip, $ns_name)) {
 				success(SUC_SM_DEL);
 			}
 		} else {
@@ -60,7 +65,7 @@ if ($master_ip == "-1"){
 			echo "      " . _('Account') . ": " . $info['account'] . "\n";
 			echo "     </p>\n";
 			echo "     <p>" . _('Are you sure?') . "</p>\n";
-			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='delete_supermaster.php?master_ip=" . $master_ip . "&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n"; 
+			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='delete_supermaster.php?master_ip=" . $master_ip . "&amp;ns_name=" . $info['ns_name'] . "&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n"; 
 			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
 		}
 	}

@@ -49,7 +49,7 @@ if ($num_supermasters == "0") {
 	foreach ($supermasters as $c) {
 		echo "      <tr>\n";
 		if ($perm_sm_edit == "1") {
-			echo "        <td class=\"n\"><a href=\"delete_supermaster.php?master_ip=" .  $c['master_ip'] . "\"><img src=\"images/delete.gif\" title=\"" . _('Delete supermaster') . ' ' . $c['master_ip'] . "\" alt=\"[  " . _('Delete supermaster') . " ]\"></a></td>\n";
+			echo "        <td class=\"n\"><a href=\"delete_supermaster.php?master_ip=" .  $c['master_ip'] . "&amp;ns_name=" . $c['ns_name'] . "\"><img src=\"images/delete.gif\" title=\"" . _('Delete supermaster') . ' ' . $c['master_ip'] . "\" alt=\"[  " . _('Delete supermaster') . " ]\"></a></td>\n";
 		} else {
 			echo "<td>&nbsp;</td>\n";
 		}

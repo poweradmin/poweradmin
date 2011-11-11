@@ -323,11 +323,12 @@ function add_supermaster($master_ip, $ns_name, $account)
         }
 }
 
-function delete_supermaster($master_ip) {
+function delete_supermaster($master_ip, $ns_name) {
 	global $db;
-        if (is_valid_ipv4($master_ip) || is_valid_ipv6($master_ip))
+        if (is_valid_ipv4($master_ip) || is_valid_ipv6($master_ip) || is_valid_hostname_fqdn($ns_name, 0))
         {
-                $db->query("DELETE FROM supermasters WHERE ip = ".$db->quote($master_ip, 'text'));
+                $db->query("DELETE FROM supermasters WHERE ip = ". $db->quote($master_ip, 'text') .
+			" AND nameserver = " . $db->quote($ns_name, 'text'));
                 return true;
         }
         else
