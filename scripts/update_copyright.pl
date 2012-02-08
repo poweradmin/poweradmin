@@ -37,6 +37,7 @@ sub process_file {
 			if ($line =~ /Copyright 2010-$last_year  Poweradmin/) {
 				print "Updating copyright in <$fn>\n";
 				$line =~ s/2010-$last_year/2010-$curr_year/;
+				$line =~ s/\s$//;
 			}	
 			print OUT $line;
 		}
