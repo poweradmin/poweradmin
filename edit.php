@@ -265,8 +265,10 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 	                } else {
 				if (preg_match('/i(p6|n-addr).arpa/i', $zone_name) && strtoupper($record_type) == 'PTR') {
 	                    		$add = " SELECTED";
+					$rev = "";
 				} else if (strtoupper($record_type) == 'A') {
 					$add = " SELECTED";
+					$rev = "<input type=\"checkbox\" name=\"reverse\">" . _('Add also reverse record') . "\n";
 				} else {
 					$add = "";
 				}
@@ -281,6 +283,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 	            echo "       </tr>\n";
 	            echo "      </table>\n";
 	            echo "      <input type=\"submit\" name=\"commit\" value=\"" .  _('Add record') . "\" class=\"button\">\n";
+		    echo "      $rev";
 	            echo "     </form>\n";
 			}
 		}

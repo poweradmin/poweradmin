@@ -99,11 +99,33 @@ if (isset($_POST["commit"])) {
 	if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
 		error(ERR_PERM_ADD_RECORD);
 	} else {
-		if ( add_record($zone_id, $name, $type, $content, $ttl, $prio)) {
-			success(" <a href=\"edit.php?id=".$zone_id."\"> " ._('The record was successfully added.')."</a>");
-			$name = $type = $content = $ttl = $prio = "";
-		}
-	}
+                // rev-patch
+                // a PTR-record is added if an A or an AAAA-record are created
+                // and checkbox is chacked
+
+                if (isset($_POST["reverse"])) {
+                        if ($type === 'A') {
+                                $content_array = preg_split("/\./", $content);
+                                $content_rev = sprintf("%d.%d.%d.%d.in-addr.arpa", $content_array[3], $content_array[2], $content_array[1], $content_array[0]);
+                                $zone_rev_id = get_best_matching_zone_id_from_name($content_rev);
+                        } elseif ($type === 'AAAA') {
+                                $content_rev = convert_ipv6addr_to_ptrrec($content);
+                                $zone_rev_id = get_best_matching_zone_id_from_name($content_rev);
+                                //success("zone_rev_id: ".$zone_rev_id.", content_rev: ".$content_rev);
+                        }
+                        $zone_rev = get_zone_name_from_id($zone_rev_id);
+                        $zone_name = get_zone_name_from_id($zone_id);
+                        $fqdn_name = sprintf("%s.%s", $name, $zone_name);
+                        //success("zone_rev_id: ".$zone_rev_id.",zone_rev: ".$zone_rev.",  content_rev:".$content_rev.", name:". $fqdn_name .", name:" . $name);
+                        if (add_record($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
+                                success(" <a href=\"edit.php?id=".$zone_rev_id."\"> " ._('The PTR-record was successfully added.')."</a>");
+                        }
+                }
+                if (add_record($zone_id, $name, $type, $content, $ttl, $prio)) {
+                        success(" <a href=\"edit.php?id=".$zone_id."\"> " ._('The record was successfully added.')."</a>");
+                        $name = $type = $content = $ttl = $prio = "";
+                }
+        }
 }
 
 /*
