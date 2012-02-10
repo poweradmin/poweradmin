@@ -1177,7 +1177,12 @@ function search_zone_and_record($holy_grail,$perm,$zone_sortby='name',$record_so
 	elseif (verify_permission('zone_content_edit_own')) { $perm_content_edit = "own" ; }
 	else { $perm_content_edit = "none" ; }
 
-	if ($perm == "own" || $perm == "all") {
+        if ($perm == "all") {
+                $sql_add_from = ", zones, users ";
+                $sql_add_where = " AND zones.domain_id = domains.id AND users.id = " . $db->quote($_SESSION['userid'], 'integer');
+	}
+        
+	if ($perm == "own") {
                 $sql_add_from = ", zones, users ";
                 $sql_add_where = " AND zones.domain_id = domains.id AND users.id = " . $db->quote($_SESSION['userid'], 'integer') . " AND zones.owner = " . $db->quote($_SESSION['userid'], 'integer');
 	}
