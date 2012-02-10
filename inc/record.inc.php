@@ -1371,6 +1371,10 @@ function update_zone_records($zone_id, $zone_template) {
                                 $templ_records = get_zone_templ_records($zone_template);
 
 				if ($templ_records == -1) return; 
+                                
+                                 //BEFOTE INSERTING NEW RECORDS WE NEED TO DELETE OLD ONES'
+                                $sql = "DELETE FROM records WHERE  domain_id = " . $db->quote($zone_id, 'integer') ;
+                                $response = $db->exec($sql);
 
                                 foreach ($templ_records as $r) {
 					if ((preg_match('/in-addr.arpa/i', $zone_id) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $zone_id)))

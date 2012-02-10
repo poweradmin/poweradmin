@@ -67,7 +67,7 @@ if (!(verify_permission('search'))) {
 			echo "       <th><a href=\"javascript:zone_sort_by('type')\">" . _('Type') . "</a></th>\n";
 			echo "       <th><a href=\"javascript:zone_sort_by('master')\">" . _('Master') . "</a></th>\n";
 			/* If user has all edit permissions show zone owners */
-			if ( $perm_edit == "all"){
+			if ( $perm_edit == "own"){
 			echo "	     <th><a href=\"javascript:zone_sort_by('owner')\">" . _('Owner') . "</a></th>\n";
 			}
 
@@ -92,7 +92,7 @@ if (!(verify_permission('search'))) {
 				} else {
 					echo "       <td>&nbsp;</td>\n";
 				}
-				if ( $perm_edit == "all" ) {
+				if ( $perm_edit == "own" ) {
                                         echo "          <td>" . $zone['owner'] . "</td>";
                                 }
 				echo "      </tr>\n";
