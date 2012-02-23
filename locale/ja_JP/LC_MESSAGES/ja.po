@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Poweradmin\n"
 "Report-Msgid-Bugs-To: https://www.poweradmin.org/trac/report/1\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2012-02-23 19:38+0900\n"
+"PO-Revision-Date: 2012-02-24 01:41+0900\n"
 "Last-Translator: Koichi MATSUMOTO <mzch@mac.com>\n"
 "Language-Team: Japanese (http://www.transifex.net/projects/p/poweradmin/team/ja/)\n"
 "Language: ja\n"
@@ -228,13 +228,16 @@ msgstr "削除"
 msgid "Delete permission template"
 msgstr "権限テンプレートを削除"
 
-#: delete_record.php:67
-#: delete_zone_templ_record.php:54
 #: edit.php:169
 #: edit_zone_templ.php:110
 #: search.php:137
 msgid "Delete record"
 msgstr "レコードを削除"
+
+#: delete_record.php:67
+#: delete_zone_templ_record.php:54
+msgid "Delete record in zone"
+msgstr "ゾーンのレコードを削除:"
 
 #: delete_supermaster.php:51
 #: list_supermasters.php:52
