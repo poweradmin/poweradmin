@@ -120,7 +120,6 @@ msgid "Add zone template for"
 msgstr "ゾーンテンプレートを追加:"
 
 #: bulk_registration.php:141
-#, fuzzy
 msgid "Add zones"
 msgstr "ゾーンを追加"
 
@@ -1253,7 +1252,6 @@ msgid "Zone templates for"
 msgstr "ユーザーゾーンテンプレート:"
 
 #: bulk_registration.php:125
-#, fuzzy
 msgid "Zones"
 msgstr "ゾーン"
 
