@@ -64,7 +64,7 @@ if ($record_id == "-1") {
 		$user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
 		$record_info = get_record_from_id($record_id);
 	
-		echo "     <h2>" . _('Delete record') . " in zone \"<a href=\"edit.php?id=".$zid."\">" . $zone_name . "</a>\"</h2>\n";
+		echo "     <h2>" . _('Delete record in zone') . " \"<a href=\"edit.php?id=".$zid."\">" . $zone_name . "</a>\"</h2>\n";
 
 		if ( $zone_info['type'] == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
 			error(ERR_PERM_EDIT_RECORD);

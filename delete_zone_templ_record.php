@@ -51,7 +51,7 @@ if ($record_id == "-1" || $zone_templ_id == "-1") {
 		$templ_details = get_zone_templ_details($zone_templ_id);
 		$record_info = get_zone_templ_record_from_id($record_id);
 	
-		echo "     <h2>" . _('Delete record') . " in zone \"" . $templ_details['name'] . "\"</h2>\n";
+		echo "     <h2>" . _('Delete record in zone') . " \"" . $templ_details['name'] . "\"</h2>\n";
 
 		if (!(verify_permission('zone_master_add')) || !$owner) {
 			error(ERR_PERM_DEL_RECORD);
