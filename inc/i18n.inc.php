@@ -36,6 +36,7 @@ if ($iface_lang != 'en_EN') {
 
 	$gettext_domain = 'messages';
 	bindtextdomain($gettext_domain, "./locale");
+	bind_textdomain_codeset($gettext_domain, 'utf-8');
 	textdomain($gettext_domain);
 	@putenv('LANG='.$iface_lang);
 	@putenv('LANGUAGE='.$iface_lang);
