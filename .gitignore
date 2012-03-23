@@ -1,4 +1,5 @@
 inc/config.inc.php
 .DS_Store
 /nbproject
-/nbproject/private/
+/scripts
+/tests
