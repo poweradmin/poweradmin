@@ -22,16 +22,30 @@
  */
 
 global $db_layer;
+
+
+// if DB abstraction layer is not defined in configuration file then try to
+// auto-configure otherwise fail gracefully
+
 if (!isset($db_layer)) {
-	$db_layer = 'MDB2';
-}
+    // Use MDB2 by default because PDO support is quite experimental
+    if (@include_once 'MDB2.php') {
+        $db_layer = 'MDB2';
+    } elseif (class_exists('PDO', false)) {
+        $db_layer = 'PDO';
+    } else {
+        die (error('You have to install MDB2 or PDO library!'));
+    }
+} else {
+    if ($db_layer == 'MDB2') {
+        (@include_once 'MDB2.php') or die (error('You have to install MDB2 library!'));
+    }
 
-if ($db_layer == 'MDB2') {
-	(@include_once "MDB2.php") or die (error('You have to install MDB2 library!')); 
-}
-
-if ($db_layer == 'PDO') {
-	include_once "PDOLayer.php";
+    if ($db_layer == 'PDO' && class_exists('PDO', false)) {
+        include_once 'PDOLayer.php';
+    } else {
+        die (error('You have to install PDO library!'));
+    }
 }
 
 function dbError($msg)
