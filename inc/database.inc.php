@@ -33,6 +33,7 @@ if (!isset($db_layer)) {
         $db_layer = 'MDB2';
     } elseif (class_exists('PDO', false)) {
         $db_layer = 'PDO';
+        include_once 'PDOLayer.php';
     } else {
         die (error('You have to install MDB2 or PDO library!'));
     }
