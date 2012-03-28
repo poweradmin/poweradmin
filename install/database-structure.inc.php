@@ -437,7 +437,7 @@ $def_permissions = array(
 		);
 
 $def_remaining_queries = array(
-			"INSERT INTO users VALUES (1,'admin'," . $db->quote(md5($pa_pass)) . ",'Administrator','admin@example.net','Administrator with full rights.',1,1)",
+			"INSERT INTO users VALUES (1,'admin'," . $db->quote(md5($pa_pass),'text') . ",'Administrator','admin@example.net','Administrator with full rights.',1,1)",
 			"INSERT INTO perm_templ VALUES (1,'Administrator','Administrator template with full rights.')",
 			"INSERT INTO perm_templ_items VALUES (249,1,53)"
 		);

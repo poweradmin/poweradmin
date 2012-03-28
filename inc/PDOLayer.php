@@ -28,6 +28,17 @@ class PEAR {
 	}
 }
 
+class PDOExtended {
+
+    // http://pear.php.net/package/MDB2/docs/2.5.0b3/MDB2/MDB2_Extended.html#methodexecuteMultiple
+    public function executeMultiple( $stmt, $params) {
+        foreach($params as $values) {
+            $stmt->execute($values);
+        }
+    }
+
+}
+
 class PDOLayer extends PDOCommon {
 	private $debug = false;
 	private $queries = array();
@@ -61,6 +72,62 @@ class PDOLayer extends PDOCommon {
 
 	public function disconnect() {
 	}
+
+    // http://pear.php.net/package/MDB2/docs/2.5.0b3/MDB2/MDB2_Driver_Manager_Common.html#methodcreateTable
+    public function loadModule($name) {
+        if ($name == 'Extended') {
+            $this->extended = new PDOExtended();
+        }
+    }
+
+    // http://pear.php.net/package/MDB2/docs/2.5.0b3/MDB2/MDB2_Driver_Manager_Common.html#methodlistTables
+    public function listTables() {
+        // TODO: addapt this function also to pgsql & sqlite
+
+        $tables = array();
+        $result = $this->query('show tables');
+        while ($row = $result->fetch(PDO::FETCH_NUM)) {
+            $tables[] = $row[0];
+        }
+        return $tables;
+    }
+
+    // http://pear.php.net/package/MDB2/docs/2.5.0b3/MDB2/MDB2_Driver_Manager_Common.html#methodcreateTable
+    public function createTable($name, $fields, $options = array()) {
+        $query_fields = array();
+        foreach ($fields as $key => $arr) {
+            $line = $key.' '.$arr['type'].'('.$arr['length'].')';
+
+            if ($arr['notnull']) {
+                $line .= ' NOT NULL';
+            }
+
+            if (isset($arr['autoincrement'])) {
+                $line .= ' AUTO_INCREMENT';
+            }
+
+            if ($arr['flags'] == 'primary_keynot_null') {
+                $line .= ' PRIMARY KEY';
+            }
+
+            $query_fields[] = $line;
+        }
+
+        $query = "CREATE TABLE $name (" . implode(', ', $query_fields) . ')';
+
+        if (isset($options['type'])) {
+            $query .= ' ENGINE='.$options['type'];
+        }
+
+        $this->exec($query);
+    }
+
+    // http://pear.php.net/package/MDB2/docs/2.5.0b3/MDB2/MDB2_Driver_Manager_Common.html#methoddropTable
+    public function dropTable($name) {
+        $query = "DROP TABLE $name";
+        $this->exec($query);
+    }
+
 }
 
 ?>

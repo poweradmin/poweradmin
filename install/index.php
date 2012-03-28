@@ -173,7 +173,9 @@ switch($step) {
 		}
 		$fill_perm_items = $db->prepare('INSERT INTO perm_items VALUES (?, ?, ?)');
 		$db->extended->executeMultiple($fill_perm_items, $def_permissions);
-		$fill_perm_items->free();
+        if (method_exists($fill_perm_items, 'free')) {
+            $fill_perm_items->free();
+        }
 		foreach ($def_remaining_queries as $query) {
 			$db->query($query);
 		}
