@@ -85,7 +85,18 @@ class PDOLayer extends PDOCommon {
         // TODO: addapt this function also to pgsql & sqlite
 
         $tables = array();
-        $result = $this->query('show tables');
+        $db_type = $this->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $query = '';
+
+        if ($db_type == 'mysql') {
+            $query = 'SHOW TABLES';
+        } elseif ($db_type == 'pgsql') {
+            $query = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'";
+        } else {
+            die(ERR_DB_UNK_TYPE);
+        }
+
+        $result = $this->query($query);
         while ($row = $result->fetch(PDO::FETCH_NUM)) {
             $tables[] = $row[0];
         }
@@ -94,15 +105,27 @@ class PDOLayer extends PDOCommon {
 
     // http://pear.php.net/package/MDB2/docs/2.5.0b3/MDB2/MDB2_Driver_Manager_Common.html#methodcreateTable
     public function createTable($name, $fields, $options = array()) {
+        $db_type = $this->getAttribute(PDO::ATTR_DRIVER_NAME);
         $query_fields = array();
-        foreach ($fields as $key => $arr) {
-            $line = $key.' '.$arr['type'].'('.$arr['length'].')';
 
-            if ($arr['notnull']) {
+        foreach ($fields as $key => $arr) {
+            if ($arr['type'] == 'text' and isset($arr['length'])) {
+                $arr['type'] = 'VARCHAR';
+            }
+
+            if ($db_type == 'pgsql' && isset($arr['autoincrement'])) {
+                $line = $key.' SERIAL';
+            } elseif ($db_type == 'pgsql' && $arr['type'] == 'integer') {
+                $line = $key.' '.$arr['type'];
+            } else {
+                $line = $key.' '.$arr['type'].'('.$arr['length'].')';
+            }
+
+            if ($arr['notnull'] && $db_type != 'pgsql' && !isset($arr['autoincrement'])) {
                 $line .= ' NOT NULL';
             }
 
-            if (isset($arr['autoincrement'])) {
+            if ($db_type == 'mysql' && isset($arr['autoincrement'])) {
                 $line .= ' AUTO_INCREMENT';
             }
 
@@ -115,10 +138,9 @@ class PDOLayer extends PDOCommon {
 
         $query = "CREATE TABLE $name (" . implode(', ', $query_fields) . ')';
 
-        if (isset($options['type'])) {
+        if ($db_type == 'mysql' && isset($options['type'])) {
             $query .= ' ENGINE='.$options['type'];
         }
-
         $this->exec($query);
     }
 
