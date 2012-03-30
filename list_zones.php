@@ -37,6 +37,17 @@ $count_zones_all_letterstart = zone_count_ng($perm_view,LETTERSTART);
 $count_zones_view = zone_count_ng($perm_view);
 $count_zones_edit = zone_count_ng($perm_edit);
 
+# OUCH: Temporary workaround for nasty sorting issue.
+# The problem is that sorting order is saved as a session variable
+# and it's used in two different screens - zone list and search results.
+# Both have different queries for getting data, but same order field
+# that causes failure.
+
+$zone_sort_by = ZONE_SORT_BY;
+if (!in_array(ZONE_SORT_BY, array('name','type','records'))) {
+    $zone_sort_by = 'name';
+}
+
 echo "    <h2>" . _('List zones') . "</h2>\n";
 
 if ($perm_view == "none") { 
@@ -73,11 +84,11 @@ if ($perm_view == "none") {
 	echo "      </tr>\n";
 
 	if ($count_zones_view <= $iface_rowamount) {
-		$zones = get_zones($perm_view,$_SESSION['userid'],"all",ROWSTART,$iface_rowamount,ZONE_SORT_BY);
+		$zones = get_zones($perm_view,$_SESSION['userid'],"all",ROWSTART,$iface_rowamount,$zone_sort_by);
 	} elseif(LETTERSTART == 'all') {
-		 $zones = get_zones($perm_view,$_SESSION['userid'],"all",ROWSTART,'all',ZONE_SORT_BY);
+		 $zones = get_zones($perm_view,$_SESSION['userid'],"all",ROWSTART,'all',$zone_sort_by);
 	} else {
-		$zones = get_zones($perm_view,$_SESSION['userid'],LETTERSTART,ROWSTART,$iface_rowamount,ZONE_SORT_BY);
+		$zones = get_zones($perm_view,$_SESSION['userid'],LETTERSTART,ROWSTART,$iface_rowamount,$zone_sort_by);
 		$count_zones_shown = ($zones == -1) ? 0 : count($zones);
 	}
 	foreach ($zones as $zone)

@@ -119,7 +119,7 @@ if (!(verify_permission('search'))) {
 			echo "       <th>&nbsp;</th>\n";
 			echo "       <th><a href=\"javascript:record_sort_by('name')\">" . _('Name') . "</a></th>\n";
 			echo "       <th><a href=\"javascript:record_sort_by('type')\">" . _('Type') . "</a></th>\n";
-			echo "       <th><a href=\"javascript:record_sort_by('priority')\">" . _('Priority') . "</a></th>\n";
+			echo "       <th>Priority</th>\n";
 			echo "       <th><a href=\"javascript:record_sort_by('content')\">" . _('Content') . "</a></th>\n";
 			echo "       <th><a href=\"javascript:record_sort_by('ttl')\">" . _('TTL') . "</a></th>\n";
 			echo "      </tr>\n";
