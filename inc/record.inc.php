@@ -1191,7 +1191,7 @@ function search_zone_and_record($holy_grail,$perm,$zone_sortby='name',$record_so
 			domains.name AS name,
 			domains.type AS type,
 			domains.master AS master,
-                        users.username AS owner
+                        zones.owner AS owner
 			FROM domains" . $sql_add_from . "
 			WHERE domains.name LIKE " . $db->quote($holy_grail, 'text')
 			. $sql_add_where . "
@@ -1200,13 +1200,22 @@ function search_zone_and_record($holy_grail,$perm,$zone_sortby='name',$record_so
 	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
+    $cached_owners = array();
 	while ($r = $response->fetchRow()) {
+        $owner = '';
+        if (isset($cached_owners[$r['owner']])) {
+            $owner = $cached_owners[$r['owner']];
+        } else {
+            $owner = get_owner_from_id($r['owner']);
+            $cached_owners[$r['owner']] = $owner;
+        }
+
 		$return_zones[] = array(
 			"zid"		=>	$r['zid'],
 			"name"		=>	$r['name'],
 			"type"		=>	$r['type'],
 			"master"	=>	$r['master'],
-			"owner"		=>	$r['owner']);
+			"owner"		=>	$owner);
 	}
 
 	$sql_add_from = '';
