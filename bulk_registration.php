@@ -57,7 +57,9 @@ Check user permissions
 if (isset($_POST['submit']) && $zone_master_add == "1" ) {
         $error = false;
         foreach ($domains as $domain) {
-                if (domain_exists($domain)) {
+                if (!is_valid_hostname_fqdn($domain, 0)) {
+                    error($domain . ' failed - ' . ERR_DNS_HOSTNAME);
+                } elseif (domain_exists($domain)) {
                         error($domain . " failed - " . ERR_DOMAIN_EXISTS);
                         $error = true;
                 } elseif (add_domain($domain, $owner, $dom_type, '', $zone_template)) {
