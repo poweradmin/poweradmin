@@ -35,9 +35,14 @@ if (isset($_POST["dom_type"]) && (in_array($_POST['dom_type'], $server_types))) 
 }
 
 if (isset($_POST['domains'])) {
-	$domains = split("\r\n", $_POST['domains']);
-	foreach ($domains as $key => $domain) {
-		$domains[$key] = trim($domain);
+	$domains = explode("\r\n", $_POST['domains']);
+	foreach ($domains as $key=>$domain) {
+        $domain = trim($domain);
+        if ($domain == '') {
+            unset($domains[$key]);
+        } else {
+            $domains[$key] = $domain;
+        }
 	}
 } else {
 	$domains = array();
