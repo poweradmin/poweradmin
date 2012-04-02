@@ -112,8 +112,7 @@ if (isset($_POST["commit"])) {
                                 $content_rev = convert_ipv6addr_to_ptrrec($content);
                                 $zone_rev_id = get_best_matching_zone_id_from_name($content_rev);
                         }
-			if ($zone_rev_id) { 
-                        	$zone_rev = get_zone_name_from_id($zone_rev_id);
+			if ($zone_rev_id && $zone_rev_id != -1) { 
                         	$zone_name = get_zone_name_from_id($zone_id);
                         	$fqdn_name = sprintf("%s.%s", $name, $zone_name);
                         	if (add_record($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
