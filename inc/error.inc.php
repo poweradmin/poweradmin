@@ -62,6 +62,7 @@ define("ERR_INV_ARGC", _('Invalid argument(s) given to function %s %s'));
 define("ERR_UNKNOWN", _('Unknown error.'));
 define("ERR_INV_EMAIL", _('Enter a valid email address.'));
 define("ERR_ZONE_NOT_EXIST", _('There is no zone with this ID.'));
+define("ERR_REVERS_ZONE_NOT_EXIST", _('There is no matching reverse-zone for: %s.'));
 define("ERR_ZONE_TEMPL_NOT_EXIST", _('There is no zone template with this ID.'));
 define("ERR_INSTALL_DIR_EXISTS", _('The <a href="install/">install/</a> directory exists, you must remove it first before proceeding.'));
 define("ERR_ZONE_TEMPL_EXIST", _('Zone template with this name already exists, please choose another one.'));

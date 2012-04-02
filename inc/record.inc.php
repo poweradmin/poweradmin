@@ -774,6 +774,54 @@ function get_zone_info_from_id($zid) {
 	}
 }
 
+function convert_ipv6addr_to_ptrrec($ip) {
+// rev-patch
+// taken from: http://stackoverflow.com/questions/6619682/convert-ipv6-to-nibble-format-for-ptr-records
+// PHP (>= 5.1.0, or 5.3+ on Windows), use the inet_pton
+//      $ip = '2001:db8::567:89ab';
+
+        $addr = inet_pton($ip);
+        $unpack = unpack('H*hex', $addr);
+        $hex = $unpack['hex'];
+        $arpa = implode('.', array_reverse(str_split($hex))) . '.ip6.arpa';
+        return $arpa;
+}
+
+function get_best_matching_zone_id_from_name($domain) {
+// rev-patch
+// tring to find the correct zone
+// %ip6.arpa and %in-addr.arpa is looked for
+
+        global $db;
+
+        $ret = array();
+        $match=72; // the longest ip6.arpa has a length of 72
+        $found_domain_id='';
+
+        // get all reverse-zones
+        $query = "SELECT name, id
+                    FROM domains
+                   WHERE name like " . $db->quote('%.arpa', 'text') ."
+                   ORDER BY length(name) DESC";
+
+        $response = $db->query($query);
+        if (PEAR::isError($response)) { error($response->getMessage()); return false; };
+        if ($response->numRows() == 0) {
+                return -1;
+        } else {
+                while ($r = $response->fetchRow()) {
+                        $pos = stripos($domain, $r["name"]);
+                        if ($pos !== false) {
+                                // one possible searched $domain is found
+                                if ($pos < $match) {
+                                        $match = $pos;
+                                        $found_domain_id = $r["id"];
+                                }
+                        }
+                }
+        }
+        return $found_domain_id;
+}
 
 /*
  * Check if a domain is already existing.
