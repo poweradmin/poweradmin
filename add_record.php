@@ -119,7 +119,7 @@ if (isset($_POST["commit"])) {
                                 	success(" <a href=\"edit.php?id=".$zone_rev_id."\"> " ._('The PTR-record was successfully added.')."</a>");
                         	}
 			} else {
-				error(ERR_ZONE_NOT_EXIST); 
+				error(sprintf(ERR_REVERS_ZONE_NOT_EXIST, $content_rev)); 
 			}
                 }
                 if (add_record($zone_id, $name, $type, $content, $ttl, $prio)) {
