@@ -139,6 +139,10 @@ function is_valid_hostname_fqdn(&$hostname, $wildcard) {
         $hostname_labels = explode ('.', $hostname);
         $label_count = count($hostname_labels);
 
+    if ($label_count == 1) {
+        return false;
+    }
+
 	foreach ($hostname_labels as $hostname_label) {
 		if ($wildcard == 1 && !isset($first)) {
 			if (!preg_match('/^(\*|[\w-\/]+)$/',$hostname_label)) { error(ERR_DNS_HN_INV_CHARS); return false; }
