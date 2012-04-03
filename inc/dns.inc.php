@@ -130,14 +130,13 @@ function is_valid_hostname_fqdn(&$hostname, $wildcard) {
 
 	$hostname = preg_replace("/\.$/","",$hostname);
 
-    // The full domain name may not exceed a total length of 253 characters.
-	if (strlen($hostname) > 253) {
+	if (strlen($hostname) > 255) {
 		error(ERR_DNS_HN_TOO_LONG);
 		return false;
 	}
 
-    $hostname_labels = explode ('.', $hostname);
-    $label_count = count($hostname_labels);
+        $hostname_labels = explode ('.', $hostname);
+        $label_count = count($hostname_labels);
 
 	foreach ($hostname_labels as $hostname_label) {
 		if ($wildcard == 1 && !isset($first)) {
@@ -150,9 +149,9 @@ function is_valid_hostname_fqdn(&$hostname, $wildcard) {
 		if (substr($hostname_label, -1, 1) == "-") { error(ERR_DNS_HN_DASH); return false; }
 		if (strlen($hostname_label) < 1 || strlen($hostname_label) > 63) { error(ERR_DNS_HN_LENGTH); return false; }
 	}
-
+	
 	if ($hostname_labels[$label_count-1] == "arpa" && (substr_count($hostname_labels[0], "/") == 1 XOR substr_count($hostname_labels[1], "/") == 1)) {
-		if (substr_count($hostname_labels[0], "/") == 1) {
+		if (substr_count($hostname_labels[0], "/") == 1) { 
 			$array = explode ("/", $hostname_labels[0]);
 		} else {
 			$array = explode ("/", $hostname_labels[1]);
@@ -163,7 +162,7 @@ function is_valid_hostname_fqdn(&$hostname, $wildcard) {
 	} else {
 		if (substr_count($hostname, "/") > 0) { error(ERR_DNS_HN_SLASH) ; return false; }
 	}
-
+	
 	if ($dns_strict_tld_check && !in_array(strtolower($hostname_labels[$label_count-1]), $valid_tlds)) {
 		error(ERR_DNS_INV_TLD); return false;
 	}
