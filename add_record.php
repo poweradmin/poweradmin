@@ -162,8 +162,10 @@ if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit
 		} else {
 			if (preg_match('/i(p6|n-addr).arpa/i', $zone_name) && strtoupper($record_type) == 'PTR') {
 				$add = " SELECTED";
+                $rev = "";
 			} elseif (strtoupper($record_type) == 'A') {
 				$add = " SELECTED";
+                $rev = "<input type=\"checkbox\" name=\"reverse\">" . _('Add also reverse record') . "\n";
 			} else {
 				$add = "";
 			}
@@ -179,6 +181,7 @@ if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit
 	echo "      </table>\n";
 	echo "      <br>\n";
 	echo "      <input type=\"submit\" name=\"commit\" value=\"" .  _('Add record') . "\" class=\"button\">\n";
+    echo "      $rev";
 	echo "     </form>\n";
 }
 
