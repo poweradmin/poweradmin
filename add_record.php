@@ -181,7 +181,7 @@ if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit
 	echo "      </table>\n";
 	echo "      <br>\n";
 	echo "      <input type=\"submit\" name=\"commit\" value=\"" .  _('Add record') . "\" class=\"button\">\n";
-    echo "      $rev";
+    if (isset($rev)) { echo "      $rev"; }
 	echo "     </form>\n";
 }
 

@@ -190,7 +190,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 						/*
 						Sanitize content due to SPF record quoting in PowerDNS
 						*/
-						if ($r['type'] == "SRV" || $r['type'] == "SPF") {
+						if ($r['type'] == "SRV" || $r['type'] == "SPF" || $r['type'] == "TXT") {
 							$clean_content = trim($r['content'], "\x22\x27");
 						} else {
 							$clean_content = htmlentities($r['content'], ENT_QUOTES);
