@@ -42,10 +42,12 @@ if (!isset($db_layer)) {
         (@include_once 'MDB2.php') or die (error('You have to install MDB2 library!'));
     }
 
-    if ($db_layer == 'PDO' && class_exists('PDO', false)) {
-        include_once 'PDOLayer.php';
-    } else {
-        die (error('You have to install PDO library!'));
+    if ($db_layer == 'PDO') {
+        if (class_exists('PDO', false)) {
+            include_once 'PDOLayer.php';
+        } else {
+            die (error('You have to install PDO library!'));
+        }
     }
 }
 
