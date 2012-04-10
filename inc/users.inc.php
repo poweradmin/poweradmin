@@ -611,6 +611,8 @@ function get_list_permission_templates() {
 
 function add_perm_templ($details) {
 	global $db;
+    global $db_layer;
+    global $db_type;
 
 	// Fix permission template name and description first. 
 
@@ -622,7 +624,13 @@ function add_perm_templ($details) {
 	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
-	$perm_templ_id = $db->lastInsertId('perm_templ', 'id');
+    if ($db_layer == 'MDB2') {
+        $perm_templ_id = $db->lastInsertId('perm_templ', 'id');
+    } else if ($db_layer == 'PDO' && $db_type == 'pgsql') {
+        $perm_templ_id = $db->lastInsertId('perm_templ_id_seq');
+    } else {
+        $perm_templ_id = $db->lastInsertId();
+    }
 
 	if (isset($details['perm_id'])) {
 		foreach ($details['perm_id'] AS $perm_id) {
