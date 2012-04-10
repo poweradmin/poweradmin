@@ -426,6 +426,9 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template)
 		global $dns_ns1;
 		global $dns_hostmaster;
 		global $dns_ttl;
+        global $db_layer;
+        global $db_type;
+
 		if (($domain && $owner && $zone_template) || 
 				(preg_match('/in-addr.arpa/i', $domain) && $owner && $zone_template) || 
 				$type=="SLAVE" && $domain && $owner && $slave_master) {
@@ -433,7 +436,13 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template)
 			$response = $db->query("INSERT INTO domains (name, type) VALUES (".$db->quote($domain, 'text').", ".$db->quote($type, 'text').")");
 			if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
-			$domain_id = $db->lastInsertId('domains', 'id');
+            if ($db_layer == 'MDB2') {
+			    $domain_id = $db->lastInsertId('domains', 'id');
+            } else if ($db_layer == 'PDO' && $db_type == 'pgsql') {
+                $domain_id = $db->lastInsertId('domains_id_seq');
+            } else {
+                $domain_id = $db->lastInsertId();
+            }
 			if (PEAR::isError($domain_id)) { error($id->getMessage()); return false; }
 
 			$response = $db->query("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (".$db->quote($domain_id, 'integer').", ".$db->quote($owner, 'integer').", ".$db->quote(($zone_template == "none") ? 0 : $zone_template, 'integer').")");
