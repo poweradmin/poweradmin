@@ -22,6 +22,16 @@
  */
 session_start();
 
+/* TODO: reimplement displaying of errors/messages */
+function error($msg) {
+    if ($msg) {
+        echo "     <div class=\"error\">Error: " . $msg . "</div>\n";
+    } else {
+        echo "     <div class=\"error\">" . _('An unknown error has occurred.') . "</div>\n";
+    }
+}
+
+include_once("inc/error.inc.php");
 include_once("inc/config-me.inc.php");
 if(!@include_once("inc/config.inc.php"))
 {
