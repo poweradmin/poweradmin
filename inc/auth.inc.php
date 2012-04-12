@@ -124,6 +124,7 @@ function doAuthenticate() {
 function auth($msg="",$type="success")
 {
 	include_once('inc/header.inc.php');
+    echo $_SERVER['SCRIPT_FILENAME'];
 	if ( $msg )
 	{
 		print "<div class=\"$type\">$msg</div>\n";
@@ -132,7 +133,7 @@ function auth($msg="",$type="success")
 	<h2><?php echo _('Log in'); ?></h2>
 	<?php
 	?>
-	<form method="post" action="<?php echo $_SERVER["PHP_SELF"] ?>">
+	<form method="post" action="<?php echo htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES); ?>">
 	 <table border="0">
 	  <tr>
 	   <td class="n" width="100"><?php echo _('Username'); ?>:</td>

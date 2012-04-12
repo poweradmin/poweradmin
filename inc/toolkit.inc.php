@@ -163,7 +163,7 @@ function show_pages($amount,$rowamount,$id='')
          if ($_GET["start"] == $i) {
             echo "[ <b>".$i."</b> ] ";
          } else {
-            echo " <a href=\"".$_SERVER["PHP_SELF"]."?start=".$i;
+            echo " <a href=\"".htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES)."?start=".$i;
 	    if ($id!='') echo "&id=".$id;
 	    echo "\">[ ".$i." ]</a> ";
          }
@@ -186,7 +186,7 @@ function show_letters($letterstart,$userid=true)
 	}
 	elseif (zone_letter_start($letter,$userid))
 	{
-		echo "<a href=\"".$_SERVER["PHP_SELF"]."?letter=1\">[ 0-9 ]</a> ";
+		echo "<a href=\"".htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES)."?letter=1\">[ 0-9 ]</a> ";
 	}
 	else
 	{
@@ -201,7 +201,7 @@ function show_letters($letterstart,$userid=true)
                 }
                 elseif (zone_letter_start($letter,$userid))
                 {
-                        echo "<a href=\"".$_SERVER["PHP_SELF"]."?letter=".$letter."\">[ ".$letter." ]</a> ";
+                        echo "<a href=\"".htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES)."?letter=".$letter."\">[ ".$letter." ]</a> ";
                 }
                 else
                 {
@@ -213,7 +213,7 @@ function show_letters($letterstart,$userid=true)
 	{
 		echo "[ <span class=\"lettertaken\"> Show all </span> ] ";
 	} else {
-		echo "<a href=\"".$_SERVER["PHP_SELF"]."?letter=all\">[ Show all ]</a> ";
+		echo "<a href=\"".htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES)."?letter=all\">[ Show all ]</a> ";
 	}
 }
 
@@ -295,7 +295,7 @@ function clean_page($arg='')
 {
 	if (!$arg)
 	{
-		header("Location: ".$_SERVER["PHP_SELF"]."?time=".time());
+		header("Location: ".htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES)."?time=".time());
 		exit;
 	}
 	else

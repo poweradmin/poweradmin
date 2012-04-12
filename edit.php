@@ -349,7 +349,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 		echo "      </tr>\n";
 
 		if ($meta_edit) {
-			echo "      <form action=\"" . $_SERVER['PHP_SELF'] . "?id=" . $zone_id . "\" method=\"post\">\n";
+			echo "      <form action=\"" . htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES) . "?id=" . $zone_id . "\" method=\"post\">\n";
 			echo "       <input type=\"hidden\" name=\"domain\" value=\"" . $zone_id . "\">\n";
 			echo "       <tr>\n";
 			echo "        <td>\n";
@@ -381,7 +381,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 		echo "      </tr>\n";
 
                 if ($meta_edit) {
-                        echo "      <form action=\"" . $_SERVER['PHP_SELF'] . "?id=" . $zone_id . "\" method=\"post\">\n";
+                        echo "      <form action=\"" . htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES) . "?id=" . $zone_id . "\" method=\"post\">\n";
                         echo "       <input type=\"hidden\" name=\"current_zone_template\" value=\"" . $zone_template_id . "\">\n";
                         echo "       <tr>\n";
                         echo "        <td>\n";
@@ -413,7 +413,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 			echo "      </tr>\n";
 
 			if ($meta_edit) {
-				echo "      <form action=\"" . $_SERVER['PHP_SELF'] . "?id=" . $zone_id . "\" method=\"post\">\n";
+				echo "      <form action=\"" . htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES) . "?id=" . $zone_id . "\" method=\"post\">\n";
 				echo "       <input type=\"hidden\" name=\"domain\" value=\"" . $zone_id . "\">\n";
 				echo "       <tr>\n";
 				echo "        <td>\n";
