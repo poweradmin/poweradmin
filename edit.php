@@ -198,8 +198,8 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 					echo "       </select>\n";
 					echo "      </td>\n";
 					echo "      <td class=\"u\"><input class=\"wide\" name=\"record[" . $r['id'] . "][content]\" value='" . $clean_content . "'></td>\n";
-					echo "      <td class=\"u\"><input id=\"priority_field_" . $r['id'] . "\" name=\"record[" . $r['id'] . "][prio]\" value=\"" .  $r['prio'] . "\"></td>\n";
-					echo "      <td class=\"u\"><input name=\"record[" . $r['id'] . "][ttl]\" value=\"" . $r['ttl'] . "\"></td>\n";
+					echo "      <td class=\"u\"><input size=\"4\" id=\"priority_field_" . $r['id'] . "\" name=\"record[" . $r['id'] . "][prio]\" value=\"" .  $r['prio'] . "\"></td>\n";
+					echo "      <td class=\"u\"><input size=\"4\" name=\"record[" . $r['id'] . "][ttl]\" value=\"" . $r['ttl'] . "\"></td>\n";
 					
 				}
 				echo "     </tr>\n";
@@ -221,12 +221,12 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
                         echo "     <tr>\n";
 			echo "      <td colspan=\"6\"><br>Save as new template:</td>\n";
 			echo "     </tr>\n";
-                        echo "      <tr>\n";
-                        echo "       <th>" . _('Template Name') . "</th>\n";
+                        echo "     <tr>\n";
+                        echo "       <th colspan=\"2\">" . _('Template Name') . "</th>\n";
                         echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_name\" value=\"\"></td>\n";
                         echo "      </tr>\n";
                         echo "      <tr>\n";
-                        echo "       <th>" . _('Template Description') . "</th>\n";
+                        echo "       <th colspan=\"2\">" . _('Template Description') . "</th>\n";
                         echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_descr\" value=\"\"></td>\n";
                         echo "      </tr>\n";
 			echo "    </table>\n";
