@@ -124,7 +124,6 @@ function doAuthenticate() {
 function auth($msg="",$type="success")
 {
 	include_once('inc/header.inc.php');
-    echo $_SERVER['SCRIPT_FILENAME'];
 	if ( $msg )
 	{
 		print "<div class=\"$type\">$msg</div>\n";
