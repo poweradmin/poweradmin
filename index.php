@@ -28,7 +28,7 @@ echo "     <h3>" . _('Welcome') . " " . $_SESSION["name"] . "</h3>\n";
 
 verify_permission('search') ? $perm_search = "1" : $perm_search = "0" ;
 verify_permission('zone_content_view_own') ? $perm_view_zone_own = "1" : $perm_view_zone_own = "0" ;
-verify_permission('zone_content_view_other') ? $perm_view_zone_other = "1" : $perm_view_zone_other = "0" ;
+verify_permission('zone_content_view_others') ? $perm_view_zone_other = "1" : $perm_view_zone_other = "0" ;
 verify_permission('supermaster_view') ? $perm_supermaster_view = "1" : $perm_supermaster_view = "0" ;
 verify_permission('zone_master_add') ? $perm_zone_master_add = "1" : $perm_zone_master_add = "0" ;
 verify_permission('zone_slave_add') ? $perm_zone_slave_add = "1" : $perm_zone_slave_add = "0" ;
