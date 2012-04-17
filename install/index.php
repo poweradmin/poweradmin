@@ -110,7 +110,7 @@ switch($step) {
 		echo "  </tr>\n";
 		echo " <tr>\n";
 		echo "  <td>" . _('Password') . "</td>\n";
-		echo "  <td><input type=\"password\" name=\"pass\" value=\"\"></td>\n";
+		echo "  <td><input type=\"password\" name=\"pass\" value=\"\" autocomplete=\"off\"></td>\n";
 		echo "  <td>" . _('The password for this username.') . "</td>\n";
 		echo " </tr>\n";
 		echo " <tr>\n";
@@ -139,7 +139,7 @@ switch($step) {
 		echo " </tr>\n";
                 echo "  <tr>\n";
 		echo "   <td>" . _('Poweradmin administrator password') . "</td>\n";
-		echo "   <td><input type=\"text\" name=\"pa_pass\" value=\"\"></td>\n";
+		echo "   <td><input type=\"text\" name=\"pa_pass\" value=\"\" autocomplete=\"off\"></td>\n";
 		echo "   <td>" . _('The password of the Poweradmin administrator. This administrator has full rights to Poweradmin using the web interface.') . "</td>\n";
 		echo "  </tr>\n";
 		echo "</table>\n";
@@ -191,7 +191,7 @@ switch($step) {
 		echo "  </tr>\n";
 		echo "  <tr>\n";
 		echo "   <td>" . _('Password') . "</td>\n";
-		echo "   <td><input type=\"text\" name=\"pa_db_pass\" value=\"\"></td>\n";
+		echo "   <td><input type=\"text\" name=\"pa_db_pass\" value=\"\" autocomplete=\"off\"></td>\n";
 		echo "   <td>" . _('The password for this username.') . "</td>\n";
 		echo "  </tr>\n";
 		echo "  <tr>\n";
