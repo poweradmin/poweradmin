@@ -412,6 +412,12 @@ foreach($def_tables as $table) {
 	$grantTables[] = $table['table_name'];
 }
 
+// For PostgreSQL you need to grant access to sequences
+$grantSequences = array('domains_id_seq', 'records_id_seq');
+foreach($def_tables as $table) {
+    $grantSequences[] = $table['table_name'].'_id_seq';
+}
+
 $def_permissions = array(
 			array(41,'zone_master_add','User is allowed to add new master zones.'),
 			array(42,'zone_slave_add','User is allowed to add new slave zones.'),

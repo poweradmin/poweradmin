@@ -266,10 +266,13 @@ switch($step) {
 				"Shall the new user be allowed to create more new users? (y/n) n<br>" . 
 				"CREATE USER<br>" . 
 				"$ psql " . $db_name . "<br>";
+            echo "psql> ";
 				foreach ($grantTables as $tableName) {
-					echo "psql> GRANT SELECT, INSERT, DELETE, UPDATE ON " . $tableName . " TO " . $pa_db_user . ";<br />";
-					echo "GRANT<br />";
+					echo "GRANT SELECT, INSERT, DELETE, UPDATE ON " . $tableName . " TO " . $pa_db_user . ";<br />";
 				}
+                foreach ($grantSequences as $sequenceName) {
+                    echo "GRANT USAGE, SELECT ON SEQUENCE " . $sequenceName . " TO " . $pa_db_user . ";<br />";
+                }
 				echo "</tt></p>\n";
 		}
 		echo "<p>" . _('After you have added the new user, proceed with this installation procedure.') . "</p>\n";
