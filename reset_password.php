@@ -20,6 +20,13 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/* Disable reset password functionality, because of improper implementation.
+    If you know admin or any other user email, then you initiate password change
+    to some random which will be send to him by email, but that can be done
+    by some malicious user or some script, which can reset password every sec. */
+exit;
+
 session_start();
 
 /* TODO: reimplement displaying of errors/messages */

@@ -90,7 +90,8 @@ function doAuthenticate() {
 					exit;
 				}
 			} else if (isset($_POST['authenticate'])) {
-				auth( _('Authentication failed! - <a href="reset_password.php">(forgot password)</a>'),"error");
+//				auth( _('Authentication failed! - <a href="reset_password.php">(forgot password)</a>'),"error");
+                auth( _('Authentication failed!'),"error");
 			} else {
 				auth();
 			}		
@@ -106,7 +107,8 @@ function doAuthenticate() {
 			}
 
 			//Authentication failed, retry.
-			auth( _('Authentication failed! - <a href="reset_password.php">(forgot password)</a>'),"error");
+//			auth( _('Authentication failed! - <a href="reset_password.php">(forgot password)</a>'),"error");
+            auth( _('Authentication failed!'),"error");
 		} else {
 			auth();
 		}
