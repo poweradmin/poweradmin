@@ -114,8 +114,17 @@ switch($step) {
 		echo "  <td>" . _('The password for this username.') . "</td>\n";
 		echo " </tr>\n";
 		echo " <tr>\n";
+        echo " <tr>\n";
+        echo "  <td>" . _('Database type') . "</td>\n";
+        echo "  <td>" .
+            "<select name=\"type\" onChange=\"changePort(this.value)\">" .
+            "<option value=\"mysql\">MySQL</option>" .
+            "<option value=\"pgsql\">PostgreSQL</option>" .
+            "</td>\n";
+        echo "  <td>" . _('The type of the PowerDNS database.') . "</td>\n";
+        echo " </tr>\n";
 		echo "  <td>" . _('Hostname') . "</td>\n";
-		echo "  <td><input type=\"text\" name=\"host\" value=\"\"></td>\n";
+		echo "  <td><input type=\"text\" name=\"host\" value=\"127.0.0.1\"></td>\n";
 		echo "  <td>" . _('The hostname on which the PowerDNS database resides. Frequently, this will be "localhost".') . "</td>\n";
 		echo " </tr>\n";
 		echo " <tr>\n";
@@ -127,15 +136,6 @@ switch($step) {
 		echo "  <td>" . _('Database') . "</td>\n";
 		echo "  <td><input type=\"text\" name=\"name\" value=\"\"></td>\n";
 		echo "  <td>" . _('The name of the PowerDNS database.') . "</td>\n";
-		echo " </tr>\n";
-		echo " <tr>\n";
-		echo "  <td>" . _('Database type') . "</td>\n";
-		echo "  <td>" .
-			"<select name=\"type\" onChange=\"changePort(this.value)\">" . 
-			"<option value=\"mysql\">MySQL</option>" . 
-			"<option value=\"pgsql\">PostgreSQL</option>" . 
-			"</td>\n";
-		echo "  <td>" . _('The type of the PowerDNS database.') . "</td>\n";
 		echo " </tr>\n";
                 echo "  <tr>\n";
 		echo "   <td>" . _('Poweradmin administrator password') . "</td>\n";
