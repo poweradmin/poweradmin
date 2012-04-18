@@ -297,6 +297,10 @@ switch($step) {
 	
 	case 6:
 		$step++;
+
+        require_once("../inc/database.inc.php");
+        global $db_layer;
+
 		$pa_pass = $_POST['pa_pass'];
 		$config = "<?php\n\n" .
 			"\$db_host\t\t= '" . $_POST['db_host'] . "';\n" .
@@ -305,6 +309,7 @@ switch($step) {
 			"\$db_name\t\t= '" . $_POST['db_name'] . "';\n" .
 			"\$db_port\t\t= '" . $_POST['db_port'] . "';\n" .
 			"\$db_type\t\t= '" . $_POST['db_type'] . "';\n" .
+            "\$db_layer\t\t= '" . $db_layer . "';\n" .
 			"\n" .
 			"\$session_key\t\t= '" . get_random_key() . "';\n" .
 			"\n" .
