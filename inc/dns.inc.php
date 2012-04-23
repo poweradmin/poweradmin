@@ -21,7 +21,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) { 
+function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
 
 	$zone = get_zone_name_from_id($zid);				// TODO check for return
 
@@ -32,7 +32,7 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
 			$name = $zone;
 		}
 	}
-	
+
 	switch ($type) {
 
 		case "A":
@@ -452,7 +452,7 @@ function is_valid_rr_prio(&$prio, $type) {
 			error(ERR_DNS_INV_PRIO); return false;
 		}
 	} else {
-		$prio = "";
+		$prio = 0;
 	}
 
 	return true;
