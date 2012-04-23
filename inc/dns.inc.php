@@ -308,13 +308,13 @@ function is_valid_rr_cname_exists($name,$rid) {
         global $db; 
  
         if ($rid > 0) { 
-                $where = " AND id != " .$db->quote($rid); 
+                $where = " AND id != " .$db->quote($rid, 'integer');
         } else { 
                 $where = ''; 
         } 
         $query = "SELECT type, name 
                         FROM records 
-                        WHERE name = " . $db->quote($name) . $where . " 
+                        WHERE name = " . $db->quote($name, 'text') . $where . "
                         AND TYPE = 'CNAME'"; 
  
         $response = $db->query($query); 
@@ -332,13 +332,13 @@ function is_valid_rr_cname_unique($name,$rid) {
         global $db; 
  
         if ($rid > 0) { 
-                $where = " AND id != " .$db->quote($rid); 
+                $where = " AND id != " .$db->quote($rid, 'integer');
         } else { 
                 $where = ''; 
         } 
         $query = "SELECT type, name 
                         FROM records 
-                        WHERE name = " . $db->quote($name) . $where . " 
+                        WHERE name = " . $db->quote($name, 'text') . $where . "
                         AND TYPE IN ('A', 'AAAA', 'CNAME')"; 
  
         $response = $db->query($query); 
