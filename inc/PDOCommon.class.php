@@ -158,7 +158,7 @@ class PDOCommon extends PDO {
     }
 
     /* wrapper for MDB2 */
-    public function setLimit($limit, $from)
+    public function setLimit($limit, $from=0)
     {
         $this->limit = $limit;
         $this->from = $from;
