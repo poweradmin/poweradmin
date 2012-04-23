@@ -149,7 +149,7 @@ function zone_templ_id_exists($zone_templ_id) {
         global $db;
         $query = "SELECT COUNT(id) FROM zone_templ WHERE id = " . $db->quote($zone_templ_id, 'integer');
         $count = $db->queryOne($query);
-        if (PEAR::isError($count)) { error($result->getMessage()); return false; }
+        if (PEAR::isError($count)) { error($count->getMessage()); return false; }
         return $count;
 }
 
@@ -462,7 +462,7 @@ function zone_templ_name_exists($zone_templ_name, $zone_templ_id = null) {
 
         $query = "SELECT COUNT(id) FROM zone_templ WHERE name = " . $db->quote($zone_templ_name, 'text') . "" . $sql_add;        
         $count = $db->queryOne($query);
-        if (PEAR::isError($count)) { error($result->getMessage()); return false; }
+        if (PEAR::isError($count)) { error($count->getMessage()); return false; }
         
         return $count;
 }
