@@ -446,7 +446,7 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template)
             } else {
                 $domain_id = $db->lastInsertId();
             }
-			if (PEAR::isError($domain_id)) { error($id->getMessage()); return false; }
+			if (PEAR::isError($domain_id)) { error($domain_id->getMessage()); return false; }
 
 			$response = $db->query("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (".$db->quote($domain_id, 'integer').", ".$db->quote($owner, 'integer').", ".$db->quote(($zone_template == "none") ? 0 : $zone_template, 'integer').")");
 			if (PEAR::isError($response)) { error($response->getMessage()); return false; }
@@ -718,7 +718,7 @@ function get_zone_name_from_id($zid)
 	}
 	else
 	{
-		error(sprintf(ERR_INV_ARGC, "get_zone_name_from_id", "Not a valid domainid: $id"));
+		error(sprintf(ERR_INV_ARGC, "get_zone_name_from_id", "Not a valid domainid: $zid"));
 	}
 }
 
@@ -745,7 +745,7 @@ function get_zone_id_from_name($zname) {
         }
         else
         {
-                error(sprintf(ERR_INV_ARGC, "get_zone_id_from_name", "Not a valid domainname: $id"));
+                error(sprintf(ERR_INV_ARGC, "get_zone_id_from_name", "Not a valid domainname: $zname"));
         }
 }
 
