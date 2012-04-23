@@ -25,7 +25,7 @@ function zone_id_exists($zid) {
 	global $db;
 	$query = "SELECT COUNT(id) FROM domains WHERE id = " . $db->quote($zid, 'integer');
 	$count = $db->queryOne($query);
-	if (PEAR::isError($count)) { error($result->getMessage()); return false; }
+	if (PEAR::isError($count)) { error($count->getMessage()); return false; }
 	return $count;
 }
 
@@ -937,7 +937,7 @@ function get_zones($perm,$userid=0,$letterstart='all',$rowstart=0,$rowamount=999
 				AND zones.owner = ".$db->quote($userid, 'integer');
 		}
 		if ($letterstart!='all' && $letterstart!=1) {
-			$sql_add .=" AND domains.name LIKE ".$db->quote($db->quote($letterstart, 'text', false, true)."%", 'text')." ";
+			$sql_add .=" AND domains.name LIKE ".$db->quote($letterstart."%", 'text')." ";
 		} elseif ($letterstart==1) {
 			$sql_add .=" AND substring(domains.name,1,1) ".$sql_regexp." '^[[:digit:]]'";
 		}
@@ -996,7 +996,7 @@ function zone_count_ng($perm, $letterstart='all') {
 		}
 
 		if ($letterstart != 'all' && $letterstart != 1) {
-			$sql_add .=" AND domains.name LIKE ".$db->quote($db->quote($letterstart, 'text', false, true)."%", 'text')." ";
+			$sql_add .=" AND domains.name LIKE ".$db->quote($letterstart."%", 'text')." ";
 		} elseif ($letterstart == 1) {
 			$sql_add .=" AND substring(domains.name,1,1) ".$sql_regexp." '^[[:digit:]]'";
 		}
@@ -1007,7 +1007,6 @@ function zone_count_ng($perm, $letterstart='all') {
 		$sqlq = "SELECT COUNT(domains.id) AS count_zones 
 			FROM ".$fromTable."	WHERE 1=1
 			".$sql_add;
-
 		$zone_count = $db->queryOne($sqlq);
 	}
 	return $zone_count;
