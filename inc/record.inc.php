@@ -148,6 +148,9 @@ function set_soa_serial($soa_rec, $serial) {
 
 function update_soa_serial($domain_id) {
 	$soa_rec = get_soa_record($domain_id);
+    if ($soa_rec == NULL) {
+        return false;
+    }
 
 	$curr_serial = get_soa_serial($soa_rec);
 	$new_serial = get_next_serial($curr_serial);
