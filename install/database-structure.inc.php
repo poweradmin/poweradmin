@@ -436,7 +436,7 @@ $def_permissions = array(
 			array(55,'user_add_new','User is allowed to add new users.'),
 			array(56,'user_edit_own','User is allowed to edit their own details.'),
 			array(57,'user_edit_others','User is allowed to edit other users.'),
-			array(58,'user_passwd_edit_others','User is allowed to edit the password of other users.'),
+			array(58,'user_passwd_edit_others','User is allowed to edit the password of other users.'),     // not used
 			array(59,'user_edit_templ_perm','User is allowed to change the permission template that is assigned to a user.'),
 			array(60,'templ_perm_add','User is allowed to add new permission templates.'),
 			array(61,'templ_perm_edit','User is allowed to edit existing permission templates.')
