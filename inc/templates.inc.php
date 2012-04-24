@@ -343,7 +343,7 @@ function add_zone_templ_save_as($template_name, $description, $userid, $records,
 
 		$result = $db->exec($query);
 
-                if ($db_layer == 'MDB2') {
+                if ($db_layer == 'MDB2' && $db_type == 'mysql') {
                     $zone_templ_id = $db->lastInsertId('zone_templ', 'id');
                 } else if ($db_layer == 'PDO' && $db_type == 'pgsql') {
                     $zone_templ_id = $db->lastInsertId('zone_templ_id_seq');
