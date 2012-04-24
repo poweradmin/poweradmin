@@ -31,55 +31,66 @@ require_once("inc/toolkit.inc.php");
  *  right, and "true" if the user has. 
  */
 
-function verify_permission($permission) {
+function verify_permission($permission)
+{
+    global $db;
 
-        global $db;
+    if ((!isset($_SESSION['userid'])) || (!is_object($db))) {
+        return 0;
+    }
 
-	if ((!isset($_SESSION['userid'])) || (!is_object($db))) {
-		return 0;
-	}
+    // Set current user ID.
+    $userid = $_SESSION['userid'];
 
-        // Set current user ID.
-        $userid=$_SESSION['userid'];
+    $query = 'SELECT id FROM perm_items WHERE name=' . $db->quote('user_is_ueberuser', 'text');
+    $ueberUserId = $db->queryOne($query);
 
-		$query = 'SELECT id FROM perm_items WHERE name='.$db->quote('user_is_ueberuser', 'text');
-		$ueberUserId = $db->queryOne($query);
-
-        // Find the template ID that this user has been assigned.
-        $query = "SELECT perm_templ
+    // Find the template ID that this user has been assigned.
+    $query = "SELECT perm_templ
 			FROM users 
-			WHERE id = " . $db->quote($userid, 'integer') ;
-        $templ_id = $db->queryOne($query);
+			WHERE id = " . $db->quote($userid, 'integer');
+    $templ_id = $db->queryOne($query);
 
-        // Does this user have ueberuser rights?
-        $query = "SELECT id 
+    // Does this user have ueberuser rights?
+    $query = "SELECT id
 			FROM perm_templ_items 
 			WHERE templ_id = " . $db->quote($templ_id, 'integer') . " 
-			AND perm_id = ".$ueberUserId;
-        $response = $db->query($query);
-	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
-        if ( $response->numRows() > 0 ) {
-                return 1;
-        }
+			AND perm_id = " . $ueberUserId;
 
-        // Find the permission ID for the requested permission.
-        $query = "SELECT id 
+    $response = $db->query($query);
+
+    if (PEAR::isError($response)) {
+        error($response->getMessage());
+        return false;
+    }
+
+    if ($response->numRows() > 0) {
+        return 1;
+    }
+
+    // Find the permission ID for the requested permission.
+    $query = "SELECT id
 			FROM perm_items 
-			WHERE name = " . $db->quote($permission, 'text') ;
-        $perm_id = $db->queryOne($query);
+			WHERE name = " . $db->quote($permission, 'text');
+    $perm_id = $db->queryOne($query);
 
-        // Check if the permission ID is assigned to the template ID. 
-        $query = "SELECT id 
+    // Check if the permission ID is assigned to the template ID.
+    $query = "SELECT id
 			FROM perm_templ_items 
 			WHERE templ_id = " . $db->quote($templ_id, 'integer') . " 
-			AND perm_id = " . $db->quote($perm_id, 'integer') ;
-	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
-        $response = $db->query($query);
-        if ( $response->numRows() > 0 ) {
-                return 1;
-        } else {
-                return 0;
-        }
+			AND perm_id = " . $db->quote($perm_id, 'integer');
+
+    if (PEAR::isError($response)) {
+        error($response->getMessage());
+        return false;
+    }
+
+    $response = $db->query($query);
+    if ($response->numRows() > 0) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 function list_permission_templates() {
