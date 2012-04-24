@@ -117,7 +117,8 @@ if (!(verify_permission('zone_master_add')) || !$owner) {
 				$add = "";
 			}
 		} else {
-			if (preg_match('/i(p6|n-addr).arpa/i', $zone_name) && strtoupper($record_type) == 'PTR') {
+            // TODO: from where comes $zone_name value and why this check exists here?
+			if (isset($zone_name) && preg_match('/i(p6|n-addr).arpa/i', $zone_name) && strtoupper($record_type) == 'PTR') {
 				$add = " SELECTED";
 			} elseif (strtoupper($record_type) == 'A') {
 				$add = " SELECTED";
