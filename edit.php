@@ -215,18 +215,18 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 			echo "      <a href=\"edit_comment.php?domain=" . $zone_id . "\">
                                     <img src=\"images/edit.gif\" alt=\"[ ". _('Edit comment') . " ]\"></a>\n";
 			echo "     </td>\n";
-			echo "     <td colspan=\"4\"><textarea rows=\"15\" cols=\"80\" name=\"comment\">" . get_zone_comment($zone_id) . "</textarea></td>\n";
+			echo "     <td colspan=\"4\"><textarea rows=\"5\" cols=\"80\" name=\"comment\">" . get_zone_comment($zone_id) . "</textarea></td>\n";
 			echo "     <td>&nbsp;</td>\n";
 
                         echo "     <tr>\n";
-			echo "      <td colspan=\"6\"><br>Save as new template:</td>\n";
+			echo "      <th colspan=\"6\"><br>Save as new template:</th>\n";
 			echo "     </tr>\n";
                         echo "     <tr>\n";
-                        echo "       <th colspan=\"2\">" . _('Template Name') . "</th>\n";
+                        echo "       <td colspan=\"2\">" . _('Template Name') . "</td>\n";
                         echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_name\" value=\"\"></td>\n";
                         echo "      </tr>\n";
                         echo "      <tr>\n";
-                        echo "       <th colspan=\"2\">" . _('Template Description') . "</th>\n";
+                        echo "       <td colspan=\"2\">" . _('Template Description') . "</td>\n";
                         echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_descr\" value=\"\"></td>\n";
                         echo "      </tr>\n";
 			echo "    </table>\n";
@@ -268,7 +268,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 					$rev = "";
 				} else if (strtoupper($record_type) == 'A') {
 					$add = " SELECTED";
-					$rev = "<input type=\"checkbox\" name=\"reverse\">" . _('Add also reverse record') . "\n";
+					$rev = "<input type=\"checkbox\" name=\"reverse\"><span class=\"normaltext\">" . _('Add also reverse record') . "</span>\n";
 				} else {
 					$add = "";
 				}

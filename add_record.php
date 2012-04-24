@@ -165,7 +165,7 @@ if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit
                 $rev = "";
 			} elseif (strtoupper($record_type) == 'A') {
 				$add = " SELECTED";
-                $rev = "<input type=\"checkbox\" name=\"reverse\">" . _('Add also reverse record') . "\n";
+                $rev = "<input type=\"checkbox\" name=\"reverse\"><span class=\"normaltext\">" . _('Add also reverse record') . "</span>\n";
 			} else {
 				$add = "";
 			}
