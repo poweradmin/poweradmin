@@ -37,24 +37,24 @@ if ($zone_id == "-1") {
 }
 
 if (isset($_POST['commit'])) {
-        $error = false;
-
-        if (isset($_POST['record'])) {
-                foreach ($_POST['record'] as $record) {
-                        $edit_record = edit_record($record);
-                        if (false === $edit_record) {
-				$error = true;
-                        } else {
-				success(SUC_ZONE_UPD);
-			}
-                }
-        }
+  $error = false;
+  if (isset($_POST['record'])) {
+    foreach ($_POST['record'] as $record) {
+      $edit_record = edit_record($record);
+      if (false === $edit_record) {
+        $error = true;
+      } 
+    }
+  }
 
 	edit_zone_comment($_GET['id'],$_POST['comment']);
 
 	if (false === $error) {
-                update_soa_serial($_GET['id']);
-        }
+    update_soa_serial($_GET['id']);
+    success(SUC_ZONE_UPD);
+  } else {
+    error(ERR_ZONE_UPD);
+  }
 }
 
 if (isset($_POST['save_as'])) {
