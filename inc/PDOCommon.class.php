@@ -88,7 +88,7 @@ class PDOCommon extends PDO {
         if (!empty($this->limit)) {
             $limitRange = $this->limit;
             if (!empty($this->from)) {
-                $limitRange = $this->from.", ".$limitRange;
+                $limitRange = $this->from." OFFSET ".$limitRange;
             }
             $str .= " LIMIT ".$limitRange;
 
