@@ -962,8 +962,10 @@ function get_zones($perm,$userid=0,$letterstart='all',$rowstart=0,$rowamount=999
 			WHERE 1=1".$sql_add."
 			GROUP BY domains.name, domains.id, domains.type, Record_Count.count_records
 			ORDER BY " . $sortby;
-	
-	$db->setLimit($rowamount, $rowstart);
+
+    if ($letterstart != 'all') {
+        $db->setLimit($rowamount, $rowstart);
+    }
 	$result = $db->query($sqlq);
 
 	$ret = array();
