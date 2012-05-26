@@ -39,7 +39,11 @@ if (!(isset($_GET['id']) && v_num($_GET['id']))) {
 if (isset($_POST['commit'])) {
 	
 	if (is_valid_user($uid)) {
-		$zones = $_POST['zone'];
+        $zones = array();
+        if (isset($_POST['zone'])) {
+            $zones = $_POST['zone'];
+        }
+
 		if (delete_user($uid, $zones)) {	
 			success(SUC_USER_DEL);
 		}
