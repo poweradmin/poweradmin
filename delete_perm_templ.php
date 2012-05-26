@@ -44,8 +44,9 @@ if ($perm_templ == "-1"){
 		echo "     <h2>" . _('Delete permission template') . " \"" . $templ_details['name'] . "\"</h2>\n";
 
 		if (isset($_GET['confirm']) && $_GET["confirm"] == '1') {
-			delete_perm_templ($perm_templ);
-			success(SUC_PERM_TEMPL_DEL);
+			if (delete_perm_templ($perm_templ)) {
+                success(SUC_PERM_TEMPL_DEL);
+            }
 		} else {
 			echo "     <p>" . _('Are you sure?') . "</p>\n";
 			echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='delete_perm_templ.php?id=" . $perm_templ . "&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
