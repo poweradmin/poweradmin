@@ -49,6 +49,7 @@ if (isset($_POST["commit"])) {
 		$ret_val = edit_record($_POST);
 		if ( $ret_val == "1" ) {
 			update_soa_serial($zid);
+			do_rectify_zone($zid);
 			success(SUC_RECORD_UPD);
 		} else {
 			echo "     <div class=\"error\">" . $ret_val . "</div>\n";  

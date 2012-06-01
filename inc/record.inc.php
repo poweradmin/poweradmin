@@ -295,6 +295,7 @@ function add_record($zoneid, $name, $type, $content, $ttl, $prio) {
 				return false;
 			} else {
 				if ($type != 'SOA') { update_soa_serial($zoneid); }
+				do_rectify_zone($zoneid);
 				return true;
 			}
 		} else {
@@ -1536,6 +1537,44 @@ function delete_domains($domains)
         }
 
         return $return;
+}
+
+/* If a Domain is dnssec enabled, or uses features as 
+ * e.g. ALSO-NOTIFY, ALLOW-AXFR-FROM, TSIG-ALLOW-AXFR
+ * following has to be executed
+ * pdnssec rectify-zone $domain 
+ * todo: 
+ *   change install: - add pdnssec_command in config.inc.php
+ *                   - add "GRANT SELECT on domainmetadata to poweradmin" */
+function do_rectify_zone ($domain_id) {
+
+	global $db;
+	global $pdnssec_command;
+	$response = $db->beginTransaction();
+	$output = array();
+	$return_code = int;
+
+	/* If there is any entry at domainmetadata table for this domain,
+	 * we do perform pdnssec rectify-zone $domain */
+	$query = "SELECT COUNT(id) FROM domainmetadata WHERE domain_id = " . $db->quote($domain_id, 'integer');
+	$count = $db->queryOne($query);
+	if (PEAR::isError($count)) { error($count->getMessage()); return false; }
+	if ($count >= 1 && isset($pdnssec_command)) {
+		$domain = get_zone_name_from_id($domain_id);
+		$command = $pdnssec_command . " rectify-zone " . $domain;
+		exec($command, $output, $return_code);	
+		if ($return_code != 0) {
+			/* if rectify-zone failed: display output */
+			print_r($output);
+			return false;
+		}
+		return true;
+	} else {
+		/* no rectify-zone has to be done or command is not
+		 * configured in inc/config.inc.php ; thats fine too */
+		print_r($output);
+		return true;
+	}
 }
 
 ?>

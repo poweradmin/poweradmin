@@ -57,6 +57,8 @@ if ($record_id == "-1") {
 			update serial after record deletion
 			*/
 			update_soa_serial($zid);
+			/* do also rectify-zone */
+			do_rectify_zone($zid);
 		}
 	} else {
 		$zone_id = recid_to_domid($record_id);
