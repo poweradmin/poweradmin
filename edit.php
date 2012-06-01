@@ -49,7 +49,7 @@ if (isset($_POST['commit'])) {
 
 	edit_zone_comment($_GET['id'],$_POST['comment']);
 
-	if (false == $error) {
+	if (false === $error) {
     update_soa_serial($_GET['id']);
     do_rectify_zone($_GET['id']);
     success(SUC_ZONE_UPD);
