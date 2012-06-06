@@ -58,7 +58,7 @@ if ($record_id == "-1") {
 			*/
 			update_soa_serial($zid);
 			/* do also rectify-zone */
-			do_rectify_zone($zid);
+			if (do_rectify_zone($zid)) { success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE); };
 		}
 	} else {
 		$zone_id = recid_to_domid($record_id);

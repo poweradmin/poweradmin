@@ -1562,10 +1562,12 @@ function do_rectify_zone ($domain_id) {
 	if ($count >= 1 && isset($pdnssec_command)) {
 		$domain = get_zone_name_from_id($domain_id);
 		$command = $pdnssec_command . " rectify-zone " . $domain;
+		if (!function_exists('exec')) { error(sprintf(ERR_EXEC_NOT_ALLOWED, $command)); return false; }
 		exec($command, $output, $return_code);	
 		if ($return_code != 0) {
-			/* if rectify-zone failed: display output */
+			/* if rectify-zone failed: display error */
 			print_r($output);
+			error(sprintf(ERR_EXEC_PDNSSEC_RECTIFY_ZONE, $command));
 			return false;
 		}
 		return true;
