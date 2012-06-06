@@ -52,6 +52,7 @@ if (isset($_POST['commit'])) {
 	if (false === $error) {
     update_soa_serial($_GET['id']);
     success(SUC_ZONE_UPD);
+    if (do_rectify_zone($_GET['id'])) { success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE); };
   } else {
     error(ERR_ZONE_UPD);
   }

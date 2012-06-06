@@ -50,6 +50,7 @@ if (isset($_POST["commit"])) {
 		if ( $ret_val == "1" ) {
 			update_soa_serial($zid);
 			success(SUC_RECORD_UPD);
+			if (do_rectify_zone($zid)) { success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE); };
 		} else {
 			echo "     <div class=\"error\">" . $ret_val . "</div>\n";  
 		}

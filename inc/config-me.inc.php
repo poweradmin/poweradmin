@@ -55,4 +55,5 @@ $syslog_ident = 'poweradmin';
 // On Windows usually only LOG_USER is available
 $syslog_facility = LOG_USER;
 
+$pdnssec_command = '/usr/bin/pdnssec';
 ?>
