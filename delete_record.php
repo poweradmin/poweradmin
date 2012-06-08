@@ -24,6 +24,8 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
+global $pdnssec_use;
+
 $record_id = "-1";
 if (isset($_GET['id']) && v_num($_GET['id'])) {
 	$record_id = $_GET['id'];
@@ -53,12 +55,13 @@ if ($record_id == "-1") {
 	if ($confirm == '1') {
 		if ( delete_record($record_id) ) {
 			success("<a href=\"edit.php?id=".$zid."\">".SUC_RECORD_DEL."</a>");
-			/*
-			update serial after record deletion
-			*/
+			// update serial after record deletion
 			update_soa_serial($zid);
-			/* do also rectify-zone */
-			if (do_rectify_zone($zid)) { success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE); };
+
+            if ($pdnssec_use) {
+                // do also rectify-zone
+                if (do_rectify_zone($zid)) { success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE); };
+            }
 		}
 	} else {
 		$zone_id = recid_to_domid($record_id);

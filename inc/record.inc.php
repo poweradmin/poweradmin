@@ -262,6 +262,7 @@ function edit_record($record) {
  */
 function add_record($zoneid, $name, $type, $content, $ttl, $prio) {
 	global $db;
+    global $pdnssec_use;
 
 	if (verify_permission('zone_content_edit_others')) { $perm_content_edit = "all" ; }
 	elseif (verify_permission('zone_content_edit_own')) { $perm_content_edit = "own" ; }
@@ -295,7 +296,10 @@ function add_record($zoneid, $name, $type, $content, $ttl, $prio) {
 				return false;
 			} else {
 				if ($type != 'SOA') { update_soa_serial($zoneid); }
-				do_rectify_zone($zoneid);
+
+                if ($pdnssec_use) {
+				    do_rectify_zone($zoneid);
+                }
 				return true;
 			}
 		} else {

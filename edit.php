@@ -25,6 +25,8 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
+global $pdnssec_use;
+
 $zone_id = "-1";
 if (isset($_GET['id']) && v_num($_GET['id'])) {
 	$zone_id = $_GET['id'];
@@ -43,7 +45,7 @@ if (isset($_POST['commit'])) {
       $edit_record = edit_record($record);
       if (false === $edit_record) {
         $error = true;
-      } 
+      }
     }
   }
 
@@ -52,7 +54,11 @@ if (isset($_POST['commit'])) {
 	if (false === $error) {
     update_soa_serial($_GET['id']);
     success(SUC_ZONE_UPD);
-    if (do_rectify_zone($_GET['id'])) { success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE); };
+
+    if ($pdnssec_use) {
+        if (do_rectify_zone($_GET['id'])) { success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE); };
+    }
+
   } else {
     error(ERR_ZONE_UPD);
   }

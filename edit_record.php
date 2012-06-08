@@ -24,6 +24,8 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
+global $pdnssec_use;
+
 if (verify_permission('zone_content_view_others')) { $perm_view = "all" ; }
 elseif (verify_permission('zone_content_view_own')) { $perm_view = "own" ; }
 else { $perm_view = "none" ; }
@@ -50,7 +52,10 @@ if (isset($_POST["commit"])) {
 		if ( $ret_val == "1" ) {
 			update_soa_serial($zid);
 			success(SUC_RECORD_UPD);
-			if (do_rectify_zone($zid)) { success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE); };
+
+            if ($pdnssec_use) {
+			    if (do_rectify_zone($zid)) { success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE); };
+            }
 		} else {
 			echo "     <div class=\"error\">" . $ret_val . "</div>\n";  
 		}
