@@ -1552,7 +1552,6 @@ function do_rectify_zone ($domain_id) {
 	global $pdnssec_command;
 	$response = $db->beginTransaction();
 	$output = array();
-	$return_code = int;
 
 	/* If there is any entry at domainmetadata table for this domain,
 	 * we do perform pdnssec rectify-zone $domain */
