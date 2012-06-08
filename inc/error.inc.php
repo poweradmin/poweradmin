@@ -69,6 +69,7 @@ define("ERR_ZONE_TEMPL_EXIST", _('Zone template with this name already exists, p
 define("ERR_ZONE_TEMPL_IS_EMPTY", _('Template name can\'t be an empty string.'));
 define("ERR_DEFAULT_CRYPTOKEY_USED", _('Default session encryption key is used, please set it in your configuration file.'));
 define("ERR_LOCALE_FAILURE", _('Failed to set locale.'));
+define("ERR_ZONE_UPD", _('Zone has not been updated successfully.'));
 define("ERR_EXEC_NOT_ALLOWED", _('Failed to call function exec. Make sure that exec is not listed in disable_functions at php.ini. Run this command manually to serve the zone: %s'));
 
 /* DATABASE */
