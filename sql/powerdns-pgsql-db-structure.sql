@@ -33,3 +33,4 @@ create table supermasters (
 	  nameserver VARCHAR(255) NOT NULL, 
 	  account VARCHAR(40) DEFAULT NULL
 );
+
