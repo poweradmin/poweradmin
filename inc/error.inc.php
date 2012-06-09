@@ -70,7 +70,7 @@ define("ERR_ZONE_TEMPL_IS_EMPTY", _('Template name can\'t be an empty string.'))
 define("ERR_DEFAULT_CRYPTOKEY_USED", _('Default session encryption key is used, please set it in your configuration file.'));
 define("ERR_LOCALE_FAILURE", _('Failed to set locale.'));
 define("ERR_ZONE_UPD", _('Zone has not been updated successfully.'));
-define("ERR_EXEC_NOT_ALLOWED", _('Failed to call function exec. Make sure that exec is not listed in disable_functions at php.ini. Run this command manually to serve the zone: %s'));
+define("ERR_EXEC_NOT_ALLOWED", _('Failed to call function exec. Make sure that exec is not listed in disable_functions at php.ini'));
 
 /* DATABASE */
 define("ERR_DB_NO_DB_NAME", _('No database name has been set in config.inc.php.'));
@@ -112,6 +112,10 @@ define("ERR_DNS_SRV_PORT", _('Invalid value for the weight field of the SRV reco
 define("ERR_DNS_SRV_TRGT", _('Invalid SRV target.'));
 define("ERR_DNS_PRINTABLE", _('Invalid characters have been used in this record.'));
 
+/* PDNSSEC */
+define("ERR_EXEC_PDNSSEC", _('Failed to call pdnssec utility.'));
+define("ERR_EXEC_PDNSSEC_RECTIFY_ZONE", _('Failed to rectify zone.'));
+
 /* GOOD! */
 define("SUC_ZONE_ADD", _('Zone has been added successfully.'));
 define("SUC_ZONE_DEL", _('Zone has been deleted successfully.'));
@@ -131,6 +135,6 @@ define("SUC_PERM_TEMPL_DEL", _('The permission template has been deleted success
 define("SUC_ZONE_TEMPL_ADD", _('Zone template has been added successfully.'));
 define("SUC_ZONE_TEMPL_UPD", _('Zone template has been updated successfully.'));
 define("SUC_ZONE_TEMPL_DEL", _('Zone template has been deleted successfully.'));
-define("SUC_EXEC_PDNSSEC_RECTIFY_ZONE", _('pdnssec rectify-zone has been executed successfully.'));
+define("SUC_EXEC_PDNSSEC_RECTIFY_ZONE", _('Zone has been rectified successfully.'));
 
 ?>
