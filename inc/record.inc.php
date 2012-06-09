@@ -1547,38 +1547,43 @@ function delete_domains($domains)
  * e.g. ALSO-NOTIFY, ALLOW-AXFR-FROM, TSIG-ALLOW-AXFR
  * following has to be executed
  * pdnssec rectify-zone $domain 
- * todo: 
- *   change install: - add pdnssec_command in config.inc.php
- *                   - add "GRANT SELECT on domainmetadata to poweradmin" */
+ */
 function do_rectify_zone ($domain_id) {
-
 	global $db;
 	global $pdnssec_command;
-	$response = $db->beginTransaction();
+
 	$output = array();
 
 	/* If there is any entry at domainmetadata table for this domain,
 	 * we do perform pdnssec rectify-zone $domain */
 	$query = "SELECT COUNT(id) FROM domainmetadata WHERE domain_id = " . $db->quote($domain_id, 'integer');
 	$count = $db->queryOne($query);
+
 	if (PEAR::isError($count)) { error($count->getMessage()); return false; }
-	if ($count >= 1 && isset($pdnssec_command)) {
+
+    if ($count >= 1 && isset($pdnssec_command)) {
 		$domain = get_zone_name_from_id($domain_id);
 		$command = $pdnssec_command . " rectify-zone " . $domain;
-		if (!function_exists('exec')) { error(sprintf(ERR_EXEC_NOT_ALLOWED, $command)); return false; }
-		exec($command, $output, $return_code);	
-		if ($return_code != 0) {
+
+		if (!function_exists('exec')) { error(ERR_EXEC_NOT_ALLOWED); return false; }
+
+        if (!file_exists($pdnssec_command) || !is_executable($pdnssec_command)) {
+            error(ERR_EXEC_PDNSSEC);
+            return false;
+        }
+
+        exec($command, $output, $return_code);
+        if ($return_code != 0) {
 			/* if rectify-zone failed: display error */
-			print_r($output);
-			error(sprintf(ERR_EXEC_PDNSSEC_RECTIFY_ZONE, $command));
+			error(ERR_EXEC_PDNSSEC_RECTIFY_ZONE);
 			return false;
 		}
-		return true;
+
+        return true;
 	} else {
 		/* no rectify-zone has to be done or command is not
-		 * configured in inc/config.inc.php ; thats fine too */
-		print_r($output);
-		return true;
+		 * configured in inc/config.inc.php */
+		return false;
 	}
 }
 
