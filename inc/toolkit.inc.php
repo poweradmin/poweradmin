@@ -1,4 +1,10 @@
 <?php
+
+// TODO: display elapsed time and memory consumption,
+// used to check improvements in refactored version 
+$display_stats = false;
+if ($display_stats) include('inc/benchmark.php');
+
 ob_start();
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://www.poweradmin.org> for more details.
