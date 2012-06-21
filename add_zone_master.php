@@ -23,7 +23,10 @@
 
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
+
 echo "  <script type=\"text/javascript\" src=\"inc/helper.js\"></script>";
+
+global $pdnssec_use;
 
 $owner = "-1";
 if ((isset($_POST['owner'])) && (v_num($_POST['owner']))) {
@@ -70,7 +73,11 @@ if (isset($_POST['submit']) && $zone_master_add == "1" ) {
                         // TODO: repopulate domain name(s) to the form if there was an error occured
                         $error = true;
                 } elseif (add_domain($domain, $owner, $dom_type, '', $zone_template)) {
-                        success("<a href=\"edit.php?id=" . get_zone_id_from_name($domain) . "\">".$domain . " - " . SUC_ZONE_ADD.'</a>');
+                    success("<a href=\"edit.php?id=" . get_zone_id_from_name($domain) . "\">".$domain . " - " . SUC_ZONE_ADD.'</a>');
+
+                    if ($pdnssec_use) {
+                        do_secure_zone($domain);
+                    }
                 }
         }
 

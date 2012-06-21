@@ -1587,4 +1587,25 @@ function do_rectify_zone ($domain_id) {
 	}
 }
 
+function do_secure_zone($domain_name) {
+    global $pdnssec_command;
+
+    if (!function_exists('exec')) { error(ERR_EXEC_NOT_ALLOWED); return false; }
+
+    if (!file_exists($pdnssec_command) || !is_executable($pdnssec_command)) {
+        error(ERR_EXEC_PDNSSEC);
+        return false;
+    }
+
+    $command = $pdnssec_command . " secure-zone " . $domain_name;
+    exec($command, $output, $return_code);
+
+    if ($return_code != 0) {
+        error(ERR_EXEC_PDNSSEC_SECURE_ZONE);
+        return false;
+    }
+
+    return true;
+}
+
 ?>

@@ -114,6 +114,7 @@ define("ERR_DNS_PRINTABLE", _('Invalid characters have been used in this record.
 
 /* PDNSSEC */
 define("ERR_EXEC_PDNSSEC", _('Failed to call pdnssec utility.'));
+define("ERR_EXEC_PDNSSEC_SECURE_ZONE", _('Failed to secure zone.'));
 define("ERR_EXEC_PDNSSEC_RECTIFY_ZONE", _('Failed to rectify zone.'));
 
 /* GOOD! */
