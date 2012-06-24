@@ -38,8 +38,10 @@ echo " <body>\n";
 if(file_exists('inc/custom_header.inc.php')) {
 	include('inc/custom_header.inc.php');
 }
-
-echo "  <h1>" . $iface_title ."</h1>\n";
+ else
+{
+	echo "  <h1>" . $iface_title ."</h1>\n";
+}
 
 // this config variable is used only for development, do not use it in production
 //if ($ignore_install_dir == NULL || $ignore_install_dir == false && file_exists('install')) {
