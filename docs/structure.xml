@@ -1,0 +1,3546 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project version="2.0.0a7" title="PowerAdmin">
+  <file path="install/index.php" hash="26500cb2e482b89792dbba5174467871" package="Default">
+    <include line="3" type="Require Once" package="Default">
+      <name>../inc/i18n.inc.php</name>
+    </include>
+    <include line="4" type="Require Once" package="Default">
+      <name>../inc/error.inc.php</name>
+    </include>
+    <include line="156" type="Include Once" package="Default">
+      <name>../inc/config-me.inc.php</name>
+    </include>
+    <include line="164" type="Require Once" package="Default">
+      <name>../inc/database.inc.php</name>
+    </include>
+    <include line="168" type="Include Once" package="Default">
+      <name>database-structure.inc.php</name>
+    </include>
+    <include line="242" type="Require Once" package="Default">
+      <name>../inc/database.inc.php</name>
+    </include>
+    <include line="244" type="Include Once" package="Default">
+      <name>database-structure.inc.php</name>
+    </include>
+    <include line="301" type="Require Once" package="Default">
+      <name>../inc/database.inc.php</name>
+    </include>
+    <include line="352" type="Include Once" package="Default">
+      <name>../inc/version.inc.php</name>
+    </include>
+    <function namespace="global" line="22" package="Default">
+      <name>get_random_key</name>
+      <full_name>\get_random_key</full_name>
+    </function>
+    <function namespace="global" line="36" package="Default">
+      <name>error</name>
+      <full_name>\error</full_name>
+      <argument line="36">
+        <name>$msg</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file install/index.php</error>
+      <error line="22" code="50009">No DocBlock was found for function \get_random_key()</error>
+      <error line="36" code="50009">No DocBlock was found for function \error()</error>
+    </parse_markers>
+  </file>
+  <file path="install/database-structure.inc.php" hash="76a0a429a9b6c3e31aadc70b8233c5b6" package="Default">
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file install/database-structure.inc.php</error>
+    </parse_markers>
+  </file>
+  <file path="edit_comment.php" hash="d748525149dae63dd4d32c6605856597" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <include line="25" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="95" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file edit_comment.php</error>
+    </parse_markers>
+  </file>
+  <file path="list_zones.php" hash="7e2ce66d740314c2149769fc0a11962a" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <include line="25" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="135" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file list_zones.php</error>
+    </parse_markers>
+  </file>
+  <file path="index.php" hash="3cc0ea61afd5c04e98d3b1929bfc7672" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <include line="25" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="65" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file index.php</error>
+    </parse_markers>
+  </file>
+  <file path="add_perm_templ.php" hash="c3bf927f7fa3ffed80513ee75007a024" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <include line="25" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="80" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file add_perm_templ.php</error>
+    </parse_markers>
+  </file>
+  <file path="delete_domain.php" hash="a38fe3969ab1bdc05f6a72c650042d4a" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <include line="25" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="51" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <include line="81" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file delete_domain.php</error>
+    </parse_markers>
+  </file>
+  <file path="change_password.php" hash="a7bbecae8d3d4c04ada3de893497c4aa" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <include line="30" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="56" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file change_password.php</error>
+    </parse_markers>
+  </file>
+  <file path="list_zone_templ.php" hash="369490a2d1e559b3af633eaa3ca5dc59" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <include line="25" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="64" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file list_zone_templ.php</error>
+    </parse_markers>
+  </file>
+  <file path="add_zone_templ_record.php" hash="ebee79331cb5e82a142e3108ce134344" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <include line="25" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="66" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <include line="153" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <markers>
+      <todo line="120">from where comes $zone_name value and why this check exists here?</todo>
+    </markers>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file add_zone_templ_record.php</error>
+    </parse_markers>
+  </file>
+  <file path="reset_password.php" hash="0f4328f6b5d99a8938666cb6826da2ed" package="Default">
+    <include line="41" type="Include Once" package="Default">
+      <name>inc/error.inc.php</name>
+    </include>
+    <include line="42" type="Include Once" package="Default">
+      <name>inc/config-me.inc.php</name>
+    </include>
+    <include line="43" type="Include Once" package="Default">
+      <name>inc/config.inc.php</name>
+    </include>
+    <include line="48" type="Require Once" package="Default">
+      <name>inc/database.inc.php</name>
+    </include>
+    <include line="123" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <function namespace="global" line="33" package="Default">
+      <name>error</name>
+      <full_name>\error</full_name>
+      <argument line="33">
+        <name>$msg</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file reset_password.php</error>
+      <error line="33" code="50009">No DocBlock was found for function \error()</error>
+    </parse_markers>
+  </file>
+  <file path="delete_perm_templ.php" hash="7bdd0a358f988d1a2ec378bd4b4a41a5" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <include line="25" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="58" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file delete_perm_templ.php</error>
+    </parse_markers>
+  </file>
+  <file path="inc/auth.inc.php" hash="3d0b24db65ebe26f5f23e0e426b470a2" package="Default">
+    <include line="128" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="161" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <function namespace="global" line="24" package="Default">
+      <name>doAuthenticate</name>
+      <full_name>\doAuthenticate</full_name>
+    </function>
+    <function namespace="global" line="126" package="Default">
+      <name>auth</name>
+      <full_name>\auth</full_name>
+      <argument line="126">
+        <name>$msg</name>
+        <default><![CDATA[""]]></default>
+        <type/>
+      </argument>
+      <argument line="126">
+        <name>$type</name>
+        <default><![CDATA["success"]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="170" package="Default">
+      <name>logout</name>
+      <full_name>\logout</full_name>
+      <argument line="170">
+        <name>$msg</name>
+        <default><![CDATA[""]]></default>
+        <type/>
+      </argument>
+      <argument line="170">
+        <name>$type</name>
+        <default><![CDATA[""]]></default>
+        <type/>
+      </argument>
+    </function>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file inc/auth.inc.php</error>
+      <error line="24" code="50009">No DocBlock was found for function \doAuthenticate()</error>
+      <error line="126" code="50009">No DocBlock was found for function \auth()</error>
+      <error line="170" code="50009">No DocBlock was found for function \logout()</error>
+    </parse_markers>
+  </file>
+  <file path="inc/templates.inc.php" hash="c4c9cbb0ed2a62c48a8528e1c057b3a2" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <function namespace="global" line="29" package="Default">
+      <name>get_list_zone_templ</name>
+      <full_name>\get_list_zone_templ</full_name>
+      <argument line="29">
+        <name>$userid</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="51" package="Default">
+      <name>add_zone_templ</name>
+      <full_name>\add_zone_templ</full_name>
+      <argument line="51">
+        <name>$details</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="51">
+        <name>$userid</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="76" package="Default">
+      <name>get_zone_templ_details</name>
+      <full_name>\get_zone_templ_details</full_name>
+      <argument line="76">
+        <name>$zone_templ_id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="92" package="Default">
+      <name>delete_zone_templ</name>
+      <full_name>\delete_zone_templ</full_name>
+      <argument line="92">
+        <name>$zone_templ_id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="120" package="Default">
+      <name>delete_zone_templ_userid</name>
+      <full_name>\delete_zone_templ_userid</full_name>
+      <argument line="120">
+        <name>$userid</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="138" package="Default">
+      <name>count_zone_templ_records</name>
+      <full_name>\count_zone_templ_records</full_name>
+      <argument line="138">
+        <name>$zone_templ_id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="148" package="Default">
+      <name>zone_templ_id_exists</name>
+      <full_name>\zone_templ_id_exists</full_name>
+      <argument line="148">
+        <name>$zone_templ_id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="161" package="Default">
+      <name>get_zone_templ_record_from_id</name>
+      <full_name>\get_zone_templ_record_from_id</full_name>
+      <argument line="161">
+        <name>$id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="193" package="Default">
+      <name>get_zone_templ_records</name>
+      <full_name>\get_zone_templ_records</full_name>
+      <argument line="193">
+        <name>$id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="193">
+        <name>$rowstart</name>
+        <default><![CDATA[0]]></default>
+        <type/>
+      </argument>
+      <argument line="193">
+        <name>$rowamount</name>
+        <default><![CDATA[999999]]></default>
+        <type/>
+      </argument>
+      <argument line="193">
+        <name>$sortby</name>
+        <default><![CDATA['name']]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="221" package="Default">
+      <name>add_zone_templ_record</name>
+      <full_name>\add_zone_templ_record</full_name>
+      <argument line="221">
+        <name>$zone_templ_id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="221">
+        <name>$name</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="221">
+        <name>$type</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="221">
+        <name>$content</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="221">
+        <name>$ttl</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="221">
+        <name>$prio</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="257" package="Default">
+      <name>edit_zone_templ_record</name>
+      <full_name>\edit_zone_templ_record</full_name>
+      <argument line="257">
+        <name>$record</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="292" package="Default">
+      <name>delete_zone_templ_record</name>
+      <full_name>\delete_zone_templ_record</full_name>
+      <argument line="292">
+        <name>$rid</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="311" package="Default">
+      <name>get_zone_templ_is_owner</name>
+      <full_name>\get_zone_templ_is_owner</full_name>
+      <argument line="311">
+        <name>$zone_templ_id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="311">
+        <name>$userid</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="327" package="Default">
+      <name>add_zone_templ_save_as</name>
+      <full_name>\add_zone_templ_save_as</full_name>
+      <argument line="327">
+        <name>$template_name</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="327">
+        <name>$description</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="327">
+        <name>$userid</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="327">
+        <name>$records</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="327">
+        <name>$domain</name>
+        <default><![CDATA[null]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="387" package="Default">
+      <name>get_list_zone_use_templ</name>
+      <full_name>\get_list_zone_use_templ</full_name>
+      <argument line="387">
+        <name>$zone_templ_id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="387">
+        <name>$userid</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="431" package="Default">
+      <name>edit_zone_templ</name>
+      <full_name>\edit_zone_templ</full_name>
+      <argument line="431">
+        <name>$details</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="431">
+        <name>$zone_templ_id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="455" package="Default">
+      <name>zone_templ_name_exists</name>
+      <full_name>\zone_templ_name_exists</full_name>
+      <argument line="455">
+        <name>$zone_templ_name</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="455">
+        <name>$zone_templ_id</name>
+        <default><![CDATA[null]]></default>
+        <type/>
+      </argument>
+    </function>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file inc/templates.inc.php</error>
+      <error line="29" code="50009">No DocBlock was found for function \get_list_zone_templ()</error>
+      <error line="51" code="50009">No DocBlock was found for function \add_zone_templ()</error>
+      <error line="76" code="50009">No DocBlock was found for function \get_zone_templ_details()</error>
+      <error line="92" code="50009">No DocBlock was found for function \delete_zone_templ()</error>
+      <error line="120" code="50009">No DocBlock was found for function \delete_zone_templ_userid()</error>
+      <error line="138" code="50009">No DocBlock was found for function \count_zone_templ_records()</error>
+      <error line="148" code="50009">No DocBlock was found for function \zone_templ_id_exists()</error>
+      <error line="161" code="50009">No DocBlock was found for function \get_zone_templ_record_from_id()</error>
+      <error line="193" code="50009">No DocBlock was found for function \get_zone_templ_records()</error>
+      <error line="221" code="50009">No DocBlock was found for function \add_zone_templ_record()</error>
+      <error line="257" code="50009">No DocBlock was found for function \edit_zone_templ_record()</error>
+      <error line="292" code="50009">No DocBlock was found for function \delete_zone_templ_record()</error>
+      <error line="311" code="50009">No DocBlock was found for function \get_zone_templ_is_owner()</error>
+      <error line="327" code="50009">No DocBlock was found for function \add_zone_templ_save_as()</error>
+      <error line="387" code="50009">No DocBlock was found for function \get_list_zone_use_templ()</error>
+      <error line="431" code="50009">No DocBlock was found for function \edit_zone_templ()</error>
+      <error line="455" code="50009">No DocBlock was found for function \zone_templ_name_exists()</error>
+    </parse_markers>
+  </file>
+  <file path="inc/dns.inc.php" hash="c2a3417feda6574b4dbc9e75b3660e78" package="Default">
+    <function namespace="global" line="24" package="Default">
+      <name>validate_input</name>
+      <full_name>\validate_input</full_name>
+      <argument line="24">
+        <name>$rid</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="24">
+        <name>$zid</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="24">
+        <name>$type</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="24">
+        <name>$content</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="24">
+        <name>$name</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="24">
+        <name>$prio</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="24">
+        <name>$ttl</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="126" package="Default">
+      <name>is_valid_hostname_fqdn</name>
+      <full_name>\is_valid_hostname_fqdn</full_name>
+      <argument line="126">
+        <name>$hostname</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="126">
+        <name>$wildcard</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="178" package="Default">
+      <name>is_valid_ipv4</name>
+      <full_name>\is_valid_ipv4</full_name>
+      <argument line="178">
+        <name>$ipv4</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="178">
+        <name>$answer</name>
+        <default><![CDATA[true]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="211" package="Default">
+      <name>is_valid_ipv6</name>
+      <full_name>\is_valid_ipv6</full_name>
+      <argument line="211">
+        <name>$ipv6</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="211">
+        <name>$answer</name>
+        <default><![CDATA[true]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="252" package="Default">
+      <name>are_multipe_valid_ips</name>
+      <full_name>\are_multipe_valid_ips</full_name>
+      <argument line="252">
+        <name>$ips</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="281" package="Default">
+      <name>is_valid_printable</name>
+      <full_name>\is_valid_printable</full_name>
+      <argument line="281">
+        <name>$string</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="286" package="Default">
+      <name>is_valid_rr_cname_name</name>
+      <full_name>\is_valid_rr_cname_name</full_name>
+      <argument line="286">
+        <name>$name</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="307" package="Default">
+      <name>is_valid_rr_cname_exists</name>
+      <full_name>\is_valid_rr_cname_exists</full_name>
+      <argument line="307">
+        <name>$name</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="307">
+        <name>$rid</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="331" package="Default">
+      <name>is_valid_rr_cname_unique</name>
+      <full_name>\is_valid_rr_cname_unique</full_name>
+      <argument line="331">
+        <name>$name</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="331">
+        <name>$rid</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="353" package="Default">
+      <name>is_valid_non_alias_target</name>
+      <full_name>\is_valid_non_alias_target</full_name>
+      <argument line="353">
+        <name>$target</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="369" package="Default">
+      <name>is_valid_rr_hinfo_content</name>
+      <full_name>\is_valid_rr_hinfo_content</full_name>
+      <argument line="369">
+        <name>$content</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="386" package="Default">
+      <name>is_valid_rr_soa_content</name>
+      <full_name>\is_valid_rr_soa_content</full_name>
+      <argument line="386">
+        <name>$content</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="442" package="Default">
+      <name>is_valid_rr_soa_name</name>
+      <full_name>\is_valid_rr_soa_name</full_name>
+      <argument line="442">
+        <name>$name</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="442">
+        <name>$zone</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="449" package="Default">
+      <name>is_valid_rr_prio</name>
+      <full_name>\is_valid_rr_prio</full_name>
+      <argument line="449">
+        <name>$prio</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="449">
+        <name>$type</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="461" package="Default">
+      <name>is_valid_rr_srv_name</name>
+      <full_name>\is_valid_rr_srv_name</full_name>
+      <argument line="461">
+        <name>$name</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="476" package="Default">
+      <name>is_valid_rr_srv_content</name>
+      <full_name>\is_valid_rr_srv_content</full_name>
+      <argument line="476">
+        <name>$content</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="487" package="Default">
+      <name>is_valid_rr_ttl</name>
+      <full_name>\is_valid_rr_ttl</full_name>
+      <argument line="487">
+        <name>$ttl</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="501" package="Default">
+      <name>is_valid_search</name>
+      <full_name>\is_valid_search</full_name>
+      <argument line="501">
+        <name>$holygrail</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="513" package="Default">
+      <name>is_valid_spf</name>
+      <full_name>\is_valid_spf</full_name>
+      <argument line="513">
+        <name>$content</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="524" package="Default">
+      <name>is_valid_loc</name>
+      <full_name>\is_valid_loc</full_name>
+      <argument line="524">
+        <name>$content</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <markers>
+      <todo line="26">check for return</todo>
+    </markers>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file inc/dns.inc.php</error>
+      <error line="24" code="50009">No DocBlock was found for function \validate_input()</error>
+      <error line="126" code="50009">No DocBlock was found for function \is_valid_hostname_fqdn()</error>
+      <error line="178" code="50009">No DocBlock was found for function \is_valid_ipv4()</error>
+      <error line="211" code="50009">No DocBlock was found for function \is_valid_ipv6()</error>
+      <error line="252" code="50009">No DocBlock was found for function \are_multipe_valid_ips()</error>
+      <error line="281" code="50009">No DocBlock was found for function \is_valid_printable()</error>
+      <error line="286" code="50009">No DocBlock was found for function \is_valid_rr_cname_name()</error>
+      <error line="307" code="50009">No DocBlock was found for function \is_valid_rr_cname_exists()</error>
+      <error line="331" code="50009">No DocBlock was found for function \is_valid_rr_cname_unique()</error>
+      <error line="353" code="50009">No DocBlock was found for function \is_valid_non_alias_target()</error>
+      <error line="369" code="50009">No DocBlock was found for function \is_valid_rr_hinfo_content()</error>
+      <error line="386" code="50009">No DocBlock was found for function \is_valid_rr_soa_content()</error>
+      <error line="442" code="50009">No DocBlock was found for function \is_valid_rr_soa_name()</error>
+      <error line="449" code="50009">No DocBlock was found for function \is_valid_rr_prio()</error>
+      <error line="461" code="50009">No DocBlock was found for function \is_valid_rr_srv_name()</error>
+      <error line="476" code="50009">No DocBlock was found for function \is_valid_rr_srv_content()</error>
+      <error line="487" code="50009">No DocBlock was found for function \is_valid_rr_ttl()</error>
+      <error line="501" code="50009">No DocBlock was found for function \is_valid_search()</error>
+      <error line="513" code="50009">No DocBlock was found for function \is_valid_spf()</error>
+      <error line="524" code="50009">No DocBlock was found for function \is_valid_loc()</error>
+    </parse_markers>
+  </file>
+  <file path="inc/version.inc.php" hash="193d72f464f0bcdf9305ae923b7cd4b1" package="Default">
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file inc/version.inc.php</error>
+    </parse_markers>
+  </file>
+  <file path="inc/benchmark.php" hash="84b86f7f162dad0e365dc452d775fdc1" package="Default">
+    <function namespace="global" line="6" package="Default">
+      <name>get_human_readable_usage</name>
+      <full_name>\get_human_readable_usage</full_name>
+      <argument line="6">
+        <name>$size</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="21" package="Default">
+      <name>display_current_stats</name>
+      <full_name>\display_current_stats</full_name>
+    </function>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file inc/benchmark.php</error>
+      <error line="6" code="50009">No DocBlock was found for function \get_human_readable_usage()</error>
+      <error line="21" code="50009">No DocBlock was found for function \display_current_stats()</error>
+    </parse_markers>
+  </file>
+  <file path="inc/record.inc.php" hash="62da5c473c82917c566a6d38e6ab870a" package="Default">
+    <function namespace="global" line="24" package="Default">
+      <name>zone_id_exists</name>
+      <full_name>\zone_id_exists</full_name>
+      <argument line="24">
+        <name>$zid</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="32" package="Default">
+      <name>get_zone_id_from_record_id</name>
+      <full_name>\get_zone_id_from_record_id</full_name>
+      <argument line="32">
+        <name>$rid</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="39" package="Default">
+      <name>count_zone_records</name>
+      <full_name>\count_zone_records</full_name>
+      <argument line="39">
+        <name>$zone_id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="46" package="Default">
+      <name>get_soa_record</name>
+      <full_name>\get_soa_record</full_name>
+      <argument line="46">
+        <name>$domain_id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="55" package="Default">
+      <name>get_soa_serial</name>
+      <full_name>\get_soa_serial</full_name>
+      <argument line="55">
+        <name>$soa_rec</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="60" package="Default">
+      <name>get_next_date</name>
+      <full_name>\get_next_date</full_name>
+      <argument line="60">
+        <name>$curr_date</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="65" package="Default">
+      <name>get_next_serial</name>
+      <full_name>\get_next_serial</full_name>
+      <argument line="65">
+        <name>$curr_serial</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="65">
+        <name>$today</name>
+        <default><![CDATA['']]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="126" package="Default">
+      <name>update_soa_record</name>
+      <full_name>\update_soa_record</full_name>
+      <argument line="126">
+        <name>$domain_id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="126">
+        <name>$content</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="137" package="Default">
+      <name>set_soa_serial</name>
+      <full_name>\set_soa_serial</full_name>
+      <argument line="137">
+        <name>$soa_rec</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="137">
+        <name>$serial</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="149" package="Default">
+      <name>update_soa_serial</name>
+      <full_name>\update_soa_serial</full_name>
+      <argument line="149">
+        <name>$domain_id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="166" package="Default">
+      <name>get_zone_comment</name>
+      <full_name>\get_zone_comment</full_name>
+      <argument line="166">
+        <name>$zone_id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="181" package="Default">
+      <name>edit_zone_comment</name>
+      <full_name>\edit_zone_comment</full_name>
+      <argument line="181">
+        <name>$zone_id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="181">
+        <name>$comment</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="221" package="Default">
+      <name>edit_record</name>
+      <full_name>\edit_record</full_name>
+      <argument line="221">
+        <name>$record</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="263" package="Default">
+      <name>add_record</name>
+      <full_name>\add_record</full_name>
+      <argument line="263">
+        <name>$zoneid</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="263">
+        <name>$name</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="263">
+        <name>$type</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="263">
+        <name>$content</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="263">
+        <name>$ttl</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="263">
+        <name>$prio</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="312" package="Default">
+      <name>add_supermaster</name>
+      <full_name>\add_supermaster</full_name>
+      <argument line="312">
+        <name>$master_ip</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="312">
+        <name>$ns_name</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="312">
+        <name>$account</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="336" package="Default">
+      <name>delete_supermaster</name>
+      <full_name>\delete_supermaster</full_name>
+      <argument line="336">
+        <name>$master_ip</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="336">
+        <name>$ns_name</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="350" package="Default">
+      <name>get_supermaster_info_from_ip</name>
+      <full_name>\get_supermaster_info_from_ip</full_name>
+      <argument line="350">
+        <name>$master_ip</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="371" package="Default">
+      <name>get_record_details_from_record_id</name>
+      <full_name>\get_record_details_from_record_id</full_name>
+      <argument line="371">
+        <name>$rid</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="388" package="Default">
+      <name>delete_record</name>
+      <full_name>\delete_record</full_name>
+      <argument line="388">
+        <name>$rid</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="432" package="Default">
+      <name>add_domain</name>
+      <full_name>\add_domain</full_name>
+      <docblock line="416">
+        <description><![CDATA[Add a domain to the database.]]></description>
+        <long-description><![CDATA[<p>A domain is name obligatory, so is an owner.
+return values: true when succesful.</p>
+
+<h2>Empty means templates dont have to be applied.</h2>
+
+<p>This functions eats a template and by that it inserts various records.
+first we start checking if something in an arpa record
+remember to request nextID's from the database to be able to insert record.
+if anything is invalid the function will error</p>]]></long-description>
+        <tag line="416" name="param" description="A domain name" type="string" variable="$domain">
+          <type by_reference="false">string</type>
+        </tag>
+        <tag line="416" name="param" description="Owner ID for domain" type="int" variable="$owner">
+          <type by_reference="false">int</type>
+        </tag>
+        <tag line="416" name="return" description="" type="boolean">
+          <type by_reference="false">boolean</type>
+        </tag>
+      </docblock>
+      <argument line="432">
+        <name>$domain</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="432">
+        <name>$owner</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="432">
+        <name>$type</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="432">
+        <name>$slave_master</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="432">
+        <name>$zone_template</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="544" package="Default">
+      <name>delete_domain</name>
+      <full_name>\delete_domain</full_name>
+      <argument line="544">
+        <name>$id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="573" package="Default">
+      <name>recid_to_domid</name>
+      <full_name>\recid_to_domid</full_name>
+      <argument line="573">
+        <name>$id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="593" package="Default">
+      <name>add_owner_to_zone</name>
+      <full_name>\add_owner_to_zone</full_name>
+      <argument line="593">
+        <name>$zone_id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="593">
+        <name>$user_id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="620" package="Default">
+      <name>delete_owner_from_zone</name>
+      <full_name>\delete_owner_from_zone</full_name>
+      <argument line="620">
+        <name>$zone_id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="620">
+        <name>$user_id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="647" package="Default">
+      <name>get_record_types</name>
+      <full_name>\get_record_types</full_name>
+    </function>
+    <function namespace="global" line="659" package="Default">
+      <name>get_records_by_type_from_domid</name>
+      <full_name>\get_records_by_type_from_domid</full_name>
+      <argument line="659">
+        <name>$type</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="659">
+        <name>$recid</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="682" package="Default">
+      <name>get_recordtype_from_id</name>
+      <full_name>\get_recordtype_from_id</full_name>
+      <argument line="682">
+        <name>$id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="702" package="Default">
+      <name>get_name_from_record_id</name>
+      <full_name>\get_name_from_record_id</full_name>
+      <argument line="702">
+        <name>$id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="715" package="Default">
+      <name>get_zone_name_from_id</name>
+      <full_name>\get_zone_name_from_id</full_name>
+      <argument line="715">
+        <name>$zid</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="743" package="Default">
+      <name>get_zone_id_from_name</name>
+      <full_name>\get_zone_id_from_name</full_name>
+      <argument line="743">
+        <name>$zname</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="767" package="Default">
+      <name>get_zone_info_from_id</name>
+      <full_name>\get_zone_info_from_id</full_name>
+      <argument line="767">
+        <name>$zid</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="804" package="Default">
+      <name>convert_ipv6addr_to_ptrrec</name>
+      <full_name>\convert_ipv6addr_to_ptrrec</full_name>
+      <argument line="804">
+        <name>$ip</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="817" package="Default">
+      <name>get_best_matching_zone_id_from_name</name>
+      <full_name>\get_best_matching_zone_id_from_name</full_name>
+      <argument line="817">
+        <name>$domain</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="857" package="Default">
+      <name>domain_exists</name>
+      <full_name>\domain_exists</full_name>
+      <argument line="857">
+        <name>$domain</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="873" package="Default">
+      <name>get_supermasters</name>
+      <full_name>\get_supermasters</full_name>
+    </function>
+    <function namespace="global" line="896" package="Default">
+      <name>supermaster_exists</name>
+      <full_name>\supermaster_exists</full_name>
+      <argument line="896">
+        <name>$master_ip</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="917" package="Default">
+      <name>supermaster_ip_name_exists</name>
+      <full_name>\supermaster_ip_name_exists</full_name>
+      <argument line="917">
+        <name>$master_ip</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="917">
+        <name>$ns_name</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="939" package="Default">
+      <name>get_zones</name>
+      <full_name>\get_zones</full_name>
+      <argument line="939">
+        <name>$perm</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="939">
+        <name>$userid</name>
+        <default><![CDATA[0]]></default>
+        <type/>
+      </argument>
+      <argument line="939">
+        <name>$letterstart</name>
+        <default><![CDATA['all']]></default>
+        <type/>
+      </argument>
+      <argument line="939">
+        <name>$rowstart</name>
+        <default><![CDATA[0]]></default>
+        <type/>
+      </argument>
+      <argument line="939">
+        <name>$rowamount</name>
+        <default><![CDATA[999999]]></default>
+        <type/>
+      </argument>
+      <argument line="939">
+        <name>$sortby</name>
+        <default><![CDATA['name']]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="997" package="Default">
+      <name>zone_count_ng</name>
+      <full_name>\zone_count_ng</full_name>
+      <argument line="997">
+        <name>$perm</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="997">
+        <name>$letterstart</name>
+        <default><![CDATA['all']]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="1032" package="Default">
+      <name>zone_count_for_uid</name>
+      <full_name>\zone_count_for_uid</full_name>
+      <argument line="1032">
+        <name>$uid</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="1048" package="Default">
+      <name>get_record_from_id</name>
+      <full_name>\get_record_from_id</full_name>
+      <argument line="1048">
+        <name>$id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="1090" package="Default">
+      <name>get_records_from_domain_id</name>
+      <full_name>\get_records_from_domain_id</full_name>
+      <argument line="1090">
+        <name>$id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="1090">
+        <name>$rowstart</name>
+        <default><![CDATA[0]]></default>
+        <type/>
+      </argument>
+      <argument line="1090">
+        <name>$rowamount</name>
+        <default><![CDATA[999999]]></default>
+        <type/>
+      </argument>
+      <argument line="1090">
+        <name>$sortby</name>
+        <default><![CDATA['name']]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="1149" package="Default">
+      <name>order_domain_results</name>
+      <full_name>\order_domain_results</full_name>
+      <argument line="1149">
+        <name>$domains</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="1149">
+        <name>$sortby</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="1197" package="Default">
+      <name>sort_domain_results_by_name</name>
+      <full_name>\sort_domain_results_by_name</full_name>
+      <argument line="1197">
+        <name>$a</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="1197">
+        <name>$b</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="1201" package="Default">
+      <name>sort_domain_results_by_type</name>
+      <full_name>\sort_domain_results_by_type</full_name>
+      <argument line="1201">
+        <name>$a</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="1201">
+        <name>$b</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="1205" package="Default">
+      <name>sort_domain_results_by_content</name>
+      <full_name>\sort_domain_results_by_content</full_name>
+      <argument line="1205">
+        <name>$a</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="1205">
+        <name>$b</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="1209" package="Default">
+      <name>sort_domain_results_by_prio</name>
+      <full_name>\sort_domain_results_by_prio</full_name>
+      <argument line="1209">
+        <name>$a</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="1209">
+        <name>$b</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="1213" package="Default">
+      <name>sort_domain_results_by_ttl</name>
+      <full_name>\sort_domain_results_by_ttl</full_name>
+      <argument line="1213">
+        <name>$a</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="1213">
+        <name>$b</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="1217" package="Default">
+      <name>get_users_from_domain_id</name>
+      <full_name>\get_users_from_domain_id</full_name>
+      <argument line="1217">
+        <name>$id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="1236" package="Default">
+      <name>search_zone_and_record</name>
+      <full_name>\search_zone_and_record</full_name>
+      <argument line="1236">
+        <name>$holy_grail</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="1236">
+        <name>$perm</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="1236">
+        <name>$zone_sortby</name>
+        <default><![CDATA['name']]></default>
+        <type/>
+      </argument>
+      <argument line="1236">
+        <name>$record_sortby</name>
+        <default><![CDATA['name']]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="1336" package="Default">
+      <name>get_domain_type</name>
+      <full_name>\get_domain_type</full_name>
+      <argument line="1336">
+        <name>$id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="1349" package="Default">
+      <name>get_domain_slave_master</name>
+      <full_name>\get_domain_slave_master</full_name>
+      <argument line="1349">
+        <name>$id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="1359" package="Default">
+      <name>change_zone_type</name>
+      <full_name>\change_zone_type</full_name>
+      <argument line="1359">
+        <name>$type</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="1359">
+        <name>$id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="1378" package="Default">
+      <name>change_zone_slave_master</name>
+      <full_name>\change_zone_slave_master</full_name>
+      <argument line="1378">
+        <name>$zone_id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="1378">
+        <name>$ip_slave_master</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="1391" package="Default">
+      <name>get_serial_by_zid</name>
+      <full_name>\get_serial_by_zid</full_name>
+      <argument line="1391">
+        <name>$zid</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="1405" package="Default">
+      <name>validate_account</name>
+      <full_name>\validate_account</full_name>
+      <argument line="1405">
+        <name>$account</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="1413" package="Default">
+      <name>get_zone_template</name>
+      <full_name>\get_zone_template</full_name>
+      <argument line="1413">
+        <name>$zone_id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="1420" package="Default">
+      <name>update_zone_template</name>
+      <full_name>\update_zone_template</full_name>
+      <argument line="1420">
+        <name>$zone_id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="1420">
+        <name>$new_zone_template_id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="1430" package="Default">
+      <name>update_zone_records</name>
+      <full_name>\update_zone_records</full_name>
+      <argument line="1430">
+        <name>$zone_id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="1430">
+        <name>$zone_template</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="1508" package="Default">
+      <name>delete_domains</name>
+      <full_name>\delete_domains</full_name>
+      <argument line="1508">
+        <name>$domains</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="1556" package="Default">
+      <name>do_rectify_zone</name>
+      <full_name>\do_rectify_zone</full_name>
+      <argument line="1556">
+        <name>$domain_id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="1595" package="Default">
+      <name>do_secure_zone</name>
+      <full_name>\do_secure_zone</full_name>
+      <argument line="1595">
+        <name>$domain_name</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <markers>
+      <todo line="437">make sure only one is possible if only one is enabled</todo>
+      <todo line="627">Next if() required, why not just execute DELETE query?</todo>
+      <todo line="996">letterstart limitation and userid permission limitiation should be applied at the same time?</todo>
+    </markers>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file inc/record.inc.php</error>
+      <error line="24" code="50009">No DocBlock was found for function \zone_id_exists()</error>
+      <error line="32" code="50009">No DocBlock was found for function \get_zone_id_from_record_id()</error>
+      <error line="39" code="50009">No DocBlock was found for function \count_zone_records()</error>
+      <error line="46" code="50009">No DocBlock was found for function \get_soa_record()</error>
+      <error line="55" code="50009">No DocBlock was found for function \get_soa_serial()</error>
+      <error line="60" code="50009">No DocBlock was found for function \get_next_date()</error>
+      <error line="65" code="50009">No DocBlock was found for function \get_next_serial()</error>
+      <error line="126" code="50009">No DocBlock was found for function \update_soa_record()</error>
+      <error line="137" code="50009">No DocBlock was found for function \set_soa_serial()</error>
+      <error line="149" code="50009">No DocBlock was found for function \update_soa_serial()</error>
+      <error line="166" code="50009">No DocBlock was found for function \get_zone_comment()</error>
+      <error line="181" code="50009">No DocBlock was found for function \edit_zone_comment()</error>
+      <error line="221" code="50009">No DocBlock was found for function \edit_record()</error>
+      <error line="263" code="50009">No DocBlock was found for function \add_record()</error>
+      <error line="312" code="50009">No DocBlock was found for function \add_supermaster()</error>
+      <error line="336" code="50009">No DocBlock was found for function \delete_supermaster()</error>
+      <error line="350" code="50009">No DocBlock was found for function \get_supermaster_info_from_ip()</error>
+      <error line="371" code="50009">No DocBlock was found for function \get_record_details_from_record_id()</error>
+      <error line="388" code="50009">No DocBlock was found for function \delete_record()</error>
+      <error line="416" code="50015">Argument $type is missing from the Docblock of \add_domain()</error>
+      <error line="416" code="50015">Argument $slave_master is missing from the Docblock of \add_domain()</error>
+      <error line="416" code="50015">Argument $zone_template is missing from the Docblock of \add_domain()</error>
+      <error line="544" code="50009">No DocBlock was found for function \delete_domain()</error>
+      <error line="573" code="50009">No DocBlock was found for function \recid_to_domid()</error>
+      <error line="593" code="50009">No DocBlock was found for function \add_owner_to_zone()</error>
+      <error line="620" code="50009">No DocBlock was found for function \delete_owner_from_zone()</error>
+      <error line="647" code="50009">No DocBlock was found for function \get_record_types()</error>
+      <error line="659" code="50009">No DocBlock was found for function \get_records_by_type_from_domid()</error>
+      <error line="682" code="50009">No DocBlock was found for function \get_recordtype_from_id()</error>
+      <error line="702" code="50009">No DocBlock was found for function \get_name_from_record_id()</error>
+      <error line="715" code="50009">No DocBlock was found for function \get_zone_name_from_id()</error>
+      <error line="743" code="50009">No DocBlock was found for function \get_zone_id_from_name()</error>
+      <error line="767" code="50009">No DocBlock was found for function \get_zone_info_from_id()</error>
+      <error line="804" code="50009">No DocBlock was found for function \convert_ipv6addr_to_ptrrec()</error>
+      <error line="817" code="50009">No DocBlock was found for function \get_best_matching_zone_id_from_name()</error>
+      <error line="857" code="50009">No DocBlock was found for function \domain_exists()</error>
+      <error line="873" code="50009">No DocBlock was found for function \get_supermasters()</error>
+      <error line="896" code="50009">No DocBlock was found for function \supermaster_exists()</error>
+      <error line="917" code="50009">No DocBlock was found for function \supermaster_ip_name_exists()</error>
+      <error line="939" code="50009">No DocBlock was found for function \get_zones()</error>
+      <error line="997" code="50009">No DocBlock was found for function \zone_count_ng()</error>
+      <error line="1032" code="50009">No DocBlock was found for function \zone_count_for_uid()</error>
+      <error line="1048" code="50009">No DocBlock was found for function \get_record_from_id()</error>
+      <error line="1090" code="50009">No DocBlock was found for function \get_records_from_domain_id()</error>
+      <error line="1149" code="50009">No DocBlock was found for function \order_domain_results()</error>
+      <error line="1197" code="50009">No DocBlock was found for function \sort_domain_results_by_name()</error>
+      <error line="1201" code="50009">No DocBlock was found for function \sort_domain_results_by_type()</error>
+      <error line="1205" code="50009">No DocBlock was found for function \sort_domain_results_by_content()</error>
+      <error line="1209" code="50009">No DocBlock was found for function \sort_domain_results_by_prio()</error>
+      <error line="1213" code="50009">No DocBlock was found for function \sort_domain_results_by_ttl()</error>
+      <error line="1217" code="50009">No DocBlock was found for function \get_users_from_domain_id()</error>
+      <error line="1236" code="50009">No DocBlock was found for function \search_zone_and_record()</error>
+      <error line="1336" code="50009">No DocBlock was found for function \get_domain_type()</error>
+      <error line="1349" code="50009">No DocBlock was found for function \get_domain_slave_master()</error>
+      <error line="1359" code="50009">No DocBlock was found for function \change_zone_type()</error>
+      <error line="1378" code="50009">No DocBlock was found for function \change_zone_slave_master()</error>
+      <error line="1391" code="50009">No DocBlock was found for function \get_serial_by_zid()</error>
+      <error line="1405" code="50009">No DocBlock was found for function \validate_account()</error>
+      <error line="1413" code="50009">No DocBlock was found for function \get_zone_template()</error>
+      <error line="1420" code="50009">No DocBlock was found for function \update_zone_template()</error>
+      <error line="1430" code="50009">No DocBlock was found for function \update_zone_records()</error>
+      <error line="1508" code="50009">No DocBlock was found for function \delete_domains()</error>
+      <error line="1556" code="50009">No DocBlock was found for function \do_rectify_zone()</error>
+      <error line="1595" code="50009">No DocBlock was found for function \do_secure_zone()</error>
+    </parse_markers>
+  </file>
+  <file path="inc/header.inc.php" hash="ec991492f06919f2192da5124d3437aa" package="Default">
+    <include line="39" type="Include" package="Default">
+      <name>inc/custom_header.inc.php</name>
+    </include>
+    <include line="51" type="Include" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file inc/header.inc.php</error>
+    </parse_markers>
+  </file>
+  <file path="inc/error.inc.php" hash="72a6b5981dad5e3230d9f6b5e86be1fb" package="Default">
+    <constant namespace="global" line="25" package="Default">
+      <name>ERR_PERM_SEARCH</name>
+      <full_name>\ERR_PERM_SEARCH</full_name>
+      <value><![CDATA[_("You do not have the permission to perform searches.")]]></value>
+    </constant>
+    <constant namespace="global" line="26" package="Default">
+      <name>ERR_PERM_ADD_RECORD</name>
+      <full_name>\ERR_PERM_ADD_RECORD</full_name>
+      <value><![CDATA[_("You do not have the permission to add a record to this zone.")]]></value>
+    </constant>
+    <constant namespace="global" line="27" package="Default">
+      <name>ERR_PERM_EDIT_RECORD</name>
+      <full_name>\ERR_PERM_EDIT_RECORD</full_name>
+      <value><![CDATA[_("You do not have the permission to edit this record.")]]></value>
+    </constant>
+    <constant namespace="global" line="28" package="Default">
+      <name>ERR_PERM_VIEW_RECORD</name>
+      <full_name>\ERR_PERM_VIEW_RECORD</full_name>
+      <value><![CDATA[_("You do not have the permission to view this record.")]]></value>
+    </constant>
+    <constant namespace="global" line="29" package="Default">
+      <name>ERR_PERM_DEL_RECORD</name>
+      <full_name>\ERR_PERM_DEL_RECORD</full_name>
+      <value><![CDATA[_("You do not have the permission to delete this record.")]]></value>
+    </constant>
+    <constant namespace="global" line="30" package="Default">
+      <name>ERR_PERM_ADD_ZONE_MASTER</name>
+      <full_name>\ERR_PERM_ADD_ZONE_MASTER</full_name>
+      <value><![CDATA[_("You do not have the permission to add a master zone.")]]></value>
+    </constant>
+    <constant namespace="global" line="31" package="Default">
+      <name>ERR_PERM_ADD_ZONE_SLAVE</name>
+      <full_name>\ERR_PERM_ADD_ZONE_SLAVE</full_name>
+      <value><![CDATA[_("You do not have the permission to add a slave zone.")]]></value>
+    </constant>
+    <constant namespace="global" line="32" package="Default">
+      <name>ERR_PERM_DEL_ZONE</name>
+      <full_name>\ERR_PERM_DEL_ZONE</full_name>
+      <value><![CDATA[_("You do not have the permission to delete a zone.")]]></value>
+    </constant>
+    <constant namespace="global" line="33" package="Default">
+      <name>ERR_PERM_VIEW_COMMENT</name>
+      <full_name>\ERR_PERM_VIEW_COMMENT</full_name>
+      <value><![CDATA[_("You do not have the permission to view this comment.")]]></value>
+    </constant>
+    <constant namespace="global" line="34" package="Default">
+      <name>ERR_PERM_EDIT_COMMENT</name>
+      <full_name>\ERR_PERM_EDIT_COMMENT</full_name>
+      <value><![CDATA[_("You do not have the permission to edit this comment.")]]></value>
+    </constant>
+    <constant namespace="global" line="35" package="Default">
+      <name>ERR_PERM_DEL_SM</name>
+      <full_name>\ERR_PERM_DEL_SM</full_name>
+      <value><![CDATA[_("You do not have the permission to delete a supermaster.")]]></value>
+    </constant>
+    <constant namespace="global" line="36" package="Default">
+      <name>ERR_PERM_VIEW_ZONE</name>
+      <full_name>\ERR_PERM_VIEW_ZONE</full_name>
+      <value><![CDATA[_("You do not have the permission to view this zone.")]]></value>
+    </constant>
+    <constant namespace="global" line="37" package="Default">
+      <name>ERR_PERM_EDIT_USER</name>
+      <full_name>\ERR_PERM_EDIT_USER</full_name>
+      <value><![CDATA[_("You do not have the permission to edit this user.")]]></value>
+    </constant>
+    <constant namespace="global" line="38" package="Default">
+      <name>ERR_PERM_EDIT_PERM_TEMPL</name>
+      <full_name>\ERR_PERM_EDIT_PERM_TEMPL</full_name>
+      <value><![CDATA[_("You do not have the permission to edit permission templates.")]]></value>
+    </constant>
+    <constant namespace="global" line="39" package="Default">
+      <name>ERR_PERM_DEL_PERM_TEMPL</name>
+      <full_name>\ERR_PERM_DEL_PERM_TEMPL</full_name>
+      <value><![CDATA[_("You do not have the permission to delete permission templates.")]]></value>
+    </constant>
+    <constant namespace="global" line="40" package="Default">
+      <name>ERR_PERM_ADD_USER</name>
+      <full_name>\ERR_PERM_ADD_USER</full_name>
+      <value><![CDATA[_("You do not have the permission to add a new user.")]]></value>
+    </constant>
+    <constant namespace="global" line="41" package="Default">
+      <name>ERR_PERM_DEL_USER</name>
+      <full_name>\ERR_PERM_DEL_USER</full_name>
+      <value><![CDATA[_("You do not have the permission to delete this user.")]]></value>
+    </constant>
+    <constant namespace="global" line="42" package="Default">
+      <name>ERR_PERM_EDIT_ZONE_TEMPL</name>
+      <full_name>\ERR_PERM_EDIT_ZONE_TEMPL</full_name>
+      <value><![CDATA[_("You do not have the permission to edit zone templates.")]]></value>
+    </constant>
+    <constant namespace="global" line="43" package="Default">
+      <name>ERR_PERM_DEL_ZONE_TEMPL</name>
+      <full_name>\ERR_PERM_DEL_ZONE_TEMPL</full_name>
+      <value><![CDATA[_("You do not have the permission to delete zone templates.")]]></value>
+    </constant>
+    <constant namespace="global" line="44" package="Default">
+      <name>ERR_PERM_ADD_ZONE_TEMPL</name>
+      <full_name>\ERR_PERM_ADD_ZONE_TEMPL</full_name>
+      <value><![CDATA[_("You do not have the permission to add a zone template.")]]></value>
+    </constant>
+    <constant namespace="global" line="47" package="Default">
+      <name>ERR_DOMAIN_INVALID</name>
+      <full_name>\ERR_DOMAIN_INVALID</full_name>
+      <value><![CDATA[_('This is an invalid zone name.')]]></value>
+    </constant>
+    <constant namespace="global" line="48" package="Default">
+      <name>ERR_SM_EXISTS</name>
+      <full_name>\ERR_SM_EXISTS</full_name>
+      <value><![CDATA[_('There is already a supermaster with this IP address and hostname.')]]></value>
+    </constant>
+    <constant namespace="global" line="49" package="Default">
+      <name>ERR_DOMAIN_EXISTS</name>
+      <full_name>\ERR_DOMAIN_EXISTS</full_name>
+      <value><![CDATA[_('There is already a zone with this name.')]]></value>
+    </constant>
+    <constant namespace="global" line="52" package="Default">
+      <name>ERR_USER_EXIST</name>
+      <full_name>\ERR_USER_EXIST</full_name>
+      <value><![CDATA[_('Username exist already, please choose another one.')]]></value>
+    </constant>
+    <constant namespace="global" line="53" package="Default">
+      <name>ERR_USER_NOT_EXIST</name>
+      <full_name>\ERR_USER_NOT_EXIST</full_name>
+      <value><![CDATA[_('User does not exist.')]]></value>
+    </constant>
+    <constant namespace="global" line="54" package="Default">
+      <name>ERR_USER_WRONG_CURRENT_PASS</name>
+      <full_name>\ERR_USER_WRONG_CURRENT_PASS</full_name>
+      <value><![CDATA[_('You did not enter the correct current password.')]]></value>
+    </constant>
+    <constant namespace="global" line="55" package="Default">
+      <name>ERR_USER_MATCH_NEW_PASS</name>
+      <full_name>\ERR_USER_MATCH_NEW_PASS</full_name>
+      <value><![CDATA[_('The two new password fields do not match.')]]></value>
+    </constant>
+    <constant namespace="global" line="56" package="Default">
+      <name>ERR_PERM_TEMPL_ASSIGNED</name>
+      <full_name>\ERR_PERM_TEMPL_ASSIGNED</full_name>
+      <value><![CDATA[_('This template is assigned to at least one user.')]]></value>
+    </constant>
+    <constant namespace="global" line="59" package="Default">
+      <name>ERR_INV_INPUT</name>
+      <full_name>\ERR_INV_INPUT</full_name>
+      <value><![CDATA[_('Invalid or unexpected input given.')]]></value>
+    </constant>
+    <constant namespace="global" line="60" package="Default">
+      <name>ERR_INV_ARG</name>
+      <full_name>\ERR_INV_ARG</full_name>
+      <value><![CDATA[_('Invalid argument(s) given to function %s')]]></value>
+    </constant>
+    <constant namespace="global" line="61" package="Default">
+      <name>ERR_INV_ARGC</name>
+      <full_name>\ERR_INV_ARGC</full_name>
+      <value><![CDATA[_('Invalid argument(s) given to function %s %s')]]></value>
+    </constant>
+    <constant namespace="global" line="62" package="Default">
+      <name>ERR_UNKNOWN</name>
+      <full_name>\ERR_UNKNOWN</full_name>
+      <value><![CDATA[_('Unknown error.')]]></value>
+    </constant>
+    <constant namespace="global" line="63" package="Default">
+      <name>ERR_INV_EMAIL</name>
+      <full_name>\ERR_INV_EMAIL</full_name>
+      <value><![CDATA[_('Enter a valid email address.')]]></value>
+    </constant>
+    <constant namespace="global" line="64" package="Default">
+      <name>ERR_ZONE_NOT_EXIST</name>
+      <full_name>\ERR_ZONE_NOT_EXIST</full_name>
+      <value><![CDATA[_('There is no zone with this ID.')]]></value>
+    </constant>
+    <constant namespace="global" line="65" package="Default">
+      <name>ERR_REVERS_ZONE_NOT_EXIST</name>
+      <full_name>\ERR_REVERS_ZONE_NOT_EXIST</full_name>
+      <value><![CDATA[_('There is no matching reverse-zone for: %s.')]]></value>
+    </constant>
+    <constant namespace="global" line="66" package="Default">
+      <name>ERR_ZONE_TEMPL_NOT_EXIST</name>
+      <full_name>\ERR_ZONE_TEMPL_NOT_EXIST</full_name>
+      <value><![CDATA[_('There is no zone template with this ID.')]]></value>
+    </constant>
+    <constant namespace="global" line="67" package="Default">
+      <name>ERR_INSTALL_DIR_EXISTS</name>
+      <full_name>\ERR_INSTALL_DIR_EXISTS</full_name>
+      <value><![CDATA[_('The <a href="install/">install/</a> directory exists, you must remove it first before proceeding.')]]></value>
+    </constant>
+    <constant namespace="global" line="68" package="Default">
+      <name>ERR_ZONE_TEMPL_EXIST</name>
+      <full_name>\ERR_ZONE_TEMPL_EXIST</full_name>
+      <value><![CDATA[_('Zone template with this name already exists, please choose another one.')]]></value>
+    </constant>
+    <constant namespace="global" line="69" package="Default">
+      <name>ERR_ZONE_TEMPL_IS_EMPTY</name>
+      <full_name>\ERR_ZONE_TEMPL_IS_EMPTY</full_name>
+      <value><![CDATA[_('Template name can\'t be an empty string.')]]></value>
+    </constant>
+    <constant namespace="global" line="70" package="Default">
+      <name>ERR_DEFAULT_CRYPTOKEY_USED</name>
+      <full_name>\ERR_DEFAULT_CRYPTOKEY_USED</full_name>
+      <value><![CDATA[_('Default session encryption key is used, please set it in your configuration file.')]]></value>
+    </constant>
+    <constant namespace="global" line="71" package="Default">
+      <name>ERR_LOCALE_FAILURE</name>
+      <full_name>\ERR_LOCALE_FAILURE</full_name>
+      <value><![CDATA[_('Failed to set locale.')]]></value>
+    </constant>
+    <constant namespace="global" line="72" package="Default">
+      <name>ERR_ZONE_UPD</name>
+      <full_name>\ERR_ZONE_UPD</full_name>
+      <value><![CDATA[_('Zone has not been updated successfully.')]]></value>
+    </constant>
+    <constant namespace="global" line="73" package="Default">
+      <name>ERR_EXEC_NOT_ALLOWED</name>
+      <full_name>\ERR_EXEC_NOT_ALLOWED</full_name>
+      <value><![CDATA[_('Failed to call function exec. Make sure that exec is not listed in disable_functions at php.ini')]]></value>
+    </constant>
+    <constant namespace="global" line="76" package="Default">
+      <name>ERR_DB_NO_DB_NAME</name>
+      <full_name>\ERR_DB_NO_DB_NAME</full_name>
+      <value><![CDATA[_('No database name has been set in config.inc.php.')]]></value>
+    </constant>
+    <constant namespace="global" line="77" package="Default">
+      <name>ERR_DB_NO_DB_HOST</name>
+      <full_name>\ERR_DB_NO_DB_HOST</full_name>
+      <value><![CDATA[_('No database host has been set in config.inc.php.')]]></value>
+    </constant>
+    <constant namespace="global" line="78" package="Default">
+      <name>ERR_DB_NO_DB_USER</name>
+      <full_name>\ERR_DB_NO_DB_USER</full_name>
+      <value><![CDATA[_('No database username has been set in config.inc.php.')]]></value>
+    </constant>
+    <constant namespace="global" line="79" package="Default">
+      <name>ERR_DB_NO_DB_PASS</name>
+      <full_name>\ERR_DB_NO_DB_PASS</full_name>
+      <value><![CDATA[_('No database password has been set in config.inc.php.')]]></value>
+    </constant>
+    <constant namespace="global" line="80" package="Default">
+      <name>ERR_DB_NO_DB_TYPE</name>
+      <full_name>\ERR_DB_NO_DB_TYPE</full_name>
+      <value><![CDATA[_('No or unknown database type has been set in config.inc.php.')]]></value>
+    </constant>
+    <constant namespace="global" line="81" package="Default">
+      <name>ERR_DB_NO_DB_FILE</name>
+      <full_name>\ERR_DB_NO_DB_FILE</full_name>
+      <value><![CDATA[_('No database file has been set in config.inc.php.')]]></value>
+    </constant>
+    <constant namespace="global" line="82" package="Default">
+      <name>ERR_DB_NO_DB_UPDATE</name>
+      <full_name>\ERR_DB_NO_DB_UPDATE</full_name>
+      <value><![CDATA[_('It seems that you forgot to update the database after Poweradmin upgrade to new version.')]]></value>
+    </constant>
+    <constant namespace="global" line="83" package="Default">
+      <name>ERR_DB_UNK_TYPE</name>
+      <full_name>\ERR_DB_UNK_TYPE</full_name>
+      <value><![CDATA[_('Unknown database type.')]]></value>
+    </constant>
+    <constant namespace="global" line="86" package="Default">
+      <name>ERR_DNS_CONTENT</name>
+      <full_name>\ERR_DNS_CONTENT</full_name>
+      <value><![CDATA[_('Your content field doesnt have a legit value.')]]></value>
+    </constant>
+    <constant namespace="global" line="87" package="Default">
+      <name>ERR_DNS_HOSTNAME</name>
+      <full_name>\ERR_DNS_HOSTNAME</full_name>
+      <value><![CDATA[_('Invalid hostname.')]]></value>
+    </constant>
+    <constant namespace="global" line="88" package="Default">
+      <name>ERR_DNS_HN_INV_CHARS</name>
+      <full_name>\ERR_DNS_HN_INV_CHARS</full_name>
+      <value><![CDATA[_('You have invalid characters in your hostname.')]]></value>
+    </constant>
+    <constant namespace="global" line="89" package="Default">
+      <name>ERR_DNS_HN_DASH</name>
+      <full_name>\ERR_DNS_HN_DASH</full_name>
+      <value><![CDATA[_('A hostname can not start or end with a dash.')]]></value>
+    </constant>
+    <constant namespace="global" line="90" package="Default">
+      <name>ERR_DNS_HN_LENGTH</name>
+      <full_name>\ERR_DNS_HN_LENGTH</full_name>
+      <value><![CDATA[_('Given hostname or one of the labels is too short or too long.')]]></value>
+    </constant>
+    <constant namespace="global" line="91" package="Default">
+      <name>ERR_DNS_HN_SLASH</name>
+      <full_name>\ERR_DNS_HN_SLASH</full_name>
+      <value><![CDATA[_('Given hostname has too many slashes.')]]></value>
+    </constant>
+    <constant namespace="global" line="92" package="Default">
+      <name>ERR_DNS_RR_TYPE</name>
+      <full_name>\ERR_DNS_RR_TYPE</full_name>
+      <value><![CDATA[_('Unknown record type.')]]></value>
+    </constant>
+    <constant namespace="global" line="93" package="Default">
+      <name>ERR_DNS_IP</name>
+      <full_name>\ERR_DNS_IP</full_name>
+      <value><![CDATA[_('This is not a valid IPv4 or IPv6 address.')]]></value>
+    </constant>
+    <constant namespace="global" line="94" package="Default">
+      <name>ERR_DNS_IPV6</name>
+      <full_name>\ERR_DNS_IPV6</full_name>
+      <value><![CDATA[_('This is not a valid IPv6 address.')]]></value>
+    </constant>
+    <constant namespace="global" line="95" package="Default">
+      <name>ERR_DNS_IPV4</name>
+      <full_name>\ERR_DNS_IPV4</full_name>
+      <value><![CDATA[_('This is not a valid IPv4 address.')]]></value>
+    </constant>
+    <constant namespace="global" line="96" package="Default">
+      <name>ERR_DNS_CNAME</name>
+      <full_name>\ERR_DNS_CNAME</full_name>
+      <value><![CDATA[_('This is not a valid CNAME. Did you assign an MX or NS record to the record?')]]></value>
+    </constant>
+    <constant namespace="global" line="97" package="Default">
+      <name>ERR_DNS_CNAME_EXISTS</name>
+      <full_name>\ERR_DNS_CNAME_EXISTS</full_name>
+      <value><![CDATA[_('This is not a valid record. There is already exists a CNAME with this name.')]]></value>
+    </constant>
+    <constant namespace="global" line="98" package="Default">
+      <name>ERR_DNS_CNAME_UNIQUE</name>
+      <full_name>\ERR_DNS_CNAME_UNIQUE</full_name>
+      <value><![CDATA[_('This is not a valid CNAME. There is already exists an A, AAAA or CNAME with this name.')]]></value>
+    </constant>
+    <constant namespace="global" line="99" package="Default">
+      <name>ERR_DNS_NON_ALIAS_TARGET</name>
+      <full_name>\ERR_DNS_NON_ALIAS_TARGET</full_name>
+      <value><![CDATA[_('You can not point a NS or MX record to a CNAME record. Remove or rame the CNAME record first, or take another name.')]]></value>
+    </constant>
+    <constant namespace="global" line="100" package="Default">
+      <name>ERR_DNS_NS_HNAME</name>
+      <full_name>\ERR_DNS_NS_HNAME</full_name>
+      <value><![CDATA[_('NS records must be a hostnames.')]]></value>
+    </constant>
+    <constant namespace="global" line="101" package="Default">
+      <name>ERR_DNS_MX_PRIO</name>
+      <full_name>\ERR_DNS_MX_PRIO</full_name>
+      <value><![CDATA[_('A prio field should be numeric.')]]></value>
+    </constant>
+    <constant namespace="global" line="102" package="Default">
+      <name>ERR_DNS_SOA_NAME</name>
+      <full_name>\ERR_DNS_SOA_NAME</full_name>
+      <value><![CDATA[_('Invalid value for name field of SOA record. It should be the name of the zone.')]]></value>
+    </constant>
+    <constant namespace="global" line="103" package="Default">
+      <name>ERR_DNS_SOA_MNAME</name>
+      <full_name>\ERR_DNS_SOA_MNAME</full_name>
+      <value><![CDATA[_('You have an error in the MNAME field of the SOA record.')]]></value>
+    </constant>
+    <constant namespace="global" line="104" package="Default">
+      <name>ERR_DNS_HINFO_INV_CONTENT</name>
+      <full_name>\ERR_DNS_HINFO_INV_CONTENT</full_name>
+      <value><![CDATA[_('Invalid value for content field of HINFO record.')]]></value>
+    </constant>
+    <constant namespace="global" line="105" package="Default">
+      <name>ERR_DNS_HN_TOO_LONG</name>
+      <full_name>\ERR_DNS_HN_TOO_LONG</full_name>
+      <value><![CDATA[_('The hostname is too long.')]]></value>
+    </constant>
+    <constant namespace="global" line="106" package="Default">
+      <name>ERR_DNS_INV_TLD</name>
+      <full_name>\ERR_DNS_INV_TLD</full_name>
+      <value><![CDATA[_('You are using an invalid top level domain.')]]></value>
+    </constant>
+    <constant namespace="global" line="107" package="Default">
+      <name>ERR_DNS_INV_TTL</name>
+      <full_name>\ERR_DNS_INV_TTL</full_name>
+      <value><![CDATA[_('Invalid value for TTL field. It should be numeric.')]]></value>
+    </constant>
+    <constant namespace="global" line="108" package="Default">
+      <name>ERR_DNS_INV_PRIO</name>
+      <full_name>\ERR_DNS_INV_PRIO</full_name>
+      <value><![CDATA[_('Invalid value for prio field. It should be numeric.')]]></value>
+    </constant>
+    <constant namespace="global" line="109" package="Default">
+      <name>ERR_DNS_SRV_NAME</name>
+      <full_name>\ERR_DNS_SRV_NAME</full_name>
+      <value><![CDATA[_('Invalid value for name field of SRV record.')]]></value>
+    </constant>
+    <constant namespace="global" line="110" package="Default">
+      <name>ERR_DNS_SRV_WGHT</name>
+      <full_name>\ERR_DNS_SRV_WGHT</full_name>
+      <value><![CDATA[_('Invalid value for the priority field of the SRV record.')]]></value>
+    </constant>
+    <constant namespace="global" line="111" package="Default">
+      <name>ERR_DNS_SRV_PORT</name>
+      <full_name>\ERR_DNS_SRV_PORT</full_name>
+      <value><![CDATA[_('Invalid value for the weight field of the SRV record.')]]></value>
+    </constant>
+    <constant namespace="global" line="112" package="Default">
+      <name>ERR_DNS_SRV_TRGT</name>
+      <full_name>\ERR_DNS_SRV_TRGT</full_name>
+      <value><![CDATA[_('Invalid SRV target.')]]></value>
+    </constant>
+    <constant namespace="global" line="113" package="Default">
+      <name>ERR_DNS_PRINTABLE</name>
+      <full_name>\ERR_DNS_PRINTABLE</full_name>
+      <value><![CDATA[_('Invalid characters have been used in this record.')]]></value>
+    </constant>
+    <constant namespace="global" line="116" package="Default">
+      <name>ERR_EXEC_PDNSSEC</name>
+      <full_name>\ERR_EXEC_PDNSSEC</full_name>
+      <value><![CDATA[_('Failed to call pdnssec utility.')]]></value>
+    </constant>
+    <constant namespace="global" line="117" package="Default">
+      <name>ERR_EXEC_PDNSSEC_SECURE_ZONE</name>
+      <full_name>\ERR_EXEC_PDNSSEC_SECURE_ZONE</full_name>
+      <value><![CDATA[_('Failed to secure zone.')]]></value>
+    </constant>
+    <constant namespace="global" line="118" package="Default">
+      <name>ERR_EXEC_PDNSSEC_RECTIFY_ZONE</name>
+      <full_name>\ERR_EXEC_PDNSSEC_RECTIFY_ZONE</full_name>
+      <value><![CDATA[_('Failed to rectify zone.')]]></value>
+    </constant>
+    <constant namespace="global" line="121" package="Default">
+      <name>SUC_ZONE_ADD</name>
+      <full_name>\SUC_ZONE_ADD</full_name>
+      <value><![CDATA[_('Zone has been added successfully.')]]></value>
+    </constant>
+    <constant namespace="global" line="122" package="Default">
+      <name>SUC_ZONE_DEL</name>
+      <full_name>\SUC_ZONE_DEL</full_name>
+      <value><![CDATA[_('Zone has been deleted successfully.')]]></value>
+    </constant>
+    <constant namespace="global" line="123" package="Default">
+      <name>SUC_ZONE_UPD</name>
+      <full_name>\SUC_ZONE_UPD</full_name>
+      <value><![CDATA[_('Zone has been updated successfully.')]]></value>
+    </constant>
+    <constant namespace="global" line="124" package="Default">
+      <name>SUC_ZONES_UPD</name>
+      <full_name>\SUC_ZONES_UPD</full_name>
+      <value><![CDATA[_('Zones have been updated successfully.')]]></value>
+    </constant>
+    <constant namespace="global" line="125" package="Default">
+      <name>SUC_USER_UPD</name>
+      <full_name>\SUC_USER_UPD</full_name>
+      <value><![CDATA[_('The user has been updated successfully.')]]></value>
+    </constant>
+    <constant namespace="global" line="126" package="Default">
+      <name>SUC_USER_ADD</name>
+      <full_name>\SUC_USER_ADD</full_name>
+      <value><![CDATA[_('The user has been created successfully.')]]></value>
+    </constant>
+    <constant namespace="global" line="127" package="Default">
+      <name>SUC_USER_DEL</name>
+      <full_name>\SUC_USER_DEL</full_name>
+      <value><![CDATA[_('The user has been deleted successfully.')]]></value>
+    </constant>
+    <constant namespace="global" line="128" package="Default">
+      <name>SUC_RECORD_UPD</name>
+      <full_name>\SUC_RECORD_UPD</full_name>
+      <value><![CDATA[_('The record has been updated successfully.')]]></value>
+    </constant>
+    <constant namespace="global" line="129" package="Default">
+      <name>SUC_RECORD_DEL</name>
+      <full_name>\SUC_RECORD_DEL</full_name>
+      <value><![CDATA[_('The record has been deleted successfully.')]]></value>
+    </constant>
+    <constant namespace="global" line="130" package="Default">
+      <name>SUC_COMMENT_UPD</name>
+      <full_name>\SUC_COMMENT_UPD</full_name>
+      <value><![CDATA[_('The comment has been updated successfully.')]]></value>
+    </constant>
+    <constant namespace="global" line="131" package="Default">
+      <name>SUC_SM_DEL</name>
+      <full_name>\SUC_SM_DEL</full_name>
+      <value><![CDATA[_('The supermaster has been deleted successfully.')]]></value>
+    </constant>
+    <constant namespace="global" line="132" package="Default">
+      <name>SUC_SM_ADD</name>
+      <full_name>\SUC_SM_ADD</full_name>
+      <value><![CDATA[_('The supermaster has been added successfully.')]]></value>
+    </constant>
+    <constant namespace="global" line="133" package="Default">
+      <name>SUC_PERM_TEMPL_ADD</name>
+      <full_name>\SUC_PERM_TEMPL_ADD</full_name>
+      <value><![CDATA[_('The permission template has been added successfully.')]]></value>
+    </constant>
+    <constant namespace="global" line="134" package="Default">
+      <name>SUC_PERM_TEMPL_UPD</name>
+      <full_name>\SUC_PERM_TEMPL_UPD</full_name>
+      <value><![CDATA[_('The permission template has been updated successfully.')]]></value>
+    </constant>
+    <constant namespace="global" line="135" package="Default">
+      <name>SUC_PERM_TEMPL_DEL</name>
+      <full_name>\SUC_PERM_TEMPL_DEL</full_name>
+      <value><![CDATA[_('The permission template has been deleted successfully.')]]></value>
+    </constant>
+    <constant namespace="global" line="136" package="Default">
+      <name>SUC_ZONE_TEMPL_ADD</name>
+      <full_name>\SUC_ZONE_TEMPL_ADD</full_name>
+      <value><![CDATA[_('Zone template has been added successfully.')]]></value>
+    </constant>
+    <constant namespace="global" line="137" package="Default">
+      <name>SUC_ZONE_TEMPL_UPD</name>
+      <full_name>\SUC_ZONE_TEMPL_UPD</full_name>
+      <value><![CDATA[_('Zone template has been updated successfully.')]]></value>
+    </constant>
+    <constant namespace="global" line="138" package="Default">
+      <name>SUC_ZONE_TEMPL_DEL</name>
+      <full_name>\SUC_ZONE_TEMPL_DEL</full_name>
+      <value><![CDATA[_('Zone template has been deleted successfully.')]]></value>
+    </constant>
+    <constant namespace="global" line="139" package="Default">
+      <name>SUC_EXEC_PDNSSEC_RECTIFY_ZONE</name>
+      <full_name>\SUC_EXEC_PDNSSEC_RECTIFY_ZONE</full_name>
+      <value><![CDATA[_('Zone has been rectified successfully.')]]></value>
+    </constant>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file inc/error.inc.php</error>
+    </parse_markers>
+  </file>
+  <file path="inc/footer.inc.php" hash="152101fa30c7aa63a207aee5823af7ff" package="Default">
+    <include line="24" type="Include Once" package="Default">
+      <name>version.inc.php</name>
+    </include>
+    <include line="40" type="Include" package="Default">
+      <name>inc/custom_footer.inc.php</name>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file inc/footer.inc.php</error>
+    </parse_markers>
+  </file>
+  <file path="inc/PDOCommon.class.php" hash="5b4ff6bbd90ac933dc162584cc90a7bb" package="Default">
+    <class final="false" abstract="false" namespace="global" line="33" package="Default">
+      <extends/>
+      <name>PDOStatementCommon</name>
+      <full_name>\PDOStatementCommon</full_name>
+      <property final="false" static="false" visibility="private" line="34" namespace="global" package="Default">
+        <name>$pdoStatement</name>
+        <default><![CDATA[]]></default>
+      </property>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="36" package="Default">
+        <name>__construct</name>
+        <full_name>__construct</full_name>
+        <argument line="36">
+          <name>$obj</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="42" package="Default">
+        <name>numRows</name>
+        <full_name>numRows</full_name>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="47" package="Default">
+        <name>fetch</name>
+        <full_name>fetch</full_name>
+        <argument line="47">
+          <name>$fetch_style</name>
+          <default><![CDATA[\PDO::FETCH_ASSOC]]></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="52" package="Default">
+        <name>fetchRow</name>
+        <full_name>fetchRow</full_name>
+        <argument line="52">
+          <name>$fetch_style</name>
+          <default><![CDATA[\PDO::FETCH_ASSOC]]></default>
+          <type/>
+        </argument>
+      </method>
+    </class>
+    <class final="false" abstract="false" namespace="global" line="58" package="Default">
+      <extends>\PDO</extends>
+      <name>PDOCommon</name>
+      <full_name>\PDOCommon</full_name>
+      <property final="false" static="false" visibility="private" line="59" namespace="global" package="Default">
+        <name>$limit</name>
+        <default><![CDATA[0]]></default>
+      </property>
+      <property final="false" static="false" visibility="private" line="60" namespace="global" package="Default">
+        <name>$from</name>
+        <default><![CDATA[0]]></default>
+      </property>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="62" package="Default">
+        <name>__construct</name>
+        <full_name>__construct</full_name>
+        <argument line="62">
+          <name>$dsn</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+        <argument line="62">
+          <name>$username</name>
+          <default><![CDATA['']]></default>
+          <type/>
+        </argument>
+        <argument line="62">
+          <name>$password</name>
+          <default><![CDATA['']]></default>
+          <type/>
+        </argument>
+        <argument line="63">
+          <name>$driver_options</name>
+          <default><![CDATA[array()]]></default>
+          <type/>
+        </argument>
+        <argument line="63">
+          <name>$isQuiet</name>
+          <default><![CDATA[false]]></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="85" package="Default">
+        <name>query</name>
+        <full_name>query</full_name>
+        <argument line="85">
+          <name>$str</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="global" line="124" package="Default">
+        <name>formatSQLforHTML</name>
+        <full_name>formatSQLforHTML</full_name>
+        <argument line="124">
+          <name>$str</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="142" package="Default">
+        <name>queryOne</name>
+        <full_name>queryOne</full_name>
+        <argument line="142">
+          <name>$str</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="152" package="Default">
+        <name>queryRow</name>
+        <full_name>queryRow</full_name>
+        <argument line="152">
+          <name>$str</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="161" package="Default">
+        <name>setLimit</name>
+        <full_name>setLimit</full_name>
+        <argument line="161">
+          <name>$limit</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+        <argument line="161">
+          <name>$from</name>
+          <default><![CDATA[0]]></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="168" package="Default">
+        <name>escape</name>
+        <full_name>escape</full_name>
+        <argument line="168">
+          <name>$str</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+      </method>
+    </class>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file inc/PDOCommon.class.php</error>
+      <error line="33" code="50000">No DocBlock was found for \PDOStatementCommon</error>
+      <error line="34" code="50018">No DocBlock was found for property $pdoStatement</error>
+      <error line="36" code="50010">No DocBlock was found for method __construct()</error>
+      <error line="42" code="50010">No DocBlock was found for method numRows()</error>
+      <error line="47" code="50010">No DocBlock was found for method fetch()</error>
+      <error line="52" code="50010">No DocBlock was found for method fetchRow()</error>
+      <error line="58" code="50000">No DocBlock was found for \PDOCommon</error>
+      <error line="59" code="50018">No DocBlock was found for property $limit</error>
+      <error line="60" code="50018">No DocBlock was found for property $from</error>
+      <error line="62" code="50010">No DocBlock was found for method __construct()</error>
+      <error line="85" code="50010">No DocBlock was found for method query()</error>
+      <error line="124" code="50010">No DocBlock was found for method formatSQLforHTML()</error>
+      <error line="142" code="50010">No DocBlock was found for method queryOne()</error>
+      <error line="152" code="50010">No DocBlock was found for method queryRow()</error>
+      <error line="161" code="50010">No DocBlock was found for method setLimit()</error>
+      <error line="168" code="50010">No DocBlock was found for method escape()</error>
+    </parse_markers>
+  </file>
+  <file path="inc/users.inc.php" hash="7a6c4c232a484f99f96ddcc498276e6c" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <function namespace="global" line="34" package="Default">
+      <name>verify_permission</name>
+      <full_name>\verify_permission</full_name>
+      <argument line="34">
+        <name>$permission</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="96" package="Default">
+      <name>list_permission_templates</name>
+      <full_name>\list_permission_templates</full_name>
+    </function>
+    <function namespace="global" line="118" package="Default">
+      <name>show_users</name>
+      <full_name>\show_users</full_name>
+      <argument line="118">
+        <name>$id</name>
+        <default><![CDATA['']]></default>
+        <type/>
+      </argument>
+      <argument line="118">
+        <name>$rowstart</name>
+        <default><![CDATA[0]]></default>
+        <type/>
+      </argument>
+      <argument line="118">
+        <name>$rowamount</name>
+        <default><![CDATA[9999999]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="172" package="Default">
+      <name>is_valid_user</name>
+      <full_name>\is_valid_user</full_name>
+      <argument line="172">
+        <name>$id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="191" package="Default">
+      <name>user_exists</name>
+      <full_name>\user_exists</full_name>
+      <argument line="191">
+        <name>$user</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="210" package="Default">
+      <name>delete_user</name>
+      <full_name>\delete_user</full_name>
+      <argument line="210">
+        <name>$uid</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="210">
+        <name>$zones</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="242" package="Default">
+      <name>delete_perm_templ</name>
+      <full_name>\delete_perm_templ</full_name>
+      <argument line="242">
+        <name>$ptid</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="273" package="Default">
+      <name>edit_user</name>
+      <full_name>\edit_user</full_name>
+      <argument line="273">
+        <name>$id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="273">
+        <name>$user</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="273">
+        <name>$fullname</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="273">
+        <name>$email</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="273">
+        <name>$perm_templ</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="273">
+        <name>$description</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="273">
+        <name>$active</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="273">
+        <name>$password</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="362" package="Default">
+      <name>change_user_pass</name>
+      <full_name>\change_user_pass</full_name>
+      <argument line="362">
+        <name>$details</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="406" package="Default">
+      <name>get_fullname_from_userid</name>
+      <full_name>\get_fullname_from_userid</full_name>
+      <argument line="406">
+        <name>$id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="424" package="Default">
+      <name>get_owner_from_id</name>
+      <full_name>\get_owner_from_id</full_name>
+      <argument line="424">
+        <name>$id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="451" package="Default">
+      <name>get_fullnames_owners_from_domainid</name>
+      <full_name>\get_fullnames_owners_from_domainid</full_name>
+      <docblock line="444">
+        <description><![CDATA[get_owners_from_domainid]]></description>
+        <long-description><![CDATA[]]></long-description>
+        <tag line="444" name="todo" description="also fetch the subowners"/>
+        <tag line="444" name="param" description="integer the id of the domain" type="\$id" variable="$id">
+          <type by_reference="false">\$id</type>
+        </tag>
+        <tag line="444" name="return" description="the list of owners for this domain" type="String">
+          <type by_reference="false">String</type>
+        </tag>
+      </docblock>
+      <argument line="451">
+        <name>$id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="472" package="Default">
+      <name>verify_user_is_owner_zoneid</name>
+      <full_name>\verify_user_is_owner_zoneid</full_name>
+      <argument line="472">
+        <name>$zoneid</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="493" package="Default">
+      <name>get_user_detail_list</name>
+      <full_name>\get_user_detail_list</full_name>
+      <argument line="493">
+        <name>$specific</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="548" package="Default">
+      <name>get_permissions_by_template_id</name>
+      <full_name>\get_permissions_by_template_id</full_name>
+      <argument line="548">
+        <name>$templ_id</name>
+        <default><![CDATA[0]]></default>
+        <type/>
+      </argument>
+      <argument line="548">
+        <name>$return_name_only</name>
+        <default><![CDATA[false]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="585" package="Default">
+      <name>get_permission_template_details</name>
+      <full_name>\get_permission_template_details</full_name>
+      <argument line="585">
+        <name>$templ_id</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="602" package="Default">
+      <name>get_list_permission_templates</name>
+      <full_name>\get_list_permission_templates</full_name>
+    </function>
+    <function namespace="global" line="623" package="Default">
+      <name>add_perm_templ</name>
+      <full_name>\add_perm_templ</full_name>
+      <argument line="623">
+        <name>$details</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="659" package="Default">
+      <name>update_perm_templ_details</name>
+      <full_name>\update_perm_templ_details</full_name>
+      <argument line="659">
+        <name>$details</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="693" package="Default">
+      <name>update_user_details</name>
+      <full_name>\update_user_details</full_name>
+      <argument line="693">
+        <name>$details</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="783" package="Default">
+      <name>add_new_user</name>
+      <full_name>\add_new_user</full_name>
+      <argument line="783">
+        <name>$details</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file inc/users.inc.php</error>
+      <error line="34" code="50009">No DocBlock was found for function \verify_permission()</error>
+      <error line="96" code="50009">No DocBlock was found for function \list_permission_templates()</error>
+      <error line="118" code="50009">No DocBlock was found for function \show_users()</error>
+      <error line="172" code="50009">No DocBlock was found for function \is_valid_user()</error>
+      <error line="191" code="50009">No DocBlock was found for function \user_exists()</error>
+      <error line="210" code="50009">No DocBlock was found for function \delete_user()</error>
+      <error line="242" code="50009">No DocBlock was found for function \delete_perm_templ()</error>
+      <error line="273" code="50009">No DocBlock was found for function \edit_user()</error>
+      <error line="362" code="50009">No DocBlock was found for function \change_user_pass()</error>
+      <error line="406" code="50009">No DocBlock was found for function \get_fullname_from_userid()</error>
+      <error line="424" code="50009">No DocBlock was found for function \get_owner_from_id()</error>
+      <error line="472" code="50009">No DocBlock was found for function \verify_user_is_owner_zoneid()</error>
+      <error line="493" code="50009">No DocBlock was found for function \get_user_detail_list()</error>
+      <error line="548" code="50009">No DocBlock was found for function \get_permissions_by_template_id()</error>
+      <error line="585" code="50009">No DocBlock was found for function \get_permission_template_details()</error>
+      <error line="602" code="50009">No DocBlock was found for function \get_list_permission_templates()</error>
+      <error line="623" code="50009">No DocBlock was found for function \add_perm_templ()</error>
+      <error line="659" code="50009">No DocBlock was found for function \update_perm_templ_details()</error>
+      <error line="693" code="50009">No DocBlock was found for function \update_user_details()</error>
+      <error line="783" code="50009">No DocBlock was found for function \add_new_user()</error>
+    </parse_markers>
+  </file>
+  <file path="inc/config.inc.php" hash="a9f28cb56ca054f8b75d2d783f1a966a" package="Default">
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file inc/config.inc.php</error>
+    </parse_markers>
+  </file>
+  <file path="inc/PDOLayer.php" hash="789036aa76f84399e67e6f3e6b505ffe" package="Default">
+    <include line="24" type="Include Once" package="Default">
+      <name>PDOCommon.class.php</name>
+    </include>
+    <class final="false" abstract="false" namespace="global" line="26" package="Default">
+      <extends/>
+      <name>PEAR</name>
+      <full_name>\PEAR</full_name>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="27" package="Default">
+        <name>isError</name>
+        <full_name>isError</full_name>
+      </method>
+    </class>
+    <class final="false" abstract="false" namespace="global" line="31" package="Default">
+      <extends/>
+      <name>PDOExtended</name>
+      <full_name>\PDOExtended</full_name>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="34" package="Default">
+        <name>executeMultiple</name>
+        <full_name>executeMultiple</full_name>
+        <argument line="34">
+          <name>$stmt</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+        <argument line="34">
+          <name>$params</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+      </method>
+    </class>
+    <class final="false" abstract="false" namespace="global" line="42" package="Default">
+      <extends>\PDOCommon</extends>
+      <name>PDOLayer</name>
+      <full_name>\PDOLayer</full_name>
+      <property final="false" static="false" visibility="private" line="43" namespace="global" package="Default">
+        <name>$debug</name>
+        <default><![CDATA[false]]></default>
+      </property>
+      <property final="false" static="false" visibility="private" line="44" namespace="global" package="Default">
+        <name>$queries</name>
+        <default><![CDATA[array()]]></default>
+      </property>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="46" package="Default">
+        <name>quote</name>
+        <full_name>quote</full_name>
+        <argument line="46">
+          <name>$str</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+        <argument line="46">
+          <name>$type</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="55" package="Default">
+        <name>setOption</name>
+        <full_name>setOption</full_name>
+        <argument line="55">
+          <name>$option</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+        <argument line="55">
+          <name>$value</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="61" package="Default">
+        <name>getDebugOutput</name>
+        <full_name>getDebugOutput</full_name>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="65" package="Default">
+        <name>query</name>
+        <full_name>query</full_name>
+        <argument line="65">
+          <name>$str</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="73" package="Default">
+        <name>disconnect</name>
+        <full_name>disconnect</full_name>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="77" package="Default">
+        <name>loadModule</name>
+        <full_name>loadModule</full_name>
+        <argument line="77">
+          <name>$name</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="84" package="Default">
+        <name>listTables</name>
+        <full_name>listTables</full_name>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="107" package="Default">
+        <name>createTable</name>
+        <full_name>createTable</full_name>
+        <argument line="107">
+          <name>$name</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+        <argument line="107">
+          <name>$fields</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+        <argument line="107">
+          <name>$options</name>
+          <default><![CDATA[array()]]></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="148" package="Default">
+        <name>dropTable</name>
+        <full_name>dropTable</full_name>
+        <argument line="148">
+          <name>$name</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+      </method>
+    </class>
+    <markers>
+      <todo line="85">addapt this function also to pgsql &amp; sqlite</todo>
+    </markers>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file inc/PDOLayer.php</error>
+      <error line="26" code="50000">No DocBlock was found for \PEAR</error>
+      <error line="27" code="50010">No DocBlock was found for method isError()</error>
+      <error line="31" code="50000">No DocBlock was found for \PDOExtended</error>
+      <error line="34" code="50010">No DocBlock was found for method executeMultiple()</error>
+      <error line="42" code="50000">No DocBlock was found for \PDOLayer</error>
+      <error line="43" code="50018">No DocBlock was found for property $debug</error>
+      <error line="44" code="50018">No DocBlock was found for property $queries</error>
+      <error line="46" code="50010">No DocBlock was found for method quote()</error>
+      <error line="55" code="50010">No DocBlock was found for method setOption()</error>
+      <error line="61" code="50010">No DocBlock was found for method getDebugOutput()</error>
+      <error line="65" code="50010">No DocBlock was found for method query()</error>
+      <error line="73" code="50010">No DocBlock was found for method disconnect()</error>
+      <error line="77" code="50010">No DocBlock was found for method loadModule()</error>
+      <error line="84" code="50010">No DocBlock was found for method listTables()</error>
+      <error line="107" code="50010">No DocBlock was found for method createTable()</error>
+      <error line="148" code="50010">No DocBlock was found for method dropTable()</error>
+    </parse_markers>
+  </file>
+  <file path="inc/toolkit.inc.php" hash="ece69ee22bfc945e659c23e3f52375a0" package="Default">
+    <include line="6" type="Include" package="Default">
+      <name>inc/benchmark.php</name>
+    </include>
+    <include line="36" type="Include Once" package="Default">
+      <name>config-me.inc.php</name>
+    </include>
+    <include line="38" type="Include Once" package="Default">
+      <name>config.inc.php</name>
+    </include>
+    <include line="120" type="Require Once" package="Default">
+      <name>database.inc.php</name>
+    </include>
+    <include line="143" type="Require Once" package="Default">
+      <name>i18n.inc.php</name>
+    </include>
+    <include line="144" type="Require Once" package="Default">
+      <name>error.inc.php</name>
+    </include>
+    <include line="145" type="Require Once" package="Default">
+      <name>auth.inc.php</name>
+    </include>
+    <include line="146" type="Require Once" package="Default">
+      <name>users.inc.php</name>
+    </include>
+    <include line="147" type="Require Once" package="Default">
+      <name>dns.inc.php</name>
+    </include>
+    <include line="148" type="Require Once" package="Default">
+      <name>record.inc.php</name>
+    </include>
+    <include line="149" type="Require Once" package="Default">
+      <name>templates.inc.php</name>
+    </include>
+    <include line="269" type="Include Once" package="Default">
+      <name>header.inc.php</name>
+    </include>
+    <include line="292" type="Include Once" package="Default">
+      <name>footer.inc.php</name>
+    </include>
+    <constant namespace="global" line="50" package="Default">
+      <name>ROWSTART</name>
+      <full_name>\ROWSTART</full_name>
+      <value><![CDATA[0]]></value>
+    </constant>
+    <constant namespace="global" line="59" package="Default">
+      <name>LETTERSTART</name>
+      <full_name>\LETTERSTART</full_name>
+      <value><![CDATA["a"]]></value>
+    </constant>
+    <constant namespace="global" line="71" package="Default">
+      <name>ZONE_SORT_BY</name>
+      <full_name>\ZONE_SORT_BY</full_name>
+      <value><![CDATA["name"]]></value>
+    </constant>
+    <constant namespace="global" line="83" package="Default">
+      <name>RECORD_SORT_BY</name>
+      <full_name>\RECORD_SORT_BY</full_name>
+      <value><![CDATA["name"]]></value>
+    </constant>
+    <function namespace="global" line="163" package="Default">
+      <name>show_pages</name>
+      <full_name>\show_pages</full_name>
+      <argument line="163">
+        <name>$amount</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="163">
+        <name>$rowamount</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="163">
+        <name>$id</name>
+        <default><![CDATA['']]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="184" package="Default">
+      <name>show_letters</name>
+      <full_name>\show_letters</full_name>
+      <argument line="184">
+        <name>$letterstart</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="184">
+        <name>$userid</name>
+        <default><![CDATA[true]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="226" package="Default">
+      <name>zone_letter_start</name>
+      <full_name>\zone_letter_start</full_name>
+      <argument line="226">
+        <name>$letter</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="226">
+        <name>$userid</name>
+        <default><![CDATA[true]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="247" package="Default">
+      <name>error</name>
+      <full_name>\error</full_name>
+      <argument line="247">
+        <name>$msg</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="255" package="Default">
+      <name>success</name>
+      <full_name>\success</full_name>
+      <argument line="255">
+        <name>$msg</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="267" package="Default">
+      <name>message</name>
+      <full_name>\message</full_name>
+      <argument line="267">
+        <name>$msg</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="300" package="Default">
+      <name>clean_page</name>
+      <full_name>\clean_page</full_name>
+      <argument line="300">
+        <name>$arg</name>
+        <default><![CDATA['']]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="323" package="Default">
+      <name>get_status</name>
+      <full_name>\get_status</full_name>
+      <argument line="323">
+        <name>$res</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="335" package="Default">
+      <name>parse_template_value</name>
+      <full_name>\parse_template_value</full_name>
+      <argument line="335">
+        <name>$val</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="335">
+        <name>$domain</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="346" package="Default">
+      <name>is_valid_email</name>
+      <full_name>\is_valid_email</full_name>
+      <argument line="346">
+        <name>$address</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="355" package="Default">
+      <name>v_num</name>
+      <full_name>\v_num</full_name>
+      <argument line="355">
+        <name>$string</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="364" package="Default">
+      <name>debug_print</name>
+      <full_name>\debug_print</full_name>
+      <argument line="364">
+        <name>$var</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="371" package="Default">
+      <name>set_timezone</name>
+      <full_name>\set_timezone</full_name>
+    </function>
+    <function namespace="global" line="383" package="Default">
+      <name>generate_salt</name>
+      <full_name>\generate_salt</full_name>
+      <argument line="383">
+        <name>$len</name>
+        <default><![CDATA[5]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="395" package="Default">
+      <name>extract_salt</name>
+      <full_name>\extract_salt</full_name>
+      <argument line="395">
+        <name>$password</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="399" package="Default">
+      <name>mix_salt</name>
+      <full_name>\mix_salt</full_name>
+      <argument line="399">
+        <name>$salt</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+      <argument line="399">
+        <name>$pass</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="403" package="Default">
+      <name>gen_mix_salt</name>
+      <full_name>\gen_mix_salt</full_name>
+      <argument line="403">
+        <name>$pass</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <markers>
+      <todo line="3">display elapsed time and memory consumption,</todo>
+    </markers>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file inc/toolkit.inc.php</error>
+      <error line="163" code="50009">No DocBlock was found for function \show_pages()</error>
+      <error line="184" code="50009">No DocBlock was found for function \show_letters()</error>
+      <error line="226" code="50009">No DocBlock was found for function \zone_letter_start()</error>
+      <error line="247" code="50009">No DocBlock was found for function \error()</error>
+      <error line="255" code="50009">No DocBlock was found for function \success()</error>
+      <error line="267" code="50009">No DocBlock was found for function \message()</error>
+      <error line="300" code="50009">No DocBlock was found for function \clean_page()</error>
+      <error line="323" code="50009">No DocBlock was found for function \get_status()</error>
+      <error line="335" code="50009">No DocBlock was found for function \parse_template_value()</error>
+      <error line="346" code="50009">No DocBlock was found for function \is_valid_email()</error>
+      <error line="355" code="50009">No DocBlock was found for function \v_num()</error>
+      <error line="364" code="50009">No DocBlock was found for function \debug_print()</error>
+      <error line="371" code="50009">No DocBlock was found for function \set_timezone()</error>
+      <error line="383" code="50009">No DocBlock was found for function \generate_salt()</error>
+      <error line="395" code="50009">No DocBlock was found for function \extract_salt()</error>
+      <error line="399" code="50009">No DocBlock was found for function \mix_salt()</error>
+      <error line="403" code="50009">No DocBlock was found for function \gen_mix_salt()</error>
+    </parse_markers>
+  </file>
+  <file path="inc/i18n.inc.php" hash="922e5e963cf2d09537d10e2c67e01af1" package="Default">
+    <include line="25" type="Include Once" package="Default">
+      <name>inc/config.inc.php</name>
+    </include>
+    <include line="26" type="Include Once" package="Default">
+      <name>inc/error.inc.php</name>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file inc/i18n.inc.php</error>
+    </parse_markers>
+  </file>
+  <file path="inc/config-me.inc.php" hash="92c6cd8d72bd226c5b2fa13a571fdd0f" package="Default">
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file inc/config-me.inc.php</error>
+    </parse_markers>
+  </file>
+  <file path="inc/database.inc.php" hash="36e4d2b5b9077049cfb29ce4f48e72d9" package="Default">
+    <include line="36" type="Include Once" package="Default">
+      <name>PDOLayer.php</name>
+    </include>
+    <include line="32" type="Include Once" package="Default">
+      <name>MDB2.php</name>
+    </include>
+    <include line="42" type="Include Once" package="Default">
+      <name>MDB2.php</name>
+    </include>
+    <include line="47" type="Include Once" package="Default">
+      <name>PDOLayer.php</name>
+    </include>
+    <include line="63" type="Include Once" package="Default">
+      <name>footer.inc.php</name>
+    </include>
+    <include line="87" type="Include Once" package="Default">
+      <name>header.inc.php</name>
+    </include>
+    <include line="89" type="Include Once" package="Default">
+      <name>footer.inc.php</name>
+    </include>
+    <include line="94" type="Include Once" package="Default">
+      <name>header.inc.php</name>
+    </include>
+    <include line="96" type="Include Once" package="Default">
+      <name>footer.inc.php</name>
+    </include>
+    <include line="101" type="Include Once" package="Default">
+      <name>header.inc.php</name>
+    </include>
+    <include line="103" type="Include Once" package="Default">
+      <name>footer.inc.php</name>
+    </include>
+    <include line="108" type="Include Once" package="Default">
+      <name>header.inc.php</name>
+    </include>
+    <include line="110" type="Include Once" package="Default">
+      <name>footer.inc.php</name>
+    </include>
+    <include line="115" type="Include Once" package="Default">
+      <name>header.inc.php</name>
+    </include>
+    <include line="117" type="Include Once" package="Default">
+      <name>footer.inc.php</name>
+    </include>
+    <include line="132" type="Include Once" package="Default">
+      <name>header.inc.php</name>
+    </include>
+    <include line="134" type="Include Once" package="Default">
+      <name>footer.inc.php</name>
+    </include>
+    <include line="200" type="Include Once" package="Default">
+      <name>header.inc.php</name>
+    </include>
+    <include line="202" type="Include Once" package="Default">
+      <name>footer.inc.php</name>
+    </include>
+    <function namespace="global" line="54" package="Default">
+      <name>dbError</name>
+      <full_name>\dbError</full_name>
+      <argument line="54">
+        <name>$msg</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="71" package="Default">
+      <name>dbConnect</name>
+      <full_name>\dbConnect</full_name>
+    </function>
+    <markers>
+      <fixme line="177">- it's strange, but this doesn't work, perhaps bug in MDB2 library</fixme>
+    </markers>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file inc/database.inc.php</error>
+      <error line="54" code="50009">No DocBlock was found for function \dbError()</error>
+      <error line="71" code="50009">No DocBlock was found for function \dbConnect()</error>
+    </parse_markers>
+  </file>
+  <file path="edit_zone_templ.php" hash="2cd436ada6f9972b78a06d6b585ccbb6" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <include line="25" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="34" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <include line="189" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file edit_zone_templ.php</error>
+    </parse_markers>
+  </file>
+  <file path="delete_user.php" hash="e1cb486b90b66d63711e266d301ea36c" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <include line="25" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="33" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <include line="58" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <include line="120" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file delete_user.php</error>
+    </parse_markers>
+  </file>
+  <file path="delete_domains.php" hash="0bc7ad10bb7acc5b8c5d2168b7600506" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <include line="25" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="79" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file delete_domains.php</error>
+    </parse_markers>
+  </file>
+  <file path="users.php" hash="dcbc99e527ee88ca5c9fdb513ffb724c" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <include line="25" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="147" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file users.php</error>
+    </parse_markers>
+  </file>
+  <file path="delete_zone_templ.php" hash="ca11dbc7570649554d1496e1935c8d24" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <include line="25" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="58" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file delete_zone_templ.php</error>
+    </parse_markers>
+  </file>
+  <file path="delete_supermaster.php" hash="3588108f3706697586c038319a30f8ba" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <include line="25" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="74" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file delete_supermaster.php</error>
+    </parse_markers>
+  </file>
+  <file path="bulk_registration.php" hash="4baa85dd3f5a8c1bc9d42f5817c671db" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <include line="25" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="155" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file bulk_registration.php</error>
+    </parse_markers>
+  </file>
+  <file path="add_zone_templ.php" hash="9468f9348cec1421742e2ffe82649587" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <include line="25" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="59" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <markers>
+      <todo line="34">otherwise repopulate values to form</todo>
+    </markers>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file add_zone_templ.php</error>
+    </parse_markers>
+  </file>
+  <file path="delete_zone_templ_record.php" hash="5bd64dc0f22701028677b3ab3fb5db9f" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <include line="25" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="81" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file delete_zone_templ_record.php</error>
+    </parse_markers>
+  </file>
+  <file path="edit_record.php" hash="d242f51055962eb97fe53ee6c005216b" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <include line="25" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="121" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file edit_record.php</error>
+    </parse_markers>
+  </file>
+  <file path="edit_zone_templ_record.php" hash="fff6d92d002871960716fa7fac2e4477" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <include line="25" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="98" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file edit_zone_templ_record.php</error>
+    </parse_markers>
+  </file>
+  <file path="edit.php" hash="ed8e528172809a1c01b56357e56eeb1d" package="Default">
+    <include line="25" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <include line="26" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="37" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <include line="443" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file edit.php</error>
+    </parse_markers>
+  </file>
+  <file path="search.php" hash="4acb0c575d1c2bb8bd52b19263e3e6d8" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <include line="25" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="29" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <include line="174" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file search.php</error>
+    </parse_markers>
+  </file>
+  <file path="add_user.php" hash="de21b277a85edfdad6952674191cf16c" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <include line="25" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="82" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file add_user.php</error>
+    </parse_markers>
+  </file>
+  <file path="add_zone_slave.php" hash="6e6d7a2b7e57f2b0b4496224fef139f4" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <include line="25" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="114" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file add_zone_slave.php</error>
+    </parse_markers>
+  </file>
+  <file path="edit_perm_templ.php" hash="67678790a96950d8f4568ffa3511f1d7" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <include line="25" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="91" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file edit_perm_templ.php</error>
+    </parse_markers>
+  </file>
+  <file path="dynamic_update.php" hash="ab499ca19c36023346812f5b26c2f352" package="Default">
+    <include line="24" type="Require" package="Default">
+      <name>inc/config.inc.php</name>
+    </include>
+    <include line="25" type="Require" package="Default">
+      <name>inc/database.inc.php</name>
+    </include>
+    <function namespace="global" line="30" package="Default">
+      <name>safe</name>
+      <full_name>\safe</full_name>
+      <argument line="30">
+        <name>$value</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="36" package="Default">
+      <name>status_exit</name>
+      <full_name>\status_exit</full_name>
+      <argument line="36">
+        <name>$status</name>
+        <default><![CDATA[]]></default>
+        <type/>
+      </argument>
+    </function>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file dynamic_update.php</error>
+      <error line="30" code="50009">No DocBlock was found for function \safe()</error>
+      <error line="36" code="50009">No DocBlock was found for function \status_exit()</error>
+    </parse_markers>
+  </file>
+  <file path="list_perm_templ.php" hash="96f76ea7e3f30e5f846f95553817ce25" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <include line="25" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="66" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file list_perm_templ.php</error>
+    </parse_markers>
+  </file>
+  <file path="delete_record.php" hash="13e5199b2227877c9db7ffbdfe8db6d3" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <include line="25" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="106" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file delete_record.php</error>
+    </parse_markers>
+  </file>
+  <file path="list_supermasters.php" hash="1835dc963383af5d7bf9027bfb87021a" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <include line="25" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="64" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file list_supermasters.php</error>
+    </parse_markers>
+  </file>
+  <file path="edit_user.php" hash="d5f24e3d1c6fa897243d912870f7301a" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <include line="25" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="164" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file edit_user.php</error>
+    </parse_markers>
+  </file>
+  <file path="add_supermaster.php" hash="45407cf2eb5fabc87e0bb936baf32831" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <include line="25" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="113" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file add_supermaster.php</error>
+    </parse_markers>
+  </file>
+  <file path="add_zone_master.php" hash="3608d38effa32f62f5b9df2e23c7390b" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <include line="25" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="164" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <markers>
+      <todo line="73">repopulate domain name(s) to the form if there was an error occured</todo>
+    </markers>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file add_zone_master.php</error>
+    </parse_markers>
+  </file>
+  <file path="add_record.php" hash="e96c46e6a024bb846ba5321334328bec" package="Default">
+    <include line="24" type="Require Once" package="Default">
+      <name>inc/toolkit.inc.php</name>
+    </include>
+    <include line="25" type="Include Once" package="Default">
+      <name>inc/header.inc.php</name>
+    </include>
+    <include line="82" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <include line="188" type="Include Once" package="Default">
+      <name>inc/footer.inc.php</name>
+    </include>
+    <parse_markers>
+      <error line="0" code="50007">No page-level DocBlock was found in file add_record.php</error>
+    </parse_markers>
+  </file>
+  <package name="Default" full_name="Default"/>
+  <namespace name="global" full_name="global"/>
+  <marker count="10">todo</marker>
+  <marker count="1">fixme</marker>
+  <deprecated count="0"/>
+</project>
