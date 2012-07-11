@@ -446,7 +446,7 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template)
 			$response = $db->query("INSERT INTO domains (name, type) VALUES (".$db->quote($domain, 'text').", ".$db->quote($type, 'text').")");
 			if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
-            if ($db_layer == 'MDB2' && $db_type == 'mysql') {
+            if ($db_layer == 'MDB2' && ($db_type == 'mysql' || $db_type == 'pgsql')) {
 			    $domain_id = $db->lastInsertId('domains', 'id');
             } else if ($db_layer == 'PDO' && $db_type == 'pgsql') {
                 $domain_id = $db->lastInsertId('domains_id_seq');
