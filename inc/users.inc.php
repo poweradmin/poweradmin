@@ -635,7 +635,7 @@ function add_perm_templ($details) {
 	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
-    if ($db_layer == 'MDB2' && $db_type == 'mysql') {
+    if ($db_layer == 'MDB2' && ($db_type == 'mysql' || $db_type == 'pgsql')) {
         $perm_templ_id = $db->lastInsertId('perm_templ', 'id');
     } else if ($db_layer == 'PDO' && $db_type == 'pgsql') {
         $perm_templ_id = $db->lastInsertId('perm_templ_id_seq');
