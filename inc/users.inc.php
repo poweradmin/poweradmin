@@ -24,13 +24,17 @@
 require_once("inc/toolkit.inc.php");
 
 
-/* 
+/** Verify User has Permission Name
+ *
  *  Function to see if user has right to do something. It will check if
  *  user has "ueberuser" bit set. If it isn't, it will check if the user has
  *  the specific permission. It returns "false" if the user doesn't have the
  *  right, and "true" if the user has. 
+ *
+ *  @param string $permission Permission name
+ *
+ *  @return boolean true if user has permission, false otherwise
  */
-
 function verify_permission($permission)
 {
     global $db;
@@ -93,6 +97,10 @@ function verify_permission($permission)
     }
 }
 
+/** List Permission Templates
+ *
+ * @return mixed[] array of templates [id, name, descr]
+ */
 function list_permission_templates() {
 	global $db;
 	$query = "SELECT * FROM perm_templ ORDER BY name";
@@ -110,10 +118,15 @@ function list_permission_templates() {
 	return $template_list;
 }
 
-/*
- * Retrieve all users.
+/** Retrieve all users
+ *
  * Its to show_users therefore the odd name. Has to be changed.
- * return values: an array with all users in it.
+ *
+ * @param int $id Exclude User ID
+ * @param int $rowstart Startring row number
+ * @param int $rowamount Number of rows to return this query
+ *
+ * @return mixed[] array with all users [id,username,fullname,email,description,active,numdomains]
  */
 function show_users($id='',$rowstart=0,$rowamount=9999999)
 {
@@ -165,9 +178,13 @@ function show_users($id='',$rowstart=0,$rowamount=9999999)
 }
 
 
-/*
+/** Check if Valid User
+ *
  * Check if the given $userid is connected to a valid user.
- * return values: true if user exists, false if users doesnt exist.
+ *
+ * @param int $id User ID
+ *
+ * @return boolean true if user exists, false if users doesnt exist
  */
  function is_valid_user($id)
 {
@@ -184,9 +201,13 @@ function show_users($id='',$rowstart=0,$rowamount=9999999)
 }
 
 
-/*
+/** Check if Username Exists
+ *
  * Checks if a given username exists in the database.
- * return values: true if exists, false if not.
+ *
+ * @param string $user Username
+ *
+ * @return boolean true if exists, false if not
  */
 function user_exists($user)
 {
@@ -203,10 +224,18 @@ function user_exists($user)
 }
 
 
-
-/*
- * Delete a user from the system
-s */
+/** Delete User ID
+ *
+ * Delete a user from the system. Will also delete zones owned by user or
+ * re-assign those zones to a new specified owner.
+ * $zones is an array of zone 'zid's to delete or re-assign depending on
+ * 'target' value [delete,new_owner] and 'newowner' value
+ *
+ * @param int $uid User ID to delete
+ * @param mixed[] $zones Array of zones
+ *
+ * @return boolean true on success, false otherwise
+ */
 function delete_user($uid,$zones)
 {
 	global $db;
@@ -239,6 +268,12 @@ function delete_user($uid,$zones)
 	return true;
 }
 
+/** Delete Permission Template ID
+ *
+ * @param int $ptid Permission template ID
+ *
+ * @return boolean true on success, false otherwise
+ */
 function delete_perm_templ($ptid) {
 
 	global $db;
@@ -266,9 +301,20 @@ function delete_perm_templ($ptid) {
 	}
 }
 
-/*
+/** Modify User Details
+ *
  * Edit the information of an user.. sloppy implementation with too many queries.. (2) :)
- * return values: true if succesful
+ *
+ * @param int $id User ID
+ * @param string $user Username
+ * @param string $fullname Full Name
+ * @param string $email Email address
+ * @param string $perm_templ Permission Template Name
+ * @param string $description Description
+ * @param int $active Active User
+ * @param string $password Password
+ *
+ * @return boolean true if succesful, false otherwise
  */
 function edit_user($id, $user, $fullname, $email, $perm_templ, $description, $active, $password)
 {
@@ -354,10 +400,14 @@ function edit_user($id, $user, $fullname, $email, $perm_templ, $description, $ac
 	return true;
 }
 
-/*
+/** Change User Password
+ *
  * Change the pass of the user.
  * The user is automatically logged out after the pass change.
- * return values: none.
+ *
+ * @param mixed[] User Details
+ *
+ * @return null
  */
 function change_user_pass($details) {
 	global $db;
@@ -399,9 +449,12 @@ function change_user_pass($details) {
 }
 
 
-/*
+/** Get User FullName from User ID
+ *
  * Get a fullname when you have a userid.
- * return values: gives the fullname from a userid.
+ * @param int $id User ID
+ * 
+ * @return string Full Name
  */
 function get_fullname_from_userid($id) {
 	global $db;
@@ -417,9 +470,13 @@ function get_fullname_from_userid($id) {
 }
 
 
-/*
+/** Get User FullName from User ID
+ * fixme: Duplicate function
+ *
  * Get a fullname when you have a userid.
- * return values: gives the fullname from a userid.
+ * @param int $id User ID
+ * 
+ * @return string Full Name
  */
 function get_owner_from_id($id)
 {
@@ -441,12 +498,13 @@ function get_owner_from_id($id)
 	error(ERR_INV_ARG);
 }
 
-/**
- * get_owners_from_domainid
+/** Get Full Names of owners for a Domain ID
  *
  * @todo also fetch the subowners
- * @param $id integer the id of the domain
- * @return String the list of owners for this domain
+ *
+ * @param int $id Domain ID
+ *
+ * @return string[] array of owners for domain
  */
 function get_fullnames_owners_from_domainid($id) {
 
@@ -468,7 +526,12 @@ function get_fullnames_owners_from_domainid($id) {
 }
 
 
-
+/** Verify User is Zone ID owner
+ *
+ * @param int $zoneid Zone ID
+ *
+ * @return int 1 if owner, 0 if not owner
+ */
 function verify_user_is_owner_zoneid($zoneid) {
 	global $db;
 
@@ -489,13 +552,20 @@ function verify_user_is_owner_zoneid($zoneid) {
 	error(ERR_INV_ARG);
 }
 
-
+/** Get User Details
+ *
+ * Gets an array of all users and their details
+ *
+ * @param int $specific User ID (optional)
+ *
+ * @return mixed[] array of user details
+ */
 function get_user_detail_list($specific) {
 
 	global $db;
 	$userid=$_SESSION['userid'];
 
-
+  // fixme: does this actually verify the permission?
 	if (v_num($specific)) {
 		$sql_add = "AND users.id = " . $db->quote($specific, 'integer') ;
 	} else {
@@ -540,11 +610,18 @@ function get_user_detail_list($specific) {
 }
 
 
-// Get a list of permissions that are available. If first argument is "0", it
-// should return all available permissions. If the first argument is > "0", it
-// should return the permissions assigned to that particular template only. If
-// second argument is true, only the permission names are returned.
-
+/** Get List of Permissions
+ *
+ * Get a list of permissions that are available. If first argument is "0", it
+ * should return all available permissions. If the first argument is > "0", it
+ * should return the permissions assigned to that particular template only. If
+ * second argument is true, only the permission names are returned.
+ *
+ * @param int $templ_id Template ID (optional) [default=0]
+ * @param boolean $return_name_only Return name only or all details (optional) [default=false]
+ *
+ * @return mixed[] array of permissions [id,name,descr] or permission names [name]
+ */
 function get_permissions_by_template_id($templ_id=0, $return_name_only=false) {
 	global $db;
 
@@ -580,8 +657,12 @@ function get_permissions_by_template_id($templ_id=0, $return_name_only=false) {
 }
 
 
-// Get name and description of template based on template ID.
-
+/** Get name and description of template from Template ID
+ *
+ * @param int $templ_id Template ID
+ *
+ * @return mixed[] Template details
+ */
 function get_permission_template_details($templ_id) {
 	global $db;
 
@@ -597,8 +678,10 @@ function get_permission_template_details($templ_id) {
 }	
 
 
-// Get a list of all available permission templates.
-
+/** Get list of all permission templates
+ *
+ * @return mixed[] array of permission template details [id,name,descr]
+ */
 function get_list_permission_templates() {
 	global $db;
 
@@ -618,8 +701,12 @@ function get_list_permission_templates() {
 }
 
 
-// Add a permission template.
-
+/** Add a Permission Template
+ *
+ * @param mixed[] $details Permission template details [templ_name,templ_descr,perm_id]
+ *
+ * @return boolean true on success, false otherwise
+ */
 function add_perm_templ($details) {
 	global $db;
     global $db_layer;
@@ -654,8 +741,12 @@ function add_perm_templ($details) {
 	return true;
 }
 
-// Update all details of a permission template.
-
+/** Update permission template details
+ *
+ * @param mixed[] $details Permission Template Details
+ *
+ * @return boolean true on success, false otherwise
+ */
 function update_perm_templ_details($details) {
 	global $db;
 
@@ -690,6 +781,12 @@ function update_perm_templ_details($details) {
 	return true;
 }
 
+/** Update User Details
+ *
+ * @param mixed[] $details User details
+ *
+ * @return boolean true on success, false otherise
+ */
 function update_user_details($details) {
 
 	global $db;
@@ -778,7 +875,12 @@ function update_user_details($details) {
 	return true;		
 }
 
-// Add a new user
+/** Add a new user
+ *
+ * @param mixed[] $details Array of User details
+ *
+ * @return boolean true on success, false otherwise
+ */
 
 function add_new_user($details) {
 	global $db;

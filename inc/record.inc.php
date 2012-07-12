@@ -21,6 +21,17 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/** Record functions
+ *
+ */
+
+
+/** Check if Zone ID exists
+ *
+ * @param int $zid Zone ID
+ *
+ * @return boolean|int Domain count or false on failure
+ */
 function zone_id_exists($zid) {
 	global $db;
 	$query = "SELECT COUNT(id) FROM domains WHERE id = " . $db->quote($zid, 'integer');
@@ -29,6 +40,12 @@ function zone_id_exists($zid) {
 	return $count;
 }
 
+/** Get Zone ID from Record ID
+ *
+ * @param int $rid Record ID
+ *
+ * @return int Zone ID
+ */
 function get_zone_id_from_record_id($rid) {
 	global $db;
 	$query = "SELECT domain_id FROM records WHERE id = " . $db->quote($rid, 'integer');
@@ -36,6 +53,12 @@ function get_zone_id_from_record_id($rid) {
 	return $zid;
 }
 
+/** Count Zone Records for Zone ID
+ *
+ * @param int $zone_id Zone ID
+ *
+ * @return int Record count
+ */
 function count_zone_records($zone_id) {
 	global $db;
 	$sqlq = "SELECT COUNT(id) FROM records WHERE domain_id = ".$db->quote($zone_id, 'integer');
@@ -43,41 +66,68 @@ function count_zone_records($zone_id) {
 	return $record_count;
 }
 
-function get_soa_record($domain_id) {
+/** Get SOA record content for Zone ID
+ *
+ * @param int $zone_id Zone ID
+ *
+ * @return string SOA content
+ */
+function get_soa_record($zone_id) {
 	global $db;
 
-	$sqlq = "SELECT content FROM records WHERE type = ".$db->quote('SOA', 'text')." AND domain_id = ".$db->quote($domain_id, 'integer');
+	$sqlq = "SELECT content FROM records WHERE type = ".$db->quote('SOA', 'text')." AND domain_id = ".$db->quote($zone_id, 'integer');
 	$result = $db->queryOne($sqlq);
 	
 	return $result;
 }
 
+/** Get SOA Serial Number
+ *
+ * @param string $soa_rec SOA record content
+ *
+ * @return string SOA serial
+ */
 function get_soa_serial($soa_rec) {
 	$soa = explode(" ", $soa_rec);
 	return $soa[2];
 }
 
+/** Get Next Date
+ *
+ * @param string $curr_date Current date in YYYYMMDD format
+ *
+ * @return string Date +1 day
+ */
 function get_next_date($curr_date) {
 	$next_date = date('Ymd', strtotime('+1 day', strtotime($curr_date)));
 	return $next_date;
 }
 
+/** Get Next Serial
+ *
+ * Zone transfer to zone slave(s) will occur only if the serial number
+ * of the SOA RR is arithmetically greater that the previous one 
+ * (as defined by RFC-1982).
+ * 
+ * The serial should be updated, unless:
+ * 
+ * - the serial is set to "0", see http://doc.powerdns.com/types.html#id482176
+ * 
+ * - set a fresh serial ONLY if the existing serial is lower than the current date
+ * 
+ * - update date in serial if it reaches limit of revisions for today or do you 
+ * think that ritual suicide is better in such case?
+ * 
+ * "This works unless you will require to make more than 99 changes until the new 
+ * date is reached - in which case perhaps ritual suicide is the best option."
+ * http://www.zytrax.com/books/dns/ch9/serial.html
+ *
+ * @param string $curr_serial Current Serial No
+ * @param string $today Optional date for "today"
+ *
+ * @return string Next serial number
+ */
 function get_next_serial($curr_serial, $today = '') {
-	// Zone transfer to zone slave(s) will occur only if the serial number
-	// of the SOA RR is arithmetically greater that the previous one 
-	// (as defined by RFC-1982).
-
-	// The serial should be updated, unless:
-	//  - the serial is set to "0", see http://doc.powerdns.com/types.html#id482176
-	//
-	//  - set a fresh serial ONLY if the existing serial is lower than the current date
-	//
-	//	- update date in serial if it reaches limit of revisions for today or do you 
-	//	think that ritual suicide is better in such case?
-	//
-	// "This works unless you will require to make more than 99 changes until the new 
-	// date is reached - in which case perhaps ritual suicide is the best option."
-	// http://www.zytrax.com/books/dns/ch9/serial.html
 
 	if ($today == '') {
 		set_timezone();
@@ -123,6 +173,13 @@ function get_next_serial($curr_serial, $today = '') {
 	return $serial;
 }
 
+/** Update SOA record
+ *
+ * @param int $domain_id Domain ID
+ * @param string $content SOA content to set
+ * 
+ * @return boolean true if success
+ */
 function update_soa_record($domain_id, $content) {
 	global $db;
 	
@@ -134,6 +191,13 @@ function update_soa_record($domain_id, $content) {
 	return true;
 }
 
+/** Set SOA serial in SOA content
+ *
+ * @param string $soa_rec SOA record content
+ * @param string $serial New serial number
+ *
+ * @return string Updated SOA record
+ */
 function set_soa_serial($soa_rec, $serial) {
 	// Split content of current SOA record into an array. 
 	$soa = explode(" ", $soa_rec);
@@ -146,6 +210,14 @@ function set_soa_serial($soa_rec, $serial) {
 	return $soa_rec;
 }
 
+/** Update SOA serial
+ *
+ * Increments SOA serial to next possible number
+ *
+ * @param int $domain_id Domain ID
+ *
+ * @return boolean true if success
+ */
 function update_soa_serial($domain_id) {
 	$soa_rec = get_soa_record($domain_id);
     if ($soa_rec == NULL) {
@@ -163,6 +235,12 @@ function update_soa_serial($domain_id) {
 	return true;
 }  
 
+/** Get Zone comment
+ *
+ * @param int $zone_id Zone ID
+ *
+ * @return string Zone Comment
+ */
 function get_zone_comment($zone_id) {
 	global $db;
 	$query = "SELECT comment FROM zones WHERE domain_id = " . $db->quote($zone_id, 'integer');
@@ -173,10 +251,14 @@ function get_zone_comment($zone_id) {
 	return $comment;
 }
 
-/*
- * Edit the zone comment.
+/** Edit the zone comment
+ *
  * This function validates it if correct it inserts it into the database.
- * return values: true if succesful.
+ *
+ * @param int $zone_id Zone ID
+ * @param string $comment Comment to set
+ *
+ * @return boolean true on success
  */
 function edit_zone_comment($zone_id,$comment) {
 	
@@ -213,10 +295,13 @@ function edit_zone_comment($zone_id,$comment) {
 	return true;
 }
 
-/*
- * Edit a record.
+/** Edit a record
+ *
  * This function validates it if correct it inserts it into the database.
- * return values: true if succesful.
+ *
+ * @param mixed[] $record Record structure to update
+ *
+ * @return boolean true if successful
  */
 function edit_record($record) {
 	
@@ -255,12 +340,20 @@ function edit_record($record) {
 }
 
 
-/*
- * Adds a record.
+/** Add a record
+ *
  * This function validates it if correct it inserts it into the database.
- * return values: true if succesful.
+ *
+ * @param int $zone_id Zone ID
+ * @param string $name Name part of record
+ * @param string $type Type of record
+ * @param string $content Content of record
+ * @param int $ttl Time-To-Live of record
+ * @param int $prio Priority of record
+ *
+ * @return boolean true if successful
  */
-function add_record($zoneid, $name, $type, $content, $ttl, $prio) {
+function add_record($zone_id, $name, $type, $content, $ttl, $prio) {
 	global $db;
     global $pdnssec_use;
 
@@ -268,14 +361,14 @@ function add_record($zoneid, $name, $type, $content, $ttl, $prio) {
 	elseif (verify_permission('zone_content_edit_own')) { $perm_content_edit = "own" ; }
 	else { $perm_content_edit = "none" ; }
 
-	$user_is_zone_owner = verify_user_is_owner_zoneid($zoneid);
-	$zone_type = get_domain_type($zoneid);
+	$user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
+	$zone_type = get_domain_type($zone_id);
 
         if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" && $user_is_zone_owner == "0") ) {
 		error(ERR_PERM_ADD_RECORD);
 		return false;
 	} else {
-		if (validate_input(-1, $zoneid, $type, $content, $name, $prio, $ttl) ) { 
+		if (validate_input(-1, $zone_id, $type, $content, $name, $prio, $ttl) ) { 
 			$change = time();
 				if($type == "SPF" || $type == "TXT"){
                                                 $content = $db->quote(stripslashes('\"'.$content.'\"'), 'text');
@@ -283,7 +376,7 @@ function add_record($zoneid, $name, $type, $content, $ttl, $prio) {
                                                 $content = $db->quote($content, 'text');
                                                 }
 			$query = "INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) VALUES ("
-						. $db->quote($zoneid, 'integer') . ","
+						. $db->quote($zone_id, 'integer') . ","
 						. $db->quote($name, 'text') . "," 
 						. $db->quote($type, 'text') . ","
 						. $content . ","
@@ -295,10 +388,10 @@ function add_record($zoneid, $name, $type, $content, $ttl, $prio) {
 				error($response->getMessage());
 				return false;
 			} else {
-				if ($type != 'SOA') { update_soa_serial($zoneid); }
+				if ($type != 'SOA') { update_soa_serial($zone_id); }
 
                 if ($pdnssec_use) {
-				    do_rectify_zone($zoneid);
+				    do_rectify_zone($zone_id);
                 }
 				return true;
 			}
@@ -308,7 +401,16 @@ function add_record($zoneid, $name, $type, $content, $ttl, $prio) {
 	}
 }
 
-
+/** Add Supermaster
+ *
+ * Add a trusted supermaster to the global supermasters table
+ *
+ * @param string $master_ip Supermaster IP address
+ * @param string $ns_name Hostname of supermasterfound in NS records for domain
+ * @param string $account Account name used for tracking
+ *
+ * @return boolean true on success
+ */
 function add_supermaster($master_ip, $ns_name, $account)
 {
         global $db;
@@ -333,6 +435,15 @@ function add_supermaster($master_ip, $ns_name, $account)
         }
 }
 
+/** Delete Supermaster
+ *
+ * Delete a supermaster from the global supermasters table
+ *
+ * @param string $master_ip Supermaster IP address
+ * @param string $ns_name Hostname of supermaster
+ *
+ * @return boolean true on success
+ */
 function delete_supermaster($master_ip, $ns_name) {
 	global $db;
         if (is_valid_ipv4($master_ip) || is_valid_ipv6($master_ip) || is_valid_hostname_fqdn($ns_name, 0))
@@ -347,6 +458,15 @@ function delete_supermaster($master_ip, $ns_name) {
         }
 }
 
+
+/** Get Supermaster Info from IP
+ *
+ * Retrieve supermaster details from supermaster IP address
+ *
+ * @param string $master_ip Supermaster IP address
+ *
+ * @return mixed[] array of supermaster details
+ */
 function get_supermaster_info_from_ip($master_ip)
 {
 	global $db;
@@ -368,6 +488,12 @@ function get_supermaster_info_from_ip($master_ip)
         }
 }
 
+/** Get record details from Record ID
+ *
+ * @param $rid Record ID
+ *
+ * @return mixed[] array of record details [rid,zid,name,type,content,ttl,prio,change_date]
+ */
 function get_record_details_from_record_id($rid) {
 
 	global $db;
@@ -381,9 +507,11 @@ function get_record_details_from_record_id($rid) {
 	return $return;
 }
 
-/*
- * Delete a record by a given id.
- * return values: true, this function is always succesful.
+/** Delete a record by a given record id
+ *
+ * @param int $rid Record ID
+ *
+ * @return boolean true on success
  */
 function delete_record($rid)
 {
@@ -413,16 +541,26 @@ function delete_record($rid)
 }
 
 
-/*
- * Add a domain to the database.
+/**
+ * Add a domain to the database
+ *
  * A domain is name obligatory, so is an owner.
  * return values: true when succesful.
+ * 
  * Empty means templates dont have to be applied.
- * --------------------------------------------------------------------------
+ * 
  * This functions eats a template and by that it inserts various records.
  * first we start checking if something in an arpa record
  * remember to request nextID's from the database to be able to insert record.
  * if anything is invalid the function will error
+ *
+ * @param string $domain A domain name
+ * @param int $owner Owner ID for domain
+ * @param string $type Type of domain ['NATIVE','MASTER','SLAVE']
+ * @param string $slave_master Master server hostname for domain
+ * @param int|string $zone_template ID of zone template ['none' or int] 
+ *
+ * @return boolean true on success
  */
 function add_domain($domain, $owner, $type, $slave_master, $zone_template)
 {
@@ -532,9 +670,13 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template)
 }
 
 
-/*
- * Deletes a domain by a given id.
+/** Deletes a domain by a given id
+ *
  * Function always succeeds. If the field is not found in the database, thats what we want anyway.
+ *
+ * @param int $id Zone ID
+ *
+ * @return boolean true on success
  */
 function delete_domain($id)
 {
@@ -560,10 +702,12 @@ function delete_domain($id)
 	}
 }
 
-
-/*
- * Gets the id of the domain by a given record id.
- * return values: the domain id that was requested.
+/** Record ID to Domain ID
+ *
+ * Gets the id of the domain by a given record id
+ *
+ * @param int $id Record ID
+ * @return int Domain ID of record
  */
 function recid_to_domid($id)
 {
@@ -581,9 +725,12 @@ function recid_to_domid($id)
 }
 
 
-/*
- * Change owner of a domain.
- * return values: true when succesful.
+/** Change owner of a domain
+ * 
+ * @param int $zone_id Zone ID
+ * @param int $user_id User ID
+ *
+ * @return boolean true when succesful
  */
 function add_owner_to_zone($zone_id, $user_id)
 {
@@ -612,6 +759,13 @@ function add_owner_to_zone($zone_id, $user_id)
 }
 
 
+/** Delete owner from zone
+ *
+ * @param int $zone_id Zone ID
+ * @param int $user_id User ID
+ *
+ * @return boolean true on success
+ */
 function delete_owner_from_zone($zone_id, $user_id)
 {
 	global $db;
@@ -634,10 +788,11 @@ function delete_owner_from_zone($zone_id, $user_id)
 	
 }
 
-/*
- * Retrieves all supported dns record types
+/** Retrieve all supported dns record types
+ *
  * This function might be deprecated.
- * return values: array of types in string form.
+ *
+ * @return string[] array of types
  */
 function get_record_types()
 {
@@ -646,10 +801,18 @@ function get_record_types()
 }
 
 
-/*
- * Retrieve all records by a given type and domain id.
- * Example: get all records that are of type A from domain id 1
- * return values: a DB class result object
+/** Retrieve all records by a given type and domain id
+ *
+ * Example get all records that are of type A from domain id 1
+ *
+ * <code>
+ * get_records_by_type_from_domid('A', 1)
+ * </code>
+ *
+ * @param string $type Record type
+ * @param int $recid Record ID
+ *
+ * @return object a DB class result object
  */
 function get_records_by_type_from_domid($type, $recid)
 {
@@ -669,10 +832,12 @@ function get_records_by_type_from_domid($type, $recid)
 	return $result;
 }
 
-
-/*
+/** Get Record Type for Record ID
+ *
  * Retrieves the type of a record from a given id.
- * return values: the type of the record (one of the records types in $rtypes assumable).
+ * 
+ * @param int $id Record ID
+ * @return string Record type (one of the records types in $rtypes assumable).
  */
 function get_recordtype_from_id($id)
 {
@@ -690,9 +855,12 @@ function get_recordtype_from_id($id)
 }
 
 
-/*
+/** Get Name from Record ID
+ *
  * Retrieves the name (e.g. bla.test.com) of a record by a given id.
- * return values: the name associated with the id.
+ *
+ * @param int $id Record ID
+ * @return string Name part of record
  */
 function get_name_from_record_id($id)
 {
@@ -706,7 +874,12 @@ function get_name_from_record_id($id)
 	}
 }
 
-
+/** Get Zone Name from Zone ID
+ *
+ * @param int $zid Zone ID
+ *
+ * @return string Domain name
+ */
 function get_zone_name_from_id($zid)
 {
 	global $db;
@@ -732,8 +905,10 @@ function get_zone_name_from_id($zid)
 	}
 }
 
-/*
-Get zone id from name
+/** Get zone id from name
+ *
+ * @param string $zname Zone name
+ * @return int Zone ID
 */
 function get_zone_id_from_name($zname) {
         global $db;
@@ -759,6 +934,12 @@ function get_zone_id_from_name($zname) {
         }
 }
 
+
+/** Get Zone details from Zone ID
+ *
+ * @param int $zid Zone ID
+ * @return mixed[] array of zone details [type,name,master_ip,record_count]
+ */
 function get_zone_info_from_id($zid) {
 
 	if (verify_permission('zone_content_view_others')) { $perm_view = "all" ; } 
@@ -796,6 +977,11 @@ function get_zone_info_from_id($zid) {
 	}
 }
 
+/** Convert IPv6 Address to PTR
+ *
+ * @param string $ip IPv6 Address
+ * @return string PTR form of address
+ */
 function convert_ipv6addr_to_ptrrec($ip) {
 // rev-patch
 // taken from: http://stackoverflow.com/questions/6619682/convert-ipv6-to-nibble-format-for-ptr-records
@@ -809,6 +995,12 @@ function convert_ipv6addr_to_ptrrec($ip) {
         return $arpa;
 }
 
+/** Get Best Matching in-addr.arpa Zone ID from Domain Name
+ *
+ * @param string $domain Domain name
+ *
+ * @return int Zone ID
+ */
 function get_best_matching_zone_id_from_name($domain) {
 // rev-patch
 // tring to find the correct zone
@@ -845,9 +1037,12 @@ function get_best_matching_zone_id_from_name($domain) {
         return $found_domain_id;
 }
 
-/*
+/** Check if Domain Exists
+ *
  * Check if a domain is already existing.
- * return values: true if existing, false if it doesnt exist.
+ *
+ * @param string $domain Domain name
+ * @return boolean true if existing, false if it doesnt exist.
  */
 function domain_exists($domain)
 {
@@ -865,6 +1060,12 @@ function domain_exists($domain)
 	}
 }
 
+/** Get All Supermasters
+ *
+ * Gets an array of arrays of supermaster details
+ *
+ * @return array[] supermasters detail [master_ip,ns_name,account]s
+ */
 function get_supermasters()
 {
         global $db;
@@ -888,6 +1089,12 @@ function get_supermasters()
         }
 }
 
+/** Check if Supermaster IP address exists
+ *
+ * @param string $master_ip Supermaster IP
+ *
+ * @return boolean true if exists, otherwise false
+ */
 function supermaster_exists($master_ip)
 {
         global $db;
@@ -909,6 +1116,13 @@ function supermaster_exists($master_ip)
         }
 }
 
+/** Check if Supermaster IP Address and NS Name combo exists
+ *
+ * @param string $master_ip Supermaster IP Address
+ * @param string $ns_name Supermaster NS Name
+ *
+ * @return boolean true if exists, false otherwise
+ */
 function supermaster_ip_name_exists($master_ip, $ns_name)
 {
         global $db;
@@ -931,6 +1145,17 @@ function supermaster_ip_name_exists($master_ip, $ns_name)
         }
 }
 
+/** Get Zones
+ *
+ * @param string $perm View Zone Permissions ['own','all','none']
+ * @param int $userid Requesting User ID
+ * @param string $letterstart Starting letters to match [default='all']
+ * @param int $rowstart Start from row in set [default=0]
+ * @param int $rowamount Max number of rows to fetch for this query when not 'all' [default=999999]
+ * @param string $sortby Column to sort results by [default='name']
+ *
+ * @return boolean|mixed[] false or array of zone details [id,name,type,count_records]
+ */
 function get_zones($perm,$userid=0,$letterstart='all',$rowstart=0,$rowamount=999999,$sortby='name') 
 {
 	global $db;
@@ -978,6 +1203,7 @@ function get_zones($perm,$userid=0,$letterstart='all',$rowstart=0,$rowamount=999
 	$ret = array();
 	while($r = $result->fetchRow())
 	{
+    //fixme: name is not guaranteed to be unique with round-robin record sets
 		$ret[$r["name"]] = array(
 		"id"		=>	$r["id"],
 		"name"		=>	$r["name"],
@@ -989,6 +1215,14 @@ function get_zones($perm,$userid=0,$letterstart='all',$rowstart=0,$rowamount=999
 }
 
 // TODO: letterstart limitation and userid permission limitiation should be applied at the same time?
+// fixme: letterstart 'all' forbids searching for domains that actually start with 'all'
+/** Get Count of Zones
+ *
+ * @param string $perm 'all', 'own' uses session 'userid'
+ * @param string $letterstart Starting letters to match [default='all']  
+ *
+ * @return int Count of zones matched
+ */
 function zone_count_ng($perm, $letterstart='all') {
 	global $db;
 	global $sql_regexp;
@@ -1024,6 +1258,12 @@ function zone_count_ng($perm, $letterstart='all') {
 	return $zone_count;
 }
 
+/** Get Zone Count for Owner User ID
+ *
+ * @param int $uid User ID
+ *
+ * @return int Count of Zones matched
+ */
 function zone_count_for_uid($uid) {
 	global $db;
 	$query = "SELECT COUNT(domain_id) 
@@ -1035,10 +1275,12 @@ function zone_count_for_uid($uid) {
 }
 
 
-/*
- * Get a record from an id.
+/** Get a Record from an Record ID
+ *
  * Retrieve all fields of the record and send it back to the function caller.
- * return values: the array with information, or -1 is nothing is found.
+ *
+ * @param int $id Record ID
+ * @return int|mixed[] array of record detail, or -1 if nothing found
  */
 function get_record_from_id($id)
 {
@@ -1077,10 +1319,16 @@ function get_record_from_id($id)
 }
 
 
-/*
- * Get all records from a domain id.
+/** Get all records from a domain id.
+ *
  * Retrieve all fields of the records and send it back to the function caller.
- * return values: the array with information, or -1 is nothing is found.
+ * 
+ * @param int $id Domain ID
+ * @param int $rowstart Starting row [default=0]
+ * @param int $rowamount Number of rows to return in this query [default=999999]
+ * @param string $sortby Column to sort by [default='name']
+ *
+ * @return int|mixed[] array of record detail, or -1 if nothing found
  */
 function get_records_from_domain_id($id,$rowstart=0,$rowamount=999999,$sortby='name') {
 	global $db;
@@ -1141,6 +1389,13 @@ function get_records_from_domain_id($id,$rowstart=0,$rowamount=999999,$sortby='n
 	}
 }
 
+/** Sort Domain Records intelligently
+ *
+ * @param string[] $domains Array of domains
+ * @param string $sortby Column to sort by [default='name','type','content','prio','ttl']
+ *
+ * @return mixed[] array of records detail
+ */
 function order_domain_results($domains, $sortby) {
         $results = array();
         $soa = array();
@@ -1189,26 +1444,67 @@ function order_domain_results($domains, $sortby) {
         return $results;
 }
 
+/** Sort records by name
+ *
+ * @param mixed[] $a A
+ * @param mixed[] $b B
+ *
+ * @return mixed[] result of strnatcmp
+ */
 function sort_domain_results_by_name($a, $b) {
   return strnatcmp($a['name'], $b['name']);
 }
 
+/** Sort records by type
+ *
+ * @param mixed[] $a A
+ * @param mixed[] $b B
+ *
+ * @return mixed[] result of strnatcmp
+ */
 function sort_domain_results_by_type($a, $b) {
   return strnatcmp($a['type'], $b['type']);
 }
 
+/** Sort records by content
+ *
+ * @param mixed[] $a A
+ * @param mixed[] $b B
+ *
+ * @return mixed[] result of strnatcmp
+ */
 function sort_domain_results_by_content($a, $b) {
   return strnatcmp($a['content'], $b['content']);
 }
 
+/** Sort records by prio
+ *
+ * @param mixed[] $a A
+ * @param mixed[] $b B
+ *
+ * @return mixed[] result of strnatcmp
+ */
 function sort_domain_results_by_prio($a, $b) {
   return strnatcmp($a['prio'], $b['prio']);
 }
 
+/** Sort records by TTL
+ *
+ * @param mixed[] $a A
+ * @param mixed[] $b B
+ *
+ * @return mixed[] result of strnatcmp
+ */
 function sort_domain_results_by_ttl($a, $b) {
   return strnatcmp($a['ttl'], $b['ttl']);
 }
 
+/** Get list of owners for Domain ID
+ *
+ * @param int $id Domain ID
+ *
+ * @return mixed[] array of owners [id,fullename]
+ */
 function get_users_from_domain_id($id) {
 	global $db;
 	$sqlq = "SELECT owner FROM zones WHERE domain_id =" .$db->quote($id, 'integer');
@@ -1227,12 +1523,20 @@ function get_users_from_domain_id($id) {
 	return $owners;	
 }
 
-
-function search_zone_and_record($holy_grail,$perm,$zone_sortby='name',$record_sortby='name') {
+/** Search for Zone or Record
+ *
+ * @param string $search_string  String to search
+ * @param string $perm User permitted to view 'all' or 'own' zones
+ * @param string $zone_sortby Column to sort domain results [default='name']
+ * @param string $record_sortby Column to sort record results by [default='name']
+ *
+ * @return mixed[] 'zones' => array of zones, 'records' => array of records 
+ */
+function search_zone_and_record($search_string,$perm,$zone_sortby='name',$record_sortby='name') {
 	
 	global $db;
 
-	$holy_grail = trim($holy_grail);
+	$search_string = trim($search_string);
 
 	$sql_add_from = '';
 	$sql_add_where = '';
@@ -1264,7 +1568,7 @@ function search_zone_and_record($holy_grail,$perm,$zone_sortby='name',$record_so
 			domains.master AS master,
                         zones.owner AS owner
 			FROM domains" . $sql_add_from . "
-			WHERE domains.name LIKE " . $db->quote($holy_grail, 'text')
+			WHERE domains.name LIKE " . $db->quote($search_string, 'text')
 			. $sql_add_where . "
                         ORDER BY " . $zone_sortby;
 
@@ -1308,7 +1612,7 @@ function search_zone_and_record($holy_grail,$perm,$zone_sortby='name',$record_so
 			records.prio AS prio,
 			records.domain_id AS zid
 			FROM records" . $sql_add_from . "
-			WHERE (records.name LIKE " . $db->quote($holy_grail, 'text') . " OR records.content LIKE " . $db->quote($holy_grail, 'text') . ")"
+			WHERE (records.name LIKE " . $db->quote($search_string, 'text') . " OR records.content LIKE " . $db->quote($search_string, 'text') . ")"
 			. $sql_add_where . "
 			ORDER BY " . $record_sortby; 
 
@@ -1328,6 +1632,12 @@ function search_zone_and_record($holy_grail,$perm,$zone_sortby='name',$record_so
 	return array('zones' => $return_zones, 'records' => $return_records);
 }
 
+/** Get Domain Type for Domain ID
+ *
+ * @param int $id Domain ID
+ *
+ * @return string Domain Type [NATIVE,MASTER,SLAVE]
+ */
 function get_domain_type($id) {
 	global $db;
         if (is_numeric($id)) {
@@ -1341,6 +1651,12 @@ function get_domain_type($id) {
         }
 }
 
+/** Get Slave Domain's Master
+ *
+ * @param int $id Domain ID
+ *
+ * @return string Master server
+ */
 function get_domain_slave_master($id){
 	global $db;
         if (is_numeric($id)) {
@@ -1351,6 +1667,13 @@ function get_domain_slave_master($id){
         }
 }
 
+/** Change Zone Type 
+ *
+ * @param string $type New Zone Type [NATIVE,MASTER,SLAVE]
+ * @param int $id Zone ID
+ *
+ * @return null
+ */
 function change_zone_type($type, $id)
 {
 	global $db;
@@ -1370,6 +1693,13 @@ function change_zone_type($type, $id)
         }
 }
 
+/** Change Slave Zone's Master IP Address
+ *
+ * @param int $zone_id Zone ID
+ * @param string $ip_slave_master Master IP Address
+ *
+ * @return null
+ */
 function change_zone_slave_master($zone_id, $ip_slave_master) {
 	global $db;
         if (is_numeric($zone_id)) {
@@ -1383,6 +1713,12 @@ function change_zone_slave_master($zone_id, $ip_slave_master) {
         }
 }
 
+/** Get Serial for Zone ID
+ *
+ * @param int $zid Zone ID
+ *
+ * @return boolean|string Serial Number or false if not found
+ */
 function get_serial_by_zid($zid) {
 	global $db;
 	if (is_numeric($zid)) {
@@ -1397,6 +1733,12 @@ function get_serial_by_zid($zid) {
 	return $rr_soa_fields[2];
 }
 
+/** Validate Account is valid string
+ *
+ * @param string $account Account name alphanumeric and ._-
+ *
+ * @return boolean true is valid, false otherwise
+ */
 function validate_account($account) {
   	if(preg_match("/^[A-Z0-9._-]+$/i",$account)) {
 		return true;
@@ -1405,13 +1747,26 @@ function validate_account($account) {
 	}
 }
 
+/** Get Zone Template ID for Zone ID
+ *
+ * @param int $zone_id Zone ID
+ *
+ * @return int Zone Template ID
+ */
 function get_zone_template($zone_id) {
 	global $db;
 	$query = "SELECT zone_templ_id FROM zones WHERE domain_id = " . $db->quote($zone_id, 'integer');
-	$comment = $db->queryOne($query);
-	return $comment;
+	$zone_templ_id = $db->queryOne($query);
+	return $zone_templ_id;
 }
- 
+
+/** Update Zone Templatea ID for Zone ID
+ * 
+ * @param int $zone_id Zone ID
+ * @param int @new_zone_template_id New Zone Template ID
+ *
+ * @return boolean true on success, false otherwise
+ */
 function update_zone_template($zone_id, $new_zone_template_id) {
         global $db;
 	$query = "UPDATE zones
@@ -1422,6 +1777,13 @@ function update_zone_template($zone_id, $new_zone_template_id) {
         return true;
 }
 
+/** Update All Zone Records for Zone ID with Zone Template
+ *
+ * @param int $zone_id Zone ID to update
+ * @param int $zone_template Zone Template to use for update
+ *
+ * @return null
+ */
 function update_zone_records($zone_id, $zone_template) {
         global $db;
         global $dns_ns1;
@@ -1442,6 +1804,7 @@ function update_zone_records($zone_id, $zone_template) {
         if (0 != $zone_template) {
                         if ( $perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1") ) { 
                                 if (is_numeric($zone_id)) { 
+                                    //TODO: account for non-template records?
                                     $db->exec("DELETE FROM records WHERE domain_id=".$db->quote($zone_id, 'integer')); 
                                 } else { 
                                     error(sprintf(ERR_INV_ARGC, "delete_domain", "id must be a number")); 
@@ -1458,6 +1821,7 @@ function update_zone_records($zone_id, $zone_template) {
 				if ($templ_records == -1) return; 
 
                                 foreach ($templ_records as $r) {
+          //fixme: appears to be a bug and regex match should occur against $domain
 					if ((preg_match('/in-addr.arpa/i', $zone_id) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $zone_id)))
                                         {
 						$name     = parse_template_value($r["name"], $domain);
@@ -1496,9 +1860,14 @@ function update_zone_records($zone_id, $zone_template) {
         }
 }
 
-/*
+/** Delete array of domains
+ *
  * Deletes a domain by a given id.
  * Function always succeeds. If the field is not found in the database, thats what we want anyway.
+ *
+ * @param int[] $domains Array of Domain IDs to delete
+ *
+ * @return boolean true on success, false otherwise
  */
 function delete_domains($domains)
 {
@@ -1543,10 +1912,16 @@ function delete_domains($domains)
         return $return;
 }
 
-/* If a Domain is dnssec enabled, or uses features as 
+/** Execute PDNSSEC rectify-zone command for Domain ID
+ *
+ * If a Domain is dnssec enabled, or uses features as 
  * e.g. ALSO-NOTIFY, ALLOW-AXFR-FROM, TSIG-ALLOW-AXFR
  * following has to be executed
  * pdnssec rectify-zone $domain 
+ *
+ * @param int $domain_id Domain ID
+ *
+ * @return boolean true on success, false on failure or unnecessary
  */
 function do_rectify_zone ($domain_id) {
 	global $db;
@@ -1587,6 +1962,12 @@ function do_rectify_zone ($domain_id) {
 	}
 }
 
+/** Execute PDNSSEC secure-zone command for Domain Name
+ *
+ * @param string $domain_name Domain Name
+ *
+ * @return boolean true on success, false on failure or unnecessary
+ */
 function do_secure_zone($domain_name) {
     global $pdnssec_command;
 
