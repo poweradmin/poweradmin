@@ -1,4 +1,8 @@
 <?php
+/** DNS functions
+ *
+ * @package Default
+ */
 
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://www.poweradmin.org> for more details.
@@ -21,6 +25,18 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/** Validate DNS record input
+ *
+ * @param int $rid Record ID
+ * @param int $zid Zone ID
+ * @param string $type Record Type
+ * @param string &$content content part of record
+ * @param string &$name Name part of record
+ * @param int &$prio Priority
+ * @param int &$ttl TTL
+ *
+ * @return boolean true on success, false otherwise
+ */
 function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
 
 	$zone = get_zone_name_from_id($zid);				// TODO check for return
@@ -124,6 +140,13 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
 	return true;
 }
 
+/** Test if hostname is valid FQDN
+ *
+ * @param string &$hostname Hostname string
+ * @param string $wildcard Hostname includes wildcard '*'
+ *
+ * @return boolean true if valid, false otherwise
+ */
 function is_valid_hostname_fqdn(&$hostname, $wildcard) {
 
 	global $dns_strict_tld_check;
@@ -176,6 +199,14 @@ function is_valid_hostname_fqdn(&$hostname, $wildcard) {
 	return true;
 }
 
+/** Test if IPv4 address is valid
+ *
+ * @param string $ipv4 IPv4 address string
+ * @param boolean $answer print error if true
+ * [default=true]
+ *
+ * @return boolean true if valid, false otherwise
+ */
 function is_valid_ipv4($ipv4, $answer=true) {
 
 // 20080424/RZ: The current code may be replaced by the following if() 
@@ -209,6 +240,14 @@ function is_valid_ipv4($ipv4, $answer=true) {
 	return true;
 }
 
+/** Test if IPv6 address is valid
+ *
+ * @param string $ipv6 IPv6 address string
+ * @param boolean $answer print error if true
+ * [default=true]
+ *
+ * @return boolean true if valid, false otherwise
+ */
 function is_valid_ipv6($ipv6, $answer=true) {
 
 // 20080424/RZ: The current code may be replaced by the following if() 
@@ -250,6 +289,14 @@ function is_valid_ipv6($ipv6, $answer=true) {
 	return true;
 }
 
+/** Test if multiple IP addresses are valid
+ *
+ *  Takes a string of comma seperated IP addresses and tests validity
+ *
+ *  @param string $ips Comma seperated IP addresses
+ *
+ *  @return boolean true if valid, false otherwise
+ */
 function are_multipe_valid_ips($ips) {
 
 // multiple master NS-records are permitted and must be separated by ,
@@ -279,11 +326,25 @@ function are_multipe_valid_ips($ips) {
 	}
 }
 
+/** Test if string is printable
+ *
+ * @param string $string string
+ *
+ * @return boolean true if valid, false otherwise
+ */
 function is_valid_printable($string) {
 	if (!preg_match('/^[[:print:]]+$/', trim($string))) { error(ERR_DNS_PRINTABLE); return false; }
 	return true;
 }
 
+/** Test if CNAME is valid
+ *
+ * Check if any MX or NS entries exist which invalidated CNAME
+ *
+ * @param string $name CNAME to lookup
+ *
+ * @return boolean true if valid, false otherwise
+ */
 function is_valid_rr_cname_name($name) {
 	global $db;
 
@@ -302,9 +363,13 @@ function is_valid_rr_cname_name($name) {
 	return true;
 }
 
-/*
-Check and see if the CNAME exists already
-*/
+/** Check if CNAME already exists
+ *
+ * @param string $name CNAME
+ * @param int $rid Record ID
+ *
+ * @return boolean true if non-existant, false if exists
+ */
 function is_valid_rr_cname_exists($name,$rid) { 
         global $db; 
  
@@ -326,9 +391,13 @@ function is_valid_rr_cname_exists($name,$rid) {
         return true; 
 } 
 
-/*
-Check and see if this CNAME is unique (doesn't overlap A/AAAA
-*/	 
+/** Check if CNAME is unique (doesn't overlap A/AAAA)
+ *
+ * @param string $name CNAME
+ * @param string $rid Record ID
+ *
+ * @return boolean true if unique, false if duplicate
+ */
 function is_valid_rr_cname_unique($name,$rid) { 
         global $db; 
  
@@ -362,6 +431,12 @@ function is_not_empty_cname_rr($name,$zone) {
 	return true;
 }
 
+/** Check if target is not a CNAME
+ *
+ * @param string $target target to check
+ *
+ * @return boolean true if not alias, false if CNAME exists
+ */
 function is_valid_non_alias_target($target) {
 	global $db;
 	
@@ -378,6 +453,12 @@ function is_valid_non_alias_target($target) {
 	return true;
 }
 
+/** Check if HINFO content is valid
+ *
+ * @param string $content HINFO record content
+ *
+ * @return boolean true if valid, false otherwise
+ */
 function is_valid_rr_hinfo_content($content) {
 
 	if ($content[0] == "\"") {
@@ -395,6 +476,12 @@ function is_valid_rr_hinfo_content($content) {
 	return true;
 }
 
+/** Check if SOA content is valid
+ *
+ * @param string &$content SOA record content
+ *
+ * @return boolean true if valid, false otherwise
+ */
 function is_valid_rr_soa_content(&$content) {
 
 	$fields = preg_split("/\s+/", trim($content));
@@ -451,6 +538,15 @@ function is_valid_rr_soa_content(&$content) {
 	return true;
 }
 
+/** Check if SOA name is valid
+ *
+ * Checks if SOA name = zone name
+ *
+ * @param string $name SOA name
+ * @param string $zone Zone name
+ *
+ * @return boolean true if valid, false otherwise
+ */
 function is_valid_rr_soa_name($name, $zone) {
 	if ($name != $zone) {
 		error(ERR_DNS_SOA_NAME); return false;
@@ -458,6 +554,15 @@ function is_valid_rr_soa_name($name, $zone) {
 	return true;
 }
 
+/** Check if Priority is valid
+ *
+ * Check if MX or SRV priority is within range, otherwise set to 0
+ *
+ * @param string &$prio Priority
+ * @param string $type Record type
+ *
+ * @return boolean true if valid, false otherwise
+ */
 function is_valid_rr_prio(&$prio, $type) {
 	if ($type == "MX" || $type == "SRV" ) {
 		if (!is_numeric($prio) || $prio < 0 || $prio > 65535 ) {
@@ -470,6 +575,12 @@ function is_valid_rr_prio(&$prio, $type) {
 	return true;
 }
 
+/** Check if SRV name is valid
+ *
+ * @param &$name SRV name
+ *
+ * @return boolean true if valid, false otherwise
+ */
 function is_valid_rr_srv_name(&$name){
 
 	if (strlen($name) > 255) {
@@ -485,6 +596,12 @@ function is_valid_rr_srv_name(&$name){
 	return true ;
 }
 
+/** Check if SRV content is valid
+ *
+ * @param string &$content SRV content
+ *
+ * @return boolean true if valid, false otherwise
+ */
 function is_valid_rr_srv_content(&$content) {
 	$fields = preg_split("/\s+/", trim($content), 3);
 	if (!is_numeric($fields[0]) || $fields[0] < 0 || $fields[0] > 65535) { error(ERR_DNS_SRV_WGHT) ; return false; } 
@@ -496,6 +613,12 @@ function is_valid_rr_srv_content(&$content) {
 	return true;
 }
 
+/** Check if TTL is valid and within range
+ *
+ * @param int $ttl TTL
+ *
+ * @return boolean true if valid,false otherwise
+ */
 function is_valid_rr_ttl(&$ttl) {
 
 	if (!isset($ttl) || $ttl == "" ) {
@@ -510,6 +633,12 @@ function is_valid_rr_ttl(&$ttl) {
 	return true;
 }
 
+/** Check if search string is valid
+ *
+ * @param string $holygrail search string
+ *
+ * @return boolean true if valid, false otherwise
+ */
 function is_valid_search($holygrail) {
 
 	// Only allow for alphanumeric, numeric, dot, dash, underscore and 
@@ -519,9 +648,12 @@ function is_valid_search($holygrail) {
 	return preg_match('/^[a-z0-9.\-%_]+$/i', $holygrail);
 }
 
-/*
-SPF Validation function
-*/
+/** Check if SPF content is valid
+ *
+ * @param string $content SPF content
+ *
+ * @return boolean true if valid, false otherwise
+ */
 function is_valid_spf($content){
     //Regex from http://www.schlitt.net/spf/tests/spf_record_regexp-03.txt
 	  $regex = "^[Vv]=[Ss][Pp][Ff]1( +([-+?~]?([Aa][Ll][Ll]|[Ii][Nn][Cc][Ll][Uu][Dd][Ee]:(%\{[CDHILOPR-Tcdhilopr-t]([1-9][0-9]?|10[0-9]|11[0-9]|12[0-8])?[Rr]?[+-/=_]*\}|%%|%_|%-|[!-$&-~])*(\.([A-Za-z]|[A-Za-z]([-0-9A-Za-z]?)*[0-9A-Za-z])|%\{[CDHILOPR-Tcdhilopr-t]([1-9][0-9]?|10[0-9]|11[0-9]|12[0-8])?[Rr]?[+-/=_]*\})|[Aa](:(%\{[CDHILOPR-Tcdhilopr-t]([1-9][0-9]?|10[0-9]|11[0-9]|12[0-8])?[Rr]?[+-/=_]*\}|%%|%_|%-|[!-$&-~])*(\.([A-Za-z]|[A-Za-z]([-0-9A-Za-z]?)*[0-9A-Za-z])|%\{[CDHILOPR-Tcdhilopr-t]([1-9][0-9]?|10[0-9]|11[0-9]|12[0-8])?[Rr]?[+-/=_]*\}))?((/([1-9]|1[0-9]|2[0-9]|3[0-2]))?(//([1-9][0-9]?|10[0-9]|11[0-9]|12[0-8]))?)?|[Mm][Xx](:(%\{[CDHILOPR-Tcdhilopr-t]([1-9][0-9]?|10[0-9]|11[0-9]|12[0-8])?[Rr]?[+-/=_]*\}|%%|%_|%-|[!-$&-~])*(\.([A-Za-z]|[A-Za-z]([-0-9A-Za-z]?)*[0-9A-Za-z])|%\{[CDHILOPR-Tcdhilopr-t]([1-9][0-9]?|10[0-9]|11[0-9]|12[0-8])?[Rr]?[+-/=_]*\}))?((/([1-9]|1[0-9]|2[0-9]|3[0-2]))?(//([1-9][0-9]?|10[0-9]|11[0-9]|12[0-8]))?)?|[Pp][Tt][Rr](:(%\{[CDHILOPR-Tcdhilopr-t]([1-9][0-9]?|10[0-9]|11[0-9]|12[0-8])?[Rr]?[+-/=_]*\}|%%|%_|%-|[!-$&-~])*(\.([A-Za-z]|[A-Za-z]([-0-9A-Za-z]?)*[0-9A-Za-z])|%\{[CDHILOPR-Tcdhilopr-t]([1-9][0-9]?|10[0-9]|11[0-9]|12[0-8])?[Rr]?[+-/=_]*\}))?|[Ii][Pp]4:([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(/([1-9]|1[0-9]|2[0-9]|3[0-2]))?|[Ii][Pp]6:(::|([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|([0-9A-Fa-f]{1,4}:){1,8}:|([0-9A-Fa-f]{1,4}:){7}:[0-9A-Fa-f]{1,4}|([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}){1,2}|([0-9A-Fa-f]{1,4}:){5}(:[0-9A-Fa-f]{1,4}){1,3}|([0-9A-Fa-f]{1,4}:){4}(:[0-9A-Fa-f]{1,4}){1,4}|([0-9A-Fa-f]{1,4}:){3}(:[0-9A-Fa-f]{1,4}){1,5}|([0-9A-Fa-f]{1,4}:){2}(:[0-9A-Fa-f]{1,4}){1,6}|[0-9A-Fa-f]{1,4}:(:[0-9A-Fa-f]{1,4}){1,7}|:(:[0-9A-Fa-f]{1,4}){1,8}|([0-9A-Fa-f]{1,4}:){6}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])|([0-9A-Fa-f]{1,4}:){6}:([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])|([0-9A-Fa-f]{1,4}:){5}:([0-9A-Fa-f]{1,4}:)?([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])|([0-9A-Fa-f]{1,4}:){4}:([0-9A-Fa-f]{1,4}:){0,2}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])|([0-9A-Fa-f]{1,4}:){3}:([0-9A-Fa-f]{1,4}:){0,3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])|([0-9A-Fa-f]{1,4}:){2}:([0-9A-Fa-f]{1,4}:){0,4}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])|[0-9A-Fa-f]{1,4}::([0-9A-Fa-f]{1,4}:){0,5}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])|::([0-9A-Fa-f]{1,4}:){0,6}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))(/([1-9][0-9]?|10[0-9]|11[0-9]|12[0-8]))?|[Ee][Xx][Ii][Ss][Tt][Ss]:(%\{[CDHILOPR-Tcdhilopr-t]([1-9][0-9]?|10[0-9]|11[0-9]|12[0-8])?[Rr]?[+-/=_]*\}|%%|%_|%-|[!-$&-~])*(\.([A-Za-z]|[A-Za-z]([-0-9A-Za-z]?)*[0-9A-Za-z])|%\{[CDHILOPR-Tcdhilopr-t]([1-9][0-9]?|10[0-9]|11[0-9]|12[0-8])?[Rr]?[+-/=_]*\}))|[Rr][Ee][Dd][Ii][Rr][Ee][Cc][Tt]=(%\{[CDHILOPR-Tcdhilopr-t]([1-9][0-9]?|10[0-9]|11[0-9]|12[0-8])?[Rr]?[+-/=_]*\}|%%|%_|%-|[!-$&-~])*(\.([A-Za-z]|[A-Za-z]([-0-9A-Za-z]?)*[0-9A-Za-z])|%\{[CDHILOPR-Tcdhilopr-t]([1-9][0-9]?|10[0-9]|11[0-9]|12[0-8])?[Rr]?[+-/=_]*\})|[Ee][Xx][Pp]=(%\{[CDHILOPR-Tcdhilopr-t]([1-9][0-9]?|10[0-9]|11[0-9]|12[0-8])?[Rr]?[+-/=_]*\}|%%|%_|%-|[!-$&-~])*(\.([A-Za-z]|[A-Za-z]([-0-9A-Za-z]?)*[0-9A-Za-z])|%\{[CDHILOPR-Tcdhilopr-t]([1-9][0-9]?|10[0-9]|11[0-9]|12[0-8])?[Rr]?[+-/=_]*\})|[A-Za-z][-.0-9A-Z_a-z]*=(%\{[CDHILOPR-Tcdhilopr-t]([1-9][0-9]?|10[0-9]|11[0-9]|12[0-8])?[Rr]?[+-/=_]*\}|%%|%_|%-|[!-$&-~])*))* *$^";
@@ -533,6 +665,12 @@ function is_valid_spf($content){
         }
 }
 
+/** Check if LOC content is valid
+ *
+ * @param string $content LOC content
+ *
+ * @return boolean true if valid, false otherwise
+ */
 function is_valid_loc($content){
 	$regex = "^(90|[1-8]\d|0?\d)( ([1-5]\d|0?\d)( ([1-5]\d|0?\d)(\.\d{1,3})?)?)? [NS] (180|1[0-7]\d|[1-9]\d|0?\d)( ([1-5]\d|0?\d)( ([1-5]\d|0?\d)(\.\d{1,3})?)?)? [EW] (-(100000(\.00)?|\d{1,5}(\.\d\d)?)|([1-3]?\d{1,7}(\.\d\d)?|4([01][0-9]{6}|2([0-7][0-9]{5}|8([0-3][0-9]{4}|4([0-8][0-9]{3}|9([0-5][0-9]{2}|6([0-6][0-9]|7[01]))))))(\.\d\d)?|42849672(\.([0-8]\d|9[0-5]))?))[m]?( (\d{1,7}|[1-8]\d{7})(\.\d\d)?[m]?){0,3}$^";
 	if(!preg_match($regex, $content)){

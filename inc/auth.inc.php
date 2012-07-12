@@ -1,4 +1,8 @@
 <?php
+/** Authentication functions
+ *
+ * @package Default
+ */
 
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://www.poweradmin.org> for more details.
@@ -21,6 +25,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/** Authenticate Session
+ *
+ * Checks if user is logging in, logging out, or session expired and performs
+ * actions accordingly
+ *
+ * @return null
+ */
 function doAuthenticate() {
 	global $db;
 	global $iface_expire;
@@ -119,10 +130,13 @@ function doAuthenticate() {
 	}
 }
 
-/*
- * Print the login form.
+/** Print the login form
+ *
+ * @param string $msg Error Message
+ * @param string $type Message type [default='success', 'error']
+ *
+ * @return null
  */
-
 function auth($msg="",$type="success")
 {
 	include_once('inc/header.inc.php');
@@ -163,8 +177,14 @@ function auth($msg="",$type="success")
 }
 
 
-/*
- * Logout the user and kickback to login form.
+/** Logout the user
+ *
+ * Logout the user and kickback to login form
+ *
+ * @param string $msg Error Message
+ * @param string $type Message type [default='']
+ *
+ * @return null
  */
 
 function logout($msg="",$type="")
