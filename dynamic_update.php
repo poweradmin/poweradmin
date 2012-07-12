@@ -21,12 +21,23 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
+
 require('inc/config.inc.php');
 require('inc/database.inc.php');
 
 $db = dbConnect();
 
-// make sql query safe
+/** Dynamic DNS Updates
+ * 
+ */
+
+/** Make sql query safe
+ *
+ * @param mixed $value Unsafe Value
+ *
+ * @return mixed $value Safe Value
+ */
 function safe($value) {
     global $db, $db_type, $db_layer;
 
@@ -44,7 +55,14 @@ function safe($value) {
     return $value;
 }
 
-// get exit status message
+/** Get exit status message
+ *
+ * Print verbose status message for request
+ *
+ * @param string $status Short status message
+ *
+ * @return boolean false
+ */
 function status_exit($status) {
         $verbose_codes = array(
                 'badagent' => 'Your user agent is not valid.',
