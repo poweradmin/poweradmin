@@ -148,7 +148,6 @@ function auth($msg="",$type="success")
 	?>
 	<h2><?php echo _('Log in'); ?></h2>
 	<?php
-          echo "redirecting to: " .$_SERVER["PHP_SELF"] . "?" . $_SERVER["QUERY_STRING"];
 	?>
 	<form method="post" action="<?php echo htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES); ?>">
    <input type="hidden" name="query_string" value="<?php echo htmlentities($_SERVER["QUERY_STRING"]); ?>">
