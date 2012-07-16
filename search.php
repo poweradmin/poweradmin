@@ -43,8 +43,10 @@ if (!(verify_permission('search'))) {
 		else { $perm_edit = "none" ; }
 	
 		$holy_grail = $_POST['query'];
+  	$wildcards = ($_POST['wildcards'] == "true" ? true : false);
+  	$arpa = ($_POST['arpa'] == "true" ? true : false);
 		
-		$result = search_zone_and_record($holy_grail,$perm_view,ZONE_SORT_BY,RECORD_SORT_BY);
+		$result = search_zone_and_record($holy_grail,$perm_view,ZONE_SORT_BY,RECORD_SORT_BY,$wildcards,$arpa);
 
 		if (is_array($result['zones'])) {
 			echo "     <script language=\"JavaScript\" type=\"text/javascript\">\n";
@@ -151,8 +153,12 @@ if (!(verify_permission('search'))) {
 			echo "     </table>\n";
 		}
 
-	}
+	} else { // !isset($_POST['query'])
+		$wildcards = true;
+		$arpa = true;
+  }
 
+    var_dump($_POST);
 	echo "     <h3>" . _('Query') . ":</h3>\n";
 	echo "      <form method=\"post\" action=\"" . htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES) . "\">\n";
 	echo "       <table>\n";
@@ -160,6 +166,8 @@ if (!(verify_permission('search'))) {
 	echo "         <td>\n";
 	echo "          <input type=\"text\" class=\"input\" name=\"query\" value=\"" . $holy_grail . "\">&nbsp;\n";
 	echo "          <input type=\"submit\" class=\"button\" name=\"submit\" value=\"" . _('Search') . "\">\n";
+	echo "          <input type=\"checkbox\" class=\"input\" name=\"wildcards\" value=\"true\"" . ($wildcards ? "checked=\"checked\"" : "") . ">" . _('Wildcard') . "\n";
+	echo "          <input type=\"checkbox\" class=\"input\" name=\"arpa\" value=\"true\"" . ($arpa ? "checked=\"checked\"" : "") . ">" . _('Reverse') . "\n";
 	echo "         </td>\n";
 	echo "        </tr>\n";
 	echo "        <tr>\n";
