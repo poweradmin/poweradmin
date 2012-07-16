@@ -97,7 +97,8 @@ function doAuthenticate() {
 					}
 					//If a user has just authenticated, redirect him to index with timestamp, so post-data gets lost.
 					session_write_close();
-					clean_page("index.php");
+					//clean_page("index.php");
+          clean_page($_SERVER["PHP_SELF"]);
 					exit;
 				}
 			} else if (isset($_POST['authenticate'])) {
