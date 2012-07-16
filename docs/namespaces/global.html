@@ -28,7 +28,7 @@
 <a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
                                     Reports <b class="caret"></b></a><ul class="dropdown-menu">
 <li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
-                <span class="label label-info">105</span></a></li>
+                <span class="label label-info">78</span></a></li>
 <li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
                 <ul>
 <li>todo 
@@ -290,17 +290,18 @@ TODO: actual validation?</p></p>
 </div></div>
 </div>
 <a name="are_multipe_valid_ips" id="are_multipe_valid_ips"></a><div class="element clickable function  are_multipe_valid_ips" data-toggle="collapse" data-target=".are_multipe_valid_ips .collapse">
-<h2>are_multipe_valid_ips()
-        </h2>
-<pre>are_multipe_valid_ips($ips) </pre>
+<h2>Test if multiple IP addresses are valid</h2>
+<pre>are_multipe_valid_ips(string $ips) : boolean</pre>
 <div class="labels"></div>
 <div class="row collapse"><div class="detail-description">
-<p class="long_description"></p>
+<p class="long_description"><p>Takes a string of comma seperated IP addresses and tests validity</p></p>
 <h3>Parameters</h3>
 <div class="subelement argument">
 <h4>$ips</h4>
-<code></code>
-</div>
+<code>string</code><p>Comma seperated IP addresses</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>true if valid, false otherwise</div>
 </div></div>
 </div>
 <a name="auth" id="auth"></a><div class="element clickable function  auth" data-toggle="collapse" data-target=".auth .collapse">
@@ -1586,283 +1587,301 @@ second argument is true, only the permission names are returned.</p></p>
 </div></div>
 </div>
 <a name="is_valid_hostname_fqdn" id="is_valid_hostname_fqdn"></a><div class="element clickable function  is_valid_hostname_fqdn" data-toggle="collapse" data-target=".is_valid_hostname_fqdn .collapse">
-<h2>is_valid_hostname_fqdn()
-        </h2>
-<pre>is_valid_hostname_fqdn($hostname, $wildcard) </pre>
+<h2>Test if hostname is valid FQDN</h2>
+<pre>is_valid_hostname_fqdn(string $hostname, string $wildcard) : boolean</pre>
 <div class="labels"></div>
 <div class="row collapse"><div class="detail-description">
 <p class="long_description"></p>
 <h3>Parameters</h3>
 <div class="subelement argument">
 <h4>$hostname</h4>
-<code></code>
+<code>string</code><p>&$hostname Hostname string</p>
 </div>
 <div class="subelement argument">
 <h4>$wildcard</h4>
-<code></code>
+<code>string</code><p>Hostname includes wildcard '*'</p>
 </div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>true if valid, false otherwise</div>
 </div></div>
 </div>
 <a name="is_valid_ipv4" id="is_valid_ipv4"></a><div class="element clickable function  is_valid_ipv4" data-toggle="collapse" data-target=".is_valid_ipv4 .collapse">
-<h2>is_valid_ipv4()
-        </h2>
-<pre>is_valid_ipv4($ipv4, $answer) </pre>
+<h2>Test if IPv4 address is valid</h2>
+<pre>is_valid_ipv4(string $ipv4, boolean $answer) : boolean</pre>
 <div class="labels"></div>
 <div class="row collapse"><div class="detail-description">
 <p class="long_description"></p>
 <h3>Parameters</h3>
 <div class="subelement argument">
 <h4>$ipv4</h4>
-<code></code>
-</div>
+<code>string</code><p>IPv4 address string</p></div>
 <div class="subelement argument">
 <h4>$answer</h4>
-<code></code>
+<code>boolean</code><p>print error if true [default=true]</p>
 </div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>true if valid, false otherwise</div>
 </div></div>
 </div>
 <a name="is_valid_ipv6" id="is_valid_ipv6"></a><div class="element clickable function  is_valid_ipv6" data-toggle="collapse" data-target=".is_valid_ipv6 .collapse">
-<h2>is_valid_ipv6()
-        </h2>
-<pre>is_valid_ipv6($ipv6, $answer) </pre>
+<h2>Test if IPv6 address is valid</h2>
+<pre>is_valid_ipv6(string $ipv6, boolean $answer) : boolean</pre>
 <div class="labels"></div>
 <div class="row collapse"><div class="detail-description">
 <p class="long_description"></p>
 <h3>Parameters</h3>
 <div class="subelement argument">
 <h4>$ipv6</h4>
-<code></code>
-</div>
+<code>string</code><p>IPv6 address string</p></div>
 <div class="subelement argument">
 <h4>$answer</h4>
-<code></code>
+<code>boolean</code><p>print error if true [default=true]</p>
 </div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>true if valid, false otherwise</div>
 </div></div>
 </div>
 <a name="is_valid_loc" id="is_valid_loc"></a><div class="element clickable function  is_valid_loc" data-toggle="collapse" data-target=".is_valid_loc .collapse">
-<h2>is_valid_loc()
-        </h2>
-<pre>is_valid_loc($content) </pre>
+<h2>Check if LOC content is valid</h2>
+<pre>is_valid_loc(string $content) : boolean</pre>
 <div class="labels"></div>
 <div class="row collapse"><div class="detail-description">
 <p class="long_description"></p>
 <h3>Parameters</h3>
 <div class="subelement argument">
 <h4>$content</h4>
-<code></code>
-</div>
+<code>string</code><p>LOC content</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>true if valid, false otherwise</div>
 </div></div>
 </div>
 <a name="is_valid_non_alias_target" id="is_valid_non_alias_target"></a><div class="element clickable function  is_valid_non_alias_target" data-toggle="collapse" data-target=".is_valid_non_alias_target .collapse">
-<h2>is_valid_non_alias_target()
-        </h2>
-<pre>is_valid_non_alias_target($target) </pre>
+<h2>Check if target is not a CNAME</h2>
+<pre>is_valid_non_alias_target(string $target) : boolean</pre>
 <div class="labels"></div>
 <div class="row collapse"><div class="detail-description">
 <p class="long_description"></p>
 <h3>Parameters</h3>
 <div class="subelement argument">
 <h4>$target</h4>
-<code></code>
-</div>
+<code>string</code><p>target to check</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>true if not alias, false if CNAME exists</div>
 </div></div>
 </div>
 <a name="is_valid_printable" id="is_valid_printable"></a><div class="element clickable function  is_valid_printable" data-toggle="collapse" data-target=".is_valid_printable .collapse">
-<h2>is_valid_printable()
-        </h2>
-<pre>is_valid_printable($string) </pre>
+<h2>Test if string is printable</h2>
+<pre>is_valid_printable(string $string) : boolean</pre>
 <div class="labels"></div>
 <div class="row collapse"><div class="detail-description">
 <p class="long_description"></p>
 <h3>Parameters</h3>
 <div class="subelement argument">
 <h4>$string</h4>
-<code></code>
-</div>
+<code>string</code><p>string</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>true if valid, false otherwise</div>
 </div></div>
 </div>
 <a name="is_valid_rr_cname_exists" id="is_valid_rr_cname_exists"></a><div class="element clickable function  is_valid_rr_cname_exists" data-toggle="collapse" data-target=".is_valid_rr_cname_exists .collapse">
-<h2>is_valid_rr_cname_exists()
-        </h2>
-<pre>is_valid_rr_cname_exists($name, $rid) </pre>
+<h2>Check if CNAME already exists</h2>
+<pre>is_valid_rr_cname_exists(string $name, int $rid) : boolean</pre>
 <div class="labels"></div>
 <div class="row collapse"><div class="detail-description">
 <p class="long_description"></p>
 <h3>Parameters</h3>
 <div class="subelement argument">
 <h4>$name</h4>
-<code></code>
-</div>
+<code>string</code><p>CNAME</p></div>
 <div class="subelement argument">
 <h4>$rid</h4>
-<code></code>
-</div>
+<code>int</code><p>Record ID</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>true if non-existant, false if exists</div>
 </div></div>
 </div>
 <a name="is_valid_rr_cname_name" id="is_valid_rr_cname_name"></a><div class="element clickable function  is_valid_rr_cname_name" data-toggle="collapse" data-target=".is_valid_rr_cname_name .collapse">
-<h2>is_valid_rr_cname_name()
-        </h2>
-<pre>is_valid_rr_cname_name($name) </pre>
+<h2>Test if CNAME is valid</h2>
+<pre>is_valid_rr_cname_name(string $name) : boolean</pre>
 <div class="labels"></div>
 <div class="row collapse"><div class="detail-description">
-<p class="long_description"></p>
+<p class="long_description"><p>Check if any MX or NS entries exist which invalidated CNAME</p></p>
 <h3>Parameters</h3>
 <div class="subelement argument">
 <h4>$name</h4>
-<code></code>
-</div>
+<code>string</code><p>CNAME to lookup</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>true if valid, false otherwise</div>
 </div></div>
 </div>
 <a name="is_valid_rr_cname_unique" id="is_valid_rr_cname_unique"></a><div class="element clickable function  is_valid_rr_cname_unique" data-toggle="collapse" data-target=".is_valid_rr_cname_unique .collapse">
-<h2>is_valid_rr_cname_unique()
-        </h2>
-<pre>is_valid_rr_cname_unique($name, $rid) </pre>
+<h2>Check if CNAME is unique (doesn't overlap A/AAAA)</h2>
+<pre>is_valid_rr_cname_unique(string $name, string $rid) : boolean</pre>
 <div class="labels"></div>
 <div class="row collapse"><div class="detail-description">
 <p class="long_description"></p>
 <h3>Parameters</h3>
 <div class="subelement argument">
 <h4>$name</h4>
-<code></code>
-</div>
+<code>string</code><p>CNAME</p></div>
 <div class="subelement argument">
 <h4>$rid</h4>
-<code></code>
-</div>
+<code>string</code><p>Record ID</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>true if unique, false if duplicate</div>
 </div></div>
 </div>
 <a name="is_valid_rr_hinfo_content" id="is_valid_rr_hinfo_content"></a><div class="element clickable function  is_valid_rr_hinfo_content" data-toggle="collapse" data-target=".is_valid_rr_hinfo_content .collapse">
-<h2>is_valid_rr_hinfo_content()
-        </h2>
-<pre>is_valid_rr_hinfo_content($content) </pre>
+<h2>Check if HINFO content is valid</h2>
+<pre>is_valid_rr_hinfo_content(string $content) : boolean</pre>
 <div class="labels"></div>
 <div class="row collapse"><div class="detail-description">
 <p class="long_description"></p>
 <h3>Parameters</h3>
 <div class="subelement argument">
 <h4>$content</h4>
-<code></code>
-</div>
+<code>string</code><p>HINFO record content</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>true if valid, false otherwise</div>
 </div></div>
 </div>
 <a name="is_valid_rr_prio" id="is_valid_rr_prio"></a><div class="element clickable function  is_valid_rr_prio" data-toggle="collapse" data-target=".is_valid_rr_prio .collapse">
-<h2>is_valid_rr_prio()
-        </h2>
-<pre>is_valid_rr_prio($prio, $type) </pre>
+<h2>Check if Priority is valid</h2>
+<pre>is_valid_rr_prio(string $prio, string $type) : boolean</pre>
 <div class="labels"></div>
 <div class="row collapse"><div class="detail-description">
-<p class="long_description"></p>
+<p class="long_description"><p>Check if MX or SRV priority is within range, otherwise set to 0</p></p>
 <h3>Parameters</h3>
 <div class="subelement argument">
 <h4>$prio</h4>
-<code></code>
+<code>string</code><p>&$prio Priority</p>
 </div>
 <div class="subelement argument">
 <h4>$type</h4>
-<code></code>
-</div>
+<code>string</code><p>Record type</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>true if valid, false otherwise</div>
 </div></div>
 </div>
 <a name="is_valid_rr_soa_content" id="is_valid_rr_soa_content"></a><div class="element clickable function  is_valid_rr_soa_content" data-toggle="collapse" data-target=".is_valid_rr_soa_content .collapse">
-<h2>is_valid_rr_soa_content()
-        </h2>
-<pre>is_valid_rr_soa_content($content) </pre>
+<h2>Check if SOA content is valid</h2>
+<pre>is_valid_rr_soa_content(string $content) : boolean</pre>
 <div class="labels"></div>
 <div class="row collapse"><div class="detail-description">
 <p class="long_description"></p>
 <h3>Parameters</h3>
 <div class="subelement argument">
 <h4>$content</h4>
-<code></code>
+<code>string</code><p>&$content SOA record content</p>
 </div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>true if valid, false otherwise</div>
 </div></div>
 </div>
 <a name="is_valid_rr_soa_name" id="is_valid_rr_soa_name"></a><div class="element clickable function  is_valid_rr_soa_name" data-toggle="collapse" data-target=".is_valid_rr_soa_name .collapse">
-<h2>is_valid_rr_soa_name()
-        </h2>
-<pre>is_valid_rr_soa_name($name, $zone) </pre>
+<h2>Check if SOA name is valid</h2>
+<pre>is_valid_rr_soa_name(string $name, string $zone) : boolean</pre>
 <div class="labels"></div>
 <div class="row collapse"><div class="detail-description">
-<p class="long_description"></p>
+<p class="long_description"><p>Checks if SOA name = zone name</p></p>
 <h3>Parameters</h3>
 <div class="subelement argument">
 <h4>$name</h4>
-<code></code>
-</div>
+<code>string</code><p>SOA name</p></div>
 <div class="subelement argument">
 <h4>$zone</h4>
-<code></code>
-</div>
+<code>string</code><p>Zone name</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>true if valid, false otherwise</div>
 </div></div>
 </div>
 <a name="is_valid_rr_srv_content" id="is_valid_rr_srv_content"></a><div class="element clickable function  is_valid_rr_srv_content" data-toggle="collapse" data-target=".is_valid_rr_srv_content .collapse">
-<h2>is_valid_rr_srv_content()
-        </h2>
-<pre>is_valid_rr_srv_content($content) </pre>
+<h2>Check if SRV content is valid</h2>
+<pre>is_valid_rr_srv_content(string $content) : boolean</pre>
 <div class="labels"></div>
 <div class="row collapse"><div class="detail-description">
 <p class="long_description"></p>
 <h3>Parameters</h3>
 <div class="subelement argument">
 <h4>$content</h4>
-<code></code>
+<code>string</code><p>&$content SRV content</p>
 </div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>true if valid, false otherwise</div>
 </div></div>
 </div>
 <a name="is_valid_rr_srv_name" id="is_valid_rr_srv_name"></a><div class="element clickable function  is_valid_rr_srv_name" data-toggle="collapse" data-target=".is_valid_rr_srv_name .collapse">
-<h2>is_valid_rr_srv_name()
-        </h2>
-<pre>is_valid_rr_srv_name($name) </pre>
+<h2>Check if SRV name is valid</h2>
+<pre>is_valid_rr_srv_name(\$name $name) : boolean</pre>
 <div class="labels"></div>
 <div class="row collapse"><div class="detail-description">
 <p class="long_description"></p>
 <h3>Parameters</h3>
 <div class="subelement argument">
 <h4>$name</h4>
-<code></code>
-</div>
+<code>\$name</code><p>SRV name</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>true if valid, false otherwise</div>
 </div></div>
 </div>
 <a name="is_valid_rr_ttl" id="is_valid_rr_ttl"></a><div class="element clickable function  is_valid_rr_ttl" data-toggle="collapse" data-target=".is_valid_rr_ttl .collapse">
-<h2>is_valid_rr_ttl()
-        </h2>
-<pre>is_valid_rr_ttl($ttl) </pre>
+<h2>Check if TTL is valid and within range</h2>
+<pre>is_valid_rr_ttl(int $ttl) : boolean</pre>
 <div class="labels"></div>
 <div class="row collapse"><div class="detail-description">
 <p class="long_description"></p>
 <h3>Parameters</h3>
 <div class="subelement argument">
 <h4>$ttl</h4>
-<code></code>
-</div>
+<code>int</code><p>TTL</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>true if valid,false otherwise</div>
 </div></div>
 </div>
 <a name="is_valid_search" id="is_valid_search"></a><div class="element clickable function  is_valid_search" data-toggle="collapse" data-target=".is_valid_search .collapse">
-<h2>is_valid_search()
-        </h2>
-<pre>is_valid_search($holygrail) </pre>
+<h2>Check if search string is valid</h2>
+<pre>is_valid_search(string $search_string) : boolean</pre>
 <div class="labels"></div>
 <div class="row collapse"><div class="detail-description">
 <p class="long_description"></p>
 <h3>Parameters</h3>
 <div class="subelement argument">
-<h4>$holygrail</h4>
-<code></code>
-</div>
+<h4>$search_string</h4>
+<code>string</code><p>search string</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>true if valid, false otherwise</div>
 </div></div>
 </div>
 <a name="is_valid_spf" id="is_valid_spf"></a><div class="element clickable function  is_valid_spf" data-toggle="collapse" data-target=".is_valid_spf .collapse">
-<h2>is_valid_spf()
-        </h2>
-<pre>is_valid_spf($content) </pre>
+<h2>Check if SPF content is valid</h2>
+<pre>is_valid_spf(string $content) : boolean</pre>
 <div class="labels"></div>
 <div class="row collapse"><div class="detail-description">
 <p class="long_description"></p>
 <h3>Parameters</h3>
 <div class="subelement argument">
 <h4>$content</h4>
-<code></code>
-</div>
+<code>string</code><p>SPF content</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>true if valid, false otherwise</div>
 </div></div>
 </div>
 <a name="is_valid_user" id="is_valid_user"></a><div class="element clickable function  is_valid_user" data-toggle="collapse" data-target=".is_valid_user .collapse">
@@ -2423,41 +2442,40 @@ second argument is true, only the permission names are returned.</p></p>
 </div></div>
 </div>
 <a name="validate_input" id="validate_input"></a><div class="element clickable function  validate_input" data-toggle="collapse" data-target=".validate_input .collapse">
-<h2>validate_input()
-        </h2>
-<pre>validate_input($rid, $zid, $type, $content, $name, $prio, $ttl) </pre>
+<h2>Validate DNS record input</h2>
+<pre>validate_input(int $rid, int $zid, string $type, string $content, string $name, int $prio, int $ttl) : boolean</pre>
 <div class="labels"></div>
 <div class="row collapse"><div class="detail-description">
 <p class="long_description"></p>
 <h3>Parameters</h3>
 <div class="subelement argument">
 <h4>$rid</h4>
-<code></code>
-</div>
+<code>int</code><p>Record ID</p></div>
 <div class="subelement argument">
 <h4>$zid</h4>
-<code></code>
-</div>
+<code>int</code><p>Zone ID</p></div>
 <div class="subelement argument">
 <h4>$type</h4>
-<code></code>
-</div>
+<code>string</code><p>Record Type</p></div>
 <div class="subelement argument">
 <h4>$content</h4>
-<code></code>
+<code>string</code><p>&$content content part of record</p>
 </div>
 <div class="subelement argument">
 <h4>$name</h4>
-<code></code>
+<code>string</code><p>&$name Name part of record</p>
 </div>
 <div class="subelement argument">
 <h4>$prio</h4>
-<code></code>
+<code>int</code><p>&$prio Priority</p>
 </div>
 <div class="subelement argument">
 <h4>$ttl</h4>
-<code></code>
+<code>int</code><p>&$ttl TTL</p>
 </div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>true on success, false otherwise</div>
 </div></div>
 </div>
 <a name="verify_permission" id="verify_permission"></a><div class="element clickable function  verify_permission" data-toggle="collapse" data-target=".verify_permission .collapse">
@@ -2664,7 +2682,7 @@ second argument is true, only the permission names are returned.</p></p>
 <div class="row"><footer class="span12">
             Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
             Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.0.0a7</a> and<br>
-            generated on 2012-07-12T18:09:32-04:00.<br></footer></div>
+            generated on 2012-07-13T18:39:01-04:00.<br></footer></div>
 </div>
 </body>
 </html>

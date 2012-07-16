@@ -1,4 +1,8 @@
 <?php
+/** Benchmarking functions
+ *
+ * @package Default
+ */
 
 $start_memory = memory_get_usage();
 $start_time = microtime(true);
