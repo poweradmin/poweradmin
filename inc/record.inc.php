@@ -379,6 +379,16 @@ function add_record($zone_id, $name, $type, $content, $ttl, $prio) {
                                                 }else{
                                                 $content = $db->quote($content, 'text');
                                                 }
+      if ($type == "PTR" ) {
+          // only allow one PTR to exist
+          // TODO allow this to be configurable
+          $query = "DELETE FROM records WHERE " .
+						"domain_id=" . $db->quote($zone_id, 'integer') .
+						"AND name=" . $db->quote($name, 'text') .
+						"AND type=" . $db->quote($type, 'text');
+			    $response = $db->query($query);
+          // ignore errors
+      }
 			$query = "INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) VALUES ("
 						. $db->quote($zone_id, 'integer') . ","
 						. $db->quote($name, 'text') . "," 
