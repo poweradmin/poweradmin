@@ -1,4 +1,8 @@
 <?php
+/** Toolkit functions
+ *
+ * @package Default
+ */
 
 // TODO: display elapsed time and memory consumption,
 // used to check improvements in refactored version 
