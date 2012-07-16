@@ -158,7 +158,6 @@ if (!(verify_permission('search'))) {
 		$arpa = true;
   }
 
-    var_dump($_POST);
 	echo "     <h3>" . _('Query') . ":</h3>\n";
 	echo "      <form method=\"post\" action=\"" . htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES) . "\">\n";
 	echo "       <table>\n";
