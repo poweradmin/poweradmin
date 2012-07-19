@@ -296,10 +296,7 @@ function add_record($zoneid, $name, $type, $content, $ttl, $prio) {
 				return false;
 			} else {
 				if ($type != 'SOA') { update_soa_serial($zoneid); }
-
-                if ($pdnssec_use) {
-				    do_rectify_zone($zoneid);
-                }
+                                if ($pdnssec_use) { do_rectify_zone($zoneid); }
 				return true;
 			}
 		} else {
@@ -818,7 +815,7 @@ function get_best_matching_zone_id_from_name($domain) {
 
         $ret = array();
         $match=72; // the longest ip6.arpa has a length of 72
-        $found_domain_id='';
+        $found_domain_id=-1;
 
         // get all reverse-zones
         $query = "SELECT name, id
