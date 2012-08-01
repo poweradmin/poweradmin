@@ -275,6 +275,7 @@ function add_record($zoneid, $name, $type, $content, $ttl, $prio) {
 		error(ERR_PERM_ADD_RECORD);
 		return false;
 	} else {
+		$response = $db->beginTransaction();
 		if (validate_input(-1, $zoneid, $type, $content, $name, $prio, $ttl) ) { 
 			$change = time();
 				if($type == "SPF" || $type == "TXT"){
@@ -290,11 +291,13 @@ function add_record($zoneid, $name, $type, $content, $ttl, $prio) {
 						. $db->quote($ttl, 'integer') . ","
 						. $db->quote($prio, 'integer') . ","
 						. $db->quote($change, 'integer') . ")";
-			$response = $db->query($query);
+			$response = $db->exec($query);
 			if (PEAR::isError($response)) {
 				error($response->getMessage());
+				$response = $db->rollback();
 				return false;
 			} else {
+				$response = $db->commit();
 				if ($type != 'SOA') { update_soa_serial($zoneid); }
                                 if ($pdnssec_use) { do_rectify_zone($zoneid); }
 				return true;
