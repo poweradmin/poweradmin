@@ -233,13 +233,14 @@ function edit_record($record) {
 	} else {
 		global $db;
 			if (validate_input($record['rid'], $record['zid'], $record['type'], $record['content'], $record['name'], $record['prio'], $record['ttl'])) {
+				$name = strtolower($record['name']); // powerdns only searches for lower case records
 				if ($record['type'] == "SPF" || $record['type'] == "TXT"){
                                 $content = $db->quote(stripslashes('\"'.$record['content'].'\"'), 'text');
                                 }else{
                                 $content = $db->quote($record['content'], 'text');
                                 }
 			$query = "UPDATE records 
-				SET name=".$db->quote($record['name'], 'text').", 
+				SET name=".$db->quote($name, 'text').", 
 				type=".$db->quote($record['type'], 'text').", 
 				content=".$content.",
 				ttl=".$db->quote($record['ttl'], 'integer').", 
@@ -277,6 +278,7 @@ function add_record($zoneid, $name, $type, $content, $ttl, $prio) {
 	} else {
 		if (validate_input(-1, $zoneid, $type, $content, $name, $prio, $ttl) ) { 
 			$change = time();
+			$name = strtolower($name); // powerdns only searches for lower case records
 				if($type == "SPF" || $type == "TXT"){
                                                 $content = $db->quote(stripslashes('\"'.$content.'\"'), 'text');
                                                 }else{
