@@ -1,4 +1,8 @@
 <?php
+/** Authentication functions
+ *
+ * @package Default
+ */
 
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://www.poweradmin.org> for more details.
@@ -21,6 +25,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/** Authenticate Session
+ *
+ * Checks if user is logging in, logging out, or session expired and performs
+ * actions accordingly
+ *
+ * @return null
+ */
 function doAuthenticate() {
 	global $db;
 	global $iface_expire;
@@ -86,7 +97,8 @@ function doAuthenticate() {
 					}
 					//If a user has just authenticated, redirect him to index with timestamp, so post-data gets lost.
 					session_write_close();
-					clean_page("index.php");
+					//clean_page("index.php");
+          clean_page($_SERVER["PHP_SELF"] . "?" . $_POST["query_string"]);
 					exit;
 				}
 			} else if (isset($_POST['authenticate'])) {
@@ -119,10 +131,13 @@ function doAuthenticate() {
 	}
 }
 
-/*
- * Print the login form.
+/** Print the login form
+ *
+ * @param string $msg Error Message
+ * @param string $type Message type [default='success', 'error']
+ *
+ * @return null
  */
-
 function auth($msg="",$type="success")
 {
 	include_once('inc/header.inc.php');
@@ -135,6 +150,7 @@ function auth($msg="",$type="success")
 	<?php
 	?>
 	<form method="post" action="<?php echo htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES); ?>">
+   <input type="hidden" name="query_string" value="<?php echo htmlentities($_SERVER["QUERY_STRING"]); ?>">
 	 <table border="0">
 	  <tr>
 	   <td class="n" width="100"><?php echo _('Username'); ?>:</td>
@@ -163,8 +179,14 @@ function auth($msg="",$type="success")
 }
 
 
-/*
- * Logout the user and kickback to login form.
+/** Logout the user
+ *
+ * Logout the user and kickback to login form
+ *
+ * @param string $msg Error Message
+ * @param string $type Message type [default='']
+ *
+ * @return null
  */
 
 function logout($msg="",$type="")
