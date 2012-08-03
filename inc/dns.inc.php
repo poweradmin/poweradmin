@@ -52,6 +52,7 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
                         if (!is_valid_rr_cname_unique($name,$rid)) return false; 
 			if (!is_valid_hostname_fqdn($name,1)) return false;
 			if (!is_valid_hostname_fqdn($content,0)) return false;
+			if (!is_not_empty_cname_rr($name,$zone)) return false;
 			break;
 
 		case "HINFO":
@@ -349,6 +350,17 @@ function is_valid_rr_cname_unique($name,$rid) {
         return true; 
 } 
 
+/*
+ * Check that the zone does not have a empty CNAME RR
+ */
+function is_not_empty_cname_rr($name,$zone) {
+
+	if ($name == $zone) { 
+		error(ERR_DNS_CNAME_EMPTY);
+		return false;
+	}
+	return true;
+}
 
 function is_valid_non_alias_target($target) {
 	global $db;
