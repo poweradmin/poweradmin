@@ -10,7 +10,7 @@ use warnings;
 my $login             = 'username';
 my $password          = 'password';
 my $domain            = 'mydynamicdns.example.com';
-my $ip_lookup_service = 'whatismyip';                 # or 'hostip'
+my $ip_lookup_service = 'hostip';                 # or 'whatismyip'
 my $verbose           = 1;
 
 my $poweradmin_url = 'http://example.com/poweradmin/';
@@ -18,6 +18,8 @@ my $poweradmin_url = 'http://example.com/poweradmin/';
 # try to get client ip address using whatismyip service
 my $ip_lookup_url;
 if ( $ip_lookup_service eq 'whatismyip' ) {
+    # TODO: add user agent as described here
+    # http://www.whatismyip.com/faq/automation.asp
     $ip_lookup_url = "http://automation.whatismyip.com/n09230945.asp";
 }
 elsif ( $ip_lookup_service eq 'hostip' ) {
