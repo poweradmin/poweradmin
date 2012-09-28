@@ -28,8 +28,20 @@ $db = dbConnect();
 
 // make sql query safe
 function safe($value) {
-        $value = mysql_real_escape_string($value);
-        return $value;
+    global $db, $db_type, $db_layer;
+
+    if ($db_type == 'mysql') {
+        if ($db_layer == 'MDB2') {
+            $value = mysql_real_escape_string($value);
+        } elseif($db_layer == 'PDO') {
+            $value = $db->quote($value, 'text');
+            $value = substr($value, 1, -1); // remove quotes
+        }
+    } else {
+        return status_exit('baddbtype');
+    }
+
+    return $value;
 }
 
 // get exit status message
@@ -43,7 +55,8 @@ function status_exit($status) {
                 'nohost'   => 'The specified hostname does not exist.',
                 'good'     => 'Your hostname has been updated.',
                 '911'      => 'A critical error has occurred on our end.  We apologize for any inconvenience.',
-                'nochg'    => 'This update was identical to your last update, so no changes were made to your hostname configuration.'
+                'nochg'    => 'This update was identical to your last update, so no changes were made to your hostname configuration.',
+                'baddbtype'=> 'Unsupported database type',
         );
 
         if (isset($_REQUEST['verbose'])) {
@@ -72,9 +85,6 @@ if (!preg_match('/^((?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0
 }
 
 if (!strlen($hostname)) return status_exit('notfqdn');
-
-// Don't allow super user to be used for update
-if ($username == 'admin') return status_exit('badauth');
 
 $query = "SELECT * FROM users WHERE username='$username' and password='$password'";
 $userdetails = $db->queryRow($query);
