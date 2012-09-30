@@ -60,7 +60,7 @@ function status_exit($status) {
         );
 
         if (isset($_REQUEST['verbose'])) {
-		$pieces = split(' ', $status);
+		$pieces = preg_split('/\s/', $status);
                 $status = $verbose_codes[$pieces[0]];
         }
         echo "$status\n";
