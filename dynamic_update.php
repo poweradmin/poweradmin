@@ -76,6 +76,7 @@ if (!isset($_SERVER['PHP_AUTH_USER'])) {
  }
 
 $username = safe($_SERVER['PHP_AUTH_USER']);
+// FIXME: supports only md5 hashes
 $password = md5(safe($_SERVER['PHP_AUTH_PW']));
 $hostname = safe($_REQUEST['hostname']);
 $ip = safe($_REQUEST['myip']);
@@ -99,7 +100,8 @@ while ($row = $querydomains->fetchRow()) {
 
 	while ($row2 = $result->fetchRow()) {
 		if ($hostname == $row2['name']){
-			$updatequery ="UPDATE records SET content ='{$ip}' where domain_id='{$row["domain_id"]}' and type='A'";
+			//$updatequery ="UPDATE records SET content ='{$ip}' where domain_id='{$row["domain_id"]}' and type='A'";
+            $updatequery ="UPDATE records SET content ='{$ip}' where name='{$row2["name"]}' and type='A'";
 			$query = $db->query($updatequery);
 			$domainunauth = "-1";
 		}
