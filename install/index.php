@@ -23,12 +23,12 @@ function get_random_key() {
 	$key = '';
 
 	$chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~!@#$%^&*()_+=-][{}';
-	$length = 46; 
+	$length = 46;
 
 	$size = strlen($chars);
 	for ($i = 0; $i < $length; $i++) {
 		$key .= $chars[ mt_rand( 0, $size - 1 ) ];
-	}	
+	}
 
 	return $key;
 }
@@ -95,7 +95,7 @@ switch($step) {
 		echo "</form>";
 		break;
 
-	case 3:	
+	case 3:
 		$step++;
 		echo "<p>" . _('To prepare the database for using Poweradmin, the installer needs to modify the PowerDNS database. It will add a number of tables and it will fill these tables with some data. If the tables are already present, the installer will drop them first.') . "</p>";
 
@@ -120,11 +120,12 @@ switch($step) {
             "<select name=\"type\" onChange=\"changePort(this.value)\">" .
             "<option value=\"mysql\">MySQL</option>" .
             "<option value=\"pgsql\">PostgreSQL</option>" .
+            "<option value=\"sqlite\">SQLite</option>" .
             "</td>\n";
         echo "  <td>" . _('The type of the PowerDNS database.') . "</td>\n";
         echo " </tr>\n";
 		echo "  <td>" . _('Hostname') . "</td>\n";
-		echo "  <td><input type=\"text\" name=\"host\" value=\"127.0.0.1\"></td>\n";
+		echo "  <td><input type=\"text\" id=\"host\" name=\"host\" value=\"127.0.0.1\"></td>\n";
 		echo "  <td>" . _('The hostname on which the PowerDNS database resides. Frequently, this will be "localhost".') . "</td>\n";
 		echo " </tr>\n";
 		echo " <tr>\n";
@@ -135,7 +136,7 @@ switch($step) {
 		echo " <tr>\n";
 		echo "  <td>" . _('Database') . "</td>\n";
 		echo "  <td><input type=\"text\" name=\"name\" value=\"\"></td>\n";
-		echo "  <td>" . _('The name of the PowerDNS database.') . "</td>\n";
+		echo "  <td id=\"td_name\">" . _('The name of the PowerDNS database.') . "</td>\n";
 		echo " </tr>\n";
                 echo "  <tr>\n";
 		echo "   <td>" . _('Poweradmin administrator password') . "</td>\n";
@@ -253,18 +254,18 @@ switch($step) {
 				$current_db_user = $result['user()'];
 				$pa_db_host = substr($current_db_user, strpos($current_db_user, '@')+1);
 			}
-			
+
 			echo _('In MySQL you should now perform the following command:') . "</p>";
 			echo "<p><tt>GRANT SELECT, INSERT, UPDATE, DELETE<BR>ON " . $db_name . ".*<br>TO '" . $pa_db_user . "'@'" . $pa_db_host . "'<br>IDENTIFIED BY '" . $pa_db_pass . "';</tt></p>";
 		} elseif ($db_type == 'pgsql') {
 			echo _('On PgSQL you would use:') . "</p>";
 			echo "<p><tt>$ createuser -E -P " . $pa_db_user . "<br>" .
 				"Enter password for new role: " . $pa_db_pass . "<br>" .
-				"Enter it again: " . $pa_db_pass . "<br>" . 
+				"Enter it again: " . $pa_db_pass . "<br>" .
 				"Shall the new role be a superuser? (y/n) n<br>" .
-				"Shall the new user be allowed to create databases? (y/n) n<br>" . 
-				"Shall the new user be allowed to create more new users? (y/n) n<br>" . 
-				"CREATE USER<br>" . 
+				"Shall the new user be allowed to create databases? (y/n) n<br>" .
+				"Shall the new user be allowed to create more new users? (y/n) n<br>" .
+				"CREATE USER<br>" .
 				"$ psql " . $db_name . "<br>";
             echo "psql> ";
 				foreach ($grantTables as $tableName) {
@@ -294,7 +295,7 @@ switch($step) {
 		echo "<input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $step . "\">";
 		echo "</form>";
 		break;
-	
+
 	case 6:
 		$step++;
 
