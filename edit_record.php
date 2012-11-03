@@ -83,8 +83,8 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 	echo "        <th>" . _('Name') . "</th>\n";
 	echo "        <th>&nbsp;</th>\n";
 	echo "        <th>" . _('Type') . "</th>\n";
-	echo "        <th>" . _('Priority') . "</th>\n";
 	echo "        <th>" . _('Content') . "</th>\n";
+	echo "        <th>" . _('Priority') . "</th>\n";
 	echo "        <th>" . _('TTL') . "</th>\n";
 	echo "       </tr>\n";
 
@@ -115,8 +115,8 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 		}
 		echo "        </select>\n";
 		echo "       </td>\n";
-		echo "       <td><input type=\"text\" name=\"prio\" value=\"" .  $record["prio"] . "\" class=\"sinput\"></td>\n";
 		echo "       <td><input type=\"text\" name=\"content\" value=\"" .  $record["content"] . "\" class=\"input\"></td>\n";
+		echo "       <td><input type=\"text\" name=\"prio\" value=\"" .  $record["prio"] . "\" class=\"sinput\"></td>\n";
 		echo "       <td><input type=\"text\" name=\"ttl\" value=\"" . $record["ttl"] . "\" class=\"sinput\"></td>\n";
 		echo "      </tr>\n";
 	}

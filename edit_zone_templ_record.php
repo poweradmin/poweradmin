@@ -71,8 +71,8 @@ if (!(verify_permission('zone_master_add')) || !$owner) {
 	echo "        <th>" . _('Name') . "</td>\n";
 	echo "        <th>&nbsp;</td>\n";
 	echo "        <th>" . _('Type') . "</td>\n";
-	echo "        <th>" . _('Priority') . "</td>\n";
 	echo "        <th>" . _('Content') . "</td>\n";
+	echo "        <th>" . _('Priority') . "</td>\n";
 	echo "        <th>" . _('TTL') . "</td>\n";
 	echo "       </tr>\n";
 	echo "      <input type=\"hidden\" name=\"rid\" value=\"" . $record_id . "\">\n";
@@ -92,8 +92,8 @@ if (!(verify_permission('zone_master_add')) || !$owner) {
 	}
 	echo "        </select>\n";
 	echo "       </td>\n";
-	echo "       <td><input type=\"text\" name=\"prio\" value=\"" .  $record["prio"] . "\" class=\"sinput\"></td>\n";
 	echo "       <td><input type=\"text\" name=\"content\" value=\"" .  $record["content"] . "\" class=\"input\"></td>\n";
+	echo "       <td><input type=\"text\" name=\"prio\" value=\"" .  $record["prio"] . "\" class=\"sinput\"></td>\n";
 	echo "       <td><input type=\"text\" name=\"ttl\" value=\"" . $record["ttl"] . "\" class=\"sinput\"></td>\n";
 	echo "      </tr>\n";
 	echo "      </table>\n";
