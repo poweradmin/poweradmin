@@ -95,7 +95,9 @@ function verify_permission($permission)
 
 function list_permission_templates() {
 	global $db;
-	$query = "SELECT * FROM perm_templ ORDER BY name";
+	// $query = "SELECT * FROM perm_templ ORDER BY name";
+	// return templates with superuser rights as last - for security reason
+	$query = "SELECT DISTINCT pt.id, pt.name, pt.descr FROM perm_templ AS pt INNER JOIN perm_templ_items pti ON (pt.id = pti.templ_id) LEFT JOIN perm_items AS pi ON (pi.id = pti.perm_id AND pi.name = 'user_is_ueberuser') order by pi.name, pt.name";
 	$response = $db->query($query);
 	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
