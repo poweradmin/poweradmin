@@ -88,12 +88,12 @@ if (!(verify_permission('search'))) {
 			foreach ($result['zones'] as $zone) {
 				echo "      <tr>\n";
 				echo "          <td>\n";
-				echo "           <a href=\"edit.php?id=" . $zone['zid'] . "\"><img src=\"images/edit.gif\" title=\"" . _('Edit zone') . " " . $zone['name'] . "\" alt=\"[ " . _('Edit zone') . " " . $zone['name'] . " ]\"></a>\n";
+				echo "           <a href=\"edit.php?name=" .  $zone['name'] . "&id=" . $zone['zid'] . "\"><img src=\"images/edit.gif\" title=\"" . _('Edit zone') . " " . $zone['name'] . "\" alt=\"[ " . _('Edit zone') . " " . $zone['name'] . " ]\"></a>\n";
 				if ( $perm_edit != "all" || $perm_edit != "none") {
 					$user_is_zone_owner = verify_user_is_owner_zoneid($zone['zid']);
 				}
 				if ( $perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1") ) {
-					echo "           <a href=\"delete_domain.php?id=" . $zone['zid'] . "\"><img src=\"images/delete.gif\" title=\"" . _('Delete zone') . " " . $zone['name'] . "\" alt=\"[ ". _('Delete zone') . " " . $zone['name'] . " ]\"></a>\n";
+					echo "           <a href=\"delete_domain.php?name=" .  $zone['name'] . "&id=" . $zone['zid'] . "\"><img src=\"images/delete.gif\" title=\"" . _('Delete zone') . " " . $zone['name'] . "\" alt=\"[ ". _('Delete zone') . " " . $zone['name'] . " ]\"></a>\n";
 				}
 				echo "          </td>\n";
 				echo "       <td>" . $zone['name'] . "</td>\n";
@@ -130,8 +130,8 @@ if (!(verify_permission('search'))) {
 			echo "       <th>&nbsp;</th>\n";
 			echo "       <th><a href=\"javascript:record_sort_by('name')\">" . _('Name') . "</a></th>\n";
 			echo "       <th><a href=\"javascript:record_sort_by('type')\">" . _('Type') . "</a></th>\n";
-			echo "       <th>Priority</th>\n";
 			echo "       <th><a href=\"javascript:record_sort_by('content')\">" . _('Content') . "</a></th>\n";
+			echo "       <th>Priority</th>\n";
 			echo "       <th><a href=\"javascript:record_sort_by('ttl')\">" . _('TTL') . "</a></th>\n";
 			echo "      </tr>\n";
 			echo "      </form>\n";
@@ -150,12 +150,12 @@ if (!(verify_permission('search'))) {
 				echo "          </td>\n";
 				echo "       <td>" . $record['name'] . "</td>\n";
 				echo "       <td>" . $record['type'] . "</td>\n";
+				echo "       <td>" . $record['content'] . "</td>\n";
 				if ($record['type'] == "MX" || $record['type'] == "SRV") {
 					echo "       <td>" . $record['prio'] . "</td>\n";
 				} else {
 					echo "       <td>&nbsp;</td>\n";
 				}
-				echo "       <td>" . $record['content'] . "</td>\n";
 				echo "       <td>" . $record['ttl'] . "</td>\n";
 				echo "      </tr>\n";
 			}
