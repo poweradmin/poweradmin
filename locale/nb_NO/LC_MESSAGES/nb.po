@@ -3,25 +3,25 @@
 # This file is distributed under the same license as the Poweradmin package.
 # 
 # Translators:
-#   <community@avoxip.com>, 2011.
-# Ozan  <uobasar@gmail.com>, 2011.
+# Per M Knutsen <pmknutsen@gmail.com>, 2012.
+#   <pmknutsen@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin\n"
 "Report-Msgid-Bugs-To: https://github.com/poweradmin/poweradmin/issues\n"
 "POT-Creation-Date: 2011-07-08 23:45+0300\n"
-"PO-Revision-Date: 2012-02-14 08:14+0000\n"
-"Last-Translator: Yura Cagran <community@avoxip.com>\n"
-"Language-Team: Turkish (http://www.transifex.com/projects/p/poweradmin/language/tr/)\n"
+"PO-Revision-Date: 2012-11-09 04:05+0000\n"
+"Last-Translator: Per M Knutsen <pmknutsen@gmail.com>\n"
+"Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/poweradmin/language/nb/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: tr\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Language: nb\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: edit_record.php:58
 msgid "Edit record in zone"
-msgstr "Bölgedeki kaydı düzenle"
+msgstr "Rediger DNS-peker i sone"
 
 #: edit_record.php:67 list_perm_templ.php:36 edit_zone_templ.php:96
 #: edit_zone_templ.php:173 search.php:65 search.php:119 add_perm_templ.php:44
@@ -30,26 +30,26 @@ msgstr "Bölgedeki kaydı düzenle"
 #: edit.php:240 list_zones.php:67 add_zone_templ.php:45 list_zone_templ.php:37
 #: edit_perm_templ.php:53 edit_perm_templ.php:65
 msgid "Name"
-msgstr "Ad"
+msgstr "Navn"
 
 #: edit_record.php:69 edit_zone_templ.php:97 search.php:66 search.php:120
 #: add_record.php:122 add_zone_master.php:121 delete_domains.php:58
 #: add_zone_templ_record.php:101 edit_zone_templ_record.php:63 edit.php:144
 #: edit.php:242 edit.php:349 list_zones.php:68 delete_domain.php:63
 msgid "Type"
-msgstr "Tür"
+msgstr "Type"
 
 #: edit_record.php:70 edit_zone_templ.php:99 search.php:121 add_record.php:124
 #: add_zone_templ_record.php:103 edit_zone_templ_record.php:64 edit.php:146
 #: edit.php:244
 msgid "Priority"
-msgstr "Öncelik"
+msgstr "Prioritet"
 
 #: edit_record.php:71 edit_zone_templ.php:98 search.php:122 add_record.php:123
 #: add_zone_templ_record.php:102 edit_zone_templ_record.php:65 edit.php:145
 #: edit.php:243
 msgid "Content"
-msgstr "İçerik"
+msgstr "Innhold"
 
 #: edit_record.php:72 edit_zone_templ.php:100 search.php:123
 #: add_record.php:125 add_zone_templ_record.php:104
@@ -62,745 +62,745 @@ msgstr "TTL"
 #: edit_zone_templ_record.php:91 edit.php:227 delete_user.php:111
 #: edit_perm_templ.php:86 add_user.php:76
 msgid "Commit changes"
-msgstr "Değişiklikleri kaydet"
+msgstr "Gjennomfør endringer"
 
 #: edit_record.php:110 users.php:122 edit_comment.php:88 edit_user.php:142
 #: edit_zone_templ.php:164 edit_zone_templ_record.php:92 edit.php:228
 msgid "Reset changes"
-msgstr "Değişiklikleri sıfırla"
+msgstr "Tilbakestill endringer"
 
 #: users.php:47 index.php:60 inc/header.inc.php:82
 msgid "User administration"
-msgstr "Kullanıcı yönetimi"
+msgstr "Bruker administrasjon"
 
 #: users.php:52 edit_user.php:103 inc/auth.inc.php:133 install/index.php:93
 #: install/index.php:172 add_user.php:39
 msgid "Username"
-msgstr "Kullanıcı adı"
+msgstr "Brukernavn"
 
 #: users.php:53 edit_user.php:107 add_user.php:43
 msgid "Fullname"
-msgstr "Gerçek isim"
+msgstr "Navn"
 
 #: users.php:54 list_perm_templ.php:37 edit_user.php:132
 #: edit_zone_templ.php:177 add_perm_templ.php:48 add_perm_templ.php:56
 #: add_zone_templ.php:49 list_zone_templ.php:38 edit_perm_templ.php:57
 #: edit_perm_templ.php:66 add_user.php:67
 msgid "Description"
-msgstr "Açıklama"
+msgstr "Beskrivelse"
 
 #: users.php:55 edit_user.php:115 add_user.php:51
 msgid "Email address"
-msgstr "E-posta adresi"
+msgstr "Epost adresse"
 
 #: users.php:56 add_zone_master.php:132 edit.php:381
 msgid "Template"
-msgstr "Şablon"
+msgstr "Mal"
 
 #: users.php:57 edit_user.php:136 add_user.php:71
 msgid "Enabled"
-msgstr "Aktif"
+msgstr "Aktivert"
 
 #: users.php:71 edit_user.php:98
 msgid "Edit user"
-msgstr "Kullanıcı güncelle"
+msgstr "Rediger bruker"
 
 #: users.php:75 delete_user.php:60
 msgid "Delete user"
-msgstr "Kullanıcı sil"
+msgstr "Slett bruker"
 
 #: users.php:131 edit_perm_templ.php:47
 msgid "Edit permission template"
-msgstr "İzin şablonunu düzenle"
+msgstr "Rediger rettighets mal"
 
 #: users.php:135 add_user.php:35
 msgid "Add user"
-msgstr "Kullanıcı ekle"
+msgstr "Ny bruker"
 
 #: list_perm_templ.php:32
 msgid "Permission templates"
-msgstr "İzin şablonları"
+msgstr "Rettighets maler"
 
 #: list_perm_templ.php:48 list_zone_templ.php:46
 msgid "Edit template"
-msgstr "Şablonu güncelle"
+msgstr "Rediger mal"
 
 #: list_perm_templ.php:49 list_zone_templ.php:47
 msgid "Delete template"
-msgstr "Şablonu sil"
+msgstr "Slett mal"
 
 #: list_perm_templ.php:61 add_perm_templ.php:40
 msgid "Add permission template"
-msgstr "İzin şablonu ekle."
+msgstr "Ny rettighets mal"
 
 #: edit_comment.php:53
 msgid "Edit comment in zone"
-msgstr "Bölgedeki açıklamayı düzenle"
+msgstr "Rediger kommentar i sone"
 
 #: edit_user.php:111 inc/auth.inc.php:137 install/index.php:98
 #: install/index.php:177 add_user.php:47
 msgid "Password"
-msgstr "Şifre"
+msgstr "Passord"
 
 #: edit_user.php:120 add_user.php:56
 msgid "Permission template"
-msgstr "İzin şablonu"
+msgstr "Rettighets mal"
 
 #: edit_user.php:147
 #, php-format
 msgid "This user has been assigned the permission template \"%s\"."
-msgstr "Bu kullanıcı \"%s\" izin şablonuna atandı."
+msgstr "Denne brukeren har blitt tildelt rettighets malen \"%s\"."
 
 #: edit_user.php:149
 msgid "The description for this template is"
-msgstr "Bu şablonun açıklaması"
+msgstr "Beskrivelsen av denne malen er"
 
 #: edit_user.php:151
 msgid "Based on this template, this user has the following permissions"
-msgstr "Bu şablon temelinde, bu kullanıcı aşağıdaki izinlere sahiptir"
+msgstr "Utfra denne malen, så har denne brukeren følgende rettigheter"
 
 #: edit_zone_templ.php:82
 msgid "Edit zone template"
-msgstr "Bölge şablonunu düzenle"
+msgstr "Rediger sone mal"
 
 #: edit_zone_templ.php:90
 msgid "This template zone does not have any records yet."
-msgstr "Bu bölge şablonunda henüz herhangi bir kayıt yok."
+msgstr "Denne sone malen inneholder fremdeles ingen DNS-pekere."
 
 #: edit_zone_templ.php:107 search.php:131 edit.php:161
 msgid "Edit record"
-msgstr "Kaydı güncelle"
+msgstr "Rediger DNS-peker"
 
 #: edit_zone_templ.php:109 delete_zone_templ_record.php:53 search.php:136
 #: delete_record.php:66 edit.php:163
 msgid "Delete record"
-msgstr "Kaydı sil"
+msgstr "Slett DNS-peker"
 
 #: edit_zone_templ.php:145 add_zone_templ_record.php:139
 msgid "The following placeholders can be used in template records"
-msgstr "Aşağıdaki yer tutucular şablon kayıtlarında kullanılabilir."
+msgstr "Følgende plass-holder kan brukes i mal pekere."
 
 #: edit_zone_templ.php:148 add_zone_templ_record.php:142
 msgid "substituted with current zone name"
-msgstr "geçerli bölge adı ile değiştirildi"
+msgstr "erstattet med nåværende sone navn"
 
 #: edit_zone_templ.php:149 add_zone_templ_record.php:143
 msgid "substituted with current date and 2 numbers"
-msgstr "bugünkü  tarih ve 2 sayı ile değiştirildi"
+msgstr "erstattet med dagens dato og 2 tall"
 
 #: edit_zone_templ.php:155 edit.php:219
 msgid "Template Name"
-msgstr "Şablon Adı"
+msgstr "Navn på mal"
 
 #: edit_zone_templ.php:159 edit.php:223
 msgid "Template Description"
-msgstr "Şablon Tanımı"
+msgstr "Beskrivelse av mal"
 
 #: edit_zone_templ.php:165 edit.php:229
 msgid "Save as template"
-msgstr "Şablon olarak kaydet"
+msgstr "Lagre som mal"
 
 #: edit_zone_templ.php:166
 msgid "Update zones"
-msgstr "Bölgeleri güncelle"
+msgstr "Oppdater soner"
 
 #: edit_zone_templ.php:183 add_record.php:158 add_zone_templ_record.php:147
 #: edit.php:287
 msgid "Add record"
-msgstr "Kayıt ekle"
+msgstr "Ny DNS-peker"
 
 #: edit_zone_templ.php:184 delete_zone_templ.php:44
 msgid "Delete zone template"
-msgstr "Bölge şablonunu sil"
+msgstr "Slett sone mal"
 
 #: add_zone_slave.php:67 index.php:54 inc/header.inc.php:76
 msgid "Add slave zone"
-msgstr "Bağımlı bölge ekle"
+msgstr "Ny slave sone"
 
 #: add_zone_slave.php:73 add_zone_master.php:91
 msgid "Zone name"
-msgstr "Bölge adı"
+msgstr "Sone navn"
 
 #: add_zone_slave.php:79 edit.php:413
 msgid "IP address of master NS"
-msgstr "Ana ad sunucusunun IP adresi"
+msgstr "IP adresse til master NS"
 
 #: add_zone_slave.php:85 search.php:70 add_zone_master.php:102
 #: delete_domains.php:57 list_zones.php:70 delete_domain.php:62
 msgid "Owner"
-msgstr "Sahibi"
+msgstr "Eier"
 
 #: add_zone_slave.php:106 add_zone_master.php:146
 msgid "Add zone"
-msgstr "Bölge ekle"
+msgstr "Ny sone"
 
 #: delete_zone_templ.php:50 delete_zone_templ_record.php:74
 #: delete_domains.php:72 delete_record.php:94 delete_perm_templ.php:49
 #: delete_domain.php:72 delete_supermaster.php:61
 msgid "Are you sure?"
-msgstr "Emin misiniz?"
+msgstr "Er du sikker?"
 
 #: delete_zone_templ.php:51 delete_zone_templ_record.php:75
 #: delete_domains.php:73 delete_record.php:95 delete_perm_templ.php:50
 #: delete_domain.php:73 delete_supermaster.php:62
 msgid "Yes"
-msgstr "Evet"
+msgstr "Ja"
 
 #: delete_zone_templ.php:52 delete_zone_templ_record.php:76
 #: delete_domains.php:74 delete_record.php:96 delete_perm_templ.php:51
 #: delete_domain.php:74 delete_supermaster.php:63
 msgid "No"
-msgstr "Hayır"
+msgstr "Nei"
 
 #: index.php:26
 msgid "Welcome"
-msgstr "Hoşgeldiniz"
+msgstr "Velkommen"
 
 #: index.php:37 inc/header.inc.php:59
 msgid "Index"
-msgstr "İndeks"
+msgstr "Indeks"
 
 #: index.php:39 search.php:32 inc/header.inc.php:61
 msgid "Search zones and records"
-msgstr "Bölge ve kayıtları ara"
+msgstr "Søk i soner og DNS-pekere"
 
 #: index.php:42 inc/header.inc.php:64 list_zones.php:39
 msgid "List zones"
-msgstr "Bölgeleri listele"
+msgstr "List soner"
 
 #: index.php:45 inc/header.inc.php:67
 msgid "List zone templates"
-msgstr "Bölge şablonlarını listele"
+msgstr "List sone maler"
 
 #: index.php:48 inc/header.inc.php:70 list_supermasters.php:32
 msgid "List supermasters"
-msgstr "Ana kurucuları listele"
+msgstr "List supermastere"
 
 #: index.php:51 inc/header.inc.php:73 add_zone_master.php:82
 msgid "Add master zone"
-msgstr "Ana bölge ekle"
+msgstr "Ny master sone"
 
 #: index.php:57 inc/header.inc.php:79 add_supermaster.php:54
 #: add_supermaster.php:106
 msgid "Add supermaster"
-msgstr "Ana kurucu ekle"
+msgstr "Ny supermaster"
 
 #: index.php:59 inc/header.inc.php:81 change_password.php:31
 #: change_password.php:49
 msgid "Change password"
-msgstr "Şifre değiştir"
+msgstr "Endre passord"
 
 #: index.php:61 inc/header.inc.php:83
 msgid "Logout"
-msgstr "Çıkış"
+msgstr "Logg ut"
 
 #: search.php:61
 msgid "Zones found"
-msgstr "Bölgeler bulundu"
+msgstr "Soner funnet"
 
 #: search.php:67
 msgid "Master"
-msgstr "Ana"
+msgstr "Master"
 
 #: search.php:79 edit.php:129
 msgid "Edit zone"
-msgstr "Bölgeyi güncelle"
+msgstr "Rediger sone"
 
 #: search.php:84 list_zones.php:99 delete_domain.php:54
 msgid "Delete zone"
-msgstr "Bölgeyi sil"
+msgstr "Slett sone"
 
 #: search.php:115
 msgid "Records found"
-msgstr "Kayıtlar bulundu"
+msgstr "DNS-pekere funnet"
 
 #: search.php:155
 msgid "Query"
-msgstr "Sorgu"
+msgstr "Søkestreng"
 
 #: search.php:161
 msgid "Search"
-msgstr "Ara"
+msgstr "Søk"
 
 #: search.php:166
 msgid ""
 "Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_)"
 " in pattern matches any single character, a percent sign (%) matches any "
 "string of zero or more characters."
-msgstr "Makina adı yada IP adresi giriniz. SQL benzeri sözdizimi desteklenir: Örüntü içerisindeki altçizgi (_) herhangi bir karaktere eştir, yüzde işareti (%) herhangi bir sıfır yada daha fazla karakter dizisine eşlenir."
+msgstr "Oppgi vertsnavn eller IP address. SQL LIKE syntaks er støttet: understrek (_) i søkestreng samsvarer et enkelt tegn, prosent (%) samsvarer et eller flere tegn."
 
 #: inc/users.inc.php:382
 msgid "Password has been changed, please login."
-msgstr "Şifre değiştirildi, lütfen giriş yapınız."
+msgstr "Passordet er endret. Vennligst logg inn."
 
 #: inc/record.inc.php:387
 msgid ""
 "You are trying to delete the SOA record. If are not allowed to remove it, "
 "unless you remove the entire zone."
-msgstr "SOA kaydını silmeye çalışıyorsunuz. Bu tüm bölgeyi silmedikçe yasaktır."
+msgstr "Du prøver å slette en SOA peker. Dette er ikke tillatt med mindre du sletter hele sonen."
 
 #: inc/record.inc.php:751
 msgid "Function returned an error (multiple zones matching this zone ID)."
-msgstr "Fonksiyon bir hata çevirdi (çoklu bölgeler bu bölgenin ID'siyle eşleşiyor)"
+msgstr "Funksjonen returnerte en feil (flere soner gir treff på denne sone IDen)."
 
 #: inc/toolkit.inc.php:33 reset_password.php:27
 msgid "You have to create a config.inc.php!"
-msgstr "Bir config.inc.php dosyası oluşturmalısınız!"
+msgstr "Konfigurasjons filen config.inc.php mangler!"
 
 #: inc/toolkit.inc.php:154
 msgid "Show page"
-msgstr "Sayfayı göster"
+msgstr "Vis side"
 
 #: inc/toolkit.inc.php:173
 msgid "Show zones beginning with"
-msgstr "Bununla başlayan bölgeleri görüntüle"
+msgstr "Vis soner som begynner med"
 
 #: inc/toolkit.inc.php:238 install/index.php:26
 msgid "An unknown error has occurred."
-msgstr "Bilinmeyen bir hata oluştu"
+msgstr "En ukjent feil oppstod."
 
 #: inc/toolkit.inc.php:246
 msgid ""
 "Something has been successfully performed. What exactly, however, will "
 "remain a mystery."
-msgstr "Birşeyler başarıyla gerçekleştirildi. Ancak tam olarak ne olduğu bir muamma olarak kalacak."
+msgstr "Noe ble gjennomført vellykket. Akkurat hva gjenstår som et mysterium."
 
 #: inc/toolkit.inc.php:258
 msgid "Success!"
-msgstr "Başarılı!"
+msgstr "Suksess!"
 
 #: inc/toolkit.inc.php:269
 msgid "Successful!"
-msgstr "Başarılı!"
+msgstr "Vellykket!"
 
 #: inc/toolkit.inc.php:275
 msgid "back"
-msgstr "geri"
+msgstr "tilbake"
 
 #: inc/toolkit.inc.php:314
 msgid "Inactive"
-msgstr "Pasif"
+msgstr "Inaktiv"
 
 #: inc/toolkit.inc.php:318
 msgid "Active"
-msgstr "Aktif"
+msgstr "Aktiv"
 
 #: inc/auth.inc.php:31
 msgid "You have logged out."
-msgstr "Oturumdan çıktınız."
+msgstr "Du er utlogget"
 
 #: inc/auth.inc.php:45
 msgid "Session expired, please login again."
-msgstr "Oturum süresi sona erdi, lütfen yeniden giriş yapınız."
+msgstr "Sesjon utløpt på tid. Vennligst logg inn igjen."
 
 #: inc/auth.inc.php:93
 msgid "Authentication failed!"
-msgstr "Kimlik denetimi başarısız!"
+msgstr "Feil under autentisering!"
 
 #: inc/auth.inc.php:106
 msgid ""
 "Authentication failed! - <a href=\"reset_password.php\">(forgot "
 "password)</a>"
-msgstr "Kimlik denetimi başarısız! - <a href=\"reset_password.php\">(şifremi unuttum)</a>"
+msgstr "Feil under autentisering! - <a href=\"reset_password.php\">(glemt passord?)</a>"
 
 #: inc/auth.inc.php:127
 msgid "Log in"
-msgstr "Giriş"
+msgstr "Logg inn"
 
 #: inc/auth.inc.php:143
 msgid "Go"
-msgstr "Git"
+msgstr "Kjør"
 
 #: inc/error.inc.php:24
 msgid "You do not have the permission to perform searches."
-msgstr "Arama yapmaya yetkiniz yok."
+msgstr "Du har ikke rettigheten til å søke."
 
 #: inc/error.inc.php:25
 msgid "You do not have the permission to add a record to this zone."
-msgstr "Bu bölgeye bir kayıt ekleme yetkiniz yok."
+msgstr "Du har ikke rettigheten til å lage DNS-pekere i denne sonen."
 
 #: inc/error.inc.php:26
 msgid "You do not have the permission to edit this record."
-msgstr "Bu kaydı güncelleme yetkiniz yok."
+msgstr "Du har ikke rettigheten til å redigere denne DNS-pekeren."
 
 #: inc/error.inc.php:27
 msgid "You do not have the permission to view this record."
-msgstr "Bu kaydı görüntüleme yetkiniz yok."
+msgstr "Du har ikke rettigheten til å se denne DNS-pekeren."
 
 #: inc/error.inc.php:28
 msgid "You do not have the permission to delete this record."
-msgstr "Bu kaydı silme yetkiniz yok."
+msgstr "Du har ikke rettigheten til å slette denne DNS-pekeren."
 
 #: inc/error.inc.php:29
 msgid "You do not have the permission to add a master zone."
-msgstr "Ana bölge ekleme yetkiniz yok."
+msgstr "Du har ikke rettigheten til å lage master soner."
 
 #: inc/error.inc.php:30
 msgid "You do not have the permission to add a slave zone."
-msgstr "Bağımlı bölge ekleme yetkiniz yok."
+msgstr "Du har ikke rettigheten til å lage slave soner."
 
 #: inc/error.inc.php:31
 msgid "You do not have the permission to delete a zone."
-msgstr "Bir bölgeyi silme yetkiniz yok."
+msgstr "Du har ikke rettigheten til å slette soner."
 
 #: inc/error.inc.php:32
 msgid "You do not have the permission to view this comment."
-msgstr "Bu açıklamayı görüntüleme yetkiniz yok."
+msgstr "Du har ikke rettigheten til å se denne kommentaren."
 
 #: inc/error.inc.php:33
 msgid "You do not have the permission to edit this comment."
-msgstr "Bu açıklamayı güncelleme yetkiniz yok."
+msgstr "Du har ikke rettigheten til å redigere denne kommentaren."
 
 #: inc/error.inc.php:34
 msgid "You do not have the permission to delete a supermaster."
-msgstr "Bir ana kurucuyu silmeye yetkiniz yok."
+msgstr "Du har ikke rettigheten til å slette en supermaster."
 
 #: inc/error.inc.php:35
 msgid "You do not have the permission to view this zone."
-msgstr "Bu bölgeyi görüntülemeye yetkiniz yok."
+msgstr "Du har ikke rettigheten til å se denne sonen."
 
 #: inc/error.inc.php:36
 msgid "You do not have the permission to edit this user."
-msgstr "Bu kullanıcıyı güncelleme yetkiniz yok."
+msgstr "Du har ikke rettigheten til å redigere denne brukeren."
 
 #: inc/error.inc.php:37
 msgid "You do not have the permission to edit permission templates."
-msgstr "İzin şablonlarını güncelleme yetkiniz yok."
+msgstr "Du har ikke rettigheten til å redigere rettighets maler."
 
 #: inc/error.inc.php:38
 msgid "You do not have the permission to delete permission templates."
-msgstr "İzin şablonlarını silmeye yetkiniz yok."
+msgstr "Du har ikke rettigheten til å slette rettighets maler."
 
 #: inc/error.inc.php:39
 msgid "You do not have the permission to add a new user."
-msgstr "Yeni bir kullanıcı eklemeye  yetkiniz yok."
+msgstr "Du har ikke rettigheten til å opprette nye brukere."
 
 #: inc/error.inc.php:40
 msgid "You do not have the permission to delete this user."
-msgstr "Bu kullanıcıyı silmeye  yetkiniz yok."
+msgstr "Du har ikke rettigheten til å slette denne brukeren."
 
 #: inc/error.inc.php:41
 msgid "You do not have the permission to edit zone templates."
-msgstr "Bölge şablonlarını güncellemeye  yetkiniz yok."
+msgstr "Du har ikke rettigheten til å redigere sone maler."
 
 #: inc/error.inc.php:42
 msgid "You do not have the permission to delete zone templates."
-msgstr "Bölge şablonlarını silmeye yetkiniz yok."
+msgstr "Du har ikke rettigheten til å slette sone maler."
 
 #: inc/error.inc.php:43
 msgid "You do not have the permission to add a zone template."
-msgstr "Bir bölge şablonu eklemeye  yetkiniz yok."
+msgstr "Du har ikke rettigheten til å lage nye sone maler."
 
 #: inc/error.inc.php:46
 msgid "This is an invalid zone name."
-msgstr "Bu geçersiz bir bölge adı."
+msgstr "Dette er et ugyldig sone navn."
 
 #: inc/error.inc.php:47
 msgid "There is already a supermaster with this IP address."
-msgstr "Bu IP adresine sahip başka bir ana kurucu bulunmakta."
+msgstr "Det finnes allerede en supermaster med denne IP adressen."
 
 #: inc/error.inc.php:48
 msgid "There is already a zone with this name."
-msgstr "Bu ada sahip başka bir bölge bulunmakta."
+msgstr "Det finnes allerede en sone med dette navnet."
 
 #: inc/error.inc.php:51
 msgid "Username exist already, please choose another one."
-msgstr "Kullanıcı adı halihazırda mevcut, lütfen bir başkasını seçiniz."
+msgstr "Brukernavnet finnes allerede. Vennligst velg et annet."
 
 #: inc/error.inc.php:52
 msgid "User does not exist."
-msgstr "Kullanıcı mevcut değil"
+msgstr "Brukeren eksisterer ikke"
 
 #: inc/error.inc.php:53
 msgid "You did not enter the correct current password."
-msgstr "Şu anki şifrenizi doğru şekilde girmediniz."
+msgstr "Du oppga feil passord."
 
 #: inc/error.inc.php:54
 msgid "The two new password fields do not match."
-msgstr "Her iki yeni şifre alanı aynı değil."
+msgstr "De to passord feltene samsvarer ikke."
 
 #: inc/error.inc.php:55
 msgid "This template is assigned to at least one user."
-msgstr "Bu şablon en az bir kullacıya atanmıştır."
+msgstr "Denne malen er tildelt en eller flere brukere."
 
 #: inc/error.inc.php:58
 msgid "Invalid or unexpected input given."
-msgstr "Geçersiz yada umulmadık girdi tahsisi."
+msgstr "Ugyldig eller uventet utfylling."
 
 #: inc/error.inc.php:59
 #, php-format
 msgid "Invalid argument(s) given to function %s"
-msgstr "%s fonksiyonuna geçersiz argüman(lar) tahsis edildi."
+msgstr "Ugyldig argument(er) gitt til funksjonen %s"
 
 #: inc/error.inc.php:60
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
-msgstr "%s %s fonksiyonuna geçersiz argüman(lar) tahsis edildi."
+msgstr "Ugyldig(e) argument(er) er gitt til funksjonen %s %s"
 
 #: inc/error.inc.php:61
 msgid "Unknown error."
-msgstr "Bilinmeyen hata."
+msgstr "Ukjent feil"
 
 #: inc/error.inc.php:62
 msgid "Enter a valid email address."
-msgstr "Geçerli bir e-posta adresi giriniz."
+msgstr "Oppgi en gyldig epost adresse."
 
 #: inc/error.inc.php:63
 msgid "There is no zone with this ID."
-msgstr "Bu ID'ye sahip bir bölge yok."
+msgstr "Det finnes ingen sone med denne ID."
 
 #: inc/error.inc.php:64
 msgid "There is no zone template with this ID."
-msgstr "Bu ID'ye sahip bölge şablonu bulunmamakta."
+msgstr "Det finnes ingen sone mal med denne ID."
 
 #: inc/error.inc.php:65
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
-msgstr "<a href=\"install/\">Kurulum/</a> dizini mevcut, ilerlemeden önce dizini silmelisiniz."
+msgstr "Katalogen <a href=\"install/\">install/</a> eksisterer. Du må slette denne katalogen før du kan fortsette."
 
 #: inc/error.inc.php:66
 msgid ""
 "Zone template with this name already exists, please choose another one."
-msgstr "Bu isimde başka bir bölge şablonu bulunmakta, lütfen bir başkasını seçiniz."
+msgstr "Det finnes allerede en sone mal med dette navnet. Velg et annet navn."
 
 #: inc/error.inc.php:67
 msgid "Template name can't be an empty string."
-msgstr "Şablon adı boş bir dizgi olamaz."
+msgstr "Navnet på malen kan ikke stå tomt."
 
 #: inc/error.inc.php:70
 msgid "No database name has been set in config.inc.php."
-msgstr "config.inc.php içerisinde veri tabanı adı tanımlanmamış."
+msgstr "Navnet på databasen som skal brukes er ikke oppgitt i config.inc.php."
 
 #: inc/error.inc.php:71
 msgid "No database host has been set in config.inc.php."
-msgstr "config.inc.php içerisinde veri tabanı makinası tanımlanmamış."
+msgstr "Slett bruker"
 
 #: inc/error.inc.php:72
 msgid "No database username has been set in config.inc.php."
-msgstr "config.inc.php içerisinde kullanıcı adı tanımlanmamış."
+msgstr "Det er ikke oppgitt en database bruker i config.inc.php."
 
 #: inc/error.inc.php:73
 msgid "No database password has been set in config.inc.php."
-msgstr "config.inc.php içerisinde şifre tanımlanmamış."
+msgstr "Passordet til databasen mangler i config.inc.php."
 
 #: inc/error.inc.php:74
 msgid "No or unknown database type has been set in config.inc.php."
-msgstr "config.inc.php içerisinde veri tabanı adı tanımlanmamış yada bilinmiyor."
+msgstr "Ingen eller ukjent type database er oppgitt i config.inc.php."
 
 #: inc/error.inc.php:75
 msgid "No database file has been set in config.inc.php."
-msgstr "config.inc.php içerisinde veritabanı dosyası tanımlanmamış."
+msgstr "Det mangler informasjon om database filen i config.inc.php."
 
 #: inc/error.inc.php:76
 msgid ""
 "It seems that you forgot to update the database after Poweradmin upgrade to "
 "new version."
-msgstr "Poweradmin'i yeni sürüme yükseltmenin ardından veritabanını güncellenmeyi unuttugunuz anlaşılmakta."
+msgstr "Det virker som om du har glemt å oppdatere databasen etter Poweradmin ble oppgradert til ny versjon."
 
 #: inc/error.inc.php:79
 msgid "Your content field doesnt have a legit value."
-msgstr "İçerik alanınız meşru bir değere sahip değil."
+msgstr "Innholdsfeltet ditt inneholder ikke en gyldig verdi."
 
 #: inc/error.inc.php:80
 msgid "Invalid hostname."
-msgstr "Geçersiz makine adı."
+msgstr "Ugyldig vertsnavn."
 
 #: inc/error.inc.php:81
 msgid "You have invalid characters in your hostname."
-msgstr "Makina adınız geçersiz karakterlere sahip."
+msgstr "Du har ugyldige tegn i vertsnavnet."
 
 #: inc/error.inc.php:82
 msgid "A hostname can not start or end with a dash."
-msgstr "Makina adı çizgi ile başlayamaz yada bitemez."
+msgstr "Et vertsnavn kan ikke begynne eller avslutte med bindestrek."
 
 #: inc/error.inc.php:83
 msgid "Given hostname or one of the labels is too short or too long."
-msgstr "Verilern makina adı yada etiketlerden birisi ya çok kısa yada çok uzun."
+msgstr "Oppgitt vertsnavn er for kort eller for langt."
 
 #: inc/error.inc.php:84
 msgid "Given hostname has too many slashes."
-msgstr "Verilen makina adı çok fazla taksime sahip."
+msgstr "Oppgitt vertsnavn har for mange skråstreker."
 
 #: inc/error.inc.php:85
 msgid "Unknown record type."
-msgstr "Bilinmeyen kayıt türü."
+msgstr "Ukjent DNS type."
 
 #: inc/error.inc.php:86
 msgid "This is not a valid IPv4 or IPv6 address."
-msgstr "Bu geçersiz bir IPv4 yada IPv6 adresi."
+msgstr "Dette er ikke en gyldig IPv4 eller IPv6 adresse."
 
 #: inc/error.inc.php:87
 msgid "This is not a valid IPv6 address."
-msgstr "Bu geçersiz bir IPv6 adresi."
+msgstr "Dette er ikke en gyldig IPv6 adresse."
 
 #: inc/error.inc.php:88
 msgid "This is not a valid IPv4 address."
-msgstr "Bu geçersiz bir IPv4 adresi."
+msgstr "Dette er ikke en gyldig IPv4 adresse."
 
 #: inc/error.inc.php:89
 msgid ""
 "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
-msgstr "Bu geçersiz bir CNAME. Kayda MX yada NS kaydı atadınız mı?"
+msgstr "Dette er ikke et gyldig CNAME. Mente du å tildele en MX eller NS peker istedenfor?"
 
 #: inc/error.inc.php:90
 msgid ""
 "This is not a valid record. There is already exists a CNAME with this name."
-msgstr "Bu geçersiz bir kayıt. Halihazırda bu isimde bir CNAME bulunmakta."
+msgstr "Dette er ikke en gyldig DNS-peker. Det eksisterer allerede et CNAME med dette navnet."
 
 #: inc/error.inc.php:91
 msgid ""
 "This is not a valid CNAME. There is already exists an A, AAAA or CNAME with "
 "this name."
-msgstr "Bu geçersiz bir CNAME. Halihazırda bu isimde bir A, AAAA, yada CNAME bulunmakta."
+msgstr "Dette er ikke et gyldig CNAME. Det eksisterer allerede en A, AAAA eller CNAME peker med dette navnet."
 
 #: inc/error.inc.php:92
 msgid ""
 "You can not point a NS or MX record to a CNAME record. Remove or rame the "
 "CNAME record first, or take another name."
-msgstr "CNAME kaydına NS yada MX kaydı yöneltemezsiniz. İlk olarak CNAME kaydını silin yada adını değiştirin veya başka bir isim alın."
+msgstr "Du kan ikke peke en NS eller MX peker til en CNAME peker. Fjern eller endre navn på CNAME pekeren først, eller velg et annet navn."
 
 #: inc/error.inc.php:93
 msgid "NS records must be a hostnames."
-msgstr "NS kaydı bir makina adı olmalıdır."
+msgstr "NS pekere må være vertsnavn."
 
 #: inc/error.inc.php:94
 msgid "A prio field should be numeric."
-msgstr "prio alanı rakam olmalıdır."
+msgstr "Et PRIO felt må være numerisk."
 
 #: inc/error.inc.php:95
 msgid ""
 "Invalid value for name field of SOA record. It should be the name of the "
 "zone."
-msgstr "SOA kaydı isim alanı için geçersiz değer. Bölge adı olmalıdır."
+msgstr "Ugyldig verdi på navn til SOA feltet. Verdien må være navnet på sonen."
 
 #: inc/error.inc.php:96
 msgid "You have an error in the MNAME field of the SOA record."
-msgstr "SOA kaydı MNAME alanında bir hatanız var."
+msgstr "Du har en feil i MNAME feltet til SOA pekeren."
 
 #: inc/error.inc.php:97
 msgid "Invalid value for content field of HINFO record."
-msgstr "HINFO kaydı içerik alanı için geçersiz değer."
+msgstr "Ugyldig verdi i innholdsfeltet for HINFO pekeren."
 
 #: inc/error.inc.php:98
 msgid "The hostname is too long."
-msgstr "Makina adı çok uzun."
+msgstr "Vertsnavnet er for langt."
 
 #: inc/error.inc.php:99
 msgid "You are using an invalid top level domain."
-msgstr "Geçersiz bir üst seviye alan adı kullanıyorsunuz."
+msgstr "Du bruker et ugyldig topp nivå domene."
 
 #: inc/error.inc.php:100
 msgid "Invalid value for TTL field. It should be numeric."
-msgstr "TTL alanı için geçersiz değer. Değer rakam olmalıdır."
+msgstr "Ugyldig verdi i TTL feltet. Det må være numerisk."
 
 #: inc/error.inc.php:101
 msgid "Invalid value for prio field. It should be numeric."
-msgstr "prio alanı için geçersiz değer. Değer sayı olmalı."
+msgstr "Ugyldig verdi i prio feltet. Verdien må være numerisk."
 
 #: inc/error.inc.php:102
 msgid "Invalid value for name field of SRV record."
-msgstr "SRV kaydı ad alanı için geçersiz değer."
+msgstr "Ugyldig verdi i navnefeltet til SRV pekeren."
 
 #: inc/error.inc.php:103
 msgid "Invalid value for the priority field of the SRV record."
-msgstr "SRV kaydı prio alanı için geçersiz değer."
+msgstr "Ugyldig verdi i prioritet feltet for SRV pekeren."
 
 #: inc/error.inc.php:104
 msgid "Invalid value for the weight field of the SRV record."
-msgstr "SRV kaydı etki alanı için geçersiz değer."
+msgstr "Ugyldig verdi i weight feltet for SRV pekeren."
 
 #: inc/error.inc.php:105
 msgid "Invalid SRV target."
-msgstr "Geçersiz SRV hedefi."
+msgstr "Ugyldig SRV mål."
 
 #: inc/error.inc.php:106
 msgid "Invalid characters have been used in this record."
-msgstr "Bu kayıtta geçersiz karakterler kullanılmış."
+msgstr "Ugyldige tegn brukt i DNS-pekeren."
 
 #: inc/error.inc.php:109
 msgid "Zone has been added successfully."
-msgstr "Bölge başarıyla eklendi."
+msgstr "Sonen er lagret."
 
 #: inc/error.inc.php:110
 msgid "Zone has been deleted successfully."
-msgstr "Bölge başarıyla silindi."
+msgstr "Sonen er slettet."
 
 #: inc/error.inc.php:111
 msgid "Zones have been updated successfully."
-msgstr "Bölge başarıyla güncellendi."
+msgstr "Soner har blitt oppdatert."
 
 #: inc/error.inc.php:112
 msgid "The user has been updated successfully."
-msgstr "Kullanıcı başarıyla güncellendi."
+msgstr "Brukeren er oppdatert."
 
 #: inc/error.inc.php:113
 msgid "The user has been created successfully."
-msgstr "Yeni kullanıcı başarıyla oluşturuldu."
+msgstr "Brukeren er opprettet."
 
 #: inc/error.inc.php:114
 msgid "The user has been deleted successfully."
-msgstr "Kullanıcı başarıyla silindi"
+msgstr "Brukeren er slettet."
 
 #: inc/error.inc.php:115
 msgid "The record has been updated successfully."
-msgstr "Kayıt başarıyla güncellendi."
+msgstr "DNS-pekeren er opprettet."
 
 #: inc/error.inc.php:116
 msgid "The record has been deleted successfully."
-msgstr "Kayıt başarıyla silindi."
+msgstr "DNS-pekeren er slettet."
 
 #: inc/error.inc.php:117
 msgid "The comment has been updated successfully."
-msgstr "Açıklama başarıyla güncellendi."
+msgstr "DNS-pekeren er oppdatert."
 
 #: inc/error.inc.php:118
 msgid "The supermaster has been deleted successfully."
-msgstr "Ana kurucu başarıyla silindi."
+msgstr "Supermaster er slettet."
 
 #: inc/error.inc.php:119
 msgid "The supermaster has been added successfully."
-msgstr "Ana kurucu başarıyla eklendi."
+msgstr "Ny supermaster er lagret."
 
 #: inc/error.inc.php:120
 msgid "The permission template has been updated successfully."
-msgstr "İzin şablonunu başarıyla güncellendi."
+msgstr "Rettighets malen er oppdatert."
 
 #: inc/error.inc.php:121
 msgid "The permission template has been deleted successfully."
-msgstr "İzin şablonu başarıyşa silindi."
+msgstr "Rettighets malen er slettet."
 
 #: inc/error.inc.php:122
 msgid "Zone template has been added successfully."
-msgstr "Bölge şablonu başarıyla eklendi."
+msgstr "Sone malen er opprettet."
 
 #: inc/error.inc.php:123
 msgid "Zone template has been updated successfully."
-msgstr "Bölge şablonunu başarıyla güncellendi."
+msgstr "Sone malen er oppdatert."
 
 #: inc/error.inc.php:124
 msgid "Zone template has been deleted successfully."
-msgstr "Bölge şablonunu başarıyla silindi."
+msgstr "Sone malen er slettet."
 
 #: change_password.php:35
 msgid "Current password"
-msgstr "Şimdiki şifre"
+msgstr "Nåværende passord"
 
 #: change_password.php:39 change_password.php:43
 msgid "New password"
-msgstr "Yeni şifre"
+msgstr "Nytt passord"
 
 #: add_record.php:102 add_zone_templ_record.php:81
 msgid "The record was successfully added."
-msgstr "Kayıt başarıyla eklendi"
+msgstr "DNS-pekeren er lagret"
 
 #: add_record.php:111
 msgid "Add record to zone"
-msgstr "Bölgeye kayıt ekle"
+msgstr "Ny DNS-peker til sone"
 
 #: delete_domains.php:41
 msgid "Delete zones"
-msgstr "Bölgeleri sil"
+msgstr "Slett soner"
 
 #: delete_domains.php:63 delete_domain.php:68
 #, php-format
@@ -809,101 +809,101 @@ msgid ""
 "a supermaster. Deleting the zone now, will result in temporary removal only."
 " Whenever the supermaster sends a notification for this zone, it will be "
 "added again!"
-msgstr "Ana isim sunucuya ait, bağımlı bir bölgeyi silmektesiniz. %s, ana kurucudur. Şu haliyle bu bölgeyi silmek geçici bir sonuç verecektir. Ana kurucu, bu bölge için bir uyarı yolladığında bağımlı bölge tekrar eklenecektir!"
+msgstr "Du er iferd med å slette en slave zone som tilhører master navnetjeneren %s. Denne navnetjeneren er også en supermaster. Dersom du sletter denne sonen vil dette kun være en midlertidig endring. Dersom supermasteren sender en oppdatering for denne sonen vil den bli opprettet på ny!"
 
 #: add_supermaster.php:57
 msgid "You do not have the permission to add a new supermaster."
-msgstr "Yeni bir ana kurucu eklemeye yetkiniz yok."
+msgstr "Du har ikke rettigheten til å lage en ny supermaster"
 
 #: add_supermaster.php:62 list_supermasters.php:36
 msgid "IP address of supermaster"
-msgstr "Ana kurucunun IP adresi"
+msgstr "IP adresse til supermaster"
 
 #: add_supermaster.php:72 list_supermasters.php:37 delete_supermaster.php:58
 msgid "Hostname in NS record"
-msgstr "NS kaydındaki makina adı"
+msgstr "Vertsnavn i DNS-peker"
 
 #: add_supermaster.php:82 list_supermasters.php:38 delete_supermaster.php:59
 msgid "Account"
-msgstr "Hesap"
+msgstr "Konto"
 
 #: add_zone_templ_record.php:90
 msgid "Add record to zone template"
-msgstr "Bölge şablonuna kayıt ekle"
+msgstr "Ny DNS-peker for sone mal"
 
 #: edit_zone_templ_record.php:52
 msgid "Edit record in zone template"
-msgstr "Bölge şablonundaki kaydı düzenle"
+msgstr "Rediger DNS-peker i some mal"
 
 #: delete_record.php:92
 msgid ""
 "You are trying to delete a record that is needed for this zone to work."
-msgstr "Bölgenin çalışması için gerekli olan bir kaydı silmeye çalışıyorsunuz."
+msgstr "Du er iferd med å slette en DNS-peker som er nødvendig for at denne sonen skal virke."
 
 #: delete_perm_templ.php:43
 msgid "Delete permission template"
-msgstr "İzin şablonunu sil"
+msgstr "Slett rettighets mal"
 
 #: edit.php:137
 msgid "This zone does not have any records. Weird."
-msgstr "Bu şablonda herhangi bir kayıt yok. Tuhaf."
+msgstr "Denne sonen har ingen DNS-pekere. Merkelig."
 
 #: edit.php:210
 msgid "Edit comment"
-msgstr "Açıklamayı düzenle"
+msgstr "Rediger kommentar"
 
 #: edit.php:295
 msgid "Owner of zone"
-msgstr "Bölgenin sahibi"
+msgstr "Eier av sone"
 
 #: edit.php:301
 msgid "No owner set for this zone."
-msgstr "Bu bölgenin sahibi bulunmamakta."
+msgstr "Denne sonen har ingen eier."
 
 #: edit.php:310 delete_user.php:77
 msgid "Delete"
-msgstr "Sil"
+msgstr "Slett"
 
 #: edit.php:343
 msgid "Add"
-msgstr "Ekle"
+msgstr "Ny"
 
 #: edit.php:372 edit.php:401 edit.php:424
 msgid "Change"
-msgstr "Değiştir"
+msgstr "Endre"
 
 #: list_zones.php:42
 msgid "You do not have the permission to see any zones."
-msgstr "Herhangi bir bölgeyi görmeye yetkiniz yok."
+msgstr "Du har ikke rettigheten til å vise soner."
 
 #: list_zones.php:49 list_supermasters.php:44
 msgid "There are no zones to show in this listing."
-msgstr "Bu listede görüntülecek bölgeler bulunmamakta."
+msgstr "Det er ingen soner å vise i dette søket."
 
 #: list_zones.php:69
 msgid "Records"
-msgstr "Kayıtlar."
+msgstr "DNS-pekere"
 
 #: list_zones.php:71
 msgid "Serial"
-msgstr "Seri numarası"
+msgstr "Serienummer"
 
 #: list_zones.php:97
 msgid "View zone"
-msgstr "Bölgeyi görüntüle"
+msgstr "Vis sone"
 
 #: list_zones.php:116
 msgid "Delete zone(s)"
-msgstr "Bölge(leri) sil"
+msgstr "Slett sone(r)"
 
 #: install/index.php:47
 msgid "Installation step"
-msgstr "Kurulum aşaması"
+msgstr "Innstallerings steg"
 
 #: install/index.php:62 install/index.php:80 install/index.php:135
 #: install/index.php:207 install/index.php:275 install/index.php:312
 msgid "Go to step"
-msgstr "Bu adıma git"
+msgstr "Gå til steg"
 
 #: install/index.php:69
 msgid ""
@@ -915,24 +915,24 @@ msgid ""
 "installer will, of course, not touch the data in the PowerDNS tables of the "
 "database. However, it is recommended that you create a backup of your "
 "database before proceeding."
-msgstr "Kurulum bu sunucudan erişilebilen bir PowerDNS verıtabanına sahip oldugunuzu ummaktadır. Ayrıca Poweradmin'i daha önce hiç çalıştırmadığınızı yada veritabanının Poweradmin bölümünün üzerine yazdırmayı istediğinizi öngörmektedir. Eğer Poweradmini daha önce çalıştırdıysanız şu tablolardaki veriler tahrip olacaktır: perm_items, perm_templ, perm_templ_items, users ve zones. Bu kurulum, veritabanının PowerDNS tablolarindaki verilere kesinlikle dokunmayacaktır. Yine de devam etmeden önce veritabanınızın bir yedeğini oluşturmanız tavsiye olunur."
+msgstr "Installerings programmet forventer at en PowerDNS database er tilgjengelig på denne serveren. Programmet forventer også at du aldri har brukt Poweradmin tidligere på denne serveren, eller at du ønsker å skrive over Poweradmin delen i databasen. Dersom du tidligere har benyttet Poweradmin på denne serveren vil følgende tabeller nå bli slettet: perm_items, perm_templ, perm_templ_items, users og zones. Installerings programmet vil selvsagt ikke skriver over data i PowerDNS tabellene i databasen. Allikevel, det er anbefalt at du tar en full sikkerhetskopi av databasen før du fortsetter med innstalleringen."
 
 #: install/index.php:71
 msgid ""
 "The alternative for this installer is a manual installation. Refer to the "
 "poweradmin.org website if you want to go down that road."
-msgstr "Bu kurulumun alternatifi elle kurulumdur. Bu yolla devam etmek isterseniz poweradmin.org websayfasına başvurunuz."
+msgstr "Alternativet til dette innstallerings programmet er å gjennomføre innstallasjonen manuelt. Vi henviser til nettstedet poweradmin.org for instrukser hvordan dette gjennomføres på ulike plattformer."
 
 #: install/index.php:73
 msgid ""
 "Finally, if you see any errors during the installation process, a problem "
 "report would be appreciated. You can report problems (and ask for help) on "
 "the poweradmin-users mailinglist."
-msgstr "Son olarak eğer kurulum işlemi sırasında herhangi bir hata görürseniz bunu raporlamanız makbule geçer. Sorunları poweradmin-users epostalistesi üzerinden raporlayabilir (ve yardım isteyebilir)siniz."
+msgstr "Til slutt, dersom du opplever problemer eller får feilmeldinger i løpet av innstalleringen setter utviklerene av Poweradmin pris på tilbakemelding. Du kan rapportere problemer (og be om hjelp) på poweradmin-users mailing listen."
 
 #: install/index.php:75
 msgid "Do you want to proceed now?"
-msgstr "Şimdi ilerlemek istermisiniz."
+msgstr "Vil du fortsette nå?"
 
 #: install/index.php:86
 msgid ""
@@ -940,7 +940,7 @@ msgid ""
 "the PowerDNS database. It will add a number of tables and it will fill these"
 " tables with some data. If the tables are already present, the installer "
 "will drop them first."
-msgstr "Veritabanını Poweradminin kullanımına hazırlamak için kurulum, PowerDNS veritabanında değişikliğe gereksinim duyar. Kurulum birkaç tablo ekleyip, bu tabloları bazı verilerle dolduracaktır. Eğer tablolar halihazırda veritabanında mevcutsa kurulum öncelikle bu tabloları silecektir."
+msgstr "For å forberede databasen til å bruke Poweradmin, er det nødvendig å endre på PowerDNS databasen. Innstallerings programmet vil derfor opprette flere nye tabeller og fylle disse med nødvendig informasjon. Dersom disse tabellene allerede eksisterer, vil de først slettes og deretter opprettes på ny."
 
 #: install/index.php:88
 msgid ""
@@ -948,224 +948,224 @@ msgid ""
 "account which has sufficient rights. If you trust the installer, you may "
 "give it the username and password of the database user root. Otherwise, make"
 " sure the user has enough rights, before actually proceeding."
-msgstr "Bunların tümünü yapmak için kurulum, veritabanına, yeterli haklara sahip bir hesap ile erişime gereksinim duyar. Kuruluma güveniyorsanız veritabanı kök kullanıcısının kullanıcı adı ve şifresini vermelisiniz. Aksi halde, fiilen devam etmeden önce kullanıcının yeterli haklara sahip olduğundan emin olunuz."
+msgstr "For å fortsette, trenger innstallasjons programmet tilgang til PowerDNS databasen med en bruker som har alle nødvendige rettigheter. Dersom du stoler på innstallasjons programmet kan du oppgi brukernavnet og passordet til root brukeren. Dersom du oppgir et annet brukernavn, kontroller først at brukeren har nødvendige rettigheter før du fortsetter."
 
 #: install/index.php:95
 msgid ""
 "The username to use to connect to the database, make sure the username has "
 "sufficient rights to perform administrative task to the PowerDNS database "
 "(the installer wants to drop, create and fill tables to the database)."
-msgstr "Veritanına bağlantıda kullanılan kullanıcı adı. Kullanıcı adının PowerDNS veritabanına dair idari görevleri uygulayabilmesi için yeterli haklara sahip olduğundan emin olunuz (kurulum, veritabanında iptal etme, oluşturma ve tabloları doldurmayı ister)."
+msgstr "Brukernavnet som skal brukes for tilkobling til databasen. Denne brukeren må ha alle nødvendige rettigheter til å endre på PowerDNS databasen (innstallsjons programmet vil utføre oppgaver som drop, create i tillegg til å lagre data i databasen)."
 
 #: install/index.php:100 install/index.php:179
 msgid "The password for this username."
-msgstr "Bu kullanıcı için şifre."
+msgstr "Passordet til dette brukernavnet."
 
 #: install/index.php:103
 msgid "Hostname"
-msgstr "Makine adı"
+msgstr "Vertsnavn"
 
 #: install/index.php:105
 msgid ""
 "The hostname on which the PowerDNS database resides. Frequently, this will "
 "be \"localhost\"."
-msgstr "PowerDNS veritabanının yerleşik olduğu makinanın adı. Bu, sıklıkla \"localhost\" olur."
+msgstr "Vertsnavnet PowerDNS databasen ligger under. Dette er som regel \"localhost\"."
 
 #: install/index.php:108
 msgid "DB Port"
-msgstr "DB portu"
+msgstr "DB Port"
 
 #: install/index.php:110
 msgid "The port the database server is listening on."
-msgstr "Veritabanı sunucusunun dinlediği port."
+msgstr "Porten som database serveren lytter på."
 
 #: install/index.php:113
 msgid "Database"
-msgstr "Veritabanı"
+msgstr "Database"
 
 #: install/index.php:115
 msgid "The name of the PowerDNS database."
-msgstr "PowerDNS veri tabanı adı."
+msgstr "Navnet på PowerDNS databasen."
 
 #: install/index.php:118
 msgid "Database type"
-msgstr "Veritabanı türü"
+msgstr "Database type"
 
 #: install/index.php:124
 msgid "The type of the PowerDNS database."
-msgstr "PowerDNS veri tabanı türü."
+msgstr "Type PowerDNS database."
 
 #: install/index.php:127
 msgid "Poweradmin administrator password"
-msgstr "Poweradmin yönetici şifresi"
+msgstr "Poweradmin administrator passord"
 
 #: install/index.php:129
 msgid ""
 "The password of the Poweradmin administrator. This administrator has full "
 "rights to Poweradmin using the web interface."
-msgstr "Poweradmin yöneticisinin şifresi. Bu yönetici Poweradmin web arabirimi üzerinde tam erişim haklarına sahip bulunmakta."
+msgstr "Passordet til Poweradmin administratoren. Administratoren har alle rettigheter i Poweradmin kontrollpanelet."
 
 #: install/index.php:141
 msgid "Updating database..."
-msgstr "Veritabanı güncelleniyor..."
+msgstr "Oppdaterer database..."
 
 #: install/index.php:166
 msgid "done!"
-msgstr "tamam!"
+msgstr "ferdig!"
 
 #: install/index.php:168
 msgid "Now we will gather all details for the configuration itself."
-msgstr "Şimdi yapılandırmanın kendisi için detayları toparlıyoruz."
+msgstr "Vi vil nå samle inn informasjon for konfigurering av Poweradmin."
 
 #: install/index.php:174
 msgid ""
 "The username for Poweradmin. This new user will have limited rights only."
-msgstr "Poweradmin için kullanıcı adı. Bu yeni kullanıcı yalnızca kısıtlı haklara sahip olacaktır."
+msgstr "Brukernavnet til Poweradmin. Denne nye brukeren har begrensede rettigheter."
 
 #: install/index.php:182
 msgid "Hostmaster"
-msgstr "Host kurucu"
+msgstr "Hostmaster"
 
 #: install/index.php:184
 msgid ""
 "When creating SOA records and no hostmaster is provided, this value here "
 "will be used. Should be in the form \"hostmaster.example.net\"."
-msgstr "SOA kaydı oluşturulurken host kurucu belirtilmediyse buradaki değer kullanılacaktır. \"hostmaster.example.net\" biçiminde olmalıdır."
+msgstr "Når du lager SOA pekere og hostmaster ikke er oppgitt, brukes denne verdien istedenfor. Må være i formatet \"hostmaster.eksempel.net\"."
 
 #: install/index.php:187
 msgid "Primary nameserver"
-msgstr "Birincil ad sunucusu"
+msgstr "Primær navnetjener"
 
 #: install/index.php:189
 msgid ""
 "When creating new zones using the template, this value will be used as "
 "primary nameserver. Should be like \"ns1.example.net\"."
-msgstr "Şablon kullanarak yeni bölge oluştururken bu değer birincil ad sunucusu olarak kullanılacak. \"ns1.example.net\" benzeri olmalı."
+msgstr "Når du lager nye soner med denne malen brukes informasjonen i dette feltet som primær navnetjener. For eksempel \"ns1.eksempel.net\"."
 
 #: install/index.php:192
 msgid "Secondary nameserver"
-msgstr "İkincil ad sunucusu"
+msgstr "Sekundær navnetjener"
 
 #: install/index.php:194
 msgid ""
 "When creating new zones using the template, this value will be used as "
 "secondary nameserver. Should be like \"ns2.example.net\"."
-msgstr "Şablon kullanarak yeni bölge oluştururken bu değer ikincil ad sunucusu olarak kullanılacak. \"ns2.example.net\" benzeri olmalı."
+msgstr "Når du lager nye soner med denne malen brukes informasjonen i dette feltet som sekundær navnetjener. For eksempel \"ns2.eksempel.net\"."
 
 #: install/index.php:230
 msgid ""
 "You now want to give limited rights to Poweradmin so it can update the data "
 "in the tables. To do this, you should create a new user and give it rights "
 "to select, delete, insert and update records in the PowerDNS database."
-msgstr "Şimdi Powerdmine kısıtlı haklar vermeyi isteyebilirsiniz. Böylelikle tablolardaki veriyi güncelleyebilsin. Bunun için yeni bir kullanıcı oluşturmalı ve select, delete, insert haklarını vererek PowerDNS veritabanındaki kayıtları güncellemelisiniz."
+msgstr "Du må nå gi utvidede rettigheter til Poweradmin slik at programmet kan oppdatere data i database tabellene. Dette gjør du ved å opprette en ny bruker som har select, delete, insert og update rettigheter i PowerDNS databasen."
 
 #: install/index.php:241
 msgid "In MySQL you should now perform the following command:"
-msgstr "Şimdi MySQL içerisinde aşağidaki komutu çalıştırmalısınız:"
+msgstr "Gå inn i MySQL og kjør denne kommandoen:"
 
 #: install/index.php:244
 msgid "On PgSQL you would use:"
-msgstr "PgSQL'de kullanabilirsiniz:"
+msgstr "I PgSQL kan du bruke:"
 
 #: install/index.php:259
 msgid ""
 "After you have added the new user, proceed with this installation procedure."
-msgstr "Bu kurulum işlemine yeni bir kullanıcı ekledikten sonra devam ediniz."
+msgstr "Fortsett med installeringen etter at du har opprettet en ny bruker."
 
 #: install/index.php:301
 msgid "The installer was able to write to the file \""
-msgstr "Kurulum, \" dosyasına yazım yapmaya muktedir."
+msgstr "Innstallerings programmet kunne skrive til filen \""
 
 #: install/index.php:301
 msgid ""
 "\". A basic configuration, based on the details you have given, has been "
 "created."
-msgstr "\". Verdiğiniz detaylar esasında basit bir yapılandırma oluşturuldu."
+msgstr "\". En standard konfigurering, basert på informasjonen du har oppgitt, er nå lagret."
 
 #: install/index.php:303
 msgid "The installer is unable to write to the file \""
-msgstr "Kurulum, \" dosyasına yazım yapmaya muktedir."
+msgstr "Innstallerings programmet kunne ikke skrive til filen \""
 
 #: install/index.php:303
 msgid ""
 "\" (which is in itself good). The configuration is printed here. You should "
 "now create the file \""
-msgstr "\" (varolan haliyle güzel). Yapılandırma buraya yazıldı. Şimdi dosyayı yaratmalısınız."
+msgstr "\" (noe som er bra). Konfigureringen er skrevet ut her. Du må nå opprette filen \""
 
 #: install/index.php:303
 msgid ""
 "\" in the Poweradmin root directory yourself. It should contain the "
 "following few lines:"
-msgstr "\" kendinizin Poweradmin kök dizininde. Aşağıdaki birkaç satırı içermeli:"
+msgstr "\" selv i root katalogen til Poweradmin. Denne filen må inneholde følgende linjer:"
 
 #: install/index.php:318
 msgid ""
 "Now we have finished the configuration, you should (must!) remove the "
 "directory \"install/\" from the Poweradmin root directory. You will not be "
 "able to use Poweradmin if it exists. Do it now."
-msgstr "Şu anda yapılandırmayı tamamladık, poweradmin kok dizininden \"install/\" dizinini (mutlaka) silmelisiniz. Bu dizin olduğu sürece Poweradmin'i kullanamazsınız. Şimdi yapın."
+msgstr "Konfigureringen er nå fullfør. Du må nå slette katalogen \"/install\" i katalogen hvor Poweradmin er lagret. Poweradmin vil ikke fungere dersom denne katalogen eksisterer. Slett derfor katalogen nå."
 
 #: install/index.php:319
 msgid ""
 "After you have removed the directory, you can login to <a "
 "href=\"../index.php\">Poweradmin</a> with username \"admin\" and password \""
-msgstr "Dizini sildikten sonra, <a href=\"../index.php\">Poweradmin</a>'e \"admin\" kullanıcı adı ve \" şifresi ile giriş yapabilirsiniz."
+msgstr "Når du har slettet katalogen, kan du logge deg inn på <a href=\"../index.php\">Poweradmin</a> med brukernavn \"admin\" og passord \""
 
 #: install/index.php:319
 msgid ""
 "\". You are highly encouraged to change these as soon as you are logged in."
-msgstr "\". Giriş yapar yapmaz bunları değiştirmeye son derece gayret ediniz."
+msgstr "\". Du er velkommen til å endre disse så snart du er pålogget."
 
 #: list_supermasters.php:51 delete_supermaster.php:45
 msgid "Delete supermaster"
-msgstr "Ana kurucuyu sil"
+msgstr "Slett supermaster"
 
 #: add_zone_templ.php:41
 msgid "Add zone template for"
-msgstr "Bunun için bölge şablonu ekle"
+msgstr "Ny sone mal for"
 
 #: add_zone_templ.php:53 list_zone_templ.php:59
 msgid "Add zone template"
-msgstr "Bölge şablonu ekle."
+msgstr "Ny sone mal"
 
 #: delete_user.php:71
 msgid ""
 "You are about to delete a user. This user is owner for a number of zones. "
 "Please decide what to do with these zones."
-msgstr "Bir kullanıcıyı silmektesiniz. Bu kullanıcı birçok bölgenin sahibidir. Lütfen bu bölgeleri ne yapacağınıza karar veriniz."
+msgstr "Du er iferd med å slette en bruker. Denne brukeren er eier av flere soner. Vennligst bekreft hva du ønsker å gjøre med disse sonene."
 
 #: delete_user.php:76
 msgid "Zone"
-msgstr "Bölge"
+msgstr "Sone"
 
 #: delete_user.php:78
 msgid "Leave"
-msgstr "Çık"
+msgstr "Forlat"
 
 #: delete_user.php:79
 msgid "Add new owner"
-msgstr "Yeni bir sahip Ekle"
+msgstr "Ny eier"
 
 #: delete_user.php:80
 msgid "Owner to be added"
-msgstr "Sahibi eklenecek"
+msgstr "Legg til ny eier"
 
 #: delete_user.php:106
 msgid "Really delete this user?"
-msgstr "Gerçekten bu kullanıcıyı silmek istiyor musunuz?"
+msgstr "Skal denne brukeren virkelig slettes?"
 
 #: reset_password.php:89
 msgid "Reset Password"
-msgstr "Şifre Sıfırla"
+msgstr "Endre Passord"
 
 #: reset_password.php:93
 msgid "Registered Email Address"
-msgstr "Kayıtlı E-posta Adresi"
+msgstr "Registrert Epost Adresse"
 
 #: reset_password.php:99
 msgid "Reset password"
-msgstr "Şifre sıfırla"
+msgstr "Endre passord"
 
 #: list_zone_templ.php:33
 msgid "Zone templates for"
-msgstr "Bunun için bölge şablonları"
+msgstr "Sone maler til"

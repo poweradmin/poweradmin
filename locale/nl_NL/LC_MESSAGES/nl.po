@@ -3,19 +3,20 @@
 # This file is distributed under the same license as the Poweradmin package.
 # 
 # Translators:
+#   <fabian@dammekens.be>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin\n"
-"Report-Msgid-Bugs-To: https://www.poweradmin.org/trac/report/1\n"
+"Report-Msgid-Bugs-To: https://github.com/poweradmin/poweradmin/issues\n"
 "POT-Creation-Date: 2011-07-08 23:45+0300\n"
-"PO-Revision-Date: 2011-07-08 20:55+0000\n"
-"Last-Translator: edmondas <eg@fbsd.lt>\n"
-"Language-Team: Dutch (http://www.transifex.net/projects/p/poweradmin/team/nl/)\n"
+"PO-Revision-Date: 2012-02-14 08:14+0000\n"
+"Last-Translator: fdammeke <fabian@dammekens.be>\n"
+"Language-Team: Dutch (http://www.transifex.com/projects/p/poweradmin/language/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: nl\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: edit_record.php:58
 msgid "Edit record in zone"
@@ -65,7 +66,7 @@ msgstr "Wijzigingen doorvoeren"
 #: edit_record.php:110 users.php:122 edit_comment.php:88 edit_user.php:142
 #: edit_zone_templ.php:164 edit_zone_templ_record.php:92 edit.php:228
 msgid "Reset changes"
-msgstr ""
+msgstr "Maak veranderingen ongedaan"
 
 #: users.php:47 index.php:60 inc/header.inc.php:82
 msgid "User administration"
@@ -89,7 +90,7 @@ msgstr "Omschrijving"
 
 #: users.php:55 edit_user.php:115 add_user.php:51
 msgid "Email address"
-msgstr ""
+msgstr "Email adres"
 
 #: users.php:56 add_zone_master.php:132 edit.php:381
 msgid "Template"
@@ -133,7 +134,7 @@ msgstr "Permissie template toevoegen"
 
 #: edit_comment.php:53
 msgid "Edit comment in zone"
-msgstr ""
+msgstr "Pas zone commentaar aan"
 
 #: edit_user.php:111 inc/auth.inc.php:137 install/index.php:98
 #: install/index.php:177 add_user.php:47
@@ -163,7 +164,7 @@ msgstr "Wijzigen zone template"
 
 #: edit_zone_templ.php:90
 msgid "This template zone does not have any records yet."
-msgstr ""
+msgstr "Deze template heeft nog geen records"
 
 #: edit_zone_templ.php:107 search.php:131 edit.php:161
 msgid "Edit record"
@@ -188,19 +189,19 @@ msgstr "wordt vervangen door de huidige datum en 2 cijfers"
 
 #: edit_zone_templ.php:155 edit.php:219
 msgid "Template Name"
-msgstr ""
+msgstr "Template naam"
 
 #: edit_zone_templ.php:159 edit.php:223
 msgid "Template Description"
-msgstr ""
+msgstr "Beschrijving template"
 
 #: edit_zone_templ.php:165 edit.php:229
 msgid "Save as template"
-msgstr ""
+msgstr "Sla als template op"
 
 #: edit_zone_templ.php:166
 msgid "Update zones"
-msgstr ""
+msgstr "Vernieuw zones"
 
 #: edit_zone_templ.php:183 add_record.php:158 add_zone_templ_record.php:147
 #: edit.php:287
@@ -325,10 +326,7 @@ msgid ""
 "Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_)"
 " in pattern matches any single character, a percent sign (%) matches any "
 "string of zero or more characters."
-msgstr ""
-"Geef een hostname of IP adres. SQL LIKE syntax wordt ondersteund: een "
-"underscore (_) in de zoekopdracht staat voor een enkel willekeurig teken, "
-"een procentteken (%) staat voor nul, een of meer willekeurige tekens."
+msgstr "Geef een hostname of IP adres. SQL LIKE syntax wordt ondersteund: een underscore (_) in de zoekopdracht staat voor een enkel willekeurig teken, een procentteken (%) staat voor nul, een of meer willekeurige tekens."
 
 #: inc/users.inc.php:382
 msgid "Password has been changed, please login."
@@ -338,9 +336,7 @@ msgstr "Het wachtwoord is gewijzigd. Log opnieuw in."
 msgid ""
 "You are trying to delete the SOA record. If are not allowed to remove it, "
 "unless you remove the entire zone."
-msgstr ""
-"U probeert een SOA record te verwijderen. U kunt dit record niet "
-"verwijderen, tenzij u de hele zone verwijderd."
+msgstr "U probeert een SOA record te verwijderen. U kunt dit record niet verwijderen, tenzij u de hele zone verwijderd."
 
 #: inc/record.inc.php:751
 msgid "Function returned an error (multiple zones matching this zone ID)."
@@ -366,9 +362,7 @@ msgstr "Een onbekende fout heeft zich voorgedaan."
 msgid ""
 "Something has been successfully performed. What exactly, however, will "
 "remain a mystery."
-msgstr ""
-"Er is iets succesvol uitgevoerd. Het blijft echter een mysterie wat dat dan "
-"precies was."
+msgstr "Er is iets succesvol uitgevoerd. Het blijft echter een mysterie wat dat dan precies was."
 
 #: inc/toolkit.inc.php:258
 msgid "Success!"
@@ -376,7 +370,7 @@ msgstr "Gelukt!"
 
 #: inc/toolkit.inc.php:269
 msgid "Successful!"
-msgstr ""
+msgstr "Geslaagd!"
 
 #: inc/toolkit.inc.php:275
 msgid "back"
@@ -406,7 +400,7 @@ msgstr "Authenticatie mislukt!"
 msgid ""
 "Authentication failed! - <a href=\"reset_password.php\">(forgot "
 "password)</a>"
-msgstr ""
+msgstr "Authenticatie mislukt! - <a href=\"reset_password.php\">(wachtwoord vergeten)</a>"
 
 #: inc/auth.inc.php:127
 msgid "Log in"
@@ -422,8 +416,7 @@ msgstr "U heeft onvoldoende rechten voor het uitvoeren van zoekopdrachten."
 
 #: inc/error.inc.php:25
 msgid "You do not have the permission to add a record to this zone."
-msgstr ""
-"U heeft onvoldoende rechten voor het toevoegen van een record aan deze zone."
+msgstr "U heeft onvoldoende rechten voor het toevoegen van een record aan deze zone."
 
 #: inc/error.inc.php:26
 msgid "You do not have the permission to edit this record."
@@ -451,11 +444,11 @@ msgstr "U heeft onvoldoende rechten voor het verwijderen van een zone."
 
 #: inc/error.inc.php:32
 msgid "You do not have the permission to view this comment."
-msgstr ""
+msgstr "Je hebt geen toestemming om deze commentaar te lezen"
 
 #: inc/error.inc.php:33
 msgid "You do not have the permission to edit this comment."
-msgstr ""
+msgstr "Je hebt geen toestemming om deze commentaar aan te passen"
 
 #: inc/error.inc.php:34
 msgid "You do not have the permission to delete a supermaster."
@@ -471,13 +464,11 @@ msgstr "U heeft onvoldoende rechten voor het wijzigen van deze gebruiker."
 
 #: inc/error.inc.php:37
 msgid "You do not have the permission to edit permission templates."
-msgstr ""
-"U heeft onvoldoende rechten voor het wijzigen van permissie templates."
+msgstr "U heeft onvoldoende rechten voor het wijzigen van permissie templates."
 
 #: inc/error.inc.php:38
 msgid "You do not have the permission to delete permission templates."
-msgstr ""
-"U heeft onvoldoende rechten voor het verwijderen van permissie templates."
+msgstr "U heeft onvoldoende rechten voor het verwijderen van permissie templates."
 
 #: inc/error.inc.php:39
 msgid "You do not have the permission to add a new user."
@@ -489,15 +480,15 @@ msgstr "U heeft onvoldoende rechten voor het verwijderen van deze gebruiker."
 
 #: inc/error.inc.php:41
 msgid "You do not have the permission to edit zone templates."
-msgstr ""
+msgstr "Je hebt geen toestemming om deze zone template aan te passen"
 
 #: inc/error.inc.php:42
 msgid "You do not have the permission to delete zone templates."
-msgstr ""
+msgstr "Je hebt geen toestemming om deze zone template te verwijderen"
 
 #: inc/error.inc.php:43
 msgid "You do not have the permission to add a zone template."
-msgstr ""
+msgstr "Je hebt geen toestemming om nieuwe een zone template toe te voegen"
 
 #: inc/error.inc.php:46
 msgid "This is an invalid zone name."
@@ -559,13 +550,13 @@ msgstr "Er bestaat geen zone met dit ID."
 
 #: inc/error.inc.php:64
 msgid "There is no zone template with this ID."
-msgstr ""
+msgstr "De template met deze ID is onbestaande"
 
 #: inc/error.inc.php:65
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
-msgstr ""
+msgstr "De <a href=\"install/\">install/</a> folder bestaat nog, je moet deze eerst verwijderen alvorens verder te gaan."
 
 #: inc/error.inc.php:66
 msgid ""
@@ -574,7 +565,7 @@ msgstr "Zone template met deze naam bestaat al, kies een andere."
 
 #: inc/error.inc.php:67
 msgid "Template name can't be an empty string."
-msgstr ""
+msgstr "De template naam moet ingevuld zijn"
 
 #: inc/error.inc.php:70
 msgid "No database name has been set in config.inc.php."
@@ -598,13 +589,13 @@ msgstr "Er is geen of een onbekend database type opgegeven in config.inc.php."
 
 #: inc/error.inc.php:75
 msgid "No database file has been set in config.inc.php."
-msgstr ""
+msgstr "Er is geen database bestand aanwezig in config.inc.php"
 
 #: inc/error.inc.php:76
 msgid ""
 "It seems that you forgot to update the database after Poweradmin upgrade to "
 "new version."
-msgstr ""
+msgstr "Het lijkt erop dat je vergeten bent de Poweradmin database te updaten na de upgrade naar een nieuwere versie"
 
 #: inc/error.inc.php:79
 msgid "Your content field doesnt have a legit value."
@@ -624,8 +615,7 @@ msgstr "Een hostname kan niet met een streepje beginnen of eindigen."
 
 #: inc/error.inc.php:83
 msgid "Given hostname or one of the labels is too short or too long."
-msgstr ""
-"De opgegeven hostname of een van de componenten is te kort of te lang."
+msgstr "De opgegeven hostname of een van de componenten is te kort of te lang."
 
 #: inc/error.inc.php:84
 msgid "Given hostname has too many slashes."
@@ -650,27 +640,24 @@ msgstr "Dit is geen geldig IPv4 adres."
 #: inc/error.inc.php:89
 msgid ""
 "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
-msgstr ""
-"Dit is geen geldige CNAME. Heeft u een MX of NS record hiernaar verwijzen?"
+msgstr "Dit is geen geldige CNAME. Heeft u een MX of NS record hiernaar verwijzen?"
 
 #: inc/error.inc.php:90
 msgid ""
 "This is not a valid record. There is already exists a CNAME with this name."
-msgstr ""
+msgstr "Deze record is niet geldig. Er bestaat al een CNAME met deze naam."
 
 #: inc/error.inc.php:91
 msgid ""
 "This is not a valid CNAME. There is already exists an A, AAAA or CNAME with "
 "this name."
-msgstr ""
+msgstr "Deze CNAME is niet geldig. Er bestaat al een A, AAA of CNAME met deze naam."
 
 #: inc/error.inc.php:92
 msgid ""
 "You can not point a NS or MX record to a CNAME record. Remove or rame the "
 "CNAME record first, or take another name."
-msgstr ""
-"Een NS of MX record mag niet naar een CNAME record verwijzen. Verwijder of "
-"hernoem het CNAME record eerst, of verwijs naar een ander record."
+msgstr "Een NS of MX record mag niet naar een CNAME record verwijzen. Verwijder of hernoem het CNAME record eerst, of verwijs naar een ander record."
 
 #: inc/error.inc.php:93
 msgid "NS records must be a hostnames."
@@ -684,9 +671,7 @@ msgstr "Het prioriteit veld behoort numeriek te zijn."
 msgid ""
 "Invalid value for name field of SOA record. It should be the name of the "
 "zone."
-msgstr ""
-"Ongeldige waarde voor het naam veld van het SOA record. Het moet de naam van"
-" de zone zijn."
+msgstr "Ongeldige waarde voor het naam veld van het SOA record. Het moet de naam van de zone zijn."
 
 #: inc/error.inc.php:96
 msgid "You have an error in the MNAME field of the SOA record."
@@ -698,7 +683,7 @@ msgstr "Ongeldige waarde voor het Content veld van het HINFO record."
 
 #: inc/error.inc.php:98
 msgid "The hostname is too long."
-msgstr ""
+msgstr "De hostname is te lang."
 
 #: inc/error.inc.php:99
 msgid "You are using an invalid top level domain."
@@ -714,19 +699,15 @@ msgstr "Ongeldige waarde het prio veld. Het moet numeriek zijn."
 
 #: inc/error.inc.php:102
 msgid "Invalid value for name field of SRV record."
-msgstr ""
-"U heeft een ongeldige waarde voor het name veld van het SRV record "
-"opgegeven."
+msgstr "U heeft een ongeldige waarde voor het name veld van het SRV record opgegeven."
 
 #: inc/error.inc.php:103
 msgid "Invalid value for the priority field of the SRV record."
-msgstr ""
+msgstr "Ongeldige waarde voor de prioriteit van de SRV record."
 
 #: inc/error.inc.php:104
 msgid "Invalid value for the weight field of the SRV record."
-msgstr ""
-"U heeft een ongeldige waarde voor het weight veld van het SRV record "
-"opgegeven."
+msgstr "U heeft een ongeldige waarde voor het weight veld van het SRV record opgegeven."
 
 #: inc/error.inc.php:105
 msgid "Invalid SRV target."
@@ -746,7 +727,7 @@ msgstr "Zone is succesvol verwijderd."
 
 #: inc/error.inc.php:111
 msgid "Zones have been updated successfully."
-msgstr ""
+msgstr "De zone is aangepast"
 
 #: inc/error.inc.php:112
 msgid "The user has been updated successfully."
@@ -770,7 +751,7 @@ msgstr "Het record is succesvol verwijderd."
 
 #: inc/error.inc.php:117
 msgid "The comment has been updated successfully."
-msgstr ""
+msgstr "De commentaar is aangepast"
 
 #: inc/error.inc.php:118
 msgid "The supermaster has been deleted successfully."
@@ -782,7 +763,7 @@ msgstr "De supermaster is succesvol toegevoegd."
 
 #: inc/error.inc.php:120
 msgid "The permission template has been updated successfully."
-msgstr ""
+msgstr "De permissie template is aangepast"
 
 #: inc/error.inc.php:121
 msgid "The permission template has been deleted successfully."
@@ -790,15 +771,15 @@ msgstr "Het permissie template is succesvol verwijderd."
 
 #: inc/error.inc.php:122
 msgid "Zone template has been added successfully."
-msgstr ""
+msgstr "De zone template is toegevoegd"
 
 #: inc/error.inc.php:123
 msgid "Zone template has been updated successfully."
-msgstr ""
+msgstr "De zone template is aangepast"
 
 #: inc/error.inc.php:124
 msgid "Zone template has been deleted successfully."
-msgstr ""
+msgstr "De zone template is verwijderd"
 
 #: change_password.php:35
 msgid "Current password"
@@ -818,7 +799,7 @@ msgstr "Record toevoegen aan zone"
 
 #: delete_domains.php:41
 msgid "Delete zones"
-msgstr ""
+msgstr "Verwijder zones"
 
 #: delete_domains.php:63 delete_domain.php:68
 #, php-format
@@ -827,11 +808,7 @@ msgid ""
 "a supermaster. Deleting the zone now, will result in temporary removal only."
 " Whenever the supermaster sends a notification for this zone, it will be "
 "added again!"
-msgstr ""
-"U wilt een slave zone verwijderen waarvan de master nameserver, %s, een "
-"supermaster is. Verwijdering van de zone zal enkel tot tijdelijke "
-"verwijdering leiden. Zodra de supermaster een notificatie stuurt, wordt deze"
-" zone opnieuw toegevoegd."
+msgstr "U wilt een slave zone verwijderen waarvan de master nameserver, %s, een supermaster is. Verwijdering van de zone zal enkel tot tijdelijke verwijdering leiden. Zodra de supermaster een notificatie stuurt, wordt deze zone opnieuw toegevoegd."
 
 #: add_supermaster.php:57
 msgid "You do not have the permission to add a new supermaster."
@@ -860,9 +837,7 @@ msgstr "Wijzigen record in zone template"
 #: delete_record.php:92
 msgid ""
 "You are trying to delete a record that is needed for this zone to work."
-msgstr ""
-"U gaat een record verwijderen dat nodig is voor het functioneren van deze "
-"zone."
+msgstr "U gaat een record verwijderen dat nodig is voor het functioneren van deze zone."
 
 #: delete_perm_templ.php:43
 msgid "Delete permission template"
@@ -874,7 +849,7 @@ msgstr "Deze zone heeft geen enkele records. Gek."
 
 #: edit.php:210
 msgid "Edit comment"
-msgstr ""
+msgstr "Commentaar aanpassen"
 
 #: edit.php:295
 msgid "Owner of zone"
@@ -898,8 +873,7 @@ msgstr "Wijzigen"
 
 #: list_zones.php:42
 msgid "You do not have the permission to see any zones."
-msgstr ""
-"U heeft onvoldoende rechten voor het zien van een overzicht van zones."
+msgstr "U heeft onvoldoende rechten voor het zien van een overzicht van zones."
 
 #: list_zones.php:49 list_supermasters.php:44
 msgid "There are no zones to show in this listing."
@@ -911,7 +885,7 @@ msgstr "Records"
 
 #: list_zones.php:71
 msgid "Serial"
-msgstr ""
+msgstr "Serial"
 
 #: list_zones.php:97
 msgid "View zone"
@@ -919,7 +893,7 @@ msgstr "Bekijken zone"
 
 #: list_zones.php:116
 msgid "Delete zone(s)"
-msgstr ""
+msgstr "Verwijder zone(s)"
 
 #: install/index.php:47
 msgid "Installation step"
@@ -940,34 +914,20 @@ msgid ""
 "installer will, of course, not touch the data in the PowerDNS tables of the "
 "database. However, it is recommended that you create a backup of your "
 "database before proceeding."
-msgstr ""
-"Het installatie script verwacht dat u een PowerDNS database beschikbaar "
-"heeft, welke bereikbaar is vanaf deze server. Het installatie script "
-"verwacht bovendien dat u niet eerder Poweradmin voor deze database gebruikt "
-"heeft, of dat u geen problemen heeft met het overschrijven van dat deel van "
-"de database. Als u Poweradmin eerder heeft gebruikt, dan wordt alle "
-"informatie in de volgende database tabellen overschreven: perm_items, "
-"perm_templ, perm_templ_items, users en zones. Het installatie script zal "
-"uiteraard de data in de PowerDNS tabellen in de database ongemoeid laten. "
-"Desondanks wordt u aangeraden eerst een backup van de database te maken."
+msgstr "Het installatie script verwacht dat u een PowerDNS database beschikbaar heeft, welke bereikbaar is vanaf deze server. Het installatie script verwacht bovendien dat u niet eerder Poweradmin voor deze database gebruikt heeft, of dat u geen problemen heeft met het overschrijven van dat deel van de database. Als u Poweradmin eerder heeft gebruikt, dan wordt alle informatie in de volgende database tabellen overschreven: perm_items, perm_templ, perm_templ_items, users en zones. Het installatie script zal uiteraard de data in de PowerDNS tabellen in de database ongemoeid laten. Desondanks wordt u aangeraden eerst een backup van de database te maken."
 
 #: install/index.php:71
 msgid ""
 "The alternative for this installer is a manual installation. Refer to the "
 "poweradmin.org website if you want to go down that road."
-msgstr ""
-"Het alternatief voor dit installatie script is een handmatige installatie. "
-"Kijk op de website poweradmin.org voor meer informatie daarover."
+msgstr "Het alternatief voor dit installatie script is een handmatige installatie. Kijk op de website poweradmin.org voor meer informatie daarover."
 
 #: install/index.php:73
 msgid ""
 "Finally, if you see any errors during the installation process, a problem "
 "report would be appreciated. You can report problems (and ask for help) on "
 "the poweradmin-users mailinglist."
-msgstr ""
-"Tenslotte, mocht u onverhoopt problemen tijdens het installatie proces "
-"tegenkomen, zou een beschrijving daarvan welkom zijn. U kunt op de "
-"poweradmin-users mailinglist terecht voor hulp."
+msgstr "Tenslotte, mocht u onverhoopt problemen tijdens het installatie proces tegenkomen, zou een beschrijving daarvan welkom zijn. U kunt op de poweradmin-users mailinglist terecht voor hulp."
 
 #: install/index.php:75
 msgid "Do you want to proceed now?"
@@ -979,11 +939,7 @@ msgid ""
 "the PowerDNS database. It will add a number of tables and it will fill these"
 " tables with some data. If the tables are already present, the installer "
 "will drop them first."
-msgstr ""
-"Om de database voor te bereiden op Poweradmin moet het installatie script "
-"enkele wijzigingen in de PowerDNS database maken. Het script zal een aantal "
-"tabellen toevoegen en deze vullen met data. Als deze tabellen al bestaan, "
-"zullen ze eerst worden verwijderd."
+msgstr "Om de database voor te bereiden op Poweradmin moet het installatie script enkele wijzigingen in de PowerDNS database maken. Het script zal een aantal tabellen toevoegen en deze vullen met data. Als deze tabellen al bestaan, zullen ze eerst worden verwijderd."
 
 #: install/index.php:88
 msgid ""
@@ -991,23 +947,14 @@ msgid ""
 "account which has sufficient rights. If you trust the installer, you may "
 "give it the username and password of the database user root. Otherwise, make"
 " sure the user has enough rights, before actually proceeding."
-msgstr ""
-"Om dit te kunnen doen heeft het script toegang tot de database nodig met een"
-" account dat voldoende rechten heeft. Indien u het script vertrouwt, dan "
-"kunt u hier de gebruikersnaam en wachtwoord van de database gebruiker root "
-"opgeven. In andere gevallen dient u vooraf zeker te weten dat de opgegeven "
-"gebruiker voldoende rechten heeft, alvorens verder te gaan. "
+msgstr "Om dit te kunnen doen heeft het script toegang tot de database nodig met een account dat voldoende rechten heeft. Indien u het script vertrouwt, dan kunt u hier de gebruikersnaam en wachtwoord van de database gebruiker root opgeven. In andere gevallen dient u vooraf zeker te weten dat de opgegeven gebruiker voldoende rechten heeft, alvorens verder te gaan. "
 
 #: install/index.php:95
 msgid ""
 "The username to use to connect to the database, make sure the username has "
 "sufficient rights to perform administrative task to the PowerDNS database "
 "(the installer wants to drop, create and fill tables to the database)."
-msgstr ""
-"De gebruikersnaam voor de database. Zorgt u er voor dat deze gebruiker "
-"voldoende rechten heeft voor het uitvoeren van administratieve taken op de "
-"PowerDNS database (het installatie script moet tabellen kunnen verwijderen, "
-"toevoegen en vullen)."
+msgstr "De gebruikersnaam voor de database. Zorgt u er voor dat deze gebruiker voldoende rechten heeft voor het uitvoeren van administratieve taken op de PowerDNS database (het installatie script moet tabellen kunnen verwijderen, toevoegen en vullen)."
 
 #: install/index.php:100 install/index.php:179
 msgid "The password for this username."
@@ -1021,17 +968,15 @@ msgstr "Hostnaam"
 msgid ""
 "The hostname on which the PowerDNS database resides. Frequently, this will "
 "be \"localhost\"."
-msgstr ""
-"De hostnaam waarop de PowerDNS database gevonden kan worden. Vaak is dit "
-"\"localhost\"."
+msgstr "De hostnaam waarop de PowerDNS database gevonden kan worden. Vaak is dit \"localhost\"."
 
 #: install/index.php:108
 msgid "DB Port"
-msgstr ""
+msgstr "DB Poort"
 
 #: install/index.php:110
 msgid "The port the database server is listening on."
-msgstr ""
+msgstr "De poort waarop de database luistert"
 
 #: install/index.php:113
 msgid "Database"
@@ -1057,9 +1002,7 @@ msgstr "Wachtwoord van Poweradmin beheerder"
 msgid ""
 "The password of the Poweradmin administrator. This administrator has full "
 "rights to Poweradmin using the web interface."
-msgstr ""
-"Het wachtwoord van de Poweradmin beheerder. Deze beheerder heeft via de web "
-"interface alle rechten in Poweradmin."
+msgstr "Het wachtwoord van de Poweradmin beheerder. Deze beheerder heeft via de web interface alle rechten in Poweradmin."
 
 #: install/index.php:141
 msgid "Updating database..."
@@ -1071,15 +1014,12 @@ msgstr "gedaan!"
 
 #: install/index.php:168
 msgid "Now we will gather all details for the configuration itself."
-msgstr ""
-"De volgende stap is het samenstellen van de configuratie van Poweradmin."
+msgstr "De volgende stap is het samenstellen van de configuratie van Poweradmin."
 
 #: install/index.php:174
 msgid ""
 "The username for Poweradmin. This new user will have limited rights only."
-msgstr ""
-"De gebruikersnaam voor Poweradmin. Deze nieuwe database gebruiker heeft "
-"slechts beperkte rechten."
+msgstr "De gebruikersnaam voor Poweradmin. Deze nieuwe database gebruiker heeft slechts beperkte rechten."
 
 #: install/index.php:182
 msgid "Hostmaster"
@@ -1089,9 +1029,7 @@ msgstr "Hostmaster"
 msgid ""
 "When creating SOA records and no hostmaster is provided, this value here "
 "will be used. Should be in the form \"hostmaster.example.net\"."
-msgstr ""
-"Als u een SOA record aanmaakt en u geen hostmaster opgeeft, wordt deze "
-"waarde gebruikt. Voorbeeld: \"hostmaster.example.net\"."
+msgstr "Als u een SOA record aanmaakt en u geen hostmaster opgeeft, wordt deze waarde gebruikt. Voorbeeld: \"hostmaster.example.net\"."
 
 #: install/index.php:187
 msgid "Primary nameserver"
@@ -1101,9 +1039,7 @@ msgstr "Primaire nameserver"
 msgid ""
 "When creating new zones using the template, this value will be used as "
 "primary nameserver. Should be like \"ns1.example.net\"."
-msgstr ""
-"Als u een nieuwe zone aanmaakt met het zone template, dan wordt deze "
-"nameserver als primaire nameserber gebruikt. Voorbeeld: \"ns1.example.net\"."
+msgstr "Als u een nieuwe zone aanmaakt met het zone template, dan wordt deze nameserver als primaire nameserber gebruikt. Voorbeeld: \"ns1.example.net\"."
 
 #: install/index.php:192
 msgid "Secondary nameserver"
@@ -1113,20 +1049,14 @@ msgstr "Secundaire nameserver"
 msgid ""
 "When creating new zones using the template, this value will be used as "
 "secondary nameserver. Should be like \"ns2.example.net\"."
-msgstr ""
-"Als u een nieuwe zone aanmaakt met het zone template, dan wordt deze "
-"nameserver als secundaire nameserber gebruikt. Voorbeeld: "
-"\"ns2.example.net\"."
+msgstr "Als u een nieuwe zone aanmaakt met het zone template, dan wordt deze nameserver als secundaire nameserber gebruikt. Voorbeeld: \"ns2.example.net\"."
 
 #: install/index.php:230
 msgid ""
 "You now want to give limited rights to Poweradmin so it can update the data "
 "in the tables. To do this, you should create a new user and give it rights "
 "to select, delete, insert and update records in the PowerDNS database."
-msgstr ""
-"U zult nu voor Poweradmin een database gebruiker moeten toevoegen met "
-"beperkte rechten. Deze gebruiker moet de rechten voor SELECT, DELETE, INSERT"
-" en UPDATE van records in de PowerDNS database hebben."
+msgstr "U zult nu voor Poweradmin een database gebruiker moeten toevoegen met beperkte rechten. Deze gebruiker moet de rechten voor SELECT, DELETE, INSERT en UPDATE van records in de PowerDNS database hebben."
 
 #: install/index.php:241
 msgid "In MySQL you should now perform the following command:"
@@ -1139,9 +1069,7 @@ msgstr "In PgSQL kunt u de volgende commandos gebruiken:"
 #: install/index.php:259
 msgid ""
 "After you have added the new user, proceed with this installation procedure."
-msgstr ""
-"Als u de nieuwe gebruiker heeft toegevoegd, gaat u verder met de installatie"
-" procedure."
+msgstr "Als u de nieuwe gebruiker heeft toegevoegd, gaat u verder met de installatie procedure."
 
 #: install/index.php:301
 msgid "The installer was able to write to the file \""
@@ -1151,9 +1079,7 @@ msgstr "Het installatie script kon schrijven naar het bestand \""
 msgid ""
 "\". A basic configuration, based on the details you have given, has been "
 "created."
-msgstr ""
-"\". Een minimale configuratie, gebaseerd op de door u opgegeven details, is "
-"aangemaakt."
+msgstr "\". Een minimale configuratie, gebaseerd op de door u opgegeven details, is aangemaakt."
 
 #: install/index.php:303
 msgid "The installer is unable to write to the file \""
@@ -1163,33 +1089,26 @@ msgstr "Het installatie script kon niet schrijven naar het bestand \""
 msgid ""
 "\" (which is in itself good). The configuration is printed here. You should "
 "now create the file \""
-msgstr ""
-"\" (wat op zichzelf wel goed is). De configuratie is hieronder weergegeven. "
-"U moet nu het bestand \""
+msgstr "\" (wat op zichzelf wel goed is). De configuratie is hieronder weergegeven. U moet nu het bestand \""
 
 #: install/index.php:303
 msgid ""
 "\" in the Poweradmin root directory yourself. It should contain the "
 "following few lines:"
-msgstr ""
-"\" in de Poweradmin hoofd directory zelf aanmaken. Het moet de volgende "
-"regels bevatten:"
+msgstr "\" in de Poweradmin hoofd directory zelf aanmaken. Het moet de volgende regels bevatten:"
 
 #: install/index.php:318
 msgid ""
 "Now we have finished the configuration, you should (must!) remove the "
 "directory \"install/\" from the Poweradmin root directory. You will not be "
 "able to use Poweradmin if it exists. Do it now."
-msgstr ""
-"De configuratie is afgerond. U moet nu de directory \"install/\" uit de "
-"Poweradmin hoofd directory verwijderen. U kunt geen gebruik maken van "
-"Poweradmin als deze directory bestaat."
+msgstr "De configuratie is afgerond. U moet nu de directory \"install/\" uit de Poweradmin hoofd directory verwijderen. U kunt geen gebruik maken van Poweradmin als deze directory bestaat."
 
 #: install/index.php:319
 msgid ""
 "After you have removed the directory, you can login to <a "
 "href=\"../index.php\">Poweradmin</a> with username \"admin\" and password \""
-msgstr ""
+msgstr "Nadat je de folder verwijderd hebt, kan je inloggen in <a href=\"../index.php\">Poweradmin</a> met gebruikersnaam \"admin\" en wachtwoord \""
 
 #: install/index.php:319
 msgid ""
@@ -1212,9 +1131,7 @@ msgstr "Zone template toevoegen"
 msgid ""
 "You are about to delete a user. This user is owner for a number of zones. "
 "Please decide what to do with these zones."
-msgstr ""
-"U wilt een gebruiker verwijderen. Deze gebruiker is eigenaar van (een) "
-"enkele zone(s). Bepaal wat u wilt doen met deze zones."
+msgstr "U wilt een gebruiker verwijderen. Deze gebruiker is eigenaar van (een) enkele zone(s). Bepaal wat u wilt doen met deze zones."
 
 #: delete_user.php:76
 msgid "Zone"
@@ -1238,18 +1155,16 @@ msgstr "Wilt u deze gebruiker echt verwijderen?"
 
 #: reset_password.php:89
 msgid "Reset Password"
-msgstr ""
+msgstr "Herintialiseer wachtwoord"
 
 #: reset_password.php:93
 msgid "Registered Email Address"
-msgstr ""
+msgstr "Huidig Email Adres"
 
 #: reset_password.php:99
 msgid "Reset password"
-msgstr ""
+msgstr "Herintialiseer wachtwoord"
 
 #: list_zone_templ.php:33
 msgid "Zone templates for"
 msgstr "Zone templates voor"
-
-

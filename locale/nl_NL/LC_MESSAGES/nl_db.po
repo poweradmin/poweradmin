@@ -7,16 +7,16 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin\n"
-"Report-Msgid-Bugs-To: https://www.poweradmin.org/trac/report/1\n"
+"Report-Msgid-Bugs-To: https://github.com/poweradmin/poweradmin/issues\n"
 "POT-Creation-Date: 2011-07-08 23:45+0300\n"
-"PO-Revision-Date: 2011-06-09 16:01+0000\n"
+"PO-Revision-Date: 2012-02-14 09:00+0000\n"
 "Last-Translator: fdammeke <fabian@dammekens.be>\n"
-"Language-Team: Dutch (http://www.transifex.net/projects/p/poweradmin/team/nl/)\n"
+"Language-Team: Dutch (http://www.transifex.com/projects/p/poweradmin/language/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: nl\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "User is allowed to add new master zones."
 msgstr "Gebruiker kan een master zone toevoegen."
@@ -25,17 +25,13 @@ msgid "User is allowed to add new slave zones."
 msgstr "Gebruiker kan een nieuwe slave zone toevoegen."
 
 msgid "User is allowed to see the content and meta data of zones he owns."
-msgstr ""
-"Gebruiker kan de inhoud en metadata zien van de zones waartoe hij rechten "
-"heeft."
+msgstr "Gebruiker kan de inhoud en metadata zien van de zones waartoe hij rechten heeft."
 
 msgid "User is allowed to edit the content of zones he owns."
-msgstr ""
-"Gebruiker kan de inhoud van de zones waartoe hij rechten heeft aanpassen."
+msgstr "Gebruiker kan de inhoud van de zones waartoe hij rechten heeft aanpassen."
 
 msgid "User is allowed to edit the meta data of zones he owns."
-msgstr ""
-"Gebruiker kan de metadata van de zones waartoe hij rechten heeft aanpassen."
+msgstr "Gebruiker kan de metadata van de zones waartoe hij rechten heeft aanpassen."
 
 msgid ""
 "User is allowed to see the content and meta data of zones he does not own."
@@ -87,5 +83,3 @@ msgstr "Gebruiker kan nieuwe permissies aanmaken."
 
 msgid "User is allowed to edit existing permission templates."
 msgstr "Gebruiker kan bestaande permissies aanpassen."
-
-

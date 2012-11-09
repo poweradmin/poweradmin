@@ -1,1288 +1,1171 @@
 # Poweradmin translation.
 # Copyright (C) 2011 Poweradmin Development Team
 # This file is distributed under the same license as the Poweradmin package.
-#
+# 
 # Translators:
 #   <eg@fbsd.lt>, 2011.
 # Koichi MATSUMOTO <mzch@me.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin\n"
-"Report-Msgid-Bugs-To: https://www.poweradmin.org/trac/report/1\n"
-"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2012-02-24 01:41+0900\n"
-"Last-Translator: Koichi MATSUMOTO <mzch@mac.com>\n"
-"Language-Team: Japanese (http://www.transifex.net/projects/p/poweradmin/team/ja/)\n"
-"Language: ja\n"
+"Report-Msgid-Bugs-To: https://github.com/poweradmin/poweradmin/issues\n"
+"POT-Creation-Date: 2011-07-08 23:45+0300\n"
+"PO-Revision-Date: 2012-02-14 08:14+0000\n"
+"Last-Translator: Koichi MATSUMOTO <mzch@me.com>\n"
+"Language-Team: Japanese (http://www.transifex.com/projects/p/poweradmin/language/ja/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0\n"
+"Language: ja\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
-#: install/index.php:319
-msgid "\" (which is in itself good). The configuration is printed here. You should now create the file \""
-msgstr "\" に書き込みができません (書き込みができないこと自体は構いません)。設定内容を以下に表示しますので、ファイル \""
-
-#: install/index.php:319
-msgid "\" in the Poweradmin root directory yourself. It should contain the following few lines:"
-msgstr "\" を Poweradmin のルートディレクトリに直接作成して下さい。ファイルには表示された行を必ず含めて下さい:"
-
-#: install/index.php:317
-msgid "\". A basic configuration, based on the details you have given, has been created."
-msgstr "\" へ書き込みを行いました。指定された情報に基づいて基本設定を作成しました。"
-
-#: install/index.php:335
-msgid "\". You are highly encouraged to change these as soon as you are logged in."
-msgstr "\" でログインすることができます。ログインしたら、すぐにユーザー名とパスワードを変更することを強くお勧めします。"
-
-#: inc/error.inc.php:85
-msgid "A hostname can not start or end with a dash."
-msgstr "ホスト名をダッシュで始めたりダッシュで終わらせることはできません。"
-
-#: inc/error.inc.php:97
-msgid "A prio field should be numeric."
-msgstr "プライオリティは数字でなければなりません。"
-
-#: add_supermaster.php:83
-#: delete_supermaster.php:65
-#: list_supermasters.php:39
-msgid "Account"
-msgstr "アカウント"
-
-#: inc/toolkit.inc.php:319
-msgid "Active"
-msgstr "有効"
-
-#: edit.php:339
-msgid "Add"
-msgstr "追加"
-
-#: add_zone_master.php:83
-#: inc/header.inc.php:81
-#: index.php:52
-msgid "Add master zone"
-msgstr "マスターゾーンを追加"
-
-#: delete_user.php:79
-msgid "Add new owner"
-msgstr "新たにオーナーを追加"
-
-#: add_perm_templ.php:43
-#: list_perm_templ.php:62
-msgid "Add permission template"
-msgstr "権限テンプレートを追加"
-
-#: add_record.php:159
-#: add_zone_templ_record.php:148
-#: edit.php:283
-#: edit_zone_templ.php:184
-msgid "Add record"
-msgstr "レコードを追加"
-
-#: add_record.php:112
-msgid "Add record to zone"
-msgstr "ゾーンにレコードを追加:"
-
-#: add_zone_templ_record.php:91
-msgid "Add record to zone template"
-msgstr "ゾーンテンプレートにレコードを追加:"
-
-#: add_zone_slave.php:68
-#: inc/header.inc.php:84
-#: index.php:55
-msgid "Add slave zone"
-msgstr "スレーブゾーンを追加"
-
-#: add_supermaster.php:107
-#: add_supermaster.php:55
-#: inc/header.inc.php:87
-#: index.php:58
-msgid "Add supermaster"
-msgstr "スーパーマスターを追加"
-
-#: add_user.php:36
-#: users.php:140
-msgid "Add user"
-msgstr "ユーザーを追加"
-
-#: add_zone_master.php:147
-#: add_zone_slave.php:107
-msgid "Add zone"
-msgstr "ゾーンを追加"
-
-#: add_zone_templ.php:54
-#: list_zone_templ.php:60
-msgid "Add zone template"
-msgstr "ゾーンテンプレートを追加"
-
-#: add_zone_templ.php:42
-msgid "Add zone template for"
-msgstr "ゾーンテンプレートを追加:"
-
-#: bulk_registration.php:141
-msgid "Add zones"
-msgstr "ゾーンを追加"
-
-#: install/index.php:273
-msgid "After you have added the new user, proceed with this installation procedure."
-msgstr "新しいユーザーを追加した後で、このインストールプロセスを継続します。"
-
-#: install/index.php:335
-msgid "After you have removed the directory, you can login to <a href=\"../index.php\">Poweradmin</a> with username \"admin\" and password \""
-msgstr "ディレクトリを削除したら、<a href=\"../index.php\">Poweradmin</a> にユーザー \"admin\"、パスワード \""
-
-#: inc/toolkit.inc.php:239
-#: install/index.php:40
-msgid "An unknown error has occurred."
-msgstr "未知のエラーが発生しました。"
-
-#: delete_domain.php:73
-#: delete_domains.php:73
-#: delete_perm_templ.php:50
-#: delete_record.php:95
-#: delete_supermaster.php:67
-#: delete_zone_templ.php:51
-#: delete_zone_templ_record.php:75
-msgid "Are you sure?"
-msgstr "よろしいですか?"
-
-#: inc/auth.inc.php:109
-#: inc/auth.inc.php:93
-msgid "Authentication failed! - <a href=\"reset_password.php\">(forgot password)</a>"
-msgstr "認証に失敗! - <a href=\"reset_password.php\">(パスワードを紛失)</a>"
-
-#: edit_user.php:152
-msgid "Based on this template, this user has the following permissions"
-msgstr "このテンプレートに基づいて、ユーザーには次の権限が与えられています"
-
-#: bulk_registration.php:76
-#: inc/header.inc.php:90
-msgid "Bulk registration"
-msgstr "一括登録"
-
-#: edit.php:368
-#: edit.php:397
-#: edit.php:420
-msgid "Change"
-msgstr "変更"
-
-#: change_password.php:32
-#: change_password.php:50
-#: inc/header.inc.php:92
-#: index.php:60
-msgid "Change password"
-msgstr "パスワードの変更"
-
-#: add_perm_templ.php:75
-#: add_user.php:77
-#: delete_user.php:111
-#: edit.php:233
-#: edit_comment.php:88
-#: edit_perm_templ.php:87
-#: edit_record.php:109
-#: edit_user.php:142
-#: edit_zone_templ.php:164
-#: edit_zone_templ.php:182
-#: edit_zone_templ_record.php:92
-#: users.php:126
-msgid "Commit changes"
-msgstr "変更を反映"
-
-#: add_record.php:124
-#: add_zone_templ_record.php:103
-#: edit.php:151
-#: edit.php:249
-#: edit_record.php:72
-#: edit_zone_templ.php:99
-#: edit_zone_templ_record.php:66
-#: search.php:123
-msgid "Content"
-msgstr "内容"
-
-#: change_password.php:36
-msgid "Current password"
-msgstr "現在のパスワード"
-
-#: install/index.php:122
-msgid "DB Port"
-msgstr "DB ポート"
-
-#: install/index.php:127
-msgid "Database"
-msgstr "データベース"
-
-#: install/index.php:132
-msgid "Database type"
-msgstr "データベースタイプ"
-
-#: inc/error.inc.php:69
-msgid "Default session encryption key is used, please set it in your configuration file."
-msgstr "デフォルトのセッション暗号鍵が使用されています。設定ファイルに暗号鍵を設定して下さい。"
-
-#: delete_user.php:77
-#: edit.php:306
-msgid "Delete"
-msgstr "削除"
-
-#: delete_perm_templ.php:44
-msgid "Delete permission template"
-msgstr "権限テンプレートを削除"
-
-#: edit.php:169
-#: edit_zone_templ.php:110
-#: search.php:137
-msgid "Delete record"
-msgstr "レコードを削除"
-
-#: delete_record.php:67
-#: delete_zone_templ_record.php:54
-msgid "Delete record in zone"
-msgstr "ゾーンのレコードを削除:"
-
-#: delete_supermaster.php:51
-#: list_supermasters.php:52
-msgid "Delete supermaster"
-msgstr "スーパーマスターを削除:"
-
-#: list_perm_templ.php:50
-#: list_zone_templ.php:48
-msgid "Delete template"
-msgstr "テンプレートを削除"
-
-#: delete_user.php:60
-#: users.php:76
-msgid "Delete user"
-msgstr "ユーザーを削除:"
-
-#: delete_domain.php:55
-#: list_zones.php:102
-#: search.php:85
-msgid "Delete zone"
-msgstr "ゾーンを削除:"
-
-#: delete_zone_templ.php:45
-#: edit_zone_templ.php:185
-msgid "Delete zone template"
-msgstr "ゾーンテンプレートを削除:"
-
-#: list_zones.php:119
-msgid "Delete zone(s)"
-msgstr "ゾーンを削除"
-
-#: delete_domains.php:42
-msgid "Delete zones"
-msgstr "ゾーンを削除"
-
-#: add_perm_templ.php:51
-#: add_perm_templ.php:59
-#: add_user.php:68
-#: add_zone_templ.php:50
-#: edit_perm_templ.php:58
-#: edit_perm_templ.php:67
-#: edit_user.php:133
-#: edit_zone_templ.php:178
-#: list_perm_templ.php:38
-#: list_zone_templ.php:39
-#: users.php:55
-msgid "Description"
-msgstr "説明"
-
-#: install/index.php:89
-msgid "Do you want to proceed now?"
-msgstr "続けてもよろしいですか?"
-
-#: edit.php:216
-msgid "Edit comment"
-msgstr "コメントを編集"
-
-#: edit_comment.php:54
-msgid "Edit comment in zone"
-msgstr "ゾーンのコメントを編集:"
-
-#: edit_perm_templ.php:48
-#: users.php:136
-msgid "Edit permission template"
-msgstr "権限テンプレートを編集:"
-
-#: edit.php:167
-#: edit_zone_templ.php:108
-#: search.php:132
-msgid "Edit record"
-msgstr "レコードを編集"
-
-#: edit_record.php:59
+#: edit_record.php:58
 msgid "Edit record in zone"
-msgstr "ゾーンのレコードを編集:"
+msgstr "次のゾーンのレコードを編集:"
 
-#: edit_zone_templ_record.php:53
-msgid "Edit record in zone template"
-msgstr "ゾーンテンプレートのレコードを編集:"
-
-#: list_perm_templ.php:49
-#: list_zone_templ.php:47
-msgid "Edit template"
-msgstr "テンプレートを編集"
-
-#: edit_user.php:99
-#: users.php:72
-msgid "Edit user"
-msgstr "ユーザーを編集:"
-
-#: edit.php:135
-#: search.php:80
-msgid "Edit zone"
-msgstr "ゾーンを編集:"
-
-#: edit_zone_templ.php:83
-msgid "Edit zone template"
-msgstr "ゾーンテンプレートを編集:"
-
-#: add_user.php:52
-#: edit_user.php:116
-#: users.php:56
-msgid "Email address"
-msgstr "メールアドレス"
-
-#: add_user.php:72
-#: edit_user.php:137
-#: users.php:58
-msgid "Enabled"
-msgstr "有効"
-
-#: search.php:167
-msgid "Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) in pattern matches any single character, a percent sign (%) matches any string of zero or more characters."
-msgstr "ホスト名か IP アドレスを入力して下さい。SQL ライクな文法をサポートしています: アンダースコア (_) は任意の一文字にマッチし、パーセント記号 (%) は、空文字列を含む任意の長さの文字列にマッチします。"
-
-#: inc/error.inc.php:63
-msgid "Enter a valid email address."
-msgstr "正しいメールアドレスを入力して下さい。"
-
-#: inc/error.inc.php:70
-msgid "Failed to set locale."
-msgstr "ロケールを設定できませんでした"
-
-#: install/index.php:87
-msgid "Finally, if you see any errors during the installation process, a problem report would be appreciated. You can report problems (and ask for help) on the poweradmin-users mailinglist."
-msgstr "最後に、インストール処理中にエラーが発生した場合、問題を報告していただけるとありがたく思います。poweradmin-users メーリングリストに問題を報告して解決策を尋ねることができます。"
-
-#: add_user.php:44
-#: edit_user.php:108
-#: users.php:54
-msgid "Fullname"
-msgstr "氏名"
-
-#: inc/record.inc.php:762
-msgid "Function returned an error (multiple zones matching this zone ID)."
-msgstr "関数がエラーを返しました (同一のゾーンIDが複数のゾーンにマッチしました)。"
-
-#: inc/error.inc.php:87
-msgid "Given hostname has too many slashes."
-msgstr "指定のホスト名にはスラッシュが多すぎます。"
-
-#: inc/error.inc.php:86
-msgid "Given hostname or one of the labels is too short or too long."
-msgstr "指定のホスト名、またはラベルの中に短すぎるか長すぎるものがあります。"
-
-#: inc/auth.inc.php:148
-msgid "Go"
-msgstr "実行"
-
-#: install/index.php:149
-#: install/index.php:221
-#: install/index.php:289
-#: install/index.php:328
-#: install/index.php:76
-#: install/index.php:94
-msgid "Go to step"
-msgstr "ステップ"
-
-#: install/index.php:196
-msgid "Hostmaster"
-msgstr "ホストマスター"
-
-#: install/index.php:117
-msgid "Hostname"
-msgstr "ホスト名"
-
-#: add_supermaster.php:73
-#: delete_supermaster.php:64
-#: list_supermasters.php:38
-msgid "Hostname in NS record"
-msgstr "NS レコードのホスト名"
-
-#: add_zone_slave.php:80
-#: edit.php:409
-msgid "IP address of master NS"
-msgstr "マスター NS の IP アドレス"
-
-#: add_supermaster.php:63
-#: list_supermasters.php:37
-msgid "IP address of supermaster"
-msgstr "スーパーマスターの IP アドレス"
-
-#: install/index.php:255
-msgid "In MySQL you should now perform the following command:"
-msgstr "MySQL で、次のコマンドを実行して下さい:"
-
-#: inc/toolkit.inc.php:315
-msgid "Inactive"
-msgstr "無効"
-
-#: inc/header.inc.php:67
-#: index.php:38
-msgid "Index"
-msgstr "ホーム"
-
-#: install/index.php:61
-msgid "Installation step"
-msgstr "インストールステップ"
-
-#: inc/error.inc.php:108
-msgid "Invalid SRV target."
-msgstr "不適切な SRV ターゲットです。"
-
-#: inc/error.inc.php:60
-msgid "Invalid argument(s) given to function %s"
-msgstr "関数 %s に不正な引数が渡されました。"
-
-#: inc/error.inc.php:61
-msgid "Invalid argument(s) given to function %s %s"
-msgstr "関数 %s %s に不正な引数が渡されました。"
-
-#: inc/error.inc.php:109
-msgid "Invalid characters have been used in this record."
-msgstr "このレコードは、不適切な文字が使用されています。"
-
-#: inc/error.inc.php:83
-msgid "Invalid hostname."
-msgstr "不適切なホスト名です。"
-
-#: inc/error.inc.php:59
-msgid "Invalid or unexpected input given."
-msgstr "正しくないか、もしくは不適切な入力です。"
-
-#: inc/error.inc.php:103
-msgid "Invalid value for TTL field. It should be numeric."
-msgstr "TTL に不適切な値が設定されています。TTL は数字でなければなりません。"
-
-#: inc/error.inc.php:100
-msgid "Invalid value for content field of HINFO record."
-msgstr "HINFO レコードの content 項目に不適切な値が設定されています。"
-
-#: inc/error.inc.php:98
-msgid "Invalid value for name field of SOA record. It should be the name of the zone."
-msgstr "SOA レコードの name 項目に不適切な値が設定されています。そこはゾーン名でなければなりません。"
-
-#: inc/error.inc.php:105
-msgid "Invalid value for name field of SRV record."
-msgstr "SRV レコードのドメイン名項目に不適切な値が設定されています。"
-
-#: inc/error.inc.php:104
-msgid "Invalid value for prio field. It should be numeric."
-msgstr "プライオリティに不適切な値が設定されています。プライオリティは数字でなければなりません。"
-
-#: inc/error.inc.php:106
-msgid "Invalid value for the priority field of the SRV record."
-msgstr "SRV レコードの priority 項目に不適切な値が設定されています。"
-
-#: inc/error.inc.php:107
-msgid "Invalid value for the weight field of the SRV record."
-msgstr "SRV レコードの Weight 項目に不適切な値が設定されています。"
-
-#: inc/error.inc.php:79
-msgid "It seems that you forgot to update the database after Poweradmin upgrade to new version."
-msgstr "Poweradmin を新しいバージョンにアップグレードした後でデータベースを更新し忘れているようです。"
-
-#: delete_user.php:78
-msgid "Leave"
-msgstr "残す"
-
-#: inc/header.inc.php:78
-#: index.php:49
-#: list_supermasters.php:33
-msgid "List supermasters"
-msgstr "スーパーマスター一覧"
-
-#: inc/header.inc.php:75
-#: index.php:46
-msgid "List zone templates"
-msgstr "ゾーンテンプレート一覧"
-
-#: inc/header.inc.php:72
-#: index.php:43
-#: list_zones.php:40
-msgid "List zones"
-msgstr "ゾーン一覧"
-
-#: inc/auth.inc.php:132
-msgid "Log in"
-msgstr "ログイン"
-
-#: inc/header.inc.php:94
-#: index.php:62
-msgid "Logout"
-msgstr "ログアウト"
-
-#: search.php:68
-msgid "Master"
-msgstr "マスター"
-
-#: inc/error.inc.php:96
-msgid "NS records must be a hostnames."
-msgstr "NS レコードにはホスト名を指定しなくてはなりません。"
-
-#: add_perm_templ.php:47
-#: add_perm_templ.php:58
-#: add_record.php:121
-#: add_zone_templ.php:46
-#: add_zone_templ_record.php:100
-#: delete_domains.php:57
-#: edit.php:149
-#: edit.php:246
-#: edit_perm_templ.php:54
-#: edit_perm_templ.php:66
-#: edit_record.php:68
-#: edit_zone_templ.php:174
-#: edit_zone_templ.php:97
-#: edit_zone_templ_record.php:62
-#: list_perm_templ.php:37
-#: list_zone_templ.php:38
-#: list_zones.php:68
-#: search.php:120
-#: search.php:66
+#: edit_record.php:67 list_perm_templ.php:36 edit_zone_templ.php:96
+#: edit_zone_templ.php:173 search.php:65 search.php:119 add_perm_templ.php:44
+#: add_perm_templ.php:55 add_record.php:120 delete_domains.php:56
+#: add_zone_templ_record.php:99 edit_zone_templ_record.php:61 edit.php:143
+#: edit.php:240 list_zones.php:67 add_zone_templ.php:45 list_zone_templ.php:37
+#: edit_perm_templ.php:53 edit_perm_templ.php:65
 msgid "Name"
 msgstr "名前"
 
-#: change_password.php:40
-#: change_password.php:44
-msgid "New password"
-msgstr "新しいパスワード"
+#: edit_record.php:69 edit_zone_templ.php:97 search.php:66 search.php:120
+#: add_record.php:122 add_zone_master.php:121 delete_domains.php:58
+#: add_zone_templ_record.php:101 edit_zone_templ_record.php:63 edit.php:144
+#: edit.php:242 edit.php:349 list_zones.php:68 delete_domain.php:63
+msgid "Type"
+msgstr "タイプ"
 
-#: delete_domain.php:75
-#: delete_domains.php:75
-#: delete_perm_templ.php:52
-#: delete_record.php:97
-#: delete_supermaster.php:69
-#: delete_zone_templ.php:53
-#: delete_zone_templ_record.php:77
-msgid "No"
-msgstr "いいえ"
-
-#: inc/error.inc.php:78
-msgid "No database file has been set in config.inc.php."
-msgstr "config.inc.php にデータベースファイルが設定されていません。"
-
-#: inc/error.inc.php:74
-msgid "No database host has been set in config.inc.php."
-msgstr "config.inc.php にデータベースホスト名が設定されていません。"
-
-#: inc/error.inc.php:73
-msgid "No database name has been set in config.inc.php."
-msgstr "config.inc.php にデータベース名が設定されていません。"
-
-#: inc/error.inc.php:76
-msgid "No database password has been set in config.inc.php."
-msgstr "config.inc.php にデータベースパスワードが設定されていません。"
-
-#: inc/error.inc.php:75
-msgid "No database username has been set in config.inc.php."
-msgstr "config.inc.php にデータベースユーザー名が設定されていません。"
-
-#: inc/error.inc.php:77
-msgid "No or unknown database type has been set in config.inc.php."
-msgstr "config.inc.php にデータベースタイプが設定されていないか、未知の値が設定されています。"
-
-#: edit.php:297
-msgid "No owner set for this zone."
-msgstr "このゾーンにはオーナーが設定されていません。"
-
-#: install/index.php:334
-msgid "Now we have finished the configuration, you should (must!) remove the directory \"install/\" from the Poweradmin root directory. You will not be able to use Poweradmin if it exists. Do it now."
-msgstr "設定が完了しました。ディレクトリ \"install\" を Poweradmin のルートディレクトリから **必ず** 削除して下さい! そのディレクトリがあると、Poweradmin を使うことはできません。今すぐ削除して下さい。"
-
-#: install/index.php:182
-msgid "Now we will gather all details for the configuration itself."
-msgstr "設定に必要な情報をすべて収集します。"
-
-#: install/index.php:258
-msgid "On PgSQL you would use:"
-msgstr "PgSQL で、次のコマンドを実行して下さい:"
-
-#: add_zone_master.php:103
-#: add_zone_slave.php:86
-#: bulk_registration.php:85
-#: delete_domain.php:63
-#: delete_domains.php:58
-#: list_zones.php:71
-#: search.php:71
-msgid "Owner"
-msgstr "所有者"
-
-#: edit.php:291
-msgid "Owner of zone"
-msgstr "ゾーンの所有者"
-
-#: delete_user.php:80
-msgid "Owner to be added"
-msgstr "追加される所有者"
-
-#: add_user.php:48
-#: edit_user.php:112
-#: inc/auth.inc.php:142
-#: install/index.php:112
-#: install/index.php:191
-msgid "Password"
-msgstr "パスワード"
-
-#: inc/users.inc.php:383
-#: reset_password.php:61
-msgid "Password has been changed, please login."
-msgstr "パスワードが変更されました。ログインし直して下さい。"
-
-#: add_user.php:57
-#: edit_user.php:121
-msgid "Permission template"
-msgstr "権限テンプレート"
-
-#: list_perm_templ.php:33
-msgid "Permission templates"
-msgstr "権限テンプレート"
-
-#: install/index.php:141
-msgid "Poweradmin administrator password"
-msgstr "Poweradmin 管理者のパスワード"
-
-#: install/index.php:201
-msgid "Primary nameserver"
-msgstr "プライマリ・ネームサーバー"
-
-#: add_record.php:125
-#: add_zone_templ_record.php:104
-#: edit.php:152
-#: edit.php:250
-#: edit_record.php:71
-#: edit_zone_templ.php:100
-#: edit_zone_templ_record.php:65
-#: search.php:122
+#: edit_record.php:70 edit_zone_templ.php:99 search.php:121 add_record.php:124
+#: add_zone_templ_record.php:103 edit_zone_templ_record.php:64 edit.php:146
+#: edit.php:244
 msgid "Priority"
 msgstr "プライオリティ"
 
-#: search.php:156
-msgid "Query"
-msgstr "問い合わせ"
+#: edit_record.php:71 edit_zone_templ.php:98 search.php:122 add_record.php:123
+#: add_zone_templ_record.php:102 edit_zone_templ_record.php:65 edit.php:145
+#: edit.php:243
+msgid "Content"
+msgstr "内容"
 
-#: delete_user.php:106
-msgid "Really delete this user?"
-msgstr "本当にこのユーザーを削除しますか?"
+#: edit_record.php:72 edit_zone_templ.php:100 search.php:123
+#: add_record.php:125 add_zone_templ_record.php:104
+#: edit_zone_templ_record.php:66 edit.php:147 edit.php:245
+msgid "TTL"
+msgstr "TTL"
 
-#: list_zones.php:70
-msgid "Records"
-msgstr "レコード数"
+#: edit_record.php:109 users.php:121 edit_comment.php:87 edit_user.php:141
+#: edit_zone_templ.php:163 edit_zone_templ.php:181 add_perm_templ.php:72
+#: edit_zone_templ_record.php:91 edit.php:227 delete_user.php:111
+#: edit_perm_templ.php:86 add_user.php:76
+msgid "Commit changes"
+msgstr "変更を反映"
 
-#: search.php:116
-msgid "Records found"
-msgstr "マッチしたレコード"
-
-#: reset_password.php:94
-msgid "Registered Email Address"
-msgstr "登録済みのメールアドレス"
-
-#: reset_password.php:90
-msgid "Reset Password"
-msgstr "パスワードをリセット"
-
-#: edit.php:234
-#: edit_comment.php:89
-#: edit_record.php:110
-#: edit_user.php:143
-#: edit_zone_templ.php:165
-#: edit_zone_templ_record.php:93
-#: users.php:127
+#: edit_record.php:110 users.php:122 edit_comment.php:88 edit_user.php:142
+#: edit_zone_templ.php:164 edit_zone_templ_record.php:92 edit.php:228
 msgid "Reset changes"
 msgstr "変更をリセット"
 
-#: reset_password.php:100
-msgid "Reset password"
-msgstr "パスワードをリセット"
+#: users.php:47 index.php:60 inc/header.inc.php:82
+msgid "User administration"
+msgstr "ユーザー管理"
 
-#: edit.php:235
-#: edit_zone_templ.php:166
+#: users.php:52 edit_user.php:103 inc/auth.inc.php:133 install/index.php:93
+#: install/index.php:172 add_user.php:39
+msgid "Username"
+msgstr "ユーザー名"
+
+#: users.php:53 edit_user.php:107 add_user.php:43
+msgid "Fullname"
+msgstr "氏名"
+
+#: users.php:54 list_perm_templ.php:37 edit_user.php:132
+#: edit_zone_templ.php:177 add_perm_templ.php:48 add_perm_templ.php:56
+#: add_zone_templ.php:49 list_zone_templ.php:38 edit_perm_templ.php:57
+#: edit_perm_templ.php:66 add_user.php:67
+msgid "Description"
+msgstr "説明"
+
+#: users.php:55 edit_user.php:115 add_user.php:51
+msgid "Email address"
+msgstr "メールアドレス"
+
+#: users.php:56 add_zone_master.php:132 edit.php:381
+msgid "Template"
+msgstr "テンプレート"
+
+#: users.php:57 edit_user.php:136 add_user.php:71
+msgid "Enabled"
+msgstr "有効"
+
+#: users.php:71 edit_user.php:98
+msgid "Edit user"
+msgstr "次のユーザーを編集:"
+
+#: users.php:75 delete_user.php:60
+msgid "Delete user"
+msgstr "次のユーザーを削除:"
+
+#: users.php:131 edit_perm_templ.php:47
+msgid "Edit permission template"
+msgstr "次の権限テンプレートを編集:"
+
+#: users.php:135 add_user.php:35
+msgid "Add user"
+msgstr "ユーザーを追加"
+
+#: list_perm_templ.php:32
+msgid "Permission templates"
+msgstr "権限テンプレート"
+
+#: list_perm_templ.php:48 list_zone_templ.php:46
+msgid "Edit template"
+msgstr "テンプレートを編集"
+
+#: list_perm_templ.php:49 list_zone_templ.php:47
+msgid "Delete template"
+msgstr "テンプレートを削除"
+
+#: list_perm_templ.php:61 add_perm_templ.php:40
+msgid "Add permission template"
+msgstr "権限テンプレートを追加"
+
+#: edit_comment.php:53
+msgid "Edit comment in zone"
+msgstr "次のゾーンのコメントを編集:"
+
+#: edit_user.php:111 inc/auth.inc.php:137 install/index.php:98
+#: install/index.php:177 add_user.php:47
+msgid "Password"
+msgstr "パスワード"
+
+#: edit_user.php:120 add_user.php:56
+msgid "Permission template"
+msgstr "権限テンプレート"
+
+#: edit_user.php:147
+#, php-format
+msgid "This user has been assigned the permission template \"%s\"."
+msgstr "このユーザーには、権限テンプレート \"%s\" が割り当てられています。"
+
+#: edit_user.php:149
+msgid "The description for this template is"
+msgstr "このテンプレートの説明は、"
+
+#: edit_user.php:151
+msgid "Based on this template, this user has the following permissions"
+msgstr "このテンプレートに基づいて、ユーザーには次の権限が与えられています"
+
+#: edit_zone_templ.php:82
+msgid "Edit zone template"
+msgstr "次のゾーンテンプレートを編集:"
+
+#: edit_zone_templ.php:90
+msgid "This template zone does not have any records yet."
+msgstr "このテンプレートゾーンにはレコードがありません。"
+
+#: edit_zone_templ.php:107 search.php:131 edit.php:161
+msgid "Edit record"
+msgstr "レコードを編集"
+
+#: edit_zone_templ.php:109 delete_zone_templ_record.php:53 search.php:136
+#: delete_record.php:66 edit.php:163
+msgid "Delete record"
+msgstr "レコードを削除"
+
+#: edit_zone_templ.php:145 add_zone_templ_record.php:139
+msgid "The following placeholders can be used in template records"
+msgstr "次のプレースホルダーをテンプレートレコードで使うことができます"
+
+#: edit_zone_templ.php:148 add_zone_templ_record.php:142
+msgid "substituted with current zone name"
+msgstr "現在のゾーン名で置換されます"
+
+#: edit_zone_templ.php:149 add_zone_templ_record.php:143
+msgid "substituted with current date and 2 numbers"
+msgstr "現在の日付と２桁の数字で置換されます"
+
+#: edit_zone_templ.php:155 edit.php:219
+msgid "Template Name"
+msgstr "テンプレート名"
+
+#: edit_zone_templ.php:159 edit.php:223
+msgid "Template Description"
+msgstr "テンプレート詳細"
+
+#: edit_zone_templ.php:165 edit.php:229
 msgid "Save as template"
 msgstr "テンプレートとして保存"
 
-#: search.php:162
-msgid "Search"
-msgstr "検索"
+#: edit_zone_templ.php:166
+msgid "Update zones"
+msgstr "ゾーンを更新"
 
-#: inc/header.inc.php:69
-#: index.php:40
-#: search.php:33
+#: edit_zone_templ.php:183 add_record.php:158 add_zone_templ_record.php:147
+#: edit.php:287
+msgid "Add record"
+msgstr "レコードを追加"
+
+#: edit_zone_templ.php:184 delete_zone_templ.php:44
+msgid "Delete zone template"
+msgstr "次のゾーンテンプレートを削除:"
+
+#: add_zone_slave.php:67 index.php:54 inc/header.inc.php:76
+msgid "Add slave zone"
+msgstr "スレーブゾーンを追加"
+
+#: add_zone_slave.php:73 add_zone_master.php:91
+msgid "Zone name"
+msgstr "ゾーン名"
+
+#: add_zone_slave.php:79 edit.php:413
+msgid "IP address of master NS"
+msgstr "マスター NS の IP アドレス"
+
+#: add_zone_slave.php:85 search.php:70 add_zone_master.php:102
+#: delete_domains.php:57 list_zones.php:70 delete_domain.php:62
+msgid "Owner"
+msgstr "オーナー"
+
+#: add_zone_slave.php:106 add_zone_master.php:146
+msgid "Add zone"
+msgstr "ゾーンを追加"
+
+#: delete_zone_templ.php:50 delete_zone_templ_record.php:74
+#: delete_domains.php:72 delete_record.php:94 delete_perm_templ.php:49
+#: delete_domain.php:72 delete_supermaster.php:61
+msgid "Are you sure?"
+msgstr "よろしいですか?"
+
+#: delete_zone_templ.php:51 delete_zone_templ_record.php:75
+#: delete_domains.php:73 delete_record.php:95 delete_perm_templ.php:50
+#: delete_domain.php:73 delete_supermaster.php:62
+msgid "Yes"
+msgstr "はい"
+
+#: delete_zone_templ.php:52 delete_zone_templ_record.php:76
+#: delete_domains.php:74 delete_record.php:96 delete_perm_templ.php:51
+#: delete_domain.php:74 delete_supermaster.php:63
+msgid "No"
+msgstr "いいえ"
+
+#: index.php:26
+msgid "Welcome"
+msgstr "ようこそ"
+
+#: index.php:37 inc/header.inc.php:59
+msgid "Index"
+msgstr "ホーム"
+
+#: index.php:39 search.php:32 inc/header.inc.php:61
 msgid "Search zones and records"
 msgstr "ゾーンとレコードの検索"
 
-#: install/index.php:206
-msgid "Secondary nameserver"
-msgstr "セカンダリ・ネームサーバー"
+#: index.php:42 inc/header.inc.php:64 list_zones.php:39
+msgid "List zones"
+msgstr "ゾーン一覧"
 
-#: list_zones.php:72
-msgid "Serial"
-msgstr "シリアル"
+#: index.php:45 inc/header.inc.php:67
+msgid "List zone templates"
+msgstr "ゾーンテンプレート一覧"
+
+#: index.php:48 inc/header.inc.php:70 list_supermasters.php:32
+msgid "List supermasters"
+msgstr "スーパーマスター一覧"
+
+#: index.php:51 inc/header.inc.php:73 add_zone_master.php:82
+msgid "Add master zone"
+msgstr "マスターゾーンを追加"
+
+#: index.php:57 inc/header.inc.php:79 add_supermaster.php:54
+#: add_supermaster.php:106
+msgid "Add supermaster"
+msgstr "スーパーマスターを追加"
+
+#: index.php:59 inc/header.inc.php:81 change_password.php:31
+#: change_password.php:49
+msgid "Change password"
+msgstr "パスワードの変更"
+
+#: index.php:61 inc/header.inc.php:83
+msgid "Logout"
+msgstr "ログアウト"
+
+#: search.php:61
+msgid "Zones found"
+msgstr "マッチしたゾーン"
+
+#: search.php:67
+msgid "Master"
+msgstr "マスター"
+
+#: search.php:79 edit.php:129
+msgid "Edit zone"
+msgstr "次のゾーンを編集:"
+
+#: search.php:84 list_zones.php:99 delete_domain.php:54
+msgid "Delete zone"
+msgstr "次のゾーンを削除:"
+
+#: search.php:115
+msgid "Records found"
+msgstr "マッチしたレコード"
+
+#: search.php:155
+msgid "Query"
+msgstr "問い合わせ"
+
+#: search.php:161
+msgid "Search"
+msgstr "検索"
+
+#: search.php:166
+msgid ""
+"Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_)"
+" in pattern matches any single character, a percent sign (%) matches any "
+"string of zero or more characters."
+msgstr "ホスト名か IP アドレスを入力して下さい。SQL ライクな文法をサポートしています: アンダースコア (_) は任意の一文字にマッチし、パーセント記号 (%) は、空文字列を含む任意の長さの文字列にマッチします。"
+
+#: inc/users.inc.php:382
+msgid "Password has been changed, please login."
+msgstr "パスワードが変更されました。ログインし直して下さい。"
+
+#: inc/record.inc.php:387
+msgid ""
+"You are trying to delete the SOA record. If are not allowed to remove it, "
+"unless you remove the entire zone."
+msgstr "SOA レコードを削除しようとしましたが、ゾーン全体を削除しない限り、SOA レコードを削除することはできません。"
+
+#: inc/record.inc.php:751
+msgid "Function returned an error (multiple zones matching this zone ID)."
+msgstr "関数がエラーを返しました (同一のゾーンIDが複数のゾーンにマッチしました)。"
+
+#: inc/toolkit.inc.php:33 reset_password.php:27
+msgid "You have to create a config.inc.php!"
+msgstr "config.inc.php を作成して下さい!"
+
+#: inc/toolkit.inc.php:154
+msgid "Show page"
+msgstr "ページを表示"
+
+#: inc/toolkit.inc.php:173
+msgid "Show zones beginning with"
+msgstr "次で始まるゾーンを表示"
+
+#: inc/toolkit.inc.php:238 install/index.php:26
+msgid "An unknown error has occurred."
+msgstr "未知のエラーが発生しました。"
+
+#: inc/toolkit.inc.php:246
+msgid ""
+"Something has been successfully performed. What exactly, however, will "
+"remain a mystery."
+msgstr "何かが実行されました。しかし何が実行されたのかわかりません。"
+
+#: inc/toolkit.inc.php:258
+msgid "Success!"
+msgstr "正常終了!"
+
+#: inc/toolkit.inc.php:269
+msgid "Successful!"
+msgstr "正常終了!"
+
+#: inc/toolkit.inc.php:275
+msgid "back"
+msgstr "戻る"
+
+#: inc/toolkit.inc.php:314
+msgid "Inactive"
+msgstr "無効"
+
+#: inc/toolkit.inc.php:318
+msgid "Active"
+msgstr "有効"
+
+#: inc/auth.inc.php:31
+msgid "You have logged out."
+msgstr "ログアウトしました。"
 
 #: inc/auth.inc.php:45
 msgid "Session expired, please login again."
 msgstr "セッションの有効期限が切れました。ログインし直して下さい。"
 
-#: inc/toolkit.inc.php:155
-msgid "Show page"
-msgstr "ページを表示"
+#: inc/auth.inc.php:93
+msgid "Authentication failed!"
+msgstr "認証に失敗しました!"
 
-#: inc/toolkit.inc.php:174
-msgid "Show zones beginning with"
-msgstr "次で始まるゾーンを表示"
+#: inc/auth.inc.php:106
+msgid ""
+"Authentication failed! - <a href=\"reset_password.php\">(forgot "
+"password)</a>"
+msgstr "認証に失敗! - <a href=\"reset_password.php\">(パスワードを紛失)</a>"
 
-#: inc/toolkit.inc.php:247
-msgid "Something has been successfully performed. What exactly, however, will remain a mystery."
-msgstr "何かが実行されました。しかし何が実行されたのかわかりません。"
+#: inc/auth.inc.php:127
+msgid "Log in"
+msgstr "ログイン"
 
-#: inc/toolkit.inc.php:259
-msgid "Success!"
-msgstr "正常終了!"
+#: inc/auth.inc.php:143
+msgid "Go"
+msgstr "実行する"
 
-#: inc/toolkit.inc.php:270
-msgid "Successful!"
-msgstr "正常終了!"
+#: inc/error.inc.php:24
+msgid "You do not have the permission to perform searches."
+msgstr "検索を実行する権限がありません。"
 
-#: users.php:80
-msgid "Switch user"
-msgstr "ユーザーを編集:"
+#: inc/error.inc.php:25
+msgid "You do not have the permission to add a record to this zone."
+msgstr "このゾーンにレコードを追加する権限がありません。"
 
-#: add_record.php:126
-#: add_zone_templ_record.php:105
-#: edit.php:153
-#: edit.php:251
-#: edit_record.php:73
-#: edit_zone_templ.php:101
-#: edit_zone_templ_record.php:67
-#: search.php:124
-msgid "TTL"
-msgstr "TTL"
+#: inc/error.inc.php:26
+msgid "You do not have the permission to edit this record."
+msgstr "このレコードを編集する権限がありません。"
 
-#: add_zone_master.php:133
-#: bulk_registration.php:113
-#: edit.php:377
-#: users.php:57
-msgid "Template"
-msgstr "テンプレート"
+#: inc/error.inc.php:27
+msgid "You do not have the permission to view this record."
+msgstr "このレコードを閲覧する権限がありません。"
 
-#: edit.php:229
-#: edit_zone_templ.php:160
-msgid "Template Description"
-msgstr "テンプレート詳細"
+#: inc/error.inc.php:28
+msgid "You do not have the permission to delete this record."
+msgstr "このレコードを削除する権限がありません。"
 
-#: edit.php:225
-#: edit_zone_templ.php:156
-msgid "Template Name"
-msgstr "テンプレート名"
+#: inc/error.inc.php:29
+msgid "You do not have the permission to add a master zone."
+msgstr "マスターゾーンを追加する権限がありません。"
 
-#: inc/error.inc.php:68
-msgid "Template name can't be an empty string."
-msgstr "テンプレート名に空白文字を含めることはできません。"
+#: inc/error.inc.php:30
+msgid "You do not have the permission to add a slave zone."
+msgstr "スレーブゾーンを追加する権限がありません。"
 
-#: inc/error.inc.php:66
-msgid "The <a href=\"install/\">install/</a> directory exists, you must remove it first before proceeding."
-msgstr "<a href=\"install/\">Install</a> ディレクトリを削除しないと次の処理に進めません。"
+#: inc/error.inc.php:31
+msgid "You do not have the permission to delete a zone."
+msgstr "ゾーンを削除する権限がありません。"
 
-#: install/index.php:85
-msgid "The alternative for this installer is a manual installation. Refer to the poweradmin.org website if you want to go down that road."
-msgstr "このインストーラーを使わずに、手動でインストールすることもできます。その場合は、poweradmin.org のウェブサイトをご覧下さい。"
+#: inc/error.inc.php:32
+msgid "You do not have the permission to view this comment."
+msgstr "このコメントを閲覧する権限がありません。"
 
-#: inc/error.inc.php:121
-msgid "The comment has been updated successfully."
-msgstr "コメントが更新されました。"
+#: inc/error.inc.php:33
+msgid "You do not have the permission to edit this comment."
+msgstr "このコメントを編集する権限がありません。"
 
-#: edit_user.php:150
-msgid "The description for this template is"
-msgstr "このテンプレートの説明は、"
+#: inc/error.inc.php:34
+msgid "You do not have the permission to delete a supermaster."
+msgstr "スーパーマスターを削除する権限がありません。"
 
-#: add_zone_templ_record.php:140
-#: edit_zone_templ.php:146
-msgid "The following placeholders can be used in template records"
-msgstr "次のプレースホルダーをテンプレートレコードで使うことができます"
+#: inc/error.inc.php:35
+msgid "You do not have the permission to view this zone."
+msgstr "このゾーンを閲覧する権限がありません。"
 
-#: inc/error.inc.php:101
-msgid "The hostname is too long."
-msgstr "ホスト名が長すぎます。"
+#: inc/error.inc.php:36
+msgid "You do not have the permission to edit this user."
+msgstr "このユーザーの情報を編集する権限がありません。"
 
-#: install/index.php:119
-msgid "The hostname on which the PowerDNS database resides. Frequently, this will be \"localhost\"."
-msgstr "PowerDNS データベースが存在するホストのホスト名。たいていの場合は、\"localhost\" です。"
+#: inc/error.inc.php:37
+msgid "You do not have the permission to edit permission templates."
+msgstr "権限テンプレートを編集する権限がありません。"
 
-#: install/index.php:319
-msgid "The installer is unable to write to the file \""
-msgstr "インストーラは、ファイル \""
+#: inc/error.inc.php:38
+msgid "You do not have the permission to delete permission templates."
+msgstr "権限テンプレートを削除する権限がありません。"
 
-#: install/index.php:317
-msgid "The installer was able to write to the file \""
-msgstr "インストーラは、ファイル \""
+#: inc/error.inc.php:39
+msgid "You do not have the permission to add a new user."
+msgstr "新規にユーザーを追加する権限がありません。"
 
-#: install/index.php:129
-msgid "The name of the PowerDNS database."
-msgstr "PowerDNS データベースの名前"
+#: inc/error.inc.php:40
+msgid "You do not have the permission to delete this user."
+msgstr "このユーザーを削除する権限がありません。"
 
-#: install/index.php:114
-#: install/index.php:193
-msgid "The password for this username."
-msgstr "このユーザーに対するパスワード"
+#: inc/error.inc.php:41
+msgid "You do not have the permission to edit zone templates."
+msgstr "ゾーンテンプレートを編集する権限がありません。"
 
-#: install/index.php:143
-msgid "The password of the Poweradmin administrator. This administrator has full rights to Poweradmin using the web interface."
-msgstr "Poweradmin 管理者のパスワードです。この管理者はウェブインターフェースを使って Poweradmin のすべての操作を実行する権限を持ちます。"
+#: inc/error.inc.php:42
+msgid "You do not have the permission to delete zone templates."
+msgstr "ゾーンテンプレートを削除する権限がありません。"
 
-#: inc/error.inc.php:124
-msgid "The permission template has been added successfully."
-msgstr "権限テンプレートが追加されました。"
+#: inc/error.inc.php:43
+msgid "You do not have the permission to add a zone template."
+msgstr "ゾーンテンプレートを追加する権限がありません。"
 
-#: inc/error.inc.php:126
-msgid "The permission template has been deleted successfully."
-msgstr "指定の権限テンプレートは削除されました。"
-
-#: inc/error.inc.php:125
-msgid "The permission template has been updated successfully."
-msgstr "指定の権限テンプレートは更新されました。"
-
-#: install/index.php:124
-msgid "The port the database server is listening on."
-msgstr "データベースサーバーが待機しているポート"
-
-#: inc/error.inc.php:120
-msgid "The record has been deleted successfully."
-msgstr "指定のレコードは削除されました。"
-
-#: inc/error.inc.php:119
-msgid "The record has been updated successfully."
-msgstr "指定のレコードは更新されました。"
-
-#: add_record.php:103
-#: add_zone_templ_record.php:82
-msgid "The record was successfully added."
-msgstr "レコードが追加されました。"
-
-#: inc/error.inc.php:123
-msgid "The supermaster has been added successfully."
-msgstr "スーパーマスターが追加されました。"
-
-#: inc/error.inc.php:122
-msgid "The supermaster has been deleted successfully."
-msgstr "指定のスーパーマスターは削除されました。"
-
-#: inc/error.inc.php:55
-msgid "The two new password fields do not match."
-msgstr "二つの新しいパスワード欄に入力された内容が一致しません。"
-
-#: install/index.php:138
-msgid "The type of the PowerDNS database."
-msgstr "PowerDNS データベースのタイプ"
-
-#: inc/error.inc.php:117
-msgid "The user has been created successfully."
-msgstr "ユーザーが作成されました。"
-
-#: inc/error.inc.php:118
-msgid "The user has been deleted successfully."
-msgstr "指定のユーザーは削除されました。"
-
-#: inc/error.inc.php:116
-msgid "The user has been updated successfully."
-msgstr "指定のユーザーは更新されました。"
-
-#: install/index.php:188
-msgid "The username for Poweradmin. This new user will have limited rights only."
-msgstr "Poweradmin のユーザー名。この新しいユーザーは権限が制限されます。"
-
-#: install/index.php:109
-msgid "The username to use to connect to the database, make sure the username has sufficient rights to perform administrative task to the PowerDNS database (the installer wants to drop, create and fill tables to the database)."
-msgstr "データベース接続に使用するユーザー名です。このユーザーには、Poweradmin データベースに対する管理タスクを実行する権限があることを確認して下さい (インストーラは、データベースに対して、テーブルの作成／削除、データの書き込みを行います)。"
-
-#: list_supermasters.php:45
-#: list_zones.php:50
-msgid "There are no zones to show in this listing."
-msgstr "この一覧に表示するゾーンはありません。"
-
-#: inc/error.inc.php:48
-msgid "There is already a supermaster with this IP address and hostname."
-msgstr "同じ IP アドレスもしくはホスト名のスーパーマスターが既にあります。"
-
-#: inc/error.inc.php:49
-msgid "There is already a zone with this name."
-msgstr "同じ名前のゾーンが既にあります。"
-
-#: inc/error.inc.php:65
-msgid "There is no zone template with this ID."
-msgstr "この ID を持つゾーンテンプレートはありません。"
-
-#: inc/error.inc.php:64
-msgid "There is no zone with this ID."
-msgstr "この ID を持つゾーンはありません。"
-
-#: install/index.php:83
-msgid "This installer expects you to have a PowerDNS database accessable from this server. This installer also expects you to have never ran Poweradmin before, or that you want to overwrite the Poweradmin part of the database. If you have had Poweradmin running before, any data in the following tables will be destroyed: perm_items, perm_templ, perm_templ_items, users and zones. This installer will, of course, not touch the data in the PowerDNS tables of the database. However, it is recommended that you create a backup of your database before proceeding."
-msgstr "このインストーラーは、PowerDNS のデータベースにこのサーバーからアクセスすることができることを前提としています。また、以前に Poweradmin を実行したことがないか、したことがあってもデータベースで Poweradmin が使用した箇所を上書きすることが前提となります。もし、以前に Poweradmin を実行していたのなら、次のテーブルのデータがクリアされます: perm_itemrs、perm_templ、perm_templ_items、users、zones。当然のことながらこのインストーラーはデータベースの PowerDNS のテーブルに変更を加えることはありませんが、念のため処理を始める前にデータベースのバックアップを行うことをお勧めします。"
-
-#: inc/error.inc.php:47
+#: inc/error.inc.php:46
 msgid "This is an invalid zone name."
 msgstr "不適切なゾーン名です。"
 
-#: inc/error.inc.php:92
-msgid "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
-msgstr "不適切な CNAME です。MX か NS をレコードに割り当てていませんか?"
+#: inc/error.inc.php:47
+msgid "There is already a supermaster with this IP address."
+msgstr "同じ IP アドレスのスーパーマスターが既にあります。"
 
-#: inc/error.inc.php:94
-msgid "This is not a valid CNAME. There is already exists an A, AAAA or CNAME with this name."
-msgstr "不適切な CNAME です。A、もしくはAAAA、CNAME レコードのいずれかに同じホスト名が存在します。"
+#: inc/error.inc.php:48
+msgid "There is already a zone with this name."
+msgstr "同じ名前のゾーンが既にあります。"
 
-#: inc/error.inc.php:91
+#: inc/error.inc.php:51
+msgid "Username exist already, please choose another one."
+msgstr "同じユーザー名が既にあります。別のユーザー名を指定して下さい。"
+
+#: inc/error.inc.php:52
+msgid "User does not exist."
+msgstr "ユーザーが存在しません。"
+
+#: inc/error.inc.php:53
+msgid "You did not enter the correct current password."
+msgstr "現在のパスワードに間違ったパスワードが入力されました。"
+
+#: inc/error.inc.php:54
+msgid "The two new password fields do not match."
+msgstr "二つの新しいパスワード欄に入力された内容が一致しません。"
+
+#: inc/error.inc.php:55
+msgid "This template is assigned to at least one user."
+msgstr "このテンプレートは少なくとも一人のユーザーに割り当てられています。"
+
+#: inc/error.inc.php:58
+msgid "Invalid or unexpected input given."
+msgstr "正しくないか、もしくは不適切な入力です。"
+
+#: inc/error.inc.php:59
+#, php-format
+msgid "Invalid argument(s) given to function %s"
+msgstr "関数 %s に不正な引数が渡されました。"
+
+#: inc/error.inc.php:60
+#, php-format
+msgid "Invalid argument(s) given to function %s %s"
+msgstr "関数 %s %s に不正な引数が渡されました。"
+
+#: inc/error.inc.php:61
+msgid "Unknown error."
+msgstr "未知のエラーです。"
+
+#: inc/error.inc.php:62
+msgid "Enter a valid email address."
+msgstr "正しいメールアドレスを入力して下さい。"
+
+#: inc/error.inc.php:63
+msgid "There is no zone with this ID."
+msgstr "この ID を持つゾーンはありません。"
+
+#: inc/error.inc.php:64
+msgid "There is no zone template with this ID."
+msgstr "この ID を持つゾーンテンプレートはありません。"
+
+#: inc/error.inc.php:65
+msgid ""
+"The <a href=\"install/\">install/</a> directory exists, you must remove it "
+"first before proceeding."
+msgstr "<a href=\"install/\">Install</a> ディレクトリを削除しないと次の処理に進めません。"
+
+#: inc/error.inc.php:66
+msgid ""
+"Zone template with this name already exists, please choose another one."
+msgstr "同じ名前のゾーンテンプレートが既に存在します。別の名前に変更して下さい。"
+
+#: inc/error.inc.php:67
+msgid "Template name can't be an empty string."
+msgstr "テンプレート名に空白文字を含めることはできません。"
+
+#: inc/error.inc.php:70
+msgid "No database name has been set in config.inc.php."
+msgstr "config.inc.php にデータベース名が設定されていません。"
+
+#: inc/error.inc.php:71
+msgid "No database host has been set in config.inc.php."
+msgstr "config.inc.php にデータベースホスト名が設定されていません。"
+
+#: inc/error.inc.php:72
+msgid "No database username has been set in config.inc.php."
+msgstr "config.inc.php にデータベースユーザー名が設定されていません。"
+
+#: inc/error.inc.php:73
+msgid "No database password has been set in config.inc.php."
+msgstr "config.inc.php にデータベースパスワードが設定されていません。"
+
+#: inc/error.inc.php:74
+msgid "No or unknown database type has been set in config.inc.php."
+msgstr "config.inc.php にデータベースタイプが設定されていないか、未知の値が設定されています。"
+
+#: inc/error.inc.php:75
+msgid "No database file has been set in config.inc.php."
+msgstr "config.inc.php にデータベースファイルが設定されていません。"
+
+#: inc/error.inc.php:76
+msgid ""
+"It seems that you forgot to update the database after Poweradmin upgrade to "
+"new version."
+msgstr "Poweradmin を新しいバージョンにアップグレードした後でデータベースを更新し忘れているようです。"
+
+#: inc/error.inc.php:79
+msgid "Your content field doesnt have a legit value."
+msgstr "内容欄に入力した値が不適切です。"
+
+#: inc/error.inc.php:80
+msgid "Invalid hostname."
+msgstr "不適切なホスト名です。"
+
+#: inc/error.inc.php:81
+msgid "You have invalid characters in your hostname."
+msgstr "ホスト名に不適切な文字があります。"
+
+#: inc/error.inc.php:82
+msgid "A hostname can not start or end with a dash."
+msgstr "ホスト名をダッシュで始めたりダッシュで終わらせることはできません。"
+
+#: inc/error.inc.php:83
+msgid "Given hostname or one of the labels is too short or too long."
+msgstr "指定のホスト名、またはラベルの中に短すぎるか長すぎるものがあります。"
+
+#: inc/error.inc.php:84
+msgid "Given hostname has too many slashes."
+msgstr "指定のホスト名にはスラッシュが多すぎます。"
+
+#: inc/error.inc.php:85
+msgid "Unknown record type."
+msgstr "未知のレコードタイプです。"
+
+#: inc/error.inc.php:86
+msgid "This is not a valid IPv4 or IPv6 address."
+msgstr "IPv4 アドレスとしても IPv6 アドレスとしても正しい値ではありません。"
+
+#: inc/error.inc.php:87
+msgid "This is not a valid IPv6 address."
+msgstr "IPv6 アドレスとして正しい値ではありません。"
+
+#: inc/error.inc.php:88
 msgid "This is not a valid IPv4 address."
 msgstr "IPv4 アドレスとして正しい値ではありません。"
 
 #: inc/error.inc.php:89
-msgid "This is not a valid IPv4 or IPv6 address."
-msgstr "IPv4 アドレスとしても IPv6 アドレスとしても正しい値ではありません。"
+msgid ""
+"This is not a valid CNAME. Did you assign an MX or NS record to the record?"
+msgstr "不適切な CNAME です。MX か NS をレコードに割り当てていませんか?"
 
 #: inc/error.inc.php:90
-msgid "This is not a valid IPv6 address."
-msgstr "IPv6 アドレスとして正しい値ではありません。"
-
-#: inc/error.inc.php:93
-msgid "This is not a valid record. There is already exists a CNAME with this name."
+msgid ""
+"This is not a valid record. There is already exists a CNAME with this name."
 msgstr "不適切なレコードです。この名前の CNAME が既に存在します。"
 
-#: inc/error.inc.php:56
-msgid "This template is assigned to at least one user."
-msgstr "このテンプレートは少なくとも一人のユーザーに割り当てられています。"
+#: inc/error.inc.php:91
+msgid ""
+"This is not a valid CNAME. There is already exists an A, AAAA or CNAME with "
+"this name."
+msgstr "不適切な ＣNAME です。A、もしくはAAAA、CNAME レコードのいずれかに同じホスト名が存在します。"
 
-#: edit_zone_templ.php:91
-msgid "This template zone does not have any records yet."
-msgstr "このテンプレートゾーンにはレコードがありません。"
-
-#: edit_user.php:148
-msgid "This user has been assigned the permission template \"%s\"."
-msgstr "このユーザーには、権限テンプレート \"%s\" が割り当てられています。"
-
-#: edit.php:143
-msgid "This zone does not have any records. Weird."
-msgstr "このゾーンにはレコードがありません。変ですね。"
-
-#: install/index.php:102
-msgid "To do all of this, the installer needs to access the database with an account which has sufficient rights. If you trust the installer, you may give it the username and password of the database user root. Otherwise, make sure the user has enough rights, before actually proceeding."
-msgstr "上記の作業を行うため、インストーラはそれに必要な権限を持つアカウントでデータベースにアクセスする必要があります。インストーラを信頼するなら、データベースの root ユーザーのユーザー名とパスワードを指定して下さい。root でアクセスさせてくなければ、実際に処理を継続する前に、入力したユーザーに必要な権限があることを確認して下さい。"
-
-#: install/index.php:100
-msgid "To prepare the database for using Poweradmin, the installer needs to modify the PowerDNS database. It will add a number of tables and it will fill these tables with some data. If the tables are already present, the installer will drop them first."
-msgstr "Poweradmin で使用するデータベースを準備するために、インストーラーは、PowerDNS データベースを更新する必要があります。インストーラーはテーブルをいくつか追加しデータを設定します。テーブルが既に存在する場合、インストーラーは最初にテーブルをドロップします。"
-
-#: add_record.php:123
-#: add_zone_master.php:122
-#: add_zone_templ_record.php:102
-#: bulk_registration.php:103
-#: delete_domain.php:64
-#: delete_domains.php:59
-#: edit.php:150
-#: edit.php:248
-#: edit.php:345
-#: edit_record.php:70
-#: edit_zone_templ.php:98
-#: edit_zone_templ_record.php:64
-#: list_zones.php:69
-#: search.php:121
-#: search.php:67
-msgid "Type"
-msgstr "タイプ"
-
-#: bulk_registration.php:128
-msgid "Type one domaine per line"
-msgstr "一行につきドメインをひとつ入力して下さい"
-
-#: inc/error.inc.php:62
-msgid "Unknown error."
-msgstr "未知のエラーです。"
-
-#: inc/error.inc.php:88
-msgid "Unknown record type."
-msgstr "未知のレコードタイプです。"
-
-#: edit_zone_templ.php:167
-msgid "Update zones"
-msgstr "ゾーンを更新"
-
-#: install/index.php:155
-msgid "Updating database..."
-msgstr "データベースを更新中..."
-
-#: inc/header.inc.php:93
-#: index.php:61
-#: users.php:48
-msgid "User administration"
-msgstr "ユーザー管理"
-
-#: inc/error.inc.php:53
-msgid "User does not exist."
-msgstr "ユーザーが存在しません。"
-
-#: add_user.php:40
-#: edit_user.php:104
-#: inc/auth.inc.php:138
-#: install/index.php:107
-#: install/index.php:186
-#: users.php:53
-msgid "Username"
-msgstr "ユーザー名"
-
-#: inc/error.inc.php:52
-msgid "Username exist already, please choose another one."
-msgstr "同じユーザー名が既にあります。別のユーザー名を指定して下さい。"
-
-#: list_zones.php:100
-msgid "View zone"
-msgstr "ゾーンを表示:"
-
-#: index.php:27
-msgid "Welcome"
-msgstr "ようこそ"
-
-#: install/index.php:198
-msgid "When creating SOA records and no hostmaster is provided, this value here will be used. Should be in the form \"hostmaster.example.net\"."
-msgstr "SOA レコードを作成する際に hostmaster を設定しなければ、この値が使用されます。\"hostmaster.example.net\" といった形式でなくてはなりません。"
-
-#: install/index.php:203
-msgid "When creating new zones using the template, this value will be used as primary nameserver. Should be like \"ns1.example.net\"."
-msgstr "テンプレートを使用して新しくゾーンを作成する際に、この値がプライマリネームサーバとして使用されます。\"ns1.example.net\" のように指定して下さい。"
-
-#: install/index.php:208
-msgid "When creating new zones using the template, this value will be used as secondary nameserver. Should be like \"ns2.example.net\"."
-msgstr "テンプレートを使用して新しくゾーンを作成する際に、この値がセカンダリネームサーバとして使用されます。\"ns2.example.net\" のように指定して下さい。"
-
-#: delete_domain.php:74
-#: delete_domains.php:74
-#: delete_perm_templ.php:51
-#: delete_record.php:96
-#: delete_supermaster.php:68
-#: delete_zone_templ.php:52
-#: delete_zone_templ_record.php:76
-msgid "Yes"
-msgstr "はい"
-
-#: delete_domain.php:69
-#: delete_domains.php:64
-msgid "You are about to delete a slave zone of which the master nameserver, %s, is a supermaster. Deleting the zone now, will result in temporary removal only. Whenever the supermaster sends a notification for this zone, it will be added again!"
-msgstr "マスターネームサーバ (%s) がスーパーマスターであるスレーブゾーンを削除しようとしています。ゾーンを削除しても一時的に削除されるだけで、スーパーマスターからこのゾーンが通知されると、再度ゾーンが追加されていまいます!"
-
-#: delete_user.php:71
-msgid "You are about to delete a user. This user is owner for a number of zones. Please decide what to do with these zones."
-msgstr "ユーザーを削除しようとしていますが、このユーザーがオーナーであるゾーンが存在します。以下のゾーンの扱いを決めて下さい。"
-
-#: delete_record.php:93
-msgid "You are trying to delete a record that is needed for this zone to work."
-msgstr "このゾーンになくてはならないレコードを削除しようとしています。"
-
-#: inc/record.inc.php:392
-msgid "You are trying to delete the SOA record. If are not allowed to remove it, unless you remove the entire zone."
-msgstr "SOA レコードを削除しようとしましたが、ゾーン全体を削除しない限り、SOA レコードを削除することはできません。"
-
-#: inc/error.inc.php:102
-msgid "You are using an invalid top level domain."
-msgstr "不正なトップレベルドメインを使おうとしています。"
-
-#: inc/error.inc.php:95
-msgid "You can not point a NS or MX record to a CNAME record. Remove or rame the CNAME record first, or take another name."
+#: inc/error.inc.php:92
+msgid ""
+"You can not point a NS or MX record to a CNAME record. Remove or rame the "
+"CNAME record first, or take another name."
 msgstr "NS レコードもしくは MX レコードを CNAME レコード に向けることはできません。CNAME レコードの名前を変更、または削除するか、もしくは別のホスト名を指定して下さい。"
 
-#: inc/error.inc.php:54
-msgid "You did not enter the correct current password."
-msgstr "現在のパスワードに間違ったパスワードが入力されました。"
+#: inc/error.inc.php:93
+msgid "NS records must be a hostnames."
+msgstr "NS レコードにはホスト名を指定しなくてはなりません。"
 
-#: inc/error.inc.php:30
-msgid "You do not have the permission to add a master zone."
-msgstr "マスターゾーンを追加する権限がありません。"
+#: inc/error.inc.php:94
+msgid "A prio field should be numeric."
+msgstr "プライオリティは数字でなければなりません。"
 
-#: add_supermaster.php:58
-msgid "You do not have the permission to add a new supermaster."
-msgstr "新たにスーパーマスターを追加する権限がありません。"
+#: inc/error.inc.php:95
+msgid ""
+"Invalid value for name field of SOA record. It should be the name of the "
+"zone."
+msgstr "SOA レコードの name 項目に不適切な値が設定されています。そこはゾーン名でなければなりません。"
 
-#: inc/error.inc.php:40
-msgid "You do not have the permission to add a new user."
-msgstr "新規にユーザーを追加する権限がありません。"
-
-#: inc/error.inc.php:26
-msgid "You do not have the permission to add a record to this zone."
-msgstr "このゾーンにレコードを追加する権限がありません。"
-
-#: inc/error.inc.php:31
-msgid "You do not have the permission to add a slave zone."
-msgstr "スレーブゾーンを追加する権限がありません。"
-
-#: inc/error.inc.php:44
-msgid "You do not have the permission to add a zone template."
-msgstr "ゾーンテンプレートを追加する権限がありません。"
-
-#: inc/error.inc.php:35
-msgid "You do not have the permission to delete a supermaster."
-msgstr "スーパーマスターを削除する権限がありません。"
-
-#: inc/error.inc.php:32
-msgid "You do not have the permission to delete a zone."
-msgstr "ゾーンを削除する権限がありません。"
-
-#: inc/error.inc.php:39
-msgid "You do not have the permission to delete permission templates."
-msgstr "権限テンプレートを削除する権限がありません。"
-
-#: inc/error.inc.php:29
-msgid "You do not have the permission to delete this record."
-msgstr "このレコードを削除する権限がありません。"
-
-#: inc/error.inc.php:41
-msgid "You do not have the permission to delete this user."
-msgstr "このユーザーを削除する権限がありません。"
-
-#: inc/error.inc.php:43
-msgid "You do not have the permission to delete zone templates."
-msgstr "ゾーンテンプレートを削除する権限がありません。"
-
-#: inc/error.inc.php:38
-msgid "You do not have the permission to edit permission templates."
-msgstr "権限テンプレートを編集する権限がありません。"
-
-#: inc/error.inc.php:34
-msgid "You do not have the permission to edit this comment."
-msgstr "このコメントを編集する権限がありません。"
-
-#: inc/error.inc.php:27
-msgid "You do not have the permission to edit this record."
-msgstr "このレコードを編集する権限がありません。"
-
-#: inc/error.inc.php:37
-msgid "You do not have the permission to edit this user."
-msgstr "このユーザーの情報を編集する権限がありません。"
-
-#: inc/error.inc.php:42
-msgid "You do not have the permission to edit zone templates."
-msgstr "ゾーンテンプレートを編集する権限がありません。"
-
-#: inc/error.inc.php:25
-msgid "You do not have the permission to perform searches."
-msgstr "検索を実行する権限がありません。"
-
-#: list_zones.php:43
-msgid "You do not have the permission to see any zones."
-msgstr "ゾーンを閲覧する権限がありません。"
-
-#: inc/error.inc.php:33
-msgid "You do not have the permission to view this comment."
-msgstr "このコメントを閲覧する権限がありません。"
-
-#: inc/error.inc.php:28
-msgid "You do not have the permission to view this record."
-msgstr "このレコードを閲覧する権限がありません。"
-
-#: inc/error.inc.php:36
-msgid "You do not have the permission to view this zone."
-msgstr "このゾーンを閲覧する権限がありません。"
-
-#: inc/error.inc.php:99
+#: inc/error.inc.php:96
 msgid "You have an error in the MNAME field of the SOA record."
 msgstr "SOA レコードの MNAME 項目にエラーがあります。"
 
-#: inc/error.inc.php:84
-msgid "You have invalid characters in your hostname."
-msgstr "ホスト名に不適切な文字があります。"
+#: inc/error.inc.php:97
+msgid "Invalid value for content field of HINFO record."
+msgstr "ＨINFO レコードの content 項目に不適切な値が設定されています。"
 
-#: inc/auth.inc.php:32
-msgid "You have logged out."
-msgstr "ログアウトしました。"
+#: inc/error.inc.php:98
+msgid "The hostname is too long."
+msgstr "ホスト名が長すぎます。"
 
-#: inc/toolkit.inc.php:34
-#: reset_password.php:28
-msgid "You have to create a config.inc.php!"
-msgstr "config.inc.php を作成して下さい!"
+#: inc/error.inc.php:99
+msgid "You are using an invalid top level domain."
+msgstr "不正なトップレベルドメインを使おうとしています。"
 
-#: install/index.php:244
-msgid "You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert and update records in the PowerDNS database."
+#: inc/error.inc.php:100
+msgid "Invalid value for TTL field. It should be numeric."
+msgstr "TTL に不適切な値が設定されています。TTL は数字でなければなりません。"
+
+#: inc/error.inc.php:101
+msgid "Invalid value for prio field. It should be numeric."
+msgstr "プライオリティに不適切な値が設定されています。プライオリティは数字でなければなりません。"
+
+#: inc/error.inc.php:102
+msgid "Invalid value for name field of SRV record."
+msgstr "SRV レコードのドメイン名項目に不適切な値が設定されています。"
+
+#: inc/error.inc.php:103
+msgid "Invalid value for the priority field of the SRV record."
+msgstr "SRV レコードの priority 項目に不適切な値が設定されています。"
+
+#: inc/error.inc.php:104
+msgid "Invalid value for the weight field of the SRV record."
+msgstr "SRV レコードの Weight 項目に不適切な値が設定されています。"
+
+#: inc/error.inc.php:105
+msgid "Invalid SRV target."
+msgstr "不適切な SRV ターゲットです。"
+
+#: inc/error.inc.php:106
+msgid "Invalid characters have been used in this record."
+msgstr "このレコードは、不適切な文字が使用されています。"
+
+#: inc/error.inc.php:109
+msgid "Zone has been added successfully."
+msgstr "ゾーンが追加されました。"
+
+#: inc/error.inc.php:110
+msgid "Zone has been deleted successfully."
+msgstr "指定のゾーンは削除されました。"
+
+#: inc/error.inc.php:111
+msgid "Zones have been updated successfully."
+msgstr "指定のゾーンは更新されました。"
+
+#: inc/error.inc.php:112
+msgid "The user has been updated successfully."
+msgstr "指定のユーザーは更新されました。"
+
+#: inc/error.inc.php:113
+msgid "The user has been created successfully."
+msgstr "ユーザーが作成されました。"
+
+#: inc/error.inc.php:114
+msgid "The user has been deleted successfully."
+msgstr "指定のユーザーは削除されました。"
+
+#: inc/error.inc.php:115
+msgid "The record has been updated successfully."
+msgstr "指定のレコードは更新されました。"
+
+#: inc/error.inc.php:116
+msgid "The record has been deleted successfully."
+msgstr "指定のレコードは削除されました。"
+
+#: inc/error.inc.php:117
+msgid "The comment has been updated successfully."
+msgstr "コメントが更新されました。"
+
+#: inc/error.inc.php:118
+msgid "The supermaster has been deleted successfully."
+msgstr "指定のスーパーマスターは削除されました。"
+
+#: inc/error.inc.php:119
+msgid "The supermaster has been added successfully."
+msgstr "スーパーマスターが追加されました。"
+
+#: inc/error.inc.php:120
+msgid "The permission template has been updated successfully."
+msgstr "指定の権限テンプレートは更新されました。"
+
+#: inc/error.inc.php:121
+msgid "The permission template has been deleted successfully."
+msgstr "指定の権限テンプレートは削除されました。"
+
+#: inc/error.inc.php:122
+msgid "Zone template has been added successfully."
+msgstr "ゾーンテンプレートが追加されました。"
+
+#: inc/error.inc.php:123
+msgid "Zone template has been updated successfully."
+msgstr "指定のゾーンテンプレートは更新されました。"
+
+#: inc/error.inc.php:124
+msgid "Zone template has been deleted successfully."
+msgstr "指定のゾーンテンプレートは削除されました。"
+
+#: change_password.php:35
+msgid "Current password"
+msgstr "現在のパスワード"
+
+#: change_password.php:39 change_password.php:43
+msgid "New password"
+msgstr "新しいパスワード"
+
+#: add_record.php:102 add_zone_templ_record.php:81
+msgid "The record was successfully added."
+msgstr "レコードが追加されました。"
+
+#: add_record.php:111
+msgid "Add record to zone"
+msgstr "次のゾーンにレコードを追加:"
+
+#: delete_domains.php:41
+msgid "Delete zones"
+msgstr "ゾーンを削除"
+
+#: delete_domains.php:63 delete_domain.php:68
+#, php-format
+msgid ""
+"You are about to delete a slave zone of which the master nameserver, %s, is "
+"a supermaster. Deleting the zone now, will result in temporary removal only."
+" Whenever the supermaster sends a notification for this zone, it will be "
+"added again!"
+msgstr "マスターネームサーバ (%s) がスーパーマスターであるスレーブゾーンを削除しようとしています。ゾーンを削除しても一時的に削除されるだけで、スーパーマスターからこのゾーンが通知されると、再度ゾーンが追加されていまいます!"
+
+#: add_supermaster.php:57
+msgid "You do not have the permission to add a new supermaster."
+msgstr "新たにスーパーマスターを追加する権限がありません。"
+
+#: add_supermaster.php:62 list_supermasters.php:36
+msgid "IP address of supermaster"
+msgstr "スーパーマスターの IP アドレス"
+
+#: add_supermaster.php:72 list_supermasters.php:37 delete_supermaster.php:58
+msgid "Hostname in NS record"
+msgstr "NS レコードのホスト名"
+
+#: add_supermaster.php:82 list_supermasters.php:38 delete_supermaster.php:59
+msgid "Account"
+msgstr "アカウント"
+
+#: add_zone_templ_record.php:90
+msgid "Add record to zone template"
+msgstr "次のゾーンテンプレートにレコードを追加:"
+
+#: edit_zone_templ_record.php:52
+msgid "Edit record in zone template"
+msgstr "次のゾーンテンプレートのレコードを編集:"
+
+#: delete_record.php:92
+msgid ""
+"You are trying to delete a record that is needed for this zone to work."
+msgstr "このゾーンになくてはならないレコードを削除しようとしています。"
+
+#: delete_perm_templ.php:43
+msgid "Delete permission template"
+msgstr "次の権限テンプレートを削除"
+
+#: edit.php:137
+msgid "This zone does not have any records. Weird."
+msgstr "このゾーンにはレコードがありません。変ですね。"
+
+#: edit.php:210
+msgid "Edit comment"
+msgstr "コメントを編集"
+
+#: edit.php:295
+msgid "Owner of zone"
+msgstr "ゾーンのオーナー"
+
+#: edit.php:301
+msgid "No owner set for this zone."
+msgstr "このゾーンにはオーナーが設定されていません。"
+
+#: edit.php:310 delete_user.php:77
+msgid "Delete"
+msgstr "削除"
+
+#: edit.php:343
+msgid "Add"
+msgstr "追加"
+
+#: edit.php:372 edit.php:401 edit.php:424
+msgid "Change"
+msgstr "変更"
+
+#: list_zones.php:42
+msgid "You do not have the permission to see any zones."
+msgstr "ゾーンを閲覧する権限がありません。"
+
+#: list_zones.php:49 list_supermasters.php:44
+msgid "There are no zones to show in this listing."
+msgstr "この一覧に表示するゾーンはありません。"
+
+#: list_zones.php:69
+msgid "Records"
+msgstr "レコード数"
+
+#: list_zones.php:71
+msgid "Serial"
+msgstr "シリアル"
+
+#: list_zones.php:97
+msgid "View zone"
+msgstr "次のゾーンを表示:"
+
+#: list_zones.php:116
+msgid "Delete zone(s)"
+msgstr "ゾーンを削除"
+
+#: install/index.php:47
+msgid "Installation step"
+msgstr "インストールステップ"
+
+#: install/index.php:62 install/index.php:80 install/index.php:135
+#: install/index.php:207 install/index.php:275 install/index.php:312
+msgid "Go to step"
+msgstr "ステップ"
+
+#: install/index.php:69
+msgid ""
+"This installer expects you to have a PowerDNS database accessable from this "
+"server. This installer also expects you to have never ran Poweradmin before,"
+" or that you want to overwrite the Poweradmin part of the database. If you "
+"have had Poweradmin running before, any data in the following tables will be"
+" destroyed: perm_items, perm_templ, perm_templ_items, users and zones. This "
+"installer will, of course, not touch the data in the PowerDNS tables of the "
+"database. However, it is recommended that you create a backup of your "
+"database before proceeding."
+msgstr "このインストーラーは、PowerDNS のデータベースにこのサーバーからアクセスすることができることを前提としています。また、以前に Poweradmin を実行したことがないか、したことがあってもデータベースで Poweradmin が使用した箇所を上書きすることが前提となります。もし、以前に Poweradmin を実行していたのなら、次のテーブルのデータがクリアされます: perm_itemrs、perm_templ、perm_templ_items、users、zones。当然のことながらこのインストーラーはデータベースの PowerDNS のテーブルに変更を加えることはありませんが、念のため処理を始める前にデータベースのバックアップを行うことをお勧めします。"
+
+#: install/index.php:71
+msgid ""
+"The alternative for this installer is a manual installation. Refer to the "
+"poweradmin.org website if you want to go down that road."
+msgstr "このインストーラーを使わずに、手動でインストールすることもできます。その場合は、poweradmin.org のウェブサイトをご覧下さい。"
+
+#: install/index.php:73
+msgid ""
+"Finally, if you see any errors during the installation process, a problem "
+"report would be appreciated. You can report problems (and ask for help) on "
+"the poweradmin-users mailinglist."
+msgstr "最後に、インストール処理中にエラーが発生した場合、問題を報告していただけるとありがたく思います。poweradmin-users メーリングリストに問題を報告して解決策を尋ねることができます。"
+
+#: install/index.php:75
+msgid "Do you want to proceed now?"
+msgstr "続けてもよろしいですか?"
+
+#: install/index.php:86
+msgid ""
+"To prepare the database for using Poweradmin, the installer needs to modify "
+"the PowerDNS database. It will add a number of tables and it will fill these"
+" tables with some data. If the tables are already present, the installer "
+"will drop them first."
+msgstr "Poweradmin で使用するデータベースを準備するために、インストーラーは、PowerDNS データベースを更新する必要があります。インストーラーはテーブルをいくつか追加しデータを設定します。テーブルが既に存在する場合、インストーラーは最初にテーブルをドロップします。"
+
+#: install/index.php:88
+msgid ""
+"To do all of this, the installer needs to access the database with an "
+"account which has sufficient rights. If you trust the installer, you may "
+"give it the username and password of the database user root. Otherwise, make"
+" sure the user has enough rights, before actually proceeding."
+msgstr "上記の作業を行うため、インストーラはそれに必要な権限を持つアカウントでデータベースにアクセスする必要があります。インストーラを信頼するなら、データベースの root ユーザーのユーザー名とパスワードを指定して下さい。root でアクセスさせてくなければ、実際に処理を継続する前に、入力したユーザーに必要な権限があることを確認して下さい。"
+
+#: install/index.php:95
+msgid ""
+"The username to use to connect to the database, make sure the username has "
+"sufficient rights to perform administrative task to the PowerDNS database "
+"(the installer wants to drop, create and fill tables to the database)."
+msgstr "データベース接続に使用するユーザー名です。このユーザーには、Poweradmin データベースに対する管理タスクを実行する権限があることを確認して下さい (インストーラは、データベースに対して、テーブルの作成／削除、データの書き込みを行います)。"
+
+#: install/index.php:100 install/index.php:179
+msgid "The password for this username."
+msgstr "このユーザーに対するパスワード"
+
+#: install/index.php:103
+msgid "Hostname"
+msgstr "ホスト名"
+
+#: install/index.php:105
+msgid ""
+"The hostname on which the PowerDNS database resides. Frequently, this will "
+"be \"localhost\"."
+msgstr "PowerDNS データベースが存在するホストのホスト名。たいていの場合は、\"localhost\" です。"
+
+#: install/index.php:108
+msgid "DB Port"
+msgstr "DB ポート"
+
+#: install/index.php:110
+msgid "The port the database server is listening on."
+msgstr "データベースサーバーが待機しているポート"
+
+#: install/index.php:113
+msgid "Database"
+msgstr "データベース"
+
+#: install/index.php:115
+msgid "The name of the PowerDNS database."
+msgstr "PowerDNS データベースの名前"
+
+#: install/index.php:118
+msgid "Database type"
+msgstr "データベースタイプ"
+
+#: install/index.php:124
+msgid "The type of the PowerDNS database."
+msgstr "PowerDNS データベースのタイプ"
+
+#: install/index.php:127
+msgid "Poweradmin administrator password"
+msgstr "Poweradmin 管理者のパスワード"
+
+#: install/index.php:129
+msgid ""
+"The password of the Poweradmin administrator. This administrator has full "
+"rights to Poweradmin using the web interface."
+msgstr "Poweradmin 管理者のパスワードです。この管理者はウェブインターフェースを使って Poweradmin のすべての操作を実行する権限を持ちます。"
+
+#: install/index.php:141
+msgid "Updating database..."
+msgstr "データベースを更新中..."
+
+#: install/index.php:166
+msgid "done!"
+msgstr "完了!"
+
+#: install/index.php:168
+msgid "Now we will gather all details for the configuration itself."
+msgstr "設定に必要な情報をすべて収集します。"
+
+#: install/index.php:174
+msgid ""
+"The username for Poweradmin. This new user will have limited rights only."
+msgstr "Poweradmin のユーザー名。この新しいユーザーは権限が制限されます。"
+
+#: install/index.php:182
+msgid "Hostmaster"
+msgstr "ホストマスター"
+
+#: install/index.php:184
+msgid ""
+"When creating SOA records and no hostmaster is provided, this value here "
+"will be used. Should be in the form \"hostmaster.example.net\"."
+msgstr "SOA レコードを作成する際に hostmaster を設定しなければ、この値が使用されます。\"hostmaster.example.net\" といった形式でなくてはなりません。"
+
+#: install/index.php:187
+msgid "Primary nameserver"
+msgstr "プライマリ・ネームサーバー"
+
+#: install/index.php:189
+msgid ""
+"When creating new zones using the template, this value will be used as "
+"primary nameserver. Should be like \"ns1.example.net\"."
+msgstr "テンプレートを使用して新しくゾーンを作成する際に、この値がプライマリネームサーバとして使用されます。\"ns1.example.net\" のように指定して下さい。"
+
+#: install/index.php:192
+msgid "Secondary nameserver"
+msgstr "セカンダリ・ネームサーバー"
+
+#: install/index.php:194
+msgid ""
+"When creating new zones using the template, this value will be used as "
+"secondary nameserver. Should be like \"ns2.example.net\"."
+msgstr "テンプレートを使用して新しくゾーンを作成する際に、この値がセカンダリネームサーバとして使用されます。\"ns2.example.net\" のように指定して下さい。"
+
+#: install/index.php:230
+msgid ""
+"You now want to give limited rights to Poweradmin so it can update the data "
+"in the tables. To do this, you should create a new user and give it rights "
+"to select, delete, insert and update records in the PowerDNS database."
 msgstr "Poweradmin の権限に制限を加えようとお考えなら、ここでテーブルのデータを更新することができます。そのためには、新しいユーザーを作成して、PowerDNS データベースにレコードを select, insert, update する権限だけを与えるべきです。"
 
-#: inc/error.inc.php:82
-msgid "Your content field doesnt have a legit value."
-msgstr "内容欄に入力した値が不適切です。"
+#: install/index.php:241
+msgid "In MySQL you should now perform the following command:"
+msgstr "MySQL で、次のコマンドを実行して下さい:"
+
+#: install/index.php:244
+msgid "On PgSQL you would use:"
+msgstr "PgSQL で、次のコマンドを実行して下さい:"
+
+#: install/index.php:259
+msgid ""
+"After you have added the new user, proceed with this installation procedure."
+msgstr "新しいユーザーを追加した後で、このインストールプロセスを継続します。"
+
+#: install/index.php:301
+msgid "The installer was able to write to the file \""
+msgstr "インストーラは、ファイル \""
+
+#: install/index.php:301
+msgid ""
+"\". A basic configuration, based on the details you have given, has been "
+"created."
+msgstr "\" へ書き込みを行いました。指定された情報に基づいて基本設定を作成しました。"
+
+#: install/index.php:303
+msgid "The installer is unable to write to the file \""
+msgstr "インストーラは、ファイル \""
+
+#: install/index.php:303
+msgid ""
+"\" (which is in itself good). The configuration is printed here. You should "
+"now create the file \""
+msgstr "\" に書き込みができません (書き込みができないこと自体は構いません)。設定内容を以下に表示しますので、ファイル \""
+
+#: install/index.php:303
+msgid ""
+"\" in the Poweradmin root directory yourself. It should contain the "
+"following few lines:"
+msgstr "\" を Poweradmin のルートディレクトリに直接作成して下さい。ファイルには表示された行を必ず含めて下さい:"
+
+#: install/index.php:318
+msgid ""
+"Now we have finished the configuration, you should (must!) remove the "
+"directory \"install/\" from the Poweradmin root directory. You will not be "
+"able to use Poweradmin if it exists. Do it now."
+msgstr "設定が完了しました。ディレクトリ \"install\" を Poweradmin のルートディレクトリから **必ず** 削除して下さい! そのディレクトリがあると、Poweradmin を使うことはできません。今すぐ削除して下さい。"
+
+#: install/index.php:319
+msgid ""
+"After you have removed the directory, you can login to <a "
+"href=\"../index.php\">Poweradmin</a> with username \"admin\" and password \""
+msgstr "ディレクトリを削除したら、<a href=\"../index.php\">Poweradmin</a> にユーザー \"admin\"、パスワード \""
+
+#: install/index.php:319
+msgid ""
+"\". You are highly encouraged to change these as soon as you are logged in."
+msgstr "\" でログインすることができます。ログインしたら、すぐにユーザー名とパスワードを変更することを強くお勧めします。"
+
+#: list_supermasters.php:51 delete_supermaster.php:45
+msgid "Delete supermaster"
+msgstr "次のスーパーマスターを削除:"
+
+#: add_zone_templ.php:41
+msgid "Add zone template for"
+msgstr "次のユーザー向けにゾーンテンプレートを追加:"
+
+#: add_zone_templ.php:53 list_zone_templ.php:59
+msgid "Add zone template"
+msgstr "ゾーンテンプレートを追加"
+
+#: delete_user.php:71
+msgid ""
+"You are about to delete a user. This user is owner for a number of zones. "
+"Please decide what to do with these zones."
+msgstr "ユーザーを削除しようとしていますが、このユーザーがオーナーであるゾーンが存在します。以下のゾーンの扱いを決めて下さい。"
 
 #: delete_user.php:76
 msgid "Zone"
 msgstr "ゾーン"
 
-#: inc/error.inc.php:112
-msgid "Zone has been added successfully."
-msgstr "ゾーンが追加されました。"
+#: delete_user.php:78
+msgid "Leave"
+msgstr "残す"
 
-#: inc/error.inc.php:113
-msgid "Zone has been deleted successfully."
-msgstr "指定のゾーンは削除されました。"
+#: delete_user.php:79
+msgid "Add new owner"
+msgstr "新たにオーナーを追加"
 
-#: inc/error.inc.php:114
-msgid "Zone has been updated successfully."
-msgstr "ゾーンの更新は正常に終了しました。"
+#: delete_user.php:80
+msgid "Owner to be added"
+msgstr "追加されるオーナー"
 
-#: add_zone_master.php:92
-#: add_zone_slave.php:74
-msgid "Zone name"
-msgstr "ゾーン名"
+#: delete_user.php:106
+msgid "Really delete this user?"
+msgstr "本当にこのユーザーを削除しますか?"
 
-#: inc/error.inc.php:127
-msgid "Zone template has been added successfully."
-msgstr "ゾーンテンプレートが追加されました。"
+#: reset_password.php:89
+msgid "Reset Password"
+msgstr "パスワードをリセット"
 
-#: inc/error.inc.php:129
-msgid "Zone template has been deleted successfully."
-msgstr "指定のゾーンテンプレートは削除されました。"
+#: reset_password.php:93
+msgid "Registered Email Address"
+msgstr "登録済みのメールアドレス"
 
-#: inc/error.inc.php:128
-msgid "Zone template has been updated successfully."
-msgstr "指定のゾーンテンプレートは更新されました。"
+#: reset_password.php:99
+msgid "Reset password"
+msgstr "パスワードをリセット"
 
-#: inc/error.inc.php:67
-msgid "Zone template with this name already exists, please choose another one."
-msgstr "同じ名前のゾーンテンプレートが既に存在します。別の名前に変更して下さい。"
-
-#: list_zone_templ.php:34
+#: list_zone_templ.php:33
 msgid "Zone templates for"
-msgstr "ユーザーゾーンテンプレート:"
-
-#: bulk_registration.php:125
-msgid "Zones"
-msgstr "ゾーン"
-
-#: search.php:62
-msgid "Zones found"
-msgstr "マッチしたゾーン"
-
-#: inc/error.inc.php:115
-msgid "Zones have been updated successfully."
-msgstr "指定のゾーンは更新されました。"
-
-#: inc/toolkit.inc.php:276
-msgid "back"
-msgstr "戻る"
-
-#: install/index.php:180
-msgid "done!"
-msgstr "完了!"
-
-#: add_zone_templ_record.php:144
-#: edit_zone_templ.php:150
-msgid "substituted with current date and 2 numbers"
-msgstr "現在の日付と２桁の数字で置換されます"
-
-#: add_zone_templ_record.php:143
-#: edit_zone_templ.php:149
-msgid "substituted with current zone name"
-msgstr "現在のゾーン名で置換されます"
-
-#~ msgid "Authentication failed!"
-#~ msgstr "認証に失敗しました!"
+msgstr "次のユーザー向けのゾーンテンプレート:"
