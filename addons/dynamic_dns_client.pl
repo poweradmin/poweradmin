@@ -1,53 +1,38 @@
 #!/usr/bin/env perl
 
 use LWP::Simple;
-use Socket;
 
 use strict;
 use warnings;
 
 # change these values
-my $login             = 'username';
-my $password          = 'password';
-my $domain            = 'mydynamicdns.example.com';
-my $ip_lookup_service = 'hostip';                 # or 'whatismyip'
-my $verbose           = 1;
+my $login          = 'username';
+my $password       = 'password';
+my $domain         = 'mydynamicdns.example.com';
+my $poweradmin_url = 'http://www.example.com/poweradmin';
+my $up_update_url  = $poweradmin_url . '/dynamic_update.php';
+my $ip_lookup_url  = $poweradmin_url . '/addons/clientip.php';
+my $verbose        = 1;
 
-my $poweradmin_url = 'http://example.com/poweradmin/';
-
-# try to get client ip address using whatismyip service
-my $ip_lookup_url;
-if ( $ip_lookup_service eq 'whatismyip' ) {
-    # TODO: add user agent as described here
-    # http://www.whatismyip.com/faq/automation.asp
-    $ip_lookup_url = "http://automation.whatismyip.com/n09230945.asp";
-}
-elsif ( $ip_lookup_service eq 'hostip' ) {
-    $ip_lookup_url = "http://api.hostip.info/get_html.php";
-}
-else {
-    print "Error: unknown global ip address lookup service\n";
-    exit;
-}
-
-my $ipaddress = LWP::Simple::get($ip_lookup_url)
+my $ip_address = LWP::Simple::get($ip_lookup_url)
   or die("Error: Could not get your global IP address!\n");
 
-if ( $ipaddress =~ /([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})/ ) {
-    $ipaddress = $1;
-}
-else {
-    print "Error: Could not get your global IP address!\n";
+# FIXME: doesn't support IPv6
+if ( $ip_address !~/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/ )
+{
+    print
+      "Error: Invalid global IP address! Check if Poweradmin url is correct\n";
     exit;
 }
 
-print "Updating the IP address ($ipaddress) now ... \n";
+print "Updating the IP address ($ip_address) now ... \n" if $verbose;
 
 # insert authentication data to url
 $poweradmin_url =~ s/^(http[s]?:\/\/)/$1$login:$password\@/;
+
 my $response =
   LWP::Simple::get( "$poweradmin_url/dynamic_update.php"
-      . "?hostname=$domain&myip=$ipaddress&verbose=1" )
+      . "?hostname=$domain&myip=$ip_address&verbose=$verbose" )
   or die($!);
 
 if ( !defined $response || $response eq "" ) {
@@ -55,4 +40,4 @@ if ( !defined $response || $response eq "" ) {
     exit(0);
 }
 
-print "Status: $response\n";
+print "Status: $response\n" if $verbose;
