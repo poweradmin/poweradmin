@@ -9,6 +9,7 @@ if (isset($_POST['language'])) {
 	$language = "en_EN";
 }
 
+# FIXME: setlocale can fail if locale package is not installed ion the systme for that language
 setlocale(LC_ALL, $language, $language.'.UTF-8');
 $gettext_domain = 'messages';
 if (! function_exists('bindtextdomain')) die(error('You have to install PHP gettext extension!'));
