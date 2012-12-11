@@ -86,11 +86,10 @@ class PDOCommon extends PDO {
     {
         // check if limit has been specified. if so, modify the query
         if (!empty($this->limit)) {
-            $limitRange = $this->limit;
+            $str .= " LIMIT ".$this->limit;
             if (!empty($this->from)) {
-                $limitRange = $this->from." OFFSET ".$limitRange;
+                $str .= " OFFSET ".$this->from;
             }
-            $str .= " LIMIT ".$limitRange;
 
             // after a query is executed the limits are reset, so that
             // other queries may be performed with the same object
