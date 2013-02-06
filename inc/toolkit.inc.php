@@ -71,6 +71,10 @@ if (isset($_GET["zone_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["zone_sort_b
    define('ZONE_SORT_BY', "name");
 }
 
+if (isset($_SESSION["userlang"])) {
+	$iface_lang = $_SESSION["userlang"];
+}
+
 if (isset($_GET["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["record_sort_by"] )) {
    define('RECORD_SORT_BY', $_GET["record_sort_by"]);
    $_SESSION["record_sort_by"] = $_GET["record_sort_by"];

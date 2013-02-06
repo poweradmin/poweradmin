@@ -37,6 +37,7 @@ function doAuthenticate() {
 	{
 		$_SESSION["userpwd"] = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($session_key), $_POST['password'], MCRYPT_MODE_CBC, md5(md5($session_key))));;
 		$_SESSION["userlogin"] = $_POST["username"];
+		$_SESSION["userlang"] = $_POST["userlang"];
 	}
 
 	// Check if the session hasnt expired yet.
@@ -126,6 +127,8 @@ function doAuthenticate() {
 function auth($msg="",$type="success")
 {
 	include_once('inc/header.inc.php');
+	include('inc/config.inc.php');
+	
 	if ( $msg )
 	{
 		print "<div class=\"$type\">$msg</div>\n";
@@ -143,6 +146,28 @@ function auth($msg="",$type="success")
 	  <tr>
 	   <td class="n"><?php echo _('Password'); ?>:</td>
 	   <td class="n"><input type="password" class="input" name="password"></td>
+	  </tr>
+	  <tr>
+	   <td class="n"><?php echo _('Language'); ?>:</td>
+	   <td class="n">
+	   	<select class="input" name="userlang">
+	   		<?php	// List available languages (sorted alphabetically)
+	   			include_once('inc/countrycodes.inc.php');
+	   			$locales = scandir('locale/');
+	   			foreach ($locales as $locale) {
+	   				if (strlen($locale) == 5) { $locales_fullname[$locale] = $countrycodes[substr($locale, 0, 2)]; }
+	   			}
+	   			asort($locales_fullname);
+	   			foreach ($locales_fullname as $locale => $language) {
+	   				if ($locale == $iface_lang) {
+						echo _('<option selected value="'.$locale.'">'.$language);
+	   				} else {
+						echo _('<option value="'.$locale.'">'.$language);
+	   				}
+	   			}
+	   		?>
+	   	</select>
+	   </td>
 	  </tr>
 	  <tr>
 	   <td class="n">&nbsp;</td>

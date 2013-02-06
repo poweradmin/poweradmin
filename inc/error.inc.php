@@ -68,7 +68,7 @@ define("ERR_INSTALL_DIR_EXISTS", _('The <a href="install/">install/</a> director
 define("ERR_ZONE_TEMPL_EXIST", _('Zone template with this name already exists, please choose another one.'));
 define("ERR_ZONE_TEMPL_IS_EMPTY", _('Template name can\'t be an empty string.'));
 define("ERR_DEFAULT_CRYPTOKEY_USED", _('Default session encryption key is used, please set it in your configuration file.'));
-define("ERR_LOCALE_FAILURE", _('Failed to set locale.'));
+define("ERR_LOCALE_FAILURE", _('Failed to set locale. Selected locale may be unsupported on this system. Please contact your administrator.'));
 define("ERR_ZONE_UPD", _('Zone has not been updated successfully.'));
 define("ERR_EXEC_NOT_ALLOWED", _('Failed to call function exec. Make sure that exec is not listed in disable_functions at php.ini'));
 
