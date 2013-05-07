@@ -956,8 +956,10 @@ function get_zones($perm,$userid=0,$letterstart='all',$rowstart=0,$rowamount=999
 	}
 	
 	if ($sortby != 'count_records') {
-		$sortby = "domains.".$sortby;
-	}
+		$sortby = "domains.".$sortby.", domains.name";
+    } else {
+        $sortby = $sortby.", domains.name";
+    }
 
 	$sqlq = "SELECT domains.id,
 			domains.name,
@@ -1086,8 +1088,7 @@ function get_record_from_id($id)
  */
 function get_records_from_domain_id($id,$rowstart=0,$rowamount=999999,$sortby='name') {
 	global $db;
-
-        $result = array();
+    $result = array();
 	if (is_numeric($id)) {
 		if ((isset($_SESSION[$id."_ispartial"])) && ($_SESSION[$id."_ispartial"] == 1)) {
 			$db->setLimit($rowamount, $rowstart);
@@ -1180,6 +1181,9 @@ function order_domain_results($domains, $sortby) {
           case 'ttl':
             usort($domains, 'sort_domain_results_by_ttl');
             break;
+          case 'ttl':
+            usort($domains, 'sort_domain_results_by_count_records');
+            break;
           default:
             usort($domains, 'sort_domain_results_by_name');
             break;
@@ -1196,19 +1200,39 @@ function sort_domain_results_by_name($a, $b) {
 }
 
 function sort_domain_results_by_type($a, $b) {
-  return strnatcmp($a['type'], $b['type']);
+    if ($a['type'] != $b['type']) {
+        return strnatcmp($a['type'], $b['type']);
+    }
+    else {
+        return strnatcmp($a['name'], $b['name']);
+    }
 }
 
 function sort_domain_results_by_content($a, $b) {
-  return strnatcmp($a['content'], $b['content']);
+    if ($a['content'] != $b['content']) {
+        return strnatcmp($a['content'], $b['content']);
+    }
+    else {
+        return strnatcmp($a['name'], $b['name']);
+    }
 }
 
 function sort_domain_results_by_prio($a, $b) {
-  return strnatcmp($a['prio'], $b['prio']);
+    if ($a['prio'] != $b['prio']) {
+        return strnatcmp($a['prio'], $b['prio']);
+    }
+    else {
+        return strnatcmp($a['name'], $b['name']);
+    }
 }
 
 function sort_domain_results_by_ttl($a, $b) {
-  return strnatcmp($a['ttl'], $b['ttl']);
+    if ($a['ttl'] != $b['ttl']) {
+        return strnatcmp($a['ttl'], $b['ttl']);
+    }
+    else {
+        return strnatcmp($a['name'], $b['name']);
+    }
 }
 
 function get_users_from_domain_id($id) {
