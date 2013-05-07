@@ -1181,9 +1181,6 @@ function order_domain_results($domains, $sortby) {
           case 'ttl':
             usort($domains, 'sort_domain_results_by_ttl');
             break;
-          case 'ttl':
-            usort($domains, 'sort_domain_results_by_count_records');
-            break;
           default:
             usort($domains, 'sort_domain_results_by_name');
             break;
