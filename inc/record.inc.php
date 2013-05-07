@@ -1134,7 +1134,9 @@ function get_zones($perm,$userid=0,$letterstart='all',$rowstart=0,$rowamount=999
 	}
 	
 	if ($sortby != 'count_records') {
-		$sortby = "domains.".$sortby;
+		$sortby = "domains.".$sortby.", domains.name";
+	} else {
+		$sortby = $sortby.", domains.name";
 	}
 
 	$sqlq = "SELECT domains.id,
@@ -1386,7 +1388,7 @@ function order_domain_results($domains, $sortby) {
  * @return mixed[] result of strnatcmp
  */
 function sort_domain_results_by_name($a, $b) {
-  return strnatcmp($a['name'], $b['name']);
+	return strnatcmp($a['name'], $b['name']);
 }
 
 /** Sort records by type
@@ -1397,7 +1399,11 @@ function sort_domain_results_by_name($a, $b) {
  * @return mixed[] result of strnatcmp
  */
 function sort_domain_results_by_type($a, $b) {
-  return strnatcmp($a['type'], $b['type']);
+	if ($a['type'] != $b['type']) {
+		return strnatcmp($a['type'], $b['type']);
+	} else {
+		return strnatcmp($a['name'], $b['name']);
+	}
 }
 
 /** Sort records by content
@@ -1408,7 +1414,11 @@ function sort_domain_results_by_type($a, $b) {
  * @return mixed[] result of strnatcmp
  */
 function sort_domain_results_by_content($a, $b) {
-  return strnatcmp($a['content'], $b['content']);
+	if ($a['content'] != $b['content']) {
+		return strnatcmp($a['content'], $b['content']);
+	} else {
+		return strnatcmp($a['name'], $b['name']);
+	}
 }
 
 /** Sort records by prio
@@ -1419,7 +1429,11 @@ function sort_domain_results_by_content($a, $b) {
  * @return mixed[] result of strnatcmp
  */
 function sort_domain_results_by_prio($a, $b) {
-  return strnatcmp($a['prio'], $b['prio']);
+	if ($a['prio'] != $b['prio']) {
+		return strnatcmp($a['prio'], $b['prio']);
+	} else {
+		return strnatcmp($a['name'], $b['name']);
+	}
 }
 
 /** Sort records by TTL
@@ -1430,7 +1444,11 @@ function sort_domain_results_by_prio($a, $b) {
  * @return mixed[] result of strnatcmp
  */
 function sort_domain_results_by_ttl($a, $b) {
-  return strnatcmp($a['ttl'], $b['ttl']);
+	if ($a['ttl'] != $b['ttl']) {
+		return strnatcmp($a['ttl'], $b['ttl']);
+	} else {
+		return strnatcmp($a['name'], $b['name']);
+	}
 }
 
 /** Get list of owners for Domain ID
