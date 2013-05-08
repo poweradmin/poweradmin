@@ -157,24 +157,58 @@ doAuthenticate();
  *************/
 
 /*
- * Display the page option: [1] [2] .. [n]
+ * Display the page option: [ < ][ 1 ] .. [ 8 ][ 9 ][ 10 ][ 11 ][ 12 ][ 13 ][ 14 ][ 15 ][ 16 ] .. [ 34 ][ > ]
  */
 
-function show_pages($amount,$rowamount,$id='')
+function show_pages($amount, $rowamount, $id = '')
 {
-   if ($amount > $rowamount) {
-      if (!isset($_GET["start"])) $_GET["start"]=1;
-      echo _('Show page') . ":<br>";
-      for ($i=1;$i<=ceil($amount / $rowamount);$i++) {
-         if ($_GET["start"] == $i) {
-            echo "[ <b>".$i."</b> ] ";
-         } else {
-            echo " <a href=\"".htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES)."?start=".$i;
-	    if ($id!='') echo "&id=".$id;
-	    echo "\">[ ".$i." ]</a> ";
-         }
-      }
-   }
+    if ($amount > $rowamount) {
+        if ($id != '') {
+            $url = htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . '?id=' . $id . '&start=';
+        } else {
+            $url = htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . '?start=';
+        }
+        $num = 8; // show $num items around current page
+        $poutput = '';
+        $lastpage = ceil($amount / $rowamount);
+        $startpage = 1;
+
+        if (!isset($_GET["start"])) $_GET["start"] = 1;
+        $start = $_GET["start"];
+
+        if ($lastpage > $num && $start > ($num/2)) {
+            $startpage = ($start - ($num / 2));
+        }
+
+        echo _('Show page') . ":<br>";
+
+        if ($lastpage > $num && $start > 1) {
+            $poutput .= '<a href="' . $url . ($start - 1) . '">[ &lt; ]</a>';
+        }
+        if ($start != 1) {
+            $poutput .= '<a href="' . $url . 1 . '">[ 1 ]</a>';
+            if ($startpage > 2) $poutput .= ' .. ';
+        }
+
+        for ($i = $startpage; $i <= min(($startpage + $num), $lastpage); $i++) {
+            if ($start == $i) {
+                $poutput .= '[ <b>' . $i . '</b> ]';
+            } elseif ($i != $lastpage && $i != 1) {
+                $poutput .= '<a href="' . $url . $i . '">[ ' . $i . ' ]</a>';
+            }
+        }
+
+        if ($start != $lastpage) {
+            if (min(($startpage + $num), $lastpage) < ($lastpage - 1)) $poutput .= ' .. ';
+            $poutput .= '<a href="' . $url . $lastpage . '">[ ' . $lastpage . ' ]</a>';
+        }
+
+        if ($lastpage > $num && $start < $lastpage) {
+            $poutput .= '<a href=" ' . $url . ($start + 1) . '">[ &gt; ]</a>';
+        }
+
+        echo $poutput;
+    }
 }
 
 /*
