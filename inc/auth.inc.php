@@ -24,6 +24,7 @@
 function doAuthenticate() {
 	global $auth_mode;
 	global $session_key;
+	global $iface_expire;
 	if (isset($_SESSION['userid']) && isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] == "logout") {
 		logout( _('You have logged out.'), 'success');
 	}
@@ -100,7 +101,6 @@ function ldapAuthenticate()
 
 function sqlAuthenticate() {
 	global $db;
-	global $iface_expire;
 	global $syslog_use, $syslog_ident, $syslog_facility;
 	global $session_key;
 	global $password_encryption;
