@@ -1090,7 +1090,10 @@ function get_records_from_domain_id($id,$rowstart=0,$rowamount=999999,$sortby='n
         $result = array();
 	if (is_numeric($id)) {
 		if ((isset($_SESSION[$id."_ispartial"])) && ($_SESSION[$id."_ispartial"] == 1)) {
-			$db->setLimit($rowamount, $rowstart);
+			if ($rowstart < 1) {
+				$rowstart = 1;
+			}
+			$db->setLimit($rowstart, $rowamount);
 			$result = $db->query("SELECT record_owners.record_id as id
 					FROM record_owners,domains,records
 					WHERE record_owners.user_id = " . $db->quote($_SESSION["userid"], 'integer') . "
@@ -1114,7 +1117,10 @@ function get_records_from_domain_id($id,$rowstart=0,$rowamount=999999,$sortby='n
 			}
 
 		} else {
-			$db->setLimit($rowamount, $rowstart);
+			if ($rowstart < 1) {
+				$rowstart = 1;
+			}
+			$db->setLimit($rowstart, $rowamount);
 			$result = $db->query("SELECT id FROM records WHERE domain_id=".$db->quote($id, 'integer')." ORDER BY records.".$sortby);
 			$ret = array();
 			if($result->numRows() == 0)
