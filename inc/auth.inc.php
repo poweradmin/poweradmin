@@ -62,21 +62,36 @@ function ldapAuthenticate()
 	global $ldap_host;
 	global $ldap_port;
 	global $ldap_basedn;
+	global $ldap_search_filter;
+
+	$user = $_SESSION["userlogin"];
+	$pass = $_SESSION['clearpass'];
+
+	if (isset($ldap_host)){
+		$host = $ldap_host;
+	} else {
+		$host = 'localhost';
+	}
 
 	if (isset($ldap_port)){
 		$port = $ldap_port;
 	} else {
 		$port = 389;
 	}
+	if (isset($ldap_search_filter)){
+		$needles = array("%u", "%h", "%p");
+		$replace = array($user, $ldap_host, $port);
+		$ldapsearch = str_replace($needles, $replace, $ldap_search_filter);
+	} else {
+		$ldapsearch = '(&(uid=' . $user . ")(objectClass=posixAccount))";
+	}
 	
-	$user = $_SESSION["userlogin"];
-	$pass = $_SESSION['clearpass'];
+	
 	if ($user!= "" && $pass != "") {
-		$directory=ldap_connect($ldap_host, $ldap_port);
+		$directory=ldap_connect($host, $port);
 		ldap_set_option($directory, LDAP_OPT_PROTOCOL_VERSION, 3);
 		$record = ldap_search(
-			$directory, $ldap_basedn, '(&(uid=' . $user . ")" .
-			"(objectClass=posixAccount))"
+			$directory, $ldap_basedn, $ldapsearch
 		);
 		if ($record) {
 			$result = ldap_get_entries($directory, $record);
