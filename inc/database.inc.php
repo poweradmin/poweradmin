@@ -79,6 +79,7 @@ function dbConnect() {
 	global $db_file;
 	global $db_layer;
 	global $db_debug;
+	global $db_ssl_ca;
 
 	global $sql_regexp;
 
@@ -145,6 +146,9 @@ function dbConnect() {
 				$db_name = '?service='.$db_name;
 			}
 			$dsn = "$db_type://$db_user:$db_pass@$db_host:$db_port/$db_name";
+			if (($db_type == 'mysqli') && (isset($db_ssl_ca))) {
+				$dsn .= "?ca=$db_ssl_ca";
+			}
 		}
 	}
 
@@ -163,6 +167,11 @@ function dbConnect() {
 		$options = array(
 			'portability' => MDB2_PORTABILITY_ALL ^ MDB2_PORTABILITY_EMPTY_TO_NULL,
 		);
+
+		if (($db_type == 'mysqli') && (isset($db_ssl_ca))) {
+			$options['ssl'] = true;
+		}
+
 		$db = MDB2::connect($dsn, $options);
 	}
 
