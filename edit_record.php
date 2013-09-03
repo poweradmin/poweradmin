@@ -92,7 +92,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 		echo "      <tr>\n";
 		echo "       <td><input type=\"hidden\" name=\"rid\" value=\"" . $_GET["id"] . "\">\n";
 		echo "       <input type=\"hidden\" name=\"zid\" value=\"" . $zid . "\">\n";
-		echo "       <input type=\"text\" name=\"name\" value=\"" . trim(str_replace($zone_name, '', $record["name"]), '.') . "\" class=\"input\">." . $zone_name . "</td>\n";
+		echo "       <input type=\"text\" name=\"name\" value=\"" . htmlspecialchars(trim(str_replace($zone_name, '', $record["name"]), '.')) . "\" class=\"input\">." . $zone_name . "</td>\n";
 		echo "       <td>IN</td>\n";
 		echo "       <td>\n";
 		echo "        <select name=\"type\">\n";
@@ -106,9 +106,9 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 		}
 		echo "        </select>\n";
 		echo "       </td>\n";
-		echo "       <td><input type=\"text\" name=\"prio\" value=\"" .  $record["prio"] . "\" class=\"sinput\"></td>\n";
-		echo "       <td><input type=\"text\" name=\"content\" value=\"" .  $record["content"] . "\" class=\"input\"></td>\n";
-		echo "       <td><input type=\"text\" name=\"ttl\" value=\"" . $record["ttl"] . "\" class=\"sinput\"></td>\n";
+		echo "       <td><input type=\"text\" name=\"prio\" value=\"" .  htmlspecialchars($record["prio"]) . "\" class=\"sinput\"></td>\n";
+		echo "       <td><input type=\"text\" name=\"content\" value=\"" .  htmlspecialchars($record["content"]) . "\" class=\"input\"></td>\n";
+		echo "       <td><input type=\"text\" name=\"ttl\" value=\"" . htmlspecialchars($record["ttl"]) . "\" class=\"sinput\"></td>\n";
 		echo "      </tr>\n";
 	}
 	echo "      </table>\n";
