@@ -114,24 +114,23 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
 			if (!is_valid_printable($content)) return false;
 			break;
 
-		case "CURL":
-		case "MBOXFW":
-		case "NAPTR":
 		case "SPF":
-			/*
-			Validate SPF entry
-			*/
-                        if(!is_valid_spf($content)) return false;
-		case "SSHFP":
-		case "URL":
-			// These types are supported by PowerDNS, but there is not
-			// yet code for validation. Validation needs to be added
-			// for these types. One Day Real Soon Now. [tm]
+			if(!is_valid_spf($content)) return false; 
 			break;
 
 		case "LOC":
 			if (!is_valid_loc($content)) return false;
 			if (!is_valid_hostname_fqdn($name,1)) return false;
+			break;
+			
+		case "CURL":
+		case "MBOXFW":
+		case "NAPTR":
+		case "SSHFP":
+		case "URL":
+			// These types are supported by PowerDNS, but there is not
+			// yet code for validation. Validation needs to be added
+			// for these types. One Day Real Soon Now. [tm]
 			break;
 
 		default:
