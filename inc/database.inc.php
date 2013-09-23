@@ -1,4 +1,8 @@
 <?php
+/** Database functions
+ *
+ * @package Default
+ */
 
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://www.poweradmin.org> for more details.
@@ -51,6 +55,10 @@ if (!isset($db_layer)) {
     }
 }
 
+/** Print database error message
+ *
+ * @param object $msg Database error object
+ */
 function dbError($msg)
 {
 	$debug = $msg->getDebugInfo();
@@ -68,6 +76,10 @@ if (isset($db_layer) && $db_layer == 'MDB2') {
 	PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, 'dbError');
 }
 
+/**  Connect to Database
+ *
+ * @return object $db Database object
+ */
 function dbConnect() {
 	// XXX: one day all globals will die, I promise
 	global $db_type;

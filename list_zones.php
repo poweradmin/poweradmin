@@ -44,7 +44,7 @@ $count_zones_edit = zone_count_ng($perm_edit);
 # that causes failure.
 
 $zone_sort_by = ZONE_SORT_BY;
-if (!in_array(ZONE_SORT_BY, array('name','type','records'))) {
+if (!in_array(ZONE_SORT_BY, array('name','type','count_records'))) {
     $zone_sort_by = 'name';
 }
 
@@ -108,9 +108,9 @@ if ($perm_view == "none") {
 		}
                 echo "          </td>\n";
 		echo "          <td class=\"actions\">\n";
-		echo "           <a href=\"edit.php?id=" . $zone['id'] . "\"><img src=\"images/edit.gif\" title=\"" . _('View zone') . " " . $zone['name'] . "\" alt=\"[ " . _('View zone') . " " . $zone['name'] . " ]\"></a>\n";
+		echo "           <a href=\"edit.php?name=" . $zone['name'] . "&id=" . $zone['id'] . "\"><img src=\"images/edit.gif\" title=\"" . _('View zone') . " " . $zone['name'] . "\" alt=\"[ " . _('View zone') . " " . $zone['name'] . " ]\"></a>\n";
 		if ( $perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1") ) {
-      			echo "           <a href=\"delete_domain.php?id=" . $zone["id"] . "\"><img src=\"images/delete.gif\" title=\"" . _('Delete zone') . " " . $zone['name'] . "\" alt=\"[ ". _('Delete zone') . " " . $zone['name'] . " ]\"></a>\n";
+      			echo "           <a href=\"delete_domain.php?name=" . $zone['name'] . "&id=" . $zone["id"] . "\"><img src=\"images/delete.gif\" title=\"" . _('Delete zone') . " " . $zone['name'] . "\" alt=\"[ ". _('Delete zone') . " " . $zone['name'] . " ]\"></a>\n";
 		}
 		echo "          </td>\n";
 		echo "          <td class=\"name\">" . $zone["name"] . "</td>\n";

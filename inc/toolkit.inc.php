@@ -1,4 +1,8 @@
 <?php
+/** Toolkit functions
+ *
+ * @package Default
+ */
 
 // TODO: display elapsed time and memory consumption,
 // used to check improvements in refactored version 
@@ -47,6 +51,8 @@ if(!@include_once("config.inc.php"))
 if (isset($_GET["start"])) {
    define('ROWSTART', (($_GET["start"] - 1) * $iface_rowamount));
    } else {
+   /** Starting row
+    */
    define('ROWSTART', 0);
 }
 
@@ -56,6 +62,8 @@ if (isset($_GET["letter"])) {
 } elseif(isset($_SESSION["letter"])) {
    define('LETTERSTART', $_SESSION["letter"]);
 } else {
+   /** Starting letter
+    */
    define('LETTERSTART', "a");
 }
 
@@ -68,6 +76,8 @@ if (isset($_GET["zone_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["zone_sort_b
 } elseif(isset($_SESSION["zone_sort_by"])) {
    define('ZONE_SORT_BY', $_SESSION["zone_sort_by"]);
 } else {
+   /** Field to sort zone by
+    */
    define('ZONE_SORT_BY', "name");
 }
 
@@ -80,6 +90,8 @@ if (isset($_GET["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["record_so
 } elseif(isset($_SESSION["record_sort_by"])) {
    define('RECORD_SORT_BY', $_SESSION["record_sort_by"]);
 } else {
+   /** Record to sort zone by
+    */
    define('RECORD_SORT_BY', "name");
 }
 
@@ -125,14 +137,51 @@ require_once("database.inc.php");
 $server_types = array("MASTER", "SLAVE", "NATIVE");
 
 // $rtypes - array of possible record types
-$rtypes = array('A', 'AAAA', 'CNAME', 'HINFO', 'MX', 'NAPTR', 'NS', 'PTR', 'SOA', 'SPF', 'SRV', 'SSHFP', 'TXT', 'RP');
+$rtypes = array(
+  'A',
+  'AAAA',
+  'AFSDB',
+  'CERT',
+  'CNAME',
+  'DHCID',
+  'DLV',
+  'DNSKEY',
+  'DS',
+  'EUI48',
+  'EUI64',
+  'HINFO',
+  'IPSECKEY',
+  'KEY',
+  'KX',
+  'LOC',
+  'MINFO',
+  'MR',
+  'MX',
+  'NAPTR',
+  'NS',
+  'NSEC',
+  'NSEC3',
+  'NSEC3PARAM',
+  'OPT',
+  'PTR',
+  'RKEY',
+  'RP',
+  'RRSIG',
+  'SOA',
+  'SPF',
+  'SRV',
+  'SSHFP',
+  'TLSA',
+  'TSIG',
+  'TXT',
+  'WKS',
+);
 
 // If fancy records is enabled, extend this field.
 if($dns_fancy) {
-	$rtypes[14] = 'URL';
-	$rtypes[15] = 'MBOXFW';
-	$rtypes[16] = 'CURL';
-	$rtypes[17] = 'LOC';
+  $rtypes[] = 'URL';
+  $rtypes[] = 'MBOXFW';
+  $rtypes[] = 'CURL';
 }
 
 
@@ -156,31 +205,76 @@ doAuthenticate();
  * Functions *
  *************/
 
-/*
- * Display the page option: [1] [2] .. [n]
+/** Print paging menu
+ *
+ * Display the page option: [ < ][ 1 ] .. [ 8 ][ 9 ][ 10 ][ 11 ][ 12 ][ 13 ][ 14 ][ 15 ][ 16 ] .. [ 34 ][ > ]
+ *
+ * @param int $amount Total number of items
+ * @param int $rowamount Per page number of items
+ * @param int $id Page specific ID (Zone ID, Template ID, etc)
+ *
+ * @return null
  */
-
-function show_pages($amount,$rowamount,$id='')
+function show_pages($amount, $rowamount, $id = '')
 {
-   if ($amount > $rowamount) {
-      if (!isset($_GET["start"])) $_GET["start"]=1;
-      echo _('Show page') . ":<br>";
-      for ($i=1;$i<=ceil($amount / $rowamount);$i++) {
-         if ($_GET["start"] == $i) {
-            echo "[ <b>".$i."</b> ] ";
-         } else {
-            echo " <a href=\"".htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES)."?start=".$i;
-	    if ($id!='') echo "&id=".$id;
-	    echo "\">[ ".$i." ]</a> ";
-         }
-      }
-   }
+    if ($amount > $rowamount) {
+        if ($id != '') {
+            $url = htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . '?id=' . $id . '&start=';
+        } else {
+            $url = htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . '?start=';
+        }
+        $num = 8; // show $num items around current page
+        $poutput = '';
+        $lastpage = ceil($amount / $rowamount);
+        $startpage = 1;
+
+        if (!isset($_GET["start"])) $_GET["start"] = 1;
+        $start = $_GET["start"];
+
+        if ($lastpage > $num && $start > ($num/2)) {
+            $startpage = ($start - ($num / 2));
+        }
+
+        echo _('Show page') . ":<br>";
+
+        if ($lastpage > $num && $start > 1) {
+            $poutput .= '<a href="' . $url . ($start - 1) . '">[ &lt; ]</a>';
+        }
+        if ($start != 1) {
+            $poutput .= '<a href="' . $url . 1 . '">[ 1 ]</a>';
+            if ($startpage > 2) $poutput .= ' .. ';
+        }
+
+        for ($i = $startpage; $i <= min(($startpage + $num), $lastpage); $i++) {
+            if ($start == $i) {
+                $poutput .= '[ <b>' . $i . '</b> ]';
+            } elseif ($i != $lastpage && $i != 1) {
+                $poutput .= '<a href="' . $url . $i . '">[ ' . $i . ' ]</a>';
+            }
+        }
+
+        if ($start != $lastpage) {
+            if (min(($startpage + $num), $lastpage) < ($lastpage - 1)) $poutput .= ' .. ';
+            $poutput .= '<a href="' . $url . $lastpage . '">[ ' . $lastpage . ' ]</a>';
+        }
+
+        if ($lastpage > $num && $start < $lastpage) {
+            $poutput .= '<a href=" ' . $url . ($start + 1) . '">[ &gt; ]</a>';
+        }
+
+        echo $poutput;
+    }
 }
 
-/*
+/** Print alphanumeric paging menu
+ *
  * Display the alphabetic option: [0-9] [a] [b] .. [z]
+ *
+ * @param string $letterstart Starting letter/number or 'all'
+ * @param boolean $userid unknown usage
+ *
+ * @return null
  */
-
 function show_letters($letterstart,$userid=true)
 {
         echo _('Show zones beginning with') . ":<br>";
@@ -223,6 +317,13 @@ function show_letters($letterstart,$userid=true)
 	}
 }
 
+/** Check if any zones start with letter
+ *
+ * @param string $letter Starting Letter
+ * @param boolean $userid unknown usage
+ *
+ * @return int 1 if rows found, 0 otherwise
+ */
 function zone_letter_start($letter,$userid=true)
 {
         global $db;
@@ -244,6 +345,12 @@ function zone_letter_start($letter,$userid=true)
         }
 }
 
+/** Print error message (toolkit.inc)
+ *
+ * @param string $msg Error message
+ *
+ * @return null
+ */
 function error($msg) {
 	if ($msg) {
 		echo "     <div class=\"error\">Error: " . $msg . "</div>\n";
@@ -252,6 +359,12 @@ function error($msg) {
 	}
 }
 
+/** Print success message (toolkit.inc)
+ *
+ * @param string $msg Success message
+ *
+ * @return null
+ */
 function success($msg) {
 	if ($msg) {
 		echo "     <div class=\"success\">" . $msg . "</div>\n";
@@ -261,8 +374,13 @@ function success($msg) {
 }
 
 
-/*
+/** Print message
+ *
  * Something has been done nicely, display a message and a back button.
+ *
+ * @param string $msg Message
+ *
+ * @return null
  */
 function message($msg)
 {
@@ -293,8 +411,13 @@ function message($msg)
 }
 
 
-/*
+/** Send 302 Redirect with optional argument
+ *
  * Reroute a user to a cleanpage of (if passed) arg
+ * 
+ * @param string $arg argument string to add to url
+ *
+ * @return null
  */
 
 function clean_page($arg='')
@@ -319,7 +442,12 @@ function clean_page($arg='')
 	}
 }
 
-
+/** Print active status
+ *
+ * @param int $res status, 0 for inactive, 1 active
+ *
+ * @return string html containing status
+ */
 function get_status($res)
 {
 	if ($res == '0')
@@ -332,6 +460,13 @@ function get_status($res)
 	}
 }
 
+/** Parse string and substitute domain and serial
+ *
+ * @param string $val string to parse containing tokens '[ZONE]' and '[SERIAL]'
+ * @param string $domain domain to subsitute for '[ZONE]'
+ *
+ * @return string interpolated/parsed string
+ */
 function parse_template_value($val, $domain)
 {
 	$serial = date("Ymd");
@@ -342,7 +477,12 @@ function parse_template_value($val, $domain)
 	return $val;
 }
 
-
+/** Validate email address string
+ *
+ * @param string $address email address string
+ *
+ * @return boolean true if valid, false otherwise
+ */
 function is_valid_email($address) {
 	$fields = preg_split("/@/", $address, 2);
 	if((!preg_match("/^[0-9a-z]([-_.]?[0-9a-z])*$/i", $fields[0])) || (!isset($fields[1]) || $fields[1] == '' || !is_valid_hostname_fqdn($fields[1], 0))) {
@@ -351,7 +491,12 @@ function is_valid_email($address) {
 	return true;
 }
 
-
+/** Validate numeric string
+ *
+ * @param string $string number
+ *
+ * @return boolean true if number, false otherwise
+ */
 function v_num($string) {
 	if (!preg_match("/^[0-9]+$/i", $string)) { 
 		return false ;
@@ -360,14 +505,24 @@ function v_num($string) {
 	}
 }
 
-// Debug print
+/** Debug print
+ *
+ * @param string $var debug statement
+ *
+ * @return null
+ */
 function debug_print($var) {
 	echo "<pre style=\"border: 2px solid blue;\">\n";
 	if (is_array($var)) { print_r($var) ; } else { echo $var ; } 
 	echo "</pre>\n";
 }
 
-// Set timezone (required for PHP5)
+/** Set timezone (required for PHP5)
+ *
+ * Set timezone to configured tz or UTC it not set
+ *
+ * @return null
+ */
 function set_timezone() {
 	global $timezone;
 	
@@ -380,6 +535,12 @@ function set_timezone() {
 	}
 }
 
+/** Generate random salt for encryption
+ *
+ * @param int $len salt length (default=5)
+ *
+ * @return string salt string
+ */
 function generate_salt($len = 5) {
 	$valid_characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890@#$%^*()_-!';
 	$valid_len = strlen($valid_characters) - 1;
@@ -392,14 +553,33 @@ function generate_salt($len = 5) {
 	return $salt;
 }
 
+/** Extract salt from password
+ *
+ * @param string $password salted password
+ *
+ * @return string salt
+ */
 function extract_salt($password) {
 	return substr(strchr($password, ':'), 1);
 }
 
+/** Generate salted password
+ *
+ * @param string $salt salt
+ * @param string $pass password
+ *
+ * @return string salted password
+ */
 function mix_salt($salt, $pass) {
 	return md5($salt.$pass).':'.$salt;
 }
 
+/** Generate random salt and salted password
+ *
+ * @param string $pass password
+ *
+ * @return salted password
+ */
 function gen_mix_salt($pass) {
 	$salt = generate_salt();
 	return mix_salt($salt, $pass);

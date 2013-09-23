@@ -74,41 +74,53 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 	echo "        <th>" . _('Name') . "</th>\n";
 	echo "        <th>&nbsp;</th>\n";
 	echo "        <th>" . _('Type') . "</th>\n";
-	echo "        <th>" . _('Priority') . "</th>\n";
 	echo "        <th>" . _('Content') . "</th>\n";
+	echo "        <th>" . _('Priority') . "</th>\n";
 	echo "        <th>" . _('TTL') . "</th>\n";
 	echo "       </tr>\n";
 
+	/*
+	Sanitize content due to SPF record quoting in PowerDNS
+	*/
+	if ($record['type'] == "SRV" || $record['type'] == "SPF" || $record['type'] == "TXT") {
+		$clean_content = trim($record['content'], "\x22\x27");
+	} else {
+		$clean_content = $record['content'];
+	}
+
 	if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
 		echo "      <tr>\n";
-		echo "       <td>" . $record["name"] . "</td>\n";
+		echo "       <td>" . htmlspecialchars($record["name"]) . "</td>\n";
 		echo "       <td>IN</td>\n";
-		echo "       <td>" . $record["type"] . "</td>\n";
-		echo "       <td>" . $record["content"] . "</td>\n";
-		echo "       <td>" . $record["prio"] . "</td>\n";
-		echo "       <td>" . $record["ttl"] . "</td>\n";
+		echo "       <td>" . htmlspecialchars($record["type"]) . "</td>\n";
+		echo "       <td>" . htmlspecialchars($clean_content) . "</td>\n";
+		echo "       <td>" . htmlspecialchars($record["prio"]) . "</td>\n";
+		echo "       <td>" . htmlspecialchars($record["ttl"]) . "</td>\n";
 		echo "      </tr>\n";
 	} else {
 		echo "      <tr>\n";
 		echo "       <td><input type=\"hidden\" name=\"rid\" value=\"" . $_GET["id"] . "\">\n";
 		echo "       <input type=\"hidden\" name=\"zid\" value=\"" . $zid . "\">\n";
-		echo "       <input type=\"text\" name=\"name\" value=\"" . trim(str_replace($zone_name, '', $record["name"]), '.') . "\" class=\"input\">." . $zone_name . "</td>\n";
+		echo "       <input type=\"text\" name=\"name\" value=\"" . htmlspecialchars(trim(str_replace($zone_name, '', $record["name"]), '.')) . "\" class=\"input\">." . $zone_name . "</td>\n";
 		echo "       <td>IN</td>\n";
 		echo "       <td>\n";
 		echo "        <select name=\"type\">\n";
+		$found_selected_type = false;
 		foreach (get_record_types() as $type_available) {
 			if ($type_available == $record["type"]) {
 				$add = " SELECTED";
+				$found_selected_type = true;
 			} else {
 				$add = "";
 			}
-			echo "         <option" . $add . " value=\"" . $type_available . "\" >" . $type_available . "</option>\n";
+			echo "         <option" . $add . " value=\"" . htmlspecialchars($type_available) . "\" >" . $type_available . "</option>\n";
 		}
+		if (!$found_selected_type) echo "         <option SELECTED value=\"" . htmlspecialchars($record['type']) . "\"><i>" . $record['type'] . "</i></option>\n";
 		echo "        </select>\n";
 		echo "       </td>\n";
-		echo "       <td><input type=\"text\" name=\"prio\" value=\"" .  $record["prio"] . "\" class=\"sinput\"></td>\n";
-		echo "       <td><input type=\"text\" name=\"content\" value=\"" .  $record["content"] . "\" class=\"input\"></td>\n";
-		echo "       <td><input type=\"text\" name=\"ttl\" value=\"" . $record["ttl"] . "\" class=\"sinput\"></td>\n";
+		echo "       <td><input type=\"text\" name=\"content\" value=\"" .  htmlspecialchars($clean_content) . "\" class=\"input\"></td>\n";
+		echo "       <td><input type=\"text\" name=\"prio\" value=\"" .  htmlspecialchars($record["prio"]) . "\" class=\"sinput\"></td>\n";
+		echo "       <td><input type=\"text\" name=\"ttl\" value=\"" . htmlspecialchars($record["ttl"]) . "\" class=\"sinput\"></td>\n";
 		echo "      </tr>\n";
 	}
 	echo "      </table>\n";

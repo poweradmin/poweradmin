@@ -1,8 +1,20 @@
 <?php
+/** Benchmarking functions
+ *
+ * @package Default
+ */
 
 $start_memory = memory_get_usage();
 $start_time = microtime(true);
 
+/** Get Human Readable Size
+ *
+ * Convert size to human readable units
+ *
+ * @param int $size Size to convert
+ *
+ * @return string $result Human readable size
+ */
 function get_human_readable_usage($size) {
 	$units = array('B', 'KB', 'MB', 'GB');
         $result = $size . ' B';
@@ -17,7 +29,8 @@ function get_human_readable_usage($size) {
 	return $result;
 }
 
-
+/** Print Current Memory and Runtime Stats
+ */
 function display_current_stats() {
 	global $start_time, $start_memory;
 	$memory_usage = get_human_readable_usage(memory_get_usage() - $start_memory);
