@@ -682,29 +682,6 @@ function get_permission_template_details($templ_id) {
 }	
 
 
-/** Get list of all permission templates
- *
- * @return mixed[] array of permission template details [id,name,descr]
- */
-function get_list_permission_templates() {
-	global $db;
-
-	$query = "SELECT * FROM perm_templ ORDER BY name";
-	$response = $db->query($query);
-	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
-
-	$perm_templ_list = array();
-	while ($perm_templ = $response->fetchRow()) {
-		$perm_templ_list[] = array(
-			"id"	=>	$perm_templ['id'],
-			"name"	=>	$perm_templ['name'],
-			"descr"	=>	$perm_templ['descr']
-			);
-	}
-	return $perm_templ_list;
-}
-
-
 /** Add a Permission Template
  *
  * @param mixed[] $details Permission template details [templ_name,templ_descr,perm_id]
