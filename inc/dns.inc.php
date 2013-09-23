@@ -53,27 +53,71 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
 
 		case "A":
 			if (!is_valid_ipv4($content)) return false;
-                        if (!is_valid_rr_cname_exists($name,$rid)) return false; 
+			if (!is_valid_rr_cname_exists($name,$rid)) return false;
 			if (!is_valid_hostname_fqdn($name,1)) return false;
 			break;
 
 		case "AAAA":
 			if (!is_valid_ipv6($content)) return false;
-                        if (!is_valid_rr_cname_exists($name,$rid)) return false; 
+			if (!is_valid_rr_cname_exists($name,$rid)) return false;
 			if (!is_valid_hostname_fqdn($name,1)) return false;
+			break;
+
+		case "AFSDB": // TODO: implement validation.
+			break;
+
+		case "CERT": // TODO: implement validation.
 			break;
 
 		case "CNAME":
 			if (!is_valid_rr_cname_name($name)) return false;
-                        if (!is_valid_rr_cname_unique($name,$rid)) return false; 
+			if (!is_valid_rr_cname_unique($name,$rid)) return false;
 			if (!is_valid_hostname_fqdn($name,1)) return false;
 			if (!is_valid_hostname_fqdn($content,0)) return false;
 			if (!is_not_empty_cname_rr($name,$zone)) return false;
 			break;
 
+		case 'DHCID': // TODO: implement validation
+			break;
+
+		case 'DLV': // TODO: implement validation
+			break;
+
+		case 'DNSKEY': // TODO: implement validation
+			break;
+
+		case 'DS': // TODO: implement validation
+			break;
+
+		case 'EUI48': // TODO: implement validation
+			break;
+
+		case 'EUI64': // TODO: implement validation
+			break;
+
 		case "HINFO":
 			if (!is_valid_rr_hinfo_content($content)) return false;
 			if (!is_valid_hostname_fqdn($name,1)) return false;
+			break;
+
+		case 'IPSECKEY': // TODO: implement validation
+			break;
+
+		case 'KEY': // TODO: implement validation
+			break;
+
+		case 'KX': // TODO: implement validation
+			break;
+
+		case "LOC":
+			if (!is_valid_loc($content)) return false;
+			if (!is_valid_hostname_fqdn($name,1)) return false;
+			break;
+
+		case 'MINFO': // TODO: implement validation
+			break;
+
+		case 'MR': // TODO: implement validation
 			break;
 
 		case "MX":
@@ -82,10 +126,25 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
 			if (!is_valid_non_alias_target($content)) return false;
 			break;
 
+		case 'NAPTR': // TODO: implement validation
+			break;
+
 		case "NS":
 			if (!is_valid_hostname_fqdn($content,0)) return false;
 			if (!is_valid_hostname_fqdn($name,1)) return false;
 			if (!is_valid_non_alias_target($content)) return false;
+			break;
+
+		case 'NSEC': // TODO: implement validation
+			break;
+
+		case 'NSEC3': // TODO: implement validation
+			break;
+
+		case 'NSEC3PARAM': // TODO: implement validation
+			break;
+
+		case 'OPT': // TODO: implement validation
 			break;
 
 		case "PTR":
@@ -93,15 +152,37 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
 			if (!is_valid_hostname_fqdn($name,1)) return false;
 			break;
 
+		case 'RKEY': // TODO: implement validation
+			break;
+
+		case 'RP': // TODO: implement validation
+			break;
+
+		case 'RRSIG': // TODO: implement validation
+			break;
+
 		case "SOA":
 			if (!is_valid_rr_soa_name($name,$zone)) return false;
 			if (!is_valid_hostname_fqdn($name,1)) return false;
 			if (!is_valid_rr_soa_content($content)) return false;
 			break;
-		
+
+		case "SPF":
+			if(!is_valid_spf($content)) return false;
+			break;
+
 		case "SRV":
 			if (!is_valid_rr_srv_name($name)) return false;
 			if (!is_valid_rr_srv_content($content)) return false;
+			break;
+
+		case 'SSHFP': // TODO: implement validation
+			break;
+
+		case 'TLSA': // TODO: implement validation
+			break;
+
+		case 'TSIG': // TODO: implement validation
 			break;
 
 		case "TXT":
@@ -109,23 +190,14 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
 			if (!is_valid_printable($content)) return false;
 			break;
 
-		case "SPF":
-			if(!is_valid_spf($content)) return false; 
+		case 'WKS': // TODO: implement validation
 			break;
 
-		case "LOC":
-			if (!is_valid_loc($content)) return false;
-			if (!is_valid_hostname_fqdn($name,1)) return false;
-			break;
-			
 		case "CURL":
 		case "MBOXFW":
-		case "NAPTR":
-		case "SSHFP":
 		case "URL":
-			// These types are supported by PowerDNS, but there is not
-			// yet code for validation. Validation needs to be added 
-			// for these types. One Day Real Soon Now. [tm]
+			// TODO: implement validation?
+			// Fancy types are not supported anymore in PowerDNS
 			break;
 
 		default:

@@ -137,14 +137,51 @@ require_once("database.inc.php");
 $server_types = array("MASTER", "SLAVE", "NATIVE");
 
 // $rtypes - array of possible record types
-$rtypes = array('A', 'AAAA', 'CNAME', 'HINFO', 'MX', 'NAPTR', 'NS', 'PTR', 'SOA', 'SPF', 'SRV', 'SSHFP', 'TXT', 'RP');
+$rtypes = array(
+  'A',
+  'AAAA',
+  'AFSDB',
+  'CERT',
+  'CNAME',
+  'DHCID',
+  'DLV',
+  'DNSKEY',
+  'DS',
+  'EUI48',
+  'EUI64',
+  'HINFO',
+  'IPSECKEY',
+  'KEY',
+  'KX',
+  'LOC',
+  'MINFO',
+  'MR',
+  'MX',
+  'NAPTR',
+  'NS',
+  'NSEC',
+  'NSEC3',
+  'NSEC3PARAM',
+  'OPT',
+  'PTR',
+  'RKEY',
+  'RP',
+  'RRSIG',
+  'SOA',
+  'SPF',
+  'SRV',
+  'SSHFP',
+  'TLSA',
+  'TSIG',
+  'TXT',
+  'WKS',
+);
 
 // If fancy records is enabled, extend this field.
 if($dns_fancy) {
-	$rtypes[14] = 'URL';
-	$rtypes[15] = 'MBOXFW';
-	$rtypes[16] = 'CURL';
-	$rtypes[17] = 'LOC';
+  $rtypes[] = 'URL';
+  $rtypes[] = 'MBOXFW';
+  $rtypes[] = 'CURL';
 }
 
 
