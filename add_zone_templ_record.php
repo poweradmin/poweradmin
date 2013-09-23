@@ -109,15 +109,17 @@ if (!(verify_permission('zone_master_add')) || !$owner) {
 	echo "        <td class=\"n\">IN</td>\n";
 	echo "        <td class=\"n\">\n";
 	echo "         <select name=\"type\">\n";
+	$found_selected_type = !(isset($type) && $type);
 	foreach (get_record_types() as $record_type) {
-		if ($type) {
+		if (isset($type) && $type) {
 			if ($type == $record_type) {
 				$add = " SELECTED";
+				$found_selected_type = true;
 			} else {
 				$add = "";
 			}
 		} else {
-            // TODO: from where comes $zone_name value and why this check exists here?
+			// TODO: from where comes $zone_name value and why this check exists here?
 			if (isset($zone_name) && preg_match('/i(p6|n-addr).arpa/i', $zone_name) && strtoupper($record_type) == 'PTR') {
 				$add = " SELECTED";
 			} elseif (strtoupper($record_type) == 'A') {
@@ -128,6 +130,7 @@ if (!(verify_permission('zone_master_add')) || !$owner) {
 		}
 		echo "          <option" . $add . " value=\"" . $record_type . "\">" . $record_type . "</option>\n";
 	}
+	if (!$found_selected_type) echo "          <option SELECTED value=\"" . htmlspecialchars($type) . "\"><i>".htmlspecialchars($type)."</i></option>\n";
 	echo "         </select>\n";
 	echo "        </td>\n";
 	echo "        <td class=\"n\"><input type=\"text\" name=\"content\" class=\"input\" value=\"" . $content . "\"></td>\n";

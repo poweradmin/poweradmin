@@ -85,7 +85,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 	if ($record['type'] == "SRV" || $record['type'] == "SPF" || $record['type'] == "TXT") {
 		$clean_content = trim($record['content'], "\x22\x27");
 	} else {
-		$clean_content = htmlentities($record['content'], ENT_QUOTES);
+		$clean_content = $record['content'];
 	}
 
 	if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
@@ -105,14 +105,17 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 		echo "       <td>IN</td>\n";
 		echo "       <td>\n";
 		echo "        <select name=\"type\">\n";
+		$found_selected_type = false;
 		foreach (get_record_types() as $type_available) {
 			if ($type_available == $record["type"]) {
 				$add = " SELECTED";
+				$found_selected_type = true;
 			} else {
 				$add = "";
 			}
-			echo "         <option" . $add . " value=\"" . $type_available . "\" >" . $type_available . "</option>\n";
+			echo "         <option" . $add . " value=\"" . htmlspecialchars($type_available) . "\" >" . $type_available . "</option>\n";
 		}
+		if (!$found_selected_type) echo "         <option SELECTED value=\"" . htmlspecialchars($record['type']) . "\"><i>" . $record['type'] . "</i></option>\n";
 		echo "        </select>\n";
 		echo "       </td>\n";
 		echo "       <td><input type=\"text\" name=\"content\" value=\"" .  htmlspecialchars($clean_content) . "\" class=\"input\"></td>\n";

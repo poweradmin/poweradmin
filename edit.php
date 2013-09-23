@@ -186,22 +186,25 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 					echo "      <td class=\"u\"><input class=\"wide\" name=\"record[" . $r['id'] . "][name]\" value=\"" . htmlspecialchars($r['name']) . "\"></td>\n";
 					echo "      <td class=\"u\">\n";
 					echo "       <select name=\"record[" . $r['id'] . "][type]\">\n";
+					$found_selected_type = false;
 					foreach (get_record_types() as $type_available) {
 						if ($type_available == $r['type']) {
 							$add = " SELECTED";
+							$found_selected_type = true;
 						} else {
 							$add = "";
 						}
 						echo "         <option" . $add . " value=\"" . htmlspecialchars($type_available) . "\" >" . $type_available . "</option>\n";
 					}
-						/*
-						Sanitize content due to SPF record quoting in PowerDNS
-						*/
-						if ($r['type'] == "SRV" || $r['type'] == "SPF" || $r['type'] == "TXT") {
-							$clean_content = trim($r['content'], "\x22\x27");
-						} else {
-							$clean_content = htmlentities($r['content'], ENT_QUOTES);
-						}
+					if (!$found_selected_type) echo "         <option SELECTED value=\"" . htmlspecialchars($r['type']) . "\"><i>" . $r['type'] . "</i></option>\n";
+					/*
+					Sanitize content due to SPF record quoting in PowerDNS
+					*/
+					if ($r['type'] == "SRV" || $r['type'] == "SPF" || $r['type'] == "TXT") {
+						$clean_content = trim($r['content'], "\x22\x27");
+					} else {
+						$clean_content = $r['content'];
+					}
 					echo "       </select>\n";
 					echo "      </td>\n";
 					echo "      <td class=\"u\"><input class=\"wide\" name=\"record[" . $r['id'] . "][content]\" value=\"" . htmlspecialchars($clean_content) . "\"></td>\n";
@@ -252,46 +255,49 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 				echo "       <tr>\n";
 				echo "        <td class=\"n\">" . _('Name') . "</td>\n";
 				echo "        <td class=\"n\">&nbsp;</td>\n";
-	            echo "        <td class=\"n\">" . _('Type') . "</td>\n";
-	            echo "        <td class=\"n\">" . _('Content') . "</td>\n";
-	            echo "        <td class=\"n\">" . _('Priority') .  "</td>\n";
-	            echo "        <td class=\"n\">" . _('TTL') . "</td>\n";
-	            echo "       </tr>\n";
-	            echo "       <tr>\n";
-	            echo "        <td class=\"n\"><input type=\"text\" name=\"name\" class=\"input\" value=\"\">." . $zone_name . "</td>\n";
-	            echo "        <td class=\"n\">IN</td>\n";
-	            echo "        <td class=\"n\">\n";
-	            echo "         <select name=\"type\">\n";
-	            foreach (get_record_types() as $record_type) {
-			if (isset($type) && $type) {
-	               		if ($type == $record_type) {
-					$add = " SELECTED";
-				} else {
-					$add = "";
-	                    }
-	                } else {
-				if (preg_match('/i(p6|n-addr).arpa/i', $zone_name) && strtoupper($record_type) == 'PTR') {
-	                    		$add = " SELECTED";
-					$rev = "";
-				} else if (strtoupper($record_type) == 'A') {
-					$add = " SELECTED";
-					$rev = "<input type=\"checkbox\" name=\"reverse\"><span class=\"normaltext\">" . _('Add also reverse record') . "</span>\n";
-				} else {
-					$add = "";
+				echo "        <td class=\"n\">" . _('Type') . "</td>\n";
+				echo "        <td class=\"n\">" . _('Content') . "</td>\n";
+				echo "        <td class=\"n\">" . _('Priority') .  "</td>\n";
+				echo "        <td class=\"n\">" . _('TTL') . "</td>\n";
+				echo "       </tr>\n";
+				echo "       <tr>\n";
+				echo "        <td class=\"n\"><input type=\"text\" name=\"name\" class=\"input\" value=\"\">." . $zone_name . "</td>\n";
+				echo "        <td class=\"n\">IN</td>\n";
+				echo "        <td class=\"n\">\n";
+				echo "         <select name=\"type\">\n";
+				$found_selected_type = !(isset($type) && $type);
+				foreach (get_record_types() as $record_type) {
+					if (isset($type) && $type) {
+						if ($type == $record_type) {
+							$add = " SELECTED";
+							$found_selected_type = true;
+						} else {
+							$add = "";
+						}
+					} else {
+						if (preg_match('/i(p6|n-addr).arpa/i', $zone_name) && strtoupper($record_type) == 'PTR') {
+							$add = " SELECTED";
+							$rev = "";
+						} else if (strtoupper($record_type) == 'A') {
+							$add = " SELECTED";
+							$rev = "<input type=\"checkbox\" name=\"reverse\"><span class=\"normaltext\">" . _('Add also reverse record') . "</span>\n";
+						} else {
+							$add = "";
+						}
+					}
+					echo "          <option" . $add . " value=\"" . htmlspecialchars($record_type) . "\">" . $record_type . "</option>\n";
 				}
-	                 }
-	                 echo "          <option" . $add . " value=\"" . htmlspecialchars($record_type) . "\">" . $record_type . "</option>\n";
-				}
-	            echo "         </select>\n";
-	            echo "        </td>\n";
-	            echo "        <td class=\"n\"><input type=\"text\" name=\"content\" class=\"input\" value=\"\"></td>\n";
-	            echo "        <td class=\"n\"><input type=\"text\" name=\"prio\" class=\"sinput\" value=\"\"></td>\n";
-	            echo "        <td class=\"n\"><input type=\"text\" name=\"ttl\" class=\"sinput\" value=\"\"></td>\n";
-	            echo "       </tr>\n";
-	            echo "      </table>\n";
-	            echo "      <input type=\"submit\" name=\"commit\" value=\"" .  _('Add record') . "\" class=\"button\">\n";
-		    echo "      $rev";
-	            echo "     </form>\n";
+				if (!$found_selected_type) echo "         <option SELECTED value=\"" . htmlspecialchars($type) . "\"><i>" . htmlspecialchars($type) . "</i></option>\n";
+				echo "         </select>\n";
+				echo "        </td>\n";
+				echo "        <td class=\"n\"><input type=\"text\" name=\"content\" class=\"input\" value=\"\"></td>\n";
+				echo "        <td class=\"n\"><input type=\"text\" name=\"prio\" class=\"sinput\" value=\"\"></td>\n";
+				echo "        <td class=\"n\"><input type=\"text\" name=\"ttl\" class=\"sinput\" value=\"\"></td>\n";
+				echo "       </tr>\n";
+				echo "      </table>\n";
+				echo "      <input type=\"submit\" name=\"commit\" value=\"" .  _('Add record') . "\" class=\"button\">\n";
+				echo "      $rev";
+				echo "     </form>\n";
 			}
 		}
 
