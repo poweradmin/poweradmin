@@ -183,7 +183,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 					echo "     <td class=\"n\">&nbsp;</td>\n";
 					echo "     <td class=\"n\">" . $r['ttl'] . "</td>\n";
 				} else {
-					echo "      <td class=\"u\"><input class=\"wide\" name=\"record[" . $r['id'] . "][name]\" value=\"" . $r['name'] . "\"></td>\n";
+					echo "      <td class=\"u\"><input class=\"wide\" name=\"record[" . $r['id'] . "][name]\" value=\"" . htmlspecialchars($r['name']) . "\"></td>\n";
 					echo "      <td class=\"u\">\n";
 					echo "       <select name=\"record[" . $r['id'] . "][type]\">\n";
 					foreach (get_record_types() as $type_available) {
@@ -192,7 +192,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 						} else {
 							$add = "";
 						}
-						echo "         <option" . $add . " value=\"" . $type_available . "\" >" . $type_available . "</option>\n";
+						echo "         <option" . $add . " value=\"" . htmlspecialchars($type_available) . "\" >" . $type_available . "</option>\n";
 					}
 						/*
 						Sanitize content due to SPF record quoting in PowerDNS
@@ -204,9 +204,9 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 						}
 					echo "       </select>\n";
 					echo "      </td>\n";
-					echo "      <td class=\"u\"><input class=\"wide\" name=\"record[" . $r['id'] . "][content]\" value='" . $clean_content . "'></td>\n";
-					echo "      <td class=\"u\"><input size=\"4\" id=\"priority_field_" . $r['id'] . "\" name=\"record[" . $r['id'] . "][prio]\" value=\"" .  $r['prio'] . "\"></td>\n";
-					echo "      <td class=\"u\"><input size=\"4\" name=\"record[" . $r['id'] . "][ttl]\" value=\"" . $r['ttl'] . "\"></td>\n";
+					echo "      <td class=\"u\"><input class=\"wide\" name=\"record[" . $r['id'] . "][content]\" value=\"" . htmlspecialchars($clean_content) . "\"></td>\n";
+					echo "      <td class=\"u\"><input size=\"4\" id=\"priority_field_" . $r['id'] . "\" name=\"record[" . $r['id'] . "][prio]\" value=\"" .  htmlspecialchars($r['prio']) . "\"></td>\n";
+					echo "      <td class=\"u\"><input size=\"4\" name=\"record[" . $r['id'] . "][ttl]\" value=\"" . htmlspecialchars($r['ttl']) . "\"></td>\n";
 					
 				}
 				echo "     </tr>\n";
@@ -222,7 +222,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 			echo "      <a href=\"edit_comment.php?domain=" . $zone_id . "\">
                                     <img src=\"images/edit.gif\" alt=\"[ ". _('Edit comment') . " ]\"></a>\n";
 			echo "     </td>\n";
-			echo "     <td colspan=\"4\"><textarea rows=\"5\" cols=\"80\" name=\"comment\">" . get_zone_comment($zone_id) . "</textarea></td>\n";
+			echo "     <td colspan=\"4\"><textarea rows=\"5\" cols=\"80\" name=\"comment\">" . htmlspecialchars(get_zone_comment($zone_id)) . "</textarea></td>\n";
 			echo "     <td>&nbsp;</td>\n";
 
                         echo "     <tr>\n";
@@ -280,7 +280,7 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 					$add = "";
 				}
 	                 }
-	                 echo "          <option" . $add . " value=\"" . $record_type . "\">" . $record_type . "</option>\n";
+	                 echo "          <option" . $add . " value=\"" . htmlspecialchars($record_type) . "\">" . $record_type . "</option>\n";
 				}
 	            echo "         </select>\n";
 	            echo "        </td>\n";

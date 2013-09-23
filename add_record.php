@@ -148,7 +148,7 @@ if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit
 	echo "        <td class=\"n\">" . _('TTL') . "</td>\n";
 	echo "       </tr>\n";
 	echo "       <tr>\n";
-	echo "        <td class=\"n\"><input type=\"text\" name=\"name\" class=\"input\" value=\"" . $name . "\">." . $zone_name . "</td>\n";
+	echo "        <td class=\"n\"><input type=\"text\" name=\"name\" class=\"input\" value=\"" . htmlspecialchars($name) . "\">." . $zone_name . "</td>\n";
 	echo "        <td class=\"n\">IN</td>\n";
 	echo "        <td class=\"n\">\n";
 	echo "         <select name=\"type\">\n";
@@ -170,13 +170,13 @@ if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit
 				$add = "";
 			}
 		}
-		echo "          <option" . $add . " value=\"" . $record_type . "\">" . $record_type . "</option>\n";
+		echo "          <option" . $add . " value=\"" . htmlspecialchars($record_type) . "\">" . $record_type . "</option>\n";
 	}
 	echo "         </select>\n";
 	echo "        </td>\n";
-	echo "        <td class=\"n\"><input type=\"text\" name=\"content\" class=\"input\" value=\"" . $content . "\"></td>\n";
-	echo "        <td class=\"n\"><input type=\"text\" name=\"prio\" class=\"sinput\" value=\"" . $prio . "\"></td>\n";
-	echo "        <td class=\"n\"><input type=\"text\" name=\"ttl\" class=\"sinput\" value=\"" . $ttl . "\"</td>\n";
+	echo "        <td class=\"n\"><input type=\"text\" name=\"content\" class=\"input\" value=\"" . htmlspecialchars($content) . "\"></td>\n";
+	echo "        <td class=\"n\"><input type=\"text\" name=\"prio\" class=\"sinput\" value=\"" . htmlspecialchars($prio) . "\"></td>\n";
+	echo "        <td class=\"n\"><input type=\"text\" name=\"ttl\" class=\"sinput\" value=\"" . htmlspecialchars($ttl) . "\"</td>\n";
 	echo "       </tr>\n";
 	echo "      </table>\n";
 	echo "      <br>\n";
