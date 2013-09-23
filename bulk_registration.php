@@ -67,6 +67,7 @@ if (isset($_POST['zone_template'])) {
 Check user permissions
 */
 (verify_permission('zone_master_add')) ? $zone_master_add = "1" : $zone_master_add = "0" ;
+(verify_permission('user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0" ;
 
 if (isset($_POST['submit']) && $zone_master_add == "1" ) {
         $error = false;
