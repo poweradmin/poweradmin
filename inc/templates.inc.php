@@ -1,4 +1,8 @@
 <?php
+/** Template functions
+ *
+ * @package Default
+ */
 
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://www.poweradmin.org> for more details.
@@ -24,8 +28,12 @@
 require_once("inc/toolkit.inc.php");
 
 
-// Get a list of all available zone templates.
-
+/** Get a list of all available zone templates
+ *
+ * @param int $userid User ID
+ *
+ * @return mixed[] array of zone templates [id,name,descr]
+ */
 function get_list_zone_templ($userid) {
 	global $db;
 
@@ -46,8 +54,13 @@ function get_list_zone_templ($userid) {
 	return $zone_templ_list;
 }
 
-// Add a zone template.
-
+/** Add a zone template
+ *
+ * @param mixed[] $details zone template details
+ * @param $userid User ID that owns template
+ * 
+ * @return boolean true on success, false otherwise
+ */
 function add_zone_templ($details, $userid) {
 	global $db;
 
@@ -71,8 +84,12 @@ function add_zone_templ($details, $userid) {
 	}
 }
 
-// Get name and description of template based on template ID.
-
+/** Get name and description of template based on template ID
+ *
+ * @param int $zone_templ_id Zone template ID
+ *
+ * @return mixed[] zone template details
+ */
 function get_zone_templ_details($zone_templ_id) {
 	global $db;
 
@@ -87,8 +104,12 @@ function get_zone_templ_details($zone_templ_id) {
 	return $details;
 }
 
-// Delete a zone template
-
+/** Delete a zone template
+ *
+ * @param int $zone_templ_id Zone template ID
+ *
+ * @return boolean true on success, false otherwise
+ */
 function delete_zone_templ($zone_templ_id) {
 	global $db;
 
@@ -115,8 +136,12 @@ function delete_zone_templ($zone_templ_id) {
 	}
 }
 
-// Delete all zone templates for specific user
-
+/** Delete all zone templates for specific user
+ *
+ * @param $userid User ID
+ * 
+ * @return boolean true on success, false otherwise
+ */
 function delete_zone_templ_userid($userid) {
 	global $db;
 
@@ -133,7 +158,12 @@ function delete_zone_templ_userid($userid) {
 	}
 }
 
-// Count zone template records
+/** Count zone template records
+ *
+ * @param int $zone_templ_id Zone template ID
+ *
+ * @return boolean true on success, false otherwise
+ */
 
 function count_zone_templ_records($zone_templ_id) {
         global $db;
@@ -143,8 +173,12 @@ function count_zone_templ_records($zone_templ_id) {
         return $record_count;
 }
 
-// Check if zone template exist
-
+/** Check if zone template exist
+ *
+ * @param int $zone_templ_id Zone template ID
+ *
+ * @return boolean true on success, false otherwise
+ */
 function zone_templ_id_exists($zone_templ_id) {
         global $db;
         $query = "SELECT COUNT(id) FROM zone_templ WHERE id = " . $db->quote($zone_templ_id, 'integer');
@@ -153,10 +187,14 @@ function zone_templ_id_exists($zone_templ_id) {
         return $count;
 }
 
-/*
- * Get a zone template record from an id.
+/** Get a zone template record from an id
+ *
  * Retrieve all fields of the record and send it back to the function caller.
- * return values: the array with information, or -1 is nothing is found.
+ *
+ * @param int $id zone template record id
+ *
+ * @return mixed[] zone template record
+ * [id,zone_templ_id,name,type,content,ttl,prio] or -1 if nothing is found
  */
 function get_zone_templ_record_from_id($id)
 {
@@ -185,10 +223,17 @@ function get_zone_templ_record_from_id($id)
 	}
 }
 
-/*
- * Get all zone template records from a zone template id.
+/** Get all zone template records from a zone template id
+ *
  * Retrieve all fields of the records and send it back to the function caller.
- * return values: the array with information, or -1 is nothing is found.
+ * 
+ * @param int $id zone template ID
+ * @param int $rowstart Starting row (default=0)
+ * @param int $rowamount Number of rows per query (default=999999)
+ * @param string $sortby Column to sort by (default='name')
+ *
+ * @return mixed[] zone template records numerically indexed
+ * [id,zone_templd_id,name,type,content,ttl,pro] or -1 if nothing is found
  */
 function get_zone_templ_records($id,$rowstart=0,$rowamount=999999,$sortby='name') {
 	global $db;
@@ -213,10 +258,19 @@ function get_zone_templ_records($id,$rowstart=0,$rowamount=999999,$sortby='name'
 	}
 }
 
-/*
- * Adds a record for a zone template.
- * This function validates it if correct it inserts it into the database.
- * return values: true if succesful.
+/** Add a record for a zone template
+ *
+ * This function validates and if correct it inserts it into the database.
+ * TODO: actual validation?
+ *
+ * @param int $zone_templ_id zone template ID
+ * @param string $name name part of record
+ * @param string $type record type
+ * @param string $content record content
+ * @param int $ttl TTL
+ * @param int $prio Priority
+ *
+ * @return boolean true if succesful, false otherwise
  */
 function add_zone_templ_record($zone_templ_id, $name, $type, $content, $ttl, $prio) {
 	global $db;
@@ -249,10 +303,14 @@ function add_zone_templ_record($zone_templ_id, $name, $type, $content, $ttl, $pr
 	}
 }
 
-/*
+/** Modify zone template reocrd
+ *
  * Edit a record for a zone template.
  * This function validates it if correct it inserts it into the database.
- * return values: true if succesful.
+ *
+ * @param mixed[] $record zone record array
+ *
+ * @return boolean true on success, false otherwise
  */
 function edit_zone_templ_record($record) {
 	global $db;
@@ -285,9 +343,11 @@ function edit_zone_templ_record($record) {
 	}
 }
 
-/*
- * Delete a record for a zone template by a given id.
- * return values: true if succesful.
+/** Delete a record for a zone template by a given id
+ *
+ * @param int $rid template record id
+ *
+ * @return boolean true on success, false otherwise
  */
 function delete_zone_templ_record($rid)
 {
@@ -304,9 +364,12 @@ function delete_zone_templ_record($rid)
 	}
 }
 
-/*
- * Check if the session user is the owner for the zone template.
- * return values: true if succesful.
+/** Check if the session user is the owner for the zone template
+ *
+ * @param int $zone_templ_id zone template id
+ * @param int $userid user id
+ *
+ * @return boolean true on success, false otherwise
  */
 function get_zone_templ_is_owner($zone_templ_id, $userid) {
 	global $db;
@@ -322,8 +385,16 @@ function get_zone_templ_is_owner($zone_templ_id, $userid) {
 	}
 }
 
-// Add a zone template from zone / another template.
-
+/** Add a zone template from zone / another template
+ *
+ * @param string $template_name template name
+ * @param string $description description
+ * @param int $userid user id
+ * @param mixed[] $records array of zone records
+ * @param string $domain domain to substitute with '[ZONE]' (optional) [default=null]
+ *
+ * @return boolean true on success, false otherwise
+ */
 function add_zone_templ_save_as($template_name, $description, $userid, $records, $domain = null) {
 	global $db;
     global $db_layer;
@@ -382,8 +453,13 @@ function add_zone_templ_save_as($template_name, $description, $userid, $records,
 	return true;
 }
 
-// Get a list of all zones using the template
-
+/** Get list of all zones using template
+ *
+ * @param int $zone_templ_id zone template id
+ * @param int $userid user id
+ *
+ * @return mixed[] array of zones [id,name,type,count_records]
+ */
 function get_list_zone_use_templ($zone_templ_id, $userid) {
 	global $db;
 
@@ -426,8 +502,13 @@ function get_list_zone_use_templ($zone_templ_id, $userid) {
 	return $zone_list;
 }
 
-// Edit a zone template.
-
+/** Modify zone template
+ *
+ * @param mixed[] $details array of new zone template details
+ * @param int $zone_templ_id zone template id
+ *
+ * @return boolean true on success, false otherwise
+ */
 function edit_zone_templ($details, $zone_templ_id) {
 	global $db;
         $zone_name_exists = zone_templ_name_exists($details['templ_name'], $zone_templ_id);
@@ -450,8 +531,13 @@ function edit_zone_templ($details, $zone_templ_id) {
 	}
 }
 
-// Check if zone template name exist
-
+/** Check if zone template name exists
+ *
+ * @param string $zone_templ_name zone template name
+ * @param int $zone_templ_id zone template id (optional) [default=null]
+ *
+ * @return int number of matching templates
+ */
 function zone_templ_name_exists($zone_templ_name, $zone_templ_id = null) {
         global $db;
         

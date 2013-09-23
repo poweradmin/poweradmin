@@ -27,10 +27,20 @@
     by some malicious user or some script, which can reset password every sec. */
 exit;
 
-session_start();
+/** Reset Password functionality
+ *
+ */
 
-/* TODO: reimplement displaying of errors/messages */
+
+session_start();
+/** Print error message
+ *
+ * @param string $msg Error message
+ *
+ * @return null
+ */
 function error($msg) {
+/* TODO: reimplement displaying of errors/messages */
     if ($msg) {
         echo "     <div class=\"error\">Error: " . $msg . "</div>\n";
     } else {
