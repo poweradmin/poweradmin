@@ -78,28 +78,39 @@ if (!(verify_permission('zone_master_add')) || !$owner) {
 	echo "      <input type=\"hidden\" name=\"rid\" value=\"" . $record_id . "\">\n";
 	echo "      <input type=\"hidden\" name=\"zid\" value=\"" . $zone_templ_id . "\">\n";
 	echo "      <tr>\n";
-	echo "       <td><input type=\"text\" name=\"name\" value=\"" . $record["name"] . "\" class=\"input\"></td>\n";
+	echo "       <td><input type=\"text\" name=\"name\" value=\"" . htmlspecialchars($record["name"]) . "\" class=\"input\"></td>\n";
 	echo "       <td>IN</td>\n";
 	echo "       <td>\n";
 	echo "        <select name=\"type\">\n";
+	$found_selected_type = false;
 	foreach (get_record_types() as $type_available) {
 		if ($type_available == $record["type"]) {
 			$add = " SELECTED";
+			$found_selected_type = true;
 		} else {
 			$add = "";
 		}
 		echo "         <option" . $add . " value=\"" . $type_available . "\" >" . $type_available . "</option>\n";
 	}
+	if (!$found_selected_type) echo "         <option SELECTED value=\"" . htmlspecialchars($record['type']) . "\"><i>" . $record['type'] . "</i></option>\n";
+	/*
+	Sanitize content due to SPF record quoting in PowerDNS
+	*/
+	if ($record['type'] == "SRV" || $record['type'] == "SPF" || $record['type'] == "TXT") {
+		$clean_content = trim($record['content'], "\x22\x27");
+	} else {
+		$clean_content = $record['content'];
+	}
 	echo "        </select>\n";
 	echo "       </td>\n";
-	echo "       <td><input type=\"text\" name=\"content\" value=\"" .  $record["content"] . "\" class=\"input\"></td>\n";
-	echo "       <td><input type=\"text\" name=\"prio\" value=\"" .  $record["prio"] . "\" class=\"sinput\"></td>\n";
-	echo "       <td><input type=\"text\" name=\"ttl\" value=\"" . $record["ttl"] . "\" class=\"sinput\"></td>\n";
+	echo "       <td><input type=\"text\" name=\"content\" value=\"" .  htmlspecialchars($clean_content) . "\" class=\"input\"></td>\n";
+	echo "       <td><input type=\"text\" name=\"prio\" value=\"" .  htmlspecialchars($record["prio"]) . "\" class=\"sinput\"></td>\n";
+	echo "       <td><input type=\"text\" name=\"ttl\" value=\"" . htmlspecialchars($record["ttl"]) . "\" class=\"sinput\"></td>\n";
 	echo "      </tr>\n";
 	echo "      </table>\n";
 	echo "      <p>\n";
 	echo "       <input type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\" class=\"button\">&nbsp;&nbsp;\n";
-        echo "       <input type=\"reset\" name=\"reset\" value=\"" . _('Reset changes') . "\" class=\"button\">&nbsp;&nbsp;\n";
+	echo "       <input type=\"reset\" name=\"reset\" value=\"" . _('Reset changes') . "\" class=\"button\">&nbsp;&nbsp;\n";
 	echo "      </p>\n";
 	echo "     </form>\n";
 }

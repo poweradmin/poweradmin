@@ -121,14 +121,17 @@ if (!(verify_permission('zone_master_add')) || !$owner) {
 				echo "      <td class=\"u\"><input class=\"wide\" name=\"record[" . $r['id'] . "][name]\" value=\"" . $r['name'] . "\"></td>\n";
 				echo "      <td class=\"u\">\n";
 				echo "       <select name=\"record[" . $r['id'] . "][type]\">\n";
+				$found_selected_type = false;
 				foreach (get_record_types() as $type_available) {
 					if ($type_available == $r['type']) {
 						$add = " SELECTED";
+						$found_selected_type = true;
 					} else {
 						$add = "";
 					}
 					echo "         <option" . $add . " value=\"" . $type_available . "\" >" . $type_available . "</option>\n";
 				}
+				if (!$found_selected_type) echo "         <option SELECTED value=\"" . htmlspecialchars($r['type']) . "\"><i>" . $r['type'] . "</i></option>\n";
 				/*
 				Sanitize content due to SPF record quoting in PowerDNS
 				*/
