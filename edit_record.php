@@ -88,14 +88,23 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 	echo "        <th>" . _('TTL') . "</th>\n";
 	echo "       </tr>\n";
 
+	/*
+	Sanitize content due to SPF record quoting in PowerDNS
+	*/
+	if ($record['type'] == "SRV" || $record['type'] == "SPF" || $record['type'] == "TXT") {
+		$clean_content = trim($record['content'], "\x22\x27");
+	} else {
+		$clean_content = htmlentities($record['content'], ENT_QUOTES);
+	}
+
 	if ( $zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0" ) {
 		echo "      <tr>\n";
 		echo "       <td>" . $record["name"] . "</td>\n";
 		echo "       <td>IN</td>\n";
-		echo "       <td>" . $record["type"] . "</td>\n";
-		echo "       <td>" . $record["content"] . "</td>\n";
-		echo "       <td>" . $record["prio"] . "</td>\n";
-		echo "       <td>" . $record["ttl"] . "</td>\n";
+		echo "       <td>" . htmlspecialchars($record["type"]) . "</td>\n";
+		echo "       <td>" . htmlspecialchars($clean_content) . "</td>\n";
+		echo "       <td>" . htmlspecialchars($record["prio"]) . "</td>\n";
+		echo "       <td>" . htmlspecialchars($record["ttl"]) . "</td>\n";
 		echo "      </tr>\n";
 	} else {
 		echo "      <tr>\n";
@@ -115,8 +124,8 @@ if ( $perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0" )
 		}
 		echo "        </select>\n";
 		echo "       </td>\n";
+		echo "       <td><input type=\"text\" name=\"content\" value=\"" .  htmlspecialchars($clean_content) . "\" class=\"input\"></td>\n";
 		echo "       <td><input type=\"text\" name=\"prio\" value=\"" .  htmlspecialchars($record["prio"]) . "\" class=\"sinput\"></td>\n";
-		echo "       <td><input type=\"text\" name=\"content\" value=\"" .  htmlspecialchars($record["content"]) . "\" class=\"input\"></td>\n";
 		echo "       <td><input type=\"text\" name=\"ttl\" value=\"" . htmlspecialchars($record["ttl"]) . "\" class=\"sinput\"></td>\n";
 		echo "      </tr>\n";
 	}
