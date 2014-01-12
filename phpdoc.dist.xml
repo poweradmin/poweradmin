@@ -9,8 +9,6 @@
         </markers>
         <extensions>
             <extension>php</extension>
-            <extension>php3</extension>
-            <extension>phtml</extension>
         </extensions>
         <visibility></visibility>
     </parser>
@@ -20,8 +18,8 @@
     <logging>
         <level>warn</level>
         <paths>
-            <default>{APP_ROOT}/data/log/{DATE}.log</default>
-            <errors>{APP_ROOT}/data/log/{DATE}.errors.log</errors>
+            <default>logs/phpdoc/{DATE}.log</default>
+            <errors>logs/phpdoc/{DATE}.error.log</errors>
         </paths>
     </logging>
     <transformations>
@@ -29,7 +27,7 @@
     </transformations>
     <files>
         <directory>.</directory>
-        <ignore>test/*</ignore>
+        <ignore>tests/*</ignore>
         <ignore>inc/error.inc.php</ignore>
     </files>
 </phpdoc>
