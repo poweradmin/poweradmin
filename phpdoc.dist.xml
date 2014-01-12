@@ -17,17 +17,23 @@
     </transformer>
     <logging>
         <level>warn</level>
-        <paths>
+<!--
+	<paths>
             <default>logs/phpdoc/{DATE}.log</default>
             <errors>logs/phpdoc/{DATE}.error.log</errors>
         </paths>
+-->
     </logging>
     <transformations>
         <template name="responsive" />
     </transformations>
     <files>
         <directory>.</directory>
+        <ignore>addons/*</ignore>
+        <ignore>install/*</ignore>
+        <ignore>logs/*</ignore>
         <ignore>tests/*</ignore>
+        <ignore>inc/config.inc.php</ignore>
         <ignore>inc/error.inc.php</ignore>
     </files>
 </phpdoc>
