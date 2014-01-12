@@ -1,7 +1,7 @@
 <?php
 /** Benchmarking functions
  *
- * @package Default
+ * @package Poweradmin
  */
 
 $start_memory = memory_get_usage();

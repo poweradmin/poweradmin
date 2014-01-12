@@ -1,7 +1,7 @@
 <?php
 /** Authentication functions
  *
- * @package Default
+ * @package Poweradmin
  */
 
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.

@@ -1,7 +1,7 @@
 <?php
 /** Toolkit functions
  *
- * @package Default
+ * @package Poweradmin
  */
 
 // TODO: display elapsed time and memory consumption,
