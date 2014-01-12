@@ -353,7 +353,7 @@ function clean_page($arg='')
 {
 	if (!$arg)
 	{
-		header("Location: ".htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES)."?time=".time());
+		header("Location: ".htmlentities($_SERVER['SCRIPT_NAME'], ENT_QUOTES)."?time=".time());
 		exit;
 	}
 	else
