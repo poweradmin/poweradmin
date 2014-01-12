@@ -4,8 +4,8 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2012  Poweradmin Development Team
- *      <https://www.poweradmin.org/trac/wiki/Credits>
+ *  Copyright 2010-2014  Poweradmin Development Team
+ *      <http://www.poweradmin.org/credits.html>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
