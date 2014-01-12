@@ -35,35 +35,83 @@ or implied, of Aldo Gonzalez.
  * @license     http://opensource.org/licenses/BSD-2-Clause BSD
  */
 
+/**
+ * MDB2 over PDO
+ */
 class PDOStatementCommon {
+    /**
+     * Internal resource
+     * @var mixed
+     */
     private $pdoStatement;
 
+    /**
+     * Class constructor
+     *
+     * @param mixed $obj
+     */
     public function __construct($obj)
     {
         $this->pdoStatement = $obj;
     }
 
-    /* wrapper for MDB2 */
+    /**
+     * Returns the number of rows in a result object
+     *
+     * @return int
+     */
     public function numRows()
     {
         return $this->pdoStatement->rowCount();
     }
 
+    /**
+     * Fetch and return a row of data
+     *
+     * @param int $fetch_style
+     * @return mixed
+     */
     public function fetch($fetch_style = PDO::FETCH_ASSOC) {
         return $this->pdoStatement->fetch($fetch_style);
     }
 
-    /* wrapper for MDB2 */
+    /**
+     * Fetch and return a row of data
+     *
+     * @param int $fetch_style
+     * @return mixed
+     */
     public function fetchRow($fetch_style = PDO::FETCH_ASSOC) {
         $row = $this->pdoStatement->fetch($fetch_style);
         return $row;
     }
 }
 
+/**
+ * Implements common PDO methods
+ */
 class PDOCommon extends PDO {
+    /**
+     * result limit used in the next query
+     * @var int
+     */
     private $limit = 0;
+
+    /**
+     * result offset used in the next query
+     * @var int
+     */
     private $from = 0;
 
+    /**
+     * PDOCommon constructor
+     *
+     * @param string $dsn
+     * @param string $username
+     * @param string $password
+     * @param array $driver_options
+     * @param boolean $isQuiet
+     */
     public function __construct($dsn, $username='', $password='',
                                 $driver_options=array(), $isQuiet = false)
     {
@@ -87,6 +135,12 @@ class PDOCommon extends PDO {
         }
     }
 
+    /**
+     * Send a query to the database and return any results
+     *
+     * @param string $str
+     * @return \PDOStatementCommon
+     */
     public function query($str)
     {
         // check if limit has been specified. if so, modify the query
@@ -125,7 +179,12 @@ class PDOCommon extends PDO {
         return $obj_pdoStatementCommon;
     }
 
-    /* returns an HTML formatted SQL string */
+    /**
+     * Return an HTML formatted SQL string
+     *
+     * @param string $str
+     * @return string
+     */
     protected function formatSQLforHTML($str)
     {
         $Keyword = array("SELECT ", "WHERE ", " ON ", "AND ", "OR ",
@@ -143,7 +202,13 @@ class PDOCommon extends PDO {
         return str_replace($Keyword, $Replace, $str);
     }
 
-    /* wrapper for MDB2 */
+    /**
+     * Execute the specified query, fetch the value from the first column of
+     * the the first result row
+     *
+     * @param string $str
+     * @return array
+     */
     public function queryOne($str)
     {
         $result = $this->query($str);
@@ -153,7 +218,12 @@ class PDOCommon extends PDO {
         return $row[0];
     }
 
-    /* wrapper for MDB2 */
+    /**
+     * Execute the specified query, fetch values from first result row
+     *
+     * @param string $str
+     * @return mixed
+     */
     public function queryRow($str)
     {
         $obj_pdoStatement = parent::query($str);
@@ -162,14 +232,24 @@ class PDOCommon extends PDO {
         return $row;
     }
 
-    /* wrapper for MDB2 */
+    /**
+     * Set the range of the next query
+     *
+     * @param int $limit
+     * @param int $from
+     */
     public function setLimit($limit, $from=0)
     {
         $this->limit = $limit;
         $this->from = $from;
     }
 
-    /* wrapper for MDB2 */
+    /**
+     * Quotes a string so it can be safely used in a query.
+     *
+     * @param string $str
+     * @return string
+     */
     public function escape($str)
     {
         return $this->quote($str);
