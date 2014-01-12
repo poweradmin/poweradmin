@@ -21,16 +21,40 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * PDO DB access layer
+ *
+ * @package     Poweradmin
+ * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
+ * @copyright   2010-2014 Poweradmin Development Team
+ * @license     http://opensource.org/licenses/GPL-3.0 GPL
+ */
+
 include_once "PDOCommon.class.php";
 
+/**
+ * Overrided PEAR class
+ */
 class PEAR {
+    /**
+     * Overrided isError method
+     */
 	public function isError() {
 	}
 }
 
+/**
+ * Fake PDO Extended module
+ */
 class PDOExtended {
 
-    // http://pear.php.net/package/MDB2/docs/2.5.0b3/MDB2/MDB2_Extended.html#methodexecuteMultiple
+    /**
+     * Does several execute() calls on the same statement handle
+     *
+     * @link http://pear.php.net/package/MDB2/docs/2.5.0b3/MDB2/MDB2_Extended.html#methodexecuteMultiple
+     * @param resource $stmt Statement handle
+     * @param array $params numeric array containing the data to insert into the query
+     */
     public function executeMultiple( $stmt, $params) {
         foreach($params as $values) {
             $stmt->execute($values);
@@ -39,10 +63,30 @@ class PDOExtended {
 
 }
 
+/**
+ * PDO access layer
+ */
 class PDOLayer extends PDOCommon {
+
+        /**
+         * Enables/disables debugging
+         * @var boolean
+         */
 	private $debug = false;
+
+        /**
+         * Internal storage for queries
+         * @var array
+         */
 	private $queries = array();
 
+        /**
+         * Quotes a string
+         *
+         * @param string $str
+         * @param string $type
+         * @return string Returns quoted string
+         */
 	public function quote($str, $type) {
 		if ($type == 'integer') {
 			$type = PDO::PARAM_INT;
@@ -52,16 +96,33 @@ class PDOLayer extends PDOCommon {
 		return parent::quote($str, $type); 
 	}
 
+        /**
+         * Set execution options
+         *
+         * @param string $option Option name
+         * @param int $value Option value
+         */
 	public function setOption($option, $value) {
 		if ($option == 'debug' && $value == 1) {
 			$this->debug = true;
 		}
 	}
 
+        /**
+         * Return debug output
+         *
+         * @param string Debug output
+         */
 	public function getDebugOutput() {
 		echo join("<br>", $this->queries);
 	}
 
+        /**
+         * Executes SQL query
+         *
+         * @param string $str SQL query
+         * @return PDOStatement
+         */
 	public function query($str) {
 		if ($this->debug) {
 			$this->queries[] = $str;
@@ -70,17 +131,28 @@ class PDOLayer extends PDOCommon {
 		return parent::query($str);
 	}
 
+        /**
+         * Dummy method
+         */
 	public function disconnect() {
 	}
 
-    // http://pear.php.net/package/MDB2/docs/2.5.0b3/MDB2/MDB2_Driver_Manager_Common.html#methodcreateTable
+    /**
+     * Load PDO module
+     *
+     * @param string $name Module name to load
+     */
     public function loadModule($name) {
         if ($name == 'Extended') {
             $this->extended = new PDOExtended();
         }
     }
 
-    // http://pear.php.net/package/MDB2/docs/2.5.0b3/MDB2/MDB2_Driver_Manager_Common.html#methodlistTables
+    /**
+     * List all tables in the current database
+     *
+     * @link http://pear.php.net/package/MDB2/docs/2.5.0b3/MDB2/MDB2_Driver_Manager_Common.html#methodlistTables
+     */
     public function listTables() {
         // TODO: addapt this function also to pgsql & sqlite
 
@@ -103,7 +175,14 @@ class PDOLayer extends PDOCommon {
         return $tables;
     }
 
-    // http://pear.php.net/package/MDB2/docs/2.5.0b3/MDB2/MDB2_Driver_Manager_Common.html#methodcreateTable
+    /**
+     * Create a new table
+     *
+     * @link http://pear.php.net/package/MDB2/docs/2.5.0b3/MDB2/MDB2_Driver_Manager_Common.html#methodcreateTable
+     * @param string $name Name of the table that should be created
+     * @param mixed[] $fields Associative array that contains the definition of each field of the new table
+     * @param mixed[] $options An associative array of table options
+     */
     public function createTable($name, $fields, $options = array()) {
         $db_type = $this->getAttribute(PDO::ATTR_DRIVER_NAME);
         $query_fields = array();
@@ -144,7 +223,12 @@ class PDOLayer extends PDOCommon {
         $this->exec($query);
     }
 
-    // http://pear.php.net/package/MDB2/docs/2.5.0b3/MDB2/MDB2_Driver_Manager_Common.html#methoddropTable
+    /**
+     * Drop an existing table
+     *
+     * @link http://pear.php.net/package/MDB2/docs/2.5.0b3/MDB2/MDB2_Driver_Manager_Common.html#methoddropTable
+     * @param string $name name of the table that should be dropped
+     */
     public function dropTable($name) {
         $query = "DROP TABLE $name";
         $this->exec($query);

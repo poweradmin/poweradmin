@@ -30,10 +30,10 @@
  * @param int $rid Record ID
  * @param int $zid Zone ID
  * @param string $type Record Type
- * @param string &$content content part of record
- * @param string &$name Name part of record
- * @param int &$prio Priority
- * @param int &$ttl TTL
+ * @param mixed $content content part of record
+ * @param mixed $name Name part of record
+ * @param mixed $prio Priority
+ * @param mixed $ttl TTL
  *
  * @return boolean true on success, false otherwise
  */
@@ -142,7 +142,7 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
 
 /** Test if hostname is valid FQDN
  *
- * @param string &$hostname Hostname string
+ * @param mixed $hostname Hostname string
  * @param string $wildcard Hostname includes wildcard '*'
  *
  * @return boolean true if valid, false otherwise
@@ -419,8 +419,11 @@ function is_valid_rr_cname_unique($name,$rid) {
         return true; 
 } 
 
-/*
+/**
  * Check that the zone does not have a empty CNAME RR
+ * 
+ * @param string $name
+ * @param string $zone
  */
 function is_not_empty_cname_rr($name,$zone) {
 
@@ -478,7 +481,7 @@ function is_valid_rr_hinfo_content($content) {
 
 /** Check if SOA content is valid
  *
- * @param string &$content SOA record content
+ * @param mixed $content SOA record content
  *
  * @return boolean true if valid, false otherwise
  */
@@ -558,7 +561,7 @@ function is_valid_rr_soa_name($name, $zone) {
  *
  * Check if MX or SRV priority is within range, otherwise set to 0
  *
- * @param string &$prio Priority
+ * @param mixed $prio Priority
  * @param string $type Record type
  *
  * @return boolean true if valid, false otherwise
@@ -577,7 +580,7 @@ function is_valid_rr_prio(&$prio, $type) {
 
 /** Check if SRV name is valid
  *
- * @param &$name SRV name
+ * @param mixed $name SRV name
  *
  * @return boolean true if valid, false otherwise
  */
@@ -598,7 +601,7 @@ function is_valid_rr_srv_name(&$name){
 
 /** Check if SRV content is valid
  *
- * @param string &$content SRV content
+ * @param mixed $content SRV content
  *
  * @return boolean true if valid, false otherwise
  */

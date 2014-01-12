@@ -1,5 +1,3 @@
-<!--
-
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://www.poweradmin.org> for more details.
  *
@@ -115,6 +113,4 @@ function checkDomainFilled(){
 
     add_zone_master.submit();
 }
-
--->
 

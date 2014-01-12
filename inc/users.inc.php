@@ -409,7 +409,7 @@ function edit_user($id, $user, $fullname, $email, $perm_templ, $description, $ac
  * Change the pass of the user.
  * The user is automatically logged out after the pass change.
  *
- * @param mixed[] User Details
+ * @param mixed[] $details User Details
  *
  * @return null
  */

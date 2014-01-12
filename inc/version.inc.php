@@ -21,6 +21,15 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * File that contains system version
+ *
+ * @package     Poweradmin
+ * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
+ * @copyright   2010-2014 Poweradmin Development Team
+ * @license     http://opensource.org/licenses/GPL-3.0 GPL
+ */
+
 $VERSION = "2.1.6";
 
 ?>

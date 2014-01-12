@@ -25,10 +25,15 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 The views and conclusions contained in the software and documentation are those of the
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of Aldo Gonzalez.
-
-   Extends PDO to ensure compatibility with some used functionality
-   from PEAR::MDB2
 */
+
+/**
+ * Extends PDO to ensure compatibility with some used functionality from PEAR::MDB2
+ *
+ * @package     Poweradmin
+ * @copyright   2011 Aldo Gonzalez
+ * @license     http://opensource.org/licenses/BSD-2-Clause BSD
+ */
 
 class PDOStatementCommon {
     private $pdoStatement;
