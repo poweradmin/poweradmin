@@ -1,15 +1,5 @@
 <?php
-/** Toolkit functions
- *
- * @package Poweradmin
- */
 
-// TODO: display elapsed time and memory consumption,
-// used to check improvements in refactored version 
-$display_stats = false;
-if ($display_stats) include('inc/benchmark.php');
-
-ob_start();
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://www.poweradmin.org> for more details.
  *
@@ -30,6 +20,22 @@ ob_start();
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ *  Toolkit functions
+ *
+ * @package Poweradmin
+ * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
+ * @copyright   2010-2014 Poweradmin Development Team
+ * @license     http://opensource.org/licenses/GPL-3.0 GPL
+ */
+
+// TODO: display elapsed time and memory consumption,
+// used to check improvements in refactored version 
+$display_stats = false;
+if ($display_stats) include('inc/benchmark.php');
+
+ob_start();
 
 if (! function_exists('session_start')) die(error('You have to install PHP session extension!'));
 if (! function_exists('_')) die(error('You have to install PHP gettext extension!'));

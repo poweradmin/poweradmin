@@ -1,8 +1,4 @@
 <?php
-/** Template functions
- *
- * @package Poweradmin
- */
 
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://www.poweradmin.org> for more details.
@@ -23,6 +19,15 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ *  Template functions
+ *
+ * @package Poweradmin
+ * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
+ * @copyright   2010-2014 Poweradmin Development Team
+ * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
 
 require_once("inc/toolkit.inc.php");

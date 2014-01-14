@@ -1,8 +1,4 @@
 <?php
-/** Database functions
- *
- * @package Poweradmin
- */
 
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://www.poweradmin.org> for more details.
@@ -25,8 +21,16 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-global $db_layer;
+/**
+ * Database functions
+ *
+ * @package Poweradmin
+ * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
+ * @copyright   2010-2014 Poweradmin Development Team
+ * @license     http://opensource.org/licenses/GPL-3.0 GPL
+ */
 
+global $db_layer;
 
 // if DB abstraction layer is not defined in configuration file then try to
 // auto-configure otherwise fail gracefully
