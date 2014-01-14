@@ -30,11 +30,6 @@
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
 
-/** Record functions
- *
- */
-
-
 /** Check if Zone ID exists
  *
  * @param int $zid Zone ID
