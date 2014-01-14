@@ -97,7 +97,8 @@ function doAuthenticate() {
 					}
 					//If a user has just authenticated, redirect him to requested page
 					session_write_close();
-                                        clean_page($_SERVER['SCRIPT_NAME'] . "?" . $_POST["query_string"]);
+                                        $redirect_url = ($_POST["query_string"] ? $_SERVER['SCRIPT_NAME'] . "?" . $_POST["query_string"] : $_SERVER['SCRIPT_NAME']);
+                                        clean_page($redirect_url);
 					exit;
 				}
 			} else if (isset($_POST['authenticate'])) {
