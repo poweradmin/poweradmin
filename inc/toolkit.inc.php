@@ -30,6 +30,10 @@
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
 
+// Fix for Strict Standards: Non-static method PEAR::setErrorHandling() should not be called statically
+// TODO: remove after PEAR::MDB2 replacement with PDO
+ini_set ('error_reporting', E_ALL & ~ (E_NOTICE | E_STRICT));
+
 // TODO: display elapsed time and memory consumption,
 // used to check improvements in refactored version 
 $display_stats = false;
