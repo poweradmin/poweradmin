@@ -142,6 +142,10 @@ $valid_tlds = array("ac", "ad", "ae", "aero", "af", "ag", "ai", "al", "am",
   "xn--xkc2dl3a5ee0h", "xn--yfro4i67o", "xn--ygbi2ammx", "xxx", "ye", "yt",
   "za", "zm", "zw");
 
+// Special TLDs for testing and documentation purposes
+// http://tools.ietf.org/html/rfc2606#section-2
+array_push($valid_tlds, 'test', 'example', 'invalid', 'localhost');
+
 /* Database connection */
 
 require_once("database.inc.php");
