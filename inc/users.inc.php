@@ -47,6 +47,12 @@ require_once("inc/toolkit.inc.php");
 function verify_permission($permission)
 {
     global $db;
+    global $auth_mode;
+
+    if ($auth_mode == "ldap") {
+	// For the moment, ldap users are ueberusers who can do anything; so every permission granted
+	return 1;
+    }
 
     if ((!isset($_SESSION['userid'])) || (!is_object($db))) {
         return 0;

@@ -38,12 +38,9 @@
  * @return null
  */
 function doAuthenticate() {
-	global $db;
-	global $iface_expire;
-	global $syslog_use, $syslog_ident, $syslog_facility;
+	global $auth_mode;
 	global $session_key;
-	global $password_encryption;
-
+	global $iface_expire;
 	if (isset($_SESSION['userid']) && isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] == "logout") {
 		logout( _('You have logged out.'), 'success');
 	}
@@ -51,11 +48,15 @@ function doAuthenticate() {
 	// If a user had just entered his/her login && password, store them in our session.
 	if (isset($_POST["authenticate"]))
 	{
-		$_SESSION["userpwd"] = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($session_key), $_POST['password'], MCRYPT_MODE_CBC, md5(md5($session_key))));;
+		if ($auth_mode == "ldap"){
+			// Something tells me that if it wasn't necesary, this would be a bad idea
+			$_SESSION['clearpass'] = $_POST['password'];
+		} else {
+			$_SESSION["userpwd"] = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($session_key), $_POST['password'], MCRYPT_MODE_CBC, md5(md5($session_key))));;
+		}
 		$_SESSION["userlogin"] = $_POST["username"];
 		$_SESSION["userlang"] = $_POST["userlang"];
 	}
-
 	// Check if the session hasnt expired yet.
 	if ((isset($_SESSION["userid"])) && ($_SESSION["lastmod"] != "") && ((time() - $_SESSION["lastmod"]) > $iface_expire))
 	{
@@ -64,6 +65,77 @@ function doAuthenticate() {
 
 	// If the session hasn't expired yet, give our session a fresh new timestamp.
 	$_SESSION["lastmod"] = time();
+
+
+	if ($auth_mode == "ldap"){
+		ldapAuthenticate();
+	} else {
+		sqlAuthenticate();
+	}
+}
+
+function ldapAuthenticate()
+{
+	global $ldap_host;
+	global $ldap_port;
+	global $ldap_basedn;
+	global $ldap_search_filter;
+
+	$user = $_SESSION["userlogin"];
+	$pass = $_SESSION['clearpass'];
+
+	if (isset($ldap_host)){
+		$host = $ldap_host;
+	} else {
+		$host = 'localhost';
+	}
+
+	if (isset($ldap_port)){
+		$port = $ldap_port;
+	} else {
+		$port = 389;
+	}
+	if (isset($ldap_search_filter)){
+		$needles = array("%u", "%h", "%p");
+		$replace = array($user, $ldap_host, $port);
+		$ldapsearch = str_replace($needles, $replace, $ldap_search_filter);
+	} else {
+		$ldapsearch = '(&(uid=' . $user . ")(objectClass=posixAccount))";
+	}
+	
+	
+	if ($user!= "" && $pass != "") {
+		$directory=ldap_connect($host, $port);
+		ldap_set_option($directory, LDAP_OPT_PROTOCOL_VERSION, 3);
+		$record = ldap_search(
+			$directory, $ldap_basedn, $ldapsearch
+		);
+		if ($record) {
+			$result = ldap_get_entries($directory, $record);
+			if ($result['count'] != 0) {
+				if (@ldap_bind($directory, $result[0]['dn'], $pass) ) {
+					// pretend to be user 1 (default admin user) for other checks
+					$_SESSION["userid"] = 1;
+					return $result[0];
+				} else {
+					logout( _("ldap bind failed somehow"), 'error');
+				}
+			} else {
+				logout( _("Zero results found"). 'error');
+			}
+		} else {
+			logout( _("No record found"), 'error');
+		 }
+	} else {
+		logout( _("Empty user/pass"), 'error');
+	}
+}
+
+function sqlAuthenticate() {
+	global $db;
+	global $syslog_use, $syslog_ident, $syslog_facility;
+	global $session_key;
+	global $password_encryption;
 
 	if (isset($_SESSION["userlogin"]) && isset($_SESSION["userpwd"]))
 	{
@@ -221,11 +293,12 @@ function logout($msg="",$type="")
 {
 	unset($_SESSION["userid"]);
 	unset($_SESSION["name"]);
+	unset($_SESSION["clearpass"]);
+	unset($_SESSION["userpwd"]);
 	session_unset();
 	session_destroy();
 	session_write_close();
 	auth($msg, $type);
 	exit;
 }
-
 ?>
