@@ -179,8 +179,8 @@ switch($step) {
         if (method_exists($fill_perm_items, 'free')) {
             $fill_perm_items->free();
         }
-		foreach ($def_remaining_queries as $query) {
-			$db->query($query);
+		foreach ($def_remaining_queries as $user_query) {
+			$db->query($user_query);
 		}
 		echo _('done!') . "</p>";
 

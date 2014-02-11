@@ -62,6 +62,7 @@ class PDOStatementCommon {
      */
     public function numRows()
     {
+        // NOTE: Doesn't work properly with PDO and SQLite3
         return $this->pdoStatement->rowCount();
     }
 

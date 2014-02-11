@@ -70,15 +70,8 @@ function verify_permission($permission)
 			WHERE templ_id = " . $db->quote($templ_id, 'integer') . " 
 			AND perm_id = " . $ueberUserId;
 
-    $response = $db->query($query);
-
-    if (PEAR::isError($response)) {
-        error($response->getMessage());
-        return false;
-    }
-
-    if ($response->numRows() > 0) {
-        return 1;
+    if ($db->queryOne($query)) {
+        return true;
     }
 
     // Find the permission ID for the requested permission.
@@ -93,17 +86,7 @@ function verify_permission($permission)
 			WHERE templ_id = " . $db->quote($templ_id, 'integer') . " 
 			AND perm_id = " . $db->quote($perm_id, 'integer');
 
-    if (PEAR::isError($response)) {
-        error($response->getMessage());
-        return false;
-    }
-
-    $response = $db->query($query);
-    if ($response->numRows() > 0) {
-        return 1;
-    } else {
-        return 0;
-    }
+    return ($db->queryOne($query) ? true : false);
 }
 
 /** List Permission Templates
@@ -199,13 +182,8 @@ function show_users($id='',$rowstart=0,$rowamount=9999999)
 {
 	global $db;
 	if(is_numeric($id)) {
-		$response = $db->query("SELECT id FROM users WHERE id=".$db->quote($id, 'integer'));
-		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
-		if ($response->numRows() == 1) {
-			return true;
-		} else {
-			return false;
-		}
+		$response = $db->queryOne("SELECT id FROM users WHERE id=".$db->quote($id, 'integer'));
+                return ($response ? true : false);
 	}
 }
 
@@ -221,15 +199,8 @@ function show_users($id='',$rowstart=0,$rowamount=9999999)
 function user_exists($user)
 {
 	global $db;
-	$response = $db->query("SELECT id FROM users WHERE username=".$db->quote($user, 'text'));
-	if (PEAR::isError($response)) { error($response->getMessage()); return false; }
-	if ($response->numRows() == 0) {
-                 return false;
-	} elseif ($response->numRows() == 1) {
-        	return true;
-	} else {
-        	error(ERR_UNKNOWN);
-	}
+	$response = $db->queryOne("SELECT id FROM users WHERE username=".$db->quote($user, 'text'));
+        return ($response ? true : false);
 }
 
 
@@ -290,10 +261,10 @@ function delete_perm_templ($ptid) {
 		error(ERR_PERM_DEL_PERM_TEMPL);
 	} else {
 		$query = "SELECT id FROM users WHERE perm_templ = " . $ptid;
-		$response = $db->query($query);
+		$response = $db->queryOne($query);
 		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
 
-		if($response->numRows() > 0) {
+		if($response) {
 			error(ERR_PERM_TEMPL_ASSIGNED);
 			return false;
 		} else {
@@ -367,10 +338,8 @@ function edit_user($id, $user, $fullname, $email, $perm_templ, $description, $ac
 			// sure it doesn't already exist.
 			
 			$query = "SELECT id FROM users WHERE username = " . $db->quote($user, 'integer');
-			$response = $db->query($query);
-			if (PEAR::isError($response)) { error($response->getMessage()); return false; }
-
-			if($response->numRows() > 0) {
+			$response = $db->queryOne($query);
+			if($response) {
 				error(ERR_USER_EXIST);
 				return false;
 			}
@@ -487,24 +456,18 @@ function get_fullname_from_userid($id) {
  * 
  * @return string Full Name
  */
-function get_owner_from_id($id)
-{
-	global $db;
-	if (is_numeric($id))
-	{
-		$response = $db->query("SELECT fullname FROM users WHERE id=".$db->quote($id, 'integer'));
-		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
-		if ($response->numRows() == 1)
-		{
-			$r = $response->fetchRow();
-			return $r["fullname"];
-		}
-		else
-		{
-			error(ERR_USER_NOT_EXIST);
-		}
-	}
-	error(ERR_INV_ARG);
+function get_owner_from_id($id) {
+    global $db;
+    if (is_numeric($id)) {
+        $response = $db->queryRow("SELECT fullname FROM users WHERE id=" . $db->quote($id, 'integer'));
+
+        if ($response) {
+            return $response["fullname"];
+        } else {
+            error(ERR_USER_NOT_EXIST);
+        }
+    }
+    error(ERR_INV_ARG);
 }
 
 /** Get Full Names of owners for a Domain ID
@@ -517,23 +480,20 @@ function get_owner_from_id($id)
  */
 function get_fullnames_owners_from_domainid($id) {
 
-	global $db;
-	if (is_numeric($id)) {
-		$response = $db->query("SELECT users.id, users.fullname FROM users, zones WHERE zones.domain_id=".$db->quote($id, 'integer')." AND zones.owner=users.id ORDER by fullname");
-		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
-		if ($response->numRows() == 0) {
-			return "";
-		} else {
-			$names = array();
-			while ($r = $response->fetchRow()) {
-				$names[] = $r['fullname'];
-			}
-			return implode(', ', $names);
-		}
-	}
-	error(ERR_INV_ARG);
+    global $db;
+    if (is_numeric($id)) {
+        $response = $db->query("SELECT users.id, users.fullname FROM users, zones WHERE zones.domain_id=" . $db->quote($id, 'integer') . " AND zones.owner=users.id ORDER by fullname");
+        if ($response) {
+            $names = array();
+            while ($r = $response->fetchRow()) {
+                $names[] = $r['fullname'];
+            }
+            return implode(', ', $names);
+        }
+        return "";
+    }
+    error(ERR_INV_ARG);
 }
-
 
 /** Verify User is Zone ID owner
  *
@@ -542,23 +502,16 @@ function get_fullnames_owners_from_domainid($id) {
  * @return int 1 if owner, 0 if not owner
  */
 function verify_user_is_owner_zoneid($zoneid) {
-	global $db;
+    global $db;
 
-	$userid=$_SESSION["userid"];
-
-	if (is_numeric($zoneid)) {
-		$response = $db->query("SELECT zones.id 
-				FROM zones 
+    $userid = $_SESSION["userid"];
+    if (is_numeric($zoneid)) {
+        $response = $db->queryOne("SELECT zones.id FROM zones 
 				WHERE zones.owner = " . $db->quote($userid, 'integer') . "
-				AND zones.domain_id = ". $db->quote($zoneid, 'integer')) ;
-		if (PEAR::isError($response)) { error($response->getMessage()); return false; }
-		if ($response->numRows() == 0) {
-			return "0";
-		} else {
-			return "1";
-		}
-	}
-	error(ERR_INV_ARG);
+				AND zones.domain_id = " . $db->quote($zoneid, 'integer'));
+        return ($response ? "1" : "0");
+    }
+    error(ERR_INV_ARG);
 }
 
 /** Get User Details
@@ -839,10 +792,8 @@ function update_user_details($details) {
 			// we have been given. User wants a change of username. Now, make
 			// sure it doesn't already exist.
 			$query = "SELECT id FROM users WHERE username = " . $db->quote($details['username'], 'text');
-			$response = $db->query($query);
-			if (PEAR::isError($response)) { error($response->getMessage()); return false; }
-
-			if($response->numRows() > 0) {
+			$response = $db->queryOne($query);
+                        if($response) {
 				error(ERR_USER_EXIST);
 				return false;
 			}
@@ -937,7 +888,3 @@ function add_new_user($details) {
 	
 	return true;
 }
-
-			
-
-?>

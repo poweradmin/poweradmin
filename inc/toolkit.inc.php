@@ -288,13 +288,8 @@ function zone_letter_start($letter,$userid=true)
 			LEFT JOIN zones ON domains.id=zones.domain_id 
 			WHERE substring(domains.name,1,1) ".$sql_regexp." ".$db->quote("^".$letter, 'text');
 	$db->setLimit(1);
-        $result = $db->query($query);
-        $numrows = $result->numRows();
-        if ( $numrows == "1" ) {
-                return 1;
-        } else {
-                return 0;
-        }
+        $result = $db->queryOne($query);
+        return ($result ? 1 : 0);
 }
 
 /** Print error message (toolkit.inc)

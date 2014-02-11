@@ -201,31 +201,27 @@ function zone_templ_id_exists($zone_templ_id) {
  * @return mixed[] zone template record
  * [id,zone_templ_id,name,type,content,ttl,prio] or -1 if nothing is found
  */
-function get_zone_templ_record_from_id($id)
-{
-	global $db;
-	if (is_numeric($id)) {
-		$result = $db->query("SELECT id, zone_templ_id, name, type, content, ttl, prio FROM zone_templ_records WHERE id=".$db->quote($id, 'integer'));
-		if($result->numRows() == 0) {
-			return -1;
-		} elseif ($result->numRows() == 1) {
-			$r = $result->fetchRow();
-			$ret = array(
-				"id"            =>      $r["id"],
-				"zone_templ_id" =>      $r["zone_templ_id"],
-				"name"          =>      $r["name"],
-				"type"          =>      $r["type"],
-				"content"       =>      $r["content"],
-				"ttl"           =>      $r["ttl"],
-				"prio"          =>      $r["prio"],
-				);
-			return $ret;
-		} else {
-			error(sprintf(ERR_INV_ARGC, "get_zone_templ_record_from_id", "More than one row returned! This is bad!"));
-		}
-	} else {
-		error(sprintf(ERR_INV_ARG, "get_zone_templ_record_from_id"));
-	}
+function get_zone_templ_record_from_id($id) {
+    global $db;
+    if (is_numeric($id)) {
+        $result = $db->queryRow("SELECT id, zone_templ_id, name, type, content, ttl, prio FROM zone_templ_records WHERE id=" . $db->quote($id, 'integer'));
+        if ($result) {
+            $ret = array(
+                "id" => $result["id"],
+                "zone_templ_id" => $result["zone_templ_id"],
+                "name" => $result["name"],
+                "type" => $result["type"],
+                "content" => $result["content"],
+                "ttl" => $result["ttl"],
+                "prio" => $result["prio"],
+            );
+            return $ret;
+        } else {
+            return -1;
+        }
+    } else {
+        error(sprintf(ERR_INV_ARG, "get_zone_templ_record_from_id"));
+    }
 }
 
 /** Get all zone template records from a zone template id
@@ -240,27 +236,23 @@ function get_zone_templ_record_from_id($id)
  * @return mixed[] zone template records numerically indexed
  * [id,zone_templd_id,name,type,content,ttl,pro] or -1 if nothing is found
  */
-function get_zone_templ_records($id,$rowstart=0,$rowamount=999999,$sortby='name') {
-	global $db;
-	if (is_numeric($id)) {
-		$db->setLimit($rowamount, $rowstart);
-		$result = $db->query("SELECT id FROM zone_templ_records WHERE zone_templ_id=".$db->quote($id, 'integer')." ORDER BY ".$sortby);
-		$ret = array();
-		if($result->numRows() == 0) {
-			return -1;
-		} else {
-			$ret[] = array();
-			$retcount = 0;
-			while($r = $result->fetchRow()) {
-				// Call get_record_from_id for each row.
-				$ret[$retcount] = get_zone_templ_record_from_id($r["id"]);
-				$retcount++;
-			}
-			return $ret;
-		}
-	} else {
-		error(sprintf(ERR_INV_ARG, "get_zone_templ_records"));
-	}
+function get_zone_templ_records($id, $rowstart = 0, $rowamount = 999999, $sortby = 'name') {
+    global $db;
+
+    if (is_numeric($id)) {
+        $db->setLimit($rowamount, $rowstart);
+        $result = $db->query("SELECT id FROM zone_templ_records WHERE zone_templ_id=" . $db->quote($id, 'integer') . " ORDER BY " . $sortby);
+        $ret[] = array();
+        $retcount = 0;
+        while ($r = $result->fetchRow()) {
+            // Call get_record_from_id for each row.
+            $ret[$retcount] = get_zone_templ_record_from_id($r["id"]);
+            $retcount++;
+        }
+        return ($retcount > 0 ? $ret : -1);
+    } else {
+        error(sprintf(ERR_INV_ARG, "get_zone_templ_records"));
+    }
 }
 
 /** Add a record for a zone template
@@ -318,34 +310,36 @@ function add_zone_templ_record($zone_templ_id, $name, $type, $content, $ttl, $pr
  * @return boolean true on success, false otherwise
  */
 function edit_zone_templ_record($record) {
-	global $db;
+    global $db;
 
-	if (!(verify_permission('zone_master_add'))) {
-		error(ERR_PERM_EDIT_RECORD);
-		return false;
-	} else {
-                if ("" != $record['name']) {
-                        if($record['type'] == "SPF"){
-                                $content = $db->quote(stripslashes('\"'.$record['content'].'\"'), 'text');
-                        }else{
-                                $content = $db->quote($record['content'], 'text');
-                        }
-                        $query = "UPDATE zone_templ_records
-                                SET name=".$db->quote($record['name'], 'text').",
-                                type=".$db->quote($record['type'], 'text').",
-                                content=".$content.",
-                                ttl=".$db->quote($record['ttl'], 'integer').",
-                                prio=".$db->quote(isset($record['prio']) ? $record['prio'] : 0, 'integer')."
-                                WHERE id=".$db->quote($record['rid'], 'integer');
-                        $result = $db->query($query);
-                        if (PEAR::isError($result)) { error($result->getMessage()); return false; }
-                        return true;
-                }
-                else {
-                        error(ERR_DNS_HOSTNAME);
-                        return false;
-                }
-	}
+    if (!(verify_permission('zone_master_add'))) {
+        error(ERR_PERM_EDIT_RECORD);
+        return false;
+    } else {
+        if ("" != $record['name']) {
+            if ($record['type'] == "SPF") {
+                $content = $db->quote(stripslashes('\"' . $record['content'] . '\"'), 'text');
+            } else {
+                $content = $db->quote($record['content'], 'text');
+            }
+            $query = "UPDATE zone_templ_records
+                                SET name=" . $db->quote($record['name'], 'text') . ",
+                                type=" . $db->quote($record['type'], 'text') . ",
+                                content=" . $content . ",
+                                ttl=" . $db->quote($record['ttl'], 'integer') . ",
+                                prio=" . $db->quote(isset($record['prio']) ? $record['prio'] : 0, 'integer') . "
+                                WHERE id=" . $db->quote($record['rid'], 'integer');
+            $result = $db->query($query);
+            if (PEAR::isError($result)) {
+                error($result->getMessage());
+                return false;
+            }
+            return true;
+        } else {
+            error(ERR_DNS_HOSTNAME);
+            return false;
+        }
+    }
 }
 
 /** Delete a record for a zone template by a given id
@@ -379,7 +373,7 @@ function delete_zone_templ_record($rid)
 function get_zone_templ_is_owner($zone_templ_id, $userid) {
 	global $db;
 
-	$query = "SELECT owner FROM zone_templ WHERE id = " . $db->quote($zone_templ_id, 'integer');
+        $query = "SELECT owner FROM zone_templ WHERE id = " . $db->quote($zone_templ_id, 'integer');
 	$result = $db->queryOne($query);
 	if (PEAR::isError($result)) { error($result->getMessage()); return false; }
 

@@ -886,29 +886,20 @@ function get_name_from_record_id($id)
  *
  * @return string Domain name
  */
-function get_zone_name_from_id($zid)
-{
-	global $db;
+function get_zone_name_from_id($zid) {
+    global $db;
 
-	if (is_numeric($zid))
-	{
-		$result = $db->query("SELECT name FROM domains WHERE id=".$db->quote($zid, 'integer'));
-		$rows = $result->numRows() ;
-		if ($rows == 1) {
- 			$r = $result->fetchRow();
- 			return $r["name"];
-		} elseif ($rows == "0") {
-			error(sprintf("Zone does not exist."));
-			return false;
-		} else {
-	 		error(sprintf(ERR_INV_ARGC, "get_zone_name_from_id", "more than one domain found?! whaaa! BAD! BAD! Contact admin!"));
-			return false;
-		}
-	}
-	else
-	{
-		error(sprintf(ERR_INV_ARGC, "get_zone_name_from_id", "Not a valid domainid: $zid"));
-	}
+    if (is_numeric($zid)) {
+        $result = $db->queryRow("SELECT name FROM domains WHERE id=" . $db->quote($zid, 'integer'));
+        if ($result) {
+            return $result["name"];
+        } else {
+            error(sprintf("Zone does not exist."));
+            return false;
+        }
+    } else {
+        error(sprintf(ERR_INV_ARGC, "get_zone_name_from_id", "Not a valid domainid: $zid"));
+    }
 }
 
 /** Get zone id from name
@@ -921,16 +912,11 @@ function get_zone_id_from_name($zname) {
       
         if (!empty($zname))
         {
-                $result = $db->query("SELECT id FROM domains WHERE name=".$db->quote($zname, 'text'));
-                $rows = $result->numRows() ;
-                if ($rows == 1) {
-                        $r = $result->fetchRow();
-                        return $r["id"];
+                $result = $db->queryRow("SELECT id FROM domains WHERE name=".$db->quote($zname, 'text'));
+                if ($result) {
+                        return $result["id"];
                 } elseif ($rows == "0") {
                         error(sprintf("Zone does not exist."));
-                        return false;
-                } else {
-                        error(sprintf(ERR_INV_ARGC, "get_zone_id_from_name", "more than one domain found?! whaaa! BAD! BAD! Contact admin!"));
                         return false;
                 }
         }
@@ -964,21 +950,13 @@ function get_zone_info_from_id($zid) {
 					FROM domains LEFT OUTER JOIN records ON domains.id = records.domain_id 
 					WHERE domains.id = " . $db->quote($zid, 'integer') . "
 					GROUP BY domains.id, domains.type, domains.name, domains.master";
-		$result = $db->query($query);
-		if (PEAR::isError($result)) { error($result->getMessage()); return false; }
-
-		if($result->numRows() != 1) {
-			error(_('Function returned an error (multiple zones matching this zone ID).'));
-			return false;
-		} else {
-			$r = $result->fetchRow();
-			$return = array(
-				"name"		=>	$r['name'],
-				"type"		=>	$r['type'],
-				"master_ip"	=>	$r['master_ip'],
-				"record_count"	=>	$r['record_count']
-				);
-		}
+		$result = $db->queryRow($query);
+                $return = array(
+                        "name"		=>	$result['name'],
+                        "type"		=>	$result['type'],
+                        "master_ip"	=>	$result['master_ip'],
+                        "record_count"	=>	$result['record_count']
+                        );
 		return $return;
 	}
 }
@@ -1012,35 +990,36 @@ function get_best_matching_zone_id_from_name($domain) {
 // tring to find the correct zone
 // %ip6.arpa and %in-addr.arpa is looked for
 
-        global $db;
+    global $db;
 
-        $ret = array();
-        $match=72; // the longest ip6.arpa has a length of 72
-        $found_domain_id=-1;
+    $match = 72; // the longest ip6.arpa has a length of 72
+    $found_domain_id = -1;
 
-        // get all reverse-zones
-        $query = "SELECT name, id
-                    FROM domains
-                   WHERE name like " . $db->quote('%.arpa', 'text') ."
+    // get all reverse-zones
+    $query = "SELECT name, id FROM domains
+                   WHERE name like " . $db->quote('%.arpa', 'text') . "
                    ORDER BY length(name) DESC";
 
-        $response = $db->query($query);
-        if (PEAR::isError($response)) { error($response->getMessage()); return false; };
-        if ($response->numRows() == 0) {
-                return -1;
-        } else {
-                while ($r = $response->fetchRow()) {
-                        $pos = stripos($domain, $r["name"]);
-                        if ($pos !== false) {
-                                // one possible searched $domain is found
-                                if ($pos < $match) {
-                                        $match = $pos;
-                                        $found_domain_id = $r["id"];
-                                }
-                        }
+    $response = $db->query($query);
+    if (PEAR::isError($response)) {
+        error($response->getMessage());
+        return false;
+    }
+    if ($response) {
+        while ($r = $response->fetchRow()) {
+            $pos = stripos($domain, $r["name"]);
+            if ($pos !== false) {
+                // one possible searched $domain is found
+                if ($pos < $match) {
+                    $match = $pos;
+                    $found_domain_id = $r["id"];
                 }
+            }
         }
-        return $found_domain_id;
+    } else {
+        return -1;
+    }
+    return $found_domain_id;
 }
 
 /** Check if Domain Exists
@@ -1055,12 +1034,8 @@ function domain_exists($domain)
 	global $db;
 
 	if (is_valid_hostname_fqdn($domain,0)) {
-		$result = $db->query("SELECT id FROM domains WHERE name=".$db->quote($domain, 'text'));
-		if ($result->numRows() == 0) {
-			return false;
-		} elseif ($result->numRows() >= 1) {
-			return true;
-		}
+		$result = $db->queryRow("SELECT id FROM domains WHERE name=".$db->quote($domain, 'text'));
+                return ($result ? true : false);
 	} else {
 		error(ERR_DOMAIN_INVALID);
 	}
@@ -1081,18 +1056,14 @@ function get_supermasters()
 
         $ret = array();
 
-        if($result->numRows() == 0) {
-                return -1;
-        } else {
-                while ($r = $result->fetchRow()) {
-                        $ret[] = array(
-                        "master_ip"     => $r["ip"],
-                        "ns_name"       => $r["nameserver"],
-                        "account"       => $r["account"],
-                        );
-                }
-		return $ret;
+        while ($r = $result->fetchRow()) {
+                $ret[] = array(
+                "master_ip"     => $r["ip"],
+                "ns_name"       => $r["nameserver"],
+                "account"       => $r["account"],
+                );
         }
+        return (sizeof($ret) == 0 ? -1 : $ret);
 }
 
 /** Check if Supermaster IP address exists
@@ -1101,25 +1072,14 @@ function get_supermasters()
  *
  * @return boolean true if exists, otherwise false
  */
-function supermaster_exists($master_ip)
-{
-        global $db;
-        if (is_valid_ipv4($master_ip) || is_valid_ipv6($master_ip))
-        {
-                $result = $db->query("SELECT ip FROM supermasters WHERE ip = ".$db->quote($master_ip, 'text'));
-                if ($result->numRows() == 0)
-                {
-                        return false;
-                }
-                elseif ($result->numRows() >= 1)
-                {
-                        return true;
-                }
-        }
-        else
-        {
-                error(sprintf(ERR_INV_ARGC, "supermaster_exists", "No or no valid IPv4 or IPv6 address given."));
-        }
+function supermaster_exists($master_ip) {
+    global $db;
+    if (is_valid_ipv4($master_ip) || is_valid_ipv6($master_ip)) {
+        $result = $db->queryOne("SELECT ip FROM supermasters WHERE ip = " . $db->quote($master_ip, 'text'));
+        return ($result ? true : false);
+    } else {
+        error(sprintf(ERR_INV_ARGC, "supermaster_exists", "No or no valid IPv4 or IPv6 address given."));
+    }
 }
 
 /** Check if Supermaster IP Address and NS Name combo exists
@@ -1129,26 +1089,15 @@ function supermaster_exists($master_ip)
  *
  * @return boolean true if exists, false otherwise
  */
-function supermaster_ip_name_exists($master_ip, $ns_name)
-{
-        global $db;
-        if ((is_valid_ipv4($master_ip) || is_valid_ipv6($master_ip)) && is_valid_hostname_fqdn($ns_name,0))
-        {
-                $result = $db->query("SELECT ip FROM supermasters WHERE ip = ".$db->quote($master_ip, 'text').
-					" AND nameserver = ".$db->quote($ns_name, 'text'));
-                if ($result->numRows() == 0)
-                {
-                        return false;
-                }
-                elseif ($result->numRows() >= 1)
-                {
-                        return true;
-                }
-        }
-        else
-        {
-                error(sprintf(ERR_INV_ARGC, "supermaster_exists", "No or no valid IPv4 or IPv6 address given."));
-        }
+function supermaster_ip_name_exists($master_ip, $ns_name) {
+    global $db;
+    if ((is_valid_ipv4($master_ip) || is_valid_ipv6($master_ip)) && is_valid_hostname_fqdn($ns_name, 0)) {
+        $result = $db->queryOne("SELECT ip FROM supermasters WHERE ip = " . $db->quote($master_ip, 'text') .
+                " AND nameserver = " . $db->quote($ns_name, 'text'));
+        return ($result ? true : false);
+    } else {
+        error(sprintf(ERR_INV_ARGC, "supermaster_exists", "No or no valid IPv4 or IPv6 address given."));
+    }
 }
 
 /** Get Zones
@@ -1288,42 +1237,29 @@ function zone_count_for_uid($uid) {
  * @param int $id Record ID
  * @return int|mixed[] array of record detail, or -1 if nothing found
  */
-function get_record_from_id($id)
-{
-	global $db;
-	if (is_numeric($id))
-	{
-		$result = $db->query("SELECT id, domain_id, name, type, content, ttl, prio, change_date FROM records WHERE id=".$db->quote($id, 'integer'));
-		if($result->numRows() == 0)
-		{
-			return -1;
-		}
-		elseif ($result->numRows() == 1)
-		{
-			$r = $result->fetchRow();
-			$ret = array(
-				"id"            =>      $r["id"],
-				"domain_id"     =>      $r["domain_id"],
-				"name"          =>      $r["name"],
-				"type"          =>      $r["type"],
-				"content"       =>      $r["content"],
-				"ttl"           =>      $r["ttl"],
-				"prio"          =>      $r["prio"],
-				"change_date"   =>      $r["change_date"]
-				);
-			return $ret;
-		}
-		else
-		{
-			error(sprintf(ERR_INV_ARGC, "get_record_from_id", "More than one row returned! This is bad!"));
-		}
-	}
-	else
-	{
-		error(sprintf(ERR_INV_ARG, "get_record_from_id"));
-	}
+function get_record_from_id($id) {
+    global $db;
+    if (is_numeric($id)) {
+        $result = $db->queryRow("SELECT id, domain_id, name, type, content, ttl, prio, change_date FROM records WHERE id=" . $db->quote($id, 'integer'));
+        if ($result) {
+            $ret = array(
+                "id" => $result["id"],
+                "domain_id" => $result["domain_id"],
+                "name" => $result["name"],
+                "type" => $result["type"],
+                "content" => $result["content"],
+                "ttl" => $result["ttl"],
+                "prio" => $result["prio"],
+                "change_date" => $result["change_date"]
+            );
+            return $ret;
+        } else {
+            return -1;
+        }
+    } else {
+        error(sprintf(ERR_INV_ARG, "get_record_from_id"));
+    }
 }
-
 
 /** Get all records from a domain id.
  *
@@ -1336,63 +1272,55 @@ function get_record_from_id($id)
  *
  * @return int|mixed[] array of record detail, or -1 if nothing found
  */
-function get_records_from_domain_id($id,$rowstart=0,$rowamount=999999,$sortby='name') {
-	global $db;
+function get_records_from_domain_id($id, $rowstart = 0, $rowamount = 999999, $sortby = 'name') {
+    global $db;
 
-        $result = array();
-	if (is_numeric($id)) {
-		if ((isset($_SESSION[$id."_ispartial"])) && ($_SESSION[$id."_ispartial"] == 1)) {
-			$db->setLimit($rowamount, $rowstart);
-			$result = $db->query("SELECT record_owners.record_id as id
+    $result = array();
+    if (is_numeric($id)) {
+        if ((isset($_SESSION[$id . "_ispartial"])) && ($_SESSION[$id . "_ispartial"] == 1)) {
+            $db->setLimit($rowamount, $rowstart);
+            $result = $db->query("SELECT record_owners.record_id as id
 					FROM record_owners,domains,records
 					WHERE record_owners.user_id = " . $db->quote($_SESSION["userid"], 'integer') . "
 					AND record_owners.record_id = records.id
 					AND records.domain_id = " . $db->quote($id, 'integer') . "
-					GROUP BY record_owners.record_id ORDER BY records.".$sortby);
+					GROUP BY record_owners.record_id ORDER BY records." . $sortby);
 
-			$ret = array();
-			if($result->numRows() == 0) {
-				return -1;
-			} else {
-				$ret[] = array();
-				$retcount = 0;
-				while($r = $result->fetchRow())
-				{
-					// Call get_record_from_id for each row.
-					$ret[$retcount] = get_record_from_id($r["id"]);
-					$retcount++;
-				}
-                                $result = $ret;
-			}
-
-		} else {
-			$db->setLimit($rowamount, $rowstart);
-			$result = $db->query("SELECT id FROM records WHERE domain_id=".$db->quote($id, 'integer')." ORDER BY records.".$sortby);
-			$ret = array();
-			if($result->numRows() == 0)
-			{
-				return -1;
-			}
-			else
-			{
-				$ret[] = array();
-				$retcount = 0;
-				while($r = $result->fetchRow())
-				{
-					// Call get_record_from_id for each row.
-					$ret[$retcount] = get_record_from_id($r["id"]);
-					$retcount++;
-				}
-                                $result = $ret;
-			}
-			$result = order_domain_results($result, $sortby);
-			return $result;
-		}
-	}
-	else
-	{
-		error(sprintf(ERR_INV_ARG, "get_records_from_domain_id"));
-	}
+            $ret = array();
+            if ($result) {
+                $ret[] = array();
+                $retcount = 0;
+                while ($r = $result->fetchRow()) {
+                    // Call get_record_from_id for each row.
+                    $ret[$retcount] = get_record_from_id($r["id"]);
+                    $retcount++;
+                }
+                $result = $ret;
+            } else {
+                return -1;
+            }
+        } else {
+            $db->setLimit($rowamount, $rowstart);
+            $result = $db->query("SELECT id FROM records WHERE domain_id=" . $db->quote($id, 'integer') . " ORDER BY records." . $sortby);
+            $ret = array();
+            if ($result) {
+                $ret[] = array();
+                $retcount = 0;
+                while ($r = $result->fetchRow()) {
+                    // Call get_record_from_id for each row.
+                    $ret[$retcount] = get_record_from_id($r["id"]);
+                    $retcount++;
+                }
+                $result = $ret;
+            } else {
+                return -1;
+            }
+            $result = order_domain_results($result, $sortby);
+            return $result;
+        }
+    } else {
+        error(sprintf(ERR_INV_ARG, "get_records_from_domain_id"));
+    }
 }
 
 /** Sort Domain Records intelligently
@@ -1512,21 +1440,21 @@ function sort_domain_results_by_ttl($a, $b) {
  * @return mixed[] array of owners [id,fullename]
  */
 function get_users_from_domain_id($id) {
-	global $db;
-	$sqlq = "SELECT owner FROM zones WHERE domain_id =" .$db->quote($id, 'integer');
-	$id_owners = $db->query($sqlq);
-	if ($id_owners->numRows() == 0) {
-		return -1;
-	} else {
-		while ($r = $id_owners->fetchRow()) {
-			$fullname = $db->queryOne("SELECT fullname FROM users WHERE id=".$r['owner']);
-			$owners[] = array(
-				"id" 		=> 	$r['owner'],
-				"fullname"	=>	$fullname		
-			);		
-		}
-	}
-	return $owners;	
+    global $db;
+    $sqlq = "SELECT owner FROM zones WHERE domain_id =" . $db->quote($id, 'integer');
+    $id_owners = $db->query($sqlq);
+    if ($id_owners) {
+        while ($r = $id_owners->fetchRow()) {
+            $fullname = $db->queryOne("SELECT fullname FROM users WHERE id=" . $r['owner']);
+            $owners[] = array(
+                "id" => $r['owner'],
+                "fullname" => $fullname
+            );
+        }
+    } else {
+        return -1;
+    }
+    return $owners;
 }
 
 /** Search for Zone or Record

@@ -70,13 +70,11 @@ function doAuthenticate() {
 		//Username and password are set, lets try to authenticate.
 		$session_pass = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($session_key), base64_decode($_SESSION["userpwd"]), MCRYPT_MODE_CBC, md5(md5($session_key))), "\0");
 
-                $result = $db->query("SELECT id, fullname, password FROM users WHERE username=". $db->quote($_SESSION["userlogin"], 'text')  ." AND active=1");
-		
-		if($result->numRows() == 1)
+                $rowObj = $db->queryRow("SELECT id, fullname, password FROM users WHERE username=". $db->quote($_SESSION["userlogin"], 'text')  ." AND active=1");
+
+                if($rowObj)
 		{
-			$rowObj = $result->fetchRow();
-			
-			if ($password_encryption == 'md5salt') {
+                        if ($password_encryption == 'md5salt') {
 				$session_password = mix_salt(extract_salt($rowObj["password"]), $session_pass);
 			} else {
 				$session_password = md5($session_pass);
@@ -105,7 +103,7 @@ function doAuthenticate() {
 				}
 			} else if (isset($_POST['authenticate'])) {
 //				auth( _('Authentication failed! - <a href="reset_password.php">(forgot password)</a>'),"error");
-                auth( _('Authentication failed!'),"error");
+                                auth( _('Authentication failed!'),"error");
 			} else {
 				auth();
 			}		
@@ -122,8 +120,10 @@ function doAuthenticate() {
 
 			//Authentication failed, retry.
 //			auth( _('Authentication failed! - <a href="reset_password.php">(forgot password)</a>'),"error");
-            auth( _('Authentication failed!'),"error");
+                        auth( _('Authentication failed!'),"error");
 		} else {
+                        unset($_SESSION["userpwd"]);
+                        unset($_SESSION["userlogin"]);
 			auth();
 		}
 		
@@ -215,13 +215,9 @@ function auth($msg="",$type="success")
 
 function logout($msg="",$type="")
 {
-	unset($_SESSION["userid"]);
-	unset($_SESSION["name"]);
 	session_unset();
 	session_destroy();
 	session_write_close();
 	auth($msg, $type);
 	exit;
 }
-
-?>

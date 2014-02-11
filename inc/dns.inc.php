@@ -58,19 +58,19 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
 
 		case "A":
 			if (!is_valid_ipv4($content)) return false;
-                        if (!is_valid_rr_cname_exists($name,$rid)) return false; 
+                        if (!is_valid_rr_cname_exists($name,$rid)) return false;
 			if (!is_valid_hostname_fqdn($name,1)) return false;
 			break;
 
 		case "AAAA":
 			if (!is_valid_ipv6($content)) return false;
-                        if (!is_valid_rr_cname_exists($name,$rid)) return false; 
+                        if (!is_valid_rr_cname_exists($name,$rid)) return false;
 			if (!is_valid_hostname_fqdn($name,1)) return false;
 			break;
 
 		case "CNAME":
 			if (!is_valid_rr_cname_name($name)) return false;
-                        if (!is_valid_rr_cname_unique($name,$rid)) return false; 
+                        if (!is_valid_rr_cname_unique($name,$rid)) return false;
 			if (!is_valid_hostname_fqdn($name,1)) return false;
 			if (!is_valid_hostname_fqdn($content,0)) return false;
 			if (!is_not_empty_cname_rr($name,$zone)) return false;
@@ -103,7 +103,7 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
 			if (!is_valid_hostname_fqdn($name,1)) return false;
 			if (!is_valid_rr_soa_content($content)) return false;
 			break;
-		
+
 		case "SRV":
 			if (!is_valid_rr_srv_name($name)) return false;
 			if (!is_valid_rr_srv_content($content)) return false;
@@ -121,11 +121,11 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
 			/*
 			Validate SPF entry
 			*/
-                        if(!is_valid_spf($content)) return false; 
+                        if(!is_valid_spf($content)) return false;
 		case "SSHFP":
 		case "URL":
 			// These types are supported by PowerDNS, but there is not
-			// yet code for validation. Validation needs to be added 
+			// yet code for validation. Validation needs to be added
 			// for these types. One Day Real Soon Now. [tm]
 			break;
 
@@ -133,7 +133,7 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
 			if (!is_valid_loc($content)) return false;
 			if (!is_valid_hostname_fqdn($name,1)) return false;
 			break;
-			
+
 		default:
 			error(ERR_DNS_RR_TYPE);
 			return false;
@@ -183,9 +183,9 @@ function is_valid_hostname_fqdn(&$hostname, $wildcard) {
 		if (substr($hostname_label, -1, 1) == "-") { error(ERR_DNS_HN_DASH); return false; }
 		if (strlen($hostname_label) < 1 || strlen($hostname_label) > 63) { error(ERR_DNS_HN_LENGTH); return false; }
 	}
-	
+
 	if ($hostname_labels[$label_count-1] == "arpa" && (substr_count($hostname_labels[0], "/") == 1 XOR substr_count($hostname_labels[1], "/") == 1)) {
-		if (substr_count($hostname_labels[0], "/") == 1) { 
+		if (substr_count($hostname_labels[0], "/") == 1) {
 			$array = explode ("/", $hostname_labels[0]);
 		} else {
 			$array = explode ("/", $hostname_labels[1]);
@@ -196,7 +196,7 @@ function is_valid_hostname_fqdn(&$hostname, $wildcard) {
 	} else {
 		if (substr_count($hostname, "/") > 0) { error(ERR_DNS_HN_SLASH) ; return false; }
 	}
-	
+
 	if ($dns_strict_tld_check && !in_array(strtolower($hostname_labels[$label_count-1]), $valid_tlds)) {
 		error(ERR_DNS_INV_TLD); return false;
 	}
@@ -214,8 +214,8 @@ function is_valid_hostname_fqdn(&$hostname, $wildcard) {
  */
 function is_valid_ipv4($ipv4, $answer=true) {
 
-// 20080424/RZ: The current code may be replaced by the following if() 
-// statement, but it will raise the required PHP version to ">= 5.2.0". 
+// 20080424/RZ: The current code may be replaced by the following if()
+// statement, but it will raise the required PHP version to ">= 5.2.0".
 // Not sure if we want that now.
 //
 //	if(filter_var($ipv4, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === FALSE) {
@@ -229,7 +229,7 @@ function is_valid_ipv4($ipv4, $answer=true) {
 
 	$quads = explode('.', $ipv4);
 	$numquads = count($quads);
-	
+
 	if ($numquads != 4) {
 		if ($answer) { error(ERR_DNS_IPV4); }
 		return false;
@@ -255,8 +255,8 @@ function is_valid_ipv4($ipv4, $answer=true) {
  */
 function is_valid_ipv6($ipv6, $answer=true) {
 
-// 20080424/RZ: The current code may be replaced by the following if() 
-// statement, but it will raise the required PHP version to ">= 5.2.0". 
+// 20080424/RZ: The current code may be replaced by the following if()
+// statement, but it will raise the required PHP version to ">= 5.2.0".
 // Not sure if we want that now.
 //
 //	if(filter_var($ipv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === FALSE) {
@@ -353,15 +353,13 @@ function is_valid_printable($string) {
 function is_valid_rr_cname_name($name) {
 	global $db;
 
-	$query = "SELECT type, content 
-			FROM records 
+	$query = "SELECT id FROM records
 			WHERE content = " . $db->quote($name, 'text') . "
 			AND (type = ".$db->quote('MX', 'text')." OR type = ".$db->quote('NS', 'text').")";
-	
-	$response = $db->query($query);
-	if (PEAR::isError($response)) { error($response->getMessage()); return false; };
 
-	if ($response->numRows() > 0) {
+	$response = $db->queryOne($query);
+
+	if (!$response) {
 		error(ERR_DNS_CNAME); return false;
 	}
 
@@ -375,26 +373,20 @@ function is_valid_rr_cname_name($name) {
  *
  * @return boolean true if non-existant, false if exists
  */
-function is_valid_rr_cname_exists($name,$rid) { 
-        global $db; 
- 
-        if ($rid > 0) { 
-                $where = " AND id != " .$db->quote($rid, 'integer');
-        } else { 
-                $where = ''; 
-        } 
-        $query = "SELECT type, name 
-                        FROM records 
+function is_valid_rr_cname_exists($name,$rid) {
+        global $db;
+
+        $where = ($rid > 0 ? " AND id != " .$db->quote($rid, 'integer') : '');
+        $query = "SELECT id FROM records
                         WHERE name = " . $db->quote($name, 'text') . $where . "
-                        AND TYPE = 'CNAME'"; 
- 
-        $response = $db->query($query); 
-        if (PEAR::isError($response)) { error($response->getMessage()); return false; }; 
-        if ($response->numRows() > 0) { 
-                error(ERR_DNS_CNAME_EXISTS); return false; 
-        } 
-        return true; 
-} 
+                        AND TYPE = 'CNAME'";
+
+        $response = $db->queryOne($query);
+        if ($response) {
+                error(ERR_DNS_CNAME_EXISTS); return false;
+        }
+        return true;
+}
 
 /** Check if CNAME is unique (doesn't overlap A/AAAA)
  *
@@ -403,36 +395,30 @@ function is_valid_rr_cname_exists($name,$rid) {
  *
  * @return boolean true if unique, false if duplicate
  */
-function is_valid_rr_cname_unique($name,$rid) { 
-        global $db; 
- 
-        if ($rid > 0) { 
-                $where = " AND id != " .$db->quote($rid, 'integer');
-        } else { 
-                $where = ''; 
-        } 
-        $query = "SELECT type, name 
-                        FROM records 
+function is_valid_rr_cname_unique($name,$rid) {
+        global $db;
+
+        $where = ($rid > 0 ? " AND id != " .$db->quote($rid, 'integer') : '');
+        $query = "SELECT id FROM records
                         WHERE name = " . $db->quote($name, 'text') . $where . "
-                        AND TYPE IN ('A', 'AAAA', 'CNAME')"; 
- 
-        $response = $db->query($query); 
-        if (PEAR::isError($response)) { error($response->getMessage()); return false; }; 
-        if ($response->numRows() > 0) { 
-                error(ERR_DNS_CNAME_UNIQUE); return false; 
-        } 
-        return true; 
-} 
+                        AND TYPE IN ('A', 'AAAA', 'CNAME')";
+
+        $response = $db->queryOne($query);
+        if ($response) {
+                error(ERR_DNS_CNAME_UNIQUE); return false;
+        }
+        return true;
+}
 
 /**
  * Check that the zone does not have a empty CNAME RR
- * 
+ *
  * @param string $name
  * @param string $zone
  */
 function is_not_empty_cname_rr($name,$zone) {
 
-	if ($name == $zone) { 
+	if ($name == $zone) {
 		error(ERR_DNS_CNAME_EMPTY);
 		return false;
 	}
@@ -447,15 +433,13 @@ function is_not_empty_cname_rr($name,$zone) {
  */
 function is_valid_non_alias_target($target) {
 	global $db;
-	
-	$query = "SELECT type, name
-			FROM records
+
+	$query = "SELECT id FROM records
 			WHERE name = " . $db->quote($target, 'text') . "
 			AND TYPE = ".$db->quote('CNAME', 'text');
 
-	$response = $db->query($query);
-	if (PEAR::isError($response)) { error($response->getMessage()); return false; };
-	if ($response->numRows() > 0) {
+	$response = $db->queryOne($query);
+	if ($response) {
 		error(ERR_DNS_NON_ALIAS_TARGET); return false;
 	}
 	return true;
@@ -515,7 +499,7 @@ function is_valid_rr_soa_content(&$content) {
 		} else {
 			$addr_to_check = $addr_input;
 		}
-		
+
 		if (!is_valid_email($addr_to_check)) {
 			return false;
 		} else {
@@ -531,7 +515,7 @@ function is_valid_rr_soa_content(&$content) {
 		} else {
 			$final_soa .= " 0";
 		}
-		
+
 		if ($field_count == 7) {
 			for ($i = 3; ($i < 7); $i++) {
 				if (!is_numeric($fields[$i])) {
@@ -612,8 +596,8 @@ function is_valid_rr_srv_name(&$name){
  */
 function is_valid_rr_srv_content(&$content) {
 	$fields = preg_split("/\s+/", trim($content), 3);
-	if (!is_numeric($fields[0]) || $fields[0] < 0 || $fields[0] > 65535) { error(ERR_DNS_SRV_WGHT) ; return false; } 
-	if (!is_numeric($fields[1]) || $fields[1] < 0 || $fields[1] > 65535) { error(ERR_DNS_SRV_PORT) ; return false; } 
+	if (!is_numeric($fields[0]) || $fields[0] < 0 || $fields[0] > 65535) { error(ERR_DNS_SRV_WGHT) ; return false; }
+	if (!is_numeric($fields[1]) || $fields[1] < 0 || $fields[1] > 65535) { error(ERR_DNS_SRV_PORT) ; return false; }
 	if ($fields[2] == "" || ($fields[2] != "." && !is_valid_hostname_fqdn($fields[2],0))) {
 		error(ERR_DNS_SRV_TRGT) ; return false;
 	}
@@ -633,7 +617,7 @@ function is_valid_rr_ttl(&$ttl) {
 		global $dns_ttl;
 		$ttl = $dns_ttl;
 	}
-	
+
 	if (!is_numeric($ttl) ||  $ttl < 0 || $ttl > 2147483647 ) {
 		error(ERR_DNS_INV_TTL);	return false;
 	}
@@ -649,7 +633,7 @@ function is_valid_rr_ttl(&$ttl) {
  */
 function is_valid_search($search_string) {
 
-	// Only allow for alphanumeric, numeric, dot, dash, underscore and 
+	// Only allow for alphanumeric, numeric, dot, dash, underscore and
 	// percent in search string. The last two are wildcards for SQL.
 	// Needs extension probably for more usual record types.
 
