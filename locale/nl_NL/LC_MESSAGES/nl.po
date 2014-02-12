@@ -334,7 +334,7 @@ msgstr "Het wachtwoord is gewijzigd. Log opnieuw in."
 
 #: inc/record.inc.php:387
 msgid ""
-"You are trying to delete the SOA record. If are not allowed to remove it, "
+"You are trying to delete the SOA record. You are not allowed to remove it, "
 "unless you remove the entire zone."
 msgstr "U probeert een SOA record te verwijderen. U kunt dit record niet verwijderen, tenzij u de hele zone verwijderd."
 

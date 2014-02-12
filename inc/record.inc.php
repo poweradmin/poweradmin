@@ -533,7 +533,7 @@ function delete_record($rid)
 
 	if ( $perm_content_edit == "all" || ($perm_content_edit == "own" && $user_is_zone_owner == "1" )) {
 		if ($record['type'] == "SOA") {
-			error(_('You are trying to delete the SOA record. If are not allowed to remove it, unless you remove the entire zone.'));
+			error(_('You are trying to delete the SOA record. You are not allowed to remove it, unless you remove the entire zone.'));
 		} else {
 			$query = "DELETE FROM records WHERE id = " . $db->quote($rid, 'integer');
 			$response = $db->query($query);

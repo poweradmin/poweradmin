@@ -924,7 +924,7 @@ msgid "Zone template has been deleted successfully."
 msgstr "Wzorzec strefy zostaĹ usuniÄty."
 
 #: inc/record.inc.php:331
-msgid "You are trying to delete the SOA record. If are not allowed to remove it, unless you remove the entire zone."
+msgid "You are trying to delete the SOA record. You are not allowed to remove it, unless you remove the entire zone."
 msgstr "PrĂłbujesz usunÄÄ rekord SOA. Nie powinieneĹ tego robiÄ, chyba, Ĺźe zamierzasz usunÄÄ caĹÄ strefÄ."
 
 #: inc/record.inc.php:692

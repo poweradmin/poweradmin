@@ -334,7 +334,7 @@ msgstr ""
 
 #: inc/record.inc.php:387
 msgid ""
-"You are trying to delete the SOA record. If are not allowed to remove it, "
+"You are trying to delete the SOA record. You are not allowed to remove it, "
 "unless you remove the entire zone."
 msgstr ""
 

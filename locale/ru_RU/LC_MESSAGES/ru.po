@@ -651,7 +651,7 @@ msgid "The permission template has been deleted successfully."
 msgstr "Шаблон привилегий успешно удалён."
 
 #: inc/record.inc.php:268
-msgid "You are trying to delete the SOA record. If are not allowed to remove it, unless you remove the entire zone."
+msgid "You are trying to delete the SOA record. You are not allowed to remove it, unless you remove the entire zone."
 msgstr "Вы пытаетесь удалить SOA-запись. Её нельзя удалить, пока существует зона."
 
 #: inc/record.inc.php:601

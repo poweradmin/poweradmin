@@ -610,7 +610,7 @@ msgid "The permission template has been deleted succesfully."
 msgstr "这个权限模板已经删除成功"
 
 #: inc/record.inc.php:270
-msgid "You are trying to delete the SOA record. If are not allowed to remove it, unless you remove the entire zone."
+msgid "You are trying to delete the SOA record. You are not allowed to remove it, unless you remove the entire zone."
 msgstr "你正在试图删除一个SOA记录，除非移除全部域，否则不要允许移除它"
 
 #: inc/record.inc.php:603

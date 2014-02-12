@@ -335,7 +335,7 @@ msgstr "パスワードが変更されました。ログインし直して下さ
 
 #: inc/record.inc.php:387
 msgid ""
-"You are trying to delete the SOA record. If are not allowed to remove it, "
+"You are trying to delete the SOA record. You are not allowed to remove it, "
 "unless you remove the entire zone."
 msgstr "SOA レコードを削除しようとしましたが、ゾーン全体を削除しない限り、SOA レコードを削除することはできません。"
 

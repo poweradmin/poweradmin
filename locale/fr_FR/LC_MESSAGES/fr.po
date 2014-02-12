@@ -835,7 +835,7 @@ msgid "Zone template has been deleted successfully."
 msgstr "Le gabarit de zone a été supprimé avec succès."
 
 #: inc/record.inc.php:331
-msgid "You are trying to delete the SOA record. If are not allowed to remove it, unless you remove the entire zone."
+msgid "You are trying to delete the SOA record. You are not allowed to remove it, unless you remove the entire zone."
 msgstr ""
 "Vous essayez de supprimer l'enregistrement SOA. Vous ne pouvez pas le "
 "retirer sauf en retirant toute la zone."

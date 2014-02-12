@@ -658,7 +658,7 @@ msgid "The permission template has been deleted successfully."
 msgstr "Die Berechtigungsvorlage wurde erfolgreich gel&ouml;scht."
 
 #: inc/record.inc.php:270
-msgid "You are trying to delete the SOA record. If are not allowed to remove it, unless you remove the entire zone."
+msgid "You are trying to delete the SOA record. You are not allowed to remove it, unless you remove the entire zone."
 msgstr "Sie versuchen den SOA Eintrag zu l&ouml;schen. Solange Sie nicht die gesamte Zone l&ouml;schen, sind Sie hierf&uuml;r nicht berechtigt."
 
 #: inc/record.inc.php:603
