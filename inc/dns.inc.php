@@ -359,7 +359,7 @@ function is_valid_rr_cname_name($name) {
 
 	$response = $db->queryOne($query);
 
-	if (!$response) {
+	if (!empty($response)) {
 		error(ERR_DNS_CNAME); return false;
 	}
 
