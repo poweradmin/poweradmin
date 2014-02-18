@@ -62,7 +62,25 @@ function doAuthenticate() {
 	// If the session hasn't expired yet, give our session a fresh new timestamp.
 	$_SESSION["lastmod"] = time();
 
-	internalAuthenticate();
+	if(userUsesLDAP())
+	{
+		logout( _('LDAP Auth NOT implemented yet!'), 'error');
+	} else
+	{
+		internalAuthenticate();
+	}
+}
+
+function userUsesLDAP() {
+	global $session_key;
+	global $db;
+
+	$rowObj = $db->queryRow("SELECT id FROM users WHERE username=". $db->quote($_SESSION["userlogin"], 'text')  ." AND use_ldap=1");
+	if($rowObj)
+	{
+		return true;
+	}
+	return false;
 }
 
 function internalAuthenticate() {
