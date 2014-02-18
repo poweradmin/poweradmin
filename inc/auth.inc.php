@@ -38,11 +38,8 @@
  * @return null
  */
 function doAuthenticate() {
-	global $db;
 	global $iface_expire;
-	global $syslog_use, $syslog_ident, $syslog_facility;
 	global $session_key;
-	global $password_encryption;
 
 	if (isset($_SESSION['userid']) && isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] == "logout") {
 		logout( _('You have logged out.'), 'success');
@@ -64,6 +61,15 @@ function doAuthenticate() {
 
 	// If the session hasn't expired yet, give our session a fresh new timestamp.
 	$_SESSION["lastmod"] = time();
+
+	internalAuthenticate();
+}
+
+function internalAuthenticate() {
+	global $db;
+	global $syslog_use, $syslog_ident, $syslog_facility;
+	global $password_encryption;
+	global $session_key;
 
 	if (isset($_SESSION["userlogin"]) && isset($_SESSION["userpwd"]))
 	{
