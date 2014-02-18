@@ -64,6 +64,7 @@ echo "       <th>" . _('Fullname') . "</th>\n";
 echo "       <th>" . _('Description') . "</th>\n";
 echo "       <th>" . _('Email address') . "</th>\n";
 echo "       <th>" . _('Template') . "</th>\n";
+echo "       <th>" . _('LDAP') . "</th>\n";
 echo "       <th>" . _('Enabled') . "</th>\n";
 echo "      </tr>\n";
 
@@ -72,6 +73,11 @@ foreach ($users as $user) {
 		$active = " checked";
 	} else {
 		$active = "";
+	}
+	if ($user['use_ldap'] == "1" ) {
+		$use_ldap = " checked";
+	} else {
+		$use_ldap = "";
 	}
 	if (($user['uid'] == $_SESSION["userid"] && $perm_edit_own == "1") || ($user['uid'] != $_SESSION["userid"] && $perm_edit_others == "1" )) {
 		$commit_button = "1";
@@ -107,6 +113,7 @@ foreach ($users as $user) {
 			echo "         " . $user['tpl_name'] . "\n";
 		}
 		echo "       </td>\n";
+		echo "       <td><input type=\"checkbox\" name=\"user[" . $user['uid'] . "][use_ldap]\"" . $use_ldap . "></td>\n";
 		if ($user['uid'] != $_SESSION["userid"]) {
 			echo "       <td><input type=\"checkbox\" name=\"user[" . $user['uid'] . "][active]\"" . $active . "></td>\n";
 		} else {
@@ -122,6 +129,11 @@ foreach ($users as $user) {
 		echo "       <td>" . $user['email'] . "</td>\n";
 		echo "       <td>" . $user['tpl_name'] . "</td>\n";
 		if ($active == " checked") {
+			echo "       <td>Yes</td>\n";
+		} else {
+			echo "       <td>No</td>\n";
+		}
+		if ($use_ldap == " checked") {
 			echo "       <td>Yes</td>\n";
 		} else {
 			echo "       <td>No</td>\n";
