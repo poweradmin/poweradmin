@@ -523,8 +523,9 @@ function verify_user_is_owner_zoneid($zoneid) {
  * @return mixed[] array of user details
  */
 function get_user_detail_list($specific) {
-
 	global $db;
+        global $ldap_use;
+
 	$userid=$_SESSION['userid'];
 
   // fixme: does this actually verify the permission?
@@ -543,9 +544,12 @@ function get_user_detail_list($specific) {
 			fullname, 
 			email, 
 			description AS descr,
-			active,
-			use_ldap,
-			perm_templ.id AS tpl_id,
+			active,";
+        if ($ldap_use) {
+            $query .= "use_ldap,";
+        }
+
+        $query .= "perm_templ.id AS tpl_id,
 			perm_templ.name AS tpl_name,
 			perm_templ.descr AS tpl_descr
 			FROM users, perm_templ 

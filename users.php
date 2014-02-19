@@ -64,7 +64,9 @@ echo "       <th>" . _('Fullname') . "</th>\n";
 echo "       <th>" . _('Description') . "</th>\n";
 echo "       <th>" . _('Email address') . "</th>\n";
 echo "       <th>" . _('Template') . "</th>\n";
-echo "       <th>" . _('LDAP') . "</th>\n";
+if ($ldap_use) {
+    echo "       <th>" . _('LDAP') . "</th>\n";
+}
 echo "       <th>" . _('Enabled') . "</th>\n";
 echo "      </tr>\n";
 
@@ -113,7 +115,9 @@ foreach ($users as $user) {
 			echo "         " . $user['tpl_name'] . "\n";
 		}
 		echo "       </td>\n";
-		echo "       <td><input type=\"checkbox\" name=\"user[" . $user['uid'] . "][use_ldap]\"" . $use_ldap . "></td>\n";
+                if ($ldap_use) {
+                    echo "       <td><input type=\"checkbox\" name=\"user[" . $user['uid'] . "][use_ldap]\"" . $use_ldap . "></td>\n";
+                }
 		if ($user['uid'] != $_SESSION["userid"]) {
 			echo "       <td><input type=\"checkbox\" name=\"user[" . $user['uid'] . "][active]\"" . $active . "></td>\n";
 		} else {
