@@ -38,11 +38,8 @@
  * @return null
  */
 function doAuthenticate() {
-	global $db;
 	global $iface_expire;
-	global $syslog_use, $syslog_ident, $syslog_facility;
 	global $session_key;
-	global $password_encryption;
 
 	if (isset($_SESSION['userid']) && isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] == "logout") {
 		logout( _('You have logged out.'), 'success');
@@ -64,6 +61,116 @@ function doAuthenticate() {
 
 	// If the session hasn't expired yet, give our session a fresh new timestamp.
 	$_SESSION["lastmod"] = time();
+
+	if(userUsesLDAP())
+	{
+		LDAPAuthenticate();
+	} else
+	{
+		internalAuthenticate();
+	}
+}
+
+function userUsesLDAP() {
+	global $db;
+
+	$rowObj = $db->queryRow("SELECT id FROM users WHERE username=". $db->quote($_SESSION["userlogin"], 'text')  ." AND use_ldap=1");
+	if($rowObj)
+	{
+		return true;
+	}
+	return false;
+}
+
+function LDAPAuthenticate() {
+	global $db;
+	global $session_key;
+	global $ldap_uri;
+	global $ldap_basedn;
+	global $ldap_binddn;
+	global $ldap_bindpw;
+	global $ldap_user_attribute;
+
+        if (isset($_SESSION["userlogin"]) && isset($_SESSION["userpwd"]))
+        {
+		$ldapconn = ldap_connect($ldap_uri);		
+		if( !$ldapconn )
+		{
+			logout( _('Failed to connect to LDAP server!'), 'error');
+			return;
+		}
+
+		$ldapbind = ldap_bind($ldapconn,$ldap_binddn,$ldap_bindpw);
+		if( !$ldapbind )
+		{
+			logout( _('Failed to bind to LDAP server!'), 'error');
+			return;
+		}
+
+		$attributes = array ($ldap_user_attribute, 'dn');
+		$filter = "(".$ldap_user_attribute."=".$_SESSION["userlogin"].")";
+		$ldapsearch = ldap_search($ldapconn,$ldap_basedn,$filter,$attributes);
+		if( !$ldapsearch )
+		{
+			logout( _('Failed to authenticate against LDAP.  No such user.'), 'error');
+			return;
+		}
+
+		//Checking first that we only found exactly 1 user, get the DN of this user.  We'll use this to perform the actual authentication.
+		$entries = ldap_get_entries ($ldapconn,$ldapsearch);
+		if($entries["count"] != 1)
+		{
+		       	logout( _('Failed to authenticate against LDAP.'), 'error');
+			return;
+		}
+		$user_dn = $entries[0]["dn"];
+
+		$session_pass = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($session_key), base64_decode($_SESSION["userpwd"]), MCRYPT_MODE_CBC, md5(md5($session_key))), "\0");
+		$ldapbind = ldap_bind( $ldapconn, $user_dn, $session_pass );
+		if ( !$ldapbind )
+		{
+			auth( _('LDAP Authentication failed!'),"error");
+			return;
+		}
+		//LDAP AUTH SUCCESSFUL
+
+		//Make sure the user is 'active' and fetch id and name.
+		$rowObj = $db->queryRow("SELECT id, fullname FROM users WHERE username=". $db->quote($_SESSION["userlogin"], 'text')  ." AND active=1");
+		if( !$rowObj )
+		{
+			auth( _('LDAP Authentication failed!'),"error");
+			return;
+		}
+		$_SESSION["userid"] = $rowObj["id"];
+		$_SESSION["name"] = $rowObj["fullname"];
+
+		if(isset($_POST["authenticate"]))
+		{
+			// Log to syslog if it's enabled
+			if($syslog_use)
+			{
+				openlog($syslog_ident, LOG_PERROR, $syslog_facility);
+				$syslog_message = sprintf('Successful authentication attempt from [%s] for user \'%s\'', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]);
+				syslog(LOG_INFO, $syslog_message);
+				closelog();
+			}
+			//If a user has just authenticated, redirect him to requested page
+			session_write_close();
+			$redirect_url = ($_POST["query_string"] ? $_SERVER['SCRIPT_NAME'] . "?" . $_POST["query_string"] : $_SERVER['SCRIPT_NAME']);
+			clean_page($redirect_url);
+			exit;
+		}
+	} else {
+		//No username and password set, show auth form (again).
+		auth();
+	}
+}
+
+function internalAuthenticate() {
+	global $db;
+	global $syslog_use, $syslog_ident, $syslog_facility;
+	global $password_encryption;
+	global $session_key;
 
 	if (isset($_SESSION["userlogin"]) && isset($_SESSION["userpwd"]))
 	{

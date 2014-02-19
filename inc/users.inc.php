@@ -544,6 +544,7 @@ function get_user_detail_list($specific) {
 			email, 
 			description AS descr,
 			active,
+			use_ldap,
 			perm_templ.id AS tpl_id,
 			perm_templ.name AS tpl_name,
 			perm_templ.descr AS tpl_descr
@@ -563,6 +564,7 @@ function get_user_detail_list($specific) {
 			"email"		=>	$user['email'],
 			"descr"		=>	$user['descr'],
 			"active"	=>	$user['active'],
+			"use_ldap"	=>	$user['use_ldap'],
 			"tpl_id"	=>	$user['tpl_id'],
 			"tpl_name"	=>	$user['tpl_name'],
 			"tpl_descr"	=>	$user['tpl_descr']
