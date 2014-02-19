@@ -8,7 +8,8 @@ CREATE TABLE users (
   email varchar(255) NOT NULL DEFAULT '',
   description text NOT NULL,
   perm_templ tinyint(11) NOT NULL DEFAULT 0,
-  active tinyint(1) NOT NULL DEFAULT 0
+  active tinyint(1) NOT NULL DEFAULT 0,
+  use_ldap tinyint(1) NOT NULL DEFAULT 0
 );
 
 INSERT INTO users VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3','Administrator','admin@example.net','Administrator with full rights.',1,1);

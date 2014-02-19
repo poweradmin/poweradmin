@@ -1,0 +1,1 @@
+ALTER TABLE users ADD COLUMN use_ldap smallint NOT NULL DEFAULT 0;
