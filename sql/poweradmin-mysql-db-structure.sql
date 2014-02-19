@@ -12,7 +12,7 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 LOCK TABLES `users` WRITE;
-INSERT INTO `users` VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3','Administrator','admin@example.net','Administrator with full rights.',1,1);
+INSERT INTO `users` VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3','Administrator','admin@example.net','Administrator with full rights.',1,1,0);
 UNLOCK TABLES;
 
 CREATE TABLE `perm_items` (
