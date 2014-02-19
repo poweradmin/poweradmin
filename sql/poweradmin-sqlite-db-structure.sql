@@ -12,7 +12,7 @@ CREATE TABLE users (
   use_ldap tinyint(1) NOT NULL DEFAULT 0
 );
 
-INSERT INTO users VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3','Administrator','admin@example.net','Administrator with full rights.',1,1);
+INSERT INTO users VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3','Administrator','admin@example.net','Administrator with full rights.',1,1,0);
 
 CREATE TABLE perm_items (
   id INTEGER PRIMARY KEY NOT NULL,
