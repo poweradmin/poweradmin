@@ -66,7 +66,9 @@ if ( $perm_zone_slave_add ) {
 if ( $perm_supermaster_add ) {
 	echo "    <li><a href=\"add_supermaster.php\">" . _('Add supermaster') . "</a></li>\n";
 }
-echo "    <li><a href=\"change_password.php\">" . _('Change password') . "</a></li>\n";
+if ( $_SESSION["auth_used"] != "ldap" ){
+	echo "    <li><a href=\"change_password.php\">" . _('Change password') . "</a></li>\n";
+}
 echo "    <li><a href=\"users.php\">" . _('User administration') . "</a></li>\n";
 echo "    <li><a href=\"index.php?logout\">" . _('Logout') . "</a></li>\n";
 echo "   </ul>\n";
