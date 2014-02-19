@@ -736,6 +736,7 @@ function update_user_details($details) {
 	verify_permission('user_edit_own') ? $perm_edit_own = "1" : $perm_edit_own = "0" ;
 	verify_permission('user_edit_others') ? $perm_edit_others = "1" : $perm_edit_others = "0" ;
 	verify_permission('templ_perm_edit') ? $perm_templ_perm_edit = "1" : $perm_templ_perm_edit = "0" ;
+        verify_permission('user_is_ueberuser') ? $perm_is_godlike = "1" : $perm_is_godlike = "0" ;
 
 	if (($details['uid'] == $_SESSION["userid"] && $perm_edit_own == "1") || 
 			($details['uid'] != $_SESSION["userid"] && $perm_edit_others == "1" )) {
@@ -749,6 +750,11 @@ function update_user_details($details) {
 			$active = 0;
 		} else {
 			$active = 1;
+		}
+		if (isset($details['use_ldap'])) {
+			$use_ldap = 1;
+		} else {
+			$use_ldap = 0;
 		}
 
 		// Before updating the database we need to check whether the user wants to 
@@ -793,6 +799,12 @@ function update_user_details($details) {
 			$query .= ", perm_templ = " . $db->quote($details['templ_id'], 'integer') ;
 
 		}
+
+		// If the user is allowed to change the use_ldap flag, set it.
+		if ($perm_is_godlike == "1") {
+                        $query .= ", use_ldap = " . $db->quote($use_ldap, 'integer') ;
+
+                }
 
 		if(isset($details['password']) && $details['password'] != "") {
 			if ($password_encryption == 'md5salt') {
