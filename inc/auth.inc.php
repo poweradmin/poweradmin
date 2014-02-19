@@ -40,6 +40,7 @@
 function doAuthenticate() {
 	global $iface_expire;
 	global $session_key;
+        global $ldap_use;
 
 	if (isset($_SESSION['userid']) && isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] == "logout") {
 		logout( _('You have logged out.'), 'success');
@@ -62,7 +63,7 @@ function doAuthenticate() {
 	// If the session hasn't expired yet, give our session a fresh new timestamp.
 	$_SESSION["lastmod"] = time();
 
-	if(userUsesLDAP())
+	if($ldap_use && userUsesLDAP())
 	{
 		LDAPAuthenticate();
 	} else

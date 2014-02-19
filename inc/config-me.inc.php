@@ -68,4 +68,11 @@ $syslog_facility = LOG_USER;
 // PowerDNSSEC settings
 $pdnssec_use = false;
 $pdnssec_command = '/usr/bin/pdnssec';
-?>
+
+// LDAP settings
+$ldap_use = false;
+$ldap_uri = 'ldap://domaincontroller.example.com';
+$ldap_basedn = 'OU=Users,DC=example,DC=com';
+$ldap_binddn = 'GROUP\lookupuser';
+$ldap_bindpw = 'some_password';
+$ldap_user_attribute = 'sAMAccountName';
