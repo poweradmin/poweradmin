@@ -72,7 +72,6 @@ function doAuthenticate() {
 }
 
 function userUsesLDAP() {
-	global $session_key;
 	global $db;
 
 	$rowObj = $db->queryRow("SELECT id FROM users WHERE username=". $db->quote($_SESSION["userlogin"], 'text')  ." AND use_ldap=1");
