@@ -7,6 +7,7 @@ CREATE TABLE `users` (
   `description` text NOT NULL,
   `perm_templ` tinyint(11) NOT NULL default '0',
   `active` tinyint(1) NOT NULL default '0',
+  `use_ldap` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

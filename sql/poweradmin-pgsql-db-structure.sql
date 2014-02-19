@@ -6,7 +6,8 @@ CREATE TABLE users (
   email varchar(255) NOT NULL,
   description text NOT NULL,
   perm_templ integer default 0,
-  active smallint default 0
+  active smallint default 0,
+  use_ldap smallint default 0
 );
 
 INSERT INTO users (username, password, fullname, email, description, perm_templ, active) VALUES ('admin','21232f297a57a5a743894a0e4a801fc3','Administrator','admin@example.net','Administrator with full rights.',1,1);

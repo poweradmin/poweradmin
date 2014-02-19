@@ -7,6 +7,7 @@ CREATE TABLE users (
   description clob NOT NULL,
   perm_templ number(11) DEFAULT '0' NOT NULL,
   active number(1) DEFAULT '0' NOT NULL,
+  use_ldap number(1) DEFAULT '0' NOT NULL,
   PRIMARY KEY (id)
 );
 CREATE SEQUENCE USERS_ID_SEQUENCE;
