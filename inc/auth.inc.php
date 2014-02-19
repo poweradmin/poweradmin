@@ -143,6 +143,7 @@ function LDAPAuthenticate() {
 		}
 		$_SESSION["userid"] = $rowObj["id"];
 		$_SESSION["name"] = $rowObj["fullname"];
+		$_SESSION["auth_used"] = "ldap";
 
 		if(isset($_POST["authenticate"]))
 		{
@@ -191,6 +192,7 @@ function internalAuthenticate() {
 				
 				$_SESSION["userid"] = $rowObj["id"];
 				$_SESSION["name"] = $rowObj["fullname"];
+				$_SESSION["auth_used"] = "internal";
 				
 				if(isset($_POST["authenticate"]))
 				{
