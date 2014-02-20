@@ -94,6 +94,10 @@ function LDAPAuthenticate() {
 
         if (isset($_SESSION["userlogin"]) && isset($_SESSION["userpwd"]))
         {
+		if ($ldap_debug)
+		{
+			ldap_set_option(NULL, LDAP_OPT_DEBUG_LEVEL, 7);
+		}
 		$ldapconn = ldap_connect($ldap_uri);		
 		if( !$ldapconn )
 		{
