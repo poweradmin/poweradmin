@@ -115,9 +115,19 @@ foreach ($users as $user) {
 			echo "         " . $user['tpl_name'] . "\n";
 		}
 		echo "       </td>\n";
+
                 if ($ldap_use) {
-                    echo "       <td><input type=\"checkbox\" name=\"user[" . $user['uid'] . "][use_ldap]\"" . $use_ldap . "></td>\n";
-                }
+			if (( $perm_is_godlike == "1" )) {
+				echo "       <td><input type=\"checkbox\" name=\"user[" . $user['uid'] . "][use_ldap]\"" . $use_ldap . "></td>\n";
+			} else {
+				if ($use_ldap == " checked") {
+					echo "       <td>Yes</td>\n";
+				} else {
+					echo "       <td>No</td>\n";
+				}
+			}
+       	         }
+
 		if ($user['uid'] != $_SESSION["userid"]) {
 			echo "       <td><input type=\"checkbox\" name=\"user[" . $user['uid'] . "][active]\"" . $active . "></td>\n";
 		} else {
