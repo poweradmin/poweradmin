@@ -71,6 +71,7 @@ $pdnssec_command = '/usr/bin/pdnssec';
 
 // LDAP settings
 $ldap_use = false;
+$ldap_debug = false;
 $ldap_uri = 'ldap://domaincontroller.example.com';
 $ldap_basedn = 'OU=Users,DC=example,DC=com';
 $ldap_binddn = 'GROUP\lookupuser';
