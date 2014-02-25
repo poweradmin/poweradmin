@@ -68,7 +68,7 @@ function doAuthenticate() {
 		LDAPAuthenticate();
 	} else
 	{
-		internalAuthenticate();
+		SQLAuthenticate();
 	}
 }
 
@@ -168,7 +168,7 @@ function LDAPAuthenticate() {
 	}
 }
 
-function internalAuthenticate() {
+function SQLAuthenticate() {
 	global $db;
 	global $syslog_use, $syslog_ident, $syslog_facility;
 	global $password_encryption;
