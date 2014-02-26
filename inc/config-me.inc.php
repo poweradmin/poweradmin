@@ -50,6 +50,7 @@ $dns_ns2		= '';
 $dns_ttl		= 86400;
 $dns_fancy		= false;
 $dns_strict_tld_check	= true;
+$dns_top_level_tld_check = true;     // Don't allow to create top level TLDs
 
 // Timezone settings
 // See <http://www.php.net/manual/en/timezones.php> for help.

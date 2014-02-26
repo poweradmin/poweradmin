@@ -224,13 +224,13 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
  * @return boolean true if valid, false otherwise
  */
 function is_valid_hostname_fqdn(&$hostname, $wildcard) {
-
+        global $dns_top_level_tld_check;
 	global $dns_strict_tld_check;
 	global $valid_tlds;
 
 	$hostname = preg_replace("/\.$/","",$hostname);
 
-    # The full domain name may not exceed a total length of 253 characters.
+        # The full domain name may not exceed a total length of 253 characters.
 	if (strlen($hostname) > 253) {
 		error(ERR_DNS_HN_TOO_LONG);
 		return false;
@@ -239,9 +239,9 @@ function is_valid_hostname_fqdn(&$hostname, $wildcard) {
         $hostname_labels = explode ('.', $hostname);
         $label_count = count($hostname_labels);
 
-    if ($label_count == 1) {
-        return false;
-    }
+        if ($dns_top_level_tld_check && $label_count == 1) {
+            return false;
+        }
 
 	foreach ($hostname_labels as $hostname_label) {
 		if ($wildcard == 1 && !isset($first)) {
