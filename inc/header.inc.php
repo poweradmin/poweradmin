@@ -35,6 +35,7 @@ global $iface_title;
 global $ignore_install_dir;
 global $session_key;
 
+header('Content-type: text/html; charset=utf-8');
 echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n";
 echo "<html>\n";
 echo " <head>\n";
