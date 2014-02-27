@@ -276,7 +276,12 @@ function add_zone_templ_record($zone_templ_id, $name, $type, $content, $ttl, $pr
 		error(ERR_PERM_ADD_RECORD);
 		return false;
 	} else {
-                if ("" != $name) {
+		if ($content == '') {
+			error(ERR_DNS_CONTENT);
+			return false;
+		}
+
+		if ($name != '') {
                         if($type == "SPF"){
                                 $content = $db->quote(stripslashes('\"'.$content.'\"'), 'text');
                         } else {
