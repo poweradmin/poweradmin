@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin\n"
-"Report-Msgid-Bugs-To: https://www.poweradmin.org/trac/report/1\n"
+"Report-Msgid-Bugs-To: https://github.com/poweradmin/poweradmin/issues\n"
 "POT-Creation-Date: 2011-07-08 23:45+0300\n"
 "PO-Revision-Date: 2011-11-03 14:14+0000\n"
 "Last-Translator: Belko <giharko@gmail.com>\n"
