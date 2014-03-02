@@ -16,7 +16,7 @@
 // want to set there. Your changes will override the defaults provided by us.
 
 // Better description of available configuration settings you can find here:
-// <http://www.poweradmin.org/trac/wiki/Documentation/ConfigurationFile>
+// <https://github.com/poweradmin/poweradmin/wiki/Configuration-File>
 
 // Database settings
 $db_host		= '';
