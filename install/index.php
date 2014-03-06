@@ -86,7 +86,7 @@ switch($step) {
 
 		echo "<p>" . _('The alternative for this installer is a manual installation. Refer to the poweradmin.org website if you want to go down that road.') . "</p>\n";
 
-		echo "<p>" . _('Finally, if you see any errors during the installation process, a problem report would be appreciated. You can report problems (and ask for help) on the poweradmin-users mailinglist.') . "</p>";
+		echo "<p>" . _('Finally, if you see any errors during the installation process, a problem report would be appreciated. You can report problems (and ask for help) on the <a href="http://groups.google.com/group/poweradmin" target=\"blank\">poweradmin</a> mailinglist.') . "</p>";
 
 		echo "<p>" . _('Do you want to proceed now?') . "</p>\n";
 
