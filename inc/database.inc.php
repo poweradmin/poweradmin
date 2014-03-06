@@ -175,7 +175,7 @@ function dbConnect() {
 			if ($db_type == 'oci8') {
 				$db_name = '?service='.$db_name;
 	                }
-			$dsn = "$db_type:host=$db_host;dbname=$db_name";
+			$dsn = "$db_type:host=$db_host;port=$db_port;dbname=$db_name";
 		}
 	}
 
