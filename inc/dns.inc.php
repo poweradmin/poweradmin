@@ -531,7 +531,7 @@ function is_valid_rr_hinfo_content($content) {
 	}
 
 	for ($i = 0; ($i < 2); $i++) {
-		if (!preg_match("/^([^\s]{1,1000}|\"([^\"]{1,998}\")$/i", $fields[$i])) {
+		if (!preg_match("/^([^\s]{1,1000})|\"([^\"]{1,998}\")$/i", $fields[$i])) {
 			error(ERR_DNS_HINFO_INV_CONTENT); return false;
 		}
 	}
