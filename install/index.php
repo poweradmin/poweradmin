@@ -312,7 +312,7 @@ switch($step) {
 			"\$db_name\t\t= '" . $_POST['db_name'] . "';\n" .
 			"\$db_port\t\t= '" . $_POST['db_port'] . "';\n" .
 			"\$db_type\t\t= '" . $_POST['db_type'] . "';\n" .
-            "\$db_layer\t\t= '" . $db_layer . "';\n" .
+            "\$db_layer\t\t= 'PDO';\n" .
 			"\n" .
 			"\$session_key\t\t= '" . get_random_key() . "';\n" .
 			"\n" .
