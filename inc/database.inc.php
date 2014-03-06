@@ -77,7 +77,7 @@ function dbError($msg)
 }
 
 if (isset($db_layer) && $db_layer == 'MDB2') {
-	PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, 'dbError');
+	@PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, 'dbError');
 }
 
 /**  Connect to Database
@@ -200,7 +200,7 @@ function dbConnect() {
 	}
 
 	// FIXME - it's strange, but this doesn't work, perhaps bug in MDB2 library
-	if (PEAR::isError($db)) {
+	if (@PEAR::isError($db)) {
 		// Error handling should be put.
 		error(MYSQL_ERROR_FATAL, $db->getMessage());
 	}
