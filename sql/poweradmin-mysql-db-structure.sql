@@ -11,9 +11,10 @@ CREATE TABLE `users` (
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-LOCK TABLES `users` WRITE;
-INSERT INTO `users` VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3','Administrator','admin@example.net','Administrator with full rights.',1,1,0);
-UNLOCK TABLES;
+START TRANSACTION;
+    INSERT INTO `users`
+        VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3','Administrator','admin@example.net','Administrator with full rights.',1,1,0);
+COMMIT;
 
 CREATE TABLE `perm_items` (
   `id` int(11) NOT NULL auto_increment,
