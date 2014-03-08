@@ -4,7 +4,7 @@ $def_tables =
 	array(
 		array(
 			'table_name'	=>	'perm_items',
-			'options'	=>	array( 'type' => 'myisam'),
+			'options'	=>	array( 'type' => 'innodb'),
 			'fields'	=>	array(
 				    'id' => array(
 				    	    'type'		=> 'integer',
@@ -40,7 +40,7 @@ $def_tables =
 			),
 		array(
 			'table_name'	=>	'perm_templ',
-			'options'	=>	array( 'type' => 'myisam'),
+			'options'	=>	array( 'type' => 'innodb'),
 			'fields'	=>	array(
 				   'id' => array(
 				    	    'type'		=> 'integer',
@@ -77,7 +77,7 @@ $def_tables =
 			),
 		array(
 			'table_name'	=>	'perm_templ_items',
-			'options'	=>	array( 'type' => 'myisam'),
+			'options'	=>	array( 'type' => 'innodb'),
 			'fields'	=>	array(
 				   'id' => array(
 					    'notnull' 		=> 1,
@@ -114,7 +114,7 @@ $def_tables =
 			),
 		array(
 			'table_name'	=>	'users',
-			'options'	=>	array( 'type' => 'myisam'),
+			'options'	=>	array( 'type' => 'innodb'),
 			'fields'	=>	array(
 				    'id' => array
 					(

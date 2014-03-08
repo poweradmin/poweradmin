@@ -1,79 +1,111 @@
-CREATE TABLE `users` (
-  `id` int(11) NOT NULL auto_increment,
-  `username` varchar(64) NOT NULL default '',
-  `password` varchar(128) NOT NULL default '',
-  `fullname` varchar(255) NOT NULL default '',
-  `email` varchar(255) NOT NULL default '',
-  `description` text NOT NULL,
-  `perm_templ` tinyint(11) NOT NULL default '0',
-  `active` tinyint(1) NOT NULL default '0',
-  `use_ldap` tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (`id`)
+-- PowerAdmin
+-- MySQL Database Structure
+--
+
+SET SESSION SQL_MODE="ANSI,ANSI_QUOTES,TRADITIONAL";
+
+CREATE TABLE users (
+  id          INTEGER      NOT NULL AUTO_INCREMENT,
+  username    VARCHAR(64)  NOT NULL,
+  "password"  VARCHAR(128) NOT NULL,
+  fullname    VARCHAR(255) NOT NULL,
+  email       VARCHAR(255) NOT NULL,
+  description TEXT         NOT NULL,
+  perm_templ  TINYINT      NOT NULL,
+  active      TINYINT      NOT NULL,
+  use_ldap    TINYINT      NOT NULL,
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-LOCK TABLES `users` WRITE;
-INSERT INTO `users` VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3','Administrator','admin@example.net','Administrator with full rights.',1,1,0);
-UNLOCK TABLES;
+START TRANSACTION;
+    INSERT INTO users ( id, username, "password", fullname, email
+                      , description, perm_templ, active, use_ldap )
+    VALUES ( 1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Administrator'
+           , 'admin@example.net', 'Administrator with full rights.', 1, 1, 0 );
+COMMIT;
 
-CREATE TABLE `perm_items` (
-  `id` int(11) NOT NULL auto_increment,
-  `name` varchar(64) NOT NULL,
-  `descr` text NOT NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+CREATE TABLE perm_items (
+  id INTEGER       NOT NULL AUTO_INCREMENT,
+  name VARCHAR(64) NOT NULL,
+  descr TEXT       NOT NULL,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-LOCK TABLES `perm_items` WRITE;
-INSERT INTO `perm_items` VALUES (41,'zone_master_add','User is allowed to add new master zones.'),(42,'zone_slave_add','User is allowed to add new slave zones.'),(43,'zone_content_view_own','User is allowed to see the content and meta data of zones he owns.'),(44,'zone_content_edit_own','User is allowed to edit the content of zones he owns.'),(45,'zone_meta_edit_own','User is allowed to edit the meta data of zones he owns.'),(46,'zone_content_view_others','User is allowed to see the content and meta data of zones he does not own.'),(47,'zone_content_edit_others','User is allowed to edit the content of zones he does not own.'),(48,'zone_meta_edit_others','User is allowed to edit the meta data of zones he does not own.'),(49,'search','User is allowed to perform searches.'),(50,'supermaster_view','User is allowed to view supermasters.'),(51,'supermaster_add','User is allowed to add new supermasters.'),(52,'supermaster_edit','User is allowed to edit supermasters.'),(53,'user_is_ueberuser','User has full access. God-like. Redeemer.'),(54,'user_view_others','User is allowed to see other users and their details.'),(55,'user_add_new','User is allowed to add new users.'),(56,'user_edit_own','User is allowed to edit their own details.'),(57,'user_edit_others','User is allowed to edit other users.'),(58,'user_passwd_edit_others','User is allowed to edit the password of other users.'),(59,'user_edit_templ_perm','User is allowed to change the permission template that is assigned to a user.'),(60,'templ_perm_add','User is allowed to add new permission templates.'),(61,'templ_perm_edit','User is allowed to edit existing permission templates.');
-UNLOCK TABLES;
+START TRANSACTION;
+    INSERT INTO perm_items ( id, name, descr ) VALUES ( 41, 'zone_master_add', 'User is allowed to add new master zones.' );
+    INSERT INTO perm_items ( id, name, descr ) VALUES ( 42, 'zone_slave_add', 'User is allowed to add new slave zones.' );
+    INSERT INTO perm_items ( id, name, descr ) VALUES ( 43, 'zone_content_view_own', 'User is allowed to see the content and meta data of zones he owns.' );
+    INSERT INTO perm_items ( id, name, descr ) VALUES ( 44, 'zone_content_edit_own', 'User is allowed to edit the content of zones he owns.' );
+    INSERT INTO perm_items ( id, name, descr ) VALUES ( 45, 'zone_meta_edit_own', 'User is allowed to edit the meta data of zones he owns.' );
+    INSERT INTO perm_items ( id, name, descr ) VALUES ( 46, 'zone_content_view_others', 'User is allowed to see the content and meta data of zones he does not own.' );
+    INSERT INTO perm_items ( id, name, descr ) VALUES ( 47, 'zone_content_edit_others', 'User is allowed to edit the content of zones he does not own.' );
+    INSERT INTO perm_items ( id, name, descr ) VALUES ( 48, 'zone_meta_edit_others', 'User is allowed to edit the meta data of zones he does not own.' );
+    INSERT INTO perm_items ( id, name, descr ) VALUES ( 49, 'search', 'User is allowed to perform searches.' );
+    INSERT INTO perm_items ( id, name, descr ) VALUES ( 50, 'supermaster_view', 'User is allowed to view supermasters.' );
+    INSERT INTO perm_items ( id, name, descr ) VALUES ( 51, 'supermaster_add', 'User is allowed to add new supermasters.' );
+    INSERT INTO perm_items ( id, name, descr ) VALUES ( 52, 'supermaster_edit', 'User is allowed to edit supermasters.' );
+    INSERT INTO perm_items ( id, name, descr ) VALUES ( 53, 'user_is_ueberuser', 'User has full access. God-like. Redeemer.' );
+    INSERT INTO perm_items ( id, name, descr ) VALUES ( 54, 'user_view_others', 'User is allowed to see other users and their details.' );
+    INSERT INTO perm_items ( id, name, descr ) VALUES ( 55, 'user_add_new', 'User is allowed to add new users.' );
+    INSERT INTO perm_items ( id, name, descr ) VALUES ( 56, 'user_edit_own', 'User is allowed to edit their own details.' );
+    INSERT INTO perm_items ( id, name, descr ) VALUES ( 57, 'user_edit_others', 'User is allowed to edit other users.' );
+    INSERT INTO perm_items ( id, name, descr ) VALUES ( 58, 'user_passwd_edit_others', 'User is allowed to edit the password of other users.' );
+    INSERT INTO perm_items ( id, name, descr ) VALUES ( 59, 'user_edit_templ_perm', 'User is allowed to change the permission template that is assigned to a user.' );
+    INSERT INTO perm_items ( id, name, descr ) VALUES ( 60, 'templ_perm_add', 'User is allowed to add new permission templates.' );
+    INSERT INTO perm_items ( id, name, descr ) VALUES ( 61, 'templ_perm_edit', 'User is allowed to edit existing permission templates.' );
+COMMIT;
 
-CREATE TABLE `perm_templ` (
-  `id` int(11) NOT NULL auto_increment,
-  `name` varchar(128) NOT NULL,
-  `descr` text NOT NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+CREATE TABLE perm_templ (
+  id    INTEGER      NOT NULL AUTO_INCREMENT,
+  name  VARCHAR(128) NOT NULL,
+  descr TEXT         NOT NULL,
+  PRIMARY KEY  (id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-LOCK TABLES `perm_templ` WRITE;
-INSERT INTO `perm_templ` VALUES (1,'Administrator','Administrator template with full rights.');
-UNLOCK TABLES;
+START TRANSACTION;
+    INSERT INTO perm_templ ( id, name, descr )
+        VALUES ( 1, 'Administrator'
+               , 'Administrator template with full rights.' );
+COMMIT;
 
-CREATE TABLE `perm_templ_items` (
-  `id` int(11) NOT NULL auto_increment,
-  `templ_id` int(11) NOT NULL,
-  `perm_id` int(11) NOT NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+CREATE TABLE perm_templ_items (
+  id INTEGER       NOT NULL AUTO_INCREMENT,
+  templ_id INTEGER NOT NULL,
+  perm_id INTEGER  NOT NULL,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-LOCK TABLES `perm_templ_items` WRITE;
-INSERT INTO `perm_templ_items` VALUES (1,1,53);
-UNLOCK TABLES;
+START TRANSACTION;
+    INSERT INTO perm_templ_items ( id, templ_id, perm_id )
+    VALUES ( 1, 1, 53 );
+COMMIT;
 
-CREATE TABLE `zones` (
-  `id` int(11) NOT NULL auto_increment,
-  `domain_id` int(11) NOT NULL default '0',
-  `owner` int(11) NOT NULL default '0',
-  `comment` text,
-  `zone_templ_id` INT(11) NOT NULL,
-  PRIMARY KEY  (`id`),
-  KEY `owner` (`owner`)
+CREATE TABLE zones (
+  id            INTEGER NOT NULL AUTO_INCREMENT,
+  domain_id     INTEGER NOT NULL,
+  owner         INTEGER NOT NULL,
+  "comment"     TEXT,
+  zone_templ_id INTEGER NOT NULL,
+  PRIMARY KEY (id),
+  KEY owner (owner)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE zone_templ (
-  `id` int(11) NOT NULL auto_increment,
-  `name` varchar(128) NOT NULL,
-  `descr` text NOT NULL,
-  `owner` int(11) NOT NULL,
+  id    INTEGER      NOT NULL AUTO_INCREMENT,
+  name  VARCHAR(128) NOT NULL,
+  descr TEXT         NOT NULL,
+  owner INTEGER      NOT NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE zone_templ_records (
-  `id` int(11) NOT NULL auto_increment,
-  `zone_templ_id` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `type` varchar(6) NOT NULL,
-  `content` varchar(255) NOT NULL,
-  `ttl` int(11) NOT NULL,
-  `prio` int(11) NOT NULL,
+  id            INTEGER      NOT NULL AUTO_INCREMENT,
+  zone_templ_id INTEGER      NOT NULL,
+  name          VARCHAR(255) NOT NULL,
+  "type"        VARCHAR(6)   NOT NULL,
+  content       VARCHAR(255) NOT NULL,
+  ttl           INTEGER      NOT NULL,
+  prio          INTEGER      NOT NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
