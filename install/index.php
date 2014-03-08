@@ -323,8 +323,7 @@ switch ($step) {
                 "\n" .
                 "\$dns_hostmaster\t\t= '" . $_POST['dns_hostmaster'] . "';\n" .
                 "\$dns_ns1\t\t= '" . $_POST['dns_ns1'] . "';\n" .
-                "\$dns_ns2\t\t= '" . $_POST['dns_ns2'] . "';\n" .
-                "\n?>\n";
+                "\$dns_ns2\t\t= '" . $_POST['dns_ns2'] . "';\n";
 
         if (is_writeable($local_config_file)) {
             $h_config = fopen($local_config_file, "w");
