@@ -192,4 +192,3 @@ if (!(verify_permission('search'))) {
     echo "      </form>\n";
 }
 include_once('inc/footer.inc.php');
-?>

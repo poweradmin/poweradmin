@@ -2022,5 +2022,3 @@ function do_secure_zone($domain_name) {
 
     return true;
 }
-
-?>

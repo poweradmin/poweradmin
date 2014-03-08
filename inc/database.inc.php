@@ -226,5 +226,3 @@ function dbConnect() {
     };
     return $db;
 }
-
-?>

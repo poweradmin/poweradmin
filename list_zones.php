@@ -151,4 +151,3 @@ if ($perm_view == "none") {
 }
 
 include_once("inc/footer.inc.php");
-?>

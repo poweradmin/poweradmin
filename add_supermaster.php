@@ -118,4 +118,3 @@ if ($supermasters_add != "1") {
     echo "     </form>\n";
 }
 include_once("inc/footer.inc.php");
-?>

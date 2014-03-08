@@ -62,4 +62,3 @@ echo "     </table>\n";
 echo "    </form>\n";
 
 include_once("inc/footer.inc.php");
-?>

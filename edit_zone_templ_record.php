@@ -116,4 +116,3 @@ if (!(verify_permission('zone_master_add')) || !$owner) {
 }
 
 include_once("inc/footer.inc.php");
-?>

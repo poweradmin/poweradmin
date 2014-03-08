@@ -73,4 +73,3 @@ echo "    <li><a href=\"index.php?logout\">" . _('Logout') . "</a></li>\n";
 echo "   </ul>\n";
 
 include_once("inc/footer.inc.php");
-?>

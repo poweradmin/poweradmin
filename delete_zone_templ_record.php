@@ -87,4 +87,3 @@ if ($record_id == "-1" || $zone_templ_id == "-1") {
     }
 }
 include_once("inc/footer.inc.php");
-?>

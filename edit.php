@@ -469,4 +469,3 @@ if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
 }
 
 include_once("inc/footer.inc.php");
-?>

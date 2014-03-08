@@ -844,5 +844,3 @@ function is_valid_loc($content) {
         return true;
     }
 }
-
-?>

@@ -106,4 +106,3 @@ if (file_exists('install')) {
     echo "    </div> <!-- /menu -->\n";
 }
 echo "    <div class=\"content\">\n";
-?>

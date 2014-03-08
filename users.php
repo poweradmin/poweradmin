@@ -179,4 +179,3 @@ if ($perm_templ_perm_edit == "1" || $perm_add_new == "1") {
 }
 
 include_once("inc/footer.inc.php");
-?>

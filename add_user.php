@@ -88,4 +88,3 @@ if (!verify_permission('user_add_new')) {
 }
 
 include_once("inc/footer.inc.php");
-?>

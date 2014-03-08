@@ -85,4 +85,3 @@ if (!verify_permission('templ_perm_edit')) {
 }
 
 include_once("inc/footer.inc.php");
-?>

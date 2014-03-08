@@ -250,5 +250,3 @@ class PDOCommon extends PDO {
     }
 
 }
-
-?>

@@ -72,4 +72,3 @@ if ($perm_templ_perm_edit == "0") {
 }
 
 include_once("inc/footer.inc.php");
-?>

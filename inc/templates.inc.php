@@ -595,5 +595,3 @@ function zone_templ_name_exists($zone_templ_name, $zone_templ_id = null) {
 
     return $count;
 }
-
-?>

@@ -238,5 +238,3 @@ class PDOLayer extends PDOCommon {
     }
 
 }
-
-?>

@@ -67,4 +67,3 @@ if (isset($db_debug) && $db_debug == true) {
 global $display_stats;
 if ($display_stats)
     display_current_stats();
-?>

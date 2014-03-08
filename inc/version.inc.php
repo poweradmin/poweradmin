@@ -30,4 +30,3 @@
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
 $VERSION = "2.1.6";
-?>

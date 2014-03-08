@@ -70,4 +70,3 @@ if ($perm_zone_master_add == "0") {
 }
 
 include_once("inc/footer.inc.php");
-?>

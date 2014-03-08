@@ -599,4 +599,3 @@ function gen_mix_salt($pass) {
     $salt = generate_salt();
     return mix_salt($salt, $pass);
 }
-?>

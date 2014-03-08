@@ -138,4 +138,3 @@ define("SUC_ZONE_TEMPL_ADD", _('Zone template has been added successfully.'));
 define("SUC_ZONE_TEMPL_UPD", _('Zone template has been updated successfully.'));
 define("SUC_ZONE_TEMPL_DEL", _('Zone template has been deleted successfully.'));
 define("SUC_EXEC_PDNSSEC_RECTIFY_ZONE", _('Zone has been rectified successfully.'));
-?>

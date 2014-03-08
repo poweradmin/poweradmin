@@ -212,4 +212,3 @@ if ($zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit 
 }
 
 include_once("inc/footer.inc.php");
-?>

@@ -89,4 +89,3 @@ if ($confirm == '1') {
 }
 
 include_once("inc/footer.inc.php");
-?>

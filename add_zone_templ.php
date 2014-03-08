@@ -64,4 +64,3 @@ if (!verify_permission('zone_master_add')) {
 }
 
 include_once("inc/footer.inc.php");
-?>

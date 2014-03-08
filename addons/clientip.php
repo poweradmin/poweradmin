@@ -7,4 +7,3 @@ if (isset($_SERVER['X_HTTP_FORWARDED_FOR'])) {
     $client_ip = $_SERVER['REMOTE_ADDR'];
 }
 echo $client_ip;
-?>

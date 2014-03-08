@@ -359,7 +359,3 @@ include_once('../inc/version.inc.php');
 echo "<div class=\"footer\">";
 echo "<a href=\"http://www.poweradmin.org/\">a complete(r) <strong>poweradmin</strong> v$VERSION</a> - <a href=\"http://www.poweradmin.org/credits.html\">credits</a>";
 echo "</div></body></html>";
-?>
-
-
-

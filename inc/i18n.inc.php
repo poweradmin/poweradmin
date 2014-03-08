@@ -49,4 +49,3 @@ if ($iface_lang != 'en_EN') {
     @putenv('LANG=' . $iface_lang);
     @putenv('LANGUAGE=' . $iface_lang);
 }
-?>

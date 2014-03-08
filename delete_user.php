@@ -125,4 +125,3 @@ if (isset($_POST['commit'])) {
 }
 
 include_once("inc/footer.inc.php");
-?>

@@ -70,4 +70,3 @@ if ($num_supermasters == "0") {
 echo "     </table>\n";
 
 include_once("inc/footer.inc.php");
-?>

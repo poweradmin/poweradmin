@@ -80,4 +80,3 @@ if ($master_ip == "-1" || $ns_name == "-1") {
 }
 
 include_once("inc/footer.inc.php");
-?>
