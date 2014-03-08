@@ -1,5 +1,4 @@
 <?php
-
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <http://www.poweradmin.org> for more details.
  *
@@ -29,42 +28,43 @@
  * @copyright   2010-2014 Poweradmin Development Team
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
-
 include_once('version.inc.php');
 
 global $db;
-if(is_object($db))
-{
-	 $db->disconnect();
+if (is_object($db)) {
+    $db->disconnect();
 }
-
 ?>
-  </div> <!-- /content -->
-  <div class="footer">
-   <a href="http://www.poweradmin.org/">a complete(r) <strong>poweradmin</strong><?php if (isset($_SESSION["userid"])) { echo " v $VERSION"; } ?></a> - <a href="http://www.poweradmin.org/credits.html">credits</a>
-  </div>
+</div> <!-- /content -->
+<div class="footer">
+    <a href="http://www.poweradmin.org/">a complete(r) <strong>poweradmin</strong><?php
+        if (isset($_SESSION["userid"])) {
+            echo " v $VERSION";
+        }
+        ?></a> - <a href="http://www.poweradmin.org/credits.html">credits</a>
+</div>
 <?php
-if(file_exists('inc/custom_footer.inc.php')) 
-{
-	include('inc/custom_footer.inc.php');
+if (file_exists('inc/custom_footer.inc.php')) {
+    include('inc/custom_footer.inc.php');
 }
 ?>
- </body>
+</body>
 </html>
 
-<?php 
+<?php
 if (isset($db_debug) && $db_debug == true) {
-	$debug = $db->getDebugOutput(); 
-	$debug = str_replace("query(1)", "", $debug);
-	$lines = explode(":", $debug);
+    $debug = $db->getDebugOutput();
+    $debug = str_replace("query(1)", "", $debug);
+    $lines = explode(":", $debug);
 
-	foreach ($lines as $line) {
-		echo "$line<br>";
-	}
+    foreach ($lines as $line) {
+        echo "$line<br>";
+    }
 }
 ?>
 
 <?php
 global $display_stats;
-if ($display_stats) display_current_stats();
+if ($display_stats)
+    display_current_stats();
 ?>

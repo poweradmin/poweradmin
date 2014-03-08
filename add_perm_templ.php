@@ -29,61 +29,59 @@
  * @copyright   2010-2014 Poweradmin Development Team
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
-
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
 if (!verify_permission('templ_perm_edit')) {
-	error(ERR_PERM_EDIT_PERM_TEMPL);
+    error(ERR_PERM_EDIT_PERM_TEMPL);
 } else {
 
-	if (isset($_POST['commit'])) {
-		if (add_perm_templ($_POST)) {
-			success(SUC_PERM_TEMPL_ADD);
-		}	
-	}
+    if (isset($_POST['commit'])) {
+        if (add_perm_templ($_POST)) {
+            success(SUC_PERM_TEMPL_ADD);
+        }
+    }
 
-	$perms_avail = get_permissions_by_template_id();
+    $perms_avail = get_permissions_by_template_id();
 
-	/* 
-	Display new permission form
-	*/
+    /*
+      Display new permission form
+     */
 
-	echo "    <h2>" . _('Add permission template') . "</h2>\n"; 
-   	echo "    <form method=\"post\" action=\"\">\n";
-	echo "     <table>\n";
-	echo "      <tr>\n";
-	echo "       <th>" . _('Name') . "</th>\n"; 
-	echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_name\" value=\"\"></td>\n";
-	echo "      </tr>\n";
-	echo "      <tr>\n";
-	echo "       <th>" . _('Description') . "</th>\n"; 
-	echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_descr\" value=\"\"></td>\n";
-	echo "      </tr>\n";
-	echo "     </table>\n";
-	echo "     <table>\n";
-	echo "      <tr>\n";
-	echo "       <th>&nbsp;</th>\n";
-	echo "       <th>" . _('Name') . "</th>\n"; 
-	echo "       <th>" . _('Description') . "</th>\n"; 
-	echo "      </tr>\n";
+    echo "    <h2>" . _('Add permission template') . "</h2>\n";
+    echo "    <form method=\"post\" action=\"\">\n";
+    echo "     <table>\n";
+    echo "      <tr>\n";
+    echo "       <th>" . _('Name') . "</th>\n";
+    echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_name\" value=\"\"></td>\n";
+    echo "      </tr>\n";
+    echo "      <tr>\n";
+    echo "       <th>" . _('Description') . "</th>\n";
+    echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_descr\" value=\"\"></td>\n";
+    echo "      </tr>\n";
+    echo "     </table>\n";
+    echo "     <table>\n";
+    echo "      <tr>\n";
+    echo "       <th>&nbsp;</th>\n";
+    echo "       <th>" . _('Name') . "</th>\n";
+    echo "       <th>" . _('Description') . "</th>\n";
+    echo "      </tr>\n";
 
-	/*
-	Display available permissions settings for inclusion
-	in the new permission
-	*/
-	foreach ($perms_avail as $perm_a) {
+    /*
+      Display available permissions settings for inclusion
+      in the new permission
+     */
+    foreach ($perms_avail as $perm_a) {
 
-		echo "      <tr>\n";
-		echo "       <td><input type=\"checkbox\" name=\"perm_id[]\" value=\"" . $perm_a['id'] . "\"></td>\n";
-		echo "       <td>" . $perm_a['name'] . "</td>\n";
-		echo "       <td>" . _($perm_a['descr']) . "</td>\n";
-		echo "      </tr>\n";
-	}
-	echo "     </table>\n";
-	echo "     <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
-	echo "     </form>\n";
-
+        echo "      <tr>\n";
+        echo "       <td><input type=\"checkbox\" name=\"perm_id[]\" value=\"" . $perm_a['id'] . "\"></td>\n";
+        echo "       <td>" . $perm_a['name'] . "</td>\n";
+        echo "       <td>" . _($perm_a['descr']) . "</td>\n";
+        echo "      </tr>\n";
+    }
+    echo "     </table>\n";
+    echo "     <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
+    echo "     </form>\n";
 }
 
 include_once("inc/footer.inc.php");

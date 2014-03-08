@@ -29,18 +29,20 @@
  * @copyright   2010-2014 Poweradmin Development Team
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
-
 include_once "PDOCommon.class.php";
 
 /**
  * Overrided PEAR class
  */
 class PEAR {
+
     /**
      * Overrided isError method
      */
-	public function isError() {
-	}
+    public function isError() {
+        
+    }
+
 }
 
 /**
@@ -55,8 +57,8 @@ class PDOExtended {
      * @param resource $stmt Statement handle
      * @param array $params numeric array containing the data to insert into the query
      */
-    public function executeMultiple( $stmt, $params) {
-        foreach($params as $values) {
+    public function executeMultiple($stmt, $params) {
+        foreach ($params as $values) {
             $stmt->execute($values);
         }
     }
@@ -68,74 +70,75 @@ class PDOExtended {
  */
 class PDOLayer extends PDOCommon {
 
-        /**
-         * Enables/disables debugging
-         * @var boolean
-         */
-	private $debug = false;
+    /**
+     * Enables/disables debugging
+     * @var boolean
+     */
+    private $debug = false;
 
-        /**
-         * Internal storage for queries
-         * @var array
-         */
-	private $queries = array();
+    /**
+     * Internal storage for queries
+     * @var array
+     */
+    private $queries = array();
 
-        /**
-         * Quotes a string
-         *
-         * @param string $str
-         * @param string $type
-         * @return string Returns quoted string
-         */
-	public function quote($str, $type) {
-		if ($type == 'integer') {
-			$type = PDO::PARAM_INT;
-		} elseif ($type == 'text') {
-			$type = PDO::PARAM_STR;
-		}
-		return parent::quote($str, $type); 
-	}
+    /**
+     * Quotes a string
+     *
+     * @param string $str
+     * @param string $type
+     * @return string Returns quoted string
+     */
+    public function quote($str, $type) {
+        if ($type == 'integer') {
+            $type = PDO::PARAM_INT;
+        } elseif ($type == 'text') {
+            $type = PDO::PARAM_STR;
+        }
+        return parent::quote($str, $type);
+    }
 
-        /**
-         * Set execution options
-         *
-         * @param string $option Option name
-         * @param int $value Option value
-         */
-	public function setOption($option, $value) {
-		if ($option == 'debug' && $value == 1) {
-			$this->debug = true;
-		}
-	}
+    /**
+     * Set execution options
+     *
+     * @param string $option Option name
+     * @param int $value Option value
+     */
+    public function setOption($option, $value) {
+        if ($option == 'debug' && $value == 1) {
+            $this->debug = true;
+        }
+    }
 
-        /**
-         * Return debug output
-         *
-         * @param string Debug output
-         */
-	public function getDebugOutput() {
-		echo join("<br>", $this->queries);
-	}
+    /**
+     * Return debug output
+     *
+     * @param string Debug output
+     */
+    public function getDebugOutput() {
+        echo join("<br>", $this->queries);
+    }
 
-        /**
-         * Executes SQL query
-         *
-         * @param string $str SQL query
-         * @return PDOStatement
-         */
-	public function query($str) {
-		if ($this->debug) {
-			$this->queries[] = $str;
-		}
+    /**
+     * Executes SQL query
+     *
+     * @param string $str SQL query
+     * @return PDOStatement
+     */
+    public function query($str) {
+        if ($this->debug) {
+            $this->queries[] = $str;
+        }
 
-		return parent::query($str);
-	}
+        return parent::query($str);
+    }
 
-        /**
-         * Dummy method
-         */
-	public function disconnect() {
-	}
+    /**
+     * Dummy method
+     */
+    public function disconnect() {
+        
+    }
 
     /**
      * Load PDO module
@@ -193,11 +196,11 @@ class PDOLayer extends PDOCommon {
             }
 
             if ($db_type == 'pgsql' && isset($arr['autoincrement'])) {
-                $line = $key.' SERIAL';
+                $line = $key . ' SERIAL';
             } elseif ($db_type == 'pgsql' && $arr['type'] == 'integer') {
-                $line = $key.' '.$arr['type'];
+                $line = $key . ' ' . $arr['type'];
             } else {
-                $line = $key.' '.$arr['type'].'('.$arr['length'].')';
+                $line = $key . ' ' . $arr['type'] . '(' . $arr['length'] . ')';
             }
 
             if ($arr['notnull'] && $db_type != 'pgsql' && !isset($arr['autoincrement'])) {
@@ -218,7 +221,7 @@ class PDOLayer extends PDOCommon {
         $query = "CREATE TABLE $name (" . implode(', ', $query_fields) . ')';
 
         if ($db_type == 'mysql' && isset($options['type'])) {
-            $query .= ' ENGINE='.$options['type'];
+            $query .= ' ENGINE=' . $options['type'];
         }
         $this->exec($query);
     }

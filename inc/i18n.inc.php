@@ -29,26 +29,24 @@
  * @copyright   2010-2014 Poweradmin Development Team
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
-
-if(file_exists('inc/config.inc.php')) {
-	include_once("inc/config.inc.php");
-	include_once("inc/error.inc.php");
+if (file_exists('inc/config.inc.php')) {
+    include_once("inc/config.inc.php");
+    include_once("inc/error.inc.php");
 } else {
-	$iface_lang = 'en_EN';
+    $iface_lang = 'en_EN';
 }
 
 if ($iface_lang != 'en_EN') {
-	$locale = setlocale(LC_ALL, $iface_lang, $iface_lang.'.UTF-8');
-	if ($locale == false) {
-		error(ERR_LOCALE_FAILURE);
-	}
+    $locale = setlocale(LC_ALL, $iface_lang, $iface_lang . '.UTF-8');
+    if ($locale == false) {
+        error(ERR_LOCALE_FAILURE);
+    }
 
-	$gettext_domain = 'messages';
-	bindtextdomain($gettext_domain, "./locale");
-	bind_textdomain_codeset($gettext_domain, 'utf-8');
-	textdomain($gettext_domain);
-	@putenv('LANG='.$iface_lang);
-	@putenv('LANGUAGE='.$iface_lang);
+    $gettext_domain = 'messages';
+    bindtextdomain($gettext_domain, "./locale");
+    bind_textdomain_codeset($gettext_domain, 'utf-8');
+    textdomain($gettext_domain);
+    @putenv('LANG=' . $iface_lang);
+    @putenv('LANGUAGE=' . $iface_lang);
 }
-
 ?>

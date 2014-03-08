@@ -29,19 +29,17 @@
  * @copyright   2010-2014 Poweradmin Development Team
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
-
 /* Disable reset password functionality, because of improper implementation.
-    If you know admin or any other user email, then you initiate password change
-    to some random which will be send to him by email, but that can be done
-    by some malicious user or some script, which can reset password every sec. */
+  If you know admin or any other user email, then you initiate password change
+  to some random which will be send to him by email, but that can be done
+  by some malicious user or some script, which can reset password every sec. */
 exit;
 
 /** Reset Password functionality
  *
  */
-
-
 session_start();
+
 /** Print error message
  *
  * @param string $msg Error message
@@ -49,7 +47,7 @@ session_start();
  * @return null
  */
 function error($msg) {
-/* TODO: reimplement displaying of errors/messages */
+    /* TODO: reimplement displaying of errors/messages */
     if ($msg) {
         echo "     <div class=\"error\">Error: " . $msg . "</div>\n";
     } else {
@@ -59,48 +57,51 @@ function error($msg) {
 
 include_once("inc/error.inc.php");
 include_once("inc/config-me.inc.php");
-if(!@include_once("inc/config.inc.php"))
-{
-        error( _('You have to create a config.inc.php!') );
+if (!@include_once("inc/config.inc.php")) {
+    error(_('You have to create a config.inc.php!'));
 }
 
 require_once("inc/database.inc.php");
 // Generates $db variable to access database.
 $db = dbConnect();
 
-if(isset($_POST['submit']) && $_POST['submit']) {
+if (isset($_POST['submit']) && $_POST['submit']) {
 
-        global $db;
-	$email = $_POST['emailaddr'];
-        $query = "SELECT id, password, email FROM users WHERE email = " . $db->quote($email, 'text');
+    global $db;
+    $email = $_POST['emailaddr'];
+    $query = "SELECT id, password, email FROM users WHERE email = " . $db->quote($email, 'text');
+    $response = $db->query($query);
+    if (PEAR::isError($response)) {
+        error($response->getMessage());
+        return false;
+    }
+
+    $rinfo = $response->fetchRow();
+
+    if (isset($rinfo['email'])) {
+        $newpass = mt_rand();
+        $query = "UPDATE users SET password = " . $db->quote(md5($newpass), 'text') . " WHERE id = " . $db->quote($rinfo['id'], 'integer');
         $response = $db->query($query);
-        if (PEAR::isError($response)) { error($response->getMessage()); return false; }
-
-        $rinfo = $response->fetchRow();
-
-        if(isset($rinfo['email'])) {
-		$newpass = mt_rand();
-                $query = "UPDATE users SET password = " . $db->quote(md5($newpass), 'text') . " WHERE id = " . $db->quote($rinfo['id'], 'integer') ;
-                $response = $db->query($query);
-                if (PEAR::isError($response)) { error($response->getMessage()); return false; }
-
-
-		$to = $rinfo['email'];
-		$subject = "Password Reset";
-		$headers = "From: Poweradmin";
-		$body = "New Password: ".$newpass."
-		";
-		$mail_sent = @mail($to, $subject, $body, $headers);
-		
-
-		echo "A new password has been emailed to the registered email address. <a href='index.php'>(Return to login)</a>";
-//                logout( _('Password has been changed, please login.'), 'success');
-
-		
-        } else {
-                error(ERR_USER_WRONG_CURRENT_PASS);
-                return false;
+        if (PEAR::isError($response)) {
+            error($response->getMessage());
+            return false;
         }
+
+
+        $to = $rinfo['email'];
+        $subject = "Password Reset";
+        $headers = "From: Poweradmin";
+        $body = "New Password: " . $newpass . "
+		";
+        $mail_sent = @mail($to, $subject, $body, $headers);
+
+
+        echo "A new password has been emailed to the registered email address. <a href='index.php'>(Return to login)</a>";
+//                logout( _('Password has been changed, please login.'), 'success');
+    } else {
+        error(ERR_USER_WRONG_CURRENT_PASS);
+        return false;
+    }
 }
 
 
@@ -111,16 +112,19 @@ global $ignore_install_dir;
 echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n";
 echo "<html>\n";
 echo " <head>\n";
-echo "  <title>" . $iface_title ."</title>\n";
+echo "  <title>" . $iface_title . "</title>\n";
 echo "  <link rel=stylesheet href=\"style/" . $iface_style . ".css\" type=\"text/css\">\n";
 echo "  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n";
 echo " </head>\n";
 echo " <body>\n";
 
 
-if (! function_exists('session_start')) die(error('You have to install PHP session extension!'));
-if (! function_exists('_')) die(error('You have to install PHP gettext extension!'));
-if (! function_exists('mcrypt_encrypt')) die(error('You have to install PHP mcrypt extension!'));
+if (!function_exists('session_start'))
+    die(error('You have to install PHP session extension!'));
+if (!function_exists('_'))
+    die(error('You have to install PHP gettext extension!'));
+if (!function_exists('mcrypt_encrypt'))
+    die(error('You have to install PHP mcrypt extension!'));
 
 
 echo "    <h2>" . _('Reset Password') . "</h2>\n";
@@ -140,6 +144,4 @@ echo "     </table>\n";
 echo "    </form>\n";
 
 include_once("inc/footer.inc.php");
-
-
 ?>

@@ -22,31 +22,31 @@
  */
 
 /* PERMISSIONS */
-define("ERR_PERM_SEARCH", _("You do not have the permission to perform searches.")); 
-define("ERR_PERM_ADD_RECORD", _("You do not have the permission to add a record to this zone.")); 
-define("ERR_PERM_EDIT_RECORD", _("You do not have the permission to edit this record.")); 
-define("ERR_PERM_VIEW_RECORD", _("You do not have the permission to view this record.")); 
-define("ERR_PERM_DEL_RECORD", _("You do not have the permission to delete this record.")); 
-define("ERR_PERM_ADD_ZONE_MASTER", _("You do not have the permission to add a master zone.")); 
-define("ERR_PERM_ADD_ZONE_SLAVE", _("You do not have the permission to add a slave zone.")); 
-define("ERR_PERM_DEL_ZONE", _("You do not have the permission to delete a zone.")); 
-define("ERR_PERM_VIEW_COMMENT", _("You do not have the permission to view this comment.")); 
-define("ERR_PERM_EDIT_COMMENT", _("You do not have the permission to edit this comment.")); 
-define("ERR_PERM_DEL_SM", _("You do not have the permission to delete a supermaster.")); 
-define("ERR_PERM_VIEW_ZONE", _("You do not have the permission to view this zone.")); 
-define("ERR_PERM_EDIT_USER", _("You do not have the permission to edit this user.")); 
-define("ERR_PERM_EDIT_PERM_TEMPL", _("You do not have the permission to edit permission templates.")); 
-define("ERR_PERM_DEL_PERM_TEMPL", _("You do not have the permission to delete permission templates.")); 
-define("ERR_PERM_ADD_USER", _("You do not have the permission to add a new user.")); 
-define("ERR_PERM_DEL_USER", _("You do not have the permission to delete this user.")); 
-define("ERR_PERM_EDIT_ZONE_TEMPL", _("You do not have the permission to edit zone templates.")); 
-define("ERR_PERM_DEL_ZONE_TEMPL", _("You do not have the permission to delete zone templates.")); 
-define("ERR_PERM_ADD_ZONE_TEMPL", _("You do not have the permission to add a zone template.")); 
+define("ERR_PERM_SEARCH", _("You do not have the permission to perform searches."));
+define("ERR_PERM_ADD_RECORD", _("You do not have the permission to add a record to this zone."));
+define("ERR_PERM_EDIT_RECORD", _("You do not have the permission to edit this record."));
+define("ERR_PERM_VIEW_RECORD", _("You do not have the permission to view this record."));
+define("ERR_PERM_DEL_RECORD", _("You do not have the permission to delete this record."));
+define("ERR_PERM_ADD_ZONE_MASTER", _("You do not have the permission to add a master zone."));
+define("ERR_PERM_ADD_ZONE_SLAVE", _("You do not have the permission to add a slave zone."));
+define("ERR_PERM_DEL_ZONE", _("You do not have the permission to delete a zone."));
+define("ERR_PERM_VIEW_COMMENT", _("You do not have the permission to view this comment."));
+define("ERR_PERM_EDIT_COMMENT", _("You do not have the permission to edit this comment."));
+define("ERR_PERM_DEL_SM", _("You do not have the permission to delete a supermaster."));
+define("ERR_PERM_VIEW_ZONE", _("You do not have the permission to view this zone."));
+define("ERR_PERM_EDIT_USER", _("You do not have the permission to edit this user."));
+define("ERR_PERM_EDIT_PERM_TEMPL", _("You do not have the permission to edit permission templates."));
+define("ERR_PERM_DEL_PERM_TEMPL", _("You do not have the permission to delete permission templates."));
+define("ERR_PERM_ADD_USER", _("You do not have the permission to add a new user."));
+define("ERR_PERM_DEL_USER", _("You do not have the permission to delete this user."));
+define("ERR_PERM_EDIT_ZONE_TEMPL", _("You do not have the permission to edit zone templates."));
+define("ERR_PERM_DEL_ZONE_TEMPL", _("You do not have the permission to delete zone templates."));
+define("ERR_PERM_ADD_ZONE_TEMPL", _("You do not have the permission to add a zone template."));
 
 /* DOMAIN STUFF */
 define("ERR_DOMAIN_INVALID", _('This is an invalid zone name.'));
-define("ERR_SM_EXISTS", _('There is already a supermaster with this IP address and hostname.')); 
-define("ERR_DOMAIN_EXISTS", _('There is already a zone with this name.')); 
+define("ERR_SM_EXISTS", _('There is already a supermaster with this IP address and hostname.'));
+define("ERR_DOMAIN_EXISTS", _('There is already a zone with this name.'));
 
 /* USER STUFF */
 define("ERR_USER_EXIST", _('Username exist already, please choose another one.'));
@@ -56,7 +56,7 @@ define("ERR_USER_MATCH_NEW_PASS", _('The two new password fields do not match.')
 define("ERR_PERM_TEMPL_ASSIGNED", _('This template is assigned to at least one user.'));
 
 /* OTHER */
-define("ERR_INV_INPUT", _('Invalid or unexpected input given.'));  
+define("ERR_INV_INPUT", _('Invalid or unexpected input given.'));
 define("ERR_INV_ARG", _('Invalid argument(s) given to function %s'));
 define("ERR_INV_ARGC", _('Invalid argument(s) given to function %s %s'));
 define("ERR_UNKNOWN", _('Unknown error.'));
@@ -90,13 +90,13 @@ define("ERR_DNS_HN_DASH", _('A hostname can not start or end with a dash.'));
 define("ERR_DNS_HN_LENGTH", _('Given hostname or one of the labels is too short or too long.'));
 define("ERR_DNS_HN_SLASH", _('Given hostname has too many slashes.'));
 define("ERR_DNS_RR_TYPE", _('Unknown record type.'));
-define("ERR_DNS_IP", _('This is not a valid IPv4 or IPv6 address.')); 
+define("ERR_DNS_IP", _('This is not a valid IPv4 or IPv6 address.'));
 define("ERR_DNS_IPV6", _('This is not a valid IPv6 address.'));
 define("ERR_DNS_IPV4", _('This is not a valid IPv4 address.'));
 define("ERR_DNS_CNAME", _('This is not a valid CNAME. Did you assign an MX or NS record to the record?'));
-define("ERR_DNS_CNAME_EXISTS", _('This is not a valid record. There is already exists a CNAME with this name.')); 
-define("ERR_DNS_CNAME_UNIQUE", _('This is not a valid CNAME. There is already exists an A, AAAA or CNAME with this name.')); 
-define("ERR_DNS_CNAME_EMPTY", _('Empty CNAME records are not allowed.')); 
+define("ERR_DNS_CNAME_EXISTS", _('This is not a valid record. There is already exists a CNAME with this name.'));
+define("ERR_DNS_CNAME_UNIQUE", _('This is not a valid CNAME. There is already exists an A, AAAA or CNAME with this name.'));
+define("ERR_DNS_CNAME_EMPTY", _('Empty CNAME records are not allowed.'));
 define("ERR_DNS_NON_ALIAS_TARGET", _('You can not point a NS or MX record to a CNAME record. Remove or rame the CNAME record first, or take another name.'));
 define("ERR_DNS_NS_HNAME", _('NS records must be a hostnames.'));
 define("ERR_DNS_MX_PRIO", _('A prio field should be numeric.'));
@@ -138,5 +138,4 @@ define("SUC_ZONE_TEMPL_ADD", _('Zone template has been added successfully.'));
 define("SUC_ZONE_TEMPL_UPD", _('Zone template has been updated successfully.'));
 define("SUC_ZONE_TEMPL_DEL", _('Zone template has been deleted successfully.'));
 define("SUC_EXEC_PDNSSEC_RECTIFY_ZONE", _('Zone has been rectified successfully.'));
-
 ?>

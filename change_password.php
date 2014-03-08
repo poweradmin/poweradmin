@@ -29,11 +29,10 @@
  * @copyright   2010-2014 Poweradmin Development Team
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
-
 require_once("inc/toolkit.inc.php");
 
-if(isset($_POST['submit']) && $_POST['submit']) {
-	change_user_pass($_POST);
+if (isset($_POST['submit']) && $_POST['submit']) {
+    change_user_pass($_POST);
 }
 
 include_once("inc/header.inc.php");

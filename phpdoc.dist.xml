@@ -17,12 +17,12 @@
     </transformer>
     <logging>
         <level>warn</level>
-<!--
-	<paths>
-            <default>logs/phpdoc/{DATE}.log</default>
-            <errors>logs/phpdoc/{DATE}.error.log</errors>
-        </paths>
--->
+        <!--
+                <paths>
+                    <default>logs/phpdoc/{DATE}.log</default>
+                    <errors>logs/phpdoc/{DATE}.error.log</errors>
+                </paths>
+        -->
     </logging>
     <transformations>
         <template name="responsive" />

@@ -29,40 +29,38 @@
  * @copyright   2010-2014 Poweradmin Development Team
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
-
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
 if (!verify_permission('zone_master_add')) {
-	error(ERR_PERM_ADD_ZONE_TEMPL);
+    error(ERR_PERM_ADD_ZONE_TEMPL);
 } else {
 
-	if (isset($_POST['commit'])) {
-		if (add_zone_templ($_POST, $_SESSION['userid'])) {
-			success(SUC_ZONE_TEMPL_ADD);
-		} // TODO: otherwise repopulate values to form
-	}
+    if (isset($_POST['commit'])) {
+        if (add_zone_templ($_POST, $_SESSION['userid'])) {
+            success(SUC_ZONE_TEMPL_ADD);
+        } // TODO: otherwise repopulate values to form
+    }
 
-	/* 
-	Display new zone template form
-	*/
+    /*
+      Display new zone template form
+     */
 
-	$username = get_fullname_from_userid($_SESSION['userid']);
-	echo "    <h2>" . _('Add zone template for') . " " . $username . "</h2>\n"; 
-        echo "    <form method=\"post\" action=\"add_zone_templ.php\">\n";
-	echo "     <table>\n";
-	echo "      <tr>\n";
-	echo "       <th>" . _('Name') . "</th>\n"; 
-	echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_name\" value=\"\"></td>\n";
-	echo "      </tr>\n";
-	echo "      <tr>\n";
-	echo "       <th>" . _('Description') . "</th>\n"; 
-	echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_descr\" value=\"\"></td>\n";
-	echo "      </tr>\n";
-	echo "     </table>\n";
-	echo "     <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Add zone template') . "\">\n";
-	echo "     </form>\n";
-
+    $username = get_fullname_from_userid($_SESSION['userid']);
+    echo "    <h2>" . _('Add zone template for') . " " . $username . "</h2>\n";
+    echo "    <form method=\"post\" action=\"add_zone_templ.php\">\n";
+    echo "     <table>\n";
+    echo "      <tr>\n";
+    echo "       <th>" . _('Name') . "</th>\n";
+    echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_name\" value=\"\"></td>\n";
+    echo "      </tr>\n";
+    echo "      <tr>\n";
+    echo "       <th>" . _('Description') . "</th>\n";
+    echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_descr\" value=\"\"></td>\n";
+    echo "      </tr>\n";
+    echo "     </table>\n";
+    echo "     <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Add zone template') . "\">\n";
+    echo "     </form>\n";
 }
 
 include_once("inc/footer.inc.php");

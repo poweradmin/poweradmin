@@ -29,103 +29,100 @@
  * @copyright   2010-2014 Poweradmin Development Team
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
-
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
-verify_permission('user_edit_own') ? $perm_edit_own = "1" : $perm_edit_own = "0" ;
-verify_permission('user_edit_others') ? $perm_edit_others = "1" : $perm_edit_others = "0" ;
-verify_permission('user_is_ueberuser') ? $perm_is_godlike = "1" : $perm_is_godlike = "0" ;
+verify_permission('user_edit_own') ? $perm_edit_own = "1" : $perm_edit_own = "0";
+verify_permission('user_edit_others') ? $perm_edit_others = "1" : $perm_edit_others = "0";
+verify_permission('user_is_ueberuser') ? $perm_is_godlike = "1" : $perm_is_godlike = "0";
 
 if (!(isset($_GET['id']) && v_num($_GET['id']))) {
-	error(ERR_INV_INPUT);
-	include_once("inc/footer.inc.php");
-	exit;
+    error(ERR_INV_INPUT);
+    include_once("inc/footer.inc.php");
+    exit;
 } else {
-	$uid = $_GET['id'];
+    $uid = $_GET['id'];
 }
 
 if (isset($_POST['commit'])) {
-	
-	if (is_valid_user($uid)) {
+
+    if (is_valid_user($uid)) {
         $zones = array();
         if (isset($_POST['zone'])) {
             $zones = $_POST['zone'];
         }
 
-		if (delete_user($uid, $zones)) {	
-			success(SUC_USER_DEL);
-		}
-	} else {
-		header("Location: users.php");
-		exit;
-	}
+        if (delete_user($uid, $zones)) {
+            success(SUC_USER_DEL);
+        }
+    } else {
+        header("Location: users.php");
+        exit;
+    }
 } else {
 
-	if (($uid != $_SESSION['userid'] && $perm_edit_others == "0") || ($uid == $_SESSION['userid'] && $perm_is_godlike == "0")) {
-		error(ERR_PERM_DEL_USER);
-		include_once("inc/footer.inc.php");
-		exit;
-	} else {
-		$fullname = get_fullname_from_userid($uid);
-		$zones = get_zones("own",$uid);
+    if (($uid != $_SESSION['userid'] && $perm_edit_others == "0") || ($uid == $_SESSION['userid'] && $perm_is_godlike == "0")) {
+        error(ERR_PERM_DEL_USER);
+        include_once("inc/footer.inc.php");
+        exit;
+    } else {
+        $fullname = get_fullname_from_userid($uid);
+        $zones = get_zones("own", $uid);
 
-		echo "     <h2>" . _('Delete user') . " \"" . $fullname . "\"</h2>\n";
-		echo "     <form method=\"post\" action=\"\">\n";
-		echo "      <table>\n";
+        echo "     <h2>" . _('Delete user') . " \"" . $fullname . "\"</h2>\n";
+        echo "     <form method=\"post\" action=\"\">\n";
+        echo "      <table>\n";
 
-		if (count($zones) > 0) {
+        if (count($zones) > 0) {
 
-			$users = show_users();
+            $users = show_users();
 
-			echo "       <tr>\n";
-			echo "        <td colspan=\"5\">\n";
+            echo "       <tr>\n";
+            echo "        <td colspan=\"5\">\n";
 
-			echo "         " . _('You are about to delete a user. This user is owner for a number of zones. Please decide what to do with these zones.') . "\n";
-			echo "        </td>\n";
-			echo "       </tr>\n";
+            echo "         " . _('You are about to delete a user. This user is owner for a number of zones. Please decide what to do with these zones.') . "\n";
+            echo "        </td>\n";
+            echo "       </tr>\n";
 
-			echo "       <tr>\n";
-			echo "        <th>" . _('Zone') . "</th>\n";
-			echo "        <th>" . _('Delete') . "</th>\n";
-			echo "        <th>" . _('Leave') . "</th>\n";
-			echo "        <th>" . _('Add new owner') . "</th>\n";
-			echo "        <th>" . _('Owner to be added') . "</th>\n";
-			echo "       </tr>\n";
+            echo "       <tr>\n";
+            echo "        <th>" . _('Zone') . "</th>\n";
+            echo "        <th>" . _('Delete') . "</th>\n";
+            echo "        <th>" . _('Leave') . "</th>\n";
+            echo "        <th>" . _('Add new owner') . "</th>\n";
+            echo "        <th>" . _('Owner to be added') . "</th>\n";
+            echo "       </tr>\n";
 
-			foreach ($zones as $zone) {
-				echo "       <input type=\"hidden\" name=\"zone[" . $zone['id'] . "][zid]\" value=\"" . $zone['id'] . "\">\n";
-				echo "       <tr>\n";
-				echo "        <td>" . $zone['name'] . "</td>\n";
-				echo "        <td><input type=\"radio\" name=\"zone[" . $zone['id'] . "][target]\" value=\"delete\"></td>\n";
-				echo "        <td><input type=\"radio\" name=\"zone[" . $zone['id'] . "][target]\" value=\"leave\" CHECKED></td>\n";
-				echo "        <td><input type=\"radio\" name=\"zone[" . $zone['id'] . "][target]\" value=\"new_owner\"></td>\n";
-				echo "        <td>\n";
-				echo "         <select name=\"zone[" . $zone['id'] . "][newowner]\">\n";
+            foreach ($zones as $zone) {
+                echo "       <input type=\"hidden\" name=\"zone[" . $zone['id'] . "][zid]\" value=\"" . $zone['id'] . "\">\n";
+                echo "       <tr>\n";
+                echo "        <td>" . $zone['name'] . "</td>\n";
+                echo "        <td><input type=\"radio\" name=\"zone[" . $zone['id'] . "][target]\" value=\"delete\"></td>\n";
+                echo "        <td><input type=\"radio\" name=\"zone[" . $zone['id'] . "][target]\" value=\"leave\" CHECKED></td>\n";
+                echo "        <td><input type=\"radio\" name=\"zone[" . $zone['id'] . "][target]\" value=\"new_owner\"></td>\n";
+                echo "        <td>\n";
+                echo "         <select name=\"zone[" . $zone['id'] . "][newowner]\">\n";
 
-				foreach ($users as $user) {
-					echo "          <option value=\"" . $user["id"] . "\">" . $user["fullname"] . "</option>\n";
-				}
+                foreach ($users as $user) {
+                    echo "          <option value=\"" . $user["id"] . "\">" . $user["fullname"] . "</option>\n";
+                }
 
-				echo "         </select>\n";
-				echo "        </td>\n";
-				echo "       </tr>\n";
+                echo "         </select>\n";
+                echo "        </td>\n";
+                echo "       </tr>\n";
+            }
+        }
+        echo "       <tr>\n";
+        echo "        <td colspan=\"5\">\n";
 
-			}
-		}
-		echo "       <tr>\n";
-		echo "        <td colspan=\"5\">\n";
+        echo "         " . _('Really delete this user?') . "\n";
+        echo "        </td>\n";
+        echo "       </tr>\n";
 
-		echo "         " . _('Really delete this user?') . "\n";
-		echo "        </td>\n";
-		echo "       </tr>\n";
-
-		echo "      </table>\n";
-		echo "     <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
-		echo "     </form>\n";
-	}
+        echo "      </table>\n";
+        echo "     <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
+        echo "     </form>\n";
+    }
 }
 
 include_once("inc/footer.inc.php");
-
 ?>
