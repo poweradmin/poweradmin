@@ -1,34 +1,37 @@
-SET SESSION SQL_MODE='ANSI,ANSI_QUOTES,TRADITIONAL';
-CREATE TABLE domainmetadata (
-    id        INTEGER AUTO_INCREMENT,
-    domain_id INTEGER NOT NULL,
-    kind      VARCHAR(16),
-    content   TEXT,
-    PRIMARY KEY (id),
-    INDEX domainmetaidindex ( domain_id )
+create table domainmetadata (
+ id		 INT auto_increment,
+ domain_id       INT NOT NULL,
+ kind		 VARCHAR(16),
+ content	TEXT,
+ primary key(id)
 );
 
-CREATE TABLE Cryptokeys (
-    id        INTEGER AUTO_INCREMENT,
-    domain_id INTEGER NOT NULL,
-    flags     INTEGER NOT NULL,
-    active    BOOLEAN,
-    content   TEXT,
-    PRIMARY KEY(id),
-    INDEX domainidindex ( domain_id )
+create index domainmetaidindex on domainmetadata(domain_id);               
+
+
+create table cryptokeys (
+ id		INT auto_increment,
+ domain_id      INT NOT NULL,
+ flags		INT NOT NULL,
+ active		BOOL,
+ content	TEXT,
+ primary key(id)
+);		 
+
+create index domainidindex on cryptokeys(domain_id);           
+
+alter table records add ordername      VARCHAR(255);
+alter table records add auth bool;
+create index orderindex on records(ordername);
+
+create table tsigkeys (
+ id		INT auto_increment,
+ name		VARCHAR(255), 
+ algorithm	VARCHAR(50),
+ secret		VARCHAR(255),
+ primary key(id)
 );
 
-ALTER TABLE records
-      ADD COLUMN "ordername" VARCHAR(255)
-    , ADD COLUMN "auth" BOOLEAN
-    , ADD INDEX "orderindex" ( ordername )
-    , CHANGE COLUMN "type" "type" VARCHAR(10);
+create unique index namealgoindex on tsigkeys(name, algorithm);
+alter table records change column type type VARCHAR(10);
 
-CREATE TABLE tsigkeys (
-    id          INTEGER auto_increment,
-    name        VARCHAR(255), 
-    "algorithm" VARCHAR(50),
-    secret      VARCHAR(255),
-    PRIMARY KEY(id),
-    INDEX namealgoindex ( name, "algorithm" )
-);

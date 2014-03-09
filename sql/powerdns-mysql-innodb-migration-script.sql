@@ -1,9 +1,6 @@
 -- 
 -- InnoDB Migration Script
 -- 
-
-SET SESSION SQL_MODE='ANSI,ANSI_QUOTES,TRADITIONAL';
-
 ALTER TABLE users ENGINE=InnoDB;
 ALTER TABLE perm_items ENGINE=InnoDB;
 ALTER TABLE perm_templ ENGINE=InnoDB;
