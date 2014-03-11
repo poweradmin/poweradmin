@@ -85,6 +85,7 @@ function LDAPAuthenticate() {
     global $ldap_basedn;
     global $ldap_binddn;
     global $ldap_bindpw;
+    global $ldap_proto;
     global $ldap_user_attribute;
 
     if (isset($_SESSION["userlogin"]) && isset($_SESSION["userpwd"])) {
@@ -98,6 +99,7 @@ function LDAPAuthenticate() {
         }
 
         $ldapbind = ldap_bind($ldapconn, $ldap_binddn, $ldap_bindpw);
+        ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, $ldap_proto);
         if (!$ldapbind) {
             logout(_('Failed to bind to LDAP server!'), 'error');
             return;
