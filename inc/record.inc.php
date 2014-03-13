@@ -113,19 +113,19 @@ function get_next_date($curr_date) {
 /** Get Next Serial
  *
  * Zone transfer to zone slave(s) will occur only if the serial number
- * of the SOA RR is arithmetically greater that the previous one 
+ * of the SOA RR is arithmetically greater that the previous one
  * (as defined by RFC-1982).
- * 
+ *
  * The serial should be updated, unless:
- * 
+ *
  * - the serial is set to "0", see http://doc.powerdns.com/types.html#id482176
- * 
+ *
  * - set a fresh serial ONLY if the existing serial is lower than the current date
- * 
- * - update date in serial if it reaches limit of revisions for today or do you 
+ *
+ * - update date in serial if it reaches limit of revisions for today or do you
  * think that ritual suicide is better in such case?
- * 
- * "This works unless you will require to make more than 99 changes until the new 
+ *
+ * "This works unless you will require to make more than 99 changes until the new
  * date is reached - in which case perhaps ritual suicide is the best option."
  * http://www.zytrax.com/books/dns/ch9/serial.html
  *
@@ -164,7 +164,7 @@ function get_next_serial($curr_serial, $today = '') {
                 ++$revision;
             }
         } else {
-            // Current serial did not start of today, so it's either an older 
+            // Current serial did not start of today, so it's either an older
             // serial, therefore set a fresh serial
             $revision = "00";
         }
@@ -180,7 +180,7 @@ function get_next_serial($curr_serial, $today = '') {
  *
  * @param int $domain_id Domain ID
  * @param string $content SOA content to set
- * 
+ *
  * @return boolean true if success
  */
 function update_soa_record($domain_id, $content) {
@@ -205,7 +205,7 @@ function update_soa_record($domain_id, $content) {
  * @return string Updated SOA record
  */
 function set_soa_serial($soa_rec, $serial) {
-    // Split content of current SOA record into an array. 
+    // Split content of current SOA record into an array.
     $soa = explode(" ", $soa_rec);
     $soa[2] = $serial;
 
@@ -345,13 +345,13 @@ function edit_record($record) {
             } else {
                 $content = $db->quote($record['content'], 'text');
             }
-            $query = "UPDATE records 
-				SET name=" . $db->quote($name, 'text') . ", 
-				type=" . $db->quote($record['type'], 'text') . ", 
+            $query = "UPDATE records
+				SET name=" . $db->quote($name, 'text') . ",
+				type=" . $db->quote($record['type'], 'text') . ",
 				content=" . $content . ",
-				ttl=" . $db->quote($record['ttl'], 'integer') . ", 
-				prio=" . $db->quote($record['prio'], 'integer') . ", 
-				change_date=" . $db->quote(time(), 'integer') . " 
+				ttl=" . $db->quote($record['ttl'], 'integer') . ",
+				prio=" . $db->quote($record['prio'], 'integer') . ",
+				change_date=" . $db->quote(time(), 'integer') . "
 				WHERE id=" . $db->quote($record['rid'], 'integer');
             $result = $db->query($query);
             if (PEAR::isError($result)) {
@@ -578,9 +578,9 @@ function delete_record($rid) {
  *
  * A domain is name obligatory, so is an owner.
  * return values: true when succesful.
- * 
+ *
  * Empty means templates dont have to be applied.
- * 
+ *
  * This functions eats a template and by that it inserts various records.
  * first we start checking if something in an arpa record
  * remember to request nextID's from the database to be able to insert record.
@@ -590,7 +590,7 @@ function delete_record($rid) {
  * @param int $owner Owner ID for domain
  * @param string $type Type of domain ['NATIVE','MASTER','SLAVE']
  * @param string $slave_master Master server hostname for domain
- * @param int|string $zone_template ID of zone template ['none' or int] 
+ * @param int|string $zone_template ID of zone template ['none' or int]
  *
  * @return boolean true on success
  */
@@ -775,7 +775,7 @@ function recid_to_domid($id) {
 }
 
 /** Change owner of a domain
- * 
+ *
  * @param int $zone_id Zone ID
  * @param int $user_id User ID
  *
@@ -873,7 +873,7 @@ function get_records_by_type_from_domid($type, $recid) {
 /** Get Record Type for Record ID
  *
  * Retrieves the type of a record from a given id.
- * 
+ *
  * @param int $id Record ID
  * @return string Record type (one of the records types in $rtypes assumable).
  */
@@ -969,11 +969,11 @@ function get_zone_info_from_id($zid) {
     } else {
         global $db;
 
-        $query = "SELECT 	domains.type AS type, 
-					domains.name AS name, 
+        $query = "SELECT 	domains.type AS type,
+					domains.name AS name,
 					domains.master AS master_ip,
 					count(records.domain_id) AS record_count
-					FROM domains LEFT OUTER JOIN records ON domains.id = records.domain_id 
+					FROM domains LEFT OUTER JOIN records ON domains.id = records.domain_id
 					WHERE domains.id = " . $db->quote($zid, 'integer') . "
 					GROUP BY domains.id, domains.type, domains.name, domains.master";
         $result = $db->queryRow($query);
@@ -1141,6 +1141,11 @@ function supermaster_ip_name_exists($master_ip, $ns_name) {
 function get_zones($perm, $userid = 0, $letterstart = 'all', $rowstart = 0, $rowamount = 999999, $sortby = 'name') {
     global $db;
     global $sql_regexp;
+
+    if ($letterstart == '_') {
+        $letterstart = '\_';
+    }
+
     $sql_add = '';
     if ($perm != "own" && $perm != "all") {
         error(ERR_PERM_VIEW_ZONE);
@@ -1199,7 +1204,7 @@ function get_zones($perm, $userid = 0, $letterstart = 'all', $rowstart = 0, $row
 /** Get Count of Zones
  *
  * @param string $perm 'all', 'own' uses session 'userid'
- * @param string $letterstart Starting letters to match [default='all']  
+ * @param string $letterstart Starting letters to match [default='all']
  *
  * @return int Count of zones matched
  */
@@ -1226,9 +1231,9 @@ function zone_count_ng($perm, $letterstart = 'all') {
         }
 
 # XXX: do we really need this distinct directive as it's unsupported in sqlite)
-#		$sqlq = "SELECT COUNT(distinct domains.id) AS count_zones 
+#		$sqlq = "SELECT COUNT(distinct domains.id) AS count_zones
 
-        $sqlq = "SELECT COUNT(domains.id) AS count_zones 
+        $sqlq = "SELECT COUNT(domains.id) AS count_zones
 			FROM " . $fromTable . "	WHERE 1=1
 			" . $sql_add;
         $zone_count = $db->queryOne($sqlq);
@@ -1244,9 +1249,9 @@ function zone_count_ng($perm, $letterstart = 'all') {
  */
 function zone_count_for_uid($uid) {
     global $db;
-    $query = "SELECT COUNT(domain_id) 
-			FROM zones 
-			WHERE owner = " . $db->quote($uid, 'integer') . " 
+    $query = "SELECT COUNT(domain_id)
+			FROM zones
+			WHERE owner = " . $db->quote($uid, 'integer') . "
 			ORDER BY domain_id";
     $zone_count = $db->queryOne($query);
     return $zone_count;
@@ -1286,7 +1291,7 @@ function get_record_from_id($id) {
 /** Get all records from a domain id.
  *
  * Retrieve all fields of the records and send it back to the function caller.
- * 
+ *
  * @param int $id Domain ID
  * @param int $rowstart Starting row [default=0]
  * @param int $rowamount Number of rows to return in this query [default=999999]
@@ -1503,7 +1508,7 @@ function get_users_from_domain_id($id) {
  * @param boolean $wildcards Add wildcards automatically
  * @param boolean $arpa Search reverse records automatically
  *
- * @return mixed[] 'zones' => array of zones, 'records' => array of records 
+ * @return mixed[] 'zones' => array of zones, 'records' => array of records
  */
 function search_zone_and_record($search_string, $perm, $zone_sortby = 'name', $record_sortby = 'name', $wildcards = true, $arpa = true) {
 
@@ -1555,7 +1560,7 @@ function search_zone_and_record($search_string, $perm, $zone_sortby = 'name', $r
         }
     }
 
-    $query = "SELECT 
+    $query = "SELECT
 			domains.id AS zid,
 			domains.name AS name,
 			domains.type AS type,
@@ -1671,7 +1676,7 @@ function get_domain_slave_master($id) {
     }
 }
 
-/** Change Zone Type 
+/** Change Zone Type
  *
  * @param string $type New Zone Type [NATIVE,MASTER,SLAVE]
  * @param int $id Zone ID
@@ -1682,7 +1687,7 @@ function change_zone_type($type, $id) {
     global $db;
     $add = '';
     if (is_numeric($id)) {
-        // It is not really neccesary to clear the field that contains the IP address 
+        // It is not really neccesary to clear the field that contains the IP address
         // of the master if the type changes from slave to something else. PowerDNS will
         // ignore the field if the type isn't something else then slave. But then again,
         // it's much clearer this way.
@@ -1766,7 +1771,7 @@ function get_zone_template($zone_id) {
 }
 
 /** Update Zone Templatea ID for Zone ID
- * 
+ *
  * @param int $zone_id Zone ID
  * @param int $new_zone_template_id New Zone Template ID
  *
@@ -1933,10 +1938,10 @@ function delete_domains($domains) {
 
 /** Execute PDNSSEC rectify-zone command for Domain ID
  *
- * If a Domain is dnssec enabled, or uses features as 
+ * If a Domain is dnssec enabled, or uses features as
  * e.g. ALSO-NOTIFY, ALLOW-AXFR-FROM, TSIG-ALLOW-AXFR
  * following has to be executed
- * pdnssec rectify-zone $domain 
+ * pdnssec rectify-zone $domain
  *
  * @param int $domain_id Domain ID
  *

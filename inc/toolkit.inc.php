@@ -33,7 +33,7 @@
 ini_set('error_reporting', E_ALL & ~ (E_NOTICE | E_STRICT));
 
 // TODO: display elapsed time and memory consumption,
-// used to check improvements in refactored version 
+// used to check improvements in refactored version
 $display_stats = false;
 if ($display_stats)
     include('inc/benchmark.php');
@@ -349,7 +349,7 @@ function show_letters($letterstart, $userid = true) {
 
     $letter = "[[:digit:]]";
     if ($letterstart == "1") {
-        echo "[ <span class=\"lettertaken\">0-9</span> ] ";
+        echo "<span class=\"lettertaken\">[ 0-9 ]</span> ";
     } elseif (zone_letter_start($letter, $userid)) {
         echo "<a href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=1\">[ 0-9 ]</a> ";
     } else {
@@ -358,7 +358,7 @@ function show_letters($letterstart, $userid = true) {
 
     foreach (range('a', 'z') as $letter) {
         if ($letter == $letterstart) {
-            echo "[ <span class=\"lettertaken\">" . $letter . "</span> ] ";
+            echo "<span class=\"lettertaken\">[ " . $letter . " ]</span> ";
         } elseif (zone_letter_start($letter, $userid)) {
             echo "<a href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=" . $letter . "\">[ " . $letter . " ]</a> ";
         } else {
@@ -366,8 +366,16 @@ function show_letters($letterstart, $userid = true) {
         }
     }
 
+    if ($letterstart == '_') {
+        echo "<span class=\"lettertaken\">[ _ ]</span> ";
+    } elseif (zone_letter_start('_', $userid)) {
+        echo "<a href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=_\">[ _ ]</a> ";
+    } else {
+        echo "[ <span class=\"letternotavailable\">_</span> ] ";
+    }
+
     if ($letterstart == 'all') {
-        echo "[ <span class=\"lettertaken\"> Show all </span> ] ";
+        echo "<span class=\"lettertaken\">[ Show all ]</span>";
     } else {
         echo "<a href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=all\">[ Show all ]</a> ";
     }
@@ -383,12 +391,12 @@ function show_letters($letterstart, $userid = true) {
 function zone_letter_start($letter, $userid = true) {
     global $db;
     global $sql_regexp;
-    $query = "SELECT 
+    $query = "SELECT
 			domains.id AS domain_id,
 			zones.owner,
 			domains.name AS domainname
 			FROM domains
-			LEFT JOIN zones ON domains.id=zones.domain_id 
+			LEFT JOIN zones ON domains.id=zones.domain_id
 			WHERE substring(domains.name,1,1) " . $sql_regexp . " " . $db->quote("^" . $letter, 'text');
     $db->setLimit(1);
     $result = $db->queryOne($query);
@@ -458,7 +466,7 @@ function message($msg) {
 /** Send 302 Redirect with optional argument
  *
  * Reroute a user to a cleanpage of (if passed) arg
- * 
+ *
  * @param string $arg argument string to add to url
  *
  * @return null
