@@ -1,0 +1,910 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Poweradmin 2.1.6\n"
+"Report-Msgid-Bugs-To: edmondas@poweradmin.org\n"
+"POT-Creation-Date: 2011-07-08 23:45+0300\n"
+"PO-Revision-Date: 2014-03-19 17:55+0700\n"
+"Last-Translator: root <root@hangover.org.ru>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ru_RU\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "The <a href=\"install/\">install/</a> directory exists, you must remove it first before proceeding."
+msgstr "Директория <a href=\"install/\">install/</a> существует, для продолжения работы она должна быть удалена."
+
+msgid "There is no zone with this ID."
+msgstr "Нет зон с данным ID."
+
+msgid "Add permission template"
+msgstr "Добавить шаблон привилегий"
+
+msgid "Name"
+msgstr "Имя"
+
+msgid "Description"
+msgstr "Описание"
+
+msgid "Commit changes"
+msgstr "Подтвердить изменения"
+
+msgid "The record was successfully added."
+msgstr "Запись успешно добавлена."
+
+msgid "Add record to zone"
+msgstr "Добавить запись к зоне"
+
+msgid "Type"
+msgstr "Тип"
+
+msgid "Priority"
+msgstr "Приоритет"
+
+msgid "Content"
+msgstr "Содержимое"
+
+msgid "TTL"
+msgstr "TTL"
+
+msgid "Add record"
+msgstr "Добавить запись"
+
+msgid "Add supermaster"
+msgstr "Добавить supermaster"
+
+msgid "You do not have the permission to add a new supermaster."
+msgstr "Вы не имеете необходимых привилегий для добавления нового supermaster."
+
+msgid "IP address of supermaster"
+msgstr "IP-адрес supermaster"
+
+msgid "Hostname in NS record"
+msgstr "Имя хоста в NS-записи"
+
+msgid "Account"
+msgstr "Учетная запись"
+
+msgid "Add user"
+msgstr "Добавить пользователя"
+
+msgid "Username"
+msgstr "Имя пользователя"
+
+msgid "Fullname"
+msgstr "Полное имя"
+
+msgid "Password"
+msgstr "Пароль"
+
+msgid "Permission template"
+msgstr "Шаблон привилегий"
+
+msgid "Enabled"
+msgstr "Активен"
+
+msgid "IP address of web- or mailserver is invalid."
+msgstr "IP-адрес web- или почтового сервера некорректно."
+
+msgid "Add master zone"
+msgstr "Добавить первичную зону"
+
+msgid "Zone name"
+msgstr "Имя зоны"
+
+msgid "IP address of webserver"
+msgstr "IP-адрес web-сервера"
+
+msgid "IP address of mailserver"
+msgstr "IP-адрес почтового сервера"
+
+msgid "Owner"
+msgstr "Владелец"
+
+msgid "Create zone without applying records-template"
+msgstr "Добавить зону без применения шаблонов записей"
+
+msgid "Add zone"
+msgstr "Добавить зону"
+
+msgid "Add slave zone"
+msgstr "Добавить вторичную зону"
+
+msgid "IP address of master NS"
+msgstr "IP-адрес первичного NS"
+
+msgid "Change password"
+msgstr "Сменить пароль"
+
+msgid "Current password"
+msgstr "Текущий пароль"
+
+msgid "New password"
+msgstr "Новый пароль"
+
+msgid "Delete zone"
+msgstr "Удалить зону"
+
+msgid "You are about to delete a slave zone of which the master nameserver, %s, is a supermaster. Deleting the zone now, will result in temporary removal only. Whenever the supermaster sends a notification for this zone, it will be added again!"
+msgstr "Вы собираетесь удалить вторичную зону, для которой первичный сервер имён %s является supermaster. Удаля зону, вы добьётесь временного удаления, так как когда первичный сервер имён пошлёт оповещение для этой зоны, она будет добавлена снова."
+
+msgid "Are you sure?"
+msgstr "Вы уверены?"
+
+msgid "Yes"
+msgstr "Да"
+
+msgid "No"
+msgstr "Нет"
+
+msgid "Delete permission template"
+msgstr "Удалить шаблон привилегий"
+
+msgid "Delete record"
+msgstr "Удалить запись"
+
+msgid "You are trying to delete a record that is needed for this zone to work."
+msgstr "Вы пытаетесь удалить запись, которая необходима данной зоне для работы."
+
+msgid "Delete supermaster"
+msgstr "Удалить supermaster"
+
+msgid "Delete user"
+msgstr "Удалить пользователя"
+
+msgid "You are about to delete a user. This user is owner for a number of zones. Please decide what to do with these zones."
+msgstr "Вы собираетесь удалить пользователя. Этот пользователь является владельцем некоторых зон. Пожалуйста, решите, что делать с этими зонами."
+
+msgid "Zone"
+msgstr "Зона"
+
+msgid "Delete"
+msgstr "Удалить"
+
+msgid "Leave"
+msgstr "Покинуть"
+
+msgid "Add new owner"
+msgstr "Добавить пользователя"
+
+msgid "Owner to be added"
+msgstr "Владелец добавлен"
+
+msgid "Really delete this user?"
+msgstr "Точно удалить этого пользователя?"
+
+msgid "Edit permission template"
+msgstr "Изменить шаблон привилегий"
+
+msgid "Edit zone"
+msgstr "Изменить зону"
+
+msgid "This zone does not have any records. Weird."
+msgstr "Эта зона не имеет каких-либо записей. Странно..."
+
+msgid "Edit record"
+msgstr "Изменить запись"
+
+msgid "Owner of zone"
+msgstr "Владелец зоны"
+
+msgid "No owner set for this zone."
+msgstr "Владелец зоны не установлен."
+
+msgid "Add"
+msgstr "Добавить"
+
+msgid "Change"
+msgstr "Изменить"
+
+msgid "Edit record in zone"
+msgstr "Изменить запись в зоне"
+
+msgid "Edit user"
+msgstr "Изменить данные пользователя"
+
+msgid "This user has been assigned the permission template \"%s\"."
+msgstr "Данный пользователь связан с шаблоном привилегий \"%s\"."
+
+msgid "The description for this template is"
+msgstr "Описание для этого шаблона"
+
+msgid "Based on this template, this user has the following permissions"
+msgstr "На основании этого шаблона, данный пользователь имеет следующие привилегии"
+
+msgid "Welcome"
+msgstr "Добро пожаловать,"
+
+msgid "Index"
+msgstr "Главная"
+
+msgid "Search zones and records"
+msgstr "Поиск зон и записей"
+
+msgid "List zones"
+msgstr "Список зон"
+
+msgid "List supermasters"
+msgstr "Список supermaster'ов"
+
+msgid "User administration"
+msgstr "Управление пользователями"
+
+msgid "Logout"
+msgstr "Выход"
+
+msgid "Permission templates"
+msgstr "Шаблоны привилегий"
+
+msgid "Edit template"
+msgstr "Изменить шаблон"
+
+msgid "Delete template"
+msgstr "Удалить шаблон"
+
+msgid "There are no zones to show in this listing."
+msgstr "В этом списке нет зон для отображения."
+
+msgid "You do not have the permission to see any zones."
+msgstr "Вы не имеете необходимых привилегий для просмотра каких-либо зон."
+
+msgid "Records"
+msgstr "Записи"
+
+msgid "View zone"
+msgstr "Посмотреть зону"
+
+msgid "Zones found"
+msgstr "Найденные зоны"
+
+msgid "Master"
+msgstr "Первичная"
+
+msgid "Records found"
+msgstr "Найденные записи"
+
+msgid "Query"
+msgstr "Запрос"
+
+msgid "Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) in pattern matches any single character, a percent sign (%) matches any string of zero or more characters."
+msgstr "Введите имя хоста или IP-адрес. Поддерживается синтаксис SQL LIKE: знак подчёркивания (_) в шаблоне запроса соответствует одному символу, а знак процентов (%) соответствует любому значению из нуля или более символов."
+
+msgid "Search"
+msgstr "Поиск"
+
+msgid "Template"
+msgstr "Шаблон"
+
+msgid "Session expired, please login again."
+msgstr "Сессия истекла, авторизуйтесь заново, пожалуйста."
+
+msgid "Authentication failed!"
+msgstr "Авторизация не выполнена!"
+
+msgid "Log in"
+msgstr "Авторизация"
+
+msgid "Go"
+msgstr "OK"
+
+msgid "You have logged out."
+msgstr "Вы успешно вышли из системы"
+
+msgid "Oops! An error occured!"
+msgstr "Упс! Произошла ошибка!"
+
+msgid "Unknown database type in inc/config.inc.php."
+msgstr "Неизвестный тип БД в inc/config.inc.php."
+
+msgid "If you specify an MX record it must be a hostname."
+msgstr "Если вы укажете запись MX, она должна содержать имя хоста."
+
+msgid "You do not have the permission to perform searches."
+msgstr "У вас нет привилегий для того, чтобы произвести поиск."
+
+msgid "You do not have the permission to add a record to this zone."
+msgstr "У вас нет  привилегий для того, чтобы добавить запись в этой зоне."
+
+msgid "You do not have the permission to edit this record."
+msgstr "У вас нет  привилегий для редактирования этой записи."
+
+msgid "You do not have the permission to view this record."
+msgstr "У вас нет  привилегий для просмотра этой записи."
+
+msgid "You do not have the permission to delete this record."
+msgstr "У вас нет  привилегий для удаления этой записи."
+
+msgid "You do not have the permission to add a master zone."
+msgstr "У вас нет  привилегий для добавления первичной зоны."
+
+msgid "You do not have the permission to add a slave zone."
+msgstr "У вас нет  привилегий для добавления вторичной зоны."
+
+msgid "You do not have the permission to delete a zone."
+msgstr "У вас нет  привилегий для удаления зоны."
+
+msgid "You do not have the permission to delete a supermaster."
+msgstr "У вас нет  привилегий для удаления supermaster."
+
+msgid "You do not have the permission to view this zone."
+msgstr "У вас нет  привилегий для просмотра этой зоны."
+
+msgid "You do not have the permission to edit this user."
+msgstr "У вас нет  привилегий для редактирования данного пользователя."
+
+msgid "You do not have the permission to edit permission templates."
+msgstr "У вас нет  привилегий для редактирования шаблона привилегий."
+
+msgid "You do not have the permission to delete permission templates."
+msgstr "У вас нет  привилегий для удаления шаблона привилегий."
+
+msgid "You do not have the permission to add a new user."
+msgstr "У вас нет  привилегий для добавления нового пользователя."
+
+msgid "You do not have the permission to delete this user."
+msgstr "У вас нет  привилегий для удаления данного пользователя."
+
+msgid "This is an invalid zone name."
+msgstr "Это некорректное для имя зоны."
+
+msgid "There is already a supermaster with this IP address."
+msgstr "Уже существует supermaster с аналогичным IP-адресом."
+
+msgid "There is already a zone with this name."
+msgstr "Уже существует зона с аналогичным именем."
+
+msgid "Username exist already, please choose another one."
+msgstr "Указанное имя пользователя уже существует. Пожалуйста, укажите какое-нибудь другое."
+
+msgid "User does not exist."
+msgstr "Пользователь не найден."
+
+msgid "You did not enter the correct current password."
+msgstr "Вы не ввели корректный текущий пароль."
+
+msgid "The two new password fields do not match."
+msgstr "Два новых пароля не совпадают."
+
+msgid "This template is assigned to at least one user."
+msgstr "Этот шаблон связан как минимум с одним пользователем."
+
+msgid "Invalid or unexpected input given."
+msgstr "Введенные данные неверны или неожиданны."
+
+msgid "Invalid argument(s) given to function %s"
+msgstr "Неверные аргументы переданы функции %s"
+
+msgid "Invalid argument(s) given to function %s %s"
+msgstr "Неверные аргументы переданы функции %s %s"
+
+msgid "Unknown error."
+msgstr "Аларм, Упячка!"
+
+msgid "Enter a valid email address."
+msgstr "Укажите действующий адрес электронной почты."
+
+msgid "Your content field doesnt have a legit value."
+msgstr "Поле с содержимым не содержит нормального значения."
+
+msgid "Invalid hostname."
+msgstr "Неверное имя хоста."
+
+msgid "You have invalid characters in your hostname."
+msgstr "Введены неверные символы в имени хоста."
+
+msgid "A hostname can not start or end with a dash."
+msgstr "Имя хоста не может начинаться или оканчиваться знаком дефиса (-)."
+
+msgid "Given hostname or one of the labels is too short or too long."
+msgstr "Указанное имя хоста или одно из значений слишком короткое или слишком длинное."
+
+msgid "Given hostname has too many slashes."
+msgstr "Указанное имя хоста содержит слишком много символов косой черты."
+
+msgid "Unknown record type."
+msgstr "Неизвестный тип записи."
+
+msgid "This is not a valid IPv4 or IPv6 address."
+msgstr "Это не правильный адрес IPv4 или IPv6."
+
+msgid "This is not a valid IPv6 address."
+msgstr "Это не правильный адрес IPv6."
+
+msgid "This is not a valid IPv4 address."
+msgstr "Это не правильный адрес IPv4."
+
+msgid "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
+msgstr "Это не правильный алиас. Вы назначили MX- или NS-запись здесь?"
+
+msgid "You can not point a NS or MX record to a CNAME record. Remove or rame the CNAME record first, or take another name."
+msgstr "Вы не можете указать в MX- или NS-записи алиас. Сначала удалите CNAME-запись, или укажите другое имя"
+
+msgid "Invalid value for name field of SOA record. It should be the name of the zone."
+msgstr "Неправильное значение в поле имени в SOA-записи. Оно должно содержать имя зоны."
+
+msgid "Invalid value for content field of HINFO record."
+msgstr "Неправильное содержимое поля в записи HINFO."
+
+msgid "Invalid value for content field of TXT record."
+msgstr "Неправильное содержимое поля в записи TXT."
+
+msgid "Invalid value for TTL field. It should be numeric."
+msgstr "Неправильное значение в поле TTL. Оно должно быть цифровым."
+
+msgid "Invalid value for prio field. It should be numeric."
+msgstr "Неправильное значение приоритета. Оно должно быть цифровым."
+
+msgid "NS records must be a hostnames."
+msgstr "NS-запись должна быть именем хоста."
+
+msgid "A prio field should be numeric."
+msgstr "Поле приоритета должно быть цифровым."
+
+msgid "At least one of the five last SOA data fields is not numeric."
+msgstr "Минимум одно из последних пяти полей SOA-записей не цифровое."
+
+msgid "You can only have five numeric fields in the SOA record."
+msgstr "Имеется только пять цифровых полей в SOA-записи."
+
+msgid "The first part of your SOA record does not contain a valid hostname for a DNS server."
+msgstr "Первая часть вашей SOA-записи не содержит правильного имени хоста для DNS-сервера."
+
+msgid "Zone has been added successfully."
+msgstr "Зона добавлена успешно."
+
+msgid "Zone has been deleted successfully."
+msgstr "Зона удалена успешно."
+
+msgid "The user has been updated successfully."
+msgstr "Данные пользователя успешно обновлены."
+
+msgid "The user has been created successfully."
+msgstr "Пользователь успешно создан."
+
+msgid "The user has been deleted successfully."
+msgstr "Пользователь успешно удалён."
+
+msgid "The record has been updated successfully."
+msgstr "Запись успешно обновлена."
+
+msgid "The record has been deleted successfully."
+msgstr "Запись успешно удалена."
+
+msgid "The supermaster has been deleted successfully."
+msgstr "Supermaster успешно удалён."
+
+msgid "The supermaster has been added successfully."
+msgstr "Supermaster успешно добавлен."
+
+msgid "The permission template has been deleted successfully."
+msgstr "Шаблон привилегий успешно удалён."
+
+msgid "You are trying to delete the SOA record. You are not allowed to remove it, unless you remove the entire zone."
+msgstr "Вы пытаетесь удалить SOA-запись. Её нельзя удалить, пока существует зона."
+
+msgid "Function returned an error (multiple zones matching this zone ID)."
+msgstr "Функция вернула ошибку: несколько зон совпадает с данным идентификатором зоны."
+
+msgid "You have to create a config.inc.php!"
+msgstr "Вы должны создать config.inc.php!"
+
+msgid "Show page"
+msgstr "Посмотреть страницу"
+
+msgid "Show zones beginning with"
+msgstr "Посмотреть зоны начинающиеся на"
+
+msgid "An unknown error has occurred."
+msgstr "Неизвестная ошибка."
+
+msgid "Something has been successfully performed. What exactly, however, will remain a mystery."
+msgstr "Что-то было успешно выполнено. Но, что именно, останется загадкой."
+
+msgid "Success!"
+msgstr "Успешно!"
+
+msgid "back"
+msgstr "назад"
+
+msgid "Inactive"
+msgstr "Не активно"
+
+msgid "Active"
+msgstr "Активно"
+
+msgid "Password has been changed, please login."
+msgstr "Пароль сменён, пожалуйста, войдите снова."
+
+msgid "You have an error in the MNAME field of the SOA record."
+msgstr "Обнаружена ошибка в поле MNAME в SOA-записи."
+
+msgid "Too many characters in the hostname."
+msgstr "Имя хоста слишком длинное."
+
+msgid "You are using an invalid top level domain."
+msgstr "Вы используете некорректный TLD."
+
+msgid "User is allowed to add new master zones."
+msgstr "Пользователю разрешено создавать новые первичные зоны"
+
+msgid "User is allowed to add new slave zones."
+msgstr "Пользователю разрешено создавать новые вторичные зоны"
+
+msgid "User is allowed to see the content and meta data of zones he owns."
+msgstr "Пользователю разрешено просматривать содержимое и мета-информацию зон, владельцем которых он является"
+
+msgid "User is allowed to edit the content of zones he owns."
+msgstr "Пользователю разрешено изменять содержимое зон, владельцем которых он является"
+
+msgid "User is allowed to edit the meta data of zones he owns."
+msgstr "Пользователю разрешено изменять мета-информацию зон, владельцем которых он является"
+
+msgid "User is allowed to see the content and meta data of zones he does not own."
+msgstr "Пользователю разрешено просматривать содержимое и мета-информацию зон, владельцем которых он не является"
+
+msgid "User is allowed to edit the content of zones he does not own."
+msgstr "Пользователю разрешено изменять содержимое зон, владельцем которых он не является"
+
+msgid "User is allowed to edit the meta data of zones he does not own."
+msgstr "Пользователю разрешено изменять мета-информацию зон, владельцем которых он не является"
+
+msgid "User is allowed to perform searches."
+msgstr "Пользователю разрешено производить поиск"
+
+msgid "User is allowed to view supermasters."
+msgstr "Пользователю разрешено просматривать список supermaster-серверов"
+
+msgid "User is allowed to add new supermasters."
+msgstr "Пользователю разрешено добавлять supermaster"
+
+msgid "User is allowed to edit supermasters."
+msgstr "Пользователю разрешено редактировать supermaster-серверы"
+
+msgid "User has full access. God-like. Redeemer."
+msgstr "Пользователь имеет полный доступ. Ку три раза."
+
+msgid "User is allowed to see other users and their details."
+msgstr "Пользователю разрешено просматривать данные других пользователей"
+
+msgid "User is allowed to add new users."
+msgstr "Пользователю разрешено создавать новых пользователей"
+
+msgid "User is allowed to edit their own details."
+msgstr "Пользователю разрешено изменять свои данные"
+
+msgid "User is allowed to edit other users."
+msgstr "Пользователю разрешено изменять данные других пользователей"
+
+msgid "User is allowed to edit the password of other users."
+msgstr "Пользователю разрешено изменять пароли других пользователей"
+
+msgid "User is allowed to change the permission template that is assigned to a user."
+msgstr "Пользователю разрешено изменять шаблон привилегий, привязанный к нему"
+
+msgid "User is allowed to add new permission templates."
+msgstr "Пользователю разрешено добавлять новые шаблоны привилегий"
+
+msgid "User is allowed to edit existing permission templates."
+msgstr "Пользователю разрешено изменять существующие шаблоны привилегий"
+
+msgid "No database name has been set in config.inc.php."
+msgstr "В config.inc.php не указано имя базы данных."
+
+msgid "No database host has been set in config.inc.php."
+msgstr "В config.inc.php не указан хост базы данных."
+
+msgid "No database username has been set in config.inc.php."
+msgstr "В config.inc.php не указано имя пользователя базы данных."
+
+msgid "No database password has been set in config.inc.php."
+msgstr "В config.inc.php не указан пароль пользователя базы данных."
+
+msgid "No or unknown database type has been set in config.inc.php."
+msgstr "В config.inc.php не указан тип базы данных или указан неизвестный тип."
+
+msgid "Installation step"
+msgstr "Шаг установки"
+
+msgid "This installer expects you to have a PowerDNS database accessable from this server. This installer also expects you to have never ran Poweradmin before, or that you want to overwrite the Poweradmin part of the database. If you have had Poweradmin running before, any data in the following tables will be destroyed: perm_items, perm_templ, perm_templ_items, users and zones. This installer will, of course, not touch the data in the PowerDNS tables of the database. However, it is recommended that you create a backup of your database before proceeding."
+msgstr "Проведение данной инсталляции подразумевает, что у вас уже есть подходящая база данных для PowerDNS. При проведении установки также ожидается, что вы никогда до этого не пользовались Poweradmin,'ом, либо вы хотите перезаписать ту часть базы данных, которая требуется для работы Poweradmin. Если у вас до этого момента уже был установлен Poweradmin, то все данные в следующих таблицах будут потеряны: perm_items, perm_templ, perm_templ_items, users и zones. Естественно, установщик не затронет данные, которые находятся в таблицах, принадлежащих PowerDNS. В любом случае, рекомендуется предварительно создать резервную копию базы данных перед проведением процесса установки."
+
+msgid "The alternative for this installer is a manual installation. Refer to the poweradmin.org website if you want to go down that road."
+msgstr "Альтернативой данному установщику является установка вручную. Обратитесь к сайту poweradmin.org, если вы хотите пойти этим путём."
+
+msgid "Finally, if you see any errors during the installation process, a problem report would be appreciated. You can report problems (and ask for help) on the <a href=\"http://groups.google.com/group/poweradmin\" target=\"blank\">poweradmin</a> mailinglist."
+msgstr "Если вы столкнулись с ошибками в процессе установки, ваш отчёт об ошибках будет изучен. Вы можете разместить отчет и попросить помощи у пользователей в списке рассылки <a href=\"http://groups.google.com/group/poweradmin\" target=\"blank\">poweradmin</a>."
+
+msgid "Do you want to proceed now?"
+msgstr "Хотите продолжить?"
+
+msgid "Go to step"
+msgstr "На шаг"
+
+msgid "To prepare the database for using Poweradmin, the installer needs to modify the PowerDNS database. It will add a number of tables and it will fill these tables with some data. If the tables are already present, the installer will drop them first."
+msgstr "Чтобы подготовить базу данных для использования Poweradmin, установщик должен изменить базу данных PowerDNS. В неё будет добавить целый ряд таблиц и он заполнит эти таблицы с некоторыми данными. Если таблицы уже существуют, то программа установки сначала очистит их."
+
+msgid "To do all of this, the installer needs to access the database with an account which has sufficient rights. If you trust the installer, you may give it the username and password of the database user root. Otherwise, make sure the user has enough rights, before actually proceeding."
+msgstr "Чтобы сделать все это, программе установки нужен доступ к базе данных с учетной записью, которая имеет достаточные права. Если вы доверяете программе установки, вы можете дать ей имя пользователя и пароль для главного пользователя root базы данных. В противном случае, убедитесь, что пользователь имеет достаточно прав, прежде чем начинать процесс установки."
+
+msgid "The username to use to connect to the database, make sure the username has sufficient rights to perform administrative task to the PowerDNS database (the installer wants to drop, create and fill tables to the database)."
+msgstr "Имя пользователя для подключения к базе данных. Убедитесь, что пользователь имеет достаточно прав для выполнения административных задач с базой данных PowerDNS (установщику нужно удалить, создать и заполнить таблицы в базе данных)."
+
+msgid "The password for this username."
+msgstr "Пароль для этого пользователя."
+
+msgid "Hostname"
+msgstr "Хост"
+
+msgid "The hostname on which the PowerDNS database resides. Frequently, this will be \"localhost\"."
+msgstr "Хост, на котором работает сервер баз данных, обслуживающий PowerDNS. Обычно, это \"localhost\"."
+
+msgid "Database"
+msgstr "База данных"
+
+msgid "The name of the PowerDNS database."
+msgstr "Имя базы данных PowerDNS."
+
+msgid "Database type"
+msgstr "Тип базы данных"
+
+msgid "The type of the PowerDNS database."
+msgstr "Тип базы данных PowerDNS"
+
+msgid "Updating database..."
+msgstr "Обновление базы данных..."
+
+msgid "done!"
+msgstr "выполнено!"
+
+msgid "You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert and update records in the PowerDNS database."
+msgstr "Если вы хотите предоставить ограниченные права для доступа Poweradmin к базе данных, надо учитывать, что он должен иметь права для обновления данных в таблицах. Чтобы сделать это, вам следует создать нового пользователя и дать ему следующие права в базе данных PowerDNS: select, delete, insert и update."
+
+msgid "In MySQL you should now perform the following command:"
+msgstr "В MySQL вы должны выполнить следующие команды:"
+
+msgid "On PgSQL you would use:"
+msgstr "В PgSQL вы должны выполнить следующие команды:"
+
+msgid "After you have added the new user, proceed with this installation procedure."
+msgstr "После того, как вы добавите нового пользователя, продолжите процесс установки."
+
+msgid "Now we will gather all details for the configuration itself."
+msgstr "Теперь будут собраны все необходимые данные для самоконфигурации."
+
+msgid "The username for Poweradmin. This new user will have limited rights only."
+msgstr "Имя пользователя для Poweradmin. Этот новый пользователь будет иметь только ограниченные привилегии."
+
+msgid "Hostmaster"
+msgstr "Hostmaster"
+
+msgid "When creating SOA records and no hostmaster is provided, this value here will be used. Should be in the form \"hostmaster.example.net\"."
+msgstr "Если вы не укажете hostmaster'а при создании SOA-записи, это значение будет подставлено. Пример: \"hostmaster.example.net\"."
+
+msgid "Primary nameserver"
+msgstr "Первичный сервер имён"
+
+msgid "When creating new zones using the template, this value will be used as primary nameserver. Should be like \"ns1.example.net\"."
+msgstr "При создании новой зоны по шаблону, это значение будет подставлено как первичный сервер имён. Пример: \"ns1.example.net\"."
+
+msgid "Secondary nameserver"
+msgstr "Вторичный сервер имён"
+
+msgid "When creating new zones using the template, this value will be used as secondary nameserver. Should be like \"ns2.example.net\"."
+msgstr "При создании новой зоны по шаблону, это значение будет подставлено как вторичный сервер имён. Пример: \"ns2.example.net\"."
+
+msgid "The installer was able to write to the file \""
+msgstr "Программа инсталляции записала конфигурацию в файл \""
+
+msgid "\". A basic configuration, based on the details you have given, has been created."
+msgstr "\". Базовая конфигурация, основанная на данных, которые вы ввели была создана."
+
+msgid "The installer is unable to write to the file \""
+msgstr "Программа инсталляции не может произвести запись в файл \""
+
+msgid "\" (which is in itself good). The configuration is printed here. You should now create the file \""
+msgstr "\" (что само по себе хорошо). Листинг файла конфигурации приведен здесь. Вы должны создать файл \""
+
+msgid "\" in the Poweradmin root directory yourself. It should contain the following few lines:"
+msgstr "\" в корневой директории Poweradmin самостоятельно. Он должен содержать следующие несколько строк:"
+
+msgid "Now we have finished the configuration, you should (must!) remove the directory \"install/\" from the Poweradmin root directory. You will not be able to use Poweradmin if it exists. Do it now."
+msgstr "Конфигурирование окончено. Вы обязательно должны удалить директорию \"install/\" из корневой директории Poweradmin. Вы не сможете использовать Poweradmin не удалив данную директорию."
+
+msgid "After you have removed the directory, you can login to <a href=\"index.php\">Poweradmin</a> with username \"admin\" and password \""
+msgstr "После того, как удалите директорию, вы можете войти в систему <a href=\"index.php\">Poweradmin</a> с именем пользователя \"admin\" и паролем \""
+
+msgid "\". You are highly encouraged to change these as soon as you are logged in."
+msgstr "\". Вам настоятельно рекомендуется сразу поменять их из соображений безопасности."
+
+msgid "Invalid value for name field of SRV record."
+msgstr "Недопустимое значение имени записи SRV."
+
+msgid "Invalid value for the weight field of the SRV record."
+msgstr "Недопустимое значение ширины поля записи SRV."
+
+msgid "Invalid value for the port field of the SRV record."
+msgstr "Недопустимое значение поля порта для записи SRV."
+
+msgid "Invalid SRV target."
+msgstr "Неправильная цель SRV."
+
+msgid "Invalid characters have been used in this record."
+msgstr "В данной записи использованы недопустимые символы."
+
+msgid "Poweradmin administrator password"
+msgstr "Пароль администратора Poweradmin"
+
+msgid "The password of the Poweradmin administrator. This administrator has full rights to Poweradmin using the web interface."
+msgstr "Пароль администратора Poweradmin. Он имеет полные права доступа к Poweradmin используя web-интерфейс."
+
+msgid "Reset changes"
+msgstr "Сбросить изменения"
+
+msgid "Email address"
+msgstr "Адрес e-mail"
+
+msgid "Edit comment in zone"
+msgstr "Редактировать комментарий зоны"
+
+msgid "Edit zone template"
+msgstr "Редактировать шаблон зоны"
+
+msgid "This template zone does not have any records yet."
+msgstr "У этого шаблона зоны пока нет никаких записей"
+
+msgid "The following placeholders can be used in template records"
+msgstr "В записях шаблонов зон можно использовать следующие заменители"
+
+msgid "substituted with current zone name"
+msgstr "заменяется именем текущей зоны"
+
+msgid "substituted with current date and 2 numbers"
+msgstr "заменяется сегодняшней датой и двумя цифрами"
+
+msgid "Template Name"
+msgstr "Название шаблона"
+
+msgid "Template Description"
+msgstr "Описание шаблона"
+
+msgid "Save as template"
+msgstr "Сохранить как шаблон"
+
+msgid "Update zones"
+msgstr "Обновить зоны"
+
+msgid "Delete zone template"
+msgstr "Удаление"
+
+msgid "List zone templates"
+msgstr "Список шаблонов зон"
+
+msgid "Successful!"
+msgstr "Успешно!"
+
+msgid "Authentication failed! - <a href=\"reset_password.php\">(forgot password)</a>"
+msgstr "Authentication failed! - <a href=\"reset_password.php\">(forgot password)</a>"
+
+msgid "You do not have the permission to view this comment."
+msgstr "У вас нет привилегий для просмотра этого комментария."
+
+msgid "You do not have the permission to edit this comment."
+msgstr "У вас нет привилегий для редактирования этого комментария."
+
+msgid "You do not have the permission to edit zone templates."
+msgstr "У вас нет привилегий для редактирования шаблонов зон."
+
+msgid "You do not have the permission to delete zone templates."
+msgstr "У вас нет привилегий для удаления шаблонов зон."
+
+msgid "You do not have the permission to add a zone template."
+msgstr "У вас нет привилегий для добавления шаблонов зон."
+
+msgid "There is no zone template with this ID."
+msgstr "С таким ID нет шаблона зоны."
+
+msgid "Zone template with this name already exists, please choose another one."
+msgstr "Шаблон зоны с таким именем уже существует, пожалуйста, выберите другое."
+
+msgid "Template name can't be an empty string."
+msgstr "Имя шаблона не может быть пустой строкой"
+
+msgid "No database file has been set in config.inc.php."
+msgstr "В config.inc.php не указан файл БД."
+
+msgid "It seems that you forgot to update the database after Poweradmin upgrade to new version."
+msgstr "Похоже, что вы забыли обновить базу после обновления Poweradmin до новой версии."
+
+msgid "This is not a valid record. There is already exists a CNAME with this name."
+msgstr "Эта запись неправильна. Уже существует CNAME с таким именем."
+
+msgid "This is not a valid CNAME. There is already exists an A, AAAA or CNAME with this name."
+msgstr "Эта CNAME-запись неправильная. Уже существует A, AAAA или CNAME с таким именем."
+
+msgid "The hostname is too long."
+msgstr "Имя хоста слишком длинное."
+
+msgid "Invalid value for the priority field of the SRV record."
+msgstr "Неверное значение приоритета в SRV-записи."
+
+msgid "Zones have been updated successfully."
+msgstr "Зоны были успешно обновлены."
+
+msgid "The comment has been updated successfully."
+msgstr "Комментарий был успешно обновлён."
+
+msgid "The permission template has been updated successfully."
+msgstr "Шаблон привилегий был успешно обновлён."
+
+msgid "Zone template has been added successfully."
+msgstr "Шаблон зоны был успешно добавлен."
+
+msgid "Zone template has been updated successfully."
+msgstr "Шаблон зоны был успешно обновлён."
+
+msgid "Zone template has been deleted successfully."
+msgstr "Шаблон зоны был успешно удалён."
+
+msgid "Delete zones"
+msgstr "Удалить зоны"
+
+msgid "Add record to zone template"
+msgstr "Добавить запись в шаблон зоны"
+
+msgid "Edit record in zone template"
+msgstr "Редактировать запись в шаблоне зоны"
+
+msgid "Edit comment"
+msgstr "Редактировать комментарий"
+
+msgid "Serial"
+msgstr "Номер зоны"
+
+msgid "Delete zone(s)"
+msgstr "Удалить зоны"
+
+msgid "DB Port"
+msgstr "Порт СУБД"
+
+msgid "The port the database server is listening on."
+msgstr "Порт, на котором слушает СУБД."
+
+msgid "After you have removed the directory, you can login to <a href=\"../index.php\">Poweradmin</a> with username \"admin\" and password \""
+msgstr "После того, как вы удалите директорию, вы можете войти в <a href=\"../index.php\">Poweradmin</a> с именем пользователя \"admin\" и паролем \""
+
+msgid "Add zone template for"
+msgstr "Добавить шаблон зоны для"
+
+msgid "Add zone template"
+msgstr "Добавить шаблон зоны"
+
+msgid "Reset Password"
+msgstr "Сбросить пароль"
+
+msgid "Registered Email Address"
+msgstr "Зарегистрированный адрес e-mail"
+
+msgid "Reset password"
+msgstr "Сбросить пароль"
+
+msgid "Zone templates for"
+msgstr "Шаблоны зон пользователя"
+
+msgid "Bulk registration"
+msgstr "Массовая регистрация"
+
+msgid "Language"
+msgstr "Язык"
+
+msgid "Add also reverse record"
+msgstr "Также добавить обратную запись"
+
+msgid "Type one domain per line"
+msgstr "Введите имена зон по одной в строку"
+
+msgid "Zones"
+msgstr "Зоны"
+
+msgid "Add zones"
+msgstr "Добавить зоны"
+
