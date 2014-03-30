@@ -115,8 +115,23 @@ $username = safe($auth_username);
 // FIXME: supports only md5 hashes
 $password = md5(safe($auth_password));
 $hostname = safe($_REQUEST['hostname']);
-$ip = safe($_REQUEST['myip']);
 
+// Grab IP to use
+$given_ip = "";
+if (!empty($_REQUEST['myip'])) {
+	$given_ip = $_REQUEST['myip'];
+
+} elseif (!empty($_REQUEST['ip'])) {
+	$given_ip = $_REQUEST['ip'];
+
+}
+// Look for tag tograb the IP we coming from
+if ($given_ip == "whatismyip") {
+	$given_ip = $_SERVER['REMOTE_ADDR'];
+}
+// Finally get save version of the IP
+$ip = safe($given_ip);
+// Check its ok...
 if (!preg_match('/^((?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/i', $ip)) {
     return status_exit('dnserr');
 }
