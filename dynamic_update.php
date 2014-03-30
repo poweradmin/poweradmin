@@ -92,15 +92,28 @@ if (!(isset($_SERVER)) && !$_SERVER['HTTP_USER_AGENT']) {
     return status_exit('badagent');
 }
 
-if (!isset($_SERVER['PHP_AUTH_USER'])) {
+// Grab username & password based on HTTP auth, alternatively the query string
+if (isset($_SERVER['PHP_AUTH_USER'])) {
+	$auth_username = $_SERVER['PHP_AUTH_USER'];
+} elseif (isset($_REQUEST['username'])) {
+	$auth_username = $_REQUEST['username'];
+}
+if (isset($_SERVER['PHP_AUTH_PW'])) {
+	$auth_password = $_SERVER['PHP_AUTH_PW'];
+} elseif (isset($_REQUEST['password'])) {
+	$auth_password = $_REQUEST['password'];
+}
+
+// If we still don't have a username, throw up
+if (!isset($auth_username)) {
     header('WWW-Authenticate: Basic realm="DNS Update"');
     header('HTTP/1.0 401 Unauthorized');
     return status_exit('badauth');
 }
 
-$username = safe($_SERVER['PHP_AUTH_USER']);
+$username = safe($auth_username);
 // FIXME: supports only md5 hashes
-$password = md5(safe($_SERVER['PHP_AUTH_PW']));
+$password = md5(safe($auth_password));
 $hostname = safe($_REQUEST['hostname']);
 $ip = safe($_REQUEST['myip']);
 
