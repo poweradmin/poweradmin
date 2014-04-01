@@ -69,4 +69,4 @@ $ldap_basedn = 'OU=Users,DC=example,DC=com';
 $ldap_binddn = 'GROUP\lookupuser';
 $ldap_bindpw = 'some_password';
 $ldap_user_attribute = 'sAMAccountName';
-$ldap_proto='3';
+$ldap_proto = 3;
