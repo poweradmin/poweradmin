@@ -140,8 +140,27 @@ if (!strlen($hostname)) {
     return status_exit('notfqdn');
 }
 
-$user_query = "SELECT id FROM users WHERE username='$username' and password='$password'";
+$user_query = "
+	SELECT
+		users.id
+	FROM
+		users, perm_templ, perm_templ_items, perm_items
+	WHERE
+		users.username = '$username'
+		AND users.password = '$password'
+		AND users.active = 1
+		AND perm_templ.id = users.perm_templ
+		AND perm_templ_items.templ_id = perm_templ.id
+		AND perm_items.id = perm_templ_items.perm_id
+		AND (
+				perm_items.name = 'zone_content_edit_own'
+				OR perm_items.name = 'zone_content_edit_others'
+		)
+";
 $user = $db->queryRow($user_query);
+if (!$user) {
+    return status_exit('badauth');
+}
 
 $zones_query = "SELECT domain_id FROM zones WHERE owner='{$user["id"]}'";
 $zones_result = $db->query($zones_query);
