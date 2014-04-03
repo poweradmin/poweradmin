@@ -132,7 +132,7 @@ function dbConnect() {
         exit;
     }
 
-    if ($db_type != 'sqlite' && $db_type != 'sqlite3' && !(isset($db_port))) {
+    if ($db_type != 'sqlite' && $db_type != 'sqlite3' && !(isset($db_port)) || $db_port == '') {
         if ($db_type == "mysql" || $db_type == "mysqli") {
             $db_port = 3306;
         } else if ($db_type == 'oci8') {
