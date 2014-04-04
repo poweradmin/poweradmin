@@ -95,6 +95,12 @@ function LDAPAuthenticate() {
         }
         $ldapconn = ldap_connect($ldap_uri);
         if (!$ldapconn) {
+            if (isset($_POST["authenticate"]) && $syslog_use ) {
+                openlog($syslog_ident, LOG_PERROR, $syslog_facility);
+                $syslog_message = sprintf('Failed LDAP authentication attempt from [%s] Reason: ldap_connect failed', $_SERVER['REMOTE_ADDR']);
+                syslog(LOG_WARNING, $syslog_message);
+                closelog();
+            }
             logout(_('Failed to connect to LDAP server!'), 'error');
             return;
         }
@@ -102,6 +108,12 @@ function LDAPAuthenticate() {
         $ldapbind = ldap_bind($ldapconn, $ldap_binddn, $ldap_bindpw);
         ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, $ldap_proto);
         if (!$ldapbind) {
+            if (isset($_POST["authenticate"]) && $syslog_use ) {
+                openlog($syslog_ident, LOG_PERROR, $syslog_facility);
+                $syslog_message = sprintf('Failed LDAP authentication attempt from [%s] Reason: ldap_bind failed', $_SERVER['REMOTE_ADDR']);
+                syslog(LOG_WARNING, $syslog_message);
+                closelog();
+            }
             logout(_('Failed to bind to LDAP server!'), 'error');
             return;
         }
@@ -110,13 +122,29 @@ function LDAPAuthenticate() {
         $filter = "(" . $ldap_user_attribute . "=" . $_SESSION["userlogin"] . ")";
         $ldapsearch = ldap_search($ldapconn, $ldap_basedn, $filter, $attributes);
         if (!$ldapsearch) {
-            logout(_('Failed to authenticate against LDAP.  No such user.'), 'error');
+            if (isset($_POST["authenticate"]) && $syslog_use ) {
+                openlog($syslog_ident, LOG_PERROR, $syslog_facility);
+                $syslog_message = sprintf('Failed LDAP authentication attempt from [%s] Reason: ldap_search failed', $_SERVER['REMOTE_ADDR']);
+                syslog(LOG_WARNING, $syslog_message);
+                closelog();
+            }
+            logout(_('Failed to search LDAP.'), 'error');
             return;
         }
 
         //Checking first that we only found exactly 1 user, get the DN of this user.  We'll use this to perform the actual authentication.
         $entries = ldap_get_entries($ldapconn, $ldapsearch);
         if ($entries["count"] != 1) {
+            if (isset($_POST["authenticate"]) && $syslog_use ) {
+                openlog($syslog_ident, LOG_PERROR, $syslog_facility);
+                if ($entries["count"] == 0 ){ 
+                    $syslog_message = sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: No such user', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]); 
+                } else {
+                    $syslog_message = sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: Duplicate usernames detected', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]);
+                }
+                syslog(LOG_WARNING, $syslog_message);
+                closelog();
+            }
             logout(_('Failed to authenticate against LDAP.'), 'error');
             return;
         }
@@ -125,6 +153,12 @@ function LDAPAuthenticate() {
         $session_pass = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($session_key), base64_decode($_SESSION["userpwd"]), MCRYPT_MODE_CBC, md5(md5($session_key))), "\0");
         $ldapbind = ldap_bind($ldapconn, $user_dn, $session_pass);
         if (!$ldapbind) {
+            if (isset($_POST["authenticate"]) && $syslog_use ) {
+                openlog($syslog_ident, LOG_PERROR, $syslog_facility);
+                $syslog_message = sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: Incorrect password', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]);
+                syslog(LOG_WARNING, $syslog_message);
+                closelog();
+            }
             auth(_('LDAP Authentication failed!'), "error");
             return;
         }
@@ -132,6 +166,12 @@ function LDAPAuthenticate() {
         //Make sure the user is 'active' and fetch id and name.
         $rowObj = $db->queryRow("SELECT id, fullname FROM users WHERE username=" . $db->quote($_SESSION["userlogin"], 'text') . " AND active=1");
         if (!$rowObj) {
+            if (isset($_POST["authenticate"]) && $syslog_use ) {
+                openlog($syslog_ident, LOG_PERROR, $syslog_facility);
+                $syslog_message = sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: User is inactive', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]);
+                syslog(LOG_WARNING, $syslog_message);
+                closelog();
+            }
             auth(_('LDAP Authentication failed!'), "error");
             return;
         }
@@ -143,7 +183,7 @@ function LDAPAuthenticate() {
             // Log to syslog if it's enabled
             if ($syslog_use) {
                 openlog($syslog_ident, LOG_PERROR, $syslog_facility);
-                $syslog_message = sprintf('Successful authentication attempt from [%s] for user \'%s\'', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]);
+                $syslog_message = sprintf('Successful LDAP authentication attempt from [%s] for user \'%s\'', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]);
                 syslog(LOG_INFO, $syslog_message);
                 closelog();
             }
