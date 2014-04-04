@@ -87,6 +87,7 @@ function LDAPAuthenticate() {
     global $ldap_bindpw;
     global $ldap_proto;
     global $ldap_user_attribute;
+    global $syslog_use, $syslog_ident, $syslog_facility;
 
     if (isset($_SESSION["userlogin"]) && isset($_SESSION["userpwd"])) {
         if ($ldap_debug) {
