@@ -1140,6 +1140,7 @@ function supermaster_ip_name_exists($master_ip, $ns_name) {
  */
 function get_zones($perm, $userid = 0, $letterstart = 'all', $rowstart = 0, $rowamount = 999999, $sortby = 'name') {
     global $db;
+    global $db_type;
     global $sql_regexp;
 
     if ($letterstart == '_') {
@@ -1163,10 +1164,14 @@ function get_zones($perm, $userid = 0, $letterstart = 'all', $rowstart = 0, $row
     }
 
     if ($sortby != 'count_records') {
-        $sortby = "domains." . $sortby . ", domains.name";
-    } else {
-        $sortby = $sortby . ", domains.name";
+        $sortby = 'domains.' . $sortby;
     }
+
+    $natural_sort = 'LENGTH(domains.name), domains.name';
+    if ($db_type == 'mysql' || $db_type == 'mysqli' || $db_type == 'sqlite' || $db_type == 'sqlite3') {
+        $natural_sort = 'domains.name+0<>0 DESC, domains.name+0, domains.name';
+    }
+    $sql_sortby = ($sortby == 'domains.name' ? $natural_sort : $sortby . ', ' . $natural_sort);
 
     $sqlq = "SELECT domains.id,
 			domains.name,
@@ -1179,7 +1184,7 @@ function get_zones($perm, $userid = 0, $letterstart = 'all', $rowstart = 0, $row
 			) Record_Count ON Record_Count.domain_id=domains.id
 			WHERE 1=1" . $sql_add . "
 			GROUP BY domains.name, domains.id, domains.type, Record_Count.count_records
-			ORDER BY " . $sortby;
+			ORDER BY " . $sql_sortby;
 
     if ($letterstart != 'all') {
         $db->setLimit($rowamount, $rowstart);
@@ -1301,6 +1306,7 @@ function get_record_from_id($id) {
  */
 function get_records_from_domain_id($id, $rowstart = 0, $rowamount = 999999, $sortby = 'name') {
     global $db;
+    global $db_type;
 
     $result = array();
     if (is_numeric($id)) {
@@ -1328,7 +1334,14 @@ function get_records_from_domain_id($id, $rowstart = 0, $rowamount = 999999, $so
             }
         } else {
             $db->setLimit($rowamount, $rowstart);
-            $result = $db->query("SELECT id FROM records WHERE domain_id=" . $db->quote($id, 'integer') . " ORDER BY records." . $sortby);
+
+            $natural_sort = 'LENGTH(records.name), records.name';
+            if ($db_type == 'mysql' || $db_type == 'mysqli' || $db_type == 'sqlite' || $db_type == 'sqlite3') {
+                $natural_sort = 'records.name+0<>0 DESC, records.name+0, records.name';
+            }
+            $sql_sortby = ($sortby == 'name' ? $natural_sort : $sortby . ', ' . $natural_sort);
+
+            $result = $db->query("SELECT id FROM records WHERE domain_id=" . $db->quote($id, 'integer') . " ORDER BY " . $sql_sortby);
             $ret = array();
             if ($result) {
                 $ret[] = array();
