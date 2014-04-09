@@ -207,9 +207,8 @@ class PDOCommon extends PDO {
      * @param string $str
      * @return array
      */
-    public function queryOne($str) {
+    public function queryOne($str, $debug=false) {
         $result = $this->query($str);
-
         $row = $result->fetch(PDO::FETCH_NUM);
 
         return $row[0];

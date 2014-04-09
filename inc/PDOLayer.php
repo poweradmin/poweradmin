@@ -39,7 +39,7 @@ class PEAR {
     /**
      * Overrided isError method
      */
-    public function isError() {
+    public static function isError() {
         
     }
 
@@ -85,17 +85,17 @@ class PDOLayer extends PDOCommon {
     /**
      * Quotes a string
      *
-     * @param string $str
-     * @param string $type
+     * @param string $string
+     * @param string $paramtype
      * @return string Returns quoted string
      */
-    public function quote($str, $type) {
-        if ($type == 'integer') {
-            $type = PDO::PARAM_INT;
-        } elseif ($type == 'text') {
-            $type = PDO::PARAM_STR;
+    public function quote($string, $paramtype = NULL) {
+        if ($paramtype == 'integer') {
+            $paramtype = PDO::PARAM_INT;
+        } elseif ($paramtype == 'text') {
+            $paramtype = PDO::PARAM_STR;
         }
-        return parent::quote($str, $type);
+        return parent::quote($string, $paramtype);
     }
 
     /**
