@@ -135,6 +135,20 @@ function get_next_date($curr_date) {
  * @return string Next serial number
  */
 function get_next_serial($curr_serial, $today = '') {
+    // Autoserial
+    if ($curr_serial == 0) {
+        return 0;
+    }
+
+    // Serial number could be a not date based
+    if ($curr_serial < 1979999999) {
+        return $curr_serial+1;
+    }
+
+    // Reset the serial number, Bind was written in the early 1980s
+    if ($curr_serial == 1979999999) {
+        return 1;
+    }
 
     if ($today == '') {
         set_timezone();

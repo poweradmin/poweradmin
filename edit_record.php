@@ -70,7 +70,9 @@ if (isset($_POST["commit"])) {
     } else {
         $ret_val = edit_record($_POST);
         if ($ret_val == "1") {
-            update_soa_serial($zid);
+            if ($_POST['type'] != "SOA") {
+                update_soa_serial($zid);
+            }
             success(SUC_RECORD_UPD);
 
             if ($pdnssec_use) {
