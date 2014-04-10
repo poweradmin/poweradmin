@@ -216,6 +216,25 @@ function set_soa_serial($soa_rec, $serial) {
     return $soa_rec;
 }
 
+/** Return SOA record
+ *
+ * Returns SOA record with incremented serial number
+ *
+ * @param int $soa_rec Current SOA record
+ *
+ * @return boolean true if success
+ */
+function get_updated_soa_record($soa_rec) {
+    $curr_serial = get_soa_serial($soa_rec);
+    $new_serial = get_next_serial($curr_serial);
+
+    if ($curr_serial != $new_serial) {
+        return set_soa_serial($soa_rec, $new_serial);
+    }
+
+    return set_soa_serial($soa_rec, $curr_serial);
+}
+
 /** Update SOA serial
  *
  * Increments SOA serial to next possible number
@@ -1828,11 +1847,13 @@ function update_zone_records($zone_id, $zone_template) {
 
     if (verify_permission('zone_master_add')) {
         $zone_master_add = "1";
-    };
+    }
+
     if (verify_permission('zone_slave_add')) {
         $zone_slave_add = "1";
-    };
+    }
 
+    $soa_rec = get_soa_record($zone_id);
     $response = $db->beginTransaction();
 
     if (0 != $zone_template) {
@@ -1860,7 +1881,13 @@ function update_zone_records($zone_id, $zone_template) {
                 if ((preg_match('/in-addr.arpa/i', $zone_id) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $zone_id))) {
                     $name = parse_template_value($r["name"], $domain);
                     $type = $r["type"];
-                    $content = parse_template_value($r["content"], $domain);
+                    if ($type == "SOA") {
+                        $content = get_updated_soa_record($soa_rec);
+                        echo $content;
+                    } else {
+                        $content = parse_template_value($r["content"], $domain);
+                    }
+
                     $ttl = $r["ttl"];
                     $prio = intval($r["prio"]);
 
