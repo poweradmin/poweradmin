@@ -93,7 +93,7 @@ if ($record_id == "-1") {
             echo "       <th>Name</th>\n";
             echo "       <th>Type</th>\n";
             echo "       <th>Content</th>\n";
-            if (isset($record_info['priority'])) {
+            if (isset($record_info['prio'])) {
                 echo "       <th>Priority</th>\n";
             }
             echo "       <th>TTL</th>\n";
@@ -102,8 +102,8 @@ if ($record_id == "-1") {
             echo "       <td>" . $record_info['name'] . "</td>\n";
             echo "       <td>" . $record_info['type'] . "</td>\n";
             echo "       <td>" . $record_info['content'] . "</td>\n";
-            if (isset($record_info['priority'])) {
-                echo "       <td>" . $record_info['priority'] . "</td>\n";
+            if (isset($record_info['prio'])) {
+                echo "       <td>" . $record_info['prio'] . "</td>\n";
             }
             echo "       <td>" . $record_info['ttl'] . "</td>\n";
             echo "      </tr>\n";

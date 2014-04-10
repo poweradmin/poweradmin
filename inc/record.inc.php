@@ -1120,7 +1120,7 @@ function get_supermasters() {
  */
 function supermaster_exists($master_ip) {
     global $db;
-    if (is_valid_ipv4($master_ip) || is_valid_ipv6($master_ip)) {
+    if (is_valid_ipv4($master_ip, false) || is_valid_ipv6($master_ip)) {
         $result = $db->queryOne("SELECT ip FROM supermasters WHERE ip = " . $db->quote($master_ip, 'text'));
         return ($result ? true : false);
     } else {
