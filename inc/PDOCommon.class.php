@@ -207,7 +207,7 @@ class PDOCommon extends PDO {
      * @param string $str
      * @return array
      */
-    public function queryOne($str, $debug=false) {
+    public function queryOne($str) {
         $result = $this->query($str);
         $row = $result->fetch(PDO::FETCH_NUM);
 
@@ -222,9 +222,7 @@ class PDOCommon extends PDO {
      */
     public function queryRow($str) {
         $obj_pdoStatement = parent::query($str);
-
-        $row = $obj_pdoStatement->fetch(PDO::FETCH_ASSOC);
-        return $row;
+        return $obj_pdoStatement->fetch(PDO::FETCH_ASSOC);
     }
 
     /**
