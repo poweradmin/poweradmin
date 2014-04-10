@@ -78,10 +78,8 @@ if (isset($_POST["commit"])) {
             if ($pdnssec_use) {
                 if (do_rectify_zone($zid)) {
                     success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
-                };
+                }
             }
-        } else {
-            echo "     <div class=\"error\">" . $ret_val . "</div>\n";
         }
     }
 }

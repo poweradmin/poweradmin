@@ -195,6 +195,7 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
             if (!is_valid_hostname_fqdn($name, 1))
                 return false;
             if (!is_valid_rr_soa_content($content))
+                error(ERR_DNS_CONTENT);
                 return false;
             break;
 
@@ -671,7 +672,9 @@ function is_valid_rr_soa_content(&$content) {
             $final_soa .= " 0";
         }
 
-        if ($field_count == 7) {
+        if ($field_count != 7) {
+            return false;
+        } else {
             for ($i = 3; ($i < 7); $i++) {
                 if (!is_numeric($fields[$i])) {
                     return false;
