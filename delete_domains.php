@@ -54,9 +54,21 @@ if (!$zones) {
 echo "     <h2>" . _('Delete zones') . "</h2>\n";
 
 if ($confirm == '1') {
+    //Fetch information about zones before deleting them
+    $deleted_zones = array();
+    foreach ($zones as $zone) {
+        $zone_info = get_zone_info_from_id($zone);
+        array_push($deleted_zones,$zone_info);
+    }
     $delete_domains = delete_domains($zones);
     if ($delete_domains) {
         success(SUC_ZONE_DEL);
+        //Zones successfully deleted so generate log messages from information retrieved earlier
+        foreach ($deleted_zones as $zone_info) {
+            log_info(sprintf('client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
+                              $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
+                              $zone_info['name'], $zone_info['type']));
+        }
     }
 } else {
     echo "     <form method=\"post\" action=\"delete_domains.php\">\n";

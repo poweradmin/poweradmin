@@ -136,6 +136,9 @@ if (isset($_POST["commit"])) {
                 $fqdn_name = sprintf("%s.%s", $name, $zone_name);
                 if (add_record($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
                     success(" <a href=\"edit.php?id=" . $zone_rev_id . "\"> " . _('The PTR-record was successfully added.') . "</a>");
+                    log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
+                                      $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
+                                      $content_rev, $fqdn_name, $ttl, $prio));
                 }
             } elseif (isset($content_rev)) {
                 error(sprintf(ERR_REVERS_ZONE_NOT_EXIST, $content_rev));
@@ -143,6 +146,9 @@ if (isset($_POST["commit"])) {
         }
         if (add_record($zone_id, $name, $type, $content, $ttl, $prio)) {
             success(" <a href=\"edit.php?id=" . $zone_id . "\"> " . _('The record was successfully added.') . "</a>");
+            log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:%s record:%s.%s content:%s ttl:%s priority:%s',
+                              $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
+                              $type, $name, $zone_name, $content, $ttl, $prio));
             $name = $type = $content = $ttl = $prio = "";
         }
     }

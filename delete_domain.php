@@ -69,6 +69,9 @@ echo "     <h2>" . _('Delete zone') . " \"" . $zone_info['name'] . "\"</h2>\n";
 if ($confirm == '1') {
     if (delete_domain($zone_id)) {
         success(SUC_ZONE_DEL);
+        log_info(sprintf('client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
+                          $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
+                          $zone_info['name'], $zone_info['type']));
     }
 } else {
     if ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) {

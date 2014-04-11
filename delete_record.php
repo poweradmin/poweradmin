@@ -65,8 +65,19 @@ if ($record_id == "-1") {
     error(ERR_INV_INPUT);
 } else {
     if ($confirm == '1') {
+        $record_info = get_record_from_id($record_id);
         if (delete_record($record_id)) {
             success("<a href=\"edit.php?id=" . $zid . "\">" . SUC_RECORD_DEL . "</a>");
+            if (isset($record_info['prio'])) {
+                log_info(sprintf('client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s priority:%s',
+                     $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
+                     $record_info['type'], $record_info['name'], $record_info['content'], $record_info['ttl'], $record_info['prio'] ));
+            } else {
+                log_info(sprintf('client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s',
+                     $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
+                     $record_info['type'], $record_info['name'], $record_info['content'], $record_info['ttl'] ));
+
+            }
             // update serial after record deletion
             update_soa_serial($zid);
 
