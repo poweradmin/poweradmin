@@ -203,6 +203,17 @@ $def_tables = array(
                 'name' => 'active',
                 'table' => 'users',
                 'flags' => 'not_null'
+            ),
+            'use_ldap' => array
+                (
+                'notnull' => 1,
+                'length' => 1,
+                'unsigned' => 0,
+                'default' => 0,
+                'type' => 'integer',
+                'name' => 'use_ldap',
+                'table' => 'users',
+                'flags' => 'not_null'
             )
         )
     ),
