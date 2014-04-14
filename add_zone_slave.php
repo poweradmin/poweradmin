@@ -65,6 +65,9 @@ if (isset($_POST['submit']) && $zone_slave_add == "1") {
     } else {
         if (add_domain($zone, $owner, $type, $master, 'none')) {
             success("<a href=\"edit.php?id=" . get_zone_id_from_name($zone) . "\">" . SUC_ZONE_ADD . '</a>');
+            log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',
+                              $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
+                              $zone, $master, $zone_template));
             unset($zone, $owner, $webip, $mailip, $empty, $type, $master);
         }
     }
