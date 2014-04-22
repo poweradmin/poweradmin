@@ -2081,3 +2081,16 @@ function do_secure_zone($domain_name) {
 
     return true;
 }
+
+/** Check if record exists
+ *
+ * @param string $name Record name
+ *
+ * @return boolean true on success, false on failure
+ */
+function record_name_exists($name) {
+    global $db;
+    $query = "SELECT COUNT(id) FROM records WHERE name = " . $db->quote($name, 'text');
+    $count = $db->queryOne($query);
+    return ($count == "1" ? true : false);
+}

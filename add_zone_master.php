@@ -75,7 +75,7 @@ if (isset($_POST['submit']) && $zone_master_add == "1") {
     foreach ($domains as $domain) {
         if (!is_valid_hostname_fqdn($domain, 0)) {
             error($domain . ' failed - ' . ERR_DNS_HOSTNAME);
-        } elseif (domain_exists($domain)) {
+        } elseif (record_name_exists($domain) || domain_exists($domain)) {
             error($domain . ' failed - ' . ERR_DOMAIN_EXISTS);
             // TODO: repopulate domain name(s) to the form if there was an error occured
             $error = true;
