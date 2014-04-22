@@ -81,6 +81,9 @@ if (isset($_POST['submit']) && $zone_master_add == "1") {
             $error = true;
         } elseif (add_domain($domain, $owner, $dom_type, '', $zone_template)) {
             success("<a href=\"edit.php?id=" . get_zone_id_from_name($domain) . "\">" . $domain . " - " . SUC_ZONE_ADD . '</a>');
+            log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
+                              $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
+                              $domain,$dom_type,$zone_template));
 
             if ($pdnssec_use) {
                 do_secure_zone($domain);
