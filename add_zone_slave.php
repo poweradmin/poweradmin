@@ -32,6 +32,8 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
+global $dns_third_level_check;
+
 $owner = "-1";
 if ((isset($_POST['owner'])) && (v_num($_POST['owner']))) {
     $owner = $_POST['owner'];
@@ -58,9 +60,9 @@ $type = "SLAVE";
 if (isset($_POST['submit']) && $zone_slave_add == "1") {
     if (!is_valid_hostname_fqdn($zone, 0)) {
         error(ERR_DNS_HOSTNAME);
-    } elseif ($dns_third_level_check && get_domain_level($domain) > 2 && domain_exists(get_second_level_domain($domain))) {
+    } elseif ($dns_third_level_check && get_domain_level($zone) > 2 && domain_exists(get_second_level_domain($zone))) {
         error(ERR_DOMAIN_EXISTS);
-    } elseif (domain_exists($domain) || record_name_exists($domain)) {
+    } elseif (domain_exists($zone) || record_name_exists($zone)) {
         error(ERR_DOMAIN_EXISTS);
     } elseif (!is_valid_ipv4($master, false) && !is_valid_ipv6($master)) {
         error(ERR_DNS_IP);
