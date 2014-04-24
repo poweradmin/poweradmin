@@ -58,7 +58,9 @@ $type = "SLAVE";
 if (isset($_POST['submit']) && $zone_slave_add == "1") {
     if (!is_valid_hostname_fqdn($zone, 0)) {
         error(ERR_DNS_HOSTNAME);
-    } elseif (domain_exists($zone)) {
+    } elseif ($dns_third_level_check && get_domain_level($domain) > 2 && domain_exists(get_second_level_domain($domain))) {
+        error(ERR_DOMAIN_EXISTS);
+    } elseif (domain_exists($domain) || record_name_exists($domain)) {
         error(ERR_DOMAIN_EXISTS);
     } elseif (!is_valid_ipv4($master, false) && !is_valid_ipv6($master)) {
         error(ERR_DNS_IP);

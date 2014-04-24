@@ -35,6 +35,7 @@ include_once("inc/header.inc.php");
 echo "  <script type=\"text/javascript\" src=\"inc/helper.js\"></script>";
 
 global $pdnssec_use;
+global $dns_third_level_check;
 
 $owner = "-1";
 if ((isset($_POST['owner'])) && (v_num($_POST['owner']))) {
@@ -75,7 +76,10 @@ if (isset($_POST['submit']) && $zone_master_add == "1") {
     foreach ($domains as $domain) {
         if (!is_valid_hostname_fqdn($domain, 0)) {
             error($domain . ' failed - ' . ERR_DNS_HOSTNAME);
-        } elseif (record_name_exists($domain) || domain_exists($domain)) {
+        } elseif ($dns_third_level_check && get_domain_level($domain) > 2 && domain_exists(get_second_level_domain($domain))) {
+            error($domain . ' failed - ' . ERR_DOMAIN_EXISTS);
+            $error = true;
+        } elseif (domain_exists($domain) || record_name_exists($domain)) {
             error($domain . ' failed - ' . ERR_DOMAIN_EXISTS);
             // TODO: repopulate domain name(s) to the form if there was an error occured
             $error = true;

@@ -2094,3 +2094,25 @@ function record_name_exists($name) {
     $count = $db->queryOne($query);
     return ($count == "1" ? true : false);
 }
+
+/** Return domain level for given name
+ *
+ * @param string $name Zone name
+ *
+ * @return int domain level
+ */
+function get_domain_level($name) {
+    return substr_count($name, '.') + 1;
+}
+
+/** Return domain second level domain for given name
+ *
+ * @param string $name Zone name
+ *
+ * @return string 2nd level domain name
+ */
+function get_second_level_domain($name) {
+    $domain_parts = explode('.', $name);
+    $domain_parts = array_reverse($domain_parts);
+    return $domain_parts[1] . '.' . $domain_parts[0];
+}
