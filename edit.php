@@ -59,11 +59,8 @@ if (isset($_POST['commit'])) {
                //Figure out if record was updated
                unset($new_record_info["change_date"]);
                unset($old_record_info["change_date"]);
-               if ($new_record_info == $old_record_info){
-                 //This record was not changed
-               }else
-               {
-                 //but this record was, so log the operation
+               if ($new_record_info != $old_record_info){
+                 //The record was changed, so log the edit_record operation
                  log_info(sprintf('client_ip:%s user:%s operation:edit_record'
                                   .' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
                                   .' record_type:%s record:%s content:%s ttl:%s priority:%s',
