@@ -66,7 +66,7 @@ if (isset($_POST['commit'])) {
         if ($pdnssec_use) {
             if (do_rectify_zone($_GET['id'])) {
                 success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
-            };
+            }
         }
     } else {
         error(ERR_ZONE_UPD);

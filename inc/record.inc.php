@@ -285,8 +285,9 @@ function get_zone_comment($zone_id) {
     $query = "SELECT comment FROM zones WHERE domain_id = " . $db->quote($zone_id, 'integer');
     $comment = $db->queryOne($query);
 
-    if ($comment == "0")
+    if ($comment == "0") {
         $comment = '';
+    }
 
     return $comment;
 }
@@ -630,10 +631,10 @@ function delete_record($rid) {
 function add_domain($domain, $owner, $type, $slave_master, $zone_template) {
     if (verify_permission('zone_master_add')) {
         $zone_master_add = "1";
-    };
+    }
     if (verify_permission('zone_slave_add')) {
         $zone_slave_add = "1";
-    };
+    }
 
     // TODO: make sure only one is possible if only one is enabled
     if ($zone_master_add == "1" || $zone_slave_add == "1") {
@@ -1887,8 +1888,9 @@ function update_zone_records($zone_id, $zone_template) {
             $now = time();
             $templ_records = get_zone_templ_records($zone_template);
 
-            if ($templ_records == -1)
+            if ($templ_records == -1) {
                 return;
+            }
 
             foreach ($templ_records as $r) {
                 //fixme: appears to be a bug and regex match should occur against $domain

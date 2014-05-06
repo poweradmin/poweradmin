@@ -85,7 +85,7 @@ if ($record_id == "-1") {
                 // do also rectify-zone
                 if (do_rectify_zone($zid)) {
                     success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
-                };
+                }
             }
         }
     } else {

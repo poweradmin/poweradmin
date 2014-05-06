@@ -335,7 +335,7 @@ switch ($step) {
             echo "<pre>";
             echo htmlentities($config);
             echo "</pre>";
-        };
+        }
         echo "<form method=\"post\">";
         echo "<input type=\"hidden\" name=\"pa_pass\" value=\"" . $pa_pass . "\">";
         echo "<input type=\"hidden\" name=\"step\" value=\"" . $step . "\">";

@@ -48,7 +48,7 @@ function doAuthenticate() {
     // If a user had just entered his/her login && password, store them in our session.
     if (isset($_POST["authenticate"])) {
         $_SESSION["userpwd"] = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($session_key), $_POST['password'], MCRYPT_MODE_CBC, md5(md5($session_key))));
-        ;
+
         $_SESSION["userlogin"] = $_POST["username"];
         $_SESSION["userlang"] = $_POST["userlang"];
     }

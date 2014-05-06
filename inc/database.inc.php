@@ -223,6 +223,6 @@ function dbConnect() {
         error(ERR_DB_NO_DB_TYPE);
         include_once("footer.inc.php");
         exit;
-    };
+    }
     return $db;
 }
