@@ -90,7 +90,7 @@ if (isset($_POST['submit']) && $zone_master_add == "1") {
                               $domain,$dom_type,$zone_template));
 
             if ($pdnssec_use) {
-                do_secure_zone($domain);
+                dnssec_secure_zone($domain);
             }
         }
     }

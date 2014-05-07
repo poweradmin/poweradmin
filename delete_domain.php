@@ -32,6 +32,8 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
+global $pdnssec_use;
+
 if (verify_permission('zone_content_edit_others')) {
     $perm_edit = "all";
 } elseif (verify_permission('zone_content_edit_own')) {
@@ -67,6 +69,11 @@ if ($zone_id == "-1") {
 echo "     <h2>" . _('Delete zone') . " \"" . $zone_info['name'] . "\"</h2>\n";
 
 if ($confirm == '1') {
+    if ($zone_info['type'] == 'MASTER') {
+        $zone_name = get_zone_name_from_id($zone_id);
+        dnssec_disable_zone($zone_name);
+    }
+
     if (delete_domain($zone_id)) {
         success(SUC_ZONE_DEL);
         log_info(sprintf('client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',

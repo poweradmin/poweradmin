@@ -113,9 +113,11 @@ define("ERR_DNS_SRV_PORT", _('Invalid value for the weight field of the SRV reco
 define("ERR_DNS_SRV_TRGT", _('Invalid SRV target.'));
 define("ERR_DNS_PRINTABLE", _('Invalid characters have been used in this record.'));
 
-/* PDNSSEC */
+/* DNSSEC */
 define("ERR_EXEC_PDNSSEC", _('Failed to call pdnssec utility.'));
+define("ERR_EXEC_PDNSSEC_DISABLE_ZONE", _('Failed to deactivate DNSSEC keys.'));
 define("ERR_EXEC_PDNSSEC_SECURE_ZONE", _('Failed to secure zone.'));
+define("ERR_EXEC_PDNSSEC_SHOW_ZONE", _('Failed to get DNSSEC key details.'));
 define("ERR_EXEC_PDNSSEC_RECTIFY_ZONE", _('Failed to rectify zone.'));
 
 /* GOOD! */

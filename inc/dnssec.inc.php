@@ -30,6 +30,50 @@
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
 
+/** Check if it's possible to execute dnssec command
+ *
+ * @return boolean true on success, false on failure
+ */
+function is_pdnssec_callable() {
+    global $pdnssec_command;
+
+    if (!function_exists('exec')) {
+        error(ERR_EXEC_NOT_ALLOWED);
+        return false;
+    }
+
+    if (!file_exists($pdnssec_command) || !is_executable($pdnssec_command)) {
+        error(ERR_EXEC_PDNSSEC);
+        return false;
+    }
+
+    return true;
+}
+
+/** Execute dnssec utility
+ *
+ * @return mixed[] Array with output from command execution and error code
+ */
+function call_dnssec($command, $args) {
+    global $pdnssec_command;
+    $output = '';
+    $return_code = -1;
+
+    if (!is_pdnssec_callable()) {
+        return array($output, $return_code);
+    }
+
+    $command = join(' ', array(
+        $pdnssec_command,
+        $command,
+        $args)
+    );
+
+    exec($command, $output, $return_code);
+
+    return array($output, $return_code);
+}
+
 /** Execute PDNSSEC rectify-zone command for Domain ID
  *
  * If a Domain is dnssec enabled, or uses features as
@@ -41,7 +85,7 @@
  *
  * @return boolean true on success, false on failure or unnecessary
  */
-function do_rectify_zone($domain_id) {
+function dnssec_rectify_zone($domain_id) {
     global $db;
     global $pdnssec_command;
 
@@ -64,13 +108,7 @@ function do_rectify_zone($domain_id) {
         $domain = get_zone_name_from_id($domain_id);
         $command = $pdnssec_command . " rectify-zone " . $domain;
 
-        if (!function_exists('exec')) {
-            error(ERR_EXEC_NOT_ALLOWED);
-            return false;
-        }
-
-        if (!file_exists($pdnssec_command) || !is_executable($pdnssec_command)) {
-            error(ERR_EXEC_PDNSSEC);
+        if (!is_pdnssec_callable()) {
             return false;
         }
 
@@ -98,26 +136,50 @@ function do_rectify_zone($domain_id) {
  *
  * @return boolean true on success, false on failure or unnecessary
  */
-function do_secure_zone($domain_name) {
-    global $pdnssec_command;
-
-    if (!function_exists('exec')) {
-        error(ERR_EXEC_NOT_ALLOWED);
-        return false;
-    }
-
-    if (!file_exists($pdnssec_command) || !is_executable($pdnssec_command)) {
-        error(ERR_EXEC_PDNSSEC);
-        return false;
-    }
-
-    $command = $pdnssec_command . " secure-zone " . $domain_name;
-    exec($command, $output, $return_code);
+function dnssec_secure_zone($domain_name) {
+    $call_result = call_dnssec('secure-zone', $domain_name);
+    $return_code = $call_result[1];
 
     if ($return_code != 0) {
         error(ERR_EXEC_PDNSSEC_SECURE_ZONE);
         return false;
     }
+
+    return true;
+}
+
+/** Execute PDNSSEC disable-dnssec command for Domain Name
+ *
+ * @param string $domain_name Domain Name
+ *
+ * @return boolean true on success, false on failure or unnecessary
+ */
+function dnssec_disable_zone($domain_name) {
+    $call_result = call_dnssec('disable-dnssec', $domain_name);
+    $return_code = $call_result[1];
+
+    if ($return_code != 0) {
+        error(ERR_EXEC_PDNSSEC_DISABLE_ZONE);
+        return false;
+    }
+
+    return true;
+}
+
+/** Check if zone is secured
+ *
+ * @return boolean true on success, false on failure
+ */
+function dnssec_zone_secured($domain_name) {
+    $call_result = call_dnssec('disable-dnssec', $domain_name);
+    $return_code = $call_result[1];
+
+    if ($return_code != 0) {
+        error(ERR_EXEC_PDNSSEC_DISABLE_ZONE);
+        return false;
+    }
+
+    //TODO: parse output
 
     return true;
 }

@@ -458,7 +458,7 @@ function add_record($zone_id, $name, $type, $content, $ttl, $prio) {
                     update_soa_serial($zone_id);
                 }
                 if ($pdnssec_use) {
-                    do_rectify_zone($zone_id);
+                    dnssec_rectify_zone($zone_id);
                 }
                 return true;
             }
