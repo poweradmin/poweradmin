@@ -114,11 +114,14 @@ define("ERR_DNS_SRV_TRGT", _('Invalid SRV target.'));
 define("ERR_DNS_PRINTABLE", _('Invalid characters have been used in this record.'));
 
 /* DNSSEC */
-define("ERR_EXEC_PDNSSEC", _('Failed to call pdnssec utility.'));
-define("ERR_EXEC_PDNSSEC_DISABLE_ZONE", _('Failed to deactivate DNSSEC keys.'));
-define("ERR_EXEC_PDNSSEC_SECURE_ZONE", _('Failed to secure zone.'));
-define("ERR_EXEC_PDNSSEC_SHOW_ZONE", _('Failed to get DNSSEC key details.'));
-define("ERR_EXEC_PDNSSEC_RECTIFY_ZONE", _('Failed to rectify zone.'));
+define('ERR_EXEC_PDNSSEC', _('Failed to call pdnssec utility.'));
+define('ERR_EXEC_PDNSSEC_ADD_ZONE_KEY', _('Failed to add new DNSSEC key.'));
+define('ERR_EXEC_PDNSSEC_DISABLE_ZONE', _('Failed to deactivate DNSSEC keys.'));
+define('ERR_EXEC_PDNSSEC_SECURE_ZONE', _('Failed to secure zone.'));
+define('ERR_EXEC_PDNSSEC_SHOW_ZONE', _('Failed to get DNSSEC key details.'));
+define('ERR_EXEC_PDNSSEC_RECTIFY_ZONE', _('Failed to rectify zone.'));
+define('ERR_EXEC_PDNSSEC_PRESIGNED_ZONE', _('Failed to change presigned mode'));
+define('ERR_PDNSSEC_DEL_ZONE_KEY', _('Failed to delete DNSSEC key.'));
 
 /* GOOD! */
 define("SUC_ZONE_ADD", _('Zone has been added successfully.'));
@@ -141,3 +144,7 @@ define("SUC_ZONE_TEMPL_ADD", _('Zone template has been added successfully.'));
 define("SUC_ZONE_TEMPL_UPD", _('Zone template has been updated successfully.'));
 define("SUC_ZONE_TEMPL_DEL", _('Zone template has been deleted successfully.'));
 define("SUC_EXEC_PDNSSEC_RECTIFY_ZONE", _('Zone has been rectified successfully.'));
+define("SUC_EXEC_PDNSSEC_ADD_ZONE_KEY", _('Zone key has been added successfully.'));
+define("SUC_EXEC_PDNSSEC_REMOVE_ZONE_KEY", _('Zone key has been deleted successfully.'));
+define("SUC_EXEC_PDNSSEC_ACTIVATE_ZONE_KEY", _('Zone key has been successfully activated.'));
+define("SUC_EXEC_PDNSSEC_DEACTIVATE_ZONE_KEY", _('Zone key has been successfully deactivated.'));

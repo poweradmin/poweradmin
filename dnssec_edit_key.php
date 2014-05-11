@@ -34,17 +34,14 @@ include_once("inc/header.inc.php");
 
 global $pdnssec_use;
 
-if (verify_permission('zone_content_edit_others')) {
-    $perm_edit = "all";
-} elseif (verify_permission('zone_content_edit_own')) {
-    $perm_edit = "own";
-} else {
-    $perm_edit = "none";
-}
-
 $zone_id = "-1";
 if (isset($_GET['id']) && v_num($_GET['id'])) {
     $zone_id = $_GET['id'];
+}
+
+$key_id = "-1";
+if (isset($_GET['key_id']) && v_num($_GET['key_id'])) {
+    $key_id = (int) $_GET['key_id'];
 }
 
 $confirm = "-1";
@@ -52,12 +49,6 @@ if (isset($_GET['confirm']) && v_num($_GET['confirm'])) {
     $confirm = $_GET['confirm'];
 }
 
-$zone_info = get_zone_info_from_id($zone_id);
-if (!$zone_info) {
-    header("Location: list_zones.php");
-    exit;
-}
-$zone_owners = get_fullnames_owners_from_domainid($zone_id);
 $user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
 
 if ($zone_id == "-1") {
@@ -66,37 +57,51 @@ if ($zone_id == "-1") {
     exit;
 }
 
-echo "     <h2>" . _('Delete zone') . " \"" . $zone_info['name'] . "\"</h2>\n";
+$domain_name = get_zone_name_from_id($zone_id);
+
+if ($key_id == "-1") {
+    error(ERR_INV_INPUT);
+    include_once("inc/footer.inc.php");
+    exit;
+}
+
+if (!dnssec_zone_key_exists($domain_name, $key_id)) {
+    error(ERR_INV_INPUT);
+    include_once("inc/footer.inc.php");
+    exit;
+}
+
+$key_info = dnssec_get_zone_key($domain_name, $key_id);
+if ($key_info[5]) {
+    echo "     <h2>" . _('Deactivate zone key') . "</h2>\n";
+} else {
+    echo "     <h2>" . _('Activate zone key') . "</h2>\n";
+}
 
 if ($confirm == '1') {
-    if ($zone_info['type'] == 'MASTER') {
-        $zone_name = get_zone_name_from_id($zone_id);
-        dnssec_unsecure_zone($zone_name);
-    }
-
-    if (delete_domain($zone_id)) {
-        success(SUC_ZONE_DEL);
-        log_info(sprintf('client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
-                          $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                          $zone_info['name'], $zone_info['type']));
+    if ($key_info[5]) {
+        if (dnssec_deactivate_zone_key($domain_name, $key_id)) {
+            success(SUC_EXEC_PDNSSEC_DEACTIVATE_ZONE_KEY);
+        }
+    } else {
+        if (dnssec_activate_zone_key($domain_name, $key_id)) {
+            success(SUC_EXEC_PDNSSEC_ACTIVATE_ZONE_KEY);
+        }
     }
 } else {
-    if ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) {
-        echo "      " . _('Owner') . ": " . $zone_owners . "<br>\n";
-        echo "      " . _('Type') . ": " . $zone_info['type'] . "\n";
-        if ($zone_info['type'] == "SLAVE") {
-            $slave_master = get_domain_slave_master($zone_id);
-            if (supermaster_exists($slave_master)) {
-                echo "        <p>         \n";
-                printf(_('You are about to delete a slave zone of which the master nameserver, %s, is a supermaster. Deleting the zone now, will result in temporary removal only. Whenever the supermaster sends a notification for this zone, it will be added again!'), $slave_master);
-                echo "        </p>\n";
-            }
-        }
+    if ($user_is_zone_owner == "1") {
+        echo "      " . _('Domain') . ": " . $domain_name . "<br>\n";
+        echo "      " . _('Id') . ": " . $key_info[0] . "<br>\n";
+        echo "      " . _('Type') . ": " . $key_info[1] . "<br>\n";
+        echo "      " . _('Tag') . ": " . $key_info[2] . "<br>\n";
+        echo "      " . _('Algorithm') . ": " . dnssec_algorithm_to_name($key_info[3]) . "<br>\n";
+        echo "      " . _('Bits') . ": " . $key_info[4] . "<br>\n";
+        echo "      " . _('Active') . ": " . ($key_info[5] ? _('Yes') : _('No')) . "\n";
         echo "     <p>" . _('Are you sure?') . "</p>\n";
-        echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='delete_domain.php?id=" . $zone_id . "&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
+        echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='dnssec_edit_key.php?id=" . $zone_id . "&amp;key_id=$key_id&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
         echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
     } else {
-        error(ERR_PERM_DEL_ZONE);
+        error(ERR_PDNSSEC_DEL_ZONE_KEY);
     }
 }
 

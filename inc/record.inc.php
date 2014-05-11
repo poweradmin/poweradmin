@@ -1964,6 +1964,12 @@ function delete_domains($domains) {
 
         if ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) {
             if (is_numeric($id)) {
+                $zone_type = get_domain_type($id);
+                if ($zone_type == 'MASTER') {
+                    $zone_name = get_zone_name_from_id($id);
+                    dnssec_unsecure_zone($zone_name);
+                }
+
                 $db->exec("DELETE FROM zones WHERE domain_id=" . $db->quote($id, 'integer'));
                 $db->exec("DELETE FROM domains WHERE id=" . $db->quote($id, 'integer'));
                 $db->exec("DELETE FROM records WHERE domain_id=" . $db->quote($id, 'integer'));
