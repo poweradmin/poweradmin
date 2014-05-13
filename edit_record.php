@@ -77,11 +77,11 @@ if (isset($_POST["commit"])) {
             success(SUC_RECORD_UPD);
             $new_record_info = get_record_from_id($_POST["rid"]);
             log_info(sprintf('client_ip:%s user:%s operation:edit_record'
-                             .' old_record_type:%s old_record:%s.%s old_content:%s old_ttl:%s old_priority:%s'
-                             .' record_type:%s record:%s.%s content:%s ttl:%s priority:%s',
+                             .' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
+                             .' record_type:%s record:%s content:%s ttl:%s priority:%s',
                               $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                              $old_record_info['type'], $old_record_info['name'], $zone_name, $old_record_info['content'], $old_record_info['ttl'], $old_record_info['prio'], 
-                              $new_record_info['type'], $new_record_info['name'], $zone_name, $new_record_info['content'], $new_record_info['ttl'], $new_record_info['prio']));
+                              $old_record_info['type'], $old_record_info['name'], $old_record_info['content'], $old_record_info['ttl'], $old_record_info['prio'], 
+                              $new_record_info['type'], $new_record_info['name'], $new_record_info['content'], $new_record_info['ttl'], $new_record_info['prio']));
 
             if ($pdnssec_use) {
                 if (do_rectify_zone($zid)) {
