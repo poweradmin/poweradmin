@@ -191,7 +191,7 @@ if ($zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit 
             if (preg_match('/i(p6|n-addr).arpa/i', $zone_name) && strtoupper($record_type) == 'PTR') {
                 $add = " SELECTED";
                 $rev = "";
-            if ((isset($_POST["reverse"])) && $permit_reverse_dns ) {
+            } elseif ((strtoupper($record_type) == 'A') && $permit_reverse_dns) {
                 $add = " SELECTED";
                 $rev = "<input type=\"checkbox\" name=\"reverse\"><span class=\"normaltext\">" . _('Add also reverse record') . "</span>\n";
             } else {
