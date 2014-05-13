@@ -122,7 +122,7 @@ if (isset($_POST["commit"])) {
         // a PTR-record is added if an A or an AAAA-record are created
         // and checkbox is checked
 
-        if (isset($_POST["reverse"])) {
+        if ((isset($_POST["reverse"])) && $permit_reverse_dns ) {
             if ($type === 'A') {
                 $content_array = preg_split("/\./", $content);
                 $content_rev = sprintf("%d.%d.%d.%d.in-addr.arpa", $content_array[3], $content_array[2], $content_array[1], $content_array[0]);
@@ -191,7 +191,7 @@ if ($zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit 
             if (preg_match('/i(p6|n-addr).arpa/i', $zone_name) && strtoupper($record_type) == 'PTR') {
                 $add = " SELECTED";
                 $rev = "";
-            } elseif (strtoupper($record_type) == 'A') {
+            if ((isset($_POST["reverse"])) && $permit_reverse_dns ) {
                 $add = " SELECTED";
                 $rev = "<input type=\"checkbox\" name=\"reverse\"><span class=\"normaltext\">" . _('Add also reverse record') . "</span>\n";
             } else {
