@@ -317,7 +317,7 @@ if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
                         if (preg_match('/i(p6|n-addr).arpa/i', $zone_name) && strtoupper($record_type) == 'PTR') {
                             $add = " SELECTED";
                             $rev = "";
-                        } else if (strtoupper($record_type) == 'A') {
+                        } else if ((strtoupper($record_type) == 'A') && $permit_reverse_dns )  {
                             $add = " SELECTED";
                             $rev = "<input type=\"checkbox\" name=\"reverse\"><span class=\"normaltext\">" . _('Add also reverse record') . "</span>\n";
                         } else {
