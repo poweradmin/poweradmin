@@ -57,21 +57,27 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
     switch ($type) {
 
         case "A":
-            if (!is_valid_ipv4($content))
+            if (!is_valid_ipv4($content)) {
                 return false;
-            if (!is_valid_rr_cname_exists($name, $rid))
+            }
+            if (!is_valid_rr_cname_exists($name, $rid)) {
                 return false;
-            if (!is_valid_hostname_fqdn($name, 1))
+            }
+            if (!is_valid_hostname_fqdn($name, 1)) {
                 return false;
+            }
             break;
 
         case "AAAA":
-            if (!is_valid_ipv6($content))
+            if (!is_valid_ipv6($content)) {
                 return false;
-            if (!is_valid_rr_cname_exists($name, $rid))
+            }
+            if (!is_valid_rr_cname_exists($name, $rid)) {
                 return false;
-            if (!is_valid_hostname_fqdn($name, 1))
+            }
+            if (!is_valid_hostname_fqdn($name, 1)) {
                 return false;
+            }
             break;
 
         case "AFSDB": // TODO: implement validation.
@@ -81,16 +87,21 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
             break;
 
         case "CNAME":
-            if (!is_valid_rr_cname_name($name))
+            if (!is_valid_rr_cname_name($name)) {
                 return false;
-            if (!is_valid_rr_cname_unique($name, $rid))
+            }
+            if (!is_valid_rr_cname_unique($name, $rid)) {
                 return false;
-            if (!is_valid_hostname_fqdn($name, 1))
+            }
+            if (!is_valid_hostname_fqdn($name, 1)) {
                 return false;
-            if (!is_valid_hostname_fqdn($content, 0))
+            }
+            if (!is_valid_hostname_fqdn($content, 0)) {
                 return false;
-            if (!is_not_empty_cname_rr($name, $zone))
+            }
+            if (!is_not_empty_cname_rr($name, $zone)) {
                 return false;
+            }
             break;
 
         case 'DHCID': // TODO: implement validation
@@ -112,10 +123,12 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
             break;
 
         case "HINFO":
-            if (!is_valid_rr_hinfo_content($content))
+            if (!is_valid_rr_hinfo_content($content)) {
                 return false;
-            if (!is_valid_hostname_fqdn($name, 1))
+            }
+            if (!is_valid_hostname_fqdn($name, 1)) {
                 return false;
+            }
             break;
 
         case 'IPSECKEY': // TODO: implement validation
@@ -128,10 +141,12 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
             break;
 
         case "LOC":
-            if (!is_valid_loc($content))
+            if (!is_valid_loc($content)) {
                 return false;
-            if (!is_valid_hostname_fqdn($name, 1))
+            }
+            if (!is_valid_hostname_fqdn($name, 1)) {
                 return false;
+            }
             break;
 
         case 'MINFO': // TODO: implement validation
@@ -141,24 +156,30 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
             break;
 
         case "MX":
-            if (!is_valid_hostname_fqdn($content, 0))
+            if (!is_valid_hostname_fqdn($content, 0)) {
                 return false;
-            if (!is_valid_hostname_fqdn($name, 1))
+            }
+            if (!is_valid_hostname_fqdn($name, 1)) {
                 return false;
-            if (!is_valid_non_alias_target($content))
+            }
+            if (!is_valid_non_alias_target($content)) {
                 return false;
+            }
             break;
 
         case 'NAPTR': // TODO: implement validation
             break;
 
         case "NS":
-            if (!is_valid_hostname_fqdn($content, 0))
+            if (!is_valid_hostname_fqdn($content, 0)) {
                 return false;
-            if (!is_valid_hostname_fqdn($name, 1))
+            }
+            if (!is_valid_hostname_fqdn($name, 1)) {
                 return false;
-            if (!is_valid_non_alias_target($content))
+            }
+            if (!is_valid_non_alias_target($content)) {
                 return false;
+            }
             break;
 
         case 'NSEC': // TODO: implement validation
@@ -174,10 +195,12 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
             break;
 
         case "PTR":
-            if (!is_valid_hostname_fqdn($content, 0))
+            if (!is_valid_hostname_fqdn($content, 0)) {
                 return false;
-            if (!is_valid_hostname_fqdn($name, 1))
+            }
+            if (!is_valid_hostname_fqdn($name, 1)) {
                 return false;
+            }
             break;
 
         case 'RKEY': // TODO: implement validation
@@ -190,25 +213,31 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
             break;
 
         case "SOA":
-            if (!is_valid_rr_soa_name($name, $zone))
+            if (!is_valid_rr_soa_name($name, $zone)) {
                 return false;
-            if (!is_valid_hostname_fqdn($name, 1))
+            }
+            if (!is_valid_hostname_fqdn($name, 1)) {
                 return false;
-            if (!is_valid_rr_soa_content($content))
+            }
+            if (!is_valid_rr_soa_content($content)) {
                 error(ERR_DNS_CONTENT);
                 return false;
+            }
             break;
 
         case "SPF":
-            if (!is_valid_spf($content))
+            if (!is_valid_spf($content)) {
                 return false;
+            }
             break;
 
         case "SRV":
-            if (!is_valid_rr_srv_name($name))
+            if (!is_valid_rr_srv_name($name)) {
                 return false;
-            if (!is_valid_rr_srv_content($content))
+            }
+            if (!is_valid_rr_srv_content($content)) {
                 return false;
+            }
             break;
 
         case 'SSHFP': // TODO: implement validation
@@ -221,10 +250,12 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
             break;
 
         case "TXT":
-            if (!is_valid_printable($name))
+            if (!is_valid_printable($name)) {
                 return false;
-            if (!is_valid_printable($content))
+            }
+            if (!is_valid_printable($content)) {
                 return false;
+            }
             break;
 
         case 'WKS': // TODO: implement validation
@@ -242,10 +273,12 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
             return false;
     }
 
-    if (!is_valid_rr_prio($prio, $type))
+    if (!is_valid_rr_prio($prio, $type)) {
         return false;
-    if (!is_valid_rr_ttl($ttl))
+    }
+    if (!is_valid_rr_ttl($ttl)) {
         return false;
+    }
 
     return true;
 }
