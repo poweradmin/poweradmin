@@ -32,6 +32,8 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
+global $pdnssec_use;
+
 if (verify_permission('zone_content_view_others')) {
     $perm_view = "all";
 } elseif (verify_permission('zone_content_view_own')) {
@@ -96,8 +98,15 @@ if ($perm_view == "none") {
     echo "       <th><a href=\"list_zones.php?zone_sort_by=type\">" . _('Type') . "</a></th>\n";
     echo "       <th><a href=\"list_zones.php?zone_sort_by=count_records\">" . _('Records') . "</a></th>\n";
     echo "       <th>" . _('Owner') . "</th>\n";
-    if ($iface_zonelist_serial)
+
+    if ($iface_zonelist_serial) {
         echo "       <th>" . _('Serial') . "</th>\n";
+    }
+
+    if ($pdnssec_use) {
+        echo "       <th>" . _('DNSSEC') . "</th>\n";
+    }
+
     echo "      </tr>\n";
 
     if ($count_zones_view <= $iface_rowamount) {
@@ -142,6 +151,9 @@ if ($perm_view == "none") {
             } else {
                 echo "          <td class=\"n\">&nbsp;</td>\n";
             }
+        }
+        if ($pdnssec_use) {
+            echo "          <td class=\"dnssec\"><input type=\"checkbox\" onclick=\"return false\" " . (dnssec_is_zone_secured($zone['name']) ? 'checked' : '') . "></td>\n";
         }
         echo "           </tr>\n";
     }

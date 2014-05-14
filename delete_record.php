@@ -83,7 +83,7 @@ if ($record_id == "-1") {
 
             if ($pdnssec_use) {
                 // do also rectify-zone
-                if (do_rectify_zone($zid)) {
+                if (dnssec_rectify_zone($zid)) {
                     success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
                 }
             }

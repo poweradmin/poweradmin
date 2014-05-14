@@ -237,6 +237,7 @@ require_once("auth.inc.php");
 require_once("users.inc.php");
 require_once("dns.inc.php");
 require_once("record.inc.php");
+require_once("dnssec.inc.php");
 require_once("templates.inc.php");
 
 $db = dbConnect();

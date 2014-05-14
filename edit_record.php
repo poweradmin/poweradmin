@@ -84,7 +84,7 @@ if (isset($_POST["commit"])) {
                               $new_record_info['type'], $new_record_info['name'], $new_record_info['content'], $new_record_info['ttl'], $new_record_info['prio']));
 
             if ($pdnssec_use) {
-                if (do_rectify_zone($zid)) {
+                if (dnssec_rectify_zone($zid)) {
                     success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
                 }
             }

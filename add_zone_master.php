@@ -65,6 +65,11 @@ if (isset($_POST['zone_template'])) {
     $zone_template = "none";
 }
 
+$enable_dnssec = false;
+if (isset($_POST['dnssec']) && $_POST['dnssec'] == '1') {
+    $enable_dnssec = true;
+}
+
 /*
   Check user permissions
  */
@@ -84,13 +89,18 @@ if (isset($_POST['submit']) && $zone_master_add == "1") {
             // TODO: repopulate domain name(s) to the form if there was an error occured
             $error = true;
         } elseif (add_domain($domain, $owner, $dom_type, '', $zone_template)) {
-            success("<a href=\"edit.php?id=" . get_zone_id_from_name($domain) . "\">" . $domain . " - " . SUC_ZONE_ADD . '</a>');
+            $domain_id = get_zone_id_from_name($domain);
+            success("<a href=\"edit.php?id=" . $domain_id . "\">" . $domain . " - " . SUC_ZONE_ADD . '</a>');
             log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
                               $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                               $domain,$dom_type,$zone_template));
 
             if ($pdnssec_use) {
-                do_secure_zone($domain);
+                if ($enable_dnssec) {
+                    dnssec_secure_zone($domain);
+                }
+
+                dnssec_rectify_zone($domain_id);
             }
         }
     }
@@ -163,6 +173,10 @@ if ($zone_master_add != "1") {
     echo "         </select>\n";
     echo "        </td>\n";
     echo "        <td>&nbsp;</td>\n";
+    echo "       </tr>\n";
+    echo "       <tr>\n";
+    echo "        <td class=\"n\">" . _('DNSSEC') . ":</td>\n";
+    echo "        <td class=\"n\"><input type=\"checkbox\" class=\"input\" name=\"dnssec\" value=\"1\"></td>\n";
     echo "       </tr>\n";
     echo "       <tr>\n";
     echo "        <td class=\"n\">&nbsp;</td>\n";

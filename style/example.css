@@ -69,6 +69,15 @@ td.owner {
     border:			1px solid #000000;
 }
 
+td.cell {
+    background:		#ffffff;
+    border:			1px solid #000000;
+}
+
+td.dnssec {
+    width: 50px;
+}
+
 td.checkbox {
 }
 

@@ -458,7 +458,7 @@ function add_record($zone_id, $name, $type, $content, $ttl, $prio) {
                     update_soa_serial($zone_id);
                 }
                 if ($pdnssec_use) {
-                    do_rectify_zone($zone_id);
+                    dnssec_rectify_zone($zone_id);
                 }
                 return true;
             }
@@ -1964,6 +1964,12 @@ function delete_domains($domains) {
 
         if ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) {
             if (is_numeric($id)) {
+                $zone_type = get_domain_type($id);
+                if ($zone_type == 'MASTER') {
+                    $zone_name = get_zone_name_from_id($id);
+                    dnssec_unsecure_zone($zone_name);
+                }
+
                 $db->exec("DELETE FROM zones WHERE domain_id=" . $db->quote($id, 'integer'));
                 $db->exec("DELETE FROM domains WHERE id=" . $db->quote($id, 'integer'));
                 $db->exec("DELETE FROM records WHERE domain_id=" . $db->quote($id, 'integer'));
@@ -1990,98 +1996,6 @@ function delete_domains($domains) {
     }
 
     return $return;
-}
-
-/** Execute PDNSSEC rectify-zone command for Domain ID
- *
- * If a Domain is dnssec enabled, or uses features as
- * e.g. ALSO-NOTIFY, ALLOW-AXFR-FROM, TSIG-ALLOW-AXFR
- * following has to be executed
- * pdnssec rectify-zone $domain
- *
- * @param int $domain_id Domain ID
- *
- * @return boolean true on success, false on failure or unnecessary
- */
-function do_rectify_zone($domain_id) {
-    global $db;
-    global $pdnssec_command;
-
-    $output = array();
-
-    /* if pdnssec_command is set we perform ``pdnssec rectify-zone $domain`` on all zones,
-     * as pdns needs the "auth" column for all zones if dnssec is enabled
-     *
-     * If there is any entry at domainmetadata table for this domain,
-     * it is an error if pdnssec_command is not set */
-    $query = "SELECT COUNT(id) FROM domainmetadata WHERE domain_id = " . $db->quote($domain_id, 'integer');
-    $count = $db->queryOne($query);
-
-    if (PEAR::isError($count)) {
-        error($count->getMessage());
-        return false;
-    }
-
-    if (isset($pdnssec_command)) {
-        $domain = get_zone_name_from_id($domain_id);
-        $command = $pdnssec_command . " rectify-zone " . $domain;
-
-        if (!function_exists('exec')) {
-            error(ERR_EXEC_NOT_ALLOWED);
-            return false;
-        }
-
-        if (!file_exists($pdnssec_command) || !is_executable($pdnssec_command)) {
-            error(ERR_EXEC_PDNSSEC);
-            return false;
-        }
-
-        exec($command, $output, $return_code);
-        if ($return_code != 0) {
-            /* if rectify-zone failed: display error */
-            error(ERR_EXEC_PDNSSEC_RECTIFY_ZONE);
-            return false;
-        }
-
-        return true;
-    } else if ($count >= 1) {
-        error(ERR_EXEC_PDNSSEC);
-        return false;
-    } else {
-        /* no rectify-zone has to be done or command is not
-         * configured in inc/config.inc.php */
-        return false;
-    }
-}
-
-/** Execute PDNSSEC secure-zone command for Domain Name
- *
- * @param string $domain_name Domain Name
- *
- * @return boolean true on success, false on failure or unnecessary
- */
-function do_secure_zone($domain_name) {
-    global $pdnssec_command;
-
-    if (!function_exists('exec')) {
-        error(ERR_EXEC_NOT_ALLOWED);
-        return false;
-    }
-
-    if (!file_exists($pdnssec_command) || !is_executable($pdnssec_command)) {
-        error(ERR_EXEC_PDNSSEC);
-        return false;
-    }
-
-    $command = $pdnssec_command . " secure-zone " . $domain_name;
-    exec($command, $output, $return_code);
-
-    if ($return_code != 0) {
-        error(ERR_EXEC_PDNSSEC_SECURE_ZONE);
-        return false;
-    }
-
-    return true;
 }
 
 /** Check if record exists
