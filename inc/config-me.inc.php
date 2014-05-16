@@ -29,6 +29,7 @@ $db_type = '';
 // This should be changed upon install
 $session_key = 'p0w3r4dm1n';
 $password_encryption = 'md5'; // or md5salt
+
 // Interface settings
 $iface_lang = 'en_EN';
 $iface_style = 'example';
@@ -36,6 +37,7 @@ $iface_rowamount = 50;
 $iface_expire = 1800;
 $iface_zonelist_serial = false;
 $iface_title = 'Poweradmin';
+$iface_add_reverse_record = true;
 
 // Predefined DNS settings
 $dns_hostmaster = '';

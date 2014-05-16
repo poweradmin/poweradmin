@@ -196,9 +196,67 @@ $zone_template_id = get_zone_template($zone_id);
 
 echo "   <h2>" . _('Edit zone') . " \"" . get_zone_name_from_id($zone_id) . "\"</h2>\n";
 
-echo "   <div class=\"showmax\">\n";
-show_pages($record_count, $iface_rowamount, $zone_id);
-echo "   </div>\n";
+        if ($perm_content_edit == "all" || $perm_content_edit == "own" && $user_is_zone_owner == "1") {
+            if ($domain_type != "SLAVE") {
+                $zone_name = get_zone_name_from_id($zone_id);
+                echo "     <form method=\"post\" action=\"add_record.php?id=" . $zone_id . "\">\n";
+                echo "      <input type=\"hidden\" name=\"domain\" value=\"" . $zone_id . "\">\n";
+                echo "      <table border=\"0\" cellspacing=\"4\">\n";
+                echo "       <tr>\n";
+                echo "        <td class=\"n\">" . _('Name') . "</td>\n";
+                echo "        <td class=\"n\">&nbsp;</td>\n";
+                echo "        <td class=\"n\">" . _('Type') . "</td>\n";
+                echo "        <td class=\"n\">" . _('Content') . "</td>\n";
+                echo "        <td class=\"n\">" . _('Priority') . "</td>\n";
+                echo "        <td class=\"n\">" . _('TTL') . "</td>\n";
+                echo "       </tr>\n";
+                echo "       <tr>\n";
+                echo "        <td class=\"n\"><input type=\"text\" name=\"name\" class=\"input\" value=\"\">." . $zone_name . "</td>\n";
+                echo "        <td class=\"n\">IN</td>\n";
+                echo "        <td class=\"n\">\n";
+                echo "         <select name=\"type\">\n";
+                $found_selected_type = !(isset($type) && $type);
+                foreach (get_record_types() as $record_type) {
+                    if (isset($type) && $type) {
+                        if ($type == $record_type) {
+                            $add = " SELECTED";
+                            $found_selected_type = true;
+                        } else {
+                            $add = "";
+                        }
+                    } else {
+                        if (preg_match('/i(p6|n-addr).arpa/i', $zone_name) && strtoupper($record_type) == 'PTR') {
+                            $add = " SELECTED";
+                            $rev = "";
+                        } else if ((strtoupper($record_type) == 'A') && $iface_add_reverse_record )  {
+                            $add = " SELECTED";
+                            $rev = "<input type=\"checkbox\" name=\"reverse\"><span class=\"normaltext\">" . _('Add also reverse record') . "</span>\n";
+                        } else {
+                            $add = "";
+                        }
+                    }
+                    echo "          <option" . $add . " value=\"" . htmlspecialchars($record_type) . "\">" . $record_type . "</option>\n";
+                }
+                if (!$found_selected_type)
+                    echo "         <option SELECTED value=\"" . htmlspecialchars($type) . "\"><i>" . htmlspecialchars($type) . "</i></option>\n";
+                echo "         </select>\n";
+                echo "        </td>\n";
+                echo "        <td class=\"n\"><input type=\"text\" name=\"content\" class=\"input\" value=\"\"></td>\n";
+                echo "        <td class=\"n\"><input type=\"text\" name=\"prio\" class=\"sinput\" value=\"\"></td>\n";
+                echo "        <td class=\"n\"><input type=\"text\" name=\"ttl\" class=\"sinput\" value=\"\"></td>\n";
+                echo "       </tr>\n";
+                echo "      </table>\n";
+                echo "      <input type=\"submit\" name=\"commit\" value=\"" . _('Add record') . "\" class=\"button\">\n";
+                echo "      $rev";
+                echo "     </form>\n";
+            }
+        }
+
+        echo "   <div id=\"meta\">\n";
+        echo "    <table>\n";
+        echo "     <tr>\n";
+        echo "      <th colspan=\"2\">" . _('Owner of zone') . "</th>\n";
+        echo "     </tr>\n";
 
 $records = get_records_from_domain_id($zone_id, ROWSTART, $iface_rowamount, RECORD_SORT_BY);
 if ($records == "-1") {
