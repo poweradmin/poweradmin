@@ -12,3 +12,9 @@ ALTER TABLE tsigkeys ENGINE=InnoDB;
 ALTER TABLE domains ENGINE=InnoDB;
 ALTER TABLE records ENGINE=InnoDB;
 ALTER TABLE supermasters ENGINE=InnoDB;
+
+CREATE TABLE records_zone_templ (
+    domain_id INTEGER NOT NULL,
+    record_id INTEGER NOT NULL,
+    zone_templ_id INTEGER NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

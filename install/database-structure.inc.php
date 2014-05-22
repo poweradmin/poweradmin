@@ -412,6 +412,45 @@ $def_tables = array(
                 'flags' => ''
             )
         )
+    ),
+    array(
+        'table_name' => 'records_zone_templ',
+        'options' => array('type' => 'innodb'),
+        'fields' => array(
+            'domain_id' => array
+                (
+                'notnull' => 1,
+                'length' => 11,
+                'fixed' => 0,
+                'default' => 0,
+                'type' => 'integer',
+                'name' => 'domain_id',
+                'table' => 'records_zone_templ',
+                'flags' => 'not_null'
+            ),
+            'record_id' => array
+                (
+                'notnull' => 1,
+                'length' => 11,
+                'fixed' => 0,
+                'default' => 0,
+                'type' => 'integer',
+                'name' => 'record_id',
+                'table' => 'records_zone_templ',
+                'flags' => 'not_null'
+            ),
+            'zone_templ_id' => array
+                (
+                'notnull' => 1,
+                'length' => 11,
+                'fixed' => 0,
+                'default' => 0,
+                'type' => 'integer',
+                'name' => 'zone_templ_id',
+                'table' => 'records_zone_templ',
+                'flags' => 'not_null'
+            )
+        )
     )
 );
 

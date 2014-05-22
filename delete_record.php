@@ -78,6 +78,9 @@ if ($record_id == "-1") {
                      $record_info['type'], $record_info['name'], $record_info['content'], $record_info['ttl'] ));
 
             }
+
+            delete_record_zone_templ($record_id);
+
             // update serial after record deletion
             update_soa_serial($zid);
 

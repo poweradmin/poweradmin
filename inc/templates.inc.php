@@ -130,7 +130,6 @@ function delete_zone_templ($zone_templ_id) {
         return false;
     } else {
         // Delete the zone template
-
         $query = "DELETE FROM zone_templ"
                 . " WHERE id = " . $db->quote($zone_templ_id, 'integer');
         $result = $db->query($query);
@@ -140,8 +139,16 @@ function delete_zone_templ($zone_templ_id) {
         }
 
         // Delete the zone template records
-
         $query = "DELETE FROM zone_templ_records"
+                . " WHERE zone_templ_id = " . $db->quote($zone_templ_id, 'integer');
+        $result = $db->query($query);
+        if (PEAR::isError($result)) {
+            error($result->getMessage());
+            return false;
+        }
+
+        // Delete references to zone template
+        $query = "DELETE FROM records_zone_templ"
                 . " WHERE zone_templ_id = " . $db->quote($zone_templ_id, 'integer');
         $result = $db->query($query);
         if (PEAR::isError($result)) {
