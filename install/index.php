@@ -164,6 +164,9 @@ switch ($step) {
         $db_port = $_POST['dbport'];
         $db_name = $_POST['name'];
         $db_type = $_POST['type'];
+        if ($db_type == 'sqlite') {
+            $db_file = $db_name;
+        }
         $pa_pass = $_POST['pa_pass'];
         require_once("../inc/database.inc.php");
         $db = dbConnect();
