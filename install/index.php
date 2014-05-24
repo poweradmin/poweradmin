@@ -323,6 +323,7 @@ switch ($step) {
 
         $db_type = $_POST['db_type'];
         $pa_pass = $_POST['pa_pass'];
+        $db_port = $_POST['db_port'];
 
         $config = "<?php\n\n" .
                 ( $db_type == 'sqlite' ? "\$db_file\t\t= '" . $_POST['db_name'] . "';\n" :
@@ -330,7 +331,7 @@ switch ($step) {
                 "\$db_user\t\t= '" . $_POST['pa_db_user'] . "';\n" .
                 "\$db_pass\t\t= '" . $_POST['pa_db_pass'] . "';\n" .
                 "\$db_name\t\t= '" . $_POST['db_name'] . "';\n" .
-                "\$db_port\t\t= '" . $_POST['db_port'] . "';\n") .
+                (($db_type == 'mysql' && $db_port != 3306) || ($db_type == 'pgsql' && $db_port != 5432) ? "\$db_port\t\t= '" . $db_port . "';\n" : '')) .
                 "\$db_type\t\t= '" . $_POST['db_type'] . "';\n" .
                 "\$db_layer\t\t= 'PDO';\n" .
                 "\n" .
