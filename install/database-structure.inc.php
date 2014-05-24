@@ -412,6 +412,45 @@ $def_tables = array(
                 'flags' => ''
             )
         )
+    ),
+    array(
+        'table_name' => 'records_zone_templ',
+        'options' => array('type' => 'innodb'),
+        'fields' => array(
+            'domain_id' => array
+                (
+                'notnull' => 1,
+                'length' => 11,
+                'fixed' => 0,
+                'default' => 0,
+                'type' => 'integer',
+                'name' => 'domain_id',
+                'table' => 'records_zone_templ',
+                'flags' => 'not_null'
+            ),
+            'record_id' => array
+                (
+                'notnull' => 1,
+                'length' => 11,
+                'fixed' => 0,
+                'default' => 0,
+                'type' => 'integer',
+                'name' => 'record_id',
+                'table' => 'records_zone_templ',
+                'flags' => 'not_null'
+            ),
+            'zone_templ_id' => array
+                (
+                'notnull' => 1,
+                'length' => 11,
+                'fixed' => 0,
+                'default' => 0,
+                'type' => 'integer',
+                'name' => 'zone_templ_id',
+                'table' => 'records_zone_templ',
+                'flags' => 'not_null'
+            )
+        )
     )
 );
 
@@ -425,6 +464,7 @@ foreach ($def_tables as $table) {
 // For PostgreSQL you need to grant access to sequences
 $grantSequences = array('domains_id_seq', 'records_id_seq');
 foreach ($def_tables as $table) {
+    if ($table == 'migrations') { continue; } // ignore migrations table
     $grantSequences[] = $table['table_name'] . '_id_seq';
 }
 
@@ -453,7 +493,7 @@ $def_permissions = array(
 );
 
 $def_remaining_queries = array(
-    "INSERT INTO users (username, password, fullname, email, description, perm_templ, active) VALUES ('admin'," . $db->quote(md5($pa_pass), 'text') . ",'Administrator','admin@example.net','Administrator with full rights.',1,1)",
+    "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('admin'," . $db->quote(md5($pa_pass), 'text') . ",'Administrator','admin@example.net','Administrator with full rights.',1,1,0)",
     "INSERT INTO perm_templ (name, descr) VALUES ('Administrator','Administrator template with full rights.')",
     "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (1,53)"
 );

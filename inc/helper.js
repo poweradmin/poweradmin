@@ -22,16 +22,40 @@
 function changePort(db_type) {
     var dbport = document.getElementById("dbport");
     var host = document.getElementById("host");
-    var td_name = document.getElementById("td_name");
+    var db_name_title = document.getElementById("db_name_title");
+    var db_path_title = document.getElementById("db_path_title");
+    var username_row = document.getElementById("username_row");
+    var password_row = document.getElementById("password_row");
+    var hostname_row = document.getElementById("hostname_row");
+    var dbport_row = document.getElementById("dbport_row");
 
     if (db_type == "mysql") {
         dbport.value = "3306";
+        host.value = "localhost";
+        db_name_title.style.display = '';
+        db_path_title.style.display = "none";
+        username_row.style.display = '';
+        password_row.style.display = '';
+        hostname_row.style.display = '';
+        dbport_row.style.display = '';
     } else if (db_type == "pgsql") {
         dbport.value = "5432";
+        host.value = "localhost";
+        db_name_title.style.display = '';
+        db_path_title.style.display = "none";
+        username_row.style.display = '';
+        password_row.style.display = '';
+        hostname_row.style.display = '';
+        dbport_row.style.display = '';
     } else {
         dbport.value = "";
         host.value = "";
-        td_name.innerHTML = "<strong>The path and filename to the PowerDNS SQLite database.</strong>";
+        db_name_title.style.display = "none";
+        db_path_title.style.display = '';
+        username_row.style.display = "none";
+        password_row.style.display = "none";
+        hostname_row.style.display = "none";
+        dbport_row.style.display = "none";
     }
 }
 

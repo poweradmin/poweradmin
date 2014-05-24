@@ -107,3 +107,13 @@ CREATE TABLE zone_templ_records (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE records_zone_templ (
+    domain_id INTEGER NOT NULL,
+    record_id INTEGER NOT NULL,
+    zone_templ_id INTEGER NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE migrations (
+    version VARCHAR(255) NOT NULL,
+    apply_time INTEGER NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

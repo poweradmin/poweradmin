@@ -607,6 +607,25 @@ function delete_record($rid) {
     }
 }
 
+/** Delete record reference to zone template
+ *
+ * @param int $rid Record ID
+ *
+ * @return boolean true on success
+ */
+function delete_record_zone_templ($rid) {
+    global $db;
+
+    $query = "DELETE FROM records_zone_templ WHERE record_id = " . $db->quote($rid, 'integer');
+    $response = $db->query($query);
+    if (PEAR::isError($response)) {
+        error($response->getMessage());
+        return false;
+    }
+
+    return true;
+}
+
 /**
  * Add a domain to the database
  *
@@ -738,6 +757,29 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template) {
                                     error($response->getMessage());
                                     return false;
                                 }
+
+                                if ($db_layer == 'MDB2' && ($db_type == 'mysql' || $db_type == 'pgsql')) {
+                                    $record_id = $db->lastInsertId('records', 'id');
+                                } else if ($db_layer == 'PDO' && $db_type == 'pgsql') {
+                                    $record_id = $db->lastInsertId('records_id_seq');
+                                } else {
+                                    $record_id = $db->lastInsertId();
+                                }
+
+                                if (PEAR::isError($record_id)) {
+                                    error($record_id->getMessage());
+                                    return false;
+                                }
+
+                                $query = "INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES ("
+                                        . $db->quote($domain_id, 'integer') . ","
+                                        . $db->quote($record_id, 'integer') . ","
+                                        . $db->quote($r['zone_templ_id'], 'integer') . ")";
+                                $response = $db->query($query);
+                                if (PEAR::isError($response)) {
+                                    error($response->getMessage());
+                                    return false;
+                                }
                             }
                         }
                     }
@@ -780,6 +822,7 @@ function delete_domain($id) {
             $db->query("DELETE FROM zones WHERE domain_id=" . $db->quote($id, 'integer'));
             $db->query("DELETE FROM domains WHERE id=" . $db->quote($id, 'integer'));
             $db->query("DELETE FROM records WHERE domain_id=" . $db->quote($id, 'integer'));
+            $db->query("DELETE FROM records_zone_templ WHERE domain_id=" . $db->quote($id, 'integer'));
             return true;
         } else {
             error(sprintf(ERR_INV_ARGC, "delete_domain", "id must be a number"));
@@ -1840,11 +1883,11 @@ function update_zone_template($zone_id, $new_zone_template_id) {
 /** Update All Zone Records for Zone ID with Zone Template
  *
  * @param int $zone_id Zone ID to update
- * @param int $zone_template Zone Template to use for update
+ * @param int $zone_template_id Zone Template ID to use for update
  *
  * @return null
  */
-function update_zone_records($zone_id, $zone_template) {
+function update_zone_records($zone_id, $zone_template_id) {
     global $db;
     global $dns_ns1;
     global $dns_hostmaster;
@@ -1871,11 +1914,13 @@ function update_zone_records($zone_id, $zone_template) {
     $soa_rec = get_soa_record($zone_id);
     $response = $db->beginTransaction();
 
-    if (0 != $zone_template) {
+    if (0 != $zone_template_id) {
         if ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) {
             if (is_numeric($zone_id)) {
-                //TODO: account for non-template records?
-                $db->exec("DELETE FROM records WHERE domain_id=" . $db->quote($zone_id, 'integer'));
+                $db->exec("DELETE FROM records WHERE id IN (SELECT record_id FROM records_zone_templ WHERE "
+                        . "domain_id = " . $db->quote($zone_id, 'integer') . " AND "
+                        . "zone_templ_id = " . $db->quote($zone_template_id, 'integer') . ")");
+                $db->exec("DELETE FROM records_zone_templ WHERE domain_id = " . $db->quote($zone_id, 'integer'));
             } else {
                 error(sprintf(ERR_INV_ARGC, "delete_domain", "id must be a number"));
             }
@@ -1886,7 +1931,7 @@ function update_zone_records($zone_id, $zone_template) {
         if ($zone_master_add == "1" || $zone_slave_add == "1") {
             $domain = get_zone_name_from_id($zone_id);
             $now = time();
-            $templ_records = get_zone_templ_records($zone_template);
+            $templ_records = get_zone_templ_records($zone_template_id);
 
             if ($templ_records == -1) {
                 return;
@@ -1920,13 +1965,27 @@ function update_zone_records($zone_id, $zone_template) {
                             . $db->quote($prio, 'integer') . ","
                             . $db->quote($now, 'integer') . ")";
                     $response = $db->exec($query);
+
+                    if ($db_layer == 'MDB2' && ($db_type == 'mysql' || $db_type == 'pgsql')) {
+                        $record_id = $db->lastInsertId('records', 'id');
+                    } else if ($db_layer == 'PDO' && $db_type == 'pgsql') {
+                        $record_id = $db->lastInsertId('records_id_seq');
+                    } else {
+                        $record_id = $db->lastInsertId();
+                    }
+
+                    $query = "INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES ("
+                            . $db->quote($zone_id, 'integer') . ","
+                            . $db->quote($record_id, 'integer') . ","
+                            . $db->quote($zone_template_id, 'integer') . ")";
+                    $response = $db->query($query);
                 }
             }
         }
     }
 
     $query = "UPDATE zones
-                    SET zone_templ_id = " . $db->quote($zone_template, 'integer') . "
+                    SET zone_templ_id = " . $db->quote($zone_template_id, 'integer') . "
                     WHERE domain_id = " . $db->quote($zone_id, 'integer');
     $response = $db->exec($query);
 
@@ -1973,6 +2032,7 @@ function delete_domains($domains) {
                 $db->exec("DELETE FROM zones WHERE domain_id=" . $db->quote($id, 'integer'));
                 $db->exec("DELETE FROM domains WHERE id=" . $db->quote($id, 'integer'));
                 $db->exec("DELETE FROM records WHERE domain_id=" . $db->quote($id, 'integer'));
+                $db->query("DELETE FROM records_zone_templ WHERE domain_id=" . $db->quote($id, 'integer'));
             } else {
                 error(sprintf(ERR_INV_ARGC, "delete_domains", "id must be a number"));
                 $error = true;

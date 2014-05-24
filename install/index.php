@@ -74,7 +74,8 @@ switch ($step) {
         echo "  <input type=\"radio\" name=\"language\" value=\"ja_JP\"> 日本語で続ける<br>\n";
         echo "  <input type=\"radio\" name=\"language\" value=\"pl_PL\"> Chcę kontynuować po polsku.<br>\n";
         echo "  <input type=\"radio\" name=\"language\" value=\"fr_FR\"> Je préfère continuer en français.<br>\n";
-        echo "  <input type=\"radio\" name=\"language\" value=\"nb_NO\"> Jeg ønsker å forsette på norsk.<br><br>\n";
+        echo "  <input type=\"radio\" name=\"language\" value=\"nb_NO\"> Jeg ønsker å forsette på norsk.<br>\n";
+        echo "  <input type=\"radio\" name=\"language\" value=\"lt_LT\"> Norėčiau tęsti lietuvių kalba.<br><br>\n";
         echo "  <input type=\"hidden\" name=\"step\" value=\"" . $step . "\">";
         echo "  <input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $step . "\">";
         echo " </form>\n";
@@ -106,19 +107,18 @@ switch ($step) {
 
         echo "<form method=\"post\">";
         echo " <table>\n";
-        echo "  <tr>\n";
+        echo "  <tr id=\"username_row\">\n";
         echo "   <td>" . _('Username') . "</td>\n";
         echo "   <td><input type=\"text\" name=\"user\" value=\"\"></td>\n";
         echo "   <td>" . _('The username to use to connect to the database, make sure the username has sufficient rights to perform administrative task to the PowerDNS database (the installer wants to drop, create and fill tables to the database).') . "</td>\n";
         echo "  </tr>\n";
-        echo " <tr>\n";
+        echo " <tr id=\"password_row\">\n";
         echo "  <td>" . _('Password') . "</td>\n";
         echo "  <td><input type=\"password\" name=\"pass\" value=\"\" autocomplete=\"off\"></td>\n";
         echo "  <td>" . _('The password for this username.') . "</td>\n";
         echo " </tr>\n";
         echo " <tr>\n";
-        echo " <tr>\n";
-        echo "  <td>" . _('Database type') . "</td>\n";
+        echo "  <td width=\"210\">" . _('Database type') . "</td>\n";
         echo "  <td>" .
         "<select name=\"type\" onChange=\"changePort(this.value)\">" .
         "<option value=\"mysql\">MySQL</option>" .
@@ -127,11 +127,12 @@ switch ($step) {
         "</td>\n";
         echo "  <td>" . _('The type of the PowerDNS database.') . "</td>\n";
         echo " </tr>\n";
+        echo " <tr id=\"hostname_row\">\n";
         echo "  <td>" . _('Hostname') . "</td>\n";
-        echo "  <td><input type=\"text\" id=\"host\" name=\"host\" value=\"127.0.0.1\"></td>\n";
+        echo "  <td><input type=\"text\" id=\"host\" name=\"host\" value=\"localhost\"></td>\n";
         echo "  <td>" . _('The hostname on which the PowerDNS database resides. Frequently, this will be "localhost".') . "</td>\n";
         echo " </tr>\n";
-        echo " <tr>\n";
+        echo " <tr id=\"dbport_row\">\n";
         echo "  <td>" . _('DB Port') . "</td>\n";
         echo "  <td><input type=\"text\" id=\"dbport\" name=\"dbport\" value=\"3306\"></td>\n";
         echo "  <td>" . _('The port the database server is listening on.') . "</td>\n";
@@ -139,7 +140,8 @@ switch ($step) {
         echo " <tr>\n";
         echo "  <td>" . _('Database') . "</td>\n";
         echo "  <td><input type=\"text\" name=\"name\" value=\"\"></td>\n";
-        echo "  <td id=\"td_name\">" . _('The name of the PowerDNS database.') . "</td>\n";
+        echo "  <td><span id=\"db_name_title\">" . _('The name of the PowerDNS database.') . "</span>"
+                . "<span id=\"db_path_title\" style=\"display: none;\">" . _('The path and filename to the PowerDNS SQLite database.') . "</span></td>\n";
         echo " </tr>\n";
         echo "  <tr>\n";
         echo "   <td>" . _('Poweradmin administrator password') . "</td>\n";
@@ -164,6 +166,9 @@ switch ($step) {
         $db_port = $_POST['dbport'];
         $db_name = $_POST['name'];
         $db_type = $_POST['type'];
+        if ($db_type == 'sqlite') {
+            $db_file = $db_name;
+        }
         $pa_pass = $_POST['pa_pass'];
         require_once("../inc/database.inc.php");
         $db = dbConnect();
@@ -190,15 +195,17 @@ switch ($step) {
         echo "<form method=\"post\">";
         echo " <table>";
         echo "  <tr>";
-        echo "   <td>" . _('Username') . "</td>\n";
-        echo "   <td><input type=\"text\" name=\"pa_db_user\" value=\"\"></td>\n";
-        echo "   <td>" . _('The username for Poweradmin. This new user will have limited rights only.') . "</td>\n";
-        echo "  </tr>\n";
-        echo "  <tr>\n";
-        echo "   <td>" . _('Password') . "</td>\n";
-        echo "   <td><input type=\"text\" name=\"pa_db_pass\" value=\"\" autocomplete=\"off\"></td>\n";
-        echo "   <td>" . _('The password for this username.') . "</td>\n";
-        echo "  </tr>\n";
+        if ($db_type != 'sqlite') {
+            echo "   <td>" . _('Username') . "</td>\n";
+            echo "   <td><input type=\"text\" name=\"pa_db_user\" value=\"\"></td>\n";
+            echo "   <td>" . _('The username for Poweradmin. This new user will have limited rights only.') . "</td>\n";
+            echo "  </tr>\n";
+            echo "  <tr>\n";
+            echo "   <td>" . _('Password') . "</td>\n";
+            echo "   <td><input type=\"text\" name=\"pa_db_pass\" value=\"\" autocomplete=\"off\"></td>\n";
+            echo "   <td>" . _('The password for this username.') . "</td>\n";
+            echo "  </tr>\n";
+        }
         echo "  <tr>\n";
         echo "   <td>" . _('Hostmaster') . "</td>\n";
         echo "   <td><input type=\"text\" name=\"dns_hostmaster\" value=\"\"></td>\n";
@@ -238,13 +245,18 @@ switch ($step) {
         $db_port = $_POST['db_port'];
         $db_name = $_POST['db_name'];
         $db_type = $_POST['db_type'];
-        $pa_db_user = $_POST['pa_db_user'];
-        $pa_db_pass = $_POST['pa_db_pass'];
+        if ($db_type == 'sqlite') {
+            $db_file = $db_name;
+        } else {
+            $pa_db_user = $_POST['pa_db_user'];
+            $pa_db_pass = $_POST['pa_db_pass'];
+        }
         $pa_pass = $_POST['pa_pass'];
         $dns_hostmaster = $_POST['dns_hostmaster'];
         $dns_ns1 = $_POST['dns_ns1'];
         $dns_ns2 = $_POST['dns_ns2'];
 
+        $db_layer = 'PDO';
         require_once("../inc/database.inc.php");
         $db = dbConnect();
         include_once("database-structure.inc.php");
@@ -289,8 +301,10 @@ switch ($step) {
         echo "<input type=\"hidden\" name=\"db_type\" value=\"" . $db_type . "\">";
         echo "<input type=\"hidden\" name=\"db_user\" value=\"" . $db_user . "\">";
         echo "<input type=\"hidden\" name=\"db_pass\" value=\"" . $db_pass . "\">";
-        echo "<input type=\"hidden\" name=\"pa_db_user\" value=\"" . $pa_db_user . "\">";
-        echo "<input type=\"hidden\" name=\"pa_db_pass\" value=\"" . $pa_db_pass . "\">";
+        if ($db_type != 'sqlite') {
+            echo "<input type=\"hidden\" name=\"pa_db_user\" value=\"" . $pa_db_user . "\">";
+            echo "<input type=\"hidden\" name=\"pa_db_pass\" value=\"" . $pa_db_pass . "\">";
+        }
         echo "<input type=\"hidden\" name=\"pa_pass\" value=\"" . $pa_pass . "\">";
         echo "<input type=\"hidden\" name=\"dns_hostmaster\" value=\"" . $dns_hostmaster . "\">";
         echo "<input type=\"hidden\" name=\"dns_ns1\" value=\"" . $dns_ns1 . "\">";
@@ -307,13 +321,16 @@ switch ($step) {
         require_once("../inc/database.inc.php");
         global $db_layer;
 
+        $db_type = $_POST['db_type'];
         $pa_pass = $_POST['pa_pass'];
+
         $config = "<?php\n\n" .
+                ( $db_type == 'sqlite' ? "\$db_file\t\t= '" . $_POST['db_name'] . "';\n" :
                 "\$db_host\t\t= '" . $_POST['db_host'] . "';\n" .
                 "\$db_user\t\t= '" . $_POST['pa_db_user'] . "';\n" .
                 "\$db_pass\t\t= '" . $_POST['pa_db_pass'] . "';\n" .
                 "\$db_name\t\t= '" . $_POST['db_name'] . "';\n" .
-                "\$db_port\t\t= '" . $_POST['db_port'] . "';\n" .
+                "\$db_port\t\t= '" . $_POST['db_port'] . "';\n") .
                 "\$db_type\t\t= '" . $_POST['db_type'] . "';\n" .
                 "\$db_layer\t\t= 'PDO';\n" .
                 "\n" .
