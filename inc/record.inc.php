@@ -553,7 +553,6 @@ function get_supermaster_info_from_ip($master_ip) {
  * @return mixed[] array of record details [rid,zid,name,type,content,ttl,prio,change_date]
  */
 function get_record_details_from_record_id($rid) {
-
     global $db;
 
     $query = "SELECT id AS rid, domain_id AS zid, name, type, content, ttl, prio, change_date FROM records WHERE id = " . $db->quote($rid, 'integer');
@@ -1601,7 +1600,6 @@ function get_users_from_domain_id($id) {
  * @return mixed[] 'zones' => array of zones, 'records' => array of records
  */
 function search_zone_and_record($search_string, $perm, $zone_sortby = 'name', $record_sortby = 'name', $wildcards = true, $arpa = true) {
-
     global $db;
 
     $search_string = trim($search_string);
@@ -1889,8 +1887,6 @@ function update_zone_template($zone_id, $new_zone_template_id) {
  */
 function update_zone_records($zone_id, $zone_template_id) {
     global $db;
-    global $dns_ns1;
-    global $dns_hostmaster;
     global $dns_ttl;
 
     if (verify_permission('zone_content_edit_others')) {
