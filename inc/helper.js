@@ -26,12 +26,14 @@ function changePort(db_type) {
 
     if (db_type == "mysql") {
         dbport.value = "3306";
+        host.value = "localhost";
     } else if (db_type == "pgsql") {
         dbport.value = "5432";
+        host.value = "localhost";
     } else {
         dbport.value = "";
         host.value = "";
-        td_name.innerHTML = "<strong>The path and filename to the PowerDNS SQLite database.</strong>";
+        td_name.innerHTML = "The path and filename to the PowerDNS SQLite database.";
     }
 }
 
