@@ -74,7 +74,8 @@ switch ($step) {
         echo "  <input type=\"radio\" name=\"language\" value=\"ja_JP\"> 日本語で続ける<br>\n";
         echo "  <input type=\"radio\" name=\"language\" value=\"pl_PL\"> Chcę kontynuować po polsku.<br>\n";
         echo "  <input type=\"radio\" name=\"language\" value=\"fr_FR\"> Je préfère continuer en français.<br>\n";
-        echo "  <input type=\"radio\" name=\"language\" value=\"nb_NO\"> Jeg ønsker å forsette på norsk.<br><br>\n";
+        echo "  <input type=\"radio\" name=\"language\" value=\"nb_NO\"> Jeg ønsker å forsette på norsk.<br>\n";
+        echo "  <input type=\"radio\" name=\"language\" value=\"lt_LT\"> Norėčiau tęsti lietuvių kalba.<br><br>\n";
         echo "  <input type=\"hidden\" name=\"step\" value=\"" . $step . "\">";
         echo "  <input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $step . "\">";
         echo " </form>\n";
@@ -106,19 +107,18 @@ switch ($step) {
 
         echo "<form method=\"post\">";
         echo " <table>\n";
-        echo "  <tr>\n";
+        echo "  <tr id=\"username_row\">\n";
         echo "   <td>" . _('Username') . "</td>\n";
         echo "   <td><input type=\"text\" name=\"user\" value=\"\"></td>\n";
         echo "   <td>" . _('The username to use to connect to the database, make sure the username has sufficient rights to perform administrative task to the PowerDNS database (the installer wants to drop, create and fill tables to the database).') . "</td>\n";
         echo "  </tr>\n";
-        echo " <tr>\n";
+        echo " <tr id=\"password_row\">\n";
         echo "  <td>" . _('Password') . "</td>\n";
         echo "  <td><input type=\"password\" name=\"pass\" value=\"\" autocomplete=\"off\"></td>\n";
         echo "  <td>" . _('The password for this username.') . "</td>\n";
         echo " </tr>\n";
         echo " <tr>\n";
-        echo " <tr>\n";
-        echo "  <td>" . _('Database type') . "</td>\n";
+        echo "  <td width=\"210\">" . _('Database type') . "</td>\n";
         echo "  <td>" .
         "<select name=\"type\" onChange=\"changePort(this.value)\">" .
         "<option value=\"mysql\">MySQL</option>" .
@@ -127,11 +127,12 @@ switch ($step) {
         "</td>\n";
         echo "  <td>" . _('The type of the PowerDNS database.') . "</td>\n";
         echo " </tr>\n";
+        echo " <tr id=\"hostname_row\">\n";
         echo "  <td>" . _('Hostname') . "</td>\n";
         echo "  <td><input type=\"text\" id=\"host\" name=\"host\" value=\"localhost\"></td>\n";
         echo "  <td>" . _('The hostname on which the PowerDNS database resides. Frequently, this will be "localhost".') . "</td>\n";
         echo " </tr>\n";
-        echo " <tr>\n";
+        echo " <tr id=\"dbport_row\">\n";
         echo "  <td>" . _('DB Port') . "</td>\n";
         echo "  <td><input type=\"text\" id=\"dbport\" name=\"dbport\" value=\"3306\"></td>\n";
         echo "  <td>" . _('The port the database server is listening on.') . "</td>\n";
@@ -139,7 +140,8 @@ switch ($step) {
         echo " <tr>\n";
         echo "  <td>" . _('Database') . "</td>\n";
         echo "  <td><input type=\"text\" name=\"name\" value=\"\"></td>\n";
-        echo "  <td id=\"td_name\">" . _('The name of the PowerDNS database.') . "</td>\n";
+        echo "  <td><span id=\"db_name_title\">" . _('The name of the PowerDNS database.') . "</span>"
+                . "<span id=\"db_path_title\" style=\"display: none;\">" . _('The path and filename to the PowerDNS SQLite database.') . "</span></td>\n";
         echo " </tr>\n";
         echo "  <tr>\n";
         echo "   <td>" . _('Poweradmin administrator password') . "</td>\n";
