@@ -128,7 +128,7 @@ switch ($step) {
         echo "  <td>" . _('The type of the PowerDNS database.') . "</td>\n";
         echo " </tr>\n";
         echo "  <td>" . _('Hostname') . "</td>\n";
-        echo "  <td><input type=\"text\" id=\"host\" name=\"host\" value=\"127.0.0.1\"></td>\n";
+        echo "  <td><input type=\"text\" id=\"host\" name=\"host\" value=\"localhost\"></td>\n";
         echo "  <td>" . _('The hostname on which the PowerDNS database resides. Frequently, this will be "localhost".') . "</td>\n";
         echo " </tr>\n";
         echo " <tr>\n";
@@ -241,6 +241,9 @@ switch ($step) {
         $db_port = $_POST['db_port'];
         $db_name = $_POST['db_name'];
         $db_type = $_POST['db_type'];
+        if ($db_type == 'sqlite') {
+            $db_file = $db_name;
+        }
         $pa_db_user = $_POST['pa_db_user'];
         $pa_db_pass = $_POST['pa_db_pass'];
         $pa_pass = $_POST['pa_pass'];
@@ -248,6 +251,7 @@ switch ($step) {
         $dns_ns1 = $_POST['dns_ns1'];
         $dns_ns2 = $_POST['dns_ns2'];
 
+        $db_layer = 'PDO';
         require_once("../inc/database.inc.php");
         $db = dbConnect();
         include_once("database-structure.inc.php");
