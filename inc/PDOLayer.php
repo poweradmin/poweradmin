@@ -167,6 +167,8 @@ class PDOLayer extends PDOCommon {
             $query = 'SHOW TABLES';
         } elseif ($db_type == 'pgsql') {
             $query = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'";
+        } elseif ($db_type == 'sqlite') {
+            $query = "SELECT name FROM sqlite_master WHERE type='table'";
         } else {
             die(ERR_DB_UNK_TYPE);
         }
