@@ -95,3 +95,13 @@ CREATE TABLE zone_templ_records (
 );
 CREATE SEQUENCE ZONE_TEMPL_RECID_SEQUENCE;
 
+CREATE TABLE records_zone_templ (
+    domain_id number(11) NOT NULL,
+    record_id number(11) NOT NULL,
+    zone_templ_id number(11) NOT NULL
+);
+
+CREATE TABLE migrations (
+    version varchar2(255) NOT NULL,
+    apply_time number(11) NOT NULL
+);
