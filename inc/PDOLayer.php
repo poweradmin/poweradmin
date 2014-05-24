@@ -202,7 +202,7 @@ class PDOLayer extends PDOCommon {
             } elseif ($db_type == 'pgsql' && $arr['type'] == 'integer') {
                 $line = $key . ' ' . $arr['type'];
             } else {
-                $line = $key . ' ' . $arr['type'] . '(' . $arr['length'] . ')';
+                $line = $key . ' ' . $arr['type'] . (isset($arr['length']) ? '(' . $arr['length'] . ')' : '');
             }
 
             if ($arr['notnull'] && $db_type != 'pgsql' && !isset($arr['autoincrement'])) {
