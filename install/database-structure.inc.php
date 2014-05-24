@@ -464,6 +464,7 @@ foreach ($def_tables as $table) {
 // For PostgreSQL you need to grant access to sequences
 $grantSequences = array('domains_id_seq', 'records_id_seq');
 foreach ($def_tables as $table) {
+    if ($table == 'migrations') { continue; } // ignore migrations table
     $grantSequences[] = $table['table_name'] . '_id_seq';
 }
 
