@@ -447,6 +447,34 @@ $def_tables = array(
                 'flags' => 'not_null'
             )
         )
+    ),
+    array(
+        'table_name' => 'migrations',
+        'options' => array('type' => 'innodb'),
+        'fields' => array(
+            'domain_id' => array
+                (
+                'notnull' => 1,
+                'length' => 255,
+                'fixed' => 0,
+                'default' => 0,
+                'type' => 'text',
+                'name' => 'version',
+                'table' => 'migrations',
+                'flags' => 'not_null'
+            ),
+            'record_id' => array
+                (
+                'notnull' => 1,
+                'length' => 11,
+                'fixed' => 0,
+                'default' => 0,
+                'type' => 'integer',
+                'name' => 'apply_time',
+                'table' => 'migrations',
+                'flags' => 'not_null'
+            )
+        )
     )
 );
 
@@ -460,7 +488,9 @@ foreach ($def_tables as $table) {
 // For PostgreSQL you need to grant access to sequences
 $grantSequences = array('domains_id_seq', 'records_id_seq');
 foreach ($def_tables as $table) {
-    if ($table == 'migrations') { continue; } // ignore migrations table
+    // ignore tables without primary key
+    if ($table['table_name'] == 'migrations') { continue; }
+    if ($table['table_name'] == 'records_zone_templ') { continue; }
     $grantSequences[] = $table['table_name'] . '_id_seq';
 }
 
