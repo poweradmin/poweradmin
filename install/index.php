@@ -195,15 +195,17 @@ switch ($step) {
         echo "<form method=\"post\">";
         echo " <table>";
         echo "  <tr>";
-        echo "   <td>" . _('Username') . "</td>\n";
-        echo "   <td><input type=\"text\" name=\"pa_db_user\" value=\"\"></td>\n";
-        echo "   <td>" . _('The username for Poweradmin. This new user will have limited rights only.') . "</td>\n";
-        echo "  </tr>\n";
-        echo "  <tr>\n";
-        echo "   <td>" . _('Password') . "</td>\n";
-        echo "   <td><input type=\"text\" name=\"pa_db_pass\" value=\"\" autocomplete=\"off\"></td>\n";
-        echo "   <td>" . _('The password for this username.') . "</td>\n";
-        echo "  </tr>\n";
+        if ($db_type != 'sqlite') {
+            echo "   <td>" . _('Username') . "</td>\n";
+            echo "   <td><input type=\"text\" name=\"pa_db_user\" value=\"\"></td>\n";
+            echo "   <td>" . _('The username for Poweradmin. This new user will have limited rights only.') . "</td>\n";
+            echo "  </tr>\n";
+            echo "  <tr>\n";
+            echo "   <td>" . _('Password') . "</td>\n";
+            echo "   <td><input type=\"text\" name=\"pa_db_pass\" value=\"\" autocomplete=\"off\"></td>\n";
+            echo "   <td>" . _('The password for this username.') . "</td>\n";
+            echo "  </tr>\n";
+        }
         echo "  <tr>\n";
         echo "   <td>" . _('Hostmaster') . "</td>\n";
         echo "   <td><input type=\"text\" name=\"dns_hostmaster\" value=\"\"></td>\n";
@@ -245,9 +247,10 @@ switch ($step) {
         $db_type = $_POST['db_type'];
         if ($db_type == 'sqlite') {
             $db_file = $db_name;
+        } else {
+            $pa_db_user = $_POST['pa_db_user'];
+            $pa_db_pass = $_POST['pa_db_pass'];
         }
-        $pa_db_user = $_POST['pa_db_user'];
-        $pa_db_pass = $_POST['pa_db_pass'];
         $pa_pass = $_POST['pa_pass'];
         $dns_hostmaster = $_POST['dns_hostmaster'];
         $dns_ns1 = $_POST['dns_ns1'];
@@ -298,8 +301,10 @@ switch ($step) {
         echo "<input type=\"hidden\" name=\"db_type\" value=\"" . $db_type . "\">";
         echo "<input type=\"hidden\" name=\"db_user\" value=\"" . $db_user . "\">";
         echo "<input type=\"hidden\" name=\"db_pass\" value=\"" . $db_pass . "\">";
-        echo "<input type=\"hidden\" name=\"pa_db_user\" value=\"" . $pa_db_user . "\">";
-        echo "<input type=\"hidden\" name=\"pa_db_pass\" value=\"" . $pa_db_pass . "\">";
+        if ($db_type != 'sqlite') {
+            echo "<input type=\"hidden\" name=\"pa_db_user\" value=\"" . $pa_db_user . "\">";
+            echo "<input type=\"hidden\" name=\"pa_db_pass\" value=\"" . $pa_db_pass . "\">";
+        }
         echo "<input type=\"hidden\" name=\"pa_pass\" value=\"" . $pa_pass . "\">";
         echo "<input type=\"hidden\" name=\"dns_hostmaster\" value=\"" . $dns_hostmaster . "\">";
         echo "<input type=\"hidden\" name=\"dns_ns1\" value=\"" . $dns_ns1 . "\">";
@@ -316,13 +321,15 @@ switch ($step) {
         require_once("../inc/database.inc.php");
         global $db_layer;
 
+        $db_type = $_POST['db_type'];
         $pa_pass = $_POST['pa_pass'];
+
         $config = "<?php\n\n" .
-                "\$db_host\t\t= '" . $_POST['db_host'] . "';\n" .
+                ( $db_type == 'sqlite' ? '' : "\$db_host\t\t= '" . $_POST['db_host'] . "';\n" .
                 "\$db_user\t\t= '" . $_POST['pa_db_user'] . "';\n" .
-                "\$db_pass\t\t= '" . $_POST['pa_db_pass'] . "';\n" .
+                "\$db_pass\t\t= '" . $_POST['pa_db_pass'] . "';\n") .
                 "\$db_name\t\t= '" . $_POST['db_name'] . "';\n" .
-                "\$db_port\t\t= '" . $_POST['db_port'] . "';\n" .
+                ( $db_type == 'sqlite' ? '' : "\$db_port\t\t= '" . $_POST['db_port'] . "';\n") .
                 "\$db_type\t\t= '" . $_POST['db_type'] . "';\n" .
                 "\$db_layer\t\t= 'PDO';\n" .
                 "\n" .
