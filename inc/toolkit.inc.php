@@ -244,7 +244,7 @@ require_once("dnssec.inc.php");
 require_once("templates.inc.php");
 
 //do_hook('hook_post_includes');
-do_hook('hook_authenticate');
+do_hook('authenticate');
 
 
 /* * ***********
