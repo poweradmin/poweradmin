@@ -70,7 +70,7 @@ function add_zone_templ($details, $userid) {
     global $db;
 
     $zone_name_exists = zone_templ_name_exists($details['templ_name']);
-    if (!(verify_permission('zone_master_add'))) {
+    if (!(do_hook('verify_permission' , 'zone_master_add' ))) {
         error(ERR_PERM_ADD_ZONE_TEMPL);
         return false;
     } elseif ($zone_name_exists != '0') {
@@ -124,7 +124,7 @@ function get_zone_templ_details($zone_templ_id) {
 function delete_zone_templ($zone_templ_id) {
     global $db;
 
-    if (!(verify_permission('zone_master_add'))) {
+    if (!(do_hook('verify_permission' , 'zone_master_add' ))) {
         error(ERR_PERM_DEL_ZONE_TEMPL);
         return false;
     } else {
@@ -168,7 +168,7 @@ function delete_zone_templ($zone_templ_id) {
 function delete_zone_templ_userid($userid) {
     global $db;
 
-    if (!(verify_permission('zone_master_add'))) {
+    if (!(do_hook('verify_permission' , 'zone_master_add' ))) {
         error(ERR_PERM_DEL_ZONE_TEMPL);
         return false;
     } else {
@@ -298,7 +298,7 @@ function get_zone_templ_records($id, $rowstart = 0, $rowamount = 999999, $sortby
 function add_zone_templ_record($zone_templ_id, $name, $type, $content, $ttl, $prio) {
     global $db;
 
-    if (!(verify_permission('zone_master_add'))) {
+    if (!(do_hook('verify_permission' , 'zone_master_add' ))) {
         error(ERR_PERM_ADD_RECORD);
         return false;
     } else {
@@ -345,7 +345,7 @@ function add_zone_templ_record($zone_templ_id, $name, $type, $content, $ttl, $pr
 function edit_zone_templ_record($record) {
     global $db;
 
-    if (!(verify_permission('zone_master_add'))) {
+    if (!(do_hook('verify_permission' , 'zone_master_add' ))) {
         error(ERR_PERM_EDIT_RECORD);
         return false;
     } else {
@@ -384,7 +384,7 @@ function edit_zone_templ_record($record) {
 function delete_zone_templ_record($rid) {
     global $db;
 
-    if (!(verify_permission('zone_master_add'))) {
+    if (!(do_hook('verify_permission' , 'zone_master_add' ))) {
         error(ERR_PERM_DEL_RECORD);
         return false;
     } else {
@@ -437,7 +437,7 @@ function add_zone_templ_save_as($template_name, $description, $userid, $records,
     global $db_layer;
     global $db_type;
 
-    if (!(verify_permission('zone_master_add'))) {
+    if (!(do_hook('verify_permission' , 'zone_master_add' ))) {
         error(ERR_PERM_ADD_ZONE_TEMPL);
         return false;
     } else {
@@ -500,9 +500,9 @@ function add_zone_templ_save_as($template_name, $description, $userid, $records,
 function get_list_zone_use_templ($zone_templ_id, $userid) {
     global $db;
 
-    if (verify_permission('zone_content_edit_others')) {
+    if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
         $perm_edit = "all";
-    } elseif (verify_permission('zone_content_edit_own')) {
+    } elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
         $perm_edit = "own";
     } else {
         $perm_edit = "none";
@@ -555,7 +555,7 @@ function get_list_zone_use_templ($zone_templ_id, $userid) {
 function edit_zone_templ($details, $zone_templ_id) {
     global $db;
     $zone_name_exists = zone_templ_name_exists($details['templ_name'], $zone_templ_id);
-    if (!(verify_permission('zone_master_add'))) {
+    if (!(do_hook('verify_permission' , 'zone_master_add' ))) {
         error(ERR_PERM_ADD_ZONE_TEMPL);
         return false;
     } elseif ($zone_name_exists != '0') {

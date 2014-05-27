@@ -45,7 +45,7 @@ if (isset($_GET['zone_templ_id']) && v_num($_GET['zone_templ_id'])) {
 $owner = get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
 
 if (isset($_POST["commit"])) {
-    if (!(verify_permission('zone_master_add')) || !$owner) {
+    if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
         error(ERR_PERM_EDIT_RECORD);
     } else {
         $ret_val = edit_zone_templ_record($_POST);
@@ -60,7 +60,7 @@ if (isset($_POST["commit"])) {
 $templ_details = get_zone_templ_details($zone_templ_id);
 echo "    <h2>" . _('Edit record in zone template') . " \"" . $templ_details['name'] . "\"</h2>\n";
 
-if (!(verify_permission('zone_master_add')) || !$owner) {
+if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
     error(ERR_PERM_VIEW_RECORD);
 } else {
     $record = get_zone_templ_record_from_id($record_id);

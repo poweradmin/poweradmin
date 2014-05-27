@@ -44,9 +44,9 @@ if (isset($_GET['confirm']) && v_num($_GET['confirm'])) {
     $confirm = $_GET['confirm'];
 }
 
-if (verify_permission('zone_content_edit_others')) {
+if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
     $perm_content_edit = "all";
-} elseif (verify_permission('zone_content_edit_own')) {
+} elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
     $perm_content_edit = "own";
 } else {
     $perm_content_edit = "none";
@@ -57,7 +57,7 @@ if ($zid == NULL) {
     header("Location: list_zones.php");
     exit;
 }
-$user_is_zone_owner = verify_user_is_owner_zoneid($zid);
+$user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zid );
 
 $zone_info = get_zone_info_from_id($zid);
 
@@ -94,7 +94,7 @@ if ($record_id == "-1") {
     } else {
         $zone_id = recid_to_domid($record_id);
         $zone_name = get_zone_name_from_id($zone_id);
-        $user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
+        $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );
         $record_info = get_record_from_id($record_id);
 
         echo "     <h2>" . _('Delete record in zone') . " \"<a href=\"edit.php?id=" . $zid . "\">" . $zone_name . "</a>\"</h2>\n";

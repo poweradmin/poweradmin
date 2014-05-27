@@ -83,7 +83,7 @@ $owner = get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
   process it!
  */
 if (isset($_POST["commit"])) {
-    if (!(verify_permission('zone_master_add')) || !$owner) {
+    if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
         error(ERR_PERM_ADD_RECORD);
     } else {
         if (add_zone_templ_record($zone_templ_id, $name, $type, $content, $ttl, $prio)) {
@@ -98,7 +98,7 @@ if (isset($_POST["commit"])) {
  */
 echo "    <h2>" . _('Add record to zone template') . " \"" . $templ_details['name'] . "\"</h2>\n";
 
-if (!(verify_permission('zone_master_add')) || !$owner) {
+if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
     error(ERR_PERM_ADD_RECORD);
 } else {
     echo "     <form method=\"post\">\n";
