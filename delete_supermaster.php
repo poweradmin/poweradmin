@@ -50,7 +50,7 @@ if ((isset($_GET['confirm'])) && (v_num($_GET['confirm']))) {
 if ($master_ip == "-1" || $ns_name == "-1") {
     error(ERR_INV_INPUT);
 } else {
-    (verify_permission('supermaster_edit')) ? $perm_sm_edit = "1" : $perm_sm_edit = "0";
+    (do_hook('verify_permission' , 'supermaster_edit' )) ? $perm_sm_edit = "1" : $perm_sm_edit = "0";
     if ($perm_sm_edit == "0") {
         error(ERR_PERM_DEL_SM);
     } else {

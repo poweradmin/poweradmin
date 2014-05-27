@@ -39,19 +39,19 @@ if ((isset($_GET['id'])) || (v_num($_GET['id']))) {
 
 if ($id == "-1") {
     error(ERR_INV_INPUT);
-} elseif (!verify_permission('templ_perm_edit')) {
+} elseif (!do_hook('verify_permission' , 'templ_perm_edit' )) {
     error(ERR_PERM_EDIT_PERM_TEMPL);
 } else {
     $id = $_GET['id'];
 
     if (isset($_POST['commit'])) {
-        update_perm_templ_details($_POST);
+        do_hook('update_perm_templ_details' , $_POST );
         success(SUC_RECORD_UPD);
     }
 
-    $templ = get_permission_template_details($id);
-    $perms_templ = get_permissions_by_template_id($id);
-    $perms_avail = get_permissions_by_template_id();
+    $templ = do_hook('get_permission_template_details' , $id );
+    $perms_templ = do_hook('get_permissions_by_template_id' , $id );
+    $perms_avail = do_hook('get_permissions_by_template_id' );
 
     echo "    <h2>" . _('Edit permission template') . "</h2>\n";
     echo "    <form method=\"post\" action=\"\">\n";

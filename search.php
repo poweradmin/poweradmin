@@ -32,7 +32,7 @@
 require_once('inc/toolkit.inc.php');
 include_once('inc/header.inc.php');
 
-if (!(verify_permission('search'))) {
+if (!(do_hook('verify_permission' , 'search' ))) {
     error(ERR_PERM_SEARCH);
     include_once('inc/footer.inc.php');
     exit;
@@ -41,17 +41,17 @@ if (!(verify_permission('search'))) {
     $holy_grail = '';
     if (isset($_POST['query'])) {
 
-        if (verify_permission('zone_content_view_others')) {
+        if (do_hook('verify_permission' , 'zone_content_view_others' )) {
             $perm_view = "all";
-        } elseif (verify_permission('zone_content_view_own')) {
+        } elseif (do_hook('verify_permission' , 'zone_content_view_own' )) {
             $perm_view = "own";
         } else {
             $perm_view = "none";
         }
 
-        if (verify_permission('zone_content_edit_others')) {
+        if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
             $perm_edit = "all";
-        } elseif (verify_permission('zone_content_edit_own')) {
+        } elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
             $perm_edit = "own";
         } else {
             $perm_edit = "none";
@@ -96,7 +96,7 @@ if (!(verify_permission('search'))) {
                 echo "          <td>\n";
                 echo "           <a href=\"edit.php?name=" . $zone['name'] . "&id=" . $zone['zid'] . "\"><img src=\"images/edit.gif\" title=\"" . _('Edit zone') . " " . $zone['name'] . "\" alt=\"[ " . _('Edit zone') . " " . $zone['name'] . " ]\"></a>\n";
                 if ($perm_edit != "all" || $perm_edit != "none") {
-                    $user_is_zone_owner = verify_user_is_owner_zoneid($zone['zid']);
+                    $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone['zid'] );
                 }
                 if ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) {
                     echo "           <a href=\"delete_domain.php?name=" . $zone['name'] . "&id=" . $zone['zid'] . "\"><img src=\"images/delete.gif\" title=\"" . _('Delete zone') . " " . $zone['name'] . "\" alt=\"[ " . _('Delete zone') . " " . $zone['name'] . " ]\"></a>\n";
@@ -148,7 +148,7 @@ if (!(verify_permission('search'))) {
                 echo "          <td>\n";
                 echo "           <a href=\"edit_record.php?id=" . $record['rid'] . "\"><img src=\"images/edit.gif\" title=\"" . _('Edit record') . " " . $record['name'] . "\" alt=\"[ " . _('Edit record') . " " . $record['name'] . " ]\"></a>\n";
                 if ($perm_edit != "all" || $perm_edit != "none") {
-                    $user_is_zone_owner = verify_user_is_owner_zoneid($record['zid']);
+                    $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $record['zid'] );
                 }
                 if ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) {
                     echo "           <a href=\"delete_record.php?id=" . $record['rid'] . "\"><img src=\"images/delete.gif\" title=\"" . _('Delete record') . " " . $record['name'] . "\" alt=\"[ " . _('Delete record') . " " . $record['name'] . " ]\"></a>\n";

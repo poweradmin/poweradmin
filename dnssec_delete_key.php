@@ -49,7 +49,7 @@ if (isset($_GET['confirm']) && v_num($_GET['confirm'])) {
     $confirm = $_GET['confirm'];
 }
 
-$user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
+$user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );
 
 if ($zone_id == "-1") {
     error(ERR_INV_INPUT);

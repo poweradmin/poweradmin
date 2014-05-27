@@ -5,6 +5,15 @@ inc/config.inc.php
 /tests
 /.idea
 /docs
+<<<<<<< HEAD
 /.buildpath
 /.project
 /.settings/
+=======
+/.settings/
+/.buildpath
+/.project
+/install2/
+
+/vendor/
+>>>>>>> refs/remotes/origin/configured_modular

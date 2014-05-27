@@ -34,17 +34,17 @@ include_once("inc/header.inc.php");
 
 global $pdnssec_use;
 
-if (verify_permission('zone_content_view_others')) {
+if (do_hook('verify_permission' , 'zone_content_view_others' )) {
     $perm_view = "all";
-} elseif (verify_permission('zone_content_view_own')) {
+} elseif (do_hook('verify_permission' , 'zone_content_view_own' )) {
     $perm_view = "own";
 } else {
     $perm_view = "none";
 }
 
-if (verify_permission('zone_content_edit_others')) {
+if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
     $perm_edit = "all";
-} elseif (verify_permission('zone_content_edit_own')) {
+} elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
     $perm_edit = "own";
 } else {
     $perm_edit = "none";
@@ -122,12 +122,12 @@ if ($perm_view == "none") {
             $zone['count_records'] = 0;
         }
 
-        $zone_owners = get_fullnames_owners_from_domainid($zone['id']);
+        $zone_owners = do_hook('get_fullnames_owners_from_domainid' , $zone['id'] );
         if ($iface_zonelist_serial)
             $serial = get_serial_by_zid($zone['id']);
 
         if ($perm_edit != "all" || $perm_edit != "none") {
-            $user_is_zone_owner = verify_user_is_owner_zoneid($zone["id"]);
+            $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone["id"] );
         }
         echo "         <tr>\n";
         echo "          <td class=\"checkbox\">\n";

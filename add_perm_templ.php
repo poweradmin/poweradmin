@@ -32,7 +32,7 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
-if (!verify_permission('templ_perm_edit')) {
+if (!do_hook('verify_permission' , 'templ_perm_edit' )) {
     error(ERR_PERM_EDIT_PERM_TEMPL);
 } else {
 
@@ -42,7 +42,7 @@ if (!verify_permission('templ_perm_edit')) {
         }
     }
 
-    $perms_avail = get_permissions_by_template_id();
+    $perms_avail = do_hook('get_permissions_by_template_id');
 
     /*
       Display new permission form
