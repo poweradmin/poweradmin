@@ -230,6 +230,8 @@ if ($dns_fancy) {
 /* * ***********
  * Includes  *
  * *********** */
+$db = dbConnect();
+require_once("plugin.inc.php");
 
 require_once("i18n.inc.php");
 require_once("error.inc.php");
@@ -240,8 +242,8 @@ require_once("record.inc.php");
 require_once("dnssec.inc.php");
 require_once("templates.inc.php");
 
-$db = dbConnect();
-doAuthenticate();
+//do_hook('hook_post_includes');
+do_hook('hook_authenticate');
 
 
 /* * ***********
