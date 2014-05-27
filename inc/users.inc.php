@@ -1,4 +1,8 @@
 <?php 
+<<<<<<< Upstream, based on branch 'modular_auth' of https://github.com/henkloke/poweradmin.git
+=======
+//add_listener('verify_permission', 'verify_permission_wefact');
+>>>>>>> 0263780 Merged
 /*
  * 
  * these are the standard listeners.
@@ -23,4 +27,13 @@ add_listener('get_permission_template_details', 'get_permission_template_details
 add_listener('add_perm_templ', 'add_perm_templ_local');
 add_listener('update_perm_templ_details', 'update_perm_templ_details_local');
 add_listener('update_user_details', 'update_user_details_local');
+<<<<<<< Upstream, based on branch 'modular_auth' of https://github.com/henkloke/poweradmin.git
 add_listener('add_new_user', 'add_new_user_local');
+=======
+add_listener('add_new_user', 'add_new_user_local');
+//add_listener('', '_local');
+//add_listener('', '_local');
+//add_listener('', '_local');
+
+
+>>>>>>> 0263780 Merged
