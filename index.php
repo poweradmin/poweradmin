@@ -1,11 +1,4 @@
 <?php
-<<<<<<< Upstream, based on branch 'modular_auth' of https://github.com/henkloke/poweradmin.git
-=======
-<<<<<<< modular_auth
-
-=======
->>>>>>> f076590 removed error_log lines
->>>>>>> 269f91f removed error_log lines
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <http://www.poweradmin.org> for more details.
  *
