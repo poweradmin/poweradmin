@@ -1,5 +1,4 @@
 <?php 
-//add_listener('verify_permission', 'verify_permission_wefact');
 /*
  * 
  * these are the standard listeners.
@@ -25,8 +24,3 @@ add_listener('add_perm_templ', 'add_perm_templ_local');
 add_listener('update_perm_templ_details', 'update_perm_templ_details_local');
 add_listener('update_user_details', 'update_user_details_local');
 add_listener('add_new_user', 'add_new_user_local');
-//add_listener('', '_local');
-//add_listener('', '_local');
-//add_listener('', '_local');
-
-
