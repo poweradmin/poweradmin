@@ -105,41 +105,41 @@ if (isset($_POST['save_as'])) {
 /*
   Check permissions
  */
-if (verify_permission('zone_content_view_others')) {
+if (do_hook('verify_permission' , 'zone_content_view_others' )) {
     $perm_view = "all";
-} elseif (verify_permission('zone_content_view_own')) {
+} elseif (do_hook('verify_permission' , 'zone_content_view_own' )) {
     $perm_view = "own";
 } else {
     $perm_view = "none";
 }
 
-if (verify_permission('zone_content_edit_others')) {
+if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
     $perm_content_edit = "all";
-} elseif (verify_permission('zone_content_edit_own')) {
+} elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
     $perm_content_edit = "own";
 } else {
     $perm_content_edit = "none";
 }
 
-if (verify_permission('zone_meta_edit_others')) {
+if (do_hook('verify_permission' , 'zone_meta_edit_others' )) {
     $perm_meta_edit = "all";
-} elseif (verify_permission('zone_meta_edit_own')) {
+} elseif (do_hook('verify_permission' , 'zone_meta_edit_own' )) {
     $perm_meta_edit = "own";
 } else {
     $perm_meta_edit = "none";
 }
 
-verify_permission('zone_master_add') ? $perm_zone_master_add = "1" : $perm_zone_master_add = "0";
-verify_permission('zone_slave_add') ? $perm_zone_slave_add = "1" : $perm_zone_slave_add = "0";
+do_hook('verify_permission' , 'zone_master_add' ) ? $perm_zone_master_add = "1" : $perm_zone_master_add = "0";
+do_hook('verify_permission' , 'zone_slave_add' ) ? $perm_zone_slave_add = "1" : $perm_zone_slave_add = "0";
 
-$user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
+$user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );
 if ($perm_meta_edit == "all" || ( $perm_meta_edit == "own" && $user_is_zone_owner == "1")) {
     $meta_edit = "1";
 } else {
     $meta_edit = "0";
 }
 
-(verify_permission('user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
+(do_hook('verify_permission' , 'user_view_others' )) ? $perm_view_others = "1" : $perm_view_others = "0";
 
 if (isset($_POST['slave_master_change']) && is_numeric($_POST["domain"])) {
     change_zone_slave_master($_POST['domain'], $_POST['new_master']);
@@ -409,7 +409,7 @@ if ($meta_edit) {
     /*
       Show list of users to add as owners of this domain, only if we have permission to do so.
      */
-    $users = show_users();
+    $users = do_hook('show_users');
     foreach ($users as $user) {
         $add = '';
         if ($user["id"] == $_SESSION["userid"]) {

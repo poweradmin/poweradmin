@@ -32,11 +32,11 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
-if (!verify_permission('user_add_new')) {
+if (!do_hook('verify_permission' , 'user_add_new' )) {
     error(ERR_PERM_ADD_USER);
 } else {
     if (isset($_POST["commit"])) {
-        if (add_new_user($_POST)) {
+        if (do_hook('add_new_user' , $_POST )) {
             success(SUC_USER_ADD);
         }
     }
@@ -60,12 +60,12 @@ if (!verify_permission('user_add_new')) {
     echo "        <td class=\"n\">" . _('Email address') . "</td>\n";
     echo "        <td class=\"n\"><input type=\"text\" class=\"input\" name=\"email\" value=\"\"></td>\n";
     echo "       </tr>\n";
-    if (verify_permission('user_edit_templ_perm')) {
+    if (do_hook('verify_permission' , 'user_edit_templ_perm' )) {
         echo "       <tr>\n";
         echo "        <td class=\"n\">" . _('Permission template') . "</td>\n";
         echo "        <td class=\"n\">\n";
         echo "         <select name=\"perm_templ\">\n";
-        foreach (list_permission_templates() as $template) {
+        foreach (do_hook('list_permission_templates' ) as $template) {
             echo "          <option value=\"" . $template['id'] . "\">" . $template['name'] . "</option>\n";
         }
         echo "         </select>\n";

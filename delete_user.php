@@ -32,9 +32,9 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
-verify_permission('user_edit_own') ? $perm_edit_own = "1" : $perm_edit_own = "0";
-verify_permission('user_edit_others') ? $perm_edit_others = "1" : $perm_edit_others = "0";
-verify_permission('user_is_ueberuser') ? $perm_is_godlike = "1" : $perm_is_godlike = "0";
+do_hook('verify_permission' , 'user_edit_own' ) ? $perm_edit_own = "1" : $perm_edit_own = "0";
+do_hook('verify_permission' , 'user_edit_others' ) ? $perm_edit_others = "1" : $perm_edit_others = "0";
+do_hook('verify_permission' , 'user_is_ueberuser' ) ? $perm_is_godlike = "1" : $perm_is_godlike = "0";
 
 if (!(isset($_GET['id']) && v_num($_GET['id']))) {
     error(ERR_INV_INPUT);
@@ -46,13 +46,13 @@ if (!(isset($_GET['id']) && v_num($_GET['id']))) {
 
 if (isset($_POST['commit'])) {
 
-    if (is_valid_user($uid)) {
+    if (do_hook('is_valid_user' , $uid )) {
         $zones = array();
         if (isset($_POST['zone'])) {
             $zones = $_POST['zone'];
         }
 
-        if (delete_user($uid, $zones)) {
+        if (do_hook('delete_user' , $uid, $zones )) {
             success(SUC_USER_DEL);
         }
     } else {
@@ -66,7 +66,7 @@ if (isset($_POST['commit'])) {
         include_once("inc/footer.inc.php");
         exit;
     } else {
-        $fullname = get_fullname_from_userid($uid);
+        $fullname = do_hook('get_fullname_from_userid' , $uid );
         $zones = get_zones("own", $uid);
 
         echo "     <h2>" . _('Delete user') . " \"" . $fullname . "\"</h2>\n";
@@ -75,7 +75,7 @@ if (isset($_POST['commit'])) {
 
         if (count($zones) > 0) {
 
-            $users = show_users();
+            $users = do_hook('show_users');
 
             echo "       <tr>\n";
             echo "        <td colspan=\"5\">\n";

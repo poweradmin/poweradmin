@@ -54,8 +54,8 @@ $type = "SLAVE";
 /*
   Check permissions
  */
-(verify_permission('zone_slave_add')) ? $zone_slave_add = "1" : $zone_slave_add = "0";
-(verify_permission('user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
+(do_hook('verify_permission' , 'zone_slave_add' )) ? $zone_slave_add = "1" : $zone_slave_add = "0";
+(do_hook('verify_permission' , 'user_view_others' )) ? $perm_view_others = "1" : $perm_view_others = "0";
 
 if (isset($_POST['submit']) && $zone_slave_add == "1") {
     if (!is_valid_hostname_fqdn($zone, 0)) {
@@ -82,7 +82,7 @@ if ($zone_slave_add != "1") {
 } else {
     echo "     <h2>" . _('Add slave zone') . "</h2>\n";
 
-    $users = show_users();
+    $users = do_hook('show_users');
     echo "     <form method=\"post\" action=\"add_zone_slave.php\">\n";
     echo "      <table>\n";
     echo "       <tr>\n";
