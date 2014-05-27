@@ -80,7 +80,7 @@ if (isset($_POST['update_zones'])) {
     }
 }
 
-if (!(verify_permission('zone_master_add')) || !$owner) {
+if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
     error(ERR_PERM_EDIT_ZONE_TEMPL);
 } else {
     if (zone_templ_id_exists($zone_templ_id) == "0") {

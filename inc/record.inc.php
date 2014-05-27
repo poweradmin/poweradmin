@@ -303,15 +303,15 @@ function get_zone_comment($zone_id) {
  */
 function edit_zone_comment($zone_id, $comment) {
 
-    if (verify_permission('zone_content_edit_others')) {
+    if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
         $perm_content_edit = "all";
-    } elseif (verify_permission('zone_content_edit_own')) {
+    } elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
         $perm_content_edit = "own";
     } else {
         $perm_content_edit = "none";
     }
 
-    $user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
+    $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );
     $zone_type = get_domain_type($zone_id);
 
     if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" && $user_is_zone_owner == "0")) {
@@ -356,15 +356,15 @@ function edit_zone_comment($zone_id, $comment) {
  */
 function edit_record($record) {
 
-    if (verify_permission('zone_content_edit_others')) {
+    if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
         $perm_content_edit = "all";
-    } elseif (verify_permission('zone_content_edit_own')) {
+    } elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
         $perm_content_edit = "own";
     } else {
         $perm_content_edit = "none";
     }
 
-    $user_is_zone_owner = verify_user_is_owner_zoneid($record['zid']);
+    $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $record['zid'] );
     $zone_type = get_domain_type($record['zid']);
 
     if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" && $user_is_zone_owner == "0")) {
@@ -415,15 +415,15 @@ function add_record($zone_id, $name, $type, $content, $ttl, $prio) {
     global $db;
     global $pdnssec_use;
 
-    if (verify_permission('zone_content_edit_others')) {
+    if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
         $perm_content_edit = "all";
-    } elseif (verify_permission('zone_content_edit_own')) {
+    } elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
         $perm_content_edit = "own";
     } else {
         $perm_content_edit = "none";
     }
 
-    $user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
+    $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );
     $zone_type = get_domain_type($zone_id);
 
     if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" && $user_is_zone_owner == "0")) {
@@ -577,9 +577,9 @@ function get_record_details_from_record_id($rid) {
 function delete_record($rid) {
     global $db;
 
-    if (verify_permission('zone_content_edit_others')) {
+    if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
         $perm_content_edit = "all";
-    } elseif (verify_permission('zone_content_edit_own')) {
+    } elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
         $perm_content_edit = "own";
     } else {
         $perm_content_edit = "none";
@@ -587,7 +587,7 @@ function delete_record($rid) {
 
     // Determine ID of zone first.
     $record = get_record_details_from_record_id($rid);
-    $user_is_zone_owner = verify_user_is_owner_zoneid($record['zid']);
+    $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $record['zid'] );
 
     if ($perm_content_edit == "all" || ($perm_content_edit == "own" && $user_is_zone_owner == "1" )) {
         if ($record['type'] == "SOA") {
@@ -629,10 +629,10 @@ function delete_record($rid) {
  * @return boolean true on success
  */
 function add_domain($domain, $owner, $type, $slave_master, $zone_template) {
-    if (verify_permission('zone_master_add')) {
+    if (do_hook('verify_permission' , 'zone_master_add' )) {
         $zone_master_add = "1";
     }
-    if (verify_permission('zone_slave_add')) {
+    if (do_hook('verify_permission' , 'zone_slave_add' )) {
         $zone_slave_add = "1";
     }
 
@@ -766,14 +766,14 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template) {
 function delete_domain($id) {
     global $db;
 
-    if (verify_permission('zone_content_edit_others')) {
+    if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
         $perm_edit = "all";
-    } elseif (verify_permission('zone_content_edit_own')) {
+    } elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
         $perm_edit = "own";
     } else {
         $perm_edit = "none";
     }
-    $user_is_zone_owner = verify_user_is_owner_zoneid($id);
+    $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $id );
 
     if ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) {
         if (is_numeric($id)) {
@@ -817,9 +817,9 @@ function recid_to_domid($id) {
  */
 function add_owner_to_zone($zone_id, $user_id) {
     global $db;
-    if ((verify_permission('zone_meta_edit_others')) || (verify_permission('zone_meta_edit_own')) && verify_user_is_owner_zoneid($_GET["id"])) {
+    if ((do_hook('verify_permission' , 'zone_meta_edit_others' )) || (do_hook('verify_permission' , 'zone_meta_edit_own' )) && do_hook('verify_user_is_owner_zoneid' , $_GET["id"] )) {
         // User is allowed to make change to meta data of this zone.
-        if (is_numeric($zone_id) && is_numeric($user_id) && is_valid_user($user_id)) {
+        if (is_numeric($zone_id) && is_numeric($user_id) && do_hook('is_valid_user' , $user_id )) {
             if ($db->queryOne("SELECT COUNT(id) FROM zones WHERE owner=" . $db->quote($user_id, 'integer') . " AND domain_id=" . $db->quote($zone_id, 'integer')) == 0) {
                 $zone_templ_id = get_zone_template($zone_id);
                 if ($zone_templ_id == NULL)
@@ -848,9 +848,9 @@ function add_owner_to_zone($zone_id, $user_id) {
  */
 function delete_owner_from_zone($zone_id, $user_id) {
     global $db;
-    if ((verify_permission('zone_meta_edit_others')) || (verify_permission('zone_meta_edit_own')) && verify_user_is_owner_zoneid($_GET["id"])) {
+    if ((do_hook('verify_permission' , 'zone_meta_edit_others' )) || (do_hook('verify_permission' , 'zone_meta_edit_own' )) && do_hook('verify_user_is_owner_zoneid' , $_GET["id"] )) {
         // User is allowed to make change to meta data of this zone.
-        if (is_numeric($zone_id) && is_numeric($user_id) && is_valid_user($user_id)) {
+        if (is_numeric($zone_id) && is_numeric($user_id) && do_hook('is_valid_user' , $user_id )) {
             // TODO: Next if() required, why not just execute DELETE query?
             if ($db->queryOne("SELECT COUNT(id) FROM zones WHERE owner=" . $db->quote($user_id, 'integer') . " AND domain_id=" . $db->quote($zone_id, 'integer')) != 0) {
                 $db->query("DELETE FROM zones WHERE owner=" . $db->quote($user_id, 'integer') . " AND domain_id=" . $db->quote($zone_id, 'integer'));
@@ -990,9 +990,9 @@ function get_zone_id_from_name($zname) {
  */
 function get_zone_info_from_id($zid) {
 
-    if (verify_permission('zone_content_view_others')) {
+    if (do_hook('verify_permission' , 'zone_content_view_others' )) {
         $perm_view = "all";
-    } elseif (verify_permission('zone_content_view_own')) {
+    } elseif (do_hook('verify_permission' , 'zone_content_view_own' )) {
         $perm_view = "own";
     } else {
         $perm_view = "none";
@@ -1570,17 +1570,17 @@ function search_zone_and_record($search_string, $perm, $zone_sortby = 'name', $r
     $return_zones = array();
     $return_records = array();
 
-    if (verify_permission('zone_content_view_others')) {
+    if (do_hook('verify_permission' , 'zone_content_view_others' )) {
         $perm_view = "all";
-    } elseif (verify_permission('zone_content_view_own')) {
+    } elseif (do_hook('verify_permission' , 'zone_content_view_own' )) {
         $perm_view = "own";
     } else {
         $perm_view = "none";
     }
 
-    if (verify_permission('zone_content_edit_others')) {
+    if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
         $perm_content_edit = "all";
-    } elseif (verify_permission('zone_content_edit_own')) {
+    } elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
         $perm_content_edit = "own";
     } else {
         $perm_content_edit = "none";
@@ -1632,7 +1632,7 @@ function search_zone_and_record($search_string, $perm, $zone_sortby = 'name', $r
         if (isset($cached_owners[$r['owner']])) {
             $owner = $cached_owners[$r['owner']];
         } else {
-            $owner = get_owner_from_id($r['owner']);
+            $owner = do_hook('get_owner_from_id' , $r['owner'] );
             $cached_owners[$r['owner']] = $owner;
         }
 
@@ -1850,21 +1850,21 @@ function update_zone_records($zone_id, $zone_template) {
     global $dns_hostmaster;
     global $dns_ttl;
 
-    if (verify_permission('zone_content_edit_others')) {
+    if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
         $perm_edit = "all";
-    } elseif (verify_permission('zone_content_edit_own')) {
+    } elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
         $perm_edit = "own";
     } else {
         $perm_edit = "none";
     }
 
-    $user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
+    $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );
 
-    if (verify_permission('zone_master_add')) {
+    if (do_hook('verify_permission' , 'zone_master_add' )) {
         $zone_master_add = "1";
     }
 
-    if (verify_permission('zone_slave_add')) {
+    if (do_hook('verify_permission' , 'zone_slave_add' )) {
         $zone_slave_add = "1";
     }
 
@@ -1953,14 +1953,14 @@ function delete_domains($domains) {
     $response = $db->beginTransaction();
 
     foreach ($domains as $id) {
-        if (verify_permission('zone_content_edit_others')) {
+        if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
             $perm_edit = "all";
-        } elseif (verify_permission('zone_content_edit_own')) {
+        } elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
             $perm_edit = "own";
         } else {
             $perm_edit = "none";
         }
-        $user_is_zone_owner = verify_user_is_owner_zoneid($id);
+        $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $id );
 
         if ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) {
             if (is_numeric($id)) {

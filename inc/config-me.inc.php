@@ -29,7 +29,6 @@ $db_type = '';
 // This should be changed upon install
 $session_key = 'p0w3r4dm1n';
 $password_encryption = 'md5'; // or md5salt
-
 // Interface settings
 $iface_lang = 'en_EN';
 $iface_style = 'example';

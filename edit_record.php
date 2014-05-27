@@ -34,25 +34,25 @@ include_once("inc/header.inc.php");
 
 global $pdnssec_use;
 
-if (verify_permission('zone_content_view_others')) {
+if (do_hook('verify_permission' , 'zone_content_view_others' )) {
     $perm_view = "all";
-} elseif (verify_permission('zone_content_view_own')) {
+} elseif (do_hook('verify_permission' , 'zone_content_view_own' )) {
     $perm_view = "own";
 } else {
     $perm_view = "none";
 }
 
-if (verify_permission('zone_content_edit_others')) {
+if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
     $perm_content_edit = "all";
-} elseif (verify_permission('zone_content_edit_own')) {
+} elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
     $perm_content_edit = "own";
 } else {
     $perm_content_edit = "none";
 }
 
-if (verify_permission('zone_meta_edit_others')) {
+if (do_hook('verify_permission' , 'zone_meta_edit_others' )) {
     $perm_meta_edit = "all";
-} elseif (verify_permission('zone_meta_edit_own')) {
+} elseif (do_hook('verify_permission' , 'zone_meta_edit_own' )) {
     $perm_meta_edit = "own";
 } else {
     $perm_meta_edit = "none";
@@ -60,7 +60,7 @@ if (verify_permission('zone_meta_edit_others')) {
 
 $zid = get_zone_id_from_record_id($_GET['id']);
 
-$user_is_zone_owner = verify_user_is_owner_zoneid($zid);
+$user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zid );
 $zone_type = get_domain_type($zid);
 $zone_name = get_zone_name_from_id($zid);
 

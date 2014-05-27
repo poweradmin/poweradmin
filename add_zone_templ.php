@@ -32,7 +32,7 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
-if (!verify_permission('zone_master_add')) {
+if (!do_hook('verify_permission' , 'zone_master_add' )) {
     error(ERR_PERM_ADD_ZONE_TEMPL);
 } else {
 
@@ -46,7 +46,7 @@ if (!verify_permission('zone_master_add')) {
       Display new zone template form
      */
 
-    $username = get_fullname_from_userid($_SESSION['userid']);
+    $username = do_hook('get_fullname_from_userid' , $_SESSION['userid'] );
     echo "    <h2>" . _('Add zone template for') . " " . $username . "</h2>\n";
     echo "    <form method=\"post\" action=\"add_zone_templ.php\">\n";
     echo "     <table>\n";

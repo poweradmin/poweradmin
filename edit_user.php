@@ -37,8 +37,8 @@ if (isset($_GET['id']) && v_num($_GET['id'])) {
     $edit_id = $_GET['id'];
 }
 
-verify_permission('user_edit_own') ? $perm_edit_own = "1" : $perm_edit_own = "0";
-verify_permission('user_edit_others') ? $perm_edit_others = "1" : $perm_edit_others = "0";
+do_hook('verify_permission' , 'user_edit_own' ) ? $perm_edit_own = "1" : $perm_edit_own = "0";
+do_hook('verify_permission' , 'user_edit_others' ) ? $perm_edit_others = "1" : $perm_edit_others = "0";
 
 if ($edit_id == "-1") {
     error(ERR_INV_INPUT);
@@ -91,14 +91,14 @@ if ($edit_id == "-1") {
                 } else {
                     $active = 1;
                 }
-                if (edit_user($edit_id, $i_username, $i_fullname, $i_email, $i_perm_templ, $i_description, $active, $i_password)) {
+                if (do_hook('edit_user' , $edit_id, $i_username, $i_fullname, $i_email, $i_perm_templ, $i_description, $active, $i_password )) {
                     success(SUC_USER_UPD);
                 }
             }
         }
     }
 
-    $users = get_user_detail_list($edit_id);
+    $users = do_hook('get_user_detail_list' , $edit_id );
 
     foreach ($users as $user) {
 
@@ -124,12 +124,12 @@ if ($edit_id == "-1") {
         echo "        <td class=\"n\">" . _('Email address') . "</td>\n";
         echo "        <td class=\"n\"><input type=\"text\" class=\"input\" name=\"email\" value=\"" . $user['email'] . "\"></td>\n";
         echo "       </tr>\n";
-        if (verify_permission('user_edit_templ_perm')) {
+        if (do_hook('verify_permission' , 'user_edit_templ_perm' )) {
             echo "       <tr>\n";
             echo "        <td class=\"n\">" . _('Permission template') . "</td>\n";
             echo "        <td class=\"n\">\n";
             echo "         <select name=\"perm_templ\">\n";
-            foreach (list_permission_templates() as $template) {
+            foreach (do_hook('list_permission_templates' ) as $template) {
                 ($template['id'] == $user['tpl_id']) ? $select = " SELECTED" : $select = "";
                 echo "          <option value=\"" . $template['id'] . "\"" . $select . ">" . $template['name'] . "</option>\n";
             }
@@ -160,7 +160,7 @@ if ($edit_id == "-1") {
         echo " " . _('Based on this template, this user has the following permissions') . ":";
         echo "     </p>\n";
         echo "     <ul>\n";
-        foreach (get_permissions_by_template_id($user['tpl_id']) as $item) {
+        foreach (do_hook('get_permissions_by_template_id' , $user['tpl_id'] ) as $item) {
             echo "      <li>" . _($item['descr']) . " (" . $item['name'] . ")</li>\n";
         }
         echo "     </ul>\n";

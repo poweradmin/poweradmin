@@ -73,8 +73,8 @@ if (isset($_POST['dnssec']) && $_POST['dnssec'] == '1') {
 /*
   Check user permissions
  */
-(verify_permission('zone_master_add')) ? $zone_master_add = "1" : $zone_master_add = "0";
-(verify_permission('user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
+(do_hook('verify_permission' , 'zone_master_add' )) ? $zone_master_add = "1" : $zone_master_add = "0";
+(do_hook('verify_permission' , 'user_view_others' )) ? $perm_view_others = "1" : $perm_view_others = "0";
 
 if (isset($_POST['submit']) && $zone_master_add == "1") {
     $error = false;
@@ -116,7 +116,7 @@ if ($zone_master_add != "1") {
     echo "     <h2>" . _('Add master zone') . "</h2>\n";
 
     $available_zone_types = array("MASTER", "NATIVE");
-    $users = show_users();
+    $users = do_hook('show_users');
     $zone_templates = get_list_zone_templ($_SESSION['userid']);
 
     echo "     <form method=\"post\" action=\"add_zone_master.php\">\n";
