@@ -1,5 +1,8 @@
 <?php
+<<<<<<< modular_auth
 
+=======
+>>>>>>> f076590 removed error_log lines
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <http://www.poweradmin.org> for more details.
  *
