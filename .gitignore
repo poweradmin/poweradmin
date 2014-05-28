@@ -5,8 +5,7 @@ inc/config.inc.php
 /tests
 /.idea
 /docs
-/.settings/
 /.buildpath
 /.project
-/install2/
-/vendor/
+/.settings/
+/.settings/
