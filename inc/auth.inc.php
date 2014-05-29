@@ -11,9 +11,16 @@
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
 /*
- * Only the first function gets called, soput the preferred function 
- * first
+ * Only the first function gets called, so put the preferred functions first
  * 
  */
 
+
+/** Authenticate Session
+ *
+ * Checks if user is logging in, logging out, or session expired and performs
+ * actions accordingly
+ *
+ * @return null
+ */
 add_listener('authenticate', 'authenticate_local');
