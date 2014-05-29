@@ -5,15 +5,6 @@ inc/config.inc.php
 /tests
 /.idea
 /docs
-<<<<<<< Upstream, based on branch 'modular_auth' of https://github.com/henkloke/poweradmin.git
-/.buildpath
-/.project
-/.settings/
-=======
 /.settings/
 /.buildpath
 /.project
-/install2/
-/vendor/
->>>>>>> c4b047b : tests 
-/install/
