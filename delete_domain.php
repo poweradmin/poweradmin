@@ -34,9 +34,9 @@ include_once("inc/header.inc.php");
 
 global $pdnssec_use;
 
-if (verify_permission('zone_content_edit_others')) {
+if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
     $perm_edit = "all";
-} elseif (verify_permission('zone_content_edit_own')) {
+} elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
     $perm_edit = "own";
 } else {
     $perm_edit = "none";
@@ -57,8 +57,8 @@ if (!$zone_info) {
     header("Location: list_zones.php");
     exit;
 }
-$zone_owners = get_fullnames_owners_from_domainid($zone_id);
-$user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
+$zone_owners = do_hook('get_fullnames_owners_from_domainid' , $zone_id );
+$user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );
 
 if ($zone_id == "-1") {
     error(ERR_INV_INPUT);

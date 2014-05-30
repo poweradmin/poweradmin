@@ -37,7 +37,7 @@ if (isset($_GET['id']) && v_num($_GET['id'])) {
     $zone_id = $_GET['id'];
 }
 
-$user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
+$user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );
 
 if ($user_is_zone_owner == "0") {
     error(ERR_PERM_VIEW_ZONE);

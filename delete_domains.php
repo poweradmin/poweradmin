@@ -32,9 +32,9 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
-if (verify_permission('zone_content_edit_others')) {
+if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
     $perm_edit = "all";
-} elseif (verify_permission('zone_content_edit_own')) {
+} elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
     $perm_edit = "own";
 } else {
     $perm_edit = "none";
@@ -73,8 +73,8 @@ if ($confirm == '1') {
 } else {
     echo "     <form method=\"post\" action=\"delete_domains.php\">\n";
     foreach ($zones as $zone) {
-        $zone_owners = get_fullnames_owners_from_domainid($zone);
-        $user_is_zone_owner = verify_user_is_owner_zoneid($zone);
+        $zone_owners = do_hook('get_fullnames_owners_from_domainid' , $zone );
+        $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone );
         $zone_info = get_zone_info_from_id($zone);
         if ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) {
             echo "      <input type=\"hidden\" name=\"zone_id[]\" value=\"" . $zone . "\">\n";
