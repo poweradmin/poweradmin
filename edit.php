@@ -196,6 +196,10 @@ $zone_template_id = get_zone_template($zone_id);
 
 echo "   <h2>" . _('Edit zone') . " \"" . get_zone_name_from_id($zone_id) . "\"</h2>\n";
 
+echo "   <div class=\"showmax\">\n";
+show_pages($record_count, $iface_rowamount, $zone_id);
+echo "   </div>\n";
+
 $records = get_records_from_domain_id($zone_id, ROWSTART, $iface_rowamount, RECORD_SORT_BY);
 if ($records == "-1") {
     echo " <p>" . _("This zone does not have any records. Weird.") . "</p>\n";
