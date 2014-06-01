@@ -148,3 +148,17 @@ define("SUC_EXEC_PDNSSEC_ADD_ZONE_KEY", _('Zone key has been added successfully.
 define("SUC_EXEC_PDNSSEC_REMOVE_ZONE_KEY", _('Zone key has been deleted successfully.'));
 define("SUC_EXEC_PDNSSEC_ACTIVATE_ZONE_KEY", _('Zone key has been successfully activated.'));
 define("SUC_EXEC_PDNSSEC_DEACTIVATE_ZONE_KEY", _('Zone key has been successfully deactivated.'));
+
+/** Print error message (toolkit.inc)
+ *
+ * @param string $msg Error message
+ *
+ * @return null
+ */
+function error($msg) {
+    if ($msg) {
+        echo "     <div class=\"error\">Error: " . $msg . "</div>\n";
+    } else {
+        echo "     <div class=\"error\">" . _('An unknown error has occurred.') . "</div>\n";
+    }
+}

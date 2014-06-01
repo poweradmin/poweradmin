@@ -21,6 +21,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+require_once('templates.inc.php');
+
 /**
  * DNS record functions
  *
@@ -2087,4 +2089,34 @@ function get_second_level_domain($name) {
     $domain_parts = explode('.', $name);
     $domain_parts = array_reverse($domain_parts);
     return $domain_parts[1] . '.' . $domain_parts[0];
+}
+
+/** Get zone list which use templates
+ *
+ * @param resource $db DB link
+ *
+ * @return mixed[] Array with domain and template ids
+ */
+function get_zones_with_templates($db) {
+    $query = "SELECT id, domain_id, zone_templ_id FROM zones WHERE zone_templ_id <> 0";
+    $result = $db->query($query);
+    $zones = array();
+    while ($zone = $result->fetchRow()) {
+        $zones[]=$zone;
+    }
+    return $zones;
+}
+
+/** Get records by domain id
+ *
+ *
+ */
+function get_records_by_domain_id($db, $domain_id) {
+    $query = "SELECT id, name, type, content FROM records WHERE domain_id = " . $db->quote($domain_id, 'integer');
+    $result = $db->query($query);
+    $records = array();
+    while ($zone_records = $result->fetchRow()) {
+        $records[]=$zone_records;
+    }
+    return $records;
 }

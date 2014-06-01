@@ -29,7 +29,6 @@
  * @copyright   2010-2014 Poweradmin Development Team
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
-require_once("inc/toolkit.inc.php");
 
 /** Get a list of all available zone templates
  *
@@ -64,7 +63,7 @@ function get_list_zone_templ($userid) {
  *
  * @param mixed[] $details zone template details
  * @param $userid User ID that owns template
- * 
+ *
  * @return boolean true on success, false otherwise
  */
 function add_zone_templ($details, $userid) {
@@ -163,7 +162,7 @@ function delete_zone_templ($zone_templ_id) {
 /** Delete all zone templates for specific user
  *
  * @param $userid User ID
- * 
+ *
  * @return boolean true on success, false otherwise
  */
 function delete_zone_templ_userid($userid) {
@@ -254,7 +253,7 @@ function get_zone_templ_record_from_id($id) {
 /** Get all zone template records from a zone template id
  *
  * Retrieve all fields of the records and send it back to the function caller.
- * 
+ *
  * @param int $id zone template ID
  * @param int $rowstart Starting row (default=0)
  * @param int $rowamount Number of rows per query (default=999999)
@@ -601,4 +600,54 @@ function zone_templ_name_exists($zone_templ_name, $zone_templ_id = null) {
     }
 
     return $count;
+}
+
+/** Parse string and substitute domain and serial
+ *
+ * @param string $val string to parse containing tokens '[ZONE]' and '[SERIAL]'
+ * @param string $domain domain to subsitute for '[ZONE]'
+ *
+ * @return string interpolated/parsed string
+ */
+function parse_template_value($val, $domain) {
+    $serial = date("Ymd");
+    $serial .= "00";
+
+    $val = str_replace('[ZONE]', $domain, $val);
+    $val = str_replace('[SERIAL]', $serial, $val);
+    return $val;
+}
+
+/** Add relation between zone record and template
+ *
+ * @param type $db DB link
+ * @param type $domain_id Domain id
+ * @param type $record_id Record id
+ * @param type $zone_templ_id Zone template id
+ */
+function add_record_relation_to_templ($db, $domain_id, $record_id, $zone_templ_id) {
+    $query = "INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES ("
+            . $db->quote($domain_id, 'integer') . ","
+            . $db->quote($record_id, 'integer') . ","
+            . $db->quote($zone_templ_id, 'integer') . ")";
+    $db->query($query);
+}
+
+/** Check if given relation exists
+ *
+ * @param type $db
+ * @param type $domain_id
+ * @param type $record_id
+ * @param type $zone_templ_id
+ * @return boolean true on success, false on failure
+ */
+function record_relation_to_templ_exists($db, $domain_id, $record_id, $zone_templ_id) {
+    $query = "SELECT COUNT(*) FROM records_zone_templ WHERE domain_id = " . $db->quote($domain_id, 'integer') .
+            " AND record_id = " . $db->quote($record_id, 'integer') . " AND zone_templ_id = " . $db->quote($zone_templ_id, 'integer');
+    $count = $db->queryOne($query);
+    if ($count == 0) {
+        return false;
+    }
+
+    return true;
 }

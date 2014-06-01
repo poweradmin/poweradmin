@@ -172,7 +172,7 @@ $valid_tlds = array("ac", "academy", "actor", "ad", "ae", "aero", "af", "ag",
 array_push($valid_tlds, 'test', 'example', 'invalid', 'localhost');
 
 /* Database connection */
-
+require_once("error.inc.php");
 require_once("database.inc.php");
 // Generates $db variable to access database.
 // Array of the available zone types
@@ -232,7 +232,6 @@ if ($dns_fancy) {
  * *********** */
 
 require_once("i18n.inc.php");
-require_once("error.inc.php");
 require_once("auth.inc.php");
 require_once("users.inc.php");
 require_once("dns.inc.php");
@@ -404,20 +403,6 @@ function zone_letter_start($letter, $userid = true) {
     return ($result ? 1 : 0);
 }
 
-/** Print error message (toolkit.inc)
- *
- * @param string $msg Error message
- *
- * @return null
- */
-function error($msg) {
-    if ($msg) {
-        echo "     <div class=\"error\">Error: " . $msg . "</div>\n";
-    } else {
-        echo "     <div class=\"error\">" . _('An unknown error has occurred.') . "</div>\n";
-    }
-}
-
 /** Print success message (toolkit.inc)
  *
  * @param string $msg Success message
@@ -499,22 +484,6 @@ function get_status($res) {
     } elseif ($res == '1') {
         return "<FONT CLASS=\"active\">" . _('Active') . "</FONT>";
     }
-}
-
-/** Parse string and substitute domain and serial
- *
- * @param string $val string to parse containing tokens '[ZONE]' and '[SERIAL]'
- * @param string $domain domain to subsitute for '[ZONE]'
- *
- * @return string interpolated/parsed string
- */
-function parse_template_value($val, $domain) {
-    $serial = date("Ymd");
-    $serial .= "00";
-
-    $val = str_replace('[ZONE]', $domain, $val);
-    $val = str_replace('[SERIAL]', $serial, $val);
-    return $val;
 }
 
 /** Validate email address string
