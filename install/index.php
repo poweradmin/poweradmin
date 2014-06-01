@@ -75,7 +75,6 @@ switch ($step) {
         echo "  <input type=\"radio\" name=\"language\" value=\"pl_PL\"> Chcę kontynuować po polsku.<br>\n";
         echo "  <input type=\"radio\" name=\"language\" value=\"fr_FR\"> Je préfère continuer en français.<br>\n";
         echo "  <input type=\"radio\" name=\"language\" value=\"nb_NO\"> Jeg ønsker å forsette på norsk.<br>\n";
-        echo "  <input type=\"radio\" name=\"language\" value=\"lt_LT\"> Norėčiau tęsti lietuvių kalba.<br><br>\n";
         echo "  <input type=\"hidden\" name=\"step\" value=\"" . $step . "\">";
         echo "  <input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $step . "\">";
         echo " </form>\n";
