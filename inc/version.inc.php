@@ -29,4 +29,4 @@
  * @copyright   2010-2014 Poweradmin Development Team
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
-$VERSION = '2.1.7';
+$VERSION = '2.1.8';
