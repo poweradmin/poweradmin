@@ -35,14 +35,6 @@ function get_random_key() {
     return $key;
 }
 
-function error($msg) {
-    if ($msg) {
-        echo "     <div class=\"error\">Error: " . $msg . "</div>\n";
-    } else {
-        echo "     <div class=\"error\">" . _('An unknown error has occurred.') . "</div>\n";
-    }
-}
-
 echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n";
 echo "<html>\n";
 echo " <head>\n";
