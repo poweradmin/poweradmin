@@ -32,7 +32,7 @@
 require_once("inc/toolkit.inc.php");
 
 if (isset($_POST['submit']) && $_POST['submit']) {
-    change_user_pass($_POST);
+    do_hook('change_user_pass' , $_POST );
 }
 
 include_once("inc/header.inc.php");
