@@ -46,7 +46,7 @@ if ((isset($_POST['ttl'])) && (v_num($_POST['ttl']))) {
     $ttl = $_POST['ttl'];
 }
 
-$prio = "10";
+$prio = "";
 if ((isset($_POST['prio'])) && (v_num($_POST['prio']))) {
     $prio = $_POST['prio'];
 }
