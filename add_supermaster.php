@@ -47,8 +47,8 @@ if (isset($_POST["account"])) {
     $account = $_POST["account"];
 }
 
-(verify_permission('supermaster_add')) ? $supermasters_add = "1" : $supermasters_add = "0";
-(verify_permission('user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
+(do_hook('verify_permission' , 'supermaster_add' )) ? $supermasters_add = "1" : $supermasters_add = "0";
+(do_hook('verify_permission' , 'user_view_others' )) ? $perm_view_others = "1" : $perm_view_others = "0";
 
 $error = 0;
 if (isset($_POST["submit"])) {
@@ -96,7 +96,7 @@ if ($supermasters_add != "1") {
       editing user has the permissions to, otherise just
       display the adding users name
      */
-    $users = show_users();
+    $users = do_hook('show_users');
     foreach ($users as $user) {
         if ($user['id'] === $_SESSION['userid']) {
             echo "          <option value=\"" . $user['username'] . "\" selected>" . $user['fullname'] . "</option>\n";

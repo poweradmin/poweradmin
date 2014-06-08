@@ -46,7 +46,7 @@ $owner = get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
 if ($zone_templ_id == "-1") {
     error(ERR_INV_INPUT);
 } else {
-    if (!verify_permission('zone_master_add') || !$owner) {
+    if (!do_hook('verify_permission' , 'zone_master_add' ) || !$owner) {
         error(ERR_PERM_DEL_ZONE_TEMPL);
     } else {
         $templ_details = get_zone_templ_details($zone_templ_id);

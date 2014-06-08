@@ -5,3 +5,6 @@ inc/config.inc.php
 /tests
 /.idea
 /docs
+/.settings/
+/.buildpath
+/.project
