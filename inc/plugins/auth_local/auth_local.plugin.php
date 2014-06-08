@@ -1,4 +1,5 @@
 <?php
+
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <http://www.poweradmin.org> for more details.
  *
@@ -19,6 +20,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 /**
  * Authentication functions
  *
@@ -35,7 +37,7 @@
  *
  * @return null
  */
-function authenticate_local(){
+function authenticate_local() {
     global $iface_expire;
     global $session_key;
     global $ldap_use;
@@ -102,7 +104,7 @@ function LDAPAuthenticate() {
         $ldapbind = ldap_bind($ldapconn, $ldap_binddn, $ldap_bindpw);
         ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, $ldap_proto);
         if (!$ldapbind) {
-            if (isset($_POST["authenticate"])) 
+            if (isset($_POST["authenticate"]))
                 log_error(sprintf('Failed LDAP authentication attempt from [%s] Reason: ldap_bind failed', $_SERVER['REMOTE_ADDR']));
             logout(_('Failed to bind to LDAP server!'), 'error');
             return;
@@ -112,7 +114,7 @@ function LDAPAuthenticate() {
         $filter = "(" . $ldap_user_attribute . "=" . $_SESSION["userlogin"] . ")";
         $ldapsearch = ldap_search($ldapconn, $ldap_basedn, $filter, $attributes);
         if (!$ldapsearch) {
-            if (isset($_POST["authenticate"]) ) 
+            if (isset($_POST["authenticate"]))
                 log_error(sprintf('Failed LDAP authentication attempt from [%s] Reason: ldap_search failed', $_SERVER['REMOTE_ADDR']));
             logout(_('Failed to search LDAP.'), 'error');
             return;
@@ -122,8 +124,8 @@ function LDAPAuthenticate() {
         $entries = ldap_get_entries($ldapconn, $ldapsearch);
         if ($entries["count"] != 1) {
             if (isset($_POST["authenticate"])) {
-                if ($entries["count"] == 0 ){ 
-                    log_warn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: No such user', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"])); 
+                if ($entries["count"] == 0) {
+                    log_warn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: No such user', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
                 } else {
                     log_error(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: Duplicate usernames detected', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
                 }
@@ -136,7 +138,7 @@ function LDAPAuthenticate() {
         $session_pass = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($session_key), base64_decode($_SESSION["userpwd"]), MCRYPT_MODE_CBC, md5(md5($session_key))), "\0");
         $ldapbind = ldap_bind($ldapconn, $user_dn, $session_pass);
         if (!$ldapbind) {
-            if (isset($_POST["authenticate"]) ) 
+            if (isset($_POST["authenticate"]))
                 log_warn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: Incorrect password', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
             auth(_('LDAP Authentication failed!'), "error");
             return;
@@ -145,7 +147,7 @@ function LDAPAuthenticate() {
         //Make sure the user is 'active' and fetch id and name.
         $rowObj = $db->queryRow("SELECT id, fullname FROM users WHERE username=" . $db->quote($_SESSION["userlogin"], 'text') . " AND active=1");
         if (!$rowObj) {
-            if (isset($_POST["authenticate"]) )
+            if (isset($_POST["authenticate"]))
                 log_warn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: User is inactive', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
             auth(_('LDAP Authentication failed!'), "error");
             return;
@@ -155,7 +157,7 @@ function LDAPAuthenticate() {
         $_SESSION["auth_used"] = "ldap";
 
         if (isset($_POST["authenticate"])) {
-            log_notice( sprintf('Successful LDAP authentication attempt from [%s] for user \'%s\'', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]) );
+            log_notice(sprintf('Successful LDAP authentication attempt from [%s] for user \'%s\'', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
             //If a user has just authenticated, redirect him to requested page
             session_write_close();
             $redirect_url = ($_POST["query_string"] ? $_SERVER['SCRIPT_NAME'] . "?" . $_POST["query_string"] : $_SERVER['SCRIPT_NAME']);

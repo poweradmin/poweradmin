@@ -23,7 +23,7 @@
 /**
  *  Toolkit functions
  *
- * @package Poweradmin
+ * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
  * @copyright   2010-2014 Poweradmin Development Team
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
@@ -600,8 +600,7 @@ function gen_mix_salt($pass) {
     return mix_salt($salt, $pass);
 }
 
-
-function do_log($syslog_message,$priority){
+function do_log($syslog_message, $priority) {
     global $syslog_use, $syslog_ident, $syslog_facility;
     if ($syslog_use) {
         openlog($syslog_ident, LOG_PERROR, $syslog_facility);
@@ -611,19 +610,19 @@ function do_log($syslog_message,$priority){
 }
 
 function log_error($syslog_message) {
-    do_log($syslog_message,LOG_ERR);
+    do_log($syslog_message, LOG_ERR);
 }
 
 function log_warn($syslog_message) {
-    do_log($syslog_message,LOG_WARNING);
+    do_log($syslog_message, LOG_WARNING);
 }
 
 function log_notice($syslog_message) {
-    do_log($syslog_message,LOG_NOTICE);
+    do_log($syslog_message, LOG_NOTICE);
 }
 
 function log_info($syslog_message) {
-    do_log($syslog_message,LOG_INFO);
+    do_log($syslog_message, LOG_INFO);
 }
 
 /** Print the login form
@@ -634,13 +633,13 @@ function log_info($syslog_message) {
  * @return null
  */
 function auth($msg = "", $type = "success") {
-	include_once('inc/header.inc.php');
-	include('inc/config.inc.php');
+    include_once('inc/header.inc.php');
+    include('inc/config.inc.php');
 
-	if ($msg) {
-		print "<div class=\"$type\">$msg</div>\n";
-	}
-	?>
+    if ($msg) {
+        print "<div class=\"$type\">$msg</div>\n";
+    }
+    ?>
     <h2><?php echo _('Log in'); ?></h2>
     <form method="post" action="<?php echo htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES); ?>">
         <input type="hidden" name="query_string" value="<?php echo htmlentities($_SERVER["QUERY_STRING"]); ?>">
@@ -689,7 +688,7 @@ function auth($msg = "", $type = "success") {
     <script type="text/javascript">
         <!--
       document.getElementById('username').focus();
-    //-->
+        //-->
     </script>
     <?php
     include_once('inc/footer.inc.php');

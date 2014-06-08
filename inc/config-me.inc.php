@@ -25,10 +25,12 @@ $db_type = '';
 //$db_debug		= false;	# show all SQL queries
 $db_layer		= 'PDO';	# or MDB2
 //$db_ssl_ca            = '';
+
 // Security settings
 // This should be changed upon install
 $session_key = 'p0w3r4dm1n';
 $password_encryption = 'md5'; // or md5salt
+
 // Interface settings
 $iface_lang = 'en_EN';
 $iface_style = 'example';
@@ -47,9 +49,11 @@ $dns_fancy = false;
 $dns_strict_tld_check = false;
 $dns_top_level_tld_check = false;     // Don't allow to create top level TLDs
 $dns_third_level_check = false;
+
 // Timezone settings
 // See <http://www.php.net/manual/en/timezones.php> for help.
 //$timezone		= 'UTC';
+
 // Logging settings
 // Syslog usage - writes authentication attempts to syslog
 // This facility could be used in combination with fail2ban to
