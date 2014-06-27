@@ -354,10 +354,6 @@ msgstr ""
 msgid "Show zones beginning with"
 msgstr ""
 
-#: inc/toolkit.inc.php:238 install/index.php:26
-msgid "An unknown error has occurred."
-msgstr ""
-
 #: inc/toolkit.inc.php:246
 msgid ""
 "Something has been successfully performed. What exactly, however, will "

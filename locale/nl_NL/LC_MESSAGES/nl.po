@@ -354,10 +354,6 @@ msgstr "Toon pagina"
 msgid "Show zones beginning with"
 msgstr "Toon zones beginnend met"
 
-#: inc/toolkit.inc.php:238 install/index.php:26
-msgid "An unknown error has occurred."
-msgstr "Een onbekende fout heeft zich voorgedaan."
-
 #: inc/toolkit.inc.php:246
 msgid ""
 "Something has been successfully performed. What exactly, however, will "
