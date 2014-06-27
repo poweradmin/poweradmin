@@ -40,6 +40,8 @@ if ($display_stats)
 
 ob_start();
 
+require_once("error.inc.php");
+
 if (!function_exists('session_start'))
     die(error('You have to install PHP session extension!'));
 if (!function_exists('_'))
@@ -172,7 +174,6 @@ $valid_tlds = array("ac", "academy", "actor", "ad", "ae", "aero", "af", "ag",
 array_push($valid_tlds, 'test', 'example', 'invalid', 'localhost');
 
 /* Database connection */
-require_once("error.inc.php");
 require_once("database.inc.php");
 // Generates $db variable to access database.
 // Array of the available zone types

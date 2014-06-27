@@ -1,7 +1,7 @@
 <?php
 
-require_once('../inc/i18n.inc.php');
 require_once('../inc/error.inc.php');
+require_once('../inc/i18n.inc.php');
 
 if (isset($_POST['language'])) {
     $language = $_POST['language'];
@@ -12,8 +12,9 @@ if (isset($_POST['language'])) {
 # FIXME: setlocale can fail if locale package is not installed ion the systme for that language
 setlocale(LC_ALL, $language, $language . '.UTF-8');
 $gettext_domain = 'messages';
-if (!function_exists('bindtextdomain'))
+if (!function_exists('bindtextdomain')) {
     die(error('You have to install PHP gettext extension!'));
+}
 bindtextdomain($gettext_domain, "./../locale");
 textdomain($gettext_domain);
 @putenv('LANG=' . $language);
