@@ -156,9 +156,5 @@ define("SUC_EXEC_PDNSSEC_DEACTIVATE_ZONE_KEY", _('Zone key has been successfully
  * @return null
  */
 function error($msg) {
-    if ($msg) {
-        echo "     <div class=\"error\">Error: " . $msg . "</div>\n";
-    } else {
-        echo "     <div class=\"error\">" . _('An unknown error has occurred.') . "</div>\n";
-    }
+    echo "     <div class=\"error\">Error: " . $msg . "</div>\n";
 }

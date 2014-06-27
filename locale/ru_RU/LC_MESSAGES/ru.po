@@ -494,9 +494,6 @@ msgstr "Посмотреть страницу"
 msgid "Show zones beginning with"
 msgstr "Посмотреть зоны начинающиеся на"
 
-msgid "An unknown error has occurred."
-msgstr "Неизвестная ошибка."
-
 msgid "Something has been successfully performed. What exactly, however, will remain a mystery."
 msgstr "Что-то было успешно выполнено. Но, что именно, останется загадкой."
 

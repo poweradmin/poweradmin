@@ -31,7 +31,6 @@
  */
 if (file_exists('inc/config.inc.php')) {
     include_once("inc/config.inc.php");
-    include_once("inc/error.inc.php");
 } else {
     $iface_lang = 'en_EN';
 }

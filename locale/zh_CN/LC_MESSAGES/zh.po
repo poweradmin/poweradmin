@@ -629,10 +629,6 @@ msgstr "显示页"
 msgid "Show zones beginning with"
 msgstr "刚开始的显示域"
 
-#: inc/toolkit.inc.php:164
-msgid "An unknown error has occurred."
-msgstr "已发生一个未知错误"
-
 #: inc/toolkit.inc.php:172
 msgid "Something has been successfully performed. What exactly, however, will remain a mystery."
 msgstr "之前的已经执行成功，无论如何任是一个未知"

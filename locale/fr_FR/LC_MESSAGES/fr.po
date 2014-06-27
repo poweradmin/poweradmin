@@ -856,10 +856,6 @@ msgstr "Voir la page"
 msgid "Show zones beginning with"
 msgstr "Voir les zones commençant avec"
 
-#: inc/toolkit.inc.php:228
-msgid "An unknown error has occurred."
-msgstr "Une erreur inconnue s'est produite."
-
 #: inc/toolkit.inc.php:236
 msgid "Something has been successfully performed. What exactly, however, will remain a mystery."
 msgstr ""

@@ -677,10 +677,6 @@ msgstr "Seite anzeigen"
 msgid "Show zones beginning with"
 msgstr "Domains anzeigen - beginnend mit"
 
-#: inc/toolkit.inc.php:164
-msgid "An unknown error has occurred."
-msgstr "Ein unbekannter Fehler ist aufgetreten."
-
 #: inc/toolkit.inc.php:172
 msgid "Something has been successfully performed. What exactly, however, will remain a mystery."
 msgstr "Etwas wurde erfolgreich ausgef&uuml;hrt. Was genau -  wie auch immer - bleibt ein R&auml;tsel."
