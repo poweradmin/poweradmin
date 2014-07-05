@@ -82,6 +82,7 @@ function LDAPAuthenticate() {
     global $db;
     global $session_key;
     global $ldap_uri;
+    global $ldap_debug;
     global $ldap_basedn;
     global $ldap_binddn;
     global $ldap_bindpw;
