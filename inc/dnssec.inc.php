@@ -52,6 +52,8 @@ function dnssec_is_pdnssec_callable() {
 
 /** Execute dnssec utility
  *
+ * @param $command Command name
+ * @param $args Command arguments
  * @return mixed[] Array with output from command execution and error code
  */
 function dnssec_call_pdnssec($command, $args) {
@@ -343,9 +345,10 @@ function dnssec_algorithm_to_name($algo) {
     return $name;
 }
 
-/** Return algorihtm name for given short name
+/** Return algorithm name for given short name
  *
  * @param string $short_name Short algorithm name
+ * @return string Algorithm name
  */
 function dnssec_shorthand_to_algorithm_name($short_name) {
     $name = 'Unknown';
