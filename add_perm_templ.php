@@ -37,9 +37,8 @@ if (!do_hook('verify_permission' , 'templ_perm_edit' )) {
 } else {
 
     if (isset($_POST['commit'])) {
-        if (add_perm_templ($_POST)) {
-            success(SUC_PERM_TEMPL_ADD);
-        }
+        do_hook('add_perm_templ', $_POST );
+        success(SUC_PERM_TEMPL_ADD);
     }
 
     $perms_avail = do_hook('get_permissions_by_template_id');
