@@ -1998,6 +1998,8 @@ function update_zone_records($zone_id, $zone_template_id) {
  */
 function delete_domains($domains) {
     global $db;
+    global $pdnssec_use;
+
     $error = false;
     $return = false;
     $response = $db->beginTransaction();
@@ -2015,7 +2017,7 @@ function delete_domains($domains) {
         if ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) {
             if (is_numeric($id)) {
                 $zone_type = get_domain_type($id);
-                if ($zone_type == 'MASTER') {
+                if ($pdnssec_use && $zone_type == 'MASTER') {
                     $zone_name = get_zone_name_from_id($id);
                     dnssec_unsecure_zone($zone_name);
                 }
