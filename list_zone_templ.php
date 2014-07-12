@@ -31,9 +31,10 @@
  */
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
+
 do_hook('verify_permission', 'zone_master_add') ? $perm_zone_master_add = "1" : $perm_zone_master_add = "0";
 
-$zone_templ = get_list_zone_templ($_SESSION['userid']);
+$zone_templates = get_list_zone_templ($_SESSION['userid']);
 $username = do_hook('get_fullname_from_userid', $_SESSION['userid']);
 
 if ($perm_zone_master_add == "0") {
@@ -47,7 +48,7 @@ if ($perm_zone_master_add == "0") {
     echo "       <th>" . _('Description') . "</th>\n";
     echo "      </tr>\n";
 
-    foreach ($zone_templ as $template) {
+    foreach ($zone_templates as $template) {
 
         echo "      <tr>\n";
         if ($perm_zone_master_add == "1") {
