@@ -1938,7 +1938,6 @@ function update_zone_records($zone_id, $zone_template_id) {
                     $type = $r["type"];
                     if ($type == "SOA") {
                         $content = get_updated_soa_record($soa_rec);
-                        echo $content;
                     } else {
                         $content = parse_template_value($r["content"], $domain);
                     }
