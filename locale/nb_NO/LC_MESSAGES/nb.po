@@ -1107,11 +1107,6 @@ msgid ""
 "href=\"../index.php\">Poweradmin</a> with username \"admin\" and password \""
 msgstr "Når du har slettet katalogen, kan du logge deg inn på <a href=\"../index.php\">Poweradmin</a> med brukernavn \"admin\" og passord \""
 
-#: install/index.php:319
-msgid ""
-"\". You are highly encouraged to change these as soon as you are logged in."
-msgstr "\". Du er velkommen til å endre disse så snart du er pålogget."
-
 #: list_supermasters.php:51 delete_supermaster.php:45
 msgid "Delete supermaster"
 msgstr "Slett supermaster"

@@ -1106,11 +1106,6 @@ msgid ""
 "href=\"../index.php\">Poweradmin</a> with username \"admin\" and password \""
 msgstr "Nadat je de folder verwijderd hebt, kan je inloggen in <a href=\"../index.php\">Poweradmin</a> met gebruikersnaam \"admin\" en wachtwoord \""
 
-#: install/index.php:319
-msgid ""
-"\". You are highly encouraged to change these as soon as you are logged in."
-msgstr "\". U wordt zeer aangeraden deze direct te wijzigen."
-
 #: list_supermasters.php:51 delete_supermaster.php:45
 msgid "Delete supermaster"
 msgstr "Verwijderen supermaster"

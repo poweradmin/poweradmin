@@ -1107,11 +1107,6 @@ msgid ""
 "href=\"../index.php\">Poweradmin</a> with username \"admin\" and password \""
 msgstr "Dizini sildikten sonra, <a href=\"../index.php\">Poweradmin</a>'e \"admin\" kullanıcı adı ve \" şifresi ile giriş yapabilirsiniz."
 
-#: install/index.php:319
-msgid ""
-"\". You are highly encouraged to change these as soon as you are logged in."
-msgstr "\". Giriş yapar yapmaz bunları değiştirmeye son derece gayret ediniz."
-
 #: list_supermasters.php:51 delete_supermaster.php:45
 msgid "Delete supermaster"
 msgstr "Ana kurucuyu sil"

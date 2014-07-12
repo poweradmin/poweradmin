@@ -15,6 +15,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: cn\n"
 
 #: add_perm_templ.php:35 list_perm_templ.php:60
 msgid "Add permission template"

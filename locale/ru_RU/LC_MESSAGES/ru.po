@@ -710,9 +710,6 @@ msgstr "Конфигурирование окончено. Вы обязател
 msgid "After you have removed the directory, you can login to <a href=\"index.php\">Poweradmin</a> with username \"admin\" and password \""
 msgstr "После того, как удалите директорию, вы можете войти в систему <a href=\"index.php\">Poweradmin</a> с именем пользователя \"admin\" и паролем \""
 
-msgid "\". You are highly encouraged to change these as soon as you are logged in."
-msgstr "\". Вам настоятельно рекомендуется сразу поменять их из соображений безопасности."
-
 msgid "Invalid value for name field of SRV record."
 msgstr "Недопустимое значение имени записи SRV."
 

@@ -1103,12 +1103,7 @@ msgstr ""
 #: install/index.php:319
 msgid ""
 "After you have removed the directory, you can login to <a "
-"href=\"../index.php\">Poweradmin</a> with username \"admin\" and password \""
-msgstr ""
-
-#: install/index.php:319
-msgid ""
-"\". You are highly encouraged to change these as soon as you are logged in."
+"href=\"../index.php\">Poweradmin</a>."
 msgstr ""
 
 #: list_supermasters.php:51 delete_supermaster.php:45

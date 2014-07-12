@@ -137,7 +137,7 @@ switch ($step) {
         echo " </tr>\n";
         echo "  <tr>\n";
         echo "   <td>" . _('Poweradmin administrator password') . "</td>\n";
-        echo "   <td><input type=\"text\" name=\"pa_pass\" value=\"\" autocomplete=\"off\"></td>\n";
+        echo "   <td><input type=\"password\" name=\"pa_pass\" value=\"\" autocomplete=\"off\"></td>\n";
         echo "   <td>" . _('The password of the Poweradmin administrator. This administrator has full rights to Poweradmin using the web interface.') . "</td>\n";
         echo "  </tr>\n";
         echo "</table>\n";
@@ -194,7 +194,7 @@ switch ($step) {
             echo "  </tr>\n";
             echo "  <tr>\n";
             echo "   <td>" . _('Password') . "</td>\n";
-            echo "   <td><input type=\"text\" name=\"pa_db_pass\" value=\"\" autocomplete=\"off\"></td>\n";
+            echo "   <td><input type=\"password\" name=\"pa_db_pass\" value=\"\" autocomplete=\"off\"></td>\n";
             echo "   <td>" . _('The password for this username.') . "</td>\n";
             echo "  </tr>\n";
         }
@@ -356,7 +356,7 @@ switch ($step) {
         echo "<p>" . _('Now we have finished the configuration.') . "</p>";
         echo "<p>" . _('If you want support for the URLs used by other dynamic DNS providers, run "cp install/htaccess.dist .htaccess" and enable mod_rewrite in Apache.') . "</p>";
         echo "<p>" . _('You should (must!) remove the directory "install/" from the Poweradmin root directory. You will not be able to use Poweradmin if it exists. Do it now.') . "</p>";
-        echo "<p>" . _('After you have removed the directory, you can login to <a href="../index.php">Poweradmin</a> with username "admin" and password "') . $_POST['pa_pass'] . _('". You are highly encouraged to change these as soon as you are logged in.') . "</p>";
+        echo "<p>" . _('After you have removed the directory, you can login to <a href="../index.php">Poweradmin</a>.')."</p>";
         break;
 
     default:

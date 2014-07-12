@@ -1152,12 +1152,6 @@ msgstr ""
 "After you have removed the directory, you can login to <a "
 "href=\"../index.php\">Poweradmin</a> with username \"admin\" and password \""
 
-#: install/index.php:319
-msgid ""
-"\". You are highly encouraged to change these as soon as you are logged in."
-msgstr ""
-"\". You are highly encouraged to change these as soon as you are logged in."
-
 #: list_perm_templ.php:32
 msgid "Permission templates"
 msgstr "Permission templates"

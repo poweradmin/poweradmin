@@ -1107,11 +1107,6 @@ msgid ""
 "href=\"../index.php\">Poweradmin</a> with username \"admin\" and password \""
 msgstr "ディレクトリを削除したら、<a href=\"../index.php\">Poweradmin</a> にユーザー \"admin\"、パスワード \""
 
-#: install/index.php:319
-msgid ""
-"\". You are highly encouraged to change these as soon as you are logged in."
-msgstr "\" でログインすることができます。ログインしたら、すぐにユーザー名とパスワードを変更することを強くお勧めします。"
-
 #: list_supermasters.php:51 delete_supermaster.php:45
 msgid "Delete supermaster"
 msgstr "次のスーパーマスターを削除:"
