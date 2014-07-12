@@ -1013,7 +1013,7 @@ function get_zone_id_from_name($zname) {
         $result = $db->queryRow("SELECT id FROM domains WHERE name=" . $db->quote($zname, 'text'));
         if ($result) {
             return $result["id"];
-        } elseif ($rows == "0") {
+        } else {
             error(sprintf("Zone does not exist."));
             return false;
         }
@@ -1885,6 +1885,7 @@ function update_zone_template($zone_id, $new_zone_template_id) {
 function update_zone_records($zone_id, $zone_template_id) {
     global $db;
     global $dns_ttl;
+    global $db_type;
 
     if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
         $perm_edit = "all";
