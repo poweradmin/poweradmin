@@ -434,7 +434,6 @@ function get_zone_templ_is_owner($zone_templ_id, $userid) {
  */
 function add_zone_templ_save_as($template_name, $description, $userid, $records, $domain = null) {
     global $db;
-    global $db_layer;
     global $db_type;
 
     if (!(do_hook('verify_permission' , 'zone_master_add' ))) {
@@ -451,9 +450,7 @@ function add_zone_templ_save_as($template_name, $description, $userid, $records,
 
         $result = $db->exec($query);
 
-        if ($db_layer == 'MDB2' && ($db_type == 'mysql' || $db_type == 'pgsql')) {
-            $zone_templ_id = $db->lastInsertId('zone_templ', 'id');
-        } else if ($db_layer == 'PDO' && $db_type == 'pgsql') {
+        if ($db_type == 'pgsql') {
             $zone_templ_id = $db->lastInsertId('zone_templ_id_seq');
         } else {
             $zone_templ_id = $db->lastInsertId();

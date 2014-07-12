@@ -663,7 +663,6 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template) {
         global $dns_ns1;
         global $dns_hostmaster;
         global $dns_ttl;
-        global $db_layer;
         global $db_type;
 
         if (($domain && $owner && $zone_template) ||
@@ -676,9 +675,7 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template) {
                 return false;
             }
 
-            if ($db_layer == 'MDB2' && ($db_type == 'mysql' || $db_type == 'pgsql')) {
-                $domain_id = $db->lastInsertId('domains', 'id');
-            } else if ($db_layer == 'PDO' && $db_type == 'pgsql') {
+            if ($db_type == 'pgsql') {
                 $domain_id = $db->lastInsertId('domains_id_seq');
             } else {
                 $domain_id = $db->lastInsertId();
@@ -759,9 +756,7 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template) {
                                     return false;
                                 }
 
-                                if ($db_layer == 'MDB2' && ($db_type == 'mysql' || $db_type == 'pgsql')) {
-                                    $record_id = $db->lastInsertId('records', 'id');
-                                } else if ($db_layer == 'PDO' && $db_type == 'pgsql') {
+                                if ($db_type == 'pgsql') {
                                     $record_id = $db->lastInsertId('records_id_seq');
                                 } else {
                                     $record_id = $db->lastInsertId();
@@ -1964,9 +1959,7 @@ function update_zone_records($zone_id, $zone_template_id) {
                             . $db->quote($now, 'integer') . ")";
                     $response = $db->exec($query);
 
-                    if ($db_layer == 'MDB2' && ($db_type == 'mysql' || $db_type == 'pgsql')) {
-                        $record_id = $db->lastInsertId('records', 'id');
-                    } else if ($db_layer == 'PDO' && $db_type == 'pgsql') {
+                    if ($db_type == 'pgsql') {
                         $record_id = $db->lastInsertId('records_id_seq');
                     } else {
                         $record_id = $db->lastInsertId();

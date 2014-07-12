@@ -248,7 +248,6 @@ switch ($step) {
         $dns_ns1 = $_POST['dns_ns1'];
         $dns_ns2 = $_POST['dns_ns2'];
 
-        $db_layer = 'PDO';
         require_once("../inc/database.inc.php");
         $db = dbConnect();
         include_once("database-structure.inc.php");
@@ -311,7 +310,6 @@ switch ($step) {
         $step++;
 
         require_once("../inc/database.inc.php");
-        global $db_layer;
 
         $db_type = $_POST['db_type'];
         $pa_pass = $_POST['pa_pass'];
@@ -325,7 +323,6 @@ switch ($step) {
                 "\$db_name\t\t= '" . $_POST['db_name'] . "';\n" .
                 (($db_type == 'mysql' && $db_port != 3306) || ($db_type == 'pgsql' && $db_port != 5432) ? "\$db_port\t\t= '" . $db_port . "';\n" : '')) .
                 "\$db_type\t\t= '" . $_POST['db_type'] . "';\n" .
-                "\$db_layer\t\t= 'PDO';\n" .
                 "\n" .
                 "\$session_key\t\t= '" . get_random_key() . "';\n" .
                 "\n" .

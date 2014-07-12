@@ -42,15 +42,11 @@ $db = dbConnect();
  * @return mixed $value Safe Value
  */
 function safe($value) {
-    global $db, $db_type, $db_layer;
+    global $db, $db_type;
 
     if ($db_type == 'mysql') {
-        if ($db_layer == 'MDB2') {
-            $value = mysql_real_escape_string($value);
-        } elseif ($db_layer == 'PDO') {
-            $value = $db->quote($value, 'text');
-            $value = substr($value, 1, -1); // remove quotes
-        }
+        $value = $db->quote($value, 'text');
+        $value = substr($value, 1, -1); // remove quotes
     } else {
         return status_exit('baddbtype');
     }

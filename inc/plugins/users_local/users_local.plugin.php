@@ -682,7 +682,6 @@ function get_permission_template_details_local($templ_id) {
  */
 function add_perm_templ_local($details) {
     global $db;
-    global $db_layer;
     global $db_type;
 
     // Fix permission template name and description first.
@@ -696,9 +695,7 @@ function add_perm_templ_local($details) {
         return false;
     }
 
-    if ($db_layer == 'MDB2' && ($db_type == 'mysql' || $db_type == 'pgsql')) {
-        $perm_templ_id = $db->lastInsertId('perm_templ', 'id');
-    } else if ($db_layer == 'PDO' && $db_type == 'pgsql') {
+    if ($db_type == 'pgsql') {
         $perm_templ_id = $db->lastInsertId('perm_templ_id_seq');
     } else {
         $perm_templ_id = $db->lastInsertId();
