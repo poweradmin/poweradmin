@@ -25,6 +25,8 @@
 define("ERR_PERM_SEARCH", _("You do not have the permission to perform searches."));
 define("ERR_PERM_ADD_RECORD", _("You do not have the permission to add a record to this zone."));
 define("ERR_PERM_EDIT_RECORD", _("You do not have the permission to edit this record."));
+define("ERR_PERM_EDIT_RECORD_SOA", _("You do not have the permission to edit this SOA record."));
+define("ERR_PERM_EDIT_RECORD_NS", _("You do not have the permission to edit this NS record."));
 define("ERR_PERM_VIEW_RECORD", _("You do not have the permission to view this record."));
 define("ERR_PERM_DEL_RECORD", _("You do not have the permission to delete this record."));
 define("ERR_PERM_ADD_ZONE_MASTER", _("You do not have the permission to add a master zone."));
