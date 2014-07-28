@@ -591,7 +591,7 @@ function get_user_detail_list_local($specific) {
             "email" => $user ['email'],
             "descr" => $user ['descr'],
             "active" => $user ['active'],
-            "use_ldap" => $user ['use_ldap'],
+            "use_ldap" => isset($user['use_ldap']) ? $user ['use_ldap'] : 0,
             "tpl_id" => $user ['tpl_id'],
             "tpl_name" => $user ['tpl_name'],
             "tpl_descr" => $user ['tpl_descr']
