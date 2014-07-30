@@ -44,6 +44,8 @@ if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
     $perm_content_edit = "all";
 } elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
     $perm_content_edit = "own";
+} elseif (do_hook('verify_permission' , 'zone_content_edit_own_as_client' )) {
+    $perm_content_edit = "own_as_client";
 } else {
     $perm_content_edit = "none";
 }
@@ -63,7 +65,7 @@ $zone_type = get_domain_type($zid);
 $zone_name = get_zone_name_from_id($zid);
 
 if (isset($_POST["commit"])) {
-    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0") {
+    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own"|| $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
         error(ERR_PERM_EDIT_COMMENT);
     } else {
         edit_zone_comment($_GET['domain'], $_POST['comment']);
@@ -86,7 +88,7 @@ if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
     echo "       <td>&nbsp;</td><td colspan=\"5\">Comments:</td>\n";
     echo "      </tr>\n";
 
-    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0") {
+    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own"|| $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
         echo "    <tr>\n";
         echo "     <td class=\"n\">\n";
         echo "      &nbsp;\n";

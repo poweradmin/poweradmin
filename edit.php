@@ -117,6 +117,8 @@ if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
     $perm_content_edit = "all";
 } elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
     $perm_content_edit = "own";
+} elseif (do_hook('verify_permission' , 'zone_content_edit_own_as_client' )) {
+    $perm_content_edit = "own_as_client";
 } else {
     $perm_content_edit = "none";
 }
@@ -216,15 +218,19 @@ if ($records == "-1") {
     echo "     <th><a href=\"edit.php?id=" . $zone_id . "&amp;record_sort_by=ttl\">" . _('TTL') . "</a></th>\n";
     echo "    </tr>\n";
     foreach ($records as $r) {
-        if ($r['type'] != "SOA") {
+        if (!($r['type'] == "SOA" || ($r['type'] == "NS" && $perm_content_edit == "own_as_client"))) {
             echo "    <input type=\"hidden\" name=\"record[" . $r['id'] . "][rid]\" value=\"" . $r['id'] . "\">\n";
             echo "    <input type=\"hidden\" name=\"record[" . $r['id'] . "][zid]\" value=\"" . $zone_id . "\">\n";
         }
         echo "    <tr>\n";
 
-        if ($domain_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" && $user_is_zone_owner == "0") {
+        if ($domain_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" || $perm_content_edit == "own_as_client" && $user_is_zone_owner == "0") {
             echo "     <td class=\"n\">&nbsp;</td>\n";
-        } else {
+        } 
+        elseif ( $r['type'] == "SOA" || ($r['type'] == "NS" && $perm_content_edit == "own_as_client")) {
+        	echo "     <td class=\"n\">&nbsp;</td>\n";
+        }        
+        else {
             echo "     <td class=\"n\">\n";
             echo "      <a href=\"edit_record.php?id=" . $r['id'] . "&amp;domain=" . $zone_id . "\">
                                                 <img src=\"images/edit.gif\" alt=\"[ " . _('Edit record') . " ]\"></a>\n";
@@ -233,7 +239,7 @@ if ($records == "-1") {
             echo "     </td>\n";
         }
         echo "     <td class=\"n\">{$r['id']}</td>\n";
-        if ($r['type'] == "SOA") {
+        if ($r['type'] == "SOA" || ($r['type'] == "NS" && $perm_content_edit == "own_as_client")) {
             echo "     <td class=\"n\">" . $r['name'] . "</td>\n";
             echo "     <td class=\"n\">" . $r['type'] . "</td>\n";
             echo "     <td class=\"n\">" . $r['content'] . "</td>\n";
@@ -315,7 +321,7 @@ if ($records == "-1") {
     echo "    </form>\n";
 }
 
-if ($perm_content_edit == "all" || $perm_content_edit == "own" && $user_is_zone_owner == "1") {
+if ($perm_content_edit == "all" || ($perm_content_edit == "own"|| $perm_content_edit == "own_as_client") && $user_is_zone_owner == "1") {
     if ($domain_type != "SLAVE") {
         $zone_name = get_zone_name_from_id($zone_id);
         echo "     <form method=\"post\" action=\"add_record.php?id=" . $zone_id . "\">\n";

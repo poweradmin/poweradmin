@@ -309,14 +309,16 @@ function edit_zone_comment($zone_id, $comment) {
         $perm_content_edit = "all";
     } elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
         $perm_content_edit = "own";
-    } else {
+    } elseif (do_hook('verify_permission' , 'zone_content_edit_own_as_client' )) {
+    	$perm_content_edit = "own_as_client";
+    }else {
         $perm_content_edit = "none";
     }
 
     $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );
     $zone_type = get_domain_type($zone_id);
 
-    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" && $user_is_zone_owner == "0")) {
+    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || (($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0")) {
         error(ERR_PERM_EDIT_COMMENT);
         return false;
     } else {
@@ -362,14 +364,25 @@ function edit_record($record) {
         $perm_content_edit = "all";
     } elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
         $perm_content_edit = "own";
+    } elseif (do_hook('verify_permission' , 'zone_content_edit_own_as_client' )) {
+    	$perm_content_edit = "own_as_client";
     } else {
         $perm_content_edit = "none";
     }
 
     $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $record['zid'] );
     $zone_type = get_domain_type($record['zid']);
+    
+    if($record['type'] == 'SOA' && $perm_content_edit == "own_as_client"){
+    	error(ERR_PERM_EDIT_RECORD_SOA);
+    	return false;
+    }
+    if($record['type'] == 'NS' && $perm_content_edit == "own_as_client"){
+    	error(ERR_PERM_EDIT_RECORD_NS);
+    	return false;
+    }    
 
-    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" && $user_is_zone_owner == "0")) {
+    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || (($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0")) {
         error(ERR_PERM_EDIT_RECORD);
         return false;
     } else {
@@ -421,14 +434,16 @@ function add_record($zone_id, $name, $type, $content, $ttl, $prio) {
         $perm_content_edit = "all";
     } elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
         $perm_content_edit = "own";
-    } else {
+    } elseif (do_hook('verify_permission' , 'zone_content_edit_own_as_client' )) {
+    	$perm_content_edit = "own_as_client";
+    }else {
         $perm_content_edit = "none";
     }
 
     $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );
     $zone_type = get_domain_type($zone_id);
 
-    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" && $user_is_zone_owner == "0")) {
+    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || (($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0")) {
         error(ERR_PERM_ADD_RECORD);
         return false;
     } else {
@@ -590,7 +605,7 @@ function delete_record($rid) {
     $record = get_record_details_from_record_id($rid);
     $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $record['zid'] );
 
-    if ($perm_content_edit == "all" || ($perm_content_edit == "own" && $user_is_zone_owner == "1" )) {
+    if ($perm_content_edit == "all" || (($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "1" )) {
         if ($record['type'] == "SOA") {
             error(_('You are trying to delete the SOA record. You are not allowed to remove it, unless you remove the entire zone.'));
         } else {
@@ -1615,12 +1630,15 @@ function search_zone_and_record($search_string, $perm, $zone_sortby = 'name', $r
     } else {
         $perm_view = "none";
     }
-
+    
+    //redundant?
     if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
         $perm_content_edit = "all";
     } elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
         $perm_content_edit = "own";
-    } else {
+    } elseif (do_hook('verify_permission' , 'zone_content_edit_own_as_client' )) {
+    	$perm_content_edit = "own_as_client";
+    }else {
         $perm_content_edit = "none";
     }
 
