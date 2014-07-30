@@ -305,13 +305,13 @@ function get_zone_comment($zone_id) {
  */
 function edit_zone_comment($zone_id, $comment) {
 
-    if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
+    if (do_hook('verify_permission', 'zone_content_edit_others')) {
         $perm_content_edit = "all";
-    } elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
+    } elseif (do_hook('verify_permission', 'zone_content_edit_own')) {
         $perm_content_edit = "own";
-    } elseif (do_hook('verify_permission' , 'zone_content_edit_own_as_client' )) {
-    	$perm_content_edit = "own_as_client";
-    }else {
+    } elseif (do_hook('verify_permission', 'zone_content_edit_own_as_client')) {
+        $perm_content_edit = "own_as_client";
+    } else {
         $perm_content_edit = "none";
     }
 
@@ -360,17 +360,17 @@ function edit_zone_comment($zone_id, $comment) {
  */
 function edit_record($record) {
 
-    if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
+    if (do_hook('verify_permission', 'zone_content_edit_others')) {
         $perm_content_edit = "all";
-    } elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
+    } elseif (do_hook('verify_permission', 'zone_content_edit_own')) {
         $perm_content_edit = "own";
-    } elseif (do_hook('verify_permission' , 'zone_content_edit_own_as_client' )) {
-    	$perm_content_edit = "own_as_client";
+    } elseif (do_hook('verify_permission', 'zone_content_edit_own_as_client')) {
+        $perm_content_edit = "own_as_client";
     } else {
         $perm_content_edit = "none";
     }
 
-    $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $record['zid'] );
+    $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $record['zid']);
     $zone_type = get_domain_type($record['zid']);
     
     if($record['type'] == 'SOA' && $perm_content_edit == "own_as_client"){
@@ -380,7 +380,7 @@ function edit_record($record) {
     if($record['type'] == 'NS' && $perm_content_edit == "own_as_client"){
     	error(ERR_PERM_EDIT_RECORD_NS);
     	return false;
-    }    
+    }
 
     if ($zone_type == "SLAVE" || $perm_content_edit == "none" || (($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0")) {
         error(ERR_PERM_EDIT_RECORD);
@@ -430,13 +430,13 @@ function add_record($zone_id, $name, $type, $content, $ttl, $prio) {
     global $db;
     global $pdnssec_use;
 
-    if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
+    if (do_hook('verify_permission', 'zone_content_edit_others')) {
         $perm_content_edit = "all";
-    } elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
+    } elseif (do_hook('verify_permission', 'zone_content_edit_own')) {
         $perm_content_edit = "own";
-    } elseif (do_hook('verify_permission' , 'zone_content_edit_own_as_client' )) {
-    	$perm_content_edit = "own_as_client";
-    }else {
+    } elseif (do_hook('verify_permission', 'zone_content_edit_own_as_client')) {
+        $perm_content_edit = "own_as_client";
+    } else {
         $perm_content_edit = "none";
     }
 

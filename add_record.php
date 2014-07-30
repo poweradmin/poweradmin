@@ -29,33 +29,33 @@
  * @copyright   2010-2014 Poweradmin Development Team
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
-require_once("inc/toolkit.inc.php");
-include_once("inc/header.inc.php");
+require_once('inc/toolkit.inc.php');
+include_once('inc/header.inc.php');
 
 /*
   Get permissions
  */
-if (do_hook('verify_permission' , 'zone_content_view_others' )) {
+if (do_hook('verify_permission', 'zone_content_view_others')) {
     $perm_view = "all";
-} elseif (do_hook('verify_permission' , 'zone_content_view_own' )) {
-    $perm_view = "own";
+} elseif (do_hook('verify_permission', 'zone_content_view_own')) {
+    $perm_view = 'own';
 } else {
-    $perm_view = "none";
+    $perm_view = 'none';
 }
 
-if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
-    $perm_content_edit = "all";
-} elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
-    $perm_content_edit = "own";
-} elseif (do_hook('verify_permission' , 'zone_content_edit_own_as_client' )) {
-    $perm_content_edit = "own_as_client";
+if (do_hook('verify_permission', 'zone_content_edit_others')) {
+    $perm_content_edit = 'all';
+} elseif (do_hook('verify_permission', 'zone_content_edit_own')) {
+    $perm_content_edit = 'own';
+} elseif (do_hook('verify_permission', 'zone_content_edit_own_as_client')) {
+    $perm_content_edit = 'own_as_client';
 } else {
-    $perm_content_edit = "none";
+    $perm_content_edit = 'none';
 }
 
-if (do_hook('verify_permission' , 'zone_meta_edit_others' )) {
+if (do_hook('verify_permission', 'zone_meta_edit_others')) {
     $perm_meta_edit = "all";
-} elseif (do_hook('verify_permission' , 'zone_meta_edit_own' )) {
+} elseif (do_hook('verify_permission', 'zone_meta_edit_own')) {
     $perm_meta_edit = "own";
 } else {
     $perm_meta_edit = "none";
@@ -109,7 +109,7 @@ if ($zone_id == "-1") {
   Check and see if the user is the zone owner
   Check the sone type and get the zone name
  */
-$user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );
+$user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
 $zone_type = get_domain_type($zone_id);
 $zone_name = get_zone_name_from_id($zone_id);
 
@@ -118,7 +118,7 @@ $zone_name = get_zone_name_from_id($zone_id);
   process it!
  */
 if (isset($_POST["commit"])) {
-    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own"|| $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
+    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
         error(ERR_PERM_ADD_RECORD);
     } else {
         // a PTR-record is added if an A or an AAAA-record are created
@@ -161,7 +161,7 @@ if (isset($_POST["commit"])) {
  */
 echo "    <h2>" . _('Add record to zone') . " <a href=\"edit.php?id=" . $zone_id . "\"> " . $zone_name . "</a></h2>\n";
 
-if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ( $perm_content_edit == "own"|| $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
+if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
     error(ERR_PERM_ADD_RECORD);
 } else {
     echo "     <form method=\"post\">\n";

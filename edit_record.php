@@ -34,27 +34,27 @@ include_once("inc/header.inc.php");
 
 global $pdnssec_use;
 
-if (do_hook('verify_permission' , 'zone_content_view_others' )) {
+if (do_hook('verify_permission', 'zone_content_view_others')) {
     $perm_view = "all";
-} elseif (do_hook('verify_permission' , 'zone_content_view_own' )) {
+} elseif (do_hook('verify_permission', 'zone_content_view_own')) {
     $perm_view = "own";
 } else {
     $perm_view = "none";
 }
 
-if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
+if (do_hook('verify_permission', 'zone_content_edit_others')) {
     $perm_content_edit = "all";
-} elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
+} elseif (do_hook('verify_permission', 'zone_content_edit_own')) {
     $perm_content_edit = "own";
-} elseif (do_hook('verify_permission' , 'zone_content_edit_own_as_client' )) {
+} elseif (do_hook('verify_permission', 'zone_content_edit_own_as_client')) {
     $perm_content_edit = "own_as_client";
 } else {
     $perm_content_edit = "none";
 }
 
-if (do_hook('verify_permission' , 'zone_meta_edit_others' )) {
+if (do_hook('verify_permission', 'zone_meta_edit_others')) {
     $perm_meta_edit = "all";
-} elseif (do_hook('verify_permission' , 'zone_meta_edit_own' )) {
+} elseif (do_hook('verify_permission', 'zone_meta_edit_own')) {
     $perm_meta_edit = "own";
 } else {
     $perm_meta_edit = "none";
@@ -67,7 +67,7 @@ $zone_type = get_domain_type($zid);
 $zone_name = get_zone_name_from_id($zid);
 
 if (isset($_POST["commit"])) {
-    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client")&& $user_is_zone_owner == "0") {
+    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
         error(ERR_PERM_EDIT_RECORD);
     } else {
         $old_record_info = get_record_from_id($_POST["rid"]);
@@ -120,7 +120,7 @@ if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
         $clean_content = $record['content'];
     }
 
-    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own"|| $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
+    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
         echo "      <tr>\n";
         echo "       <td>" . $record["name"] . "</td>\n";
         echo "       <td>IN</td>\n";

@@ -516,8 +516,7 @@ $def_permissions = array(
     array(59, 'user_edit_templ_perm', 'User is allowed to change the permission template that is assigned to a user.'),
     array(60, 'templ_perm_add', 'User is allowed to add new permission templates.'),
     array(61, 'templ_perm_edit', 'User is allowed to edit existing permission templates.'),
-	array(62, 'zone_content_edit_own_as_client', 'User is allowed to edit record, but not SOA and NS.'),
-		
+    array(62, 'zone_content_edit_own_as_client', 'User is allowed to edit record, but not SOA and NS.'),
 );
 
 $def_remaining_queries = array(

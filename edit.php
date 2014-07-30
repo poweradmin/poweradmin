@@ -105,27 +105,27 @@ if (isset($_POST['save_as'])) {
 /*
   Check permissions
  */
-if (do_hook('verify_permission' , 'zone_content_view_others' )) {
+if (do_hook('verify_permission', 'zone_content_view_others')) {
     $perm_view = "all";
-} elseif (do_hook('verify_permission' , 'zone_content_view_own' )) {
+} elseif (do_hook('verify_permission', 'zone_content_view_own')) {
     $perm_view = "own";
 } else {
     $perm_view = "none";
 }
 
-if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
+if (do_hook('verify_permission', 'zone_content_edit_others')) {
     $perm_content_edit = "all";
-} elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
+} elseif (do_hook('verify_permission', 'zone_content_edit_own')) {
     $perm_content_edit = "own";
-} elseif (do_hook('verify_permission' , 'zone_content_edit_own_as_client' )) {
+} elseif (do_hook('verify_permission', 'zone_content_edit_own_as_client')) {
     $perm_content_edit = "own_as_client";
 } else {
     $perm_content_edit = "none";
 }
 
-if (do_hook('verify_permission' , 'zone_meta_edit_others' )) {
+if (do_hook('verify_permission', 'zone_meta_edit_others')) {
     $perm_meta_edit = "all";
-} elseif (do_hook('verify_permission' , 'zone_meta_edit_own' )) {
+} elseif (do_hook('verify_permission', 'zone_meta_edit_own')) {
     $perm_meta_edit = "own";
 } else {
     $perm_meta_edit = "none";
@@ -321,7 +321,7 @@ if ($records == "-1") {
     echo "    </form>\n";
 }
 
-if ($perm_content_edit == "all" || ($perm_content_edit == "own"|| $perm_content_edit == "own_as_client") && $user_is_zone_owner == "1") {
+if ($perm_content_edit == "all" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "1") {
     if ($domain_type != "SLAVE") {
         $zone_name = get_zone_name_from_id($zone_id);
         echo "     <form method=\"post\" action=\"add_record.php?id=" . $zone_id . "\">\n";

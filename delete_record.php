@@ -44,13 +44,13 @@ if (isset($_GET['confirm']) && v_num($_GET['confirm'])) {
     $confirm = $_GET['confirm'];
 }
 
-if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
+if (do_hook('verify_permission', 'zone_content_edit_others')) {
     $perm_content_edit = "all";
-} elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
+} elseif (do_hook('verify_permission', 'zone_content_edit_own')) {
     $perm_content_edit = "own";
-} elseif (do_hook('verify_permission' , 'zone_content_edit_own_as_client' )) {
+} elseif (do_hook('verify_permission', 'zone_content_edit_own_as_client')) {
     $perm_content_edit = "own_as_client";
-}else {
+} else {
     $perm_content_edit = "none";
 }
 
@@ -101,7 +101,7 @@ if ($record_id == "-1") {
 
         echo "     <h2>" . _('Delete record in zone') . " \"<a href=\"edit.php?id=" . $zid . "\">" . $zone_name . "</a>\"</h2>\n";
 
-        if ($zone_info['type'] == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own"|| $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
+        if ($zone_info['type'] == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
             error(ERR_PERM_EDIT_RECORD);
         } else {
             echo "     <table>\n";
