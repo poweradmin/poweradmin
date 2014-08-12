@@ -1362,6 +1362,10 @@ function get_record_from_id($id) {
     if (is_numeric($id)) {
         $result = $db->queryRow("SELECT id, domain_id, name, type, content, ttl, prio, change_date FROM records WHERE id=" . $db->quote($id, 'integer'));
         if ($result) {
+            if ($result["type"] == "" || $result["content"] == "") {
+                return -1;
+            }
+
             $ret = array(
                 "id" => $result["id"],
                 "domain_id" => $result["domain_id"],
@@ -1413,7 +1417,11 @@ function get_records_from_domain_id($id, $rowstart = 0, $rowamount = 999999, $so
                 $retcount = 0;
                 while ($r = $result->fetchRow()) {
                     // Call get_record_from_id for each row.
-                    $ret[$retcount] = get_record_from_id($r["id"]);
+                    $fields = get_record_from_id($r["id"]);
+                    if ($fields == -1) {
+                        continue;
+                    }
+                    $ret[$retcount] = $fields;
                     $retcount++;
                 }
                 $result = $ret;
@@ -1436,7 +1444,11 @@ function get_records_from_domain_id($id, $rowstart = 0, $rowamount = 999999, $so
                 $retcount = 0;
                 while ($r = $result->fetchRow()) {
                     // Call get_record_from_id for each row.
-                    $ret[$retcount] = get_record_from_id($r["id"]);
+                    $fields = get_record_from_id($r["id"]);
+                    if ($fields == -1) {
+                        continue;
+                    }
+                    $ret[$retcount] = $fields;
                     $retcount++;
                 }
                 $result = $ret;
