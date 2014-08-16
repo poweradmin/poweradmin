@@ -1,174 +1,103 @@
-/* sample style sheet file for Poweradmin */
+/*
+ * Author: Tim Herman
+ * Website: http://www.punk.be
+ * Comments: Based on the normalize.css design. The best I could do without touching the php files. Temp solution untill an MVC model is applied
 
+/* RESET */
+@import url("../style/normalize.css");
+
+/* BEGIN ACTUAL STYLESHEET */
 body {
-    padding-left:	5%;
-    padding-right:	5%;
-    font-family:	Verdana, Arial, Helvetica, serif;
-    font-size:		85%;
-    text-align:		left;
-    vertical-align:	top;
-    background:		#f4f4f4;
+	background: #F7F7F7;
 }
 
-h1, h2, table, .menu, .footer {
-    border:			1px solid #000000;
-    padding:		3px;
-    background:		#ddeeff;
+* {
+	color: #333333;
 }
 
-p {
-    padding:		3px;
+a {
+	text-decoration: none;
+	color: #069;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+p, div, table tr, table tr td, table tr th, strong, li, b, input, textarea {
+	font-size: 0.9em;
+}
+
+/*HEADERS*/
+h1 {
+	font-size: 2.375em;
+	color: #69A619;
+	text-transform: lowercase;
+	text-shadow: 1px 1px 0 #304d08;
+	text-decoration: none;
+}
+
+h1, .menu {
+	margin: 10px auto;
+	width: 980px;
+}
+
+h2, h3 {
+	font-size: 1.17em;
+}
+
+.content, .footer {
+	margin: 10px auto;
+	width: 940px;
+}
+
+/*NAVIGATION*/
+.menu {
+}
+
+.menuitem {
+	padding-right: 5px;
+	font-size: 0.8em;
+	font-weight: bold;
+}
+
+/*CONTENT*/
+.content {
+	padding: 20px 20px;
+	border: 1px solid #ccc;
+	background: #fff;
 }
 
 table {
-    width:			100%;
-    font-family:	Verdana, Arial, Helvetica, serif;
-    font-size:		90%;
-    text-align:		left;
-    vertical-align:	top;
+    border-collapse: collapse;
 }
 
-img {
-    border:			0;
+table tr th {
+	text-align: left;
+	padding-right: 10px;
+	font-weight: normal;
 }
 
-#meta {
-    width:			100%;
-    clear:			both;
+table tr td {
+	padding: 3px;
 }
 
-#meta .button {
-    margin:			0 5px 0 0;
+.success, .error {
+	padding: 10px;
+	font-weight: bold;
 }
 
-td {
-    padding:		0 2px 0 2px;
-    vertical-align:	top;
-}
 
-td.actions {
-}
-
-td.name {
-    background:		#ffffff;
-    border:			1px solid #000000;
-}
-
-td.type {
-    background:		#ffffff;
-    border:			1px solid #000000;
-}
-
-td.count {
-    background:		#ffffff;
-    border:			1px solid #000000;
-}
-
-td.owner {
-    background:		#ffffff;
-    border:			1px solid #000000;
-}
-
-td.cell {
-    background:		#ffffff;
-    border:			1px solid #000000;
-}
-
-td.dnssec {
-    width: 50px;
-}
-
-td.checkbox {
-}
-
-.menu {
-    font-size:		80%;
+.success {
+	border: 1px solid green;
+	color: green;
 }
 
 .error {
-    background:		#ff0000;
-    color:			#ffffff;
-    padding:		3px;
-    font-size:		90%;
+	border: 1px solid red;
+	color: red;
 }
 
-.success {
-    background:		#00cc33;
-    padding:		3px;
-    font-size:		90%;
-}
-
-.showmax {
-    font-size:		80%;
-    margin:			5px 0 5px 0;
-    text-align:		center;
-}
-
-.showmax  a {
-    text-decoration:	none;
-}
-
-.showmax a:hover {
-    background-color:	#ddeeff;
-}
-
-.lettertaken {
-    color:			#000000;
-    font-weight:	bold;
-    background-color:   #ddeeff;
-}
-
-a:link { 
-    color:			#000000;
-}
-
-a:visited { 
-    color:			#000000;
-}
-
-a:active { 
-    color:			#000000;
-}
-
-a:hover	{
-    text-decoration:	none;
-}
-
-.footer	{
-    font-size:		70%;
-    margin-top:		5px;
-}
-
-.sbutton {
-    border:			#999999 1px solid;
-}
-
-.button {
-    border:			#999999 1px solid;
-}
-.input {
-    border:			#999999 1px solid;
-}
-.sinput {
-    border: 		#999999 1px solid;
-}
-
-textarea {
-    width:			100%;
-}
-
-input.wide {
-    width:			100%;
-}
-
-.letternotavailable { 
-    color:			#CCCCCC;
-}
-
-td.checkbox {
-    width:			5px;
-}
-
-.normaltext {
-    font-size:		80%;
+.footer {
+	font-size: 0.6em;
 }
