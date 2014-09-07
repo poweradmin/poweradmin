@@ -8,5 +8,5 @@ CREATE TABLE records_zone_templ (
 
 CREATE TABLE migrations (
     version varchar(255) NOT NULL,
-    apply_time integer NOT NULL,
+    apply_time integer NOT NULL
 );
