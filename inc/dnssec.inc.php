@@ -35,14 +35,14 @@
  * @return boolean true on success, false on failure
  */
 function dnssec_is_pdnssec_callable() {
-    global $pdnssec_command;
+    global $pdnssec_command,$pdnssec_use_sudo,$pdnssec_sudo_command;
 
     if (!function_exists('exec')) {
         error(ERR_EXEC_NOT_ALLOWED);
         return false;
     }
 
-    if (!file_exists($pdnssec_command) || !is_executable($pdnssec_command)) {
+    if (!file_exists($pdnssec_sudo_command) ||  !file_exists($pdnssec_command) || !is_executable($pdnssec_command)) {
         error(ERR_EXEC_PDNSSEC);
         return false;
     }
@@ -57,7 +57,7 @@ function dnssec_is_pdnssec_callable() {
  * @return mixed[] Array with output from command execution and error code
  */
 function dnssec_call_pdnssec($command, $args) {
-    global $pdnssec_command;
+    global $pdnssec_command,$pdnssec_use_sudo,$pdnssec_sudo_command;
     $output = '';
     $return_code = -1;
 
@@ -65,7 +65,9 @@ function dnssec_call_pdnssec($command, $args) {
         return array($output, $return_code);
     }
 
+    $sudo = $pdnssec_use_sudo ? $pdnssec_sudo_command : '';
     $command = join(' ', array(
+        $sudo,
         $pdnssec_command,
         $command,
         $args)
@@ -89,7 +91,7 @@ function dnssec_call_pdnssec($command, $args) {
  */
 function dnssec_rectify_zone($domain_id) {
     global $db;
-    global $pdnssec_command;
+    global $pdnssec_command,$pdnssec_use_sudo,$pdnssec_sudo_command;
 
     $output = array();
 
@@ -107,8 +109,9 @@ function dnssec_rectify_zone($domain_id) {
     }
 
     if (isset($pdnssec_command)) {
+        $sudo = $pdnssec_use_sudo ? $pdnssec_sudo_command.' ' : '';
         $domain = get_zone_name_from_id($domain_id);
-        $command = $pdnssec_command . " rectify-zone " . $domain;
+        $command = $sudo.$pdnssec_command . " rectify-zone " . $domain;
 
         if (!dnssec_is_pdnssec_callable()) {
             return false;

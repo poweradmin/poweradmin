@@ -65,6 +65,11 @@ $syslog_facility = LOG_USER;
 // PowerDNSSEC settings
 $pdnssec_use = false;
 $pdnssec_command = '/usr/bin/pdnssec';
+// Execute pdnssec commands through sudo
+// You need to add something like this to your /etc/sudoers file, using visudo 
+//	www-data ALL=NOPASSWD:/usr/bin/pdnssec
+$pdnssec_use_sudo = false;
+$pdnssec_sudo_command = '/usr/bin/sudo';
 
 // LDAP settings
 $ldap_use = false;
