@@ -224,7 +224,7 @@ if ($records == "-1") {
         }
         echo "    <tr>\n";
 
-        if ($domain_type == "SLAVE" || $perm_content_edit == "none" || $perm_content_edit == "own" || $perm_content_edit == "own_as_client" && $user_is_zone_owner == "0") {
+        if ($domain_type == "SLAVE" || $perm_content_edit == "none" || (($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0")) {
             echo "     <td class=\"n\">&nbsp;</td>\n";
         } 
         elseif ( $r['type'] == "SOA" || ($r['type'] == "NS" && $perm_content_edit == "own_as_client")) {
