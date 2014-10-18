@@ -1,0 +1,174 @@
+/* sample style sheet file for Poweradmin */
+
+body {
+    padding-left:	5%;
+    padding-right:	5%;
+    font-family:	Verdana, Arial, Helvetica, serif;
+    font-size:		85%;
+    text-align:		left;
+    vertical-align:	top;
+    background:		#f4f4f4;
+}
+
+h1, h2, table, .menu, .footer {
+    border:			1px solid #000000;
+    padding:		3px;
+    background:		#ddeeff;
+}
+
+p {
+    padding:		3px;
+}
+
+table {
+    width:			100%;
+    font-family:	Verdana, Arial, Helvetica, serif;
+    font-size:		90%;
+    text-align:		left;
+    vertical-align:	top;
+}
+
+img {
+    border:			0;
+}
+
+#meta {
+    width:			100%;
+    clear:			both;
+}
+
+#meta .button {
+    margin:			0 5px 0 0;
+}
+
+td {
+    padding:		0 2px 0 2px;
+    vertical-align:	top;
+}
+
+td.actions {
+}
+
+td.name {
+    background:		#ffffff;
+    border:			1px solid #000000;
+}
+
+td.type {
+    background:		#ffffff;
+    border:			1px solid #000000;
+}
+
+td.count {
+    background:		#ffffff;
+    border:			1px solid #000000;
+}
+
+td.owner {
+    background:		#ffffff;
+    border:			1px solid #000000;
+}
+
+td.cell {
+    background:		#ffffff;
+    border:			1px solid #000000;
+}
+
+td.dnssec {
+    width: 50px;
+}
+
+td.checkbox {
+}
+
+.menu {
+    font-size:		80%;
+}
+
+.error {
+    background:		#ff0000;
+    color:			#ffffff;
+    padding:		3px;
+    font-size:		90%;
+}
+
+.success {
+    background:		#00cc33;
+    padding:		3px;
+    font-size:		90%;
+}
+
+.showmax {
+    font-size:		80%;
+    margin:			5px 0 5px 0;
+    text-align:		center;
+}
+
+.showmax  a {
+    text-decoration:	none;
+}
+
+.showmax a:hover {
+    background-color:	#ddeeff;
+}
+
+.lettertaken {
+    color:			#000000;
+    font-weight:	bold;
+    background-color:   #ddeeff;
+}
+
+a:link { 
+    color:			#000000;
+}
+
+a:visited { 
+    color:			#000000;
+}
+
+a:active { 
+    color:			#000000;
+}
+
+a:hover	{
+    text-decoration:	none;
+}
+
+.footer	{
+    font-size:		70%;
+    margin-top:		5px;
+}
+
+.sbutton {
+    border:			#999999 1px solid;
+}
+
+.button {
+    border:			#999999 1px solid;
+}
+.input {
+    border:			#999999 1px solid;
+}
+.sinput {
+    border: 		#999999 1px solid;
+}
+
+textarea {
+    width:			100%;
+}
+
+input.wide {
+    width:			100%;
+}
+
+.letternotavailable { 
+    color:			#CCCCCC;
+}
+
+td.checkbox {
+    width:			5px;
+}
+
+.normaltext {
+    font-size:		80%;
+}
