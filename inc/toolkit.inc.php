@@ -266,6 +266,7 @@ require_once("dns.inc.php");
 require_once("record.inc.php");
 require_once("dnssec.inc.php");
 require_once("templates.inc.php");
+require_once("cloudflare.inc.php");
 
 //do_hook('hook_post_includes');
 do_hook('authenticate');

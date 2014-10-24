@@ -150,6 +150,7 @@ define("SUC_EXEC_PDNSSEC_ADD_ZONE_KEY", _('Zone key has been added successfully.
 define("SUC_EXEC_PDNSSEC_REMOVE_ZONE_KEY", _('Zone key has been deleted successfully.'));
 define("SUC_EXEC_PDNSSEC_ACTIVATE_ZONE_KEY", _('Zone key has been successfully activated.'));
 define("SUC_EXEC_PDNSSEC_DEACTIVATE_ZONE_KEY", _('Zone key has been successfully deactivated.'));
+define("SUC_CLOUDFLARE_ZONE_SET", _('CloudFlare settings has been successfully updated.'));
 
 /** Print error message (toolkit.inc)
  *

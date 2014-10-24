@@ -388,6 +388,8 @@ function edit_record($record) {
     } else {
         global $db;
         if (validate_input($record['rid'], $record['zid'], $record['type'], $record['content'], $record['name'], $record['prio'], $record['ttl'])) {
+            $record = edit_record_meta($record);
+            if (!$record) return false;
             $name = strtolower($record['name']); // powerdns only searches for lower case records
             if ($record['type'] == "SPF" || $record['type'] == "TXT") {
                 $content = $db->quote(stripslashes('\"' . $record['content'] . '\"'), 'text');
@@ -411,6 +413,31 @@ function edit_record($record) {
         }
         return false;
     }
+}
+
+function edit_record_meta($record) {
+    global $db;
+
+    if ($record['type'] === 'CNAME') {
+        $cf = !!@$record['cloudflare'];
+        $query = sprintf('INSERT INTO `records_meta` SET `id` = %d, `content` = %s, `cloudflare` = %d ON DUPLICATE KEY UPDATE `content`=VALUES(`content`), `cloudflare`=VALUES(`cloudflare`)'
+                        , $record['rid']
+                        , $cf ? $db->quote($record['content'], 'text') : 'NULL'
+                        , $cf ? 1 : 0
+                        );
+
+        $result = $db->query($query);
+        if (PEAR::isError($result)) {
+            error($result->getMessage());
+            return false;
+        }
+
+        if ($cf) {
+            $record['content'] = $record['name'] . '.cdn.cloudflare.net';
+        }
+    }
+
+    return $record;
 }
 
 /** Add a record
@@ -1366,15 +1393,20 @@ function get_record_from_id($id) {
                 return -1;
             }
 
+            $meta = get_record_meta_from_id($id);
+
+            $content = $meta["content"] ? $meta["content"] : $result["content"];
+
             $ret = array(
                 "id" => $result["id"],
                 "domain_id" => $result["domain_id"],
                 "name" => $result["name"],
                 "type" => $result["type"],
-                "content" => $result["content"],
+                "content" => $content,
                 "ttl" => $result["ttl"],
                 "prio" => $result["prio"],
-                "change_date" => $result["change_date"]
+                "change_date" => $result["change_date"],
+                "cloudflare" => $meta["cloudflare"]
             );
             return $ret;
         } else {
@@ -1383,6 +1415,24 @@ function get_record_from_id($id) {
     } else {
         error(sprintf(ERR_INV_ARG, "get_record_from_id"));
     }
+}
+
+function get_record_meta_from_id($id) {
+    global $db;
+    if (!is_numeric($id)) {
+        error(sprintf(ERR_INV_ARG, "get_record_from_id"));
+        return;
+    }
+
+    $result = $db->queryRow("SELECT `content`, `cloudflare` FROM `records_meta` WHERE `id`=" . $db->quote($id, 'integer'));
+    if (!$result) $result = array();
+
+    $ret = array(
+        "content" => (string) @$result["content"],
+        "cloudflare" => !!@$result["cloudflare"]
+    );
+
+    return $ret;
 }
 
 /** Get all records from a domain id.

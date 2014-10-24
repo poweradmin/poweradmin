@@ -76,6 +76,10 @@ if (isset($_POST['commit'])) {
 
     edit_zone_comment($_GET['id'], $_POST['comment']);
 
+    if (cloudflare_zone_set($_GET['id'])) {
+        success(SUC_CLOUDFLARE_ZONE_SET);
+    }
+
     if (false === $error) {
         update_soa_serial($_GET['id']);
         success(SUC_ZONE_UPD);
@@ -216,6 +220,11 @@ if ($records == "-1") {
     echo "     <th><a href=\"edit.php?id=" . $zone_id . "&amp;record_sort_by=content\">" . _('Content') . "</a></th>\n";
     echo "     <th><a href=\"edit.php?id=" . $zone_id . "&amp;record_sort_by=prio\">" . _('Priority') . "</a></th>\n";
     echo "     <th><a href=\"edit.php?id=" . $zone_id . "&amp;record_sort_by=ttl\">" . _('TTL') . "</a></th>\n";
+
+    if ($cloudflare_host_key) {
+        echo "     <th>" . _('CF') . "</th>\n";
+    }
+
     echo "    </tr>\n";
     foreach ($records as $r) {
         if (!($r['type'] == "SOA" || ($r['type'] == "NS" && $perm_content_edit == "own_as_client"))) {
@@ -274,6 +283,9 @@ if ($records == "-1") {
             echo "      <td class=\"u\"><input class=\"wide\" name=\"record[" . $r['id'] . "][content]\" value=\"" . htmlspecialchars($clean_content) . "\"></td>\n";
             echo "      <td class=\"u\"><input size=\"4\" id=\"priority_field_" . $r['id'] . "\" name=\"record[" . $r['id'] . "][prio]\" value=\"" . htmlspecialchars($r['prio']) . "\"></td>\n";
             echo "      <td class=\"u\"><input size=\"4\" name=\"record[" . $r['id'] . "][ttl]\" value=\"" . htmlspecialchars($r['ttl']) . "\"></td>\n";
+            if ($cloudflare_host_key && $r['type'] === 'CNAME') {
+                echo "      <td class=\"u\"><input type=\"checkbox\" name=\"record[" . $r['id'] . "][cloudflare]\" value=\"1\"" . ($r['cloudflare'] ? " checked" : "") . "></td>\n";
+            }
         }
         echo "     </tr>\n";
     }
