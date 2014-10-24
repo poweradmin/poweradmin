@@ -70,7 +70,7 @@ function get_zone_id_from_record_id($rid) {
  */
 function count_zone_records($zone_id) {
     global $db;
-    $sqlq = "SELECT COUNT(id) FROM records WHERE domain_id = " . $db->quote($zone_id, 'integer');
+    $sqlq = "SELECT COUNT(id) FROM records WHERE domain_id = " . $db->quote($zone_id, 'integer') . " AND type IS NOT NULL";
     $record_count = $db->queryOne($sqlq);
     return $record_count;
 }
@@ -1268,7 +1268,7 @@ function get_zones($perm, $userid = 0, $letterstart = 'all', $rowstart = 0, $row
 			FROM domains
 			LEFT JOIN zones ON domains.id=zones.domain_id
 			LEFT JOIN (
-				SELECT COUNT(domain_id) AS count_records, domain_id FROM records GROUP BY domain_id
+				SELECT COUNT(domain_id) AS count_records, domain_id FROM records WHERE type IS NOT NULL GROUP BY domain_id
 			) Record_Count ON Record_Count.domain_id=domains.id
 			WHERE 1=1" . $sql_add . "
 			GROUP BY domains.name, domains.id, domains.type, Record_Count.count_records
@@ -1360,7 +1360,7 @@ function zone_count_for_uid($uid) {
 function get_record_from_id($id) {
     global $db;
     if (is_numeric($id)) {
-        $result = $db->queryRow("SELECT id, domain_id, name, type, content, ttl, prio, change_date FROM records WHERE id=" . $db->quote($id, 'integer'));
+        $result = $db->queryRow("SELECT id, domain_id, name, type, content, ttl, prio, change_date FROM records WHERE id=" . $db->quote($id, 'integer') . " AND type IS NOT NULL");
         if ($result) {
             if ($result["type"] == "" || $result["content"] == "") {
                 return -1;
@@ -1437,7 +1437,7 @@ function get_records_from_domain_id($id, $rowstart = 0, $rowamount = 999999, $so
             }
             $sql_sortby = ($sortby == 'name' ? $natural_sort : $sortby . ', ' . $natural_sort);
 
-            $result = $db->query("SELECT id FROM records WHERE domain_id=" . $db->quote($id, 'integer') . " ORDER BY " . $sql_sortby);
+            $result = $db->query("SELECT id FROM records WHERE domain_id=" . $db->quote($id, 'integer') . " AND type IS NOT NULL ORDER BY " . $sql_sortby);
             $ret = array();
             if ($result) {
                 $ret[] = array();
