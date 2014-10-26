@@ -102,8 +102,8 @@ function LDAPAuthenticate() {
             return;
         }
 
-        $ldapbind = ldap_bind($ldapconn, $ldap_binddn, $ldap_bindpw);
         ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, $ldap_proto);
+        $ldapbind = ldap_bind($ldapconn, $ldap_binddn, $ldap_bindpw);
         if (!$ldapbind) {
             if (isset($_POST["authenticate"]))
                 log_error(sprintf('Failed LDAP authentication attempt from [%s] Reason: ldap_bind failed', $_SERVER['REMOTE_ADDR']));
