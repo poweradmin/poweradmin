@@ -110,7 +110,7 @@ if (isset($_GET["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["record_so
 
 // Updated on 2014102301 - 736 TLDs
 // http://data.iana.org/TLD/tlds-alpha-by-domain.txt
-$valid_tlds = ('abogado', 'ac', 'academy', 'accountants', 'active', 'actor', 'ad', 'ae',
+$valid_tlds = array('abogado', 'ac', 'academy', 'accountants', 'active', 'actor', 'ad', 'ae',
     'aero', 'af', 'ag', 'agency', 'ai', 'airforce', 'al', 'allfinanz', 'alsace',
     'am', 'an', 'ao', 'aq', 'ar', 'archi', 'army', 'arpa', 'as', 'asia',
     'associates', 'at', 'attorney', 'au', 'auction', 'audio', 'autos', 'aw', 'ax',
