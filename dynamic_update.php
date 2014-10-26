@@ -32,6 +32,7 @@
  */
 require('inc/config.inc.php');
 require('inc/database.inc.php');
+require('inc/record.inc.php');
 
 $db = dbConnect();
 
@@ -190,6 +191,7 @@ while ($zone = $zones_result->fetchRow()) {
         if ($hostname == $record['name']) {
             $update_query = "UPDATE records SET content ='{$ip}' where name='{$record["name"]}' and type='$type'";
             $update_result = $db->query($update_query);
+            update_soa_serial($zone['domain_id']);
             $was_updated = true;
         }
     }

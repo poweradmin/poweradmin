@@ -2145,3 +2145,22 @@ function get_records_by_domain_id($db, $domain_id) {
     }
     return $records;
 }
+
+
+/** Set timezone (required for PHP5)
+ *
+ * Set timezone to configured tz or UTC it not set
+ *
+ * @return null
+ */
+function set_timezone() {
+    global $timezone;
+
+    if (function_exists('date_default_timezone_set')) {
+        if (isset($timezone)) {
+            date_default_timezone_set($timezone);
+        } else if (!ini_get('date.timezone')) {
+            date_default_timezone_set('UTC');
+        }
+    }
+}
