@@ -711,11 +711,11 @@ function is_valid_rr_srv_name(&$name) {
     }
 
     $fields = explode('.', $name, 3);
-    if (!preg_match('/^[\w-]+$/i', $fields[0])) {
+    if (!preg_match('/^_[\w-]+$/i', $fields[0])) {
         error(ERR_DNS_SRV_NAME);
         return false;
     }
-    if (!preg_match('/^[\w]+$/i', $fields[1])) {
+    if (!preg_match('/^_[\w]+$/i', $fields[1])) {
         error(ERR_DNS_SRV_NAME);
         return false;
     }
