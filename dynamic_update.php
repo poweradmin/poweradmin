@@ -48,6 +48,8 @@ function safe($value) {
     if ($db_type == 'mysql') {
         $value = $db->quote($value, 'text');
         $value = substr($value, 1, -1); // remove quotes
+    } elseif ($db_type == 'pgsql') {
+	$value = pg_escape_string($value);        
     } else {
         return status_exit('baddbtype');
     }
