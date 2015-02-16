@@ -183,13 +183,8 @@ function SQLAuthenticate() {
         $rowObj = $db->queryRow("SELECT id, fullname, password FROM users WHERE username=" . $db->quote($_SESSION["userlogin"], 'text') . " AND active=1");
 
         if ($rowObj) {
-            if ($password_encryption == 'md5salt') {
-                $session_password = mix_salt(extract_salt($rowObj["password"]), $session_pass);
-            } else {
-                $session_password = md5($session_pass);
-            }
 
-            if ($session_password == $rowObj["password"]) {
+            if (Poweradmin\password\verify($session_pass, $rowObj['password'])) {
 
                 $_SESSION["userid"] = $rowObj["id"];
                 $_SESSION["name"] = $rowObj["fullname"];
