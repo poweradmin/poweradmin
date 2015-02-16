@@ -66,8 +66,8 @@ function safe($value) {
 function status_exit($status) {
     $verbose_codes = array(
         'badagent' => 'Your user agent is not valid.',
-        'badauth2' => 'No username available.',
-        'badauth' => 'Invalid username or password.  Authentication failed.',
+        'badauth' => 'No username available.',
+        'badauth2' => 'Invalid username or password.  Authentication failed.',
         'notfqdn' => 'The hostname you specified was not valid.',
         'dnserr' => 'A DNS error has occurred on our end.  We apologize for any inconvenience.',
         '!yours' => 'The specified hostname does not belong to you.',
@@ -157,7 +157,6 @@ if (($given_ip == "whatismyip")&&(valid_ip_address($_SERVER['REMOTE_ADDR']) === 
     $given_ip = $_SERVER['REMOTE_ADDR'];
 }elseif (($given_ip == "whatismyip")&&(valid_ip_address($_SERVER['REMOTE_ADDR']) === 'AAAA')&&(!(valid_ip_address($given_ip6) === 'AAAA'))){
     $given_ip6 = $_SERVER['REMOTE_ADDR'];
-    echo "testtest";
 }
 
 // Finally get safe version of the IP
