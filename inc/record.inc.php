@@ -1596,6 +1596,8 @@ function sort_domain_results_by_ttl($a, $b) {
  */
 function get_users_from_domain_id($id) {
     global $db;
+    $owners = array();
+
     $sqlq = "SELECT owner FROM zones WHERE domain_id =" . $db->quote($id, 'integer');
     $id_owners = $db->query($sqlq);
     if ($id_owners) {
