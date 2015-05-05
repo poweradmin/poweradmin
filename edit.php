@@ -229,7 +229,7 @@ if ($records == "-1") {
         }
         elseif ($r['type'] == "SOA" && $perm_content_edit != "all" || ($r['type'] == "NS" && $perm_content_edit == "own_as_client")) {
         	echo "     <td class=\"n\">&nbsp;</td>\n";
-        }        
+        }
         else {
             echo "     <td class=\"n\">\n";
             echo "      <a href=\"edit_record.php?id=" . $r['id'] . "&amp;domain=" . $zone_id . "\">
