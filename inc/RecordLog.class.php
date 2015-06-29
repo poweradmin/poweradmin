@@ -52,13 +52,40 @@ class RecordLog {
     }
 
     public function write() {
-        log_info(sprintf('client_ip:%s user:%s operation:edit_record'
-            . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
-            . ' record_type:%s record:%s content:%s ttl:%s priority:%s',
-            $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-            $this->record_prior['type'], $this->record_prior['name'],
-            $this->record_prior['content'], $this->record_prior['ttl'], $this->record_prior['prio'],
-            $this->record_after['type'], $this->record_after['name'],
-            $this->record_after['content'], $this->record_after['ttl'], $this->record_after['prio']));
+        global $db;
+
+        $this->writeStdout();
+
+        $prior_id = $this->log_records_data($this->record_prior);
+        $after_id = $this->log_records_data($this->record_after);
+        $record_type_id = $db->queryOne("SELECT id FROM log_records_type WHERE name = 'record_edit'");
+        $now = date('Y-m-d H:i:s');
+        $fullname = get_fullname_from_userid_local($_SESSION['userid']);
+
+        // TODO: Log approving user (col                                                    v here)
+        $log_insert_record = "INSERT INTO log_records (log_records_type_id, timestamp, user, prior, after) VALUES ("
+            . $db->quote($record_type_id, 'integer') . ","
+            . $db->quote($now, 'text') . ","
+            . $db->quote($fullname, 'text') . ","
+            . $db->quote($prior_id, 'integer') . ","
+            . $db->quote($after_id, 'integer') . ")";
+        $db->exec($log_insert_record);
+    }
+
+    private function log_records_data($record) {
+        global $db;
+
+        $query = "INSERT INTO log_records_data (domain_id, name, type, content, ttl, prio, change_date) VALUES ("
+            . $db->quote($record['domain_id'], 'integer') . ","
+            . $db->quote($record['name'], 'text') . ","
+            . $db->quote($record['type'], 'text') . ","
+            . $db->quote(trim($record['content'], '"'), 'text') . ","
+            . $db->quote($record['ttl'], 'integer') . ","
+            . $db->quote($record['prio'], 'integer') . ","
+            . $db->quote($record['change_date'], 'integer') . ")";
+        $db->exec($query);
+        return $db->lastInsertId();
+
+
     }
 }
