@@ -63,8 +63,8 @@ CREATE TABLE IF NOT EXISTS `powerdns`.`log_records` (
   `timestamp`             DATETIME    NOT NULL,
   `user`                  VARCHAR(64) NOT NULL,
   `user_approve`          VARCHAR(64),
-  `prior`                 INT         NOT NULL,
-  `after`                 INT         NOT NULL,
+  `prior`                 INT             NULL,
+  `after`                 INT             NULL,
   PRIMARY KEY (`id`),
 
   INDEX `fk_log_records_1_idx` (`log_records_type_id` ASC),
