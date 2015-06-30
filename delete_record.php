@@ -31,6 +31,7 @@
  */
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
+include_once("inc/RecordLog.class.php");
 
 global $pdnssec_use;
 
@@ -67,6 +68,8 @@ if ($record_id == "-1") {
     error(ERR_INV_INPUT);
 } else {
     if ($confirm == '1') {
+        $log = new RecordLog();
+        $log->log_prior($record_id);
         $record_info = get_record_from_id($record_id);
         if (delete_record($record_id)) {
             success("<a href=\"edit.php?id=" . $zid . "\">" . SUC_RECORD_DEL . "</a>");
@@ -80,6 +83,8 @@ if ($record_id == "-1") {
                      $record_info['type'], $record_info['name'], $record_info['content'], $record_info['ttl'] ));
 
             }
+
+            $log->writeDelete();
 
             delete_record_zone_templ($record_id);
 

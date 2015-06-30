@@ -1,11 +1,68 @@
 <?php
 
+class RecordComparator {
+
+    public function has_changed(array $a, array $b, $append_zone = false) {
+        if($append_zone) {
+            $this->append_zone_name($b['zid'], $b, $a);
+        }
+
+        $this->unsetChangeDate($a);
+        $this->unsetChangeDate($b);
+        $this->trim_record_content($a);
+        $this->trim_record_content($b);
+        $this->makeCompatible($b);
+
+        // Do the comparison
+        return ($a != $b);
+    }
+
+    private function append_zone_name($zid, &$b, &$a) {
+        $zone = get_zone_name_from_id($zid);
+
+        if (!(preg_match("/$zone$/i", $b['name']))) {
+            if (isset($b) && $b['name'] != "") {
+                $b['name'] = $b["name"] . "." . $zone;
+            } else {
+                $b['name'] = $a["name"];
+            }
+        }
+    }
+
+    private function unsetChangeDate(&$record) {
+        unset($record["change_date"]);
+    }
+
+    private function trim_record_content(&$record) {
+        // Quotes are special for SPF and TXT
+        if ($record['type'] == "SPF" || $record['type'] == "TXT") {
+            $record['content'] = trim($record['content'], '"');
+        }
+    }
+
+    private function makeCompatible(&$record) {
+        // Make $a and $b compatible
+        $record['id'] = $record['rid'];
+        $record['domain_id'] = $record['zid'];
+        unset($record['zid']);
+        unset($record['rid']);
+        unset($record['commit']);
+    }
+}
+
 class RecordLog {
 
     private $record_prior;
     private $record_after;
 
-    private $record_changed = false;
+    /**
+     * @var RecordComparator
+     */
+    private $record_comparator;
+
+    function __construct() {
+        $this->record_comparator = new RecordComparator();
+    }
 
     public function log_prior($rid) {
         $this->record_prior = $this->getRecord($rid);
@@ -19,57 +76,17 @@ class RecordLog {
         return get_record_from_id($rid);
     }
 
-    public function has_changed(array $record) {
-        // Arrays are assigned by copy.
-        // Copy arrays to avoid side effects caused by unset().
-        $record_copy = $record;
-        $record_prior_copy = $this->record_prior;
-
-        // Don't compare the 'change_date'
-        unset($record_copy["change_date"]);
-        unset($record_prior_copy["change_date"]);
-
-        // PowerDNS only searches for lowercase records
-        $record_copy['name'] = strtolower($record_copy['name']);
-        $record_prior_copy['name'] = strtolower($record_prior_copy['name']);
-
-        // Quotes are special for SPF and TXT
-        $type = $record_prior_copy['type'];
-        if ($type == "SPF" || $type == "TXT") {
-            $record_prior_copy['content'] = trim($record_prior_copy['content'], '"');
-            $record_copy['content'] = trim($record_copy['content'], '"');
-        }
-
-        // Make $record_copy and $record_prior_copy compatible
-        $record_copy['id'] = $record_copy['rid'];
-        $record_copy['domain_id'] = $record_copy['zid'];
-        unset($record_copy['zid']);
-        unset($record_copy['rid']);
-
-        // Do the comparison
-        $this->record_changed = ($record_copy != $record_prior_copy);
-        return $this->record_changed;
+    private function getUser() {
+        return $_SESSION['userlogin'];
     }
 
-    public function write() {
+    private function getDate() {
+        return date('Y-m-d H:i:s');
+    }
+
+    private function getLogType($type_name) {
         global $db;
-
-        $this->writeStdout();
-
-        $prior_id = $this->log_records_data($this->record_prior);
-        $after_id = $this->log_records_data($this->record_after);
-        $record_type_id = $db->queryOne("SELECT id FROM log_records_type WHERE name = 'record_edit'");
-        $now = date('Y-m-d H:i:s');
-        $fullname = get_fullname_from_userid_local($_SESSION['userid']);
-
-        // TODO: Log approving user (col                                                    v here)
-        $log_insert_record = "INSERT INTO log_records (log_records_type_id, timestamp, user, prior, after) VALUES ("
-            . $db->quote($record_type_id, 'integer') . ","
-            . $db->quote($now, 'text') . ","
-            . $db->quote($fullname, 'text') . ","
-            . $db->quote($prior_id, 'integer') . ","
-            . $db->quote($after_id, 'integer') . ")";
-        $db->exec($log_insert_record);
+        return $db->queryOne("SELECT id FROM log_records_type WHERE name = '" . $type_name . "'");
     }
 
     private function log_records_data($record) {
@@ -85,7 +102,62 @@ class RecordLog {
             . $db->quote($record['change_date'], 'integer') . ")";
         $db->exec($query);
         return $db->lastInsertId();
+    }
 
+    public function writeNew() {
+        global $db;
 
+        $after_id = $this->log_records_data($this->record_after);
+        $record_type_id = $this->getLogType('record_create');
+        $now = $this->getDate();
+        $fullname = $this->getUser();
+
+        // TODO: Log approving user (col                                                    v here)
+        $log_insert_record = "INSERT INTO log_records (log_records_type_id, timestamp, user, after) VALUES ("
+            . $db->quote($record_type_id, 'integer') . ","
+            . $db->quote($now, 'text') . ","
+            . $db->quote($fullname, 'text') . ","
+            . $db->quote($after_id, 'integer') . ")";
+        $db->exec($log_insert_record);
+    }
+
+    public function writeChange() {
+        global $db;
+
+        $prior_id = $this->log_records_data($this->record_prior);
+        $after_id = $this->log_records_data($this->record_after);
+        $record_type_id = $this->getLogType('record_edit');
+        $now = $this->getDate();
+        $user = $this->getUser();
+
+        // TODO: Log approving user (col                                                    v here)
+        $log_insert_record = "INSERT INTO log_records (log_records_type_id, timestamp, user, prior, after) VALUES ("
+            . $db->quote($record_type_id, 'integer') . ","
+            . $db->quote($now, 'text') . ","
+            . $db->quote($user, 'text') . ","
+            . $db->quote($prior_id, 'integer') . ","
+            . $db->quote($after_id, 'integer') . ")";
+        $db->exec($log_insert_record);
+    }
+
+    public function writeDelete() {
+        global $db;
+
+        $prior_id = $this->log_records_data($this->record_prior);
+        $record_type_id = $this->getLogType('record_delete');
+        $now = $this->getDate();
+        $user = $this->getUser();
+
+        // TODO: Log approving user (col                                                    v here)
+        $log_insert_record = "INSERT INTO log_records (log_records_type_id, timestamp, user, prior) VALUES ("
+            . $db->quote($record_type_id, 'integer') . ","
+            . $db->quote($now, 'text') . ","
+            . $db->quote($user, 'text') . ","
+            . $db->quote($prior_id, 'integer') . ")";
+        $db->exec($log_insert_record);
+    }
+
+    public function has_changed($record) {
+        return $this->record_comparator->has_changed($this->record_prior, $record);
     }
 }

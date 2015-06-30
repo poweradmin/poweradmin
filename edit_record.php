@@ -31,6 +31,7 @@
  */
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
+include_once("inc/RecordLog.class.php");
 
 global $pdnssec_use;
 
@@ -70,24 +71,37 @@ if (isset($_POST["commit"])) {
     if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
         error(ERR_PERM_EDIT_RECORD);
     } else {
-        $old_record_info = get_record_from_id($_POST["rid"]);
-        $ret_val = edit_record($_POST);
-        if ($ret_val == "1") {
-            if ($_POST['type'] != "SOA") {
-                update_soa_serial($zid);
-            }
-            success(SUC_RECORD_UPD);
-            $new_record_info = get_record_from_id($_POST["rid"]);
-            log_info(sprintf('client_ip:%s user:%s operation:edit_record'
-                             .' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
-                             .' record_type:%s record:%s content:%s ttl:%s priority:%s',
-                              $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                              $old_record_info['type'], $old_record_info['name'], $old_record_info['content'], $old_record_info['ttl'], $old_record_info['prio'], 
-                              $new_record_info['type'], $new_record_info['name'], $new_record_info['content'], $new_record_info['ttl'], $new_record_info['prio']));
 
-            if ($pdnssec_use) {
-                if (dnssec_rectify_zone($zid)) {
-                    success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
+        // Only update if necessary
+        $log = new RecordLog($zone);
+        $log->log_prior($_POST["rid"], true);
+        if(!$log->has_changed($_POST, true)) {
+            success(SUC_ZONE_NOCHANGE);
+
+        } else {
+            $old_record_info = get_record_from_id($_POST["rid"]);
+            $ret_val = edit_record($_POST);
+            if ($ret_val == "1") {
+                if ($_POST['type'] != "SOA") {
+                    update_soa_serial($zid);
+                }
+                success(SUC_RECORD_UPD);
+
+                $log->log_after($_POST["rid"]);
+                $log->writeChange();
+
+                $new_record_info = get_record_from_id($_POST["rid"]);
+                log_info(sprintf('client_ip:%s user:%s operation:edit_record'
+                    . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
+                    . ' record_type:%s record:%s content:%s ttl:%s priority:%s',
+                    $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
+                    $old_record_info['type'], $old_record_info['name'], $old_record_info['content'], $old_record_info['ttl'], $old_record_info['prio'],
+                    $new_record_info['type'], $new_record_info['name'], $new_record_info['content'], $new_record_info['ttl'], $new_record_info['prio']));
+
+                if ($pdnssec_use) {
+                    if (dnssec_rectify_zone($zid)) {
+                        success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
+                    }
                 }
             }
         }

@@ -424,9 +424,10 @@ function edit_record($record) {
  * @param int $ttl Time-To-Live of record
  * @param int $prio Priority of record
  *
- * @return boolean true if successful
+ * @param RecordLog $log
+ * @return bool true if successful
  */
-function add_record($zone_id, $name, $type, $content, $ttl, $prio) {
+function add_record($zone_id, $name, $type, $content, $ttl, $prio, RecordLog &$log) {
     global $db;
     global $pdnssec_use;
 
@@ -465,11 +466,14 @@ function add_record($zone_id, $name, $type, $content, $ttl, $prio) {
                     . $db->quote($prio, 'integer') . ","
                     . $db->quote($change, 'integer') . ")";
             $response = $db->exec($query);
+
             if (PEAR::isError($response)) {
                 error($response->getMessage());
                 $response = $db->rollback();
                 return false;
             } else {
+                $log->log_after($db->lastInsertId());
+
                 $response = $db->commit();
                 if ($type != 'SOA') {
                     update_soa_serial($zone_id);
