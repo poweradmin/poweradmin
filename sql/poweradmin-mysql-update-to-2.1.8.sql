@@ -3,7 +3,7 @@ START TRANSACTION;
 #################################################
 # Type tables
 #################################################
-CREATE TABLE IF NOT EXISTS `powerdns`.`log_zones_type` (
+CREATE TABLE IF NOT EXISTS `powerdns`.`log_domains_type` (
   `id`    INT         NOT NULL AUTO_INCREMENT,
   `name`  VARCHAR(32) NOT NULL,
   PRIMARY KEY (`id`),
@@ -40,20 +40,21 @@ CREATE TABLE IF NOT EXISTS `powerdns`.`log_records_data` (
 # Log management
 #################################################
 
-# Logs when (maybe with help of an approving user) a zone was created or deleted
-CREATE TABLE IF NOT EXISTS `powerdns`.`log_zones` (
-  `id`                INT         NOT NULL AUTO_INCREMENT,
-  `log_zones_type_id` INT         NOT NULL,
-  `timestamp`         DATETIME    NOT NULL,
-  `user`              VARCHAR(64) NOT NULL,
-  `user_approve`      VARCHAR(64),
+# Logs when (maybe with help of an approving user) a domain was created or deleted
+CREATE TABLE IF NOT EXISTS `powerdns`.`log_domains` (
+  `id`                  INT          NOT NULL AUTO_INCREMENT,
+  `log_domains_type_id` INT          NOT NULL,
+  `domain_name`         VARCHAR(255) NOT NULL,
+  `timestamp`           DATETIME     NOT NULL,
+  `user`                VARCHAR(64)  NOT NULL,
+  `user_approve`        VARCHAR(64),
   PRIMARY KEY (`id`),
 
-  INDEX `fk_log_zones_1_idx` (`log_zones_type_id` ASC),
+  INDEX `fk_log_domains_1_idx` (`log_domains_type_id` ASC),
 
-  CONSTRAINT `fk_log_zones_1`
-  FOREIGN KEY (`log_zones_type_id`)
-  REFERENCES `powerdns`.`log_zones_type` (`id`)
+  CONSTRAINT `fk_log_domains_1`
+  FOREIGN KEY (`log_domains_type_id`)
+  REFERENCES `powerdns`.`log_domains_type` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 # Logs when (maybe with help of an approving user) a record was created/edited/deleted
@@ -87,9 +88,9 @@ CREATE TABLE IF NOT EXISTS `powerdns`.`log_records` (
 #################################################
 # Data
 #################################################
-LOCK TABLES `powerdns`.`log_zones_type` WRITE;
-INSERT INTO `powerdns`.`log_zones_type` VALUES
-  (1, 'zone_create'), (2, 'zone_delete');
+LOCK TABLES `powerdns`.`log_domains_type` WRITE;
+INSERT INTO `powerdns`.`log_domains_type` VALUES
+  (1, 'domain_create'), (2, 'domain_delete');
 UNLOCK TABLES;
 
 LOCK TABLES `powerdns`.`log_records_type` WRITE;

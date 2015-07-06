@@ -52,6 +52,7 @@ class RecordComparator {
 
 class RecordLog {
 
+    private $db;
     private $record_prior;
     private $record_after;
 
@@ -62,6 +63,12 @@ class RecordLog {
 
     function __construct() {
         $this->record_comparator = new RecordComparator();
+    }
+
+    public static function with_db($db) {
+        $instance = new RecordLog();
+        $instance->set_database($db);
+        return $instance;
     }
 
     public function log_prior($rid) {
@@ -159,5 +166,29 @@ class RecordLog {
 
     public function has_changed($record) {
         return $this->record_comparator->has_changed($this->record_prior, $record);
+    }
+
+    public function write_delete_all($domain_id) {
+        $record_ids = $this->record_ids_for_domain($domain_id);
+        foreach($record_ids as $record_id) {
+            $this->record_prior = $this->getRecord($record_id);
+            $test = $this->record_prior;
+            $this->writeDelete();
+        }
+    }
+
+    private function set_database($db) {
+        $this->db = $db;
+    }
+
+    private function record_ids_for_domain($domain_id) {
+        $result = $this->db->query("SELECT id
+                                     FROM records
+                                     WHERE domain_id = " . $this->db->quote($domain_id, 'integer'));
+        $record_ids = array();
+        while($record = $result->fetchRow()) {
+            $record_ids[] = $record['id'];
+        }
+        return $record_ids;
     }
 }

@@ -22,6 +22,8 @@
  */
 
 require_once('templates.inc.php');
+require_once('inc/DomainLog.class.php');
+require_once('inc/RecordLog.class.php');
 
 /**
  * DNS record functions
@@ -834,6 +836,12 @@ function delete_domain($id) {
 
     if ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) {
         if (is_numeric($id)) {
+            $domain_log = DomainLog::with_db($db);
+            $domain_log->delete_domain($id);
+
+            $record_log = RecordLog::with_db($db);
+            $record_log->write_delete_all($id);
+
             $db->query("DELETE FROM zones WHERE domain_id=" . $db->quote($id, 'integer'));
             $db->query("DELETE FROM domains WHERE id=" . $db->quote($id, 'integer'));
             $db->query("DELETE FROM records WHERE domain_id=" . $db->quote($id, 'integer'));
