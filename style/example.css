@@ -4,7 +4,7 @@ body {
     padding-left:	5%;
     padding-right:	5%;
     font-family:	Verdana, Arial, Helvetica, serif;
-    font-size:		85%;
+    font-size:		100%
     text-align:		left;
     vertical-align:	top;
     background:		#f4f4f4;
@@ -43,7 +43,7 @@ img {
 
 td {
     padding:		0 2px 0 2px;
-    vertical-align:	top;
+    vertical-align:	middle;
 }
 
 td.actions {
@@ -83,6 +83,22 @@ td.checkbox {
 
 .menu {
     font-size:		80%;
+}
+
+.record-create {
+    background-color: rgb(64, 186, 64);
+}
+
+.record-delete {
+    background-color: rgb(255, 113, 113);
+}
+
+.record-edit {
+
+}
+
+.record-edit-cell {
+    background-color: rgb(245, 188, 66);
 }
 
 .error {
