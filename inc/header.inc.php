@@ -98,6 +98,9 @@ if (file_exists('install')) {
     if ($perm_zone_master_add) {
         echo "    <span class=\"menuitem\"><a href=\"bulk_registration.php\">" . _('Bulk registration') . "</a></span>\n";
     }
+    if($perm_is_godlike) {
+        echo "    <span class=\"menuitem\"><a href=\"show_log.php\">" . _('Show logs') . "</a></span>\n";
+    }
     if ($_SESSION ["auth_used"] != "ldap") {
         echo "    <span class=\"menuitem\"><a href=\"change_password.php\">" . _('Change password') . "</a></span>\n";
     }
