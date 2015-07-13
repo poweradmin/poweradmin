@@ -93,8 +93,10 @@ td.checkbox {
     background-color: rgb(255, 113, 113);
 }
 
-.record-edit {
+.record-edit {}
 
+.domain-delete {
+    background-color: rgb(140, 140, 140);
 }
 
 .record-edit-cell {
