@@ -39,25 +39,24 @@ class LogOutput {
         // Data
         while($diff = $diff_data->fetchRow()) {
             $this->merge_domain_name($diff);
-            $indent = "    ";
 
             switch($diff['event']) {
 
                 // Will print row without rowspan
                 case 'record_create':
                     // Render only the created ('after' is interesting)
-                    $s .= $indent . $this->create_diff_row($diff);
+                    $s .= $this->create_diff_row($diff);
                     break;
 
                 // Will print row without rowspan
                 case 'record_delete':
                     // Render only the deleted ('prior' is interesting)
-                    $s .= $indent . $this->delete_diff_row($diff);
+                    $s .= $this->delete_diff_row($diff);
                     break;
 
                 // Will print row with rowspan
                 case 'record_edit':
-                    $s .= $indent . $this->edit_diff_row($diff);
+                    $s .= $this->edit_diff_row($diff);
                     break;
 
                 default:
