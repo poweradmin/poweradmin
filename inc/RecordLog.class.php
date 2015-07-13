@@ -88,7 +88,8 @@ class RecordLog {
     }
 
     private function getDate() {
-        return date('Y-m-d H:i:s');
+        $localtime = new DateTime('now', new DateTimeZone('Europe/Berlin'));
+        return $localtime->format('Y-m-d H:i:s');
     }
 
     private function getLogType($type_name) {
@@ -172,7 +173,6 @@ class RecordLog {
         $record_ids = $this->record_ids_for_domain($domain_id);
         foreach($record_ids as $record_id) {
             $this->record_prior = $this->getRecord($record_id);
-            $test = $this->record_prior;
             $this->writeDelete();
         }
     }

@@ -34,7 +34,8 @@ class DomainLog {
     }
 
     private function getDate() {
-        return date('Y-m-d H:i:s');
+        $localtime = new DateTime('now', new DateTimeZone('Europe/Berlin'));
+        return $localtime->format('Y-m-d H:i:s');
     }
 
     private function set_database($db) {
