@@ -59,6 +59,10 @@ class LogOutput {
                     $s .= $this->edit_diff_row($diff);
                     break;
 
+                case 'domain_delete':
+                    $s .= $this->create_domain_delete_diff_row($diff);
+                    break;
+
                 default:
                     break;
             }
@@ -111,41 +115,59 @@ class LogOutput {
     // HELPER METHODS
 
     private function get_diff_data() {
-        $sql = "SELECT
-                    timestamp                     as time,
-                    record_type.name              as event,
-                    record.user,
-                    record.user_approve,
-                    domain_prior.name as domain_prior,
-                    domain_after.name as domain_after,
+        $sql = "
+(SELECT
+	timestamp                     as time,
+	record_type.name              as event,
+	record.user,
+	record.user_approve,
+	domain_prior.name as domain_prior,
+	domain_after.name as domain_after,
 
-                    record_data_prior.name        as prior_record_name,
-                    record_data_prior.type        as prior_record_type,
-                    record_data_prior.content     as prior_record_content,
-                    record_data_prior.ttl         as prior_record_ttl,
-                    record_data_prior.prio        as prior_record_prio,
-                    record_data_prior.change_date as prior_record_change_date,
+	record_data_prior.name        as prior_record_name,
+	record_data_prior.type        as prior_record_type,
+	record_data_prior.content     as prior_record_content,
+	record_data_prior.ttl         as prior_record_ttl,
+	record_data_prior.prio        as prior_record_prio,
+	record_data_prior.change_date as prior_record_change_date,
 
-                    record_data_after.name        as after_record_name,
-                    record_data_after.type        as after_record_type,
-                    record_data_after.content     as after_record_content,
-                    record_data_after.ttl         as after_record_ttl,
-                    record_data_after.prio        as after_record_prio,
-                    record_data_after.change_date as after_record_change_date
-                FROM
-                    log_records      record
-                INNER JOIN
-                    log_records_type record_type       ON record.log_records_type_id  = record_type.id
-                LEFT JOIN
-                    log_records_data record_data_prior ON record.prior                = record_data_prior.id
-                LEFT JOIN
-                    log_records_data record_data_after ON record.after                = record_data_after.id
-                LEFT JOIN
-                    domains          domain_prior      ON record_data_prior.domain_id = domain_prior.id
-                LEFT JOIN
-                    domains          domain_after      ON record_data_after.domain_id = domain_after.id
-                ORDER BY
-                    timestamp DESC;";
+	record_data_after.name        as after_record_name,
+	record_data_after.type        as after_record_type,
+	record_data_after.content     as after_record_content,
+	record_data_after.ttl         as after_record_ttl,
+	record_data_after.prio        as after_record_prio,
+	record_data_after.change_date as after_record_change_date
+FROM
+	log_records      record
+INNER JOIN
+	log_records_type record_type       ON record.log_records_type_id  = record_type.id
+LEFT JOIN
+	log_records_data record_data_prior ON record.prior                = record_data_prior.id
+LEFT JOIN
+	log_records_data record_data_after ON record.after                = record_data_after.id
+LEFT JOIN
+	domains          domain_prior      ON record_data_prior.domain_id = domain_prior.id
+LEFT JOIN
+	domains          domain_after      ON record_data_after.domain_id = domain_after.id
+)
+
+UNION
+
+(SELECT
+	timestamp                      as time,
+    domain_type.name               as event,
+    domain.user,
+    domain.user_approve,
+    domain.domain_name,
+    null, null, null, null, null, null, null, null, null, null, null, null, null
+FROM
+	log_domains     domain
+INNER JOIN
+	log_domains_type domain_type ON domain.log_domains_type_id = domain_type.id
+
+)
+
+ORDER BY time DESC;";
         return $this->db->query($sql);
     }
 
@@ -210,5 +232,10 @@ class LogOutput {
             }
         }
         return $s;
+    }
+
+    private function create_domain_delete_diff_row($diff) {
+        $class = 'domain-delete';
+        return $this->diff_row($diff, "", $class);
     }
 }
