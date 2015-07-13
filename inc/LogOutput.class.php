@@ -193,7 +193,7 @@ ORDER BY time DESC;";
             if($field == 'approving_user')
             {
                 // If the approving user is null, print a '-'. Else the name of the user.
-                $data = $data ? $data : "-";
+                //$data = $data ? $data : "-";
             }
             $s .= "<td" . $rowspan_attr . ">" . $data . "</td>";
         }
