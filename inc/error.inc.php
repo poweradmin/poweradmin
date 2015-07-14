@@ -130,6 +130,7 @@ define("SUC_ZONE_ADD", _('Zone has been added successfully.'));
 define("SUC_ZONE_DEL", _('Zone has been deleted successfully.'));
 define("SUC_ZONES_DEL", _('Zones have been deleted successfully.'));
 define("SUC_ZONE_UPD", _('Zone has been updated successfully.'));
+define("SUC_ZONE_NOCHANGE", _('Zone did not have any record changes.'));
 define("SUC_ZONES_UPD", _('Zones have been updated successfully.'));
 define("SUC_USER_UPD", _('The user has been updated successfully.'));
 define("SUC_USER_ADD", _('The user has been created successfully.'));
