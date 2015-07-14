@@ -19,7 +19,7 @@ class ChangeLogger
 
     public function html_diff()
     {
-        $diff_data = $this->get_diff_data();
+        $diff_data = $this->get_diff_data_raw();
         $s  = "<table id=\"log-data\">";
 
         // Headers
@@ -96,13 +96,13 @@ class ChangeLogger
 
         // Part with rowspan (meta + data)
         $s = "<tr class=\"record-edit\">";
-        $s .= $this->add_diff_meta($diff, $rowspan);
-        $s .= $this->add_diff_data($diff, 'prior', $colorize_edit);
+        $s .= $this->get_diff_meta($diff, $rowspan);
+        $s .= $this->get_diff_data($diff, 'prior', $colorize_edit);
         $s .= "</tr>";
 
         // Part without (only data)
         $s .= "<tr class=\"record-edit\">";
-        $s .= $this->add_diff_data($diff, 'after', $colorize_edit);
+        $s .= $this->get_diff_data($diff, 'after', $colorize_edit);
         $s .= "</tr>";
 
         return $s;
@@ -119,8 +119,8 @@ class ChangeLogger
         $rowspan = 0;
 
         $s  = "<tr class=\"$class\">";
-        $s .= $this->add_diff_meta($diff, $rowspan);
-        $s .= $this->add_diff_data($diff, $prefix);
+        $s .= $this->get_diff_meta($diff, $rowspan);
+        $s .= $this->get_diff_data($diff, $prefix);
         $s .= "</tr>";
         return $s;
     }
@@ -128,7 +128,7 @@ class ChangeLogger
     ///////////////////////////////////////////////////////////////////////////
     // HELPER METHODS
 
-    private function get_diff_data()
+    private function get_diff_data_raw()
     {
         $sql = "
 (SELECT
@@ -186,7 +186,7 @@ ORDER BY time DESC;";
         return $this->db->query($sql);
     }
 
-    private function add_diff_meta($diff, $rowspan)
+    private function get_diff_meta($diff, $rowspan)
     {
         $s = "";
         $rowspan_attr = $rowspan > 0 ? " rowspan=\"$rowspan\"" : "";
@@ -206,7 +206,7 @@ ORDER BY time DESC;";
         return $s;
     }
 
-    private function add_diff_data($diff, $prefix, $colorize_edit = false)
+    private function get_diff_data($diff, $prefix, $colorize_edit = false)
     {
         $s = "";
         $fields = array(
