@@ -31,7 +31,7 @@
  */
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
-include_once("inc/LogOutput.class.php");
+include_once("inc/ChangeLogger.class.php");
 
 
 echo "    <h2>" . _('Show logs') . "</h2>\n";
@@ -43,8 +43,8 @@ if(!$perm_is_godlike) {
 }
 
 global $db;
-$log_out = LogOutput::with_db($db);
+$log_out = ChangeLogger::with_db($db);
 
-echo $log_out->as_html();
+echo $log_out->html_diff();
 
 include_once("inc/footer.inc.php");

@@ -1,25 +1,26 @@
 <?php
 
-class LogOutput {
-
+class ChangeLogger
+{
     private $db;
 
     ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
 
-    public static function with_db($db) {
-        $instance = new LogOutput();
+    public static function with_db($db)
+    {
+        $instance = new ChangeLogger();
         $instance->set_database($db);
         return $instance;
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // MAIN METHODS
+    // PUBLIC METHODS
 
-    public function as_html()
+    public function html_diff()
     {
         $diff_data = $this->get_diff_data();
-        $s  = "<table>";
+        $s  = "<table id=\"log-data\">";
 
         // Headers
         $s .= "<tr>";
@@ -45,22 +46,22 @@ class LogOutput {
                 // Will print row without rowspan
                 case 'record_create':
                     // Render only the created ('after' is interesting)
-                    $s .= $this->create_diff_row($diff);
+                    $s .= $this->row_record_create($diff);
                     break;
 
                 // Will print row without rowspan
                 case 'record_delete':
                     // Render only the deleted ('prior' is interesting)
-                    $s .= $this->delete_diff_row($diff);
+                    $s .= $this->row_record_delete($diff);
                     break;
 
                 // Will print row with rowspan
                 case 'record_edit':
-                    $s .= $this->edit_diff_row($diff);
+                    $s .= $this->row_record_edit($diff);
                     break;
 
                 case 'domain_delete':
-                    $s .= $this->create_domain_delete_diff_row($diff);
+                    $s .= $this->row_domain_delete($diff);
                     break;
 
                 default:
@@ -71,29 +72,25 @@ class LogOutput {
         return $s;
     }
 
-    private function create_diff_row($diff) {
+    ///////////////////////////////////////////////////////////////////////////
+    // PRIVATE METHODS
+
+    private function row_record_create($diff)
+    {
         $prefix = 'after'; // After a create, only what is there after the create is interesting.
         $class = "record-create";
-        return $this->diff_row($diff, $prefix, $class);
+        return $this->row_diff($diff, $prefix, $class);
     }
 
-    private function delete_diff_row($diff) {
+    private function row_record_delete($diff)
+    {
         $prefix = 'prior';  // After a delete, only what was there previous to the delete is interesting.
         $class = "record-delete";
-        return $this->diff_row($diff, $prefix, $class);
+        return $this->row_diff($diff, $prefix, $class);
     }
 
-    private function diff_row($diff, $prefix, $class) {
-        $rowspan = 0;
-
-        $s  = "<tr class=\"$class\">";
-        $s .= $this->add_diff_meta($diff, $rowspan);
-        $s .= $this->add_diff_data($diff, $prefix);
-        $s .= "</tr>";
-        return $s;
-    }
-
-    private function edit_diff_row($diff) {
+    private function row_record_edit($diff)
+    {
         $rowspan = 2;
         $colorize_edit = true;
 
@@ -111,10 +108,28 @@ class LogOutput {
         return $s;
     }
 
+    private function row_domain_delete($diff)
+    {
+        $class = 'domain-delete';
+        return $this->row_diff($diff, "", $class);
+    }
+
+    private function row_diff($diff, $prefix, $class)
+    {
+        $rowspan = 0;
+
+        $s  = "<tr class=\"$class\">";
+        $s .= $this->add_diff_meta($diff, $rowspan);
+        $s .= $this->add_diff_data($diff, $prefix);
+        $s .= "</tr>";
+        return $s;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // HELPER METHODS
 
-    private function get_diff_data() {
+    private function get_diff_data()
+    {
         $sql = "
 (SELECT
 	timestamp                     as time,
@@ -171,17 +186,8 @@ ORDER BY time DESC;";
         return $this->db->query($sql);
     }
 
-    private function set_database($db) {
-        $this->db = $db;
-    }
-
-    private function merge_domain_name(&$diff) {
-        $diff['domain'] = $diff['domain_prior'] ? $diff['domain_prior'] : $diff['domain_after'];
-        unset($diff['domain_prior']);
-        unset($diff['domain_after']);
-    }
-
-    private function add_diff_meta($diff, $rowspan) {
+    private function add_diff_meta($diff, $rowspan)
+    {
         $s = "";
         $rowspan_attr = $rowspan > 0 ? " rowspan=\"$rowspan\"" : "";
         $fields = array('time', 'event', 'user', 'approving_user', 'domain');
@@ -200,7 +206,8 @@ ORDER BY time DESC;";
         return $s;
     }
 
-    private function add_diff_data($diff, $prefix, $colorize_edit = false) {
+    private function add_diff_data($diff, $prefix, $colorize_edit = false)
+    {
         $s = "";
         $fields = array(
             'record_name',
@@ -234,8 +241,15 @@ ORDER BY time DESC;";
         return $s;
     }
 
-    private function create_domain_delete_diff_row($diff) {
-        $class = 'domain-delete';
-        return $this->diff_row($diff, "", $class);
+    private function merge_domain_name(&$diff)
+    {
+        $diff['domain'] = $diff['domain_prior'] ? $diff['domain_prior'] : $diff['domain_after'];
+        unset($diff['domain_prior']);
+        unset($diff['domain_after']);
+    }
+
+    private function set_database($db)
+    {
+        $this->db = $db;
     }
 }

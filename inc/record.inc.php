@@ -2066,6 +2066,12 @@ function delete_domains($domains) {
                     dnssec_unsecure_zone($zone_name);
                 }
 
+                $domain_log = DomainLog::with_db($db);
+                $domain_log->delete_domain($id);
+
+                $record_log = RecordLog::with_db($db);
+                $record_log->write_delete_all($id);
+
                 $db->exec("DELETE FROM zones WHERE domain_id=" . $db->quote($id, 'integer'));
                 $db->exec("DELETE FROM domains WHERE id=" . $db->quote($id, 'integer'));
                 $db->exec("DELETE FROM records WHERE domain_id=" . $db->quote($id, 'integer'));

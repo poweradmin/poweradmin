@@ -66,7 +66,7 @@ if ($perm_supermaster_add) {
     echo "    <li><a href=\"add_supermaster.php\">" . _('Add supermaster') . "</a></li>\n";
 }
 if($perm_is_godlike) {
-    echo "    <li><a href=\"show_log.php\">" . _('Show logs') . "</a></li>\n";
+    echo "    <li><a href=\"list_log.php\">" . _('List logs') . "</a></li>\n";
 }
 if ($_SESSION["auth_used"] != "ldap") {
     echo "    <li><a href=\"change_password.php\">" . _('Change password') . "</a></li>\n";
