@@ -11,15 +11,19 @@ class ChangeMailer {
      */
     private $change_logger;
 
-    function __construct($mail_config, $change_logger) {
+    function __construct($mail_config, $change_logger, $params) {
         $this->change_logger = $change_logger;
         $this->mail_config = $mail_config;
+        $this->dry_run = isset($params['dry-run']) ? $params['dry-run'] : null;
     }
 
     /**
      * @return bool Sends a HTML diff e-mail.
      */
     public function send() {
+
+        if($this->dry_run) { print($this->build_message()); }
+
         return mail(
             $this->mail_config['to'],
             $this->mail_config['subject'],
