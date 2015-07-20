@@ -67,6 +67,27 @@ class CliParser {
             ++$n_arg;
         }
 
+        // Insert default values if empty
+        foreach($this->cli_settings as $key => $value) {
+            $not_set = !isset($params[$value['name']]);
+            $has_default = isset($value['default']) ? true : false;
+            if($has_default === true && $not_set === true)
+            {
+                $params[$value['name']] = $value['default'];
+            }
+        }
+
+        // Check required
+        foreach($this->cli_settings as $key => $value) {
+            $not_set = !isset($params[$value['name']]);
+            $is_required = isset($value['required']) ? $value['required'] : false;
+            if($is_required === true && $not_set === true) {
+                throw new InvalidArgumentException("Argument --" . $value['name'] . " is required but was not set.");
+            };
+        }
+
+        var_dump($params);
+
         return $params;
     }
 }
