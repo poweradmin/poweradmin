@@ -193,7 +193,10 @@ ORDER BY time DESC;";
         $fields = array('time', 'event', 'user', 'approving_user', 'domain');
 
         foreach($fields as $field) {
-            $data = $diff[$field];
+            $data = '';
+            if(isset($diff[$field])) {
+                $data = $diff[$field];
+            }
 
             // Special cases
             if($field == 'approving_user')
@@ -219,7 +222,10 @@ ORDER BY time DESC;";
         );
 
         foreach($fields as $field) {
-            $data = $diff[$prefix . "_" . $field];
+            $data = '';
+            if(isset($diff[$prefix . "_" . $field])) {
+                $data = $diff[$prefix . "_" . $field];
+            }
             $colorize_cell = false;
 
             // Try to colorize when we are supposed to do it
