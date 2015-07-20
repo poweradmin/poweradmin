@@ -86,21 +86,21 @@ td.checkbox {
 }
 
 .record-create {
-    background-color: rgb(64, 186, 64);
+    background-color: rgb(53, 188, 175);
 }
 
 .record-delete {
-    background-color: rgb(255, 113, 113);
+    background-color: rgb(255, 121, 121);
 }
 
 .record-edit {}
 
 .domain-delete {
-    background-color: rgb(140, 140, 140);
+    background-color: rgb(175, 171, 151);
 }
 
 .record-edit-cell {
-    background-color: rgb(245, 188, 66);
+    background-color: rgb(239, 214, 85);
 }
 
 .error {
