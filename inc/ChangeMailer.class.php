@@ -10,9 +10,9 @@ class ChangeMailer {
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta name="viewport" content="width=device-width"/>
-	<style>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width"/>
+    <style>
 EOD;
 
     private $HTML_MAIL_FOOTER = <<<'EOD'
@@ -31,6 +31,7 @@ EOD;
         $this->change_logger = $change_logger;
         $this->mail_config = $mail_config;
         $this->dry_run = isset($params['dry-run']) ? $params['dry-run'] : null;
+        $this->changes_since = isset($params['changes-since']) ? $params['changes-since'] : null;
     }
 
     /**
@@ -53,6 +54,12 @@ EOD;
      */
     private function build_message()
     {
+        if($this->changes_since !== null) {
+            $html_diff = $this->change_logger->html_diff($this->changes_since);
+        } else {
+            $html_diff = $this->change_logger->html_diff();
+        }
+
         return
             $this->HTML_MAIL_HEADER .
             "<style>" .
@@ -61,7 +68,7 @@ EOD;
             $this->mail_config['before_diff'] .
             "<br />" .
             "<br />" .
-            $this->change_logger->html_diff() .
+            $html_diff .
             "<br />" .
             "<br />" .
             $this->mail_config['after_diff'] .

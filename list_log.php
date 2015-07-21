@@ -42,9 +42,34 @@ if(!$perm_is_godlike) {
     exit;
 }
 
+$intervals = array(
+    "P1M" => _("One month ago"),
+    "P1W" => _("One week ago"),
+    "P1D" => _("One day ago"),
+    "PT6H" => _("6 hours ago"),
+    "PT1H" => _("An hour ago"),
+);
+$now = new DateTimeImmutable('now', new DateTimeZone('Europe/Berlin'));
+
+echo "<p class=\"hnav\"> <a class=\"hnav-item-first\" href='list_log.php'>" . _("All") . "</a>";
+foreach($intervals as $interval => $text) {
+    $timestamp = $now->sub(new DateInterval($interval))->format('Y-m-d H:i:s');
+    echo " | <a class=\"hnav-item\" href='list_log.php?changes_since=" . $timestamp . "'>" . $text . "</a>";
+}
+echo "</p>";
+
 global $db;
 $log_out = ChangeLogger::with_db($db);
 
-echo $log_out->html_diff();
+// Regex for PHP Datetime::format 'Y-m-d H:i:s'
+// Taken from Perls Regexp::Common::time.
+// Format: yr4-mo2-dy2 hr2:mi2:sc2
+$timestamp_regex = '\d{4}-(?:(?=[01])(?:0[1-9]|1[012]))-(?:(?=[0123])(?:0[1-9]|[12]\d|3[01])) (?:(?=[012])(?:[01]\d|2[0123])):(?:[0-5]\d):(?:(?=[0-6])(?:[0-5]\d|6[01]))';
+if (isset($_GET["changes_since"]) && preg_match("/^" . $timestamp_regex . "$/", $_GET["changes_since"])) {
+    $changes_since = $_GET["changes_since"];
+    echo $log_out->html_diff($changes_since);
+} else {
+    echo $log_out->html_diff();
+}
 
 include_once("inc/footer.inc.php");

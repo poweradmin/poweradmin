@@ -17,9 +17,9 @@ class ChangeLogger
     ///////////////////////////////////////////////////////////////////////////
     // PUBLIC METHODS
 
-    public function html_diff()
+    public function html_diff($changes_since='1970-01-01 00:00:00')
     {
-        $diff_data = $this->get_diff_data_raw();
+        $diff_data = $this->get_diff_data_raw($changes_since);
         $s  = "<table id=\"log-data\">";
 
         // Headers
@@ -128,58 +128,61 @@ class ChangeLogger
     ///////////////////////////////////////////////////////////////////////////
     // HELPER METHODS
 
-    private function get_diff_data_raw()
+    private function get_diff_data_raw($changes_since)
     {
         $sql = "
 (SELECT
-	timestamp                     as time,
-	record_type.name              as event,
-	record.user,
-	record.user_approve,
-	domain_prior.name as domain_prior,
-	domain_after.name as domain_after,
+    timestamp                     as time,
+    record_type.name              as event,
+    record.user,
+    record.user_approve,
+    domain_prior.name as domain_prior,
+    domain_after.name as domain_after,
 
-	record_data_prior.name        as prior_record_name,
-	record_data_prior.type        as prior_record_type,
-	record_data_prior.content     as prior_record_content,
-	record_data_prior.ttl         as prior_record_ttl,
-	record_data_prior.prio        as prior_record_prio,
-	record_data_prior.change_date as prior_record_change_date,
+    record_data_prior.name        as prior_record_name,
+    record_data_prior.type        as prior_record_type,
+    record_data_prior.content     as prior_record_content,
+    record_data_prior.ttl         as prior_record_ttl,
+    record_data_prior.prio        as prior_record_prio,
+    record_data_prior.change_date as prior_record_change_date,
 
-	record_data_after.name        as after_record_name,
-	record_data_after.type        as after_record_type,
-	record_data_after.content     as after_record_content,
-	record_data_after.ttl         as after_record_ttl,
-	record_data_after.prio        as after_record_prio,
-	record_data_after.change_date as after_record_change_date
+    record_data_after.name        as after_record_name,
+    record_data_after.type        as after_record_type,
+    record_data_after.content     as after_record_content,
+    record_data_after.ttl         as after_record_ttl,
+    record_data_after.prio        as after_record_prio,
+    record_data_after.change_date as after_record_change_date
 FROM
-	log_records      record
+    log_records      record
 INNER JOIN
-	log_records_type record_type       ON record.log_records_type_id  = record_type.id
+    log_records_type record_type       ON record.log_records_type_id  = record_type.id
 LEFT JOIN
-	log_records_data record_data_prior ON record.prior                = record_data_prior.id
+    log_records_data record_data_prior ON record.prior                = record_data_prior.id
 LEFT JOIN
-	log_records_data record_data_after ON record.after                = record_data_after.id
+    log_records_data record_data_after ON record.after                = record_data_after.id
 LEFT JOIN
-	domains          domain_prior      ON record_data_prior.domain_id = domain_prior.id
+    domains          domain_prior      ON record_data_prior.domain_id = domain_prior.id
 LEFT JOIN
-	domains          domain_after      ON record_data_after.domain_id = domain_after.id
+    domains          domain_after      ON record_data_after.domain_id = domain_after.id
+WHERE
+    timestamp >= " . $this->db->quote($changes_since, 'text') . "
 )
 
 UNION
 
 (SELECT
-	timestamp                      as time,
+    timestamp                      as time,
     domain_type.name               as event,
     domain.user,
     domain.user_approve,
     domain.domain_name,
     null, null, null, null, null, null, null, null, null, null, null, null, null
 FROM
-	log_domains     domain
+    log_domains     domain
 INNER JOIN
-	log_domains_type domain_type ON domain.log_domains_type_id = domain_type.id
-
+    log_domains_type domain_type ON domain.log_domains_type_id = domain_type.id
+WHERE
+    timestamp >= " . $this->db->quote($changes_since, 'text') . "
 )
 
 ORDER BY time DESC;";
@@ -239,7 +242,7 @@ ORDER BY time DESC;";
             }
 
             if($colorize_cell) {
-                $s .= "<td class=\"record-edit-cell\">" . $data . "</td>";
+                $s .= "<td class=\"record-edit-cell-" . $prefix . "\">" . $data . "</td>";
             } else {
                 $s .= "<td>" . $data . "</td>";
             }
