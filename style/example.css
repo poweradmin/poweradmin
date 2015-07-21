@@ -86,7 +86,7 @@ td.checkbox {
 }
 
 .record-create {
-    background-color: rgb(53, 188, 175);
+    background-color: rgb(55, 184, 87);
 }
 
 .record-delete {
@@ -99,8 +99,28 @@ td.checkbox {
     background-color: rgb(175, 171, 151);
 }
 
-.record-edit-cell {
-    background-color: rgb(239, 214, 85);
+td.record-edit-cell-prior {
+    background-color: rgb(255, 121, 121);
+}
+
+td.record-edit-cell-after {
+    background-color: rgb(55, 184, 87);
+}
+
+.hnav {
+    margin: 5px 0;
+}
+
+.hnav-item {
+    margin: 0 5px;
+    display: inline-block;
+    line-height: 50px;
+}
+
+.hnav-item-first {
+    margin-right: 5px;
+    display: inline-block;
+    line-height: 50px;
 }
 
 .error {
