@@ -85,9 +85,6 @@ class CliParser {
                 throw new InvalidArgumentException("Argument --" . $value['name'] . " is required but was not set.");
             };
         }
-
-        var_dump($params);
-
         return $params;
     }
 }
