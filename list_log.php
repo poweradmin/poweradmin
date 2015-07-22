@@ -60,14 +60,10 @@ foreach($intervals as $interval => $text) {
 }
 echo "</p>";
 
+// Show the diff
 global $db;
 $log_out = ChangeLogger::with_db($db);
-
-// Regex for PHP Datetime::format 'Y-m-d H:i:s'
-// Taken from Perls Regexp::Common::time.
-// Format: yr4-mo2-dy2 hr2:mi2:sc2
-$timestamp_regex = '\d{4}-(?:(?=[01])(?:0[1-9]|1[012]))-(?:(?=[0123])(?:0[1-9]|[12]\d|3[01])) (?:(?=[012])(?:[01]\d|2[0123])):(?:[0-5]\d):(?:(?=[0-6])(?:[0-5]\d|6[01]))';
-if (isset($_GET["changes_since"]) && preg_match("/^" . $timestamp_regex . "$/", $_GET["changes_since"])) {
+if (isset($_GET["changes_since"]) && preg_match("/^" . $th->regex() . "$/", $_GET["changes_since"])) {
     // Show only logs since …
     $changes_since = $_GET["changes_since"];
     echo $log_out->html_diff($changes_since);
