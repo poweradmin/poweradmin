@@ -32,6 +32,7 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 include_once("inc/ChangeLogger.class.php");
+include_once("inc/TimeHelper.class.php");
 
 
 echo "<h2>" . _('Show logs') . "</h2>";
@@ -49,11 +50,12 @@ $intervals = array(
     "PT6H" => _("6 hours ago"),
     "PT1H" => _("An hour ago"),
 );
-$now = new DateTimeImmutable('now', new DateTimeZone('Europe/Berlin'));
+$th = new TimeHelper();
 
+// Show the horizontal timespan-selection menu
 echo '<p class="hnav"> <a class="hnav-item-first" href="list_log.php">' . _("All") . '</a>';
 foreach($intervals as $interval => $text) {
-    $timestamp = $now->sub(new DateInterval($interval))->format('Y-m-d H:i:s');
+    $timestamp = $th->now_minus($interval)->format($th->format);
     echo ' | <a class="hnav-item" href="list_log.php?changes_since=' . $timestamp . '">' . $text . "</a>";
 }
 echo "</p>";
@@ -66,9 +68,11 @@ $log_out = ChangeLogger::with_db($db);
 // Format: yr4-mo2-dy2 hr2:mi2:sc2
 $timestamp_regex = '\d{4}-(?:(?=[01])(?:0[1-9]|1[012]))-(?:(?=[0123])(?:0[1-9]|[12]\d|3[01])) (?:(?=[012])(?:[01]\d|2[0123])):(?:[0-5]\d):(?:(?=[0-6])(?:[0-5]\d|6[01]))';
 if (isset($_GET["changes_since"]) && preg_match("/^" . $timestamp_regex . "$/", $_GET["changes_since"])) {
+    // Show only logs since …
     $changes_since = $_GET["changes_since"];
     echo $log_out->html_diff($changes_since);
 } else {
+    // Show all logs
     echo $log_out->html_diff();
 }
 
