@@ -17,8 +17,13 @@ class ChangeLogger
     ///////////////////////////////////////////////////////////////////////////
     // PUBLIC METHODS
 
-    public function html_diff($changes_since='1970-01-01 00:00:00')
+    public function html_diff($changes_since = null)
     {
+        if($changes_since == null) {
+            $th = new TimeHelper();
+            $changes_since = $th->beginning_of_time()->format($th->format);
+        }
+
         $diff_data = $this->get_diff_data_raw($changes_since);
         $s  = '<table id="log-data">';
 
