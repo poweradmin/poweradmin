@@ -20,7 +20,7 @@ class ChangeLogger
     public function html_diff($changes_since='1970-01-01 00:00:00')
     {
         $diff_data = $this->get_diff_data_raw($changes_since);
-        $s  = "<table id=\"log-data\">";
+        $s  = '<table id="log-data">';
 
         // Headers
         $s .= "<tr>";
@@ -95,13 +95,13 @@ class ChangeLogger
         $colorize_edit = true;
 
         // Part with rowspan (meta + data)
-        $s = "<tr class=\"record-edit\">";
+        $s = '<tr class="record-edit">';
         $s .= $this->get_diff_meta($diff, $rowspan);
         $s .= $this->get_diff_data($diff, 'prior', $colorize_edit);
         $s .= "</tr>";
 
         // Part without (only data)
-        $s .= "<tr class=\"record-edit\">";
+        $s .= '<tr class="record-edit">';
         $s .= $this->get_diff_data($diff, 'after', $colorize_edit);
         $s .= "</tr>";
 
@@ -118,7 +118,7 @@ class ChangeLogger
     {
         $rowspan = 0;
 
-        $s  = "<tr class=\"$class\">";
+        $s  = "<tr class=" . $class . ">";
         $s .= $this->get_diff_meta($diff, $rowspan);
         $s .= $this->get_diff_data($diff, $prefix);
         $s .= "</tr>";
@@ -192,7 +192,7 @@ ORDER BY time DESC;";
     private function get_diff_meta($diff, $rowspan)
     {
         $s = "";
-        $rowspan_attr = $rowspan > 0 ? " rowspan=\"$rowspan\"" : "";
+        $rowspan_attr = $rowspan > 0 ? " rowspan=" . $rowspan : "";
         $fields = array('time', 'event', 'user', 'approving_user', 'domain');
 
         foreach($fields as $field) {

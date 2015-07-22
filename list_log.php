@@ -34,10 +34,10 @@ include_once("inc/header.inc.php");
 include_once("inc/ChangeLogger.class.php");
 
 
-echo "    <h2>" . _('Show logs') . "</h2>\n";
+echo "<h2>" . _('Show logs') . "</h2>";
 
 if(!$perm_is_godlike) {
-    echo "     <p>" . _('You do not have the permission to see the logs.') . "</p>\n";
+    echo "<p>" . _('You do not have the permission to see the logs.') . "</p>";
     include_once("inc/footer.inc.php");
     exit;
 }
@@ -51,10 +51,10 @@ $intervals = array(
 );
 $now = new DateTimeImmutable('now', new DateTimeZone('Europe/Berlin'));
 
-echo "<p class=\"hnav\"> <a class=\"hnav-item-first\" href='list_log.php'>" . _("All") . "</a>";
+echo '<p class="hnav"> <a class="hnav-item-first" href="list_log.php">' . _("All") . '</a>';
 foreach($intervals as $interval => $text) {
     $timestamp = $now->sub(new DateInterval($interval))->format('Y-m-d H:i:s');
-    echo " | <a class=\"hnav-item\" href='list_log.php?changes_since=" . $timestamp . "'>" . $text . "</a>";
+    echo ' | <a class="hnav-item" href="list_log.php?changes_since=' . $timestamp . '">' . $text . "</a>";
 }
 echo "</p>";
 
