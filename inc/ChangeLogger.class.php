@@ -1,5 +1,8 @@
 <?php
 
+require_once('ChangeLogger.class.php');
+require_once('TimeHelper.class.php');
+
 class ChangeLogger
 {
     private $db;
