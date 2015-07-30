@@ -34,6 +34,11 @@ $cli_args = array(
         'count' => 1,
         'required' => true,
     ),
+    '--from' => array(
+        'name' => 'from',
+        'type' => 'arg',
+        'count' => 1,
+    ),
     '--header' => array(
         'name' => 'header',
         'type' => 'arg',
@@ -57,8 +62,7 @@ $mail_config = array(
     "headers" => array(
         "MIME-Version" => "1.0",
         "Content-Type" => "text/html; charset=UTF-8",
-        "From" => "1234@noris.de",
-        "Reply-To" => "1234@noris.de"
+        "From" => getindex($params, 'from', 'support@noris.de'),
     ),
     "before_diff" => getindex($params, 'header', ''),
     "after_diff" => getindex($params, 'footer', '')

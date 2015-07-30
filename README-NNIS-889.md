@@ -52,6 +52,11 @@ Akzeptiert mehrere Argumente, z.B.
 Benötigt.
 Ein String für den Betreff.
 
+--from
+Optional.
+Ein String für den Absender.
+Standardmäßig auf 'support@noris.de' gesetzt.
+
 --header
 Optional.
 Eine Zeichenkette die der der HTML Tabelle vorangestellt wird.
