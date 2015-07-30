@@ -39,7 +39,7 @@ EOD;
      */
     public function send() {
 
-        if($this->dry_run) { print($this->build_message()); }
+        if($this->dry_run) { return print($this->build_message()); }
 
         return mail(
             $this->mail_config['to'],
