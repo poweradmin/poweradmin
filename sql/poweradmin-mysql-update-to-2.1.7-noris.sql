@@ -3,7 +3,7 @@ START TRANSACTION;
 #################################################
 # Type tables
 #################################################
-CREATE TABLE IF NOT EXISTS `powerdns`.`log_domains_type` (
+CREATE TABLE IF NOT EXISTS `log_domains_type` (
   `id`    INT         NOT NULL AUTO_INCREMENT,
   `name`  VARCHAR(32) NOT NULL,
   PRIMARY KEY (`id`),
@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `powerdns`.`log_domains_type` (
   UNIQUE INDEX `name_UNIQUE` (`name` ASC)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE IF NOT EXISTS `powerdns`.`log_records_type` (
+CREATE TABLE IF NOT EXISTS `log_records_type` (
   `id`    INT         NOT NULL AUTO_INCREMENT,
   `name`  VARCHAR(32) NOT NULL,
   PRIMARY KEY (`id`),
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `powerdns`.`log_records_type` (
 #################################################
 
 # For a record
-CREATE TABLE IF NOT EXISTS `powerdns`.`log_records_data` (
+CREATE TABLE IF NOT EXISTS `log_records_data` (
   `id`          INT             NOT NULL AUTO_INCREMENT,
   `domain_id`   INT,
   `name`        VARCHAR(255),
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `powerdns`.`log_records_data` (
 #################################################
 
 # Logs when (maybe with help of an approving user) a domain was created or deleted
-CREATE TABLE IF NOT EXISTS `powerdns`.`log_domains` (
+CREATE TABLE IF NOT EXISTS `log_domains` (
   `id`                  INT          NOT NULL AUTO_INCREMENT,
   `log_domains_type_id` INT          NOT NULL,
   `domain_name`         VARCHAR(255) NOT NULL,
@@ -54,11 +54,11 @@ CREATE TABLE IF NOT EXISTS `powerdns`.`log_domains` (
 
   CONSTRAINT `fk_log_domains_1`
   FOREIGN KEY (`log_domains_type_id`)
-  REFERENCES `powerdns`.`log_domains_type` (`id`)
+  REFERENCES `log_domains_type` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 # Logs when (maybe with help of an approving user) a record was created/edited/deleted
-CREATE TABLE IF NOT EXISTS `powerdns`.`log_records` (
+CREATE TABLE IF NOT EXISTS `log_records` (
   `id`                    INT         NOT NULL AUTO_INCREMENT,
   `log_records_type_id`   INT         NOT NULL,
   `timestamp`             DATETIME    NOT NULL,
@@ -74,27 +74,27 @@ CREATE TABLE IF NOT EXISTS `powerdns`.`log_records` (
 
   CONSTRAINT `fk_log_records_1`
   FOREIGN KEY (`log_records_type_id`)
-  REFERENCES `powerdns`.`log_records_type` (`id`),
+  REFERENCES `log_records_type` (`id`),
 
   CONSTRAINT `fk_log_records_2`
   FOREIGN KEY (`prior`)
-  REFERENCES `powerdns`.`log_records_data` (`id`),
+  REFERENCES `log_records_data` (`id`),
 
   CONSTRAINT `fk_log_records_3`
   FOREIGN KEY (`after`)
-  REFERENCES `powerdns`.`log_records_data` (`id`)
+  REFERENCES `log_records_data` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 #################################################
 # Data
 #################################################
-LOCK TABLES `powerdns`.`log_domains_type` WRITE;
-INSERT INTO `powerdns`.`log_domains_type` VALUES
+LOCK TABLES `log_domains_type` WRITE;
+INSERT INTO `log_domains_type` VALUES
   (1, 'domain_create'), (2, 'domain_delete');
 UNLOCK TABLES;
 
-LOCK TABLES `powerdns`.`log_records_type` WRITE;
-INSERT INTO `powerdns`.`log_records_type` VALUES
+LOCK TABLES `log_records_type` WRITE;
+INSERT INTO `log_records_type` VALUES
   (1, 'record_create'), (2, 'record_edit'), (3, 'record_delete');
 UNLOCK TABLES;
 
