@@ -26,7 +26,7 @@ class TimeHelper
         $this->regex = implode($this->regex_parts);
     }
 
-    private function now() {
+    public function now() {
         return new DateTimeImmutable('now', $this->timezone);
     }
 
