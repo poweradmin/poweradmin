@@ -14,17 +14,16 @@ UNLOCK TABLES;
 #################################################
 
 # The metadata for RFCs
-CREATE TABLE IF NOT EXISTS `rfcs` (
+CREATE TABLE IF NOT EXISTS `rfc` (
   `id`        INT         NOT NULL AUTO_INCREMENT,
   `timestamp` DATETIME    NOT NULL,
   `initiator` VARCHAR(64) NOT NULL,
-  `expired`   BOOLEAN               DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 # The actual data for RFCs (shadow version of `records`)
 CREATE TABLE IF NOT EXISTS `rfc_data` (
-  `id`          INT           NOT NULL AUTO_INCREMENT,
+  `id`          INT             NOT NULL AUTO_INCREMENT,
   `domain_id`   VARCHAR(45),
   `name`        VARCHAR(255),
   `type`        VARCHAR(10),
@@ -32,14 +31,37 @@ CREATE TABLE IF NOT EXISTS `rfc_data` (
   `ttl`         INT(11),
   `prio`        INT(11),
   `change_date` INT(11),
-  `rfc` INT(11)               NOT NULL,
-  PRIMARY KEY (`id`, `rfc`),
-
-  INDEX `fk_rfc_data_1_idx` (`rfc` ASC),
-
-  CONSTRAINT `fk_rfc_data_1`
-  FOREIGN KEY (`rfc`)
-  REFERENCES `rfcs` (`id`)
+  `rfc`         INT(11)         NOT NULL,
+  PRIMARY KEY (`id`, `rfc`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+# A change in a zone
+CREATE TABLE IF NOT EXISTS `rfc_change` (
+  `id`     INT          NOT NULL AUTO_INCREMENT,
+  `zone`   VARCHAR(255) NOT NULL,
+  `serial` VARCHAR(45)  NOT NULL,
+  `prior`  INT,
+  `after`  INT,
+  `rfc`    INT          NOT NULL,
+  PRIMARY KEY (`id`),
+
+  INDEX `fk_rfc_change_1_idx` (`prior` ASC),
+  INDEX `fk_rfc_change_2_idx` (`after` ASC),
+  INDEX `fk_rfc_change_3_idx` (`rfc` ASC),
+
+  CONSTRAINT `fk_rfc_change_1`
+  FOREIGN KEY (`prior`)
+  REFERENCES `rfc_data` (`id`),
+
+  CONSTRAINT `fk_rfc_change_2`
+  FOREIGN KEY (`after`)
+  REFERENCES `rfc_data` (`id`),
+
+  CONSTRAINT `fk_rfc_change_3`
+  FOREIGN KEY (`rfc`)
+  REFERENCES `rfc` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
 
 COMMIT;
