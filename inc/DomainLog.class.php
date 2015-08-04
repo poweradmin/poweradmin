@@ -1,5 +1,7 @@
 <?php
 
+require_once('TimeHelper.class.php');
+
 class DomainLog {
 
     private $db;
@@ -30,12 +32,13 @@ class DomainLog {
     }
 
     private function getUser() {
+        // TODO: Move to utility class
         return $_SESSION['userlogin'];
     }
 
     private function getDate() {
-        $localtime = new DateTime('now', new DateTimeZone('Europe/Berlin'));
-        return $localtime->format('Y-m-d H:i:s');
+        $th = new TimeHelper();
+        return $th->now()->format($th->format);
     }
 
     private function set_database($db) {
