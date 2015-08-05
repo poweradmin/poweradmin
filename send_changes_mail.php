@@ -71,11 +71,27 @@ $db = dbConnect();
 
 $change_logger = ChangeLogger::with_db($db);
 $mailer = new ChangeMailer($mail_config, $change_logger, $params);
-$sent_successfully = $mailer->send();
+$status = $mailer->send();
 
-if(!$sent_successfully) {
-    exit(1);
+if ($status === EmailStatus::SUCCESS) {
+    echo "Sent.";
+    exit(0);
 }
 
-exit(0);
+if ($status === EmailStatus::ERROR) {
+    echo "Error sending mail. PHPs `mail()` returned `false`.\n";
+    exit(1);
+}
+if ($status === EmailStatus::NO_CHANGES) {
+    $changes_since = isset($params['changes-since']) ? $params['changes-since'] : null;
 
+    if ($changes_since === null) {
+        echo "No changes in forever.";
+    } else {
+        printf("No changes since %s.\n", $changes_since);
+    }
+    exit(0);
+}
+if ($status === EmailStatus::DRY_RUN) {
+    exit(0);
+}

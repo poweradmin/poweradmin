@@ -1,5 +1,12 @@
 <?php
 
+abstract class EmailStatus {
+    const SUCCESS = 0;
+    const ERROR = 1;
+    const NO_CHANGES = 2;
+    const DRY_RUN = 3;
+}
+
 class ChangeMailer {
     /**
      * @var array Mail configuration.
@@ -35,44 +42,57 @@ EOD;
     }
 
     /**
-     * @return bool Sends a HTML diff e-mail.
+     * Sends a HTML diff e-mail.
+     * @return EmailStatus Whether the mail was sent, sent to stdout or not sent at all.
      */
     public function send() {
+        // Create diff
+        $html_diff = $this->build_html_diff();
 
-        if($this->dry_run) { return print($this->build_message()); }
+        // Must be called after creating the diff
+        if (!$this->change_logger->has_changes()) {
+            return EmailStatus::NO_CHANGES;
+        }
 
-        return mail(
+        if ($this->dry_run) {
+            print($this->build_message($html_diff));
+            return EmailStatus::DRY_RUN;
+        }
+
+        $success = mail(
             $this->mail_config['to'],
             $this->mail_config['subject'],
-            $this->build_message(),
-            $this->build_header($this->mail_config['headers']));
+            $this->build_message($html_diff),
+            $this->build_header($this->mail_config['headers'])
+        );
+
+        if ($success === true) {
+            return EmailStatus::SUCCESS;
+        } else {
+            return EmailStatus::ERROR;
+        }
     }
 
     /**
+     * @param string $html_diff The diff as a HTML table.
      * @return string Creates the email message, wrapping the diff in before and after content,
      * separated by HTML newlines.
      */
-    private function build_message()
+    private function build_message($html_diff)
     {
-        if($this->changes_since !== null) {
-            $html_diff = $this->change_logger->html_diff($this->changes_since);
-        } else {
-            $html_diff = $this->change_logger->html_diff();
-        }
-
         return
-            $this->HTML_MAIL_HEADER .
-            "<style>" .
-            $this->build_style() .
-            "</style>" .
-            $this->mail_config['before_diff'] .
-            "<br />" .
-            "<br />" .
-            $html_diff .
-            "<br />" .
-            "<br />" .
-            $this->mail_config['after_diff'] .
-            $this->HTML_MAIL_FOOTER;
+            $this->HTML_MAIL_HEADER
+            . "<style>"
+            . $this->build_style()
+            . "</style>"
+            . $this->mail_config['before_diff']
+            . "<br />"
+            . "<br />"
+            . $html_diff
+            . "<br />"
+            . "<br />"
+            . $this->mail_config['after_diff']
+            . $this->HTML_MAIL_FOOTER;
     }
 
     /**
@@ -91,5 +111,13 @@ EOD;
     private function build_style() {
         global $iface_style;
         return file_get_contents("./style/" . $iface_style . ".css");
+    }
+
+    private function build_html_diff() {
+        if ($this->changes_since !== null) {
+            return $this->change_logger->html_diff($this->changes_since);
+        } else {
+            return $this->change_logger->html_diff();
+        }
     }
 }
