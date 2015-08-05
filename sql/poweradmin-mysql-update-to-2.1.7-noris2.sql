@@ -31,8 +31,7 @@ CREATE TABLE IF NOT EXISTS `rfc_data` (
   `ttl`         INT(11),
   `prio`        INT(11),
   `change_date` INT(11),
-  `rfc`         INT(11)         NOT NULL,
-  PRIMARY KEY (`id`, `rfc`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 # A change in a zone
