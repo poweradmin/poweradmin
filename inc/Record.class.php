@@ -18,8 +18,14 @@ class Record
     public function __construct($record)
     {
         # Some fields have different names sometimes
-        if(isset($record['rid'])) { $record['id'] = $record['rid']; }
-        if(isset($record['zid'])) { $record['domain_id'] = $record['zid']; }
+        if (isset($record['rid'])) {
+            $record['id'] = $record['rid'];
+            unset($record['rid']);
+        }
+        if (isset($record['zid'])) {
+            $record['domain_id'] = $record['zid'];
+            unset($record['zid']);
+        }
 
         # Remove invalid fields
         $valid_fields = array('id', 'domain_id', 'name', 'type', 'content', 'ttl', 'prio', 'change_date');
