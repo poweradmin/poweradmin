@@ -42,65 +42,72 @@ class Record
     /**
      * @return integer
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
     /**
      * @return integer
      */
-    public function getZone() {
+    public function getZone()
+    {
         return $this->getDomainId();
     }
 
     /**
      * @return integer
      */
-    public function getDomainId() {
+    public function getDomainId()
+    {
         return $this->domain_id;
     }
 
     /**
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
     /**
      * @return string
      */
-    public function getType() {
+    public function getType()
+    {
         return $this->type;
     }
 
     /**
      * @return string
      */
-    public function getContent() {
+    public function getContent()
+    {
         return $this->content;
     }
 
     /**
      * @return integer
      */
-    public function getTtl() {
+    public function getTtl()
+    {
         return $this->ttl;
     }
 
     /**
      * @return integer
      */
-    public function getPrio() {
+    public function getPrio()
+    {
         return $this->prio;
     }
 
     /**
      * @return string
      */
-    public function getChangeDate() {
+    public function getChangeDate()
+    {
         return $this->change_date;
     }
-
-
 }

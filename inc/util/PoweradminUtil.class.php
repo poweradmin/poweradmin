@@ -2,7 +2,8 @@
 
 class PoweradminUtil
 {
-    public static function get_username() {
+    public static function get_username()
+    {
         return $_SESSION['userlogin'];
     }
 }
