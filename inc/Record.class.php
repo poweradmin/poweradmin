@@ -29,8 +29,8 @@ class Record
 
         # Remove invalid fields
         $valid_fields = array('id', 'domain_id', 'name', 'type', 'content', 'ttl', 'prio', 'change_date');
-        foreach($record as $field) {
-            if(!in_array($field, $valid_fields, true)) {
+        foreach ($record as $field) {
+            if (!in_array($field, $valid_fields, true)) {
                 log_notice($field . " is not a valid record field.");
             }
         }
