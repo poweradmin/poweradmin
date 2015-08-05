@@ -14,7 +14,7 @@ class RfcBuilder
         $this->instance = new Rfc();
     }
 
-    public static function make()
+    public static function makeEmptyRfc()
     {
         return new RfcBuilder();
     }
@@ -60,59 +60,109 @@ class Rfc
      */
     private $changes;
 
+    private $timestamp;
+    private $initiator;
+
     /**
-     * Creates a new Rfc with an empty list of changes.
-     * @param string $serial
+     * **Use it only if you know what you are doing**. Use {@link RfcBuilder} instead.
      */
-    public function __construct($serial)
+    public function __construct()
     {
-        $this->serial = $serial;
-        $this->elements = array();
+        $this->changes = array();
     }
 
     /**
      * Adds a change to the RFC.
-     * @param array $prior The record before the change.
-     * @param array $after The record after the change.
+     * @param int $zone The zone id
+     * @param string $serial The serial of zone this
+     * @param Record $before The record before the change.
+     * @param Record $after The record after the change.
      */
-    public function add($prior, $after)
+    public function add_change($zone, $serial, $before, $after)
     {
-        $prior = new Record($prior);
-        $after = new Record($after);
-
-        $zone = $prior->getZone();
-        $serial = get_serial_by_zid($zone);
-
-        $this->changes[] = new RfcChange($zone, $serial, $prior, $after);
-    }
-
-    private function getUser()
-    {
-        // TODO: Move to utility class
-        return $_SESSION['userlogin'];
+        $this->changes[] = new RfcChange($zone, $serial, $before, $after);
     }
 
     /**
      * @param PDOLayer $db A connection to the database.
      * @return bool True, if a RFC was created. False otherwise.
      */
-    public function create($db)
+    public function write($db)
     {
-        if(count($this->changes) === 0) { return false; }
+        if (count($this->changes) === 0) {
+            return false;
+        }
 
         $th = new TimeHelper();
 
         $timestamp = $th->now()->format($th->format);
-        $initiator = $this->getUser();
+        $initiator = PoweradminUtil::get_username();
 
-        # Metadata
+        # Write RFC
         $query = "INSERT INTO rfc (timestamp, initiator) VALUES ("
             . $db->quote($timestamp, 'text') . ","
             . $db->quote($initiator, 'text') . ")";
         $db->exec($query);
+        $rfc_id = $db->lastInsertId(); // TODO: Fix PosgreSQL
 
-        #
+        # Write RFC-Data
+        foreach ($this->changes as $change) {
+            $change->setRfcId($rfc_id);
+            $rfc_change_id = $change->write($db);
+        }
 
         return true;
+    }
+
+    ###########################################################################
+    # GETTERS AND SETTERS #
+    #######################
+
+    /**
+     * @return RfcChange[]
+     */
+    public function getChanges()
+    {
+        return $this->changes;
+    }
+
+    /**
+     * @param RfcChange[] $changes
+     */
+    public function setChanges($changes)
+    {
+        $this->changes = $changes;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTimestamp()
+    {
+        return $this->timestamp;
+    }
+
+    /**
+     * @param string $timestamp
+     */
+    public function setTimestamp($timestamp)
+    {
+        $this->timestamp = $timestamp;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInitiator()
+    {
+        return $this->initiator;
+    }
+
+    /**
+     * @param string $initiator
+     */
+    public function setInitiator($initiator)
+    {
+        $this->initiator = $initiator;
     }
 }
