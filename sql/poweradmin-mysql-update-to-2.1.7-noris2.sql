@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `rfc_data` (
 # A change in a zone
 CREATE TABLE IF NOT EXISTS `rfc_change` (
   `id`     INT          NOT NULL AUTO_INCREMENT,
-  `zone`   VARCHAR(255) NOT NULL,
+  `zone`   INT          NOT NULL,
   `serial` VARCHAR(45)  NOT NULL,
   `prior`  INT,
   `after`  INT,
