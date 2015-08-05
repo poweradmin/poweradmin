@@ -52,24 +52,24 @@ if (isset($_POST['commit'])) {
     $one_record_changed = false;
 
     if (isset($_POST['record'])) {
-        foreach ($_POST['record'] as $record) {
-            $old_record_info = get_record_from_id($record['rid']);
+        foreach ($_POST['record'] as $record_after) {
+            $record_before = get_record_from_id($record_after['rid']);
 
             // Check if a record changed and save the state
             $log = new RecordLog();
-            $log->log_prior($record['rid']);
-            if (!$log->has_changed($record)) {
+            $log->log_prior($record_after['rid']);
+            if (!$log->has_changed($record_after)) {
                 continue;
             } else {
                 $one_record_changed = true;
             }
 
-            $edit_record = edit_record($record);
+            $edit_record = edit_record($record_after);
             if (false === $edit_record) {
                 $error = true;
             } else {
                 // Log the state after saving and write it to logging table
-                $log->log_after($record['rid']);
+                $log->log_after($record_after['rid']);
                 $log->writeChange();
             }
         }
