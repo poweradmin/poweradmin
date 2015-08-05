@@ -15,3 +15,8 @@
 
     * TimeHelper.class.php
     *
+
+* Compatability
+
+    * lastInsertId for PostgreSQL.
+    * SQL (-noris) for other RDBMS
