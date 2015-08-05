@@ -6,6 +6,7 @@ require_once('TimeHelper.class.php');
 class ChangeLogger
 {
     private $db;
+    private $has_changes = false;
 
     ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -47,6 +48,7 @@ class ChangeLogger
 
         // Data
         while($diff = $diff_data->fetchRow()) {
+            $this->has_changes = true;
             $this->merge_domain_name($diff);
 
             switch($diff['event']) {
@@ -268,5 +270,9 @@ ORDER BY time DESC;";
     private function set_database($db)
     {
         $this->db = $db;
+    }
+
+    public function has_changes() {
+        return $this->has_changes;
     }
 }
