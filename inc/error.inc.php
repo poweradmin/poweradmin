@@ -132,6 +132,7 @@ define("SUC_ZONES_DEL", _('Zones have been deleted successfully.'));
 define("SUC_ZONE_UPD", _('Zone has been updated successfully.'));
 define("SUC_ZONE_NOCHANGE", _('Zone did not have any record changes.'));
 define("SUC_ZONES_UPD", _('Zones have been updated successfully.'));
+define("SUC_RFC_CREATED", _('A <a href="list_rfc.php">RFC for your changes has been created.</a>'));
 define("SUC_USER_UPD", _('The user has been updated successfully.'));
 define("SUC_USER_ADD", _('The user has been created successfully.'));
 define("SUC_USER_DEL", _('The user has been deleted successfully.'));

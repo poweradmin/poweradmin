@@ -33,6 +33,7 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 include_once("inc/RecordLog.class.php");
+include_once("inc/Rfc.class.php");
 
 global $pdnssec_use;
 
@@ -105,6 +106,43 @@ if (isset($_POST['save_as'])) {
         success(SUC_ZONE_TEMPL_ADD);
         $records = get_records_from_domain_id($zone_id);
         add_zone_templ_save_as($_POST['templ_name'], $_POST['templ_descr'], $_SESSION['userid'], $records, get_zone_name_from_id($zone_id));
+    }
+}
+
+if (isset($_POST['create_rfc'])) {
+    global $db;
+    $one_record_changed = false;
+
+    $rfc = RfcBuilder::makeEmptyRfc()->now()->myself()->build();
+
+    if (isset($_POST['record'])) {
+        foreach ($_POST['record'] as $record_after) {
+            $rid = $record_after['rid'];
+            $record_before = get_record_from_id($rid);
+
+            $log = new RecordLog();
+            $log->log_prior($rid);
+            if (!$log->has_changed($record_after)) {
+                continue;
+            }
+
+            // We have a change
+            $one_record_changed = true;
+
+            $before = new Record($record_before);
+            $after = new Record($record_after);
+            $serial = get_serial_by_zid($before->getZone());
+
+            // Because we have two valid records with identical zones, just use one of them.
+            $rfc->add_change($before->getZone(), $serial, $before, $after);
+        }
+
+        if ($one_record_changed) {
+            $rfc->write($db);
+            success(SUC_RFC_CREATED);
+        } else {
+            success(SUC_ZONE_NOCHANGE);
+        }
     }
 }
 
