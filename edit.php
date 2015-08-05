@@ -309,7 +309,23 @@ if ($records == "-1") {
     echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_descr\" value=\"\"></td>\n";
     echo "      </tr>\n";
     echo "    </table>\n";
-    echo "     <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
+
+    // Show 'Create RFC' only if I am authorized
+    if ($perm_is_godlike
+        || $zone_content_rfc_other
+        || ($zone_content_rfc_own && $user_is_zone_owner)
+    ) {
+        echo '<input type="submit" class="button" name="create_rfc" value="' . _('Create RFC') . '">' . "\n";
+    }
+
+    // Show 'Commit changes' only if I am authorized
+    if($perm_is_godlike
+        || ($perm_content_edit === 'all')
+        || ($perm_content_edit === 'own' && $user_is_zone_owner)
+    ) {
+        echo "     <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
+    }
+
     echo "     <input type=\"reset\" class=\"button\" name=\"reset\" value=\"" . _('Reset changes') . "\">\n";
     echo "     <input type=\"submit\" class=\"button\" name=\"save_as\" value=\"" . _('Save as template') . "\">\n";
 

@@ -71,6 +71,9 @@ if($perm_is_godlike) {
     $timestamp = $th->now_minus('P1W')->format($th->format);
     echo '<li><a href="list_log.php?changes_since=' . $timestamp . '">' . _('List logs') . '</a></li>';
 }
+if($perm_is_godlike || $zone_content_rfc_other || $zone_content_rfc_own) {
+    echo '<li class="menuitem"><a href="list_rfc.php">' . _('Manage RFCs') . '</a></li>';
+}
 if ($_SESSION["auth_used"] != "ldap") {
     echo "    <li><a href=\"change_password.php\">" . _('Change password') . "</a></li>\n";
 }

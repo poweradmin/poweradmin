@@ -69,6 +69,9 @@ if (file_exists('install')) {
     do_hook('verify_permission', 'supermaster_add') ? $perm_supermaster_add = "1" : $perm_supermaster_add = "0";
     do_hook('verify_permission', 'user_is_ueberuser') ? $perm_is_godlike = "1" : $perm_is_godlike = "0";
 
+    do_hook('verify_permission', 'zone_content_rfc_own') ? $zone_content_rfc_own = "1" : $zone_content_rfc_own = "0";
+    do_hook('verify_permission', 'zone_content_rfc_other') ? $zone_content_rfc_other = "1" : $zone_content_rfc_other = "0";
+
     if ($perm_is_godlike == 1 && $session_key == 'p0w3r4dm1n') {
         error(ERR_DEFAULT_CRYPTOKEY_USED);
         echo "<br>";
@@ -104,6 +107,9 @@ if (file_exists('install')) {
         $th = new TimeHelper();
         $changes_since = $th->now_minus('P1W')->format($th->format);
         echo '<span class="menuitem"><a href="list_log.php?changes_since=' . $changes_since . '">' . _('List logs') . '</a></span>';
+    }
+    if($perm_is_godlike || $zone_content_rfc_other || $zone_content_rfc_own) {
+        echo '<span class="menuitem"><a href="list_rfc.php">' . _('Manage RFCs') . '</a></span>';
     }
     if ($_SESSION ["auth_used"] != "ldap") {
         echo "    <span class=\"menuitem\"><a href=\"change_password.php\">" . _('Change password') . "</a></span>\n";

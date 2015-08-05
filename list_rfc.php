@@ -31,45 +31,14 @@
  */
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
-include_once("inc/ChangeLogger.class.php");
-include_once("inc/TimeHelper.class.php");
 
 
-echo "<h2>" . _('Show logs') . "</h2>";
+echo "<h2>" . _('Manage RFCs') . "</h2>";
 
-if(!$perm_is_godlike) {
+if(!$zone_content_rfc_other || !$zone_content_rfc_own) {
     echo "<p>" . _('You do not have the permission to see the logs.') . "</p>";
     include_once("inc/footer.inc.php");
     exit;
-}
-
-$intervals = array(
-    "P1M" => _("One month ago"),
-    "P1W" => _("One week ago"),
-    "P1D" => _("One day ago"),
-    "PT6H" => _("6 hours ago"),
-    "PT1H" => _("An hour ago"),
-);
-$th = new TimeHelper();
-
-// Show the horizontal timespan-selection menu
-echo '<p class="hnav"> <a class="hnav-item-first" href="list_log.php">' . _("All") . '</a>';
-foreach($intervals as $interval => $text) {
-    $timestamp = $th->now_minus($interval)->format($th->format);
-    echo ' | <a class="hnav-item" href="list_log.php?changes_since=' . $timestamp . '">' . $text . "</a>";
-}
-echo "</p>";
-
-// Show the diff
-global $db;
-$log_out = ChangeLogger::with_db($db);
-if (isset($_GET["changes_since"]) && preg_match("/^" . $th->regex() . "$/", $_GET["changes_since"])) {
-    // Show only logs since …
-    $changes_since = $_GET["changes_since"];
-    echo $log_out->html_diff($changes_since);
-} else {
-    // Show all logs
-    echo $log_out->html_diff();
 }
 
 include_once("inc/footer.inc.php");
