@@ -3,6 +3,52 @@
 require_once('TimeHelper.class.php');
 require_once('Record.class.php');
 require_once('RfcChange.class.php');
+require_once('util/PoweradminUtil.class.php');
+
+class RfcBuilder
+{
+    private $instance;
+
+    private function __construct()
+    {
+        $this->instance = new Rfc();
+    }
+
+    public static function make()
+    {
+        return new RfcBuilder();
+    }
+
+    public function timestamp($timestamp)
+    {
+        $this->instance->setTimestamp($timestamp);
+        return $this;
+    }
+
+    public function now()
+    {
+        $th = new TimeHelper();
+        $this->instance->setTimestamp($th->now()->format($th->format));
+        return $this;
+    }
+
+    public function myself()
+    {
+        $this->instance->setInitiator(PoweradminUtil::get_username());
+        return $this;
+    }
+
+    public function initiator($initiator)
+    {
+        $this->instance->setInitiator($initiator);
+        return $this;
+    }
+
+    public function build()
+    {
+        return $this->instance;
+    }
+}
 
 /**
  * A RFC is a list of record inserts/updates/deletes in one zone.
