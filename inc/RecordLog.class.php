@@ -165,8 +165,8 @@ class RecordLog {
         $db->exec($log_insert_record);
     }
 
-    public function has_changed($record) {
-        return $this->record_comparator->has_changed($this->record_prior, $record);
+    public function has_changed($record, $append_zone) {
+        return $this->record_comparator->has_changed($this->record_prior, $record, $append_zone);
     }
 
     public function write_delete_all($domain_id) {

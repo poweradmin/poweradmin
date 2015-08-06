@@ -59,7 +59,7 @@ if (isset($_POST['commit'])) {
             // Check if a record changed and save the state
             $log = new RecordLog();
             $log->log_prior($record_after['rid']);
-            if (!$log->has_changed($record_after)) {
+            if (!$log->has_changed($record_after, false)) {
                 continue;
             } else {
                 $one_record_changed = true;
@@ -122,7 +122,7 @@ if (isset($_POST['create_rfc'])) {
 
             $log = new RecordLog();
             $log->log_prior($rid);
-            if (!$log->has_changed($record_after)) {
+            if (!$log->has_changed($record_after, false)) {
                 continue;
             }
 
