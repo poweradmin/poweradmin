@@ -437,7 +437,23 @@ if ($perm_content_edit == "all" || ($perm_content_edit == "own" || $perm_content
         echo "        <td class=\"n\"><input type=\"text\" name=\"ttl\" class=\"sinput\" value=\"\"></td>\n";
         echo "       </tr>\n";
         echo "      </table>\n";
-        echo "      <input type=\"submit\" name=\"commit\" value=\"" . _('Add record') . "\" class=\"button\">\n";
+
+        // Show only if I am authorized
+        if ($perm_is_godlike
+            || $zone_content_rfc_other
+            || ($zone_content_rfc_own && $user_is_zone_owner)
+        ) {
+            echo '<input type="submit" class="button" name="create_rfc" value="' . _('Create RFC') . '">';
+        }
+
+        // Show only if I am authorized
+        if($perm_is_godlike
+            || ($perm_content_edit === 'all')
+            || ($perm_content_edit === 'own' && $user_is_zone_owner)
+        ) {
+            echo '<input type="submit" class="button" name="commit" value="' . _('Add record') . '">';
+        }
+
         echo "      $rev";
         echo "     </form>\n";
     }
