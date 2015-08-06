@@ -127,8 +127,9 @@ if (isset($_POST["commit"])) {
         // a PTR-record is added if an A or an AAAA-record are created
         // and checkbox is checked
 
-        if ((isset($_POST["reverse"])) && $iface_add_reverse_record ) {
+        if ((isset($_POST["reverse"])) && $iface_add_reverse_record) {
             $log = new RecordLog();
+
             if ($type === 'A') {
                 $content_array = preg_split("/\./", $content);
                 $content_rev = sprintf("%d.%d.%d.%d.in-addr.arpa", $content_array[3], $content_array[2], $content_array[1], $content_array[0]);
@@ -137,6 +138,7 @@ if (isset($_POST["commit"])) {
                 $content_rev = convert_ipv6addr_to_ptrrec($content);
                 $zone_rev_id = get_best_matching_zone_id_from_name($content_rev);
             }
+
             if (isset($zone_rev_id) && $zone_rev_id != -1) {
                 $zone_name = get_zone_name_from_id($zone_id);
                 $fqdn_name = sprintf("%s.%s", $name, $zone_name);
@@ -144,13 +146,14 @@ if (isset($_POST["commit"])) {
                     $log->writeNew();
                     success(" <a href=\"edit.php?id=" . $zone_rev_id . "\"> " . _('The PTR-record was successfully added.') . "</a>");
                     log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
-                                      $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                                      $content_rev, $fqdn_name, $ttl, $prio));
-		    if ($pdnssec_use) {
-			    if (dnssec_rectify_zone($zone_rev_id)) {
-				    success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
-			    }
-		    }
+                        $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
+                        $content_rev, $fqdn_name, $ttl, $prio));
+
+                    if ($pdnssec_use) {
+                        if (dnssec_rectify_zone($zone_rev_id)) {
+                            success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
+                        }
+                    }
 
                 }
             } elseif (isset($content_rev)) {
@@ -162,14 +165,14 @@ if (isset($_POST["commit"])) {
         if (add_record($zone_id, $name, $type, $content, $ttl, $prio, $log)) {
             success(" <a href=\"edit.php?id=" . $zone_id . "\"> " . _('The record was successfully added.') . "</a>");
             log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:%s record:%s.%s content:%s ttl:%s priority:%s',
-                              $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                              $type, $name, $zone_name, $content, $ttl, $prio));
+                $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
+                $type, $name, $zone_name, $content, $ttl, $prio));
             $log->writeNew();
-	    if ($pdnssec_use) {
-		    if (dnssec_rectify_zone($zone_id)) {
-			    success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
-		    }
-	    }
+            if ($pdnssec_use) {
+                if (dnssec_rectify_zone($zone_id)) {
+                    success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
+                }
+            }
 
             $name = $type = $content = $ttl = $prio = "";
         }
