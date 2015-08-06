@@ -125,6 +125,10 @@ define('ERR_EXEC_PDNSSEC_RECTIFY_ZONE', _('Failed to rectify zone.'));
 define('ERR_EXEC_PDNSSEC_PRESIGNED_ZONE', _('Failed to change presigned mode'));
 define('ERR_PDNSSEC_DEL_ZONE_KEY', _('Failed to delete DNSSEC key.'));
 
+/* RFCs */
+define("SUC_RFC_CREATED", _('A <a href="list_rfc.php">RFC for your changes</a> has been created.'));
+define("ERR_RFC_PERMISSIONS", _('You do not have enough permissions to do that.'));
+
 /* GOOD! */
 define("SUC_ZONE_ADD", _('Zone has been added successfully.'));
 define("SUC_ZONE_DEL", _('Zone has been deleted successfully.'));
@@ -132,7 +136,6 @@ define("SUC_ZONES_DEL", _('Zones have been deleted successfully.'));
 define("SUC_ZONE_UPD", _('Zone has been updated successfully.'));
 define("SUC_ZONE_NOCHANGE", _('Zone did not have any record changes.'));
 define("SUC_ZONES_UPD", _('Zones have been updated successfully.'));
-define("SUC_RFC_CREATED", _('A <a href="list_rfc.php">RFC for your changes has been created.</a>'));
 define("SUC_USER_UPD", _('The user has been updated successfully.'));
 define("SUC_USER_ADD", _('The user has been created successfully.'));
 define("SUC_USER_DEL", _('The user has been deleted successfully.'));
