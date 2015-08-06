@@ -183,6 +183,7 @@ a:hover	{
 
 .button {
     border:			#999999 1px solid;
+    margin-right:   5px;
 }
 .input {
     border:			#999999 1px solid;
