@@ -32,6 +32,7 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 include_once("inc/RecordLog.class.php");
+include_once("inc/Rfc.class.php");
 
 global $pdnssec_use;
 
@@ -66,6 +67,32 @@ $zid = get_zone_id_from_record_id($_GET['id']);
 $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zid );
 $zone_type = get_domain_type($zid);
 $zone_name = get_zone_name_from_id($zid);
+
+if(isset($_POST['create_rfc'])) {
+    if ($perm_is_godlike || $zone_content_rfc_other || ($zone_content_rfc_own && $user_is_zone_owner)) {
+        $log = new RecordLog();
+        $rid = $_GET['id'];
+        global $db;
+
+        $log->log_prior($rid);
+
+        $before = new Record(get_record_from_id($rid));
+        $after = RecordBuilder::make($rid, $zid, $_POST['name'], $_POST['type'], $_POST['content'], $_POST['prio'], $_POST['ttl'], 0);
+
+        if (!$log->has_changed($after->as_array(), true)) {
+            success(SUC_ZONE_NOCHANGE);
+        } else {
+            $rfc = RfcBuilder::makeEmptyRfc()->now()->myself()->build();
+            $serial = get_serial_by_zid($before->getZone());
+
+            $rfc->add_change($zid, $serial, $before, $after);
+            $rfc->write($db);
+            success(SUC_RFC_CREATED);
+        }
+    } else {
+        error(ERR_RFC_PERMISSIONS);
+    }
+}
 
 if (isset($_POST["commit"])) {
     if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
@@ -171,9 +198,26 @@ if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
         echo "      </tr>\n";
     }
     echo "      </table>\n";
-    echo "       <input type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\" class=\"button\">&nbsp;&nbsp;\n";
-    echo "       <input type=\"reset\" name=\"reset\" value=\"" . _('Reset changes') . "\" class=\"button\">&nbsp;&nbsp;\n";
-    echo "     </form>\n";
+
+    // Show only if I am authorized
+    if ($perm_is_godlike
+        || $zone_content_rfc_other
+        || ($zone_content_rfc_own && $user_is_zone_owner)
+    ) {
+        echo '<input type="submit" class="button" name="create_rfc" value="' . _('Create RFC') . '">';
+    }
+
+    // Show only if I am authorized
+    if($perm_is_godlike
+        || ($perm_content_edit === 'all')
+        || ($perm_content_edit === 'own' && $user_is_zone_owner)
+    ) {
+        echo '<input type="submit" class="button" name="commit" value="' . _('Commit changes') . '">';
+    }
+
+
+    echo '<input type="reset" name="reset" value="' . _('Reset changes') . '" class="button">';
+    echo '</form>';
 }
 
 

@@ -109,40 +109,46 @@ if (isset($_POST['save_as'])) {
     }
 }
 
+$user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );
 if (isset($_POST['create_rfc'])) {
-    global $db;
-    $one_record_changed = false;
+    if ($perm_is_godlike || $zone_content_rfc_other || ($zone_content_rfc_own && $user_is_zone_owner)) {
 
-    $rfc = RfcBuilder::makeEmptyRfc()->now()->myself()->build();
+        global $db;
+        $one_record_changed = false;
 
-    if (isset($_POST['record'])) {
-        foreach ($_POST['record'] as $record_after) {
-            $rid = $record_after['rid'];
-            $record_before = get_record_from_id($rid);
+        $rfc = RfcBuilder::makeEmptyRfc()->now()->myself()->build();
 
-            $log = new RecordLog();
-            $log->log_prior($rid);
-            if (!$log->has_changed($record_after, false)) {
-                continue;
+        if (isset($_POST['record'])) {
+            foreach ($_POST['record'] as $record_after) {
+                $rid = $record_after['rid'];
+                $record_before = get_record_from_id($rid);
+
+                $log = new RecordLog();
+                $log->log_prior($rid);
+                if (!$log->has_changed($record_after, false)) {
+                    continue;
+                }
+
+                // We have a change
+                $one_record_changed = true;
+
+                $before = new Record($record_before);
+                $after = new Record($record_after);
+                $serial = get_serial_by_zid($before->getZone());
+
+                // Because we have two valid records with identical zones, just use one of them.
+                $rfc->add_change($before->getZone(), $serial, $before, $after);
             }
 
-            // We have a change
-            $one_record_changed = true;
-
-            $before = new Record($record_before);
-            $after = new Record($record_after);
-            $serial = get_serial_by_zid($before->getZone());
-
-            // Because we have two valid records with identical zones, just use one of them.
-            $rfc->add_change($before->getZone(), $serial, $before, $after);
+            if ($one_record_changed) {
+                $rfc->write($db);
+                success(SUC_RFC_CREATED);
+            } else {
+                success(SUC_ZONE_NOCHANGE);
+            }
         }
-
-        if ($one_record_changed) {
-            $rfc->write($db);
-            success(SUC_RFC_CREATED);
-        } else {
-            success(SUC_ZONE_NOCHANGE);
-        }
+    } else {
+        error(ERR_RFC_PERMISSIONS);
     }
 }
 

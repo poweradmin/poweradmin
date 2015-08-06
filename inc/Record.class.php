@@ -1,5 +1,22 @@
 <?php
 
+class RecordBuilder {
+    public static function make($id, $domain_id, $name, $type, $content, $prio, $ttl, $change_date)
+    {
+        $args = array(
+            'id'          => $id,
+            'domain_id'   => $domain_id,
+            'name'        => $name,
+            'type'        => $type,
+            'content'     => $content,
+            'prio'        => $prio,
+            'ttl'         => $ttl,
+            'change_date' => $change_date
+        );
+        return new Record($args);
+    }
+}
+
 class Record
 {
     private $id;
@@ -7,8 +24,8 @@ class Record
     private $name;
     private $type;
     private $content;
-    private $ttl;
     private $prio;
+    private $ttl;
     private $change_date;
 
     /**
@@ -27,6 +44,14 @@ class Record
             unset($record['zid']);
         }
 
+        // Append zone name to record if it is not
+        $zone = get_zone_name_from_id($record['domain_id']);
+        if (!(preg_match("/$zone$/i", $record['name']))) {
+            if (isset($record) && $record['name'] != "") {
+                $record['name'] = $record['name'] . "." . $zone;
+            }
+        }
+
         # Remove invalid fields
         $valid_fields = array('id', 'domain_id', 'name', 'type', 'content', 'ttl', 'prio', 'change_date');
         foreach ($record as $field) {
@@ -40,8 +65,8 @@ class Record
         $this->name = $record['name'];
         $this->type = $record['type'];
         $this->content = $record['content'];
-        $this->ttl = $record['ttl'];
         $this->prio = $record['prio'];
+        $this->ttl = $record['ttl'];
         $this->change_date = $record['change_date'];
     }
 
@@ -96,17 +121,17 @@ class Record
     /**
      * @return integer
      */
-    public function getTtl()
+    public function getPrio()
     {
-        return $this->ttl;
+        return $this->prio;
     }
 
     /**
      * @return integer
      */
-    public function getPrio()
+    public function getTtl()
     {
-        return $this->prio;
+        return $this->ttl;
     }
 
     /**
@@ -115,5 +140,19 @@ class Record
     public function getChangeDate()
     {
         return $this->change_date;
+    }
+
+    public function as_array()
+    {
+        return array(
+            'id'          => $this->getId(),
+            'domain_id'   => $this->getDomainId(),
+            'name'        => $this->getName(),
+            'type'        => $this->getType(),
+            'content'     => $this->getContent(),
+            'prio'        => $this->getPrio(),
+            'ttl'         => $this->getTtl(),
+            'change_date' => $this->getChangeDate(),
+        );
     }
 }

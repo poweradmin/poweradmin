@@ -4,7 +4,10 @@ class RecordComparator {
 
     public function has_changed(array $a, array $b, $append_zone = false) {
         if($append_zone) {
-            $this->append_zone_name($b['zid'], $b, $a);
+            $zid = -1;
+            if(isset($b['zid'])) $zid = $b['zid'];
+            if(isset($b['domain_id'])) $zid = $b['domain_id'];
+            $this->append_zone_name($zid, $b, $a);
         }
 
         $this->unsetChangeDate($a);
@@ -42,10 +45,15 @@ class RecordComparator {
 
     private function makeCompatible(&$record) {
         // Make $a and $b compatible
-        $record['id'] = $record['rid'];
-        $record['domain_id'] = $record['zid'];
-        unset($record['zid']);
-        unset($record['rid']);
+        if(isset($record['rid'])) {
+            $record['id'] = $record['rid'];
+            unset($record['rid']);
+        }
+        if(isset($record['zid'])) {
+            $record['domain_id'] = $record['zid'];
+            unset($record['zid']);
+        }
+
         unset($record['commit']);
     }
 }
