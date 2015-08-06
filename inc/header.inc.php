@@ -106,10 +106,10 @@ if (file_exists('install')) {
     if($perm_is_godlike) {
         $th = new TimeHelper();
         $changes_since = $th->now_minus('P1W')->format($th->format);
-        echo '<span class="menuitem"><a href="list_log.php?changes_since=' . $changes_since . '">' . _('List logs') . '</a></span>';
+        echo ' <span class="menuitem"><a href="list_log.php?changes_since=' . $changes_since . '">' . _('List logs') . '</a></span>';
     }
     if($perm_is_godlike || $zone_content_rfc_other || $zone_content_rfc_own) {
-        echo '<span class="menuitem"><a href="list_rfc.php">' . _('Manage RFCs') . '</a></span>';
+        echo ' <span class="menuitem"><a href="list_rfc.php">' . _('Manage RFCs') . '</a></span>';
     }
     if ($_SESSION ["auth_used"] != "ldap") {
         echo "    <span class=\"menuitem\"><a href=\"change_password.php\">" . _('Change password') . "</a></span>\n";
