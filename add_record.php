@@ -32,6 +32,7 @@
 require_once('inc/toolkit.inc.php');
 include_once('inc/header.inc.php');
 include_once("inc/RecordLog.class.php");
+include_once("inc/Rfc.class.php");
 
 global $pdnssec_use;
 

@@ -14,7 +14,7 @@ class RfcBuilder
         $this->instance = new Rfc();
     }
 
-    public static function makeEmptyRfc()
+    public static function make()
     {
         return new RfcBuilder();
     }
@@ -25,6 +25,10 @@ class RfcBuilder
         return $this;
     }
 
+    /**
+     * Set the timestamp to *now*.
+     * @return $this
+     */
     public function now()
     {
         $th = new TimeHelper();
@@ -32,6 +36,10 @@ class RfcBuilder
         return $this;
     }
 
+    /**
+     * Make the current user the initiator.
+     * @return $this
+     */
     public function myself()
     {
         $this->instance->setInitiator(PoweradminUtil::get_username());
@@ -64,7 +72,7 @@ class Rfc
     private $initiator;
 
     /**
-     * **Use it only if you know what you are doing**. Use {@link RfcBuilder} instead.
+     * Use it only if you know what you are doing**. Use {@link RfcBuilder} instead.
      */
     public function __construct()
     {
@@ -115,8 +123,7 @@ class Rfc
     }
 
     ###########################################################################
-    # GETTERS AND SETTERS #
-    #######################
+    # GETTERS AND SETTERS
 
     /**
      * @return RfcChange[]

@@ -74,19 +74,19 @@ $mailer = new ChangeMailer($mail_config, $change_logger, $params);
 $status = $mailer->send();
 
 if ($status === EmailStatus::SUCCESS) {
-    echo "Sent.";
+    printf("Sent.\n");
     exit(0);
 }
 
 if ($status === EmailStatus::ERROR) {
-    echo "Error sending mail. PHPs `mail()` returned `false`.\n";
+    printf("Error sending mail. PHPs `mail()` returned `false`.\n");
     exit(1);
 }
 if ($status === EmailStatus::NO_CHANGES) {
     $changes_since = isset($params['changes-since']) ? $params['changes-since'] : null;
 
     if ($changes_since === null) {
-        echo "No changes in forever.";
+        printf("No changes in forever.\n");
     } else {
         printf("No changes since %s.\n", $changes_since);
     }

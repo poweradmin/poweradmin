@@ -288,6 +288,8 @@ if ($records == "-1") {
                                                 <img src=\"images/delete.gif\" ALT=\"[ " . _('Delete record') . " ]\" BORDER=\"0\"></a>\n";
             echo "     </td>\n";
         }
+
+
         echo "     <td class=\"n\">{$r['id']}</td>\n";
         if ($r['type'] == "SOA" || ($r['type'] == "NS" && $perm_content_edit == "own_as_client")) {
             echo "     <td class=\"n\">" . $r['name'] . "</td>\n";

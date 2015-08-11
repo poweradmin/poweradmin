@@ -1,8 +1,10 @@
 <?php
 
-class RecordComparator {
+class RecordComparator
+{
 
-    public function has_changed(array $a, array $b, $append_zone = false) {
+    public function has_changed(array $a, array $b, $append_zone = false)
+    {
         if($append_zone) {
             $zid = -1;
             if(isset($b['zid'])) $zid = $b['zid'];
@@ -20,7 +22,8 @@ class RecordComparator {
         return ($a != $b);
     }
 
-    private function append_zone_name($zid, &$b, &$a) {
+    private function append_zone_name($zid, &$b, &$a)
+    {
         $zone = get_zone_name_from_id($zid);
 
         if (!(preg_match("/$zone$/i", $b['name']))) {
@@ -32,18 +35,21 @@ class RecordComparator {
         }
     }
 
-    private function unsetChangeDate(&$record) {
+    private function unsetChangeDate(&$record)
+    {
         unset($record["change_date"]);
     }
 
-    private function trim_record_content(&$record) {
+    private function trim_record_content(&$record)
+    {
         // Quotes are special for SPF and TXT
         if ($record['type'] == "SPF" || $record['type'] == "TXT") {
             $record['content'] = trim($record['content'], '"');
         }
     }
 
-    private function makeCompatible(&$record) {
+    private function makeCompatible(&$record)
+    {
         // Make $a and $b compatible
         if(isset($record['rid'])) {
             $record['id'] = $record['rid'];
@@ -58,7 +64,8 @@ class RecordComparator {
     }
 }
 
-class RecordLog {
+class RecordLog
+{
 
     private $db;
     private $record_prior;
@@ -69,25 +76,30 @@ class RecordLog {
      */
     private $record_comparator;
 
-    function __construct() {
+    function __construct()
+    {
         $this->record_comparator = new RecordComparator();
     }
 
-    public static function with_db($db) {
+    public static function with_db($db)
+    {
         $instance = new RecordLog();
         $instance->set_database($db);
         return $instance;
     }
 
-    public function log_prior($rid) {
+    public function log_prior($rid)
+    {
         $this->record_prior = $this->getRecord($rid);
     }
 
-    public function log_after($rid) {
+    public function log_after($rid)
+    {
         $this->record_after = $this->getRecord($rid);
     }
 
-    private function getRecord($rid) {
+    private function getRecord($rid)
+    {
         return get_record_from_id($rid);
     }
 
@@ -95,17 +107,20 @@ class RecordLog {
         return $_SESSION['userlogin'];
     }
 
-    private function getDate() {
+    private function getDate()
+    {
         $localtime = new DateTime('now', new DateTimeZone('Europe/Berlin'));
         return $localtime->format('Y-m-d H:i:s');
     }
 
-    private function getLogType($type_name) {
+    private function getLogType($type_name)
+    {
         global $db;
         return $db->queryOne("SELECT id FROM log_records_type WHERE name = '" . $type_name . "'");
     }
 
-    private function log_records_data($record) {
+    private function log_records_data($record)
+    {
         global $db;
 
         $query = "INSERT INTO log_records_data (domain_id, name, type, content, ttl, prio, change_date) VALUES ("
@@ -120,7 +135,8 @@ class RecordLog {
         return $db->lastInsertId();
     }
 
-    public function writeNew() {
+    public function writeNew()
+    {
         global $db;
 
         $after_id = $this->log_records_data($this->record_after);
@@ -137,7 +153,8 @@ class RecordLog {
         $db->exec($log_insert_record);
     }
 
-    public function writeChange() {
+    public function writeChange()
+    {
         global $db;
 
         $prior_id = $this->log_records_data($this->record_prior);
@@ -156,7 +173,8 @@ class RecordLog {
         $db->exec($log_insert_record);
     }
 
-    public function writeDelete() {
+    public function writeDelete()
+    {
         global $db;
 
         $prior_id = $this->log_records_data($this->record_prior);
@@ -173,7 +191,8 @@ class RecordLog {
         $db->exec($log_insert_record);
     }
 
-    public function has_changed($record, $append_zone) {
+    public function has_changed($record, $append_zone)
+    {
         return $this->record_comparator->has_changed($this->record_prior, $record, $append_zone);
     }
 
@@ -185,11 +204,13 @@ class RecordLog {
         }
     }
 
-    private function set_database($db) {
+    private function set_database($db)
+    {
         $this->db = $db;
     }
 
-    private function record_ids_for_domain($domain_id) {
+    private function record_ids_for_domain($domain_id)
+    {
         $result = $this->db->query("SELECT id
                                      FROM records
                                      WHERE domain_id = " . $this->db->quote($domain_id, 'integer'));

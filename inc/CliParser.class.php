@@ -1,14 +1,17 @@
 <?php
 
-class CliParser {
+class CliParser
+{
 
     private $cli_settings;
 
-    function __construct($cli_settings) {
+    function __construct($cli_settings)
+    {
         $this->cli_settings = $cli_settings;
     }
 
-    public function parse($argv) {
+    public function parse($argv)
+    {
         $params = array();
         $n_arg = 0;
         foreach($argv as $arg)

@@ -1,13 +1,15 @@
 <?php
 
-abstract class EmailStatus {
+abstract class EmailStatus
+{
     const SUCCESS = 0;
     const ERROR = 1;
     const NO_CHANGES = 2;
     const DRY_RUN = 3;
 }
 
-class ChangeMailer {
+class ChangeMailer
+{
     /**
      * @var array Mail configuration.
      */
@@ -34,7 +36,8 @@ EOD;
      */
     private $change_logger;
 
-    function __construct($mail_config, $change_logger, $params) {
+    function __construct($mail_config, $change_logger, $params)
+    {
         $this->change_logger = $change_logger;
         $this->mail_config = $mail_config;
         $this->dry_run = isset($params['dry-run']) ? $params['dry-run'] : null;
@@ -45,7 +48,8 @@ EOD;
      * Sends a HTML diff e-mail.
      * @return EmailStatus Whether the mail was sent, sent to stdout or not sent at all.
      */
-    public function send() {
+    public function send()
+    {
         // Create diff
         $html_diff = $this->build_html_diff();
 
@@ -99,7 +103,8 @@ EOD;
      * @param array $raw_headers An associative array containing key-value pairs used as headers.
      * @return string A properly formatted email header with correct \r\n usage.
      */
-    private function build_header($raw_headers) {
+    private function build_header($raw_headers)
+    {
         $headers = array();
         foreach ($raw_headers as $key => $value) {
             $headers[] = $key . ': ' . $value;
@@ -108,12 +113,14 @@ EOD;
         return implode("\r\n", $headers);
     }
 
-    private function build_style() {
+    private function build_style()
+    {
         global $iface_style;
         return file_get_contents("./style/" . $iface_style . ".css");
     }
 
-    private function build_html_diff() {
+    private function build_html_diff()
+    {
         if ($this->changes_since !== null) {
             return $this->change_logger->html_diff($this->changes_since);
         } else {

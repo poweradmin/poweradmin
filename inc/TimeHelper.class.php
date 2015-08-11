@@ -21,12 +21,14 @@ class TimeHelper
     private $timezone;
     private $regex;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->timezone = new DateTimeZone($this->timezone_name);
         $this->regex = implode($this->regex_parts);
     }
 
-    public function now() {
+    public function now()
+    {
         return new DateTimeImmutable('now', $this->timezone);
     }
 
@@ -39,11 +41,13 @@ class TimeHelper
         return $this->now()->sub(new DateInterval($interval));
     }
 
-    public function beginning_of_time() {
+    public function beginning_of_time()
+    {
         return $this->now()->setTimestamp(0);
     }
 
-    public function regex() {
+    public function regex()
+    {
         return $this->regex;
     }
 }
