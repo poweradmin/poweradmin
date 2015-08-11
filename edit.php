@@ -116,7 +116,7 @@ if (isset($_POST['create_rfc'])) {
         global $db;
         $one_record_changed = false;
 
-        $rfc = RfcBuilder::makeEmptyRfc()->now()->myself()->build();
+        $rfc = RfcBuilder::make()->now()->myself()->build();
 
         if (isset($_POST['record'])) {
             foreach ($_POST['record'] as $record_after) {

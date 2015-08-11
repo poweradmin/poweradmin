@@ -77,12 +77,12 @@ if(isset($_POST['create_rfc'])) {
         $log->log_prior($rid);
 
         $before = new Record(get_record_from_id($rid));
-        $after = RecordBuilder::make($rid, $zid, $_POST['name'], $_POST['type'], $_POST['content'], $_POST['prio'], $_POST['ttl'], 0);
+        $after = RecordBuilder::make($rid, $zid, $_POST['name'], $_POST['type'], $_POST['content'], $_POST['prio'], $_POST['ttl'], time());
 
         if (!$log->has_changed($after->as_array(), true)) {
             success(SUC_ZONE_NOCHANGE);
         } else {
-            $rfc = RfcBuilder::makeEmptyRfc()->now()->myself()->build();
+            $rfc = RfcBuilder::make()->now()->myself()->build();
             $serial = get_serial_by_zid($before->getZone());
 
             $rfc->add_change($zid, $serial, $before, $after);
@@ -100,7 +100,7 @@ if (isset($_POST["commit"])) {
     } else {
 
         // Only update if necessary
-        $log = new RecordLog($zone);
+        $log = new RecordLog($zone_id);
         $log->log_prior($_POST["rid"]);
         if(!$log->has_changed($_POST, true)) {
             success(SUC_ZONE_NOCHANGE);

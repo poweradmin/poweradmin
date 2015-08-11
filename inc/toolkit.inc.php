@@ -540,6 +540,19 @@ function v_num($string) {
     }
 }
 
+/**
+ * Validate a string.
+ * @param string $s The string to validate
+ * @return bool Returns true, if the string is alphanumeric and underscores only. False otherwise.
+ */
+function v_str($s) {
+    if (!preg_match("/^[a-z0-9_]+$/i", $s)) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
 /** Debug print
  *
  * @param string $var debug statement

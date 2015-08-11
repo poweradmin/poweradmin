@@ -49,13 +49,15 @@ class Record
         if (!(preg_match("/$zone$/i", $record['name']))) {
             if (isset($record) && $record['name'] != "") {
                 $record['name'] = $record['name'] . "." . $zone;
+            } else {
+                $record['name'] = $zone;
             }
         }
 
         # Remove invalid fields
         $valid_fields = array('id', 'domain_id', 'name', 'type', 'content', 'ttl', 'prio', 'change_date');
         foreach ($record as $field) {
-            if (!in_array($field, $valid_fields, true)) {
+            if (!array_key_exists($field, $valid_fields)) {
                 log_notice($field . " is not a valid record field.");
             }
         }
@@ -69,6 +71,9 @@ class Record
         $this->ttl = $record['ttl'];
         $this->change_date = $record['change_date'];
     }
+
+    ###########################################################################
+    # GETTERS AND SETTERS
 
     /**
      * @return integer
@@ -140,6 +145,14 @@ class Record
     public function getChangeDate()
     {
         return $this->change_date;
+    }
+
+    /**
+     * @param mixed $change_date
+     */
+    public function setChangeDate($change_date)
+    {
+        $this->change_date = $change_date;
     }
 
     public function as_array()
