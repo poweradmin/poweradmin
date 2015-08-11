@@ -38,13 +38,14 @@ class RfcChange
         $rfc_data_prior_id = $this->insert_record($db, $this->prior);
         $rfc_data_after_id = $this->insert_record($db, $this->after);
 
-        $rfc_change_query = "INSERT INTO rfc_change (zone, serial, prior, after, rfc) VALUES ("
-            . $db->quote($this->zone, 'integer') . ","
-            . $db->quote($this->serial, 'text') . ","
-            . $db->quote($rfc_data_prior_id, 'integer') . ","
-            . $db->quote($rfc_data_after_id, 'integer') . ","
-            . $db->quote($this->rfc_id, 'integer') . ")";
-        $db->exec($rfc_change_query);
+        $stmt = $db->prepare("INSERT INTO rfc_change (zone, serial, prior, after, rfc) VALUES (:zone, :serial, :prior, :after, :rfc)");
+        $stmt->bindParam(":zone", $this->zone, PDO::PARAM_INT);
+        $stmt->bindParam(":serial", $this->serial);
+        $stmt->bindParam(":prior", $rfc_data_prior_id, PDO::PARAM_INT);
+        $stmt->bindParam(":after", $rfc_data_after_id, PDO::PARAM_INT);
+        $stmt->bindParam(":rfc", $this->rfc_id, PDO::PARAM_INT);
+
+        $success = $stmt->execute();
         $rfc_change_id = $db->lastInsertId(); // TODO: Fix PosgreSQL
 
         return $rfc_change_id;
@@ -53,19 +54,27 @@ class RfcChange
     /**
      * @param PDOLayer $db A connection to the database.
      * @param Record $record Inserts a record in the rfc_data shadow table.
-     * @return int The id of the inserted row.
+     * @return int The id of the inserted row. Returns null if $record was null.
      */
     private function insert_record($db, $record)
     {
-        $query = "INSERT INTO rfc_data (domain_id, name, type, content, ttl, prio, change_date) VALUES ("
-            . $db->quote($record->getDomainId(), 'integer') . ","
-            . $db->quote($record->getName(), 'text') . ","
-            . $db->quote($record->getType(), 'text') . ","
-            . $db->quote($record->getContent(), 'text') . ","
-            . $db->quote($record->getTtl(), 'integer') . ","
-            . $db->quote($record->getPrio(), 'integer') . ","
-            . $db->quote($record->getChangeDate(), 'integer') . ")";
-        $db->exec($query);
+        if($record === null) { return null; }
+
+        if($record->getChangeDate() === null) {
+            $record->setChangeDate(time());
+        }
+
+        $stmt = $db->prepare("INSERT INTO rfc_data (domain_id, name, type, content, ttl, prio, change_date)
+                              VALUES (:domain, :name, :type, :content, :ttl, :prio, :change_date)");
+        $stmt->bindParam(":domain", $record->getDomainId(), PDO::PARAM_INT);
+        $stmt->bindParam(":name", $record->getName());
+        $stmt->bindParam(":type", $record->getType());
+        $stmt->bindParam(":content", $record->getContent());
+        $stmt->bindParam(":ttl", $record->getTtl(), PDO::PARAM_INT);
+        $stmt->bindParam(":prio", $record->getPrio(), PDO::PARAM_INT);
+        $stmt->bindParam(":change_date", $record->getChangeDate(), PDO::PARAM_INT);
+        $success = $stmt->execute();
+
         $result_id = $db->lastInsertId(); // TODO: Fix PosgreSQL
 
         return $result_id;

@@ -161,7 +161,10 @@ if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
         $clean_content = $record['content'];
     }
 
-    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
+    $edit_rfc = $perm_is_godlike || $zone_content_rfc_other || ($zone_content_rfc_own && $user_is_zone_owner);
+    $read_only = $zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0";
+
+    if ($read_only && !$edit_rfc) {
         echo "      <tr>\n";
         echo "       <td>" . $record["name"] . "</td>\n";
         echo "       <td>IN</td>\n";

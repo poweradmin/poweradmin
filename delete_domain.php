@@ -92,7 +92,16 @@ if ($confirm == '1') {
                 echo "        </p>\n";
             }
         }
-        echo "     <p>" . _('Are you sure?') . "</p>\n";
+        echo "<p>" . _('Are you sure?') . "</p>\n";
+
+        // Show only if I am authorized
+        if ($perm_is_godlike
+            || $zone_content_rfc_other
+            || ($zone_content_rfc_own && $user_is_zone_owner)
+        ) {
+            echo '<input type="button" class="button" onclick="location.href=\'create_rfc.php?zone_id=' . $zone_id . '&amp;action=delete_zone\'" value="' . _('Create RFC') . '">';
+        }
+
         echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='delete_domain.php?id=" . $zone_id . "&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
         echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
     } else {

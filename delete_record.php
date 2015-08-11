@@ -106,7 +106,10 @@ if ($record_id == "-1") {
 
         echo "     <h2>" . _('Delete record in zone') . " \"<a href=\"edit.php?id=" . $zid . "\">" . $zone_name . "</a>\"</h2>\n";
 
-        if ($zone_info['type'] == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
+        $perm_edit_rfc = $perm_is_godlike || $zone_content_rfc_other || ($zone_content_rfc_own && $user_is_zone_owner);
+        $perm_no_edit = $zone_info['type'] == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0";
+
+        if ($perm_no_edit && !$perm_edit_rfc) {
             error(ERR_PERM_EDIT_RECORD);
         } else {
             echo "     <table>\n";
@@ -133,8 +136,23 @@ if ($record_id == "-1") {
                 echo "     <p>" . _('You are trying to delete a record that is needed for this zone to work.') . "</p>\n";
             }
             echo "     <p>" . _('Are you sure?') . "</p>\n";
-            echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='delete_record.php?id=" . $record_id . "&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
-            echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='edit.php?id=" . $zid . "'\" value=\"" . _('No') . "\">\n";
+
+            // Show only if I am authorized
+            if ($perm_is_godlike
+                || $zone_content_rfc_other
+                || ($zone_content_rfc_own && $user_is_zone_owner)
+            ) {
+                echo '<input type="button" class="button" onclick="location.href=\'create_rfc.php?id=' . $record_id . '&amp;action=delete_record\'" value="' . _('Create RFC') . '">';
+            }
+
+            // Show only if I am authorized
+            if($perm_is_godlike
+                || ($perm_content_edit === 'all')
+                || ($perm_content_edit === 'own' && $user_is_zone_owner)
+            ) {
+                echo '<input type="button" class="button" onclick="location.href=\'delete_record.php?record_id=' . $record_id . '&amp;confirm=1\'" value="' . _('Yes') . '">';
+                echo '<input type="button" class="button" onclick="location.href=\'edit.php?id=' . $zid . '\'" value="' . _('No') . '">';
+            }
         }
     }
 }

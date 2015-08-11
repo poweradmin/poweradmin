@@ -180,6 +180,58 @@ if (isset($_POST["commit"])) {
     }
 }
 
+if (isset($_POST['create_rfc'])) {
+    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
+        error(ERR_PERM_ADD_RECORD);
+    } else {
+
+        if ($perm_is_godlike || $zone_content_rfc_other || ($zone_content_rfc_own && $user_is_zone_owner)) {
+
+            global $db;
+            $rfc = RfcBuilder::make()->now()->myself()->build();
+
+            # Handle reverse
+            if ((isset($_POST["reverse"])) && $iface_add_reverse_record) {
+                if ($type === 'A') {
+                    $content_array = preg_split("/\./", $content);
+                    $content_rev = sprintf("%d.%d.%d.%d.in-addr.arpa", $content_array[3], $content_array[2], $content_array[1], $content_array[0]);
+                    $zone_rev_id = get_best_matching_zone_id_from_name($content_rev);
+                } elseif ($type === 'AAAA') {
+                    $content_rev = convert_ipv6addr_to_ptrrec($content);
+                    $zone_rev_id = get_best_matching_zone_id_from_name($content_rev);
+                }
+            }
+
+            # Insert reverse
+            if (isset($zone_rev_id) && $zone_rev_id != -1) {
+                $zone_name = get_zone_name_from_id($zone_id);
+                $fqdn_name = sprintf("%s.%s", $name, $zone_name);
+                $zone_rev_serial = get_serial_by_zid($zone_rev_id);
+
+                $new_rev_record = RecordBuilder::make(null, $zone_rev_id, $content_rev, 'PTR', $fqdn_name, $prio, $ttl, time());
+
+                if(validate_input(-1, $zone_rev_id, 'PTR', $fqdn_name, $content_rev, $prio, $ttl)) {
+                    $rfc->add_create($zone_rev_id, $zone_rev_serial, $new_rev_record);
+                }
+
+            } elseif (isset($content_rev)) {
+                error(sprintf(ERR_REVERS_ZONE_NOT_EXIST, $content_rev));
+            }
+
+            $serial = get_serial_by_zid($zone_id);
+            $new_record = RecordBuilder::make(null, $zone_id, $name, $type, $content, $prio, $ttl, time());
+            $rfc->add_create($zone_id, $serial, $new_record);
+
+            $success = $rfc->write($db);
+            if ($success === true) {
+                success(SUC_RFC_CREATED);
+            }
+        } else {
+            error(ERR_RFC_PERMISSIONS);
+        }
+    }
+}
+
 /*
   Display form to add a record
  */

@@ -274,13 +274,22 @@ if ($records == "-1") {
         }
         echo "    <tr>\n";
 
-        if ($domain_type == "SLAVE" || $perm_content_edit == "none" || (($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0")) {
+        $edit_slave = $domain_type == "SLAVE"
+            || $perm_content_edit == "none"
+            || (($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0");
+
+        $edit_soa_ns = $r['type'] == "SOA"
+            && $perm_content_edit != "all"
+            || ($r['type'] == "NS" && $perm_content_edit == "own_as_client");
+
+        $edit_rfc = $perm_is_godlike || $zone_content_rfc_other || ($zone_content_rfc_own && $user_is_zone_owner);
+
+        if ($edit_slave && !$edit_rfc) {
             echo "     <td class=\"n\">&nbsp;</td>\n";
         }
-        elseif ($r['type'] == "SOA" && $perm_content_edit != "all" || ($r['type'] == "NS" && $perm_content_edit == "own_as_client")) {
-        	echo "     <td class=\"n\">&nbsp;</td>\n";
-        }
-        else {
+        elseif ($edit_soa_ns && !$edit_rfc) {
+            echo "     <td class=\"n\">&nbsp;</td>\n";
+        } else {
             echo "     <td class=\"n\">\n";
             echo "      <a href=\"edit_record.php?id=" . $r['id'] . "&amp;domain=" . $zone_id . "\">
                                                 <img src=\"images/edit.gif\" alt=\"[ " . _('Edit record') . " ]\"></a>\n";

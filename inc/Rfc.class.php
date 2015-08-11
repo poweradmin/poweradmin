@@ -81,14 +81,60 @@ class Rfc
 
     /**
      * Adds a change to the RFC.
+     *
      * @param int $zone The zone id
-     * @param string $serial The serial of zone this
-     * @param Record $before The record before the change.
-     * @param Record $after The record after the change.
+     * @param string $serial The serial of zone this change is valid upon
+     * @param Record $before The record before the change
+     * @param Record $after The record after the change
      */
-    public function add_change($zone, $serial, $before, $after)
+    public function add_change($zone, $serial, Record $before, Record $after)
     {
         $this->changes[] = new RfcChange($zone, $serial, $before, $after);
+    }
+
+    /**
+     * @param int $zone The zone id
+     * @param string $serial The serial of zone this change is valid upon
+     * @param Record $new The new Record
+     */
+    public function add_create($zone, $serial, Record $new)
+    {
+        $this->changes[] = new RfcChange($zone, $serial, null, $new);
+    }
+
+    /**
+     * @param int $zone The zone id
+     * @param string $serial The serial of zone this change is valid upon
+     * @param Record $old The old record that will be deleted in this RFC
+     */
+    public function add_delete($zone, $serial, Record $old)
+    {
+        $this->changes[] = new RfcChange($zone, $serial, $old, null);
+    }
+
+    /**
+     * @param int $zone_id The zone to delete
+     * @param string $zone_serial The serial of zone this change is valid upon
+     */
+    public function add_delete_domain($zone_id, $zone_serial)
+    {
+        $records = get_records_from_domain_id($zone_id);
+
+        foreach ($records as $record) {
+            $r = new Record($record);
+            $this->changes[] = new RfcChange($zone_id, $zone_serial, $r, null);
+        }
+
+        # Since we don't have a flag for what changed (record / domain delete) in
+        # a RfcChange, the prior / after Records are used.
+        #
+        # prior | after | Action type
+        # -----------------------------
+        # null  | null  | Domain delete
+        # value | null  | Record delete
+        # null  | value | Record insert
+        # value | value | Record edit
+        $this->changes[] = new RfcChange($zone_id, $zone_serial, null, null);
     }
 
     /**
@@ -107,10 +153,11 @@ class Rfc
         $initiator = PoweradminUtil::get_username();
 
         # Write RFC
-        $query = "INSERT INTO rfc (timestamp, initiator) VALUES ("
-            . $db->quote($timestamp, 'text') . ","
-            . $db->quote($initiator, 'text') . ")";
-        $db->exec($query);
+        $stmt = $db->prepare("INSERT INTO rfc (timestamp, initiator) VALUES (:timestamp, :initiator)");
+        $stmt->bindParam(":timestamp", $timestamp);
+        $stmt->bindParam(":initiator", $initiator);
+        $success = $stmt->execute();
+
         $rfc_id = $db->lastInsertId(); // TODO: Fix PosgreSQL
 
         # Write RFC-Data
