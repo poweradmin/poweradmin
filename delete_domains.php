@@ -30,11 +30,12 @@
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
 require_once("inc/toolkit.inc.php");
+require_once("inc/RfcPermissions.class.php");
 include_once("inc/header.inc.php");
 
-if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
+if (do_hook('verify_permission', 'zone_content_edit_others')) {
     $perm_edit = "all";
-} elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
+} elseif (do_hook('verify_permission', 'zone_content_edit_own')) {
     $perm_edit = "own";
 } else {
     $perm_edit = "none";
@@ -58,7 +59,7 @@ if ($confirm == '1') {
     $deleted_zones = array();
     foreach ($zones as $zone) {
         $zone_info = get_zone_info_from_id($zone);
-        array_push($deleted_zones,$zone_info);
+        array_push($deleted_zones, $zone_info);
     }
     $delete_domains = delete_domains($zones);
     if ($delete_domains) {
@@ -66,17 +67,17 @@ if ($confirm == '1') {
         //Zones successfully deleted so generate log messages from information retrieved earlier
         foreach ($deleted_zones as $zone_info) {
             log_info(sprintf('client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
-                              $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                              $zone_info['name'], $zone_info['type']));
+                $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
+                $zone_info['name'], $zone_info['type']));
         }
     }
 } else {
     echo "     <form method=\"post\" action=\"delete_domains.php\">\n";
     foreach ($zones as $zone) {
-        $zone_owners = do_hook('get_fullnames_owners_from_domainid' , $zone );
-        $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone );
+        $zone_owners = do_hook('get_fullnames_owners_from_domainid', $zone);
+        $permission_to_delete_all_zones = do_hook('verify_user_is_owner_zoneid', $zone);
         $zone_info = get_zone_info_from_id($zone);
-        if ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) {
+        if ($perm_edit == "all" || ($perm_edit == "own" && $permission_to_delete_all_zones == "1")) {
             echo "      <input type=\"hidden\" name=\"zone_id[]\" value=\"" . $zone . "\">\n";
             echo "      " . _('Name') . ": " . $zone_info['name'] . "<br>\n";
             echo "      " . _('Owner') . ": " . $zone_owners . "<br>\n";
@@ -94,10 +95,20 @@ if ($confirm == '1') {
             error(ERR_PERM_DEL_ZONE);
         }
     }
-    echo "                     <p>" . _('Are you sure?') . "</p>\n";
-    echo "                     <input type=\"submit\" name=\"confirm\" value=\"" . _('Yes') . "\" class=\"button\">\n";
-    echo "                     <input type=\"button\" class=\"button\" OnClick=\"location.href='list_zones.php'\" value=\"" . _('No') . "\">\n";
-    echo "     </form>\n";
+
+    echo "<p>" . _('Are you sure?') . "</p>";
+
+    // Show only if I am authorized
+    if(RfcPermissions::can_create_rfc($zones)) {
+        echo '<input type="button" class="button" name="create_rfc" value="' . _('Create RFC') . '">';
+    }
+
+    if(RfcPermissions::can_edit_zone($zones)) {
+        echo '<input type="submit" class="button" name="confirm" value="' . _('Yes') . '">';
+        echo '<input type="button" class="button" OnClick="location.href=\'list_zones.php\'" value="' . _('No') . '">';
+    }
+
+    echo "</form>\n";
 }
 
 include_once("inc/footer.inc.php");

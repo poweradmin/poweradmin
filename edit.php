@@ -34,6 +34,7 @@ require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 include_once("inc/RecordLog.class.php");
 include_once("inc/Rfc.class.php");
+require_once("inc/RfcPermissions.class.php");
 
 global $pdnssec_use;
 
@@ -282,7 +283,7 @@ if ($records == "-1") {
             && $perm_content_edit != "all"
             || ($r['type'] == "NS" && $perm_content_edit == "own_as_client");
 
-        $edit_rfc = $perm_is_godlike || $zone_content_rfc_other || ($zone_content_rfc_own && $user_is_zone_owner);
+        $edit_rfc = RfcPermissions::can_create_rfc($zone_id);
 
         if ($edit_slave && !$edit_rfc) {
             echo "     <td class=\"n\">&nbsp;</td>\n";
@@ -297,7 +298,6 @@ if ($records == "-1") {
                                                 <img src=\"images/delete.gif\" ALT=\"[ " . _('Delete record') . " ]\" BORDER=\"0\"></a>\n";
             echo "     </td>\n";
         }
-
 
         echo "     <td class=\"n\">{$r['id']}</td>\n";
         if ($r['type'] == "SOA" || ($r['type'] == "NS" && $perm_content_edit == "own_as_client")) {
@@ -450,23 +450,17 @@ if ($perm_content_edit == "all" || ($perm_content_edit == "own" || $perm_content
         echo "      </table>\n";
 
         // Show only if I am authorized
-        if ($perm_is_godlike
-            || $zone_content_rfc_other
-            || ($zone_content_rfc_own && $user_is_zone_owner)
-        ) {
+        if (RfcPermissions::can_create_rfc($zone_id)) {
             echo '<input type="submit" class="button" name="create_rfc" value="' . _('Create RFC') . '">';
         }
 
         // Show only if I am authorized
-        if($perm_is_godlike
-            || ($perm_content_edit === 'all')
-            || ($perm_content_edit === 'own' && $user_is_zone_owner)
-        ) {
+        if(RfcPermissions::can_edit_zone($zone_id)) {
             echo '<input type="submit" class="button" name="commit" value="' . _('Add record') . '">';
         }
 
-        echo "      $rev";
-        echo "     </form>\n";
+        echo "$rev";
+        echo "</form>\n";
     }
 }
 

@@ -32,6 +32,7 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 include_once("inc/Rfc.class.php");
+require_once("inc/RfcPermissions.class.php");
 
 $record_id_in = null;
 if (isset($_GET['record_id']) && v_num($_GET['record_id'])) {
@@ -54,7 +55,7 @@ switch($action_in) {
 
     case "delete_record":
         # Stop on permission error
-        if(!($perm_is_godlike || $zone_content_rfc_other || ($zone_content_rfc_own && $user_is_zone_owner))) {
+        if(!RfcPermissions::can_create_rfc($zone_id_in)) {
             error(ERR_RFC_PERMISSIONS);
             include_once("inc/footer.inc.php");
             exit();
@@ -79,7 +80,7 @@ switch($action_in) {
 
     case "delete_zone":
         # Stop on permission error
-        if(!($perm_is_godlike || $zone_content_rfc_other || ($zone_content_rfc_own && $user_is_zone_owner))) {
+        if(!RfcPermissions::can_create_rfc($zone_id_in)) {
             error(ERR_RFC_PERMISSIONS);
             include_once("inc/footer.inc.php");
             exit();

@@ -32,6 +32,7 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 include_once("inc/RecordLog.class.php");
+require_once("inc/RfcPermissions.class.php");
 include_once("inc/Rfc.class.php");
 
 global $pdnssec_use;
@@ -69,7 +70,7 @@ $zone_type = get_domain_type($zid);
 $zone_name = get_zone_name_from_id($zid);
 
 if(isset($_POST['create_rfc'])) {
-    if ($perm_is_godlike || $zone_content_rfc_other || ($zone_content_rfc_own && $user_is_zone_owner)) {
+    if (RfcPermissions::can_create_rfc($zid)) {
         $log = new RecordLog();
         $rid = $_GET['id'];
         global $db;
@@ -161,7 +162,7 @@ if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
         $clean_content = $record['content'];
     }
 
-    $edit_rfc = $perm_is_godlike || $zone_content_rfc_other || ($zone_content_rfc_own && $user_is_zone_owner);
+    $edit_rfc = RfcPermissions::can_create_rfc($zid);
     $read_only = $zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0";
 
     if ($read_only && !$edit_rfc) {
@@ -203,18 +204,12 @@ if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
     echo "      </table>\n";
 
     // Show only if I am authorized
-    if ($perm_is_godlike
-        || $zone_content_rfc_other
-        || ($zone_content_rfc_own && $user_is_zone_owner)
-    ) {
+    if (RfcPermissions::can_create_rfc($zid)) {
         echo '<input type="submit" class="button" name="create_rfc" value="' . _('Create RFC') . '">';
     }
 
     // Show only if I am authorized
-    if($perm_is_godlike
-        || ($perm_content_edit === 'all')
-        || ($perm_content_edit === 'own' && $user_is_zone_owner)
-    ) {
+    if(RfcPermissions::can_edit_zone($zid)) {
         echo '<input type="submit" class="button" name="commit" value="' . _('Commit changes') . '">';
     }
 

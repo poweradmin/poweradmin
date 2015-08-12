@@ -30,15 +30,25 @@
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
 require_once("inc/toolkit.inc.php");
+require_once("inc/RfcPermissions.class.php");
 include_once("inc/header.inc.php");
+require_once("inc/RfcResolver.class.php");
+require_once("inc/util/PoweradminUtil.class.php");
 
 
 echo "<h2>" . _('Manage RFCs') . "</h2>";
 
-if(!$zone_content_rfc_other || !$zone_content_rfc_own) {
+if(!RfcPermissions::can_view_rfcs()) {
     echo "<p>" . _('You do not have the permission to see the logs.') . "</p>";
     include_once("inc/footer.inc.php");
     exit;
 }
+global $db;
+
+require_once("inc/RfcResolver.class.php");
+$p = new RfcResolver($db);
+echo $p->get_own_active_rfcs(PoweradminUtil::get_username());
+echo $p->get_other_active_rfcs(PoweradminUtil::get_username());
+#echo $p->get_html();
 
 include_once("inc/footer.inc.php");

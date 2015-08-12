@@ -31,6 +31,7 @@
  */
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
+require_once("inc/RfcPermissions.class.php");
 
 global $pdnssec_use;
 
@@ -123,23 +124,34 @@ if ($perm_view == "none") {
         }
 
         $zone_owners = do_hook('get_fullnames_owners_from_domainid', $zone['id']);
-        if ($iface_zonelist_serial)
+        if ($iface_zonelist_serial) {
             $serial = get_serial_by_zid($zone['id']);
+        }
 
         if ($perm_edit != "all" || $perm_edit != "none") {
             $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone["id"]);
         }
         echo "         <tr>\n";
         echo "          <td class=\"checkbox\">\n";
-        if ($count_zones_edit > 0 && ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1"))) {
+
+        $can_create_rfcs = RfcPermissions::can_create_rfc($zone['id']);
+
+        if ($can_create_rfcs || $count_zones_edit > 0 && ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1"))) {
             echo "       <input type=\"checkbox\" name=\"zone_id[]\" value=\"" . $zone['id'] . "\">";
         }
+
+
         echo "          </td>\n";
         echo "          <td class=\"actions\">\n";
         echo "           <a href=\"edit.php?name=" . $zone['name'] . "&id=" . $zone['id'] . "\"><img src=\"images/edit.gif\" title=\"" . _('View zone') . " " . $zone['name'] . "\" alt=\"[ " . _('View zone') . " " . $zone['name'] . " ]\"></a>\n";
-        if ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) {
+
+
+
+        if ($can_create_rfcs || $perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) {
             echo "           <a href=\"delete_domain.php?name=" . $zone['name'] . "&id=" . $zone["id"] . "\"><img src=\"images/delete.gif\" title=\"" . _('Delete zone') . " " . $zone['name'] . "\" alt=\"[ " . _('Delete zone') . " " . $zone['name'] . " ]\"></a>\n";
         }
+
+
         echo "          </td>\n";
         echo "          <td class=\"name\">" . $zone["name"] . "</td>\n";
         echo "          <td class=\"type\">" . strtolower($zone["type"]) . "</td>\n";

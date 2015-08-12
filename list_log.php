@@ -33,11 +33,12 @@ require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 include_once("inc/ChangeLogger.class.php");
 include_once("inc/TimeHelper.class.php");
+require_once("inc/Permissions.class.php");
 
 
 echo "<h2>" . _('Show logs') . "</h2>";
 
-if(!$perm_is_godlike) {
+if(!Permissions::is_godlike()) {
     echo "<p>" . _('You do not have the permission to see the logs.') . "</p>";
     include_once("inc/footer.inc.php");
     exit;

@@ -32,6 +32,7 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 include_once("inc/RecordLog.class.php");
+require_once("inc/RfcPermissions.class.php");
 
 global $pdnssec_use;
 
@@ -138,19 +139,13 @@ if ($record_id == "-1") {
             echo "     <p>" . _('Are you sure?') . "</p>\n";
 
             // Show only if I am authorized
-            if ($perm_is_godlike
-                || $zone_content_rfc_other
-                || ($zone_content_rfc_own && $user_is_zone_owner)
-            ) {
-                echo '<input type="button" class="button" onclick="location.href=\'create_rfc.php?id=' . $record_id . '&amp;action=delete_record\'" value="' . _('Create RFC') . '">';
+            if (RfcPermissions::can_create_rfc($zone_id)) {
+                echo '<input type="button" class="button" onclick="location.href=\'create_rfc.php?record_id=' . $record_id . '&amp;action=delete_record\'" value="' . _('Create RFC') . '">';
             }
 
             // Show only if I am authorized
-            if($perm_is_godlike
-                || ($perm_content_edit === 'all')
-                || ($perm_content_edit === 'own' && $user_is_zone_owner)
-            ) {
-                echo '<input type="button" class="button" onclick="location.href=\'delete_record.php?record_id=' . $record_id . '&amp;confirm=1\'" value="' . _('Yes') . '">';
+            if(RfcPermissions::can_create_rfc($zone_id)) {
+                echo '<input type="button" class="button" onclick="location.href=\'delete_record.php?id=' . $record_id . '&amp;confirm=1\'" value="' . _('Yes') . '">';
                 echo '<input type="button" class="button" onclick="location.href=\'edit.php?id=' . $zid . '\'" value="' . _('No') . '">';
             }
         }

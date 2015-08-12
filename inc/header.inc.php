@@ -35,6 +35,9 @@ global $ignore_install_dir;
 global $session_key;
 
 require_once('TimeHelper.class.php');
+require_once('RfcPermissions.class.php');
+require_once('RfcResolver.class.php');
+require_once('Permissions.class.php');
 
 header('Content-type: text/html; charset=utf-8');
 echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n";
@@ -103,13 +106,19 @@ if (file_exists('install')) {
     if ($perm_zone_master_add) {
         echo "    <span class=\"menuitem\"><a href=\"bulk_registration.php\">" . _('Bulk registration') . "</a></span>\n";
     }
-    if($perm_is_godlike) {
+    if(Permissions::is_godlike()) {
         $th = new TimeHelper();
         $changes_since = $th->now_minus('P1W')->format($th->format);
         echo ' <span class="menuitem"><a href="list_log.php?changes_since=' . $changes_since . '">' . _('List logs') . '</a></span>';
     }
-    if($perm_is_godlike || $zone_content_rfc_other || $zone_content_rfc_own) {
-        echo ' <span class="menuitem"><a href="list_rfc.php">' . _('Manage RFCs') . '</a></span>';
+
+    if(RfcPermissions::can_view_rfcs()) {
+        global $db;
+        $r = new RfcResolver($db);
+        $user = PoweradminUtil::get_username();
+        $rfc_stat = " <b>(" . $r->get_own_active_rfcs($user) . " / " . $r->get_other_active_rfcs($user) . ")</b>";
+
+        echo ' <span class="menuitem"><a href="list_rfc.php">' . _('Manage RFCs') . $rfc_stat . '</a></span>';
     }
     if ($_SESSION ["auth_used"] != "ldap") {
         echo "    <span class=\"menuitem\"><a href=\"change_password.php\">" . _('Change password') . "</a></span>\n";

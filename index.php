@@ -32,6 +32,9 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 include_once("inc/TimeHelper.class.php");
+require_once("inc/RfcResolver.class.php");
+require_once("inc/RfcPermissions.class.php");
+require_once("inc/Permissions.class.php");
 
 echo "     <h3>" . _('Welcome') . " " . $_SESSION["name"] . "</h3>\n";
 
@@ -66,13 +69,19 @@ if ($perm_zone_slave_add) {
 if ($perm_supermaster_add) {
     echo "    <li><a href=\"add_supermaster.php\">" . _('Add supermaster') . "</a></li>\n";
 }
-if($perm_is_godlike) {
+if(Permissions::is_godlike()) {
     $th = new TimeHelper();
     $timestamp = $th->now_minus('P1W')->format($th->format);
     echo '<li><a href="list_log.php?changes_since=' . $timestamp . '">' . _('List logs') . '</a></li>';
 }
-if($perm_is_godlike || $zone_content_rfc_other || $zone_content_rfc_own) {
-    echo '<li class="menuitem"><a href="list_rfc.php">' . _('Manage RFCs') . '</a></li>';
+
+if(RfcPermissions::can_view_rfcs()) {
+    global $db;
+    $r = new RfcResolver($db);
+    $user = PoweradminUtil::get_username();
+    $rfc_stat = " <b>(" . $r->get_own_active_rfcs($user) . " / " . $r->get_other_active_rfcs($user) . ")</b>";
+
+    echo '<li class="menuitem"><a href="list_rfc.php">' . _('Manage RFCs') . $rfc_stat . '</a></li>';
 }
 if ($_SESSION["auth_used"] != "ldap") {
     echo "    <li><a href=\"change_password.php\">" . _('Change password') . "</a></li>\n";
