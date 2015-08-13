@@ -1419,30 +1419,32 @@ function get_records_from_domain_id($id, $rowstart = 0, $rowamount = 999999, $so
     if (is_numeric($id)) {
         if ((isset($_SESSION[$id . "_ispartial"])) && ($_SESSION[$id . "_ispartial"] == 1)) {
             $db->setLimit($rowamount, $rowstart);
-            $result = $db->query("SELECT record_owners.record_id as id
-					FROM record_owners,domains,records
-					WHERE record_owners.user_id = " . $db->quote($_SESSION["userid"], 'integer') . "
-					AND record_owners.record_id = records.id
-					AND records.domain_id = " . $db->quote($id, 'integer') . "
-					GROUP BY record_owners.record_id ORDER BY records." . $sortby);
+            $result = $db->query("SELECT records.id, domains.id, records.name, records.type, records.content, records.ttl, records.prio, records.change_date
+                                    FROM record_owners,domains,records
+                                    WHERE record_owners.user_id = " . $db->quote($_SESSION["userid"], 'integer') . "
+                                    AND record_owners.record_id = records.id
+                                    AND records.domain_id = " . $db->quote($id, 'integer') . "
+                                    GROUP BY records.id, domains.id, records.name, records.type, records.content, records.ttl, records.prio, records.change_date
+                                    ORDER BY type = 'SOA' DESC, type = 'NS' DESC, records." . $sortby);
 
-            $ret = array();
             if ($result) {
-                $ret[] = array();
-                $retcount = 0;
                 while ($r = $result->fetchRow()) {
-                    // Call get_record_from_id for each row.
-                    $fields = get_record_from_id($r["id"]);
-                    if ($fields == -1) {
-                        continue;
-                    }
-                    $ret[$retcount] = $fields;
-                    $retcount++;
+                    $ret[] = array(
+                        "id" => $r["id"],
+                        "domain_id" => $r["domain_id"],
+                        "name" => $r["name"],
+                        "type" => $r["type"],
+                        "content" => $r["content"],
+                        "ttl" => $r["ttl"],
+                        "prio" => $r["prio"],
+                        "change_date" => $r["change_date"]
+                    );
                 }
                 $result = $ret;
             } else {
                 return -1;
             }
+
         } else {
             $db->setLimit($rowamount, $rowstart);
 
@@ -1452,24 +1454,30 @@ function get_records_from_domain_id($id, $rowstart = 0, $rowamount = 999999, $so
             }
             $sql_sortby = ($sortby == 'name' ? $natural_sort : $sortby . ', ' . $natural_sort);
 
-            $result = $db->query("SELECT id FROM records WHERE domain_id=" . $db->quote($id, 'integer') . " AND type IS NOT NULL ORDER BY " . $sql_sortby);
+            $result = $db->query("SELECT id, domain_id, name, type, content, ttl, prio, change_date
+                                    FROM records 
+                                    WHERE domain_id=" . $db->quote($id, 'integer') . " AND type IS NOT NULL
+                                    ORDER BY type = 'SOA' DESC, type = 'NS' DESC," . $sql_sortby);
+
             $ret = array();
             if ($result) {
-                $ret[] = array();
-                $retcount = 0;
                 while ($r = $result->fetchRow()) {
-                    // Call get_record_from_id for each row.
-                    $fields = get_record_from_id($r["id"]);
-                    if ($fields == -1) {
-                        continue;
-                    }
-                    $ret[$retcount] = $fields;
-                    $retcount++;
+                    $ret[] = array(
+                        "id" => $r["id"],
+                        "domain_id" => $r["domain_id"],
+                        "name" => $r["name"],
+                        "type" => $r["type"],
+                        "content" => $r["content"],
+                        "ttl" => $r["ttl"],
+                        "prio" => $r["prio"],
+                        "change_date" => $r["change_date"]
+                    );
                 }
                 $result = $ret;
             } else {
                 return -1;
             }
+
             $result = order_domain_results($result, $sortby);
             return $result;
         }
