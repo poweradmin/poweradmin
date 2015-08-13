@@ -45,8 +45,8 @@ if(!RfcPermissions::can_view_rfcs()) {
 }
 global $db;
 
-$p = new RfcResolver($db);
-$p->build_tree();
+$r = new RfcResolver($db);
+$rfcs = $r->build_tree();
 
 
 include_once("inc/footer.inc.php");

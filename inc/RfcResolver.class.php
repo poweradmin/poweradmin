@@ -157,6 +157,8 @@ class RfcResolver
             }
 
         }
+
+        return $rfcs;
     }
 
     public function get_index_menu()
