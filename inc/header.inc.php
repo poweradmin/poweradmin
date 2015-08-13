@@ -112,14 +112,11 @@ if (file_exists('install')) {
         echo ' <span class="menuitem"><a href="list_log.php?changes_since=' . $changes_since . '">' . _('List logs') . '</a></span>';
     }
 
-    if(RfcPermissions::can_view_rfcs()) {
-        global $db;
-        $r = new RfcResolver($db);
-        $user = PoweradminUtil::get_username();
-        $rfc_stat = " <b>(" . $r->get_own_active_rfcs($user) . " / " . $r->get_other_active_rfcs($user) . ")</b>";
+    global $db;
+    $r = new RfcResolver($db);
+    echo $r->get_header_menu();
 
-        echo ' <span class="menuitem"><a href="list_rfc.php">' . _('Manage RFCs') . $rfc_stat . '</a></span>';
-    }
+
     if ($_SESSION ["auth_used"] != "ldap") {
         echo "    <span class=\"menuitem\"><a href=\"change_password.php\">" . _('Change password') . "</a></span>\n";
     }
