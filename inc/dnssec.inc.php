@@ -172,16 +172,19 @@ function dnssec_unsecure_zone($domain_name) {
  * @return boolean true on success, false on failure
  */
 function dnssec_is_zone_secured($domain_name) {
-    $call_result = dnssec_call_pdnssec('show-zone', $domain_name);
-    $output = $call_result[0];
-    $return_code = $call_result[1];
-
-    if ($return_code != 0) {
-        error(ERR_EXEC_PDNSSEC_SHOW_ZONE);
-        return false;
-    }
-
-    return (count($output) == 0 ? false : true);
+    global $db;
+    $query = $db->prepare("SELECT
+                  COUNT(cryptokeys.id) AS active_keys,
+                  COUNT(domainmetadata.id) > 0 AS presigned
+                  FROM domains
+                  LEFT JOIN cryptokeys ON domains.id = cryptokeys.domain_id
+                  LEFT JOIN domainmetadata ON domains.id = domainmetadata.domain_id AND domainmetadata.kind = 'PRESIGNED'
+                  WHERE domains.name = ?
+                  GROUP BY domains.id
+        ");
+    $query->execute(array($domain_name));
+    $row = $query->fetch();
+    return $row['active_keys'] > 0 || $row['presigned'];
 }
 
 /** Use presigned RRSIGs from storage
