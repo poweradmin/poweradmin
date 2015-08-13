@@ -39,7 +39,7 @@ require_once("inc/util/PoweradminUtil.class.php");
 echo "<h2>" . _('Manage RFCs') . "</h2>";
 
 if(!RfcPermissions::can_view_rfcs()) {
-    echo "<p>" . _('You do not have the permission to see the logs.') . "</p>";
+    echo "<p>" . _('You do not have the permission to see the RFCs.') . "</p>";
     include_once("inc/footer.inc.php");
     exit;
 }

@@ -99,6 +99,7 @@ class RfcResolver
             if (!$rfcs[$rfc_id]) {
                 $rfcs[$rfc_id] = $rfc;
             } else {
+                # We already have this RFC. Just need to put the changes in $rfc
                 $rfc = $rfcs[$rfc_id];
             }
 
