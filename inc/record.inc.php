@@ -1230,6 +1230,7 @@ function get_zones($perm, $userid = 0, $letterstart = 'all', $rowstart = 0, $row
     global $db;
     global $db_type;
     global $sql_regexp;
+    global $pdnssec_use;
 
     if ($letterstart == '_') {
         $letterstart = '\_';
@@ -1245,7 +1246,7 @@ function get_zones($perm, $userid = 0, $letterstart = 'all', $rowstart = 0, $row
 				AND zones.owner = " . $db->quote($userid, 'integer');
         }
         if ($letterstart != 'all' && $letterstart != 1) {
-            $sql_add .=" AND domains.name LIKE " . $db->quote($letterstart . "%", 'text') . " ";
+            $sql_add .=" AND substring(domains.name,1,1) = " . $db->quote($letterstart, 'text') . " ";
         } elseif ($letterstart == 1) {
             $sql_add .=" AND substring(domains.name,1,1) " . $sql_regexp . " '^[[:digit:]]'";
         }
@@ -1262,17 +1263,27 @@ function get_zones($perm, $userid = 0, $letterstart = 'all', $rowstart = 0, $row
     $sql_sortby = ($sortby == 'domains.name' ? $natural_sort : $sortby . ', ' . $natural_sort);
 
     $sqlq = "SELECT domains.id,
-			domains.name,
-			domains.type,
-			Record_Count.count_records
-			FROM domains
-			LEFT JOIN zones ON domains.id=zones.domain_id
-			LEFT JOIN (
-				SELECT COUNT(domain_id) AS count_records, domain_id FROM records WHERE type IS NOT NULL GROUP BY domain_id
-			) Record_Count ON Record_Count.domain_id=domains.id
-			WHERE 1=1" . $sql_add . "
-			GROUP BY domains.name, domains.id, domains.type, Record_Count.count_records
-			ORDER BY " . $sql_sortby;
+                        domains.name,
+                        domains.type,
+                        COUNT(records.id) AS count_records,
+                        users.fullname
+                        " . ($pdnssec_use ? ",COUNT(cryptokeys.id) > 0 OR COUNT(domainmetadata.id) > 0 AS secured" : "") . "
+                        FROM domains
+                        LEFT JOIN zones ON domains.id=zones.domain_id
+                        LEFT JOIN records ON records.domain_id=domains.id AND records.type IS NOT NULL
+                        LEFT JOIN users ON users.id=zones.owner
+        ";
+
+    if ($pdnssec_use) {
+        $sqlq .= "      LEFT JOIN cryptokeys ON domains.id = cryptokeys.domain_id AND cryptokeys.active
+                        LEFT JOIN domainmetadata ON domains.id = domainmetadata.domain_id AND domainmetadata.kind = 'PRESIGNED'
+            ";
+    }
+
+        $sqlq .= "
+                        WHERE 1=1" . $sql_add . "
+                        GROUP BY domains.name, domains.id, domains.type, users.fullname
+                        ORDER BY " . $sql_sortby;
 
     if ($letterstart != 'all') {
         $db->setLimit($rowamount, $rowstart);
@@ -1286,8 +1297,12 @@ function get_zones($perm, $userid = 0, $letterstart = 'all', $rowstart = 0, $row
             "id" => $r["id"],
             "name" => $r["name"],
             "type" => $r["type"],
-            "count_records" => $r["count_records"]
+            "count_records" => $r["count_records"],
+            "owner" => $r["fullname"],
         );
+        if ($pdnssec_use) {
+            $ret[$r["name"]]["secured"] = $r["secured"];
+        }
     }
     return $ret;
 }

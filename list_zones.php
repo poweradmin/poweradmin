@@ -122,7 +122,6 @@ if ($perm_view == "none") {
             $zone['count_records'] = 0;
         }
 
-        $zone_owners = do_hook('get_fullnames_owners_from_domainid', $zone['id']);
         if ($iface_zonelist_serial)
             $serial = get_serial_by_zid($zone['id']);
 
@@ -144,7 +143,7 @@ if ($perm_view == "none") {
         echo "          <td class=\"name\">" . $zone["name"] . "</td>\n";
         echo "          <td class=\"type\">" . strtolower($zone["type"]) . "</td>\n";
         echo "          <td class=\"count\">" . $zone["count_records"] . "</td>\n";
-        echo "          <td class=\"owner\">" . $zone_owners . "</td>\n";
+        echo "          <td class=\"owner\">" . $zone["owner"] . "</td>\n";
         if ($iface_zonelist_serial) {
             if ($serial != "") {
                 echo "          <td class=\"y\">" . $serial . "</td>\n";
@@ -153,7 +152,7 @@ if ($perm_view == "none") {
             }
         }
         if ($pdnssec_use) {
-            echo "          <td class=\"dnssec\"><input type=\"checkbox\" onclick=\"return false\" " . (dnssec_is_zone_secured($zone['name']) ? 'checked' : '') . "></td>\n";
+            echo "          <td class=\"dnssec\"><input type=\"checkbox\" onclick=\"return false\" " . ($zone["secured"] ? 'checked' : '') . "></td>\n";
         }
         echo "           </tr>\n";
     }
