@@ -31,8 +31,8 @@
  */
 require_once("inc/toolkit.inc.php");
 require_once("inc/RfcPermissions.class.php");
-include_once("inc/header.inc.php");
 require_once("inc/RfcResolver.class.php");
+include_once("inc/header.inc.php");
 require_once("inc/util/PoweradminUtil.class.php");
 
 
@@ -45,10 +45,8 @@ if(!RfcPermissions::can_view_rfcs()) {
 }
 global $db;
 
-require_once("inc/RfcResolver.class.php");
 $p = new RfcResolver($db);
-echo $p->get_own_active_rfcs(PoweradminUtil::get_username());
-echo $p->get_other_active_rfcs(PoweradminUtil::get_username());
-#echo $p->get_html();
+$p->build_tree();
+
 
 include_once("inc/footer.inc.php");
