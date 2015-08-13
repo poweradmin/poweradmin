@@ -19,23 +19,26 @@ class RfcResolver
      */
     private function get_menu_entry($before = '', $after = '')
     {
-        $menu = '';
-        if(RfcPermissions::can_view_rfcs()) {
-            $username = PoweradminUtil::get_username();
-            $own_active = $this->get_own_active_rfcs($username);
-            $other_active = $this->get_other_active_rfcs($username);
-
-            $menu .= $before;
-            $menu .= _('Manage RFCs');
-
-            $tag_start = $tag_end = '';
-            if($own_active + $other_active > 0) {
-                $tag_start = '<b>';
-                $tag_end = '</b>';
-            }
-            $menu .= $tag_start . " (" . $own_active . " / " . $other_active . ") " . $tag_end;
-            $menu .= $after;
+        if(!RfcPermissions::can_view_rfcs()) {
+            return '';
         }
+
+        $username = PoweradminUtil::get_username();
+        $own_active = $this->get_own_active_rfcs($username);
+        $other_active = $this->get_other_active_rfcs($username);
+
+        $menu = $before;
+        $menu .= _('Manage RFCs');
+
+        $tag_start = $tag_end = '';
+        if($own_active + $other_active > 0) {
+            $tag_start = '<b>';
+            $tag_end = '</b>';
+        }
+
+        $menu .= $tag_start . " (" . $own_active . " / " . $other_active . ") " . $tag_end;
+        $menu .= $after;
+
 
         return $menu;
     }
