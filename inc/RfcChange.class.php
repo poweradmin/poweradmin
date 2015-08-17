@@ -79,4 +79,36 @@ class RfcChange
 
         return $result_id;
     }
+
+    /**
+     * @return int
+     */
+    public function getZone()
+    {
+        return $this->zone;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSerial()
+    {
+        return $this->serial;
+    }
+
+    /**
+     * @return Record
+     */
+    public function getPrior()
+    {
+        return $this->prior;
+    }
+
+    /**
+     * @return Record
+     */
+    public function getAfter()
+    {
+        return $this->after;
+    }
 }

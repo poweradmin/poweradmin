@@ -67,6 +67,12 @@ class Rfc
      * @var RfcChange[] A list of changes.
      */
     private $changes;
+    private $id;
+
+    /**
+     * @var bool True, if the RFC is expired. False otherwise.
+     */
+    private $expired;
 
     private $timestamp;
     private $initiator;
@@ -218,5 +224,37 @@ class Rfc
     public function setInitiator($initiator)
     {
         $this->initiator = $initiator;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getExpired()
+    {
+        return $this->expired;
+    }
+
+    /**
+     * @param mixed $expired
+     */
+    public function setExpired($expired)
+    {
+        $this->expired = $expired;
     }
 }

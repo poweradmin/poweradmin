@@ -252,7 +252,7 @@ ORDER BY time DESC;";
             }
 
             if($colorize_cell) {
-                $s .= "<td class=\"record-edit-cell-" . $prefix . "\">" . $data . "</td>";
+                $s .= '<td class="record-edit-cell-' . $prefix . '">' . $data . '</td>';
             } else {
                 $s .= "<td>" . $data . "</td>";
             }

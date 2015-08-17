@@ -32,6 +32,7 @@
 require_once("inc/toolkit.inc.php");
 require_once("inc/RfcPermissions.class.php");
 require_once("inc/RfcResolver.class.php");
+require_once("inc/RFCRender.class.php");
 include_once("inc/header.inc.php");
 require_once("inc/util/PoweradminUtil.class.php");
 
@@ -47,6 +48,8 @@ global $db;
 
 $r = new RfcResolver($db);
 $rfcs = $r->build_tree();
+$renderer = new RFCRender($rfcs);
+echo $renderer->get_html();
 
 
 include_once("inc/footer.inc.php");

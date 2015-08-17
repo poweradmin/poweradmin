@@ -53,17 +53,15 @@ class RfcResolver
                     ON c.after = d_after.id
                 JOIN domains d
                     ON c.zone = d.id
-            WHERE
-                r.initiator = :user
             ;";
         $user = PoweradminUtil::get_username();
 
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(":user", $user);
         $success = $stmt->execute();
 
         $rfc_dump = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $active_rfcs = array();
+        $expired_rfcs = array();
 
         # Filter active RFCs (with cache, yeah!)
         $serial_cache = array();
@@ -84,16 +82,23 @@ class RfcResolver
             # Make sure the rfc is based on the current version
             $serial_in_rfc_change = $row['change_based_on_serial'];
             if($serial_in_db != $serial_in_rfc_change) {
-                continue;
+                $row['rfc_expired'] = true;
+                $expired_rfcs[] = $row;
+            } else {
+                $row['rfc_expired'] = false;
+                $active_rfcs[] = $row;
             }
-
-            $active_rfcs[] = $row;
         }
 
+        $all_rfcs = array_merge($active_rfcs, $expired_rfcs);
+
         $rfcs = array();
-        foreach ($active_rfcs as $rfc_rows) {
-            $rfc = RfcBuilder::make()->initiator($rfc_rows['rfc_initiator'])->timestamp($rfc_rows['rfc_timestamp'])->build();
+        foreach ($all_rfcs as $rfc_rows) {
             $rfc_id = $rfc_rows['rfc_id'];
+
+            $rfc = RfcBuilder::make()->initiator($rfc_rows['rfc_initiator'])->timestamp($rfc_rows['rfc_timestamp'])->build();
+            $rfc->setId($rfc_id);
+            $rfc->setExpired($rfc_rows['rfc_expired']);
 
             # Insert only if nonexistent
             if (!$rfcs[$rfc_id]) {
