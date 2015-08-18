@@ -36,8 +36,18 @@ require_once("inc/RFCRender.class.php");
 include_once("inc/header.inc.php");
 require_once("inc/util/PoweradminUtil.class.php");
 
-if (isset($_GET['success'])) {
-    success(SUC_RFC_DELETED);
+if (isset($_GET['flash'])) {
+    switch($_GET['flash']) {
+        case 'success_accept':
+            success(SUC_RFC_ACCEPT);
+            break;
+        case 'success_delete':
+            success(SUC_RFC_DELETE);
+            break;
+        case 'error_id':
+            error(ERR_RFC_ID);
+            break;
+    }
 }
 
 echo "<h2>" . _('Manage RFCs') . "</h2>";

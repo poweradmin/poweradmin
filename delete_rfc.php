@@ -38,7 +38,7 @@ $rfc_id = null;
 if (isset($_POST['id']) && v_num($_POST['id'])) {
     $rfc_id = $_POST['id'];
 } else {
-    header("Location: list_rfc.php");
+    header("Location: list_rfc.php?flash=error_id");
     exit;
 }
 
@@ -46,4 +46,4 @@ global $db;
 $manager = new RfcManager($db);
 $manager->delete_rfc($rfc_id);
 
-header("Location: list_rfc.php?success");
+header("Location: list_rfc.php?flash=success_delete");
