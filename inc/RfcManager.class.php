@@ -39,4 +39,50 @@ class RfcManager
         $delete3_stmt->bindParam(':rfc_id', $rfc_id);
         $delete3_success = $delete3_stmt->execute();
     }
+
+    public function get_own_active_rfcs_count()
+    {
+        $where = 'WHERE r.initiator = :user';
+        return self::get_active_rfcs_count($where);
+    }
+
+    public function get_other_active_rfcs_count()
+    {
+        $where = 'WHERE r.initiator != :user';
+        return self::get_active_rfcs_count($where);
+    }
+
+    ###########################################################################
+    # PRIVATE FUNCTIONS
+
+    private function get_active_rfcs_count($where)
+    {
+        $user = PoweradminUtil::get_username();
+        $query = "
+SELECT
+    r.id AS 'rfc',
+    c.zone,
+    c.serial
+FROM
+    rfc r
+    INNER JOIN rfc_change c
+        ON r.id = c.rfc " . $where . ";";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(":user", $user, PDO::PARAM_STR);
+        $success = $stmt->execute();
+
+        $rfcs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        # Filter active
+        $active_rfcs = array();
+        foreach ($rfcs as $rfc) {
+            $current_serial = get_serial_by_zid($rfc['zone']);
+            if($current_serial == $rfc['serial']) { # Is it still valid (based on current zone)?
+                $active_rfcs[] = $rfc['rfc'];
+            }
+        }
+
+        return count(array_unique($active_rfcs));
+    }
 }
