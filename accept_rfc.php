@@ -46,7 +46,9 @@ $all_rfcs = $rfc_resolver->build_rfcs_from_db();
 
 $this_rfc = $all_rfcs[$rfc_id];
 $acceptor = new RfcAcceptor($db);
-$acceptor->accept($this_rfc);
+$success = $acceptor->accept($this_rfc);
 
-http_response_code(200);
-header('Location: list_rfc.php?flash=success_accept');
+if($success) {
+    http_response_code(200);
+    header('Location: list_rfc.php?flash=success_accept');
+}
