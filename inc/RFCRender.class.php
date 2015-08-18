@@ -22,14 +22,19 @@ class RFCRender
             $method = $this->get_method();
 
             $style = '';
+            $user = PoweradminUtil::get_username();
             if($rfc->getExpired()) {
                 $style = 'background-color: grey';
+
+                if($user !== $rfc->getInitiator()) {
+                    continue;
+                }
             }
+
             $s .= sprintf('<form action="%s" method="%s" style="%s">', $action, $method, $style);
             $s .= $this->get_rfc_html($rfc);
             $s .= '<hr>';
         }
-
         return $s;
     }
 
