@@ -54,8 +54,6 @@ class RfcResolver
                 JOIN domains d
                     ON c.zone = d.id
             ;";
-        $user = PoweradminUtil::get_username();
-
         $stmt = $this->db->prepare($query);
         $success = $stmt->execute();
 
@@ -160,9 +158,7 @@ class RfcResolver
                 default:
                     break;
             }
-
         }
-
         return $rfcs;
     }
 
