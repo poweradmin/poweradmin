@@ -101,11 +101,10 @@ if (isset($_POST["commit"])) {
     } else {
 
         // Only update if necessary
-        $log = new RecordLog($zone_id);
+        $log = new RecordLog($zid);
         $log->log_prior($_POST["rid"]);
         if(!$log->has_changed($_POST, true)) {
             success(SUC_ZONE_NOCHANGE);
-
         } else {
             $old_record_info = get_record_from_id($_POST["rid"]);
             $ret_val = edit_record($_POST);
