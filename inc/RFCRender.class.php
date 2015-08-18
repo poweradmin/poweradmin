@@ -93,7 +93,7 @@ class RFCRender
             $s .= '</form>';
             $s .= '<form action="delete_rfc.php" method="POST">';
             $s .= '   <input type="hidden" name="id" value="' . $rfc->getId() . '"/>';
-            $s .= '   <input type="submit" value="' . _('Delete RFC') . '"/>';
+            $s .= '   <input type="submit" value="' . _('Delete my RFC') . '"/>';
             $s .= '</form>';
         }
         $s .= '</br></br>';
