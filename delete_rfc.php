@@ -46,4 +46,4 @@ global $db;
 $manager = new RfcManager($db);
 $manager->delete_rfc($rfc_id);
 
-include_once("inc/footer.inc.php");
+header("Location: list_rfc.php?success");

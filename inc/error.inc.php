@@ -127,6 +127,7 @@ define('ERR_PDNSSEC_DEL_ZONE_KEY', _('Failed to delete DNSSEC key.'));
 
 /* RFCs */
 define("SUC_RFC_CREATED", _('A <a href="list_rfc.php">RFC for your changes</a> has been created.'));
+define("SUC_RFC_DELETED", _('Successfully deleted RFC.'));
 define("ERR_RFC_PERMISSIONS", _('You do not have enough permissions to do that.'));
 
 /* GOOD! */

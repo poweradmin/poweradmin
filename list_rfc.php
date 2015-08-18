@@ -36,6 +36,9 @@ require_once("inc/RFCRender.class.php");
 include_once("inc/header.inc.php");
 require_once("inc/util/PoweradminUtil.class.php");
 
+if (isset($_GET['success'])) {
+    success(SUC_RFC_DELETED);
+}
 
 echo "<h2>" . _('Manage RFCs') . "</h2>";
 
