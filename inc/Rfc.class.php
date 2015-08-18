@@ -19,12 +19,6 @@ class RfcBuilder
         return new RfcBuilder();
     }
 
-    public function timestamp($timestamp)
-    {
-        $this->instance->setTimestamp($timestamp);
-        return $this;
-    }
-
     /**
      * Set the timestamp to *now*.
      * @return $this
@@ -37,6 +31,15 @@ class RfcBuilder
     }
 
     /**
+     * Actually create the RFC.
+     * @return Rfc The initialized RFC
+     */
+    public function build()
+    {
+        return $this->instance;
+    }
+
+    /**
      * Make the current user the initiator.
      * @return $this
      */
@@ -46,15 +49,22 @@ class RfcBuilder
         return $this;
     }
 
+    public function timestamp($timestamp)
+    {
+        $this->instance->setTimestamp($timestamp);
+        return $this;
+    }
+
     public function initiator($initiator)
     {
         $this->instance->setInitiator($initiator);
         return $this;
     }
 
-    public function build()
+    public function expired($expired)
     {
-        return $this->instance;
+        $this->instance->setExpired($expired);
+        return $this;
     }
 }
 
