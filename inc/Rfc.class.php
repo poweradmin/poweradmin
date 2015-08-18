@@ -66,6 +66,12 @@ class RfcBuilder
         $this->instance->setExpired($expired);
         return $this;
     }
+
+    public function id($id)
+    {
+        $this->instance->setId($id);
+        return $this;
+    }
 }
 
 /**

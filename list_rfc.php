@@ -50,7 +50,7 @@ if(!RfcPermissions::can_view_rfcs()) {
 global $db;
 
 $r = new RfcResolver($db);
-$rfcs = $r->build_tree();
+$rfcs = $r->build_rfcs_from_db();
 $renderer = new RFCRender($rfcs);
 echo $renderer->get_html();
 
