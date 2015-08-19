@@ -67,13 +67,12 @@ class RfcChangeRenderer
         $text = ' class="record-edit-cell-' . $prefix . '"';
 
         $prefix = array();
-        $prefix['name'] = ($colorize['name'] ? $text : '');
-        $prefix['type'] = ($colorize['type'] ? $text : '');
-        $prefix['content'] = ($colorize['content'] ? $text : '');
-        $prefix['ttl'] = ($colorize['ttl'] ? $text : '');
-        $prefix['prio'] = ($colorize['prio'] ? $text : '');
-        $prefix['change_date'] = ($colorize['change_date'] ? $text : '');
-
+        $prefix['name'] = (array_key_exists('name', $colorize) ? $text : '');
+        $prefix['type'] = (array_key_exists('type', $colorize) ? $text : '');
+        $prefix['content'] = (array_key_exists('content', $colorize) ? $text : '');
+        $prefix['ttl'] = (array_key_exists('ttl', $colorize) ? $text : '');
+        $prefix['prio'] = (array_key_exists('prio', $colorize) ? $text : '');
+        $prefix['change_date'] = (array_key_exists('change_date', $colorize) ? $text : '');
 
         $s = '<td' . $prefix['name'] . '>' . $row->getName() . '</td>';
         $s .= '<td' . $prefix['type'] . '>' . $row->getType() . '</td>';

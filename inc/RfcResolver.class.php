@@ -136,7 +136,7 @@ class RfcResolver
 
             # Cache serials for less queries
             $serial_in_db = null;
-            if ($serial_cache[$zone_id]) {
+            if (array_key_exists($zone_id, $serial_cache)) {
                 $serial_in_db = $serial_cache[$zone_id];
             } else {
                 $serial_in_db = get_serial_by_zid($zone_id);
@@ -165,7 +165,7 @@ class RfcResolver
             $rfc_id = $rfc_arr['rfc_id'];
 
             # Insert only if nonexistent
-            if (!$rfcs_objs[$rfc_id]) {
+            if (!array_key_exists($rfc_id, $rfcs_objs)) {
                 $rfcs_objs[$rfc_id] = RfcBuilder::make()
                     ->id($rfc_id)
                     ->expired($rfc_arr['rfc_expired'])

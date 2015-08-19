@@ -69,7 +69,7 @@ class Record
         $this->content = $record['content'];
         $this->prio = $record['prio'];
         $this->ttl = $record['ttl'];
-        $this->change_date = $record['change_date'];
+        $this->change_date = isset($record['change_date']) ? $record['change_date'] : time();
     }
 
     ###########################################################################
