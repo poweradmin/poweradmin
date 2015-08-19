@@ -52,6 +52,21 @@ class RfcManager
         return self::get_active_rfcs_count($where);
     }
 
+    public function zone_has_changes($zone_id)
+    {
+        # Get data
+        $select = $this->db->prepare("SELECT count(*) as 'count' FROM powerdns.rfc_change WHERE zone = :zone_id");
+        $select->bindParam(':zone_id', $zone_id, PDO::PARAM_INT);
+        $select->execute();
+        $result = $select->fetch(PDO::FETCH_ASSOC);
+        $count = $result['count'];
+
+        if(ctype_digit($count) && $count > 0) {
+            return true;
+        }
+        return false;
+    }
+
     ###########################################################################
     # PRIVATE FUNCTIONS
 

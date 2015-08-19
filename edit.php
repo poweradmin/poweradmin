@@ -247,6 +247,12 @@ $record_count = count_zone_records($zone_id);
 $zone_templates = get_list_zone_templ($_SESSION['userid']);
 $zone_template_id = get_zone_template($zone_id);
 
+global $db;
+$m = new RfcManager($db);
+if($m->zone_has_changes($zone_id) === true) {
+    info('This zone has <a href="list_rfc.php">pending RFCs</a>. Maybe you should take a look?');
+}
+
 echo "   <h2>" . _('Edit zone') . " \"" . get_zone_name_from_id($zone_id) . "\"</h2>\n";
 
 echo "   <div class=\"showmax\">\n";

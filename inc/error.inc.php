@@ -165,6 +165,12 @@ define("SUC_EXEC_PDNSSEC_DEACTIVATE_ZONE_KEY", _('Zone key has been successfully
  *
  * @return null
  */
-function error($msg) {
-    echo "     <div class=\"error\">Error: " . $msg . "</div>\n";
+function error($msg)
+{
+    echo '<div class="error">Error: ' . $msg . "</div>";
+}
+
+function info($msg)
+{
+    echo '<div class="info">Info: ' . $msg . '</div>';
 }

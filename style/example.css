@@ -130,6 +130,12 @@ td.record-edit-cell-after {
     font-size:		90%;
 }
 
+.info {
+    background: #dda138;
+    padding: 3px;
+    font-size: 90%;
+}
+
 .success {
     background:		#00cc33;
     padding:		3px;
