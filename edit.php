@@ -138,7 +138,7 @@ if (isset($_POST['create_rfc'])) {
                 $serial = get_serial_by_zid($before->getZone());
 
                 // Because we have two valid records with identical zones, just use one of them.
-                $rfc->add_change($before->getZone(), $serial, $before, $after);
+                $rfc->add_change($before->getZone(), $serial, $rid, $before, $after);
             }
 
             if ($one_record_changed) {

@@ -86,7 +86,7 @@ if(isset($_POST['create_rfc'])) {
             $rfc = RfcBuilder::make()->now()->myself()->build();
             $serial = get_serial_by_zid($before->getZone());
 
-            $rfc->add_change($zid, $serial, $before, $after);
+            $rfc->add_change($zid, $serial, $rid, $before, $after);
             $rfc->write($db);
             success(SUC_RFC_CREATED);
         }

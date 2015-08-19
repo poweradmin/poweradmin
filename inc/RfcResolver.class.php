@@ -92,6 +92,7 @@ class RfcResolver
                 r.initiator          AS rfc_initiator,
                 c.zone               AS zone_id,
                 c.serial             AS change_based_on_serial,
+                c.affected_record_id AS affected_record_id,
                 d.name               AS zone_name,
                 d_before.id          AS prior_id,
                 d_before.domain_id   AS prior_domain_id,
@@ -203,13 +204,14 @@ class RfcResolver
             $action = self::get_action($prior, $after);
             $zone_id = $rfc_arr['zone_id'];
             $change_based_on_serial = $rfc_arr['change_based_on_serial'];
+            $affected_record_id = $rfc_arr['affected_record_id'];
             switch($action) {
                 case 'edit':
-                    $rfc_obj->add_change($zone_id, $change_based_on_serial, $prior, $after);
+                    $rfc_obj->add_change($zone_id, $change_based_on_serial, $affected_record_id, $prior, $after);
                     break;
 
                 case 'delete':
-                    $rfc_obj->add_delete($zone_id, $change_based_on_serial, $prior);
+                    $rfc_obj->add_delete($zone_id, $change_based_on_serial, $affected_record_id, $prior);
                     break;
 
                 case 'insert':

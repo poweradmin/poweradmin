@@ -73,7 +73,7 @@ switch($action_in) {
         $rfc = RfcBuilder::make()->myself()->now()->build();
         $old_record = new Record($record);
 
-        $rfc->add_delete($zone_id, $zone_serial, $old_record);
+        $rfc->add_delete($zone_id, $zone_serial, $record_id_in, $old_record);
         $rfc->write($db);
         success(SUC_RFC_CREATED);
         break;

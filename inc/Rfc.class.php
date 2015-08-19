@@ -106,12 +106,13 @@ class Rfc
      *
      * @param int $zone The zone id
      * @param string $serial The serial of zone this change is valid upon
+     * @param int $affected_record_id
      * @param Record $before The record before the change
      * @param Record $after The record after the change
      */
-    public function add_change($zone, $serial, Record $before, Record $after)
+    public function add_change($zone, $serial, $affected_record_id, Record $before, Record $after)
     {
-        $this->changes[] = new RfcChange($zone, $serial, $before, $after);
+        $this->changes[] = new RfcChange($zone, $serial, $before, $after, $affected_record_id);
     }
 
     /**
@@ -127,11 +128,12 @@ class Rfc
     /**
      * @param int $zone The zone id
      * @param string $serial The serial of zone this change is valid upon
+     * @param int $affected_record_id
      * @param Record $old The old record that will be deleted in this RFC
      */
-    public function add_delete($zone, $serial, Record $old)
+    public function add_delete($zone, $serial, $affected_record_id, Record $old)
     {
-        $this->changes[] = new RfcChange($zone, $serial, $old, null);
+        $this->changes[] = new RfcChange($zone, $serial, $old, null, $affected_record_id);
     }
 
     /**
@@ -144,7 +146,7 @@ class Rfc
 
         foreach ($records as $record) {
             $r = new Record($record);
-            $this->changes[] = new RfcChange($zone_id, $zone_serial, $r, null);
+            $this->changes[] = new RfcChange($zone_id, $zone_serial, $r, null, $r->getId());
         }
 
         # Since we don't have a flag for what changed (record / domain delete) in

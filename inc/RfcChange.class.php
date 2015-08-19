@@ -8,6 +8,7 @@ class RfcChange
     private $after;
 
     private $rfc_id = null;
+    private $affected_record_id = null;
 
     /**
      * RfcChange constructor.
@@ -15,13 +16,15 @@ class RfcChange
      * @param string $serial The serial based on which the change is valid.
      * @param Record $prior The record before the change.
      * @param Record $after The record after the change.
+     * @param int|null $affected_record_id The record id this change is based upon
      */
-    public function __construct($zone, $serial, $prior, $after)
+    public function __construct($zone, $serial, $prior, $after, $affected_record_id = null)
     {
         $this->zone = $zone;
         $this->serial = $serial;
         $this->prior = $prior;
         $this->after = $after;
+        $this->affected_record_id = $affected_record_id;
     }
 
     public function setRfcId($rfc_id)
@@ -38,12 +41,13 @@ class RfcChange
         $rfc_data_prior_id = $this->insert_record($db, $this->prior);
         $rfc_data_after_id = $this->insert_record($db, $this->after);
 
-        $stmt = $db->prepare("INSERT INTO rfc_change (zone, serial, prior, after, rfc) VALUES (:zone, :serial, :prior, :after, :rfc)");
+        $stmt = $db->prepare("INSERT INTO rfc_change (zone, serial, prior, after, rfc, affected_record_id) VALUES (:zone, :serial, :prior, :after, :rfc, :affected_record_id)");
         $stmt->bindParam(":zone", $this->zone, PDO::PARAM_INT);
         $stmt->bindParam(":serial", $this->serial);
         $stmt->bindParam(":prior", $rfc_data_prior_id, PDO::PARAM_INT);
         $stmt->bindParam(":after", $rfc_data_after_id, PDO::PARAM_INT);
         $stmt->bindParam(":rfc", $this->rfc_id, PDO::PARAM_INT);
+        $stmt->bindValue(":affected_record_id", $this->affected_record_id,PDO::PARAM_INT);
 
         $success = $stmt->execute();
         $rfc_change_id = $db->lastInsertId(); // TODO: Fix PosgreSQL
@@ -110,5 +114,13 @@ class RfcChange
     public function getAfter()
     {
         return $this->after;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getAffectedRecordId()
+    {
+        return $this->affected_record_id;
     }
 }
