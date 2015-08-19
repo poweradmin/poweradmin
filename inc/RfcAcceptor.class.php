@@ -59,29 +59,50 @@ class RfcAcceptor
         foreach ($changes as $change) {
             $change_type = self::get_action_type($change->getPrior(), $change->getAfter());
 
+            # Yes you shouldn't do that, yes, its ugly. But here you go:
             switch($change_type) {
-                case 'record_edit':
-                    $method = 'POST';
+                case 'record_insert':
                     $action = 'add_record.php';
-                    // TODO 10: CURL IT!
+                    $_GET['id'] = $change->getZone();
+                    $_POST['ttl'] = $change->getAfter()->getTtl();
+                    $_POST['prio'] = $change->getAfter()->getPrio();
+                    $_POST['name'] = $change->getAfter()->getName();
+                    $_POST['type'] = $change->getAfter()->getType();
+                    $_POST['content'] = $change->getAfter()->getContent();
+                    $_POST['commit'] = 'Add record';
+
+                    require($action);
+                    break;
+
+                case 'record_edit':
+                    $action = 'edit_record.php';
+                    $_GET['id'] = $change->getAffectedRecordId();
+                    $_POST['rid'] = $change->getAffectedRecordId();
+                    $_POST['zid'] = $change->getAfter()->getZone();
+                    $_POST['name'] = $change->getAfter()->getName();
+                    $_POST['type'] = $change->getAfter()->getType();
+                    $_POST['content'] = $change->getAfter()->getContent();
+                    $_POST['prio'] = $change->getAfter()->getPrio();
+                    $_POST['ttl'] = $change->getAfter()->getTtl();
+                    $_POST['commit'] = 'Edit record';
+
+                    require($action);
                     break;
 
                 case 'record_delete':
-                    $method = 'GET';
-                    $action = 'edit_record.php';
-                    // TODO 10: CURL IT!
-                    break;
-
-                case 'record_insert':
-                    $method = 'POST';
                     $action = 'delete_record.php';
-                    // TODO 10: CURL IT!
+                    $_GET['id'] = $change->getAffectedRecordId();
+                    $_GET['confirm'] = 1;
+
+                    require($action);
                     break;
 
                 case 'zone_delete':
-                    $method = 'GET';
                     $action = 'delete_domain.php';
-                    // TODO 10: CURL IT!
+                    $_GET['id'] = $change->getZone();
+                    $_GET['confirm'] = 1;
+
+                    require($action);
                     break;
             }
         }
