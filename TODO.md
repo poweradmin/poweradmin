@@ -12,11 +12,9 @@
     *
 
 * Move utility classes to inc/util
-
     * TimeHelper.class.php
     *
 
 * Compatability
-
     * lastInsertId for PostgreSQL.
     * SQL (-noris) for other RDBMS
