@@ -631,7 +631,7 @@ function delete_record($rid) {
     $do_rfc_commit = $is_rfc_commit && RfcPermissions::can_commit_rfcs();
 
     if ($do_rfc_commit || ($perm_content_edit == "all" || (($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "1" ))) {
-        if ($record['type'] == "SOA") {
+        if (!$do_rfc_commit && $record['type'] == "SOA") {
             error(_('You are trying to delete the SOA record. You are not allowed to remove it, unless you remove the entire zone.'));
         } else {
             $query = "DELETE FROM records WHERE id = " . $db->quote($rid, 'integer');
@@ -853,7 +853,13 @@ function delete_domain($id) {
     }
     $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $id );
 
-    if ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) {
+    $is_rfc_commit = false;
+    if(isset($_POST['rfc_commit'])) {
+        $is_rfc_commit = true;
+    }
+    $do_rfc_commit = $is_rfc_commit && RfcPermissions::can_commit_rfcs();
+
+    if (($is_rfc_commit && $do_rfc_commit) || $perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) {
         if (is_numeric($id)) {
             $domain_log = DomainLog::with_db($db);
             $domain_log->delete_domain($id);
