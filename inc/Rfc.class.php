@@ -140,13 +140,15 @@ class Rfc
      * @param int $zone_id The zone to delete
      * @param string $zone_serial The serial of zone this change is valid upon
      */
-    public function add_delete_domain($zone_id, $zone_serial)
+    public function add_delete_domain($zone_id, $zone_serial, $flag = false)
     {
         $records = get_records_from_domain_id($zone_id);
 
-        foreach ($records as $record) {
-            $r = new Record($record);
-            $this->changes[] = new RfcChange($zone_id, $zone_serial, $r, null, $r->getId());
+        if($flag !== true) {
+            foreach ($records as $record) {
+                $r = new Record($record);
+                $this->changes[] = new RfcChange($zone_id, $zone_serial, $r, null, $r->getId());
+            }
         }
 
         # Since we don't have a flag for what changed (record / domain delete) in

@@ -219,7 +219,7 @@ class RfcResolver
                     break;
 
                 case 'zone_delete':
-                    $rfc_obj->add_delete_domain($zone_id, $change_based_on_serial);
+                    $rfc_obj->add_delete_domain($zone_id, $change_based_on_serial, true);
                     break;
 
                 default:
