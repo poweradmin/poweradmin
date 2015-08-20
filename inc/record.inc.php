@@ -446,7 +446,12 @@ function add_record($zone_id, $name, $type, $content, $ttl, $prio, RecordLog &$l
     $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );
     $zone_type = get_domain_type($zone_id);
 
-    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || (($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0")) {
+    $is_rfc_commit = false;
+    if(isset($_POST['rfc_commit'])) {
+        $is_rfc_commit = true;
+    }
+
+    if (!($is_rfc_commit && RfcPermissions::can_commit_rfcs()) && ($zone_type == "SLAVE" || $perm_content_edit == "none" || (($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0"))) {
         error(ERR_PERM_ADD_RECORD);
         return false;
     } else {

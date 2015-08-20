@@ -110,6 +110,11 @@ if ($zone_id == "-1") {
     exit;
 }
 
+$is_rfc_commit = false;
+if(isset($_POST['rfc_commit'])) {
+    $is_rfc_commit = true;
+}
+
 /*
   Check and see if the user is the zone owner
   Check the sone type and get the zone name
@@ -123,7 +128,7 @@ $zone_name = get_zone_name_from_id($zone_id);
   process it!
  */
 if (isset($_POST["commit"])) {
-    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
+    if (!($is_rfc_commit && RfcPermissions::can_commit_rfcs()) && ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0")) {
         error(ERR_PERM_ADD_RECORD);
     } else {
         // a PTR-record is added if an A or an AAAA-record are created

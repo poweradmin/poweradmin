@@ -70,6 +70,7 @@ class RfcAcceptor
                     $_POST['type'] = $change->getAfter()->getType();
                     $_POST['content'] = $change->getAfter()->getContent();
                     $_POST['commit'] = 'Add record';
+                    $_POST['rfc_commit'] = true;
 
                     require($action);
                     break;
