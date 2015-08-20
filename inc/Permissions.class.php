@@ -36,7 +36,7 @@ class Permissions
     public static function can_view_other_zone()
     {
         self::assert_user_is_available();
-        return self::boolean_hook(self::$VERIFY_PERMISSION, 'zone_content_view_other');
+        return self::boolean_hook(self::$VERIFY_PERMISSION, 'zone_content_view_others');
     }
 
     public static function can_rfc_own()
