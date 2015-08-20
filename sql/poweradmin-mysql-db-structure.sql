@@ -212,7 +212,8 @@ START TRANSACTION;
 LOCK TABLES `perm_items` WRITE;
 INSERT INTO `perm_items` (`name`, `descr`) VALUES
   ('zone_content_rfc_own', 'User can create RFCs for changes in zones he owns.'),
-  ('zone_content_rfc_other', 'User can create RFCs for changes in zones he does not own.');
+  ('zone_content_rfc_other', 'User can create RFCs for changes in zones he does not own.'),
+  ('rfc_can_commit', 'User can commit (accept) RFCs.');
 UNLOCK TABLES;
 
 CREATE TABLE IF NOT EXISTS `rfc` (
@@ -235,12 +236,13 @@ CREATE TABLE IF NOT EXISTS `rfc_data` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `rfc_change` (
-  `id`     INT          NOT NULL AUTO_INCREMENT,
-  `zone`   INT          NOT NULL,
-  `serial` VARCHAR(45)  NOT NULL,
-  `prior`  INT,
-  `after`  INT,
-  `rfc`    INT          NOT NULL,
+  `id`                 INT         NOT NULL AUTO_INCREMENT,
+  `zone`               INT         NOT NULL,
+  `serial`             VARCHAR(45) NOT NULL,
+  `prior`              INT,
+  `after`              INT,
+  `rfc`                INT         NOT NULL,
+  `affected_record_id` INT,
   PRIMARY KEY (`id`),
 
   INDEX `fk_rfc_change_1_idx` (`prior` ASC),

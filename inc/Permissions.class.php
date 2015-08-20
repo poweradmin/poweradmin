@@ -101,4 +101,10 @@ class Permissions
             throw new UnexpectedValueException("Permission data unavailable since no logged-in user was found.");
         }
     }
+
+    public static function can_commit_rfc()
+    {
+        self::assert_user_is_available();
+        return self::boolean_hook(self::$VERIFY_PERMISSION, 'rfc_can_commit');
+    }
 }

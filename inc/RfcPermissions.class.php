@@ -61,4 +61,10 @@ class RfcPermissions
         || Permissions::can_rfc_other()
         || (Permissions::can_rfc_own() && Permissions::is_zone_owner($zone_id));
     }
+
+    public static function can_commit_rfcs()
+    {
+        return Permissions::is_godlike()
+            || Permissions::can_commit_rfc();
+    }
 }

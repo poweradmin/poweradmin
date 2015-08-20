@@ -1,8 +1,7 @@
-START TRANSACTION;
-
 #################################################
 # Type tables
 #################################################
+START TRANSACTION;
 CREATE TABLE IF NOT EXISTS `log_domains_type` (
   `id`    INT         NOT NULL AUTO_INCREMENT,
   `name`  VARCHAR(32) NOT NULL,
@@ -97,14 +96,17 @@ LOCK TABLES `log_records_type` WRITE;
 INSERT INTO `log_records_type` VALUES
   (1, 'record_create'), (2, 'record_edit'), (3, 'record_delete');
 UNLOCK TABLES;
+COMMIT;
 
 #################################################
 # Add new permissions (RFCs)
 #################################################
+START TRANSACTION;
 LOCK TABLES `perm_items` WRITE;
 INSERT INTO `perm_items` (`name`, `descr`) VALUES
   ('zone_content_rfc_own', 'User can create RFCs for changes in zones he owns.'),
-  ('zone_content_rfc_other', 'User can create RFCs for changes in zones he does not own.');
+  ('zone_content_rfc_other', 'User can create RFCs for changes in zones he does not own.'),
+  ('rfc_can_commit', 'User can commit (accept) RFCs.');
 UNLOCK TABLES;
 
 #################################################
@@ -159,5 +161,4 @@ CREATE TABLE IF NOT EXISTS `rfc_change` (
   FOREIGN KEY (`rfc`)
   REFERENCES `rfc` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 COMMIT;
