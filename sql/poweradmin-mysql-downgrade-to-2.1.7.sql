@@ -7,6 +7,10 @@ DROP TABLE IF EXISTS `log_records`;
 DROP TABLE IF EXISTS `log_records_type`;
 DROP TABLE IF EXISTS `log_records_data`;
 
+DELETE FROM `perm_templ_items` WHERE `perm_id` IN (
+    SELECT `id` from `perm_items` WHERE name in ('zone_content_rfc_own', 'zone_content_rfc_other', 'rfc_can_commit')
+);
+
 # RFCs
 DELETE FROM `perm_items` WHERE `name` = 'zone_content_rfc_own' LIMIT 1;
 DELETE FROM `perm_items` WHERE `name` = 'zone_content_rfc_other' LIMIT 1;
