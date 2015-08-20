@@ -33,6 +33,11 @@ class RfcAcceptor
         $this->manager = new RfcManager($db);
     }
 
+    private static function show_error_info_messages($output)
+    {
+        echo $output;
+    }
+
     /**
      * @param Rfc $rfc
      * @return bool True on success. False otherwise.
@@ -54,6 +59,7 @@ class RfcAcceptor
      */
     private function apply_changes($rfc)
     {
+        ob_start();
         $success = true;
         $changes = $rfc->getChanges();
         foreach ($changes as $change) {
@@ -104,11 +110,16 @@ class RfcAcceptor
                     $action = 'delete_domain.php';
                     $_GET['id'] = $change->getZone();
                     $_GET['confirm'] = 1;
+                    $_POST['rfc_commit'] = true;
 
                     require($action);
                     break;
             }
         }
+
+        $output = ob_get_clean();
+        self::show_error_info_messages($output);
+
         return $success;
     }
 
