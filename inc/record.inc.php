@@ -612,11 +612,16 @@ function delete_record($rid) {
         $perm_content_edit = "none";
     }
 
+    $is_rfc_commit = false;
+    if(isset($_POST['rfc_commit'])) {
+        $is_rfc_commit = true;
+    }
+
     // Determine ID of zone first.
     $record = get_record_details_from_record_id($rid);
     $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $record['zid'] );
 
-    if ($perm_content_edit == "all" || (($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "1" )) {
+    if (($is_rfc_commit && RfcPermissions::can_commit_rfcs()) || ($perm_content_edit == "all" || (($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "1" ))) {
         if ($record['type'] == "SOA") {
             error(_('You are trying to delete the SOA record. You are not allowed to remove it, unless you remove the entire zone.'));
         } else {

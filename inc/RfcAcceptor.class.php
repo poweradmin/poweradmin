@@ -94,6 +94,7 @@ class RfcAcceptor
                     $action = 'delete_record.php';
                     $_GET['id'] = $change->getAffectedRecordId();
                     $_GET['confirm'] = 1;
+                    $_POST['rfc_commit'] = true;
 
                     require($action);
                     break;
