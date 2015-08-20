@@ -128,7 +128,10 @@ $zone_name = get_zone_name_from_id($zone_id);
   process it!
  */
 if (isset($_POST["commit"])) {
-    if (!($is_rfc_commit && RfcPermissions::can_commit_rfcs()) && ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0")) {
+
+    $do_rfc_commit = $is_rfc_commit && RfcPermissions::can_commit_rfcs();
+
+    if (!($do_rfc_commit) && ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0")) {
         error(ERR_PERM_ADD_RECORD);
     } else {
         // a PTR-record is added if an A or an AAAA-record are created
