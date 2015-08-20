@@ -22,16 +22,13 @@ class RfcManager
         $select_result = $select->fetchAll(PDO::FETCH_ASSOC);
 
         foreach ($select_result as $change) {
-            # Delete rfc_data
-            $delete1_stmt = $this->db->prepare('DELETE FROM rfc_data WHERE id IN (:prior, :after)');
-            $delete1_stmt->bindParam(':prior', $change['prior']);
-            $delete1_stmt->bindParam(':after', $change['after']);
-            $delete1_success = $delete1_stmt->execute();
-
             # Delete rfc_change
-            $delete2_stmt = $this->db->prepare('DELETE FROM rfc_change WHERE id = :rfc_change_id');
-            $delete2_stmt->bindParam(':rfc_change_id', $change['id']);
-            $delete2_success = $delete2_stmt->execute();
+            $this->delete_rfc_change($change['id']);
+
+            # Delete rfc_data
+            $this->delete_rfc_data($change['prior']);
+            $this->delete_rfc_data($change['after']);
+
         }
 
         # Delete rfc
@@ -66,7 +63,6 @@ class RfcManager
         }
         return false;
     }
-
     ###########################################################################
     # PRIVATE FUNCTIONS
 
@@ -99,5 +95,21 @@ FROM
         }
 
         return count(array_unique($active_rfcs));
+    }
+
+    private function delete_rfc_data($entry)
+    {
+        if(!$entry) { return; }
+
+        $delete_stmt = $this->db->prepare('DELETE FROM rfc_data WHERE id = :entry');
+        $delete_stmt->bindParam(':entry', $entry, PDO::PARAM_INT);
+        $delete_success = $delete_stmt->execute();
+    }
+
+    private function delete_rfc_change($change_id)
+    {
+        $delete2_stmt = $this->db->prepare('DELETE FROM rfc_change WHERE id = :rfc_change_id');
+        $delete2_stmt->bindParam(':rfc_change_id', $change_id);
+        $delete2_success = $delete2_stmt->execute();
     }
 }
