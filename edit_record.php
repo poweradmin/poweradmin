@@ -69,6 +69,11 @@ $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zid );
 $zone_type = get_domain_type($zid);
 $zone_name = get_zone_name_from_id($zid);
 
+$is_rfc_commit = false;
+if(isset($_POST['rfc_commit'])) {
+    $is_rfc_commit = true;
+}
+
 if(isset($_POST['create_rfc'])) {
     if (RfcPermissions::can_create_rfc($zid)) {
         $log = new RecordLog();
@@ -96,10 +101,11 @@ if(isset($_POST['create_rfc'])) {
 }
 
 if (isset($_POST["commit"])) {
-    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
+    $do_rfc_commit = $is_rfc_commit && RfcPermissions::can_commit_rfcs();
+
+    if (!($do_rfc_commit) && ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0")) {
         error(ERR_PERM_EDIT_RECORD);
     } else {
-
         // Only update if necessary
         $log = new RecordLog($zid);
         $log->log_prior($_POST["rid"]);

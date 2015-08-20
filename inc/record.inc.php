@@ -372,6 +372,11 @@ function edit_record($record) {
         $perm_content_edit = "none";
     }
 
+    $is_rfc_commit = false;
+    if(isset($_POST['rfc_commit'])) {
+        $is_rfc_commit = true;
+    }
+
     $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $record['zid']);
     $zone_type = get_domain_type($record['zid']);
     
@@ -384,7 +389,9 @@ function edit_record($record) {
     	return false;
     }
 
-    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || (($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0")) {
+    $do_rfc_commit = $is_rfc_commit && RfcPermissions::can_commit_rfcs();
+
+    if (!$do_rfc_commit && ($zone_type == "SLAVE" || $perm_content_edit == "none" || (($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0"))) {
         error(ERR_PERM_EDIT_RECORD);
         return false;
     } else {

@@ -86,6 +86,7 @@ class RfcAcceptor
                     $_POST['prio'] = $change->getAfter()->getPrio();
                     $_POST['ttl'] = $change->getAfter()->getTtl();
                     $_POST['commit'] = 'Edit record';
+                    $_POST['rfc_commit'] = true;
 
                     require($action);
                     break;
