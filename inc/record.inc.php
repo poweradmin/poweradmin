@@ -2055,9 +2055,9 @@ function delete_domains($domains) {
                 }
 
                 $db->exec("DELETE FROM zones WHERE domain_id=" . $db->quote($id, 'integer'));
-                $db->exec("DELETE FROM domains WHERE id=" . $db->quote($id, 'integer'));
                 $db->exec("DELETE FROM records WHERE domain_id=" . $db->quote($id, 'integer'));
                 $db->query("DELETE FROM records_zone_templ WHERE domain_id=" . $db->quote($id, 'integer'));
+                $db->exec("DELETE FROM domains WHERE id=" . $db->quote($id, 'integer'));
             } else {
                 error(sprintf(ERR_INV_ARGC, "delete_domains", "id must be a number"));
                 $error = true;
