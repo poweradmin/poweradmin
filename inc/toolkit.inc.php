@@ -373,7 +373,7 @@ function show_pages($amount, $rowamount, $id = '') {
 function show_letters($letterstart, $userid = true) {
     echo _('Show zones beginning with') . ":<br>";
 
-    $letter = "[[:digit:]]";
+    $letter = "0";
     if ($letterstart == "1") {
         echo "<span class=\"lettertaken\">[ 0-9 ]</span> ";
     } elseif (zone_letter_start($letter, $userid)) {
@@ -416,14 +416,26 @@ function show_letters($letterstart, $userid = true) {
  */
 function zone_letter_start($letter, $userid = true) {
     global $db;
+    global $db_type;
     global $sql_regexp;
+
+    if ($letter == "0") {
+        $letter = "[[:digit:]]";
+        if ($db_type == "sqlite" || $db_type == "sqlite3")
+            $letter = "[0-9]";
+    }
+
     $query = "SELECT
 			domains.id AS domain_id,
 			zones.owner,
 			domains.name AS domainname
 			FROM domains
-			LEFT JOIN zones ON domains.id=zones.domain_id
-			WHERE substring(domains.name,1,1) " . $sql_regexp . " " . $db->quote("^" . $letter, 'text');
+            LEFT JOIN zones ON domains.id=zones.domain_id";
+    if ($db_type == "sqlite" || $db_type == "sqlite3")
+        $query .=" WHERE domains.name GLOB " . $db->quote($letter . "*", 'text');
+    else
+        $query .=" WHERE domains.name " . $sql_regexp . " " . $db->quote("^" . $letter, 'text');
+
     $db->setLimit(1);
     $result = $db->queryOne($query);
     return ($result ? 1 : 0);
