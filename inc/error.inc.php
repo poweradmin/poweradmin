@@ -110,8 +110,8 @@ define("ERR_DNS_INV_TLD", _('You are using an invalid top level domain.'));
 define("ERR_DNS_INV_TTL", _('Invalid value for TTL field. It should be numeric.'));
 define("ERR_DNS_INV_PRIO", _('Invalid value for prio field. It should be numeric.'));
 define("ERR_DNS_SRV_NAME", _('Invalid value for name field of SRV record.'));
-define("ERR_DNS_SRV_WGHT", _('Invalid value for the priority field of the SRV record.'));
-define("ERR_DNS_SRV_PORT", _('Invalid value for the weight field of the SRV record.'));
+define("ERR_DNS_SRV_PORT", _('Invalid value for the port field of the SRV record.'));
+define("ERR_DNS_SRV_WGHT", _('Invalid value for the weight field of the SRV record.'));
 define("ERR_DNS_SRV_TRGT", _('Invalid SRV target.'));
 define("ERR_DNS_PRINTABLE", _('Invalid characters have been used in this record.'));
 
