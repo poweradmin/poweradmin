@@ -62,10 +62,10 @@ class RfcAcceptor
         ob_start();
         $success = true;
         $changes = $rfc->getChanges();
+        $_POST['rfc_user_approve'] = PoweradminUtil::get_username();
         foreach ($changes as $change) {
             $change_type = self::get_action_type($change->getPrior(), $change->getAfter());
 
-            # Yes you shouldn't do that, yes, its ugly. But here you go:
             switch($change_type) {
                 case 'record_insert':
                     $action = 'add_record.php';
@@ -122,7 +122,6 @@ class RfcAcceptor
 
         return $success;
     }
-
 
     private function get_action_type($prior, $after)
     {

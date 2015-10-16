@@ -61,6 +61,11 @@ class RecordComparator
         }
 
         unset($record['commit']);
+        unset($record['rfc_id']);
+        unset($record['rfc_timestamp']);
+        unset($record['rfc_initiator']);
+        unset($record['rfc_commit']);
+        unset($record['rfc_user_approve']);
     }
 }
 
@@ -104,6 +109,9 @@ class RecordLog
     }
 
     private function getUser() {
+        if(isset($_POST['rfc_initiator'])) {
+            return $_POST['rfc_initiator'];
+        }
         return $_SESSION['userlogin'];
     }
 
@@ -143,12 +151,13 @@ class RecordLog
         $record_type_id = $this->getLogType('record_create');
         $now = $this->getDate();
         $fullname = $this->getUser();
+        $user_approve = $_POST['rfc_user_approve'];
 
-        // TODO: Log approving user (col                                                    v here)
-        $log_insert_record = "INSERT INTO log_records (log_records_type_id, timestamp, user, after) VALUES ("
+        $log_insert_record = "INSERT INTO log_records (log_records_type_id, timestamp, user, user_approve, after) VALUES ("
             . $db->quote($record_type_id, 'integer') . ","
             . $db->quote($now, 'text') . ","
             . $db->quote($fullname, 'text') . ","
+            . $db->quote($user_approve, 'text') . ","
             . $db->quote($after_id, 'integer') . ")";
         $db->exec($log_insert_record);
     }
@@ -162,12 +171,13 @@ class RecordLog
         $record_type_id = $this->getLogType('record_edit');
         $now = $this->getDate();
         $user = $this->getUser();
+        $user_approve = $_POST['rfc_user_approve'];
 
-        // TODO: Log approving user (col                                                    v here)
-        $log_insert_record = "INSERT INTO log_records (log_records_type_id, timestamp, user, prior, after) VALUES ("
+        $log_insert_record = "INSERT INTO log_records (log_records_type_id, timestamp, user, user_approve, prior, after) VALUES ("
             . $db->quote($record_type_id, 'integer') . ","
             . $db->quote($now, 'text') . ","
             . $db->quote($user, 'text') . ","
+            . $db->quote($user_approve, 'text') . ","
             . $db->quote($prior_id, 'integer') . ","
             . $db->quote($after_id, 'integer') . ")";
         $db->exec($log_insert_record);
@@ -181,12 +191,13 @@ class RecordLog
         $record_type_id = $this->getLogType('record_delete');
         $now = $this->getDate();
         $user = $this->getUser();
+        $user_approve = $_POST['rfc_user_approve'];
 
-        // TODO: Log approving user (col                                                    v here)
-        $log_insert_record = "INSERT INTO log_records (log_records_type_id, timestamp, user, prior) VALUES ("
+        $log_insert_record = "INSERT INTO log_records (log_records_type_id, timestamp, user, user_approve, prior) VALUES ("
             . $db->quote($record_type_id, 'integer') . ","
             . $db->quote($now, 'text') . ","
             . $db->quote($user, 'text') . ","
+            . $db->quote($user_approve, 'text') . ","
             . $db->quote($prior_id, 'integer') . ")";
         $db->exec($log_insert_record);
     }

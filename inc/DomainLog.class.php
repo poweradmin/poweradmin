@@ -20,13 +20,14 @@ class DomainLog
         $now = $this->getDate();
         $user = $this->getUser();
         $domain_name = $this->db->queryOne("SELECT name FROM domains WHERE id = " . $this->db->quote($domain_id));
+        $user_approve = $_POST['rfc_user_approve'];
 
-        // TODO: Log approving user (col                                                                v here)
-        $log_delete_domain = "INSERT INTO log_domains (log_domains_type_id, domain_name, timestamp, user) VALUES ("
+        $log_delete_domain = "INSERT INTO log_domains (log_domains_type_id, domain_name, timestamp, user, user_approve) VALUES ("
             . $this->db->quote($domain_log_type, 'integer') . ","
             . $this->db->quote($domain_name, 'text') . ","
             . $this->db->quote($now, 'text') . ","
-            . $this->db->quote($user, 'text') . ")";
+            . $this->db->quote($user, 'text') . ","
+            . $this->db->quote($user_approve, 'text') . ")";
         $this->db->exec($log_delete_domain);
     }
 

@@ -203,7 +203,7 @@ ORDER BY time DESC;";
     {
         $s = "";
         $rowspan_attr = $rowspan > 0 ? " rowspan=" . $rowspan : "";
-        $fields = array('time', 'event', 'user', 'approving_user', 'domain');
+        $fields = array('time', 'event', 'user', 'user_approve', 'domain');
 
         foreach($fields as $field) {
             $data = '';
@@ -212,10 +212,10 @@ ORDER BY time DESC;";
             }
 
             // Special cases
-            if($field == 'approving_user')
+            if($field == 'user_approve')
             {
-                // If the approving user is null, print a '-'. Else the name of the user.
-                //$data = $data ? $data : "-";
+                // If the user to approve a RFC is null, print a '-'. Else the name of the user.
+                $data = $data ? $data : "-";
             }
             $s .= "<td" . $rowspan_attr . ">" . $data . "</td>";
         }
