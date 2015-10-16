@@ -150,13 +150,13 @@ class RecordLog
         $after_id = $this->log_records_data($this->record_after);
         $record_type_id = $this->getLogType('record_create');
         $now = $this->getDate();
-        $fullname = $this->getUser();
+        $user = $this->getUser();
         $user_approve = $_POST['rfc_user_approve'];
 
         $log_insert_record = "INSERT INTO log_records (log_records_type_id, timestamp, user, user_approve, after) VALUES ("
             . $db->quote($record_type_id, 'integer') . ","
             . $db->quote($now, 'text') . ","
-            . $db->quote($fullname, 'text') . ","
+            . $db->quote($user, 'text') . ","
             . $db->quote($user_approve, 'text') . ","
             . $db->quote($after_id, 'integer') . ")";
         $db->exec($log_insert_record);
