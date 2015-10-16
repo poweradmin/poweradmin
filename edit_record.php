@@ -74,12 +74,6 @@ if(isset($_POST['rfc_commit'])) {
     $is_rfc_commit = true;
 }
 
-// This might be a RFC that gets accepted
-$user_approve = null;
-if(isset($_POST['rfc_user_approve'])) {
-    $user_approve = $_POST['rfc_user_approve'];
-}
-
 if(isset($_POST['create_rfc'])) {
     if (RfcPermissions::can_create_rfc($zid)) {
         $log = new RecordLog();
