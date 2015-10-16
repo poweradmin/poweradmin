@@ -36,9 +36,10 @@ class DomainLog
         return $this->db->queryOne("SELECT id FROM log_domains_type WHERE name = '" . $type_name . "'");
     }
 
-    private function getUser()
-    {
-        // TODO: Move to utility class
+    private function getUser() {
+        if(isset($_POST['rfc_initiator'])) {
+            return $_POST['rfc_initiator'];
+        }
         return $_SESSION['userlogin'];
     }
 

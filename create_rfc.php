@@ -50,6 +50,7 @@ if (isset($_GET['action']) && v_str($_GET['action'])) {
 }
 
 
+// For GET requests
 global $db;
 switch($action_in) {
 
@@ -98,6 +99,39 @@ switch($action_in) {
 
     default:
         break;
+}
+
+// For POST
+if(isset($_POST['type'])) {
+    switch($_POST['type']) {
+
+        case 'delete_zone_multiple':
+            if(!isset($_POST['zone_id']) || !RfcPermissions::can_create_rfc($_POST['zone_id'])) {
+                error(ERR_INV_INPUT);
+                include_once('inc/footer.inc.php');
+                exit();
+            }
+
+            // Fail fast on invalid zone ids
+            foreach($_POST['zone_id'] as $zone_id ) {
+                if(!v_num($zone_id)) {
+                    error(ERR_INV_INPUT);
+                    include_once('inc/footer.inc.php');
+                    exit();
+                }
+            }
+
+            $rfc = RfcBuilder::make()->myself()->now()->build();
+            foreach($_POST['zone_id'] as $zone_id ) {
+                $zone_serial = get_serial_by_zid($zone_id);
+                $rfc->add_delete_domain($zone_id, $zone_serial);
+            }
+            $rfc->write($db);
+            success(SUC_RFC_CREATED);
+
+            break;
+
+    }
 }
 
 include_once("inc/footer.inc.php");

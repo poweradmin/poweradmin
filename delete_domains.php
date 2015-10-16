@@ -100,7 +100,7 @@ if ($confirm == '1') {
 
     // Show only if I am authorized
     if(RfcPermissions::can_create_rfc($zones)) {
-        echo '<input type="button" class="button" name="create_rfc" value="' . _('Create RFC') . '">';
+        echo '<button type="submit" formaction="create_rfc.php" class="button" name="type" value="delete_zone_multiple">' . _('Create RFC') .  '</button>';
     }
 
     if(RfcPermissions::can_edit_zone($zones)) {
