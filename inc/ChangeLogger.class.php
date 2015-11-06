@@ -251,7 +251,7 @@ ORDER BY time DESC;";
                 $colorize_cell = ($data !== $other_data);
             }
 
-            if($field === 'record_change_date') {
+            if($field === 'record_change_date' && $data !== '') {
                 $data = $this->epoch_to_localtime($data);
             }
 
