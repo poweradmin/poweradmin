@@ -60,33 +60,37 @@ class RfcChangeRenderer
         return $s;
     }
 
+    /**
+     * @param int $rowspan
+     * @return string
+     */
     private function get_rfc_meta($rowspan)
     {
-        $rowspan_attr = $rowspan > 0 ? " rowspan=" . $rowspan : "";
-        $s = '<td ' . $rowspan_attr . '>' . get_zone_name_from_id($this->change->getZone()) . '</td>';
-        $s .= '<td ' . $rowspan_attr . '>' . $this->change->getSerial() . '</td>';
-        $s .= '<td ' . $rowspan_attr . '>' . $this->get_action_type() . '</td>';
+        if ($rowspan > 0) {
+            $rowspan_attr = " rowspan=" . $rowspan;
+        } else {
+            $rowspan_attr = "";
+        }
+
+        $s  = '<td' . $rowspan_attr . '>' . get_zone_name_from_id($this->change->getZone()) . '</td>';
+        $s .= '<td' . $rowspan_attr . '>' . $this->change->getSerial() . '</td>';
+        $s .= '<td' . $rowspan_attr . '>' . $this->get_action_type() . '</td>';
         return $s;
     }
 
-    private function get_rfc_data(Record $row, $prefix = '', array $colorize = array())
+    private function get_rfc_data(Record $row, $attributes = '', array $colorize = array())
     {
-        $text = ' class="record-edit-cell-' . $prefix . '"';
+        $th = new TimeHelper();
+        $time = $th->from_epoch($row->getChangeDate())->format($th->format);
 
-        $prefix = array();
-        $prefix['name'] = (array_key_exists('name', $colorize) ? $text : '');
-        $prefix['type'] = (array_key_exists('type', $colorize) ? $text : '');
-        $prefix['content'] = (array_key_exists('content', $colorize) ? $text : '');
-        $prefix['ttl'] = (array_key_exists('ttl', $colorize) ? $text : '');
-        $prefix['prio'] = (array_key_exists('prio', $colorize) ? $text : '');
-        $prefix['change_date'] = (array_key_exists('change_date', $colorize) ? $text : '');
+        $attributes = $this->get_attributes($attributes, $colorize);
 
-        $s = '<td' . $prefix['name'] . '>' . $row->getName() . '</td>';
-        $s .= '<td' . $prefix['type'] . '>' . $row->getType() . '</td>';
-        $s .= '<td' . $prefix['content'] . '>' . $row->getContent() . '</td>';
-        $s .= '<td' . $prefix['ttl'] . '>' . $row->getTtl() . '</td>';
-        $s .= '<td' . $prefix['prio'] . '>' . $row->getPrio() . '</td>';
-        $s .= '<td' . $prefix['change_date'] . '>' . ($row->getChangeDate() ? $row->getChangeDate() : 0) . '</td>';
+        $s  = '<td' . $attributes['name'] . '>'    . $row->getName()    . '</td>';
+        $s .= '<td' . $attributes['type'] . '>'    . $row->getType()    . '</td>';
+        $s .= '<td' . $attributes['content'] . '>' . $row->getContent() . '</td>';
+        $s .= '<td' . $attributes['ttl'] . '>'     . $row->getTtl()     . '</td>';
+        $s .= '<td' . $attributes['prio'] . '>'    . $row->getPrio()    . '</td>';
+        $s .= '<td' . $attributes['change_date']   . '>' . $time        . '</td>';
         return $s;
     }
 
@@ -140,5 +144,29 @@ class RfcChangeRenderer
         if($prior->getPrio() !== $after->getPrio()) $a['prio'] = true;
         if($prior->getChangeDate() !== $after->getChangeDate()) $a['change_date'] = true;
         return $a;
+    }
+
+    private function get_attributes($css_class_postfix, $array)
+    {
+        $css_class = ' class="record-edit-cell-' . $css_class_postfix . '"';
+
+        $prefixes = array();
+        $keys = array('name', 'type', 'content', 'ttl', 'prio', 'change_date');
+        foreach($keys as $key) {
+            if($this->exists_and_true($array, $key)) {
+                $prefixes[$key] = $css_class;
+            } else {
+                $prefixes[$key] = '';
+            }
+        }
+        return $prefixes;
+    }
+
+    private function exists_and_true($array, $key)
+    {
+        $is_array = is_array($array);
+        $key_exists = array_key_exists($key, $array);
+        $value_is_true = $array[$key] === true;
+        return $is_array && $key_exists && $value_is_true;
     }
 }
