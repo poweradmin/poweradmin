@@ -251,6 +251,10 @@ ORDER BY time DESC;";
                 $colorize_cell = ($data !== $other_data);
             }
 
+            if($field === 'record_change_date') {
+                $data = $this->epoch_to_localtime($data);
+            }
+
             if($colorize_cell) {
                 $s .= '<td class="record-edit-cell-' . $prefix . '">' . $data . '</td>';
             } else {
@@ -274,5 +278,11 @@ ORDER BY time DESC;";
 
     public function has_changes() {
         return $this->has_changes;
+    }
+
+    private function epoch_to_localtime($epoch)
+    {
+        $th = new TimeHelper();
+        return $th->from_epoch($epoch)->format($th->format);
     }
 }

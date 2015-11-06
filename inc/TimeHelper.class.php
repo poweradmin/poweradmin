@@ -32,6 +32,11 @@ class TimeHelper
         return new DateTimeImmutable('now', $this->timezone);
     }
 
+    public function from_epoch($epoch)
+    {
+        return DateTimeImmutable::createFromFormat("U", $epoch);
+    }
+
     /**
      * @param string $interval A DateInterval format string, i.e. 'P1W' (one week).
      * @return DateTimeImmutable A datetime in the past, subtracting $interval from now.
