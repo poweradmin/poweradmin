@@ -120,7 +120,7 @@ class Record
      */
     public function getContent()
     {
-        return $this->content;
+        return str_replace('"', "", $this->content);
     }
 
     /**
