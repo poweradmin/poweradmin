@@ -86,7 +86,10 @@ class RFCRender
         $s .= '</fieldset>';
 
         if($rfc->getExpired() === true) {
-            $s .= '<p>This RFC became invalid due to more recent changes, <a href="list_log.php">see log</a>.</p>';
+            $th = new TimeHelper();
+            $timestamp = $th->now_minus('P1W')->format($th->format);
+            $s .= '<p>This RFC became invalid due to more recent changes. For details, please '
+                . '<a href="list_log.php?changes_since=' . $timestamp . '">consult the logs.</a></p>';
         }
 
         # Show button to submit RFC only if it is not my own.
