@@ -70,7 +70,7 @@ class RfcPermissions
 
     public static function can_commit_rfcs_with_initiator($initiator)
     {
-        $is_initiator = PoweradminUtil::get_username() !== $initiator;
+        $is_initiator = PoweradminUtil::get_username() === $initiator;
         return Permissions::is_godlike()
             || (!$is_initiator && RfcPermissions::can_commit_rfcs());
     }
