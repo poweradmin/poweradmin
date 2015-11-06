@@ -1,5 +1,13 @@
 <?php
 
+class ChangeAction
+{
+    const RECORD_EDIT = 'record_edit';
+    const RECORD_DELETE = 'record_delete';
+    const RECORD_INSERT = 'record_insert';
+    const ZONE_DELETE = 'zone_delete';
+}
+
 class RfcChangeRenderer
 {
     private $change;
@@ -15,17 +23,16 @@ class RfcChangeRenderer
 
     private function get_action_type()
     {
-        // TODO 3: Extract strings into constants / enums
         $prior = $this->change->getPrior();
         $after = $this->change->getAfter();
         if ($prior && $after) {
-            return 'record_edit';
+            return ChangeAction::RECORD_EDIT;
         } elseif ($prior) {
-            return 'record_delete';
+            return ChangeAction::RECORD_DELETE;
         } elseif ($after) {
-            return 'record_insert';
+            return ChangeAction::RECORD_INSERT;
         } else {
-            return 'zone_delete';
+            return ChangeAction::ZONE_DELETE;
         }
     }
 
@@ -33,16 +40,16 @@ class RfcChangeRenderer
     {
         $s = '';
         switch ($this->get_action_type()) {
-            case 'record_insert':
+            case ChangeAction::RECORD_INSERT:
                 $s .= $this->get_insert_row($this->change->getAfter());
                 break;
-            case 'record_delete':
+            case ChangeAction::RECORD_DELETE:
                 $s .= $this->get_delete_row($this->change->getPrior());
                 break;
-            case 'record_edit':
+            case ChangeAction::RECORD_EDIT:
                 $s .= $this->get_edit_row($this->change->getPrior(), $this->change->getAfter());
                 break;
-            case 'zone_delete':
+            case ChangeAction::ZONE_DELETE:
                 $s .= '<tr class="domain-delete">';
                 $s .= '    <td>' . get_zone_name_from_id($this->change->getZone()) . '</td>';
                 $s .= '    <td>' . $this->change->getSerial() . '</td>';
