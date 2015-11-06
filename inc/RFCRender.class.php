@@ -86,7 +86,7 @@ class RFCRender
         $s .= '</fieldset>';
 
         # Show button to submit RFC only if it is not my own.
-        if($rfc->getInitiator() !== PoweradminUtil::get_username()) {
+        if(RfcPermissions::can_commit_rfcs_with_initiator($rfc->getInitiator())) {
             $s .= '  <input type="submit" value="' . sprintf(_('Accept RFC as %s'), PoweradminUtil::get_username()) . '" />';
             $s .= '</form>';
         } else {
