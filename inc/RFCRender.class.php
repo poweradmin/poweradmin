@@ -85,6 +85,10 @@ class RFCRender
         $s .= '</table>';
         $s .= '</fieldset>';
 
+        if($rfc->getExpired() === true) {
+            $s .= '<p>This RFC became invalid due to more recent changes, <a href="list_log.php">see log</a>.</p>';
+        }
+
         # Show button to submit RFC only if it is not my own.
         if(RfcPermissions::can_commit_rfcs_with_initiator($rfc->getInitiator())) {
             $s .= '  <input type="submit" value="' . sprintf(_('Accept RFC as %s'), PoweradminUtil::get_username()) . '" />';
@@ -93,7 +97,7 @@ class RFCRender
             $s .= '</form>';
             $s .= '<form action="delete_rfc.php" method="POST">';
             $s .= '   <input type="hidden" name="id" value="' . $rfc->getId() . '"/>';
-            $s .= '   <input type="submit" value="' . _('Delete my RFC') . '"/>';
+            $s .= '   <input type="submit" value="' . _('Delete RFC') . '"/>';
             $s .= '</form>';
         }
         $s .= '</br></br>';
