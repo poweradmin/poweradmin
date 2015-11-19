@@ -712,15 +712,15 @@ function is_valid_rr_srv_name(&$name) {
 
     $fields = explode('.', $name, 3);
     if (!preg_match('/^_[\w-]+$/i', $fields[0])) {
-        error(ERR_DNS_SRV_NAME);
+        error(ERR_DNS_SRV_NAME_SERVICE, $name);
         return false;
     }
     if (!preg_match('/^_[\w]+$/i', $fields[1])) {
-        error(ERR_DNS_SRV_NAME);
+        error(ERR_DNS_SRV_NAME_PROTO, $name);
         return false;
     }
     if (!is_valid_hostname_fqdn($fields[2], 0)) {
-        error(ERR_DNS_SRV_NAME);
+        error(ERR_DNS_SRV_NAME, $name);
         return false;
     }
     $name = join('.', $fields);
@@ -736,15 +736,15 @@ function is_valid_rr_srv_name(&$name) {
 function is_valid_rr_srv_content(&$content) {
     $fields = preg_split("/\s+/", trim($content), 3);
     if (!is_numeric($fields[0]) || $fields[0] < 0 || $fields[0] > 65535) {
-        error(ERR_DNS_SRV_WGHT);
+        error(ERR_DNS_SRV_WGHT, $name);
         return false;
     }
     if (!is_numeric($fields[1]) || $fields[1] < 0 || $fields[1] > 65535) {
-        error(ERR_DNS_SRV_PORT);
+        error(ERR_DNS_SRV_PORT, $name);
         return false;
     }
     if ($fields[2] == "" || ($fields[2] != "." && !is_valid_hostname_fqdn($fields[2], 0))) {
-        error(ERR_DNS_SRV_TRGT);
+        error(ERR_DNS_SRV_TRGT, $name);
         return false;
     }
     $content = join(' ', $fields);
