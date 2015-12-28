@@ -45,7 +45,7 @@ $db = dbConnect();
 function safe($value) {
     global $db, $db_type;
 
-    if ($db_type == 'mysql') {
+    if ($db_type == 'mysql' || $db_type == 'sqlite') {
         $value = $db->quote($value, 'text');
         $value = substr($value, 1, -1); // remove quotes
     } elseif ($db_type == 'pgsql') {
