@@ -1617,145 +1617,102 @@ function get_users_from_domain_id($id) {
 /** Search for Zone or Record
  *
  * @param string $search_string  String to search
- * @param string $perm User permitted to view 'all' or 'own' zones
- * @param string $zone_sortby Column to sort domain results [default='name']
- * @param string $record_sortby Column to sort record results by [default='name']
- * @param boolean $wildcards Add wildcards automatically
- * @param boolean $arpa Search reverse records automatically
+ * @param string $permission_view User permitted to view 'all' or 'own' zones
+ * @param string $sort_zones_by Column to sort domain results [default='name']
+ * @param string $sort_records_by Column to sort record results by [default='name']
+ * @param boolean $wildcard Add wildcards automatically
+ * @param boolean $reverse Search reverse records automatically
  *
  * @return mixed[] 'zones' => array of zones, 'records' => array of records
  */
-function search_zone_and_record($search_string, $perm, $zone_sortby = 'name', $record_sortby = 'name', $wildcards = true, $arpa = true) {
+function search_zone_and_record($search_string, $permission_view, $sort_zones_by = 'name', $sort_records_by = 'name', $wildcard = true, $reverse = true) {
     global $db;
 
-    $search_string = trim($search_string);
+    $return = array('zones' => [], 'records' => []);
 
-    $sql_add_from = '';
-    $sql_add_where = '';
-    $arpa_search = '';
-
-    $return_zones = array();
-    $return_records = array();
-
-    if (do_hook('verify_permission' , 'zone_content_view_others' )) {
-        $perm_view = "all";
-    } elseif (do_hook('verify_permission' , 'zone_content_view_own' )) {
-        $perm_view = "own";
-    } else {
-        $perm_view = "none";
-    }
-    
-    //redundant?
-    if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
-        $perm_content_edit = "all";
-    } elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
-        $perm_content_edit = "own";
-    } elseif (do_hook('verify_permission' , 'zone_content_edit_own_as_client' )) {
-    	$perm_content_edit = "own_as_client";
-    }else {
-        $perm_content_edit = "none";
-    }
-
-    if ($perm == "all") {
-        $sql_add_from = ", zones, users ";
-        $sql_add_where = " AND zones.domain_id = domains.id AND users.id = " . $db->quote($_SESSION['userid'], 'integer');
-    }
-
-    if ($perm == "own") {
-        $sql_add_from = ", zones, users ";
-        $sql_add_where = " AND zones.domain_id = domains.id AND users.id = " . $db->quote($_SESSION['userid'], 'integer') . " AND zones.owner = " . $db->quote($_SESSION['userid'], 'integer');
-    }
-
-
-    if ($arpa) {
-        if (preg_match("/^[0-9\.]+$/", $search_string)) {
-            $quads = explode('.', $search_string);
-            $arpa_search = join('.', array_reverse($quads));
-        }
-        if (preg_match("/^[0-9a-f]{0,4}:([0-9a-f]{0,4}:){0,6}[0-9a-f]{0,4}$/i", $search_string)) {
-            //TODO ipv6 search
-        }
-    }
-
-    $query = "SELECT
-			domains.id AS zid,
-			domains.name AS name,
-			domains.type AS type,
-			domains.master AS master,
-                        zones.owner AS owner
-			FROM domains" . $sql_add_from . "
-			WHERE " . ($arpa_search ? "(" : "") .
-            " domains.name LIKE " . $db->quote(($wildcards ? "%" : "") . $search_string . ($wildcards ? "%" : ""), 'text')
-            . ($arpa_search ? " OR domains.name LIKE " . $db->quote("%" . $arpa_search . "%in-addr.arpa", 'text') . ")" : "")
-            . $sql_add_where . "
-                        ORDER BY " . $zone_sortby;
-
-    $response = $db->query($query);
-    if (PEAR::isError($response)) {
-        error($response->getMessage());
-        return false;
-    }
-
-    $cached_owners = array();
-    while ($r = $response->fetchRow()) {
-        $owner = '';
-        if (isset($cached_owners[$r['owner']])) {
-            $owner = $cached_owners[$r['owner']];
+    if ($reverse) {
+        if (filter_var($search_string, FILTER_FLAG_IPV4)) {
+            $reverse_search_string = implode('.', array_reverse(explode('.', $search_string)));
+        } elseif (filter_var($search_string, FILTER_FLAG_IPV6)) {
+            $reverse_search_string = unpack('H*hex', inet_pton($search_string));
+            $reverse_search_string = implode('.', array_reverse(str_split($reverse_search_string['hex'])));
         } else {
-            $owner = do_hook('get_owner_from_id' , $r['owner'] );
-            $cached_owners[$r['owner']] = $owner;
+            $reverse = false;
+            $reverse_search_string = '';
         }
 
-        $return_zones[] = array(
-            "zid" => $r['zid'],
-            "name" => $r['name'],
-            "type" => $r['type'],
-            "master" => $r['master'],
-            "owner" => $owner);
+        $reverse_search_string = $db->quote('%' . $reverse_search_string . '%', 'text');
     }
 
-    $sql_add_from = '';
-    $sql_add_where = '';
+    $search_string = ($wildcard ? '%' : '') . trim($search_string) . ($wildcard ? '%' : '');
 
-    // Search for matching records
+    $zonesQuery = '
+        SELECT
+            domains.id,
+            domains.name,
+            domains.type,
+            z.id as zone_id,
+            z.domain_id,
+            z.owner,
+            u.id as user_id,
+            u.fullname,
+            record_count.count_records
+        FROM
+            domains
+        LEFT JOIN zones z on domains.id = z.domain_id
+        LEFT JOIN users u on z.owner = u.id
+        LEFT JOIN (SELECT COUNT(domain_id) AS count_records, domain_id FROM records WHERE type IS NOT NULL GROUP BY domain_id) record_count ON record_count.domain_id=domains.id
+        WHERE
+            (domains.name LIKE ' . $db->quote($search_string, 'text') .
+            ($reverse ? ' OR domains.name LIKE ' . $reverse_search_string : '') . ') ' .
+            ($permission_view == 'own' ? ' AND z.owner = ' . $db->quote($_SESSION['userid'], 'integer') : '') .
+        ' ORDER BY ' . $sort_zones_by;
 
-    if ($perm == "own") {
-        $sql_add_from = ", zones ";
-        $sql_add_where = " AND zones.domain_id = records.domain_id AND zones.owner = " . $db->quote($_SESSION['userid'], 'integer');
-    }
-
-    $query = "SELECT
-			records.id AS rid,
-			records.name AS name,
-			records.type AS type,
-			records.content AS content,
-			records.ttl AS ttl,
-			records.prio AS prio,
-			records.domain_id AS zid
-			FROM records" . $sql_add_from . "
-			WHERE (records.name LIKE " . $db->quote(($wildcards ? "%" : "") . $search_string . ($wildcards ? "%" : ""), 'text') . " OR records.content LIKE " . $db->quote(($wildcards ? "%" : "") . $search_string . ($wildcards ? "%" : ""), 'text')
-            . ($arpa_search ? " OR records.name LIKE " . $db->quote("%" . $arpa_search . "%in-addr.arpa", 'text') : "")
-            . ")"
-            . $sql_add_where . "
-			ORDER BY " . $record_sortby;
-
-    $response = $db->query($query);
-    if (PEAR::isError($response)) {
-        error($response->getMessage());
+    $zonesResponse = $db->query($zonesQuery);
+    if (PEAR::isError($zonesResponse)) {
+        error($zonesResponse->getMessage());
         return false;
     }
 
-    while ($r = $response->fetchRow()) {
-        $return_records[] = array(
-            "rid" => $r['rid'],
-            "name" => $r['name'],
-            "type" => $r['type'],
-            "content" => $r['content'],
-            "ttl" => $r['ttl'],
-            "zid" => $r['zid'],
-            "prio" => $r['prio']);
+    while($zone = $zonesResponse->fetchRow()) {
+        $return['zones'][] = $zone;
     }
-    return array('zones' => $return_zones, 'records' => $return_records);
+
+
+    $recordsQuery = '
+        SELECT
+            records.id,
+            records.domain_id,
+            records.name,
+            records.type,
+            records.content,
+            records.ttl,
+            records.prio,
+            z.id as zone_id,
+            z.owner,
+            u.id as user_id,
+            u.fullname
+        FROM
+            records
+        LEFT JOIN zones z on records.domain_id = z.domain_id
+        LEFT JOIN users u on z.owner = u.id
+        WHERE
+            (records.name LIKE ' . $db->quote($search_string, 'text') . ' OR records.content LIKE ' . $db->quote($search_string, 'text') .
+            ($reverse ? ' OR records.name LIKE ' . $reverse_search_string . ' OR records.content LIKE ' . $reverse_search_string : '') . ')' .
+            ($permission_view == 'own' ? 'AND z.owner = ' . $db->quote($_SESSION['userid'], 'integer') : '') .
+        ' ORDER BY ' . $sort_records_by;
+
+    $recordsResponse = $db->query($recordsQuery);
+    if (PEAR::isError($recordsResponse)) {
+        error($recordsResponse->getMessage());
+        return false;
+    }
+
+    while($record = $recordsResponse->fetchRow()) {
+        $return['records'][] = $record;
+    }
+
+    return $return;
 }
 
 /** Get Domain Type for Domain ID
