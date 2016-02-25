@@ -366,11 +366,11 @@ function show_pages($amount, $rowamount, $id = '') {
  * Display the alphabetic option: [0-9] [a] [b] .. [z]
  *
  * @param string $letterstart Starting letter/number or 'all'
- * @param boolean $userid unknown usage
+ * @param int $userid Current user ID
  *
  * @return null
  */
-function show_letters($letterstart, $userid = true) {
+function show_letters($letterstart, $userid) {
     echo _('Show zones beginning with') . ":<br>";
 
     $letter = "[[:digit:]]";
@@ -410,11 +410,11 @@ function show_letters($letterstart, $userid = true) {
 /** Check if any zones start with letter
  *
  * @param string $letter Starting Letter
- * @param boolean $userid unknown usage
+ * @param int $userid Current user ID
  *
  * @return int 1 if rows found, 0 otherwise
  */
-function zone_letter_start($letter, $userid = true) {
+function zone_letter_start($letter, $userid) {
     global $db;
     global $sql_regexp;
     $query = "SELECT
@@ -423,7 +423,8 @@ function zone_letter_start($letter, $userid = true) {
 			domains.name AS domainname
 			FROM domains
 			LEFT JOIN zones ON domains.id=zones.domain_id
-			WHERE substring(domains.name,1,1) " . $sql_regexp . " " . $db->quote("^" . $letter, 'text');
+			WHERE zones.owner = " . $userid . "
+			AND substring(domains.name,1,1) " . $sql_regexp . " " . $db->quote("^" . $letter, 'text');
     $db->setLimit(1);
     $result = $db->queryOne($query);
     return ($result ? 1 : 0);

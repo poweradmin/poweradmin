@@ -73,7 +73,7 @@ if ($perm_view == "none") {
 } elseif (($count_zones_view > $iface_rowamount && $count_zones_all_letterstart == "0") || $count_zones_view == 0) {
     if ($count_zones_view > $iface_rowamount) {
         echo "<div class=\"showmax\">";
-        show_letters(LETTERSTART);
+        show_letters(LETTERSTART, $_SESSION["userid"]);
         echo "</div>";
     }
     echo "     <p>" . _('There are no zones to show in this listing.') . "</p>\n";
@@ -86,7 +86,7 @@ if ($perm_view == "none") {
 
     if ($count_zones_view > $iface_rowamount) {
         echo "<div class=\"showmax\">";
-        show_letters(LETTERSTART);
+        show_letters(LETTERSTART, $_SESSION["userid"]);
         echo "</div>";
     }
     echo "     <form method=\"post\" action=\"delete_domains.php\">\n";
