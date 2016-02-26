@@ -30,9 +30,6 @@
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/header.inc.php';
 
@@ -49,14 +46,16 @@ $parameters['reverse'] = !isset($_POST['reverse']) || isset($_POST['reverse']) &
 ?>
 
 <h2><?php echo _('Search zones and records'); ?></h2>
-<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
+<form name="search_form" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
     <table>
         <tr>
             <td>
                 <input type="text" class="input" name="query" value="<?php echo $parameters['query']; ?>">
-                <input type="submit" class="button" name="submit" value="<?php echo _('Search'); ?>">
+                <input type="submit" class="button" name="do_search" value="<?php echo _('Search'); ?>">
                 <input type="checkbox" class="input" name="wildcard" value="true"<?php echo $parameters['wildcard'] ? ' checked="checked"' : ''; ?>><?php echo _('Wildcard'); ?>
                 <input type="checkbox" class="input" name="reverse" value="true"<?php echo $parameters['reverse'] ? ' checked="checked"' : ''; ?>><?php echo _('Reverse'); ?>
+                <input type="hidden" name="zone_sort_by" value="<?php echo ZONE_SORT_BY; ?>">
+                <input type="hidden" name="record_sort_by" value="<?php echo RECORD_SORT_BY; ?>">
             </td>
         </tr>
         <tr>
@@ -100,10 +99,10 @@ if (isset($_POST['query'])) {
         <table>
             <tr>
                 <th></th>
-                <th><a href=""><?php echo _('Name'); ?></a></th>
-                <th><a href=""><?php echo _('Type'); ?></a></th>
-                <th><a href=""><?php echo _('Records'); ?></a></th>
-                <th><a href=""><?php echo _('Owner'); ?></a></th>
+                <th><a href="javascript:zone_sort_by('name');"><?php echo _('Name'); ?></a></th>
+                <th><a href="javascript:zone_sort_by('type');"><?php echo _('Type'); ?></a></th>
+                <th><a href="javascript:zone_sort_by('count_records');"><?php echo _('Records'); ?></a></th>
+                <th><a href="javascript:zone_sort_by('fullname');"><?php echo _('Owner'); ?></a></th>
             </tr>
             <?php foreach ($searchResult['zones'] as $zone): ?>
                 <tr>
@@ -130,11 +129,11 @@ if (isset($_POST['query'])) {
         <table>
             <tr>
                 <th></th>
-                <th><a href=""><?php echo _('Name'); ?></a></th>
-                <th><a href=""><?php echo _('Type'); ?></a></th>
-                <th><a href=""><?php echo _('Priority'); ?></a></th>
-                <th><a href=""><?php echo _('Content'); ?></a></th>
-                <th><a href=""><?php echo _('TTL'); ?></a></th>
+                <th><a href="javascript:record_sort_by('name');"><?php echo _('Name'); ?></a></th>
+                <th><a href="javascript:record_sort_by('type');"><?php echo _('Type'); ?></a></th>
+                <th><a href="javascript:record_sort_by('prio');"><?php echo _('Priority'); ?></a></th>
+                <th><a href="javascript:record_sort_by('content');"><?php echo _('Content'); ?></a></th>
+                <th><a href="javascript:record_sort_by('ttl');"><?php echo _('TTL'); ?></a></th>
             </tr>
             <?php foreach ($searchResult['records'] as $record): ?>
                 <tr>
@@ -152,6 +151,20 @@ if (isset($_POST['query'])) {
                 </tr>
             <?php endforeach; ?>
         </table>
+
+        <script type="text/javascript">
+            function zone_sort_by(sortbytype)
+            {
+                document.search_form.zone_sort_by.value = sortbytype;
+                document.search_form.submit();
+            }
+
+            function record_sort_by(sortbytype)
+            {
+                document.search_form.record_sort_by.value = sortbytype;
+                document.search_form.submit();
+            }
+        </script>
 
 <?php
     endif;
