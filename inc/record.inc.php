@@ -1614,102 +1614,104 @@ function get_users_from_domain_id($id) {
     return $owners;
 }
 
-/** Search for Zone or Record
+/**
+ * Search for Zones and/or Records
  *
- * @param string $search_string  String to search
+ * @param array $parameters Array with parameters which configures function
  * @param string $permission_view User permitted to view 'all' or 'own' zones
- * @param string $sort_zones_by Column to sort domain results [default='name']
- * @param string $sort_records_by Column to sort record results by [default='name']
- * @param boolean $wildcard Add wildcards automatically
- * @param boolean $reverse Search reverse records automatically
- *
- * @return mixed[] 'zones' => array of zones, 'records' => array of records
+ * @param string $sort_zones_by Column to sort zone results
+ * @param string $sort_records_by Column to sort record results
+ * @return array|bool
  */
-function search_zone_and_record($search_string, $permission_view, $sort_zones_by = 'name', $sort_records_by = 'name', $wildcard = true, $reverse = true) {
+function search_zone_and_record($parameters, $permission_view, $sort_zones_by, $sort_records_by) {
     global $db;
 
     $return = array('zones' => [], 'records' => []);
 
-    if ($reverse) {
-        if (filter_var($search_string, FILTER_FLAG_IPV4)) {
-            $reverse_search_string = implode('.', array_reverse(explode('.', $search_string)));
-        } elseif (filter_var($search_string, FILTER_FLAG_IPV6)) {
-            $reverse_search_string = unpack('H*hex', inet_pton($search_string));
+    if ($parameters['reverse']) {
+        if (filter_var($parameters['query'], FILTER_FLAG_IPV4)) {
+            $reverse_search_string = implode('.', array_reverse(explode('.', $parameters['query'])));
+        } elseif (filter_var($parameters['query'], FILTER_FLAG_IPV6)) {
+            $reverse_search_string = unpack('H*hex', inet_pton($parameters['query']));
             $reverse_search_string = implode('.', array_reverse(str_split($reverse_search_string['hex'])));
         } else {
-            $reverse = false;
+            $parameters['reverse'] = false;
             $reverse_search_string = '';
         }
 
         $reverse_search_string = $db->quote('%' . $reverse_search_string . '%', 'text');
     }
 
-    $search_string = ($wildcard ? '%' : '') . trim($search_string) . ($wildcard ? '%' : '');
+    $search_string = ($parameters['wildcard'] ? '%' : '') . trim($parameters['query']) . ($parameters['wildcard'] ? '%' : '');
 
-    $zonesQuery = '
-        SELECT
-            domains.id,
-            domains.name,
-            domains.type,
-            z.id as zone_id,
-            z.domain_id,
-            z.owner,
-            u.id as user_id,
-            u.fullname,
-            record_count.count_records
-        FROM
-            domains
-        LEFT JOIN zones z on domains.id = z.domain_id
-        LEFT JOIN users u on z.owner = u.id
-        LEFT JOIN (SELECT COUNT(domain_id) AS count_records, domain_id FROM records WHERE type IS NOT NULL GROUP BY domain_id) record_count ON record_count.domain_id=domains.id
-        WHERE
-            (domains.name LIKE ' . $db->quote($search_string, 'text') .
-            ($reverse ? ' OR domains.name LIKE ' . $reverse_search_string : '') . ') ' .
+    if ($parameters['zones']) {
+        $zonesQuery = '
+            SELECT
+                domains.id,
+                domains.name,
+                domains.type,
+                z.id as zone_id,
+                z.domain_id,
+                z.owner,
+                u.id as user_id,
+                u.fullname,
+                record_count.count_records
+            FROM
+                domains
+            LEFT JOIN zones z on domains.id = z.domain_id
+            LEFT JOIN users u on z.owner = u.id
+            LEFT JOIN (SELECT COUNT(domain_id) AS count_records, domain_id FROM records WHERE type IS NOT NULL GROUP BY domain_id) record_count ON record_count.domain_id=domains.id
+            WHERE
+                (domains.name LIKE ' . $db->quote($search_string, 'text') .
+            ($parameters['reverse'] ? ' OR domains.name LIKE ' . $reverse_search_string : '') . ') ' .
             ($permission_view == 'own' ? ' AND z.owner = ' . $db->quote($_SESSION['userid'], 'integer') : '') .
-        ' ORDER BY ' . $sort_zones_by;
+            ' ORDER BY ' . $sort_zones_by;
 
-    $zonesResponse = $db->query($zonesQuery);
-    if (PEAR::isError($zonesResponse)) {
-        error($zonesResponse->getMessage());
-        return false;
+        $zonesResponse = $db->query($zonesQuery);
+        if (PEAR::isError($zonesResponse)) {
+            error($zonesResponse->getMessage());
+            return false;
+        }
+
+        while ($zone = $zonesResponse->fetchRow()) {
+            $return['zones'][] = $zone;
+        }
     }
 
-    while($zone = $zonesResponse->fetchRow()) {
-        $return['zones'][] = $zone;
-    }
 
-
-    $recordsQuery = '
-        SELECT
-            records.id,
-            records.domain_id,
-            records.name,
-            records.type,
-            records.content,
-            records.ttl,
-            records.prio,
-            z.id as zone_id,
-            z.owner,
-            u.id as user_id,
-            u.fullname
-        FROM
-            records
-        LEFT JOIN zones z on records.domain_id = z.domain_id
-        LEFT JOIN users u on z.owner = u.id
-        WHERE
-            (records.name LIKE ' . $db->quote($search_string, 'text') . ' OR records.content LIKE ' . $db->quote($search_string, 'text') .
-            ($reverse ? ' OR records.name LIKE ' . $reverse_search_string . ' OR records.content LIKE ' . $reverse_search_string : '') . ')' .
+    if ($parameters['records']) {
+        $recordsQuery = '
+            SELECT
+                records.id,
+                records.domain_id,
+                records.name,
+                records.type,
+                records.content,
+                records.ttl,
+                records.prio,
+                z.id as zone_id,
+                z.owner,
+                u.id as user_id,
+                u.fullname
+            FROM
+                records
+            LEFT JOIN zones z on records.domain_id = z.domain_id
+            LEFT JOIN users u on z.owner = u.id
+            WHERE
+                (records.name LIKE ' . $db->quote($search_string, 'text') . ' OR records.content LIKE ' . $db->quote($search_string, 'text') .
+            ($parameters['reverse'] ? ' OR records.name LIKE ' . $reverse_search_string . ' OR records.content LIKE ' . $reverse_search_string : '') . ')' .
             ($permission_view == 'own' ? 'AND z.owner = ' . $db->quote($_SESSION['userid'], 'integer') : '') .
-        ' ORDER BY ' . $sort_records_by;
+            ' ORDER BY ' . $sort_records_by;
 
-    $recordsResponse = $db->query($recordsQuery);
-    if (PEAR::isError($recordsResponse)) {
-        error($recordsResponse->getMessage());
-        return false;
-    }
+        $recordsResponse = $db->query($recordsQuery);
+        if (PEAR::isError($recordsResponse)) {
+            error($recordsResponse->getMessage());
+            return false;
+        }
 
-    while($record = $recordsResponse->fetchRow()) {
-        $return['records'][] = $record;
+        while ($record = $recordsResponse->fetchRow()) {
+            $return['records'][] = $record;
+        }
     }
 
     return $return;

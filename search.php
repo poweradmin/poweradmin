@@ -40,8 +40,10 @@ if (!do_hook('verify_permission', 'search')) {
 }
 
 $parameters['query'] = isset($_POST['query']) && !empty($_POST['query']) ? $_POST['query'] : '';
-$parameters['wildcard'] = !isset($_POST['wildcard']) || isset($_POST['wildcard']) && $_POST['wildcard'] == true ? true : false;
-$parameters['reverse'] = !isset($_POST['reverse']) || isset($_POST['reverse']) && $_POST['reverse'] == true ? true : false;
+$parameters['zones'] = !isset($_POST['do_search']) && !isset($_POST['zones']) || isset($_POST['zones']) && $_POST['zones'] == true ? true : false;
+$parameters['records'] = !isset($_POST['do_search']) && !isset($_POST['records']) || isset($_POST['records']) && $_POST['records'] == true ? true : false;
+$parameters['wildcard'] = !isset($_POST['do_search']) && !isset($_POST['wildcard']) || isset($_POST['wildcard']) && $_POST['wildcard'] == true ? true : false;
+$parameters['reverse'] = !isset($_POST['do_search']) && !isset($_POST['reverse']) || isset($_POST['reverse']) && $_POST['reverse'] == true ? true : false;
 
 ?>
 
@@ -52,6 +54,8 @@ $parameters['reverse'] = !isset($_POST['reverse']) || isset($_POST['reverse']) &
             <td>
                 <input type="text" class="input" name="query" value="<?php echo $parameters['query']; ?>">
                 <input type="submit" class="button" name="do_search" value="<?php echo _('Search'); ?>">
+                <input type="checkbox" class="input" name="zones" value="true"<?php echo $parameters['zones'] ? ' checked="checked"' : ''; ?>><?php echo _('Zones'); ?>
+                <input type="checkbox" class="input" name="records" value="true"<?php echo $parameters['records'] ? ' checked="checked"' : ''; ?>><?php echo _('Records'); ?> |
                 <input type="checkbox" class="input" name="wildcard" value="true"<?php echo $parameters['wildcard'] ? ' checked="checked"' : ''; ?>><?php echo _('Wildcard'); ?>
                 <input type="checkbox" class="input" name="reverse" value="true"<?php echo $parameters['reverse'] ? ' checked="checked"' : ''; ?>><?php echo _('Reverse'); ?>
                 <input type="hidden" name="zone_sort_by" value="<?php echo ZONE_SORT_BY; ?>">
@@ -84,12 +88,10 @@ if (isset($_POST['query'])) {
     }
 
     $searchResult = search_zone_and_record(
-        $parameters['query'],
+        $parameters,
         $permissions['view'],
         ZONE_SORT_BY,
-        RECORD_SORT_BY,
-        $parameters['wildcard'],
-        $parameters['reverse']
+        RECORD_SORT_BY
     );
 
     if (is_array($searchResult['zones'])):
@@ -156,13 +158,13 @@ if (isset($_POST['query'])) {
             function zone_sort_by(sortbytype)
             {
                 document.search_form.zone_sort_by.value = sortbytype;
-                document.search_form.submit();
+                document.getElementsByName("do_search")[0].click();
             }
 
             function record_sort_by(sortbytype)
             {
                 document.search_form.record_sort_by.value = sortbytype;
-                document.search_form.submit();
+                document.getElementsByName("do_search")[0].click();
             }
         </script>
 
