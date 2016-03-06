@@ -52,8 +52,9 @@ function dnssec_is_pdnssec_callable() {
 
 /** Execute dnssec utility
  *
- * @param $command Command name
- * @param $args Command arguments
+ * @param string $command Command name
+ * @param string $args Command arguments
+ *
  * @return mixed[] Array with output from command execution and error code
  */
 function dnssec_call_pdnssec($command, $args) {
