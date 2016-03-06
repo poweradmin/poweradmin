@@ -459,8 +459,9 @@ function dnssec_get_dnskey_record($domain_name) {
 /** Activate zone key
  *
  * @param string $domain_name Domain Name
+ * @param $key_id
  *
- * @return boolean true on success, false on failure
+ * @return bool true on success, false on failure
  */
 function dnssec_activate_zone_key($domain_name, $key_id) {
     $call_result = dnssec_call_pdnssec('activate-zone-key', join(" ", array($domain_name, $key_id)));
@@ -480,8 +481,9 @@ function dnssec_activate_zone_key($domain_name, $key_id) {
 /** Deactivate zone key
  *
  * @param string $domain_name Domain Name
+ * @param $key_id
  *
- * @return boolean true on success, false on failure
+ * @return bool true on success, false on failure
  */
 function dnssec_deactivate_zone_key($domain_name, $key_id) {
     $call_result = dnssec_call_pdnssec('deactivate-zone-key', join(" ", array($domain_name, $key_id)));
