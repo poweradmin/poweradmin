@@ -145,7 +145,7 @@ function dnssec_secure_zone($domain_name) {
     }
 
     log_info(sprintf('client_ip:%s user:%s operation:dnssec_secure_zone zone:%s',
-        $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"], $domain_name));
+        $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $domain_name));
 
     return true;
 }
@@ -166,7 +166,7 @@ function dnssec_unsecure_zone($domain_name) {
     }
 
     log_info(sprintf('client_ip:%s user:%s operation:dnssec_unsecure_zone zone:%s',
-        $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"], $domain_name));
+        $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $domain_name));
 
     return true;
 }
@@ -197,7 +197,7 @@ function dnssec_is_zone_secured($domain_name) {
 function dnssec_set_nsec3($domain_name) {
     dnssec_call_pdnssec('set-nsec3', $domain_name);
     log_info(sprintf('client_ip:%s user:%s operation:dnssec_set_nsec3 zone:%s',
-        $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"], $domain_name));
+        $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $domain_name));
 }
 
 /** Switch back to NSEC
@@ -207,7 +207,7 @@ function dnssec_set_nsec3($domain_name) {
 function dnssec_unset_nsec3($domain_name) {
     dnssec_call_pdnssec('unset-nsec3', $domain_name);
     log_info(sprintf('client_ip:%s user:%s operation:dnssec_unset_nsec3 zone:%s',
-        $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"], $domain_name));
+        $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $domain_name));
 }
 
 /** Return nsec type
@@ -230,7 +230,7 @@ function dnssec_get_nsec_type($domain_name) {
 function dnssec_set_presigned($domain_name) {
     dnssec_call_pdnssec('set-presigned', $domain_name);
     log_info(sprintf('client_ip:%s user:%s operation:dnssec_set_presigned zone:%s',
-        $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"], $domain_name));
+        $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $domain_name));
 }
 
 /** No longer use presigned RRSIGs
@@ -240,7 +240,7 @@ function dnssec_set_presigned($domain_name) {
 function dnssec_unset_presigned($domain_name) {
     dnssec_call_pdnssec('unset-presigned', $domain_name);
     log_info(sprintf('client_ip:%s user:%s operation:unset-presigned zone:%s',
-        $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"], $domain_name));
+        $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $domain_name));
 }
 
 /** Return presigned status
@@ -261,7 +261,7 @@ function dnssec_get_presigned_status($domain_name) {
 function dnssec_rectify_all_zones() {
     dnssec_call_pdnssec('rectify-all-zones', '');
     log_info(sprintf('client_ip:%s user:%s operation:dnssec_rectify_all_zones',
-        $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
+        $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin']));
 }
 
 /** Return DS records
@@ -472,7 +472,7 @@ function dnssec_activate_zone_key($domain_name, $key_id) {
     }
 
     log_info(sprintf('client_ip:%s user:%s operation:dnssec_activate_zone_key zone:%s key_id:%s',
-        $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"], $domain_name, $key_id));
+        $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $domain_name, $key_id));
 
     return true;
 }
@@ -493,7 +493,7 @@ function dnssec_deactivate_zone_key($domain_name, $key_id) {
     }
 
     log_info(sprintf('client_ip:%s user:%s operation:dnssec_deactivate_zone_key zone:%s key_id:%s',
-        $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"], $domain_name, $key_id));
+        $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $domain_name, $key_id));
 
     return true;
 }
@@ -545,7 +545,7 @@ function dnssec_add_zone_key($domain_name, $key_type, $bits, $algorithm) {
     }
 
     log_info(sprintf('client_ip:%s user:%s operation:dnssec_add_zone_key zone:%s type:%s bits:%s algorithm:%s',
-        $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"], $domain_name, $key_type, $bits, $algorithm));
+        $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $domain_name, $key_type, $bits, $algorithm));
 
     return true;
 }
@@ -567,7 +567,7 @@ function dnssec_remove_zone_key($domain_name, $key_id) {
     }
 
     log_info(sprintf('client_ip:%s user:%s operation:dnssec_remove_zone_key zone:%s key_id:%s',
-        $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"], $domain_name, $key_id));
+        $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $domain_name, $key_id));
 
     return true;
 }
