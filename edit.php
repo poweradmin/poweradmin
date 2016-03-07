@@ -27,12 +27,14 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2014 Poweradmin Development Team
+ * @copyright   2010-2015 Poweradmin Development Team
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 include_once("inc/RecordLog.class.php");
+include_once("inc/Rfc.class.php");
+require_once("inc/RfcPermissions.class.php");
 
 global $pdnssec_use;
 
@@ -52,25 +54,25 @@ if (isset($_POST['commit'])) {
     $one_record_changed = false;
 
     if (isset($_POST['record'])) {
-        foreach ($_POST['record'] as $record) {
-            $old_record_info = get_record_from_id($record['rid']);
+        foreach ($_POST['record'] as $record_after) {
+            $record_before = get_record_from_id($record_after['rid']);
 
             // Check if a record changed and save the state
             $log = new RecordLog();
-            $log->log_prior($record['rid']);
-            if (!$log->has_changed($record)) {
+            $log->log_prior($record_after['rid']);
+            if (!$log->has_changed($record_after, false)) {
                 continue;
             } else {
                 $one_record_changed = true;
             }
 
-            $edit_record = edit_record($record);
+            $edit_record = edit_record($record_after);
             if (false === $edit_record) {
                 $error = true;
             } else {
                 // Log the state after saving and write it to logging table
-                $log->log_after($record['rid']);
-                $log->write();
+                $log->log_after($record_after['rid']);
+                $log->writeChange();
             }
         }
     }
@@ -105,6 +107,49 @@ if (isset($_POST['save_as'])) {
         success(SUC_ZONE_TEMPL_ADD);
         $records = get_records_from_domain_id($zone_id);
         add_zone_templ_save_as($_POST['templ_name'], $_POST['templ_descr'], $_SESSION['userid'], $records, get_zone_name_from_id($zone_id));
+    }
+}
+
+$user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );
+if (isset($_POST['create_rfc'])) {
+    if ($perm_is_godlike || $zone_content_rfc_other || ($zone_content_rfc_own && $user_is_zone_owner)) {
+
+        global $db;
+        $one_record_changed = false;
+
+        $rfc = RfcBuilder::make()->now()->myself()->build();
+
+        if (isset($_POST['record'])) {
+            foreach ($_POST['record'] as $record_after) {
+                $rid = $record_after['rid'];
+                $record_before = get_record_from_id($rid);
+
+                $log = new RecordLog();
+                $log->log_prior($rid);
+                if (!$log->has_changed($record_after, false)) {
+                    continue;
+                }
+
+                // We have a change
+                $one_record_changed = true;
+
+                $before = new Record($record_before);
+                $after = new Record($record_after);
+                $serial = get_serial_by_zid($before->getZone());
+
+                // Because we have two valid records with identical zones, just use one of them.
+                $rfc->add_change($before->getZone(), $serial, $rid, $before, $after);
+            }
+
+            if ($one_record_changed) {
+                $rfc->write($db);
+                success(SUC_RFC_CREATED);
+            } else {
+                success(SUC_ZONE_NOCHANGE);
+            }
+        }
+    } else {
+        error(ERR_RFC_PERMISSIONS);
     }
 }
 
@@ -202,6 +247,12 @@ $record_count = count_zone_records($zone_id);
 $zone_templates = get_list_zone_templ($_SESSION['userid']);
 $zone_template_id = get_zone_template($zone_id);
 
+global $db;
+$m = new RfcManager($db);
+if($m->zone_has_changes($zone_id) === true) {
+    info('This zone has <a href="list_rfc.php">pending RFCs</a>. Maybe you should take a look?');
+}
+
 echo "   <h2>" . _('Edit zone') . " \"" . get_zone_name_from_id($zone_id) . "\"</h2>\n";
 
 echo "   <div class=\"showmax\">\n";
@@ -230,13 +281,22 @@ if ($records == "-1") {
         }
         echo "    <tr>\n";
 
-        if ($domain_type == "SLAVE" || $perm_content_edit == "none" || (($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0")) {
+        $edit_slave = $domain_type == "SLAVE"
+            || $perm_content_edit == "none"
+            || (($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0");
+
+        $edit_soa_ns = $r['type'] == "SOA"
+            && $perm_content_edit != "all"
+            || ($r['type'] == "NS" && $perm_content_edit == "own_as_client");
+
+        $edit_rfc = RfcPermissions::can_create_rfc($zone_id);
+
+        if ($edit_slave && !$edit_rfc) {
             echo "     <td class=\"n\">&nbsp;</td>\n";
         }
-        elseif ($r['type'] == "SOA" && $perm_content_edit != "all" || ($r['type'] == "NS" && $perm_content_edit == "own_as_client")) {
-        	echo "     <td class=\"n\">&nbsp;</td>\n";
-        }
-        else {
+        elseif ($edit_soa_ns && !$edit_rfc) {
+            echo "     <td class=\"n\">&nbsp;</td>\n";
+        } else {
             echo "     <td class=\"n\">\n";
             echo "      <a href=\"edit_record.php?id=" . $r['id'] . "&amp;domain=" . $zone_id . "\">
                                                 <img src=\"images/edit.gif\" alt=\"[ " . _('Edit record') . " ]\"></a>\n";
@@ -244,6 +304,7 @@ if ($records == "-1") {
                                                 <img src=\"images/delete.gif\" ALT=\"[ " . _('Delete record') . " ]\" BORDER=\"0\"></a>\n";
             echo "     </td>\n";
         }
+
         echo "     <td class=\"n\">{$r['id']}</td>\n";
         if ($r['type'] == "SOA" || ($r['type'] == "NS" && $perm_content_edit == "own_as_client")) {
             echo "     <td class=\"n\">" . $r['name'] . "</td>\n";
@@ -309,9 +370,25 @@ if ($records == "-1") {
     echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_descr\" value=\"\"></td>\n";
     echo "      </tr>\n";
     echo "    </table>\n";
-    echo "     <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
-    echo "     <input type=\"reset\" class=\"button\" name=\"reset\" value=\"" . _('Reset changes') . "\">\n";
-    echo "     <input type=\"submit\" class=\"button\" name=\"save_as\" value=\"" . _('Save as template') . "\">\n";
+
+    // Show only if I am authorized
+    if ($perm_is_godlike
+        || $zone_content_rfc_other
+        || ($zone_content_rfc_own && $user_is_zone_owner)
+    ) {
+        echo '<input type="submit" class="button" name="create_rfc" value="' . _('Create RFC') . '">';
+    }
+
+    // Show only if I am authorized
+    if($perm_is_godlike
+        || ($perm_content_edit === 'all')
+        || ($perm_content_edit === 'own' && $user_is_zone_owner)
+    ) {
+        echo '<input type="submit" class="button" name="commit" value="' . _('Commit changes') . '">';
+    }
+
+    echo "<input type=\"reset\" class=\"button\" name=\"reset\" value=\"" . _('Reset changes') . "\">\n";
+    echo "<input type=\"submit\" class=\"button\" name=\"save_as\" value=\"" . _('Save as template') . "\">\n";
 
     if ($pdnssec_use) {
         $zone_name = get_zone_name_from_id($zone_id);
@@ -377,9 +454,19 @@ if ($perm_content_edit == "all" || ($perm_content_edit == "own" || $perm_content
         echo "        <td class=\"n\"><input type=\"text\" name=\"ttl\" class=\"sinput\" value=\"\"></td>\n";
         echo "       </tr>\n";
         echo "      </table>\n";
-        echo "      <input type=\"submit\" name=\"commit\" value=\"" . _('Add record') . "\" class=\"button\">\n";
-        echo "      $rev";
-        echo "     </form>\n";
+
+        // Show only if I am authorized
+        if (RfcPermissions::can_create_rfc($zone_id)) {
+            echo '<input type="submit" class="button" name="create_rfc" value="' . _('Create RFC') . '">';
+        }
+
+        // Show only if I am authorized
+        if(RfcPermissions::can_edit_zone($zone_id)) {
+            echo '<input type="submit" class="button" name="commit" value="' . _('Add record') . '">';
+        }
+
+        echo "$rev";
+        echo "</form>\n";
     }
 }
 

@@ -22,6 +22,8 @@
  */
 
 require_once('templates.inc.php');
+require_once('inc/DomainLog.class.php');
+require_once('inc/RecordLog.class.php');
 
 /**
  * DNS record functions
@@ -370,6 +372,11 @@ function edit_record($record) {
         $perm_content_edit = "none";
     }
 
+    $is_rfc_commit = false;
+    if(isset($_POST['rfc_commit'])) {
+        $is_rfc_commit = true;
+    }
+
     $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $record['zid']);
     $zone_type = get_domain_type($record['zid']);
     
@@ -382,7 +389,9 @@ function edit_record($record) {
     	return false;
     }
 
-    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || (($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0")) {
+    $do_rfc_commit = $is_rfc_commit && RfcPermissions::can_commit_rfcs();
+
+    if (!$do_rfc_commit && ($zone_type == "SLAVE" || $perm_content_edit == "none" || (($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0"))) {
         error(ERR_PERM_EDIT_RECORD);
         return false;
     } else {
@@ -424,9 +433,10 @@ function edit_record($record) {
  * @param int $ttl Time-To-Live of record
  * @param int $prio Priority of record
  *
- * @return boolean true if successful
+ * @param RecordLog $log
+ * @return bool true if successful
  */
-function add_record($zone_id, $name, $type, $content, $ttl, $prio) {
+function add_record($zone_id, $name, $type, $content, $ttl, $prio, RecordLog &$log) {
     global $db;
     global $pdnssec_use;
 
@@ -443,7 +453,12 @@ function add_record($zone_id, $name, $type, $content, $ttl, $prio) {
     $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );
     $zone_type = get_domain_type($zone_id);
 
-    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || (($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0")) {
+    $is_rfc_commit = false;
+    if(isset($_POST['rfc_commit'])) {
+        $is_rfc_commit = true;
+    }
+
+    if (!($is_rfc_commit && RfcPermissions::can_commit_rfcs()) && ($zone_type == "SLAVE" || $perm_content_edit == "none" || (($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0"))) {
         error(ERR_PERM_ADD_RECORD);
         return false;
     } else {
@@ -465,11 +480,14 @@ function add_record($zone_id, $name, $type, $content, $ttl, $prio) {
                     . $db->quote($prio, 'integer') . ","
                     . $db->quote($change, 'integer') . ")";
             $response = $db->exec($query);
+
             if (PEAR::isError($response)) {
                 error($response->getMessage());
                 $response = $db->rollback();
                 return false;
             } else {
+                $log->log_after($db->lastInsertId());
+
                 $response = $db->commit();
                 if ($type != 'SOA') {
                     update_soa_serial($zone_id);
@@ -601,12 +619,19 @@ function delete_record($rid) {
         $perm_content_edit = "none";
     }
 
+    $is_rfc_commit = false;
+    if(isset($_POST['rfc_commit'])) {
+        $is_rfc_commit = true;
+    }
+
     // Determine ID of zone first.
     $record = get_record_details_from_record_id($rid);
     $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $record['zid'] );
 
-    if ($perm_content_edit == "all" || (($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "1" )) {
-        if ($record['type'] == "SOA") {
+    $do_rfc_commit = $is_rfc_commit && RfcPermissions::can_commit_rfcs();
+
+    if ($do_rfc_commit || ($perm_content_edit == "all" || (($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "1" ))) {
+        if (!$do_rfc_commit && $record['type'] == "SOA") {
             error(_('You are trying to delete the SOA record. You are not allowed to remove it, unless you remove the entire zone.'));
         } else {
             $query = "DELETE FROM records WHERE id = " . $db->quote($rid, 'integer');
@@ -828,8 +853,20 @@ function delete_domain($id) {
     }
     $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $id );
 
-    if ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) {
+    $is_rfc_commit = false;
+    if(isset($_POST['rfc_commit'])) {
+        $is_rfc_commit = true;
+    }
+    $do_rfc_commit = $is_rfc_commit && RfcPermissions::can_commit_rfcs();
+
+    if (($is_rfc_commit && $do_rfc_commit) || $perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) {
         if (is_numeric($id)) {
+            $domain_log = DomainLog::with_db($db);
+            $domain_log->delete_domain($id);
+
+            $record_log = RecordLog::with_db($db);
+            $record_log->write_delete_all($id);
+
             $db->query("DELETE FROM zones WHERE domain_id=" . $db->quote($id, 'integer'));
             $db->query("DELETE FROM records WHERE domain_id=" . $db->quote($id, 'integer'));
             $db->query("DELETE FROM records_zone_templ WHERE domain_id=" . $db->quote($id, 'integer'));
@@ -2012,6 +2049,12 @@ function delete_domains($domains) {
                     $zone_name = get_zone_name_from_id($id);
                     dnssec_unsecure_zone($zone_name);
                 }
+
+                $domain_log = DomainLog::with_db($db);
+                $domain_log->delete_domain($id);
+
+                $record_log = RecordLog::with_db($db);
+                $record_log->write_delete_all($id);
 
                 $db->exec("DELETE FROM zones WHERE domain_id=" . $db->quote($id, 'integer'));
                 $db->exec("DELETE FROM records WHERE domain_id=" . $db->quote($id, 'integer'));

@@ -4,7 +4,7 @@ body {
     padding-left:	5%;
     padding-right:	5%;
     font-family:	Verdana, Arial, Helvetica, serif;
-    font-size:		85%;
+    font-size:		100%
     text-align:		left;
     vertical-align:	top;
     background:		#f4f4f4;
@@ -43,7 +43,7 @@ img {
 
 td {
     padding:		0 2px 0 2px;
-    vertical-align:	top;
+    vertical-align:	middle;
 }
 
 td.actions {
@@ -85,11 +85,55 @@ td.checkbox {
     font-size:		80%;
 }
 
+.record-create {
+    background-color: rgb(55, 184, 87);
+}
+
+.record-delete {
+    background-color: rgb(255, 121, 121);
+}
+
+.record-edit {}
+
+.domain-delete {
+    background-color: rgb(175, 171, 151);
+}
+
+td.record-edit-cell-prior {
+    background-color: rgb(255, 121, 121);
+}
+
+td.record-edit-cell-after {
+    background-color: rgb(55, 184, 87);
+}
+
+.hnav {
+    margin: 5px 0;
+}
+
+.hnav-item {
+    margin: 0 5px;
+    display: inline-block;
+    line-height: 50px;
+}
+
+.hnav-item-first {
+    margin-right: 5px;
+    display: inline-block;
+    line-height: 50px;
+}
+
 .error {
     background:		#ff0000;
     color:			#ffffff;
     padding:		3px;
     font-size:		90%;
+}
+
+.info {
+    background: #dda138;
+    padding: 3px;
+    font-size: 90%;
 }
 
 .success {
@@ -145,6 +189,7 @@ a:hover	{
 
 .button {
     border:			#999999 1px solid;
+    margin-right:   5px;
 }
 .input {
     border:			#999999 1px solid;

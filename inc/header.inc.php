@@ -34,6 +34,11 @@ global $iface_title;
 global $ignore_install_dir;
 global $session_key;
 
+require_once('TimeHelper.class.php');
+require_once('RfcPermissions.class.php');
+require_once('RfcResolver.class.php');
+require_once('Permissions.class.php');
+
 header('Content-type: text/html; charset=utf-8');
 echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n";
 echo "<html>\n";
@@ -67,6 +72,9 @@ if (file_exists('install')) {
     do_hook('verify_permission', 'supermaster_add') ? $perm_supermaster_add = "1" : $perm_supermaster_add = "0";
     do_hook('verify_permission', 'user_is_ueberuser') ? $perm_is_godlike = "1" : $perm_is_godlike = "0";
 
+    do_hook('verify_permission', 'zone_content_rfc_own') ? $zone_content_rfc_own = "1" : $zone_content_rfc_own = "0";
+    do_hook('verify_permission', 'zone_content_rfc_other') ? $zone_content_rfc_other = "1" : $zone_content_rfc_other = "0";
+
     if ($perm_is_godlike == 1 && $session_key == 'p0w3r4dm1n') {
         error(ERR_DEFAULT_CRYPTOKEY_USED);
         echo "<br>";
@@ -98,6 +106,17 @@ if (file_exists('install')) {
     if ($perm_zone_master_add) {
         echo "    <span class=\"menuitem\"><a href=\"bulk_registration.php\">" . _('Bulk registration') . "</a></span>\n";
     }
+    if(Permissions::is_godlike()) {
+        $th = new TimeHelper();
+        $changes_since = $th->now_minus('P1W')->format($th->format);
+        echo ' <span class="menuitem"><a href="list_log.php?changes_since=' . $changes_since . '">' . _('List logs') . '</a></span>';
+    }
+
+    global $db;
+    $r = new RfcResolver($db);
+    echo $r->get_header_menu();
+
+
     if ($_SESSION ["auth_used"] != "ldap") {
         echo "    <span class=\"menuitem\"><a href=\"change_password.php\">" . _('Change password') . "</a></span>\n";
     }

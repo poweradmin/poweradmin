@@ -3,8 +3,8 @@
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <http://www.poweradmin.org> for more details.
  *
- *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2014  Poweradmin Development Team
+ *  Copyright 2007-2010  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2015  Poweradmin Development Team
  *      <http://www.poweradmin.org/credits.html>
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -22,11 +22,28 @@
  */
 
 /**
- * File that contains system version
+ * Script that handles deleting RFCs.
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
  * @copyright   2010-2015 Poweradmin Development Team
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
-$VERSION = '2.1.8';
+require_once("inc/toolkit.inc.php");
+include_once("inc/header.inc.php");
+require_once("inc/RfcPermissions.class.php");
+require_once("inc/RfcManager.class.php");
+
+$rfc_id = null;
+if (isset($_POST['id']) && v_num($_POST['id'])) {
+    $rfc_id = $_POST['id'];
+} else {
+    header("Location: list_rfc.php?flash=error_id");
+    exit;
+}
+
+global $db;
+$manager = new RfcManager($db);
+$manager->delete_rfc($rfc_id);
+
+header("Location: list_rfc.php?flash=success_delete");

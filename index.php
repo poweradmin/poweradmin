@@ -26,11 +26,14 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2014 Poweradmin Development Team
+ * @copyright   2010-2015 Poweradmin Development Team
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
+include_once("inc/TimeHelper.class.php");
+require_once("inc/RfcResolver.class.php");
+require_once("inc/Permissions.class.php");
 
 echo "     <h3>" . _('Welcome') . " " . $_SESSION["name"] . "</h3>\n";
 
@@ -65,6 +68,16 @@ if ($perm_zone_slave_add) {
 if ($perm_supermaster_add) {
     echo "    <li><a href=\"add_supermaster.php\">" . _('Add supermaster') . "</a></li>\n";
 }
+if(Permissions::is_godlike()) {
+    $th = new TimeHelper();
+    $timestamp = $th->now_minus('P1W')->format($th->format);
+    echo '<li><a href="list_log.php?changes_since=' . $timestamp . '">' . _('List logs') . '</a></li>';
+}
+
+global $db;
+$r = new RfcResolver($db);
+echo $r->get_index_menu();
+
 if ($_SESSION["auth_used"] != "ldap") {
     echo "    <li><a href=\"change_password.php\">" . _('Change password') . "</a></li>\n";
 }

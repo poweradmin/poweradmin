@@ -31,6 +31,9 @@
  */
 require_once('inc/toolkit.inc.php');
 include_once('inc/header.inc.php');
+include_once("inc/RecordLog.class.php");
+include_once("inc/Rfc.class.php");
+require_once("inc/RfcPermissions.class.php");
 
 global $pdnssec_use;
 
@@ -107,6 +110,11 @@ if ($zone_id == "-1") {
     exit;
 }
 
+$is_rfc_commit = false;
+if(isset($_POST['rfc_commit'])) {
+    $is_rfc_commit = true;
+}
+
 /*
   Check and see if the user is the zone owner
   Check the sone type and get the zone name
@@ -120,13 +128,18 @@ $zone_name = get_zone_name_from_id($zone_id);
   process it!
  */
 if (isset($_POST["commit"])) {
-    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
+
+    $do_rfc_commit = $is_rfc_commit && RfcPermissions::can_commit_rfcs();
+
+    if (!($do_rfc_commit) && ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0")) {
         error(ERR_PERM_ADD_RECORD);
     } else {
         // a PTR-record is added if an A or an AAAA-record are created
         // and checkbox is checked
 
-        if ((isset($_POST["reverse"])) && $iface_add_reverse_record ) {
+        if ((isset($_POST["reverse"])) && $iface_add_reverse_record) {
+            $log = new RecordLog();
+
             if ($type === 'A') {
                 $content_array = preg_split("/\./", $content);
                 $content_rev = sprintf("%d.%d.%d.%d.in-addr.arpa", $content_array[3], $content_array[2], $content_array[1], $content_array[0]);
@@ -135,37 +148,95 @@ if (isset($_POST["commit"])) {
                 $content_rev = convert_ipv6addr_to_ptrrec($content);
                 $zone_rev_id = get_best_matching_zone_id_from_name($content_rev);
             }
+
             if (isset($zone_rev_id) && $zone_rev_id != -1) {
                 $zone_name = get_zone_name_from_id($zone_id);
                 $fqdn_name = sprintf("%s.%s", $name, $zone_name);
-                if (add_record($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
+                if (add_record($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio, $log)) {
+                    $log->writeNew();
                     success(" <a href=\"edit.php?id=" . $zone_rev_id . "\"> " . _('The PTR-record was successfully added.') . "</a>");
                     log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
-                                      $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                                      $content_rev, $fqdn_name, $ttl, $prio));
-		    if ($pdnssec_use) {
-			    if (dnssec_rectify_zone($zone_rev_id)) {
-				    success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
-			    }
-		    }
+                        $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
+                        $content_rev, $fqdn_name, $ttl, $prio));
+
+                    if ($pdnssec_use) {
+                        if (dnssec_rectify_zone($zone_rev_id)) {
+                            success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
+                        }
+                    }
 
                 }
             } elseif (isset($content_rev)) {
                 error(sprintf(ERR_REVERS_ZONE_NOT_EXIST, $content_rev));
             }
         }
-        if (add_record($zone_id, $name, $type, $content, $ttl, $prio)) {
+
+        $log = new RecordLog();
+        if (add_record($zone_id, $name, $type, $content, $ttl, $prio, $log)) {
             success(" <a href=\"edit.php?id=" . $zone_id . "\"> " . _('The record was successfully added.') . "</a>");
             log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:%s record:%s.%s content:%s ttl:%s priority:%s',
-                              $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                              $type, $name, $zone_name, $content, $ttl, $prio));
-	    if ($pdnssec_use) {
-		    if (dnssec_rectify_zone($zone_id)) {
-			    success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
-		    }
-	    }
+                $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
+                $type, $name, $zone_name, $content, $ttl, $prio));
+            $log->writeNew();
+            if ($pdnssec_use) {
+                if (dnssec_rectify_zone($zone_id)) {
+                    success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
+                }
+            }
 
             $name = $type = $content = $ttl = $prio = "";
+        }
+    }
+}
+
+if (isset($_POST['create_rfc'])) {
+    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
+        error(ERR_PERM_ADD_RECORD);
+    } else {
+
+        if(RfcPermissions::can_create_rfc($zone_id)) {
+
+            global $db;
+            $rfc = RfcBuilder::make()->now()->myself()->build();
+
+            # Handle reverse
+            if ((isset($_POST["reverse"])) && $iface_add_reverse_record) {
+                if ($type === 'A') {
+                    $content_array = preg_split("/\./", $content);
+                    $content_rev = sprintf("%d.%d.%d.%d.in-addr.arpa", $content_array[3], $content_array[2], $content_array[1], $content_array[0]);
+                    $zone_rev_id = get_best_matching_zone_id_from_name($content_rev);
+                } elseif ($type === 'AAAA') {
+                    $content_rev = convert_ipv6addr_to_ptrrec($content);
+                    $zone_rev_id = get_best_matching_zone_id_from_name($content_rev);
+                }
+            }
+
+            # Insert reverse
+            if (isset($zone_rev_id) && $zone_rev_id != -1) {
+                $zone_name = get_zone_name_from_id($zone_id);
+                $fqdn_name = sprintf("%s.%s", $name, $zone_name);
+                $zone_rev_serial = get_serial_by_zid($zone_rev_id);
+
+                $new_rev_record = RecordBuilder::make(null, $zone_rev_id, $content_rev, 'PTR', $fqdn_name, $prio, $ttl, time());
+
+                if(validate_input(-1, $zone_rev_id, 'PTR', $fqdn_name, $content_rev, $prio, $ttl)) {
+                    $rfc->add_create($zone_rev_id, $zone_rev_serial, $new_rev_record);
+                }
+
+            } elseif (isset($content_rev)) {
+                error(sprintf(ERR_REVERS_ZONE_NOT_EXIST, $content_rev));
+            }
+
+            $serial = get_serial_by_zid($zone_id);
+            $new_record = RecordBuilder::make(null, $zone_id, $name, $type, $content, $prio, $ttl, time());
+            $rfc->add_create($zone_id, $serial, $new_record);
+
+            $success = $rfc->write($db);
+            if ($success === true) {
+                success(SUC_RFC_CREATED);
+            }
+        } else {
+            error(ERR_RFC_PERMISSIONS);
         }
     }
 }
@@ -226,11 +297,20 @@ if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit
     echo "       </tr>\n";
     echo "      </table>\n";
     echo "      <br>\n";
-    echo "      <input type=\"submit\" name=\"commit\" value=\"" . _('Add record') . "\" class=\"button\">\n";
-    if (isset($rev)) {
-        echo "      $rev";
+
+
+    if(RfcPermissions::can_create_rfc($zone_id)) {
+        echo '<input type="submit" class="button" name="create_rfc" value="' . _('Create RFC') . '">';
     }
-    echo "     </form>\n";
+
+    if(RfcPermissions::can_edit_zone($zone_id)) {
+        echo '<input type="submit" class="button" name="commit" value="' . _('Add record') . '">';
+    }
+
+    if (isset($rev)) {
+        echo "$rev";
+    }
+    echo "</form>\n";
 }
 
 include_once("inc/footer.inc.php");

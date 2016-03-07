@@ -30,6 +30,7 @@
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
 require_once("inc/toolkit.inc.php");
+require_once("inc/RfcPermissions.class.php");
 include_once("inc/header.inc.php");
 
 global $pdnssec_use;
@@ -92,9 +93,17 @@ if ($confirm == '1') {
                 echo "        </p>\n";
             }
         }
-        echo "     <p>" . _('Are you sure?') . "</p>\n";
-        echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='delete_domain.php?id=" . $zone_id . "&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
-        echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
+        echo "<p>" . _('Are you sure?') . "</p>\n";
+
+        if(RfcPermissions::can_create_rfc($zone_id)) {
+            echo '<input type="button" class="button" onclick="location.href=\'create_rfc.php?zone_id=' . $zone_id . '&amp;action=delete_zone\'" value="' . _('Create RFC') . '">';
+        }
+
+        if(RfcPermissions::can_edit_zone($zone_id)) {
+            echo '<input type="button" class="button" OnClick="location.href=\'delete_domain.php?id=' . $zone_id . '&amp;confirm=1\'" value="' . _('Yes') . '">';
+            echo '<input type="button" class="button" OnClick="location.href=\'index.php\'" value="' . _('No') . '">';
+        }
+
     } else {
         error(ERR_PERM_DEL_ZONE);
     }

@@ -31,6 +31,9 @@
  */
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
+include_once("inc/RecordLog.class.php");
+require_once("inc/RfcPermissions.class.php");
+include_once("inc/Rfc.class.php");
 
 global $pdnssec_use;
 
@@ -66,28 +69,72 @@ $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zid );
 $zone_type = get_domain_type($zid);
 $zone_name = get_zone_name_from_id($zid);
 
+$is_rfc_commit = false;
+if(isset($_POST['rfc_commit'])) {
+    $is_rfc_commit = true;
+}
+
+if(isset($_POST['create_rfc'])) {
+    if (RfcPermissions::can_create_rfc($zid)) {
+        $log = new RecordLog();
+        $rid = $_GET['id'];
+        global $db;
+
+        $log->log_prior($rid);
+
+        $before = new Record(get_record_from_id($rid));
+        $after = RecordBuilder::make($rid, $zid, $_POST['name'], $_POST['type'], $_POST['content'], $_POST['prio'], $_POST['ttl'], time());
+
+        if (!$log->has_changed($after->as_array(), true)) {
+            success(SUC_ZONE_NOCHANGE);
+        } else {
+            $rfc = RfcBuilder::make()->now()->myself()->build();
+            $serial = get_serial_by_zid($before->getZone());
+
+            $rfc->add_change($zid, $serial, $rid, $before, $after);
+            $rfc->write($db);
+            success(SUC_RFC_CREATED);
+        }
+    } else {
+        error(ERR_RFC_PERMISSIONS);
+    }
+}
+
 if (isset($_POST["commit"])) {
-    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
+    $do_rfc_commit = $is_rfc_commit && RfcPermissions::can_commit_rfcs();
+
+    if (!($do_rfc_commit) && ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0")) {
         error(ERR_PERM_EDIT_RECORD);
     } else {
-        $old_record_info = get_record_from_id($_POST["rid"]);
-        $ret_val = edit_record($_POST);
-        if ($ret_val == "1") {
-            if ($_POST['type'] != "SOA") {
-                update_soa_serial($zid);
-            }
-            success(SUC_RECORD_UPD);
-            $new_record_info = get_record_from_id($_POST["rid"]);
-            log_info(sprintf('client_ip:%s user:%s operation:edit_record'
-                             .' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
-                             .' record_type:%s record:%s content:%s ttl:%s priority:%s',
-                              $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                              $old_record_info['type'], $old_record_info['name'], $old_record_info['content'], $old_record_info['ttl'], $old_record_info['prio'], 
-                              $new_record_info['type'], $new_record_info['name'], $new_record_info['content'], $new_record_info['ttl'], $new_record_info['prio']));
+        // Only update if necessary
+        $log = new RecordLog($zid);
+        $log->log_prior($_POST["rid"]);
+        if(!$log->has_changed($_POST, true)) {
+            success(SUC_ZONE_NOCHANGE);
+        } else {
+            $old_record_info = get_record_from_id($_POST["rid"]);
+            $ret_val = edit_record($_POST);
+            if ($ret_val == "1") {
+                if ($_POST['type'] != "SOA") {
+                    update_soa_serial($zid);
+                }
+                success(SUC_RECORD_UPD);
 
-            if ($pdnssec_use) {
-                if (dnssec_rectify_zone($zid)) {
-                    success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
+                $log->log_after($_POST["rid"]);
+                $log->writeChange();
+
+                $new_record_info = get_record_from_id($_POST["rid"]);
+                log_info(sprintf('client_ip:%s user:%s operation:edit_record'
+                    . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
+                    . ' record_type:%s record:%s content:%s ttl:%s priority:%s',
+                    $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
+                    $old_record_info['type'], $old_record_info['name'], $old_record_info['content'], $old_record_info['ttl'], $old_record_info['prio'],
+                    $new_record_info['type'], $new_record_info['name'], $new_record_info['content'], $new_record_info['ttl'], $new_record_info['prio']));
+
+                if ($pdnssec_use) {
+                    if (dnssec_rectify_zone($zid)) {
+                        success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
+                    }
                 }
             }
         }
@@ -120,7 +167,10 @@ if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
         $clean_content = $record['content'];
     }
 
-    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
+    $edit_rfc = RfcPermissions::can_create_rfc($zid);
+    $read_only = $zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0";
+
+    if ($read_only && !$edit_rfc) {
         echo "      <tr>\n";
         echo "       <td>" . $record["name"] . "</td>\n";
         echo "       <td>IN</td>\n";
@@ -157,9 +207,20 @@ if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
         echo "      </tr>\n";
     }
     echo "      </table>\n";
-    echo "       <input type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\" class=\"button\">&nbsp;&nbsp;\n";
-    echo "       <input type=\"reset\" name=\"reset\" value=\"" . _('Reset changes') . "\" class=\"button\">&nbsp;&nbsp;\n";
-    echo "     </form>\n";
+
+    // Show only if I am authorized
+    if (RfcPermissions::can_create_rfc($zid)) {
+        echo '<input type="submit" class="button" name="create_rfc" value="' . _('Create RFC') . '">';
+    }
+
+    // Show only if I am authorized
+    if(RfcPermissions::can_edit_zone($zid)) {
+        echo '<input type="submit" class="button" name="commit" value="' . _('Commit changes') . '">';
+    }
+
+
+    echo '<input type="reset" name="reset" value="' . _('Reset changes') . '" class="button">';
+    echo '</form>';
 }
 
 
