@@ -831,9 +831,9 @@ function delete_domain($id) {
     if ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) {
         if (is_numeric($id)) {
             $db->query("DELETE FROM zones WHERE domain_id=" . $db->quote($id, 'integer'));
-            $db->query("DELETE FROM domains WHERE id=" . $db->quote($id, 'integer'));
             $db->query("DELETE FROM records WHERE domain_id=" . $db->quote($id, 'integer'));
             $db->query("DELETE FROM records_zone_templ WHERE domain_id=" . $db->quote($id, 'integer'));
+            $db->query("DELETE FROM domains WHERE id=" . $db->quote($id, 'integer'));
             return true;
         } else {
             error(sprintf(ERR_INV_ARGC, "delete_domain", "id must be a number"));
@@ -2014,9 +2014,9 @@ function delete_domains($domains) {
                 }
 
                 $db->exec("DELETE FROM zones WHERE domain_id=" . $db->quote($id, 'integer'));
-                $db->exec("DELETE FROM domains WHERE id=" . $db->quote($id, 'integer'));
                 $db->exec("DELETE FROM records WHERE domain_id=" . $db->quote($id, 'integer'));
                 $db->query("DELETE FROM records_zone_templ WHERE domain_id=" . $db->quote($id, 'integer'));
+                $db->exec("DELETE FROM domains WHERE id=" . $db->quote($id, 'integer'));
             } else {
                 error(sprintf(ERR_INV_ARGC, "delete_domains", "id must be a number"));
                 $error = true;
