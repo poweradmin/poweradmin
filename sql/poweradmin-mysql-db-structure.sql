@@ -117,3 +117,10 @@ CREATE TABLE migrations (
     version VARCHAR(255) NOT NULL,
     apply_time INTEGER NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE records_meta (
+  id          INTEGER      NOT NULL,
+  content     VARCHAR(64000) DEFAULT NULL,
+  cloudflare  TINYINT      NOT NULL,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

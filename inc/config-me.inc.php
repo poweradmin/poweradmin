@@ -75,3 +75,7 @@ $ldap_binddn = 'GROUP\lookupuser';
 $ldap_bindpw = 'some_password';
 $ldap_user_attribute = 'sAMAccountName';
 $ldap_proto = 3;
+
+// CloudFlare settings
+$cloudflare_host_key = '';
+$cloudflare_user_key = '';
