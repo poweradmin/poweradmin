@@ -34,6 +34,8 @@ global $iface_title;
 global $ignore_install_dir;
 global $session_key;
 
+require_once('TimeHelper.class.php');
+
 header('Content-type: text/html; charset=utf-8');
 echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n";
 echo "<html>\n";
@@ -97,6 +99,11 @@ if (file_exists('install')) {
     }
     if ($perm_zone_master_add) {
         echo "    <span class=\"menuitem\"><a href=\"bulk_registration.php\">" . _('Bulk registration') . "</a></span>\n";
+    }
+    if($perm_is_godlike) {
+        $th = new TimeHelper();
+        $changes_since = $th->now_minus('P1W')->format($th->format);
+        echo '<span class="menuitem"><a href="list_log.php?changes_since=' . $changes_since . '">' . _('List logs') . '</a></span>';
     }
     if ($_SESSION ["auth_used"] != "ldap") {
         echo "    <span class=\"menuitem\"><a href=\"change_password.php\">" . _('Change password') . "</a></span>\n";

@@ -31,6 +31,7 @@
  */
 require_once('inc/toolkit.inc.php');
 include_once('inc/header.inc.php');
+include_once("inc/RecordLog.class.php");
 
 global $pdnssec_use;
 
@@ -127,6 +128,7 @@ if (isset($_POST["commit"])) {
         // and checkbox is checked
 
         if ((isset($_POST["reverse"])) && $iface_add_reverse_record ) {
+            $log = new RecordLog();
             if ($type === 'A') {
                 $content_array = preg_split("/\./", $content);
                 $content_rev = sprintf("%d.%d.%d.%d.in-addr.arpa", $content_array[3], $content_array[2], $content_array[1], $content_array[0]);
@@ -138,7 +140,8 @@ if (isset($_POST["commit"])) {
             if (isset($zone_rev_id) && $zone_rev_id != -1) {
                 $zone_name = get_zone_name_from_id($zone_id);
                 $fqdn_name = sprintf("%s.%s", $name, $zone_name);
-                if (add_record($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
+                if (add_record($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio, $log)) {
+                    $log->writeNew();
                     success(" <a href=\"edit.php?id=" . $zone_rev_id . "\"> " . _('The PTR-record was successfully added.') . "</a>");
                     log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
                                       $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
@@ -154,11 +157,14 @@ if (isset($_POST["commit"])) {
                 error(sprintf(ERR_REVERS_ZONE_NOT_EXIST, $content_rev));
             }
         }
-        if (add_record($zone_id, $name, $type, $content, $ttl, $prio)) {
+
+        $log = new RecordLog();
+        if (add_record($zone_id, $name, $type, $content, $ttl, $prio, $log)) {
             success(" <a href=\"edit.php?id=" . $zone_id . "\"> " . _('The record was successfully added.') . "</a>");
             log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:%s record:%s.%s content:%s ttl:%s priority:%s',
                               $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                               $type, $name, $zone_name, $content, $ttl, $prio));
+            $log->writeNew();
 	    if ($pdnssec_use) {
 		    if (dnssec_rectify_zone($zone_id)) {
 			    success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);

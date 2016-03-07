@@ -70,7 +70,7 @@ if (isset($_POST['commit'])) {
             } else {
                 // Log the state after saving and write it to logging table
                 $log->log_after($record['rid']);
-                $log->write();
+                $log->writeChange();
             }
         }
     }

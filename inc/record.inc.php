@@ -22,6 +22,8 @@
  */
 
 require_once('templates.inc.php');
+require_once('inc/DomainLog.class.php');
+require_once('inc/RecordLog.class.php');
 
 /**
  * DNS record functions
@@ -424,9 +426,10 @@ function edit_record($record) {
  * @param int $ttl Time-To-Live of record
  * @param int $prio Priority of record
  *
- * @return boolean true if successful
+ * @param RecordLog $log
+ * @return bool true if successful
  */
-function add_record($zone_id, $name, $type, $content, $ttl, $prio) {
+function add_record($zone_id, $name, $type, $content, $ttl, $prio, RecordLog &$log) {
     global $db;
     global $pdnssec_use;
 
@@ -465,11 +468,14 @@ function add_record($zone_id, $name, $type, $content, $ttl, $prio) {
                     . $db->quote($prio, 'integer') . ","
                     . $db->quote($change, 'integer') . ")";
             $response = $db->exec($query);
+
             if (PEAR::isError($response)) {
                 error($response->getMessage());
                 $response = $db->rollback();
                 return false;
             } else {
+                $log->log_after($db->lastInsertId());
+
                 $response = $db->commit();
                 if ($type != 'SOA') {
                     update_soa_serial($zone_id);
@@ -830,6 +836,12 @@ function delete_domain($id) {
 
     if ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) {
         if (is_numeric($id)) {
+            $domain_log = DomainLog::with_db($db);
+            $domain_log->delete_domain($id);
+
+            $record_log = RecordLog::with_db($db);
+            $record_log->write_delete_all($id);
+
             $db->query("DELETE FROM zones WHERE domain_id=" . $db->quote($id, 'integer'));
             $db->query("DELETE FROM records WHERE domain_id=" . $db->quote($id, 'integer'));
             $db->query("DELETE FROM records_zone_templ WHERE domain_id=" . $db->quote($id, 'integer'));
@@ -2012,6 +2024,12 @@ function delete_domains($domains) {
                     $zone_name = get_zone_name_from_id($id);
                     dnssec_unsecure_zone($zone_name);
                 }
+
+                $domain_log = DomainLog::with_db($db);
+                $domain_log->delete_domain($id);
+
+                $record_log = RecordLog::with_db($db);
+                $record_log->write_delete_all($id);
 
                 $db->exec("DELETE FROM zones WHERE domain_id=" . $db->quote($id, 'integer'));
                 $db->exec("DELETE FROM records WHERE domain_id=" . $db->quote($id, 'integer'));

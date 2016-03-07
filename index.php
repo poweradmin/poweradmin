@@ -31,6 +31,7 @@
  */
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
+include_once("inc/TimeHelper.class.php");
 
 echo "     <h3>" . _('Welcome') . " " . $_SESSION["name"] . "</h3>\n";
 
@@ -64,6 +65,11 @@ if ($perm_zone_slave_add) {
 }
 if ($perm_supermaster_add) {
     echo "    <li><a href=\"add_supermaster.php\">" . _('Add supermaster') . "</a></li>\n";
+}
+if($perm_is_godlike) {
+    $th = new TimeHelper();
+    $timestamp = $th->now_minus('P1W')->format($th->format);
+    echo '<li><a href="list_log.php?changes_since=' . $timestamp . '">' . _('List logs') . '</a></li>';
 }
 if ($_SESSION["auth_used"] != "ldap") {
     echo "    <li><a href=\"change_password.php\">" . _('Change password') . "</a></li>\n";
