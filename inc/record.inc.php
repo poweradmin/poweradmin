@@ -1247,7 +1247,10 @@ function get_zones($perm, $userid = 0, $letterstart = 'all', $rowstart = 0, $row
         if ($letterstart != 'all' && $letterstart != 1) {
             $sql_add .=" AND domains.name LIKE " . $db->quote($letterstart . "%", 'text') . " ";
         } elseif ($letterstart == 1) {
-            $sql_add .=" AND substring(domains.name,1,1) " . $sql_regexp . " '^[[:digit:]]'";
+            if ($db_type == 'sqlite' || $db_type == 'sqlite3')
+                $sql_add .=" AND domains.name GLOB '[0-9]*'";
+            else
+                $sql_add .=" AND domains.name " . $sql_regexp . " '^[[:digit:]]'";
         }
     }
 
@@ -1303,6 +1306,7 @@ function get_zones($perm, $userid = 0, $letterstart = 'all', $rowstart = 0, $row
  */
 function zone_count_ng($perm, $letterstart = 'all') {
     global $db;
+    global $db_type;
     global $sql_regexp;
 
     $fromTable = 'domains';
@@ -1320,7 +1324,10 @@ function zone_count_ng($perm, $letterstart = 'all') {
         if ($letterstart != 'all' && $letterstart != 1) {
             $sql_add .=" AND domains.name LIKE " . $db->quote($letterstart . "%", 'text') . " ";
         } elseif ($letterstart == 1) {
-            $sql_add .=" AND substring(domains.name,1,1) " . $sql_regexp . " '^[[:digit:]]'";
+            if ($db_type == 'sqlite' || $db_type == 'sqlite3')
+                $sql_add .=" AND domains.name GLOB '[0-9]*'";
+            else
+                $sql_add .=" AND domains.name " . $sql_regexp . " '^[[:digit:]]'";
         }
 
 # XXX: do we really need this distinct directive as it's unsupported in sqlite)
