@@ -1255,7 +1255,7 @@ function get_zones($perm, $userid = 0, $letterstart = 'all', $rowstart = 0, $row
         $sortby = 'domains.' . $sortby;
     }
 
-    $natural_sort = 'LENGTH(domains.name), domains.name';
+    $natural_sort = 'domains.name';
     if ($db_type == 'mysql' || $db_type == 'mysqli' || $db_type == 'sqlite' || $db_type == 'sqlite3') {
         $natural_sort = 'domains.name+0<>0 DESC, domains.name+0, domains.name';
     }
@@ -1431,7 +1431,7 @@ function get_records_from_domain_id($id, $rowstart = 0, $rowamount = 999999, $so
         } else {
             $db->setLimit($rowamount, $rowstart);
 
-            $natural_sort = 'LENGTH(records.name), records.name';
+            $natural_sort = 'records.name';
             if ($db_type == 'mysql' || $db_type == 'mysqli' || $db_type == 'sqlite' || $db_type == 'sqlite3') {
                 $natural_sort = 'records.name+0<>0 DESC, records.name+0, records.name';
             }
