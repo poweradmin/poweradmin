@@ -1230,6 +1230,7 @@ function get_zones($perm, $userid = 0, $letterstart = 'all', $rowstart = 0, $row
     global $db;
     global $db_type;
     global $sql_regexp;
+    global $pdnssec_use;
 
     if ($letterstart == '_') {
         $letterstart = '\_';
@@ -1245,7 +1246,7 @@ function get_zones($perm, $userid = 0, $letterstart = 'all', $rowstart = 0, $row
 				AND zones.owner = " . $db->quote($userid, 'integer');
         }
         if ($letterstart != 'all' && $letterstart != 1) {
-            $sql_add .=" AND domains.name LIKE " . $db->quote($letterstart . "%", 'text') . " ";
+            $sql_add .=" AND substring(domains.name,1,1) = " . $db->quote($letterstart, 'text') . " ";
         } elseif ($letterstart == 1) {
             $sql_add .=" AND substring(domains.name,1,1) " . $sql_regexp . " '^[[:digit:]]'";
         }
@@ -1262,17 +1263,27 @@ function get_zones($perm, $userid = 0, $letterstart = 'all', $rowstart = 0, $row
     $sql_sortby = ($sortby == 'domains.name' ? $natural_sort : $sortby . ', ' . $natural_sort);
 
     $sqlq = "SELECT domains.id,
-			domains.name,
-			domains.type,
-			Record_Count.count_records
-			FROM domains
-			LEFT JOIN zones ON domains.id=zones.domain_id
-			LEFT JOIN (
-				SELECT COUNT(domain_id) AS count_records, domain_id FROM records WHERE type IS NOT NULL GROUP BY domain_id
-			) Record_Count ON Record_Count.domain_id=domains.id
-			WHERE 1=1" . $sql_add . "
-			GROUP BY domains.name, domains.id, domains.type, Record_Count.count_records
-			ORDER BY " . $sql_sortby;
+                        domains.name,
+                        domains.type,
+                        COUNT(records.id) AS count_records,
+                        users.fullname
+                        " . ($pdnssec_use ? ",COUNT(cryptokeys.id) > 0 OR COUNT(domainmetadata.id) > 0 AS secured" : "") . "
+                        FROM domains
+                        LEFT JOIN zones ON domains.id=zones.domain_id
+                        LEFT JOIN records ON records.domain_id=domains.id AND records.type IS NOT NULL
+                        LEFT JOIN users ON users.id=zones.owner
+        ";
+
+    if ($pdnssec_use) {
+        $sqlq .= "      LEFT JOIN cryptokeys ON domains.id = cryptokeys.domain_id AND cryptokeys.active
+                        LEFT JOIN domainmetadata ON domains.id = domainmetadata.domain_id AND domainmetadata.kind = 'PRESIGNED'
+            ";
+    }
+
+        $sqlq .= "
+                        WHERE 1=1" . $sql_add . "
+                        GROUP BY domains.name, domains.id, domains.type, users.fullname
+                        ORDER BY " . $sql_sortby;
 
     if ($letterstart != 'all') {
         $db->setLimit($rowamount, $rowstart);
@@ -1286,8 +1297,12 @@ function get_zones($perm, $userid = 0, $letterstart = 'all', $rowstart = 0, $row
             "id" => $r["id"],
             "name" => $r["name"],
             "type" => $r["type"],
-            "count_records" => $r["count_records"]
+            "count_records" => $r["count_records"],
+            "owner" => $r["fullname"],
         );
+        if ($pdnssec_use) {
+            $ret[$r["name"]]["secured"] = $r["secured"];
+        }
     }
     return $ret;
 }
@@ -1404,30 +1419,32 @@ function get_records_from_domain_id($id, $rowstart = 0, $rowamount = 999999, $so
     if (is_numeric($id)) {
         if ((isset($_SESSION[$id . "_ispartial"])) && ($_SESSION[$id . "_ispartial"] == 1)) {
             $db->setLimit($rowamount, $rowstart);
-            $result = $db->query("SELECT record_owners.record_id as id
-					FROM record_owners,domains,records
-					WHERE record_owners.user_id = " . $db->quote($_SESSION["userid"], 'integer') . "
-					AND record_owners.record_id = records.id
-					AND records.domain_id = " . $db->quote($id, 'integer') . "
-					GROUP BY record_owners.record_id ORDER BY records." . $sortby);
+            $result = $db->query("SELECT records.id, domains.id, records.name, records.type, records.content, records.ttl, records.prio, records.change_date
+                                    FROM record_owners,domains,records
+                                    WHERE record_owners.user_id = " . $db->quote($_SESSION["userid"], 'integer') . "
+                                    AND record_owners.record_id = records.id
+                                    AND records.domain_id = " . $db->quote($id, 'integer') . "
+                                    GROUP BY records.id, domains.id, records.name, records.type, records.content, records.ttl, records.prio, records.change_date
+                                    ORDER BY type = 'SOA' DESC, type = 'NS' DESC, records." . $sortby);
 
-            $ret = array();
             if ($result) {
-                $ret[] = array();
-                $retcount = 0;
                 while ($r = $result->fetchRow()) {
-                    // Call get_record_from_id for each row.
-                    $fields = get_record_from_id($r["id"]);
-                    if ($fields == -1) {
-                        continue;
-                    }
-                    $ret[$retcount] = $fields;
-                    $retcount++;
+                    $ret[] = array(
+                        "id" => $r["id"],
+                        "domain_id" => $r["domain_id"],
+                        "name" => $r["name"],
+                        "type" => $r["type"],
+                        "content" => $r["content"],
+                        "ttl" => $r["ttl"],
+                        "prio" => $r["prio"],
+                        "change_date" => $r["change_date"]
+                    );
                 }
                 $result = $ret;
             } else {
                 return -1;
             }
+
         } else {
             $db->setLimit($rowamount, $rowstart);
 
@@ -1437,24 +1454,30 @@ function get_records_from_domain_id($id, $rowstart = 0, $rowamount = 999999, $so
             }
             $sql_sortby = ($sortby == 'name' ? $natural_sort : $sortby . ', ' . $natural_sort);
 
-            $result = $db->query("SELECT id FROM records WHERE domain_id=" . $db->quote($id, 'integer') . " AND type IS NOT NULL ORDER BY " . $sql_sortby);
+            $result = $db->query("SELECT id, domain_id, name, type, content, ttl, prio, change_date
+                                    FROM records 
+                                    WHERE domain_id=" . $db->quote($id, 'integer') . " AND type IS NOT NULL
+                                    ORDER BY type = 'SOA' DESC, type = 'NS' DESC," . $sql_sortby);
+
             $ret = array();
             if ($result) {
-                $ret[] = array();
-                $retcount = 0;
                 while ($r = $result->fetchRow()) {
-                    // Call get_record_from_id for each row.
-                    $fields = get_record_from_id($r["id"]);
-                    if ($fields == -1) {
-                        continue;
-                    }
-                    $ret[$retcount] = $fields;
-                    $retcount++;
+                    $ret[] = array(
+                        "id" => $r["id"],
+                        "domain_id" => $r["domain_id"],
+                        "name" => $r["name"],
+                        "type" => $r["type"],
+                        "content" => $r["content"],
+                        "ttl" => $r["ttl"],
+                        "prio" => $r["prio"],
+                        "change_date" => $r["change_date"]
+                    );
                 }
                 $result = $ret;
             } else {
                 return -1;
             }
+
             $result = order_domain_results($result, $sortby);
             return $result;
         }

@@ -34,7 +34,12 @@ function verify_permission_local($arg) {
         $permission = $arg;
     }
 
-    $permission = $arg;
+    static $cache = false;
+
+    if ($cache !== false) {
+        return array_key_exists('user_is_ueberuser', $cache) || array_key_exists($permission, $cache);
+    }
+
     global $db;
     if ((!isset($_SESSION ['userid'])) || (!is_object($db))) {
         return 0;
@@ -42,35 +47,17 @@ function verify_permission_local($arg) {
     // Set current user ID.
     $userid = $_SESSION ['userid'];
 
-    $query = 'SELECT id FROM perm_items WHERE name=' . $db->quote('user_is_ueberuser', 'text');
-    $ueberUserId = $db->queryOne($query);
+    $query = $db->prepare("SELECT
+        perm_items.name AS permission
+        FROM perm_templ_items
+        LEFT JOIN perm_items ON perm_items.id = perm_templ_items.perm_id
+        LEFT JOIN perm_templ ON perm_templ.id = perm_templ_items.templ_id
+        LEFT JOIN users ON perm_templ.id = users.perm_templ
+        WHERE users.id = ?");
+    $query->execute(array($userid));
+    $cache = $query->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_GROUP, 'permission');
 
-    // Find the template ID that this user has been assigned.
-    $query = "SELECT perm_templ
-			FROM users
-			WHERE id = " . $db->quote($userid, 'integer');
-    $templ_id = $db->queryOne($query);
-
-    // Does this user have ueberuser rights?
-    $query = "SELECT id
-			FROM perm_templ_items
-			WHERE templ_id = " . $db->quote($templ_id, 'integer') . "
-			AND perm_id = " . $ueberUserId;
-    if ($db->queryOne($query)) {
-        return true;
-    }
-
-    // Find the permission ID for the requested permission.
-    $query = "SELECT id
-			FROM perm_items
-			WHERE name = " . $db->quote($permission, 'text');
-    $perm_id = $db->queryOne($query);
-    // Check if the permission ID is assigned to the template ID.
-    $query = "SELECT id
-			FROM perm_templ_items
-			WHERE templ_id = " . $db->quote($templ_id, 'integer') . "
-			AND perm_id = " . $db->quote($perm_id, 'integer');
-    return ($db->queryOne($query) ? true : false);
+    return array_key_exists('user_is_ueberuser', $cache) || array_key_exists($permission, $cache);
 }
 
 /**
