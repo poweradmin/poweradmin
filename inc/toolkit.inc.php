@@ -444,38 +444,57 @@ function show_pages($amount, $rowamount, $id = '') {
  * Display the alphabetic option: [0-9] [a] [b] .. [z]
  *
  * @param string $letterstart Starting letter/number or 'all'
- * @param boolean $userid unknown usage
+ * @param int $userid Current user ID
  *
  * @return null
  */
-function show_letters($letterstart, $userid = true) {
+function show_letters($letterstart, $userid) {
+    global $db;
+
+    $char_range = array_merge(range('a', 'z'), array('_'));
+
+    $allowed = zone_content_view_others($userid);
+
+    $query = "SELECT
+			DISTINCT SUBSTRING(domains.name, 1, 1) AS letter
+			FROM domains
+			LEFT JOIN zones ON domains.id = zones.domain_id
+			WHERE " . $allowed . " = 1
+			OR zones.owner = " . $userid . "
+			ORDER BY 1";
+    $db->setLimit(36);
+
+    $available_chars = array();
+    $digits_available = 0;
+
+    $response = $db->query($query);
+
+    while ($row = $response->fetchRow()) {
+        if (preg_match("/[0-9]/", $row['letter'])) {
+	    $digits_available = 1;
+	} elseif (in_array($row['letter'], $char_range)) {
+	    array_push($available_chars, $row['letter']);
+	}
+    }
+
     echo _('Show zones beginning with') . ":<br>";
 
-    $letter = "[[:digit:]]";
     if ($letterstart == "1") {
         echo "<span class=\"lettertaken\">[ 0-9 ]</span> ";
-    } elseif (zone_letter_start($letter, $userid)) {
+    } elseif ($digits_available) {
         echo "<a href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=1\">[ 0-9 ]</a> ";
     } else {
         echo "[ <span class=\"letternotavailable\">0-9</span> ] ";
     }
 
-    foreach (range('a', 'z') as $letter) {
+    foreach ($char_range as $letter) {
         if ($letter == $letterstart) {
             echo "<span class=\"lettertaken\">[ " . $letter . " ]</span> ";
-        } elseif (zone_letter_start($letter, $userid)) {
+        } elseif (in_array($letter, $available_chars)) {
             echo "<a href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=" . $letter . "\">[ " . $letter . " ]</a> ";
         } else {
             echo "[ <span class=\"letternotavailable\">" . $letter . "</span> ] ";
         }
-    }
-
-    if ($letterstart == '_') {
-        echo "<span class=\"lettertaken\">[ _ ]</span> ";
-    } elseif (zone_letter_start('_', $userid)) {
-        echo "<a href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=_\">[ _ ]</a> ";
-    } else {
-        echo "[ <span class=\"letternotavailable\">_</span> ] ";
     }
 
     if ($letterstart == 'all') {
@@ -485,25 +504,29 @@ function show_letters($letterstart, $userid = true) {
     }
 }
 
-/** Check if any zones start with letter
+/** Check if current user allowed to view any zone content
  *
- * @param string $letter Starting Letter
- * @param boolean $userid unknown usage
+ * @param int $userid Current user ID
  *
- * @return int 1 if rows found, 0 otherwise
+ * @return int 1 if user has permission to view other users zones content, 0 otherwise
  */
-function zone_letter_start($letter, $userid = true) {
+function zone_content_view_others($userid) {
     global $db;
-    global $sql_regexp;
+
     $query = "SELECT
-			domains.id AS domain_id,
-			zones.owner,
-			domains.name AS domainname
-			FROM domains
-			LEFT JOIN zones ON domains.id=zones.domain_id
-			WHERE substring(domains.name,1,1) " . $sql_regexp . " " . $db->quote("^" . $letter, 'text');
-    $db->setLimit(1);
+		DISTINCT u.id
+		FROM 	users u,
+		        perm_templ pt,
+		        perm_templ_items pti,
+		        (SELECT id FROM perm_items WHERE name
+			    IN ('zone_content_view_others', 'user_is_ueberuser')) pit
+                WHERE u.id = " . $userid . "
+                AND u.perm_templ = pt.id
+                AND pti.templ_id = pt.id
+                AND pti.perm_id  = pit.id";
+
     $result = $db->queryOne($query);
+
     return ($result ? 1 : 0);
 }
 
