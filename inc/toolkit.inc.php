@@ -28,7 +28,6 @@
  * @copyright   2010-2014 Poweradmin Development Team
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
-
 // TODO: display elapsed time and memory consumption,
 // used to check improvements in refactored version
 $display_stats = false;
@@ -109,62 +108,167 @@ if (isset($_GET["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["record_so
     define('RECORD_SORT_BY', "name");
 }
 
-$valid_tlds = array("ac", "academy", "actor", "ad", "ae", "aero", "af", "ag",
-    "agency", "ai", "al", "am", "an", "ao", "aq", "ar", "arpa", "as", "asia",
-    "at", "au", "aw", "ax", "az", "ba", "bar", "bargains", "bb", "bd", "be",
-    "berlin", "best", "bf", "bg", "bh", "bi", "bid", "bike", "biz", "bj", "blue",
-    "bm", "bn", "bo", "boutique", "br", "bs", "bt", "build", "builders", "buzz",
-    "bv", "bw", "by", "bz", "ca", "cab", "camera", "camp", "cards", "careers",
-    "cat", "catering", "cc", "cd", "center", "ceo", "cf", "cg", "ch", "cheap",
-    "christmas", "ci", "ck", "cl", "cleaning", "clothing", "club", "cm", "cn",
-    "co", "codes", "coffee", "com", "community", "company", "computer", "condos",
-    "construction", "contractors", "cool", "coop", "cr", "cruises", "cu", "cv",
-    "cw", "cx", "cy", "cz", "dance", "dating", "de", "democrat", "diamonds",
-    "directory", "dj", "dk", "dm", "do", "domains", "dz", "ec", "edu",
-    "education", "ee", "eg", "email", "enterprises", "equipment", "er", "es",
-    "estate", "et", "eu", "events", "expert", "exposed", "farm", "fi", "fish",
-    "fj", "fk", "flights", "florist", "fm", "fo", "foundation", "fr", "futbol",
-    "ga", "gallery", "gb", "gd", "ge", "gf", "gg", "gh", "gi", "gift", "gl",
-    "glass", "gm", "gn", "gov", "gp", "gq", "gr", "graphics", "gs", "gt", "gu",
-    "guitars", "guru", "gw", "gy", "hk", "hm", "hn", "holdings", "holiday",
-    "house", "hr", "ht", "hu", "id", "ie", "il", "im", "immobilien", "in",
-    "industries", "info", "institute", "int", "international", "io", "iq", "ir",
-    "is", "it", "je", "jm", "jo", "jobs", "jp", "kaufen", "ke", "kg", "kh", "ki",
-    "kim", "kitchen", "kiwi", "km", "kn", "koeln", "kp", "kr", "kred", "kw", "ky",
-    "kz", "la", "land", "lb", "lc", "li", "lighting", "limo", "link", "lk", "lr",
-    "ls", "lt", "lu", "luxury", "lv", "ly", "ma", "maison", "management", "mango",
-    "marketing", "mc", "md", "me", "media", "menu", "mg", "mh", "mil", "mk", "ml",
-    "mm", "mn", "mo", "mobi", "moda", "monash", "mp", "mq", "mr", "ms", "mt", "mu",
-    "museum", "mv", "mw", "mx", "my", "mz", "na", "nagoya", "name", "nc", "ne",
-    "net", "neustar", "nf", "ng", "ni", "ninja", "nl", "no", "np", "nr", "nu",
-    "nz", "okinawa", "om", "onl", "org", "pa", "partners", "parts", "pe", "pf",
-    "pg", "ph", "photo", "photography", "photos", "pics", "pink", "pk", "pl",
-    "plumbing", "pm", "pn", "post", "pr", "pro", "productions", "properties",
-    "ps", "pt", "pub", "pw", "py", "qa", "qpon", "re", "recipes", "red",
-    "rentals", "repair", "report", "reviews", "rich", "ro", "rs", "ru", "ruhr",
-    "rw", "sa", "sb", "sc", "sd", "se", "sexy", "sg", "sh", "shiksha", "shoes",
-    "si", "singles", "sj", "sk", "sl", "sm", "sn", "so", "social", "solar",
-    "solutions", "sr", "st", "su", "supplies", "supply", "support", "sv", "sx",
-    "sy", "systems", "sz", "tattoo", "tc", "td", "technology", "tel", "tf", "tg",
-    "th", "tienda", "tips", "tj", "tk", "tl", "tm", "tn", "to", "today", "tokyo",
-    "tools", "tp", "tr", "training", "travel", "tt", "tv", "tw", "tz", "ua", "ug",
-    "uk", "uno", "us", "uy", "uz", "va", "vacations", "vc", "ve", "ventures",
-    "vg", "vi", "viajes", "villas", "vision", "vn", "vote", "voting", "voto",
-    "voyage", "vu", "wang", "watch", "wed", "wf", "wien", "wiki", "works", "ws",
-    "xn--3bst00m", "xn--3ds443g", "xn--3e0b707e", "xn--45brj9c", "xn--55qw42g",
-    "xn--55qx5d", "xn--6frz82g", "xn--6qq986b3xl", "xn--80ao21a", "xn--80asehdb",
-    "xn--80aswg", "xn--90a3ac", "xn--c1avg", "xn--cg4bki",
-    "xn--clchc0ea0b2g2a9gcd", "xn--d1acj3b", "xn--fiq228c5hs", "xn--fiq64b",
-    "xn--fiqs8s", "xn--fiqz9s", "xn--fpcrj9c3d", "xn--fzc2c9e2c", "xn--gecrj9c",
-    "xn--h2brj9c", "xn--i1b6b1a6a2e", "xn--io0a7i", "xn--j1amh", "xn--j6w193g",
-    "xn--kprw13d", "xn--kpry57d", "xn--l1acc", "xn--lgbbat1ad8j", "xn--mgb9awbf",
-    "xn--mgba3a4f16a", "xn--mgbaam7a8h", "xn--mgbab2bd", "xn--mgbayh7gpa",
-    "xn--mgbbh1a71e", "xn--mgbc0a9azcg", "xn--mgberp4a5d4ar", "xn--mgbx4cd0ab",
-    "xn--ngbc5azd", "xn--nqv7f", "xn--nqv7fs00ema", "xn--o3cw4h", "xn--ogbpf8fl",
-    "xn--p1ai", "xn--pgbs0dh", "xn--q9jyb4c", "xn--s9brj9c", "xn--unup4y",
-    "xn--wgbh1c", "xn--wgbl6a", "xn--xkc2al3hye2a", "xn--xkc2dl3a5ee0h",
-    "xn--yfro4i67o", "xn--ygbi2ammx", "xn--zfr164b", "xxx", "xyz", "ye", "yt",
-    "za", "zm", "zone", "zw");
+// Updated on 2016022601 - 1238 TLDs
+// http://data.iana.org/TLD/tlds-alpha-by-domain.txt
+$valid_tlds = array("aaa", "aarp", "abb", "abbott", "abogado", "ac", "academy",
+    "accenture", "accountant", "accountants", "aco", "active", "actor", "ad",
+    "adac", "ads", "adult", "ae", "aeg", "aero", "af", "afl", "ag", "agency",
+    "ai", "aig", "airforce", "airtel", "al", "alibaba", "alipay", "allfinanz",
+    "alsace", "am", "amica", "amsterdam", "analytics", "android", "ao",
+    "apartments", "app", "apple", "aq", "aquarelle", "ar", "aramco", "archi",
+    "army", "arpa", "arte", "as", "asia", "associates", "at", "attorney", "au",
+    "auction", "audi", "audio", "author", "auto", "autos", "aw", "ax", "axa",
+    "az", "azure", "ba", "baidu", "band", "bank", "bar", "barcelona",
+    "barclaycard", "barclays", "bargains", "bauhaus", "bayern", "bb", "bbc",
+    "bbva", "bcn", "bd", "be", "beats", "beer", "bentley", "berlin", "best",
+    "bet", "bf", "bg", "bh", "bharti", "bi", "bible", "bid", "bike", "bing",
+    "bingo", "bio", "biz", "bj", "black", "blackfriday", "bloomberg", "blue",
+    "bm", "bms", "bmw", "bn", "bnl", "bnpparibas", "bo", "boats", "boehringer",
+    "bom", "bond", "boo", "book", "boots", "bosch", "bostik", "bot", "boutique",
+    "br", "bradesco", "bridgestone", "broadway", "broker", "brother", "brussels",
+    "bs", "bt", "budapest", "bugatti", "build", "builders", "business", "buy",
+    "buzz", "bv", "bw", "by", "bz", "bzh", "ca", "cab", "cafe", "cal", "call",
+    "camera", "camp", "cancerresearch", "canon", "capetown", "capital", "car",
+    "caravan", "cards", "care", "career", "careers", "cars", "cartier", "casa",
+    "cash", "casino", "cat", "catering", "cba", "cbn", "cc", "cd", "ceb",
+    "center", "ceo", "cern", "cf", "cfa", "cfd", "cg", "ch", "chanel", "channel",
+    "chat", "cheap", "chloe", "christmas", "chrome", "church", "ci", "cipriani",
+    "circle", "cisco", "citic", "city", "cityeats", "ck", "cl", "claims",
+    "cleaning", "click", "clinic", "clinique", "clothing", "cloud", "club",
+    "clubmed", "cm", "cn", "co", "coach", "codes", "coffee", "college", "cologne",
+    "com", "commbank", "community", "company", "compare", "computer", "comsec",
+    "condos", "construction", "consulting", "contact", "contractors", "cooking",
+    "cool", "coop", "corsica", "country", "coupon", "coupons", "courses", "cr",
+    "credit", "creditcard", "creditunion", "cricket", "crown", "crs", "cruises",
+    "csc", "cu", "cuisinella", "cv", "cw", "cx", "cy", "cymru", "cyou", "cz",
+    "dabur", "dad", "dance", "date", "dating", "datsun", "day", "dclk", "de",
+    "dealer", "deals", "degree", "delivery", "dell", "deloitte", "delta",
+    "democrat", "dental", "dentist", "desi", "design", "dev", "diamonds", "diet",
+    "digital", "direct", "directory", "discount", "dj", "dk", "dm", "dnp", "do",
+    "docs", "dog", "doha", "domains", "download", "drive", "dubai", "durban",
+    "dvag", "dz", "earth", "eat", "ec", "edeka", "edu", "education", "ee", "eg",
+    "email", "emerck", "energy", "engineer", "engineering", "enterprises",
+    "epson", "equipment", "er", "erni", "es", "esq", "estate", "et", "eu",
+    "eurovision", "eus", "events", "everbank", "exchange", "expert", "exposed",
+    "express", "fage", "fail", "fairwinds", "faith", "family", "fan", "fans",
+    "farm", "fashion", "fast", "feedback", "ferrero", "fi", "film", "final",
+    "finance", "financial", "firestone", "firmdale", "fish", "fishing", "fit",
+    "fitness", "fj", "fk", "flickr", "flights", "florist", "flowers", "flsmidth",
+    "fly", "fm", "fo", "foo", "football", "ford", "forex", "forsale", "forum",
+    "foundation", "fox", "fr", "fresenius", "frl", "frogans", "frontier", "fund",
+    "furniture", "futbol", "fyi", "ga", "gal", "gallery", "gallup", "game",
+    "garden", "gb", "gbiz", "gd", "gdn", "ge", "gea", "gent", "genting", "gf",
+    "gg", "ggee", "gh", "gi", "gift", "gifts", "gives", "giving", "gl", "glass",
+    "gle", "global", "globo", "gm", "gmail", "gmo", "gmx", "gn", "gold",
+    "goldpoint", "golf", "goo", "goog", "google", "gop", "got", "gov", "gp", "gq",
+    "gr", "grainger", "graphics", "gratis", "green", "gripe", "group", "gs", "gt",
+    "gu", "gucci", "guge", "guide", "guitars", "guru", "gw", "gy", "hamburg",
+    "hangout", "haus", "hdfcbank", "health", "healthcare", "help", "helsinki",
+    "here", "hermes", "hiphop", "hitachi", "hiv", "hk", "hm", "hn", "hockey",
+    "holdings", "holiday", "homedepot", "homes", "honda", "horse", "host",
+    "hosting", "hoteles", "hotmail", "house", "how", "hr", "hsbc", "ht", "hu",
+    "hyundai", "ibm", "icbc", "ice", "icu", "id", "ie", "ifm", "iinet", "il",
+    "im", "immo", "immobilien", "in", "industries", "infiniti", "info", "ing",
+    "ink", "institute", "insurance", "insure", "int", "international",
+    "investments", "io", "ipiranga", "iq", "ir", "irish", "is", "iselect", "ist",
+    "istanbul", "it", "itau", "iwc", "jaguar", "java", "jcb", "je", "jetzt",
+    "jewelry", "jlc", "jll", "jm", "jmp", "jo", "jobs", "joburg", "jot", "joy",
+    "jp", "jprs", "juegos", "kaufen", "kddi", "ke", "kfh", "kg", "kh", "ki",
+    "kia", "kim", "kinder", "kitchen", "kiwi", "km", "kn", "koeln", "komatsu",
+    "kp", "kpn", "kr", "krd", "kred", "kw", "ky", "kyoto", "kz", "la", "lacaixa",
+    "lamborghini", "lamer", "lancaster", "land", "landrover", "lanxess",
+    "lasalle", "lat", "latrobe", "law", "lawyer", "lb", "lc", "lds", "lease",
+    "leclerc", "legal", "lexus", "lgbt", "li", "liaison", "lidl", "life",
+    "lifeinsurance", "lifestyle", "lighting", "like", "limited", "limo",
+    "lincoln", "linde", "link", "live", "living", "lixil", "lk", "loan", "loans",
+    "lol", "london", "lotte", "lotto", "love", "lr", "ls", "lt", "ltd", "ltda",
+    "lu", "lupin", "luxe", "luxury", "lv", "ly", "ma", "madrid", "maif", "maison",
+    "makeup", "man", "management", "mango", "market", "marketing", "markets",
+    "marriott", "mba", "mc", "md", "me", "med", "media", "meet", "melbourne",
+    "meme", "memorial", "men", "menu", "meo", "mg", "mh", "miami", "microsoft",
+    "mil", "mini", "mk", "ml", "mm", "mma", "mn", "mo", "mobi", "mobily", "moda",
+    "moe", "moi", "mom", "monash", "money", "montblanc", "mormon", "mortgage",
+    "moscow", "motorcycles", "mov", "movie", "movistar", "mp", "mq", "mr", "ms",
+    "mt", "mtn", "mtpc", "mtr", "mu", "museum", "mutuelle", "mv", "mw", "mx",
+    "my", "mz", "na", "nadex", "nagoya", "name", "natura", "navy", "nc", "ne",
+    "nec", "net", "netbank", "network", "neustar", "new", "news", "nexus", "nf",
+    "ng", "ngo", "nhk", "ni", "nico", "nikon", "ninja", "nissan", "nl", "no",
+    "nokia", "norton", "nowruz", "np", "nr", "nra", "nrw", "ntt", "nu", "nyc",
+    "nz", "obi", "office", "okinawa", "om", "omega", "one", "ong", "onl",
+    "online", "ooo", "oracle", "orange", "org", "organic", "origins", "osaka",
+    "otsuka", "ovh", "pa", "page", "pamperedchef", "panerai", "paris", "pars",
+    "partners", "parts", "party", "pe", "pet", "pf", "pg", "ph", "pharmacy",
+    "philips", "photo", "photography", "photos", "physio", "piaget", "pics",
+    "pictet", "pictures", "pid", "pin", "ping", "pink", "pizza", "pk", "pl",
+    "place", "play", "playstation", "plumbing", "plus", "pm", "pn", "pohl",
+    "poker", "porn", "post", "pr", "praxi", "press", "pro", "prod", "productions",
+    "prof", "promo", "properties", "property", "protection", "ps", "pt", "pub",
+    "pw", "pwc", "py", "qa", "qpon", "quebec", "quest", "racing", "re", "read",
+    "realtor", "realty", "recipes", "red", "redstone", "redumbrella", "rehab",
+    "reise", "reisen", "reit", "ren", "rent", "rentals", "repair", "report",
+    "republican", "rest", "restaurant", "review", "reviews", "rexroth", "rich",
+    "ricoh", "rio", "rip", "ro", "rocher", "rocks", "rodeo", "room", "rs", "rsvp",
+    "ru", "ruhr", "run", "rw", "rwe", "ryukyu", "sa", "saarland", "safe",
+    "safety", "sakura", "sale", "salon", "samsung", "sandvik", "sandvikcoromant",
+    "sanofi", "sap", "sapo", "sarl", "sas", "saxo", "sb", "sbs", "sc", "sca",
+    "scb", "schaeffler", "schmidt", "scholarships", "school", "schule", "schwarz",
+    "science", "scor", "scot", "sd", "se", "seat", "security", "seek", "select",
+    "sener", "services", "seven", "sew", "sex", "sexy", "sfr", "sg", "sh",
+    "sharp", "shell", "shia", "shiksha", "shoes", "show", "shriram", "si",
+    "singles", "site", "sj", "sk", "ski", "skin", "sky", "skype", "sl", "sm",
+    "smile", "sn", "sncf", "so", "soccer", "social", "softbank", "software",
+    "sohu", "solar", "solutions", "song", "sony", "soy", "space", "spiegel",
+    "spot", "spreadbetting", "sr", "srl", "st", "stada", "star", "starhub",
+    "statefarm", "statoil", "stc", "stcgroup", "stockholm", "storage", "store",
+    "studio", "study", "style", "su", "sucks", "supplies", "supply", "support",
+    "surf", "surgery", "suzuki", "sv", "swatch", "swiss", "sx", "sy", "sydney",
+    "symantec", "systems", "sz", "tab", "taipei", "taobao", "tatamotors", "tatar",
+    "tattoo", "tax", "taxi", "tc", "tci", "td", "team", "tech", "technology",
+    "tel", "telecity", "telefonica", "temasek", "tennis", "tf", "tg", "th", "thd",
+    "theater", "theatre", "tickets", "tienda", "tiffany", "tips", "tires",
+    "tirol", "tj", "tk", "tl", "tm", "tmall", "tn", "to", "today", "tokyo",
+    "tools", "top", "toray", "toshiba", "tours", "town", "toyota", "toys", "tr",
+    "trade", "trading", "training", "travel", "travelers", "travelersinsurance",
+    "trust", "trv", "tt", "tube", "tui", "tunes", "tushu", "tv", "tvs", "tw",
+    "tz", "ua", "ubs", "ug", "uk", "unicom", "university", "uno", "uol", "us",
+    "uy", "uz", "va", "vacations", "vana", "vc", "ve", "vegas", "ventures",
+    "verisign", "versicherung", "vet", "vg", "vi", "viajes", "video", "viking",
+    "villas", "vin", "vip", "virgin", "vision", "vista", "vistaprint", "viva",
+    "vlaanderen", "vn", "vodka", "volkswagen", "vote", "voting", "voto", "voyage",
+    "vu", "wales", "walter", "wang", "wanggou", "watch", "watches", "weather",
+    "weatherchannel", "webcam", "weber", "website", "wed", "wedding", "weir",
+    "wf", "whoswho", "wien", "wiki", "williamhill", "win", "windows", "wine",
+    "wme", "wolterskluwer", "work", "works", "world", "ws", "wtc", "wtf", "xbox",
+    "xerox", "xin", "xn--11b4c3d", "xn--1ck2e1b", "xn--1qqw23a", "xn--30rr7y",
+    "xn--3bst00m", "xn--3ds443g", "xn--3e0b707e", "xn--3pxu8k", "xn--42c2d9a",
+    "xn--45brj9c", "xn--45q11c", "xn--4gbrim", "xn--55qw42g", "xn--55qx5d",
+    "xn--6frz82g", "xn--6qq986b3xl", "xn--80adxhks", "xn--80ao21a",
+    "xn--80asehdb", "xn--80aswg", "xn--8y0a063a", "xn--90a3ac", "xn--90ais",
+    "xn--9dbq2a", "xn--9et52u", "xn--b4w605ferd", "xn--bck1b9a5dre4c",
+    "xn--c1avg", "xn--c2br7g", "xn--cck2b3b", "xn--cg4bki",
+    "xn--clchc0ea0b2g2a9gcd", "xn--czr694b", "xn--czrs0t", "xn--czru2d",
+    "xn--d1acj3b", "xn--d1alf", "xn--e1a4c", "xn--eckvdtc9d", "xn--efvy88h",
+    "xn--estv75g", "xn--fhbei", "xn--fiq228c5hs", "xn--fiq64b", "xn--fiqs8s",
+    "xn--fiqz9s", "xn--fjq720a", "xn--flw351e", "xn--fpcrj9c3d", "xn--fzc2c9e2c",
+    "xn--g2xx48c", "xn--gckr3f0f", "xn--gecrj9c", "xn--h2brj9c", "xn--hxt814e",
+    "xn--i1b6b1a6a2e", "xn--imr513n", "xn--io0a7i", "xn--j1aef", "xn--j1amh",
+    "xn--j6w193g", "xn--jlq61u9w7b", "xn--jvr189m", "xn--kcrx77d1x4a",
+    "xn--kprw13d", "xn--kpry57d", "xn--kpu716f", "xn--kput3i", "xn--l1acc",
+    "xn--lgbbat1ad8j", "xn--mgb9awbf", "xn--mgba3a3ejt", "xn--mgba3a4f16a",
+    "xn--mgbaam7a8h", "xn--mgbab2bd", "xn--mgbayh7gpa", "xn--mgbb9fbpob",
+    "xn--mgbbh1a71e", "xn--mgbc0a9azcg", "xn--mgberp4a5d4ar", "xn--mgbpl2fh",
+    "xn--mgbt3dhd", "xn--mgbtx2b", "xn--mgbx4cd0ab", "xn--mix891f",
+    "xn--mk1bu44c", "xn--mxtq1m", "xn--ngbc5azd", "xn--ngbe9e0a", "xn--node",
+    "xn--nqv7f", "xn--nqv7fs00ema", "xn--nyqy26a", "xn--o3cw4h", "xn--ogbpf8fl",
+    "xn--p1acf", "xn--p1ai", "xn--pbt977c", "xn--pgbs0dh", "xn--pssy2u",
+    "xn--q9jyb4c", "xn--qcka1pmc", "xn--qxam", "xn--rhqv96g", "xn--rovu88b",
+    "xn--s9brj9c", "xn--ses554g", "xn--t60b56a", "xn--tckwe", "xn--unup4y",
+    "xn--vermgensberater-ctb", "xn--vermgensberatung-pwb", "xn--vhquv",
+    "xn--vuq861b", "xn--wgbh1c", "xn--wgbl6a", "xn--xhq521b", "xn--xkc2al3hye2a",
+    "xn--xkc2dl3a5ee0h", "xn--y9a3aq", "xn--yfro4i67o", "xn--ygbi2ammx",
+    "xn--zfr164b", "xperia", "xxx", "xyz", "yachts", "yahoo", "yamaxun", "yandex",
+    "ye", "yodobashi", "yoga", "yokohama", "youtube", "yt", "za", "zara", "zero",
+    "zip", "zm", "zone", "zuerich", "zw");
 
 // Special TLDs for testing and documentation purposes
 // http://tools.ietf.org/html/rfc2606#section-2
@@ -230,7 +334,7 @@ if ($dns_fancy) {
  * *********** */
 $db = dbConnect();
 require_once("plugin.inc.php");
-
+require_once("password.inc.php");
 require_once("i18n.inc.php");
 require_once("auth.inc.php");
 require_once("users.inc.php");
@@ -340,38 +444,57 @@ function show_pages($amount, $rowamount, $id = '') {
  * Display the alphabetic option: [0-9] [a] [b] .. [z]
  *
  * @param string $letterstart Starting letter/number or 'all'
- * @param boolean $userid unknown usage
+ * @param int $userid Current user ID
  *
  * @return null
  */
-function show_letters($letterstart, $userid = true) {
+function show_letters($letterstart, $userid) {
+    global $db;
+
+    $char_range = array_merge(range('a', 'z'), array('_'));
+
+    $allowed = zone_content_view_others($userid);
+
+    $query = "SELECT
+			DISTINCT SUBSTRING(domains.name, 1, 1) AS letter
+			FROM domains
+			LEFT JOIN zones ON domains.id = zones.domain_id
+			WHERE " . $allowed . " = 1
+			OR zones.owner = " . $userid . "
+			ORDER BY 1";
+    $db->setLimit(36);
+
+    $available_chars = array();
+    $digits_available = 0;
+
+    $response = $db->query($query);
+
+    while ($row = $response->fetchRow()) {
+        if (preg_match("/[0-9]/", $row['letter'])) {
+	    $digits_available = 1;
+	} elseif (in_array($row['letter'], $char_range)) {
+	    array_push($available_chars, $row['letter']);
+	}
+    }
+
     echo _('Show zones beginning with') . ":<br>";
 
-    $letter = "[[:digit:]]";
     if ($letterstart == "1") {
         echo "<span class=\"lettertaken\">[ 0-9 ]</span> ";
-    } elseif (zone_letter_start($letter, $userid)) {
+    } elseif ($digits_available) {
         echo "<a href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=1\">[ 0-9 ]</a> ";
     } else {
         echo "[ <span class=\"letternotavailable\">0-9</span> ] ";
     }
 
-    foreach (range('a', 'z') as $letter) {
+    foreach ($char_range as $letter) {
         if ($letter == $letterstart) {
             echo "<span class=\"lettertaken\">[ " . $letter . " ]</span> ";
-        } elseif (zone_letter_start($letter, $userid)) {
+        } elseif (in_array($letter, $available_chars)) {
             echo "<a href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=" . $letter . "\">[ " . $letter . " ]</a> ";
         } else {
             echo "[ <span class=\"letternotavailable\">" . $letter . "</span> ] ";
         }
-    }
-
-    if ($letterstart == '_') {
-        echo "<span class=\"lettertaken\">[ _ ]</span> ";
-    } elseif (zone_letter_start('_', $userid)) {
-        echo "<a href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=_\">[ _ ]</a> ";
-    } else {
-        echo "[ <span class=\"letternotavailable\">_</span> ] ";
     }
 
     if ($letterstart == 'all') {
@@ -381,25 +504,29 @@ function show_letters($letterstart, $userid = true) {
     }
 }
 
-/** Check if any zones start with letter
+/** Check if current user allowed to view any zone content
  *
- * @param string $letter Starting Letter
- * @param boolean $userid unknown usage
+ * @param int $userid Current user ID
  *
- * @return int 1 if rows found, 0 otherwise
+ * @return int 1 if user has permission to view other users zones content, 0 otherwise
  */
-function zone_letter_start($letter, $userid = true) {
+function zone_content_view_others($userid) {
     global $db;
-    global $sql_regexp;
+
     $query = "SELECT
-			domains.id AS domain_id,
-			zones.owner,
-			domains.name AS domainname
-			FROM domains
-			LEFT JOIN zones ON domains.id=zones.domain_id
-			WHERE substring(domains.name,1,1) " . $sql_regexp . " " . $db->quote("^" . $letter, 'text');
-    $db->setLimit(1);
+		DISTINCT u.id
+		FROM 	users u,
+		        perm_templ pt,
+		        perm_templ_items pti,
+		        (SELECT id FROM perm_items WHERE name
+			    IN ('zone_content_view_others', 'user_is_ueberuser')) pit
+                WHERE u.id = " . $userid . "
+                AND u.perm_templ = pt.id
+                AND pti.templ_id = pt.id
+                AND pti.perm_id  = pit.id";
+
     $result = $db->queryOne($query);
+
     return ($result ? 1 : 0);
 }
 
@@ -472,20 +599,6 @@ function clean_page($arg = '') {
     }
 }
 
-/** Print active status
- *
- * @param int $res status, 0 for inactive, 1 active
- *
- * @return string html containing status
- */
-function get_status($res) {
-    if ($res == '0') {
-        return "<FONT CLASS=\"inactive\">" . _('Inactive') . "</FONT>";
-    } elseif ($res == '1') {
-        return "<FONT CLASS=\"active\">" . _('Active') . "</FONT>";
-    }
-}
-
 /** Validate email address string
  *
  * @param string $address email address string
@@ -528,74 +641,6 @@ function debug_print($var) {
         echo $var;
     }
     echo "</pre>\n";
-}
-
-/** Set timezone (required for PHP5)
- *
- * Set timezone to configured tz or UTC it not set
- *
- * @return null
- */
-function set_timezone() {
-    global $timezone;
-
-    if (function_exists('date_default_timezone_set')) {
-        if (isset($timezone)) {
-            date_default_timezone_set($timezone);
-        } else if (!ini_get('date.timezone')) {
-            date_default_timezone_set('UTC');
-        }
-    }
-}
-
-/** Generate random salt for encryption
- *
- * @param int $len salt length (default=5)
- *
- * @return string salt string
- */
-function generate_salt($len = 5) {
-    $valid_characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890@#$%^*()_-!';
-    $valid_len = strlen($valid_characters) - 1;
-    $salt = "";
-
-    for ($i = 0; $i < $len; $i++) {
-        $salt .= $valid_characters[rand(0, $valid_len)];
-    }
-
-    return $salt;
-}
-
-/** Extract salt from password
- *
- * @param string $password salted password
- *
- * @return string salt
- */
-function extract_salt($password) {
-    return substr(strchr($password, ':'), 1);
-}
-
-/** Generate salted password
- *
- * @param string $salt salt
- * @param string $pass password
- *
- * @return string salted password
- */
-function mix_salt($salt, $pass) {
-    return md5($salt . $pass) . ':' . $salt;
-}
-
-/** Generate random salt and salted password
- *
- * @param string $pass password
- *
- * @return salted password
- */
-function gen_mix_salt($pass) {
-    $salt = generate_salt();
-    return mix_salt($salt, $pass);
 }
 
 function do_log($syslog_message, $priority) {
@@ -708,4 +753,19 @@ function logout($msg = "", $type = "") {
     session_write_close();
     auth($msg, $type);
     exit;
+}
+
+/** Matches end of string
+ * 
+ * Matches end of string (haystack) against another string (needle)
+ *
+ * @param string $needle
+ * @param string $haystack
+ * 
+ * @return true if ends with specified string, otherwise false
+ */
+function endsWith($needle, $haystack) {
+    $length = strlen($haystack);
+    $nLength = strlen($needle);
+    return $nLength <= $length && strncmp(substr($haystack, -$nLength), $needle, $nLength) === 0;
 }

@@ -70,7 +70,7 @@ function get_zone_id_from_record_id($rid) {
  */
 function count_zone_records($zone_id) {
     global $db;
-    $sqlq = "SELECT COUNT(id) FROM records WHERE domain_id = " . $db->quote($zone_id, 'integer');
+    $sqlq = "SELECT COUNT(id) FROM records WHERE domain_id = " . $db->quote($zone_id, 'integer') . " AND type IS NOT NULL";
     $record_count = $db->queryOne($sqlq);
     return $record_count;
 }
@@ -831,9 +831,9 @@ function delete_domain($id) {
     if ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) {
         if (is_numeric($id)) {
             $db->query("DELETE FROM zones WHERE domain_id=" . $db->quote($id, 'integer'));
-            $db->query("DELETE FROM domains WHERE id=" . $db->quote($id, 'integer'));
             $db->query("DELETE FROM records WHERE domain_id=" . $db->quote($id, 'integer'));
             $db->query("DELETE FROM records_zone_templ WHERE domain_id=" . $db->quote($id, 'integer'));
+            $db->query("DELETE FROM domains WHERE id=" . $db->quote($id, 'integer'));
             return true;
         } else {
             error(sprintf(ERR_INV_ARGC, "delete_domain", "id must be a number"));
@@ -1230,6 +1230,7 @@ function get_zones($perm, $userid = 0, $letterstart = 'all', $rowstart = 0, $row
     global $db;
     global $db_type;
     global $sql_regexp;
+    global $pdnssec_use;
 
     if ($letterstart == '_') {
         $letterstart = '\_';
@@ -1245,7 +1246,7 @@ function get_zones($perm, $userid = 0, $letterstart = 'all', $rowstart = 0, $row
 				AND zones.owner = " . $db->quote($userid, 'integer');
         }
         if ($letterstart != 'all' && $letterstart != 1) {
-            $sql_add .=" AND domains.name LIKE " . $db->quote($letterstart . "%", 'text') . " ";
+            $sql_add .=" AND substring(domains.name,1,1) = " . $db->quote($letterstart, 'text') . " ";
         } elseif ($letterstart == 1) {
             $sql_add .=" AND substring(domains.name,1,1) " . $sql_regexp . " '^[[:digit:]]'";
         }
@@ -1255,24 +1256,34 @@ function get_zones($perm, $userid = 0, $letterstart = 'all', $rowstart = 0, $row
         $sortby = 'domains.' . $sortby;
     }
 
-    $natural_sort = 'LENGTH(domains.name), domains.name';
+    $natural_sort = 'domains.name';
     if ($db_type == 'mysql' || $db_type == 'mysqli' || $db_type == 'sqlite' || $db_type == 'sqlite3') {
         $natural_sort = 'domains.name+0<>0 DESC, domains.name+0, domains.name';
     }
     $sql_sortby = ($sortby == 'domains.name' ? $natural_sort : $sortby . ', ' . $natural_sort);
 
     $sqlq = "SELECT domains.id,
-			domains.name,
-			domains.type,
-			Record_Count.count_records
-			FROM domains
-			LEFT JOIN zones ON domains.id=zones.domain_id
-			LEFT JOIN (
-				SELECT COUNT(domain_id) AS count_records, domain_id FROM records GROUP BY domain_id
-			) Record_Count ON Record_Count.domain_id=domains.id
-			WHERE 1=1" . $sql_add . "
-			GROUP BY domains.name, domains.id, domains.type, Record_Count.count_records
-			ORDER BY " . $sql_sortby;
+                        domains.name,
+                        domains.type,
+                        COUNT(records.id) AS count_records,
+                        users.fullname
+                        " . ($pdnssec_use ? ",COUNT(cryptokeys.id) > 0 OR COUNT(domainmetadata.id) > 0 AS secured" : "") . "
+                        FROM domains
+                        LEFT JOIN zones ON domains.id=zones.domain_id
+                        LEFT JOIN records ON records.domain_id=domains.id AND records.type IS NOT NULL
+                        LEFT JOIN users ON users.id=zones.owner
+        ";
+
+    if ($pdnssec_use) {
+        $sqlq .= "      LEFT JOIN cryptokeys ON domains.id = cryptokeys.domain_id AND cryptokeys.active
+                        LEFT JOIN domainmetadata ON domains.id = domainmetadata.domain_id AND domainmetadata.kind = 'PRESIGNED'
+            ";
+    }
+
+        $sqlq .= "
+                        WHERE 1=1" . $sql_add . "
+                        GROUP BY domains.name, domains.id, domains.type, users.fullname
+                        ORDER BY " . $sql_sortby;
 
     if ($letterstart != 'all') {
         $db->setLimit($rowamount, $rowstart);
@@ -1286,8 +1297,12 @@ function get_zones($perm, $userid = 0, $letterstart = 'all', $rowstart = 0, $row
             "id" => $r["id"],
             "name" => $r["name"],
             "type" => $r["type"],
-            "count_records" => $r["count_records"]
+            "count_records" => $r["count_records"],
+            "owner" => $r["fullname"],
         );
+        if ($pdnssec_use) {
+            $ret[$r["name"]]["secured"] = $r["secured"];
+        }
     }
     return $ret;
 }
@@ -1360,7 +1375,7 @@ function zone_count_for_uid($uid) {
 function get_record_from_id($id) {
     global $db;
     if (is_numeric($id)) {
-        $result = $db->queryRow("SELECT id, domain_id, name, type, content, ttl, prio, change_date FROM records WHERE id=" . $db->quote($id, 'integer'));
+        $result = $db->queryRow("SELECT id, domain_id, name, type, content, ttl, prio, change_date FROM records WHERE id=" . $db->quote($id, 'integer') . " AND type IS NOT NULL");
         if ($result) {
             if ($result["type"] == "" || $result["content"] == "") {
                 return -1;
@@ -1404,57 +1419,65 @@ function get_records_from_domain_id($id, $rowstart = 0, $rowamount = 999999, $so
     if (is_numeric($id)) {
         if ((isset($_SESSION[$id . "_ispartial"])) && ($_SESSION[$id . "_ispartial"] == 1)) {
             $db->setLimit($rowamount, $rowstart);
-            $result = $db->query("SELECT record_owners.record_id as id
-					FROM record_owners,domains,records
-					WHERE record_owners.user_id = " . $db->quote($_SESSION["userid"], 'integer') . "
-					AND record_owners.record_id = records.id
-					AND records.domain_id = " . $db->quote($id, 'integer') . "
-					GROUP BY record_owners.record_id ORDER BY records." . $sortby);
+            $result = $db->query("SELECT records.id, domains.id, records.name, records.type, records.content, records.ttl, records.prio, records.change_date
+                                    FROM record_owners,domains,records
+                                    WHERE record_owners.user_id = " . $db->quote($_SESSION["userid"], 'integer') . "
+                                    AND record_owners.record_id = records.id
+                                    AND records.domain_id = " . $db->quote($id, 'integer') . "
+                                    GROUP BY records.id, domains.id, records.name, records.type, records.content, records.ttl, records.prio, records.change_date
+                                    ORDER BY type = 'SOA' DESC, type = 'NS' DESC, records." . $sortby);
 
-            $ret = array();
             if ($result) {
-                $ret[] = array();
-                $retcount = 0;
                 while ($r = $result->fetchRow()) {
-                    // Call get_record_from_id for each row.
-                    $fields = get_record_from_id($r["id"]);
-                    if ($fields == -1) {
-                        continue;
-                    }
-                    $ret[$retcount] = $fields;
-                    $retcount++;
+                    $ret[] = array(
+                        "id" => $r["id"],
+                        "domain_id" => $r["domain_id"],
+                        "name" => $r["name"],
+                        "type" => $r["type"],
+                        "content" => $r["content"],
+                        "ttl" => $r["ttl"],
+                        "prio" => $r["prio"],
+                        "change_date" => $r["change_date"]
+                    );
                 }
                 $result = $ret;
             } else {
                 return -1;
             }
+
         } else {
             $db->setLimit($rowamount, $rowstart);
 
-            $natural_sort = 'LENGTH(records.name), records.name';
+            $natural_sort = 'records.name';
             if ($db_type == 'mysql' || $db_type == 'mysqli' || $db_type == 'sqlite' || $db_type == 'sqlite3') {
                 $natural_sort = 'records.name+0<>0 DESC, records.name+0, records.name';
             }
             $sql_sortby = ($sortby == 'name' ? $natural_sort : $sortby . ', ' . $natural_sort);
 
-            $result = $db->query("SELECT id FROM records WHERE domain_id=" . $db->quote($id, 'integer') . " ORDER BY " . $sql_sortby);
+            $result = $db->query("SELECT id, domain_id, name, type, content, ttl, prio, change_date
+                                    FROM records 
+                                    WHERE domain_id=" . $db->quote($id, 'integer') . " AND type IS NOT NULL
+                                    ORDER BY type = 'SOA' DESC, type = 'NS' DESC," . $sql_sortby);
+
             $ret = array();
             if ($result) {
-                $ret[] = array();
-                $retcount = 0;
                 while ($r = $result->fetchRow()) {
-                    // Call get_record_from_id for each row.
-                    $fields = get_record_from_id($r["id"]);
-                    if ($fields == -1) {
-                        continue;
-                    }
-                    $ret[$retcount] = $fields;
-                    $retcount++;
+                    $ret[] = array(
+                        "id" => $r["id"],
+                        "domain_id" => $r["domain_id"],
+                        "name" => $r["name"],
+                        "type" => $r["type"],
+                        "content" => $r["content"],
+                        "ttl" => $r["ttl"],
+                        "prio" => $r["prio"],
+                        "change_date" => $r["change_date"]
+                    );
                 }
                 $result = $ret;
             } else {
                 return -1;
             }
+
             $result = order_domain_results($result, $sortby);
             return $result;
         }
@@ -1596,6 +1619,8 @@ function sort_domain_results_by_ttl($a, $b) {
  */
 function get_users_from_domain_id($id) {
     global $db;
+    $owners = array();
+
     $sqlq = "SELECT owner FROM zones WHERE domain_id =" . $db->quote($id, 'integer');
     $id_owners = $db->query($sqlq);
     if ($id_owners) {
@@ -1612,148 +1637,107 @@ function get_users_from_domain_id($id) {
     return $owners;
 }
 
-/** Search for Zone or Record
+/**
+ * Search for Zones and/or Records
  *
- * @param string $search_string  String to search
- * @param string $perm User permitted to view 'all' or 'own' zones
- * @param string $zone_sortby Column to sort domain results [default='name']
- * @param string $record_sortby Column to sort record results by [default='name']
- * @param boolean $wildcards Add wildcards automatically
- * @param boolean $arpa Search reverse records automatically
- *
- * @return mixed[] 'zones' => array of zones, 'records' => array of records
+ * @param array $parameters Array with parameters which configures function
+ * @param string $permission_view User permitted to view 'all' or 'own' zones
+ * @param string $sort_zones_by Column to sort zone results
+ * @param string $sort_records_by Column to sort record results
+ * @return array|bool
  */
-function search_zone_and_record($search_string, $perm, $zone_sortby = 'name', $record_sortby = 'name', $wildcards = true, $arpa = true) {
+function search_zone_and_record($parameters, $permission_view, $sort_zones_by, $sort_records_by) {
     global $db;
 
-    $search_string = trim($search_string);
+    $return = array('zones' => [], 'records' => []);
 
-    $sql_add_from = '';
-    $sql_add_where = '';
-    $arpa_search = '';
-
-    $return_zones = array();
-    $return_records = array();
-
-    if (do_hook('verify_permission' , 'zone_content_view_others' )) {
-        $perm_view = "all";
-    } elseif (do_hook('verify_permission' , 'zone_content_view_own' )) {
-        $perm_view = "own";
-    } else {
-        $perm_view = "none";
-    }
-    
-    //redundant?
-    if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
-        $perm_content_edit = "all";
-    } elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
-        $perm_content_edit = "own";
-    } elseif (do_hook('verify_permission' , 'zone_content_edit_own_as_client' )) {
-    	$perm_content_edit = "own_as_client";
-    }else {
-        $perm_content_edit = "none";
-    }
-
-    if ($perm == "all") {
-        $sql_add_from = ", zones, users ";
-        $sql_add_where = " AND zones.domain_id = domains.id AND users.id = " . $db->quote($_SESSION['userid'], 'integer');
-    }
-
-    if ($perm == "own") {
-        $sql_add_from = ", zones, users ";
-        $sql_add_where = " AND zones.domain_id = domains.id AND users.id = " . $db->quote($_SESSION['userid'], 'integer') . " AND zones.owner = " . $db->quote($_SESSION['userid'], 'integer');
-    }
-
-
-    if ($arpa) {
-        if (preg_match("/^[0-9\.]+$/", $search_string)) {
-            $quads = explode('.', $search_string);
-            $arpa_search = join('.', array_reverse($quads));
-        }
-        if (preg_match("/^[0-9a-f]{0,4}:([0-9a-f]{0,4}:){0,6}[0-9a-f]{0,4}$/i", $search_string)) {
-            //TODO ipv6 search
-        }
-    }
-
-    $query = "SELECT
-			domains.id AS zid,
-			domains.name AS name,
-			domains.type AS type,
-			domains.master AS master,
-                        zones.owner AS owner
-			FROM domains" . $sql_add_from . "
-			WHERE " . ($arpa_search ? "(" : "") .
-            " domains.name LIKE " . $db->quote(($wildcards ? "%" : "") . $search_string . ($wildcards ? "%" : ""), 'text')
-            . ($arpa_search ? " OR domains.name LIKE " . $db->quote("%" . $arpa_search . "%in-addr.arpa", 'text') . ")" : "")
-            . $sql_add_where . "
-                        ORDER BY " . $zone_sortby;
-
-    $response = $db->query($query);
-    if (PEAR::isError($response)) {
-        error($response->getMessage());
-        return false;
-    }
-
-    $cached_owners = array();
-    while ($r = $response->fetchRow()) {
-        $owner = '';
-        if (isset($cached_owners[$r['owner']])) {
-            $owner = $cached_owners[$r['owner']];
+    if ($parameters['reverse']) {
+        if (filter_var($parameters['query'], FILTER_FLAG_IPV4)) {
+            $reverse_search_string = implode('.', array_reverse(explode('.', $parameters['query'])));
+        } elseif (filter_var($parameters['query'], FILTER_FLAG_IPV6)) {
+            $reverse_search_string = unpack('H*hex', inet_pton($parameters['query']));
+            $reverse_search_string = implode('.', array_reverse(str_split($reverse_search_string['hex'])));
         } else {
-            $owner = do_hook('get_owner_from_id' , $r['owner'] );
-            $cached_owners[$r['owner']] = $owner;
+            $parameters['reverse'] = false;
+            $reverse_search_string = '';
         }
 
-        $return_zones[] = array(
-            "zid" => $r['zid'],
-            "name" => $r['name'],
-            "type" => $r['type'],
-            "master" => $r['master'],
-            "owner" => $owner);
+        $reverse_search_string = $db->quote('%' . $reverse_search_string . '%', 'text');
     }
 
-    $sql_add_from = '';
-    $sql_add_where = '';
+    $search_string = ($parameters['wildcard'] ? '%' : '') . trim($parameters['query']) . ($parameters['wildcard'] ? '%' : '');
 
-    // Search for matching records
+    if ($parameters['zones']) {
+        $zonesQuery = '
+            SELECT
+                domains.id,
+                domains.name,
+                domains.type,
+                z.id as zone_id,
+                z.domain_id,
+                z.owner,
+                u.id as user_id,
+                u.fullname,
+                record_count.count_records
+            FROM
+                domains
+            LEFT JOIN zones z on domains.id = z.domain_id
+            LEFT JOIN users u on z.owner = u.id
+            LEFT JOIN (SELECT COUNT(domain_id) AS count_records, domain_id FROM records WHERE type IS NOT NULL GROUP BY domain_id) record_count ON record_count.domain_id=domains.id
+            WHERE
+                (domains.name LIKE ' . $db->quote($search_string, 'text') .
+            ($parameters['reverse'] ? ' OR domains.name LIKE ' . $reverse_search_string : '') . ') ' .
+            ($permission_view == 'own' ? ' AND z.owner = ' . $db->quote($_SESSION['userid'], 'integer') : '') .
+            ' ORDER BY ' . $sort_zones_by;
 
-    if ($perm == "own") {
-        $sql_add_from = ", zones ";
-        $sql_add_where = " AND zones.domain_id = records.domain_id AND zones.owner = " . $db->quote($_SESSION['userid'], 'integer');
+        $zonesResponse = $db->query($zonesQuery);
+        if (PEAR::isError($zonesResponse)) {
+            error($zonesResponse->getMessage());
+            return false;
+        }
+
+        while ($zone = $zonesResponse->fetchRow()) {
+            $return['zones'][] = $zone;
+        }
     }
 
-    $query = "SELECT
-			records.id AS rid,
-			records.name AS name,
-			records.type AS type,
-			records.content AS content,
-			records.ttl AS ttl,
-			records.prio AS prio,
-			records.domain_id AS zid
-			FROM records" . $sql_add_from . "
-			WHERE (records.name LIKE " . $db->quote(($wildcards ? "%" : "") . $search_string . ($wildcards ? "%" : ""), 'text') . " OR records.content LIKE " . $db->quote(($wildcards ? "%" : "") . $search_string . ($wildcards ? "%" : ""), 'text')
-            . ($arpa_search ? " OR records.name LIKE " . $db->quote("%" . $arpa_search . "%in-addr.arpa", 'text') : "")
-            . ")"
-            . $sql_add_where . "
-			ORDER BY " . $record_sortby;
 
-    $response = $db->query($query);
-    if (PEAR::isError($response)) {
-        error($response->getMessage());
-        return false;
+    if ($parameters['records']) {
+        $recordsQuery = '
+            SELECT
+                records.id,
+                records.domain_id,
+                records.name,
+                records.type,
+                records.content,
+                records.ttl,
+                records.prio,
+                z.id as zone_id,
+                z.owner,
+                u.id as user_id,
+                u.fullname
+            FROM
+                records
+            LEFT JOIN zones z on records.domain_id = z.domain_id
+            LEFT JOIN users u on z.owner = u.id
+            WHERE
+                (records.name LIKE ' . $db->quote($search_string, 'text') . ' OR records.content LIKE ' . $db->quote($search_string, 'text') .
+            ($parameters['reverse'] ? ' OR records.name LIKE ' . $reverse_search_string . ' OR records.content LIKE ' . $reverse_search_string : '') . ')' .
+            ($permission_view == 'own' ? 'AND z.owner = ' . $db->quote($_SESSION['userid'], 'integer') : '') .
+            ' ORDER BY ' . $sort_records_by;
+
+        $recordsResponse = $db->query($recordsQuery);
+        if (PEAR::isError($recordsResponse)) {
+            error($recordsResponse->getMessage());
+            return false;
+        }
+
+        while ($record = $recordsResponse->fetchRow()) {
+            $return['records'][] = $record;
+        }
     }
 
-    while ($r = $response->fetchRow()) {
-        $return_records[] = array(
-            "rid" => $r['rid'],
-            "name" => $r['name'],
-            "type" => $r['type'],
-            "content" => $r['content'],
-            "ttl" => $r['ttl'],
-            "zid" => $r['zid'],
-            "prio" => $r['prio']);
-    }
-    return array('zones' => $return_zones, 'records' => $return_records);
+    return $return;
 }
 
 /** Get Domain Type for Domain ID
@@ -2053,9 +2037,9 @@ function delete_domains($domains) {
                 }
 
                 $db->exec("DELETE FROM zones WHERE domain_id=" . $db->quote($id, 'integer'));
-                $db->exec("DELETE FROM domains WHERE id=" . $db->quote($id, 'integer'));
                 $db->exec("DELETE FROM records WHERE domain_id=" . $db->quote($id, 'integer'));
                 $db->query("DELETE FROM records_zone_templ WHERE domain_id=" . $db->quote($id, 'integer'));
+                $db->exec("DELETE FROM domains WHERE id=" . $db->quote($id, 'integer'));
             } else {
                 error(sprintf(ERR_INV_ARGC, "delete_domains", "id must be a number"));
                 $error = true;
@@ -2144,4 +2128,23 @@ function get_records_by_domain_id($db, $domain_id) {
         $records[]=$zone_records;
     }
     return $records;
+}
+
+
+/** Set timezone (required for PHP5)
+ *
+ * Set timezone to configured tz or UTC it not set
+ *
+ * @return null
+ */
+function set_timezone() {
+    global $timezone;
+
+    if (function_exists('date_default_timezone_set')) {
+        if (isset($timezone)) {
+            date_default_timezone_set($timezone);
+        } else if (!ini_get('date.timezone')) {
+            date_default_timezone_set('UTC');
+        }
+    }
 }

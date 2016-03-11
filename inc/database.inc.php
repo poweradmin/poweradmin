@@ -64,6 +64,7 @@ function dbConnect() {
     global $db_host;
     global $db_port;
     global $db_name;
+    global $db_charset;
     global $db_file;
     global $db_debug;
     global $db_ssl_ca;
@@ -131,7 +132,16 @@ function dbConnect() {
         $dsn = "$db_type:host=$db_host;port=$db_port;dbname=$db_name";
     }
 
+    if ($db_type === 'mysql' && $db_charset === 'utf8') {
+        $dsn .= ';charset=utf8';
+    }
+
     $db = new PDOLayer($dsn, $db_user, $db_pass);
+
+    // http://stackoverflow.com/a/4361485/567193
+    if ($db_type === 'mysql' && $db_charset === 'utf8' && version_compare(phpversion(), '5.3.6', '<')) {
+        $db->exec('set names utf8');
+    }
 
     if (isset($db_debug) && $db_debug) {
         $db->setOption('debug', 1);

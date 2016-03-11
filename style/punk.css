@@ -1,0 +1,103 @@
+/*
+ * Author: Tim Herman
+ * Website: http://www.punk.be
+ * Comments: Based on the normalize.css design. The best I could do without touching the php files. Temp solution untill an MVC model is applied
+
+/* RESET */
+@import url("../style/normalize.css");
+
+/* BEGIN ACTUAL STYLESHEET */
+body {
+	background: #F7F7F7;
+}
+
+* {
+	color: #333333;
+}
+
+a {
+	text-decoration: none;
+	color: #069;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+p, div, table tr, table tr td, table tr th, strong, li, b, input, textarea {
+	font-size: 0.9em;
+}
+
+/*HEADERS*/
+h1 {
+	font-size: 2.375em;
+	color: #69A619;
+	text-transform: lowercase;
+	text-shadow: 1px 1px 0 #304d08;
+	text-decoration: none;
+}
+
+h1, .menu {
+	margin: 10px auto;
+	width: 980px;
+}
+
+h2, h3 {
+	font-size: 1.17em;
+}
+
+.content, .footer {
+	margin: 10px auto;
+	width: 940px;
+}
+
+/*NAVIGATION*/
+.menu {
+}
+
+.menuitem {
+	padding-right: 5px;
+	font-size: 0.8em;
+	font-weight: bold;
+}
+
+/*CONTENT*/
+.content {
+	padding: 20px 20px;
+	border: 1px solid #ccc;
+	background: #fff;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+table tr th {
+	text-align: left;
+	padding-right: 10px;
+	font-weight: normal;
+}
+
+table tr td {
+	padding: 3px;
+}
+
+.success, .error {
+	padding: 10px;
+	font-weight: bold;
+}
+
+
+.success {
+	border: 1px solid green;
+	color: green;
+}
+
+.error {
+	border: 1px solid red;
+	color: red;
+}
+
+.footer {
+	font-size: 0.6em;
+}

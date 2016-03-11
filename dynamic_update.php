@@ -32,6 +32,7 @@
  */
 require('inc/config.inc.php');
 require('inc/database.inc.php');
+require('inc/record.inc.php');
 
 $db = dbConnect();
 
@@ -44,9 +45,11 @@ $db = dbConnect();
 function safe($value) {
     global $db, $db_type;
 
-    if ($db_type == 'mysql') {
+    if ($db_type == 'mysql' || $db_type == 'sqlite') {
         $value = $db->quote($value, 'text');
         $value = substr($value, 1, -1); // remove quotes
+    } elseif ($db_type == 'pgsql') {
+	$value = pg_escape_string($value);        
     } else {
         return status_exit('baddbtype');
     }
@@ -82,6 +85,24 @@ function status_exit($status) {
     }
     echo "$status\n";
     return false;
+}
+
+/** Check whether the given address is an IP address
+ *
+ * @param string $ip Given IP address
+ *
+ * @return string A if IPv4, AAAA if IPv6 or 0 if invalid
+ */
+function valid_ip_address( $ip )
+{
+    if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+        $value = 'A';
+    }elseif (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+        $value = 'AAAA';
+    }else {
+        $value = 0;
+    }
+    return $value;
 }
 
 if (!(isset($_SERVER)) && !$_SERVER['HTTP_USER_AGENT']) {
@@ -128,8 +149,10 @@ if ($given_ip == "whatismyip") {
 // Finally get save version of the IP
 $ip = safe($given_ip);
 // Check its ok...
-if (!preg_match('/^((?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/i', $ip)) {
+if (!valid_ip_address($ip)) {
     return status_exit('dnserr');
+}else {
+    $type = valid_ip_address($ip);
 }
 
 if (!strlen($hostname)) {
@@ -163,13 +186,14 @@ $zones_result = $db->query($zones_query);
 $was_updated = false;
 
 while ($zone = $zones_result->fetchRow()) {
-    $name_query = "SELECT name FROM records WHERE domain_id='{$zone["domain_id"]}' and type = 'A'";
+    $name_query = "SELECT name FROM records WHERE domain_id='{$zone["domain_id"]}' and type = '$type'";
     $result = $db->query($name_query);
 
     while ($record = $result->fetchRow()) {
         if ($hostname == $record['name']) {
-            $update_query = "UPDATE records SET content ='{$ip}' where name='{$record["name"]}' and type='A'";
+            $update_query = "UPDATE records SET content ='{$ip}' where name='{$record["name"]}' and type='$type'";
             $update_result = $db->query($update_query);
+            update_soa_serial($zone['domain_id']);
             $was_updated = true;
         }
     }

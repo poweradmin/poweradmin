@@ -520,7 +520,7 @@ $def_permissions = array(
 );
 
 $def_remaining_queries = array(
-    "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('admin'," . $db->quote(md5($pa_pass), 'text') . ",'Administrator','admin@example.net','Administrator with full rights.',1,1,0)",
+    "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('admin',%s,'Administrator','admin@example.net','Administrator with full rights.',1,1,0)",
     "INSERT INTO perm_templ (name, descr) VALUES ('Administrator','Administrator template with full rights.')",
     "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (1,53)"
 );

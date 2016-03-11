@@ -13,7 +13,7 @@ CREATE TABLE users (
   active      TINYINT      NOT NULL,
   use_ldap    TINYINT      NOT NULL,
   PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB;
 
 START TRANSACTION;
     INSERT INTO users ( id, username, `password`, fullname, email
@@ -27,7 +27,7 @@ CREATE TABLE perm_items (
   name VARCHAR(64) NOT NULL,
   descr TEXT       NOT NULL,
   PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB;
 
 START TRANSACTION;
     INSERT INTO perm_items ( id, name, descr ) VALUES ( 41, 'zone_master_add', 'User is allowed to add new master zones.' );
@@ -58,7 +58,7 @@ CREATE TABLE perm_templ (
   name  VARCHAR(128) NOT NULL,
   descr TEXT         NOT NULL,
   PRIMARY KEY  (id)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB;
 
 START TRANSACTION;
     INSERT INTO perm_templ ( id, name, descr )
@@ -71,7 +71,7 @@ CREATE TABLE perm_templ_items (
   templ_id INTEGER NOT NULL,
   perm_id INTEGER  NOT NULL,
   PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB;
 
 START TRANSACTION;
     INSERT INTO perm_templ_items ( id, templ_id, perm_id )
@@ -86,7 +86,7 @@ CREATE TABLE zones (
   zone_templ_id INTEGER NOT NULL,
   PRIMARY KEY (id),
   KEY owner (owner)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB;
 
 CREATE TABLE zone_templ (
   id    INTEGER      NOT NULL AUTO_INCREMENT,
@@ -94,7 +94,7 @@ CREATE TABLE zone_templ (
   descr TEXT         NOT NULL,
   owner INTEGER      NOT NULL,
   PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB;
 
 CREATE TABLE zone_templ_records (
   id            INTEGER      NOT NULL AUTO_INCREMENT,
@@ -105,15 +105,15 @@ CREATE TABLE zone_templ_records (
   ttl           INTEGER      NOT NULL,
   prio          INTEGER      NOT NULL,
   PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB;
 
 CREATE TABLE records_zone_templ (
     domain_id INTEGER NOT NULL,
     record_id INTEGER NOT NULL,
     zone_templ_id INTEGER NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB;
 
 CREATE TABLE migrations (
     version VARCHAR(255) NOT NULL,
     apply_time INTEGER NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB;

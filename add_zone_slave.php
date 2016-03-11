@@ -64,14 +64,14 @@ if (isset($_POST['submit']) && $zone_slave_add == "1") {
         error(ERR_DOMAIN_EXISTS);
     } elseif (domain_exists($zone) || record_name_exists($zone)) {
         error(ERR_DOMAIN_EXISTS);
-    } elseif (!is_valid_ipv4($master, false) && !is_valid_ipv6($master)) {
+    } elseif (!are_multipe_valid_ips($master)) {
         error(ERR_DNS_IP);
     } else {
         if (add_domain($zone, $owner, $type, $master, 'none')) {
             success("<a href=\"edit.php?id=" . get_zone_id_from_name($zone) . "\">" . SUC_ZONE_ADD . '</a>');
             log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',
                               $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                              $zone, $master, $zone_template));
+                              $zone, $master));
             unset($zone, $owner, $webip, $mailip, $empty, $type, $master);
         }
     }

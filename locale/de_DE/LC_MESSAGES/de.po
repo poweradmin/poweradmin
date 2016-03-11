@@ -740,7 +740,7 @@ msgstr "Dieser Installer geht davon aus, dass von diesem Server aus auf eine Pow
 
 #: index.php:28
 msgid "The alternative for this installer is a manual installation. Refer to the poweradmin.org website if you want to go down that road."
-msgstr "Die ALternative zu diesem Installer ist die manuelle Installation. Folgen Sie in diesem Fall den entsprechenden Anweisungen auf der Webseite poweradmin.org."
+msgstr "Die Alternative zu diesem Installer ist die manuelle Installation. Folgen Sie in diesem Fall den entsprechenden Anweisungen auf der Webseite poweradmin.org."
 
 #: index.php:30
 msgid "Finally, if you see any errors during the installation process, a problem report would be appreciated. You can report problems (and ask for help) on the <a href=\"http://groups.google.com/group/poweradmin\" target=\"blank\">poweradmin</a> mailinglist."

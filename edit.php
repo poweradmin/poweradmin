@@ -32,6 +32,7 @@
  */
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
+include_once("inc/RecordLog.class.php");
 
 global $pdnssec_use;
 
@@ -48,28 +49,28 @@ if ($zone_id == "-1") {
 
 if (isset($_POST['commit'])) {
     $error = false;
+    $one_record_changed = false;
+
     if (isset($_POST['record'])) {
         foreach ($_POST['record'] as $record) {
             $old_record_info = get_record_from_id($record['rid']);
+
+            // Check if a record changed and save the state
+            $log = new RecordLog();
+            $log->log_prior($record['rid']);
+            if (!$log->has_changed($record)) {
+                continue;
+            } else {
+                $one_record_changed = true;
+            }
+
             $edit_record = edit_record($record);
             if (false === $edit_record) {
                 $error = true;
             } else {
-               $new_record_info = get_record_from_id($record["rid"]);
-               //Figure out if record was updated
-               unset($new_record_info["change_date"]);
-               unset($old_record_info["change_date"]);
-               if ($new_record_info != $old_record_info){
-                 //The record was changed, so log the edit_record operation
-                 log_info(sprintf('client_ip:%s user:%s operation:edit_record'
-                                  .' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
-                                  .' record_type:%s record:%s content:%s ttl:%s priority:%s',
-                                  $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                              $old_record_info['type'], $old_record_info['name'],
-                              $old_record_info['content'], $old_record_info['ttl'], $old_record_info['prio'],
-                              $new_record_info['type'], $new_record_info['name'],
-                              $new_record_info['content'], $new_record_info['ttl'], $new_record_info['prio']));
-               }
+                // Log the state after saving and write it to logging table
+                $log->log_after($record['rid']);
+                $log->write();
             }
         }
     }
@@ -78,7 +79,12 @@ if (isset($_POST['commit'])) {
 
     if (false === $error) {
         update_soa_serial($_GET['id']);
-        success(SUC_ZONE_UPD);
+
+        if ($one_record_changed) {
+            success(SUC_ZONE_UPD);
+        } else {
+            success(SUC_ZONE_NOCHANGE);
+        }
 
         if ($pdnssec_use) {
             if (dnssec_rectify_zone($_GET['id'])) {
@@ -226,10 +232,10 @@ if ($records == "-1") {
 
         if ($domain_type == "SLAVE" || $perm_content_edit == "none" || (($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0")) {
             echo "     <td class=\"n\">&nbsp;</td>\n";
-        } 
-        elseif ( $r['type'] == "SOA" || ($r['type'] == "NS" && $perm_content_edit == "own_as_client")) {
+        }
+        elseif ($r['type'] == "SOA" && $perm_content_edit != "all" || ($r['type'] == "NS" && $perm_content_edit == "own_as_client")) {
         	echo "     <td class=\"n\">&nbsp;</td>\n";
-        }        
+        }
         else {
             echo "     <td class=\"n\">\n";
             echo "      <a href=\"edit_record.php?id=" . $r['id'] . "&amp;domain=" . $zone_id . "\">

@@ -46,7 +46,7 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
 
     $zone = get_zone_name_from_id($zid);    // TODO check for return
 
-    if (!(preg_match("/$zone$/i", $name))) {
+    if (!endsWith(strtolower($zone), strtolower($name))) {
         if (isset($name) && $name != "") {
             $name = $name . "." . $zone;
         } else {
@@ -380,40 +380,14 @@ function is_valid_hostname_fqdn(&$hostname, $wildcard) {
  */
 function is_valid_ipv4($ipv4, $answer = true) {
 
-// 20080424/RZ: The current code may be replaced by the following if()
-// statement, but it will raise the required PHP version to ">= 5.2.0".
-// Not sure if we want that now.
-//
-//	if(filter_var($ipv4, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === FALSE) {
-//		error(ERR_DNS_IPV4); return false;
-//	}
 
-    if (!preg_match("/^[0-9\.]{7,15}$/", $ipv4)) {
-        if ($answer) {
-            error(ERR_DNS_IPV4);
-        }
-        return false;
+    if(filter_var($ipv4, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === FALSE) {
+        if($answer) {
+		error(ERR_DNS_IPV4); 
+	}
+	return false;
     }
-
-    $quads = explode('.', $ipv4);
-    $numquads = count($quads);
-
-    if ($numquads != 4) {
-        if ($answer) {
-            error(ERR_DNS_IPV4);
-        }
-        return false;
-    }
-
-    for ($i = 0; $i < 4; $i++) {
-        if ($quads[$i] > 255) {
-            if ($answer) {
-                error(ERR_DNS_IPV4);
-            }
-            return false;
-        }
-    }
-
+    
     return true;
 }
 
@@ -427,49 +401,12 @@ function is_valid_ipv4($ipv4, $answer = true) {
  */
 function is_valid_ipv6($ipv6, $answer = true) {
 
-// 20080424/RZ: The current code may be replaced by the following if()
-// statement, but it will raise the required PHP version to ">= 5.2.0".
-// Not sure if we want that now.
-//
-//	if(filter_var($ipv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === FALSE) {
-//		error(ERR_DNS_IPV6); return false;
-//	}
 
-    if (!preg_match("/^[0-9a-f]{0,4}:([0-9a-f]{0,4}:){0,6}[0-9a-f]{0,4}$/i", $ipv6)) {
-        if ($answer) {
-            error(ERR_DNS_IPV6);
-        }
-        return false;
-    }
-
-    $quads = explode(':', $ipv6);
-    $numquads = count($quads);
-
-    if ($numquads > 8 || $numquads < 3) {
-        if ($answer) {
-            error(ERR_DNS_IPV6);
-        }
-        return false;
-    }
-
-    $emptyquads = 0;
-    for ($i = 1; $i < $numquads - 1; $i++) {
-        if ($quads[$i] == "")
-            $emptyquads++;
-    }
-
-    if ($emptyquads > 1) {
-        if ($answer) {
-            error(ERR_DNS_IPV6);
-        }
-        return false;
-    }
-
-    if ($emptyquads == 0 && $numquads != 8) {
-        if ($answer) {
-            error(ERR_DNS_IPV6);
-        }
-        return false;
+    if(filter_var($ipv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === FALSE) {
+	if($answer) {
+		error(ERR_DNS_IPV6);
+	}       
+	return false;
     }
 
     return true;
