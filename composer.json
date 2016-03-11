@@ -1,0 +1,21 @@
+{
+  "description": "A web-based control panel for PowerDNS.",
+  "name": "poweradmin/poweradmin",
+  "type": "project",
+  "homepage": "http://www.poweradmin.org",
+  "license": "GPL-3.0",
+  "support": {
+    "issues": "https://github.com/poweradmin/poweradmin/issues",
+    "wiki": "https://github.com/poweradmin/poweradmin/wiki",
+    "irc": "irc://irc.oftc.net/poweradmin",
+    "source": "https://github.com/poweradmin/poweradmin"
+  },
+  "require": {
+    "php": ">=5.5.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Poweradmin\\": "vendor/poweradmin/"
+    }
+  }
+}
