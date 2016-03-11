@@ -7,6 +7,7 @@ require_once dirname(__DIR__) . '/inc/i18n.inc.php';
 
 // Constants
 define('LOCAL_CONFIG_FILE', dirname(__DIR__) . '/inc/config.inc.php');
+define('SESSION_KEY_LENGTH', 46);
 
 if (isset($_POST['language']) && $_POST['language'] != 'en_EN') {
     $language = $_POST['language'];
@@ -354,7 +355,7 @@ switch ($step) {
         }
 
         $config .= "\n" .
-            "\$session_key\t\t= '" . Poweradmin\Session::getRandomKey() . "';\n" .
+            "\$session_key\t\t= '" . Poweradmin\Password::salt(SESSION_KEY_LENGTH) . "';\n" .
             "\n" .
             "\$iface_lang\t\t= '" . $_POST['language'] . "';\n" .
             "\n" .

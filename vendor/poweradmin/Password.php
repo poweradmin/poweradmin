@@ -40,7 +40,7 @@ class Password {
      *
      * @return string salt string
      */
-    public static function generate_salt($len = 5) {
+    public static function salt($len = 5) {
         $valid_characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890@#$%^*()_-!';
         $valid_len = strlen($valid_characters) - 1;
         $salt = '';
@@ -88,7 +88,7 @@ class Password {
      * @return string salted password
      */
     private static function gen_mix_salt($pass) {
-        $salt = self::generate_salt();
+        $salt = self::salt();
         return self::mix_salt($salt, $pass);
     }
 
