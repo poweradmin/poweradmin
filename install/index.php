@@ -138,6 +138,16 @@ switch ($step) {
                 . "<span id=\"db_path_title\" style=\"display: none;\">" . _('The path and filename to the PowerDNS SQLite database.') . "</span></td>\n";
         echo " </tr>\n";
         echo "  <tr>\n";
+        echo "   <td>" . _('DB charset') . "</td>\n";
+        echo "   <td><input type=\"text\" name=\"charset\" value=\"\"></td>\n";
+        echo "   <td>" . _('The charset (encoding) which will be used for new tables. Leave it empty then default database charset will be used') . "</td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "   <td>" . _('DB collation') . "</td>\n";
+        echo "   <td><input type=\"text\" name=\"collation\" value=\"\"></td>\n";
+        echo "   <td>" . _('Set of rules for comparing characters in database. Leave it empty then default database collation will be used') . "</td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
         echo "   <td>" . _('Poweradmin administrator password') . "</td>\n";
         echo "   <td><input type=\"password\" name=\"pa_pass\" value=\"\" autocomplete=\"off\"></td>\n";
         echo "   <td>" . _('The password of the Poweradmin administrator. This administrator has full rights to Poweradmin using the web interface.') . "</td>\n";
@@ -159,6 +169,8 @@ switch ($step) {
         $db_host = $_POST['host'];
         $db_port = $_POST['dbport'];
         $db_name = $_POST['name'];
+        $db_charset = $_POST['charset'];
+        $db_collation = $_POST['collation'];
         $db_type = $_POST['type'];
         if ($db_type == 'sqlite') {
             $db_file = $db_name;
@@ -170,11 +182,24 @@ switch ($step) {
         $db->loadModule('Extended');
         include_once("database-structure.inc.php");
         $current_tables = $db->listTables();
+
         foreach ($def_tables as $table) {
-            if (in_array($table['table_name'], $current_tables))
+            if (in_array($table['table_name'], $current_tables)) {
                 $db->dropTable($table['table_name']);
-            $db->createTable($table['table_name'], $table['fields'], $table['options']);
+            }
+
+            $options = $table['options'];
+
+            if ($db_charset) {
+                $options['charset'] = $db_charset;
+            }
+
+            if ($db_collation) {
+                $options['collation'] = $db_collation;
+            }
+            $db->createTable($table['table_name'], $table['fields'], $options);
         }
+
         $fill_perm_items = $db->prepare('INSERT INTO perm_items VALUES (?, ?, ?)');
         $db->extended->executeMultiple($fill_perm_items, $def_permissions);
         if (method_exists($fill_perm_items, 'free')) {
@@ -227,6 +252,7 @@ switch ($step) {
         echo "<input type=\"hidden\" name=\"db_port\" value=\"" . $db_port . "\">";
         echo "<input type=\"hidden\" name=\"db_name\" value=\"" . $db_name . "\">";
         echo "<input type=\"hidden\" name=\"db_type\" value=\"" . $db_type . "\">";
+        echo "<input type=\"hidden\" name=\"db_charset\" value=\"" . $db_charset . "\">";
         echo "<input type=\"hidden\" name=\"pa_pass\" value=\"" . $pa_pass . "\">";
         echo "<input type=\"hidden\" name=\"step\" value=\"" . $step . "\">";
         echo "<input type=\"hidden\" name=\"language\" value=\"" . $language . "\">";
@@ -242,6 +268,7 @@ switch ($step) {
         $db_port = $_POST['db_port'];
         $db_name = $_POST['db_name'];
         $db_type = $_POST['db_type'];
+        $db_charset = $_POST['db_charset'];
         if ($db_type == 'sqlite') {
             $db_file = $db_name;
         } else {
@@ -297,6 +324,7 @@ switch ($step) {
         echo "<input type=\"hidden\" name=\"db_type\" value=\"" . $db_type . "\">";
         echo "<input type=\"hidden\" name=\"db_user\" value=\"" . $db_user . "\">";
         echo "<input type=\"hidden\" name=\"db_pass\" value=\"" . $db_pass . "\">";
+        echo "<input type=\"hidden\" name=\"db_charset\" value=\"" . $db_charset . "\">";
         if ($db_type != 'sqlite') {
             echo "<input type=\"hidden\" name=\"pa_db_user\" value=\"" . $pa_db_user . "\">";
             echo "<input type=\"hidden\" name=\"pa_db_pass\" value=\"" . $pa_db_pass . "\">";
@@ -328,6 +356,7 @@ switch ($step) {
                 "\$db_name\t\t= '" . $_POST['db_name'] . "';\n" .
                 (($db_type == 'mysql' && $db_port != 3306) || ($db_type == 'pgsql' && $db_port != 5432) ? "\$db_port\t\t= '" . $db_port . "';\n" : '')) .
                 "\$db_type\t\t= '" . $_POST['db_type'] . "';\n" .
+                "\$db_charset\t\t= '" . $_POST['db_charset'] . "';\n" .
                 "\n" .
                 "\$session_key\t\t= '" . get_random_key() . "';\n" .
                 "\n" .

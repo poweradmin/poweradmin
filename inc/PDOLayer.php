@@ -227,12 +227,12 @@ class PDOLayer extends PDOCommon {
                 $query .= ' ENGINE=' . $options['type'];
             }
 
-            if (isset($options['default_charset'])) {
-                $query .= ' DEFAULT CHARSET=' . $options['default_charset'];
+            if (isset($options['charset'])) {
+                $query .= ' DEFAULT CHARSET=' . $options['charset'];
             }
 
-            if (isset($options['collate'])) {
-                $query .= ' COLLATE=' . $options['collate'];
+            if (isset($options['collation'])) {
+                $query .= ' COLLATE=' . $options['collation'];
             }
         }
 
