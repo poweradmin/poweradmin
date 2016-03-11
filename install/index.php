@@ -1,27 +1,34 @@
 <?php
 
-require_once('../inc/error.inc.php');
-require_once('../inc/i18n.inc.php');
-require_once('../inc/password.inc.php');
+// Dependencies
+require_once dirname(__DIR__) . '/vendor/autoload.php';
+require_once dirname(__DIR__) . '/inc/error.inc.php';
+require_once dirname(__DIR__) . '/inc/i18n.inc.php';
+require_once dirname(__DIR__) . '/inc/password.inc.php';
+
+// Constants
+define('LOCAL_CONFIG_FILE', dirname(__DIR__) . '/inc/config.inc.php');
 
 if (isset($_POST['language'])) {
     $language = $_POST['language'];
+
+    $locale = setlocale(LC_ALL, $language, $language . '.UTF-8');
+    if ($locale == false) {
+        error(ERR_LOCALE_FAILURE);
+    }
+
+    $gettext_domain = 'messages';
+    if (!function_exists('bindtextdomain')) {
+        die(error('You have to install PHP gettext extension!'));
+    }
+    bindtextdomain($gettext_domain, "./../locale");
+    textdomain($gettext_domain);
+    @putenv('LANG=' . $language);
+    @putenv('LANGUAGE=' . $language);
+
 } else {
-    $language = "en_EN";
+    $language = 'en_EN';
 }
-
-# FIXME: setlocale can fail if locale package is not installed on the system for that language
-setlocale(LC_ALL, $language, $language . '.UTF-8');
-$gettext_domain = 'messages';
-if (!function_exists('bindtextdomain')) {
-    die(error('You have to install PHP gettext extension!'));
-}
-bindtextdomain($gettext_domain, "./../locale");
-textdomain($gettext_domain);
-@putenv('LANG=' . $language);
-@putenv('LANGUAGE=' . $language);
-
-$local_config_file = "../inc/config.inc.php";
 
 function get_random_key() {
     $key = '';
@@ -296,10 +303,10 @@ switch ($step) {
             }
 
             echo _('In MySQL you should now perform the following command:') . "</p>";
-            echo "<p><tt>GRANT SELECT, INSERT, UPDATE, DELETE<BR>ON " . $db_name . ".*<br>TO '" . $pa_db_user . "'@'" . $pa_db_host . "'<br>IDENTIFIED BY '" . $pa_db_pass . "';</tt></p>";
+            echo "<p><code>GRANT SELECT, INSERT, UPDATE, DELETE<BR>ON " . $db_name . ".*<br>TO '" . $pa_db_user . "'@'" . $pa_db_host . "'<br>IDENTIFIED BY '" . $pa_db_pass . "';</code></p>";
         } elseif ($db_type == 'pgsql') {
             echo _('On PgSQL you would use:') . "</p>";
-            echo "<p><tt>$ createuser -E -P " . $pa_db_user . "<br>" .
+            echo "<p><code>$ createuser -E -P " . $pa_db_user . "<br>" .
             "Enter password for new role: " . $pa_db_pass . "<br>" .
             "Enter it again: " . $pa_db_pass . "<br>" .
             "Shall the new role be a superuser? (y/n) n<br>" .
@@ -314,7 +321,7 @@ switch ($step) {
             foreach ($grantSequences as $sequenceName) {
                 echo "GRANT USAGE, SELECT ON SEQUENCE " . $sequenceName . " TO " . $pa_db_user . ";<br />";
             }
-            echo "</tt></p>\n";
+            echo "</code></p>\n";
         }
         echo "<p>" . _('After you have added the new user, proceed with this installation procedure.') . "</p>\n";
         echo "<form method=\"post\">";
@@ -366,13 +373,14 @@ switch ($step) {
                 "\$dns_ns1\t\t= '" . $_POST['dns_ns1'] . "';\n" .
                 "\$dns_ns2\t\t= '" . $_POST['dns_ns2'] . "';\n";
 
-        if (is_writeable($local_config_file)) {
-            $h_config = fopen($local_config_file, "w");
+        if (is_writeable(LOCAL_CONFIG_FILE)) {
+            $h_config = fopen(LOCAL_CONFIG_FILE, "w");
             fwrite($h_config, $config);
             fclose($h_config);
-            echo "<p>" . _('The installer was able to write to the file "') . $local_config_file . _('". A basic configuration, based on the details you have given, has been created.') . "</p>\n";
+            echo "<p>" . _('The installer was able to write to the file "') . LOCAL_CONFIG_FILE . _('". A basic configuration, based on the details you have given, has been created.') . "</p>\n";
         } else {
-            echo "<p>" . _('The installer is unable to write to the file "') . $local_config_file . _('" (which is in itself good). The configuration is printed here. You should now create the file "') . $local_config_file . _('" in the Poweradmin root directory yourself. It should contain the following few lines:') . "</p>\n";
+            echo "<p>" . _('The installer is unable to write to the file "') . LOCAL_CONFIG_FILE . _('" (which is in itself good). The configuration is printed here. You should now create the file "')
+                . LOCAL_CONFIG_FILE . _('" in the Poweradmin root directory yourself. It should contain the following few lines:') . "</p>\n";
             echo "<pre>";
             echo htmlentities($config);
             echo "</pre>";
