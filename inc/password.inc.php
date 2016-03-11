@@ -36,7 +36,7 @@ namespace {
          *
          * @param string $pass password
          *
-         * @return salted password
+         * @return string salted password
          */
         function gen_mix_salt($pass) {
             $salt = generate_salt();
@@ -121,7 +121,12 @@ namespace Poweradmin\password {
         }
 
         /**
+         * Count the number of bytes in a string
          * @see https://github.com/ircmaxell/password_compat
+         *
+         * @param string $binary_string The input string
+         *
+         * @return int The number of bytes
          */
         function _strlen($binary_string) {
             if (function_exists('mb_strlen')) {
@@ -131,7 +136,13 @@ namespace Poweradmin\password {
         }
 
         /**
+         *
          * @see https://github.com/ircmaxell/password_compat
+         *
+         * @param string $str1 The first string
+         * @param string $str2 The second string
+         *
+         * @return bool true if they are equal, otherwise - false
          */
         function _strsafecmp($str1, $str2) {
             if (!is_string($str1) || !is_string($str2) || _strlen($str1) !== _strlen($str1)) {
