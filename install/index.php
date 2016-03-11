@@ -2,6 +2,7 @@
 
 require_once('../inc/error.inc.php');
 require_once('../inc/i18n.inc.php');
+require_once('../inc/password.inc.php');
 
 if (isset($_POST['language'])) {
     $language = $_POST['language'];
@@ -179,7 +180,10 @@ switch ($step) {
         if (method_exists($fill_perm_items, 'free')) {
             $fill_perm_items->free();
         }
-        foreach ($def_remaining_queries as $user_query) {
+        foreach ($def_remaining_queries as $n => $user_query) {
+            if ($n === 0) {
+                $user_query = sprintf($user_query, $db->quote(Poweradmin\password\hash($pa_pass), 'text'));
+            }
             $db->query($user_query);
         }
         echo _('done!') . "</p>";

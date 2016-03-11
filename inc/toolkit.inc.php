@@ -334,7 +334,7 @@ if ($dns_fancy) {
  * *********** */
 $db = dbConnect();
 require_once("plugin.inc.php");
-
+require_once("password.inc.php");
 require_once("i18n.inc.php");
 require_once("auth.inc.php");
 require_once("users.inc.php");
@@ -655,57 +655,6 @@ function debug_print($var) {
         echo $var;
     }
     echo "</pre>\n";
-}
-
-
-/** Generate random salt for encryption
- *
- * @param int $len salt length (default=5)
- *
- * @return string salt string
- */
-function generate_salt($len = 5) {
-    $valid_characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890@#$%^*()_-!';
-    $valid_len = strlen($valid_characters) - 1;
-    $salt = "";
-
-    for ($i = 0; $i < $len; $i++) {
-        $salt .= $valid_characters[rand(0, $valid_len)];
-    }
-
-    return $salt;
-}
-
-/** Extract salt from password
- *
- * @param string $password salted password
- *
- * @return string salt
- */
-function extract_salt($password) {
-    return substr(strchr($password, ':'), 1);
-}
-
-/** Generate salted password
- *
- * @param string $salt salt
- * @param string $pass password
- *
- * @return string salted password
- */
-function mix_salt($salt, $pass) {
-    return md5($salt . $pass) . ':' . $salt;
-}
-
-/** Generate random salt and salted password
- *
- * @param string $pass password
- *
- * @return salted password
- */
-function gen_mix_salt($pass) {
-    $salt = generate_salt();
-    return mix_salt($salt, $pass);
 }
 
 function do_log($syslog_message, $priority) {
