@@ -3,7 +3,7 @@
 $def_tables = array(
     array(
         'table_name' => 'perm_items',
-        'options' => array('type' => 'innodb'),
+        'options' => array('type' => 'innodb', 'default_charset' => 'utf8', 'collate' => 'utf8_unicode_ci'),
         'fields' => array(
             'id' => array(
                 'type' => 'integer',
@@ -38,7 +38,7 @@ $def_tables = array(
     ),
     array(
         'table_name' => 'perm_templ',
-        'options' => array('type' => 'innodb'),
+        'options' => array('type' => 'innodb', 'default_charset' => 'utf8', 'collate' => 'utf8_unicode_ci'),
         'fields' => array(
             'id' => array(
                 'type' => 'integer',
@@ -74,7 +74,7 @@ $def_tables = array(
     ),
     array(
         'table_name' => 'perm_templ_items',
-        'options' => array('type' => 'innodb'),
+        'options' => array('type' => 'innodb', 'default_charset' => 'utf8', 'collate' => 'utf8_unicode_ci'),
         'fields' => array(
             'id' => array(
                 'notnull' => 1,
@@ -110,7 +110,7 @@ $def_tables = array(
     ),
     array(
         'table_name' => 'users',
-        'options' => array('type' => 'innodb'),
+        'options' => array('type' => 'innodb', 'default_charset' => 'utf8', 'collate' => 'utf8_unicode_ci'),
         'fields' => array(
             'id' => array
                 (
@@ -215,7 +215,7 @@ $def_tables = array(
     ),
     array(
         'table_name' => 'zones',
-        'options' => array('type' => 'innodb'),
+        'options' => array('type' => 'innodb', 'default_charset' => 'utf8', 'collate' => 'utf8_unicode_ci'),
         'fields' => array(
             'id' => array
                 (
@@ -276,7 +276,7 @@ $def_tables = array(
     ),
     array(
         'table_name' => 'zone_templ',
-        'options' => array('type' => 'innodb'),
+        'options' => array('type' => 'innodb', 'default_charset' => 'utf8', 'collate' => 'utf8_unicode_ci'),
         'fields' => array(
             'id' => array
                 (
@@ -327,7 +327,7 @@ $def_tables = array(
     ),
     array(
         'table_name' => 'zone_templ_records',
-        'options' => array('type' => 'innodb'),
+        'options' => array('type' => 'innodb', 'default_charset' => 'utf8', 'collate' => 'utf8_unicode_ci'),
         'fields' => array(
             'id' => array
                 (
@@ -411,7 +411,7 @@ $def_tables = array(
     ),
     array(
         'table_name' => 'records_zone_templ',
-        'options' => array('type' => 'innodb'),
+        'options' => array('type' => 'innodb', 'default_charset' => 'utf8', 'collate' => 'utf8_unicode_ci'),
         'fields' => array(
             'domain_id' => array
                 (
@@ -450,7 +450,7 @@ $def_tables = array(
     ),
     array(
         'table_name' => 'migrations',
-        'options' => array('type' => 'innodb'),
+        'options' => array('type' => 'innodb', 'default_charset' => 'utf8', 'collate' => 'utf8_unicode_ci'),
         'fields' => array(
             'domain_id' => array
                 (

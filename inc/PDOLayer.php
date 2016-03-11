@@ -40,7 +40,7 @@ class PEAR {
      * Overrided isError method
      */
     public static function isError() {
-        
+
     }
 
 }
@@ -137,7 +137,7 @@ class PDOLayer extends PDOCommon {
      * Dummy method
      */
     public function disconnect() {
-        
+
     }
 
     /**
@@ -222,9 +222,20 @@ class PDOLayer extends PDOCommon {
 
         $query = "CREATE TABLE $name (" . implode(', ', $query_fields) . ')';
 
-        if ($db_type == 'mysql' && isset($options['type'])) {
-            $query .= ' ENGINE=' . $options['type'];
+        if ($db_type == 'mysql') {
+            if (isset($options['type'])) {
+                $query .= ' ENGINE=' . $options['type'];
+            }
+
+            if (isset($options['default_charset'])) {
+                $query .= ' DEFAULT CHARSET=' . $options['default_charset'];
+            }
+
+            if (isset($options['collate'])) {
+                $query .= ' COLLATE=' . $options['collate'];
+            }
         }
+
         $this->exec($query);
     }
 
