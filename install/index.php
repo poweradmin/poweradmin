@@ -8,7 +8,7 @@ require_once dirname(__DIR__) . '/inc/i18n.inc.php';
 // Constants
 define('LOCAL_CONFIG_FILE', dirname(__DIR__) . '/inc/config.inc.php');
 
-if (isset($_POST['language'])) {
+if (isset($_POST['language']) && $_POST['language'] != 'en_EN') {
     $language = $_POST['language'];
 
     $locale = setlocale(LC_ALL, $language, $language . '.UTF-8');
@@ -132,12 +132,12 @@ switch ($step) {
         echo "  <tr>\n";
         echo "   <td>" . _('DB charset') . "</td>\n";
         echo "   <td><input type=\"text\" name=\"charset\" value=\"\"></td>\n";
-        echo "   <td>" . _('The charset (encoding) which will be used for new tables. Leave it empty then default database charset will be used') . "</td>\n";
+        echo "   <td>" . _('The charset (encoding) which will be used for new tables. Leave it empty then default database charset will be used.') . "</td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "   <td>" . _('DB collation') . "</td>\n";
         echo "   <td><input type=\"text\" name=\"collation\" value=\"\"></td>\n";
-        echo "   <td>" . _('Set of rules for comparing characters in database. Leave it empty then default database collation will be used') . "</td>\n";
+        echo "   <td>" . _('Set of rules for comparing characters in database. Leave it empty then default database collation will be used.') . "</td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "   <td>" . _('Poweradmin administrator password') . "</td>\n";
@@ -199,7 +199,7 @@ switch ($step) {
         }
         foreach ($def_remaining_queries as $query_nr => $user_query) {
             if ($query_nr === 0) {
-                $user_query = sprintf($user_query, $db->quote(Poweradmin\Password\hash($pa_pass), 'text'));
+                $user_query = sprintf($user_query, $db->quote(Poweradmin\Password::hash($pa_pass), 'text'));
             }
             $db->query($user_query);
         }
@@ -341,22 +341,26 @@ switch ($step) {
         $db_port = $_POST['db_port'];
 
         $config = "<?php\n\n" .
-                ( $db_type == 'sqlite' ? "\$db_file\t\t= '" . $_POST['db_name'] . "';\n" :
-                "\$db_host\t\t= '" . $_POST['db_host'] . "';\n" .
-                "\$db_user\t\t= '" . $_POST['pa_db_user'] . "';\n" .
-                "\$db_pass\t\t= '" . $_POST['pa_db_pass'] . "';\n" .
-                "\$db_name\t\t= '" . $_POST['db_name'] . "';\n" .
-                (($db_type == 'mysql' && $db_port != 3306) || ($db_type == 'pgsql' && $db_port != 5432) ? "\$db_port\t\t= '" . $db_port . "';\n" : '')) .
-                "\$db_type\t\t= '" . $_POST['db_type'] . "';\n" .
-                "\$db_charset\t\t= '" . $_POST['db_charset'] . "';\n" .
-                "\n" .
-                "\$session_key\t\t= '" . Poweradmin\Session::getRandomKey() . "';\n" .
-                "\n" .
-                "\$iface_lang\t\t= '" . $_POST['language'] . "';\n" .
-                "\n" .
-                "\$dns_hostmaster\t\t= '" . $_POST['dns_hostmaster'] . "';\n" .
-                "\$dns_ns1\t\t= '" . $_POST['dns_ns1'] . "';\n" .
-                "\$dns_ns2\t\t= '" . $_POST['dns_ns2'] . "';\n";
+            ( $db_type == 'sqlite' ? "\$db_file\t\t= '" . $_POST['db_name'] . "';\n" :
+            "\$db_host\t\t= '" . $_POST['db_host'] . "';\n" .
+            "\$db_user\t\t= '" . $_POST['pa_db_user'] . "';\n" .
+            "\$db_pass\t\t= '" . $_POST['pa_db_pass'] . "';\n" .
+            "\$db_name\t\t= '" . $_POST['db_name'] . "';\n" .
+            (($db_type == 'mysql' && $db_port != 3306) || ($db_type == 'pgsql' && $db_port != 5432) ? "\$db_port\t\t= '" . $db_port . "';\n" : '')) .
+            "\$db_type\t\t= '" . $_POST['db_type'] . "';\n";
+
+        if ($_POST['db_charset']) {
+            $config .= "\$db_charset\t\t= '" . $_POST['db_charset'] . "';\n";
+        }
+
+        $config .= "\n" .
+            "\$session_key\t\t= '" . Poweradmin\Session::getRandomKey() . "';\n" .
+            "\n" .
+            "\$iface_lang\t\t= '" . $_POST['language'] . "';\n" .
+            "\n" .
+            "\$dns_hostmaster\t\t= '" . $_POST['dns_hostmaster'] . "';\n" .
+            "\$dns_ns1\t\t= '" . $_POST['dns_ns1'] . "';\n" .
+            "\$dns_ns2\t\t= '" . $_POST['dns_ns2'] . "';\n";
 
         if (is_writeable(LOCAL_CONFIG_FILE)) {
             $h_config = fopen(LOCAL_CONFIG_FILE, "w");

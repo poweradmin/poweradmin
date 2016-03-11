@@ -184,7 +184,7 @@ function SQLAuthenticate() {
 
         if ($rowObj) {
 
-            if (Poweradmin\Password\verify($session_pass, $rowObj['password'])) {
+            if (Poweradmin\Password::verify($session_pass, $rowObj['password'])) {
 
                 $_SESSION["userid"] = $rowObj["id"];
                 $_SESSION["name"] = $rowObj["fullname"];
