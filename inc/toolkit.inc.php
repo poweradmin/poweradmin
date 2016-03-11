@@ -333,15 +333,17 @@ if ($dns_fancy) {
  * Includes  *
  * *********** */
 $db = dbConnect();
-require_once("plugin.inc.php");
-require_once("password.inc.php");
-require_once("i18n.inc.php");
-require_once("auth.inc.php");
-require_once("users.inc.php");
-require_once("dns.inc.php");
-require_once("record.inc.php");
-require_once("dnssec.inc.php");
-require_once("templates.inc.php");
+require_once "plugin.inc.php";
+require_once "i18n.inc.php";
+require_once "auth.inc.php";
+require_once "users.inc.php";
+require_once "dns.inc.php";
+require_once "record.inc.php";
+require_once "dnssec.inc.php";
+require_once "templates.inc.php";
+
+# FIXME - use class autoloader
+require_once(dirname(__DIR__) . '/vendor/poweradmin/Password.php');
 
 //do_hook('hook_post_includes');
 do_hook('authenticate');

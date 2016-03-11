@@ -88,9 +88,9 @@ namespace {
     }
 }
 
-namespace Poweradmin\password {
+namespace Poweradmin\Password {
 
-    if (!function_exists('Poweradmin\\password\\hash')) {
+    if (!function_exists('Poweradmin\\Password\\hash')) {
 
         function hash($password) {
             global $password_encryption, $password_encryption_cost;

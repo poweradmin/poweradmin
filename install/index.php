@@ -4,7 +4,6 @@
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 require_once dirname(__DIR__) . '/inc/error.inc.php';
 require_once dirname(__DIR__) . '/inc/i18n.inc.php';
-require_once dirname(__DIR__) . '/inc/password.inc.php';
 
 // Constants
 define('LOCAL_CONFIG_FILE', dirname(__DIR__) . '/inc/config.inc.php');
@@ -200,7 +199,7 @@ switch ($step) {
         }
         foreach ($def_remaining_queries as $query_nr => $user_query) {
             if ($query_nr === 0) {
-                $user_query = sprintf($user_query, $db->quote(Poweradmin\password\hash($pa_pass), 'text'));
+                $user_query = sprintf($user_query, $db->quote(Poweradmin\Password\hash($pa_pass), 'text'));
             }
             $db->query($user_query);
         }

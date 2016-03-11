@@ -351,7 +351,7 @@ email = " . $db->quote($email, 'text') . ",";
 				active = " . $db->quote($active, 'integer');
 
         if ($password != "") {
-            $query .= ", password = " . $db->quote(Poweradmin\password\hash($password), 'text');
+            $query .= ", password = " . $db->quote(Poweradmin\Password\hash($password), 'text');
         }
 
         $query .= " WHERE id = " . $db->quote($id, 'integer');
@@ -395,8 +395,8 @@ function change_user_pass_local($details) {
 
     $rinfo = $response->fetchRow();
 
-    if (Poweradmin\password\verify($details['currentpass'], $rinfo['password'])) {
-        $query = "UPDATE users SET password = " . $db->quote(Poweradmin\password\hash($details['newpass']), 'text') . " WHERE id = " . $db->quote($rinfo ['id'], 'integer');
+    if (Poweradmin\Password\verify($details['currentpass'], $rinfo['password'])) {
+        $query = "UPDATE users SET password = " . $db->quote(Poweradmin\Password\hash($details['newpass']), 'text') . " WHERE id = " . $db->quote($rinfo ['id'], 'integer');
         $response = $db->query($query);
         if (PEAR::isError($response)) {
             error($response->getMessage());
@@ -818,7 +818,7 @@ function update_user_details_local($details) {
         }
 
         if (isset($details ['password']) && $details ['password'] != "") {
-            $query .= ", password = " . $db->quote(Poweradmin\password\hash($details['password'], 'text'));
+            $query .= ", password = " . $db->quote(Poweradmin\Password\hash($details['password'], 'text'));
         }
 
         $query .= " WHERE id = " . $db->quote($details ['uid'], 'integer');
@@ -865,7 +865,7 @@ function add_new_user_local($details) {
         $query .= ' perm_templ,';
     }
 
-    $password_hash = Poweradmin\password\hash($details['password']);
+    $password_hash = Poweradmin\Password\hash($details['password']);
 
     $query .= " active) VALUES (" . $db->quote($details ['username'], 'text') . ", " . $db->quote($password_hash, 'text') . ", " . $db->quote($details ['fullname'], 'text') . ", " . $db->quote($details ['email'], 'text') . ", " . $db->quote($details ['descr'], 'text') . ", ";
     if (do_hook('verify_permission', 'user_edit_templ_perm')) {
