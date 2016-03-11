@@ -49,23 +49,14 @@ if (!isset($_POST['step']) || !is_numeric($_POST['step'])) {
 echo "  <h1>Poweradmin</h1>\n";
 echo "  <h2>" . _('Installation step') . " " . $step . "</h2>\n";
 
+$loader = new Twig_Loader_Filesystem('templates');
+$twig = new Twig_Environment($loader);
+
 switch ($step) {
 
     case 1:
         $step++;
-
-        echo " <form method=\"post\" action=\"\">\n";
-        echo "  <input type=\"radio\" name=\"language\" value=\"en_EN\" checked> I prefer to proceed in english.<br>\n";
-        echo "  <input type=\"radio\" name=\"language\" value=\"nl_NL\"> Ik ga graag verder in het Nederlands.<br>\n";
-        echo "	<input type=\"radio\" name=\"language\" value=\"de_DE\"> Ich mache in Deutsch weiter.<br>\n";
-        echo "  <input type=\"radio\" name=\"language\" value=\"ja_JP\"> 日本語で続ける<br>\n";
-        echo "  <input type=\"radio\" name=\"language\" value=\"pl_PL\"> Chcę kontynuować po polsku.<br>\n";
-        echo "  <input type=\"radio\" name=\"language\" value=\"fr_FR\"> Je préfère continuer en français.<br>\n";
-        echo "  <input type=\"radio\" name=\"language\" value=\"nb_NO\"> Jeg ønsker å forsette på norsk.<br>\n";
-        echo "  <input type=\"hidden\" name=\"step\" value=\"" . $step . "\">";
-        echo "  <br>\n";
-        echo "  <input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $step . "\">";
-        echo " </form>\n";
+        echo $twig->render('step1.html', array('step' => $step, 'next_step_button' => _('Go to step')));
         break;
 
     case 2:
