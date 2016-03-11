@@ -40,7 +40,7 @@ class Password {
      *
      * @return string salt string
      */
-    function generate_salt($len = 5) {
+    public static function generate_salt($len = 5) {
         $valid_characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890@#$%^*()_-!';
         $valid_len = strlen($valid_characters) - 1;
         $salt = '';
