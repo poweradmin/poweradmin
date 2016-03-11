@@ -599,20 +599,6 @@ function clean_page($arg = '') {
     }
 }
 
-/** Print active status
- *
- * @param int $res status, 0 for inactive, 1 active
- *
- * @return string html containing status
- */
-function get_status($res) {
-    if ($res == '0') {
-        return "<FONT CLASS=\"inactive\">" . _('Inactive') . "</FONT>";
-    } elseif ($res == '1') {
-        return "<FONT CLASS=\"active\">" . _('Active') . "</FONT>";
-    }
-}
-
 /** Validate email address string
  *
  * @param string $address email address string
