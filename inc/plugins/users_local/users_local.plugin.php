@@ -55,7 +55,7 @@ function verify_permission_local($arg) {
         LEFT JOIN users ON perm_templ.id = users.perm_templ
         WHERE users.id = ?");
     $query->execute(array($userid));
-    $cache = $query->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_GROUP, 'permission');
+    $cache = $query->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
 
     return array_key_exists('user_is_ueberuser', $cache) || array_key_exists($permission, $cache);
 }
