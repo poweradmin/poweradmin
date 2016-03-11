@@ -30,20 +30,6 @@ if (isset($_POST['language'])) {
     $language = 'en_EN';
 }
 
-function get_random_key() {
-    $key = '';
-
-    $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~!@#$%^&*()_+=-][{}';
-    $length = 46;
-
-    $size = strlen($chars);
-    for ($i = 0; $i < $length; $i++) {
-        $key .= $chars[mt_rand(0, $size - 1)];
-    }
-
-    return $key;
-}
-
 echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n";
 echo "<html>\n";
 echo " <head>\n";
@@ -365,7 +351,7 @@ switch ($step) {
                 "\$db_type\t\t= '" . $_POST['db_type'] . "';\n" .
                 "\$db_charset\t\t= '" . $_POST['db_charset'] . "';\n" .
                 "\n" .
-                "\$session_key\t\t= '" . get_random_key() . "';\n" .
+                "\$session_key\t\t= '" . Poweradmin\Session::getRandomKey() . "';\n" .
                 "\n" .
                 "\$iface_lang\t\t= '" . $_POST['language'] . "';\n" .
                 "\n" .
