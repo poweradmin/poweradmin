@@ -10,7 +10,7 @@ if (isset($_POST['language'])) {
     $language = "en_EN";
 }
 
-# FIXME: setlocale can fail if locale package is not installed ion the systme for that language
+# FIXME: setlocale can fail if locale package is not installed on the system for that language
 setlocale(LC_ALL, $language, $language . '.UTF-8');
 $gettext_domain = 'messages';
 if (!function_exists('bindtextdomain')) {
@@ -180,8 +180,8 @@ switch ($step) {
         if (method_exists($fill_perm_items, 'free')) {
             $fill_perm_items->free();
         }
-        foreach ($def_remaining_queries as $n => $user_query) {
-            if ($n === 0) {
+        foreach ($def_remaining_queries as $query_nr => $user_query) {
+            if ($query_nr === 0) {
                 $user_query = sprintf($user_query, $db->quote(Poweradmin\password\hash($pa_pass), 'text'));
             }
             $db->query($user_query);
