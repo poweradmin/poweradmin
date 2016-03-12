@@ -55,26 +55,18 @@ $twig = new Twig_Environment($loader);
 switch ($step) {
 
     case 1:
-        $step++;
-        echo $twig->render('step1.html', array('step' => $step, 'next_step_button' => _('Go to step')));
+        echo $twig->render('step1.html', array('next_step' => ++$step, 'next_step_button' => _('Go to step')));
         break;
 
     case 2:
-        $step++;
-
-        echo "<p>" . _('This installer expects you to have a PowerDNS database accessable from this server. This installer also expects you to have never ran Poweradmin before, or that you want to overwrite the Poweradmin part of the database. If you have had Poweradmin running before, any data in the following tables will be destroyed: perm_items, perm_templ, perm_templ_items, users and zones. This installer will, of course, not touch the data in the PowerDNS tables of the database. However, it is recommended that you create a backup of your database before proceeding.') . "</p>\n";
-
-        echo "<p>" . _('The alternative for this installer is a manual installation. Refer to the poweradmin.org website if you want to go down that road.') . "</p>\n";
-
-        echo "<p>" . _('Finally, if you see any errors during the installation process, a problem report would be appreciated. You can report problems (and ask for help) on the <a href="http://groups.google.com/group/poweradmin" target=\"blank\">poweradmin</a> mailinglist.') . "</p>";
-
-        echo "<p>" . _('Do you want to proceed now?') . "</p>\n";
-
-        echo "<form method=\"post\">";
-        echo "<input type=\"hidden\" name=\"language\" value=\"" . $language . "\">";
-        echo "<input type=\"hidden\" name=\"step\" value=\"" . $step . "\">";
-        echo "<input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $step . "\">";
-        echo "</form>";
+        echo $twig->render('step2.html', array(
+            'message1' => _('This installer expects you to have a PowerDNS database accessable from this server. This installer also expects you to have never ran Poweradmin before, or that you want to overwrite the Poweradmin part of the database. If you have had Poweradmin running before, any data in the following tables will be destroyed: perm_items, perm_templ, perm_templ_items, users and zones. This installer will, of course, not touch the data in the PowerDNS tables of the database. However, it is recommended that you create a backup of your database before proceeding.'),
+            'message2' => _('The alternative for this installer is a manual installation. Refer to the poweradmin.org website if you want to go down that road.'),
+            'message3' => _('Finally, if you see any errors during the installation process, a problem report would be appreciated. You can report problems (and ask for help) on the <a href="http://groups.google.com/group/poweradmin" target="blank">poweradmin</a> mailinglist.'),
+            'message4' => _('Do you want to proceed now?'),
+            'next_step' => ++$step,
+            'language' => $_POST['language'],
+            'next_step_button' => _('Go to step')));
         break;
 
     case 3:
