@@ -367,11 +367,11 @@ switch ($step) {
         break;
 
     case 7:
-        $step++;
-        echo "<p>" . _('Now we have finished the configuration.') . "</p>";
-        echo "<p>" . _('If you want support for the URLs used by other dynamic DNS providers, run "cp install/htaccess.dist .htaccess" and enable mod_rewrite in Apache.') . "</p>";
-        echo "<p>" . _('You should (must!) remove the directory "install/" from the Poweradmin root directory. You will not be able to use Poweradmin if it exists. Do it now.') . "</p>";
-        echo "<p>" . _('After you have removed the directory, you can login to <a href="../index.php">Poweradmin</a>.')."</p>";
+        echo $twig->render('step7.html', array(
+            'message1' => _('Now we have finished the configuration.'),
+            'message2' => _('If you want support for the URLs used by other dynamic DNS providers, run "cp install/htaccess.dist .htaccess" and enable mod_rewrite in Apache.'),
+            'message3' => _('You should (must!) remove the directory "install/" from the Poweradmin root directory. You will not be able to use Poweradmin if it exists. Do it now.'),
+            'message4' => _('After you have removed the directory, you can login to <a href="../index.php">Poweradmin</a>.')));
         break;
 
     default:
@@ -379,6 +379,7 @@ switch ($step) {
 }
 
 include_once('../inc/version.inc.php');
+
 echo "<div class=\"footer\">";
 echo "<a href=\"http://www.poweradmin.org/\">a complete(r) <strong>poweradmin</strong> v$VERSION</a> - <a href=\"http://www.poweradmin.org/credits.html\">credits</a>";
 echo "</div></body></html>";
