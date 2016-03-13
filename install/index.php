@@ -82,7 +82,6 @@ switch ($current_step) {
         break;
 
     case 4:
-        $current_step++;
         echo "<p>" . _('Updating database...') . " ";
         include_once("../inc/config-me.inc.php");
         $db_user = $_POST['user'];
@@ -134,51 +133,18 @@ switch ($current_step) {
         }
         echo _('done!') . "</p>";
 
-        echo "<p>" . _('Now we will gather all details for the configuration itself.') . "</p>\n";
-        echo "<form method=\"post\">";
-        echo " <table>";
-        echo "  <tr>";
-        if ($db_type != 'sqlite') {
-            echo "   <td>" . _('Username') . "</td>\n";
-            echo "   <td><input type=\"text\" name=\"pa_db_user\" value=\"\"></td>\n";
-            echo "   <td>" . _('The username for Poweradmin. This new user will have limited rights only.') . "</td>\n";
-            echo "  </tr>\n";
-            echo "  <tr>\n";
-            echo "   <td>" . _('Password') . "</td>\n";
-            echo "   <td><input type=\"password\" name=\"pa_db_pass\" value=\"\" autocomplete=\"off\"></td>\n";
-            echo "   <td>" . _('The password for this username.') . "</td>\n";
-            echo "  </tr>\n";
-        }
-        echo "  <tr>\n";
-        echo "   <td>" . _('Hostmaster') . "</td>\n";
-        echo "   <td><input type=\"text\" name=\"dns_hostmaster\" value=\"\"></td>\n";
-        echo "   <td>" . _('When creating SOA records and no hostmaster is provided, this value here will be used. Should be in the form "hostmaster.example.net".') . "</td>\n";
-        echo "  </tr>\n";
-        echo "  <tr>\n";
-        echo "   <td>" . _('Primary nameserver') . "</td>\n";
-        echo "   <td><input type=\"text\" name=\"dns_ns1\" value=\"\"></td>\n";
-        echo "   <td>" . _('When creating new zones using the template, this value will be used as primary nameserver. Should be like "ns1.example.net".') . "</td>\n";
-        echo "  </tr>\n";
-        echo "  <tr>\n";
-        echo "   <td>" . _('Secondary nameserver') . "</td>\n";
-        ;
-        echo "   <td><input type=\"text\" name=\"dns_ns2\" value=\"\"></td>\n";
-        echo "   <td>" . _('When creating new zones using the template, this value will be used as secondary nameserver. Should be like "ns2.example.net".') . "</td>\n";
-        echo "  </tr>\n";
-        echo "</table>";
-        echo "<br>\n";
-        echo "<input type=\"hidden\" name=\"db_user\" value=\"" . $db_user . "\">";
-        echo "<input type=\"hidden\" name=\"db_pass\" value=\"" . $db_pass . "\">";
-        echo "<input type=\"hidden\" name=\"db_host\" value=\"" . $db_host . "\">";
-        echo "<input type=\"hidden\" name=\"db_port\" value=\"" . $db_port . "\">";
-        echo "<input type=\"hidden\" name=\"db_name\" value=\"" . $db_name . "\">";
-        echo "<input type=\"hidden\" name=\"db_type\" value=\"" . $db_type . "\">";
-        echo "<input type=\"hidden\" name=\"db_charset\" value=\"" . $db_charset . "\">";
-        echo "<input type=\"hidden\" name=\"pa_pass\" value=\"" . $pa_pass . "\">";
-        echo "<input type=\"hidden\" name=\"step\" value=\"" . $current_step . "\">";
-        echo "<input type=\"hidden\" name=\"language\" value=\"" . $language . "\">";
-        echo "<input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $current_step . "\">";
-        echo "</form>";
+        echo $twig->render('step4.html', array(
+            'next_step' => ++$current_step,
+            'language' => $_POST['language'],
+            'db_user' => $db_user,
+            'db_pass' => $db_pass,
+            'db_host' => $db_host,
+            'db_port' => $db_port,
+            'db_name' => $db_name,
+            'db_type' => $db_type,
+            'db_charset' => $db_charset,
+            'pa_pass' => $pa_pass
+        ));
         break;
 
     case 5:
