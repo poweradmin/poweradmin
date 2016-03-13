@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Poweradmin\\Password' => $vendorDir . '/poweradmin/Password.php',
+    'Poweradmin\\Version' => $vendorDir . '/poweradmin/Version.php',
     'Twig_Autoloader' => $vendorDir . '/twig/twig/lib/Twig/Autoloader.php',
     'Twig_BaseNodeVisitor' => $vendorDir . '/twig/twig/lib/Twig/BaseNodeVisitor.php',
     'Twig_CacheInterface' => $vendorDir . '/twig/twig/lib/Twig/CacheInterface.php',

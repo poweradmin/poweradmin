@@ -30,7 +30,7 @@ if (isset($_POST['language']) && $_POST['language'] != 'en_EN') {
     $language = 'en_EN';
 }
 
-$step = isset($_POST['step']) || is_numeric($_POST['step']) ? $_POST['step'] : 1;
+$step = isset($_POST['step']) && is_numeric($_POST['step']) ? $_POST['step'] : 1;
 
 $loader = new Twig_Loader_Filesystem('templates');
 $twig = new Twig_Environment($loader);
@@ -326,7 +326,6 @@ switch ($step) {
         break;
 }
 
-require_once '../inc/version.inc.php';
-echo $twig->render('footer.html', array('version' => $VERSION));
+echo $twig->render('footer.html', array('version' => Poweradmin\Version::VERSION));
 
 
