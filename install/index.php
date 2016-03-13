@@ -45,44 +45,11 @@ switch ($current_step) {
         break;
 
     case 2:
-        echo $twig->render('step2.html', array(
-            'message1' => _('This installer expects you to have a PowerDNS database accessable from this server. This installer also expects you to have never ran Poweradmin before, or that you want to overwrite the Poweradmin part of the database. If you have had Poweradmin running before, any data in the following tables will be destroyed: perm_items, perm_templ, perm_templ_items, users and zones. This installer will, of course, not touch the data in the PowerDNS tables of the database. However, it is recommended that you create a backup of your database before proceeding.'),
-            'message2' => _('The alternative for this installer is a manual installation. Refer to the poweradmin.org website if you want to go down that road.'),
-            'message3' => _('Finally, if you see any errors during the installation process, a problem report would be appreciated. You can report problems (and ask for help) on the <a href="http://groups.google.com/group/poweradmin" target="blank">poweradmin</a> mailinglist.'),
-            'message4' => _('Do you want to proceed now?'),
-            'language' => $_POST['language'],
-            'next_step' => ++$current_step,
-            'next_step_button' => _('Go to step')));
+        echo $twig->render('step2.html', array('next_step' => ++$current_step, 'language' => $_POST['language']));
         break;
 
     case 3:
-        echo $twig->render('step3.html', array(
-            'username' => _('Username'),
-            'password' => _('Password'),
-            'database_type' => _('Database type'),
-            'hostname' => _('Hostname'),
-            'db_port' => _('DB Port'),
-            'database' => _('Database'),
-            'db_title' => _('The name of the PowerDNS database.'),
-            'db_charset' => _('DB charset'),
-            'db_collation' => _('DB collation'),
-            'admin_password' => _('Poweradmin administrator password'),
-
-            'message1' => _('To prepare the database for using Poweradmin, the installer needs to modify the PowerDNS database. It will add a number of tables and it will fill these tables with some data. If the tables are already present, the installer will drop them first.'),
-            'message2' => _('To do all of this, the installer needs to access the database with an account which has sufficient rights. If you trust the installer, you may give it the username and password of the database user root. Otherwise, make sure the user has enough rights, before actually proceeding.'),
-            'message3' => _('The username to use to connect to the database, make sure the username has sufficient rights to perform administrative task to the PowerDNS database (the installer wants to drop, create and fill tables to the database).'),
-            'message4' => _('The password for this username.'),
-            'message5' => _('The type of the PowerDNS database.'),
-            'message6' => _('The hostname on which the PowerDNS database resides. Frequently, this will be "localhost".'),
-            'message7' => _('The port the database server is listening on.'),
-            'message8' => _('The path and filename to the PowerDNS SQLite database.'),
-            'message9' => _('The charset (encoding) which will be used for new tables. Leave it empty then default database charset will be used.'),
-            'message10' => _('Set of rules for comparing characters in database. Leave it empty then default database collation will be used.'),
-            'message11' => _('The password of the Poweradmin administrator. This administrator has full rights to Poweradmin using the web interface.'),
-
-            'language' => $_POST['language'],
-            'next_step' => ++$current_step,
-            'next_step_button' => _('Go to step')));
+        echo $twig->render('step3.html', array('next_step' => ++$current_step, 'language' => $_POST['language']));
         break;
 
     case 4:
@@ -316,11 +283,7 @@ switch ($current_step) {
         break;
 
     case 7:
-        echo $twig->render('step7.html', array(
-            'message1' => _('Now we have finished the configuration.'),
-            'message2' => _('If you want support for the URLs used by other dynamic DNS providers, run "cp install/htaccess.dist .htaccess" and enable mod_rewrite in Apache.'),
-            'message3' => _('You should (must!) remove the directory "install/" from the Poweradmin root directory. You will not be able to use Poweradmin if it exists. Do it now.'),
-            'message4' => _('After you have removed the directory, you can login to <a href="../index.php">Poweradmin</a>.')));
+        echo $twig->render('step7.html');
         break;
 
     default:
