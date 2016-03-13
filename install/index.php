@@ -9,6 +9,8 @@ require_once dirname(__DIR__) . '/inc/i18n.inc.php';
 define('LOCAL_CONFIG_FILE', dirname(__DIR__) . '/inc/config.inc.php');
 define('SESSION_KEY_LENGTH', 46);
 
+// Localize interface
+$language = 'en_EN';
 if (isset($_POST['language']) && $_POST['language'] != 'en_EN') {
     $language = $_POST['language'];
 
@@ -25,22 +27,21 @@ if (isset($_POST['language']) && $_POST['language'] != 'en_EN') {
     textdomain($gettext_domain);
     @putenv('LANG=' . $language);
     @putenv('LANGUAGE=' . $language);
-
-} else {
-    $language = 'en_EN';
 }
 
-$step = isset($_POST['step']) && is_numeric($_POST['step']) ? $_POST['step'] : 1;
-
+// Initialize Twig template engine
 $loader = new Twig_Loader_Filesystem('templates');
 $twig = new Twig_Environment($loader);
+$twig->addExtension(new Twig_Extensions_Extension_I18n());
 
-echo $twig->render('header.html', array('current_step' => $step, 'message1' => _('Installation step')));
+// Display header
+$current_step = isset($_POST['step']) && is_numeric($_POST['step']) ? $_POST['step'] : 1;
+echo $twig->render('header.html', array('current_step' => $current_step));
 
-switch ($step) {
+switch ($current_step) {
 
     case 1:
-        echo $twig->render('step1.html', array('next_step' => ++$step, 'next_step_button' => _('Go to step')));
+        echo $twig->render('step1.html', array('next_step' => ++$current_step));
         break;
 
     case 2:
@@ -50,7 +51,7 @@ switch ($step) {
             'message3' => _('Finally, if you see any errors during the installation process, a problem report would be appreciated. You can report problems (and ask for help) on the <a href="http://groups.google.com/group/poweradmin" target="blank">poweradmin</a> mailinglist.'),
             'message4' => _('Do you want to proceed now?'),
             'language' => $_POST['language'],
-            'next_step' => ++$step,
+            'next_step' => ++$current_step,
             'next_step_button' => _('Go to step')));
         break;
 
@@ -80,12 +81,12 @@ switch ($step) {
             'message11' => _('The password of the Poweradmin administrator. This administrator has full rights to Poweradmin using the web interface.'),
 
             'language' => $_POST['language'],
-            'next_step' => ++$step,
+            'next_step' => ++$current_step,
             'next_step_button' => _('Go to step')));
         break;
 
     case 4:
-        $step++;
+        $current_step++;
         echo "<p>" . _('Updating database...') . " ";
         include_once("../inc/config-me.inc.php");
         $db_user = $_POST['user'];
@@ -178,14 +179,14 @@ switch ($step) {
         echo "<input type=\"hidden\" name=\"db_type\" value=\"" . $db_type . "\">";
         echo "<input type=\"hidden\" name=\"db_charset\" value=\"" . $db_charset . "\">";
         echo "<input type=\"hidden\" name=\"pa_pass\" value=\"" . $pa_pass . "\">";
-        echo "<input type=\"hidden\" name=\"step\" value=\"" . $step . "\">";
+        echo "<input type=\"hidden\" name=\"step\" value=\"" . $current_step . "\">";
         echo "<input type=\"hidden\" name=\"language\" value=\"" . $language . "\">";
-        echo "<input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $step . "\">";
+        echo "<input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $current_step . "\">";
         echo "</form>";
         break;
 
     case 5:
-        $step++;
+        $current_step++;
         $db_user = $_POST['db_user'];
         $db_pass = $_POST['db_pass'];
         $db_host = $_POST['db_host'];
@@ -257,14 +258,14 @@ switch ($step) {
         echo "<input type=\"hidden\" name=\"dns_hostmaster\" value=\"" . $dns_hostmaster . "\">";
         echo "<input type=\"hidden\" name=\"dns_ns1\" value=\"" . $dns_ns1 . "\">";
         echo "<input type=\"hidden\" name=\"dns_ns2\" value=\"" . $dns_ns2 . "\">";
-        echo "<input type=\"hidden\" name=\"step\" value=\"" . $step . "\">";
+        echo "<input type=\"hidden\" name=\"step\" value=\"" . $current_step . "\">";
         echo "<input type=\"hidden\" name=\"language\" value=\"" . $language . "\">";
-        echo "<input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $step . "\">";
+        echo "<input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $current_step . "\">";
         echo "</form>";
         break;
 
     case 6:
-        $step++;
+        $current_step++;
 
         require_once("../inc/database.inc.php");
 
@@ -308,9 +309,9 @@ switch ($step) {
         }
         echo "<form method=\"post\">";
         echo "<input type=\"hidden\" name=\"pa_pass\" value=\"" . $pa_pass . "\">";
-        echo "<input type=\"hidden\" name=\"step\" value=\"" . $step . "\">";
+        echo "<input type=\"hidden\" name=\"step\" value=\"" . $current_step . "\">";
         echo "<input type=\"hidden\" name=\"language\" value=\"" . $language . "\">";
-        echo "<input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $step . "\">";
+        echo "<input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $current_step . "\">";
         echo "</form>";
         break;
 
@@ -327,5 +328,3 @@ switch ($step) {
 }
 
 echo $twig->render('footer.html', array('version' => Poweradmin\Version::VERSION));
-
-
