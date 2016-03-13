@@ -91,7 +91,7 @@ function addField(area, field, limit) {
         editLink.setAttribute('class', 'button');
         editLink.onclick = function() {
             this.parentNode.parentNode.removeChild(this.parentNode);
-        }
+        };
         li.appendChild(editLink);
         field_area.appendChild(li);
     } else { //Older Method
@@ -107,7 +107,7 @@ function getDomainsElements() {
             elm,
             i = 0,
             key = 0,
-            records = new Array();
+            records = [];
 
     while (elm = coll.item(i++))
     {
@@ -123,7 +123,6 @@ function getDomainsElements() {
 
 function checkDomainFilled() {
     var
-            domains = new Array(),
             allEmpty = true,
             domains = getDomainsElements();
 
@@ -133,7 +132,7 @@ function checkDomainFilled() {
             return false;
         }
     } else {
-        for (key in domains) {
+        for (var key in domains) {
             if ((domains[key].value.length != 0)) {
                 allEmpty = false;
             }

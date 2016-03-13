@@ -30,11 +30,7 @@ if (isset($_POST['language']) && $_POST['language'] != 'en_EN') {
     $language = 'en_EN';
 }
 
-if (!isset($_POST['step']) || !is_numeric($_POST['step'])) {
-    $step = 1;
-} else {
-    $step = $_POST['step'];
-}
+$step = isset($_POST['step']) || is_numeric($_POST['step']) ? $_POST['step'] : 1;
 
 $loader = new Twig_Loader_Filesystem('templates');
 $twig = new Twig_Environment($loader);
@@ -53,76 +49,39 @@ switch ($step) {
             'message2' => _('The alternative for this installer is a manual installation. Refer to the poweradmin.org website if you want to go down that road.'),
             'message3' => _('Finally, if you see any errors during the installation process, a problem report would be appreciated. You can report problems (and ask for help) on the <a href="http://groups.google.com/group/poweradmin" target="blank">poweradmin</a> mailinglist.'),
             'message4' => _('Do you want to proceed now?'),
-            'next_step' => ++$step,
             'language' => $_POST['language'],
+            'next_step' => ++$step,
             'next_step_button' => _('Go to step')));
         break;
 
     case 3:
-        $step++;
-        echo "<p>" . _('To prepare the database for using Poweradmin, the installer needs to modify the PowerDNS database. It will add a number of tables and it will fill these tables with some data. If the tables are already present, the installer will drop them first.') . "</p>";
+        echo $twig->render('step3.html', array(
+            'username' => _('Username'),
+            'password' => _('Password'),
+            'database_type' => _('Database type'),
+            'hostname' => _('Hostname'),
+            'db_port' => _('DB Port'),
+            'database' => _('Database'),
+            'db_title' => _('The name of the PowerDNS database.'),
+            'db_charset' => _('DB charset'),
+            'db_collation' => _('DB collation'),
+            'admin_password' => _('Poweradmin administrator password'),
 
-        echo "<p>" . _('To do all of this, the installer needs to access the database with an account which has sufficient rights. If you trust the installer, you may give it the username and password of the database user root. Otherwise, make sure the user has enough rights, before actually proceeding.') . "</p>";
+            'message1' => _('To prepare the database for using Poweradmin, the installer needs to modify the PowerDNS database. It will add a number of tables and it will fill these tables with some data. If the tables are already present, the installer will drop them first.'),
+            'message2' => _('To do all of this, the installer needs to access the database with an account which has sufficient rights. If you trust the installer, you may give it the username and password of the database user root. Otherwise, make sure the user has enough rights, before actually proceeding.'),
+            'message3' => _('The username to use to connect to the database, make sure the username has sufficient rights to perform administrative task to the PowerDNS database (the installer wants to drop, create and fill tables to the database).'),
+            'message4' => _('The password for this username.'),
+            'message5' => _('The type of the PowerDNS database.'),
+            'message6' => _('The hostname on which the PowerDNS database resides. Frequently, this will be "localhost".'),
+            'message7' => _('The port the database server is listening on.'),
+            'message8' => _('The path and filename to the PowerDNS SQLite database.'),
+            'message9' => _('The charset (encoding) which will be used for new tables. Leave it empty then default database charset will be used.'),
+            'message10' => _('Set of rules for comparing characters in database. Leave it empty then default database collation will be used.'),
+            'message11' => _('The password of the Poweradmin administrator. This administrator has full rights to Poweradmin using the web interface.'),
 
-        echo "<form method=\"post\">";
-        echo " <table>\n";
-        echo "  <tr id=\"username_row\">\n";
-        echo "   <td>" . _('Username') . "</td>\n";
-        echo "   <td><input type=\"text\" name=\"user\" value=\"\"></td>\n";
-        echo "   <td>" . _('The username to use to connect to the database, make sure the username has sufficient rights to perform administrative task to the PowerDNS database (the installer wants to drop, create and fill tables to the database).') . "</td>\n";
-        echo "  </tr>\n";
-        echo " <tr id=\"password_row\">\n";
-        echo "  <td>" . _('Password') . "</td>\n";
-        echo "  <td><input type=\"password\" name=\"pass\" value=\"\" autocomplete=\"off\"></td>\n";
-        echo "  <td>" . _('The password for this username.') . "</td>\n";
-        echo " </tr>\n";
-        echo " <tr>\n";
-        echo "  <td width=\"210\">" . _('Database type') . "</td>\n";
-        echo "  <td>" .
-        "<select name=\"type\" onChange=\"changePort(this.value)\">" .
-        "<option value=\"mysql\">MySQL</option>" .
-        "<option value=\"pgsql\">PostgreSQL</option>" .
-        "<option value=\"sqlite\">SQLite</option>" .
-        "</td>\n";
-        echo "  <td>" . _('The type of the PowerDNS database.') . "</td>\n";
-        echo " </tr>\n";
-        echo " <tr id=\"hostname_row\">\n";
-        echo "  <td>" . _('Hostname') . "</td>\n";
-        echo "  <td><input type=\"text\" id=\"host\" name=\"host\" value=\"localhost\"></td>\n";
-        echo "  <td>" . _('The hostname on which the PowerDNS database resides. Frequently, this will be "localhost".') . "</td>\n";
-        echo " </tr>\n";
-        echo " <tr id=\"dbport_row\">\n";
-        echo "  <td>" . _('DB Port') . "</td>\n";
-        echo "  <td><input type=\"text\" id=\"dbport\" name=\"dbport\" value=\"3306\"></td>\n";
-        echo "  <td>" . _('The port the database server is listening on.') . "</td>\n";
-        echo " </tr>\n";
-        echo " <tr>\n";
-        echo "  <td>" . _('Database') . "</td>\n";
-        echo "  <td><input type=\"text\" name=\"name\" value=\"\"></td>\n";
-        echo "  <td><span id=\"db_name_title\">" . _('The name of the PowerDNS database.') . "</span>"
-                . "<span id=\"db_path_title\" style=\"display: none;\">" . _('The path and filename to the PowerDNS SQLite database.') . "</span></td>\n";
-        echo " </tr>\n";
-        echo "  <tr>\n";
-        echo "   <td>" . _('DB charset') . "</td>\n";
-        echo "   <td><input type=\"text\" name=\"charset\" value=\"\"></td>\n";
-        echo "   <td>" . _('The charset (encoding) which will be used for new tables. Leave it empty then default database charset will be used.') . "</td>\n";
-        echo "  </tr>\n";
-        echo "  <tr>\n";
-        echo "   <td>" . _('DB collation') . "</td>\n";
-        echo "   <td><input type=\"text\" name=\"collation\" value=\"\"></td>\n";
-        echo "   <td>" . _('Set of rules for comparing characters in database. Leave it empty then default database collation will be used.') . "</td>\n";
-        echo "  </tr>\n";
-        echo "  <tr>\n";
-        echo "   <td>" . _('Poweradmin administrator password') . "</td>\n";
-        echo "   <td><input type=\"password\" name=\"pa_pass\" value=\"\" autocomplete=\"off\"></td>\n";
-        echo "   <td>" . _('The password of the Poweradmin administrator. This administrator has full rights to Poweradmin using the web interface.') . "</td>\n";
-        echo "  </tr>\n";
-        echo "</table>\n";
-        echo "<br>\n";
-        echo "<input type=\"hidden\" name=\"step\" value=\"" . $step . "\">";
-        echo "<input type=\"hidden\" name=\"language\" value=\"" . $language . "\">";
-        echo "<input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $step . "\">";
-        echo "</form>";
+            'language' => $_POST['language'],
+            'next_step' => ++$step,
+            'next_step_button' => _('Go to step')));
         break;
 
     case 4:

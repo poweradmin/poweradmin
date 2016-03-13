@@ -1,0 +1,64 @@
+<p>{{ message1 }}</p>
+
+<p>{{ message2 }}</p>
+
+<form method="post">
+     <table>
+          <tr id="username_row">
+               <td>{{ username }}</td>
+               <td><input type="text" name="user" value=""></td>
+               <td>{{ message3 }}</td>
+              </tr>
+         <tr id="password_row">
+              <td>{{ password }}</td>
+              <td><input type="password" name="pass" value="" autocomplete="off"></td>
+              <td>{{ message4 }}</td>
+             </tr>
+         <tr>
+              <td width="210">{{ database_type }}</td>
+              <td>
+                  <select name="type" onChange="changePort(this.value)">
+                      <option value="mysql">MySQL</option>
+                      <option value="pgsql">PostgreSQL</option>
+                      <option value="sqlite">SQLite</option>
+                  </select>
+              </td>
+              <td>{{ message5 }}</td>
+             </tr>
+         <tr id="hostname_row">
+              <td>{{ hostname }}</td>
+              <td><input type="text" id="host" name="host" value="localhost"></td>
+              <td>{{ message6 }}</td>
+             </tr>
+         <tr id="dbport_row">
+              <td>{{ db_port }}</td>
+              <td><input type="text" id="dbport" name="dbport" value="3306"></td>
+              <td>{{ message7 }}</td>
+             </tr>
+         <tr>
+              <td>{{ database }}</td>
+              <td><input type="text" name="name" value=""></td>
+              <td><span id="db_name_title">{{ db_title }}</span>"
+               <span id="db_path_title" style="display: none;">{{ message8 }}</span></td>
+             </tr>
+          <tr>
+               <td>{{ db_charset }}</td>
+               <td><input type="text" name="charset" value=""></td>
+               <td>{{ message9 }}</td>
+              </tr>
+          <tr>
+               <td>{{ db_collation }}</td>
+               <td><input type="text" name="collation" value=""></td>
+               <td>{{ message10 }}</td>
+              </tr>
+          <tr>
+               <td>{{ admin_password }}</td>
+               <td><input type="password" name="pa_pass" value="" autocomplete="off"></td>
+               <td>{{ message11 }}</td>
+              </tr>
+        </table>
+    <br>
+    <input type="hidden" name="step" value="{{ next_step }}">
+    <input type="hidden" name="language" value="{{ language }}">
+    <input type="submit" name="submit" value="{{ next_step_button }} {{ next_step }}">
+</form>
