@@ -30,27 +30,16 @@ if (isset($_POST['language']) && $_POST['language'] != 'en_EN') {
     $language = 'en_EN';
 }
 
-echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n";
-echo "<html>\n";
-echo " <head>\n";
-echo "  <title>Poweradmin</title>\n";
-echo "  <link rel=stylesheet href=\"../style/example.css\" type=\"text/css\">\n";
-echo "  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n";
-echo "  <script type=\"text/javascript\" src=\"../inc/helper.js\"></script>";
-echo " </head>\n";
-echo " <body>\n";
-
 if (!isset($_POST['step']) || !is_numeric($_POST['step'])) {
     $step = 1;
 } else {
     $step = $_POST['step'];
 }
 
-echo "  <h1>Poweradmin</h1>\n";
-echo "  <h2>" . _('Installation step') . " " . $step . "</h2>\n";
-
 $loader = new Twig_Loader_Filesystem('templates');
 $twig = new Twig_Environment($loader);
+
+echo $twig->render('header.html', array('current_step' => $step, 'message1' => _('Installation step')));
 
 switch ($step) {
 
