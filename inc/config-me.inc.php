@@ -29,8 +29,8 @@ $db_type = '';
 // Security settings
 // This should be changed upon install
 $session_key = 'p0w3r4dm1n';
-$password_encryption = 'bcrypt'; // md5, md5salt or bcrypt
-$password_encryption_cost = 12; // needed for bcrypt
+$password_encryption = 'md5'; // md5, md5salt or bcrypt
+//$password_encryption_cost = 12; // needed for bcrypt
 
 // Interface settings
 $iface_lang = 'en_EN';
