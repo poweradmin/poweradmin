@@ -342,9 +342,6 @@ require_once "record.inc.php";
 require_once "dnssec.inc.php";
 require_once "templates.inc.php";
 
-# FIXME - use class autoloader
-require_once(dirname(__DIR__) . '/vendor/poweradmin/Password.php');
-
 //do_hook('hook_post_includes');
 do_hook('authenticate');
 

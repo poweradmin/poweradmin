@@ -13,7 +13,9 @@
  * @license http://opensource.org/licenses/GPL-3.0 GPL
  *
  */
-require_once ("inc/toolkit.inc.php");
+require_once 'inc/toolkit.inc.php';
+
+require_once dirname(dirname(dirname(__DIR__))) . '/vendor/poweradmin/Password.php';
 
 /**
  * Verify User has Permission Name
@@ -395,7 +397,7 @@ function change_user_pass_local($details) {
 
     $rinfo = $response->fetchRow();
 
-    if (Poweradmin\Password\verify($details['currentpass'], $rinfo['password'])) {
+    if (Poweradmin\Password::verify($details['currentpass'], $rinfo['password'])) {
         $query = "UPDATE users SET password = " . $db->quote(Poweradmin\Password::hash($details['newpass']), 'text') . " WHERE id = " . $db->quote($rinfo ['id'], 'integer');
         $response = $db->query($query);
         if (PEAR::isError($response)) {
