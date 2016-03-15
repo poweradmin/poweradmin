@@ -112,7 +112,7 @@ class Password {
      * @return string salt
      */
     private static function extract_salt($password) {
-        return substr(strchr($password, ':'), 1);
+        return substr(strstr($password, ':'), 1);
     }
 
     /**
@@ -140,7 +140,7 @@ class Password {
      * @return bool true if they are equal, otherwise - false
      */
     private static function _strsafecmp($str1, $str2) {
-        if (!is_string($str1) || !is_string($str2) || self::_strlen($str1) !== self::_strlen($str1)) {
+        if (!is_string($str1) || !is_string($str2) || self::_strlen($str1) !== self::_strlen($str2)) {
             return false;
         }
 
