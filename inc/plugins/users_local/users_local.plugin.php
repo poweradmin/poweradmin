@@ -43,11 +43,11 @@ function verify_permission_local($arg) {
     }
 
     global $db;
-    if ((!isset($_SESSION ['userid'])) || (!is_object($db))) {
+    if ((!isset($_SESSION['userid'])) || (!is_object($db))) {
         return 0;
     }
     // Set current user ID.
-    $userid = $_SESSION ['userid'];
+    $userid = $_SESSION['userid'];
 
     $query = $db->prepare("SELECT
         perm_items.name AS permission

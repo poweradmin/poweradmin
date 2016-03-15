@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Poweradmin\\Configuration' => $vendorDir . '/poweradmin/Configuration.php',
     'Poweradmin\\Password' => $vendorDir . '/poweradmin/Password.php',
     'Poweradmin\\Version' => $vendorDir . '/poweradmin/Version.php',
     'Twig_Autoloader' => $vendorDir . '/twig/twig/lib/Twig/Autoloader.php',

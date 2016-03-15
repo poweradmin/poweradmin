@@ -74,11 +74,11 @@ switch ($current_step) {
         break;
 
     case 2:
-        echo $twig->render('step2.html', array('next_step' => ++$current_step, 'language' => $_POST['language']));
+        echo $twig->render('step2.html', array('next_step' => ++$current_step, 'language' => $language));
         break;
 
     case 3:
-        echo $twig->render('step3.html', array('next_step' => ++$current_step, 'language' => $_POST['language']));
+        echo $twig->render('step3.html', array('next_step' => ++$current_step, 'language' => $language));
         break;
 
     case 4:
@@ -163,7 +163,7 @@ switch ($current_step) {
             $pa_db_pass = $_POST['pa_db_pass'];
         }
         $pa_pass = $_POST['pa_pass'];
-        $dns_hostmaster = $_POST['dns_hostmaster'];
+        $hostmaster = $_POST['dns_hostmaster'];
         $dns_ns1 = $_POST['dns_ns1'];
         $dns_ns2 = $_POST['dns_ns2'];
 
@@ -217,7 +217,7 @@ switch ($current_step) {
             echo "<input type=\"hidden\" name=\"pa_db_pass\" value=\"" . $pa_db_pass . "\">";
         }
         echo "<input type=\"hidden\" name=\"pa_pass\" value=\"" . $pa_pass . "\">";
-        echo "<input type=\"hidden\" name=\"dns_hostmaster\" value=\"" . $dns_hostmaster . "\">";
+        echo "<input type=\"hidden\" name=\"dns_hostmaster\" value=\"" . $hostmaster . "\">";
         echo "<input type=\"hidden\" name=\"dns_ns1\" value=\"" . $dns_ns1 . "\">";
         echo "<input type=\"hidden\" name=\"dns_ns2\" value=\"" . $dns_ns2 . "\">";
         echo "<input type=\"hidden\" name=\"step\" value=\"" . $current_step . "\">";
@@ -227,54 +227,42 @@ switch ($current_step) {
         break;
 
     case 6:
-        $current_step++;
-
-        require_once("../inc/database.inc.php");
-
-        $db_type = $_POST['db_type'];
-        $pa_pass = $_POST['pa_pass'];
-        $db_port = $_POST['db_port'];
-
-        $config = "<?php\n\n" .
-            ( $db_type == 'sqlite' ? "\$db_file\t\t= '" . $_POST['db_name'] . "';\n" :
-            "\$db_host\t\t= '" . $_POST['db_host'] . "';\n" .
-            "\$db_user\t\t= '" . $_POST['pa_db_user'] . "';\n" .
-            "\$db_pass\t\t= '" . $_POST['pa_db_pass'] . "';\n" .
-            "\$db_name\t\t= '" . $_POST['db_name'] . "';\n" .
-            (($db_type == 'mysql' && $db_port != 3306) || ($db_type == 'pgsql' && $db_port != 5432) ? "\$db_port\t\t= '" . $db_port . "';\n" : '')) .
-            "\$db_type\t\t= '" . $_POST['db_type'] . "';\n";
-
-        if ($_POST['db_charset']) {
-            $config .= "\$db_charset\t\t= '" . $_POST['db_charset'] . "';\n";
-        }
-
-        $config .= "\n" .
-            "\$session_key\t\t= '" . Poweradmin\Password::salt(SESSION_KEY_LENGTH) . "';\n" .
-            "\n" .
-            "\$iface_lang\t\t= '" . $_POST['language'] . "';\n" .
-            "\n" .
-            "\$dns_hostmaster\t\t= '" . $_POST['dns_hostmaster'] . "';\n" .
-            "\$dns_ns1\t\t= '" . $_POST['dns_ns1'] . "';\n" .
-            "\$dns_ns2\t\t= '" . $_POST['dns_ns2'] . "';\n";
-
+        // Try to create configuration file
+        $config_file_created = false;
+        $configuration = ''; // FIXME
         if (is_writeable(LOCAL_CONFIG_FILE)) {
-            $h_config = fopen(LOCAL_CONFIG_FILE, "w");
-            fwrite($h_config, $config);
-            fclose($h_config);
-            echo "<p>" . _('The installer was able to write to the file "') . LOCAL_CONFIG_FILE . _('". A basic configuration, based on the details you have given, has been created.') . "</p>\n";
-        } else {
-            echo "<p>" . _('The installer is unable to write to the file "') . LOCAL_CONFIG_FILE . _('" (which is in itself good). The configuration is printed here. You should now create the file "')
-                . LOCAL_CONFIG_FILE . _('" in the Poweradmin root directory yourself. It should contain the following few lines:') . "</p>\n";
-            echo "<pre>";
-            echo htmlentities($config);
-            echo "</pre>";
+            $local_config = fopen(LOCAL_CONFIG_FILE, "w");
+            fwrite($local_config, $configuration);
+            fclose($local_config);
+            $config_file_created = true;
         }
-        echo "<form method=\"post\">";
-        echo "<input type=\"hidden\" name=\"pa_pass\" value=\"" . $pa_pass . "\">";
-        echo "<input type=\"hidden\" name=\"step\" value=\"" . $current_step . "\">";
-        echo "<input type=\"hidden\" name=\"language\" value=\"" . $language . "\">";
-        echo "<input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $current_step . "\">";
-        echo "</form>";
+
+        // No need to set database port if it's standard port for that db
+        $db_port = ($_POST['db_type'] == 'mysql' && $_POST['db_port'] != 3306)
+            || ($_POST['db_type'] == 'pgsql' && $_POST['db_port'] != 5432) ? $_POST['db_port'] : '';
+
+        // For SQLite we should provide path to db file
+        $db_file = $_POST['db_type'] =='sqlite' ? $db_file = $_POST['db_name'] : '';
+
+        echo $twig->render('step6.html', array(
+            'next_step' => ++$current_step,
+            'language' => $language,
+            'config_file_created' => $config_file_created,
+            'local_config_file' => LOCAL_CONFIG_FILE,
+            'session_key' => Poweradmin\Password::salt(SESSION_KEY_LENGTH),
+            'iface_lang' => $language,
+            'dns_hostmaster' => $_POST['dns_hostmaster'],
+            'dns_ns1' => $_POST['dns_ns1'],
+            'dns_ns2' => $_POST['dns_ns2'],
+            'db_host' => $_POST['db_host'],
+            'db_user' => $_POST['pa_db_user'],
+            'db_pass' => $_POST['pa_db_pass'],
+            'db_name' => $_POST['db_name'],
+            'db_type' => $_POST['db_type'],
+            'db_port' => $db_port,
+            'db_charset' => $_POST['db_charset'],
+            'pa_pass' => $_POST['pa_pass']
+        ));
         break;
 
     case 7:
