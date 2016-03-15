@@ -109,9 +109,11 @@ define("ERR_DNS_HN_TOO_LONG", _('The hostname is too long.'));
 define("ERR_DNS_INV_TLD", _('You are using an invalid top level domain.'));
 define("ERR_DNS_INV_TTL", _('Invalid value for TTL field. It should be numeric.'));
 define("ERR_DNS_INV_PRIO", _('Invalid value for prio field. It should be numeric.'));
-define("ERR_DNS_SRV_NAME", _('Invalid value for name field of SRV record.'));
-define("ERR_DNS_SRV_PORT", _('Invalid value for the port field of the SRV record.'));
-define("ERR_DNS_SRV_WGHT", _('Invalid value for the weight field of the SRV record.'));
+define("ERR_DNS_SRV_NAME_SERVICE", _('Invalid service value in name field of SRV record.'));
+define("ERR_DNS_SRV_NAME_PROTO", _('Invalid protocol value in name field of SRV record.'));
+define("ERR_DNS_SRV_NAME", _('Invalid FQDN value in name field of SRV record.'));
+define("ERR_DNS_SRV_WGHT", _('Invalid value for the priority field of the SRV record.'));
+define("ERR_DNS_SRV_PORT", _('Invalid value for the weight field of the SRV record.'));
 define("ERR_DNS_SRV_TRGT", _('Invalid SRV target.'));
 define("ERR_DNS_PRINTABLE", _('Invalid characters have been used in this record.'));
 
@@ -155,9 +157,15 @@ define("SUC_EXEC_PDNSSEC_DEACTIVATE_ZONE_KEY", _('Zone key has been successfully
 /** Print error message (toolkit.inc)
  *
  * @param string $msg Error message
+ * @param string $name Offending DNS record name
  *
  * @return null
  */
-function error($msg) {
-    echo "     <div class=\"error\">Error: " . $msg . "</div>\n";
+function error($msg, $name = null) {
+        if ($name == null) {
+                echo "     <div class=\"error\">Error: " . $msg . "</div>\n";
+        } else {
+                echo "     <div class=\"error\">Error: " . $msg . " (Record: " . $name . ")</b></div>\n";
+        }
 }
+
