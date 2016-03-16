@@ -33,7 +33,7 @@
     <?php if (!isset($error) || (isset($error) && $error === false)): ?>
         <div class="alert alert-info">
             <?=_('You have successfully installed Poweradmin! Please delete the install-directory and login to use Poweradmin.') ?><br>
-            <em><?=_('If you want to use Poweradmin for DynDNS, please see instructions in our wiki!'); ?></em>
+            <em><?=_('If you want to use Poweradmin for DynDNS, please see instructions in our wiki!') ?></em>
         </div>
 
         <a href="/" class="btn btn-primary pull-right">Go to Poweradmin</a>

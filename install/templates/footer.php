@@ -5,11 +5,12 @@
     <div class="clearfix visible-xs-block"></div>
     <div class="col-xs-12 col-md-6 text-right">
         <?php if (function_exists('gettext')): ?>
-            <form name="change_locale" action="<?= $_SERVER['REQUEST_URI']; ?>" method="POST">
-                <select name="locale">
+            <form name="change_locale" action="<?=$_SERVER['REQUEST_URI']; ?>" method="POST">
+                <label class="sr-only" for="locale"></label>
+                <select name="locale" id="locale">
                     <?php foreach ($config['locales'] as $value => $localeName): ?>
                         <option
-                            value="<?= $value ?>"<?= ($parameters['locale'] === $value ? ' selected' : '') ?>><?= $localeName ?></option>
+                            value="<?=$value ?>"<?=$parameters['locale'] === $value ? ' selected' : '' ?>><?=$localeName ?></option>
                     <?php endforeach; ?>
                 </select>
             </form>

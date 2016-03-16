@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="<?= substr($parameters['locale'], 0, 2); ?>">
+<html lang="<?=substr($parameters['locale'], 0, 2); ?>">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -28,7 +28,7 @@
         <div class="col-xs-12 col-md-6"><img class="img-responsive" src="../images/logo_full.png"
                                              alt="Poweradmin Logo - Full"></div>
         <div class="clearfix visible-xs-block"></div>
-        <div class="col-xs-12 col-md-6 text-right"><h3>Step <?= $parameters['step']; ?>/5</h3></div>
+        <div class="col-xs-12 col-md-6 text-right"><h3>Step <?=$parameters['step']; ?>/5</h3></div>
     </header>
 
     <section class="row content">
