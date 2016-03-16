@@ -1,6 +1,6 @@
 {
-  "description": "A web-based control panel for PowerDNS.",
   "name": "poweradmin/poweradmin",
+  "description": "A web-based control panel for PowerDNS.",
   "type": "project",
   "homepage": "http://www.poweradmin.org",
   "license": "GPL-3.0",
@@ -12,12 +12,12 @@
   },
   "require": {
     "php": ">=5.5.0",
-    "twig/twig": "~1.0",
-    "twig/extensions": "^1.3"
+    "doctrine/dbal": "^2.5",
+    "vlucas/valitron": "^1.2"
   },
   "autoload": {
     "psr-4": {
-      "Poweradmin\\": "vendor/poweradmin/"
+      "Poweradmin\\": "inc/classes/"
     }
   }
 }

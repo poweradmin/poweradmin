@@ -1,276 +1,419 @@
 <?php
-/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
- *  See <http://www.poweradmin.org> for more details.
- *
- *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2016  Poweradmin Development Team
- *      <http://www.poweradmin.org/credits.html>
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 
-/**
- *  Poweradmin installer
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2016 Poweradmin Development Team
- * @license     http://opensource.org/licenses/GPL-3.0 GPL
- */
+// Check for debug-mode
+if (array_key_exists('debug', $_GET) && $_GET['debug'] === 'true') {
+    // Enable error-reporting
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
 
-// Dependencies
-require_once dirname(__DIR__) . '/vendor/autoload.php';
-require_once dirname(__DIR__) . '/inc/error.inc.php';
-require_once dirname(__DIR__) . '/inc/i18n.inc.php';
-
-// Constants
-define('LOCAL_CONFIG_FILE', dirname(__DIR__) . '/inc/config.inc.php');
-define('SESSION_KEY_LENGTH', 46);
-
-// Localize interface
-$language = 'en_EN';
-if (isset($_POST['language']) && $_POST['language'] != 'en_EN') {
-    $language = $_POST['language'];
-
-    $locale = setlocale(LC_ALL, $language, $language . '.UTF-8');
-    if ($locale == false) {
-        error(ERR_LOCALE_FAILURE);
-    }
-
-    $gettext_domain = 'messages';
-    if (!function_exists('bindtextdomain')) {
-        die(error('You have to install PHP gettext extension!'));
-    }
-    bindtextdomain($gettext_domain, "./../locale");
-    textdomain($gettext_domain);
-    @putenv('LANG=' . $language);
-    @putenv('LANGUAGE=' . $language);
+    // Set debug-mode constant
+    define('DEBUG', true);
 }
 
-// Initialize Twig template engine
-$loader = new Twig_Loader_Filesystem('templates');
-$twig = new Twig_Environment($loader);
-$twig->addExtension(new Twig_Extensions_Extension_I18n());
+// Starting session
+session_start();
 
-// Display header
-$current_step = isset($_POST['step']) && is_numeric($_POST['step']) ? $_POST['step'] : 1;
-echo $twig->render('header.html', array('current_step' => $current_step));
+// Set directory-constants
+define('INSTALLER_DIRECTORY', __DIR__ . '/');
 
-switch ($current_step) {
+// Load autoloader & functions-file
+require_once INSTALLER_DIRECTORY . '../vendor/autoload.php';
+require_once INSTALLER_DIRECTORY . 'includes/functions.php';
+require_once INSTALLER_DIRECTORY . 'includes/validation_functions.php';
 
+// Import used classes
+use Valitron\Validator as V;
+
+// Set array with default-configuration
+$config = [
+    'configFile' => realpath(INSTALLER_DIRECTORY . '../inc') . '/config.inc.php',
+
+    'availableDatabaseDrivers' => Doctrine\DBAL\DriverManager::getAvailableDrivers(),
+    'supportedDatabaseDrivers' => ['pdo_mysql' => 'MySQL', 'pdo_pgsql' => 'PostgreSQL', 'pdo_sqlite' => 'SQLite'],
+
+    'defaultLocale' => 'en_US',
+    'locales' => ['de_DE' => _('German'), 'en_US' => _('English')],
+
+    'sessionKeyLength' => 48
+];
+
+// Add overlap of available and supported database-drivers to config
+$config['availableSupportedDatabaseDrivers'] = array_intersect(
+    array_keys($config['supportedDatabaseDrivers']),
+    $config['availableDatabaseDrivers']
+);
+
+// Detect locale-change
+if (array_key_exists('locale', $_POST) && array_key_exists($_POST['locale'], $config['locales'])) {
+    // Change locale
+    $_SESSION['locale'] = $_POST['locale'];
+}
+
+// Build array with parameters
+$parameters = [
+    'locale' => array_key_exists('locale', $_SESSION) ? $_SESSION['locale'] : $config['defaultLocale'],
+    'step' => array_key_exists('step', $_GET) && $_GET['step'] >= 1 && $_GET['step'] <= 5 ? $_GET['step'] : 1
+];
+
+// Configure "gettext"-extension
+configureGettextExtension($parameters['locale'], $config['defaultLocale']);
+
+// Set locale for valitron
+V::lang(substr($parameters['locale'], 0, 2));
+
+// Create object of validator-library
+$validator = new V($_POST);
+
+// Switch through installer-steps
+switch ($parameters['step']) {
     case 1:
-        echo $twig->render('step1.html', array('next_step' => ++$current_step));
+        if (array_key_exists('submit', $_POST)) {
+            // Add validation-rules
+            $validator->rule('required', 'confirmInformation');
+            $validator->rule('accepted', 'confirmInformation');
+
+            // Validate form-data
+            if ($validator->validate()) {
+                // Set step to session to avoid skipping
+                $_SESSION['step'] = 2;
+
+                // Redirect user to next step
+                header('location: ' . $_SERVER['PHP_SELF'] . '?step=2' . (defined('DEBUG') ? '&debug=true' : ''));
+                exit;
+            } else {
+                // Get validation-errors
+                $errors = $validator->errors();
+            }
+        }
         break;
 
     case 2:
-        echo $twig->render('step2.html', array('next_step' => ++$current_step, 'language' => $language));
+        // Check for step in session to prevent skipping
+        checkStep(2, 1, false);
+
+        // Do tests to check php-requirements
+        $phpRequirements = [
+            'php-version' => version_compare(PHP_VERSION, '5.5', '>='),
+            'php-module-session' => function_exists('session_start'),
+            'php-module-gettext' => function_exists('gettext'),
+            'php-module-mcrypt' => function_exists('mcrypt_decrypt'),
+            'php-function-exec' => !in_array('exec', explode(',', ini_get('disable_functions')))
+        ];
+
+        // Create config-file && check if it's writable
+        $createConfigFile = !file_exists($config['configFile']) ? touch($config['configFile']) : true;
+        $configFileIsWritable = is_writable($config['configFile']);
         break;
 
     case 3:
-        echo $twig->render('step3.html', array('next_step' => ++$current_step, 'language' => $language));
+        // Check for step in session to prevent skipping
+        checkStep(3, 2);
+
+        // Check for form
+        if (array_key_exists('dbDriver', $_POST) && in_array($_POST['dbDriver'], $config['availableSupportedDatabaseDrivers'])) {
+            // Set field-names as labels
+            $validator->labels([
+                'dbFile' => _('Database-File'),
+                'dbHost' => _('Host'),
+                'dbPort' => _('Port'),
+                'dbUsername' => _('Username'),
+                'dbPassword' => _('Password'),
+                'dbDatabase' => _('Database'),
+                'dbCharset' => _('Charset')
+            ]);
+
+            // Switch database-drivers
+            switch ($_POST['dbDriver']) {
+                case 'pdo_mysql':
+                case 'pdo_pgsql':
+                    // Set validation-rules
+                    $validator->rule('required', ['dbHost', 'dbPort', 'dbUsername', 'dbPassword', 'dbDatabase', 'dbCharset']);
+                    $validator->rule('numeric', 'dbPort');
+                    $validator->rule('in', 'dbCharset', ['latin1', 'utf8']);
+
+                    if ($validator->validate()) {
+                        // Build parameters-array
+                        $dbParameters = [
+                            'driver' => $_POST['dbDriver'],
+                            'host' => $_POST['dbHost'],
+                            'port' => $_POST['dbPort'],
+                            'user' => $_POST['dbUsername'],
+                            'password' => $_POST['dbPassword'],
+                            'dbname' => $_POST['dbDatabase'],
+                            'charset' => $_POST['dbCharset']
+                        ];
+                    }
+                    break;
+
+                case 'pdo_sqlite':
+                    // Set validation-rules
+                    $validator->rule('required', 'dbFile');
+                    $validator->rule('isFile', 'dbFile');
+
+                    if ($validator->validate()) {
+                        // Build parameters-array
+                        $dbParameters = [
+                            'driver' => $_POST['dbDriver'],
+                            'path' => $_POST['dbFile']
+                        ];
+
+                        // Check for username as optional parameter
+                        if (array_key_exists('dbUsername', $_POST) && !empty($_POST['dbUsername'])) {
+                            $parameters['user'] = $_POST['dbUsername'];
+                        }
+
+                        // Check for password as optional parameter
+                        if (array_key_exists('dbPassword', $_POST) && !empty($_POST['dbPassword'])) {
+                            $parameters['password'] = $_POST['dbPassword'];
+                        }
+                    }
+                    break;
+            }
+
+            if (isset($dbParameters)) {
+                // Create connection to test data
+                $connectionStatus = Poweradmin\Db::createConnection($dbParameters);
+
+                if ($connectionStatus) {
+                    // Get existing tables
+                    $tables = Poweradmin\Db::getConnection()->getSchemaManager()->listTables();
+
+                    // Set required tables
+                    $requiredTables = ['domains', 'records', 'supermasters', 'domainmetadata', 'cryptokeys', 'tsigkeys'];
+
+                    // Check for tables
+                    if (count($tables) > 0) {
+                        // Loop through tables to remove existing
+                        foreach ($tables as $i => $table) {
+                            // Get array-key of table in requiredTables-array
+                            $tableArrayKey = array_search($table->getName(), $requiredTables);
+
+                            // Check if table is from PowerDNS tu support custom tables in the same database
+                            if (array_search($table->getName(), $requiredTables) !== false) {
+                                // Remove table from array
+                                unset($requiredTables[$tableArrayKey]);
+                            }
+                        }
+                    }
+
+                    // Check if all required tables exists
+                    if (count($requiredTables) === 0) {
+                        // Set database-parameters to session && unlock next step
+                        $_SESSION['dbParameters'] = $dbParameters;
+                        $_SESSION['step'] = 4;
+                    }
+                }
+            }
+        }
         break;
 
     case 4:
-        echo "<p>" . _('Updating database...') . " ";
-        include_once("../inc/config-me.inc.php");
-        $db_user = $_POST['user'];
-        $db_pass = $_POST['pass'];
-        $db_host = $_POST['host'];
-        $db_port = $_POST['dbport'];
-        $db_name = $_POST['name'];
-        $db_charset = $_POST['charset'];
-        $db_collation = $_POST['collation'];
-        $db_type = $_POST['type'];
-        if ($db_type == 'sqlite') {
-            $db_file = $db_name;
-        }
-        $pa_pass = $_POST['pa_pass'];
-        require_once("../inc/database.inc.php");
-        $db = dbConnect();
-        $db->loadModule('Manager');
-        $db->loadModule('Extended');
-        include_once("database-structure.inc.php");
-        $current_tables = $db->listTables();
+        // Check for step in session to prevent skipping
+        checkStep(4, 3);
 
-        foreach ($def_tables as $table) {
-            if (in_array($table['table_name'], $current_tables)) {
-                $db->dropTable($table['table_name']);
+        // Check for submit
+        if (array_key_exists('submit', $_POST)) {
+            // Set field-labels
+            $validator->labels([
+                'hostmaster' => _('E-Mail of Hostmaster'),
+                'primaryNameserver' => _('Primary Nameserver'),
+                'secondaryNameserver' => _('Secondary Nameserver'),
+                'tertiaryNameserver' => _('Tertiary Nameserver'),
+                'fullname' => _('Full Name'),
+                'email' => _('E-Mail'),
+                'username' => _('Username'),
+                'password' => _('Password'),
+                'passwordRepeat' => _('Password Repeat')
+            ]);
+
+            // Set validation-rules
+            $validator->rule('required', ['hostmaster', 'primaryNameserver', 'secondaryNameserver', 'fullname', 'email', 'username', 'password', 'passwordRepeat']);
+            $validator->rule('email', ['hostmaster', 'email']);
+            $validator->rule('equals', 'password', 'passwordRepeat');
+            $validator->rule('different', 'primaryNameserver', 'secondaryNameserver');
+            $validator->rule('different', 'primaryNameserver', 'tertiaryNameserver');
+            $validator->rule('different', 'secondaryNameserver', 'tertiaryNameserver');
+
+            // Validate form
+            if ($validator->validate()) {
+                $_SESSION['generalData'] = [
+                    'hostmaster' => str_replace('@', '.', $_POST['hostmaster']),
+                    'primaryNameserver' => $_POST['primaryNameserver'],
+                    'secondaryNameserver' => $_POST['secondaryNameserver']
+                ];
+
+                // Check for tertiary-nameserver as optional parameter
+                if (array_key_exists('tertiaryNameserver', $_POST) && !empty($_POST['tertiaryNameserver'])) {
+                    $_SESSION['generalData']['tertiaryNameserver'] = $_POST['tertiaryNameserver'];
+                }
+
+                $_SESSION['userData'] = [
+                    'fullname' => $_POST['fullname'],
+                    'email' => $_POST['email'],
+                    'username' => $_POST['username'],
+                    'password' => $_POST['password']
+                ];
+
+                // Unlock next step
+                $_SESSION['step'] = 5;
+
+                // Redirect user to next step
+                header('location: ' . $_SERVER['PHP_SELF'] . '?step=5' . (defined('DEBUG') ? '&debug=true' : ''));
+                exit;
             }
-
-            $options = $table['options'];
-
-            if ($db_charset) {
-                $options['charset'] = $db_charset;
-            }
-
-            if ($db_collation) {
-                $options['collation'] = $db_collation;
-            }
-            $db->createTable($table['table_name'], $table['fields'], $options);
         }
-
-        $fill_perm_items = $db->prepare('INSERT INTO perm_items VALUES (?, ?, ?)');
-        $db->extended->executeMultiple($fill_perm_items, $def_permissions);
-        if (method_exists($fill_perm_items, 'free')) {
-            $fill_perm_items->free();
-        }
-        foreach ($def_remaining_queries as $query_nr => $user_query) {
-            if ($query_nr === 0) {
-                $user_query = sprintf($user_query, $db->quote(Poweradmin\Password::hash($pa_pass), 'text'));
-            }
-            $db->query($user_query);
-        }
-        echo _('done!') . "</p>";
-
-        echo $twig->render('step4.html', array(
-            'next_step' => ++$current_step,
-            'language' => $_POST['language'],
-            'db_user' => $db_user,
-            'db_pass' => $db_pass,
-            'db_host' => $db_host,
-            'db_port' => $db_port,
-            'db_name' => $db_name,
-            'db_type' => $db_type,
-            'db_charset' => $db_charset,
-            'pa_pass' => $pa_pass
-        ));
         break;
 
     case 5:
-        $current_step++;
-        $db_user = $_POST['db_user'];
-        $db_pass = $_POST['db_pass'];
-        $db_host = $_POST['db_host'];
-        $db_port = $_POST['db_port'];
-        $db_name = $_POST['db_name'];
-        $db_type = $_POST['db_type'];
-        $db_charset = $_POST['db_charset'];
-        if ($db_type == 'sqlite') {
-            $db_file = $db_name;
-        } else {
-            $pa_db_user = $_POST['pa_db_user'];
-            $pa_db_pass = $_POST['pa_db_pass'];
-        }
-        $pa_pass = $_POST['pa_pass'];
-        $hostmaster = $_POST['dns_hostmaster'];
-        $dns_ns1 = $_POST['dns_ns1'];
-        $dns_ns2 = $_POST['dns_ns2'];
+        // Check for step in session to prevent skipping
+        checkStep(5, 4);
 
-        require_once("../inc/database.inc.php");
-        $db = dbConnect();
-        include_once("database-structure.inc.php");
+        // Create database-connection, get connection, get schema-manager get query-builder
+        Poweradmin\Db::createConnection($_SESSION['dbParameters']);
+        $dbConnection = Poweradmin\Db::getConnection();
+        $schemaManager = $dbConnection->getSchemaManager();
+        $queryBuilder = $dbConnection->createQueryBuilder();
 
-        echo "<p>" . _('You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert and update records in the PowerDNS database.') . " ";
-        if ($db_type == 'mysql') {
-            $pa_db_host = $db_host;
 
-            $sql = 'SELECT USER()';
-            $result = $db->queryRow($sql);
-            if (isset($result['user()'])) {
-                $current_db_user = $result['user()'];
-                $pa_db_host = substr($current_db_user, strpos($current_db_user, '@') + 1);
+        // Load database-structure
+        $databaseStructure = include INSTALLER_DIRECTORY . 'includes/database_structure.php';
+
+        // Loop through tables to create them
+        foreach ($databaseStructure as $tableName => $tableData) {
+            // Check if table exists
+            if ($schemaManager->tablesExist($tableName)) {
+                // Drop table
+                $schemaManager->dropTable($tableName);
             }
 
-            echo _('In MySQL you should now perform the following command:') . "</p>";
-            echo "<p><code>GRANT SELECT, INSERT, UPDATE, DELETE<BR>ON " . $db_name . ".*<br>TO '" . $pa_db_user . "'@'" . $pa_db_host . "'<br>IDENTIFIED BY '" . $pa_db_pass . "';</code></p>";
-        } elseif ($db_type == 'pgsql') {
-            echo _('On PgSQL you would use:') . "</p>";
-            echo "<p><code>$ createuser -E -P " . $pa_db_user . "<br>" .
-            "Enter password for new role: " . $pa_db_pass . "<br>" .
-            "Enter it again: " . $pa_db_pass . "<br>" .
-            "Shall the new role be a superuser? (y/n) n<br>" .
-            "Shall the new user be allowed to create databases? (y/n) n<br>" .
-            "Shall the new user be allowed to create more new users? (y/n) n<br>" .
-            "CREATE USER<br>" .
-            "$ psql " . $db_name . "<br>";
-            echo "psql> ";
-            foreach ($grantTables as $tableName) {
-                echo "GRANT SELECT, INSERT, DELETE, UPDATE ON " . $tableName . " TO " . $pa_db_user . ";<br />";
+            // Create Table
+            $table = new Doctrine\DBAL\Schema\Table($tableName);
+
+            // Loop through columns
+            foreach ($tableData['columns'] as $fieldName => $fieldData) {
+                // Add column
+                $table->addColumn(
+                    $fieldName,
+                    $fieldData['type'],
+                    array_key_exists('options', $fieldData) ? $fieldData['options'] : []
+                );
             }
-            foreach ($grantSequences as $sequenceName) {
-                echo "GRANT USAGE, SELECT ON SEQUENCE " . $sequenceName . " TO " . $pa_db_user . ";<br />";
+
+            // Check for primary-key
+            if (array_key_exists('primaryKey', $tableData)) {
+                // Set primary-key
+                $table->setPrimaryKey($tableData['primaryKey']);
             }
-            echo "</code></p>\n";
-        }
-        echo "<p>" . _('After you have added the new user, proceed with this installation procedure.') . "</p>\n";
-        echo "<form method=\"post\">";
-        echo "<input type=\"hidden\" name=\"db_host\" value=\"" . $db_host . "\">";
-        echo "<input type=\"hidden\" name=\"db_name\" value=\"" . $db_name . "\">";
-        echo "<input type=\"hidden\" name=\"db_port\" value=\"" . $db_port . "\">";
-        echo "<input type=\"hidden\" name=\"db_type\" value=\"" . $db_type . "\">";
-        echo "<input type=\"hidden\" name=\"db_user\" value=\"" . $db_user . "\">";
-        echo "<input type=\"hidden\" name=\"db_pass\" value=\"" . $db_pass . "\">";
-        echo "<input type=\"hidden\" name=\"db_charset\" value=\"" . $db_charset . "\">";
-        if ($db_type != 'sqlite') {
-            echo "<input type=\"hidden\" name=\"pa_db_user\" value=\"" . $pa_db_user . "\">";
-            echo "<input type=\"hidden\" name=\"pa_db_pass\" value=\"" . $pa_db_pass . "\">";
-        }
-        echo "<input type=\"hidden\" name=\"pa_pass\" value=\"" . $pa_pass . "\">";
-        echo "<input type=\"hidden\" name=\"dns_hostmaster\" value=\"" . $hostmaster . "\">";
-        echo "<input type=\"hidden\" name=\"dns_ns1\" value=\"" . $dns_ns1 . "\">";
-        echo "<input type=\"hidden\" name=\"dns_ns2\" value=\"" . $dns_ns2 . "\">";
-        echo "<input type=\"hidden\" name=\"step\" value=\"" . $current_step . "\">";
-        echo "<input type=\"hidden\" name=\"language\" value=\"" . $language . "\">";
-        echo "<input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $current_step . "\">";
-        echo "</form>";
-        break;
 
-    case 6:
-        // Try to create configuration file
-        $config_file_created = false;
-        $configuration = ''; // FIXME
-        if (is_writeable(LOCAL_CONFIG_FILE)) {
-            $local_config = fopen(LOCAL_CONFIG_FILE, "w");
-            fwrite($local_config, $configuration);
-            fclose($local_config);
-            $config_file_created = true;
+            // Check for unique-index
+            if (array_key_exists('unique', $tableData)) {
+                // Add unique-index
+                $table->addUniqueIndex($tableData['unique']);
+            }
+
+            // Add table
+            $schemaManager->createTable($table);
         }
 
-        // No need to set database port if it's standard port for that db
-        $db_port = ($_POST['db_type'] == 'mysql' && $_POST['db_port'] != 3306)
-            || ($_POST['db_type'] == 'pgsql' && $_POST['db_port'] != 5432) ? $_POST['db_port'] : '';
 
-        // For SQLite we should provide path to db file
-        $db_file = $_POST['db_type'] =='sqlite' ? $db_file = $_POST['db_name'] : '';
+        // Load permissions
+        $permissions = include INSTALLER_DIRECTORY . 'includes/permissions.php';
 
-        echo $twig->render('step6.html', array(
-            'next_step' => ++$current_step,
-            'language' => $language,
-            'config_file_created' => $config_file_created,
-            'local_config_file' => LOCAL_CONFIG_FILE,
-            'session_key' => Poweradmin\Password::salt(SESSION_KEY_LENGTH),
-            'iface_lang' => $language,
-            'dns_hostmaster' => $_POST['dns_hostmaster'],
-            'dns_ns1' => $_POST['dns_ns1'],
-            'dns_ns2' => $_POST['dns_ns2'],
-            'db_host' => $_POST['db_host'],
-            'db_user' => $_POST['pa_db_user'],
-            'db_pass' => $_POST['pa_db_pass'],
-            'db_name' => $_POST['db_name'],
-            'db_type' => $_POST['db_type'],
-            'db_port' => $db_port,
-            'db_charset' => $_POST['db_charset'],
-            'pa_pass' => $_POST['pa_pass']
-        ));
-        break;
+        // Set counter-variable
+        $permissionsCreated = 0;
 
-    case 7:
-        echo $twig->render('step7.html');
-        break;
+        // Loop through permissions
+        foreach ($permissions as $i => $permission) {
+            // Insert permission
+            $dbConnection->executeQuery(
+                $queryBuilder->insert('perm_items')->values(['id' => '?', 'name' => '?', 'descr' => '?']),
+                [$permission[0], $permission[1], $permission[2]]
+            );
 
-    default:
+            ++$permissionsCreated;
+        }
+
+        // Create default permission-template
+        $permissionTemplateResult = $dbConnection->executeQuery(
+            $queryBuilder->insert('perm_templ')->values(['name' => '?', 'descr' => '?']),
+            ['Administrator', _('Administrator template with full rights.')]
+        );
+
+        $permissionTemplateItemResult = $dbConnection->executeQuery(
+            $queryBuilder->insert('perm_templ_items')->values(['templ_id' => '?', 'perm_id' => '?']),
+            [1, 53]
+        );
+
+
+        // Get user-data
+        $user = $_SESSION['userData'];
+
+        // Replace password with hashed password
+        $user['password'] = Poweradmin\Password::hash($user['password']);
+
+        // Create user-query
+        $userQuery = $queryBuilder->insert('users')->values([
+            'username' => '?', 'password' => '?', 'fullname' => '?', 'email' => '?', 'description' => '?',
+            'perm_templ' => '?', 'use_ldap' => '?', 'active' => '?'
+        ]);
+
+        // Insert user
+        $userResult = $dbConnection->executeQuery(
+            $userQuery,
+            [
+                $user['username'], $user['password'], $user['fullname'], $user['email'],
+                _('Administrator with full rights.'), 1, false, true
+            ]
+        );
+
+
+        // Get template of config-file
+        $configFileContent = file_get_contents(INSTALLER_DIRECTORY . 'includes/config_template.php');
+
+        // Get db-parameters & general-data from session
+        $dbParameters = $_SESSION['dbParameters'];
+        $generalData = $_SESSION['generalData'];
+
+        // Replace placeholder
+        $configFileContent = str_replace([
+            '%dbType%',
+            $dbParameters['driver'] === 'sqlite' ? '%dbFile%' : '$db_file',
+            array_key_exists('user', $dbParameters) ? '%dbUsername%' : '$db_user',
+            array_key_exists('password', $dbParameters) ? '%dbPassword%' : '$db_pass',
+            $dbParameters['driver'] !== 'sqlite' ? '%dbHost%' : '$db_host',
+            $dbParameters['driver'] !== 'sqlite' ? '%dbPort%' : '$db_port',
+            $dbParameters['driver'] !== 'sqlite' ? '%dbDatabase%' : '$db_name',
+            $dbParameters['driver'] !== 'sqlite' ? '%dbCharset%' : '$db_charset',
+            '%sessionKey%',
+            '%locale%',
+            '%hostmaster%',
+            '%primaryNameserver%',
+            '%secondaryNameserver%',
+            array_key_exists('tertiaryNameserver', $generalData) ? '%tertiaryNameserver%' : '$dns_ns3'
+        ], [
+            substr($_SESSION['dbParameters']['driver'], 4),
+            $dbParameters['driver'] === 'sqlite' ? $dbParameters['path'] : '//$db_file',
+            array_key_exists('user', $dbParameters) ? $dbParameters['user'] : '//$db_user',
+            array_key_exists('password', $dbParameters) ? $dbParameters['password'] : '//$db_pass',
+            $dbParameters['driver'] !== 'sqlite' ? $dbParameters['host'] : '//$db_host',
+            $dbParameters['driver'] !== 'sqlite' ? $dbParameters['port'] : '//$db_port',
+            $dbParameters['driver'] !== 'sqlite' ? $dbParameters['dbname'] : '//$db_name',
+            $dbParameters['driver'] !== 'sqlite' ? $dbParameters['charset'] : '//$db_charset',
+            Poweradmin\Password::salt($config['sessionKeyLength']),
+            $parameters['locale'],
+            $generalData['hostmaster'],
+            $generalData['primaryNameserver'],
+            $generalData['secondaryNameserver'],
+            array_key_exists('tertiaryNameserver', $generalData) ? $generalData['tertiaryNameserver'] : '//$dns_ns3'
+        ], $configFileContent);
+
+        // Write config-file
+        $configWriteResult = file_put_contents($config['configFile'], $configFileContent);
         break;
 }
 
-echo $twig->render('footer.html', array('version' => Poweradmin\Version::VERSION));
+// Include template for set step
+include INSTALLER_DIRECTORY . 'templates/step' . $parameters['step'] . '.php';
+
+// Write locale to session
+$_SESSION['locale'] = $parameters['locale'];
