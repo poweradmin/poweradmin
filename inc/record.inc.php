@@ -1651,7 +1651,7 @@ function get_users_from_domain_id($id) {
 function search_zone_and_record($parameters, $permission_view, $sort_zones_by, $sort_records_by) {
     global $db;
 
-    $return = array('zones' => [], 'records' => []);
+    $return = array('zones' => array(), 'records' => array());
 
     if ($parameters['reverse']) {
         if (filter_var($parameters['query'], FILTER_FLAG_IPV4)) {
