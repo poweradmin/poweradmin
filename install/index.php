@@ -14,10 +14,11 @@ if (array_key_exists('debug', $_GET) && $_GET['debug'] === 'true') {
 session_start();
 
 // Set directory-constants
+define('APPLICATION_DIRECTORY', dirname(__DIR__) . '/');
 define('INSTALLER_DIRECTORY', __DIR__ . '/');
 
 // Load autoloader & functions-file
-require_once INSTALLER_DIRECTORY . '../vendor/autoload.php';
+require_once APPLICATION_DIRECTORY . 'vendor/autoload.php';
 require_once INSTALLER_DIRECTORY . 'includes/functions.php';
 require_once INSTALLER_DIRECTORY . 'includes/validation_functions.php';
 
@@ -26,7 +27,7 @@ use Valitron\Validator as V;
 
 // Set array with default-configuration
 $config = [
-    'configFile' => realpath(INSTALLER_DIRECTORY . '../inc') . '/config.inc.php',
+    'configFile' => APPLICATION_DIRECTORY . 'inc/config.inc.php',
 
     'availableDatabaseDrivers' => Doctrine\DBAL\DriverManager::getAvailableDrivers(),
     'supportedDatabaseDrivers' => ['pdo_mysql' => 'MySQL', 'pdo_pgsql' => 'PostgreSQL', 'pdo_sqlite' => 'SQLite'],
