@@ -58,7 +58,7 @@ class Password {
         if ($password_encryption === 'md5salt') {
             return self::gen_mix_salt($password);
         } elseif ($password_encryption === 'bcrypt') {
-            return password_hash($password, PASSWORD_BCRYPT, ['cost' => $password_encryption_cost]);
+            return password_hash($password, PASSWORD_BCRYPT, array('cost' => $password_encryption_cost));
         } else {
             return md5($password);
         }
