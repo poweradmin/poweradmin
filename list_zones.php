@@ -62,7 +62,7 @@ $count_zones_edit = zone_count_ng($perm_edit);
 # that causes failure.
 
 $zone_sort_by = ZONE_SORT_BY;
-if (!in_array(ZONE_SORT_BY, array('name', 'type', 'count_records'))) {
+if (!in_array(ZONE_SORT_BY, array('name', 'type', 'count_records', 'owner'))) {
     $zone_sort_by = 'name';
 }
 
@@ -97,7 +97,7 @@ if ($perm_view == "none") {
     echo "       <th><a href=\"list_zones.php?zone_sort_by=name\">" . _('Name') . "</a></th>\n";
     echo "       <th><a href=\"list_zones.php?zone_sort_by=type\">" . _('Type') . "</a></th>\n";
     echo "       <th><a href=\"list_zones.php?zone_sort_by=count_records\">" . _('Records') . "</a></th>\n";
-    echo "       <th>" . _('Owner') . "</th>\n";
+    echo "       <th><a href=\"list_zones.php?zone_sort_by=owner\">" . _('Owner') . "</a></th>\n";
 
     if ($iface_zonelist_serial) {
         echo "       <th>" . _('Serial') . "</th>\n";

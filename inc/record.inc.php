@@ -1252,7 +1252,9 @@ function get_zones($perm, $userid = 0, $letterstart = 'all', $rowstart = 0, $row
         }
     }
 
-    if ($sortby != 'count_records') {
+    if ($sortby == 'owner') {
+        $sortby = 'users.username';
+    } elseif ($sortby != 'count_records') {
         $sortby = 'domains.' . $sortby;
     }
 
