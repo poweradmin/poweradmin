@@ -1,3 +1,21 @@
-/.idea/
+# PhpStorm (IDE) configuration
+.idea/
+
+# Eclipse (IDE) configuration
+.project/
+.settings/
+
+# Configuration file created by installer containing sensible informations
 inc/config.inc.php
+
+# Netbeans (IDE) configuration
+nbproject/
+
+# https://github.com/poweradmin/poweradmin-scripts
+scripts/
+
+# https://github.com/poweradmin/poweradmin-tests
+tests/
+
+# Skip tracking composer-lock as we will keep composer.json up-to-date
 composer.lock
