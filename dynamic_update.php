@@ -27,7 +27,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2014 Poweradmin Development Team
+ * @copyright   2010-2016 Poweradmin Development Team
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
 require('inc/config.inc.php');
@@ -42,14 +42,15 @@ $db = dbConnect();
  *
  * @return mixed $value Safe Value
  */
-function safe($value) {
+function safe($value)
+{
     global $db, $db_type;
 
     if ($db_type == 'mysql' || $db_type == 'sqlite') {
         $value = $db->quote($value, 'text');
         $value = substr($value, 1, -1); // remove quotes
     } elseif ($db_type == 'pgsql') {
-	$value = pg_escape_string($value);        
+        $value = pg_escape_string($value);
     } else {
         return status_exit('baddbtype');
     }
@@ -65,7 +66,8 @@ function safe($value) {
  *
  * @return boolean false
  */
-function status_exit($status) {
+function status_exit($status)
+{
     $verbose_codes = array(
         'badagent' => 'Your user agent is not valid.',
         'badauth' => 'No username available.',
@@ -94,13 +96,13 @@ function status_exit($status) {
  *
  * @return string A if IPv4, AAAA if IPv6 or 0 if invalid
  */
-function valid_ip_address( $ip )
+function valid_ip_address($ip)
 {
     if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
         $value = 'A';
-    }elseif (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+    } elseif (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
         $value = 'AAAA';
-    }else {
+    } else {
         $value = 0;
     }
     return $value;
@@ -148,16 +150,16 @@ if (!empty($_REQUEST['myip6'])) {
     $given_ip6 = $_REQUEST['ip6'];
 }
 
-if (valid_ip_address($given_ip) === 'AAAA'){
+if (valid_ip_address($given_ip) === 'AAAA') {
     $given_ip6 = $given_ip;
 }
 // Look for tag to grab the IP we coming from
-if (($given_ip6 == "whatismyip")&&(valid_ip_address($_SERVER['REMOTE_ADDR']) === 'AAAA')){
+if (($given_ip6 == "whatismyip") && (valid_ip_address($_SERVER['REMOTE_ADDR']) === 'AAAA')) {
     $given_ip6 = $_SERVER['REMOTE_ADDR'];
 }
-if (($given_ip == "whatismyip")&&(valid_ip_address($_SERVER['REMOTE_ADDR']) === 'A')){
+if (($given_ip == "whatismyip") && (valid_ip_address($_SERVER['REMOTE_ADDR']) === 'A')) {
     $given_ip = $_SERVER['REMOTE_ADDR'];
-}elseif (($given_ip == "whatismyip")&&(valid_ip_address($_SERVER['REMOTE_ADDR']) === 'AAAA')&&(!(valid_ip_address($given_ip6) === 'AAAA'))){
+} elseif (($given_ip == "whatismyip") && (valid_ip_address($_SERVER['REMOTE_ADDR']) === 'AAAA') && (!(valid_ip_address($given_ip6) === 'AAAA'))) {
     $given_ip6 = $_SERVER['REMOTE_ADDR'];
 }
 
@@ -165,7 +167,7 @@ if (($given_ip == "whatismyip")&&(valid_ip_address($_SERVER['REMOTE_ADDR']) === 
 $ip = safe($given_ip);
 $ip6 = safe($given_ip6);
 // Check its ok...
-if ( (!valid_ip_address($ip)) && (!valid_ip_address($ip6)) ) {
+if ((!valid_ip_address($ip)) && (!valid_ip_address($ip6))) {
     return status_exit('dnserr');
 }
 
@@ -207,19 +209,19 @@ while ($zone = $zones_result->fetchRow()) {
 
     while ($record = $result->fetchRow()) {
         if ($hostname == $record['name']) {
-            if (($record['type'] == 'A')&&(valid_ip_address($ip) === 'A')) {
+            if (($record['type'] == 'A') && (valid_ip_address($ip) === 'A')) {
                 if ($ip == $record['content']) {
                     $no_update_necessary = true;
-                }else{
+                } else {
                     $update_query = "UPDATE records SET content ='{$ip}' where name='{$record["name"]}' and type='A'";
                     $update_result = $db->query($update_query);
                     $zone_updated = true;
                     $was_updated = true;
                 }
-            }elseif (($record['type'] == 'AAAA')&&(valid_ip_address($ip6) === 'AAAA')) {
+            } elseif (($record['type'] == 'AAAA') && (valid_ip_address($ip6) === 'AAAA')) {
                 if ($ip6 == $record['content']) {
                     $no_update_necessary = true;
-                }else{
+                } else {
                     $update_query = "UPDATE records SET content ='{$ip6}' where name='{$record["name"]}' and type='AAAA'";
                     $update_result = $db->query($update_query);
                     $zone_updated = true;
@@ -228,9 +230,9 @@ while ($zone = $zones_result->fetchRow()) {
             }
         }
     }
-    if($zone_updated){
+    if ($zone_updated) {
         update_soa_serial($zone['domain_id']);
     }
 }
 
-return (($was_updated||$no_update_necessary) ? status_exit('good') : status_exit('!yours'));
+return (($was_updated || $no_update_necessary) ? status_exit('good') : status_exit('!yours'));
