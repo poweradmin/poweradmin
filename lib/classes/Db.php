@@ -51,39 +51,6 @@ class Db
      */
     public static function createConnection($parameters, $name = 'default')
     {
-        // Check for driver in parameters
-        if (!is_array($parameters) || !array_key_exists('driver', $parameters)) {
-            // @ToDo. real error-handling
-            die(sprintf('<strong>Error:</strong> You have to specify driver in $parameters for method <em>%s</em>!', __METHOD__));
-        }
-
-        // Switch between db-drivers
-        switch($parameters['driver'])
-        {
-            default:
-                // @ToDo: real error-handling
-                die(sprintf('<strong>Error:</strong> Specified database-driver %s is not supported!', $parameters['driver']));
-                break;
-
-            case 'pdo_mysql':
-            case 'pdo_pgsql':
-                $requiredParameters = array('driver', 'host', 'user', 'password', 'dbname');
-                break;
-
-            case 'pdo_sqlite':
-                $requiredParameters = array('driver', 'path');
-                break;
-        }
-
-        // Result of parameters-check
-        $parametersCheckResult = array_diff($requiredParameters, array_keys($parameters));
-
-        // Check if required parameters not included
-        if (count($parametersCheckResult) > 0) {
-            // @ToDo: real error-handling
-            die(sprintf('<strong>Error:</strong> Missing parameter(s) %s for driver %s', implode(',', $parametersCheckResult), $parameters['driver']));
-        }
-
         // Create connection
         self::$connections[$name] = DriverManager::getConnection($parameters);
 
