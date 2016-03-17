@@ -20,7 +20,7 @@
                 <td>
                     <select name="dbDriver" id="dbDriver">
                         <?php foreach ($config['availableSupportedDatabaseDrivers'] as $i => $driver): ?>
-                            <option value="<?= $driver ?>"<?=getValue('driver', 'pdo_mysql') === $driver ? ' selected' : '' ?>><?= $config['supportedDatabaseDrivers'][$driver] ?></option>
+                            <option value="<?= $driver ?>"<?=getValue('dbDriver', 'pdo_mysql') === $driver ? ' selected' : '' ?>><?= $config['supportedDatabaseDrivers'][$driver] ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>
