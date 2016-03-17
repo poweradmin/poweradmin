@@ -675,8 +675,9 @@ function log_info($syslog_message) {
  * @return null
  */
 function auth($msg = "", $type = "success") {
-    include_once('inc/header.inc.php');
-    include('inc/config.inc.php');
+    include_once 'inc/header.inc.php';
+    include_once 'inc/config.inc.php';
+    global $iface_lang;
 
     if ($msg) {
         print "<div class=\"$type\">$msg</div>\n";
@@ -700,16 +701,16 @@ function auth($msg = "", $type = "success") {
                     <select class="input" name="userlang">
                         <?php
                         // List available languages (sorted alphabetically)
-                        include_once('inc/countrycodes.inc.php');
+                        include_once 'inc/countrycodes.inc.php';
                         $locales = scandir('locale/');
                         foreach ($locales as $locale) {
                             if (strlen($locale) == 5) {
-                                $locales_fullname[$locale] = $countrycodes[substr($locale, 0, 2)];
+                                $locales_fullname[$locale] = $country_codes[substr($locale, 0, 2)];
                             }
                         }
                         asort($locales_fullname);
                         foreach ($locales_fullname as $locale => $language) {
-                            if ($locale == $iface_lang) {
+                            if (substr($locale, 0, 2) == substr($iface_lang, 0, 2)) {
                                 echo _('<option selected value="' . $locale . '">' . $language);
                             } else {
                                 echo _('<option value="' . $locale . '">' . $language);
