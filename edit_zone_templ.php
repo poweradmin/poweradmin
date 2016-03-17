@@ -132,17 +132,9 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
                 if (!$found_selected_type) {
                     echo "         <option SELECTED value=\"" . htmlspecialchars($r['type']) . "\"><i>" . $r['type'] . "</i></option>\n";
                 }
-                /*
-                  Sanitize content due to SPF record quoting in PowerDNS
-                 */
-                if ($r['type'] == "SRV" || $r['type'] == "SPF") {
-                    $clean_content = trim($r['content'], "\x22\x27");
-                } else {
-                    $clean_content = $r['content'];
-                }
                 echo "       </select>\n";
                 echo "      </td>\n";
-                echo "      <td class=\"u\"><input class=\"wide\" name=\"record[" . $r['id'] . "][content]\" value='" . $clean_content . "'></td>\n";
+                echo "      <td class=\"u\"><input class=\"wide\" name=\"record[" . $r['id'] . "][content]\" value='" . $r['content'] . "'></td>\n";
                 if ($r['type'] == "MX" || $r['type'] == "SRV") {
                     echo "      <td class=\"u\"><input name=\"record[" . $r['id'] . "][prio]\" value=\"" . $r['prio'] . "\"></td>\n";
                 } else {

@@ -82,7 +82,7 @@ if (isset($_POST["commit"])) {
                              .' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
                              .' record_type:%s record:%s content:%s ttl:%s priority:%s',
                               $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                              $old_record_info['type'], $old_record_info['name'], $old_record_info['content'], $old_record_info['ttl'], $old_record_info['prio'], 
+                              $old_record_info['type'], $old_record_info['name'], $old_record_info['content'], $old_record_info['ttl'], $old_record_info['prio'],
                               $new_record_info['type'], $new_record_info['name'], $new_record_info['content'], $new_record_info['ttl'], $new_record_info['prio']));
 
             if ($pdnssec_use) {
@@ -111,21 +111,12 @@ if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
     echo "        <th>" . _('TTL') . "</th>\n";
     echo "       </tr>\n";
 
-    /*
-      Sanitize content due to SPF record quoting in PowerDNS
-     */
-    if ($record['type'] == "SRV" || $record['type'] == "SPF" || $record['type'] == "TXT") {
-        $clean_content = trim($record['content'], "\x22\x27");
-    } else {
-        $clean_content = $record['content'];
-    }
-
     if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
         echo "      <tr>\n";
         echo "       <td>" . $record["name"] . "</td>\n";
         echo "       <td>IN</td>\n";
         echo "       <td>" . htmlspecialchars($record["type"]) . "</td>\n";
-        echo "       <td>" . htmlspecialchars($clean_content) . "</td>\n";
+        echo "       <td>" . htmlspecialchars($record['content']) . "</td>\n";
         echo "       <td>" . htmlspecialchars($record["prio"]) . "</td>\n";
         echo "       <td>" . htmlspecialchars($record["ttl"]) . "</td>\n";
         echo "      </tr>\n";
@@ -151,7 +142,7 @@ if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
             echo "         <option SELECTED value=\"" . htmlspecialchars($record['type']) . "\"><i>" . $record['type'] . "</i></option>\n";
         echo "        </select>\n";
         echo "       </td>\n";
-        echo "       <td><input type=\"text\" name=\"content\" value=\"" . htmlspecialchars($clean_content) . "\" class=\"input\"></td>\n";
+        echo "       <td><input type=\"text\" name=\"content\" value=\"" . htmlspecialchars($record['content']) . "\" class=\"input\"></td>\n";
         echo "       <td><input type=\"text\" name=\"prio\" value=\"" . htmlspecialchars($record["prio"]) . "\" class=\"sinput\"></td>\n";
         echo "       <td><input type=\"text\" name=\"ttl\" value=\"" . htmlspecialchars($record["ttl"]) . "\" class=\"sinput\"></td>\n";
         echo "      </tr>\n";

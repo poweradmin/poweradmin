@@ -267,17 +267,10 @@ if ($records == "-1") {
             }
             if (!$found_selected_type)
                 echo "         <option SELECTED value=\"" . htmlspecialchars($r['type']) . "\"><i>" . $r['type'] . "</i></option>\n";
-            /*
-              Sanitize content due to SPF record quoting in PowerDNS
-             */
-            if ($r['type'] == "SRV" || $r['type'] == "SPF" || $r['type'] == "TXT") {
-                $clean_content = trim($r['content'], "\x22\x27");
-            } else {
-                $clean_content = $r['content'];
-            }
+
             echo "       </select>\n";
             echo "      </td>\n";
-            echo "      <td class=\"u\"><input class=\"wide\" name=\"record[" . $r['id'] . "][content]\" value=\"" . htmlspecialchars($clean_content) . "\"></td>\n";
+            echo "      <td class=\"u\"><input class=\"wide\" name=\"record[" . $r['id'] . "][content]\" value=\"" . htmlspecialchars($r['content']) . "\"></td>\n";
             echo "      <td class=\"u\"><input size=\"4\" id=\"priority_field_" . $r['id'] . "\" name=\"record[" . $r['id'] . "][prio]\" value=\"" . htmlspecialchars($r['prio']) . "\"></td>\n";
             echo "      <td class=\"u\"><input size=\"4\" name=\"record[" . $r['id'] . "][ttl]\" value=\"" . htmlspecialchars($r['ttl']) . "\"></td>\n";
         }
