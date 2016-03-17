@@ -308,16 +308,11 @@ function add_zone_templ_record($zone_templ_id, $name, $type, $content, $ttl, $pr
         }
 
         if ($name != '') {
-            if ($type == "SPF") {
-                $content = $db->quote(stripslashes('\"' . $content . '\"'), 'text');
-            } else {
-                $content = $db->quote($content, 'text');
-            }
             $query = "INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES ("
                     . $db->quote($zone_templ_id, 'integer') . ","
                     . $db->quote($name, 'text') . ","
                     . $db->quote($type, 'text') . ","
-                    . $content . ","
+                    . $db->quote($content, 'text') . ","
                     . $db->quote($ttl, 'integer') . ","
                     . $db->quote($prio, 'integer') . ")";
             $result = $db->query($query);
@@ -350,15 +345,10 @@ function edit_zone_templ_record($record) {
         return false;
     } else {
         if ("" != $record['name']) {
-            if ($record['type'] == "SPF") {
-                $content = $db->quote(stripslashes('\"' . $record['content'] . '\"'), 'text');
-            } else {
-                $content = $db->quote($record['content'], 'text');
-            }
             $query = "UPDATE zone_templ_records
                                 SET name=" . $db->quote($record['name'], 'text') . ",
                                 type=" . $db->quote($record['type'], 'text') . ",
-                                content=" . $content . ",
+                                content=" . $db->quote($record['content'], 'text') . ",
                                 ttl=" . $db->quote($record['ttl'], 'integer') . ",
                                 prio=" . $db->quote(isset($record['prio']) ? $record['prio'] : 0, 'integer') . "
                                 WHERE id=" . $db->quote($record['rid'], 'integer');
@@ -459,11 +449,6 @@ function add_zone_templ_save_as($template_name, $description, $userid, $records,
         $owner = get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
 
         foreach ($records as $record) {
-            if ($record['type'] == "SPF") {
-                $content = $db->quote(stripslashes('\"' . $record['content'] . '\"'), 'text');
-            } else {
-                $content = $db->quote($record['content'], 'text');
-            }
 
             $name = $domain ? preg_replace('/' . $domain . '/', '[ZONE]', $record['name']) : $record['name'];
             $content = $domain ? preg_replace('/' . $domain . '/', '[ZONE]', $content) : $content;
@@ -472,7 +457,7 @@ function add_zone_templ_save_as($template_name, $description, $userid, $records,
                     . $db->quote($zone_templ_id, 'integer') . ","
                     . $db->quote($name, 'text') . ","
                     . $db->quote($record['type'], 'text') . ","
-                    . $content . ","
+                    . $db->quote($record['content'], 'text') . ","
                     . $db->quote($record['ttl'], 'integer') . ","
                     . $db->quote(isset($record['prio']) ? $record['prio'] : 0, 'integer') . ")";
             $result = $db->exec($query2);
