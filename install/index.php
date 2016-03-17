@@ -171,7 +171,7 @@ switch ($parameters['step']) {
                     break;
             }
 
-            if (isset($dbParameters)) {
+            if (isset($dbParameters) && Poweradmin\Db::validateParameters($dbParameters)) {
                 // Create connection to test data
                 $connectionStatus = Poweradmin\Db::createConnection($dbParameters);
 
@@ -269,6 +269,12 @@ switch ($parameters['step']) {
         // Check for step in session to prevent skipping
         checkStep(5, 4);
 
+        // Validate db-parameters from session
+        if (!Poweradmin\Db::validateParameters($_SESSION['dbParameters'])) {
+            // @ToDo: real error-handling
+            die('<strong>Error:</strong> Error in db-parameters please contact the developer-team!');
+        }
+
         // Create database-connection, get connection, get schema-manager get query-builder
         Poweradmin\Db::createConnection($_SESSION['dbParameters']);
         $dbConnection = Poweradmin\Db::getConnection();
@@ -363,7 +369,7 @@ switch ($parameters['step']) {
             $userQuery,
             [
                 $user['username'], $user['password'], $user['fullname'], $user['email'],
-                _('Administrator with full rights.'), 1, false, true
+                _('Administrator with full rights.'), 1, 0, 1
             ]
         );
 

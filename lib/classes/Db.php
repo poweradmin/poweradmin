@@ -23,6 +23,7 @@
 namespace Poweradmin;
 
 use Doctrine\DBAL\DriverManager;
+use Valitron\Validator;
 
 /**
  * Db class
@@ -113,5 +114,44 @@ class Db
 
         // Return connection
         return self::$connections[$name];
+    }
+
+    /**
+     * Validates given parameters depending on dbDriver
+     *
+     * @param array $parameters
+     * @return array|bool
+     */
+    public static function validateParameters($parameters)
+    {
+        // Get object of validation-library
+        $validator = new Validator($parameters);
+
+        // Add validation for dbDriver
+        $validator->rule('required', 'driver');
+        $validator->rule('in', 'driver', ['pdo_mysql', 'pdo_sqlite', 'pdo_pgsql']);
+
+        // Check if dbDriver is validate
+        if ($validator->validate()) {
+            // Switch dbDriver
+            switch($parameters['driver']) {
+                case 'pdo_mysql':
+                case 'pdo_pgsql':
+                    // Set validation-rules
+                    $validator->rule('required', ['host', 'port', 'user', 'password', 'dbname', 'charset']);
+                    $validator->rule('numeric', 'port');
+                    $validator->rule('in', 'charset', ['latin1', 'utf8']);
+                    break;
+
+                case 'pdo_sqlite':
+                    // Set validation-rules
+                    $validator->rule('required', 'path');
+                    $validator->rule('isFile', 'path');
+                    break;
+            }
+        }
+
+        // Return result
+        return $validator->validate() ? true : $validator->errors();
     }
 }
