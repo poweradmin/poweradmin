@@ -124,7 +124,7 @@ function getDomainsElements() {
 function checkDomainFilled() {
     var
             allEmpty = true,
-            domains = getDomainsElements();
+            domains = getDomainsElements().split("\n");
 
     if (domains.length == 1) {
         if ((domains[0].value.length == 0 || domains[0].value == null || domains[0].value == "")) {
