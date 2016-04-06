@@ -913,7 +913,7 @@ msgid "User is allowed to add new master zones."
 msgstr "Benutzer ist berechtigt neue Master Zonen hinzuzuf&uuml;gen."
 
 msgid "User is allowed to add new slave zones."
-msgstr "Benutzer ist berechtigt neue Salve Zonen hinzuzuf&uuml;gen."
+msgstr "Benutzer ist berechtigt neue Slave Zonen hinzuzuf&uuml;gen."
 
 msgid "User is allowed to see the content and meta data of zones he owns."
 msgstr "Benutzer ist berechtigt den Inhalt und die Meta Daten seiner Zonen anzuzeigen."
