@@ -32,8 +32,8 @@ $config = [
     'availableDatabaseDrivers' => Doctrine\DBAL\DriverManager::getAvailableDrivers(),
     'supportedDatabaseDrivers' => ['pdo_mysql' => 'MySQL', 'pdo_pgsql' => 'PostgreSQL', 'pdo_sqlite' => 'SQLite'],
 
-    'defaultLocale' => 'en_US',
-    'locales' => ['de_DE' => _('German'), 'en_US' => _('English')],
+    'defaultLocale' => 'en_US.UTF-8',
+    'locales' => ['en_US.UTF-8' => _('English'), 'de_DE.UTF-8' => _('German')],
 
     'sessionKeyLength' => 48
 ];
@@ -175,6 +175,9 @@ switch ($parameters['step']) {
                 // Create connection to test data
                 $connectionStatus = Poweradmin\Db::createConnection($dbParameters);
 
+                // Set type-mapping for pgsql & sqlite
+                Poweradmin\Db::getConnection()->getDatabasePlatform()->registerDoctrineTypeMapping('bool', 'boolean');
+
                 if ($connectionStatus) {
                     // Get existing tables
                     $tables = Poweradmin\Db::getConnection()->getSchemaManager()->listTables();
@@ -189,8 +192,8 @@ switch ($parameters['step']) {
                             // Get array-key of table in requiredTables-array
                             $tableArrayKey = array_search($table->getName(), $requiredTables);
 
-                            // Check if table is from PowerDNS tu support custom tables in the same database
-                            if (array_search($table->getName(), $requiredTables) !== false) {
+                            // Check if table is from PowerDNS to support custom tables in the same database
+                            if ($tableArrayKey !== false) {
                                 // Remove table from array
                                 unset($requiredTables[$tableArrayKey]);
                             }
@@ -384,13 +387,13 @@ switch ($parameters['step']) {
         // Replace placeholder
         $configFileContent = str_replace([
             '%dbType%',
-            $dbParameters['driver'] === 'sqlite' ? '%dbFile%' : '$db_file',
+            $dbParameters['driver'] === 'pdo_sqlite' ? '%dbFile%' : '$db_file',
             array_key_exists('user', $dbParameters) ? '%dbUsername%' : '$db_user',
             array_key_exists('password', $dbParameters) ? '%dbPassword%' : '$db_pass',
-            $dbParameters['driver'] !== 'sqlite' ? '%dbHost%' : '$db_host',
-            $dbParameters['driver'] !== 'sqlite' ? '%dbPort%' : '$db_port',
-            $dbParameters['driver'] !== 'sqlite' ? '%dbDatabase%' : '$db_name',
-            $dbParameters['driver'] !== 'sqlite' ? '%dbCharset%' : '$db_charset',
+            $dbParameters['driver'] !== 'pdo_sqlite' ? '%dbHost%' : '$db_host',
+            $dbParameters['driver'] !== 'pdo_sqlite' ? '%dbPort%' : '$db_port',
+            $dbParameters['driver'] !== 'pdo_sqlite' ? '%dbDatabase%' : '$db_name',
+            $dbParameters['driver'] !== 'pdo_sqlite' ? '%dbCharset%' : '$db_charset',
             '%sessionKey%',
             '%locale%',
             '%hostmaster%',
@@ -399,13 +402,13 @@ switch ($parameters['step']) {
             array_key_exists('tertiaryNameserver', $generalData) ? '%tertiaryNameserver%' : '$dns_ns3'
         ], [
             substr($_SESSION['dbParameters']['driver'], 4),
-            $dbParameters['driver'] === 'sqlite' ? $dbParameters['path'] : '//$db_file',
+            $dbParameters['driver'] === 'pdo_sqlite' ? $dbParameters['path'] : '//$db_file',
             array_key_exists('user', $dbParameters) ? $dbParameters['user'] : '//$db_user',
             array_key_exists('password', $dbParameters) ? $dbParameters['password'] : '//$db_pass',
-            $dbParameters['driver'] !== 'sqlite' ? $dbParameters['host'] : '//$db_host',
-            $dbParameters['driver'] !== 'sqlite' ? $dbParameters['port'] : '//$db_port',
-            $dbParameters['driver'] !== 'sqlite' ? $dbParameters['dbname'] : '//$db_name',
-            $dbParameters['driver'] !== 'sqlite' ? $dbParameters['charset'] : '//$db_charset',
+            $dbParameters['driver'] !== 'pdo_sqlite' ? $dbParameters['host'] : '//$db_host',
+            $dbParameters['driver'] !== 'pdo_sqlite' ? $dbParameters['port'] : '//$db_port',
+            $dbParameters['driver'] !== 'pdo_sqlite' ? $dbParameters['dbname'] : '//$db_name',
+            $dbParameters['driver'] !== 'pdo_sqlite' ? $dbParameters['charset'] : '//$db_charset',
             Poweradmin\Password::salt($config['sessionKeyLength']),
             $parameters['locale'],
             $generalData['hostmaster'],

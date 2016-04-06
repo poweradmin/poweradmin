@@ -19,8 +19,8 @@ function checkStep($requiredStep, $failureStep, $equal = true)
 /**
  * Configures the PHP-Extension "gettext" to use the configured locale
  *
- * @param $locale
- * @param $defaultLocale
+ * @param string $locale
+ * @param string $defaultLocale
  */
 function configureGettextExtension($locale, $defaultLocale)
 {
