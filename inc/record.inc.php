@@ -213,6 +213,27 @@ function update_soa_record($domain_id, $content) {
     return true;
 }
 
+/** Update change_date of SOA record
+ *
+ * @param int $domain_id Domain ID
+ * @param int $changed SOA change_date to set
+ *
+ * @return boolean true if success
+ */
+function update_soa_change_date($domain_id, $changed) {
+    global $db;
+
+    $sqlq = "UPDATE records SET change_date = " . $db->quote($changed, 'integer') . " WHERE domain_id = " . $db->quote($domain_id, 'integer') . " AND type = " . $db->quote('SOA', 'text');
+    $response = $db->query($sqlq);
+
+    if (PEAR::isError($response)) {
+        error($response->getMessage());
+        return false;
+    }
+
+    return true;
+}
+
 /** Set SOA serial in SOA content
  *
  * @param string $soa_rec SOA record content
@@ -256,16 +277,26 @@ function get_updated_soa_record($soa_rec) {
  * Increments SOA serial to next possible number
  *
  * @param int $domain_id Domain ID
+ * @param bool $force Update change_date when in autoserial mode
  *
  * @return boolean true if success
  */
-function update_soa_serial($domain_id) {
+function update_soa_serial($domain_id, $force=FALSE) {
     $soa_rec = get_soa_record($domain_id);
     if ($soa_rec == NULL) {
         return false;
     }
 
     $curr_serial = get_soa_serial($soa_rec);
+
+    if ($curr_serial == 0) {
+        if (!$force) {
+            return true;
+        }
+        $now = time();
+        return update_soa_change_date($domain_id, $now);
+    }
+
     $new_serial = get_next_serial($curr_serial);
 
     if ($curr_serial != $new_serial) {
