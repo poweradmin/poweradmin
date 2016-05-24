@@ -1,340 +1,285 @@
-#
+# 
 # Translators:
 msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin-Installer\n"
-"POT-Creation-Date: 2016-03-16 12:33+0100\n"
-"PO-Revision-Date: 2016-03-16 12:59+0100\n"
-"Last-Translator: Sebastian Sellmeier <mail@sebastian-sellmeier.de>\n"
-"Language-Team: English (http://www.transifex.com/poweradmin/poweradmin-"
-"installer/language/en/)\n"
+"POT-Creation-Date: 2016-05-24 16:57+0200\n"
+"PO-Revision-Date: 2016-05-24 14:58+0000\n"
+"Last-Translator: Sebastian Sellmeier\n"
+"Language-Team: English (http://www.transifex.com/poweradmin/poweradmin-installer/language/en/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.6.10\n"
-"X-Poedit-Basepath: .\n"
+"X-Generator: Poedit 1.8.4\n"
+"X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: _(\n"
+"X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-SearchPath-0: /var/www/poweradmin.localdev/install\n"
 
-#: /var/www/poweradmin.localdev/install/includes/validation_functions.php:6
+#: includes/validation_functions.php:6
 msgid "is not a file!"
 msgstr "is not a file!"
 
-#: /var/www/poweradmin.localdev/install/index.php:36
-msgid "German"
-msgstr "German"
-
-#: /var/www/poweradmin.localdev/install/index.php:36
+#: index.php:37
 msgid "English"
 msgstr "English"
 
-#: /var/www/poweradmin.localdev/install/index.php:117
-#: /var/www/poweradmin.localdev/install/templates/step3.php:29
+#: index.php:37
+msgid "German"
+msgstr "German"
+
+#: index.php:126 templates/step3.php:29
 msgid "Database-File"
 msgstr "Database-File"
 
-#: /var/www/poweradmin.localdev/install/index.php:118
-#: /var/www/poweradmin.localdev/install/templates/step3.php:33
+#: index.php:127 templates/step3.php:33
 msgid "Host"
 msgstr "Host"
 
-#: /var/www/poweradmin.localdev/install/index.php:119
-#: /var/www/poweradmin.localdev/install/templates/step3.php:37
+#: index.php:128 templates/step3.php:37
 msgid "Port"
 msgstr "Port"
 
-#: /var/www/poweradmin.localdev/install/index.php:120
-#: /var/www/poweradmin.localdev/install/index.php:225
-#: /var/www/poweradmin.localdev/install/templates/step3.php:41
-#: /var/www/poweradmin.localdev/install/templates/step4.php:48
+#: index.php:129 index.php:237 templates/step3.php:41 templates/step4.php:48
 msgid "Username"
 msgstr "Username"
 
-#: /var/www/poweradmin.localdev/install/index.php:121
-#: /var/www/poweradmin.localdev/install/index.php:226
-#: /var/www/poweradmin.localdev/install/templates/step3.php:45
-#: /var/www/poweradmin.localdev/install/templates/step4.php:52
+#: index.php:130 index.php:238 templates/step3.php:45 templates/step4.php:52
 msgid "Password"
 msgstr "Password"
 
-#: /var/www/poweradmin.localdev/install/index.php:122
-#: /var/www/poweradmin.localdev/install/templates/step3.php:49
+#: index.php:131 templates/step3.php:49
 msgid "Database"
 msgstr "Database"
 
-#: /var/www/poweradmin.localdev/install/index.php:123
-#: /var/www/poweradmin.localdev/install/templates/step3.php:53
+#: index.php:132 templates/step3.php:53
 msgid "Charset"
 msgstr "Charset"
 
-#: /var/www/poweradmin.localdev/install/index.php:219
-#: /var/www/poweradmin.localdev/install/templates/step4.php:14
+#: index.php:231 templates/step4.php:14
 msgid "E-Mail of Hostmaster"
 msgstr "E-Mail of Hostmaster"
 
-#: /var/www/poweradmin.localdev/install/index.php:220
-#: /var/www/poweradmin.localdev/install/templates/step4.php:18
+#: index.php:232 templates/step4.php:18
 msgid "Primary Nameserver"
 msgstr "Primary Nameserver"
 
-#: /var/www/poweradmin.localdev/install/index.php:221
-#: /var/www/poweradmin.localdev/install/templates/step4.php:22
+#: index.php:233 templates/step4.php:22
 msgid "Secondary Nameserver"
 msgstr "Secondary Nameserver"
 
-#: /var/www/poweradmin.localdev/install/index.php:222
-#: /var/www/poweradmin.localdev/install/templates/step4.php:26
+#: index.php:234 templates/step4.php:26
 msgid "Tertiary Nameserver"
 msgstr "Tertiary Nameserver"
 
-#: /var/www/poweradmin.localdev/install/index.php:223
-#: /var/www/poweradmin.localdev/install/templates/step4.php:40
+#: index.php:235 templates/step4.php:40
 msgid "Full Name"
 msgstr "Full Name"
 
-#: /var/www/poweradmin.localdev/install/index.php:224
-#: /var/www/poweradmin.localdev/install/templates/step4.php:44
+#: index.php:236 templates/step4.php:44
 msgid "E-Mail"
 msgstr "E-Mail"
 
-#: /var/www/poweradmin.localdev/install/index.php:227
-#: /var/www/poweradmin.localdev/install/templates/step4.php:57
+#: index.php:239 templates/step4.php:57
 msgid "Password Repeat"
 msgstr "Password Repeat"
 
-#: /var/www/poweradmin.localdev/install/index.php:340
+#: index.php:358
 msgid "Administrator template with full rights."
 msgstr "Administrator template with full rights."
 
-#: /var/www/poweradmin.localdev/install/index.php:366
+#: index.php:384
 msgid "Administrator with full rights."
 msgstr "Administrator with full rights."
 
-#: /var/www/poweradmin.localdev/install/templates/header.php:8
+#: templates/header.php:8
 msgid "Installation Step"
 msgstr "Installation Step"
 
-#: /var/www/poweradmin.localdev/install/templates/header.php:23
+#: templates/header.php:23
 msgid "Debug-Mode is enabled!"
 msgstr "Debug-Mode is enabled!"
 
-#: /var/www/poweradmin.localdev/install/templates/step1.php:3
+#: templates/step1.php:3
 msgid "Welcome to the installation of Poweradmin!"
 msgstr "Welcome to the installation of Poweradmin!"
 
-#: /var/www/poweradmin.localdev/install/templates/step1.php:6
+#: templates/step1.php:6
 msgid ""
-"We are pleased that you want to install our software Poweradmin. Please read "
-"carefully thorough the following information to complete the setup "
+"We are pleased that you want to install our software Poweradmin. Please read"
+" carefully thorough the following information to complete the setup "
 "successfully."
-msgstr ""
-"We are pleased that you want to install our software Poweradmin. Please read "
-"carefully thorough the following information to complete the setup "
-"successfully."
+msgstr "We are pleased that you want to install our software Poweradmin. Please read carefully thorough the following information to complete the setup successfully."
 
-#: /var/www/poweradmin.localdev/install/templates/step1.php:7
+#: templates/step1.php:7
 msgid ""
 "The installation-script will check the required PHP modules & settings "
 "within the next steps. Also the supported database-engines will be tested."
-msgstr ""
-"The installation-script will check the required PHP modules & settings "
-"within the next steps. Also the supported database-engines will be tested."
+msgstr "The installation-script will check the required PHP modules & settings within the next steps. Also the supported database-engines will be tested."
 
-#: /var/www/poweradmin.localdev/install/templates/step1.php:8
+#: templates/step1.php:8
 msgid ""
 "Poweradmin requires to have a working instance of PowerDNS with connection "
 "to database-server and the default sql-schema installed."
-msgstr ""
-"Poweradmin requires to have a working instance of PowerDNS with connection "
-"to database-server and the default sql-schema installed."
+msgstr "Poweradmin requires to have a working instance of PowerDNS with connection to database-server and the default sql-schema installed."
 
-#: /var/www/poweradmin.localdev/install/templates/step1.php:14
+#: templates/step1.php:14
 msgid ""
 "While installing Poweradmin this script will NOT touch the existing data "
 "inside the PowerDNS tables."
-msgstr ""
-"While installing Poweradmin this script will NOT touch the existing data "
-"inside the PowerDNS tables."
+msgstr "While installing Poweradmin this script will NOT touch the existing data inside the PowerDNS tables."
 
-#: /var/www/poweradmin.localdev/install/templates/step1.php:15
+#: templates/step1.php:15
 msgid "A backup before installing Poweradmin will be still recommended!"
 msgstr "A backup before installing Poweradmin will be still recommended!"
 
-#: /var/www/poweradmin.localdev/install/templates/step1.php:22
+#: templates/step1.php:22
 msgid ""
-"This script is ONLY for installing Poweradmin! If you are running a previous "
-"version of Poweradmin please read through the Upgrade-Guide."
-msgstr ""
-"This script is ONLY for installing Poweradmin! If you are running a previous "
-"version of Poweradmin please read through the Upgrade-Guide."
+"This script is ONLY for installing Poweradmin! If you are running a previous"
+" version of Poweradmin please read through the Upgrade-Guide."
+msgstr "This script is ONLY for installing Poweradmin! If you are running a previous version of Poweradmin please read through the Upgrade-Guide."
 
-#: /var/www/poweradmin.localdev/install/templates/step1.php:24
+#: templates/step1.php:24
 msgid ""
 "All tables (including data) provided by Poweradmin will be deleted by "
 "running this setup-script!"
-msgstr ""
-"All tables (including data) provided by Poweradmin will be deleted by "
-"running this setup-script!"
+msgstr "All tables (including data) provided by Poweradmin will be deleted by running this setup-script!"
 
-#: /var/www/poweradmin.localdev/install/templates/step1.php:30
+#: templates/step1.php:30
 msgid ""
 "I promise I have read the informations carefully and know what I am doing!"
-msgstr ""
-"I promise I have read the informations carefully and know what I am doing!"
+msgstr "I promise I have read the informations carefully and know what I am doing!"
 
-#: /var/www/poweradmin.localdev/install/templates/step1.php:32
-#: /var/www/poweradmin.localdev/install/templates/step2.php:61
-#: /var/www/poweradmin.localdev/install/templates/step3.php:66
+#: templates/step1.php:32 templates/step2.php:61 templates/step3.php:66
 msgid "Continue"
 msgstr "Continue"
 
-#: /var/www/poweradmin.localdev/install/templates/step2.php:3
+#: templates/step2.php:3
 msgid "PHP-Requirements"
 msgstr "PHP-Requirements"
 
-#: /var/www/poweradmin.localdev/install/templates/step2.php:8
+#: templates/step2.php:8
 msgid "Required Value"
 msgstr "Required Value"
 
-#: /var/www/poweradmin.localdev/install/templates/step2.php:9
+#: templates/step2.php:9
 msgid "Your Value"
 msgstr "Your Value"
 
-#: /var/www/poweradmin.localdev/install/templates/step2.php:14
+#: templates/step2.php:14
 msgid "PHP-Version"
 msgstr "PHP-Version"
 
-#: /var/www/poweradmin.localdev/install/templates/step2.php:19
-#: /var/www/poweradmin.localdev/install/templates/step2.php:24
-#: /var/www/poweradmin.localdev/install/templates/step2.php:29
+#: templates/step2.php:19 templates/step2.php:24 templates/step2.php:29
 msgid "PHP-Extension"
 msgstr "PHP-Extension"
 
-#: /var/www/poweradmin.localdev/install/templates/step2.php:20
-#: /var/www/poweradmin.localdev/install/templates/step2.php:21
-#: /var/www/poweradmin.localdev/install/templates/step2.php:25
-#: /var/www/poweradmin.localdev/install/templates/step2.php:26
-#: /var/www/poweradmin.localdev/install/templates/step2.php:30
-#: /var/www/poweradmin.localdev/install/templates/step2.php:31
+#: templates/step2.php:20 templates/step2.php:21 templates/step2.php:25
+#: templates/step2.php:26 templates/step2.php:30 templates/step2.php:31
 msgid "installed"
 msgstr "installed"
 
-#: /var/www/poweradmin.localdev/install/templates/step2.php:21
-#: /var/www/poweradmin.localdev/install/templates/step2.php:26
-#: /var/www/poweradmin.localdev/install/templates/step2.php:31
+#: templates/step2.php:21 templates/step2.php:26 templates/step2.php:31
 msgid "not installed"
 msgstr "not installed"
 
-#: /var/www/poweradmin.localdev/install/templates/step2.php:34
+#: templates/step2.php:34
 msgid "PHP-Function"
 msgstr "PHP-Function"
 
-#: /var/www/poweradmin.localdev/install/templates/step2.php:35
-#: /var/www/poweradmin.localdev/install/templates/step2.php:36
-#: /var/www/poweradmin.localdev/install/templates/step2.php:53
+#: templates/step2.php:35 templates/step2.php:36 templates/step2.php:53
 msgid "available"
 msgstr "available"
 
-#: /var/www/poweradmin.localdev/install/templates/step2.php:36
+#: templates/step2.php:36
 msgid "disabled"
 msgstr "disabled"
 
-#: /var/www/poweradmin.localdev/install/templates/step2.php:41
+#: templates/step2.php:41
 msgid "Supported Database-Driver"
 msgstr "Supported Database-Driver"
 
-#: /var/www/poweradmin.localdev/install/templates/step2.php:45
-#: /var/www/poweradmin.localdev/install/templates/step3.php:19
+#: templates/step2.php:45 templates/step3.php:19
 msgid "Driver"
 msgstr "Driver"
 
-#: /var/www/poweradmin.localdev/install/templates/step2.php:46
+#: templates/step2.php:46
 msgid "Status"
 msgstr "Status"
 
-#: /var/www/poweradmin.localdev/install/templates/step2.php:53
+#: templates/step2.php:53
 msgid "not available"
 msgstr "not available"
 
-#: /var/www/poweradmin.localdev/install/templates/step2.php:64
+#: templates/step2.php:63
 #, php-format
 msgid "Could not create Config-File \"%s\" or it is not writable!"
 msgstr "Could not create Config-File \"%s\" or it is not writable!"
 
-#: /var/www/poweradmin.localdev/install/templates/step2.php:67
+#: templates/step2.php:66
 msgid ""
 "Your System does not fulfill the PHP requirements or there is no database-"
 "driver available!"
-msgstr ""
-"Your System does not fulfill the PHP requirements or there is no database-"
-"driver available!"
+msgstr "Your System does not fulfill the PHP requirements or there is no database-driver available!"
 
-#: /var/www/poweradmin.localdev/install/templates/step3.php:4
+#: templates/step3.php:4
 msgid "Please Note:"
 msgstr "Please Note:"
 
-#: /var/www/poweradmin.localdev/install/templates/step3.php:5
+#: templates/step3.php:5
 msgid ""
 "We have changed the install procedure. There is no need to provide a "
 "superuser at any-time. The user specified here will be written to config-"
 "file."
-msgstr ""
-"We have changed the install procedure. There is no need to provide a "
-"superuser at any-time. The user specified here will be written to config-"
-"file."
+msgstr "We have changed the install procedure. There is no need to provide a superuser at any-time. The user specified here will be written to config-file."
 
-#: /var/www/poweradmin.localdev/install/templates/step3.php:14
+#: templates/step3.php:14
 msgid "Database Credentials"
 msgstr "Database Credentials"
 
-#: /var/www/poweradmin.localdev/install/templates/step3.php:65
+#: templates/step3.php:65
 msgid "Connection to database-server was successful!"
 msgstr "Connection to database-server was successful!"
 
-#: /var/www/poweradmin.localdev/install/templates/step3.php:69
+#: templates/step3.php:69
 msgid "Could not connect to database-server with the given informations!"
 msgstr "Could not connect to database-server with the given informations!"
 
-#: /var/www/poweradmin.localdev/install/templates/step3.php:73
+#: templates/step3.php:73
 #, php-format
 msgid "Required tables \"%s\" from PowerDNS-Schema missing!"
 msgstr "Required tables \"%s\" from PowerDNS-Schema missing!"
 
-#: /var/www/poweradmin.localdev/install/templates/step3.php:76
+#: templates/step3.php:76
 msgid "Test Data"
 msgstr "Test Data"
 
-#: /var/www/poweradmin.localdev/install/templates/step4.php:9
+#: templates/step4.php:9
 msgid "General Settings"
 msgstr "General Settings"
 
-#: /var/www/poweradmin.localdev/install/templates/step4.php:35
+#: templates/step4.php:35
 msgid "Administrative User"
 msgstr "Administrative User"
 
-#: /var/www/poweradmin.localdev/install/templates/step4.php:63
+#: templates/step4.php:63
 msgid "Start Installation"
 msgstr "Start Installation"
 
-#: /var/www/poweradmin.localdev/install/templates/step5.php:3
+#: templates/step5.php:3
 msgid "Installation finished"
 msgstr "Installation finished"
 
-#: /var/www/poweradmin.localdev/install/templates/step5.php:35
+#: templates/step5.php:35
 msgid ""
 "You have successfully installed Poweradmin! Please delete the install-"
 "directory and login to use Poweradmin."
-msgstr ""
-"You have successfully installed Poweradmin! Please delete the install-"
-"directory and login to use Poweradmin."
+msgstr "You have successfully installed Poweradmin! Please delete the install-directory and login to use Poweradmin."
 
-#: /var/www/poweradmin.localdev/install/templates/step5.php:36
+#: templates/step5.php:36
 msgid ""
 "If you want to use Poweradmin for DynDNS, please see instructions in our "
 "wiki!"
-msgstr ""
-"If you want to use Poweradmin for DynDNS, please see instructions in our "
-"wiki!"
+msgstr "If you want to use Poweradmin for DynDNS, please see instructions in our wiki!"

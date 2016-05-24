@@ -20,7 +20,7 @@
                 <td>
                     <select name="dbDriver" id="dbDriver">
                         <?php foreach ($config['availableSupportedDatabaseDrivers'] as $i => $driver): ?>
-                            <option value="<?= $driver ?>"<?=getValue('dbDriver', 'pdo_mysql') === $driver ? ' selected' : '' ?>><?= $config['supportedDatabaseDrivers'][$driver] ?></option>
+                            <option value="<?= $driver ?>"<?=getValue('dbDriver', $config['defaultDatabaseDriver']) === $driver ? ' selected' : '' ?>><?= $config['supportedDatabaseDrivers'][$driver] ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>
@@ -35,7 +35,7 @@
             </tr>
             <tr class="mysql_pgsql">
                 <td class="text-right"><label for="dbPort"><?=_('Port') ?>:</label></td>
-                <td><input type="text" class="form-control" name="dbPort" id="dbPort" value="<?= getValue('dbPort', getDbPortDefault()) ?>"></td>
+                <td><input type="text" class="form-control" name="dbPort" id="dbPort" value="<?= getValue('dbPort', getDbPortDefault($config['defaultDatabaseDriver'])) ?>"></td>
             </tr>
             <tr>
                 <td class="text-right"><label for="dbUsername"><?=_('Username') ?>:</label></td>

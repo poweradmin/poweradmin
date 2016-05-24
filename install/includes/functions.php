@@ -92,9 +92,31 @@ function createUser($userData, $connectionName = 'default')
  *
  * @return int
  */
-function getDbPortDefault()
+function getDbPortDefault($defaultDatabaseDriver)
 {
-    return array_key_exists('dbDriver', $_POST) && $_POST['dbDriver'] === 'pgsql' ? 5432 : 3306;
+    // Set database-driver to default driver
+    $dbDriver = $defaultDatabaseDriver;
+
+    // Check if database-driver is set in post-fields to use current value instead of default
+    if (array_key_exists('dbDriver', $_POST)) {
+        $dbDriver = $_POST['dbDriver'];
+    }
+
+    // Set variable for db-port
+    $dbPort = '';
+
+    // Set default port for database-driver
+    switch($dbDriver) {
+        case 'pdo_mysql':
+            $dbPort = 3306;
+        break;
+
+        case 'pdo_pgsql':
+            $dbPort = 5432;
+        break;
+    }
+
+    return $dbPort;
 }
 
 /**

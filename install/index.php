@@ -20,7 +20,6 @@ define('INSTALLER_DIRECTORY', __DIR__ . '/');
 // Load autoloader & functions-file
 require_once APPLICATION_DIRECTORY . 'vendor/autoload.php';
 require_once INSTALLER_DIRECTORY . 'includes/functions.php';
-require_once INSTALLER_DIRECTORY . 'includes/validation_functions.php';
 
 // Import used classes
 use Valitron\Validator as V;
@@ -29,7 +28,8 @@ use Valitron\Validator as V;
 $config = [
     'configFile' => APPLICATION_DIRECTORY . 'inc/config.inc.php',
 
-    'availableDatabaseDrivers' => Doctrine\DBAL\DriverManager::getAvailableDrivers(),
+    'defaultDatabaseDriver' => '',
+    'availableDatabaseDrivers' => array_map(function($value) { return 'pdo_' . $value; }, PDO::getAvailableDrivers()),
     'supportedDatabaseDrivers' => ['pdo_mysql' => 'MySQL', 'pdo_pgsql' => 'PostgreSQL', 'pdo_sqlite' => 'SQLite'],
 
     'defaultLocale' => 'en_US.UTF-8',
@@ -43,6 +43,14 @@ $config['availableSupportedDatabaseDrivers'] = array_intersect(
     array_keys($config['supportedDatabaseDrivers']),
     $config['availableDatabaseDrivers']
 );
+
+// Get default database-driver
+if (in_array('pdo_mysql', $config['availableSupportedDatabaseDrivers'])) {
+    $config['defaultDatabaseDriver'] = 'pdo_mysql';
+} elseif (count($config['availableSupportedDatabaseDrivers']) > 0) {
+    reset($config['availableSupportedDatabaseDrivers']);
+    $config['defaultDatabaseDriver'] = current($config['availableSupportedDatabaseDrivers']);
+}
 
 // Detect locale-change
 if (array_key_exists('locale', $_POST) && array_key_exists($_POST['locale'], $config['locales'])) {
@@ -58,6 +66,10 @@ $parameters = [
 
 // Configure "gettext"-extension
 configureGettextExtension($parameters['locale'], $config['defaultLocale']);
+
+// Load file with additional validation-functions
+// @WARNING: File have to be loaded AFTER initializing gettext-extension
+require_once INSTALLER_DIRECTORY . 'includes/validation_functions.php';
 
 // Set locale for valitron
 V::lang(substr($parameters['locale'], 0, 2));
@@ -175,10 +187,10 @@ switch ($parameters['step']) {
                 // Create connection to test data
                 $connectionStatus = Poweradmin\Db::createConnection($dbParameters);
 
-                // Set type-mapping for pgsql & sqlite
-                Poweradmin\Db::getConnection()->getDatabasePlatform()->registerDoctrineTypeMapping('bool', 'boolean');
-
                 if ($connectionStatus) {
+                    // Set type-mapping for pgsql & sqlite
+                    Poweradmin\Db::getConnection()->getDatabasePlatform()->registerDoctrineTypeMapping('bool', 'boolean');
+
                     // Get existing tables
                     $tables = Poweradmin\Db::getConnection()->getSchemaManager()->listTables();
 
