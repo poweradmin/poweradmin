@@ -1918,8 +1918,8 @@ function update_zone_records($zone_id, $zone_template_id) {
         if ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) {
             if (is_numeric($zone_id)) {
                 $db->exec("DELETE FROM records WHERE id IN (SELECT record_id FROM records_zone_templ WHERE "
-                        . "domain_id = " . $db->quote($zone_id, 'integer') . " AND "
-                        . "zone_templ_id = " . $db->quote($zone_template_id, 'integer') . ")");
+                        . "domain_id = " . $db->quote($zone_id, 'integer') . ")");
+
                 $db->exec("DELETE FROM records_zone_templ WHERE domain_id = " . $db->quote($zone_id, 'integer'));
             } else {
                 error(sprintf(ERR_INV_ARGC, "delete_domain", "id must be a number"));
@@ -1943,6 +1943,7 @@ function update_zone_records($zone_id, $zone_template_id) {
                     $name = parse_template_value($r["name"], $domain);
                     $type = $r["type"];
                     if ($type == "SOA") {
+                        $db->exec("DELETE FROM records WHERE domain_id = " . $db->quote($zone_id, 'integer') . " AND type = 'SOA'");
                         $content = get_updated_soa_record($soa_rec);
                     } else {
                         $content = parse_template_value($r["content"], $domain);
