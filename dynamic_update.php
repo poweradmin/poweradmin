@@ -204,7 +204,7 @@ $no_update_necessary = false;
 
 while ($zone = $zones_result->fetchRow()) {
     $zone_updated = false;
-    $name_query = "SELECT name, type, content FROM records WHERE domain_id='{$zone["domain_id"]}' and type = 'A' OR type = 'AAAA' ";
+    $name_query = "SELECT name, type, content FROM records WHERE domain_id='{$zone["domain_id"]}' and (type = 'A' OR type = 'AAAA') ";
     $result = $db->query($name_query);
 
     while ($record = $result->fetchRow()) {
