@@ -458,7 +458,6 @@ function dnssec_get_dnskey_record($domain_name) {
         return false;
     }
 
-    $dns_key = '';
     $dns_keys = array();
     foreach ($output as $line) {
         if (substr($line, 0, 3) == 'CSK' or substr($line, 0, 3) == 'ZSK' or substr($line, 0, 3) == 'KSK' or substr($line, 0, 3) == 'ID ' ) {
