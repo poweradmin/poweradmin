@@ -1,6 +1,6 @@
 <?php
 
-$countrycodes = array(
+$country_codes = array(
     'aa' => 'Afar',
     'ab' => 'Abkhaz',
     'ae' => 'Avestan',

@@ -389,15 +389,10 @@ function edit_record($record) {
         global $db;
         if (validate_input($record['rid'], $record['zid'], $record['type'], $record['content'], $record['name'], $record['prio'], $record['ttl'])) {
             $name = strtolower($record['name']); // powerdns only searches for lower case records
-            if ($record['type'] == "SPF" || $record['type'] == "TXT") {
-                $content = $db->quote(stripslashes('\"' . $record['content'] . '\"'), 'text');
-            } else {
-                $content = $db->quote($record['content'], 'text');
-            }
             $query = "UPDATE records
 				SET name=" . $db->quote($name, 'text') . ",
 				type=" . $db->quote($record['type'], 'text') . ",
-				content=" . $content . ",
+				content=" . $db->quote($record['content'], 'text') . ",
 				ttl=" . $db->quote($record['ttl'], 'integer') . ",
 				prio=" . $db->quote($record['prio'], 'integer') . ",
 				change_date=" . $db->quote(time(), 'integer') . "
@@ -451,16 +446,11 @@ function add_record($zone_id, $name, $type, $content, $ttl, $prio) {
         if (validate_input(-1, $zone_id, $type, $content, $name, $prio, $ttl)) {
             $change = time();
             $name = strtolower($name); // powerdns only searches for lower case records
-            if ($type == "SPF" || $type == "TXT") {
-                $content = $db->quote(stripslashes('\"' . $content . '\"'), 'text');
-            } else {
-                $content = $db->quote($content, 'text');
-            }
             $query = "INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) VALUES ("
                     . $db->quote($zone_id, 'integer') . ","
                     . $db->quote($name, 'text') . ","
                     . $db->quote($type, 'text') . ","
-                    . $content . ","
+                    . $db->quote($content, 'text') . ","
                     . $db->quote($ttl, 'integer') . ","
                     . $db->quote($prio, 'integer') . ","
                     . $db->quote($change, 'integer') . ")";
@@ -1252,7 +1242,9 @@ function get_zones($perm, $userid = 0, $letterstart = 'all', $rowstart = 0, $row
         }
     }
 
-    if ($sortby != 'count_records') {
+    if ($sortby == 'owner') {
+        $sortby = 'users.username';
+    } elseif ($sortby != 'count_records') {
         $sortby = 'domains.' . $sortby;
     }
 
@@ -1649,7 +1641,7 @@ function get_users_from_domain_id($id) {
 function search_zone_and_record($parameters, $permission_view, $sort_zones_by, $sort_records_by) {
     global $db;
 
-    $return = array('zones' => [], 'records' => []);
+    $return = array('zones' => array(), 'records' => array());
 
     if ($parameters['reverse']) {
         if (filter_var($parameters['query'], FILTER_FLAG_IPV4)) {
@@ -1926,8 +1918,8 @@ function update_zone_records($zone_id, $zone_template_id) {
         if ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) {
             if (is_numeric($zone_id)) {
                 $db->exec("DELETE FROM records WHERE id IN (SELECT record_id FROM records_zone_templ WHERE "
-                        . "domain_id = " . $db->quote($zone_id, 'integer') . " AND "
-                        . "zone_templ_id = " . $db->quote($zone_template_id, 'integer') . ")");
+                        . "domain_id = " . $db->quote($zone_id, 'integer') . ")");
+
                 $db->exec("DELETE FROM records_zone_templ WHERE domain_id = " . $db->quote($zone_id, 'integer'));
             } else {
                 error(sprintf(ERR_INV_ARGC, "delete_domain", "id must be a number"));
@@ -1951,6 +1943,7 @@ function update_zone_records($zone_id, $zone_template_id) {
                     $name = parse_template_value($r["name"], $domain);
                     $type = $r["type"];
                     if ($type == "SOA") {
+                        $db->exec("DELETE FROM records WHERE domain_id = " . $db->quote($zone_id, 'integer') . " AND type = 'SOA'");
                         $content = get_updated_soa_record($soa_rec);
                     } else {
                         $content = parse_template_value($r["content"], $domain);

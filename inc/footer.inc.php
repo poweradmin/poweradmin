@@ -28,7 +28,9 @@
  * @copyright   2010-2014 Poweradmin Development Team
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
-include_once('version.inc.php');
+require_once dirname(__DIR__) . '/vendor/autoload.php';
+
+$VERSION = Poweradmin\Version::VERSION;
 
 global $db;
 if (is_object($db)) {
@@ -39,7 +41,7 @@ if (is_object($db)) {
 <div class="footer">
     <a href="http://www.poweradmin.org/">a complete(r) <strong>poweradmin</strong><?php
         if (isset($_SESSION["userid"])) {
-            echo " v $VERSION";
+            echo " v$VERSION";
         }
         ?></a> - <a href="http://www.poweradmin.org/credits.html">credits</a>
 </div>

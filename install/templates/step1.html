@@ -1,0 +1,12 @@
+<form method="post" action="">
+    <input type="radio" name="language" value="en_EN" checked> I prefer to proceed in english.<br>
+    <input type="radio" name="language" value="nl_NL"> Ik ga graag verder in het Nederlands.<br>
+    <input type="radio" name="language" value="de_DE"> Ich mache in Deutsch weiter.<br>
+    <input type="radio" name="language" value="ja_JP"> 日本語で続ける<br>
+    <input type="radio" name="language" value="pl_PL"> Chcę kontynuować po polsku.<br>
+    <input type="radio" name="language" value="fr_FR"> Je préfère continuer en français.<br>
+    <input type="radio" name="language" value="nb_NO"> Jeg ønsker å forsette på norsk.<br>
+    <input type="hidden" name="step" value="{{ next_step }}">
+    <br>
+    <input type="submit" name="submit" value="{% trans 'Go to step' %} {{ next_step }}">
+</form>

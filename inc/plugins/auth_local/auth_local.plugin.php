@@ -29,6 +29,7 @@
  * @copyright   2010-2014 Poweradmin Development Team
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
+require_once dirname(dirname(dirname(__DIR__))) . '/vendor/poweradmin/Password.php';
 
 /** Authenticate Session
  *
@@ -184,7 +185,7 @@ function SQLAuthenticate() {
 
         if ($rowObj) {
 
-            if (Poweradmin\password\verify($session_pass, $rowObj['password'])) {
+            if (Poweradmin\Password::verify($session_pass, $rowObj['password'])) {
 
                 $_SESSION["userid"] = $rowObj["id"];
                 $_SESSION["name"] = $rowObj["fullname"];

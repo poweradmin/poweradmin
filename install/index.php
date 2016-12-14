@@ -1,167 +1,87 @@
 <?php
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <http://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2016  Poweradmin Development Team
+ *      <http://www.poweradmin.org/credits.html>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
-require_once('../inc/error.inc.php');
-require_once('../inc/i18n.inc.php');
-require_once('../inc/password.inc.php');
+/**
+ *  Poweradmin installer
+ *
+ * @package     Poweradmin
+ * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
+ * @copyright   2010-2016 Poweradmin Development Team
+ * @license     http://opensource.org/licenses/GPL-3.0 GPL
+ */
 
-if (isset($_POST['language'])) {
+// Dependencies
+require_once dirname(__DIR__) . '/vendor/autoload.php';
+require_once dirname(__DIR__) . '/inc/error.inc.php';
+require_once dirname(__DIR__) . '/inc/i18n.inc.php';
+
+// Constants
+define('LOCAL_CONFIG_FILE', dirname(__DIR__) . '/inc/config.inc.php');
+define('SESSION_KEY_LENGTH', 46);
+
+// Localize interface
+$language = 'en_EN';
+if (isset($_POST['language']) && $_POST['language'] != 'en_EN') {
     $language = $_POST['language'];
-} else {
-    $language = "en_EN";
-}
 
-# FIXME: setlocale can fail if locale package is not installed on the system for that language
-setlocale(LC_ALL, $language, $language . '.UTF-8');
-$gettext_domain = 'messages';
-if (!function_exists('bindtextdomain')) {
-    die(error('You have to install PHP gettext extension!'));
-}
-bindtextdomain($gettext_domain, "./../locale");
-textdomain($gettext_domain);
-@putenv('LANG=' . $language);
-@putenv('LANGUAGE=' . $language);
-
-$local_config_file = "../inc/config.inc.php";
-
-function get_random_key() {
-    $key = '';
-
-    $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~!@#$%^&*()_+=-][{}';
-    $length = 46;
-
-    $size = strlen($chars);
-    for ($i = 0; $i < $length; $i++) {
-        $key .= $chars[mt_rand(0, $size - 1)];
+    $locale = setlocale(LC_ALL, $language, $language . '.UTF-8');
+    if ($locale == false) {
+        error(ERR_LOCALE_FAILURE);
     }
 
-    return $key;
+    $gettext_domain = 'messages';
+    if (!function_exists('bindtextdomain')) {
+        die(error('You have to install PHP gettext extension!'));
+    }
+    bindtextdomain($gettext_domain, "./../locale");
+    textdomain($gettext_domain);
+    @putenv('LANG=' . $language);
+    @putenv('LANGUAGE=' . $language);
 }
 
-echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n";
-echo "<html>\n";
-echo " <head>\n";
-echo "  <title>Poweradmin</title>\n";
-echo "  <link rel=stylesheet href=\"../style/example.css\" type=\"text/css\">\n";
-echo "  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n";
-echo "  <script type=\"text/javascript\" src=\"../inc/helper.js\"></script>";
-echo " </head>\n";
-echo " <body>\n";
+// Initialize Twig template engine
+$loader = new Twig_Loader_Filesystem('templates');
+$twig = new Twig_Environment($loader);
+$twig->addExtension(new Twig_Extensions_Extension_I18n());
 
-if (!isset($_POST['step']) || !is_numeric($_POST['step'])) {
-    $step = 1;
-} else {
-    $step = $_POST['step'];
-}
+// Display header
+$current_step = isset($_POST['step']) && is_numeric($_POST['step']) ? $_POST['step'] : 1;
+echo $twig->render('header.html', array('current_step' => $current_step));
 
-echo "  <h1>Poweradmin</h1>\n";
-echo "  <h2>" . _('Installation step') . " " . $step . "</h2>\n";
-
-switch ($step) {
+switch ($current_step) {
 
     case 1:
-        $step++;
-
-        echo " <form method=\"post\" action=\"\">\n";
-        echo "  <input type=\"radio\" name=\"language\" value=\"en_EN\" checked> I prefer to proceed in english.<br>\n";
-        echo "  <input type=\"radio\" name=\"language\" value=\"nl_NL\"> Ik ga graag verder in het Nederlands.<br>\n";
-        echo "	<input type=\"radio\" name=\"language\" value=\"de_DE\"> Ich mache in Deutsch weiter.<br>\n";
-        echo "  <input type=\"radio\" name=\"language\" value=\"ja_JP\"> 日本語で続ける<br>\n";
-        echo "  <input type=\"radio\" name=\"language\" value=\"pl_PL\"> Chcę kontynuować po polsku.<br>\n";
-        echo "  <input type=\"radio\" name=\"language\" value=\"fr_FR\"> Je préfère continuer en français.<br>\n";
-        echo "  <input type=\"radio\" name=\"language\" value=\"nb_NO\"> Jeg ønsker å forsette på norsk.<br>\n";
-        echo "  <input type=\"hidden\" name=\"step\" value=\"" . $step . "\">";
-        echo "  <br>\n";
-        echo "  <input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $step . "\">";
-        echo " </form>\n";
+        echo $twig->render('step1.html', array('next_step' => ++$current_step));
         break;
 
     case 2:
-        $step++;
-
-        echo "<p>" . _('This installer expects you to have a PowerDNS database accessable from this server. This installer also expects you to have never ran Poweradmin before, or that you want to overwrite the Poweradmin part of the database. If you have had Poweradmin running before, any data in the following tables will be destroyed: perm_items, perm_templ, perm_templ_items, users and zones. This installer will, of course, not touch the data in the PowerDNS tables of the database. However, it is recommended that you create a backup of your database before proceeding.') . "</p>\n";
-
-        echo "<p>" . _('The alternative for this installer is a manual installation. Refer to the poweradmin.org website if you want to go down that road.') . "</p>\n";
-
-        echo "<p>" . _('Finally, if you see any errors during the installation process, a problem report would be appreciated. You can report problems (and ask for help) on the <a href="http://groups.google.com/group/poweradmin" target=\"blank\">poweradmin</a> mailinglist.') . "</p>";
-
-        echo "<p>" . _('Do you want to proceed now?') . "</p>\n";
-
-        echo "<form method=\"post\">";
-        echo "<input type=\"hidden\" name=\"language\" value=\"" . $language . "\">";
-        echo "<input type=\"hidden\" name=\"step\" value=\"" . $step . "\">";
-        echo "<input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $step . "\">";
-        echo "</form>";
+        echo $twig->render('step2.html', array('next_step' => ++$current_step, 'language' => $language));
         break;
 
     case 3:
-        $step++;
-        echo "<p>" . _('To prepare the database for using Poweradmin, the installer needs to modify the PowerDNS database. It will add a number of tables and it will fill these tables with some data. If the tables are already present, the installer will drop them first.') . "</p>";
-
-        echo "<p>" . _('To do all of this, the installer needs to access the database with an account which has sufficient rights. If you trust the installer, you may give it the username and password of the database user root. Otherwise, make sure the user has enough rights, before actually proceeding.') . "</p>";
-
-        echo "<form method=\"post\">";
-        echo " <table>\n";
-        echo "  <tr id=\"username_row\">\n";
-        echo "   <td>" . _('Username') . "</td>\n";
-        echo "   <td><input type=\"text\" name=\"user\" value=\"\"></td>\n";
-        echo "   <td>" . _('The username to use to connect to the database, make sure the username has sufficient rights to perform administrative task to the PowerDNS database (the installer wants to drop, create and fill tables to the database).') . "</td>\n";
-        echo "  </tr>\n";
-        echo " <tr id=\"password_row\">\n";
-        echo "  <td>" . _('Password') . "</td>\n";
-        echo "  <td><input type=\"password\" name=\"pass\" value=\"\" autocomplete=\"off\"></td>\n";
-        echo "  <td>" . _('The password for this username.') . "</td>\n";
-        echo " </tr>\n";
-        echo " <tr>\n";
-        echo "  <td width=\"210\">" . _('Database type') . "</td>\n";
-        echo "  <td>" .
-        "<select name=\"type\" onChange=\"changePort(this.value)\">" .
-        "<option value=\"mysql\">MySQL</option>" .
-        "<option value=\"pgsql\">PostgreSQL</option>" .
-        "<option value=\"sqlite\">SQLite</option>" .
-        "</td>\n";
-        echo "  <td>" . _('The type of the PowerDNS database.') . "</td>\n";
-        echo " </tr>\n";
-        echo " <tr id=\"hostname_row\">\n";
-        echo "  <td>" . _('Hostname') . "</td>\n";
-        echo "  <td><input type=\"text\" id=\"host\" name=\"host\" value=\"localhost\"></td>\n";
-        echo "  <td>" . _('The hostname on which the PowerDNS database resides. Frequently, this will be "localhost".') . "</td>\n";
-        echo " </tr>\n";
-        echo " <tr id=\"dbport_row\">\n";
-        echo "  <td>" . _('DB Port') . "</td>\n";
-        echo "  <td><input type=\"text\" id=\"dbport\" name=\"dbport\" value=\"3306\"></td>\n";
-        echo "  <td>" . _('The port the database server is listening on.') . "</td>\n";
-        echo " </tr>\n";
-        echo " <tr>\n";
-        echo "  <td>" . _('Database') . "</td>\n";
-        echo "  <td><input type=\"text\" name=\"name\" value=\"\"></td>\n";
-        echo "  <td><span id=\"db_name_title\">" . _('The name of the PowerDNS database.') . "</span>"
-                . "<span id=\"db_path_title\" style=\"display: none;\">" . _('The path and filename to the PowerDNS SQLite database.') . "</span></td>\n";
-        echo " </tr>\n";
-        echo "  <tr>\n";
-        echo "   <td>" . _('DB charset') . "</td>\n";
-        echo "   <td><input type=\"text\" name=\"charset\" value=\"\"></td>\n";
-        echo "   <td>" . _('The charset (encoding) which will be used for new tables. Leave it empty then default database charset will be used') . "</td>\n";
-        echo "  </tr>\n";
-        echo "  <tr>\n";
-        echo "   <td>" . _('DB collation') . "</td>\n";
-        echo "   <td><input type=\"text\" name=\"collation\" value=\"\"></td>\n";
-        echo "   <td>" . _('Set of rules for comparing characters in database. Leave it empty then default database collation will be used') . "</td>\n";
-        echo "  </tr>\n";
-        echo "  <tr>\n";
-        echo "   <td>" . _('Poweradmin administrator password') . "</td>\n";
-        echo "   <td><input type=\"password\" name=\"pa_pass\" value=\"\" autocomplete=\"off\"></td>\n";
-        echo "   <td>" . _('The password of the Poweradmin administrator. This administrator has full rights to Poweradmin using the web interface.') . "</td>\n";
-        echo "  </tr>\n";
-        echo "</table>\n";
-        echo "<br>\n";
-        echo "<input type=\"hidden\" name=\"step\" value=\"" . $step . "\">";
-        echo "<input type=\"hidden\" name=\"language\" value=\"" . $language . "\">";
-        echo "<input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $step . "\">";
-        echo "</form>";
+        echo $twig->render('step3.html', array('next_step' => ++$current_step, 'language' => $language));
         break;
 
     case 4:
-        $step++;
         echo "<p>" . _('Updating database...') . " ";
         include_once("../inc/config-me.inc.php");
         $db_user = $_POST['user'];
@@ -207,61 +127,28 @@ switch ($step) {
         }
         foreach ($def_remaining_queries as $query_nr => $user_query) {
             if ($query_nr === 0) {
-                $user_query = sprintf($user_query, $db->quote(Poweradmin\password\hash($pa_pass), 'text'));
+                $user_query = sprintf($user_query, $db->quote(Poweradmin\Password::hash($pa_pass), 'text'));
             }
             $db->query($user_query);
         }
         echo _('done!') . "</p>";
 
-        echo "<p>" . _('Now we will gather all details for the configuration itself.') . "</p>\n";
-        echo "<form method=\"post\">";
-        echo " <table>";
-        echo "  <tr>";
-        if ($db_type != 'sqlite') {
-            echo "   <td>" . _('Username') . "</td>\n";
-            echo "   <td><input type=\"text\" name=\"pa_db_user\" value=\"\"></td>\n";
-            echo "   <td>" . _('The username for Poweradmin. This new user will have limited rights only.') . "</td>\n";
-            echo "  </tr>\n";
-            echo "  <tr>\n";
-            echo "   <td>" . _('Password') . "</td>\n";
-            echo "   <td><input type=\"password\" name=\"pa_db_pass\" value=\"\" autocomplete=\"off\"></td>\n";
-            echo "   <td>" . _('The password for this username.') . "</td>\n";
-            echo "  </tr>\n";
-        }
-        echo "  <tr>\n";
-        echo "   <td>" . _('Hostmaster') . "</td>\n";
-        echo "   <td><input type=\"text\" name=\"dns_hostmaster\" value=\"\"></td>\n";
-        echo "   <td>" . _('When creating SOA records and no hostmaster is provided, this value here will be used. Should be in the form "hostmaster.example.net".') . "</td>\n";
-        echo "  </tr>\n";
-        echo "  <tr>\n";
-        echo "   <td>" . _('Primary nameserver') . "</td>\n";
-        echo "   <td><input type=\"text\" name=\"dns_ns1\" value=\"\"></td>\n";
-        echo "   <td>" . _('When creating new zones using the template, this value will be used as primary nameserver. Should be like "ns1.example.net".') . "</td>\n";
-        echo "  </tr>\n";
-        echo "  <tr>\n";
-        echo "   <td>" . _('Secondary nameserver') . "</td>\n";
-        ;
-        echo "   <td><input type=\"text\" name=\"dns_ns2\" value=\"\"></td>\n";
-        echo "   <td>" . _('When creating new zones using the template, this value will be used as secondary nameserver. Should be like "ns2.example.net".') . "</td>\n";
-        echo "  </tr>\n";
-        echo "</table>";
-        echo "<br>\n";
-        echo "<input type=\"hidden\" name=\"db_user\" value=\"" . $db_user . "\">";
-        echo "<input type=\"hidden\" name=\"db_pass\" value=\"" . $db_pass . "\">";
-        echo "<input type=\"hidden\" name=\"db_host\" value=\"" . $db_host . "\">";
-        echo "<input type=\"hidden\" name=\"db_port\" value=\"" . $db_port . "\">";
-        echo "<input type=\"hidden\" name=\"db_name\" value=\"" . $db_name . "\">";
-        echo "<input type=\"hidden\" name=\"db_type\" value=\"" . $db_type . "\">";
-        echo "<input type=\"hidden\" name=\"db_charset\" value=\"" . $db_charset . "\">";
-        echo "<input type=\"hidden\" name=\"pa_pass\" value=\"" . $pa_pass . "\">";
-        echo "<input type=\"hidden\" name=\"step\" value=\"" . $step . "\">";
-        echo "<input type=\"hidden\" name=\"language\" value=\"" . $language . "\">";
-        echo "<input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $step . "\">";
-        echo "</form>";
+        echo $twig->render('step4.html', array(
+            'next_step' => ++$current_step,
+            'language' => $_POST['language'],
+            'db_user' => $db_user,
+            'db_pass' => $db_pass,
+            'db_host' => $db_host,
+            'db_port' => $db_port,
+            'db_name' => $db_name,
+            'db_type' => $db_type,
+            'db_charset' => $db_charset,
+            'pa_pass' => $pa_pass
+        ));
         break;
 
     case 5:
-        $step++;
+        $current_step++;
         $db_user = $_POST['db_user'];
         $db_pass = $_POST['db_pass'];
         $db_host = $_POST['db_host'];
@@ -276,7 +163,7 @@ switch ($step) {
             $pa_db_pass = $_POST['pa_db_pass'];
         }
         $pa_pass = $_POST['pa_pass'];
-        $dns_hostmaster = $_POST['dns_hostmaster'];
+        $hostmaster = $_POST['dns_hostmaster'];
         $dns_ns1 = $_POST['dns_ns1'];
         $dns_ns2 = $_POST['dns_ns2'];
 
@@ -296,10 +183,10 @@ switch ($step) {
             }
 
             echo _('In MySQL you should now perform the following command:') . "</p>";
-            echo "<p><tt>GRANT SELECT, INSERT, UPDATE, DELETE<BR>ON " . $db_name . ".*<br>TO '" . $pa_db_user . "'@'" . $pa_db_host . "'<br>IDENTIFIED BY '" . $pa_db_pass . "';</tt></p>";
+            echo "<p><code>GRANT SELECT, INSERT, UPDATE, DELETE<BR>ON " . $db_name . ".*<br>TO '" . $pa_db_user . "'@'" . $pa_db_host . "'<br>IDENTIFIED BY '" . $pa_db_pass . "';</code></p>";
         } elseif ($db_type == 'pgsql') {
             echo _('On PgSQL you would use:') . "</p>";
-            echo "<p><tt>$ createuser -E -P " . $pa_db_user . "<br>" .
+            echo "<p><code>$ createuser -E -P " . $pa_db_user . "<br>" .
             "Enter password for new role: " . $pa_db_pass . "<br>" .
             "Enter it again: " . $pa_db_pass . "<br>" .
             "Shall the new role be a superuser? (y/n) n<br>" .
@@ -314,7 +201,7 @@ switch ($step) {
             foreach ($grantSequences as $sequenceName) {
                 echo "GRANT USAGE, SELECT ON SEQUENCE " . $sequenceName . " TO " . $pa_db_user . ";<br />";
             }
-            echo "</tt></p>\n";
+            echo "</code></p>\n";
         }
         echo "<p>" . _('After you have added the new user, proceed with this installation procedure.') . "</p>\n";
         echo "<form method=\"post\">";
@@ -330,74 +217,60 @@ switch ($step) {
             echo "<input type=\"hidden\" name=\"pa_db_pass\" value=\"" . $pa_db_pass . "\">";
         }
         echo "<input type=\"hidden\" name=\"pa_pass\" value=\"" . $pa_pass . "\">";
-        echo "<input type=\"hidden\" name=\"dns_hostmaster\" value=\"" . $dns_hostmaster . "\">";
+        echo "<input type=\"hidden\" name=\"dns_hostmaster\" value=\"" . $hostmaster . "\">";
         echo "<input type=\"hidden\" name=\"dns_ns1\" value=\"" . $dns_ns1 . "\">";
         echo "<input type=\"hidden\" name=\"dns_ns2\" value=\"" . $dns_ns2 . "\">";
-        echo "<input type=\"hidden\" name=\"step\" value=\"" . $step . "\">";
+        echo "<input type=\"hidden\" name=\"step\" value=\"" . $current_step . "\">";
         echo "<input type=\"hidden\" name=\"language\" value=\"" . $language . "\">";
-        echo "<input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $step . "\">";
+        echo "<input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $current_step . "\">";
         echo "</form>";
         break;
 
     case 6:
-        $step++;
-
-        require_once("../inc/database.inc.php");
-
-        $db_type = $_POST['db_type'];
-        $pa_pass = $_POST['pa_pass'];
-        $db_port = $_POST['db_port'];
-
-        $config = "<?php\n\n" .
-                ( $db_type == 'sqlite' ? "\$db_file\t\t= '" . $_POST['db_name'] . "';\n" :
-                "\$db_host\t\t= '" . $_POST['db_host'] . "';\n" .
-                "\$db_user\t\t= '" . $_POST['pa_db_user'] . "';\n" .
-                "\$db_pass\t\t= '" . $_POST['pa_db_pass'] . "';\n" .
-                "\$db_name\t\t= '" . $_POST['db_name'] . "';\n" .
-                (($db_type == 'mysql' && $db_port != 3306) || ($db_type == 'pgsql' && $db_port != 5432) ? "\$db_port\t\t= '" . $db_port . "';\n" : '')) .
-                "\$db_type\t\t= '" . $_POST['db_type'] . "';\n" .
-                "\$db_charset\t\t= '" . $_POST['db_charset'] . "';\n" .
-                "\n" .
-                "\$session_key\t\t= '" . get_random_key() . "';\n" .
-                "\n" .
-                "\$iface_lang\t\t= '" . $_POST['language'] . "';\n" .
-                "\n" .
-                "\$dns_hostmaster\t\t= '" . $_POST['dns_hostmaster'] . "';\n" .
-                "\$dns_ns1\t\t= '" . $_POST['dns_ns1'] . "';\n" .
-                "\$dns_ns2\t\t= '" . $_POST['dns_ns2'] . "';\n";
-
-        if (is_writeable($local_config_file)) {
-            $h_config = fopen($local_config_file, "w");
-            fwrite($h_config, $config);
-            fclose($h_config);
-            echo "<p>" . _('The installer was able to write to the file "') . $local_config_file . _('". A basic configuration, based on the details you have given, has been created.') . "</p>\n";
-        } else {
-            echo "<p>" . _('The installer is unable to write to the file "') . $local_config_file . _('" (which is in itself good). The configuration is printed here. You should now create the file "') . $local_config_file . _('" in the Poweradmin root directory yourself. It should contain the following few lines:') . "</p>\n";
-            echo "<pre>";
-            echo htmlentities($config);
-            echo "</pre>";
+        // Try to create configuration file
+        $config_file_created = false;
+        $configuration = ''; // FIXME
+        if (is_writeable(LOCAL_CONFIG_FILE)) {
+            $local_config = fopen(LOCAL_CONFIG_FILE, "w");
+            fwrite($local_config, $configuration);
+            fclose($local_config);
+            $config_file_created = true;
         }
-        echo "<form method=\"post\">";
-        echo "<input type=\"hidden\" name=\"pa_pass\" value=\"" . $pa_pass . "\">";
-        echo "<input type=\"hidden\" name=\"step\" value=\"" . $step . "\">";
-        echo "<input type=\"hidden\" name=\"language\" value=\"" . $language . "\">";
-        echo "<input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $step . "\">";
-        echo "</form>";
+
+        // No need to set database port if it's standard port for that db
+        $db_port = ($_POST['db_type'] == 'mysql' && $_POST['db_port'] != 3306)
+            || ($_POST['db_type'] == 'pgsql' && $_POST['db_port'] != 5432) ? $_POST['db_port'] : '';
+
+        // For SQLite we should provide path to db file
+        $db_file = $_POST['db_type'] =='sqlite' ? $db_file = $_POST['db_name'] : '';
+
+        echo $twig->render('step6.html', array(
+            'next_step' => ++$current_step,
+            'language' => $language,
+            'config_file_created' => $config_file_created,
+            'local_config_file' => LOCAL_CONFIG_FILE,
+            'session_key' => Poweradmin\Password::salt(SESSION_KEY_LENGTH),
+            'iface_lang' => $language,
+            'dns_hostmaster' => $_POST['dns_hostmaster'],
+            'dns_ns1' => $_POST['dns_ns1'],
+            'dns_ns2' => $_POST['dns_ns2'],
+            'db_host' => $_POST['db_host'],
+            'db_user' => $_POST['pa_db_user'],
+            'db_pass' => $_POST['pa_db_pass'],
+            'db_name' => $_POST['db_name'],
+            'db_type' => $_POST['db_type'],
+            'db_port' => $db_port,
+            'db_charset' => $_POST['db_charset'],
+            'pa_pass' => $_POST['pa_pass']
+        ));
         break;
 
     case 7:
-        $step++;
-        echo "<p>" . _('Now we have finished the configuration.') . "</p>";
-        echo "<p>" . _('If you want support for the URLs used by other dynamic DNS providers, run "cp install/htaccess.dist .htaccess" and enable mod_rewrite in Apache.') . "</p>";
-        echo "<p>" . _('You should (must!) remove the directory "install/" from the Poweradmin root directory. You will not be able to use Poweradmin if it exists. Do it now.') . "</p>";
-        echo "<p>" . _('After you have removed the directory, you can login to <a href="../index.php">Poweradmin</a>.')."</p>";
+        echo $twig->render('step7.html');
         break;
 
     default:
         break;
 }
 
-include_once('../inc/version.inc.php');
-echo "<div class=\"footer\">";
-echo "<a href=\"http://www.poweradmin.org/\">a complete(r) <strong>poweradmin</strong> v$VERSION</a> - <a href=\"http://www.poweradmin.org/credits.html\">credits</a>";
-echo "</div></body></html>";
+echo $twig->render('footer.html', array('version' => Poweradmin\Version::VERSION));

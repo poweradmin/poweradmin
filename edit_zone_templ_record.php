@@ -93,17 +93,9 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
     }
     if (!$found_selected_type)
         echo "         <option SELECTED value=\"" . htmlspecialchars($record['type']) . "\"><i>" . $record['type'] . "</i></option>\n";
-    /*
-      Sanitize content due to SPF record quoting in PowerDNS
-     */
-    if ($record['type'] == "SRV" || $record['type'] == "SPF" || $record['type'] == "TXT") {
-        $clean_content = trim($record['content'], "\x22\x27");
-    } else {
-        $clean_content = $record['content'];
-    }
     echo "        </select>\n";
     echo "       </td>\n";
-    echo "       <td><input type=\"text\" name=\"content\" value=\"" . htmlspecialchars($clean_content) . "\" class=\"input\"></td>\n";
+    echo "       <td><input type=\"text\" name=\"content\" value=\"" . htmlspecialchars($record['content']) . "\" class=\"input\"></td>\n";
     echo "       <td><input type=\"text\" name=\"prio\" value=\"" . htmlspecialchars($record["prio"]) . "\" class=\"sinput\"></td>\n";
     echo "       <td><input type=\"text\" name=\"ttl\" value=\"" . htmlspecialchars($record["ttl"]) . "\" class=\"sinput\"></td>\n";
     echo "      </tr>\n";
