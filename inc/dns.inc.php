@@ -68,7 +68,10 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
             }
             break;
 
-        case "AAAA":
+	case "A6": // TODO: implement validation.
+	    break;
+
+    	case "AAAA":
             if (!is_valid_ipv6($content)) {
                 return false;
             }
@@ -82,6 +85,18 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
 
         case "AFSDB": // TODO: implement validation.
             break;
+
+	case "ALIAS": // TODO: implement validation.
+	    break;
+
+	case "CAA": // TODO: implement validation.
+	    break;
+
+	case "CDNSKEY": // TODO: implement validation.
+	    break;
+
+	case "CDS": // TODO: implement validation.
+	    break;
 
         case "CERT": // TODO: implement validation.
             break;
@@ -109,6 +124,9 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
 
         case 'DLV': // TODO: implement validation
             break;
+
+	case "DNAME": // TODO: implement validation.
+	    break;
 
         case 'DNSKEY': // TODO: implement validation
             break;
@@ -148,6 +166,12 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
                 return false;
             }
             break;
+
+	case "MAILA": // TODO: implement validation.
+	    break;
+
+	case "MAILB": // TODO: implement validation.
+	    break;
 
         case 'MINFO': // TODO: implement validation
             break;
@@ -191,6 +215,9 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
         case 'NSEC3PARAM': // TODO: implement validation
             break;
 
+	case "OPENPGPKEY": // TODO: implement validation.
+	    break;
+
         case 'OPT': // TODO: implement validation
             break;
 
@@ -211,6 +238,9 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
 
         case 'RRSIG': // TODO: implement validation
             break;
+
+	case "SIG": // TODO: implement validation.
+	    break;
 
         case "SOA":
             if (!is_valid_rr_soa_name($name, $zone)) {
@@ -243,6 +273,9 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
         case 'SSHFP': // TODO: implement validation
             break;
 
+	case "TKEY": // TODO: implement validation.
+	    break;
+
         case 'TLSA': // TODO: implement validation
             break;
 
@@ -261,12 +294,11 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
         case 'WKS': // TODO: implement validation
             break;
 
-        case "CURL":
-        case "MBOXFW":
-        case "URL":
-            // TODO: implement validation?
-            // Fancy types are not supported anymore in PowerDNS
-            break;
+    	case "MBOXFW": // TODO: implement validation
+	    break;
+
+	case "URL": // TODO: implement validation.
+	    break;
 
         default:
             error(ERR_DNS_RR_TYPE);
