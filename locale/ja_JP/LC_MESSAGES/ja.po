@@ -5,14 +5,17 @@
 # Translators:
 #   <eg@fbsd.lt>, 2011.
 # Koichi MATSUMOTO <mzch@me.com>, 2011.
+#       http://www.transifex.com/projects/p/poweradmin/language/ja/
+# Shogo Mori <smori@designet.co.jp>, 2017.
+#       http://www.designet.co.jp/ 
 msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin\n"
 "Report-Msgid-Bugs-To: https://github.com/poweradmin/poweradmin/issues\n"
 "POT-Creation-Date: 2011-07-08 23:45+0300\n"
-"PO-Revision-Date: 2012-02-14 08:14+0000\n"
-"Last-Translator: Koichi MATSUMOTO <mzch@me.com>\n"
-"Language-Team: Japanese (http://www.transifex.com/projects/p/poweradmin/language/ja/)\n"
+"PO-Revision-Date: 2017-01-31 10:27+0900\n"
+"Last-Translator: Shogo Mori <smori@designet.co.jp>\n"
+"Language-Team: Japanese (http://www.designet.co.jp/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1160,3 +1163,94 @@ msgstr "パスワードをリセット"
 #: list_zone_templ.php:33
 msgid "Zone templates for"
 msgstr "次のユーザー向けのゾーンテンプレート:"
+
+#: search.php:182
+msgid "Wildcard"
+msgstr "ワイルドカード"
+
+#: search.php:183
+msgid "Reverse"
+msgstr "逆引きの検索"
+
+#: inc/auth.inc.php:256
+msgid "Language"
+msgstr "言語"
+
+#: bulk_registration.php:92
+msgid "Bulk registration"
+msgstr "ゾーン一括登録"
+
+#: bulk_registration.php:144
+msgid "Type one domain per line"
+msgstr "登録するドメインを1行1ドメインの形式で入力してください。"
+
+#: bulk_registration.php:157
+msgid  "Add zones"
+msgstr "ゾーンの追加"
+
+#: add_perm_templ.php
+msgid "User is allowed to add new master zones."
+msgstr "マスターゾーンの追加を許可"
+
+msgid "User is allowed to add new slave zones."
+msgstr "スレーブゾーンの追加を許可"
+
+msgid "User is allowed to see the content and meta data of zones he owns."
+msgstr "ユーザが所有するゾーン情報とメタデータの参照を許可"
+
+msgid "User is allowed to edit the content of zones he owns."
+msgstr "ユーザが所有するゾーン情報の変更を許可"
+
+msgid "User is allowed to edit the meta data of zones he owns."
+msgstr "ユーザが所有するゾーンのメタデータの変更を許可."
+
+msgid "User is allowed to see the content and meta data of zones he does not own."
+msgstr "他のユーザが所有するゾーン情報とメタデータの参照を許可"
+
+msgid "User is allowed to edit the content of zones he does not own."
+msgstr "他のユーザが所有するゾーン情報の変更を許可"
+
+msgid "User is allowed to edit the meta data of zones he does not own."
+msgstr "他のユーザが所有するゾーン情報のメタデータの変更を許可"
+
+msgid "User is allowed to perform searches."
+msgstr "検索の実行を許可"
+
+msgid "User is allowed to view supermasters."
+msgstr "スーパーマスターの参照を許可"
+
+msgid "User is allowed to add new supermasters."
+msgstr "スーパーマスターの追加を許可"
+
+msgid "User is allowed to edit supermasters."
+msgstr "スーパーマスターの変更を許可"
+
+msgid "User has full access. God-like. Redeemer."
+msgstr "すべての操作を許可"
+
+msgid "User is allowed to see other users and their details."
+msgstr "他のユーザ情報の参照を許可"
+
+msgid "User is allowed to add new users."
+msgstr "ユーザの追加を許可"
+
+msgid "User is allowed to edit their own details."
+msgstr "ユーザ自身の情報の変更を許可"
+
+msgid "User is allowed to edit other users."
+msgstr "他のユーザ情報の変更を許可."
+
+msgid "User is allowed to edit the password of other users."
+msgstr "他のユーザのパスワードの変更を許可"
+
+msgid ""
+"User is allowed to change the permission template that is assigned to a "
+"user."
+msgstr ""
+"ユーザへの権限テンプレートの適用を許可"
+
+msgid "User is allowed to add new permission templates."
+msgstr "権限テンプレートの追加を許可"
+
+msgid "User is allowed to edit existing permission templates."
+msgstr "権限テンプレートの変更を許可"
