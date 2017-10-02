@@ -532,21 +532,17 @@ function dnssec_get_keys($domain_name) {
     $keys = array();
     foreach ($output as $line) {
         if (substr($line, 0, 2) == 'ID') {
-	    $items[0] = explode(' ', (explode('ID = ', $line)[1]))[0];
-	    $items[1] = substr(explode(' ', (explode('ID = ', $line)[1]))[1], 1, -2);
-	    $items[2] = substr(explode(' ', (explode('flags = ', $line)[1]))[0], 0, -1);
-	    $items[3] = substr(explode(' ', (explode('tag = ', $line)[1]))[0], 0, -1);
-	    $items[4] = substr(explode(' ', (explode('algo = ', $line)[1]))[0], 0, -1);
-	    $items[5] = preg_replace('/[^0-9]/', '', explode(' ', (explode('bits = ', $line)[1]))[0]);
-	    if (strpos($line, 'Active') !== false) {
-		$items[6] = 1;
-	    } else {
-		$items[6] = 0;
-	    }
-//		print "<pre>";
-//		print "$line<br/>";
-//		print_r ($items);
-//		print "</pre>";
+            $items[0] = explode(' ', (explode('ID = ', $line)[1]))[0];
+            $items[1] = substr(explode(' ', (explode('ID = ', $line)[1]))[1], 1, -2);
+            $items[2] = substr(explode(' ', (explode('flags = ', $line)[1]))[0], 0, -1);
+            $items[3] = substr(explode(' ', (explode('tag = ', $line)[1]))[0], 0, -1);
+            $items[4] = substr(explode(' ', (explode('algo = ', $line)[1]))[0], 0, -1);
+            $items[5] = preg_replace('/[^0-9]/', '', explode(' ', (explode('bits = ', $line)[1]))[0]);
+            if (strpos($line, 'Active') !== false) {
+                $items[6] = 1;
+            } else {
+                $items[6] = 0;
+            }
             $keys[] = array($items[0], $items[1], $items[3], $items[4], $items[5], $items[6]);
         }
     }
@@ -560,10 +556,9 @@ function dnssec_get_keys($domain_name) {
  * @param string $key_type Key type
  * @param string $bits Bits in length
  * @param string $algorithm Algorithm
-1*
+ *
  * @return boolean true on success, false on failure
  */
-//pdnsutil add-zone-key egaro.cz zsk 1048 inactive rsasha256
 function dnssec_add_zone_key($domain_name, $key_type, $bits, $algorithm) {
     $call_result = dnssec_call_pdnssec('add-zone-key', join(" ", array($domain_name, $key_type, $bits, "inactive", $algorithm)));
     $return_code = $call_result[1];
