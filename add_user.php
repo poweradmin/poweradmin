@@ -80,6 +80,12 @@ if (!do_hook('verify_permission' , 'user_add_new' )) {
     echo "        <td class=\"n\">" . _('Enabled') . "</td>\n";
     echo "        <td class=\"n\"><input type=\"checkbox\" class=\"input\" name=\"active\" value=\"1\" CHECKED></td>\n";
     echo "       </tr>\n";
+    if ($ldap_use) {
+        echo "       <tr>\n";
+        echo "        <td class=\"n\">" . _('LDAP Authentication') . "</td>\n";
+        echo "        <td class=\"n\"><input type=\"checkbox\" class=\"input\" name=\"use_ldap\" value=\"1\" CHECKED></td>\n";
+        echo "       </tr>\n";
+    }
     echo "       <tr>\n";
     echo "        <td class=\"n\">&nbsp;</td>\n";
     echo "        <td class=\"n\"><input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Commit changes') . "\"></td>\n";

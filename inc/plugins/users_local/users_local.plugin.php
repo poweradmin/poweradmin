@@ -846,6 +846,7 @@ function update_user_details_local($details) {
  */
 function add_new_user_local($details) {
     global $db;
+    global $ldap_use;
 
     if (!do_hook('verify_permission', 'user_add_new')) {
         error(ERR_PERM_ADD_USER);
@@ -862,6 +863,12 @@ function add_new_user_local($details) {
         $active = 0;
     }
 
+    if ($ldap_use && $details['use_ldap'] == 1) {
+        $use_ldap = 1;
+    } else {
+        $use_ldap = 0;
+    }
+
     $query = "INSERT INTO users (username, password, fullname, email, description,";
     if (do_hook('verify_permission', 'user_edit_templ_perm')) {
         $query .= ' perm_templ,';
@@ -869,11 +876,11 @@ function add_new_user_local($details) {
 
     $password_hash = Poweradmin\Password::hash($details['password']);
 
-    $query .= " active) VALUES (" . $db->quote($details ['username'], 'text') . ", " . $db->quote($password_hash, 'text') . ", " . $db->quote($details ['fullname'], 'text') . ", " . $db->quote($details ['email'], 'text') . ", " . $db->quote($details ['descr'], 'text') . ", ";
+    $query .= " active, use_ldap) VALUES (" . $db->quote($details ['username'], 'text') . ", " . $db->quote($password_hash, 'text') . ", " . $db->quote($details ['fullname'], 'text') . ", " . $db->quote($details ['email'], 'text') . ", " . $db->quote($details ['descr'], 'text') . ", ";
     if (do_hook('verify_permission', 'user_edit_templ_perm')) {
         $query .= $db->quote($details ['perm_templ'], 'integer') . ", ";
     }
-    $query .= $db->quote($active, 'integer') . ")";
+    $query .= $db->quote($active, 'integer') . ", " . $db->quote($use_ldap, 'integer') . ")";
     $response = $db->query($query);
     if (PEAR::isError($response)) {
         error($response->getMessage());
