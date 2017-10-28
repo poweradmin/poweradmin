@@ -71,6 +71,10 @@ function authenticate_local() {
 }
 
 function userUsesLDAP() {
+    if (!isset($_SESSION["userlogin"])) {
+        return false;
+    }
+
     global $db;
 
     $rowObj = $db->queryRow("SELECT id FROM users WHERE username=" . $db->quote($_SESSION["userlogin"], 'text') . " AND use_ldap=1");
