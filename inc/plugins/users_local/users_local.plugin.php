@@ -742,7 +742,7 @@ function update_perm_templ_details_local($details) {
  *
  * @param mixed[] $details User details
  *
- * @return boolean true on success, false otherise
+ * @return boolean true on success, false otherwise
  */
 function update_user_details_local($details) {
     global $db;

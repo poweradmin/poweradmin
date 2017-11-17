@@ -93,7 +93,7 @@ if ($supermasters_add != "1") {
     echo "         <select name=\"account\">\n";
     /*
       Display list of users to assign slave zone to if the
-      editing user has the permissions to, otherise just
+      editing user has the permissions to, otherwise just
       display the adding users name
      */
     $users = do_hook('show_users');
