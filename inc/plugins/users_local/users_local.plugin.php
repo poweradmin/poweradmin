@@ -714,7 +714,7 @@ function update_perm_templ_details_local($details) {
     // currently assigned with a list of permissions that should be assigned and
     // apply the difference between these two lists to the database. That sounds
     // like too much work. Just delete all the permissions currently assigned to
-    // the template, than assign all the permessions the template should have.
+    // the template, than assign all the permissions the template should have.
 
     $query = "DELETE FROM perm_templ_items WHERE templ_id = " . $details ['templ_id'];
     $response = $db->query($query);
