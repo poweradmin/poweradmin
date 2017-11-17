@@ -809,7 +809,7 @@ function update_user_details_local($details) {
             description = " . $db->quote($details ['descr'], 'text') . ",
         active = " . $db->quote($active, 'integer');
 
-        // If the user is alllowed to change the permission template, set it.
+        // If the user is allowed to change the permission template, set it.
         if ($perm_templ_perm_edit == "1") {
             $query .= ", perm_templ = " . $db->quote($details ['templ_id'], 'integer');
         }
