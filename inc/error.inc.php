@@ -108,6 +108,7 @@ define("ERR_DNS_HINFO_INV_CONTENT", _('Invalid value for content field of HINFO 
 define("ERR_DNS_HN_TOO_LONG", _('The hostname is too long.'));
 define("ERR_DNS_INV_TLD", _('You are using an invalid top level domain.'));
 define("ERR_DNS_INV_TTL", _('Invalid value for TTL field. It should be numeric.'));
+define("ERR_DNS_INV_TTL_INCONSISTENT", _('Invalid value for TTL field. It should be consistent for all records of this name and type.'));
 define("ERR_DNS_INV_PRIO", _('Invalid value for prio field. It should be numeric.'));
 define("ERR_DNS_SRV_NAME_SERVICE", _('Invalid service value in name field of SRV record.'));
 define("ERR_DNS_SRV_NAME_PROTO", _('Invalid protocol value in name field of SRV record.'));
