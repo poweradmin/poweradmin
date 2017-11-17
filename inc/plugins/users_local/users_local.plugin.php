@@ -313,7 +313,7 @@ function edit_user_local($id, $user, $fullname, $email, $perm_templ, $descriptio
         //
 		// First find the current username of the user ID we want to change. If the
         // current username is not the same as the username that was given by the
-        // user, the username should apparantly changed. If so, check if the "new"
+        // user, the username should apparently changed. If so, check if the "new"
         // username already exists.
 
         $query = "SELECT username FROM users WHERE id = " . $db->quote($id, 'integer');
@@ -776,7 +776,7 @@ function update_user_details_local($details) {
         //
         // First find the current username of the user ID we want to change. If the
         // current username is not the same as the username that was given by the
-        // user, the username should apparantly changed. If so, check if the "new"
+        // user, the username should apparently changed. If so, check if the "new"
         // username already exists.
         $query = "SELECT username FROM users WHERE id = " . $db->quote($details ['uid'], 'integer');
         $response = $db->query($query);
