@@ -450,7 +450,7 @@ function is_valid_ipv6($ipv6, $answer = true) {
  *
  *  @return boolean true if valid, false otherwise
  */
-function are_multipe_valid_ips($ips) {
+function are_multiple_valid_ips($ips) {
 
 // multiple master NS-records are permitted and must be separated by ,
 // eg. "192.0.0.1, 192.0.0.2, 2001:1::1"

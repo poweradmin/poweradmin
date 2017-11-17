@@ -64,7 +64,7 @@ if (isset($_POST['submit']) && $zone_slave_add == "1") {
         error(ERR_DOMAIN_EXISTS);
     } elseif (domain_exists($zone) || record_name_exists($zone)) {
         error(ERR_DOMAIN_EXISTS);
-    } elseif (!are_multipe_valid_ips($master)) {
+    } elseif (!are_multiple_valid_ips($master)) {
         error(ERR_DNS_IP);
     } else {
         if (add_domain($zone, $owner, $type, $master, 'none')) {
