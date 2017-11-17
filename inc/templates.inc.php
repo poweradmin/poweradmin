@@ -587,7 +587,7 @@ function zone_templ_name_exists($zone_templ_name, $zone_templ_id = null) {
 /** Parse string and substitute domain and serial
  *
  * @param string $val string to parse containing tokens '[ZONE]' and '[SERIAL]'
- * @param string $domain domain to subsitute for '[ZONE]'
+ * @param string $domain domain to substitute for '[ZONE]'
  *
  * @return string interpolated/parsed string
  */
