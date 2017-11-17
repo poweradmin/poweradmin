@@ -97,7 +97,7 @@ define("ERR_DNS_IPV6", _('This is not a valid IPv6 address.'));
 define("ERR_DNS_IPV4", _('This is not a valid IPv4 address.'));
 define("ERR_DNS_CNAME", _('This is not a valid CNAME. Did you assign an MX or NS record to the record?'));
 define("ERR_DNS_CNAME_EXISTS", _('This is not a valid record. There is already exists a CNAME with this name.'));
-define("ERR_DNS_CNAME_UNIQUE", _('This is not a valid CNAME. There is already exists an A, AAAA or CNAME with this name.'));
+define("ERR_DNS_CNAME_UNIQUE", _('This is not a valid CNAME. There already exists a record with this name.'));
 define("ERR_DNS_CNAME_EMPTY", _('Empty CNAME records are not allowed.'));
 define("ERR_DNS_NON_ALIAS_TARGET", _('You can not point a NS or MX record to a CNAME record. Remove or rame the CNAME record first, or take another name.'));
 define("ERR_DNS_NS_HNAME", _('NS records must be a hostnames.'));

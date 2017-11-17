@@ -553,8 +553,7 @@ function is_valid_rr_cname_unique($name, $rid) {
 
     $where = ($rid > 0 ? " AND id != " . $db->quote($rid, 'integer') : '');
     $query = "SELECT id FROM records
-                        WHERE name = " . $db->quote($name, 'text') . $where . "
-                        AND TYPE IN ('A', 'AAAA', 'CNAME')";
+                        WHERE name = " . $db->quote($name, 'text') . $where;
 
     $response = $db->queryOne($query);
     if ($response) {
