@@ -1861,7 +1861,7 @@ function get_zone_template($zone_id) {
     return $zone_templ_id;
 }
 
-/** Update Zone Templatea ID for Zone ID
+/** Update Zone Template ID for Zone ID
  *
  * @param int $zone_id Zone ID
  * @param int $new_zone_template_id New Zone Template ID
