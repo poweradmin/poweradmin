@@ -1778,7 +1778,7 @@ function change_zone_type($type, $id) {
     global $db;
     $add = '';
     if (is_numeric($id)) {
-        // It is not really neccesary to clear the field that contains the IP address
+        // It is not really necessary to clear the field that contains the IP address
         // of the master if the type changes from slave to something else. PowerDNS will
         // ignore the field if the type isn't something else then slave. But then again,
         // it's much clearer this way.
