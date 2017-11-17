@@ -54,13 +54,16 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
         }
     }
 
+    if ($type != "CNAME") {
+        if (!is_valid_rr_cname_exists($name, $rid)) {
+            return false;
+        }
+    }
+
     switch ($type) {
 
       case "A":
         if (!is_valid_ipv4($content)) {
-          return false;
-        }
-        if (!is_valid_rr_cname_exists($name, $rid)) {
           return false;
         }
         if (!is_valid_hostname_fqdn($name, 1)) {
@@ -70,9 +73,6 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
 
       case "AAAA":
         if (!is_valid_ipv6($content)) {
-          return false;
-        }
-        if (!is_valid_rr_cname_exists($name, $rid)) {
           return false;
         }
         if (!is_valid_hostname_fqdn($name, 1)) {
