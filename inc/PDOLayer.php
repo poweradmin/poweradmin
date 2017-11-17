@@ -32,12 +32,12 @@
 include_once "PDOCommon.class.php";
 
 /**
- * Overrided PEAR class
+ * Override PEAR class
  */
 class PEAR {
 
     /**
-     * Overrided isError method
+     * Override isError method
      */
     public static function isError() {
 
