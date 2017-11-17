@@ -1607,7 +1607,7 @@ function sort_domain_results_by_ttl($a, $b) {
  *
  * @param int $id Domain ID
  *
- * @return mixed[] array of owners [id,fullename]
+ * @return mixed[] array of owners [id,fullname]
  */
 function get_users_from_domain_id($id) {
     global $db;
