@@ -49,7 +49,7 @@ function authenticate_local() {
 
     // If a user had just entered his/her login && password, store them in our session.
     if (isset($_POST["authenticate"])) {
-        $_SESSION["userpwd"] = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($session_key), $_POST['password'], MCRYPT_MODE_CBC, md5(md5($session_key))));
+        $_SESSION["userpwd"] = base64_encode(openssl_encrypt($_POST['password'], "aes-256-cbc",  md5($session_key), OPENSSL_RAW_DATA, md5(md5($session_key))));
 
         $_SESSION["userlogin"] = $_POST["username"];
         $_SESSION["userlang"] = $_POST["userlang"];
@@ -137,7 +137,7 @@ function LDAPAuthenticate() {
         }
         $user_dn = $entries[0]["dn"];
 
-        $session_pass = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($session_key), base64_decode($_SESSION["userpwd"]), MCRYPT_MODE_CBC, md5(md5($session_key))), "\0");
+         $session_pass = rtrim(openssl_decrypt(base64_decode($_SESSION["userpwd"]), "aes-256-cbc", md5($session_key), OPENSSL_RAW_DATA, md5(md5($session_key))) , "\0");;
         $ldapbind = ldap_bind($ldapconn, $user_dn, $session_pass);
         if (!$ldapbind) {
             if (isset($_POST["authenticate"]))
@@ -179,7 +179,7 @@ function SQLAuthenticate() {
 
     if (isset($_SESSION["userlogin"]) && isset($_SESSION["userpwd"])) {
         //Username and password are set, lets try to authenticate.
-        $session_pass = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($session_key), base64_decode($_SESSION["userpwd"]), MCRYPT_MODE_CBC, md5(md5($session_key))), "\0");
+         $session_pass = rtrim(openssl_decrypt(base64_decode($_SESSION["userpwd"]), "aes-256-cbc", md5($session_key), OPENSSL_RAW_DATA, md5(md5($session_key))) , "\0");
 
         $rowObj = $db->queryRow("SELECT id, fullname, password FROM users WHERE username=" . $db->quote($_SESSION["userlogin"], 'text') . " AND active=1");
 
