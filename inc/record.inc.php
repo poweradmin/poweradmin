@@ -732,7 +732,33 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template) {
                     return true;
                 } elseif ($domain_id && is_numeric($zone_template)) {
                     global $dns_ttl;
+# Addition -  Adds SOA record before we begin to add each template record 
 
+                    $ns1 = $dns_ns1;
+                    $hm = $dns_hostmaster;
+                    $ttl = $dns_ttl;
+
+                    set_timezone();
+
+                    $serial = date("Ymd");
+                    $serial .= "00";
+
+
+
+                    $query = "INSERT INTO records (domain_id, name, content, type, ttl, prio, change_date) VALUES ("
+                            . $db->quote($domain_id, 'integer') . ","
+                            . $db->quote($domain, 'text') . ","
+                            . $db->quote($ns1 . ' ' . $hm . ' ' . $serial . ' 28800 7200 604800 86400', 'text') . ","
+                            . $db->quote('SOA', 'text') . ","
+                            . $db->quote($ttl, 'integer') . ","
+                            . $db->quote(0, 'integer') . ","
+                            . $db->quote($now, 'integer') . ")";
+                    $response = $db->query($query);
+                    if (PEAR::isError($response)) {
+                        error($response->getMessage());
+                        return false;
+                    }
+#End of addition
                     $templ_records = get_zone_templ_records($zone_template);
                     if ($templ_records != -1) {
                         foreach ($templ_records as $r) {

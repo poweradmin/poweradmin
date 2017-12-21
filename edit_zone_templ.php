@@ -144,14 +144,16 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
                 echo "     </tr>\n";
             }
             echo "     <tr>\n";
-            echo "      <td colspan=\"6\"><br><b>Hint:</b></td>\n";
+            echo "      <td colspan=\"6\"><br><b>HINT:</b></td>\n";
             echo "     </tr>\n";
             echo "     <tr>\n";
             echo "      <td colspan=\"6\">" . _('The following placeholders can be used in template records') . "</td>\n";
             echo "     </tr>\n";
             echo "     <tr>\n";
             echo "      <td colspan=\"6\"><br>&nbsp;&nbsp;&nbsp;&nbsp; * [ZONE] - " . _('substituted with current zone name') . "<br>";
-            echo "&nbsp;&nbsp;&nbsp;&nbsp; * [SERIAL] - " . _('substituted with current date and 2 numbers') . " (YYYYMMDD + 00)</td>\n";
+            echo "&nbsp;&nbsp;&nbsp;&nbsp; * [SERIAL] - " . _('substituted with current date and 2 numbers') . " (YYYYMMDD + 00)\n <br>";
+            echo "&nbsp;&nbsp;&nbsp;&nbsp; Example: to add a subdomain foo in a zonetemplate you would put foo.[ZONE] into the name field. <br>";
+            echo "&nbsp;&nbsp;&nbsp;&nbsp; When using zone templates the SOA record will get added automatically to the new zone.</td>";
             echo "     </tr>\n";
             echo "     <tr>\n";
             echo "      <td colspan=\"6\"><br>Save as new template:</td>\n";
