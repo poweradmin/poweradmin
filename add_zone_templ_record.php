@@ -155,10 +155,10 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
     echo "     <tr>\n";
     echo "      <td colspan=\"6\"><br>&nbsp;&nbsp;&nbsp;&nbsp; * [ZONE] - " . _('substituted with current zone name') . "<br>";
     echo "&nbsp;&nbsp;&nbsp;&nbsp; * [SERIAL] - " . _('substituted with current date and 2 numbers') . " (YYYYMMDD + 00)\n <br>";
-	echo "&nbsp;&nbsp;&nbsp;&nbsp; When using zone templates the SOA record will get added automatically to the new zone.<br>";
+    echo "&nbsp;&nbsp;&nbsp;&nbsp; When using zone templates the SOA record will get added automatically to the new zone.<br>";
     echo "&nbsp;&nbsp;&nbsp;&nbsp; Examples: to add a subdomain foo in a zonetemplate you would put foo.[ZONE] into the name field. <br>";
     echo "&nbsp;&nbsp;&nbsp;&nbsp; To add a wildcard record put *.[ZONE] in the name field.<br>";
-	echo "&nbsp;&nbsp;&nbsp;&nbsp; Use just [ZONE] to have the domain itself return a value.</td>";
+    echo "&nbsp;&nbsp;&nbsp;&nbsp; Use just [ZONE] to have the domain itself return a value.</td>";
     echo "     </tr>\n";
     echo "      </table>\n";
     echo "      <br>\n";
