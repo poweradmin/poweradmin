@@ -338,8 +338,8 @@ function edit_zone_comment($zone_id, $comment) {
                 return false;
             }
         } else {
-            $query = "INSERT INTO zones (domain_id, owner, comment)
-				VALUES(" . $db->quote($zone_id, 'integer') . ",1," . $db->quote($comment, 'text') . ")";
+            $query = "INSERT INTO zones (domain_id, owner, comment, zone_templ_id)
+				VALUES(" . $db->quote($zone_id, 'integer') . ",1," . $db->quote($comment, 'text') . ",0)";
             $result = $db->query($query);
             if (PEAR::isError($result)) {
                 error($result->getMessage());
