@@ -109,7 +109,7 @@ if ($zone_id == "-1") {
 
 /*
   Check and see if the user is the zone owner
-  Check the sone type and get the zone name
+  Check the zone type and get the zone name
  */
 $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
 $zone_type = get_domain_type($zone_id);
