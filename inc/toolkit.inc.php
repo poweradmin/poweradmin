@@ -339,6 +339,7 @@ $rtypes = array(
     'IPSECKEY',
     'KEY',
     'KX',
+    'LUA',
     'LOC',
     'MAILA',
     'MAILB',
