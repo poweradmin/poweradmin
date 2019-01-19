@@ -344,13 +344,13 @@ function is_valid_hostname_fqdn(&$hostname, $wildcard) {
 
     foreach ($hostname_labels as $hostname_label) {
         if ($wildcard == 1 && !isset($first)) {
-            if (!preg_match('/^(\*|[\w-\/]+)$/', $hostname_label)) {
+            if (!preg_match('/^(\*|[\w\-\/]+)$/', $hostname_label)) {
                 error(ERR_DNS_HN_INV_CHARS);
                 return false;
             }
             $first = 1;
         } else {
-            if (!preg_match('/^[\w-\/]+$/', $hostname_label)) {
+            if (!preg_match('/^[\w\-\/]+$/', $hostname_label)) {
                 error(ERR_DNS_HN_INV_CHARS);
                 return false;
             }
@@ -741,7 +741,7 @@ function is_valid_rr_srv_name(&$name) {
     }
 
     $fields = explode('.', $name, 3);
-    if (!preg_match('/^_[\w-]+$/i', $fields[0])) {
+    if (!preg_match('/^_[\w\-]+$/i', $fields[0])) {
         error(ERR_DNS_SRV_NAME_SERVICE, $name);
         return false;
     }
