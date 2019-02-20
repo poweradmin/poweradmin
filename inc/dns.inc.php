@@ -444,13 +444,13 @@ function is_valid_ipv6($ipv6, $answer = true) {
 
 /** Test if multiple IP addresses are valid
  *
- *  Takes a string of comma seperated IP addresses and tests validity
+ *  Takes a string of comma separated IP addresses and tests validity
  *
- *  @param string $ips Comma seperated IP addresses
+ *  @param string $ips Comma separated IP addresses
  *
  *  @return boolean true if valid, false otherwise
  */
-function are_multipe_valid_ips($ips) {
+function are_multiple_valid_ips($ips) {
 
 // multiple master NS-records are permitted and must be separated by ,
 // eg. "192.0.0.1, 192.0.0.2, 2001:1::1"

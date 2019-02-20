@@ -313,7 +313,7 @@ function edit_user_local($id, $user, $fullname, $email, $perm_templ, $descriptio
         //
 		// First find the current username of the user ID we want to change. If the
         // current username is not the same as the username that was given by the
-        // user, the username should apparantly changed. If so, check if the "new"
+        // user, the username should apparently changed. If so, check if the "new"
         // username already exists.
 
         $query = "SELECT username FROM users WHERE id = " . $db->quote($id, 'integer');
@@ -714,7 +714,7 @@ function update_perm_templ_details_local($details) {
     // currently assigned with a list of permissions that should be assigned and
     // apply the difference between these two lists to the database. That sounds
     // like too much work. Just delete all the permissions currently assigned to
-    // the template, than assign all the permessions the template should have.
+    // the template, than assign all the permissions the template should have.
 
     $query = "DELETE FROM perm_templ_items WHERE templ_id = " . $details ['templ_id'];
     $response = $db->query($query);
@@ -742,7 +742,7 @@ function update_perm_templ_details_local($details) {
  *
  * @param mixed[] $details User details
  *
- * @return boolean true on success, false otherise
+ * @return boolean true on success, false otherwise
  */
 function update_user_details_local($details) {
     global $db;
@@ -776,7 +776,7 @@ function update_user_details_local($details) {
         //
         // First find the current username of the user ID we want to change. If the
         // current username is not the same as the username that was given by the
-        // user, the username should apparantly changed. If so, check if the "new"
+        // user, the username should apparently changed. If so, check if the "new"
         // username already exists.
         $query = "SELECT username FROM users WHERE id = " . $db->quote($details ['uid'], 'integer');
         $response = $db->query($query);
@@ -809,7 +809,7 @@ function update_user_details_local($details) {
             description = " . $db->quote($details ['descr'], 'text') . ",
         active = " . $db->quote($active, 'integer');
 
-        // If the user is alllowed to change the permission template, set it.
+        // If the user is allowed to change the permission template, set it.
         if ($perm_templ_perm_edit == "1") {
             $query .= ", perm_templ = " . $db->quote($details ['templ_id'], 'integer');
         }

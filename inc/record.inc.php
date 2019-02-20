@@ -1607,7 +1607,7 @@ function sort_domain_results_by_ttl($a, $b) {
  *
  * @param int $id Domain ID
  *
- * @return mixed[] array of owners [id,fullename]
+ * @return mixed[] array of owners [id,fullname]
  */
 function get_users_from_domain_id($id) {
     global $db;
@@ -1778,7 +1778,7 @@ function change_zone_type($type, $id) {
     global $db;
     $add = '';
     if (is_numeric($id)) {
-        // It is not really neccesary to clear the field that contains the IP address
+        // It is not really necessary to clear the field that contains the IP address
         // of the master if the type changes from slave to something else. PowerDNS will
         // ignore the field if the type isn't something else then slave. But then again,
         // it's much clearer this way.
@@ -1801,7 +1801,7 @@ function change_zone_type($type, $id) {
 function change_zone_slave_master($zone_id, $ip_slave_master) {
     global $db;
     if (is_numeric($zone_id)) {
-        if (are_multipe_valid_ips($ip_slave_master)) {
+        if (are_multiple_valid_ips($ip_slave_master)) {
             $result = $db->query("UPDATE domains SET master = " . $db->quote($ip_slave_master, 'text') . " WHERE id = " . $db->quote($zone_id, 'integer'));
         } else {
             error(sprintf(ERR_INV_ARGC, "change_domain_ip_slave_master", "This is not a valid IPv4 or IPv6 address: $ip_slave_master"));
@@ -1861,7 +1861,7 @@ function get_zone_template($zone_id) {
     return $zone_templ_id;
 }
 
-/** Update Zone Templatea ID for Zone ID
+/** Update Zone Template ID for Zone ID
  *
  * @param int $zone_id Zone ID
  * @param int $new_zone_template_id New Zone Template ID

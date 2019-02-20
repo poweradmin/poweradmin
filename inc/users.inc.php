@@ -237,7 +237,7 @@ add_listener('update_perm_templ_details', 'update_perm_templ_details_local');
  *
  * @param mixed[] $details User details
  *
- * @return boolean true on success, false otherise
+ * @return boolean true on success, false otherwise
  */
 add_listener('update_user_details', 'update_user_details_local');
 

@@ -32,12 +32,12 @@
 include_once "PDOCommon.class.php";
 
 /**
- * Overrided PEAR class
+ * Override PEAR class
  */
 class PEAR {
 
     /**
-     * Overrided isError method
+     * Override isError method
      */
     public static function isError() {
 
@@ -157,7 +157,7 @@ class PDOLayer extends PDOCommon {
      * @link http://pear.php.net/package/MDB2/docs/2.5.0b3/MDB2/MDB2_Driver_Manager_Common.html#methodlistTables
      */
     public function listTables() {
-        // TODO: addapt this function also to pgsql & sqlite
+        // TODO: adapt this function also to pgsql & sqlite
 
         $tables = array();
         $db_type = $this->getAttribute(PDO::ATTR_DRIVER_NAME);

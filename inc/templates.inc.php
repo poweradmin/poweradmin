@@ -44,7 +44,7 @@ function get_list_zone_templ($userid) {
             . "ORDER BY name";
     $result = $db->query($query);
     if (PEAR::isError($result)) {
-        error("Not all tables available in database, please make sure all upgrade/install proceedures were followed");
+        error("Not all tables available in database, please make sure all upgrade/install procedures were followed");
         return false;
     }
 
@@ -511,7 +511,7 @@ function get_list_zone_use_templ($zone_templ_id, $userid) {
 
     $result = $db->query($query);
     if (PEAR::isError($result)) {
-        error("Not all tables available in database, please make sure all upgrade/install proceedures were followed");
+        error("Not all tables available in database, please make sure all upgrade/install procedures were followed");
         return false;
     }
 
@@ -587,7 +587,7 @@ function zone_templ_name_exists($zone_templ_name, $zone_templ_id = null) {
 /** Parse string and substitute domain and serial
  *
  * @param string $val string to parse containing tokens '[ZONE]' and '[SERIAL]'
- * @param string $domain domain to subsitute for '[ZONE]'
+ * @param string $domain domain to substitute for '[ZONE]'
  *
  * @return string interpolated/parsed string
  */
