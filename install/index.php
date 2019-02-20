@@ -97,7 +97,7 @@ switch ($current_step) {
         }
         $pa_pass = $_POST['pa_pass'];
         require_once("../inc/database.inc.php");
-        $db = dbConnect();
+        $db = dbConnect();echo 'here';
         $db->loadModule('Manager');
         $db->loadModule('Extended');
         include_once("database-structure.inc.php");
