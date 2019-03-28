@@ -1,0 +1,5 @@
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+	RewriteRule ^update$ /dynamic_update.php
+	RewriteRule ^nic/update$ /dynamic_update.php
+</IfModule>
