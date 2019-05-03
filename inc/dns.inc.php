@@ -158,6 +158,9 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
       case 'KX': // TODO: implement validation
       break;
 
+      case "LUA": // TODO: implement validation.
+      break;
+
       case "LOC":
         if (!is_valid_loc($content)) {
           return false;
