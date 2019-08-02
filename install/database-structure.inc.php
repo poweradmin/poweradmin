@@ -452,7 +452,7 @@ $def_tables = array(
         'table_name' => 'migrations',
         'options' => array('type' => 'innodb'),
         'fields' => array(
-            'domain_id' => array
+            'version' => array
                 (
                 'notnull' => 1,
                 'length' => 255,
@@ -463,7 +463,7 @@ $def_tables = array(
                 'table' => 'migrations',
                 'flags' => 'not_null'
             ),
-            'record_id' => array
+            'apply_time' => array
                 (
                 'notnull' => 1,
                 'length' => 11,
