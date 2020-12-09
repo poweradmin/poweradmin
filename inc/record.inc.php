@@ -1500,8 +1500,6 @@ function order_domain_results($domains, $sortby) {
                 $ns[] = $domain;
                 unset($domains[$key]);
                 break;
-            default:
-                continue;
         }
     }
 
