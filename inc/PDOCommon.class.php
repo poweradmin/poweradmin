@@ -142,7 +142,7 @@ class PDOCommon extends PDO {
      * @param string $str
      * @return \PDOStatementCommon
      */
-    public function query($str) {
+    public function query($str, ?int $fetchMode = null, mixed ...$fetchModeArgs) {
         // check if limit has been specified. if so, modify the query
         if (!empty($this->limit)) {
             $str .= " LIMIT " . $this->limit;
