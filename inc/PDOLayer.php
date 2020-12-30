@@ -125,7 +125,7 @@ class PDOLayer extends PDOCommon {
      * @param string $str SQL query
      * @return PDOStatement
      */
-    public function query($str) {
+    public function query($str, ?int $fetchMode = null, mixed ...$fetchModeArgs) {
         if ($this->debug) {
             $this->queries[] = $str;
         }
