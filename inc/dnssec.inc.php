@@ -451,7 +451,7 @@ function dnssec_get_dnskey_record($domain_name) {
 
     $dns_key = '';
     foreach ($output as $line) {
-        if (substr($line, 0, 3) == 'KSK') {
+        if (preg_match('/^[CK]SK$/',substr($line, 0, 3))) {
             $items = explode(' ', $line);
             $dns_key = join(" ", array_slice($items, 3));
         }
