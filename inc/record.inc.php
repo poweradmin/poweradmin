@@ -395,7 +395,6 @@ function edit_record($record) {
 				content=" . $db->quote($record['content'], 'text') . ",
 				ttl=" . $db->quote($record['ttl'], 'integer') . ",
 				prio=" . $db->quote($record['prio'], 'integer') . ",
-				change_date=" . $db->quote(time(), 'integer') . "
 				WHERE id=" . $db->quote($record['rid'], 'integer');
             $result = $db->query($query);
             if (PEAR::isError($result)) {
@@ -446,7 +445,7 @@ function add_record($zone_id, $name, $type, $content, $ttl, $prio) {
         if (validate_input(-1, $zone_id, $type, $content, $name, $prio, $ttl)) {
             $change = time();
             $name = strtolower($name); // powerdns only searches for lower case records
-            $query = "INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) VALUES ("
+            $query = "INSERT INTO records (domain_id, name, type, content, ttl, prio) VALUES ("
                     . $db->quote($zone_id, 'integer') . ","
                     . $db->quote($name, 'text') . ","
                     . $db->quote($type, 'text') . ","
@@ -557,12 +556,12 @@ function get_supermaster_info_from_ip($master_ip) {
  *
  * @param $rid Record ID
  *
- * @return mixed[] array of record details [rid,zid,name,type,content,ttl,prio,change_date]
+ * @return mixed[] array of record details [rid,zid,name,type,content,ttl,prio]
  */
 function get_record_details_from_record_id($rid) {
     global $db;
 
-    $query = "SELECT id AS rid, domain_id AS zid, name, type, content, ttl, prio, change_date FROM records WHERE id = " . $db->quote($rid, 'integer');
+    $query = "SELECT id AS rid, domain_id AS zid, name, type, content, ttl, prio FROM records WHERE id = " . $db->quote($rid, 'integer');
 
     $response = $db->query($query);
     if (PEAR::isError($response)) {
@@ -716,7 +715,7 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template) {
                     $serial = date("Ymd");
                     $serial .= "00";
 
-                    $query = "INSERT INTO records (domain_id, name, content, type, ttl, prio, change_date) VALUES ("
+                    $query = "INSERT INTO records (domain_id, name, content, type, ttl, prio) VALUES ("
                             . $db->quote($domain_id, 'integer') . ","
                             . $db->quote($domain, 'text') . ","
                             . $db->quote($ns1 . ' ' . $hm . ' ' . $serial . ' 28800 7200 604800 86400', 'text') . ","
@@ -747,7 +746,7 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template) {
                                     $ttl = $dns_ttl;
                                 }
 
-                                $query = "INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) VALUES ("
+                                $query = "INSERT INTO records (domain_id, name, type, content, ttl, prio) VALUES ("
                                         . $db->quote($domain_id, 'integer') . ","
                                         . $db->quote($name, 'text') . ","
                                         . $db->quote($type, 'text') . ","
@@ -1367,7 +1366,7 @@ function zone_count_for_uid($uid) {
 function get_record_from_id($id) {
     global $db;
     if (is_numeric($id)) {
-        $result = $db->queryRow("SELECT id, domain_id, name, type, content, ttl, prio, change_date FROM records WHERE id=" . $db->quote($id, 'integer') . " AND type IS NOT NULL");
+        $result = $db->queryRow("SELECT id, domain_id, name, type, content, ttl, prio FROM records WHERE id=" . $db->quote($id, 'integer') . " AND type IS NOT NULL");
         if ($result) {
             if ($result["type"] == "" || $result["content"] == "") {
                 return -1;
@@ -1380,8 +1379,7 @@ function get_record_from_id($id) {
                 "type" => $result["type"],
                 "content" => $result["content"],
                 "ttl" => $result["ttl"],
-                "prio" => $result["prio"],
-                "change_date" => $result["change_date"]
+                "prio" => $result["prio"]
             );
             return $ret;
         } else {
@@ -1411,12 +1409,12 @@ function get_records_from_domain_id($id, $rowstart = 0, $rowamount = 999999, $so
     if (is_numeric($id)) {
         if ((isset($_SESSION[$id . "_ispartial"])) && ($_SESSION[$id . "_ispartial"] == 1)) {
             $db->setLimit($rowamount, $rowstart);
-            $result = $db->query("SELECT records.id, domains.id, records.name, records.type, records.content, records.ttl, records.prio, records.change_date
+            $result = $db->query("SELECT records.id, domains.id, records.name, records.type, records.content, records.ttl, records.prio
                                     FROM record_owners,domains,records
                                     WHERE record_owners.user_id = " . $db->quote($_SESSION["userid"], 'integer') . "
                                     AND record_owners.record_id = records.id
                                     AND records.domain_id = " . $db->quote($id, 'integer') . "
-                                    GROUP BY records.id, domains.id, records.name, records.type, records.content, records.ttl, records.prio, records.change_date
+                                    GROUP BY records.id, domains.id, records.name, records.type, records.content, records.ttl, records.prio
                                     ORDER BY type = 'SOA' DESC, type = 'NS' DESC, records." . $sortby);
 
             if ($result) {
@@ -1428,8 +1426,7 @@ function get_records_from_domain_id($id, $rowstart = 0, $rowamount = 999999, $so
                         "type" => $r["type"],
                         "content" => $r["content"],
                         "ttl" => $r["ttl"],
-                        "prio" => $r["prio"],
-                        "change_date" => $r["change_date"]
+                        "prio" => $r["prio"]
                     );
                 }
                 $result = $ret;
@@ -1446,7 +1443,7 @@ function get_records_from_domain_id($id, $rowstart = 0, $rowamount = 999999, $so
             }
             $sql_sortby = ($sortby == 'name' ? $natural_sort : $sortby . ', ' . $natural_sort);
 
-            $result = $db->query("SELECT id, domain_id, name, type, content, ttl, prio, change_date
+            $result = $db->query("SELECT id, domain_id, name, type, content, ttl, prio
                                     FROM records 
                                     WHERE domain_id=" . $db->quote($id, 'integer') . " AND type IS NOT NULL
                                     ORDER BY type = 'SOA' DESC, type = 'NS' DESC," . $sql_sortby);
@@ -1461,8 +1458,7 @@ function get_records_from_domain_id($id, $rowstart = 0, $rowamount = 999999, $so
                         "type" => $r["type"],
                         "content" => $r["content"],
                         "ttl" => $r["ttl"],
-                        "prio" => $r["prio"],
-                        "change_date" => $r["change_date"]
+                        "prio" => $r["prio"]
                     );
                 }
                 $result = $ret;
@@ -1954,14 +1950,13 @@ function update_zone_records($zone_id, $zone_template_id) {
                         $ttl = $dns_ttl;
                     }
 
-                    $query = "INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) VALUES ("
+                    $query = "INSERT INTO records (domain_id, name, type, content, ttl, prio) VALUES ("
                             . $db->quote($zone_id, 'integer') . ","
                             . $db->quote($name, 'text') . ","
                             . $db->quote($type, 'text') . ","
                             . $db->quote($content, 'text') . ","
                             . $db->quote($ttl, 'integer') . ","
-                            . $db->quote($prio, 'integer') . ","
-                            . $db->quote($now, 'integer') . ")";
+                            . $db->quote($prio, 'integer') . ",";
                     $response = $db->exec($query);
 
                     if ($db_type == 'pgsql') {

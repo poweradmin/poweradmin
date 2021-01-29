@@ -25,10 +25,6 @@ class RecordLog {
         $record_copy = $record;
         $record_prior_copy = $this->record_prior;
 
-        // Don't compare the 'change_date'
-        unset($record_copy["change_date"]);
-        unset($record_prior_copy["change_date"]);
-
         // PowerDNS only searches for lowercase records
         $record_copy['name'] = strtolower($record_copy['name']);
         $record_prior_copy['name'] = strtolower($record_prior_copy['name']);
