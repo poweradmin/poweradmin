@@ -19,7 +19,6 @@ CREATE TABLE records (
   content         VARCHAR(64000) DEFAULT NULL,
   ttl             INT DEFAULT NULL,
   prio            INT DEFAULT NULL,
-  change_date     INT DEFAULT NULL,
   disabled        BOOLEAN DEFAULT 0,
   primary key(id)
 ) Engine=InnoDB;
