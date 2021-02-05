@@ -18,7 +18,6 @@ CREATE TABLE records (
         content         VARCHAR(65535) DEFAULT NULL,
         ttl             INT DEFAULT NULL,
         prio            INT DEFAULT NULL,
-        change_date     INT DEFAULT NULL,
         disabled        BOOL DEFAULT 'f',
         CONSTRAINT domain_exists
         FOREIGN KEY(domain_id) REFERENCES domains(id)
