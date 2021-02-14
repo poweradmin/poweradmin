@@ -451,8 +451,7 @@ function add_record($zone_id, $name, $type, $content, $ttl, $prio) {
                     . $db->quote($type, 'text') . ","
                     . $db->quote($content, 'text') . ","
                     . $db->quote($ttl, 'integer') . ","
-                    . $db->quote($prio, 'integer') . ","
-                    . $db->quote($change, 'integer') . ")";
+                    . $db->quote($prio, 'integer') . ")";
             $response = $db->exec($query);
             if (PEAR::isError($response)) {
                 error($response->getMessage());
@@ -721,8 +720,7 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template) {
                             . $db->quote($ns1 . ' ' . $hm . ' ' . $serial . ' 28800 7200 604800 86400', 'text') . ","
                             . $db->quote('SOA', 'text') . ","
                             . $db->quote($ttl, 'integer') . ","
-                            . $db->quote(0, 'integer') . ","
-                            . $db->quote($now, 'integer') . ")";
+                            . $db->quote(0, 'integer') . ")";
                     $response = $db->query($query);
                     if (PEAR::isError($response)) {
                         error($response->getMessage());
@@ -752,8 +750,7 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template) {
                                         . $db->quote($type, 'text') . ","
                                         . $db->quote($content, 'text') . ","
                                         . $db->quote($ttl, 'integer') . ","
-                                        . $db->quote($prio, 'integer') . ","
-                                        . $db->quote($now, 'integer') . ")";
+                                        . $db->quote($prio, 'integer') . ")";
                                 $response = $db->query($query);
                                 if (PEAR::isError($response)) {
                                     error($response->getMessage());
@@ -1956,7 +1953,7 @@ function update_zone_records($zone_id, $zone_template_id) {
                             . $db->quote($type, 'text') . ","
                             . $db->quote($content, 'text') . ","
                             . $db->quote($ttl, 'integer') . ","
-                            . $db->quote($prio, 'integer') . ",";
+                            . $db->quote($prio, 'integer') . ")";
                     $response = $db->exec($query);
 
                     if ($db_type == 'pgsql') {
