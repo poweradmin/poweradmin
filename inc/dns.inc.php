@@ -330,6 +330,8 @@ function is_valid_hostname_fqdn(&$hostname, $wildcard) {
     global $dns_strict_tld_check;
     global $valid_tlds;
 
+    if ($hostname == ".") { return true; }
+
     $hostname = preg_replace("/\.$/", "", $hostname);
 
     # The full domain name may not exceed a total length of 253 characters.
