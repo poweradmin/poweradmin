@@ -511,7 +511,7 @@ function show_letters($letterstart, $userid) {
     $allowed = zone_content_view_others($userid);
 
     $query = "SELECT
-			DISTINCT SUBSTRING(domains.name, 1, 1) AS letter
+			DISTINCT ".dbfunc_substr()."(domains.name, 1, 1) AS letter
 			FROM domains
 			LEFT JOIN zones ON domains.id = zones.domain_id
 			WHERE " . $allowed . " = 1
