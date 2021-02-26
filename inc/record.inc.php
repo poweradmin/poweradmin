@@ -394,7 +394,7 @@ function edit_record($record) {
 				type=" . $db->quote($record['type'], 'text') . ",
 				content=" . $db->quote($record['content'], 'text') . ",
 				ttl=" . $db->quote($record['ttl'], 'integer') . ",
-				prio=" . $db->quote($record['prio'], 'integer') . ",
+				prio=" . $db->quote($record['prio'], 'integer') . "
 				WHERE id=" . $db->quote($record['rid'], 'integer');
             $result = $db->query($query);
             if (PEAR::isError($result)) {
