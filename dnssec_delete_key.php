@@ -89,10 +89,10 @@ if ($confirm == '1') {
         echo "      " . _('Active') . ": " . ($key_info[5] ? _('Yes') : _('No')) . "\n";
         echo "     <p>" . _('Are you sure?') . "</p>\n";
         echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='dnssec_delete_key.php?id=" . $zone_id . "&amp;key_id=$key_id&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
-        echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
+        echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='dnssec.php?id=" . $zone_id . "'\" value=\"" . _('No') . "\">\n";
     } else {
         error(ERR_PDNSSEC_DEL_ZONE_KEY);
     }
 }
-
+echo "<br/><a href='dnssec.php?id=" . $zone_id . "'>Back to DNSSEC " . $domain_name . "</a>";
 include_once("inc/footer.inc.php");

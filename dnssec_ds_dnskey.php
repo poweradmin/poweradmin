@@ -34,6 +34,8 @@ require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
 global $pdnssec_use;
+global $perm_view;
+global $perm_meta_edit;
 
 $zone_id = "-1";
 if (isset($_GET['id']) && v_num($_GET['id'])) {
@@ -79,9 +81,12 @@ $zone_template_id = get_zone_template($zone_id);
 echo "   <h2>" . _('DNSSEC public records for zone') . " \"" . get_zone_name_from_id($zone_id) . "\"</h2>\n";
 
 echo "   <h3>" . _('DNSKEY') . "</h3>\n";
-$dnskey_record = dnssec_get_dnskey_record($domain_name);
-echo $dnskey_record."<br>\n";
-
+$dnskey_records = dnssec_get_dnskey_record($domain_name);
+echo "<pre>\n";
+foreach ($dnskey_records as $record) {
+    echo $record."<br/>";
+}
+echo "</pre>\n";
 echo "<br>";
 
 echo "   <h3>" . _('DS record') . "</h3>\n";
@@ -91,5 +96,6 @@ foreach ($ds_records as $record) {
 }
 
 echo "<br>";
+echo "<br/><a href='dnssec.php?id=" . $zone_id . "'>Back to DNSSEC " . $domain_name . "</a>";
 
 include_once("inc/footer.inc.php");
