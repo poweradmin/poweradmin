@@ -451,7 +451,7 @@ function dnssec_get_dnskey_record($domain_name) {
 
     $dns_key = '';
     foreach ($output as $line) {
-        if (substr($line, 0, 3) == 'KSK') {
+        if (substr($line, 0, 3) == 'CSK') {
             $items = explode(' ', $line);
             $dns_key = join(" ", array_slice($items, 3));
         }
@@ -524,8 +524,9 @@ function dnssec_get_keys($domain_name) {
     foreach ($output as $line) {
         if (substr($line, 0, 2) == 'ID') {
             $items = explode(' ', $line);
-            $bits_array = explode("\t", $items[12]);
-            $keys[] = array($items[2], substr($items[3], 1, -2), substr($items[6], 0, -1), substr($items[9], 0, -1), $bits_array[0], $items[13]);
+
+            $bits_array = explode("\t", $items[15]);
+            $keys[] = array($items[2], substr($items[3], 1, -2), substr($items[9], 0, -1), substr($items[12], 0, -1), $bits_array[0], $items[17]);
         }
     }
 
