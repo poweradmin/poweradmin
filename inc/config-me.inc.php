@@ -77,3 +77,6 @@ $ldap_binddn = 'GROUP\lookupuser';
 $ldap_bindpw = 'some_password';
 $ldap_user_attribute = 'sAMAccountName';
 $ldap_proto = 3;
+
+// Development settings
+$develop_mode = 0;
