@@ -1671,7 +1671,7 @@ function search_zone_and_record($parameters, $permission_view, $sort_zones_by, $
                 (domains.name LIKE ' . $db->quote($search_string, 'text') .
             ($parameters['reverse'] ? ' OR domains.name LIKE ' . $reverse_search_string : '') . ') ' .
             ($permission_view == 'own' ? ' AND z.owner = ' . $db->quote($_SESSION['userid'], 'integer') : '') .
-            ' ORDER BY ' . $sort_zones_by;
+            ' ORDER BY ' . $sort_zones_by . ', z.owner';
 
         $zonesResponse = $db->query($zonesQuery);
         if (PEAR::isError($zonesResponse)) {
@@ -1680,8 +1680,19 @@ function search_zone_and_record($parameters, $permission_view, $sort_zones_by, $
         }
 
         while ($zone = $zonesResponse->fetchRow()) {
-            $return['zones'][] = $zone;
+            $zones[$zone['id']][] = $zone;
         }
+	foreach ($zones as $zone_id => $zone_array) {
+	    $zone_owner_fullnames = [];
+	    $zone_owner_ids = [];
+	    foreach ($zone_array as $zone_entry) {
+	        $zone_owner_ids[] = $zone_entry['owner'];
+	        $zone_owner_fullnames[] = $zone_entry['fullname'];
+	    }
+	    $zones[$zone_id][0]['owner'] = implode(', ', $zone_owner_ids);
+	    $zones[$zone_id][0]['fullname'] = implode(', ', $zone_owner_fullnames);
+	    $return['zones'][] = $zones[$zone_id][0];
+	}
     }
 
 
@@ -1707,7 +1718,7 @@ function search_zone_and_record($parameters, $permission_view, $sort_zones_by, $
                 (records.name LIKE ' . $db->quote($search_string, 'text') . ' OR records.content LIKE ' . $db->quote($search_string, 'text') .
             ($parameters['reverse'] ? ' OR records.name LIKE ' . $reverse_search_string . ' OR records.content LIKE ' . $reverse_search_string : '') . ')' .
             ($permission_view == 'own' ? 'AND z.owner = ' . $db->quote($_SESSION['userid'], 'integer') : '') .
-            ' ORDER BY ' . $sort_records_by;
+            ' GROUP BY records.id ORDER BY ' . $sort_records_by;
 
         $recordsResponse = $db->query($recordsQuery);
         if (PEAR::isError($recordsResponse)) {
