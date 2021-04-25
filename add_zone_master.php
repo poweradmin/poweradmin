@@ -181,7 +181,8 @@ if ($zone_master_add != "1") {
     echo "       <tr>\n";
     echo "        <td class=\"n\">&nbsp;</td>\n";
     echo "        <td class=\"n\">\n";
-    echo "         <input type=\"submit\" class=\"button\" name=\"submit\" value=\"" . _('Add zone') . "\" onclick=\"checkDomainFilled();return false;\">\n";
+    //echo "         <input type=\"submit\" class=\"button\" name=\"submit\" value=\"" . _('Add zone') . "\" onclick=\"checkDomainFilled();return false;\">\n";
+    echo "         <button type=\"submit\" class=\"button\" id=\"submit\" name=\"submit\" onclick=\"checkDomainFilled();return false;\"><i class=\"fas fa-plus-circle facol\"></i> " . _('Add zone') . "</button>\n";
     echo "        </td>\n";
     echo "        <td class=\"n\">&nbsp;</td>\n";
     echo "       </tr>\n";
