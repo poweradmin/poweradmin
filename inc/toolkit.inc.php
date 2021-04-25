@@ -779,7 +779,8 @@ function auth($msg = "", $type = "success") {
             <tr>
                 <td class="n">&nbsp;</td>
                 <td class="n">
-                    <input type="submit" name="authenticate" class="button" value=" <?php echo _('Go'); ?> ">
+                    <!-- <input type="submit" id="authenticate" name="authenticate" class="button" value=" <?php echo _('Go'); ?> "> -->
+                    <button type="submit" id="authenticate" name="authenticate" class="button"><i class="fas fa-lock facol"></i> <?php echo _('Go'); ?></button>
                 </td>
             </tr>
         </table>

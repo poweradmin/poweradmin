@@ -107,4 +107,4 @@ if (file_exists('install2')) {
     echo "    <span class=\"menuitem\"><a href=\"index.php?logout\">" . _('Logout') . "</a></span>\n";
     echo "    </div> <!-- /menu -->\n";
 }
-echo "    <div class=\"content\">\n";
+echo "    <div id=\"content\" class=\"content\">\n";
