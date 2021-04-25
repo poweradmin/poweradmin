@@ -4,6 +4,7 @@
 
 # Darkmode, Bootstrap, html5, jQuery, Tooltipp
 
-I just added these features to the fork.
+I just added the features Darkmode, Bootstrap, html5, jQuery, Tooltipp to this fork.
+In the next step i want to sent ajax callbacks insteat of submit forms via html.
 
-![alt text](https://www.bit-worker.com/assets/img/poweradmin.jpg)
+![Poweradmin in darkmode](https://www.bit-worker.com/assets/img/poweradmin.jpg)
