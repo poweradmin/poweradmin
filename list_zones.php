@@ -135,9 +135,9 @@ if ($perm_view == "none") {
         }
         echo "          </td>\n";
         echo "          <td class=\"actions\">\n";
-        echo "           <a href=\"edit.php?name=" . $zone['name'] . "&id=" . $zone['id'] . "\"><i class=\"fas fa-edit\" title=\"" . _('View zone') . " " . $zone['name'] . "\" alt=\"[ " . _('View zone') . " " . $zone['name'] . " ]\"></i></a>\n";
+        echo "           <a href=\"edit.php?name=" . $zone['name'] . "&id=" . $zone['id'] . "\"><i data-toggle=\"tooltip\" class=\"fas fa-edit\" title=\"" . _('View zone') . " " . $zone['name'] . "\" alt=\"[ " . _('View zone') . " " . $zone['name'] . " ]\"></i></a>\n";
         if ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) {
-            echo "           <a href=\"delete_domain.php?name=" . $zone['name'] . "&id=" . $zone["id"] . "\"><i class=\"fas fa-trash\" title=\"" . _('Delete zone') . " " . $zone['name'] . "\" alt=\"[ " . _('Delete zone') . " " . $zone['name'] . " ]\"></i></a>\n";
+            echo "           <a href=\"delete_domain.php?name=" . $zone['name'] . "&id=" . $zone["id"] . "\"><i data-toggle=\"tooltip\" class=\"fas fa-trash\" title=\"" . _('Delete zone') . " " . $zone['name'] . "\" alt=\"[ " . _('Delete zone') . " " . $zone['name'] . " ]\"></i></a>\n";
         }
         echo "          </td>\n";
         echo "          <td class=\"name\">" . $zone["name"] . "</td>\n";
