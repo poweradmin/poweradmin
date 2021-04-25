@@ -1,0 +1,253 @@
+/*
+ * Author: Dipl. Wirt.-Ing. Nick Herrmann
+ * Website: https://www.bit-worker.com
+ * Comments: Cool dark mode design
+ */
+
+/**
+ *
+ * Normalize
+ *
+ */
+@import url('../style/dark_normalize.css');
+
+/**
+ *
+ * Load font
+ *
+ */
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200&display=swap');
+
+/**
+ *
+ * General
+ *
+ */
+body {
+    background: #0d1117;
+    font-family: 'Oswald';
+    /* font-size: 1rem; */
+}
+
+* {
+    color: #8b949e;
+}
+
+a {
+    text-decoration: none;
+    color: #8b949e;
+    font-size: 1rem;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+p,
+div,
+table tr,
+table tr td,
+table tr th,
+strong,
+li,
+b,
+input,
+textarea {
+    font-size: 1rem;
+}
+
+
+
+/**
+ *
+ * Header
+ *
+ */
+h1 {
+    font-size: 3rem;
+    color: #8b949e;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+
+h1,
+.menu {
+    margin: 10px auto;
+    width: 980px;
+}
+
+h2,
+h3 {
+    font-size: 2rem;
+    color: #e15d10;
+}
+
+.content,
+.footer {
+    margin: 10px auto;
+    width: 940px;
+}
+
+
+
+
+
+/**
+ *
+ * Navigation
+ *
+ */
+.menu {
+    font-size: 1rem;
+    font-style: normal;
+}
+
+.menuitem {
+    /* padding-right: 5px; */
+    font-size: 0.8rem;
+    font-weight: normal;
+    background-color: #8b949e;
+    margin-right: 1rem;
+    padding: 0.6rem;
+    line-height: 3rem;
+}
+
+.menuitem:hover {
+    background-color: #6f767e;
+    transition: 0.3s;
+}
+
+.menuitem a {
+    color: #0d1117;
+    text-decoration: none;
+}
+
+
+
+
+
+
+/**
+*
+* Content
+*
+*/
+.content {
+    padding: 20px 20px;
+    /* border: 1px solid #ccc; */
+    border-top: 1px solid #333;
+    background: transparent;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+table tr th {
+    text-align: left;
+    padding-right: 10px;
+    font-weight: normal;
+    border-bottom: 1px solid #333;
+    padding: 1rem;
+}
+
+table tr td {
+    padding: 1rem;
+    /* border-bottom: 1px solid #333; */
+}
+
+
+
+/* table tr:hover {
+	background-color:#181e27;
+	cursor: pointer;
+	transition: 0.3s;
+} */
+
+.success,
+.error {
+    padding: 10px;
+    font-weight: bold;
+}
+
+.success {
+    border: 1px solid green;
+    color: green;
+}
+
+.error {
+    border: 1px solid red;
+    color: red;
+}
+
+.footer {
+    font-size: 0.6rem;
+    border-top: 1px solid #333;
+}
+
+.footer a {
+    font-size: 0.6rem;
+}
+
+
+
+
+/**
+ *
+ * Buttons
+ *
+ */
+.button {
+    font-size: 1rem;
+    border: none;
+    background: #e15d10;
+    color: #0d1117;
+    padding-top: 5px;
+    padding-bottom: 6px;
+    cursor: pointer;
+    margin-top: 1rem;
+}
+
+.button:hover {
+    -moz-box-shadow: 0px 0px 5px #333;
+    -webkit-box-shadow: 0px 0px 5px #333;
+    box-shadow: 0px 0px 5px #333;
+    background: #b44505;
+    transition: 0.3s;
+}
+
+
+
+
+/**
+ *
+ * li Startpage
+ *
+ */
+.content li {
+    line-height: 2rem;
+}
+
+
+
+
+/**
+ *
+ * Forms
+ *
+ */
+.input {
+    padding: 0.4rem;
+    border-radius: 0px;
+    border: none;
+    background-color: #171d26;
+}
+
+input,
+select,
+textarea {
+    padding: 0.4rem;
+    border-radius: 0px;
+    border: none;
+    background-color: #171d26;
+}
