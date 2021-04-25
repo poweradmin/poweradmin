@@ -100,7 +100,7 @@ if ($zone_master_add != "1") {
     echo "       <tr>\n";
     echo "        <td class=\"n\" width=\"100\">" . _('Owner') . ":</td>\n";
     echo "        <td class=\"n\">\n";
-    echo "         <select name=\"owner\">\n";
+    echo "         <select name=\"owner\" style=\"width: 150px\">\n";
     /*
       Display list of users to assign zone to if creating
       user has the proper permission to do so.
@@ -118,7 +118,7 @@ if ($zone_master_add != "1") {
     echo "       <tr>\n";
     echo "        <td class=\"n\">" . _('Type') . ":</td>\n";
     echo "        <td class=\"n\">\n";
-    echo "         <select name=\"dom_type\">\n";
+    echo "         <select name=\"dom_type\" style=\"width: 150px\">\n";
     foreach ($available_zone_types as $type) {
         echo "          <option value=\"" . $type . "\">" . strtolower($type) . "</option>\n";
     }
@@ -128,7 +128,7 @@ if ($zone_master_add != "1") {
     echo "       <tr>\n";
     echo "        <td class=\"n\">" . _('Template') . ":</td>\n";
     echo "        <td class=\"n\">\n";
-    echo "         <select name=\"zone_template\">\n";
+    echo "         <select name=\"zone_template\" style=\"width: 150px\">\n";
     echo "          <option value=\"none\">none</option>\n";
     foreach ($zone_templates as $zone_template) {
         echo "          <option value=\"" . $zone_template['id'] . "\">" . $zone_template['name'] . "</option>\n";

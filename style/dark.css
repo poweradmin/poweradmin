@@ -255,3 +255,8 @@ textarea {
     border: none;
     background-color: #171d26;
 }
+
+
+.cursor {
+    cursor: pointer;
+}
