@@ -53,7 +53,10 @@ $parameters['reverse'] = !isset($_POST['do_search']) && !isset($_POST['reverse']
         <tr>
             <td>
                 <input type="text" class="input" name="query" value="<?php echo $parameters['query']; ?>">
-                <input type="submit" class="button" name="do_search" value="<?php echo _('Search'); ?>">
+                
+                <!--<input type="submit" class="button" name="do_search" value="<?php echo _('Search'); ?>">-->
+                <button type="submit" class="button" id="do_search" name="do_search"><i class="fas fa-search facol"></i><?php echo _('Search'); ?></button>
+
                 <input type="checkbox" class="input" name="zones" value="true"<?php echo $parameters['zones'] ? ' checked="checked"' : ''; ?>><?php echo _('Zones'); ?>
                 <input type="checkbox" class="input" name="records" value="true"<?php echo $parameters['records'] ? ' checked="checked"' : ''; ?>><?php echo _('Records'); ?> |
                 <input type="checkbox" class="input" name="wildcard" value="true"<?php echo $parameters['wildcard'] ? ' checked="checked"' : ''; ?>><?php echo _('Wildcard'); ?>

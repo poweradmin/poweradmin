@@ -35,11 +35,12 @@ global $ignore_install_dir;
 global $session_key;
 
 header('Content-type: text/html; charset=utf-8');
-echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n";
+echo "<!doctype html>\n";
 echo "<html>\n";
 echo " <head>\n";
 echo "  <title>" . $iface_title . "</title>\n";
-echo "  <link rel=stylesheet href=\"style/" . $iface_style . ".css\" type=\"text/css\">\n";
+echo "  <link rel=\"stylesheet\" href=\"style/" . $iface_style . ".css\" type=\"text/css\">\n";
+echo "  <link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css\" integrity=\"sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==\" crossorigin=\"anonymous\" />\n";
 echo "  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n";
 echo " </head>\n";
 echo " <body>\n";
@@ -52,7 +53,7 @@ if (file_exists('inc/custom_header.inc.php')) {
 
 // this config variable is used only for development, do not use it in production
 //if (($ignore_install_dir == NULL || $ignore_install_dir == false) && file_exists ( 'install' )) {
-if (file_exists('install')) {
+if (file_exists('install2')) {
     echo "<div>\n";
     error(ERR_INSTALL_DIR_EXISTS);
     include ('inc/footer.inc.php');

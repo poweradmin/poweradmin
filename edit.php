@@ -239,9 +239,9 @@ if ($records == "-1") {
         else {
             echo "     <td class=\"n\">\n";
             echo "      <a href=\"edit_record.php?id=" . $r['id'] . "&amp;domain=" . $zone_id . "\">
-                                                <img src=\"images/edit.gif\" alt=\"[ " . _('Edit record') . " ]\"></a>\n";
+                                                <i class=\"fas fa-edit\" title=\"" . _('Edit record') . "\" alt=\"[ " . _('Edit record') . " ]\"></i></a>\n";
             echo "      <a href=\"delete_record.php?id=" . $r['id'] . "&amp;domain=" . $zone_id . "\">
-                                                <img src=\"images/delete.gif\" ALT=\"[ " . _('Delete record') . " ]\" BORDER=\"0\"></a>\n";
+                                                <i class=\"fas fa-trash\" title=\"" . _('Delete record') . "\" title=\"[ " . _('Delete record') . " ]\"></i></a>\n";
             echo "     </td>\n";
         }
         echo "     <td class=\"n\">{$r['id']}</td>\n";

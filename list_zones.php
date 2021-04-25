@@ -135,9 +135,9 @@ if ($perm_view == "none") {
         }
         echo "          </td>\n";
         echo "          <td class=\"actions\">\n";
-        echo "           <a href=\"edit.php?name=" . $zone['name'] . "&id=" . $zone['id'] . "\"><img src=\"images/edit.gif\" title=\"" . _('View zone') . " " . $zone['name'] . "\" alt=\"[ " . _('View zone') . " " . $zone['name'] . " ]\"></a>\n";
+        echo "           <a href=\"edit.php?name=" . $zone['name'] . "&id=" . $zone['id'] . "\"><i class=\"fas fa-edit\" title=\"" . _('View zone') . " " . $zone['name'] . "\" alt=\"[ " . _('View zone') . " " . $zone['name'] . " ]\"></i></a>\n";
         if ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) {
-            echo "           <a href=\"delete_domain.php?name=" . $zone['name'] . "&id=" . $zone["id"] . "\"><img src=\"images/delete.gif\" title=\"" . _('Delete zone') . " " . $zone['name'] . "\" alt=\"[ " . _('Delete zone') . " " . $zone['name'] . " ]\"></a>\n";
+            echo "           <a href=\"delete_domain.php?name=" . $zone['name'] . "&id=" . $zone["id"] . "\"><i class=\"fas fa-trash\" title=\"" . _('Delete zone') . " " . $zone['name'] . "\" alt=\"[ " . _('Delete zone') . " " . $zone['name'] . " ]\"></i></a>\n";
         }
         echo "          </td>\n";
         echo "          <td class=\"name\">" . $zone["name"] . "</td>\n";
@@ -157,7 +157,8 @@ if ($perm_view == "none") {
         echo "           </tr>\n";
     }
     echo "          </table>\n";
-    echo "      <input type=\"submit\" name=\"commit\" value=\"" . _('Delete zone(s)') . "\" class=\"button\">\n";
+    #echo "      <input type=\"submit\" name=\"commit\" value=\"" . _('Delete zone(s)') . "\" class=\"button\">\n";
+    echo "      <button type=\"submit\" class=\"button\" id=\"commit\" name=\"commit\"><i class=\"fas fa-trash facol\"></i> " . _('Delete zone(s)') . "</button>\n";
     echo "     </form>\n";
 }
 

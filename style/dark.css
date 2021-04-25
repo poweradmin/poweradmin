@@ -202,10 +202,10 @@ table tr td {
     border: none;
     background: #e15d10;
     color: #0d1117;
-    padding-top: 5px;
-    padding-bottom: 6px;
+    padding: .5rem;
     cursor: pointer;
     margin-top: 1rem;
+   
 }
 
 .button:hover {
@@ -214,6 +214,10 @@ table tr td {
     box-shadow: 0px 0px 5px #333;
     background: #b44505;
     transition: 0.3s;
+}
+
+.facol {
+  color: #0d1117;
 }
 
 
