@@ -113,8 +113,8 @@ if (isset($_POST['query'])) {
                 <tr>
                     <td>
                         <?php if ($permissions['edit'] == 'all' || $permissions['edit'] == 'own' && do_hook('verify_user_is_owner_zoneid', $zone['id'])): ?>
-                            <a href="<?php echo 'edit.php?name=' . $zone['name'] . '&id=' . $zone['id']; ?>"><img src="images/edit.gif" alt="[ <?php echo _('Edit zone'); ?> ]" title="<?php echo _('Edit zone'); ?>"></a>
-                            <a href="<?php echo 'delete_domain.php?name=' . $zone['name'] . '&id=' . $zone['id']; ?>"><img src="images/delete.gif" alt="[ <?php echo _('Delete zone'); ?> ]" title="<?php echo _('Delete zone'); ?>"></a>
+                            <a href="<?php echo 'edit.php?name=' . $zone['name'] . '&id=' . $zone['id']; ?>"><i class="fas fa-edit" data-toggle="tooltip" alt="<?php echo _('Edit zone');  ?>" title="[ <?php echo _('Edit zone') ?> ]"></i></a>
+                            <a href="<?php echo 'delete_domain.php?name=' . $zone['name'] . '&id=' . $zone['id']; ?>"><i class="fas fa-trash" data-toggle="tooltip" alt="[ <?php echo _('Delete zone'); ?> ]" title="<?php echo _('Delete zone'); ?>"></i></a>
                         <?php endif; ?>
                     </td>
                     <td><?php echo $zone['name']; ?></td>
@@ -144,8 +144,8 @@ if (isset($_POST['query'])) {
                 <tr>
                     <td>
                         <?php if ($permissions['edit'] == 'all' || $permissions['edit'] == 'own' && do_hook('verify_user_is_owner_zoneid', $record['domain_id'])): ?>
-                            <a href="<?php echo 'edit_record.php?domain=' . $record['domain_id'] . '&id=' . $record['id']; ?>"><img src="images/edit.gif" alt="[ <?php echo _('Edit zone'); ?> ]" title="<?php echo _('Edit zone'); ?>"></a>
-                            <a href="<?php echo 'delete_record.php?domain=' . $record['domain_id'] . '&id=' . $record['id']; ?>"><img src="images/delete.gif" alt="[ <?php echo _('Delete zone'); ?> ]" title="<?php echo _('Delete zone'); ?>"></a>
+                            <a href="<?php echo 'edit_record.php?domain=' . $record['domain_id'] . '&id=' . $record['id']; ?>"><i class="fas fa-edit" data-toggle="tooltip"  alt="[ <?php echo _('Edit zone'); ?> ]" title="<?php echo _('Edit zone'); ?>"></i></a>
+                            <a href="<?php echo 'delete_record.php?domain=' . $record['domain_id'] . '&id=' . $record['id']; ?>"><i class="fas fa-trash"  data-toggle="tooltip"  alt="[ <?php echo _('Delete zone'); ?> ]" title="<?php echo _('Delete zone'); ?>"></i></a>
                         <?php endif; ?>
                     </td>
                     <td><?php echo $record['name']; ?></td>

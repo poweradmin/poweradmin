@@ -86,11 +86,11 @@ if (count ( $users ) > 0 ) {
 			echo "      <tr>\n";
 			echo "       <td>\n";
 			echo "        <input type=\"hidden\" name=\"user[" . $user ['uid'] . "][uid]\" value=\"" . $user ['uid'] . "\">\n";
-			echo "        <a href=\"edit_user.php?id=" . $user ['uid'] . "\"><img src=\"images/edit.gif\" alt=\"[ " . _ ( 'Edit user' ) . " ]\"></a>\n";
+			echo "        <a href=\"edit_user.php?id=" . $user ['uid'] . "\"><i class=\"fas fa-edit\" data-toggle=\"tooltip\" alt=\"[ " . _ ( 'Edit user' ) . " ]\" title=\"" . _ ( 'Edit user' ) . "\"></i></a>\n";
 			
 			// do not allow to delete him- or herself
 			if ($user ['uid'] != $_SESSION ["userid"]) {
-				echo "        <a href=\"delete_user.php?id=" . $user ['uid'] . "\"><img src=\"images/delete.gif\" alt=\"[ " . _ ( 'Delete user' ) . " ]\"></a>";
+				echo "        <a href=\"delete_user.php?id=" . $user ['uid'] . "\"><i class=\"fas fa-trash\" data-toggle=\"tooltip\" alt=\"[ " . _ ( 'Delete user' ) . " ]\" title=\"" . _ ( 'Delete user' ) . "\"></i></a>";
 			}
 			
 			// if ($user['uid'] != $_SESSION["userid"] && $perm_is_godlike == "1") {
@@ -159,8 +159,9 @@ if (count ( $users ) > 0 ) {
 
 echo "     </table>\n";
 if (isset ( $commit_button ) && $commit_button) {
-	echo "     <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _ ( 'Commit changes' ) . "\">\n";
-	echo "     <input type=\"reset\" class=\"button\" name=\"reset\" value=\"" . _ ( 'Reset changes' ) . "\">\n";
+	//echo "     <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _ ( 'Commit changes' ) . "\">\n";
+	echo "     <button type=\"submit\" class=\"button\" id=\"commit\" name=\"commit\">" . _ ( 'Commit changes' ) . "</button>\n";
+	//echo "     <input type=\"reset\" class=\"button\" name=\"reset\" value=\"" . _ ( 'Reset changes' ) . "\">\n";
 }
 echo "    </form>\n";
 
