@@ -239,9 +239,9 @@ if ($records == "-1") {
         else {
             echo "     <td class=\"n\">\n";
             echo "      <a href=\"edit_record.php?id=" . $r['id'] . "&amp;domain=" . $zone_id . "\">
-                                                <i class=\"fas fa-edit\" title=\"" . _('Edit record') . "\" alt=\"[ " . _('Edit record') . " ]\"></i></a>\n";
+                                                <i class=\"fas fa-edit\" data-toggle=\"tooltip\" title=\"" . _('Edit record') . "\" alt=\"[ " . _('Edit record') . " ]\"></i></a>\n";
             echo "      <a href=\"delete_record.php?id=" . $r['id'] . "&amp;domain=" . $zone_id . "\">
-                                                <i class=\"fas fa-trash\" title=\"" . _('Delete record') . "\" title=\"[ " . _('Delete record') . " ]\"></i></a>\n";
+                                                <i class=\"fas fa-trash\" data-toggle=\"tooltip\" title=\"" . _('Delete record') . "\" title=\"[ " . _('Delete record') . " ]\"></i></a>\n";
             echo "     </td>\n";
         }
         echo "     <td class=\"n\">{$r['id']}</td>\n";
@@ -285,7 +285,7 @@ if ($records == "-1") {
     echo "    <tr>\n";
     echo "     <td class=\"n\">\n";
     echo "      <a href=\"edit_comment.php?domain=" . $zone_id . "\">
-                            <img src=\"images/edit.gif\" alt=\"[ " . _('Edit comment') . " ]\"></a>\n";
+                    <i class=\"fas fa-edit\" data-toggle=\"tooltip\" title=\"" . _('Edit comment') . "\" alt=\"[ " . _('Edit comment') . " ]\"> </i>\n";
     echo "     </td>\n";
     echo "     <td colspan=\"4\"><textarea rows=\"5\" cols=\"80\" name=\"comment\">" . htmlspecialchars(get_zone_comment($zone_id)) . "</textarea></td>\n";
     echo "     <td>&nbsp;</td>\n";
