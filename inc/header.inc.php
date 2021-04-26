@@ -53,8 +53,8 @@ if (file_exists('inc/custom_header.inc.php')) {
 }
 
 // this config variable is used only for development, do not use it in production
-//if (($ignore_install_dir == NULL || $ignore_install_dir == false) && file_exists ( 'install' )) {
-if (file_exists('install2')) {
+if (($ignore_install_dir == NULL || $ignore_install_dir == false) && file_exists ( 'install' )) {
+//if (file_exists('install')) {
     echo "<div>\n";
     error(ERR_INSTALL_DIR_EXISTS);
     include ('inc/footer.inc.php');

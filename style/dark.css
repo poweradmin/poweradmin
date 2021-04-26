@@ -23,6 +23,11 @@
  * General
  *
  */
+html {
+    overflow-y: scroll;
+    height: 101%;
+}
+
 body {
     background: #0d1117;
     font-family: 'Oswald';
