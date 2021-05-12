@@ -112,9 +112,13 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
                 echo "     <td class=\"n\">\n";
                 echo "    <input type=\"hidden\" name=\"record[" . $r['id'] . "][rid]\" value=\"" . $r['id'] . "\">\n";
                 echo "      <a href=\"edit_zone_templ_record.php?id=" . $r['id'] . "&amp;zone_templ_id=" . $zone_templ_id . "\">
-						<img src=\"images/edit.gif\" alt=\"[ " . _('Edit record') . " ]\"></a>\n";
+                            <i class=\"fas fa-edit\" data-toggle=\"tooltip\" title=\"" . _('Edit reord') . "\" alt=\"[ " . _('Edit record') . " ]\"></i></a>\n";
+
+
                 echo "      <a href=\"delete_zone_templ_record.php?id=" . $r['id'] . "&amp;zone_templ_id=" . $zone_templ_id . "\">
-						<img src=\"images/delete.gif\" ALT=\"[ " . _('Delete record') . " ]\" BORDER=\"0\"></a>\n";
+                            <i class=\"fas fa-trash\" data-toggle=\"tooltip\" title=\"" . _('Delete record') . "\" alt=\"[ " . _('Delete record') . " ]\"></i></a>\n";
+
+
                 echo "     </td>\n";
                 echo "      <td class=\"u\"><input class=\"wide\" name=\"record[" . $r['id'] . "][name]\" value=\"" . $r['name'] . "\"></td>\n";
                 echo "      <td class=\"u\">\n";

@@ -147,8 +147,8 @@ if ($edit_id == "-1") {
         echo "       </tr>\n";
         echo "       <tr>\n";
         echo "        <td class=\"n\">&nbsp;</td>\n";
-        echo "        <td class=\"n\"><input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
-        echo "        <input type=\"reset\" class=\"button\" name=\"reset\" value=\"" . _('Reset changes') . "\"></td>\n";
+        echo "        <td class=\"n\"><button type=\"submit\" class=\"button\" id=\"commit\" name=\"commit\"><i class=\"fas fa-save facol\"></i> " . _('Commit changes') . "</button>\n";
+        //echo "        <input type=\"reset\" class=\"button\" name=\"reset\" value=\"" . _('Reset changes') . "\"></td>\n";
         echo "      </table>\n";
         echo "     </form>\n";
 

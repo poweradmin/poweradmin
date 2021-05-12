@@ -79,7 +79,8 @@ if (!do_hook('verify_permission' , 'templ_perm_edit' )) {
         echo "      </tr>\n";
     }
     echo "     </table>\n";
-    echo "     <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
+    //echo "     <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
+    echo "       <button type=\"submit\" class=\"button\" id=\"commit\" name=\"commit\"><i class=\"fas fa-save facol\"></i> " . _('Commit changes') . "</button>\n";
     echo "     </form>\n";
 }
 
