@@ -15,8 +15,6 @@
  */
 require_once 'inc/toolkit.inc.php';
 
-require_once dirname(dirname(dirname(__DIR__))) . '/vendor/poweradmin/Password.php';
-
 /**
  * Verify User has Permission Name
  *

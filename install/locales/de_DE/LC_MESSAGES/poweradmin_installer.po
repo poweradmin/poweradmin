@@ -1,0 +1,286 @@
+# 
+# Translators:
+# Sebastian Sellmeier, 2016
+msgid ""
+msgstr ""
+"Project-Id-Version: Poweradmin-Installer\n"
+"POT-Creation-Date: 2016-05-24 16:57+0200\n"
+"PO-Revision-Date: 2016-05-24 14:58+0000\n"
+"Last-Translator: Sebastian Sellmeier\n"
+"Language-Team: German (http://www.transifex.com/poweradmin/poweradmin-installer/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.8.4\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-KeywordsList: _(\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: includes/validation_functions.php:6
+msgid "is not a file!"
+msgstr "ist keine Datei!"
+
+#: index.php:37
+msgid "English"
+msgstr "Englisch"
+
+#: index.php:37
+msgid "German"
+msgstr "Deutsch"
+
+#: index.php:126 templates/step3.php:29
+msgid "Database-File"
+msgstr "Datenbank-Datei"
+
+#: index.php:127 templates/step3.php:33
+msgid "Host"
+msgstr "Host"
+
+#: index.php:128 templates/step3.php:37
+msgid "Port"
+msgstr "Port"
+
+#: index.php:129 index.php:237 templates/step3.php:41 templates/step4.php:48
+msgid "Username"
+msgstr "Benutzername"
+
+#: index.php:130 index.php:238 templates/step3.php:45 templates/step4.php:52
+msgid "Password"
+msgstr "Passwort"
+
+#: index.php:131 templates/step3.php:49
+msgid "Database"
+msgstr "Datenbank"
+
+#: index.php:132 templates/step3.php:53
+msgid "Charset"
+msgstr "Zeichensatz"
+
+#: index.php:231 templates/step4.php:14
+msgid "E-Mail of Hostmaster"
+msgstr "E-Mail Adresse des Hostmasters"
+
+#: index.php:232 templates/step4.php:18
+msgid "Primary Nameserver"
+msgstr "Primärer Nameserver"
+
+#: index.php:233 templates/step4.php:22
+msgid "Secondary Nameserver"
+msgstr "Sekundärer Nameserver"
+
+#: index.php:234 templates/step4.php:26
+msgid "Tertiary Nameserver"
+msgstr "Terziärer Nameserver"
+
+#: index.php:235 templates/step4.php:40
+msgid "Full Name"
+msgstr "Voller Name"
+
+#: index.php:236 templates/step4.php:44
+msgid "E-Mail"
+msgstr "E-Mail Adresse"
+
+#: index.php:239 templates/step4.php:57
+msgid "Password Repeat"
+msgstr "Passwort wiederholung"
+
+#: index.php:358
+msgid "Administrator template with full rights."
+msgstr "Administrator-Vorlage mit allen Rechten."
+
+#: index.php:384
+msgid "Administrator with full rights."
+msgstr "Administrator mit allen rechten."
+
+#: templates/header.php:8
+msgid "Installation Step"
+msgstr "Installation Schritt"
+
+#: templates/header.php:23
+msgid "Debug-Mode is enabled!"
+msgstr "Debug-Modus ist aktiviert!"
+
+#: templates/step1.php:3
+msgid "Welcome to the installation of Poweradmin!"
+msgstr "Willkommen zur Installation von Poweradmin!"
+
+#: templates/step1.php:6
+msgid ""
+"We are pleased that you want to install our software Poweradmin. Please read"
+" carefully thorough the following information to complete the setup "
+"successfully."
+msgstr "Wir freuen uns, das Sie Poweradmin installieren möchten. Bitte lesen Sie die folgenden Informationen sorgfältig durch, um den Installationsprozess erfolgreich abzuschließen."
+
+#: templates/step1.php:7
+msgid ""
+"The installation-script will check the required PHP modules & settings "
+"within the next steps. Also the supported database-engines will be tested."
+msgstr "Das Installations-Script wird überprüfen, ob auf Ihrem System die erforderlichen PHP-Module installiert sowie Einstellungen gesetzt sind. Des weiteren wird geprüft, welche der durch die Software unterstützten Datenbanktreiber auf Ihrem System verfügbar sind."
+
+#: templates/step1.php:8
+msgid ""
+"Poweradmin requires to have a working instance of PowerDNS with connection "
+"to database-server and the default sql-schema installed."
+msgstr "Voraussetzung für den Betrieb von Poweradmin ist eine funktionsfähige Instanz von PowerDNS mit Anbindung an den Datenbank-Server sowie dem Standard Datenbank-Schema."
+
+#: templates/step1.php:14
+msgid ""
+"While installing Poweradmin this script will NOT touch the existing data "
+"inside the PowerDNS tables."
+msgstr "Währen der Installation von Poweradmin werden KEINE Änderungen an bestehenden Daten innerhalb der von PowerDNS bereitgestellten Tabellen vorgenommen."
+
+#: templates/step1.php:15
+msgid "A backup before installing Poweradmin will be still recommended!"
+msgstr "Ein Datenbank-Backup vor der Installation von Poweradmin wird dennoch empfohlen!"
+
+#: templates/step1.php:22
+msgid ""
+"This script is ONLY for installing Poweradmin! If you are running a previous"
+" version of Poweradmin please read through the Upgrade-Guide."
+msgstr "Dieses Script ist ausschließlich zur Installation von Poweradmin geeignet. Wenn Sie bereits eine ältere Version von Poweradmin eingesetzt haben, lesen Sie bitte die Upgrade-Dokumentation."
+
+#: templates/step1.php:24
+msgid ""
+"All tables (including data) provided by Poweradmin will be deleted by "
+"running this setup-script!"
+msgstr "Alle Tabellen (inklusive Daten) welche von Poweradmin bereitgestellt werden, werden durch das Installations-Script gelöscht."
+
+#: templates/step1.php:30
+msgid ""
+"I promise I have read the informations carefully and know what I am doing!"
+msgstr "I verspreche, das ich die Informationen aufmerksam gelesen habe und weiß was ich tue!"
+
+#: templates/step1.php:32 templates/step2.php:61 templates/step3.php:66
+msgid "Continue"
+msgstr "Weiter"
+
+#: templates/step2.php:3
+msgid "PHP-Requirements"
+msgstr "PHP-Vorraussetzungen"
+
+#: templates/step2.php:8
+msgid "Required Value"
+msgstr "Benötigter Wert"
+
+#: templates/step2.php:9
+msgid "Your Value"
+msgstr "Ihr Wert"
+
+#: templates/step2.php:14
+msgid "PHP-Version"
+msgstr "PHP-Version"
+
+#: templates/step2.php:19 templates/step2.php:24 templates/step2.php:29
+msgid "PHP-Extension"
+msgstr "PHP-Erweiterung"
+
+#: templates/step2.php:20 templates/step2.php:21 templates/step2.php:25
+#: templates/step2.php:26 templates/step2.php:30 templates/step2.php:31
+msgid "installed"
+msgstr "installiert"
+
+#: templates/step2.php:21 templates/step2.php:26 templates/step2.php:31
+msgid "not installed"
+msgstr "nicht installiert"
+
+#: templates/step2.php:34
+msgid "PHP-Function"
+msgstr "PHP-Funktion"
+
+#: templates/step2.php:35 templates/step2.php:36 templates/step2.php:53
+msgid "available"
+msgstr "verfügbar"
+
+#: templates/step2.php:36
+msgid "disabled"
+msgstr "deaktiviert"
+
+#: templates/step2.php:41
+msgid "Supported Database-Driver"
+msgstr "Unterstützte Datenbank-Treiber"
+
+#: templates/step2.php:45 templates/step3.php:19
+msgid "Driver"
+msgstr "Treiber"
+
+#: templates/step2.php:46
+msgid "Status"
+msgstr "Status"
+
+#: templates/step2.php:53
+msgid "not available"
+msgstr "nicht verfügbar"
+
+#: templates/step2.php:63
+#, php-format
+msgid "Could not create Config-File \"%s\" or it is not writable!"
+msgstr "Die Konfigurations-Datei \"%s\" konnte nicht erstellt werden, oder ist nicht beschreibbar!"
+
+#: templates/step2.php:66
+msgid ""
+"Your System does not fulfill the PHP requirements or there is no database-"
+"driver available!"
+msgstr "Ihr System erfüllt nicht die PHP-Vorraussetzungen oder es ist kein Datenbank-Treiber verfügbar!"
+
+#: templates/step3.php:4
+msgid "Please Note:"
+msgstr "Bitte beachten:"
+
+#: templates/step3.php:5
+msgid ""
+"We have changed the install procedure. There is no need to provide a "
+"superuser at any-time. The user specified here will be written to config-"
+"file."
+msgstr "Der Installationsprozess wurde angepasst. Es ist nicht mehr notwendig die Zugangsdaten eines besonders privilegierten Benutzers einzugeben. Die hier angegeben Zugangsdaten werden in die Konfigurationsdatei geschrieben."
+
+#: templates/step3.php:14
+msgid "Database Credentials"
+msgstr "Datenbank Zugangsdaten"
+
+#: templates/step3.php:65
+msgid "Connection to database-server was successful!"
+msgstr "Die Verbindung zum Datenbank-Server war erfolgreich!"
+
+#: templates/step3.php:69
+msgid "Could not connect to database-server with the given informations!"
+msgstr "Mit den angegeben Daten konnte keine Verbindung zum Datenbank-Server aufgebaut werden!"
+
+#: templates/step3.php:73
+#, php-format
+msgid "Required tables \"%s\" from PowerDNS-Schema missing!"
+msgstr "Benötigte Tabellen \"%s\" von PowerDNS fehlen!"
+
+#: templates/step3.php:76
+msgid "Test Data"
+msgstr "Teste Daten"
+
+#: templates/step4.php:9
+msgid "General Settings"
+msgstr "Allgemeine Einstellungen"
+
+#: templates/step4.php:35
+msgid "Administrative User"
+msgstr "Administrativer Benutzer"
+
+#: templates/step4.php:63
+msgid "Start Installation"
+msgstr "Starte Installation"
+
+#: templates/step5.php:3
+msgid "Installation finished"
+msgstr "Installation abgeschlossen"
+
+#: templates/step5.php:35
+msgid ""
+"You have successfully installed Poweradmin! Please delete the install-"
+"directory and login to use Poweradmin."
+msgstr "Sie haben Poweradmin erfolgreich installiert! Bitte löschen Sie das Verzeichnis \"install\" und loggen Sie sich ein um Poweradmin zu nutzen."
+
+#: templates/step5.php:36
+msgid ""
+"If you want to use Poweradmin for DynDNS, please see instructions in our "
+"wiki!"
+msgstr "Wenn Sie Poweradmin für DynDNS nutzen möchten, lesen Sie bitte die Anleitung in unserem Wiki."

@@ -1,0 +1,32 @@
+header {
+    border-bottom: 1px dashed #000;
+    padding: 20px 0 10px 0;
+}
+
+section.content {
+    padding: 25px;
+}
+
+section.content h1:first-of-type, section.content h2:first-of-type, section.content h3:first-of-type {
+    margin-top: 0;
+}
+
+.debug {
+    width: 100%;
+
+    background-color: #2E64FE;
+    color: #FFF;
+
+    border-bottom: 1px solid #000;
+    padding: 5px 10px;
+}
+
+label.error, .errorText {
+    color: red;
+    font-weight: bold;
+}
+
+footer {
+    border-top: 1px dashed #000;
+    padding-top: 10px;
+}
