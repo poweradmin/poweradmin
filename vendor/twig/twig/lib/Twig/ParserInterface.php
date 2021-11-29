@@ -3,11 +3,15 @@
 /*
  * This file is part of Twig.
  *
- * (c) 2009 Fabien Potencier
+ * (c) Fabien Potencier
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+use Twig\Error\SyntaxError;
+use Twig\Node\ModuleNode;
+use Twig\TokenStream;
 
 /**
  * Interface implemented by parser classes.
@@ -21,11 +25,9 @@ interface Twig_ParserInterface
     /**
      * Converts a token stream to a node tree.
      *
-     * @param Twig_TokenStream $stream A token stream instance
+     * @return ModuleNode
      *
-     * @return Twig_Node_Module A node tree
-     *
-     * @throws Twig_Error_Syntax When the token stream is syntactically or semantically wrong
+     * @throws SyntaxError When the token stream is syntactically or semantically wrong
      */
-    public function parse(Twig_TokenStream $stream);
+    public function parse(TokenStream $stream);
 }

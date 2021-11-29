@@ -3,8 +3,9 @@
     "type": "library",
     "description": "Twig, the flexible, fast, and secure template language for PHP",
     "keywords": ["templating"],
-    "homepage": "http://twig.sensiolabs.org",
+    "homepage": "https://twig.symfony.com",
     "license": "BSD-3-Clause",
+    "minimum-stability": "dev",
     "authors": [
         {
             "name": "Fabien Potencier",
@@ -14,7 +15,6 @@
         },
         {
             "name": "Twig Team",
-            "homepage": "http://twig.sensiolabs.org/contributors",
             "role": "Contributors"
         },
         {
@@ -23,24 +23,30 @@
             "role": "Project Founder"
         }
     ],
-    "support": {
-        "forum": "https://groups.google.com/forum/#!forum/twig-users"
-    },
     "require": {
-        "php": ">=5.2.7"
+        "php": ">=7.2.5",
+        "symfony/polyfill-ctype": "^1.8"
     },
     "require-dev": {
-        "symfony/phpunit-bridge": "~2.7",
-        "symfony/debug": "~2.7"
+        "symfony/phpunit-bridge": "^4.4.9|^5.0.9",
+        "psr/container": "^1.0"
     },
     "autoload": {
         "psr-0" : {
             "Twig_" : "lib/"
+        },
+        "psr-4" : {
+            "Twig\\" : "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4" : {
+            "Twig\\Tests\\" : "tests"
         }
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.24-dev"
+            "dev-master": "1.44-dev"
         }
     }
 }
