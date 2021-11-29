@@ -168,12 +168,12 @@ function dbConnect() {
 }
 
 // SUBSTR/SUBSTRING selector
-function dbfunc_substr(){
+function dbfunc_substr()
+{
     global $db_type;
-    if( $db_type == "sqlite" ){
-        $result = "SUBSTR";
-    }else{
-        $result = "SUBSTRING";
+    if ($db_type == "sqlite") {
+        return "SUBSTR";
+    } else {
+        return "SUBSTRING";
     }
-    return($result);
 }
