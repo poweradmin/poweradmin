@@ -1232,9 +1232,9 @@ function get_zones($perm, $userid = 0, $letterstart = 'all', $rowstart = 0, $row
 				AND zones.owner = " . $db->quote($userid, 'integer');
         }
         if ($letterstart != 'all' && $letterstart != 1) {
-            $sql_add .=" AND substring(domains.name,1,1) = " . $db->quote($letterstart, 'text') . " ";
+            $sql_add .=" AND ".dbfunc_substr()."(domains.name,1,1) = " . $db->quote($letterstart, 'text') . " ";
         } elseif ($letterstart == 1) {
-            $sql_add .=" AND substring(domains.name,1,1) " . $sql_regexp . " '^[[:digit:]]'";
+            $sql_add .=" AND ".dbfunc_substr()."(domains.name,1,1) " . $sql_regexp . " '^[[:digit:]]'";
         }
     }
 
@@ -1323,7 +1323,7 @@ function zone_count_ng($perm, $letterstart = 'all') {
         if ($letterstart != 'all' && $letterstart != 1) {
             $sql_add .=" AND domains.name LIKE " . $db->quote($letterstart . "%", 'text') . " ";
         } elseif ($letterstart == 1) {
-            $sql_add .=" AND substring(domains.name,1,1) " . $sql_regexp . " '^[[:digit:]]'";
+            $sql_add .=" AND ".dbfunc_substr()."(domains.name,1,1) " . $sql_regexp . " '^[[:digit:]]'";
         }
 
 # XXX: do we really need this distinct directive as it's unsupported in sqlite)
