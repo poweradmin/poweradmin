@@ -1,0 +1,221 @@
+@import "/style/inc/bootstrap.min.css";
+.content,
+.footer {
+    max-width: 1000px
+}
+
+@-webkit-keyframes fadeInDown {
+    from {
+        opacity: 0;
+        -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+        -webkit-transform: translate3d(0, -10%, 0);
+        transform: translate3d(0, -10%, 0)
+    }
+    to {
+        opacity: 1;
+        -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+        -webkit-transform: none;
+        transform: none
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+        -webkit-transform: translate3d(0, -10%, 0);
+        transform: translate3d(0, -10%, 0)
+    }
+    to {
+        opacity: 1;
+        -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+        -webkit-transform: none;
+        transform: none
+    }
+}
+
+.content,
+.footer,
+.menu,
+h1 {
+    -webkit-animation-name: fadeInDown;
+    animation-name: fadeInDown;
+    -webkit-animation-duration: .6s;
+    animation-duration: .6s;
+    aanimation-fill-mode: empty
+}
+
+* {
+    -webkit-transition: all .6s;
+    transition: all .6s
+}
+
+a {
+    text-decoration: none!important
+}
+
+.content,
+.footer,
+h1 {
+    width: 100%;
+    text-align: center
+}
+
+.footer {
+    background-color: #303F9F;
+    margin: auto;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px
+}
+
+.footer a {
+    color: #fff
+}
+
+.footer a:hover {
+    color: #C5CAE9
+}
+
+.content a,
+.content>h2,
+.content>h3 {
+    color: #fff
+}
+
+.content>ul,
+.menu {
+    display: table;
+    margin: 30px 20px 40px
+}
+
+.content>ul>li,
+.menuitem {
+    padding: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-bottom: 10px;
+    border-radius: 3px;
+    background-color: #303F9F;
+    height: 40px;
+    display: inline-block
+}
+
+.content>ul>li:hover,
+.menuitem:hover {
+    background-color: #212121
+}
+
+.content>ul>li>a,
+.menuitem a {
+    width: 100%;
+    padding-top: 2px;
+    padding-left: 10px;
+    padding-right: 10px;
+    display: table-cell;
+    color: #fff
+}
+
+.content {
+    margin: auto;
+    background-color: #3F51B5;
+    padding: 10px 40px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px
+}
+
+.content>ul>li {
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex
+}
+
+.content a:hover {
+    color: #C5CAE9
+}
+
+body {
+    background: #BDBDBD
+}
+
+body>h1 {
+    background: #303F9F;
+    padding: 15px 10px 10px;
+    color: #fff;
+    margin-top: 0
+}
+
+form,
+table,
+table>tbody {
+    display: table;
+    width: 100%
+}
+
+table>tbody>tr {
+    display: table-header-group;
+    width: 100%;
+    height: 40px!important;
+    border-bottom: 3px rgba(0, 0, 0, .2) solid;
+    color: #fff;
+    font-size: 14px
+}
+
+table>tbody>tr select {
+    width: 100%;
+    height: 40px!important;
+    height: 35px!important
+}
+
+table>tbody>tr>td {
+    display: table-cell;
+    padding: 5px
+}
+
+table>tbody>tr>td>input {
+    width: 100%!important
+}
+
+.button:hover,
+input[type=submit]:hover {
+    background: #03A9F4;
+    color: #212121
+}
+
+.button,
+input[type=submit] {
+    border: none;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 3px;
+    background: #303F9F;
+    color: #fff
+}
+
+input[type=checkbox] {
+    margin: -5px;
+    position: relative
+}
+
+input[type=password],
+input[type=text] {
+    color: #000;
+    padding: 5px 5px 2px
+}
+
+select {
+    color: #000;
+    padding: 2px;
+    margin-top: 5px;
+    margin-bottom: 5px
+}
+
+textarea {
+    border: none;
+    display: block;
+    width: 100%;
+    border-radius: 3px;
+    margin-top: 10px;
+    margin-bottom: 10px
+}
