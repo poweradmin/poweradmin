@@ -227,22 +227,57 @@ switch ($current_step) {
         break;
 
     case 6:
-        // Try to create configuration file
-        $config_file_created = false;
-        $configuration = ''; // FIXME
-        if (is_writeable(LOCAL_CONFIG_FILE)) {
-            $local_config = fopen(LOCAL_CONFIG_FILE, "w");
-            fwrite($local_config, $configuration);
-            fclose($local_config);
-            $config_file_created = true;
-        }
-
         // No need to set database port if it's standard port for that db
         $db_port = ($_POST['db_type'] == 'mysql' && $_POST['db_port'] != 3306)
             || ($_POST['db_type'] == 'pgsql' && $_POST['db_port'] != 5432) ? $_POST['db_port'] : '';
 
         // For SQLite we should provide path to db file
         $db_file = $_POST['db_type'] =='sqlite' ? $db_file = $_POST['db_name'] : '';
+
+        $session_key = Poweradmin\Password::salt(SESSION_KEY_LENGTH);
+        $iface_lang = $language;
+        $dns_hostmaster = $_POST['dns_hostmaster'];
+        $dns_ns1 = $_POST['dns_ns1'];
+        $dns_ns2 = $_POST['dns_ns2'];
+        $db_host = $_POST['db_host'];
+        $db_user = $_POST['pa_db_user'];
+        $db_pass = $_POST['pa_db_pass'];
+        $db_name = $_POST['db_name'];
+        $db_type = $_POST['db_type'];
+        $db_charset = $_POST['db_charset'];
+        $pa_pass = $_POST['pa_pass'];
+
+        $configuration = "<?php".PHP_EOL;
+        if ($db_file) {
+            $configuration .=  "\$db_file = '$db_name';".PHP_EOL;
+        } else {
+            $configuration .=  "\$db_host = '$db_host';".PHP_EOL;
+            $configuration .=  "\$db_name = '$db_name';".PHP_EOL;
+        }
+        $configuration .= "\$db_user = '$db_user';".PHP_EOL;
+        $configuration .= "\$db_pass = '$db_pass';".PHP_EOL;
+        if ($db_port) {
+            $configuration .= "\$db_port = '$db_port';".PHP_EOL;
+        }
+        $configuration .= "\$db_type = '$db_type';".PHP_EOL;
+        if ($db_charset) {
+            $configuration .= "\$db_charset = '$db_charset';".PHP_EOL;
+        }
+        $configuration .= "\$session_key = '$session_key';".PHP_EOL;
+        $configuration .= "\$iface_lang = '$iface_lang';".PHP_EOL;
+        $configuration .= "\$dns_hostmaster = '$dns_hostmaster';".PHP_EOL;
+        $configuration .= "\$dns_ns1 = '$dns_ns1';".PHP_EOL;
+        $configuration .= "\$dns_ns2 = '$dns_ns2';".PHP_EOL;
+
+        // Try to create configuration file
+        $config_file_created = false;
+
+        if (is_writeable(LOCAL_CONFIG_FILE)) {
+            $local_config = fopen(LOCAL_CONFIG_FILE, "w");
+            fwrite($local_config, $configuration);
+            fclose($local_config);
+            $config_file_created = true;
+        }
 
         echo $twig->render('step6.html', array(
             'next_step' => ++$current_step,
@@ -251,17 +286,17 @@ switch ($current_step) {
             'local_config_file' => LOCAL_CONFIG_FILE,
             'session_key' => Poweradmin\Password::salt(SESSION_KEY_LENGTH),
             'iface_lang' => $language,
-            'dns_hostmaster' => $_POST['dns_hostmaster'],
-            'dns_ns1' => $_POST['dns_ns1'],
-            'dns_ns2' => $_POST['dns_ns2'],
-            'db_host' => $_POST['db_host'],
-            'db_user' => $_POST['pa_db_user'],
-            'db_pass' => $_POST['pa_db_pass'],
-            'db_name' => $_POST['db_name'],
-            'db_type' => $_POST['db_type'],
+            'dns_hostmaster' => $dns_hostmaster,
+            'dns_ns1' => $dns_ns1,
+            'dns_ns2' => $dns_ns2,
+            'db_host' => $db_host,
+            'db_user' => $db_user,
+            'db_pass' => $db_pass,
+            'db_name' => $db_name,
+            'db_type' => $db_type,
             'db_port' => $db_port,
-            'db_charset' => $_POST['db_charset'],
-            'pa_pass' => $_POST['pa_pass']
+            'db_charset' => $db_charset,
+            'pa_pass' => $pa_pass
         ));
         break;
 
