@@ -806,7 +806,7 @@ msgid "This is not a valid CNAME. There is already exists an A, AAAA or CNAME wi
 msgstr "To nie jest poprawny rekord CNAME. Istnieje juź rekord A, AAAA, lub CNAME o takiej nazwie."
 
 #: inc/error.inc.php:90
-msgid "You can not point a NS or MX record to a CNAME record. Remove or rame the CNAME record first, or take another name."
+msgid "You can not point a NS or MX record to a CNAME record. Remove or rename the CNAME record first, or take another name."
 msgstr "Rekord NS lub MX nie moźe wskazywać na rekord CNAME. Usuń lub zmień nazwę rekordu CNAME, albo wybierz inną nazwę."
 
 #: inc/error.inc.php:91
