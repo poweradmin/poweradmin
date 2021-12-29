@@ -84,7 +84,7 @@ if ($record_id == "-1") {
             delete_record_zone_templ($record_id);
 
             // update serial after record deletion
-            update_soa_serial($zid, TRUE);
+            update_soa_serial($zid);
 
             if ($pdnssec_use) {
                 // do also rectify-zone
