@@ -631,7 +631,7 @@ msgid "This is not a valid CNAME. There is already exists an A, AAAA or CNAME wi
 msgstr ""
 
 #: inc/error.inc.php:92
-msgid "You can not point a NS or MX record to a CNAME record. Remove or rame the CNAME record first, or take another name."
+msgid "You can not point a NS or MX record to a CNAME record. Remove or rename the CNAME record first, or take another name."
 msgstr ""
 
 #: inc/error.inc.php:93
