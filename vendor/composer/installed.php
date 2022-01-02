@@ -5,7 +5,7 @@
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => 'd4051e8d7d910810a82964b48875747f68b01f70',
+        'reference' => 'f805ad139f234d5036872d82120bccc0e326bc17',
         'name' => 'poweradmin/poweradmin',
         'dev' => true,
     ),
@@ -16,7 +16,7 @@
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => 'd4051e8d7d910810a82964b48875747f68b01f70',
+            'reference' => 'f805ad139f234d5036872d82120bccc0e326bc17',
             'dev_requirement' => false,
         ),
         'symfony/polyfill-ctype' => array(
@@ -26,15 +26,6 @@
             'install_path' => __DIR__ . '/../symfony/polyfill-ctype',
             'aliases' => array(),
             'reference' => '46cd95797e9df938fdd2b03693b5fca5e64b01ce',
-            'dev_requirement' => false,
-        ),
-        'twig/extensions' => array(
-            'pretty_version' => 'v1.5.4',
-            'version' => '1.5.4.0',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../twig/extensions',
-            'aliases' => array(),
-            'reference' => '57873c8b0c1be51caa47df2cdb824490beb16202',
             'dev_requirement' => false,
         ),
         'twig/twig' => array(
