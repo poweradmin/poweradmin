@@ -78,5 +78,5 @@ $ldap_bindpw = 'some_password';
 $ldap_user_attribute = 'sAMAccountName';
 $ldap_proto = 3;
 
-// Development settings
-$develop_mode = 0;
+// Do not use this configuration variable in production, instead remove the installation folder.
+$ignore_install_dir = false;
