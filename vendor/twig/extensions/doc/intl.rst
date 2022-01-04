@@ -50,6 +50,27 @@ Arguments
 * ``format``: Optional pattern to use when formatting or parsing. Possible
   patterns are documented in the `ICU user guide`_.
 
+* ``calendar``: Calendar to use for formatting. The default value is 'gregorian',
+  which corresponds to IntlDateFormatter::GREGORIAN. Choose one of these formats:
+
+  * 'gregorian':   `IntlDateFormatter::GREGORIAN`_
+  * 'traditional':  `IntlDateFormatter::TRADITIONAL`_
+
+For the following calendars should use 'traditional':
+    * Japanese
+    * Buddhist
+    * Chinese
+    * Persian
+    * Indian
+    * Islamic
+    * Hebrew
+    * Coptic
+    * Ethiopic
+
+Also for non-Gregorian calendars need to be specified in locale.
+Examples might include locale="fa_IR@calendar=PERSIAN".
+
+
 ``localizednumber``
 -------------------
 
@@ -68,7 +89,7 @@ representating the number.
 Arguments
 ~~~~~~~~~
 
-* ``style``: Optional date format (default: 'decimal'). Choose one of these formats:
+* ``style``: Optional number format (default: 'decimal'). Choose one of these formats:
 
   * 'decimal':    `NumberFormatter::DECIMAL`_
   * 'currency':   `NumberFormatter::CURRENCY`_
@@ -121,6 +142,8 @@ Arguments
 .. _`IntlDateFormatter::MEDIUM`:      http://php.net/manual/en/class.intldateformatter.php#intldateformatter.constants.medium
 .. _`IntlDateFormatter::LONG`:        http://php.net/manual/en/class.intldateformatter.php#intldateformatter.constants.long
 .. _`IntlDateFormatter::FULL`:        http://php.net/manual/en/class.intldateformatter.php#intldateformatter.constants.full
+.. _`IntlDateFormatter::GREGORIAN`:   http://php.net/IntlDateFormatter#intldateformatter.constants.gregorian
+.. _`IntlDateFormatter::TRADITIONAL`: http://php.net/IntlDateFormatter#intldateformatter.constants.traditional
 .. _`ICU user guide`:                 http://userguide.icu-project.org/formatparse/datetime
 .. _`NumberFormatter::create()`:      http://php.net/manual/en/numberformatter.create.php
 .. _`NumberFormatter::DECIMAL`:       http://php.net/manual/en/class.numberformatter.php#numberformatter.constants.decimal

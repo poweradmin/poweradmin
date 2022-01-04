@@ -4,7 +4,7 @@
  *  See <http://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010  Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2014  Poweradmin Development Team
+ *  Copyright 2010-2022  Poweradmin Development Team
  *      <http://www.poweradmin.org/credits.html>
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2014 Poweradmin Development Team
+ * @copyright   2010-2022  Poweradmin Development Team
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
 require_once("inc/toolkit.inc.php");
@@ -93,7 +93,7 @@ if ($supermasters_add != "1") {
     echo "         <select name=\"account\">\n";
     /*
       Display list of users to assign slave zone to if the
-      editing user has the permissions to, otherise just
+      editing user has the permissions to, otherwise just
       display the adding users name
      */
     $users = do_hook('show_users');

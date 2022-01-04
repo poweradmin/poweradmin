@@ -4,7 +4,7 @@
  *  See <http://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2014  Poweradmin Development Team
+ *  Copyright 2010-2022  Poweradmin Development Team
  *      <http://www.poweradmin.org/credits.html>
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2014 Poweradmin Development Team
+ * @copyright   2010-2022  Poweradmin Development Team
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
 global $iface_style;
@@ -50,9 +50,7 @@ if (file_exists('inc/custom_header.inc.php')) {
     echo "  <h1>" . $iface_title . "</h1>\n";
 }
 
-// this config variable is used only for development, do not use it in production
-//if (($ignore_install_dir == NULL || $ignore_install_dir == false) && file_exists ( 'install' )) {
-if (file_exists('install') && (isset($develop_mode) && $develop_mode == 0)) {
+if ($ignore_install_dir == false && file_exists ( 'install' )) {
     echo "<div>\n";
     error(ERR_INSTALL_DIR_EXISTS);
     include ('inc/footer.inc.php');

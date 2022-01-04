@@ -4,7 +4,7 @@
  *  See <http://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2014  Poweradmin Development Team
+ *  Copyright 2010-2022  Poweradmin Development Team
  *      <http://www.poweradmin.org/credits.html>
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@
  *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2014 Poweradmin Development Team
+ * @copyright   2010-2022  Poweradmin Development Team
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -165,4 +165,15 @@ function dbConnect() {
         exit;
     }
     return $db;
+}
+
+// SUBSTR/SUBSTRING selector
+function dbfunc_substr()
+{
+    global $db_type;
+    if ($db_type == "sqlite") {
+        return "SUBSTR";
+    } else {
+        return "SUBSTRING";
+    }
 }

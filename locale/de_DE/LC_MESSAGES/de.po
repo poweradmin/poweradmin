@@ -580,7 +580,7 @@ msgstr "Dies ist keine g&uuml;ltige IPv4 Adresse."
 msgid "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
 msgstr "Dies ist kein g&uuml;ltiger CNAME. Haben Sie diesem Eintrag einen MX oder NS Eintrag zugewiesen?"
 
-msgid "You can not point a NS or MX record to a CNAME record. Remove or rame the CNAME record first, or take another name."
+msgid "You can not point a NS or MX record to a CNAME record. Remove or rename the CNAME record first, or take another name."
 msgstr "Sie k&ouml;nnen keinen NS bzw. MX Eintrag auf einen CNAME Eintrag zeigen lassen. Entfernen Sie den CNAME Eintrag zuerst bzw. benennen Sie den CNAME Eintrag um oder w&auml;hlen Sie einen anderen Namen."
 
 msgid "Invalid value for name field of SOA record. It should be the name of the zone."

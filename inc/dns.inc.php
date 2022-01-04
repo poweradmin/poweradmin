@@ -4,7 +4,7 @@
  *  See <http://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2014  Poweradmin Development Team
+ *  Copyright 2010-2022  Poweradmin Development Team
  *      <http://www.poweradmin.org/credits.html>
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@
  *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2014 Poweradmin Development Team
+ * @copyright   2010-2022  Poweradmin Development Team
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -56,253 +56,256 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
 
     switch ($type) {
 
-        case "A":
-            if (!is_valid_ipv4($content)) {
-                return false;
-            }
-            if (!is_valid_rr_cname_exists($name, $rid)) {
-                return false;
-            }
-            if (!is_valid_hostname_fqdn($name, 1)) {
-                return false;
-            }
-            break;
+      case "A":
+        if (!is_valid_ipv4($content)) {
+          return false;
+        }
+        if (!is_valid_rr_cname_exists($name, $rid)) {
+          return false;
+        }
+        if (!is_valid_hostname_fqdn($name, 1)) {
+          return false;
+        }
+      break;
 
-	case "A6": // TODO: implement validation.
-	    break;
+      case "A6": // TODO: implement validation.
+      break;
 
-    	case "AAAA":
-            if (!is_valid_ipv6($content)) {
-                return false;
-            }
-            if (!is_valid_rr_cname_exists($name, $rid)) {
-                return false;
-            }
-            if (!is_valid_hostname_fqdn($name, 1)) {
-                return false;
-            }
-            break;
+      case "AAAA":
+        if (!is_valid_ipv6($content)) {
+          return false;
+        }
+        if (!is_valid_rr_cname_exists($name, $rid)) {
+          return false;
+        }
+        if (!is_valid_hostname_fqdn($name, 1)) {
+          return false;
+        }
+      break;
 
-        case "AFSDB": // TODO: implement validation.
-            break;
+      case "AFSDB": // TODO: implement validation.
+      break;
 
-	case "ALIAS": // TODO: implement validation.
-	    break;
+      case "ALIAS": // TODO: implement validation.
+      break;
 
-	case "CAA": // TODO: implement validation.
-	    break;
+      case "CAA": // TODO: implement validation.
+      break;
 
-	case "CDNSKEY": // TODO: implement validation.
-	    break;
+      case "CDNSKEY": // TODO: implement validation.
+      break;
 
-	case "CDS": // TODO: implement validation.
-	    break;
+      case "CDS": // TODO: implement validation.
+      break;
 
-        case "CERT": // TODO: implement validation.
-            break;
+      case "CERT": // TODO: implement validation.
+      break;
 
-        case "CNAME":
-            if (!is_valid_rr_cname_name($name)) {
-                return false;
-            }
-            if (!is_valid_rr_cname_unique($name, $rid)) {
-                return false;
-            }
-            if (!is_valid_hostname_fqdn($name, 1)) {
-                return false;
-            }
-            if (!is_valid_hostname_fqdn($content, 0)) {
-                return false;
-            }
-            if (!is_not_empty_cname_rr($name, $zone)) {
-                return false;
-            }
-            break;
+      case "CNAME":
+        if (!is_valid_rr_cname_name($name)) {
+          return false;
+        }
+        if (!is_valid_rr_cname_unique($name, $rid)) {
+          return false;
+        }
+        if (!is_valid_hostname_fqdn($name, 1)) {
+          return false;
+        }
+        if (!is_valid_hostname_fqdn($content, 0)) {
+          return false;
+        }
+        if (!is_not_empty_cname_rr($name, $zone)) {
+          return false;
+        }
+        break;
 
-        case 'DHCID': // TODO: implement validation
-            break;
+      case 'DHCID': // TODO: implement validation
+      break;
 
-        case 'DLV': // TODO: implement validation
-            break;
+      case 'DLV': // TODO: implement validation
+      break;
 
-	case "DNAME": // TODO: implement validation.
-	    break;
+      case "DNAME": // TODO: implement validation.
+      break;
 
-        case 'DNSKEY': // TODO: implement validation
-            break;
+      case 'DNSKEY': // TODO: implement validation
+      break;
 
-        case 'DS': // TODO: implement validation
-            break;
+      case 'DS': // TODO: implement validation
+      break;
 
-        case 'EUI48': // TODO: implement validation
-            break;
+      case 'EUI48': // TODO: implement validation
+      break;
 
-        case 'EUI64': // TODO: implement validation
-            break;
+      case 'EUI64': // TODO: implement validation
+      break;
 
-        case "HINFO":
-            if (!is_valid_rr_hinfo_content($content)) {
-                return false;
-            }
-            if (!is_valid_hostname_fqdn($name, 1)) {
-                return false;
-            }
-            break;
+      case "HINFO":
+        if (!is_valid_rr_hinfo_content($content)) {
+          return false;
+        }
+        if (!is_valid_hostname_fqdn($name, 1)) {
+          return false;
+        }
+      break;
 
-        case 'IPSECKEY': // TODO: implement validation
-            break;
+      case 'IPSECKEY': // TODO: implement validation
+      break;
 
-        case 'KEY': // TODO: implement validation
-            break;
+      case 'KEY': // TODO: implement validation
+      break;
 
-        case 'KX': // TODO: implement validation
-            break;
+      case 'KX': // TODO: implement validation
+      break;
 
-        case "LOC":
-            if (!is_valid_loc($content)) {
-                return false;
-            }
-            if (!is_valid_hostname_fqdn($name, 1)) {
-                return false;
-            }
-            break;
+      case "LUA": // TODO: implement validation.
+      break;
 
-	case "MAILA": // TODO: implement validation.
-	    break;
+      case "LOC":
+        if (!is_valid_loc($content)) {
+          return false;
+        }
+        if (!is_valid_hostname_fqdn($name, 1)) {
+          return false;
+        }
+      break;
 
-	case "MAILB": // TODO: implement validation.
-	    break;
+      case "MAILA": // TODO: implement validation.
+      break;
 
-        case 'MINFO': // TODO: implement validation
-            break;
+      case "MAILB": // TODO: implement validation.
+      break;
 
-        case 'MR': // TODO: implement validation
-            break;
+      case 'MINFO': // TODO: implement validation
+      break;
 
-        case "MX":
-            if (!is_valid_hostname_fqdn($content, 0)) {
-                return false;
-            }
-            if (!is_valid_hostname_fqdn($name, 1)) {
-                return false;
-            }
-            if (!is_valid_non_alias_target($content)) {
-                return false;
-            }
-            break;
+      case 'MR': // TODO: implement validation
+      break;
 
-        case 'NAPTR': // TODO: implement validation
-            break;
+      case "MX":
+        if (!is_valid_hostname_fqdn($content, 0)) {
+          return false;
+        }
+        if (!is_valid_hostname_fqdn($name, 1)) {
+          return false;
+        }
+        if (!is_valid_non_alias_target($content)) {
+          return false;
+        }
+      break;
 
-        case "NS":
-            if (!is_valid_hostname_fqdn($content, 0)) {
-                return false;
-            }
-            if (!is_valid_hostname_fqdn($name, 1)) {
-                return false;
-            }
-            if (!is_valid_non_alias_target($content)) {
-                return false;
-            }
-            break;
+      case 'NAPTR': // TODO: implement validation
+      break;
 
-        case 'NSEC': // TODO: implement validation
-            break;
+      case "NS":
+        if (!is_valid_hostname_fqdn($content, 0)) {
+          return false;
+        }
+        if (!is_valid_hostname_fqdn($name, 1)) {
+          return false;
+        }
+        if (!is_valid_non_alias_target($content)) {
+          return false;
+        }
+      break;
 
-        case 'NSEC3': // TODO: implement validation
-            break;
+      case 'NSEC': // TODO: implement validation
+      break;
 
-        case 'NSEC3PARAM': // TODO: implement validation
-            break;
+      case 'NSEC3': // TODO: implement validation
+      break;
 
-	case "OPENPGPKEY": // TODO: implement validation.
-	    break;
+      case 'NSEC3PARAM': // TODO: implement validation
+      break;
 
-        case 'OPT': // TODO: implement validation
-            break;
+      case "OPENPGPKEY": // TODO: implement validation.
+      break;
 
-        case "PTR":
-            if (!is_valid_hostname_fqdn($content, 0)) {
-                return false;
-            }
-            if (!is_valid_hostname_fqdn($name, 1)) {
-                return false;
-            }
-            break;
+      case 'OPT': // TODO: implement validation
+      break;
 
-        case 'RKEY': // TODO: implement validation
-            break;
+      case "PTR":
+        if (!is_valid_hostname_fqdn($content, 0)) {
+          return false;
+        }
+        if (!is_valid_hostname_fqdn($name, 1)) {
+          return false;
+        }
+      break;
 
-        case 'RP': // TODO: implement validation
-            break;
+      case 'RKEY': // TODO: implement validation
+      break;
 
-        case 'RRSIG': // TODO: implement validation
-            break;
+      case 'RP': // TODO: implement validation
+      break;
 
-	case "SIG": // TODO: implement validation.
-	    break;
+      case 'RRSIG': // TODO: implement validation
+      break;
 
-        case "SOA":
-            if (!is_valid_rr_soa_name($name, $zone)) {
-                return false;
-            }
-            if (!is_valid_hostname_fqdn($name, 1)) {
-                return false;
-            }
-            if (!is_valid_rr_soa_content($content)) {
-                error(ERR_DNS_CONTENT);
-                return false;
-            }
-            break;
+      case "SIG": // TODO: implement validation.
+      break;
 
-        case "SPF":
-            if (!is_valid_spf($content)) {
-                return false;
-            }
-            break;
+      case "SOA":
+        if (!is_valid_rr_soa_name($name, $zone)) {
+          return false;
+        }
+        if (!is_valid_hostname_fqdn($name, 1)) {
+          return false;
+        }
+        if (!is_valid_rr_soa_content($content)) {
+          error(ERR_DNS_CONTENT);
+          return false;
+        }
+      break;
 
-        case "SRV":
-            if (!is_valid_rr_srv_name($name)) {
-                return false;
-            }
-            if (!is_valid_rr_srv_content($content)) {
-                return false;
-            }
-            break;
+      case "SPF":
+        if (!is_valid_spf($content)) {
+          return false;
+        }
+      break;
 
-        case 'SSHFP': // TODO: implement validation
-            break;
+      case "SRV":
+        if (!is_valid_rr_srv_name($name)) {
+          return false;
+        }
+        if (!is_valid_rr_srv_content($content)) {
+          return false;
+        }
+      break;
 
-	case "TKEY": // TODO: implement validation.
-	    break;
+      case 'SSHFP': // TODO: implement validation
+      break;
 
-        case 'TLSA': // TODO: implement validation
-            break;
+      case "TKEY": // TODO: implement validation.
+      break;
 
-        case 'TSIG': // TODO: implement validation
-            break;
+      case 'TLSA': // TODO: implement validation
+      break;
 
-        case "TXT":
-            if (!is_valid_printable($name)) {
-                return false;
-            }
-            if (!is_valid_printable($content)) {
-                return false;
-            }
-            break;
+      case 'TSIG': // TODO: implement validation
+      break;
 
-        case 'WKS': // TODO: implement validation
-            break;
+      case "TXT":
+        if (!is_valid_printable($name)) {
+          return false;
+        }
+        if (!is_valid_printable($content)) {
+          return false;
+        }
+      break;
 
-    	case "MBOXFW": // TODO: implement validation
-	    break;
+      case 'WKS': // TODO: implement validation
+      break;
 
-	case "URL": // TODO: implement validation.
-	    break;
+      case "MBOXFW": // TODO: implement validation
+      break;
 
-        default:
-            error(ERR_DNS_RR_TYPE);
-            return false;
+      case "URL": // TODO: implement validation.
+      break;
+
+      default:
+        error(ERR_DNS_RR_TYPE);
+        return false;
     }
 
     if (!is_valid_rr_prio($prio, $type)) {
@@ -327,6 +330,8 @@ function is_valid_hostname_fqdn(&$hostname, $wildcard) {
     global $dns_strict_tld_check;
     global $valid_tlds;
 
+    if ($hostname == ".") { return true; }
+
     $hostname = preg_replace("/\.$/", "", $hostname);
 
     # The full domain name may not exceed a total length of 253 characters.
@@ -344,13 +349,13 @@ function is_valid_hostname_fqdn(&$hostname, $wildcard) {
 
     foreach ($hostname_labels as $hostname_label) {
         if ($wildcard == 1 && !isset($first)) {
-            if (!preg_match('/^(\*|[\w-\/]+)$/', $hostname_label)) {
+            if (!preg_match('/^(\*|[\w\-\/]+)$/', $hostname_label)) {
                 error(ERR_DNS_HN_INV_CHARS);
                 return false;
             }
             $first = 1;
         } else {
-            if (!preg_match('/^[\w-\/]+$/', $hostname_label)) {
+            if (!preg_match('/^[\w\-\/]+$/', $hostname_label)) {
                 error(ERR_DNS_HN_INV_CHARS);
                 return false;
             }
@@ -412,15 +417,14 @@ function is_valid_hostname_fqdn(&$hostname, $wildcard) {
  */
 function is_valid_ipv4($ipv4, $answer = true) {
 
-
-    if(filter_var($ipv4, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === FALSE) {
-        if($answer) {
-		error(ERR_DNS_IPV4); 
-	}
-	return false;
+  if(filter_var($ipv4, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === FALSE) {
+    if($answer) {
+      error(ERR_DNS_IPV4);
     }
-    
-    return true;
+    return false;
+  }
+
+  return true;
 }
 
 /** Test if IPv6 address is valid
@@ -433,26 +437,25 @@ function is_valid_ipv4($ipv4, $answer = true) {
  */
 function is_valid_ipv6($ipv6, $answer = true) {
 
-
-    if(filter_var($ipv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === FALSE) {
-	if($answer) {
-		error(ERR_DNS_IPV6);
-	}       
-	return false;
+  if(filter_var($ipv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === FALSE) {
+    if($answer) {
+      error(ERR_DNS_IPV6);
     }
+    return false;
+  }
 
-    return true;
+  return true;
 }
 
 /** Test if multiple IP addresses are valid
  *
- *  Takes a string of comma seperated IP addresses and tests validity
+ *  Takes a string of comma separated IP addresses and tests validity
  *
- *  @param string $ips Comma seperated IP addresses
+ *  @param string $ips Comma separated IP addresses
  *
  *  @return boolean true if valid, false otherwise
  */
-function are_multipe_valid_ips($ips) {
+function are_multiple_valid_ips($ips) {
 
 // multiple master NS-records are permitted and must be separated by ,
 // eg. "192.0.0.1, 192.0.0.2, 2001:1::1"
@@ -743,7 +746,7 @@ function is_valid_rr_srv_name(&$name) {
     }
 
     $fields = explode('.', $name, 3);
-    if (!preg_match('/^_[\w-]+$/i', $fields[0])) {
+    if (!preg_match('/^_[\w\-]+$/i', $fields[0])) {
         error(ERR_DNS_SRV_NAME_SERVICE, $name);
         return false;
     }

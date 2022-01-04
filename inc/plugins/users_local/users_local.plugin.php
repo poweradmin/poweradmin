@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Poweradmin, a friendly web-based admin tool for PowerDNS. See <http://www.poweradmin.org> for more details. Copyright 2007-2009 Rejo Zenger <rejo@zenger.nl> Copyright 2010-2014 Poweradmin Development Team <http://www.poweradmin.org/credits.html> This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * Poweradmin, a friendly web-based admin tool for PowerDNS. See <http://www.poweradmin.org> for more details. Copyright 2007-2009 Rejo Zenger <rejo@zenger.nl> Copyright 2010-2022  Poweradmin Development Team <http://www.poweradmin.org/credits.html> This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
@@ -9,7 +9,7 @@
  *
  * @package Poweradmin
  * @copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright 2010-2014 Poweradmin Development Team
+ * @copyright 2010-2022  Poweradmin Development Team
  * @license http://opensource.org/licenses/GPL-3.0 GPL
  *
  */
@@ -313,7 +313,7 @@ function edit_user_local($id, $user, $fullname, $email, $perm_templ, $descriptio
         //
 		// First find the current username of the user ID we want to change. If the
         // current username is not the same as the username that was given by the
-        // user, the username should apparantly changed. If so, check if the "new"
+        // user, the username should apparently changed. If so, check if the "new"
         // username already exists.
 
         $query = "SELECT username FROM users WHERE id = " . $db->quote($id, 'integer');
@@ -714,7 +714,7 @@ function update_perm_templ_details_local($details) {
     // currently assigned with a list of permissions that should be assigned and
     // apply the difference between these two lists to the database. That sounds
     // like too much work. Just delete all the permissions currently assigned to
-    // the template, than assign all the permessions the template should have.
+    // the template, than assign all the permissions the template should have.
 
     $query = "DELETE FROM perm_templ_items WHERE templ_id = " . $details ['templ_id'];
     $response = $db->query($query);
@@ -742,7 +742,7 @@ function update_perm_templ_details_local($details) {
  *
  * @param mixed[] $details User details
  *
- * @return boolean true on success, false otherise
+ * @return boolean true on success, false otherwise
  */
 function update_user_details_local($details) {
     global $db;
@@ -776,7 +776,7 @@ function update_user_details_local($details) {
         //
         // First find the current username of the user ID we want to change. If the
         // current username is not the same as the username that was given by the
-        // user, the username should apparantly changed. If so, check if the "new"
+        // user, the username should apparently changed. If so, check if the "new"
         // username already exists.
         $query = "SELECT username FROM users WHERE id = " . $db->quote($details ['uid'], 'integer');
         $response = $db->query($query);
@@ -809,7 +809,7 @@ function update_user_details_local($details) {
             description = " . $db->quote($details ['descr'], 'text') . ",
         active = " . $db->quote($active, 'integer');
 
-        // If the user is alllowed to change the permission template, set it.
+        // If the user is allowed to change the permission template, set it.
         if ($perm_templ_perm_edit == "1") {
             $query .= ", perm_templ = " . $db->quote($details ['templ_id'], 'integer');
         }
@@ -846,6 +846,7 @@ function update_user_details_local($details) {
  */
 function add_new_user_local($details) {
     global $db;
+    global $ldap_use;
 
     if (!do_hook('verify_permission', 'user_add_new')) {
         error(ERR_PERM_ADD_USER);
@@ -862,6 +863,12 @@ function add_new_user_local($details) {
         $active = 0;
     }
 
+    if ($ldap_use && $details['use_ldap'] == 1) {
+        $use_ldap = 1;
+    } else {
+        $use_ldap = 0;
+    }
+
     $query = "INSERT INTO users (username, password, fullname, email, description,";
     if (do_hook('verify_permission', 'user_edit_templ_perm')) {
         $query .= ' perm_templ,';
@@ -869,11 +876,11 @@ function add_new_user_local($details) {
 
     $password_hash = Poweradmin\Password::hash($details['password']);
 
-    $query .= " active) VALUES (" . $db->quote($details ['username'], 'text') . ", " . $db->quote($password_hash, 'text') . ", " . $db->quote($details ['fullname'], 'text') . ", " . $db->quote($details ['email'], 'text') . ", " . $db->quote($details ['descr'], 'text') . ", ";
+    $query .= " active, use_ldap) VALUES (" . $db->quote($details ['username'], 'text') . ", " . $db->quote($password_hash, 'text') . ", " . $db->quote($details ['fullname'], 'text') . ", " . $db->quote($details ['email'], 'text') . ", " . $db->quote($details ['descr'], 'text') . ", ";
     if (do_hook('verify_permission', 'user_edit_templ_perm')) {
         $query .= $db->quote($details ['perm_templ'], 'integer') . ", ";
     }
-    $query .= $db->quote($active, 'integer') . ")";
+    $query .= $db->quote($active, 'integer') . ", " . $db->quote($use_ldap, 'integer') . ")";
     $response = $db->query($query);
     if (PEAR::isError($response)) {
         error($response->getMessage());

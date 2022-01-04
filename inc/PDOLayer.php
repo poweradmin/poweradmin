@@ -4,7 +4,7 @@
  *  See <http://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2014  Poweradmin Development Team
+ *  Copyright 2010-2022  Poweradmin Development Team
  *      <http://www.poweradmin.org/credits.html>
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -26,18 +26,18 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2014 Poweradmin Development Team
+ * @copyright   2010-2022  Poweradmin Development Team
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
 include_once "PDOCommon.class.php";
 
 /**
- * Overrided PEAR class
+ * Override PEAR class
  */
 class PEAR {
 
     /**
-     * Overrided isError method
+     * Override isError method
      */
     public static function isError() {
 
@@ -125,7 +125,7 @@ class PDOLayer extends PDOCommon {
      * @param string $str SQL query
      * @return PDOStatement
      */
-    public function query($str) {
+    public function query($str, ?int $fetchMode = null, mixed ...$fetchModeArgs) {
         if ($this->debug) {
             $this->queries[] = $str;
         }
@@ -157,7 +157,7 @@ class PDOLayer extends PDOCommon {
      * @link http://pear.php.net/package/MDB2/docs/2.5.0b3/MDB2/MDB2_Driver_Manager_Common.html#methodlistTables
      */
     public function listTables() {
-        // TODO: addapt this function also to pgsql & sqlite
+        // TODO: adapt this function also to pgsql & sqlite
 
         $tables = array();
         $db_type = $this->getAttribute(PDO::ATTR_DRIVER_NAME);

@@ -4,7 +4,7 @@
  *  See <http://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2014  Poweradmin Development Team
+ *  Copyright 2010-2022  Poweradmin Development Team
  *      <http://www.poweradmin.org/credits.html>
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@
  *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2014 Poweradmin Development Team
+ * @copyright   2010-2022  Poweradmin Development Team
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
 require_once dirname(dirname(dirname(__DIR__))) . '/vendor/poweradmin/Password.php';
@@ -49,7 +49,7 @@ function authenticate_local() {
 
     // If a user had just entered his/her login && password, store them in our session.
     if (isset($_POST["authenticate"])) {
-        $_SESSION["userpwd"] = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($session_key), $_POST['password'], MCRYPT_MODE_CBC, md5(md5($session_key))));
+        $_SESSION["userpwd"] = base64_encode(openssl_encrypt($_POST['password'], "aes-256-cbc",  md5($session_key), OPENSSL_RAW_DATA, md5(md5($session_key), TRUE)));
 
         $_SESSION["userlogin"] = $_POST["username"];
         $_SESSION["userlang"] = $_POST["userlang"];
@@ -71,6 +71,10 @@ function authenticate_local() {
 }
 
 function userUsesLDAP() {
+    if (!isset($_SESSION["userlogin"])) {
+        return false;
+    }
+
     global $db;
 
     $rowObj = $db->queryRow("SELECT id FROM users WHERE username=" . $db->quote($_SESSION["userlogin"], 'text') . " AND use_ldap=1");
@@ -137,7 +141,7 @@ function LDAPAuthenticate() {
         }
         $user_dn = $entries[0]["dn"];
 
-        $session_pass = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($session_key), base64_decode($_SESSION["userpwd"]), MCRYPT_MODE_CBC, md5(md5($session_key))), "\0");
+        $session_pass = rtrim(openssl_decrypt(base64_decode($_SESSION["userpwd"]), "aes-256-cbc", md5($session_key), OPENSSL_RAW_DATA, md5(md5($session_key), TRUE)) , "\0");;
         $ldapbind = ldap_bind($ldapconn, $user_dn, $session_pass);
         if (!$ldapbind) {
             if (isset($_POST["authenticate"]))
@@ -179,7 +183,7 @@ function SQLAuthenticate() {
 
     if (isset($_SESSION["userlogin"]) && isset($_SESSION["userpwd"])) {
         //Username and password are set, lets try to authenticate.
-        $session_pass = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($session_key), base64_decode($_SESSION["userpwd"]), MCRYPT_MODE_CBC, md5(md5($session_key))), "\0");
+        $session_pass = rtrim(openssl_decrypt(base64_decode($_SESSION["userpwd"]), "aes-256-cbc", md5($session_key), OPENSSL_RAW_DATA, md5(md5($session_key), TRUE)) , "\0");
 
         $rowObj = $db->queryRow("SELECT id, fullname, password FROM users WHERE username=" . $db->quote($_SESSION["userlogin"], 'text') . " AND active=1");
 

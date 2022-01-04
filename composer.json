@@ -11,7 +11,7 @@
     "source": "https://github.com/poweradmin/poweradmin"
   },
   "require": {
-    "php": ">=5.5.0",
+    "php": ">=7.2.0",
     "twig/twig": "~1.0",
     "twig/extensions": "^1.3"
   },

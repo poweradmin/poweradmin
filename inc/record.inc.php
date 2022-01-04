@@ -4,7 +4,7 @@
  *  See <http://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2014  Poweradmin Development Team
+ *  Copyright 2010-2022  Poweradmin Development Team
  *      <http://www.poweradmin.org/credits.html>
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ require_once('templates.inc.php');
  *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2014 Poweradmin Development Team
+ * @copyright   2010-2022  Poweradmin Development Team
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -338,8 +338,8 @@ function edit_zone_comment($zone_id, $comment) {
                 return false;
             }
         } else {
-            $query = "INSERT INTO zones (domain_id, owner, comment)
-				VALUES(" . $db->quote($zone_id, 'integer') . ",1," . $db->quote($comment, 'text') . ")";
+            $query = "INSERT INTO zones (domain_id, owner, comment, zone_templ_id)
+				VALUES(" . $db->quote($zone_id, 'integer') . ",1," . $db->quote($comment, 'text') . ",0)";
             $result = $db->query($query);
             if (PEAR::isError($result)) {
                 error($result->getMessage());
@@ -394,8 +394,7 @@ function edit_record($record) {
 				type=" . $db->quote($record['type'], 'text') . ",
 				content=" . $db->quote($record['content'], 'text') . ",
 				ttl=" . $db->quote($record['ttl'], 'integer') . ",
-				prio=" . $db->quote($record['prio'], 'integer') . ",
-				change_date=" . $db->quote(time(), 'integer') . "
+				prio=" . $db->quote($record['prio'], 'integer') . "
 				WHERE id=" . $db->quote($record['rid'], 'integer');
             $result = $db->query($query);
             if (PEAR::isError($result)) {
@@ -446,14 +445,13 @@ function add_record($zone_id, $name, $type, $content, $ttl, $prio) {
         if (validate_input(-1, $zone_id, $type, $content, $name, $prio, $ttl)) {
             $change = time();
             $name = strtolower($name); // powerdns only searches for lower case records
-            $query = "INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) VALUES ("
+            $query = "INSERT INTO records (domain_id, name, type, content, ttl, prio) VALUES ("
                     . $db->quote($zone_id, 'integer') . ","
                     . $db->quote($name, 'text') . ","
                     . $db->quote($type, 'text') . ","
                     . $db->quote($content, 'text') . ","
                     . $db->quote($ttl, 'integer') . ","
-                    . $db->quote($prio, 'integer') . ","
-                    . $db->quote($change, 'integer') . ")";
+                    . $db->quote($prio, 'integer') . ")";
             $response = $db->exec($query);
             if (PEAR::isError($response)) {
                 error($response->getMessage());
@@ -557,12 +555,12 @@ function get_supermaster_info_from_ip($master_ip) {
  *
  * @param $rid Record ID
  *
- * @return mixed[] array of record details [rid,zid,name,type,content,ttl,prio,change_date]
+ * @return mixed[] array of record details [rid,zid,name,type,content,ttl,prio]
  */
 function get_record_details_from_record_id($rid) {
     global $db;
 
-    $query = "SELECT id AS rid, domain_id AS zid, name, type, content, ttl, prio, change_date FROM records WHERE id = " . $db->quote($rid, 'integer');
+    $query = "SELECT id AS rid, domain_id AS zid, name, type, content, ttl, prio FROM records WHERE id = " . $db->quote($rid, 'integer');
 
     $response = $db->query($query);
     if (PEAR::isError($response)) {
@@ -716,14 +714,13 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template) {
                     $serial = date("Ymd");
                     $serial .= "00";
 
-                    $query = "INSERT INTO records (domain_id, name, content, type, ttl, prio, change_date) VALUES ("
+                    $query = "INSERT INTO records (domain_id, name, content, type, ttl, prio) VALUES ("
                             . $db->quote($domain_id, 'integer') . ","
                             . $db->quote($domain, 'text') . ","
                             . $db->quote($ns1 . ' ' . $hm . ' ' . $serial . ' 28800 7200 604800 86400', 'text') . ","
                             . $db->quote('SOA', 'text') . ","
                             . $db->quote($ttl, 'integer') . ","
-                            . $db->quote(0, 'integer') . ","
-                            . $db->quote($now, 'integer') . ")";
+                            . $db->quote(0, 'integer') . ")";
                     $response = $db->query($query);
                     if (PEAR::isError($response)) {
                         error($response->getMessage());
@@ -747,14 +744,13 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template) {
                                     $ttl = $dns_ttl;
                                 }
 
-                                $query = "INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) VALUES ("
+                                $query = "INSERT INTO records (domain_id, name, type, content, ttl, prio) VALUES ("
                                         . $db->quote($domain_id, 'integer') . ","
                                         . $db->quote($name, 'text') . ","
                                         . $db->quote($type, 'text') . ","
                                         . $db->quote($content, 'text') . ","
                                         . $db->quote($ttl, 'integer') . ","
-                                        . $db->quote($prio, 'integer') . ","
-                                        . $db->quote($now, 'integer') . ")";
+                                        . $db->quote($prio, 'integer') . ")";
                                 $response = $db->query($query);
                                 if (PEAR::isError($response)) {
                                     error($response->getMessage());
@@ -1236,9 +1232,9 @@ function get_zones($perm, $userid = 0, $letterstart = 'all', $rowstart = 0, $row
 				AND zones.owner = " . $db->quote($userid, 'integer');
         }
         if ($letterstart != 'all' && $letterstart != 1) {
-            $sql_add .=" AND substring(domains.name,1,1) = " . $db->quote($letterstart, 'text') . " ";
+            $sql_add .=" AND ".dbfunc_substr()."(domains.name,1,1) = " . $db->quote($letterstart, 'text') . " ";
         } elseif ($letterstart == 1) {
-            $sql_add .=" AND substring(domains.name,1,1) " . $sql_regexp . " '^[[:digit:]]'";
+            $sql_add .=" AND ".dbfunc_substr()."(domains.name,1,1) " . $sql_regexp . " '^[[:digit:]]'";
         }
     }
 
@@ -1327,7 +1323,7 @@ function zone_count_ng($perm, $letterstart = 'all') {
         if ($letterstart != 'all' && $letterstart != 1) {
             $sql_add .=" AND domains.name LIKE " . $db->quote($letterstart . "%", 'text') . " ";
         } elseif ($letterstart == 1) {
-            $sql_add .=" AND substring(domains.name,1,1) " . $sql_regexp . " '^[[:digit:]]'";
+            $sql_add .=" AND ".dbfunc_substr()."(domains.name,1,1) " . $sql_regexp . " '^[[:digit:]]'";
         }
 
 # XXX: do we really need this distinct directive as it's unsupported in sqlite)
@@ -1367,7 +1363,7 @@ function zone_count_for_uid($uid) {
 function get_record_from_id($id) {
     global $db;
     if (is_numeric($id)) {
-        $result = $db->queryRow("SELECT id, domain_id, name, type, content, ttl, prio, change_date FROM records WHERE id=" . $db->quote($id, 'integer') . " AND type IS NOT NULL");
+        $result = $db->queryRow("SELECT id, domain_id, name, type, content, ttl, prio FROM records WHERE id=" . $db->quote($id, 'integer') . " AND type IS NOT NULL");
         if ($result) {
             if ($result["type"] == "" || $result["content"] == "") {
                 return -1;
@@ -1380,8 +1376,7 @@ function get_record_from_id($id) {
                 "type" => $result["type"],
                 "content" => $result["content"],
                 "ttl" => $result["ttl"],
-                "prio" => $result["prio"],
-                "change_date" => $result["change_date"]
+                "prio" => $result["prio"]
             );
             return $ret;
         } else {
@@ -1411,12 +1406,12 @@ function get_records_from_domain_id($id, $rowstart = 0, $rowamount = 999999, $so
     if (is_numeric($id)) {
         if ((isset($_SESSION[$id . "_ispartial"])) && ($_SESSION[$id . "_ispartial"] == 1)) {
             $db->setLimit($rowamount, $rowstart);
-            $result = $db->query("SELECT records.id, domains.id, records.name, records.type, records.content, records.ttl, records.prio, records.change_date
+            $result = $db->query("SELECT records.id, domains.id, records.name, records.type, records.content, records.ttl, records.prio
                                     FROM record_owners,domains,records
                                     WHERE record_owners.user_id = " . $db->quote($_SESSION["userid"], 'integer') . "
                                     AND record_owners.record_id = records.id
                                     AND records.domain_id = " . $db->quote($id, 'integer') . "
-                                    GROUP BY records.id, domains.id, records.name, records.type, records.content, records.ttl, records.prio, records.change_date
+                                    GROUP BY records.id, domains.id, records.name, records.type, records.content, records.ttl, records.prio
                                     ORDER BY type = 'SOA' DESC, type = 'NS' DESC, records." . $sortby);
 
             if ($result) {
@@ -1428,8 +1423,7 @@ function get_records_from_domain_id($id, $rowstart = 0, $rowamount = 999999, $so
                         "type" => $r["type"],
                         "content" => $r["content"],
                         "ttl" => $r["ttl"],
-                        "prio" => $r["prio"],
-                        "change_date" => $r["change_date"]
+                        "prio" => $r["prio"]
                     );
                 }
                 $result = $ret;
@@ -1446,7 +1440,7 @@ function get_records_from_domain_id($id, $rowstart = 0, $rowamount = 999999, $so
             }
             $sql_sortby = ($sortby == 'name' ? $natural_sort : $sortby . ', ' . $natural_sort);
 
-            $result = $db->query("SELECT id, domain_id, name, type, content, ttl, prio, change_date
+            $result = $db->query("SELECT id, domain_id, name, type, content, ttl, prio
                                     FROM records 
                                     WHERE domain_id=" . $db->quote($id, 'integer') . " AND type IS NOT NULL
                                     ORDER BY type = 'SOA' DESC, type = 'NS' DESC," . $sql_sortby);
@@ -1461,8 +1455,7 @@ function get_records_from_domain_id($id, $rowstart = 0, $rowamount = 999999, $so
                         "type" => $r["type"],
                         "content" => $r["content"],
                         "ttl" => $r["ttl"],
-                        "prio" => $r["prio"],
-                        "change_date" => $r["change_date"]
+                        "prio" => $r["prio"]
                     );
                 }
                 $result = $ret;
@@ -1500,8 +1493,6 @@ function order_domain_results($domains, $sortby) {
                 $ns[] = $domain;
                 unset($domains[$key]);
                 break;
-            default:
-                continue;
         }
     }
 
@@ -1607,7 +1598,7 @@ function sort_domain_results_by_ttl($a, $b) {
  *
  * @param int $id Domain ID
  *
- * @return mixed[] array of owners [id,fullename]
+ * @return mixed[] array of owners [id,fullname]
  */
 function get_users_from_domain_id($id) {
     global $db;
@@ -1680,7 +1671,7 @@ function search_zone_and_record($parameters, $permission_view, $sort_zones_by, $
                 (domains.name LIKE ' . $db->quote($search_string, 'text') .
             ($parameters['reverse'] ? ' OR domains.name LIKE ' . $reverse_search_string : '') . ') ' .
             ($permission_view == 'own' ? ' AND z.owner = ' . $db->quote($_SESSION['userid'], 'integer') : '') .
-            ' ORDER BY ' . $sort_zones_by;
+            ' ORDER BY ' . $sort_zones_by . ', z.owner';
 
         $zonesResponse = $db->query($zonesQuery);
         if (PEAR::isError($zonesResponse)) {
@@ -1689,10 +1680,22 @@ function search_zone_and_record($parameters, $permission_view, $sort_zones_by, $
         }
 
         while ($zone = $zonesResponse->fetchRow()) {
-            $return['zones'][] = $zone;
+            $zones[$zone['id']][] = $zone;
+        }
+        if ($zones) {
+            foreach ($zones as $zone_id => $zone_array) {
+                $zone_owner_fullnames = [];
+                $zone_owner_ids = [];
+                foreach ($zone_array as $zone_entry) {
+                    $zone_owner_ids[] = $zone_entry['owner'];
+                    $zone_owner_fullnames[] = $zone_entry['fullname'];
+                }
+                $zones[$zone_id][0]['owner'] = implode(', ', $zone_owner_ids);
+                $zones[$zone_id][0]['fullname'] = implode(', ', $zone_owner_fullnames);
+                $return['zones'][] = $zones[$zone_id][0];
+            }
         }
     }
-
 
     if ($parameters['records']) {
         $recordsQuery = '
@@ -1716,7 +1719,7 @@ function search_zone_and_record($parameters, $permission_view, $sort_zones_by, $
                 (records.name LIKE ' . $db->quote($search_string, 'text') . ' OR records.content LIKE ' . $db->quote($search_string, 'text') .
             ($parameters['reverse'] ? ' OR records.name LIKE ' . $reverse_search_string . ' OR records.content LIKE ' . $reverse_search_string : '') . ')' .
             ($permission_view == 'own' ? 'AND z.owner = ' . $db->quote($_SESSION['userid'], 'integer') : '') .
-            ' ORDER BY ' . $sort_records_by;
+            ' GROUP BY records.id ORDER BY ' . $sort_records_by;
 
         $recordsResponse = $db->query($recordsQuery);
         if (PEAR::isError($recordsResponse)) {
@@ -1778,7 +1781,7 @@ function change_zone_type($type, $id) {
     global $db;
     $add = '';
     if (is_numeric($id)) {
-        // It is not really neccesary to clear the field that contains the IP address
+        // It is not really necessary to clear the field that contains the IP address
         // of the master if the type changes from slave to something else. PowerDNS will
         // ignore the field if the type isn't something else then slave. But then again,
         // it's much clearer this way.
@@ -1801,7 +1804,7 @@ function change_zone_type($type, $id) {
 function change_zone_slave_master($zone_id, $ip_slave_master) {
     global $db;
     if (is_numeric($zone_id)) {
-        if (are_multipe_valid_ips($ip_slave_master)) {
+        if (are_multiple_valid_ips($ip_slave_master)) {
             $result = $db->query("UPDATE domains SET master = " . $db->quote($ip_slave_master, 'text') . " WHERE id = " . $db->quote($zone_id, 'integer'));
         } else {
             error(sprintf(ERR_INV_ARGC, "change_domain_ip_slave_master", "This is not a valid IPv4 or IPv6 address: $ip_slave_master"));
@@ -1861,7 +1864,7 @@ function get_zone_template($zone_id) {
     return $zone_templ_id;
 }
 
-/** Update Zone Templatea ID for Zone ID
+/** Update Zone Template ID for Zone ID
  *
  * @param int $zone_id Zone ID
  * @param int $new_zone_template_id New Zone Template ID
@@ -1956,14 +1959,13 @@ function update_zone_records($zone_id, $zone_template_id) {
                         $ttl = $dns_ttl;
                     }
 
-                    $query = "INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) VALUES ("
+                    $query = "INSERT INTO records (domain_id, name, type, content, ttl, prio) VALUES ("
                             . $db->quote($zone_id, 'integer') . ","
                             . $db->quote($name, 'text') . ","
                             . $db->quote($type, 'text') . ","
                             . $db->quote($content, 'text') . ","
                             . $db->quote($ttl, 'integer') . ","
-                            . $db->quote($prio, 'integer') . ","
-                            . $db->quote($now, 'integer') . ")";
+                            . $db->quote($prio, 'integer') . ")";
                     $response = $db->exec($query);
 
                     if ($db_type == 'pgsql') {
