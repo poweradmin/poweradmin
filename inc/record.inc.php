@@ -1682,19 +1682,20 @@ function search_zone_and_record($parameters, $permission_view, $sort_zones_by, $
         while ($zone = $zonesResponse->fetchRow()) {
             $zones[$zone['id']][] = $zone;
         }
-	foreach ($zones as $zone_id => $zone_array) {
-	    $zone_owner_fullnames = [];
-	    $zone_owner_ids = [];
-	    foreach ($zone_array as $zone_entry) {
-	        $zone_owner_ids[] = $zone_entry['owner'];
-	        $zone_owner_fullnames[] = $zone_entry['fullname'];
-	    }
-	    $zones[$zone_id][0]['owner'] = implode(', ', $zone_owner_ids);
-	    $zones[$zone_id][0]['fullname'] = implode(', ', $zone_owner_fullnames);
-	    $return['zones'][] = $zones[$zone_id][0];
-	}
+        if ($zones) {
+            foreach ($zones as $zone_id => $zone_array) {
+                $zone_owner_fullnames = [];
+                $zone_owner_ids = [];
+                foreach ($zone_array as $zone_entry) {
+                    $zone_owner_ids[] = $zone_entry['owner'];
+                    $zone_owner_fullnames[] = $zone_entry['fullname'];
+                }
+                $zones[$zone_id][0]['owner'] = implode(', ', $zone_owner_ids);
+                $zones[$zone_id][0]['fullname'] = implode(', ', $zone_owner_fullnames);
+                $return['zones'][] = $zones[$zone_id][0];
+            }
+        }
     }
-
 
     if ($parameters['records']) {
         $recordsQuery = '
