@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-REQUIRED_PLUGINS = %w(vagrant-hostsupdater vagrant-vbguest)
+REQUIRED_PLUGINS = %w(vagrant-hostmanager vagrant-vbguest)
 REQUIRED_PLUGINS_VERSIONS = {}
 REQUIRED_PLUGINS.each do |plugin|
   unless Vagrant.has_plugin?(plugin) || ARGV[0] == 'plugin' then
@@ -12,38 +12,52 @@ REQUIRED_PLUGINS.each do |plugin|
 end
 
 Vagrant.configure(2) do |config|
-  config.vm.box = "centos/7"
-
-  config.vm.box_check_update = true
-  config.vm.network "private_network", ip: "192.168.33.10"
+  config.vm.box = "centos/8"
   config.vm.hostname = "poweradmin.local"
-  config.vm.synced_folder "./", "/var/www/html/",
-    type: "virtualbox", owner: 48
+  config.vm.box_check_update = true
+
+  config.hostmanager.enabled = true
+  config.hostmanager.manage_host = true
+
+  config.vm.network "private_network", ip: "192.168.33.10"
+  config.vm.synced_folder "./", "/var/www/html/", owner: 48 # Apache
+
+  # Provider for VirtualBox
   config.vm.provider "virtualbox" do |vb|
     vb.gui = false
     vb.memory = "1024"
+    vb.cpus = 2
+  end
+
+  # Provider for Docker
+  config.vm.provider :docker do |docker, override|
+    override.vm.box = nil
+    docker.image = "centos:8"
+    docker.remains_running = true
+    override.ssh.insert_key = true
+    docker.has_ssh = true
+    docker.privileged = true
   end
 
   config.vm.provision "shell", inline: <<-SHELL
-     sudo yum -y update
-     sudo yum -y install kernel-devel
+     # sudo yum -y update
+     sudo yum -y install mariadb-server mariadb
      sudo yum -y install epel-release httpd
-     sudo yum -y install pdns pdns-backend-*
-     sudo yum -y install http://rpms.remirepo.net/enterprise/remi-release-7.rpm
-     sudo yum -y install yum-utils
-     sudo yum-config-manager --enable remi-php56
-     sudo yum -y install php56 php56-php-fpm php56-php-common php56-php-mbstring php56-php-mcrypt php56-php-pdo php56-php-cli php56-php-mysqlnd php56-php-ldap php56-php-bcmath mariadb-server mariadb bind-utils
+     sudo yum -y install pdns-backend-mysql pdns
+     sudo yum -y install php-fpm php-cli php-mysqlnd
+
      # Autostart services on reboot
+     sudo systemctl enable mariadb
      sudo systemctl enable httpd
      sudo systemctl enable pdns
-     sudo systemctl enable php56-php-fpm.service
+     sudo systemctl enable php-fpm
+
      cat << EOT >> /etc/httpd/conf.modules.d/02-php.conf
       <FilesMatch \.php$>
          SetHandler "proxy:fcgi://127.0.0.1:9000"
       </FilesMatch>
 
      DirectoryIndex index.php
-
 EOT
 
      # Disable SELinux
@@ -52,6 +66,7 @@ EOT
      SELINUX=disabled
      SELINUXTYPE=targeted
 EOT
+
      sudo setenforce 0
      echo "Setup database"
      sudo systemctl start mariadb
@@ -70,7 +85,6 @@ EOT
 ) Engine=InnoDB;
 
 CREATE UNIQUE INDEX name_index ON domains(name);
-
 
 CREATE TABLE records (
   id                    INT AUTO_INCREMENT,
@@ -91,14 +105,12 @@ CREATE INDEX nametype_index ON records(name,type);
 CREATE INDEX domain_id ON records(domain_id);
 CREATE INDEX recordorder ON records (domain_id, ordername);
 
-
 CREATE TABLE supermasters (
   ip                    VARCHAR(64) NOT NULL,
   nameserver            VARCHAR(255) NOT NULL,
   account               VARCHAR(40) NOT NULL,
   PRIMARY KEY (ip, nameserver)
 ) Engine=InnoDB;
-
 
 CREATE TABLE comments (
   id                    INT AUTO_INCREMENT,
@@ -115,7 +127,6 @@ CREATE INDEX comments_domain_id_idx ON comments (domain_id);
 CREATE INDEX comments_name_type_idx ON comments (name, type);
 CREATE INDEX comments_order_idx ON comments (domain_id, modified_at);
 
-
 CREATE TABLE domainmetadata (
   id                    INT AUTO_INCREMENT,
   domain_id             INT NOT NULL,
@@ -125,7 +136,6 @@ CREATE TABLE domainmetadata (
 ) Engine=InnoDB;
 
 CREATE INDEX domainmetadata_idx ON domainmetadata (domain_id, kind);
-
 
 CREATE TABLE cryptokeys (
   id                    INT AUTO_INCREMENT,
@@ -137,7 +147,6 @@ CREATE TABLE cryptokeys (
 ) Engine=InnoDB;
 
 CREATE INDEX domainidindex ON cryptokeys(domain_id);
-
 
 CREATE TABLE tsigkeys (
   id                    INT AUTO_INCREMENT,
@@ -160,14 +169,12 @@ gmysql-password=
 
 EOT
      sudo systemctl start pdns
-     sudo systemctl start php56-php-fpm.service
+     sudo systemctl start php-fpm
      sudo systemctl start httpd
 
      echo "READY: Poweradmin is available via http://poweradmin.local/install"
      echo "Database: pdns"
      echo "Mysql user: poweradmin"
      echo "Mysql password: poweradmin"
-
-
   SHELL
 end
