@@ -1497,6 +1497,9 @@ function order_domain_results($domains, $sortby) {
     }
 
     switch ($sortby) {
+        case 'id':
+            usort($domains, 'sort_domain_results_by_id');
+            break;
         case 'name':
             usort($domains, 'sort_domain_results_by_name');
             break;
@@ -1521,6 +1524,17 @@ function order_domain_results($domains, $sortby) {
     $results = array_merge($results, $domains);
 
     return $results;
+}
+
+/** Sort records by id
+ *
+ * @param mixed[] $a A
+ * @param mixed[] $b B
+ *
+ * @return mixed[] result of strnatcmp
+ */
+function sort_domain_results_by_id($a, $b) {
+    return strnatcmp($a['id'], $b['id']);
 }
 
 /** Sort records by name
