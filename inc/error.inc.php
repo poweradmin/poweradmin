@@ -97,7 +97,7 @@ define("ERR_DNS_IPV6", _('This is not a valid IPv6 address.'));
 define("ERR_DNS_IPV4", _('This is not a valid IPv4 address.'));
 define("ERR_DNS_CNAME", _('This is not a valid CNAME. Did you assign an MX or NS record to the record?'));
 define("ERR_DNS_CNAME_EXISTS", _('This is not a valid record. There is already exists a CNAME with this name.'));
-define("ERR_DNS_CNAME_UNIQUE", _('This is not a valid CNAME. There is already exists an A, AAAA or CNAME with this name.'));
+define("ERR_DNS_CNAME_UNIQUE", _('This is not a valid CNAME. There already exists a record with this name.'));
 define("ERR_DNS_CNAME_EMPTY", _('Empty CNAME records are not allowed.'));
 define("ERR_DNS_NON_ALIAS_TARGET", _('You can not point a NS or MX record to a CNAME record. Remove or rename the CNAME record first, or take another name.'));
 define("ERR_DNS_NS_HNAME", _('NS records must be a hostnames.'));
@@ -108,6 +108,7 @@ define("ERR_DNS_HINFO_INV_CONTENT", _('Invalid value for content field of HINFO 
 define("ERR_DNS_HN_TOO_LONG", _('The hostname is too long.'));
 define("ERR_DNS_INV_TLD", _('You are using an invalid top level domain.'));
 define("ERR_DNS_INV_TTL", _('Invalid value for TTL field. It should be numeric.'));
+define("ERR_DNS_INV_TTL_INCONSISTENT", _('Invalid value for TTL field. It should be consistent for all records of this name and type.'));
 define("ERR_DNS_INV_PRIO", _('Invalid value for prio field. It should be numeric.'));
 define("ERR_DNS_SRV_NAME_SERVICE", _('Invalid service value in name field of SRV record.'));
 define("ERR_DNS_SRV_NAME_PROTO", _('Invalid protocol value in name field of SRV record.'));

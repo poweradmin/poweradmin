@@ -54,13 +54,20 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
         }
     }
 
+    if ($type != "CNAME") {
+        if (!is_valid_rr_cname_exists($name, $rid)) {
+            return false;
+        }
+    }
+
+    if (!is_valid_rr_ttl_for_name($name, $ttl, $type, $rid, $zid)) {
+        return false;
+    }
+
     switch ($type) {
 
       case "A":
         if (!is_valid_ipv4($content)) {
-          return false;
-        }
-        if (!is_valid_rr_cname_exists($name, $rid)) {
           return false;
         }
         if (!is_valid_hostname_fqdn($name, 1)) {
@@ -70,9 +77,6 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
 
       case "AAAA":
         if (!is_valid_ipv6($content)) {
-          return false;
-        }
-        if (!is_valid_rr_cname_exists($name, $rid)) {
           return false;
         }
         if (!is_valid_hostname_fqdn($name, 1)) {
@@ -555,8 +559,7 @@ function is_valid_rr_cname_unique($name, $rid) {
 
     $where = ($rid > 0 ? " AND id != " . $db->quote($rid, 'integer') : '');
     $query = "SELECT id FROM records
-                        WHERE name = " . $db->quote($name, 'text') . $where . "
-                        AND TYPE IN ('A', 'AAAA', 'CNAME')";
+                        WHERE name = " . $db->quote($name, 'text') . $where;
 
     $response = $db->queryOne($query);
     if ($response) {
@@ -798,6 +801,36 @@ function is_valid_rr_ttl(&$ttl) {
 
     if (!is_numeric($ttl) || $ttl < 0 || $ttl > 2147483647) {
         error(ERR_DNS_INV_TTL);
+        return false;
+    }
+
+    return true;
+}
+
+/** Check if TTL is consistent for this field
+ *
+ * @param mixed $name Name part of record
+ * @param mixed $ttl TTL
+ * @param string $type Record Type
+ * @param int $rid Record ID
+ * @param int $zid Zone ID
+ *
+ * @return boolean true if valid,false otherwise
+ */
+function is_valid_rr_ttl_for_name($name, $ttl, $type, $rid, $zid) {
+    global $db;
+
+    $where = ($rid > 0 ? " AND id != " . $db->quote($rid, 'integer') : '');
+    $query = "SELECT ttl FROM records
+                       WHERE name = " . $db->quote($name, 'text') . $where . "
+                       AND domain_id = " . $db->quote($zid, 'integer') . "
+                       AND TYPE = " . $db->quote($type, 'text') . "
+                       AND ttl != " . $db->quote($ttl, 'integer');
+
+    $response = $db->queryOne($query);
+
+    if (!empty($response)) {
+        error(ERR_DNS_INV_TTL_INCONSISTENT);
         return false;
     }
 
