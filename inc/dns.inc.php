@@ -68,9 +68,6 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
         }
       break;
 
-      case "A6": // TODO: implement validation.
-      break;
-
       case "AAAA":
         if (!is_valid_ipv6($content)) {
           return false;
