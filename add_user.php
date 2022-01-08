@@ -32,12 +32,63 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
+global $ldap_use;
+
+$username = "";
+if ((isset($_POST['username']))) {
+    $username = $_POST['username'];
+}
+
+$fullname = "";
+if ((isset($_POST['fullname']))) {
+    $fullname = $_POST['fullname'];
+}
+
+$email = "";
+if ((isset($_POST['email']))) {
+    $email = $_POST['email'];
+}
+
+$perm_templ = "1";
+if ((isset($_POST['perm_templ']))) {
+    $perm_templ = $_POST['perm_templ'];
+}
+
+$password = "";
+if ((isset($_POST['password']))) {
+    $password = $_POST['password'];
+}
+
+$description = "";
+if ((isset($_POST['descr']))) {
+    $description = $_POST['descr'];
+}
+
+$active_checked = "checked";
+if ((isset($_POST['active']))) {
+    $active_checked = $_POST['active'] === "1" ? "checked" : "";
+}
+
+$use_ldap_checked = "checked";
+if ((isset($_POST['use_ldap']))) {
+    $use_ldap_checked = $_POST['use_ldap'] === "1" ? "checked" : "";
+}
+
 if (!do_hook('verify_permission' , 'user_add_new' )) {
     error(ERR_PERM_ADD_USER);
 } else {
     if (isset($_POST["commit"])) {
         if (do_hook('add_new_user' , $_POST )) {
             success(SUC_USER_ADD);
+
+            $username = "";
+            $fullname = "";
+            $password = "";
+            $email = "";
+            $perm_templ = "1";
+            $description = "";
+            $active_checked = "checked";
+            $use_ldap_checked = "checked";
         }
     }
 
@@ -46,19 +97,19 @@ if (!do_hook('verify_permission' , 'user_add_new' )) {
     echo "      <table>\n";
     echo "       <tr>\n";
     echo "        <td class=\"n\">" . _('Username') . "</td>\n";
-    echo "        <td class=\"n\"><input type=\"text\" class=\"input\" name=\"username\" value=\"\"></td>\n";
+    echo "        <td class=\"n\"><input type=\"text\" class=\"input\" name=\"username\" value=\"" . $username . "\"></td>\n";
     echo "       </tr>\n";
     echo "       <tr>\n";
     echo "        <td class=\"n\">" . _('Fullname') . "</td>\n";
-    echo "        <td class=\"n\"><input type=\"text\" class=\"input\" name=\"fullname\" value=\"\"></td>\n";
+    echo "        <td class=\"n\"><input type=\"text\" class=\"input\" name=\"fullname\" value=\"" . $fullname . "\"></td>\n";
     echo "       </tr>\n";
     echo "       <tr>\n";
     echo "        <td class=\"n\">" . _('Password') . "</td>\n";
-    echo "        <td class=\"n\"><input type=\"password\" class=\"input\" name=\"password\"></td>\n";
+    echo "        <td class=\"n\"><input type=\"password\" class=\"input\" name=\"password\" value=\"" . $password . "\"></td>\n";
     echo "       </tr>\n";
     echo "       <tr>\n";
     echo "        <td class=\"n\">" . _('Email address') . "</td>\n";
-    echo "        <td class=\"n\"><input type=\"text\" class=\"input\" name=\"email\" value=\"\"></td>\n";
+    echo "        <td class=\"n\"><input type=\"text\" class=\"input\" name=\"email\" value=\"" . $email . "\"></td>\n";
     echo "       </tr>\n";
     if (do_hook('verify_permission' , 'user_edit_templ_perm' )) {
         echo "       <tr>\n";
@@ -66,7 +117,8 @@ if (!do_hook('verify_permission' , 'user_add_new' )) {
         echo "        <td class=\"n\">\n";
         echo "         <select name=\"perm_templ\">\n";
         foreach (do_hook('list_permission_templates' ) as $template) {
-            echo "          <option value=\"" . $template['id'] . "\">" . $template['name'] . "</option>\n";
+            $selected = $perm_templ == $template['id'] ? "selected" : "";
+            echo "          <option value=\"" . $template['id'] . "\"" . $selected . ">" . $template['name'] . "</option>\n";
         }
         echo "         </select>\n";
         echo "       </td>\n";
@@ -74,16 +126,16 @@ if (!do_hook('verify_permission' , 'user_add_new' )) {
     }
     echo "       <tr>\n";
     echo "        <td class=\"n\">" . _('Description') . "</td>\n";
-    echo "        <td class=\"n\"><textarea rows=\"4\" cols=\"30\" class=\"inputarea\" name=\"descr\"></textarea></td>\n";
+    echo "        <td class=\"n\"><textarea rows=\"4\" cols=\"30\" class=\"inputarea\" name=\"descr\">" . $description . "</textarea></td>\n";
     echo "       </tr>\n";
     echo "       <tr>\n";
     echo "        <td class=\"n\">" . _('Enabled') . "</td>\n";
-    echo "        <td class=\"n\"><input type=\"checkbox\" class=\"input\" name=\"active\" value=\"1\" CHECKED></td>\n";
+    echo "        <td class=\"n\"><input type=\"checkbox\" class=\"input\" name=\"active\" value=\"1\"" . $active_checked . "></td>\n";
     echo "       </tr>\n";
     if ($ldap_use) {
         echo "       <tr>\n";
         echo "        <td class=\"n\">" . _('LDAP Authentication') . "</td>\n";
-        echo "        <td class=\"n\"><input type=\"checkbox\" class=\"input\" name=\"use_ldap\" value=\"1\" CHECKED></td>\n";
+        echo "        <td class=\"n\"><input type=\"checkbox\" class=\"input\" name=\"use_ldap\" value=\"1\"" . $use_ldap_checked . "></td>\n";
         echo "       </tr>\n";
     }
     echo "       <tr>\n";

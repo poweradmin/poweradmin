@@ -62,6 +62,7 @@ define("ERR_INV_INPUT", _('Invalid or unexpected input given.'));
 define("ERR_INV_ARG", _('Invalid argument(s) given to function %s'));
 define("ERR_INV_ARGC", _('Invalid argument(s) given to function %s %s'));
 define("ERR_UNKNOWN", _('Unknown error.'));
+define("ERR_INV_USERNAME", _('Enter a valid user name.'));
 define("ERR_INV_EMAIL", _('Enter a valid email address.'));
 define("ERR_ZONE_NOT_EXIST", _('There is no zone with this ID.'));
 define("ERR_REVERS_ZONE_NOT_EXIST", _('There is no matching reverse-zone for: %s.'));

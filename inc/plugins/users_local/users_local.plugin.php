@@ -867,6 +867,9 @@ function add_new_user_local($details) {
     } elseif (user_exists($details ['username'])) {
         error(ERR_USER_EXIST);
         return false;
+    } elseif (!is_valid_username($details ['username'])) {
+        error(ERR_INV_USERNAME);
+        return false;
     } elseif (!is_valid_email($details ['email'])) {
         error(ERR_INV_EMAIL);
         return false;
