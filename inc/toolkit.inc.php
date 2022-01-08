@@ -326,7 +326,6 @@ $server_types = array("MASTER", "SLAVE", "NATIVE");
 // $rtypes - array of possible record types
 $rtypes = array(
     'A',
-    'A6',
     'AAAA',
     'AFSDB',
     'ALIAS',
