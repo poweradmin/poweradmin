@@ -65,11 +65,11 @@ class Password {
     }
 
     public static function verify($password, $hash) {
-        global $password_encryption;
+        $hash_type = self::get_hash_type($hash);
 
-        if ($password_encryption === 'md5salt') {
+        if ($hash_type === 'md5salt') {
             return self::_strsafecmp(self::mix_salt(self::extract_salt($hash), $password), $hash);
-        } elseif ($password_encryption === 'bcrypt') {
+        } elseif ($hash_type === 'bcrypt') {
             return password_verify($password, $hash);
         } else {
             return self::_strsafecmp(md5($password), $hash);
@@ -77,7 +77,29 @@ class Password {
     }
 
     public static function needs_rehash($hash) {
-        // @todo
+        global $password_encryption, $password_encryption_cost;
+
+        $hash_type = self::get_hash_type($hash);
+
+        if ($hash_type == 'bcrypt') {
+            return password_needs_rehash($hash, PASSWORD_BCRYPT, ['cost' => $password_encryption_cost]);
+        } else if ($hash_type !== $password_encryption) {
+            return true;
+        }
+    }
+
+    private static function get_hash_type($hash) {
+        $hash_type = null;
+
+        if (preg_match('/^[a-f0-9]{32}$/', $hash)) {
+            $hash_type = 'md5';
+        } else if (preg_match('/^[a-f0-9]{32}:[a-zA-Z0-9@#$%^*()_\-!]{5}$/', $hash)) {
+            $hash_type = 'md5salt';
+        } else if (preg_match('/^\$2y\$/', $hash)) {
+            $hash_type = 'bcrypt';
+        }
+
+        return $hash_type;
     }
 
     /**

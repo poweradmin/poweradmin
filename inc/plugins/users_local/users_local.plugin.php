@@ -373,6 +373,19 @@ email = " . $db->quote($email, 'text') . ",";
 /**
  * Change User Password
  *
+ * @param int $id User ID
+ * @param string $password New password
+ * @return void
+ */
+function update_user_password($id, $password) {
+    global $db;
+    $query = "UPDATE users SET password = " . $db->quote(Poweradmin\Password::hash($password), 'text') . " WHERE id = " . $db->quote($id, 'integer');
+    $db->query($query);
+}
+
+/**
+ * Change User Password
+ *
  * Change the pass of the user.
  * The user is automatically logged out after the pass change.
  *
