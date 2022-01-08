@@ -117,6 +117,7 @@ define("ERR_DNS_SRV_WGHT", _('Invalid value for the priority field of the SRV re
 define("ERR_DNS_SRV_PORT", _('Invalid value for the weight field of the SRV record.'));
 define("ERR_DNS_SRV_TRGT", _('Invalid SRV target.'));
 define("ERR_DNS_PRINTABLE", _('Invalid characters have been used in this record.'));
+define("ERR_DNS_HTML_TAGS", _('You cannot use html tags for this type of record.'));
 
 /* DNSSEC */
 define('ERR_EXEC_PDNSSEC', _('Failed to call pdnssec utility.'));

@@ -290,7 +290,7 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl) {
         if (!is_valid_printable($name)) {
           return false;
         }
-        if (!is_valid_printable($content)) {
+        if (!is_valid_printable($content) || has_html_tags($content)) {
           return false;
         }
       break;
@@ -497,6 +497,19 @@ function is_valid_printable($string) {
         return false;
     }
     return true;
+}
+
+/** Test if string has html opening and closing tags
+ *
+ * @param string $string Input string
+ * @return bool true if valid, false otherwise
+ */
+function has_html_tags($string) {
+    if (preg_match('/[<>]/', trim($string))) {
+        error(ERR_DNS_HTML_TAGS);
+        return true;
+    }
+    return false;
 }
 
 /** Test if CNAME is valid
