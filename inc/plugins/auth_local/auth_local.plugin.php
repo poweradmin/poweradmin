@@ -188,8 +188,10 @@ function SQLAuthenticate() {
         $rowObj = $db->queryRow("SELECT id, fullname, password FROM users WHERE username=" . $db->quote($_SESSION["userlogin"], 'text') . " AND active=1");
 
         if ($rowObj) {
-
             if (Poweradmin\Password::verify($session_pass, $rowObj['password'])) {
+                if (Poweradmin\Password::needs_rehash($rowObj['password'])) {
+                    update_user_password($rowObj["id"], $session_pass);
+                }
 
                 $_SESSION["userid"] = $rowObj["id"];
                 $_SESSION["name"] = $rowObj["fullname"];
