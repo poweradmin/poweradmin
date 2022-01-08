@@ -32,6 +32,8 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
+global $dns_ttl;
+
 /*
   Check and make sure all post values have made it through
   if not set them.
@@ -46,7 +48,7 @@ if ((isset($_POST['ttl'])) && (v_num($_POST['ttl']))) {
     $ttl = $_POST['ttl'];
 }
 
-$prio = "";
+$prio = 0;
 if ((isset($_POST['prio'])) && (v_num($_POST['prio']))) {
     $prio = $_POST['prio'];
 }
