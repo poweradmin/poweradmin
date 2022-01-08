@@ -56,7 +56,7 @@ if ((isset($_POST['prio'])) && (v_num($_POST['prio']))) {
 if (isset($_POST['name'])) {
     $name = $_POST['name'];
 } else {
-    $name = "";
+    $name = "[ZONE]";
 }
 
 if (isset($_POST['type'])) {
