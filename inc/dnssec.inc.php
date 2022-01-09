@@ -451,7 +451,7 @@ function dnssec_get_dnskey_record($domain_name) {
 
     $dns_key = '';
     foreach ($output as $line) {
-        if (substr($line, 0, 3) == 'CSK') {
+        if (substr($line, 0, 3) == 'KSK' || substr($line, 0, 3) == 'CSK') {
             $items = explode(' ', $line);
             $dns_key = join(" ", array_slice($items, 3));
         }
