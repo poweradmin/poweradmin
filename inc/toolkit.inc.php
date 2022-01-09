@@ -525,10 +525,10 @@ function show_letters($letterstart, $userid) {
 
     while ($row = $response->fetchRow()) {
         if (preg_match("/[0-9]/", $row['letter'])) {
-	    $digits_available = 1;
-	} elseif (in_array($row['letter'], $char_range)) {
-	    array_push($available_chars, $row['letter']);
-	}
+            $digits_available = 1;
+        } elseif (in_array($row['letter'], $char_range)) {
+            array_push($available_chars, $row['letter']);
+        }
     }
 
     echo _('Show zones beginning with') . ":<br>";

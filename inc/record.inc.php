@@ -1234,7 +1234,7 @@ function get_zones($perm, $userid = 0, $letterstart = 'all', $rowstart = 0, $row
         if ($letterstart != 'all' && $letterstart != 1) {
             $sql_add .=" AND ".dbfunc_substr()."(domains.name,1,1) = " . $db->quote($letterstart, 'text') . " ";
         } elseif ($letterstart == 1) {
-            $sql_add .=" AND ".dbfunc_substr()."(domains.name,1,1) " . $sql_regexp . " '^[[:digit:]]'";
+            $sql_add .=" AND ".dbfunc_substr()."(domains.name,1,1) " . $sql_regexp . " '[0-9]'";
         }
     }
 
@@ -1323,7 +1323,7 @@ function zone_count_ng($perm, $letterstart = 'all') {
         if ($letterstart != 'all' && $letterstart != 1) {
             $sql_add .=" AND domains.name LIKE " . $db->quote($letterstart . "%", 'text') . " ";
         } elseif ($letterstart == 1) {
-            $sql_add .=" AND ".dbfunc_substr()."(domains.name,1,1) " . $sql_regexp . " '^[[:digit:]]'";
+            $sql_add .=" AND ".dbfunc_substr()."(domains.name,1,1) " . $sql_regexp . " '[0-9]'";
         }
 
         $sqlq = "SELECT COUNT(domains.id) AS count_zones
