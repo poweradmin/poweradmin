@@ -1326,9 +1326,6 @@ function zone_count_ng($perm, $letterstart = 'all') {
             $sql_add .=" AND ".dbfunc_substr()."(domains.name,1,1) " . $sql_regexp . " '^[[:digit:]]'";
         }
 
-# XXX: do we really need this distinct directive as it's unsupported in sqlite)
-#		$sqlq = "SELECT COUNT(distinct domains.id) AS count_zones
-
         $sqlq = "SELECT COUNT(domains.id) AS count_zones
 			FROM " . $fromTable . "	WHERE 1=1
 			" . $sql_add;
