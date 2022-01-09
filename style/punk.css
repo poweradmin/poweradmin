@@ -39,7 +39,7 @@ h1 {
 
 h1, .menu {
 	margin: 10px auto;
-	width: 980px;
+	width: 90%;
 }
 
 h2, h3 {
@@ -48,7 +48,7 @@ h2, h3 {
 
 .content, .footer {
 	margin: 10px auto;
-	width: 940px;
+	width: 90%;
 }
 
 /*NAVIGATION*/

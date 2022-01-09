@@ -1,0 +1,188 @@
+/*
+ * Author: Tim Herman
+ * Website: http://www.punk.be
+ * Comments: Based on the normalize.css design. The best I could do without touching the php files. Temp solution untill an MVC model is applied
+
+/* RESET */
+@import url("../style/normalize.css");
+
+/* BEGIN ACTUAL STYLESHEET */
+body {
+	background: #F7F7F7;
+}
+
+* {
+	color: #333333;
+}
+
+p, div, table tr, table tr td, table tr th, strong, li, b, input, textarea {
+	font-size: 0.9em;
+}
+
+/*HEADERS*/
+h1 {
+	font-size: 2.375em;
+	color: #69A619;
+	text-transform: lowercase;
+	text-shadow: 1px 1px 0 #304d08;
+	text-decoration: none;
+}
+
+h1, .menu {
+	margin: 10px auto;
+	width: 90%;
+}
+
+h2, h3 {
+	font-size: 1.17em;
+}
+
+.content, .footer {
+	margin: 10px auto;
+	width: 90%;
+}
+
+/*NAVIGATION*/
+.menu {
+}
+
+/*CONTENT*/
+.content {
+	padding: 20px 20px;
+	border: 1px solid #ccc;
+	background: #fff;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+table tr th {
+	text-align: left;
+	padding-right: 10px;
+	font-weight: bold;
+}
+
+table tr td {
+	padding: 3px;
+}
+
+.success, .error {
+	padding: 10px;
+	font-weight: bold;
+}
+
+
+.success {
+	border: 1px solid green;
+	color: green;
+}
+
+.error {
+	border: 1px solid red;
+	color: red;
+}
+
+.footer {
+	font-size: 0.6em;
+}
+
+/*CUSTOM*/
+.button, .sbutton {
+	display: inline-block;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	font-size: 12px;
+	padding: 7px 15px;
+	margin-top: 10px;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border: 1px solid rgba(0,0,0,0.3);
+	border-bottom-width: 3px;
+	background-color: #699DB6;
+	border-color: rgba(0,0,0,0.3);
+	text-shadow: 0 1px 0 rgba(0,0,0,0.5);
+	color: #FFF;
+}
+
+.button:hover, .sbutton:hover {
+		background-color: #4F87A2;
+		border-color: rgba(0,0,0,0.5);
+	}
+
+
+a {
+        text-decoration: none;
+        /*color: #069;*/
+}
+
+a:hover {
+        text-decoration: underline;
+}
+
+.menuitem {
+        display: inline-block;
+        font-size: 12px;
+        padding: 5px 5px;
+        margin-top: 5px;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        border: 1px solid rgba(0,0,0,0.3);
+        border-bottom-width: 3px;
+        /*background-color: #699DB6;*/
+        border-color: rgba(0,0,0,0.3);
+        /*color: #FFF;*/
+	word-wrap: normal;
+}
+
+
+input, textarea {
+        display: inline-block;
+        letter-spacing: 2px;
+        font-size: 12px;
+        padding: 6px 5px;
+        border-radius: 5px; 
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        border: 1px solid rgba(0,0,0,0.3);
+        border-bottom-width: 3px;
+        border-color: rgba(0,0,0,0.3);
+        text-shadow: 0 1px 0 rgba(0,0,0,0.5);
+}
+
+select {
+        display: inline-block;
+        letter-spacing: 2px;
+        font-size: 12px;
+        padding: 5px 5px;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        border: 1px solid rgba(0,0,0,0.3);
+        border-bottom-width: 3px;
+        border-color: rgba(0,0,0,0.3);
+        text-shadow: 0 1px 0 rgba(0,0,0,0.5);
+}
+
+
+td.n, th {
+        font-size: 12px;
+        padding: 3px 10px;
+}
+
+form, meta { 
+   /*     display: inline-block;*/
+   /*     letter-spacing: 2px;*/
+        font-size: 12px;
+        padding: 6px 5px;
+        border-radius: 5px; 
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        border: 1px solid rgba(0,0,0,0.3);
+        border-bottom-width: 3px;
+        border-color: rgba(0,0,0,0.3);
+       /* text-shadow: 0 1px 0 rgba(0,0,0,0.5);*/
+}
+

@@ -285,11 +285,20 @@ function dnssec_get_ds_records($domain_name) {
     }
 
     $ds_records = array();
+    $oldid = $id = 0;
     foreach ($output as $line) {
         if (substr($line, 0, 2) == 'DS') {
+	    $oldid = $id;
             $items = explode(' ', $line);
+
             $ds_line = join(" ", array_slice($items, 2));
-            $ds_records[] = $ds_line;
+	    $id = $items[5];
+            if ($oldid != $id and $oldid !=0) {
+		$ds_records[] = "<br/>".$ds_line;
+	    }
+	    else {
+		$ds_records[] = $ds_line;
+	    }
         }
     }
 
@@ -449,15 +458,15 @@ function dnssec_get_dnskey_record($domain_name) {
         return false;
     }
 
-    $dns_key = '';
+    $dns_keys = array();
     foreach ($output as $line) {
-        if (substr($line, 0, 3) == 'KSK' || substr($line, 0, 3) == 'CSK') {
+        if (substr($line, 0, 3) == 'CSK' or substr($line, 0, 3) == 'ZSK' or substr($line, 0, 3) == 'KSK' or substr($line, 0, 3) == 'ID ' ) {
             $items = explode(' ', $line);
             $dns_key = join(" ", array_slice($items, 3));
+	    $dns_keys[] = $dns_key; 
         }
     }
-
-    return $dns_key;
+    return $dns_keys;
 }
 
 /** Activate zone key
@@ -523,10 +532,18 @@ function dnssec_get_keys($domain_name) {
     $keys = array();
     foreach ($output as $line) {
         if (substr($line, 0, 2) == 'ID') {
-            $items = explode(' ', $line);
-
-            $bits_array = explode("\t", $items[15]);
-            $keys[] = array($items[2], substr($items[3], 1, -2), substr($items[9], 0, -1), substr($items[12], 0, -1), $bits_array[0], $items[17]);
+            $items[0] = explode(' ', (explode('ID = ', $line)[1]))[0];
+            $items[1] = substr(explode(' ', (explode('ID = ', $line)[1]))[1], 1, -2);
+            $items[2] = substr(explode(' ', (explode('flags = ', $line)[1]))[0], 0, -1);
+            $items[3] = substr(explode(' ', (explode('tag = ', $line)[1]))[0], 0, -1);
+            $items[4] = substr(explode(' ', (explode('algo = ', $line)[1]))[0], 0, -1);
+            $items[5] = preg_replace('/[^0-9]/', '', explode(' ', (explode('bits = ', $line)[1]))[0]);
+            if (strpos($line, 'Active') !== false) {
+                $items[6] = 1;
+            } else {
+                $items[6] = 0;
+            }
+            $keys[] = array($items[0], $items[1], $items[3], $items[4], $items[5], $items[6]);
         }
     }
 
@@ -543,7 +560,7 @@ function dnssec_get_keys($domain_name) {
  * @return boolean true on success, false on failure
  */
 function dnssec_add_zone_key($domain_name, $key_type, $bits, $algorithm) {
-    $call_result = dnssec_call_pdnssec('add-zone-key', join(" ", array($domain_name, $key_type, $bits, $algorithm)));
+    $call_result = dnssec_call_pdnssec('add-zone-key', join(" ", array($domain_name, $key_type, $bits, "inactive", $algorithm)));
     $return_code = $call_result[1];
 
     if ($return_code != 0) {
