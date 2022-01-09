@@ -57,7 +57,6 @@ function dbError($msg) {
  * @return object $db Database object
  */
 function dbConnect() {
-    // XXX: one day all globals will die, I promise
     global $db_type;
     global $db_user;
     global $db_pass;
@@ -71,7 +70,7 @@ function dbConnect() {
 
     global $sql_regexp;
 
-    if (!(isset($db_type) && $db_type == 'mysql' || $db_type == 'mysqli' || $db_type == 'pgsql' || $db_type == 'sqlite' || $db_type == 'sqlite3' || $db_type == 'oci8')) {
+    if (!(isset($db_type) && $db_type == 'mysql' || $db_type == 'mysqli' || $db_type == 'pgsql' || $db_type == 'sqlite' || $db_type == 'sqlite3')) {
         include_once("header.inc.php");
         error(ERR_DB_NO_DB_TYPE);
         include_once("footer.inc.php");
@@ -109,8 +108,6 @@ function dbConnect() {
     if ($db_type != 'sqlite' && $db_type != 'sqlite3' && !(isset($db_port)) || $db_port == '') {
         if ($db_type == "mysql" || $db_type == "mysqli") {
             $db_port = 3306;
-        } else if ($db_type == 'oci8') {
-            $db_port = 1521;
         } else {
             $db_port = 5432;
         }
@@ -126,9 +123,6 @@ function dbConnect() {
     if ($db_type == 'sqlite' || $db_type == 'sqlite3') {
         $dsn = "$db_type:$db_file";
     } else {
-        if ($db_type == 'oci8') {
-            $db_name = '?service=' . $db_name;
-        }
         $dsn = "$db_type:host=$db_host;port=$db_port;dbname=$db_name";
     }
 
@@ -153,9 +147,6 @@ function dbConnect() {
     // Add support for regular expressions in both MySQL and PostgreSQL
     if ($db_type == 'mysql' || $db_type == 'mysqli' || $db_type == 'sqlite' || $db_type == 'sqlite3') {
         $sql_regexp = "REGEXP";
-    } elseif ($db_type == "oci8") {
-        # TODO: what is regexp syntax in Oracle?
-        $sql_regexp = "";
     } elseif ($db_type == "pgsql") {
         $sql_regexp = "~";
     } else {
