@@ -592,11 +592,16 @@ function zone_templ_name_exists($zone_templ_name, $zone_templ_id = null) {
  * @return string interpolated/parsed string
  */
 function parse_template_value($val, $domain) {
+    global $dns_ns1, $dns_hostmaster;
+
     $serial = date("Ymd");
     $serial .= "00";
 
     $val = str_replace('[ZONE]', $domain, $val);
     $val = str_replace('[SERIAL]', $serial, $val);
+    $val = str_replace('[NS1]', $dns_ns1, $val);
+    $val = str_replace('[HOSTMASTER]', $dns_hostmaster, $val);
+
     return $val;
 }
 
