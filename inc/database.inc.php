@@ -145,8 +145,10 @@ function dbConnect() {
     $dsn = '';
 
     // Add support for regular expressions in both MySQL and PostgreSQL
-    if ($db_type == 'mysql' || $db_type == 'mysqli' || $db_type == 'sqlite' || $db_type == 'sqlite3') {
+    if ($db_type == 'mysql' || $db_type == 'mysqli') {
         $sql_regexp = "REGEXP";
+    } else if ($db_type == 'sqlite' || $db_type == 'sqlite3') {
+        $sql_regexp = 'GLOB';
     } elseif ($db_type == "pgsql") {
         $sql_regexp = "~";
     } else {
