@@ -516,6 +516,6 @@ if ($domain_type == "SLAVE") {
     }
 }
 echo "     </table>\n";
-echo "   </div>\n"; // eo div meta
+echo "   </div>\n";
 
 include_once("inc/footer.inc.php");
