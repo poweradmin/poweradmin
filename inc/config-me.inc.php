@@ -40,7 +40,7 @@ $iface_expire = 1800;
 $iface_zonelist_serial = false;
 $iface_title = 'Poweradmin';
 $iface_add_reverse_record = true;
-$iface_zone_type_default = 'NATIVE';
+$iface_zone_type_default = 'MASTER';
 
 // Predefined DNS settings
 $dns_hostmaster = '';
