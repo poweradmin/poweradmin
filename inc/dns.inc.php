@@ -60,9 +60,11 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl)
         }
     }
 
-    if (!is_valid_rr_ttl_for_name($name, $ttl, $type, $rid, $zid)) {
-        return false;
-    }
+//    TODO: Rethink the validation process
+//    https://github.com/poweradmin/poweradmin/issues/343
+//    if (!is_valid_rr_ttl_for_name($name, $ttl, $type, $rid, $zid)) {
+//        return false;
+//    }
 
     switch ($type) {
 
