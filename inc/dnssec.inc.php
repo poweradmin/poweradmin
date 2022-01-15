@@ -30,7 +30,7 @@
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
 
-/** Check if it's possible to execute dnssec command
+/** Check if it's possible to execute pdnsutil command
  *
  * @return boolean true on success, false on failure
  */
@@ -77,12 +77,12 @@ function dnssec_call_pdnssec($command, $args) {
     return array($output, $return_code);
 }
 
-/** Execute PDNSSEC rectify-zone command for Domain ID
+/** Execute pdnsutil rectify-zone command for Domain ID
  *
  * If a Domain is dnssec enabled, or uses features as
  * e.g. ALSO-NOTIFY, ALLOW-AXFR-FROM, TSIG-ALLOW-AXFR
  * following has to be executed
- * pdnssec rectify-zone $domain
+ * pdnsutil rectify-zone $domain
  *
  * @param int $domain_id Domain ID
  *
@@ -94,7 +94,7 @@ function dnssec_rectify_zone($domain_id) {
 
     $output = array();
 
-    /* if pdnssec_command is set we perform ``pdnssec rectify-zone $domain`` on all zones,
+    /* if pdnssec_command is set we perform ``pdnsutil rectify-zone $domain`` on all zones,
      * as pdns needs the "auth" column for all zones if dnssec is enabled
      *
      * If there is any entry at domainmetadata table for this domain,
@@ -130,7 +130,7 @@ function dnssec_rectify_zone($domain_id) {
     return false;
 }
 
-/** Execute PDNSSEC secure-zone command for Domain Name
+/** Execute pdnsutil secure-zone command for Domain Name
  *
  * @param string $domain_name Domain Name
  *
@@ -151,7 +151,7 @@ function dnssec_secure_zone($domain_name) {
     return true;
 }
 
-/** Execute PDNSSEC disable-dnssec command for Domain Name
+/** Execute pdnsutil disable-dnssec command for Domain Name
  *
  * @param string $domain_name Domain Name
  *
