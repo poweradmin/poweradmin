@@ -67,6 +67,7 @@ $syslog_facility = LOG_USER;
 
 // DNSSEC settings
 $pdnssec_use = false;
+$pdnssec_debug = false;
 $pdnssec_command = '/usr/bin/pdnsutil';
 
 // LDAP settings

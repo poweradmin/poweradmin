@@ -98,6 +98,13 @@ td.checkbox {
     font-size:		90%;
 }
 
+.debug {
+    background:		#FFFFE0;
+    color:			#000;
+    padding:		3px;
+    font-size:		90%;
+}
+
 .showmax {
     font-size:		80%;
     margin:			5px 0 5px 0;

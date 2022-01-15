@@ -177,7 +177,7 @@ if ($zone_master_add != "1") {
     echo "       </tr>\n";
     echo "       <tr>\n";
     echo "        <td class=\"n\">" . _('DNSSEC') . ":</td>\n";
-    echo "        <td class=\"n\"><input type=\"checkbox\" class=\"input\" name=\"dnssec\" value=\"1\"></td>\n";
+    echo "        <td class=\"n\"><input type=\"checkbox\" class=\"input\" name=\"dnssec\" value=\"1\" " . ($pdnssec_use ? "checked" : "") . "></td>\n";
     echo "       </tr>\n";
     echo "       <tr>\n";
     echo "        <td class=\"n\">&nbsp;</td>\n";

@@ -82,11 +82,9 @@ echo "   <h2>" . _('DNSSEC public records for zone') . " \"" . get_zone_name_fro
 
 echo "   <h3>" . _('DNSKEY') . "</h3>\n";
 $dnskey_records = dnssec_get_dnskey_record($domain_name);
-echo "<pre>\n";
 foreach ($dnskey_records as $record) {
     echo $record."<br/>";
 }
-echo "</pre>\n";
 echo "<br>";
 
 echo "   <h3>" . _('DS record') . "</h3>\n";

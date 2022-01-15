@@ -58,7 +58,7 @@ function dnssec_is_pdnssec_callable() {
  * @return mixed[] Array with output from command execution and error code
  */
 function dnssec_call_pdnssec($command, $args) {
-    global $pdnssec_command;
+    global $pdnssec_command, $pdnssec_debug;
     $output = '';
     $return_code = -1;
 
@@ -66,13 +66,21 @@ function dnssec_call_pdnssec($command, $args) {
         return array($output, $return_code);
     }
 
-    $command = join(' ', array(
-        $pdnssec_command,
+    $full_command = join(' ', array(
+        escapeshellcmd($pdnssec_command),
         $command,
-        $args)
+        escapeshellarg($args),
+        '2>&1')
     );
 
-    exec($command, $output, $return_code);
+    exec($full_command, $output, $return_code);
+
+    if ($pdnssec_debug) {
+        echo "<div class=\"debug\"><pre>";
+        echo sprintf("Command: %s<br>", $full_command);
+        echo sprintf("Output: %s", implode("<br>", $output));
+        echo "</pre></div>";
+    }
 
     return array($output, $return_code);
 }
@@ -90,7 +98,7 @@ function dnssec_call_pdnssec($command, $args) {
  */
 function dnssec_rectify_zone($domain_id) {
     global $db;
-    global $pdnssec_command;
+    global $pdnssec_command, $pdnssec_debug;
 
     $output = array();
 
@@ -109,13 +117,25 @@ function dnssec_rectify_zone($domain_id) {
 
     if (isset($pdnssec_command)) {
         $domain = get_zone_name_from_id($domain_id);
-        $command = $pdnssec_command . " rectify-zone " . $domain;
+        $full_command = join(' ',array(
+            escapeshellcmd($pdnssec_command),
+            'rectify-zone',
+            escapeshellarg($domain)
+        ));
 
         if (!dnssec_is_pdnssec_callable()) {
             return false;
         }
 
-        exec($command, $output, $return_code);
+        exec($full_command, $output, $return_code);
+
+        if ($pdnssec_debug) {
+            echo "<div class=\"debug\"><pre>";
+            echo sprintf("Command: %s<br>", $full_command);
+            echo sprintf("Output: %s", implode("<br>", $output));
+            echo "</pre></div>";
+        }
+
         if ($return_code != 0) {
             error(ERR_EXEC_PDNSSEC_RECTIFY_ZONE);
             return false;
@@ -460,10 +480,10 @@ function dnssec_get_dnskey_record($domain_name) {
 
     $dns_keys = array();
     foreach ($output as $line) {
-        if (substr($line, 0, 3) == 'CSK' or substr($line, 0, 3) == 'ZSK' or substr($line, 0, 3) == 'KSK' or substr($line, 0, 3) == 'ID ' ) {
+        if (in_array(substr($line, 0, 3), ['CSK', 'KSK', 'ZSK', 'ID '], true)) {
             $items = explode(' ', $line);
             $dns_key = join(" ", array_slice($items, 3));
-	    $dns_keys[] = $dns_key; 
+            $dns_keys[] = $dns_key;
         }
     }
     return $dns_keys;
