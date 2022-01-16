@@ -125,12 +125,18 @@ switch ($current_step) {
         if (method_exists($fill_perm_items, 'free')) {
             $fill_perm_items->free();
         }
-        foreach ($def_remaining_queries as $query_nr => $user_query) {
-            if ($query_nr === 0) {
-                $user_query = sprintf($user_query, $db->quote(Poweradmin\Password::hash($pa_pass), 'text'));
-            }
-            $db->query($user_query);
-        }
+
+        // Create an administrator user with the appropriate permissions
+        $db->query("INSERT INTO perm_templ (name, descr) VALUES ('Administrator', 'Administrator template with full rights.')");
+        $result = $db->query("SELECT id FROM perm_templ WHERE name = 'Administrator'");
+        $perm_templ_row = $result->fetch();
+
+        $perm_templ_items_query = $db->prepare("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (?, 53)");
+        $perm_templ_items_query->execute(array($perm_templ_row['id']));
+
+        $user_query = $db->prepare("INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('admin', ?, 'Administrator', 'admin@example.net', 'Administrator with full rights.', ?, 1, 0)");
+        $user_query->execute(array(Poweradmin\Password::hash($pa_pass), $perm_templ_row['id']));
+
         echo _('done!') . "</p>";
 
         echo $twig->render('step4.html', array(

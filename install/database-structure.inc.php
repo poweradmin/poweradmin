@@ -518,9 +518,3 @@ $def_permissions = array(
     array(61, 'templ_perm_edit', 'User is allowed to edit existing permission templates.'),
     array(62, 'zone_content_edit_own_as_client', 'User is allowed to edit record, but not SOA and NS.'),
 );
-
-$def_remaining_queries = array(
-    "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('admin',%s,'Administrator','admin@example.net','Administrator with full rights.',1,1,0)",
-    "INSERT INTO perm_templ (name, descr) VALUES ('Administrator','Administrator template with full rights.')",
-    "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (1,53)"
-);
