@@ -133,8 +133,6 @@ if (!isset($auth_username)) {
 }
 
 $username = safe($auth_username);
-// FIXME: supports only md5 hashes
-$password = md5(safe($auth_password));
 $hostname = safe($_REQUEST['hostname']);
 
 // Grab IP to use
@@ -177,7 +175,7 @@ if (!strlen($hostname)) {
 }
 
 $user = $db->queryRow("SELECT users.id, users.password FROM users, perm_templ, perm_templ_items, perm_items 
-                        WHERE users.username=" . $db->quote($auth_username, 'text') . " 
+                        WHERE users.username='" . $db->quote($username, 'text') . "'
                         AND users.active=1 
                         AND perm_templ.id = users.perm_templ 
                         AND perm_templ_items.templ_id = perm_templ.id 
@@ -187,11 +185,7 @@ $user = $db->queryRow("SELECT users.id, users.password FROM users, perm_templ, p
                             OR perm_items.name = 'zone_content_edit_others'
                         )");
 
-if ($user) {
-    if (!Poweradmin\Password::verify($auth_password, $user['password'])) {
-        return status_exit('badauth2');
-    }
-} else {
+if (!$user || !Poweradmin\Password::verify($auth_password, $user['password'])) {
     return status_exit('badauth2');
 }
 
