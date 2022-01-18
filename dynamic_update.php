@@ -33,6 +33,7 @@
 require('inc/config.inc.php');
 require('inc/database.inc.php');
 require('inc/record.inc.php');
+require('vendor/poweradmin/Password.php');
 
 $db = dbConnect();
 
@@ -175,25 +176,18 @@ if (!strlen($hostname)) {
     return status_exit('notfqdn');
 }
 
-$user_query = "
-    SELECT
-        users.id
-    FROM
-        users, perm_templ, perm_templ_items, perm_items
-    WHERE
-        users.username = '$username'
-        AND users.password = '$password'
-        AND users.active = 1
-        AND perm_templ.id = users.perm_templ
-        AND perm_templ_items.templ_id = perm_templ.id
-        AND perm_items.id = perm_templ_items.perm_id
-        AND (
-                perm_items.name = 'zone_content_edit_own'
-                OR perm_items.name = 'zone_content_edit_others'
-        )
-";
-$user = $db->queryRow($user_query);
-if (!$user) {
+$user = $db->queryRow("SELECT users.id, users.password FROM users, perm_templ, perm_templ_items, perm_items WHERE users.username=" . $db->quote($auth_username, 'text') . " AND users.active=1 AND perm_templ.id = users.perm_templ AND perm_templ_items.templ_id = perm_templ.id AND perm_items.id = perm_templ_items.perm_id AND (perm_items.name = 'zone_content_edit_own' OR perm_items.name = 'zone_content_edit_others')");
+
+if ($user) {
+    if (Poweradmin\Password::verify($auth_password, $user['password'])) {
+        if (Poweradmin\Password::needs_rehash($rowObj['password'])) {
+            Poweradmin\Password::update_user_password($rowObj["id"], $session_pass);
+        }
+    }
+    else {
+        return status_exit('badauth2');
+    }
+} else {
     return status_exit('badauth2');
 }
 
