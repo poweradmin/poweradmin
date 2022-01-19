@@ -175,7 +175,7 @@ if (!strlen($hostname)) {
 }
 
 $user = $db->queryRow("SELECT users.id, users.password FROM users, perm_templ, perm_templ_items, perm_items 
-                        WHERE users.username='" . $db->quote($username, 'text') . "'
+                        WHERE users.username='{$username}'
                         AND users.active=1 
                         AND perm_templ.id = users.perm_templ 
                         AND perm_templ_items.templ_id = perm_templ.id 
