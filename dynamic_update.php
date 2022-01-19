@@ -33,6 +33,7 @@
 require('inc/config.inc.php');
 require('inc/database.inc.php');
 require('inc/record.inc.php');
+require('vendor/poweradmin/Password.php');
 
 $db = dbConnect();
 
@@ -132,8 +133,6 @@ if (!isset($auth_username)) {
 }
 
 $username = safe($auth_username);
-// FIXME: supports only md5 hashes
-$password = md5(safe($auth_password));
 $hostname = safe($_REQUEST['hostname']);
 
 // Grab IP to use
@@ -175,25 +174,18 @@ if (!strlen($hostname)) {
     return status_exit('notfqdn');
 }
 
-$user_query = "
-    SELECT
-        users.id
-    FROM
-        users, perm_templ, perm_templ_items, perm_items
-    WHERE
-        users.username = '$username'
-        AND users.password = '$password'
-        AND users.active = 1
-        AND perm_templ.id = users.perm_templ
-        AND perm_templ_items.templ_id = perm_templ.id
-        AND perm_items.id = perm_templ_items.perm_id
-        AND (
-                perm_items.name = 'zone_content_edit_own'
-                OR perm_items.name = 'zone_content_edit_others'
-        )
-";
-$user = $db->queryRow($user_query);
-if (!$user) {
+$user = $db->queryRow("SELECT users.id, users.password FROM users, perm_templ, perm_templ_items, perm_items 
+                        WHERE users.username='" . $db->quote($username, 'text') . "'
+                        AND users.active=1 
+                        AND perm_templ.id = users.perm_templ 
+                        AND perm_templ_items.templ_id = perm_templ.id 
+                        AND perm_items.id = perm_templ_items.perm_id 
+                        AND (
+                            perm_items.name = 'zone_content_edit_own' 
+                            OR perm_items.name = 'zone_content_edit_others'
+                        )");
+
+if (!$user || !Poweradmin\Password::verify($auth_password, $user['password'])) {
     return status_exit('badauth2');
 }
 
