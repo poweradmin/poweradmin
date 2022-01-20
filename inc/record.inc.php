@@ -2081,7 +2081,7 @@ function record_name_exists($name) {
     global $db;
     $query = "SELECT COUNT(id) FROM records WHERE name = " . $db->quote($name, 'text');
     $count = $db->queryOne($query);
-    return ($count == "1" ? true : false);
+    return $count > 0;
 }
 
 /** Return domain level for given name
