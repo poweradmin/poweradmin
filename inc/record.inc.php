@@ -1270,7 +1270,7 @@ function get_zones($perm, $userid = 0, $letterstart = 'all', $rowstart = 0, $row
 
         $sqlq .= "
                         WHERE 1=1" . $sql_add . "
-                        GROUP BY domains.name, domains.id, domains.type, users.fullname
+                        GROUP BY domains.name, domains.id, domains.type, users.username, users.fullname
                         ORDER BY " . $sql_sortby;
 
     if ($letterstart != 'all') {
