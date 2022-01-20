@@ -210,7 +210,9 @@ class PDOCommon extends PDO {
     public function queryOne($str) {
         $result = $this->query($str);
         $row = $result->fetch(PDO::FETCH_NUM);
-
+        if (is_bool($row)) {
+            return $row;
+        }
         return $row[0];
     }
 

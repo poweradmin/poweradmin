@@ -52,7 +52,7 @@ if ($perm_templ == "-1") {
         echo "     <h2>" . _('Delete permission template') . " \"" . $templ_details['name'] . "\"</h2>\n";
 
         if (isset($_GET['confirm']) && $_GET["confirm"] == '1') {
-            if (delete_perm_templ($perm_templ)) {
+            if (do_hook('delete_perm_templ', $perm_templ)) {
                 success(SUC_PERM_TEMPL_DEL);
             }
         } else {
