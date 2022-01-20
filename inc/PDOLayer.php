@@ -40,7 +40,7 @@ class PEAR {
      * Override isError method
      */
     public static function isError() {
-
+        // TODO: This method may not be required at all
     }
 
 }
