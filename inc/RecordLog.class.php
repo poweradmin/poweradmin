@@ -29,13 +29,6 @@ class RecordLog {
         $record_copy['name'] = strtolower($record_copy['name']);
         $record_prior_copy['name'] = strtolower($record_prior_copy['name']);
 
-        // Quotes are special for SPF and TXT
-        $type = $record_prior_copy['type'];
-        if ($type == "SPF" || $type == "TXT") {
-            $record_prior_copy['content'] = trim($record_prior_copy['content'], '"');
-            $record_copy['content'] = trim($record_copy['content'], '"');
-        }
-
         // Make $record_copy and $record_prior_copy compatible
         $record_copy['id'] = $record_copy['rid'];
         $record_copy['domain_id'] = $record_copy['zid'];

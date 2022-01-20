@@ -119,6 +119,8 @@ define("ERR_DNS_SRV_PORT", _('Invalid value for the weight field of the SRV reco
 define("ERR_DNS_SRV_TRGT", _('Invalid SRV target.'));
 define("ERR_DNS_PRINTABLE", _('Invalid characters have been used in this record.'));
 define("ERR_DNS_HTML_TAGS", _('You cannot use html tags for this type of record.'));
+define("ERR_DNS_TXT_MISSING_QUOTES", _('Add quotes around TXT record content.'));
+define("ERR_DNS_SPF_CONTENT", _('The content of the SPF record is invalid'));
 
 /* DNSSEC */
 define('ERR_EXEC_PDNSSEC', _('Failed to call pdnssec utility.'));
