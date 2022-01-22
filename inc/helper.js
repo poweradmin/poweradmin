@@ -146,3 +146,13 @@ function checkDomainFilled() {
 
     add_zone_master.submit();
 }
+
+function disablePasswordField() {
+    const ldap = document.getElementById("ldap");
+    const password = document.getElementById("password");
+
+    if (ldap.checked) {
+        password.value = '';
+    }
+    password.disabled = ldap.checked;
+}

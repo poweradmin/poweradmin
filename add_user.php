@@ -32,6 +32,8 @@
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
+echo "  <script type=\"text/javascript\" src=\"inc/helper.js\"></script>";
+
 global $ldap_use;
 
 $username = "";
@@ -69,7 +71,7 @@ if ((isset($_POST['active']))) {
     $active_checked = $_POST['active'] === "1" ? "checked" : "";
 }
 
-$use_ldap_checked = "checked";
+$use_ldap_checked = "";
 if ((isset($_POST['use_ldap']))) {
     $use_ldap_checked = $_POST['use_ldap'] === "1" ? "checked" : "";
 }
@@ -105,7 +107,7 @@ if (!do_hook('verify_permission' , 'user_add_new' )) {
     echo "       </tr>\n";
     echo "       <tr>\n";
     echo "        <td class=\"n\">" . _('Password') . "</td>\n";
-    echo "        <td class=\"n\"><input type=\"password\" class=\"input\" name=\"password\" value=\"" . $password . "\"></td>\n";
+    echo "        <td class=\"n\"><input id=\"password\" type=\"password\" class=\"input\" name=\"password\" value=\"" . $password . "\"></td>\n";
     echo "       </tr>\n";
     echo "       <tr>\n";
     echo "        <td class=\"n\">" . _('Email address') . "</td>\n";
@@ -135,7 +137,7 @@ if (!do_hook('verify_permission' , 'user_add_new' )) {
     if ($ldap_use) {
         echo "       <tr>\n";
         echo "        <td class=\"n\">" . _('LDAP Authentication') . "</td>\n";
-        echo "        <td class=\"n\"><input type=\"checkbox\" class=\"input\" name=\"use_ldap\" value=\"1\"" . $use_ldap_checked . "></td>\n";
+        echo "        <td class=\"n\"><input id=\"ldap\" type=\"checkbox\" class=\"input\" name=\"use_ldap\" value=\"1\" onclick=\"disablePasswordField()\" " . $use_ldap_checked . "></td>\n";
         echo "       </tr>\n";
     }
     echo "       <tr>\n";
