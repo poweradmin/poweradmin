@@ -73,11 +73,11 @@ $pdnssec_command = '/usr/bin/pdnsutil';
 // LDAP settings
 $ldap_use = false;
 $ldap_debug = false;
-$ldap_uri = 'ldap://domaincontroller.example.com';
-$ldap_basedn = 'OU=Users,DC=example,DC=com';
-$ldap_binddn = 'GROUP\lookupuser';
+$ldap_uri = 'ldap://domaincontroller.example.com'; // Hostname, port number not required
+$ldap_basedn = 'ou=users,dc=example,dc=com'; // The place where all users are stored
+$ldap_binddn = 'cn=admin,dc=example,dc=com'; // OpenLDAP - full DN of the user cn=admin,dc=example,dc=com, Active Directory - Group\User
 $ldap_bindpw = 'some_password';
-$ldap_user_attribute = 'sAMAccountName';
+$ldap_user_attribute = 'uid'; // OpenLDAP - uid, Active Directory - sAMAccountName
 $ldap_proto = 3;
 
 // Do not use this configuration variable in production, instead remove the installation folder.
