@@ -49,13 +49,17 @@ function authenticate_local() {
 
     // If a user had just entered his/her login && password, store them in our session.
     if (isset($_POST["authenticate"])) {
-        $_SESSION["userpwd"] = base64_encode(openssl_encrypt($_POST['password'], "aes-256-cbc",  md5($session_key), OPENSSL_RAW_DATA, md5(md5($session_key), TRUE)));
+        if ($_POST['password'] != '') {
+            $_SESSION["userpwd"] = base64_encode(openssl_encrypt($_POST['password'], "aes-256-cbc",  md5($session_key), OPENSSL_RAW_DATA, md5(md5($session_key), TRUE)));
 
-        $_SESSION["userlogin"] = $_POST["username"];
-        $_SESSION["userlang"] = $_POST["userlang"];
+            $_SESSION["userlogin"] = $_POST["username"];
+            $_SESSION["userlang"] = $_POST["userlang"];
+        } else {
+            auth(_('An empty password is not allowed'), "error");
+        }
     }
 
-    // Check if the session hasnt expired yet.
+    // Check if the session hasn't expired yet.
     if ((isset($_SESSION["userid"])) && ($_SESSION["lastmod"] != "") && ((time() - $_SESSION["lastmod"]) > $iface_expire)) {
         logout(_('Session expired, please login again.'), 'error');
     }
@@ -101,8 +105,9 @@ function LDAPAuthenticate() {
         }
         $ldapconn = ldap_connect($ldap_uri);
         if (!$ldapconn) {
-            if (isset($_POST["authenticate"]))
+            if (isset($_POST["authenticate"])) {
                 log_error(sprintf('Failed LDAP authentication attempt from [%s] Reason: ldap_connect failed', $_SERVER['REMOTE_ADDR']));
+            }
             logout(_('Failed to connect to LDAP server!'), 'error');
             return;
         }
@@ -110,8 +115,9 @@ function LDAPAuthenticate() {
         ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, $ldap_proto);
         $ldapbind = ldap_bind($ldapconn, $ldap_binddn, $ldap_bindpw);
         if (!$ldapbind) {
-            if (isset($_POST["authenticate"]))
+            if (isset($_POST["authenticate"])) {
                 log_error(sprintf('Failed LDAP authentication attempt from [%s] Reason: ldap_bind failed', $_SERVER['REMOTE_ADDR']));
+            }
             logout(_('Failed to bind to LDAP server!'), 'error');
             return;
         }
@@ -120,8 +126,9 @@ function LDAPAuthenticate() {
         $filter = "(" . $ldap_user_attribute . "=" . $_SESSION["userlogin"] . ")";
         $ldapsearch = ldap_search($ldapconn, $ldap_basedn, $filter, $attributes);
         if (!$ldapsearch) {
-            if (isset($_POST["authenticate"]))
+            if (isset($_POST["authenticate"])) {
                 log_error(sprintf('Failed LDAP authentication attempt from [%s] Reason: ldap_search failed', $_SERVER['REMOTE_ADDR']));
+            }
             logout(_('Failed to search LDAP.'), 'error');
             return;
         }
@@ -144,17 +151,19 @@ function LDAPAuthenticate() {
         $session_pass = rtrim(openssl_decrypt(base64_decode($_SESSION["userpwd"]), "aes-256-cbc", md5($session_key), OPENSSL_RAW_DATA, md5(md5($session_key), TRUE)) , "\0");;
         $ldapbind = ldap_bind($ldapconn, $user_dn, $session_pass);
         if (!$ldapbind) {
-            if (isset($_POST["authenticate"]))
+            if (isset($_POST["authenticate"])) {
                 log_warn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: Incorrect password', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
+            }
             auth(_('LDAP Authentication failed!'), "error");
             return;
         }
         //LDAP AUTH SUCCESSFUL
         //Make sure the user is 'active' and fetch id and name.
-        $rowObj = $db->queryRow("SELECT id, fullname FROM users WHERE username=" . $db->quote($_SESSION["userlogin"], 'text') . " AND active=1");
+        $rowObj = $db->queryRow("SELECT id, fullname FROM users WHERE username=" . $db->quote($_SESSION["userlogin"], 'text') . " AND active=1 AND use_ldap=1");
         if (!$rowObj) {
-            if (isset($_POST["authenticate"]))
+            if (isset($_POST["authenticate"])) {
                 log_warn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: User is inactive', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
+            }
             auth(_('LDAP Authentication failed!'), "error");
             return;
         }
@@ -178,14 +187,13 @@ function LDAPAuthenticate() {
 
 function SQLAuthenticate() {
     global $db;
-    global $password_encryption;
     global $session_key;
 
     if (isset($_SESSION["userlogin"]) && isset($_SESSION["userpwd"])) {
         //Username and password are set, lets try to authenticate.
         $session_pass = rtrim(openssl_decrypt(base64_decode($_SESSION["userpwd"]), "aes-256-cbc", md5($session_key), OPENSSL_RAW_DATA, md5(md5($session_key), TRUE)) , "\0");
 
-        $rowObj = $db->queryRow("SELECT id, fullname, password FROM users WHERE username=" . $db->quote($_SESSION["userlogin"], 'text') . " AND active=1");
+        $rowObj = $db->queryRow("SELECT id, fullname, password FROM users WHERE username=" . $db->quote($_SESSION["userlogin"], 'text') . " AND active=1 AND use_ldap=0");
 
         if ($rowObj) {
             if (Poweradmin\Password::verify($session_pass, $rowObj['password'])) {
@@ -206,16 +214,12 @@ function SQLAuthenticate() {
                     exit;
                 }
             } else if (isset($_POST['authenticate'])) {
-//				auth( _('Authentication failed! - <a href="reset_password.php">(forgot password)</a>'),"error");
                 auth(_('Authentication failed!'), "error");
             } else {
                 auth();
             }
         } else if (isset($_POST['authenticate'])) {
             log_warn(sprintf('Failed authentication attempt from [%s]', $_SERVER['REMOTE_ADDR']));
-
-            //Authentication failed, retry.
-//			auth( _('Authentication failed! - <a href="reset_password.php">(forgot password)</a>'),"error");
             auth(_('Authentication failed!'), "error");
         } else {
             unset($_SESSION["userpwd"]);
@@ -223,7 +227,7 @@ function SQLAuthenticate() {
             auth();
         }
     } else {
-        //No username and password set, show auth form (again).
+        // No username and password set, show auth form (again).
         auth();
     }
 }
