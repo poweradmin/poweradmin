@@ -41,7 +41,7 @@ if ((isset($_POST['owner'])) && (v_num($_POST['owner']))) {
 
 $zone = "";
 if (isset($_POST['domain'])) {
-    $zone = trim($_POST['domain']);
+    $zone = idn_to_ascii(trim($_POST['domain']));
 }
 
 $master = "";

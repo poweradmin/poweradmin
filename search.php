@@ -39,7 +39,7 @@ if (!do_hook('verify_permission', 'search')) {
     die();
 }
 
-$parameters['query'] = isset($_POST['query']) && !empty($_POST['query']) ? $_POST['query'] : '';
+$parameters['query'] = isset($_POST['query']) && !empty($_POST['query']) ? idn_to_ascii($_POST['query']) : '';
 $parameters['zones'] = !isset($_POST['do_search']) && !isset($_POST['zones']) || isset($_POST['zones']) && $_POST['zones'] == true ? true : false;
 $parameters['records'] = !isset($_POST['do_search']) && !isset($_POST['records']) || isset($_POST['records']) && $_POST['records'] == true ? true : false;
 $parameters['wildcard'] = !isset($_POST['do_search']) && !isset($_POST['wildcard']) || isset($_POST['wildcard']) && $_POST['wildcard'] == true ? true : false;

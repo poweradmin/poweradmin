@@ -51,7 +51,7 @@ if (isset($_POST['domain'])) {
     $temp = array();
     foreach ($_POST['domain'] as $domain) {
         if ($domain != "") {
-            $temp[] = trim($domain);
+            $temp[] = idn_to_ascii(trim($domain));
         }
     }
     $domains = $temp;
