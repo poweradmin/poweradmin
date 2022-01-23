@@ -73,12 +73,12 @@ if (zone_id_exists($zone_id) == "0") {
 }
 
 $domain_type = get_domain_type($zone_id);
-$domain_name = get_zone_name_from_id($zone_id);
+$domain_name = get_domain_name_by_id($zone_id);
 $record_count = count_zone_records($zone_id);
 $zone_templates = get_list_zone_templ($_SESSION['userid']);
 $zone_template_id = get_zone_template($zone_id);
 
-echo "   <h2>" . _('DNSSEC public records for zone') . " \"" . get_zone_name_from_id($zone_id) . "\"</h2>\n";
+echo "   <h2>" . _('DNSSEC public records for zone') . " \"" . get_domain_name_by_id($zone_id) . "\"</h2>\n";
 
 echo "   <h3>" . _('DNSKEY') . "</h3>\n";
 $dnskey_records = dnssec_get_dnskey_record($domain_name);

@@ -22,7 +22,7 @@ if (migration_exists($db, $file_name)) {
 
 $zones = get_zones_with_templates($db);
 foreach ($zones as $zone) {
-    $domain = get_zone_name_from_id($zone['id']);
+    $domain = get_domain_name_by_zone_id($zone['id']);
     $templ_records = get_zone_templ_records($zone['zone_templ_id']);
 
     $generated_templ_records = array();

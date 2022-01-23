@@ -104,7 +104,7 @@ if (isset($_POST['save_as'])) {
     } else {
         success(SUC_ZONE_TEMPL_ADD);
         $records = get_records_from_domain_id($zone_id);
-        add_zone_templ_save_as($_POST['templ_name'], $_POST['templ_descr'], $_SESSION['userid'], $records, get_zone_name_from_id($zone_id));
+        add_zone_templ_save_as($_POST['templ_name'], $_POST['templ_descr'], $_SESSION['userid'], $records, get_domain_name_by_id($zone_id));
     }
 }
 
@@ -185,14 +185,14 @@ if (zone_id_exists($zone_id) == "0") {
 }
 
 if (isset($_POST['sign_zone'])) {
-    $zone_name = get_zone_name_from_id($zone_id);
+    $zone_name = get_domain_name_by_id($zone_id);
     update_soa_serial($zone_id);
     dnssec_secure_zone($zone_name);
     dnssec_rectify_zone($zone_id);
 }
 
 if (isset($_POST['unsign_zone'])) {
-    $zone_name = get_zone_name_from_id($zone_id);
+    $zone_name = get_domain_name_by_id($zone_id);
     dnssec_unsecure_zone($zone_name);
     update_soa_serial($zone_id);
 }
@@ -202,7 +202,7 @@ $record_count = count_zone_records($zone_id);
 $zone_templates = get_list_zone_templ($_SESSION['userid']);
 $zone_template_id = get_zone_template($zone_id);
 
-echo "   <h2>" . _('Edit zone') . " \"" . get_zone_name_from_id($zone_id) . "\"</h2>\n";
+echo "   <h2>" . _('Edit zone') . " \"" . get_domain_name_by_id($zone_id) . "\"</h2>\n";
 
 echo "   <div class=\"showmax\">\n";
 show_pages($record_count, $iface_rowamount, $zone_id);
@@ -307,7 +307,7 @@ if ($records == "-1") {
     echo "     <input type=\"submit\" class=\"button\" name=\"save_as\" value=\"" . _('Save as template') . "\">\n";
 
     if ($pdnssec_use) {
-        $zone_name = get_zone_name_from_id($zone_id);
+        $zone_name = get_domain_name_by_id($zone_id);
 
         if (dnssec_is_zone_secured($zone_name)) {
             echo "     <input type=\"button\" class=\"button\" name=\"dnssec\" onclick=\"location.href = 'dnssec.php?id=".$zone_id."';\" value=\"" . _('DNSSEC') . "\">\n";
@@ -322,7 +322,7 @@ if ($records == "-1") {
 
 if ($perm_content_edit == "all" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "1") {
     if ($domain_type != "SLAVE") {
-        $zone_name = get_zone_name_from_id($zone_id);
+        $zone_name = get_domain_name_by_id($zone_id);
         echo "     <form method=\"post\" action=\"add_record.php?id=" . $zone_id . "\">\n";
         echo "      <input type=\"hidden\" name=\"domain\" value=\"" . $zone_id . "\">\n";
         echo "      <table border=\"0\" cellspacing=\"4\">\n";

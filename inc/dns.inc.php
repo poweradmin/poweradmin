@@ -44,7 +44,7 @@
  */
 function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl)
 {
-    $zone = get_zone_name_from_id($zid);    // TODO check for return
+    $zone = get_domain_name_by_id($zid);    // TODO check for return
 
     if (!endsWith(strtolower($zone), strtolower($name))) {
         if (isset($name) && $name != "") {

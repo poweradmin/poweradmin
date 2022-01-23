@@ -980,26 +980,48 @@ function get_name_from_record_id($id) {
     }
 }
 
+/** Get Domain Name by domain ID
+ *
+ * @param int $id Domain ID
+ *
+ * @return string Domain name
+ */
+function get_domain_name_by_id($id) {
+    global $db;
+
+    if (is_numeric($id)) {
+        $result = $db->queryRow("SELECT name FROM domains WHERE id=" . $db->quote($id, 'integer'));
+        if ($result) {
+            return $result["name"];
+        } else {
+            error(sprintf("Domain does not exist."));
+            return false;
+        }
+    }
+
+    error(sprintf(ERR_INV_ARGC, "get_domain_name_by_id", "Not a valid domainid: $id"));
+}
+
 /** Get Zone Name from Zone ID
  *
  * @param int $zid Zone ID
  *
  * @return string Domain name
  */
-function get_zone_name_from_id($zid) {
+function get_domain_name_by_zone_id($zid) {
     global $db;
 
     if (is_numeric($zid)) {
-        $result = $db->queryRow("SELECT name FROM domains WHERE id=" . $db->quote($zid, 'integer'));
+        $result = $db->query("SELECT domains.name as name from domains LEFT JOIN zones ON domains.id=zones.domain_id WHERE zones.id = " . $db->quote($zid, 'integer'));
         if ($result) {
             return $result["name"];
         } else {
             error(sprintf("Zone does not exist."));
             return false;
         }
-    } else {
-        error(sprintf(ERR_INV_ARGC, "get_zone_name_from_id", "Not a valid domainid: $zid"));
     }
+
+    error(sprintf(ERR_INV_ARGC, "get_domain_name_by_zone_id", "Not a valid zoneid: $zid"));
 }
 
 /** Get zone id from name
@@ -1943,7 +1965,7 @@ function update_zone_records($zone_id, $zone_template_id) {
         }
 
         if ($zone_master_add == "1" || $zone_slave_add == "1") {
-            $domain = get_zone_name_from_id($zone_id);
+            $domain = get_domain_name_by_id($zone_id);
             $now = time();
             $templ_records = get_zone_templ_records($zone_template_id);
 
@@ -2038,7 +2060,7 @@ function delete_domains($domains) {
             if (is_numeric($id)) {
                 $zone_type = get_domain_type($id);
                 if ($pdnssec_use && $zone_type == 'MASTER') {
-                    $zone_name = get_zone_name_from_id($id);
+                    $zone_name = get_domain_name_by_id($id);
                     dnssec_unsecure_zone($zone_name);
                 }
 

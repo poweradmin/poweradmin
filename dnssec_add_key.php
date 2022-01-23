@@ -86,7 +86,7 @@ if (isset($_POST["algorithm"])) {
     }
 }
 
-$domain_name = get_zone_name_from_id($zone_id);
+$domain_name = get_domain_name_by_id($zone_id);
 if (isset($_POST["submit"])) {
     if (dnssec_add_zone_key($domain_name, $key_type, $bits, $algorithm)) {
         success(SUC_EXEC_PDNSSEC_ADD_ZONE_KEY);

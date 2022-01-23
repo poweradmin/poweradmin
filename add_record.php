@@ -113,7 +113,7 @@ if ($zone_id == "-1") {
  */
 $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
 $zone_type = get_domain_type($zone_id);
-$zone_name = get_zone_name_from_id($zone_id);
+$zone_name = get_domain_name_by_id($zone_id);
 
 /*
   If the form as been submitted
@@ -136,7 +136,7 @@ if (isset($_POST["commit"])) {
                 $zone_rev_id = get_best_matching_zone_id_from_name($content_rev);
             }
             if (isset($zone_rev_id) && $zone_rev_id != -1) {
-                $zone_name = get_zone_name_from_id($zone_id);
+                $zone_name = get_domain_name_by_id($zone_id);
                 $fqdn_name = sprintf("%s.%s", $name, $zone_name);
                 if (add_record($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
                     success(" <a href=\"edit.php?id=" . $zone_rev_id . "\"> " . _('The PTR-record was successfully added.') . "</a>");

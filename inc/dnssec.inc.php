@@ -116,7 +116,7 @@ function dnssec_rectify_zone($domain_id) {
     }
 
     if (isset($pdnssec_command)) {
-        $domain = get_zone_name_from_id($domain_id);
+        $domain = get_domain_name_by_id($domain_id);
         $full_command = join(' ',array(
             escapeshellcmd($pdnssec_command),
             'rectify-zone',

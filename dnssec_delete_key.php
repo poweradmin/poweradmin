@@ -57,7 +57,7 @@ if ($zone_id == "-1") {
     exit;
 }
 
-$domain_name = get_zone_name_from_id($zone_id);
+$domain_name = get_domain_name_by_id($zone_id);
 
 if ($key_id == "-1") {
     error(ERR_INV_INPUT);

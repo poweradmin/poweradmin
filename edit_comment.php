@@ -62,7 +62,7 @@ $zid = $_GET['domain'];
 
 $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zid );
 $zone_type = get_domain_type($zid);
-$zone_name = get_zone_name_from_id($zid);
+$zone_name = get_domain_name_by_id($zid);
 
 if (isset($_POST["commit"])) {
     if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {

@@ -70,7 +70,7 @@ echo "     <h2>" . _('Delete zone') . " \"" . $zone_info['name'] . "\"</h2>\n";
 
 if ($confirm == '1') {
     if ($pdnssec_use && $zone_info['type'] == 'MASTER') {
-        $zone_name = get_zone_name_from_id($zone_id);
+        $zone_name = get_domain_name_by_id($zone_id);
         dnssec_unsecure_zone($zone_name);
     }
 
