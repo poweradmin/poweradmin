@@ -88,7 +88,6 @@ $def_tables = array(
             ),
             'templ_id' => array(
                 'notnull' => 1,
-                'length' => 4,
                 'unsigned' => 0,
                 'default' => 0,
                 'type' => 'integer',
@@ -98,7 +97,6 @@ $def_tables = array(
             ),
             'perm_id' => array(
                 'notnull' => 1,
-                'length' => 4,
                 'unsigned' => 0,
                 'default' => 0,
                 'type' => 'integer',
@@ -181,7 +179,6 @@ $def_tables = array(
             'perm_templ' => array
                 (
                 'notnull' => 1,
-                'length' => 1,
                 'unsigned' => 0,
                 'default' => 0,
                 'type' => 'integer',
@@ -220,7 +217,6 @@ $def_tables = array(
             'id' => array
                 (
                 'notnull' => 1,
-                'length' => 4,
                 'unsigned' => 0,
                 'default' => 0,
                 'autoincrement' => 1,
@@ -232,7 +228,6 @@ $def_tables = array(
             'domain_id' => array
                 (
                 'notnull' => 1,
-                'length' => 4,
                 'unsigned' => 0,
                 'default' => 0,
                 'type' => 'integer',
@@ -243,7 +238,6 @@ $def_tables = array(
             'owner' => array
                 (
                 'notnull' => 1,
-                'length' => 4,
                 'unsigned' => 0,
                 'default' => 0,
                 'type' => 'integer',
@@ -265,7 +259,6 @@ $def_tables = array(
             'zone_templ_id' => array
                 (
                 'notnull' => 1,
-                'length' => 4,
                 'unsigned' => 0,
                 'type' => 'integer',
                 'name' => 'zone_templ_id',
@@ -281,7 +274,6 @@ $def_tables = array(
             'id' => array
                 (
                 'notnull' => 1,
-                'length' => 11,
                 'unsigned' => 0,
                 'default' => 0,
                 'autoincrement' => 1,
@@ -315,7 +307,6 @@ $def_tables = array(
             'owner' => array
                 (
                 'notnull' => 1,
-                'length' => 11,
                 'fixed' => 0,
                 'default' => 0,
                 'type' => 'integer',
@@ -332,7 +323,6 @@ $def_tables = array(
             'id' => array
                 (
                 'notnull' => 1,
-                'length' => 11,
                 'unsigned' => 0,
                 'default' => 0,
                 'autoincrement' => 1,
@@ -344,7 +334,6 @@ $def_tables = array(
             'zone_templ_id' => array
                 (
                 'notnull' => 1,
-                'length' => 11,
                 'fixed' => 0,
                 'default' => 0,
                 'type' => 'integer',
@@ -388,7 +377,6 @@ $def_tables = array(
             'ttl' => array
                 (
                 'notnull' => 1,
-                'length' => 11,
                 'fixed' => 0,
                 'default' => 0,
                 'type' => 'integer',
@@ -399,7 +387,6 @@ $def_tables = array(
             'prio' => array
                 (
                 'notnull' => 1,
-                'length' => 11,
                 'fixed' => 0,
                 'default' => 0,
                 'type' => 'integer',
@@ -416,7 +403,6 @@ $def_tables = array(
             'domain_id' => array
                 (
                 'notnull' => 1,
-                'length' => 11,
                 'fixed' => 0,
                 'default' => 0,
                 'type' => 'integer',
@@ -427,7 +413,6 @@ $def_tables = array(
             'record_id' => array
                 (
                 'notnull' => 1,
-                'length' => 11,
                 'fixed' => 0,
                 'default' => 0,
                 'type' => 'integer',
@@ -438,7 +423,6 @@ $def_tables = array(
             'zone_templ_id' => array
                 (
                 'notnull' => 1,
-                'length' => 11,
                 'fixed' => 0,
                 'default' => 0,
                 'type' => 'integer',
@@ -466,7 +450,6 @@ $def_tables = array(
             'apply_time' => array
                 (
                 'notnull' => 1,
-                'length' => 11,
                 'fixed' => 0,
                 'default' => 0,
                 'type' => 'integer',
