@@ -59,9 +59,11 @@ if (isset($db_debug) && $db_debug == true) {
     $debug = str_replace("query(1)", "", $debug);
     $lines = explode(":", $debug);
 
+    echo "<div class=\"debug\"><pre>";
     foreach ($lines as $line) {
         echo "$line<br>";
     }
+    echo "</pre></div>";
 }
 ?>
 
