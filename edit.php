@@ -202,7 +202,13 @@ $record_count = count_zone_records($zone_id);
 $zone_templates = get_list_zone_templ($_SESSION['userid']);
 $zone_template_id = get_zone_template($zone_id);
 
-echo "   <h2>" . _('Edit zone') . " \"" . idn_to_utf8(get_domain_name_by_id($zone_id)) . "\" (\"".get_domain_name_by_id($zone_id)  ."\")</h2>\n";
+$zone_name_to_display = get_domain_name_by_id($zone_id);
+if (preg_match("/^xn--/", $zone_name_to_display)) {
+    $idn_zone_name = idn_to_utf8($zone_name_to_display);
+    echo "   <h2>" . _('Edit zone') . " \"" . $idn_zone_name . "\" (\"". $zone_name_to_display ."\")</h2>\n";
+} else {
+    echo "   <h2>" . _('Edit zone') . " \"" . $zone_name_to_display ."\"</h2>\n";
+}
 
 echo "   <div class=\"showmax\">\n";
 show_pages($record_count, $iface_rowamount, $zone_id);
