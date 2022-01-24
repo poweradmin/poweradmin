@@ -4,5 +4,5 @@ namespace Poweradmin;
 
 class Version
 {
-    const VERSION = '2.2.1';
+    const VERSION = '2.2.2';
 }
