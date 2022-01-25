@@ -1752,7 +1752,7 @@ function search_zone_and_record($parameters, $permission_view, $sort_zones_by, $
                 (records.name LIKE ' . $db->quote($search_string, 'text') . ' OR records.content LIKE ' . $db->quote($search_string, 'text') .
             ($parameters['reverse'] ? ' OR records.name LIKE ' . $reverse_search_string . ' OR records.content LIKE ' . $reverse_search_string : '') . ')' .
             ($permission_view == 'own' ? 'AND z.owner = ' . $db->quote($_SESSION['userid'], 'integer') : '') .
-            ' GROUP BY records.id ORDER BY ' . $sort_records_by;
+            ' ORDER BY ' . $sort_records_by;
 
         $recordsResponse = $db->query($recordsQuery);
         if (PEAR::isError($recordsResponse)) {
