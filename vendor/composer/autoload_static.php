@@ -41,7 +41,7 @@ class ComposerStaticInit02fd231869a48df50cb631d6580008da
         ),
         'Poweradmin\\' => 
         array (
-            0 => __DIR__ . '/..' . '/poweradmin',
+            0 => __DIR__ . '/../..' . '/lib',
         ),
     );
 

@@ -29,7 +29,10 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
-require_once dirname(dirname(dirname(__DIR__))) . '/vendor/poweradmin/Password.php';
+
+use Poweradmin\Password;
+
+require_once dirname(dirname(dirname(__DIR__))) . '/vendor/autoload.php';
 
 /** Authenticate Session
  *
@@ -196,8 +199,8 @@ function SQLAuthenticate() {
         $rowObj = $db->queryRow("SELECT id, fullname, password FROM users WHERE username=" . $db->quote($_SESSION["userlogin"], 'text') . " AND active=1 AND use_ldap=0");
 
         if ($rowObj) {
-            if (Poweradmin\Password::verify($session_pass, $rowObj['password'])) {
-                if (Poweradmin\Password::needs_rehash($rowObj['password'])) {
+            if (Password::verify($session_pass, $rowObj['password'])) {
+                if (Password::needs_rehash($rowObj['password'])) {
                     update_user_password($rowObj["id"], $session_pass);
                 }
 

@@ -30,6 +30,8 @@
  */
 
 // Dependencies
+use Poweradmin\Password;
+
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 require_once dirname(__DIR__) . '/inc/error.inc.php';
 require_once dirname(__DIR__) . '/inc/i18n.inc.php';
@@ -135,7 +137,7 @@ switch ($current_step) {
         $perm_templ_items_query->execute(array($perm_templ_row['id']));
 
         $user_query = $db->prepare("INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('admin', ?, 'Administrator', 'admin@example.net', 'Administrator with full rights.', ?, 1, 0)");
-        $user_query->execute(array(Poweradmin\Password::hash($pa_pass), $perm_templ_row['id']));
+        $user_query->execute(array(Password::hash($pa_pass), $perm_templ_row['id']));
 
         echo _('done!') . "</p>";
 
@@ -240,7 +242,7 @@ switch ($current_step) {
         // For SQLite we should provide path to db file
         $db_file = $_POST['db_type'] =='sqlite' ? $db_file = $_POST['db_name'] : '';
 
-        $session_key = Poweradmin\Password::salt(SESSION_KEY_LENGTH);
+        $session_key = Password::salt(SESSION_KEY_LENGTH);
         $iface_lang = $language;
         $dns_hostmaster = $_POST['dns_hostmaster'];
         $dns_ns1 = $_POST['dns_ns1'];
@@ -290,7 +292,7 @@ switch ($current_step) {
             'language' => $language,
             'config_file_created' => $config_file_created,
             'local_config_file' => LOCAL_CONFIG_FILE,
-            'session_key' => Poweradmin\Password::salt(SESSION_KEY_LENGTH),
+            'session_key' => Password::salt(SESSION_KEY_LENGTH),
             'iface_lang' => $language,
             'dns_hostmaster' => $dns_hostmaster,
             'dns_ns1' => $dns_ns1,
@@ -315,4 +317,4 @@ switch ($current_step) {
         break;
 }
 
-echo $twig->render('footer.html', array('version' => Poweradmin\Version::VERSION));
+echo $twig->render('footer.html', array('version' => lib\Version::VERSION));

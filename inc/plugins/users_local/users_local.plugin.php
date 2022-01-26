@@ -13,9 +13,12 @@
  * @license http://opensource.org/licenses/GPL-3.0 GPL
  *
  */
+
+use Poweradmin\Password;
+
 require_once 'inc/toolkit.inc.php';
 
-require_once dirname(dirname(dirname(__DIR__))) . '/vendor/poweradmin/Password.php';
+require_once dirname(dirname(dirname(__DIR__))) . '/vendor/autoload.php';
 
 /**
  * Verify User has Permission Name
@@ -353,7 +356,7 @@ email = " . $db->quote($email, 'text') . ",";
 				active = " . $db->quote($active, 'integer');
 
         if ($password != "") {
-            $query .= ", password = " . $db->quote(Poweradmin\Password::hash($password), 'text');
+            $query .= ", password = " . $db->quote(Password::hash($password), 'text');
         }
 
         $query .= " WHERE id = " . $db->quote($id, 'integer');
@@ -379,7 +382,7 @@ email = " . $db->quote($email, 'text') . ",";
  */
 function update_user_password($id, $password) {
     global $db;
-    $query = "UPDATE users SET password = " . $db->quote(Poweradmin\Password::hash($password), 'text') . " WHERE id = " . $db->quote($id, 'integer');
+    $query = "UPDATE users SET password = " . $db->quote(Password::hash($password), 'text') . " WHERE id = " . $db->quote($id, 'integer');
     $db->query($query);
 }
 
@@ -410,8 +413,8 @@ function change_user_pass_local($details) {
 
     $rinfo = $response->fetchRow();
 
-    if (Poweradmin\Password::verify($details['currentpass'], $rinfo['password'])) {
-        $query = "UPDATE users SET password = " . $db->quote(Poweradmin\Password::hash($details['newpass']), 'text') . " WHERE id = " . $db->quote($rinfo ['id'], 'integer');
+    if (Password::verify($details['currentpass'], $rinfo['password'])) {
+        $query = "UPDATE users SET password = " . $db->quote(Password::hash($details['newpass']), 'text') . " WHERE id = " . $db->quote($rinfo ['id'], 'integer');
         $response = $db->query($query);
         if (PEAR::isError($response)) {
             error($response->getMessage());
@@ -833,7 +836,7 @@ function update_user_details_local($details) {
         }
 
         if (isset($details ['password']) && $details ['password'] != "") {
-            $query .= ", password = " . $db->quote(Poweradmin\Password::hash($details['password'], 'text'));
+            $query .= ", password = " . $db->quote(Password::hash($details['password'], 'text'));
         }
 
         $query .= " WHERE id = " . $db->quote($details ['uid'], 'integer');
@@ -890,7 +893,7 @@ function add_new_user_local($details) {
         $query .= ' perm_templ,';
     }
 
-    $password_hash = Poweradmin\Password::hash($details['password']);
+    $password_hash = Password::hash($details['password']);
 
     $query .= " active, use_ldap) VALUES (" . $db->quote($details ['username'], 'text') . ", " . $db->quote($password_hash, 'text') . ", " . $db->quote($details ['fullname'], 'text') . ", " . $db->quote($details ['email'], 'text') . ", " . $db->quote($details ['descr'], 'text') . ", ";
     if (do_hook('verify_permission', 'user_edit_templ_perm')) {

@@ -30,10 +30,14 @@
  * @copyright   2010-2022 Poweradmin Development Team
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
+
+use Poweradmin\Password;
+
 require('inc/config.inc.php');
 require('inc/database.inc.php');
 require('inc/record.inc.php');
-require('vendor/poweradmin/Password.php');
+
+require __DIR__ . '/vendor/autoload.php';
 
 $db = dbConnect();
 
@@ -185,7 +189,7 @@ $user = $db->queryRow("SELECT users.id, users.password FROM users, perm_templ, p
                             OR perm_items.name = 'zone_content_edit_others'
                         )");
 
-if (!$user || !Poweradmin\Password::verify($auth_password, $user['password'])) {
+if (!$user || !Password::verify($auth_password, $user['password'])) {
     return status_exit('badauth2');
 }
 
