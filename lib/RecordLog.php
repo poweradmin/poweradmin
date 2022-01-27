@@ -1,5 +1,7 @@
 <?php
 
+namespace Poweradmin;
+
 class RecordLog {
 
     private $record_prior;

@@ -29,9 +29,11 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
+
+use Poweradmin\RecordLog;
+
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
-include_once("inc/RecordLog.class.php");
 
 global $pdnssec_use;
 
