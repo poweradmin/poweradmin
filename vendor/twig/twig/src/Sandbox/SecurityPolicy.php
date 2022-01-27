@@ -12,21 +12,20 @@
 namespace Twig\Sandbox;
 
 use Twig\Markup;
+use Twig\Template;
 
 /**
  * Represents a security policy which need to be enforced when sandbox mode is enabled.
  *
- * @final
- *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class SecurityPolicy implements SecurityPolicyInterface
+final class SecurityPolicy implements SecurityPolicyInterface
 {
-    protected $allowedTags;
-    protected $allowedFilters;
-    protected $allowedMethods;
-    protected $allowedProperties;
-    protected $allowedFunctions;
+    private $allowedTags;
+    private $allowedFilters;
+    private $allowedMethods;
+    private $allowedProperties;
+    private $allowedFunctions;
 
     public function __construct(array $allowedTags = [], array $allowedFilters = [], array $allowedMethods = [], array $allowedProperties = [], array $allowedFunctions = [])
     {
@@ -88,7 +87,7 @@ class SecurityPolicy implements SecurityPolicyInterface
 
     public function checkMethodAllowed($obj, $method)
     {
-        if ($obj instanceof \Twig_TemplateInterface || $obj instanceof Markup) {
+        if ($obj instanceof Template || $obj instanceof Markup) {
             return;
         }
 

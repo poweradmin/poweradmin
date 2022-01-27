@@ -31,8 +31,13 @@
 
 // Dependencies
 use Poweradmin\Password;
+use Poweradmin\Version;
+use Twig\Environment;
+use Twig\Extensions\I18nExtension;
+use Twig\Loader\FilesystemLoader;
 
-require_once dirname(__DIR__) . '/vendor/autoload.php';
+require dirname(__DIR__) . '/vendor/autoload.php';
+
 require_once dirname(__DIR__) . '/inc/error.inc.php';
 require_once dirname(__DIR__) . '/inc/i18n.inc.php';
 
@@ -61,9 +66,9 @@ if (isset($_POST['language']) && $_POST['language'] != 'en_EN') {
 }
 
 // Initialize Twig template engine
-$loader = new Twig_Loader_Filesystem('templates');
-$twig = new Twig_Environment($loader);
-$twig->addExtension(new Twig_Extensions_Extension_I18n());
+$loader = new FilesystemLoader('templates');
+$twig = new Environment($loader);
+$twig->addExtension(new I18nExtension());
 
 // Display header
 $current_step = isset($_POST['step']) && is_numeric($_POST['step']) ? $_POST['step'] : 1;
@@ -317,4 +322,4 @@ switch ($current_step) {
         break;
 }
 
-echo $twig->render('footer.html', array('version' => lib\Version::VERSION));
+echo $twig->render('footer.html', array('version' => Version::VERSION));
