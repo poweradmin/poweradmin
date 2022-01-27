@@ -30,10 +30,6 @@
  * @license     http://opensource.org/licenses/GPL-3.0 GPL
  */
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 require_once("inc/toolkit.inc.php");
 include_once("inc/header.inc.php");
 
