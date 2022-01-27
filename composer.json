@@ -2,7 +2,7 @@
   "description": "A web-based control panel for PowerDNS.",
   "name": "poweradmin/poweradmin",
   "type": "project",
-  "homepage": "http://www.poweradmin.org",
+  "homepage": "https://www.poweradmin.org",
   "license": "GPL-3.0",
   "support": {
     "issues": "https://github.com/poweradmin/poweradmin/issues",

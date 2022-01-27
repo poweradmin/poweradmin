@@ -1,10 +1,9 @@
 <?php
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
- *  See <http://www.poweradmin.org> for more details.
+ *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
  *  Copyright 2010-2022  Poweradmin Development Team
- *      <http://www.poweradmin.org/credits.html>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -42,11 +41,12 @@ if (is_object($db)) {
 ?>
 </div> <!-- /content -->
 <div class="footer">
-    <a href="http://www.poweradmin.org/">a complete(r) <strong>poweradmin</strong><?php
+    <a href="https://www.poweradmin.org/">a complete(r) <strong>poweradmin</strong><?php
         if (isset($_SESSION["userid"])) {
             echo " v$VERSION";
         }
-        ?></a> - <a href="http://www.poweradmin.org/credits.html">credits</a>
+        ?>
+    </a>
 </div>
 <?php
 if (file_exists('inc/custom_footer.inc.php')) {

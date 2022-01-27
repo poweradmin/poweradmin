@@ -3,7 +3,6 @@
  *
  *  Copyright 2007-2010  Rejo Zenger <rejo@zenger.nl>
  *  Copyright 2010-2022  Poweradmin Development Team
- *      <http://www.poweradmin.org/credits.html>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
