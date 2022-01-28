@@ -27,9 +27,17 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
-// TODO: display elapsed time and memory consumption,
-// used to check improvements in refactored version
-$display_stats = false;
+
+include_once("config-me.inc.php");
+
+if (!@include_once("config.inc.php")) {
+    error(_('You have to create a config.inc.php!'));
+}
+
+global $display_stats;
+global $iface_rowamount;
+global $dns_fancy;
+
 if ($display_stats) {
     include('inc/benchmark.php');
 }
@@ -46,12 +54,6 @@ if (!function_exists('openssl_encrypt'))
     die(error('You have to install PHP openssl extension!'));
 
 session_start();
-
-include_once("config-me.inc.php");
-
-if (!@include_once("config.inc.php")) {
-    error(_('You have to create a config.inc.php!'));
-}
 
 /* * ***********
  * Constants *
@@ -773,6 +775,7 @@ function auth($msg = "", $type = "success") {
                         <?php
                         // List available languages (sorted alphabetically)
                         include_once 'inc/countrycodes.inc.php';
+                        global $country_codes;
                         $locales = scandir('locale/');
                         foreach ($locales as $locale) {
                             if (strlen($locale) == 5) {
