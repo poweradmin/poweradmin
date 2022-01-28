@@ -45,6 +45,7 @@ if ($display_stats) {
 ob_start();
 
 require_once("error.inc.php");
+require_once('inc/countrycodes.inc.php');
 
 session_start();
 
@@ -767,11 +768,10 @@ function auth($msg = "", $type = "success") {
                     <select class="input" name="userlang">
                         <?php
                         // List available languages (sorted alphabetically)
-                        include_once 'inc/countrycodes.inc.php';
                         $locales = scandir('locale/');
                         foreach ($locales as $locale) {
                             if (strlen($locale) == 5) {
-                                $locales_fullname[$locale] = $country_codes[substr($locale, 0, 2)];
+                                $locales_fullname[$locale] = get_country_code($locale);
                             }
                         }
                         asort($locales_fullname);
