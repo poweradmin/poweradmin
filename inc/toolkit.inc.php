@@ -316,38 +316,6 @@ function success($msg) {
     }
 }
 
-/** Print message
- *
- * Something has been done nicely, display a message and a back button.
- *
- * @param string $msg Message
- *
- * @return null
- */
-function message($msg) {
-    include_once("header.inc.php");
-    ?>
-    <P><TABLE CLASS="messagetable"><TR><TD CLASS="message"><H2><?php echo _('Success!'); ?></H2>
-                <BR>
-                <FONT STYLE="font-weight: Bold">
-                <P>
-                    <?php
-                    if ($msg) {
-                        echo nl2br($msg);
-                    } else {
-                        echo _('Successful!');
-                    }
-                    ?>
-                </P>
-                <BR>
-                <P>
-                    <a href="javascript:history.go(-1)">&lt;&lt; <?php echo _('back'); ?></a></FONT>
-                </P>
-            </TD></TR></TABLE></P>
-    <?php
-    include_once("footer.inc.php");
-}
-
 /** Send 302 Redirect with optional argument
  *
  * Reroute a user to a cleanpage of (if passed) arg
