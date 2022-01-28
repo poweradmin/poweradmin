@@ -29,6 +29,21 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+/** Matches end of string
+ *
+ * Matches end of string (haystack) against another string (needle)
+ *
+ * @param string $needle
+ * @param string $haystack
+ *
+ * @return true if ends with specified string, otherwise false
+ */
+function endsWith($needle, $haystack) {
+    $length = strlen($haystack);
+    $nLength = strlen($needle);
+    return $nLength <= $length && strncmp(substr($haystack, -$nLength), $needle, $nLength) === 0;
+}
+
 /** Validate DNS record input
  *
  * @param int $rid Record ID
