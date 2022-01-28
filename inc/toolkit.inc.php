@@ -339,16 +339,6 @@ function clean_page($arg = '') {
     }
 }
 
-/** Validate user name string
- *
- * @param string $username user name string
- *
- * @return boolean true if valid, false otherwise
- */
-function is_valid_username($username) {
-    return $username != '';
-}
-
 /** Validate email address string
  *
  * @param string $address email address string
