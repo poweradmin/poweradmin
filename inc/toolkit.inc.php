@@ -31,6 +31,7 @@
 include_once 'config-me.inc.php';
 include_once 'tlds.inc.php';
 include_once 'record-types.inc.php';
+include_once 'zone-types.inc.php';
 
 if (!@include_once('config.inc.php')) {
     error(_('You have to create a config.inc.php!'));
@@ -95,9 +96,6 @@ if (isset($_GET["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["record_so
 
 // Database connection
 require_once 'database.inc.php';
-
-// Array of the available zone types
-$server_types = array("MASTER", "SLAVE", "NATIVE");
 
 /* * ***********
  * Includes  *
