@@ -28,8 +28,9 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-include_once("config-me.inc.php");
+include_once 'config-me.inc.php';
 include_once 'tlds.inc.php';
+include_once 'record-types.inc.php';
 
 if (!@include_once("config.inc.php")) {
     error(_('You have to create a config.inc.php!'));
@@ -105,67 +106,6 @@ $server_types = array("MASTER", "SLAVE", "NATIVE");
 
 // The following is a list of supported record types by PowerDNS
 // https://doc.powerdns.com/authoritative/appendices/types.html
-
-// Array of possible record types
-$record_types = array(
-    'A',
-    'A6',
-    'AAAA',
-    'AFSDB',
-    'ALIAS',
-    'APL',
-    'CAA',
-    'CDNSKEY',
-    'CDS',
-    'CERT',
-    'CNAME',
-    'CSYNC',
-    'DHCID',
-    'DLV',
-    'DNAME',
-    'DNSKEY',
-    'DS',
-    'EUI48',
-    'EUI64',
-    'HINFO',
-    'HTTPS',
-    'IPSECKEY',
-    'KEY',
-    'KX',
-    'L32',
-    'L64',
-    'LOC',
-    'LP',
-    'MAILA',
-    'MAILB',
-    'MINFO',
-    'MR',
-    'MX',
-    'NAPTR',
-    'NID',
-    'NS',
-    'NSEC',
-    'NSEC3',
-    'NSEC3PARAM',
-    'OPENPGPKEY',
-    'PTR',
-    'RKEY',
-    'RP',
-    'RRSIG',
-    'SIG',
-    'SMIMEA',
-    'SOA',
-    'SPF',
-    'SRV',
-    'SSHFP',
-    'SVCB',
-    'TKEY',
-    'TLSA',
-    'TSIG',
-    'TXT',
-    'URI',
-    'WKS'
-);
 
 // If fancy records is enabled, extend this field.
 if ($dns_fancy) {
