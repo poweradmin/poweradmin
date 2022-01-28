@@ -35,6 +35,7 @@ require_once dirname(dirname(dirname(__DIR__))) . '/vendor/autoload.php';
 
 require_once 'inc/session.inc.php';
 require_once 'inc/syslog.inc.php';
+require_once 'inc/redirect.inc.php';
 
 /** Authenticate Session
  *
