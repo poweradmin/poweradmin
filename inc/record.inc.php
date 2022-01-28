@@ -910,8 +910,8 @@ function delete_owner_from_zone($zone_id, $user_id) {
  * @return string[] array of types
  */
 function get_record_types() {
-    global $rtypes;
-    return $rtypes;
+    global $record_types;
+    return $record_types;
 }
 
 /** Retrieve all records by a given type and domain id
@@ -928,11 +928,11 @@ function get_record_types() {
  * @return object a DB class result object
  */
 function get_records_by_type_from_domid($type, $recid) {
-    global $rtypes;
+    global $record_types;
     global $db;
 
     // Does this type exist?
-    if (!in_array(strtoupper($type), $rtypes)) {
+    if (!in_array(strtoupper($type), $record_types)) {
         error(sprintf(ERR_INV_ARGC, "get_records_from_type", "this is not a supported record"));
     }
 
@@ -948,7 +948,7 @@ function get_records_by_type_from_domid($type, $recid) {
  * Retrieves the type of a record from a given id.
  *
  * @param int $id Record ID
- * @return string Record type (one of the records types in $rtypes assumable).
+ * @return string Record type (one of the records types in $record_types assumable).
  */
 function get_recordtype_from_id($id) {
     global $db;

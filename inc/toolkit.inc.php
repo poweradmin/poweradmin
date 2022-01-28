@@ -97,17 +97,17 @@ if (isset($_GET["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["record_so
 // http://tools.ietf.org/html/rfc2606#section-2
 array_push($valid_tlds, 'test', 'example', 'invalid', 'localhost');
 
-/* Database connection */
+// Database connection
 require_once("database.inc.php");
-// Generates $db variable to access database.
+
 // Array of the available zone types
 $server_types = array("MASTER", "SLAVE", "NATIVE");
 
 // The following is a list of supported record types by PowerDNS
 // https://doc.powerdns.com/authoritative/appendices/types.html
 
-// $rtypes - array of possible record types
-$rtypes = array(
+// Array of possible record types
+$record_types = array(
     'A',
     'A6',
     'AAAA',
@@ -169,11 +169,10 @@ $rtypes = array(
 
 // If fancy records is enabled, extend this field.
 if ($dns_fancy) {
-    $rtypes[] = 'URL';
-    $rtypes[] = 'MBOXFW';
-    $rtypes[] = 'CURL';
+    $record_types[] = 'URL';
+    $record_types[] = 'MBOXFW';
+    $record_types[] = 'CURL';
 }
-
 
 /* * ***********
  * Includes  *
@@ -190,7 +189,6 @@ require_once "templates.inc.php";
 
 //do_hook('hook_post_includes');
 do_hook('authenticate');
-
 
 /* * ***********
  * Functions *
