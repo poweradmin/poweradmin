@@ -35,6 +35,7 @@ $password_encryption_cost = 12; // needed for bcrypt
 // Interface settings
 $iface_lang = 'en_EN';
 $iface_style = 'example';
+$iface_templates = 'templates';
 $iface_rowamount = 50;
 $iface_expire = 1800;
 $iface_zonelist_serial = false;
