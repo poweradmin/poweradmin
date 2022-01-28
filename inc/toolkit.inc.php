@@ -32,7 +32,7 @@ include_once 'config-me.inc.php';
 include_once 'tlds.inc.php';
 include_once 'record-types.inc.php';
 
-if (!@include_once("config.inc.php")) {
+if (!@include_once('config.inc.php')) {
     error(_('You have to create a config.inc.php!'));
 }
 
@@ -40,13 +40,13 @@ global $display_stats;
 global $iface_rowamount;
 
 if ($display_stats) {
-    include_once('inc/benchmark.php');
+    include_once 'inc/benchmark.php';
 }
 
 ob_start();
 
-require_once("error.inc.php");
-require_once('inc/countrycodes.inc.php');
+require_once 'error.inc.php';
+require_once 'inc/countrycodes.inc.php';
 
 session_start();
 
@@ -94,7 +94,7 @@ if (isset($_GET["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["record_so
 }
 
 // Database connection
-require_once("database.inc.php");
+require_once 'database.inc.php';
 
 // Array of the available zone types
 $server_types = array("MASTER", "SLAVE", "NATIVE");
@@ -103,13 +103,13 @@ $server_types = array("MASTER", "SLAVE", "NATIVE");
  * Includes  *
  * *********** */
 $db = dbConnect();
-require_once "plugin.inc.php";
-require_once "i18n.inc.php";
-require_once "auth.inc.php";
-require_once "users.inc.php";
-require_once "dns.inc.php";
-require_once "record.inc.php";
-require_once "dnssec.inc.php";
-require_once "templates.inc.php";
+require_once 'plugin.inc.php';
+require_once 'i18n.inc.php';
+require_once 'auth.inc.php';
+require_once 'users.inc.php';
+require_once 'dns.inc.php';
+require_once 'record.inc.php';
+require_once 'dnssec.inc.php';
+require_once 'templates.inc.php';
 
 do_hook('authenticate');
