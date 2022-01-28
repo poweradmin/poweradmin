@@ -28,8 +28,10 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
-require_once("inc/toolkit.inc.php");
-include_once("inc/header.inc.php");
+require_once 'inc/toolkit.inc.php';
+require_once 'inc/validation.inc.php';
+
+include_once 'inc/header.inc.php';
 
 $owner = "-1";
 if ((isset($_POST['owner'])) && (v_num($_POST['owner']))) {

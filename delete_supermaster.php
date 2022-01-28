@@ -28,8 +28,10 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
-require_once("inc/toolkit.inc.php");
-include_once("inc/header.inc.php");
+require_once 'inc/toolkit.inc.php';
+require_once 'inc/validation.inc.php';
+
+include_once 'inc/header.inc.php';
 
 $master_ip = "-1";
 if (isset($_GET['master_ip']) && (is_valid_ipv4($_GET['master_ip']) || is_valid_ipv6($_GET['master_ip']))) {

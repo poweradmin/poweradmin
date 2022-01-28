@@ -112,7 +112,6 @@ require_once "record.inc.php";
 require_once "dnssec.inc.php";
 require_once "templates.inc.php";
 
-//do_hook('hook_post_includes');
 do_hook('authenticate');
 
 /* * ***********
@@ -130,19 +129,5 @@ function success($msg) {
         echo "     <div class=\"success\">" . $msg . "</div>\n";
     } else {
         echo "     <div class=\"success\">" . _('Something has been successfully performed. What exactly, however, will remain a mystery.') . "</div>\n";
-    }
-}
-
-/** Validate numeric string
- *
- * @param string $string number
- *
- * @return boolean true if number, false otherwise
- */
-function v_num($string) {
-    if (!preg_match("/^[0-9]+$/i", $string)) {
-        return false;
-    } else {
-        return true;
     }
 }
