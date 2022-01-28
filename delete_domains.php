@@ -30,6 +30,7 @@
  */
 require_once("inc/toolkit.inc.php");
 require_once 'inc/syslog.inc.php';
+require_once 'inc/message.inc.php';
 
 include_once("inc/header.inc.php");
 

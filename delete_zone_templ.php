@@ -30,6 +30,8 @@
  */
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/validation.inc.php';
+require_once 'inc/message.inc.php';
+require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
 
