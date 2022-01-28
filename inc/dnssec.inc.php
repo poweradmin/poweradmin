@@ -29,6 +29,8 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+require_once 'inc/syslog.inc.php';
+
 /** Check if it's possible to execute pdnsutil command
  *
  * @return boolean true on success, false on failure

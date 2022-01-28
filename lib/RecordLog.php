@@ -2,6 +2,8 @@
 
 namespace Poweradmin;
 
+require_once 'inc/syslog.inc.php';
+
 class RecordLog {
 
     private $record_prior;
