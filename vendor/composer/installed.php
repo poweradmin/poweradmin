@@ -5,7 +5,7 @@
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '22b643bda97924b32abf2b1d88459128d375be7e',
+        'reference' => 'd13efde369c0bab826604ff29a1f6fb006ca1e76',
         'name' => 'poweradmin/poweradmin',
         'dev' => true,
     ),
@@ -16,7 +16,7 @@
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '22b643bda97924b32abf2b1d88459128d375be7e',
+            'reference' => 'd13efde369c0bab826604ff29a1f6fb006ca1e76',
             'dev_requirement' => false,
         ),
         'symfony/polyfill-ctype' => array(
