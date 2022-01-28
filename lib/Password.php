@@ -137,21 +137,6 @@ class Password {
     }
 
     /**
-     * Count the number of bytes in a string
-     * @see https://github.com/ircmaxell/password_compat
-     *
-     * @param string $binary_string The input string
-     *
-     * @return int The number of bytes
-     */
-    private static function _strlen($binary_string) {
-        if (function_exists('mb_strlen')) {
-            return mb_strlen($binary_string, '8bit');
-        }
-        return strlen($binary_string);
-    }
-
-    /**
      *
      * @see https://github.com/ircmaxell/password_compat
      *
@@ -161,12 +146,12 @@ class Password {
      * @return bool true if they are equal, otherwise - false
      */
     private static function _strsafecmp($str1, $str2) {
-        if (!is_string($str1) || !is_string($str2) || self::_strlen($str1) !== self::_strlen($str2)) {
+        if (!is_string($str1) || !is_string($str2) || strlen($str1) !== strlen($str2)) {
             return false;
         }
 
         $status = 0;
-        for ($i = 0; $i < self::_strlen($str1); $i++) {
+        for ($i = 0; $i < strlen($str1); $i++) {
             $status |= (ord($str1[$i]) ^ ord($str2[$i]));
         }
 

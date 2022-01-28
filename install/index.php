@@ -55,9 +55,6 @@ if (isset($_POST['language']) && $_POST['language'] != 'en_EN') {
     }
 
     $gettext_domain = 'messages';
-    if (!function_exists('bindtextdomain')) {
-        die(error('You have to install PHP gettext extension!'));
-    }
     bindtextdomain($gettext_domain, "./../locale");
     textdomain($gettext_domain);
     @putenv('LANG=' . $language);

@@ -768,7 +768,6 @@ function auth($msg = "", $type = "success") {
                         <?php
                         // List available languages (sorted alphabetically)
                         include_once 'inc/countrycodes.inc.php';
-                        global $country_codes;
                         $locales = scandir('locale/');
                         foreach ($locales as $locale) {
                             if (strlen($locale) == 5) {
