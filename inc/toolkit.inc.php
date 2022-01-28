@@ -49,15 +49,9 @@ require_once('inc/countrycodes.inc.php');
 
 session_start();
 
-/* * ***********
- * Constants *
- * *********** */
-
 if (isset($_GET["start"])) {
     define('ROWSTART', (($_GET["start"] - 1) * $iface_rowamount));
 } else {
-    /** Starting row
-     */
     define('ROWSTART', 0);
 }
 
@@ -67,8 +61,6 @@ if (isset($_GET["letter"])) {
 } elseif (isset($_SESSION["letter"])) {
     define('LETTERSTART', $_SESSION["letter"]);
 } else {
-    /** Starting letter
-     */
     define('LETTERSTART', "a");
 }
 
@@ -81,8 +73,6 @@ if (isset($_GET["zone_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["zone_sort_b
 } elseif (isset($_SESSION["zone_sort_by"])) {
     define('ZONE_SORT_BY', $_SESSION["zone_sort_by"]);
 } else {
-    /** Field to sort zone by
-     */
     define('ZONE_SORT_BY', "name");
 }
 
@@ -99,8 +89,6 @@ if (isset($_GET["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["record_so
 } elseif (isset($_SESSION["record_sort_by"])) {
     define('RECORD_SORT_BY', $_SESSION["record_sort_by"]);
 } else {
-    /** Record to sort zone by
-     */
     define('RECORD_SORT_BY', "name");
 }
 
