@@ -199,3 +199,7 @@ $valid_tlds = array(  "aaa", "aarp", "abarth", "abb", "abbott", "abbvie", "abc",
     "yahoo", "yamaxun", "yandex", "ye", "yodobashi", "yoga", "yokohama", "you",
     "youtube", "yt", "yun", "za", "zappos", "zara", "zero", "zip", "zm", "zone",
     "zuerich", "zw");
+
+// Special TLDs for testing and documentation purposes
+// http://tools.ietf.org/html/rfc2606#section-2
+array_push($valid_tlds, 'test', 'example', 'invalid', 'localhost');

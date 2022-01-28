@@ -93,10 +93,6 @@ if (isset($_GET["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["record_so
     define('RECORD_SORT_BY', "name");
 }
 
-// Special TLDs for testing and documentation purposes
-// http://tools.ietf.org/html/rfc2606#section-2
-array_push($valid_tlds, 'test', 'example', 'invalid', 'localhost');
-
 // Database connection
 require_once("database.inc.php");
 
