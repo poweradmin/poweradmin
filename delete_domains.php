@@ -28,11 +28,11 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
-require_once("inc/toolkit.inc.php");
+require_once 'inc/toolkit.inc.php';
 require_once 'inc/syslog.inc.php';
 require_once 'inc/message.inc.php';
 
-include_once("inc/header.inc.php");
+include_once 'inc/header.inc.php';
 
 if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
     $perm_edit = "all";

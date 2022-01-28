@@ -28,8 +28,8 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
-require_once("inc/toolkit.inc.php");
-include_once("inc/header.inc.php");
+require_once 'inc/toolkit.inc.php';
+include_once 'inc/header.inc.php';
 
 do_hook('verify_permission', 'zone_master_add') ? $perm_zone_master_add = "1" : $perm_zone_master_add = "0";
 

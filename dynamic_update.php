@@ -32,9 +32,9 @@
 
 use Poweradmin\Password;
 
-require('inc/config.inc.php');
-require('inc/database.inc.php');
-require('inc/record.inc.php');
+require 'inc/config.inc.php';
+require 'inc/database.inc.php';
+require 'inc/record.inc.php';
 
 require __DIR__ . '/vendor/autoload.php';
 

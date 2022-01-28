@@ -28,7 +28,7 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
-require_once("inc/toolkit.inc.php");
+require_once 'inc/toolkit.inc.php';
 
 if (isset($_POST['submit']) && $_POST['submit']) {
     do_hook('change_user_pass' , $_POST );

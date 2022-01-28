@@ -28,8 +28,8 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
-require_once ("inc/toolkit.inc.php");
-include_once ("inc/header.inc.php");
+require_once 'inc/toolkit.inc.php';
+include_once 'inc/header.inc.php';
 
 do_hook ( 'verify_permission', 'user_view_others' ) ? $perm_view_others = "1" : $perm_view_others = "0";
 do_hook ( 'verify_permission', 'user_edit_own' ) ? $perm_edit_own = "1" : $perm_edit_own = "0";
