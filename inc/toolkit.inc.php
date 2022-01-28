@@ -367,22 +367,6 @@ function v_num($string) {
     }
 }
 
-/** Debug print
- *
- * @param string $var debug statement
- *
- * @return null
- */
-function debug_print($var) {
-    echo "<pre style=\"border: 2px solid blue;\">\n";
-    if (is_array($var)) {
-        print_r($var);
-    } else {
-        echo $var;
-    }
-    echo "</pre>\n";
-}
-
 function do_log($syslog_message, $priority) {
     global $syslog_use, $syslog_ident, $syslog_facility;
     if ($syslog_use) {
@@ -475,22 +459,5 @@ function auth($msg = "", $type = "success") {
     </script>
     <?php
     include_once('inc/footer.inc.php');
-    exit;
-}
-
-/** Logout the user
- *
- * Logout the user and kickback to login form
- *
- * @param string $msg Error Message
- * @param string $type Message type [default='']
- *
- * @return null
- */
-function logout($msg = "", $type = "") {
-    session_unset();
-    session_destroy();
-    session_write_close();
-    auth($msg, $type);
     exit;
 }

@@ -33,6 +33,8 @@ use Poweradmin\Password;
 
 require_once dirname(dirname(dirname(__DIR__))) . '/vendor/autoload.php';
 
+require_once 'inc/session.inc.php';
+
 /** Authenticate Session
  *
  * Checks if user is logging in, logging out, or session expired and performs
