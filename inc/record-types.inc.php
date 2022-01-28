@@ -1,5 +1,8 @@
 <?php
 
+// The following is a list of supported record types by PowerDNS
+// https://doc.powerdns.com/authoritative/appendices/types.html
+
 // Array of possible record types
 $record_types = array(
     'A',

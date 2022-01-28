@@ -103,9 +103,6 @@ require_once("database.inc.php");
 // Array of the available zone types
 $server_types = array("MASTER", "SLAVE", "NATIVE");
 
-// The following is a list of supported record types by PowerDNS
-// https://doc.powerdns.com/authoritative/appendices/types.html
-
 /* * ***********
  * Includes  *
  * *********** */
