@@ -48,7 +48,6 @@ $dns_hostmaster = '';
 $dns_ns1 = '';
 $dns_ns2 = '';
 $dns_ttl = 86400;
-$dns_fancy = false;
 $dns_strict_tld_check = false;
 $dns_top_level_tld_check = false;     // Don't allow to create top level TLDs
 $dns_third_level_check = false;

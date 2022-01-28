@@ -38,7 +38,6 @@ if (!@include_once("config.inc.php")) {
 
 global $display_stats;
 global $iface_rowamount;
-global $dns_fancy;
 
 if ($display_stats) {
     include_once('inc/benchmark.php');
@@ -106,13 +105,6 @@ $server_types = array("MASTER", "SLAVE", "NATIVE");
 
 // The following is a list of supported record types by PowerDNS
 // https://doc.powerdns.com/authoritative/appendices/types.html
-
-// If fancy records is enabled, extend this field.
-if ($dns_fancy) {
-    $record_types[] = 'URL';
-    $record_types[] = 'MBOXFW';
-    $record_types[] = 'CURL';
-}
 
 /* * ***********
  * Includes  *
