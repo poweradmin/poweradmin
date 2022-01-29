@@ -93,15 +93,12 @@ if (isset($_GET["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["record_so
 
 // Database connection
 require_once 'database.inc.php';
-
-/* * ***********
- * Includes  *
- * *********** */
-$db = dbConnect();
 require_once 'plugin.inc.php';
 require_once 'i18n.inc.php';
 require_once 'auth.inc.php';
 require_once 'users.inc.php';
+
+$db = dbConnect();
 require_once 'dns.inc.php';
 require_once 'record.inc.php';
 require_once 'dnssec.inc.php';
