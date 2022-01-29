@@ -8,8 +8,13 @@
  * @copyright   2010-2022 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
-$start_memory = memory_get_usage();
-$start_time = microtime(true);
+
+global $display_stats;
+
+if ($display_stats) {
+    $start_memory = memory_get_usage();
+    $start_time = microtime(true);
+}
 
 /** Get Human Readable Size
  *

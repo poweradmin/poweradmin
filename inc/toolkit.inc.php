@@ -37,12 +37,9 @@ if (!@include_once('config.inc.php')) {
     error(_('You have to create a config.inc.php!'));
 }
 
-global $display_stats;
 global $iface_rowamount;
 
-if ($display_stats) {
-    include_once 'inc/benchmark.php';
-}
+require_once 'inc/benchmark.php';
 
 ob_start();
 
