@@ -35,6 +35,13 @@ include_once 'inc/header.inc.php';
 
 global $pdnssec_use;
 
+global $iface_rowamount;
+if (isset($_GET["start"])) {
+    define('ROWSTART', (($_GET["start"] - 1) * $iface_rowamount));
+} else {
+    define('ROWSTART', 0);
+}
+
 if (do_hook('verify_permission', 'zone_content_view_others')) {
     $perm_view = "all";
 } elseif (do_hook('verify_permission', 'zone_content_view_own')) {

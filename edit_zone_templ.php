@@ -35,6 +35,13 @@ require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
 
+global $iface_rowamount;
+if (isset($_GET["start"])) {
+    define('ROWSTART', (($_GET["start"] - 1) * $iface_rowamount));
+} else {
+    define('ROWSTART', 0);
+}
+
 $zone_templ_id = "-1";
 if (isset($_GET['id']) && v_num($_GET['id'])) {
     $zone_templ_id = $_GET['id'];

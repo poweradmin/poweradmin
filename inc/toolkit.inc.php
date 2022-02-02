@@ -43,13 +43,6 @@ require_once 'countrycodes.inc.php';
 
 session_start();
 
-global $iface_rowamount;
-if (isset($_GET["start"])) {
-    define('ROWSTART', (($_GET["start"] - 1) * $iface_rowamount));
-} else {
-    define('ROWSTART', 0);
-}
-
 if (isset($_GET["letter"])) {
     define('LETTERSTART', $_GET["letter"]);
     $_SESSION["letter"] = $_GET["letter"];
