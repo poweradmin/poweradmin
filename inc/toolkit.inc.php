@@ -43,41 +43,8 @@ require_once 'countrycodes.inc.php';
 
 session_start();
 
-if (isset($_GET["letter"])) {
-    define('LETTERSTART', $_GET["letter"]);
-    $_SESSION["letter"] = $_GET["letter"];
-} elseif (isset($_SESSION["letter"])) {
-    define('LETTERSTART', $_SESSION["letter"]);
-} else {
-    define('LETTERSTART', "a");
-}
-
-if (isset($_GET["zone_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["zone_sort_by"])) {
-    define('ZONE_SORT_BY', $_GET["zone_sort_by"]);
-    $_SESSION["zone_sort_by"] = $_GET["zone_sort_by"];
-} elseif (isset($_POST["zone_sort_by"]) && preg_match("/^[a-z_]+$/", $_POST["zone_sort_by"])) {
-    define('ZONE_SORT_BY', $_POST["zone_sort_by"]);
-    $_SESSION["zone_sort_by"] = $_POST["zone_sort_by"];
-} elseif (isset($_SESSION["zone_sort_by"])) {
-    define('ZONE_SORT_BY', $_SESSION["zone_sort_by"]);
-} else {
-    define('ZONE_SORT_BY', "name");
-}
-
 if (isset($_SESSION["userlang"])) {
     $iface_lang = $_SESSION["userlang"];
-}
-
-if (isset($_GET["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["record_sort_by"])) {
-    define('RECORD_SORT_BY', $_GET["record_sort_by"]);
-    $_SESSION["record_sort_by"] = $_GET["record_sort_by"];
-} elseif (isset($_POST["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_POST["record_sort_by"])) {
-    define('RECORD_SORT_BY', $_POST["record_sort_by"]);
-    $_SESSION["record_sort_by"] = $_POST["record_sort_by"];
-} elseif (isset($_SESSION["record_sort_by"])) {
-    define('RECORD_SORT_BY', $_SESSION["record_sort_by"]);
-} else {
-    define('RECORD_SORT_BY', "name");
 }
 
 // Database connection

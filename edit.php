@@ -48,6 +48,18 @@ if (isset($_GET["start"])) {
     define('ROWSTART', 0);
 }
 
+if (isset($_GET["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["record_sort_by"])) {
+    define('RECORD_SORT_BY', $_GET["record_sort_by"]);
+    $_SESSION["record_sort_by"] = $_GET["record_sort_by"];
+} elseif (isset($_POST["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_POST["record_sort_by"])) {
+    define('RECORD_SORT_BY', $_POST["record_sort_by"]);
+    $_SESSION["record_sort_by"] = $_POST["record_sort_by"];
+} elseif (isset($_SESSION["record_sort_by"])) {
+    define('RECORD_SORT_BY', $_SESSION["record_sort_by"]);
+} else {
+    define('RECORD_SORT_BY', "name");
+}
+
 $zone_id = "-1";
 if (isset($_GET['id']) && v_num($_GET['id'])) {
     $zone_id = $_GET['id'];

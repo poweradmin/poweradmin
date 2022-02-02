@@ -58,10 +58,31 @@ if (do_hook('verify_permission', 'zone_content_edit_others')) {
     $perm_edit = "none";
 }
 
+if (isset($_GET["letter"])) {
+    define('LETTERSTART', $_GET["letter"]);
+    $_SESSION["letter"] = $_GET["letter"];
+} elseif (isset($_SESSION["letter"])) {
+    define('LETTERSTART', $_SESSION["letter"]);
+} else {
+    define('LETTERSTART', "a");
+}
+
 $count_zones_all = zone_count_ng("all");
 $count_zones_all_letterstart = zone_count_ng($perm_view, LETTERSTART);
 $count_zones_view = zone_count_ng($perm_view);
 $count_zones_edit = zone_count_ng($perm_edit);
+
+if (isset($_GET["zone_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["zone_sort_by"])) {
+    define('ZONE_SORT_BY', $_GET["zone_sort_by"]);
+    $_SESSION["zone_sort_by"] = $_GET["zone_sort_by"];
+} elseif (isset($_POST["zone_sort_by"]) && preg_match("/^[a-z_]+$/", $_POST["zone_sort_by"])) {
+    define('ZONE_SORT_BY', $_POST["zone_sort_by"]);
+    $_SESSION["zone_sort_by"] = $_POST["zone_sort_by"];
+} elseif (isset($_SESSION["zone_sort_by"])) {
+    define('ZONE_SORT_BY', $_SESSION["zone_sort_by"]);
+} else {
+    define('ZONE_SORT_BY', "name");
+}
 
 # OUCH: Temporary workaround for nasty sorting issue.
 # The problem is that sorting order is saved as a session variable

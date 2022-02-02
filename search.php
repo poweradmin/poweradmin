@@ -38,6 +38,30 @@ if (!do_hook('verify_permission', 'search')) {
     die();
 }
 
+if (isset($_GET["zone_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["zone_sort_by"])) {
+    define('ZONE_SORT_BY', $_GET["zone_sort_by"]);
+    $_SESSION["zone_sort_by"] = $_GET["zone_sort_by"];
+} elseif (isset($_POST["zone_sort_by"]) && preg_match("/^[a-z_]+$/", $_POST["zone_sort_by"])) {
+    define('ZONE_SORT_BY', $_POST["zone_sort_by"]);
+    $_SESSION["zone_sort_by"] = $_POST["zone_sort_by"];
+} elseif (isset($_SESSION["zone_sort_by"])) {
+    define('ZONE_SORT_BY', $_SESSION["zone_sort_by"]);
+} else {
+    define('ZONE_SORT_BY', "name");
+}
+
+if (isset($_GET["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["record_sort_by"])) {
+    define('RECORD_SORT_BY', $_GET["record_sort_by"]);
+    $_SESSION["record_sort_by"] = $_GET["record_sort_by"];
+} elseif (isset($_POST["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_POST["record_sort_by"])) {
+    define('RECORD_SORT_BY', $_POST["record_sort_by"]);
+    $_SESSION["record_sort_by"] = $_POST["record_sort_by"];
+} elseif (isset($_SESSION["record_sort_by"])) {
+    define('RECORD_SORT_BY', $_SESSION["record_sort_by"]);
+} else {
+    define('RECORD_SORT_BY', "name");
+}
+
 $parameters['query'] = isset($_POST['query']) && !empty($_POST['query']) ? idn_to_ascii($_POST['query']) : '';
 $parameters['zones'] = !isset($_POST['do_search']) && !isset($_POST['zones']) || isset($_POST['zones']) && $_POST['zones'] == true ? true : false;
 $parameters['records'] = !isset($_POST['do_search']) && !isset($_POST['records']) || isset($_POST['records']) && $_POST['records'] == true ? true : false;
