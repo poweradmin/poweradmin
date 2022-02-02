@@ -43,10 +43,6 @@ require_once 'countrycodes.inc.php';
 
 session_start();
 
-if (isset($_SESSION["userlang"])) {
-    $iface_lang = $_SESSION["userlang"];
-}
-
 // Database connection
 require_once 'database.inc.php';
 require_once 'plugin.inc.php';

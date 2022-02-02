@@ -34,6 +34,10 @@ if (file_exists('inc/config.inc.php')) {
     $iface_lang = 'en_EN';
 }
 
+if (isset($_SESSION["userlang"])) {
+    $iface_lang = $_SESSION["userlang"];
+}
+
 if ($iface_lang != 'en_EN') {
     $locale = setlocale(LC_ALL, $iface_lang, $iface_lang . '.UTF-8');
     if ($locale == false) {
