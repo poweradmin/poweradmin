@@ -37,17 +37,13 @@ if (!@include_once('config.inc.php')) {
     error(_('You have to create a config.inc.php!'));
 }
 
-global $iface_rowamount;
-
-require_once 'inc/benchmark.php';
-
-ob_start();
-
+require_once 'benchmark.php';
 require_once 'error.inc.php';
-require_once 'inc/countrycodes.inc.php';
+require_once 'countrycodes.inc.php';
 
 session_start();
 
+global $iface_rowamount;
 if (isset($_GET["start"])) {
     define('ROWSTART', (($_GET["start"] - 1) * $iface_rowamount));
 } else {
