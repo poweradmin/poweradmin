@@ -29,7 +29,6 @@
  */
 
 include_once 'config-me.inc.php';
-include_once 'tlds.inc.php';
 include_once 'record-types.inc.php';
 include_once 'zone-types.inc.php';
 

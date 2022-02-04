@@ -20,6 +20,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use Poweradmin\TopLevelDomain;
+
 require_once 'validation.inc.php';
 
 /**
@@ -376,7 +378,6 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl)
 function is_valid_hostname_fqdn(&$hostname, $wildcard) {
     global $dns_top_level_tld_check;
     global $dns_strict_tld_check;
-    global $valid_tlds;
 
     if ($hostname == ".") { return true; }
 
@@ -447,7 +448,7 @@ function is_valid_hostname_fqdn(&$hostname, $wildcard) {
         }
     }
 
-    if ($dns_strict_tld_check && !in_array(strtolower($hostname_labels[$label_count - 1]), $valid_tlds)) {
+    if ($dns_strict_tld_check && !TopLevelDomain::isValidTopLevelDomain($hostname)) {
         error(ERR_DNS_INV_TLD);
         return false;
     }
