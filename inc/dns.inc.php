@@ -78,12 +78,6 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl)
         }
     }
 
-//    TODO: Rethink the validation process
-//    https://github.com/poweradmin/poweradmin/issues/343
-//    if (!is_valid_rr_ttl_for_name($name, $ttl, $type, $rid, $zid)) {
-//        return false;
-//    }
-
     switch ($type) {
 
         case "A":
@@ -885,51 +879,6 @@ function is_valid_rr_ttl(&$ttl) {
     }
 
     return true;
-}
-
-/** Check if TTL is consistent for this field
- *
- * @param mixed $name Name part of record
- * @param mixed $ttl TTL
- * @param string $type Record Type
- * @param int $rid Record ID
- * @param int $zid Zone ID
- *
- * @return boolean true if valid,false otherwise
- */
-function is_valid_rr_ttl_for_name($name, $ttl, $type, $rid, $zid) {
-    global $db;
-
-    $where = ($rid > 0 ? " AND id != " . $db->quote($rid, 'integer') : '');
-    $query = "SELECT ttl FROM records
-                       WHERE name = " . $db->quote($name, 'text') . $where . "
-                       AND domain_id = " . $db->quote($zid, 'integer') . "
-                       AND TYPE = " . $db->quote($type, 'text') . "
-                       AND ttl != " . $db->quote($ttl, 'integer');
-
-    $response = $db->queryOne($query);
-
-    if (!empty($response)) {
-        error(ERR_DNS_INV_TTL_INCONSISTENT);
-        return false;
-    }
-
-    return true;
-}
-
-/** Check if search string is valid
- *
- * @param string $search_string search string
- *
- * @return boolean true if valid, false otherwise
- */
-function is_valid_search($search_string) {
-
-    // Only allow for alphanumeric, numeric, dot, dash, underscore and
-    // percent in search string. The last two are wildcards for SQL.
-    // Needs extension probably for more usual record types.
-
-    return preg_match('/^[a-z0-9.\-%_]+$/i', $search_string);
 }
 
 /** Check if SPF content is valid

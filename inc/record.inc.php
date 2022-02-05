@@ -903,42 +903,6 @@ function delete_owner_from_zone($zone_id, $user_id) {
     }
 }
 
-/** Get Record Type for Record ID
- *
- * Retrieves the type of a record from a given id.
- *
- * @param int $id Record ID
- * @return string Record type (one of the records types in $record_types assumable).
- */
-function get_recordtype_from_id($id) {
-    global $db;
-    if (is_numeric($id)) {
-        $result = $db->query("SELECT type FROM records WHERE id=" . $db->quote($id, 'integer'));
-        $r = $result->fetchRow();
-        return $r["type"];
-    } else {
-        error(sprintf(ERR_INV_ARG, "get_recordtype_from_id"));
-    }
-}
-
-/** Get Name from Record ID
- *
- * Retrieves the name (e.g. bla.test.com) of a record by a given id.
- *
- * @param int $id Record ID
- * @return string Name part of record
- */
-function get_name_from_record_id($id) {
-    global $db;
-    if (is_numeric($id)) {
-        $result = $db->query("SELECT name FROM records WHERE id=" . $db->quote($id, 'integer'));
-        $r = $result->fetchRow();
-        return $r["name"];
-    } else {
-        error(sprintf(ERR_INV_ARG, "get_name_from_record_id"));
-    }
-}
-
 /** Get Domain Name by domain ID
  *
  * @param int $id Domain ID
@@ -1312,22 +1276,6 @@ function zone_count_ng($perm, $letterstart = 'all') {
 			" . $sql_add;
         $zone_count = $db->queryOne($sqlq);
     }
-    return $zone_count;
-}
-
-/** Get Zone Count for Owner User ID
- *
- * @param int $uid User ID
- *
- * @return int Count of Zones matched
- */
-function zone_count_for_uid($uid) {
-    global $db;
-    $query = "SELECT COUNT(domain_id)
-			FROM zones
-			WHERE owner = " . $db->quote($uid, 'integer') . "
-			ORDER BY domain_id";
-    $zone_count = $db->queryOne($query);
     return $zone_count;
 }
 
@@ -1854,26 +1802,6 @@ function get_zone_template($zone_id) {
     $query = "SELECT zone_templ_id FROM zones WHERE domain_id = " . $db->quote($zone_id, 'integer');
     $zone_templ_id = $db->queryOne($query);
     return $zone_templ_id;
-}
-
-/** Update Zone Template ID for Zone ID
- *
- * @param int $zone_id Zone ID
- * @param int $new_zone_template_id New Zone Template ID
- *
- * @return boolean true on success, false otherwise
- */
-function update_zone_template($zone_id, $new_zone_template_id) {
-    global $db;
-    $query = "UPDATE zones
-			SET zone_templ_id = " . $db->quote($new_zone_template_id, 'integer') . "
-			WHERE id = " . $db->quote($zone_id, 'integer');
-    $response = $db->query($query);
-    if (PEAR::isError($response)) {
-        error($response->getMessage());
-        return false;
-    }
-    return true;
 }
 
 /** Update All Zone Records for Zone ID with Zone Template
