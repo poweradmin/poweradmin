@@ -28,11 +28,8 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
-if (file_exists('inc/config.inc.php')) {
-    include_once("inc/config.inc.php");
-} else {
-    $iface_lang = 'en_EN';
-}
+
+global $iface_lang;
 
 if (isset($_SESSION["userlang"])) {
     $iface_lang = $_SESSION["userlang"];
