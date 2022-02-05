@@ -28,6 +28,9 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
+
+use Poweradmin\RecordType;
+
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/validation.inc.php';
 require_once 'inc/message.inc.php';
@@ -198,7 +201,7 @@ if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit
     echo "        <td class=\"n\">\n";
     echo "         <select name=\"type\">\n";
     $found_selected_type = !(isset($type) && $type);
-    foreach (get_record_types() as $record_type) {
+    foreach (RecordType::getTypes() as $record_type) {
         if (isset($type) && $type) {
             if ($type == $record_type) {
                 $found_selected_type = true;

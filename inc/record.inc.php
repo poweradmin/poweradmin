@@ -903,46 +903,6 @@ function delete_owner_from_zone($zone_id, $user_id) {
     }
 }
 
-/** Retrieve all supported dns record types
- *
- * This function might be deprecated.
- *
- * @return string[] array of types
- */
-function get_record_types() {
-    global $record_types;
-    return $record_types;
-}
-
-/** Retrieve all records by a given type and domain id
- *
- * Example get all records that are of type A from domain id 1
- *
- * <code>
- * get_records_by_type_from_domid('A', 1)
- * </code>
- *
- * @param string $type Record type
- * @param int $recid Record ID
- *
- * @return object a DB class result object
- */
-function get_records_by_type_from_domid($type, $recid) {
-    global $record_types;
-    global $db;
-
-    // Does this type exist?
-    if (!in_array(strtoupper($type), $record_types)) {
-        error(sprintf(ERR_INV_ARGC, "get_records_from_type", "this is not a supported record"));
-    }
-
-    // Get the domain id.
-    $domid = recid_to_domid($recid);
-
-    $result = $db->query("select id, type from records where domain_id=" . $db->quote($recid, 'integer') . " and type=" . $db->quote($type, 'text'));
-    return $result;
-}
-
 /** Get Record Type for Record ID
  *
  * Retrieves the type of a record from a given id.

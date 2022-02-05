@@ -28,6 +28,9 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
+
+use Poweradmin\RecordType;
+
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/pagination.inc.php';
 require_once 'inc/validation.inc.php';
@@ -142,7 +145,7 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
                 echo "      <td class=\"u\">\n";
                 echo "       <select name=\"record[" . $r['id'] . "][type]\">\n";
                 $found_selected_type = false;
-                foreach (get_record_types() as $type_available) {
+                foreach (RecordType::getTypes() as $type_available) {
                     if ($type_available == $r['type']) {
                         $add = " SELECTED";
                         $found_selected_type = true;

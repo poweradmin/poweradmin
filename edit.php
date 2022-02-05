@@ -31,6 +31,7 @@
  */
 
 use Poweradmin\RecordLog;
+use Poweradmin\RecordType;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/pagination.inc.php';
@@ -286,7 +287,7 @@ if ($records == "-1") {
             echo "      <td class=\"u\">\n";
             echo "       <select name=\"record[" . $r['id'] . "][type]\">\n";
             $found_selected_type = false;
-            foreach (get_record_types() as $type_available) {
+            foreach (RecordType::getTypes() as $type_available) {
                 if ($type_available == $r['type']) {
                     $add = " SELECTED";
                     $found_selected_type = true;
@@ -370,7 +371,7 @@ if ($perm_content_edit == "all" || ($perm_content_edit == "own" || $perm_content
         echo "        <td class=\"n\">\n";
         echo "         <select name=\"type\">\n";
         $found_selected_type = !(isset($type) && $type);
-        foreach (get_record_types() as $record_type) {
+        foreach (RecordType::getTypes() as $record_type) {
             if (isset($type) && $type) {
                 if ($type == $record_type) {
                     $add = " SELECTED";

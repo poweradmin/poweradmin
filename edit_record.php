@@ -28,6 +28,9 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
+
+use Poweradmin\RecordType;
+
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/syslog.inc.php';
 require_once 'inc/message.inc.php';
@@ -131,7 +134,7 @@ if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
         echo "       <td>\n";
         echo "        <select name=\"type\">\n";
         $found_selected_type = false;
-        foreach (get_record_types() as $type_available) {
+        foreach (RecordType::getTypes() as $type_available) {
             if ($type_available == $record["type"]) {
                 $add = " SELECTED";
                 $found_selected_type = true;
