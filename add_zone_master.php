@@ -28,6 +28,9 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
+
+use Poweradmin\ZoneType;
+
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/validation.inc.php';
 require_once 'inc/message.inc.php';
@@ -46,7 +49,7 @@ if ((isset($_POST['owner'])) && (is_number($_POST['owner']))) {
 }
 
 $dom_type = "NATIVE";
-if (isset($_POST["dom_type"]) && (in_array($_POST['dom_type'], $server_types))) {
+if (isset($_POST["dom_type"]) && (in_array($_POST['dom_type'], ZoneType::getTypes()))) {
     $dom_type = $_POST["dom_type"];
 }
 

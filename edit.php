@@ -32,6 +32,7 @@
 
 use Poweradmin\RecordLog;
 use Poweradmin\RecordType;
+use Poweradmin\ZoneType;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/pagination.inc.php';
@@ -177,7 +178,7 @@ if ($perm_meta_edit == "all" || ( $perm_meta_edit == "own" && $user_is_zone_owne
 if (isset($_POST['slave_master_change']) && is_numeric($_POST["domain"])) {
     change_zone_slave_master($_POST['domain'], $_POST['new_master']);
 }
-if (isset($_POST['type_change']) && in_array($_POST['newtype'], $server_types)) {
+if (isset($_POST['type_change']) && in_array($_POST['newtype'], ZoneType::getTypes())) {
     change_zone_type($_POST['newtype'], $zone_id);
 }
 if (isset($_POST["newowner"]) && is_numeric($_POST["domain"]) && is_numeric($_POST["newowner"])) {
@@ -472,7 +473,7 @@ if ($meta_edit) {
     echo "       <tr>\n";
     echo "        <td>\n";
     echo "         <select name=\"newtype\">\n";
-    foreach ($server_types as $type) {
+    foreach (ZoneType::getTypes() as $type) {
         $add = '';
         if ($type == $domain_type) {
             $add = " SELECTED";

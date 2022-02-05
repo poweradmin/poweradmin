@@ -20,5 +20,14 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Array of the available zone types
-$server_types = array("MASTER", "SLAVE", "NATIVE");
+namespace Poweradmin;
+
+class ZoneType
+{
+    // Array of the available zone types
+    private const ZONE_TYPES = array("MASTER", "SLAVE", "NATIVE");
+
+    public static function getTypes() {
+        return self::ZONE_TYPES;
+    }
+}

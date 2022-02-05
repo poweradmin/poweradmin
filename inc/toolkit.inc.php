@@ -29,7 +29,6 @@
  */
 
 include_once 'config-me.inc.php';
-include_once 'zone-types.inc.php';
 
 require_once 'error.inc.php';
 if (!@include_once('config.inc.php')) {
