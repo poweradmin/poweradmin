@@ -556,7 +556,7 @@ function get_user_detail_list_local($specific) {
     $userid = $_SESSION ['userid'];
 
     // fixme: does this actually verify the permission?
-    if (v_num($specific)) {
+    if (is_number($specific)) {
         $sql_add = "AND users.id = " . $db->quote($specific, 'integer');
     } else {
         if (do_hook('verify_permission', 'user_view_others')) {

@@ -38,7 +38,7 @@ do_hook('verify_permission' , 'user_edit_own' ) ? $perm_edit_own = "1" : $perm_e
 do_hook('verify_permission' , 'user_edit_others' ) ? $perm_edit_others = "1" : $perm_edit_others = "0";
 do_hook('verify_permission' , 'user_is_ueberuser' ) ? $perm_is_godlike = "1" : $perm_is_godlike = "0";
 
-if (!(isset($_GET['id']) && v_num($_GET['id']))) {
+if (!(isset($_GET['id']) && is_number($_GET['id']))) {
     error(ERR_INV_INPUT);
     include_once("inc/footer.inc.php");
     exit;

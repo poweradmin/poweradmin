@@ -39,7 +39,7 @@ global $perm_meta_edit;
 global $perm_view;
 
 $zone_id = "-1";
-if (isset($_GET['id']) && v_num($_GET['id'])) {
+if (isset($_GET['id']) && is_number($_GET['id'])) {
     $zone_id = $_GET['id'];
 }
 

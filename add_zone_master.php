@@ -41,7 +41,7 @@ global $pdnssec_use;
 global $dns_third_level_check;
 
 $owner = "-1";
-if ((isset($_POST['owner'])) && (v_num($_POST['owner']))) {
+if ((isset($_POST['owner'])) && (is_number($_POST['owner']))) {
     $owner = $_POST['owner'];
 }
 

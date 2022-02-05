@@ -37,17 +37,17 @@ include_once 'inc/header.inc.php';
 global $pdnssec_use;
 
 $zone_id = "-1";
-if (isset($_GET['id']) && v_num($_GET['id'])) {
+if (isset($_GET['id']) && is_number($_GET['id'])) {
     $zone_id = $_GET['id'];
 }
 
 $key_id = "-1";
-if (isset($_GET['key_id']) && v_num($_GET['key_id'])) {
+if (isset($_GET['key_id']) && is_number($_GET['key_id'])) {
     $key_id = (int) $_GET['key_id'];
 }
 
 $confirm = "-1";
-if (isset($_GET['confirm']) && v_num($_GET['confirm'])) {
+if (isset($_GET['confirm']) && is_number($_GET['confirm'])) {
     $confirm = $_GET['confirm'];
 }
 

@@ -35,7 +35,7 @@ require_once 'inc/message.inc.php';
 include_once 'inc/header.inc.php';
 
 $owner = "-1";
-if ((isset($_POST['owner'])) && (v_num($_POST['owner']))) {
+if ((isset($_POST['owner'])) && (is_number($_POST['owner']))) {
     $owner = $_POST['owner'];
 }
 

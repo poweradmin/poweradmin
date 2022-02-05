@@ -35,7 +35,7 @@ require_once 'inc/message.inc.php';
 include_once 'inc/header.inc.php';
 
 $id = "-1";
-if ((isset($_GET['id'])) || (v_num($_GET['id']))) {
+if ((isset($_GET['id'])) || (is_number($_GET['id']))) {
     $id = $_GET['id'];
 }
 

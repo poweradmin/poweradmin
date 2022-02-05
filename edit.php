@@ -62,7 +62,7 @@ if (isset($_GET["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["record_so
 }
 
 $zone_id = "-1";
-if (isset($_GET['id']) && v_num($_GET['id'])) {
+if (isset($_GET['id']) && is_number($_GET['id'])) {
     $zone_id = $_GET['id'];
 }
 

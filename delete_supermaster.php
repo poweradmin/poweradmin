@@ -45,7 +45,7 @@ if (isset($_GET['ns_name']) && (is_valid_hostname_fqdn($_GET['ns_name'], 0))) {
 }
 
 $confirm = "-1";
-if ((isset($_GET['confirm'])) && (v_num($_GET['confirm']))) {
+if ((isset($_GET['confirm'])) && (is_number($_GET['confirm']))) {
     $confirm = $_GET['confirm'];
 }
 

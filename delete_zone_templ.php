@@ -36,12 +36,12 @@ require_once 'inc/message.inc.php';
 include_once 'inc/header.inc.php';
 
 $zone_templ_id = "-1";
-if (isset($_GET['id']) && (v_num($_GET['id']))) {
+if (isset($_GET['id']) && (is_number($_GET['id']))) {
     $zone_templ_id = $_GET['id'];
 }
 
 $confirm = "-1";
-if ((isset($_GET['confirm'])) && v_num($_GET['confirm'])) {
+if ((isset($_GET['confirm'])) && is_number($_GET['confirm'])) {
     $confirm = $_GET['confirm'];
 }
 

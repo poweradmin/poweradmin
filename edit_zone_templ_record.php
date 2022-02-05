@@ -38,12 +38,12 @@ require_once 'inc/message.inc.php';
 include_once 'inc/header.inc.php';
 
 $record_id = "-1";
-if (isset($_GET['id']) && v_num($_GET['id'])) {
+if (isset($_GET['id']) && is_number($_GET['id'])) {
     $record_id = $_GET['id'];
 }
 
 $zone_templ_id = "-1";
-if (isset($_GET['zone_templ_id']) && v_num($_GET['zone_templ_id'])) {
+if (isset($_GET['zone_templ_id']) && is_number($_GET['zone_templ_id'])) {
     $zone_templ_id = $_GET['zone_templ_id'];
 }
 

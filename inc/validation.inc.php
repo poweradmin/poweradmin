@@ -40,7 +40,7 @@ function is_valid_email($address) {
  *
  * @return boolean true if number, false otherwise
  */
-function v_num($string) {
+function is_number($string) {
     if (!preg_match("/^[0-9]+$/i", $string)) {
         return false;
     } else {

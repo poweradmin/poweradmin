@@ -75,17 +75,17 @@ if (do_hook('verify_permission', 'zone_meta_edit_others')) {
   if not set them.
  */
 $zone_id = "-1";
-if ((isset($_GET['id'])) && (v_num($_GET['id']))) {
+if ((isset($_GET['id'])) && (is_number($_GET['id']))) {
     $zone_id = $_GET['id'];
 }
 
 $ttl = $dns_ttl;
-if ((isset($_POST['ttl'])) && (v_num($_POST['ttl']))) {
+if ((isset($_POST['ttl'])) && (is_number($_POST['ttl']))) {
     $ttl = $_POST['ttl'];
 }
 
 $prio = "10";
-if ((isset($_POST['prio'])) && (v_num($_POST['prio']))) {
+if ((isset($_POST['prio'])) && (is_number($_POST['prio']))) {
     $prio = $_POST['prio'];
 }
 
