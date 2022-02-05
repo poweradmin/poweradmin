@@ -44,7 +44,10 @@ session_start();
 require_once 'database.inc.php';
 require_once 'plugin.inc.php';
 require_once 'i18n.inc.php';
-require_once 'auth.inc.php';
+
+// Checks if user is logging in, logging out, or session expired and performs actions accordingly
+add_listener('authenticate', 'authenticate_local');
+
 require_once 'users.inc.php';
 
 $db = dbConnect();
