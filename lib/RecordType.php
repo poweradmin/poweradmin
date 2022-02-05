@@ -24,10 +24,10 @@ namespace Poweradmin;
 
 class RecordType
 {
-// The following is a list of supported record types by PowerDNS
-// https://doc.powerdns.com/authoritative/appendices/types.html
+    // The following is a list of supported record types by PowerDNS
+    // https://doc.powerdns.com/authoritative/appendices/types.html
 
-// Array of possible record types
+    // Array of possible record types
     private const RECORD_TYPES = array(
         'A',
         'A6',

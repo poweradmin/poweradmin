@@ -20,8 +20,11 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function get_country_code($locale) {
-    $country_codes = array(
+namespace Poweradmin;
+
+class CountryCode
+{
+    private const COUNTRY_CODES = array(
         'aa' => 'Afar',
         'ab' => 'Abkhaz',
         'ae' => 'Avestan',
@@ -208,5 +211,8 @@ function get_country_code($locale) {
         'zu' => 'Zulu'
     );
 
-    return $country_codes[substr($locale, 0, 2)];
+    public static function getByLocale($locale): string
+    {
+        return self::COUNTRY_CODES[substr($locale, 0, 2)];
+    }
 }

@@ -37,7 +37,6 @@ if (!@include_once('config.inc.php')) {
 }
 
 require_once 'benchmark.php';
-require_once 'countrycodes.inc.php';
 
 session_start();
 

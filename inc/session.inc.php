@@ -20,6 +20,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use Poweradmin\CountryCode;
+
 /** Logout the user
  *
  * Logout the user and kickback to login form
@@ -74,7 +76,7 @@ function auth($msg = "", $type = "success") {
                         $locales = scandir('locale/');
                         foreach ($locales as $locale) {
                             if (strlen($locale) == 5) {
-                                $locales_fullname[$locale] = get_country_code($locale);
+                                $locales_fullname[$locale] = CountryCode::getByLocale($locale);
                             }
                         }
                         asort($locales_fullname);
