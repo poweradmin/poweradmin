@@ -31,12 +31,12 @@
 include_once 'config-me.inc.php';
 include_once 'zone-types.inc.php';
 
+require_once 'error.inc.php';
 if (!@include_once('config.inc.php')) {
     error(_('You have to create a config.inc.php!'));
 }
 
 require_once 'benchmark.php';
-require_once 'error.inc.php';
 require_once 'countrycodes.inc.php';
 
 session_start();
