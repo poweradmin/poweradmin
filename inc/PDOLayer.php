@@ -28,27 +28,7 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
-include_once "PDOCommon.class.php";
-
-/**
- * Fake PDO Extended module
- */
-class PDOExtended {
-
-    /**
-     * Does several execute() calls on the same statement handle
-     *
-     * @link http://pear.php.net/package/MDB2/docs/2.5.0b3/MDB2/MDB2_Extended.html#methodexecuteMultiple
-     * @param resource $stmt Statement handle
-     * @param array $params numeric array containing the data to insert into the query
-     */
-    public function executeMultiple($stmt, $params) {
-        foreach ($params as $values) {
-            $stmt->execute($values);
-        }
-    }
-
-}
+require_once "PDOCommon.class.php";
 
 /**
  * PDO access layer
@@ -125,14 +105,9 @@ class PDOLayer extends PDOCommon {
 
     }
 
-    /**
-     * Load PDO module
-     *
-     * @param string $name Module name to load
-     */
-    public function loadModule($name) {
-        if ($name == 'Extended') {
-            $this->extended = new PDOExtended();
+    public function executeMultiple($stmt, $params) {
+        foreach ($params as $values) {
+            $stmt->execute($values);
         }
     }
 

@@ -101,8 +101,6 @@ switch ($current_step) {
         $pa_pass = $_POST['pa_pass'];
         require_once("../inc/database.inc.php");
         $db = dbConnect();
-        $db->loadModule('Manager');
-        $db->loadModule('Extended');
         include_once("database-structure.inc.php");
         $current_tables = $db->listTables();
 
@@ -124,7 +122,7 @@ switch ($current_step) {
         }
 
         $fill_perm_items = $db->prepare('INSERT INTO perm_items VALUES (?, ?, ?)');
-        $db->extended->executeMultiple($fill_perm_items, $def_permissions);
+        $db->executeMultiple($fill_perm_items, $def_permissions);
         if (method_exists($fill_perm_items, 'free')) {
             $fill_perm_items->free();
         }
