@@ -308,7 +308,7 @@ function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl)
             if (!is_valid_rr_srv_name($name)) {
                 return false;
             }
-            if (!is_valid_rr_srv_content($content)) {
+            if (!is_valid_rr_srv_content($content, $name)) {
                 return false;
             }
             break;
@@ -842,7 +842,7 @@ function is_valid_rr_srv_name(&$name) {
  *
  * @return boolean true if valid, false otherwise
  */
-function is_valid_rr_srv_content(&$content) {
+function is_valid_rr_srv_content(&$content, $name) {
     $fields = preg_split("/\s+/", trim($content), 3);
     if (!is_numeric($fields[0]) || $fields[0] < 0 || $fields[0] > 65535) {
         error(ERR_DNS_SRV_WGHT, $name);
