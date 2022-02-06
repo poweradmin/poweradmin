@@ -36,58 +36,7 @@
  * @license     http://opensource.org/licenses/BSD-2-Clause BSD
  */
 
-/**
- * MDB2 over PDO
- */
-class PDOStatementCommon {
-
-    /**
-     * Internal resource
-     * @var mixed
-     */
-    private $pdoStatement;
-
-    /**
-     * Class constructor
-     *
-     * @param mixed $obj
-     */
-    public function __construct($obj) {
-        $this->pdoStatement = $obj;
-    }
-
-    /**
-     * Returns the number of rows in a result object
-     *
-     * @return int
-     */
-    public function numRows() {
-        // NOTE: Doesn't work properly with PDO and SQLite3
-        return $this->pdoStatement->rowCount();
-    }
-
-    /**
-     * Fetch and return a row of data
-     *
-     * @param int $fetch_style
-     * @return mixed
-     */
-    public function fetch($fetch_style = PDO::FETCH_ASSOC) {
-        return $this->pdoStatement->fetch($fetch_style);
-    }
-
-    /**
-     * Fetch and return a row of data
-     *
-     * @param int $fetch_style
-     * @return mixed
-     */
-    public function fetchRow($fetch_style = PDO::FETCH_ASSOC) {
-        $row = $this->pdoStatement->fetch($fetch_style);
-        return $row;
-    }
-
-}
+require_once "PDOStatementCommon.php";
 
 /**
  * Implements common PDO methods
@@ -140,7 +89,7 @@ class PDOCommon extends PDO {
      * Send a query to the database and return any results
      *
      * @param string $str
-     * @return \PDOStatementCommon
+     * @return PDOStatementCommon
      */
     public function query($str, ?int $fetchMode = null, mixed ...$fetchModeArgs) {
         // check if limit has been specified. if so, modify the query
@@ -173,9 +122,7 @@ class PDOCommon extends PDO {
                     "</pre>");
         }
 
-        $obj_pdoStatementCommon = new PDOStatementCommon($obj_pdoStatement);
-
-        return $obj_pdoStatementCommon;
+        return new PDOStatementCommon($obj_pdoStatement);
     }
 
     /**

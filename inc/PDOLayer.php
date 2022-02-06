@@ -28,7 +28,7 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
-require_once "PDOCommon.class.php";
+require_once "PDOCommon.php";
 
 /**
  * PDO access layer
