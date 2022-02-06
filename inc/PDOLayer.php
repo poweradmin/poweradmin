@@ -31,20 +31,6 @@
 include_once "PDOCommon.class.php";
 
 /**
- * Override PEAR class
- */
-class PEAR {
-
-    /**
-     * Override isError method
-     */
-    public static function isError($item) {
-        // TODO: This method may not be required at all
-    }
-
-}
-
-/**
  * Fake PDO Extended module
  */
 class PDOExtended {

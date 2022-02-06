@@ -114,11 +114,6 @@ function dnssec_rectify_zone($domain_id): bool
     $query = "SELECT COUNT(id) FROM domainmetadata WHERE domain_id = " . $db->quote($domain_id, 'integer');
     $count = $db->queryOne($query);
 
-    if (PEAR::isError($count)) {
-        error($count->getMessage());
-        return false;
-    }
-
     if (isset($pdnssec_command)) {
         $domain = get_domain_name_by_id($domain_id);
         $full_command = join(' ', array(

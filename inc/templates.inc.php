@@ -42,10 +42,6 @@ function get_list_zone_templ($userid) {
             . "WHERE owner = '" . $userid . "' "
             . "ORDER BY name";
     $result = $db->query($query);
-    if (PEAR::isError($result)) {
-        error("Not all tables available in database, please make sure all upgrade/install procedures were followed");
-        return false;
-    }
 
     $zone_templ_list = array();
     while ($zone_templ = $result->fetchRow()) {
@@ -81,12 +77,7 @@ function add_zone_templ($details, $userid) {
                 . $db->quote($details['templ_descr'], 'text') . ", "
                 . $db->quote($userid, 'integer') . ")";
 
-        $result = $db->query($query);
-        if (PEAR::isError($result)) {
-            error($result->getMessage());
-            return false;
-        }
-
+        $db->query($query);
         return true;
     }
 }
@@ -105,13 +96,7 @@ function get_zone_templ_details($zone_templ_id) {
             . " WHERE id = " . $db->quote($zone_templ_id, 'integer');
 
     $result = $db->query($query);
-    if (PEAR::isError($result)) {
-        error($result->getMessage());
-        return false;
-    }
-
-    $details = $result->fetchRow();
-    return $details;
+    return $result->fetchRow();
 }
 
 /** Delete a zone template
@@ -130,30 +115,17 @@ function delete_zone_templ($zone_templ_id) {
         // Delete the zone template
         $query = "DELETE FROM zone_templ"
                 . " WHERE id = " . $db->quote($zone_templ_id, 'integer');
-        $result = $db->query($query);
-        if (PEAR::isError($result)) {
-            error($result->getMessage());
-            return false;
-        }
+        $db->query($query);
 
         // Delete the zone template records
         $query = "DELETE FROM zone_templ_records"
                 . " WHERE zone_templ_id = " . $db->quote($zone_templ_id, 'integer');
-        $result = $db->query($query);
-        if (PEAR::isError($result)) {
-            error($result->getMessage());
-            return false;
-        }
+        $db->query($query);
 
         // Delete references to zone template
         $query = "DELETE FROM records_zone_templ"
                 . " WHERE zone_templ_id = " . $db->quote($zone_templ_id, 'integer');
-        $result = $db->query($query);
-        if (PEAR::isError($result)) {
-            error($result->getMessage());
-            return false;
-        }
-
+        $db->query($query);
         return true;
     }
 }
@@ -173,12 +145,7 @@ function delete_zone_templ_userid($userid) {
     } else {
         $query = "DELETE FROM zone_templ"
                 . " WHERE owner = " . $db->quote($userid, 'integer');
-        $result = $db->query($query);
-        if (PEAR::isError($result)) {
-            error($result->getMessage());
-            return false;
-        }
-
+        $db->query($query);
         return true;
     }
 }
@@ -192,12 +159,7 @@ function delete_zone_templ_userid($userid) {
 function count_zone_templ_records($zone_templ_id) {
     global $db;
     $query = "SELECT COUNT(id) FROM zone_templ_records WHERE zone_templ_id = " . $db->quote($zone_templ_id, 'integer');
-    $record_count = $db->queryOne($query);
-    if (PEAR::isError($record_count)) {
-        error($record_count->getMessage());
-        return false;
-    }
-    return $record_count;
+    return $db->queryOne($query);
 }
 
 /** Check if zone template exist
@@ -209,12 +171,7 @@ function count_zone_templ_records($zone_templ_id) {
 function zone_templ_id_exists($zone_templ_id) {
     global $db;
     $query = "SELECT COUNT(id) FROM zone_templ WHERE id = " . $db->quote($zone_templ_id, 'integer');
-    $count = $db->queryOne($query);
-    if (PEAR::isError($count)) {
-        error($count->getMessage());
-        return false;
-    }
-    return $count;
+    return $db->queryOne($query);
 }
 
 /** Get a zone template record from an id
@@ -314,11 +271,7 @@ function add_zone_templ_record($zone_templ_id, $name, $type, $content, $ttl, $pr
                     . $db->quote($content, 'text') . ","
                     . $db->quote($ttl, 'integer') . ","
                     . $db->quote($prio, 'integer') . ")";
-            $result = $db->query($query);
-            if (PEAR::isError($result)) {
-                error($result->getMessage());
-                return false;
-            }
+            $db->query($query);
             return true;
         } else {
             error(ERR_DNS_HOSTNAME);
@@ -351,11 +304,7 @@ function edit_zone_templ_record($record) {
                                 ttl=" . $db->quote($record['ttl'], 'integer') . ",
                                 prio=" . $db->quote(isset($record['prio']) ? $record['prio'] : 0, 'integer') . "
                                 WHERE id=" . $db->quote($record['rid'], 'integer');
-            $result = $db->query($query);
-            if (PEAR::isError($result)) {
-                error($result->getMessage());
-                return false;
-            }
+            $db->query($query);
             return true;
         } else {
             error(ERR_DNS_HOSTNAME);
@@ -378,11 +327,7 @@ function delete_zone_templ_record($rid) {
         return false;
     } else {
         $query = "DELETE FROM zone_templ_records WHERE id = " . $db->quote($rid, 'integer');
-        $result = $db->query($query);
-        if (PEAR::isError($result)) {
-            error($result->getMessage());
-            return false;
-        }
+        $db->query($query);
         return true;
     }
 }
@@ -399,10 +344,6 @@ function get_zone_templ_is_owner($zone_templ_id, $userid) {
 
     $query = "SELECT owner FROM zone_templ WHERE id = " . $db->quote($zone_templ_id, 'integer');
     $result = $db->queryOne($query);
-    if (PEAR::isError($result)) {
-        error($result->getMessage());
-        return false;
-    }
 
     if ($result == $userid) {
         return true;
@@ -459,14 +400,10 @@ function add_zone_templ_save_as($template_name, $description, $userid, $records,
                     . $db->quote($record['content'], 'text') . ","
                     . $db->quote($record['ttl'], 'integer') . ","
                     . $db->quote(isset($record['prio']) ? $record['prio'] : 0, 'integer') . ")";
-            $result = $db->exec($query2);
+            $db->exec($query2);
         }
 
-        if (PEAR::isError($result)) {
-            $result = $db->rollback();
-        } else {
-            $result = $db->commit();
-        }
+        $db->commit();
     }
     return true;
 }
@@ -509,10 +446,6 @@ function get_list_zone_use_templ($zone_templ_id, $userid) {
 			GROUP BY domains.name, domains.id, domains.type, Record_Count.count_records";
 
     $result = $db->query($query);
-    if (PEAR::isError($result)) {
-        error("Not all tables available in database, please make sure all upgrade/install procedures were followed");
-        return false;
-    }
 
     $zone_list = array();
     while ($zone = $result->fetchRow()) {
@@ -548,12 +481,7 @@ function edit_zone_templ($details, $zone_templ_id) {
 			descr=" . $db->quote($details['templ_descr'], 'text') . "
 			WHERE id=" . $db->quote($zone_templ_id, 'integer');
 
-        $result = $db->query($query);
-        if (PEAR::isError($result)) {
-            error($result->getMessage());
-            return false;
-        }
-
+        $db->query($query);
         return true;
     }
 }
@@ -574,13 +502,7 @@ function zone_templ_name_exists($zone_templ_name, $zone_templ_id = null) {
     }
 
     $query = "SELECT COUNT(id) FROM zone_templ WHERE name = " . $db->quote($zone_templ_name, 'text') . "" . $sql_add;
-    $count = $db->queryOne($query);
-    if (PEAR::isError($count)) {
-        error($count->getMessage());
-        return false;
-    }
-
-    return $count;
+    return $db->queryOne($query);
 }
 
 /** Parse string and substitute domain and serial

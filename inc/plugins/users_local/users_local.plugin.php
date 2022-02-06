@@ -92,10 +92,6 @@ function list_permission_templates_local() {
     global $db;
     $query = "SELECT * FROM perm_templ ORDER BY name";
     $response = $db->query($query);
-    if (PEAR::isError($response)) {
-        error($response->getMessage());
-        return false;
-    }
 
     $template_list = array();
     while ($template = $response->fetchRow()) {
@@ -152,10 +148,6 @@ function show_users_local($id = '', $rowstart = 0, $rowamount = 9999999) {
     // Execute the huge query.
     $db->setLimit($rowamount, $rowstart);
     $response = $db->query($query);
-    if (PEAR::isError($response)) {
-        error($response->getMessage());
-        return false;
-    }
     $ret = array();
     while ($r = $response->fetchRow()) {
         $ret [] = array(
@@ -235,18 +227,10 @@ function delete_user_local($uid, $zones) {
         }
 
         $query = "DELETE FROM zones WHERE owner = " . $db->quote($uid, 'integer');
-        $response = $db->query($query);
-        if (PEAR::isError($response)) {
-            error($response->getMessage());
-            return false;
-        }
+        $db->query($query);
 
         $query = "DELETE FROM users WHERE id = " . $db->quote($uid, 'integer');
-        $response = $db->query($query);
-        if (PEAR::isError($response)) {
-            error($response->getMessage());
-            return false;
-        }
+        $db->query($query);
 
         delete_zone_templ_userid($uid);
     }
@@ -267,29 +251,16 @@ function delete_perm_templ_local($ptid) {
     } else {
         $query = "SELECT id FROM users WHERE perm_templ = " . $ptid;
         $response = $db->queryOne($query);
-        if (PEAR::isError($response)) {
-            error($response->getMessage());
-            return false;
-        }
 
         if ($response) {
             error(ERR_PERM_TEMPL_ASSIGNED);
             return false;
         } else {
             $query = "DELETE FROM perm_templ_items WHERE templ_id = " . $ptid;
-            $response = $db->query($query);
-            if (PEAR::isError($response)) {
-                error($response->getMessage());
-                return false;
-            }
+            $db->query($query);
 
             $query = "DELETE FROM perm_templ WHERE id = " . $ptid;
-            $response = $db->query($query);
-            if (PEAR::isError($response)) {
-                error($response->getMessage());
-                return false;
-            }
-
+            $db->query($query);
             return true;
         }
     }
@@ -339,12 +310,7 @@ function edit_user_local($id, $user, $fullname, $email, $perm_templ, $descriptio
 
         $query = "SELECT username FROM users WHERE id = " . $db->quote($id, 'integer');
         $response = $db->query($query);
-        if (PEAR::isError($response)) {
-            error($response->getMessage());
-            return false;
-        }
 
-        $usercheck = array();
         $usercheck = $response->fetchRow();
 
         if ($usercheck ['username'] != $user) {
@@ -379,11 +345,7 @@ email = " . $db->quote($email, 'text') . ",";
 
         $query .= " WHERE id = " . $db->quote($id, 'integer');
 
-        $response = $db->query($query);
-        if (PEAR::isError($response)) {
-            error($response->getMessage());
-            return false;
-        }
+        $db->query($query);
     } else {
         error(ERR_PERM_EDIT_USER);
         return false;
@@ -424,20 +386,11 @@ function change_user_pass_local($details) {
 
     $query = "SELECT id, password FROM users WHERE username = " . $db->quote($_SESSION ["userlogin"], 'text');
     $response = $db->query($query);
-    if (PEAR::isError($response)) {
-        error($response->getMessage());
-        return false;
-    }
-
     $rinfo = $response->fetchRow();
 
     if (Password::verify($details['currentpass'], $rinfo['password'])) {
         $query = "UPDATE users SET password = " . $db->quote(Password::hash($details['newpass']), 'text') . " WHERE id = " . $db->quote($rinfo ['id'], 'integer');
-        $response = $db->query($query);
-        if (PEAR::isError($response)) {
-            error($response->getMessage());
-            return false;
-        }
+        $db->query($query);
 
         logout(_('Password has been changed, please login.'), 'success');
     } else {
@@ -459,10 +412,6 @@ function get_fullname_from_userid_local($id) {
     global $db;
     if (is_numeric($id)) {
         $response = $db->query("SELECT fullname FROM users WHERE id=" . $db->quote($id, 'integer'));
-        if (PEAR::isError($response)) {
-            error($response->getMessage());
-            return false;
-        }
         $r = $response->fetchRow();
         return $r ["fullname"];
     } else {
@@ -584,10 +533,6 @@ function get_user_detail_list_local($specific) {
 			ORDER BY username";
 
     $response = $db->query($query);
-    if (PEAR::isError($response)) {
-        error($response->getMessage());
-        return false;
-    }
 
     while ($user = $response->fetchRow()) {
         $userlist [] = array(
@@ -635,10 +580,6 @@ function get_permissions_by_template_id_local($templ_id = 0, $return_name_only =
 			FROM perm_items" . $limit . "
 			ORDER BY name";
     $response = $db->query($query);
-    if (PEAR::isError($response)) {
-        error($response->getMessage());
-        return false;
-    }
 
     $permission_list = array();
     while ($permission = $response->fetchRow()) {
@@ -670,13 +611,7 @@ function get_permission_template_details_local($templ_id) {
 			WHERE perm_templ.id = " . $db->quote($templ_id, 'integer');
 
     $response = $db->query($query);
-    if (PEAR::isError($response)) {
-        error($response->getMessage());
-        return false;
-    }
-
-    $details = $response->fetchRow();
-    return $details;
+    return $response->fetchRow();
 }
 
 /**
@@ -695,11 +630,7 @@ function add_perm_templ_local($details) {
     $query = "INSERT INTO perm_templ (name, descr)
 			VALUES (" . $db->quote($details ['templ_name'], 'text') . ", " . $db->quote($details ['templ_descr'], 'text') . ")";
 
-    $response = $db->query($query);
-    if (PEAR::isError($response)) {
-        error($response->getMessage());
-        return false;
-    }
+    $db->query($query);
 
     if ($db_type == 'pgsql') {
         $perm_templ_id = $db->lastInsertId('perm_templ_id_seq');
@@ -710,11 +641,7 @@ function add_perm_templ_local($details) {
     if (isset($details ['perm_id'])) {
         foreach ($details ['perm_id'] as $perm_id) {
             $query = "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . $db->quote($perm_templ_id, 'integer') . "," . $db->quote($perm_id, 'integer') . ")";
-            $response = $db->query($query);
-            if (PEAR::isError($response)) {
-                error($response->getMessage());
-                return false;
-            }
+            $db->query($query);
         }
     }
 
@@ -737,11 +664,7 @@ function update_perm_templ_details_local($details) {
 			SET name = " . $db->quote($details ['templ_name'], 'text') . ",
 			descr = " . $db->quote($details ['templ_descr'], 'text') . "
 			WHERE id = " . $db->quote($details ['templ_id'], 'integer');
-    $response = $db->query($query);
-    if (PEAR::isError($response)) {
-        error($response->getMessage());
-        return false;
-    }
+    $db->query($query);
 
     // Now, update list of permissions assigned to this template. We could do
     // this The Correct Way [tm] by comparing the list of permissions that are
@@ -751,20 +674,12 @@ function update_perm_templ_details_local($details) {
     // the template, than assign all the permissions the template should have.
 
     $query = "DELETE FROM perm_templ_items WHERE templ_id = " . $details ['templ_id'];
-    $response = $db->query($query);
-    if (PEAR::isError($response)) {
-        error($response->getMessage());
-        return false;
-    }
+    $db->query($query);
 
     if (isset($details ['perm_id'])) {
         foreach ($details ['perm_id'] as $perm_id) {
             $query = "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . $db->quote($details ['templ_id'], 'integer') . "," . $db->quote($perm_id, 'integer') . ")";
-            $response = $db->query($query);
-            if (PEAR::isError($response)) {
-                error($response->getMessage());
-                return false;
-            }
+            $db->query($query);
         }
     }
 
@@ -814,12 +729,7 @@ function update_user_details_local($details) {
         // username already exists.
         $query = "SELECT username FROM users WHERE id = " . $db->quote($details ['uid'], 'integer');
         $response = $db->query($query);
-        if (PEAR::isError($response)) {
-            error($response->getMessage());
-            return false;
-        }
 
-        $usercheck = array();
         $usercheck = $response->fetchRow();
 
         if ($usercheck ['username'] != $details ['username']) {
@@ -859,11 +769,7 @@ function update_user_details_local($details) {
 
         $query .= " WHERE id = " . $db->quote($details ['uid'], 'integer');
 
-        $response = $db->query($query);
-        if (PEAR::isError($response)) {
-            error($response->getMessage());
-            return false;
-        }
+        $db->query($query);
     } else {
         error(ERR_PERM_EDIT_USER);
         return false;
@@ -918,11 +824,6 @@ function add_new_user_local($details) {
         $query .= $db->quote($details ['perm_templ'], 'integer') . ", ";
     }
     $query .= $db->quote($active, 'integer') . ", " . $db->quote($use_ldap, 'integer') . ")";
-    $response = $db->query($query);
-    if (PEAR::isError($response)) {
-        error($response->getMessage());
-        return false;
-    }
-
+    $db->query($query);
     return true;
 }

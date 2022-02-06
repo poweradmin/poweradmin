@@ -40,12 +40,7 @@ require_once('templates.inc.php');
 function zone_id_exists($zid) {
     global $db;
     $query = "SELECT COUNT(id) FROM domains WHERE id = " . $db->quote($zid, 'integer');
-    $count = $db->queryOne($query);
-    if (PEAR::isError($count)) {
-        error($count->getMessage());
-        return false;
-    }
-    return $count;
+    return $db->queryOne($query);
 }
 
 /** Get Zone ID from Record ID
@@ -202,13 +197,7 @@ function update_soa_record($domain_id, $content) {
     global $db;
 
     $sqlq = "UPDATE records SET content = " . $db->quote($content, 'text') . " WHERE domain_id = " . $db->quote($domain_id, 'integer') . " AND type = " . $db->quote('SOA', 'text');
-    $response = $db->query($sqlq);
-
-    if (PEAR::isError($response)) {
-        error($response->getMessage());
-        return false;
-    }
-
+    $db->query($sqlq);
     return true;
 }
 
@@ -331,19 +320,11 @@ function edit_zone_comment($zone_id, $comment) {
             $query = "UPDATE zones
 				SET comment=" . $db->quote($comment, 'text') . "
 				WHERE domain_id=" . $db->quote($zone_id, 'integer');
-            $result = $db->query($query);
-            if (PEAR::isError($result)) {
-                error($result->getMessage());
-                return false;
-            }
+            $db->query($query);
         } else {
             $query = "INSERT INTO zones (domain_id, owner, comment, zone_templ_id)
 				VALUES(" . $db->quote($zone_id, 'integer') . ",1," . $db->quote($comment, 'text') . ",0)";
-            $result = $db->query($query);
-            if (PEAR::isError($result)) {
-                error($result->getMessage());
-                return false;
-            }
+            $db->query($query);
         }
     }
     return true;
@@ -395,11 +376,7 @@ function edit_record($record) {
 				ttl=" . $db->quote($record['ttl'], 'integer') . ",
 				prio=" . $db->quote($record['prio'], 'integer') . "
 				WHERE id=" . $db->quote($record['rid'], 'integer');
-            $result = $db->query($query);
-            if (PEAR::isError($result)) {
-                error($result->getMessage());
-                return false;
-            }
+            $db->query($query);
             return true;
         }
         return false;
@@ -440,9 +417,8 @@ function add_record($zone_id, $name, $type, $content, $ttl, $prio) {
         error(ERR_PERM_ADD_RECORD);
         return false;
     } else {
-        $response = $db->beginTransaction();
+        $db->beginTransaction();
         if (validate_input(-1, $zone_id, $type, $content, $name, $prio, $ttl)) {
-            $change = time();
             $name = strtolower($name); // powerdns only searches for lower case records
             $query = "INSERT INTO records (domain_id, name, type, content, ttl, prio) VALUES ("
                     . $db->quote($zone_id, 'integer') . ","
@@ -451,21 +427,15 @@ function add_record($zone_id, $name, $type, $content, $ttl, $prio) {
                     . $db->quote($content, 'text') . ","
                     . $db->quote($ttl, 'integer') . ","
                     . $db->quote($prio, 'integer') . ")";
-            $response = $db->exec($query);
-            if (PEAR::isError($response)) {
-                error($response->getMessage());
-                $response = $db->rollback();
-                return false;
-            } else {
-                $response = $db->commit();
-                if ($type != 'SOA') {
-                    update_soa_serial($zone_id);
-                }
-                if ($pdnssec_use) {
-                    dnssec_rectify_zone($zone_id);
-                }
-                return true;
+            $db->exec($query);
+            $db->commit();
+            if ($type != 'SOA') {
+                update_soa_serial($zone_id);
             }
+            if ($pdnssec_use) {
+                dnssec_rectify_zone($zone_id);
+            }
+            return true;
         } else {
             return false;
         }
@@ -562,13 +532,7 @@ function get_record_details_from_record_id($rid) {
     $query = "SELECT id AS rid, domain_id AS zid, name, type, content, ttl, prio FROM records WHERE id = " . $db->quote($rid, 'integer');
 
     $response = $db->query($query);
-    if (PEAR::isError($response)) {
-        error($response->getMessage());
-        return false;
-    }
-
-    $return = $response->fetchRow();
-    return $return;
+    return $response->fetchRow();
 }
 
 /** Delete a record by a given record id
@@ -597,11 +561,7 @@ function delete_record($rid) {
             error(_('You are trying to delete the SOA record. You are not allowed to remove it, unless you remove the entire zone.'));
         } else {
             $query = "DELETE FROM records WHERE id = " . $db->quote($rid, 'integer');
-            $response = $db->query($query);
-            if (PEAR::isError($response)) {
-                error($response->getMessage());
-                return false;
-            }
+            $db->query($query);
             return true;
         }
     } else {
@@ -620,11 +580,7 @@ function delete_record_zone_templ($rid) {
     global $db;
 
     $query = "DELETE FROM records_zone_templ WHERE record_id = " . $db->quote($rid, 'integer');
-    $response = $db->query($query);
-    if (PEAR::isError($response)) {
-        error($response->getMessage());
-        return false;
-    }
+    $db->query($query);
 
     return true;
 }
@@ -671,11 +627,7 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template) {
                 (preg_match('/in-addr.arpa/i', $domain) && $owner && $zone_template) ||
                 $type == "SLAVE" && $domain && $owner && $slave_master) {
 
-            $response = $db->query("INSERT INTO domains (name, type) VALUES (" . $db->quote($domain, 'text') . ", " . $db->quote($type, 'text') . ")");
-            if (PEAR::isError($response)) {
-                error($response->getMessage());
-                return false;
-            }
+            $db->query("INSERT INTO domains (name, type) VALUES (" . $db->quote($domain, 'text') . ", " . $db->quote($type, 'text') . ")");
 
             if ($db_type == 'pgsql') {
                 $domain_id = $db->lastInsertId('domains_id_seq');
@@ -683,23 +635,10 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template) {
                 $domain_id = $db->lastInsertId();
             }
 
-            if (PEAR::isError($domain_id)) {
-                error($domain_id->getMessage());
-                return false;
-            }
-
-            $response = $db->query("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (" . $db->quote($domain_id, 'integer') . ", " . $db->quote($owner, 'integer') . ", " . $db->quote(($zone_template == "none") ? 0 : $zone_template, 'integer') . ")");
-            if (PEAR::isError($response)) {
-                error($response->getMessage());
-                return false;
-            }
+            $db->query("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (" . $db->quote($domain_id, 'integer') . ", " . $db->quote($owner, 'integer') . ", " . $db->quote(($zone_template == "none") ? 0 : $zone_template, 'integer') . ")");
 
             if ($type == "SLAVE") {
-                $response = $db->query("UPDATE domains SET master = " . $db->quote($slave_master, 'text') . " WHERE id = " . $db->quote($domain_id, 'integer'));
-                if (PEAR::isError($response)) {
-                    error($response->getMessage());
-                    return false;
-                }
+                $db->query("UPDATE domains SET master = " . $db->quote($slave_master, 'text') . " WHERE id = " . $db->quote($domain_id, 'integer'));
                 return true;
             } else {
                 $now = time();
@@ -720,11 +659,7 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template) {
                             . $db->quote('SOA', 'text') . ","
                             . $db->quote($ttl, 'integer') . ","
                             . $db->quote(0, 'integer') . ")";
-                    $response = $db->query($query);
-                    if (PEAR::isError($response)) {
-                        error($response->getMessage());
-                        return false;
-                    }
+                    $db->query($query);
                     return true;
                 } elseif ($domain_id && is_numeric($zone_template)) {
                     global $dns_ttl;
@@ -750,11 +685,7 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template) {
                                         . $db->quote($content, 'text') . ","
                                         . $db->quote($ttl, 'integer') . ","
                                         . $db->quote($prio, 'integer') . ")";
-                                $response = $db->query($query);
-                                if (PEAR::isError($response)) {
-                                    error($response->getMessage());
-                                    return false;
-                                }
+                                $db->query($query);
 
                                 if ($db_type == 'pgsql') {
                                     $record_id = $db->lastInsertId('records_id_seq');
@@ -762,20 +693,11 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template) {
                                     $record_id = $db->lastInsertId();
                                 }
 
-                                if (PEAR::isError($record_id)) {
-                                    error($record_id->getMessage());
-                                    return false;
-                                }
-
                                 $query = "INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES ("
                                         . $db->quote($domain_id, 'integer') . ","
                                         . $db->quote($record_id, 'integer') . ","
                                         . $db->quote($r['zone_templ_id'], 'integer') . ")";
-                                $response = $db->query($query);
-                                if (PEAR::isError($response)) {
-                                    error($response->getMessage());
-                                    return false;
-                                }
+                                $db->query($query);
                             }
                         }
                     }
@@ -1046,10 +968,6 @@ function get_best_matching_zone_id_from_name($domain) {
                    ORDER BY length(name) DESC";
 
     $response = $db->query($query);
-    if (PEAR::isError($response)) {
-        error($response->getMessage());
-        return false;
-    }
     if ($response) {
         while ($r = $response->fetchRow()) {
             $pos = stripos($domain, $r["name"]);
@@ -1095,10 +1013,6 @@ function get_supermasters() {
     global $db;
 
     $result = $db->query("SELECT ip, nameserver, account FROM supermasters");
-    if (PEAR::isError($result)) {
-        error($result->getMessage());
-        return false;
-    }
 
     $ret = array();
 
@@ -1614,10 +1528,6 @@ function search_zone_and_record($parameters, $permission_view, $sort_zones_by, $
             ' ORDER BY ' . $sort_zones_by . ', z.owner';
 
         $zonesResponse = $db->query($zonesQuery);
-        if (PEAR::isError($zonesResponse)) {
-            error($zonesResponse->getMessage());
-            return false;
-        }
 
         while ($zone = $zonesResponse->fetchRow()) {
             $zones[$zone['id']][] = $zone;
@@ -1662,10 +1572,6 @@ function search_zone_and_record($parameters, $permission_view, $sort_zones_by, $
             ' ORDER BY ' . $sort_records_by;
 
         $recordsResponse = $db->query($recordsQuery);
-        if (PEAR::isError($recordsResponse)) {
-            error($recordsResponse->getMessage());
-            return false;
-        }
 
         while ($record = $recordsResponse->fetchRow()) {
             $return['records'][] = $record;
@@ -1765,10 +1671,6 @@ function get_serial_by_zid($zid) {
     if (is_numeric($zid)) {
         $query = "SELECT content FROM records where TYPE = " . $db->quote('SOA', 'text') . " and domain_id = " . $db->quote($zid, 'integer');
         $rr_soa = $db->queryOne($query);
-        if (PEAR::isError($rr_soa)) {
-            error($rr_soa->getMessage());
-            return false;
-        }
         $rr_soa_fields = explode(" ", $rr_soa);
     } else {
         error(sprintf(ERR_INV_ARGC, "get_serial_by_zid", "id must be a number"));
@@ -1800,8 +1702,7 @@ function validate_account($account) {
 function get_zone_template($zone_id) {
     global $db;
     $query = "SELECT zone_templ_id FROM zones WHERE domain_id = " . $db->quote($zone_id, 'integer');
-    $zone_templ_id = $db->queryOne($query);
-    return $zone_templ_id;
+    return $db->queryOne($query);
 }
 
 /** Update All Zone Records for Zone ID with Zone Template
@@ -1835,7 +1736,7 @@ function update_zone_records($zone_id, $zone_template_id) {
     }
 
     $soa_rec = get_soa_record($zone_id);
-    $response = $db->beginTransaction();
+    $db->beginTransaction();
 
     if (0 != $zone_template_id) {
         if ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) {
@@ -1853,7 +1754,6 @@ function update_zone_records($zone_id, $zone_template_id) {
 
         if ($zone_master_add == "1" || $zone_slave_add == "1") {
             $domain = get_domain_name_by_id($zone_id);
-            $now = time();
             $templ_records = get_zone_templ_records($zone_template_id);
 
             if ($templ_records == -1) {
@@ -1886,7 +1786,7 @@ function update_zone_records($zone_id, $zone_template_id) {
                             . $db->quote($content, 'text') . ","
                             . $db->quote($ttl, 'integer') . ","
                             . $db->quote($prio, 'integer') . ")";
-                    $response = $db->exec($query);
+                    $db->exec($query);
 
                     if ($db_type == 'pgsql') {
                         $record_id = $db->lastInsertId('records_id_seq');
@@ -1898,7 +1798,7 @@ function update_zone_records($zone_id, $zone_template_id) {
                             . $db->quote($zone_id, 'integer') . ","
                             . $db->quote($record_id, 'integer') . ","
                             . $db->quote($zone_template_id, 'integer') . ")";
-                    $response = $db->query($query);
+                    $db->query($query);
                 }
             }
         }
@@ -1907,13 +1807,8 @@ function update_zone_records($zone_id, $zone_template_id) {
     $query = "UPDATE zones
                     SET zone_templ_id = " . $db->quote($zone_template_id, 'integer') . "
                     WHERE domain_id = " . $db->quote($zone_id, 'integer');
-    $response = $db->exec($query);
-
-    if (PEAR::isError($response)) {
-        $response = $db->rollback();
-    } else {
-        $response = $db->commit();
-    }
+    $db->exec($query);
+    $db->commit();
 }
 
 /** Delete array of domains
@@ -1965,19 +1860,9 @@ function delete_domains($domains) {
         }
     }
 
-    if (PEAR::isError($response)) {
-        $response = $db->rollback();
-        $commit = false;
-    } else {
-        $response = $db->commit();
-        $commit = true;
-    }
+    $db->commit();
 
-    if (true == $commit && false == $error) {
-        $return = true;
-    }
-
-    return $return;
+    return true;
 }
 
 /** Check if record exists
