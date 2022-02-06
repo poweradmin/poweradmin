@@ -15,6 +15,7 @@
     "ext-intl": "*",
     "ext-gettext": "*",
     "ext-openssl": "*",
+    "ext-pdo": "*",
     "twig/twig": "^2.0",
     "twig/extensions": "^1.5"
   },

@@ -29,11 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-if (class_exists('PDO', false)) {
-    include_once 'PDOLayer.php';
-} else {
-    die(error('You have to install PDO library!'));
-}
+include_once 'PDOLayer.php';
 
 /** Print database error message
  *
