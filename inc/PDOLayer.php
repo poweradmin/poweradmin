@@ -38,7 +38,7 @@ class PEAR {
     /**
      * Override isError method
      */
-    public static function isError() {
+    public static function isError($item) {
         // TODO: This method may not be required at all
     }
 

@@ -35,7 +35,8 @@ require_once 'inc/syslog.inc.php';
  *
  * @return boolean true on success, false on failure
  */
-function dnssec_is_pdnssec_callable() {
+function dnssec_is_pdnssec_callable(): bool
+{
     global $pdnssec_command;
 
     if (!function_exists('exec')) {
@@ -56,9 +57,10 @@ function dnssec_is_pdnssec_callable() {
  * @param string $command Command name
  * @param string $args Command arguments
  *
- * @return mixed[] Array with output from command execution and error code
+ * @return array Array with output from command execution and error code
  */
-function dnssec_call_pdnssec($command, $args) {
+function dnssec_call_pdnssec($command, $args): array
+{
     global $pdnssec_command, $pdnssec_debug;
     $output = '';
     $return_code = -1;
@@ -68,10 +70,10 @@ function dnssec_call_pdnssec($command, $args) {
     }
 
     $full_command = join(' ', array(
-        escapeshellcmd($pdnssec_command),
-        $command,
-        escapeshellarg($args),
-        '2>&1')
+            escapeshellcmd($pdnssec_command),
+            $command,
+            escapeshellarg($args),
+            '2>&1')
     );
 
     exec($full_command, $output, $return_code);
@@ -97,7 +99,8 @@ function dnssec_call_pdnssec($command, $args) {
  *
  * @return boolean true on success, false on failure or unnecessary
  */
-function dnssec_rectify_zone($domain_id) {
+function dnssec_rectify_zone($domain_id): bool
+{
     global $db;
     global $pdnssec_command, $pdnssec_debug;
 
@@ -118,7 +121,7 @@ function dnssec_rectify_zone($domain_id) {
 
     if (isset($pdnssec_command)) {
         $domain = get_domain_name_by_id($domain_id);
-        $full_command = join(' ',array(
+        $full_command = join(' ', array(
             escapeshellcmd($pdnssec_command),
             'rectify-zone',
             escapeshellarg($domain)
@@ -157,7 +160,8 @@ function dnssec_rectify_zone($domain_id) {
  *
  * @return boolean true on success, false on failure or unnecessary
  */
-function dnssec_secure_zone($domain_name) {
+function dnssec_secure_zone($domain_name): bool
+{
     $call_result = dnssec_call_pdnssec('secure-zone', $domain_name);
     $return_code = $call_result[1];
 
@@ -178,7 +182,8 @@ function dnssec_secure_zone($domain_name) {
  *
  * @return boolean true on success, false on failure or unnecessary
  */
-function dnssec_unsecure_zone($domain_name) {
+function dnssec_unsecure_zone($domain_name): bool
+{
     $call_result = dnssec_call_pdnssec('disable-dnssec', $domain_name);
     $return_code = $call_result[1];
 
@@ -199,7 +204,8 @@ function dnssec_unsecure_zone($domain_name) {
  *
  * @return boolean true on success, false on failure
  */
-function dnssec_is_zone_secured($domain_name) {
+function dnssec_is_zone_secured($domain_name): bool
+{
     global $db;
     $query = $db->prepare("SELECT
                   COUNT(cryptokeys.id) AS active_keys,
@@ -215,87 +221,14 @@ function dnssec_is_zone_secured($domain_name) {
     return $row['active_keys'] > 0 || $row['presigned'];
 }
 
-/** Use presigned RRSIGs from storage
- *
- * @param string $domain_name Domain Name
- */
-function dnssec_set_nsec3($domain_name) {
-    dnssec_call_pdnssec('set-nsec3', $domain_name);
-    log_info(sprintf('client_ip:%s user:%s operation:dnssec_set_nsec3 zone:%s',
-        $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $domain_name));
-}
-
-/** Switch back to NSEC
- *
- * @param string $domain_name Domain Name
- */
-function dnssec_unset_nsec3($domain_name) {
-    dnssec_call_pdnssec('unset-nsec3', $domain_name);
-    log_info(sprintf('client_ip:%s user:%s operation:dnssec_unset_nsec3 zone:%s',
-        $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $domain_name));
-}
-
-/** Return nsec type
- *
- * @param string $domain_name Domain Name
- *
- * @return string nsec or nsec3
- */
-function dnssec_get_nsec_type($domain_name) {
-    $call_result = dnssec_call_pdnssec('show-zone', $domain_name);
-    $output = $call_result[0];
-
-    return ($output[0] == 'Zone has NSEC semantics' ? 'nsec' : 'nsec3');
-}
-
-/** Use presigned RRSIGs from storage
- *
- * @param string $domain_name Domain Name
- */
-function dnssec_set_presigned($domain_name) {
-    dnssec_call_pdnssec('set-presigned', $domain_name);
-    log_info(sprintf('client_ip:%s user:%s operation:dnssec_set_presigned zone:%s',
-        $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $domain_name));
-}
-
-/** No longer use presigned RRSIGs
- *
- * @param string $domain_name Domain Name
- */
-function dnssec_unset_presigned($domain_name) {
-    dnssec_call_pdnssec('unset-presigned', $domain_name);
-    log_info(sprintf('client_ip:%s user:%s operation:unset-presigned zone:%s',
-        $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $domain_name));
-}
-
-/** Return presigned status
- *
- * @param string $domain_name Domain Name
- *
- * @return boolean true if zone is presigned, otherwise false
- */
-function dnssec_get_presigned_status($domain_name) {
-    $call_result = dnssec_call_pdnssec('show-zone', $domain_name);
-    $output = $call_result[0];
-
-    return ($output[1] == 'Zone is presigned' ? true : false);
-}
-
-/** Rectify all zones.
- */
-function dnssec_rectify_all_zones() {
-    dnssec_call_pdnssec('rectify-all-zones', '');
-    log_info(sprintf('client_ip:%s user:%s operation:dnssec_rectify_all_zones',
-        $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin']));
-}
-
 /** Return DS records
  *
  * @param string $domain_name Domain Name
  *
- * @return mixed[] DS records
+ * @return array|false
  */
-function dnssec_get_ds_records($domain_name) {
+function dnssec_get_ds_records($domain_name)
+{
     $call_result = dnssec_call_pdnssec('show-zone', $domain_name);
     $output = $call_result[0];
     $return_code = $call_result[1];
@@ -306,20 +239,19 @@ function dnssec_get_ds_records($domain_name) {
     }
 
     $ds_records = array();
-    $oldid = $id = 0;
+    $id = 0;
     foreach ($output as $line) {
         if (substr($line, 0, 2) == 'DS') {
-	    $oldid = $id;
+            $oldid = $id;
             $items = explode(' ', $line);
 
             $ds_line = join(" ", array_slice($items, 2));
-	    $id = $items[5];
-            if ($oldid != $id and $oldid !=0) {
-		$ds_records[] = "<br/>".$ds_line;
-	    }
-	    else {
-		$ds_records[] = $ds_line;
-	    }
+            $id = $items[5];
+            if ($oldid != $id and $oldid != 0) {
+                $ds_records[] = "<br/>" . $ds_line;
+            } else {
+                $ds_records[] = $ds_line;
+            }
         }
     }
 
@@ -332,7 +264,8 @@ function dnssec_get_ds_records($domain_name) {
  *
  * @return string algorithm name
  */
-function dnssec_algorithm_to_name($algo) {
+function dnssec_algorithm_to_name($algo): string
+{
     $name = 'Unallocated/Reserved';
 
     switch ($algo) {
@@ -400,7 +333,8 @@ function dnssec_algorithm_to_name($algo) {
  * @param string $short_name Short algorithm name
  * @return string Algorithm name
  */
-function dnssec_shorthand_to_algorithm_name($short_name) {
+function dnssec_shorthand_to_algorithm_name($short_name): string
+{
     $name = 'Unknown';
 
     switch ($short_name) {
@@ -442,34 +376,14 @@ function dnssec_shorthand_to_algorithm_name($short_name) {
     return $name;
 }
 
-/** Get name of digest type
- *
- * @param int $type Digest type id
- *
- * @return string digest name
- */
-function dnssec_get_digest_name($type) {
-    $name = 'Unknown';
-
-    switch ($type) {
-        case 1:
-            $name = 'SHA-1';
-            break;
-        case 2:
-            $name = 'SHA-256 ';
-            break;
-    }
-
-    return $name;
-}
-
 /** Check if zone is secured
  *
  * @param string $domain_name Domain Name
  *
- * @return string string containing dns key
+ * @return array|false string containing dns key
  */
-function dnssec_get_dnskey_record($domain_name) {
+function dnssec_get_dnskey_record($domain_name)
+{
     $call_result = dnssec_call_pdnssec('show-zone', $domain_name);
     $output = $call_result[0];
     $return_code = $call_result[1];
@@ -497,7 +411,8 @@ function dnssec_get_dnskey_record($domain_name) {
  *
  * @return bool true on success, false on failure
  */
-function dnssec_activate_zone_key($domain_name, $key_id) {
+function dnssec_activate_zone_key($domain_name, $key_id): bool
+{
     $call_result = dnssec_call_pdnssec('activate-zone-key', join(" ", array($domain_name, $key_id)));
     $return_code = $call_result[1];
 
@@ -519,7 +434,8 @@ function dnssec_activate_zone_key($domain_name, $key_id) {
  *
  * @return bool true on success, false on failure
  */
-function dnssec_deactivate_zone_key($domain_name, $key_id) {
+function dnssec_deactivate_zone_key($domain_name, $key_id): bool
+{
     $call_result = dnssec_call_pdnssec('deactivate-zone-key', join(" ", array($domain_name, $key_id)));
     $return_code = $call_result[1];
 
@@ -538,9 +454,10 @@ function dnssec_deactivate_zone_key($domain_name, $key_id) {
  *
  * @param string $domain_name Domain Name
  *
- * @return mixed[] array with DNSSEC keys
+ * @return array|false
  */
-function dnssec_get_keys($domain_name) {
+function dnssec_get_keys($domain_name)
+{
     $call_result = dnssec_call_pdnssec('show-zone', $domain_name);
     $output = $call_result[0];
     $return_code = $call_result[1];
@@ -580,7 +497,8 @@ function dnssec_get_keys($domain_name) {
  *
  * @return boolean true on success, false on failure
  */
-function dnssec_add_zone_key($domain_name, $key_type, $bits, $algorithm) {
+function dnssec_add_zone_key($domain_name, $key_type, $bits, $algorithm): bool
+{
     $call_result = dnssec_call_pdnssec('add-zone-key', join(" ", array($domain_name, $key_type, $bits, "inactive", $algorithm)));
     $return_code = $call_result[1];
 
@@ -602,7 +520,8 @@ function dnssec_add_zone_key($domain_name, $key_type, $bits, $algorithm) {
  *
  * @return boolean true on success, false on failure
  */
-function dnssec_remove_zone_key($domain_name, $key_id) {
+function dnssec_remove_zone_key($domain_name, $key_id): bool
+{
     $call_result = dnssec_call_pdnssec('remove-zone-key', join(" ", array($domain_name, $key_id)));
     $return_code = $call_result[1];
 
@@ -624,7 +543,8 @@ function dnssec_remove_zone_key($domain_name, $key_id) {
  *
  * @return boolean true if exists, otherwise false
  */
-function dnssec_zone_key_exists($domain_name, $key_id) {
+function dnssec_zone_key_exists($domain_name, $key_id): bool
+{
     $keys = dnssec_get_keys($domain_name);
 
     foreach ($keys as $key) {
@@ -641,9 +561,10 @@ function dnssec_zone_key_exists($domain_name, $key_id) {
  * @param string $domain_name Domain Name
  * @param int $key_id Key ID
  *
- * @return mixed[] true if exists, otherwise false
+ * @return array true if exists, otherwise false
  */
-function dnssec_get_zone_key($domain_name, $key_id) {
+function dnssec_get_zone_key($domain_name, $key_id): array
+{
     $keys = dnssec_get_keys($domain_name);
 
     foreach ($keys as $key) {
