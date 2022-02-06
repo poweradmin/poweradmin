@@ -35,9 +35,7 @@ require_once 'database.inc.php';
 require_once 'plugin.inc.php';
 require_once 'i18n.inc.php';
 
-// Checks if user is logging in, logging out, or session expired and performs actions accordingly
 add_listener('authenticate', 'authenticate_local');
-
 add_listener('verify_permission', 'verify_permission_local');
 add_listener('show_users', 'show_users_local');
 add_listener('change_user_pass', 'change_user_pass_local');
