@@ -28,12 +28,15 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
+
+use Poweradmin\ZoneTemplate;
+
 require_once 'inc/toolkit.inc.php';
 include_once 'inc/header.inc.php';
 
 do_hook('verify_permission', 'zone_master_add') ? $perm_zone_master_add = "1" : $perm_zone_master_add = "0";
 
-$zone_templates = get_list_zone_templ($_SESSION['userid']);
+$zone_templates = ZoneTemplate::get_list_zone_templ($_SESSION['userid']);
 $username = do_hook('get_fullname_from_userid', $_SESSION['userid']);
 
 if ($perm_zone_master_add == "0") {

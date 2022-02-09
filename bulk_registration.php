@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\ZoneTemplate;
 use Poweradmin\ZoneType;
 
 require_once 'inc/toolkit.inc.php';
@@ -98,7 +99,7 @@ if ($zone_master_add != "1") {
 
     $available_zone_types = array("MASTER", "NATIVE");
     $users = do_hook('show_users');
-    $zone_templates = get_list_zone_templ($_SESSION['userid']);
+    $zone_templates = ZoneTemplate::get_list_zone_templ($_SESSION['userid']);
 
     echo "     <form method=\"post\" action=\"bulk_registration.php\">\n";
     echo "      <table>\n";

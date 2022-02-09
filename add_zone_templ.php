@@ -28,6 +28,9 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
+
+use Poweradmin\ZoneTemplate;
+
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/message.inc.php';
 
@@ -38,7 +41,7 @@ if (!do_hook('verify_permission' , 'zone_master_add' )) {
 } else {
 
     if (isset($_POST['commit'])) {
-        if (add_zone_templ($_POST, $_SESSION['userid'])) {
+        if (ZoneTemplate::add_zone_templ($_POST, $_SESSION['userid'])) {
             success(SUC_ZONE_TEMPL_ADD);
         } // TODO: otherwise repopulate values to form
     }

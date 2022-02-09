@@ -30,6 +30,7 @@
  */
 
 use Poweradmin\RecordType;
+use Poweradmin\ZoneTemplate;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/pagination.inc.php';
@@ -71,33 +72,33 @@ if ($zone_templ_id == "-1") {
 /*
   Check permissions
  */
-$owner = get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
+$owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
 
 if (isset($_POST['commit']) && $owner) {
     success(SUC_ZONE_TEMPL_UPD);
     foreach ($_POST['record'] as $record) {
-        edit_zone_templ_record($record);
+        ZoneTemplate::edit_zone_templ_record($record);
     }
 }
 
 if (isset($_POST['edit']) && $owner) {
-    edit_zone_templ($_POST, $zone_templ_id);
+    ZoneTemplate::edit_zone_templ($_POST, $zone_templ_id);
 }
 
 if (isset($_POST['save_as'])) {
-    if (zone_templ_name_exists($_POST['templ_name'])) {
+    if (ZoneTemplate::zone_templ_name_exists($_POST['templ_name'])) {
         error(ERR_ZONE_TEMPL_EXIST);
     } elseif ($_POST['templ_name'] == '') {
         error(ERR_ZONE_TEMPL_IS_EMPTY);
     } else {
         success(SUC_ZONE_TEMPL_ADD);
-        $templ_details = get_zone_templ_details($zone_templ_id);
-        add_zone_templ_save_as($_POST['templ_name'], $_POST['templ_descr'], $_SESSION['userid'], $_POST['record']);
+        $templ_details = ZoneTemplate::get_zone_templ_details($zone_templ_id);
+        ZoneTemplate::add_zone_templ_save_as($_POST['templ_name'], $_POST['templ_descr'], $_SESSION['userid'], $_POST['record']);
     }
 }
 
 if (isset($_POST['update_zones'])) {
-    $zones = get_list_zone_use_templ($zone_templ_id, $_SESSION['userid']);
+    $zones = ZoneTemplate::get_list_zone_use_templ($zone_templ_id, $_SESSION['userid']);
     success(SUC_ZONES_UPD);
     foreach ($zones as $zone) {
         update_zone_records($zone['id'], $zone_templ_id);
@@ -107,18 +108,18 @@ if (isset($_POST['update_zones'])) {
 if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
     error(ERR_PERM_EDIT_ZONE_TEMPL);
 } else {
-    if (zone_templ_id_exists($zone_templ_id) == "0") {
+    if (ZoneTemplate::zone_templ_id_exists($zone_templ_id) == "0") {
         error(ERR_ZONE_TEMPL_NOT_EXIST);
     } else {
-        $record_count = count_zone_templ_records($zone_templ_id);
-        $templ_details = get_zone_templ_details($zone_templ_id);
+        $record_count = ZoneTemplate::count_zone_templ_records($zone_templ_id);
+        $templ_details = ZoneTemplate::get_zone_templ_details($zone_templ_id);
         echo "   <h2>" . _('Edit zone template') . " \"" . $templ_details['name'] . "\"</h2>\n";
 
         echo "   <div class=\"showmax\">\n";
         show_pages($record_count, $iface_rowamount, $zone_templ_id);
         echo "   </div>\n";
 
-        $records = get_zone_templ_records($zone_templ_id, ROWSTART, $iface_rowamount, RECORD_SORT_BY);
+        $records = ZoneTemplate::get_zone_templ_records($zone_templ_id, ROWSTART, $iface_rowamount, RECORD_SORT_BY);
         if ($records == "-1") {
             echo " <p>" . _("This template zone does not have any records yet.") . "</p>\n";
         } else {

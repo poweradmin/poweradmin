@@ -30,6 +30,7 @@
  */
 
 use Poweradmin\RecordType;
+use Poweradmin\ZoneTemplate;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/validation.inc.php';
@@ -47,7 +48,7 @@ if (isset($_GET['zone_templ_id']) && is_number($_GET['zone_templ_id'])) {
     $zone_templ_id = $_GET['zone_templ_id'];
 }
 
-$owner = get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
+$owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
 
 if (isset($_POST["commit"])) {
     if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
@@ -62,13 +63,13 @@ if (isset($_POST["commit"])) {
     }
 }
 
-$templ_details = get_zone_templ_details($zone_templ_id);
+$templ_details = ZoneTemplate::get_zone_templ_details($zone_templ_id);
 echo "    <h2>" . _('Edit record in zone template') . " \"" . $templ_details['name'] . "\"</h2>\n";
 
 if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
     error(ERR_PERM_VIEW_RECORD);
 } else {
-    $record = get_zone_templ_record_from_id($record_id);
+    $record = ZoneTemplate::get_zone_templ_record_from_id($record_id);
     echo "     <form method=\"post\" action=\"edit_zone_templ_record.php?zone_templ_id=" . $zone_templ_id . "&id=" . $record_id . "\">\n";
     echo "      <table>\n";
     echo "       <tr>\n";

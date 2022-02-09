@@ -31,6 +31,7 @@
  */
 
 use Poweradmin\Password;
+use Poweradmin\ZoneTemplate;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/session.inc.php';
@@ -232,7 +233,7 @@ function delete_user_local($uid, $zones) {
         $query = "DELETE FROM users WHERE id = " . $db->quote($uid, 'integer');
         $db->query($query);
 
-        delete_zone_templ_userid($uid);
+        ZoneTemplate::delete_zone_templ_userid($uid);
     }
     return true;
 }

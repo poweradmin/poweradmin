@@ -30,6 +30,7 @@
  */
 
 use Poweradmin\RecordType;
+use Poweradmin\ZoneTemplate;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/validation.inc.php';
@@ -82,8 +83,8 @@ if ($zone_templ_id == "-1") {
     exit;
 }
 
-$templ_details = get_zone_templ_details($zone_templ_id);
-$owner = get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
+$templ_details = ZoneTemplate::get_zone_templ_details($zone_templ_id);
+$owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
 
 /*
   If the form as been submitted
@@ -93,7 +94,7 @@ if (isset($_POST["commit"])) {
     if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
         error(ERR_PERM_ADD_RECORD);
     } else {
-        if (add_zone_templ_record($zone_templ_id, $name, $type, $content, $ttl, $prio)) {
+        if (ZoneTemplate::add_zone_templ_record($zone_templ_id, $name, $type, $content, $ttl, $prio)) {
             success(_('The record was successfully added.'));
             $name = $type = $content = $ttl = $prio = "";
         }

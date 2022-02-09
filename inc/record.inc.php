@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once('templates.inc.php');
+use Poweradmin\ZoneTemplate;
 
 /**
  * DNS record functions
@@ -664,13 +664,13 @@ function add_domain($domain, $owner, $type, $slave_master, $zone_template) {
                 } elseif ($domain_id && is_numeric($zone_template)) {
                     global $dns_ttl;
 
-                    $templ_records = get_zone_templ_records($zone_template);
+                    $templ_records = ZoneTemplate::get_zone_templ_records($zone_template);
                     if ($templ_records != -1) {
                         foreach ($templ_records as $r) {
                             if ((preg_match('/in-addr.arpa/i', $domain) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $domain))) {
-                                $name = parse_template_value($r["name"], $domain);
+                                $name = ZoneTemplate::parse_template_value($r["name"], $domain);
                                 $type = $r["type"];
-                                $content = parse_template_value($r["content"], $domain);
+                                $content = ZoneTemplate::parse_template_value($r["content"], $domain);
                                 $ttl = $r["ttl"];
                                 $prio = intval($r["prio"]);
 
@@ -1754,7 +1754,7 @@ function update_zone_records($zone_id, $zone_template_id) {
 
         if ($zone_master_add == "1" || $zone_slave_add == "1") {
             $domain = get_domain_name_by_id($zone_id);
-            $templ_records = get_zone_templ_records($zone_template_id);
+            $templ_records = ZoneTemplate::get_zone_templ_records($zone_template_id);
 
             if ($templ_records == -1) {
                 return;
@@ -1763,13 +1763,13 @@ function update_zone_records($zone_id, $zone_template_id) {
             foreach ($templ_records as $r) {
                 //fixme: appears to be a bug and regex match should occur against $domain
                 if ((preg_match('/in-addr.arpa/i', $zone_id) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $zone_id))) {
-                    $name = parse_template_value($r["name"], $domain);
+                    $name = ZoneTemplate::parse_template_value($r["name"], $domain);
                     $type = $r["type"];
                     if ($type == "SOA") {
                         $db->exec("DELETE FROM records WHERE domain_id = " . $db->quote($zone_id, 'integer') . " AND type = 'SOA'");
                         $content = get_updated_soa_record($soa_rec);
                     } else {
-                        $content = parse_template_value($r["content"], $domain);
+                        $content = ZoneTemplate::parse_template_value($r["content"], $domain);
                     }
 
                     $ttl = $r["ttl"];

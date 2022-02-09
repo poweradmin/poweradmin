@@ -1,5 +1,7 @@
 <?php
 
+use Poweradmin\ZoneTemplate;
+
 include_once('../inc/config-me.inc.php');
 
 if (!@include_once('../inc/config.inc.php')) {
@@ -23,13 +25,13 @@ if (migration_exists($db, $file_name)) {
 $zones = get_zones_with_templates($db);
 foreach ($zones as $zone) {
     $domain = get_domain_name_by_zone_id($zone['id']);
-    $templ_records = get_zone_templ_records($zone['zone_templ_id']);
+    $templ_records = ZoneTemplate::get_zone_templ_records($zone['zone_templ_id']);
 
     $generated_templ_records = array();
     foreach ($templ_records as $templ_record) {
-        $name = parse_template_value($templ_record['name'], $domain);
+        $name = ZoneTemplate::parse_template_value($templ_record['name'], $domain);
         $type = $templ_record['type'];
-        $content = parse_template_value($templ_record['content'], $domain);
+        $content = ZoneTemplate::parse_template_value($templ_record['content'], $domain);
         $generated_templ_records[] = array(
             'name' => $name,
             'type' => $type,
@@ -43,8 +45,8 @@ foreach ($zones as $zone) {
             if ($record['name'] == $generated_templ_record['name'] &&
                     $record['type'] == $generated_templ_record['type'] &&
                     $record['content'] == $generated_templ_record['content']) {
-                if (!record_relation_to_templ_exists($db, $zone['domain_id'], $record['id'], $zone['zone_templ_id'])) {
-                    add_record_relation_to_templ($db, $zone['domain_id'], $record['id'], $zone['zone_templ_id']);
+                if (!ZoneTemplate::record_relation_to_templ_exists($db, $zone['domain_id'], $record['id'], $zone['zone_templ_id'])) {
+                    ZoneTemplate::add_record_relation_to_templ($db, $zone['domain_id'], $record['id'], $zone['zone_templ_id']);
                 }
                 break;
             }

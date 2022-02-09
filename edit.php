@@ -32,6 +32,7 @@
 
 use Poweradmin\RecordLog;
 use Poweradmin\RecordType;
+use Poweradmin\ZoneTemplate;
 use Poweradmin\ZoneType;
 
 require_once 'inc/toolkit.inc.php';
@@ -123,14 +124,14 @@ if (isset($_POST['commit'])) {
 }
 
 if (isset($_POST['save_as'])) {
-    if (zone_templ_name_exists($_POST['templ_name'])) {
+    if (ZoneTemplate::zone_templ_name_exists($_POST['templ_name'])) {
         error(ERR_ZONE_TEMPL_EXIST);
     } elseif ($_POST['templ_name'] == '') {
         error(ERR_ZONE_TEMPL_IS_EMPTY);
     } else {
         success(SUC_ZONE_TEMPL_ADD);
         $records = get_records_from_domain_id($zone_id);
-        add_zone_templ_save_as($_POST['templ_name'], $_POST['templ_descr'], $_SESSION['userid'], $records, get_domain_name_by_id($zone_id));
+        ZoneTemplate::add_zone_templ_save_as($_POST['templ_name'], $_POST['templ_descr'], $_SESSION['userid'], $records, get_domain_name_by_id($zone_id));
     }
 }
 
@@ -225,7 +226,7 @@ if (isset($_POST['unsign_zone'])) {
 
 $domain_type = get_domain_type($zone_id);
 $record_count = count_zone_records($zone_id);
-$zone_templates = get_list_zone_templ($_SESSION['userid']);
+$zone_templates = ZoneTemplate::get_list_zone_templ($_SESSION['userid']);
 $zone_template_id = get_zone_template($zone_id);
 
 $zone_name_to_display = get_domain_name_by_id($zone_id);
@@ -521,7 +522,7 @@ if ($meta_edit) {
     echo "       </tr>\n";
     echo "      </form>\n";
 } else {
-    $zone_template_details = get_zone_templ_details($zone_template_id);
+    $zone_template_details = ZoneTemplate::get_zone_templ_details($zone_template_id);
     echo "      <tr><td>" . (isset($zone_template_details) ? strtolower($zone_template_details['name']) : "none" ) . "</td><td>&nbsp;</td></tr>\n";
 }
 

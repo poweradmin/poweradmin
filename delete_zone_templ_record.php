@@ -28,6 +28,9 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
+
+use Poweradmin\ZoneTemplate;
+
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/validation.inc.php';
 require_once 'inc/message.inc.php';
@@ -52,14 +55,14 @@ if (isset($_GET['confirm']) && is_number($_GET['confirm'])) {
 if ($record_id == "-1" || $zone_templ_id == "-1") {
     error(ERR_INV_INPUT);
 } else {
-    $owner = get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
+    $owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
     if ($confirm == '1' && $owner) {
-        if (delete_zone_templ_record($record_id)) {
+        if (ZoneTemplate::delete_zone_templ_record($record_id)) {
             success(SUC_RECORD_DEL);
         }
     } else {
-        $templ_details = get_zone_templ_details($zone_templ_id);
-        $record_info = get_zone_templ_record_from_id($record_id);
+        $templ_details = ZoneTemplate::get_zone_templ_details($zone_templ_id);
+        $record_info = ZoneTemplate::get_zone_templ_record_from_id($record_id);
 
         echo "     <h2>" . _('Delete record in zone') . " \"" . $templ_details['name'] . "\"</h2>\n";
 
