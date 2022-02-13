@@ -28,9 +28,11 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
+
+use Poweradmin\Syslog;
+
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/validation.inc.php';
-require_once 'inc/syslog.inc.php';
 require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
@@ -74,11 +76,11 @@ if ($record_id == "-1") {
         if (delete_record($record_id)) {
             success("<a href=\"edit.php?id=" . $zid . "\">" . SUC_RECORD_DEL . "</a>");
             if (isset($record_info['prio'])) {
-                log_info(sprintf('client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s priority:%s',
+                Syslog::log_info(sprintf('client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s priority:%s',
                      $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                      $record_info['type'], $record_info['name'], $record_info['content'], $record_info['ttl'], $record_info['prio'] ));
             } else {
-                log_info(sprintf('client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s',
+                Syslog::log_info(sprintf('client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s',
                      $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                      $record_info['type'], $record_info['name'], $record_info['content'], $record_info['ttl'] ));
 

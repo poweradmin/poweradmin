@@ -30,9 +30,9 @@
  */
 
 use Poweradmin\RecordType;
+use Poweradmin\Syslog;
 
 require_once 'inc/toolkit.inc.php';
-require_once 'inc/syslog.inc.php';
 require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
@@ -83,7 +83,7 @@ if (isset($_POST["commit"])) {
             }
             success(SUC_RECORD_UPD);
             $new_record_info = get_record_from_id($_POST["rid"]);
-            log_info(sprintf('client_ip:%s user:%s operation:edit_record'
+            Syslog::log_info(sprintf('client_ip:%s user:%s operation:edit_record'
                              .' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
                              .' record_type:%s record:%s content:%s ttl:%s priority:%s',
                               $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],

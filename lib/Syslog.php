@@ -20,27 +20,38 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function do_log($syslog_message, $priority) {
-    global $syslog_use, $syslog_ident, $syslog_facility;
-    if ($syslog_use) {
-        openlog($syslog_ident, LOG_PERROR, $syslog_facility);
-        syslog($priority, $syslog_message);
-        closelog();
+namespace Poweradmin;
+
+class Syslog
+{
+
+    public static function do_log($syslog_message, $priority)
+    {
+        global $syslog_use, $syslog_ident, $syslog_facility;
+        if ($syslog_use) {
+            openlog($syslog_ident, LOG_PERROR, $syslog_facility);
+            syslog($priority, $syslog_message);
+            closelog();
+        }
     }
-}
 
-function log_error($syslog_message) {
-    do_log($syslog_message, LOG_ERR);
-}
+    public static function log_error($syslog_message)
+    {
+        self::do_log($syslog_message, LOG_ERR);
+    }
 
-function log_warn($syslog_message) {
-    do_log($syslog_message, LOG_WARNING);
-}
+    public static function log_warn($syslog_message)
+    {
+        self::do_log($syslog_message, LOG_WARNING);
+    }
 
-function log_notice($syslog_message) {
-    do_log($syslog_message, LOG_NOTICE);
-}
+    public static function log_notice($syslog_message)
+    {
+        self::do_log($syslog_message, LOG_NOTICE);
+    }
 
-function log_info($syslog_message) {
-    do_log($syslog_message, LOG_INFO);
+    public static function log_info($syslog_message)
+    {
+        self::do_log($syslog_message, LOG_INFO);
+    }
 }

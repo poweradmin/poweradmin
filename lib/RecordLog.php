@@ -22,8 +22,6 @@
 
 namespace Poweradmin;
 
-require_once 'inc/syslog.inc.php';
-
 class RecordLog {
 
     private $record_prior;
@@ -65,7 +63,7 @@ class RecordLog {
     }
 
     public function write() {
-        log_info(sprintf('client_ip:%s user:%s operation:edit_record'
+        Syslog::log_info(sprintf('client_ip:%s user:%s operation:edit_record'
             . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
             . ' record_type:%s record:%s content:%s ttl:%s priority:%s',
             $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],

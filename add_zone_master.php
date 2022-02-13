@@ -29,13 +29,13 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Syslog;
 use Poweradmin\ZoneTemplate;
 use Poweradmin\ZoneType;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/validation.inc.php';
 require_once 'inc/message.inc.php';
-require_once 'inc/syslog.inc.php';
 
 include_once 'inc/header.inc.php';
 
@@ -98,7 +98,7 @@ if (isset($_POST['submit']) && $zone_master_add == "1") {
         } elseif (add_domain($domain, $owner, $dom_type, '', $zone_template)) {
             $domain_id = get_zone_id_from_name($domain);
             success("<a href=\"edit.php?id=" . $domain_id . "\">" . $domain . " - " . SUC_ZONE_ADD . '</a>');
-            log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
+            Syslog::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
                               $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                               $domain,$dom_type,$zone_template));
 

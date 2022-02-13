@@ -30,11 +30,11 @@
  */
 
 use Poweradmin\RecordType;
+use Poweradmin\Syslog;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/validation.inc.php';
 require_once 'inc/message.inc.php';
-require_once 'inc/syslog.inc.php';
 
 include_once 'inc/header.inc.php';
 
@@ -146,7 +146,7 @@ if (isset($_POST["commit"])) {
                 $fqdn_name = sprintf("%s.%s", $name, $zone_name);
                 if (add_record($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
                     success(" <a href=\"edit.php?id=" . $zone_rev_id . "\"> " . _('The PTR-record was successfully added.') . "</a>");
-                    log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
+                    Syslog::log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
                                       $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                                       $content_rev, $fqdn_name, $ttl, $prio));
 		    if ($pdnssec_use) {
@@ -162,7 +162,7 @@ if (isset($_POST["commit"])) {
         }
         if (add_record($zone_id, $name, $type, $content, $ttl, $prio)) {
             success(" <a href=\"edit.php?id=" . $zone_id . "\"> " . _('The record was successfully added.') . "</a>");
-            log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:%s record:%s.%s content:%s ttl:%s priority:%s',
+            Syslog::log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:%s record:%s.%s content:%s ttl:%s priority:%s',
                               $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                               $type, $name, $zone_name, $content, $ttl, $prio));
 	    if ($pdnssec_use) {

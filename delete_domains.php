@@ -28,8 +28,10 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
+
+use Poweradmin\Syslog;
+
 require_once 'inc/toolkit.inc.php';
-require_once 'inc/syslog.inc.php';
 require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
@@ -67,7 +69,7 @@ if ($confirm == '1') {
         count($deleted_zones) == 1 ? success(SUC_ZONE_DEL) : success(SUC_ZONES_DEL);
         //Zones successfully deleted so generate log messages from information retrieved earlier
         foreach ($deleted_zones as $zone_info) {
-            log_info(sprintf('client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
+            Syslog::log_info(sprintf('client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
                               $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                               $zone_info['name'], $zone_info['type']));
         }

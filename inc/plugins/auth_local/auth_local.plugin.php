@@ -30,11 +30,11 @@
  */
 
 use Poweradmin\Password;
+use Poweradmin\Syslog;
 
 require_once dirname(dirname(dirname(__DIR__))) . '/vendor/autoload.php';
 
 require_once 'inc/session.inc.php';
-require_once 'inc/syslog.inc.php';
 require_once 'inc/redirect.inc.php';
 
 /** Authenticate Session
@@ -112,7 +112,7 @@ function LDAPAuthenticate() {
         $ldapconn = ldap_connect($ldap_uri);
         if (!$ldapconn) {
             if (isset($_POST["authenticate"])) {
-                log_error(sprintf('Failed LDAP authentication attempt from [%s] Reason: ldap_connect failed', $_SERVER['REMOTE_ADDR']));
+                Syslog::log_error(sprintf('Failed LDAP authentication attempt from [%s] Reason: ldap_connect failed', $_SERVER['REMOTE_ADDR']));
             }
             logout(_('Failed to connect to LDAP server!'), 'error');
             return;
@@ -122,7 +122,7 @@ function LDAPAuthenticate() {
         $ldapbind = ldap_bind($ldapconn, $ldap_binddn, $ldap_bindpw);
         if (!$ldapbind) {
             if (isset($_POST["authenticate"])) {
-                log_error(sprintf('Failed LDAP authentication attempt from [%s] Reason: ldap_bind failed', $_SERVER['REMOTE_ADDR']));
+                Syslog::log_error(sprintf('Failed LDAP authentication attempt from [%s] Reason: ldap_bind failed', $_SERVER['REMOTE_ADDR']));
             }
             logout(_('Failed to bind to LDAP server!'), 'error');
             return;
@@ -133,7 +133,7 @@ function LDAPAuthenticate() {
         $ldapsearch = ldap_search($ldapconn, $ldap_basedn, $filter, $attributes);
         if (!$ldapsearch) {
             if (isset($_POST["authenticate"])) {
-                log_error(sprintf('Failed LDAP authentication attempt from [%s] Reason: ldap_search failed', $_SERVER['REMOTE_ADDR']));
+                Syslog::log_error(sprintf('Failed LDAP authentication attempt from [%s] Reason: ldap_search failed', $_SERVER['REMOTE_ADDR']));
             }
             logout(_('Failed to search LDAP.'), 'error');
             return;
@@ -144,9 +144,9 @@ function LDAPAuthenticate() {
         if ($entries["count"] != 1) {
             if (isset($_POST["authenticate"])) {
                 if ($entries["count"] == 0) {
-                    log_warn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: No such user', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
+                    Syslog::log_warn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: No such user', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
                 } else {
-                    log_error(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: Duplicate usernames detected', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
+                    Syslog::log_error(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: Duplicate usernames detected', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
                 }
             }
             logout(_('Failed to authenticate against LDAP.'), 'error');
@@ -154,11 +154,11 @@ function LDAPAuthenticate() {
         }
         $user_dn = $entries[0]["dn"];
 
-        $session_pass = rtrim(openssl_decrypt(base64_decode($_SESSION["userpwd"]), "aes-256-cbc", md5($session_key), OPENSSL_RAW_DATA, md5(md5($session_key), TRUE)) , "\0");;
+        $session_pass = rtrim(openssl_decrypt(base64_decode($_SESSION["userpwd"]), "aes-256-cbc", md5($session_key), OPENSSL_RAW_DATA, md5(md5($session_key), TRUE)) , "\0");
         $ldapbind = ldap_bind($ldapconn, $user_dn, $session_pass);
         if (!$ldapbind) {
             if (isset($_POST["authenticate"])) {
-                log_warn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: Incorrect password', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
+                Syslog::log_warn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: Incorrect password', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
             }
             auth(_('LDAP Authentication failed!'), "error");
             return;
@@ -168,7 +168,7 @@ function LDAPAuthenticate() {
         $rowObj = $db->queryRow("SELECT id, fullname FROM users WHERE username=" . $db->quote($_SESSION["userlogin"], 'text') . " AND active=1 AND use_ldap=1");
         if (!$rowObj) {
             if (isset($_POST["authenticate"])) {
-                log_warn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: User is inactive', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
+                Syslog::log_warn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: User is inactive', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
             }
             auth(_('LDAP Authentication failed!'), "error");
             return;
@@ -178,7 +178,7 @@ function LDAPAuthenticate() {
         $_SESSION["auth_used"] = "ldap";
 
         if (isset($_POST["authenticate"])) {
-            log_notice(sprintf('Successful LDAP authentication attempt from [%s] for user \'%s\'', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
+            Syslog::log_notice(sprintf('Successful LDAP authentication attempt from [%s] for user \'%s\'', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
             //If a user has just authenticated, redirect him to requested page
             session_write_close();
             $redirect_url = ($_POST["query_string"] ? $_SERVER['SCRIPT_NAME'] . "?" . $_POST["query_string"] : $_SERVER['SCRIPT_NAME']);
@@ -212,7 +212,7 @@ function SQLAuthenticate() {
                 $_SESSION["auth_used"] = "internal";
 
                 if (isset($_POST["authenticate"])) {
-                    log_notice(sprintf('Successful authentication attempt from [%s] for user \'%s\'', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
+                    Syslog::log_notice(sprintf('Successful authentication attempt from [%s] for user \'%s\'', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
                     //If a user has just authenticated, redirect him to requested page
                     session_write_close();
                     $redirect_url = ($_POST["query_string"] ? $_SERVER['SCRIPT_NAME'] . "?" . $_POST["query_string"] : $_SERVER['SCRIPT_NAME']);
@@ -225,7 +225,7 @@ function SQLAuthenticate() {
                 auth();
             }
         } else if (isset($_POST['authenticate'])) {
-            log_warn(sprintf('Failed authentication attempt from [%s]', $_SERVER['REMOTE_ADDR']));
+            Syslog::log_warn(sprintf('Failed authentication attempt from [%s]', $_SERVER['REMOTE_ADDR']));
             auth(_('Authentication failed!'), "error");
         } else {
             unset($_SESSION["userpwd"]);

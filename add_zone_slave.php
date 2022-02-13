@@ -28,10 +28,12 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
+
+use Poweradmin\Syslog;
+
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/validation.inc.php';
 require_once 'inc/message.inc.php';
-require_once 'inc/syslog.inc.php';
 
 include_once 'inc/header.inc.php';
 
@@ -72,7 +74,7 @@ if (isset($_POST['submit']) && $zone_slave_add == "1") {
     } else {
         if (add_domain($zone, $owner, $type, $master, 'none')) {
             success("<a href=\"edit.php?id=" . get_zone_id_from_name($zone) . "\">" . SUC_ZONE_ADD . '</a>');
-            log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',
+            Syslog::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',
                               $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                               $zone, $master));
             unset($zone, $owner, $webip, $mailip, $empty, $type, $master);
