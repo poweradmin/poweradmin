@@ -30,6 +30,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Dnssec;
 use Poweradmin\RecordLog;
 use Poweradmin\RecordType;
 use Poweradmin\ZoneTemplate;
@@ -114,7 +115,7 @@ if (isset($_POST['commit'])) {
         }
 
         if ($pdnssec_use) {
-            if (dnssec_rectify_zone($_GET['id'])) {
+            if (Dnssec::dnssec_rectify_zone($_GET['id'])) {
                 success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
             }
         }
@@ -214,13 +215,13 @@ if (zone_id_exists($zone_id) == "0") {
 if (isset($_POST['sign_zone'])) {
     $zone_name = get_domain_name_by_id($zone_id);
     update_soa_serial($zone_id);
-    dnssec_secure_zone($zone_name);
-    dnssec_rectify_zone($zone_id);
+    Dnssec::dnssec_secure_zone($zone_name);
+    Dnssec::dnssec_rectify_zone($zone_id);
 }
 
 if (isset($_POST['unsign_zone'])) {
     $zone_name = get_domain_name_by_id($zone_id);
-    dnssec_unsecure_zone($zone_name);
+    Dnssec::dnssec_unsecure_zone($zone_name);
     update_soa_serial($zone_id);
 }
 
@@ -342,7 +343,7 @@ if ($records == "-1") {
     if ($pdnssec_use) {
         $zone_name = get_domain_name_by_id($zone_id);
 
-        if (dnssec_is_zone_secured($zone_name)) {
+        if (Dnssec::dnssec_is_zone_secured($zone_name)) {
             echo "     <input type=\"button\" class=\"button\" name=\"dnssec\" onclick=\"location.href = 'dnssec.php?id=".$zone_id."';\" value=\"" . _('DNSSEC') . "\">\n";
             echo "     <input type=\"submit\" class=\"button\" name=\"unsign_zone\" value=\"" . _('Unsign this zone') . "\">\n";
         } else {

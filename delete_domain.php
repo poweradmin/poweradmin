@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Dnssec;
 use Poweradmin\Syslog;
 
 require_once 'inc/toolkit.inc.php';
@@ -76,7 +77,7 @@ echo "     <h2>" . _('Delete zone') . " \"" . $zone_info['name'] . "\"</h2>\n";
 if ($confirm == '1') {
     if ($pdnssec_use && $zone_info['type'] == 'MASTER') {
         $zone_name = get_domain_name_by_id($zone_id);
-        dnssec_unsecure_zone($zone_name);
+        Dnssec::dnssec_unsecure_zone($zone_name);
     }
 
     if (delete_domain($zone_id)) {

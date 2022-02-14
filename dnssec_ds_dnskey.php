@@ -30,6 +30,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Dnssec;
 use Poweradmin\ZoneTemplate;
 
 require_once 'inc/toolkit.inc.php';
@@ -85,14 +86,14 @@ $zone_template_id = get_zone_template($zone_id);
 echo "   <h2>" . _('DNSSEC public records for zone') . " \"" . get_domain_name_by_id($zone_id) . "\"</h2>\n";
 
 echo "   <h3>" . _('DNSKEY') . "</h3>\n";
-$dnskey_records = dnssec_get_dnskey_record($domain_name);
+$dnskey_records = Dnssec::dnssec_get_dnskey_record($domain_name);
 foreach ($dnskey_records as $record) {
     echo $record."<br/>";
 }
 echo "<br>";
 
 echo "   <h3>" . _('DS record') . "</h3>\n";
-$ds_records = dnssec_get_ds_records($domain_name);
+$ds_records = Dnssec::dnssec_get_ds_records($domain_name);
 foreach ($ds_records as $record) {
     echo $record."<br>\n";
 }

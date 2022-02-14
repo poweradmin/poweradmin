@@ -28,6 +28,9 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
+
+use Poweradmin\Dnssec;
+
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/validation.inc.php';
 require_once 'inc/message.inc.php';
@@ -90,7 +93,7 @@ if (isset($_POST["algorithm"])) {
 
 $domain_name = get_domain_name_by_id($zone_id);
 if (isset($_POST["submit"])) {
-    if (dnssec_add_zone_key($domain_name, $key_type, $bits, $algorithm)) {
+    if (Dnssec::dnssec_add_zone_key($domain_name, $key_type, $bits, $algorithm)) {
         success(SUC_EXEC_PDNSSEC_ADD_ZONE_KEY);
     } else {
         error(ERR_EXEC_PDNSSEC_ADD_ZONE_KEY);
@@ -131,12 +134,12 @@ echo "        <td class=\"n\">\n";
 
 echo "         <select name=\"algorithm\">\n";
 echo "          <option value=\"\"></option>\n";
-echo "          <option value=\"rsasha1\">".dnssec_shorthand_to_algorithm_name('rsasha1')."</option>\n";
-echo "          <option value=\"rsasha256\">".dnssec_shorthand_to_algorithm_name('rsasha256')."</option>\n";
-echo "          <option value=\"rsasha512\">".dnssec_shorthand_to_algorithm_name('rsasha512')."</option>\n";
-echo "          <option value=\"gost\">".dnssec_shorthand_to_algorithm_name('gost')."</option>\n";
-echo "          <option value=\"ecdsa256\">".dnssec_shorthand_to_algorithm_name('ecdsa256')."</option>\n";
-echo "          <option value=\"ecdsa384\">".dnssec_shorthand_to_algorithm_name('ecdsa384')."</option>\n";
+echo "          <option value=\"rsasha1\">".Dnssec::dnssec_shorthand_to_algorithm_name('rsasha1')."</option>\n";
+echo "          <option value=\"rsasha256\">".Dnssec::dnssec_shorthand_to_algorithm_name('rsasha256')."</option>\n";
+echo "          <option value=\"rsasha512\">".Dnssec::dnssec_shorthand_to_algorithm_name('rsasha512')."</option>\n";
+echo "          <option value=\"gost\">".Dnssec::dnssec_shorthand_to_algorithm_name('gost')."</option>\n";
+echo "          <option value=\"ecdsa256\">".Dnssec::dnssec_shorthand_to_algorithm_name('ecdsa256')."</option>\n";
+echo "          <option value=\"ecdsa384\">".Dnssec::dnssec_shorthand_to_algorithm_name('ecdsa384')."</option>\n";
 echo "         </select>\n";
 
 echo "        </td>\n";

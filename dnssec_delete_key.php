@@ -28,6 +28,9 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
+
+use Poweradmin\Dnssec;
+
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/validation.inc.php';
 require_once 'inc/message.inc.php';
@@ -67,7 +70,7 @@ if ($key_id == "-1") {
     exit;
 }
 
-if (!dnssec_zone_key_exists($domain_name, $key_id)) {
+if (!Dnssec::dnssec_zone_key_exists($domain_name, $key_id)) {
     error(ERR_INV_INPUT);
     include_once("inc/footer.inc.php");
     exit;    
@@ -76,17 +79,17 @@ if (!dnssec_zone_key_exists($domain_name, $key_id)) {
 echo "     <h2>" . _('Delete zone key') . "</h2>\n";
 
 if ($confirm == '1') {
-    if (dnssec_remove_zone_key($domain_name, $key_id)) {
+    if (Dnssec::dnssec_remove_zone_key($domain_name, $key_id)) {
         success(SUC_EXEC_PDNSSEC_REMOVE_ZONE_KEY);
     }
 } else {
     if ($user_is_zone_owner == "1") {
-        $key_info = dnssec_get_zone_key($domain_name, $key_id);
+        $key_info = Dnssec::dnssec_get_zone_key($domain_name, $key_id);
         echo "      " . _('Domain') . ": " . $domain_name . "<br>\n";
         echo "      " . _('Id') . ": " . $key_info[0] . "<br>\n";
         echo "      " . _('Type') . ": " . $key_info[1] . "<br>\n";
         echo "      " . _('Tag') . ": " . $key_info[2] . "<br>\n";
-        echo "      " . _('Algorithm') . ": " . dnssec_algorithm_to_name($key_info[3]) . "<br>\n";
+        echo "      " . _('Algorithm') . ": " . Dnssec::dnssec_algorithm_to_name($key_info[3]) . "<br>\n";
         echo "      " . _('Bits') . ": " . $key_info[4] . "<br>\n";
         echo "      " . _('Active') . ": " . ($key_info[5] ? _('Yes') : _('No')) . "\n";
         echo "     <p>" . _('Are you sure?') . "</p>\n";

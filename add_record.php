@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Dnssec;
 use Poweradmin\RecordType;
 use Poweradmin\Syslog;
 
@@ -150,7 +151,7 @@ if (isset($_POST["commit"])) {
                                       $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                                       $content_rev, $fqdn_name, $ttl, $prio));
 		    if ($pdnssec_use) {
-			    if (dnssec_rectify_zone($zone_rev_id)) {
+			    if (Dnssec::dnssec_rectify_zone($zone_rev_id)) {
 				    success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
 			    }
 		    }
@@ -166,7 +167,7 @@ if (isset($_POST["commit"])) {
                               $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                               $type, $name, $zone_name, $content, $ttl, $prio));
 	    if ($pdnssec_use) {
-		    if (dnssec_rectify_zone($zone_id)) {
+		    if (Dnssec::dnssec_rectify_zone($zone_id)) {
 			    success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
 		    }
 	    }

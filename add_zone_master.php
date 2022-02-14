@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Dnssec;
 use Poweradmin\Syslog;
 use Poweradmin\ZoneTemplate;
 use Poweradmin\ZoneType;
@@ -104,10 +105,10 @@ if (isset($_POST['submit']) && $zone_master_add == "1") {
 
             if ($pdnssec_use) {
                 if ($enable_dnssec) {
-                    dnssec_secure_zone($domain);
+                    Dnssec::dnssec_secure_zone($domain);
                 }
 
-                dnssec_rectify_zone($domain_id);
+                Dnssec::dnssec_rectify_zone($domain_id);
             }
         }
     }

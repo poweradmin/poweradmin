@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Dnssec;
 use Poweradmin\Syslog;
 
 require_once 'inc/toolkit.inc.php';
@@ -93,7 +94,7 @@ if ($record_id == "-1") {
 
             if ($pdnssec_use) {
                 // do also rectify-zone
-                if (dnssec_rectify_zone($zid)) {
+                if (Dnssec::dnssec_rectify_zone($zid)) {
                     success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
                 }
             }

@@ -30,6 +30,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Dnssec;
 use Poweradmin\ZoneTemplate;
 
 require_once 'inc/toolkit.inc.php';
@@ -111,7 +112,7 @@ echo "       <th>" . _('Bits') . "</th>\n";
 echo "       <th>" . _('Active') . "</th>\n";
 echo "      </tr>\n";
 
-$keys = dnssec_get_keys($domain_name);
+$keys = Dnssec::dnssec_get_keys($domain_name);
 
 foreach ($keys as $item) {
     echo "<tr>\n";
@@ -122,7 +123,7 @@ foreach ($keys as $item) {
     echo "<td class=\"cell\">".$item[0]."</td>\n";
     echo "<td class=\"cell\">".$item[1]."</td>\n";
     echo "<td class=\"cell\">".$item[2]."</td>\n";
-    echo "<td class=\"cell\">".dnssec_algorithm_to_name($item[3])."</td>\n";
+    echo "<td class=\"cell\">".Dnssec::dnssec_algorithm_to_name($item[3])."</td>\n";
     echo "<td class=\"cell\">".$item[4]."</td>\n";
     echo "<td class=\"cell\">".($item[5] ? _('Yes') : _('No'))."</td>\n";
     echo "</tr>\n";

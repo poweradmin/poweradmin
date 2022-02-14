@@ -28,6 +28,9 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
+
+use Poweradmin\Dnssec;
+
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/validation.inc.php';
 require_once 'inc/message.inc.php';
@@ -67,13 +70,13 @@ if ($key_id == "-1") {
     exit;
 }
 
-if (!dnssec_zone_key_exists($domain_name, $key_id)) {
+if (!Dnssec::dnssec_zone_key_exists($domain_name, $key_id)) {
     error(ERR_INV_INPUT);
     include_once("inc/footer.inc.php");
     exit;
 }
 
-$key_info = dnssec_get_zone_key($domain_name, $key_id);
+$key_info = Dnssec::dnssec_get_zone_key($domain_name, $key_id);
 if ($key_info[5]) {
     echo "     <h2>" . _('Deactivate zone key') . "</h2>\n";
 } else {
@@ -82,11 +85,11 @@ if ($key_info[5]) {
 
 if ($confirm == '1') {
     if ($key_info[5]) {
-        if (dnssec_deactivate_zone_key($domain_name, $key_id)) {
+        if (Dnssec::dnssec_deactivate_zone_key($domain_name, $key_id)) {
             success(SUC_EXEC_PDNSSEC_DEACTIVATE_ZONE_KEY);
         }
     } else {
-        if (dnssec_activate_zone_key($domain_name, $key_id)) {
+        if (Dnssec::dnssec_activate_zone_key($domain_name, $key_id)) {
             success(SUC_EXEC_PDNSSEC_ACTIVATE_ZONE_KEY);
         }
     }
@@ -96,7 +99,7 @@ if ($confirm == '1') {
         echo "      " . _('Id') . ": " . $key_info[0] . "<br>\n";
         echo "      " . _('Type') . ": " . $key_info[1] . "<br>\n";
         echo "      " . _('Tag') . ": " . $key_info[2] . "<br>\n";
-        echo "      " . _('Algorithm') . ": " . dnssec_algorithm_to_name($key_info[3]) . "<br>\n";
+        echo "      " . _('Algorithm') . ": " . Dnssec::dnssec_algorithm_to_name($key_info[3]) . "<br>\n";
         echo "      " . _('Bits') . ": " . $key_info[4] . "<br>\n";
         echo "      " . _('Active') . ": " . ($key_info[5] ? _('Yes') : _('No')) . "\n";
         echo "     <p>" . _('Are you sure?') . "</p>\n";

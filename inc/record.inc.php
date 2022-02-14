@@ -20,6 +20,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use Poweradmin\Dnssec;
 use Poweradmin\ZoneTemplate;
 
 /**
@@ -433,7 +434,7 @@ function add_record($zone_id, $name, $type, $content, $ttl, $prio) {
                 update_soa_serial($zone_id);
             }
             if ($pdnssec_use) {
-                dnssec_rectify_zone($zone_id);
+                Dnssec::dnssec_rectify_zone($zone_id);
             }
             return true;
         } else {
@@ -1843,7 +1844,7 @@ function delete_domains($domains) {
                 $zone_type = get_domain_type($id);
                 if ($pdnssec_use && $zone_type == 'MASTER') {
                     $zone_name = get_domain_name_by_id($id);
-                    dnssec_unsecure_zone($zone_name);
+                    Dnssec::dnssec_unsecure_zone($zone_name);
                 }
 
                 $db->exec("DELETE FROM zones WHERE domain_id=" . $db->quote($id, 'integer'));
