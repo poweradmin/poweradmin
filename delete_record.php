@@ -34,7 +34,6 @@ use Poweradmin\Dnssec;
 use Poweradmin\Syslog;
 
 require_once 'inc/toolkit.inc.php';
-require_once 'inc/validation.inc.php';
 require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
@@ -42,12 +41,12 @@ include_once 'inc/header.inc.php';
 global $pdnssec_use;
 
 $record_id = "-1";
-if (isset($_GET['id']) && is_number($_GET['id'])) {
+if (isset($_GET['id']) && Validation::is_number($_GET['id'])) {
     $record_id = $_GET['id'];
 }
 
 $confirm = "-1";
-if (isset($_GET['confirm']) && is_number($_GET['confirm'])) {
+if (isset($_GET['confirm']) && Validation::is_number($_GET['confirm'])) {
     $confirm = $_GET['confirm'];
 }
 

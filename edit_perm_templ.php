@@ -28,14 +28,16 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
+
+use Poweradmin\Validation;
+
 require_once 'inc/toolkit.inc.php';
-require_once 'inc/validation.inc.php';
 require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
 
 $id = "-1";
-if ((isset($_GET['id'])) || (is_number($_GET['id']))) {
+if ((isset($_GET['id'])) || (Validation::is_number($_GET['id']))) {
     $id = $_GET['id'];
 }
 

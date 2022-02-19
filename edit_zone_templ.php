@@ -31,11 +31,11 @@
 
 use Poweradmin\DnsRecord;
 use Poweradmin\RecordType;
+use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/pagination.inc.php';
-require_once 'inc/validation.inc.php';
 require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
@@ -60,7 +60,7 @@ if (isset($_GET["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["record_so
 }
 
 $zone_templ_id = "-1";
-if (isset($_GET['id']) && is_number($_GET['id'])) {
+if (isset($_GET['id']) && Validation::is_number($_GET['id'])) {
     $zone_templ_id = $_GET['id'];
 }
 

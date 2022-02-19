@@ -30,9 +30,9 @@
  */
 
 use Poweradmin\DnsRecord;
+use Poweradmin\Validation;
 
 require_once 'inc/toolkit.inc.php';
-require_once 'inc/validation.inc.php';
 require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
@@ -41,7 +41,7 @@ do_hook('verify_permission' , 'user_edit_own' ) ? $perm_edit_own = "1" : $perm_e
 do_hook('verify_permission' , 'user_edit_others' ) ? $perm_edit_others = "1" : $perm_edit_others = "0";
 do_hook('verify_permission' , 'user_is_ueberuser' ) ? $perm_is_godlike = "1" : $perm_is_godlike = "0";
 
-if (!(isset($_GET['id']) && is_number($_GET['id']))) {
+if (!(isset($_GET['id']) && Validation::is_number($_GET['id']))) {
     error(ERR_INV_INPUT);
     include_once("inc/footer.inc.php");
     exit;

@@ -32,10 +32,10 @@
 
 use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
+use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
 
 require_once 'inc/toolkit.inc.php';
-require_once 'inc/validation.inc.php';
 
 include_once 'inc/header.inc.php';
 
@@ -44,7 +44,7 @@ global $perm_meta_edit;
 global $perm_view;
 
 $zone_id = "-1";
-if (isset($_GET['id']) && is_number($_GET['id'])) {
+if (isset($_GET['id']) && Validation::is_number($_GET['id'])) {
     $zone_id = $_GET['id'];
 }
 

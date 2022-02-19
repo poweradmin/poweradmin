@@ -31,15 +31,15 @@
 
 use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
+use Poweradmin\Validation;
 
 require_once 'inc/toolkit.inc.php';
-require_once 'inc/validation.inc.php';
 require_once 'inc/message.inc.php';
 
 include_once("inc/header.inc.php");
 
 $zone_id = "-1";
-if (isset($_GET['id']) && is_number($_GET['id'])) {
+if (isset($_GET['id']) && Validation::is_number($_GET['id'])) {
     $zone_id = $_GET['id'];
 }
 

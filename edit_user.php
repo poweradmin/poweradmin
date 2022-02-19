@@ -28,14 +28,16 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
+
+use Poweradmin\Validation;
+
 require_once 'inc/toolkit.inc.php';
-require_once 'inc/validation.inc.php';
 require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
 
 $edit_id = "-1";
-if (isset($_GET['id']) && is_number($_GET['id'])) {
+if (isset($_GET['id']) && Validation::is_number($_GET['id'])) {
     $edit_id = $_GET['id'];
 }
 
@@ -76,11 +78,11 @@ if ($edit_id == "-1") {
             $i_password = $_POST['password'];
         }
 
-        if (isset($_POST['perm_templ']) && is_number($_POST['perm_templ'])) {
+        if (isset($_POST['perm_templ']) && Validation::is_number($_POST['perm_templ'])) {
             $i_perm_templ = $_POST['perm_templ'];
         }
 
-        if (isset($_POST['active']) && is_number($_POST['active'])) {
+        if (isset($_POST['active']) && Validation::is_number($_POST['active'])) {
             $i_active = $_POST['active'];
         }
 

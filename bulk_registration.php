@@ -30,17 +30,17 @@
  */
 
 use Poweradmin\DnsRecord;
+use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
 use Poweradmin\ZoneType;
 
 require_once 'inc/toolkit.inc.php';
-require_once 'inc/validation.inc.php';
 require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
 
 $owner = "-1";
-if ((isset($_POST['owner'])) && (is_number($_POST['owner']))) {
+if ((isset($_POST['owner'])) && (Validation::is_number($_POST['owner']))) {
     $owner = $_POST['owner'];
 }
 

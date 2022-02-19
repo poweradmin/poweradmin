@@ -29,18 +29,17 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 require_once 'inc/toolkit.inc.php';
-require_once 'inc/validation.inc.php';
 require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
 
 $perm_templ = "-1";
-if (isset($_GET['id']) && (is_number($_GET['id']))) {
+if (isset($_GET['id']) && (Validation::is_number($_GET['id']))) {
     $perm_templ = $_GET['id'];
 }
 
 $confirm = "-1";
-if ((isset($_GET['confirm'])) && is_number($_GET['confirm'])) {
+if ((isset($_GET['confirm'])) && Validation::is_number($_GET['confirm'])) {
     $confirm = $_GET['confirm'];
 }
 

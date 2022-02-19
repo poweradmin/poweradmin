@@ -32,11 +32,11 @@
 
 use Poweradmin\DnsRecord;
 use Poweradmin\Password;
+use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/session.inc.php';
-require_once 'inc/validation.inc.php';
 
 require_once dirname(dirname(dirname(__DIR__))) . '/vendor/autoload.php';
 
@@ -292,7 +292,7 @@ function edit_user_local($id, $user, $fullname, $email, $perm_templ, $descriptio
 
     if (($id == $_SESSION ["userid"] && $perm_edit_own == "1") || ($id != $_SESSION ["userid"] && $perm_edit_others == "1")) {
 
-        if (!is_valid_email($email)) {
+        if (!Validation::is_valid_email($email)) {
             error(ERR_INV_EMAIL);
             return false;
         }
@@ -507,7 +507,7 @@ function get_user_detail_list_local($specific) {
     $userid = $_SESSION ['userid'];
 
     // fixme: does this actually verify the permission?
-    if (is_number($specific)) {
+    if (Validation::is_number($specific)) {
         $sql_add = "AND users.id = " . $db->quote($specific, 'integer');
     } else {
         if (do_hook('verify_permission', 'user_view_others')) {
@@ -705,7 +705,7 @@ function update_user_details_local($details) {
 
     if (($details ['uid'] == $_SESSION ["userid"] && $perm_edit_own == "1") || ($details ['uid'] != $_SESSION ["userid"] && $perm_edit_others == "1")) {
 
-        if (!is_valid_email($details ['email'])) {
+        if (!Validation::is_valid_email($details ['email'])) {
             error(ERR_INV_EMAIL);
             return false;
         }
@@ -799,7 +799,7 @@ function add_new_user_local($details) {
     } elseif ($details ['username'] === '') {
         error(ERR_INV_USERNAME);
         return false;
-    } elseif (!is_valid_email($details ['email'])) {
+    } elseif (!Validation::is_valid_email($details ['email'])) {
         error(ERR_INV_EMAIL);
         return false;
     } elseif ($details ['active'] == 1) {

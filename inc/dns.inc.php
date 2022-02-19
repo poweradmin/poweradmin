@@ -22,8 +22,9 @@
 
 use Poweradmin\DnsRecord;
 use Poweradmin\TopLevelDomain;
+use Poweradmin\Validation;
 
-require_once 'validation.inc.php';
+require_once 'Validation.php';
 
 /**
  * DNS functions
@@ -736,7 +737,7 @@ function is_valid_rr_soa_content(&$content) {
             $addr_to_check = $addr_input;
         }
 
-        if (!is_valid_email($addr_to_check)) {
+        if (!Validation::is_valid_email($addr_to_check)) {
             return false;
         } else {
             $addr_final = explode('@', $addr_to_check, 2);

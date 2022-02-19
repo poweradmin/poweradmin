@@ -33,9 +33,9 @@ use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
 use Poweradmin\RecordType;
 use Poweradmin\Syslog;
+use Poweradmin\Validation;
 
 require_once 'inc/toolkit.inc.php';
-require_once 'inc/validation.inc.php';
 require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
@@ -79,17 +79,17 @@ if (do_hook('verify_permission', 'zone_meta_edit_others')) {
   if not set them.
  */
 $zone_id = "-1";
-if ((isset($_GET['id'])) && (is_number($_GET['id']))) {
+if ((isset($_GET['id'])) && (Validation::is_number($_GET['id']))) {
     $zone_id = $_GET['id'];
 }
 
 $ttl = $dns_ttl;
-if ((isset($_POST['ttl'])) && (is_number($_POST['ttl']))) {
+if ((isset($_POST['ttl'])) && (Validation::is_number($_POST['ttl']))) {
     $ttl = $_POST['ttl'];
 }
 
 $prio = "10";
-if ((isset($_POST['prio'])) && (is_number($_POST['prio']))) {
+if ((isset($_POST['prio'])) && (Validation::is_number($_POST['prio']))) {
     $prio = $_POST['prio'];
 }
 

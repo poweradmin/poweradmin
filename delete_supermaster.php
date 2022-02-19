@@ -30,9 +30,9 @@
  */
 
 use Poweradmin\DnsRecord;
+use Poweradmin\Validation;
 
 require_once 'inc/toolkit.inc.php';
-require_once 'inc/validation.inc.php';
 require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
@@ -48,7 +48,7 @@ if (isset($_GET['ns_name']) && (is_valid_hostname_fqdn($_GET['ns_name'], 0))) {
 }
 
 $confirm = "-1";
-if ((isset($_GET['confirm'])) && (is_number($_GET['confirm']))) {
+if ((isset($_GET['confirm'])) && (Validation::is_number($_GET['confirm']))) {
     $confirm = $_GET['confirm'];
 }
 
