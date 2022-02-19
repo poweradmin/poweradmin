@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Dns;
 use Poweradmin\DnsRecord;
 use Poweradmin\Validation;
 
@@ -38,12 +39,12 @@ require_once 'inc/message.inc.php';
 include_once 'inc/header.inc.php';
 
 $master_ip = "-1";
-if (isset($_GET['master_ip']) && (is_valid_ipv4($_GET['master_ip']) || is_valid_ipv6($_GET['master_ip']))) {
+if (isset($_GET['master_ip']) && (Dns::is_valid_ipv4($_GET['master_ip']) || Dns::is_valid_ipv6($_GET['master_ip']))) {
     $master_ip = $_GET['master_ip'];
 }
 
 $ns_name = "-1";
-if (isset($_GET['ns_name']) && (is_valid_hostname_fqdn($_GET['ns_name'], 0))) {
+if (isset($_GET['ns_name']) && (Dns::is_valid_hostname_fqdn($_GET['ns_name'], 0))) {
     $ns_name = $_GET['ns_name'];
 }
 

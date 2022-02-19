@@ -382,7 +382,7 @@ class DnsRecord
             return false;
         } else {
             global $db;
-            if (validate_input($record['rid'], $record['zid'], $record['type'], $record['content'], $record['name'], $record['prio'], $record['ttl'])) {
+            if (Dns::validate_input($record['rid'], $record['zid'], $record['type'], $record['content'], $record['name'], $record['prio'], $record['ttl'])) {
                 $name = strtolower($record['name']); // powerdns only searches for lower case records
                 $query = "UPDATE records
 				SET name=" . $db->quote($name, 'text') . ",
@@ -434,7 +434,7 @@ class DnsRecord
             return false;
         } else {
             $db->beginTransaction();
-            if (validate_input(-1, $zone_id, $type, $content, $name, $prio, $ttl)) {
+            if (Dns::validate_input(-1, $zone_id, $type, $content, $name, $prio, $ttl)) {
                 $name = strtolower($name); // powerdns only searches for lower case records
                 $query = "INSERT INTO records (domain_id, name, type, content, ttl, prio) VALUES ("
                     . $db->quote($zone_id, 'integer') . ","
@@ -471,11 +471,11 @@ class DnsRecord
     public static function add_supermaster($master_ip, $ns_name, $account)
     {
         global $db;
-        if (!is_valid_ipv4($master_ip) && !is_valid_ipv6($master_ip)) {
+        if (!Dns::is_valid_ipv4($master_ip) && !Dns::is_valid_ipv6($master_ip)) {
             error(ERR_DNS_IP);
             return false;
         }
-        if (!is_valid_hostname_fqdn($ns_name, 0)) {
+        if (!Dns::is_valid_hostname_fqdn($ns_name, 0)) {
             error(ERR_DNS_HOSTNAME);
             return false;
         }
@@ -504,7 +504,7 @@ class DnsRecord
     public static function delete_supermaster($master_ip, $ns_name)
     {
         global $db;
-        if (is_valid_ipv4($master_ip) || is_valid_ipv6($master_ip) || is_valid_hostname_fqdn($ns_name, 0)) {
+        if (Dns::is_valid_ipv4($master_ip) || Dns::is_valid_ipv6($master_ip) || Dns::is_valid_hostname_fqdn($ns_name, 0)) {
             $db->query("DELETE FROM supermasters WHERE ip = " . $db->quote($master_ip, 'text') .
                 " AND nameserver = " . $db->quote($ns_name, 'text'));
             return true;
@@ -524,7 +524,7 @@ class DnsRecord
     public static function get_supermaster_info_from_ip($master_ip)
     {
         global $db;
-        if (is_valid_ipv4($master_ip) || is_valid_ipv6($master_ip)) {
+        if (Dns::is_valid_ipv4($master_ip) || Dns::is_valid_ipv6($master_ip)) {
             $result = $db->queryRow("SELECT ip,nameserver,account FROM supermasters WHERE ip = " . $db->quote($master_ip, 'text'));
 
             $ret = array(
@@ -1029,7 +1029,7 @@ class DnsRecord
     {
         global $db;
 
-        if (is_valid_hostname_fqdn($domain, 0)) {
+        if (Dns::is_valid_hostname_fqdn($domain, 0)) {
             $result = $db->queryRow("SELECT id FROM domains WHERE name=" . $db->quote($domain, 'text'));
             return ($result ? true : false);
         } else {
@@ -1070,7 +1070,7 @@ class DnsRecord
     public static function supermaster_exists($master_ip)
     {
         global $db;
-        if (is_valid_ipv4($master_ip, false) || is_valid_ipv6($master_ip)) {
+        if (Dns::is_valid_ipv4($master_ip, false) || Dns::is_valid_ipv6($master_ip)) {
             $result = $db->queryOne("SELECT ip FROM supermasters WHERE ip = " . $db->quote($master_ip, 'text'));
             return ($result ? true : false);
         } else {
@@ -1088,7 +1088,7 @@ class DnsRecord
     public static function supermaster_ip_name_exists($master_ip, $ns_name)
     {
         global $db;
-        if ((is_valid_ipv4($master_ip) || is_valid_ipv6($master_ip)) && is_valid_hostname_fqdn($ns_name, 0)) {
+        if ((Dns::is_valid_ipv4($master_ip) || Dns::is_valid_ipv6($master_ip)) && Dns::is_valid_hostname_fqdn($ns_name, 0)) {
             $result = $db->queryOne("SELECT ip FROM supermasters WHERE ip = " . $db->quote($master_ip, 'text') .
                 " AND nameserver = " . $db->quote($ns_name, 'text'));
             return ($result ? true : false);
@@ -1704,7 +1704,7 @@ class DnsRecord
     {
         global $db;
         if (is_numeric($zone_id)) {
-            if (are_multiple_valid_ips($ip_slave_master)) {
+            if (Dns::are_multiple_valid_ips($ip_slave_master)) {
                 $result = $db->query("UPDATE domains SET master = " . $db->quote($ip_slave_master, 'text') . " WHERE id = " . $db->quote($zone_id, 'integer'));
             } else {
                 error(sprintf(ERR_INV_ARGC, "change_domain_ip_slave_master", "This is not a valid IPv4 or IPv6 address: $ip_slave_master"));

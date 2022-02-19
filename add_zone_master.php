@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Dns;
 use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
 use Poweradmin\Syslog;
@@ -88,7 +89,7 @@ if (isset($_POST['dnssec']) && $_POST['dnssec'] == '1') {
 if (isset($_POST['submit']) && $zone_master_add == "1") {
     $error = false;
     foreach ($domains as $domain) {
-        if (!is_valid_hostname_fqdn($domain, 0)) {
+        if (!Dns::is_valid_hostname_fqdn($domain, 0)) {
             error($domain . ' failed - ' . ERR_DNS_HOSTNAME);
         } elseif ($dns_third_level_check && DnsRecord::get_domain_level($domain) > 2 && DnsRecord::domain_exists(DnsRecord::get_second_level_domain($domain))) {
             error($domain . ' failed - ' . ERR_DOMAIN_EXISTS);

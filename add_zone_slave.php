@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Dns;
 use Poweradmin\DnsRecord;
 use Poweradmin\Syslog;
 use Poweradmin\Validation;
@@ -64,13 +65,13 @@ $type = "SLAVE";
 (do_hook('verify_permission' , 'user_view_others' )) ? $perm_view_others = "1" : $perm_view_others = "0";
 
 if (isset($_POST['submit']) && $zone_slave_add == "1") {
-    if (!is_valid_hostname_fqdn($zone, 0)) {
+    if (!Dns::is_valid_hostname_fqdn($zone, 0)) {
         error(ERR_DNS_HOSTNAME);
     } elseif ($dns_third_level_check && DnsRecord::get_domain_level($zone) > 2 && DnsRecord::domain_exists(DnsRecord::get_second_level_domain($zone))) {
         error(ERR_DOMAIN_EXISTS);
     } elseif (DnsRecord::domain_exists($zone) || DnsRecord::record_name_exists($zone)) {
         error(ERR_DOMAIN_EXISTS);
-    } elseif (!are_multiple_valid_ips($master)) {
+    } elseif (!Dns::are_multiple_valid_ips($master)) {
         error(ERR_DNS_IP);
     } else {
         if (DnsRecord::add_domain($zone, $owner, $type, $master, 'none')) {

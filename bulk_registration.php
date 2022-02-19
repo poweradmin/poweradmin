@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Dns;
 use Poweradmin\DnsRecord;
 use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
@@ -78,7 +79,7 @@ if (isset($_POST['zone_template'])) {
 if (isset($_POST['submit']) && $zone_master_add == "1") {
     $error = false;
     foreach ($domains as $domain) {
-        if (!is_valid_hostname_fqdn($domain, 0)) {
+        if (!Dns::is_valid_hostname_fqdn($domain, 0)) {
             error($domain . ' failed - ' . ERR_DNS_HOSTNAME);
         } elseif (DnsRecord::domain_exists($domain)) {
             error($domain . " failed - " . ERR_DOMAIN_EXISTS);
