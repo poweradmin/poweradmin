@@ -608,8 +608,8 @@ msgstr "Проведение данной инсталляции подразу�
 msgid "The alternative for this installer is a manual installation. Refer to the poweradmin.org website if you want to go down that road."
 msgstr "Альтернативой данному установщику является установка вручную. Обратитесь к сайту poweradmin.org, если вы хотите пойти этим путём."
 
-msgid "Finally, if you see any errors during the installation process, a problem report would be appreciated. You can report problems (and ask for help) on the <a href=\"http://groups.google.com/group/poweradmin\" target=\"blank\">poweradmin</a> mailinglist."
-msgstr "Если вы столкнулись с ошибками в процессе установки, ваш отчёт об ошибках будет изучен. Вы можете разместить отчет и попросить помощи у пользователей в списке рассылки <a href=\"http://groups.google.com/group/poweradmin\" target=\"blank\">poweradmin</a>."
+msgid "Finally, if you see any errors during the installation process, a problem report would be appreciated. You can report problems (and ask for help) on the <a href=\"https://groups.google.com/group/poweradmin\" target=\"blank\">poweradmin</a> mailinglist."
+msgstr "Если вы столкнулись с ошибками в процессе установки, ваш отчёт об ошибках будет изучен. Вы можете разместить отчет и попросить помощи у пользователей в списке рассылки <a href=\"https://groups.google.com/group/poweradmin\" target=\"blank\">poweradmin</a>."
 
 msgid "Do you want to proceed now?"
 msgstr "Хотите продолжить?"
