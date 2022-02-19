@@ -22,10 +22,6 @@
 
 namespace Poweradmin;
 
-use Poweradmin\DnsRecord;
-use Poweradmin\TopLevelDomain;
-use Poweradmin\Validation;
-
 class Dns
 {
     /**
@@ -519,7 +515,7 @@ class Dns
         if (is_array($multiple_ips)) {
             foreach ($multiple_ips as $m_ip) {
                 $trimmed_ip = trim($m_ip);
-                if (self::is_valid_ipv4($trimmed_ip, false) || self::is_valid_ipv6($trimmed_ip, true)) {
+                if (self::is_valid_ipv4($trimmed_ip, false) || self::is_valid_ipv6($trimmed_ip)) {
                     $are_valid = true;
                 } else {
                     // as soon there is an invalid ip-addr

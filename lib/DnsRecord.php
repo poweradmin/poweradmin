@@ -55,8 +55,7 @@ class DnsRecord
     {
         global $db;
         $query = "SELECT domain_id FROM records WHERE id = " . $db->quote($rid, 'integer');
-        $zid = $db->queryOne($query);
-        return $zid;
+        return $db->queryOne($query);
     }
 
     /** Count Zone Records for Zone ID
@@ -69,8 +68,7 @@ class DnsRecord
     {
         global $db;
         $sqlq = "SELECT COUNT(id) FROM records WHERE domain_id = " . $db->quote($zone_id, 'integer') . " AND type IS NOT NULL";
-        $record_count = $db->queryOne($sqlq);
-        return $record_count;
+        return $db->queryOne($sqlq);
     }
 
     /** Get SOA record content for Zone ID
@@ -84,9 +82,7 @@ class DnsRecord
         global $db;
 
         $sqlq = "SELECT content FROM records WHERE type = " . $db->quote('SOA', 'text') . " AND domain_id = " . $db->quote($zone_id, 'integer');
-        $result = $db->queryOne($sqlq);
-
-        return $result;
+        return $db->queryOne($sqlq);
     }
 
     /** Get SOA Serial Number
@@ -109,8 +105,7 @@ class DnsRecord
      */
     public static function get_next_date($curr_date)
     {
-        $next_date = date('Ymd', strtotime('+1 day', strtotime($curr_date)));
-        return $next_date;
+        return date('Ymd', strtotime('+1 day', strtotime($curr_date)));
     }
 
     /** Get Next Serial
@@ -225,9 +220,7 @@ class DnsRecord
 
         // Build new SOA record content
         $soa_rec = join(" ", $soa);
-        chop($soa_rec);
-
-        return $soa_rec;
+        return chop($soa_rec);
     }
 
     /** Return SOA record
@@ -511,6 +504,7 @@ class DnsRecord
         } else {
             error(sprintf(ERR_INV_ARGC, "delete_supermaster", "No or no valid ipv4 or ipv6 address given."));
         }
+        return false;
     }
 
     /** Get Supermaster Info from IP
@@ -527,13 +521,11 @@ class DnsRecord
         if (Dns::is_valid_ipv4($master_ip) || Dns::is_valid_ipv6($master_ip)) {
             $result = $db->queryRow("SELECT ip,nameserver,account FROM supermasters WHERE ip = " . $db->quote($master_ip, 'text'));
 
-            $ret = array(
+            return array(
                 "master_ip" => $result["ip"],
                 "ns_name" => $result["nameserver"],
                 "account" => $result["account"]
             );
-
-            return $ret;
         } else {
             error(sprintf(ERR_INV_ARGC, "get_supermaster_info_from_ip", "No or no valid ipv4 or ipv6 address given."));
         }
@@ -867,7 +859,7 @@ class DnsRecord
             if ($result) {
                 return $result["name"];
             } else {
-                error(sprintf("Domain does not exist."));
+                error("Domain does not exist.");
                 return false;
             }
         }
@@ -890,7 +882,7 @@ class DnsRecord
             if ($result) {
                 return $result["name"];
             } else {
-                error(sprintf("Zone does not exist."));
+                error("Zone does not exist.");
                 return false;
             }
         }
@@ -912,7 +904,7 @@ class DnsRecord
             if ($result) {
                 return $result["id"];
             } else {
-                error(sprintf("Zone does not exist."));
+                error("Zone does not exist.");
                 return false;
             }
         } else {
@@ -949,13 +941,12 @@ class DnsRecord
 					WHERE domains.id = " . $db->quote($zid, 'integer') . "
 					GROUP BY domains.id, domains.type, domains.name, domains.master";
             $result = $db->queryRow($query);
-            $return = array(
+            return array(
                 "name" => $result['name'],
                 "type" => $result['type'],
                 "master_ip" => $result['master_ip'],
                 "record_count" => $result['record_count']
             );
-            return $return;
         }
     }
 
@@ -974,8 +965,7 @@ class DnsRecord
         $addr = inet_pton($ip);
         $unpack = unpack('H*hex', $addr);
         $hex = $unpack['hex'];
-        $arpa = implode('.', array_reverse(str_split($hex))) . '.ip6.arpa';
-        return $arpa;
+        return implode('.', array_reverse(str_split($hex))) . '.ip6.arpa';
     }
 
     /** Get Best Matching in-addr.arpa Zone ID from Domain Name
@@ -1249,7 +1239,7 @@ class DnsRecord
                     return -1;
                 }
 
-                $ret = array(
+                return array(
                     "id" => $result["id"],
                     "domain_id" => $result["domain_id"],
                     "name" => $result["name"],
@@ -1258,7 +1248,6 @@ class DnsRecord
                     "ttl" => $result["ttl"],
                     "prio" => $result["prio"]
                 );
-                return $ret;
             } else {
                 return -1;
             }
@@ -1344,8 +1333,7 @@ class DnsRecord
                     return -1;
                 }
 
-                $result = self::order_domain_results($result, $sortby);
-                return $result;
+                return self::order_domain_results($result, $sortby);
             }
         } else {
             error(sprintf(ERR_INV_ARG, "get_records_from_domain_id"));
@@ -1403,9 +1391,7 @@ class DnsRecord
         }
 
         $results = array_merge($soa, $ns);
-        $results = array_merge($results, $domains);
-
-        return $results;
+        return array_merge($results, $domains);
     }
 
     /** Sort records by id
@@ -1661,8 +1647,7 @@ class DnsRecord
     {
         global $db;
         if (is_numeric($id)) {
-            $slave_master = $db->queryOne("SELECT master FROM domains WHERE type = 'SLAVE' and id = " . $db->quote($id, 'integer'));
-            return $slave_master;
+            return $db->queryOne("SELECT master FROM domains WHERE type = 'SLAVE' and id = " . $db->quote($id, 'integer'));
         } else {
             error(sprintf(ERR_INV_ARG, "get_domain_slave_master", "no or no valid zoneid given"));
         }

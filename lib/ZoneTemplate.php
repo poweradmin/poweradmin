@@ -199,7 +199,7 @@ class ZoneTemplate
         if (is_numeric($id)) {
             $result = $db->queryRow("SELECT id, zone_templ_id, name, type, content, ttl, prio FROM zone_templ_records WHERE id=" . $db->quote($id, 'integer'));
             if ($result) {
-                $ret = array(
+                return array(
                     "id" => $result["id"],
                     "zone_templ_id" => $result["zone_templ_id"],
                     "name" => $result["name"],
@@ -208,7 +208,6 @@ class ZoneTemplate
                     "ttl" => $result["ttl"],
                     "prio" => $result["prio"],
                 );
-                return $ret;
             } else {
                 return -1;
             }
@@ -519,7 +518,7 @@ class ZoneTemplate
             $sql_add = " AND id != " . $db->quote($zone_templ_id, 'integer');
         }
 
-        $query = "SELECT COUNT(id) FROM zone_templ WHERE name = " . $db->quote($zone_templ_name, 'text') . "" . $sql_add;
+        $query = "SELECT COUNT(id) FROM zone_templ WHERE name = " . $db->quote($zone_templ_name, 'text') . $sql_add;
         return $db->queryOne($query);
     }
 
@@ -540,9 +539,7 @@ class ZoneTemplate
         $val = str_replace('[ZONE]', $domain, $val);
         $val = str_replace('[SERIAL]', $serial, $val);
         $val = str_replace('[NS1]', $dns_ns1, $val);
-        $val = str_replace('[HOSTMASTER]', $dns_hostmaster, $val);
-
-        return $val;
+        return str_replace('[HOSTMASTER]', $dns_hostmaster, $val);
     }
 
     /** Add relation between zone record and template
