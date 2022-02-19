@@ -20,6 +20,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use Poweradmin\DnsRecord;
 use Poweradmin\TopLevelDomain;
 
 require_once 'validation.inc.php';
@@ -62,7 +63,7 @@ function endsWith($needle, $haystack) {
  */
 function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl)
 {
-    $zone = get_domain_name_by_id($zid);    // TODO check for return
+    $zone = DnsRecord::get_domain_name_by_id($zid);    // TODO check for return
 
     if (!endsWith(strtolower($zone), strtolower($name))) {
         if (isset($name) && $name != "") {

@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
 use Poweradmin\Syslog;
 
@@ -60,21 +61,21 @@ if (do_hook('verify_permission', 'zone_content_edit_others')) {
     $perm_content_edit = "none";
 }
 
-$zid = get_zone_id_from_record_id($_GET['id']);
+$zid = DnsRecord::get_zone_id_from_record_id($_GET['id']);
 if ($zid == NULL) {
     header("Location: list_zones.php");
     exit;
 }
 $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zid );
 
-$zone_info = get_zone_info_from_id($zid);
+$zone_info = DnsRecord::get_zone_info_from_id($zid);
 
 if ($record_id == "-1") {
     error(ERR_INV_INPUT);
 } else {
     if ($confirm == '1') {
-        $record_info = get_record_from_id($record_id);
-        if (delete_record($record_id)) {
+        $record_info = DnsRecord::get_record_from_id($record_id);
+        if (DnsRecord::delete_record($record_id)) {
             success("<a href=\"edit.php?id=" . $zid . "\">" . SUC_RECORD_DEL . "</a>");
             if (isset($record_info['prio'])) {
                 Syslog::log_info(sprintf('client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s priority:%s',
@@ -87,10 +88,10 @@ if ($record_id == "-1") {
 
             }
 
-            delete_record_zone_templ($record_id);
+            DnsRecord::delete_record_zone_templ($record_id);
 
             // update serial after record deletion
-            update_soa_serial($zid);
+            DnsRecord::update_soa_serial($zid);
 
             if ($pdnssec_use) {
                 // do also rectify-zone
@@ -100,10 +101,10 @@ if ($record_id == "-1") {
             }
         }
     } else {
-        $zone_id = recid_to_domid($record_id);
-        $zone_name = get_domain_name_by_id($zone_id);
+        $zone_id = DnsRecord::recid_to_domid($record_id);
+        $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
         $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );
-        $record_info = get_record_from_id($record_id);
+        $record_info = DnsRecord::get_record_from_id($record_id);
 
         echo "     <h2>" . _('Delete record in zone') . " \"<a href=\"edit.php?id=" . $zid . "\">" . $zone_name . "</a>\"</h2>\n";
 

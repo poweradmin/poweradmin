@@ -117,7 +117,7 @@ class Dnssec
         $count = $db->queryOne($query);
 
         if (isset($pdnssec_command)) {
-            $domain = get_domain_name_by_id($domain_id);
+            $domain = DnsRecord::get_domain_name_by_id($domain_id);
             $full_command = join(' ', array(
                 escapeshellcmd($pdnssec_command),
                 'rectify-zone',

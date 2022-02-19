@@ -28,6 +28,9 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
+
+use Poweradmin\DnsRecord;
+
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/validation.inc.php';
 require_once 'inc/message.inc.php';
@@ -69,7 +72,7 @@ if (isset($_POST['commit'])) {
         exit;
     } else {
         $fullname = do_hook('get_fullname_from_userid' , $uid );
-        $zones = get_zones("own", $uid);
+        $zones = DnsRecord::get_zones("own", $uid);
 
         echo "     <h2>" . _('Delete user') . " \"" . $fullname . "\"</h2>\n";
         echo "     <form method=\"post\" action=\"\">\n";

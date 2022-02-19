@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
 use Poweradmin\RecordType;
 use Poweradmin\Syslog;
@@ -40,6 +41,8 @@ require_once 'inc/message.inc.php';
 include_once 'inc/header.inc.php';
 
 global $pdnssec_use;
+global $dns_ttl;
+global $iface_add_reverse_record;
 
 /*
   Get permissions
@@ -119,8 +122,8 @@ if ($zone_id == "-1") {
   Check the zone type and get the zone name
  */
 $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
-$zone_type = get_domain_type($zone_id);
-$zone_name = get_domain_name_by_id($zone_id);
+$zone_type = DnsRecord::get_domain_type($zone_id);
+$zone_name = DnsRecord::get_domain_name_by_id($zone_id);
 
 /*
   If the form as been submitted
@@ -137,15 +140,15 @@ if (isset($_POST["commit"])) {
             if ($type === 'A') {
                 $content_array = preg_split("/\./", $content);
                 $content_rev = sprintf("%d.%d.%d.%d.in-addr.arpa", $content_array[3], $content_array[2], $content_array[1], $content_array[0]);
-                $zone_rev_id = get_best_matching_zone_id_from_name($content_rev);
+                $zone_rev_id = DnsRecord::get_best_matching_zone_id_from_name($content_rev);
             } elseif ($type === 'AAAA') {
-                $content_rev = convert_ipv6addr_to_ptrrec($content);
-                $zone_rev_id = get_best_matching_zone_id_from_name($content_rev);
+                $content_rev = DnsRecord::convert_ipv6addr_to_ptrrec($content);
+                $zone_rev_id = DnsRecord::get_best_matching_zone_id_from_name($content_rev);
             }
             if (isset($zone_rev_id) && $zone_rev_id != -1) {
-                $zone_name = get_domain_name_by_id($zone_id);
+                $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
                 $fqdn_name = sprintf("%s.%s", $name, $zone_name);
-                if (add_record($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
+                if (DnsRecord::add_record($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
                     success(" <a href=\"edit.php?id=" . $zone_rev_id . "\"> " . _('The PTR-record was successfully added.') . "</a>");
                     Syslog::log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
                                       $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
@@ -161,7 +164,7 @@ if (isset($_POST["commit"])) {
                 error(sprintf(ERR_REVERS_ZONE_NOT_EXIST, $content_rev));
             }
         }
-        if (add_record($zone_id, $name, $type, $content, $ttl, $prio)) {
+        if (DnsRecord::add_record($zone_id, $name, $type, $content, $ttl, $prio)) {
             success(" <a href=\"edit.php?id=" . $zone_id . "\"> " . _('The record was successfully added.') . "</a>");
             Syslog::log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:%s record:%s.%s content:%s ttl:%s priority:%s',
                               $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],

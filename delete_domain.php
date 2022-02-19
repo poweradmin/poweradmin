@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
 use Poweradmin\Syslog;
 
@@ -58,7 +59,7 @@ if (isset($_GET['confirm']) && is_number($_GET['confirm'])) {
     $confirm = $_GET['confirm'];
 }
 
-$zone_info = get_zone_info_from_id($zone_id);
+$zone_info = DnsRecord::get_zone_info_from_id($zone_id);
 if (!$zone_info) {
     header("Location: list_zones.php");
     exit;
@@ -76,11 +77,11 @@ echo "     <h2>" . _('Delete zone') . " \"" . $zone_info['name'] . "\"</h2>\n";
 
 if ($confirm == '1') {
     if ($pdnssec_use && $zone_info['type'] == 'MASTER') {
-        $zone_name = get_domain_name_by_id($zone_id);
+        $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
         Dnssec::dnssec_unsecure_zone($zone_name);
     }
 
-    if (delete_domain($zone_id)) {
+    if (DnsRecord::delete_domain($zone_id)) {
         success(SUC_ZONE_DEL);
         Syslog::log_info(sprintf('client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
                           $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
@@ -91,8 +92,8 @@ if ($confirm == '1') {
         echo "      " . _('Owner') . ": " . $zone_owners . "<br>\n";
         echo "      " . _('Type') . ": " . $zone_info['type'] . "\n";
         if ($zone_info['type'] == "SLAVE") {
-            $slave_master = get_domain_slave_master($zone_id);
-            if (supermaster_exists($slave_master)) {
+            $slave_master = DnsRecord::get_domain_slave_master($zone_id);
+            if (DnsRecord::supermaster_exists($slave_master)) {
                 echo "        <p>         \n";
                 printf(_('You are about to delete a slave zone of which the master nameserver, %s, is a supermaster. Deleting the zone now, will result in temporary removal only. Whenever the supermaster sends a notification for this zone, it will be added again!'), $slave_master);
                 echo "        </p>\n";

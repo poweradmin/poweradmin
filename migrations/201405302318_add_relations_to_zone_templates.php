@@ -1,5 +1,6 @@
 <?php
 
+use Poweradmin\DnsRecord;
 use Poweradmin\ZoneTemplate;
 
 include_once('../inc/config-me.inc.php');
@@ -11,7 +12,6 @@ if (!@include_once('../inc/config.inc.php')) {
 require '../inc/error.inc.php';
 require '../inc/database.inc.php';
 require '../inc/file.inc.php';
-require '../inc/record.inc.php';
 require '../inc/migrations.inc.php';
 
 $db = dbConnect();
@@ -22,9 +22,9 @@ if (migration_exists($db, $file_name)) {
     exit;
 }
 
-$zones = get_zones_with_templates($db);
+$zones = DnsRecord::get_zones_with_templates($db);
 foreach ($zones as $zone) {
-    $domain = get_domain_name_by_zone_id($zone['id']);
+    $domain = DnsRecord::get_domain_name_by_zone_id($zone['id']);
     $templ_records = ZoneTemplate::get_zone_templ_records($zone['zone_templ_id']);
 
     $generated_templ_records = array();
@@ -39,7 +39,7 @@ foreach ($zones as $zone) {
         );
     }
 
-    $records = get_records_by_domain_id($db, $zone['domain_id']);
+    $records = DnsRecord::get_records_by_domain_id($db, $zone['domain_id']);
     foreach ($records as $record) {
         foreach ($generated_templ_records as $generated_templ_record) {
             if ($record['name'] == $generated_templ_record['name'] &&

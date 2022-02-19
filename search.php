@@ -29,6 +29,8 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\DnsRecord;
+
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/header.inc.php';
 
@@ -110,7 +112,7 @@ if (isset($_POST['query'])) {
         $permissions['edit'] = "none";
     }
 
-    $searchResult = search_zone_and_record(
+    $searchResult = DnsRecord::search_zone_and_record(
         $parameters,
         $permissions['view'],
         ZONE_SORT_BY,

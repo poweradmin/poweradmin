@@ -28,6 +28,9 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
+
+use Poweradmin\DnsRecord;
+
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/pagination.inc.php';
 
@@ -67,10 +70,10 @@ if (isset($_GET["letter"])) {
     define('LETTERSTART', "a");
 }
 
-$count_zones_all = zone_count_ng("all");
-$count_zones_all_letterstart = zone_count_ng($perm_view, LETTERSTART);
-$count_zones_view = zone_count_ng($perm_view);
-$count_zones_edit = zone_count_ng($perm_edit);
+$count_zones_all = DnsRecord::zone_count_ng("all");
+$count_zones_all_letterstart = DnsRecord::zone_count_ng($perm_view, LETTERSTART);
+$count_zones_view = DnsRecord::zone_count_ng($perm_view);
+$count_zones_edit = DnsRecord::zone_count_ng($perm_edit);
 
 if (isset($_GET["zone_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["zone_sort_by"])) {
     define('ZONE_SORT_BY', $_GET["zone_sort_by"]);
@@ -139,11 +142,11 @@ if ($perm_view == "none") {
     echo "      </tr>\n";
 
     if ($count_zones_view <= $iface_rowamount) {
-        $zones = get_zones($perm_view, $_SESSION['userid'], "all", ROWSTART, $iface_rowamount, $zone_sort_by);
+        $zones = DnsRecord::get_zones($perm_view, $_SESSION['userid'], "all", ROWSTART, $iface_rowamount, $zone_sort_by);
     } elseif (LETTERSTART == 'all') {
-        $zones = get_zones($perm_view, $_SESSION['userid'], "all", ROWSTART, 'all', $zone_sort_by);
+        $zones = DnsRecord::get_zones($perm_view, $_SESSION['userid'], "all", ROWSTART, 'all', $zone_sort_by);
     } else {
-        $zones = get_zones($perm_view, $_SESSION['userid'], LETTERSTART, ROWSTART, $iface_rowamount, $zone_sort_by);
+        $zones = DnsRecord::get_zones($perm_view, $_SESSION['userid'], LETTERSTART, ROWSTART, $iface_rowamount, $zone_sort_by);
         $count_zones_shown = ($zones == -1) ? 0 : count($zones);
     }
     foreach ($zones as $zone) {
@@ -152,7 +155,7 @@ if ($perm_view == "none") {
         }
 
         if ($iface_zonelist_serial)
-            $serial = get_serial_by_zid($zone['id']);
+            $serial = DnsRecord::get_serial_by_zid($zone['id']);
 
         if ($perm_edit != "all" || $perm_edit != "none") {
             $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone["id"]);

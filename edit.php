@@ -30,6 +30,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
 use Poweradmin\RecordLog;
 use Poweradmin\RecordType;
@@ -81,7 +82,7 @@ if (isset($_POST['commit'])) {
 
     if (isset($_POST['record'])) {
         foreach ($_POST['record'] as $record) {
-            $old_record_info = get_record_from_id($record['rid']);
+            $old_record_info = DnsRecord::get_record_from_id($record['rid']);
 
             // Check if a record changed and save the state
             $log = new RecordLog();
@@ -92,7 +93,7 @@ if (isset($_POST['commit'])) {
                 $one_record_changed = true;
             }
 
-            $edit_record = edit_record($record);
+            $edit_record = DnsRecord::edit_record($record);
             if (false === $edit_record) {
                 $error = true;
             } else {
@@ -103,10 +104,10 @@ if (isset($_POST['commit'])) {
         }
     }
 
-    edit_zone_comment($_GET['id'], $_POST['comment']);
+    DnsRecord::edit_zone_comment($_GET['id'], $_POST['comment']);
 
     if (false === $error) {
-        update_soa_serial($_GET['id']);
+        DnsRecord::update_soa_serial($_GET['id']);
 
         if ($one_record_changed) {
             success(SUC_ZONE_UPD);
@@ -131,8 +132,8 @@ if (isset($_POST['save_as'])) {
         error(ERR_ZONE_TEMPL_IS_EMPTY);
     } else {
         success(SUC_ZONE_TEMPL_ADD);
-        $records = get_records_from_domain_id($zone_id);
-        ZoneTemplate::add_zone_templ_save_as($_POST['templ_name'], $_POST['templ_descr'], $_SESSION['userid'], $records, get_domain_name_by_id($zone_id));
+        $records = DnsRecord::get_records_from_domain_id($zone_id);
+        ZoneTemplate::add_zone_templ_save_as($_POST['templ_name'], $_POST['templ_descr'], $_SESSION['userid'], $records, DnsRecord::get_domain_name_by_id($zone_id));
     }
 }
 
@@ -178,16 +179,16 @@ if ($perm_meta_edit == "all" || ( $perm_meta_edit == "own" && $user_is_zone_owne
 (do_hook('verify_permission' , 'user_view_others' )) ? $perm_view_others = "1" : $perm_view_others = "0";
 
 if (isset($_POST['slave_master_change']) && is_numeric($_POST["domain"])) {
-    change_zone_slave_master($_POST['domain'], $_POST['new_master']);
+    DnsRecord::change_zone_slave_master($_POST['domain'], $_POST['new_master']);
 }
 if (isset($_POST['type_change']) && in_array($_POST['newtype'], ZoneType::getTypes())) {
-    change_zone_type($_POST['newtype'], $zone_id);
+    DnsRecord::change_zone_type($_POST['newtype'], $zone_id);
 }
 if (isset($_POST["newowner"]) && is_numeric($_POST["domain"]) && is_numeric($_POST["newowner"])) {
-    add_owner_to_zone($_POST["domain"], $_POST["newowner"]);
+    DnsRecord::add_owner_to_zone($_POST["domain"], $_POST["newowner"]);
 }
 if (isset($_POST["delete_owner"]) && is_numeric($_POST["delete_owner"])) {
-    delete_owner_from_zone($zone_id, $_POST["delete_owner"]);
+    DnsRecord::delete_owner_from_zone($zone_id, $_POST["delete_owner"]);
 }
 if (isset($_POST["template_change"])) {
     if (!isset($_POST['zone_template']) || "none" == $_POST['zone_template']) {
@@ -196,7 +197,7 @@ if (isset($_POST["template_change"])) {
         $new_zone_template = $_POST['zone_template'];
     }
     if ($_POST['current_zone_template'] != $new_zone_template) {
-        update_zone_records($zone_id, $new_zone_template);
+        DnsRecord::update_zone_records($zone_id, $new_zone_template);
     }
 }
 
@@ -206,31 +207,31 @@ if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
     exit();
 }
 
-if (zone_id_exists($zone_id) == "0") {
+if (DnsRecord::zone_id_exists($zone_id) == "0") {
     error(ERR_ZONE_NOT_EXIST);
     include_once("inc/footer.inc.php");
     exit();
 }
 
 if (isset($_POST['sign_zone'])) {
-    $zone_name = get_domain_name_by_id($zone_id);
-    update_soa_serial($zone_id);
+    $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
+    DnsRecord::update_soa_serial($zone_id);
     Dnssec::dnssec_secure_zone($zone_name);
     Dnssec::dnssec_rectify_zone($zone_id);
 }
 
 if (isset($_POST['unsign_zone'])) {
-    $zone_name = get_domain_name_by_id($zone_id);
+    $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
     Dnssec::dnssec_unsecure_zone($zone_name);
-    update_soa_serial($zone_id);
+    DnsRecord::update_soa_serial($zone_id);
 }
 
-$domain_type = get_domain_type($zone_id);
-$record_count = count_zone_records($zone_id);
+$domain_type = DnsRecord::get_domain_type($zone_id);
+$record_count = DnsRecord::count_zone_records($zone_id);
 $zone_templates = ZoneTemplate::get_list_zone_templ($_SESSION['userid']);
-$zone_template_id = get_zone_template($zone_id);
+$zone_template_id = DnsRecord::get_zone_template($zone_id);
 
-$zone_name_to_display = get_domain_name_by_id($zone_id);
+$zone_name_to_display = DnsRecord::get_domain_name_by_id($zone_id);
 if (preg_match("/^xn--/", $zone_name_to_display)) {
     $idn_zone_name = idn_to_utf8($zone_name_to_display);
     echo "   <h2>" . _('Edit zone') . " \"" . $idn_zone_name . "\" (\"". $zone_name_to_display ."\")</h2>\n";
@@ -242,7 +243,7 @@ echo "   <div class=\"showmax\">\n";
 show_pages($record_count, $iface_rowamount, $zone_id);
 echo "   </div>\n";
 
-$records = get_records_from_domain_id($zone_id, ROWSTART, $iface_rowamount, RECORD_SORT_BY);
+$records = DnsRecord::get_records_from_domain_id($zone_id, ROWSTART, $iface_rowamount, RECORD_SORT_BY);
 if ($records == "-1") {
     echo " <p>" . _("This zone does not have any records. Weird.") . "</p>\n";
 } else {
@@ -321,7 +322,7 @@ if ($records == "-1") {
     echo "      <a href=\"edit_comment.php?domain=" . $zone_id . "\">
                             <img src=\"images/edit.gif\" alt=\"[ " . _('Edit comment') . " ]\"></a>\n";
     echo "     </td>\n";
-    echo "     <td colspan=\"4\"><textarea rows=\"5\" cols=\"80\" name=\"comment\">" . htmlspecialchars(get_zone_comment($zone_id)) . "</textarea></td>\n";
+    echo "     <td colspan=\"4\"><textarea rows=\"5\" cols=\"80\" name=\"comment\">" . htmlspecialchars(DnsRecord::get_zone_comment($zone_id)) . "</textarea></td>\n";
     echo "     <td>&nbsp;</td>\n";
 
     echo "     <tr>\n";
@@ -341,7 +342,7 @@ if ($records == "-1") {
     echo "     <input type=\"submit\" class=\"button\" name=\"save_as\" value=\"" . _('Save as template') . "\">\n";
 
     if ($pdnssec_use) {
-        $zone_name = get_domain_name_by_id($zone_id);
+        $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
 
         if (Dnssec::dnssec_is_zone_secured($zone_name)) {
             echo "     <input type=\"button\" class=\"button\" name=\"dnssec\" onclick=\"location.href = 'dnssec.php?id=".$zone_id."';\" value=\"" . _('DNSSEC') . "\">\n";
@@ -356,7 +357,7 @@ if ($records == "-1") {
 
 if ($perm_content_edit == "all" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "1") {
     if ($domain_type != "SLAVE") {
-        $zone_name = get_domain_name_by_id($zone_id);
+        $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
         echo "     <form method=\"post\" action=\"add_record.php?id=" . $zone_id . "\">\n";
         echo "      <input type=\"hidden\" name=\"domain\" value=\"" . $zone_id . "\">\n";
         echo "      <table border=\"0\" cellspacing=\"4\">\n";
@@ -416,7 +417,7 @@ echo "     <tr>\n";
 echo "      <th colspan=\"2\">" . _('Owner of zone') . "</th>\n";
 echo "     </tr>\n";
 
-$owners = get_users_from_domain_id($zone_id);
+$owners = DnsRecord::get_users_from_domain_id($zone_id);
 
 if ($owners == "-1") {
     echo "      <tr><td>" . _('No owner set for this zone.') . "</td></tr>";
@@ -528,7 +529,7 @@ if ($meta_edit) {
 }
 
 if ($domain_type == "SLAVE") {
-    $slave_master = get_domain_slave_master($zone_id);
+    $slave_master = DnsRecord::get_domain_slave_master($zone_id);
     echo "      <tr>\n";
     echo "       <th colspan=\"2\">" . _('IP address of master NS') . "</th>\n";
     echo "      </tr>\n";

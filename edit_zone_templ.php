@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\DnsRecord;
 use Poweradmin\RecordType;
 use Poweradmin\ZoneTemplate;
 
@@ -101,7 +102,7 @@ if (isset($_POST['update_zones'])) {
     $zones = ZoneTemplate::get_list_zone_use_templ($zone_templ_id, $_SESSION['userid']);
     success(SUC_ZONES_UPD);
     foreach ($zones as $zone) {
-        update_zone_records($zone['id'], $zone_templ_id);
+        DnsRecord::update_zone_records($zone['id'], $zone_templ_id);
     }
 }
 

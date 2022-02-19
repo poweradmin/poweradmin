@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
 
 require_once 'inc/toolkit.inc.php';
@@ -50,7 +51,7 @@ if ($user_is_zone_owner == "0") {
     exit();
 }
 
-if (zone_id_exists($zone_id) == "0") {
+if (DnsRecord::zone_id_exists($zone_id) == "0") {
     error(ERR_ZONE_NOT_EXIST);
     include_once("inc/footer.inc.php");
     exit();
@@ -91,7 +92,7 @@ if (isset($_POST["algorithm"])) {
     }
 }
 
-$domain_name = get_domain_name_by_id($zone_id);
+$domain_name = DnsRecord::get_domain_name_by_id($zone_id);
 if (isset($_POST["submit"])) {
     if (Dnssec::dnssec_add_zone_key($domain_name, $key_type, $bits, $algorithm)) {
         success(SUC_EXEC_PDNSSEC_ADD_ZONE_KEY);

@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\DnsRecord;
 use Poweradmin\Syslog;
 
 require_once 'inc/toolkit.inc.php';
@@ -65,15 +66,15 @@ $type = "SLAVE";
 if (isset($_POST['submit']) && $zone_slave_add == "1") {
     if (!is_valid_hostname_fqdn($zone, 0)) {
         error(ERR_DNS_HOSTNAME);
-    } elseif ($dns_third_level_check && get_domain_level($zone) > 2 && domain_exists(get_second_level_domain($zone))) {
+    } elseif ($dns_third_level_check && DnsRecord::get_domain_level($zone) > 2 && DnsRecord::domain_exists(DnsRecord::get_second_level_domain($zone))) {
         error(ERR_DOMAIN_EXISTS);
-    } elseif (domain_exists($zone) || record_name_exists($zone)) {
+    } elseif (DnsRecord::domain_exists($zone) || DnsRecord::record_name_exists($zone)) {
         error(ERR_DOMAIN_EXISTS);
     } elseif (!are_multiple_valid_ips($master)) {
         error(ERR_DNS_IP);
     } else {
-        if (add_domain($zone, $owner, $type, $master, 'none')) {
-            success("<a href=\"edit.php?id=" . get_zone_id_from_name($zone) . "\">" . SUC_ZONE_ADD . '</a>');
+        if (DnsRecord::add_domain($zone, $owner, $type, $master, 'none')) {
+            success("<a href=\"edit.php?id=" . DnsRecord::get_zone_id_from_name($zone) . "\">" . SUC_ZONE_ADD . '</a>');
             Syslog::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',
                               $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                               $zone, $master));

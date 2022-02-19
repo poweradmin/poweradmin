@@ -30,6 +30,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
 use Poweradmin\ZoneTemplate;
 
@@ -87,19 +88,19 @@ if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
     exit();
 }
 
-if (zone_id_exists($zone_id) == "0") {
+if (DnsRecord::zone_id_exists($zone_id) == "0") {
     error(ERR_ZONE_NOT_EXIST);
     include_once("inc/footer.inc.php");
     exit();
 }
 
-$domain_type = get_domain_type($zone_id);
-$domain_name = get_domain_name_by_id($zone_id);
-$record_count = count_zone_records($zone_id);
+$domain_type = DnsRecord::get_domain_type($zone_id);
+$domain_name = DnsRecord::get_domain_name_by_id($zone_id);
+$record_count = DnsRecord::count_zone_records($zone_id);
 $zone_templates = ZoneTemplate::get_list_zone_templ($_SESSION['userid']);
-$zone_template_id = get_zone_template($zone_id);
+$zone_template_id = DnsRecord::get_zone_template($zone_id);
 
-echo "   <h2>" . _('DNSSEC keys for zone') . " \"" . get_domain_name_by_id($zone_id) . "\"</h2>\n";
+echo "   <h2>" . _('DNSSEC keys for zone') . " \"" . DnsRecord::get_domain_name_by_id($zone_id) . "\"</h2>\n";
 
 echo "     <table>\n";
 echo "      <tr>\n";

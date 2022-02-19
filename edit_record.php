@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
 use Poweradmin\RecordType;
 use Poweradmin\Syslog;
@@ -66,24 +67,24 @@ if (do_hook('verify_permission', 'zone_meta_edit_others')) {
     $perm_meta_edit = "none";
 }
 
-$zid = get_zone_id_from_record_id($_GET['id']);
+$zid = DnsRecord::get_zone_id_from_record_id($_GET['id']);
 
 $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zid );
-$zone_type = get_domain_type($zid);
-$zone_name = get_domain_name_by_id($zid);
+$zone_type = DnsRecord::get_domain_type($zid);
+$zone_name = DnsRecord::get_domain_name_by_id($zid);
 
 if (isset($_POST["commit"])) {
     if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
         error(ERR_PERM_EDIT_RECORD);
     } else {
-        $old_record_info = get_record_from_id($_POST["rid"]);
-        $ret_val = edit_record($_POST);
+        $old_record_info = DnsRecord::get_record_from_id($_POST["rid"]);
+        $ret_val = DnsRecord::edit_record($_POST);
         if ($ret_val == "1") {
             if ($_POST['type'] != "SOA") {
-                update_soa_serial($zid);
+                DnsRecord::update_soa_serial($zid);
             }
             success(SUC_RECORD_UPD);
-            $new_record_info = get_record_from_id($_POST["rid"]);
+            $new_record_info = DnsRecord::get_record_from_id($_POST["rid"]);
             Syslog::log_info(sprintf('client_ip:%s user:%s operation:edit_record'
                              .' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
                              .' record_type:%s record:%s content:%s ttl:%s priority:%s',
@@ -105,7 +106,7 @@ echo "    <h2>" . _('Edit record in zone') . " \"<a href=\"edit.php?id=" . $zid 
 if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
     error(ERR_PERM_VIEW_RECORD);
 } else {
-    $record = get_record_from_id($_GET["id"]);
+    $record = DnsRecord::get_record_from_id($_GET["id"]);
     echo "     <form method=\"post\" action=\"edit_record.php?domain=" . $zid . "&amp;id=" . $_GET["id"] . "\">\n";
     echo "      <table>\n";
     echo "       <tr>\n";

@@ -28,6 +28,9 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
+
+use Poweradmin\DnsRecord;
+
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/message.inc.php';
 
@@ -62,14 +65,14 @@ if (do_hook('verify_permission', 'zone_meta_edit_others')) {
 $zid = $_GET['domain'];
 
 $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zid );
-$zone_type = get_domain_type($zid);
-$zone_name = get_domain_name_by_id($zid);
+$zone_type = DnsRecord::get_domain_type($zid);
+$zone_name = DnsRecord::get_domain_name_by_id($zid);
 
 if (isset($_POST["commit"])) {
     if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
         error(ERR_PERM_EDIT_COMMENT);
     } else {
-        edit_zone_comment($_GET['domain'], $_POST['comment']);
+        DnsRecord::edit_zone_comment($_GET['domain'], $_POST['comment']);
         success(SUC_COMMENT_UPD);
     }
 }
@@ -79,7 +82,7 @@ echo "    <h2>" . _('Edit comment in zone') . " " . $zone_name . "</h2>\n";
 if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
     error(ERR_PERM_VIEW_COMMENT);
 } else {
-    $comment = get_zone_comment($zid);
+    $comment = DnsRecord::get_zone_comment($zid);
     echo "     <form method=\"post\" action=\"edit_comment.php?domain=" . $zid . "\">\n";
     echo "      <table>\n";
     echo "      <tr>\n";

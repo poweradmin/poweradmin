@@ -28,13 +28,16 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
+
+use Poweradmin\DnsRecord;
+
 require_once 'inc/toolkit.inc.php';
 include_once 'inc/header.inc.php';
 
 (do_hook('verify_permission', 'supermaster_view')) ? $perm_sm_view = "1" : $perm_sm_view = "0";
 (do_hook('verify_permission', 'supermaster_edit')) ? $perm_sm_edit = "1" : $perm_sm_edit = "0";
 
-$supermasters = get_supermasters();
+$supermasters = DnsRecord::get_supermasters();
 $num_supermasters = ($supermasters == -1) ? 0 : count($supermasters);
 
 echo "     <h2>" . _('List supermasters') . "</h2>\n";

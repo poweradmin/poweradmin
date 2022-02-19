@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\DnsRecord;
 use Poweradmin\ZoneTemplate;
 use Poweradmin\ZoneType;
 
@@ -79,11 +80,11 @@ if (isset($_POST['submit']) && $zone_master_add == "1") {
     foreach ($domains as $domain) {
         if (!is_valid_hostname_fqdn($domain, 0)) {
             error($domain . ' failed - ' . ERR_DNS_HOSTNAME);
-        } elseif (domain_exists($domain)) {
+        } elseif (DnsRecord::domain_exists($domain)) {
             error($domain . " failed - " . ERR_DOMAIN_EXISTS);
             $error = true;
-        } elseif (add_domain($domain, $owner, $dom_type, '', $zone_template)) {
-            success("<a href=\"edit.php?id=" . get_zone_id_from_name($domain) . "\">" . $domain . " - " . SUC_ZONE_ADD . '</a>');
+        } elseif (DnsRecord::add_domain($domain, $owner, $dom_type, '', $zone_template)) {
+            success("<a href=\"edit.php?id=" . DnsRecord::get_zone_id_from_name($domain) . "\">" . $domain . " - " . SUC_ZONE_ADD . '</a>');
         }
     }
 

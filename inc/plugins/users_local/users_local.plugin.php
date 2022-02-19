@@ -30,6 +30,7 @@
  *
  */
 
+use Poweradmin\DnsRecord;
 use Poweradmin\Password;
 use Poweradmin\ZoneTemplate;
 
@@ -220,9 +221,9 @@ function delete_user_local($uid, $zones) {
         if (is_array($zones)) {
             foreach ($zones as $zone) {
                 if ($zone ['target'] == "delete") {
-                    delete_domain($zone ['zid']);
+                    DnsRecord::delete_domain($zone ['zid']);
                 } elseif ($zone ['target'] == "new_owner") {
-                    add_owner_to_zone($zone ['zid'], $zone ['newowner']);
+                    DnsRecord::add_owner_to_zone($zone ['zid'], $zone ['newowner']);
                 }
             }
         }

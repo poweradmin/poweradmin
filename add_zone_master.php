@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
 use Poweradmin\Syslog;
 use Poweradmin\ZoneTemplate;
@@ -89,15 +90,15 @@ if (isset($_POST['submit']) && $zone_master_add == "1") {
     foreach ($domains as $domain) {
         if (!is_valid_hostname_fqdn($domain, 0)) {
             error($domain . ' failed - ' . ERR_DNS_HOSTNAME);
-        } elseif ($dns_third_level_check && get_domain_level($domain) > 2 && domain_exists(get_second_level_domain($domain))) {
+        } elseif ($dns_third_level_check && DnsRecord::get_domain_level($domain) > 2 && DnsRecord::domain_exists(DnsRecord::get_second_level_domain($domain))) {
             error($domain . ' failed - ' . ERR_DOMAIN_EXISTS);
             $error = true;
-        } elseif (domain_exists($domain) || record_name_exists($domain)) {
+        } elseif (DnsRecord::domain_exists($domain) || DnsRecord::record_name_exists($domain)) {
             error($domain . ' failed - ' . ERR_DOMAIN_EXISTS);
             // TODO: repopulate domain name(s) to the form if there was an error occured
             $error = true;
-        } elseif (add_domain($domain, $owner, $dom_type, '', $zone_template)) {
-            $domain_id = get_zone_id_from_name($domain);
+        } elseif (DnsRecord::add_domain($domain, $owner, $dom_type, '', $zone_template)) {
+            $domain_id = DnsRecord::get_zone_id_from_name($domain);
             success("<a href=\"edit.php?id=" . $domain_id . "\">" . $domain . " - " . SUC_ZONE_ADD . '</a>');
             Syslog::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
                               $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],

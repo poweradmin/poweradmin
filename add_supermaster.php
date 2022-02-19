@@ -28,6 +28,9 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
+
+use Poweradmin\DnsRecord;
+
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/message.inc.php';
 
@@ -53,7 +56,7 @@ if (isset($_POST["account"])) {
 
 $error = 0;
 if (isset($_POST["submit"])) {
-    if (add_supermaster($master_ip, $ns_name, $account)) {
+    if (DnsRecord::add_supermaster($master_ip, $ns_name, $account)) {
         success(SUC_SM_ADD);
     } else {
         $error = "1";

@@ -58,6 +58,5 @@ add_listener('add_new_user', 'add_new_user_local');
 
 $db = dbConnect();
 require_once 'dns.inc.php';
-require_once 'record.inc.php';
 
 do_hook('authenticate');

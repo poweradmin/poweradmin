@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\DnsRecord;
 use Poweradmin\Syslog;
 
 require_once 'inc/toolkit.inc.php';
@@ -61,10 +62,10 @@ if ($confirm == '1') {
     //Fetch information about zones before deleting them
     $deleted_zones = array();
     foreach ($zones as $zone) {
-        $zone_info = get_zone_info_from_id($zone);
+        $zone_info = DnsRecord::get_zone_info_from_id($zone);
         array_push($deleted_zones,$zone_info);
     }
-    $delete_domains = delete_domains($zones);
+    $delete_domains = DnsRecord::delete_domains($zones);
     if ($delete_domains) {
         count($deleted_zones) == 1 ? success(SUC_ZONE_DEL) : success(SUC_ZONES_DEL);
         //Zones successfully deleted so generate log messages from information retrieved earlier
@@ -79,15 +80,15 @@ if ($confirm == '1') {
     foreach ($zones as $zone) {
         $zone_owners = do_hook('get_fullnames_owners_from_domainid' , $zone );
         $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone );
-        $zone_info = get_zone_info_from_id($zone);
+        $zone_info = DnsRecord::get_zone_info_from_id($zone);
         if ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) {
             echo "      <input type=\"hidden\" name=\"zone_id[]\" value=\"" . $zone . "\">\n";
             echo "      " . _('Name') . ": " . $zone_info['name'] . "<br>\n";
             echo "      " . _('Owner') . ": " . $zone_owners . "<br>\n";
             echo "      " . _('Type') . ": " . $zone_info['type'] . "\n";
             if ($zone_info['type'] == "SLAVE") {
-                $slave_master = get_domain_slave_master($zone);
-                if (supermaster_exists($slave_master)) {
+                $slave_master = DnsRecord::get_domain_slave_master($zone);
+                if (DnsRecord::supermaster_exists($slave_master)) {
                     echo "        <p>         \n";
                     printf(_('You are about to delete a slave zone of which the master nameserver, %s, is a supermaster. Deleting the zone now, will result in temporary removal only. Whenever the supermaster sends a notification for this zone, it will be added again!'), $slave_master);
                     echo "        </p>\n";

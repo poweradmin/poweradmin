@@ -38,7 +38,7 @@ class RecordLog {
     }
 
     private function getRecord($rid) {
-        return get_record_from_id($rid);
+        return DnsRecord::get_record_from_id($rid);
     }
 
     public function has_changed(array $record) {

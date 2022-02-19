@@ -28,6 +28,9 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
+
+use Poweradmin\DnsRecord;
+
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/validation.inc.php';
 require_once 'inc/message.inc.php';
@@ -56,17 +59,17 @@ if ($master_ip == "-1" || $ns_name == "-1") {
     if ($perm_sm_edit == "0") {
         error(ERR_PERM_DEL_SM);
     } else {
-        $info = get_supermaster_info_from_ip($master_ip);
+        $info = DnsRecord::get_supermaster_info_from_ip($master_ip);
 
         echo "     <h2>" . _('Delete supermaster') . " \"" . $master_ip . "\"</h2>\n";
 
         if (isset($_GET['confirm']) && $_GET["confirm"] == '1') {
-            if (!supermaster_ip_name_exists($master_ip, $ns_name)) {
+            if (!DnsRecord::supermaster_ip_name_exists($master_ip, $ns_name)) {
                 header("Location: list_supermasters.php");
                 exit;
             }
 
-            if (delete_supermaster($master_ip, $ns_name)) {
+            if (DnsRecord::delete_supermaster($master_ip, $ns_name)) {
                 success(SUC_SM_DEL);
             }
         } else {

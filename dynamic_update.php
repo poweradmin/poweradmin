@@ -30,11 +30,11 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\DnsRecord;
 use Poweradmin\Password;
 
 require 'inc/config.inc.php';
 require 'inc/database.inc.php';
-require 'inc/record.inc.php';
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -226,7 +226,7 @@ while ($zone = $zones_result->fetchRow()) {
         }
     }
     if ($zone_updated) {
-        update_soa_serial($zone['domain_id']);
+        DnsRecord::update_soa_serial($zone['domain_id']);
     }
 }
 
