@@ -22,17 +22,16 @@
 
 namespace Poweradmin;
 
+/**
+ * DNS functions
+ *
+ * @package Poweradmin
+ * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
+ * @copyright   2010-2022  Poweradmin Development Team
+ * @license     https://opensource.org/licenses/GPL-3.0 GPL
+ */
 class Dns
 {
-    /**
-     * DNS functions
-     *
-     * @package Poweradmin
-     * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
-     * @copyright   2010-2022  Poweradmin Development Team
-     * @license     https://opensource.org/licenses/GPL-3.0 GPL
-     */
-
     /** Matches end of string
      *
      * Matches end of string (haystack) against another string (needle)

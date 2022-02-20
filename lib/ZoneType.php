@@ -27,7 +27,8 @@ class ZoneType
     // Array of the available zone types
     private const ZONE_TYPES = array("MASTER", "SLAVE", "NATIVE");
 
-    public static function getTypes() {
+    public static function getTypes(): array
+    {
         return self::ZONE_TYPES;
     }
 }

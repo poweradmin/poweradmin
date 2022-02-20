@@ -31,22 +31,6 @@
 
 include_once 'PDOLayer.php';
 
-/** Print database error message
- *
- * @param object $msg Database error object
- */
-function dbError($msg) {
-    $debug = $msg->getDebugInfo();
-
-    if (preg_match("/Unknown column 'zone_templ_id'/", $debug)) {
-        $debug = ERR_DB_NO_DB_UPDATE;
-    }
-
-    echo "     <div class=\"error\">Error: " . $debug . "</div>\n";
-    include_once("footer.inc.php");
-    die();
-}
-
 /**  Connect to Database
  *
  * @return object $db Database object

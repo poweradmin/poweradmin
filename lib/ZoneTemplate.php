@@ -260,7 +260,7 @@ class ZoneTemplate
      * @param int $ttl TTL
      * @param int $prio Priority
      *
-     * @return boolean true if succesful, false otherwise
+     * @return boolean true if successful, false otherwise
      */
     public static function add_zone_templ_record($zone_templ_id, $name, $type, $content, $ttl, $prio)
     {

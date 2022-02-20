@@ -20,6 +20,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace Poweradmin;
+
 /**
  * DNSSEC functions
  *
@@ -28,9 +30,6 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
-
-namespace Poweradmin;
-
 class Dnssec
 {
     /** Check if it's possible to execute pdnsutil command
