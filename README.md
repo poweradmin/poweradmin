@@ -8,7 +8,7 @@
 * PHP gettext extension
 * PHP openssl extension
 * PHP pdo extension
-* PHP pdo-mysql or pdo-pgsql extension (depending on your)
+* PHP pdo-mysql or pdo-pgsql extension
 * PHP ldap extension (optional)
-* MySQL/PostgreSQL/SQLite database
+* MySQL/MariaDB, PostgreSQL or SQLite database
 * PowerDNS authoritative server 4.0.0+
