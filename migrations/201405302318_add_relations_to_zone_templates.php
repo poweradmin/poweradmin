@@ -3,6 +3,8 @@
 use Poweradmin\DnsRecord;
 use Poweradmin\ZoneTemplate;
 
+require_once dirname(__DIR__) . '/vendor/autoload.php';
+
 include_once('../inc/config-me.inc.php');
 
 if (!@include_once('../inc/config.inc.php')) {

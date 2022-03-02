@@ -878,7 +878,7 @@ class DnsRecord
         global $db;
 
         if (is_numeric($zid)) {
-            $result = $db->query("SELECT domains.name as name from domains LEFT JOIN zones ON domains.id=zones.domain_id WHERE zones.id = " . $db->quote($zid, 'integer'));
+            $result = $db->queryRow("SELECT domains.name as name from domains LEFT JOIN zones ON domains.id=zones.domain_id WHERE zones.id = " . $db->quote($zid, 'integer'));
             if ($result) {
                 return $result["name"];
             } else {
