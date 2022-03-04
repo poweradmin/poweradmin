@@ -180,6 +180,9 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
             echo "      <td colspan=\"6\"><br>&nbsp;&nbsp;&nbsp;&nbsp; * [ZONE] - " . _('substituted with current zone name') . "<br>";
             echo "&nbsp;&nbsp;&nbsp;&nbsp; * [SERIAL] - " . _('substituted with current date and 2 numbers') . " (YYYYMMDD + 00)<br>\n";
             echo "&nbsp;&nbsp;&nbsp;&nbsp; * [NS1] - " . _('substituted with 1st name server') . "<br>\n";
+            echo "&nbsp;&nbsp;&nbsp;&nbsp; * [NS2] - " . _('substituted with 2nd name server') . "<br>\n";
+            echo "&nbsp;&nbsp;&nbsp;&nbsp; * [NS3] - " . _('substituted with 3rd name server') . "<br>\n";
+            echo "&nbsp;&nbsp;&nbsp;&nbsp; * [NS4] - " . _('substituted with 4th name server') . "<br>\n";
             echo "&nbsp;&nbsp;&nbsp;&nbsp; * [HOSTMASTER] - " . _('substituted with hostmaster') . "</td>\n";
             echo "     </tr>\n";
             echo "     <tr>\n";
@@ -191,7 +194,7 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
             echo "      " . _('Use just [ZONE] to have the domain itself return a value.') . "<br>";
             echo "      " . _('For the SOA record, place [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400 in the content field.') . "</td>";
             echo "     </tr>\n";
-            echo "      <td colspan=\"6\"><br>Save as new template:</td>\n";
+            echo "      <td colsn=\"6\"><br>Save as new template:</td>\n";
             echo "     </tr>\n";
             echo "      <tr>\n";
             echo "       <th>" . _('Template Name') . "</th>\n";

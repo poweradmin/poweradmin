@@ -531,7 +531,7 @@ class ZoneTemplate
      */
     public static function parse_template_value($val, $domain)
     {
-        global $dns_ns1, $dns_hostmaster;
+        global $dns_ns1, $dns_ns2, $dns_ns3, $dns_ns4, $dns_hostmaster;
 
         $serial = date("Ymd");
         $serial .= "00";
@@ -539,6 +539,9 @@ class ZoneTemplate
         $val = str_replace('[ZONE]', $domain, $val);
         $val = str_replace('[SERIAL]', $serial, $val);
         $val = str_replace('[NS1]', $dns_ns1, $val);
+        $val = str_replace('[NS2]', $dns_ns2, $val);
+        $val = str_replace('[NS3]', $dns_ns3, $val);
+        $val = str_replace('[NS4]', $dns_ns4, $val);
         return str_replace('[HOSTMASTER]', $dns_hostmaster, $val);
     }
 
