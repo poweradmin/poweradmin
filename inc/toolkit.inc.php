@@ -58,4 +58,7 @@ add_listener('add_new_user', 'add_new_user_local');
 
 $db = dbConnect();
 
+use Poweradmin\DependencyCheck;
+DependencyCheck::verifyExtensions();
+
 do_hook('authenticate');
