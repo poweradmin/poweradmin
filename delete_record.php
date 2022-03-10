@@ -31,6 +31,7 @@
 
 use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
+use Poweradmin\Validation;
 use Poweradmin\Syslog;
 
 require_once 'inc/toolkit.inc.php';
