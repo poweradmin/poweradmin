@@ -6,9 +6,10 @@
   "license": "GPL-3.0",
   "support": {
     "issues": "https://github.com/poweradmin/poweradmin/issues",
+    "forum": "https://github.com/poweradmin/poweradmin/discussions",
     "wiki": "https://github.com/poweradmin/poweradmin/wiki",
-    "irc": "irc://irc.oftc.net/poweradmin",
-    "source": "https://github.com/poweradmin/poweradmin"
+    "source": "https://github.com/poweradmin/poweradmin",
+    "chat": "https://gitter.im/poweradmin/poweradmin"
   },
   "require": {
     "php": ">=7.2.5",
