@@ -28,6 +28,9 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
+
+use Poweradmin\Validation;
+
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/message.inc.php';
 
