@@ -58,7 +58,7 @@ function auth($msg = "", $type = "success") {
     <h2><?php echo _('Log in'); ?></h2>
     <form method="post" action="<?php echo htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES); ?>">
         <input type="hidden" name="query_string" value="<?php echo htmlentities($_SERVER["QUERY_STRING"]); ?>">
-        <table border="0">
+        <table>
             <tr>
                 <td class="n" width="100"><?php echo _('Username'); ?>:</td>
                 <td class="n"><input type="text" class="input" name="username" id="username"></td>
