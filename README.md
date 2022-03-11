@@ -12,3 +12,44 @@
 * PHP ldap extension (optional)
 * MySQL/MariaDB, PostgreSQL or SQLite database
 * PowerDNS authoritative server 4.0.0+
+
+## Installation
+Install the following dependencies:
+
+On Debian based Systems:
+```sh
+apt install php-intl
+
+For MySQL/MariaDB
+apt install php-mysqlnd
+
+For PostgreSQL
+apt install php-pgsql
+```
+
+On RHEL based Systems:
+```sh
+yum install -y php-intl
+
+For MySQL/MariaDB
+yum install -y php-mysqlnd
+
+For PostgreSQL
+yum install -y php-pgsql
+```
+
+* Via Git:
+  * Clone the repository: ```git clone https://github.com/poweradmin/poweradmin.git```
+  * Select latest tag (for example v2.2.1) or skip this if you want to run from master: ```git checkout tags/v2.2.1``` 
+* Via releases:
+  * Download latest file from [releases](https://github.com/poweradmin/poweradmin/releases)
+* Visit http(s)://URL/install/ and follow the installation steps
+* Once the installation is complete, remove the `install` folder
+* Point your browser to: http(s)://URL
+* Log in using the credentials created during setup
+
+## Screenshots
+### Log in
+![The login screen](https://www.poweradmin.org/screenshots/login.png)
+### Zone list
+![List of zones](https://www.poweradmin.org/screenshots/zones.png)
