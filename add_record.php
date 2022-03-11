@@ -153,11 +153,9 @@ if (isset($_POST["commit"])) {
                     Syslog::log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
                                       $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                                       $content_rev, $fqdn_name, $ttl, $prio));
-		    if ($pdnssec_use) {
-			    if (Dnssec::dnssec_rectify_zone($zone_rev_id)) {
-				    success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
-			    }
-		    }
+		    if ($pdnssec_use && Dnssec::dnssec_rectify_zone($zone_rev_id)) {
+                success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
+            }
 
                 }
             } elseif (isset($content_rev)) {
@@ -167,13 +165,13 @@ if (isset($_POST["commit"])) {
         if (DnsRecord::add_record($zone_id, $name, $type, $content, $ttl, $prio)) {
             success(" <a href=\"edit.php?id=" . $zone_id . "\"> " . _('The record was successfully added.') . "</a>");
             Syslog::log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:%s record:%s.%s content:%s ttl:%s priority:%s',
-                              $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                              $type, $name, $zone_name, $content, $ttl, $prio));
-	    if ($pdnssec_use) {
-		    if (Dnssec::dnssec_rectify_zone($zone_id)) {
-			    success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
-		    }
-	    }
+                $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
+                $type, $name, $zone_name, $content, $ttl, $prio)
+            );
+
+            if ($pdnssec_use && Dnssec::dnssec_rectify_zone($zone_id)) {
+                success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
+            }
 
             $name = $type = $content = $ttl = $prio = "";
         }
