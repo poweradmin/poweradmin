@@ -39,7 +39,7 @@ $hook_listeners = array();
  * @param string $hook
  * @param mixed $function
  */
-function add_listener($hook, $function) {
+function add_listener(string $hook, $function) {
     if (!$hook || !$function) {
         trigger_error('add_listener requires both a hook name and a function', E_USER_ERROR);
     }
@@ -52,7 +52,7 @@ function add_listener($hook, $function) {
  *
  * @param string $hook
  */
-function clear_listeners($hook) {
+function clear_listeners(string $hook) {
     if (!$hook) {
         trigger_error('clear_listeners requires a hook name', E_USER_ERROR);
     }
