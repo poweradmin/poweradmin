@@ -138,7 +138,7 @@ function show_letters($letterstart, $userid) {
 
     $response = $db->query($query);
 
-    while ($row = $response->fetchRow()) {
+    while ($row = $response->fetch()) {
         if (preg_match("/[0-9]/", $row['letter'])) {
             $digits_available = 1;
         } elseif (in_array($row['letter'], $char_range)) {

@@ -48,7 +48,7 @@ class ZoneTemplate
         $result = $db->query($query);
 
         $zone_templ_list = array();
-        while ($zone_templ = $result->fetchRow()) {
+        while ($zone_templ = $result->fetch()) {
             $zone_templ_list[] = array(
                 "id" => $zone_templ['id'],
                 "name" => $zone_templ['name'],
@@ -102,7 +102,7 @@ class ZoneTemplate
             . " WHERE id = " . $db->quote($zone_templ_id, 'integer');
 
         $result = $db->query($query);
-        return $result->fetchRow();
+        return $result->fetch();
     }
 
     /** Delete a zone template
@@ -237,7 +237,7 @@ class ZoneTemplate
             $result = $db->query("SELECT id FROM zone_templ_records WHERE zone_templ_id=" . $db->quote($id, 'integer') . " ORDER BY " . $sortby);
             $ret[] = array();
             $retcount = 0;
-            while ($r = $result->fetchRow()) {
+            while ($r = $result->fetch()) {
                 // Call get_record_from_id for each row.
                 $ret[$retcount] = ZoneTemplate::get_zone_templ_record_from_id($r["id"]);
                 $retcount++;
@@ -463,7 +463,7 @@ class ZoneTemplate
         $result = $db->query($query);
 
         $zone_list = array();
-        while ($zone = $result->fetchRow()) {
+        while ($zone = $result->fetch()) {
             $zone_list[] = array(
                 "id" => $zone['id'],
                 "name" => $zone['name'],

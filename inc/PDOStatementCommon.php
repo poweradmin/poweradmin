@@ -21,16 +21,6 @@ class PDOStatementCommon {
     }
 
     /**
-     * Returns the number of rows in a result object
-     *
-     * @return int
-     */
-    public function numRows() {
-        // NOTE: Doesn't work properly with PDO and SQLite3
-        return $this->pdoStatement->rowCount();
-    }
-
-    /**
      * Fetch and return a row of data
      *
      * @param int $fetch_style
@@ -47,8 +37,6 @@ class PDOStatementCommon {
      * @return mixed
      */
     public function fetchRow($fetch_style = PDO::FETCH_ASSOC) {
-        $row = $this->pdoStatement->fetch($fetch_style);
-        return $row;
+        return $this->pdoStatement->fetch($fetch_style);
     }
-
 }

@@ -96,7 +96,7 @@ function list_permission_templates_local() {
     $response = $db->query($query);
 
     $template_list = array();
-    while ($template = $response->fetchRow()) {
+    while ($template = $response->fetch()) {
         $template_list [] = array(
             "id" => $template ['id'],
             "name" => $template ['name'],
@@ -151,7 +151,7 @@ function show_users_local($id = '', $rowstart = 0, $rowamount = 9999999) {
     $db->setLimit($rowamount, $rowstart);
     $response = $db->query($query);
     $ret = array();
-    while ($r = $response->fetchRow()) {
+    while ($r = $response->fetch()) {
         $ret [] = array(
             "id" => $r ["id"],
             "username" => $r ["username"],
@@ -313,7 +313,7 @@ function edit_user_local($id, $user, $fullname, $email, $perm_templ, $descriptio
         $query = "SELECT username FROM users WHERE id = " . $db->quote($id, 'integer');
         $response = $db->query($query);
 
-        $usercheck = $response->fetchRow();
+        $usercheck = $response->fetch();
 
         if ($usercheck ['username'] != $user) {
 
@@ -414,8 +414,8 @@ function get_fullname_from_userid_local($id) {
     global $db;
     if (is_numeric($id)) {
         $response = $db->query("SELECT fullname FROM users WHERE id=" . $db->quote($id, 'integer'));
-        $r = $response->fetchRow();
-        return $r ["fullname"];
+        $r = $response->fetch();
+        return $r["fullname"];
     } else {
         error(ERR_INV_ARG);
         return false;
@@ -461,7 +461,7 @@ function get_fullnames_owners_from_domainid_local($id) {
         $response = $db->query("SELECT users.id, users.fullname FROM users, zones WHERE zones.domain_id=" . $db->quote($id, 'integer') . " AND zones.owner=users.id ORDER by fullname");
         if ($response) {
             $names = array();
-            while ($r = $response->fetchRow()) {
+            while ($r = $response->fetch()) {
                 $names [] = $r ['fullname'];
             }
             return implode(', ', $names);
@@ -536,7 +536,7 @@ function get_user_detail_list_local($specific) {
 
     $response = $db->query($query);
 
-    while ($user = $response->fetchRow()) {
+    while ($user = $response->fetch()) {
         $userlist [] = array(
             "uid" => $user ['uid'],
             "username" => $user ['username'],
@@ -584,7 +584,7 @@ function get_permissions_by_template_id_local($templ_id = 0, $return_name_only =
     $response = $db->query($query);
 
     $permission_list = array();
-    while ($permission = $response->fetchRow()) {
+    while ($permission = $response->fetch()) {
         if ($return_name_only == false) {
             $permission_list [] = array(
                 "id" => $permission ['id'],
@@ -613,7 +613,7 @@ function get_permission_template_details_local($templ_id) {
 			WHERE perm_templ.id = " . $db->quote($templ_id, 'integer');
 
     $response = $db->query($query);
-    return $response->fetchRow();
+    return $response->fetch();
 }
 
 /**
@@ -732,7 +732,7 @@ function update_user_details_local($details) {
         $query = "SELECT username FROM users WHERE id = " . $db->quote($details ['uid'], 'integer');
         $response = $db->query($query);
 
-        $usercheck = $response->fetchRow();
+        $usercheck = $response->fetch();
 
         if ($usercheck ['username'] != $details ['username']) {
             // Username of user ID in the database is different from the name

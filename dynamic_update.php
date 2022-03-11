@@ -197,12 +197,12 @@ $zones_result = $db->query($zones_query);
 $was_updated = false;
 $no_update_necessary = false;
 
-while ($zone = $zones_result->fetchRow()) {
+while ($zone = $zones_result->fetch()) {
     $zone_updated = false;
     $name_query = "SELECT name, type, content FROM records WHERE domain_id='{$zone["domain_id"]}' and (type = 'A' OR type = 'AAAA') ";
     $result = $db->query($name_query);
 
-    while ($record = $result->fetchRow()) {
+    while ($record = $result->fetch()) {
         if ($hostname == $record['name']) {
             if (($record['type'] == 'A') && (valid_ip_address($ip) === 'A')) {
                 if ($ip == $record['content']) {

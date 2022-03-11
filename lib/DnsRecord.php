@@ -544,7 +544,7 @@ class DnsRecord
         $query = "SELECT id AS rid, domain_id AS zid, name, type, content, ttl, prio FROM records WHERE id = " . $db->quote($rid, 'integer');
 
         $response = $db->query($query);
-        return $response->fetchRow();
+        return $response->fetch();
     }
 
     /** Delete a record by a given record id
@@ -779,7 +779,7 @@ class DnsRecord
         global $db;
         if (is_numeric($id)) {
             $result = $db->query("SELECT domain_id FROM records WHERE id=" . $db->quote($id, 'integer'));
-            $r = $result->fetchRow();
+            $r = $result->fetch();
             return $r["domain_id"];
         } else {
             error(sprintf(ERR_INV_ARGC, "recid_to_domid", "id must be a number"));
@@ -992,7 +992,7 @@ class DnsRecord
 
         $response = $db->query($query);
         if ($response) {
-            while ($r = $response->fetchRow()) {
+            while ($r = $response->fetch()) {
                 $pos = stripos($domain, $r["name"]);
                 if ($pos !== false) {
                     // one possible searched $domain is found
@@ -1041,7 +1041,7 @@ class DnsRecord
 
         $ret = array();
 
-        while ($r = $result->fetchRow()) {
+        while ($r = $result->fetch()) {
             $ret[] = array(
                 "master_ip" => $r["ip"],
                 "ns_name" => $r["nameserver"],
@@ -1166,7 +1166,7 @@ class DnsRecord
         $result = $db->query($sqlq);
 
         $ret = array();
-        while ($r = $result->fetchRow()) {
+        while ($r = $result->fetch()) {
             //fixme: name is not guaranteed to be unique with round-robin record sets
             $ret[$r["name"]] = array(
                 "id" => $r["id"],
@@ -1285,7 +1285,7 @@ class DnsRecord
                                     ORDER BY type = 'SOA' DESC, type = 'NS' DESC, records." . $sortby);
 
                 if ($result) {
-                    while ($r = $result->fetchRow()) {
+                    while ($r = $result->fetch()) {
                         $ret[] = array(
                             "id" => $r["id"],
                             "domain_id" => $r["domain_id"],
@@ -1317,7 +1317,7 @@ class DnsRecord
 
                 $ret = array();
                 if ($result) {
-                    while ($r = $result->fetchRow()) {
+                    while ($r = $result->fetch()) {
                         $ret[] = array(
                             "id" => $r["id"],
                             "domain_id" => $r["domain_id"],
@@ -1496,7 +1496,7 @@ class DnsRecord
         $sqlq = "SELECT owner FROM zones WHERE domain_id =" . $db->quote($id, 'integer');
         $id_owners = $db->query($sqlq);
         if ($id_owners) {
-            while ($r = $id_owners->fetchRow()) {
+            while ($r = $id_owners->fetch()) {
                 $fullname = $db->queryOne("SELECT fullname FROM users WHERE id=" . $r['owner']);
                 $owners[] = array(
                     "id" => $r['owner'],
@@ -1565,7 +1565,7 @@ class DnsRecord
 
             $zonesResponse = $db->query($zonesQuery);
 
-            while ($zone = $zonesResponse->fetchRow()) {
+            while ($zone = $zonesResponse->fetch()) {
                 $zones[$zone['id']][] = $zone;
             }
             if ($zones) {
@@ -1609,7 +1609,7 @@ class DnsRecord
 
             $recordsResponse = $db->query($recordsQuery);
 
-            while ($record = $recordsResponse->fetchRow()) {
+            while ($record = $recordsResponse->fetch()) {
                 $return['records'][] = $record;
             }
         }
@@ -1958,7 +1958,7 @@ class DnsRecord
         $query = "SELECT id, domain_id, zone_templ_id FROM zones WHERE zone_templ_id <> 0";
         $result = $db->query($query);
         $zones = array();
-        while ($zone = $result->fetchRow()) {
+        while ($zone = $result->fetch()) {
             $zones[] = $zone;
         }
         return $zones;
@@ -1973,7 +1973,7 @@ class DnsRecord
         $query = "SELECT id, name, type, content FROM records WHERE domain_id = " . $db->quote($domain_id, 'integer');
         $result = $db->query($query);
         $records = array();
-        while ($zone_records = $result->fetchRow()) {
+        while ($zone_records = $result->fetch()) {
             $records[] = $zone_records;
         }
         return $records;
