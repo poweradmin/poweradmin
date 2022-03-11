@@ -38,11 +38,14 @@ For PostgreSQL
 yum install -y php-pgsql
 ```
 
+Download the project files
 * Via Git:
   * Clone the repository: ```git clone https://github.com/poweradmin/poweradmin.git```
   * Select latest tag (for example v2.2.1) or skip this if you want to run from master: ```git checkout tags/v2.2.1``` 
 * Via releases:
-  * Download latest file from [releases](https://github.com/poweradmin/poweradmin/releases)
+  * Get the latest file from [releases](https://github.com/poweradmin/poweradmin/releases)
+
+Go to the installed system in your browser
 * Visit http(s)://URL/install/ and follow the installation steps
 * Once the installation is complete, remove the `install` folder
 * Point your browser to: http(s)://URL
