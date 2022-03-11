@@ -63,7 +63,7 @@ function clear_listeners($hook) {
 /**
  * Execute a hook, call registered listener functions
  */
-function do_hook() {
+function do_hook(): bool {
     global $hook_listeners;
     $argc = func_num_args();
     $argv = func_get_args();
@@ -74,13 +74,14 @@ function do_hook() {
     $hook_name = array_shift($argv);
 
     if (!isset($hook_listeners [$hook_name])) {
-        return;
+        return false;
     }
 
     foreach ($hook_listeners [$hook_name] as $func) {
-        $response = call_user_func_array($func, (array) $argv);
-        return $response;
+        return (bool) call_user_func_array($func, $argv);
     }
+
+    return false;
 }
 
 /**
