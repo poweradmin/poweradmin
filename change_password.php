@@ -28,36 +28,17 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
+
+use Poweradmin\AppFactory;
+
 require_once 'inc/toolkit.inc.php';
-
-if (isset($_POST['submit']) && $_POST['submit']) {
-    do_hook('change_user_pass' , $_POST );
-}
-
 include_once("inc/header.inc.php");
 
-echo "    <h2>" . _('Change password') . "</h2>\n";
-echo "    <form method=\"post\" action=\"change_password.php\">\n";
-echo "     <table border=\"0\" cellspacing=\"4\">\n";
-echo "      <tr>\n";
-echo "       <td class=\"n\">" . _('Current password') . ":</td>\n";
-echo "       <td class=\"n\"><input type=\"password\" class=\"input\" name=\"currentpass\" value=\"\"></td>\n";
-echo "      </tr>\n";
-echo "      <tr>\n";
-echo "       <td class=\"n\">" . _('New password') . ":</td>\n";
-echo "       <td class=\"n\"><input type=\"password\" class=\"input\" name=\"newpass\" value=\"\"></td>\n";
-echo "      </tr>\n";
-echo "      <tr>\n";
-echo "       <td class=\"n\">" . _('New password') . ":</td>\n";
-echo "       <td class=\"n\"><input type=\"password\" class=\"input\" name=\"newpass2\" value=\"\"></td>\n";
-echo "      </tr>\n";
-echo "      <tr>\n";
-echo "       <td class=\"n\">&nbsp;</td>\n";
-echo "       <td class=\"n\">\n";
-echo "        <input type=\"submit\" class=\"button\" name=\"submit\" value=\"" . _('Change password') . "\">\n";
-echo "       </td>\n";
-echo "      </tr>\n";
-echo "     </table>\n";
-echo "    </form>\n";
+if (isset($_POST['submit']) && $_POST['submit']) {
+    do_hook('change_user_pass', $_POST);
+}
+
+$app = AppFactory::create();
+$app->render('change_password.html');
 
 include_once("inc/footer.inc.php");

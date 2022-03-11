@@ -37,7 +37,7 @@ class Application {
         $this->templateRenderer->addExtension(new I18nExtension());
     }
 
-    public function render($template, $params) {
+    public function render($template, $params = []) {
         try {
             echo $this->templateRenderer->render($template, $params);
         } catch (Error $e) {
