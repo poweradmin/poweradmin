@@ -33,10 +33,9 @@ use Poweradmin\AppFactory;
 
 require 'vendor/autoload.php';
 
-require_once 'inc/toolkit.inc.php';
-
 $app = AppFactory::create();
 
+require_once 'inc/toolkit.inc.php';
 include_once 'inc/header.inc.php';
 
 $app->render('index.html', [
