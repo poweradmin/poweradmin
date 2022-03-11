@@ -38,11 +38,6 @@ do_hook ( 'verify_permission', 'templ_perm_edit' ) ? $perm_templ_perm_edit = "1"
 do_hook ( 'verify_permission', 'user_is_ueberuser' ) ? $perm_is_godlike = "1" : $perm_is_godlike = "0";
 do_hook ( 'verify_permission', 'user_add_new' ) ? $perm_add_new = "1" : $perm_add_new = "0";
 
-// f (isset($_GET['action']) && $_GET['action'] === "switchuser" && $perm_is_godlike === "1"){
-// $_SESSION["userlogin"] = $_GET['username'];
-// echo '<meta http-equiv="refresh" content="1"/>';
-//
-
 unset ( $commit_button );
 
 if (isset ( $_POST ['commit'] )) {
@@ -62,9 +57,12 @@ echo "       <th>" . _ ( 'Fullname' ) . "</th>\n";
 echo "       <th>" . _ ( 'Description' ) . "</th>\n";
 echo "       <th>" . _ ( 'Email address' ) . "</th>\n";
 echo "       <th>" . _ ( 'Template' ) . "</th>\n";
+
+global $ldap_use;
 if ($ldap_use) {
 	echo "       <th>" . _ ( 'LDAP' ) . "</th>\n";
 }
+
 echo "       <th>" . _ ( 'Enabled' ) . "</th>\n";
 echo "      </tr>\n";
 
@@ -91,10 +89,6 @@ if (count ( $users ) > 0 ) {
 			if ($user ['uid'] != $_SESSION ["userid"]) {
 				echo "        <a href=\"delete_user.php?id=" . $user ['uid'] . "\"><img src=\"images/delete.gif\" alt=\"[ " . _ ( 'Delete user' ) . " ]\"></a>";
 			}
-			
-			// if ($user['uid'] != $_SESSION["userid"] && $perm_is_godlike == "1") {
-			// echo " <a href=\"users.php?action=switchuser&username=" . $user['username'] . "\"><img src=\"images/switch_user.png\" alt=\"[ " . _('Switch user') . " ]\"></a>\n";
-			// }
 			
 			echo "       </td>\n";
 			echo "       <td><input type=\"text\" name=\"user[" . $user ['uid'] . "][username]\" value=\"" . $user ['username'] . "\"></td>\n";
