@@ -1,0 +1,36 @@
+<h2>{% trans 'List supermasters' %}</h2>
+<table>
+    <tr>
+        <th>&nbsp;</th>
+        <th>{% trans 'IP address of supermaster' %}</th>
+        <th>{% trans 'Hostname in NS record' %}</th>
+        <th>{% trans 'Account' %}</th>
+    </tr>
+
+    {% if supermasters %}
+    {% for server in supermasters %}
+    <tr>
+        {% if perm_sm_edit %}
+        <td class="n">
+            <a href="delete_supermaster.php?master_ip={{ server['master_ip'] }}&amp;ns_name={{ server['ns_name'] }}">
+                <img src="images/delete.gif" title="{% trans 'Delete supermaster' %} {{ server['master_ip'] }}"
+                     alt="{% trans 'Delete supermaster' %}">
+            </a>
+        </td>
+        {% else %}
+        <td>&nbsp;</td>
+        {% endif %}
+        <td class="y">{{ server['master_ip'] }}</td>
+        <td class="y">{{ server['ns_name'] }}</td>
+        <td class="y">{{ server['account'] }}</td>
+    </tr>
+    {% endfor %}
+    {% else %}
+    <tr>
+        <td class="n">&nbsp;</td>
+        <td class="n" colspan="3">
+            {% trans 'There are no zones to show in this listing.' %}
+        </td>
+    </tr>
+    {% endif %}
+</table>

@@ -1039,16 +1039,16 @@ class DnsRecord
 
         $result = $db->query("SELECT ip, nameserver, account FROM supermasters");
 
-        $ret = array();
+        $supermasters = array();
 
         while ($r = $result->fetch()) {
-            $ret[] = array(
+            $supermasters[] = array(
                 "master_ip" => $r["ip"],
                 "ns_name" => $r["nameserver"],
                 "account" => $r["account"],
             );
         }
-        return (sizeof($ret) == 0 ? -1 : $ret);
+        return $supermasters;
     }
 
     /** Check if Supermaster IP address exists
