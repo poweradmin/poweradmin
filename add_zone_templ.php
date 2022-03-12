@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\AppFactory;
 use Poweradmin\ZoneTemplate;
 
 require_once 'inc/toolkit.inc.php';
@@ -36,35 +37,17 @@ require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
 
-if (!do_hook('verify_permission' , 'zone_master_add' )) {
+if (!do_hook('verify_permission', 'zone_master_add')) {
     error(ERR_PERM_ADD_ZONE_TEMPL);
 } else {
-
-    if (isset($_POST['commit'])) {
-        if (ZoneTemplate::add_zone_templ($_POST, $_SESSION['userid'])) {
-            success(SUC_ZONE_TEMPL_ADD);
-        } // TODO: otherwise repopulate values to form
+    if (isset($_POST['commit']) && ZoneTemplate::add_zone_templ($_POST, $_SESSION['userid'])) {
+        success(SUC_ZONE_TEMPL_ADD);
     }
 
-    /*
-      Display new zone template form
-     */
-
-    $username = do_hook('get_fullname_from_userid' , $_SESSION['userid'] );
-    echo "    <h2>" . _('Add zone template for') . " " . $username . "</h2>\n";
-    echo "    <form method=\"post\" action=\"add_zone_templ.php\">\n";
-    echo "     <table>\n";
-    echo "      <tr>\n";
-    echo "       <th>" . _('Name') . "</th>\n";
-    echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_name\" value=\"\"></td>\n";
-    echo "      </tr>\n";
-    echo "      <tr>\n";
-    echo "       <th>" . _('Description') . "</th>\n";
-    echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_descr\" value=\"\"></td>\n";
-    echo "      </tr>\n";
-    echo "     </table>\n";
-    echo "     <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Add zone template') . "\">\n";
-    echo "     </form>\n";
+    $app = AppFactory::create();
+    $app->render('add_zone_templ.html', [
+        'username' => do_hook('get_fullname_from_userid', $_SESSION['userid'])
+    ]);
 }
 
 include_once("inc/footer.inc.php");
