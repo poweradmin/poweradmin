@@ -1,0 +1,29 @@
+<h2>{% trans 'Zone templates for' %} {{ username }}</h2>
+<table>
+    <tr>
+        <th>&nbsp;</th>
+        <th>{% trans 'Name' %}</th>
+        <th>{% trans 'Description' %}</th>
+    </tr>
+
+    {% for template in zone_templates %}
+    <tr>
+        {% if perm_zone_master_add %}
+        <td>
+            <a href="edit_zone_templ.php?id={{ template['id'] }}"><img src="images/edit.gif"
+                                                                       alt="[ {% trans 'Edit template' %} ]"></a>
+            <a href="delete_zone_templ.php?id={{ template['id'] }}"><img src="images/delete.gif"
+                                                                         alt="[ {% trans 'Delete template' %} ]"></a>
+        </td>
+        {% else %}
+        <td>&nbsp;</td>
+        {% endif %}
+        <td class="y">{{ template['name'] }}</td>
+        <td class="y">{{ template['descr'] }}</td>
+    </tr>
+    {% endfor %}
+
+</table>
+<ul>
+    <li><a href="add_zone_templ.php">{% trans 'Add zone template' %}</a>.</li>
+</ul>

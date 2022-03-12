@@ -1,0 +1,14 @@
+<h2>{% trans 'Add zone template for' %} {{ username }}</h2>
+<form method="post" action="add_zone_templ.php">
+    <table>
+        <tr>
+            <th>{% trans 'Name' %}</th>
+            <td><input class="wide" type="text" name="templ_name" value=""></td>
+        </tr>
+        <tr>
+            <th>{% trans 'Description' %}</th>
+            <td><input class="wide" type="text" name="templ_descr" value=""></td>
+        </tr>
+    </table>
+    <input type="submit" class="button" name="commit" value="{% trans 'Add zone template' %}">
+</form>

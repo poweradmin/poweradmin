@@ -29,47 +29,23 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\AppFactory;
 use Poweradmin\ZoneTemplate;
 
 require_once 'inc/toolkit.inc.php';
 include_once 'inc/header.inc.php';
 
-do_hook('verify_permission', 'zone_master_add') ? $perm_zone_master_add = "1" : $perm_zone_master_add = "0";
+$perm_zone_master_add = do_hook('verify_permission', 'zone_master_add');
 
-$zone_templates = ZoneTemplate::get_list_zone_templ($_SESSION['userid']);
-$username = do_hook('get_fullname_from_userid', $_SESSION['userid']);
-
-if ($perm_zone_master_add == "0") {
+if (!$perm_zone_master_add) {
     error(ERR_PERM_EDIT_ZONE_TEMPL);
 } else {
-    echo "    <h2>" . _('Zone templates for') . " " . $username . "</h2>\n";
-    echo "     <table>\n";
-    echo "      <tr>\n";
-    echo "       <th>&nbsp;</th>\n";
-    echo "       <th>" . _('Name') . "</th>\n";
-    echo "       <th>" . _('Description') . "</th>\n";
-    echo "      </tr>\n";
-
-    foreach ($zone_templates as $template) {
-
-        echo "      <tr>\n";
-        if ($perm_zone_master_add == "1") {
-            echo "       <td>\n";
-            echo "        <a href=\"edit_zone_templ.php?id=" . $template["id"] . "\"><img src=\"images/edit.gif\" alt=\"[ " . _('Edit template') . " ]\"></a>\n";
-            echo "        <a href=\"delete_zone_templ.php?id=" . $template["id"] . "\"><img src=\"images/delete.gif\" alt=\"[ " . _('Delete template') . " ]\"></a>\n";
-            echo "       </td>\n";
-        } else {
-            echo "       <td>&nbsp;</td>\n";
-        }
-        echo "       <td class=\"y\">" . $template['name'] . "</td>\n";
-        echo "       <td class=\"y\">" . $template['descr'] . "</td>\n";
-        echo "      </tr>\n";
-    }
-
-    echo "     </table>\n";
-    echo "     <ul>\n";
-    echo "      <li><a href=\"add_zone_templ.php\">" . _('Add zone template') . "</a>.</li>\n";
-    echo "     </ul>\n";
+    $app = AppFactory::create();
+    $app->render('list_zone_templ.html', [
+        'perm_zone_master_add' => $perm_zone_master_add,
+        'username' => do_hook('get_fullname_from_userid', $_SESSION['userid']),
+        'zone_templates' => ZoneTemplate::get_list_zone_templ($_SESSION['userid'])
+    ]);
 }
 
 include_once("inc/footer.inc.php");
