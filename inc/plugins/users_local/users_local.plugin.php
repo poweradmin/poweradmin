@@ -52,7 +52,8 @@ require_once dirname(dirname(dirname(__DIR__))) . '/vendor/autoload.php';
  *
  * @return boolean true if user has permission, false otherwise
  */
-function verify_permission_local($arg) {
+function verify_permission_local($arg)
+{
     if (is_array($arg)) {
         $permission = $arg [0];
     } else {
@@ -90,7 +91,8 @@ function verify_permission_local($arg) {
  *
  * @return mixed[] array of templates [id, name, descr]
  */
-function list_permission_templates_local() {
+function list_permission_templates_local()
+{
     global $db;
     $query = "SELECT * FROM perm_templ ORDER BY name";
     $response = $db->query($query);
@@ -117,7 +119,8 @@ function list_permission_templates_local() {
  *
  * @return mixed[] array with all users [id,username,fullname,email,description,active,numdomains]
  */
-function show_users_local($id = '', $rowstart = 0, $rowamount = 9999999) {
+function show_users_local($id = '', $rowstart = 0, $rowamount = 9999999)
+{
 
     global $db;
     $add = '';
@@ -174,7 +177,8 @@ function show_users_local($id = '', $rowstart = 0, $rowamount = 9999999) {
  *
  * @return boolean true if user exists, false if users doesnt exist
  */
-function is_valid_user_local($id) {
+function is_valid_user_local($id)
+{
     global $db;
     if (is_numeric($id)) {
         $response = $db->queryOne("SELECT id FROM users WHERE id=" . $db->quote($id, 'integer'));
@@ -191,7 +195,8 @@ function is_valid_user_local($id) {
  *
  * @return boolean true if exists, false if not
  */
-function user_exists($user) {
+function user_exists($user)
+{
     global $db;
     $response = $db->queryOne("SELECT id FROM users WHERE username=" . $db->quote($user, 'text'));
     return ($response ? true : false);
@@ -210,7 +215,8 @@ function user_exists($user) {
  *
  * @return boolean true on success, false otherwise
  */
-function delete_user_local($uid, $zones) {
+function delete_user_local($uid, $zones)
+{
     global $db;
 
     if (($uid != $_SESSION ['userid'] && !do_hook('verify_permission', 'user_edit_others')) || ($uid == $_SESSION ['userid'] && !do_hook('verify_permission', 'user_edit_own'))) {
@@ -246,7 +252,8 @@ function delete_user_local($uid, $zones) {
  *
  * @return boolean true on success, false otherwise
  */
-function delete_perm_templ_local($ptid) {
+function delete_perm_templ_local($ptid)
+{
     global $db;
     if (!(do_hook('verify_permission', 'user_edit_templ_perm'))) {
         error(ERR_PERM_DEL_PERM_TEMPL);
@@ -284,7 +291,8 @@ function delete_perm_templ_local($ptid) {
  *
  * @return boolean true if succesful, false otherwise
  */
-function edit_user_local($id, $user, $fullname, $email, $perm_templ, $description, $active, $password) {
+function edit_user_local($id, $user, $fullname, $email, $perm_templ, $description, $active, $password)
+{
     global $db;
 
     do_hook('verify_permission', 'user_edit_own') ? $perm_edit_own = "1" : $perm_edit_own = "0";
@@ -305,7 +313,7 @@ function edit_user_local($id, $user, $fullname, $email, $perm_templ, $descriptio
         // change the username. If the user wants to change the username, we need
         // to make sure it doesn't already exists.
         //
-		// First find the current username of the user ID we want to change. If the
+        // First find the current username of the user ID we want to change. If the
         // current username is not the same as the username that was given by the
         // user, the username should apparently changed. If so, check if the "new"
         // username already exists.
@@ -362,7 +370,8 @@ email = " . $db->quote($email, 'text') . ",";
  * @param string $password New password
  * @return void
  */
-function update_user_password($id, $password) {
+function update_user_password($id, $password)
+{
     global $db;
     $query = "UPDATE users SET password = " . $db->quote(Password::hash($password), 'text') . " WHERE id = " . $db->quote($id, 'integer');
     $db->query($query);
@@ -410,7 +419,8 @@ function change_user_pass_local($details)
  *
  * @return string Full Name
  */
-function get_fullname_from_userid_local($id) {
+function get_fullname_from_userid_local($id)
+{
     global $db;
     if (is_numeric($id)) {
         $response = $db->query("SELECT fullname FROM users WHERE id=" . $db->quote($id, 'integer'));
@@ -432,7 +442,8 @@ function get_fullname_from_userid_local($id) {
  *
  * @return string Full Name
  */
-function get_owner_from_id_local($id) {
+function get_owner_from_id_local($id)
+{
     global $db;
     if (is_numeric($id)) {
         $response = $db->queryRow("SELECT fullname FROM users WHERE id=" . $db->quote($id, 'integer'));
@@ -449,13 +460,14 @@ function get_owner_from_id_local($id) {
 /**
  * Get Full Names of owners for a Domain ID
  *
- * @todo also fetch the subowners
- *
  * @param int $id Domain ID
  *
  * @return string[] array of owners for domain
+ * @todo also fetch the subowners
+ *
  */
-function get_fullnames_owners_from_domainid_local($id) {
+function get_fullnames_owners_from_domainid_local($id)
+{
     global $db;
     if (is_numeric($id)) {
         $response = $db->query("SELECT users.id, users.fullname FROM users, zones WHERE zones.domain_id=" . $db->quote($id, 'integer') . " AND zones.owner=users.id ORDER by fullname");
@@ -478,7 +490,8 @@ function get_fullnames_owners_from_domainid_local($id) {
  *
  * @return int 1 if owner, 0 if not owner
  */
-function verify_user_is_owner_zoneid_local($zoneid) {
+function verify_user_is_owner_zoneid_local($zoneid)
+{
     global $db;
 
     $userid = $_SESSION ["userid"];
@@ -500,7 +513,8 @@ function verify_user_is_owner_zoneid_local($zoneid) {
  *
  * @return mixed[] array of user details
  */
-function get_user_detail_list_local($specific) {
+function get_user_detail_list_local($specific)
+{
     global $db;
     global $ldap_use;
 
@@ -566,7 +580,8 @@ function get_user_detail_list_local($specific) {
  *
  * @return mixed[] array of permissions [id,name,descr] or permission names [name]
  */
-function get_permissions_by_template_id_local($templ_id = 0, $return_name_only = false) {
+function get_permissions_by_template_id_local($templ_id = 0, $return_name_only = false)
+{
     global $db;
 
     $limit = '';
@@ -605,7 +620,8 @@ function get_permissions_by_template_id_local($templ_id = 0, $return_name_only =
  *
  * @return mixed[] Template details
  */
-function get_permission_template_details_local($templ_id) {
+function get_permission_template_details_local($templ_id)
+{
     global $db;
 
     $query = "SELECT *
@@ -623,7 +639,8 @@ function get_permission_template_details_local($templ_id) {
  *
  * @return boolean true on success, false otherwise
  */
-function add_perm_templ_local($details) {
+function add_perm_templ_local($details)
+{
     global $db;
     global $db_type;
 
@@ -657,7 +674,8 @@ function add_perm_templ_local($details) {
  *
  * @return boolean true on success, false otherwise
  */
-function update_perm_templ_details_local($details) {
+function update_perm_templ_details_local($details)
+{
     global $db;
 
     // Fix permission template name and description first.
@@ -695,7 +713,8 @@ function update_perm_templ_details_local($details) {
  *
  * @return boolean true on success, false otherwise
  */
-function update_user_details_local($details) {
+function update_user_details_local($details)
+{
     global $db;
 
     do_hook('verify_permission', 'user_edit_own') ? $perm_edit_own = "1" : $perm_edit_own = "0";
@@ -786,7 +805,8 @@ function update_user_details_local($details) {
  *
  * @return boolean true on success, false otherwise
  */
-function add_new_user_local($details) {
+function add_new_user_local($details)
+{
     global $db;
     global $ldap_use;
 
