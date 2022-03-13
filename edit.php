@@ -311,21 +311,25 @@ if ($records == "-1") {
         }
         echo "     </tr>\n";
     }
-    echo "    <tr>\n";
-    echo "     <td colspan=\"6\">&nbsp;</td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "     <td>&nbsp;</td><td colspan=\"5\">Comments:</td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "     <td class=\"n\">\n";
-    echo "      <a href=\"edit_comment.php?domain=" . $zone_id . "\">
-                            <img src=\"images/edit.gif\" alt=\"[ " . _('Edit comment') . " ]\"></a>\n";
-    echo "     </td>\n";
-    echo "     <td colspan=\"4\"><textarea rows=\"5\" cols=\"80\" name=\"comment\">" . htmlspecialchars(DnsRecord::get_zone_comment($zone_id)) . "</textarea></td>\n";
-    echo "     <td>&nbsp;</td>\n";
 
-    echo "     <tr>\n";
+    global $iface_zone_comments;
+    if ($iface_zone_comments) {
+        echo "    <tr>\n";
+        echo "     <td colspan=\"6\">&nbsp;</td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "     <td>&nbsp;</td><td colspan=\"5\">Comments:</td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "     <td class=\"n\">\n";
+        echo "      <a href=\"edit_comment.php?domain=" . $zone_id . "\">
+                                <img src=\"images/edit.gif\" alt=\"[ " . _('Edit comment') . " ]\"></a>\n";
+        echo "     </td>\n";
+        echo "     <td colspan=\"4\"><textarea rows=\"5\" cols=\"80\" name=\"comment\">" . htmlspecialchars(DnsRecord::get_zone_comment($zone_id)) . "</textarea></td>\n";
+        echo "     <td>&nbsp;</td>\n";
+        echo "     <tr>\n";
+    }
+
     echo "      <th colspan=\"6\"><br>Save as new template:</th>\n";
     echo "     </tr>\n";
     echo "     <tr>\n";

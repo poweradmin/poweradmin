@@ -42,6 +42,7 @@ $iface_zonelist_serial = false;
 $iface_title = 'Poweradmin';
 $iface_add_reverse_record = true;
 $iface_zone_type_default = 'MASTER'; // or 'NATIVE'
+$iface_zone_comments = true; // Show or hide zone comments
 
 // Predefined DNS settings
 $dns_hostmaster = '';
