@@ -127,8 +127,10 @@ if ($zone_master_add != "1") {
     echo "        <td class=\"n\">" . _('Type') . ":</td>\n";
     echo "        <td class=\"n\">\n";
     echo "         <select name=\"dom_type\">\n";
+    global $iface_zone_type_default;
     foreach ($available_zone_types as $type) {
-        echo "          <option value=\"" . $type . "\">" . strtolower($type) . "</option>\n";
+        $type == $iface_zone_type_default ? $selected = ' selected' : $selected = '';
+        echo "          <option value=\"" . $type . "\" $selected>" . strtolower($type) . "</option>\n";
     }
     echo "         </select>\n";
     echo "        </td>\n";
