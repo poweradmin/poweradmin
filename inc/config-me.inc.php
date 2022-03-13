@@ -50,6 +50,7 @@ $dns_ns2 = '';
 $dns_ns3 = '';
 $dns_ns4 = '';
 $dns_ttl = 86400;
+$dns_soa  = '28800 7200 604800 86400'; // refresh, retry, expire, minimum
 $dns_strict_tld_check = false;
 $dns_top_level_tld_check = false;     // Don't allow to create top level TLDs
 $dns_third_level_check = false;
