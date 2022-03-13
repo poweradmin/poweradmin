@@ -45,8 +45,9 @@ require_once 'inc/message.inc.php';
 include_once 'inc/header.inc.php';
 
 global $pdnssec_use;
-
+global $iface_add_reverse_record;
 global $iface_rowamount;
+
 if (isset($_GET["start"])) {
     define('ROWSTART', (($_GET["start"] - 1) * $iface_rowamount));
 } else {
@@ -379,6 +380,7 @@ if ($perm_content_edit == "all" || ($perm_content_edit == "own" || $perm_content
         echo "        <td class=\"n\">\n";
         echo "         <select name=\"type\">\n";
         $found_selected_type = !(isset($type) && $type);
+        $rev = "";
         foreach (RecordType::getTypes() as $record_type) {
             if (isset($type) && $type) {
                 if ($type == $record_type) {
@@ -390,7 +392,6 @@ if ($perm_content_edit == "all" || ($perm_content_edit == "own" || $perm_content
             } else {
                 if (preg_match('/i(p6|n-addr).arpa/i', $zone_name) && strtoupper($record_type) == 'PTR') {
                     $add = " SELECTED";
-                    $rev = "";
                 } else if ((strtoupper($record_type) == 'A') && $iface_add_reverse_record) {
                     $add = " SELECTED";
                     $rev = "<input type=\"checkbox\" name=\"reverse\"><span class=\"normaltext\">" . _('Add also reverse record') . "</span>\n";
@@ -400,8 +401,9 @@ if ($perm_content_edit == "all" || ($perm_content_edit == "own" || $perm_content
             }
             echo "          <option" . $add . " value=\"" . htmlspecialchars($record_type) . "\">" . $record_type . "</option>\n";
         }
-        if (!$found_selected_type)
+        if (!$found_selected_type) {
             echo "         <option SELECTED value=\"" . htmlspecialchars($type) . "\"><i>" . htmlspecialchars($type) . "</i></option>\n";
+        }
         echo "         </select>\n";
         echo "        </td>\n";
         echo "        <td class=\"n\"><input type=\"text\" name=\"content\" class=\"input\" value=\"\"></td>\n";
