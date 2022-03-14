@@ -1,0 +1,129 @@
+<h2>{% trans 'User administration' %}</h2>
+<form method="post" action="">
+    <table>
+        <tr>
+            <th>&nbsp;</th>
+            <th>{% trans 'Username' %}</th>
+            <th>{% trans 'Fullname' %}</th>
+            <th>{% trans 'Description' %}</th>
+            <th>{% trans 'Email address' %}</th>
+            <th>{% trans 'Template' %}</th>
+
+            {% if ldap_use %}
+            <th>{% trans 'LDAP' %}</th>
+            {% endif %}
+
+            <th>{% trans 'Enabled' %}</th>
+        </tr>
+
+        {% for user in users %}
+
+        {% if user['active'] %}
+        {% set active = 'checked' %}
+        {% endif %}
+
+        {% if user['use_ldap'] %}
+        {% set use_ldap = 'checked' %}
+        {% endif %}
+
+        {% set user_uid = user['uid'] %}
+
+        {% if (user_uid == session_userid and perm_edit_own) or (user_uid != session_userid and perm_edit_others) %}
+        <tr>
+            <td>
+                <input type="hidden" name="user[{{ user_uid }}][uid]" value="{{ user_uid }}">
+                <a href="edit_user.php?id={{ user_uid }}">
+                    <img src="images/edit.gif" alt="{% trans 'Edit user' %}">
+                </a>
+
+                {% if user['uid'] != session_userid %}
+                <a href="delete_user.php?id={{ user['uid'] }}">
+                    <img src="images/delete.gif" alt="{% trans 'Delete user' %}">
+                </a>
+                {% endif %}
+            </td>
+            <td><input type="text" name="user[{{ user['uid'] }}][username]" value="{{ user ['username'] }}"></td>
+            <td><input type="text" name="user[{{ user['uid'] }}][fullname]" value="{{ user ['fullname'] }}"></td>
+            <td><input type="text" name="user[{{ user['uid'] }}][descr]" value="{{ user ['descr'] }}"></td>
+            <td><input type="text" name="user[{{ user['uid'] }}][email]" value="{{ user ['email'] }}"></td>
+            <td>
+                {% if perm_templ_perm_edit %}
+                <select name="user[{{ user['uid'] }}][templ_id]">
+                    {% for template in perm_templates %}
+                    {% if template['id'] == user['tpl_id'] %}
+                    {% set selected = 'SELECTED' %}
+                    {% else %}
+                    {% set selected = '' %}
+                    {% endif %}
+                    <option value="{{ template['id'] }}" {{ selected }}>{{ template['name'] }}</option>
+                    {% endfor %}
+                </select>
+                {% else %}
+                <input type="hidden" name="user[{{ user['uid'] }}][templ_id]" value="{{ user['tpl_id'] }}">
+                {{ user['tpl_name'] }}
+                {% endif %}
+            </td>
+
+            {% if ldap_use %}
+            {% if perm_is_godlike %}
+            <td><input type="checkbox" name="user[{{ user['uid'] }}][use_ldap]" {{ use_ldap }}></td>
+            {% else %}
+            {% if use_ldap == "checked" %}
+            <td>Yes</td>
+            {% else %}
+            <td>No</td>
+            {% endif %}
+            {% endif %}
+            {% endif %}
+
+            {% if user['uid'] != session_userid %}
+            <td><input type="checkbox" name="user[{{ user['uid'] }}][active]" {{ active }}></td>
+            {% else %}
+            <td><input type="hidden" name="user[{{ user['uid'] }}][active]" value="on"></td>
+            {% endif %}
+        </tr>
+        {% else %}
+        <tr>
+            <td>&nbsp;</td>
+            <td>{{ user['username'] }}</td>
+            <td>{{ user['fullname'] }}</td>
+            <td>{{ user['descr'] }}</td>
+            <td>{{ user['email'] }}</td>
+            <td>{{ user['tpl_name'] }}</td>
+
+            {% if active == "checked" %}
+            <td>Yes</td>
+            {% else %}
+            <td>No</td>
+            {% endif %}
+
+            {% if use_ldap == "checked" %}
+            <td>Yes</td>
+            {% else %}
+            <td>No</td>
+            {% endif %}
+        </tr>
+        {% endif %}
+        {% endfor %}
+
+    </table>
+
+    <input type="submit" class="button" name="commit" value="{% trans 'Commit changes' %}">
+    <input type="reset" class="button" name="reset" value="{% trans 'Reset changes' %}">
+</form>
+
+{% if perm_templ_perm_edit or perm_add_new %}
+<ul>
+    {% endif %}
+
+    {% if perm_templ_perm_edit %}
+    <li><a href="list_perm_templ.php">{% trans 'Edit permission template' %}</a>.</li>
+    {% endif %}
+
+    {% if perm_add_new %}
+    <li><a href="add_user.php">{% trans 'Add user' %}</a>.</li>
+    {% endif %}
+
+    {% if perm_templ_perm_edit or perm_add_new %}
+</ul>
+{% endif %}
