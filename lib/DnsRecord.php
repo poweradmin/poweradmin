@@ -1565,6 +1565,7 @@ class DnsRecord
 
             $zonesResponse = $db->query($zonesQuery);
 
+            $zones = [];
             while ($zone = $zonesResponse->fetch()) {
                 $zones[$zone['id']][] = $zone;
             }
