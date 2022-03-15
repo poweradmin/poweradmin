@@ -172,7 +172,7 @@ if ($perm_view == "none") {
             echo "           <a href=\"delete_domain.php?name=" . $zone['name'] . "&id=" . $zone["id"] . "\"><img src=\"images/delete.gif\" title=\"" . _('Delete zone') . " " . $zone['name'] . "\" alt=\"[ " . _('Delete zone') . " " . $zone['name'] . " ]\"></a>\n";
         }
         echo "          </td>\n";
-        echo "          <td class=\"name\">" . idn_to_utf8($zone["name"]) . "</td>\n";
+        echo "          <td class=\"name\">" . idn_to_utf8($zone["name"], IDNA_NONTRANSITIONAL_TO_ASCII) . "</td>\n";
         echo "          <td class=\"type\">" . strtolower($zone["type"]) . "</td>\n";
         echo "          <td class=\"count\">" . $zone["count_records"] . "</td>\n";
         echo "          <td class=\"owner\">" . $zone["owner"] . "</td>\n";

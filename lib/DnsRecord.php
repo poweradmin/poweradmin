@@ -1538,7 +1538,8 @@ class DnsRecord
             $reverse_search_string = $db->quote('%' . $reverse_search_string . '%', 'text');
         }
 
-        $search_string = ($parameters['wildcard'] ? '%' : '') . trim($parameters['query']) . ($parameters['wildcard'] ? '%' : '');
+        $needle = idn_to_ascii(trim($parameters['query']), IDNA_NONTRANSITIONAL_TO_ASCII);
+        $search_string = ($parameters['wildcard'] ? '%' : '') . $needle . ($parameters['wildcard'] ? '%' : '');
 
         if ($parameters['zones']) {
             $zonesQuery = '
@@ -1579,7 +1580,9 @@ class DnsRecord
                     }
                     $zones[$zone_id][0]['owner'] = implode(', ', $zone_owner_ids);
                     $zones[$zone_id][0]['fullname'] = implode(', ', $zone_owner_fullnames);
-                    $return['zones'][] = $zones[$zone_id][0];
+                    $found_zone = $zones[$zone_id][0];
+                    $found_zone['name'] = idn_to_utf8($found_zone['name'], IDNA_NONTRANSITIONAL_TO_ASCII);
+                    $return['zones'][] = $found_zone;
                 }
             }
         }
@@ -1611,7 +1614,9 @@ class DnsRecord
             $recordsResponse = $db->query($recordsQuery);
 
             while ($record = $recordsResponse->fetch()) {
-                $return['records'][] = $record;
+                $found_record = $record;
+                $found_record['name'] = idn_to_utf8($found_record['name'], IDNA_NONTRANSITIONAL_TO_ASCII);
+                $return['records'][] = $found_record;
             }
         }
 

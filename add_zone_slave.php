@@ -48,7 +48,7 @@ if ((isset($_POST['owner'])) && (Validation::is_number($_POST['owner']))) {
 
 $zone = "";
 if (isset($_POST['domain'])) {
-    $zone = idn_to_ascii(trim($_POST['domain']));
+    $zone = idn_to_ascii(trim($_POST['domain']), IDNA_NONTRANSITIONAL_TO_ASCII);
 }
 
 $master = "";
