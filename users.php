@@ -34,8 +34,8 @@ use Poweradmin\AppFactory;
 require_once 'inc/toolkit.inc.php';
 include_once 'inc/header.inc.php';
 
-if (isset ($_POST ['commit'])) {
-    foreach ($_POST ['user'] as $user) {
+if (isset ($_POST['commit'])) {
+    foreach ($_POST['user'] as $user) {
         do_hook('update_user_details', $user);
     }
 }
