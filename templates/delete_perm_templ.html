@@ -1,0 +1,5 @@
+<h2>{% trans 'Delete permission template' %} "{{ templ_name }}"</h2>
+
+<p>{% trans 'Are you sure?' %}</p>
+<input type="button" class="button" onClick="location.href='delete_perm_templ.php?id={{ perm_templ_id }}&confirm=1'" value="{% trans 'Yes' %}">
+<input type="button" class="button" onClick="location.href='index.php'" value="{% trans 'No' %}">

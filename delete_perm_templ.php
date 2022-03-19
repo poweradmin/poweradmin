@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\AppFactory;
 use Poweradmin\Validation;
 
 require_once 'inc/toolkit.inc.php';
@@ -36,36 +37,35 @@ require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
 
-$perm_templ = "-1";
-if (isset($_GET['id']) && (Validation::is_number($_GET['id']))) {
-    $perm_templ = $_GET['id'];
+if (!do_hook('verify_permission' , 'user_edit_templ_perm' )) {
+    error(ERR_PERM_DEL_PERM_TEMPL);
+    include_once('inc/footer.inc.php');
+    die();
 }
 
-$confirm = "-1";
-if ((isset($_GET['confirm'])) && Validation::is_number($_GET['confirm'])) {
-    $confirm = $_GET['confirm'];
-}
-
-if ($perm_templ == "-1") {
+if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
     error(ERR_INV_INPUT);
-} else {
-    if (!(do_hook('verify_permission' , 'user_edit_templ_perm' ))) {
-        error(ERR_PERM_DEL_PERM_TEMPL);
-    } else {
-        $templ_details = do_hook('get_permission_template_details' , $perm_templ );
-        echo "     <h2>" . _('Delete permission template') . " \"" . $templ_details['name'] . "\"</h2>\n";
-
-        if (isset($_GET['confirm']) && $_GET["confirm"] == '1') {
-            if (do_hook('delete_perm_templ', $perm_templ)) {
-                success(SUC_PERM_TEMPL_DEL);
-            }
-        } else {
-            echo "     <p>" . _('Are you sure?') . "</p>\n";
-            echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='delete_perm_templ.php?id=" . $perm_templ . "&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
-            echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
-        }
-    }
+    include_once('inc/footer.inc.php');
+    die();
 }
+
+$perm_templ_id = $_GET['id'];
+
+if (isset($_GET['confirm']) && Validation::is_number($_GET['confirm']) && $_GET["confirm"] == '1') {
+    if (do_hook('delete_perm_templ', $perm_templ_id)) {
+        success(SUC_PERM_TEMPL_DEL);
+    }
+    include_once('inc/footer.inc.php');
+    die();
+}
+
+$templ_details = do_hook('get_permission_template_details' , $perm_templ_id );
+
+$app = AppFactory::create();
+$app->render('delete_perm_templ.html', [
+    'perm_templ_id' => $perm_templ_id,
+    'templ_name' => $templ_details['name'],
+]);
 
 include_once("inc/footer.inc.php");
 
