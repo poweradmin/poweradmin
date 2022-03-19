@@ -132,14 +132,11 @@ if ($zone_master_add != "1") {
     echo "     <form method=\"post\" action=\"add_zone_master.php\">\n";
     echo "      <table>\n";
     echo "       <tr>\n";
-    echo "        <td class=\"n\">" . _('Zone name') . ":</td>\n";
+    echo "        <td class=\"n\" width=\"150\">" . _('Zone name') . ":</td>\n";
     echo "        <td class=\"n\">\n";
     echo "         <ul id=\"domain_names\" style=\"list-style-type:none; padding:0 \">\n";
     echo "          <li><input type=\"text\" class=\"input\" name=\"domain[]\" value=\"\" id=\"domain_1\"></li>\n";
-    echo "         </ol>\n";
-    echo "        </td>\n";
-    echo "        <td class=\"n\">\n";
-    echo "         <input class=\"button\" type=\"button\" value=\"Add another domain\" onclick=\"addField('domain_names','domain_',0);\" />\n";
+    echo "         </ul>\n";
     echo "        </td>\n";
     echo "       </tr>\n";
     echo "       <tr>\n";
@@ -159,7 +156,6 @@ if ($zone_master_add != "1") {
     }
     echo "         </select>\n";
     echo "        </td>\n";
-    echo "        <td class=\"n\">&nbsp;</td>\n";
     echo "       </tr>\n";
     echo "       <tr>\n";
     echo "        <td class=\"n\">" . _('Type') . ":</td>\n";
@@ -172,7 +168,6 @@ if ($zone_master_add != "1") {
     }
     echo "         </select>\n";
     echo "        </td>\n";
-    echo "        <td>&nbsp;</td>\n";
     echo "       </tr>\n";
     echo "       <tr>\n";
     echo "        <td class=\"n\">" . _('Template') . ":</td>\n";
@@ -184,7 +179,6 @@ if ($zone_master_add != "1") {
     }
     echo "         </select>\n";
     echo "        </td>\n";
-    echo "        <td>&nbsp;</td>\n";
     echo "       </tr>\n";
     echo "       <tr>\n";
     echo "        <td class=\"n\">" . _('DNSSEC') . ":</td>\n";
@@ -195,7 +189,6 @@ if ($zone_master_add != "1") {
     echo "        <td class=\"n\">\n";
     echo "         <input type=\"submit\" class=\"button\" name=\"submit\" value=\"" . _('Add zone') . "\" onclick=\"checkDomainFilled();return false;\">\n";
     echo "        </td>\n";
-    echo "        <td class=\"n\">&nbsp;</td>\n";
     echo "       </tr>\n";
     echo "      </table>\n";
     echo "     </form>\n";

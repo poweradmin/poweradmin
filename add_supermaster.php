@@ -71,7 +71,7 @@ if ($supermasters_add != "1") {
     echo "     <form method=\"post\" action=\"add_supermaster.php\">\n";
     echo "      <table>\n";
     echo "       <tr>\n";
-    echo "        <td class=\"n\">" . _('IP address of supermaster') . "</td>\n";
+    echo "        <td class=\"n\" width=\"200\">" . _('IP address of supermaster') . "</td>\n";
     echo "        <td class=\"n\">\n";
     if ($error) {
         echo "         <input type=\"text\" class=\"input\" name=\"master_ip\" value=\"" . $master_ip . "\">\n";

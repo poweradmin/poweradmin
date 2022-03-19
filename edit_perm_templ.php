@@ -63,11 +63,11 @@ if ($id == "-1") {
 
     echo "     <table>\n";
     echo "      <tr>\n";
-    echo "       <th>" . _('Name') . "</th>\n";
-    echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_name\" value=\"" . $templ['name'] . "\"></td>\n";
+    echo "       <td width=\"100\">" . _('Name') . "</td>\n";
+    echo "       <td><input class=\"input\" type=\"text\" name=\"templ_name\" value=\"" . $templ['name'] . "\"></td>\n";
     echo "      </tr>\n";
     echo "      <tr>\n";
-    echo "       <th>" . _('Description') . "</th>\n";
+    echo "       <td>" . _('Description') . "</td>\n";
     echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_descr\" value=\"" . $templ['descr'] . "\"></td>\n";
     echo "      </tr>\n";
     echo "     </table>\n";

@@ -93,7 +93,7 @@ if ($zone_slave_add != "1") {
     echo "     <form method=\"post\" action=\"add_zone_slave.php\">\n";
     echo "      <table>\n";
     echo "       <tr>\n";
-    echo "        <td class=\"n\">" . _('Zone name') . "</td>\n";
+    echo "        <td class=\"n\" width=\"200\">" . _('Zone name') . "</td>\n";
     echo "        <td class=\"n\">\n";
     echo "         <input type=\"text\" class=\"input\" name=\"domain\" value=\"\">\n";
     echo "        </td>\n";
