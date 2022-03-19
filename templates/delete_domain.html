@@ -1,0 +1,16 @@
+<h2>{% trans 'Delete zone' %} "{{ zone_info['name'] }}"</h2>
+{% trans 'Owner' %}: {{ zone_owners }}<br>
+{% trans 'Type' %}: {{ zone_info['type'] }}
+
+{% if slave_master_exists %}
+<p>
+    {% trans %}You are about to delete a slave zone of which the master nameserver is a supermaster. Deleting the
+    zone now, will result in temporary removal only. Whenever the supermaster sends a notification for this zone, it
+    will be added again!{% endtrans %}
+</p>
+{% endif %}
+
+<p>{% trans 'Are you sure?' %}</p>
+<input type="button" class="button" onClick="location.href='delete_domain.php?id={{ zone_id }}&confirm=1'"
+       value="{% trans 'Yes' %}">
+<input type="button" class="button" onClick="location.href='index.php'" value="{% trans 'No' %}">
