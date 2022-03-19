@@ -1,0 +1,11 @@
+<h2>{% trans 'Delete supermaster' %} "{{ master_ip }}"</h2>
+
+<p>
+    {% trans 'Hostname in NS record' %}: {{ info['ns_name'] }}<br>
+    {% trans 'Account' %}: {{ info['account'] }}
+</p>
+<p>{% trans 'Are you sure?' %}</p>
+<input type="button" class="button"
+       onClick="location.href='delete_supermaster.php?master_ip={{ master_ip }}&ns_name={{ info['ns_name'] }}&confirm=1'"
+       value="{% trans 'Yes' %}">
+<input type="button" class="button" onClick="location.href='index.php'" value="{% trans 'No' %}">

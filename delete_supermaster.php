@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\AppFactory;
 use Poweradmin\Dns;
 use Poweradmin\DnsRecord;
 use Poweradmin\Validation;
@@ -38,51 +39,52 @@ require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
 
-$master_ip = "-1";
-if (isset($_GET['master_ip']) && (Dns::is_valid_ipv4($_GET['master_ip']) || Dns::is_valid_ipv6($_GET['master_ip']))) {
-    $master_ip = $_GET['master_ip'];
-}
-
-$ns_name = "-1";
-if (isset($_GET['ns_name']) && (Dns::is_valid_hostname_fqdn($_GET['ns_name'], 0))) {
-    $ns_name = $_GET['ns_name'];
-}
-
-$confirm = "-1";
-if ((isset($_GET['confirm'])) && (Validation::is_number($_GET['confirm']))) {
-    $confirm = $_GET['confirm'];
-}
-
-if ($master_ip == "-1" || $ns_name == "-1") {
+if (!isset($_GET['master_ip']) || !Dns::is_valid_ipv4($_GET['master_ip']) && !Dns::is_valid_ipv6($_GET['master_ip'])) {
     error(ERR_INV_INPUT);
-} else {
-    (do_hook('verify_permission' , 'supermaster_edit' )) ? $perm_sm_edit = "1" : $perm_sm_edit = "0";
-    if ($perm_sm_edit == "0") {
-        error(ERR_PERM_DEL_SM);
-    } else {
-        $info = DnsRecord::get_supermaster_info_from_ip($master_ip);
-
-        echo "     <h2>" . _('Delete supermaster') . " \"" . $master_ip . "\"</h2>\n";
-
-        if (isset($_GET['confirm']) && $_GET["confirm"] == '1') {
-            if (!DnsRecord::supermaster_ip_name_exists($master_ip, $ns_name)) {
-                header("Location: list_supermasters.php");
-                exit;
-            }
-
-            if (DnsRecord::delete_supermaster($master_ip, $ns_name)) {
-                success(SUC_SM_DEL);
-            }
-        } else {
-            echo "     <p>\n";
-            echo "      " . _('Hostname in NS record') . ": " . $info['ns_name'] . "<br>\n";
-            echo "      " . _('Account') . ": " . $info['account'] . "\n";
-            echo "     </p>\n";
-            echo "     <p>" . _('Are you sure?') . "</p>\n";
-            echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='delete_supermaster.php?master_ip=" . $master_ip . "&amp;ns_name=" . $info['ns_name'] . "&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
-            echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
-        }
-    }
+    include_once('inc/footer.inc.php');
+    die();
 }
+$master_ip = $_GET['master_ip'];
+
+if (!isset($_GET['ns_name']) || !Dns::is_valid_hostname_fqdn($_GET['ns_name'], 0)) {
+    error(ERR_INV_INPUT);
+    include_once('inc/footer.inc.php');
+    die();
+}
+$ns_name = $_GET['ns_name'];
+
+if (isset($_GET['confirm']) && !Validation::is_number($_GET['confirm'])) {
+    error(ERR_INV_INPUT);
+    include_once('inc/footer.inc.php');
+    die();
+}
+
+$perm_sm_edit = do_hook('verify_permission', 'supermaster_edit');
+if (!$perm_sm_edit) {
+    error(ERR_PERM_DEL_SM);
+    include_once('inc/footer.inc.php');
+    die();
+}
+
+if (isset($_GET['confirm']) && $_GET['confirm'] == '1') {
+    if (!DnsRecord::supermaster_ip_name_exists($master_ip, $ns_name)) {
+        header("Location: list_supermasters.php");
+        exit;
+    }
+
+    if (DnsRecord::delete_supermaster($master_ip, $ns_name)) {
+        success(SUC_SM_DEL);
+    }
+    include_once('inc/footer.inc.php');
+    die();
+}
+
+$info = DnsRecord::get_supermaster_info_from_ip($master_ip);
+
+$app = AppFactory::create();
+$app->render('delete_supermaster.html', [
+    'master_ip' => $master_ip,
+    'info' => $info
+]);
 
 include_once("inc/footer.inc.php");
