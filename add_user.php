@@ -99,7 +99,7 @@ if (!do_hook('verify_permission' , 'user_add_new' )) {
     echo "     <form method=\"post\" action=\"add_user.php\">\n";
     echo "      <table>\n";
     echo "       <tr>\n";
-    echo "        <td class=\"n\">" . _('Username') . "</td>\n";
+    echo "        <td class=\"n\" width=\"150\">" . _('Username') . "</td>\n";
     echo "        <td class=\"n\"><input type=\"text\" class=\"input\" name=\"username\" value=\"" . $username . "\"></td>\n";
     echo "       </tr>\n";
     echo "       <tr>\n";

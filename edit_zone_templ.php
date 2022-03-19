@@ -215,11 +215,11 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
         echo "    <form method=\"post\" action=\"\">\n";
         echo "     <table>\n";
         echo "      <tr>\n";
-        echo "       <th>" . _('Name') . "</th>\n";
+        echo "       <td width=\"150\">" . _('Name') . "</td>\n";
         echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_name\" value=\"" . $templ_details['name'] . "\"></td>\n";
         echo "      </tr>\n";
         echo "      <tr>\n";
-        echo "       <th>" . _('Description') . "</th>\n";
+        echo "       <td>" . _('Description') . "</td>\n";
         echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_descr\" value=\"" . $templ_details['descr'] . "\"></td>\n";
         echo "      </tr>\n";
         echo "     </table>\n";
