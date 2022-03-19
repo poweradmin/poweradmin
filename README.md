@@ -25,6 +25,9 @@ apt install php-mysqlnd
 
 For PostgreSQL
 apt install php-pgsql
+
+For SQLite
+apt install php-sqlite3
 ```
 
 On RHEL based Systems:

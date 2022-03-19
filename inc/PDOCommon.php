@@ -72,8 +72,7 @@ class PDOCommon extends PDO {
             if ($isQuiet) {
                 die();
             } else {
-                die("Unable to connect to the database server. " .
-                        "Please report the problem to an Administrator.");
+                die("Unable to connect to the database server. Please report the problem to an Administrator.");
             }
         }
         $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
