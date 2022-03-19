@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\AppFactory;
 use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
 
@@ -37,35 +38,33 @@ require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
 
-$zone_templ_id = "-1";
-if (isset($_GET['id']) && (Validation::is_number($_GET['id']))) {
-    $zone_templ_id = $_GET['id'];
+if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
+    error(ERR_INV_INPUT);
+    include_once('inc/footer.inc.php');
+    die();
 }
 
-$confirm = "-1";
-if ((isset($_GET['confirm'])) && Validation::is_number($_GET['confirm'])) {
-    $confirm = $_GET['confirm'];
-}
+$zone_templ_id = $_GET['id'];
 
 $owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
-if ($zone_templ_id == "-1") {
-    error(ERR_INV_INPUT);
-} else {
-    if (!do_hook('verify_permission' , 'zone_master_add' ) || !$owner) {
-        error(ERR_PERM_DEL_ZONE_TEMPL);
-    } else {
-        $templ_details = ZoneTemplate::get_zone_templ_details($zone_templ_id);
-        echo "     <h2>" . _('Delete zone template') . " \"" . $templ_details['name'] . "\"</h2>\n";
-
-        if (isset($_GET['confirm']) && $_GET["confirm"] == '1') {
-            ZoneTemplate::delete_zone_templ($zone_templ_id);
-            success(SUC_ZONE_TEMPL_DEL);
-        } else {
-            echo "     <p>" . _('Are you sure?') . "</p>\n";
-            echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='delete_zone_templ.php?id=" . $zone_templ_id . "&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
-            echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
-        }
-    }
+if (!do_hook('verify_permission', 'zone_master_add') || !$owner) {
+    error(ERR_PERM_DEL_ZONE_TEMPL);
+    include_once('inc/footer.inc.php');
+    die();
 }
 
-include_once("inc/footer.inc.php");
+if (isset($_GET['confirm']) && Validation::is_number($_GET['confirm']) && $_GET["confirm"] == '1') {
+    ZoneTemplate::delete_zone_templ($zone_templ_id);
+    success(SUC_ZONE_TEMPL_DEL);
+    include_once('inc/footer.inc.php');
+    die();
+}
+
+$templ_details = ZoneTemplate::get_zone_templ_details($zone_templ_id);
+$app = AppFactory::create();
+$app->render('delete_zone_templ.html', [
+    'templ_name' => $templ_details['name'],
+    'zone_templ_id' => $zone_templ_id,
+]);
+
+include_once('inc/footer.inc.php');
