@@ -1134,6 +1134,8 @@ class DnsRecord
         $natural_sort = 'domains.name';
         if ($db_type == 'mysql' || $db_type == 'mysqli' || $db_type == 'sqlite' || $db_type == 'sqlite3') {
             $natural_sort = 'domains.name+0<>0 DESC, domains.name+0, domains.name';
+        } elseif ($db_type == 'pgsql') {
+            $natural_sort = "SUBSTRING(domains.name FROM '\.arpa$'), LENGTH(SUBSTRING(domains.name FROM '^[0-9]+')), domains.name";
         }
         $sql_sortby = ($sortby == 'domains.name' ? $natural_sort : $sortby . ', ' . $natural_sort);
 
