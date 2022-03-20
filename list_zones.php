@@ -36,7 +36,7 @@ require_once 'inc/pagination.inc.php';
 
 include_once 'inc/header.inc.php';
 
-global $pdnssec_use;
+global $pdnssec_use, $iface_zonelist_serial;
 
 global $iface_rowamount;
 if (isset($_GET["start"])) {
@@ -154,8 +154,9 @@ if ($perm_view == "none") {
             $zone['count_records'] = 0;
         }
 
-        if ($iface_zonelist_serial)
+        if ($iface_zonelist_serial) {
             $serial = DnsRecord::get_serial_by_zid($zone['id']);
+        }
 
         if ($perm_edit != "all" || $perm_edit != "none") {
             $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone["id"]);
