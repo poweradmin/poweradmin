@@ -36,23 +36,12 @@ require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
 
-$master_ip = "";
-if (isset($_POST["master_ip"])) {
-    $master_ip = $_POST["master_ip"];
-}
+$master_ip = $_POST["master_ip"] ?? "";
+$ns_name = $_POST["ns_name"] ?? "";
+$account = $_POST["account"] ?? "";
 
-$ns_name = "";
-if (isset($_POST["ns_name"])) {
-    $ns_name = $_POST["ns_name"];
-}
-
-$account = "";
-if (isset($_POST["account"])) {
-    $account = $_POST["account"];
-}
-
-(do_hook('verify_permission' , 'supermaster_add' )) ? $supermasters_add = "1" : $supermasters_add = "0";
-(do_hook('verify_permission' , 'user_view_others' )) ? $perm_view_others = "1" : $perm_view_others = "0";
+$supermasters_add = do_hook('verify_permission', 'supermaster_add');
+$perm_view_others = do_hook('verify_permission', 'user_view_others');
 
 $error = 0;
 if (isset($_POST["submit"])) {
@@ -65,60 +54,63 @@ if (isset($_POST["submit"])) {
 
 echo "     <h2>" . _('Add supermaster') . "</h2>\n";
 
-if ($supermasters_add != "1") {
+if (!$supermasters_add) {
     echo "     <p>" . _("You do not have the permission to add a new supermaster.") . "</p>\n";
-} else {
-    echo "     <form method=\"post\" action=\"add_supermaster.php\">\n";
-    echo "      <table>\n";
-    echo "       <tr>\n";
-    echo "        <td class=\"n\" width=\"200\">" . _('IP address of supermaster') . "</td>\n";
-    echo "        <td class=\"n\">\n";
-    if ($error) {
-        echo "         <input type=\"text\" class=\"input\" name=\"master_ip\" value=\"" . $master_ip . "\">\n";
-    } else {
-        echo "         <input type=\"text\" class=\"input\" name=\"master_ip\" value=\"\">\n";
-    }
-    echo "        </td>\n";
-    echo "       </tr>\n";
-    echo "       <tr>\n";
-    echo "        <td class=\"n\">" . _('Hostname in NS record') . "</td>\n";
-    echo "        <td class=\"n\">\n";
-    if ($error) {
-        echo "         <input type=\"text\" class=\"input\" name=\"ns_name\" value=\"" . $ns_name . "\">\n";
-    } else {
-        echo "         <input type=\"text\" class=\"input\" name=\"ns_name\" value=\"\">\n";
-    }
-    echo "        </td>\n";
-    echo "       </tr>\n";
-    echo "       <tr>\n";
-    echo "        <td class=\"n\">" . _('Account') . "</td>\n";
-    echo "        <td class=\"n\">\n";
-
-    echo "         <select name=\"account\">\n";
-    /*
-      Display list of users to assign slave zone to if the
-      editing user has the permissions to, otherwise just
-      display the adding users name
-     */
-    $users = do_hook('show_users');
-    foreach ($users as $user) {
-        if ($user['id'] === $_SESSION['userid']) {
-            echo "          <option value=\"" . $user['username'] . "\" selected>" . $user['fullname'] . "</option>\n";
-        } elseif ($perm_view_others == "1") {
-            echo "          <option value=\"" . $user['username'] . "\">" . $user['fullname'] . "</option>\n";
-        }
-    }
-    echo "         </select>\n";
-
-    echo "        </td>\n";
-    echo "       </tr>\n";
-    echo "       <tr>\n";
-    echo "        <td class=\"n\">&nbsp;</td>\n";
-    echo "        <td class=\"n\">\n";
-    echo "         <input type=\"submit\" class=\"button\" name=\"submit\" value=\"" . _('Add supermaster') . "\">\n";
-    echo "        </td>\n";
-    echo "       </tr>\n";
-    echo "      </table>\n";
-    echo "     </form>\n";
+    include_once('inc/footer.inc.php');
+    die();
 }
-include_once("inc/footer.inc.php");
+
+echo "     <form method=\"post\" action=\"add_supermaster.php\">\n";
+echo "      <table>\n";
+echo "       <tr>\n";
+echo "        <td class=\"n\" width=\"200\">" . _('IP address of supermaster') . "</td>\n";
+echo "        <td class=\"n\">\n";
+if ($error) {
+    echo "         <input type=\"text\" class=\"input\" name=\"master_ip\" value=\"" . $master_ip . "\">\n";
+} else {
+    echo "         <input type=\"text\" class=\"input\" name=\"master_ip\" value=\"\">\n";
+}
+echo "        </td>\n";
+echo "       </tr>\n";
+echo "       <tr>\n";
+echo "        <td class=\"n\">" . _('Hostname in NS record') . "</td>\n";
+echo "        <td class=\"n\">\n";
+if ($error) {
+    echo "         <input type=\"text\" class=\"input\" name=\"ns_name\" value=\"" . $ns_name . "\">\n";
+} else {
+    echo "         <input type=\"text\" class=\"input\" name=\"ns_name\" value=\"\">\n";
+}
+echo "        </td>\n";
+echo "       </tr>\n";
+echo "       <tr>\n";
+echo "        <td class=\"n\">" . _('Account') . "</td>\n";
+echo "        <td class=\"n\">\n";
+
+echo "         <select name=\"account\">\n";
+/*
+  Display list of users to assign slave zone to if the
+  editing user has the permissions to, otherwise just
+  display the adding users name
+ */
+$users = do_hook('show_users');
+foreach ($users as $user) {
+    if ($user['id'] === $_SESSION['userid']) {
+        echo "          <option value=\"" . $user['username'] . "\" selected>" . $user['fullname'] . "</option>\n";
+    } elseif ($perm_view_others) {
+        echo "          <option value=\"" . $user['username'] . "\">" . $user['fullname'] . "</option>\n";
+    }
+}
+echo "         </select>\n";
+
+echo "        </td>\n";
+echo "       </tr>\n";
+echo "       <tr>\n";
+echo "        <td class=\"n\">&nbsp;</td>\n";
+echo "        <td class=\"n\">\n";
+echo "         <input type=\"submit\" class=\"button\" name=\"submit\" value=\"" . _('Add supermaster') . "\">\n";
+echo "        </td>\n";
+echo "       </tr>\n";
+echo "      </table>\n";
+echo "     </form>\n";
+
+include_once('inc/footer.inc.php');
