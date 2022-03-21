@@ -37,16 +37,18 @@ include_once 'inc/header.inc.php';
 
 if (!do_hook('verify_permission', 'templ_perm_edit')) {
     error(ERR_PERM_EDIT_PERM_TEMPL);
-} else {
-    if (isset($_POST['commit'])) {
-        do_hook('add_perm_templ', $_POST);
-        success(SUC_PERM_TEMPL_ADD);
-    }
-
-    $app = AppFactory::create();
-    $app->render('add_perm_templ.html', [
-        'perms_avail' => do_hook('get_permissions_by_template_id'),
-    ]);
+    include_once("inc/footer.inc.php");
+    die();
 }
+
+if (isset($_POST['commit'])) {
+    do_hook('add_perm_templ', $_POST);
+    success(SUC_PERM_TEMPL_ADD);
+}
+
+$app = AppFactory::create();
+$app->render('add_perm_templ.html', [
+    'perms_avail' => do_hook('get_permissions_by_template_id'),
+]);
 
 include_once("inc/footer.inc.php");
