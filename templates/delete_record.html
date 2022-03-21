@@ -1,0 +1,29 @@
+<h2>{% trans 'Delete record in zone' %} "<a href="edit.php?id={{ zid }}">{{ zone_name }}</a>"</h2>
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Content</th>
+        {% if record_info['prio'] %}
+        <th>Priority</th>
+        {% endif %}
+        <th>TTL</th>
+    </tr>
+    <tr>
+        <td>{{ record_info['name'] }}</td>
+        <td>{{ record_info['type'] }}</td>
+        <td>{{ record_info['content'] }}</td>
+        {% if record_info['prio'] %}
+        <td>{{ record_info['prio'] }}</td>
+        {% endif %}
+        <td>{{ record_info['ttl'] }}</td>
+    </tr>
+</table>
+{% if (record_info['type'] == 'NS' and record_info['name'] == zone_name) or record_info['type'] == 'SOA' %}
+<p>{% trans 'You are trying to delete a record that is needed for this zone to work.' %}</p>
+{% endif %}
+<p>{% trans 'Are you sure?' %}</p>
+<input type="button" class="button" onClick="location.href='delete_record.php?id={{ record_id }}&confirm=1'"
+       value="{% trans 'Yes' %}">
+<input type="button" class="button" onClick="location.href='edit.php?id={{ zid }}'" value="{% trans 'No' %}">

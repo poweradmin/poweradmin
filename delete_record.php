@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\AppFactory;
 use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
 use Poweradmin\Validation;
@@ -92,45 +93,23 @@ if (do_hook('verify_permission', 'zone_content_edit_others')) {
     $perm_content_edit = "none";
 }
 
-$user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zid );
-
 $zone_info = DnsRecord::get_zone_info_from_id($zid);
 $zone_id = DnsRecord::recid_to_domid($record_id);
-$zone_name = DnsRecord::get_domain_name_by_id($zone_id);
 $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );
-$record_info = DnsRecord::get_record_from_id($record_id);
-
-echo "     <h2>" . _('Delete record in zone') . " \"<a href=\"edit.php?id=" . $zid . "\">" . $zone_name . "</a>\"</h2>\n";
-
 if ($zone_info['type'] == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
     error(ERR_PERM_EDIT_RECORD);
-} else {
-    echo "     <table>\n";
-    echo "      <tr>\n";
-    echo "       <th>Name</th>\n";
-    echo "       <th>Type</th>\n";
-    echo "       <th>Content</th>\n";
-    if (isset($record_info['prio'])) {
-        echo "       <th>Priority</th>\n";
-    }
-    echo "       <th>TTL</th>\n";
-    echo "      </tr>\n";
-    echo "      <tr>\n";
-    echo "       <td>" . $record_info['name'] . "</td>\n";
-    echo "       <td>" . $record_info['type'] . "</td>\n";
-    echo "       <td>" . $record_info['content'] . "</td>\n";
-    if (isset($record_info['prio'])) {
-        echo "       <td>" . $record_info['prio'] . "</td>\n";
-    }
-    echo "       <td>" . $record_info['ttl'] . "</td>\n";
-    echo "      </tr>\n";
-    echo "     </table>\n";
-    if (($record_info['type'] == 'NS' && $record_info['name'] == $zone_name) || $record_info['type'] == 'SOA') {
-        echo "     <p>" . _('You are trying to delete a record that is needed for this zone to work.') . "</p>\n";
-    }
-    echo "     <p>" . _('Are you sure?') . "</p>\n";
-    echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='delete_record.php?id=" . $record_id . "&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
-    echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='edit.php?id=" . $zid . "'\" value=\"" . _('No') . "\">\n";
+    include_once('inc/footer.inc.php');
+    die();
 }
+
+
+$app = AppFactory::create();
+$app->render('delete_record.html', [
+    'record_id' => $record_id,
+    'zid' => $zid,
+    'zone_name' => DnsRecord::get_domain_name_by_id($zone_id),
+    'record_info' => DnsRecord::get_record_from_id($record_id),
+]);
+
 
 include_once('inc/footer.inc.php');
