@@ -58,54 +58,6 @@ function changePort(db_type) {
     }
 }
 
-function getDomainsElements() {
-    var
-            coll = document.getElementsByTagName('input'),
-            re = /^domain\[\]$/,
-            t,
-            elm,
-            i = 0,
-            key = 0,
-            records = [];
-
-    while (elm = coll.item(i++))
-    {
-        t = re.exec(elm.name);
-        if (t != null)
-        {
-            records[key] = elm;
-            key++;
-        }
-    }
-    return records;
-}
-
-function checkDomainFilled() {
-    var
-            allEmpty = true,
-            domains = getDomainsElements();
-
-    if (domains.length == 1) {
-        if ((domains[0].value.length == 0 || domains[0].value == null || domains[0].value == "")) {
-            alert('Zone name cannot be empty');
-            return false;
-        }
-    } else {
-        for (var key in domains) {
-            if ((domains[key].value.length != 0)) {
-                allEmpty = false;
-            }
-        }
-
-        if (true === allEmpty) {
-            alert('Please fill in at least one Zone name');
-            return false;
-        }
-    }
-
-    add_zone_master.submit();
-}
-
 function disablePasswordField() {
     const ldap = document.getElementById("ldap");
     const password = document.getElementById("password");
