@@ -39,15 +39,17 @@ include_once 'inc/header.inc.php';
 
 if (!do_hook('verify_permission', 'zone_master_add')) {
     error(ERR_PERM_ADD_ZONE_TEMPL);
-} else {
-    if (isset($_POST['commit']) && ZoneTemplate::add_zone_templ($_POST, $_SESSION['userid'])) {
-        success(SUC_ZONE_TEMPL_ADD);
-    }
-
-    $app = AppFactory::create();
-    $app->render('add_zone_templ.html', [
-        'username' => do_hook('get_fullname_from_userid', $_SESSION['userid'])
-    ]);
+    include_once("inc/footer.inc.php");
+    die();
 }
+
+if (isset($_POST['commit']) && ZoneTemplate::add_zone_templ($_POST, $_SESSION['userid'])) {
+    success(SUC_ZONE_TEMPL_ADD);
+}
+
+$app = AppFactory::create();
+$app->render('add_zone_templ.html', [
+    'username' => do_hook('get_fullname_from_userid', $_SESSION['userid'])
+]);
 
 include_once("inc/footer.inc.php");
