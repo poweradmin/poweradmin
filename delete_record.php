@@ -102,7 +102,6 @@ if ($zone_info['type'] == "SLAVE" || $perm_content_edit == "none" || ($perm_cont
     die();
 }
 
-
 $app = AppFactory::create();
 $app->render('delete_record.html', [
     'record_id' => $record_id,
@@ -110,6 +109,5 @@ $app->render('delete_record.html', [
     'zone_name' => DnsRecord::get_domain_name_by_id($zone_id),
     'record_info' => DnsRecord::get_record_from_id($record_id),
 ]);
-
 
 include_once('inc/footer.inc.php');
