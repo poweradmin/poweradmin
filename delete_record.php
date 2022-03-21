@@ -41,14 +41,45 @@ include_once 'inc/header.inc.php';
 
 global $pdnssec_use;
 
-$record_id = "-1";
-if (isset($_GET['id']) && Validation::is_number($_GET['id'])) {
-    $record_id = $_GET['id'];
+if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
+    error(ERR_INV_INPUT);
+    include_once('inc/footer.inc.php');
+    die();
+}
+$record_id = $_GET['id'];
+
+$zid = DnsRecord::get_zone_id_from_record_id($record_id);
+if ($zid == NULL) {
+    header("Location: list_zones.php");
+    exit;
 }
 
-$confirm = "-1";
-if (isset($_GET['confirm']) && Validation::is_number($_GET['confirm'])) {
-    $confirm = $_GET['confirm'];
+if (isset($_GET['confirm']) && Validation::is_number($_GET['confirm']) && $_GET['confirm'] == 1) {
+    $record_info = DnsRecord::get_record_from_id($record_id);
+    if (DnsRecord::delete_record($record_id)) {
+        success("<a href=\"edit.php?id=" . $zid . "\">" . SUC_RECORD_DEL . "</a>");
+        if (isset($record_info['prio'])) {
+            Syslog::log_info(sprintf('client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s priority:%s',
+                $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
+                $record_info['type'], $record_info['name'], $record_info['content'], $record_info['ttl'], $record_info['prio'] ));
+        } else {
+            Syslog::log_info(sprintf('client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s',
+                $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
+                $record_info['type'], $record_info['name'], $record_info['content'], $record_info['ttl'] ));
+
+        }
+
+        DnsRecord::delete_record_zone_templ($record_id);
+        DnsRecord::update_soa_serial($zid);
+
+        // do also rectify-zone
+        if ($pdnssec_use && Dnssec::dnssec_rectify_zone($zid)) {
+            success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
+        }
+    }
+
+    include_once('inc/footer.inc.php');
+    die();
 }
 
 if (do_hook('verify_permission', 'zone_content_edit_others')) {
@@ -61,83 +92,45 @@ if (do_hook('verify_permission', 'zone_content_edit_others')) {
     $perm_content_edit = "none";
 }
 
-$zid = DnsRecord::get_zone_id_from_record_id($_GET['id']);
-if ($zid == NULL) {
-    header("Location: list_zones.php");
-    exit;
-}
 $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zid );
 
 $zone_info = DnsRecord::get_zone_info_from_id($zid);
+$zone_id = DnsRecord::recid_to_domid($record_id);
+$zone_name = DnsRecord::get_domain_name_by_id($zone_id);
+$user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );
+$record_info = DnsRecord::get_record_from_id($record_id);
 
-if ($record_id == "-1") {
-    error(ERR_INV_INPUT);
+echo "     <h2>" . _('Delete record in zone') . " \"<a href=\"edit.php?id=" . $zid . "\">" . $zone_name . "</a>\"</h2>\n";
+
+if ($zone_info['type'] == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
+    error(ERR_PERM_EDIT_RECORD);
 } else {
-    if ($confirm == '1') {
-        $record_info = DnsRecord::get_record_from_id($record_id);
-        if (DnsRecord::delete_record($record_id)) {
-            success("<a href=\"edit.php?id=" . $zid . "\">" . SUC_RECORD_DEL . "</a>");
-            if (isset($record_info['prio'])) {
-                Syslog::log_info(sprintf('client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s priority:%s',
-                     $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                     $record_info['type'], $record_info['name'], $record_info['content'], $record_info['ttl'], $record_info['prio'] ));
-            } else {
-                Syslog::log_info(sprintf('client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s',
-                     $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                     $record_info['type'], $record_info['name'], $record_info['content'], $record_info['ttl'] ));
-
-            }
-
-            DnsRecord::delete_record_zone_templ($record_id);
-
-            // update serial after record deletion
-            DnsRecord::update_soa_serial($zid);
-
-            if ($pdnssec_use) {
-                // do also rectify-zone
-                if (Dnssec::dnssec_rectify_zone($zid)) {
-                    success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
-                }
-            }
-        }
-    } else {
-        $zone_id = DnsRecord::recid_to_domid($record_id);
-        $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
-        $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );
-        $record_info = DnsRecord::get_record_from_id($record_id);
-
-        echo "     <h2>" . _('Delete record in zone') . " \"<a href=\"edit.php?id=" . $zid . "\">" . $zone_name . "</a>\"</h2>\n";
-
-        if ($zone_info['type'] == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
-            error(ERR_PERM_EDIT_RECORD);
-        } else {
-            echo "     <table>\n";
-            echo "      <tr>\n";
-            echo "       <th>Name</th>\n";
-            echo "       <th>Type</th>\n";
-            echo "       <th>Content</th>\n";
-            if (isset($record_info['prio'])) {
-                echo "       <th>Priority</th>\n";
-            }
-            echo "       <th>TTL</th>\n";
-            echo "      </tr>\n";
-            echo "      <tr>\n";
-            echo "       <td>" . $record_info['name'] . "</td>\n";
-            echo "       <td>" . $record_info['type'] . "</td>\n";
-            echo "       <td>" . $record_info['content'] . "</td>\n";
-            if (isset($record_info['prio'])) {
-                echo "       <td>" . $record_info['prio'] . "</td>\n";
-            }
-            echo "       <td>" . $record_info['ttl'] . "</td>\n";
-            echo "      </tr>\n";
-            echo "     </table>\n";
-            if (($record_info['type'] == 'NS' && $record_info['name'] == $zone_name) || $record_info['type'] == 'SOA') {
-                echo "     <p>" . _('You are trying to delete a record that is needed for this zone to work.') . "</p>\n";
-            }
-            echo "     <p>" . _('Are you sure?') . "</p>\n";
-            echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='delete_record.php?id=" . $record_id . "&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
-            echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='edit.php?id=" . $zid . "'\" value=\"" . _('No') . "\">\n";
-        }
+    echo "     <table>\n";
+    echo "      <tr>\n";
+    echo "       <th>Name</th>\n";
+    echo "       <th>Type</th>\n";
+    echo "       <th>Content</th>\n";
+    if (isset($record_info['prio'])) {
+        echo "       <th>Priority</th>\n";
     }
+    echo "       <th>TTL</th>\n";
+    echo "      </tr>\n";
+    echo "      <tr>\n";
+    echo "       <td>" . $record_info['name'] . "</td>\n";
+    echo "       <td>" . $record_info['type'] . "</td>\n";
+    echo "       <td>" . $record_info['content'] . "</td>\n";
+    if (isset($record_info['prio'])) {
+        echo "       <td>" . $record_info['prio'] . "</td>\n";
+    }
+    echo "       <td>" . $record_info['ttl'] . "</td>\n";
+    echo "      </tr>\n";
+    echo "     </table>\n";
+    if (($record_info['type'] == 'NS' && $record_info['name'] == $zone_name) || $record_info['type'] == 'SOA') {
+        echo "     <p>" . _('You are trying to delete a record that is needed for this zone to work.') . "</p>\n";
+    }
+    echo "     <p>" . _('Are you sure?') . "</p>\n";
+    echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='delete_record.php?id=" . $record_id . "&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
+    echo "     <input type=\"button\" class=\"button\" OnClick=\"location.href='edit.php?id=" . $zid . "'\" value=\"" . _('No') . "\">\n";
 }
-include_once("inc/footer.inc.php");
+
+include_once('inc/footer.inc.php');

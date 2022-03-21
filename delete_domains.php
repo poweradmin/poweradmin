@@ -63,7 +63,7 @@ if ($confirm == '1') {
     $deleted_zones = array();
     foreach ($zones as $zone) {
         $zone_info = DnsRecord::get_zone_info_from_id($zone);
-        array_push($deleted_zones,$zone_info);
+        $deleted_zones[] = $zone_info;
     }
     $delete_domains = DnsRecord::delete_domains($zones);
     if ($delete_domains) {
