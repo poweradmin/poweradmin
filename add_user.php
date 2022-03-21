@@ -38,61 +38,59 @@ echo "  <script type=\"text/javascript\" src=\"inc/helper.js\"></script>";
 global $ldap_use;
 
 $username = "";
-if ((isset($_POST['username']))) {
+if (isset($_POST['username'])) {
     $username = $_POST['username'];
 }
 
 $fullname = "";
-if ((isset($_POST['fullname']))) {
+if (isset($_POST['fullname'])) {
     $fullname = $_POST['fullname'];
 }
 
 $email = "";
-if ((isset($_POST['email']))) {
+if (isset($_POST['email'])) {
     $email = $_POST['email'];
 }
 
 $perm_templ = "1";
-if ((isset($_POST['perm_templ']))) {
+if (isset($_POST['perm_templ'])) {
     $perm_templ = $_POST['perm_templ'];
 }
 
 $password = "";
-if ((isset($_POST['password']))) {
+if (isset($_POST['password'])) {
     $password = $_POST['password'];
 }
 
 $description = "";
-if ((isset($_POST['descr']))) {
+if (isset($_POST['descr'])) {
     $description = $_POST['descr'];
 }
 
 $active_checked = "checked";
-if ((isset($_POST['active']))) {
+if (isset($_POST['active'])) {
     $active_checked = $_POST['active'] === "1" ? "checked" : "";
 }
 
 $use_ldap_checked = "";
-if ((isset($_POST['use_ldap']))) {
+if (isset($_POST['use_ldap'])) {
     $use_ldap_checked = $_POST['use_ldap'] === "1" ? "checked" : "";
 }
 
 if (!do_hook('verify_permission' , 'user_add_new' )) {
     error(ERR_PERM_ADD_USER);
 } else {
-    if (isset($_POST["commit"])) {
-        if (do_hook('add_new_user' , $_POST )) {
-            success(SUC_USER_ADD);
+    if (isset($_POST["commit"]) && do_hook('add_new_user', $_POST)) {
+        success(SUC_USER_ADD);
 
-            $username = "";
-            $fullname = "";
-            $password = "";
-            $email = "";
-            $perm_templ = "1";
-            $description = "";
-            $active_checked = "checked";
-            $use_ldap_checked = "checked";
-        }
+        $username = "";
+        $fullname = "";
+        $password = "";
+        $email = "";
+        $perm_templ = "1";
+        $description = "";
+        $active_checked = "checked";
+        $use_ldap_checked = "checked";
     }
 
     echo "     <h2>" . _('Add user') . "</h2>\n";
