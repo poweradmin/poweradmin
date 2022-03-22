@@ -36,9 +36,8 @@ require_once 'inc/pagination.inc.php';
 
 include_once 'inc/header.inc.php';
 
-global $pdnssec_use, $iface_zonelist_serial;
+global $pdnssec_use, $iface_zonelist_serial, $iface_rowamount;
 
-global $iface_rowamount;
 if (isset($_GET["start"])) {
     define('ROWSTART', (($_GET["start"] - 1) * $iface_rowamount));
 } else {
@@ -194,4 +193,4 @@ if ($perm_view == "none") {
     echo "     </form>\n";
 }
 
-include_once("inc/footer.inc.php");
+include_once('inc/footer.inc.php');

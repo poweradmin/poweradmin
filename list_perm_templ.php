@@ -38,12 +38,14 @@ $perm_templ_perm_edit = do_hook('verify_permission', 'templ_perm_edit');
 
 if (!$perm_templ_perm_edit) {
     error(ERR_PERM_EDIT_PERM_TEMPL);
-} else {
-    $app = AppFactory::create();
-    $app->render('list_perm_templ.html', [
-        'perm_templ_perm_edit' => $perm_templ_perm_edit,
-        'permission_templates' => do_hook('list_permission_templates')
-    ]);
+    include_once('inc/footer.inc.php');
+    die();
 }
 
-include_once("inc/footer.inc.php");
+$app = AppFactory::create();
+$app->render('list_perm_templ.html', [
+    'perm_templ_perm_edit' => $perm_templ_perm_edit,
+    'permission_templates' => do_hook('list_permission_templates')
+]);
+
+include_once('inc/footer.inc.php');

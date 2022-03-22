@@ -39,13 +39,15 @@ $perm_zone_master_add = do_hook('verify_permission', 'zone_master_add');
 
 if (!$perm_zone_master_add) {
     error(ERR_PERM_EDIT_ZONE_TEMPL);
-} else {
-    $app = AppFactory::create();
-    $app->render('list_zone_templ.html', [
-        'perm_zone_master_add' => $perm_zone_master_add,
-        'username' => do_hook('get_fullname_from_userid', $_SESSION['userid']),
-        'zone_templates' => ZoneTemplate::get_list_zone_templ($_SESSION['userid'])
-    ]);
+    include_once('inc/footer.inc.php');
+    die();
 }
 
-include_once("inc/footer.inc.php");
+$app = AppFactory::create();
+$app->render('list_zone_templ.html', [
+    'perm_zone_master_add' => $perm_zone_master_add,
+    'username' => do_hook('get_fullname_from_userid', $_SESSION['userid']),
+    'zone_templates' => ZoneTemplate::get_list_zone_templ($_SESSION['userid'])
+]);
+
+include_once('inc/footer.inc.php');

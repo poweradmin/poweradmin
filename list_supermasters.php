@@ -41,4 +41,4 @@ $app->render('list_supermasters.html', [
     'supermasters' => DnsRecord::get_supermasters()
 ]);
 
-include_once("inc/footer.inc.php");
+include_once('inc/footer.inc.php');
