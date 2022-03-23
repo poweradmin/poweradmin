@@ -70,30 +70,26 @@ if (do_hook('verify_permission', 'zone_meta_edit_others')) {
     $perm_meta_edit = "none";
 }
 
-$zone_id = "-1";
-if ((isset($_GET['id'])) && (Validation::is_number($_GET['id']))) {
-    $zone_id = $_GET['id'];
+if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
+    error(ERR_INV_INPUT);
+    include_once('inc/footer.inc.php');
+    exit;
 }
+$zone_id = $_GET['id'];
 
 $ttl = $dns_ttl;
-if ((isset($_POST['ttl'])) && (Validation::is_number($_POST['ttl']))) {
+if (isset($_POST['ttl']) && Validation::is_number($_POST['ttl'])) {
     $ttl = $_POST['ttl'];
 }
 
-$prio = "10";
-if ((isset($_POST['prio'])) && (Validation::is_number($_POST['prio']))) {
+$prio = 10;
+if (isset($_POST['prio']) && Validation::is_number($_POST['prio'])) {
     $prio = $_POST['prio'];
 }
 
 $name = $_POST['name'] ?? "";
 $type = $_POST['type'] ?? "";
 $content = $_POST['content'] ?? "";
-
-if ($zone_id == "-1") {
-    error(ERR_INV_INPUT);
-    include_once('inc/footer.inc.php');
-    exit;
-}
 
 $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
 $zone_type = DnsRecord::get_domain_type($zone_id);
