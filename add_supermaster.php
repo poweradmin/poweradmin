@@ -57,7 +57,7 @@ echo "     <h2>" . _('Add supermaster') . "</h2>\n";
 if (!$supermasters_add) {
     echo "     <p>" . _("You do not have the permission to add a new supermaster.") . "</p>\n";
     include_once('inc/footer.inc.php');
-    die();
+    exit;
 }
 
 echo "     <form method=\"post\" action=\"add_supermaster.php\">\n";

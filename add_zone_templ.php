@@ -40,7 +40,7 @@ include_once 'inc/header.inc.php';
 if (!do_hook('verify_permission', 'zone_master_add')) {
     error(ERR_PERM_ADD_ZONE_TEMPL);
     include_once("inc/footer.inc.php");
-    die();
+    exit;
 }
 
 if (isset($_POST['commit']) && ZoneTemplate::add_zone_templ($_POST, $_SESSION['userid'])) {

@@ -40,13 +40,13 @@ include_once 'inc/header.inc.php';
 if (!do_hook('verify_permission' , 'user_edit_templ_perm' )) {
     error(ERR_PERM_DEL_PERM_TEMPL);
     include_once('inc/footer.inc.php');
-    die();
+    exit;
 }
 
 if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
     error(ERR_INV_INPUT);
     include_once('inc/footer.inc.php');
-    die();
+    exit;
 }
 
 $perm_templ_id = $_GET['id'];
@@ -56,7 +56,7 @@ if (isset($_GET['confirm']) && Validation::is_number($_GET['confirm']) && $_GET[
         success(SUC_PERM_TEMPL_DEL);
     }
     include_once('inc/footer.inc.php');
-    die();
+    exit;
 }
 
 $templ_details = do_hook('get_permission_template_details' , $perm_templ_id );

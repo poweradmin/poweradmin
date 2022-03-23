@@ -57,7 +57,7 @@ if (isset($_POST['use_ldap'])) {
 if (!do_hook('verify_permission', 'user_add_new')) {
     error(ERR_PERM_ADD_USER);
     include_once("inc/footer.inc.php");
-    die();
+    exit;
 }
 
 if (isset($_POST["commit"]) && do_hook('add_new_user', $_POST)) {

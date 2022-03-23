@@ -41,7 +41,7 @@ include_once 'inc/header.inc.php';
 if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
     error(ERR_INV_INPUT);
     include_once('inc/footer.inc.php');
-    die();
+    exit;
 }
 
 $zone_templ_id = $_GET['id'];
@@ -50,14 +50,14 @@ $owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid
 if (!do_hook('verify_permission', 'zone_master_add') || !$owner) {
     error(ERR_PERM_DEL_ZONE_TEMPL);
     include_once('inc/footer.inc.php');
-    die();
+    exit;
 }
 
 if (isset($_GET['confirm']) && Validation::is_number($_GET['confirm']) && $_GET["confirm"] == '1') {
     ZoneTemplate::delete_zone_templ($zone_templ_id);
     success(SUC_ZONE_TEMPL_DEL);
     include_once('inc/footer.inc.php');
-    die();
+    exit;
 }
 
 $templ_details = ZoneTemplate::get_zone_templ_details($zone_templ_id);

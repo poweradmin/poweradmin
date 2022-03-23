@@ -43,7 +43,7 @@ global $dns_ttl;
 if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
     error(ERR_INV_INPUT);
     include_once('inc/footer.inc.php');
-    die();
+    exit;
 }
 $zone_templ_id = $_GET['id'];
 
@@ -71,7 +71,7 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
     error(ERR_PERM_ADD_RECORD);
     error(ERR_INV_INPUT);
     include_once("inc/footer.inc.php");
-    die();
+    exit;
 }
 
 echo "    <h2>" . _('Add record to zone template') . " \"" . $templ_details['name'] . "\"</h2>\n";

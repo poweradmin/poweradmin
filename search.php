@@ -37,7 +37,7 @@ require_once 'inc/header.inc.php';
 if (!do_hook('verify_permission', 'search')) {
     error(ERR_PERM_SEARCH);
     require_once 'inc/footer.inc.php';
-    die();
+    exit;
 }
 
 if (isset($_GET["zone_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["zone_sort_by"])) {

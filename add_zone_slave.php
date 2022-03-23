@@ -84,7 +84,7 @@ if (isset($_POST['submit']) && $zone_slave_add) {
 if (!$zone_slave_add) {
     error(ERR_PERM_ADD_ZONE_SLAVE);
     include_once('inc/footer.inc.php');
-    die();
+    exit;
 }
 
 echo "     <h2>" . _('Add slave zone') . "</h2>\n";

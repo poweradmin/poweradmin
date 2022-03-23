@@ -90,7 +90,7 @@ if (isset($_POST['submit']) && $zone_master_add) {
 if (!$zone_master_add) {
     error(ERR_PERM_ADD_ZONE_MASTER);
     include_once('inc/footer.inc.php');
-    die();
+    exit;
 }
 echo "     <h2>" . _('Bulk registration') . "</h2>\n";
 

@@ -39,7 +39,7 @@ $perm_templ_perm_edit = do_hook('verify_permission', 'templ_perm_edit');
 if (!$perm_templ_perm_edit) {
     error(ERR_PERM_EDIT_PERM_TEMPL);
     include_once('inc/footer.inc.php');
-    die();
+    exit;
 }
 
 $app = AppFactory::create();

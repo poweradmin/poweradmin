@@ -53,7 +53,7 @@ if (do_hook('verify_permission', 'zone_content_edit_others')) {
 if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
     error(ERR_INV_INPUT);
     include_once('inc/footer.inc.php');
-    die();
+    exit;
 }
 $zone_id = $_GET['id'];
 
@@ -84,13 +84,13 @@ if ($confirm == '1') {
             $zone_info['name'], $zone_info['type']));
     }
     include_once('inc/footer.inc.php');
-    die();
+    exit;
 }
 
 if ($perm_edit != "all" && ($perm_edit != "own" || $user_is_zone_owner != "1")) {
     error(ERR_PERM_DEL_ZONE);
     include_once('inc/footer.inc.php');
-    die();
+    exit;
 }
 
 $slave_master = '';

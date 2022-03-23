@@ -42,28 +42,28 @@ include_once 'inc/header.inc.php';
 if (!isset($_GET['master_ip']) || !Dns::is_valid_ipv4($_GET['master_ip']) && !Dns::is_valid_ipv6($_GET['master_ip'])) {
     error(ERR_INV_INPUT);
     include_once('inc/footer.inc.php');
-    die();
+    exit;
 }
 $master_ip = $_GET['master_ip'];
 
 if (!isset($_GET['ns_name']) || !Dns::is_valid_hostname_fqdn($_GET['ns_name'], 0)) {
     error(ERR_INV_INPUT);
     include_once('inc/footer.inc.php');
-    die();
+    exit;
 }
 $ns_name = $_GET['ns_name'];
 
 if (isset($_GET['confirm']) && !Validation::is_number($_GET['confirm'])) {
     error(ERR_INV_INPUT);
     include_once('inc/footer.inc.php');
-    die();
+    exit;
 }
 
 $perm_sm_edit = do_hook('verify_permission', 'supermaster_edit');
 if (!$perm_sm_edit) {
     error(ERR_PERM_DEL_SM);
     include_once('inc/footer.inc.php');
-    die();
+    exit;
 }
 
 if (isset($_GET['confirm']) && $_GET['confirm'] == '1') {
@@ -76,7 +76,7 @@ if (isset($_GET['confirm']) && $_GET['confirm'] == '1') {
         success(SUC_SM_DEL);
     }
     include_once('inc/footer.inc.php');
-    die();
+    exit;
 }
 
 $info = DnsRecord::get_supermaster_info_from_ip($master_ip);

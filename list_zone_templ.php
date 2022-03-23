@@ -40,7 +40,7 @@ $perm_zone_master_add = do_hook('verify_permission', 'zone_master_add');
 if (!$perm_zone_master_add) {
     error(ERR_PERM_EDIT_ZONE_TEMPL);
     include_once('inc/footer.inc.php');
-    die();
+    exit;
 }
 
 $app = AppFactory::create();

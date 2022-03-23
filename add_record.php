@@ -91,7 +91,7 @@ $content = $_POST['content'] ?? "";
 
 if ($zone_id == "-1") {
     error(ERR_INV_INPUT);
-    include_once("inc/footer.inc.php");
+    include_once('inc/footer.inc.php');
     exit;
 }
 
@@ -100,7 +100,7 @@ $zone_type = DnsRecord::get_domain_type($zone_id);
 $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
 
 if (isset($_POST["commit"])) {
-    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
+    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && !$user_is_zone_owner) {
         error(ERR_PERM_ADD_RECORD);
     } else {
         // a PTR-record is added if an A or an AAAA-record are created
@@ -148,7 +148,7 @@ if (isset($_POST["commit"])) {
     }
 }
 
-if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
+if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && !$user_is_zone_owner) {
     error(ERR_PERM_ADD_RECORD);
     include_once('inc/footer.inc.php');
     exit;

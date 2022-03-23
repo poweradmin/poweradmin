@@ -38,7 +38,7 @@ include_once 'inc/header.inc.php';
 if (!do_hook('verify_permission', 'templ_perm_edit')) {
     error(ERR_PERM_EDIT_PERM_TEMPL);
     include_once("inc/footer.inc.php");
-    die();
+    exit;
 }
 
 if (isset($_POST['commit'])) {
