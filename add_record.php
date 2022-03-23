@@ -44,9 +44,6 @@ global $pdnssec_use;
 global $dns_ttl;
 global $iface_add_reverse_record;
 
-/*
-  Get permissions
- */
 if (do_hook('verify_permission', 'zone_content_view_others')) {
     $perm_view = "all";
 } elseif (do_hook('verify_permission', 'zone_content_view_own')) {
@@ -73,11 +70,6 @@ if (do_hook('verify_permission', 'zone_meta_edit_others')) {
     $perm_meta_edit = "none";
 }
 
-
-/*
-  Check and make sure all post values have made it through
-  if not set them.
- */
 $zone_id = "-1";
 if ((isset($_GET['id'])) && (Validation::is_number($_GET['id']))) {
     $zone_id = $_GET['id'];
@@ -93,23 +85,9 @@ if ((isset($_POST['prio'])) && (Validation::is_number($_POST['prio']))) {
     $prio = $_POST['prio'];
 }
 
-if (isset($_POST['name'])) {
-    $name = $_POST['name'];
-} else {
-    $name = "";
-}
-
-if (isset($_POST['type'])) {
-    $type = $_POST['type'];
-} else {
-    $type = "";
-}
-
-if (isset($_POST['content'])) {
-    $content = $_POST['content'];
-} else {
-    $content = "";
-}
+$name = $_POST['name'] ?? "";
+$type = $_POST['type'] ?? "";
+$content = $_POST['content'] ?? "";
 
 if ($zone_id == "-1") {
     error(ERR_INV_INPUT);
@@ -117,18 +95,10 @@ if ($zone_id == "-1") {
     exit;
 }
 
-/*
-  Check and see if the user is the zone owner
-  Check the zone type and get the zone name
- */
 $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
 $zone_type = DnsRecord::get_domain_type($zone_id);
 $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
 
-/*
-  If the form as been submitted
-  process it!
- */
 if (isset($_POST["commit"])) {
     if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
         error(ERR_PERM_ADD_RECORD);
@@ -178,67 +148,66 @@ if (isset($_POST["commit"])) {
     }
 }
 
-/*
-  Display form to add a record
- */
-echo "    <h2>" . _('Add record to zone') . " <a href=\"edit.php?id=" . $zone_id . "\"> " . $zone_name . "</a></h2>\n";
-
 if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
     error(ERR_PERM_ADD_RECORD);
-} else {
-    echo "     <form method=\"post\">\n";
-    echo "      <input type=\"hidden\" name=\"domain\" value=\"" . $zone_id . "\">\n";
-    echo "      <table border=\"0\" cellspacing=\"4\">\n";
-    echo "       <tr>\n";
-    echo "        <td class=\"n\">" . _('Name') . "</td>\n";
-    echo "        <td class=\"n\">&nbsp;</td>\n";
-    echo "        <td class=\"n\">" . _('Type') . "</td>\n";
-    echo "        <td class=\"n\">" . _('Content') . "</td>\n";
-    echo "        <td class=\"n\">" . _('Priority') . "</td>\n";
-    echo "        <td class=\"n\">" . _('TTL') . "</td>\n";
-    echo "       </tr>\n";
-    echo "       <tr>\n";
-    echo "        <td class=\"n\"><input type=\"text\" name=\"name\" class=\"input\" value=\"" . htmlspecialchars($name) . "\">." . $zone_name . "</td>\n";
-    echo "        <td class=\"n\">IN</td>\n";
-    echo "        <td class=\"n\">\n";
-    echo "         <select name=\"type\">\n";
-    $found_selected_type = !(isset($type) && $type);
-    foreach (RecordType::getTypes() as $record_type) {
-        if (isset($type) && $type) {
-            if ($type == $record_type) {
-                $found_selected_type = true;
-                $add = " SELECTED";
-            } else {
-                $add = "";
-            }
-        } else {
-            if (preg_match('/i(p6|n-addr).arpa/i', $zone_name) && strtoupper($record_type) == 'PTR') {
-                $add = " SELECTED";
-                $rev = "";
-            } elseif ((strtoupper($record_type) == 'A') && $iface_add_reverse_record) {
-                $add = " SELECTED";
-                $rev = "<input type=\"checkbox\" name=\"reverse\"><span class=\"normaltext\">" . _('Add also reverse record') . "</span>\n";
-            } else {
-                $add = "";
-            }
-        }
-        echo "          <option" . $add . " value=\"" . htmlspecialchars($record_type) . "\">" . $record_type . "</option>\n";
-    }
-    if (!$found_selected_type)
-        echo "          <option SELECTED value=\"" . htmlspecialchars($type) . "\"><i>" . htmlspecialchars($type) . "</i></option>\n";
-    echo "         </select>\n";
-    echo "        </td>\n";
-    echo "        <td class=\"n\"><input type=\"text\" name=\"content\" class=\"input\" value=\"" . htmlspecialchars($content) . "\"></td>\n";
-    echo "        <td class=\"n\"><input type=\"text\" name=\"prio\" class=\"sinput\" value=\"" . htmlspecialchars($prio) . "\"></td>\n";
-    echo "        <td class=\"n\"><input type=\"text\" name=\"ttl\" class=\"sinput\" value=\"" . htmlspecialchars($ttl) . "\"</td>\n";
-    echo "       </tr>\n";
-    echo "      </table>\n";
-    echo "      <br>\n";
-    echo "      <input type=\"submit\" name=\"commit\" value=\"" . _('Add record') . "\" class=\"button\">\n";
-    if (isset($rev)) {
-        echo "      $rev";
-    }
-    echo "     </form>\n";
+    include_once('inc/footer.inc.php');
+    exit;
 }
 
-include_once("inc/footer.inc.php");
+echo "    <h2>" . _('Add record to zone') . " <a href=\"edit.php?id=" . $zone_id . "\"> " . $zone_name . "</a></h2>\n";
+echo "     <form method=\"post\">\n";
+echo "      <input type=\"hidden\" name=\"domain\" value=\"" . $zone_id . "\">\n";
+echo "      <table border=\"0\" cellspacing=\"4\">\n";
+echo "       <tr>\n";
+echo "        <td class=\"n\">" . _('Name') . "</td>\n";
+echo "        <td class=\"n\">&nbsp;</td>\n";
+echo "        <td class=\"n\">" . _('Type') . "</td>\n";
+echo "        <td class=\"n\">" . _('Content') . "</td>\n";
+echo "        <td class=\"n\">" . _('Priority') . "</td>\n";
+echo "        <td class=\"n\">" . _('TTL') . "</td>\n";
+echo "       </tr>\n";
+echo "       <tr>\n";
+echo "        <td class=\"n\"><input type=\"text\" name=\"name\" class=\"input\" value=\"" . htmlspecialchars($name) . "\">." . $zone_name . "</td>\n";
+echo "        <td class=\"n\">IN</td>\n";
+echo "        <td class=\"n\">\n";
+echo "         <select name=\"type\">\n";
+$found_selected_type = !(isset($type) && $type);
+foreach (RecordType::getTypes() as $record_type) {
+    if (isset($type) && $type) {
+        if ($type == $record_type) {
+            $found_selected_type = true;
+            $add = " SELECTED";
+        } else {
+            $add = "";
+        }
+    } else {
+        if (preg_match('/i(p6|n-addr).arpa/i', $zone_name) && strtoupper($record_type) == 'PTR') {
+            $add = " SELECTED";
+            $rev = "";
+        } elseif ((strtoupper($record_type) == 'A') && $iface_add_reverse_record) {
+            $add = " SELECTED";
+            $rev = "<input type=\"checkbox\" name=\"reverse\"><span class=\"normaltext\">" . _('Add also reverse record') . "</span>\n";
+        } else {
+            $add = "";
+        }
+    }
+    echo "          <option" . $add . " value=\"" . htmlspecialchars($record_type) . "\">" . $record_type . "</option>\n";
+}
+if (!$found_selected_type) {
+    echo "          <option SELECTED value=\"" . htmlspecialchars($type) . "\"><i>" . htmlspecialchars($type) . "</i></option>\n";
+}
+echo "         </select>\n";
+echo "        </td>\n";
+echo "        <td class=\"n\"><input type=\"text\" name=\"content\" class=\"input\" value=\"" . htmlspecialchars($content) . "\"></td>\n";
+echo "        <td class=\"n\"><input type=\"text\" name=\"prio\" class=\"sinput\" value=\"" . htmlspecialchars($prio) . "\"></td>\n";
+echo "        <td class=\"n\"><input type=\"text\" name=\"ttl\" class=\"sinput\" value=\"" . htmlspecialchars($ttl) . "\"</td>\n";
+echo "       </tr>\n";
+echo "      </table>\n";
+echo "      <br>\n";
+echo "      <input type=\"submit\" name=\"commit\" value=\"" . _('Add record') . "\" class=\"button\">\n";
+if (isset($rev)) {
+    echo "      $rev";
+}
+echo "     </form>\n";
+
+include_once('inc/footer.inc.php');
