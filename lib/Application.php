@@ -30,11 +30,13 @@ use Twig\Loader\FilesystemLoader;
 class Application {
 
     protected $templateRenderer;
+    protected $configuration;
 
     public function __construct() {
         $loader = new FilesystemLoader('templates');
         $this->templateRenderer = new Environment($loader);
         $this->templateRenderer->addExtension(new I18nExtension());
+        $this->configuration = new Configuration();
     }
 
     public function render($template, $params = []) {
@@ -43,5 +45,9 @@ class Application {
         } catch (Error $e) {
             die($e->getMessage());
         }
+    }
+
+    public function config($name) {
+        return $this->configuration->get($name);
     }
 }

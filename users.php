@@ -40,8 +40,6 @@ if (isset ($_POST['commit'])) {
     }
 }
 
-global $ldap_use;
-
 $app = AppFactory::create();
 $app->render('users.html', [
     'perm_view_others' => do_hook('verify_permission', 'user_view_others'),
@@ -52,7 +50,7 @@ $app->render('users.html', [
     'perm_add_new' => do_hook('verify_permission', 'user_add_new'),
     'users' => do_hook('get_user_detail_list', ""),
     'perm_templates' => do_hook('list_permission_templates'),
-    'ldap_use' => $ldap_use,
+    'ldap_use' => $app->config('ldap_use'),
     'session_userid' => $_SESSION ["userid"]
 ]);
 

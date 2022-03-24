@@ -31,5 +31,54 @@ namespace Poweradmin;
  */
 class Configuration
 {
+    protected $config = array();
 
+    public function __construct()
+    {
+        $default_config = $this->parseConfig('inc/config-me.inc.php');
+        $custom_config = array();
+        if (file_exists('inc/config.inc.php')) {
+            $custom_config = $this->parseConfig('inc/config.inc.php');
+        }
+        $this->config = array_merge($default_config, $custom_config);
+    }
+
+    private function parseConfig($fileName): array
+    {
+        $default_config_content = file_get_contents($fileName);
+        $tokens = token_get_all($default_config_content);
+        $last_token = null;
+        $configItems = array();
+        foreach ($tokens as $token) {
+            if (is_array($token)) {
+                $token_type = $token[0];
+                $token_value = $token[1];
+                switch ($token_type) {
+                    case T_VARIABLE:
+                        $last_token = substr($token_value, 1);
+                        break;
+                    case T_STRING:
+                    case T_CONSTANT_ENCAPSED_STRING:
+                        $configItems[$last_token] = $token_value;
+                        break;
+                    case T_LNUMBER:
+                        $configItems[$last_token] = intval($token_value);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        return $configItems;
+    }
+
+    public function get($name)
+    {
+        if (array_key_exists($name, $this->config)) {
+            $value = $this->config[$name];
+            return $value == 'true' || $value == 'false' ? $value == 'true' : $this->config[$name];
+        } else {
+            return null;
+        }
+    }
 }
