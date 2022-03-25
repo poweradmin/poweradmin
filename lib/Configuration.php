@@ -59,7 +59,11 @@ class Configuration
                         break;
                     case T_STRING:
                     case T_CONSTANT_ENCAPSED_STRING:
-                        $configItems[$last_token] = $token_value;
+                        if ($token_value == 'true' || $token_value == 'false') {
+                            $configItems[$last_token] = $token_value == 'true';
+                        } else {
+                            $configItems[$last_token] = $token_value;
+                        }
                         break;
                     case T_LNUMBER:
                         $configItems[$last_token] = intval($token_value);
@@ -75,8 +79,7 @@ class Configuration
     public function get($name)
     {
         if (array_key_exists($name, $this->config)) {
-            $value = $this->config[$name];
-            return $value == 'true' || $value == 'false' ? $value == 'true' : $this->config[$name];
+            return $this->config[$name];
         } else {
             return null;
         }
