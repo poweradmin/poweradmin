@@ -40,6 +40,8 @@ require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
 
+$app = AppFactory::create();
+
 global $pdnssec_use;
 
 if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
@@ -102,7 +104,6 @@ if ($zone_info['type'] == "SLAVE" || $perm_content_edit == "none" || ($perm_cont
     exit;
 }
 
-$app = AppFactory::create();
 $app->render('delete_record.html', [
     'record_id' => $record_id,
     'zid' => $zid,

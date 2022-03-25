@@ -40,6 +40,8 @@ require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
 
+$app = AppFactory::create();
+
 global $pdnssec_use;
 
 if (do_hook('verify_permission', 'zone_content_edit_others')) {
@@ -102,7 +104,6 @@ if ($zone_info['type'] == "SLAVE") {
     }
 }
 
-$app = AppFactory::create();
 $app->render('delete_domain.html', [
     'zone_id' => $zone_id,
     'zone_info' => $zone_info,

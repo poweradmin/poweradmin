@@ -34,11 +34,12 @@ use Poweradmin\AppFactory;
 require_once 'inc/toolkit.inc.php';
 include_once("inc/header.inc.php");
 
+$app = AppFactory::create();
+
 if (isset($_POST['submit']) && $_POST['submit']) {
     do_hook('change_user_pass', $_POST);
 }
 
-$app = AppFactory::create();
 $app->render('change_password.html');
 
 include_once("inc/footer.inc.php");

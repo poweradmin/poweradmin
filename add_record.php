@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\AppFactory;
 use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
 use Poweradmin\RecordType;
@@ -40,9 +41,9 @@ require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
 
-global $pdnssec_use;
-global $dns_ttl;
-global $iface_add_reverse_record;
+$app = AppFactory::create();
+$pdnssec_use = $app->config('pdnssec_use');
+$iface_add_reverse_record = $app->config('iface_add_reverse_record');
 
 if (do_hook('verify_permission', 'zone_content_view_others')) {
     $perm_view = "all";
@@ -77,7 +78,7 @@ if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
 }
 $zone_id = $_GET['id'];
 
-$ttl = $dns_ttl;
+$ttl = $app->config('dns_ttl');
 if (isset($_POST['ttl']) && Validation::is_number($_POST['ttl'])) {
     $ttl = $_POST['ttl'];
 }

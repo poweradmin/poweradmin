@@ -37,6 +37,8 @@ require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
 
+$app = AppFactory::create();
+
 if (!do_hook('verify_permission' , 'user_edit_templ_perm' )) {
     error(ERR_PERM_DEL_PERM_TEMPL);
     include_once('inc/footer.inc.php');
@@ -61,7 +63,6 @@ if (isset($_GET['confirm']) && Validation::is_number($_GET['confirm']) && $_GET[
 
 $templ_details = do_hook('get_permission_template_details' , $perm_templ_id );
 
-$app = AppFactory::create();
 $app->render('delete_perm_templ.html', [
     'perm_templ_id' => $perm_templ_id,
     'templ_name' => $templ_details['name'],

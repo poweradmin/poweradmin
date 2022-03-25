@@ -38,6 +38,8 @@ require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
 
+$app = AppFactory::create();
+
 if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
     error(ERR_INV_INPUT);
     include_once('inc/footer.inc.php');
@@ -75,7 +77,6 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
 $templ_details = ZoneTemplate::get_zone_templ_details($zone_templ_id);
 $record_info = ZoneTemplate::get_zone_templ_record_from_id($record_id);
 
-$app = AppFactory::create();
 $app->render('delete_zone_templ_record.html', [
     'record_id' => $record_id,
     'zone_templ_id' => $zone_templ_id,

@@ -39,6 +39,8 @@ require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
 
+$app = AppFactory::create();
+
 if (!isset($_GET['master_ip']) || !Dns::is_valid_ipv4($_GET['master_ip']) && !Dns::is_valid_ipv6($_GET['master_ip'])) {
     error(ERR_INV_INPUT);
     include_once('inc/footer.inc.php');
@@ -81,7 +83,6 @@ if (isset($_GET['confirm']) && $_GET['confirm'] == '1') {
 
 $info = DnsRecord::get_supermaster_info_from_ip($master_ip);
 
-$app = AppFactory::create();
 $app->render('delete_supermaster.html', [
     'master_ip' => $master_ip,
     'info' => $info

@@ -35,6 +35,8 @@ require_once 'inc/toolkit.inc.php';
 require_once 'inc/message.inc.php';
 include_once 'inc/header.inc.php';
 
+$app = AppFactory::create();
+
 if (!do_hook('verify_permission', 'templ_perm_edit')) {
     error(ERR_PERM_EDIT_PERM_TEMPL);
     include_once("inc/footer.inc.php");
@@ -46,7 +48,6 @@ if (isset($_POST['commit'])) {
     success(SUC_PERM_TEMPL_ADD);
 }
 
-$app = AppFactory::create();
 $app->render('add_perm_templ.html', [
     'perms_avail' => do_hook('get_permissions_by_template_id'),
 ]);

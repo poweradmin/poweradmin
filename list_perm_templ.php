@@ -34,6 +34,8 @@ use Poweradmin\AppFactory;
 require_once 'inc/toolkit.inc.php';
 include_once 'inc/header.inc.php';
 
+$app = AppFactory::create();
+
 $perm_templ_perm_edit = do_hook('verify_permission', 'templ_perm_edit');
 
 if (!$perm_templ_perm_edit) {
@@ -42,7 +44,6 @@ if (!$perm_templ_perm_edit) {
     exit;
 }
 
-$app = AppFactory::create();
 $app->render('list_perm_templ.html', [
     'perm_templ_perm_edit' => $perm_templ_perm_edit,
     'permission_templates' => do_hook('list_permission_templates')

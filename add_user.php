@@ -28,6 +28,9 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
+
+use Poweradmin\AppFactory;
+
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/message.inc.php';
 
@@ -35,7 +38,8 @@ include_once 'inc/header.inc.php';
 
 echo '<script type="text/javascript" src="inc/helper.js"></script>';
 
-global $ldap_use;
+$app = AppFactory::create();
+$ldap_use = $app->config('ldap_use');
 
 $username = $_POST['username'] ?? "";
 $fullname = $_POST['fullname'] ?? "";

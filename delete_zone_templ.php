@@ -38,6 +38,8 @@ require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
 
+$app = AppFactory::create();
+
 if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
     error(ERR_INV_INPUT);
     include_once('inc/footer.inc.php');
@@ -61,7 +63,6 @@ if (isset($_GET['confirm']) && Validation::is_number($_GET['confirm']) && $_GET[
 }
 
 $templ_details = ZoneTemplate::get_zone_templ_details($zone_templ_id);
-$app = AppFactory::create();
 $app->render('delete_zone_templ.html', [
     'templ_name' => $templ_details['name'],
     'zone_templ_id' => $zone_templ_id,

@@ -35,6 +35,8 @@ use Poweradmin\ZoneTemplate;
 require_once 'inc/toolkit.inc.php';
 include_once 'inc/header.inc.php';
 
+$app = AppFactory::create();
+
 $perm_zone_master_add = do_hook('verify_permission', 'zone_master_add');
 
 if (!$perm_zone_master_add) {
@@ -43,7 +45,6 @@ if (!$perm_zone_master_add) {
     exit;
 }
 
-$app = AppFactory::create();
 $app->render('list_zone_templ.html', [
     'perm_zone_master_add' => $perm_zone_master_add,
     'username' => do_hook('get_fullname_from_userid', $_SESSION['userid']),

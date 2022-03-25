@@ -34,13 +34,14 @@ use Poweradmin\AppFactory;
 require_once 'inc/toolkit.inc.php';
 include_once 'inc/header.inc.php';
 
+$app = AppFactory::create();
+
 if (isset ($_POST['commit'])) {
     foreach ($_POST['user'] as $user) {
         do_hook('update_user_details', $user);
     }
 }
 
-$app = AppFactory::create();
 $app->render('users.html', [
     'perm_view_others' => do_hook('verify_permission', 'user_view_others'),
     'perm_edit_own' => do_hook('verify_permission', 'user_edit_own'),
