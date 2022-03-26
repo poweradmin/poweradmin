@@ -41,8 +41,7 @@ require_once 'inc/message.inc.php';
 include_once 'inc/header.inc.php';
 
 $app = AppFactory::create();
-
-global $pdnssec_use;
+$pdnssec_use = $app->config('pdnssec_use');
 
 if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
     error(ERR_INV_INPUT);

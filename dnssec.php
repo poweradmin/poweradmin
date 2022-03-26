@@ -30,6 +30,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\AppFactory;
 use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
 use Poweradmin\Validation;
@@ -39,20 +40,15 @@ require_once 'inc/toolkit.inc.php';
 
 include_once 'inc/header.inc.php';
 
-global $pdnssec_use;
-global $perm_meta_edit;
-global $perm_view;
+$app = AppFactory::create();
+$pdnssec_use = $app->config('pdnssec_use');
 
-$zone_id = "-1";
-if (isset($_GET['id']) && Validation::is_number($_GET['id'])) {
-    $zone_id = $_GET['id'];
-}
-
-if ($zone_id == "-1") {
+if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
     error(ERR_INV_INPUT);
-    include_once("inc/footer.inc.php");
+    include_once('inc/footer.inc.php');
     exit;
 }
+$zone_id = $_GET['id'];
 
 if (do_hook('verify_permission', 'zone_meta_edit_others')) {
     $perm_meta_edit = "all";
@@ -70,9 +66,6 @@ if (do_hook('verify_permission', 'zone_content_view_others')) {
     $perm_view = "none";
 }
 
-/*
-  Check permissions
- */
 $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );
 if ($perm_meta_edit == "all" || ( $perm_meta_edit == "own" && $user_is_zone_owner == "1")) {
     $meta_edit = "1";

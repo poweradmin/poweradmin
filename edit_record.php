@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\AppFactory;
 use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
 use Poweradmin\RecordType;
@@ -39,7 +40,8 @@ require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
 
-global $pdnssec_use;
+$app = AppFactory::create();
+$pdnssec_use = $app->config('pdnssec_use');
 
 if (do_hook('verify_permission', 'zone_content_view_others')) {
     $perm_view = "all";
@@ -92,10 +94,8 @@ if (isset($_POST["commit"])) {
                               $old_record_info['type'], $old_record_info['name'], $old_record_info['content'], $old_record_info['ttl'], $old_record_info['prio'],
                               $new_record_info['type'], $new_record_info['name'], $new_record_info['content'], $new_record_info['ttl'], $new_record_info['prio']));
 
-            if ($pdnssec_use) {
-                if (Dnssec::dnssec_rectify_zone($zid)) {
-                    success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
-                }
+            if ($pdnssec_use && Dnssec::dnssec_rectify_zone($zid)) {
+                success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
             }
         }
     }

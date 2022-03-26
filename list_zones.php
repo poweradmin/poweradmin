@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\AppFactory;
 use Poweradmin\DnsRecord;
 
 require_once 'inc/toolkit.inc.php';
@@ -36,7 +37,10 @@ require_once 'inc/pagination.inc.php';
 
 include_once 'inc/header.inc.php';
 
-global $pdnssec_use, $iface_zonelist_serial, $iface_rowamount;
+$app = AppFactory::create();
+$pdnssec_use = $app->config('pdnssec_use');
+$iface_zonelist_serial = $app->config('iface_zonelist_serial');
+$iface_rowamount = $app->config('iface_rowamount');
 
 if (isset($_GET["start"])) {
     define('ROWSTART', (($_GET["start"] - 1) * $iface_rowamount));

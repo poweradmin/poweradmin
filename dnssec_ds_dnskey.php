@@ -30,6 +30,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\AppFactory;
 use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
 use Poweradmin\Validation;
@@ -39,9 +40,8 @@ require_once 'inc/toolkit.inc.php';
 
 include_once 'inc/header.inc.php';
 
-global $pdnssec_use;
-global $perm_view;
-global $perm_meta_edit;
+$app = AppFactory::create();
+$pdnssec_use = $app->config('pdnssec_use');
 
 $zone_id = "-1";
 if (isset($_GET['id']) && Validation::is_number($_GET['id'])) {
@@ -50,13 +50,18 @@ if (isset($_GET['id']) && Validation::is_number($_GET['id'])) {
 
 if ($zone_id == "-1") {
     error(ERR_INV_INPUT);
-    include_once("inc/footer.inc.php");
+    include_once('inc/footer.inc.php');
     exit;
 }
 
-/*
-  Check permissions
- */
+if (do_hook('verify_permission', 'zone_meta_edit_others')) {
+    $perm_meta_edit = "all";
+} elseif (do_hook('verify_permission', 'zone_meta_edit_own')) {
+    $perm_meta_edit = "own";
+} else {
+    $perm_meta_edit = "none";
+}
+
 $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );
 if ($perm_meta_edit == "all" || ( $perm_meta_edit == "own" && $user_is_zone_owner == "1")) {
     $meta_edit = "1";
@@ -65,6 +70,14 @@ if ($perm_meta_edit == "all" || ( $perm_meta_edit == "own" && $user_is_zone_owne
 }
 
 (do_hook('verify_permission' , 'user_view_others' )) ? $perm_view_others = "1" : $perm_view_others = "0";
+
+if (do_hook('verify_permission', 'zone_content_view_others')) {
+    $perm_view = "all";
+} elseif (do_hook('verify_permission', 'zone_content_view_own')) {
+    $perm_view = "own";
+} else {
+    $perm_view = "none";
+}
 
 if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
     error(ERR_PERM_VIEW_ZONE);

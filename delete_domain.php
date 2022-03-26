@@ -41,8 +41,7 @@ require_once 'inc/message.inc.php';
 include_once 'inc/header.inc.php';
 
 $app = AppFactory::create();
-
-global $pdnssec_use;
+$pdnssec_use = $app->config('pdnssec_use');
 
 if (do_hook('verify_permission', 'zone_content_edit_others')) {
     $perm_edit = "all";

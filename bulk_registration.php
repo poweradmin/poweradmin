@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\AppFactory;
 use Poweradmin\Dns;
 use Poweradmin\DnsRecord;
 use Poweradmin\Validation;
@@ -39,6 +40,9 @@ require_once 'inc/toolkit.inc.php';
 require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
+
+$app = AppFactory::create();
+$iface_zone_type_default = $app->config('iface_zone_type_default');
 
 $owner = "-1";
 if ((isset($_POST['owner'])) && (Validation::is_number($_POST['owner']))) {
@@ -122,7 +126,6 @@ echo "       <tr>\n";
 echo "        <td class=\"n\">" . _('Type') . ":</td>\n";
 echo "        <td class=\"n\">\n";
 echo "         <select name=\"dom_type\">\n";
-global $iface_zone_type_default;
 foreach ($available_zone_types as $type) {
     $type == $iface_zone_type_default ? $selected = ' selected' : $selected = '';
     echo "          <option value=\"" . $type . "\" $selected>" . strtolower($type) . "</option>\n";

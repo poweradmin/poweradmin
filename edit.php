@@ -30,6 +30,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\AppFactory;
 use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
 use Poweradmin\RecordLog;
@@ -44,9 +45,11 @@ require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
 
-global $pdnssec_use;
-global $iface_add_reverse_record;
-global $iface_rowamount;
+$app = AppFactory::create();
+$pdnssec_use = $app->config('pdnssec_use');
+$iface_add_reverse_record = $app->config('iface_add_reverse_record');
+$iface_rowamount = $app->config('iface_rowamount');
+$iface_zone_comments = $app->config('iface_zone_comments');
 
 if (isset($_GET["start"])) {
     define('ROWSTART', (($_GET["start"] - 1) * $iface_rowamount));
@@ -313,7 +316,6 @@ if ($records == "-1") {
         echo "     </tr>\n";
     }
 
-    global $iface_zone_comments;
     if ($iface_zone_comments) {
         echo "    <tr>\n";
         echo "     <td colspan=\"6\">&nbsp;</td>\n";

@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\AppFactory;
 use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
 use Poweradmin\Validation;
@@ -38,7 +39,7 @@ require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
 
-global $pdnssec_use;
+$app = AppFactory::create();
 
 $zone_id = "-1";
 if (isset($_GET['id']) && Validation::is_number($_GET['id'])) {

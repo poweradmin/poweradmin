@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\AppFactory;
 use Poweradmin\Dns;
 use Poweradmin\DnsRecord;
 use Poweradmin\Syslog;
@@ -39,7 +40,8 @@ require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
 
-global $dns_third_level_check;
+$app = AppFactory::create();
+$dns_third_level_check = $app->config('dns_third_level_check');
 
 $owner = "-1";
 if ((isset($_POST['owner'])) && (Validation::is_number($_POST['owner']))) {

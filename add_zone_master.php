@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\AppFactory;
 use Poweradmin\Dns;
 use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
@@ -42,9 +43,10 @@ require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
 
-global $pdnssec_use;
-global $dns_third_level_check;
-global $iface_zone_type_default;
+$app = AppFactory::create();
+$pdnssec_use = $app->config('pdnssec_use');
+$dns_third_level_check = $app->config('dns_third_level_check');
+$iface_zone_type_default = $app->config('iface_zone_type_default');
 
 $owner = "-1";
 if ((isset($_POST['owner'])) && (Validation::is_number($_POST['owner']))) {

@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\AppFactory;
 use Poweradmin\RecordType;
 use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
@@ -38,7 +39,8 @@ require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
 
-global $dns_ttl;
+$app = AppFactory::create();
+$dns_ttl = $app->config('dns_ttl');
 
 if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
     error(ERR_INV_INPUT);

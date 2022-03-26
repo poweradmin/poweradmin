@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\AppFactory;
 use Poweradmin\DnsRecord;
 use Poweradmin\RecordType;
 use Poweradmin\Validation;
@@ -40,7 +41,9 @@ require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
 
-global $iface_rowamount;
+$app = AppFactory::create();
+$iface_rowamount = $app->config('iface_rowamount');
+
 if (isset($_GET["start"])) {
     define('ROWSTART', (($_GET["start"] - 1) * $iface_rowamount));
 } else {
