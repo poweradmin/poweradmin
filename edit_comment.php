@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\AppFactory;
 use Poweradmin\DnsRecord;
 
 require_once 'inc/toolkit.inc.php';
@@ -77,45 +78,17 @@ if (isset($_POST["commit"])) {
     }
 }
 
-echo "    <h2>" . _('Edit comment in zone') . " " . $zone_name . "</h2>\n";
-
 if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
     error(ERR_PERM_VIEW_COMMENT);
-} else {
-    $comment = DnsRecord::get_zone_comment($zid);
-    echo "     <form method=\"post\" action=\"edit_comment.php?domain=" . $zid . "\">\n";
-    echo "      <table>\n";
-    echo "      <tr>\n";
-    echo "       <td colspan=\"6\">&nbsp;</td>\n";
-    echo "      </tr>\n";
-    echo "      <tr>\n";
-    echo "       <td>&nbsp;</td><td colspan=\"5\">Comments:</td>\n";
-    echo "      </tr>\n";
-
-    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
-        echo "    <tr>\n";
-        echo "     <td class=\"n\">\n";
-        echo "      &nbsp;\n";
-        echo "     </td>\n";
-        echo "     <td colspan=\"4\"><textarea rows=\"15\" name=\"comment\" disabled>" . $comment . "</textarea></td>\n";
-        echo "     <td>&nbsp;</td>\n";
-        echo "    </tr>\n";
-    } else {
-        echo "    <tr>\n";
-        echo "     <td class=\"n\">\n";
-        echo "      &nbsp;\n";
-        echo "     </td>\n";
-        echo "     <td colspan=\"4\"><textarea rows=\"15\" name=\"comment\">" . $comment . "</textarea></td>\n";
-        echo "     <td>&nbsp;</td>\n";
-        echo "    </tr>\n";
-    }
-    echo "      </table>\n";
-    echo "      <p>\n";
-    echo "       <input type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\" class=\"button\">&nbsp;&nbsp;\n";
-    echo "       <input type=\"reset\" name=\"reset\" value=\"" . _('Reset changes') . "\" class=\"button\">&nbsp;&nbsp;\n";
-    echo "      </p>\n";
-    echo "     </form>\n";
+    include_once("inc/footer.inc.php");
+    exit;
 }
 
 
-include_once("inc/footer.inc.php");
+$app = AppFactory::create();
+$app->render('edit_comment.html', [
+    'zid' => $zid,
+    'comment' => DnsRecord::get_zone_comment($zid)
+]);
+
+include_once('inc/footer.inc.php');

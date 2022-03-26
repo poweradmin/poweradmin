@@ -94,9 +94,8 @@ if ($perm_edit != "all" && ($perm_edit != "own" || $user_is_zone_owner != "1")) 
     exit;
 }
 
-$slave_master = '';
 $slave_master_exists = false;
-if ($zone_info['type'] == "SLAVE") {
+if ($zone_info['type'] == 'SLAVE') {
     $slave_master = DnsRecord::get_domain_slave_master($zone_id);
     if (DnsRecord::supermaster_exists($slave_master)) {
         $slave_master_exists = true;

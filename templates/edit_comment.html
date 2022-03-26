@@ -1,0 +1,35 @@
+<h2>{% trans 'Edit comment in zone' %} {{ zone_name }}</h2>
+<form method="post" action="edit_comment.php?domain={{ zid }}">
+    <table>
+        <tr>
+            <td colspan="6">&nbsp;</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td colspan="5">Comments:</td>
+        </tr>
+
+        {% if zone_type == "SLAVE" or perm_content_edit == "none" or (perm_content_edit == "own" or perm_content_edit
+        == "own_as_client") and user_is_zone_owner == "0" %}
+        <tr>
+            <td class="n">
+                &nbsp;
+            </td>
+            <td colspan="4"><textarea rows="15" name="comment" disabled>{{ comment }}</textarea></td>
+            <td>&nbsp;</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td class="n">
+                &nbsp;
+            </td>
+            <td colspan="4"><textarea rows="15" name="comment">{{ comment }}</textarea></td>
+            <td>&nbsp;</td>
+        </tr>
+        {% endif %}
+    </table>
+    <p>
+        <input type="submit" name="commit" value="{% trans 'Commit changes' %}" class="button">&nbsp;&nbsp;
+        <input type="reset" name="reset" value="{% trans 'Reset changes' %}" class="button">&nbsp;&nbsp;
+    </p>
+</form>
