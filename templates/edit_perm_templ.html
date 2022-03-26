@@ -1,0 +1,39 @@
+<h2>{% trans 'Edit permission template' %}</h2>
+<form method="post" action="">
+    <input type="hidden" name="templ_id" value="{{ id }}">
+
+    <table>
+        <tr>
+            <td width="100">{% trans 'Name' %}</td>
+            <td><input class="input" type="text" name="templ_name" value="{{ templ['name'] }}"></td>
+        </tr>
+        <tr>
+            <td>{% trans 'Description' %}</td>
+            <td><input class="wide" type="text" name="templ_descr" value="{{ templ['descr'] }}"></td>
+        </tr>
+    </table>
+
+    <table>
+        <tr>
+            <th>&nbsp;</th>
+            <th>{% trans 'Name' %}</th>
+            <th>{% trans 'Description' %}</th>
+        </tr>
+
+        {% for permission in perms_avail %}
+        <tr>
+            {% set descr = permission['descr'] %}
+            {% set has_perm = "" %}
+            {% for template in perms_templ  %}
+                {% if permission['id'] in template %}
+                    {% set has_perm = "checked" %}
+                {% endif %}
+            {% endfor %}
+            <td><input type="checkbox" name="perm_id[]" value="{{ permission['id'] }}" {{ has_perm }}></td>
+            <td>{{ permission['name'] }}</td>
+            <td>{% trans descr %}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <input type="submit" class="button" name="commit" value="{% trans 'Commit changes' %}">
+</form>
