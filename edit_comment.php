@@ -65,7 +65,7 @@ if (do_hook('verify_permission', 'zone_meta_edit_others')) {
 
 $zid = $_GET['domain'];
 
-$user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zid );
+$user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zid);
 $zone_type = DnsRecord::get_domain_type($zid);
 $zone_name = DnsRecord::get_domain_name_by_id($zid);
 
@@ -83,7 +83,6 @@ if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
     include_once("inc/footer.inc.php");
     exit;
 }
-
 
 $app = AppFactory::create();
 $app->render('edit_comment.html', [
