@@ -1,0 +1,65 @@
+<h2>{% trans 'Bulk registration' %}</h2>
+
+<form method="post" action="bulk_registration.php">
+    <table>
+        <tr>
+            <td class="n" width="100">{% trans 'Owner' %}:</td>
+            <td class="n">
+                <select name="owner">
+                    {% for user in users %}
+                    {% if user['id'] == userid %}
+                    <option value="{{ user['id'] }}" selected>{{ user['fullname'] }}</option>
+                    {% elseif perm_view_others %}
+                    <option value="{{ user['id'] }}">{{ user['fullname'] }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="n">{% trans 'Type' %}:</td>
+            <td class="n">
+                <select name="dom_type">
+                    {% for type in available_zone_types %}
+                    {% if type == iface_zone_type_default %}
+                    {% set selected = 'selected' %}
+                    {% else %}
+                    {% set selected = '' %}
+                    {% endif %}
+                    <option value="{{ type }}" {{ selected }}>{{ type | lower }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="n">{% trans 'Template' %}:</td>
+            <td class="n">
+                <select name="zone_template">
+                    <option value="none">none</option>
+                    {% for zone_template in zone_templates %}
+                    <option value="{{ zone_template['id'] }}">{{ zone_template['name'] }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="n">{% trans 'Zones' %}:</td>
+            <td class="n">
+                <ul id="domain_names" style="list-style-type:none; padding:0 ">
+                    <li>{% trans 'Type one domain per line' %}:</li>
+                    <li>
+                        <textarea class="input" name="domains" rows="10" cols="30" style="width: 500px;">{% if error and domains %}{{ domains | join('\n') }}{% endif %}</textarea>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="n">&nbsp;</td>
+            <td class="n">
+                <input type="submit" class="button" name="submit" value="{% trans 'Add zones' %}">
+            </td>
+        </tr>
+    </table>
+</form>
