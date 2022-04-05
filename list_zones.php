@@ -80,21 +80,15 @@ $count_zones_edit = DnsRecord::zone_count_ng($perm_edit);
 
 if (isset($_GET["zone_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["zone_sort_by"])) {
     define('ZONE_SORT_BY', $_GET["zone_sort_by"]);
-    $_SESSION["zone_sort_by"] = $_GET["zone_sort_by"];
+    $_SESSION["list_zone_sort_by"] = $_GET["zone_sort_by"];
 } elseif (isset($_POST["zone_sort_by"]) && preg_match("/^[a-z_]+$/", $_POST["zone_sort_by"])) {
     define('ZONE_SORT_BY', $_POST["zone_sort_by"]);
-    $_SESSION["zone_sort_by"] = $_POST["zone_sort_by"];
-} elseif (isset($_SESSION["zone_sort_by"])) {
-    define('ZONE_SORT_BY', $_SESSION["zone_sort_by"]);
+    $_SESSION["list_zone_sort_by"] = $_POST["zone_sort_by"];
+} elseif (isset($_SESSION["list_zone_sort_by"])) {
+    define('ZONE_SORT_BY', $_SESSION["list_zone_sort_by"]);
 } else {
     define('ZONE_SORT_BY', "name");
 }
-
-# OUCH: Temporary workaround for nasty sorting issue.
-# The problem is that sorting order is saved as a session variable
-# and it's used in two different screens - zone list and search results.
-# Both have different queries for getting data, but same order field
-# that causes failure.
 
 $zone_sort_by = ZONE_SORT_BY;
 if (!in_array(ZONE_SORT_BY, array('name', 'type', 'count_records', 'owner'))) {
