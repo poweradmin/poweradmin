@@ -96,6 +96,7 @@ if (!in_array(ZONE_SORT_BY, array('name', 'type', 'count_records', 'owner'))) {
 }
 
 echo "    <h2>" . _('List zones') . "</h2>\n";
+echo "    <div class=\"normaltext\">" . _('Total number of zones:') . " " . $count_zones_all ."</div>\n";
 
 if ($perm_view == "none") {
     echo "     <p>" . _('You do not have the permission to see any zones.') . "</p>\n";
@@ -121,7 +122,7 @@ if ($perm_view == "none") {
     echo "     <form method=\"post\" action=\"delete_domains.php\">\n";
     echo "     <table>\n";
     echo "      <tr>\n";
-    echo "       <th>&nbsp;</th>\n";
+    echo "       <th><input type=\"checkbox\" id=\"select_zones\" onClick=\"toggleZoneCheckboxes()\" /></th>\n";
     echo "       <th>&nbsp;</th>\n";
     echo "       <th><a href=\"list_zones.php?zone_sort_by=name\">" . _('Name') . "</a></th>\n";
     echo "       <th><a href=\"list_zones.php?zone_sort_by=type\">" . _('Type') . "</a></th>\n";

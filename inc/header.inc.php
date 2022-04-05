@@ -34,13 +34,14 @@ global $ignore_install_dir;
 global $session_key;
 
 header('Content-type: text/html; charset=utf-8');
+$file_version = time();
 echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n";
 echo "<html>\n";
 echo " <head>\n";
 echo "  <title>" . $iface_title . "</title>\n";
-echo "  <link rel=stylesheet href=\"style/" . $iface_style . ".css\" type=\"text/css\">\n";
+echo "  <link rel=stylesheet href=\"style/" . $iface_style . ".css?time=" . $file_version . "\" type=\"text/css\">\n";
 echo "  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n";
-echo "  <script type=\"text/javascript\" src=\"inc/helper.js\"></script>\n";
+echo "  <script type=\"text/javascript\" src=\"inc/helper.js?time=" . $file_version . "\"></script>\n";
 echo " </head>\n";
 echo " <body>\n";
 

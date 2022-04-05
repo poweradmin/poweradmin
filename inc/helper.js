@@ -67,3 +67,11 @@ function disablePasswordField() {
     }
     password.disabled = ldap.checked;
 }
+
+function toggleZoneCheckboxes() {
+    const select_state = document.getElementById("select_zones");
+    const checkboxes = document.getElementsByName("zone_id[]");
+    for (let index=0; index < checkboxes.length; index++){
+        checkboxes[index].checked = select_state.checked;
+    }
+}
