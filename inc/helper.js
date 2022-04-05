@@ -19,16 +19,16 @@
  */
 
 function changePort(db_type) {
-    var dbport = document.getElementById("dbport");
-    var host = document.getElementById("host");
-    var db_name_title = document.getElementById("db_name_title");
-    var db_path_title = document.getElementById("db_path_title");
-    var username_row = document.getElementById("username_row");
-    var password_row = document.getElementById("password_row");
-    var hostname_row = document.getElementById("hostname_row");
-    var dbport_row = document.getElementById("dbport_row");
+    const dbport = document.getElementById("dbport");
+    const host = document.getElementById("host");
+    const db_name_title = document.getElementById("db_name_title");
+    const db_path_title = document.getElementById("db_path_title");
+    const username_row = document.getElementById("username_row");
+    const password_row = document.getElementById("password_row");
+    const hostname_row = document.getElementById("hostname_row");
+    const dbport_row = document.getElementById("dbport_row");
 
-    if (db_type == "mysql") {
+    if (db_type === "mysql") {
         dbport.value = "3306";
         host.value = "localhost";
         db_name_title.style.display = '';
@@ -37,7 +37,7 @@ function changePort(db_type) {
         password_row.style.display = '';
         hostname_row.style.display = '';
         dbport_row.style.display = '';
-    } else if (db_type == "pgsql") {
+    } else if (db_type === "pgsql") {
         dbport.value = "5432";
         host.value = "localhost";
         db_name_title.style.display = '';
