@@ -45,14 +45,14 @@ if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
     include_once('inc/footer.inc.php');
     exit;
 }
-$record_id = $_GET['id'];
+$record_id = htmlspecialchars($_GET['id']);
 
 if (!isset($_GET['zone_templ_id']) || !Validation::is_number($_GET['zone_templ_id'])) {
     error(ERR_INV_INPUT);
     include_once('inc/footer.inc.php');
     exit;
 }
-$zone_templ_id = $_GET['zone_templ_id'];
+$zone_templ_id = htmlspecialchars($_GET['zone_templ_id']);
 
 $confirm = "-1";
 if (isset($_GET['confirm']) && Validation::is_number($_GET['confirm'])) {

@@ -48,7 +48,7 @@ if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
     include_once('inc/footer.inc.php');
     exit;
 }
-$zone_id = $_GET['id'];
+$zone_id = htmlspecialchars($_GET['id']);
 
 if (do_hook('verify_permission', 'zone_meta_edit_others')) {
     $perm_meta_edit = "all";

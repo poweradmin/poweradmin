@@ -42,7 +42,7 @@ if (!isset($_GET['id']) && !Validation::is_number($_GET['id'])) {
     include_once('inc/footer.inc.php');
     exit;
 }
-$id = $_GET['id'];
+$id = htmlspecialchars($_GET['id']);
 
 if (!do_hook('verify_permission', 'templ_perm_edit')) {
     error(ERR_PERM_EDIT_PERM_TEMPL);

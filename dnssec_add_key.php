@@ -40,7 +40,7 @@ include_once("inc/header.inc.php");
 
 $zone_id = "-1";
 if (isset($_GET['id']) && Validation::is_number($_GET['id'])) {
-    $zone_id = $_GET['id'];
+    $zone_id = htmlspecialchars($_GET['id']);
 }
 
 $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );

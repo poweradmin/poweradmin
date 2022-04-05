@@ -46,7 +46,7 @@ if (!(isset($_GET['id']) && Validation::is_number($_GET['id']))) {
     include_once("inc/footer.inc.php");
     exit;
 } else {
-    $uid = $_GET['id'];
+    $uid = htmlspecialchars($_GET['id']);
 }
 
 if (isset($_POST['commit'])) {

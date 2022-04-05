@@ -40,12 +40,12 @@ include_once 'inc/header.inc.php';
 
 $record_id = "-1";
 if (isset($_GET['id']) && Validation::is_number($_GET['id'])) {
-    $record_id = $_GET['id'];
+    $record_id = htmlspecialchars($_GET['id']);
 }
 
 $zone_templ_id = "-1";
 if (isset($_GET['zone_templ_id']) && Validation::is_number($_GET['zone_templ_id'])) {
-    $zone_templ_id = $_GET['zone_templ_id'];
+    $zone_templ_id = htmlspecialchars($_GET['zone_templ_id']);
 }
 
 $owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);

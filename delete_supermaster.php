@@ -46,7 +46,7 @@ if (!isset($_GET['master_ip']) || !Dns::is_valid_ipv4($_GET['master_ip']) && !Dn
     include_once('inc/footer.inc.php');
     exit;
 }
-$master_ip = $_GET['master_ip'];
+$master_ip = htmlspecialchars($_GET['master_ip']);
 
 if (!isset($_GET['ns_name']) || !Dns::is_valid_hostname_fqdn($_GET['ns_name'], 0)) {
     error(ERR_INV_INPUT);

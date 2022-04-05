@@ -47,7 +47,7 @@ if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
     include_once('inc/footer.inc.php');
     exit;
 }
-$zone_templ_id = $_GET['id'];
+$zone_templ_id = htmlspecialchars($_GET['id']);
 
 $ttl = isset($_POST['ttl']) && Validation::is_number($_POST['ttl']) ? $_POST['ttl'] : $dns_ttl;
 $prio = isset($_POST['prio']) && Validation::is_number($_POST['prio']) ? $_POST['prio'] : 0;

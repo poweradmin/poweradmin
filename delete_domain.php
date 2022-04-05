@@ -56,7 +56,7 @@ if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
     include_once('inc/footer.inc.php');
     exit;
 }
-$zone_id = $_GET['id'];
+$zone_id = htmlspecialchars($_GET['id']);
 
 $confirm = "-1";
 if (isset($_GET['confirm']) && Validation::is_number($_GET['confirm'])) {

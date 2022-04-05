@@ -48,7 +48,7 @@ if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
     include_once('inc/footer.inc.php');
     exit;
 }
-$record_id = $_GET['id'];
+$record_id = htmlspecialchars($_GET['id']);
 
 $zid = DnsRecord::get_zone_id_from_record_id($record_id);
 if ($zid == NULL) {

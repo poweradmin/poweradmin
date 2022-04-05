@@ -45,7 +45,7 @@ $pdnssec_use = $app->config('pdnssec_use');
 
 $zone_id = "-1";
 if (isset($_GET['id']) && Validation::is_number($_GET['id'])) {
-    $zone_id = $_GET['id'];
+    $zone_id = htmlspecialchars($_GET['id']);
 }
 
 if ($zone_id == "-1") {

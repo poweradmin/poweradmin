@@ -45,8 +45,7 @@ if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
     include_once('inc/footer.inc.php');
     exit;
 }
-
-$zone_templ_id = $_GET['id'];
+$zone_templ_id = htmlspecialchars($_GET['id']);
 
 $owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
 if (!do_hook('verify_permission', 'zone_master_add') || !$owner) {

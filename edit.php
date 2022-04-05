@@ -69,16 +69,12 @@ if (isset($_GET["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["record_so
     define('RECORD_SORT_BY', "name");
 }
 
-$zone_id = "-1";
-if (isset($_GET['id']) && Validation::is_number($_GET['id'])) {
-    $zone_id = $_GET['id'];
-}
-
-if ($zone_id == "-1") {
+if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
     error(ERR_INV_INPUT);
     include_once("inc/footer.inc.php");
     exit;
 }
+$zone_id = htmlspecialchars($_GET['id']);
 
 if (isset($_POST['commit'])) {
     $error = false;

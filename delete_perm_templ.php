@@ -51,7 +51,7 @@ if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
     exit;
 }
 
-$perm_templ_id = $_GET['id'];
+$perm_templ_id = htmlspecialchars($_GET['id']);
 
 if (isset($_GET['confirm']) && Validation::is_number($_GET['confirm']) && $_GET["confirm"] == '1') {
     if (do_hook('delete_perm_templ', $perm_templ_id)) {
