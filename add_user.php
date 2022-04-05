@@ -36,8 +36,6 @@ require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
 
-echo '<script type="text/javascript" src="inc/helper.js"></script>';
-
 $app = AppFactory::create();
 $ldap_use = $app->config('ldap_use');
 

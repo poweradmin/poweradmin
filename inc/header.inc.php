@@ -40,6 +40,7 @@ echo " <head>\n";
 echo "  <title>" . $iface_title . "</title>\n";
 echo "  <link rel=stylesheet href=\"style/" . $iface_style . ".css\" type=\"text/css\">\n";
 echo "  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n";
+echo "  <script type=\"text/javascript\" src=\"inc/helper.js\"></script>\n";
 echo " </head>\n";
 echo " <body>\n";
 
