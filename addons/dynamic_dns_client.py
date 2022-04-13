@@ -54,12 +54,12 @@ with patch('socket.getaddrinfo', side_effect=getaddrinfoIPv4):
 
 if verbose:
     print ("Updating the IP address (" + ipv4 + ") now ...")
-response = requests.get(poweradmin + "/dynamic_update.php?hostname=" + dyndns + "&myip=" + ipv4 + "&verbose=" + verbose, auth = HTTPBasicAuth(login, password))
+response = requests.get(poweradmin + "/dynamic_update.php?hostname=" + dyndns + "&myip=" + ipv4 + "&verbose=" + str(verbose), auth = HTTPBasicAuth(login, password))
 if verbose:
     print ("Status: " + response.text)
 
 if verbose:
     print ("Updating the IP address (" + ipv6 + ") now ...")
-response = requests.get(poweradmin + "/dynamic_update.php?hostname=" + dyndns + "&myip=" + ipv6 + "&verbose=" + verbose, auth = HTTPBasicAuth(login, password))
+response = requests.get(poweradmin + "/dynamic_update.php?hostname=" + dyndns + "&myip=" + ipv6 + "&verbose=" + str(verbose), auth = HTTPBasicAuth(login, password))
 if verbose:
     print ("Status: " + response.text)
