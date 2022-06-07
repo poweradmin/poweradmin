@@ -122,11 +122,15 @@ function show_letters($letterstart, $userid) {
 
     $char_range = array_merge(range('a', 'z'), array('_'));
 
+    $allowed = zone_content_view_others($userid);
+
     $query = "SELECT
 			DISTINCT ".dbfunc_substr()."(domains.name, 1, 1) AS letter
 			FROM domains
 			LEFT JOIN zones ON domains.id = zones.domain_id
-			WHERE zones.owner = " . $userid;
+			WHERE " . $allowed . " = 1
+			OR zones.owner = " . $userid . "
+			ORDER BY 1";
     $db->setLimit(36);
 
     $available_chars = array();
