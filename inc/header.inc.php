@@ -87,39 +87,43 @@ if ($ignore_install_dir == false && file_exists ( 'install' )) {
             echo '<a href="search.php" class="nav-item nav-link">'. _('Search zones and records').'</a>';
         }
 
-        echo '<div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">List</a>
-                    <div class="dropdown-menu">';
-                        
-                        if ($perm_view_zone_own == "1" || $perm_view_zone_other == "1") {
-                            echo "   <a href=\"list_zones.php\" class=\"dropdown-item\"> " . _('List zones') . "</a>\n";
-                        }
-                        if ($perm_zone_master_add) {
-                            echo "    <a href=\"list_zone_templ.php\" class=\"dropdown-item\" >" . _('List zone templates') . "</a>\n";
-                        }
-                        if ($perm_supermaster_view) {
-                            echo "    <a href=\"list_supermasters.php\" class=\"dropdown-item\">" . _('List supermasters') . "</a>\n";
-                        }
+         if ( ($perm_view_zone_own == "1" || $perm_view_zone_other == "1") || $perm_zone_master_add || $perm_supermaster_view ){
+            echo '<div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">List</a>
+                        <div class="dropdown-menu">';
+                            
+                            if ($perm_view_zone_own == "1" || $perm_view_zone_other == "1") {
+                                echo "   <a href=\"list_zones.php\" class=\"dropdown-item\"> " . _('List zones') . "</a>\n";
+                            }
+                            if ($perm_zone_master_add) {
+                                echo "    <a href=\"list_zone_templ.php\" class=\"dropdown-item\" >" . _('List zone templates') . "</a>\n";
+                            }
+                            if ($perm_supermaster_view) {
+                                echo "    <a href=\"list_supermasters.php\" class=\"dropdown-item\">" . _('List supermasters') . "</a>\n";
+                            }
 
-        echo            '</div>
-                </div>';
+            echo            '</div>
+                    </div>';
+        }
 
-        echo '<div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Add</a>
-                    <div class="dropdown-menu">';
-                        
-                        if ($perm_zone_master_add) {
-                            echo "    <a href=\"add_zone_master.php\" class=\"dropdown-item\">" . _('Add master zone') . "</a>\n";
-                        }
-                        if ($perm_zone_slave_add) {
-                            echo "    <a href=\"add_zone_slave.php\" class=\"dropdown-item\">" . _('Add slave zone') . "</a>\n";
-                        }
-                        if ($perm_supermaster_add) {
-                            echo "    <a href=\"add_supermaster.php\" class=\"dropdown-item\">" . _('Add supermaster') . "</a>\n";
-                        }
+        if ($perm_zone_master_add || $perm_zone_slave_add || $perm_supermaster_add){
+            echo '<div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Add</a>
+                        <div class="dropdown-menu">';
+                            
+                            if ($perm_zone_master_add) {
+                                echo "    <a href=\"add_zone_master.php\" class=\"dropdown-item\">" . _('Add master zone') . "</a>\n";
+                            }
+                            if ($perm_zone_slave_add) {
+                                echo "    <a href=\"add_zone_slave.php\" class=\"dropdown-item\">" . _('Add slave zone') . "</a>\n";
+                            }
+                            if ($perm_supermaster_add) {
+                                echo "    <a href=\"add_supermaster.php\" class=\"dropdown-item\">" . _('Add supermaster') . "</a>\n";
+                            }
 
-        echo            '</div>
-                </div>';
+            echo            '</div>
+                    </div>';
+        }
 
         if ($perm_zone_master_add) {
             echo "    <a href=\"bulk_registration.php\" class=\"nav-item nav-link\">" . _('Bulk registration') . "</a>\n";
