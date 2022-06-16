@@ -139,5 +139,5 @@ echo '</div></div>';
 //close navbar
 echo '      </div>
         </nav>';
-}
+
 echo "    <div class=\"content\">\n";
