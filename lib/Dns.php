@@ -190,9 +190,6 @@ class Dns
 
             case "L64": // TODO: implement validation.
                 break;
-			
-	    case "LUA": // TODO: implement validation.
-                break;
 
             case "LOC":
                 if (!self::is_valid_loc($content)) {
