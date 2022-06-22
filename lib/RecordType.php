@@ -55,7 +55,6 @@ class RecordType
         'KX',
         'L32',
         'L64',
-        'LUA',
         'LOC',
         'LP',
         'MAILA',
