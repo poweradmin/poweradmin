@@ -42,21 +42,13 @@ echo "  <title>" . $iface_title . "</title>\n";
 echo "  <link rel=stylesheet href=\"style/" . $iface_style . ".css?time=" . $file_version . "\" type=\"text/css\">\n";
 echo "  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n";
 echo "  <script type=\"text/javascript\" src=\"inc/helper.js?time=" . $file_version . "\"></script>\n";
-//add bootsrap
-echo '<meta name="viewport" content="width=device-width, initial-scale=1">
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-       ';
 echo " </head>\n";
 echo " <body>\n";
 
-//navbar
-echo '<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-            <div class="container-fluid">';
 if (file_exists('inc/custom_header.inc.php')) {
     include('inc/custom_header.inc.php');
 } else {
-    echo  '<a href="#" class="navbar-brand">'.$iface_title.'</a>' ;
+    echo "  <h1>" . $iface_title . "</h1>\n";
 }
 
 if ($ignore_install_dir == false && file_exists ( 'install' )) {
@@ -79,70 +71,37 @@ if ($ignore_install_dir == false && file_exists ( 'install' )) {
         echo "<br>";
     }
 
-   echo '<div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
-            <div class="navbar-nav">';
-
-        echo '<a href="index.php" class="nav-item nav-link">'.  _('Index').'</a>';
-        if ($perm_search == "1") {
-            echo '<a href="search.php" class="nav-item nav-link">'. _('Search zones and records').'</a>';
-        }
-
-         if ( ($perm_view_zone_own == "1" || $perm_view_zone_other == "1") || $perm_zone_master_add || $perm_supermaster_view ){
-            echo '<div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">List</a>
-                        <div class="dropdown-menu">';
-                            
-                            if ($perm_view_zone_own == "1" || $perm_view_zone_other == "1") {
-                                echo "   <a href=\"list_zones.php\" class=\"dropdown-item\"> " . _('List zones') . "</a>\n";
-                            }
-                            if ($perm_zone_master_add) {
-                                echo "    <a href=\"list_zone_templ.php\" class=\"dropdown-item\" >" . _('List zone templates') . "</a>\n";
-                            }
-                            if ($perm_supermaster_view) {
-                                echo "    <a href=\"list_supermasters.php\" class=\"dropdown-item\">" . _('List supermasters') . "</a>\n";
-                            }
-
-            echo            '</div>
-                    </div>';
-        }
-
-        if ($perm_zone_master_add || $perm_zone_slave_add || $perm_supermaster_add){
-            echo '<div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Add</a>
-                        <div class="dropdown-menu">';
-                            
-                            if ($perm_zone_master_add) {
-                                echo "    <a href=\"add_zone_master.php\" class=\"dropdown-item\">" . _('Add master zone') . "</a>\n";
-                            }
-                            if ($perm_zone_slave_add) {
-                                echo "    <a href=\"add_zone_slave.php\" class=\"dropdown-item\">" . _('Add slave zone') . "</a>\n";
-                            }
-                            if ($perm_supermaster_add) {
-                                echo "    <a href=\"add_supermaster.php\" class=\"dropdown-item\">" . _('Add supermaster') . "</a>\n";
-                            }
-
-            echo            '</div>
-                    </div>';
-        }
-
-        if ($perm_zone_master_add) {
-            echo "    <a href=\"bulk_registration.php\" class=\"nav-item nav-link\">" . _('Bulk registration') . "</a>\n";
-        }
-        if ($_SESSION ["auth_used"] != "ldap") {
-            echo "    <a href=\"change_password.php\" class=\"nav-item nav-link\" >" . _('Change password') . "</a>\n";
-        }
-        echo "    <a href=\"users.php\" class=\"nav-item nav-link\">" . _('User administration') . "</a>\n";
-        echo "</div>";
-
-        echo "<div class=\"navbar-nav\">";
-        echo "    <a href=\"index.php?logout\"  class=\"nav-item nav-link\">" . _('Logout') . "</a>\n";
-        echo "</div>";
-echo '</div></div>';
-
+    echo "    <div class=\"menu\">\n";
+    echo "    <span class=\"menuitem\"><a href=\"index.php\">" . _('Index') . "</a></span>\n";
+    if ($perm_search == "1") {
+        echo "    <span class=\"menuitem\"><a href=\"search.php\">" . _('Search zones and records') . "</a></span>\n";
+    }
+    if ($perm_view_zone_own == "1" || $perm_view_zone_other == "1") {
+        echo "    <span class=\"menuitem\"><a href=\"list_zones.php\">" . _('List zones') . "</a></span>\n";
+    }
+    if ($perm_zone_master_add) {
+        echo "    <span class=\"menuitem\"><a href=\"list_zone_templ.php\">" . _('List zone templates') . "</a></span>\n";
+    }
+    if ($perm_supermaster_view) {
+        echo "    <span class=\"menuitem\"><a href=\"list_supermasters.php\">" . _('List supermasters') . "</a></span>\n";
+    }
+    if ($perm_zone_master_add) {
+        echo "    <span class=\"menuitem\"><a href=\"add_zone_master.php\">" . _('Add master zone') . "</a></span>\n";
+    }
+    if ($perm_zone_slave_add) {
+        echo "    <span class=\"menuitem\"><a href=\"add_zone_slave.php\">" . _('Add slave zone') . "</a></span>\n";
+    }
+    if ($perm_supermaster_add) {
+        echo "    <span class=\"menuitem\"><a href=\"add_supermaster.php\">" . _('Add supermaster') . "</a></span>\n";
+    }
+    if ($perm_zone_master_add) {
+        echo "    <span class=\"menuitem\"><a href=\"bulk_registration.php\">" . _('Bulk registration') . "</a></span>\n";
+    }
+    if ($_SESSION ["auth_used"] != "ldap") {
+        echo "    <span class=\"menuitem\"><a href=\"change_password.php\">" . _('Change password') . "</a></span>\n";
+    }
+    echo "    <span class=\"menuitem\"><a href=\"users.php\">" . _('User administration') . "</a></span>\n";
+    echo "    <span class=\"menuitem\"><a href=\"index.php?logout\">" . _('Logout') . "</a></span>\n";
+    echo "    </div> <!-- /menu -->\n";
 }
-//close navbar
-echo '      </div>
-        </nav>';
-
-
 echo "    <div class=\"content\">\n";
