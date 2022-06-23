@@ -1,0 +1,73 @@
+/*
+ * Author: Benchea Dan-Cosmin
+ * https://github.com/bnchdan
+ * Comments: Based on the punk.css design
+
+/* BEGIN ACTUAL STYLESHEET */
+body {
+	background: #adaaaa;
+}
+
+
+p,  table tr, table tr td, table tr th, strong, li, b, input, textarea {
+	font-size: 0.9em;
+}
+
+
+
+h2, h3 {
+	font-size: 1.17em;
+}
+
+.content, .footer {
+	margin: 10px auto;
+	width: 90%;
+}
+
+
+
+/*CONTENT*/
+.content {
+	padding: 20px 20px;
+	border: 1px solid #ccc;
+	background: #fff;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+
+table tr th {
+	text-align: left;
+	padding-right: 10px;
+	font-weight: normal;
+}
+
+table tr td {
+    border: 1px solid #ddd;
+	padding: 3px;
+}
+
+tr:nth-child(even){background-color: #f2f2f2;}
+
+.success, .error {
+	padding: 10px;
+	font-weight: bold;
+}
+
+
+.success {
+	border: 1px solid green;
+	color: green;
+}
+
+.error {
+	border: 1px solid red;
+	color: red;
+}
+
+.footer {
+	font-size: 0.8em;
+}
