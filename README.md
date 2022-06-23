@@ -56,6 +56,6 @@ Go to the installed system in your browser
 
 ## Screenshots
 ### Log in
-![The login screen](https://www.poweradmin.org/screenshots/login.png)
+![image](https://user-images.githubusercontent.com/30780133/175272317-1df9d943-c324-48da-a719-5c26de79ef03.png)
 ### Zone list
 ![List of zones](https://www.poweradmin.org/screenshots/zones.png)
