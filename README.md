@@ -58,4 +58,4 @@ Go to the installed system in your browser
 ### Log in
 ![image](https://user-images.githubusercontent.com/30780133/175272317-1df9d943-c324-48da-a719-5c26de79ef03.png)
 ### Zone list
-![List of zones](https://www.poweradmin.org/screenshots/zones.png)
+![image](https://user-images.githubusercontent.com/30780133/175272906-e1404629-c5e2-4d80-b3a6-7710456d3f33.png)
