@@ -42,12 +42,18 @@ echo "  <title>" . $iface_title . "</title>\n";
 echo "  <link rel=stylesheet href=\"style/" . $iface_style . ".css?time=" . $file_version . "\" type=\"text/css\">\n";
 echo "  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n";
 echo "  <script type=\"text/javascript\" src=\"inc/helper.js?time=" . $file_version . "\"></script>\n";
-//add bootsrap
+
+//add boostrap
 echo '<meta name="viewport" content="width=device-width, initial-scale=1">
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-       ';
+      <link 
+      href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css" 
+      rel="stylesheet"  type="text/css">
+      ';
+
 echo " </head>\n";
+
 echo " <body>\n";
 
 //navbar
@@ -79,27 +85,27 @@ if ($ignore_install_dir == false && file_exists ( 'install' )) {
         echo "<br>";
     }
 
-   echo '<div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
-            <div class="navbar-nav">';
+echo '<div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+            <div class="navbar-nav ">';
 
-        echo '<a href="index.php" class="nav-item nav-link">'.  _('Index').'</a>';
+        echo '<a href="index.php" class="nav-item nav-link"><i class="fa fa-home" title="Edit"></i> '.  _('Index').'</a>';
         if ($perm_search == "1") {
-            echo '<a href="search.php" class="nav-item nav-link">'. _('Search zones and records').'</a>';
+            echo '<a href="search.php" class="nav-item nav-link"><i class="fa fa-search" ></i> '. _('Search zones and records').'</a>';
         }
 
-         if ( ($perm_view_zone_own == "1" || $perm_view_zone_other == "1") || $perm_zone_master_add || $perm_supermaster_view ){
-            echo '<div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">List</a>
-                        <div class="dropdown-menu">';
+        if ( ($perm_view_zone_own == "1" || $perm_view_zone_other == "1") || $perm_zone_master_add || $perm_supermaster_view ){
+            echo "<div class=\"nav-item dropdown\">
+                        <a href=\"#\" class=\"nav-link dropdown-toggle\" data-bs-toggle=\"dropdown\"><i class=\"fa fa-list\"></i>  List</a>
+                        <div class=\"dropdown-menu\">";
                             
                             if ($perm_view_zone_own == "1" || $perm_view_zone_other == "1") {
-                                echo "   <a href=\"list_zones.php\" class=\"dropdown-item\"> " . _('List zones') . "</a>\n";
+                                echo "   <a href=\"list_zones.php\" class=\"dropdown-item\"><i class=\"fa fa-list-ul\"></i> ". _('List zones') . "</a>\n";
                             }
                             if ($perm_zone_master_add) {
-                                echo "    <a href=\"list_zone_templ.php\" class=\"dropdown-item\" >" . _('List zone templates') . "</a>\n";
+                                echo "    <a href=\"list_zone_templ.php\" class=\"dropdown-item\" ><i class=\"fa fa-list-ol\"></i> " . _('List zone templates') . "</a>\n";
                             }
                             if ($perm_supermaster_view) {
-                                echo "    <a href=\"list_supermasters.php\" class=\"dropdown-item\">" . _('List supermasters') . "</a>\n";
+                                echo "    <a href=\"list_supermasters.php\" class=\"dropdown-item\"><i class=\"fa fa-list-alt\"></i> " . _('List supermasters') . "</a>\n";
                             }
 
             echo            '</div>
@@ -107,18 +113,18 @@ if ($ignore_install_dir == false && file_exists ( 'install' )) {
         }
 
         if ($perm_zone_master_add || $perm_zone_slave_add || $perm_supermaster_add){
-            echo '<div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Add</a>
-                        <div class="dropdown-menu">';
+            echo "<div class=\"nav-item dropdown\">
+                        <a href=\"#\" class=\"nav-link dropdown-toggle\" data-bs-toggle=\"dropdown\"><i class=\"fa fa-plus\"></i> Add</a>
+                        <div class=\"dropdown-menu\">";
                             
                             if ($perm_zone_master_add) {
-                                echo "    <a href=\"add_zone_master.php\" class=\"dropdown-item\">" . _('Add master zone') . "</a>\n";
+                                echo "    <a href=\"add_zone_master.php\" class=\"dropdown-item\"><i class=\"fa fa-plus-circle\"></i> " . _('Add master zone') . "</a>\n";
                             }
                             if ($perm_zone_slave_add) {
-                                echo "    <a href=\"add_zone_slave.php\" class=\"dropdown-item\">" . _('Add slave zone') . "</a>\n";
+                                echo "    <a href=\"add_zone_slave.php\" class=\"dropdown-item\"><i class=\"fa fa-plus-square\"></i> " . _('Add slave zone') . "</a>\n";
                             }
                             if ($perm_supermaster_add) {
-                                echo "    <a href=\"add_supermaster.php\" class=\"dropdown-item\">" . _('Add supermaster') . "</a>\n";
+                                echo "    <a href=\"add_supermaster.php\" class=\"dropdown-item\"><i class=\"fa fa-plus-square-o\"></i> " . _('Add supermaster') . "</a>\n";
                             }
 
             echo            '</div>
@@ -126,16 +132,16 @@ if ($ignore_install_dir == false && file_exists ( 'install' )) {
         }
 
         if ($perm_zone_master_add) {
-            echo "    <a href=\"bulk_registration.php\" class=\"nav-item nav-link\">" . _('Bulk registration') . "</a>\n";
+            echo "    <a href=\"bulk_registration.php\" class=\"nav-item nav-link\"><i class=\"fa fa-exchange\"></i> " . _('Bulk registration') . "</a>\n";
         }
         if ($_SESSION ["auth_used"] != "ldap") {
-            echo "    <a href=\"change_password.php\" class=\"nav-item nav-link\" >" . _('Change password') . "</a>\n";
+            echo "    <a href=\"change_password.php\" class=\"nav-item nav-link\" ><i class=\"fa fa-lock\"></i> " . _('Change password') . "</a>\n";
         }
-        echo "    <a href=\"users.php\" class=\"nav-item nav-link\">" . _('User administration') . "</a>\n";
+        echo "    <a href=\"users.php\" class=\"nav-item nav-link\"><i class=\"fa fa-users\"></i> " . _('User administration') . "</a>\n";
         echo "</div>";
 
         echo "<div class=\"navbar-nav\">";
-        echo "    <a href=\"index.php?logout\"  class=\"nav-item nav-link\">" . _('Logout') . "</a>\n";
+        echo "    <a href=\"index.php?logout\"  class=\"nav-item nav-link\"><i class=\"fa fa-sign-out\"></i> " . _('Logout') . "</a>\n";
         echo "</div>";
 echo '</div></div>';
 
@@ -145,4 +151,7 @@ echo '      </div>
         </nav>';
 
 
+
+
 echo "    <div class=\"content\">\n";
+?>
