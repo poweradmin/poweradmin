@@ -52,6 +52,11 @@ table tr td {
 
 tr:nth-child(even){background-color: #f2f2f2;}
 
+input.wide {
+    width:			100%;
+}
+
+
 .success, .error {
 	padding: 10px;
 	font-weight: bold;
