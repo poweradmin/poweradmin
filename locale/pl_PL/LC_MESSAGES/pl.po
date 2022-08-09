@@ -293,7 +293,7 @@ msgstr "Usuń strefę"
 #: delete_domain.php:63
 #, php-format
 msgid "You are about to delete a slave zone of which the master nameserver, %s, is a supermaster. Deleting the zone now, will result in temporary removal only. Whenever the supermaster sends a notification for this zone, it will be added again!"
-msgstr "Zamierzasz usunać strefę slave, ktĂłrej serwerem master jest %s, będący jednocześnie supermasterem. Usunięcie tej strefy będzie jedynie tymczasowe. Po otrzymaniu NOTIFY od supermastera, strefa będzie dodana ponownie!"
+msgstr "Zamierzasz usunać strefę slave, której serwerem master jest %s, będący jednocześnie supermasterem. Usunięcie tej strefy będzie jedynie tymczasowe. Po otrzymaniu NOTIFY od supermastera, strefa będzie dodana ponownie!"
 
 #: delete_domain.php:67
 #: delete_perm_templ.php:48
@@ -335,7 +335,7 @@ msgstr "Usuń rekord"
 
 #: delete_record.php:87
 msgid "You are trying to delete a record that is needed for this zone to work."
-msgstr "PrĂłbujesz usunąć rekord,ktĂłry jest niezbędny do poprawnego działania strefy."
+msgstr "Próbujesz usunąć rekord,który jest niezbędny do poprawnego działania strefy."
 
 #: delete_supermaster.php:44
 #: list_supermasters.php:50
@@ -393,7 +393,7 @@ msgstr "Edytuj strefę"
 
 #: edit.php:97
 msgid "This zone does not have any records. Weird."
-msgstr "Ta strefa nie ma źadnych rekordĂłw. Dziwne."
+msgstr "Ta strefa nie ma źadnych rekordów. Dziwne."
 
 #: edit.php:121
 #: edit_zone_templ.php:80
@@ -459,7 +459,7 @@ msgstr "Edytuj wzorzec strefy"
 
 #: edit_zone_templ.php:63
 msgid "This template zone does not have any records yet."
-msgstr "Ten wzorzec strefy nie posiada jeszcze źadnych rekordĂłw."
+msgstr "Ten wzorzec strefy nie posiada jeszcze źadnych rekordów."
 
 #: edit_zone_templ_record.php:51
 msgid "Edit record in zone template"
@@ -478,7 +478,7 @@ msgstr "Indeks"
 #: search.php:31
 #: inc/header.inc.php:57
 msgid "Search zones and records"
-msgstr "Szukaj stref i rekordĂłw"
+msgstr "Szukaj stref i rekordów"
 
 #: index.php:42
 #: list_zones.php:38
@@ -489,13 +489,13 @@ msgstr "Lista stref"
 #: index.php:45
 #: inc/header.inc.php:63
 msgid "List zone templates"
-msgstr "Lista wzorcĂłw stref"
+msgstr "Lista wzorców stref"
 
 #: index.php:48
 #: list_supermasters.php:31
 #: inc/header.inc.php:66
 msgid "List supermasters"
-msgstr "Lista supermasterĂłw"
+msgstr "Lista supermasterów"
 
 #: index.php:60
 #: users.php:39
@@ -569,7 +569,7 @@ msgstr "Szukaj"
 
 #: search.php:165
 msgid "Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) in pattern matches any single character, a percent sign (%) matches any string of zero or more characters."
-msgstr "Wpisz nazwę hosta lub adres IP. Składnia podobna do SQL: podkreślenie (_) we wzorcu zastępuje dowolny, pojedynczy znak, procent (%) zastępuje dowolny ciąg znakĂłw, dowolnej długości."
+msgstr "Wpisz nazwę hosta lub adres IP. Składnia podobna do SQL: podkreślenie (_) we wzorcu zastępuje dowolny, pojedynczy znak, procent (%) zastępuje dowolny ciąg znaków, dowolnej długości."
 
 #: inc/auth.inc.php:41
 msgid "Session expired, please login again."
@@ -645,15 +645,15 @@ msgstr "Nie masz uprawnień do edycji tego uźytkownika."
 
 #: inc/error.inc.php:40
 msgid "You do not have the permission to edit permission templates."
-msgstr "Nie masz uprawnień do edycji wzorcĂłw uprawnień."
+msgstr "Nie masz uprawnień do edycji wzorców uprawnień."
 
 #: inc/error.inc.php:41
 msgid "You do not have the permission to delete permission templates."
-msgstr "Nie masz uprawnień do usunięcia wzorcĂłw uprawnień."
+msgstr "Nie masz uprawnień do usunięcia wzorców uprawnień."
 
 #: inc/error.inc.php:42
 msgid "You do not have the permission to add a new user."
-msgstr "Nie masz uprawnień do dodawania uźytkownikĂłw."
+msgstr "Nie masz uprawnień do dodawania uźytkowników."
 
 #: inc/error.inc.php:43
 msgid "You do not have the permission to delete this user."
@@ -661,15 +661,15 @@ msgstr "Nie masz uprawnień do usunięcia tego uźytkownika."
 
 #: inc/error.inc.php:44
 msgid "You do not have the permission to edit zone templates."
-msgstr "Nie masz uprawnień do edycji wzorcĂłw stref."
+msgstr "Nie masz uprawnień do edycji wzorców stref."
 
 #: inc/error.inc.php:45
 msgid "You do not have the permission to delete zone templates."
-msgstr "Nie masz uprawnień do usuwania wzorcĂłw stref."
+msgstr "Nie masz uprawnień do usuwania wzorców stref."
 
 #: inc/error.inc.php:46
 msgid "You do not have the permission to add a zone templates."
-msgstr "Nie masz uprawnień do dodawania wzorcĂłw stref."
+msgstr "Nie masz uprawnień do dodawania wzorców stref."
 
 #: inc/error.inc.php:49
 msgid "This is an invalid zone name."
@@ -705,7 +705,7 @@ msgstr "Ten wzorzec jest przypisany do co najmniej jednego uźytkownika."
 
 #: inc/error.inc.php:61
 msgid "Invalid or unexpected input given."
-msgstr "Nieprawidłowy lub nieprzewidziany wybĂłr."
+msgstr "Nieprawidłowy lub nieprzewidziany wybór."
 
 #: inc/error.inc.php:62
 #, php-format
@@ -771,11 +771,11 @@ msgstr "Nazwa hosta nie moźe się zaczynać lub kończyć myślnikiem."
 
 #: inc/error.inc.php:81
 msgid "Given hostname or one of the labels is too short or too long."
-msgstr "Wpisana nazwa hosta lub etykieta jest zbyt krĂłtka, lub zbyt długa."
+msgstr "Wpisana nazwa hosta lub etykieta jest zbyt krótka, lub zbyt długa."
 
 #: inc/error.inc.php:82
 msgid "Given hostname has too many slashes."
-msgstr "Wpisana nazwa hosta zawiera zbyt duźo ukośnikĂłw."
+msgstr "Wpisana nazwa hosta zawiera zbyt duźo ukośników."
 
 #: inc/error.inc.php:83
 msgid "Unknown record type."
@@ -863,7 +863,7 @@ msgstr "Nieprawidłowy odnośnik SRV."
 
 #: inc/error.inc.php:104
 msgid "Invalid characters have been used in this record."
-msgstr "W tym rekordzie uźyto nieprawidłowych znakĂłw."
+msgstr "W tym rekordzie uźyto nieprawidłowych znaków."
 
 #: inc/error.inc.php:107
 msgid "Zone has been added successfully."
@@ -887,7 +887,7 @@ msgstr "Uźytkownik został usunięty."
 
 #: inc/error.inc.php:112
 msgid "The record has been updated successfully."
-msgstr "Rekord zostałk zaktualizowany."
+msgstr "Rekord został zaktualizowany."
 
 #: inc/error.inc.php:113
 msgid "The record has been deleted successfully."
@@ -923,11 +923,11 @@ msgstr "Wzorzec strefy został usunięty."
 
 #: inc/record.inc.php:331
 msgid "You are trying to delete the SOA record. You are not allowed to remove it, unless you remove the entire zone."
-msgstr "PrĂłbujesz usunąć rekord SOA. Nie powinieneś tego robić, chyba, źe zamierzasz usunąć całą strefę."
+msgstr "Próbujesz usunąć rekord SOA. Nie powinieneś tego robić, chyba, źe zamierzasz usunąć całą strefę."
 
 #: inc/record.inc.php:692
 msgid "Function returned an error (multiple zones matching this zone ID)."
-msgstr "Funkcja zwrĂłciła błąd (wiele stref pasuje do tego ID)."
+msgstr "Funkcja zwróciła błąd (wiele stref pasuje do tego ID)."
 
 #: inc/toolkit.inc.php:28
 msgid "You have to create a config.inc.php!"
@@ -943,7 +943,7 @@ msgstr "Pokasz strony zaczynające się na"
 
 #: inc/toolkit.inc.php:233
 msgid "Something has been successfully performed. What exactly, however, will remain a mystery."
-msgstr "Coś się udało wykonać. Ale co, dalibĂłg, nie mam pojęcia."
+msgstr "Coś się udało wykonać. Ale co, dalibóg, nie mam pojęcia."
 
 #: inc/toolkit.inc.php:245
 msgid "Success!"
@@ -955,7 +955,7 @@ msgstr "Udane!"
 
 #: inc/toolkit.inc.php:262
 msgid "back"
-msgstr "wrĂłć"
+msgstr "wróć"
 
 #: inc/toolkit.inc.php:301
 msgid "Inactive"
@@ -982,16 +982,16 @@ msgid "User is allowed to add new slave zones."
 msgstr "Uźytkownik moźe dodawać nowe strefy slave."
 
 msgid "User is allowed to see the content and meta data of zones he owns."
-msgstr "Uźytkownik moźe zobaczyć zawartość i metadane stref, ktĂłrych jest właścicielem."
+msgstr "Uźytkownik moźe zobaczyć zawartość i metadane stref, których jest właścicielem."
 
 msgid "User is allowed to edit the content of zones he owns."
-msgstr "Uźytkownik moźe edytować zawartosć stref, ktĂłrych jest właścicielem."
+msgstr "Uźytkownik moźe edytować zawartosć stref, których jest właścicielem."
 
 msgid "User is allowed to edit the meta data of zones he owns."
-msgstr "Uźytkownik moźe edytować metadane stref, ktĂłrych jest właścicielem."
+msgstr "Uźytkownik moźe edytować metadane stref, których jest właścicielem."
 
 msgid "User is allowed to see the content and meta data of zones he does not own."
-msgstr "Uźytkownik moźe zobaczyć zawartość i metadane stref, ktĂłrych nie jest właścicielem."
+msgstr "Uźytkownik moźe zobaczyć zawartość i metadane stref, których nie jest właścicielem."
 
 msgid "User is allowed to edit the content of zones he does not own."
 msgstr "Uźytkownik moźe edytować zawartość stref nie będących jego własnością."
@@ -1015,16 +1015,16 @@ msgid "User has full access. God-like. Redeemer."
 msgstr "Uźytkownik ma władzę absolutną."
 
 msgid "User is allowed to see other users and their details."
-msgstr "Uźytkownik moźe wyświetlać innych uźytkownikĂłw i ich dane."
+msgstr "Uźytkownik moźe wyświetlać innych uźytkowników i ich dane."
 
 msgid "User is allowed to add new users."
-msgstr "Uźytkownik moźe dodawać nowych uźytkownikĂłw."
+msgstr "Uźytkownik moźe dodawać nowych uźytkowników."
 
 msgid "User is allowed to edit their own details."
 msgstr "Uźytkownik moźe edytować swoje dane."
 
 msgid "User is allowed to edit other users."
-msgstr "Uźytkownik moźe edytować innych uźytkownikĂłw."
+msgstr "Uźytkownik moźe edytować innych uźytkowników."
 
 msgid "User is allowed to edit the password of other users."
 msgstr "Uźytkownik moźe zmieniać hasła innych uźytkownikĂłw."
