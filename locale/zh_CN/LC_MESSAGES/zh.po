@@ -1,16 +1,16 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <sh_yu2000@hotmail.com>, YEAR.
-# this translate version by yu
-
+# Poweradmin translation.
+# Copyright (C) 2022 Poweradmin Development Team
+# This file is distributed under the same license as the Poweradmin package.
+#
+# Translators:
+#   <sh_yu2000@hotmail.com>, 2008.
 msgid ""
 msgstr ""
 "Project-Id-Version: poweradmin 2.1.4\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-03-30 12:50+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2008-03-30 12:50+0200\n"
+"Last-Translator: Yu <sh_yu2000@hotmail.com>\n"
 "Language-Team: Chinese\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"

@@ -1,5 +1,5 @@
 # Poweradmin translation.
-# Copyright (C) 2011 Poweradmin Development Team
+# Copyright (C) 2022 Poweradmin Development Team
 # This file is distributed under the same license as the Poweradmin package.
 # 
 msgid ""

@@ -1,9 +1,8 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Poweradmin translation.
+# Copyright (C) 2022 Poweradmin Development Team
+# This file is distributed under the same license as the Poweradmin package.
 #
-
+# Georg K&auml;fer <gkaefer@backbone.co.at>, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: poweradmin 2.0.3\n"
