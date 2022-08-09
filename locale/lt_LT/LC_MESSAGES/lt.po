@@ -3,15 +3,15 @@
 # This file is distributed under the same license as the Poweradmin package.
 # 
 # Translators:
-#   <eg@fbsd.lt>, 2011.
+# Edmondas Girkantas <edmondas@girkantas.lt>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin\n"
 "Report-Msgid-Bugs-To: https://github.com/poweradmin/poweradmin/issues\n"
 "POT-Creation-Date: 2011-07-08 23:45+0300\n"
 "PO-Revision-Date: 2011-11-05 13:38+0000\n"
-"Last-Translator: edmondas <eg@fbsd.lt>\n"
-"Language-Team: Lithuanian (http://www.transifex.net/projects/p/poweradmin/team/lt/)\n"
+"Last-Translator: Edmondas Girkantas <edmondas@girkantas.lt>\n"
+"Language-Team: Lithuanian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
