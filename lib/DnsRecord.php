@@ -1819,6 +1819,9 @@ class DnsRecord
                         if ($type == "SOA") {
                             $db->exec("DELETE FROM records WHERE domain_id = " . $db->quote($zone_id, 'integer') . " AND type = 'SOA'");
                             $content = self::get_updated_soa_record($soa_rec);
+                            if ($content == "") {
+                                $content = ZoneTemplate::parse_template_value($r["content"], $domain);
+                            }
                         } else {
                             $content = ZoneTemplate::parse_template_value($r["content"], $domain);
                         }
