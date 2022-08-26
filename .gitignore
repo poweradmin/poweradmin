@@ -1,11 +1,20 @@
+# Poweradmin related
 inc/config.inc.php
-.DS_Store
-/nbproject
 /scripts
-/tests
-/.idea
 /docs
+
+# Misc
+.DS_Store
+/.vagrant
+
+# IDE
+/nbproject
+/.idea
 /.settings/
 /.buildpath
 /.project
-/.vagrant
+/.vscode
+
+# PHPUnit
+/.phpunit.cache
+.phpunit.result.cache

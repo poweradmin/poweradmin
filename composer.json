@@ -24,5 +24,8 @@
     "psr-4": {
       "Poweradmin\\": "lib/"
     }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.5"
   }
 }

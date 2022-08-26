@@ -1,6 +1,31 @@
+# 2.15.2 (2022-08-12)
+
+ * Allow inherited magic method to still run with calling class
+ * Fix CallExpression::reflectCallable() throwing TypeError
+ * Fix typo in naming (currency_code)
+
+# 2.15.1 (2022-05-17)
+
+* Fix optimizing non-public named closures
+
+# 2.15.0 (2022-05-15)
+
+ * Add support for named closures
+
+# 2.14.13 (2022-04-06)
+
+ * Enable bytecode invalidation when auto_reload is enabled
+
+# 2.14.12 (2022-03-25)
+
+ * Fix custom escapers when using multiple Twig environments
+ * Do not reuse internally generated variable names during parsing
+
 # 2.14.11 (2022-02-04)
 
  * Fix a security issue when in a sandbox: the `sort` filter must require a Closure for the `arrow` parameter
+ * Fix deprecation notice on `round`
+ * Fix call to deprecated `convertToHtml` method
 
 # 2.14.10 (2022-01-03)
 
