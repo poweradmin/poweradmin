@@ -94,7 +94,7 @@ class DnsRecord
     public static function get_soa_serial($soa_rec)
     {
         $soa = explode(" ", $soa_rec);
-        return $soa[2];
+        return array_key_exists(2, $soa) ? $soa[2] : null;
     }
 
     /** Get Next Date
