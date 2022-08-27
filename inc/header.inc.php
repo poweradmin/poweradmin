@@ -54,12 +54,14 @@ if (file_exists('inc/custom_header.inc.php')) {
     echo "  <h1>" . $iface_title . "</h1>\n";
 }
 
-if ($ignore_install_dir == false && file_exists ( 'install' )) {
+if ($ignore_install_dir == false && file_exists('install')) {
     echo "<div>\n";
     error(ERR_INSTALL_DIR_EXISTS);
-    include ('inc/footer.inc.php');
+    include('inc/footer.inc.php');
     exit();
-} elseif (isset($_SESSION ["userid"])) {
+}
+
+if (isset($_SESSION ["userid"])) {
     do_hook('verify_permission', 'search') ? $perm_search = "1" : $perm_search = "0";
     do_hook('verify_permission', 'zone_content_view_own') ? $perm_view_zone_own = "1" : $perm_view_zone_own = "0";
     do_hook('verify_permission', 'zone_content_view_others') ? $perm_view_zone_other = "1" : $perm_view_zone_other = "0";
