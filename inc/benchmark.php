@@ -61,9 +61,10 @@ function get_human_readable_usage($size) {
 
 /** Print Current Memory and Runtime Stats
  */
-function display_current_stats() {
+function display_current_stats(): string
+{
     global $start_time, $start_memory;
     $memory_usage = get_human_readable_usage(memory_get_usage() - $start_memory);
     $elapsed_time = sprintf("%.5f", microtime(true) - $start_time);
-    echo "<div class=\"debug\">Memory usage: {$memory_usage}, elapsed time: {$elapsed_time}</div>";
+    return "<div class=\"debug\">Memory usage: {$memory_usage}, elapsed time: {$elapsed_time}</div>";
 }

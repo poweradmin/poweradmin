@@ -34,6 +34,9 @@ use Poweradmin\AppFactory;
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 global $db;
+global $db_debug;
+global $display_stats;
+
 if (is_object($db)) {
     $db->disconnect();
 }
@@ -42,23 +45,7 @@ $app = AppFactory::create();
 $app->render('footer.html', [
     'version' => isset($_SESSION["userid"]) ? Version::VERSION : false,
     'custom_footer' => file_exists('templates/custom/footer.html'),
+    'display_stats' => $display_stats ? display_current_stats() : false,
+    'db_queries' => $db_debug ? $db->getQueries() : false
 ]);
 
-if (isset($db_debug) && $db_debug == true) {
-    $debug = $db->getDebugOutput();
-    $debug = str_replace("query(1)", "", $debug);
-    $lines = explode(":", $debug);
-
-    if ($debug) {
-        echo "<div class=\"debug\"><pre>";
-        foreach ($lines as $line) {
-            echo "$line<br>";
-        }
-        echo "</pre></div>";
-    }
-}
-
-global $display_stats;
-if ($display_stats) {
-    display_current_stats();
-}

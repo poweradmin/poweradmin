@@ -10,5 +10,15 @@
             </a>
         {% endif %}
     </div>
+    {% if db_queries %}
+        <div class="debug">
+            {% for query in db_queries %}
+                {{ query }}<br>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if display_stats %}
+        {{ display_stats | raw }}
+    {% endif %}
 </body>
 </html>
