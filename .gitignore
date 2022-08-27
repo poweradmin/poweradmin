@@ -2,6 +2,7 @@
 inc/config.inc.php
 /scripts
 /docs
+/templates/custom
 
 # Misc
 .DS_Store

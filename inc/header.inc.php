@@ -36,20 +36,14 @@ global $ignore_install_dir;
 global $session_key;
 
 header('Content-type: text/html; charset=utf-8');
-$file_version = time();
 
 $app = AppFactory::create();
 $app->render('header.html', [
     'iface_title' => $iface_title,
     'iface_style' => $iface_style,
-    'file_version' => $file_version,
+    'file_version' => time(),
+    'custom_header' => file_exists('templates/custom/header.html'),
 ]);
-
-if (file_exists('inc/custom_header.inc.php')) {
-    include('inc/custom_header.inc.php');
-} else {
-    echo "  <h1>" . $iface_title . "</h1>\n";
-}
 
 if ($ignore_install_dir == false && file_exists('install')) {
     echo "<div>\n";

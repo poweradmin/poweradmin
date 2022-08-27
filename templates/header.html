@@ -8,3 +8,8 @@
     <script type="text/javascript" src="inc/helper.js?time={{ file_version }}"></script>
 </head>
 <body>
+    {% if custom_header %}
+        {% include ('custom/header.html') %}
+    {% else %}
+        <h1>{{ iface_title }}</h1>
+    {% endif %}
