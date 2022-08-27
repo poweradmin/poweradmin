@@ -28,6 +28,8 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
+use Poweradmin\AppFactory;
+
 global $iface_style;
 global $iface_title;
 global $ignore_install_dir;
@@ -36,17 +38,12 @@ global $session_key;
 header('Content-type: text/html; charset=utf-8');
 $file_version = time();
 
-echo <<<HEAD
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<html>
- <head>
-  <title>{$iface_title}</title>
-  <link rel=stylesheet href="style/{$iface_style}.css?time={$file_version}" type="text/css">
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <script type="text/javascript" src="inc/helper.js?time={$file_version}"></script>
- </head>
- <body>
-HEAD;
+$app = AppFactory::create();
+$app->render('header.html', [
+    'iface_title' => $iface_title,
+    'iface_style' => $iface_style,
+    'file_version' => $file_version,
+]);
 
 if (file_exists('inc/custom_header.inc.php')) {
     include('inc/custom_header.inc.php');
