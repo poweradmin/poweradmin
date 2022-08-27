@@ -1,0 +1,14 @@
+    </div>
+    <div class="footer">
+        {% if custom_footer %}
+            {% include ('custom/footer.html') %}
+        {% else %}
+            <a href="https://www.poweradmin.org/">a complete(r) <strong>poweradmin</strong>
+                {% if version %}
+                v{{ version }}
+                {% endif %}
+            </a>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -29,34 +29,21 @@
  */
 
 use Poweradmin\Version;
+use Poweradmin\AppFactory;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
-
-$VERSION = Version::VERSION;
 
 global $db;
 if (is_object($db)) {
     $db->disconnect();
 }
-?>
-</div> <!-- /content -->
-<div class="footer">
-    <a href="https://www.poweradmin.org/">a complete(r) <strong>poweradmin</strong><?php
-        if (isset($_SESSION["userid"])) {
-            echo " v$VERSION";
-        }
-        ?>
-    </a>
-</div>
-<?php
-if (file_exists('inc/custom_footer.inc.php')) {
-    include('inc/custom_footer.inc.php');
-}
-?>
-</body>
-</html>
 
-<?php
+$app = AppFactory::create();
+$app->render('footer.html', [
+    'version' => isset($_SESSION["userid"]) ? Version::VERSION : false,
+    'custom_footer' => file_exists('templates/custom/footer.html'),
+]);
+
 if (isset($db_debug) && $db_debug == true) {
     $debug = $db->getDebugOutput();
     $debug = str_replace("query(1)", "", $debug);
@@ -70,9 +57,7 @@ if (isset($db_debug) && $db_debug == true) {
         echo "</pre></div>";
     }
 }
-?>
 
-<?php
 global $display_stats;
 if ($display_stats) {
     display_current_stats();
