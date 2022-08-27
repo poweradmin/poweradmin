@@ -8,8 +8,57 @@
     <script type="text/javascript" src="inc/helper.js?time={{ file_version }}"></script>
 </head>
 <body>
-    {% if custom_header %}
-        {% include ('custom/header.html') %}
-    {% else %}
-        <h1>{{ iface_title }}</h1>
+{% if custom_header %}
+    {% include ('custom/header.html') %}
+{% else %}
+    <h1>{{ iface_title }}</h1>
+{% endif %}
+
+{% if install_error %}
+    <div>
+        <div class="error">Error: {{ install_error | raw }}</div>
+    </div>
+{% endif %}
+
+{% if user_logged_in %}
+    {% if session_key_error %}
+        <div>
+            <div class="error">Error: {{ session_key_error | raw }}</div>
+        </div>
     {% endif %}
+
+    <div class="menu">
+        <span class="menuitem"><a href="index.php">{% trans 'Index' %}</a></span>
+        {% if perm_search %}
+            <span class="menuitem"><a href="search.php">{% trans 'Search zones and records' %}</a></span>
+        {% endif %}
+        {% if perm_view_zone_own or perm_view_zone_other %}
+            <span class="menuitem"><a href="list_zones.php">{% trans 'List zones' %}</a></span>
+        {% endif %}
+        {% if perm_zone_master_add %}
+            <span class="menuitem"><a href="list_zone_templ.php">{% trans 'List zone templates' %}</a></span>
+        {% endif %}
+        {% if perm_supermaster_view %}
+            <span class="menuitem"><a href="list_supermasters.php">{% trans 'List supermasters' %}</a></span>
+        {% endif %}
+        {% if perm_zone_master_add %}
+            <span class="menuitem"><a href="add_zone_master.php">{% trans 'Add master zone' %}</a></span>
+        {% endif %}
+        {% if perm_zone_slave_add %}
+            <span class="menuitem"><a href="add_zone_slave.php">{% trans 'Add slave zone' %}</a></span>
+        {% endif %}
+        {% if perm_supermaster_add %}
+            <span class="menuitem"><a href="add_supermaster.php">{% trans 'Add supermaster' %}</a></span>
+        {% endif %}
+        {% if perm_zone_master_add %}
+            <span class="menuitem"><a href="bulk_registration.php">{% trans 'Bulk registration' %}</a></span>
+        {% endif %}
+        {% if auth_used %}
+            <span class="menuitem"><a href="change_password.php">{% trans 'Change password' %}</a></span>
+        {% endif %}
+        <span class="menuitem"><a href="users.php">{% trans 'User administration' %}</a></span>
+        <span class="menuitem"><a href="index.php?logout">{% trans 'Logout' %}</a></span>
+    </div>
+{% endif %}
+
+<div class="content">
