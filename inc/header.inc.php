@@ -62,26 +62,26 @@ if ($ignore_install_dir == false && file_exists('install')) {
 }
 
 if (isset($_SESSION ["userid"])) {
-    do_hook('verify_permission', 'search') ? $perm_search = "1" : $perm_search = "0";
-    do_hook('verify_permission', 'zone_content_view_own') ? $perm_view_zone_own = "1" : $perm_view_zone_own = "0";
-    do_hook('verify_permission', 'zone_content_view_others') ? $perm_view_zone_other = "1" : $perm_view_zone_other = "0";
-    do_hook('verify_permission', 'supermaster_view') ? $perm_supermaster_view = "1" : $perm_supermaster_view = "0";
-    do_hook('verify_permission', 'zone_master_add') ? $perm_zone_master_add = "1" : $perm_zone_master_add = "0";
-    do_hook('verify_permission', 'zone_slave_add') ? $perm_zone_slave_add = "1" : $perm_zone_slave_add = "0";
-    do_hook('verify_permission', 'supermaster_add') ? $perm_supermaster_add = "1" : $perm_supermaster_add = "0";
-    do_hook('verify_permission', 'user_is_ueberuser') ? $perm_is_godlike = "1" : $perm_is_godlike = "0";
+    $perm_search = do_hook('verify_permission', 'search');
+    $perm_view_zone_own = do_hook('verify_permission', 'zone_content_view_own');
+    $perm_view_zone_other = do_hook('verify_permission', 'zone_content_view_others');
+    $perm_supermaster_view = do_hook('verify_permission', 'supermaster_view');
+    $perm_zone_master_add = do_hook('verify_permission', 'zone_master_add');
+    $perm_zone_slave_add = do_hook('verify_permission', 'zone_slave_add');
+    $perm_supermaster_add = do_hook('verify_permission', 'supermaster_add');
+    $perm_is_godlike = do_hook('verify_permission', 'user_is_ueberuser');
 
-    if ($perm_is_godlike == 1 && $session_key == 'p0w3r4dm1n') {
+    if ($perm_is_godlike && $session_key == 'p0w3r4dm1n') {
         error(ERR_DEFAULT_CRYPTOKEY_USED);
         echo "<br>";
     }
 
     echo "    <div class=\"menu\">\n";
     echo "    <span class=\"menuitem\"><a href=\"index.php\">" . _('Index') . "</a></span>\n";
-    if ($perm_search == "1") {
+    if ($perm_search) {
         echo "    <span class=\"menuitem\"><a href=\"search.php\">" . _('Search zones and records') . "</a></span>\n";
     }
-    if ($perm_view_zone_own == "1" || $perm_view_zone_other == "1") {
+    if ($perm_view_zone_own || $perm_view_zone_other) {
         echo "    <span class=\"menuitem\"><a href=\"list_zones.php\">" . _('List zones') . "</a></span>\n";
     }
     if ($perm_zone_master_add) {
