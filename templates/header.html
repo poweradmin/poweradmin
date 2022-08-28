@@ -15,14 +15,73 @@
 {% include ('custom/header.html') %}
 {% else %}
 <header class="mb-4 border-bottom sticky-top">
-    <nav class="navbar navbar-expand-lg bg-light">
-        <div class="container">
-            <div class="navbar-brand d-flex align-items-center">
-                <a href="index.php"><img class="me-2" src="images/logo.png" height="32"></a>
-                <span class="fs-4">{{ iface_title }}</span>
+    <div class="container">
+        <nav class="navbar navbar-expand">
+            <div class="container-fluid">
+                <a class="navbar-brand d-flex align-items-center" href="index.php">
+                    <img class="me-2" src="images/logo.png" height="32">
+                    <span class="fs-4">{{ iface_title }}</span>
+                </a>
+                {% if user_logged_in %}
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        {% if perm_search %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="search.php">{% trans 'Search zones and records' %}</a>
+                        </li>
+                        {% endif %}
+                        {% if perm_view_zone_own or perm_view_zone_other %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="list_zones.php">{% trans 'List zones' %}</a>
+                        </li>
+                        {% endif %}
+                        {% if perm_zone_master_add %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="list_zone_templ.php">{% trans 'List zone templates' %}</a>
+                        </li>
+                        {% endif %}
+                        {% if perm_supermaster_view %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="list_supermasters.php">{% trans 'List supermasters' %}</a>
+                        </li>
+                        {% endif %}
+                        {% if perm_zone_master_add %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="add_zone_master.php">{% trans 'Add master zone' %}</a>
+                        </li>
+                        {% endif %}
+                        {% if perm_zone_slave_add %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="add_zone_slave.php">{% trans 'Add slave zone' %}</a>
+                        </li>
+                        {% endif %}
+                        {% if perm_supermaster_add %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="add_supermaster.php">{% trans 'Add supermaster' %}</a>
+                        </li>
+                        {% endif %}
+                        {% if perm_zone_master_add %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="bulk_registration.php">{% trans 'Bulk registration' %}</a>
+                        </li>
+                        {% endif %}
+                        {% if auth_used %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="change_password.php">{% trans 'Change password' %}</a>
+                        </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="users.php">{% trans 'User administration' %}</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.php?logout">{% trans 'Logout' %}</a>
+                        </li>
+                    </ul>
+                </div>
+                {% endif %}
             </div>
-        </div>
-    </nav>
+        </nav>
+    </div>
 </header>
 {% endif %}
 
@@ -38,38 +97,6 @@
     <div class="alert alert-danger"><strong>Error:</strong> {{ session_key_error | raw }}</div>
 </div>
 {% endif %}
-
-<div class="container pb-3">
-    {% if perm_search %}
-    <span class="menuitem"><a href="search.php">{% trans 'Search zones and records' %}</a></span>
-    {% endif %}
-    {% if perm_view_zone_own or perm_view_zone_other %}
-    <span class="menuitem"><a href="list_zones.php">{% trans 'List zones' %}</a></span>
-    {% endif %}
-    {% if perm_zone_master_add %}
-    <span class="menuitem"><a href="list_zone_templ.php">{% trans 'List zone templates' %}</a></span>
-    {% endif %}
-    {% if perm_supermaster_view %}
-    <span class="menuitem"><a href="list_supermasters.php">{% trans 'List supermasters' %}</a></span>
-    {% endif %}
-    {% if perm_zone_master_add %}
-    <span class="menuitem"><a href="add_zone_master.php">{% trans 'Add master zone' %}</a></span>
-    {% endif %}
-    {% if perm_zone_slave_add %}
-    <span class="menuitem"><a href="add_zone_slave.php">{% trans 'Add slave zone' %}</a></span>
-    {% endif %}
-    {% if perm_supermaster_add %}
-    <span class="menuitem"><a href="add_supermaster.php">{% trans 'Add supermaster' %}</a></span>
-    {% endif %}
-    {% if perm_zone_master_add %}
-    <span class="menuitem"><a href="bulk_registration.php">{% trans 'Bulk registration' %}</a></span>
-    {% endif %}
-    {% if auth_used %}
-    <span class="menuitem"><a href="change_password.php">{% trans 'Change password' %}</a></span>
-    {% endif %}
-    <span class="menuitem"><a href="users.php">{% trans 'User administration' %}</a></span>
-    <span class="menuitem"><a href="index.php?logout">{% trans 'Logout' %}</a></span>
-</div>
 {% endif %}
 
 <main class="container pb-3 flex-shrink-0">
