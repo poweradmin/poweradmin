@@ -13,13 +13,15 @@
 {% if custom_header %}
     {% include ('custom/header.html') %}
 {% else %}
-    <header class="py-3 mb-4 border-bottom sticky-top">
-        <div class="container">
-            <div class="navbar-brand d-flex align-items-center">
-                <a href="index.php"><img class="me-2" src="images/logo.png" height="32"></a>
-                <span class="fs-4">{{ iface_title }}</span>
+    <header class="mb-4 border-bottom sticky-top">
+        <nav class="navbar navbar-expand-lg bg-light">
+            <div class="container">
+                <div class="navbar-brand d-flex align-items-center">
+                    <a href="index.php"><img class="me-2" src="images/logo.png" height="32"></a>
+                    <span class="fs-4">{{ iface_title }}</span>
+                </div>
             </div>
-        </div>
+        </nav>
     </header>
 {% endif %}
 
