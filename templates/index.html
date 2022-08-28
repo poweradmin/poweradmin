@@ -1,30 +1,52 @@
 <h3>{% trans 'Welcome' %} {{ user_name }}</h3>
-<ul>
-    <li><a href="index.php">{% trans 'Index' %}</a></li>
+<ul class="list-group">
+    <li class="list-group-item list-group-item-action">
+        <i class="bi bi-house"></i> <a href="index.php">{% trans 'Index' %}</a>
+    </li>
     {% if perm_search %}
-        <li><a href="search.php">{% trans 'Search zones and records' %}</a></li>
+        <li class="list-group-item list-group-item-action">
+            <i class="bi bi-search"></i> <a href="search.php">{% trans 'Search zones and records' %}</a>
+        </li>
     {% endif %}
     {% if perm_view_zone_own or perm_view_zone_other %}
-        <li><a href="list_zones.php">{% trans 'List zones' %}</a></li>
+        <li class="list-group-item list-group-item-action">
+            <i class="bi bi-list"></i> <a href="list_zones.php">{% trans 'List zones' %}</a>
+        </li>
     {% endif %}
     {% if perm_zone_master_add %}
-        <li><a href="list_zone_templ.php">{% trans 'List zone templates' %}</a></li>
+        <li class="list-group-item list-group-item-action">
+            <i class="bi bi-list"></i> <a href="list_zone_templ.php">{% trans 'List zone templates' %}</a>
+        </li>
     {% endif %}
     {% if perm_supermaster_view %}
-        <li><a href="list_supermasters.php">{% trans 'List supermasters' %}</a></li>
+        <li class="list-group-item list-group-item-action">
+            <i class="bi bi-list"></i> <a href="list_supermasters.php">{% trans 'List supermasters' %}</a>
+        </li>
     {% endif %}
     {% if perm_zone_master_add %}
-        <li><a href="add_zone_master.php">{% trans 'Add master zone' %}</a></li>
+        <li class="list-group-item list-group-item-action">
+            <i class="bi bi-plus-circle"></i> <a href="add_zone_master.php">{% trans 'Add master zone' %}</a>
+        </li>
     {% endif %}
     {% if perm_zone_slave_add %}
-        <li><a href="add_zone_slave.php">{% trans 'Add slave zone' %}</a></li>
+        <li class="list-group-item list-group-item-action">
+            <i class="bi bi-plus-circle"></i> <a href="add_zone_slave.php">{% trans 'Add slave zone' %}</a>
+        </li>
     {% endif %}
     {% if perm_supermaster_add %}
-        <li><a href="add_supermaster.php">{% trans 'Add supermaster' %}</a></li>
+        <li class="list-group-item list-group-item-action">
+            <i class="bi bi-plus-circle"></i> <a href="add_supermaster.php">{% trans 'Add supermaster' %}</a>
+        </li>
     {% endif %}
     {% if auth_used != "ldap" %}
-        <li><a href="change_password.php">{% trans 'Change password' %}</a></li>
+        <li class="list-group-item list-group-item-action">
+            <i class="bi bi-key"></i> <a href="change_password.php">{% trans 'Change password' %}</a>
+        </li>
     {% endif %}
-    <li><a href="users.php">{% trans 'User administration' %}</a></li>
-    <li><a href="index.php?logout">{% trans 'Logout' %}</a></li>
+    <li class="list-group-item list-group-item-action">
+        <i class="bi bi-people"></i> <a href="users.php">{% trans 'User administration' %}</a>
+    </li>
+    <li class="list-group-item list-group-item-action">
+        <i class="bi bi-box-arrow-right"></i> <a href="index.php?logout">{% trans 'Logout' %}</a>
+    </li>
 </ul>

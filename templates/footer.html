@@ -1,24 +1,27 @@
-    </div>
-    <div class="footer">
+</main>
+<footer class="footer py-3 bg-light">
+    <div class="container">
         {% if custom_footer %}
             {% include ('custom/footer.html') %}
         {% else %}
             <a href="https://www.poweradmin.org/">a complete(r) <strong>poweradmin</strong>
                 {% if version %}
-                v{{ version }}
+                    v{{ version }}
                 {% endif %}
             </a>
         {% endif %}
     </div>
-    {% if db_queries %}
-        <div class="debug">
-            {% for query in db_queries %}
-                {{ query }}<br>
-            {% endfor %}
-        </div>
-    {% endif %}
-    {% if display_stats %}
-        {{ display_stats | raw }}
-    {% endif %}
+</footer>
+{% if db_queries %}
+    <div class="debug">
+        {% for query in db_queries %}
+            {{ query }}<br>
+        {% endfor %}
+    </div>
+{% endif %}
+{% if display_stats %}
+    {{ display_stats | raw }}
+{% endif %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
 </body>
 </html>

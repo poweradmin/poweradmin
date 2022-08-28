@@ -46,6 +46,6 @@ $app->render('footer.html', [
     'version' => isset($_SESSION["userid"]) ? Version::VERSION : false,
     'custom_footer' => file_exists('templates/custom/footer.html'),
     'display_stats' => $display_stats ? display_current_stats() : false,
-    'db_queries' => $db_debug ? $db->getQueries() : false
+    'db_queries' => $db_debug ? $db->getQueries() : false,
 ]);
 

@@ -61,13 +61,13 @@ function authenticate_local() {
             $_SESSION["userlogin"] = $_POST["username"];
             $_SESSION["userlang"] = $_POST["userlang"];
         } else {
-            auth(_('An empty password is not allowed'), "error");
+            auth(_('An empty password is not allowed'), 'danger');
         }
     }
 
     // Check if the session hasn't expired yet.
     if ((isset($_SESSION["userid"])) && ($_SESSION["lastmod"] != "") && ((time() - $_SESSION["lastmod"]) > $iface_expire)) {
-        logout(_('Session expired, please login again.'), 'error');
+        logout(_('Session expired, please login again.'), 'danger');
     }
 
     // If the session hasn't expired yet, give our session a fresh new timestamp.
@@ -114,7 +114,7 @@ function LDAPAuthenticate() {
             if (isset($_POST["authenticate"])) {
                 Syslog::log_error(sprintf('Failed LDAP authentication attempt from [%s] Reason: ldap_connect failed', $_SERVER['REMOTE_ADDR']));
             }
-            logout(_('Failed to connect to LDAP server!'), 'error');
+            logout(_('Failed to connect to LDAP server!'), 'danger');
             return;
         }
 
@@ -124,7 +124,7 @@ function LDAPAuthenticate() {
             if (isset($_POST["authenticate"])) {
                 Syslog::log_error(sprintf('Failed LDAP authentication attempt from [%s] Reason: ldap_bind failed', $_SERVER['REMOTE_ADDR']));
             }
-            logout(_('Failed to bind to LDAP server!'), 'error');
+            logout(_('Failed to bind to LDAP server!'), 'danger');
             return;
         }
 
@@ -135,7 +135,7 @@ function LDAPAuthenticate() {
             if (isset($_POST["authenticate"])) {
                 Syslog::log_error(sprintf('Failed LDAP authentication attempt from [%s] Reason: ldap_search failed', $_SERVER['REMOTE_ADDR']));
             }
-            logout(_('Failed to search LDAP.'), 'error');
+            logout(_('Failed to search LDAP.'), 'danger');
             return;
         }
 
@@ -149,7 +149,7 @@ function LDAPAuthenticate() {
                     Syslog::log_error(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: Duplicate usernames detected', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
                 }
             }
-            logout(_('Failed to authenticate against LDAP.'), 'error');
+            logout(_('Failed to authenticate against LDAP.'), 'danger');
             return;
         }
         $user_dn = $entries[0]["dn"];
@@ -160,7 +160,7 @@ function LDAPAuthenticate() {
             if (isset($_POST["authenticate"])) {
                 Syslog::log_warn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: Incorrect password', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
             }
-            auth(_('LDAP Authentication failed!'), "error");
+            auth(_('LDAP Authentication failed!'), 'danger');
             return;
         }
         //LDAP AUTH SUCCESSFUL
@@ -170,7 +170,7 @@ function LDAPAuthenticate() {
             if (isset($_POST["authenticate"])) {
                 Syslog::log_warn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: User is inactive', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
             }
-            auth(_('LDAP Authentication failed!'), "error");
+            auth(_('LDAP Authentication failed!'), 'danger');
             return;
         }
         $_SESSION["userid"] = $rowObj["id"];
@@ -220,13 +220,13 @@ function SQLAuthenticate() {
                     exit;
                 }
             } else if (isset($_POST['authenticate'])) {
-                auth(_('Authentication failed!'), "error");
+                auth(_('Authentication failed!'), 'danger');
             } else {
                 auth();
             }
         } else if (isset($_POST['authenticate'])) {
             Syslog::log_warn(sprintf('Failed authentication attempt from [%s]', $_SERVER['REMOTE_ADDR']));
-            auth(_('Authentication failed!'), "error");
+            auth(_('Authentication failed!'), 'danger');
         } else {
             unset($_SESSION["userpwd"]);
             unset($_SESSION["userlogin"]);
