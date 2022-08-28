@@ -39,7 +39,7 @@ header('Content-type: text/html; charset=utf-8');
 
 $vars = [
     'iface_title' => $iface_title,
-    'iface_style' => $iface_style,
+    'iface_style' => $iface_style == 'example' ? 'ignite' : $iface_style,
     'file_version' => time(),
     'custom_header' => file_exists('templates/custom/header.html'),
     'install_error' => !$ignore_install_dir && file_exists('install') ? ERR_INSTALL_DIR_EXISTS : false,

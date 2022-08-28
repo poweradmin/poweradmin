@@ -13,10 +13,12 @@
     </div>
 </footer>
 {% if db_queries %}
-    <div class="debug">
+    <div class="container pt-3 pb-3">
+    <code>
         {% for query in db_queries %}
             {{ query }}<br>
         {% endfor %}
+    </code>
     </div>
 {% endif %}
 {% if display_stats %}

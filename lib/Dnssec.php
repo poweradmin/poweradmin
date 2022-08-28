@@ -80,7 +80,7 @@ class Dnssec
         exec($full_command, $output, $return_code);
 
         if ($pdnssec_debug) {
-            echo "<div class=\"debug\"><pre>";
+            echo "<div class=\"container\"><pre>";
             echo sprintf("Command: %s<br>", $full_command);
             echo sprintf("Output: %s", implode("<br>", $output));
             echo "</pre></div>";
@@ -130,7 +130,7 @@ class Dnssec
             exec($full_command, $output, $return_code);
 
             if ($pdnssec_debug) {
-                echo "<div class=\"debug\"><pre>";
+                echo "<div class=\"container\"><pre>";
                 echo sprintf("Command: %s<br>", $full_command);
                 echo sprintf("Output: %s", implode("<br>", $output));
                 echo "</pre></div>";
