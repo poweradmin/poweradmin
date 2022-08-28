@@ -16,7 +16,7 @@
     <header class="py-3 mb-4 border-bottom sticky-top">
         <div class="container">
             <div class="navbar-brand d-flex align-items-center">
-                <img class="me-2" src="images/logo.png" height="32">
+                <a href="index.php"><img class="me-2" src="images/logo.png" height="32"></a>
                 <span class="fs-4">{{ iface_title }}</span>
             </div>
         </div>
@@ -25,7 +25,7 @@
 
 {% if install_error %}
     <div class="container">
-        <div class="alert alert-danger" role="alert">><stron>Error:</stron> {{ install_error | raw }}</div>
+        <div class="alert alert-danger" role="alert"><strong>Error:</strong> {{ install_error | raw }}</div>
     </div>
 {% endif %}
 
@@ -37,7 +37,6 @@
     {% endif %}
 
     <div class="container pb-3">
-        <span class="menuitem"><a href="index.php">{% trans 'Index' %}</a></span>
         {% if perm_search %}
             <span class="menuitem"><a href="search.php">{% trans 'Search zones and records' %}</a></span>
         {% endif %}

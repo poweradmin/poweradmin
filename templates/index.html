@@ -1,8 +1,5 @@
 <h3>{% trans 'Welcome' %} {{ user_name }}</h3>
 <ul class="list-group">
-    <li class="list-group-item list-group-item-action">
-        <i class="bi bi-house"></i> <a href="index.php">{% trans 'Index' %}</a>
-    </li>
     {% if perm_search %}
         <li class="list-group-item list-group-item-action">
             <i class="bi bi-search"></i> <a href="search.php">{% trans 'Search zones and records' %}</a>
