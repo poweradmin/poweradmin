@@ -1,21 +1,23 @@
- <h2>{% trans 'Delete record in zone' %} "{{ templ_details['name'] }}"</h2>
+<h4 class="mb-3">{% trans 'Delete record in zone' %} "{{ templ_details['name'] }}"</h4>
 
- <table>
-      <tr>
-           <th>Name</th>
-           <th>Type</th>
-           <th>Content</th>
-           <th>Priority</th>
-           <th>TTL</th>
-          </tr>
-      <tr>
-           <td>{{ record_info['name'] }}</td>
-           <td>{{ record_info['type'] }}</td>
-           <td>{{ record_info['content'] }}</td>
-           <td>{{ record_info['prio'] }}</td>
-           <td>{{ record_info['ttl'] }}</td>
-          </tr>
-     </table>
- <p>{% trans 'Are you sure?' %}</p>
- <input type="button" class="button" OnClick="location.href='delete_zone_templ_record.php?id={{ record_id }}&zone_templ_id={{ zone_templ_id }}&confirm=1'" value="{% trans 'Yes' %}">
- <input type="button" class="button" OnClick="location.href='index.php'" value="{% trans 'No' %}">
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Content</th>
+        <th>Priority</th>
+        <th>TTL</th>
+    </tr>
+    <tr>
+        <td>{{ record_info['name'] }}</td>
+        <td>{{ record_info['type'] }}</td>
+        <td>{{ record_info['content'] }}</td>
+        <td>{{ record_info['prio'] }}</td>
+        <td>{{ record_info['ttl'] }}</td>
+    </tr>
+</table>
+<p>{% trans 'Are you sure?' %}</p>
+<input type="button" class="button"
+       OnClick="location.href='delete_zone_templ_record.php?id={{ record_id }}&zone_templ_id={{ zone_templ_id }}&confirm=1'"
+       value="{% trans 'Yes' %}">
+<input type="button" class="button" OnClick="location.href='index.php'" value="{% trans 'No' %}">

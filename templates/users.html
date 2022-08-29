@@ -1,8 +1,8 @@
-<h2>{% trans 'User administration' %}</h2>
+<h4 class="mb-3">{% trans 'User administration' %}</h4>
 <form method="post" action="">
-    <table>
+    <table class="table table-striped table-hover">
+        <thead>
         <tr>
-            <th>&nbsp;</th>
             <th>{% trans 'Username' %}</th>
             <th>{% trans 'Fullname' %}</th>
             <th>{% trans 'Description' %}</th>
@@ -14,8 +14,11 @@
             {% endif %}
 
             <th>{% trans 'Enabled' %}</th>
+            <th></th>
         </tr>
+        </thead>
 
+        <tbody>
         {% for user in users %}
 
         {% if user['active'] %}
@@ -30,18 +33,6 @@
 
         {% if (user_uid == session_userid and perm_edit_own) or (user_uid != session_userid and perm_edit_others) %}
         <tr>
-            <td>
-                <input type="hidden" name="user[{{ user_uid }}][uid]" value="{{ user_uid }}">
-                <a href="edit_user.php?id={{ user_uid }}">
-                    <img src="images/edit.gif" alt="{% trans 'Edit user' %}">
-                </a>
-
-                {% if user['uid'] != session_userid %}
-                <a href="delete_user.php?id={{ user['uid'] }}">
-                    <img src="images/delete.gif" alt="{% trans 'Delete user' %}">
-                </a>
-                {% endif %}
-            </td>
             <td><input type="text" name="user[{{ user['uid'] }}][username]" value="{{ user ['username'] }}"></td>
             <td><input type="text" name="user[{{ user['uid'] }}][fullname]" value="{{ user ['fullname'] }}"></td>
             <td><input type="text" name="user[{{ user['uid'] }}][descr]" value="{{ user ['descr'] }}"></td>
@@ -81,6 +72,19 @@
             {% else %}
             <td><input type="hidden" name="user[{{ user['uid'] }}][active]" value="on"></td>
             {% endif %}
+
+            <td>
+                <input type="hidden" name="user[{{ user_uid }}][uid]" value="{{ user_uid }}">
+                <a href="edit_user.php?id={{ user_uid }}">
+                    <img src="images/edit.gif" alt="{% trans 'Edit user' %}">
+                </a>
+
+                {% if user['uid'] != session_userid %}
+                <a href="delete_user.php?id={{ user['uid'] }}">
+                    <img src="images/delete.gif" alt="{% trans 'Delete user' %}">
+                </a>
+                {% endif %}
+            </td>
         </tr>
         {% else %}
         <tr>
@@ -105,7 +109,7 @@
         </tr>
         {% endif %}
         {% endfor %}
-
+        </tbody>
     </table>
 
     <input type="submit" class="button" name="commit" value="{% trans 'Commit changes' %}">
@@ -117,11 +121,11 @@
     {% endif %}
 
     {% if perm_templ_perm_edit %}
-    <li><a href="list_perm_templ.php">{% trans 'Edit permission template' %}</a>.</li>
+    <li><a href="list_perm_templ.php">{% trans 'Edit permission template' %}</a></li>
     {% endif %}
 
     {% if perm_add_new %}
-    <li><a href="add_user.php">{% trans 'Add user' %}</a>.</li>
+    <li><a href="add_user.php">{% trans 'Add user' %}</a></li>
     {% endif %}
 
     {% if perm_templ_perm_edit or perm_add_new %}
