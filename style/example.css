@@ -46,9 +46,6 @@ td {
     vertical-align:	top;
 }
 
-td.actions {
-}
-
 td.name {
     background:		#ffffff;
     border:			1px solid #000000;
@@ -76,9 +73,6 @@ td.cell {
 
 td.dnssec {
     width: 50px;
-}
-
-td.checkbox {
 }
 
 .menu {
@@ -174,8 +168,4 @@ input.wide {
 
 td.checkbox {
     width:			5px;
-}
-
-.normaltext {
-    font-size:		90%;
 }

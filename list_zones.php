@@ -95,8 +95,8 @@ if (!in_array(ZONE_SORT_BY, array('name', 'type', 'count_records', 'owner'))) {
     $zone_sort_by = 'name';
 }
 
-echo "    <h2>" . _('List zones') . "</h2>\n";
-echo "    <div class=\"normaltext\">" . _('Total number of zones:') . " " . $count_zones_all ."</div>\n";
+echo "    <h4 class=\"mb-3\">" . _('List zones') . "</h2>\n";
+echo "    <div class=\"text-secondary\">" . _('Total number of zones:') . " " . $count_zones_all . "</div>\n";
 
 if ($perm_view == "none") {
     echo "     <p>" . _('You do not have the permission to see any zones.') . "</p>\n";
@@ -120,7 +120,8 @@ if ($perm_view == "none") {
         echo "</div>";
     }
     echo "     <form method=\"post\" action=\"delete_domains.php\">\n";
-    echo "     <table>\n";
+    echo "     <table class=\"table table-striped table-hover\">\n";
+    echo "     <thead>\n";
     echo "      <tr>\n";
     echo "       <th><input type=\"checkbox\" id=\"select_zones\" onClick=\"toggleZoneCheckboxes()\" /></th>\n";
     echo "       <th>&nbsp;</th>\n";
@@ -138,6 +139,7 @@ if ($perm_view == "none") {
     }
 
     echo "      </tr>\n";
+    echo "    </thead>\n";
 
     if ($count_zones_view <= $iface_rowamount) {
         $zones = DnsRecord::get_zones($perm_view, $_SESSION['userid'], "all", ROWSTART, $iface_rowamount, $zone_sort_by);
@@ -147,6 +149,7 @@ if ($perm_view == "none") {
         $zones = DnsRecord::get_zones($perm_view, $_SESSION['userid'], LETTERSTART, ROWSTART, $iface_rowamount, $zone_sort_by);
         $count_zones_shown = ($zones == -1) ? 0 : count($zones);
     }
+    echo "       <tbody>\n";
     foreach ($zones as $zone) {
         if ($zone['count_records'] == NULL) {
             $zone['count_records'] = 0;
@@ -161,14 +164,8 @@ if ($perm_view == "none") {
         }
         echo "         <tr>\n";
         echo "          <td class=\"checkbox\">\n";
-        if ($count_zones_edit > 0 && ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1"))) {
+        if ($count_zones_edit > 0 && ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1"))) {
             echo "       <input type=\"checkbox\" name=\"zone_id[]\" value=\"" . $zone['id'] . "\">";
-        }
-        echo "          </td>\n";
-        echo "          <td class=\"actions\">\n";
-        echo "           <a href=\"edit.php?name=" . $zone['name'] . "&id=" . $zone['id'] . "\"><img src=\"images/edit.gif\" title=\"" . _('View zone') . " " . $zone['name'] . "\" alt=\"[ " . _('View zone') . " " . $zone['name'] . " ]\"></a>\n";
-        if ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) {
-            echo "           <a href=\"delete_domain.php?name=" . $zone['name'] . "&id=" . $zone["id"] . "\"><img src=\"images/delete.gif\" title=\"" . _('Delete zone') . " " . $zone['name'] . "\" alt=\"[ " . _('Delete zone') . " " . $zone['name'] . " ]\"></a>\n";
         }
         echo "          </td>\n";
         echo "          <td class=\"name\">" . idn_to_utf8($zone["name"], IDNA_NONTRANSITIONAL_TO_ASCII) . "</td>\n";
@@ -185,10 +182,17 @@ if ($perm_view == "none") {
         if ($pdnssec_use) {
             echo "          <td class=\"dnssec\"><input type=\"checkbox\" onclick=\"return false\" " . ($zone["secured"] ? 'checked' : '') . "></td>\n";
         }
+        echo "          <td>\n";
+        echo "           <a class=\"btn btn-outline-primary btn-sm\" href=\"edit.php?name=" . $zone['name'] . "&id=" . $zone['id'] . "\"><i class=\"bi bi-eye\"></i> " . _('View zone') . "</a>\n";
+        if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
+            echo "           <a class=\"btn btn-outline-primary btn-sm\" href=\"delete_domain.php?name=" . $zone['name'] . "&id=" . $zone["id"] . "\"><i class=\"bi bi-trash\"></i>" . _('Delete zone') . "</a>\n";
+        }
+        echo "          </td>\n";
         echo "           </tr>\n";
     }
-    echo "          </table>\n";
-    echo "      <input type=\"submit\" name=\"commit\" value=\"" . _('Delete zone(s)') . "\" class=\"button\">\n";
+    echo "          </tbody>\n";
+    echo "        </table>\n";
+    echo "      <input type=\"submit\" name=\"commit\" value=\"" . _('Delete zone(s)') . "\" class=\"btn btn-primary\">\n";
     echo "     </form>\n";
 }
 
