@@ -124,7 +124,6 @@ if ($perm_view == "none") {
     echo "     <thead>\n";
     echo "      <tr>\n";
     echo "       <th><input type=\"checkbox\" id=\"select_zones\" onClick=\"toggleZoneCheckboxes()\" /></th>\n";
-    echo "       <th>&nbsp;</th>\n";
     echo "       <th><a href=\"list_zones.php?zone_sort_by=name\">" . _('Name') . "</a></th>\n";
     echo "       <th><a href=\"list_zones.php?zone_sort_by=type\">" . _('Type') . "</a></th>\n";
     echo "       <th><a href=\"list_zones.php?zone_sort_by=count_records\">" . _('Records') . "</a></th>\n";
@@ -137,7 +136,7 @@ if ($perm_view == "none") {
     if ($pdnssec_use) {
         echo "       <th>" . _('DNSSEC') . "</th>\n";
     }
-
+    echo "       <th>&nbsp;</th>\n";
     echo "      </tr>\n";
     echo "    </thead>\n";
 
@@ -155,10 +154,6 @@ if ($perm_view == "none") {
             $zone['count_records'] = 0;
         }
 
-        if ($iface_zonelist_serial) {
-            $serial = DnsRecord::get_serial_by_zid($zone['id']);
-        }
-
         if ($perm_edit != "all" || $perm_edit != "none") {
             $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone["id"]);
         }
@@ -172,15 +167,17 @@ if ($perm_view == "none") {
         echo "          <td class=\"type\">" . strtolower($zone["type"]) . "</td>\n";
         echo "          <td class=\"count\">" . $zone["count_records"] . "</td>\n";
         echo "          <td class=\"owner\">" . $zone["owner"] . "</td>\n";
+
         if ($iface_zonelist_serial) {
+            $serial = DnsRecord::get_serial_by_zid($zone['id']);
             if ($serial != "") {
-                echo "          <td class=\"y\">" . $serial . "</td>\n";
+                echo "          <td>{$serial}</td>\n";
             } else {
-                echo "          <td class=\"n\">&nbsp;</td>\n";
+                echo "          <td>&nbsp;</td>\n";
             }
         }
         if ($pdnssec_use) {
-            echo "          <td class=\"dnssec\"><input type=\"checkbox\" onclick=\"return false\" " . ($zone["secured"] ? 'checked' : '') . "></td>\n";
+            echo "          <td><input type=\"checkbox\" onclick=\"return false\" " . ($zone["secured"] ? 'checked' : '') . "></td>\n";
         }
         echo "          <td>\n";
         echo "           <a class=\"btn btn-outline-primary btn-sm\" href=\"edit.php?name=" . $zone['name'] . "&id=" . $zone['id'] . "\"><i class=\"bi bi-eye\"></i> " . _('View zone') . "</a>\n";

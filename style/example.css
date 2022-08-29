@@ -71,10 +71,6 @@ td.cell {
     border:			1px solid #000000;
 }
 
-td.dnssec {
-    width: 50px;
-}
-
 .menu {
     font-size:		80%;
 }
