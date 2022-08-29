@@ -145,11 +145,11 @@ if (isset($_POST['query'])) {
             <table class="table table-striped table-hover">
                 <thead>
                 <tr>
-                    <th></th>
                     <th><a href="javascript:zone_sort_by('name');"><?php echo _('Name'); ?></a></th>
                     <th><a href="javascript:zone_sort_by('type');"><?php echo _('Type'); ?></a></th>
                     <th><a href="javascript:zone_sort_by('count_records');"><?php echo _('Records'); ?></a></th>
                     <th><a href="javascript:zone_sort_by('fullname');"><?php echo _('Owner'); ?></a></th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -189,12 +189,12 @@ if (isset($_POST['query'])) {
             <table class="table table-striped table-hover">
                 <thead>
                 <tr>
-                    <th></th>
                     <th><a href="javascript:record_sort_by('name');"><?php echo _('Name'); ?></a></th>
                     <th><a href="javascript:record_sort_by('type');"><?php echo _('Type'); ?></a></th>
                     <th><a href="javascript:record_sort_by('prio');"><?php echo _('Priority'); ?></a></th>
                     <th><a href="javascript:record_sort_by('content');"><?php echo _('Content'); ?></a></th>
                     <th><a href="javascript:record_sort_by('ttl');"><?php echo _('TTL'); ?></a></th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
