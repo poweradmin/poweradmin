@@ -72,25 +72,44 @@ $parameters['reverse'] = !isset($_POST['do_search']) && !isset($_POST['reverse']
 
 ?>
 
-<h2><?php echo _('Search zones and records'); ?></h2>
+<h4 class="mb-3"><?php echo _('Search zones and records'); ?></h4>
+<span class="text-secondary"><?php echo _('Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) in pattern matches any single character, a percent sign (%) matches any string of zero or more characters.'); ?></span>
 <form name="search_form" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
-    <table>
-        <tr>
-            <td>
-                <input type="text" class="input" name="query" value="<?php echo $parameters['query']; ?>">
-                <input type="submit" class="button" name="do_search" value="<?php echo _('Search'); ?>">
-                <input type="checkbox" class="input" name="zones" value="true"<?php echo $parameters['zones'] ? ' checked="checked"' : ''; ?>><?php echo _('Zones'); ?>
-                <input type="checkbox" class="input" name="records" value="true"<?php echo $parameters['records'] ? ' checked="checked"' : ''; ?>><?php echo _('Records'); ?> |
-                <input type="checkbox" class="input" name="wildcard" value="true"<?php echo $parameters['wildcard'] ? ' checked="checked"' : ''; ?>><?php echo _('Wildcard'); ?>
-                <input type="checkbox" class="input" name="reverse" value="true"<?php echo $parameters['reverse'] ? ' checked="checked"' : ''; ?>><?php echo _('Reverse'); ?>
-                <input type="hidden" name="zone_sort_by" value="<?php echo ZONE_SORT_BY; ?>">
-                <input type="hidden" name="record_sort_by" value="<?php echo RECORD_SORT_BY; ?>">
-            </td>
-        </tr>
-        <tr>
-            <td><?php echo _('Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) in pattern matches any single character, a percent sign (%) matches any string of zero or more characters.'); ?></td>
-        </tr>
-    </table>
+    <input type="hidden" name="zone_sort_by" value="<?php echo ZONE_SORT_BY; ?>">
+    <input type="hidden" name="record_sort_by" value="<?php echo RECORD_SORT_BY; ?>">
+
+    <div class="row pt-3 pb-3">
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="query" value="<?php echo $parameters['query']; ?>">
+        </div>
+        <div class="col-sm-6 d-flex align-items-center">
+            <div class="form-check form-check-inline">
+                <input type="checkbox" class="form-check-input" name="zones" id="inlineCheckbox1"
+                       value="true"<?php echo $parameters['zones'] ? ' checked="checked"' : ''; ?>>
+                <label class="form-check-label" for="inlineCheckbox1"><?php echo _('Zones'); ?></label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input type="checkbox" class="form-check-input" name="records" id="inlineCheckbox2"
+                       value="true"<?php echo $parameters['records'] ? ' checked="checked"' : ''; ?>>
+                <label class="form-check-label" for="inlineCheckbox2"><?php echo _('Records'); ?></label>
+            </div>
+            <div class="form-check form-check-inline">
+
+                <input type="checkbox" class="form-check-input" name="wildcard" id="inlineCheckbox3"
+                       value="true"<?php echo $parameters['wildcard'] ? ' checked="checked"' : ''; ?>>
+                <label class="form-check-label" for="inlineCheckbox3"><?php echo _('Wildcard'); ?></label>
+            </div>
+            <div class="form-check form-check-inline">
+
+                <input type="checkbox" class="form-check-input" name="reverse" id="inlineCheckbox4"
+                       value="true"<?php echo $parameters['reverse'] ? ' checked="checked"' : ''; ?>>
+                <label class="form-check-label" for="inlineCheckbox4"><?php echo _('Reverse'); ?></label>
+            </div>
+        </div>
+        <div class="col-sm-12 pt-3">
+            <input type="submit" class="btn btn-primary" name="do_search" value="<?php echo _('Search'); ?>">
+        </div>
+    </div>
 </form>
 
 <?php
@@ -120,80 +139,105 @@ if (isset($_POST['query'])) {
     );
 
     if (is_array($searchResult['zones'])):
-?>
-
-        <h3><?php echo _('Zones found'); ?></h3>
-        <table>
-            <tr>
-                <th></th>
-                <th><a href="javascript:zone_sort_by('name');"><?php echo _('Name'); ?></a></th>
-                <th><a href="javascript:zone_sort_by('type');"><?php echo _('Type'); ?></a></th>
-                <th><a href="javascript:zone_sort_by('count_records');"><?php echo _('Records'); ?></a></th>
-                <th><a href="javascript:zone_sort_by('fullname');"><?php echo _('Owner'); ?></a></th>
-            </tr>
-            <?php foreach ($searchResult['zones'] as $zone): ?>
+        ?>
+        <div class="pb-3">
+            <h4 class="mb-3 pt-3 border-top"><?php echo _('Zones found'); ?></h4>
+            <table class="table table-striped table-hover">
+                <thead>
                 <tr>
-                    <td>
-                        <?php if ($permissions['edit'] == 'all' || $permissions['edit'] == 'own' && do_hook('verify_user_is_owner_zoneid', $zone['id'])): ?>
-                            <a href="<?php echo 'edit.php?name=' . $zone['name'] . '&id=' . $zone['id']; ?>"><img src="images/edit.gif" alt="[ <?php echo _('Edit zone'); ?> ]" title="<?php echo _('Edit zone'); ?>"></a>
-                            <a href="<?php echo 'delete_domain.php?name=' . $zone['name'] . '&id=' . $zone['id']; ?>"><img src="images/delete.gif" alt="[ <?php echo _('Delete zone'); ?> ]" title="<?php echo _('Delete zone'); ?>"></a>
-                        <?php endif; ?>
-                    </td>
-                    <td><?php echo $zone['name']; ?></td>
-                    <td><?php echo $zone['type']; ?></td>
-                    <td><?php echo $zone['count_records']; ?></td>
-                    <td><?php echo $zone['fullname']; ?></td>
+                    <th></th>
+                    <th><a href="javascript:zone_sort_by('name');"><?php echo _('Name'); ?></a></th>
+                    <th><a href="javascript:zone_sort_by('type');"><?php echo _('Type'); ?></a></th>
+                    <th><a href="javascript:zone_sort_by('count_records');"><?php echo _('Records'); ?></a></th>
+                    <th><a href="javascript:zone_sort_by('fullname');"><?php echo _('Owner'); ?></a></th>
                 </tr>
-            <?php endforeach; ?>
-        </table>
-
-<?php
+                </thead>
+                <tbody>
+                <?php if (!$searchResult['zones']): ?>
+                    <tr>
+                        <td colspan="5"><?php echo _('No results found'); ?></td>
+                    </tr>
+                <?php endif; ?>
+                <?php foreach ($searchResult['zones'] as $zone): ?>
+                    <tr>
+                        <td><?php echo $zone['name']; ?></td>
+                        <td><?php echo $zone['type']; ?></td>
+                        <td><?php echo $zone['count_records']; ?></td>
+                        <td><?php echo $zone['fullname']; ?></td>
+                        <td>
+                            <?php if ($permissions['edit'] == 'all' || $permissions['edit'] == 'own' && do_hook('verify_user_is_owner_zoneid', $zone['id'])): ?>
+                                <a class="btn btn-outline-primary btn-sm"
+                                   href="<?php echo 'edit.php?name=' . $zone['name'] . '&id=' . $zone['id']; ?>">
+                                    <i class="bi bi-pencil-square"></i> <?php echo _('Edit zone'); ?></a>
+                                <a class="btn btn-outline-danger btn-sm"
+                                   href="<?php echo 'delete_domain.php?name=' . $zone['name'] . '&id=' . $zone['id']; ?>">
+                                    <i class="bi bi-trash"></i> <?php echo _('Delete zone'); ?></a>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    <?php
     endif;
     if (is_array($searchResult['records'])):
-?>
+        ?>
 
-        <h3><?php echo _('Records found'); ?></h3>
-        <table>
-            <tr>
-                <th></th>
-                <th><a href="javascript:record_sort_by('name');"><?php echo _('Name'); ?></a></th>
-                <th><a href="javascript:record_sort_by('type');"><?php echo _('Type'); ?></a></th>
-                <th><a href="javascript:record_sort_by('prio');"><?php echo _('Priority'); ?></a></th>
-                <th><a href="javascript:record_sort_by('content');"><?php echo _('Content'); ?></a></th>
-                <th><a href="javascript:record_sort_by('ttl');"><?php echo _('TTL'); ?></a></th>
-            </tr>
-            <?php foreach ($searchResult['records'] as $record): ?>
+        <div class="pb-3">
+            <h4 class="mb-3 pt-3 border-top"><?php echo _('Records found'); ?></h4>
+            <table class="table table-striped table-hover">
+                <thead>
                 <tr>
-                    <td>
-                        <?php if ($permissions['edit'] == 'all' || $permissions['edit'] == 'own' && do_hook('verify_user_is_owner_zoneid', $record['domain_id'])): ?>
-                            <a href="<?php echo 'edit_record.php?domain=' . $record['domain_id'] . '&id=' . $record['id']; ?>"><img src="images/edit.gif" alt="[ <?php echo _('Edit zone'); ?> ]" title="<?php echo _('Edit zone'); ?>"></a>
-                            <a href="<?php echo 'delete_record.php?domain=' . $record['domain_id'] . '&id=' . $record['id']; ?>"><img src="images/delete.gif" alt="[ <?php echo _('Delete zone'); ?> ]" title="<?php echo _('Delete zone'); ?>"></a>
-                        <?php endif; ?>
-                    </td>
-                    <td><?php echo $record['name']; ?></td>
-                    <td><?php echo $record['type']; ?></td>
-                    <td><?php echo $record['prio']; ?></td>
-                    <td><?php echo $record['content']; ?></td>
-                    <td><?php echo $record['ttl']; ?></td>
+                    <th></th>
+                    <th><a href="javascript:record_sort_by('name');"><?php echo _('Name'); ?></a></th>
+                    <th><a href="javascript:record_sort_by('type');"><?php echo _('Type'); ?></a></th>
+                    <th><a href="javascript:record_sort_by('prio');"><?php echo _('Priority'); ?></a></th>
+                    <th><a href="javascript:record_sort_by('content');"><?php echo _('Content'); ?></a></th>
+                    <th><a href="javascript:record_sort_by('ttl');"><?php echo _('TTL'); ?></a></th>
                 </tr>
-            <?php endforeach; ?>
-        </table>
+                </thead>
+                <tbody>
+                <?php if (!$searchResult['zones']): ?>
+                    <tr>
+                        <td colspan="6"><?php echo _('No results found'); ?></td>
+                    </tr>
+                <?php endif; ?>
+                <?php foreach ($searchResult['records'] as $record): ?>
+                    <tr>
+                        <td><?php echo $record['name']; ?></td>
+                        <td><?php echo $record['type']; ?></td>
+                        <td><?php echo $record['prio']; ?></td>
+                        <td><?php echo $record['content']; ?></td>
+                        <td><?php echo $record['ttl']; ?></td>
+                        <td>
+                            <?php if ($permissions['edit'] == 'all' || $permissions['edit'] == 'own' && do_hook('verify_user_is_owner_zoneid', $record['domain_id'])): ?>
+                                <a class="btn btn-outline-primary btn-sm"
+                                   href="<?php echo 'edit_record.php?domain=' . $record['domain_id'] . '&id=' . $record['id']; ?>">
+                                    <i class="bi bi-pencil-square"></i> <?php echo _('Edit zone'); ?></a>
+                                <a class="btn btn-outline-danger btn-sm"
+                                   href="<?php echo 'delete_record.php?domain=' . $record['domain_id'] . '&id=' . $record['id']; ?>">
+                                    <i class="bi bi-trash"></i> <?php echo _('Delete zone'); ?></a>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
 
         <script type="text/javascript">
-            function zone_sort_by(sortbytype)
-            {
+            function zone_sort_by(sortbytype) {
                 document.search_form.zone_sort_by.value = sortbytype;
                 document.getElementsByName("do_search")[0].click();
             }
 
-            function record_sort_by(sortbytype)
-            {
+            function record_sort_by(sortbytype) {
                 document.search_form.record_sort_by.value = sortbytype;
                 document.getElementsByName("do_search")[0].click();
             }
         </script>
-
-<?php
+    <?php
     endif;
 }
 
