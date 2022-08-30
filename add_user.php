@@ -75,7 +75,7 @@ if (isset($_POST["commit"]) && do_hook('add_new_user', $_POST)) {
     $use_ldap_checked = "checked";
 }
 
-echo "     <h2>" . _('Add user') . "</h2>\n";
+echo "     <h4 class=\"mb-3\">" . _('Add user') . "</h2>\n";
 echo "     <form method=\"post\" action=\"add_user.php\">\n";
 echo "      <table>\n";
 echo "       <tr>\n";

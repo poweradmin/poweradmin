@@ -93,7 +93,7 @@ $record_count = DnsRecord::count_zone_records($zone_id);
 $zone_templates = ZoneTemplate::get_list_zone_templ($_SESSION['userid']);
 $zone_template_id = DnsRecord::get_zone_template($zone_id);
 
-echo "   <h2>" . _('DNSSEC keys for zone') . " \"" . DnsRecord::get_domain_name_by_id($zone_id) . "\"</h2>\n";
+echo "   <h4 class=\"mb-3\">" . _('DNSSEC keys for zone') . " \"" . DnsRecord::get_domain_name_by_id($zone_id) . "\"</h2>\n";
 
 echo "     <table>\n";
 echo "      <tr>\n";

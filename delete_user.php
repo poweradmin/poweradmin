@@ -74,7 +74,7 @@ if (isset($_POST['commit'])) {
         $fullname = do_hook('get_fullname_from_userid' , $uid );
         $zones = DnsRecord::get_zones("own", $uid);
 
-        echo "     <h2>" . _('Delete user') . " \"" . $fullname . "\"</h2>\n";
+        echo "     <h4 class=\"mb-3\">" . _('Delete user') . " \"" . $fullname . "\"</h2>\n";
         echo "     <form method=\"post\" action=\"\">\n";
         echo "      <table>\n";
 

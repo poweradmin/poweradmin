@@ -101,7 +101,7 @@ if (isset($_POST["submit"])) {
     }
 }
 
-echo "     <h2>" . _('Add key for zone '). $domain_name . "</h2>\n";
+echo "     <h4 class=\"mb-3\">" . _('Add key for zone '). $domain_name . "</h2>\n";
 
 echo "     <form method=\"post\" action=\"dnssec_add_key.php?id=".$zone_id."\">\n";
 echo "      <table>\n";

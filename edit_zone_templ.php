@@ -117,7 +117,7 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
     } else {
         $record_count = ZoneTemplate::count_zone_templ_records($zone_templ_id);
         $templ_details = ZoneTemplate::get_zone_templ_details($zone_templ_id);
-        echo "   <h2>" . _('Edit zone template') . " \"" . $templ_details['name'] . "\"</h2>\n";
+        echo "   <h4 class=\"mb-3\">" . _('Edit zone template') . " \"" . $templ_details['name'] . "\"</h2>\n";
 
         echo "   <div>\n";
         show_pages($record_count, $iface_rowamount, $zone_templ_id);

@@ -234,9 +234,9 @@ $zone_template_id = DnsRecord::get_zone_template($zone_id);
 $zone_name_to_display = DnsRecord::get_domain_name_by_id($zone_id);
 if (preg_match("/^xn--/", $zone_name_to_display)) {
     $idn_zone_name = idn_to_utf8($zone_name_to_display, IDNA_NONTRANSITIONAL_TO_ASCII);
-    echo "   <h2>" . _('Edit zone') . " \"" . $idn_zone_name . "\" (\"" . $zone_name_to_display . "\")</h2>\n";
+    echo "   <h4 class=\"mb-3\">" . _('Edit zone') . " \"" . $idn_zone_name . "\" (\"" . $zone_name_to_display . "\")</h2>\n";
 } else {
-    echo "   <h2>" . _('Edit zone') . " \"" . $zone_name_to_display . "\"</h2>\n";
+    echo "   <h4 class=\"mb-3\">" . _('Edit zone') . " \"" . $zone_name_to_display . "\"</h2>\n";
 }
 
 echo "   <div>\n";

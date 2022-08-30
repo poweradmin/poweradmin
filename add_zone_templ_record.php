@@ -76,7 +76,7 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
     exit;
 }
 
-echo "    <h2>" . _('Add record to zone template') . " \"" . $templ_details['name'] . "\"</h2>\n";
+echo "    <h4 class=\"mb-3\">" . _('Add record to zone template') . " \"" . $templ_details['name'] . "\"</h2>\n";
 
 echo "     <form method=\"post\">\n";
 echo "      <input type=\"hidden\" name=\"domain\" value=\"" . $zone_templ_id . "\">\n";

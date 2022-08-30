@@ -151,7 +151,7 @@ if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit
     exit;
 }
 
-echo "    <h2>" . _('Add record to zone') . " <a href=\"edit.php?id=" . $zone_id . "\"> " . $zone_name . "</a></h2>\n";
+echo "    <h4 class=\"mb-3\">" . _('Add record to zone') . " <a href=\"edit.php?id=" . $zone_id . "\"> " . $zone_name . "</a></h2>\n";
 echo "     <form method=\"post\">\n";
 echo "      <input type=\"hidden\" name=\"domain\" value=\"" . $zone_id . "\">\n";
 echo "      <table border=\"0\" cellspacing=\"4\">\n";

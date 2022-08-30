@@ -89,7 +89,7 @@ if (!$zone_slave_add) {
     exit;
 }
 
-echo "     <h2>" . _('Add slave zone') . "</h2>\n";
+echo "     <h4 class=\"mb-3\">" . _('Add slave zone') . "</h2>\n";
 
 $users = do_hook('show_users');
 echo "     <form method=\"post\" action=\"add_zone_slave.php\">\n";
