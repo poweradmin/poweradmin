@@ -24,6 +24,6 @@
 <p>{% trans 'You are trying to delete a record that is needed for this zone to work.' %}</p>
 {% endif %}
 <p>{% trans 'Are you sure?' %}</p>
-<input type="button" class="button" onClick="location.href='delete_record.php?id={{ record_id }}&confirm=1'"
+<input type="button" class="btn btn-primary" onClick="location.href='delete_record.php?id={{ record_id }}&confirm=1'"
        value="{% trans 'Yes' %}">
-<input type="button" class="button" onClick="location.href='edit.php?id={{ zid }}'" value="{% trans 'No' %}">
+<input type="button" class="btn btn-secondary" onClick="location.href='edit.php?id={{ zid }}'" value="{% trans 'No' %}">
