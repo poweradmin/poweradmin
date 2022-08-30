@@ -1,28 +1,30 @@
 <h4 class="mb-3">{% trans 'List supermasters' %}</h4>
-<table>
+<table class="table table-striped table-hover">
+    <thead>
     <tr>
-        <th>&nbsp;</th>
         <th>{% trans 'IP address of supermaster' %}</th>
         <th>{% trans 'Hostname in NS record' %}</th>
         <th>{% trans 'Account' %}</th>
+        <th>&nbsp;</th>
     </tr>
-
+    </thead>
+    <tbody>
     {% if supermasters %}
     {% for server in supermasters %}
     <tr>
+        <td>{{ server['master_ip'] }}</td>
+        <td>{{ server['ns_name'] }}</td>
+        <td>{{ server['account'] }}</td>
         {% if perm_sm_edit %}
         <td>
-            <a href="delete_supermaster.php?master_ip={{ server['master_ip'] }}&amp;ns_name={{ server['ns_name'] }}">
-                <img src="images/delete.gif" title="{% trans 'Delete supermaster' %} {{ server['master_ip'] }}"
-                     alt="{% trans 'Delete supermaster' %}">
+            <a class="btn btn-outline-danger btn-sm"
+               href="delete_supermaster.php?master_ip={{ server['master_ip'] }}&amp;ns_name={{ server['ns_name'] }}">
+                <i class="bi bi-trash"></i> {% trans 'Delete supermaster' %}
             </a>
         </td>
         {% else %}
         <td>&nbsp;</td>
         {% endif %}
-        <td>{{ server['master_ip'] }}</td>
-        <td>{{ server['ns_name'] }}</td>
-        <td>{{ server['account'] }}</td>
     </tr>
     {% endfor %}
     {% else %}
@@ -33,4 +35,5 @@
         </td>
     </tr>
     {% endif %}
+    </tbody>
 </table>

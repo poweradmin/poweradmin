@@ -180,9 +180,9 @@ if ($perm_view == "none") {
             echo "          <td><input type=\"checkbox\" onclick=\"return false\" " . ($zone["secured"] ? 'checked' : '') . "></td>\n";
         }
         echo "          <td>\n";
-        echo "           <a class=\"btn btn-outline-primary btn-sm\" href=\"edit.php?name=" . $zone['name'] . "&id=" . $zone['id'] . "\"><i class=\"bi bi-eye\"></i> " . _('View zone') . "</a>\n";
+        echo "           <a class=\"btn btn-outline-primary btn-sm\" href=\"edit.php?name=" . $zone['name'] . "&id=" . $zone['id'] . "\"><i class=\"bi bi-pencil-square\"></i> " . _('Edit zone') . "</a>\n";
         if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
-            echo "           <a class=\"btn btn-outline-primary btn-sm\" href=\"delete_domain.php?name=" . $zone['name'] . "&id=" . $zone["id"] . "\"><i class=\"bi bi-trash\"></i>" . _('Delete zone') . "</a>\n";
+            echo "           <a class=\"btn btn-outline-danger btn-sm\" href=\"delete_domain.php?name=" . $zone['name'] . "&id=" . $zone["id"] . "\"><i class=\"bi bi-trash\"></i>" . _('Delete zone') . "</a>\n";
         }
         echo "          </td>\n";
         echo "           </tr>\n";

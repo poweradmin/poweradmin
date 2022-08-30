@@ -111,8 +111,8 @@ $keys = Dnssec::dnssec_get_keys($domain_name);
 foreach ($keys as $item) {
     echo "<tr>\n";
     echo "<td>&nbsp;\n";
-    echo "<a href=\"dnssec_edit_key.php?id=" . $zone_id . "&key_id=" . $item[0] . "\"><img src=\"images/edit.gif\" title=\"" . _('Edit zone key') . " " . $item[0] . "\" alt=\"[ " . _('Edit zone key') . " " . $domain_name . " ]\"></a>\n";
-    echo "<a href=\"dnssec_delete_key.php?id=" . $zone_id . "&key_id=" . $item[0] . "\"><img src=\"images/delete.gif\" title=\"" . _('Delete zone key') . " " . $item[0] . "\" alt=\"[ " . _('Delete zone key') . " " . $domain_name . " ]\"></a>\n";
+    echo "<a class=\"btn btn-outline-primary btn-sm\" href=\"dnssec_edit_key.php?id=" . $zone_id . "&key_id=" . $item[0] . "\"><i class=\"bi bi-pencil-square\"></i> " . _('Edit zone key') . " " . $item[0] . "</a>\n";
+    echo "<a class=\"btn btn-outline-danger btn-sm\" href=\"dnssec_delete_key.php?id=" . $zone_id . "&key_id=" . $item[0] . "\"><i class=\"bi bi-trash\"></i> " . _('Delete zone key') . " " . $item[0] . "</a>\n";
     echo "</td>";
     echo "<td>".$item[0]."</td>\n";
     echo "<td>".$item[1]."</td>\n";

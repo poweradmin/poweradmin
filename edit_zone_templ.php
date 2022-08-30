@@ -141,10 +141,10 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
                 echo "    <tr>\n";
                 echo "     <td class=\"n\">\n";
                 echo "    <input type=\"hidden\" name=\"record[" . $r['id'] . "][rid]\" value=\"" . $r['id'] . "\">\n";
-                echo "      <a href=\"edit_zone_templ_record.php?id=" . $r['id'] . "&amp;zone_templ_id=" . $zone_templ_id . "\">
-						<img src=\"images/edit.gif\" alt=\"[ " . _('Edit record') . " ]\"></a>\n";
-                echo "      <a href=\"delete_zone_templ_record.php?id=" . $r['id'] . "&amp;zone_templ_id=" . $zone_templ_id . "\">
-						<img src=\"images/delete.gif\" ALT=\"[ " . _('Delete record') . " ]\" BORDER=\"0\"></a>\n";
+                echo "      <a class=\"btn btn-outline-primary btn-sm\" href=\"edit_zone_templ_record.php?id=" . $r['id'] . "&amp;zone_templ_id=" . $zone_templ_id . "\">
+						<i class=\"bi bi-pencil-square\"></i>" . _('Edit record') . "</a>\n";
+                echo "      <a class=\"btn btn-outline-danger btn-sm\" href=\"delete_zone_templ_record.php?id=" . $r['id'] . "&amp;zone_templ_id=" . $zone_templ_id . "\">
+						<i class=\"bi bi-trash\"></i>" . _('Delete record') . "</a>\n";
                 echo "     </td>\n";
                 echo "      <td class=\"u\"><input name=\"record[" . $r['id'] . "][name]\" value=\"" . $r['name'] . "\"></td>\n";
                 echo "      <td class=\"u\">\n";

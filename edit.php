@@ -166,17 +166,17 @@ if (do_hook('verify_permission', 'zone_meta_edit_others')) {
     $perm_meta_edit = "none";
 }
 
-do_hook('verify_permission' , 'zone_master_add' ) ? $perm_zone_master_add = "1" : $perm_zone_master_add = "0";
-do_hook('verify_permission' , 'zone_slave_add' ) ? $perm_zone_slave_add = "1" : $perm_zone_slave_add = "0";
+do_hook('verify_permission', 'zone_master_add') ? $perm_zone_master_add = "1" : $perm_zone_master_add = "0";
+do_hook('verify_permission', 'zone_slave_add') ? $perm_zone_slave_add = "1" : $perm_zone_slave_add = "0";
 
-$user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );
-if ($perm_meta_edit == "all" || ( $perm_meta_edit == "own" && $user_is_zone_owner == "1")) {
+$user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
+if ($perm_meta_edit == "all" || ($perm_meta_edit == "own" && $user_is_zone_owner == "1")) {
     $meta_edit = "1";
 } else {
     $meta_edit = "0";
 }
 
-(do_hook('verify_permission' , 'user_view_others' )) ? $perm_view_others = "1" : $perm_view_others = "0";
+(do_hook('verify_permission', 'user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
 
 if (isset($_POST['slave_master_change']) && is_numeric($_POST["domain"])) {
     DnsRecord::change_zone_slave_master($_POST['domain'], $_POST['new_master']);
@@ -234,9 +234,9 @@ $zone_template_id = DnsRecord::get_zone_template($zone_id);
 $zone_name_to_display = DnsRecord::get_domain_name_by_id($zone_id);
 if (preg_match("/^xn--/", $zone_name_to_display)) {
     $idn_zone_name = idn_to_utf8($zone_name_to_display, IDNA_NONTRANSITIONAL_TO_ASCII);
-    echo "   <h2>" . _('Edit zone') . " \"" . $idn_zone_name . "\" (\"". $zone_name_to_display ."\")</h2>\n";
+    echo "   <h2>" . _('Edit zone') . " \"" . $idn_zone_name . "\" (\"" . $zone_name_to_display . "\")</h2>\n";
 } else {
-    echo "   <h2>" . _('Edit zone') . " \"" . $zone_name_to_display ."\"</h2>\n";
+    echo "   <h2>" . _('Edit zone') . " \"" . $zone_name_to_display . "\"</h2>\n";
 }
 
 echo "   <div>\n";
@@ -267,16 +267,14 @@ if ($records == "-1") {
 
         if ($domain_type == "SLAVE" || $perm_content_edit == "none" || (($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0")) {
             echo "     <td class=\"n\">&nbsp;</td>\n";
-        }
-        elseif ($r['type'] == "SOA" && $perm_content_edit != "all" || ($r['type'] == "NS" && $perm_content_edit == "own_as_client")) {
-        	echo "     <td class=\"n\">&nbsp;</td>\n";
-        }
-        else {
+        } elseif ($r['type'] == "SOA" && $perm_content_edit != "all" || ($r['type'] == "NS" && $perm_content_edit == "own_as_client")) {
+            echo "     <td class=\"n\">&nbsp;</td>\n";
+        } else {
             echo "     <td class=\"n\">\n";
-            echo "      <a href=\"edit_record.php?id=" . $r['id'] . "&amp;domain=" . $zone_id . "\">
-                                                <img src=\"images/edit.gif\" alt=\"[ " . _('Edit record') . " ]\"></a>\n";
-            echo "      <a href=\"delete_record.php?id=" . $r['id'] . "&amp;domain=" . $zone_id . "\">
-                                                <img src=\"images/delete.gif\" ALT=\"[ " . _('Delete record') . " ]\" BORDER=\"0\"></a>\n";
+            echo "      <a class=\"btn btn-outline-primary btn-sm\" href=\"edit_record.php?id=" . $r['id'] . "&amp;domain=" . $zone_id . "\">
+                                                <i class=\"bi bi-pencil-square\"></i> " . _('Edit record') . "</a>\n";
+            echo "      <a class=\"btn btn-outline-danger btn-sm\" href=\"delete_record.php?id=" . $r['id'] . "&amp;domain=" . $zone_id . "\">
+                                                <i class=\"bi bi-trash\"></i> " . _('Delete record') . "</a>\n";
             echo "     </td>\n";
         }
         echo "     <td class=\"n\">{$r['id']}</td>\n";
@@ -321,8 +319,8 @@ if ($records == "-1") {
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "     <td class=\"n\">\n";
-        echo "      <a href=\"edit_comment.php?domain=" . $zone_id . "\">
-                                <img src=\"images/edit.gif\" alt=\"[ " . _('Edit comment') . " ]\"></a>\n";
+        echo "      <a class=\"btn btn-outline-primary btn-sm\" href=\"edit_comment.php?domain=" . $zone_id . "\">
+                                <i class=\"bi bi-pencil-square\"></i> " . _('Edit comment') . "</a>\n";
         echo "     </td>\n";
         echo "     <td colspan=\"4\"><textarea rows=\"5\" cols=\"80\" name=\"comment\">" . htmlspecialchars(DnsRecord::get_zone_comment($zone_id)) . "</textarea></td>\n";
         echo "     <td>&nbsp;</td>\n";
@@ -348,7 +346,7 @@ if ($records == "-1") {
         $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
 
         if (Dnssec::dnssec_is_zone_secured($zone_name)) {
-            echo "     <input type=\"button\" name=\"dnssec\" onclick=\"location.href = 'dnssec.php?id=".$zone_id."';\" value=\"" . _('DNSSEC') . "\">\n";
+            echo "     <input type=\"button\" name=\"dnssec\" onclick=\"location.href = 'dnssec.php?id=" . $zone_id . "';\" value=\"" . _('DNSSEC') . "\">\n";
             echo "     <input type=\"submit\" name=\"unsign_zone\" value=\"" . _('Unsign this zone') . "\">\n";
         } else {
             echo "     <input type=\"submit\" name=\"sign_zone\" value=\"" . _('Sign this zone') . "\">\n";
@@ -529,7 +527,7 @@ if ($meta_edit) {
     echo "      </form>\n";
 } else {
     $zone_template_details = ZoneTemplate::get_zone_templ_details($zone_template_id);
-    echo "      <tr><td>" . (isset($zone_template_details) ? strtolower($zone_template_details['name']) : "none" ) . "</td><td>&nbsp;</td></tr>\n";
+    echo "      <tr><td>" . (isset($zone_template_details) ? strtolower($zone_template_details['name']) : "none") . "</td><td>&nbsp;</td></tr>\n";
 }
 
 if ($domain_type == "SLAVE") {
