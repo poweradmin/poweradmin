@@ -100,8 +100,8 @@ if ($confirm == '1') {
         }
     }
     echo "                     <p>" . _('Are you sure?') . "</p>\n";
-    echo "                     <input type=\"submit\" name=\"confirm\" value=\"" . _('Yes') . "\" class=\"button\">\n";
-    echo "                     <input type=\"button\" class=\"button\" OnClick=\"location.href='list_zones.php'\" value=\"" . _('No') . "\">\n";
+    echo "                     <input type=\"submit\" name=\"confirm\" value=\"" . _('Yes') . "\">\n";
+    echo "                     <input type=\"button\" onClick=\"location.href='list_zones.php'\" value=\"" . _('No') . "\">\n";
     echo "     </form>\n";
 }
 

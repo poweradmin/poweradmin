@@ -110,21 +110,21 @@ $keys = Dnssec::dnssec_get_keys($domain_name);
 
 foreach ($keys as $item) {
     echo "<tr>\n";
-    echo "<td width=\"60\" class=\"actions\">&nbsp;\n";
+    echo "<td>&nbsp;\n";
     echo "<a href=\"dnssec_edit_key.php?id=" . $zone_id . "&key_id=" . $item[0] . "\"><img src=\"images/edit.gif\" title=\"" . _('Edit zone key') . " " . $item[0] . "\" alt=\"[ " . _('Edit zone key') . " " . $domain_name . " ]\"></a>\n";
     echo "<a href=\"dnssec_delete_key.php?id=" . $zone_id . "&key_id=" . $item[0] . "\"><img src=\"images/delete.gif\" title=\"" . _('Delete zone key') . " " . $item[0] . "\" alt=\"[ " . _('Delete zone key') . " " . $domain_name . " ]\"></a>\n";
     echo "</td>";
-    echo "<td class=\"cell\">".$item[0]."</td>\n";
-    echo "<td class=\"cell\">".$item[1]."</td>\n";
-    echo "<td class=\"cell\">".$item[2]."</td>\n";
-    echo "<td class=\"cell\">".Dnssec::dnssec_algorithm_to_name($item[3])."</td>\n";
-    echo "<td class=\"cell\">".$item[4]."</td>\n";
-    echo "<td class=\"cell\">".($item[5] ? _('Yes') : _('No'))."</td>\n";
+    echo "<td>".$item[0]."</td>\n";
+    echo "<td>".$item[1]."</td>\n";
+    echo "<td>".$item[2]."</td>\n";
+    echo "<td>".Dnssec::dnssec_algorithm_to_name($item[3])."</td>\n";
+    echo "<td>".$item[4]."</td>\n";
+    echo "<td>".($item[5] ? _('Yes') : _('No'))."</td>\n";
     echo "</tr>\n";
 }
 
 echo "     </table>\n";
-echo "      <input type=\"button\" class=\"button\" onclick=\"location.href = 'dnssec_add_key.php?id=".$zone_id."';\" value=\"" . _('Add new key') . "\">\n";
-echo "      <input type=\"button\" class=\"button\" onclick=\"location.href = 'dnssec_ds_dnskey.php?id=".$zone_id."';\" value=\"" . _('Show DS and DNSKEY') . "\">\n";
+echo "      <input type=\"button\" onClick=\"location.href = 'dnssec_add_key.php?id=".$zone_id."';\" value=\"" . _('Add new key') . "\">\n";
+echo "      <input type=\"button\" onClick=\"location.href = 'dnssec_ds_dnskey.php?id=".$zone_id."';\" value=\"" . _('Show DS and DNSKEY') . "\">\n";
 
 include_once("inc/footer.inc.php");

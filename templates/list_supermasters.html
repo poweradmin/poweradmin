@@ -11,7 +11,7 @@
     {% for server in supermasters %}
     <tr>
         {% if perm_sm_edit %}
-        <td class="n">
+        <td>
             <a href="delete_supermaster.php?master_ip={{ server['master_ip'] }}&amp;ns_name={{ server['ns_name'] }}">
                 <img src="images/delete.gif" title="{% trans 'Delete supermaster' %} {{ server['master_ip'] }}"
                      alt="{% trans 'Delete supermaster' %}">
@@ -20,15 +20,15 @@
         {% else %}
         <td>&nbsp;</td>
         {% endif %}
-        <td class="y">{{ server['master_ip'] }}</td>
-        <td class="y">{{ server['ns_name'] }}</td>
-        <td class="y">{{ server['account'] }}</td>
+        <td>{{ server['master_ip'] }}</td>
+        <td>{{ server['ns_name'] }}</td>
+        <td>{{ server['account'] }}</td>
     </tr>
     {% endfor %}
     {% else %}
     <tr>
-        <td class="n">&nbsp;</td>
-        <td class="n" colspan="3">
+        <td>&nbsp;</td>
+        <td colspan="3">
             {% trans 'There are no zones to show in this listing.' %}
         </td>
     </tr>

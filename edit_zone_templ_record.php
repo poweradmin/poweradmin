@@ -58,7 +58,7 @@ if (isset($_POST["commit"])) {
         if ($ret_val == "1") {
             success(SUC_RECORD_UPD);
         } else {
-            echo "     <div class=\"error\">" . $ret_val . "</div>\n";
+            echo "     <div class=\"alert alert-danger\">" . $ret_val . "</div>\n";
         }
     }
 }
@@ -83,7 +83,7 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
     echo "      <input type=\"hidden\" name=\"rid\" value=\"" . $record_id . "\">\n";
     echo "      <input type=\"hidden\" name=\"zid\" value=\"" . $zone_templ_id . "\">\n";
     echo "      <tr>\n";
-    echo "       <td><input type=\"text\" name=\"name\" value=\"" . htmlspecialchars($record["name"]) . "\" class=\"input\"></td>\n";
+    echo "       <td><input type=\"text\" name=\"name\" value=\"" . htmlspecialchars($record["name"]) . "\"></td>\n";
     echo "       <td>IN</td>\n";
     echo "       <td>\n";
     echo "        <select name=\"type\">\n";
@@ -101,14 +101,14 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
         echo "         <option SELECTED value=\"" . htmlspecialchars($record['type']) . "\"><i>" . $record['type'] . "</i></option>\n";
     echo "        </select>\n";
     echo "       </td>\n";
-    echo "       <td><input type=\"text\" name=\"content\" value=\"" . htmlspecialchars($record['content']) . "\" class=\"input\"></td>\n";
-    echo "       <td><input type=\"text\" name=\"prio\" value=\"" . htmlspecialchars($record["prio"]) . "\" class=\"sinput\"></td>\n";
-    echo "       <td><input type=\"text\" name=\"ttl\" value=\"" . htmlspecialchars($record["ttl"]) . "\" class=\"sinput\"></td>\n";
+    echo "       <td><input type=\"text\" name=\"content\" value=\"" . htmlspecialchars($record['content']) . "\"></td>\n";
+    echo "       <td><input type=\"text\" name=\"prio\" value=\"" . htmlspecialchars($record["prio"]) . "\"></td>\n";
+    echo "       <td><input type=\"text\" name=\"ttl\" value=\"" . htmlspecialchars($record["ttl"]) . "\"></td>\n";
     echo "      </tr>\n";
     echo "      </table>\n";
     echo "      <p>\n";
-    echo "       <input type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\" class=\"button\">&nbsp;&nbsp;\n";
-    echo "       <input type=\"reset\" name=\"reset\" value=\"" . _('Reset changes') . "\" class=\"button\">&nbsp;&nbsp;\n";
+    echo "       <input type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\">&nbsp;&nbsp;\n";
+    echo "       <input type=\"reset\" name=\"reset\" value=\"" . _('Reset changes') . "\">&nbsp;&nbsp;\n";
     echo "      </p>\n";
     echo "     </form>\n";
 }

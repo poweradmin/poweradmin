@@ -145,25 +145,25 @@ function show_letters($letterstart, $userid) {
     echo _('Show zones beginning with') . ":<br>";
 
     if ($letterstart == "1") {
-        echo "<span class=\"lettertaken\">[ 0-9 ]</span> ";
+        echo "<span class=\"text-mutted\">[ 0-9 ]</span> ";
     } elseif ($digits_available) {
         echo "<a href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=1\">[ 0-9 ]</a> ";
     } else {
-        echo "[ <span class=\"letternotavailable\">0-9</span> ] ";
+        echo "[ <span class=\"text-muted\">0-9</span> ] ";
     }
 
     foreach ($char_range as $letter) {
         if ($letter == $letterstart) {
-            echo "<span class=\"lettertaken\">[ " . $letter . " ]</span> ";
+            echo "<span class=\"text-muted\">[ " . $letter . " ]</span> ";
         } elseif (in_array($letter, $available_chars)) {
             echo "<a href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=" . $letter . "\">[ " . $letter . " ]</a> ";
         } else {
-            echo "[ <span class=\"letternotavailable\">" . $letter . "</span> ] ";
+            echo "[ <span class=\"text-muted\">" . $letter . "</span> ] ";
         }
     }
 
     if ($letterstart == 'all') {
-        echo "<span class=\"lettertaken\">[ Show all ]</span>";
+        echo "<span class=\"text-muted\">[ Show all ]</span>";
     } else {
         echo "<a href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=all\">[ Show all ]</a> ";
     }

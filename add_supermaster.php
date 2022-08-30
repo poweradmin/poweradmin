@@ -66,9 +66,9 @@ echo "       <tr>\n";
 echo "        <td class=\"n\" width=\"200\">" . _('IP address of supermaster') . "</td>\n";
 echo "        <td class=\"n\">\n";
 if ($error) {
-    echo "         <input type=\"text\" class=\"input\" name=\"master_ip\" value=\"" . $master_ip . "\">\n";
+    echo "         <input type=\"text\" name=\"master_ip\" value=\"" . $master_ip . "\">\n";
 } else {
-    echo "         <input type=\"text\" class=\"input\" name=\"master_ip\" value=\"\">\n";
+    echo "         <input type=\"text\" name=\"master_ip\" value=\"\">\n";
 }
 echo "        </td>\n";
 echo "       </tr>\n";
@@ -76,9 +76,9 @@ echo "       <tr>\n";
 echo "        <td class=\"n\">" . _('Hostname in NS record') . "</td>\n";
 echo "        <td class=\"n\">\n";
 if ($error) {
-    echo "         <input type=\"text\" class=\"input\" name=\"ns_name\" value=\"" . $ns_name . "\">\n";
+    echo "         <input type=\"text\" name=\"ns_name\" value=\"" . $ns_name . "\">\n";
 } else {
-    echo "         <input type=\"text\" class=\"input\" name=\"ns_name\" value=\"\">\n";
+    echo "         <input type=\"text\" name=\"ns_name\" value=\"\">\n";
 }
 echo "        </td>\n";
 echo "       </tr>\n";
@@ -107,7 +107,7 @@ echo "       </tr>\n";
 echo "       <tr>\n";
 echo "        <td class=\"n\">&nbsp;</td>\n";
 echo "        <td class=\"n\">\n";
-echo "         <input type=\"submit\" class=\"button\" name=\"submit\" value=\"" . _('Add supermaster') . "\">\n";
+echo "         <input type=\"submit\" name=\"submit\" value=\"" . _('Add supermaster') . "\">\n";
 echo "        </td>\n";
 echo "       </tr>\n";
 echo "      </table>\n";

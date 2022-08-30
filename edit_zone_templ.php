@@ -119,7 +119,7 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
         $templ_details = ZoneTemplate::get_zone_templ_details($zone_templ_id);
         echo "   <h2>" . _('Edit zone template') . " \"" . $templ_details['name'] . "\"</h2>\n";
 
-        echo "   <div class=\"showmax\">\n";
+        echo "   <div>\n";
         show_pages($record_count, $iface_rowamount, $zone_templ_id);
         echo "   </div>\n";
 
@@ -146,7 +146,7 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
                 echo "      <a href=\"delete_zone_templ_record.php?id=" . $r['id'] . "&amp;zone_templ_id=" . $zone_templ_id . "\">
 						<img src=\"images/delete.gif\" ALT=\"[ " . _('Delete record') . " ]\" BORDER=\"0\"></a>\n";
                 echo "     </td>\n";
-                echo "      <td class=\"u\"><input class=\"wide\" name=\"record[" . $r['id'] . "][name]\" value=\"" . $r['name'] . "\"></td>\n";
+                echo "      <td class=\"u\"><input name=\"record[" . $r['id'] . "][name]\" value=\"" . $r['name'] . "\"></td>\n";
                 echo "      <td class=\"u\">\n";
                 echo "       <select name=\"record[" . $r['id'] . "][type]\">\n";
                 $found_selected_type = false;
@@ -164,7 +164,7 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
                 }
                 echo "       </select>\n";
                 echo "      </td>\n";
-                echo "      <td class=\"u\"><input class=\"wide\" name=\"record[" . $r['id'] . "][content]\" value='" . $r['content'] . "'></td>\n";
+                echo "      <td class=\"u\"><input name=\"record[" . $r['id'] . "][content]\" value='" . $r['content'] . "'></td>\n";
                 if ($r['type'] == "MX" || $r['type'] == "SRV") {
                     echo "      <td class=\"u\"><input name=\"record[" . $r['id'] . "][prio]\" value=\"" . $r['prio'] . "\"></td>\n";
                 } else {
@@ -201,17 +201,17 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
             echo "     </tr>\n";
             echo "      <tr>\n";
             echo "       <th>" . _('Template Name') . "</th>\n";
-            echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_name\" value=\"\"></td>\n";
+            echo "       <td><input type=\"text\" name=\"templ_name\" value=\"\"></td>\n";
             echo "      </tr>\n";
             echo "      <tr>\n";
             echo "       <th>" . _('Template Description') . "</th>\n";
-            echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_descr\" value=\"\"></td>\n";
+            echo "       <td><input type=\"text\" name=\"templ_descr\" value=\"\"></td>\n";
             echo "      </tr>\n";
             echo "    </table>\n";
-            echo "     <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
-            echo "     <input type=\"reset\" class=\"button\" name=\"reset\" value=\"" . _('Reset changes') . "\">\n";
-            echo "     <input type=\"submit\" class=\"button\" name=\"save_as\" value=\"" . _('Save as template') . "\">\n";
-            echo "     <input type=\"submit\" class=\"button\" name=\"update_zones\" value=\"" . _('Update zones') . "\">\n";
+            echo "     <input type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
+            echo "     <input type=\"reset\" name=\"reset\" value=\"" . _('Reset changes') . "\">\n";
+            echo "     <input type=\"submit\" name=\"save_as\" value=\"" . _('Save as template') . "\">\n";
+            echo "     <input type=\"submit\" name=\"update_zones\" value=\"" . _('Update zones') . "\">\n";
             echo "    </form>";
         }
 
@@ -219,17 +219,17 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
         echo "     <table>\n";
         echo "      <tr>\n";
         echo "       <td width=\"150\">" . _('Name') . "</td>\n";
-        echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_name\" value=\"" . $templ_details['name'] . "\"></td>\n";
+        echo "       <td><input type=\"text\" name=\"templ_name\" value=\"" . $templ_details['name'] . "\"></td>\n";
         echo "      </tr>\n";
         echo "      <tr>\n";
         echo "       <td>" . _('Description') . "</td>\n";
-        echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_descr\" value=\"" . $templ_details['descr'] . "\"></td>\n";
+        echo "       <td><input type=\"text\" name=\"templ_descr\" value=\"" . $templ_details['descr'] . "\"></td>\n";
         echo "      </tr>\n";
         echo "     </table>\n";
-        echo "     <input type=\"submit\" class=\"button\" name=\"edit\" value=\"" . _('Commit changes') . "\">\n";
+        echo "     <input type=\"submit\" name=\"edit\" value=\"" . _('Commit changes') . "\">\n";
         echo "     </form>\n";
-        echo "    <input type=\"button\" class=\"button\" OnClick=\"location.href='add_zone_templ_record.php?id=" . $zone_templ_id . "'\" value=\"" . _('Add record') . "\">&nbsp;&nbsp\n";
-        echo "    <input type=\"button\" class=\"button\" OnClick=\"location.href='delete_zone_templ.php?id=" . $zone_templ_id . "'\" value=\"" . _('Delete zone template') . "\">\n";
+        echo "    <input type=\"button\" onClick=\"location.href='add_zone_templ_record.php?id=" . $zone_templ_id . "'\" value=\"" . _('Add record') . "\">&nbsp;&nbsp\n";
+        echo "    <input type=\"button\" onClick=\"location.href='delete_zone_templ.php?id=" . $zone_templ_id . "'\" value=\"" . _('Delete zone template') . "\">\n";
     }
 }
 

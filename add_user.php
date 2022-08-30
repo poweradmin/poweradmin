@@ -80,19 +80,19 @@ echo "     <form method=\"post\" action=\"add_user.php\">\n";
 echo "      <table>\n";
 echo "       <tr>\n";
 echo "        <td class=\"n\" width=\"150\">" . _('Username') . "</td>\n";
-echo "        <td class=\"n\"><input type=\"text\" class=\"input\" name=\"username\" value=\"" . $username . "\"></td>\n";
+echo "        <td class=\"n\"><input type=\"text\" name=\"username\" value=\"" . $username . "\"></td>\n";
 echo "       </tr>\n";
 echo "       <tr>\n";
 echo "        <td class=\"n\">" . _('Fullname') . "</td>\n";
-echo "        <td class=\"n\"><input type=\"text\" class=\"input\" name=\"fullname\" value=\"" . $fullname . "\"></td>\n";
+echo "        <td class=\"n\"><input type=\"text\" name=\"fullname\" value=\"" . $fullname . "\"></td>\n";
 echo "       </tr>\n";
 echo "       <tr>\n";
 echo "        <td class=\"n\">" . _('Password') . "</td>\n";
-echo "        <td class=\"n\"><input id=\"password\" type=\"password\" class=\"input\" name=\"password\" value=\"" . $password . "\"></td>\n";
+echo "        <td class=\"n\"><input id=\"password\" name=\"password\" value=\"" . $password . "\"></td>\n";
 echo "       </tr>\n";
 echo "       <tr>\n";
 echo "        <td class=\"n\">" . _('Email address') . "</td>\n";
-echo "        <td class=\"n\"><input type=\"text\" class=\"input\" name=\"email\" value=\"" . $email . "\"></td>\n";
+echo "        <td class=\"n\"><input type=\"text\" name=\"email\" value=\"" . $email . "\"></td>\n";
 echo "       </tr>\n";
 if (do_hook('verify_permission', 'user_edit_templ_perm')) {
     echo "       <tr>\n";
@@ -113,17 +113,17 @@ echo "        <td class=\"n\"><textarea rows=\"4\" cols=\"30\" class=\"inputarea
 echo "       </tr>\n";
 echo "       <tr>\n";
 echo "        <td class=\"n\">" . _('Enabled') . "</td>\n";
-echo "        <td class=\"n\"><input type=\"checkbox\" class=\"input\" name=\"active\" value=\"1\"" . $active_checked . "></td>\n";
+echo "        <td class=\"n\"><input type=\"checkbox\" name=\"active\" value=\"1\"" . $active_checked . "></td>\n";
 echo "       </tr>\n";
 if ($ldap_use) {
     echo "       <tr>\n";
     echo "        <td class=\"n\">" . _('LDAP Authentication') . "</td>\n";
-    echo "        <td class=\"n\"><input id=\"ldap\" type=\"checkbox\" class=\"input\" name=\"use_ldap\" value=\"1\" onclick=\"disablePasswordField()\" " . $use_ldap_checked . "></td>\n";
+    echo "        <td class=\"n\"><input id=\"ldap\" type=\"checkbox\" name=\"use_ldap\" value=\"1\" onclick=\"disablePasswordField()\" " . $use_ldap_checked . "></td>\n";
     echo "       </tr>\n";
 }
 echo "       <tr>\n";
 echo "        <td class=\"n\">&nbsp;</td>\n";
-echo "        <td class=\"n\"><input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Commit changes') . "\"></td>\n";
+echo "        <td class=\"n\"><input type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\"></td>\n";
 echo "      </table>\n";
 echo "     </form>\n";
 

@@ -12,8 +12,8 @@
                 <a href="edit_perm_templ.php?id={{ template['id'] }}"><img src="images/edit.gif" alt="{% trans 'Edit template' %}"></a>
                 <a href="delete_perm_templ.php?id={{ template['id'] }}"><img src="images/delete.gif" alt="{% trans 'Delete template' %}"></a>
             </td>
-            <td class="y">{{ template['name'] }}</td>
-            <td class="y">{{ template['descr'] }}</td>
+            <td>{{ template['name'] }}</td>
+            <td>{{ template['descr'] }}</td>
         </tr>
     {% endfor %}
 </table>

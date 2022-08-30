@@ -3,8 +3,8 @@
 <form method="post" action="bulk_registration.php">
     <table>
         <tr>
-            <td class="n" width="100">{% trans 'Owner' %}:</td>
-            <td class="n">
+            <td>{% trans 'Owner' %}:</td>
+            <td>
                 <select name="owner">
                     {% for user in users %}
                     {% if user['id'] == userid %}
@@ -17,8 +17,8 @@
             </td>
         </tr>
         <tr>
-            <td class="n">{% trans 'Type' %}:</td>
-            <td class="n">
+            <td>{% trans 'Type' %}:</td>
+            <td>
                 <select name="dom_type">
                     {% for type in available_zone_types %}
                     {% if type == iface_zone_type_default %}
@@ -32,8 +32,8 @@
             </td>
         </tr>
         <tr>
-            <td class="n">{% trans 'Template' %}:</td>
-            <td class="n">
+            <td>{% trans 'Template' %}:</td>
+            <td>
                 <select name="zone_template">
                     <option value="none">none</option>
                     {% for zone_template in zone_templates %}
@@ -44,8 +44,8 @@
         </tr>
 
         <tr>
-            <td class="n">{% trans 'Zones' %}:</td>
-            <td class="n">
+            <td>{% trans 'Zones' %}:</td>
+            <td>
                 <ul id="domain_names" style="list-style-type:none; padding:0 ">
                     <li>{% trans 'Type one domain per line' %}:</li>
                     <li>
@@ -56,8 +56,8 @@
         </tr>
 
         <tr>
-            <td class="n">&nbsp;</td>
-            <td class="n">
+            <td>&nbsp;</td>
+            <td>
                 <input type="submit" class="button" name="submit" value="{% trans 'Add zones' %}">
             </td>
         </tr>

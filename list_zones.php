@@ -102,20 +102,20 @@ if ($perm_view == "none") {
     echo "     <p>" . _('You do not have the permission to see any zones.') . "</p>\n";
 } elseif (($count_zones_view > $iface_rowamount && $count_zones_all_letterstart == "0") || $count_zones_view == 0) {
     if ($count_zones_view > $iface_rowamount) {
-        echo "<div class=\"showmax\">";
+        echo "<div>";
         show_letters(LETTERSTART, $_SESSION["userid"]);
         echo "</div>";
     }
     echo "     <p>" . _('There are no zones to show in this listing.') . "</p>\n";
 } else {
     if (LETTERSTART != 'all') {
-        echo "     <div class=\"showmax\">\n";
+        echo "     <div>\n";
         show_pages($count_zones_all_letterstart, $iface_rowamount);
         echo "     </div>\n";
     }
 
     if ($count_zones_view > $iface_rowamount) {
-        echo "<div class=\"showmax\">";
+        echo "<div>";
         show_letters(LETTERSTART, $_SESSION["userid"]);
         echo "</div>";
     }
@@ -158,15 +158,15 @@ if ($perm_view == "none") {
             $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone["id"]);
         }
         echo "         <tr>\n";
-        echo "          <td class=\"checkbox\">\n";
+        echo "          <td>\n";
         if ($count_zones_edit > 0 && ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1"))) {
             echo "       <input type=\"checkbox\" name=\"zone_id[]\" value=\"" . $zone['id'] . "\">";
         }
         echo "          </td>\n";
-        echo "          <td class=\"name\">" . idn_to_utf8($zone["name"], IDNA_NONTRANSITIONAL_TO_ASCII) . "</td>\n";
-        echo "          <td class=\"type\">" . strtolower($zone["type"]) . "</td>\n";
-        echo "          <td class=\"count\">" . $zone["count_records"] . "</td>\n";
-        echo "          <td class=\"owner\">" . $zone["owner"] . "</td>\n";
+        echo "          <td>" . idn_to_utf8($zone["name"], IDNA_NONTRANSITIONAL_TO_ASCII) . "</td>\n";
+        echo "          <td>" . strtolower($zone["type"]) . "</td>\n";
+        echo "          <td>" . $zone["count_records"] . "</td>\n";
+        echo "          <td>" . $zone["owner"] . "</td>\n";
 
         if ($iface_zonelist_serial) {
             $serial = DnsRecord::get_serial_by_zid($zone['id']);

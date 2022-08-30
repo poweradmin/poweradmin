@@ -28,8 +28,8 @@
  */
 function success($msg) {
     if ($msg) {
-        echo "     <div class=\"success\">" . $msg . "</div>\n";
+        echo "     <div class=\"alert alert-success\">" . $msg . "</div>\n";
     } else {
-        echo "     <div class=\"success\">" . _('Something has been successfully performed. What exactly, however, will remain a mystery.') . "</div>\n";
+        echo "     <div class=\"alert alert-success\">" . _('Something has been successfully performed. What exactly, however, will remain a mystery.') . "</div>\n";
     }
 }

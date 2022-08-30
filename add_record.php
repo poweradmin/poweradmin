@@ -164,7 +164,7 @@ echo "        <td class=\"n\">" . _('Priority') . "</td>\n";
 echo "        <td class=\"n\">" . _('TTL') . "</td>\n";
 echo "       </tr>\n";
 echo "       <tr>\n";
-echo "        <td class=\"n\"><input type=\"text\" name=\"name\" class=\"input\" value=\"" . htmlspecialchars($name) . "\">." . $zone_name . "</td>\n";
+echo "        <td class=\"n\"><input type=\"text\" name=\"name\" value=\"" . htmlspecialchars($name) . "\">." . $zone_name . "</td>\n";
 echo "        <td class=\"n\">IN</td>\n";
 echo "        <td class=\"n\">\n";
 echo "         <select name=\"type\">\n";
@@ -195,13 +195,13 @@ if (!$found_selected_type) {
 }
 echo "         </select>\n";
 echo "        </td>\n";
-echo "        <td class=\"n\"><input type=\"text\" name=\"content\" class=\"input\" value=\"" . htmlspecialchars($content) . "\"></td>\n";
-echo "        <td class=\"n\"><input type=\"text\" name=\"prio\" class=\"sinput\" value=\"" . htmlspecialchars($prio) . "\"></td>\n";
-echo "        <td class=\"n\"><input type=\"text\" name=\"ttl\" class=\"sinput\" value=\"" . htmlspecialchars($ttl) . "\"</td>\n";
+echo "        <td class=\"n\"><input type=\"text\" name=\"content\" value=\"" . htmlspecialchars($content) . "\"></td>\n";
+echo "        <td class=\"n\"><input type=\"text\" name=\"prio\" value=\"" . htmlspecialchars($prio) . "\"></td>\n";
+echo "        <td class=\"n\"><input type=\"text\" name=\"ttl\" value=\"" . htmlspecialchars($ttl) . "\"</td>\n";
 echo "       </tr>\n";
 echo "      </table>\n";
 echo "      <br>\n";
-echo "      <input type=\"submit\" name=\"commit\" value=\"" . _('Add record') . "\" class=\"button\">\n";
+echo "      <input type=\"submit\" name=\"commit\" value=\"" . _('Add record') . "\">\n";
 if (isset($rev)) {
     echo "      $rev";
 }

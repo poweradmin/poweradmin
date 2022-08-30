@@ -148,7 +148,7 @@ echo "       </tr>\n";
 echo "       <tr>\n";
 echo "        <td class=\"n\">&nbsp;</td>\n";
 echo "        <td class=\"n\">\n";
-echo "         <input type=\"submit\" class=\"button\" name=\"submit\" value=\"" . _('Add key') . "\">\n";
+echo "         <input type=\"submit\" name=\"submit\" value=\"" . _('Add key') . "\">\n";
 echo "        </td>\n";
 echo "       </tr>\n";
 echo "      </table>\n";

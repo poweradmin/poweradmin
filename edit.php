@@ -239,7 +239,7 @@ if (preg_match("/^xn--/", $zone_name_to_display)) {
     echo "   <h2>" . _('Edit zone') . " \"" . $zone_name_to_display ."\"</h2>\n";
 }
 
-echo "   <div class=\"showmax\">\n";
+echo "   <div>\n";
 show_pages($record_count, $iface_rowamount, $zone_id);
 echo "   </div>\n";
 
@@ -287,7 +287,7 @@ if ($records == "-1") {
             echo "     <td class=\"n\">&nbsp;</td>\n";
             echo "     <td class=\"n\">" . $r['ttl'] . "</td>\n";
         } else {
-            echo "      <td class=\"u\"><input class=\"wide\" name=\"record[" . $r['id'] . "][name]\" value=\"" . htmlspecialchars($r['name']) . "\"></td>\n";
+            echo "      <td class=\"u\"><input name=\"record[" . $r['id'] . "][name]\" value=\"" . htmlspecialchars($r['name']) . "\"></td>\n";
             echo "      <td class=\"u\">\n";
             echo "       <select name=\"record[" . $r['id'] . "][type]\">\n";
             $found_selected_type = false;
@@ -305,7 +305,7 @@ if ($records == "-1") {
 
             echo "       </select>\n";
             echo "      </td>\n";
-            echo "      <td class=\"u\"><input class=\"wide\" name=\"record[" . $r['id'] . "][content]\" value=\"" . htmlspecialchars($r['content']) . "\"></td>\n";
+            echo "      <td class=\"u\"><input name=\"record[" . $r['id'] . "][content]\" value=\"" . htmlspecialchars($r['content']) . "\"></td>\n";
             echo "      <td class=\"u\"><input size=\"4\" id=\"priority_field_" . $r['id'] . "\" name=\"record[" . $r['id'] . "][prio]\" value=\"" . htmlspecialchars($r['prio']) . "\"></td>\n";
             echo "      <td class=\"u\"><input size=\"4\" name=\"record[" . $r['id'] . "][ttl]\" value=\"" . htmlspecialchars($r['ttl']) . "\"></td>\n";
         }
@@ -333,25 +333,25 @@ if ($records == "-1") {
     echo "     </tr>\n";
     echo "     <tr>\n";
     echo "       <td colspan=\"2\">" . _('Template Name') . "</td>\n";
-    echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_name\" value=\"\"></td>\n";
+    echo "       <td><input type=\"text\" name=\"templ_name\" value=\"\"></td>\n";
     echo "      </tr>\n";
     echo "      <tr>\n";
     echo "       <td colspan=\"2\">" . _('Template Description') . "</td>\n";
-    echo "       <td><input class=\"wide\" type=\"text\" name=\"templ_descr\" value=\"\"></td>\n";
+    echo "       <td><input type=\"text\" name=\"templ_descr\" value=\"\"></td>\n";
     echo "      </tr>\n";
     echo "    </table>\n";
-    echo "     <input type=\"submit\" class=\"button\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
-    echo "     <input type=\"reset\" class=\"button\" name=\"reset\" value=\"" . _('Reset changes') . "\">\n";
-    echo "     <input type=\"submit\" class=\"button\" name=\"save_as\" value=\"" . _('Save as template') . "\">\n";
+    echo "     <input type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
+    echo "     <input type=\"reset\" name=\"reset\" value=\"" . _('Reset changes') . "\">\n";
+    echo "     <input type=\"submit\" name=\"save_as\" value=\"" . _('Save as template') . "\">\n";
 
     if ($pdnssec_use) {
         $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
 
         if (Dnssec::dnssec_is_zone_secured($zone_name)) {
-            echo "     <input type=\"button\" class=\"button\" name=\"dnssec\" onclick=\"location.href = 'dnssec.php?id=".$zone_id."';\" value=\"" . _('DNSSEC') . "\">\n";
-            echo "     <input type=\"submit\" class=\"button\" name=\"unsign_zone\" value=\"" . _('Unsign this zone') . "\">\n";
+            echo "     <input type=\"button\" name=\"dnssec\" onclick=\"location.href = 'dnssec.php?id=".$zone_id."';\" value=\"" . _('DNSSEC') . "\">\n";
+            echo "     <input type=\"submit\" name=\"unsign_zone\" value=\"" . _('Unsign this zone') . "\">\n";
         } else {
-            echo "     <input type=\"submit\" class=\"button\" name=\"sign_zone\" value=\"" . _('Sign this zone') . "\">\n";
+            echo "     <input type=\"submit\" name=\"sign_zone\" value=\"" . _('Sign this zone') . "\">\n";
         }
     }
 
@@ -373,7 +373,7 @@ if ($perm_content_edit == "all" || ($perm_content_edit == "own" || $perm_content
         echo "        <td class=\"n\">" . _('TTL') . "</td>\n";
         echo "       </tr>\n";
         echo "       <tr>\n";
-        echo "        <td class=\"n\"><input type=\"text\" name=\"name\" class=\"input\" value=\"\">." . $zone_name . "</td>\n";
+        echo "        <td class=\"n\"><input type=\"text\" name=\"name\" value=\"\">." . $zone_name . "</td>\n";
         echo "        <td class=\"n\">IN</td>\n";
         echo "        <td class=\"n\">\n";
         echo "         <select name=\"type\">\n";
@@ -404,12 +404,12 @@ if ($perm_content_edit == "all" || ($perm_content_edit == "own" || $perm_content
         }
         echo "         </select>\n";
         echo "        </td>\n";
-        echo "        <td class=\"n\"><input type=\"text\" name=\"content\" class=\"input\" value=\"\"></td>\n";
-        echo "        <td class=\"n\"><input type=\"text\" name=\"prio\" class=\"sinput\" value=\"\"></td>\n";
-        echo "        <td class=\"n\"><input type=\"text\" name=\"ttl\" class=\"sinput\" value=\"\"></td>\n";
+        echo "        <td class=\"n\"><input type=\"text\" name=\"content\" value=\"\"></td>\n";
+        echo "        <td class=\"n\"><input type=\"text\" name=\"prio\" value=\"\"></td>\n";
+        echo "        <td class=\"n\"><input type=\"text\" name=\"ttl\" value=\"\"></td>\n";
         echo "       </tr>\n";
         echo "      </table>\n";
-        echo "      <input type=\"submit\" name=\"commit\" value=\"" . _('Add record') . "\" class=\"button\">\n";
+        echo "      <input type=\"submit\" name=\"commit\" value=\"" . _('Add record') . "\">\n";
         echo "      $rev";
         echo "     </form>\n";
     }
@@ -433,7 +433,7 @@ if ($owners == "-1") {
             echo "        <td>" . $owner["fullname"] . "</td>\n";
             echo "        <td>\n";
             echo "         <input type=\"hidden\" name=\"delete_owner\" value=\"" . $owner["id"] . "\">\n";
-            echo "         <input type=\"submit\" class=\"sbutton\" name=\"co\" value=\"" . _('Delete') . "\">\n";
+            echo "         <input type=\"submit\" name=\"co\" value=\"" . _('Delete') . "\">\n";
             echo "        </td>\n";
             echo "        </form>\n";
             echo "       </tr>\n";
@@ -465,7 +465,7 @@ if ($meta_edit) {
     echo "         </select>\n";
     echo "        </td>\n";
     echo "        <td>\n";
-    echo "         <input type=\"submit\" class=\"sbutton\" name=\"co\" value=\"" . _('Add') . "\">\n";
+    echo "         <input type=\"submit\" name=\"co\" value=\"" . _('Add') . "\">\n";
     echo "        </td>\n";
     echo "       </tr>\n";
     echo "      </form>\n";
@@ -494,7 +494,7 @@ if ($meta_edit) {
     echo "         </select>\n";
     echo "        </td>\n";
     echo "        <td>\n";
-    echo "         <input type=\"submit\" class=\"sbutton\" name=\"type_change\" value=\"" . _('Change') . "\">\n";
+    echo "         <input type=\"submit\" name=\"type_change\" value=\"" . _('Change') . "\">\n";
     echo "        </td>\n";
     echo "       </tr>\n";
     echo "      </form>\n";
@@ -523,7 +523,7 @@ if ($meta_edit) {
     echo "         </select>\n";
     echo "        </td>\n";
     echo "        <td>\n";
-    echo "         <input type=\"submit\" class=\"sbutton\" name=\"template_change\" value=\"" . _('Change') . "\">\n";
+    echo "         <input type=\"submit\" name=\"template_change\" value=\"" . _('Change') . "\">\n";
     echo "        </td>\n";
     echo "       </tr>\n";
     echo "      </form>\n";
@@ -543,10 +543,10 @@ if ($domain_type == "SLAVE") {
         echo "       <input type=\"hidden\" name=\"domain\" value=\"" . $zone_id . "\">\n";
         echo "       <tr>\n";
         echo "        <td>\n";
-        echo "         <input type=\"text\" name=\"new_master\" value=\"" . $slave_master . "\" class=\"input\">\n";
+        echo "         <input type=\"text\" name=\"new_master\" value=\"" . $slave_master . "\">\n";
         echo "        </td>\n";
         echo "        <td>\n";
-        echo "         <input type=\"submit\" class=\"sbutton\" name=\"slave_master_change\" value=\"" . _('Change') . "\">\n";
+        echo "         <input type=\"submit\" name=\"slave_master_change\" value=\"" . _('Change') . "\">\n";
         echo "        </td>\n";
         echo "       </tr>\n";
         echo "      </form>\n";
