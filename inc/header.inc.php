@@ -28,6 +28,7 @@
  * @copyright   2010-2022  Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
+
 use Poweradmin\AppFactory;
 
 global $iface_style;
@@ -45,11 +46,11 @@ $vars = [
     'install_error' => !$ignore_install_dir && file_exists('install') ? ERR_INSTALL_DIR_EXISTS : false,
 ];
 
-if (isset($_SESSION ["userid"])) {
+if (isset($_SESSION["userid"])) {
     $perm_is_godlike = do_hook('verify_permission', 'user_is_ueberuser');
 
     $vars = array_merge($vars, [
-        'user_logged_in' => isset($_SESSION ["userid"]),
+        'user_logged_in' => isset($_SESSION["userid"]),
         'perm_search' => do_hook('verify_permission', 'search'),
         'perm_view_zone_own' => do_hook('verify_permission', 'zone_content_view_own'),
         'perm_view_zone_other' => do_hook('verify_permission', 'zone_content_view_others'),
