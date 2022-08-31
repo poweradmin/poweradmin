@@ -113,25 +113,25 @@ if ($edit_id == "-1") {
         echo "      <input type=\"hidden\" name=\"number\" value=\"" . $edit_id . "\">\n";
         echo "      <table>\n";
         echo "       <tr>\n";
-        echo "        <td class=\"n\">" . _('Username') . "</td>\n";
-        echo "        <td class=\"n\"><input type=\"text\" name=\"username\" value=\"" . $user['username'] . "\"></td>\n";
+        echo "        <td>" . _('Username') . "</td>\n";
+        echo "        <td><input type=\"text\" name=\"username\" value=\"" . $user['username'] . "\"></td>\n";
         echo "       </tr>\n";
         echo "       <tr>\n";
-        echo "        <td class=\"n\">" . _('Fullname') . "</td>\n";
-        echo "        <td class=\"n\"><input type=\"text\" name=\"fullname\" value=\"" . $user['fullname'] . "\"></td>\n";
+        echo "        <td>" . _('Fullname') . "</td>\n";
+        echo "        <td><input type=\"text\" name=\"fullname\" value=\"" . $user['fullname'] . "\"></td>\n";
         echo "       </tr>\n";
         echo "       <tr>\n";
-        echo "        <td class=\"n\">" . _('Password') . "</td>\n";
-        echo "        <td class=\"n\"><input type=\"password\" name=\"password\"></td>\n";
+        echo "        <td>" . _('Password') . "</td>\n";
+        echo "        <td><input type=\"password\" name=\"password\"></td>\n";
         echo "       </tr>\n";
         echo "       <tr>\n";
-        echo "        <td class=\"n\">" . _('Email address') . "</td>\n";
-        echo "        <td class=\"n\"><input type=\"text\" name=\"email\" value=\"" . $user['email'] . "\"></td>\n";
+        echo "        <td>" . _('Email address') . "</td>\n";
+        echo "        <td><input type=\"text\" name=\"email\" value=\"" . $user['email'] . "\"></td>\n";
         echo "       </tr>\n";
         if (do_hook('verify_permission' , 'user_edit_templ_perm' )) {
             echo "       <tr>\n";
-            echo "        <td class=\"n\">" . _('Permission template') . "</td>\n";
-            echo "        <td class=\"n\">\n";
+            echo "        <td>" . _('Permission template') . "</td>\n";
+            echo "        <td>\n";
             echo "         <select name=\"perm_templ\">\n";
             foreach (do_hook('list_permission_templates' ) as $template) {
                 ($template['id'] == $user['tpl_id']) ? $select = " SELECTED" : $select = "";
@@ -142,16 +142,16 @@ if ($edit_id == "-1") {
         }
         echo "       </tr>\n";
         echo "       <tr>\n";
-        echo "        <td class=\"n\">" . _('Description') . "</td>\n";
-        echo "        <td class=\"n\"><textarea rows=\"4\" cols=\"30\" class=\"inputarea\" name=\"description\">" . $user['descr'] . "</textarea></td>\n";
+        echo "        <td>" . _('Description') . "</td>\n";
+        echo "        <td><textarea rows=\"4\" cols=\"30\" class=\"inputarea\" name=\"description\">" . $user['descr'] . "</textarea></td>\n";
         echo "       </tr>\n";
         echo "       <tr>\n";
-        echo "        <td class=\"n\">" . _('Enabled') . "</td>\n";
-        echo "        <td class=\"n\"><input type=\"checkbox\" name=\"active\" value=\"1\"" . $check . "></td>\n";
+        echo "        <td>" . _('Enabled') . "</td>\n";
+        echo "        <td><input type=\"checkbox\" name=\"active\" value=\"1\"" . $check . "></td>\n";
         echo "       </tr>\n";
         echo "       <tr>\n";
-        echo "        <td class=\"n\">&nbsp;</td>\n";
-        echo "        <td class=\"n\"><input type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
+        echo "        <td>&nbsp;</td>\n";
+        echo "        <td><input type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
         echo "        <input type=\"reset\" name=\"reset\" value=\"" . _('Reset changes') . "\"></td>\n";
         echo "      </table>\n";
         echo "     </form>\n";

@@ -63,30 +63,30 @@ if (!$supermasters_add) {
 echo "     <form method=\"post\" action=\"add_supermaster.php\">\n";
 echo "      <table>\n";
 echo "       <tr>\n";
-echo "        <td class=\"n\" width=\"200\">" . _('IP address of supermaster') . "</td>\n";
-echo "        <td class=\"n\">\n";
+echo "        <td>" . _('IP address of supermaster') . "</td>\n";
+echo "        <td>\n";
 if ($error) {
     echo "         <input type=\"text\" name=\"master_ip\" value=\"" . $master_ip . "\">\n";
 } else {
-    echo "         <input type=\"text\" name=\"master_ip\" value=\"\">\n";
+    echo "         <input class=\"form-control\" type=\"text\" name=\"master_ip\" value=\"\">\n";
 }
 echo "        </td>\n";
 echo "       </tr>\n";
 echo "       <tr>\n";
-echo "        <td class=\"n\">" . _('Hostname in NS record') . "</td>\n";
-echo "        <td class=\"n\">\n";
+echo "        <td>" . _('Hostname in NS record') . "</td>\n";
+echo "        <td>\n";
 if ($error) {
     echo "         <input type=\"text\" name=\"ns_name\" value=\"" . $ns_name . "\">\n";
 } else {
-    echo "         <input type=\"text\" name=\"ns_name\" value=\"\">\n";
+    echo "         <input class=\"form-control\" type=\"text\" name=\"ns_name\" value=\"\">\n";
 }
 echo "        </td>\n";
 echo "       </tr>\n";
 echo "       <tr>\n";
-echo "        <td class=\"n\">" . _('Account') . "</td>\n";
-echo "        <td class=\"n\">\n";
+echo "        <td>" . _('Account') . "</td>\n";
+echo "        <td>\n";
 
-echo "         <select name=\"account\">\n";
+echo "         <select class=\"form-select\" name=\"account\">\n";
 /*
   Display list of users to assign slave zone to if the
   editing user has the permissions to, otherwise just
@@ -105,9 +105,9 @@ echo "         </select>\n";
 echo "        </td>\n";
 echo "       </tr>\n";
 echo "       <tr>\n";
-echo "        <td class=\"n\">&nbsp;</td>\n";
-echo "        <td class=\"n\">\n";
-echo "         <input type=\"submit\" name=\"submit\" value=\"" . _('Add supermaster') . "\">\n";
+echo "        <td>&nbsp;</td>\n";
+echo "        <td>\n";
+echo "         <input class=\"btn btn-primary\" type=\"submit\" name=\"submit\" value=\"" . _('Add supermaster') . "\">\n";
 echo "        </td>\n";
 echo "       </tr>\n";
 echo "      </table>\n";

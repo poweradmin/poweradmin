@@ -139,7 +139,7 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
             echo "    </tr>\n";
             foreach ($records as $r) {
                 echo "    <tr>\n";
-                echo "     <td class=\"n\">\n";
+                echo "     <td>\n";
                 echo "    <input type=\"hidden\" name=\"record[" . $r['id'] . "][rid]\" value=\"" . $r['id'] . "\">\n";
                 echo "      <a class=\"btn btn-outline-primary btn-sm\" href=\"edit_zone_templ_record.php?id=" . $r['id'] . "&amp;zone_templ_id=" . $zone_templ_id . "\">
 						<i class=\"bi bi-pencil-square\"></i>" . _('Edit record') . "</a>\n";
@@ -168,7 +168,7 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
                 if ($r['type'] == "MX" || $r['type'] == "SRV") {
                     echo "      <td class=\"u\"><input name=\"record[" . $r['id'] . "][prio]\" value=\"" . $r['prio'] . "\"></td>\n";
                 } else {
-                    echo "      <td class=\"n\">&nbsp;</td>\n";
+                    echo "      <td>&nbsp;</td>\n";
                 }
                 echo "      <td class=\"u\"><input name=\"record[" . $r['id'] . "][ttl]\" value=\"" . $r['ttl'] . "\"></td>\n";
                 echo "     </tr>\n";
@@ -218,7 +218,7 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
         echo "    <form method=\"post\" action=\"\">\n";
         echo "     <table>\n";
         echo "      <tr>\n";
-        echo "       <td width=\"150\">" . _('Name') . "</td>\n";
+        echo "       <td>" . _('Name') . "</td>\n";
         echo "       <td><input type=\"text\" name=\"templ_name\" value=\"" . $templ_details['name'] . "\"></td>\n";
         echo "      </tr>\n";
         echo "      <tr>\n";

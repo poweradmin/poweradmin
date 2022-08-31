@@ -5,7 +5,7 @@
         <tr>
             <td>{% trans 'Owner' %}:</td>
             <td>
-                <select name="owner">
+                <select class="form-select" name="owner">
                     {% for user in users %}
                     {% if user['id'] == userid %}
                     <option value="{{ user['id'] }}" selected>{{ user['fullname'] }}</option>
@@ -19,7 +19,7 @@
         <tr>
             <td>{% trans 'Type' %}:</td>
             <td>
-                <select name="dom_type">
+                <select class="form-select" name="dom_type">
                     {% for type in available_zone_types %}
                     {% if type == iface_zone_type_default %}
                     {% set selected = 'selected' %}
@@ -34,7 +34,7 @@
         <tr>
             <td>{% trans 'Template' %}:</td>
             <td>
-                <select name="zone_template">
+                <select class="form-select" name="zone_template">
                     <option value="none">none</option>
                     {% for zone_template in zone_templates %}
                     <option value="{{ zone_template['id'] }}">{{ zone_template['name'] }}</option>
