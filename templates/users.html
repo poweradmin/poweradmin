@@ -40,7 +40,7 @@
             <td><input class="form-control" type="text" name="user[{{ user['uid'] }}][email]" value="{{ user ['email'] }}"></td>
             <td>
                 {% if perm_templ_perm_edit %}
-                <select class="form-control" name="user[{{ user['uid'] }}][templ_id]">
+                <select class="form-select" name="user[{{ user['uid'] }}][templ_id]">
                     {% for template in perm_templates %}
                     {% if template['id'] == user['tpl_id'] %}
                     {% set selected = 'SELECTED' %}
