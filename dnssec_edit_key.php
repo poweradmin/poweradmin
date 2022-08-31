@@ -80,9 +80,9 @@ if (!Dnssec::dnssec_zone_key_exists($domain_name, $key_id)) {
 
 $key_info = Dnssec::dnssec_get_zone_key($domain_name, $key_id);
 if ($key_info[5]) {
-    echo "     <h4 class=\"mb-3\">" . _('Deactivate zone key') . "</h2>\n";
+    echo "     <h4 class=\"mb-3\">" . _('Deactivate zone key') . "</h4>\n";
 } else {
-    echo "     <h4 class=\"mb-3\">" . _('Activate zone key') . "</h2>\n";
+    echo "     <h4 class=\"mb-3\">" . _('Activate zone key') . "</h4>\n";
 }
 
 if ($confirm == '1') {

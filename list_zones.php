@@ -95,7 +95,7 @@ if (!in_array(ZONE_SORT_BY, array('name', 'type', 'count_records', 'owner'))) {
     $zone_sort_by = 'name';
 }
 
-echo "    <h4 class=\"mb-3\">" . _('List zones') . "</h2>\n";
+echo "    <h4 class=\"mb-3\">" . _('List zones') . "</h4>\n";
 echo "    <div class=\"text-secondary\">" . _('Total number of zones:') . " " . $count_zones_all . "</div>\n";
 
 if ($perm_view == "none") {

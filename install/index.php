@@ -68,7 +68,7 @@ $twig->addExtension(new I18nExtension());
 
 // Display header
 $current_step = isset($_POST['step']) && is_numeric($_POST['step']) ? $_POST['step'] : 1;
-echo $twig->render('header.html', array('current_step' => $current_step));
+echo $twig->render('header.html', array('current_step' => $current_step, 'file_version' => time()));
 
 switch ($current_step) {
 

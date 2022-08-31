@@ -56,7 +56,7 @@ if (!$zones) {
     exit;
 }
 
-echo "     <h4 class=\"mb-3\">" . _('Delete zones') . "</h2>\n";
+echo "     <h4 class=\"mb-3\">" . _('Delete zones') . "</h4>\n";
 
 if ($confirm == '1') {
     //Fetch information about zones before deleting them

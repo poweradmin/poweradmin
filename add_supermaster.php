@@ -52,7 +52,7 @@ if (isset($_POST["submit"])) {
     }
 }
 
-echo "     <h4 class=\"mb-3\">" . _('Add supermaster') . "</h2>\n";
+echo "     <h4 class=\"mb-3\">" . _('Add supermaster') . "</h4>\n";
 
 if (!$supermasters_add) {
     echo "     <p>" . _("You do not have the permission to add a new supermaster.") . "</p>\n";

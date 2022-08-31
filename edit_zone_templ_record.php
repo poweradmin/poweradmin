@@ -64,7 +64,7 @@ if (isset($_POST["commit"])) {
 }
 
 $templ_details = ZoneTemplate::get_zone_templ_details($zone_templ_id);
-echo "    <h4 class=\"mb-3\">" . _('Edit record in zone template') . " \"" . $templ_details['name'] . "\"</h2>\n";
+echo "    <h4 class=\"mb-3\">" . _('Edit record in zone template') . " \"" . $templ_details['name'] . "\"</h4>\n";
 
 if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
     error(ERR_PERM_VIEW_RECORD);

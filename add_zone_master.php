@@ -102,7 +102,7 @@ if (!$zone_master_add) {
     exit;
 }
 
-echo "     <h4 class=\"mb-3\">" . _('Add master zone') . "</h2>\n";
+echo "     <h4 class=\"mb-3\">" . _('Add master zone') . "</h4>\n";
 
 $available_zone_types = array("MASTER", "NATIVE");
 $users = do_hook('show_users');
