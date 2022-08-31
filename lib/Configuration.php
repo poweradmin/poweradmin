@@ -35,7 +35,7 @@ class Configuration
 
     public function __construct()
     {
-        $default_config = $this->parseConfig('inc/config-me.inc.php');
+        $default_config = file_exists('inc/config-me.inc.php') ? $this->parseConfig('inc/config-me.inc.php') : [];
         $custom_config = array();
         if (file_exists('inc/config.inc.php')) {
             $custom_config = $this->parseConfig('inc/config.inc.php');

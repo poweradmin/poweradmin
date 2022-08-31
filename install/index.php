@@ -70,6 +70,12 @@ $twig->addExtension(new I18nExtension());
 $current_step = isset($_POST['step']) && is_numeric($_POST['step']) ? $_POST['step'] : 1;
 echo $twig->render('header.html', array('current_step' => $current_step, 'file_version' => time()));
 
+if (file_exists('../inc/config.inc.php')) {
+    echo "<p class='alert alert-danger'>". _('There is already a configuration file in place, so the installation will be skipped.') ."</p>";
+    echo $twig->render('footer.html');
+    exit;
+}
+
 switch ($current_step) {
 
     case 1:
@@ -85,7 +91,7 @@ switch ($current_step) {
         break;
 
     case 4:
-        echo "<p>" . _('Updating database...') . " ";
+        echo "<p class='alert alert-secondary'>" . _('Updating database...') . " ";
         include_once("../inc/config-me.inc.php");
         $db_user = $_POST['user'];
         $db_pass = $_POST['pass'];
@@ -275,6 +281,7 @@ switch ($current_step) {
         $configuration .= "\$dns_hostmaster = '$dns_hostmaster';".PHP_EOL;
         $configuration .= "\$dns_ns1 = '$dns_ns1';".PHP_EOL;
         $configuration .= "\$dns_ns2 = '$dns_ns2';".PHP_EOL;
+        $configuration .= "\$ignore_install_dir = true;".PHP_EOL;
 
         // Try to create configuration file
         $config_file_created = false;
@@ -316,4 +323,4 @@ switch ($current_step) {
         break;
 }
 
-echo $twig->render('footer.html', array('version' => Version::VERSION));
+echo $twig->render('footer.html');

@@ -1,35 +1,35 @@
 <p>{% trans 'Now we will gather all details for the configuration itself.' %}</p>
 <form method="post">
-    <table>
+    <table class="table">
         {% if db_type != 'sqlite' %}
         <tr>
             <td>{% trans 'Username' %}</td>
-            <td><input type="text" name="pa_db_user" value=""></td>
+            <td class="w-25"><input class="form-control" type="text" name="pa_db_user" value=""></td>
             <td>{% trans 'The username for Poweradmin. This new user will have limited rights only.' %}</td>
         </tr>
         <tr>
             <td>{% trans 'Password' %}</td>
-            <td><input type="password" name="pa_db_pass" value="" autocomplete="off"></td>
+            <td><input class="form-control" type="password" name="pa_db_pass" value="" autocomplete="off"></td>
             <td>{% trans 'The password for this username.' %}</td>
         </tr>
         {% endif %}
         <tr>
             <td>{% trans 'Hostmaster' %}</td>
-            <td><input type="text" name="dns_hostmaster" value=""></td>
+            <td><input class="form-control" type="text" name="dns_hostmaster" value=""></td>
             <td>{% trans 'When creating SOA records and no hostmaster is provided, this value here will be used. Should
                 be in the form "hostmaster.example.net".' %}
             </td>
         </tr>
         <tr>
             <td>{% trans 'Primary nameserver' %}</td>
-            <td><input type="text" name="dns_ns1" value=""></td>
+            <td><input class="form-control" type="text" name="dns_ns1" value=""></td>
             <td>{% trans 'When creating new zones using the template, this value will be used as primary nameserver.
                 Should be like "ns1.example.net".' %}
             </td>
         </tr>
         <tr>
             <td>{% trans 'Secondary nameserver' %}</td>
-            <td><input type="text" name="dns_ns2" value=""></td>
+            <td><input class="form-control" type="text" name="dns_ns2" value=""></td>
             <td>{% trans 'When creating new zones using the template, this value will be used as secondary nameserver.
                 Should be like "ns2.example.net".' %}
             </td>

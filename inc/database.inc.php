@@ -57,7 +57,7 @@ function dbConnect() {
     }
 
     if ($db_type != 'sqlite' && $db_type != 'sqlite3' && !(isset($db_user) && $db_user != "")) {
-        include_once("header.inc.php");
+//        include_once("header.inc.php");
         error(ERR_DB_NO_DB_USER);
         include_once("footer.inc.php");
         exit;

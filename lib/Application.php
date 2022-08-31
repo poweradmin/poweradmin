@@ -34,7 +34,7 @@ class Application {
 
     public function __construct() {
         $loader = new FilesystemLoader('templates');
-        $this->templateRenderer = new Environment($loader);
+        $this->templateRenderer = new Environment($loader, [ 'debug' => false ]);
         $this->templateRenderer->addExtension(new I18nExtension());
         $this->configuration = new Configuration();
     }
