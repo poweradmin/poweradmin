@@ -158,7 +158,7 @@ echo "        </td>\n";
 echo "       </tr>\n";
 echo "       <tr>\n";
 echo "        <td>" . _('DNSSEC') . ":</td>\n";
-echo "        <td><input type=\"checkbox\" name=\"dnssec\" value=\"1\" " . ($pdnssec_use ? "checked" : "") . "></td>\n";
+echo "        <td><input type=\"checkbox\" name=\"dnssec\" value=\"1\" " . ($pdnssec_use ? "checked" : "disabled") . "></td>\n";
 echo "       </tr>\n";
 echo "       <tr>\n";
 echo "        <td>&nbsp;</td>\n";
