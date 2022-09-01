@@ -151,7 +151,7 @@ if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit
     exit;
 }
 
-echo "    <h4 class=\"mb-3\">" . _('Add record to zone') . " <a href=\"edit.php?id=" . $zone_id . "\"> " . $zone_name . "</a></h4>\n";
+echo "    <h4 class=\"mb-3\">" . _('Add record to zone') . "</h4>\n";
 echo "     <form method=\"post\">\n";
 echo "      <input type=\"hidden\" name=\"domain\" value=\"" . $zone_id . "\">\n";
 echo "      <table border=\"0\" cellspacing=\"4\">\n";
@@ -164,10 +164,10 @@ echo "        <td>" . _('Priority') . "</td>\n";
 echo "        <td>" . _('TTL') . "</td>\n";
 echo "       </tr>\n";
 echo "       <tr>\n";
-echo "        <td><input type=\"text\" name=\"name\" value=\"" . htmlspecialchars($name) . "\">." . $zone_name . "</td>\n";
+echo "        <td><input class=\"form-control\" type=\"text\" name=\"name\" value=\"" . htmlspecialchars($name) . "\">." . $zone_name . "</td>\n";
 echo "        <td>IN</td>\n";
 echo "        <td>\n";
-echo "         <select name=\"type\">\n";
+echo "         <select class=\"form-select\" name=\"type\">\n";
 $found_selected_type = !(isset($type) && $type);
 foreach (RecordType::getTypes() as $record_type) {
     if (isset($type) && $type) {
@@ -183,7 +183,7 @@ foreach (RecordType::getTypes() as $record_type) {
             $rev = "";
         } elseif ((strtoupper($record_type) == 'A') && $iface_add_reverse_record) {
             $add = " SELECTED";
-            $rev = "<input type=\"checkbox\" name=\"reverse\"><span class=\"text-secondary\">" . _('Add also reverse record') . "</span>\n";
+            $rev = "<input type=\"checkbox\" name=\"reverse\"><span class=\"text-secondary\"> " . _('Add also reverse record') . "</span>\n";
         } else {
             $add = "";
         }
@@ -195,13 +195,13 @@ if (!$found_selected_type) {
 }
 echo "         </select>\n";
 echo "        </td>\n";
-echo "        <td><input type=\"text\" name=\"content\" value=\"" . htmlspecialchars($content) . "\"></td>\n";
-echo "        <td><input type=\"text\" name=\"prio\" value=\"" . htmlspecialchars($prio) . "\"></td>\n";
-echo "        <td><input type=\"text\" name=\"ttl\" value=\"" . htmlspecialchars($ttl) . "\"</td>\n";
+echo "        <td><input class=\"form-control\" type=\"text\" name=\"content\" value=\"" . htmlspecialchars($content) . "\"></td>\n";
+echo "        <td><input class=\"form-control\" type=\"text\" name=\"prio\" value=\"" . htmlspecialchars($prio) . "\"></td>\n";
+echo "        <td><input class=\"form-control\" type=\"text\" name=\"ttl\" value=\"" . htmlspecialchars($ttl) . "\"</td>\n";
 echo "       </tr>\n";
 echo "      </table>\n";
 echo "      <br>\n";
-echo "      <input type=\"submit\" name=\"commit\" value=\"" . _('Add record') . "\">\n";
+echo "      <input class=\"btn btn-primary\" type=\"submit\" name=\"commit\" value=\"" . _('Add record') . "\">\n";
 if (isset($rev)) {
     echo "      $rev";
 }

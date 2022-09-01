@@ -101,7 +101,7 @@ if (isset($_POST["commit"])) {
     }
 }
 
-echo "    <h4 class=\"mb-3\">" . _('Edit record in zone') . " \"<a href=\"edit.php?id=" . $zid . "\">" . $zone_name . "</a>\"</h4>\n";
+echo "    <h4 class=\"mb-3\">" . _('Edit record in zone') . "</h4>\n";
 
 if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
     error(ERR_PERM_VIEW_RECORD);
@@ -131,10 +131,10 @@ if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
         echo "      <tr>\n";
         echo "       <td><input type=\"hidden\" name=\"rid\" value=\"" . $_GET["id"] . "\">\n";
         echo "       <input type=\"hidden\" name=\"zid\" value=\"" . $zid . "\">\n";
-        echo "       <input type=\"text\" name=\"name\" value=\"" . htmlspecialchars(trim(str_replace($zone_name, '', $record["name"]), '.')) . "\">." . $zone_name . "</td>\n";
+        echo "       <input class=\"form-control\" type=\"text\" name=\"name\" value=\"" . htmlspecialchars(trim(str_replace($zone_name, '', $record["name"]), '.')) . "\">." . $zone_name . "</td>\n";
         echo "       <td>IN</td>\n";
         echo "       <td>\n";
-        echo "        <select name=\"type\">\n";
+        echo "        <select class=\"form-select\" name=\"type\">\n";
         $found_selected_type = false;
         foreach (RecordType::getTypes() as $type_available) {
             if ($type_available == $record["type"]) {
@@ -149,14 +149,14 @@ if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
             echo "         <option SELECTED value=\"" . htmlspecialchars($record['type']) . "\"><i>" . $record['type'] . "</i></option>\n";
         echo "        </select>\n";
         echo "       </td>\n";
-        echo "       <td><input type=\"text\" name=\"content\" value=\"" . htmlspecialchars($record['content']) . "\"></td>\n";
-        echo "       <td><input type=\"text\" name=\"prio\" value=\"" . htmlspecialchars($record["prio"]) . "\"></td>\n";
-        echo "       <td><input type=\"text\" name=\"ttl\" value=\"" . htmlspecialchars($record["ttl"]) . "\"></td>\n";
+        echo "       <td><input class=\"form-control\" type=\"text\" name=\"content\" value=\"" . htmlspecialchars($record['content']) . "\"></td>\n";
+        echo "       <td><input class=\"form-control\" type=\"text\" name=\"prio\" value=\"" . htmlspecialchars($record["prio"]) . "\"></td>\n";
+        echo "       <td><input class=\"form-control\" type=\"text\" name=\"ttl\" value=\"" . htmlspecialchars($record["ttl"]) . "\"></td>\n";
         echo "      </tr>\n";
     }
     echo "      </table>\n";
-    echo "       <input type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\">&nbsp;&nbsp;\n";
-    echo "       <input type=\"reset\" name=\"reset\" value=\"" . _('Reset changes') . "\">&nbsp;&nbsp;\n";
+    echo "       <input class=\"btn btn-primary\" type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\">&nbsp;&nbsp;\n";
+    echo "       <input class=\"btn btn-secondary\" type=\"reset\" name=\"reset\" value=\"" . _('Reset changes') . "\">&nbsp;&nbsp;\n";
     echo "     </form>\n";
 }
 

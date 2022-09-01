@@ -139,9 +139,9 @@ if (!(do_hook('verify_permission', 'zone_master_add')) || !$owner) {
             echo "    </tr>\n";
             foreach ($records as $r) {
                 echo "    <tr>\n";
-                echo "      <td class=\"u\"><input name=\"record[" . $r['id'] . "][name]\" value=\"" . $r['name'] . "\"></td>\n";
+                echo "      <td class=\"u\"><input class=\"form-control\" type=\"text\" name=\"record[" . $r['id'] . "][name]\" value=\"" . $r['name'] . "\"></td>\n";
                 echo "      <td class=\"u\">\n";
-                echo "       <select name=\"record[" . $r['id'] . "][type]\">\n";
+                echo "       <select class=\"form-select\" name=\"record[" . $r['id'] . "][type]\">\n";
                 $found_selected_type = false;
                 foreach (RecordType::getTypes() as $type_available) {
                     if ($type_available == $r['type']) {
@@ -157,13 +157,13 @@ if (!(do_hook('verify_permission', 'zone_master_add')) || !$owner) {
                 }
                 echo "       </select>\n";
                 echo "      </td>\n";
-                echo "      <td class=\"u\"><input name=\"record[" . $r['id'] . "][content]\" value='" . $r['content'] . "'></td>\n";
+                echo "      <td class=\"u\"><input class=\"form-control\" type=\"text\" name=\"record[" . $r['id'] . "][content]\" value='" . $r['content'] . "'></td>\n";
                 if ($r['type'] == "MX" || $r['type'] == "SRV") {
-                    echo "      <td class=\"u\"><input name=\"record[" . $r['id'] . "][prio]\" value=\"" . $r['prio'] . "\"></td>\n";
+                    echo "      <td class=\"u\"><input class=\"form-control\" type=\"text\" name=\"record[" . $r['id'] . "][prio]\" value=\"" . $r['prio'] . "\"></td>\n";
                 } else {
                     echo "      <td>&nbsp;</td>\n";
                 }
-                echo "      <td class=\"u\"><input name=\"record[" . $r['id'] . "][ttl]\" value=\"" . $r['ttl'] . "\"></td>\n";
+                echo "      <td class=\"u\"><input class=\"form-control\" name=\"record[" . $r['id'] . "][ttl]\" value=\"" . $r['ttl'] . "\"></td>\n";
                 echo "     <td>\n";
                 echo "    <input type=\"hidden\" name=\"record[" . $r['id'] . "][rid]\" value=\"" . $r['id'] . "\">\n";
                 echo "      <a class=\"btn btn-outline-primary btn-sm\" href=\"edit_zone_templ_record.php?id=" . $r['id'] . "&amp;zone_templ_id=" . $zone_templ_id . "\">
@@ -173,6 +173,10 @@ if (!(do_hook('verify_permission', 'zone_master_add')) || !$owner) {
                 echo "     </td>\n";
                 echo "     </tr>\n";
             }
+            echo "<tr><td colspan=\"2\">";
+            echo "    <input class=\"btn btn-primary\" type=\"button\" onClick=\"location.href='add_zone_templ_record.php?id=" . $zone_templ_id . "'\" value=\"" . _('Add record') . "\">&nbsp;&nbsp\n";
+            echo "    <input class=\"btn btn-danger\" type=\"button\" onClick=\"location.href='delete_zone_templ.php?id=" . $zone_templ_id . "'\" value=\"" . _('Delete zone template') . "\">\n";
+            echo "</td></tr>";
             echo "     <tr>\n";
             echo "      <td colspan=\"6\"><br><b>" . _('Hint:') . "</b></td>\n";
             echo "     </tr>\n";
@@ -197,7 +201,10 @@ if (!(do_hook('verify_permission', 'zone_master_add')) || !$owner) {
             echo "      " . _('Use just [ZONE] to have the domain itself return a value.') . "<br>";
             echo "      " . _('For the SOA record, place [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400 in the content field.') . "</td>";
             echo "     </tr>\n";
-            echo "      <td colsn=\"6\"><br>Save as new template:</td>\n";
+            echo "</table>";
+            echo "<hr>";
+            echo "<table><tr>";
+            echo "      <td colspan=\"6\"><strong>Save as new template:</strong></td>\n";
             echo "     </tr>\n";
             echo "      <tr>\n";
             echo "       <th>" . _('Template Name') . "</th>\n";
@@ -210,11 +217,11 @@ if (!(do_hook('verify_permission', 'zone_master_add')) || !$owner) {
             echo "    </table>\n";
             echo "     <input class=\"btn btn-primary\" type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
             echo "     <input class=\"btn btn-secondary\" type=\"reset\" name=\"reset\" value=\"" . _('Reset changes') . "\">\n";
-            echo "     <input type=\"submit\" name=\"save_as\" value=\"" . _('Save as template') . "\">\n";
-            echo "     <input type=\"submit\" name=\"update_zones\" value=\"" . _('Update zones') . "\">\n";
+            echo "     <input class=\"btn btn-secondary\" type=\"submit\" name=\"save_as\" value=\"" . _('Save as template') . "\">\n";
+            echo "     <input class=\"btn btn-secondary\" type=\"submit\" name=\"update_zones\" value=\"" . _('Update zones') . "\">\n";
             echo "    </form>";
         }
-
+        echo "<hr>";
         echo "    <form method=\"post\" action=\"\">\n";
         echo "     <table>\n";
         echo "      <tr>\n";
@@ -231,8 +238,6 @@ if (!(do_hook('verify_permission', 'zone_master_add')) || !$owner) {
         echo "     </form>\n";
         echo "</div>";
         echo "<div class=\"pt-3\">";
-        echo "    <input class=\"btn btn-outline-primary\" type=\"button\" onClick=\"location.href='add_zone_templ_record.php?id=" . $zone_templ_id . "'\" value=\"" . _('Add record') . "\">&nbsp;&nbsp\n";
-        echo "    <input class=\"btn btn-outline-danger\" type=\"button\" onClick=\"location.href='delete_zone_templ.php?id=" . $zone_templ_id . "'\" value=\"" . _('Delete zone template') . "\">\n";
     }
 }
 
