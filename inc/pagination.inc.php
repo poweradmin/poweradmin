@@ -111,8 +111,6 @@ function show_pages($amount, $rowamount, $id = '') {
 
 /** Print alphanumeric paging menu
  *
- * Display the alphabetic option: [0-9] [a] [b] .. [z]
- *
  * @param string $letterstart Starting letter/number or 'all'
  * @param int $userid Current user ID
  *
@@ -147,31 +145,36 @@ function show_letters($letterstart, $userid) {
         }
     }
 
-    echo _('Show zones beginning with') . ":<br>";
+    echo '<span class="text-secondary">' . _('Show zones beginning with') . "</span><br>";
+    echo '<nav>';
+    echo '<ul class="pagination pagination-sm">';
 
     if ($letterstart == "1") {
-        echo "<span class=\"text-mutted\">[ 0-9 ]</span> ";
+        echo '<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">0-9</a></li>';
     } elseif ($digits_available) {
-        echo "<a href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=1\">[ 0-9 ]</a> ";
+        echo "<li class=\"page-item\"><a class=\"page-link\" href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=1\">0-9</a></li>";
     } else {
-        echo "[ <span class=\"text-muted\">0-9</span> ] ";
+        echo '<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">0-9</a></li>';
     }
 
     foreach ($char_range as $letter) {
         if ($letter == $letterstart) {
-            echo "<span class=\"text-muted\">[ " . $letter . " ]</span> ";
+            echo '<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">' . $letter . '</a></li>';
         } elseif (in_array($letter, $available_chars)) {
-            echo "<a href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=" . $letter . "\">[ " . $letter . " ]</a> ";
+            echo "<li class=\"page-item\"><a class=\"page-link\" href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=" . $letter . "\">" . $letter . "</a></li>";
         } else {
-            echo "[ <span class=\"text-muted\">" . $letter . "</span> ] ";
+            echo '<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">' . $letter . '</a></li>';
         }
     }
 
     if ($letterstart == 'all') {
-        echo "<span class=\"text-muted\">[ Show all ]</span>";
+        echo '<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">' . _('Show all') . '</a></li>';
     } else {
-        echo "<a href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=all\">[ Show all ]</a> ";
+        echo "<li class=\"page-item\"><a class=\"page-link\" href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=all\">" . _('Show all') . '</a></li>';
     }
+
+    echo "</ul>";
+    echo "</nav>";
 }
 
 /** Check if current user allowed to view any zone content
