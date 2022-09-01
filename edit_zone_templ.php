@@ -226,8 +226,11 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
         echo "       <td><input class=\"form-control\" type=\"text\" name=\"templ_descr\" value=\"" . $templ_details['descr'] . "\"></td>\n";
         echo "      </tr>\n";
         echo "     </table>\n";
+        echo "<div class=\"pt-3\">";
         echo "     <input class=\"btn btn-primary\" type=\"submit\" name=\"edit\" value=\"" . _('Commit changes') . "\">\n";
         echo "     </form>\n";
+        echo "</div>";
+        echo "<div class=\"pt-3\">";
         echo "    <input class=\"btn btn-outline-primary\" type=\"button\" onClick=\"location.href='add_zone_templ_record.php?id=" . $zone_templ_id . "'\" value=\"" . _('Add record') . "\">&nbsp;&nbsp\n";
         echo "    <input class=\"btn btn-outline-danger\" type=\"button\" onClick=\"location.href='delete_zone_templ.php?id=" . $zone_templ_id . "'\" value=\"" . _('Delete zone template') . "\">\n";
     }

@@ -77,31 +77,43 @@ if ($confirm == '1') {
     }
 } else {
     echo "     <form method=\"post\" action=\"delete_domains.php\">\n";
+    echo "<table class=\"table table-striped table-hover table-sm\">";
+    echo "<thead>";
+    echo "  <th> " . _('Name') . "</th>";
+    echo "  <th> " . _('Owner') . "</th>";
+    echo "  <th> " . _('Type') . "</th>";
+    echo "  <th></th>";
+    echo "</thead>";
+
+    echo "<tbody>";
     foreach ($zones as $zone) {
         $zone_owners = do_hook('get_fullnames_owners_from_domainid' , $zone );
         $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone );
         $zone_info = DnsRecord::get_zone_info_from_id($zone);
         if ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) {
-            echo "      <input type=\"hidden\" name=\"zone_id[]\" value=\"" . $zone . "\">\n";
-            echo "      " . _('Name') . ": " . $zone_info['name'] . "<br>\n";
-            echo "      " . _('Owner') . ": " . $zone_owners . "<br>\n";
-            echo "      " . _('Type') . ": " . $zone_info['type'] . "\n";
+            echo "<tr>";
+            echo "<input type=\"hidden\" name=\"zone_id[]\" value=\"" . $zone . "\">\n";
+            echo "<td>" . $zone_info['name'] . "</td>\n";
+            echo "<td>" . $zone_owners . "</td>\n";
+            echo "<td>" . $zone_info['type'] . "\n";
             if ($zone_info['type'] == "SLAVE") {
                 $slave_master = DnsRecord::get_domain_slave_master($zone);
                 if (DnsRecord::supermaster_exists($slave_master)) {
-                    echo "        <p>         \n";
+                    echo "        <td>         \n";
                     printf(_('You are about to delete a slave zone of which the master nameserver, %s, is a supermaster. Deleting the zone now, will result in temporary removal only. Whenever the supermaster sends a notification for this zone, it will be added again!'), $slave_master);
-                    echo "        </p>\n";
+                    echo "        </td>\n";
                 }
             }
-            echo "     <br><br>\n";
+            echo "</tr>";
         } else {
             error(ERR_PERM_DEL_ZONE);
         }
     }
+    echo "<tbody>";
+    echo "</table>";
     echo "                     <p>" . _('Are you sure?') . "</p>\n";
-    echo "                     <input type=\"submit\" name=\"confirm\" value=\"" . _('Yes') . "\">\n";
-    echo "                     <input type=\"button\" onClick=\"location.href='list_zones.php'\" value=\"" . _('No') . "\">\n";
+    echo "                     <input class=\"btn btn-primary\" type=\"submit\" name=\"confirm\" value=\"" . _('Yes') . "\">\n";
+    echo "                     <input class=\"btn btn-secondary\"  type=\"button\" onClick=\"location.href='list_zones.php'\" value=\"" . _('No') . "\">\n";
     echo "     </form>\n";
 }
 
