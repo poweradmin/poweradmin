@@ -173,7 +173,7 @@ msgstr "Владелец добавлен"
 msgid "Really delete this user?"
 msgstr "Точно удалить этого пользователя?"
 
-msgid "List permission templates"
+msgid "Edit permission template"
 msgstr "Изменить шаблон привилегий"
 
 msgid "Edit zone"

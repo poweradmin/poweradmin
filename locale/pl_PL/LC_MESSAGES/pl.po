@@ -383,7 +383,7 @@ msgstr "Usuń wzorzec strefy"
 
 #: edit_perm_templ.php:45
 #: users.php:112
-msgid "List permission templates"
+msgid "Edit permission template"
 msgstr "Edytuj wzorzec uprawnień"
 
 #: edit.php:89

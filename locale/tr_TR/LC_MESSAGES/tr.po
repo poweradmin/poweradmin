@@ -110,7 +110,7 @@ msgid "Delete user"
 msgstr "Kullanıcı sil"
 
 #: users.php:131 edit_perm_templ.php:47
-msgid "List permission templates"
+msgid "Edit permission template"
 msgstr "İzin şablonunu düzenle"
 
 #: users.php:135 add_user.php:35

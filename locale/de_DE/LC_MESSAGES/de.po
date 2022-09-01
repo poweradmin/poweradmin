@@ -258,7 +258,7 @@ msgid "Really delete this user?"
 msgstr "Wirklich diesen Benutzer l&ouml;schen?"
 
 #: edit_perm_templ.php:45 users.php:110
-msgid "List permission templates"
+msgid "Edit permission template"
 msgstr "Berechtigungsvorlage bearbeiten"
 
 #: edit.php:75 search.php:60

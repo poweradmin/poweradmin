@@ -297,7 +297,7 @@ msgid "Reset changes"
 msgstr "Annuler les modifications"
 
 #: edit_perm_templ.php:45 users.php:117
-msgid "List permission templates"
+msgid "Edit permission template"
 msgstr "Modifier un gabarit de droits"
 
 #: edit.php:90 search.php:78

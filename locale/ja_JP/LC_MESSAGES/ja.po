@@ -111,7 +111,7 @@ msgid "Delete user"
 msgstr "次のユーザーを削除:"
 
 #: users.php:131 edit_perm_templ.php:47
-msgid "List permission templates"
+msgid "Edit permission template"
 msgstr "次の権限テンプレートを編集:"
 
 #: users.php:135 add_user.php:35
