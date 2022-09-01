@@ -366,7 +366,7 @@ if ($perm_content_edit == "all" || ($perm_content_edit == "own" || $perm_content
         $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
         echo "     <form method=\"post\" action=\"add_record.php?id=" . $zone_id . "\">\n";
         echo "      <input type=\"hidden\" name=\"domain\" value=\"" . $zone_id . "\">\n";
-        echo "      <table border=\"0\" cellspacing=\"4\">\n";
+        echo "      <table>\n";
         echo "       <tr>\n";
         echo "        <td>" . _('Name') . "</td>\n";
         echo "        <td>&nbsp;</td>\n";
