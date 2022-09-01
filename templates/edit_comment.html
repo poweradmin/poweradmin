@@ -1,35 +1,17 @@
 <h4 class="mb-3">{% trans 'Edit comment in zone' %} {{ zone_name }}</h4>
 <form method="post" action="edit_comment.php?domain={{ zid }}">
-    <table>
-        <tr>
-            <td colspan="6">&nbsp;</td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td colspan="5">Comments:</td>
-        </tr>
+    <div class="form-floating">
+        <label for="floatingTextarea">{% trans 'Comments' %}</label>
 
         {% if zone_type == "SLAVE" or perm_content_edit == "none" or (perm_content_edit == "own" or perm_content_edit
         == "own_as_client") and user_is_zone_owner == "0" %}
-        <tr>
-            <td>
-                &nbsp;
-            </td>
-            <td colspan="4"><textarea rows="15" name="comment" disabled>{{ comment }}</textarea></td>
-            <td>&nbsp;</td>
-        </tr>
+            <textarea class="form-control" rows="10" name="comment" id="floatingTextarea" style="height: 200px" disabled>{{ comment }}</textarea>
         {% else %}
-        <tr>
-            <td>
-                &nbsp;
-            </td>
-            <td colspan="4"><textarea rows="15" name="comment">{{ comment }}</textarea></td>
-            <td>&nbsp;</td>
-        </tr>
+            <textarea class="form-control" rows="10" name="comment" id="floatingTextarea" style="height: 200px">{{ comment }}</textarea>
         {% endif %}
-    </table>
-    <p>
+    </div>
+    <div class="pt-3">
         <input type="submit" name="commit" value="{% trans 'Commit changes' %}"  class="btn btn-primary">&nbsp;&nbsp;
         <input type="reset" name="reset" value="{% trans 'Reset changes' %}"  class="btn btn-secondary">&nbsp;&nbsp;
-    </p>
+    </div>
 </form>
