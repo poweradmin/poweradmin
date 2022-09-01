@@ -1,6 +1,7 @@
 <h4 class="mb-3">{% trans 'Delete record in zone' %} "{{ templ_details['name'] }}"</h4>
 
-<table>
+<table class="table">
+    <thead>
     <tr>
         <th>Name</th>
         <th>Type</th>
@@ -8,6 +9,8 @@
         <th>Priority</th>
         <th>TTL</th>
     </tr>
+    </thead>
+    <tbody>
     <tr>
         <td>{{ record_info['name'] }}</td>
         <td>{{ record_info['type'] }}</td>
@@ -15,6 +18,7 @@
         <td>{{ record_info['prio'] }}</td>
         <td>{{ record_info['ttl'] }}</td>
     </tr>
+    </tbody>
 </table>
 <p>{% trans 'Are you sure?' %}</p>
 <input type="button" class="btn btn-primary"

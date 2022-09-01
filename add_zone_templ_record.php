@@ -90,10 +90,10 @@ echo "        <td>" . _('Priority') . "</td>\n";
 echo "        <td>" . _('TTL') . "</td>\n";
 echo "       </tr>\n";
 echo "       <tr>\n";
-echo "        <td><input type=\"text\" name=\"name\" value=\"" . $name . "\"></td>\n";
+echo "        <td><input class=\"form-control\" type=\"text\" name=\"name\" value=\"" . $name . "\"></td>\n";
 echo "        <td>IN</td>\n";
 echo "        <td>\n";
-echo "         <select name=\"type\">\n";
+echo "         <select class=\"form-select\" name=\"type\">\n";
 $found_selected_type = !(isset($type) && $type);
 foreach (RecordType::getTypes() as $record_type) {
     if (isset($type) && $type) {
@@ -119,10 +119,13 @@ if (!$found_selected_type)
     echo "          <option SELECTED value=\"" . htmlspecialchars($type) . "\"><i>" . htmlspecialchars($type) . "</i></option>\n";
 echo "         </select>\n";
 echo "        </td>\n";
-echo "        <td><input type=\"text\" name=\"content\" value=\"" . $content . "\"></td>\n";
-echo "        <td><input type=\"text\" name=\"prio\" value=\"" . $prio . "\"></td>\n";
-echo "        <td><input type=\"text\" name=\"ttl\" value=\"" . $ttl . "\"</td>\n";
+echo "        <td><input class=\"form-control\" type=\"text\" name=\"content\" value=\"" . $content . "\"></td>\n";
+echo "        <td><input class=\"form-control\" type=\"text\" name=\"prio\" value=\"" . $prio . "\"></td>\n";
+echo "        <td><input class=\"form-control\" type=\"text\" name=\"ttl\" value=\"" . $ttl . "\"</td>\n";
 echo "       </tr>\n";
+echo "<tr><td>";
+echo "      <div class=\"pt-3\"><input class=\"btn btn-primary\" type=\"submit\" name=\"commit\" value=\"" . _('Add record') . "\"></div>\n";
+echo "</td></tr>";
 echo "     <tr>\n";
 echo "      <td colspan=\"6\"><br><b>" . _('Hint:') . "</b></td>\n";
 echo "     </tr>\n";
@@ -149,8 +152,6 @@ echo "      " . _('For the SOA record, place [NS1] [HOSTMASTER] [SERIAL] 28800 7
 echo "     </tr>\n";
 echo "     <tr>\n";
 echo "      </table>\n";
-echo "      <br>\n";
-echo "      <input type=\"submit\" name=\"commit\" value=\"" . _('Add record') . "\">\n";
 echo "     </form>\n";
 
 include_once('inc/footer.inc.php');
