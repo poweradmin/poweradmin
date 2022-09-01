@@ -320,11 +320,13 @@ if ($records == "-1") {
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "     <td>\n";
+        echo "     </td>\n";
+        echo "     <td colspan=\"4\"><textarea class=\"form-control\" rows=\"5\" cols=\"80\" name=\"comment\">" . htmlspecialchars(DnsRecord::get_zone_comment($zone_id)) . "</textarea></td>\n";
+        echo "<td></td>";
+        echo "     <td>";
         echo "      <a class=\"btn btn-outline-primary btn-sm\" href=\"edit_comment.php?domain=" . $zone_id . "\">
                                 <i class=\"bi bi-pencil-square\"></i> " . _('Edit comment') . "</a>\n";
         echo "     </td>\n";
-        echo "     <td colspan=\"4\"><textarea rows=\"5\" cols=\"80\" name=\"comment\">" . htmlspecialchars(DnsRecord::get_zone_comment($zone_id)) . "</textarea></td>\n";
-        echo "     <td>&nbsp;</td>\n";
         echo "     <tr>\n";
     }
 
@@ -356,6 +358,8 @@ if ($records == "-1") {
 
     echo "    </form>\n";
 }
+
+echo "<hr>";
 
 if ($perm_content_edit == "all" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "1") {
     if ($domain_type != "SLAVE") {
@@ -414,6 +418,7 @@ if ($perm_content_edit == "all" || ($perm_content_edit == "own" || $perm_content
     }
 }
 
+echo "<hr>";
 echo "   <div id=\"meta\">\n";
 echo "    <table>\n";
 echo "     <tr>\n";
@@ -432,7 +437,7 @@ if ($owners == "-1") {
             echo "        <td>" . $owner["fullname"] . "</td>\n";
             echo "        <td>\n";
             echo "         <input type=\"hidden\" name=\"delete_owner\" value=\"" . $owner["id"] . "\">\n";
-            echo "         <input type=\"submit\" name=\"co\" value=\"" . _('Delete') . "\">\n";
+            echo "         <input class=\"btn btn-outline-danger\" type=\"submit\" name=\"co\" value=\"" . _('Delete') . "\">\n";
             echo "        </td>\n";
             echo "        </form>\n";
             echo "       </tr>\n";

@@ -1,6 +1,7 @@
 <h4 class="mb-3">{% trans 'Delete record in zone' %} "<a href="edit.php?id={{ zid }}">{{ zone_name }}</a>"</h4>
 
-<table>
+<table class="table">
+    <thead>
     <tr>
         <th>Name</th>
         <th>Type</th>
@@ -10,6 +11,8 @@
         {% endif %}
         <th>TTL</th>
     </tr>
+    </thead>
+    <tbody>
     <tr>
         <td>{{ record_info['name'] }}</td>
         <td>{{ record_info['type'] }}</td>
@@ -19,6 +22,7 @@
         {% endif %}
         <td>{{ record_info['ttl'] }}</td>
     </tr>
+    </tbody>
 </table>
 {% if (record_info['type'] == 'NS' and record_info['name'] == zone_name) or record_info['type'] == 'SOA' %}
 <p>{% trans 'You are trying to delete a record that is needed for this zone to work.' %}</p>
