@@ -348,10 +348,6 @@ msgstr "関数がエラーを返しました (同一のゾーンIDが複数の�
 msgid "You have to create a config.inc.php!"
 msgstr "config.inc.php を作成して下さい!"
 
-#: inc/toolkit.inc.php:154
-msgid "Show page"
-msgstr "ページを表示"
-
 #: inc/toolkit.inc.php:173
 msgid "Show zones beginning with"
 msgstr "次で始まるゾーンを表示"

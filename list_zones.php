@@ -96,7 +96,7 @@ if (!in_array(ZONE_SORT_BY, array('name', 'type', 'count_records', 'owner'))) {
 }
 
 echo "    <h4 class=\"mb-3\">" . _('List zones') . "</h4>\n";
-echo "    <div class=\"text-secondary\">" . _('Total number of zones:') . " " . $count_zones_all . "</div>\n";
+echo "    <div class=\"pb-3 text-secondary\">" . _('Total number of zones:') . " " . $count_zones_all . "</div>\n";
 
 if ($perm_view == "none") {
     echo "     <p>" . _('You do not have the permission to see any zones.') . "</p>\n";
@@ -108,12 +108,6 @@ if ($perm_view == "none") {
     }
     echo "     <p>" . _('There are no zones to show in this listing.') . "</p>\n";
 } else {
-    if (LETTERSTART != 'all') {
-        echo "     <div>\n";
-        show_pages($count_zones_all_letterstart, $iface_rowamount);
-        echo "     </div>\n";
-    }
-
     if ($count_zones_view > $iface_rowamount) {
         echo "<div>";
         show_letters(LETTERSTART, $_SESSION["userid"]);
@@ -189,6 +183,13 @@ if ($perm_view == "none") {
     }
     echo "          </tbody>\n";
     echo "        </table>\n";
+
+    if (LETTERSTART != 'all') {
+        echo "     <div class='pb-3'>\n";
+        show_pages($count_zones_all_letterstart, $iface_rowamount);
+        echo "     </div>\n";
+    }
+
     echo "      <input type=\"submit\" name=\"commit\" value=\"" . _('Delete zone(s)') . "\" class=\"btn btn-primary\">\n";
     echo "     </form>\n";
 }

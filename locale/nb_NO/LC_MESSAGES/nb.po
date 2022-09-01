@@ -347,10 +347,6 @@ msgstr "Funksjonen returnerte en feil (flere soner gir treff på denne sone IDen
 msgid "You have to create a config.inc.php!"
 msgstr "Konfigurasjons filen config.inc.php mangler!"
 
-#: inc/toolkit.inc.php:154
-msgid "Show page"
-msgstr "Vis side"
-
 #: inc/toolkit.inc.php:173
 msgid "Show zones beginning with"
 msgstr "Vis soner som begynner med"

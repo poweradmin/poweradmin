@@ -848,10 +848,6 @@ msgstr "La fonction a renvoyée une erreur (plusieurs zones ont cet ID)."
 msgid "You have to create a config.inc.php!"
 msgstr "Vous devez créer un config.inc.php !"
 
-#: inc/toolkit.inc.php:151
-msgid "Show page"
-msgstr "Voir la page"
-
 #: inc/toolkit.inc.php:170
 msgid "Show zones beginning with"
 msgstr "Voir les zones commençant avec"

@@ -347,10 +347,6 @@ msgstr "Fonksiyon bir hata çevirdi (çoklu bölgeler bu bölgenin ID'siyle eşl
 msgid "You have to create a config.inc.php!"
 msgstr "Bir config.inc.php dosyası oluşturmalısınız!"
 
-#: inc/toolkit.inc.php:154
-msgid "Show page"
-msgstr "Sayfayı göster"
-
 #: inc/toolkit.inc.php:173
 msgid "Show zones beginning with"
 msgstr "Bununla başlayan bölgeleri görüntüle"

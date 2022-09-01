@@ -340,10 +340,6 @@ msgstr ""
 msgid "You have to create a config.inc.php!"
 msgstr ""
 
-#: inc/toolkit.inc.php:154
-msgid "Show page"
-msgstr ""
-
 #: inc/toolkit.inc.php:173
 msgid "Show zones beginning with"
 msgstr ""

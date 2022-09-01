@@ -843,10 +843,6 @@ msgstr "Function returned an error (multiple zones matching this zone ID)."
 msgid "You have to create a config.inc.php!"
 msgstr "You have to create a config.inc.php!"
 
-#: inc/toolkit.inc.php:154
-msgid "Show page"
-msgstr "Show page"
-
 #: inc/toolkit.inc.php:173
 msgid "Show zones beginning with"
 msgstr "Show zones beginning with"

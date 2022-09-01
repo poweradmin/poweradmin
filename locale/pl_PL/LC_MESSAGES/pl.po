@@ -933,10 +933,6 @@ msgstr "Funkcja zwróciła błąd (wiele stref pasuje do tego ID)."
 msgid "You have to create a config.inc.php!"
 msgstr "Musisz utworzyć plik config.inc.php!"
 
-#: inc/toolkit.inc.php:148
-msgid "Show page"
-msgstr "Pokaź stronę"
-
 #: inc/toolkit.inc.php:167
 msgid "Show zones beginning with"
 msgstr "Pokasz strony zaczynające się na"

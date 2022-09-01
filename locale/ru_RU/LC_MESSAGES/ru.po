@@ -488,9 +488,6 @@ msgstr "Функция вернула ошибку: несколько зон с
 msgid "You have to create a config.inc.php!"
 msgstr "Вы должны создать config.inc.php!"
 
-msgid "Show page"
-msgstr "Посмотреть страницу"
-
 msgid "Show zones beginning with"
 msgstr "Посмотреть зоны начинающиеся на"
 

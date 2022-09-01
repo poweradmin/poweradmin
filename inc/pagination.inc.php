@@ -22,8 +22,6 @@
 
 /** Print paging menu
  *
- * Display the page option: [ < ][ 1 ] .. [ 8 ][ 9 ][ 10 ][ 11 ][ 12 ][ 13 ][ 14 ][ 15 ][ 16 ] .. [ 34 ][ > ]
- *
  * @param int $amount Total number of items
  * @param int $rowamount Per page number of items
  * @param int $id Page specific ID (Zone ID, Template ID, etc)
@@ -45,64 +43,67 @@ function show_pages($amount, $rowamount, $id = '') {
             $startpage = ($start - ($num / 2));
         }
 
-        echo _('Show page') . ":<br>";
+        $poutput .= "<nav><ul class=\"pagination\">";
 
         if ($lastpage > $num & $start > 1) {
-            $poutput .= '<a href=" ' . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES);
+            $poutput .= '<li class="page-item"><a class="page-link" href=" ' . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES);
             $poutput .= '?start=' . ($start - 1);
             if ($id != '')
                 $poutput .= '&id=' . $id;
             $poutput .= '">';
-            $poutput .= '[ < ]';
-            $poutput .= '</a>';
+            $poutput .= _('Previous');
+            $poutput .= '</a></li>';
         }
+
         if ($start != 1) {
-            $poutput .= '<a href=" ' . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES);
+            $poutput .= '<li class="page-item"><a class="page-link" href=" ' . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES);
             $poutput .= '?start=1';
             if ($id != '')
                 $poutput .= '&id=' . $id;
             $poutput .= '">';
-            $poutput .= '[ 1 ]';
-            $poutput .= '</a>';
+            $poutput .= '1';
+            $poutput .= '</a></li>';
             if ($startpage > 2)
-                $poutput .= ' .. ';
+                $poutput .= '<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">..</a></li>';
         }
 
         for ($i = $startpage; $i <= min(($startpage + $num), $lastpage); $i++) {
             if ($start == $i) {
-                $poutput .= '[ <b>' . $i . '</b> ]';
+                $poutput .= '<li class="page-item active"><span class="page-link">' . $i . '</span></li>';
             } elseif ($i != $lastpage & $i != 1) {
-                $poutput .= '<a href=" ' . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES);
+                $poutput .= '<li class="page-item"><a class="page-link" href=" ' . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES);
                 $poutput .= '?start=' . $i;
                 if ($id != '')
                     $poutput .= '&id=' . $id;
                 $poutput .= '">';
-                $poutput .= '[ ' . $i . ' ]';
-                $poutput .= '</a>';
+                $poutput .= $i;
+                $poutput .= '</a></li>';
             }
         }
 
         if ($start != $lastpage) {
             if (min(($startpage + $num), $lastpage) < ($lastpage - 1))
-                $poutput .= ' .. ';
-            $poutput .= '<a href=" ' . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES);
+                $poutput .= '<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">..</a></li>';
+            $poutput .= '<li class="page-item"><a class="page-link" href=" ' . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES);
             $poutput .= '?start=' . $lastpage;
             if ($id != '')
                 $poutput .= '&id=' . $id;
             $poutput .= '">';
-            $poutput .= '[ ' . $lastpage . ' ]';
-            $poutput .= '</a>';
+            $poutput .= $lastpage;
+            $poutput .= '</a></li>';
         }
 
         if ($lastpage > $num & $start < $lastpage) {
-            $poutput .= '<a href=" ' . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES);
+            $poutput .= '<li class="page-item"><a class="page-link" href=" ' . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES);
             $poutput .= '?start=' . ($start + 1);
             if ($id != '')
                 $poutput .= '&id=' . $id;
             $poutput .= '">';
-            $poutput .= '[ > ]';
-            $poutput .= '</a>';
+            $poutput .= _('Next');
+            $poutput .= '</a></li>';
         }
+
+        $poutput .= "</ul></nav>";
 
         echo $poutput;
     }
