@@ -125,7 +125,9 @@ if (!(do_hook('verify_permission', 'zone_master_add')) || !$owner) {
 
         $records = ZoneTemplate::get_zone_templ_records($zone_templ_id, ROWSTART, $iface_rowamount, RECORD_SORT_BY);
         if ($records == "-1") {
-            echo " <span class='text-secondary'>" . _("This template zone does not have any records yet.") . "</span>\n";
+            echo " <div class='text-secondary'>" . _("This template zone does not have any records yet.") . "</div>\n";
+            echo " <div><input class=\"btn btn-primary\" type=\"button\" onClick=\"location.href='add_zone_templ_record.php?id=" . $zone_templ_id . "'\" value=\"" . _('Add record') . "\"></div>\n";
+
         } else {
             echo "   <form method=\"post\" action=\"\">\n";
             echo "   <table>\n";
