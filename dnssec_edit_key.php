@@ -105,8 +105,8 @@ if ($confirm == '1') {
         echo "      " . _('Bits') . ": " . $key_info[4] . "<br>\n";
         echo "      " . _('Active') . ": " . ($key_info[5] ? _('Yes') : _('No')) . "\n";
         echo "     <p>" . _('Are you sure?') . "</p>\n";
-        echo "     <input type=\"button\" onClick=\"location.href='dnssec_edit_key.php?id=" . $zone_id . "&amp;key_id=$key_id&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
-        echo "     <input type=\"button\" onClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
+        echo "     <input class=\"btn btn-primary\" type=\"button\" onClick=\"location.href='dnssec_edit_key.php?id=" . $zone_id . "&amp;key_id=$key_id&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
+        echo "     <input class=\"btn btn-secondary\" type=\"button\" onClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
     } else {
         error(ERR_PDNSSEC_DEL_ZONE_KEY);
     }

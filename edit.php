@@ -349,10 +349,10 @@ if ($records == "-1") {
         $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
 
         if (Dnssec::dnssec_is_zone_secured($zone_name)) {
-            echo "     <input type=\"button\" name=\"dnssec\" onclick=\"location.href = 'dnssec.php?id=" . $zone_id . "';\" value=\"" . _('DNSSEC') . "\">\n";
-            echo "     <input type=\"submit\" name=\"unsign_zone\" value=\"" . _('Unsign this zone') . "\">\n";
+            echo "     <input class=\"btn btn-secondary\" type=\"button\" name=\"dnssec\" onclick=\"location.href = 'dnssec.php?id=" . $zone_id . "';\" value=\"" . _('DNSSEC') . "\">\n";
+            echo "     <input class=\"btn btn-secondary\" type=\"submit\" name=\"unsign_zone\" value=\"" . _('Unsign this zone') . "\">\n";
         } else {
-            echo "     <input type=\"submit\" name=\"sign_zone\" value=\"" . _('Sign this zone') . "\">\n";
+            echo "     <input class=\"btn btn-secondary\" type=\"submit\" name=\"sign_zone\" value=\"" . _('Sign this zone') . "\">\n";
         }
     }
 

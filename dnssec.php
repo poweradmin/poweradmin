@@ -95,36 +95,36 @@ $zone_template_id = DnsRecord::get_zone_template($zone_id);
 
 echo "   <h4 class=\"mb-3\">" . _('DNSSEC keys for zone') . " \"" . DnsRecord::get_domain_name_by_id($zone_id) . "\"</h4>\n";
 
-echo "     <table>\n";
+echo "     <table class=\"table\">\n";
 echo "      <tr>\n";
-echo "       <th>&nbsp;</th>\n";
 echo "       <th>" . _('ID') . "</th>\n";
 echo "       <th>" . _('Type') . "</th>\n";
 echo "       <th>" . _('Tag') . "</th>\n";
 echo "       <th>" . _('Algorithm') . "</th>\n";
 echo "       <th>" . _('Bits') . "</th>\n";
 echo "       <th>" . _('Active') . "</th>\n";
+echo "       <th>&nbsp;</th>\n";
 echo "      </tr>\n";
 
 $keys = Dnssec::dnssec_get_keys($domain_name);
 
 foreach ($keys as $item) {
     echo "<tr>\n";
-    echo "<td>&nbsp;\n";
-    echo "<a class=\"btn btn-outline-primary btn-sm\" href=\"dnssec_edit_key.php?id=" . $zone_id . "&key_id=" . $item[0] . "\"><i class=\"bi bi-pencil-square\"></i> " . _('Edit zone key') . " " . $item[0] . "</a>\n";
-    echo "<a class=\"btn btn-outline-danger btn-sm\" href=\"dnssec_delete_key.php?id=" . $zone_id . "&key_id=" . $item[0] . "\"><i class=\"bi bi-trash\"></i> " . _('Delete zone key') . " " . $item[0] . "</a>\n";
-    echo "</td>";
     echo "<td>".$item[0]."</td>\n";
     echo "<td>".$item[1]."</td>\n";
     echo "<td>".$item[2]."</td>\n";
     echo "<td>".Dnssec::dnssec_algorithm_to_name($item[3])."</td>\n";
     echo "<td>".$item[4]."</td>\n";
     echo "<td>".($item[5] ? _('Yes') : _('No'))."</td>\n";
+    echo "<td>\n";
+    echo "<a class=\"btn btn-outline-primary btn-sm\" href=\"dnssec_edit_key.php?id=" . $zone_id . "&key_id=" . $item[0] . "\"><i class=\"bi bi-pencil-square\"></i> " . _('Edit zone key') . "</a>\n";
+    echo "<a class=\"btn btn-outline-danger btn-sm\" href=\"dnssec_delete_key.php?id=" . $zone_id . "&key_id=" . $item[0] . "\"><i class=\"bi bi-trash\"></i> " . _('Delete zone key') . "</a>\n";
+    echo "</td>";
     echo "</tr>\n";
 }
 
 echo "     </table>\n";
-echo "      <input type=\"button\" onClick=\"location.href = 'dnssec_add_key.php?id=".$zone_id."';\" value=\"" . _('Add new key') . "\">\n";
-echo "      <input type=\"button\" onClick=\"location.href = 'dnssec_ds_dnskey.php?id=".$zone_id."';\" value=\"" . _('Show DS and DNSKEY') . "\">\n";
+echo "      <input class=\"btn btn-primary\" type=\"button\" onClick=\"location.href = 'dnssec_add_key.php?id=".$zone_id."';\" value=\"" . _('Add new key') . "\">\n";
+echo "      <input class=\"btn btn-secondary\" type=\"button\" onClick=\"location.href = 'dnssec_ds_dnskey.php?id=".$zone_id."';\" value=\"" . _('Show DS and DNSKEY') . "\">\n";
 
 include_once("inc/footer.inc.php");
