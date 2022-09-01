@@ -48,7 +48,6 @@ $app->render('users.html', [
     'perm_edit_others' => do_hook('verify_permission', 'user_edit_others'),
     'perm_templ_perm_edit' => do_hook('verify_permission', 'templ_perm_edit'),
     'perm_is_godlike' => do_hook('verify_permission', 'user_is_ueberuser'),
-    'perm_add_new' => do_hook('verify_permission', 'user_add_new'),
     'users' => do_hook('get_user_detail_list', ""),
     'perm_templates' => do_hook('list_permission_templates'),
     'ldap_use' => $app->config('ldap_use'),

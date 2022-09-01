@@ -6,7 +6,7 @@
         <tr>
             <th>{% trans 'Username' %}</th>
             <th>{% trans 'Fullname' %}</th>
-            <th>{% trans 'Description' %}</th>
+<!--            <th>{% trans 'Description' %}</th>-->
             <th>{% trans 'Email address' %}</th>
             <th>{% trans 'Template' %}</th>
 
@@ -36,7 +36,7 @@
         <tr>
             <td><input class="form-control" type="text" name="user[{{ user['uid'] }}][username]" value="{{ user ['username'] }}"></td>
             <td><input class="form-control" type="text" name="user[{{ user['uid'] }}][fullname]" value="{{ user ['fullname'] }}"></td>
-            <td><input class="form-control" type="text" name="user[{{ user['uid'] }}][descr]" value="{{ user ['descr'] }}"></td>
+<!--            <td><input class="form-control" type="text" name="user[{{ user['uid'] }}][descr]" value="{{ user ['descr'] }}"></td>-->
             <td><input class="form-control" type="text" name="user[{{ user['uid'] }}][email]" value="{{ user ['email'] }}"></td>
             <td>
                 {% if perm_templ_perm_edit %}
@@ -76,13 +76,13 @@
 
             <td>
                 <input type="hidden" name="user[{{ user_uid }}][uid]" value="{{ user_uid }}">
-                <a href="edit_user.php?id={{ user_uid }}">
-                    <i class="bi bi-pencil-square"></i>
+                <a class="btn btn-outline-primary btn-sm" href="edit_user.php?id={{ user_uid }}">
+                    <i class="bi bi-pencil-square"></i> {% trans 'Edit user' %}
                 </a>
 
                 {% if user['uid'] != session_userid %}
-                <a href="delete_user.php?id={{ user['uid'] }}">
-                    <i class="bi bi-trash"></i>
+                <a class="btn btn-outline-danger btn-sm" href="delete_user.php?id={{ user['uid'] }}">
+                    <i class="bi bi-trash"></i> {% trans 'Delete user' %}
                 </a>
                 {% endif %}
             </td>
@@ -116,19 +116,3 @@
     <input type="submit" class="btn btn-primary" name="commit" value="{% trans 'Commit changes' %}">
     <input type="reset" class="btn btn-secondary" name="reset" value="{% trans 'Reset changes' %}">
 </form>
-
-{% if perm_templ_perm_edit or perm_add_new %}
-<div class="pt-3">
-    {% endif %}
-
-    {% if perm_templ_perm_edit %}
-    <a class="btn btn-outline-secondary btn-sm" href="list_perm_templ.php">{% trans 'Edit permission template' %}</a></li>
-    {% endif %}
-
-    {% if perm_add_new %}
-    <a class="btn btn-outline-secondary btn-sm" href="add_user.php">{% trans 'Add user' %}</a></li>
-    {% endif %}
-
-    {% if perm_templ_perm_edit or perm_add_new %}
-</div>
-{% endif %}

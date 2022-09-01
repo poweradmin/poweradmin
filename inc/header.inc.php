@@ -59,6 +59,8 @@ if (isset($_SESSION["userid"])) {
         'perm_zone_slave_add' => do_hook('verify_permission', 'zone_slave_add'),
         'perm_supermaster_add' => do_hook('verify_permission', 'supermaster_add'),
         'perm_is_godlike' => $perm_is_godlike,
+        'perm_templ_perm_edit' => do_hook('verify_permission', 'templ_perm_edit'),
+        'perm_add_new' => do_hook('verify_permission', 'user_add_new'),
         'session_key_error' => $perm_is_godlike && $session_key == 'p0w3r4dm1n' ? ERR_DEFAULT_CRYPTOKEY_USED : false,
         'auth_used' => $_SESSION["auth_used"] != "ldap"
     ]);

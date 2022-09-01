@@ -351,8 +351,8 @@ msgid "Edit comment in zone"
 msgstr "Edit comment in zone"
 
 #: edit_perm_templ.php:47 users.php:131
-msgid "Edit permission template"
-msgstr "Edit permission template"
+msgid "List permission templates"
+msgstr "List permission templates"
 
 #: edit_record.php:58
 msgid "Edit record in zone"

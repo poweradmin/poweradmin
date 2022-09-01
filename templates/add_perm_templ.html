@@ -10,13 +10,16 @@
             <td><input class="form-control" type="text" name="templ_descr" value=""></td>
         </tr>
     </table>
-    <table>
+    <span class="p-3"></span>
+    <table class="table table-striped table-hover table-sm">
+        <thead>
         <tr>
             <th>&nbsp;</th>
             <th>{% trans 'Name' %}</th>
             <th>{% trans 'Description' %}</th>
         </tr>
-
+        </thead>
+        <tbody>
         {% for perm in perms_avail %}
         {% set descr = perm['descr'] %}
         <tr>
@@ -25,6 +28,9 @@
             <td>{% trans descr %}</td>
         </tr>
         {% endfor %}
+        </tbody>
     </table>
-    <input type="submit" class="btn btn-primary" name="commit" value="{% trans 'Commit changes' %}">
+    <div class="pt-3">
+        <input type="submit" class="btn btn-primary" name="commit" value="{% trans 'Commit changes' %}">
+    </div>
 </form>

@@ -245,7 +245,7 @@ msgid "Really delete this user?"
 msgstr "确定删除这个用户？"
 
 #: edit_perm_templ.php:45 users.php:110
-msgid "Edit permission template"
+msgid "List permission templates"
 msgstr "编辑许可模板"
 
 #: edit.php:75 search.php:60

@@ -114,25 +114,25 @@ if ($edit_id == "-1") {
         echo "      <table>\n";
         echo "       <tr>\n";
         echo "        <td>" . _('Username') . "</td>\n";
-        echo "        <td><input type=\"text\" name=\"username\" value=\"" . $user['username'] . "\"></td>\n";
+        echo "        <td><input class=\"form-control\" type=\"text\" name=\"username\" value=\"" . $user['username'] . "\"></td>\n";
         echo "       </tr>\n";
         echo "       <tr>\n";
         echo "        <td>" . _('Fullname') . "</td>\n";
-        echo "        <td><input type=\"text\" name=\"fullname\" value=\"" . $user['fullname'] . "\"></td>\n";
+        echo "        <td><input class=\"form-control\" type=\"text\" name=\"fullname\" value=\"" . $user['fullname'] . "\"></td>\n";
         echo "       </tr>\n";
         echo "       <tr>\n";
         echo "        <td>" . _('Password') . "</td>\n";
-        echo "        <td><input type=\"password\" name=\"password\"></td>\n";
+        echo "        <td><input class=\"form-control\" type=\"password\" name=\"password\"></td>\n";
         echo "       </tr>\n";
         echo "       <tr>\n";
         echo "        <td>" . _('Email address') . "</td>\n";
-        echo "        <td><input type=\"text\" name=\"email\" value=\"" . $user['email'] . "\"></td>\n";
+        echo "        <td><input class=\"form-control\" type=\"text\" name=\"email\" value=\"" . $user['email'] . "\"></td>\n";
         echo "       </tr>\n";
         if (do_hook('verify_permission' , 'user_edit_templ_perm' )) {
             echo "       <tr>\n";
             echo "        <td>" . _('Permission template') . "</td>\n";
             echo "        <td>\n";
-            echo "         <select name=\"perm_templ\">\n";
+            echo "         <select class=\"form-select\" name=\"perm_templ\">\n";
             foreach (do_hook('list_permission_templates' ) as $template) {
                 ($template['id'] == $user['tpl_id']) ? $select = " SELECTED" : $select = "";
                 echo "          <option value=\"" . $template['id'] . "\"" . $select . ">" . $template['name'] . "</option>\n";
@@ -143,7 +143,7 @@ if ($edit_id == "-1") {
         echo "       </tr>\n";
         echo "       <tr>\n";
         echo "        <td>" . _('Description') . "</td>\n";
-        echo "        <td><textarea rows=\"4\" cols=\"30\" class=\"inputarea\" name=\"description\">" . $user['descr'] . "</textarea></td>\n";
+        echo "        <td><textarea class=\"form-control\" rows=\"4\" cols=\"30\" class=\"inputarea\" name=\"description\">" . $user['descr'] . "</textarea></td>\n";
         echo "       </tr>\n";
         echo "       <tr>\n";
         echo "        <td>" . _('Enabled') . "</td>\n";
@@ -151,12 +151,13 @@ if ($edit_id == "-1") {
         echo "       </tr>\n";
         echo "       <tr>\n";
         echo "        <td>&nbsp;</td>\n";
-        echo "        <td><input type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
-        echo "        <input type=\"reset\" name=\"reset\" value=\"" . _('Reset changes') . "\"></td>\n";
+        echo "        <td><input class=\"btn btn-primary\" type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
+        echo "        <input class=\"btn btn-secondary\" type=\"reset\" name=\"reset\" value=\"" . _('Reset changes') . "\"></td>\n";
         echo "      </table>\n";
         echo "     </form>\n";
 
         echo "     <p>\n";
+        echo "<div class=\"pt-3 text-secondary\">";
         printf(_('This user has been assigned the permission template "%s".'), $user['tpl_name']);
         if ($user['tpl_descr'] != "") {
             echo " " . _('The description for this template is') . ": \"" . $user['tpl_descr'] . "\".";
@@ -168,6 +169,7 @@ if ($edit_id == "-1") {
             echo "      <li>" . _(htmlspecialchars($item['descr'])) . " (" . htmlspecialchars($item['name']) . ")</li>\n";
         }
         echo "     </ul>\n";
+        echo "</div>";
     }
 } else {
     error(ERR_PERM_EDIT_USER);
