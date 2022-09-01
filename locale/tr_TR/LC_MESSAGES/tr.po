@@ -923,8 +923,8 @@ msgstr "Bu kurulumun alternatifi elle kurulumdur. Bu yolla devam etmek isterseni
 msgid ""
 "Finally, if you see any errors during the installation process, a problem "
 "report would be appreciated. You can report problems (and ask for help) on "
-"the <a href=\"https://groups.google.com/group/poweradmin\" target=\"blank\">poweradmin</a> mailinglist."
-msgstr "Son olarak eğer kurulum işlemi sırasında herhangi bir hata görürseniz bunu raporlamanız makbule geçer. Sorunları <a href=\"https://groups.google.com/group/poweradmin\" target=\"blank\">poweradmin</a> epostalistesi üzerinden raporlayabilir (ve yardım isteyebilir)siniz."
+"the <a href=\"https://github.com/poweradmin/poweradmin/issues\" target=\"blank\">poweradmin</a> issues."
+msgstr "Son olarak eğer kurulum işlemi sırasında herhangi bir hata görürseniz bunu raporlamanız makbule geçer. Sorunları <a href=\"https://github.com/poweradmin/poweradmin/issues\" target=\"blank\">poweradmin</a> epostalistesi üzerinden raporlayabilir (ve yardım isteyebilir)siniz."
 
 #: install/index.php:75
 msgid "Do you want to proceed now?"
