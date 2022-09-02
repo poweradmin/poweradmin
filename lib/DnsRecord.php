@@ -1880,8 +1880,7 @@ class DnsRecord
         global $pdnssec_use;
 
         $error = false;
-        $return = false;
-        $response = $db->beginTransaction();
+        $db->beginTransaction();
 
         foreach ($domains as $id) {
             if (do_hook('verify_permission', 'zone_content_edit_others')) {
