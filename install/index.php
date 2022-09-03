@@ -70,7 +70,7 @@ $twig->addExtension(new I18nExtension());
 $current_step = isset($_POST['step']) && is_numeric($_POST['step']) ? $_POST['step'] : 1;
 echo $twig->render('header.html', array('current_step' => $current_step, 'file_version' => time()));
 
-if (file_exists('../inc/config.inc.php')) {
+if ($current_step == 1 && file_exists('../inc/config.inc.php')) {
     echo "<p class='alert alert-danger'>". _('There is already a configuration file in place, so the installation will be skipped.') ."</p>";
     echo $twig->render('footer.html');
     exit;
