@@ -11,97 +11,111 @@
     <script type="text/javascript" src="inc/helper.js?time={{ file_version }}"></script>
 </head>
 <body>
-{% if custom_header %}
-{% include ('custom/header.html') %}
-{% else %}
+
 <header class="mb-4 border-bottom">
     <div class="container">
         <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
             <a class="py-4 d-flex align-items-center my-2 my-lg-0 me-lg-auto text-black text-decoration-none"
                href="index.php">
-                <img class="me-2" src="images/logo.png" height="32">
-                <span class="fs-4">{{ iface_title }}</span>
+                {% if custom_header %}
+                    {% include ('custom/header.html') %}
+                {% else %}
+                    <img class="me-2" src="images/logo.png" height="32">
+                    <span class="fs-4">{{ iface_title }}</span>
+                {% endif %}
             </a>
             <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
                 {% if user_logged_in %}
-                {% if perm_search %}
-                <li class="p-1">
-                    <a href="search.php" class="nav-link text-secondary"><i class="bi bi-search"></i></a>
-                    <a href="search.php" class="text-secondary text-decoration-none">{% trans 'Search' %}</a>
-                </li>
-                {% endif %}
-                {% if perm_view_zone_own or perm_view_zone_other or perm_zone_master_add or perm_zone_slave_add %}
-                <li class="p-1">
-                    <a href="list_zones.php" class="nav-link text-secondary"><i class="bi bi-diagram-3"></i></a>
-                    <a class="text-secondary text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" href="#"
-                       role="button" aria-expanded="false">{% trans 'Zones' %}</a>
-                    <ul class="dropdown-menu">
-                        {% if perm_view_zone_own or perm_view_zone_other %}
-                        <li><a class="dropdown-item" href="list_zones.php">{% trans 'List zones' %}</a></li>
-                        {% endif %}
-                        {% if perm_zone_master_add %}
-                        <li><a class="dropdown-item" href="add_zone_master.php">{% trans 'Add master zone' %}</a></li>
-                        {% endif %}
-                        {% if perm_zone_slave_add %}
-                        <li><a class="dropdown-item" href="add_zone_slave.php">{% trans 'Add slave zone' %}</a></li>
-                        {% endif %}
-                        {% if perm_zone_master_add %}
-                        <li><a class="dropdown-item" href="bulk_registration.php">{% trans 'Bulk registration' %}</a>
+                    {% if perm_search %}
+                        <li class="p-1">
+                            <a href="search.php" class="nav-link text-secondary"><i class="bi bi-search"></i></a>
+                            <a href="search.php" class="text-secondary text-decoration-none">{% trans 'Search' %}</a>
                         </li>
-                        {% endif %}
-                    </ul>
-                </li>
-                {% endif %}
-                <li class="p-1">
-                    <a href="users.php" class="nav-link text-secondary"><i class="bi bi-people"></i></a>
-                    <a class="text-secondary text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" href="#"
-                       role="button" aria-expanded="false">{% trans 'Users' %}</a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="users.php">{% trans 'Users' %}</a></li>
-                        {% if perm_add_new %}
-                        <li><a class="dropdown-item" href="add_user.php">{% trans 'Add user' %}</a></li>
-                        {% endif %}
-                        {% if perm_templ_perm_edit %}
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="list_perm_templ.php">{% trans 'List permission templates' %}</a></li>
-                        <li><a class="dropdown-item" href="add_perm_templ.php">{% trans 'Add permission template' %}</a></li>
-                        {% endif %}
-                    </ul>
-                </li>
-                {% if perm_zone_master_add %}
-                <li class="p-1">
-                    <a href="list_zone_templ.php" class="nav-link text-secondary text-center"><i class="bi bi-files"></i></a>
-                    <a class="text-secondary text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" href="#"
-                       role="button" aria-expanded="false">{% trans 'Templates' %}</a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="list_zone_templ.php">{% trans 'List zone templates' %}</a></li>
-                        <li><a class="dropdown-item" href="add_zone_templ.php">{% trans 'Add zone template' %}</a></li>
-                    </ul>
-                </li>
-                {% endif %}
-                <li class="p-1">
-                    <a href="index.php?logout" class="nav-link text-secondary"><i class="bi bi-box-arrow-right"></i></a>
-                    <a href="index.php?logout" class="text-secondary text-decoration-none">{% trans 'Logout' %}</a>
-                </li>
+                    {% endif %}
+                    {% if perm_view_zone_own or perm_view_zone_other or perm_zone_master_add or perm_zone_slave_add %}
+                        <li class="p-1">
+                            <a href="list_zones.php" class="nav-link text-secondary"><i class="bi bi-diagram-3"></i></a>
+                            <a class="text-secondary text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
+                               href="#"
+                               role="button" aria-expanded="false">{% trans 'Zones' %}</a>
+                            <ul class="dropdown-menu">
+                                {% if perm_view_zone_own or perm_view_zone_other %}
+                                    <li><a class="dropdown-item" href="list_zones.php">{% trans 'List zones' %}</a></li>
+                                {% endif %}
+                                {% if perm_zone_master_add %}
+                                    <li><a class="dropdown-item"
+                                           href="add_zone_master.php">{% trans 'Add master zone' %}</a></li>
+                                {% endif %}
+                                {% if perm_zone_slave_add %}
+                                    <li><a class="dropdown-item"
+                                           href="add_zone_slave.php">{% trans 'Add slave zone' %}</a></li>
+                                {% endif %}
+                                {% if perm_zone_master_add %}
+                                    <li><a class="dropdown-item"
+                                           href="bulk_registration.php">{% trans 'Bulk registration' %}</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </li>
+                    {% endif %}
+                    <li class="p-1">
+                        <a href="users.php" class="nav-link text-secondary"><i class="bi bi-people"></i></a>
+                        <a class="text-secondary text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
+                           href="#"
+                           role="button" aria-expanded="false">{% trans 'Users' %}</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="users.php">{% trans 'Users' %}</a></li>
+                            {% if perm_add_new %}
+                                <li><a class="dropdown-item" href="add_user.php">{% trans 'Add user' %}</a></li>
+                            {% endif %}
+                            {% if perm_templ_perm_edit %}
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item"
+                                       href="list_perm_templ.php">{% trans 'List permission templates' %}</a></li>
+                                <li><a class="dropdown-item"
+                                       href="add_perm_templ.php">{% trans 'Add permission template' %}</a></li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                    {% if perm_zone_master_add %}
+                        <li class="p-1">
+                            <a href="list_zone_templ.php" class="nav-link text-secondary text-center"><i
+                                    class="bi bi-files"></i></a>
+                            <a class="text-secondary text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
+                               href="#"
+                               role="button" aria-expanded="false">{% trans 'Templates' %}</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item"
+                                       href="list_zone_templ.php">{% trans 'List zone templates' %}</a></li>
+                                <li><a class="dropdown-item"
+                                       href="add_zone_templ.php">{% trans 'Add zone template' %}</a></li>
+                            </ul>
+                        </li>
+                    {% endif %}
+                    <li class="p-1">
+                        <a href="index.php?logout" class="nav-link text-secondary"><i class="bi bi-box-arrow-right"></i></a>
+                        <a href="index.php?logout" class="text-secondary text-decoration-none">{% trans 'Logout' %}</a>
+                    </li>
                 {% endif %}
             </ul>
         </div>
     </div>
 </header>
-{% endif %}
 
 {% if install_error %}
-<div class="container">
-    <div class="alert alert-danger" role="alert"><strong>Error:</strong> {{ install_error | raw }}</div>
-</div>
+    <div class="container">
+        <div class="alert alert-danger" role="alert"><strong>Error:</strong> {{ install_error | raw }}</div>
+    </div>
 {% endif %}
 
 {% if user_logged_in %}
-{% if session_key_error %}
-<div class="container">
-    <div class="alert alert-danger"><strong>Error:</strong> {{ session_key_error | raw }}</div>
-</div>
-{% endif %}
+    {% if session_key_error %}
+        <div class="container">
+            <div class="alert alert-danger"><strong>Error:</strong> {{ session_key_error | raw }}</div>
+        </div>
+    {% endif %}
 {% endif %}
 
 <main class="container pb-3 flex-shrink-0">
