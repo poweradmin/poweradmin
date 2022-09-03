@@ -58,4 +58,4 @@ Go to the installed system in your browser
 ### Log in
 ![The login screen](https://www.poweradmin.org/screenshots/ignite_login.png)
 ### Zone list
-![List of zones](https://www.poweradmin.org/screenshots/ignite_zones.png)
+![List of zones](https://www.poweradmin.org/screenshots/ignite_zone_list.png)
