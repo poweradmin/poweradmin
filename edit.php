@@ -248,7 +248,7 @@ if ($records == "-1") {
     echo " <p>" . _("This zone does not have any records. Weird.") . "</p>\n";
 } else {
     echo "   <form method=\"post\" action=\"\">\n";
-    echo "   <table>\n";
+    echo "   <table class=\"table table-striped table-hover table-sm\">\n";
     echo "    <tr>\n";
     echo "     <th><a href=\"edit.php?id=" . $zone_id . "&amp;record_sort_by=id\">" . _('Id') . "</a></th>\n";
     echo "     <th><a href=\"edit.php?id=" . $zone_id . "&amp;record_sort_by=name\">" . _('Name') . "</a></th>\n";
@@ -313,10 +313,7 @@ if ($records == "-1") {
 
     if ($iface_zone_comments) {
         echo "    <tr>\n";
-        echo "     <td colspan=\"6\">&nbsp;</td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "     <td>&nbsp;</td><td colspan=\"5\">Comments:</td>\n";
+        echo "     <td>&nbsp;</td><td colspan=\"7\">Comments:</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "     <td>\n";
@@ -330,7 +327,7 @@ if ($records == "-1") {
         echo "     <tr>\n";
     }
 
-    echo "      <th colspan=\"6\"><br>Save as new template:</th>\n";
+    echo "      <th colspan=\"7\"><br>Save as new template:</th>\n";
     echo "     </tr>\n";
     echo "     <tr>\n";
     echo "       <td colspan=\"2\">" . _('Template Name') . "</td>\n";
@@ -366,7 +363,7 @@ if ($perm_content_edit == "all" || ($perm_content_edit == "own" || $perm_content
         $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
         echo "     <form method=\"post\" action=\"add_record.php?id=" . $zone_id . "\">\n";
         echo "      <input type=\"hidden\" name=\"domain\" value=\"" . $zone_id . "\">\n";
-        echo "      <table>\n";
+        echo "      <table class=\"table table-striped table-hover table-sm\">\n";
         echo "       <tr>\n";
         echo "        <td>" . _('Name') . "</td>\n";
         echo "        <td>&nbsp;</td>\n";

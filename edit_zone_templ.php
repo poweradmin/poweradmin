@@ -130,7 +130,7 @@ if (!(do_hook('verify_permission', 'zone_master_add')) || !$owner) {
 
         } else {
             echo "   <form method=\"post\" action=\"\">\n";
-            echo "   <table>\n";
+            echo "   <table class=\"table table-striped table-hover table-sm\">\n";
             echo "    <tr>\n";
             echo "     <th><a href=\"edit_zone_templ.php?id=" . $zone_templ_id . "&amp;record_sort_by=name\">" . _('Name') . "</a></th>\n";
             echo "     <th><a href=\"edit_zone_templ.php?id=" . $zone_templ_id . "&amp;record_sort_by=type\">" . _('Type') . "</a></th>\n";
@@ -175,10 +175,12 @@ if (!(do_hook('verify_permission', 'zone_master_add')) || !$owner) {
                 echo "     </td>\n";
                 echo "     </tr>\n";
             }
-            echo "<tr><td colspan=\"2\">";
+            echo "<tr><td colspan=\"6\">";
             echo "    <input class=\"btn btn-primary\" type=\"button\" onClick=\"location.href='add_zone_templ_record.php?id=" . $zone_templ_id . "'\" value=\"" . _('Add record') . "\">&nbsp;&nbsp\n";
             echo "    <input class=\"btn btn-danger\" type=\"button\" onClick=\"location.href='delete_zone_templ.php?id=" . $zone_templ_id . "'\" value=\"" . _('Delete zone template') . "\">\n";
             echo "</td></tr>";
+            echo "</table>";
+            echo "<table>";
             echo "     <tr>\n";
             echo "      <td colspan=\"6\"><br><b>" . _('Hint:') . "</b></td>\n";
             echo "     </tr>\n";

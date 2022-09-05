@@ -108,7 +108,7 @@ if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
 } else {
     $record = DnsRecord::get_record_from_id($_GET["id"]);
     echo "     <form method=\"post\" action=\"edit_record.php?domain=" . $zid . "&amp;id=" . $_GET["id"] . "\">\n";
-    echo "      <table>\n";
+    echo "      <table class=\"table table-striped table-sm\">\n";
     echo "       <tr>\n";
     echo "        <th>" . _('Name') . "</th>\n";
     echo "        <th>&nbsp;</th>\n";

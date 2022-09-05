@@ -64,7 +64,7 @@
                            href="#"
                            role="button" aria-expanded="false">{% trans 'Users' %}</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="users.php">{% trans 'Users' %}</a></li>
+                            <li><a class="dropdown-item" href="users.php">{% trans 'User administration' %}</a></li>
                             {% if perm_add_new %}
                                 <li><a class="dropdown-item" href="add_user.php">{% trans 'Add user' %}</a></li>
                             {% endif %}
@@ -95,8 +95,16 @@
                         </li>
                     {% endif %}
                     <li class="p-1">
-                        <a href="index.php?logout" class="nav-link text-secondary"><i class="bi bi-box-arrow-right"></i></a>
-                        <a href="index.php?logout" class="text-secondary text-decoration-none">{% trans 'Logout' %}</a>
+                        <a href="#" class="nav-link text-secondary"><i class="bi bi-person-circle"></i></a>
+                        <a class="text-secondary text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
+                           href="#"
+                           role="button" aria-expanded="false">{% trans 'Account' %}</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item"
+                                   href="change_password.php">{% trans 'Change password' %}</a></li>
+                            <li><a class="dropdown-item"
+                                   href="index.php?logout">{% trans 'Logout' %}</a></li>
+                        </ul>
                     </li>
                 {% endif %}
             </ul>

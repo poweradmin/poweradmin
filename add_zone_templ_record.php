@@ -80,7 +80,7 @@ echo "    <h4 class=\"mb-3\">" . _('Add record to zone template') . " \"" . $tem
 
 echo "     <form method=\"post\">\n";
 echo "      <input type=\"hidden\" name=\"domain\" value=\"" . $zone_templ_id . "\">\n";
-echo "      <table>\n";
+echo "      <table class=\"table table-striped table-hover table-sm\">\n";
 echo "       <tr>\n";
 echo "        <td>" . _('Name') . "</td>\n";
 echo "        <td>&nbsp;</td>\n";
@@ -123,9 +123,11 @@ echo "        <td><input class=\"form-control\" type=\"text\" name=\"content\" v
 echo "        <td><input class=\"form-control\" type=\"text\" name=\"prio\" value=\"" . $prio . "\"></td>\n";
 echo "        <td><input class=\"form-control\" type=\"text\" name=\"ttl\" value=\"" . $ttl . "\"</td>\n";
 echo "       </tr>\n";
-echo "<tr><td>";
+echo "<tr><td colspan=\"6\">";
 echo "      <div class=\"pt-3\"><input class=\"btn btn-primary\" type=\"submit\" name=\"commit\" value=\"" . _('Add record') . "\"></div>\n";
 echo "</td></tr>";
+echo "</table>";
+echo "<table>";
 echo "     <tr>\n";
 echo "      <td colspan=\"6\"><br><b>" . _('Hint:') . "</b></td>\n";
 echo "     </tr>\n";

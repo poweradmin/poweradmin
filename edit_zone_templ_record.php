@@ -71,7 +71,7 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
 } else {
     $record = ZoneTemplate::get_zone_templ_record_from_id($record_id);
     echo "     <form method=\"post\" action=\"edit_zone_templ_record.php?zone_templ_id=" . $zone_templ_id . "&id=" . $record_id . "\">\n";
-    echo "      <table>\n";
+    echo "      <table class=\"table table-striped table-sm\">\n";
     echo "       <tr>\n";
     echo "        <th>" . _('Name') . "</td>\n";
     echo "        <th>&nbsp;</td>\n";

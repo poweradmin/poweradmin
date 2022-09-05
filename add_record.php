@@ -154,7 +154,7 @@ if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit
 echo "    <h4 class=\"mb-3\">" . _('Add record to zone') . "</h4>\n";
 echo "     <form method=\"post\">\n";
 echo "      <input type=\"hidden\" name=\"domain\" value=\"" . $zone_id . "\">\n";
-echo "      <table>\n";
+echo "      <table class=\"table table-striped table-sm\">\n";
 echo "       <tr>\n";
 echo "        <td>" . _('Name') . "</td>\n";
 echo "        <td>&nbsp;</td>\n";
