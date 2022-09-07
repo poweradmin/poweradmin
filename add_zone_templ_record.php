@@ -124,7 +124,7 @@ echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" na
 echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"ttl\" value=\"" . $ttl . "\"</td>\n";
 echo "       </tr>\n";
 echo "<tr><td colspan=\"6\">";
-echo "      <div class=\"pt-3\"><input class=\"btn btn-primary\" type=\"submit\" name=\"commit\" value=\"" . _('Add record') . "\"></div>\n";
+echo "      <div class=\"pt-3\"><input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"commit\" value=\"" . _('Add record') . "\"></div>\n";
 echo "</td></tr>";
 echo "</table>";
 echo "<table>";

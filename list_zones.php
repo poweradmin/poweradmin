@@ -154,7 +154,7 @@ if ($perm_view == "none") {
         echo "         <tr>\n";
         echo "          <td>\n";
         if ($count_zones_edit > 0 && ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1"))) {
-            echo "       <input type=\"checkbox\" name=\"zone_id[]\" value=\"" . $zone['id'] . "\">";
+            echo "       <input class=\"form-check-input\" type=\"checkbox\" name=\"zone_id[]\" value=\"" . $zone['id'] . "\">";
         }
         echo "          </td>\n";
         echo "          <td>" . idn_to_utf8($zone["name"], IDNA_NONTRANSITIONAL_TO_ASCII) . "</td>\n";

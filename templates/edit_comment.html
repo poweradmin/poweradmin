@@ -1,7 +1,7 @@
 <h5 class="mb-3">{% trans 'Edit comment in zone' %} {{ zone_name }}</h5>
 <form method="post" action="edit_comment.php?domain={{ zid }}">
     <div class="form-floating">
-        <label for="floatingTextarea">{% trans 'Comments' %}</label>
+        <label for="floatingTextarea"></label>
 
         {% if zone_type == "SLAVE" or perm_content_edit == "none" or (perm_content_edit == "own" or perm_content_edit
         == "own_as_client") and user_is_zone_owner == "0" %}

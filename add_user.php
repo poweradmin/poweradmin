@@ -113,12 +113,12 @@ echo "        <td><textarea class=\"form-control form-control-sm\" rows=\"4\" co
 echo "       </tr>\n";
 echo "       <tr>\n";
 echo "        <td>" . _('Enabled') . "</td>\n";
-echo "        <td><input type=\"checkbox\" name=\"active\" value=\"1\"" . $active_checked . "></td>\n";
+echo "        <td><input class=\"form-check-input\" type=\"checkbox\" name=\"active\" value=\"1\"" . $active_checked . "></td>\n";
 echo "       </tr>\n";
 if ($ldap_use) {
     echo "       <tr>\n";
     echo "        <td>" . _('LDAP Authentication') . "</td>\n";
-    echo "        <td><input id=\"ldap\" type=\"checkbox\" name=\"use_ldap\" value=\"1\" onclick=\"disablePasswordField()\" " . $use_ldap_checked . "></td>\n";
+    echo "        <td><input class=\"form-check-input\" id=\"ldap\" type=\"checkbox\" name=\"use_ldap\" value=\"1\" onclick=\"disablePasswordField()\" " . $use_ldap_checked . "></td>\n";
     echo "       </tr>\n";
 }
 echo "       <tr>\n";

@@ -392,7 +392,7 @@ if ($perm_content_edit == "all" || ($perm_content_edit == "own" || $perm_content
                     $add = " SELECTED";
                 } else if ((strtoupper($record_type) == 'A') && $iface_add_reverse_record) {
                     $add = " SELECTED";
-                    $rev = "<input type=\"checkbox\" name=\"reverse\"><span class=\"text-secondary\">" . _('Add also reverse record') . "</span>\n";
+                    $rev = "<input class=\"form-check-input\" type=\"checkbox\" name=\"reverse\"><span class=\"text-secondary\">" . _('Add also reverse record') . "</span>\n";
                 } else {
                     $add = "";
                 }

@@ -183,7 +183,7 @@ foreach (RecordType::getTypes() as $record_type) {
             $rev = "";
         } elseif ((strtoupper($record_type) == 'A') && $iface_add_reverse_record) {
             $add = " SELECTED";
-            $rev = "<input type=\"checkbox\" name=\"reverse\"><span class=\"text-secondary\"> " . _('Add also reverse record') . "</span>\n";
+            $rev = "<input class=\"form-check-input\" type=\"checkbox\" name=\"reverse\"><span class=\"text-secondary\"> " . _('Add also reverse record') . "</span>\n";
         } else {
             $add = "";
         }

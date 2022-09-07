@@ -147,7 +147,7 @@ if ($edit_id == "-1") {
         echo "       </tr>\n";
         echo "       <tr>\n";
         echo "        <td>" . _('Enabled') . "</td>\n";
-        echo "        <td><input type=\"checkbox\" name=\"active\" value=\"1\"" . $check . "></td>\n";
+        echo "        <td><input class=\"form-check-input\" type=\"checkbox\" name=\"active\" value=\"1\"" . $check . "></td>\n";
         echo "       </tr>\n";
         echo "       <tr>\n";
         echo "        <td>&nbsp;</td>\n";

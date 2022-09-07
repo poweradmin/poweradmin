@@ -160,7 +160,7 @@ echo "       </tr>\n";
 if ($pdnssec_use) {
     echo "       <tr>\n";
     echo "        <td>" . _('DNSSEC') . ":</td>\n";
-    echo "        <td><input type=\"checkbox\" name=\"dnssec\" value=\"1\" checked></td>\n";
+    echo "        <td><input class=\"form-check-input\" type=\"checkbox\" name=\"dnssec\" value=\"1\" checked></td>\n";
     echo "       </tr>\n";
 }
 
