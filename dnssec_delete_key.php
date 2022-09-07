@@ -78,7 +78,7 @@ if (!Dnssec::dnssec_zone_key_exists($domain_name, $key_id)) {
     exit;    
 }
 
-echo "     <h4 class=\"mb-3\">" . _('Delete zone key') . "</h4>\n";
+echo "     <h5 class=\"mb-3\">" . _('Delete zone key') . "</h5>\n";
 
 if ($confirm == '1') {
     if (Dnssec::dnssec_remove_zone_key($domain_name, $key_id)) {
@@ -95,8 +95,8 @@ if ($confirm == '1') {
         echo "      " . _('Bits') . ": " . $key_info[4] . "<br>\n";
         echo "      " . _('Active') . ": " . ($key_info[5] ? _('Yes') : _('No')) . "\n";
         echo "     <p class=\"pt-3\">" . _('Are you sure?') . "</p>\n";
-        echo "     <input class=\"btn btn-primary\" type=\"button\" onClick=\"location.href='dnssec_delete_key.php?id=" . $zone_id . "&amp;key_id=$key_id&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
-        echo "     <input class=\"btn btn-secondary\" type=\"button\" onClick=\"location.href='dnssec.php?id=" . $zone_id . "'\" value=\"" . _('No') . "\">\n";
+        echo "     <input class=\"btn btn-primary btn-sm\" type=\"button\" onClick=\"location.href='dnssec_delete_key.php?id=" . $zone_id . "&amp;key_id=$key_id&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
+        echo "     <input class=\"btn btn-secondary btn-sm\" type=\"button\" onClick=\"location.href='dnssec.php?id=" . $zone_id . "'\" value=\"" . _('No') . "\">\n";
     } else {
         error(ERR_PDNSSEC_DEL_ZONE_KEY);
     }

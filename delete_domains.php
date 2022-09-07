@@ -56,7 +56,7 @@ if (!$zones) {
     exit;
 }
 
-echo "     <h4 class=\"mb-3\">" . _('Delete zones') . "</h4>\n";
+echo "     <h5 class=\"mb-3\">" . _('Delete zones') . "</h5>\n";
 
 if ($confirm == '1') {
     //Fetch information about zones before deleting them
@@ -112,8 +112,8 @@ if ($confirm == '1') {
     echo "<tbody>";
     echo "</table>";
     echo "                     <p>" . _('Are you sure?') . "</p>\n";
-    echo "                     <input class=\"btn btn-primary\" type=\"submit\" name=\"confirm\" value=\"" . _('Yes') . "\">\n";
-    echo "                     <input class=\"btn btn-secondary\"  type=\"button\" onClick=\"location.href='list_zones.php'\" value=\"" . _('No') . "\">\n";
+    echo "                     <input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"confirm\" value=\"" . _('Yes') . "\">\n";
+    echo "                     <input class=\"btn btn-secondary btn-sm\"  type=\"button\" onClick=\"location.href='list_zones.php'\" value=\"" . _('No') . "\">\n";
     echo "     </form>\n";
 }
 

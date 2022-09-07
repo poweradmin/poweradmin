@@ -72,7 +72,7 @@ $parameters['reverse'] = !isset($_POST['do_search']) && !isset($_POST['reverse']
 
 ?>
 
-<h4 class="mb-3"><?php echo _('Search zones and records'); ?></h4>
+<h5 class="mb-3"><?php echo _('Search zones and records'); ?></h5>
 <span class="text-secondary"><?php echo _('Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) in pattern matches any single character, a percent sign (%) matches any string of zero or more characters.'); ?></span>
 <form name="search_form" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
     <input type="hidden" name="zone_sort_by" value="<?php echo ZONE_SORT_BY; ?>">
@@ -80,7 +80,7 @@ $parameters['reverse'] = !isset($_POST['do_search']) && !isset($_POST['reverse']
 
     <div class="row pt-3 pb-3">
         <div class="col-sm-6">
-            <input type="text" class="form-control" name="query" value="<?php echo $parameters['query']; ?>">
+            <input type="text" class="form-control form-control-sm" name="query" value="<?php echo $parameters['query']; ?>">
         </div>
         <div class="col-sm-6 d-flex align-items-center">
             <div class="form-check form-check-inline">
@@ -107,7 +107,7 @@ $parameters['reverse'] = !isset($_POST['do_search']) && !isset($_POST['reverse']
             </div>
         </div>
         <div class="col-sm-12 pt-3">
-            <input type="submit" class="btn btn-primary" name="do_search" value="<?php echo _('Search'); ?>">
+            <input type="submit" class="btn btn-primary btn-sm" name="do_search" value="<?php echo _('Search'); ?>">
         </div>
     </div>
 </form>
@@ -141,8 +141,8 @@ if (isset($_POST['query'])) {
     if (is_array($searchResult['zones'])):
         ?>
         <div class="pb-3">
-            <h4 class="mb-3 pt-3 border-top"><?php echo _('Zones found'); ?></h4>
-            <table class="table table-striped table-hover">
+            <h5 class="mb-3 pt-3 border-top"><?php echo _('Zones found'); ?></h5>
+            <table class="table table-striped table-hover table-sm">
                 <thead>
                 <tr>
                     <th><a href="javascript:zone_sort_by('name');"><?php echo _('Name'); ?></a></th>
@@ -185,8 +185,8 @@ if (isset($_POST['query'])) {
         ?>
 
         <div class="pb-3">
-            <h4 class="mb-3 pt-3 border-top"><?php echo _('Records found'); ?></h4>
-            <table class="table table-striped table-hover">
+            <h5 class="mb-3 pt-3 border-top"><?php echo _('Records found'); ?></h5>
+            <table class="table table-striped table-hover table-sm">
                 <thead>
                 <tr>
                     <th><a href="javascript:record_sort_by('name');"><?php echo _('Name'); ?></a></th>

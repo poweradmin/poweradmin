@@ -76,7 +76,7 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
     exit;
 }
 
-echo "    <h4 class=\"mb-3\">" . _('Add record to zone template') . " \"" . $templ_details['name'] . "\"</h4>\n";
+echo "    <h5 class=\"mb-3\">" . _('Add record to zone template') . " \"" . $templ_details['name'] . "\"</h5>\n";
 
 echo "     <form method=\"post\">\n";
 echo "      <input type=\"hidden\" name=\"domain\" value=\"" . $zone_templ_id . "\">\n";
@@ -90,10 +90,10 @@ echo "        <td>" . _('Priority') . "</td>\n";
 echo "        <td>" . _('TTL') . "</td>\n";
 echo "       </tr>\n";
 echo "       <tr>\n";
-echo "        <td><input class=\"form-control\" type=\"text\" name=\"name\" value=\"" . $name . "\"></td>\n";
+echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"name\" value=\"" . $name . "\"></td>\n";
 echo "        <td>IN</td>\n";
 echo "        <td>\n";
-echo "         <select class=\"form-select\" name=\"type\">\n";
+echo "         <select class=\"form-select form-select-sm\" name=\"type\">\n";
 $found_selected_type = !(isset($type) && $type);
 foreach (RecordType::getTypes() as $record_type) {
     if (isset($type) && $type) {
@@ -119,9 +119,9 @@ if (!$found_selected_type)
     echo "          <option SELECTED value=\"" . htmlspecialchars($type) . "\"><i>" . htmlspecialchars($type) . "</i></option>\n";
 echo "         </select>\n";
 echo "        </td>\n";
-echo "        <td><input class=\"form-control\" type=\"text\" name=\"content\" value=\"" . $content . "\"></td>\n";
-echo "        <td><input class=\"form-control\" type=\"text\" name=\"prio\" value=\"" . $prio . "\"></td>\n";
-echo "        <td><input class=\"form-control\" type=\"text\" name=\"ttl\" value=\"" . $ttl . "\"</td>\n";
+echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"content\" value=\"" . $content . "\"></td>\n";
+echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"prio\" value=\"" . $prio . "\"></td>\n";
+echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"ttl\" value=\"" . $ttl . "\"</td>\n";
 echo "       </tr>\n";
 echo "<tr><td colspan=\"6\">";
 echo "      <div class=\"pt-3\"><input class=\"btn btn-primary\" type=\"submit\" name=\"commit\" value=\"" . _('Add record') . "\"></div>\n";

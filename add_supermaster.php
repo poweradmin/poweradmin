@@ -52,7 +52,7 @@ if (isset($_POST["submit"])) {
     }
 }
 
-echo "     <h4 class=\"mb-3\">" . _('Add supermaster') . "</h4>\n";
+echo "     <h5 class=\"mb-3\">" . _('Add supermaster') . "</h5>\n";
 
 if (!$supermasters_add) {
     echo "     <p>" . _("You do not have the permission to add a new supermaster.") . "</p>\n";
@@ -68,7 +68,7 @@ echo "        <td>\n";
 if ($error) {
     echo "         <input type=\"text\" name=\"master_ip\" value=\"" . $master_ip . "\">\n";
 } else {
-    echo "         <input class=\"form-control\" type=\"text\" name=\"master_ip\" value=\"\">\n";
+    echo "         <input class=\"form-control form-control-sm\" type=\"text\" name=\"master_ip\" value=\"\">\n";
 }
 echo "        </td>\n";
 echo "       </tr>\n";
@@ -78,7 +78,7 @@ echo "        <td>\n";
 if ($error) {
     echo "         <input type=\"text\" name=\"ns_name\" value=\"" . $ns_name . "\">\n";
 } else {
-    echo "         <input class=\"form-control\" type=\"text\" name=\"ns_name\" value=\"\">\n";
+    echo "         <input class=\"form-control form-control-sm\" type=\"text\" name=\"ns_name\" value=\"\">\n";
 }
 echo "        </td>\n";
 echo "       </tr>\n";
@@ -86,7 +86,7 @@ echo "       <tr>\n";
 echo "        <td>" . _('Account') . "</td>\n";
 echo "        <td>\n";
 
-echo "         <select class=\"form-select\" name=\"account\">\n";
+echo "         <select class=\"form-select form-select-sm\" name=\"account\">\n";
 /*
   Display list of users to assign slave zone to if the
   editing user has the permissions to, otherwise just
@@ -107,7 +107,7 @@ echo "       </tr>\n";
 echo "       <tr>\n";
 echo "        <td>&nbsp;</td>\n";
 echo "        <td>\n";
-echo "         <input class=\"btn btn-primary\" type=\"submit\" name=\"submit\" value=\"" . _('Add supermaster') . "\">\n";
+echo "         <input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"submit\" value=\"" . _('Add supermaster') . "\">\n";
 echo "        </td>\n";
 echo "       </tr>\n";
 echo "      </table>\n";

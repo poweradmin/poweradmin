@@ -1,13 +1,13 @@
-<h4 class="mb-3">{% trans 'Add permission template' %}</h4>
+<h5 class="mb-3">{% trans 'Add permission template' %}</h5>
 <form method="post" action="">
     <table>
         <tr>
             <td width="100">{% trans 'Name' %}</td>
-            <td><input class="form-control" type="text" name="templ_name" value=""></td>
+            <td><input class="form-control form-control-sm" type="text" name="templ_name" value=""></td>
         </tr>
         <tr>
             <td>{% trans 'Description' %}</td>
-            <td><input class="form-control" type="text" name="templ_descr" value=""></td>
+            <td><input class="form-control form-control-sm" type="text" name="templ_descr" value=""></td>
         </tr>
     </table>
     <span class="p-3"></span>
@@ -31,6 +31,6 @@
         </tbody>
     </table>
     <div class="pt-3">
-        <input type="submit" class="btn btn-primary" name="commit" value="{% trans 'Commit changes' %}">
+        <input type="submit" class="btn btn-primary btn-sm" name="commit" value="{% trans 'Commit changes' %}">
     </div>
 </form>

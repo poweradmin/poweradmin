@@ -108,31 +108,31 @@ if ($edit_id == "-1") {
 
         (($user['active']) == "1") ? $check = " CHECKED" : $check = "";
 
-        echo "     <h4 class=\"mb-3\">" . _('Edit user') . " \"" . $user['fullname'] . "\"</h4>\n";
+        echo "     <h5 class=\"mb-3\">" . _('Edit user') . " \"" . $user['fullname'] . "\"</h5>\n";
         echo "     <form method=\"post\" action=\"\">\n";
         echo "      <input type=\"hidden\" name=\"number\" value=\"" . $edit_id . "\">\n";
         echo "      <table>\n";
         echo "       <tr>\n";
         echo "        <td>" . _('Username') . "</td>\n";
-        echo "        <td><input class=\"form-control\" type=\"text\" name=\"username\" value=\"" . $user['username'] . "\"></td>\n";
+        echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"username\" value=\"" . $user['username'] . "\"></td>\n";
         echo "       </tr>\n";
         echo "       <tr>\n";
         echo "        <td>" . _('Fullname') . "</td>\n";
-        echo "        <td><input class=\"form-control\" type=\"text\" name=\"fullname\" value=\"" . $user['fullname'] . "\"></td>\n";
+        echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"fullname\" value=\"" . $user['fullname'] . "\"></td>\n";
         echo "       </tr>\n";
         echo "       <tr>\n";
         echo "        <td>" . _('Password') . "</td>\n";
-        echo "        <td><input class=\"form-control\" type=\"password\" name=\"password\"></td>\n";
+        echo "        <td><input class=\"form-control form-control-sm\" type=\"password\" name=\"password\"></td>\n";
         echo "       </tr>\n";
         echo "       <tr>\n";
         echo "        <td>" . _('Email address') . "</td>\n";
-        echo "        <td><input class=\"form-control\" type=\"text\" name=\"email\" value=\"" . $user['email'] . "\"></td>\n";
+        echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"email\" value=\"" . $user['email'] . "\"></td>\n";
         echo "       </tr>\n";
         if (do_hook('verify_permission' , 'user_edit_templ_perm' )) {
             echo "       <tr>\n";
             echo "        <td>" . _('Permission template') . "</td>\n";
             echo "        <td>\n";
-            echo "         <select class=\"form-select\" name=\"perm_templ\">\n";
+            echo "         <select class=\"form-select form-select-sm\" name=\"perm_templ\">\n";
             foreach (do_hook('list_permission_templates' ) as $template) {
                 ($template['id'] == $user['tpl_id']) ? $select = " SELECTED" : $select = "";
                 echo "          <option value=\"" . $template['id'] . "\"" . $select . ">" . $template['name'] . "</option>\n";
@@ -143,7 +143,7 @@ if ($edit_id == "-1") {
         echo "       </tr>\n";
         echo "       <tr>\n";
         echo "        <td>" . _('Description') . "</td>\n";
-        echo "        <td><textarea class=\"form-control\" rows=\"4\" cols=\"30\" class=\"inputarea\" name=\"description\">" . $user['descr'] . "</textarea></td>\n";
+        echo "        <td><textarea class=\"form-control form-control-sm\" rows=\"4\" cols=\"30\" class=\"inputarea\" name=\"description\">" . $user['descr'] . "</textarea></td>\n";
         echo "       </tr>\n";
         echo "       <tr>\n";
         echo "        <td>" . _('Enabled') . "</td>\n";
@@ -151,8 +151,8 @@ if ($edit_id == "-1") {
         echo "       </tr>\n";
         echo "       <tr>\n";
         echo "        <td>&nbsp;</td>\n";
-        echo "        <td><input class=\"btn btn-primary\" type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
-        echo "        <input class=\"btn btn-secondary\" type=\"reset\" name=\"reset\" value=\"" . _('Reset changes') . "\"></td>\n";
+        echo "        <td><input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
+        echo "        <input class=\"btn btn-secondary btn-sm\" type=\"reset\" name=\"reset\" value=\"" . _('Reset changes') . "\"></td>\n";
         echo "      </table>\n";
         echo "     </form>\n";
 

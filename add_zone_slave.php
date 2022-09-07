@@ -89,7 +89,7 @@ if (!$zone_slave_add) {
     exit;
 }
 
-echo "     <h4 class=\"mb-3\">" . _('Add slave zone') . "</h4>\n";
+echo "     <h5 class=\"mb-3\">" . _('Add slave zone') . "</h5>\n";
 
 $users = do_hook('show_users');
 echo "     <form method=\"post\" action=\"add_zone_slave.php\">\n";
@@ -97,19 +97,19 @@ echo "      <table>\n";
 echo "       <tr>\n";
 echo "        <td>" . _('Zone name') . "</td>\n";
 echo "        <td>\n";
-echo "         <input class=\"form-control\" type=\"text\" name=\"domain\" value=\"\">\n";
+echo "         <input class=\"form-control form-control-sm\" type=\"text\" name=\"domain\" value=\"\">\n";
 echo "        </td>\n";
 echo "       </tr>\n";
 echo "       <tr>\n";
 echo "        <td>" . _('IP address of master NS') . ":</td>\n";
 echo "        <td>\n";
-echo "         <input class=\"form-control\" type=\"text\" name=\"slave_master\" value=\"\">\n";
+echo "         <input class=\"form-control form-control-sm\" type=\"text\" name=\"slave_master\" value=\"\">\n";
 echo "        </td>\n";
 echo "       </tr>\n";
 echo "       <tr>\n";
 echo "        <td>" . _('Owner') . ":</td>\n";
 echo "        <td>\n";
-echo "         <select class=\"form-select\" name=\"owner\">\n";
+echo "         <select class=\"form-select form-select-sm\" name=\"owner\">\n";
 /*
   Display list of users to assign slave zone to if the
   editing user has the permissions to, otherwise just
@@ -128,7 +128,7 @@ echo "       </tr>\n";
 echo "       <tr>\n";
 echo "        <td>&nbsp;</td>\n";
 echo "        <td>\n";
-echo "         <input class=\"btn btn-primary\" type=\"submit\" name=\"submit\" value=\"" . _('Add zone') . "\">\n";
+echo "         <input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"submit\" value=\"" . _('Add zone') . "\">\n";
 echo "        </td>\n";
 echo "       </tr>\n";
 echo "      </table>\n";

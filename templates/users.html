@@ -1,4 +1,4 @@
-<h4 class="mb-3">{% trans 'User administration' %}</h4>
+<h5 class="mb-3">{% trans 'User administration' %}</h5>
 
 <form method="post" action="">
     <table class="table table-striped table-hover table-sm">
@@ -34,13 +34,13 @@
 
         {% if (user_uid == session_userid and perm_edit_own) or (user_uid != session_userid and perm_edit_others) %}
         <tr>
-            <td><input class="form-control" type="text" name="user[{{ user['uid'] }}][username]" value="{{ user ['username'] }}"></td>
-            <td><input class="form-control" type="text" name="user[{{ user['uid'] }}][fullname]" value="{{ user ['fullname'] }}"></td>
-<!--            <td><input class="form-control" type="text" name="user[{{ user['uid'] }}][descr]" value="{{ user ['descr'] }}"></td>-->
-            <td><input class="form-control" type="text" name="user[{{ user['uid'] }}][email]" value="{{ user ['email'] }}"></td>
+            <td><input class="form-control form-control-sm" type="text" name="user[{{ user['uid'] }}][username]" value="{{ user ['username'] }}"></td>
+            <td><input class="form-control form-control-sm" type="text" name="user[{{ user['uid'] }}][fullname]" value="{{ user ['fullname'] }}"></td>
+<!--            <td><input class="form-control form-control-sm" type="text" name="user[{{ user['uid'] }}][descr]" value="{{ user ['descr'] }}"></td>-->
+            <td><input class="form-control form-control-sm" type="text" name="user[{{ user['uid'] }}][email]" value="{{ user ['email'] }}"></td>
             <td>
                 {% if perm_templ_perm_edit %}
-                <select class="form-select" name="user[{{ user['uid'] }}][templ_id]">
+                <select class="form-select form-select-sm" name="user[{{ user['uid'] }}][templ_id]">
                     {% for template in perm_templates %}
                     {% if template['id'] == user['tpl_id'] %}
                     {% set selected = 'SELECTED' %}
@@ -113,6 +113,6 @@
         </tbody>
     </table>
 
-    <input type="submit" class="btn btn-primary" name="commit" value="{% trans 'Commit changes' %}">
-    <input type="reset" class="btn btn-secondary" name="reset" value="{% trans 'Reset changes' %}">
+    <input type="submit" class="btn btn-primary btn-sm" name="commit" value="{% trans 'Commit changes' %}">
+    <input type="reset" class="btn btn-secondary btn-sm" name="reset" value="{% trans 'Reset changes' %}">
 </form>

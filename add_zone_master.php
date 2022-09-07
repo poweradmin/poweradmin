@@ -102,7 +102,7 @@ if (!$zone_master_add) {
     exit;
 }
 
-echo "     <h4 class=\"mb-3\">" . _('Add master zone') . "</h4>\n";
+echo "     <h5 class=\"mb-3\">" . _('Add master zone') . "</h5>\n";
 
 $available_zone_types = array("MASTER", "NATIVE");
 $users = do_hook('show_users');
@@ -113,13 +113,13 @@ echo "      <table>\n";
 echo "       <tr>\n";
 echo "        <td>" . _('Zone name') . ":</td>\n";
 echo "        <td>\n";
-echo "          <input class=\"form-control\" type=\"text\" name=\"domain\" value=\"\">\n";
+echo "          <input class=\"form-control form-control-sm\" type=\"text\" name=\"domain\" value=\"\">\n";
 echo "        </td>\n";
 echo "       </tr>\n";
 echo "       <tr>\n";
 echo "        <td>" . _('Owner') . ":</td>\n";
 echo "        <td>\n";
-echo "         <select  class=\"form-select\" name=\"owner\">\n";
+echo "         <select  class=\"form-select form-select-sm\" name=\"owner\">\n";
 /*
   Display list of users to assign zone to if creating
   user has the proper permission to do so.
@@ -137,7 +137,7 @@ echo "       </tr>\n";
 echo "       <tr>\n";
 echo "        <td>" . _('Type') . ":</td>\n";
 echo "        <td>\n";
-echo "         <select class=\"form-select\" name=\"dom_type\">\n";
+echo "         <select class=\"form-select form-select-sm\" name=\"dom_type\">\n";
 foreach ($available_zone_types as $type) {
     $type == $iface_zone_type_default ? $selected = ' selected' : $selected = '';
     echo "          <option value=\"" . $type . "\" $selected>" . strtolower($type) . "</option>\n";
@@ -148,7 +148,7 @@ echo "       </tr>\n";
 echo "       <tr>\n";
 echo "        <td>" . _('Template') . ":</td>\n";
 echo "        <td>\n";
-echo "         <select class=\"form-select\" name=\"zone_template\">\n";
+echo "         <select class=\"form-select form-select-sm\" name=\"zone_template\">\n";
 echo "          <option value=\"none\">none</option>\n";
 foreach ($zone_templates as $zone_template) {
     echo "          <option value=\"" . $zone_template['id'] . "\">" . $zone_template['name'] . "</option>\n";
@@ -167,7 +167,7 @@ if ($pdnssec_use) {
 echo "       <tr>\n";
 echo "        <td>&nbsp;</td>\n";
 echo "        <td>\n";
-echo "         <input class=\"btn btn-primary\" type=\"submit\" name=\"submit\" value=\"" . _('Add zone') . "\">\n";
+echo "         <input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"submit\" value=\"" . _('Add zone') . "\">\n";
 echo "        </td>\n";
 echo "       </tr>\n";
 echo "      </table>\n";

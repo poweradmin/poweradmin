@@ -11,7 +11,7 @@
         <tbody>
         <tr id="username_row">
             <td>{% trans 'Username' %}</td>
-            <td class="w-25"><input class="form-control" type="text" name="user" value=""></td>
+            <td class="w-25"><input class="form-control form-control-sm" type="text" name="user" value=""></td>
             <td>{% trans 'The username to use to connect to the database, make sure the username has
                 sufficient rights to perform administrative task to the PowerDNS database (the installer wants to drop,
                 create and fill tables to the database).' %}
@@ -19,13 +19,13 @@
         </tr>
         <tr id="password_row">
             <td>{% trans 'Password' %}</td>
-            <td><input class="form-control" type="password" name="pass" value="" autocomplete="off"></td>
+            <td><input class="form-control form-control-sm" type="password" name="pass" value="" autocomplete="off"></td>
             <td>{% trans 'The password for this username.' %}</td>
         </tr>
         <tr>
             <td width="210">{% trans 'Database type' %}</td>
             <td>
-                <select class="form-select" name="type" onChange="changePort(this.value)">
+                <select class="form-select form-select-sm" name="type" onChange="changePort(this.value)">
                     <option value="mysql">MySQL</option>
                     <option value="pgsql">PostgreSQL</option>
                     <option value="sqlite">SQLite</option>
@@ -35,39 +35,39 @@
         </tr>
         <tr id="hostname_row">
             <td>{% trans 'Hostname' %}</td>
-            <td><input class="form-control" type="text" id="host" name="host" value="localhost"></td>
+            <td><input class="form-control form-control-sm" type="text" id="host" name="host" value="localhost"></td>
             <td>{% trans 'The hostname on which the PowerDNS database resides. Frequently, this will be "localhost".' %}
             </td>
         </tr>
         <tr id="dbport_row">
             <td>{% trans 'DB Port' %}</td>
-            <td><input class="form-control" type="text" id="dbport" name="dbport" value="3306"></td>
+            <td><input class="form-control form-control-sm" type="text" id="dbport" name="dbport" value="3306"></td>
             <td>{% trans 'The port the database server is listening on.' %}</td>
         </tr>
         <tr>
             <td>{% trans 'Database' %}</td>
-            <td><input class="form-control" type="text" name="name" value=""></td>
+            <td><input class="form-control form-control-sm" type="text" name="name" value=""></td>
             <td><span id="db_name_title">{% trans 'The name of the PowerDNS database.' %}</span>
                 <span id="db_path_title" style="display: none;">{% trans 'The path and filename to the PowerDNS SQLite database.' %}</span>
             </td>
         </tr>
         <tr>
             <td>{% trans 'DB charset' %}</td>
-            <td><input class="form-control" type="text" name="charset" value=""></td>
+            <td><input class="form-control form-control-sm" type="text" name="charset" value=""></td>
             <td>{% trans 'The charset (encoding) which will be used for new tables. Leave it empty then default database
                 charset will be used.' %}
             </td>
         </tr>
         <tr>
             <td>{% trans 'DB collation' %}</td>
-            <td><input class="form-control" type="text" name="collation" value=""></td>
+            <td><input class="form-control form-control-sm" type="text" name="collation" value=""></td>
             <td>{% trans 'Set of rules for comparing characters in database. Leave it empty then default database
                 collation will be used.' %}
             </td>
         </tr>
         <tr>
             <td>{% trans 'Poweradmin administrator password' %}</td>
-            <td><input class="form-control" type="password" name="pa_pass" value="" autocomplete="off"></td>
+            <td><input class="form-control form-control-sm" type="password" name="pa_pass" value="" autocomplete="off"></td>
             <td>{% trans 'The password of the Poweradmin administrator. This administrator has full rights to Poweradmin
                 using the web interface.' %}
             </td>
@@ -77,5 +77,5 @@
     <br>
     <input type="hidden" name="step" value="{{ next_step }}">
     <input type="hidden" name="language" value="{{ language }}">
-    <input type="submit" name="submit" class="btn btn-primary" value="{% trans 'Go to step' %} {{ next_step }}">
+    <input type="submit" name="submit" class="btn btn-primary btn-sm" value="{% trans 'Go to step' %} {{ next_step }}">
 </form>

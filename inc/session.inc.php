@@ -55,21 +55,21 @@ function auth(string $msg = "", string $type = "success") {
         print "<div class=\"alert alert-{$type}\">{$msg}</div>\n";
     }
     ?>
-    <h4><?php echo _('Log in'); ?></h4>
+    <h5><?php echo _('Log in'); ?></h5>
     <form method="post" action="<?php echo htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES); ?>">
         <input type="hidden" name="query_string" value="<?php echo htmlentities($_SERVER["QUERY_STRING"]); ?>">
         <div class="row g-2 col-sm-4">
             <div>
                 <label for="username" class="form-label"><?php echo _('Username'); ?></label>
-                <input type="text" class="form-control" id="username" name="username">
+                <input type="text" class="form-control form-control-sm" id="username" name="username">
             </div>
             <div>
                 <label for="password" class="form-label"><?php echo _('Password'); ?></label>
-                <input type="password" class="form-control" id="password" name="password">
+                <input type="password" class="form-control form-control-sm" id="password" name="password">
             </div>
             <div>
                 <label for="language" class="form-label"><?php echo _('Language'); ?></label>
-                <select class="form-select" name="userlang">
+                <select class="form-select form-select-sm" name="userlang">
                     <?php
                     // List available languages (sorted alphabetically)
                     $locales = scandir('locale/');
@@ -90,7 +90,7 @@ function auth(string $msg = "", string $type = "success") {
                 </select>
             </div>
             <div>
-                <input type="submit" name="authenticate" class="btn btn-primary" value=" <?php echo _('Go'); ?> ">
+                <input type="submit" name="authenticate" class="btn btn-primary btn-sm" value=" <?php echo _('Go'); ?> ">
             </div>
         </div>
     </form>

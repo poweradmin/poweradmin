@@ -1,4 +1,4 @@
-<h4 class="mb-3">{% trans 'Delete zone' %} "{{ zone_info['name'] }}"</h4>
+<h5 class="mb-3">{% trans 'Delete zone' %} "{{ zone_info['name'] }}"</h5>
 {% trans 'Owner' %}: {{ zone_owners }}<br>
 {% trans 'Type' %}: {{ zone_info['type'] }}
 
@@ -11,6 +11,6 @@
 {% endif %}
 
 <p>{% trans 'Are you sure?' %}</p>
-<input type="button" class="btn btn-primary" onClick="location.href='delete_domain.php?id={{ zone_id }}&confirm=1'"
+<input type="button" class="btn btn-primary btn-sm" onClick="location.href='delete_domain.php?id={{ zone_id }}&confirm=1'"
        value="{% trans 'Yes' %}">
-<input type="button" class="btn btn-secondary" onClick="location.href='index.php'" value="{% trans 'No' %}">
+<input type="button" class="btn btn-secondary btn-sm" onClick="location.href='index.php'" value="{% trans 'No' %}">

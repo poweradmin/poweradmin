@@ -101,14 +101,14 @@ if (isset($_POST["submit"])) {
     }
 }
 
-echo "     <h4 class=\"mb-3\">" . _('Add key for zone '). $domain_name . "</h4>\n";
+echo "     <h5 class=\"mb-3\">" . _('Add key for zone '). $domain_name . "</h5>\n";
 
 echo "     <form method=\"post\" action=\"dnssec_add_key.php?id=".$zone_id."\">\n";
 echo "      <table>\n";
 echo "       <tr>\n";
 echo "        <td>" . _('Key type') . "</td>\n";
 echo "        <td>\n";
-echo "         <select class=\"form-select\" name=\"key_type\">\n";
+echo "         <select class=\"form-select form-select-sm\" name=\"key_type\">\n";
 echo "          <option value=\"\"></option>\n";
 echo "		<option value=\"csk\">CSK</option>\n";
 echo "          <option value=\"ksk\">KSK</option>\n";
@@ -119,7 +119,7 @@ echo "       </tr>\n";
 echo "       <tr>\n";
 echo "        <td>" . _('Bits in length') . "</td>\n";
 echo "        <td>\n";
-echo "         <select class=\"form-select\" name=\"bits\">\n";
+echo "         <select class=\"form-select form-select-sm\" name=\"bits\">\n";
 echo "          <option value=\"\"></option>\n";
 echo "          <option value=\"2048\">2048</option>\n";
 echo "          <option value=\"1024\">1024</option>\n";
@@ -133,7 +133,7 @@ echo "       <tr>\n";
 echo "        <td>" . _('Algorithm') . "</td>\n";
 echo "        <td>\n";
 
-echo "         <select class=\"form-select\" name=\"algorithm\">\n";
+echo "         <select class=\"form-select form-select-sm\" name=\"algorithm\">\n";
 echo "          <option value=\"\"></option>\n";
 echo "          <option value=\"rsasha1\">".Dnssec::dnssec_shorthand_to_algorithm_name('rsasha1')."</option>\n";
 echo "          <option value=\"rsasha256\">".Dnssec::dnssec_shorthand_to_algorithm_name('rsasha256')."</option>\n";
@@ -148,7 +148,7 @@ echo "       </tr>\n";
 echo "       <tr>\n";
 echo "        <td>&nbsp;</td>\n";
 echo "        <td>\n";
-echo "         <input class=\"btn btn-primary\" type=\"submit\" name=\"submit\" value=\"" . _('Add key') . "\">\n";
+echo "         <input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"submit\" value=\"" . _('Add key') . "\">\n";
 echo "        </td>\n";
 echo "       </tr>\n";
 echo "      </table>\n";

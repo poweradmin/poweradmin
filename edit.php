@@ -234,9 +234,9 @@ $zone_template_id = DnsRecord::get_zone_template($zone_id);
 $zone_name_to_display = DnsRecord::get_domain_name_by_id($zone_id);
 if (preg_match("/^xn--/", $zone_name_to_display)) {
     $idn_zone_name = idn_to_utf8($zone_name_to_display, IDNA_NONTRANSITIONAL_TO_ASCII);
-    echo "   <h4 class=\"mb-3\">" . _('Edit zone') . " \"" . $idn_zone_name . "\" (\"" . $zone_name_to_display . "\")</h4>\n";
+    echo "   <h5 class=\"mb-3\">" . _('Edit zone') . " \"" . $idn_zone_name . "\" (\"" . $zone_name_to_display . "\")</h5>\n";
 } else {
-    echo "   <h4 class=\"mb-3\">" . _('Edit zone') . " \"" . $zone_name_to_display . "\"</h4>\n";
+    echo "   <h5 class=\"mb-3\">" . _('Edit zone') . " \"" . $zone_name_to_display . "\"</h5>\n";
 }
 
 echo "   <div>\n";
@@ -274,7 +274,7 @@ if ($records == "-1") {
         } else {
             echo "      <td class=\"u\"><input name=\"record[" . $r['id'] . "][name]\" value=\"" . htmlspecialchars($r['name']) . "\"></td>\n";
             echo "      <td class=\"u\">\n";
-            echo "       <select class=\"form-select\" name=\"record[" . $r['id'] . "][type]\">\n";
+            echo "       <select class=\"form-select form-select-sm\" name=\"record[" . $r['id'] . "][type]\">\n";
             $found_selected_type = false;
             foreach (RecordType::getTypes() as $type_available) {
                 if ($type_available == $r['type']) {
@@ -318,7 +318,7 @@ if ($records == "-1") {
         echo "    <tr>\n";
         echo "     <td>\n";
         echo "     </td>\n";
-        echo "     <td colspan=\"4\"><textarea class=\"form-control\" rows=\"5\" cols=\"80\" name=\"comment\">" . htmlspecialchars(DnsRecord::get_zone_comment($zone_id)) . "</textarea></td>\n";
+        echo "     <td colspan=\"4\"><textarea class=\"form-control form-control-sm\" rows=\"5\" cols=\"80\" name=\"comment\">" . htmlspecialchars(DnsRecord::get_zone_comment($zone_id)) . "</textarea></td>\n";
         echo "<td></td>";
         echo "     <td>";
         echo "      <a class=\"btn btn-outline-primary btn-sm\" href=\"edit_comment.php?domain=" . $zone_id . "\">
@@ -331,25 +331,25 @@ if ($records == "-1") {
     echo "     </tr>\n";
     echo "     <tr>\n";
     echo "       <td colspan=\"2\">" . _('Template Name') . "</td>\n";
-    echo "       <td><input class=\"form-control\" type=\"text\" name=\"templ_name\" value=\"\"></td>\n";
+    echo "       <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"templ_name\" value=\"\"></td>\n";
     echo "      </tr>\n";
     echo "      <tr>\n";
     echo "       <td colspan=\"2\">" . _('Template Description') . "</td>\n";
-    echo "       <td><input class=\"form-control\" type=\"text\" name=\"templ_descr\" value=\"\"></td>\n";
+    echo "       <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"templ_descr\" value=\"\"></td>\n";
     echo "      </tr>\n";
     echo "    </table>\n";
-    echo "     <input class=\"btn btn-primary\" type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
-    echo "     <input class=\"btn btn-secondary\" type=\"reset\" name=\"reset\" value=\"" . _('Reset changes') . "\">\n";
-    echo "     <input class=\"btn btn-secondary\" type=\"submit\" name=\"save_as\" value=\"" . _('Save as template') . "\">\n";
+    echo "     <input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
+    echo "     <input class=\"btn btn-secondary btn-sm\" type=\"reset\" name=\"reset\" value=\"" . _('Reset changes') . "\">\n";
+    echo "     <input class=\"btn btn-secondary btn-sm\" type=\"submit\" name=\"save_as\" value=\"" . _('Save as template') . "\">\n";
 
     if ($pdnssec_use) {
         $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
 
         if (Dnssec::dnssec_is_zone_secured($zone_name)) {
-            echo "     <input class=\"btn btn-secondary\" type=\"button\" name=\"dnssec\" onclick=\"location.href = 'dnssec.php?id=" . $zone_id . "';\" value=\"" . _('DNSSEC') . "\">\n";
-            echo "     <input class=\"btn btn-secondary\" type=\"submit\" name=\"unsign_zone\" value=\"" . _('Unsign this zone') . "\">\n";
+            echo "     <input class=\"btn btn-secondary btn-sm\" type=\"button\" name=\"dnssec\" onclick=\"location.href = 'dnssec.php?id=" . $zone_id . "';\" value=\"" . _('DNSSEC') . "\">\n";
+            echo "     <input class=\"btn btn-secondary btn-sm\" type=\"submit\" name=\"unsign_zone\" value=\"" . _('Unsign this zone') . "\">\n";
         } else {
-            echo "     <input class=\"btn btn-secondary\" type=\"submit\" name=\"sign_zone\" value=\"" . _('Sign this zone') . "\">\n";
+            echo "     <input class=\"btn btn-secondary btn-sm\" type=\"submit\" name=\"sign_zone\" value=\"" . _('Sign this zone') . "\">\n";
         }
     }
 
@@ -373,10 +373,10 @@ if ($perm_content_edit == "all" || ($perm_content_edit == "own" || $perm_content
         echo "        <td>" . _('TTL') . "</td>\n";
         echo "       </tr>\n";
         echo "       <tr>\n";
-        echo "        <td><input class=\"form-control\" type=\"text\" name=\"name\" value=\"\">." . $zone_name . "</td>\n";
+        echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"name\" value=\"\">." . $zone_name . "</td>\n";
         echo "        <td>IN</td>\n";
         echo "        <td>\n";
-        echo "         <select class=\"form-select\" name=\"type\">\n";
+        echo "         <select class=\"form-select form-select-sm\" name=\"type\">\n";
         $found_selected_type = !(isset($type) && $type);
         $rev = "";
         foreach (RecordType::getTypes() as $record_type) {
@@ -404,12 +404,12 @@ if ($perm_content_edit == "all" || ($perm_content_edit == "own" || $perm_content
         }
         echo "         </select>\n";
         echo "        </td>\n";
-        echo "        <td><input class=\"form-control\" type=\"text\" name=\"content\" value=\"\"></td>\n";
-        echo "        <td><input class=\"form-control\" type=\"text\" name=\"prio\" value=\"\"></td>\n";
-        echo "        <td><input class=\"form-control\" type=\"text\" name=\"ttl\" value=\"\"></td>\n";
+        echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"content\" value=\"\"></td>\n";
+        echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"prio\" value=\"\"></td>\n";
+        echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"ttl\" value=\"\"></td>\n";
         echo "       </tr>\n";
         echo "      </table>\n";
-        echo "      <input class=\"btn btn-outline-secondary\" type=\"submit\" name=\"commit\" value=\"" . _('Add record') . "\">\n";
+        echo "      <input class=\"btn btn-outline-secondary btn-sm\" type=\"submit\" name=\"commit\" value=\"" . _('Add record') . "\">\n";
         echo "      $rev";
         echo "     </form>\n";
     }
@@ -434,7 +434,7 @@ if ($owners == "-1") {
             echo "        <td>" . $owner["fullname"] . "</td>\n";
             echo "        <td>\n";
             echo "         <input type=\"hidden\" name=\"delete_owner\" value=\"" . $owner["id"] . "\">\n";
-            echo "         <input class=\"btn btn-outline-danger\" type=\"submit\" name=\"co\" value=\"" . _('Delete') . "\">\n";
+            echo "         <input class=\"btn btn-outline-danger btn-sm\" type=\"submit\" name=\"co\" value=\"" . _('Delete') . "\">\n";
             echo "        </td>\n";
             echo "        </form>\n";
             echo "       </tr>\n";
@@ -450,7 +450,7 @@ if ($meta_edit) {
     echo "       <input type=\"hidden\" name=\"domain\" value=\"" . $zone_id . "\">\n";
     echo "       <tr>\n";
     echo "        <td>\n";
-    echo "         <select class=\"form-select\" name=\"newowner\">\n";
+    echo "         <select class=\"form-select form-select-sm\" name=\"newowner\">\n";
     /*
       Show list of users to add as owners of this domain, only if we have permission to do so.
      */
@@ -466,7 +466,7 @@ if ($meta_edit) {
     echo "         </select>\n";
     echo "        </td>\n";
     echo "        <td>\n";
-    echo "         <input class=\"btn btn-outline-secondary\" type=\"submit\" name=\"co\" value=\"" . _('Add') . "\">\n";
+    echo "         <input class=\"btn btn-outline-secondary btn-sm\" type=\"submit\" name=\"co\" value=\"" . _('Add') . "\">\n";
     echo "        </td>\n";
     echo "       </tr>\n";
     echo "      </form>\n";
@@ -480,7 +480,7 @@ if ($meta_edit) {
     echo "       <input type=\"hidden\" name=\"domain\" value=\"" . $zone_id . "\">\n";
     echo "       <tr>\n";
     echo "        <td>\n";
-    echo "         <select class=\"form-select\" name=\"newtype\">\n";
+    echo "         <select class=\"form-select form-select-sm\" name=\"newtype\">\n";
     foreach (ZoneType::getTypes() as $type) {
         $add = '';
         if ($type == $domain_type) {
@@ -495,7 +495,7 @@ if ($meta_edit) {
     echo "         </select>\n";
     echo "        </td>\n";
     echo "        <td>\n";
-    echo "         <input class=\"btn btn-outline-secondary\" type=\"submit\" name=\"type_change\" value=\"" . _('Change') . "\">\n";
+    echo "         <input class=\"btn btn-outline-secondary btn-sm\" type=\"submit\" name=\"type_change\" value=\"" . _('Change') . "\">\n";
     echo "        </td>\n";
     echo "       </tr>\n";
     echo "      </form>\n";
@@ -512,7 +512,7 @@ if ($meta_edit) {
     echo "       <input type=\"hidden\" name=\"current_zone_template\" value=\"" . $zone_template_id . "\">\n";
     echo "       <tr>\n";
     echo "        <td>\n";
-    echo "         <select class=\"form-select\" name=\"zone_template\">\n";
+    echo "         <select class=\"form-select form-select-sm\" name=\"zone_template\">\n";
     echo "          <option value=\"none\">none</option>\n";
     foreach ($zone_templates as $zone_template) {
         $add = '';
@@ -524,7 +524,7 @@ if ($meta_edit) {
     echo "         </select>\n";
     echo "        </td>\n";
     echo "        <td>\n";
-    echo "         <input class=\"btn btn-outline-secondary\" type=\"submit\" name=\"template_change\" value=\"" . _('Change') . "\">\n";
+    echo "         <input class=\"btn btn-outline-secondary btn-sm\" type=\"submit\" name=\"template_change\" value=\"" . _('Change') . "\">\n";
     echo "        </td>\n";
     echo "       </tr>\n";
     echo "      </form>\n";

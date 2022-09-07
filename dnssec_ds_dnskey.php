@@ -97,16 +97,16 @@ $record_count = DnsRecord::count_zone_records($zone_id);
 $zone_templates = ZoneTemplate::get_list_zone_templ($_SESSION['userid']);
 $zone_template_id = DnsRecord::get_zone_template($zone_id);
 
-echo "   <h4 class=\"mb-3\">" . _('DNSSEC public records for zone') . " \"" . DnsRecord::get_domain_name_by_id($zone_id) . "\"</h4>\n";
+echo "   <h5 class=\"mb-3\">" . _('DNSSEC public records for zone') . " \"" . DnsRecord::get_domain_name_by_id($zone_id) . "\"</h5>\n";
 
-echo "   <h4 class=\"mb-3\">" . _('DNSKEY') . "</h4>\n";
+echo "   <h5 class=\"mb-3\">" . _('DNSKEY') . "</h5>\n";
 $dnskey_records = Dnssec::dnssec_get_dnskey_record($domain_name);
 foreach ($dnskey_records as $record) {
     echo $record."<br/>";
 }
 echo "<br>";
 
-echo "   <h4 class=\"mb-3\">" . _('DS record') . "</h4>\n";
+echo "   <h5 class=\"mb-3\">" . _('DS record') . "</h5>\n";
 $ds_records = Dnssec::dnssec_get_ds_records($domain_name);
 foreach ($ds_records as $record) {
     echo $record."<br>\n";

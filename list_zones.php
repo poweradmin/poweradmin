@@ -95,7 +95,7 @@ if (!in_array(ZONE_SORT_BY, array('name', 'type', 'count_records', 'owner'))) {
     $zone_sort_by = 'name';
 }
 
-echo "    <h4 class=\"mb-3\">" . _('List zones') . "</h4>\n";
+echo "    <h5 class=\"mb-3\">" . _('List zones') . "</h5>\n";
 echo "    <div class=\"pb-3 text-secondary\">" . _('Total number of zones:') . " " . $count_zones_all . "</div>\n";
 
 if ($perm_view == "none") {
@@ -114,7 +114,7 @@ if ($perm_view == "none") {
         echo "</div>";
     }
     echo "     <form method=\"post\" action=\"delete_domains.php\">\n";
-    echo "     <table class=\"table table-striped table-hover\">\n";
+    echo "     <table class=\"table table-striped table-hover table-sm\">\n";
     echo "     <thead>\n";
     echo "      <tr>\n";
     echo "       <th><input type=\"checkbox\" class=\"form-check-input\" id=\"select_zones\" onClick=\"toggleZoneCheckboxes()\" /></th>\n";
@@ -190,7 +190,7 @@ if ($perm_view == "none") {
         echo "     </div>\n";
     }
 
-    echo "      <input type=\"submit\" name=\"commit\" value=\"" . _('Delete zone(s)') . "\" class=\"btn btn-primary\">\n";
+    echo "      <input type=\"submit\" name=\"commit\" value=\"" . _('Delete zone(s)') . "\" class=\"btn btn-primary btn-sm\">\n";
     echo "     </form>\n";
 }
 

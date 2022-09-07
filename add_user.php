@@ -75,30 +75,30 @@ if (isset($_POST["commit"]) && do_hook('add_new_user', $_POST)) {
     $use_ldap_checked = "checked";
 }
 
-echo "     <h4 class=\"mb-3\">" . _('Add user') . "</h4>\n";
+echo "     <h5 class=\"mb-3\">" . _('Add user') . "</h5>\n";
 echo "     <form method=\"post\" action=\"add_user.php\">\n";
 echo "      <table>\n";
 echo "       <tr>\n";
 echo "        <td>" . _('Username') . "</td>\n";
-echo "        <td><input class=\"form-control\" type=\"text\" name=\"username\" value=\"" . $username . "\"></td>\n";
+echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"username\" value=\"" . $username . "\"></td>\n";
 echo "       </tr>\n";
 echo "       <tr>\n";
 echo "        <td>" . _('Fullname') . "</td>\n";
-echo "        <td><input class=\"form-control\" type=\"text\" name=\"fullname\" value=\"" . $fullname . "\"></td>\n";
+echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"fullname\" value=\"" . $fullname . "\"></td>\n";
 echo "       </tr>\n";
 echo "       <tr>\n";
 echo "        <td>" . _('Password') . "</td>\n";
-echo "        <td><input class=\"form-control\" id=\"password\" name=\"password\" value=\"" . $password . "\"></td>\n";
+echo "        <td><input class=\"form-control form-control-sm\" id=\"password\" name=\"password\" value=\"" . $password . "\"></td>\n";
 echo "       </tr>\n";
 echo "       <tr>\n";
 echo "        <td>" . _('Email address') . "</td>\n";
-echo "        <td><input class=\"form-control\" type=\"text\" name=\"email\" value=\"" . $email . "\"></td>\n";
+echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"email\" value=\"" . $email . "\"></td>\n";
 echo "       </tr>\n";
 if (do_hook('verify_permission', 'user_edit_templ_perm')) {
     echo "       <tr>\n";
     echo "        <td>" . _('Permission template') . "</td>\n";
     echo "        <td>\n";
-    echo "         <select class=\"form-select\" name=\"perm_templ\">\n";
+    echo "         <select class=\"form-select form-select-sm\" name=\"perm_templ\">\n";
     foreach (do_hook('list_permission_templates') as $template) {
         $selected = $perm_templ == $template['id'] ? "selected" : "";
         echo "          <option value=\"" . $template['id'] . "\"" . $selected . ">" . $template['name'] . "</option>\n";
@@ -109,7 +109,7 @@ if (do_hook('verify_permission', 'user_edit_templ_perm')) {
 }
 echo "       <tr>\n";
 echo "        <td>" . _('Description') . "</td>\n";
-echo "        <td><textarea class=\"form-control\" rows=\"4\" cols=\"30\" class=\"inputarea\" name=\"descr\">" . $description . "</textarea></td>\n";
+echo "        <td><textarea class=\"form-control form-control-sm\" rows=\"4\" cols=\"30\" class=\"inputarea\" name=\"descr\">" . $description . "</textarea></td>\n";
 echo "       </tr>\n";
 echo "       <tr>\n";
 echo "        <td>" . _('Enabled') . "</td>\n";
@@ -123,7 +123,7 @@ if ($ldap_use) {
 }
 echo "       <tr>\n";
 echo "        <td>&nbsp;</td>\n";
-echo "        <td><input class=\"btn btn-primary\" type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\"></td>\n";
+echo "        <td><input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\"></td>\n";
 echo "      </table>\n";
 echo "     </form>\n";
 

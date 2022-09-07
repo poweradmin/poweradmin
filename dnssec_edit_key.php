@@ -80,9 +80,9 @@ if (!Dnssec::dnssec_zone_key_exists($domain_name, $key_id)) {
 
 $key_info = Dnssec::dnssec_get_zone_key($domain_name, $key_id);
 if ($key_info[5]) {
-    echo "     <h4 class=\"mb-3\">" . _('Deactivate zone key') . "</h4>\n";
+    echo "     <h5 class=\"mb-3\">" . _('Deactivate zone key') . "</h5>\n";
 } else {
-    echo "     <h4 class=\"mb-3\">" . _('Activate zone key') . "</h4>\n";
+    echo "     <h5 class=\"mb-3\">" . _('Activate zone key') . "</h5>\n";
 }
 
 if ($confirm == '1') {
@@ -105,8 +105,8 @@ if ($confirm == '1') {
         echo "      " . _('Bits') . ": " . $key_info[4] . "<br>\n";
         echo "      " . _('Active') . ": " . ($key_info[5] ? _('Yes') : _('No')) . "\n";
         echo "     <p>" . _('Are you sure?') . "</p>\n";
-        echo "     <input class=\"btn btn-primary\" type=\"button\" onClick=\"location.href='dnssec_edit_key.php?id=" . $zone_id . "&amp;key_id=$key_id&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
-        echo "     <input class=\"btn btn-secondary\" type=\"button\" onClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
+        echo "     <input class=\"btn btn-primary btn-sm\" type=\"button\" onClick=\"location.href='dnssec_edit_key.php?id=" . $zone_id . "&amp;key_id=$key_id&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
+        echo "     <input class=\"btn btn-secondary btn-sm\" type=\"button\" onClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
     } else {
         error(ERR_PDNSSEC_DEL_ZONE_KEY);
     }

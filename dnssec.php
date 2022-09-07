@@ -93,9 +93,9 @@ $record_count = DnsRecord::count_zone_records($zone_id);
 $zone_templates = ZoneTemplate::get_list_zone_templ($_SESSION['userid']);
 $zone_template_id = DnsRecord::get_zone_template($zone_id);
 
-echo "   <h4 class=\"mb-3\">" . _('DNSSEC keys for zone') . " \"" . DnsRecord::get_domain_name_by_id($zone_id) . "\"</h4>\n";
+echo "   <h5 class=\"mb-3\">" . _('DNSSEC keys for zone') . " \"" . DnsRecord::get_domain_name_by_id($zone_id) . "\"</h5>\n";
 
-echo "     <table class=\"table\">\n";
+echo "     <table class=\"table table-striped table-hover table-sm\">\n";
 echo "      <tr>\n";
 echo "       <th>" . _('ID') . "</th>\n";
 echo "       <th>" . _('Type') . "</th>\n";
@@ -124,7 +124,7 @@ foreach ($keys as $item) {
 }
 
 echo "     </table>\n";
-echo "      <input class=\"btn btn-primary\" type=\"button\" onClick=\"location.href = 'dnssec_add_key.php?id=".$zone_id."';\" value=\"" . _('Add new key') . "\">\n";
-echo "      <input class=\"btn btn-secondary\" type=\"button\" onClick=\"location.href = 'dnssec_ds_dnskey.php?id=".$zone_id."';\" value=\"" . _('Show DS and DNSKEY') . "\">\n";
+echo "      <input class=\"btn btn-primary btn-sm\" type=\"button\" onClick=\"location.href = 'dnssec_add_key.php?id=".$zone_id."';\" value=\"" . _('Add new key') . "\">\n";
+echo "      <input class=\"btn btn-secondary btn-sm\" type=\"button\" onClick=\"location.href = 'dnssec_ds_dnskey.php?id=".$zone_id."';\" value=\"" . _('Show DS and DNSKEY') . "\">\n";
 
 include_once("inc/footer.inc.php");
