@@ -117,7 +117,7 @@ if ($perm_view == "none") {
     echo "     <table class=\"table table-striped table-hover\">\n";
     echo "     <thead>\n";
     echo "      <tr>\n";
-    echo "       <th><input type=\"checkbox\" id=\"select_zones\" onClick=\"toggleZoneCheckboxes()\" /></th>\n";
+    echo "       <th><input type=\"checkbox\" class=\"form-check-input\" id=\"select_zones\" onClick=\"toggleZoneCheckboxes()\" /></th>\n";
     echo "       <th><a href=\"list_zones.php?zone_sort_by=name\">" . _('Name') . "</a></th>\n";
     echo "       <th><a href=\"list_zones.php?zone_sort_by=type\">" . _('Type') . "</a></th>\n";
     echo "       <th><a href=\"list_zones.php?zone_sort_by=count_records\">" . _('Records') . "</a></th>\n";
@@ -171,7 +171,7 @@ if ($perm_view == "none") {
             }
         }
         if ($pdnssec_use) {
-            echo "          <td><input type=\"checkbox\" disabled " . ($zone["secured"] ? 'checked' : '') . "></td>\n";
+            echo "          <td><input class=\"form-check-input\" type=\"checkbox\" disabled " . ($zone["secured"] ? 'checked' : '') . "></td>\n";
         }
         echo "          <td>\n";
         echo "           <a class=\"btn btn-outline-primary btn-sm\" href=\"edit.php?name=" . $zone['name'] . "&id=" . $zone['id'] . "\"><i class=\"bi bi-pencil-square\"></i> " . _('Edit zone') . "</a>\n";

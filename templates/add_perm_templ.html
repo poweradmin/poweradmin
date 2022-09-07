@@ -23,7 +23,7 @@
         {% for perm in perms_avail %}
         {% set descr = perm['descr'] %}
         <tr>
-            <td><input type="checkbox" name="perm_id[]" value="{{ perm['id'] }}"></td>
+            <td><input class="form-check-input" type="checkbox" name="perm_id[]" value="{{ perm['id'] }}"></td>
             <td>{{ perm['name'] }}</td>
             <td>{% trans descr %}</td>
         </tr>

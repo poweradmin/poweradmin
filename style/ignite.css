@@ -3,3 +3,28 @@
 body {
     background-image: linear-gradient(180deg, #eee, #fff 100px, #fff);
 }
+
+header {
+    border-bottom-color: rgb(222, 226, 230);
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+}
+
+header a, a:hover {
+    color: #000000;
+}
+
+footer {
+    background-color: rgb(248, 249, 250);
+    border-top-color: rgb(222, 226, 230);
+    border-top-style: solid;
+    border-top-width: 1px;
+    border-bottom-color: rgb(222, 226, 230);
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+}
+
+footer a, footer a:hover {
+    color: rgb(108, 117, 125);
+    text-decoration: none;
+}

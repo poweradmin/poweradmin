@@ -1,0 +1,102 @@
+/* Dark theme */
+
+body {
+    color: #f8f9fa;
+    background-color: #181a1c;
+}
+
+header {
+    background-color: #242424;
+}
+
+header a, header a:hover {
+    color: #f8f9fa;
+}
+
+footer {
+    background-color: #242424;
+}
+
+footer a, footer a:hover {
+    color: #6c757d;
+    text-decoration: none;
+}
+
+a {
+    color: #6c757d;
+}
+
+a:hover {
+    color: #f8f9fa;
+}
+
+.form-control, .form-control:valid, .form-select {
+    background-color: #212529;
+    color: #f8f9fa;
+}
+
+.list-group-item {
+    color: #6c757d;
+    background-color: #212529;
+}
+
+.list-group-item:hover {
+    color: #f8f9fa;
+    background-color: #343a40;
+}
+
+.table {
+    color: #6c757d !important;
+    background-color: #212529;
+}
+
+.table tr {
+    border-color: #6c757d;
+}
+
+.table td {
+    color: #6c757d !important;
+}
+
+.table-hover > tbody > tr:hover > * {
+    color: #f8f9fa !important;
+    background-color: #343a40 !important;
+}
+
+.table-striped>tbody>tr:nth-of-type(odd)>* {
+    background-color: #2c3031;
+}
+
+.dropdown-menu {
+    background-color: #2c3031;
+}
+
+.dropdown-item {
+    color: #b7b7b8;
+}
+
+.dropdown-item:hover {
+    color: #f8f9fa;
+    background-color: #343a40;
+}
+
+.nav a:hover {
+    color: #f8f9fa !important;
+}
+
+.pagination .page-link {
+    color: #b7b7b8;
+    background: #2c3031;
+    border-color: #373b3e;
+}
+
+.pagination .page-link:hover {
+    color: #f8f9fa;
+    background-color: #343a40;
+}
+
+.page-item.active .page-link {
+    border-color: #b7b7b8;
+    color: #f8f9fa;
+    background-color: #343a40;
+}

@@ -150,7 +150,7 @@ function show_letters($letterstart, $userid) {
     echo '<ul class="pagination pagination-sm">';
 
     if ($letterstart == "1") {
-        echo '<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">0-9</a></li>';
+        echo '<li class="page-item disabled active"><a class="page-link" href="#" tabindex="-1">0-9</a></li>';
     } elseif ($digits_available) {
         echo "<li class=\"page-item\"><a class=\"page-link\" href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=1\">0-9</a></li>";
     } else {
@@ -159,7 +159,7 @@ function show_letters($letterstart, $userid) {
 
     foreach ($char_range as $letter) {
         if ($letter == $letterstart) {
-            echo '<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">' . $letter . '</a></li>';
+            echo '<li class="page-item disabled active"><a class="page-link" href="#" tabindex="-1">' . $letter . '</a></li>';
         } elseif (in_array($letter, $available_chars)) {
             echo "<li class=\"page-item\"><a class=\"page-link\" href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=" . $letter . "\">" . $letter . "</a></li>";
         } else {
