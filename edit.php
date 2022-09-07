@@ -327,7 +327,7 @@ if ($records == "-1") {
         echo "     <tr>\n";
     }
 
-    echo "      <th colspan=\"7\"><br>Save as new template:</th>\n";
+    echo "      <td colspan=\"7\"><br>Save as new template:</td>\n";
     echo "     </tr>\n";
     echo "     <tr>\n";
     echo "       <td colspan=\"2\">" . _('Template Name') . "</td>\n";

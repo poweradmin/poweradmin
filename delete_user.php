@@ -76,7 +76,7 @@ if (isset($_POST['commit'])) {
 
         echo "     <h5 class=\"mb-3\">" . _('Delete user') . " \"" . $fullname . "\"</h5>\n";
         echo "     <form method=\"post\" action=\"\">\n";
-        echo "      <table>\n";
+        echo "      <table class=\"table table-striped table-sm\">\n";
 
         if (count($zones) > 0) {
 
@@ -105,7 +105,7 @@ if (isset($_POST['commit'])) {
                 echo "        <td><input type=\"radio\" name=\"zone[" . $zone['id'] . "][target]\" value=\"leave\" CHECKED></td>\n";
                 echo "        <td><input type=\"radio\" name=\"zone[" . $zone['id'] . "][target]\" value=\"new_owner\"></td>\n";
                 echo "        <td>\n";
-                echo "         <select name=\"zone[" . $zone['id'] . "][newowner]\">\n";
+                echo "         <select class=\"form-select form-select-sm\" name=\"zone[" . $zone['id'] . "][newowner]\">\n";
 
                 foreach ($users as $user) {
                     echo "          <option value=\"" . $user["id"] . "\">" . $user["fullname"] . "</option>\n";
@@ -124,7 +124,7 @@ if (isset($_POST['commit'])) {
         echo "       </tr>\n";
 
         echo "      </table>\n";
-        echo "     <input type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
+        echo "     <input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
         echo "     </form>\n";
     }
 }
