@@ -326,7 +326,8 @@ if ($records == "-1") {
         echo "     </td>\n";
         echo "     <tr>\n";
     }
-
+    echo "</table>";
+    echo "<table><tr>";
     echo "      <td colspan=\"7\"><br>Save as new template:</td>\n";
     echo "     </tr>\n";
     echo "     <tr>\n";
