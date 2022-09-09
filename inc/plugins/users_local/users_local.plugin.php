@@ -771,8 +771,7 @@ function update_user_details_local($details)
         $query = "UPDATE users SET username = " . $db->quote($details ['username'], 'text') . ",
             fullname = " . $db->quote($details ['fullname'], 'text') . ",
             email = " . $db->quote($details ['email'], 'text') . ",
-            description = " . $db->quote($details ['descr'], 'text') . ",
-        active = " . $db->quote($active, 'integer');
+            active = " . $db->quote($active, 'integer');
 
         // If the user is allowed to change the permission template, set it.
         if ($perm_templ_perm_edit == "1") {
