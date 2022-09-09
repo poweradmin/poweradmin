@@ -1,17 +1,17 @@
-<h5 class="mb-3">{% trans 'Edit comment in zone' %} {{ zone_name }}</h5>
+<h5>{% trans 'Edit comment in zone' %} {{ zone_name }}</h5>
 <form method="post" action="edit_comment.php?domain={{ zid }}">
-    <div class="form-floating">
+    <div>
         <label for="floatingTextarea"></label>
-
         {% if zone_type == "SLAVE" or perm_content_edit == "none" or (perm_content_edit == "own" or perm_content_edit
         == "own_as_client") and user_is_zone_owner == "0" %}
-            <textarea class="form-control form-control-sm" rows="10" name="comment" id="floatingTextarea" style="height: 200px" disabled>{{ comment }}</textarea>
+        <textarea class="form-control form-control-sm" rows="10" name="comment" id="floatingTextarea" disabled>{{ comment }}</textarea>
         {% else %}
-            <textarea class="form-control form-control-sm" rows="10" name="comment" id="floatingTextarea" style="height: 200px">{{ comment }}</textarea>
+        <textarea class="form-control form-control-sm" rows="10" name="comment"
+                  id="floatingTextarea">{{ comment }}</textarea>
         {% endif %}
     </div>
     <div class="pt-3">
-        <input type="submit" name="commit" value="{% trans 'Commit changes' %}"  class="btn btn-primary btn-sm">&nbsp;&nbsp;
-        <input type="reset" name="reset" value="{% trans 'Reset changes' %}"  class="btn btn-secondary btn-sm">&nbsp;&nbsp;
+        <input type="submit" name="commit" value="{% trans 'Commit changes' %}" class="btn btn-primary btn-sm">
+        <input type="reset" name="reset" value="{% trans 'Reset changes' %}" class="btn btn-secondary btn-sm">
     </div>
 </form>

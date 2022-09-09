@@ -1,7 +1,7 @@
 <h5 class="mb-3">{% trans 'Bulk registration' %}</h5>
 
 <form method="post" action="bulk_registration.php">
-    <table>
+    <table class="table">
         <tr>
             <td>{% trans 'Owner' %}:</td>
             <td>
@@ -46,12 +46,10 @@
         <tr>
             <td>{% trans 'Zones' %}:</td>
             <td>
-                <ul id="domain_names" style="list-style-type:none; padding:0 ">
-                    <li>{% trans 'Type one domain per line' %}:</li>
-                    <li>
-                        <textarea class="form-control form-control-sm" name="domains" rows="10" style="width: 500px;">{% if error and domains %}{{ domains | join('\n') }}{% endif %}</textarea>
-                    </li>
-                </ul>
+                <div>{% trans 'Type one domain per line' %}:</div>
+                <div>
+                    <textarea class="form-control form-control-sm" name="domains" rows="10">{% if error and domains %}{{ domains | join('\n') }}{% endif %}</textarea>
+                </div>
             </td>
         </tr>
 

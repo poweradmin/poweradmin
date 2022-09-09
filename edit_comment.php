@@ -87,7 +87,10 @@ if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
 $app = AppFactory::create();
 $app->render('edit_comment.html', [
     'zid' => $zid,
-    'comment' => DnsRecord::get_zone_comment($zid)
+    'comment' => DnsRecord::get_zone_comment($zid),
+    'zone_type' => $zone_type,
+    'perm_content_edit' => $perm_content_edit,
+    'user_is_zone_owner' => $user_is_zone_owner,
 ]);
 
 include_once('inc/footer.inc.php');
