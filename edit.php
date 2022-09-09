@@ -531,7 +531,7 @@ if ($meta_edit) {
     echo "      </form>\n";
 } else {
     $zone_template_details = ZoneTemplate::get_zone_templ_details($zone_template_id);
-    echo "      <tr><td>" . (isset($zone_template_details) ? strtolower($zone_template_details['name']) : "none") . "</td><td>&nbsp;</td></tr>\n";
+    echo "      <tr><td>" . ($zone_template_details ? strtolower($zone_template_details['name']) : "none") . "</td><td>&nbsp;</td></tr>\n";
 }
 
 if ($domain_type == "SLAVE") {
