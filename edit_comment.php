@@ -38,6 +38,14 @@ require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
 
+$app = AppFactory::create();
+$iface_zone_comments = $app->config('iface_zone_comments');
+if (!$iface_zone_comments) {
+    error(ERR_PERM_EDIT_COMMENT);
+    include_once('inc/footer.inc.php');
+    exit;
+}
+
 if (do_hook('verify_permission', 'zone_content_view_others')) {
     $perm_view = "all";
 } elseif (do_hook('verify_permission', 'zone_content_view_own')) {
@@ -92,7 +100,6 @@ if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
     exit;
 }
 
-$app = AppFactory::create();
 $app->render('edit_comment.html', [
     'zone_id' => $zone_id,
     'comment' => DnsRecord::get_zone_comment($zone_id),
