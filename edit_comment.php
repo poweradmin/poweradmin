@@ -31,6 +31,7 @@
 
 use Poweradmin\AppFactory;
 use Poweradmin\DnsRecord;
+use Poweradmin\Validation;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/message.inc.php';
@@ -63,17 +64,24 @@ if (do_hook('verify_permission', 'zone_meta_edit_others')) {
     $perm_meta_edit = "none";
 }
 
-$zid = $_GET['domain'];
+if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
+    error(ERR_INV_INPUT);
+    include_once('inc/footer.inc.php');
+    exit;
+}
+$zone_id = htmlspecialchars($_GET['id']);
 
-$user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zid);
-$zone_type = DnsRecord::get_domain_type($zid);
-$zone_name = DnsRecord::get_domain_name_by_id($zid);
+$user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
+$zone_type = DnsRecord::get_domain_type($zone_id);
+$zone_name = DnsRecord::get_domain_name_by_id($zone_id);
+
+$perm_edit_comment = $zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0";
 
 if (isset($_POST["commit"])) {
-    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
+    if ($perm_edit_comment) {
         error(ERR_PERM_EDIT_COMMENT);
     } else {
-        DnsRecord::edit_zone_comment($_GET['domain'], $_POST['comment']);
+        DnsRecord::edit_zone_comment($zone_id, $_POST['comment']);
         success(SUC_COMMENT_UPD);
     }
 }
@@ -86,11 +94,9 @@ if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
 
 $app = AppFactory::create();
 $app->render('edit_comment.html', [
-    'zid' => $zid,
-    'comment' => DnsRecord::get_zone_comment($zid),
-    'zone_type' => $zone_type,
-    'perm_content_edit' => $perm_content_edit,
-    'user_is_zone_owner' => $user_is_zone_owner,
+    'zone_id' => $zone_id,
+    'comment' => DnsRecord::get_zone_comment($zone_id),
+    'disabled' => $perm_edit_comment
 ]);
 
 include_once('inc/footer.inc.php');

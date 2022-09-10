@@ -321,7 +321,7 @@ if ($records == "-1") {
         echo "     <td colspan=\"4\"><textarea class=\"form-control form-control-sm\" rows=\"5\" cols=\"80\" name=\"comment\">" . htmlspecialchars(DnsRecord::get_zone_comment($zone_id)) . "</textarea></td>\n";
         echo "<td></td>";
         echo "     <td>";
-        echo "      <a class=\"btn btn-outline-primary btn-sm\" href=\"edit_comment.php?domain=" . $zone_id . "\">
+        echo "      <a class=\"btn btn-outline-primary btn-sm\" href=\"edit_comment.php?id=" . $zone_id . "\">
                                 <i class=\"bi bi-pencil-square\"></i> " . _('Edit comment') . "</a>\n";
         echo "     </td>\n";
         echo "     <tr>\n";

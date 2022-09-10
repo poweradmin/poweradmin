@@ -1,14 +1,9 @@
 <h5>{% trans 'Edit comment in zone' %} {{ zone_name }}</h5>
-<form method="post" action="edit_comment.php?domain={{ zid }}">
+<form method="post" action="edit_comment.php?id={{ zone_id }}">
     <div>
         <label for="floatingTextarea"></label>
-        {% if zone_type == "SLAVE" or perm_content_edit == "none" or (perm_content_edit == "own" or perm_content_edit
-        == "own_as_client") and user_is_zone_owner == "0" %}
-        <textarea class="form-control form-control-sm" rows="10" name="comment" id="floatingTextarea" disabled>{{ comment }}</textarea>
-        {% else %}
         <textarea class="form-control form-control-sm" rows="10" name="comment"
-                  id="floatingTextarea">{{ comment }}</textarea>
-        {% endif %}
+                  id="floatingTextarea" {% if disabled %}disabled{% endif %}>{{ comment }}</textarea>
     </div>
     <div class="pt-3">
         <input type="submit" name="commit" value="{% trans 'Commit changes' %}" class="btn btn-primary btn-sm">
