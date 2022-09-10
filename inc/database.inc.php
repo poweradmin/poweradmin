@@ -45,7 +45,6 @@ function dbConnect() {
     global $db_charset;
     global $db_file;
     global $db_debug;
-    global $db_ssl_ca;
 
     global $sql_regexp;
 

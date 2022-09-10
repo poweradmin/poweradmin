@@ -24,7 +24,6 @@ $db_type = '';
 //$db_charset = 'latin1'; // or utf8
 //$db_file		= '';		# used only for SQLite, provide full path to database file
 //$db_debug		= false;	# show all SQL queries
-//$db_ssl_ca            = '';   // TODO: not used?
 
 // Security settings
 // This should be changed upon install

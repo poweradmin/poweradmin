@@ -30,7 +30,6 @@
 
 // Dependencies
 use Poweradmin\Password;
-use Poweradmin\Version;
 use Twig\Environment;
 use Twig\Extensions\I18nExtension;
 use Twig\Loader\FilesystemLoader;
