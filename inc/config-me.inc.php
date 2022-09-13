@@ -68,6 +68,9 @@ $syslog_ident = 'poweradmin';
 // On Windows usually only LOG_USER is available
 $syslog_facility = LOG_USER;
 
+//mysqllogging true or false
+$mysql_log = false;
+
 // DNSSEC settings
 $pdnssec_use = false;
 $pdnssec_debug = false;
