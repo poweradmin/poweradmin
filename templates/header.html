@@ -32,7 +32,7 @@
                             <a href="search.php" class="text-secondary text-decoration-none">{% trans 'Search' %}</a>
                         </li>
                     {% endif %}
-                    {% if perm_supermaster_add %}
+                    {% if perm_supermaster_add and mysql_logs == true%}
                         <li class="p-1">
                             <a href="list_logs.php" class="nav-link text-secondary"><i class="bi bi-list-ul"></i></a>
                             <a href="list_logs.php" class="text-secondary text-decoration-none">{% trans 'List logs' %}</a>
