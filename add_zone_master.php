@@ -82,7 +82,7 @@ if (isset($_POST['submit']) && $zone_master_add) {
         success("<a href=\"edit.php?id=" . $domain_id . "\">" . $zone . " - " . SUC_ZONE_ADD . '</a>');
         Syslog::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
             $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-            $zone, $dom_type, $zone_template));
+            $zone, $dom_type, $zone_template), $domain_id);
 
         if ($pdnssec_use) {
             if ($enable_dnssec) {

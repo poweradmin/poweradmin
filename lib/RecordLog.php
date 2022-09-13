@@ -70,6 +70,6 @@ class RecordLog {
             $this->record_prior['type'], $this->record_prior['name'],
             $this->record_prior['content'], $this->record_prior['ttl'], $this->record_prior['prio'],
             $this->record_after['type'], $this->record_after['name'],
-            $this->record_after['content'], $this->record_after['ttl'], $this->record_after['prio']));
+            $this->record_after['content'], $this->record_after['ttl'], $this->record_after['prio']), $this->record_prior['rid']);
     }
 }

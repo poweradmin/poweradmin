@@ -25,33 +25,40 @@ namespace Poweradmin;
 class Syslog
 {
 
-    public static function do_log($syslog_message, $priority)
+
+
+    public static function do_log($syslog_message, $priority, $zone_id)
     {
-        global $syslog_use, $syslog_ident, $syslog_facility;
+    
+        global $syslog_use, $syslog_ident, $syslog_facility, $mysql_log;
         if ($syslog_use) {
             openlog($syslog_ident, LOG_PERROR, $syslog_facility);
-            syslog($priority, $syslog_message);
+            syslog($priority, $syslog_message." ".$zone_id);
             closelog();
+            if ($mysql_log )
+                SQLlog::do_log($syslog_message, $zone_id);
         }
+       
+
     }
 
-    public static function log_error($syslog_message)
+    public static function log_error($syslog_message, $zone_id=NULL)
     {
-        self::do_log($syslog_message, LOG_ERR);
+        self::do_log($syslog_message, LOG_ERR, $zone_id);
     }
 
-    public static function log_warn($syslog_message)
+    public static function log_warn($syslog_message, $zone_id=NULL)
     {
-        self::do_log($syslog_message, LOG_WARNING);
+        self::do_log($syslog_message, LOG_WARNING, $zone_id);
     }
 
-    public static function log_notice($syslog_message)
+    public static function log_notice($syslog_message, $zone_id=NULL)
     {
-        self::do_log($syslog_message, LOG_NOTICE);
+        self::do_log($syslog_message, LOG_NOTICE, $zone_id);
     }
 
-    public static function log_info($syslog_message)
+    public static function log_info($syslog_message, $zone_id=NULL)
     {
-        self::do_log($syslog_message, LOG_INFO);
+        self::do_log($syslog_message, LOG_INFO, $zone_id);
     }
 }
