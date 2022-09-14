@@ -69,7 +69,7 @@ $syslog_ident = 'poweradmin';
 $syslog_facility = LOG_USER;
 
 //mysqllogging true or false
-$mysql_log = true;
+$mysql_log = false;
 
 // DNSSEC settings
 $pdnssec_use = false;
