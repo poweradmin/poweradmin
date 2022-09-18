@@ -458,6 +458,49 @@ $def_tables = array(
                 'flags' => 'not_null'
             )
         )
+    ),
+    array(
+        'table_name' => 'logs',
+        'options' => array('type' => 'innodb'),
+        'fields' => array(
+            'id' => array
+            (
+                'notnull' => 1,
+                'unsigned' => 0,
+                'default' => 0,
+                'autoincrement' => 1,
+                'type' => 'integer',
+                'name' => 'id',
+                'table' => 'logs',
+                'flags' => 'primary_keynot_null'
+            ),
+            'zone_id' => array(
+                'notnull' => 0,
+                'unsigned' => 0,
+                'default' => 0,
+                'type' => 'integer',
+                'name' => 'zone_id',
+                'table' => 'logs',
+                'flags' => 'key'
+            ),
+            'log' => array
+            (
+                'notnull' => 1,
+                'length' => 2048,
+                'type' => 'text',
+                'name' => 'log',
+                'table' => 'logs',
+                'flags' => ''
+            ),
+            'created_at' => array(
+                'notnull' => 0,
+                'default' => 'current_timestamp()',
+                'type' => 'datetime',
+                'name' => 'created_at',
+                'table' => 'logs',
+                'flags' => ''
+            ),
+        )
     )
 );
 
