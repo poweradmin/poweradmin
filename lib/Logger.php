@@ -22,19 +22,19 @@
 
 namespace Poweradmin;
 
-class Syslog
+class Logger
 {
-
     public static function do_log($syslog_message, $priority, $zone_id)
     {
-    
         global $syslog_use, $syslog_ident, $syslog_facility, $dblog_use;
         if ($syslog_use) {
             openlog($syslog_ident, LOG_PERROR, $syslog_facility);
-            syslog($priority, $syslog_message." ".$zone_id);
+            syslog($priority, $syslog_message);
             closelog();
-            if ($dblog_use)
-                DbLog::do_log($syslog_message, $zone_id);
+        }
+
+        if ($dblog_use) {
+            DbLog::do_log($syslog_message, $zone_id);
         }
     }
 

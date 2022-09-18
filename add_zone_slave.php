@@ -32,7 +32,7 @@
 use Poweradmin\AppFactory;
 use Poweradmin\Dns;
 use Poweradmin\DnsRecord;
-use Poweradmin\Syslog;
+use Poweradmin\Logger;
 use Poweradmin\Validation;
 
 require_once 'inc/toolkit.inc.php';
@@ -75,7 +75,7 @@ if (isset($_POST['submit']) && $zone_slave_add) {
     } else {
         if (DnsRecord::add_domain($zone, $owner, $type, $master, 'none')) {
             success("<a href=\"edit.php?id=" . DnsRecord::get_zone_id_from_name($zone) . "\">" . SUC_ZONE_ADD . '</a>');
-            Syslog::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',
+            Logger::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',
                 $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                 $zone, $master));
             unset($zone, $owner, $webip, $mailip, $empty, $type, $master);

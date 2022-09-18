@@ -33,7 +33,7 @@ use Poweradmin\AppFactory;
 use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
 use Poweradmin\Validation;
-use Poweradmin\Syslog;
+use Poweradmin\Logger;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/message.inc.php';
@@ -61,11 +61,11 @@ if (isset($_GET['confirm']) && Validation::is_number($_GET['confirm']) && $_GET[
     if (DnsRecord::delete_record($record_id)) {
         success("<a href=\"edit.php?id=" . $zid . "\">" . SUC_RECORD_DEL . "</a>");
         if (isset($record_info['prio'])) {
-            Syslog::log_info(sprintf('client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s priority:%s',
+            Logger::log_info(sprintf('client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s priority:%s',
                 $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                 $record_info['type'], $record_info['name'], $record_info['content'], $record_info['ttl'], $record_info['prio'] ), $zid);
         } else {
-            Syslog::log_info(sprintf('client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s',
+            Logger::log_info(sprintf('client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s',
                 $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                 $record_info['type'], $record_info['name'], $record_info['content'], $record_info['ttl'] ), $zid);
 

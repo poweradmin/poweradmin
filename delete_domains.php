@@ -30,7 +30,7 @@
  */
 
 use Poweradmin\DnsRecord;
-use Poweradmin\Syslog;
+use Poweradmin\Logger;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/message.inc.php';
@@ -70,7 +70,7 @@ if ($confirm == '1') {
         count($deleted_zones) == 1 ? success(SUC_ZONE_DEL) : success(SUC_ZONES_DEL);
         //Zones successfully deleted so generate log messages from information retrieved earlier
         foreach ($deleted_zones as $zone_info) {
-            Syslog::log_info(sprintf('client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
+            Logger::log_info(sprintf('client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
                               $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                               $zone_info['name'], $zone_info['type']));
         }

@@ -32,7 +32,7 @@
 use Poweradmin\AppFactory;
 use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
-use Poweradmin\Syslog;
+use Poweradmin\Logger;
 use Poweradmin\Validation;
 
 require_once 'inc/toolkit.inc.php';
@@ -80,7 +80,7 @@ if ($confirm == '1') {
 
     if (DnsRecord::delete_domain($zone_id)) {
         success(SUC_ZONE_DEL);
-        Syslog::log_info(sprintf('client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
+        Logger::log_info(sprintf('client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
             $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
             $zone_info['name'], $zone_info['type']));
     }

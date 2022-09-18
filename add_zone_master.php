@@ -33,7 +33,7 @@ use Poweradmin\AppFactory;
 use Poweradmin\Dns;
 use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
-use Poweradmin\Syslog;
+use Poweradmin\Logger;
 use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
 use Poweradmin\ZoneType;
@@ -80,7 +80,7 @@ if (isset($_POST['submit']) && $zone_master_add) {
     } elseif (DnsRecord::add_domain($zone, $owner, $dom_type, '', $zone_template)) {
         $domain_id = DnsRecord::get_zone_id_from_name($zone);
         success("<a href=\"edit.php?id=" . $domain_id . "\">" . $zone . " - " . SUC_ZONE_ADD . '</a>');
-        Syslog::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
+        Logger::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
             $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
             $zone, $dom_type, $zone_template), $domain_id);
 
