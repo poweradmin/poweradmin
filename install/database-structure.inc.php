@@ -481,7 +481,7 @@ $def_tables = array(
                 'type' => 'integer',
                 'name' => 'zone_id',
                 'table' => 'logs',
-                'flags' => 'key'
+                'flags' => ''
             ),
             'log' => array
             (
@@ -494,8 +494,8 @@ $def_tables = array(
             ),
             'created_at' => array(
                 'notnull' => 0,
-                'default' => 'current_timestamp()',
-                'type' => 'datetime',
+                'default' => 'current_timestamp',
+                'type' => 'timestamp',
                 'name' => 'created_at',
                 'table' => 'logs',
                 'flags' => ''

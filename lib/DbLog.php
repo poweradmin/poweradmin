@@ -37,7 +37,7 @@ class DbLog
     public static function count_all_logs()
     {
         global $db;
-        $stmt = $db->query("SELECT count(*) AS 'number_of_logs' FROM logs");
+        $stmt = $db->query("SELECT count(*) AS number_of_logs FROM logs");
         return $stmt->fetch()['number_of_logs'];
     }
 
@@ -45,7 +45,7 @@ class DbLog
     {
         global $db;
         $stmt = $db->prepare("
-                    SELECT count(domains.id) as 'number_of_logs' 
+                    SELECT count(domains.id) as number_of_logs
                     FROM logs 
                     INNER JOIN domains 
                     ON domains.id = logs.zone_id 
@@ -60,7 +60,7 @@ class DbLog
     public static function count_auth_logs()
     {
         global $db;
-        $stmt = $db->query("SELECT count(*) as 'number_of_logs' FROM logs where zone_id is null");
+        $stmt = $db->query("SELECT count(*) as number_of_logs FROM logs where zone_id is null");
         return $stmt->fetch()['number_of_logs'];
     }
 

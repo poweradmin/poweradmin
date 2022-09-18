@@ -151,8 +151,6 @@ class PDOLayer extends PDOCommon {
         $db_type = $this->getAttribute(PDO::ATTR_DRIVER_NAME);
         $query_fields = array();
 
-        $keys = [];
-
         foreach ($fields as $key => $arr) {
             if ($arr['type'] == 'text' and isset($arr['length'])) {
                 $arr['type'] = 'VARCHAR';
@@ -178,10 +176,6 @@ class PDOLayer extends PDOCommon {
                 $line .= ' PRIMARY KEY';
             }
 
-            if ($arr['flags'] == 'key') {
-                $keys[] = "KEY {$arr['name']}({$arr['name']})";
-            }
-
             if (isset($arr['default']) && $arr['default'] != '0') {
                 $line .= ' DEFAULT ' . $arr['default'];
             }
@@ -189,8 +183,7 @@ class PDOLayer extends PDOCommon {
             $query_fields[] = $line;
         }
 
-        $index_keys = $keys ? ', ' . implode(', ', $keys) : '';
-        $query = "CREATE TABLE $name (" . implode(', ', $query_fields) . $index_keys . ')';
+        $query = "CREATE TABLE $name (" . implode(', ', $query_fields) . ')';
 
         if ($db_type == 'mysql') {
             if (isset($options['type'])) {
