@@ -32,6 +32,12 @@
                             <a href="search.php" class="text-secondary text-decoration-none">{% trans 'Search' %}</a>
                         </li>
                     {% endif %}
+                    {% if perm_supermaster_add and mysql_logs == true%}
+                        <li class="p-1">
+                            <a href="list_logs.php" class="nav-link text-secondary"><i class="bi bi-list-ul"></i></a>
+                            <a href="list_logs.php" class="text-secondary text-decoration-none">{% trans 'List logs' %}</a>
+                        </li>
+                    {% endif %}
                     {% if perm_view_zone_own or perm_view_zone_other or perm_zone_master_add or perm_zone_slave_add %}
                         <li class="p-1">
                             <a href="list_zones.php" class="nav-link text-secondary"><i class="bi bi-diagram-3"></i></a>

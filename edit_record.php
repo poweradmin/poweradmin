@@ -69,7 +69,7 @@ if (do_hook('verify_permission', 'zone_meta_edit_others')) {
     $perm_meta_edit = "none";
 }
 
-$zid = DnsRecord::get_zone_id_from_record_id($_GET['id']);
+ $zid = DnsRecord::get_zone_id_from_record_id($_GET['id']);
 
 $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zid );
 $zone_type = DnsRecord::get_domain_type($zid);
@@ -92,7 +92,8 @@ if (isset($_POST["commit"])) {
                              .' record_type:%s record:%s content:%s ttl:%s priority:%s',
                               $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                               $old_record_info['type'], $old_record_info['name'], $old_record_info['content'], $old_record_info['ttl'], $old_record_info['prio'],
-                              $new_record_info['type'], $new_record_info['name'], $new_record_info['content'], $new_record_info['ttl'], $new_record_info['prio']));
+                              $new_record_info['type'], $new_record_info['name'], $new_record_info['content'], $new_record_info['ttl'], $new_record_info['prio']),
+                              $zid);
 
             if ($pdnssec_use && Dnssec::dnssec_rectify_zone($zid)) {
                 success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);

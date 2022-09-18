@@ -47,7 +47,8 @@ $app->render('index.html', [
     'perm_supermaster_view' => do_hook('verify_permission', 'supermaster_view'),
     'perm_zone_master_add' => do_hook('verify_permission', 'zone_master_add'),
     'perm_zone_slave_add' => do_hook('verify_permission', 'zone_slave_add'),
-    'perm_supermaster_add' => do_hook('verify_permission', 'supermaster_add')
+    'perm_supermaster_add' => do_hook('verify_permission', 'supermaster_add'),
+    'mysql_logs' => $mysql_log
 ]);
 
 include_once("inc/footer.inc.php");

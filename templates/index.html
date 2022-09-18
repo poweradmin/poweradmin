@@ -40,6 +40,11 @@
             <i class="bi bi-plus-circle"></i> <a href="bulk_registration.php">{% trans 'Bulk registration' %}</a>
         </li>
     {% endif %}
+    {% if perm_supermaster_add and mysql_logs ==  true %}
+    <li class="list-group-item list-group-item-action">
+        <i class="bi bi-list-ul"></i> <a href="list_logs.php">{% trans 'List logs' %}</a>
+    </li>
+    {% endif %}
     {% if auth_used != "ldap" %}
         <li class="list-group-item list-group-item-action">
             <i class="bi bi-key"></i> <a href="change_password.php">{% trans 'Change password' %}</a>
