@@ -46,6 +46,9 @@ $vars = [
     'install_error' => !$ignore_install_dir && file_exists('install') ? ERR_INSTALL_DIR_EXISTS : false,
 ];
 
+$app = AppFactory::create();
+$dblog_use = $app->config('dblog_use');
+
 if (isset($_SESSION["userid"])) {
     $perm_is_godlike = do_hook('verify_permission', 'user_is_ueberuser');
 
@@ -63,9 +66,8 @@ if (isset($_SESSION["userid"])) {
         'perm_add_new' => do_hook('verify_permission', 'user_add_new'),
         'session_key_error' => $perm_is_godlike && $session_key == 'p0w3r4dm1n' ? ERR_DEFAULT_CRYPTOKEY_USED : false,
         'auth_used' => $_SESSION["auth_used"] != "ldap",
-        'mysql_logs' => $mysql_log
+        'dblog_use' => $dblog_use
     ]);
 }
 
-$app = AppFactory::create();
 $app->render('header.html', $vars);

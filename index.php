@@ -34,6 +34,7 @@ use Poweradmin\AppFactory;
 require 'vendor/autoload.php';
 
 $app = AppFactory::create();
+$dblog_use = $app->config('dblog_use');
 
 require_once 'inc/toolkit.inc.php';
 include_once 'inc/header.inc.php';
@@ -48,7 +49,8 @@ $app->render('index.html', [
     'perm_zone_master_add' => do_hook('verify_permission', 'zone_master_add'),
     'perm_zone_slave_add' => do_hook('verify_permission', 'zone_slave_add'),
     'perm_supermaster_add' => do_hook('verify_permission', 'supermaster_add'),
-    'mysql_logs' => $mysql_log
+    'perm_is_godlike' => do_hook('verify_permission', 'user_is_ueberuser'),
+    'dblog_use' => $dblog_use
 ]);
 
 include_once("inc/footer.inc.php");
