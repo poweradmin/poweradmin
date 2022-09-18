@@ -49,8 +49,8 @@ class DbLog
                     FROM logs 
                     INNER JOIN domains 
                     ON domains.id = logs.zone_id 
-                    WHERE domains.name LIKE :search_by"
-        );
+                    WHERE domains.name LIKE :search_by
+        ");
         $name = $domain;
         $name = "%$name%";
         $stmt->execute(['search_by' => $name]);
@@ -72,7 +72,7 @@ class DbLog
                     ORDER BY created_at DESC 
                     LIMIT :limit 
                     OFFSET :offset 
-                    ");
+        ");
 
         $stmt->execute([
             'limit' => $limit,
@@ -89,9 +89,8 @@ class DbLog
         }
 
         global $db;
-        $stmt = $db->prepare(
-            "SELECT 
-            logs.log, logs.created_at, domains.name FROM logs 
+        $stmt = $db->prepare("
+            SELECT logs.log, logs.created_at, domains.name FROM logs
             INNER JOIN domains ON domains.id = logs.zone_id 
             WHERE domains.name LIKE :search_by 
             LIMIT :limit 
@@ -132,7 +131,7 @@ class DbLog
                     ORDER BY created_at DESC 
                     LIMIT :limit 
                     OFFSET :offset 
-                    ");
+        ");
 
         $stmt->execute([
             'limit' => $limit,
