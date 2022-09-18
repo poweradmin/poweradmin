@@ -27,7 +27,7 @@ class DbLog
     public static function do_log($msg, $zone_id)
     {
         global $db;
-        $stmt = $db->prepare(' insert into logs (zone_id, log) values (:zone_id, :msg)');
+        $stmt = $db->prepare('INSERT INTO logs (zone_id, log) VALUES (:zone_id, :msg)');
         $stmt->execute([
             ':msg' => $db->quote($msg, 'text'),
             ':zone_id' => $zone_id
@@ -37,7 +37,7 @@ class DbLog
     public static function count_all_logs()
     {
         global $db;
-        $stmt = $db->query("SELECT count(*) as 'number_of_logs' FROM logs ");
+        $stmt = $db->query("SELECT count(*) AS 'number_of_logs' FROM logs");
         return $stmt->fetch()['number_of_logs'];
     }
 
@@ -45,11 +45,11 @@ class DbLog
     {
         global $db;
         $stmt = $db->prepare("
-                    select count(domains.id) as 'number_of_logs' 
-                    from logs 
-                    inner join domains 
-                    on domains.id = logs.zone_id 
-                    where domains.name like :search_by "
+                    SELECT count(domains.id) as 'number_of_logs' 
+                    FROM logs 
+                    INNER JOIN domains 
+                    ON domains.id = logs.zone_id 
+                    WHERE domains.name LIKE :search_by"
         );
         $name = $domain;
         $name = "%$name%";
@@ -60,7 +60,7 @@ class DbLog
     public static function count_auth_logs()
     {
         global $db;
-        $stmt = $db->query("SELECT count(*) as 'number_of_logs' FROM logs where zone_id is null ");
+        $stmt = $db->query("SELECT count(*) as 'number_of_logs' FROM logs where zone_id is null");
         return $stmt->fetch()['number_of_logs'];
     }
 
@@ -69,7 +69,7 @@ class DbLog
         global $db;
         $stmt = $db->prepare("
                     SELECT * FROM logs 
-                    order by created_at desc 
+                    ORDER BY created_at DESC 
                     LIMIT :limit 
                     OFFSET :offset 
                     ");
@@ -90,10 +90,10 @@ class DbLog
 
         global $db;
         $stmt = $db->prepare(
-            "select 
-            logs.log, logs.created_at, domains.name from logs 
-            inner join domains on domains.id = logs.zone_id 
-            where domains.name like :search_by 
+            "SELECT 
+            logs.log, logs.created_at, domains.name FROM logs 
+            INNER JOIN domains ON domains.id = logs.zone_id 
+            WHERE domains.name LIKE :search_by 
             LIMIT :limit 
             OFFSET :offset"
         );
@@ -128,8 +128,8 @@ class DbLog
         global $db;
         $stmt = $db->prepare("
                     SELECT * FROM logs 
-                    where zone_id is null
-                    order by created_at desc 
+                    WHERE zone_id is NULL
+                    ORDER BY created_at DESC 
                     LIMIT :limit 
                     OFFSET :offset 
                     ");
