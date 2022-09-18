@@ -37,54 +37,29 @@ if (isset($_GET['auth'])) {
 $number_of_logs = 0;
 $logs_per_page = $app->config('iface_rowamount');
 $number_of_page = 0;
-if (isset($_GET['name'])) {
-    /**
-     * search by domain
-     */
 
-    //get number of logs for domain
+if (isset($_GET['name'])) {
     $number_of_logs = DbLog::count_logs_by_domain($_GET['name']);
-    //count pages for domain
     $number_of_pages = round($number_of_logs / $logs_per_page + 0.5);
-    //check page
     if ($selected_page > $number_of_pages) die('Unknown page');
-    //get logs for domain
     $data = DbLog::get_logs_for_domain($_GET['name'], $logs_per_page, ($selected_page - 1) * $logs_per_page);
 
 } elseif (isset($_GET['auth'])) {
-    /**
-     * show auth log
-     */
-
-    //get number of auth logs
     $number_of_logs = DbLog::count_auth_logs();
-    //get number of pager for auth logs
     $number_of_pages = round($number_of_logs / $logs_per_page + 0.5);
-    //check page
     if ($selected_page > $number_of_pages) die('Unknown page');
-    //get auth logs
     $data = DbLog::get_auth_logs($logs_per_page, ($selected_page - 1) * $logs_per_page);
 
 } else {
-    /**
-     * show all logs
-     */
-
-    //get number of all logs
     $number_of_logs = DbLog::count_all_logs();
-    //get number of pages for all logs
     $number_of_pages = round($number_of_logs / $logs_per_page + 0.5);
-    //check page
     if ($selected_page > $number_of_pages) die('Unknown page');
-    //get all logs
     $data = DbLog::get_all_logs($logs_per_page, ($selected_page - 1) * $logs_per_page);
 }
 
 echo "    <h5 class=\"mb-3\">" . _('Logs') . "</h5>\n";
 echo "    <div class=\"text-secondary\">Total number of logs : " . $number_of_logs . "</div><br>\n";
-/**
- *Search logs by zone
- */
+
 echo '
         <div class="input-group-append" style="margin-right: 5px;">
             <a  href="list_logs.php"  class="btn btn-secondary btn-sm" role="button"><i class="bi bi-eraser"></i> clear</a>
@@ -93,7 +68,6 @@ echo '
         <form><div class="input-group mb-3" style="width: 40%; margin-top:10px;">  
         <input name="name" id="name" type="text" class="form-control form-control-sm"';
 
-//show value in search bar if exists
 if (isset($_GET['name'])) {
     echo 'value="' . $_GET['name'] . '"';
 }
@@ -105,7 +79,7 @@ echo 'placeholder="Search logs by domain" aria-label="Search logs by domain" ari
     </div></form>';
 
 echo "     <form method=\"post\" action=\"delete_domains.php\">\n";
-//if exists logs
+
 if (sizeof($data) > 0) {
     showPages($number_of_pages, $selected_page, $_GET['name'] ?? "", $_GET['auth'] ?? "");
     echo "<table class=\"table table-striped table-bordered\" style=\"margin-top : 10px;\">\n";
@@ -135,9 +109,6 @@ echo "     </form>\n";
 
 include_once('inc/footer.inc.php');
 
-/**
- * function for pagination
- */
 function showPages($number_of_pages, $selected_page, $zone, $auth)
 {
     echo '<div class="row"  style="padding-left: 14px;">     Page:        <select class="form-select form-select-sm" style="width: 7%; height:30px; margin-left: 5px;">';
