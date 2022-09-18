@@ -61,11 +61,11 @@ echo "    <h5 class=\"mb-3\">" . _('Logs') . "</h5>\n";
 echo "    <div class=\"text-secondary\">Total number of logs : " . $number_of_logs . "</div><br>\n";
 
 echo '
-        <div class="input-group-append" style="margin-right: 5px;">
+        <div class="input-group-append">
             <a  href="list_logs.php"  class="btn btn-secondary btn-sm" role="button"><i class="bi bi-eraser"></i> clear</a>
             <a  href="list_logs.php?auth=1"  class="btn btn-secondary btn-sm" role="button"><i class="bi bi-person"></i> auth logs</a>
         </div>
-        <form><div class="input-group mb-3" style="width: 40%; margin-top:10px;">  
+        <form><div class="input-group mb-3 mt-2" style="width: 40%;">
         <input name="name" id="name" type="text" class="form-control form-control-sm"';
 
 if (isset($_GET['name'])) {
@@ -82,11 +82,11 @@ echo "     <form method=\"post\" action=\"delete_domains.php\">\n";
 
 if (sizeof($data) > 0) {
     showPages($number_of_pages, $selected_page, $_GET['name'] ?? "", $_GET['auth'] ?? "");
-    echo "<table class=\"table table-striped table-bordered\" style=\"margin-top : 10px;\">\n";
-    echo "      <thead><tr style=\"text-align: center;\">\n";
-    echo "          <th style=\"width: 3%;\"> #</th>\n";
-    echo "          <th style=\"width: 82%;\">log</th>\n";
-    echo "          <th style=\"width: 15%;\">created at</th>\n";
+    echo "<table class=\"table table-striped table-bordered mt-2\">\n";
+    echo "      <thead><tr>\n";
+    echo "          <th>#</th>\n";
+    echo "          <th>log</th>\n";
+    echo "          <th>created at</th>\n";
     echo "      </tr></thead>";
 
     $log_number = ($selected_page - 1) * $logs_per_page;
@@ -111,7 +111,7 @@ include_once('inc/footer.inc.php');
 
 function showPages($number_of_pages, $selected_page, $zone, $auth)
 {
-    echo '<div class="row"  style="padding-left: 14px;">     Page:        <select class="form-select form-select-sm" style="width: 7%; height:30px; margin-left: 5px;">';
+    echo '<div class="row pl-2" style="padding-left: 14px;"> Page: <select class="form-select form-select-sm ml-5" style="width: 7%; margin-left: 5px;">';
 
     for ($i = 1; $i <= $number_of_pages; $i++) {
         if ($i == $selected_page) {
