@@ -16,7 +16,6 @@ require_once 'inc/pagination.inc.php';
 include_once 'inc/header.inc.php';
 
 $app = AppFactory::create();
-$iface_rowamount = $app->config('iface_rowamount');
 
 if (!do_hook('verify_permission', 'user_is_ueberuser')) {
     echo "<p>You do not have the permission to see any logs</p>\n";
@@ -36,7 +35,7 @@ if (isset($_GET['auth'])) {
 }
 
 $number_of_logs = 0;
-$logs_per_page = $iface_rowamount;
+$logs_per_page = $app->config('iface_rowamount');
 $number_of_page = 0;
 if (isset($_GET['name'])) {
     /**
@@ -93,7 +92,8 @@ echo '
         </div>
         <form><div class="input-group mb-3" style="width: 40%; margin-top:10px;">  
         <input name="name" id="name" type="text" class="form-control form-control-sm"';
-//show value in searh bar if exists
+
+//show value in search bar if exists
 if (isset($_GET['name'])) {
     echo 'value="' . $_GET['name'] . '"';
 }
@@ -101,14 +101,13 @@ if (isset($_GET['name'])) {
 echo 'placeholder="Search logs by domain" aria-label="Search logs by domain" aria-describedby="basic-addon1">
         <div class="input-group-append">
             <button for="name" type="submit" class="btn btn-secondary btn-sm" type="button"><i class="bi bi-search"></i> search</button>
-            
         </div>
     </div></form>';
 
 echo "     <form method=\"post\" action=\"delete_domains.php\">\n";
 //if exists logs
 if (sizeof($data) > 0) {
-    showPages($number_of_pages, $selected_page, isset($_GET['name']) ? $_GET['name'] : "", isset($_GET['auth']) ? $_GET['auth'] : "");
+    showPages($number_of_pages, $selected_page, $_GET['name'] ?? "", $_GET['auth'] ?? "");
     echo "<table class=\"table table-striped table-bordered\" style=\"margin-top : 10px;\">\n";
     echo "      <thead><tr style=\"text-align: center;\">\n";
     echo "          <th style=\"width: 3%;\"> #</th>\n";
@@ -128,7 +127,7 @@ if (sizeof($data) > 0) {
 
     }
     echo "</table>\n";
-    showPages($number_of_pages, $selected_page, isset($_GET['name']) ? $_GET['name'] : "", isset($_GET['auth']) ? $_GET['auth'] : "");
+    showPages($number_of_pages, $selected_page, $_GET['name'] ?? "", $_GET['auth'] ?? "");
 } else {
     echo 'No logs found' . (isset($_GET['name']) ? ' for ' . $_GET['name'] . "." : ".");
 }
@@ -157,9 +156,9 @@ function showPages($number_of_pages, $selected_page, $zone, $auth)
 
 <script>
     function go2page(page, name, auth) {
-        if (name != "") {
+        if (name !== "") {
             window.location.href = "?page=" + page + "&name=" + name;
-        } else if (auth != "") {
+        } else if (auth !== "") {
             window.location.href = "?page=" + page + "&auth=" + auth;
         } else {
             window.location.href = "?page=" + page;
@@ -168,35 +167,33 @@ function showPages($number_of_pages, $selected_page, $zone, $auth)
 
     function showLog(log_id) {
         //logParser = new LOGParser(document.getElementById(log_id).innerHTML);
-        logString = document.getElementById(log_id).innerHTML;
-        logArraySplitBySpace = logString.split(" ");
+        const logString = document.getElementById(log_id).innerHTML;
+        const logArraySplitBySpace = logString.split(" ");
 
-        if (logArraySplitBySpace[0] == "Failed") {
+        if (logArraySplitBySpace[0] === "Failed") {
             parseFailedAuthentication(log_id, logString);
             return;
         }
 
-        if (logArraySplitBySpace[0] == "Successful") {
+        if (logArraySplitBySpace[0] === "Successful") {
             parseAuthentication(log_id, logString);
             return;
         }
 
-        html = logString + '<br>&emsp;&emsp;';
+        let html = logString + '<br>&emsp;&emsp;';
 
-
-        for (i = 0; i < logArraySplitBySpace.length; i++) {
-            tag = logArraySplitBySpace[i].split(":")[0];
-            val = logArraySplitBySpace[i].split(":")[1];
+        for (let i = 0; i < logArraySplitBySpace.length; i++) {
+            const tag = logArraySplitBySpace[i].split(":")[0];
+            const val = logArraySplitBySpace[i].split(":")[1];
             html += ' <b>' + tag + '</b> : ' + val + '<br>&emsp;&emsp;';
         }
         document.getElementById(log_id).innerHTML = html;
 
         document.getElementById("tr_" + log_id.split('_')[1]).setAttribute("onClick", "javascript: hideLog('" + log_id + "');");
-
     }
 
     function parseAuthentication(log_id, logString) {
-        html = logString + '<br>&emsp;&emsp;';
+        let html = logString + '<br>&emsp;&emsp;';
 
         //append ip
         html += '<b>from :</b>' + logString.split(']')[0].split('[')[1] + '<br>&emsp;&emsp;';
@@ -207,7 +204,7 @@ function showPages($number_of_pages, $selected_page, $zone, $auth)
     }
 
     function parseFailedAuthentication(log_id, logString) {
-        html = logString + '<br>&emsp;&emsp;';
+        let html = logString + '<br>&emsp;&emsp;';
 
         html += '<b>from :</b>' + logString.split(']')[0].split('[')[1] + '<br>&emsp;&emsp;';
         document.getElementById(log_id).innerHTML = html;
@@ -216,10 +213,8 @@ function showPages($number_of_pages, $selected_page, $zone, $auth)
     }
 
     function hideLog(log_id) {
-
-        logString = document.getElementById(log_id).innerHTML;
+        const logString = document.getElementById(log_id).innerHTML;
         document.getElementById(log_id).innerHTML = logString.split('<br>')[0];
         document.getElementById("tr_" + log_id.split('_')[1]).setAttribute("onClick", "javascript: showLog('" + log_id + "');");
-
     }
 </script>
