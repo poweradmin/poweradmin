@@ -73,9 +73,7 @@ if (isset($_GET['name'])) {
 }
 
 echo 'placeholder="Search logs by domain" aria-label="Search logs by domain" aria-describedby="basic-addon1">
-        <div class="input-group-append">
-            <button for="name" type="submit" class="btn btn-secondary btn-sm" type="button"><i class="bi bi-search"></i> search</button>
-        </div>
+            <button for="name" type="submit" class="btn btn-primary btn-sm" type="button"><i class="bi bi-search"></i> search</button>
     </div></form>';
 
 echo "     <form method=\"post\" action=\"delete_domains.php\">\n";

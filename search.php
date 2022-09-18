@@ -79,10 +79,13 @@ $parameters['reverse'] = !isset($_POST['do_search']) && !isset($_POST['reverse']
     <input type="hidden" name="record_sort_by" value="<?php echo RECORD_SORT_BY; ?>">
 
     <div class="row pt-3 pb-3">
-        <div class="col-sm-6">
-            <input type="text" class="form-control form-control-sm" name="query" value="<?php echo $parameters['query']; ?>">
+        <div class="col-sm-4">
+            <div class="input-group">
+                <input type="text" class="form-control form-control-sm" name="query" value="<?php echo $parameters['query']; ?>">
+                <input type="submit" class="btn btn-primary btn-sm" name="do_search" value="<?php echo _('Search'); ?>">
+            </div>
         </div>
-        <div class="col-sm-6 d-flex align-items-center">
+        <div class="col-sm-8 d-flex align-items-center">
             <div class="form-check form-check-inline">
                 <input type="checkbox" class="form-check-input" name="zones" id="inlineCheckbox1"
                        value="true"<?php echo $parameters['zones'] ? ' checked="checked"' : ''; ?>>
@@ -94,20 +97,15 @@ $parameters['reverse'] = !isset($_POST['do_search']) && !isset($_POST['reverse']
                 <label class="form-check-label" for="inlineCheckbox2"><?php echo _('Records'); ?></label>
             </div>
             <div class="form-check form-check-inline">
-
                 <input type="checkbox" class="form-check-input" name="wildcard" id="inlineCheckbox3"
                        value="true"<?php echo $parameters['wildcard'] ? ' checked="checked"' : ''; ?>>
                 <label class="form-check-label" for="inlineCheckbox3"><?php echo _('Wildcard'); ?></label>
             </div>
             <div class="form-check form-check-inline">
-
                 <input type="checkbox" class="form-check-input" name="reverse" id="inlineCheckbox4"
                        value="true"<?php echo $parameters['reverse'] ? ' checked="checked"' : ''; ?>>
                 <label class="form-check-label" for="inlineCheckbox4"><?php echo _('Reverse'); ?></label>
             </div>
-        </div>
-        <div class="col-sm-12 pt-3">
-            <input type="submit" class="btn btn-primary btn-sm" name="do_search" value="<?php echo _('Search'); ?>">
         </div>
     </div>
 </form>
