@@ -85,7 +85,6 @@ class SQLlog
         return $stmt->fetchAll();
     }
 
-
     /**
      * get logs for domain
      * @return logs array for domain
@@ -116,21 +115,19 @@ class SQLlog
         return $stmt->fetchAll();
     }
 
-    /**
-     * check if searched string is in domain list
-     * @return 0 - not found
-     * @return 1 - string is in domain
-     */
     public static function check_if_domain_exist($domain_searched)
     {
+        if ($domain_searched == "") {
+            return false;
+        }
+
         $zones = DnsRecord::get_zones('all');
         foreach ($zones as $zone) {
-
             if (strpos($zone['name'], $domain_searched) !== false) {
-                return 1;
+                return true;
             }
         }
-        return 0;
+        return false;
     }
 
     /**
