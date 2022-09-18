@@ -234,7 +234,7 @@ switch ($current_step) {
         echo "<input type=\"hidden\" name=\"dns_ns2\" value=\"" . $dns_ns2 . "\">";
         echo "<input type=\"hidden\" name=\"step\" value=\"" . $current_step . "\">";
         echo "<input type=\"hidden\" name=\"language\" value=\"" . $language . "\">";
-        echo "<input type=\"submit\" name=\"submit\" value=\"" . _('Go to step') . " " . $current_step . "\">";
+        echo "<input type=\"submit\" name=\"submit\" class=\"btn btn-primary btn-sm\" value=\"" . _('Go to step') . " " . $current_step . "\">";
         echo "</form>";
         break;
 
