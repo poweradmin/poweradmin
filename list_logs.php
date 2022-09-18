@@ -82,7 +82,7 @@ if (isset($_GET['name'])) {
 }
 
 echo "    <h5 class=\"mb-3\">" . _('Logs') . "</h5>\n";
-echo "    <div>Total number of logs : " . $number_of_logs . "</div><br>\n";
+echo "    <div class=\"text-secondary\">Total number of logs : " . $number_of_logs . "</div><br>\n";
 /**
  *Search logs by zone
  */
