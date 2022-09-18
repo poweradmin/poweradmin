@@ -24,37 +24,38 @@ namespace Poweradmin;
 
 class Logger
 {
-    public static function do_log($syslog_message, $priority, $zone_id)
+    public static function do_log($message, $priority, $zone_id)
     {
         global $syslog_use, $syslog_ident, $syslog_facility, $dblog_use;
+
         if ($syslog_use) {
             openlog($syslog_ident, LOG_PERROR, $syslog_facility);
-            syslog($priority, $syslog_message);
+            syslog($priority, $message);
             closelog();
         }
 
         if ($dblog_use) {
-            DbLog::do_log($syslog_message, $zone_id);
+            DbLog::do_log($message, $zone_id);
         }
     }
 
-    public static function log_error($syslog_message, $zone_id=NULL)
+    public static function log_error($message, $zone_id=NULL)
     {
-        self::do_log($syslog_message, LOG_ERR, $zone_id);
+        self::do_log($message, LOG_ERR, $zone_id);
     }
 
-    public static function log_warn($syslog_message, $zone_id=NULL)
+    public static function log_warn($message, $zone_id=NULL)
     {
-        self::do_log($syslog_message, LOG_WARNING, $zone_id);
+        self::do_log($message, LOG_WARNING, $zone_id);
     }
 
-    public static function log_notice($syslog_message, $zone_id=NULL)
+    public static function log_notice($message, $zone_id=NULL)
     {
-        self::do_log($syslog_message, LOG_NOTICE, $zone_id);
+        self::do_log($message, LOG_NOTICE, $zone_id);
     }
 
-    public static function log_info($syslog_message, $zone_id=NULL)
+    public static function log_info($message, $zone_id=NULL)
     {
-        self::do_log($syslog_message, LOG_INFO, $zone_id);
+        self::do_log($message, LOG_INFO, $zone_id);
     }
 }
