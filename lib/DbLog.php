@@ -1,16 +1,29 @@
 <?php
-/**
- * created by bnch
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
  *
+ *  Copyright 2007-2009  Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2022  Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 namespace Poweradmin;
 
-class SQLlog
+class DbLog
 {
-    /**
-     * write log to table `logs`
-     */
     public static function do_log($msg, $zone_id)
     {
         global $db;
@@ -21,10 +34,6 @@ class SQLlog
         ]);
     }
 
-    /**
-     *count all logs from table `logs`
-     * @return number of all logs
-     */
     public static function count_all_logs()
     {
         global $db;
@@ -32,10 +41,6 @@ class SQLlog
         return $stmt->fetch()['number_of_logs'];
     }
 
-    /**
-     * count logs by domain
-     * @return number of logs for
-     */
     public static function count_logs_by_domain($domain)
     {
         global $db;
@@ -52,10 +57,6 @@ class SQLlog
         return $stmt->fetch()['number_of_logs'];
     }
 
-    /**
-     * count auth logs
-     * @return number of auth logs
-     * */
     public static function count_auth_logs()
     {
         global $db;
@@ -63,10 +64,6 @@ class SQLlog
         return $stmt->fetch()['number_of_logs'];
     }
 
-    /**
-     * get all logs
-     * @return logs array
-     * */
     public static function get_all_logs($limit, $offset)
     {
         global $db;
@@ -85,10 +82,6 @@ class SQLlog
         return $stmt->fetchAll();
     }
 
-    /**
-     * get logs for domain
-     * @return logs array for domain
-     */
     public static function get_logs_for_domain($domain, $limit, $offset)
     {
         if (!(self::check_if_domain_exist($domain))) {
@@ -130,10 +123,6 @@ class SQLlog
         return false;
     }
 
-    /**
-     * get auth logs
-     * @return auth array logs
-     */
     public static function get_auth_logs($limit, $offset)
     {
         global $db;

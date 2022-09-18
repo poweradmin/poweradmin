@@ -25,8 +25,6 @@ namespace Poweradmin;
 class Syslog
 {
 
-
-
     public static function do_log($syslog_message, $priority, $zone_id)
     {
     
@@ -36,10 +34,8 @@ class Syslog
             syslog($priority, $syslog_message." ".$zone_id);
             closelog();
             if ($dblog_use)
-                SQLlog::do_log($syslog_message, $zone_id);
+                DbLog::do_log($syslog_message, $zone_id);
         }
-       
-
     }
 
     public static function log_error($syslog_message, $zone_id=NULL)

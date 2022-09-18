@@ -9,7 +9,7 @@
  */
 
 use Poweradmin\AppFactory;
-use Poweradmin\SQLlog;
+use Poweradmin\DbLog;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/pagination.inc.php';
@@ -44,13 +44,13 @@ if (isset($_GET['name'])) {
      */
 
     //get number of logs for domain
-    $number_of_logs = SQLlog::count_logs_by_domain($_GET['name']);
+    $number_of_logs = DbLog::count_logs_by_domain($_GET['name']);
     //count pages for domain
     $number_of_pages = round($number_of_logs / $logs_per_page + 0.5);
     //check page
     if ($selected_page > $number_of_pages) die('Unknown page');
     //get logs for domain
-    $data = SQLlog::get_logs_for_domain($_GET['name'], $logs_per_page, ($selected_page - 1) * $logs_per_page);
+    $data = DbLog::get_logs_for_domain($_GET['name'], $logs_per_page, ($selected_page - 1) * $logs_per_page);
 
 } elseif (isset($_GET['auth'])) {
     /**
@@ -58,13 +58,13 @@ if (isset($_GET['name'])) {
      */
 
     //get number of auth logs
-    $number_of_logs = SQLlog::count_auth_logs();
+    $number_of_logs = DbLog::count_auth_logs();
     //get number of pager for auth logs
     $number_of_pages = round($number_of_logs / $logs_per_page + 0.5);
     //check page
     if ($selected_page > $number_of_pages) die('Unknown page');
     //get auth logs
-    $data = SQLlog::get_auth_logs($logs_per_page, ($selected_page - 1) * $logs_per_page);
+    $data = DbLog::get_auth_logs($logs_per_page, ($selected_page - 1) * $logs_per_page);
 
 } else {
     /**
@@ -72,13 +72,13 @@ if (isset($_GET['name'])) {
      */
 
     //get number of all logs
-    $number_of_logs = SQLlog::count_all_logs();
+    $number_of_logs = DbLog::count_all_logs();
     //get number of pages for all logs
     $number_of_pages = round($number_of_logs / $logs_per_page + 0.5);
     //check page
     if ($selected_page > $number_of_pages) die('Unknown page');
     //get all logs
-    $data = SQLlog::get_all_logs($logs_per_page, ($selected_page - 1) * $logs_per_page);
+    $data = DbLog::get_all_logs($logs_per_page, ($selected_page - 1) * $logs_per_page);
 }
 
 echo "    <h5 class=\"mb-3\">" . _('Logs') . "</h5>\n";
