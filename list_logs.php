@@ -137,7 +137,6 @@ function showPages($number_of_pages, $selected_page, $zone, $auth)
     }
 
     function showLog(log_id) {
-        //logParser = new LOGParser(document.getElementById(log_id).innerHTML);
         const logString = document.getElementById(log_id).innerHTML;
         const logArraySplitBySpace = logString.split(" ");
 
@@ -166,7 +165,6 @@ function showPages($number_of_pages, $selected_page, $zone, $auth)
     function parseAuthentication(log_id, logString) {
         let html = logString + '<br>&emsp;&emsp;';
 
-        //append ip
         html += '<b>from :</b>' + logString.split(']')[0].split('[')[1] + '<br>&emsp;&emsp;';
         html += '<b>user :</b>' + logString.split('user')[1] + '<br>&emsp;&emsp;';
         document.getElementById(log_id).innerHTML = html;
