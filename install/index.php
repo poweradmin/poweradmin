@@ -252,8 +252,8 @@ switch ($current_step) {
         $dns_ns1 = $_POST['dns_ns1'];
         $dns_ns2 = $_POST['dns_ns2'];
         $db_host = $_POST['db_host'];
-        $db_user = $_POST['pa_db_user'];
-        $db_pass = $_POST['pa_db_pass'];
+        $db_user = $_POST['pa_db_user'] ?? '';
+        $db_pass = $_POST['pa_db_pass'] ?? '';
         $db_name = $_POST['db_name'];
         $db_type = $_POST['db_type'];
         $db_charset = $_POST['db_charset'];
