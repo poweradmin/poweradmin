@@ -75,7 +75,7 @@ echo 'placeholder="Search logs by domain" aria-label="Search logs by domain" ari
 echo "     <form method=\"post\" action=\"delete_domains.php\">\n";
 
 if (sizeof($data) > 0) {
-    showPages($number_of_pages, $selected_page, $_GET['name'] ?? "", $_GET['auth'] ?? "");
+    showPages($number_of_pages, $selected_page, $_GET['name'] ?? "null", $_GET['auth'] ?? "null");
     echo "<table class=\"table table-striped table-bordered mt-2\">\n";
     echo "      <thead><tr>\n";
     echo "          <th>#</th>\n";
@@ -95,7 +95,7 @@ if (sizeof($data) > 0) {
 
     }
     echo "</table>\n";
-    showPages($number_of_pages, $selected_page, $_GET['name'] ?? "", $_GET['auth'] ?? "");
+    showPages($number_of_pages, $selected_page, $_GET['name'] ?? "null", $_GET['auth'] ?? "null");
 } else {
     echo 'No logs found' . (isset($_GET['name']) ? ' for ' . htmlspecialchars($_GET['name']) . "." : ".");
 }
@@ -105,13 +105,13 @@ include_once('inc/footer.inc.php');
 
 function showPages($number_of_pages, $selected_page, $zone, $auth)
 {
-    echo '<div class="row pl-2" style="padding-left: 14px;"> Page: <select class="form-select form-select-sm ml-5" style="width: 7%; margin-left: 5px;">';
+    echo '<div class="row pl-2" style="padding-left: 14px;"> Page: <select onChange="go2page(this.value, { name: '. $zone .', auth: '. $auth .' });" class="form-select form-select-sm ml-5" style="width: 7%; margin-left: 5px;">';
 
     for ($i = 1; $i <= $number_of_pages; $i++) {
         if ($i == $selected_page) {
-            echo "<option selected onclick=\"go2page('" . $i . "','" . $zone . "','" . $auth . "')\" >" . $i . "</option>";
+            echo "<option value=\"$i\" selected>" . $i . "</option>";
         } else {
-            echo "<option onclick=\"go2page('" . $i . "','" . $zone . "','" . $auth . "')\" >" . $i . "</option>";
+            echo "<option value=\"$i\">" . $i . "</option>";
         }
     }
 
@@ -120,14 +120,16 @@ function showPages($number_of_pages, $selected_page, $zone, $auth)
 ?>
 
 <script>
-    function go2page(page, name, auth) {
-        if (name !== "") {
-            window.location.href = "?page=" + page + "&name=" + name;
-        } else if (auth !== "") {
-            window.location.href = "?page=" + page + "&auth=" + auth;
+    function go2page(page, data) {
+        if (data.name !== null) {
+            window.location.href = "list_logs.php?page=" + page + "&name=" + data.name;
+        } else if (data.auth !== null) {
+            window.location.href = "list_logs.php?page=" + page + "&auth=" + data.auth;
         } else {
-            window.location.href = "?page=" + page;
+            document.location.href = "list_logs.php?page=" + page;
         }
+
+        return false;x
     }
 
     function showLog(log_id) {
