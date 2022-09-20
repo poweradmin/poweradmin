@@ -107,7 +107,7 @@ class DbLog
         return $stmt->fetchAll();
     }
 
-    public static function check_if_domain_exist($domain_searched)
+    public static function check_if_domain_exist($domain_searched): bool
     {
         if ($domain_searched == "") {
             return false;

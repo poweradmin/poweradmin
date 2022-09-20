@@ -84,7 +84,7 @@ if ($confirm == '1') {
         success(SUC_ZONE_DEL);
         Logger::log_info(sprintf('client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
             $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-            $zone_info['name'], $zone_info['type']));
+            $zone_info['name'], $zone_info['type']), $zone_id);
     }
     include_once('inc/footer.inc.php');
     exit;

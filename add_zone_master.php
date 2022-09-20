@@ -78,18 +78,18 @@ if (isset($_POST['submit']) && $zone_master_add) {
         error($zone . ' failed - ' . ERR_DOMAIN_EXISTS);
         // TODO: repopulate domain name(s) to the form if there was an error occured
     } elseif (DnsRecord::add_domain($zone, $owner, $dom_type, '', $zone_template)) {
-        $domain_id = DnsRecord::get_zone_id_from_name($zone);
-        success("<a href=\"edit.php?id=" . $domain_id . "\">" . $zone . " - " . SUC_ZONE_ADD . '</a>');
+        $zone_id = DnsRecord::get_zone_id_from_name($zone);
+        success("<a href=\"edit.php?id=" . $zone_id . "\">" . $zone . " - " . SUC_ZONE_ADD . '</a>');
         Logger::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
             $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-            $zone, $dom_type, $zone_template), $domain_id);
+            $zone, $dom_type, $zone_template), $zone_id);
 
         if ($pdnssec_use) {
             if ($enable_dnssec) {
                 Dnssec::dnssec_secure_zone($zone);
             }
 
-            Dnssec::dnssec_rectify_zone($domain_id);
+            Dnssec::dnssec_rectify_zone($zone_id);
         }
 
         unset($zone, $owner, $dom_type, $zone_template);

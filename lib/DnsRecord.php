@@ -933,7 +933,7 @@ class DnsRecord
         } else {
             global $db;
 
-            $query = "SELECT 	domains.type AS type,
+            $query = "SELECT domains.type AS type,
 					domains.name AS name,
 					domains.master AS master_ip,
 					count(records.domain_id) AS record_count
@@ -942,6 +942,7 @@ class DnsRecord
 					GROUP BY domains.id, domains.type, domains.name, domains.master";
             $result = $db->queryRow($query);
             return array(
+                "id" => $zid,
                 "name" => $result['name'],
                 "type" => $result['type'],
                 "master_ip" => $result['master_ip'],

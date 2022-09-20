@@ -74,10 +74,11 @@ if (isset($_POST['submit']) && $zone_slave_add) {
         error(ERR_DNS_IP);
     } else {
         if (DnsRecord::add_domain($zone, $owner, $type, $master, 'none')) {
+            $zone_id = DnsRecord::get_zone_id_from_name($zone);
             success("<a href=\"edit.php?id=" . DnsRecord::get_zone_id_from_name($zone) . "\">" . SUC_ZONE_ADD . '</a>');
             Logger::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',
                 $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                $zone, $master));
+                $zone, $master), $zone_id);
             unset($zone, $owner, $webip, $mailip, $empty, $type, $master);
         }
     }

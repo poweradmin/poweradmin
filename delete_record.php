@@ -63,12 +63,11 @@ if (isset($_GET['confirm']) && Validation::is_number($_GET['confirm']) && $_GET[
         if (isset($record_info['prio'])) {
             Logger::log_info(sprintf('client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s priority:%s',
                 $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                $record_info['type'], $record_info['name'], $record_info['content'], $record_info['ttl'], $record_info['prio'] ), $zid);
+                $record_info['type'], $record_info['name'], $record_info['content'], $record_info['ttl'], $record_info['prio']), $zid);
         } else {
             Logger::log_info(sprintf('client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s',
                 $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                $record_info['type'], $record_info['name'], $record_info['content'], $record_info['ttl'] ), $zid);
-
+                $record_info['type'], $record_info['name'], $record_info['content'], $record_info['ttl']), $zid);
         }
 
         DnsRecord::delete_record_zone_templ($record_id);

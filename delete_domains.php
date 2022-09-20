@@ -71,8 +71,8 @@ if ($confirm == '1') {
         //Zones successfully deleted so generate log messages from information retrieved earlier
         foreach ($deleted_zones as $zone_info) {
             Logger::log_info(sprintf('client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
-                              $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                              $zone_info['name'], $zone_info['type']));
+                $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
+                $zone_info['name'], $zone_info['type']), $zone_info['id']);
         }
     }
 } else {
