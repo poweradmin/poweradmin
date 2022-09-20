@@ -151,7 +151,7 @@ function showPages($number_of_pages, $selected_page, $zone, $auth)
         for (let i = 0; i < logArraySplitBySpace.length; i++) {
             const tag = logArraySplitBySpace[i].split(":")[0];
             const val = logArraySplitBySpace[i].split(":")[1];
-            html += ' <b>' + tag + '</b> : ' + val + '<br>&emsp;&emsp;';
+            html += ' <strong>' + tag + '</strong> : ' + val + '<br>&emsp;&emsp;';
         }
         document.getElementById(log_id).innerHTML = html;
 
@@ -161,8 +161,8 @@ function showPages($number_of_pages, $selected_page, $zone, $auth)
     function parseAuthentication(log_id, logString) {
         let html = logString + '<br>&emsp;&emsp;';
 
-        html += '<b>from :</b>' + logString.split(']')[0].split('[')[1] + '<br>&emsp;&emsp;';
-        html += '<b>user :</b>' + logString.split('user')[1] + '<br>&emsp;&emsp;';
+        html += '<strong>from :</strong>' + logString.split(']')[0].split('[')[1] + '<br>&emsp;&emsp;';
+        html += '<strong>user :</strong>' + logString.split('user')[1] + '<br>&emsp;&emsp;';
         document.getElementById(log_id).innerHTML = html;
 
         document.getElementById("tr_" + log_id.split('_')[1]).setAttribute("onClick", "javascript: hideLog('" + log_id + "');");
@@ -171,7 +171,7 @@ function showPages($number_of_pages, $selected_page, $zone, $auth)
     function parseFailedAuthentication(log_id, logString) {
         let html = logString + '<br>&emsp;&emsp;';
 
-        html += '<b>from :</b>' + logString.split(']')[0].split('[')[1] + '<br>&emsp;&emsp;';
+        html += '<strong>from :</strong>' + logString.split(']')[0].split('[')[1] + '<br>&emsp;&emsp;';
         document.getElementById(log_id).innerHTML = html;
 
         document.getElementById("tr_" + log_id.split('_')[1]).setAttribute("onClick", "javascript: hideLog('" + log_id + "');");
