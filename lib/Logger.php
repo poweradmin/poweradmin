@@ -39,22 +39,22 @@ class Logger
         }
     }
 
-    public static function log_error($message, $zone_id=NULL)
+    public static function log_error($message, $zone_id = NULL)
     {
         self::do_log($message, LOG_ERR, $zone_id);
     }
 
-    public static function log_warn($message, $zone_id=NULL)
+    public static function log_warn($message, $zone_id = NULL)
     {
         self::do_log($message, LOG_WARNING, $zone_id);
     }
 
-    public static function log_notice($message, $zone_id=NULL)
+    public static function log_notice($message, $zone_id = NULL)
     {
         self::do_log($message, LOG_NOTICE, $zone_id);
     }
 
-    public static function log_info($message, $zone_id=NULL)
+    public static function log_info($message, $zone_id = NULL)
     {
         self::do_log($message, LOG_INFO, $zone_id);
     }
