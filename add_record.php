@@ -103,7 +103,7 @@ if (isset($_POST["commit"])) {
         // a PTR-record is added if an A or an AAAA-record are created
         // and checkbox is checked
 
-        if ((isset($_POST["reverse"])) && $iface_add_reverse_record ) {
+        if ((isset($_POST["reverse"])) && $iface_add_reverse_record) {
             if ($type === 'A') {
                 $content_array = preg_split("/\./", $content);
                 $content_rev = sprintf("%d.%d.%d.%d.in-addr.arpa", $content_array[3], $content_array[2], $content_array[1], $content_array[0]);
@@ -120,10 +120,9 @@ if (isset($_POST["commit"])) {
                     Logger::log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
                         $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                         $content_rev, $fqdn_name, $ttl, $prio), $zone_id);
-		    if ($pdnssec_use && Dnssec::dnssec_rectify_zone($zone_rev_id)) {
-                success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
-            }
-
+                    if ($pdnssec_use && Dnssec::dnssec_rectify_zone($zone_rev_id)) {
+                        success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
+                    }
                 }
             } elseif (isset($content_rev)) {
                 error(sprintf(ERR_REVERS_ZONE_NOT_EXIST, $content_rev));
