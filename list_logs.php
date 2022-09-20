@@ -36,19 +36,19 @@ $logs_per_page = $app->config('iface_rowamount');
 
 if (isset($_GET['name'])) {
     $number_of_logs = DbLog::count_logs_by_domain($_GET['name']);
-    $number_of_pages = round($number_of_logs / $logs_per_page + 0.5);
+    $number_of_pages = ceil($number_of_logs / $logs_per_page);
     if ($selected_page > $number_of_pages) die('Unknown page');
     $data = DbLog::get_logs_for_domain($_GET['name'], $logs_per_page, ($selected_page - 1) * $logs_per_page);
 
 } elseif (isset($_GET['auth'])) {
     $number_of_logs = DbLog::count_auth_logs();
-    $number_of_pages = round($number_of_logs / $logs_per_page + 0.5);
+    $number_of_pages = ceil($number_of_logs / $logs_per_page);
     if ($selected_page > $number_of_pages) die('Unknown page');
     $data = DbLog::get_auth_logs($logs_per_page, ($selected_page - 1) * $logs_per_page);
 
 } else {
     $number_of_logs = DbLog::count_all_logs();
-    $number_of_pages = round($number_of_logs / $logs_per_page + 0.5);
+    $number_of_pages = ceil($number_of_logs / $logs_per_page);
     if ($selected_page > $number_of_pages) die('Unknown page');
     $data = DbLog::get_all_logs($logs_per_page, ($selected_page - 1) * $logs_per_page);
 }
