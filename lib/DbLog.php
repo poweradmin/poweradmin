@@ -51,8 +51,7 @@ class DbLog
                     ON domains.id = logs.zone_id 
                     WHERE domains.name LIKE :search_by
         ");
-        $name = $domain;
-        $name = "%$name%";
+        $name = "%$domain%";
         $stmt->execute(['search_by' => $name]);
         return $stmt->fetch()['number_of_logs'];
     }

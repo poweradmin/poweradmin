@@ -18,8 +18,7 @@ include_once 'inc/header.inc.php';
 $app = AppFactory::create();
 
 if (!do_hook('verify_permission', 'user_is_ueberuser')) {
-    echo "<p>You do not have the permission to see any logs</p>\n";
-    die();
+    die("You do not have the permission to see any logs");
 }
 
 $selected_page = 1;
@@ -28,15 +27,12 @@ if (isset($_GET['page'])) {
     if ($selected_page < 0) die('Unknown page.');
 }
 
-if (isset($_GET['auth'])) {
-    if ($_GET['auth'] != 1) {
-        die('Unknown auth flag.');
-    }
+if (isset($_GET['auth']) && $_GET['auth'] != 1) {
+    die('Unknown auth flag.');
 }
 
 $number_of_logs = 0;
 $logs_per_page = $app->config('iface_rowamount');
-$number_of_page = 0;
 
 if (isset($_GET['name'])) {
     $number_of_logs = DbLog::count_logs_by_domain($_GET['name']);
@@ -69,7 +65,7 @@ echo '
         <input name="name" id="name" type="text" class="form-control form-control-sm"';
 
 if (isset($_GET['name'])) {
-    echo 'value="' . $_GET['name'] . '"';
+    echo 'value="' . htmlspecialchars($_GET['name']) . '"';
 }
 
 echo 'placeholder="Search logs by domain" aria-label="Search logs by domain" aria-describedby="basic-addon1">
@@ -101,7 +97,7 @@ if (sizeof($data) > 0) {
     echo "</table>\n";
     showPages($number_of_pages, $selected_page, $_GET['name'] ?? "", $_GET['auth'] ?? "");
 } else {
-    echo 'No logs found' . (isset($_GET['name']) ? ' for ' . $_GET['name'] . "." : ".");
+    echo 'No logs found' . (isset($_GET['name']) ? ' for ' . htmlspecialchars($_GET['name']) . "." : ".");
 }
 echo "     </form>\n";
 
