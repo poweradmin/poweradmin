@@ -88,11 +88,11 @@ if ($confirm == '1') {
     if ($user_is_zone_owner == "1") {
         $key_info = Dnssec::dnssec_get_zone_key($domain_name, $key_id);
         echo "      " . _('Domain') . ": " . $domain_name . "<br>\n";
-        echo "      " . _('Id') . ": " . $key_info[0] . "<br>\n";
-        echo "      " . _('Type') . ": " . $key_info[1] . "<br>\n";
-        echo "      " . _('Tag') . ": " . $key_info[2] . "<br>\n";
-        echo "      " . _('Algorithm') . ": " . Dnssec::dnssec_algorithm_to_name($key_info[3]) . "<br>\n";
-        echo "      " . _('Bits') . ": " . $key_info[4] . "<br>\n";
+        echo "      " . _('Id') . ": " . htmlspecialchars($key_info[0]) . "<br>\n";
+        echo "      " . _('Type') . ": " . htmlspecialchars($key_info[1]) . "<br>\n";
+        echo "      " . _('Tag') . ": " . htmlspecialchars($key_info[2]) . "<br>\n";
+        echo "      " . _('Algorithm') . ": " . Dnssec::dnssec_algorithm_to_name(htmlspecialchars($key_info[3])) . "<br>\n";
+        echo "      " . _('Bits') . ": " . htmlspecialchars($key_info[4]) . "<br>\n";
         echo "      " . _('Active') . ": " . ($key_info[5] ? _('Yes') : _('No')) . "\n";
         echo "     <p class=\"pt-3\">" . _('Are you sure?') . "</p>\n";
         echo "     <input class=\"btn btn-primary btn-sm\" type=\"button\" onClick=\"location.href='dnssec_delete_key.php?id=" . $zone_id . "&amp;key_id=$key_id&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
