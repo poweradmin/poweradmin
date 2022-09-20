@@ -1897,7 +1897,9 @@ class DnsRecord
                     $zone_type = self::get_domain_type($id);
                     if ($pdnssec_use && $zone_type == 'MASTER') {
                         $zone_name = self::get_domain_name_by_id($id);
-                        Dnssec::dnssec_unsecure_zone($zone_name);
+                        if (Dnssec::dnssec_is_zone_secured($zone_name)) {
+                            Dnssec::dnssec_unsecure_zone($zone_name);
+                        }
                     }
 
                     $db->exec("DELETE FROM zones WHERE domain_id=" . $db->quote($id, 'integer'));

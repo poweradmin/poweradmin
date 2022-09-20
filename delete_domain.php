@@ -75,7 +75,9 @@ $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
 if ($confirm == '1') {
     if ($pdnssec_use && $zone_info['type'] == 'MASTER') {
         $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
-        Dnssec::dnssec_unsecure_zone($zone_name);
+        if (Dnssec::dnssec_is_zone_secured($zone_name)) {
+            Dnssec::dnssec_unsecure_zone($zone_name);
+        }
     }
 
     if (DnsRecord::delete_domain($zone_id)) {
