@@ -82,14 +82,14 @@
         </div>
     {% endif %}
     {% if perm_is_godlike and dblog_use == true %}
-    <div class="col-sm-3" style="margin-bottom:10px" >
-        <div class="card">
-            <div class="text-center"><i class="bi bi-list-ul" style="font-size: 64px;"></i></div>
-            <div class="card-body">
-            <div class="row"><a href="list_logs.php" class="btn btn-primary btn-block">{% trans 'Show logs' %}</a> </div>
+        <div class="col-sm-3" style="margin-bottom:10px" >
+            <div class="card">
+                <div class="text-center"><i class="bi bi-list-ul" style="font-size: 64px;"></i></div>
+                <div class="card-body">
+                <div class="row"><a href="list_logs.php" class="btn btn-primary btn-block">{% trans 'Show logs' %}</a> </div>
+                </div>
             </div>
         </div>
-    </div>
     {% endif %}
     {% if auth_used != "ldap" %}
         <div class="col-sm-3" style="margin-bottom:10px" >
