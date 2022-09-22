@@ -1,9 +1,9 @@
 <h5 class="mb-3">{% trans 'Welcome' %} {{ user_name }}</h5>
 <div class="row">
     {% if perm_search %}
-        <div class="col-sm-3" style="margin-bottom:10px" >
+        <div class="col-sm-3 mb-3"  >
             <div class="card">
-                <div class="text-center"><i class="bi bi-search" style="font-size: 64px;"></i></div>
+                <div class="text-center"><i class="bi bi-search display-1" ></i></div>
                 <div class="card-body">
                 <div class="row"><a href="search.php" class="btn btn-primary btn-block">{% trans 'Search zones and records' %}</a> </div>
                 </div>
@@ -11,9 +11,9 @@
         </div>
     {% endif %}
     {% if perm_view_zone_own or perm_view_zone_other %}
-        <div class="col-sm-3" style="margin-bottom:10px" >
+        <div class="col-sm-3 mb-3" >
             <div class="card">
-                <div class="text-center"><i class="bi bi-list" style="font-size: 64px;"></i></div>
+                <div class="text-center"><i class="bi bi-list display-1" ></i></div>
                 <div class="card-body">
                 <div class="row"><a href="list_zones.php" class="btn btn-primary btn-block">{% trans 'List zones' %}</a> </div>
                 </div>
@@ -22,9 +22,9 @@
     {% endif %}
     
     {% if perm_zone_master_add %}
-        <div class="col-sm-3" style="margin-bottom:10px" >
+        <div class="col-sm-3 mb-3" >
             <div class="card">
-                <div class="text-center"><i class="bi bi-list" style="font-size: 64px;"></i></div>
+                <div class="text-center"><i class="bi bi-list display-1" ></i></div>
                 <div class="card-body">
                 <div class="row"><a href="list_zone_templ.php" class="btn btn-primary btn-block">{% trans 'List zone templates' %}</a> </div>
                 </div>
@@ -32,9 +32,9 @@
         </div>
     {% endif %}
     {% if perm_supermaster_view %}
-        <div class="col-sm-3" style="margin-bottom:10px" >
+        <div class="col-sm-3 mb-3"  >
             <div class="card">
-                <div class="text-center"><i class="bi bi-list" style="font-size: 64px;"></i></div>
+                <div class="text-center"><i class="bi bi-list display-1" ></i></div>
                 <div class="card-body">
                 <div class="row"><a href="list_supermasters.php" class="btn btn-primary btn-block">{% trans 'List supermasters' %}</a> </div>
                 </div>
@@ -42,9 +42,9 @@
         </div>
     {% endif %}
     {% if perm_zone_master_add %}
-        <div class="col-sm-3" style="margin-bottom:10px" >
+        <div class="col-sm-3 mb-3"  >
             <div class="card">
-                <div class="text-center"><i class="bi bi-plus-circle" style="font-size: 64px;"></i></div>
+                <div class="text-center"><i class="bi bi-plus-circle display-1" ></i></div>
                 <div class="card-body">
                 <div class="row"><a href="add_zone_master.php" class="btn btn-primary btn-block">{% trans 'Add master zone' %}</a> </div>
                 </div>
@@ -52,9 +52,9 @@
         </div>
     {% endif %}
     {% if perm_zone_slave_add %}
-        <div class="col-sm-3" style="margin-bottom:10px" >
+        <div class="col-sm-3 mb-3"  >
             <div class="card">
-                <div class="text-center"><i class="bi bi-plus-circle" style="font-size: 64px;"></i></div>
+                <div class="text-center"><i class="bi bi-plus-circle display-1" ></i></div>
                 <div class="card-body">
                 <div class="row"><a href="add_zone_slave.php" class="btn btn-primary btn-block">{% trans 'Add slave zone' %}</a> </div>
                 </div>
@@ -62,9 +62,9 @@
         </div>
     {% endif %}
     {% if perm_supermaster_add %}
-        <div class="col-sm-3" style="margin-bottom:10px" >
+        <div class="col-sm-3 mb-3" >
             <div class="card">
-                <div class="text-center"><i class="bi bi-plus-circle" style="font-size: 64px;"></i></div>
+                <div class="text-center"><i class="bi bi-plus-circle display-1" ></i></div>
                 <div class="card-body">
                 <div class="row"><a href="add_supermaster.php" class="btn btn-primary btn-block">{% trans 'Add supermaster' %}</a> </div>
                 </div>
@@ -72,9 +72,9 @@
         </div>
     {% endif %}
     {% if perm_zone_master_add %}
-        <div class="col-sm-3" style="margin-bottom:10px" >
+        <div class="col-sm-3 mb-3" >
             <div class="card">
-                <div class="text-center"><i class="bi bi-plus-circle" style="font-size: 64px;"></i></div>
+                <div class="text-center"><i class="bi bi-plus-circle display-1" ></i></div>
                 <div class="card-body">
                 <div class="row"><a href="bulk_registration.php" class="btn btn-primary btn-block">{% trans 'Bulk registration' %}</a> </div>
                 </div>
@@ -82,9 +82,9 @@
         </div>
     {% endif %}
     {% if perm_is_godlike and dblog_use == true %}
-        <div class="col-sm-3" style="margin-bottom:10px" >
+        <div class="col-sm-3 mb-3" >
             <div class="card">
-                <div class="text-center"><i class="bi bi-list-ul" style="font-size: 64px;"></i></div>
+                <div class="text-center"><i class="bi bi-list-ul display-1" ></i></div>
                 <div class="card-body">
                 <div class="row"><a href="list_logs.php" class="btn btn-primary btn-block">{% trans 'Show logs' %}</a> </div>
                 </div>
@@ -92,26 +92,26 @@
         </div>
     {% endif %}
     {% if auth_used != "ldap" %}
-        <div class="col-sm-3" style="margin-bottom:10px" >
+        <div class="col-sm-3 mb-3" >
             <div class="card">
-                <div class="text-center"><i class="bi bi-key" style="font-size: 64px;"></i></div>
+                <div class="text-center"><i class="bi bi-key display-1"></i></div>
                 <div class="card-body">
                 <div class="row"><a href="change_password.php" class="btn btn-primary btn-block">{% trans 'Change password' %}</a> </div>
                 </div>
             </div>
         </div>
     {% endif %}
-    <div class="col-sm-3" style="margin-bottom:10px" >
+    <div class="col-sm-3 mb-3" >
         <div class="card">
-            <div class="text-center"><i class="bi bi-people" style="font-size: 64px;"></i></div>
+            <div class="text-center"><i class="bi bi-people display-1" ></i></div>
             <div class="card-body">
             <div class="row"><a href="users.php" class="btn btn-primary btn-block">{% trans 'User administration' %}</a> </div>
             </div>
         </div>
     </div>
-    <div class="col-sm-3" style="margin-bottom:10px" >
+    <div class="col-sm-3 mb-3" >
         <div class="card">
-            <div class="text-center"><i class="bi bi-box-arrow-right" style="font-size: 64px;"></i></div>
+            <div class="text-center"><i class="bi bi-box-arrow-right display-1" ></i></div>
             <div class="card-body">
             <div class="row"><a href="index.php?logout" class="btn btn-primary btn-block">{% trans 'Logout' %}</a> </div>
             </div>
