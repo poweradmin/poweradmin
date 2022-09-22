@@ -29,7 +29,7 @@ class DbLog
         global $db;
         $stmt = $db->prepare('INSERT INTO logs (zone_id, log) VALUES (:zone_id, :msg)');
         $stmt->execute([
-            ':msg' => $db->quote($msg, 'text'),
+            ':msg' => $msg,
             ':zone_id' => $zone_id
         ]);
     }

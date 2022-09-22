@@ -35,6 +35,7 @@ class Logger
         }
 
         if ($dblog_use) {
+            $message = str_replace(["'", '\\'], '', $message);
             DbLog::do_log($message, $zone_id);
         }
     }

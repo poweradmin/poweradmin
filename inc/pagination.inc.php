@@ -26,87 +26,97 @@
  * @param int $rowamount Per page number of items
  * @param int $id Page specific ID (Zone ID, Template ID, etc)
  *
- * @return null
+ * @return string $result
  */
 function show_pages($amount, $rowamount, $id = '') {
-    if ($amount > $rowamount) {
-        $num = 8;
-        $poutput = '';
-        $lastpage = ceil($amount / $rowamount);
-        $startpage = 1;
-
-        if (!isset($_GET["start"]))
-            $_GET["start"] = 1;
-        $start = $_GET["start"];
-
-        if ($lastpage > $num & $start > ($num / 2)) {
-            $startpage = ($start - ($num / 2));
-        }
-
-        $poutput .= "<nav><ul class=\"pagination\">";
-
-        if ($lastpage > $num & $start > 1) {
-            $poutput .= '<li class="page-item"><a class="page-link" href=" ' . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES);
-            $poutput .= '?start=' . ($start - 1);
-            if ($id != '')
-                $poutput .= '&id=' . $id;
-            $poutput .= '">';
-            $poutput .= _('Previous');
-            $poutput .= '</a></li>';
-        }
-
-        if ($start != 1) {
-            $poutput .= '<li class="page-item"><a class="page-link" href=" ' . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES);
-            $poutput .= '?start=1';
-            if ($id != '')
-                $poutput .= '&id=' . $id;
-            $poutput .= '">';
-            $poutput .= '1';
-            $poutput .= '</a></li>';
-            if ($startpage > 2)
-                $poutput .= '<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">..</a></li>';
-        }
-
-        for ($i = $startpage; $i <= min(($startpage + $num), $lastpage); $i++) {
-            if ($start == $i) {
-                $poutput .= '<li class="page-item active"><span class="page-link">' . $i . '</span></li>';
-            } elseif ($i != $lastpage & $i != 1) {
-                $poutput .= '<li class="page-item"><a class="page-link" href=" ' . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES);
-                $poutput .= '?start=' . $i;
-                if ($id != '')
-                    $poutput .= '&id=' . $id;
-                $poutput .= '">';
-                $poutput .= $i;
-                $poutput .= '</a></li>';
-            }
-        }
-
-        if ($start != $lastpage) {
-            if (min(($startpage + $num), $lastpage) < ($lastpage - 1))
-                $poutput .= '<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">..</a></li>';
-            $poutput .= '<li class="page-item"><a class="page-link" href=" ' . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES);
-            $poutput .= '?start=' . $lastpage;
-            if ($id != '')
-                $poutput .= '&id=' . $id;
-            $poutput .= '">';
-            $poutput .= $lastpage;
-            $poutput .= '</a></li>';
-        }
-
-        if ($lastpage > $num & $start < $lastpage) {
-            $poutput .= '<li class="page-item"><a class="page-link" href=" ' . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES);
-            $poutput .= '?start=' . ($start + 1);
-            if ($id != '')
-                $poutput .= '&id=' . $id;
-            $poutput .= '">';
-            $poutput .= _('Next');
-            $poutput .= '</a></li>';
-        }
-
-        $poutput .= "</ul></nav>";
-
-        echo $poutput;
+    if ($amount <= $rowamount) {
+        return "";
     }
+
+    $num = 8;
+    $result = '';
+    $lastpage = ceil($amount / $rowamount);
+    $startpage = 1;
+
+    if (!isset($_GET["start"])) {
+        $_GET["start"] = 1;
+    }
+    $start = $_GET["start"];
+
+    if ($lastpage > $num & $start > ($num / 2)) {
+        $startpage = ($start - ($num / 2));
+    }
+
+    $result .= "<nav><ul class=\"pagination\">";
+
+    if ($lastpage > $num & $start > 1) {
+        $result .= '<li class="page-item"><a class="page-link" href=" ' . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES);
+        $result .= '?start=' . ($start - 1);
+        if ($id != '') {
+            $result .= '&id=' . $id;
+        }
+        $result .= '">';
+        $result .= _('Previous');
+        $result .= '</a></li>';
+    }
+
+    if ($start != 1) {
+        $result .= '<li class="page-item"><a class="page-link" href=" ' . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES);
+        $result .= '?start=1';
+        if ($id != '') {
+            $result .= '&id=' . $id;
+        }
+        $result .= '">';
+        $result .= '1';
+        $result .= '</a></li>';
+        if ($startpage > 2) {
+            $result .= '<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">..</a></li>';
+        }
+    }
+
+    for ($i = $startpage; $i <= min(($startpage + $num), $lastpage); $i++) {
+        if ($start == $i) {
+            $result .= '<li class="page-item active"><span class="page-link">' . $i . '</span></li>';
+        } elseif ($i != $lastpage & $i != 1) {
+            $result .= '<li class="page-item"><a class="page-link" href=" ' . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES);
+            $result .= '?start=' . $i;
+            if ($id != '') {
+                $result .= '&id=' . $id;
+            }
+            $result .= '">';
+            $result .= $i;
+            $result .= '</a></li>';
+        }
+    }
+
+    if ($start != $lastpage) {
+        if (min(($startpage + $num), $lastpage) < ($lastpage - 1)) {
+            $result .= '<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">..</a></li>';
+        }
+        $result .= '<li class="page-item"><a class="page-link" href=" ' . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES);
+        $result .= '?start=' . $lastpage;
+        if ($id != '') {
+            $result .= '&id=' . $id;
+        }
+        $result .= '">';
+        $result .= $lastpage;
+        $result .= '</a></li>';
+    }
+
+    if ($lastpage > $num & $start < $lastpage) {
+        $result .= '<li class="page-item"><a class="page-link" href=" ' . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES);
+        $result .= '?start=' . ($start + 1);
+        if ($id != '') {
+            $result .= '&id=' . $id;
+        }
+        $result .= '">';
+        $result .= _('Next');
+        $result .= '</a></li>';
+    }
+
+    $result .= "</ul></nav>";
+
+    return $result;
 }
 
 /** Print alphanumeric paging menu
@@ -141,7 +151,7 @@ function show_letters($letterstart, $userid) {
         if (preg_match("/[0-9]/", $row['letter'])) {
             $digits_available = 1;
         } elseif (in_array($row['letter'], $char_range)) {
-            array_push($available_chars, $row['letter']);
+            $available_chars[] = $row['letter'];
         }
     }
 

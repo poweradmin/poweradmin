@@ -240,7 +240,7 @@ if (preg_match("/^xn--/", $zone_name_to_display)) {
 }
 
 echo "   <div>\n";
-show_pages($record_count, $iface_rowamount, $zone_id);
+echo show_pages($record_count, $iface_rowamount, $zone_id);
 echo "   </div>\n";
 
 $records = DnsRecord::get_records_from_domain_id($zone_id, ROWSTART, $iface_rowamount, RECORD_SORT_BY);

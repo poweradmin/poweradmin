@@ -186,7 +186,7 @@ if ($perm_view == "none") {
 
     if (LETTERSTART != 'all') {
         echo "     <div class='pb-3'>\n";
-        show_pages($count_zones_all_letterstart, $iface_rowamount);
+        echo show_pages($count_zones_all_letterstart, $iface_rowamount);
         echo "     </div>\n";
     }
 

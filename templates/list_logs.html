@@ -1,0 +1,45 @@
+<h5 class="mb-3">{% trans 'Logs' %}</h5>
+<div class="text-secondary">{% trans 'Total number of logs:' %} {{ number_of_logs }}</div><br>
+
+<div class="input-group-append">
+    <a href="list_logs.php" class="btn btn-secondary btn-sm" role="button"><i class="bi bi-eraser"></i> clear</a>
+    <a href="list_logs.php?auth=1" class="btn btn-secondary btn-sm" role="button"><i class="bi bi-person"></i> auth logs</a>
+</div>
+<form>
+    <div class="input-group mb-3 mt-2" style="width: 40%;">
+        <input name="name" id="name" type="text" class="form-control form-control-sm"
+               placeholder="Search logs by domain"
+               {% if name %}value="{{ name }}" %}} {% endif %}}>
+        <button for="name" type="submit" class="btn btn-primary btn-sm" type="button"><i class="bi bi-search"></i>
+            {% trans 'Search' %}
+        </button>
+    </div>
+</form>
+
+<form method="post" action="delete_domains.php">
+
+    {% if data %}
+    {{ pagination | raw }}
+    <table class="table table-striped table-bordered mt-2">
+        <thead>
+        <tr>
+            <th>{% trans 'Id' %}</th>
+            <th>log</th>
+            <th>{% trans 'Created at' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for row in data %}
+        <tr>
+            <td>{{ row['id'] }}</td>
+            <td>{{ row['log'] }}</td>
+            <td>{{ row['created_at'] }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {{ pagination | raw }}
+    {% else %}
+    {% trans 'No logs found' %}
+    {% endif %}
+</form>
