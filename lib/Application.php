@@ -48,6 +48,6 @@ class Application {
     }
 
     public function config($name) {
-        return $this->configuration->get($name);
+        return str_replace(['"',"'"], "", $this->configuration->get($name));
     }
 }

@@ -39,7 +39,10 @@ $dblog_use = $app->config('dblog_use');
 require_once 'inc/toolkit.inc.php';
 include_once 'inc/header.inc.php';
 
-$app->render('index.html', [
+$iface_index = $app->config('iface_index');
+$template = sprintf("index_%s.html", $iface_index);
+
+$app->render($template, [
     'user_name' => $_SESSION["name"],
     'auth_used' => $_SESSION["auth_used"],
     'perm_search' => do_hook('verify_permission', 'search'),
