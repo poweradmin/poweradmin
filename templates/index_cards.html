@@ -14,7 +14,7 @@
     {% if perm_view_zone_own or perm_view_zone_other %}
     <div class="col-sm-3 mb-3">
         <div class="card">
-            <div class="text-center"><i class="bi bi-list display-1"></i></div>
+            <div class="text-center"><i class="bi bi-list-check display-1"></i></div>
             <div class="card-body">
                 <div class="row"><a href="list_zones.php" class="btn btn-primary btn-block">{% trans 'List zones' %}</a>
                 </div>
@@ -26,7 +26,7 @@
     {% if perm_zone_master_add %}
     <div class="col-sm-3 mb-3">
         <div class="card">
-            <div class="text-center"><i class="bi bi-list display-1"></i></div>
+            <div class="text-center"><i class="bi bi-list-columns display-1"></i></div>
             <div class="card-body">
                 <div class="row"><a href="list_zone_templ.php" class="btn btn-primary btn-block">{% trans 'List zone
                     templates' %}</a></div>
@@ -37,7 +37,7 @@
     {% if perm_supermaster_view %}
     <div class="col-sm-3 mb-3">
         <div class="card">
-            <div class="text-center"><i class="bi bi-list display-1"></i></div>
+            <div class="text-center"><i class="bi bi-list-columns-reverse display-1"></i></div>
             <div class="card-body">
                 <div class="row"><a href="list_supermasters.php" class="btn btn-primary btn-block">{% trans 'List
                     supermasters' %}</a></div>
@@ -59,7 +59,7 @@
     {% if perm_zone_slave_add %}
     <div class="col-sm-3 mb-3">
         <div class="card">
-            <div class="text-center"><i class="bi bi-plus-circle display-1"></i></div>
+            <div class="text-center"><i class="bi bi-plus-circle-dotted display-1"></i></div>
             <div class="card-body">
                 <div class="row"><a href="add_zone_slave.php" class="btn btn-primary btn-block">{% trans 'Add slave
                     zone' %}</a></div>
@@ -70,7 +70,7 @@
     {% if perm_supermaster_add %}
     <div class="col-sm-3 mb-3">
         <div class="card">
-            <div class="text-center"><i class="bi bi-plus-circle display-1"></i></div>
+            <div class="text-center"><i class="bi bi-plus-square display-1"></i></div>
             <div class="card-body">
                 <div class="row"><a href="add_supermaster.php" class="btn btn-primary btn-block">{% trans 'Add
                     supermaster' %}</a></div>
@@ -81,7 +81,7 @@
     {% if perm_zone_master_add %}
     <div class="col-sm-3 mb-3">
         <div class="card">
-            <div class="text-center"><i class="bi bi-plus-circle display-1"></i></div>
+            <div class="text-center"><i class="bi bi-plus-square-dotted display-1"></i></div>
             <div class="card-body">
                 <div class="row"><a href="bulk_registration.php" class="btn btn-primary btn-block">{% trans 'Bulk
                     registration' %}</a></div>
