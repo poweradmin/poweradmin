@@ -100,3 +100,18 @@ a:hover {
     color: #f8f9fa;
     background-color: #343a40;
 }
+
+.card {
+    background-color: #212529;
+}
+
+.card a {
+    color: #b7b7b8;
+    background: #2c3031;
+    border-color: #373b3e;
+}
+
+.card a:hover {
+    color: #f8f9fa;
+    background-color: #343a40;
+}
