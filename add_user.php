@@ -80,11 +80,11 @@ echo "     <form method=\"post\" action=\"add_user.php\">\n";
 echo "      <table>\n";
 echo "       <tr>\n";
 echo "        <td>" . _('Username') . "</td>\n";
-echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"username\" value=\"" . $username . "\"></td>\n";
+echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"username\" value=\"" . htmlspecialchars($username) . "\"></td>\n";
 echo "       </tr>\n";
 echo "       <tr>\n";
 echo "        <td>" . _('Fullname') . "</td>\n";
-echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"fullname\" value=\"" . $fullname . "\"></td>\n";
+echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"fullname\" value=\"" . htmlspecialchars($fullname) . "\"></td>\n";
 echo "       </tr>\n";
 echo "       <tr>\n";
 echo "        <td>" . _('Password') . "</td>\n";
@@ -92,7 +92,7 @@ echo "        <td><input class=\"form-control form-control-sm\" id=\"password\" 
 echo "       </tr>\n";
 echo "       <tr>\n";
 echo "        <td>" . _('Email address') . "</td>\n";
-echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"email\" value=\"" . $email . "\"></td>\n";
+echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"email\" value=\"" . htmlspecialchars($email) . "\"></td>\n";
 echo "       </tr>\n";
 if (do_hook('verify_permission', 'user_edit_templ_perm')) {
     echo "       <tr>\n";
@@ -109,7 +109,7 @@ if (do_hook('verify_permission', 'user_edit_templ_perm')) {
 }
 echo "       <tr>\n";
 echo "        <td>" . _('Description') . "</td>\n";
-echo "        <td><textarea class=\"form-control form-control-sm\" rows=\"4\" cols=\"30\" class=\"inputarea\" name=\"descr\">" . $description . "</textarea></td>\n";
+echo "        <td><textarea class=\"form-control form-control-sm\" rows=\"4\" cols=\"30\" class=\"inputarea\" name=\"descr\">" . htmlspecialchars($description) . "</textarea></td>\n";
 echo "       </tr>\n";
 echo "       <tr>\n";
 echo "        <td>" . _('Enabled') . "</td>\n";
