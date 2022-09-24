@@ -28,3 +28,7 @@ footer a, footer a:hover {
     color: rgb(108, 117, 125);
     text-decoration: none;
 }
+
+.card i {
+    color: rgb(108, 117, 125);
+}
