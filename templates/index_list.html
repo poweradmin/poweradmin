@@ -7,17 +7,17 @@
     {% endif %}
     {% if perm_view_zone_own or perm_view_zone_other %}
         <li class="list-group-item list-group-item-action">
-            <i class="bi bi-list"></i> <a href="list_zones.php">{% trans 'List zones' %}</a>
+            <i class="bi bi-diagram-3"></i> <a href="list_zones.php">{% trans 'List zones' %}</a>
         </li>
     {% endif %}
     {% if perm_zone_master_add %}
         <li class="list-group-item list-group-item-action">
-            <i class="bi bi-list-check"></i> <a href="list_zone_templ.php">{% trans 'List zone templates' %}</a>
+            <i class="bi bi-files"></i> <a href="list_zone_templ.php">{% trans 'List zone templates' %}</a>
         </li>
     {% endif %}
     {% if perm_supermaster_view %}
         <li class="list-group-item list-group-item-action">
-            <i class="bi bi-list-columns"></i> <a href="list_supermasters.php">{% trans 'List supermasters' %}</a>
+            <i class="bi bi-hdd-rack"></i> <a href="list_supermasters.php">{% trans 'List supermasters' %}</a>
         </li>
     {% endif %}
     {% if perm_zone_master_add %}
@@ -32,12 +32,12 @@
     {% endif %}
     {% if perm_supermaster_add %}
         <li class="list-group-item list-group-item-action">
-            <i class="bi bi-plus-square"></i> <a href="add_supermaster.php">{% trans 'Add supermaster' %}</a>
+            <i class="bi bi-hdd-network"></i> <a href="add_supermaster.php">{% trans 'Add supermaster' %}</a>
         </li>
     {% endif %}
     {% if perm_zone_master_add %}
         <li class="list-group-item list-group-item-action">
-            <i class="bi bi-plus-square-dotted"></i> <a href="bulk_registration.php">{% trans 'Bulk registration' %}</a>
+            <i class="bi bi-collection"></i> <a href="bulk_registration.php">{% trans 'Bulk registration' %}</a>
         </li>
     {% endif %}
     {% if perm_is_godlike and dblog_use == true %}
