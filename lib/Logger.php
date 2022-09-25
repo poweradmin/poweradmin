@@ -24,7 +24,7 @@ namespace Poweradmin;
 
 class Logger
 {
-    public static function do_log($message, $priority, $zone_id)
+    private static function do_log($message, $priority, $zone_id)
     {
         global $syslog_use, $syslog_ident, $syslog_facility, $dblog_use;
 

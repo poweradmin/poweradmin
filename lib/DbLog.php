@@ -59,7 +59,7 @@ class DbLog
     public static function count_auth_logs()
     {
         global $db;
-        $stmt = $db->query("SELECT count(*) as number_of_logs FROM logs where zone_id is null");
+        $stmt = $db->query("SELECT count(*) as number_of_logs FROM log_users");
         return $stmt->fetch()['number_of_logs'];
     }
 
@@ -125,8 +125,7 @@ class DbLog
     {
         global $db;
         $stmt = $db->prepare("
-                    SELECT * FROM logs 
-                    WHERE zone_id is NULL
+                    SELECT * FROM log_users
                     ORDER BY created_at DESC 
                     LIMIT :limit 
                     OFFSET :offset 

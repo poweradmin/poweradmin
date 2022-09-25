@@ -1,18 +1,17 @@
 <h5 class="mb-3">{% trans 'Logs' %}</h5>
 <div class="text-secondary">{% trans 'Total number of logs:' %} {{ number_of_logs }}</div><br>
 
-<div class="input-group-append">
-    <a href="list_logs.php" class="btn btn-secondary btn-sm" role="button"><i class="bi bi-eraser"></i> clear</a>
-    <a href="list_logs.php?auth=1" class="btn btn-secondary btn-sm" role="button"><i class="bi bi-person"></i> auth logs</a>
-</div>
 <form>
-    <div class="input-group mb-3 mt-2" style="width: 40%;">
+    <div class="input-group mb-3" style="width: 40%;">
         <input name="name" id="name" type="text" class="form-control form-control-sm"
-               placeholder="Search logs by domain"
+               placeholder="{% trans 'Search logs by domain' %}"
                {% if name %}value="{{ name }}" %}} {% endif %}}>
         <button for="name" type="submit" class="btn btn-primary btn-sm" type="button"><i class="bi bi-search"></i>
             {% trans 'Search' %}
         </button>
+        <div class="input-group-append">
+            <a href="list_log_zones.php" class="btn btn-secondary btn-sm" role="button"><i class="bi bi-eraser"></i> {% trans 'Clear' %}</a>
+        </div>
     </div>
 </form>
 

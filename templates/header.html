@@ -32,12 +32,6 @@
                             <a href="search.php" class="text-secondary text-decoration-none">{% trans 'Search' %}</a>
                         </li>
                     {% endif %}
-                    {% if perm_is_godlike and dblog_use == true %}
-                        <li class="p-1">
-                            <a href="list_logs.php" class="nav-link text-secondary"><i class="bi bi-list-ul"></i></a>
-                            <a href="list_logs.php" class="text-secondary text-decoration-none">{% trans 'Logs' %}</a>
-                        </li>
-                    {% endif %}
                     {% if perm_view_zone_own or perm_view_zone_other or perm_zone_master_add or perm_zone_slave_add %}
                         <li class="p-1">
                             <a href="list_zones.php" class="nav-link text-secondary"><i class="bi bi-diagram-3"></i></a>
@@ -61,6 +55,12 @@
                                            href="bulk_registration.php">{% trans 'Bulk registration' %}</a>
                                     </li>
                                 {% endif %}
+                                {% if perm_is_godlike and dblog_use == true %}
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item" href="list_log_zones.php">{% trans 'Zone logs' %}</a></li>
+                                {% endif %}
                             </ul>
                         </li>
                     {% endif %}
@@ -82,6 +82,13 @@
                                        href="list_perm_templ.php">{% trans 'List permission templates' %}</a></li>
                                 <li><a class="dropdown-item"
                                        href="add_perm_templ.php">{% trans 'Add permission template' %}</a></li>
+                            {% endif %}
+                            {% if perm_is_godlike and dblog_use == true %}
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item"
+                                   href="list_log_users.php">{% trans 'User logs' %}</a></li>
                             {% endif %}
                         </ul>
                     </li>
