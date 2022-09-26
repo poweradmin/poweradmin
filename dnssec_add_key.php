@@ -61,7 +61,7 @@ $key_type = "";
 if (isset($_POST['key_type'])) {
     $key_type = $_POST['key_type'];
 
-    if ($key_type != 'ksk' && $key_type != 'zsk' && $key_type != 'csk') {
+    if ($key_type != 'ksk' && $key_type != 'zsk') {
         error(ERR_INV_INPUT);
         include_once("inc/footer.inc.php");
         exit;
@@ -110,7 +110,6 @@ echo "        <td>" . _('Key type') . "</td>\n";
 echo "        <td>\n";
 echo "         <select class=\"form-select form-select-sm\" name=\"key_type\">\n";
 echo "          <option value=\"\"></option>\n";
-echo "		<option value=\"csk\">CSK</option>\n";
 echo "          <option value=\"ksk\">KSK</option>\n";
 echo "          <option value=\"zsk\">ZSK</option>\n";
 echo "         </select>\n";
