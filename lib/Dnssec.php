@@ -60,7 +60,7 @@ class Dnssec
      *
      * @return array Array with output from command execution and error code
      */
-    public static function dnssec_call_pdnssec($command, $domain, $args = Array ()): array
+    public static function dnssec_call_pdnssec($command, $domain, $args = array()): array
     {
         global $pdnssec_command, $pdnssec_debug;
         $output = '';
@@ -70,19 +70,19 @@ class Dnssec
             return array($output, $return_code);
         }
 
-	if (!is_array ($args)) {
-	    return array('ERROR: internal error, input not Array ()', $return_code);
-	} else {
-		foreach ($args as $k => $v) {
-			$args [$k] = escapeshellarg ($v);
-		}
-		$args = join (' ', $args);
-	}
+        if (!is_array($args)) {
+            return array('ERROR: internal error, input not Array ()', $return_code);
+        } else {
+            foreach ($args as $k => $v) {
+                $args [$k] = escapeshellarg($v);
+            }
+            $args = join(' ', $args);
+        }
 
         $full_command = join(' ', array(
                 escapeshellcmd($pdnssec_command),
                 $command,
-                escapeshellarg($domain).' '.$args,
+                escapeshellarg($domain) . ' ' . $args,
                 '2>&1')
         );
 
