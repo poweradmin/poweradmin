@@ -43,7 +43,7 @@ if (isset($_GET['id']) && Validation::is_number($_GET['id'])) {
     $zone_id = htmlspecialchars($_GET['id']);
 }
 
-$user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );
+$user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
 
 if ($user_is_zone_owner == "0") {
     error(ERR_PERM_VIEW_ZONE);
@@ -84,7 +84,8 @@ $algorithm = "";
 if (isset($_POST["algorithm"])) {
     $algorithm = $_POST["algorithm"];
 
-    $valid_algorithm = array('rsasha1', 'rsasha256', 'rsasha512', 'gost', 'ecdsa256', 'ecdsa384');
+    // To check the supported DNSSEC algorithms in your build of PowerDNS, run pdnsutil list-algorithms.
+    $valid_algorithm = array('rsasha1', 'rsasha1-nsec3', 'rsasha256', 'rsasha512', 'ecdsa256', 'ecdsa384', 'ed25519', 'ed448');
     if (!in_array($algorithm, $valid_algorithm)) {
         error(ERR_INV_INPUT);
         include_once("inc/footer.inc.php");
@@ -135,11 +136,13 @@ echo "        <td>\n";
 echo "         <select class=\"form-select form-select-sm\" name=\"algorithm\">\n";
 echo "          <option value=\"\"></option>\n";
 echo "          <option value=\"rsasha1\">".Dnssec::dnssec_shorthand_to_algorithm_name('rsasha1')."</option>\n";
+echo "          <option value=\"rsasha1-nsec3\">".Dnssec::dnssec_shorthand_to_algorithm_name('rsasha1-nsec3')."</option>\n";
 echo "          <option value=\"rsasha256\">".Dnssec::dnssec_shorthand_to_algorithm_name('rsasha256')."</option>\n";
 echo "          <option value=\"rsasha512\">".Dnssec::dnssec_shorthand_to_algorithm_name('rsasha512')."</option>\n";
-echo "          <option value=\"gost\">".Dnssec::dnssec_shorthand_to_algorithm_name('gost')."</option>\n";
 echo "          <option value=\"ecdsa256\">".Dnssec::dnssec_shorthand_to_algorithm_name('ecdsa256')."</option>\n";
 echo "          <option value=\"ecdsa384\">".Dnssec::dnssec_shorthand_to_algorithm_name('ecdsa384')."</option>\n";
+echo "          <option value=\"ed25519\">".Dnssec::dnssec_shorthand_to_algorithm_name('ed25519')."</option>\n";
+echo "          <option value=\"ed448\">".Dnssec::dnssec_shorthand_to_algorithm_name('ed448')."</option>\n";
 echo "         </select>\n";
 
 echo "        </td>\n";
