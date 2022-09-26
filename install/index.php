@@ -67,7 +67,7 @@ $twig->addExtension(new I18nExtension());
 
 // Display header
 $current_step = isset($_POST['step']) && is_numeric($_POST['step']) ? $_POST['step'] : 1;
-echo $twig->render('header.html', array('current_step' => $current_step, 'file_version' => time()));
+echo $twig->render('header.html', array('current_step' => htmlspecialchars($current_step), 'file_version' => time()));
 
 if ($current_step == 1 && file_exists('../inc/config.inc.php')) {
     echo "<p class='alert alert-danger'>". _('There is already a configuration file in place, so the installation will be skipped.') ."</p>";
@@ -82,11 +82,11 @@ switch ($current_step) {
         break;
 
     case 2:
-        echo $twig->render('step2.html', array('next_step' => ++$current_step, 'language' => $language));
+        echo $twig->render('step2.html', array('next_step' => ++$current_step, 'language' => htmlspecialchars($language)));
         break;
 
     case 3:
-        echo $twig->render('step3.html', array('next_step' => ++$current_step, 'language' => $language));
+        echo $twig->render('step3.html', array('next_step' => ++$current_step, 'language' => htmlspecialchars($language)));
         break;
 
     case 4:
@@ -147,7 +147,7 @@ switch ($current_step) {
 
         echo $twig->render('step4.html', array(
             'next_step' => ++$current_step,
-            'language' => $_POST['language'],
+            'language' => htmlspecialchars($_POST['language']),
             'db_user' => $db_user,
             'db_pass' => $db_pass,
             'db_host' => $db_host,
