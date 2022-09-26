@@ -54,7 +54,8 @@ class PDOLayer extends PDOCommon {
      * @param string $paramtype
      * @return string Returns quoted string
      */
-    public function quote($string, $paramtype = NULL) {
+    public function quote($string, $paramtype = NULL): string
+    {
         if ($paramtype == 'integer') {
             $paramtype = PDO::PARAM_INT;
         } elseif ($paramtype == 'text') {
@@ -91,7 +92,7 @@ class PDOLayer extends PDOCommon {
      * @param string $str SQL query
      * @return PDOStatement
      */
-    public function query($str, ?int $fetchMode = null, mixed ...$fetchModeArgs) {
+    public function query($str, ?int $fetchMode = null, mixed ...$fetchModeArgs): PDOStatement {
         if ($this->debug) {
             $this->queries[] = $str;
         }

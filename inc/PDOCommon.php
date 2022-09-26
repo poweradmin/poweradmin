@@ -88,9 +88,9 @@ class PDOCommon extends PDO {
      * Send a query to the database and return any results
      *
      * @param string $str
-     * @return PDOStatementCommon
+     * @return PDOStatement
      */
-    public function query($str, ?int $fetchMode = null, mixed ...$fetchModeArgs) {
+    public function query($str, ?int $fetchMode = null, mixed ...$fetchModeArgs): PDOStatement {
         // check if limit has been specified. if so, modify the query
         if (!empty($this->limit)) {
             $str .= " LIMIT " . $this->limit;
@@ -183,15 +183,4 @@ class PDOCommon extends PDO {
         $this->limit = $limit;
         $this->from = $from;
     }
-
-    /**
-     * Quotes a string so it can be safely used in a query.
-     *
-     * @param string $str
-     * @return string
-     */
-    public function escape($str) {
-        return $this->quote($str);
-    }
-
 }

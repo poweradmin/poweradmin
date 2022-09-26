@@ -3,7 +3,7 @@
 /**
  * MDB2 over PDO
  */
-class PDOStatementCommon {
+class PDOStatementCommon extends PDOStatement {
 
     /**
      * Internal resource
@@ -23,11 +23,12 @@ class PDOStatementCommon {
     /**
      * Fetch and return a row of data
      *
-     * @param int $fetch_style
+     * @param int $mode
      * @return mixed
      */
-    public function fetch($fetch_style = PDO::FETCH_ASSOC) {
-        return $this->pdoStatement->fetch($fetch_style);
+    #[\ReturnTypeWillChange]
+    public function fetch($mode = PDO::FETCH_ASSOC, $cursorOrientation = PDO::FETCH_ORI_NEXT, $cursorOffset = 0) {
+        return $this->pdoStatement->fetch($mode);
     }
 
     /**
