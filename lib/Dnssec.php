@@ -319,6 +319,12 @@ class Dnssec
             case 14:
                 $name = 'ECDSAP384SHA384';
                 break;
+            case 15:
+                $name = 'ED25519';
+                break;
+            case 16:
+                $name = 'ED448';
+                break;
             case 252:
                 $name = 'INDIRECT';
                 break;
@@ -358,6 +364,9 @@ class Dnssec
             case "rsasha1":
                 $name = self::dnssec_algorithm_to_name(5);
                 break;
+            case "rsasha1-nsec3":
+                $name = self::dnssec_algorithm_to_name(7);
+                break;
             case "rsasha256":
                 $name = self::dnssec_algorithm_to_name(8);
                 break;
@@ -374,7 +383,10 @@ class Dnssec
                 $name = self::dnssec_algorithm_to_name(14);
                 break;
             case "ed25519":
-                $name = self::dnssec_algorithm_to_name(250);
+                $name = self::dnssec_algorithm_to_name(15);
+                break;
+            case "ed448":
+                $name = self::dnssec_algorithm_to_name(16);
                 break;
         }
 
