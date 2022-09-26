@@ -89,10 +89,12 @@ if ($confirm == '1') {
     if ($key_info[5]) {
         if (Dnssec::dnssec_deactivate_zone_key($domain_name, $key_id)) {
             success(SUC_EXEC_PDNSSEC_DEACTIVATE_ZONE_KEY);
+	echo "<p class=\"pt-3\"><a href='dnssec.php?id=" . $zone_id . "'>Back to DNSSEC " . $domain_name . "</a></p>";
         }
     } else {
         if (Dnssec::dnssec_activate_zone_key($domain_name, $key_id)) {
             success(SUC_EXEC_PDNSSEC_ACTIVATE_ZONE_KEY);
+	echo "<p class=\"pt-3\"><a href='dnssec.php?id=" . $zone_id . "'>Back to DNSSEC " . $domain_name . "</a></p>";
         }
     }
 } else {

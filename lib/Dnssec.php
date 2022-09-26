@@ -60,7 +60,7 @@ class Dnssec
      *
      * @return array Array with output from command execution and error code
      */
-    public static function dnssec_call_pdnssec($command, $args): array
+    public static function dnssec_call_pdnssec($command, $domain, $args = Array ()): array
     {
         global $pdnssec_command, $pdnssec_debug;
         $output = '';
@@ -70,10 +70,19 @@ class Dnssec
             return array($output, $return_code);
         }
 
+	if (!is_array ($args)) {
+	    return array('ERROR: internal error, input not Array ()', $return_code);
+	} else {
+		foreach ($args as $k => $v) {
+			$args [$k] = escapeshellarg ($v);
+		}
+		$args = join (' ', $args);
+	}
+
         $full_command = join(' ', array(
                 escapeshellcmd($pdnssec_command),
                 $command,
-                escapeshellarg($args),
+                escapeshellarg($domain).' '.$args,
                 '2>&1')
         );
 
@@ -409,7 +418,7 @@ class Dnssec
      */
     public static function dnssec_activate_zone_key($domain_name, $key_id): bool
     {
-        $call_result = self::dnssec_call_pdnssec('activate-zone-key', join(" ", array($domain_name, $key_id)));
+        $call_result = self::dnssec_call_pdnssec('activate-zone-key', $domain_name, array($key_id));
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
@@ -432,7 +441,7 @@ class Dnssec
      */
     public static function dnssec_deactivate_zone_key($domain_name, $key_id): bool
     {
-        $call_result = self::dnssec_call_pdnssec('deactivate-zone-key', join(" ", array($domain_name, $key_id)));
+        $call_result = self::dnssec_call_pdnssec('deactivate-zone-key', $domain_name, array($key_id));
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
@@ -495,7 +504,7 @@ class Dnssec
      */
     public static function dnssec_add_zone_key($domain_name, $key_type, $bits, $algorithm): bool
     {
-        $call_result = self::dnssec_call_pdnssec('add-zone-key', join(" ", array($domain_name, $key_type, $bits, "inactive", $algorithm)));
+        $call_result = self::dnssec_call_pdnssec('add-zone-key', $domain_name, array($key_type, $bits, "inactive", $algorithm));
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
@@ -518,7 +527,7 @@ class Dnssec
      */
     public static function dnssec_remove_zone_key($domain_name, $key_id): bool
     {
-        $call_result = self::dnssec_call_pdnssec('remove-zone-key', join(" ", array($domain_name, $key_id)));
+        $call_result = self::dnssec_call_pdnssec('remove-zone-key', $domain_name, array($key_id));
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
