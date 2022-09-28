@@ -25,6 +25,7 @@
             <th>{% trans 'Id' %}</th>
             <th>{% trans 'Event' %}</th>
             <th>{% trans 'Created at' %}</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -33,6 +34,13 @@
             <td>{{ row['id'] }}</td>
             <td>{{ row['event'] }}</td>
             <td>{{ row['created_at'] }}</td>
+            <td>
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="popover"
+                        data-bs-title="{% trans 'Details' %}"
+                        data-bs-content="{{ row['details'] }}">
+                    <i class="bi bi-eye"></i>
+                </button>
+            </td>
         </tr>
         {% endfor %}
         </tbody>
