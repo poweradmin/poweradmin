@@ -312,13 +312,17 @@ if ($records == "-1") {
     }
 
     if ($iface_zone_comments) {
+        $zone_comment = '';
+        $raw_zone_comment = DnsRecord::get_zone_comment($zone_id);
+        if ($raw_zone_comment) { $zone_comment = htmlspecialchars($raw_zone_comment); }
+
         echo "    <tr>\n";
         echo "     <td>&nbsp;</td><td colspan=\"7\">Comments:</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "     <td>\n";
         echo "     </td>\n";
-        echo "     <td colspan=\"4\"><textarea class=\"form-control form-control-sm\" rows=\"5\" cols=\"80\" name=\"comment\">" . htmlspecialchars(DnsRecord::get_zone_comment($zone_id)) . "</textarea></td>\n";
+        echo "     <td colspan=\"4\"><textarea class=\"form-control form-control-sm\" rows=\"5\" cols=\"80\" name=\"comment\">" . $zone_comment . "</textarea></td>\n";
         echo "<td></td>";
         echo "     <td>";
         echo "      <a class=\"btn btn-outline-primary btn-sm\" href=\"edit_comment.php?id=" . $zone_id . "\">
