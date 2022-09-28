@@ -4,7 +4,7 @@
 <form>
     <div class="input-group mb-3" style="width: 40%;">
         <input name="name" id="name" type="text" class="form-control form-control-sm"
-               placeholder="{% trans 'Search logs by username' %}"
+               placeholder="{% trans 'Search logs by user' %}"
                {% if name %}value="{{ name }}" %}} {% endif %}}>
         <button for="name" type="submit" class="btn btn-primary btn-sm" type="button"><i class="bi bi-search"></i>
             {% trans 'Search' %}
@@ -23,7 +23,7 @@
         <thead>
         <tr>
             <th>{% trans 'Id' %}</th>
-            <th>log</th>
+            <th>{% trans 'Event' %}</th>
             <th>{% trans 'Created at' %}</th>
         </tr>
         </thead>
@@ -31,7 +31,7 @@
         {% for row in data %}
         <tr>
             <td>{{ row['id'] }}</td>
-            <td>{{ row['log'] }}</td>
+            <td>{{ row['event'] }}</td>
             <td>{{ row['created_at'] }}</td>
         </tr>
         {% endfor %}

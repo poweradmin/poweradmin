@@ -22,22 +22,23 @@
 
 namespace Poweradmin;
 
-class DbLog
+class DbZoneLogger
 {
-    public static function do_log($msg, $zone_id)
+    public static function do_log($msg, $zone_id, $priority)
     {
         global $db;
-        $stmt = $db->prepare('INSERT INTO logs (zone_id, log) VALUES (:zone_id, :msg)');
+        $stmt = $db->prepare('INSERT INTO log_zones (zone_id, event, priority) VALUES (:zone_id, :msg, :priority)');
         $stmt->execute([
             ':msg' => $msg,
-            ':zone_id' => $zone_id
+            ':zone_id' => $zone_id,
+            ':priority' => $priority,
         ]);
     }
 
     public static function count_all_logs()
     {
         global $db;
-        $stmt = $db->query("SELECT count(*) AS number_of_logs FROM logs");
+        $stmt = $db->query("SELECT count(*) AS number_of_logs FROM log_zones");
         return $stmt->fetch()['number_of_logs'];
     }
 
@@ -46,9 +47,9 @@ class DbLog
         global $db;
         $stmt = $db->prepare("
                     SELECT count(domains.id) as number_of_logs
-                    FROM logs 
+                    FROM log_zones
                     INNER JOIN domains 
-                    ON domains.id = logs.zone_id 
+                    ON domains.id = log_zones.zone_id
                     WHERE domains.name LIKE :search_by
         ");
         $name = "%$domain%";
@@ -56,18 +57,11 @@ class DbLog
         return $stmt->fetch()['number_of_logs'];
     }
 
-    public static function count_auth_logs()
-    {
-        global $db;
-        $stmt = $db->query("SELECT count(*) as number_of_logs FROM log_users");
-        return $stmt->fetch()['number_of_logs'];
-    }
-
     public static function get_all_logs($limit, $offset)
     {
         global $db;
         $stmt = $db->prepare("
-                    SELECT * FROM logs 
+                    SELECT * FROM log_zones
                     ORDER BY created_at DESC 
                     LIMIT :limit 
                     OFFSET :offset 
@@ -89,9 +83,9 @@ class DbLog
 
         global $db;
         $stmt = $db->prepare("
-            SELECT logs.log, logs.created_at, domains.name FROM logs
-            INNER JOIN domains ON domains.id = logs.zone_id 
-            WHERE domains.name LIKE :search_by 
+            SELECT log_zones.event, log_zones.created_at, domains.name FROM log_zones
+            INNER JOIN domains ON domains.id = log_zones.zone_id 
+            WHERE domains.name LIKE :search_by
             LIMIT :limit 
             OFFSET :offset"
         );
@@ -119,23 +113,5 @@ class DbLog
             }
         }
         return false;
-    }
-
-    public static function get_auth_logs($limit, $offset)
-    {
-        global $db;
-        $stmt = $db->prepare("
-                    SELECT * FROM log_users
-                    ORDER BY created_at DESC 
-                    LIMIT :limit 
-                    OFFSET :offset 
-        ");
-
-        $stmt->execute([
-            'limit' => $limit,
-            'offset' => $offset
-        ]);
-
-        return $stmt->fetchAll();
     }
 }

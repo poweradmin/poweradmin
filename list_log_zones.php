@@ -9,7 +9,7 @@
  */
 
 use Poweradmin\AppFactory;
-use Poweradmin\DbLog;
+use Poweradmin\DbZoneLogger;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/pagination.inc.php';
@@ -32,16 +32,16 @@ $logs_per_page = $app->config('iface_rowamount');
 $logs = null;
 
 if (isset($_GET['name'])) {
-    $number_of_logs = DbLog::count_logs_by_domain($_GET['name']);
-    $number_of_pages = ceil($number_of_logs / $logs_per_page);
-    if ($selected_page > $number_of_pages) die('Unknown page');
-    $logs = DbLog::get_logs_for_domain($_GET['name'], $logs_per_page, ($selected_page - 1) * $logs_per_page);
-
-} else {
-    $number_of_logs = DbLog::count_all_logs();
+    $number_of_logs = DbZoneLogger::count_logs_by_domain($_GET['name']);
     $number_of_pages = ceil($number_of_logs / $logs_per_page);
     if ($number_of_logs != 0 && $selected_page > $number_of_pages) die('Unknown page');
-    $logs = DbLog::get_all_logs($logs_per_page, ($selected_page - 1) * $logs_per_page);
+    $logs = DbZoneLogger::get_logs_for_domain($_GET['name'], $logs_per_page, ($selected_page - 1) * $logs_per_page);
+
+} else {
+    $number_of_logs = DbZoneLogger::count_all_logs();
+    $number_of_pages = ceil($number_of_logs / $logs_per_page);
+    if ($number_of_logs != 0 && $selected_page > $number_of_pages) die('Unknown page');
+    $logs = DbZoneLogger::get_all_logs($logs_per_page, ($selected_page - 1) * $logs_per_page);
 }
 
 $app->render('list_log_zones.html', [

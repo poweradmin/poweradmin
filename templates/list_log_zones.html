@@ -1,4 +1,4 @@
-<h5 class="mb-3">{% trans 'Logs' %}</h5>
+<h5 class="mb-3">{% trans 'Zone logs' %}</h5>
 <div class="text-secondary">{% trans 'Total number of logs:' %} {{ number_of_logs }}</div><br>
 
 <form>
@@ -23,7 +23,7 @@
         <thead>
         <tr>
             <th>{% trans 'Id' %}</th>
-            <th>log</th>
+            <th>{% trans 'Event' %}</th>
             <th>{% trans 'Created at' %}</th>
         </tr>
         </thead>
@@ -31,7 +31,7 @@
         {% for row in data %}
         <tr>
             <td>{{ row['id'] }}</td>
-            <td>{{ row['log'] }}</td>
+            <td>{{ row['event'] }}</td>
             <td>{{ row['created_at'] }}</td>
         </tr>
         {% endfor %}

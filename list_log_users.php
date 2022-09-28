@@ -1,6 +1,6 @@
 <?php
 /**
- * Script that displays list of permission templates
+ * Script that displays list of event logs
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
@@ -9,7 +9,7 @@
  */
 
 use Poweradmin\AppFactory;
-use Poweradmin\DbLog;
+use Poweradmin\DbUserLogger;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/pagination.inc.php';
@@ -27,34 +27,24 @@ if (isset($_GET['start'])) {
     if ($selected_page < 0) die('Unknown page.');
 }
 
-if (isset($_GET['auth']) && $_GET['auth'] != 1) {
-    die('Unknown auth flag.');
-}
-
 $number_of_logs = 0;
 $logs_per_page = $app->config('iface_rowamount');
 $logs = null;
 
 if (isset($_GET['name'])) {
-    $number_of_logs = DbLog::count_logs_by_domain($_GET['name']);
+    $number_of_logs = DbUserLogger::count_logs_by_user($_GET['name']);
     $number_of_pages = ceil($number_of_logs / $logs_per_page);
-    if ($selected_page > $number_of_pages) die('Unknown page');
-    $logs = DbLog::get_logs_for_domain($_GET['name'], $logs_per_page, ($selected_page - 1) * $logs_per_page);
-
-} elseif (isset($_GET['auth'])) {
-    $number_of_logs = DbLog::count_auth_logs();
-    $number_of_pages = ceil($number_of_logs / $logs_per_page);
-    if ($selected_page > $number_of_pages) die('Unknown page');
-    $logs = DbLog::get_auth_logs($logs_per_page, ($selected_page - 1) * $logs_per_page);
+    if ($number_of_logs != 0 && $selected_page > $number_of_pages) die('Unknown page');
+    $logs = DbUserLogger::get_logs_for_user($_GET['name'], $logs_per_page, ($selected_page - 1) * $logs_per_page);
 
 } else {
-    $number_of_logs = DbLog::count_all_logs();
+    $number_of_logs = DbUserLogger::count_all_logs();
     $number_of_pages = ceil($number_of_logs / $logs_per_page);
-    if ($number_of_logs > 0 && $selected_page > $number_of_pages) die('Unknown page');
-    $logs = DbLog::get_all_logs($logs_per_page, ($selected_page - 1) * $logs_per_page);
+    if ($number_of_logs != 0 && $selected_page > $number_of_pages) die('Unknown page');
+    $logs = DbUserLogger::get_all_logs($logs_per_page, ($selected_page - 1) * $logs_per_page);
 }
 
-$app->render('list_logs.html', [
+$app->render('list_log_users.html', [
     'number_of_logs' => $number_of_logs,
     'name' => isset($_GET['name']) ? htmlspecialchars($_GET['name']) : null,
     'data' => $logs,

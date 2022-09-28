@@ -24,7 +24,7 @@ namespace Poweradmin;
 
 class Logger
 {
-    private static function do_log($message, $priority, $zone_id)
+    private static function do_log($message, $priority, $zone_id = NULL)
     {
         global $syslog_use, $syslog_ident, $syslog_facility, $dblog_use;
 
@@ -35,8 +35,12 @@ class Logger
         }
 
         if ($dblog_use) {
-            $message = str_replace(["'", '\\'], '', $message);
-            DbLog::do_log($message, $zone_id);
+            // TODO: This distinction would be better handled with special type enum
+            if ($zone_id) {
+                DbZoneLogger::do_log($message, $zone_id, $priority);
+            } else {
+                DbUserLogger::do_log($message, $priority);
+            }
         }
     }
 
@@ -50,9 +54,9 @@ class Logger
         self::do_log($message, LOG_WARNING, $zone_id);
     }
 
-    public static function log_notice($message, $zone_id = NULL)
+    public static function log_notice($message)
     {
-        self::do_log($message, LOG_NOTICE, $zone_id);
+        self::do_log($message, LOG_NOTICE);
     }
 
     public static function log_info($message, $zone_id = NULL)

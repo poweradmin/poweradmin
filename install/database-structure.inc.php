@@ -460,7 +460,7 @@ $def_tables = array(
         )
     ),
     array(
-        'table_name' => 'logs',
+        'table_name' => 'log_zones',
         'options' => array('type' => 'innodb'),
         'fields' => array(
             'id' => array
@@ -471,25 +471,16 @@ $def_tables = array(
                 'autoincrement' => 1,
                 'type' => 'integer',
                 'name' => 'id',
-                'table' => 'logs',
+                'table' => 'log_zones',
                 'flags' => 'primary_keynot_null'
             ),
-            'zone_id' => array(
-                'notnull' => 0,
-                'unsigned' => 0,
-                'default' => 0,
-                'type' => 'integer',
-                'name' => 'zone_id',
-                'table' => 'logs',
-                'flags' => ''
-            ),
-            'log' => array
+            'event' => array
             (
                 'notnull' => 1,
                 'length' => 2048,
                 'type' => 'text',
-                'name' => 'log',
-                'table' => 'logs',
+                'name' => 'event',
+                'table' => 'log_zones',
                 'flags' => ''
             ),
             'created_at' => array(
@@ -497,11 +488,72 @@ $def_tables = array(
                 'default' => 'current_timestamp',
                 'type' => 'timestamp',
                 'name' => 'created_at',
-                'table' => 'logs',
+                'table' => 'log_zones',
+                'flags' => ''
+            ),
+            'priority' => array
+            (
+                'notnull' => 1,
+                'unsigned' => 0,
+                'type' => 'integer',
+                'name' => 'priority',
+                'table' => 'log_zones',
+                'flags' => ''
+            ),
+            'zone_id' => array(
+                'notnull' => 0,
+                'unsigned' => 0,
+                'default' => 0,
+                'type' => 'integer',
+                'name' => 'zone_id',
+                'table' => 'log_zones',
                 'flags' => ''
             ),
         )
-    )
+    ),
+    array(
+        'table_name' => 'log_users',
+        'options' => array('type' => 'innodb'),
+        'fields' => array(
+            'id' => array
+            (
+                'notnull' => 1,
+                'unsigned' => 0,
+                'default' => 0,
+                'autoincrement' => 1,
+                'type' => 'integer',
+                'name' => 'id',
+                'table' => 'log_users',
+                'flags' => 'primary_keynot_null'
+            ),
+            'event' => array
+            (
+                'notnull' => 1,
+                'length' => 2048,
+                'type' => 'text',
+                'name' => 'event',
+                'table' => 'log_users',
+                'flags' => ''
+            ),
+            'created_at' => array(
+                'notnull' => 0,
+                'default' => 'current_timestamp',
+                'type' => 'timestamp',
+                'name' => 'created_at',
+                'table' => 'log_users',
+                'flags' => ''
+            ),
+            'priority' => array
+            (
+                'notnull' => 1,
+                'unsigned' => 0,
+                'type' => 'integer',
+                'name' => 'priority',
+                'table' => 'log_zones',
+                'flags' => ''
+            ),
+        )
+    ),
 );
 
 // Tables from PowerDNS
