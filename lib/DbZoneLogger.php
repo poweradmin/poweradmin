@@ -83,7 +83,7 @@ class DbZoneLogger
 
         global $db;
         $stmt = $db->prepare("
-            SELECT log_zones.event, log_zones.created_at, domains.name FROM log_zones
+            SELECT log_zones.id, log_zones.event, log_zones.created_at, domains.name FROM log_zones
             INNER JOIN domains ON domains.id = log_zones.zone_id 
             WHERE domains.name LIKE :search_by
             LIMIT :limit 
