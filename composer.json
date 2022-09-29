@@ -17,8 +17,8 @@
     "ext-gettext": "*",
     "ext-openssl": "*",
     "ext-pdo": "*",
-    "twig/twig": "^2.0",
-    "twig/extensions": "^1.5"
+    "twig/twig": "v2.15.3",
+    "twig/extensions": "v1.5.4"
   },
   "autoload": {
     "psr-4": {
