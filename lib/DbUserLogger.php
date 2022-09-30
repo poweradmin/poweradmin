@@ -51,7 +51,7 @@ class DbUserLogger
                     FROM log_users
                     WHERE log_users.event LIKE :search_by
         ");
-        $name = "%$user%";
+        $name = "%'$user'%";
         $stmt->execute(['search_by' => $name]);
         return $stmt->fetch()['number_of_logs'];
     }
@@ -88,7 +88,7 @@ class DbUserLogger
             OFFSET :offset"
         );
 
-        $user = "%$user%";
+        $user = "%'$user'%";
         $stmt->execute([
             'search_by' => $user,
             'limit' => $limit,

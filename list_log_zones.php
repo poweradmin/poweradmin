@@ -31,7 +31,7 @@ $number_of_logs = 0;
 $logs_per_page = $app->config('iface_rowamount');
 $logs = null;
 
-if (isset($_GET['name'])) {
+if (isset($_GET['name']) && $_GET['name'] != '') {
     $number_of_logs = DbZoneLogger::count_logs_by_domain($_GET['name']);
     $number_of_pages = ceil($number_of_logs / $logs_per_page);
     if ($number_of_logs != 0 && $selected_page > $number_of_pages) die('Unknown page');
