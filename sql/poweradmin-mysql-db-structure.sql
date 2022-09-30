@@ -1,11 +1,35 @@
--- PowerAdmin
--- MySQL Database Structure
---
+-- Adminer 4.8.1 MySQL 5.5.5-10.9.3-MariaDB-1:10.9.3+maria~ubu2204 dump
+
+SET NAMES utf8;
+SET time_zone = '+00:00';
+SET foreign_key_checks = 0;
+SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
+
+SET NAMES utf8mb4;
+
+CREATE TABLE `log_users` (
+                             `id` int(11) NOT NULL AUTO_INCREMENT,
+                             `event` varchar(2048) NOT NULL,
+                             `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+                             `priority` int(11) NOT NULL,
+                             PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+CREATE TABLE `log_zones` (
+                             `id` int(11) NOT NULL AUTO_INCREMENT,
+                             `event` varchar(2048) NOT NULL,
+                             `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+                             `priority` int(11) NOT NULL,
+                             `zone_id` int(11) DEFAULT NULL,
+                             PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 
 CREATE TABLE `migrations` (
                               `version` varchar(255) NOT NULL,
                               `apply_time` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 CREATE TABLE `perm_items` (
@@ -13,7 +37,7 @@ CREATE TABLE `perm_items` (
                               `name` varchar(64) NOT NULL,
                               `descr` varchar(1024) NOT NULL,
                               PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `perm_items` (`id`, `name`, `descr`) VALUES
                                                      (41,	'zone_master_add',	'User is allowed to add new master zones.'),
@@ -44,7 +68,7 @@ CREATE TABLE `perm_templ` (
                               `name` varchar(128) NOT NULL,
                               `descr` varchar(1024) NOT NULL,
                               PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `perm_templ` (`id`, `name`, `descr`) VALUES
     (1,	'Administrator',	'Administrator template with full rights.');
@@ -54,7 +78,7 @@ CREATE TABLE `perm_templ_items` (
                                     `templ_id` int(11) NOT NULL,
                                     `perm_id` int(11) NOT NULL,
                                     PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `perm_templ_items` (`id`, `templ_id`, `perm_id`) VALUES
     (1,	1,	53);
@@ -63,7 +87,7 @@ CREATE TABLE `records_zone_templ` (
                                       `domain_id` int(11) NOT NULL,
                                       `record_id` int(11) NOT NULL,
                                       `zone_templ_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 CREATE TABLE `users` (
@@ -77,10 +101,10 @@ CREATE TABLE `users` (
                          `active` int(1) NOT NULL,
                          `use_ldap` int(1) NOT NULL,
                          PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `users` (`id`, `username`, `password`, `fullname`, `email`, `description`, `perm_templ`, `active`, `use_ldap`) VALUES
-    (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Administrator', 'admin@example.net', 'Administrator with full rights.', 1, 1, 0);
+    (1,	'admin',	'$2y$12$1U1Es2G8l.70VZkxdRqaYebWz8GFJEe/PItGEBegr5Q1ev.n9E31e',	'Administrator',	'admin@example.net',	'Administrator with full rights.',	1,	1,	0);
 
 CREATE TABLE `zones` (
                          `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -89,7 +113,7 @@ CREATE TABLE `zones` (
                          `comment` varchar(1024) DEFAULT NULL,
                          `zone_templ_id` int(11) NOT NULL,
                          PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 CREATE TABLE `zone_templ` (
@@ -98,7 +122,7 @@ CREATE TABLE `zone_templ` (
                               `descr` varchar(1024) NOT NULL,
                               `owner` int(11) NOT NULL,
                               PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 CREATE TABLE `zone_templ_records` (
@@ -110,4 +134,7 @@ CREATE TABLE `zone_templ_records` (
                                       `ttl` int(11) NOT NULL,
                                       `prio` int(11) NOT NULL,
                                       PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- 2022-09-29 19:08:10

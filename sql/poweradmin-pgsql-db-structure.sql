@@ -1,95 +1,151 @@
-CREATE TABLE users (
-  id SERIAL PRIMARY KEY,
-  username varchar(64) NOT NULL,
-  password varchar(128) NOT NULL,
-  fullname varchar(255) NOT NULL,
-  email varchar(255) NOT NULL,
-  description text NOT NULL,
-  perm_templ integer default 0,
-  active smallint default 0,
-  use_ldap smallint default 0
-);
+-- Adminer 4.8.1 PostgreSQL 14.5 (Debian 14.5-1.pgdg110+1) dump
 
-INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('admin','21232f297a57a5a743894a0e4a801fc3','Administrator','admin@example.net','Administrator with full rights.',1,1,0);
+CREATE SEQUENCE log_users_id_seq1 INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
-CREATE TABLE perm_items (
-  id SERIAL PRIMARY KEY,
-  name varchar(64) NOT NULL,
-  descr text NOT NULL
-);
+CREATE TABLE "public"."log_users" (
+                                      "id" integer DEFAULT nextval('log_users_id_seq1') NOT NULL,
+                                      "event" character varying(2048),
+                                      "created_at" timestamp DEFAULT CURRENT_TIMESTAMP,
+                                      "priority" integer,
+                                      CONSTRAINT "log_users_pkey" PRIMARY KEY ("id")
+) WITH (oids = false);
 
-INSERT INTO perm_items (name, descr) VALUES ('user_is_ueberuser','User has full access. God-like. Redeemer.');
-INSERT INTO perm_items (name, descr) VALUES ('zone_master_add','User is allowed to add new master zones.');
-INSERT INTO perm_items (name, descr) VALUES ('zone_slave_add','User is allowed to add new slave zones.');
-INSERT INTO perm_items (name, descr) VALUES ('zone_content_view_own','User is allowed to see the content and meta data of zones he owns.');
-INSERT INTO perm_items (name, descr) VALUES ('zone_content_edit_own','User is allowed to edit the content of zones he owns.');
-INSERT INTO perm_items (name, descr) VALUES ('zone_meta_edit_own','User is allowed to edit the meta data of zones he owns.');
-INSERT INTO perm_items (name, descr) VALUES ('zone_content_view_others','User is allowed to see the content and meta data of zones he does not own.');
-INSERT INTO perm_items (name, descr) VALUES ('zone_content_edit_others','User is allowed to edit the content of zones he does not own.');
-INSERT INTO perm_items (name, descr) VALUES ('zone_meta_edit_others','User is allowed to edit the meta data of zones he does not own.');
-INSERT INTO perm_items (name, descr) VALUES ('search','User is allowed to perform searches.');
-INSERT INTO perm_items (name, descr) VALUES ('supermaster_view','User is allowed to view supermasters.');
-INSERT INTO perm_items (name, descr) VALUES ('supermaster_add','User is allowed to add new supermasters.');
-INSERT INTO perm_items (name, descr) VALUES ('supermaster_edit','User is allowed to edit supermasters.');
-INSERT INTO perm_items (name, descr) VALUES ('user_view_others','User is allowed to see other users and their details.');
-INSERT INTO perm_items (name, descr) VALUES ('user_add_new','User is allowed to add new users.');
-INSERT INTO perm_items (name, descr) VALUES ('user_edit_own','User is allowed to edit their own details.');
-INSERT INTO perm_items (name, descr) VALUES ('user_edit_others','User is allowed to edit other users.');
-INSERT INTO perm_items (name, descr) VALUES ('user_passwd_edit_others','User is allowed to edit the password of other users.');
-INSERT INTO perm_items (name, descr) VALUES ('user_edit_templ_perm','User is allowed to change the permission template that is assigned to a user.');
-INSERT INTO perm_items (name, descr) VALUES ('templ_perm_add','User is allowed to add new permission templates.');
-INSERT INTO perm_items (name, descr) VALUES ('templ_perm_edit','User is allowed to edit existing permission templates.');
 
-CREATE TABLE perm_templ (
-  id SERIAL PRIMARY KEY,
-  name varchar(128) NOT NULL,
-  descr text NOT NULL
-);
+CREATE SEQUENCE log_zones_id_seq1 INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
-INSERT INTO perm_templ (name, descr) VALUES ('Administrator','Administrator template with full rights.');
+CREATE TABLE "public"."log_zones" (
+                                      "id" integer DEFAULT nextval('log_zones_id_seq1') NOT NULL,
+                                      "event" character varying(2048),
+                                      "created_at" timestamp DEFAULT CURRENT_TIMESTAMP,
+                                      "priority" integer,
+                                      "zone_id" integer,
+                                      CONSTRAINT "log_zones_pkey" PRIMARY KEY ("id")
+) WITH (oids = false);
 
-CREATE TABLE perm_templ_items (
-  id SERIAL PRIMARY KEY,
-  templ_id integer NOT NULL,
-  perm_id integer NOT NULL
-);
 
-INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (1,1);
+CREATE TABLE "public"."migrations" (
+                                       "version" character varying(255),
+                                       "apply_time" integer
+) WITH (oids = false);
 
-CREATE TABLE zones (
-  id SERIAL PRIMARY KEY,
-  domain_id integer default 0,
-  owner integer default 0,
-  comment text,
-  zone_templ_id integer NOT NULL
-);
 
-CREATE INDEX zone_domain_owner ON zones(domain_id, owner);
+CREATE SEQUENCE perm_items_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
-CREATE TABLE zone_templ (
-  id SERIAL PRIMARY KEY,
-  name varchar(128) NOT NULL,
-  descr text NOT NULL,
-  owner integer default 0
-);
+CREATE TABLE "public"."perm_items" (
+                                       "id" integer DEFAULT nextval('perm_items_id_seq') NOT NULL,
+                                       "name" character varying(64),
+                                       "descr" character varying(1024),
+                                       CONSTRAINT "perm_items_pkey" PRIMARY KEY ("id")
+) WITH (oids = false);
 
-CREATE TABLE zone_templ_records (
-  id SERIAL PRIMARY KEY,
-  zone_templ_id integer NOT NULL,
-  name varchar(255) NOT NULL,
-  type varchar(6) NOT NULL,
-  content varchar(255) NOT NULL,
-  ttl integer default NULL,
-  prio integer default NULL 
-);
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES
+                                                     (41,	'zone_master_add',	'User is allowed to add new master zones.'),
+                                                     (42,	'zone_slave_add',	'User is allowed to add new slave zones.'),
+                                                     (43,	'zone_content_view_own',	'User is allowed to see the content and meta data of zones he owns.'),
+                                                     (44,	'zone_content_edit_own',	'User is allowed to edit the content of zones he owns.'),
+                                                     (45,	'zone_meta_edit_own',	'User is allowed to edit the meta data of zones he owns.'),
+                                                     (46,	'zone_content_view_others',	'User is allowed to see the content and meta data of zones he does not own.'),
+                                                     (47,	'zone_content_edit_others',	'User is allowed to edit the content of zones he does not own.'),
+                                                     (48,	'zone_meta_edit_others',	'User is allowed to edit the meta data of zones he does not own.'),
+                                                     (49,	'search',	'User is allowed to perform searches.'),
+                                                     (50,	'supermaster_view',	'User is allowed to view supermasters.'),
+                                                     (51,	'supermaster_add',	'User is allowed to add new supermasters.'),
+                                                     (52,	'supermaster_edit',	'User is allowed to edit supermasters.'),
+                                                     (53,	'user_is_ueberuser',	'User has full access. God-like. Redeemer.'),
+                                                     (54,	'user_view_others',	'User is allowed to see other users and their details.'),
+                                                     (55,	'user_add_new',	'User is allowed to add new users.'),
+                                                     (56,	'user_edit_own',	'User is allowed to edit their own details.'),
+                                                     (57,	'user_edit_others',	'User is allowed to edit other users.'),
+                                                     (58,	'user_passwd_edit_others',	'User is allowed to edit the password of other users.'),
+                                                     (59,	'user_edit_templ_perm',	'User is allowed to change the permission template that is assigned to a user.'),
+                                                     (60,	'templ_perm_add',	'User is allowed to add new permission templates.'),
+                                                     (61,	'templ_perm_edit',	'User is allowed to edit existing permission templates.'),
+                                                     (62,	'zone_content_edit_own_as_client',	'User is allowed to edit record, but not SOA and NS.');
 
-CREATE TABLE records_zone_templ (
-    domain_id integer NOT NULL,
-    record_id integer NOT NULL,
-    zone_templ_id integer NOT NULL
-);
+CREATE SEQUENCE perm_templ_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
-CREATE TABLE migrations (
-    version varchar(255) NOT NULL,
-    apply_time integer NOT NULL
-);
+CREATE TABLE "public"."perm_templ" (
+                                       "id" integer DEFAULT nextval('perm_templ_id_seq') NOT NULL,
+                                       "name" character varying(128),
+                                       "descr" character varying(1024),
+                                       CONSTRAINT "perm_templ_pkey" PRIMARY KEY ("id")
+) WITH (oids = false);
+
+INSERT INTO "perm_templ" ("id", "name", "descr") VALUES
+    (1,	'Administrator',	'Administrator template with full rights.');
+
+CREATE SEQUENCE perm_templ_items_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+
+CREATE TABLE "public"."perm_templ_items" (
+                                             "id" integer DEFAULT nextval('perm_templ_items_id_seq') NOT NULL,
+                                             "templ_id" integer,
+                                             "perm_id" integer,
+                                             CONSTRAINT "perm_templ_items_pkey" PRIMARY KEY ("id")
+) WITH (oids = false);
+
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES
+    (1,	1,	53);
+
+CREATE TABLE "public"."records_zone_templ" (
+                                               "domain_id" integer,
+                                               "record_id" integer,
+                                               "zone_templ_id" integer
+) WITH (oids = false);
+
+
+CREATE SEQUENCE users_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+
+CREATE TABLE "public"."users" (
+                                  "id" integer DEFAULT nextval('users_id_seq') NOT NULL,
+                                  "username" character varying(64),
+                                  "password" character varying(128),
+                                  "fullname" character varying(255),
+                                  "email" character varying(255),
+                                  "description" character varying(1024),
+                                  "perm_templ" integer,
+                                  "active" integer,
+                                  "use_ldap" integer,
+                                  CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+) WITH (oids = false);
+
+INSERT INTO "users" ("id", "username", "password", "fullname", "email", "description", "perm_templ", "active", "use_ldap") VALUES
+    (1,	'admin',	'$2y$12$WAsxozK6UBqjQDN4W2B5lOZV.n5FdEXj5PuVJmdbaAE10Ghgh6OqG',	'Administrator',	'admin@example.net',	'Administrator with full rights.',	1,	1,	0);
+
+CREATE SEQUENCE zone_templ_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+
+CREATE TABLE "public"."zone_templ" (
+                                       "id" integer DEFAULT nextval('zone_templ_id_seq') NOT NULL,
+                                       "name" character varying(128),
+                                       "descr" character varying(1024),
+                                       "owner" integer,
+                                       CONSTRAINT "zone_templ_pkey" PRIMARY KEY ("id")
+) WITH (oids = false);
+
+
+CREATE SEQUENCE zone_templ_records_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+
+CREATE TABLE "public"."zone_templ_records" (
+                                               "id" integer DEFAULT nextval('zone_templ_records_id_seq') NOT NULL,
+                                               "zone_templ_id" integer,
+                                               "name" character varying(255),
+                                               "type" character varying(6),
+                                               "content" character varying(255),
+                                               "ttl" integer,
+                                               "prio" integer,
+                                               CONSTRAINT "zone_templ_records_pkey" PRIMARY KEY ("id")
+) WITH (oids = false);
+
+
+CREATE SEQUENCE zones_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+
+CREATE TABLE "public"."zones" (
+                                  "id" integer DEFAULT nextval('zones_id_seq') NOT NULL,
+                                  "domain_id" integer,
+                                  "owner" integer,
+                                  "comment" character varying(1024),
+                                  "zone_templ_id" integer,
+                                  CONSTRAINT "zones_pkey" PRIMARY KEY ("id")
+) WITH (oids = false);
+
+
+-- 2022-09-29 19:10:39.890321+00
