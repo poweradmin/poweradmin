@@ -29,10 +29,13 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\AppFactory;
 use Poweradmin\DnsRecord;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/header.inc.php';
+
+$app = AppFactory::create();
 
 if (!do_hook('verify_permission', 'search')) {
     error(ERR_PERM_SEARCH);
@@ -64,69 +67,30 @@ if (isset($_GET["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["record_so
     define('RECORD_SORT_BY', "name");
 }
 
-$parameters['query'] = isset($_POST['query']) && !empty($_POST['query']) ? $_POST['query'] : '';
-$parameters['zones'] = !isset($_POST['do_search']) && !isset($_POST['zones']) || isset($_POST['zones']) && $_POST['zones'] == true ? true : false;
-$parameters['records'] = !isset($_POST['do_search']) && !isset($_POST['records']) || isset($_POST['records']) && $_POST['records'] == true ? true : false;
-$parameters['wildcard'] = !isset($_POST['do_search']) && !isset($_POST['wildcard']) || isset($_POST['wildcard']) && $_POST['wildcard'] == true ? true : false;
-$parameters['reverse'] = !isset($_POST['do_search']) && !isset($_POST['reverse']) || isset($_POST['reverse']) && $_POST['reverse'] == true ? true : false;
+$parameters['query'] = isset($_POST['query']) && !empty($_POST['query']) ? htmlspecialchars($_POST['query']) : '';
+$parameters['zones'] = !isset($_POST['do_search']) && !isset($_POST['zones']) || isset($_POST['zones']) && $_POST['zones'] == true;
+$parameters['records'] = !isset($_POST['do_search']) && !isset($_POST['records']) || isset($_POST['records']) && $_POST['records'] == true;
+$parameters['wildcard'] = !isset($_POST['do_search']) && !isset($_POST['wildcard']) || isset($_POST['wildcard']) && $_POST['wildcard'] == true;
+$parameters['reverse'] = !isset($_POST['do_search']) && !isset($_POST['reverse']) || isset($_POST['reverse']) && $_POST['reverse'] == true;
 
-?>
-
-<h5 class="mb-3"><?php echo _('Search zones and records'); ?></h5>
-<span class="text-secondary"><?php echo _('Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) in pattern matches any single character, a percent sign (%) matches any string of zero or more characters.'); ?></span>
-<form name="search_form" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
-    <input type="hidden" name="zone_sort_by" value="<?php echo ZONE_SORT_BY; ?>">
-    <input type="hidden" name="record_sort_by" value="<?php echo RECORD_SORT_BY; ?>">
-
-    <div class="row pt-3 pb-3">
-        <div class="col-sm-4">
-            <div class="input-group">
-                <input type="text" class="form-control form-control-sm" name="query" value="<?php echo $parameters['query']; ?>">
-                <input type="submit" class="btn btn-primary btn-sm" name="do_search" value="<?php echo _('Search'); ?>">
-            </div>
-        </div>
-        <div class="col-sm-8 d-flex align-items-center">
-            <div class="form-check form-check-inline">
-                <input type="checkbox" class="form-check-input" name="zones" id="inlineCheckbox1"
-                       value="true"<?php echo $parameters['zones'] ? ' checked="checked"' : ''; ?>>
-                <label class="form-check-label" for="inlineCheckbox1"><?php echo _('Zones'); ?></label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input type="checkbox" class="form-check-input" name="records" id="inlineCheckbox2"
-                       value="true"<?php echo $parameters['records'] ? ' checked="checked"' : ''; ?>>
-                <label class="form-check-label" for="inlineCheckbox2"><?php echo _('Records'); ?></label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input type="checkbox" class="form-check-input" name="wildcard" id="inlineCheckbox3"
-                       value="true"<?php echo $parameters['wildcard'] ? ' checked="checked"' : ''; ?>>
-                <label class="form-check-label" for="inlineCheckbox3"><?php echo _('Wildcard'); ?></label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input type="checkbox" class="form-check-input" name="reverse" id="inlineCheckbox4"
-                       value="true"<?php echo $parameters['reverse'] ? ' checked="checked"' : ''; ?>>
-                <label class="form-check-label" for="inlineCheckbox4"><?php echo _('Reverse'); ?></label>
-            </div>
-        </div>
-    </div>
-</form>
-
-<?php
+$searchResult = [ 'zones' => null, 'records' => null ];
+$permissions = [ 'edit' => null, 'view' => null];
 
 if (isset($_POST['query'])) {
     if (do_hook('verify_permission', 'zone_content_view_others')) {
-        $permissions['view'] = "all";
+        $permissions['view'] = 'all';
     } elseif (do_hook('verify_permission', 'zone_content_view_own')) {
-        $permissions['view'] = "own";
+        $permissions['view'] = 'own';
     } else {
-        $permissions['view'] = "none";
+        $permissions['view'] = 'none';
     }
 
     if (do_hook('verify_permission', 'zone_content_edit_others')) {
-        $permissions['edit'] = "all";
+        $permissions['edit'] = 'all';
     } elseif (do_hook('verify_permission', 'zone_content_edit_own')) {
-        $permissions['edit'] = "own";
+        $permissions['edit'] = 'own';
     } else {
-        $permissions['edit'] = "none";
+        $permissions['edit'] = 'none';
     }
 
     $searchResult = DnsRecord::search_zone_and_record(
@@ -135,98 +99,21 @@ if (isset($_POST['query'])) {
         ZONE_SORT_BY,
         RECORD_SORT_BY
     );
-
-    if (is_array($searchResult['zones'])):
-        ?>
-        <div class="pb-3">
-            <h5 class="mb-3 pt-3 border-top"><?php echo _('Zones found'); ?></h5>
-            <table class="table table-striped table-hover table-sm">
-                <thead>
-                <tr>
-                    <th><a href="javascript:zone_sort_by('name');"><?php echo _('Name'); ?></a></th>
-                    <th><a href="javascript:zone_sort_by('type');"><?php echo _('Type'); ?></a></th>
-                    <th><a href="javascript:zone_sort_by('count_records');"><?php echo _('Records'); ?></a></th>
-                    <th><a href="javascript:zone_sort_by('fullname');"><?php echo _('Owner'); ?></a></th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php if (!$searchResult['zones']): ?>
-                    <tr>
-                        <td colspan="5"><?php echo _('No results found'); ?></td>
-                    </tr>
-                <?php endif; ?>
-                <?php foreach ($searchResult['zones'] as $zone): ?>
-                    <tr>
-                        <td><?php echo $zone['name']; ?></td>
-                        <td><?php echo $zone['type']; ?></td>
-                        <td><?php echo $zone['count_records']; ?></td>
-                        <td><?php echo $zone['fullname']; ?></td>
-                        <td>
-                            <?php if ($permissions['edit'] == 'all' || $permissions['edit'] == 'own' && do_hook('verify_user_is_owner_zoneid', $zone['id'])): ?>
-                                <a class="btn btn-outline-primary btn-sm"
-                                   href="<?php echo 'edit.php?name=' . $zone['name'] . '&id=' . $zone['id']; ?>">
-                                    <i class="bi bi-pencil-square"></i> <?php echo _('Edit zone'); ?></a>
-                                <a class="btn btn-outline-danger btn-sm"
-                                   href="<?php echo 'delete_domain.php?name=' . $zone['name'] . '&id=' . $zone['id']; ?>">
-                                    <i class="bi bi-trash"></i> <?php echo _('Delete zone'); ?></a>
-                            <?php endif; ?>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-    <?php
-    endif;
-    if (is_array($searchResult['records'])):
-        ?>
-
-        <div class="pb-3">
-            <h5 class="mb-3 pt-3 border-top"><?php echo _('Records found'); ?></h5>
-            <table class="table table-striped table-hover table-sm">
-                <thead>
-                <tr>
-                    <th><a href="javascript:record_sort_by('name');"><?php echo _('Name'); ?></a></th>
-                    <th><a href="javascript:record_sort_by('type');"><?php echo _('Type'); ?></a></th>
-                    <th><a href="javascript:record_sort_by('prio');"><?php echo _('Priority'); ?></a></th>
-                    <th><a href="javascript:record_sort_by('content');"><?php echo _('Content'); ?></a></th>
-                    <th><a href="javascript:record_sort_by('ttl');"><?php echo _('TTL'); ?></a></th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php if (!$searchResult['zones']): ?>
-                    <tr>
-                        <td colspan="6"><?php echo _('No results found'); ?></td>
-                    </tr>
-                <?php endif; ?>
-                <?php foreach ($searchResult['records'] as $record): ?>
-                    <tr>
-                        <td><?php echo $record['name']; ?></td>
-                        <td><?php echo $record['type']; ?></td>
-                        <td><?php echo $record['prio']; ?></td>
-                        <td><?php echo $record['content']; ?></td>
-                        <td><?php echo $record['ttl']; ?></td>
-                        <td>
-                            <?php if ($permissions['edit'] == 'all' || $permissions['edit'] == 'own' && do_hook('verify_user_is_owner_zoneid', $record['domain_id'])): ?>
-                                <a class="btn btn-outline-primary btn-sm"
-                                   href="<?php echo 'edit_record.php?domain=' . $record['domain_id'] . '&id=' . $record['id']; ?>">
-                                    <i class="bi bi-pencil-square"></i> <?php echo _('Edit zone'); ?></a>
-                                <a class="btn btn-outline-danger btn-sm"
-                                   href="<?php echo 'delete_record.php?domain=' . $record['domain_id'] . '&id=' . $record['id']; ?>">
-                                    <i class="bi bi-trash"></i> <?php echo _('Delete zone'); ?></a>
-                            <?php endif; ?>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-    <?php
-    endif;
 }
 
-require_once 'inc/footer.inc.php';
+$app->render('search.html', [
+    'zone_sort_by' => ZONE_SORT_BY,
+    'record_sort_by' => RECORD_SORT_BY,
+    'query' => $parameters['query'],
+    'search_by_zones' => $parameters['zones'] ? 'checked' : '',
+    'search_by_records' => $parameters['records'] ? 'checked' : '',
+    'search_by_wildcard' => $parameters['wildcard'] ? 'checked' : '',
+    'search_by_reverse' => $parameters['reverse'] ? 'checked' : '',
+    'zones_found' => is_array($searchResult['zones']),
+    'records_found' => is_array($searchResult['records']),
+    'searchResult' => $searchResult,
+    'edit_permission' => $permissions['edit'],
+    'user_id' => $_SESSION['userid'],
+]);
 
-?>
+require_once 'inc/footer.inc.php';
