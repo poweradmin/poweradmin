@@ -1,0 +1,40 @@
+<h5 class="mb-3">{% trans 'Add supermaster' %}</h5>
+<form class="needs-validation" method="post" action="add_supermaster.php" novalidate>
+    <table>
+        <tr>
+            <td>{% trans 'IP address of supermaster' %}</td>
+            <td>
+                <input class="form-control form-control-sm" type="text" name="master_ip" value="{{ master_ip }}"
+                       required>
+                <div class="invalid-feedback">{% trans 'Provide ip address' %}</div>
+            </td>
+        </tr>
+        <tr>
+            <td>{% trans 'Hostname in NS record' %}</td>
+            <td>
+                <input class="form-control form-control-sm" type="text" name="ns_name" value="{{ ns_name }}" required>
+                <div class="invalid-feedback">{% trans 'Provide host name' %}</div>
+            </td>
+        </tr>
+        <tr>
+            <td>{% trans 'Account' %}</td>
+            <td>
+                <select class="form-select form-select-sm" name="account">
+                    {% for user in users %}
+                    {% if user['id'] == session_uid %}
+                    <option value="{{ user['username'] }}" selected>{{ user['fullname'] }}</option>
+                    {% elseif perm_view_others %}}
+                    <option value="{{ user['username'] }}">{{ user['fullname'] }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>
+                <input class="btn btn-primary btn-sm" type="submit" name="submit" value="{% trans 'Add supermaster' %}">
+            </td>
+        </tr>
+    </table>
+</form>
