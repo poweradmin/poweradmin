@@ -75,3 +75,14 @@ function toggleZoneCheckboxes() {
         checkboxes[index].checked = select_state.checked;
     }
 }
+
+function zone_sort_by(sortbytype) {
+    console.log(sortbytype);
+    document.search_form.zone_sort_by.value = sortbytype;
+    document.getElementsByName("do_search")[0].click();
+}
+
+function record_sort_by(sortbytype) {
+    document.search_form.record_sort_by.value = sortbytype;
+    document.getElementsByName("do_search")[0].click();
+}

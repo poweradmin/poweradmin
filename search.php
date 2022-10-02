@@ -223,18 +223,6 @@ if (isset($_POST['query'])) {
                 </tbody>
             </table>
         </div>
-
-        <script type="text/javascript">
-            function zone_sort_by(sortbytype) {
-                document.search_form.zone_sort_by.value = sortbytype;
-                document.getElementsByName("do_search")[0].click();
-            }
-
-            function record_sort_by(sortbytype) {
-                document.search_form.record_sort_by.value = sortbytype;
-                document.getElementsByName("do_search")[0].click();
-            }
-        </script>
     <?php
     endif;
 }
