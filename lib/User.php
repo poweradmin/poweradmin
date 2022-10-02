@@ -36,4 +36,19 @@ class User
 
         return (bool)$stmt->fetch();
     }
+
+    public static function get_username_by_id($user_id): string
+    {
+        if ($user_id == "") {
+            return "";
+        }
+
+        global $db;
+        $stmt = $db->prepare("SELECT username FROM users WHERE id=:user_id");
+        $stmt->execute(['user_id' => $user_id]);
+
+        $user = $stmt->fetch();
+
+        return $user['username'] ? $user['username'] : "";
+    }
 }

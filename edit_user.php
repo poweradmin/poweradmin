@@ -107,8 +107,9 @@ if ($edit_id == "-1") {
     foreach ($users as $user) {
 
         (($user['active']) == "1") ? $check = " CHECKED" : $check = "";
+        $name = $user['fullname'] ?: $user['username'];
 
-        echo "     <h5 class=\"mb-3\">" . _('Edit user') . " \"" . $user['fullname'] . "\"</h5>\n";
+        echo "     <h5 class=\"mb-3\">" . _('Edit user') . " \"" . $name . "\"</h5>\n";
         echo "     <form method=\"post\" action=\"\">\n";
         echo "      <input type=\"hidden\" name=\"number\" value=\"" . $edit_id . "\">\n";
         echo "      <table>\n";

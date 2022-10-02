@@ -30,6 +30,7 @@
  */
 
 use Poweradmin\DnsRecord;
+use Poweradmin\User;
 use Poweradmin\Validation;
 
 require_once 'inc/toolkit.inc.php';
@@ -71,10 +72,14 @@ if (isset($_POST['commit'])) {
         include_once("inc/footer.inc.php");
         exit;
     } else {
-        $fullname = do_hook('get_fullname_from_userid' , $uid );
+        $name = do_hook('get_fullname_from_userid', $uid);
+        if (!$name) {
+            $name = User::get_username_by_id($uid);
+        }
+
         $zones = DnsRecord::get_zones("own", $uid);
 
-        echo "     <h5 class=\"mb-3\">" . _('Delete user') . " \"" . $fullname . "\"</h5>\n";
+        echo "     <h5 class=\"mb-3\">" . _('Delete user') . " \"" . $name . "\"</h5>\n";
         echo "     <form method=\"post\" action=\"\">\n";
         echo "      <table class=\"table table-striped table-sm\">\n";
 
