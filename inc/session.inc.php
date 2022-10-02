@@ -56,16 +56,18 @@ function auth(string $msg = "", string $type = "success") {
     }
     ?>
     <h5><?php echo _('Log in'); ?></h5>
-    <form method="post" action="<?php echo htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES); ?>">
+    <form class="needs-validation" method="post" action="<?php echo htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES); ?>" novalidate>
         <input type="hidden" name="query_string" value="<?php echo htmlentities($_SERVER["QUERY_STRING"]); ?>">
         <div class="row g-2 col-sm-4">
             <div>
                 <label for="username" class="form-label"><?php echo _('Username'); ?></label>
-                <input type="text" class="form-control form-control-sm" id="username" name="username">
+                <input type="text" class="form-control form-control-sm" id="username" name="username" required>
+                <div class="invalid-feedback"><?php echo _('Please provide a username'); ?></div>
             </div>
             <div>
                 <label for="password" class="form-label"><?php echo _('Password'); ?></label>
-                <input type="password" class="form-control form-control-sm" id="password" name="password">
+                <input type="password" class="form-control form-control-sm" id="password" name="password" required>
+                <div class="invalid-feedback"><?php echo _('Please provide a password'); ?></div>
             </div>
             <div>
                 <label for="language" class="form-label"><?php echo _('Language'); ?></label>
