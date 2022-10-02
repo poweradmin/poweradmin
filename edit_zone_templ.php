@@ -86,6 +86,11 @@ if (isset($_POST['commit']) && $owner) {
 }
 
 if (isset($_POST['edit']) && $owner) {
+    if (!isset($_POST['templ_name']) || $_POST['templ_name'] == "") {
+        error(ERR_INV_INPUT);
+        include_once('inc/footer.inc.php');
+        exit;
+    }
     ZoneTemplate::edit_zone_templ($_POST, $zone_templ_id);
 }
 
@@ -226,11 +231,15 @@ if (!(do_hook('verify_permission', 'zone_master_add')) || !$owner) {
             echo "    </form>";
         }
         echo "<hr>";
-        echo "    <form method=\"post\" action=\"\">\n";
+
+        echo "    <form class=\"needs-validation\" method=\"post\" action=\"\" novalidate>\n";
         echo "     <table>\n";
         echo "      <tr>\n";
         echo "       <td>" . _('Name') . "</td>\n";
-        echo "       <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"templ_name\" value=\"" . $templ_details['name'] . "\"></td>\n";
+        echo "       <td>";
+        echo "         <input class=\"form-control form-control-sm\" type=\"text\" name=\"templ_name\" value=\"" . $templ_details['name'] . "\" required>";
+        echo "         <div class=\"invalid-feedback\">" . _('Provide a name for your template') . "</div>";
+        echo "       </td>\n";
         echo "      </tr>\n";
         echo "      <tr>\n";
         echo "       <td>" . _('Description') . "</td>\n";
