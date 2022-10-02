@@ -1528,9 +1528,9 @@ class DnsRecord
         $return = array('zones' => array(), 'records' => array());
 
         if ($parameters['reverse']) {
-            if (filter_var($parameters['query'], FILTER_FLAG_IPV4)) {
+            if (filter_var($parameters['query'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
                 $reverse_search_string = implode('.', array_reverse(explode('.', $parameters['query'])));
-            } elseif (filter_var($parameters['query'], FILTER_FLAG_IPV6)) {
+            } elseif (filter_var($parameters['query'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
                 $reverse_search_string = unpack('H*hex', inet_pton($parameters['query']));
                 $reverse_search_string = implode('.', array_reverse(str_split($reverse_search_string['hex'])));
             } else {
