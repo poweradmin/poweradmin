@@ -56,7 +56,7 @@ if (isset($_POST['commit']) && ZoneTemplate::add_zone_templ($_POST, $_SESSION['u
 }
 
 $app->render('add_zone_templ.html', [
-    'username' => do_hook('get_fullname_from_userid', $_SESSION['userid'])
+    'user_name' => do_hook('get_fullname_from_userid', $_SESSION['userid']) ?: $_SESSION['userlogin']
 ]);
 
 include_once("inc/footer.inc.php");

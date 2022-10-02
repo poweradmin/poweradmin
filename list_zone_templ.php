@@ -47,7 +47,7 @@ if (!$perm_zone_master_add) {
 
 $app->render('list_zone_templ.html', [
     'perm_zone_master_add' => $perm_zone_master_add,
-    'username' => do_hook('get_fullname_from_userid', $_SESSION['userid']),
+    'user_name' => do_hook('get_fullname_from_userid', $_SESSION['userid']) ?: $_SESSION['userlogin'],
     'zone_templates' => ZoneTemplate::get_list_zone_templ($_SESSION['userid'])
 ]);
 
