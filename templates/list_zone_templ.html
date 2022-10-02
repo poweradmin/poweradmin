@@ -9,6 +9,11 @@
     </thead>
 
     <tbody>
+    {% if not zone_templates %}
+    <tr>
+        <td colspan="4">{% trans 'No results found' %}</td>
+    </tr>
+    {% endif %}
     {% for template in zone_templates %}
     <tr>
         <td>{{ template['name'] }}</td>
