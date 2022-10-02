@@ -2,15 +2,21 @@
 <div class="text-secondary">{% trans 'Total number of logs:' %} {{ number_of_logs }}</div><br>
 
 <form>
-    <div class="input-group mb-3" style="width: 40%;">
-        <input name="name" id="name" type="text" class="form-control form-control-sm"
-               placeholder="{% trans 'Search logs by user' %}"
-               {% if name %}value="{{ name }}" %}} {% endif %}}>
-        <button for="name" type="submit" class="btn btn-primary btn-sm" type="button"><i class="bi bi-search"></i>
-            {% trans 'Search' %}
-        </button>
-        <div class="input-group-append">
-            <a href="list_log_users.php" class="btn btn-secondary btn-sm" role="button"><i class="bi bi-eraser"></i> {% trans 'Clear' %}</a>
+    <div class="row pb-3">
+        <div class="col-sm-4">
+            <div class="input-group">
+                <input name="name" id="name" type="text" class="form-control form-control-sm"
+                       placeholder="{% trans 'Search logs by user' %}"
+                       {% if name %}value="{{ name }}" %}} {% endif %}}>
+                <button for="name" type="submit" class="btn btn-primary btn-sm" type="button"><i
+                        class="bi bi-search"></i>
+                    {% trans 'Search' %}
+                </button>
+                <div class="input-group-append">
+                    <a href="list_log_users.php" class="btn btn-secondary btn-sm" role="button"><i
+                            class="bi bi-eraser"></i> {% trans 'Clear' %}</a>
+                </div>
+            </div>
         </div>
     </div>
 </form>

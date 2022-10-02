@@ -10,6 +10,9 @@
                 <input type="text" class="form-control form-control-sm" name="query" value="{{ query }}" required>
                 <input type="submit" class="btn btn-primary btn-sm" name="do_search" value="{% trans 'Search' %}">
                 <div class="invalid-feedback">{% trans 'Provide a keyword for your search' %}</div>
+                <div class="input-group-append">
+                    <a href="search.php" class="btn btn-secondary btn-sm" role="button"><i class="bi bi-eraser"></i> {% trans 'Clear' %}</a>
+                </div>
             </div>
         </div>
         <div class="col-sm-8 mt-1">
