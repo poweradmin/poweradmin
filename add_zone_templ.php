@@ -39,6 +39,12 @@ include_once 'inc/header.inc.php';
 
 $app = AppFactory::create();
 
+if (isset($_POST['commit']) && (!isset($_POST['templ_name']) || $_POST['templ_name'] == "")) {
+    error(ERR_INV_INPUT);
+    include_once('inc/footer.inc.php');
+    exit;
+}
+
 if (!do_hook('verify_permission', 'zone_master_add')) {
     error(ERR_PERM_ADD_ZONE_TEMPL);
     include_once("inc/footer.inc.php");
