@@ -99,14 +99,14 @@ echo "    <h5 class=\"mb-3\">" . _('List zones') . "</h5>\n";
 echo "    <div class=\"pb-3 text-secondary\">" . _('Total number of zones:') . " " . $count_zones_all . "</div>\n";
 
 if ($perm_view == "none") {
-    echo "     <p>" . _('You do not have the permission to see any zones.') . "</p>\n";
+    echo _('You do not have the permission to see any zones.');
 } elseif (($count_zones_view > $iface_rowamount && $count_zones_all_letterstart == "0") || $count_zones_view == 0) {
     if ($count_zones_view > $iface_rowamount) {
         echo "<div>";
         show_letters(LETTERSTART, $_SESSION["userid"]);
         echo "</div>";
     }
-    echo "     <p>" . _('There are no zones to show in this listing.') . "</p>\n";
+    echo _('There are no zones to show in this listing.');
 } else {
     if ($count_zones_view > $iface_rowamount) {
         echo "<div>";
