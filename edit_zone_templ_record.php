@@ -54,7 +54,7 @@ if (isset($_POST["commit"])) {
     if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
         error(ERR_PERM_EDIT_RECORD);
     } else {
-        $ret_val = edit_zone_templ_record($_POST);
+        $ret_val = ZoneTemplate::edit_zone_templ_record($_POST);
         if ($ret_val == "1") {
             success(SUC_RECORD_UPD);
         } else {
@@ -70,7 +70,7 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
     error(ERR_PERM_VIEW_RECORD);
 } else {
     $record = ZoneTemplate::get_zone_templ_record_from_id($record_id);
-    echo "     <form method=\"post\" action=\"edit_zone_templ_record.php?zone_templ_id=" . $zone_templ_id . "&id=" . $record_id . "\">\n";
+    echo "     <form class=\"needs-validation\" method=\"post\" action=\"edit_zone_templ_record.php?zone_templ_id=" . $zone_templ_id . "&id=" . $record_id . "\" novalidate>\n";
     echo "      <table class=\"table table-striped table-hover table-sm\">\n";
     echo "       <tr>\n";
     echo "        <th>" . _('Name') . "</td>\n";
@@ -83,7 +83,9 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
     echo "      <input type=\"hidden\" name=\"rid\" value=\"" . $record_id . "\">\n";
     echo "      <input type=\"hidden\" name=\"zid\" value=\"" . $zone_templ_id . "\">\n";
     echo "      <tr>\n";
-    echo "       <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"name\" value=\"" . htmlspecialchars($record["name"]) . "\"></td>\n";
+    echo "       <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"name\" value=\"" . htmlspecialchars($record["name"]) . "\" required>";
+    echo "       <div class=\"invalid-feedback\">" . _('Provide name') . "</div>";
+    echo "       </td>\n";
     echo "       <td>IN</td>\n";
     echo "       <td>\n";
     echo "        <select class=\"form-select form-select-sm\" name=\"type\">\n";
@@ -101,7 +103,9 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
         echo "         <option SELECTED value=\"" . htmlspecialchars($record['type']) . "\"><i>" . $record['type'] . "</i></option>\n";
     echo "        </select>\n";
     echo "       </td>\n";
-    echo "       <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"content\" value=\"" . htmlspecialchars($record['content']) . "\"></td>\n";
+    echo "       <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"content\" value=\"" . htmlspecialchars($record['content']) . "\" required>\n";
+    echo "       <div class=\"invalid-feedback\">" . _('Provide content') . "</div>";
+    echo "       </td>\n";
     echo "       <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"prio\" value=\"" . htmlspecialchars($record["prio"]) . "\"></td>\n";
     echo "       <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"ttl\" value=\"" . htmlspecialchars($record["ttl"]) . "\"></td>\n";
     echo "      </tr>\n";
