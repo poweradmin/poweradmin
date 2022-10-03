@@ -1,6 +1,6 @@
 <h5 class="mb-3">{% trans 'Bulk registration' %}</h5>
 
-<form method="post" action="bulk_registration.php">
+<form class="needs-validation" method="post" action="bulk_registration.php" novalidate>
     <table class="table">
         <tr>
             <td>{% trans 'Owner' %}:</td>
@@ -48,7 +48,8 @@
             <td>
                 <div>{% trans 'Type one domain per line' %}:</div>
                 <div>
-                    <textarea class="form-control form-control-sm" name="domains" rows="10">{% if error and domains %}{{ domains | join('\n') }}{% endif %}</textarea>
+                    <textarea class="form-control form-control-sm" name="domains" rows="10" required>{% if error and domains %}{{ domains | join('\n') }}{% endif %}</textarea>
+                    <div class="invalid-feedback">{% trans 'Provide a domain name(s)' %}</div>
                 </div>
             </td>
         </tr>
