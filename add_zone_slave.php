@@ -93,18 +93,20 @@ if (!$zone_slave_add) {
 echo "     <h5 class=\"mb-3\">" . _('Add slave zone') . "</h5>\n";
 
 $users = do_hook('show_users');
-echo "     <form method=\"post\" action=\"add_zone_slave.php\">\n";
+echo "     <form class=\"needs-validation\" method=\"post\" action=\"add_zone_slave.php\" novalidate>\n";
 echo "      <table>\n";
 echo "       <tr>\n";
-echo "        <td>" . _('Zone name') . "</td>\n";
+echo "        <td style=\"vertical-align: top\" class=\"pt-1\">" . _('Zone name') . "</td>\n";
 echo "        <td>\n";
-echo "         <input class=\"form-control form-control-sm\" type=\"text\" name=\"domain\" value=\"\">\n";
+echo "         <input class=\"form-control form-control-sm\" type=\"text\" name=\"domain\" value=\"\" required>\n";
+echo "         <div class=\"invalid-feedback\">" . _('Provide zone name') . "</div>";
 echo "        </td>\n";
 echo "       </tr>\n";
 echo "       <tr>\n";
-echo "        <td>" . _('IP address of master NS') . ":</td>\n";
+echo "        <td style=\"vertical-align: top\" class=\"pt-1\">" . _('IP address of master NS') . ":</td>\n";
 echo "        <td>\n";
-echo "         <input class=\"form-control form-control-sm\" type=\"text\" name=\"slave_master\" value=\"\">\n";
+echo "         <input class=\"form-control form-control-sm\" type=\"text\" name=\"slave_master\" value=\"\" required>\n";
+echo "         <div class=\"invalid-feedback\">" . _('Provide ip address') . "</div>";
 echo "        </td>\n";
 echo "       </tr>\n";
 echo "       <tr>\n";

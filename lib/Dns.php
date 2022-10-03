@@ -520,9 +520,6 @@ class Dns
                 if (self::is_valid_ipv4($trimmed_ip, false) || self::is_valid_ipv6($trimmed_ip)) {
                     $are_valid = true;
                 } else {
-                    // as soon there is an invalid ip-addr
-                    // exit and return false
-                    echo "hin:=$trimmed_ip=";
                     return false;
                 }
             }
