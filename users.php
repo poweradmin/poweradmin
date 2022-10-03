@@ -51,7 +51,7 @@ $app->render('users.html', [
     'users' => do_hook('get_user_detail_list', ""),
     'perm_templates' => do_hook('list_permission_templates'),
     'ldap_use' => $app->config('ldap_use'),
-    'session_userid' => $_SESSION ["userid"]
+    'session_userid' => $_SESSION["userid"]
 ]);
 
 include_once('inc/footer.inc.php');

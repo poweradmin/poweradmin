@@ -89,30 +89,20 @@
         </tr>
         {% else %}
         <tr>
-            <td>&nbsp;</td>
             <td>{{ user['username'] }}</td>
             <td>{{ user['fullname'] }}</td>
             <td>{{ user['descr'] }}</td>
             <td>{{ user['email'] }}</td>
             <td>{{ user['tpl_name'] }}</td>
-
-            {% if active == "checked" %}
-            <td>Yes</td>
-            {% else %}
-            <td>No</td>
-            {% endif %}
-
-            {% if use_ldap == "checked" %}
-            <td>Yes</td>
-            {% else %}
-            <td>No</td>
-            {% endif %}
+            <td></td>
         </tr>
         {% endif %}
         {% endfor %}
         </tbody>
     </table>
 
+    {% if perm_edit_own or perm_edit_others %}
     <input type="submit" class="btn btn-primary btn-sm" name="commit" value="{% trans 'Commit changes' %}">
     <input type="reset" class="btn btn-secondary btn-sm" name="reset" value="{% trans 'Reset changes' %}">
+    {% endif %}
 </form>
