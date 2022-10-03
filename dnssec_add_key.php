@@ -104,22 +104,23 @@ if (isset($_POST["submit"])) {
 
 echo "     <h5 class=\"mb-3\">" . _('Add key for zone '). $domain_name . "</h5>\n";
 
-echo "     <form method=\"post\" action=\"dnssec_add_key.php?id=".$zone_id."\">\n";
+echo "     <form class=\"needs-validation\" method=\"post\" action=\"dnssec_add_key.php?id=".$zone_id."\" novalidate>\n";
 echo "      <table>\n";
 echo "       <tr>\n";
-echo "        <td>" . _('Key type') . "</td>\n";
+echo "        <td style=\"vertical-align: top\" class=\"pt-1\">" . _('Key type') . "</td>\n";
 echo "        <td>\n";
-echo "         <select class=\"form-select form-select-sm\" name=\"key_type\">\n";
+echo "         <select class=\"form-select form-select-sm\" name=\"key_type\" required>\n";
 echo "          <option value=\"\"></option>\n";
 echo "          <option value=\"ksk\">KSK</option>\n";
 echo "          <option value=\"zsk\">ZSK</option>\n";
 echo "         </select>\n";
+echo "         <div class=\"invalid-feedback\">" . _('Select key type') . "</div>";
 echo "        </td>\n";
 echo "       </tr>\n";
 echo "       <tr>\n";
-echo "        <td>" . _('Bits in length') . "</td>\n";
+echo "        <td style=\"vertical-align: top\" class=\"pt-1\">" . _('Bits in length') . "</td>\n";
 echo "        <td>\n";
-echo "         <select class=\"form-select form-select-sm\" name=\"bits\">\n";
+echo "         <select class=\"form-select form-select-sm\" name=\"bits\" required>\n";
 echo "          <option value=\"\"></option>\n";
 echo "          <option value=\"2048\">2048</option>\n";
 echo "          <option value=\"1024\">1024</option>\n";
@@ -127,13 +128,14 @@ echo "          <option value=\"768\">768</option>\n";
 echo "          <option value=\"384\">384</option>\n";
 echo "          <option value=\"256\">256</option>\n";
 echo "         </select>\n";
+echo "         <div class=\"invalid-feedback\">" . _('Select bits length') . "</div>";
 echo "        </td>\n";
 echo "       </tr>\n";
 echo "       <tr>\n";
-echo "        <td>" . _('Algorithm') . "</td>\n";
+echo "        <td style=\"vertical-align: top\" class=\"pt-1\">" . _('Algorithm') . "</td>\n";
 echo "        <td>\n";
 
-echo "         <select class=\"form-select form-select-sm\" name=\"algorithm\">\n";
+echo "         <select class=\"form-select form-select-sm\" name=\"algorithm\" required>\n";
 echo "          <option value=\"\"></option>\n";
 echo "          <option value=\"rsasha1\">".Dnssec::dnssec_shorthand_to_algorithm_name('rsasha1')."</option>\n";
 echo "          <option value=\"rsasha1-nsec3\">".Dnssec::dnssec_shorthand_to_algorithm_name('rsasha1-nsec3')."</option>\n";
@@ -144,7 +146,7 @@ echo "          <option value=\"ecdsa384\">".Dnssec::dnssec_shorthand_to_algorit
 echo "          <option value=\"ed25519\">".Dnssec::dnssec_shorthand_to_algorithm_name('ed25519')."</option>\n";
 echo "          <option value=\"ed448\">".Dnssec::dnssec_shorthand_to_algorithm_name('ed448')."</option>\n";
 echo "         </select>\n";
-
+echo "         <div class=\"invalid-feedback\">" . _('Select algorithm') . "</div>";
 echo "        </td>\n";
 echo "       </tr>\n";
 echo "       <tr>\n";
