@@ -146,15 +146,15 @@ if (!(do_hook('verify_permission', 'zone_master_add')) || !$owner) {
             echo "    </tr>\n";
             foreach ($records as $r) {
                 echo "    <tr>\n";
-                echo "      <td class=\"u\">" . $r['name'] . "</td>\n";
-                echo "      <td class=\"u\">" . $r['type'] . "</td>\n";
-                echo "      <td class=\"u\">" . $r['content'] . "</td>\n";
+                echo "      <td class=\"u\">" . htmlspecialchars($r['name']) . "</td>\n";
+                echo "      <td class=\"u\">" . htmlspecialchars($r['type']) . "</td>\n";
+                echo "      <td class=\"u\">" . htmlspecialchars($r['content']) . "</td>\n";
                 if ($r['type'] == "MX" || $r['type'] == "SRV") {
-                    echo "      <td class=\"u\">" . $r['prio'] . "</td>\n";
+                    echo "      <td class=\"u\">" . htmlspecialchars($r['prio']) . "</td>\n";
                 } else {
                     echo "      <td>&nbsp;</td>\n";
                 }
-                echo "      <td class=\"u\">" . $r['ttl'] . "</td>\n";
+                echo "      <td class=\"u\">" . htmlspecialchars($r['ttl']) . "</td>\n";
                 echo "     <td>\n";
                 echo "    <input type=\"hidden\" name=\"record[" . $r['id'] . "][rid]\" value=\"" . $r['id'] . "\">\n";
                 echo "      <a class=\"btn btn-outline-primary btn-sm\" href=\"edit_zone_templ_record.php?id=" . $r['id'] . "&amp;zone_templ_id=" . $zone_templ_id . "\">
