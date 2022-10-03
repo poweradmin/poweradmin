@@ -50,6 +50,12 @@ if (!do_hook('verify_permission', 'templ_perm_edit')) {
     exit;
 }
 
+if (isset($_POST['commit']) && (!isset($_POST['templ_name']) || $_POST['templ_name'] == "")) {
+    error(ERR_INV_INPUT);
+    include_once('inc/footer.inc.php');
+    exit;
+}
+
 if (isset($_POST['commit'])) {
     do_hook('update_perm_templ_details', $_POST);
     success(SUC_RECORD_UPD);

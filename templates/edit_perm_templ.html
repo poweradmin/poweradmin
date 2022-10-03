@@ -1,18 +1,21 @@
 <h5 class="mb-3">{% trans 'Edit permission template' %}</h5>
-<form method="post" action="">
+<form class="needs-validation" method="post" action="edit_perm_templ.php" novalidate>
     <input type="hidden" name="templ_id" value="{{ id }}">
 
-    <table>
-        <tr>
-            <td width="100">{% trans 'Name' %}</td>
-            <td><input class="form-control form-control-sm" type="text" name="templ_name" value="{{ templ['name'] }}"></td>
-        </tr>
-        <tr>
-            <td>{% trans 'Description' %}</td>
-            <td><input class="form-control form-control-sm" type="text" name="templ_descr" value="{{ templ['descr'] }}"></td>
-        </tr>
-    </table>
-    <p></p>
+    <div class="col-sm-3">
+        <div class="mb-2">
+            <label for="templ_name" class="form-label">{% trans 'Name' %}</label>
+            <input class="form-control form-control-sm" type="text" id="templ_name" name="templ_name" value="{{ templ['name'] }}" required>
+            <div class="invalid-feedback">{% trans 'Provide a name for your template' %}</div>
+        </div>
+        <div class="mb-2">
+            <label for="templ_descr" class="form-label">{% trans 'Description' %}</label>
+            <input class="form-control form-control-sm" type="text" id="templ_descr" name="templ_descr" value="{{ templ['descr'] }}">
+        </div>
+    </div>
+
+    <hr>
+
     <table class="table table-striped table-hover table-sm">
         <thead>
         <tr>
