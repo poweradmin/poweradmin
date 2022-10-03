@@ -151,7 +151,7 @@ if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit
 }
 
 echo "    <h5 class=\"mb-3\">" . _('Add record to zone') . "</h5>\n";
-echo "     <form method=\"post\">\n";
+echo "     <form class=\"needs-validation\" method=\"post\" novalidate>\n";
 echo "      <input type=\"hidden\" name=\"domain\" value=\"" . $zone_id . "\">\n";
 echo "      <table class=\"table table-striped table-sm\">\n";
 echo "       <tr>\n";
@@ -194,7 +194,9 @@ if (!$found_selected_type) {
 }
 echo "         </select>\n";
 echo "        </td>\n";
-echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"content\" value=\"" . htmlspecialchars($content) . "\"></td>\n";
+echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"content\" value=\"" . htmlspecialchars($content) . "\" required>";
+echo "            <div class=\"invalid-feedback\">" . _('Provide content') . "</div>";
+echo "        </td>\n";
 echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"prio\" value=\"" . htmlspecialchars($prio) . "\"></td>\n";
 echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"ttl\" value=\"" . htmlspecialchars($ttl) . "\"</td>\n";
 echo "       </tr>\n";
