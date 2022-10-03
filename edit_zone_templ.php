@@ -146,31 +146,15 @@ if (!(do_hook('verify_permission', 'zone_master_add')) || !$owner) {
             echo "    </tr>\n";
             foreach ($records as $r) {
                 echo "    <tr>\n";
-                echo "      <td class=\"u\"><input class=\"form-control form-control-sm\" type=\"text\" name=\"record[" . $r['id'] . "][name]\" value=\"" . $r['name'] . "\"></td>\n";
-                echo "      <td class=\"u\">\n";
-                echo "       <select class=\"form-select form-select-sm\" name=\"record[" . $r['id'] . "][type]\">\n";
-                $found_selected_type = false;
-                foreach (RecordType::getTypes() as $type_available) {
-                    if ($type_available == $r['type']) {
-                        $add = " SELECTED";
-                        $found_selected_type = true;
-                    } else {
-                        $add = "";
-                    }
-                    echo "         <option" . $add . " value=\"" . $type_available . "\" >" . $type_available . "</option>\n";
-                }
-                if (!$found_selected_type) {
-                    echo "         <option SELECTED value=\"" . htmlspecialchars($r['type']) . "\"><i>" . $r['type'] . "</i></option>\n";
-                }
-                echo "       </select>\n";
-                echo "      </td>\n";
-                echo "      <td class=\"u\"><input class=\"form-control form-control-sm\" type=\"text\" name=\"record[" . $r['id'] . "][content]\" value='" . $r['content'] . "'></td>\n";
+                echo "      <td class=\"u\">" . $r['name'] . "</td>\n";
+                echo "      <td class=\"u\">" . $r['type'] . "</td>\n";
+                echo "      <td class=\"u\">" . $r['content'] . "</td>\n";
                 if ($r['type'] == "MX" || $r['type'] == "SRV") {
-                    echo "      <td class=\"u\"><input class=\"form-control form-control-sm\" type=\"text\" name=\"record[" . $r['id'] . "][prio]\" value=\"" . $r['prio'] . "\"></td>\n";
+                    echo "      <td class=\"u\">" . $r['prio'] . "</td>\n";
                 } else {
                     echo "      <td>&nbsp;</td>\n";
                 }
-                echo "      <td class=\"u\"><input class=\"form-control form-control-sm\" name=\"record[" . $r['id'] . "][ttl]\" value=\"" . $r['ttl'] . "\"></td>\n";
+                echo "      <td class=\"u\">" . $r['ttl'] . "</td>\n";
                 echo "     <td>\n";
                 echo "    <input type=\"hidden\" name=\"record[" . $r['id'] . "][rid]\" value=\"" . $r['id'] . "\">\n";
                 echo "      <a class=\"btn btn-outline-primary btn-sm\" href=\"edit_zone_templ_record.php?id=" . $r['id'] . "&amp;zone_templ_id=" . $zone_templ_id . "\">
@@ -235,7 +219,7 @@ if (!(do_hook('verify_permission', 'zone_master_add')) || !$owner) {
         echo "    <form class=\"needs-validation\" method=\"post\" action=\"\" novalidate>\n";
         echo "     <table>\n";
         echo "      <tr>\n";
-        echo "       <td>" . _('Name') . "</td>\n";
+        echo "       <td style=\"vertical-align: top\" class=\"pt-1\">" . _('Name') . "</td>\n";
         echo "       <td>";
         echo "         <input class=\"form-control form-control-sm\" type=\"text\" name=\"templ_name\" value=\"" . $templ_details['name'] . "\" required>";
         echo "         <div class=\"invalid-feedback\">" . _('Provide a name for your template') . "</div>";
