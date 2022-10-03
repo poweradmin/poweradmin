@@ -108,12 +108,13 @@ $available_zone_types = array("MASTER", "NATIVE");
 $users = do_hook('show_users');
 $zone_templates = ZoneTemplate::get_list_zone_templ($_SESSION['userid']);
 
-echo "     <form method=\"post\" action=\"add_zone_master.php\">\n";
+echo "     <form class=\"needs-validation\" method=\"post\" action=\"add_zone_master.php\" novalidate>\n";
 echo "      <table>\n";
 echo "       <tr>\n";
-echo "        <td>" . _('Zone name') . ":</td>\n";
+echo "        <td style=\"vertical-align: top\" class=\"pt-1\">" . _('Zone name') . ":</td>\n";
 echo "        <td>\n";
-echo "          <input class=\"form-control form-control-sm\" type=\"text\" name=\"domain\" value=\"\">\n";
+echo "          <input class=\"form-control form-control-sm\" type=\"text\" name=\"domain\" value=\"\" required>\n";
+echo "          <div class=\"invalid-feedback\">" . _('Provide zone name') . "</div>";
 echo "        </td>\n";
 echo "       </tr>\n";
 echo "       <tr>\n";
