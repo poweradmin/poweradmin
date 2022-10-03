@@ -1,19 +1,19 @@
 <h5 class="mb-3">{% trans 'Add permission template' %}</h5>
 <form class="needs-validation" method="post" action="add_perm_templ.php" novalidate>
-    <table>
-        <tr>
-            <td>{% trans 'Name' %}</td>
-            <td>
-                <input class="form-control form-control-sm" type="text" name="templ_name" value="" required>
-                <div class="invalid-feedback">{% trans 'Provide a name for your template' %}</div>
-            </td>
-        </tr>
-        <tr>
-            <td>{% trans 'Description' %}</td>
-            <td><input class="form-control form-control-sm" type="text" name="templ_descr" value=""></td>
-        </tr>
-    </table>
-    <span class="p-3"></span>
+    <div class="col-sm-3">
+        <div class="mb-2">
+            <label for="templ_name" class="form-label">{% trans 'Name' %}</label>
+            <input class="form-control form-control-sm" type="text" id="templ_name" name="templ_name" value="" required>
+            <div class="invalid-feedback">{% trans 'Provide a name for your template' %}</div>
+        </div>
+        <div class="mb-2">
+            <label for="templ_descr" class="form-label">{% trans 'Description' %}</label>
+            <input class="form-control form-control-sm" type="text" id="templ_descr" name="templ_descr" value="">
+        </div>
+    </div>
+
+    <hr>
+
     <table class="table table-striped table-hover table-sm">
         <thead>
         <tr>
