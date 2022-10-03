@@ -124,12 +124,13 @@ if (isset($_POST['commit'])) {
         echo "       <tr>\n";
         echo "        <td colspan=\"5\">\n";
 
-        echo "         " . _('Really delete this user?') . "\n";
+        echo "         " . _('Are you sure?') . "\n";
         echo "        </td>\n";
         echo "       </tr>\n";
 
         echo "      </table>\n";
-        echo "     <input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
+        echo "     <input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"commit\" value=\"" . _('Yes') . "\">\n";
+        echo "     <input class=\"btn btn-secondary btn-sm\" type=\"button\" onClick=\"location.href='users.php'\" value=\"" . _('No') . "\">\n";
         echo "     </form>\n";
     }
 }
