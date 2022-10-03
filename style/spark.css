@@ -130,6 +130,10 @@ a:hover {
     border-color: rgba(0, 0, 0, 0.25);
 }
 
+.form-check-input.is-valid:checked, .was-validated .form-check-input:valid:checked {
+    background-color: #ffffff;
+}
+
 .form-select.is-valid, .was-validated .form-select:valid {
     border-color: #ced4da;
 }
