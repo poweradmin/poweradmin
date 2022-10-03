@@ -78,7 +78,7 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
 
 echo "    <h5 class=\"mb-3\">" . _('Add record to zone template') . " \"" . $templ_details['name'] . "\"</h5>\n";
 
-echo "     <form method=\"post\">\n";
+echo "     <form class=\"needs-validation\" method=\"post\" novalidate>\n";
 echo "      <input type=\"hidden\" name=\"domain\" value=\"" . $zone_templ_id . "\">\n";
 echo "      <table class=\"table table-striped table-hover table-sm\">\n";
 echo "       <tr>\n";
@@ -90,7 +90,10 @@ echo "        <td>" . _('Priority') . "</td>\n";
 echo "        <td>" . _('TTL') . "</td>\n";
 echo "       </tr>\n";
 echo "       <tr>\n";
-echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"name\" value=\"" . $name . "\"></td>\n";
+echo "        <td>";
+echo "          <input class=\"form-control form-control-sm\" type=\"text\" name=\"name\" value=\"" . $name . "\" required>";
+echo "          <div class=\"invalid-feedback\">". _('Provide hostname for your zone record') . "</div>";
+echo "        </td>\n";
 echo "        <td>IN</td>\n";
 echo "        <td>\n";
 echo "         <select class=\"form-select form-select-sm\" name=\"type\">\n";
@@ -119,12 +122,15 @@ if (!$found_selected_type)
     echo "          <option SELECTED value=\"" . htmlspecialchars($type) . "\"><i>" . htmlspecialchars($type) . "</i></option>\n";
 echo "         </select>\n";
 echo "        </td>\n";
-echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"content\" value=\"" . $content . "\"></td>\n";
+echo "        <td>";
+echo "          <input class=\"form-control form-control-sm\" type=\"text\" name=\"content\" value=\"" . $content . "\" required>";
+echo "          <div class=\"invalid-feedback\">". _('Provide content for your zone record') . "</div>";
+echo "        </td>\n";
 echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"prio\" value=\"" . $prio . "\"></td>\n";
 echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"ttl\" value=\"" . $ttl . "\"</td>\n";
 echo "       </tr>\n";
 echo "<tr><td colspan=\"6\">";
-echo "      <div class=\"pt-3\"><input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"commit\" value=\"" . _('Add record') . "\"></div>\n";
+echo "      <div><input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"commit\" value=\"" . _('Add record') . "\"></div>\n";
 echo "</td></tr>";
 echo "</table>";
 echo "<table>";

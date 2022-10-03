@@ -216,11 +216,11 @@ if (!(do_hook('verify_permission', 'zone_master_add')) || !$owner) {
             echo "      <td colspan=\"6\"><strong>Save as new template:</strong></td>\n";
             echo "     </tr>\n";
             echo "      <tr>\n";
-            echo "       <th>" . _('Template Name') . "</th>\n";
+            echo "       <td>" . _('Template Name') . "</td>\n";
             echo "       <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"templ_name\" value=\"\"></td>\n";
             echo "      </tr>\n";
             echo "      <tr>\n";
-            echo "       <th>" . _('Template Description') . "</th>\n";
+            echo "       <td>" . _('Template Description') . "</td>\n";
             echo "       <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"templ_descr\" value=\"\"></td>\n";
             echo "      </tr>\n";
             echo "    </table>\n";
