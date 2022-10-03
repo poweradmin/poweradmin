@@ -76,11 +76,13 @@ if (isset($_POST["commit"]) && do_hook('add_new_user', $_POST)) {
 }
 
 echo "     <h5 class=\"mb-3\">" . _('Add user') . "</h5>\n";
-echo "     <form method=\"post\" action=\"add_user.php\">\n";
+echo "     <form class=\"needs-validation\" method=\"post\" action=\"add_user.php\" novalidate>\n";
 echo "      <table>\n";
 echo "       <tr>\n";
 echo "        <td>" . _('Username') . "</td>\n";
-echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"username\" value=\"" . htmlspecialchars($username) . "\"></td>\n";
+echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"username\" value=\"" . htmlspecialchars($username) . "\" required>";
+echo "        <div class=\"invalid-feedback\">" . _('Provide user name') . "</div>";
+echo "        </td>\n";
 echo "       </tr>\n";
 echo "       <tr>\n";
 echo "        <td>" . _('Fullname') . "</td>\n";
@@ -92,7 +94,9 @@ echo "        <td><input class=\"form-control form-control-sm\" id=\"password\" 
 echo "       </tr>\n";
 echo "       <tr>\n";
 echo "        <td>" . _('Email address') . "</td>\n";
-echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"email\" value=\"" . htmlspecialchars($email) . "\"></td>\n";
+echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"email\" value=\"" . htmlspecialchars($email) . "\" required>\n";
+echo "        <div class=\"invalid-feedback\">" . _('Provide email') . "</div>";
+echo "        </td>\n";
 echo "       </tr>\n";
 if (do_hook('verify_permission', 'user_edit_templ_perm')) {
     echo "       <tr>\n";
