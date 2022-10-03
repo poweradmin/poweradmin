@@ -119,3 +119,8 @@ a:hover {
     color: #f8f9fa;
     background-color: #343a40;
 }
+
+.form-control.is-valid, .was-validated .form-control:valid {
+    border-color:inherit !important;
+    background-image: inherit !important;
+}

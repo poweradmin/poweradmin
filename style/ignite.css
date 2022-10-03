@@ -32,3 +32,8 @@ footer a, footer a:hover {
 .card i {
     color: rgb(108, 117, 125);
 }
+
+.form-control.is-valid, .was-validated .form-control:valid {
+    border-color:inherit !important;
+    background-image: inherit !important;
+}
