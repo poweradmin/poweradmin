@@ -129,3 +129,8 @@ a:hover {
     background-image: inherit !important;
     border-color: rgba(0, 0, 0, 0.25);
 }
+
+.form-select.is-valid, .was-validated .form-select:valid {
+    border-color: #ced4da;
+    background-image: inherit !important;
+}

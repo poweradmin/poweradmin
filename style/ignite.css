@@ -34,11 +34,16 @@ footer a, footer a:hover {
 }
 
 .form-control.is-valid, .was-validated .form-control:valid {
-    border-color:inherit !important;
+    border-color: inherit !important;
     background-image: inherit !important;
 }
 
 .form-check-input.is-valid, .was-validated .form-check-input:valid {
     background-image: inherit !important;
     border-color: rgba(0, 0, 0, 0.25);
+}
+
+.form-select.is-valid, .was-validated .form-select:valid {
+    border-color: #ced4da;
+    background-image: inherit !important;
 }
