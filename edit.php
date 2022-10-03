@@ -378,9 +378,7 @@ if ($perm_content_edit == "all" || ($perm_content_edit == "own" || $perm_content
         echo "        <td>" . _('TTL') . "</td>\n";
         echo "       </tr>\n";
         echo "       <tr>\n";
-        echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"name\" value=\"\" required>." . $zone_name;
-        echo "            <div class=\"invalid-feedback\">" . _('Provide name') . "</div>";
-        echo "        </td>\n";
+        echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"name\" value=\"\">." . $zone_name . "</td>\n";
         echo "        <td>IN</td>\n";
         echo "        <td>\n";
         echo "         <select class=\"form-select form-select-sm\" name=\"type\">\n";

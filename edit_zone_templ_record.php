@@ -83,8 +83,7 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
     echo "      <input type=\"hidden\" name=\"rid\" value=\"" . $record_id . "\">\n";
     echo "      <input type=\"hidden\" name=\"zid\" value=\"" . $zone_templ_id . "\">\n";
     echo "      <tr>\n";
-    echo "       <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"name\" value=\"" . htmlspecialchars($record["name"]) . "\" required>";
-    echo "       <div class=\"invalid-feedback\">" . _('Provide name') . "</div>";
+    echo "       <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"name\" value=\"" . htmlspecialchars($record["name"]) . "\">";
     echo "       </td>\n";
     echo "       <td>IN</td>\n";
     echo "       <td>\n";
