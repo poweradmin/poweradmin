@@ -317,7 +317,7 @@ if ($records == "-1") {
         if ($raw_zone_comment) { $zone_comment = htmlspecialchars($raw_zone_comment); }
 
         echo "    <tr>\n";
-        echo "     <td>&nbsp;</td><td colspan=\"7\">Comments:</td>\n";
+        echo "     <td>&nbsp;</td><td colspan=\"7\">" . _('Comments') . ":</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "     <td>\n";
@@ -366,7 +366,7 @@ echo "<hr>";
 if ($perm_content_edit == "all" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "1") {
     if ($domain_type != "SLAVE") {
         $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
-        echo "     <form method=\"post\" action=\"add_record.php?id=" . $zone_id . "\">\n";
+        echo "     <form class=\"needs-validation\" method=\"post\" action=\"add_record.php?id=" . $zone_id . "\" novalidate>\n";
         echo "      <input type=\"hidden\" name=\"domain\" value=\"" . $zone_id . "\">\n";
         echo "      <table class=\"table table-striped table-hover table-sm\">\n";
         echo "       <tr>\n";
@@ -378,7 +378,9 @@ if ($perm_content_edit == "all" || ($perm_content_edit == "own" || $perm_content
         echo "        <td>" . _('TTL') . "</td>\n";
         echo "       </tr>\n";
         echo "       <tr>\n";
-        echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"name\" value=\"\">." . $zone_name . "</td>\n";
+        echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"name\" value=\"\" required>." . $zone_name;
+        echo "            <div class=\"invalid-feedback\">" . _('Provide name') . "</div>";
+        echo "        </td>\n";
         echo "        <td>IN</td>\n";
         echo "        <td>\n";
         echo "         <select class=\"form-select form-select-sm\" name=\"type\">\n";
@@ -409,7 +411,9 @@ if ($perm_content_edit == "all" || ($perm_content_edit == "own" || $perm_content
         }
         echo "         </select>\n";
         echo "        </td>\n";
-        echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"content\" value=\"\"></td>\n";
+        echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"content\" value=\"\" required>";
+        echo "            <div class=\"invalid-feedback\">" . _('Provide content') . "</div>";
+        echo "        </td>\n";
         echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"prio\" value=\"\"></td>\n";
         echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"ttl\" value=\"\"></td>\n";
         echo "       </tr>\n";
