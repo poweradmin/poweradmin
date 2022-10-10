@@ -113,6 +113,6 @@ foreach ($ds_records as $record) {
 }
 
 echo "<br>";
-echo "<br/><a href='dnssec.php?id=" . $zone_id . "'>Back to DNSSEC " . $domain_name . "</a>";
+echo "<br/><a href='dnssec.php?id=" . htmlspecialchars($zone_id) . "'>Back to DNSSEC " . htmlspecialchars($domain_name) . "</a>";
 
 include_once("inc/footer.inc.php");

@@ -152,7 +152,7 @@ echo "        <td>\n";
 echo "         <select class=\"form-select form-select-sm\" name=\"zone_template\">\n";
 echo "          <option value=\"none\">none</option>\n";
 foreach ($zone_templates as $zone_template) {
-    echo "          <option value=\"" . $zone_template['id'] . "\">" . $zone_template['name'] . "</option>\n";
+    echo "          <option value=\"" . htmlspecialchars($zone_template['id']) . "\">" . htmlspecialchars($zone_template['name']) . "</option>\n";
 }
 echo "         </select>\n";
 echo "        </td>\n";

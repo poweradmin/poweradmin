@@ -111,17 +111,17 @@ if ($edit_id == "-1") {
 
         echo "     <h5 class=\"mb-3\">" . _('Edit user') . " \"" . $name . "\"</h5>\n";
         echo "     <form class=\"needs-validation\" method=\"post\" action=\"\" novalidate>\n";
-        echo "      <input type=\"hidden\" name=\"number\" value=\"" . $edit_id . "\">\n";
+        echo "      <input type=\"hidden\" name=\"number\" value=\"" . htmlspecialchars($edit_id) . "\">\n";
         echo "      <table>\n";
         echo "       <tr>\n";
         echo "        <td>" . _('Username') . "</td>\n";
-        echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"username\" value=\"" . $user['username'] . "\" required>\n";
+        echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"username\" value=\"" . htmlspecialchars($user['username']) . "\" required>\n";
         echo "        <div class=\"invalid-feedback\">" . _('Provide user name') . "</div>";
         echo "        </td>\n";
         echo "       </tr>\n";
         echo "       <tr>\n";
         echo "        <td>" . _('Fullname') . "</td>\n";
-        echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"fullname\" value=\"" . $user['fullname'] . "\" required></td>\n";
+        echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"fullname\" value=\"" . htmlspecialchars($user['fullname']) . "\" required></td>\n";
         echo "       </tr>\n";
         echo "       <tr>\n";
         echo "        <td>" . _('Password') . "</td>\n";
@@ -129,7 +129,7 @@ if ($edit_id == "-1") {
         echo "       </tr>\n";
         echo "       <tr>\n";
         echo "        <td>" . _('Email address') . "</td>\n";
-        echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"email\" value=\"" . $user['email'] . "\" required>\n";
+        echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"email\" value=\"" . htmlspecialchars($user['email']) . "\" required>\n";
         echo "        <div class=\"invalid-feedback\">" . _('Provide email') . "</div>";
         echo "        </td>\n";
         echo "       </tr>\n";
@@ -148,7 +148,7 @@ if ($edit_id == "-1") {
         echo "       </tr>\n";
         echo "       <tr>\n";
         echo "        <td>" . _('Description') . "</td>\n";
-        echo "        <td><textarea class=\"form-control form-control-sm\" rows=\"4\" cols=\"30\" class=\"inputarea\" name=\"description\">" . $user['descr'] . "</textarea></td>\n";
+        echo "        <td><textarea class=\"form-control form-control-sm\" rows=\"4\" cols=\"30\" class=\"inputarea\" name=\"description\">" . htmlspecialchars($user['descr']) . "</textarea></td>\n";
         echo "       </tr>\n";
         echo "       <tr>\n";
         echo "        <td>" . _('Enabled') . "</td>\n";
@@ -165,7 +165,7 @@ if ($edit_id == "-1") {
         echo "<div class=\"pt-3 text-secondary\">";
         printf(_('This user has been assigned the permission template "%s".'), $user['tpl_name']);
         if ($user['tpl_descr'] != "") {
-            echo " " . _('The description for this template is') . ": \"" . $user['tpl_descr'] . "\".";
+            echo " " . _('The description for this template is') . ": \"" . htmlspecialchars($user['tpl_descr']) . "\".";
         }
         echo " " . _('Based on this template, this user has the following permissions') . ":";
         echo "     </p>\n";

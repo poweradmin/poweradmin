@@ -108,7 +108,7 @@ if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
     error(ERR_PERM_VIEW_RECORD);
 } else {
     $record = DnsRecord::get_record_from_id($_GET["id"]);
-    echo "     <form class=\"needs-validation\" method=\"post\" action=\"edit_record.php?domain=" . $zid . "&amp;id=" . $_GET["id"] . "\" novalidate>\n";
+    echo "     <form class=\"needs-validation\" method=\"post\" action=\"edit_record.php?domain=" . $zid . "&amp;id=" . htmlspecialchars($_GET["id"]) . "\" novalidate>\n";
     echo "      <table class=\"table table-striped table-hover table-sm\">\n";
     echo "      <thead>";
     echo "       <tr>\n";
@@ -123,16 +123,16 @@ if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
     echo "      <tr>\n";
 
     if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
-        echo "       <td>" . $record["name"] . "</td>\n";
+        echo "       <td>" . htmlspecialchars($record["name"]) . "</td>\n";
         echo "       <td>IN</td>\n";
         echo "       <td>" . htmlspecialchars($record["type"]) . "</td>\n";
         echo "       <td>" . htmlspecialchars($record['content']) . "</td>\n";
         echo "       <td>" . htmlspecialchars($record["prio"]) . "</td>\n";
         echo "       <td>" . htmlspecialchars($record["ttl"]) . "</td>\n";
     } else {
-        echo "       <td><input type=\"hidden\" name=\"rid\" value=\"" . $_GET["id"] . "\">\n";
-        echo "       <input type=\"hidden\" name=\"zid\" value=\"" . $zid . "\">\n";
-        echo "       <input class=\"form-control form-control-sm\" type=\"text\" name=\"name\" value=\"" . htmlspecialchars(trim(str_replace($zone_name, '', $record["name"]), '.')) . "\">." . $zone_name;
+        echo "       <td><input type=\"hidden\" name=\"rid\" value=\"" . htmlspecialchars($_GET["id"]) . "\">\n";
+        echo "       <input type=\"hidden\" name=\"zid\" value=\"" . htmlspecialchars($zid) . "\">\n";
+        echo "       <input class=\"form-control form-control-sm\" type=\"text\" name=\"name\" value=\"" . trim(str_replace($zone_name, '', htmlspecialchars($record["name"])), '.') . "\">." . $zone_name;
         echo "       </td>\n";
         echo "       <td>IN</td>\n";
         echo "       <td>\n";
@@ -148,7 +148,7 @@ if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
             echo "         <option" . $add . " value=\"" . htmlspecialchars($type_available) . "\" >" . $type_available . "</option>\n";
         }
         if (!$found_selected_type)
-            echo "         <option SELECTED value=\"" . htmlspecialchars($record['type']) . "\"><i>" . $record['type'] . "</i></option>\n";
+            echo "         <option SELECTED value=\"" . htmlspecialchars($record['type']) . "\"><i>" . htmlspecialchars($record['type']) . "</i></option>\n";
         echo "        </select>\n";
         echo "       </td>\n";
         echo "       <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"content\" value=\"" . htmlspecialchars($record['content']) . "\" required>";

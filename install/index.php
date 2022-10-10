@@ -146,7 +146,7 @@ switch ($current_step) {
         echo _('done!') . "</p>";
 
         echo $twig->render('step4.html', array(
-            'next_step' => ++$current_step,
+            'next_step' => (int)htmlspecialchars($current_step) + 1,
             'language' => htmlspecialchars($_POST['language']),
             'db_user' => $db_user,
             'db_pass' => $db_pass,
@@ -195,12 +195,12 @@ switch ($current_step) {
             }
 
             echo _('In MySQL you should now perform the following command:') . "</p>";
-            echo "<p><code>GRANT SELECT, INSERT, UPDATE, DELETE<BR>ON " . $db_name . ".*<br>TO '" . $pa_db_user . "'@'" . $pa_db_host . "'<br>IDENTIFIED BY '" . $pa_db_pass . "';</code></p>";
+            echo "<p><code>GRANT SELECT, INSERT, UPDATE, DELETE<BR>ON " . htmlspecialchars($db_name) . ".*<br>TO '" . htmlspecialchars($pa_db_user) . "'@'" . htmlspecialchars($pa_db_host) . "'<br>IDENTIFIED BY '" . htmlspecialchars($pa_db_pass) . "';</code></p>";
         } elseif ($db_type == 'pgsql') {
             echo _('On PgSQL you would use:') . "</p>";
-            echo "<p><code>$ createuser -E -P " . $pa_db_user . "<br>" .
-            "Enter password for new role: " . $pa_db_pass . "<br>" .
-            "Enter it again: " . $pa_db_pass . "<br>" .
+            echo "<p><code>$ createuser -E -P " . htmlspecialchars($pa_db_user) . "<br>" .
+            "Enter password for new role: " . htmlspecialchars($pa_db_pass) . "<br>" .
+            "Enter it again: " . htmlspecialchars($pa_db_pass) . "<br>" .
             "Shall the new role be a superuser? (y/n) n<br>" .
             "Shall the new user be allowed to create databases? (y/n) n<br>" .
             "Shall the new user be allowed to create more new users? (y/n) n<br>" .
@@ -208,33 +208,33 @@ switch ($current_step) {
             "$ psql " . $db_name . "<br>";
             echo "psql> ";
             foreach ($grantTables as $tableName) {
-                echo "GRANT SELECT, INSERT, DELETE, UPDATE ON " . $tableName . " TO " . $pa_db_user . ";<br />";
+                echo "GRANT SELECT, INSERT, DELETE, UPDATE ON " . $tableName . " TO " . htmlspecialchars($pa_db_user) . ";<br />";
             }
             foreach ($grantSequences as $sequenceName) {
-                echo "GRANT USAGE, SELECT ON SEQUENCE " . $sequenceName . " TO " . $pa_db_user . ";<br />";
+                echo "GRANT USAGE, SELECT ON SEQUENCE " . $sequenceName . " TO " . htmlspecialchars($pa_db_user) . ";<br />";
             }
             echo "</code></p>\n";
         }
         echo "<p>" . _('After you have added the new user, proceed with this installation procedure.') . "</p>\n";
         echo "<form method=\"post\">";
-        echo "<input type=\"hidden\" name=\"db_host\" value=\"" . $db_host . "\">";
-        echo "<input type=\"hidden\" name=\"db_name\" value=\"" . $db_name . "\">";
-        echo "<input type=\"hidden\" name=\"db_port\" value=\"" . $db_port . "\">";
-        echo "<input type=\"hidden\" name=\"db_type\" value=\"" . $db_type . "\">";
-        echo "<input type=\"hidden\" name=\"db_user\" value=\"" . $db_user . "\">";
-        echo "<input type=\"hidden\" name=\"db_pass\" value=\"" . $db_pass . "\">";
-        echo "<input type=\"hidden\" name=\"db_charset\" value=\"" . $db_charset . "\">";
+        echo "<input type=\"hidden\" name=\"db_host\" value=\"" . htmlspecialchars($db_host) . "\">";
+        echo "<input type=\"hidden\" name=\"db_name\" value=\"" . htmlspecialchars($db_name) . "\">";
+        echo "<input type=\"hidden\" name=\"db_port\" value=\"" . htmlspecialchars($db_port) . "\">";
+        echo "<input type=\"hidden\" name=\"db_type\" value=\"" . htmlspecialchars($db_type) . "\">";
+        echo "<input type=\"hidden\" name=\"db_user\" value=\"" . htmlspecialchars($db_user) . "\">";
+        echo "<input type=\"hidden\" name=\"db_pass\" value=\"" . htmlspecialchars($db_pass) . "\">";
+        echo "<input type=\"hidden\" name=\"db_charset\" value=\"" . htmlspecialchars($db_charset) . "\">";
         if ($db_type != 'sqlite') {
-            echo "<input type=\"hidden\" name=\"pa_db_user\" value=\"" . $pa_db_user . "\">";
-            echo "<input type=\"hidden\" name=\"pa_db_pass\" value=\"" . $pa_db_pass . "\">";
+            echo "<input type=\"hidden\" name=\"pa_db_user\" value=\"" . htmlspecialchars($pa_db_user) . "\">";
+            echo "<input type=\"hidden\" name=\"pa_db_pass\" value=\"" . htmlspecialchars($pa_db_pass) . "\">";
         }
-        echo "<input type=\"hidden\" name=\"pa_pass\" value=\"" . $pa_pass . "\">";
-        echo "<input type=\"hidden\" name=\"dns_hostmaster\" value=\"" . $hostmaster . "\">";
-        echo "<input type=\"hidden\" name=\"dns_ns1\" value=\"" . $dns_ns1 . "\">";
-        echo "<input type=\"hidden\" name=\"dns_ns2\" value=\"" . $dns_ns2 . "\">";
-        echo "<input type=\"hidden\" name=\"step\" value=\"" . $current_step . "\">";
-        echo "<input type=\"hidden\" name=\"language\" value=\"" . $language . "\">";
-        echo "<input type=\"submit\" name=\"submit\" class=\"btn btn-primary btn-sm\" value=\"" . _('Go to step') . " " . $current_step . "\">";
+        echo "<input type=\"hidden\" name=\"pa_pass\" value=\"" . htmlspecialchars($pa_pass) . "\">";
+        echo "<input type=\"hidden\" name=\"dns_hostmaster\" value=\"" . htmlspecialchars($hostmaster) . "\">";
+        echo "<input type=\"hidden\" name=\"dns_ns1\" value=\"" . htmlspecialchars($dns_ns1) . "\">";
+        echo "<input type=\"hidden\" name=\"dns_ns2\" value=\"" . htmlspecialchars($dns_ns2) . "\">";
+        echo "<input type=\"hidden\" name=\"step\" value=\"" . htmlspecialchars($current_step) . "\">";
+        echo "<input type=\"hidden\" name=\"language\" value=\"" . htmlspecialchars($language) . "\">";
+        echo "<input type=\"submit\" name=\"submit\" class=\"btn btn-primary btn-sm\" value=\"" . _('Go to step') . " " . htmlspecialchars($current_step) . "\">";
         echo "</form>";
         break;
 
@@ -293,24 +293,24 @@ switch ($current_step) {
         }
 
         echo $twig->render('step6.html', array(
-            'next_step' => ++$current_step,
-            'language' => $language,
+            'next_step' => (int)htmlspecialchars($current_step)+1,
+            'language' => htmlspecialchars($language),
             'config_file_created' => $config_file_created,
             'local_config_file' => LOCAL_CONFIG_FILE,
             'session_key' => Password::salt(SESSION_KEY_LENGTH),
-            'iface_lang' => $language,
-            'dns_hostmaster' => $dns_hostmaster,
-            'dns_ns1' => $dns_ns1,
-            'dns_ns2' => $dns_ns2,
-            'db_host' => $db_host,
-            'db_user' => $db_user,
-            'db_pass' => $db_pass,
-            'db_name' => $db_name,
-            'db_file' => $db_type =='sqlite' ? $db_name : '',
-            'db_type' => $db_type,
-            'db_port' => $db_port,
-            'db_charset' => $db_charset,
-            'pa_pass' => $pa_pass
+            'iface_lang' => htmlspecialchars($language),
+            'dns_hostmaster' => htmlspecialchars($dns_hostmaster),
+            'dns_ns1' => htmlspecialchars($dns_ns1),
+            'dns_ns2' => htmlspecialchars($dns_ns2),
+            'db_host' => htmlspecialchars($db_host),
+            'db_user' => htmlspecialchars($db_user),
+            'db_pass' => htmlspecialchars($db_pass),
+            'db_name' => htmlspecialchars($db_name),
+            'db_file' => $db_type =='sqlite' ? htmlspecialchars($db_name) : '',
+            'db_type' => htmlspecialchars($db_type),
+            'db_port' => htmlspecialchars($db_port),
+            'db_charset' => htmlspecialchars($db_charset),
+            'pa_pass' => htmlspecialchars($pa_pass)
         ));
         break;
 

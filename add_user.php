@@ -90,7 +90,7 @@ echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" na
 echo "       </tr>\n";
 echo "       <tr>\n";
 echo "        <td>" . _('Password') . "</td>\n";
-echo "        <td><input class=\"form-control form-control-sm\" id=\"password\" name=\"password\" value=\"" . $password . "\"></td>\n";
+echo "        <td><input class=\"form-control form-control-sm\" id=\"password\" name=\"password\" value=\"" . htmlspecialchars($password) . "\"></td>\n";
 echo "       </tr>\n";
 echo "       <tr>\n";
 echo "        <td>" . _('Email address') . "</td>\n";

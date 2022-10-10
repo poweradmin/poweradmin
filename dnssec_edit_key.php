@@ -89,12 +89,12 @@ if ($confirm == '1') {
     if ($key_info[5]) {
         if (Dnssec::dnssec_deactivate_zone_key($domain_name, $key_id)) {
             success(SUC_EXEC_PDNSSEC_DEACTIVATE_ZONE_KEY);
-            echo "<p class=\"pt-3\"><a href='dnssec.php?id=" . $zone_id . "'>Back to DNSSEC " . $domain_name . "</a></p>";
+            echo "<p class=\"pt-3\"><a href='dnssec.php?id=" . htmlspecialchars($zone_id) . "'>Back to DNSSEC " . htmlspecialchars($domain_name) . "</a></p>";
         }
     } else {
         if (Dnssec::dnssec_activate_zone_key($domain_name, $key_id)) {
             success(SUC_EXEC_PDNSSEC_ACTIVATE_ZONE_KEY);
-            echo "<p class=\"pt-3\"><a href='dnssec.php?id=" . $zone_id . "'>Back to DNSSEC " . $domain_name . "</a></p>";
+            echo "<p class=\"pt-3\"><a href='dnssec.php?id=" . htmlspecialchars($zone_id) . "'>Back to DNSSEC " . htmlspecialchars($domain_name) . "</a></p>";
         }
     }
 } else {
@@ -107,7 +107,7 @@ if ($confirm == '1') {
         echo "      " . _('Bits') . ": " . htmlspecialchars($key_info[4]) . "<br>\n";
         echo "      " . _('Active') . ": " . ($key_info[5] ? _('Yes') : _('No')) . "\n";
         echo "     <p>" . _('Are you sure?') . "</p>\n";
-        echo "     <input class=\"btn btn-primary btn-sm\" type=\"button\" onClick=\"location.href='dnssec_edit_key.php?id=" . $zone_id . "&amp;key_id=$key_id&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
+        echo "     <input class=\"btn btn-primary btn-sm\" type=\"button\" onClick=\"location.href='dnssec_edit_key.php?id=" . htmlspecialchars($zone_id) . "&amp;key_id=". htmlspecialchars($key_id) . "&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
         echo "     <input class=\"btn btn-secondary btn-sm\" type=\"button\" onClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
     } else {
         error(ERR_PDNSSEC_DEL_ZONE_KEY);

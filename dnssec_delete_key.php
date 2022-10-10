@@ -95,11 +95,11 @@ if ($confirm == '1') {
         echo "      " . _('Bits') . ": " . htmlspecialchars($key_info[4]) . "<br>\n";
         echo "      " . _('Active') . ": " . ($key_info[5] ? _('Yes') : _('No')) . "\n";
         echo "     <p class=\"pt-3\">" . _('Are you sure?') . "</p>\n";
-        echo "     <input class=\"btn btn-primary btn-sm\" type=\"button\" onClick=\"location.href='dnssec_delete_key.php?id=" . $zone_id . "&amp;key_id=$key_id&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
-        echo "     <input class=\"btn btn-secondary btn-sm\" type=\"button\" onClick=\"location.href='dnssec.php?id=" . $zone_id . "'\" value=\"" . _('No') . "\">\n";
+        echo "     <input class=\"btn btn-primary btn-sm\" type=\"button\" onClick=\"location.href='dnssec_delete_key.php?id=" . htmlspecialchars($zone_id) . "&amp;key_id=" . htmlspecialchars($key_id) . "&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
+        echo "     <input class=\"btn btn-secondary btn-sm\" type=\"button\" onClick=\"location.href='dnssec.php?id=" . htmlspecialchars($zone_id) . "'\" value=\"" . _('No') . "\">\n";
     } else {
         error(ERR_PDNSSEC_DEL_ZONE_KEY);
     }
 }
-echo "<p class=\"pt-3\"><a href='dnssec.php?id=" . $zone_id . "'>Back to DNSSEC " . $domain_name . "</a></p>";
+echo "<p class=\"pt-3\"><a href='dnssec.php?id=" . htmlspecialchars($zone_id) . "'>Back to DNSSEC " . htmlspecialchars($domain_name) . "</a></p>";
 include_once("inc/footer.inc.php");
