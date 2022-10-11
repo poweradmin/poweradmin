@@ -190,7 +190,9 @@ if ($perm_view == "none") {
         echo "     </div>\n";
     }
 
-    echo "      <input type=\"submit\" name=\"commit\" value=\"" . _('Delete zone(s)') . "\" class=\"btn btn-primary btn-sm\">\n";
+    if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
+        echo "      <input type=\"submit\" name=\"commit\" value=\"" . _('Delete zone(s)') . "\" class=\"btn btn-primary btn-sm\">\n";
+    }
     echo "     </form>\n";
 }
 
