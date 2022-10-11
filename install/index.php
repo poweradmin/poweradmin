@@ -195,7 +195,9 @@ switch ($current_step) {
             }
 
             echo _('In MySQL you should now perform the following command:') . "</p>";
-            echo "<p><code>GRANT SELECT, INSERT, UPDATE, DELETE<BR>ON " . htmlspecialchars($db_name) . ".*<br>TO '" . htmlspecialchars($pa_db_user) . "'@'" . htmlspecialchars($pa_db_host) . "'<br>IDENTIFIED BY '" . htmlspecialchars($pa_db_pass) . "';</code></p>";
+            echo "<p><code>";
+            echo "CREATE USER '" . htmlspecialchars($pa_db_user) . "'@'" . htmlspecialchars($pa_db_host) . "' IDENTIFIED BY '" . htmlspecialchars($pa_db_pass) . "';<br>";
+            echo "GRANT SELECT, INSERT, UPDATE, DELETE<BR>ON " . htmlspecialchars($db_name) . ".*<br>TO '" . htmlspecialchars($pa_db_user) . "'@'" . htmlspecialchars($pa_db_host) . "';</code></p>";
         } elseif ($db_type == 'pgsql') {
             echo _('On PgSQL you would use:') . "</p>";
             echo "<p><code>$ createuser -E -P " . htmlspecialchars($pa_db_user) . "<br>" .
