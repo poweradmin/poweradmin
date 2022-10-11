@@ -30,9 +30,10 @@ class RecordLog
 
     private $record_changed = false;
 
-    public function log_prior($rid)
+    public function log_prior($rid, $zid)
     {
         $this->record_prior = $this->getRecord($rid);
+        $this->record_prior['zid'] = $zid;
     }
 
     public function log_after($rid)
@@ -76,6 +77,6 @@ class RecordLog
             $this->record_prior['type'], $this->record_prior['name'],
             $this->record_prior['content'], $this->record_prior['ttl'], $this->record_prior['prio'],
             $this->record_after['type'], $this->record_after['name'],
-            $this->record_after['content'], $this->record_after['ttl'], $this->record_after['prio']), $this->record_prior['rid']);
+            $this->record_after['content'], $this->record_after['ttl'], $this->record_after['prio']), $this->record_prior['zid']);
     }
 }

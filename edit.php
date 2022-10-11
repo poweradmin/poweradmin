@@ -86,7 +86,7 @@ if (isset($_POST['commit'])) {
 
             // Check if a record changed and save the state
             $log = new RecordLog();
-            $log->log_prior($record['rid']);
+            $log->log_prior($record['rid'], $record['zid']);
             if (!$log->has_changed($record)) {
                 continue;
             } else {
