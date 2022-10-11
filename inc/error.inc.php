@@ -23,6 +23,8 @@
 /* PERMISSIONS */
 define("ERR_PERM_SEARCH", _("You do not have the permission to perform searches."));
 define("ERR_PERM_ADD_RECORD", _("You do not have the permission to add a record to this zone."));
+define("ERR_PERM_ADD_RECORD_SOA", _("You do not have the permission to add SOA record."));
+define("ERR_PERM_ADD_RECORD_NS", _("You do not have the permission to add NS record."));
 define("ERR_PERM_EDIT_RECORD", _("You do not have the permission to edit this record."));
 define("ERR_PERM_EDIT_RECORD_SOA", _("You do not have the permission to edit this SOA record."));
 define("ERR_PERM_EDIT_RECORD_NS", _("You do not have the permission to edit this NS record."));

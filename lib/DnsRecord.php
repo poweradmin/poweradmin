@@ -347,7 +347,6 @@ class DnsRecord
      */
     public static function edit_record($record)
     {
-
         if (do_hook('verify_permission', 'zone_content_edit_others')) {
             $perm_content_edit = "all";
         } elseif (do_hook('verify_permission', 'zone_content_edit_own')) {
@@ -421,6 +420,15 @@ class DnsRecord
 
         $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
         $zone_type = self::get_domain_type($zone_id);
+
+        if ($type == 'SOA' && $perm_content_edit == "own_as_client") {
+            error(ERR_PERM_ADD_RECORD_SOA);
+            return false;
+        }
+        if ($type == 'NS' && $perm_content_edit == "own_as_client") {
+            error(ERR_PERM_ADD_RECORD_NS);
+            return false;
+        }
 
         if ($zone_type == "SLAVE" || $perm_content_edit == "none" || (($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0")) {
             error(ERR_PERM_ADD_RECORD);
