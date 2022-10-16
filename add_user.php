@@ -43,7 +43,6 @@ $username = $_POST['username'] ?? "";
 $fullname = $_POST['fullname'] ?? "";
 $email = $_POST['email'] ?? "";
 $perm_templ = $_POST['perm_templ'] ?? "1";
-$password = $_POST['password'] ?? "";
 $description = $_POST['descr'] ?? "";
 
 $active_checked = "checked";
@@ -90,7 +89,7 @@ echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" na
 echo "       </tr>\n";
 echo "       <tr>\n";
 echo "        <td>" . _('Password') . "</td>\n";
-echo "        <td><input class=\"form-control form-control-sm\" id=\"password\" name=\"password\" value=\"" . htmlspecialchars($password) . "\"></td>\n";
+echo "        <td><input class=\"form-control form-control-sm\" id=\"password\" name=\"password\" value=\"\"></td>\n";
 echo "       </tr>\n";
 echo "       <tr>\n";
 echo "        <td>" . _('Email address') . "</td>\n";
