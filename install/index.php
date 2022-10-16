@@ -148,14 +148,14 @@ switch ($current_step) {
         echo $twig->render('step4.html', array(
             'next_step' => (int)htmlspecialchars($current_step) + 1,
             'language' => htmlspecialchars($_POST['language']),
-            'db_user' => $db_user,
-            'db_pass' => $db_pass,
-            'db_host' => $db_host,
-            'db_port' => $db_port,
-            'db_name' => $db_name,
-            'db_type' => $db_type,
-            'db_charset' => $db_charset,
-            'pa_pass' => $pa_pass
+            'db_user' => htmlspecialchars($db_user),
+            'db_pass' => htmlspecialchars($db_pass),
+            'db_host' => htmlspecialchars($db_host),
+            'db_port' => htmlspecialchars($db_port),
+            'db_name' => htmlspecialchars($db_name),
+            'db_type' => htmlspecialchars($db_type),
+            'db_charset' => htmlspecialchars($db_charset),
+            'pa_pass' => htmlspecialchars($pa_pass)
         ));
         break;
 
