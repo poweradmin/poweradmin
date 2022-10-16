@@ -192,24 +192,24 @@ if (!$user || !Password::verify($auth_password, $user['password'])) {
     return status_exit('badauth2');
 }
 
-$zones_query = "SELECT domain_id FROM zones WHERE owner='{$user["id"]}'";
-$zones_result = $db->query($zones_query);
+$zones_query = $db->prepare('SELECT domain_id FROM zones WHERE owner=:user_id');
+$zones_query->execute([':user_id' => $user['id']]);
 $was_updated = false;
 $no_update_necessary = false;
 
-while ($zone = $zones_result->fetch()) {
+while ($zone = $zones_query->fetch()) {
     $zone_updated = false;
-    $name_query = "SELECT name, type, content FROM records WHERE domain_id='{$zone["domain_id"]}' and (type = 'A' OR type = 'AAAA') ";
-    $result = $db->query($name_query);
+    $name_query = $db->prepare("SELECT name, type, content FROM records WHERE domain_id=:domain_id and (type = 'A' OR type = 'AAAA')");
+    $name_query->execute([':domain_id' => $zone["domain_id"]]);
 
-    while ($record = $result->fetch()) {
+    while ($record = $name_query->fetch()) {
         if ($hostname == $record['name']) {
             if (($record['type'] == 'A') && (valid_ip_address($ip) === 'A')) {
                 if ($ip == $record['content']) {
                     $no_update_necessary = true;
                 } else {
-                    $update_query = "UPDATE records SET content ='{$ip}' where name='{$record["name"]}' and type='A'";
-                    $update_result = $db->query($update_query);
+                    $update_query = $db->prepare("UPDATE records SET content =:ip where name=:record_name and type='A'");
+                    $update_query->execute([':ip' => $ip, ':record_name' => $record['name']]);
                     $zone_updated = true;
                     $was_updated = true;
                 }
@@ -217,8 +217,8 @@ while ($zone = $zones_result->fetch()) {
                 if ($ip6 == $record['content']) {
                     $no_update_necessary = true;
                 } else {
-                    $update_query = "UPDATE records SET content ='{$ip6}' where name='{$record["name"]}' and type='AAAA'";
-                    $update_result = $db->query($update_query);
+                    $update_query = $db->prepare("UPDATE records SET content =:ip6 where name=:record_name and type='AAAA'");
+                    $db->execute([':ip6' => $ip6, ':record_name' => $record['name']]);
                     $zone_updated = true;
                     $was_updated = true;
                 }
