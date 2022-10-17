@@ -132,7 +132,7 @@ if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
     } else {
         echo "       <td><input type=\"hidden\" name=\"rid\" value=\"" . htmlspecialchars($_GET["id"]) . "\">\n";
         echo "       <input type=\"hidden\" name=\"zid\" value=\"" . htmlspecialchars($zid) . "\">\n";
-        echo "       <input class=\"form-control form-control-sm\" type=\"text\" name=\"name\" value=\"" . trim(str_replace($zone_name, '', htmlspecialchars($record["name"])), '.') . "\">." . $zone_name;
+        echo "       <input class=\"form-control form-control-sm\" type=\"text\" name=\"name\" value=\"" . trim(str_replace(htmlspecialchars($zone_name), '', htmlspecialchars($record["name"])), '.') . "\">." . htmlspecialchars($zone_name);
         echo "       </td>\n";
         echo "       <td>IN</td>\n";
         echo "       <td>\n";

@@ -207,7 +207,7 @@ switch ($current_step) {
             "Shall the new user be allowed to create databases? (y/n) n<br>" .
             "Shall the new user be allowed to create more new users? (y/n) n<br>" .
             "CREATE USER<br>" .
-            "$ psql " . $db_name . "<br>";
+            "$ psql " . htmlspecialchars($db_name) . "<br>";
             echo "psql> ";
             foreach ($grantTables as $tableName) {
                 echo "GRANT SELECT, INSERT, DELETE, UPDATE ON " . $tableName . " TO " . htmlspecialchars($pa_db_user) . ";<br />";
