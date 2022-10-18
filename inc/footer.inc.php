@@ -31,8 +31,6 @@
 use Poweradmin\Version;
 use Poweradmin\AppFactory;
 
-require_once dirname(__DIR__) . '/vendor/autoload.php';
-
 global $db;
 global $db_debug;
 global $display_stats;

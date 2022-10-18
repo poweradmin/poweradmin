@@ -26,6 +26,8 @@ if (!@include_once('config.inc.php')) {
     error(_('You have to create a config.inc.php!'));
 }
 
+require_once dirname(__DIR__) . '/vendor/autoload.php';
+
 require_once 'benchmark.php';
 
 session_start();

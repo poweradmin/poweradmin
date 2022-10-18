@@ -38,8 +38,6 @@ use Poweradmin\ZoneTemplate;
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/session.inc.php';
 
-require_once dirname(dirname(dirname(__DIR__))) . '/vendor/autoload.php';
-
 /**
  * Verify User has Permission Name
  *
