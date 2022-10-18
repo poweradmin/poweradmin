@@ -10,6 +10,7 @@
 namespace PHPUnit\Framework;
 
 use function func_get_args;
+use function function_exists;
 use ArrayAccess;
 use Countable;
 use DOMDocument;
@@ -1453,7 +1454,9 @@ if (!function_exists('PHPUnit\Framework\assertSame')) {
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @psalm-template ExpectedType
+     *
      * @psalm-param ExpectedType $expected
+     *
      * @psalm-assert =ExpectedType $actual
      *
      * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -1494,7 +1497,9 @@ if (!function_exists('PHPUnit\Framework\assertInstanceOf')) {
      * @throws Exception
      *
      * @psalm-template ExpectedType of object
+     *
      * @psalm-param class-string<ExpectedType> $expected
+     *
      * @psalm-assert =ExpectedType $actual
      *
      * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -1516,7 +1521,9 @@ if (!function_exists('PHPUnit\Framework\assertNotInstanceOf')) {
      * @throws Exception
      *
      * @psalm-template ExpectedType of object
+     *
      * @psalm-param class-string<ExpectedType> $expected
+     *
      * @psalm-assert !ExpectedType $actual
      *
      * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit

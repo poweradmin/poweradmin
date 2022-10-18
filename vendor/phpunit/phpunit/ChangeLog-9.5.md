@@ -2,6 +2,28 @@
 
 All notable changes of the PHPUnit 9.5 release series are documented in this file using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 
+## [9.5.25] - 2022-09-25
+
+### Added
+
+* [#5042](https://github.com/sebastianbergmann/phpunit/issues/5042): Support Disjunctive Normal Form types
+
+### Fixed
+
+* [#4966](https://github.com/sebastianbergmann/phpunit/issues/4966): `TestCase::assertSame()` (and related exact comparisons) must compare `float` exactly
+
+## [9.5.24] - 2022-08-30
+
+### Added
+
+* [#4931](https://github.com/sebastianbergmann/phpunit/issues/4931): Support `null` and `false` as stand-alone types
+* [#4955](https://github.com/sebastianbergmann/phpunit/issues/4955): Support `true` as stand-alone type
+
+### Fixed
+
+* [#4913](https://github.com/sebastianbergmann/phpunit/issues/4913): Failed `assert()` should show a backtrace
+* [#5012](https://github.com/sebastianbergmann/phpunit/pull/5012): Memory leak in `ExceptionWrapper`
+
 ## [9.5.23] - 2022-08-22
 
 ### Changed
@@ -178,6 +200,8 @@ All notable changes of the PHPUnit 9.5 release series are documented in this fil
 
 * [#4535](https://github.com/sebastianbergmann/phpunit/issues/4535): `getMockFromWsdl()` does not handle methods that do not have parameters correctly
 
+[9.5.25]: https://github.com/sebastianbergmann/phpunit/compare/9.5.24...9.5.25
+[9.5.24]: https://github.com/sebastianbergmann/phpunit/compare/9.5.23...9.5.24
 [9.5.23]: https://github.com/sebastianbergmann/phpunit/compare/9.5.22...9.5.23
 [9.5.22]: https://github.com/sebastianbergmann/phpunit/compare/9.5.21...9.5.22
 [9.5.21]: https://github.com/sebastianbergmann/phpunit/compare/9.5.20...9.5.21

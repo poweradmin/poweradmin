@@ -1,9 +1,9 @@
 {
-  "description": "A web-based control panel for PowerDNS.",
   "name": "poweradmin/poweradmin",
+  "description": "A web-based control panel for PowerDNS.",
   "type": "project",
   "homepage": "https://www.poweradmin.org",
-  "license": "GPL-3.0",
+  "license": "GPL-3.0-or-later",
   "support": {
     "issues": "https://github.com/poweradmin/poweradmin/issues",
     "forum": "https://github.com/poweradmin/poweradmin/discussions",
@@ -17,8 +17,8 @@
     "ext-gettext": "*",
     "ext-openssl": "*",
     "ext-pdo": "*",
-    "twig/twig": "v2.15.3",
-    "twig/extensions": "v1.5.4"
+    "twig/twig": "^v2.15",
+    "twig/extensions": "^v1.5"
   },
   "autoload": {
     "psr-4": {
