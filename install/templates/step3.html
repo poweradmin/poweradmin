@@ -6,12 +6,15 @@
     If you trust the installer, you may give it the username and password of the database user root. Otherwise, make
     sure the user has enough rights, before actually proceeding.' %}</p>
 
-<form method="post">
+<form class="needs-validation" method="post" novalidate>
     <table class="table table-sm">
         <tbody>
         <tr id="username_row">
             <td>{% trans 'Username' %}</td>
-            <td class="w-25"><input class="form-control form-control-sm" type="text" name="user" value=""></td>
+            <td class="w-25">
+                <input class="form-control form-control-sm" type="text" id="username" name="user" value="" required>
+                <div class="invalid-feedback">{% trans 'Provide the name username' %}</div>
+            </td>
             <td>{% trans 'The username to use to connect to the database, make sure the username has
                 sufficient rights to perform administrative task to the PowerDNS database (the installer wants to drop,
                 create and fill tables to the database).' %}
@@ -19,7 +22,10 @@
         </tr>
         <tr id="password_row">
             <td>{% trans 'Password' %}</td>
-            <td><input class="form-control form-control-sm" type="password" name="pass" value="" autocomplete="off"></td>
+            <td>
+                <input class="form-control form-control-sm" type="password" id="userpass" name="pass" value="" autocomplete="off" required>
+                <div class="invalid-feedback">{% trans 'Provide user password' %}</div>
+            </td>
             <td>{% trans 'The password for this username.' %}</td>
         </tr>
         <tr>
@@ -35,18 +41,27 @@
         </tr>
         <tr id="hostname_row">
             <td>{% trans 'Hostname' %}</td>
-            <td><input class="form-control form-control-sm" type="text" id="host" name="host" value="localhost"></td>
+            <td>
+                <input class="form-control form-control-sm" type="text" id="host" name="host" value="localhost" required>
+                <div class="invalid-feedback">{% trans 'Provide the hostname' %}</div>
+            </td>
             <td>{% trans 'The hostname on which the PowerDNS database resides. Frequently, this will be "localhost".' %}
             </td>
         </tr>
         <tr id="dbport_row">
             <td>{% trans 'DB Port' %}</td>
-            <td><input class="form-control form-control-sm" type="text" id="dbport" name="dbport" value="3306"></td>
+            <td>
+                <input class="form-control form-control-sm" type="text" id="dbport" name="dbport" value="3306" required>
+                <div class="invalid-feedback">{% trans 'Provide database port' %}</div>
+            </td>
             <td>{% trans 'The port the database server is listening on.' %}</td>
         </tr>
         <tr>
             <td>{% trans 'Database' %}</td>
-            <td><input class="form-control form-control-sm" type="text" name="name" value=""></td>
+            <td>
+                <input class="form-control form-control-sm" type="text" name="name" value="" required>
+                <div class="invalid-feedback">{% trans 'Provide the name of the database' %}</div>
+            </td>
             <td><span id="db_name_title">{% trans 'The name of the PowerDNS database.' %}</span>
                 <span id="db_path_title" style="display: none;">{% trans 'The path and filename to the PowerDNS SQLite database.' %}</span>
             </td>
@@ -67,7 +82,10 @@
         </tr>
         <tr>
             <td>{% trans 'Poweradmin administrator password' %}</td>
-            <td><input class="form-control form-control-sm" type="password" name="pa_pass" value="" autocomplete="off"></td>
+            <td>
+                <input class="form-control form-control-sm" type="password" name="pa_pass" value="" autocomplete="off" required>
+                <div class="invalid-feedback">{% trans 'Provide a password' %}</div>
+            </td>
             <td>{% trans 'The password of the Poweradmin administrator. This administrator has full rights to Poweradmin
                 using the web interface.' %}
             </td>

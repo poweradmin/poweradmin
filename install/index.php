@@ -41,7 +41,7 @@ require_once dirname(__DIR__) . '/inc/i18n.inc.php';
 
 // Constants
 define('LOCAL_CONFIG_FILE', dirname(__DIR__) . '/inc/config.inc.php');
-define('SESSION_KEY_LENGTH', 46);
+const SESSION_KEY_LENGTH = 46;
 
 // Localize interface
 $language = 'en_EN';
@@ -49,7 +49,7 @@ if (isset($_POST['language']) && $_POST['language'] != 'en_EN') {
     $language = $_POST['language'];
 
     $locale = setlocale(LC_ALL, $language, $language . '.UTF-8');
-    if ($locale == false) {
+    if (!$locale) {
         error(ERR_LOCALE_FAILURE);
     }
 
@@ -127,6 +127,7 @@ switch ($current_step) {
         }
 
         $fill_perm_items = $db->prepare('INSERT INTO perm_items VALUES (?, ?, ?)');
+        $def_permissions = include 'includes/permissions.php';
         $db->executeMultiple($fill_perm_items, $def_permissions);
         if (method_exists($fill_perm_items, 'free')) {
             $fill_perm_items->free();

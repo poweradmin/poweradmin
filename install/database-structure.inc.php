@@ -571,28 +571,3 @@ foreach ($def_tables as $table) {
     if ($table['table_name'] == 'records_zone_templ') { continue; }
     $grantSequences[] = $table['table_name'] . '_id_seq';
 }
-
-$def_permissions = array(
-    array(41, 'zone_master_add', 'User is allowed to add new master zones.'),
-    array(42, 'zone_slave_add', 'User is allowed to add new slave zones.'),
-    array(43, 'zone_content_view_own', 'User is allowed to see the content and meta data of zones he owns.'),
-    array(44, 'zone_content_edit_own', 'User is allowed to edit the content of zones he owns.'),
-    array(45, 'zone_meta_edit_own', 'User is allowed to edit the meta data of zones he owns.'),
-    array(46, 'zone_content_view_others', 'User is allowed to see the content and meta data of zones he does not own.'),
-    array(47, 'zone_content_edit_others', 'User is allowed to edit the content of zones he does not own.'),
-    array(48, 'zone_meta_edit_others', 'User is allowed to edit the meta data of zones he does not own.'),
-    array(49, 'search', 'User is allowed to perform searches.'),
-    array(50, 'supermaster_view', 'User is allowed to view supermasters.'),
-    array(51, 'supermaster_add', 'User is allowed to add new supermasters.'),
-    array(52, 'supermaster_edit', 'User is allowed to edit supermasters.'),
-    array(53, 'user_is_ueberuser', 'User has full access. God-like. Redeemer.'),
-    array(54, 'user_view_others', 'User is allowed to see other users and their details.'),
-    array(55, 'user_add_new', 'User is allowed to add new users.'),
-    array(56, 'user_edit_own', 'User is allowed to edit their own details.'),
-    array(57, 'user_edit_others', 'User is allowed to edit other users.'),
-    array(58, 'user_passwd_edit_others', 'User is allowed to edit the password of other users.'), // not used
-    array(59, 'user_edit_templ_perm', 'User is allowed to change the permission template that is assigned to a user.'),
-    array(60, 'templ_perm_add', 'User is allowed to add new permission templates.'),
-    array(61, 'templ_perm_edit', 'User is allowed to edit existing permission templates.'),
-    array(62, 'zone_content_edit_own_as_client', 'User is allowed to edit record, but not SOA and NS.'),
-);
