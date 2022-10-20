@@ -31,7 +31,7 @@
         <tr>
             <td width="210">{% trans 'Database type' %}</td>
             <td>
-                <select class="form-select form-select-sm" name="type" onChange="changePort(this.value)">
+                <select class="form-select form-select-sm" name="type" onChange="updateFormFields(this.value)">
                     <option value="mysql">MySQL</option>
                     <option value="pgsql">PostgreSQL</option>
                     <option value="sqlite">SQLite</option>

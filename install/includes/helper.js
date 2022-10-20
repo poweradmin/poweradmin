@@ -18,7 +18,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-function changePort(db_type) {
+function updateFormFields(db_type) {
     const db_name_title = document.getElementById('db_name_title');
     const db_path_title = document.getElementById('db_path_title');
     const username_row = document.getElementById('username_row');
