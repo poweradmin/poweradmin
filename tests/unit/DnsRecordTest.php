@@ -15,7 +15,8 @@ class DnsRecordTest extends TestCase
 
     public function testGetUpdatedSoaRecordShouldReturnIncrementedDate()
     {
-        $this->assertSame("ns1.poweradmin.org hostmaster.poweradmin.org 2022082601 28800 7200 604800 86400", DnsRecord::get_updated_soa_record(self::SOA_REC));
+        $expected = sprintf("ns1.poweradmin.org hostmaster.poweradmin.org %s00 28800 7200 604800 86400", date('Ymd'));
+        $this->assertSame($expected, DnsRecord::get_updated_soa_record(self::SOA_REC));
     }
 
     public function testGetSoaSerialShouldReturnEmpty()
