@@ -127,10 +127,10 @@ class DnsRecord
      * date is reached - in which case perhaps ritual suicide is the best option."
      * http://www.zytrax.com/books/dns/ch9/serial.html
      *
-     * @param string $curr_serial Current Serial No
+     * @param string|int $curr_serial Current Serial No
      * @param string $today Optional date for "today"
      *
-     * @return string Next serial number
+     * @return string|int Next serial number
      */
     public static function get_next_serial($curr_serial, $today = '')
     {
@@ -157,9 +157,7 @@ class DnsRecord
         $revision = (int)substr($curr_serial, -2);
         $ser_date = substr($curr_serial, 0, 8);
 
-        if ($curr_serial == '0') {
-            $serial = $curr_serial;
-        } elseif ($curr_serial == $today . '99') {
+        if ($curr_serial == $today . '99') {
             $serial = self::get_next_date($today) . '00';
         } else {
             if (strcmp($today, $ser_date) === 0) {
