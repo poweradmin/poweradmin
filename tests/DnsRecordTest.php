@@ -1,8 +1,7 @@
 <?php
 
-namespace Poweradmin;
-
 use PHPUnit\Framework\TestCase;
+use Poweradmin\DnsRecord;
 
 class DnsRecordTest extends TestCase
 {
