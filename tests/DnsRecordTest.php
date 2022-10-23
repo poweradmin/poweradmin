@@ -43,14 +43,14 @@ class DnsRecordTest extends TestCase
         $this->assertSame(1, DnsRecord::get_next_serial(1979999999));
     }
 
-    public function testGetNextSerialShouldIncrementDateIfMaxRevision()
+    public function testGetNextSerialShouldIncrementDateIfMaxRevisionAndToday()
     {
         $given = sprintf( "%s99", date('Ymd'));
         $expected = sprintf( "%s00", date('Ymd', strtotime("+1 day")));
         $this->assertSame($expected, DnsRecord::get_next_serial($given));
     }
 
-    public function testGetNextSerialShouldReturnIncrementedRevision()
+    public function testGetNextSerialShouldReturnIncrementedRevisionIfToday()
     {
         $given = sprintf( "%s01", date('Ymd'));
         $expected = sprintf( "%s02", date('Ymd'));
@@ -71,7 +71,7 @@ class DnsRecordTest extends TestCase
         $this->assertSame($expected, DnsRecord::get_next_serial($given));
     }
 
-    public function testGetNextSerialShouldRestartRevisionFromTodayIfOlder()
+    public function testGetNextSerialShouldRestartRevisionFromTodayIfInThePast()
     {
         $given = sprintf( "%s01", date('Ymd', strtotime("-4 day")));
         $expected = sprintf( "%s00", date('Ymd'));
