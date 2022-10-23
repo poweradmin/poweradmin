@@ -161,9 +161,9 @@ class DnsRecord
         if (strcmp($today, $ser_date) === 0) {
             // Current serial starts with date of today, so we need to update the revision only.
             ++$revision;
-        } elseif (strncmp($today, $curr_serial, 8) === -1) {
+        } elseif (strcmp($today, $ser_date) === -1) {
             // Reuse existing serial date if it's in the future
-            $today = substr($curr_serial, 0, 8);
+            $today = $ser_date;
 
             // Get next date if revision reaches maximum per day (99) limit otherwise increment the counter
             if ($revision == 99) {
