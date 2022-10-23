@@ -60,14 +60,14 @@ class DnsRecordTest extends TestCase
     public function testGetNextSerialShouldReStartRevisionFromTodayIfInFuture()
     {
         $given = sprintf( "%s01", date('Ymd', strtotime("+3 day")));
-        $expected = sprintf( "%s00", date('Ymd'));
+        $expected = sprintf( "%s02", date('Ymd', strtotime("+3 day")));
         $this->assertSame($expected, DnsRecord::get_next_serial($given));
     }
 
     public function testGetNextSerialShouldReStartRevisionFromTodayIfInFutureAndMaxPerDay()
     {
         $given = sprintf( "%s99", date('Ymd', strtotime("+3 day")));
-        $expected = sprintf( "%s00", date('Ymd'));
+        $expected = sprintf( "%s00", date('Ymd', strtotime("+4 day")));
         $this->assertSame($expected, DnsRecord::get_next_serial($given));
     }
 

@@ -161,7 +161,7 @@ class DnsRecord
         if (strcmp($today, $ser_date) === 0) {
             // Current serial starts with date of today, so we need to update the revision only.
             ++$revision;
-        } elseif (strcmp($today, $ser_date) === -1) {
+        } elseif (strcmp($today, $ser_date) <= -1) {
             // Reuse existing serial date if it's in the future
             $today = $ser_date;
 
