@@ -155,33 +155,31 @@ class DnsRecord
         $ser_date = substr($curr_serial, 0, 8);
 
         if ($curr_serial == $today . '99') {
-            $serial = self::get_next_date($today) . '00';
-        } else {
-            if (strcmp($today, $ser_date) === 0) {
-                // Current serial starts with date of today, so we need to update the revision only.
-                ++$revision;
-            } elseif (strncmp($today, $curr_serial, 8) === -1) {
-                // Reuse existing serial date if it's in the future
-                $today = substr($curr_serial, 0, 8);
-
-                // Get next date if revision reaches maximum per day (99) limit otherwise increment the counter
-                if ($revision == 99) {
-                    $today = self::get_next_date($today);
-                    $revision = "00";
-                } else {
-                    ++$revision;
-                }
-            } else {
-                // Current serial did not start of today, so it's either an older
-                // serial, therefore set a fresh serial
-                $revision = "00";
-            }
-
-            // Create new serial out of existing/updated date and revision
-            $serial = $today . str_pad($revision, 2, "0", STR_PAD_LEFT);
+            return self::get_next_date($today) . '00';
         }
 
-        return $serial;
+        if (strcmp($today, $ser_date) === 0) {
+            // Current serial starts with date of today, so we need to update the revision only.
+            ++$revision;
+        } elseif (strncmp($today, $curr_serial, 8) === -1) {
+            // Reuse existing serial date if it's in the future
+            $today = substr($curr_serial, 0, 8);
+
+            // Get next date if revision reaches maximum per day (99) limit otherwise increment the counter
+            if ($revision == 99) {
+                $today = self::get_next_date($today);
+                $revision = "00";
+            } else {
+                ++$revision;
+            }
+        } else {
+            // Current serial did not start of today, so it's either an older
+            // serial, therefore set a fresh serial
+            $revision = "00";
+        }
+
+        // Create new serial out of existing/updated date and revision
+        return $today . str_pad($revision, 2, "0", STR_PAD_LEFT);
     }
 
     /** Update SOA record
