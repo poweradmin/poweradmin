@@ -128,11 +128,10 @@ class DnsRecord
      * http://www.zytrax.com/books/dns/ch9/serial.html
      *
      * @param string|int $curr_serial Current Serial No
-     * @param string $today Optional date for "today"
      *
      * @return string|int Next serial number
      */
-    public static function get_next_serial($curr_serial, $today = '')
+    public static function get_next_serial($curr_serial)
     {
         // Autoserial
         if ($curr_serial == 0) {
@@ -149,10 +148,8 @@ class DnsRecord
             return 1;
         }
 
-        if ($today == '') {
-            self::set_timezone();
-            $today = date('Ymd');
-        }
+        self::set_timezone();
+        $today = date('Ymd');
 
         $revision = (int)substr($curr_serial, -2);
         $ser_date = substr($curr_serial, 0, 8);
