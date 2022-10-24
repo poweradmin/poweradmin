@@ -22,7 +22,8 @@
 include_once 'config-me.inc.php';
 
 require_once 'error.inc.php';
-if (!@include_once('config.inc.php')) {
+
+if (!file_exists('install') && !@include_once('config.inc.php')) {
     error(_('You have to create a config.inc.php!'));
 }
 
