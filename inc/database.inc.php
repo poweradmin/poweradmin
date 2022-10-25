@@ -50,7 +50,9 @@ function dbConnect() {
 
     if (!(isset($db_type) && $db_type == 'mysql' || $db_type == 'mysqli' || $db_type == 'pgsql' || $db_type == 'sqlite' || $db_type == 'sqlite3')) {
         include_once("header.inc.php");
-        error(ERR_DB_NO_DB_TYPE);
+        if (!file_exists('install')) {
+            error(ERR_DB_NO_DB_TYPE);
+        }
         include_once("footer.inc.php");
         exit;
     }
