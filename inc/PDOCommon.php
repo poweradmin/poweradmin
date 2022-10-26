@@ -70,9 +70,9 @@ class PDOCommon extends PDO {
         } catch (Exception $e) {
             error_log($e->getMessage());
             if ($isQuiet) {
-                die();
-            } else {
                 die("Unable to connect to the database server. Please report the problem to an Administrator.");
+            } else {
+                die("Unable to connect to the database server. {$e->getMessage()}");
             }
         }
         $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

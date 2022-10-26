@@ -105,7 +105,7 @@ switch ($current_step) {
         }
         $pa_pass = $_POST['pa_pass'];
         require_once("../inc/database.inc.php");
-        $db = dbConnect();
+        $db = dbConnect($isQuiet = false);
         include_once("database-structure.inc.php");
         $current_tables = $db->listTables();
 
@@ -181,7 +181,7 @@ switch ($current_step) {
         $dns_ns2 = $_POST['dns_ns2'];
 
         require_once("../inc/database.inc.php");
-        $db = dbConnect();
+        $db = dbConnect($isQuiet = false);
         include_once("database-structure.inc.php");
 
         echo "<p>" . _('You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert and update records in the PowerDNS database.') . " ";
@@ -254,36 +254,53 @@ switch ($current_step) {
         $dns_hostmaster = $_POST['dns_hostmaster'];
         $dns_ns1 = $_POST['dns_ns1'];
         $dns_ns2 = $_POST['dns_ns2'];
+        $dns_ns3 = ''; // $_POST['dns_ns3'];
+        $dns_ns4 = ''; // $_POST['dns_ns4'];
         $db_host = $_POST['db_host'];
-        $db_user = $_POST['pa_db_user'] ?? '';
-        $db_pass = $_POST['pa_db_pass'] ?? '';
+        $db_user = $_POST['pa_db_user'];
+        $db_pass = $_POST['pa_db_pass'];
         $db_name = $_POST['db_name'];
         $db_type = $_POST['db_type'];
         $db_charset = $_POST['db_charset'];
         $pa_pass = $_POST['pa_pass'];
 
-        $configuration = "<?php".PHP_EOL;
-        if ($db_file) {
-            $configuration .=  "\$db_file = '$db_name';".PHP_EOL;
-        } else {
-            $configuration .=  "\$db_host = '$db_host';".PHP_EOL;
-            $configuration .=  "\$db_name = '$db_name';".PHP_EOL;
-        }
-        $configuration .= "\$db_user = '$db_user';".PHP_EOL;
-        $configuration .= "\$db_pass = '$db_pass';".PHP_EOL;
-        if ($db_port) {
-            $configuration .= "\$db_port = '$db_port';".PHP_EOL;
-        }
-        $configuration .= "\$db_type = '$db_type';".PHP_EOL;
-        if ($db_charset) {
-            $configuration .= "\$db_charset = '$db_charset';".PHP_EOL;
-        }
-        $configuration .= "\$session_key = '$session_key';".PHP_EOL;
-        $configuration .= "\$iface_lang = '$iface_lang';".PHP_EOL;
-        $configuration .= "\$dns_hostmaster = '$dns_hostmaster';".PHP_EOL;
-        $configuration .= "\$dns_ns1 = '$dns_ns1';".PHP_EOL;
-        $configuration .= "\$dns_ns2 = '$dns_ns2';".PHP_EOL;
-        $configuration .= "\$ignore_install_dir = true;".PHP_EOL;
+        $configuration = str_replace(
+            [
+                '%dbType%',
+                '%dbFile%',
+                '%dbHost%',
+                '%dbPort%',
+                '%dbUser%',
+                '%dbPassword%',
+                '%dbName%',
+                '%dbCharset%',
+                '%sessionKey%',
+                '%locale%',
+                '%hostMaster%',
+                '%primaryNameServer%',
+                '%secondaryNameServer%',
+                '%thirdNameServer%',
+                '%fourthNameServer%',
+            ],
+            [
+                $db_type,
+                $db_file,
+                $db_host,
+                $db_port,
+                $db_user,
+                $db_pass,
+                $db_name,
+                $db_charset,
+                $session_key,
+                $iface_lang,
+                $dns_hostmaster,
+                $dns_ns1,
+                $dns_ns2,
+                $dns_ns3,
+                $dns_ns4,
+            ],
+            file_get_contents('includes/config_template.php')
+        );
 
         // Try to create configuration file
         $config_file_created = false;

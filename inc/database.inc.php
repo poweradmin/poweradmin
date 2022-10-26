@@ -35,7 +35,7 @@ include_once 'PDOLayer.php';
  *
  * @return object $db Database object
  */
-function dbConnect() {
+function dbConnect($isQuiet = true) {
     global $db_type;
     global $db_user;
     global $db_pass;
@@ -110,7 +110,7 @@ function dbConnect() {
         $dsn .= ';charset=utf8';
     }
 
-    $db = new PDOLayer($dsn, $db_user, $db_pass);
+    $db = new PDOLayer($dsn, $db_user, $db_pass, [], $isQuiet);
 
     // http://stackoverflow.com/a/4361485/567193
     if ($db_type === 'mysql' && $db_charset === 'utf8' && version_compare(phpversion(), '5.3.6', '<')) {
