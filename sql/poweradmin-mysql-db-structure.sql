@@ -104,7 +104,7 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `users` (`id`, `username`, `password`, `fullname`, `email`, `description`, `perm_templ`, `active`, `use_ldap`) VALUES
-    (1,	'admin',	'$2y$12$1U1Es2G8l.70VZkxdRqaYebWz8GFJEe/PItGEBegr5Q1ev.n9E31e',	'Administrator',	'admin@example.net',	'Administrator with full rights.',	1,	1,	0);
+    (1,	'admin',	'$2y$12$10ei/WGJPcUY9Ea8/eVage9zBbxr0xxW82qJF/cfSyev/jX84WHQe',	'Administrator',	'admin@example.net',	'Administrator with full rights.',	1,	1,	0);
 
 CREATE TABLE `zones` (
                          `id` int(11) NOT NULL AUTO_INCREMENT,

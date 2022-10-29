@@ -109,7 +109,7 @@ CREATE TABLE "public"."users" (
 ) WITH (oids = false);
 
 INSERT INTO "users" ("id", "username", "password", "fullname", "email", "description", "perm_templ", "active", "use_ldap") VALUES
-    (1,	'admin',	'$2y$12$WAsxozK6UBqjQDN4W2B5lOZV.n5FdEXj5PuVJmdbaAE10Ghgh6OqG',	'Administrator',	'admin@example.net',	'Administrator with full rights.',	1,	1,	0);
+    (1,	'admin',	'$2y$12$10ei/WGJPcUY9Ea8/eVage9zBbxr0xxW82qJF/cfSyev/jX84WHQe',	'Administrator',	'admin@example.net',	'Administrator with full rights.',	1,	1,	0);
 
 CREATE SEQUENCE zone_templ_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
