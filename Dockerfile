@@ -1,7 +1,7 @@
 # This Dockerfile is intended only for testing.
 #
 # Usage:
-#    docker build -t poweradmin .
+#    docker build --no-cache -t poweradmin .
 #    docker run -d --name poweradmin -p 80:80 poweradmin
 #
 # Log in with the following username and password:
