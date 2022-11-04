@@ -26,7 +26,7 @@ class PDOStatementCommon extends PDOStatement {
      * @param int $mode
      * @return mixed
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function fetch($mode = PDO::FETCH_ASSOC, $cursorOrientation = PDO::FETCH_ORI_NEXT, $cursorOffset = 0) {
         return $this->pdoStatement->fetch($mode);
     }
