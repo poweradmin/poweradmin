@@ -27,5 +27,9 @@
   },
   "require-dev": {
     "phpunit/phpunit": "^9.5"
+  },
+  "scripts": {
+    "docs": "tools/phpDocumentor",
+    "tests": "phpunit"
   }
 }
