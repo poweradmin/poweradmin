@@ -9,7 +9,7 @@ use warnings;
 my $login = 'username';
 my $password = 'password';
 my $domain = 'mydynamicdns.example.com';
-my $poweradmin_url = 'http://www.example.com/poweradmin';
+my $poweradmin_url = 'https://www.example.com/poweradmin';
 my $ip_update_url = $poweradmin_url . '/dynamic_update.php';
 my $ip_lookup_url = $poweradmin_url . '/addons/clientip.php';
 my $verbose = 1;
