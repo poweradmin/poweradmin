@@ -797,8 +797,15 @@ final class File extends Renderer
         $singleLineTemplate = new Template($this->templatePath . 'line.html.dist', '{{', '}}');
 
         $lines = '';
+        $first = true;
 
         foreach ($path['path'] as $branchId) {
+            if ($first) {
+                $first = false;
+            } else {
+                $lines .= '    <tr><td colspan="2">&nbsp;</td></tr>' . "\n";
+            }
+
             $branchLines = range($branches[$branchId]['line_start'], $branches[$branchId]['line_end']);
             sort($branchLines); // sometimes end_line < start_line
 
@@ -834,6 +841,7 @@ final class File extends Renderer
 
                         $popoverContent .= $this->createPopoverContentForTest($test, $testData[$test]);
                     }
+
                     $trClass = $lineCss . ' popin';
                 }
 
