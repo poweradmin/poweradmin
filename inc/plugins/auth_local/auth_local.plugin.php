@@ -183,7 +183,6 @@ function LDAPAuthenticate() {
             session_write_close();
             $redirect_url = ($_POST["query_string"] ? $_SERVER['SCRIPT_NAME'] . "?" . $_POST["query_string"] : $_SERVER['SCRIPT_NAME']);
             clean_page($redirect_url);
-            exit;
         }
     } else {
         //No username and password set, show auth form (again).
@@ -217,7 +216,6 @@ function SQLAuthenticate() {
                     session_write_close();
                     $redirect_url = ($_POST["query_string"] ? $_SERVER['SCRIPT_NAME'] . "?" . $_POST["query_string"] : $_SERVER['SCRIPT_NAME']);
                     clean_page($redirect_url);
-                    exit;
                 }
             } else if (isset($_POST['authenticate'])) {
                 UserEventLogger::log_failed_auth();
