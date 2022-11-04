@@ -33,6 +33,7 @@
         <ignore>install/*</ignore>
         <ignore>logs/*</ignore>
         <ignore>tests/*</ignore>
+        <ignore>vendor/*</ignore>
         <ignore>inc/config.inc.php</ignore>
         <ignore>inc/error.inc.php</ignore>
     </files>
