@@ -10,7 +10,7 @@
         <extensions>
             <extension>php</extension>
         </extensions>
-        <visibility></visibility>
+        <visibility/>
     </parser>
     <transformer>
         <target>docs</target>
