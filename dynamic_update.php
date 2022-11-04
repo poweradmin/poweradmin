@@ -44,7 +44,7 @@ $db = dbConnect();
  *
  * @param mixed $value Unsafe Value
  *
- * @return mixed $value Safe Value
+ * @return bool|string $value Safe Value
  */
 function safe($value)
 {

@@ -507,7 +507,7 @@ class ZoneTemplate
      * @param string $zone_templ_name zone template name
      * @param int $zone_templ_id zone template id (optional) [default=null]
      *
-     * @return int number of matching templates
+     * @return array|bool number of matching templates
      */
     public static function zone_templ_name_exists($zone_templ_name, $zone_templ_id = null)
     {

@@ -36,7 +36,7 @@ class DnsRecord
      *
      * @param int $zid Zone ID
      *
-     * @return boolean|int Domain count or false on failure
+     * @return array|boolean Domain count or false on failure
      */
     public static function zone_id_exists($zid)
     {
@@ -49,7 +49,7 @@ class DnsRecord
      *
      * @param int $rid Record ID
      *
-     * @return int Zone ID
+     * @return array|bool Zone ID
      */
     public static function get_zone_id_from_record_id($rid)
     {
@@ -62,7 +62,7 @@ class DnsRecord
      *
      * @param int $zone_id Zone ID
      *
-     * @return int Record count
+     * @return array|bool Record count
      */
     public static function count_zone_records($zone_id)
     {
@@ -75,7 +75,7 @@ class DnsRecord
      *
      * @param int $zone_id Zone ID
      *
-     * @return string SOA content
+     * @return array|bool SOA content
      */
     public static function get_soa_record($zone_id)
     {
@@ -222,7 +222,7 @@ class DnsRecord
      *
      * @param int $soa_rec Current SOA record
      *
-     * @return boolean true if success
+     * @return string true if success
      */
     public static function get_updated_soa_record($soa_rec)
     {
@@ -1208,7 +1208,7 @@ class DnsRecord
      * @param string $perm 'all', 'own' uses session 'userid'
      * @param string $letterstart Starting letters to match [default='all']
      *
-     * @return int Count of zones matched
+     * @return array|bool|string Count of zones matched
      */
     public static function zone_count_ng($perm, $letterstart = 'all')
     {
@@ -1418,7 +1418,7 @@ class DnsRecord
      * @param mixed[] $a A
      * @param mixed[] $b B
      *
-     * @return mixed[] result of strnatcmp
+     * @return int result of strnatcmp
      */
     public static function sort_domain_results_by_id($a, $b)
     {
@@ -1430,7 +1430,7 @@ class DnsRecord
      * @param mixed[] $a A
      * @param mixed[] $b B
      *
-     * @return mixed[] result of strnatcmp
+     * @return int result of strnatcmp
      */
     public static function sort_domain_results_by_name($a, $b)
     {
@@ -1442,7 +1442,7 @@ class DnsRecord
      * @param mixed[] $a A
      * @param mixed[] $b B
      *
-     * @return mixed[] result of strnatcmp
+     * @return int result of strnatcmp
      */
     public static function sort_domain_results_by_type($a, $b)
     {
@@ -1458,7 +1458,7 @@ class DnsRecord
      * @param mixed[] $a A
      * @param mixed[] $b B
      *
-     * @return mixed[] result of strnatcmp
+     * @return int result of strnatcmp
      */
     public static function sort_domain_results_by_content($a, $b)
     {
@@ -1474,7 +1474,7 @@ class DnsRecord
      * @param mixed[] $a A
      * @param mixed[] $b B
      *
-     * @return mixed[] result of strnatcmp
+     * @return int result of strnatcmp
      */
     public static function sort_domain_results_by_prio($a, $b)
     {
@@ -1490,7 +1490,7 @@ class DnsRecord
      * @param mixed[] $a A
      * @param mixed[] $b B
      *
-     * @return mixed[] result of strnatcmp
+     * @return int result of strnatcmp
      */
     public static function sort_domain_results_by_ttl($a, $b)
     {
@@ -1535,7 +1535,7 @@ class DnsRecord
      * @param string $permission_view User permitted to view 'all' or 'own' zones
      * @param string $sort_zones_by Column to sort zone results
      * @param string $sort_records_by Column to sort record results
-     * @return array|bool
+     * @return array|array[]
      */
     public static function search_zone_and_record($parameters, $permission_view, $sort_zones_by, $sort_records_by)
     {
@@ -1666,7 +1666,7 @@ class DnsRecord
      *
      * @param int $id Domain ID
      *
-     * @return string Master server
+     * @return array|bool|void Master server
      */
     public static function get_domain_slave_master($id)
     {
@@ -1763,7 +1763,7 @@ class DnsRecord
      *
      * @param int $zone_id Zone ID
      *
-     * @return int Zone Template ID
+     * @return array|bool Zone Template ID
      */
     public static function get_zone_template($zone_id)
     {

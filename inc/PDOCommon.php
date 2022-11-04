@@ -88,6 +88,8 @@ class PDOCommon extends PDO {
      * Send a query to the database and return any results
      *
      * @param string $str
+     * @param int|null $fetchMode
+     * @param mixed ...$fetchModeArgs
      * @return PDOStatement
      */
     public function query($str, ?int $fetchMode = null, mixed ...$fetchModeArgs): PDOStatement {

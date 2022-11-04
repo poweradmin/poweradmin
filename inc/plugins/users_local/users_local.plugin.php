@@ -46,7 +46,7 @@ require_once 'inc/session.inc.php';
  * the specific permission. It returns "false" if the user doesn't have the
  * right, and "true" if the user has.
  *
- * @param array arg[0] Permission name
+ * @param array $arg Permission name
  *
  * @return boolean true if user has permission, false otherwise
  */
@@ -460,7 +460,7 @@ function get_owner_from_id_local($id)
  *
  * @param int $id Domain ID
  *
- * @return string[] array of owners for domain
+ * @return string|void array of owners for domain
  * @todo also fetch the subowners
  *
  */
@@ -486,7 +486,7 @@ function get_fullnames_owners_from_domainid_local($id)
  *
  * @param int $zoneid Zone ID
  *
- * @return int 1 if owner, 0 if not owner
+ * @return string|void 1 if owner, 0 if not owner
  */
 function verify_user_is_owner_zoneid_local($zoneid)
 {

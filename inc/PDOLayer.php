@@ -79,7 +79,6 @@ class PDOLayer extends PDOCommon {
     /**
      * Return executed queries
      *
-     * @param string[] query lines
      */
     public function getQueries(): array
     {
@@ -90,6 +89,8 @@ class PDOLayer extends PDOCommon {
      * Executes SQL query
      *
      * @param string $str SQL query
+     * @param int|null $fetchMode
+     * @param mixed ...$fetchModeArgs
      * @return PDOStatement
      */
     public function query($str, ?int $fetchMode = null, mixed ...$fetchModeArgs): PDOStatement {
