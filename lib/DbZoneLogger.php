@@ -24,7 +24,7 @@ namespace Poweradmin;
 
 class DbZoneLogger
 {
-    public static function do_log($msg, $zone_id, $priority)
+    public static function do_log($msg, $zone_id, $priority): void
     {
         global $db;
         $stmt = $db->prepare('INSERT INTO log_zones (zone_id, event, priority) VALUES (:zone_id, :msg, :priority)');
@@ -57,7 +57,7 @@ class DbZoneLogger
         return $stmt->fetch()['number_of_logs'];
     }
 
-    public static function get_all_logs($limit, $offset)
+    public static function get_all_logs($limit, $offset): bool|array
     {
         global $db;
         $stmt = $db->prepare("
@@ -83,7 +83,7 @@ class DbZoneLogger
         return $records;
     }
 
-    public static function get_logs_for_domain($domain, $limit, $offset)
+    public static function get_logs_for_domain($domain, $limit, $offset): bool|array
     {
         if (!(self::check_if_domain_exist($domain))) {
             return array();

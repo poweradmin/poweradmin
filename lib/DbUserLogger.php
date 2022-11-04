@@ -24,7 +24,7 @@ namespace Poweradmin;
 
 class DbUserLogger
 {
-    public static function do_log($msg, $priority)
+    public static function do_log($msg, $priority): void
     {
         global $db;
 
@@ -56,7 +56,7 @@ class DbUserLogger
         return $stmt->fetch()['number_of_logs'];
     }
 
-    public static function get_all_logs($limit, $offset)
+    public static function get_all_logs($limit, $offset): bool|array
     {
         global $db;
         $stmt = $db->prepare("
@@ -74,7 +74,7 @@ class DbUserLogger
         return $stmt->fetchAll();
     }
 
-    public static function get_logs_for_user($user, $limit, $offset)
+    public static function get_logs_for_user($user, $limit, $offset): bool|array
     {
         if (!(User::exists($user))) {
             return array();
