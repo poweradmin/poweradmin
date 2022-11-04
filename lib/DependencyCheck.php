@@ -15,7 +15,7 @@ class DependencyCheck
     {
         foreach (array_keys(self::DEPENDENCIES) as $extension) {
             if (!function_exists(self::DEPENDENCIES[$extension])) {
-                die("You have to install PHP {$extension} extension!");
+                die("You have to install PHP $extension extension!");
             }
         }
     }
