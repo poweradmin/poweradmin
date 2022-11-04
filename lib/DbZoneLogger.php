@@ -116,7 +116,7 @@ class DbZoneLogger
 
         $zones = DnsRecord::get_zones('all');
         foreach ($zones as $zone) {
-            if (strpos($zone['name'], $domain_searched) !== false) {
+            if (str_contains($zone['name'], $domain_searched)) {
                 return true;
             }
         }
