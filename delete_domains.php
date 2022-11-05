@@ -45,11 +45,6 @@ if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
     $perm_edit = "none";
 }
 
-$confirm = "-1";
-if (isset($_POST['confirm'])) {
-    $confirm = "1";
-}
-
 $zones = $_POST['zone_id'];
 if (!$zones) {
     header("Location: list_zones.php");
@@ -58,7 +53,7 @@ if (!$zones) {
 
 echo "     <h5 class=\"mb-3\">" . _('Delete zones') . "</h5>\n";
 
-if ($confirm == '1') {
+if (isset($_POST['confirm'])) {
     //Fetch information about zones before deleting them
     $deleted_zones = array();
     foreach ($zones as $zone) {
