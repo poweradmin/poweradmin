@@ -54,16 +54,12 @@ if (!$zones) {
 echo "     <h5 class=\"mb-3\">" . _('Delete zones') . "</h5>\n";
 
 if (isset($_POST['confirm'])) {
-    //Fetch information about zones before deleting them
-    $deleted_zones = array();
-    foreach ($zones as $zone) {
-        $zone_info = DnsRecord::get_zone_info_from_id($zone);
-        $deleted_zones[] = $zone_info;
-    }
+    $deleted_zones = DnsRecord::get_zone_info_from_ids($zones);
     $delete_domains = DnsRecord::delete_domains($zones);
+
     if ($delete_domains) {
         count($deleted_zones) == 1 ? success(SUC_ZONE_DEL) : success(SUC_ZONES_DEL);
-        //Zones successfully deleted so generate log messages from information retrieved earlier
+
         foreach ($deleted_zones as $zone_info) {
             Logger::log_info(sprintf('client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
                 $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],

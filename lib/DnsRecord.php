@@ -952,6 +952,21 @@ class DnsRecord
         }
     }
 
+    /** Get Zone(s) details from Zone IDs
+     *
+     * @param array $zones Zone IDs
+     * @return array
+     */
+    public static function get_zone_info_from_ids(array $zones): array
+    {
+        $zone_infos = array();
+        foreach ($zones as $zone) {
+            $zone_info = DnsRecord::get_zone_info_from_id($zone);
+            $zone_infos[] = $zone_info;
+        }
+        return $zone_infos;
+    }
+
     /** Convert IPv6 Address to PTR
      *
      * @param string $ip IPv6 Address
