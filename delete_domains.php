@@ -37,9 +37,9 @@ require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
 
-if (do_hook('verify_permission' , 'zone_content_edit_others' )) {
+if (do_hook('verify_permission', 'zone_content_edit_others')) {
     $perm_edit = "all";
-} elseif (do_hook('verify_permission' , 'zone_content_edit_own' )) {
+} elseif (do_hook('verify_permission', 'zone_content_edit_own')) {
     $perm_edit = "own";
 } else {
     $perm_edit = "none";
@@ -66,46 +66,51 @@ if (isset($_POST['confirm'])) {
                 $zone_info['name'], $zone_info['type']), $zone_info['id']);
         }
     }
-} else {
-    echo "     <form method=\"post\" action=\"delete_domains.php\">\n";
-    echo "<table class=\"table table-striped table-hover table-sm\">";
-    echo "<thead>";
-    echo "  <th> " . _('Name') . "</th>";
-    echo "  <th> " . _('Owner') . "</th>";
-    echo "  <th> " . _('Type') . "</th>";
-    echo "  <th></th>";
-    echo "</thead>";
 
-    echo "<tbody>";
-    foreach ($zones as $zone) {
-        $zone_owners = do_hook('get_fullnames_owners_from_domainid' , $zone );
-        $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone );
-        $zone_info = DnsRecord::get_zone_info_from_id($zone);
-        if ($perm_edit == "all" || ( $perm_edit == "own" && $user_is_zone_owner == "1")) {
-            echo "<tr>";
-            echo "<input type=\"hidden\" name=\"zone_id[]\" value=\"" . $zone . "\">\n";
-            echo "<td>" . $zone_info['name'] . "</td>\n";
-            echo "<td>" . $zone_owners . "</td>\n";
-            echo "<td>" . $zone_info['type'] . "\n";
-            if ($zone_info['type'] == "SLAVE") {
-                $slave_master = DnsRecord::get_domain_slave_master($zone);
-                if (DnsRecord::supermaster_exists($slave_master)) {
-                    echo "        <td>         \n";
-                    printf(_('You are about to delete a slave zone of which the master nameserver, %s, is a supermaster. Deleting the zone now, will result in temporary removal only. Whenever the supermaster sends a notification for this zone, it will be added again!'), $slave_master);
-                    echo "        </td>\n";
-                }
-            }
-            echo "</tr>";
-        } else {
-            error(ERR_PERM_DEL_ZONE);
-        }
-    }
-    echo "<tbody>";
-    echo "</table>";
-    echo "                     <p>" . _('Are you sure?') . "</p>\n";
-    echo "                     <input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"confirm\" value=\"" . _('Yes') . "\">\n";
-    echo "                     <input class=\"btn btn-secondary btn-sm\"  type=\"button\" onClick=\"location.href='list_zones.php'\" value=\"" . _('No') . "\">\n";
-    echo "     </form>\n";
+    include_once("inc/footer.inc.php");
+    exit;
 }
+
+echo "     <form method=\"post\" action=\"delete_domains.php\">\n";
+echo "<table class=\"table table-striped table-hover table-sm\">";
+echo "<thead>";
+echo "  <th> " . _('Name') . "</th>";
+echo "  <th> " . _('Owner') . "</th>";
+echo "  <th> " . _('Type') . "</th>";
+echo "  <th></th>";
+echo "</thead>";
+
+echo "<tbody>";
+
+foreach ($zones as $zone) {
+    $zone_owners = do_hook('get_fullnames_owners_from_domainid', $zone);
+    $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone);
+    $zone_info = DnsRecord::get_zone_info_from_id($zone);
+    if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
+        echo "<tr>";
+        echo "<input type=\"hidden\" name=\"zone_id[]\" value=\"" . $zone . "\">\n";
+        echo "<td>" . $zone_info['name'] . "</td>\n";
+        echo "<td>" . $zone_owners . "</td>\n";
+        echo "<td>" . $zone_info['type'] . "\n";
+        if ($zone_info['type'] == "SLAVE") {
+            $slave_master = DnsRecord::get_domain_slave_master($zone);
+            if (DnsRecord::supermaster_exists($slave_master)) {
+                echo "        <td>         \n";
+                printf(_('You are about to delete a slave zone of which the master nameserver, %s, is a supermaster. Deleting the zone now, will result in temporary removal only. Whenever the supermaster sends a notification for this zone, it will be added again!'), $slave_master);
+                echo "        </td>\n";
+            }
+        }
+        echo "</tr>";
+    } else {
+        error(ERR_PERM_DEL_ZONE);
+    }
+}
+
+echo "</tbody>";
+echo "</table>";
+echo "                     <p>" . _('Are you sure?') . "</p>\n";
+echo "                     <input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"confirm\" value=\"" . _('Yes') . "\">\n";
+echo "                     <input class=\"btn btn-secondary btn-sm\"  type=\"button\" onClick=\"location.href='list_zones.php'\" value=\"" . _('No') . "\">\n";
+echo "     </form>\n";
 
 include_once("inc/footer.inc.php");
