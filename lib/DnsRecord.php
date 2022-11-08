@@ -1741,7 +1741,7 @@ class DnsRecord
             error(sprintf(ERR_INV_ARGC, "get_serial_by_zid", "id must be a number"));
             return false;
         }
-        return $rr_soa_fields[2];
+        return $rr_soa_fields[2] ?? '';
     }
 
     /** Validate Account is valid string
