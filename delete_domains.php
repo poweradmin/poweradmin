@@ -88,10 +88,10 @@ foreach ($zones as $zone) {
     $zone_info = DnsRecord::get_zone_info_from_id($zone);
     if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
         echo "<tr>";
-        echo "<input type=\"hidden\" name=\"zone_id[]\" value=\"" . $zone . "\">\n";
-        echo "<td>" . $zone_info['name'] . "</td>\n";
-        echo "<td>" . $zone_owners . "</td>\n";
-        echo "<td>" . $zone_info['type'] . "\n";
+        echo "<input type=\"hidden\" name=\"zone_id[]\" value=\"" . htmlspecialchars($zone) . "\">\n";
+        echo "<td>" . htmlspecialchars($zone_info['name']) . "</td>\n";
+        echo "<td>" . htmlspecialchars($zone_owners) . "</td>\n";
+        echo "<td>" . htmlspecialchars($zone_info['type']) . "\n";
         if ($zone_info['type'] == "SLAVE") {
             $slave_master = DnsRecord::get_domain_slave_master($zone);
             if (DnsRecord::supermaster_exists($slave_master)) {
