@@ -29,7 +29,7 @@
  * @return string $result
  */
 function show_pages($amount, $rowamount, $id = '') {
-    if ($amount <= $rowamount) {
+    if ($amount <= $rowamount || $rowamount == 0) {
         return "";
     }
 
