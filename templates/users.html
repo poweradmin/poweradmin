@@ -6,7 +6,6 @@
         <tr>
             <th>{% trans 'Username' %}</th>
             <th>{% trans 'Fullname' %}</th>
-<!--            <th>{% trans 'Description' %}</th>-->
             <th>{% trans 'Email address' %}</th>
             <th>{% trans 'Template' %}</th>
 
@@ -91,9 +90,9 @@
         <tr>
             <td>{{ user['username'] }}</td>
             <td>{{ user['fullname'] }}</td>
-            <td>{{ user['descr'] }}</td>
             <td>{{ user['email'] }}</td>
             <td>{{ user['tpl_name'] }}</td>
+            <td><input class="form-check-input" type="checkbox" name="user[{{ user['uid'] }}][active]" {{ active }} disabled></td>
             <td></td>
         </tr>
         {% endif %}
