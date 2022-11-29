@@ -96,7 +96,7 @@ if (!in_array(ZONE_SORT_BY, array('name', 'type', 'count_records', 'owner'))) {
 }
 
 echo "    <h5 class=\"mb-3\">" . _('List zones') . "</h5>\n";
-echo "    <div class=\"pb-3 text-secondary\">" . _('Total number of zones:') . " " . $count_zones_all . "</div>\n";
+echo "    <div class=\"pb-3 text-secondary\">" . _('Total number of zones:') . " " . $count_zones_view . "</div>\n";
 
 if ($perm_view == "none") {
     echo _('You do not have the permission to see any zones.');
