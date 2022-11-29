@@ -57,7 +57,7 @@ class DbZoneLogger
         return $stmt->fetch()['number_of_logs'];
     }
 
-    public static function get_all_logs($limit, $offset): bool|array
+    public static function get_all_logs($limit, $offset)
     {
         global $db;
         $stmt = $db->prepare("
@@ -83,7 +83,7 @@ class DbZoneLogger
         return $records;
     }
 
-    public static function get_logs_for_domain($domain, $limit, $offset): bool|array
+    public static function get_logs_for_domain($domain, $limit, $offset)
     {
         if (!(self::check_if_domain_exist($domain))) {
             return array();
