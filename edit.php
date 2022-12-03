@@ -272,8 +272,8 @@ if ($records == "-1") {
             echo "     <td>&nbsp;</td>\n";
             echo "     <td>" . $r['ttl'] . "</td>\n";
         } else {
-            echo "      <td class=\"u\"><input name=\"record[" . $r['id'] . "][name]\" value=\"" . htmlspecialchars($r['name']) . "\"></td>\n";
-            echo "      <td class=\"u\">\n";
+            echo "      <td><input name=\"record[" . $r['id'] . "][name]\" value=\"" . htmlspecialchars($r['name']) . "\"></td>\n";
+            echo "      <td>\n";
             echo "       <select class=\"form-select form-select-sm\" name=\"record[" . $r['id'] . "][type]\">\n";
             $found_selected_type = false;
             foreach (RecordType::getTypes() as $type_available) {
@@ -290,9 +290,9 @@ if ($records == "-1") {
 
             echo "       </select>\n";
             echo "      </td>\n";
-            echo "      <td class=\"u\"><input name=\"record[" . $r['id'] . "][content]\" value=\"" . htmlspecialchars($r['content']) . "\"></td>\n";
-            echo "      <td class=\"u\"><input size=\"4\" id=\"priority_field_" . $r['id'] . "\" name=\"record[" . $r['id'] . "][prio]\" value=\"" . htmlspecialchars($r['prio']) . "\"></td>\n";
-            echo "      <td class=\"u\"><input size=\"4\" name=\"record[" . $r['id'] . "][ttl]\" value=\"" . htmlspecialchars($r['ttl']) . "\"></td>\n";
+            echo "      <td><input name=\"record[" . $r['id'] . "][content]\" value=\"" . htmlspecialchars($r['content']) . "\"></td>\n";
+            echo "      <td><input size=\"4\" id=\"priority_field_" . $r['id'] . "\" name=\"record[" . $r['id'] . "][prio]\" value=\"" . htmlspecialchars($r['prio']) . "\"></td>\n";
+            echo "      <td><input size=\"4\" name=\"record[" . $r['id'] . "][ttl]\" value=\"" . htmlspecialchars($r['ttl']) . "\"></td>\n";
         }
 
         if ($domain_type == "SLAVE" || $perm_content_edit == "none" || (($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0")) {
