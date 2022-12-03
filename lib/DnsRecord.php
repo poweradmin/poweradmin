@@ -562,6 +562,8 @@ class DnsRecord
             $perm_content_edit = "all";
         } elseif (do_hook('verify_permission', 'zone_content_edit_own')) {
             $perm_content_edit = "own";
+        } elseif (do_hook('verify_permission', 'zone_content_edit_own_as_client')) {
+            $perm_content_edit = "own_as_client";
         } else {
             $perm_content_edit = "none";
         }
