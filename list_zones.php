@@ -71,7 +71,6 @@ if (isset($_GET["letter"])) {
     $letter_start = $_SESSION["letter"];
 }
 
-$count_zones_all = DnsRecord::zone_count_ng("all");
 $count_zones_all_letterstart = DnsRecord::zone_count_ng($perm_view, $letter_start);
 $count_zones_view = DnsRecord::zone_count_ng($perm_view);
 $count_zones_edit = DnsRecord::zone_count_ng($perm_edit);
@@ -161,7 +160,7 @@ if ($perm_view == "none") {
         if ($iface_zonelist_serial) {
             $serial = DnsRecord::get_serial_by_zid($zone['id']);
             if ($serial != "") {
-                echo "          <td>{$serial}</td>\n";
+                echo "          <td>$serial</td>\n";
             } else {
                 echo "          <td>&nbsp;</td>\n";
             }
