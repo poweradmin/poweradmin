@@ -42,10 +42,9 @@ $pdnssec_use = $app->config('pdnssec_use');
 $iface_zonelist_serial = $app->config('iface_zonelist_serial');
 $iface_rowamount = $app->config('iface_rowamount');
 
+$row_start = 0;
 if (isset($_GET["start"])) {
-    define('ROWSTART', (($_GET["start"] - 1) * $iface_rowamount));
-} else {
-    define('ROWSTART', 0);
+    $row_start = ($_GET["start"] - 1) * $iface_rowamount;
 }
 
 if (do_hook('verify_permission', 'zone_content_view_others')) {
@@ -64,34 +63,31 @@ if (do_hook('verify_permission', 'zone_content_edit_others')) {
     $perm_edit = "none";
 }
 
+$letter_start = 'a';
 if (isset($_GET["letter"])) {
-    define('LETTERSTART', $_GET["letter"]);
+    $letter_start = $_GET["letter"];
     $_SESSION["letter"] = $_GET["letter"];
 } elseif (isset($_SESSION["letter"])) {
-    define('LETTERSTART', $_SESSION["letter"]);
-} else {
-    define('LETTERSTART', "a");
+    $letter_start = $_SESSION["letter"];
 }
 
 $count_zones_all = DnsRecord::zone_count_ng("all");
-$count_zones_all_letterstart = DnsRecord::zone_count_ng($perm_view, LETTERSTART);
+$count_zones_all_letterstart = DnsRecord::zone_count_ng($perm_view, $letter_start);
 $count_zones_view = DnsRecord::zone_count_ng($perm_view);
 $count_zones_edit = DnsRecord::zone_count_ng($perm_edit);
 
+$zone_sort_by = 'name';
 if (isset($_GET["zone_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["zone_sort_by"])) {
-    define('ZONE_SORT_BY', $_GET["zone_sort_by"]);
+    $zone_sort_by = $_GET["zone_sort_by"];
     $_SESSION["list_zone_sort_by"] = $_GET["zone_sort_by"];
 } elseif (isset($_POST["zone_sort_by"]) && preg_match("/^[a-z_]+$/", $_POST["zone_sort_by"])) {
-    define('ZONE_SORT_BY', $_POST["zone_sort_by"]);
+    $zone_sort_by = $_POST["zone_sort_by"];
     $_SESSION["list_zone_sort_by"] = $_POST["zone_sort_by"];
 } elseif (isset($_SESSION["list_zone_sort_by"])) {
-    define('ZONE_SORT_BY', $_SESSION["list_zone_sort_by"]);
-} else {
-    define('ZONE_SORT_BY', "name");
+    $zone_sort_by = $_SESSION["list_zone_sort_by"];
 }
 
-$zone_sort_by = ZONE_SORT_BY;
-if (!in_array(ZONE_SORT_BY, array('name', 'type', 'count_records', 'owner'))) {
+if (!in_array($zone_sort_by, array('name', 'type', 'count_records', 'owner'))) {
     $zone_sort_by = 'name';
 }
 
@@ -103,14 +99,14 @@ if ($perm_view == "none") {
 } elseif (($count_zones_view > $iface_rowamount && $count_zones_all_letterstart == "0") || $count_zones_view == 0) {
     if ($count_zones_view > $iface_rowamount) {
         echo "<div>";
-        show_letters(LETTERSTART, $_SESSION["userid"]);
+        show_letters($letter_start, $_SESSION["userid"]);
         echo "</div>";
     }
     echo _('There are no zones to show in this listing.');
 } else {
     if ($count_zones_view > $iface_rowamount) {
         echo "<div>";
-        show_letters(LETTERSTART, $_SESSION["userid"]);
+        show_letters($letter_start, $_SESSION["userid"]);
         echo "</div>";
     }
     echo "     <form method=\"post\" action=\"delete_domains.php\">\n";
@@ -135,11 +131,11 @@ if ($perm_view == "none") {
     echo "    </thead>\n";
 
     if ($count_zones_view <= $iface_rowamount) {
-        $zones = DnsRecord::get_zones($perm_view, $_SESSION['userid'], "all", ROWSTART, $iface_rowamount, $zone_sort_by);
-    } elseif (LETTERSTART == 'all') {
-        $zones = DnsRecord::get_zones($perm_view, $_SESSION['userid'], "all", ROWSTART, 'all', $zone_sort_by);
+        $zones = DnsRecord::get_zones($perm_view, $_SESSION['userid'], "all", $row_start, $iface_rowamount, $zone_sort_by);
+    } elseif ($letter_start == 'all') {
+        $zones = DnsRecord::get_zones($perm_view, $_SESSION['userid'], "all", $row_start, 'all', $zone_sort_by);
     } else {
-        $zones = DnsRecord::get_zones($perm_view, $_SESSION['userid'], LETTERSTART, ROWSTART, $iface_rowamount, $zone_sort_by);
+        $zones = DnsRecord::get_zones($perm_view, $_SESSION['userid'], $letter_start, $row_start, $iface_rowamount, $zone_sort_by);
         $count_zones_shown = ($zones == -1) ? 0 : count($zones);
     }
     echo "       <tbody>\n";
@@ -184,7 +180,7 @@ if ($perm_view == "none") {
     echo "          </tbody>\n";
     echo "        </table>\n";
 
-    if (LETTERSTART != 'all') {
+    if ($letter_start != 'all') {
         echo "     <div class='pb-3'>\n";
         echo show_pages($count_zones_all_letterstart, $iface_rowamount);
         echo "     </div>\n";
