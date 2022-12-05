@@ -1134,8 +1134,7 @@ class DnsRecord
             return false;
         } else {
             if ($perm == "own") {
-                $sql_add = " AND zones.domain_id = domains.id
-				AND zones.owner = " . $db->quote($userid, 'integer');
+                $sql_add = " AND zones.domain_id = domains.id AND zones.owner = " . $db->quote($userid, 'integer');
             }
             if ($letterstart != 'all' && $letterstart != 1) {
                 $sql_add .= " AND " . dbfunc_substr() . "(domains.name,1,1) = " . $db->quote($letterstart, 'text') . " ";
@@ -1158,33 +1157,30 @@ class DnsRecord
         }
         $sql_sortby = ($sortby == 'domains.name' ? $natural_sort : $sortby . ', ' . $natural_sort);
 
-        $sqlq = "SELECT domains.id,
+        $query = "SELECT domains.id,
                         domains.name,
                         domains.type,
                         COUNT(records.id) AS count_records,
                         users.fullname
-                        " . ($pdnssec_use ? ",COUNT(cryptokeys.id) > 0 OR COUNT(domainmetadata.id) > 0 AS secured" : "") . "
+                        " . ($pdnssec_use ? ", COUNT(cryptokeys.id) > 0 OR COUNT(domainmetadata.id) > 0 AS secured" : "") . "
                         FROM domains
                         LEFT JOIN zones ON domains.id=zones.domain_id
                         LEFT JOIN records ON records.domain_id=domains.id AND records.type IS NOT NULL
-                        LEFT JOIN users ON users.id=zones.owner
-        ";
+                        LEFT JOIN users ON users.id=zones.owner";
 
         if ($pdnssec_use) {
-            $sqlq .= "      LEFT JOIN cryptokeys ON domains.id = cryptokeys.domain_id AND cryptokeys.active
-                        LEFT JOIN domainmetadata ON domains.id = domainmetadata.domain_id AND domainmetadata.kind = 'PRESIGNED'
-            ";
+            $query .= " LEFT JOIN cryptokeys ON domains.id = cryptokeys.domain_id AND cryptokeys.active
+                        LEFT JOIN domainmetadata ON domains.id = domainmetadata.domain_id AND domainmetadata.kind = 'PRESIGNED'";
         }
 
-        $sqlq .= "
-                        WHERE 1=1" . $sql_add . "
-                        GROUP BY domains.name, domains.id, domains.type, users.username, users.fullname
-                        ORDER BY " . $sql_sortby;
+        $query .= " WHERE 1=1" . $sql_add . "
+                    GROUP BY domains.name, domains.id, domains.type, users.username, users.fullname
+                    ORDER BY " . $sql_sortby;
 
         if ($letterstart != 'all') {
             $db->setLimit($rowamount, $rowstart);
         }
-        $result = $db->query($sqlq);
+        $result = $db->query($query);
 
         $ret = array();
         while ($r = $result->fetch()) {
@@ -1217,30 +1213,28 @@ class DnsRecord
         global $db;
         global $sql_regexp;
 
-        $fromTable = 'domains';
-        $sql_add = '';
+        $tables = 'domains';
+        $query_addon = '';
 
         if ($perm != "own" && $perm != "all") {
-            $zone_count = "0";
-        } else {
-            if ($perm == "own") {
-                $sql_add = " AND zones.domain_id = domains.id
-					AND zones.owner = " . $db->quote($_SESSION['userid'], 'integer');
-                $fromTable .= ',zones';
-            }
-
-            if ($letterstart != 'all' && $letterstart != 1) {
-                $sql_add .= " AND domains.name LIKE " . $db->quote($letterstart . "%", 'text') . " ";
-            } elseif ($letterstart == 1) {
-                $sql_add .= " AND " . dbfunc_substr() . "(domains.name,1,1) " . $sql_regexp . " '[0-9]'";
-            }
-
-            $sqlq = "SELECT COUNT(domains.id) AS count_zones
-			FROM " . $fromTable . "	WHERE 1=1
-			" . $sql_add;
-            $zone_count = $db->queryOne($sqlq);
+            return "0";
         }
-        return $zone_count;
+
+        if ($perm == "own") {
+            $query_addon = " AND zones.domain_id = domains.id
+                AND zones.owner = " . $db->quote($_SESSION['userid'], 'integer');
+            $tables .= ', zones';
+        }
+
+        if ($letterstart != 'all' && $letterstart != 1) {
+            $query_addon .= " AND domains.name LIKE " . $db->quote($letterstart . "%", 'text') . " ";
+        } elseif ($letterstart == 1) {
+            $query_addon .= " AND " . dbfunc_substr() . "(domains.name,1,1) " . $sql_regexp . " '[0-9]'";
+        }
+
+        $query = "SELECT COUNT(domains.id) AS count_zones FROM {$tables} WHERE 1=1 {$query_addon}";
+
+        return $db->queryOne($query);
     }
 
     /** Get a Record from an Record ID

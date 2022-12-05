@@ -129,27 +129,25 @@ function show_pages($amount, $rowamount, $id = '') {
 function show_letters($letterstart, $userid) {
     global $db;
 
+    $query = "SELECT DISTINCT ".dbfunc_substr()."(domains.name, 1, 1) AS letter FROM domains";
+
+    $allow_view_others = zone_content_view_others($userid);
+    if (!$allow_view_others) {
+        $query .= " LEFT JOIN zones ON domains.id = zones.domain_id";
+        $query .= " WHERE zones.owner = " . $userid;
+    }
+
     $char_range = array_merge(range('a', 'z'), array('_'));
-
-    $allowed = zone_content_view_others($userid);
-
-    $query = "SELECT
-			DISTINCT ".dbfunc_substr()."(domains.name, 1, 1) AS letter
-			FROM domains
-			LEFT JOIN zones ON domains.id = zones.domain_id
-			WHERE " . $allowed . " = 1
-			OR zones.owner = " . $userid . "
-			ORDER BY 1";
-    $db->setLimit(36);
+    $query .= " ORDER BY 1";
 
     $available_chars = array();
-    $digits_available = 0;
+    $digits_available = false;
 
     $response = $db->query($query);
 
     while ($row = $response->fetch()) {
         if (preg_match("/[0-9]/", $row['letter'])) {
-            $digits_available = 1;
+            $digits_available = true;
         } elseif (in_array($row['letter'], $char_range)) {
             $available_chars[] = $row['letter'];
         }
@@ -160,7 +158,7 @@ function show_letters($letterstart, $userid) {
     echo '<ul class="pagination pagination-sm">';
 
     if ($letterstart == "1") {
-        echo '<li class="page-item disabled active"><a class="page-link" href="#" tabindex="-1">0-9</a></li>';
+        echo '<li class="page-item active"><span class="page-link" tabindex="-1">0-9</span></li>';
     } elseif ($digits_available) {
         echo "<li class=\"page-item\"><a class=\"page-link\" href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=1\">0-9</a></li>";
     } else {
@@ -169,16 +167,16 @@ function show_letters($letterstart, $userid) {
 
     foreach ($char_range as $letter) {
         if ($letter == $letterstart) {
-            echo '<li class="page-item disabled active"><a class="page-link" href="#" tabindex="-1">' . $letter . '</a></li>';
+            echo '<li class="page-item active"><span class="page-link" tabindex="-1">' . $letter . '</span></li>';
         } elseif (in_array($letter, $available_chars)) {
             echo "<li class=\"page-item\"><a class=\"page-link\" href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=" . $letter . "\">" . $letter . "</a></li>";
         } else {
-            echo '<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">' . $letter . '</a></li>';
+            echo '<li class="page-item disabled"><span class="page-link" tabindex="-1">' . $letter . '</span></li>';
         }
     }
 
     if ($letterstart == 'all') {
-        echo '<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">' . _('Show all') . '</a></li>';
+        echo '<li class="page-item active"><a class="page-link" href="#" tabindex="-1">' . _('Show all') . '</a></li>';
     } else {
         echo "<li class=\"page-item\"><a class=\"page-link\" href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=all\">" . _('Show all') . '</a></li>';
     }
