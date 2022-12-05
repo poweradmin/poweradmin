@@ -1161,6 +1161,7 @@ class DnsRecord
                         domains.name,
                         domains.type,
                         COUNT(records.id) AS count_records,
+                        users.username,
                         users.fullname
                         " . ($pdnssec_use ? ", COUNT(cryptokeys.id) > 0 OR COUNT(domainmetadata.id) > 0 AS secured" : "") . "
                         FROM domains
@@ -1190,7 +1191,7 @@ class DnsRecord
                 "name" => $r["name"],
                 "type" => $r["type"],
                 "count_records" => $r["count_records"],
-                "owner" => $r["fullname"],
+                "owner" => $r["fullname"] ? "{$r["username"]} ({$r["fullname"]})" : $r["username"],
             );
             if ($pdnssec_use) {
                 $ret[$r["name"]]["secured"] = $r["secured"];
