@@ -29,14 +29,12 @@
  */
 
 /**
- * Extends PDO to ensure compatibility with some used functionality from PEAR::MDB2
+ * Extends PDO to add error handling and other functionality
  *
  * @package     Poweradmin
  * @copyright   2011 Aldo Gonzalez
  * @license     http://opensource.org/licenses/BSD-2-Clause BSD
  */
-
-require_once "PDOStatementCommon.php";
 
 /**
  * Implements common PDO methods
@@ -123,7 +121,7 @@ class PDOCommon extends PDO {
                     "</pre>");
         }
 
-        return new PDOStatementCommon($obj_pdoStatement);
+        return $obj_pdoStatement;
     }
 
     /**
@@ -150,7 +148,7 @@ class PDOCommon extends PDO {
 
     /**
      * Execute the specified query, fetch the value from the first column of
-     * the the first result row
+     * the first result row
      *
      * @param string $str
      * @return array

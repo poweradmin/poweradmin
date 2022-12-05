@@ -116,13 +116,10 @@ class PDOLayer extends PDOCommon {
 
     /**
      * List all tables in the current database
-     *
-     * @link http://pear.php.net/package/MDB2/docs/2.5.0b3/MDB2/MDB2_Driver_Manager_Common.html#methodlistTables
      */
     public function listTables() {
         $tables = array();
         $db_type = $this->getAttribute(PDO::ATTR_DRIVER_NAME);
-        $query = '';
 
         if ($db_type == 'mysql') {
             $query = 'SHOW TABLES';
@@ -144,7 +141,6 @@ class PDOLayer extends PDOCommon {
     /**
      * Create a new table
      *
-     * @link http://pear.php.net/package/MDB2/docs/2.5.0b3/MDB2/MDB2_Driver_Manager_Common.html#methodcreateTable
      * @param string $name Name of the table that should be created
      * @param mixed[] $fields Associative array that contains the definition of each field of the new table
      * @param mixed[] $options An associative array of table options
@@ -207,7 +203,6 @@ class PDOLayer extends PDOCommon {
     /**
      * Drop an existing table
      *
-     * @link http://pear.php.net/package/MDB2/docs/2.5.0b3/MDB2/MDB2_Driver_Manager_Common.html#methoddropTable
      * @param string $name name of the table that should be dropped
      */
     public function dropTable($name) {
