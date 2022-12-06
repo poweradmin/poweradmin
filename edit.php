@@ -166,8 +166,8 @@ if (do_hook('verify_permission', 'zone_meta_edit_others')) {
     $perm_meta_edit = "none";
 }
 
-do_hook('verify_permission', 'zone_master_add') ? $perm_zone_master_add = "1" : $perm_zone_master_add = "0";
-do_hook('verify_permission', 'zone_slave_add') ? $perm_zone_slave_add = "1" : $perm_zone_slave_add = "0";
+$perm_zone_master_add = do_hook('verify_permission', 'zone_master_add');
+$perm_zone_slave_add = do_hook('verify_permission', 'zone_slave_add');
 
 $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
 if ($perm_meta_edit == "all" || ($perm_meta_edit == "own" && $user_is_zone_owner == "1")) {
@@ -331,8 +331,13 @@ if ($records == "-1") {
         echo "     <tr>\n";
     }
     echo "</table>";
+    echo "     <input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
+    echo "     <input class=\"btn btn-secondary btn-sm\" type=\"reset\" name=\"reset\" value=\"" . _('Reset changes') . "\">\n";
+
+    echo "<hr>";
+
     echo "<table><tr>";
-    echo "      <td colspan=\"7\"><br>Save as new template:</td>\n";
+    echo "      <td colspan=\"7\"><strong>" . _("Save as new template") . "</strong></td>\n";
     echo "     </tr>\n";
     echo "     <tr>\n";
     echo "       <td colspan=\"2\">" . _('Template Name') . "</td>\n";
@@ -343,8 +348,7 @@ if ($records == "-1") {
     echo "       <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"templ_descr\" value=\"\"></td>\n";
     echo "      </tr>\n";
     echo "    </table>\n";
-    echo "     <input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
-    echo "     <input class=\"btn btn-secondary btn-sm\" type=\"reset\" name=\"reset\" value=\"" . _('Reset changes') . "\">\n";
+
     echo "     <input class=\"btn btn-secondary btn-sm\" type=\"submit\" name=\"save_as\" value=\"" . _('Save as template') . "\">\n";
 
     if ($pdnssec_use) {
@@ -420,9 +424,10 @@ if ($perm_content_edit == "all" || ($perm_content_edit == "own" || $perm_content
         echo "      $rev";
         echo "     </form>\n";
     }
+
+    echo "<hr>";
 }
 
-echo "<hr>";
 echo "   <div id=\"meta\">\n";
 echo "    <table>\n";
 echo "     <tr>\n";
@@ -494,7 +499,7 @@ if ($meta_edit) {
             $add = " SELECTED";
         }
 
-        if (($perm_zone_master_add == "0" && $type == "MASTER") || ($perm_zone_slave_add == "0" && $type == "SLAVE")) {
+        if (($perm_zone_master_add && $type == "MASTER") || ($perm_zone_slave_add && $type == "SLAVE")) {
             continue;
         }
         echo "          <option" . $add . " value=\"" . $type . "\">" . strtolower($type) . "</option>\n";
