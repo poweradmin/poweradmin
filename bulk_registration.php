@@ -58,7 +58,7 @@ $domains = array();
 if (isset($_POST['domains'])) {
     $domains = explode("\r\n", $_POST['domains']);
     foreach ($domains as $key => $domain) {
-        $domain = trim($domain);
+        $domain = idn_to_ascii(trim($domain), IDNA_NONTRANSITIONAL_TO_ASCII);
         if ($domain == '') {
             unset($domains[$key]);
         } else {
@@ -79,14 +79,16 @@ if (isset($_POST['submit']) && $zone_master_add) {
         if (!Dns::is_valid_hostname_fqdn($domain, 0)) {
             error($domain . ' failed - ' . ERR_DNS_HOSTNAME);
         } elseif (DnsRecord::domain_exists($domain)) {
-            error($domain . " failed - " . ERR_DOMAIN_EXISTS);
+            $idn_zone_name = idn_to_utf8($domain, IDNA_NONTRANSITIONAL_TO_ASCII);
+            error($idn_zone_name . " failed - " . ERR_DOMAIN_EXISTS);
             $error = true;
         } elseif (DnsRecord::add_domain($domain, $owner, $dom_type, '', $zone_template)) {
             $zone_id = DnsRecord::get_zone_id_from_name($domain);
             Logger::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
                 $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                 $domain, $dom_type, $zone_template), $zone_id);
-            success("<a href=\"edit.php?id=" . DnsRecord::get_zone_id_from_name($domain) . "\">" . $domain . " - " . SUC_ZONE_ADD . '</a>');
+            $idn_zone_name = idn_to_utf8($domain, IDNA_NONTRANSITIONAL_TO_ASCII);
+            success("<a href=\"edit.php?id=" . DnsRecord::get_zone_id_from_name($domain) . "\">" . $idn_zone_name . " - " . SUC_ZONE_ADD . '</a>');
         }
     }
 

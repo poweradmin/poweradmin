@@ -73,9 +73,11 @@ if (isset($_POST['submit']) && $zone_master_add) {
     if (!Dns::is_valid_hostname_fqdn($zone, 0)) {
         error($zone . ' failed - ' . ERR_DNS_HOSTNAME);
     } elseif ($dns_third_level_check && DnsRecord::get_domain_level($zone) > 2 && DnsRecord::domain_exists(DnsRecord::get_second_level_domain($zone))) {
-        error($zone . ' failed - ' . ERR_DOMAIN_EXISTS);
+        $idn_zone_name = idn_to_utf8($zone, IDNA_NONTRANSITIONAL_TO_ASCII);
+        error($idn_zone_name . ' failed - ' . ERR_DOMAIN_EXISTS);
     } elseif (DnsRecord::domain_exists($zone) || DnsRecord::record_name_exists($zone)) {
-        error($zone . ' failed - ' . ERR_DOMAIN_EXISTS);
+        $idn_zone_name = idn_to_utf8($zone, IDNA_NONTRANSITIONAL_TO_ASCII);
+        error($idn_zone_name . ' failed - ' . ERR_DOMAIN_EXISTS);
         // TODO: repopulate domain name(s) to the form if there was an error occured
     } elseif (DnsRecord::add_domain($zone, $owner, $dom_type, '', $zone_template)) {
         $zone_id = DnsRecord::get_zone_id_from_name($zone);
