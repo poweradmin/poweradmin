@@ -104,7 +104,9 @@ if (isset($_POST['commit'])) {
         }
     }
 
-    DnsRecord::edit_zone_comment($_GET['id'], $_POST['comment']);
+    if ($iface_zone_comments) {
+        DnsRecord::edit_zone_comment($_GET['id'], $_POST['comment']);
+    }
 
     if (false === $error) {
         DnsRecord::update_soa_serial($_GET['id']);
