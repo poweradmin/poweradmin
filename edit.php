@@ -334,22 +334,25 @@ if ($records == "-1") {
     echo "     <input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
     echo "     <input class=\"btn btn-secondary btn-sm\" type=\"reset\" name=\"reset\" value=\"" . _('Reset changes') . "\">\n";
 
-    echo "<hr>";
+    if ($perm_zone_master_add) {
+        echo "<hr>";
 
-    echo "<table><tr>";
-    echo "      <td colspan=\"7\"><strong>" . _("Save as new template") . "</strong></td>\n";
-    echo "     </tr>\n";
-    echo "     <tr>\n";
-    echo "       <td colspan=\"2\">" . _('Template Name') . "</td>\n";
-    echo "       <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"templ_name\" value=\"\"></td>\n";
-    echo "      </tr>\n";
-    echo "      <tr>\n";
-    echo "       <td colspan=\"2\">" . _('Template Description') . "</td>\n";
-    echo "       <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"templ_descr\" value=\"\"></td>\n";
-    echo "      </tr>\n";
-    echo "    </table>\n";
+        echo "<table>";
+        echo "<tr>";
+        echo "  <td colspan=\"7\"><strong>" . _("Save as new template") . "</strong></td>\n";
+        echo "</tr>\n";
+        echo "<tr>\n";
+        echo "  <td colspan=\"2\">" . _('Template Name') . "</td>\n";
+        echo "  <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"templ_name\" value=\"\"></td>\n";
+        echo "</tr>\n";
+        echo "<tr>\n";
+        echo "  <td colspan=\"2\">" . _('Template Description') . "</td>\n";
+        echo "  <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"templ_descr\" value=\"\"></td>\n";
+        echo "</tr>\n";
+        echo "</table>\n";
 
-    echo "     <input class=\"btn btn-secondary btn-sm\" type=\"submit\" name=\"save_as\" value=\"" . _('Save as template') . "\">\n";
+        echo "<input class=\"btn btn-secondary btn-sm\" type=\"submit\" name=\"save_as\" value=\"" . _('Save as template') . "\">\n";
+    }
 
     if ($pdnssec_use) {
         $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
