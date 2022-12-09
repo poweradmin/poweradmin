@@ -169,6 +169,7 @@ $perm_zone_master_add = do_hook('verify_permission', 'zone_master_add');
 $perm_zone_slave_add = do_hook('verify_permission', 'zone_slave_add');
 
 $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
+
 if ($perm_meta_edit == "all" || ($perm_meta_edit == "own" && $user_is_zone_owner == "1")) {
     $meta_edit = "1";
 } else {
@@ -263,7 +264,7 @@ if ($records == "-1") {
             echo "    <input type=\"hidden\" name=\"record[" . $r['id'] . "][zid]\" value=\"" . $zone_id . "\">\n";
         }
         echo "    <tr>\n";
-        echo "     <td>{$r['id']}</td>\n";
+        echo "     <td class=\"col-sm-1\">{$r['id']}</td>\n";
         if ($r['type'] == "SOA" || ($r['type'] == "NS" && $perm_content_edit == "own_as_client")) {
             echo "     <td>" . $r['name'] . "</td>\n";
             echo "     <td>" . $r['type'] . "</td>\n";
@@ -504,7 +505,7 @@ if ($meta_edit) {
             $add = " SELECTED";
         }
 
-        if (($perm_zone_master_add && $type == "MASTER") || ($perm_zone_slave_add && $type == "SLAVE")) {
+        if ((!$perm_zone_master_add && $type == "MASTER") || (!$perm_zone_slave_add && $type == "SLAVE")) {
             continue;
         }
         echo "          <option" . $add . " value=\"" . $type . "\">" . strtolower($type) . "</option>\n";
@@ -561,10 +562,10 @@ if ($domain_type == "SLAVE") {
         echo "       <input type=\"hidden\" name=\"domain\" value=\"" . $zone_id . "\">\n";
         echo "       <tr>\n";
         echo "        <td>\n";
-        echo "         <input type=\"text\" name=\"new_master\" value=\"" . $slave_master . "\">\n";
+        echo "         <input class=\"form-control form-control-sm\" type=\"text\" name=\"new_master\" value=\"" . $slave_master . "\">\n";
         echo "        </td>\n";
         echo "        <td>\n";
-        echo "         <input type=\"submit\" name=\"slave_master_change\" value=\"" . _('Change') . "\">\n";
+        echo "         <input class=\"btn btn-outline-secondary btn-sm\" type=\"submit\" name=\"slave_master_change\" value=\"" . _('Change') . "\">\n";
         echo "        </td>\n";
         echo "       </tr>\n";
         echo "      </form>\n";
