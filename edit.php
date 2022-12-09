@@ -139,9 +139,6 @@ if (isset($_POST['save_as'])) {
     }
 }
 
-/*
-  Check permissions
- */
 if (do_hook('verify_permission', 'zone_content_view_others')) {
     $perm_view = "all";
 } elseif (do_hook('verify_permission', 'zone_content_view_own')) {
@@ -333,8 +330,11 @@ if ($records == "-1") {
         echo "     <tr>\n";
     }
     echo "</table>";
-    echo "     <input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
-    echo "     <input class=\"btn btn-secondary btn-sm\" type=\"reset\" name=\"reset\" value=\"" . _('Reset changes') . "\">\n";
+
+    if ($perm_content_edit != "none") {
+        echo "     <input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
+        echo "     <input class=\"btn btn-secondary btn-sm\" type=\"reset\" name=\"reset\" value=\"" . _('Reset changes') . "\">\n";
+    }
 
     if ($pdnssec_use) {
         $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
