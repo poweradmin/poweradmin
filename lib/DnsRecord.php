@@ -1288,72 +1288,30 @@ class DnsRecord
         global $db;
         global $db_type;
 
-        $result = array();
-        if (is_numeric($id)) {
-            if ((isset($_SESSION[$id . "_ispartial"])) && ($_SESSION[$id . "_ispartial"] == 1)) {
-                $db->setLimit($rowamount, $rowstart);
-                $result = $db->query("SELECT records.id, domains.id, records.name, records.type, records.content, records.ttl, records.prio
-                                    FROM record_owners,domains,records
-                                    WHERE record_owners.user_id = " . $db->quote($_SESSION["userid"], 'integer') . "
-                                    AND record_owners.record_id = records.id
-                                    AND records.domain_id = " . $db->quote($id, 'integer') . "
-                                    GROUP BY records.id, domains.id, records.name, records.type, records.content, records.ttl, records.prio
-                                    ORDER BY type = 'SOA' DESC, type = 'NS' DESC, records." . $sortby);
-
-                if ($result) {
-                    while ($r = $result->fetch()) {
-                        $ret[] = array(
-                            "id" => $r["id"],
-                            "domain_id" => $r["domain_id"],
-                            "name" => $r["name"],
-                            "type" => $r["type"],
-                            "content" => $r["content"],
-                            "ttl" => $r["ttl"],
-                            "prio" => $r["prio"]
-                        );
-                    }
-                    $result = $ret;
-                } else {
-                    return -1;
-                }
-
-            } else {
-                $db->setLimit($rowamount, $rowstart);
-
-                $natural_sort = 'records.name';
-                if ($db_type == 'mysql' || $db_type == 'mysqli' || $db_type == 'sqlite' || $db_type == 'sqlite3') {
-                    $natural_sort = 'records.name+0<>0 DESC, records.name+0, records.name';
-                }
-                $sql_sortby = ($sortby == 'name' ? $natural_sort : $sortby . ', ' . $natural_sort);
-
-                $result = $db->query("SELECT id, domain_id, name, type, content, ttl, prio
-                                    FROM records 
-                                    WHERE domain_id=" . $db->quote($id, 'integer') . " AND type IS NOT NULL
-                                    ORDER BY type = 'SOA' DESC, type = 'NS' DESC," . $sql_sortby);
-
-                $ret = array();
-                if ($result) {
-                    while ($r = $result->fetch()) {
-                        $ret[] = array(
-                            "id" => $r["id"],
-                            "domain_id" => $r["domain_id"],
-                            "name" => $r["name"],
-                            "type" => $r["type"],
-                            "content" => $r["content"],
-                            "ttl" => $r["ttl"],
-                            "prio" => $r["prio"]
-                        );
-                    }
-                    $result = $ret;
-                } else {
-                    return -1;
-                }
-
-                return self::order_domain_results($result, $sortby);
-            }
-        } else {
+        if (!is_numeric($id)) {
             error(sprintf(ERR_INV_ARG, "get_records_from_domain_id"));
+            return -1;
         }
+
+        $db->setLimit($rowamount, $rowstart);
+        $natural_sort = 'records.name';
+        if ($db_type == 'mysql' || $db_type == 'mysqli' || $db_type == 'sqlite' || $db_type == 'sqlite3') {
+            $natural_sort = 'records.name+0<>0 DESC, records.name+0, records.name';
+        }
+        $sql_sortby = ($sortby == 'name' ? $natural_sort : $sortby . ', ' . $natural_sort);
+
+        $records = $db->query("SELECT id, domain_id, name, type, content, ttl, prio
+                            FROM records
+                            WHERE domain_id=" . $db->quote($id, 'integer') . " AND type IS NOT NULL
+                            ORDER BY type = 'SOA' DESC, type = 'NS' DESC," . $sql_sortby);
+
+        if ($records) {
+            $result = $records->fetchAll();
+        } else {
+            return -1;
+        }
+
+        return self::order_domain_results($result, $sortby);
     }
 
     /** Sort Domain Records intelligently
