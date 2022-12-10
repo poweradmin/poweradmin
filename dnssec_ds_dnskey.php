@@ -54,20 +54,7 @@ if ($zone_id == "-1") {
     exit;
 }
 
-if (do_hook('verify_permission', 'zone_meta_edit_others')) {
-    $perm_meta_edit = "all";
-} elseif (do_hook('verify_permission', 'zone_meta_edit_own')) {
-    $perm_meta_edit = "own";
-} else {
-    $perm_meta_edit = "none";
-}
-
 $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );
-if ($perm_meta_edit == "all" || ( $perm_meta_edit == "own" && $user_is_zone_owner == "1")) {
-    $meta_edit = "1";
-} else {
-    $meta_edit = "0";
-}
 
 (do_hook('verify_permission' , 'user_view_others' )) ? $perm_view_others = "1" : $perm_view_others = "0";
 

@@ -64,14 +64,6 @@ if (do_hook('verify_permission', 'zone_content_edit_others')) {
     $perm_content_edit = "none";
 }
 
-if (do_hook('verify_permission', 'zone_meta_edit_others')) {
-    $perm_meta_edit = "all";
-} elseif (do_hook('verify_permission', 'zone_meta_edit_own')) {
-    $perm_meta_edit = "own";
-} else {
-    $perm_meta_edit = "none";
-}
-
 if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
     error(ERR_INV_INPUT);
     include_once('inc/footer.inc.php');

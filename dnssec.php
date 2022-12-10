@@ -50,14 +50,6 @@ if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
 }
 $zone_id = htmlspecialchars($_GET['id']);
 
-if (do_hook('verify_permission', 'zone_meta_edit_others')) {
-    $perm_meta_edit = "all";
-} elseif (do_hook('verify_permission', 'zone_meta_edit_own')) {
-    $perm_meta_edit = "own";
-} else {
-    $perm_meta_edit = "none";
-}
-
 if (do_hook('verify_permission', 'zone_content_view_others')) {
     $perm_view = "all";
 } elseif (do_hook('verify_permission', 'zone_content_view_own')) {
@@ -67,11 +59,6 @@ if (do_hook('verify_permission', 'zone_content_view_others')) {
 }
 
 $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );
-if ($perm_meta_edit == "all" || ( $perm_meta_edit == "own" && $user_is_zone_owner == "1")) {
-    $meta_edit = "1";
-} else {
-    $meta_edit = "0";
-}
 
 (do_hook('verify_permission' , 'user_view_others' )) ? $perm_view_others = "1" : $perm_view_others = "0";
 
