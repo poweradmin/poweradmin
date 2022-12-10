@@ -832,11 +832,11 @@ class DnsRecord
     {
         global $db;
         if ((do_hook('verify_permission', 'zone_meta_edit_others')) || (do_hook('verify_permission', 'zone_meta_edit_own')) && do_hook('verify_user_is_owner_zoneid', $_GET["id"])) {
-            // User is allowed to make change to meta data of this zone.
             if (is_numeric($zone_id) && is_numeric($user_id) && do_hook('is_valid_user', $user_id)) {
-                // TODO: Next if() required, why not just execute DELETE query?
-                if ($db->queryOne("SELECT COUNT(id) FROM zones WHERE owner=" . $db->quote($user_id, 'integer') . " AND domain_id=" . $db->quote($zone_id, 'integer')) != 0) {
+                if ($db->queryOne("SELECT COUNT(id) FROM zones WHERE domain_id=" . $db->quote($zone_id, 'integer')) > 1) {
                     $db->query("DELETE FROM zones WHERE owner=" . $db->quote($user_id, 'integer') . " AND domain_id=" . $db->quote($zone_id, 'integer'));
+                } else {
+                    error(ERR_ZONE_MUST_HAVE_USER);
                 }
                 return true;
             } else {

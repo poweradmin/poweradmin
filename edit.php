@@ -371,8 +371,6 @@ if ($records == "-1") {
     echo "    </form>\n";
 }
 
-echo "<hr>";
-
 if ($perm_content_edit == "all" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "1") {
     if ($domain_type != "SLAVE") {
         $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
