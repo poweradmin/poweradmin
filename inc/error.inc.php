@@ -75,7 +75,8 @@ define("ERR_DEFAULT_CRYPTOKEY_USED", _('Default session encryption key is used, 
 define("ERR_LOCALE_FAILURE", _('Failed to set locale. Selected locale may be unsupported on this system. Please contact your administrator.'));
 define("ERR_ZONE_UPD", _('Zone has not been updated successfully.'));
 define("ERR_EXEC_NOT_ALLOWED", _('Failed to call function exec. Make sure that exec is not listed in disable_functions at php.ini'));
-define("ERR_ZONE_MUST_HAVE_USER", _('There must be at least one user in the zone.'));
+define("ERR_ZONE_MUST_HAVE_OWNER", _('There must be at least one owner for a zone.'));
+define("ERR_ZONE_OWNER_EXISTS", _('The selected user already owns the zone.'));
 
 /* DATABASE */
 define("ERR_DB_NO_DB_NAME", _('No database name has been set in config.inc.php.'));
