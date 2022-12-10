@@ -42,20 +42,10 @@ class ZoneTemplate
     {
         global $db;
 
-        $query = "SELECT * FROM zone_templ "
-            . "WHERE owner = '" . $userid . "' "
-            . "ORDER BY name";
-        $result = $db->query($query);
+        $stmt = $db->prepare("SELECT id, name, descr FROM zone_templ WHERE owner = :uid ORDER BY name");
+        $stmt->execute(["uid" => $userid]);
 
-        $zone_templ_list = array();
-        while ($zone_templ = $result->fetch()) {
-            $zone_templ_list[] = array(
-                "id" => $zone_templ['id'],
-                "name" => $zone_templ['name'],
-                "descr" => $zone_templ['descr']
-            );
-        }
-        return $zone_templ_list;
+        return $stmt->fetchAll();
     }
 
     /** Add a zone template
