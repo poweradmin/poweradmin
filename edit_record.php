@@ -32,6 +32,7 @@
 use Poweradmin\AppFactory;
 use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
+use Poweradmin\Permission;
 use Poweradmin\RecordType;
 use Poweradmin\Logger;
 
@@ -43,23 +44,8 @@ include_once 'inc/header.inc.php';
 $app = AppFactory::create();
 $pdnssec_use = $app->config('pdnssec_use');
 
-if (do_hook('verify_permission', 'zone_content_view_others')) {
-    $perm_view = "all";
-} elseif (do_hook('verify_permission', 'zone_content_view_own')) {
-    $perm_view = "own";
-} else {
-    $perm_view = "none";
-}
-
-if (do_hook('verify_permission', 'zone_content_edit_others')) {
-    $perm_content_edit = "all";
-} elseif (do_hook('verify_permission', 'zone_content_edit_own')) {
-    $perm_content_edit = "own";
-} elseif (do_hook('verify_permission', 'zone_content_edit_own_as_client')) {
-    $perm_content_edit = "own_as_client";
-} else {
-    $perm_content_edit = "none";
-}
+$perm_view = Permission::getViewPermission();
+$perm_content_edit = Permission::getEditPermission();
 
 $zid = DnsRecord::get_zone_id_from_record_id($_GET['id']);
 

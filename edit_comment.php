@@ -31,6 +31,7 @@
 
 use Poweradmin\AppFactory;
 use Poweradmin\DnsRecord;
+use Poweradmin\Permission;
 use Poweradmin\Validation;
 
 require_once 'inc/toolkit.inc.php';
@@ -46,23 +47,8 @@ if (!$iface_zone_comments) {
     exit;
 }
 
-if (do_hook('verify_permission', 'zone_content_view_others')) {
-    $perm_view = "all";
-} elseif (do_hook('verify_permission', 'zone_content_view_own')) {
-    $perm_view = "own";
-} else {
-    $perm_view = "none";
-}
-
-if (do_hook('verify_permission', 'zone_content_edit_others')) {
-    $perm_content_edit = "all";
-} elseif (do_hook('verify_permission', 'zone_content_edit_own')) {
-    $perm_content_edit = "own";
-} elseif (do_hook('verify_permission', 'zone_content_edit_own_as_client')) {
-    $perm_content_edit = "own_as_client";
-} else {
-    $perm_content_edit = "none";
-}
+$perm_view = Permission::getViewPermission();
+$perm_content_edit = Permission::getEditPermission();
 
 if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
     error(ERR_INV_INPUT);

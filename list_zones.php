@@ -31,6 +31,7 @@
 
 use Poweradmin\AppFactory;
 use Poweradmin\DnsRecord;
+use Poweradmin\Permission;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/pagination.inc.php';
@@ -47,13 +48,7 @@ if (isset($_GET["start"])) {
     $row_start = ($_GET["start"] - 1) * $iface_rowamount;
 }
 
-if (do_hook('verify_permission', 'zone_content_view_others')) {
-    $perm_view = "all";
-} elseif (do_hook('verify_permission', 'zone_content_view_own')) {
-    $perm_view = "own";
-} else {
-    $perm_view = "none";
-}
+$perm_view = Permission::getViewPermission();
 
 if (do_hook('verify_permission', 'zone_content_edit_others')) {
     $perm_edit = "all";

@@ -33,6 +33,7 @@
 use Poweradmin\AppFactory;
 use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
+use Poweradmin\Permission;
 use Poweradmin\RecordLog;
 use Poweradmin\RecordType;
 use Poweradmin\Validation;
@@ -139,23 +140,8 @@ if (isset($_POST['save_as'])) {
     }
 }
 
-if (do_hook('verify_permission', 'zone_content_view_others')) {
-    $perm_view = "all";
-} elseif (do_hook('verify_permission', 'zone_content_view_own')) {
-    $perm_view = "own";
-} else {
-    $perm_view = "none";
-}
-
-if (do_hook('verify_permission', 'zone_content_edit_others')) {
-    $perm_content_edit = "all";
-} elseif (do_hook('verify_permission', 'zone_content_edit_own')) {
-    $perm_content_edit = "own";
-} elseif (do_hook('verify_permission', 'zone_content_edit_own_as_client')) {
-    $perm_content_edit = "own_as_client";
-} else {
-    $perm_content_edit = "none";
-}
+$perm_view = Permission::getViewPermission();
+$perm_content_edit = Permission::getEditPermission();
 
 if (do_hook('verify_permission', 'zone_meta_edit_others')) {
     $perm_meta_edit = "all";

@@ -32,6 +32,7 @@
 use Poweradmin\AppFactory;
 use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
+use Poweradmin\Permission;
 use Poweradmin\Validation;
 use Poweradmin\Logger;
 
@@ -83,15 +84,7 @@ if (isset($_GET['confirm']) && Validation::is_number($_GET['confirm']) && $_GET[
     exit;
 }
 
-if (do_hook('verify_permission', 'zone_content_edit_others')) {
-    $perm_content_edit = "all";
-} elseif (do_hook('verify_permission', 'zone_content_edit_own')) {
-    $perm_content_edit = "own";
-} elseif (do_hook('verify_permission', 'zone_content_edit_own_as_client')) {
-    $perm_content_edit = "own_as_client";
-} else {
-    $perm_content_edit = "none";
-}
+$perm_content_edit = Permission::getEditPermission();
 
 $zone_info = DnsRecord::get_zone_info_from_id($zid);
 $zone_id = DnsRecord::recid_to_domid($record_id);

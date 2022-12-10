@@ -33,6 +33,7 @@
 use Poweradmin\AppFactory;
 use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
+use Poweradmin\Permission;
 use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
 
@@ -50,13 +51,7 @@ if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
 }
 $zone_id = htmlspecialchars($_GET['id']);
 
-if (do_hook('verify_permission', 'zone_content_view_others')) {
-    $perm_view = "all";
-} elseif (do_hook('verify_permission', 'zone_content_view_own')) {
-    $perm_view = "own";
-} else {
-    $perm_view = "none";
-}
+$perm_view = Permission::getViewPermission();
 
 $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );
 
