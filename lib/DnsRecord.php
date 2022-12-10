@@ -806,11 +806,8 @@ class DnsRecord
                     if ($zone_templ_id == NULL) {
                         $zone_templ_id = 0;
                     }
-                    $db->query("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES("
-                        . $db->quote($zone_id, 'integer') . ", "
-                        . $db->quote($user_id, 'integer') . ", "
-                        . $db->quote($zone_templ_id, 'integer') . ")"
-                    );
+                    $stmt = $db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES(?, ?, ?)");
+                    $stmt->execute(array($zone_id, $user_id, $zone_templ_id));
                     return true;
                 } else {
                     error(ERR_ZONE_OWNER_EXISTS);
