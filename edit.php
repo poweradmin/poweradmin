@@ -554,7 +554,7 @@ if ($meta_edit) {
         if ($zone_template['id'] == $zone_template_id) {
             $add = " SELECTED";
         }
-        echo "          <option .  $add . value=\"" . $zone_template['id'] . "\">" . $zone_template['name'] . "</option>\n";
+        echo "          <option" . $add . " value=\"" . $zone_template['id'] . "\">" . $zone_template['name'] . "</option>\n";
     }
     echo "         </select>\n";
     echo "        </td>\n";
