@@ -502,10 +502,6 @@ if ($meta_edit) {
         if ($type == $domain_type) {
             $add = " SELECTED";
         }
-
-        if ((!$perm_zone_master_add && $type == "MASTER") || (!$perm_zone_slave_add && $type == "SLAVE")) {
-            continue;
-        }
         echo "          <option" . $add . " value=\"" . $type . "\">" . strtolower($type) . "</option>\n";
     }
     echo "         </select>\n";
@@ -517,6 +513,29 @@ if ($meta_edit) {
     echo "      </form>\n";
 } else {
     echo "      <tr><td>" . strtolower($domain_type) . "</td><td>&nbsp;</td></tr>\n";
+}
+
+if ($domain_type == "SLAVE") {
+    $slave_master = DnsRecord::get_domain_slave_master($zone_id);
+    echo "      <tr>\n";
+    echo "       <th colspan=\"2\">" . _('IP address of master NS') . "</th>\n";
+    echo "      </tr>\n";
+
+    if ($meta_edit) {
+        echo "      <form action=\"" . htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES) . "?id=" . $zone_id . "\" method=\"post\">\n";
+        echo "       <input type=\"hidden\" name=\"domain\" value=\"" . $zone_id . "\">\n";
+        echo "       <tr>\n";
+        echo "        <td>\n";
+        echo "         <input class=\"form-control form-control-sm\" type=\"text\" name=\"new_master\" value=\"" . $slave_master . "\">\n";
+        echo "        </td>\n";
+        echo "        <td>\n";
+        echo "         <input class=\"btn btn-outline-secondary btn-sm\" type=\"submit\" name=\"slave_master_change\" value=\"" . _('Change') . "\">\n";
+        echo "        </td>\n";
+        echo "       </tr>\n";
+        echo "      </form>\n";
+    } else {
+        echo "      <tr><td>" . $slave_master . "</td><td>&nbsp;</td></tr>\n";
+    }
 }
 
 echo "      <tr>\n";
@@ -549,28 +568,6 @@ if ($meta_edit) {
     echo "      <tr><td>" . ($zone_template_details ? strtolower($zone_template_details['name']) : "none") . "</td><td>&nbsp;</td></tr>\n";
 }
 
-if ($domain_type == "SLAVE") {
-    $slave_master = DnsRecord::get_domain_slave_master($zone_id);
-    echo "      <tr>\n";
-    echo "       <th colspan=\"2\">" . _('IP address of master NS') . "</th>\n";
-    echo "      </tr>\n";
-
-    if ($meta_edit) {
-        echo "      <form action=\"" . htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES) . "?id=" . $zone_id . "\" method=\"post\">\n";
-        echo "       <input type=\"hidden\" name=\"domain\" value=\"" . $zone_id . "\">\n";
-        echo "       <tr>\n";
-        echo "        <td>\n";
-        echo "         <input class=\"form-control form-control-sm\" type=\"text\" name=\"new_master\" value=\"" . $slave_master . "\">\n";
-        echo "        </td>\n";
-        echo "        <td>\n";
-        echo "         <input class=\"btn btn-outline-secondary btn-sm\" type=\"submit\" name=\"slave_master_change\" value=\"" . _('Change') . "\">\n";
-        echo "        </td>\n";
-        echo "       </tr>\n";
-        echo "      </form>\n";
-    } else {
-        echo "      <tr><td>" . $slave_master . "</td><td>&nbsp;</td></tr>\n";
-    }
-}
 echo "     </table>\n";
 echo "   </div>\n";
 

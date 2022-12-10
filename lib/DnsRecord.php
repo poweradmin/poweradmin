@@ -1673,10 +1673,10 @@ class DnsRecord
             if (Dns::are_multiple_valid_ips($ip_slave_master)) {
                 $result = $db->query("UPDATE domains SET master = " . $db->quote($ip_slave_master, 'text') . " WHERE id = " . $db->quote($zone_id, 'integer'));
             } else {
-                error(sprintf(ERR_INV_ARGC, "change_domain_ip_slave_master", "This is not a valid IPv4 or IPv6 address: $ip_slave_master"));
+                error(sprintf(ERR_INV_ARGC, "change_zone_slave_master", "This is not a valid IPv4 or IPv6 address: $ip_slave_master"));
             }
         } else {
-            error(sprintf(ERR_INV_ARG, "change_domain_type", "no or no valid zoneid given"));
+            error(sprintf(ERR_INV_ARG, "change_zone_slave_master", "no or no valid zoneid given"));
         }
     }
 
