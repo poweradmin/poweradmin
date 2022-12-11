@@ -102,6 +102,7 @@ return array(
     'PHPUnit\\Framework\\MockObject\\CannotUseOnlyMethodsException' => $vendorDir . '/phpunit/phpunit/src/Framework/MockObject/Exception/CannotUseOnlyMethodsException.php',
     'PHPUnit\\Framework\\MockObject\\ClassAlreadyExistsException' => $vendorDir . '/phpunit/phpunit/src/Framework/MockObject/Exception/ClassAlreadyExistsException.php',
     'PHPUnit\\Framework\\MockObject\\ClassIsFinalException' => $vendorDir . '/phpunit/phpunit/src/Framework/MockObject/Exception/ClassIsFinalException.php',
+    'PHPUnit\\Framework\\MockObject\\ClassIsReadonlyException' => $vendorDir . '/phpunit/phpunit/src/Framework/MockObject/Exception/ClassIsReadonlyException.php',
     'PHPUnit\\Framework\\MockObject\\ConfigurableMethod' => $vendorDir . '/phpunit/phpunit/src/Framework/MockObject/ConfigurableMethod.php',
     'PHPUnit\\Framework\\MockObject\\ConfigurableMethodsAlreadyInitializedException' => $vendorDir . '/phpunit/phpunit/src/Framework/MockObject/Exception/ConfigurableMethodsAlreadyInitializedException.php',
     'PHPUnit\\Framework\\MockObject\\DuplicateMethodException' => $vendorDir . '/phpunit/phpunit/src/Framework/MockObject/Exception/DuplicateMethodException.php',
