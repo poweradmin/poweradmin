@@ -41,6 +41,7 @@ include_once 'inc/header.inc.php';
 
 $app = AppFactory::create();
 $iface_zone_comments = $app->config('iface_zone_comments');
+
 if (!$iface_zone_comments) {
     error(ERR_PERM_EDIT_COMMENT);
     include_once('inc/footer.inc.php');
@@ -48,7 +49,7 @@ if (!$iface_zone_comments) {
 }
 
 $perm_view = Permission::getViewPermission();
-$perm_content_edit = Permission::getEditPermission();
+$perm_edit = Permission::getEditPermission();
 
 if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
     error(ERR_INV_INPUT);
@@ -61,7 +62,7 @@ $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
 $zone_type = DnsRecord::get_domain_type($zone_id);
 $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
 
-$perm_edit_comment = $zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0";
+$perm_edit_comment = $zone_type == "SLAVE" || $perm_edit == "none" || ($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0";
 
 if (isset($_POST["commit"])) {
     if ($perm_edit_comment) {

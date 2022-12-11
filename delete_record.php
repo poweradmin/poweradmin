@@ -84,12 +84,12 @@ if (isset($_GET['confirm']) && Validation::is_number($_GET['confirm']) && $_GET[
     exit;
 }
 
-$perm_content_edit = Permission::getEditPermission();
+$perm_edit = Permission::getEditPermission();
 
 $zone_info = DnsRecord::get_zone_info_from_id($zid);
 $zone_id = DnsRecord::recid_to_domid($record_id);
 $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );
-if ($zone_info['type'] == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
+if ($zone_info['type'] == "SLAVE" || $perm_edit == "none" || ($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0") {
     error(ERR_PERM_EDIT_RECORD);
     include_once('inc/footer.inc.php');
     exit;

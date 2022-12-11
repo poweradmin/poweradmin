@@ -141,7 +141,7 @@ if (isset($_POST['save_as'])) {
 }
 
 $perm_view = Permission::getViewPermission();
-$perm_content_edit = Permission::getEditPermission();
+$perm_edit = Permission::getEditPermission();
 
 if (do_hook('verify_permission', 'zone_meta_edit_others')) {
     $perm_meta_edit = "all";
@@ -241,13 +241,13 @@ if ($records == "-1") {
     echo "     <th>&nbsp;</th>\n";
     echo "    </tr>\n";
     foreach ($records as $r) {
-        if (!($r['type'] == "SOA" || ($r['type'] == "NS" && $perm_content_edit == "own_as_client"))) {
+        if (!($r['type'] == "SOA" || ($r['type'] == "NS" && $perm_edit == "own_as_client"))) {
             echo "    <input type=\"hidden\" name=\"record[" . $r['id'] . "][rid]\" value=\"" . $r['id'] . "\">\n";
             echo "    <input type=\"hidden\" name=\"record[" . $r['id'] . "][zid]\" value=\"" . $zone_id . "\">\n";
         }
         echo "    <tr>\n";
         echo "     <td class=\"col-sm-1\">{$r['id']}</td>\n";
-        if ($r['type'] == "SOA" || ($r['type'] == "NS" && $perm_content_edit == "own_as_client")) {
+        if ($r['type'] == "SOA" || ($r['type'] == "NS" && $perm_edit == "own_as_client")) {
             echo "     <td>" . $r['name'] . "</td>\n";
             echo "     <td>" . $r['type'] . "</td>\n";
             echo "     <td>" . $r['content'] . "</td>\n";
@@ -277,9 +277,9 @@ if ($records == "-1") {
             echo "      <td class=\"col-sm-1\"><input class=\"form-control form-control-sm\" type=\"text\" name=\"record[" . $r['id'] . "][ttl]\" value=\"" . htmlspecialchars($r['ttl']) . "\"></td>\n";
         }
 
-        if ($domain_type == "SLAVE" || $perm_content_edit == "none" || (($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0")) {
+        if ($domain_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
             echo "     <td>&nbsp;</td>\n";
-        } elseif ($r['type'] == "SOA" && $perm_content_edit != "all" || ($r['type'] == "NS" && $perm_content_edit == "own_as_client")) {
+        } elseif ($r['type'] == "SOA" && $perm_edit != "all" || ($r['type'] == "NS" && $perm_edit == "own_as_client")) {
             echo "     <td>&nbsp;</td>\n";
         } else {
             echo "     <td>\n";
@@ -314,7 +314,7 @@ if ($records == "-1") {
     }
     echo "</table>";
 
-    if ($perm_content_edit != "none") {
+    if ($perm_edit != "none") {
         echo "     <input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
         echo "     <input class=\"btn btn-secondary btn-sm\" type=\"reset\" name=\"reset\" value=\"" . _('Reset changes') . "\">\n";
     }
@@ -351,9 +351,10 @@ if ($records == "-1") {
     }
 
     echo "    </form>\n";
+    echo "<hr>";
 }
 
-if ($perm_content_edit == "all" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "1") {
+if ($perm_edit == "all" || ($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "1") {
     if ($domain_type != "SLAVE") {
         $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
         echo "     <form class=\"needs-validation\" method=\"post\" action=\"add_record.php?id=" . $zone_id . "\" novalidate>\n";

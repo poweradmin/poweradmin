@@ -45,7 +45,7 @@ $app = AppFactory::create();
 $pdnssec_use = $app->config('pdnssec_use');
 
 $perm_view = Permission::getViewPermission();
-$perm_content_edit = Permission::getEditPermission();
+$perm_edit = Permission::getEditPermission();
 
 $zid = DnsRecord::get_zone_id_from_record_id($_GET['id']);
 
@@ -54,7 +54,7 @@ $zone_type = DnsRecord::get_domain_type($zid);
 $zone_name = DnsRecord::get_domain_name_by_id($zid);
 
 if (isset($_POST["commit"])) {
-    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
+    if ($zone_type == "SLAVE" || $perm_edit == "none" || ($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0") {
         error(ERR_PERM_EDIT_RECORD);
     } else {
         $old_record_info = DnsRecord::get_record_from_id($_POST["rid"]);
@@ -100,7 +100,7 @@ if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
     echo "      </thead>";
     echo "      <tr>\n";
 
-    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0") {
+    if ($zone_type == "SLAVE" || $perm_edit == "none" || ($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0") {
         echo "       <td>" . htmlspecialchars($record["name"]) . "</td>\n";
         echo "       <td>IN</td>\n";
         echo "       <td>" . htmlspecialchars($record["type"]) . "</td>\n";

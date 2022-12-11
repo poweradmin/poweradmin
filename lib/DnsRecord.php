@@ -292,21 +292,12 @@ class DnsRecord
      */
     public static function edit_zone_comment($zone_id, $comment)
     {
-
-        if (do_hook('verify_permission', 'zone_content_edit_others')) {
-            $perm_content_edit = "all";
-        } elseif (do_hook('verify_permission', 'zone_content_edit_own')) {
-            $perm_content_edit = "own";
-        } elseif (do_hook('verify_permission', 'zone_content_edit_own_as_client')) {
-            $perm_content_edit = "own_as_client";
-        } else {
-            $perm_content_edit = "none";
-        }
+        $perm_edit = Permission::getEditPermission();
 
         $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
         $zone_type = self::get_domain_type($zone_id);
 
-        if ($zone_type == "SLAVE" || $perm_content_edit == "none" || (($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0")) {
+        if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
             error(ERR_PERM_EDIT_COMMENT);
             return false;
         } else {
@@ -340,29 +331,21 @@ class DnsRecord
      */
     public static function edit_record($record)
     {
-        if (do_hook('verify_permission', 'zone_content_edit_others')) {
-            $perm_content_edit = "all";
-        } elseif (do_hook('verify_permission', 'zone_content_edit_own')) {
-            $perm_content_edit = "own";
-        } elseif (do_hook('verify_permission', 'zone_content_edit_own_as_client')) {
-            $perm_content_edit = "own_as_client";
-        } else {
-            $perm_content_edit = "none";
-        }
+        $perm_edit = Permission::getEditPermission();
 
         $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $record['zid']);
         $zone_type = self::get_domain_type($record['zid']);
 
-        if ($record['type'] == 'SOA' && $perm_content_edit == "own_as_client") {
+        if ($record['type'] == 'SOA' && $perm_edit == "own_as_client") {
             error(ERR_PERM_EDIT_RECORD_SOA);
             return false;
         }
-        if ($record['type'] == 'NS' && $perm_content_edit == "own_as_client") {
+        if ($record['type'] == 'NS' && $perm_edit == "own_as_client") {
             error(ERR_PERM_EDIT_RECORD_NS);
             return false;
         }
 
-        if ($zone_type == "SLAVE" || $perm_content_edit == "none" || (($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0")) {
+        if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
             error(ERR_PERM_EDIT_RECORD);
             return false;
         } else {
@@ -401,29 +384,21 @@ class DnsRecord
         global $db;
         global $pdnssec_use;
 
-        if (do_hook('verify_permission', 'zone_content_edit_others')) {
-            $perm_content_edit = "all";
-        } elseif (do_hook('verify_permission', 'zone_content_edit_own')) {
-            $perm_content_edit = "own";
-        } elseif (do_hook('verify_permission', 'zone_content_edit_own_as_client')) {
-            $perm_content_edit = "own_as_client";
-        } else {
-            $perm_content_edit = "none";
-        }
+        $perm_edit = Permission::getEditPermission();
 
         $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
         $zone_type = self::get_domain_type($zone_id);
 
-        if ($type == 'SOA' && $perm_content_edit == "own_as_client") {
+        if ($type == 'SOA' && $perm_edit == "own_as_client") {
             error(ERR_PERM_ADD_RECORD_SOA);
             return false;
         }
-        if ($type == 'NS' && $perm_content_edit == "own_as_client") {
+        if ($type == 'NS' && $perm_edit == "own_as_client") {
             error(ERR_PERM_ADD_RECORD_NS);
             return false;
         }
 
-        if ($zone_type == "SLAVE" || $perm_content_edit == "none" || (($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "0")) {
+        if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
             error(ERR_PERM_ADD_RECORD);
             return false;
         } else {
@@ -558,21 +533,12 @@ class DnsRecord
     {
         global $db;
 
-        if (do_hook('verify_permission', 'zone_content_edit_others')) {
-            $perm_content_edit = "all";
-        } elseif (do_hook('verify_permission', 'zone_content_edit_own')) {
-            $perm_content_edit = "own";
-        } elseif (do_hook('verify_permission', 'zone_content_edit_own_as_client')) {
-            $perm_content_edit = "own_as_client";
-        } else {
-            $perm_content_edit = "none";
-        }
+        $perm_edit = Permission::getEditPermission();
 
-        // Determine ID of zone first.
         $record = self::get_record_details_from_record_id($rid);
         $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $record['zid']);
 
-        if ($perm_content_edit == "all" || (($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && $user_is_zone_owner == "1")) {
+        if ($perm_edit == "all" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "1")) {
             if ($record['type'] == "SOA") {
                 error(_('You are trying to delete the SOA record. You are not allowed to remove it, unless you remove the entire zone.'));
             } else {

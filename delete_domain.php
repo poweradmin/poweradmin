@@ -33,6 +33,7 @@ use Poweradmin\AppFactory;
 use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
 use Poweradmin\Logger;
+use Poweradmin\Permission;
 use Poweradmin\Validation;
 
 require_once 'inc/toolkit.inc.php';
@@ -43,13 +44,7 @@ include_once 'inc/header.inc.php';
 $app = AppFactory::create();
 $pdnssec_use = $app->config('pdnssec_use');
 
-if (do_hook('verify_permission', 'zone_content_edit_others')) {
-    $perm_edit = "all";
-} elseif (do_hook('verify_permission', 'zone_content_edit_own')) {
-    $perm_edit = "own";
-} else {
-    $perm_edit = "none";
-}
+$perm_edit = Permission::getEditPermission();
 
 if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
     error(ERR_INV_INPUT);

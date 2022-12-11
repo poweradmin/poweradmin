@@ -32,6 +32,7 @@
 use Poweradmin\AppFactory;
 use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
+use Poweradmin\Permission;
 use Poweradmin\RecordType;
 use Poweradmin\Logger;
 use Poweradmin\Validation;
@@ -45,23 +46,8 @@ $app = AppFactory::create();
 $pdnssec_use = $app->config('pdnssec_use');
 $iface_add_reverse_record = $app->config('iface_add_reverse_record');
 
-if (do_hook('verify_permission', 'zone_content_view_others')) {
-    $perm_view = "all";
-} elseif (do_hook('verify_permission', 'zone_content_view_own')) {
-    $perm_view = 'own';
-} else {
-    $perm_view = 'none';
-}
-
-if (do_hook('verify_permission', 'zone_content_edit_others')) {
-    $perm_content_edit = 'all';
-} elseif (do_hook('verify_permission', 'zone_content_edit_own')) {
-    $perm_content_edit = 'own';
-} elseif (do_hook('verify_permission', 'zone_content_edit_own_as_client')) {
-    $perm_content_edit = 'own_as_client';
-} else {
-    $perm_content_edit = 'none';
-}
+$perm_view = Permission::getViewPermission();
+$perm_edit = Permission::getEditPermission();
 
 if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
     error(ERR_INV_INPUT);
@@ -89,7 +75,7 @@ $zone_type = DnsRecord::get_domain_type($zone_id);
 $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
 
 if (isset($_POST["commit"])) {
-    if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && !$user_is_zone_owner) {
+    if ($zone_type == "SLAVE" || $perm_edit == "none" || ($perm_edit == "own" || $perm_edit == "own_as_client") && !$user_is_zone_owner) {
         error(ERR_PERM_ADD_RECORD);
     } else {
         // a PTR-record is added if an A or an AAAA-record are created
@@ -136,7 +122,7 @@ if (isset($_POST["commit"])) {
     }
 }
 
-if ($zone_type == "SLAVE" || $perm_content_edit == "none" || ($perm_content_edit == "own" || $perm_content_edit == "own_as_client") && !$user_is_zone_owner) {
+if ($zone_type == "SLAVE" || $perm_edit == "none" || ($perm_edit == "own" || $perm_edit == "own_as_client") && !$user_is_zone_owner) {
     error(ERR_PERM_ADD_RECORD);
     include_once('inc/footer.inc.php');
     exit;

@@ -49,14 +49,7 @@ if (isset($_GET["start"])) {
 }
 
 $perm_view = Permission::getViewPermission();
-
-if (do_hook('verify_permission', 'zone_content_edit_others')) {
-    $perm_edit = "all";
-} elseif (do_hook('verify_permission', 'zone_content_edit_own')) {
-    $perm_edit = "own";
-} else {
-    $perm_edit = "none";
-}
+$perm_edit = Permission::getEditPermission();
 
 $letter_start = 'a';
 if (isset($_GET["letter"])) {
