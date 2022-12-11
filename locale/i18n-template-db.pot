@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Poweradmin 2.1.6\n"
+"Project-Id-Version: Poweradmin 3.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@poweradmin.org\n"
-"POT-Creation-Date: 2011-07-08 23:45+0300\n"
+"POT-Creation-Date: 2022-12-11 16:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,67 +16,4 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-msgid "User is allowed to add new master zones."
-msgstr ""
-
-msgid "User is allowed to add new slave zones."
-msgstr ""
-
-msgid "User is allowed to see the content and meta data of zones he owns."
-msgstr ""
-
-msgid "User is allowed to edit the content of zones he owns."
-msgstr ""
-
-msgid "User is allowed to edit the meta data of zones he owns."
-msgstr ""
-
-msgid "User is allowed to see the content and meta data of zones he does not own."
-msgstr ""
-
-msgid "User is allowed to edit the content of zones he does not own."
-msgstr ""
-
-msgid "User is allowed to edit the meta data of zones he does not own."
-msgstr ""
-
-msgid "User is allowed to perform searches."
-msgstr ""
-
-msgid "User is allowed to view supermasters."
-msgstr ""
-
-msgid "User is allowed to add new supermasters."
-msgstr ""
-
-msgid "User is allowed to edit supermasters."
-msgstr ""
-
-msgid "User has full access. God-like. Redeemer."
-msgstr ""
-
-msgid "User is allowed to see other users and their details."
-msgstr ""
-
-msgid "User is allowed to add new users."
-msgstr ""
-
-msgid "User is allowed to edit their own details."
-msgstr ""
-
-msgid "User is allowed to edit other users."
-msgstr ""
-
-msgid "User is allowed to edit the password of other users."
-msgstr ""
-
-msgid "User is allowed to change the permission template that is assigned to a user."
-msgstr ""
-
-msgid "User is allowed to add new permission templates."
-msgstr ""
-
-msgid "User is allowed to edit existing permission templates."
-msgstr ""
 
