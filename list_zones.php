@@ -45,7 +45,7 @@ $iface_rowamount = $app->config('iface_rowamount');
 
 $row_start = 0;
 if (isset($_GET["start"])) {
-    $row_start = ($_GET["start"] - 1) * $iface_rowamount;
+    $row_start = (htmlspecialchars($_GET["start"]) - 1) * $iface_rowamount;
 }
 
 $perm_view = Permission::getViewPermission();
@@ -60,8 +60,8 @@ if (do_hook('verify_permission', 'zone_content_edit_others')) {
 
 $letter_start = 'a';
 if (isset($_GET["letter"])) {
-    $letter_start = $_GET["letter"];
-    $_SESSION["letter"] = $_GET["letter"];
+    $letter_start = htmlspecialchars($_GET["letter"]);
+    $_SESSION["letter"] = htmlspecialchars($_GET["letter"]);
 } elseif (isset($_SESSION["letter"])) {
     $letter_start = $_SESSION["letter"];
 }
@@ -72,11 +72,11 @@ $count_zones_edit = DnsRecord::zone_count_ng($perm_edit);
 
 $zone_sort_by = 'name';
 if (isset($_GET["zone_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["zone_sort_by"])) {
-    $zone_sort_by = $_GET["zone_sort_by"];
-    $_SESSION["list_zone_sort_by"] = $_GET["zone_sort_by"];
+    $zone_sort_by = htmlspecialchars($_GET["zone_sort_by"]);
+    $_SESSION["list_zone_sort_by"] = htmlspecialchars($_GET["zone_sort_by"]);
 } elseif (isset($_POST["zone_sort_by"]) && preg_match("/^[a-z_]+$/", $_POST["zone_sort_by"])) {
-    $zone_sort_by = $_POST["zone_sort_by"];
-    $_SESSION["list_zone_sort_by"] = $_POST["zone_sort_by"];
+    $zone_sort_by = htmlspecialchars($_POST["zone_sort_by"]);
+    $_SESSION["list_zone_sort_by"] = htmlspecialchars($_POST["zone_sort_by"]);
 } elseif (isset($_SESSION["list_zone_sort_by"])) {
     $zone_sort_by = $_SESSION["list_zone_sort_by"];
 }
