@@ -4,8 +4,10 @@
 
 ## Disclaimer
 
-This project is not affiliated with [PowerDNS.com](https://www.powerdns.com/index.html), [Open-Xchange](https://www.open-xchange.com), or any other third parties. The project is
-independently funded and maintained. Check out these [options](https://github.com/PowerDNS/pdns/wiki/WebFrontends) if this doesn't meet your needs.
+This project is not affiliated with [PowerDNS.com](https://www.powerdns.com/index.html)
+, [Open-Xchange](https://www.open-xchange.com), or any other third parties.
+It is independently funded and maintained. If this project does not meet your needs, please check out these
+other [options](https://github.com/PowerDNS/pdns/wiki/WebFrontends).
 
 ## Requirements
 * PHP 7.2.5+
