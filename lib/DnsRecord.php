@@ -711,13 +711,7 @@ class DnsRecord
     {
         global $db;
 
-        if (do_hook('verify_permission', 'zone_content_edit_others')) {
-            $perm_edit = "all";
-        } elseif (do_hook('verify_permission', 'zone_content_edit_own')) {
-            $perm_edit = "own";
-        } else {
-            $perm_edit = "none";
-        }
+        $perm_edit = Permission::getEditPermission();
         $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $id);
 
         if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
@@ -892,14 +886,7 @@ class DnsRecord
      */
     public static function get_zone_info_from_id($zid)
     {
-
-        if (do_hook('verify_permission', 'zone_content_view_others')) {
-            $perm_view = "all";
-        } elseif (do_hook('verify_permission', 'zone_content_view_own')) {
-            $perm_view = "own";
-        } else {
-            $perm_view = "none";
-        }
+        $perm_view = Permission::getViewPermission();
 
         if ($perm_view == "none") {
             error(ERR_PERM_VIEW_ZONE);
@@ -1712,14 +1699,7 @@ class DnsRecord
         global $dns_ttl;
         global $db_type;
 
-        if (do_hook('verify_permission', 'zone_content_edit_others')) {
-            $perm_edit = "all";
-        } elseif (do_hook('verify_permission', 'zone_content_edit_own')) {
-            $perm_edit = "own";
-        } else {
-            $perm_edit = "none";
-        }
-
+        $perm_edit = Permission::getEditPermission();
         $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
 
         if (do_hook('verify_permission', 'zone_master_add')) {
@@ -1827,13 +1807,7 @@ class DnsRecord
         $db->beginTransaction();
 
         foreach ($domains as $id) {
-            if (do_hook('verify_permission', 'zone_content_edit_others')) {
-                $perm_edit = "all";
-            } elseif (do_hook('verify_permission', 'zone_content_edit_own')) {
-                $perm_edit = "own";
-            } else {
-                $perm_edit = "none";
-            }
+            $perm_edit = Permission::getEditPermission();
             $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $id);
 
             if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {

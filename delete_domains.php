@@ -31,19 +31,14 @@
 
 use Poweradmin\DnsRecord;
 use Poweradmin\Logger;
+use Poweradmin\Permission;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
 
-if (do_hook('verify_permission', 'zone_content_edit_others')) {
-    $perm_edit = "all";
-} elseif (do_hook('verify_permission', 'zone_content_edit_own')) {
-    $perm_edit = "own";
-} else {
-    $perm_edit = "none";
-}
+$perm_edit = Permission::getEditPermission();
 
 $zones = $_POST['zone_id'];
 if (!$zones) {

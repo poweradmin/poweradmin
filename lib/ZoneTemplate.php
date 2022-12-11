@@ -423,13 +423,7 @@ class ZoneTemplate
     {
         global $db;
 
-        if (do_hook('verify_permission', 'zone_content_edit_others')) {
-            $perm_edit = "all";
-        } elseif (do_hook('verify_permission', 'zone_content_edit_own')) {
-            $perm_edit = "own";
-        } else {
-            $perm_edit = "none";
-        }
+        $perm_edit = Permission::getEditPermission();
 
         $sql_add = '';
         if ($perm_edit != "all") {

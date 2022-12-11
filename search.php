@@ -31,6 +31,7 @@
 
 use Poweradmin\AppFactory;
 use Poweradmin\DnsRecord;
+use Poweradmin\Permission;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/header.inc.php';
@@ -74,28 +75,11 @@ $parameters['wildcard'] = !isset($_POST['do_search']) && !isset($_POST['wildcard
 $parameters['reverse'] = !isset($_POST['do_search']) && !isset($_POST['reverse']) || isset($_POST['reverse']) && $_POST['reverse'] == true;
 
 $searchResult = [ 'zones' => null, 'records' => null ];
-$permissions = [ 'edit' => null, 'view' => null];
 
 if (isset($_POST['query'])) {
-    if (do_hook('verify_permission', 'zone_content_view_others')) {
-        $permissions['view'] = 'all';
-    } elseif (do_hook('verify_permission', 'zone_content_view_own')) {
-        $permissions['view'] = 'own';
-    } else {
-        $permissions['view'] = 'none';
-    }
-
-    if (do_hook('verify_permission', 'zone_content_edit_others')) {
-        $permissions['edit'] = 'all';
-    } elseif (do_hook('verify_permission', 'zone_content_edit_own')) {
-        $permissions['edit'] = 'own';
-    } else {
-        $permissions['edit'] = 'none';
-    }
-
     $searchResult = DnsRecord::search_zone_and_record(
         $parameters,
-        $permissions['view'],
+        Permission::getViewPermission(),
         ZONE_SORT_BY,
         RECORD_SORT_BY
     );
@@ -112,7 +96,7 @@ $app->render('search.html', [
     'zones_found' => is_array($searchResult['zones']),
     'records_found' => is_array($searchResult['records']),
     'searchResult' => $searchResult,
-    'edit_permission' => $permissions['edit'],
+    'edit_permission' => Permission::getEditPermission(),
     'user_id' => $_SESSION['userid'],
 ]);
 
