@@ -144,18 +144,18 @@ if ($perm_view == "none") {
         echo "         <tr>\n";
         echo "          <td>\n";
         if ($count_zones_edit > 0 && ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1"))) {
-            echo "       <input class=\"form-check-input\" type=\"checkbox\" name=\"zone_id[]\" value=\"" . $zone['id'] . "\">";
+            echo "       <input class=\"form-check-input\" type=\"checkbox\" name=\"zone_id[]\" value=\"" . htmlspecialchars($zone['id']) . "\">";
         }
         echo "          </td>\n";
-        echo "          <td>" . idn_to_utf8($zone["name"], IDNA_NONTRANSITIONAL_TO_ASCII) . "</td>\n";
-        echo "          <td>" . strtolower($zone["type"]) . "</td>\n";
-        echo "          <td>" . $zone["count_records"] . "</td>\n";
-        echo "          <td>" . $zone["owner"] . "</td>\n";
+        echo "          <td>" . idn_to_utf8(htmlspecialchars($zone["name"]), IDNA_NONTRANSITIONAL_TO_ASCII) . "</td>\n";
+        echo "          <td>" . strtolower(htmlspecialchars($zone["type"])) . "</td>\n";
+        echo "          <td>" . htmlspecialchars($zone["count_records"]) . "</td>\n";
+        echo "          <td>" . htmlspecialchars($zone["owner"]) . "</td>\n";
 
         if ($iface_zonelist_serial) {
             $serial = DnsRecord::get_serial_by_zid($zone['id']);
             if ($serial != "") {
-                echo "          <td>$serial</td>\n";
+                echo "          <td>" . htmlspecialchars($serial) . "</td>\n";
             } else {
                 echo "          <td>&nbsp;</td>\n";
             }
@@ -164,9 +164,9 @@ if ($perm_view == "none") {
             echo "          <td><i class=\"bi bi-" . ($zone["secured"] ? 'lock-fill' : 'unlock-fill') . "\"></i></td>\n";
         }
         echo "          <td>\n";
-        echo "           <a class=\"btn btn-outline-primary btn-sm\" href=\"edit.php?name=" . $zone['name'] . "&id=" . $zone['id'] . "\"><i class=\"bi bi-pencil-square\"></i> " . _('Edit zone') . "</a>\n";
+        echo "           <a class=\"btn btn-outline-primary btn-sm\" href=\"edit.php?name=" . htmlspecialchars($zone['name']) . "&id=" . htmlspecialchars($zone['id']) . "\"><i class=\"bi bi-pencil-square\"></i> " . _('Edit zone') . "</a>\n";
         if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
-            echo "           <a class=\"btn btn-outline-danger btn-sm\" href=\"delete_domain.php?name=" . $zone['name'] . "&id=" . $zone["id"] . "\"><i class=\"bi bi-trash\"></i> " . _('Delete zone') . "</a>\n";
+            echo "           <a class=\"btn btn-outline-danger btn-sm\" href=\"delete_domain.php?name=" . htmlspecialchars($zone['name']) . "&id=" . htmlspecialchars($zone["id"]) . "\"><i class=\"bi bi-trash\"></i> " . _('Delete zone') . "</a>\n";
         }
         echo "          </td>\n";
         echo "           </tr>\n";
