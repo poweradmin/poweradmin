@@ -2,6 +2,11 @@
 
 [Poweradmin](https://www.poweradmin.org) is a friendly web-based DNS administration tool for Bert Hubert's PowerDNS server. The interface has full support for most of the features of PowerDNS. It has full support for all zone types (master,  native and  slave), for  supermasters for automatic provisioning of slave zones, full support for IPv6 and comes with multi-language support.
 
+## Disclaimer
+
+This project is not affiliated with [PowerDNS.com](https://www.powerdns.com/index.html), [Open-Xchange](https://www.open-xchange.com), or any other third parties. The project is
+independently funded and maintained. Check out these [options](https://github.com/PowerDNS/pdns/wiki/WebFrontends) if this doesn't meet your needs.
+
 ## Requirements
 * PHP 7.2.5+
 * PHP intl extension
