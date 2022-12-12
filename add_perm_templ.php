@@ -43,7 +43,7 @@ class AddPermTemplController extends BaseController
         if ($this->isPost()) {
             $this->addPermTempl();
         }
-        $this->showPermTempl();
+        $this->showAddPermTempl();
     }
 
     private function addPermTempl()
@@ -66,7 +66,7 @@ class AddPermTemplController extends BaseController
         }
     }
 
-    private function showPermTempl()
+    private function showAddPermTempl()
     {
         $this->render('add_perm_templ.html', [
             'perms_avail' => do_hook('get_permissions_by_template_id'),
