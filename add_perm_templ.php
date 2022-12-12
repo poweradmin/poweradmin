@@ -58,7 +58,6 @@ class AddPermTemplController extends BaseController
             'array' => ['perm_id'],
         ]);
 
-        var_dump($_POST);
         if ($v->validate()) {
             do_hook('add_perm_templ', $_POST);
             success(SUC_PERM_TEMPL_ADD);
