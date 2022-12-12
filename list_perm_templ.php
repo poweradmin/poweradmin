@@ -45,7 +45,6 @@ if (!$perm_templ_perm_edit) {
 }
 
 $app->render('list_perm_templ.html', [
-    'perm_templ_perm_edit' => $perm_templ_perm_edit,
     'permission_templates' => do_hook('list_permission_templates')
 ]);
 
