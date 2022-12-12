@@ -642,8 +642,6 @@ function add_perm_templ_local($details)
     global $db;
     global $db_type;
 
-    // Fix permission template name and description first.
-
     $query = "INSERT INTO perm_templ (name, descr)
 			VALUES (" . $db->quote($details ['templ_name'], 'text') . ", " . $db->quote($details ['templ_descr'], 'text') . ")";
 
@@ -655,8 +653,8 @@ function add_perm_templ_local($details)
         $perm_templ_id = $db->lastInsertId();
     }
 
-    if (isset($details ['perm_id'])) {
-        foreach ($details ['perm_id'] as $perm_id) {
+    if (isset($details['perm_id'])) {
+        foreach ($details['perm_id'] as $perm_id) {
             $query = "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . $db->quote($perm_templ_id, 'integer') . "," . $db->quote($perm_id, 'integer') . ")";
             $db->query($query);
         }

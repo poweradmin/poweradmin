@@ -15,6 +15,10 @@ class ComposerStaticInit02fd231869a48df50cb631d6580008da
     );
 
     public static $prefixLengthsPsr4 = array (
+        'V' => 
+        array (
+            'Valitron\\' => 9,
+        ),
         'T' => 
         array (
             'Twig\\Extensions\\' => 16,
@@ -39,6 +43,10 @@ class ComposerStaticInit02fd231869a48df50cb631d6580008da
     );
 
     public static $prefixDirsPsr4 = array (
+        'Valitron\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/vlucas/valitron/src/Valitron',
+        ),
         'Twig\\Extensions\\' => 
         array (
             0 => __DIR__ . '/..' . '/twig/extensions/src',

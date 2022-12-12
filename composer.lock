@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ff025f1f05cf295a6e6b024890cda6d6",
+    "content-hash": "833fe9e765fa318772f475496d95a0a9",
     "packages": [
         {
             "name": "symfony/polyfill-ctype",
@@ -386,6 +386,65 @@
                 }
             ],
             "time": "2022-09-28T08:40:08+00:00"
+        },
+        {
+            "name": "vlucas/valitron",
+            "version": "v1.4.11",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/vlucas/valitron.git",
+                "reference": "fadce39f5f235755bb9794b2573af2d5bfcba85f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/vlucas/valitron/zipball/fadce39f5f235755bb9794b2573af2d5bfcba85f",
+                "reference": "fadce39f5f235755bb9794b2573af2d5bfcba85f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": ">=4.8.35"
+            },
+            "suggest": {
+                "ext-mbstring": "It can support the multiple bytes string length."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Valitron\\": "src/Valitron"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Vance Lucas",
+                    "email": "vance@vancelucas.com",
+                    "homepage": "https://www.vancelucas.com"
+                }
+            ],
+            "description": "Simple, elegant, stand-alone validation library with NO dependencies",
+            "homepage": "https://github.com/vlucas/valitron",
+            "keywords": [
+                "valid",
+                "validation",
+                "validator"
+            ],
+            "support": {
+                "issues": "https://github.com/vlucas/valitron/issues",
+                "source": "https://github.com/vlucas/valitron/tree/v1.4.11"
+            },
+            "funding": [
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/vlucas/valitron",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-10-14T11:54:24+00:00"
         }
     ],
     "packages-dev": [

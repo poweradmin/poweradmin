@@ -29,33 +29,51 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\AppFactory;
+use Poweradmin\BaseController;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/message.inc.php';
-include_once 'inc/header.inc.php';
 
-$app = AppFactory::create();
+class AddPermTemplController extends BaseController
+{
+    public function run(): void
+    {
+        $this->checkPermission('templ_perm_add', ERR_PERM_ADD_PERM_TEMPL);
 
-if (isset($_POST['commit']) && (!isset($_POST['templ_name']) || $_POST['templ_name'] == "")) {
-    error(ERR_INV_INPUT);
-    include_once('inc/footer.inc.php');
-    exit;
+        if ($this->isPost()) {
+            $this->addPermTempl();
+        }
+        $this->showPermTempl();
+    }
+
+    private function addPermTempl()
+    {
+        $v = new Valitron\Validator($_POST);
+        $v->rules([
+            'required' => ['templ_name'],
+            'lengthMax' => [
+                ['templ_name', 128],
+                ['templ_descr', 1024],
+            ],
+            'array' => ['perm_id'],
+        ]);
+
+        var_dump($_POST);
+        if ($v->validate()) {
+            do_hook('add_perm_templ', $_POST);
+            success(SUC_PERM_TEMPL_ADD);
+        } else {
+            $this->showError($v->errors());
+        }
+    }
+
+    private function showPermTempl()
+    {
+        $this->render('add_perm_templ.html', [
+            'perms_avail' => do_hook('get_permissions_by_template_id'),
+        ]);
+    }
 }
 
-if (!do_hook('verify_permission', 'templ_perm_edit')) {
-    error(ERR_PERM_EDIT_PERM_TEMPL);
-    include_once("inc/footer.inc.php");
-    exit;
-}
-
-if (isset($_POST['commit'])) {
-    do_hook('add_perm_templ', $_POST);
-    success(SUC_PERM_TEMPL_ADD);
-}
-
-$app->render('add_perm_templ.html', [
-    'perms_avail' => do_hook('get_permissions_by_template_id'),
-]);
-
-include_once("inc/footer.inc.php");
+$controller = new AddPermTemplController();
+$controller->run();

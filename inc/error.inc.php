@@ -38,6 +38,7 @@ define("ERR_PERM_EDIT_COMMENT", _("You do not have the permission to edit this c
 define("ERR_PERM_DEL_SM", _("You do not have the permission to delete a supermaster."));
 define("ERR_PERM_VIEW_ZONE", _("You do not have the permission to view this zone."));
 define("ERR_PERM_EDIT_USER", _("You do not have the permission to edit this user."));
+define("ERR_PERM_ADD_PERM_TEMPL", _("You do not have the permission to add permission templates."));
 define("ERR_PERM_EDIT_PERM_TEMPL", _("You do not have the permission to edit permission templates."));
 define("ERR_PERM_DEL_PERM_TEMPL", _("You do not have the permission to delete permission templates."));
 define("ERR_PERM_ADD_USER", _("You do not have the permission to add a new user."));

@@ -18,7 +18,8 @@
     "ext-openssl": "*",
     "ext-pdo": "*",
     "twig/twig": "^v2.15",
-    "twig/extensions": "^v1.5"
+    "twig/extensions": "^v1.5",
+    "vlucas/valitron": "^1.4"
   },
   "autoload": {
     "psr-4": {

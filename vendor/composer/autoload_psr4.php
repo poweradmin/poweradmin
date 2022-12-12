@@ -6,6 +6,7 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Valitron\\' => array($vendorDir . '/vlucas/valitron/src/Valitron'),
     'Twig\\Extensions\\' => array($vendorDir . '/twig/extensions/src'),
     'Twig\\' => array($vendorDir . '/twig/twig/src'),
     'Symfony\\Polyfill\\Php72\\' => array($vendorDir . '/symfony/polyfill-php72'),
