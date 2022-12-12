@@ -39,11 +39,13 @@ class AddPermTemplController extends BaseController
     public function run(): void
     {
         $this->checkPermission('templ_perm_add', ERR_PERM_ADD_PERM_TEMPL);
+        $this->checkPermission('templ_perm_edit', ERR_PERM_EDIT_PERM_TEMPL);
 
         if ($this->isPost()) {
             $this->addPermTempl();
+        } else {
+            $this->showAddPermTempl();
         }
-        $this->showAddPermTempl();
     }
 
     private function addPermTempl()
@@ -61,6 +63,10 @@ class AddPermTemplController extends BaseController
         if ($v->validate()) {
             do_hook('add_perm_templ', $_POST);
             success(SUC_PERM_TEMPL_ADD);
+
+            $this->render('list_perm_templ.html', [
+                'permission_templates' => do_hook('list_permission_templates')
+            ]);
         } else {
             $this->showError($v->errors());
         }
