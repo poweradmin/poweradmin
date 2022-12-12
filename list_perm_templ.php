@@ -29,23 +29,27 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\AppFactory;
+use Poweradmin\BaseController;
 
 require_once 'inc/toolkit.inc.php';
-include_once 'inc/header.inc.php';
 
-$app = AppFactory::create();
+class ListPermTemplController extends BaseController
+{
 
-$perm_templ_perm_edit = do_hook('verify_permission', 'templ_perm_edit');
+    public function run(): void
+    {
+        $this->checkPermission('templ_perm_edit', ERR_PERM_EDIT_PERM_TEMPL);
 
-if (!$perm_templ_perm_edit) {
-    error(ERR_PERM_EDIT_PERM_TEMPL);
-    include_once('inc/footer.inc.php');
-    exit;
+        $this->showListPermTempl();
+    }
+
+    private function showListPermTempl()
+    {
+        $this->render('list_perm_templ.html', [
+            'permission_templates' => do_hook('list_permission_templates')
+        ]);
+    }
 }
 
-$app->render('list_perm_templ.html', [
-    'permission_templates' => do_hook('list_permission_templates')
-]);
-
-include_once('inc/footer.inc.php');
+$controller = new ListPermTemplController();
+$controller->run();
