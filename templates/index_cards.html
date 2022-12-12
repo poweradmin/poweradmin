@@ -120,6 +120,17 @@
             </div>
         </div>
     </div>
+    {% if perm_templ_perm_edit %}
+    <div class="col-sm-3 mb-3">
+        <div class="card">
+            <div class="text-center"><i class="bi bi-person-lock display-1"></i></div>
+            <div class="card-body">
+                <div class="row"><a href="list_perm_templ.php" class="btn btn-light btn-block">{% trans 'List permission templates'
+                    %}</a></div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
     <div class="col-sm-3 mb-3">
         <div class="card">
             <div class="text-center"><i class="bi bi-box-arrow-right display-1"></i></div>

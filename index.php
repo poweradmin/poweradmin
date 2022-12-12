@@ -52,6 +52,7 @@ $app->render($template, [
     'perm_zone_slave_add' => do_hook('verify_permission', 'zone_slave_add'),
     'perm_supermaster_add' => do_hook('verify_permission', 'supermaster_add'),
     'perm_is_godlike' => do_hook('verify_permission', 'user_is_ueberuser'),
+    'perm_templ_perm_edit' =>do_hook('verify_permission', 'templ_perm_edit'),
     'dblog_use' => $dblog_use
 ]);
 

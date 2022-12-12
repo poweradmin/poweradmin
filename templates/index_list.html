@@ -53,6 +53,11 @@
     <li class="list-group-item list-group-item-action">
         <i class="bi bi-people"></i> <a href="users.php">{% trans 'User administration' %}</a>
     </li>
+    {% if perm_templ_perm_edit %}
+    <li class="list-group-item list-group-item-action">
+        <i class="bi bi-person-lock"></i> <a href="users.php">{% trans 'List permission templates' %}</a>
+    </li>
+    {% endif %}
     <li class="list-group-item list-group-item-action">
         <i class="bi bi-box-arrow-right"></i> <a href="index.php?logout">{% trans 'Logout' %}</a>
     </li>
