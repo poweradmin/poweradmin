@@ -42,7 +42,7 @@ include_once 'inc/header.inc.php';
 $template = sprintf("index_%s.html", $app->config('iface_index'));
 
 $app->render($template, [
-    'user_name' => $_SESSION["name"],
+    'user_name' => empty($_SESSION["name"]) ? $_SESSION["userlogin"] : $_SESSION["name"],
     'auth_used' => $_SESSION["auth_used"],
     'perm_search' => do_hook('verify_permission', 'search'),
     'perm_view_zone_own' => do_hook('verify_permission', 'zone_content_view_own'),
