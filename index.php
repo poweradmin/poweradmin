@@ -29,31 +29,39 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\AppFactory;
+use Poweradmin\BaseController;
 
 require 'vendor/autoload.php';
 
-$app = AppFactory::create();
-$dblog_use = $app->config('dblog_use');
-
 require_once 'inc/toolkit.inc.php';
-include_once 'inc/header.inc.php';
 
-$template = sprintf("index_%s.html", $app->config('iface_index'));
+class IndexController extends BaseController
+{
+    public function run(): void
+    {
+        $this->showIndex();
+    }
 
-$app->render($template, [
-    'user_name' => empty($_SESSION["name"]) ? $_SESSION["userlogin"] : $_SESSION["name"],
-    'auth_used' => $_SESSION["auth_used"],
-    'perm_search' => do_hook('verify_permission', 'search'),
-    'perm_view_zone_own' => do_hook('verify_permission', 'zone_content_view_own'),
-    'perm_view_zone_other' => do_hook('verify_permission', 'zone_content_view_others'),
-    'perm_supermaster_view' => do_hook('verify_permission', 'supermaster_view'),
-    'perm_zone_master_add' => do_hook('verify_permission', 'zone_master_add'),
-    'perm_zone_slave_add' => do_hook('verify_permission', 'zone_slave_add'),
-    'perm_supermaster_add' => do_hook('verify_permission', 'supermaster_add'),
-    'perm_is_godlike' => do_hook('verify_permission', 'user_is_ueberuser'),
-    'perm_templ_perm_edit' =>do_hook('verify_permission', 'templ_perm_edit'),
-    'dblog_use' => $dblog_use
-]);
+    private function showIndex()
+    {
+        $template = sprintf("index_%s.html", $this->config('iface_index'));
 
-include_once("inc/footer.inc.php");
+        $this->render($template, [
+            'user_name' => empty($_SESSION["name"]) ? $_SESSION["userlogin"] : $_SESSION["name"],
+            'auth_used' => $_SESSION["auth_used"],
+            'perm_search' => do_hook('verify_permission', 'search'),
+            'perm_view_zone_own' => do_hook('verify_permission', 'zone_content_view_own'),
+            'perm_view_zone_other' => do_hook('verify_permission', 'zone_content_view_others'),
+            'perm_supermaster_view' => do_hook('verify_permission', 'supermaster_view'),
+            'perm_zone_master_add' => do_hook('verify_permission', 'zone_master_add'),
+            'perm_zone_slave_add' => do_hook('verify_permission', 'zone_slave_add'),
+            'perm_supermaster_add' => do_hook('verify_permission', 'supermaster_add'),
+            'perm_is_godlike' => do_hook('verify_permission', 'user_is_ueberuser'),
+            'perm_templ_perm_edit' => do_hook('verify_permission', 'templ_perm_edit'),
+            'dblog_use' => $this->config('dblog_use')
+        ]);
+    }
+}
+
+$controller = new IndexController();
+$controller->run();

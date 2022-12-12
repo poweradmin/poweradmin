@@ -43,6 +43,11 @@ abstract class BaseController {
         return $_SERVER['REQUEST_METHOD'] === 'GET';
     }
 
+    public function config(string $key)
+    {
+        return $this->app->config($key);
+    }
+
     public function render(string $template, array $params): void
     {
         $this->app->render($template, $params);
