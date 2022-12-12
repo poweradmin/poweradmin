@@ -29,44 +29,58 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\AppFactory;
-use Poweradmin\Validation;
+use Poweradmin\BaseController;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/message.inc.php';
 
-include_once 'inc/header.inc.php';
+class DeletePermTemplController extends BaseController
+{
 
-$app = AppFactory::create();
+    public function run(): void
+    {
+        $this->checkPermission('user_edit_templ_perm', ERR_PERM_DEL_PERM_TEMPL);
 
-if (!do_hook('verify_permission' , 'user_edit_templ_perm' )) {
-    error(ERR_PERM_DEL_PERM_TEMPL);
-    include_once('inc/footer.inc.php');
-    exit;
-}
-
-if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
-    error(ERR_INV_INPUT);
-    include_once('inc/footer.inc.php');
-    exit;
-}
-
-$perm_templ_id = htmlspecialchars($_GET['id']);
-
-if (isset($_GET['confirm']) && Validation::is_number($_GET['confirm']) && $_GET["confirm"] == '1') {
-    if (do_hook('delete_perm_templ', $perm_templ_id)) {
-        success(SUC_PERM_TEMPL_DEL);
+        if (isset($_GET['confirm'])) {
+            $this->deletePermTempl();
+        } else {
+            $this->showDeletePermTempl();
+        }
     }
-    include_once('inc/footer.inc.php');
-    exit;
+
+    private function deletePermTempl()
+    {
+        $v = new Valitron\Validator($_GET);
+        $v->rules([
+            'required' => ['id'],
+            'integer' => ['id'],
+        ]);
+
+        $perm_templ_id = htmlspecialchars($_GET['id']);
+        if ($v->validate()) {
+            if (do_hook('delete_perm_templ', $perm_templ_id)) {
+                success(SUC_PERM_TEMPL_DEL);
+            }
+
+            $this->render('list_perm_templ.html', [
+                'permission_templates' => do_hook('list_permission_templates')
+            ]);
+        } else {
+            $this->showError($v->errors());
+        }
+    }
+
+    private function showDeletePermTempl()
+    {
+        $perm_templ_id = htmlspecialchars($_GET['id']);
+        $templ_details = do_hook('get_permission_template_details', $perm_templ_id);
+
+        $this->render('delete_perm_templ.html', [
+            'perm_templ_id' => $perm_templ_id,
+            'templ_name' => $templ_details['name'],
+        ]);
+    }
 }
 
-$templ_details = do_hook('get_permission_template_details' , $perm_templ_id );
-
-$app->render('delete_perm_templ.html', [
-    'perm_templ_id' => $perm_templ_id,
-    'templ_name' => $templ_details['name'],
-]);
-
-include_once("inc/footer.inc.php");
-
+$controller = new DeletePermTemplController();
+$controller->run();
