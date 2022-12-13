@@ -3,12 +3,12 @@
     <div class="col-sm-3">
         <div class="mb-2">
             <label for="templ_name" class="form-label">{% trans 'Name' %}</label>
-            <input class="form-control form-control-sm" type="text" id="templ_name" name="templ_name" value="" required>
+            <input class="form-control form-control-sm" type="text" id="templ_name" name="templ_name" value="{{ templ_name }}" required>
             <div class="invalid-feedback">{% trans 'Provide a name for your template' %}</div>
         </div>
         <div class="mb-2">
             <label for="templ_descr" class="form-label">{% trans 'Description' %}</label>
-            <input class="form-control form-control-sm" type="text" id="templ_descr" name="templ_descr" value="">
+            <input class="form-control form-control-sm" type="text" id="templ_descr" name="templ_descr" value="{{ templ_descr }}">
         </div>
         <div div class="mb-2">
             <input type="submit" class="btn btn-primary btn-sm" name="commit" value="{% trans 'Add zone template' %}">

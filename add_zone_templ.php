@@ -29,34 +29,63 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\AppFactory;
+use Poweradmin\BaseController;
 use Poweradmin\ZoneTemplate;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/message.inc.php';
 
-include_once 'inc/header.inc.php';
+class AddZoneTemplateController extends BaseController
+{
+    public function run(): void
+    {
+        $this->checkPermission('zone_master_add', ERR_PERM_ADD_ZONE_TEMPL);
 
-$app = AppFactory::create();
+        if ($this->isPost()) {
+            $this->addZoneTemplate();
+        } else {
+            $this->showAddZoneTemplate();
+        }
+    }
 
-if (isset($_POST['commit']) && (!isset($_POST['templ_name']) || $_POST['templ_name'] == "")) {
-    error(ERR_INV_INPUT);
-    include_once('inc/footer.inc.php');
-    exit;
+    private function showAddZoneTemplate()
+    {
+        $this->render('add_zone_templ.html', [
+            'user_name' => do_hook('get_fullname_from_userid', $_SESSION['userid']) ?: $_SESSION['userlogin']
+        ]);
+    }
+
+    private function addZoneTemplate()
+    {
+        $v = new Valitron\Validator($_POST);
+        $v->rules([
+            'required' => ['templ_name'],
+            'lengthMax' => [
+                ['templ_name', 128],
+                ['templ_descr', 1024],
+            ],
+        ]);
+
+        if (ZoneTemplate::add_zone_templ($_POST, $_SESSION['userid'])) {
+            success(SUC_ZONE_TEMPL_ADD);
+
+            $perm_zone_master_add = do_hook('verify_permission', 'zone_master_add');
+
+            $this->render('list_zone_templ.html', [
+                'perm_zone_master_add' => $perm_zone_master_add,
+                'user_name' => do_hook('get_fullname_from_userid', $_SESSION['userid']) ?: $_SESSION['userlogin'],
+                'zone_templates' => ZoneTemplate::get_list_zone_templ($_SESSION['userid'])
+            ]);
+        } else {
+            $this->render('add_zone_templ.html', [
+                'user_name' => do_hook('get_fullname_from_userid', $_SESSION['userid']) ?: $_SESSION['userlogin'],
+                'templ_name' => htmlspecialchars($_POST['templ_name']),
+                'templ_descr' => htmlspecialchars($_POST['templ_descr']),
+            ]);
+        }
+    }
 }
 
-if (!do_hook('verify_permission', 'zone_master_add')) {
-    error(ERR_PERM_ADD_ZONE_TEMPL);
-    include_once("inc/footer.inc.php");
-    exit;
-}
+$controller = new AddZoneTemplateController();
+$controller->run();
 
-if (isset($_POST['commit']) && ZoneTemplate::add_zone_templ($_POST, $_SESSION['userid'])) {
-    success(SUC_ZONE_TEMPL_ADD);
-}
-
-$app->render('add_zone_templ.html', [
-    'user_name' => do_hook('get_fullname_from_userid', $_SESSION['userid']) ?: $_SESSION['userlogin']
-]);
-
-include_once("inc/footer.inc.php");
