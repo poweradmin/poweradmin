@@ -29,26 +29,31 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\AppFactory;
+use Poweradmin\BaseController;
 use Poweradmin\ZoneTemplate;
 
 require_once 'inc/toolkit.inc.php';
-include_once 'inc/header.inc.php';
 
-$app = AppFactory::create();
+class ListZoneTemplController extends BaseController {
 
-$perm_zone_master_add = do_hook('verify_permission', 'zone_master_add');
+    public function run(): void
+    {
+        $this->checkPermission('zone_master_add', ERR_PERM_EDIT_ZONE_TEMPL);
 
-if (!$perm_zone_master_add) {
-    error(ERR_PERM_EDIT_ZONE_TEMPL);
-    include_once('inc/footer.inc.php');
-    exit;
+        $this->showListZoneTempl();
+    }
+
+    private function showListZoneTempl()
+    {
+        $perm_zone_master_add = do_hook('verify_permission', 'zone_master_add');
+
+        $this->render('list_zone_templ.html', [
+            'perm_zone_master_add' => $perm_zone_master_add,
+            'user_name' => do_hook('get_fullname_from_userid', $_SESSION['userid']) ?: $_SESSION['userlogin'],
+            'zone_templates' => ZoneTemplate::get_list_zone_templ($_SESSION['userid'])
+        ]);
+    }
 }
 
-$app->render('list_zone_templ.html', [
-    'perm_zone_master_add' => $perm_zone_master_add,
-    'user_name' => do_hook('get_fullname_from_userid', $_SESSION['userid']) ?: $_SESSION['userlogin'],
-    'zone_templates' => ZoneTemplate::get_list_zone_templ($_SESSION['userid'])
-]);
-
-include_once('inc/footer.inc.php');
+$controller = new ListZoneTemplController();
+$controller->run();
