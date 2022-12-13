@@ -29,75 +29,82 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\AppFactory;
+use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
 use Poweradmin\Permission;
 
 require_once 'inc/toolkit.inc.php';
-require_once 'inc/header.inc.php';
 
-$app = AppFactory::create();
+class SearchController extends BaseController
+{
 
-if (!do_hook('verify_permission', 'search')) {
-    error(ERR_PERM_SEARCH);
-    require_once 'inc/footer.inc.php';
-    exit;
+    public function run(): void
+    {
+        $this->checkPermission('search', ERR_PERM_SEARCH);
+
+        $parameters = [
+            'query' => '',
+            'zones' => true,
+            'records' => true,
+            'wildcard' => true,
+            'reverse' => true,
+        ];
+        $searchResult = ['zones' => null, 'records' => null];
+
+        $zone_sort_by = $this->getFromRequestOrSession('zone_sort_by');
+        $record_sort_by = $this->getFromRequestOrSession('record_sort_by');
+
+        $_SESSION['zone_sort_by'] = $zone_sort_by;
+        $_SESSION['record_sort_by'] = $record_sort_by;
+
+        if ($this->isPost()) {
+            $parameters['query'] = !empty($_POST['query']) ? htmlspecialchars($_POST['query']) : '';
+
+            $parameters['zones'] = $_POST['zones'] ?? false;
+            $parameters['records'] = $_POST['records'] ?? false;
+            $parameters['wildcard'] = $_POST['wildcard'] ?? false;
+            $parameters['reverse'] = $_POST['reverse'] ?? false;
+
+            $searchResult = DnsRecord::search_zone_and_record(
+                $parameters,
+                Permission::getViewPermission(),
+                $zone_sort_by,
+                $record_sort_by
+            );
+        }
+
+        $this->showSearchForm($parameters, $searchResult, $zone_sort_by, $record_sort_by);
+    }
+
+    private function showSearchForm($parameters, $searchResult, $zone_sort_by, $record_sort_by)
+    {
+        $this->render('search.html', [
+            'zone_sort_by' => $zone_sort_by,
+            'record_sort_by' => $record_sort_by,
+            'query' => $parameters['query'],
+            'search_by_zones' => $parameters['zones'],
+            'search_by_records' => $parameters['records'],
+            'search_by_wildcard' => $parameters['wildcard'],
+            'search_by_reverse' => $parameters['reverse'],
+            'zones_found' => is_array($searchResult['zones']),
+            'records_found' => is_array($searchResult['records']),
+            'searchResult' => $searchResult,
+            'edit_permission' => Permission::getEditPermission(),
+            'user_id' => $_SESSION['userid'],
+        ]);
+    }
+
+    private function getFromRequestOrSession($name)
+    {
+        if (isset($_POST[$name])) {
+            return $_POST[$name];
+        }
+        if (isset($_SESSION[$name])) {
+            return $_SESSION[$name];
+        }
+        return 'name';
+    }
 }
 
-if (isset($_GET["zone_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["zone_sort_by"])) {
-    define('ZONE_SORT_BY', $_GET["zone_sort_by"]);
-    $_SESSION["search_zone_sort_by"] = $_GET["zone_sort_by"];
-} elseif (isset($_POST["zone_sort_by"]) && preg_match("/^[a-z_]+$/", $_POST["zone_sort_by"])) {
-    define('ZONE_SORT_BY', $_POST["zone_sort_by"]);
-    $_SESSION["search_zone_sort_by"] = $_POST["zone_sort_by"];
-} elseif (isset($_SESSION["search_zone_sort_by"])) {
-    define('ZONE_SORT_BY', $_SESSION["search_zone_sort_by"]);
-} else {
-    define('ZONE_SORT_BY', "name");
-}
-
-if (isset($_GET["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["record_sort_by"])) {
-    define('RECORD_SORT_BY', $_GET["record_sort_by"]);
-    $_SESSION["record_sort_by"] = $_GET["record_sort_by"];
-} elseif (isset($_POST["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_POST["record_sort_by"])) {
-    define('RECORD_SORT_BY', $_POST["record_sort_by"]);
-    $_SESSION["record_sort_by"] = $_POST["record_sort_by"];
-} elseif (isset($_SESSION["record_sort_by"])) {
-    define('RECORD_SORT_BY', $_SESSION["record_sort_by"]);
-} else {
-    define('RECORD_SORT_BY', "name");
-}
-
-$parameters['query'] = isset($_POST['query']) && !empty($_POST['query']) ? htmlspecialchars($_POST['query']) : '';
-$parameters['zones'] = !isset($_POST['do_search']) && !isset($_POST['zones']) || isset($_POST['zones']) && $_POST['zones'] == true;
-$parameters['records'] = !isset($_POST['do_search']) && !isset($_POST['records']) || isset($_POST['records']) && $_POST['records'] == true;
-$parameters['wildcard'] = !isset($_POST['do_search']) && !isset($_POST['wildcard']) || isset($_POST['wildcard']) && $_POST['wildcard'] == true;
-$parameters['reverse'] = !isset($_POST['do_search']) && !isset($_POST['reverse']) || isset($_POST['reverse']) && $_POST['reverse'] == true;
-
-$searchResult = [ 'zones' => null, 'records' => null ];
-
-if (isset($_POST['query'])) {
-    $searchResult = DnsRecord::search_zone_and_record(
-        $parameters,
-        Permission::getViewPermission(),
-        ZONE_SORT_BY,
-        RECORD_SORT_BY
-    );
-}
-
-$app->render('search.html', [
-    'zone_sort_by' => ZONE_SORT_BY,
-    'record_sort_by' => RECORD_SORT_BY,
-    'query' => $parameters['query'],
-    'search_by_zones' => $parameters['zones'] ? 'checked' : '',
-    'search_by_records' => $parameters['records'] ? 'checked' : '',
-    'search_by_wildcard' => $parameters['wildcard'] ? 'checked' : '',
-    'search_by_reverse' => $parameters['reverse'] ? 'checked' : '',
-    'zones_found' => is_array($searchResult['zones']),
-    'records_found' => is_array($searchResult['records']),
-    'searchResult' => $searchResult,
-    'edit_permission' => Permission::getEditPermission(),
-    'user_id' => $_SESSION['userid'],
-]);
-
-require_once 'inc/footer.inc.php';
+$controller = new SearchController();
+$controller->run();

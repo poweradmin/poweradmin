@@ -37,7 +37,6 @@ function toggleZoneCheckboxes() {
 }
 
 function zone_sort_by(sortbytype) {
-    console.log(sortbytype);
     document.search_form.zone_sort_by.value = sortbytype;
     document.getElementsByName("do_search")[0].click();
 }
