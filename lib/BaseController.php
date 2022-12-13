@@ -54,6 +54,15 @@ abstract class BaseController {
         include_once('inc/footer.inc.php');
     }
 
+    public function checkCondition(bool $condition, string $errorMessage): void
+    {
+        if ($condition) {
+            error($errorMessage);
+            include_once('inc/footer.inc.php');
+            exit;
+        }
+    }
+
     public function checkPermission(string $permission, string $errorMessage)
     {
         if (!do_hook('verify_permission', $permission)) {

@@ -29,42 +29,63 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\AppFactory;
-use Poweradmin\Validation;
+use Poweradmin\BaseController;
 use Poweradmin\ZoneTemplate;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/message.inc.php';
 
-include_once 'inc/header.inc.php';
+class DeleteZoneTemplController extends BaseController
+{
+    public function run(): void
+    {
+        $zone_templ_id = htmlspecialchars($_GET['id']);
+        $owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
+        $this->checkCondition(!do_hook('verify_permission', 'zone_master_add') || !$owner, ERR_PERM_DEL_ZONE_TEMPL);
 
-$app = AppFactory::create();
+        if (isset($_GET['confirm'])) {
+            $this->deleteZoneTempl();
+        } else {
+            $this->showDeleteZoneTempl();
+        }
+    }
 
-if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
-    error(ERR_INV_INPUT);
-    include_once('inc/footer.inc.php');
-    exit;
+    private function deleteZoneTempl()
+    {
+        $v = new Valitron\Validator($_GET);
+        $v->rules([
+            'required' => ['id'],
+            'integer' => ['id'],
+        ]);
+
+        if ($v->validate()) {
+            $zone_templ_id = htmlspecialchars($_GET['id']);
+            ZoneTemplate::delete_zone_templ($zone_templ_id);
+            success(SUC_ZONE_TEMPL_DEL);
+
+            $perm_zone_master_add = do_hook('verify_permission', 'zone_master_add');
+
+            $this->render('list_zone_templ.html', [
+                'perm_zone_master_add' => $perm_zone_master_add,
+                'user_name' => do_hook('get_fullname_from_userid', $_SESSION['userid']) ?: $_SESSION['userlogin'],
+                'zone_templates' => ZoneTemplate::get_list_zone_templ($_SESSION['userid'])
+            ]);
+        } else {
+            $this->showError($v->errors());
+        }
+    }
+
+    private function showDeleteZoneTempl()
+    {
+        $zone_templ_id = htmlspecialchars($_GET['id']);
+        $templ_details = ZoneTemplate::get_zone_templ_details($zone_templ_id);
+
+        $this->render('delete_zone_templ.html', [
+            'templ_name' => $templ_details['name'],
+            'zone_templ_id' => $zone_templ_id,
+        ]);
+    }
 }
-$zone_templ_id = htmlspecialchars($_GET['id']);
 
-$owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
-if (!do_hook('verify_permission', 'zone_master_add') || !$owner) {
-    error(ERR_PERM_DEL_ZONE_TEMPL);
-    include_once('inc/footer.inc.php');
-    exit;
-}
-
-if (isset($_GET['confirm']) && Validation::is_number($_GET['confirm']) && $_GET["confirm"] == '1') {
-    ZoneTemplate::delete_zone_templ($zone_templ_id);
-    success(SUC_ZONE_TEMPL_DEL);
-    include_once('inc/footer.inc.php');
-    exit;
-}
-
-$templ_details = ZoneTemplate::get_zone_templ_details($zone_templ_id);
-$app->render('delete_zone_templ.html', [
-    'templ_name' => $templ_details['name'],
-    'zone_templ_id' => $zone_templ_id,
-]);
-
-include_once('inc/footer.inc.php');
+$controller = new DeleteZoneTemplController();
+$controller->run();
