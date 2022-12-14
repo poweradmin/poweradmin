@@ -39,7 +39,6 @@ class AddPermTemplController extends BaseController
     public function run(): void
     {
         $this->checkPermission('templ_perm_add', ERR_PERM_ADD_PERM_TEMPL);
-        $this->checkPermission('templ_perm_edit', ERR_PERM_EDIT_PERM_TEMPL);
 
         if ($this->isPost()) {
             $this->addPermTempl();
