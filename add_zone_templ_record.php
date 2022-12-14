@@ -76,89 +76,15 @@ if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
     exit;
 }
 
-echo "    <h5 class=\"mb-3\">" . _('Add record to zone template') . " \"" . $templ_details['name'] . "\"</h5>\n";
-
-echo "     <form class=\"needs-validation\" method=\"post\" novalidate>\n";
-echo "      <input type=\"hidden\" name=\"domain\" value=\"" . $zone_templ_id . "\">\n";
-echo "      <table class=\"table table-striped table-hover table-sm\">\n";
-echo "       <tr>\n";
-echo "        <td>" . _('Name') . "</td>\n";
-echo "        <td>&nbsp;</td>\n";
-echo "        <td>" . _('Type') . "</td>\n";
-echo "        <td>" . _('Content') . "</td>\n";
-echo "        <td>" . _('Priority') . "</td>\n";
-echo "        <td>" . _('TTL') . "</td>\n";
-echo "       </tr>\n";
-echo "       <tr>\n";
-echo "        <td>";
-echo "          <input class=\"form-control form-control-sm\" type=\"text\" name=\"name\" value=\"" . htmlspecialchars($name) . "\">";
-echo "        </td>\n";
-echo "        <td>IN</td>\n";
-echo "        <td>\n";
-echo "         <select class=\"form-select form-select-sm\" name=\"type\">\n";
-$found_selected_type = !(isset($type) && $type);
-foreach (RecordType::getTypes() as $record_type) {
-    if (isset($type) && $type) {
-        if ($type == $record_type) {
-            $add = " SELECTED";
-            $found_selected_type = true;
-        } else {
-            $add = "";
-        }
-    } else {
-        // TODO: from where comes $zone_name value and why this check exists here?
-        if (isset($zone_name) && preg_match('/i(p6|n-addr).arpa/i', $zone_name) && strtoupper($record_type) == 'PTR') {
-            $add = " SELECTED";
-        } elseif (strtoupper($record_type) == 'A') {
-            $add = " SELECTED";
-        } else {
-            $add = "";
-        }
-    }
-    echo "          <option" . $add . " value=\"" . $record_type . "\">" . $record_type . "</option>\n";
-}
-if (!$found_selected_type)
-    echo "          <option SELECTED value=\"" . htmlspecialchars($type) . "\"><i>" . htmlspecialchars($type) . "</i></option>\n";
-echo "         </select>\n";
-echo "        </td>\n";
-echo "        <td>";
-echo "          <input class=\"form-control form-control-sm\" type=\"text\" name=\"content\" value=\"" . htmlspecialchars($content) . "\" required>";
-echo "          <div class=\"invalid-feedback\">". _('Provide content for your zone record') . "</div>";
-echo "        </td>\n";
-echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"prio\" value=\"" . htmlspecialchars($prio) . "\"></td>\n";
-echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"ttl\" value=\"" . htmlspecialchars($ttl) . "\"</td>\n";
-echo "       </tr>\n";
-echo "<tr><td colspan=\"6\">";
-echo "      <div><input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"commit\" value=\"" . _('Add record') . "\"></div>\n";
-echo "</td></tr>";
-echo "</table>";
-echo "<table>";
-echo "     <tr>\n";
-echo "      <td colspan=\"6\"><br><b>" . _('Hint:') . "</b></td>\n";
-echo "     </tr>\n";
-echo "     <tr>\n";
-echo "      <td colspan=\"6\">" . _('The following placeholders can be used in template records') . "</td>\n";
-echo "     </tr>\n";
-    echo "     <tr>\n";
-    echo "      <td colspan=\"6\"><br>&nbsp;&nbsp;&nbsp;&nbsp; * [ZONE] - " . _('substituted with current zone name') . "<br>";
-    echo "&nbsp;&nbsp;&nbsp;&nbsp; * [SERIAL] - " . _('substituted with current date and 2 numbers') . " (YYYYMMDD + 00)<br>\n";
-    echo "&nbsp;&nbsp;&nbsp;&nbsp; * [NS1] - " . _('substituted with 1st name server') . "<br>\n";
-    echo "&nbsp;&nbsp;&nbsp;&nbsp; * [NS2] - " . _('substituted with 2nd name server') . "<br>\n";
-    echo "&nbsp;&nbsp;&nbsp;&nbsp; * [NS3] - " . _('substituted with 3rd name server') . "<br>\n";
-    echo "&nbsp;&nbsp;&nbsp;&nbsp; * [NS4] - " . _('substituted with 4th name server') . "<br>\n";
-    echo "&nbsp;&nbsp;&nbsp;&nbsp; * [HOSTMASTER] - " . _('substituted with hostmaster') . "</td>\n";
-    echo "     </tr>\n";
-echo "     <tr>\n";
-echo "      <td colspan=\"6\"><br><b>" . _('Examples:') . "</b></td>\n";
-echo "     </tr>\n";
-echo "     <tr>\n";
-echo "      <td colspan=\"6\">" . _('To add a subdomain foo in a zonetemplate you would put foo.[ZONE] into the name field.') . "<br>";
-echo "      " . _('To add a wildcard record put *.[ZONE] in the name field.') . "<br>";
-echo "      " . _('Use just [ZONE] to have the domain itself return a value.') . "<br>";
-echo "      " . _('For the SOA record, place [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400 in the content field.') . "</td>";
-echo "     </tr>\n";
-echo "     <tr>\n";
-echo "      </table>\n";
-echo "     </form>\n";
+$app->render('add_zone_templ_record.html', [
+    'templ_name' => $templ_details['name'],
+    'zone_templ_id' => $zone_templ_id,
+    'name' => htmlspecialchars($name),
+    'type' => htmlspecialchars($type),
+    'record_types' => RecordType::getTypes(),
+    'content' => htmlspecialchars($content),
+    'prio' => htmlspecialchars($prio),
+    'ttl' => htmlspecialchars($ttl),
+]);
 
 include_once('inc/footer.inc.php');
