@@ -29,9 +29,8 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\AppFactory;
+use Poweradmin\BaseController;
 use Poweradmin\RecordType;
-use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
 
 require_once 'inc/toolkit.inc.php';
@@ -39,52 +38,61 @@ require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
 
-$app = AppFactory::create();
-$dns_ttl = $app->config('dns_ttl');
+class AddZoneTemplRecordController extends BaseController {
 
-if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
-    error(ERR_INV_INPUT);
-    include_once('inc/footer.inc.php');
-    exit;
-}
-$zone_templ_id = htmlspecialchars($_GET['id']);
+    public function run(): void
+    {
+        $zone_templ_id = htmlspecialchars($_GET['id']);
+        $owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
 
-$ttl = isset($_POST['ttl']) && Validation::is_number($_POST['ttl']) ? $_POST['ttl'] : $dns_ttl;
-$prio = isset($_POST['prio']) && Validation::is_number($_POST['prio']) ? $_POST['prio'] : 0;
-$name = $_POST['name'] ?? "[ZONE]";
-$type = $_POST['type'] ?? "";
-$content = $_POST['content'] ?? "";
+        $this->checkCondition(!do_hook('verify_permission' , 'zone_master_add' ) || !$owner, ERR_PERM_ADD_RECORD);
 
-$templ_details = ZoneTemplate::get_zone_templ_details($zone_templ_id);
-$owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
+        if ($this->isPost()) {
+            $this->addZoneTemplRecord();
+        } else {
+            $this->showAddZoneTemplRecord();
+        }
+    }
 
-if (isset($_POST["commit"])) {
-    if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
-        error(ERR_PERM_ADD_RECORD);
-    } else {
+    private function addZoneTemplRecord()
+    {
+        $zone_templ_id = htmlspecialchars($_GET['id']);
+        $name = $_POST['name'] ?? "[ZONE]";
+        $type = $_POST['type'] ?? "";
+        $content = $_POST['content'] ?? "";
+        $prio = $_POST['prio'] ?? 0;
+        $dns_ttl = $this->config('dns_ttl');
+        $ttl = $_POST['ttl'] ?? $dns_ttl;
+
         if (ZoneTemplate::add_zone_templ_record($zone_templ_id, $name, $type, $content, $ttl, $prio)) {
             success(_('The record was successfully added.'));
-            $name = $type = $content = $ttl = $prio = "";
         }
+        $this->showAddZoneTemplRecord();
+    }
+
+    private function showAddZoneTemplRecord()
+    {
+        $zone_templ_id = htmlspecialchars($_GET['id']);
+        $templ_details = ZoneTemplate::get_zone_templ_details($zone_templ_id);
+        $name = $_POST['name'] ?? "[ZONE]";
+        $type = $_POST['type'] ?? "";
+        $content = $_POST['content'] ?? "";
+        $prio = $_POST['prio'] ?? 0;
+        $dns_ttl = $this->config('dns_ttl');
+        $ttl = $_POST['ttl'] ?? $dns_ttl;
+
+        $this->render('add_zone_templ_record.html', [
+            'templ_name' => $templ_details['name'],
+            'zone_templ_id' => $zone_templ_id,
+            'name' => htmlspecialchars($name),
+            'type' => htmlspecialchars($type),
+            'record_types' => RecordType::getTypes(),
+            'content' => htmlspecialchars($content),
+            'prio' => htmlspecialchars($prio),
+            'ttl' => htmlspecialchars($ttl),
+        ]);
     }
 }
 
-if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
-    error(ERR_PERM_ADD_RECORD);
-    error(ERR_INV_INPUT);
-    include_once("inc/footer.inc.php");
-    exit;
-}
-
-$app->render('add_zone_templ_record.html', [
-    'templ_name' => $templ_details['name'],
-    'zone_templ_id' => $zone_templ_id,
-    'name' => htmlspecialchars($name),
-    'type' => htmlspecialchars($type),
-    'record_types' => RecordType::getTypes(),
-    'content' => htmlspecialchars($content),
-    'prio' => htmlspecialchars($prio),
-    'ttl' => htmlspecialchars($ttl),
-]);
-
-include_once('inc/footer.inc.php');
+$controller = new AddZoneTemplRecordController();
+$controller->run();
