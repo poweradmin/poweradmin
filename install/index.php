@@ -40,7 +40,7 @@ require_once dirname(__DIR__) . '/inc/error.inc.php';
 require_once dirname(__DIR__) . '/inc/i18n.inc.php';
 
 // Constants
-define('LOCAL_CONFIG_FILE', dirname(__DIR__) . '/inc/config.inc.php');
+$local_config_file = dirname(__DIR__) . '/inc/config.inc.php';
 const SESSION_KEY_LENGTH = 46;
 
 // Localize interface
@@ -305,8 +305,8 @@ switch ($current_step) {
         // Try to create configuration file
         $config_file_created = false;
 
-        if (is_writeable(LOCAL_CONFIG_FILE)) {
-            $local_config = fopen(LOCAL_CONFIG_FILE, "w");
+        if (is_writeable($local_config_file)) {
+            $local_config = fopen($local_config_file, "w");
             fwrite($local_config, $configuration);
             fclose($local_config);
             $config_file_created = true;
@@ -316,7 +316,7 @@ switch ($current_step) {
             'next_step' => (int)htmlspecialchars($current_step)+1,
             'language' => htmlspecialchars($language),
             'config_file_created' => $config_file_created,
-            'local_config_file' => LOCAL_CONFIG_FILE,
+            'local_config_file' => $local_config_file,
             'session_key' => Password::salt(SESSION_KEY_LENGTH),
             'iface_lang' => htmlspecialchars($language),
             'dns_hostmaster' => htmlspecialchars($dns_hostmaster),
