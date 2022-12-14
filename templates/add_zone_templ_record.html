@@ -13,7 +13,7 @@
         </tr>
         <tr>
             <td>
-                <input class="form-control form-control-sm" type="text" name="name" value="{{ name }}">
+                <input class="form-control form-control-sm" type="text" name="name" value="{{ name }}" required>
             </td>
             <td>IN</td>
             <td>
@@ -28,8 +28,8 @@
                 <input class="form-control form-control-sm" type="text" name="content" value="{{ content }}" required>
                 <div class="invalid-feedback">{% trans 'Provide content for your zone record' %}</div>
             </td>
-            <td><input class="form-control form-control-sm" type="text" name="prio" value="{{ prio }}"></td>
-            <td><input class="form-control form-control-sm" type="text" name="ttl" value="{{ ttl }}"></td>
+            <td><input class="form-control form-control-sm" type="text" name="prio" value="{{ prio }}" required></td>
+            <td><input class="form-control form-control-sm" type="text" name="ttl" value="{{ ttl }}" required></td>
         </tr>
         <tr>
             <td colspan="6">

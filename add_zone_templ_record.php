@@ -42,13 +42,27 @@ class AddZoneTemplRecordController extends BaseController {
 
     public function run(): void
     {
+        $v = new Valitron\Validator($_GET);
+        $v->rule('required', ['id']);
+        if (!$v->validate()) {
+            $this->showError($v->errors());
+        }
+
         $zone_templ_id = htmlspecialchars($_GET['id']);
         $owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
 
         $this->checkCondition(!do_hook('verify_permission' , 'zone_master_add' ) || !$owner, ERR_PERM_ADD_RECORD);
 
         if ($this->isPost()) {
-            $this->addZoneTemplRecord();
+            $v = new Valitron\Validator($_POST);
+            $v->rules(['required' => [
+                'name', 'type', 'content', 'prio', 'ttl'
+            ]]);
+            if ($v->validate()) {
+                $this->addZoneTemplRecord();
+            } else {
+                $this->showError($v->errors());
+            }
         } else {
             $this->showAddZoneTemplRecord();
         }
