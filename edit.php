@@ -52,22 +52,20 @@ $iface_add_reverse_record = $app->config('iface_add_reverse_record');
 $iface_rowamount = $app->config('iface_rowamount');
 $iface_zone_comments = $app->config('iface_zone_comments');
 
+$row_start = 0;
 if (isset($_GET["start"])) {
-    define('ROWSTART', (($_GET["start"] - 1) * $iface_rowamount));
-} else {
-    define('ROWSTART', 0);
+    $row_start = ($_GET["start"] - 1) * $iface_rowamount;
 }
 
+$record_sort_by = 'name';
 if (isset($_GET["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["record_sort_by"])) {
-    define('RECORD_SORT_BY', $_GET["record_sort_by"]);
+    $record_sort_by = $_GET["record_sort_by"];
     $_SESSION["record_sort_by"] = $_GET["record_sort_by"];
 } elseif (isset($_POST["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_POST["record_sort_by"])) {
-    define('RECORD_SORT_BY', $_POST["record_sort_by"]);
+    $record_sort_by = $_POST["record_sort_by"];
     $_SESSION["record_sort_by"] = $_POST["record_sort_by"];
 } elseif (isset($_SESSION["record_sort_by"])) {
-    define('RECORD_SORT_BY', $_SESSION["record_sort_by"]);
-} else {
-    define('RECORD_SORT_BY', "name");
+    $record_sort_by = $_SESSION["record_sort_by"];
 }
 
 if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
@@ -225,7 +223,7 @@ echo "   <div>\n";
 echo show_pages($record_count, $iface_rowamount, $zone_id);
 echo "   </div>\n";
 
-$records = DnsRecord::get_records_from_domain_id($zone_id, ROWSTART, $iface_rowamount, RECORD_SORT_BY);
+$records = DnsRecord::get_records_from_domain_id($zone_id, $row_start, $iface_rowamount, $record_sort_by);
 if ($records == "-1") {
     echo " <p>" . _("This zone does not have any records. Weird.") . "</p>\n";
 } else {
