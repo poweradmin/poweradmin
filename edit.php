@@ -240,21 +240,21 @@ if ($records == "-1") {
     echo "    </tr>\n";
     foreach ($records as $r) {
         if (!($r['type'] == "SOA" || ($r['type'] == "NS" && $perm_edit == "own_as_client"))) {
-            echo "    <input type=\"hidden\" name=\"record[" . $r['id'] . "][rid]\" value=\"" . $r['id'] . "\">\n";
-            echo "    <input type=\"hidden\" name=\"record[" . $r['id'] . "][zid]\" value=\"" . $zone_id . "\">\n";
+            echo "    <input type=\"hidden\" name=\"record[" . htmlspecialchars($r['id']) . "][rid]\" value=\"" . htmlspecialchars($r['id']) . "\">\n";
+            echo "    <input type=\"hidden\" name=\"record[" . htmlspecialchars($r['id']) . "][zid]\" value=\"" . htmlspecialchars($zone_id) . "\">\n";
         }
         echo "    <tr>\n";
-        echo "     <td class=\"col-sm-1\">{$r['id']}</td>\n";
+        echo "     <td class=\"col-sm-1\">" . htmlspecialchars($r['id']) . "</td>\n";
         if ($r['type'] == "SOA" || ($r['type'] == "NS" && $perm_edit == "own_as_client")) {
-            echo "     <td>" . $r['name'] . "</td>\n";
-            echo "     <td>" . $r['type'] . "</td>\n";
-            echo "     <td>" . $r['content'] . "</td>\n";
+            echo "     <td>" . htmlspecialchars($r['name']) . "</td>\n";
+            echo "     <td>" . htmlspecialchars($r['type']) . "</td>\n";
+            echo "     <td>" . htmlspecialchars($r['content']) . "</td>\n";
             echo "     <td>&nbsp;</td>\n";
-            echo "     <td>" . $r['ttl'] . "</td>\n";
+            echo "     <td>" . htmlspecialchars($r['ttl']) . "</td>\n";
         } else {
             echo "      <td class=\"col-sm-2\"><input class=\"form-control form-control-sm\" type=\"text\" name=\"record[" . $r['id'] . "][name]\" value=\"" . htmlspecialchars($r['name']) . "\"></td>\n";
             echo "      <td class=\"col-sm-1\">\n";
-            echo "       <select class=\"form-select form-select-sm\" name=\"record[" . $r['id'] . "][type]\">\n";
+            echo "       <select class=\"form-select form-select-sm\" name=\"record[" . htmlspecialchars($r['id']) . "][type]\">\n";
             $found_selected_type = false;
             foreach (RecordType::getTypes() as $type_available) {
                 if ($type_available == $r['type']) {
@@ -266,7 +266,7 @@ if ($records == "-1") {
                 echo "         <option" . $add . " value=\"" . htmlspecialchars($type_available) . "\" >" . $type_available . "</option>\n";
             }
             if (!$found_selected_type)
-                echo "         <option SELECTED value=\"" . htmlspecialchars($r['type']) . "\"><i>" . $r['type'] . "</i></option>\n";
+                echo "         <option SELECTED value=\"" . htmlspecialchars($r['type']) . "\"><i>" . htmlspecialchars($r['type']) . "</i></option>\n";
 
             echo "       </select>\n";
             echo "      </td>\n";

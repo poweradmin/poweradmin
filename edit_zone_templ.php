@@ -151,10 +151,10 @@ if (!(do_hook('verify_permission', 'zone_master_add')) || !$owner) {
                 }
                 echo "      <td class=\"u\">" . htmlspecialchars($r['ttl']) . "</td>\n";
                 echo "     <td>\n";
-                echo "    <input type=\"hidden\" name=\"record[" . $r['id'] . "][rid]\" value=\"" . $r['id'] . "\">\n";
-                echo "      <a class=\"btn btn-outline-primary btn-sm\" href=\"edit_zone_templ_record.php?id=" . $r['id'] . "&amp;zone_templ_id=" . $zone_templ_id . "\">
+                echo "    <input type=\"hidden\" name=\"record[" . htmlspecialchars($r['id']) . "][rid]\" value=\"" . htmlspecialchars($r['id']) . "\">\n";
+                echo "      <a class=\"btn btn-outline-primary btn-sm\" href=\"edit_zone_templ_record.php?id=" . htmlspecialchars($r['id']) . "&amp;zone_templ_id=" . $zone_templ_id . "\">
 						<i class=\"bi bi-pencil-square\"></i>" . _('Edit record') . "</a>\n";
-                echo "      <a class=\"btn btn-outline-danger btn-sm\" href=\"delete_zone_templ_record.php?id=" . $r['id'] . "&amp;zone_templ_id=" . $zone_templ_id . "\">
+                echo "      <a class=\"btn btn-outline-danger btn-sm\" href=\"delete_zone_templ_record.php?id=" . htmlspecialchars($r['id']) . "&amp;zone_templ_id=" . $zone_templ_id . "\">
 						<i class=\"bi bi-trash\"></i>" . _('Delete record') . "</a>\n";
                 echo "     </td>\n";
                 echo "     </tr>\n";
