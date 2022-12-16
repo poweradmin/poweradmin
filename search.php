@@ -88,7 +88,7 @@ class SearchController extends BaseController
             'search_by_reverse' => $parameters['reverse'],
             'zones_found' => is_array($searchResult['zones']),
             'records_found' => is_array($searchResult['records']),
-            'searchResult' => $searchResult,
+            'search_result' => $searchResult,
             'edit_permission' => Permission::getEditPermission(),
             'user_id' => $_SESSION['userid'],
         ]);

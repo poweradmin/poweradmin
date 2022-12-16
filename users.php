@@ -67,6 +67,5 @@ class UsersController extends BaseController
     }
 }
 
-
 $controller = new UsersController();
 $controller->run();

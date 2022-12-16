@@ -54,12 +54,12 @@
         </tr>
         </thead>
         <tbody>
-        {% if not searchResult['zones'] %}
+        {% if not search_result['zones'] %}
         <tr>
             <td colspan="5">{% trans 'No results found' %}</td>
         </tr>
         {% endif %}
-        {% for zone in searchResult['zones'] %}
+        {% for zone in search_result['zones'] %}
         <tr>
             <td>{{ zone['name'] }}</td>
             <td>{{ zone['type'] }}</td>
@@ -98,12 +98,12 @@
         </tr>
         </thead>
         <tbody>
-        {% if not searchResult['records'] %}
+        {% if not search_result['records'] %}
         <tr>
             <td colspan="6">{% trans 'No results found' %}</td>
         </tr>
         {% endif %}
-        {% for record in searchResult['records'] %}
+        {% for record in search_result['records'] %}
         <tr>
             <td>{{ record['name'] }}</td>
             <td>{{ record['type'] }}</td>
