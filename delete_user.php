@@ -38,101 +38,98 @@ require_once 'inc/message.inc.php';
 
 include_once 'inc/header.inc.php';
 
-do_hook('verify_permission' , 'user_edit_own' ) ? $perm_edit_own = "1" : $perm_edit_own = "0";
-do_hook('verify_permission' , 'user_edit_others' ) ? $perm_edit_others = "1" : $perm_edit_others = "0";
-do_hook('verify_permission' , 'user_is_ueberuser' ) ? $perm_is_godlike = "1" : $perm_is_godlike = "0";
+$perm_edit_others = do_hook('verify_permission', 'user_edit_others');
+$perm_is_godlike = do_hook('verify_permission', 'user_is_ueberuser');
 
 if (!(isset($_GET['id']) && Validation::is_number($_GET['id']))) {
     error(ERR_INV_INPUT);
     include_once("inc/footer.inc.php");
     exit;
-} else {
-    $uid = htmlspecialchars($_GET['id']);
 }
 
-if (isset($_POST['commit'])) {
+$uid = htmlspecialchars($_GET['id']);
 
-    if (do_hook('is_valid_user' , $uid )) {
+if (isset($_POST['commit'])) {
+    if (do_hook('is_valid_user', $uid)) {
         $zones = array();
         if (isset($_POST['zone'])) {
             $zones = $_POST['zone'];
         }
 
-        if (do_hook('delete_user' , $uid, $zones )) {
+        if (do_hook('delete_user', $uid, $zones)) {
             success(SUC_USER_DEL);
         }
     } else {
         header("Location: users.php");
         exit;
     }
-} else {
+    include_once("inc/footer.inc.php");
+    exit;
+}
 
-    if (($uid != $_SESSION['userid'] && $perm_edit_others == "0") || ($uid == $_SESSION['userid'] && $perm_is_godlike == "0")) {
-        error(ERR_PERM_DEL_USER);
-        include_once("inc/footer.inc.php");
-        exit;
-    } else {
-        $name = do_hook('get_fullname_from_userid', $uid);
-        if (!$name) {
-            $name = User::get_username_by_id($uid);
-        }
+if (($uid != $_SESSION['userid'] && !$perm_edit_others) || ($uid == $_SESSION['userid'] && !$perm_is_godlike)) {
+    error(ERR_PERM_DEL_USER);
+    include_once("inc/footer.inc.php");
+    exit;
+}
 
-        $zones = DnsRecord::get_zones("own", $uid);
+$name = do_hook('get_fullname_from_userid', $uid);
+if (!$name) {
+    $name = User::get_username_by_id($uid);
+}
+$zones = DnsRecord::get_zones("own", $uid);
 
-        echo "     <h5 class=\"mb-3\">" . _('Delete user') . " \"" . $name . "\"</h5>\n";
-        echo "     <form method=\"post\" action=\"\">\n";
-        echo "      <table class=\"table table-striped table-sm\">\n";
+echo "     <h5 class=\"mb-3\">" . _('Delete user') . " \"" . $name . "\"</h5>\n";
+echo "     <form method=\"post\" action=\"\">\n";
+echo "      <table class=\"table table-striped table-sm\">\n";
 
-        if (count($zones) > 0) {
+if (count($zones) > 0) {
+    $users = do_hook('show_users');
 
-            $users = do_hook('show_users');
+    echo "       <tr>\n";
+    echo "        <td colspan=\"5\">\n";
 
-            echo "       <tr>\n";
-            echo "        <td colspan=\"5\">\n";
+    echo "         " . _('You are about to delete a user. This user is owner for a number of zones. Please decide what to do with these zones.') . "\n";
+    echo "        </td>\n";
+    echo "       </tr>\n";
 
-            echo "         " . _('You are about to delete a user. This user is owner for a number of zones. Please decide what to do with these zones.') . "\n";
-            echo "        </td>\n";
-            echo "       </tr>\n";
+    echo "       <tr>\n";
+    echo "        <th>" . _('Zone') . "</th>\n";
+    echo "        <th>" . _('Delete') . "</th>\n";
+    echo "        <th>" . _('Leave') . "</th>\n";
+    echo "        <th>" . _('Add new owner') . "</th>\n";
+    echo "        <th>" . _('Owner to be added') . "</th>\n";
+    echo "       </tr>\n";
 
-            echo "       <tr>\n";
-            echo "        <th>" . _('Zone') . "</th>\n";
-            echo "        <th>" . _('Delete') . "</th>\n";
-            echo "        <th>" . _('Leave') . "</th>\n";
-            echo "        <th>" . _('Add new owner') . "</th>\n";
-            echo "        <th>" . _('Owner to be added') . "</th>\n";
-            echo "       </tr>\n";
-
-            foreach ($zones as $zone) {
-                echo "       <input type=\"hidden\" name=\"zone[" . $zone['id'] . "][zid]\" value=\"" . $zone['id'] . "\">\n";
-                echo "       <tr>\n";
-                echo "        <td>" . $zone['name'] . "</td>\n";
-                echo "        <td><input type=\"radio\" name=\"zone[" . $zone['id'] . "][target]\" value=\"delete\"></td>\n";
-                echo "        <td><input type=\"radio\" name=\"zone[" . $zone['id'] . "][target]\" value=\"leave\" CHECKED></td>\n";
-                echo "        <td><input type=\"radio\" name=\"zone[" . $zone['id'] . "][target]\" value=\"new_owner\"></td>\n";
-                echo "        <td>\n";
-                echo "         <select class=\"form-select form-select-sm\" name=\"zone[" . $zone['id'] . "][newowner]\">\n";
-
-                foreach ($users as $user) {
-                    echo "          <option value=\"" . $user["id"] . "\">" . $user["fullname"] . "</option>\n";
-                }
-
-                echo "         </select>\n";
-                echo "        </td>\n";
-                echo "       </tr>\n";
-            }
-        }
+    foreach ($zones as $zone) {
+        echo "       <input type=\"hidden\" name=\"zone[" . $zone['id'] . "][zid]\" value=\"" . $zone['id'] . "\">\n";
         echo "       <tr>\n";
-        echo "        <td colspan=\"5\">\n";
+        echo "        <td>" . $zone['name'] . "</td>\n";
+        echo "        <td><input type=\"radio\" name=\"zone[" . $zone['id'] . "][target]\" value=\"delete\"></td>\n";
+        echo "        <td><input type=\"radio\" name=\"zone[" . $zone['id'] . "][target]\" value=\"leave\" CHECKED></td>\n";
+        echo "        <td><input type=\"radio\" name=\"zone[" . $zone['id'] . "][target]\" value=\"new_owner\"></td>\n";
+        echo "        <td>\n";
+        echo "         <select class=\"form-select form-select-sm\" name=\"zone[" . $zone['id'] . "][newowner]\">\n";
 
-        echo "         " . _('Are you sure?') . "\n";
+        foreach ($users as $user) {
+            echo "          <option value=\"" . $user["id"] . "\">" . $user["fullname"] . "</option>\n";
+        }
+
+        echo "         </select>\n";
         echo "        </td>\n";
         echo "       </tr>\n";
-
-        echo "      </table>\n";
-        echo "     <input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"commit\" value=\"" . _('Yes') . "\">\n";
-        echo "     <input class=\"btn btn-secondary btn-sm\" type=\"button\" onClick=\"location.href='users.php'\" value=\"" . _('No') . "\">\n";
-        echo "     </form>\n";
     }
 }
+echo "       <tr>\n";
+echo "        <td colspan=\"5\">\n";
+
+echo "         " . _('Are you sure?') . "\n";
+echo "        </td>\n";
+echo "       </tr>\n";
+
+echo "      </table>\n";
+echo "     <input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"commit\" value=\"" . _('Yes') . "\">\n";
+echo "     <input class=\"btn btn-secondary btn-sm\" type=\"button\" onClick=\"location.href='users.php'\" value=\"" . _('No') . "\">\n";
+echo "     </form>\n";
 
 include_once("inc/footer.inc.php");
