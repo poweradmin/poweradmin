@@ -1452,6 +1452,7 @@ class DnsRecord
     public static function search_zone_and_record($parameters, $permission_view, $sort_zones_by, $sort_records_by)
     {
         global $db;
+        global $iface_search_group_records;
 
         $return = array('zones' => array(), 'records' => array());
 
@@ -1540,7 +1541,7 @@ class DnsRecord
                 (records.name LIKE ' . $db->quote($search_string, 'text') . ' OR records.content LIKE ' . $db->quote($search_string, 'text') .
                 ($parameters['reverse'] ? ' OR records.name LIKE ' . $reverse_search_string . ' OR records.content LIKE ' . $reverse_search_string : '') . ')' .
                 ($permission_view == 'own' ? 'AND z.owner = ' . $db->quote($_SESSION['userid'], 'integer') : '') .
-                ' GROUP BY records.name, records.content, records.id, records.domain_id, records.type, records.ttl, records.prio, z.id, z.owner, u.id, u.fullname ' .
+                ($iface_search_group_records ? ' GROUP BY records.name, records.content ' : '') . // May not work correctly with MySQL strict mode
                 ' ORDER BY ' . $sort_records_by;
 
             $recordsResponse = $db->query($recordsQuery);

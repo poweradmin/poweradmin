@@ -43,6 +43,7 @@ $iface_add_reverse_record = true; // Displays a checkbox for adding a reverse re
 $iface_zone_type_default = 'MASTER'; // or 'NATIVE'
 $iface_zone_comments = true; // Show or hide zone comments
 $iface_index = 'cards'; // or list
+$iface_search_group_records = false; // Group records by name and content in search results
 
 // Predefined DNS settings
 $dns_hostmaster = '';
