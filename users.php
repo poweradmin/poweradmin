@@ -29,29 +29,44 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\AppFactory;
+use Poweradmin\BaseController;
 
 require_once 'inc/toolkit.inc.php';
-include_once 'inc/header.inc.php';
 
-$app = AppFactory::create();
+class UsersController extends BaseController
+{
 
-if (isset ($_POST['commit'])) {
-    foreach ($_POST['user'] as $user) {
-        do_hook('update_user_details', $user);
+    public function run(): void
+    {
+        if ($this->isPost()) {
+            $this->updateUsers();
+        }
+        $this->showUsers();
+    }
+
+    private function updateUsers()
+    {
+        foreach ($_POST['user'] as $user) {
+            do_hook('update_user_details', $user);
+        }
+    }
+
+    private function showUsers()
+    {
+        $this->render('users.html', [
+            'perm_view_others' => do_hook('verify_permission', 'user_view_others'),
+            'perm_edit_own' => do_hook('verify_permission', 'user_edit_own'),
+            'perm_edit_others' => do_hook('verify_permission', 'user_edit_others'),
+            'perm_templ_perm_edit' => do_hook('verify_permission', 'templ_perm_edit'),
+            'perm_is_godlike' => do_hook('verify_permission', 'user_is_ueberuser'),
+            'users' => do_hook('get_user_detail_list', ""),
+            'perm_templates' => do_hook('list_permission_templates'),
+            'ldap_use' => $this->config('ldap_use'),
+            'session_userid' => $_SESSION["userid"]
+        ]);
     }
 }
 
-$app->render('users.html', [
-    'perm_view_others' => do_hook('verify_permission', 'user_view_others'),
-    'perm_edit_own' => do_hook('verify_permission', 'user_edit_own'),
-    'perm_edit_others' => do_hook('verify_permission', 'user_edit_others'),
-    'perm_templ_perm_edit' => do_hook('verify_permission', 'templ_perm_edit'),
-    'perm_is_godlike' => do_hook('verify_permission', 'user_is_ueberuser'),
-    'users' => do_hook('get_user_detail_list', ""),
-    'perm_templates' => do_hook('list_permission_templates'),
-    'ldap_use' => $app->config('ldap_use'),
-    'session_userid' => $_SESSION["userid"]
-]);
 
-include_once('inc/footer.inc.php');
+$controller = new UsersController();
+$controller->run();
