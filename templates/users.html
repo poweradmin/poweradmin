@@ -23,6 +23,8 @@
 
         {% if user['active'] %}
         {% set active = 'checked' %}
+        {% else %}
+        {% set active = '' %}
         {% endif %}
 
         {% if user['use_ldap'] %}
