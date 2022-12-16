@@ -1,9 +1,11 @@
 <?php
 
 $client_ip = '';
-if (isset($_SERVER['X_HTTP_FORWARDED_FOR'])) {
-    $client_ip = $_SERVER['X_HTTP_FORWARDED_FOR'];
+
+if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+    $client_ip = filter_var($_SERVER['HTTP_X_FORWARDED_FOR'], FILTER_VALIDATE_IP);
 } else if (isset($_SERVER['REMOTE_ADDR'])) {
-    $client_ip = $_SERVER['REMOTE_ADDR'];
+    $client_ip = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
 }
-echo $client_ip;
+
+echo htmlspecialchars($client_ip);
