@@ -39,6 +39,11 @@ class ListSuperMastersController extends BaseController
 
     public function run(): void
     {
+        $this->showSuperMasters();
+    }
+
+    private function showSuperMasters()
+    {
         $this->render('list_supermasters.html', [
             'perm_sm_edit' => do_hook('verify_permission', 'supermaster_edit'),
             'supermasters' => DnsRecord::get_supermasters()

@@ -29,37 +29,60 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\AppFactory;
+use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/message.inc.php';
-include_once 'inc/header.inc.php';
 
-$app = AppFactory::create();
+class AddSuperMasterController extends BaseController
+{
 
-$master_ip = $_POST["master_ip"] ?? "";
-$ns_name = $_POST["ns_name"] ?? "";
-$account = $_POST["account"] ?? "";
+    public function run(): void
+    {
+        $this->checkPermission('supermaster_add', _("You do not have the permission to add a new supermaster."));
 
-$supermasters_add = do_hook('verify_permission', 'supermaster_add');
-if (!$supermasters_add) {
-    echo _("You do not have the permission to add a new supermaster.");
-    include_once('inc/footer.inc.php');
-    exit;
+        $master_ip = $_POST["master_ip"] ?? "";
+        $ns_name = $_POST["ns_name"] ?? "";
+        $account = $_POST["account"] ?? "";
+
+        if ($this->isPost()) {
+            $this->addSuperMaster($master_ip, $ns_name, $account);
+        } else {
+            $this->showAddSuperMaster($master_ip, $ns_name, $account);
+        }
+    }
+
+    private function addSuperMaster($master_ip, $ns_name, $account)
+    {
+        if (DnsRecord::add_supermaster($master_ip, $ns_name, $account)) {
+            success(SUC_SM_ADD);
+            $this->showSuperMasters();
+        } else {
+            $this->showAddSuperMaster($master_ip, $ns_name, $account);
+        }
+    }
+
+    private function showAddSuperMaster($master_ip, $ns_name, $account)
+    {
+        $this->render('add_supermaster.html', [
+            'users' => do_hook('show_users'),
+            'master_ip' => htmlspecialchars($master_ip),
+            'ns_name' => htmlspecialchars($ns_name),
+            'account' => htmlspecialchars($account),
+            'perm_view_others' => do_hook('verify_permission', 'user_view_others'),
+            'session_uid' => $_SESSION['userid']
+        ]);
+    }
+
+    private function showSuperMasters()
+    {
+        $this->render('list_supermasters.html', [
+            'perm_sm_edit' => do_hook('verify_permission', 'supermaster_edit'),
+            'supermasters' => DnsRecord::get_supermasters()
+        ]);
+    }
 }
 
-if (isset($_POST["submit"]) && DnsRecord::add_supermaster($master_ip, $ns_name, $account)) {
-    success(SUC_SM_ADD);
-}
-
-$app->render('add_supermaster.html', [
-    'users' => do_hook('show_users'),
-    'master_ip' => htmlspecialchars($master_ip),
-    'ns_name' => htmlspecialchars($ns_name),
-    'account' => htmlspecialchars($account),
-    'perm_view_others' => do_hook('verify_permission', 'user_view_others'),
-    'session_uid' => $_SESSION['userid']
-]);
-
-include_once('inc/footer.inc.php');
+$controller = new AddSuperMasterController();
+$controller->run();
