@@ -30,6 +30,7 @@
  */
 
 use Poweradmin\BaseController;
+use Poweradmin\Permission;
 
 require_once 'inc/toolkit.inc.php';
 
@@ -54,13 +55,15 @@ class UsersController extends BaseController
     private function showUsers()
     {
         $this->render('users.html', [
-            'perm_view_others' => do_hook('verify_permission', 'user_view_others'),
-            'perm_edit_own' => do_hook('verify_permission', 'user_edit_own'),
-            'perm_edit_others' => do_hook('verify_permission', 'user_edit_others'),
-            'perm_templ_perm_edit' => do_hook('verify_permission', 'templ_perm_edit'),
-            'perm_is_godlike' => do_hook('verify_permission', 'user_is_ueberuser'),
-            'users' => do_hook('get_user_detail_list', ""),
+            'permissions' => Permission::getPermissions(
+                'user_view_others',
+                'user_edit_own',
+                'user_edit_others',
+                'templ_perm_edit',
+                'user_is_ueberuser',
+            ),
             'perm_templates' => do_hook('list_permission_templates'),
+            'users' => do_hook('get_user_detail_list', ""),
             'ldap_use' => $this->config('ldap_use'),
             'session_userid' => $_SESSION["userid"]
         ]);

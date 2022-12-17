@@ -47,4 +47,16 @@ class Permission
             return "none";
         }
     }
+
+    public static function getPermissions()
+    {
+        $arguments = func_get_args();
+        $permissions = [];
+
+        foreach ($arguments as $argument) {
+            $permissions[$argument] = do_hook('verify_permission', $argument);
+        }
+
+        return $permissions;
+    }
 }

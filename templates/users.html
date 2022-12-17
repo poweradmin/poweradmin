@@ -33,14 +33,13 @@
 
         {% set user_uid = user['uid'] %}
 
-        {% if (user_uid == session_userid and perm_edit_own) or (user_uid != session_userid and perm_edit_others) %}
+        {% if (user_uid == session_userid and permissions['user_edit_own']) or (user_uid != session_userid and perm_edit_others) %}
         <tr>
             <td><input class="form-control form-control-sm" type="text" name="user[{{ user['uid'] }}][username]" value="{{ user ['username'] }}"></td>
             <td><input class="form-control form-control-sm" type="text" name="user[{{ user['uid'] }}][fullname]" value="{{ user ['fullname'] }}"></td>
-<!--            <td><input class="form-control form-control-sm" type="text" name="user[{{ user['uid'] }}][descr]" value="{{ user ['descr'] }}"></td>-->
             <td><input class="form-control form-control-sm" type="text" name="user[{{ user['uid'] }}][email]" value="{{ user ['email'] }}"></td>
             <td>
-                {% if perm_templ_perm_edit %}
+                {% if permissions['templ_perm_edit'] %}
                 <select class="form-select form-select-sm" name="user[{{ user['uid'] }}][templ_id]">
                     {% for template in perm_templates %}
                     {% if template['id'] == user['tpl_id'] %}
@@ -58,7 +57,7 @@
             </td>
 
             {% if ldap_use %}
-            {% if perm_is_godlike %}
+            {% if permissions['user_is_ueberuser'] %}
             <td><input class="form-check-input" type="checkbox" name="user[{{ user['uid'] }}][use_ldap]" {{ use_ldap }}></td>
             {% else %}
             {% if use_ldap == "checked" %}
@@ -102,7 +101,7 @@
         </tbody>
     </table>
 
-    {% if perm_edit_own or perm_edit_others %}
+    {% if permissions['user_edit_own'] or permissions['user_edit_others'] %}
     <input type="submit" class="btn btn-primary btn-sm" name="commit" value="{% trans 'Commit changes' %}">
     <input type="reset" class="btn btn-secondary btn-sm" name="reset" value="{% trans 'Reset changes' %}">
     {% endif %}
