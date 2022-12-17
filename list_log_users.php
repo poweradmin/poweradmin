@@ -29,50 +29,55 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\AppFactory;
+use Poweradmin\BaseController;
 use Poweradmin\DbUserLogger;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/pagination.inc.php';
 include_once 'inc/header.inc.php';
 
-$app = AppFactory::create();
+class ListLogUsersController extends BaseController {
 
-if (!do_hook('verify_permission', 'user_is_ueberuser')) {
-    die("You do not have the permission to see any logs");
+    public function run(): void
+    {
+        $this->checkPermission('user_is_ueberuser', 'You do not have the permission to see any logs');
+
+        $this->showListLogUsers();
+    }
+
+    private function showListLogUsers()
+    {
+        $selected_page = 1;
+        if (isset($_GET['start'])) {
+            is_numeric($_GET['start']) ? $selected_page = $_GET['start'] : die("Unknown page.");
+            if ($selected_page < 0) die('Unknown page.');
+        }
+
+        $logs_per_page = $this->config('iface_rowamount');
+
+        if (isset($_GET['name']) && $_GET['name'] != '') {
+            $number_of_logs = DbUserLogger::count_logs_by_user($_GET['name']);
+            $number_of_pages = ceil($number_of_logs / $logs_per_page);
+            if ($number_of_logs != 0 && $selected_page > $number_of_pages) die('Unknown page');
+            $logs = DbUserLogger::get_logs_for_user($_GET['name'], $logs_per_page, ($selected_page - 1) * $logs_per_page);
+
+        } else {
+            $number_of_logs = DbUserLogger::count_all_logs();
+            $number_of_pages = ceil($number_of_logs / $logs_per_page);
+            if ($number_of_logs != 0 && $selected_page > $number_of_pages) die('Unknown page');
+            $logs = DbUserLogger::get_all_logs($logs_per_page, ($selected_page - 1) * $logs_per_page);
+        }
+
+        $this->render('list_log_users.html', [
+            'number_of_logs' => $number_of_logs,
+            'name' => isset($_GET['name']) ? htmlspecialchars($_GET['name']) : null,
+            'data' => $logs,
+            'selected_page' => $selected_page,
+            'logs_per_page' => $logs_per_page,
+            'pagination' => show_pages($number_of_logs, $logs_per_page),
+        ]);
+    }
 }
 
-$selected_page = 1;
-if (isset($_GET['start'])) {
-    is_numeric($_GET['start']) ? $selected_page = $_GET['start'] : die("Unknown page.");
-    if ($selected_page < 0) die('Unknown page.');
-}
-
-$number_of_logs = 0;
-$logs_per_page = $app->config('iface_rowamount');
-$logs = null;
-
-if (isset($_GET['name']) && $_GET['name'] != '') {
-    $number_of_logs = DbUserLogger::count_logs_by_user($_GET['name']);
-    $number_of_pages = ceil($number_of_logs / $logs_per_page);
-    if ($number_of_logs != 0 && $selected_page > $number_of_pages) die('Unknown page');
-    $logs = DbUserLogger::get_logs_for_user($_GET['name'], $logs_per_page, ($selected_page - 1) * $logs_per_page);
-
-} else {
-    $number_of_logs = DbUserLogger::count_all_logs();
-    $number_of_pages = ceil($number_of_logs / $logs_per_page);
-    if ($number_of_logs != 0 && $selected_page > $number_of_pages) die('Unknown page');
-    $logs = DbUserLogger::get_all_logs($logs_per_page, ($selected_page - 1) * $logs_per_page);
-}
-
-$app->render('list_log_users.html', [
-    'number_of_logs' => $number_of_logs,
-    'name' => isset($_GET['name']) ? htmlspecialchars($_GET['name']) : null,
-    'data' => $logs,
-    'selected_page' => $selected_page,
-    'logs_per_page' => $logs_per_page,
-    'pagination' => show_pages($number_of_logs, $logs_per_page),
-]);
-
-include_once('inc/footer.inc.php');
-
+$controller = new ListLogUsersController();
+$controller->run();
