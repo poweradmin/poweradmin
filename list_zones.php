@@ -82,101 +82,102 @@ echo "    <h5 class=\"mb-3\">" . _('List zones') . "</h5>\n";
 echo "    <div class=\"pb-3 text-secondary\">" . _('Total number of zones:') . " " . $count_zones_view . "</div>\n";
 
 if ($perm_view == "none") {
-    echo _('You do not have the permission to see any zones.');
-} elseif (($count_zones_view > $iface_rowamount && $count_zones_all_letterstart == "0") || $count_zones_view == 0) {
-    if ($count_zones_view > $iface_rowamount) {
-        echo "<div>";
-        show_letters($letter_start, $_SESSION["userid"]);
-        echo "</div>";
-    }
+    error(_('You do not have the permission to see any zones.'));
+    include_once('inc/footer.inc.php');
+    exit;
+}
+
+if ($count_zones_view > $iface_rowamount) {
+    echo "<div>";
+    show_letters($letter_start, $_SESSION["userid"]);
+    echo "</div>";
+}
+
+if (($count_zones_view > $iface_rowamount && $count_zones_all_letterstart == "0") || $count_zones_view == 0) {
     echo _('There are no zones to show in this listing.');
+    include_once('inc/footer.inc.php');
+    exit;
+}
+
+echo "     <form method=\"post\" action=\"delete_domains.php\">\n";
+echo "     <table class=\"table table-striped table-hover table-sm\">\n";
+echo "     <thead>\n";
+echo "      <tr>\n";
+echo "       <th><input type=\"checkbox\" class=\"form-check-input\" id=\"select_zones\" onClick=\"toggleZoneCheckboxes()\" /></th>\n";
+echo "       <th><a href=\"list_zones.php?zone_sort_by=name\">" . _('Name') . "</a></th>\n";
+echo "       <th><a href=\"list_zones.php?zone_sort_by=type\">" . _('Type') . "</a></th>\n";
+echo "       <th><a href=\"list_zones.php?zone_sort_by=count_records\">" . _('Records') . "</a></th>\n";
+echo "       <th><a href=\"list_zones.php?zone_sort_by=owner\">" . _('Owner') . "</a></th>\n";
+
+if ($iface_zonelist_serial) {
+    echo "       <th>" . _('Serial') . "</th>\n";
+}
+if ($pdnssec_use) {
+    echo "       <th>" . _('DNSSEC') . "</th>\n";
+}
+echo "       <th>&nbsp;</th>\n";
+echo "      </tr>\n";
+echo "    </thead>\n";
+
+if ($count_zones_view <= $iface_rowamount) {
+    $zones = DnsRecord::get_zones($perm_view, $_SESSION['userid'], "all", $row_start, $iface_rowamount, $zone_sort_by);
+} elseif ($letter_start == 'all') {
+    $zones = DnsRecord::get_zones($perm_view, $_SESSION['userid'], "all", $row_start, 'all', $zone_sort_by);
 } else {
-    if ($count_zones_view > $iface_rowamount) {
-        echo "<div>";
-        show_letters($letter_start, $_SESSION["userid"]);
-        echo "</div>";
+    $zones = DnsRecord::get_zones($perm_view, $_SESSION['userid'], $letter_start, $row_start, $iface_rowamount, $zone_sort_by);
+    $count_zones_shown = ($zones == -1) ? 0 : count($zones);
+}
+echo "       <tbody>\n";
+foreach ($zones as $zone) {
+    if ($zone['count_records'] == NULL) {
+        $zone['count_records'] = 0;
     }
-    echo "     <form method=\"post\" action=\"delete_domains.php\">\n";
-    echo "     <table class=\"table table-striped table-hover table-sm\">\n";
-    echo "     <thead>\n";
-    echo "      <tr>\n";
-    echo "       <th><input type=\"checkbox\" class=\"form-check-input\" id=\"select_zones\" onClick=\"toggleZoneCheckboxes()\" /></th>\n";
-    echo "       <th><a href=\"list_zones.php?zone_sort_by=name\">" . _('Name') . "</a></th>\n";
-    echo "       <th><a href=\"list_zones.php?zone_sort_by=type\">" . _('Type') . "</a></th>\n";
-    echo "       <th><a href=\"list_zones.php?zone_sort_by=count_records\">" . _('Records') . "</a></th>\n";
-    echo "       <th><a href=\"list_zones.php?zone_sort_by=owner\">" . _('Owner') . "</a></th>\n";
+
+    if ($perm_edit != "all" || $perm_edit != "none") {
+        $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone["id"]);
+    }
+    echo "         <tr>\n";
+    echo "          <td>\n";
+    if ($count_zones_edit > 0 && ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1"))) {
+        echo "       <input class=\"form-check-input\" type=\"checkbox\" name=\"zone_id[]\" value=\"" . htmlspecialchars($zone['id']) . "\">";
+    }
+    echo "          </td>\n";
+    echo "          <td>" . idn_to_utf8(htmlspecialchars($zone["name"]), IDNA_NONTRANSITIONAL_TO_ASCII) . "</td>\n";
+    echo "          <td>" . strtolower(htmlspecialchars($zone["type"])) . "</td>\n";
+    echo "          <td>" . htmlspecialchars($zone["count_records"]) . "</td>\n";
+    echo "          <td>" . htmlspecialchars($zone["owner"]) . "</td>\n";
 
     if ($iface_zonelist_serial) {
-        echo "       <th>" . _('Serial') . "</th>\n";
+        $serial = DnsRecord::get_serial_by_zid($zone['id']);
+        if ($serial != "") {
+            echo "          <td>" . htmlspecialchars($serial) . "</td>\n";
+        } else {
+            echo "          <td>&nbsp;</td>\n";
+        }
     }
-
     if ($pdnssec_use) {
-        echo "       <th>" . _('DNSSEC') . "</th>\n";
+        echo "          <td><i class=\"bi bi-" . ($zone["secured"] ? 'lock-fill' : 'unlock-fill') . "\"></i></td>\n";
     }
-    echo "       <th>&nbsp;</th>\n";
-    echo "      </tr>\n";
-    echo "    </thead>\n";
-
-    if ($count_zones_view <= $iface_rowamount) {
-        $zones = DnsRecord::get_zones($perm_view, $_SESSION['userid'], "all", $row_start, $iface_rowamount, $zone_sort_by);
-    } elseif ($letter_start == 'all') {
-        $zones = DnsRecord::get_zones($perm_view, $_SESSION['userid'], "all", $row_start, 'all', $zone_sort_by);
-    } else {
-        $zones = DnsRecord::get_zones($perm_view, $_SESSION['userid'], $letter_start, $row_start, $iface_rowamount, $zone_sort_by);
-        $count_zones_shown = ($zones == -1) ? 0 : count($zones);
-    }
-    echo "       <tbody>\n";
-    foreach ($zones as $zone) {
-        if ($zone['count_records'] == NULL) {
-            $zone['count_records'] = 0;
-        }
-
-        if ($perm_edit != "all" || $perm_edit != "none") {
-            $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone["id"]);
-        }
-        echo "         <tr>\n";
-        echo "          <td>\n";
-        if ($count_zones_edit > 0 && ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1"))) {
-            echo "       <input class=\"form-check-input\" type=\"checkbox\" name=\"zone_id[]\" value=\"" . htmlspecialchars($zone['id']) . "\">";
-        }
-        echo "          </td>\n";
-        echo "          <td>" . idn_to_utf8(htmlspecialchars($zone["name"]), IDNA_NONTRANSITIONAL_TO_ASCII) . "</td>\n";
-        echo "          <td>" . strtolower(htmlspecialchars($zone["type"])) . "</td>\n";
-        echo "          <td>" . htmlspecialchars($zone["count_records"]) . "</td>\n";
-        echo "          <td>" . htmlspecialchars($zone["owner"]) . "</td>\n";
-
-        if ($iface_zonelist_serial) {
-            $serial = DnsRecord::get_serial_by_zid($zone['id']);
-            if ($serial != "") {
-                echo "          <td>" . htmlspecialchars($serial) . "</td>\n";
-            } else {
-                echo "          <td>&nbsp;</td>\n";
-            }
-        }
-        if ($pdnssec_use) {
-            echo "          <td><i class=\"bi bi-" . ($zone["secured"] ? 'lock-fill' : 'unlock-fill') . "\"></i></td>\n";
-        }
-        echo "          <td>\n";
-        echo "           <a class=\"btn btn-outline-primary btn-sm\" href=\"edit.php?name=" . htmlspecialchars($zone['name']) . "&id=" . htmlspecialchars($zone['id']) . "\"><i class=\"bi bi-pencil-square\"></i> " . _('Edit zone') . "</a>\n";
-        if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
-            echo "           <a class=\"btn btn-outline-danger btn-sm\" href=\"delete_domain.php?name=" . htmlspecialchars($zone['name']) . "&id=" . htmlspecialchars($zone["id"]) . "\"><i class=\"bi bi-trash\"></i> " . _('Delete zone') . "</a>\n";
-        }
-        echo "          </td>\n";
-        echo "           </tr>\n";
-    }
-    echo "          </tbody>\n";
-    echo "        </table>\n";
-
-    if ($letter_start != 'all') {
-        echo "     <div class='pb-3'>\n";
-        echo show_pages($count_zones_all_letterstart, $iface_rowamount);
-        echo "     </div>\n";
-    }
-
+    echo "          <td>\n";
+    echo "           <a class=\"btn btn-outline-primary btn-sm\" href=\"edit.php?name=" . htmlspecialchars($zone['name']) . "&id=" . htmlspecialchars($zone['id']) . "\"><i class=\"bi bi-pencil-square\"></i> " . _('Edit zone') . "</a>\n";
     if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
-        echo "      <input type=\"submit\" name=\"commit\" value=\"" . _('Delete zone(s)') . "\" class=\"btn btn-primary btn-sm\">\n";
+        echo "           <a class=\"btn btn-outline-danger btn-sm\" href=\"delete_domain.php?name=" . htmlspecialchars($zone['name']) . "&id=" . htmlspecialchars($zone["id"]) . "\"><i class=\"bi bi-trash\"></i> " . _('Delete zone') . "</a>\n";
     }
-    echo "     </form>\n";
+    echo "          </td>\n";
+    echo "           </tr>\n";
 }
+echo "          </tbody>\n";
+echo "        </table>\n";
+
+if ($letter_start != 'all') {
+    echo "     <div class='pb-3'>\n";
+    echo show_pages($count_zones_all_letterstart, $iface_rowamount);
+    echo "     </div>\n";
+}
+if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
+    echo "      <input type=\"submit\" name=\"commit\" value=\"" . _('Delete zone(s)') . "\" class=\"btn btn-primary btn-sm\">\n";
+}
+echo "     </form>\n";
+
 
 include_once('inc/footer.inc.php');
