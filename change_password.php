@@ -29,17 +29,21 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\AppFactory;
+use Poweradmin\BaseController;
 
 require_once 'inc/toolkit.inc.php';
-include_once("inc/header.inc.php");
 
-$app = AppFactory::create();
+class ChangePasswordController extends BaseController {
 
-if (isset($_POST['submit']) && $_POST['submit']) {
-    do_hook('change_user_pass', $_POST);
+    public function run(): void
+    {
+        if ($this->isPost()) {
+            do_hook('change_user_pass', $_POST);
+        }
+
+        $this->render('change_password.html', []);
+    }
 }
 
-$app->render('change_password.html');
-
-include_once("inc/footer.inc.php");
+$controller = new ChangePasswordController();
+$controller->run();
