@@ -385,11 +385,11 @@ function update_user_password($id, $password)
  *
  * @return null
  */
-function change_user_pass_local($details)
+function change_user_pass_local(array $details)
 {
     global $db;
 
-    if ($details ['newpass'] != $details ['newpass2']) {
+    if ($details['new_password'] != $details['new_password2']) {
         error(ERR_USER_MATCH_NEW_PASS);
         return false;
     }
@@ -397,8 +397,8 @@ function change_user_pass_local($details)
     $query = "SELECT id, password FROM users WHERE username = {$db->quote($_SESSION ["userlogin"], 'text')}";
     $response = $db->queryRow($query);
 
-    if (Password::verify($details['currentpass'], $response['password'])) {
-        $query = "UPDATE users SET password = {$db->quote(Password::hash($details['newpass']), 'text')} WHERE id = {$db->quote($response['id'], 'integer')}";
+    if (Password::verify($details['old_password'], $response['password'])) {
+        $query = "UPDATE users SET password = {$db->quote(Password::hash($details['new_password']), 'text')} WHERE id = {$db->quote($response['id'], 'integer')}";
         $db->query($query);
 
         logout(_('Password has been changed, please login.'), 'success');

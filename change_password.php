@@ -30,6 +30,7 @@
  */
 
 use Poweradmin\BaseController;
+use Valitron\Validator;
 
 require_once 'inc/toolkit.inc.php';
 
@@ -38,7 +39,20 @@ class ChangePasswordController extends BaseController {
     public function run(): void
     {
         if ($this->isPost()) {
-            do_hook('change_user_pass', $_POST);
+            $v = new Validator($_POST);
+            $v->rules([
+                'required' => [
+                    ['old_password'],
+                    ['new_password'],
+                    ['new_password2'],
+                ]
+            ]);
+
+            if ($v->validate()) {
+                do_hook('change_user_pass', $_POST);
+            } else {
+                $this->showError($v->errors());
+            }
         }
 
         $this->render('change_password.html', []);
