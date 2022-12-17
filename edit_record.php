@@ -49,7 +49,7 @@ $perm_edit = Permission::getEditPermission();
 
 $zid = DnsRecord::get_zone_id_from_record_id($_GET['id']);
 
-$user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zid );
+$user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zid);
 $zone_type = DnsRecord::get_domain_type($zid);
 $zone_name = DnsRecord::get_domain_name_by_id($zid);
 
@@ -84,63 +84,65 @@ echo "    <h5 class=\"mb-3\">" . _('Edit record in zone') . "</h5>\n";
 
 if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
     error(ERR_PERM_VIEW_RECORD);
-} else {
-    $record = DnsRecord::get_record_from_id($_GET["id"]);
-    echo "     <form class=\"needs-validation\" method=\"post\" action=\"edit_record.php?domain=" . $zid . "&amp;id=" . htmlspecialchars($_GET["id"]) . "\" novalidate>\n";
-    echo "      <table class=\"table table-striped table-hover table-sm\">\n";
-    echo "      <thead>";
-    echo "       <tr>\n";
-    echo "        <th>" . _('Name') . "</th>\n";
-    echo "        <th>&nbsp;</th>\n";
-    echo "        <th>" . _('Type') . "</th>\n";
-    echo "        <th>" . _('Content') . "</th>\n";
-    echo "        <th>" . _('Priority') . "</th>\n";
-    echo "        <th>" . _('TTL') . "</th>\n";
-    echo "       </tr>\n";
-    echo "      </thead>";
-    echo "      <tr>\n";
-
-    if ($zone_type == "SLAVE" || $perm_edit == "none" || ($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0") {
-        echo "       <td>" . htmlspecialchars($record["name"]) . "</td>\n";
-        echo "       <td>IN</td>\n";
-        echo "       <td>" . htmlspecialchars($record["type"]) . "</td>\n";
-        echo "       <td>" . htmlspecialchars($record['content']) . "</td>\n";
-        echo "       <td>" . htmlspecialchars($record["prio"]) . "</td>\n";
-        echo "       <td>" . htmlspecialchars($record["ttl"]) . "</td>\n";
-    } else {
-        echo "       <td><input type=\"hidden\" name=\"rid\" value=\"" . htmlspecialchars($_GET["id"]) . "\">\n";
-        echo "       <input type=\"hidden\" name=\"zid\" value=\"" . htmlspecialchars($zid) . "\">\n";
-        echo "       <input class=\"form-control form-control-sm\" type=\"text\" name=\"name\" value=\"" . trim(str_replace(htmlspecialchars($zone_name), '', htmlspecialchars($record["name"])), '.') . "\">." . htmlspecialchars($zone_name);
-        echo "       </td>\n";
-        echo "       <td>IN</td>\n";
-        echo "       <td>\n";
-        echo "        <select class=\"form-select form-select-sm\" name=\"type\">\n";
-        $found_selected_type = false;
-        foreach (RecordType::getTypes() as $type_available) {
-            if ($type_available == $record["type"]) {
-                $add = " SELECTED";
-                $found_selected_type = true;
-            } else {
-                $add = "";
-            }
-            echo "         <option" . $add . " value=\"" . htmlspecialchars($type_available) . "\" >" . $type_available . "</option>\n";
-        }
-        if (!$found_selected_type)
-            echo "         <option SELECTED value=\"" . htmlspecialchars($record['type']) . "\"><i>" . htmlspecialchars($record['type']) . "</i></option>\n";
-        echo "        </select>\n";
-        echo "       </td>\n";
-        echo "       <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"content\" value=\"" . htmlspecialchars($record['content']) . "\" required>";
-        echo "       <div class=\"invalid-feedback\">" . _('Provide content') . "</div>";
-        echo "       </td>\n";
-        echo "       <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"prio\" value=\"" . htmlspecialchars($record["prio"]) . "\"></td>\n";
-        echo "       <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"ttl\" value=\"" . htmlspecialchars($record["ttl"]) . "\"></td>\n";
-    }
-    echo "      </tr>\n";
-    echo "      </table>\n";
-    echo "       <input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\">&nbsp;&nbsp;\n";
-    echo "       <input class=\"btn btn-secondary btn-sm\" type=\"reset\" name=\"reset\" value=\"" . _('Reset changes') . "\">&nbsp;&nbsp;\n";
-    echo "     </form>\n";
+    include_once("inc/footer.inc.php");
+    exit;
 }
+
+$record = DnsRecord::get_record_from_id($_GET["id"]);
+echo "     <form class=\"needs-validation\" method=\"post\" action=\"edit_record.php?domain=" . $zid . "&amp;id=" . htmlspecialchars($_GET["id"]) . "\" novalidate>\n";
+echo "      <table class=\"table table-striped table-hover table-sm\">\n";
+echo "      <thead>";
+echo "       <tr>\n";
+echo "        <th>" . _('Name') . "</th>\n";
+echo "        <th>&nbsp;</th>\n";
+echo "        <th>" . _('Type') . "</th>\n";
+echo "        <th>" . _('Content') . "</th>\n";
+echo "        <th>" . _('Priority') . "</th>\n";
+echo "        <th>" . _('TTL') . "</th>\n";
+echo "       </tr>\n";
+echo "      </thead>";
+echo "      <tr>\n";
+
+if ($zone_type == "SLAVE" || $perm_edit == "none" || ($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0") {
+    echo "       <td>" . htmlspecialchars($record["name"]) . "</td>\n";
+    echo "       <td>IN</td>\n";
+    echo "       <td>" . htmlspecialchars($record["type"]) . "</td>\n";
+    echo "       <td>" . htmlspecialchars($record['content']) . "</td>\n";
+    echo "       <td>" . htmlspecialchars($record["prio"]) . "</td>\n";
+    echo "       <td>" . htmlspecialchars($record["ttl"]) . "</td>\n";
+} else {
+    echo "       <td><input type=\"hidden\" name=\"rid\" value=\"" . htmlspecialchars($_GET["id"]) . "\">\n";
+    echo "       <input type=\"hidden\" name=\"zid\" value=\"" . htmlspecialchars($zid) . "\">\n";
+    echo "       <input class=\"form-control form-control-sm\" type=\"text\" name=\"name\" value=\"" . trim(str_replace(htmlspecialchars($zone_name), '', htmlspecialchars($record["name"])), '.') . "\">." . htmlspecialchars($zone_name);
+    echo "       </td>\n";
+    echo "       <td>IN</td>\n";
+    echo "       <td>\n";
+    echo "        <select class=\"form-select form-select-sm\" name=\"type\">\n";
+    $found_selected_type = false;
+    foreach (RecordType::getTypes() as $type_available) {
+        if ($type_available == $record["type"]) {
+            $add = " SELECTED";
+            $found_selected_type = true;
+        } else {
+            $add = "";
+        }
+        echo "         <option" . $add . " value=\"" . htmlspecialchars($type_available) . "\" >" . $type_available . "</option>\n";
+    }
+    if (!$found_selected_type)
+        echo "         <option SELECTED value=\"" . htmlspecialchars($record['type']) . "\"><i>" . htmlspecialchars($record['type']) . "</i></option>\n";
+    echo "        </select>\n";
+    echo "       </td>\n";
+    echo "       <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"content\" value=\"" . htmlspecialchars($record['content']) . "\" required>";
+    echo "       <div class=\"invalid-feedback\">" . _('Provide content') . "</div>";
+    echo "       </td>\n";
+    echo "       <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"prio\" value=\"" . htmlspecialchars($record["prio"]) . "\"></td>\n";
+    echo "       <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"ttl\" value=\"" . htmlspecialchars($record["ttl"]) . "\"></td>\n";
+}
+echo "      </tr>\n";
+echo "      </table>\n";
+echo "       <input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\">&nbsp;&nbsp;\n";
+echo "       <input class=\"btn btn-secondary btn-sm\" type=\"reset\" name=\"reset\" value=\"" . _('Reset changes') . "\">&nbsp;&nbsp;\n";
+echo "     </form>\n";
 
 
 include_once("inc/footer.inc.php");
