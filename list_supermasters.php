@@ -29,16 +29,22 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\AppFactory;
+use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
 
 require_once 'inc/toolkit.inc.php';
-include_once 'inc/header.inc.php';
 
-$app = AppFactory::create();
-$app->render('list_supermasters.html', [
-    'perm_sm_edit' => do_hook('verify_permission', 'supermaster_edit'),
-    'supermasters' => DnsRecord::get_supermasters()
-]);
+class ListSuperMastersController extends BaseController
+{
 
-include_once('inc/footer.inc.php');
+    public function run(): void
+    {
+        $this->render('list_supermasters.html', [
+            'perm_sm_edit' => do_hook('verify_permission', 'supermaster_edit'),
+            'supermasters' => DnsRecord::get_supermasters()
+        ]);
+    }
+}
+
+$controller = new ListSuperMastersController();
+$controller->run();
