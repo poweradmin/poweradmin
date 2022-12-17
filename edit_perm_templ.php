@@ -29,45 +29,70 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\AppFactory;
-use Poweradmin\Validation;
+use Poweradmin\BaseController;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/message.inc.php';
 
-include_once 'inc/header.inc.php';
+class EditPermTemplController extends BaseController
+{
 
-if (!isset($_GET['id']) && !Validation::is_number($_GET['id'])) {
-    error(ERR_INV_INPUT);
-    include_once('inc/footer.inc.php');
-    exit;
+    public function run(): void
+    {
+        $this->checkPermission('templ_perm_edit', ERR_PERM_EDIT_PERM_TEMPL);
+
+        $v = new Valitron\Validator($_GET);
+        $v->rules([
+            'required' => ['id'],
+            'integer' => ['id'],
+        ]);
+
+        if (!$v->validate()) {
+            $this->showError($v->errors());
+        }
+
+        if ($this->isPost()) {
+            $this->editPermTempl();
+        } else {
+            $this->showEditPermTempl();
+        }
+    }
+
+    private function editPermTempl()
+    {
+        $v = new Valitron\Validator($_POST);
+        $v->rules([
+            'required' => ['templ_name'],
+        ]);
+
+        if ($v->validate()) {
+            do_hook('update_perm_templ_details', $_POST);
+            success(SUC_RECORD_UPD);
+
+            $this->showListPermTempl();
+        } else {
+            $this->showError($v->errors());
+        }
+    }
+
+    private function showEditPermTempl()
+    {
+        $id = htmlspecialchars($_GET['id']);
+        $this->render('edit_perm_templ.html', [
+            'id' => $id,
+            'templ' => do_hook('get_permission_template_details', $id),
+            'perms_templ' => do_hook('get_permissions_by_template_id', $id),
+            'perms_avail' => do_hook('get_permissions_by_template_id')
+        ]);
+    }
+
+    private function showListPermTempl()
+    {
+        $this->render('list_perm_templ.html', [
+            'permission_templates' => do_hook('list_permission_templates')
+        ]);
+    }
 }
-$id = htmlspecialchars($_GET['id']);
 
-if (!do_hook('verify_permission', 'templ_perm_edit')) {
-    error(ERR_PERM_EDIT_PERM_TEMPL);
-    include_once('inc/footer.inc.php');
-    exit;
-}
-
-if (isset($_POST['commit']) && (!isset($_POST['templ_name']) || $_POST['templ_name'] == "")) {
-    error(ERR_INV_INPUT);
-    include_once('inc/footer.inc.php');
-    exit;
-}
-
-if (isset($_POST['commit'])) {
-    do_hook('update_perm_templ_details', $_POST);
-    success(SUC_RECORD_UPD);
-}
-
-$app = AppFactory::create();
-$app->render('edit_perm_templ.html', [
-    'id' => $id,
-    'templ' => do_hook('get_permission_template_details', $id),
-    'perms_templ' => do_hook('get_permissions_by_template_id', $id),
-    'perms_avail' => do_hook('get_permissions_by_template_id')
-]);
-
-
-include_once('inc/footer.inc.php');
+$controller = new EditPermTemplController();
+$controller->run();
