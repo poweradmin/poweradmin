@@ -50,6 +50,7 @@ define("ERR_PERM_ADD_ZONE_TEMPL", _("You do not have the permission to add a zon
 /* DOMAIN STUFF */
 define("ERR_DOMAIN_INVALID", _('This is an invalid zone name.'));
 define("ERR_SM_EXISTS", _('There is already a supermaster with this IP address and hostname.'));
+define("ERR_SM_NOT_EXISTS", _('Super master does not exist.'));
 define("ERR_DOMAIN_EXISTS", _('There is already a zone with this name.'));
 
 /* USER STUFF */

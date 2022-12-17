@@ -29,63 +29,66 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\AppFactory;
-use Poweradmin\Dns;
+use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
-use Poweradmin\Validation;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/message.inc.php';
 
-include_once 'inc/header.inc.php';
+class DeleteSuperMasterController extends BaseController {
 
-$app = AppFactory::create();
+    public function run(): void
+    {
+        $this->checkPermission('supermaster_edit', ERR_PERM_DEL_SM);
 
-if (!isset($_GET['master_ip']) || !Dns::is_valid_ipv4($_GET['master_ip']) && !Dns::is_valid_ipv6($_GET['master_ip'])) {
-    error(ERR_INV_INPUT);
-    include_once('inc/footer.inc.php');
-    exit;
-}
-$master_ip = htmlspecialchars($_GET['master_ip']);
-
-if (!isset($_GET['ns_name']) || !Dns::is_valid_hostname_fqdn($_GET['ns_name'], 0)) {
-    error(ERR_INV_INPUT);
-    include_once('inc/footer.inc.php');
-    exit;
-}
-$ns_name = $_GET['ns_name'];
-
-if (isset($_GET['confirm']) && !Validation::is_number($_GET['confirm'])) {
-    error(ERR_INV_INPUT);
-    include_once('inc/footer.inc.php');
-    exit;
-}
-
-$perm_sm_edit = do_hook('verify_permission', 'supermaster_edit');
-if (!$perm_sm_edit) {
-    error(ERR_PERM_DEL_SM);
-    include_once('inc/footer.inc.php');
-    exit;
-}
-
-if (isset($_GET['confirm']) && $_GET['confirm'] == '1') {
-    if (!DnsRecord::supermaster_ip_name_exists($master_ip, $ns_name)) {
-        header("Location: list_supermasters.php");
-        exit;
+        if (isset($_GET['confirm'])) {
+            $this->deleteSuperMaster();
+        } else {
+            $this->showDeleteSuperMaster();
+        }
     }
 
-    if (DnsRecord::delete_supermaster($master_ip, $ns_name)) {
-        success(SUC_SM_DEL);
+    private function deleteSuperMaster()
+    {
+        $v = new Valitron\Validator($_GET);
+        $v->rules([
+            'required' => ['master_ip', 'ns_name'],
+            'ip' => ['master_ip'],
+        ]);
+
+        $master_ip = htmlspecialchars($_GET['master_ip']);
+        $ns_name = htmlspecialchars($_GET['ns_name']);
+
+        if ($v->validate()) {
+             if (!DnsRecord::supermaster_ip_name_exists($master_ip, $ns_name)) {
+                error(ERR_SM_NOT_EXISTS);
+             }
+
+            if (DnsRecord::delete_supermaster($master_ip, $ns_name)) {
+                success(SUC_SM_DEL);
+
+                $this->render('list_supermasters.html', [
+                    'perm_sm_add' => do_hook('verify_permission', 'supermaster_add'),
+                    'perm_sm_edit' => do_hook('verify_permission', 'supermaster_edit'),
+                    'supermasters' => DnsRecord::get_supermasters()
+                ]);
+            }
+        } else {
+            $this->showError($v->errors());
+        }
     }
-    include_once('inc/footer.inc.php');
-    exit;
+
+    private function showDeleteSuperMaster()
+    {
+        $master_ip = htmlspecialchars($_GET['master_ip']);
+        $info = DnsRecord::get_supermaster_info_from_ip($master_ip);
+
+        $this->render('delete_supermaster.html', [
+            'master_ip' => $master_ip,
+            'info' => $info
+        ]);
+    }
 }
 
-$info = DnsRecord::get_supermaster_info_from_ip($master_ip);
-
-$app->render('delete_supermaster.html', [
-    'master_ip' => $master_ip,
-    'info' => $info
-]);
-
-include_once("inc/footer.inc.php");
+$controller = new DeleteSuperMasterController();
+$controller->run();

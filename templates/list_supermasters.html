@@ -37,6 +37,8 @@
     {% endif %}
     </tbody>
 </table>
+{% if perm_sm_add %}
 <div>
     <a class="btn btn-primary btn-sm" href="add_supermaster.php">{% trans 'Add supermaster' %}</a>
 </div>
+{% endif %}
