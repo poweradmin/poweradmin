@@ -371,30 +371,15 @@ if ($perm_edit == "all" || ($perm_edit == "own" || $perm_edit == "own_as_client"
         echo "        <td>IN</td>\n";
         echo "        <td>\n";
         echo "         <select class=\"form-select form-select-sm\" name=\"type\">\n";
-        $found_selected_type = !(isset($type) && $type);
-        $rev = "";
         foreach (RecordType::getTypes() as $record_type) {
-            if (isset($type) && $type) {
-                if ($type == $record_type) {
-                    $add = " SELECTED";
-                    $found_selected_type = true;
-                } else {
-                    $add = "";
-                }
-            } else {
-                if (preg_match('/i(p6|n-addr).arpa/i', $zone_name)) {
-                    $add = " SELECTED";
-                } else if ((strtoupper($record_type) == 'A') && $iface_add_reverse_record) {
-                    $add = " SELECTED";
-                    $rev = "<input class=\"form-check-input\" type=\"checkbox\" name=\"reverse\"><span class=\"text-secondary\">" . _('Add also reverse record') . "</span>\n";
-                } else {
-                    $add = "";
-                }
+            $add = "";
+            if (preg_match('/i(p6|n-addr).arpa/i', $zone_name) && $record_type == "PTR") {
+                $add = " SELECTED";
+            } else if ($iface_add_reverse_record && $record_type == "A") {
+                $add = " SELECTED";
+                $rev = "<input class=\"form-check-input\" type=\"checkbox\" name=\"reverse\"><span class=\"text-secondary\">" . _('Add also reverse record') . "</span>\n";
             }
             echo "          <option" . $add . " value=\"" . htmlspecialchars($record_type) . "\">" . $record_type . "</option>\n";
-        }
-        if (!$found_selected_type) {
-            echo "         <option SELECTED value=\"" . htmlspecialchars($type) . "\"><i>" . htmlspecialchars($type) . "</i></option>\n";
         }
         echo "         </select>\n";
         echo "        </td>\n";
