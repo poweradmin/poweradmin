@@ -387,7 +387,9 @@ if ($perm_edit == "all" || ($perm_edit == "own" || $perm_edit == "own_as_client"
         echo "            <div class=\"invalid-feedback\">" . _('Provide content') . "</div>";
         echo "        </td>\n";
         echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"prio\" value=\"\"></td>\n";
-        echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"ttl\" value=\"\"></td>\n";
+        echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"ttl\" value=\"" . $app->config('dns_ttl') ."\" required>\n";
+        echo "            <div class=\"invalid-feedback\">" . _('Provide TTL') . "</div>\n";
+        echo " </td>\n";
         echo "       </tr>\n";
         echo "      </table>\n";
         echo "      <input class=\"btn btn-outline-secondary btn-sm\" type=\"submit\" name=\"commit\" value=\"" . _('Add record') . "\">\n";
