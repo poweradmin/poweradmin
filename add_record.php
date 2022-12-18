@@ -29,114 +29,152 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\AppFactory;
+use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
 use Poweradmin\Permission;
 use Poweradmin\RecordType;
 use Poweradmin\Logger;
-use Poweradmin\Validation;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/message.inc.php';
 
-include_once 'inc/header.inc.php';
+class AddRecordController extends BaseController
+{
 
-$app = AppFactory::create();
-$pdnssec_use = $app->config('pdnssec_use');
-$iface_add_reverse_record = $app->config('iface_add_reverse_record');
+    public function run(): void
+    {
+        $this->checkId();
 
-$perm_view = Permission::getViewPermission();
-$perm_edit = Permission::getEditPermission();
+        $perm_edit = Permission::getEditPermission();
+        $zone_id = htmlspecialchars($_GET['id']);
+        $zone_type = DnsRecord::get_domain_type($zone_id);
+        $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
 
-if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
-    error(ERR_INV_INPUT);
-    include_once('inc/footer.inc.php');
-    exit;
-}
-$zone_id = htmlspecialchars($_GET['id']);
-
-$ttl = $app->config('dns_ttl');
-if (isset($_POST['ttl']) && Validation::is_number($_POST['ttl'])) {
-    $ttl = $_POST['ttl'];
-}
-
-$prio = 10;
-if (isset($_POST['prio']) && Validation::is_number($_POST['prio'])) {
-    $prio = $_POST['prio'];
-}
-
-$name = $_POST['name'] ?? "";
-$type = $_POST['type'] ?? "";
-$content = $_POST['content'] ?? "";
-
-$user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
-$zone_type = DnsRecord::get_domain_type($zone_id);
-$zone_name = DnsRecord::get_domain_name_by_id($zone_id);
-
-if ($zone_type == "SLAVE" || $perm_edit == "none" || ($perm_edit == "own" || $perm_edit == "own_as_client") && !$user_is_zone_owner) {
-    error(ERR_PERM_ADD_RECORD);
-    include_once('inc/footer.inc.php');
-    exit;
-}
-
-if (isset($_POST["commit"])) {
-    // a PTR-record is added if an A or an AAAA-record are created
-    // and checkbox is checked
-
-    if ((isset($_POST["reverse"])) && $iface_add_reverse_record) {
-        if ($type === 'A') {
-            $content_array = preg_split("/\./", $content);
-            $content_rev = sprintf("%d.%d.%d.%d.in-addr.arpa", $content_array[3], $content_array[2], $content_array[1], $content_array[0]);
-            $zone_rev_id = DnsRecord::get_best_matching_zone_id_from_name($content_rev);
-        } elseif ($type === 'AAAA') {
-            $content_rev = DnsRecord::convert_ipv6addr_to_ptrrec($content);
-            $zone_rev_id = DnsRecord::get_best_matching_zone_id_from_name($content_rev);
-        }
-        if (isset($zone_rev_id) && $zone_rev_id != -1) {
-            $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
-            $fqdn_name = sprintf("%s.%s", $name, $zone_name);
-            if (DnsRecord::add_record($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
-                success(" <a href=\"edit.php?id=" . $zone_rev_id . "\"> " . _('The PTR-record was successfully added.') . "</a>");
-                Logger::log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
-                    $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                    $content_rev, $fqdn_name, $ttl, $prio), $zone_id);
-                if ($pdnssec_use && Dnssec::dnssec_rectify_zone($zone_rev_id)) {
-                    success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
-                }
-            }
-        } elseif (isset($content_rev)) {
-            error(sprintf(ERR_REVERS_ZONE_NOT_EXIST, $content_rev));
-        }
-    }
-
-    if (DnsRecord::add_record($zone_id, $name, $type, $content, $ttl, $prio)) {
-        success(" <a href=\"edit.php?id=" . $zone_id . "\"> " . _('The record was successfully added.') . "</a>");
-        Logger::log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:%s record:%s.%s content:%s ttl:%s priority:%s',
-            $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-            $type, $name, $zone_name, $content, $ttl, $prio), $zone_id
+        $this->checkCondition($zone_type == "SLAVE"
+            || $perm_edit == "none"
+            || ($perm_edit == "own" || $perm_edit == "own_as_client")
+            && !$user_is_zone_owner, ERR_PERM_ADD_RECORD
         );
 
-        if ($pdnssec_use && Dnssec::dnssec_rectify_zone($zone_id)) {
-            success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
+        if ($this->isPost()) {
+            $this->addRecord();
         }
-        $name = $type = $content = $ttl = $prio = "";
+        $this->showForm();
+    }
+
+    private function addRecord()
+    {
+        $v = new Valitron\Validator($_POST);
+        $v->rules([
+            'required' => ['content', 'type', 'ttl'],
+            'integer' => ['priority', 'ttl'],
+        ]);
+
+        if (!$v->validate()) {
+            $this->showError($v->errors());
+        }
+
+        $name = $_POST['name'] ?? '';
+        $content = $_POST['content'];
+        $type = $_POST['type'];
+        $prio = $_POST['prio'];
+        $ttl = $_POST['ttl'];
+        $zone_id = htmlspecialchars($_GET['id']);
+
+        $this->createReverseRecord($name, $type, $content, $zone_id, $ttl, $prio);
+
+        $this->createRecord($zone_id, $name, $type, $content, $ttl, $prio);
+    }
+
+    private function showForm()
+    {
+        $zone_id = htmlspecialchars($_GET['id']);
+        $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
+        $prio = 10;
+        $ttl = $this->config('dns_ttl');
+        $iface_add_reverse_record = $this->config('iface_add_reverse_record');
+        $is_reverse_zone = preg_match('/i(p6|n-addr).arpa/i', $zone_name);
+
+        $this->render('add_record.html', [
+            'types' => RecordType::getTypes(),
+            'name' => '',
+            'type' => '',
+            'content' => '',
+            'ttl' => $ttl,
+            'prio' => $prio,
+            'zone_id' => $zone_id,
+            'zone_name' => $zone_name,
+            'is_reverse_zone' => $is_reverse_zone,
+            'iface_add_reverse_record' => $iface_add_reverse_record,
+        ]);
+    }
+
+    public function checkId(): void
+    {
+        $v = new Valitron\Validator($_GET);
+        $v->rules([
+            'required' => ['id'],
+            'integer' => ['id']
+        ]);
+        if (!$v->validate()) {
+            $this->showError($v->errors());
+        }
+    }
+
+    public function createReverseRecord($name, $type, $content, string $zone_id, $ttl, $prio)
+    {
+        $iface_add_reverse_record = $this->config('iface_add_reverse_record');
+
+        if ((isset($_POST["reverse"])) && $name && $iface_add_reverse_record) {
+            if ($type === 'A') {
+                $content_array = preg_split("/\./", $content);
+                $content_rev = sprintf("%d.%d.%d.%d.in-addr.arpa", $content_array[3], $content_array[2], $content_array[1], $content_array[0]);
+                $zone_rev_id = DnsRecord::get_best_matching_zone_id_from_name($content_rev);
+            } elseif ($type === 'AAAA') {
+                $content_rev = DnsRecord::convert_ipv6addr_to_ptrrec($content);
+                $zone_rev_id = DnsRecord::get_best_matching_zone_id_from_name($content_rev);
+            }
+
+            if (isset($zone_rev_id) && $zone_rev_id != -1) {
+                $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
+                $fqdn_name = sprintf("%s.%s", $name, $zone_name);
+                if (DnsRecord::add_record($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
+                    success(" <a href=\"edit.php?id=" . $zone_rev_id . "\"> " . _('The PTR-record was successfully added.') . "</a>");
+                    Logger::log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
+                        $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
+                        $content_rev, $fqdn_name, $ttl, $prio), $zone_id);
+
+                    $pdnssec_use = $this->config('pdnssec_use');
+
+                    if ($pdnssec_use && Dnssec::dnssec_rectify_zone($zone_rev_id)) {
+                        success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
+                    }
+                }
+            } elseif (isset($content_rev)) {
+                error(sprintf(ERR_REVERS_ZONE_NOT_EXIST, $content_rev));
+            }
+        }
+    }
+
+    public function createRecord(string $zone_id, $name, $type, $content, $ttl, $prio): void
+    {
+        $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
+
+        if (DnsRecord::add_record($zone_id, $name, $type, $content, $ttl, $prio)) {
+            success(" <a href=\"edit.php?id=" . $zone_id . "\"> " . _('The record was successfully added.') . "</a>");
+            Logger::log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:%s record:%s.%s content:%s ttl:%s priority:%s',
+                $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
+                $type, $name, $zone_name, $content, $ttl, $prio), $zone_id
+            );
+
+            $pdnssec_use = $this->config('pdnssec_use');
+            if ($pdnssec_use && Dnssec::dnssec_rectify_zone($zone_id)) {
+                success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
+            }
+        }
     }
 }
 
-$is_reverse_zone = preg_match('/i(p6|n-addr).arpa/i', $zone_name);
-
-$app->render('add_record.html', [
-    'types' => RecordType::getTypes(),
-    'name' => $name,
-    'type' => $type,
-    'content' => $content,
-    'ttl' => $ttl,
-    'prio' => $prio,
-    'zone_id' => $zone_id,
-    'zone_name' => $zone_name,
-    'is_reverse_zone' => $is_reverse_zone,
-    'iface_add_reverse_record' => $iface_add_reverse_record,
-]);
-
-include_once('inc/footer.inc.php');
+$controller = new AddRecordController();
+$controller->run();
