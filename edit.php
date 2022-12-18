@@ -382,7 +382,7 @@ if ($perm_edit == "all" || ($perm_edit == "own" || $perm_edit == "own_as_client"
                     $add = "";
                 }
             } else {
-                if (preg_match('/i(p6|n-addr).arpa/i', $zone_name) && strtoupper($record_type) == 'PTR') {
+                if (preg_match('/i(p6|n-addr).arpa/i', $zone_name)) {
                     $add = " SELECTED";
                 } else if ((strtoupper($record_type) == 'A') && $iface_add_reverse_record) {
                     $add = " SELECTED";
