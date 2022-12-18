@@ -109,6 +109,7 @@ if (isset($_POST["commit"])) {
             error(sprintf(ERR_REVERS_ZONE_NOT_EXIST, $content_rev));
         }
     }
+
     if (DnsRecord::add_record($zone_id, $name, $type, $content, $ttl, $prio)) {
         success(" <a href=\"edit.php?id=" . $zone_id . "\"> " . _('The record was successfully added.') . "</a>");
         Logger::log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:%s record:%s.%s content:%s ttl:%s priority:%s',
@@ -119,10 +120,11 @@ if (isset($_POST["commit"])) {
         if ($pdnssec_use && Dnssec::dnssec_rectify_zone($zone_id)) {
             success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
         }
-
         $name = $type = $content = $ttl = $prio = "";
     }
 }
+
+$is_reverse_zone = preg_match('/i(p6|n-addr).arpa/i', $zone_name);
 
 echo "    <h5 class=\"mb-3\">" . _('Add record to zone') . "</h5>\n";
 echo "     <form class=\"needs-validation\" method=\"post\" novalidate>\n";
@@ -141,30 +143,14 @@ echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" na
 echo "        <td>IN</td>\n";
 echo "        <td>\n";
 echo "         <select class=\"form-select form-select-sm\" name=\"type\">\n";
-$found_selected_type = !(isset($type) && $type);
 foreach (RecordType::getTypes() as $record_type) {
-    if (isset($type) && $type) {
-        if ($type == $record_type) {
-            $found_selected_type = true;
-            $add = " SELECTED";
-        } else {
-            $add = "";
-        }
-    } else {
-        if (preg_match('/i(p6|n-addr).arpa/i', $zone_name) && strtoupper($record_type) == 'PTR') {
-            $add = " SELECTED";
-            $rev = "";
-        } elseif ((strtoupper($record_type) == 'A') && $iface_add_reverse_record) {
-            $add = " SELECTED";
-            $rev = "<input class=\"form-check-input\" type=\"checkbox\" name=\"reverse\"><span class=\"text-secondary\"> " . _('Add also reverse record') . "</span>\n";
-        } else {
-            $add = "";
-        }
+    $add = "";
+    if ($type == strtoupper($record_type)) {
+        $add = " SELECTED";
+    } elseif ($is_reverse_zone && strtoupper($record_type) == 'PTR') {
+        $add = " SELECTED";
     }
     echo "          <option" . $add . " value=\"" . htmlspecialchars($record_type) . "\">" . $record_type . "</option>\n";
-}
-if (!$found_selected_type) {
-    echo "          <option SELECTED value=\"" . htmlspecialchars($type) . "\"><i>" . htmlspecialchars($type) . "</i></option>\n";
 }
 echo "         </select>\n";
 echo "        </td>\n";
@@ -177,8 +163,8 @@ echo "       </tr>\n";
 echo "      </table>\n";
 echo "      <br>\n";
 echo "      <input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"commit\" value=\"" . _('Add record') . "\">\n";
-if (isset($rev)) {
-    echo "      $rev";
+if (!$is_reverse_zone && $type == 'A' && $iface_add_reverse_record) {
+    echo "<input class=\"form-check-input\" type=\"checkbox\" name=\"reverse\"><span class=\"text-secondary\"> " . _('Add also reverse record') . "</span>\n";
 }
 echo "     </form>\n";
 
