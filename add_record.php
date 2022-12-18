@@ -74,58 +74,54 @@ $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
 $zone_type = DnsRecord::get_domain_type($zone_id);
 $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
 
-if (isset($_POST["commit"])) {
-    if ($zone_type == "SLAVE" || $perm_edit == "none" || ($perm_edit == "own" || $perm_edit == "own_as_client") && !$user_is_zone_owner) {
-        error(ERR_PERM_ADD_RECORD);
-    } else {
-        // a PTR-record is added if an A or an AAAA-record are created
-        // and checkbox is checked
-
-        if ((isset($_POST["reverse"])) && $iface_add_reverse_record) {
-            if ($type === 'A') {
-                $content_array = preg_split("/\./", $content);
-                $content_rev = sprintf("%d.%d.%d.%d.in-addr.arpa", $content_array[3], $content_array[2], $content_array[1], $content_array[0]);
-                $zone_rev_id = DnsRecord::get_best_matching_zone_id_from_name($content_rev);
-            } elseif ($type === 'AAAA') {
-                $content_rev = DnsRecord::convert_ipv6addr_to_ptrrec($content);
-                $zone_rev_id = DnsRecord::get_best_matching_zone_id_from_name($content_rev);
-            }
-            if (isset($zone_rev_id) && $zone_rev_id != -1) {
-                $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
-                $fqdn_name = sprintf("%s.%s", $name, $zone_name);
-                if (DnsRecord::add_record($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
-                    success(" <a href=\"edit.php?id=" . $zone_rev_id . "\"> " . _('The PTR-record was successfully added.') . "</a>");
-                    Logger::log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
-                        $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                        $content_rev, $fqdn_name, $ttl, $prio), $zone_id);
-                    if ($pdnssec_use && Dnssec::dnssec_rectify_zone($zone_rev_id)) {
-                        success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
-                    }
-                }
-            } elseif (isset($content_rev)) {
-                error(sprintf(ERR_REVERS_ZONE_NOT_EXIST, $content_rev));
-            }
-        }
-        if (DnsRecord::add_record($zone_id, $name, $type, $content, $ttl, $prio)) {
-            success(" <a href=\"edit.php?id=" . $zone_id . "\"> " . _('The record was successfully added.') . "</a>");
-            Logger::log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:%s record:%s.%s content:%s ttl:%s priority:%s',
-                $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                $type, $name, $zone_name, $content, $ttl, $prio), $zone_id
-            );
-
-            if ($pdnssec_use && Dnssec::dnssec_rectify_zone($zone_id)) {
-                success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
-            }
-
-            $name = $type = $content = $ttl = $prio = "";
-        }
-    }
-}
-
 if ($zone_type == "SLAVE" || $perm_edit == "none" || ($perm_edit == "own" || $perm_edit == "own_as_client") && !$user_is_zone_owner) {
     error(ERR_PERM_ADD_RECORD);
     include_once('inc/footer.inc.php');
     exit;
+}
+
+if (isset($_POST["commit"])) {
+    // a PTR-record is added if an A or an AAAA-record are created
+    // and checkbox is checked
+
+    if ((isset($_POST["reverse"])) && $iface_add_reverse_record) {
+        if ($type === 'A') {
+            $content_array = preg_split("/\./", $content);
+            $content_rev = sprintf("%d.%d.%d.%d.in-addr.arpa", $content_array[3], $content_array[2], $content_array[1], $content_array[0]);
+            $zone_rev_id = DnsRecord::get_best_matching_zone_id_from_name($content_rev);
+        } elseif ($type === 'AAAA') {
+            $content_rev = DnsRecord::convert_ipv6addr_to_ptrrec($content);
+            $zone_rev_id = DnsRecord::get_best_matching_zone_id_from_name($content_rev);
+        }
+        if (isset($zone_rev_id) && $zone_rev_id != -1) {
+            $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
+            $fqdn_name = sprintf("%s.%s", $name, $zone_name);
+            if (DnsRecord::add_record($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
+                success(" <a href=\"edit.php?id=" . $zone_rev_id . "\"> " . _('The PTR-record was successfully added.') . "</a>");
+                Logger::log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
+                    $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
+                    $content_rev, $fqdn_name, $ttl, $prio), $zone_id);
+                if ($pdnssec_use && Dnssec::dnssec_rectify_zone($zone_rev_id)) {
+                    success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
+                }
+            }
+        } elseif (isset($content_rev)) {
+            error(sprintf(ERR_REVERS_ZONE_NOT_EXIST, $content_rev));
+        }
+    }
+    if (DnsRecord::add_record($zone_id, $name, $type, $content, $ttl, $prio)) {
+        success(" <a href=\"edit.php?id=" . $zone_id . "\"> " . _('The record was successfully added.') . "</a>");
+        Logger::log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:%s record:%s.%s content:%s ttl:%s priority:%s',
+            $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
+            $type, $name, $zone_name, $content, $ttl, $prio), $zone_id
+        );
+
+        if ($pdnssec_use && Dnssec::dnssec_rectify_zone($zone_id)) {
+            success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
+        }
+
+        $name = $type = $content = $ttl = $prio = "";
+    }
 }
 
 echo "    <h5 class=\"mb-3\">" . _('Add record to zone') . "</h5>\n";
