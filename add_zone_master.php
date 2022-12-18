@@ -77,7 +77,6 @@ if (isset($_POST['submit']) && $zone_master_add) {
     } elseif (DnsRecord::domain_exists($zone) || DnsRecord::record_name_exists($zone)) {
         $idn_zone_name = idn_to_utf8($zone, IDNA_NONTRANSITIONAL_TO_ASCII);
         error($idn_zone_name . ' failed - ' . ERR_DOMAIN_EXISTS);
-        // TODO: repopulate domain name(s) to the form if there was an error occured
     } elseif (DnsRecord::add_domain($zone, $owner, $dom_type, '', $zone_template)) {
         $zone_id = DnsRecord::get_zone_id_from_name($zone);
         $idn_zone_name = idn_to_utf8($zone, IDNA_NONTRANSITIONAL_TO_ASCII);
