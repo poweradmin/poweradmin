@@ -126,46 +126,17 @@ if (isset($_POST["commit"])) {
 
 $is_reverse_zone = preg_match('/i(p6|n-addr).arpa/i', $zone_name);
 
-echo "    <h5 class=\"mb-3\">" . _('Add record to zone') . "</h5>\n";
-echo "     <form class=\"needs-validation\" method=\"post\" novalidate>\n";
-echo "      <input type=\"hidden\" name=\"domain\" value=\"" . $zone_id . "\">\n";
-echo "      <table class=\"table table-striped table-sm\">\n";
-echo "       <tr>\n";
-echo "        <td>" . _('Name') . "</td>\n";
-echo "        <td>&nbsp;</td>\n";
-echo "        <td>" . _('Type') . "</td>\n";
-echo "        <td>" . _('Content') . "</td>\n";
-echo "        <td>" . _('Priority') . "</td>\n";
-echo "        <td>" . _('TTL') . "</td>\n";
-echo "       </tr>\n";
-echo "       <tr>\n";
-echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"name\" value=\"" . htmlspecialchars($name) . "\">." . $zone_name . "</td>\n";
-echo "        <td>IN</td>\n";
-echo "        <td>\n";
-echo "         <select class=\"form-select form-select-sm\" name=\"type\">\n";
-foreach (RecordType::getTypes() as $record_type) {
-    $add = "";
-    if ($type == strtoupper($record_type)) {
-        $add = " SELECTED";
-    } elseif ($is_reverse_zone && strtoupper($record_type) == 'PTR') {
-        $add = " SELECTED";
-    }
-    echo "          <option" . $add . " value=\"" . htmlspecialchars($record_type) . "\">" . $record_type . "</option>\n";
-}
-echo "         </select>\n";
-echo "        </td>\n";
-echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"content\" value=\"" . htmlspecialchars($content) . "\" required>";
-echo "            <div class=\"invalid-feedback\">" . _('Provide content') . "</div>";
-echo "        </td>\n";
-echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"prio\" value=\"" . htmlspecialchars($prio) . "\"></td>\n";
-echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"ttl\" value=\"" . htmlspecialchars($ttl) . "\"</td>\n";
-echo "       </tr>\n";
-echo "      </table>\n";
-echo "      <br>\n";
-echo "      <input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"commit\" value=\"" . _('Add record') . "\">\n";
-if (!$is_reverse_zone && $type == 'A' && $iface_add_reverse_record) {
-    echo "<input class=\"form-check-input\" type=\"checkbox\" name=\"reverse\"><span class=\"text-secondary\"> " . _('Add also reverse record') . "</span>\n";
-}
-echo "     </form>\n";
+$app->render('add_record.html', [
+    'types' => RecordType::getTypes(),
+    'name' => $name,
+    'type' => $type,
+    'content' => $content,
+    'ttl' => $ttl,
+    'prio' => $prio,
+    'zone_id' => $zone_id,
+    'zone_name' => $zone_name,
+    'is_reverse_zone' => $is_reverse_zone,
+    'iface_add_reverse_record' => $iface_add_reverse_record,
+]);
 
 include_once('inc/footer.inc.php');
