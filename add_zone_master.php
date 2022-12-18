@@ -46,7 +46,6 @@ include_once 'inc/header.inc.php';
 $app = AppFactory::create();
 $pdnssec_use = $app->config('pdnssec_use');
 $dns_third_level_check = $app->config('dns_third_level_check');
-$iface_zone_type_default = $app->config('iface_zone_type_default');
 
 $owner = "-1";
 if ((isset($_POST['owner'])) && (Validation::is_number($_POST['owner']))) {
@@ -105,76 +104,13 @@ if (!$zone_master_add) {
     exit;
 }
 
-echo "     <h5 class=\"mb-3\">" . _('Add master zone') . "</h5>\n";
-
-$available_zone_types = array("MASTER", "NATIVE");
-$users = do_hook('show_users');
-$zone_templates = ZoneTemplate::get_list_zone_templ($_SESSION['userid']);
-
-echo "     <form class=\"needs-validation\" method=\"post\" action=\"add_zone_master.php\" novalidate>\n";
-echo "      <table>\n";
-echo "       <tr>\n";
-echo "        <td style=\"vertical-align: top\" class=\"pt-1\">" . _('Zone name') . ":</td>\n";
-echo "        <td>\n";
-echo "          <input class=\"form-control form-control-sm\" type=\"text\" name=\"domain\" value=\"\" required>\n";
-echo "          <div class=\"invalid-feedback\">" . _('Provide zone name') . "</div>";
-echo "        </td>\n";
-echo "       </tr>\n";
-echo "       <tr>\n";
-echo "        <td>" . _('Owner') . ":</td>\n";
-echo "        <td>\n";
-echo "         <select  class=\"form-select form-select-sm\" name=\"owner\">\n";
-/*
-  Display list of users to assign zone to if creating
-  user has the proper permission to do so.
- */
-foreach ($users as $user) {
-    if ($user['id'] === $_SESSION['userid']) {
-        echo "          <option value=\"" . $user['id'] . "\" selected>" . $user['fullname'] . "</option>\n";
-    } elseif ($perm_view_others) {
-        echo "          <option value=\"" . $user['id'] . "\">" . $user['fullname'] . "</option>\n";
-    }
-}
-echo "         </select>\n";
-echo "        </td>\n";
-echo "       </tr>\n";
-echo "       <tr>\n";
-echo "        <td>" . _('Type') . ":</td>\n";
-echo "        <td>\n";
-echo "         <select class=\"form-select form-select-sm\" name=\"dom_type\">\n";
-foreach ($available_zone_types as $type) {
-    $type == $iface_zone_type_default ? $selected = ' selected' : $selected = '';
-    echo "          <option value=\"" . $type . "\" $selected>" . strtolower($type) . "</option>\n";
-}
-echo "         </select>\n";
-echo "        </td>\n";
-echo "       </tr>\n";
-echo "       <tr>\n";
-echo "        <td>" . _('Template') . ":</td>\n";
-echo "        <td>\n";
-echo "         <select class=\"form-select form-select-sm\" name=\"zone_template\">\n";
-echo "          <option value=\"none\">none</option>\n";
-foreach ($zone_templates as $zone_template) {
-    echo "          <option value=\"" . htmlspecialchars($zone_template['id']) . "\">" . htmlspecialchars($zone_template['name']) . "</option>\n";
-}
-echo "         </select>\n";
-echo "        </td>\n";
-echo "       </tr>\n";
-
-if ($pdnssec_use) {
-    echo "       <tr>\n";
-    echo "        <td>" . _('DNSSEC') . ":</td>\n";
-    echo "        <td><input class=\"form-check-input\" type=\"checkbox\" name=\"dnssec\" value=\"1\" checked></td>\n";
-    echo "       </tr>\n";
-}
-
-echo "       <tr>\n";
-echo "        <td>&nbsp;</td>\n";
-echo "        <td>\n";
-echo "         <input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"submit\" value=\"" . _('Add zone') . "\">\n";
-echo "        </td>\n";
-echo "       </tr>\n";
-echo "      </table>\n";
-echo "     </form>\n";
+$app->render('add_zone_master.html', [
+    'perm_view_others' => $perm_view_others,
+    'session_user_id' => $_SESSION['userid'],
+    'available_zone_types' => array("MASTER", "NATIVE"),
+    'users' => do_hook('show_users'),
+    'zone_templates' => ZoneTemplate::get_list_zone_templ($_SESSION['userid']),
+    'iface_zone_type_default' => $app->config('iface_zone_type_default'),
+]);
 
 include_once('inc/footer.inc.php');
