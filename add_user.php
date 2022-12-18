@@ -29,64 +29,97 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\AppFactory;
+use Poweradmin\BaseController;
+use Poweradmin\Permission;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/message.inc.php';
 
-include_once 'inc/header.inc.php';
+class AddUserController extends BaseController {
 
-$app = AppFactory::create();
-$ldap_use = $app->config('ldap_use');
+    public function run(): void
+    {
+        $this->checkPermission('user_add_new', ERR_PERM_ADD_USER);
 
-$username = $_POST['username'] ?? "";
-$fullname = $_POST['fullname'] ?? "";
-$email = $_POST['email'] ?? "";
-$perm_templ = $_POST['perm_templ'] ?? "1";
-$description = $_POST['descr'] ?? "";
+        if ($this->isPost()) {
+            $this->addUser();
+        } else {
+            $this->showForm();
+        }
+    }
 
-$active_checked = "checked";
-if (isset($_POST['active'])) {
-    $active_checked = $_POST['active'] === "1" ? "checked" : "";
+    private function addUser()
+    {
+        $v = new Valitron\Validator($_POST);
+        $v->rules([
+            'required' => ['username', 'email'],
+        ]);
+
+        if ($v->validate()) {
+            if (do_hook('add_new_user', $_POST)) {
+                success(SUC_USER_ADD);
+
+                $this->showUsers();
+            } else {
+                $this->showForm();
+            }
+        } else {
+            $this->showError($v->errors());
+        }
+    }
+
+    private function showForm()
+    {
+        $user_edit_templ_perm = do_hook('verify_permission', 'user_edit_templ_perm');
+        $user_templates = do_hook('list_permission_templates');
+
+        $username = $_POST['username'] ?? "";
+        $fullname = $_POST['fullname'] ?? "";
+        $email = $_POST['email'] ?? "";
+        $perm_templ = $_POST['perm_templ'] ?? "1";
+        $description = $_POST['descr'] ?? "";
+
+        $active_checked = "checked";
+        if (isset($_POST['active'])) {
+            $active_checked = $_POST['active'] === "1" ? "checked" : "";
+        }
+
+        $use_ldap_checked = "";
+        if (isset($_POST['use_ldap'])) {
+            $use_ldap_checked = $_POST['use_ldap'] === "1" ? "checked" : "";
+        }
+
+        $this->render('add_user.html', [
+            'username' => $username,
+            'fullname' => $fullname,
+            'email' => $email,
+            'perm_templ' => $perm_templ,
+            'description' => $description,
+            'active_checked' => $active_checked,
+            'use_ldap_checked' => $use_ldap_checked,
+            'user_edit_templ_perm' => $user_edit_templ_perm,
+            'user_templates' => $user_templates,
+            'ldap_use' => $this->config('ldap_use'),
+        ]);
+    }
+
+    private function showUsers()
+    {
+        $this->render('users.html', [
+            'permissions' => Permission::getPermissions(
+                'user_view_others',
+                'user_edit_own',
+                'user_edit_others',
+                'templ_perm_edit',
+                'user_is_ueberuser',
+            ),
+            'perm_templates' => do_hook('list_permission_templates'),
+            'users' => do_hook('get_user_detail_list', ""),
+            'ldap_use' => $this->config('ldap_use'),
+            'session_userid' => $_SESSION["userid"]
+        ]);
+    }
 }
 
-$use_ldap_checked = "";
-if (isset($_POST['use_ldap'])) {
-    $use_ldap_checked = $_POST['use_ldap'] === "1" ? "checked" : "";
-}
-
-if (!do_hook('verify_permission', 'user_add_new')) {
-    error(ERR_PERM_ADD_USER);
-    include_once("inc/footer.inc.php");
-    exit;
-}
-
-if (isset($_POST["commit"]) && do_hook('add_new_user', $_POST)) {
-    success(SUC_USER_ADD);
-
-    $username = "";
-    $fullname = "";
-    $password = "";
-    $email = "";
-    $perm_templ = "1";
-    $description = "";
-    $active_checked = "checked";
-    $use_ldap_checked = "checked";
-}
-
-$user_edit_templ_perm = do_hook('verify_permission', 'user_edit_templ_perm');
-$user_templates = do_hook('list_permission_templates');
-
-$app->render('add_user.html', [
-    'username' => $username,
-    'fullname' => $fullname,
-    'email' => $email,
-    'perm_templ' => $perm_templ,
-    'description' => $description,
-    'active_checked' => $active_checked,
-    'use_ldap_checked' => $use_ldap_checked,
-    'user_edit_templ_perm' => $user_edit_templ_perm,
-    'user_templates' => $user_templates,
-]);
-
-include_once('inc/footer.inc.php');
+$controller = new AddUserController();
+$controller->run();
