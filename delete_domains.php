@@ -72,7 +72,7 @@ echo "<thead>";
 echo "  <th> " . _('Name') . "</th>";
 echo "  <th> " . _('Owner') . "</th>";
 echo "  <th> " . _('Type') . "</th>";
-echo "  <th></th>";
+echo "  <th> " . _('Note') . "</th>";
 echo "</thead>";
 
 echo "<tbody>";
@@ -93,7 +93,11 @@ foreach ($zones as $zone) {
                 echo "        <td>         \n";
                 printf(_('You are about to delete a slave zone of which the master nameserver, %s, is a supermaster. Deleting the zone now, will result in temporary removal only. Whenever the supermaster sends a notification for this zone, it will be added again!'), $slave_master);
                 echo "        </td>\n";
+            } else {
+                echo "<td></td>";
             }
+        } else {
+            echo "<td></td>";
         }
         echo "</tr>";
     } else {
