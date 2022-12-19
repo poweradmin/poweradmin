@@ -29,81 +29,83 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\AppFactory;
+use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
 use Poweradmin\Logger;
 use Poweradmin\Permission;
-use Poweradmin\Validation;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/message.inc.php';
 
-include_once 'inc/header.inc.php';
+class DeleteDomainController extends BaseController
+{
 
-$app = AppFactory::create();
-$pdnssec_use = $app->config('pdnssec_use');
+    public function run(): void
+    {
+        $v = new Valitron\Validator($_GET);
+        $v->rules([
+            'required' => ['id'],
+            'integer' => ['id'],
+        ]);
+        if (!$v->validate()) {
+            $this->showError($v->errors());
+        }
 
-$perm_edit = Permission::getEditPermission();
+        $zone_id = htmlspecialchars($_GET['id']);
 
-if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
-    error(ERR_INV_INPUT);
-    include_once('inc/footer.inc.php');
-    exit;
-}
-$zone_id = htmlspecialchars($_GET['id']);
+        $perm_edit = Permission::getEditPermission();
+        $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
+        $this->checkCondition($perm_edit != "all" && ($perm_edit != "own" || !$user_is_zone_owner), ERR_PERM_DEL_ZONE);
 
-$confirm = "-1";
-if (isset($_GET['confirm']) && Validation::is_number($_GET['confirm'])) {
-    $confirm = $_GET['confirm'];
-}
-
-$zone_info = DnsRecord::get_zone_info_from_id($zone_id);
-if (!$zone_info) {
-    header("Location: list_zones.php");
-    exit;
-}
-
-$zone_owners = do_hook('get_fullnames_owners_from_domainid', $zone_id);
-$user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
-
-if ($confirm == '1') {
-    if ($pdnssec_use && $zone_info['type'] == 'MASTER') {
-        $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
-        if (Dnssec::dnssec_is_zone_secured($zone_name)) {
-            Dnssec::dnssec_unsecure_zone($zone_name);
+        if (isset($_GET['confirm'])) {
+            $this->deleteDomain($zone_id);
+        } else {
+            $this->showDeleteDomain($zone_id);
         }
     }
 
-    if (DnsRecord::delete_domain($zone_id)) {
-        success(SUC_ZONE_DEL);
-        Logger::log_info(sprintf('client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
-            $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-            $zone_info['name'], $zone_info['type']), $zone_id);
+    private function deleteDomain(string $zone_id)
+    {
+        $zone_info = DnsRecord::get_zone_info_from_id($zone_id);
+        $pdnssec_use = $this->config('pdnssec_use');
+
+        if ($pdnssec_use && $zone_info['type'] == 'MASTER') {
+            $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
+            if (Dnssec::dnssec_is_zone_secured($zone_name)) {
+                Dnssec::dnssec_unsecure_zone($zone_name);
+            }
+        }
+
+        if (DnsRecord::delete_domain($zone_id)) {
+            success(SUC_ZONE_DEL);
+            Logger::log_info(sprintf('client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
+                $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
+                $zone_info['name'], $zone_info['type']), $zone_id);
+        }
     }
-    include_once('inc/footer.inc.php');
-    exit;
-}
 
-if ($perm_edit != "all" && ($perm_edit != "own" || $user_is_zone_owner != "1")) {
-    error(ERR_PERM_DEL_ZONE);
-    include_once('inc/footer.inc.php');
-    exit;
-}
+    private function showDeleteDomain(string $zone_id)
+    {
+        $zone_info = DnsRecord::get_zone_info_from_id($zone_id);
+        $zone_owners = do_hook('get_fullnames_owners_from_domainid', $zone_id);
 
-$slave_master_exists = false;
-if ($zone_info['type'] == 'SLAVE') {
-    $slave_master = DnsRecord::get_domain_slave_master($zone_id);
-    if (DnsRecord::supermaster_exists($slave_master)) {
-        $slave_master_exists = true;
+        $slave_master_exists = false;
+        if ($zone_info['type'] == 'SLAVE') {
+            $slave_master = DnsRecord::get_domain_slave_master($zone_id);
+            if (DnsRecord::supermaster_exists($slave_master)) {
+                $slave_master_exists = true;
+            }
+        }
+
+        $this->render('delete_domain.html', [
+            'zone_id' => $zone_id,
+            'zone_info' => $zone_info,
+            'zone_owners' => $zone_owners,
+            'slave_master_exists' => $slave_master_exists,
+        ]);
     }
 }
 
-$app->render('delete_domain.html', [
-    'zone_id' => $zone_id,
-    'zone_info' => $zone_info,
-    'zone_owners' => $zone_owners,
-    'slave_master_exists' => $slave_master_exists,
-]);
-
-include_once("inc/footer.inc.php");
+$controller = new DeleteDomainController();
+$controller->run();
