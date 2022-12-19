@@ -29,71 +29,80 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\AppFactory;
+use Poweradmin\BaseController;
 use Poweradmin\Dns;
 use Poweradmin\DnsRecord;
 use Poweradmin\Logger;
-use Poweradmin\Validation;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/message.inc.php';
 
-include_once 'inc/header.inc.php';
+class AddZoneSlaveController extends BaseController
+{
 
-$app = AppFactory::create();
-$dns_third_level_check = $app->config('dns_third_level_check');
+    public function run(): void
+    {
+        $this->checkPermission('zone_slave_add', ERR_PERM_ADD_ZONE_SLAVE);
 
-$owner = "-1";
-if ((isset($_POST['owner'])) && (Validation::is_number($_POST['owner']))) {
-    $owner = $_POST['owner'];
-}
-
-$zone = "";
-if (isset($_POST['domain'])) {
-    $zone = idn_to_ascii(trim($_POST['domain']), IDNA_NONTRANSITIONAL_TO_ASCII);
-}
-
-$master = "";
-if (isset($_POST['slave_master'])) {
-    $master = $_POST['slave_master'];
-}
-
-$type = "SLAVE";
-
-$zone_slave_add = do_hook('verify_permission', 'zone_slave_add');
-
-if (!$zone_slave_add) {
-    error(ERR_PERM_ADD_ZONE_SLAVE);
-    include_once('inc/footer.inc.php');
-    exit;
-}
-
-if (isset($_POST['submit'])) {
-    if (!Dns::is_valid_hostname_fqdn($zone, 0)) {
-        error(ERR_DNS_HOSTNAME);
-    } elseif ($dns_third_level_check && DnsRecord::get_domain_level($zone) > 2 && DnsRecord::domain_exists(DnsRecord::get_second_level_domain($zone))) {
-        error(ERR_DOMAIN_EXISTS);
-    } elseif (DnsRecord::domain_exists($zone) || DnsRecord::record_name_exists($zone)) {
-        error(ERR_DOMAIN_EXISTS);
-    } elseif (!Dns::are_multiple_valid_ips($master)) {
-        error(ERR_DNS_IP);
-    } else {
-        if (DnsRecord::add_domain($zone, $owner, $type, $master, 'none')) {
-            $zone_id = DnsRecord::get_zone_id_from_name($zone);
-            $idn_zone_name = idn_to_utf8($zone, IDNA_NONTRANSITIONAL_TO_ASCII);
-            success("<a href=\"edit.php?id=" . $zone_id . "\">" . SUC_ZONE_ADD . '</a>');
-            Logger::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',
-                $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                $zone, $master), $zone_id);
-            unset($zone, $owner, $type, $master);
+        if ($this->isPost()) {
+            $this->addZone();
+        } else {
+            $this->showForm();
         }
+    }
+
+    private function addZone()
+    {
+        $v = new Valitron\Validator($_POST);
+        $v->rules([
+            'required' => ['owner', 'domain', 'slave_master'],
+            'integer' => ['owner'],
+        ]);
+        if (!$v->validate()) {
+            $this->showError($v->errors());
+        }
+
+        $dns_third_level_check = $this->config('dns_third_level_check');
+
+        $type = "SLAVE";
+        $owner = $_POST['owner'];
+        $master = $_POST['slave_master'];
+        $zone = idn_to_ascii(trim($_POST['domain']), IDNA_NONTRANSITIONAL_TO_ASCII);
+
+        if (!Dns::is_valid_hostname_fqdn($zone, 0)) {
+            error(ERR_DNS_HOSTNAME);
+            $this->showForm();
+        } elseif ($dns_third_level_check && DnsRecord::get_domain_level($zone) > 2 && DnsRecord::domain_exists(DnsRecord::get_second_level_domain($zone))) {
+            error(ERR_DOMAIN_EXISTS);
+            $this->showForm();
+        } elseif (DnsRecord::domain_exists($zone) || DnsRecord::record_name_exists($zone)) {
+            error(ERR_DOMAIN_EXISTS);
+            $this->showForm();
+        } elseif (!Dns::are_multiple_valid_ips($master)) {
+            error(ERR_DNS_IP);
+            $this->showForm();
+        } else {
+            if (DnsRecord::add_domain($zone, $owner, $type, $master, 'none')) {
+                $zone_id = DnsRecord::get_zone_id_from_name($zone);
+                $idn_zone_name = idn_to_utf8($zone, IDNA_NONTRANSITIONAL_TO_ASCII);
+                success("<a href=\"edit.php?id=" . $zone_id . "\">" . SUC_ZONE_ADD . '</a>');
+                Logger::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',
+                    $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
+                    $zone, $master), $zone_id);
+                unset($zone, $owner, $type, $master);
+            }
+        }
+    }
+
+    private function showForm()
+    {
+        $this->render('add_zone_slave.html', [
+            'users' => do_hook('show_users'),
+            'session_user_id' => $_SESSION['userid'],
+            'perm_view_others' => do_hook('verify_permission', 'user_view_others'),
+        ]);
     }
 }
 
-$app->render('add_zone_slave.html', [
-    'users' => do_hook('show_users'),
-    'session_user_id' => $_SESSION['userid'],
-    'perm_view_others' => do_hook('verify_permission', 'user_view_others'),
-]);
-
-include_once('inc/footer.inc.php');
+$controller = new AddZoneSlaveController();
+$controller->run();
