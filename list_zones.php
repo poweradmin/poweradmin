@@ -104,10 +104,10 @@ echo "     <table class=\"table table-striped table-hover table-sm\">\n";
 echo "     <thead>\n";
 echo "      <tr>\n";
 echo "       <th><input type=\"checkbox\" class=\"form-check-input\" id=\"select_zones\" onClick=\"toggleZoneCheckboxes()\" /></th>\n";
-echo "       <th><a href=\"list_zones.php?zone_sort_by=name\">" . _('Name') . "</a></th>\n";
-echo "       <th><a href=\"list_zones.php?zone_sort_by=type\">" . _('Type') . "</a></th>\n";
-echo "       <th><a href=\"list_zones.php?zone_sort_by=count_records\">" . _('Records') . "</a></th>\n";
-echo "       <th><a href=\"list_zones.php?zone_sort_by=owner\">" . _('Owner') . "</a></th>\n";
+echo "       <th><a href=\"list_zones.php?zone_sort_by=name\">" . _('Name') . "</a> " . ($zone_sort_by == 'name' ? "<i class=\"bi bi-arrow-down\"></i>" : "") . "</th>\n";
+echo "       <th><a href=\"list_zones.php?zone_sort_by=type\">" . _('Type') . "</a> " . ($zone_sort_by == 'type' ? "<i class=\"bi bi-arrow-down\"></i>" : "") . "</th>\n";
+echo "       <th><a href=\"list_zones.php?zone_sort_by=count_records\">" . _('Records') . "</a> " . ($zone_sort_by == 'count_records' ? "<i class=\"bi bi-arrow-down\"></i>" : "") . "</th>\n";
+echo "       <th><a href=\"list_zones.php?zone_sort_by=owner\">" . _('Owner') . "</a> " . ($zone_sort_by == 'owner' ? "<i class=\"bi bi-arrow-down\"></i>" : "") . "</th>\n";
 
 if ($iface_zonelist_serial) {
     echo "       <th>" . _('Serial') . "</th>\n";
