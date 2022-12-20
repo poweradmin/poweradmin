@@ -1144,19 +1144,19 @@ class DnsRecord
 
         $ret = array();
         while ($r = $result->fetch()) {
-            //fixme: name is not guaranteed to be unique with round-robin record sets
-            $ret[$r["name"]] = array(
-                "id" => $r["id"],
-                "name" => $r["name"],
-                "type" => $r["type"],
-                "count_records" => $r["count_records"],
-                "owner" => $r["fullname"] ? "{$r["username"]} ({$r["fullname"]})" : $r["username"],
-                "comment" => $r["comment"] ?: '',
-            );
+            //FIXME: name is not guaranteed to be unique with round-robin record sets
+            $ret[$r["name"]]["id"] = $r["id"];
+            $ret[$r["name"]]["name"] = $r["name"];
+            $ret[$r["name"]]["type"] = $r["type"];
+            $ret[$r["name"]]["count_records"] = $r["count_records"];
+            $ret[$r["name"]]["comment"] = $r["comment"] ?: '';
+            $ret[$r["name"]]["owner"][] = $r["fullname"] ? "{$r["username"]} ({$r["fullname"]})" : $r["username"];
+
             if ($pdnssec_use) {
                 $ret[$r["name"]]["secured"] = $r["secured"];
             }
         }
+
         return $ret;
     }
 

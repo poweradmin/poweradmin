@@ -133,12 +133,11 @@ foreach ($zones as $zone) {
         $zone['count_records'] = 0;
     }
 
-    if ($perm_edit != "all" || $perm_edit != "none") {
-        $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone["id"]);
-    }
+    $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone["id"]);
+
     echo "         <tr>\n";
     echo "          <td>\n";
-    if ($count_zones_edit > 0 && ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1"))) {
+    if ($count_zones_edit > 0 && ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner))) {
         echo "       <input class=\"form-check-input\" type=\"checkbox\" name=\"zone_id[]\" value=\"" . htmlspecialchars($zone['id']) . "\">";
     }
     echo "          </td>\n";
@@ -147,7 +146,12 @@ foreach ($zones as $zone) {
     echo "</span></td>\n";
     echo "          <td>" . strtolower(htmlspecialchars($zone["type"])) . "</td>\n";
     echo "          <td>" . htmlspecialchars($zone["count_records"]) . "</td>\n";
-    echo "          <td>" . htmlspecialchars($zone["owner"]) . "</td>\n";
+
+    $owners = [];
+    foreach ($zone["owner"] as $owner) {
+        $owners[] = htmlspecialchars($owner);
+    }
+    echo "          <td>" . join("<br>", $owners) . "</td>\n";
 
     if ($iface_zonelist_serial) {
         $serial = DnsRecord::get_serial_by_zid($zone['id']);

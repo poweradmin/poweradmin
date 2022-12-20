@@ -497,7 +497,7 @@ function verify_user_is_owner_zoneid_local($zoneid)
         $response = $db->queryOne("SELECT zones.id FROM zones
 				WHERE zones.owner = " . $db->quote($userid, 'integer') . "
 				AND zones.domain_id = " . $db->quote($zoneid, 'integer'));
-        return ($response ? "1" : "0");
+        return (bool)$response;
     }
     error(ERR_INV_ARG);
 }
