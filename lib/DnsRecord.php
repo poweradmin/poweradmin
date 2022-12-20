@@ -1080,6 +1080,7 @@ class DnsRecord
         global $db_type;
         global $sql_regexp;
         global $pdnssec_use;
+        global $iface_zone_comments;
 
         if ($letterstart == '_') {
             $letterstart = '\_';
@@ -1121,6 +1122,7 @@ class DnsRecord
                         users.username,
                         users.fullname
                         " . ($pdnssec_use ? ", COUNT(cryptokeys.id) > 0 OR COUNT(domainmetadata.id) > 0 AS secured" : "") . "
+                        " . ($iface_zone_comments ? ", zones.comment" : "") . "
                         FROM domains
                         LEFT JOIN zones ON domains.id=zones.domain_id
                         LEFT JOIN records ON records.domain_id=domains.id AND records.type IS NOT NULL
@@ -1149,6 +1151,7 @@ class DnsRecord
                 "type" => $r["type"],
                 "count_records" => $r["count_records"],
                 "owner" => $r["fullname"] ? "{$r["username"]} ({$r["fullname"]})" : $r["username"],
+                "comment" => $r["comment"] ?: '',
             );
             if ($pdnssec_use) {
                 $ret[$r["name"]]["secured"] = $r["secured"];

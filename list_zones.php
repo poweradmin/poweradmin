@@ -127,6 +127,7 @@ if ($count_zones_view <= $iface_rowamount) {
     $zones = DnsRecord::get_zones($perm_view, $_SESSION['userid'], $letter_start, $row_start, $iface_rowamount, $zone_sort_by);
     $count_zones_shown = ($zones == -1) ? 0 : count($zones);
 }
+
 echo "       <tbody>\n";
 foreach ($zones as $zone) {
     if ($zone['count_records'] == NULL) {
@@ -142,7 +143,9 @@ foreach ($zones as $zone) {
         echo "       <input class=\"form-check-input\" type=\"checkbox\" name=\"zone_id[]\" value=\"" . htmlspecialchars($zone['id']) . "\">";
     }
     echo "          </td>\n";
-    echo "          <td>" . idn_to_utf8(htmlspecialchars($zone["name"]), IDNA_NONTRANSITIONAL_TO_ASCII) . "</td>\n";
+    echo "          <td><span data-bs-toggle=\"tooltip\" data-bs-placement=\"bottom\" title=\"". $zone['comment'] ."\">";
+    echo idn_to_utf8(htmlspecialchars($zone["name"]), IDNA_NONTRANSITIONAL_TO_ASCII);
+    echo "</span></td>\n";
     echo "          <td>" . strtolower(htmlspecialchars($zone["type"])) . "</td>\n";
     echo "          <td>" . htmlspecialchars($zone["count_records"]) . "</td>\n";
     echo "          <td>" . htmlspecialchars($zone["owner"]) . "</td>\n";
@@ -178,6 +181,5 @@ if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) 
     echo "      <input type=\"submit\" name=\"commit\" value=\"" . _('Delete zone(s)') . "\" class=\"btn btn-primary btn-sm\">\n";
 }
 echo "     </form>\n";
-
 
 include_once('inc/footer.inc.php');
