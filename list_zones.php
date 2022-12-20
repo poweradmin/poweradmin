@@ -125,7 +125,6 @@ if ($count_zones_view <= $iface_rowamount) {
     $zones = DnsRecord::get_zones($perm_view, $_SESSION['userid'], "all", $row_start, 'all', $zone_sort_by);
 } else {
     $zones = DnsRecord::get_zones($perm_view, $_SESSION['userid'], $letter_start, $row_start, $iface_rowamount, $zone_sort_by);
-    $count_zones_shown = ($zones == -1) ? 0 : count($zones);
 }
 
 echo "       <tbody>\n";
