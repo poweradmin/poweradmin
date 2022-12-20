@@ -435,16 +435,14 @@ if ($meta_edit) {
     echo "       <tr>\n";
     echo "        <td>\n";
     echo "         <select class=\"form-select form-select-sm\" name=\"newowner\">\n";
-    /*
-      Show list of users to add as owners of this domain, only if we have permission to do so.
-     */
+
     $users = do_hook('show_users');
     foreach ($users as $user) {
         $add = '';
         if ($user["id"] == $_SESSION["userid"]) {
             echo "          <option" . $add . " value=\"" . $user["id"] . "\">" . $user["fullname"] . "</option>\n";
         } elseif ($perm_view_others == "1") {
-            echo "          <option  value=\"" . $user["id"] . "\">" . $user["fullname"] . "</option>\n";
+            echo "          <option  value=\"" . $user["id"] . "\">" . ($user["fullname"] == "" ? $user['username'] : $user['fullname']) . "</option>\n";
         }
     }
     echo "         </select>\n";
