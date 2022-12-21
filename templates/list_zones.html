@@ -9,6 +9,9 @@
 
 <form method="post" action="delete_domains.php">
     <table class="table table-striped table-hover table-sm">
+        {% if count_zones_view > iface_rowamount and count_zones_all_letterstart == "0" or count_zones_view == 0 %}
+        <tr><td>{% trans 'There are no zones to show in this listing.' %}</td></tr>
+        {% else %}
         <thead>
         <tr>
             <th><input type="checkbox" class="form-check-input" id="select_zones" onClick="toggleZoneCheckboxes()"/>
@@ -36,12 +39,9 @@
             <th>&nbsp;</th>
         </tr>
         </thead>
-
-        <tbody>
-        {% if count_zones_view > iface_rowamount and count_zones_all_letterstart == "0" or count_zones_view == 0 %}
-        <td colspan="7">{% trans 'There are no zones to show in this listing.' %}</td>
         {% endif %}
 
+        <tbody>
         {% for zone in zones %}
 
         {% if session_userlogin in zone['users'] %}
