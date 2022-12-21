@@ -92,12 +92,6 @@ if ($perm_view == "none") {
     exit;
 }
 
-if (($count_zones_view > $iface_rowamount && $count_zones_all_letterstart == "0") || $count_zones_view == 0) {
-    echo _('There are no zones to show in this listing.');
-    include_once('inc/footer.inc.php');
-    exit;
-}
-
 $app->render('list_zones.html', [
     'zones' => $zones,
     'count_zones_all_letterstart' => $count_zones_all_letterstart,
