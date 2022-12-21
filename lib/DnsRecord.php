@@ -1150,7 +1150,8 @@ class DnsRecord
             $ret[$r["name"]]["type"] = $r["type"];
             $ret[$r["name"]]["count_records"] = $r["count_records"];
             $ret[$r["name"]]["comment"] = $r["comment"] ?: '';
-            $ret[$r["name"]]["owner"][] = $r["fullname"] ? "{$r["username"]} ({$r["fullname"]})" : $r["username"];
+            $ret[$r["name"]]["owners"][] = $r["fullname"] ?: $r["username"];
+            $ret[$r["name"]]["users"][] = $r["username"];
 
             if ($pdnssec_use) {
                 $ret[$r["name"]]["secured"] = $r["secured"];

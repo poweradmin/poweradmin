@@ -129,11 +129,7 @@ if ($count_zones_view <= $iface_rowamount) {
 
 echo "       <tbody>\n";
 foreach ($zones as $zone) {
-    if ($zone['count_records'] == NULL) {
-        $zone['count_records'] = 0;
-    }
-
-    $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone["id"]);
+    $user_is_zone_owner = in_array($_SESSION['userlogin'], $zone['users']);
 
     echo "         <tr>\n";
     echo "          <td>\n";
@@ -148,7 +144,7 @@ foreach ($zones as $zone) {
     echo "          <td>" . htmlspecialchars($zone["count_records"]) . "</td>\n";
 
     $owners = [];
-    foreach ($zone["owner"] as $owner) {
+    foreach ($zone["owners"] as $owner) {
         $owners[] = htmlspecialchars($owner);
     }
     echo "          <td>" . join("<br>", $owners) . "</td>\n";
@@ -180,7 +176,7 @@ if ($letter_start != 'all') {
     echo show_pages($count_zones_all_letterstart, $iface_rowamount);
     echo "     </div>\n";
 }
-if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
+if ($perm_edit == "all" || ($perm_edit == "own")) {
     echo "      <input type=\"submit\" name=\"commit\" value=\"" . _('Delete zone(s)') . "\" class=\"btn btn-primary btn-sm\">\n";
 }
 echo "     </form>\n";
