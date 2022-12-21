@@ -22,7 +22,8 @@
 
 namespace Poweradmin;
 
-abstract class BaseController {
+abstract class BaseController
+{
     private Application $app;
 
     abstract public function run(): void;
@@ -30,7 +31,6 @@ abstract class BaseController {
     public function __construct()
     {
         $this->app = AppFactory::create();
-        include_once 'inc/header.inc.php';
     }
 
     public function isPost(): bool
@@ -50,8 +50,66 @@ abstract class BaseController {
 
     public function render(string $template, array $params): void
     {
+        include_once 'inc/header.inc.php';
+
+        $this->showMessage($template);
+
         $this->app->render($template, $params);
         include_once('inc/footer.inc.php');
+    }
+
+    public function redirect($script, $args = [])
+    {
+        $args['time'] = time();
+        $url = htmlentities($script, ENT_QUOTES) . "?" . http_build_query($args);
+        header("Location: $url");
+        exit;
+    }
+
+    public function setMessage($script, $type, $content)
+    {
+        $_SESSION['messages'][$script] = [
+            'type' => $type,
+            'content' => $content
+        ];
+    }
+
+    public function getMessage($script)
+    {
+        if (isset($_SESSION['messages'][$script])) {
+            $messages = $_SESSION['messages'][$script];
+            unset($_SESSION['messages'][$script]);
+            return $messages;
+        }
+        return null;
+    }
+
+    public function showMessage($template)
+    {
+        $script = pathinfo($template)['filename'];
+
+        $message = $this->getMessage($script);
+        if ($message) {
+            switch ($message['type']) {
+                case 'error':
+                    $alertClass = 'alert-error';
+                    break;
+                case 'success':
+                    $alertClass = 'alert-success';
+                    break;
+                case 'info':
+                    $alertClass = 'alert-info';
+                    break;
+                default:
+                    $alertClass = '';
+            }
+
+            echo <<<EOF
+<div class="alert {$alertClass} alert-dismissible fade show" role="alert">{$message['content']}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+EOF;
+        }
     }
 
     public function checkCondition(bool $condition, string $errorMessage): void
