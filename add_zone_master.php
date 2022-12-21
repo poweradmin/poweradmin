@@ -84,8 +84,9 @@ class AddZoneMasterController extends BaseController
             $this->showForm();
         } elseif (DnsRecord::add_domain($zone, $owner, $dom_type, '', $zone_template)) {
             $zone_id = DnsRecord::get_zone_id_from_name($zone);
-            $idn_zone_name = idn_to_utf8($zone, IDNA_NONTRANSITIONAL_TO_ASCII);
-            success("<a href=\"edit.php?id=" . $zone_id . "\">" . $idn_zone_name . " - " . SUC_ZONE_ADD . '</a>');
+
+            $this->setMessage('list_zones', 'success', SUC_ZONE_ADD);
+
             Logger::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
                 $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                 $zone, $dom_type, $zone_template), $zone_id);
@@ -98,6 +99,8 @@ class AddZoneMasterController extends BaseController
 
                 Dnssec::dnssec_rectify_zone($zone_id);
             }
+
+            $this->redirect('list_zones.php');
         }
     }
 

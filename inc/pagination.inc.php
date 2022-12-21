@@ -153,36 +153,38 @@ function show_letters($letterstart, $userid) {
         }
     }
 
-    echo '<span class="text-secondary">' . _('Show zones beginning with') . "</span><br>";
-    echo '<nav>';
-    echo '<ul class="pagination pagination-sm">';
+    $result = '<span class="text-secondary">' . _('Show zones beginning with') . "</span><br>";
+    $result .= '<nav>';
+    $result .= '<ul class="pagination pagination-sm">';
 
     if ($letterstart == "1") {
-        echo '<li class="page-item active"><span class="page-link" tabindex="-1">0-9</span></li>';
+        $result .= '<li class="page-item active"><span class="page-link" tabindex="-1">0-9</span></li>';
     } elseif ($digits_available) {
-        echo "<li class=\"page-item\"><a class=\"page-link\" href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=1\">0-9</a></li>";
+        $result .= "<li class=\"page-item\"><a class=\"page-link\" href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=1\">0-9</a></li>";
     } else {
-        echo '<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">0-9</a></li>';
+        $result .= '<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">0-9</a></li>';
     }
 
     foreach ($char_range as $letter) {
         if ($letter == $letterstart) {
-            echo '<li class="page-item active"><span class="page-link" tabindex="-1">' . $letter . '</span></li>';
+            $result .= '<li class="page-item active"><span class="page-link" tabindex="-1">' . $letter . '</span></li>';
         } elseif (in_array($letter, $available_chars)) {
-            echo "<li class=\"page-item\"><a class=\"page-link\" href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=" . $letter . "\">" . $letter . "</a></li>";
+            $result .= "<li class=\"page-item\"><a class=\"page-link\" href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=" . $letter . "\">" . $letter . "</a></li>";
         } else {
-            echo '<li class="page-item disabled"><span class="page-link" tabindex="-1">' . $letter . '</span></li>';
+            $result .= '<li class="page-item disabled"><span class="page-link" tabindex="-1">' . $letter . '</span></li>';
         }
     }
 
     if ($letterstart == 'all') {
-        echo '<li class="page-item active"><a class="page-link" href="#" tabindex="-1">' . _('Show all') . '</a></li>';
+        $result .= '<li class="page-item active"><a class="page-link" href="#" tabindex="-1">' . _('Show all') . '</a></li>';
     } else {
-        echo "<li class=\"page-item\"><a class=\"page-link\" href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=all\">" . _('Show all') . '</a></li>';
+        $result .= "<li class=\"page-item\"><a class=\"page-link\" href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=all\">" . _('Show all') . '</a></li>';
     }
 
-    echo "</ul>";
-    echo "</nav>";
+    $result .= "</ul>";
+    $result .= "</nav>";
+
+    return $result;
 }
 
 /** Check if current user allowed to view any zone content

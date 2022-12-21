@@ -29,83 +29,92 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\AppFactory;
+use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
 use Poweradmin\Permission;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/pagination.inc.php';
 
-include_once 'inc/header.inc.php';
+class ListZonesController extends BaseController {
 
-$app = AppFactory::create();
-$pdnssec_use = $app->config('pdnssec_use');
-$iface_zonelist_serial = $app->config('iface_zonelist_serial');
-$iface_rowamount = $app->config('iface_rowamount');
+    public function run(): void
+    {
+        $this->listZones();
+    }
 
-$row_start = 0;
-if (isset($_GET["start"])) {
-    $row_start = (htmlspecialchars($_GET["start"]) - 1) * $iface_rowamount;
+    private function listZones()
+    {
+        $pdnssec_use = $this->config('pdnssec_use');
+        $iface_zonelist_serial = $this->config('iface_zonelist_serial');
+        $iface_rowamount = $this->config('iface_rowamount');
+
+        $row_start = 0;
+        if (isset($_GET["start"])) {
+            $row_start = (htmlspecialchars($_GET["start"]) - 1) * $iface_rowamount;
+        }
+
+        $perm_view = Permission::getViewPermission();
+        $perm_edit = Permission::getEditPermission();
+
+        $letter_start = 'a';
+        if (isset($_GET["letter"])) {
+            $letter_start = htmlspecialchars($_GET["letter"]);
+            $_SESSION["letter"] = htmlspecialchars($_GET["letter"]);
+        } elseif (isset($_SESSION["letter"])) {
+            $letter_start = $_SESSION["letter"];
+        }
+
+        $count_zones_all_letterstart = DnsRecord::zone_count_ng($perm_view, $letter_start);
+        $count_zones_view = DnsRecord::zone_count_ng($perm_view);
+        $count_zones_edit = DnsRecord::zone_count_ng($perm_edit);
+
+        $zone_sort_by = 'name';
+        if (isset($_GET["zone_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["zone_sort_by"])) {
+            $zone_sort_by = htmlspecialchars($_GET["zone_sort_by"]);
+            $_SESSION["list_zone_sort_by"] = htmlspecialchars($_GET["zone_sort_by"]);
+        } elseif (isset($_POST["zone_sort_by"]) && preg_match("/^[a-z_]+$/", $_POST["zone_sort_by"])) {
+            $zone_sort_by = htmlspecialchars($_POST["zone_sort_by"]);
+            $_SESSION["list_zone_sort_by"] = htmlspecialchars($_POST["zone_sort_by"]);
+        } elseif (isset($_SESSION["list_zone_sort_by"])) {
+            $zone_sort_by = $_SESSION["list_zone_sort_by"];
+        }
+
+        if (!in_array($zone_sort_by, array('name', 'type', 'count_records', 'owner'))) {
+            $zone_sort_by = 'name';
+        }
+
+        if ($count_zones_view <= $iface_rowamount) {
+            $zones = DnsRecord::get_zones($perm_view, $_SESSION['userid'], "all", $row_start, $iface_rowamount, $zone_sort_by);
+        } elseif ($letter_start == 'all') {
+            $zones = DnsRecord::get_zones($perm_view, $_SESSION['userid'], "all", $row_start, 'all', $zone_sort_by);
+        } else {
+            $zones = DnsRecord::get_zones($perm_view, $_SESSION['userid'], $letter_start, $row_start, $iface_rowamount, $zone_sort_by);
+        }
+
+        if ($perm_view == "none") {
+            error(_('You do not have the permission to see any zones.'));
+            include_once('inc/footer.inc.php');
+            exit;
+        }
+
+        $this->render('list_zones.html', [
+            'zones' => $zones,
+            'count_zones_all_letterstart' => $count_zones_all_letterstart,
+            'count_zones_view' => $count_zones_view,
+            'count_zones_edit' => $count_zones_edit,
+            'letter_start' => $letter_start,
+            'iface_rowamount' => $iface_rowamount,
+            'zone_sort_by' => $zone_sort_by,
+            'iface_zonelist_serial' => $iface_zonelist_serial,
+            'pdnssec_use' => $pdnssec_use,
+            'letters' => show_letters($letter_start, $_SESSION["userid"]),
+            'pagination' => show_pages($count_zones_all_letterstart, $iface_rowamount),
+            'session_userlogin' => $_SESSION['userlogin'],
+            'perm_edit' => $perm_edit
+        ]);
+    }
 }
 
-$perm_view = Permission::getViewPermission();
-$perm_edit = Permission::getEditPermission();
-
-$letter_start = 'a';
-if (isset($_GET["letter"])) {
-    $letter_start = htmlspecialchars($_GET["letter"]);
-    $_SESSION["letter"] = htmlspecialchars($_GET["letter"]);
-} elseif (isset($_SESSION["letter"])) {
-    $letter_start = $_SESSION["letter"];
-}
-
-$count_zones_all_letterstart = DnsRecord::zone_count_ng($perm_view, $letter_start);
-$count_zones_view = DnsRecord::zone_count_ng($perm_view);
-$count_zones_edit = DnsRecord::zone_count_ng($perm_edit);
-
-$zone_sort_by = 'name';
-if (isset($_GET["zone_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["zone_sort_by"])) {
-    $zone_sort_by = htmlspecialchars($_GET["zone_sort_by"]);
-    $_SESSION["list_zone_sort_by"] = htmlspecialchars($_GET["zone_sort_by"]);
-} elseif (isset($_POST["zone_sort_by"]) && preg_match("/^[a-z_]+$/", $_POST["zone_sort_by"])) {
-    $zone_sort_by = htmlspecialchars($_POST["zone_sort_by"]);
-    $_SESSION["list_zone_sort_by"] = htmlspecialchars($_POST["zone_sort_by"]);
-} elseif (isset($_SESSION["list_zone_sort_by"])) {
-    $zone_sort_by = $_SESSION["list_zone_sort_by"];
-}
-
-if (!in_array($zone_sort_by, array('name', 'type', 'count_records', 'owner'))) {
-    $zone_sort_by = 'name';
-}
-
-if ($count_zones_view <= $iface_rowamount) {
-    $zones = DnsRecord::get_zones($perm_view, $_SESSION['userid'], "all", $row_start, $iface_rowamount, $zone_sort_by);
-} elseif ($letter_start == 'all') {
-    $zones = DnsRecord::get_zones($perm_view, $_SESSION['userid'], "all", $row_start, 'all', $zone_sort_by);
-} else {
-    $zones = DnsRecord::get_zones($perm_view, $_SESSION['userid'], $letter_start, $row_start, $iface_rowamount, $zone_sort_by);
-}
-
-if ($perm_view == "none") {
-    error(_('You do not have the permission to see any zones.'));
-    include_once('inc/footer.inc.php');
-    exit;
-}
-
-$app->render('list_zones.html', [
-    'zones' => $zones,
-    'count_zones_all_letterstart' => $count_zones_all_letterstart,
-    'count_zones_view' => $count_zones_view,
-    'count_zones_edit' => $count_zones_edit,
-    'letter_start' => $letter_start,
-    'iface_rowamount' => $iface_rowamount,
-    'zone_sort_by' => $zone_sort_by,
-    'iface_zonelist_serial' => $iface_zonelist_serial,
-    'pdnssec_use' => $pdnssec_use,
-    'letters' => show_letters($letter_start, $_SESSION["userid"]),
-    'pagination' => show_pages($count_zones_all_letterstart, $iface_rowamount),
-    'session_userlogin' => $_SESSION['userlogin'],
-    'perm_edit' => $perm_edit
-]);
-
-include_once('inc/footer.inc.php');
+$controller = new ListZonesController();
+$controller->run();
