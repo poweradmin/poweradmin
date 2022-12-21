@@ -92,7 +92,7 @@ abstract class BaseController
         if ($message) {
             switch ($message['type']) {
                 case 'error':
-                    $alertClass = 'alert-error';
+                    $alertClass = 'alert-danger';
                     break;
                 case 'success':
                     $alertClass = 'alert-success';
@@ -132,6 +132,7 @@ EOF;
 
     public function showError($errors)
     {
+        include_once 'inc/header.inc.php';
         $validationErrors = array_values($errors);
         $firstError = reset($validationErrors);
         error($firstError[0]);

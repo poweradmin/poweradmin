@@ -72,28 +72,24 @@ class AddZoneMasterController extends BaseController
         $zone_template = $_POST['zone_template'] ?? "none";
 
         if (!Dns::is_valid_hostname_fqdn($zone, 0)) {
-            error($zone . ' failed - ' . ERR_DNS_HOSTNAME);
+            $this->setMessage('add_zone_master', 'error', ERR_DNS_HOSTNAME);
             $this->showForm();
         } elseif ($dns_third_level_check && DnsRecord::get_domain_level($zone) > 2 && DnsRecord::domain_exists(DnsRecord::get_second_level_domain($zone))) {
-            $idn_zone_name = idn_to_utf8($zone, IDNA_NONTRANSITIONAL_TO_ASCII);
-            error($idn_zone_name . ' failed - ' . ERR_DOMAIN_EXISTS);
+            $this->setMessage('add_zone_master', 'error', ERR_DOMAIN_EXISTS);
             $this->showForm();
         } elseif (DnsRecord::domain_exists($zone) || DnsRecord::record_name_exists($zone)) {
-            $idn_zone_name = idn_to_utf8($zone, IDNA_NONTRANSITIONAL_TO_ASCII);
-            error($idn_zone_name . ' failed - ' . ERR_DOMAIN_EXISTS);
+            $this->setMessage('add_zone_master', 'error', ERR_DOMAIN_EXISTS);
             $this->showForm();
         } elseif (DnsRecord::add_domain($zone, $owner, $dom_type, '', $zone_template)) {
-            $zone_id = DnsRecord::get_zone_id_from_name($zone);
-
             $this->setMessage('list_zones', 'success', SUC_ZONE_ADD);
 
+            $zone_id = DnsRecord::get_zone_id_from_name($zone);
             Logger::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
                 $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                 $zone, $dom_type, $zone_template), $zone_id);
 
             if ($pdnssec_use) {
-                $enable_dnssec = isset($_POST['dnssec']) && $_POST['dnssec'] == '1';
-                if ($enable_dnssec) {
+                if (isset($_POST['dnssec'])) {
                     Dnssec::dnssec_secure_zone($zone);
                 }
 
