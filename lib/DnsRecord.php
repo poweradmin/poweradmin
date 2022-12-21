@@ -1081,6 +1081,7 @@ class DnsRecord
         global $sql_regexp;
         global $pdnssec_use;
         global $iface_zone_comments;
+        global $iface_zonelist_serial;
 
         if ($letterstart == '_') {
             $letterstart = '\_';
@@ -1155,6 +1156,10 @@ class DnsRecord
 
             if ($pdnssec_use) {
                 $ret[$r["name"]]["secured"] = $r["secured"];
+            }
+
+            if ($iface_zonelist_serial) {
+                $ret[$r["name"]]["serial"] = self::get_serial_by_zid($r["id"]);
             }
         }
 
