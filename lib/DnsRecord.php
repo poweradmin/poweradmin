@@ -1148,6 +1148,7 @@ class DnsRecord
             //FIXME: name is not guaranteed to be unique with round-robin record sets
             $ret[$r["name"]]["id"] = $r["id"];
             $ret[$r["name"]]["name"] = $r["name"];
+            $ret[$r["name"]]["utf8_name"] = idn_to_utf8(htmlspecialchars($r["name"]), IDNA_NONTRANSITIONAL_TO_ASCII);
             $ret[$r["name"]]["type"] = $r["type"];
             $ret[$r["name"]]["count_records"] = $r["count_records"];
             $ret[$r["name"]]["comment"] = $r["comment"] ?: '';
