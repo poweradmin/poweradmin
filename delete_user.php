@@ -78,14 +78,16 @@ if (!$name) {
     $name = User::get_username_by_id($uid);
 }
 $zones = DnsRecord::get_zones("own", $uid);
+$user = [];
+if (count($zones) > 0) {
+    $users = do_hook('show_users');
+}
 
 echo "     <h5 class=\"mb-3\">" . _('Delete user') . " \"" . $name . "\"</h5>\n";
 echo "     <form method=\"post\" action=\"\">\n";
 echo "      <table class=\"table table-striped table-sm\">\n";
 
 if (count($zones) > 0) {
-    $users = do_hook('show_users');
-
     echo "       <tr>\n";
     echo "        <td colspan=\"5\">\n";
 
