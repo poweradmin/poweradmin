@@ -36,8 +36,6 @@ use Poweradmin\ZoneTemplate;
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/message.inc.php';
 
-include_once 'inc/header.inc.php';
-
 class AddZoneTemplRecordController extends BaseController {
 
     public function run(): void
@@ -79,9 +77,11 @@ class AddZoneTemplRecordController extends BaseController {
         $ttl = $_POST['ttl'] ?? $dns_ttl;
 
         if (ZoneTemplate::add_zone_templ_record($zone_templ_id, $name, $type, $content, $ttl, $prio)) {
-            success(_('The record was successfully added.'));
+            $this->setMessage('edit_zone_templ', 'success', 'The record was successfully added.');
+            $this->redirect('edit_zone_templ.php', ['id' => $zone_templ_id]);
+        } else {
+            $this->showAddZoneTemplRecord();
         }
-        $this->showAddZoneTemplRecord();
     }
 
     private function showAddZoneTemplRecord()
