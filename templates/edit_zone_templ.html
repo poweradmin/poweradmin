@@ -4,7 +4,8 @@
 </div>
 
 {% if records == "-1" %}
-    <div class='text-secondary'>{% trans 'This template zone does not have any records yet.' %}</div>
+    <div class='text-secondary'>{% trans 'This zone template does not have any records yet.' %}</div>
+    <br>
     <div><input class="btn btn-primary btn-sm" type="button" onClick="location.href='add_zone_templ_record.php?id={{zone_templ_id}}'" value="{% trans 'Add record' %}"></div>
 {% else %}
 <form method="post" action="">
