@@ -29,7 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\AppFactory;
+use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
 use Poweradmin\User;
 use Poweradmin\Validation;
@@ -37,61 +37,65 @@ use Poweradmin\Validation;
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/message.inc.php';
 
-include_once 'inc/header.inc.php';
+class DeleteUserController extends BaseController {
 
-$perm_edit_others = do_hook('verify_permission', 'user_edit_others');
-$perm_is_godlike = do_hook('verify_permission', 'user_is_ueberuser');
+    public function run(): void
+    {
+        $perm_edit_others = do_hook('verify_permission', 'user_edit_others');
+        $perm_is_godlike = do_hook('verify_permission', 'user_is_ueberuser');
 
-if (!(isset($_GET['id']) && Validation::is_number($_GET['id']))) {
-    error(ERR_INV_INPUT);
-    include_once("inc/footer.inc.php");
-    exit;
-}
-
-$uid = htmlspecialchars($_GET['id']);
-
-if (isset($_POST['commit'])) {
-    if (do_hook('is_valid_user', $uid)) {
-        $zones = array();
-        if (isset($_POST['zone'])) {
-            $zones = $_POST['zone'];
+        if (!(isset($_GET['id']) && Validation::is_number($_GET['id']))) {
+            error(ERR_INV_INPUT);
+            include_once("inc/footer.inc.php");
+            exit;
         }
 
-        if (do_hook('delete_user', $uid, $zones)) {
-            success(SUC_USER_DEL);
+        $uid = htmlspecialchars($_GET['id']);
+
+        if (isset($_POST['commit'])) {
+            if (do_hook('is_valid_user', $uid)) {
+                $zones = array();
+                if (isset($_POST['zone'])) {
+                    $zones = $_POST['zone'];
+                }
+
+                if (do_hook('delete_user', $uid, $zones)) {
+                    success(SUC_USER_DEL);
+                }
+            } else {
+                header("Location: users.php");
+                exit;
+            }
+            include_once("inc/footer.inc.php");
+            exit;
         }
-    } else {
-        header("Location: users.php");
-        exit;
+
+        if (($uid != $_SESSION['userid'] && !$perm_edit_others) || ($uid == $_SESSION['userid'] && !$perm_is_godlike)) {
+            error(ERR_PERM_DEL_USER);
+            include_once("inc/footer.inc.php");
+            exit;
+        }
+
+        $name = do_hook('get_fullname_from_userid', $uid);
+        if (!$name) {
+            $name = User::get_username_by_id($uid);
+        }
+        $zones = DnsRecord::get_zones("own", $uid);
+
+        $users = [];
+        if (count($zones) > 0) {
+            $users = do_hook('show_users');
+        }
+
+        $this->render('delete_user.html', [
+            'name' => $name,
+            'uid' => $uid,
+            'zones' => $zones,
+            'zones_count' => count($zones),
+            'users' => $users,
+        ]);
     }
-    include_once("inc/footer.inc.php");
-    exit;
 }
 
-if (($uid != $_SESSION['userid'] && !$perm_edit_others) || ($uid == $_SESSION['userid'] && !$perm_is_godlike)) {
-    error(ERR_PERM_DEL_USER);
-    include_once("inc/footer.inc.php");
-    exit;
-}
-
-$name = do_hook('get_fullname_from_userid', $uid);
-if (!$name) {
-    $name = User::get_username_by_id($uid);
-}
-$zones = DnsRecord::get_zones("own", $uid);
-
-$users = [];
-if (count($zones) > 0) {
-    $users = do_hook('show_users');
-}
-
-$app = AppFactory::create();
-$app->render('delete_user.html', [
-    'name' => $name,
-    'uid' => $uid,
-    'zones' => $zones,
-    'zones_count' => count($zones),
-    'users' => $users,
-]);
-
-include_once("inc/footer.inc.php");
+$controller = new DeleteUserController();
+$controller->run();
