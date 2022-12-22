@@ -159,7 +159,7 @@
             <td>
                 <select class="form-select form-select-sm" name="type">
                     {% set rev = false %}
-                    {% for record_type in types %}
+                    {% for record_type in record_types %}
                         {% set add = "" %}
                         {% if is_rev_zone and record_type == "PTR" %}
                         {% set add = "SELECTED" %}

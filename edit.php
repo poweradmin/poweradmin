@@ -35,6 +35,7 @@ use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
 use Poweradmin\Permission;
 use Poweradmin\RecordLog;
+use Poweradmin\RecordType;
 use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
 use Poweradmin\ZoneType;
@@ -260,6 +261,7 @@ $app->render('edit.html', [
     'session_userid' => $_SESSION["userid"],
     'dns_ttl' => $app->config('dns_ttl'),
     'is_rev_zone' => preg_match('/i(p6|n-addr).arpa/i', $zone_name),
+    'record_types' => RecordType::getTypes(),
 ]);
 
 include_once("inc/footer.inc.php");
