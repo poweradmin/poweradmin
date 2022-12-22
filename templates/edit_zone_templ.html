@@ -37,10 +37,10 @@
                 <input type="hidden" name="record[{{record['id']}}][rid]" value="{{record['id']}}">
                 <a class="btn btn-outline-primary btn-sm"
                    href="edit_zone_templ_record.php?id={{record['id']}}&amp;zone_templ_id={{zone_templ_id}}">
-                    <i class="bi bi-pencil-square"></i>{% trans 'Edit record' %}</a>
+                    <i class="bi bi-pencil-square"></i> {% trans 'Edit record' %}</a>
                 <a class="btn btn-outline-danger btn-sm"
                    href="delete_zone_templ_record.php?id={{record['id']}}&amp;zone_templ_id={{zone_templ_id}}">
-                    <i class="bi bi-trash"></i>{% trans 'Delete record' %}</a>
+                    <i class="bi bi-trash"></i> {% trans 'Delete record' %}</a>
             </td>
         </tr>
         {% endfor %}
