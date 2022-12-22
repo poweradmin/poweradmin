@@ -40,23 +40,23 @@ include_once 'inc/header.inc.php';
 
 $perm_edit = Permission::getEditPermission();
 
-$zones = $_POST['zone_id'];
-if (!$zones) {
+$zone_ids = $_POST['zone_id'];
+if (!$zone_ids) {
     header("Location: list_zones.php");
     exit;
 }
 
 if (isset($_POST['confirm'])) {
-    $deleted_zones = DnsRecord::get_zone_info_from_ids($zones);
-    $delete_domains = DnsRecord::delete_domains($zones);
+    $deleted_zones = DnsRecord::get_zone_info_from_ids($zone_ids);
+    $delete_domains = DnsRecord::delete_domains($zone_ids);
 
     if ($delete_domains) {
         count($deleted_zones) == 1 ? success(SUC_ZONE_DEL) : success(SUC_ZONES_DEL);
 
-        foreach ($deleted_zones as $zone_info) {
+        foreach ($deleted_zones as $deleted_zone) {
             Logger::log_info(sprintf('client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
                 $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                $zone_info['name'], $zone_info['type']), $zone_info['id']);
+                $deleted_zone['name'], $deleted_zone['type']), $deleted_zone['id']);
         }
     }
 
@@ -73,37 +73,42 @@ echo "  <th> " . _('Owner') . "</th>";
 echo "  <th> " . _('Type') . "</th>";
 echo "  <th> " . _('Note') . "</th>";
 echo "</thead>";
-
 echo "<tbody>";
 
-foreach ($zones as $zone) {
-    $zone_owners = do_hook('get_fullnames_owners_from_domainid', $zone);
-    $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone);
-    $zone_info = DnsRecord::get_zone_info_from_id($zone);
+$zones = [];
+foreach ($zone_ids as $zone_id) {
+    $zones[$zone_id] = DnsRecord::get_zone_info_from_id($zone_id);
+    $zones[$zone_id]['owner'] = do_hook('get_fullnames_owners_from_domainid', $zone_id);
+    $zones[$zone_id]['is_owner'] = $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
 
-    if ($perm_edit != "all" && ($perm_edit != "own" || $user_is_zone_owner != "1")) {
-        error(ERR_PERM_DEL_ZONE);
-    } else {
-        echo "<tr>";
-        echo "<input type=\"hidden\" name=\"zone_id[]\" value=\"" . htmlspecialchars($zone) . "\">\n";
-        echo "<td>" . htmlspecialchars($zone_info['name']) . "</td>\n";
-        echo "<td>" . htmlspecialchars($zone_owners) . "</td>\n";
-        echo "<td>" . htmlspecialchars($zone_info['type']) . "\n";
-
-        if ($zone_info['type'] == "SLAVE") {
-            $slave_master = DnsRecord::get_domain_slave_master($zone);
-            if (DnsRecord::supermaster_exists($slave_master)) {
-                echo "        <td>         \n";
-                printf(_('You are about to delete a slave zone of which the master nameserver, %s, is a supermaster. Deleting the zone now, will result in temporary removal only. Whenever the supermaster sends a notification for this zone, it will be added again!'), $slave_master);
-                echo "        </td>\n";
-            } else {
-                echo "<td></td>";
-            }
-        } else {
-            echo "<td></td>";
+    $zones[$zone_id]['has_supermaster'] = false;
+    $zones[$zone_id]['slave_master'] = null;
+    if ($zones[$zone_id]['type'] == "SLAVE") {
+        $slave_master = DnsRecord::get_domain_slave_master($zone_id);
+        $zones[$zone_id]['slave_master'] = $slave_master;
+        if (DnsRecord::supermaster_exists($slave_master)) {
+            $zones[$zone_id]['has_supermaster'] = true;
         }
-        echo "</tr>";
     }
+}
+
+foreach ($zone_ids as $zone_id) {
+    $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
+
+    echo "<tr>";
+    echo "<input type=\"hidden\" name=\"zone_id[]\" value=\"" . htmlspecialchars($zone_id) . "\">\n";
+    echo "<td>" . htmlspecialchars($zones[$zone_id]['name']) . "</td>\n";
+    echo "<td>" . htmlspecialchars($zones[$zone_id]['owner']) . "</td>\n";
+    echo "<td>" . htmlspecialchars($zones[$zone_id]['type']) . "\n";
+
+    echo "        <td>\n";
+    if ($perm_edit != "all" && ($perm_edit != "own" || $zones[$zone_id]['is_owner'] != "1")) {
+        echo ERR_PERM_DEL_ZONE;
+    } else if ($zones[$zone_id]['has_supermaster']) {
+        echo _('You are about to delete a slave zone of which the master nameserver is a supermaster. Deleting the zone now, will result in temporary removal only. Whenever the supermaster sends a notification for this zone, it will be added again!');
+    }
+    echo "        </td>\n";
+    echo "</tr>";
 }
 
 echo "</tbody>";
