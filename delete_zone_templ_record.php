@@ -29,59 +29,63 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\AppFactory;
+use Poweradmin\BaseController;
 use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/message.inc.php';
 
-include_once 'inc/header.inc.php';
+class DeleteZoneTemplRecordController extends BaseController {
 
-$app = AppFactory::create();
+    public function run(): void
+    {
+        if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
+            error(ERR_INV_INPUT);
+            include_once('inc/footer.inc.php');
+            exit;
+        }
+        $record_id = htmlspecialchars($_GET['id']);
 
-if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
-    error(ERR_INV_INPUT);
-    include_once('inc/footer.inc.php');
-    exit;
-}
-$record_id = htmlspecialchars($_GET['id']);
+        if (!isset($_GET['zone_templ_id']) || !Validation::is_number($_GET['zone_templ_id'])) {
+            error(ERR_INV_INPUT);
+            include_once('inc/footer.inc.php');
+            exit;
+        }
+        $zone_templ_id = htmlspecialchars($_GET['zone_templ_id']);
 
-if (!isset($_GET['zone_templ_id']) || !Validation::is_number($_GET['zone_templ_id'])) {
-    error(ERR_INV_INPUT);
-    include_once('inc/footer.inc.php');
-    exit;
-}
-$zone_templ_id = htmlspecialchars($_GET['zone_templ_id']);
+        $confirm = "-1";
+        if (isset($_GET['confirm']) && Validation::is_number($_GET['confirm'])) {
+            $confirm = $_GET['confirm'];
+        }
 
-$confirm = "-1";
-if (isset($_GET['confirm']) && Validation::is_number($_GET['confirm'])) {
-    $confirm = $_GET['confirm'];
-}
+        $owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
+        if ($confirm == '1' && $owner) {
+            if (ZoneTemplate::delete_zone_templ_record($record_id)) {
+                $this->setMessage('edit_zone_templ', 'success', SUC_RECORD_DEL);
+                $this->redirect('edit_zone_templ.php', ['id' => $zone_templ_id]);
+            }
+            include_once('inc/footer.inc.php');
+            exit;
+        }
 
-$owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
-if ($confirm == '1' && $owner) {
-    if (ZoneTemplate::delete_zone_templ_record($record_id)) {
-        success(SUC_RECORD_DEL);
+        if (!(do_hook('verify_permission', 'zone_master_add')) || !$owner) {
+            error(ERR_PERM_DEL_RECORD);
+            include_once('inc/footer.inc.php');
+            exit;
+        }
+
+        $templ_details = ZoneTemplate::get_zone_templ_details($zone_templ_id);
+        $record_info = ZoneTemplate::get_zone_templ_record_from_id($record_id);
+
+        $this->render('delete_zone_templ_record.html', [
+            'record_id' => $record_id,
+            'zone_templ_id' => $zone_templ_id,
+            'templ_details' => $templ_details,
+            'record_info' => $record_info,
+        ]);
     }
-    include_once('inc/footer.inc.php');
-    exit;
 }
 
-if (!(do_hook('verify_permission' , 'zone_master_add' )) || !$owner) {
-    error(ERR_PERM_DEL_RECORD);
-    include_once('inc/footer.inc.php');
-    exit;
-}
-
-$templ_details = ZoneTemplate::get_zone_templ_details($zone_templ_id);
-$record_info = ZoneTemplate::get_zone_templ_record_from_id($record_id);
-
-$app->render('delete_zone_templ_record.html', [
-    'record_id' => $record_id,
-    'zone_templ_id' => $zone_templ_id,
-    'templ_details' => $templ_details,
-    'record_info' => $record_info,
-]);
-
-include_once('inc/footer.inc.php');
+$controller = new DeleteZoneTemplRecordController();
+$controller->run();
