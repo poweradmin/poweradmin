@@ -76,42 +76,32 @@ if (!Dnssec::dnssec_zone_key_exists($domain_name, $key_id)) {
     error(ERR_INV_INPUT);
     include_once("inc/footer.inc.php");
     exit;
+
+}
+if ($user_is_zone_owner != "1") {
+    error(ERR_PDNSSEC_DEL_ZONE_KEY);
 }
 
 $key_info = Dnssec::dnssec_get_zone_key($domain_name, $key_id);
-if ($key_info[5]) {
-    echo "     <h5 class=\"mb-3\">" . _('Deactivate zone key') . "</h5>\n";
-} else {
-    echo "     <h5 class=\"mb-3\">" . _('Activate zone key') . "</h5>\n";
-}
 
 if ($confirm == '1') {
     if ($key_info[5]) {
         if (Dnssec::dnssec_deactivate_zone_key($domain_name, $key_id)) {
             success(SUC_EXEC_PDNSSEC_DEACTIVATE_ZONE_KEY);
-            echo "<p class=\"pt-3\"><a href='dnssec.php?id=" . htmlspecialchars($zone_id) . "'>Back to DNSSEC " . htmlspecialchars($domain_name) . "</a></p>";
         }
     } else {
         if (Dnssec::dnssec_activate_zone_key($domain_name, $key_id)) {
             success(SUC_EXEC_PDNSSEC_ACTIVATE_ZONE_KEY);
-            echo "<p class=\"pt-3\"><a href='dnssec.php?id=" . htmlspecialchars($zone_id) . "'>Back to DNSSEC " . htmlspecialchars($domain_name) . "</a></p>";
         }
     }
-} else {
-    if ($user_is_zone_owner == "1") {
-        echo "      " . _('Domain') . ": " . $domain_name . "<br>\n";
-        echo "      " . _('Id') . ": " . htmlspecialchars($key_info[0]) . "<br>\n";
-        echo "      " . _('Type') . ": " . htmlspecialchars($key_info[1]) . "<br>\n";
-        echo "      " . _('Tag') . ": " . htmlspecialchars($key_info[2]) . "<br>\n";
-        echo "      " . _('Algorithm') . ": " . Dnssec::dnssec_algorithm_to_name(htmlspecialchars($key_info[3])) . "<br>\n";
-        echo "      " . _('Bits') . ": " . htmlspecialchars($key_info[4]) . "<br>\n";
-        echo "      " . _('Active') . ": " . ($key_info[5] ? _('Yes') : _('No')) . "\n";
-        echo "     <p>" . _('Are you sure?') . "</p>\n";
-        echo "     <input class=\"btn btn-primary btn-sm\" type=\"button\" onClick=\"location.href='dnssec_edit_key.php?id=" . htmlspecialchars($zone_id) . "&amp;key_id=". htmlspecialchars($key_id) . "&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
-        echo "     <input class=\"btn btn-secondary btn-sm\" type=\"button\" onClick=\"location.href='index.php'\" value=\"" . _('No') . "\">\n";
-    } else {
-        error(ERR_PDNSSEC_DEL_ZONE_KEY);
-    }
 }
+
+$app->render('dnssec_edit_key.html', [
+    'domain_name' => $domain_name,
+    'key_id' => $key_id,
+    'key_info' => Dnssec::dnssec_get_zone_key($domain_name, $key_id),
+    'user_is_zone_owner' => $user_is_zone_owner,
+    'zone_id' => $zone_id,
+]);
 
 include_once("inc/footer.inc.php");
