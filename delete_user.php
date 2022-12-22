@@ -52,22 +52,8 @@ class DeleteUserController extends BaseController {
 
         $uid = htmlspecialchars($_GET['id']);
 
-        if (isset($_POST['commit'])) {
-            if (do_hook('is_valid_user', $uid)) {
-                $zones = array();
-                if (isset($_POST['zone'])) {
-                    $zones = $_POST['zone'];
-                }
-
-                if (do_hook('delete_user', $uid, $zones)) {
-                    success(SUC_USER_DEL);
-                }
-            } else {
-                header("Location: users.php");
-                exit;
-            }
-            include_once("inc/footer.inc.php");
-            exit;
+        if ($this->isPost()) {
+            $this->deleteUser($uid);
         }
 
         if (($uid != $_SESSION['userid'] && !$perm_edit_others) || ($uid == $_SESSION['userid'] && !$perm_is_godlike)) {
@@ -76,6 +62,31 @@ class DeleteUserController extends BaseController {
             exit;
         }
 
+        $this->showQuestion($uid);
+    }
+
+    public function deleteUser(string $uid): void
+    {
+        if (do_hook('is_valid_user', $uid)) {
+            $zones = array();
+            if (isset($_POST['zone'])) {
+                $zones = $_POST['zone'];
+            }
+
+            if (do_hook('delete_user', $uid, $zones)) {
+                $this->setMessage('users', 'success', SUC_USER_DEL);
+                $this->redirect('users.php');
+            }
+        } else {
+            header("Location: users.php");
+            exit;
+        }
+        include_once("inc/footer.inc.php");
+        exit;
+    }
+
+    public function showQuestion(string $uid): void
+    {
         $name = do_hook('get_fullname_from_userid', $uid);
         if (!$name) {
             $name = User::get_username_by_id($uid);
