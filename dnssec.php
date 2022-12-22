@@ -53,9 +53,9 @@ $zone_id = htmlspecialchars($_GET['id']);
 
 $perm_view = Permission::getViewPermission();
 
-$user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );
+$user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
 
-(do_hook('verify_permission' , 'user_view_others' )) ? $perm_view_others = "1" : $perm_view_others = "0";
+(do_hook('verify_permission', 'user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
 
 if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
     error(ERR_PERM_VIEW_ZONE);
@@ -74,8 +74,9 @@ $domain_name = DnsRecord::get_domain_name_by_id($zone_id);
 $record_count = DnsRecord::count_zone_records($zone_id);
 $zone_templates = ZoneTemplate::get_list_zone_templ($_SESSION['userid']);
 $zone_template_id = DnsRecord::get_zone_template($zone_id);
+$keys = Dnssec::dnssec_get_keys($domain_name);
 
-echo "   <h5 class=\"mb-3\">" . _('DNSSEC keys for zone') . " \"" . DnsRecord::get_domain_name_by_id($zone_id) . "\"</h5>\n";
+echo "   <h5 class=\"mb-3\">" . _('DNSSEC keys for zone') . " \"" . $domain_name . "\"</h5>\n";
 
 echo "     <table class=\"table table-striped table-hover table-sm\">\n";
 echo "      <tr>\n";
@@ -88,17 +89,15 @@ echo "       <th>" . _('Active') . "</th>\n";
 echo "       <th>&nbsp;</th>\n";
 echo "      </tr>\n";
 
-$keys = Dnssec::dnssec_get_keys($domain_name);
-
 foreach ($keys as $item) {
     $button_title = $item[5] ? _('Deactivate zone key') : _('Activate zone key');
     echo "<tr>\n";
-    echo "<td>".$item[0]."</td>\n";
-    echo "<td>".$item[1]."</td>\n";
-    echo "<td>".$item[2]."</td>\n";
-    echo "<td>".Dnssec::dnssec_algorithm_to_name($item[3])."</td>\n";
-    echo "<td>".$item[4]."</td>\n";
-    echo "<td>".($item[5] ? _('Yes') : _('No'))."</td>\n";
+    echo "<td>" . $item[0] . "</td>\n";
+    echo "<td>" . $item[1] . "</td>\n";
+    echo "<td>" . $item[2] . "</td>\n";
+    echo "<td>" . Dnssec::dnssec_algorithm_to_name($item[3]) . "</td>\n";
+    echo "<td>" . $item[4] . "</td>\n";
+    echo "<td>" . ($item[5] ? _('Yes') : _('No')) . "</td>\n";
     echo "<td>\n";
     echo "<a class=\"btn btn-outline-primary btn-sm\" href=\"dnssec_edit_key.php?id=" . $zone_id . "&key_id=" . $item[0] . "\"><i class=\"bi bi-pencil-square\"></i> " . $button_title . "</a>\n";
     echo "<a class=\"btn btn-outline-danger btn-sm\" href=\"dnssec_delete_key.php?id=" . $zone_id . "&key_id=" . $item[0] . "\"><i class=\"bi bi-trash\"></i> " . _('Delete zone key') . "</a>\n";
@@ -107,7 +106,7 @@ foreach ($keys as $item) {
 }
 
 echo "     </table>\n";
-echo "      <input class=\"btn btn-primary btn-sm\" type=\"button\" onClick=\"location.href = 'dnssec_add_key.php?id=".$zone_id."';\" value=\"" . _('Add new key') . "\">\n";
-echo "      <input class=\"btn btn-secondary btn-sm\" type=\"button\" onClick=\"location.href = 'dnssec_ds_dnskey.php?id=".$zone_id."';\" value=\"" . _('Show DS and DNSKEY') . "\">\n";
+echo "      <input class=\"btn btn-primary btn-sm\" type=\"button\" onClick=\"location.href = 'dnssec_add_key.php?id=" . $zone_id . "';\" value=\"" . _('Add new key') . "\">\n";
+echo "      <input class=\"btn btn-secondary btn-sm\" type=\"button\" onClick=\"location.href = 'dnssec_ds_dnskey.php?id=" . $zone_id . "';\" value=\"" . _('Show DS and DNSKEY') . "\">\n";
 
 include_once("inc/footer.inc.php");
