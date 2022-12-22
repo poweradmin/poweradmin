@@ -52,8 +52,6 @@
             </td>
         </tr>
     </table>
-    <input class="btn btn-primary btn-sm" type="submit" name="commit" value="{% trans 'Commit changes' %}">
-    <input class="btn btn-secondary btn-sm" type="reset" name="reset" value="{% trans 'Reset changes' %}">
     <input class="btn btn-secondary btn-sm" type="submit" name="update_zones" value="{% trans 'Update zones' %}">
 
     <table>
@@ -87,22 +85,27 @@
             </td>
         </tr>
     </table>
-    <hr>
-    <table>
-        <tr>
-            <td colspan="6"><strong>Save as new template:</strong></td>
-        </tr>
-        <tr>
-            <td>{% trans 'Template Name' %}</td>
-            <td><input class="form-control form-control-sm" type="text" name="templ_name" value=""></td>
-        </tr>
-        <tr>
-            <td>{% trans 'Template Description' %}</td>
-            <td><input class="form-control form-control-sm" type="text" name="templ_descr" value=""></td>
-        </tr>
-    </table>
-    <input class="btn btn-secondary btn-sm" type="submit" name="save_as" value="{% trans 'Save as template' %}">
 </form>
+<!--<hr>-->
+<!--<form class="needs-validation" method="post" action="" novalidate>-->
+<!--    <table>-->
+<!--        <tr>-->
+<!--            <td colspan="6"><strong>Save as new template:</strong></td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            <td>{% trans 'Template Name' %}</td>-->
+<!--            <td>-->
+<!--                <input class="form-control form-control-sm" type="text" name="templ_name" value="" required>-->
+<!--                <div class="invalid-feedback">{% trans 'Provide a name for your template' %}</div>-->
+<!--            </td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            <td>{% trans 'Template Description' %}</td>-->
+<!--            <td><input class="form-control form-control-sm" type="text" name="templ_descr" value=""></td>-->
+<!--        </tr>-->
+<!--    </table>-->
+<!--    <input class="btn btn-secondary btn-sm" type="submit" name="save_as" value="{% trans 'Save as template' %}">-->
+<!--</form>-->
 <hr>
 
 <form class="needs-validation" method="post" action="" novalidate>

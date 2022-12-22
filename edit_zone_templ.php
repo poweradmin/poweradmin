@@ -29,105 +29,126 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\AppFactory;
+use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
-use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/pagination.inc.php';
 require_once 'inc/message.inc.php';
 
-include_once 'inc/header.inc.php';
+class EditZoneTemplController extends BaseController
+{
 
-$app = AppFactory::create();
-$iface_rowamount = $app->config('iface_rowamount');
+    public function run(): void
+    {
+        $this->checkPermission('zone_master_add', ERR_PERM_EDIT_ZONE_TEMPL);
 
-$row_start = 0;
-if (isset($_GET["start"])) {
-    $row_start = ($_GET["start"] - 1) * $iface_rowamount;
-}
+        $v = new Valitron\Validator($_GET);
+        $v->rules([
+            'required' => ['id'],
+            'integer' => ['id'],
+        ]);
+        if (!$v->validate()) {
+            $this->showError($v->errors());
+        }
 
-$record_sort_by = 'name';
-if (isset($_GET["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["record_sort_by"])) {
-    $record_sort_by = $_GET["record_sort_by"];
-    $_SESSION["record_sort_by"] = $_GET["record_sort_by"];
-} elseif (isset($_POST["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_POST["record_sort_by"])) {
-    $record_sort_by = $_POST["record_sort_by"];
-    $_SESSION["record_sort_by"] = $_POST["record_sort_by"];
-} elseif (isset($_SESSION["record_sort_by"])) {
-    $record_sort_by = $_SESSION["record_sort_by"];
-}
+        $zone_templ_id = htmlspecialchars($_GET['id']);
+        if (ZoneTemplate::zone_templ_id_exists($zone_templ_id) == "0") {
+            $this->showError([[ERR_ZONE_TEMPL_NOT_EXIST]]);
+        }
 
-$zone_templ_id = "-1";
-if (isset($_GET['id']) && Validation::is_number($_GET['id'])) {
-    $zone_templ_id = htmlspecialchars($_GET['id']);
-}
-
-if ($zone_templ_id == "-1") {
-    error(ERR_INV_INPUT);
-    include_once("inc/footer.inc.php");
-    exit;
-}
-
-$owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
-
-if (isset($_POST['commit']) && $owner) {
-    success(SUC_ZONE_TEMPL_UPD);
-    foreach ($_POST['record'] as $record) {
-        ZoneTemplate::edit_zone_templ_record($record);
+        if ($this->isPost()) {
+            $this->updateZoneTemplate($zone_templ_id);
+        }
+        $this->showForm($zone_templ_id);
     }
-}
 
-if (isset($_POST['edit']) && $owner) {
-    if (!isset($_POST['templ_name']) || $_POST['templ_name'] == "") {
-        error(ERR_INV_INPUT);
-        include_once('inc/footer.inc.php');
-        exit;
+    private function updateZoneTemplate(string $zone_templ_id)
+    {
+        $owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
+
+        if (isset($_POST['edit']) && $owner) {
+            $this->updateTemplateNameAndDescription($zone_templ_id);
+        }
+
+//        if (isset($_POST['save_as'])) {
+//            if (ZoneTemplate::zone_templ_name_exists($_POST['templ_name'])) {
+//                error(ERR_ZONE_TEMPL_EXIST);
+//            } elseif ($_POST['templ_name'] == '') {
+//                error(ERR_ZONE_TEMPL_IS_EMPTY);
+//            } else {
+//                ZoneTemplate::add_zone_templ_save_as($_POST['templ_name'], $_POST['templ_descr'], $_SESSION['userid'], $_POST['record']);
+//                $this->setMessage('list_zone_templ', 'success', SUC_ZONE_TEMPL_ADD);
+//                $this->redirect('list_zone_templ.php');
+//            }
+//        }
+
+        if (isset($_POST['update_zones'])) {
+            $this->updateZoneRecords($zone_templ_id);
+        }
     }
-    ZoneTemplate::edit_zone_templ($_POST, $zone_templ_id);
-}
 
-if (isset($_POST['save_as'])) {
-    if (ZoneTemplate::zone_templ_name_exists($_POST['templ_name'])) {
-        error(ERR_ZONE_TEMPL_EXIST);
-    } elseif ($_POST['templ_name'] == '') {
-        error(ERR_ZONE_TEMPL_IS_EMPTY);
-    } else {
-        success(SUC_ZONE_TEMPL_ADD);
+    private function showForm(string $zone_templ_id)
+    {
+        $iface_rowamount = $this->config('iface_rowamount');
+        $row_start = $this->getRowStart($iface_rowamount);
+        $record_sort_by = $this->getSortBy();
+        $record_count = ZoneTemplate::count_zone_templ_records($zone_templ_id);
         $templ_details = ZoneTemplate::get_zone_templ_details($zone_templ_id);
-        ZoneTemplate::add_zone_templ_save_as($_POST['templ_name'], $_POST['templ_descr'], $_SESSION['userid'], $_POST['record']);
+
+        $this->render('edit_zone_templ.html', [
+            'templ_details' => $templ_details,
+            'pagination' => show_pages($record_count, $iface_rowamount, $zone_templ_id),
+            'records' => $records = ZoneTemplate::get_zone_templ_records($zone_templ_id, $row_start, $iface_rowamount, $record_sort_by),
+            'zone_templ_id' => $zone_templ_id,
+        ]);
+    }
+
+    public function getRowStart($iface_rowamount)
+    {
+        $row_start = 0;
+        if (isset($_GET["start"])) {
+            $row_start = ($_GET["start"] - 1) * $iface_rowamount;
+        }
+        return $row_start;
+    }
+
+    public function getSortBy()
+    {
+        $record_sort_by = 'name';
+        if (isset($_GET["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["record_sort_by"])) {
+            $record_sort_by = $_GET["record_sort_by"];
+            $_SESSION["record_sort_by"] = $_GET["record_sort_by"];
+        } elseif (isset($_POST["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_POST["record_sort_by"])) {
+            $record_sort_by = $_POST["record_sort_by"];
+            $_SESSION["record_sort_by"] = $_POST["record_sort_by"];
+        } elseif (isset($_SESSION["record_sort_by"])) {
+            $record_sort_by = $_SESSION["record_sort_by"];
+        }
+        return $record_sort_by;
+    }
+
+    public function updateTemplateNameAndDescription(string $zone_templ_id): void
+    {
+        if (!isset($_POST['templ_name']) || $_POST['templ_name'] == "") {
+            error(ERR_INV_INPUT);
+            include_once('inc/footer.inc.php');
+            exit;
+        }
+        $this->setMessage('edit_zone_templ', 'success', SUC_ZONE_TEMPL_UPD);
+        ZoneTemplate::edit_zone_templ($_POST, $zone_templ_id);
+    }
+
+    public function updateZoneRecords(string $zone_templ_id): void
+    {
+        $zones = ZoneTemplate::get_list_zone_use_templ($zone_templ_id, $_SESSION['userid']);
+        foreach ($zones as $zone) {
+            DnsRecord::update_zone_records($zone['id'], $zone_templ_id);
+        }
+        $this->setMessage('edit_zone_templ', 'success', SUC_ZONES_UPD);
     }
 }
 
-if (isset($_POST['update_zones'])) {
-    $zones = ZoneTemplate::get_list_zone_use_templ($zone_templ_id, $_SESSION['userid']);
-    success(SUC_ZONES_UPD);
-    foreach ($zones as $zone) {
-        DnsRecord::update_zone_records($zone['id'], $zone_templ_id);
-    }
-}
-
-if (!(do_hook('verify_permission', 'zone_master_add')) || !$owner) {
-    error(ERR_PERM_EDIT_ZONE_TEMPL);
-    include_once("inc/footer.inc.php");
-    exit;
-}
-
-if (ZoneTemplate::zone_templ_id_exists($zone_templ_id) == "0") {
-    error(ERR_ZONE_TEMPL_NOT_EXIST);
-    include_once("inc/footer.inc.php");
-    exit;
-}
-
-$record_count = ZoneTemplate::count_zone_templ_records($zone_templ_id);
-$templ_details = ZoneTemplate::get_zone_templ_details($zone_templ_id);
-
-$app->render('edit_zone_templ.html', [
-    'templ_details' => $templ_details,
-    'pagination' => show_pages($record_count, $iface_rowamount, $zone_templ_id),
-    'records' => $records = ZoneTemplate::get_zone_templ_records($zone_templ_id, $row_start, $iface_rowamount, $record_sort_by),
-    'zone_templ_id' => $zone_templ_id,
-]);
-
-include_once("inc/footer.inc.php");
+$controller = new EditZoneTemplController();
+$controller->run();
