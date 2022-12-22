@@ -37,71 +37,76 @@ use Poweradmin\Validation;
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/message.inc.php';
 
-include_once 'inc/header.inc.php';
+class DnsSecEditKeyController extends \Poweradmin\BaseController {
 
-$app = AppFactory::create();
-
-$zone_id = "-1";
-if (isset($_GET['id']) && Validation::is_number($_GET['id'])) {
-    $zone_id = htmlspecialchars($_GET['id']);
-}
-
-$key_id = "-1";
-if (isset($_GET['key_id']) && Validation::is_number($_GET['key_id'])) {
-    $key_id = (int) $_GET['key_id'];
-}
-
-$confirm = "-1";
-if (isset($_GET['confirm']) && Validation::is_number($_GET['confirm'])) {
-    $confirm = $_GET['confirm'];
-}
-
-$user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );
-
-if ($zone_id == "-1") {
-    error(ERR_INV_INPUT);
-    include_once("inc/footer.inc.php");
-    exit;
-}
-
-$domain_name = DnsRecord::get_domain_name_by_id($zone_id);
-
-if ($key_id == "-1") {
-    error(ERR_INV_INPUT);
-    include_once("inc/footer.inc.php");
-    exit;
-}
-
-if (!Dnssec::dnssec_zone_key_exists($domain_name, $key_id)) {
-    error(ERR_INV_INPUT);
-    include_once("inc/footer.inc.php");
-    exit;
-
-}
-if ($user_is_zone_owner != "1") {
-    error(ERR_PDNSSEC_DEL_ZONE_KEY);
-}
-
-$key_info = Dnssec::dnssec_get_zone_key($domain_name, $key_id);
-
-if ($confirm == '1') {
-    if ($key_info[5]) {
-        if (Dnssec::dnssec_deactivate_zone_key($domain_name, $key_id)) {
-            success(SUC_EXEC_PDNSSEC_DEACTIVATE_ZONE_KEY);
+    public function run(): void
+    {
+        $zone_id = "-1";
+        if (isset($_GET['id']) && Validation::is_number($_GET['id'])) {
+            $zone_id = htmlspecialchars($_GET['id']);
         }
-    } else {
-        if (Dnssec::dnssec_activate_zone_key($domain_name, $key_id)) {
-            success(SUC_EXEC_PDNSSEC_ACTIVATE_ZONE_KEY);
+
+        $key_id = "-1";
+        if (isset($_GET['key_id']) && Validation::is_number($_GET['key_id'])) {
+            $key_id = (int) $_GET['key_id'];
         }
+
+        $confirm = "-1";
+        if (isset($_GET['confirm']) && Validation::is_number($_GET['confirm'])) {
+            $confirm = $_GET['confirm'];
+        }
+
+        $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );
+
+        if ($zone_id == "-1") {
+            error(ERR_INV_INPUT);
+            include_once("inc/footer.inc.php");
+            exit;
+        }
+
+        $domain_name = DnsRecord::get_domain_name_by_id($zone_id);
+
+        if ($key_id == "-1") {
+            error(ERR_INV_INPUT);
+            include_once("inc/footer.inc.php");
+            exit;
+        }
+
+        if (!Dnssec::dnssec_zone_key_exists($domain_name, $key_id)) {
+            error(ERR_INV_INPUT);
+            include_once("inc/footer.inc.php");
+            exit;
+
+        }
+        if ($user_is_zone_owner != "1") {
+            error(ERR_PDNSSEC_DEL_ZONE_KEY);
+        }
+
+        $key_info = Dnssec::dnssec_get_zone_key($domain_name, $key_id);
+
+        if ($confirm == '1') {
+            if ($key_info[5]) {
+                if (Dnssec::dnssec_deactivate_zone_key($domain_name, $key_id)) {
+                    $this->setMessage('dnssec', 'success', SUC_EXEC_PDNSSEC_DEACTIVATE_ZONE_KEY);
+                    $this->redirect('dnssec.php', [id => $zone_id]);
+                }
+            } else {
+                if (Dnssec::dnssec_activate_zone_key($domain_name, $key_id)) {
+                    $this->setMessage('dnssec', 'success', SUC_EXEC_PDNSSEC_ACTIVATE_ZONE_KEY);
+                    $this->redirect('dnssec.php', [id => $zone_id]);
+                }
+            }
+        }
+
+        $this->render('dnssec_edit_key.html', [
+            'domain_name' => $domain_name,
+            'key_id' => $key_id,
+            'key_info' => Dnssec::dnssec_get_zone_key($domain_name, $key_id),
+            'user_is_zone_owner' => $user_is_zone_owner,
+            'zone_id' => $zone_id,
+        ]);
     }
 }
 
-$app->render('dnssec_edit_key.html', [
-    'domain_name' => $domain_name,
-    'key_id' => $key_id,
-    'key_info' => Dnssec::dnssec_get_zone_key($domain_name, $key_id),
-    'user_is_zone_owner' => $user_is_zone_owner,
-    'zone_id' => $zone_id,
-]);
-
-include_once("inc/footer.inc.php");
+$controller = new DnsSecEditKeyController();
+$controller->run();
