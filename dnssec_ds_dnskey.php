@@ -78,23 +78,19 @@ $domain_name = DnsRecord::get_domain_name_by_id($zone_id);
 $record_count = DnsRecord::count_zone_records($zone_id);
 $zone_templates = ZoneTemplate::get_list_zone_templ($_SESSION['userid']);
 $zone_template_id = DnsRecord::get_zone_template($zone_id);
-
-echo "   <h5 class=\"mb-3\">" . _('DNSSEC public records for zone') . " \"" . DnsRecord::get_domain_name_by_id($zone_id) . "\"</h5>\n";
-
-echo "   <h5 class=\"mb-3\">" . _('DNSKEY') . "</h5>\n";
 $dnskey_records = Dnssec::dnssec_get_dnskey_record($domain_name);
-foreach ($dnskey_records as $record) {
-    echo $record."<br/>";
-}
-echo "<br>";
-
-echo "   <h5 class=\"mb-3\">" . _('DS record') . "</h5>\n";
 $ds_records = Dnssec::dnssec_get_ds_records($domain_name);
-foreach ($ds_records as $record) {
-    echo $record."<br>\n";
-}
 
-echo "<br>";
-echo "<br/><a href='dnssec.php?id=" . htmlspecialchars($zone_id) . "'>Back to DNSSEC " . htmlspecialchars($domain_name) . "</a>";
+$app->render('dnssec_ds_dnskey.html', [
+    'domain_name' => $domain_name,
+    'domain_type' => $domain_type,
+    'dnskey_records' => $dnskey_records,
+    'ds_records' => $ds_records,
+    'pdnssec_use' => $pdnssec_use,
+    'record_count' => $record_count,
+    'zone_id' => $zone_id,
+    'zone_template_id' => $zone_template_id,
+    'zone_templates' => $zone_templates,
+]);
 
 include_once("inc/footer.inc.php");

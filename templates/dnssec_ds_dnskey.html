@@ -1,0 +1,15 @@
+<h5 class="mb-3">{% trans 'DNSSEC public records for zone' %} "{{ domain_name }}"</h5>
+
+<h5 class="mb-3">{% trans 'DNSKEY' %}</h5>
+{% for record in dnskey_records %}
+{{ record }}<br/>
+{% endfor %}
+<br>
+
+<h5 class="mb-3">{% trans 'DS record' %}</h5>
+{% for record in ds_records %}
+{{ record }}<br/>
+{% endfor %}
+
+<br>
+<br/><a href='dnssec.php?id={{ zone_id }}'>Back to DNSSEC {{ domain_name }}</a>
