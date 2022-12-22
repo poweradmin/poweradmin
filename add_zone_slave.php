@@ -84,12 +84,12 @@ class AddZoneSlaveController extends BaseController
         } else {
             if (DnsRecord::add_domain($zone, $owner, $type, $master, 'none')) {
                 $zone_id = DnsRecord::get_zone_id_from_name($zone);
-                $idn_zone_name = idn_to_utf8($zone, IDNA_NONTRANSITIONAL_TO_ASCII);
-                success("<a href=\"edit.php?id=" . $zone_id . "\">" . SUC_ZONE_ADD . '</a>');
                 Logger::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',
                     $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                     $zone, $master), $zone_id);
-                unset($zone, $owner, $type, $master);
+
+                $this->setMessage('list_zones', 'success', SUC_ZONE_ADD);
+                $this->redirect('list_zones.php');
             }
         }
     }
