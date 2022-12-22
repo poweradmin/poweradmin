@@ -4,109 +4,129 @@
 </div>
 
 {% if records == "-1" %}
-    <div class='text-secondary'>{% trans 'This zone template does not have any records yet.' %}</div>
-    <br>
-    <div><input class="btn btn-primary btn-sm" type="button" onClick="location.href='add_zone_templ_record.php?id={{zone_templ_id}}'" value="{% trans 'Add record' %}"></div>
+<div class='text-secondary'>{% trans 'This zone template does not have any records yet.' %}</div>
+<br>
+<div><input class="btn btn-primary btn-sm" type="button"
+            onClick="location.href='add_zone_templ_record.php?id={{zone_templ_id}}'" value="{% trans 'Add record' %}">
+</div>
 {% else %}
 <form method="post" action="">
     <table class="table table-striped table-hover table-sm">
-     <tr>
-          <th><a href="edit_zone_templ.php?id="{{zone_templ_id}}&amp;record_sort_by=name">{% trans 'Name' %}</a></th>
-          <th><a href="edit_zone_templ.php?id="{{zone_templ_id}}&amp;record_sort_by=type">{% trans 'Type' %}</a></th>
-          <th><a href="edit_zone_templ.php?id="{{zone_templ_id}}&amp;record_sort_by=content">{% trans 'Content' %}</a></th>
-          <th><a href="edit_zone_templ.php?id="{{zone_templ_id}}&amp;record_sort_by=prio">{% trans 'Priority' %}</a></th>
-          <th><a href="edit_zone_templ.php?id="{{zone_templ_id}}&amp;record_sort_by=ttl">{% trans 'TTL' %}</a></th>
-          <th>&nbsp;</th>
-         </tr>
-     {% for record in records %}
-     <tr>
-           <td>{{record['name']}}</td>
-           <td>{{record['type']}}</td>
-           <td>{{record['content']}}</td>
-        {% if (record['type'] == "MX") or (record['type'] == "SRV") %}
-           <td>{{record['prio']}}</td>
-        {% else %}
-           <td>&nbsp;</td>
-        {% endif %}
-           <td>{{record['ttl']}}</td>
-          <td>
-             <input type="hidden" name="record[{{record['id']}}][rid]" value="{{record['id']}}">
-               <a class="btn btn-outline-primary btn-sm" href="edit_zone_templ_record.php?id={{record['id']}}&amp;zone_templ_id={{zone_templ_id}}">
-            <i class="bi bi-pencil-square"></i>{% trans 'Edit record' %}</a>
-               <a class="btn btn-outline-danger btn-sm" href="delete_zone_templ_record.php?id={{record['id']}}&amp;zone_templ_id={{zone_templ_id}}">
-            <i class="bi bi-trash"></i>{% trans 'Delete record' %}</a>
-              </td>
-          </tr>
-    {% endfor %}
-    <tr><td colspan="6">
-         <input class="btn btn-primary btn-sm" type="button" onClick="location.href='add_zone_templ_record.php?id={{zone_templ_id}}'" value="{% trans 'Add record' %}">&nbsp;&nbsp
-         <input class="btn btn-danger btn-sm" type="button" onClick="location.href='delete_zone_templ.php?id={{zone_templ_id}}'" value="{% trans 'Delete zone template' %}">
-        </td></tr>
+        <tr>
+            <th><a href="edit_zone_templ.php?id=" {{zone_templ_id}}&amp;record_sort_by=name">{% trans 'Name' %}</a></th>
+            <th><a href="edit_zone_templ.php?id=" {{zone_templ_id}}&amp;record_sort_by=type">{% trans 'Type' %}</a></th>
+            <th><a href="edit_zone_templ.php?id=" {{zone_templ_id}}&amp;record_sort_by=content">{% trans 'Content'
+                %}</a></th>
+            <th><a href="edit_zone_templ.php?id=" {{zone_templ_id}}&amp;record_sort_by=prio">{% trans 'Priority' %}</a>
+            </th>
+            <th><a href="edit_zone_templ.php?id=" {{zone_templ_id}}&amp;record_sort_by=ttl">{% trans 'TTL' %}</a></th>
+            <th>&nbsp;</th>
+        </tr>
+        {% for record in records %}
+        <tr>
+            <td>{{record['name']}}</td>
+            <td>{{record['type']}}</td>
+            <td>{{record['content']}}</td>
+            {% if (record['type'] == "MX") or (record['type'] == "SRV") %}
+            <td>{{record['prio']}}</td>
+            {% else %}
+            <td>&nbsp;</td>
+            {% endif %}
+            <td>{{record['ttl']}}</td>
+            <td>
+                <input type="hidden" name="record[{{record['id']}}][rid]" value="{{record['id']}}">
+                <a class="btn btn-outline-primary btn-sm"
+                   href="edit_zone_templ_record.php?id={{record['id']}}&amp;zone_templ_id={{zone_templ_id}}">
+                    <i class="bi bi-pencil-square"></i>{% trans 'Edit record' %}</a>
+                <a class="btn btn-outline-danger btn-sm"
+                   href="delete_zone_templ_record.php?id={{record['id']}}&amp;zone_templ_id={{zone_templ_id}}">
+                    <i class="bi bi-trash"></i>{% trans 'Delete record' %}</a>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="6">
+                <input class="btn btn-primary btn-sm" type="button"
+                       onClick="location.href='add_zone_templ_record.php?id={{zone_templ_id}}'"
+                       value="{% trans 'Add record' %}">&nbsp;&nbsp
+                <input class="btn btn-danger btn-sm" type="button"
+                       onClick="location.href='delete_zone_templ.php?id={{zone_templ_id}}'"
+                       value="{% trans 'Delete zone template' %}">
+            </td>
+        </tr>
     </table>
     <table>
-          <tr>
-               <td colspan="6"><br><b>{% trans 'Hint:' %}</b></td>
-              </tr>
-          <tr>
-               <td colspan="6">{% trans 'The following placeholders can be used in template records' %}</td>
-              </tr>
-          <tr>
-               <td colspan="6"><br>&nbsp;&nbsp;&nbsp;&nbsp; * [ZONE] - {% trans 'substituted with current zone name' %}<br>
-                &nbsp;&nbsp;&nbsp;&nbsp; * [SERIAL] - {% trans 'substituted with current date and 2 numbers' %} (YYYYMMDD + 00)<br>
+        <tr>
+            <td colspan="6"><br><b>{% trans 'Hint:' %}</b></td>
+        </tr>
+        <tr>
+            <td colspan="6">{% trans 'The following placeholders can be used in template records' %}</td>
+        </tr>
+        <tr>
+            <td colspan="6"><br>&nbsp;&nbsp;&nbsp;&nbsp; * [ZONE] - {% trans 'substituted with current zone name' %}<br>
+                &nbsp;&nbsp;&nbsp;&nbsp; * [SERIAL] - {% trans 'substituted with current date and 2 numbers' %}
+                (YYYYMMDD + 00)<br>
                 &nbsp;&nbsp;&nbsp;&nbsp; * [NS1] - {% trans 'substituted with 1st name server' %}<br>
                 &nbsp;&nbsp;&nbsp;&nbsp; * [NS2] - {% trans 'substituted with 2nd name server' %}<br>
                 &nbsp;&nbsp;&nbsp;&nbsp; * [NS3] - {% trans 'substituted with 3rd name server' %}<br>
                 &nbsp;&nbsp;&nbsp;&nbsp; * [NS4] - {% trans 'substituted with 4th name server' %}<br>
-                &nbsp;&nbsp;&nbsp;&nbsp; * [HOSTMASTER] - {% trans 'substituted with hostmaster' %}</td>
-              </tr>
-          <tr>
-               <td colspan="6"><br><b>{% trans 'Examples:' %}</b></td>
-              </tr>
-          <tr>
-               <td colspan="6">{% trans 'To add a subdomain foo in a zonetemplate you would put foo.[ZONE] into the name field.' %}<br>
-                   {% trans 'To add a wildcard record put *.[ZONE] in the name field.' %}<br>
-                   {% trans 'Use just [ZONE] to have the domain itself return a value.' %}<br>
-                   {% trans 'For the SOA record, place [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400 in the content field.' %}</td>
-              </tr>
-        </table>
+                &nbsp;&nbsp;&nbsp;&nbsp; * [HOSTMASTER] - {% trans 'substituted with hostmaster' %}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6"><br><b>{% trans 'Examples:' %}</b></td>
+        </tr>
+        <tr>
+            <td colspan="6">{% trans 'To add a subdomain foo in a zonetemplate you would put foo.[ZONE] into the name
+                field.' %}<br>
+                {% trans 'To add a wildcard record put *.[ZONE] in the name field.' %}<br>
+                {% trans 'Use just [ZONE] to have the domain itself return a value.' %}<br>
+                {% trans 'For the SOA record, place [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400 in the content
+                field.' %}
+            </td>
+        </tr>
+    </table>
     <hr>
-    <table><tr>
-           <td colspan="6"><strong>Save as new template:</strong></td>
-          </tr>
-           <tr>
-                <td>{% trans 'Template Name' %}</td>
-                <td><input class="form-control form-control-sm" type="text" name="templ_name" value=""></td>
-               </tr>
-           <tr>
-                <td>{% trans 'Template Description' %}</td>
-                <td><input class="form-control form-control-sm" type="text" name="templ_descr" value=""></td>
-               </tr>
-         </table>
-      <input class="btn btn-primary btn-sm" type="submit" name="commit" value="{% trans 'Commit changes' %}">
-      <input class="btn btn-secondary btn-sm" type="reset" name="reset" value="{% trans 'Reset changes' %}">
-      <input class="btn btn-secondary btn-sm" type="submit" name="save_as" value="{% trans 'Save as template' %}">
-      <input class="btn btn-secondary btn-sm" type="submit" name="update_zones" value="{% trans 'Update zones' %}">
-     </form>
+    <table>
+        <tr>
+            <td colspan="6"><strong>Save as new template:</strong></td>
+        </tr>
+        <tr>
+            <td>{% trans 'Template Name' %}</td>
+            <td><input class="form-control form-control-sm" type="text" name="templ_name" value=""></td>
+        </tr>
+        <tr>
+            <td>{% trans 'Template Description' %}</td>
+            <td><input class="form-control form-control-sm" type="text" name="templ_descr" value=""></td>
+        </tr>
+    </table>
+    <input class="btn btn-primary btn-sm" type="submit" name="commit" value="{% trans 'Commit changes' %}">
+    <input class="btn btn-secondary btn-sm" type="reset" name="reset" value="{% trans 'Reset changes' %}">
+    <input class="btn btn-secondary btn-sm" type="submit" name="save_as" value="{% trans 'Save as template' %}">
+    <input class="btn btn-secondary btn-sm" type="submit" name="update_zones" value="{% trans 'Update zones' %}">
+</form>
 <hr>
 
- <form class="needs-validation" method="post" action="" novalidate>
-      <table>
-           <tr>
-                <td style="vertical-align: top" class="pt-1">{% trans 'Name' %}</td>
-                <td>
-                      <input class="form-control form-control-sm" type="text" name="templ_name" value="{{templ_details['name']}}" required>
-                      <div class="invalid-feedback">{% trans 'Provide a name for your template' %}</div>
-                    </td>
-               </tr>
-           <tr>
-                <td>{% trans 'Description' %}</td>
-                <td><input class="form-control form-control-sm" type="text" name="templ_descr" value="{{templ_details['descr']}}"></td>
-               </tr>
-          </table>
+<form class="needs-validation" method="post" action="" novalidate>
+    <table>
+        <tr>
+            <td style="vertical-align: top" class="pt-1">{% trans 'Name' %}</td>
+            <td>
+                <input class="form-control form-control-sm" type="text" name="templ_name"
+                       value="{{templ_details['name']}}" required>
+                <div class="invalid-feedback">{% trans 'Provide a name for your template' %}</div>
+            </td>
+        </tr>
+        <tr>
+            <td>{% trans 'Description' %}</td>
+            <td><input class="form-control form-control-sm" type="text" name="templ_descr"
+                       value="{{templ_details['descr']}}"></td>
+        </tr>
+    </table>
     <div class="pt-3">
-          <input class="btn btn-primary btn-sm" type="submit" name="edit" value="{% trans 'Commit changes' %}">
+        <input class="btn btn-primary btn-sm" type="submit" name="edit" value="{% trans 'Commit changes' %}">
     </div>
-          </form>
+</form>
 <div class="pt-3">
-{% endif %}
+    {% endif %}
 </div>
