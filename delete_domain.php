@@ -49,7 +49,7 @@ class DeleteDomainController extends BaseController
             'integer' => ['id'],
         ]);
         if (!$v->validate()) {
-            $this->showError($v->errors());
+            $this->showErrors($v->errors());
         }
 
         $zone_id = htmlspecialchars($_GET['id']);

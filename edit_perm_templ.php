@@ -48,7 +48,7 @@ class EditPermTemplController extends BaseController
         ]);
 
         if (!$v->validate()) {
-            $this->showError($v->errors());
+            $this->showErrors($v->errors());
         }
 
         if ($this->isPost()) {
@@ -71,7 +71,7 @@ class EditPermTemplController extends BaseController
 
             $this->showListPermTempl();
         } else {
-            $this->showError($v->errors());
+            $this->showErrors($v->errors());
         }
     }
 

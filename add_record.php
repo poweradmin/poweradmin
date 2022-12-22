@@ -72,7 +72,7 @@ class AddRecordController extends BaseController
         ]);
 
         if (!$v->validate()) {
-            $this->showError($v->errors());
+            $this->showErrors($v->errors());
         }
 
         $name = $_POST['name'] ?? '';
@@ -118,7 +118,7 @@ class AddRecordController extends BaseController
             'integer' => ['id']
         ]);
         if (!$v->validate()) {
-            $this->showError($v->errors());
+            $this->showErrors($v->errors());
         }
     }
 

@@ -133,7 +133,7 @@ EOF;
         }
     }
 
-    public function showError(array $errors)
+    public function showErrors(array $errors)
     {
         include_once 'inc/header.inc.php';
         $validationErrors = array_values($errors);

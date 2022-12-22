@@ -43,7 +43,7 @@ class AddZoneTemplRecordController extends BaseController {
         $v = new Valitron\Validator($_GET);
         $v->rule('required', ['id']);
         if (!$v->validate()) {
-            $this->showError($v->errors());
+            $this->showErrors($v->errors());
         }
 
         $zone_templ_id = htmlspecialchars($_GET['id']);
@@ -59,7 +59,7 @@ class AddZoneTemplRecordController extends BaseController {
             if ($v->validate()) {
                 $this->addZoneTemplRecord();
             } else {
-                $this->showError($v->errors());
+                $this->showErrors($v->errors());
             }
         } else {
             $this->showAddZoneTemplRecord();

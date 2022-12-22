@@ -51,7 +51,7 @@ class ChangePasswordController extends BaseController {
             if ($v->validate()) {
                 do_hook('change_user_pass', $_POST);
             } else {
-                $this->showError($v->errors());
+                $this->showErrors($v->errors());
             }
         }
 

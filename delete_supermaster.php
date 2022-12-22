@@ -74,7 +74,7 @@ class DeleteSuperMasterController extends BaseController {
                 ]);
             }
         } else {
-            $this->showError($v->errors());
+            $this->showErrors($v->errors());
         }
     }
 

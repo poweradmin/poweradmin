@@ -66,7 +66,7 @@ class DeletePermTemplController extends BaseController
                 'permission_templates' => do_hook('list_permission_templates')
             ]);
         } else {
-            $this->showError($v->errors());
+            $this->showErrors($v->errors());
         }
     }
 

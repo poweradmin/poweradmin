@@ -50,12 +50,12 @@ class EditZoneTemplController extends BaseController
             'integer' => ['id'],
         ]);
         if (!$v->validate()) {
-            $this->showError($v->errors());
+            $this->showErrors($v->errors());
         }
 
         $zone_templ_id = htmlspecialchars($_GET['id']);
         if (ZoneTemplate::zone_templ_id_exists($zone_templ_id) == "0") {
-            $this->showError([[ERR_ZONE_TEMPL_NOT_EXIST]]);
+            $this->showErrors([[ERR_ZONE_TEMPL_NOT_EXIST]]);
         }
 
         if ($this->isPost()) {

@@ -60,7 +60,7 @@ class BulkRegistrationController extends BaseController {
         ]);
 
         if (!$v->validate()) {
-            $this->showError($v->errors());
+            $this->showErrors($v->errors());
         }
 
         $domains = $this->getDomains($_POST['domains']);

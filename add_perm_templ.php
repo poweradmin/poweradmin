@@ -64,7 +64,7 @@ class AddPermTemplController extends BaseController
             $this->setMessage('list_perm_templ', 'success', SUC_PERM_TEMPL_ADD);
             $this->redirect('list_perm_templ.php');
         } else {
-            $this->showError($v->errors());
+            $this->showErrors($v->errors());
         }
     }
 

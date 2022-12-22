@@ -71,7 +71,7 @@ class DeleteZoneTemplController extends BaseController
                 'zone_templates' => ZoneTemplate::get_list_zone_templ($_SESSION['userid'])
             ]);
         } else {
-            $this->showError($v->errors());
+            $this->showErrors($v->errors());
         }
     }
 

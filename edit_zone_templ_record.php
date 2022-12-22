@@ -46,7 +46,7 @@ class EditZoneTemplRecordController extends BaseController {
             'integer' => ['id', 'zone_templ_id'],
         ]);
         if (!$v->validate()) {
-            $this->showError($v->errors());
+            $this->showErrors($v->errors());
         }
 
         $record_id = htmlspecialchars($_GET['id']);

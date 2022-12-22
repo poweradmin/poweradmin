@@ -60,7 +60,7 @@ class AddZoneMasterController extends BaseController
             'required' => ['domain', 'dom_type', 'owner', 'zone_template'],
         ]);
         if (!$v->validate()) {
-            $this->showError($v->errors());
+            $this->showErrors($v->errors());
         }
 
         $pdnssec_use = $this->config('pdnssec_use');
