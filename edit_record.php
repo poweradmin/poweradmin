@@ -29,7 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\AppFactory;
+use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
 use Poweradmin\Permission;
@@ -39,32 +39,66 @@ use Poweradmin\Logger;
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/message.inc.php';
 
-include_once 'inc/header.inc.php';
+class EditRecordController extends BaseController {
 
-$app = AppFactory::create();
-$pdnssec_use = $app->config('pdnssec_use');
+    public function run(): void
+    {
+        $pdnssec_use = $this->config('pdnssec_use');
 
-$perm_view = Permission::getViewPermission();
-$perm_edit = Permission::getEditPermission();
+        $perm_view = Permission::getViewPermission();
+        $perm_edit = Permission::getEditPermission();
 
-$record_id = $_GET['id'];
-$zid = DnsRecord::get_zone_id_from_record_id($record_id);
+        $record_id = $_GET['id'];
+        $zid = DnsRecord::get_zone_id_from_record_id($record_id);
 
-$user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zid);
-$zone_type = DnsRecord::get_domain_type($zid);
-$zone_name = DnsRecord::get_domain_name_by_id($zid);
+        $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zid);
+        $zone_type = DnsRecord::get_domain_type($zid);
 
-if (isset($_POST["commit"])) {
-    if ($zone_type == "SLAVE" || $perm_edit == "none" || ($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0") {
-        error(ERR_PERM_EDIT_RECORD);
-    } else {
+        if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
+            error(ERR_PERM_VIEW_RECORD);
+            include_once("inc/footer.inc.php");
+            exit;
+        }
+
+        if ($zone_type == "SLAVE" || $perm_edit == "none" || ($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0") {
+            error(ERR_PERM_EDIT_RECORD);
+        }
+
+        if ($this->isPost()) {
+            $this->saveRecord($zid, $pdnssec_use);
+        }
+
+        $this->showRecordEditForm($record_id, $zone_type, $zid, $perm_edit, $user_is_zone_owner);
+    }
+
+    public function showRecordEditForm($record_id, string $zone_type, $zid, string $perm_edit, $user_is_zone_owner): void
+    {
+        $zone_name = DnsRecord::get_domain_name_by_id($zid);
+
+        $recordTypes = RecordType::getTypes();
+        $record = DnsRecord::get_record_from_id($_GET["id"]);
+        $record['record_name'] = trim(str_replace(htmlspecialchars($zone_name), '', htmlspecialchars($record["name"])), '.');
+
+        $this->render('edit_record.html', [
+            'record_id' => $record_id,
+            'record' => $record,
+            'recordTypes' => $recordTypes,
+            'zone_name' => $zone_name,
+            'zone_type' => $zone_type,
+            'zid' => $zid,
+            'perm_edit' => $perm_edit,
+            'user_is_zone_owner' => $user_is_zone_owner,
+        ]);
+    }
+
+    public function saveRecord($zid, $pdnssec_use): void
+    {
         $old_record_info = DnsRecord::get_record_from_id($_POST["rid"]);
         $ret_val = DnsRecord::edit_record($_POST);
         if ($ret_val == "1") {
             if ($_POST['type'] != "SOA") {
                 DnsRecord::update_soa_serial($zid);
             }
-            success(SUC_RECORD_UPD);
             $new_record_info = DnsRecord::get_record_from_id($_POST["rid"]);
             Logger::log_info(sprintf('client_ip:%s user:%s operation:edit_record'
                 . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
@@ -77,29 +111,12 @@ if (isset($_POST["commit"])) {
             if ($pdnssec_use && Dnssec::dnssec_rectify_zone($zid)) {
                 success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
             }
+
+            $this->setMessage('edit', 'success', SUC_RECORD_UPD);
+            $this->redirect('edit.php', ['id' => $zid]);
         }
     }
 }
 
-if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
-    error(ERR_PERM_VIEW_RECORD);
-    include_once("inc/footer.inc.php");
-    exit;
-}
-
-$recordTypes = RecordType::getTypes();
-$record = DnsRecord::get_record_from_id($_GET["id"]);
-$record['record_name'] = trim(str_replace(htmlspecialchars($zone_name), '', htmlspecialchars($record["name"])), '.');
-
-$app->render('edit_record.html', [
-    'record_id' => $record_id,
-    'record' => $record,
-    'recordTypes' => $recordTypes,
-    'zone_name' => $zone_name,
-    'zone_type' => $zone_type,
-    'zid' => $zid,
-    'perm_edit' => $perm_edit,
-    'user_is_zone_owner' => $user_is_zone_owner,
-]);
-
-include_once("inc/footer.inc.php");
+$controller = new EditRecordController();
+$controller->run();
