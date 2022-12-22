@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\AppFactory;
 use Poweradmin\Validation;
 
 require_once 'inc/toolkit.inc.php';
@@ -111,78 +112,29 @@ if (isset($_POST["commit"])) {
 }
 
 $users = do_hook('get_user_detail_list', $edit_id);
-
-foreach ($users as $user) {
-
-    (($user['active']) == "1") ? $check = " CHECKED" : $check = "";
-    $name = $user['fullname'] ?: $user['username'];
-
-    echo "     <h5 class=\"mb-3\">" . _('Edit user') . " \"" . $name . "\"</h5>\n";
-    echo "     <form class=\"needs-validation\" method=\"post\" action=\"\" novalidate>\n";
-    echo "      <input type=\"hidden\" name=\"number\" value=\"" . htmlspecialchars($edit_id) . "\">\n";
-    echo "      <table>\n";
-    echo "       <tr>\n";
-    echo "        <td>" . _('Username') . "</td>\n";
-    echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"username\" value=\"" . htmlspecialchars($user['username']) . "\" required>\n";
-    echo "        <div class=\"invalid-feedback\">" . _('Provide user name') . "</div>";
-    echo "        </td>\n";
-    echo "       </tr>\n";
-    echo "       <tr>\n";
-    echo "        <td>" . _('Fullname') . "</td>\n";
-    echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"fullname\" value=\"" . htmlspecialchars($user['fullname']) . "\" required></td>\n";
-    echo "       </tr>\n";
-    echo "       <tr>\n";
-    echo "        <td>" . _('Password') . "</td>\n";
-    echo "        <td><input class=\"form-control form-control-sm\" type=\"password\" name=\"password\"></td>\n";
-    echo "       </tr>\n";
-    echo "       <tr>\n";
-    echo "        <td>" . _('Email address') . "</td>\n";
-    echo "        <td><input class=\"form-control form-control-sm\" type=\"text\" name=\"email\" value=\"" . htmlspecialchars($user['email']) . "\" required>\n";
-    echo "        <div class=\"invalid-feedback\">" . _('Provide email') . "</div>";
-    echo "        </td>\n";
-    echo "       </tr>\n";
-    if (do_hook('verify_permission', 'user_edit_templ_perm')) {
-        echo "       <tr>\n";
-        echo "        <td>" . _('Permission template') . "</td>\n";
-        echo "        <td>\n";
-        echo "         <select class=\"form-select form-select-sm\" name=\"perm_templ\">\n";
-        foreach (do_hook('list_permission_templates') as $template) {
-            ($template['id'] == $user['tpl_id']) ? $select = " SELECTED" : $select = "";
-            echo "          <option value=\"" . $template['id'] . "\"" . $select . ">" . $template['name'] . "</option>\n";
-        }
-        echo "         </select>\n";
-        echo "       </td>\n";
-    }
-    echo "       </tr>\n";
-    echo "       <tr>\n";
-    echo "        <td>" . _('Description') . "</td>\n";
-    echo "        <td><textarea class=\"form-control form-control-sm\" rows=\"4\" cols=\"30\" class=\"inputarea\" name=\"description\">" . htmlspecialchars($user['descr']) . "</textarea></td>\n";
-    echo "       </tr>\n";
-    echo "       <tr>\n";
-    echo "        <td>" . _('Enabled') . "</td>\n";
-    echo "        <td><input class=\"form-check-input\" type=\"checkbox\" name=\"active\" value=\"1\"" . $check . "></td>\n";
-    echo "       </tr>\n";
-    echo "       <tr>\n";
-    echo "        <td>&nbsp;</td>\n";
-    echo "        <td><input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"commit\" value=\"" . _('Commit changes') . "\">\n";
-    echo "        <input class=\"btn btn-secondary btn-sm\" type=\"reset\" name=\"reset\" value=\"" . _('Reset changes') . "\"></td>\n";
-    echo "      </table>\n";
-    echo "     </form>\n";
-
-    echo "     <p>\n";
-    echo "<div class=\"pt-3 text-secondary\">";
-    printf(_('This user has been assigned the permission template "%s".'), $user['tpl_name']);
-    if ($user['tpl_descr'] != "") {
-        echo " " . _('The description for this template is') . ": \"" . htmlspecialchars($user['tpl_descr']) . "\".";
-    }
-    echo " " . _('Based on this template, this user has the following permissions') . ":";
-    echo "     </p>\n";
-    echo "     <ul>\n";
-    foreach (do_hook('get_permissions_by_template_id', $user['tpl_id']) as $item) {
-        echo "      <li>" . _(htmlspecialchars($item['descr'])) . " (" . htmlspecialchars($item['name']) . ")</li>\n";
-    }
-    echo "     </ul>\n";
-    echo "</div>";
+if (empty($users)) {
+    error(ERR_USER_NOT_EXIST);
+    include_once("inc/footer.inc.php");
+    exit;
 }
+
+$user = $users[0];
+$edit_templ_perm = do_hook('verify_permission', 'user_edit_templ_perm');
+$permission_templates = do_hook('list_permission_templates');
+$user_permissions = do_hook('get_permissions_by_template_id', $user['tpl_id']);
+
+(($user['active']) == "1") ? $check = " CHECKED" : $check = "";
+$name = $user['fullname'] ?: $user['username'];
+
+$app = AppFactory::create();
+$app->render('edit_user.html', [
+    'edit_id' => $edit_id,
+    'name' => $name,
+    'user' => $user,
+    'check' => $check,
+    'edit_templ_perm' => $edit_templ_perm,
+    'permission_templates' => $permission_templates,
+    'user_permissions' => $user_permissions,
+]);
 
 include_once("inc/footer.inc.php");
