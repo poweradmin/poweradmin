@@ -48,12 +48,11 @@ class DeleteRecordController extends BaseController {
             include_once('inc/footer.inc.php');
             exit;
         }
-        $record_id = htmlspecialchars($_GET['id']);
 
+        $record_id = htmlspecialchars($_GET['id']);
         $zid = DnsRecord::get_zone_id_from_record_id($record_id);
         if ($zid == NULL) {
-            header("Location: list_zones.php");
-            exit;
+            $this->showError(ERR_ZONE_NOT_EXIST);
         }
 
         if (isset($_GET['confirm'])) {
@@ -77,10 +76,10 @@ class DeleteRecordController extends BaseController {
                 if ($pdnssec_use && Dnssec::dnssec_rectify_zone($zid)) {
                     success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
                 }
-            }
 
-            include_once('inc/footer.inc.php');
-            exit;
+                $this->setMessage('edit', 'success', SUC_RECORD_DEL);
+                $this->redirect('edit.php', ['id' => $zid]);
+            }
         }
 
         $perm_edit = Permission::getEditPermission();
@@ -89,9 +88,7 @@ class DeleteRecordController extends BaseController {
         $zone_id = DnsRecord::recid_to_domid($record_id);
         $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );
         if ($zone_info['type'] == "SLAVE" || $perm_edit == "none" || ($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0") {
-            error(ERR_PERM_EDIT_RECORD);
-            include_once('inc/footer.inc.php');
-            exit;
+            $this->showError(ERR_PERM_EDIT_RECORD);
         }
 
         $this->showQuestion($record_id, $zid, $zone_id);

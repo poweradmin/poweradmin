@@ -133,6 +133,14 @@ EOF;
         }
     }
 
+    public function showError(string $error)
+    {
+        include_once 'inc/header.inc.php';
+        error($error);
+        include_once('inc/footer.inc.php');
+        exit;
+    }
+
     public function showErrors(array $errors)
     {
         include_once 'inc/header.inc.php';
