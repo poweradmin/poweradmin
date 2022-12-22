@@ -57,17 +57,18 @@ class DeletePermTemplController extends BaseController
         ]);
 
         $perm_templ_id = htmlspecialchars($_GET['id']);
-        if ($v->validate()) {
-            if (do_hook('delete_perm_templ', $perm_templ_id)) {
-                success(SUC_PERM_TEMPL_DEL);
-            }
-
-            $this->render('list_perm_templ.html', [
-                'permission_templates' => do_hook('list_permission_templates')
-            ]);
-        } else {
+        if (!$v->validate()) {
             $this->showErrors($v->errors());
         }
+
+        if (do_hook('delete_perm_templ', $perm_templ_id)) {
+            $this->setMessage('list_perm_templ', 'success', SUC_PERM_TEMPL_DEL);
+            $this->redirect('list_perm_templ.php');
+        }
+
+        $this->render('list_perm_templ.html', [
+            'permission_templates' => do_hook('list_permission_templates')
+        ]);
     }
 
     private function showDeletePermTempl()
