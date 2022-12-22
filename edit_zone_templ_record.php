@@ -29,7 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\AppFactory;
+use Poweradmin\BaseController;
 use Poweradmin\RecordType;
 use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
@@ -37,50 +37,54 @@ use Poweradmin\ZoneTemplate;
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/message.inc.php';
 
-include_once 'inc/header.inc.php';
+class EditZoneTemplRecordController extends BaseController {
 
-$app = AppFactory::create();
-
-$record_id = "-1";
-if (isset($_GET['id']) && Validation::is_number($_GET['id'])) {
-    $record_id = htmlspecialchars($_GET['id']);
-}
-
-$zone_templ_id = "-1";
-if (isset($_GET['zone_templ_id']) && Validation::is_number($_GET['zone_templ_id'])) {
-    $zone_templ_id = htmlspecialchars($_GET['zone_templ_id']);
-}
-
-$owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
-
-if (isset($_POST["commit"])) {
-    if (!(do_hook('verify_permission', 'zone_master_add')) || !$owner) {
-        error(ERR_PERM_EDIT_RECORD);
-    } else {
-        $ret_val = ZoneTemplate::edit_zone_templ_record($_POST);
-        if ($ret_val == "1") {
-            success(SUC_RECORD_UPD);
-        } else {
-            echo "     <div class=\"alert alert-danger\">" . $ret_val . "</div>\n";
+    public function run(): void
+    {
+        $record_id = "-1";
+        if (isset($_GET['id']) && Validation::is_number($_GET['id'])) {
+            $record_id = htmlspecialchars($_GET['id']);
         }
+
+        $zone_templ_id = "-1";
+        if (isset($_GET['zone_templ_id']) && Validation::is_number($_GET['zone_templ_id'])) {
+            $zone_templ_id = htmlspecialchars($_GET['zone_templ_id']);
+        }
+
+        $owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
+
+        if (isset($_POST["commit"])) {
+            if (!(do_hook('verify_permission', 'zone_master_add')) || !$owner) {
+                error(ERR_PERM_EDIT_RECORD);
+            } else {
+                $ret_val = ZoneTemplate::edit_zone_templ_record($_POST);
+                if ($ret_val == "1") {
+                    $this->setMessage('edit_zone_templ', 'success', SUC_RECORD_UPD);
+                    $this->redirect('edit_zone_templ.php', ['id' => $zone_templ_id]);
+                } else {
+                    echo "     <div class=\"alert alert-danger\">" . $ret_val . "</div>\n";
+                }
+            }
+        }
+
+        $templ_details = ZoneTemplate::get_zone_templ_details($zone_templ_id);
+        if (!(do_hook('verify_permission', 'zone_master_add')) || !$owner) {
+            error(ERR_PERM_VIEW_RECORD);
+            include_once("inc/footer.inc.php");
+            exit;
+        }
+
+        $record = ZoneTemplate::get_zone_templ_record_from_id($record_id);
+
+        $this->render('edit_zone_templ_record.html', [
+            'record' => $record,
+            'zone_templ_id' => $zone_templ_id,
+            'record_id' => $record_id,
+            'templ_details' => $templ_details,
+            'record_types' => RecordType::getTypes(),
+        ]);
     }
 }
 
-$templ_details = ZoneTemplate::get_zone_templ_details($zone_templ_id);
-if (!(do_hook('verify_permission', 'zone_master_add')) || !$owner) {
-    error(ERR_PERM_VIEW_RECORD);
-    include_once("inc/footer.inc.php");
-    exit;
-}
-
-$record = ZoneTemplate::get_zone_templ_record_from_id($record_id);
-
-$app->render('edit_zone_templ_record.html', [
-    'record' => $record,
-    'zone_templ_id' => $zone_templ_id,
-    'record_id' => $record_id,
-    'templ_details' => $templ_details,
-    'record_types' => RecordType::getTypes(),
-]);
-
-include_once("inc/footer.inc.php");
+$controller = new EditZoneTemplRecordController();
+$controller->run();
