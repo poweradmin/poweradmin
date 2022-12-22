@@ -29,7 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\AppFactory;
+use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
 use Poweradmin\Permission;
 use Poweradmin\Validation;
@@ -37,52 +37,61 @@ use Poweradmin\Validation;
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/message.inc.php';
 
-include_once 'inc/header.inc.php';
+class EditCommentController extends BaseController {
 
-$app = AppFactory::create();
-$iface_zone_comments = $app->config('iface_zone_comments');
+    public function run(): void
+    {
+        $iface_zone_comments = $this->config('iface_zone_comments');
 
-if (!$iface_zone_comments) {
-    error(ERR_PERM_EDIT_COMMENT);
-    include_once('inc/footer.inc.php');
-    exit;
-}
+        if (!$iface_zone_comments) {
+            error(ERR_PERM_EDIT_COMMENT);
+            include_once('inc/footer.inc.php');
+            exit;
+        }
 
-$perm_view = Permission::getViewPermission();
-$perm_edit = Permission::getEditPermission();
+        $perm_view = Permission::getViewPermission();
+        $perm_edit = Permission::getEditPermission();
 
-if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
-    error(ERR_INV_INPUT);
-    include_once('inc/footer.inc.php');
-    exit;
-}
-$zone_id = htmlspecialchars($_GET['id']);
+        if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
+            error(ERR_INV_INPUT);
+            include_once('inc/footer.inc.php');
+            exit;
+        }
+        $zone_id = htmlspecialchars($_GET['id']);
 
-$user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
-$zone_type = DnsRecord::get_domain_type($zone_id);
-$zone_name = DnsRecord::get_domain_name_by_id($zone_id);
+        $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
+        if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
+            error(ERR_PERM_VIEW_COMMENT);
+            include_once("inc/footer.inc.php");
+            exit;
+        }
 
-$perm_edit_comment = $zone_type == "SLAVE" || $perm_edit == "none" || ($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0";
+        $zone_type = DnsRecord::get_domain_type($zone_id);
+        $perm_edit_comment = $zone_type == "SLAVE" || $perm_edit == "none" || ($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0";
 
-if (isset($_POST["commit"])) {
-    if ($perm_edit_comment) {
-        error(ERR_PERM_EDIT_COMMENT);
-    } else {
-        DnsRecord::edit_zone_comment($zone_id, $_POST['comment']);
-        success(SUC_COMMENT_UPD);
+        if (isset($_POST["commit"])) {
+            if ($perm_edit_comment) {
+                error(ERR_PERM_EDIT_COMMENT);
+            } else {
+                DnsRecord::edit_zone_comment($zone_id, $_POST['comment']);
+                $this->setMessage('edit', 'success', SUC_COMMENT_UPD);
+                $this->redirect('edit.php', ['id' => $zone_id]);
+            }
+        }
+
+
+        $this->showCommentForm($zone_id, $perm_edit_comment);
+    }
+
+    public function showCommentForm(string $zone_id, bool $perm_edit_comment): void
+    {
+        $this->render('edit_comment.html', [
+            'zone_id' => $zone_id,
+            'comment' => DnsRecord::get_zone_comment($zone_id),
+            'disabled' => $perm_edit_comment
+        ]);
     }
 }
 
-if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
-    error(ERR_PERM_VIEW_COMMENT);
-    include_once("inc/footer.inc.php");
-    exit;
-}
-
-$app->render('edit_comment.html', [
-    'zone_id' => $zone_id,
-    'comment' => DnsRecord::get_zone_comment($zone_id),
-    'disabled' => $perm_edit_comment
-]);
-
-include_once('inc/footer.inc.php');
+$controller = new EditCommentController();
+$controller->run();
