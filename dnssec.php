@@ -30,7 +30,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\AppFactory;
+use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
 use Poweradmin\Permission;
@@ -39,54 +39,53 @@ use Poweradmin\ZoneTemplate;
 
 require_once 'inc/toolkit.inc.php';
 
-include_once 'inc/header.inc.php';
+class DnsSecController extends BaseController {
 
-$app = AppFactory::create();
-$pdnssec_use = $app->config('pdnssec_use');
+    public function run(): void
+    {
+        if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
+            error(ERR_INV_INPUT);
+            include_once('inc/footer.inc.php');
+            exit;
+        }
 
-if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
-    error(ERR_INV_INPUT);
-    include_once('inc/footer.inc.php');
-    exit;
+        $zone_id = htmlspecialchars($_GET['id']);
+        $perm_view = Permission::getViewPermission();
+        $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
+
+        (do_hook('verify_permission', 'user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
+
+        if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
+            error(ERR_PERM_VIEW_ZONE);
+            include_once("inc/footer.inc.php");
+            exit();
+        }
+
+        if (DnsRecord::zone_id_exists($zone_id) == "0") {
+            error(ERR_ZONE_NOT_EXIST);
+            include_once("inc/footer.inc.php");
+            exit();
+        }
+
+        $this->showDnsSecKeys($zone_id);
+    }
+
+    public function showDnsSecKeys(string $zone_id): void
+    {
+        $domain_name = DnsRecord::get_domain_name_by_id($zone_id);
+        $this->render('dnssec.html', [
+            'domain_name' => $domain_name,
+            'domain_type' => DnsRecord::get_domain_type($zone_id),
+            'keys' => Dnssec::dnssec_get_keys($domain_name),
+            'pdnssec_use' => $this->config('pdnssec_use'),
+            'record_count' => DnsRecord::count_zone_records($zone_id),
+            'zone_id' => $zone_id,
+            'zone_template_id' => DnsRecord::get_zone_template($zone_id),
+            'zone_templates' => ZoneTemplate::get_list_zone_templ($_SESSION['userid']),
+            'algorithms' => Dnssec::dnssec_algorithms(),
+        ]);
+    }
 }
-$zone_id = htmlspecialchars($_GET['id']);
 
-$perm_view = Permission::getViewPermission();
-
-$user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
-
-(do_hook('verify_permission', 'user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
-
-if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
-    error(ERR_PERM_VIEW_ZONE);
-    include_once("inc/footer.inc.php");
-    exit();
-}
-
-if (DnsRecord::zone_id_exists($zone_id) == "0") {
-    error(ERR_ZONE_NOT_EXIST);
-    include_once("inc/footer.inc.php");
-    exit();
-}
-
-$domain_type = DnsRecord::get_domain_type($zone_id);
-$domain_name = DnsRecord::get_domain_name_by_id($zone_id);
-$record_count = DnsRecord::count_zone_records($zone_id);
-$zone_templates = ZoneTemplate::get_list_zone_templ($_SESSION['userid']);
-$zone_template_id = DnsRecord::get_zone_template($zone_id);
-$keys = Dnssec::dnssec_get_keys($domain_name);
-$algorithms = Dnssec::dnssec_algorithms();
-
-$app->render('dnssec.html', [
-    'domain_name' => $domain_name,
-    'domain_type' => $domain_type,
-    'keys' => $keys,
-    'pdnssec_use' => $pdnssec_use,
-    'record_count' => $record_count,
-    'zone_id' => $zone_id,
-    'zone_template_id' => $zone_template_id,
-    'zone_templates' => $zone_templates,
-    'algorithms' => $algorithms,
-]);
-
-include_once("inc/footer.inc.php");
+$controller = new DnsSecController();
+$controller->run();
