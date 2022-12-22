@@ -57,9 +57,8 @@ class AddUserController extends BaseController {
 
         if ($v->validate()) {
             if (do_hook('add_new_user', $_POST)) {
-                success(SUC_USER_ADD);
-
-                $this->showUsers();
+                $this->setMessage('users', 'success', SUC_USER_ADD);
+                $this->redirect('users.php');
             } else {
                 $this->showForm();
             }
