@@ -29,112 +29,123 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\AppFactory;
+use Poweradmin\BaseController;
 use Poweradmin\Validation;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/message.inc.php';
 
-include_once 'inc/header.inc.php';
+class EditUserController extends BaseController
+{
 
-$edit_id = "-1";
-if (isset($_GET['id']) && Validation::is_number($_GET['id'])) {
-    $edit_id = $_GET['id'];
-}
+    public function run(): void
+    {
+        $edit_id = "-1";
+        if (isset($_GET['id']) && Validation::is_number($_GET['id'])) {
+            $edit_id = $_GET['id'];
+        }
 
-do_hook('verify_permission', 'user_edit_own') ? $perm_edit_own = "1" : $perm_edit_own = "0";
-do_hook('verify_permission', 'user_edit_others') ? $perm_edit_others = "1" : $perm_edit_others = "0";
+        do_hook('verify_permission', 'user_edit_own') ? $perm_edit_own = "1" : $perm_edit_own = "0";
+        do_hook('verify_permission', 'user_edit_others') ? $perm_edit_others = "1" : $perm_edit_others = "0";
 
-if ($edit_id == "-1") {
-    error(ERR_INV_INPUT);
-    include_once("inc/footer.inc.php");
-    exit;
-}
+        if ($edit_id == "-1") {
+            error(ERR_INV_INPUT);
+            include_once("inc/footer.inc.php");
+            exit;
+        }
 
-if (($edit_id != $_SESSION["userid"] || $perm_edit_own != "1") && ($edit_id == $_SESSION["userid"] || $perm_edit_others != "1")) {
-    error(ERR_PERM_EDIT_USER);
-    include_once("inc/footer.inc.php");
-    exit;
-}
+        if (($edit_id != $_SESSION["userid"] || $perm_edit_own != "1") && ($edit_id == $_SESSION["userid"] || $perm_edit_others != "1")) {
+            error(ERR_PERM_EDIT_USER);
+            include_once("inc/footer.inc.php");
+            exit;
+        }
 
-if (isset($_POST["commit"])) {
+        if ($this->isPost()) {
+            $this->saveUser($edit_id);
+        }
 
-    $i_username = "-1";
-    $i_fullname = "-1";
-    $i_email = "-1";
-    $i_description = "-1";
-    $i_password = "-1";
-    $i_perm_templ = "0";
-    $i_active = "0";
-
-    if (isset($_POST['username'])) {
-        $i_username = $_POST['username'];
+        $this->showUserEditForm($edit_id);
     }
 
-    if (isset($_POST['fullname'])) {
-        $i_fullname = $_POST['fullname'];
-    }
+    public function saveUser($edit_id): void
+    {
+        $i_username = "-1";
+        $i_fullname = "-1";
+        $i_email = "-1";
+        $i_description = "-1";
+        $i_password = "-1";
+        $i_perm_templ = "0";
+        $i_active = "0";
 
-    if (isset($_POST['email'])) {
-        $i_email = $_POST['email'];
-    }
+        if (isset($_POST['username'])) {
+            $i_username = $_POST['username'];
+        }
 
-    if (isset($_POST['description'])) {
-        $i_description = $_POST['description'];
-    }
+        if (isset($_POST['fullname'])) {
+            $i_fullname = $_POST['fullname'];
+        }
 
-    if (isset($_POST['password'])) {
-        $i_password = $_POST['password'];
-    }
+        if (isset($_POST['email'])) {
+            $i_email = $_POST['email'];
+        }
 
-    if (isset($_POST['perm_templ']) && Validation::is_number($_POST['perm_templ'])) {
-        $i_perm_templ = $_POST['perm_templ'];
-    }
+        if (isset($_POST['description'])) {
+            $i_description = $_POST['description'];
+        }
 
-    if (isset($_POST['active']) && Validation::is_number($_POST['active'])) {
-        $i_active = $_POST['active'];
-    }
+        if (isset($_POST['password'])) {
+            $i_password = $_POST['password'];
+        }
 
-    if ($i_username == "-1" || $i_fullname == "-1" || $i_email < "1" || $i_description == "-1" || $i_password == "-1") {
-        error(ERR_INV_INPUT);
-    } else {
-        if ($i_username != "" && $i_perm_templ > "0" && $i_fullname) {
-            if (!isset($i_active)) {
-                $active = 0;
-            } else {
-                $active = 1;
-            }
-            if (do_hook('edit_user', $edit_id, $i_username, $i_fullname, $i_email, $i_perm_templ, $i_description, $active, $i_password)) {
-                success(SUC_USER_UPD);
+        if (isset($_POST['perm_templ']) && Validation::is_number($_POST['perm_templ'])) {
+            $i_perm_templ = $_POST['perm_templ'];
+        }
+
+        if (isset($_POST['active']) && Validation::is_number($_POST['active'])) {
+            $i_active = $_POST['active'];
+        }
+
+        if ($i_username == "-1" || $i_fullname == "-1" || $i_email < "1" || $i_description == "-1" || $i_password == "-1") {
+            error(ERR_INV_INPUT);
+        } else {
+            if ($i_username != "" && $i_perm_templ > "0" && $i_fullname) {
+                $active = !isset($i_active) ? 0 : 1;
+                if (do_hook('edit_user', $edit_id, $i_username, $i_fullname, $i_email, $i_perm_templ, $i_description, $active, $i_password)) {
+                    $this->setMessage('users', 'success', SUC_USER_UPD);
+                    $this->redirect('users.php');
+                }
             }
         }
     }
+
+    public function showUserEditForm($edit_id): void
+    {
+        $users = do_hook('get_user_detail_list', $edit_id);
+        if (empty($users)) {
+            error(ERR_USER_NOT_EXIST);
+            include_once("inc/footer.inc.php");
+            exit;
+        }
+
+        $user = $users[0];
+        $edit_templ_perm = do_hook('verify_permission', 'user_edit_templ_perm');
+        $permission_templates = do_hook('list_permission_templates');
+        $user_permissions = do_hook('get_permissions_by_template_id', $user['tpl_id']);
+
+        (($user['active']) == "1") ? $check = " CHECKED" : $check = "";
+        $name = $user['fullname'] ?: $user['username'];
+
+        $this->render('edit_user.html', [
+            'edit_id' => $edit_id,
+            'name' => $name,
+            'user' => $user,
+            'check' => $check,
+            'edit_templ_perm' => $edit_templ_perm,
+            'permission_templates' => $permission_templates,
+            'user_permissions' => $user_permissions,
+        ]);
+    }
 }
 
-$users = do_hook('get_user_detail_list', $edit_id);
-if (empty($users)) {
-    error(ERR_USER_NOT_EXIST);
-    include_once("inc/footer.inc.php");
-    exit;
-}
-
-$user = $users[0];
-$edit_templ_perm = do_hook('verify_permission', 'user_edit_templ_perm');
-$permission_templates = do_hook('list_permission_templates');
-$user_permissions = do_hook('get_permissions_by_template_id', $user['tpl_id']);
-
-(($user['active']) == "1") ? $check = " CHECKED" : $check = "";
-$name = $user['fullname'] ?: $user['username'];
-
-$app = AppFactory::create();
-$app->render('edit_user.html', [
-    'edit_id' => $edit_id,
-    'name' => $name,
-    'user' => $user,
-    'check' => $check,
-    'edit_templ_perm' => $edit_templ_perm,
-    'permission_templates' => $permission_templates,
-    'user_permissions' => $user_permissions,
-]);
-
-include_once("inc/footer.inc.php");
+$controller = new EditUserController();
+$controller->run();
