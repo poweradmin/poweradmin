@@ -29,7 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\AppFactory;
+use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
 use Poweradmin\Validation;
@@ -37,69 +37,74 @@ use Poweradmin\Validation;
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/message.inc.php';
 
-include_once 'inc/header.inc.php';
+class DnsSecDeleteKeyController extends BaseController
+{
 
-$app = AppFactory::create();
+    public function run(): void
+    {
+        $zone_id = "-1";
+        if (isset($_GET['id']) && Validation::is_number($_GET['id'])) {
+            $zone_id = htmlspecialchars($_GET['id']);
+        }
 
-$zone_id = "-1";
-if (isset($_GET['id']) && Validation::is_number($_GET['id'])) {
-    $zone_id = htmlspecialchars($_GET['id']);
-}
+        $key_id = "-1";
+        if (isset($_GET['key_id']) && Validation::is_number($_GET['key_id'])) {
+            $key_id = (int)$_GET['key_id'];
+        }
 
-$key_id = "-1";
-if (isset($_GET['key_id']) && Validation::is_number($_GET['key_id'])) {
-    $key_id = (int) $_GET['key_id'];
-}
+        $confirm = "-1";
+        if (isset($_GET['confirm']) && Validation::is_number($_GET['confirm'])) {
+            $confirm = $_GET['confirm'];
+        }
 
-$confirm = "-1";
-if (isset($_GET['confirm']) && Validation::is_number($_GET['confirm'])) {
-    $confirm = $_GET['confirm'];
-}
+        $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
 
-$user_is_zone_owner = do_hook('verify_user_is_owner_zoneid' , $zone_id );
+        if ($zone_id == "-1") {
+            error(ERR_INV_INPUT);
+            include_once("inc/footer.inc.php");
+            exit;
+        }
 
-if ($zone_id == "-1") {
-    error(ERR_INV_INPUT);
-    include_once("inc/footer.inc.php");
-    exit;
-}
+        $domain_name = DnsRecord::get_domain_name_by_id($zone_id);
 
-$domain_name = DnsRecord::get_domain_name_by_id($zone_id);
+        if ($key_id == "-1") {
+            error(ERR_INV_INPUT);
+            include_once("inc/footer.inc.php");
+            exit;
+        }
 
-if ($key_id == "-1") {
-    error(ERR_INV_INPUT);
-    include_once("inc/footer.inc.php");
-    exit;
-}
+        if (!Dnssec::dnssec_zone_key_exists($domain_name, $key_id)) {
+            error(ERR_INV_INPUT);
+            include_once("inc/footer.inc.php");
+            exit;
+        }
 
-if (!Dnssec::dnssec_zone_key_exists($domain_name, $key_id)) {
-    error(ERR_INV_INPUT);
-    include_once("inc/footer.inc.php");
-    exit;    
-}
+        if ($user_is_zone_owner != "1") {
+            error(ERR_PDNSSEC_DEL_ZONE_KEY);
+        }
 
-echo "     <h5 class=\"mb-3\">" . _('Delete zone key') . "</h5>\n";
+        if ($confirm == '1') {
+            if (Dnssec::dnssec_remove_zone_key($domain_name, $key_id)) {
+                success(SUC_EXEC_PDNSSEC_REMOVE_ZONE_KEY);
+            }
+        }
 
-if ($confirm == '1') {
-    if (Dnssec::dnssec_remove_zone_key($domain_name, $key_id)) {
-        success(SUC_EXEC_PDNSSEC_REMOVE_ZONE_KEY);
+        $this->showKeyInfo($domain_name, $key_id, $zone_id);
     }
-} else {
-    if ($user_is_zone_owner == "1") {
+
+    public function showKeyInfo($domain_name, $key_id, string $zone_id): void
+    {
         $key_info = Dnssec::dnssec_get_zone_key($domain_name, $key_id);
-        echo "      " . _('Domain') . ": " . $domain_name . "<br>\n";
-        echo "      " . _('Id') . ": " . htmlspecialchars($key_info[0]) . "<br>\n";
-        echo "      " . _('Type') . ": " . htmlspecialchars($key_info[1]) . "<br>\n";
-        echo "      " . _('Tag') . ": " . htmlspecialchars($key_info[2]) . "<br>\n";
-        echo "      " . _('Algorithm') . ": " . Dnssec::dnssec_algorithm_to_name(htmlspecialchars($key_info[3])) . "<br>\n";
-        echo "      " . _('Bits') . ": " . htmlspecialchars($key_info[4]) . "<br>\n";
-        echo "      " . _('Active') . ": " . ($key_info[5] ? _('Yes') : _('No')) . "\n";
-        echo "     <p class=\"pt-3\">" . _('Are you sure?') . "</p>\n";
-        echo "     <input class=\"btn btn-primary btn-sm\" type=\"button\" onClick=\"location.href='dnssec_delete_key.php?id=" . htmlspecialchars($zone_id) . "&amp;key_id=" . htmlspecialchars($key_id) . "&amp;confirm=1'\" value=\"" . _('Yes') . "\">\n";
-        echo "     <input class=\"btn btn-secondary btn-sm\" type=\"button\" onClick=\"location.href='dnssec.php?id=" . htmlspecialchars($zone_id) . "'\" value=\"" . _('No') . "\">\n";
-    } else {
-        error(ERR_PDNSSEC_DEL_ZONE_KEY);
+
+        $this->render('dnssec_delete_key.html', [
+            'domain_name' => $domain_name,
+            'key_id' => $key_id,
+            'key_info' => $key_info,
+            'algorithms' => DnsSec::dnssec_algorithms(),
+            'zone_id' => $zone_id,
+        ]);
     }
 }
-echo "<p class=\"pt-3\"><a href='dnssec.php?id=" . htmlspecialchars($zone_id) . "'>Back to DNSSEC " . htmlspecialchars($domain_name) . "</a></p>";
-include_once("inc/footer.inc.php");
+
+$controller = new DnsSecDeleteKeyController();
+$controller->run();

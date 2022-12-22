@@ -1,0 +1,22 @@
+<h5 class="mb-3">{% trans 'Delete zone key' %}</h5>
+{% if key_info[5] %}
+{% set active = 'Yes' %}
+{% else %}
+{% set active = 'No' %}
+{% endif %}
+
+{% trans 'Domain' %}: {{ domain_name }}<br>
+{% trans 'Id' %}: {{ key_info[0] }}<br>
+{% trans 'Type' %}: {{ key_info[1] }}<br>
+{% trans 'Tag' %}: {{ key_info[2] }}<br>
+{% trans 'Algorithm' %}: {{ algorithms[key_info[3]] }}<br>
+{% trans 'Bits' %}: {{ key_info[4] }}<br>
+{% trans 'Active' %}: {% trans active %}
+
+<p class="pt-3">{% trans 'Are you sure?' %}</p>
+<input class="btn btn-primary btn-sm" type="button"
+       onClick="location.href='dnssec_delete_key.php?id={{ zone_id }}&key_id={{ key_id }}&confirm=1'"
+       value="{% trans 'Yes' %}">
+<input class="btn btn-secondary btn-sm" type="button" onClick="location.href='dnssec.php?id={{ zone_id }}'"
+       value="{% trans 'No' %}">
+
