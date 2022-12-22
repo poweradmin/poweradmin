@@ -46,8 +46,6 @@ if (!$zones) {
     exit;
 }
 
-echo "     <h5 class=\"mb-3\">" . _('Delete zones') . "</h5>\n";
-
 if (isset($_POST['confirm'])) {
     $deleted_zones = DnsRecord::get_zone_info_from_ids($zones);
     $delete_domains = DnsRecord::delete_domains($zones);
@@ -66,6 +64,7 @@ if (isset($_POST['confirm'])) {
     exit;
 }
 
+echo "     <h5 class=\"mb-3\">" . _('Delete zones') . "</h5>\n";
 echo "     <form method=\"post\" action=\"delete_domains.php\">\n";
 echo "<table class=\"table table-striped table-hover table-sm\">";
 echo "<thead>";
@@ -81,12 +80,16 @@ foreach ($zones as $zone) {
     $zone_owners = do_hook('get_fullnames_owners_from_domainid', $zone);
     $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone);
     $zone_info = DnsRecord::get_zone_info_from_id($zone);
-    if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
+
+    if ($perm_edit != "all" && ($perm_edit != "own" || $user_is_zone_owner != "1")) {
+        error(ERR_PERM_DEL_ZONE);
+    } else {
         echo "<tr>";
         echo "<input type=\"hidden\" name=\"zone_id[]\" value=\"" . htmlspecialchars($zone) . "\">\n";
         echo "<td>" . htmlspecialchars($zone_info['name']) . "</td>\n";
         echo "<td>" . htmlspecialchars($zone_owners) . "</td>\n";
         echo "<td>" . htmlspecialchars($zone_info['type']) . "\n";
+
         if ($zone_info['type'] == "SLAVE") {
             $slave_master = DnsRecord::get_domain_slave_master($zone);
             if (DnsRecord::supermaster_exists($slave_master)) {
@@ -100,8 +103,6 @@ foreach ($zones as $zone) {
             echo "<td></td>";
         }
         echo "</tr>";
-    } else {
-        error(ERR_PERM_DEL_ZONE);
     }
 }
 
