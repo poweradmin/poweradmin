@@ -1,0 +1,56 @@
+<h5 class="mb-3">{% trans 'Add key for zone' %} {{ domain_name }}</h5>
+<form class="needs-validation" method="post" action="dnssec_add_key.php?id={{ zone_id }}" novalidate>
+    <table>
+        <tr>
+            <td style="vertical-align: top" class="pt-1">{% trans 'Key type' %}</td>
+            <td>
+                <select class="form-select form-select-sm" name="key_type" required>
+                    <option value=""></option>
+                    <option value="ksk">KSK</option>
+                    <option value="zsk">ZSK</option>
+                </select>
+                <div class="invalid-feedback">{% trans 'Select key type' %}</div>
+            </td>
+        </tr>
+        <tr>
+            <td style="vertical-align: top" class="pt-1">{% trans 'Bits in length' %}</td>
+            <td>
+                <select class="form-select form-select-sm" name="bits" required>
+                    <option value=""></option>
+                    <option value="2048">2048</option>
+                    <option value="1024">1024</option>
+                    <option value="768">768</option>
+                    <option value="384">384</option>
+                    <option value="256">256</option>
+                </select>
+                <div class="invalid-feedback">{% trans 'Select bits length' %}</div>
+            </td>
+        </tr>
+        <tr>
+            <td style="vertical-align: top" class="pt-1">{% trans 'Algorithm' %}</td>
+            <td>
+
+                <select class="form-select form-select-sm" name="algorithm" required>
+                    <option value=""></option>
+                    <option value="rsasha1">{{ algorithm_names['rsasha1'] }}</option>
+                    <option value="rsasha1-nsec3">{{ algorithm_names['rsasha1-nsec3'] }}</option>
+                    <option value="rsasha256">{{ algorithm_names['rsasha256'] }}</option>
+                    <option value="rsasha512">{{ algorithm_names['rsasha512'] }}</option>
+                    <option value="ecdsa256">{{ algorithm_names['ecdsa256'] }}</option>
+                    <option value="ecdsa384">{{ algorithm_names['ecdsa384'] }}</option>
+                    <option value="ed25519">{{ algorithm_names['ed25519'] }}</option>
+                    <option value="ed448">{{ algorithm_names['ed448'] }}</option>
+                </select>
+                <div class="invalid-feedback">{% trans 'Select algorithm' %}</div>
+            </td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>
+                <input class="btn btn-primary btn-sm" type="submit" name="submit" value="{% trans 'Add key' %}">
+            </td>
+        </tr>
+    </table>
+</form>
+<br/>
+<a href='dnssec.php?id="{{ zone_id }}"'>Back to DNSSEC {{ domain_name }}</a>

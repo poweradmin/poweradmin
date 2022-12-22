@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\AppFactory;
 use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
 use Poweradmin\Validation;
@@ -102,61 +103,14 @@ if (isset($_POST["submit"])) {
     }
 }
 
-echo "     <h5 class=\"mb-3\">" . _('Add key for zone '). $domain_name . "</h5>\n";
-
-echo "     <form class=\"needs-validation\" method=\"post\" action=\"dnssec_add_key.php?id=".$zone_id."\" novalidate>\n";
-echo "      <table>\n";
-echo "       <tr>\n";
-echo "        <td style=\"vertical-align: top\" class=\"pt-1\">" . _('Key type') . "</td>\n";
-echo "        <td>\n";
-echo "         <select class=\"form-select form-select-sm\" name=\"key_type\" required>\n";
-echo "          <option value=\"\"></option>\n";
-echo "          <option value=\"ksk\">KSK</option>\n";
-echo "          <option value=\"zsk\">ZSK</option>\n";
-echo "         </select>\n";
-echo "         <div class=\"invalid-feedback\">" . _('Select key type') . "</div>";
-echo "        </td>\n";
-echo "       </tr>\n";
-echo "       <tr>\n";
-echo "        <td style=\"vertical-align: top\" class=\"pt-1\">" . _('Bits in length') . "</td>\n";
-echo "        <td>\n";
-echo "         <select class=\"form-select form-select-sm\" name=\"bits\" required>\n";
-echo "          <option value=\"\"></option>\n";
-echo "          <option value=\"2048\">2048</option>\n";
-echo "          <option value=\"1024\">1024</option>\n";
-echo "          <option value=\"768\">768</option>\n";
-echo "          <option value=\"384\">384</option>\n";
-echo "          <option value=\"256\">256</option>\n";
-echo "         </select>\n";
-echo "         <div class=\"invalid-feedback\">" . _('Select bits length') . "</div>";
-echo "        </td>\n";
-echo "       </tr>\n";
-echo "       <tr>\n";
-echo "        <td style=\"vertical-align: top\" class=\"pt-1\">" . _('Algorithm') . "</td>\n";
-echo "        <td>\n";
-
-echo "         <select class=\"form-select form-select-sm\" name=\"algorithm\" required>\n";
-echo "          <option value=\"\"></option>\n";
-echo "          <option value=\"rsasha1\">".Dnssec::dnssec_shorthand_to_algorithm_name('rsasha1')."</option>\n";
-echo "          <option value=\"rsasha1-nsec3\">".Dnssec::dnssec_shorthand_to_algorithm_name('rsasha1-nsec3')."</option>\n";
-echo "          <option value=\"rsasha256\">".Dnssec::dnssec_shorthand_to_algorithm_name('rsasha256')."</option>\n";
-echo "          <option value=\"rsasha512\">".Dnssec::dnssec_shorthand_to_algorithm_name('rsasha512')."</option>\n";
-echo "          <option value=\"ecdsa256\">".Dnssec::dnssec_shorthand_to_algorithm_name('ecdsa256')."</option>\n";
-echo "          <option value=\"ecdsa384\">".Dnssec::dnssec_shorthand_to_algorithm_name('ecdsa384')."</option>\n";
-echo "          <option value=\"ed25519\">".Dnssec::dnssec_shorthand_to_algorithm_name('ed25519')."</option>\n";
-echo "          <option value=\"ed448\">".Dnssec::dnssec_shorthand_to_algorithm_name('ed448')."</option>\n";
-echo "         </select>\n";
-echo "         <div class=\"invalid-feedback\">" . _('Select algorithm') . "</div>";
-echo "        </td>\n";
-echo "       </tr>\n";
-echo "       <tr>\n";
-echo "        <td>&nbsp;</td>\n";
-echo "        <td>\n";
-echo "         <input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"submit\" value=\"" . _('Add key') . "\">\n";
-echo "        </td>\n";
-echo "       </tr>\n";
-echo "      </table>\n";
-echo "     </form>\n";
-echo "<br/><a href='dnssec.php?id=" . htmlspecialchars($zone_id) . "'>Back to DNSSEC " . htmlspecialchars($domain_name) . "</a>";
+$app = AppFactory::create();
+$app->render('dnssec_add_key.html', [
+    'zone_id' => $zone_id,
+    'domain_name' => $domain_name,
+    'key_type' => $key_type,
+    'bits' => $bits,
+    'algorithm' => $algorithm,
+    'algorithm_names' => Dnssec::dnssec_algorithm_names(),
+]);
 
 include_once("inc/footer.inc.php");
