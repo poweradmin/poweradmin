@@ -80,8 +80,6 @@ if (isset($_POST["commit"])) {
     }
 }
 
-echo "    <h5 class=\"mb-3\">" . _('Edit record in zone') . "</h5>\n";
-
 if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
     error(ERR_PERM_VIEW_RECORD);
     include_once("inc/footer.inc.php");
@@ -89,6 +87,8 @@ if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
 }
 
 $record = DnsRecord::get_record_from_id($_GET["id"]);
+
+echo "    <h5 class=\"mb-3\">" . _('Edit record in zone') . "</h5>\n";
 echo "     <form class=\"needs-validation\" method=\"post\" action=\"edit_record.php?domain=" . $zid . "&amp;id=" . htmlspecialchars($_GET["id"]) . "\" novalidate>\n";
 echo "      <table class=\"table table-striped table-hover table-sm\">\n";
 echo "      <thead>";
