@@ -67,15 +67,8 @@ class AddZoneTemplateController extends BaseController
         ]);
 
         if (ZoneTemplate::add_zone_templ($_POST, $_SESSION['userid'])) {
-            success(SUC_ZONE_TEMPL_ADD);
-
-            $perm_zone_master_add = do_hook('verify_permission', 'zone_master_add');
-
-            $this->render('list_zone_templ.html', [
-                'perm_zone_master_add' => $perm_zone_master_add,
-                'user_name' => do_hook('get_fullname_from_userid', $_SESSION['userid']) ?: $_SESSION['userlogin'],
-                'zone_templates' => ZoneTemplate::get_list_zone_templ($_SESSION['userid'])
-            ]);
+            $this->setMessage('list_zone_templ', 'success', SUC_ZONE_TEMPL_ADD);
+            $this->redirect('list_zone_templ.php');
         } else {
             $this->render('add_zone_templ.html', [
                 'user_name' => do_hook('get_fullname_from_userid', $_SESSION['userid']) ?: $_SESSION['userlogin'],
