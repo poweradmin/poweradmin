@@ -109,7 +109,7 @@ class EditUserController extends BaseController
             error(ERR_INV_INPUT);
         } else {
             if ($i_username != "" && $i_perm_templ > "0" && $i_fullname) {
-                $active = !isset($i_active) ? 0 : 1;
+                $active = !isset($i_active);
                 if (do_hook('edit_user', $edit_id, $i_username, $i_fullname, $i_email, $i_perm_templ, $i_description, $active, $i_password)) {
                     $this->setMessage('users', 'success', SUC_USER_UPD);
                     $this->redirect('users.php');
