@@ -1,0 +1,59 @@
+<h5 class="mb-3">{% trans 'Edit record in zone' %}</h5>
+<form class="needs-validation" method="post" action="edit_record.php?id={{ record_id }}" novalidate>
+    <table class="table table-striped table-hover table-sm">
+        <thead>
+        <tr>
+            <th>{% trans 'Name' %}</th>
+            <th>&nbsp;</th>
+            <th>{% trans 'Type' %}</th>
+            <th>{% trans 'Content' %}</th>
+            <th>{% trans 'Priority' %}</th>
+            <th>{% trans 'TTL' %}</th>
+        </tr>
+        </thead>
+        <tr>
+            {% if zone_type == "SLAVE" or perm_edit == "none" or perm_edit == "own" or perm_edit == "own_as_client" and user_is_zone_owner == "0" %}
+            <td>{{ record["name"] }}</td>
+            <td>IN</td>
+            <td>{{ record["type"] }}</td>
+            <td>{{ record['content'] }}</td>
+            <td>{{ record["prio"] }}</td>
+            <td>{{ record["ttl"] }}</td>
+            {% else %}
+            <td>
+                <input type="hidden" name="rid" value="{{ record_id }}">
+                <input type="hidden" name="zid" value="{{ zid }}">
+                <input class="form-control form-control-sm" type="text" name="name" value="{{ record['record_name'] }}">
+                .{{ zone_name }}
+            </td>
+            <td>IN</td>
+            <td>
+                <select class="form-select form-select-sm" name="type">
+                    {% set found_selected_type = false %}
+                    {% for type_available in recordTypes %}
+                        {% if type_available == record["type"] %}
+                            {% set add = "SELECTED" %}
+                            {% set found_selected_type = true %}
+                        {% else %}
+                            {% set add = "" %}
+                        {% endif %}
+                    <option {{ add }} value="{{ type_available }}">{{ type_available }}</option>
+                    {% endfor %}
+
+                    {% if not found_selected_type %}
+                    <option SELECTED value="{{ record['type'] }}"><i>{{ record['type'] }}</i></option>
+                    {% endif %}
+                </select>
+            </td>
+            <td><input class="form-control form-control-sm" type="text" name="content" value="{{ record['content'] }}"
+                       required>
+                <div class="invalid-feedback">{% trans 'Provide content' %}</div>
+            </td>
+            <td><input class="form-control form-control-sm" type="text" name="prio" value="{{ record['prio'] }}"></td>
+            <td><input class="form-control form-control-sm" type="text" name="ttl" value="{{ record['ttl'] }}"></td>
+            {% endif %}
+        </tr>
+    </table>
+    <input class="btn btn-primary btn-sm" type="submit" name="commit" value="{% trans 'Commit changes' %}">&nbsp;&nbsp;
+    <input class="btn btn-secondary btn-sm" type="reset" name="reset" value="{% trans 'Reset changes' %}">&nbsp;&nbsp;
+</form>
