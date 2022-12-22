@@ -79,6 +79,7 @@ define("ERR_ZONE_UPD", _('Zone has not been updated successfully.'));
 define("ERR_EXEC_NOT_ALLOWED", _('Failed to call function exec. Make sure that exec is not listed in disable_functions at php.ini'));
 define("ERR_ZONE_MUST_HAVE_OWNER", _('There must be at least one owner for a zone.'));
 define("ERR_ZONE_OWNER_EXISTS", _('The selected user already owns the zone.'));
+define("ERR_ZONES_ADD", _('Some zone(s) could not be added.'));
 
 /* DATABASE */
 define("ERR_DB_NO_DB_NAME", _('No database name has been set in config.inc.php.'));
@@ -139,6 +140,7 @@ define('ERR_PDNSSEC_DEL_ZONE_KEY', _('Failed to delete DNSSEC key.'));
 
 /* GOOD! */
 define("SUC_ZONE_ADD", _('Zone has been added successfully.'));
+define("SUC_ZONES_ADD", _('Zones has been added successfully.'));
 define("SUC_ZONE_DEL", _('Zone has been deleted successfully.'));
 define("SUC_ZONES_DEL", _('Zones have been deleted successfully.'));
 define("SUC_ZONE_UPD", _('Zone has been updated successfully.'));

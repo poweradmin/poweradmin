@@ -48,7 +48,7 @@
             <td>
                 <div>{% trans 'Type one domain per line' %}:</div>
                 <div>
-                    <textarea class="form-control form-control-sm" name="domains" rows="10" required>{% if error and domains %}{{ domains | join('\n') }}{% endif %}</textarea>
+                    <textarea class="form-control form-control-sm" name="domains" rows="10" required>{% if failed_domains %}{{ failed_domains | join('\n') }}{% endif %}</textarea>
                     <div class="invalid-feedback">{% trans 'Provide a domain name(s)' %}</div>
                 </div>
             </td>

@@ -94,6 +94,9 @@ abstract class BaseController
                 case 'error':
                     $alertClass = 'alert-danger';
                     break;
+                case 'warn':
+                    $alertClass = 'alert-warning';
+                    break;
                 case 'success':
                     $alertClass = 'alert-success';
                     break;

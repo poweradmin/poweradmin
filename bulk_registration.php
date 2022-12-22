@@ -47,7 +47,7 @@ class BulkRegistrationController extends BaseController {
         if ($this->isPost()) {
             $this->doBulkRegistration();
         } else {
-            $this->showBulkRegistrationForm();
+            $this->showBulkRegistrationForm([]);
         }
     }
 
@@ -59,33 +59,38 @@ class BulkRegistrationController extends BaseController {
             'integer' => ['owner'],
         ]);
 
-        if ($v->validate()) {
-            $domains = $this->getDomains($_POST['domains']);
-            $dom_type = $_POST["dom_type"];
-            $zone_template = $_POST['zone_template'];
-
-            foreach ($domains as $domain) {
-                if (!Dns::is_valid_hostname_fqdn($domain, 0)) {
-                    error($domain . ' failed - ' . ERR_DNS_HOSTNAME);
-                } elseif (DnsRecord::domain_exists($domain)) {
-                    $idn_zone_name = idn_to_utf8($domain, IDNA_NONTRANSITIONAL_TO_ASCII);
-                    error($idn_zone_name . " failed - " . ERR_DOMAIN_EXISTS);
-                } elseif (DnsRecord::add_domain($domain, $_POST['owner'], $dom_type, '', $zone_template)) {
-                    $zone_id = DnsRecord::get_zone_id_from_name($domain);
-                    Logger::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
-                        $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                        $domain, $dom_type, $zone_template), $zone_id);
-                    $idn_zone_name = idn_to_utf8($domain, IDNA_NONTRANSITIONAL_TO_ASCII);
-                    success("<a href=\"edit.php?id=" . DnsRecord::get_zone_id_from_name($domain) . "\">" . $idn_zone_name . " - " . SUC_ZONE_ADD . '</a>');
-                }
-            }
-        } else {
+        if (!$v->validate()) {
             $this->showError($v->errors());
         }
 
+        $domains = $this->getDomains($_POST['domains']);
+        $dom_type = $_POST["dom_type"];
+        $zone_template = $_POST['zone_template'];
+
+        $failed_domains = [];
+        foreach ($domains as $domain) {
+            if (!Dns::is_valid_hostname_fqdn($domain, 0)) {
+                $failed_domains[] = $domain . " - " . ERR_DNS_HOSTNAME;
+            } elseif (DnsRecord::domain_exists($domain)) {
+                $failed_domains[] = $domain . " - " . ERR_DOMAIN_EXISTS;
+            } elseif (DnsRecord::add_domain($domain, $_POST['owner'], $dom_type, '', $zone_template)) {
+                $zone_id = DnsRecord::get_zone_id_from_name($domain);
+                Logger::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
+                    $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
+                    $domain, $dom_type, $zone_template), $zone_id);
+            }
+        }
+
+        if (!$failed_domains) {
+            $this->setMessage('list_zones', 'success', SUC_ZONES_ADD);
+            $this->redirect('list_zones.php');
+        } else {
+            $this->setMessage('bulk_registration', 'warn', ERR_ZONES_ADD);
+            $this->showBulkRegistrationForm($failed_domains);
+        }
     }
 
-    private function showBulkRegistrationForm()
+    private function showBulkRegistrationForm(array $failed_domains = [])
     {
         $this->render('bulk_registration.html', [
             'userid' => $_SESSION['userid'],
@@ -94,6 +99,7 @@ class BulkRegistrationController extends BaseController {
             'available_zone_types' => array("MASTER", "NATIVE"),
             'users' => do_hook('show_users'),
             'zone_templates' => ZoneTemplate::get_list_zone_templ($_SESSION['userid']),
+            'failed_domains' => $failed_domains,
         ]);
     }
 
