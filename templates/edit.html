@@ -1,0 +1,356 @@
+{% if idn_zone_name %}
+<h5 class="mb-3">{% trans 'Edit zone' %} "{{ idn_zone_name }}" ({{ zone_name_to_display }})</h5>
+{% else %}
+<h5 class="mb-3">{% trans 'Edit zone' %} "{{ zone_name_to_display }}"</h5>
+{% endif %}
+
+<div>
+    {{ pagination }}
+</div>
+
+{% if records == "-1" %}
+<p>{% trans 'This zone does not have any records. Weird.' %}</p>
+{% else %}
+<form method="post" action="">
+    <table class="table table-striped table-hover table-sm">
+        <tr>
+            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=id">{% trans 'Id' %}</a></th>
+            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=name">{% trans 'Name' %}</a></th>
+            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=type">{% trans 'Type' %}</a></th>
+            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=content">{% trans 'Content' %}</a></th>
+            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=prio">{% trans 'Priority' %}</a></th>
+            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=ttl">{% trans 'TTL' %}</a></th>
+            <th>&nbsp;</th>
+        </tr>
+        {% for r in records %}
+        {% if not r['type'] == "SOA" and r['type'] == "NS" and perm_edit == "own_as_client" %}
+        <input type="hidden" name="record[{{ r['id'] }}][rid]" value="{{ r['id'] }}">
+        <input type="hidden" name="record[{{ r['id'] }}][zid]" value="{{ zone_id }}">
+        {% endif %}
+        <tr>
+            <td class="col-sm-1">{{ r['id'] }}</td>
+            {% if r['type'] == "SOA" or r['type'] == "NS" and perm_edit == "own_as_client" %}
+            <td>{{ r['name'] }}</td>
+            <td>{{ r['type'] }}</td>
+            <td>{{ r['content'] }}</td>
+            <td>&nbsp;</td>
+            <td>{{ r['ttl'] }}</td>
+            {% else %}
+            <td class="col-sm-2"><input class="form-control form-control-sm" type="text"
+                                        name="{{ record[r['id']] }}[name]" value="{{ r['name'] }}"></td>
+            <td class="col-sm-1">
+                <select class="form-select form-select-sm" name="{{ record[r['id']] }}[type]">
+                    {% set found_selected_type = false %}
+                    {% for type_available in types %}
+                    {% if type_available == r['type'] %}
+                    {% set add = "SELECTED" %}
+                    {% set found_selected_type = true %}
+                    {% else %}
+                    {% set add = "" %}
+                    {% endif %}
+                    <option {{ add }} value="{{ type_available }}">{{ type_available }}</option>
+                    {% endfor %}
+                    {% if not found_selected_type %}
+                    <option SELECTED value="{{ r['type'] }}"><i>{{ r['type'] }}</i></option>
+                    {% endif %}
+                </select>
+            </td>
+            <td class="col-sm-2"><input class="form-control form-control-sm" type="text"
+                                        name="record[{{ r['id'] }}][content]" value="{{ r['content'] }}"></td>
+            <td class="col-sm-1"><input class="form-control form-control-sm" type="text"
+                                        id="priority_field_{{ r['id'] }}" name="record[{{ r['id'] }}][prio]"
+                                        value="{{ r['prio'] }}"></td>
+            <td class="col-sm-1"><input class="form-control form-control-sm" type="text"
+                                        name="record[{{ r['id'] }}][ttl]" value="{{ r['ttl'] }}"></td>
+            {% endif %}
+
+            {% if domain_type == "SLAVE" or perm_edit == "none" or (perm_edit == "own" or perm_edit ==
+            "own_as_client") and user_is_zone_owner == "0" %}
+            <td>&nbsp;</td>
+            {% elseif r['type'] == "SOA" and perm_edit != "all" or r['type'] == "NS" and perm_edit ==
+            "own_as_client" %}
+            <td>&nbsp;</td>
+            {% else %}
+            <td>
+                <a class="btn btn-outline-primary btn-sm" href="edit_record.php?id={{ r['id'] }}&domain={{ zone_id }}">
+                    <i class="bi bi-pencil-square"></i> {% trans 'Edit record' %}</a>
+                <a class="btn btn-outline-danger btn-sm" href="delete_record.php?id={{ r['id'] }}&domain={{ zone_id }}">
+                    <i class="bi bi-trash"></i> {% trans 'Delete record' %}</a>
+            </td>
+            {% endif %}
+
+        </tr>
+        {% endfor %}
+
+        {% if iface_zone_comments %}
+        <tr>
+            <td>&nbsp;</td>
+            <td colspan="7">{% trans 'Comments' %}:</td>
+        </tr>
+        <tr>
+            <td>
+            </td>
+            <td colspan="4"><textarea class="form-control form-control-sm" rows="5" cols="80" name="comment">{{ zone_comment }}</textarea>
+            </td>
+            <td></td>
+            <td>
+                <a class="btn btn-outline-primary btn-sm" href="edit_comment.php?id={{ zone_id }}">
+                    <i class="bi bi-pencil-square"></i> {% trans 'Edit comment' %}</a>
+            </td>
+        <tr>
+            {% endif %}
+    </table>
+
+    {% if perm_edit != "none" %}
+    <input class="btn btn-primary btn-sm" type="submit" name="commit" value="{% trans 'Commit changes' %}">
+    <input class="btn btn-secondary btn-sm" type="reset" name="reset" value="{% trans 'Reset changes' %}">
+    {% endif %}
+
+    {% if pdnssec_use %}
+    {% if is_secured %}
+    <input class="btn btn-secondary btn-sm" type="button" name="dnssec"
+           onclick="location.href = 'dnssec.php?id={{ zone_id }}'" value="{% trans 'DNSSEC' %}">
+    <input class="btn btn-secondary btn-sm" type="submit" name="unsign_zone" value="{% trans 'Unsign this zone' %}">
+    {% else %}
+    <input class="btn btn-secondary btn-sm" type="submit" name="sign_zone" value="{% trans 'Sign this zone' %}">
+    {% endif %}
+    {% endif %}
+
+    {% if perm_zone_master_add %}
+    <hr>
+
+    <table>
+        <tr>
+            <td><strong>{% trans 'Save as new template' %}</strong></td>
+        </tr>
+        <tr>
+            <td>{% trans 'Template Name' %}</td>
+            <td><input class="form-control form-control-sm" type="text" name="templ_name" value=""></td>
+        </tr>
+        <tr>
+            <td>{% trans 'Template Description' %}</td>
+            <td><input class="form-control form-control-sm" type="text" name="templ_descr" value=""></td>
+        </tr>
+    </table>
+
+    <input class="btn btn-secondary btn-sm" type="submit" name="save_as" value="{% trans 'Save as template' %}">
+    {% endif %}
+
+</form>
+<hr>
+{% endif %}
+
+{% if perm_edit == "all" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "1" %}
+{% if domain_type != "SLAVE" %}
+<form class="needs-validation" method="post" action="add_record.php?id={{ zone_id }}" novalidate>
+    <input type="hidden" name="domain" value="{{ zone_id }}">
+    <table class="table table-striped table-hover table-sm">
+        <tr>
+            <td>{% trans 'Name' %}</td>
+            <td>&nbsp;</td>
+            <td>{% trans 'Type' %}</td>
+            <td>{% trans 'Content' %}</td>
+            <td>{% trans 'Priority' %}</td>
+            <td>{% trans 'TTL' %}</td>
+        </tr>
+        <tr>
+            <td><input class="form-control form-control-sm" type="text" name="name" value="">.{{ zone_name }}</td>
+            <td>IN</td>
+            <td>
+                <select class="form-select form-select-sm" name="type">
+                    {% set rev = false %}
+                    {% for record_type in types %}
+                        {% set add = "" %}
+                        {% if is_rev_zone and record_type == "PTR" %}
+                        {% set add = "SELECTED" %}
+                        {% endif %}
+
+                        {% if iface_add_reverse_record and record_type == "A" %}
+                        {% set add = "SELECTED" %}
+                        {% set rev = true %}
+                        {% endif %}
+                    <option {{ add }} value="{{ record_type }}">{{ record_type }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td><input class="form-control form-control-sm" type="text" name="content" value="" required>
+                <div class="invalid-feedback">{% trans 'Provide content' %}</div>
+            </td>
+            <td><input class="form-control form-control-sm" type="text" name="prio" value=""></td>
+            <td><input class="form-control form-control-sm" type="text" name="ttl" value="{{ dns_ttl }}" required>
+                <div class="invalid-feedback">{% trans 'Provide TTL' %}</div>
+            </td>
+        </tr>
+    </table>
+    <input class="btn btn-outline-secondary btn-sm" type="submit" name="commit" value="{% trans 'Add record' %}">
+    {% if rev %}
+    <input class="form-check-input" type="checkbox" name="reverse"><span class="text-secondary">{% trans 'Add also reverse record' %}</span>
+    {% endif %}
+</form>
+{% endif %}
+
+<hr>
+{% endif %}
+
+<div id="meta">
+    <table>
+        <tr>
+            <th colspan="2">{% trans 'Owner of zone' %}</th>
+        </tr>
+
+        {% if owners == "-1" %}
+        <tr>
+            <td>{% trans 'No owner set for this zone.' %}</td>
+        </tr>
+        {% else %}
+        {% if meta_edit %}
+        {% for owner in owners %}
+        <tr>
+            <form method="post" action="edit.php?id={{ zone_id }}">
+                <td>{{ owner["fullname"] }}</td>
+                <td>
+                    <input type="hidden" name="delete_owner" value="{{ owner['id'] }}">
+                    <input class="btn btn-outline-danger btn-sm" type="submit" name="co" value="{% trans 'Delete' %}">
+                </td>
+            </form>
+        </tr>
+        {% endfor %}
+        {% else %}
+        {% for owner in owners %}
+        <tr>
+            <td>{{ owner["fullname"] }}</td>
+            <td>&nbsp;</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        {% endif %}
+
+        {% if meta_edit %}
+        <form method="post" action="edit.php?id={{ zone_id }}">
+            <input type="hidden" name="domain" value="{{ zone_id }}">
+            <tr>
+                <td>
+                    <select class="form-select form-select-sm" name="newowner">
+
+                        {% for user in users %}
+                        {% set add = "" %}
+
+                        {% if user["id"] == session_userid %}
+                        <option {{ add }} value="{{ user['id'] }}">{{ user["fullname"] }}</option>
+                        {% elseif perm_view_others == "1" %}
+                        <option value="{{ user['id'] }}">
+                            {% if user["fullname"] %}
+                            {{ user["fullname"] }}
+                            {% else %}
+                            {{ user["username"] }}
+                            {% endif %}
+                        </option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>
+                    <input class="btn btn-outline-secondary btn-sm" type="submit" name="co" value="{% trans 'Add' %}">
+                </td>
+            </tr>
+        </form>
+        {% endif %}
+        <tr>
+            <th colspan="2">{% trans 'Type' %}</th>
+        </tr>
+
+        {% if meta_edit %}
+        <form action="edit.php?id={{ zone_id }}" method="post">
+            <input type="hidden" name="domain" value="{{ zone_id }}">
+            <tr>
+                <td>
+                    <select class="form-select form-select-sm" name="newtype">
+                        {% for type in zone_types %}
+                        {% set add = '' %}
+                        {% if type == domain_type %}
+                        {% set add = "SELECTED" %}
+                        {% endif %}
+                        <option {{ add }} value="{{ type }}">{{ type | lower }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>
+                    <input class="btn btn-outline-secondary btn-sm" type="submit" name="type_change"
+                           value="{% trans 'Change' %}">
+                </td>
+            </tr>
+        </form>
+        {% else %}
+        <tr>
+            <td>{{ domain_type | lower }}</td>
+            <td>&nbsp;</td>
+        </tr>
+        {% endif %}
+
+        {% if domain_type == "SLAVE" %}
+        <tr>
+            <th colspan="2">{% trans 'IP address of master NS' %}</th>
+        </tr>
+
+        {% if meta_edit %}
+        <form action="edit.php?id={{ zone_id }}" method="post">
+            <input type="hidden" name="domain" value="{{ zone_id }}">
+            <tr>
+                <td>
+                    <input class="form-control form-control-sm" type="text" name="new_master"
+                           value="{{ slave_master }}">
+                </td>
+                <td>
+                    <input class="btn btn-outline-secondary btn-sm" type="submit" name="slave_master_change"
+                           value="{% trans 'Change' %}">
+                </td>
+            </tr>
+        </form>
+        {% else %}
+        <tr>
+            <td>{{ slave_master }}</td>
+            <td>&nbsp;</td>
+        </tr>
+        {% endif %}
+        {% endif %}
+
+        <tr>
+            <th colspan="2">{% trans 'Template' %}</th>
+        </tr>
+
+        {% if meta_edit %}
+        <form action="edit.php?id={{ zone_id }}" method="post">
+            <input type="hidden" name="current_zone_template" value="{{ zone_template_id }}">
+            <tr>
+                <td>
+                    <select class="form-select form-select-sm" name="zone_template">
+                        <option value="none">none</option>
+                        {% for zone_template in zone_templates %}
+                        {% set add = '' %}
+                        {% if zone_template['id'] == zone_template_id %}
+                        {% set add = "SELECTED" %}
+                        {% endif %}
+                        <option {{ add }} value="{{ zone_template['id'] }}">{{ zone_template['name'] }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>
+                    <input class="btn btn-outline-secondary btn-sm" type="submit" name="template_change"
+                           value="{% trans 'Change' %}">
+                </td>
+            </tr>
+        </form>
+        {% else %}
+        <tr>
+            <td>
+                {% if zone_template_details %}
+                {{ zone_template_details['name'] | lower }}
+                {% else %}
+                none
+                {% endif %}
+            </td>
+            <td>&nbsp;</td>
+        </tr>
+        {% endif %}
+    </table>
+</div>
