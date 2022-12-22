@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\AppFactory;
 use Poweradmin\DnsRecord;
 use Poweradmin\User;
 use Poweradmin\Validation;
@@ -78,60 +79,19 @@ if (!$name) {
     $name = User::get_username_by_id($uid);
 }
 $zones = DnsRecord::get_zones("own", $uid);
-$user = [];
+
+$users = [];
 if (count($zones) > 0) {
     $users = do_hook('show_users');
 }
 
-echo "     <h5 class=\"mb-3\">" . _('Delete user') . " \"" . $name . "\"</h5>\n";
-echo "     <form method=\"post\" action=\"\">\n";
-echo "      <table class=\"table table-striped table-sm\">\n";
-
-if (count($zones) > 0) {
-    echo "       <tr>\n";
-    echo "        <td colspan=\"5\">\n";
-
-    echo "         " . _('You are about to delete a user. This user is owner for a number of zones. Please decide what to do with these zones.') . "\n";
-    echo "        </td>\n";
-    echo "       </tr>\n";
-
-    echo "       <tr>\n";
-    echo "        <th>" . _('Zone') . "</th>\n";
-    echo "        <th>" . _('Delete') . "</th>\n";
-    echo "        <th>" . _('Leave') . "</th>\n";
-    echo "        <th>" . _('Add new owner') . "</th>\n";
-    echo "        <th>" . _('Owner to be added') . "</th>\n";
-    echo "       </tr>\n";
-
-    foreach ($zones as $zone) {
-        echo "       <input type=\"hidden\" name=\"zone[" . $zone['id'] . "][zid]\" value=\"" . $zone['id'] . "\">\n";
-        echo "       <tr>\n";
-        echo "        <td>" . $zone['name'] . "</td>\n";
-        echo "        <td><input type=\"radio\" name=\"zone[" . $zone['id'] . "][target]\" value=\"delete\"></td>\n";
-        echo "        <td><input type=\"radio\" name=\"zone[" . $zone['id'] . "][target]\" value=\"leave\" CHECKED></td>\n";
-        echo "        <td><input type=\"radio\" name=\"zone[" . $zone['id'] . "][target]\" value=\"new_owner\"></td>\n";
-        echo "        <td>\n";
-        echo "         <select class=\"form-select form-select-sm\" name=\"zone[" . $zone['id'] . "][newowner]\">\n";
-
-        foreach ($users as $user) {
-            echo "          <option value=\"" . $user["id"] . "\">" . $user["fullname"] . "</option>\n";
-        }
-
-        echo "         </select>\n";
-        echo "        </td>\n";
-        echo "       </tr>\n";
-    }
-}
-echo "       <tr>\n";
-echo "        <td colspan=\"5\">\n";
-
-echo "         " . _('Are you sure?') . "\n";
-echo "        </td>\n";
-echo "       </tr>\n";
-
-echo "      </table>\n";
-echo "     <input class=\"btn btn-primary btn-sm\" type=\"submit\" name=\"commit\" value=\"" . _('Yes') . "\">\n";
-echo "     <input class=\"btn btn-secondary btn-sm\" type=\"button\" onClick=\"location.href='users.php'\" value=\"" . _('No') . "\">\n";
-echo "     </form>\n";
+$app = AppFactory::create();
+$app->render('delete_user.html', [
+    'name' => $name,
+    'uid' => $uid,
+    'zones' => $zones,
+    'zones_count' => count($zones),
+    'users' => $users,
+]);
 
 include_once("inc/footer.inc.php");
