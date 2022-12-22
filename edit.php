@@ -161,7 +161,9 @@ $meta_edit = $perm_meta_edit == "all" || ($perm_meta_edit == "own" && $user_is_z
 if (isset($_POST['slave_master_change']) && is_numeric($_POST["domain"])) {
     DnsRecord::change_zone_slave_master($_POST['domain'], $_POST['new_master']);
 }
-if (isset($_POST['type_change']) && in_array($_POST['newtype'], ZoneType::getTypes())) {
+
+$types = ZoneType::getTypes();
+if (isset($_POST['type_change']) && in_array($_POST['newtype'], $types)) {
     DnsRecord::change_zone_type($_POST['newtype'], $zone_id);
 }
 if (isset($_POST["newowner"]) && is_numeric($_POST["domain"]) && is_numeric($_POST["newowner"])) {
@@ -193,15 +195,15 @@ if (DnsRecord::zone_id_exists($zone_id) == "0") {
     exit();
 }
 
+$zone_name = DnsRecord::get_domain_name_by_id($zone_id);
+
 if (isset($_POST['sign_zone'])) {
-    $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
     DnsRecord::update_soa_serial($zone_id);
     Dnssec::dnssec_secure_zone($zone_name);
     Dnssec::dnssec_rectify_zone($zone_id);
 }
 
 if (isset($_POST['unsign_zone'])) {
-    $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
     Dnssec::dnssec_unsecure_zone($zone_name);
     DnsRecord::update_soa_serial($zone_id);
 }
@@ -210,10 +212,24 @@ $domain_type = DnsRecord::get_domain_type($zone_id);
 $record_count = DnsRecord::count_zone_records($zone_id);
 $zone_templates = ZoneTemplate::get_list_zone_templ($_SESSION['userid']);
 $zone_template_id = DnsRecord::get_zone_template($zone_id);
+$zone_template_details = ZoneTemplate::get_zone_templ_details($zone_template_id);
+$slave_master = DnsRecord::get_domain_slave_master($zone_id);
+$users = do_hook('show_users');
+
+$zone_comment = '';
+$raw_zone_comment = DnsRecord::get_zone_comment($zone_id);
+if ($raw_zone_comment) { $zone_comment = htmlspecialchars($raw_zone_comment); }
 
 $zone_name_to_display = DnsRecord::get_domain_name_by_id($zone_id);
 if (preg_match("/^xn--/", $zone_name_to_display)) {
     $idn_zone_name = idn_to_utf8($zone_name_to_display, IDNA_NONTRANSITIONAL_TO_ASCII);
+} else {
+    $idn_zone_name = "";
+}
+$records = DnsRecord::get_records_from_domain_id($zone_id, $row_start, $iface_rowamount, $record_sort_by);
+$owners = DnsRecord::get_users_from_domain_id($zone_id);
+
+if ($idn_zone_name) {
     echo "   <h5 class=\"mb-3\">" . _('Edit zone') . " \"" . $idn_zone_name . "\" (\"" . $zone_name_to_display . "\")</h5>\n";
 } else {
     echo "   <h5 class=\"mb-3\">" . _('Edit zone') . " \"" . $zone_name_to_display . "\"</h5>\n";
@@ -223,7 +239,6 @@ echo "   <div>\n";
 echo show_pages($record_count, $iface_rowamount, $zone_id);
 echo "   </div>\n";
 
-$records = DnsRecord::get_records_from_domain_id($zone_id, $row_start, $iface_rowamount, $record_sort_by);
 if ($records == "-1") {
     echo " <p>" . _("This zone does not have any records. Weird.") . "</p>\n";
 } else {
@@ -256,7 +271,7 @@ if ($records == "-1") {
             echo "      <td class=\"col-sm-1\">\n";
             echo "       <select class=\"form-select form-select-sm\" name=\"record[" . htmlspecialchars($r['id']) . "][type]\">\n";
             $found_selected_type = false;
-            foreach (RecordType::getTypes() as $type_available) {
+            foreach ($types as $type_available) {
                 if ($type_available == $r['type']) {
                     $add = " SELECTED";
                     $found_selected_type = true;
@@ -292,10 +307,6 @@ if ($records == "-1") {
     }
 
     if ($iface_zone_comments) {
-        $zone_comment = '';
-        $raw_zone_comment = DnsRecord::get_zone_comment($zone_id);
-        if ($raw_zone_comment) { $zone_comment = htmlspecialchars($raw_zone_comment); }
-
         echo "    <tr>\n";
         echo "     <td>&nbsp;</td><td colspan=\"7\">" . _('Comments') . ":</td>\n";
         echo "    </tr>\n";
@@ -318,8 +329,6 @@ if ($records == "-1") {
     }
 
     if ($pdnssec_use) {
-        $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
-
         if (Dnssec::dnssec_is_zone_secured($zone_name)) {
             echo "     <input class=\"btn btn-secondary btn-sm\" type=\"button\" name=\"dnssec\" onclick=\"location.href = 'dnssec.php?id=" . $zone_id . "';\" value=\"" . _('DNSSEC') . "\">\n";
             echo "     <input class=\"btn btn-secondary btn-sm\" type=\"submit\" name=\"unsign_zone\" value=\"" . _('Unsign this zone') . "\">\n";
@@ -354,7 +363,6 @@ if ($records == "-1") {
 
 if ($perm_edit == "all" || ($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "1") {
     if ($domain_type != "SLAVE") {
-        $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
         echo "     <form class=\"needs-validation\" method=\"post\" action=\"add_record.php?id=" . $zone_id . "\" novalidate>\n";
         echo "      <input type=\"hidden\" name=\"domain\" value=\"" . $zone_id . "\">\n";
         echo "      <table class=\"table table-striped table-hover table-sm\">\n";
@@ -371,7 +379,9 @@ if ($perm_edit == "all" || ($perm_edit == "own" || $perm_edit == "own_as_client"
         echo "        <td>IN</td>\n";
         echo "        <td>\n";
         echo "         <select class=\"form-select form-select-sm\" name=\"type\">\n";
-        foreach (RecordType::getTypes() as $record_type) {
+
+        $rev = "";
+        foreach ($types as $record_type) {
             $add = "";
             if (preg_match('/i(p6|n-addr).arpa/i', $zone_name) && $record_type == "PTR") {
                 $add = " SELECTED";
@@ -406,8 +416,6 @@ echo "     <tr>\n";
 echo "      <th colspan=\"2\">" . _('Owner of zone') . "</th>\n";
 echo "     </tr>\n";
 
-$owners = DnsRecord::get_users_from_domain_id($zone_id);
-
 if ($owners == "-1") {
     echo "      <tr><td>" . _('No owner set for this zone.') . "</td></tr>";
 } else {
@@ -436,7 +444,6 @@ if ($meta_edit) {
     echo "        <td>\n";
     echo "         <select class=\"form-select form-select-sm\" name=\"newowner\">\n";
 
-    $users = do_hook('show_users');
     foreach ($users as $user) {
         $add = '';
         if ($user["id"] == $_SESSION["userid"]) {
@@ -458,12 +465,12 @@ echo "       <th colspan=\"2\">" . _('Type') . "</th>\n";
 echo "      </tr>\n";
 
 if ($meta_edit) {
-    echo "      <form action=\"" . htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES) . "?id=" . $zone_id . "\" method=\"post\">\n";
+    echo "      <form action=\"edit.php?id=" . $zone_id . "\" method=\"post\">\n";
     echo "       <input type=\"hidden\" name=\"domain\" value=\"" . $zone_id . "\">\n";
     echo "       <tr>\n";
     echo "        <td>\n";
     echo "         <select class=\"form-select form-select-sm\" name=\"newtype\">\n";
-    foreach (ZoneType::getTypes() as $type) {
+    foreach ($types as $type) {
         $add = '';
         if ($type == $domain_type) {
             $add = " SELECTED";
@@ -482,13 +489,12 @@ if ($meta_edit) {
 }
 
 if ($domain_type == "SLAVE") {
-    $slave_master = DnsRecord::get_domain_slave_master($zone_id);
     echo "      <tr>\n";
     echo "       <th colspan=\"2\">" . _('IP address of master NS') . "</th>\n";
     echo "      </tr>\n";
 
     if ($meta_edit) {
-        echo "      <form action=\"" . htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES) . "?id=" . $zone_id . "\" method=\"post\">\n";
+        echo "      <form action=\"edit.php?id=" . $zone_id . "\" method=\"post\">\n";
         echo "       <input type=\"hidden\" name=\"domain\" value=\"" . $zone_id . "\">\n";
         echo "       <tr>\n";
         echo "        <td>\n";
@@ -509,7 +515,7 @@ echo "       <th colspan=\"2\">" . _('Template') . "</th>\n";
 echo "      </tr>\n";
 
 if ($meta_edit) {
-    echo "      <form action=\"" . htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES) . "?id=" . $zone_id . "\" method=\"post\">\n";
+    echo "      <form action=\"edit.php?id=" . $zone_id . "\" method=\"post\">\n";
     echo "       <input type=\"hidden\" name=\"current_zone_template\" value=\"" . $zone_template_id . "\">\n";
     echo "       <tr>\n";
     echo "        <td>\n";
@@ -530,7 +536,6 @@ if ($meta_edit) {
     echo "       </tr>\n";
     echo "      </form>\n";
 } else {
-    $zone_template_details = ZoneTemplate::get_zone_templ_details($zone_template_id);
     echo "      <tr><td>" . ($zone_template_details ? strtolower($zone_template_details['name']) : "none") . "</td><td>&nbsp;</td></tr>\n";
 }
 
