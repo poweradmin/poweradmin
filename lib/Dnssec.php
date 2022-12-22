@@ -263,6 +263,32 @@ class Dnssec
         return $ds_records;
     }
 
+    public static function dnssec_algorithms(): array
+    {
+        return [
+            0 => 'Reserved',
+            1 => 'RSAMD5',
+            2 => 'DH',
+            3 => 'DSA',
+            4 => 'ECC',
+            5 => 'RSASHA1',
+            6 => 'DSA-NSEC3-SHA1',
+            7 => 'RSASHA1-NSEC3-SHA1',
+            8 => 'RSASHA256',
+            9 => 'Reserved',
+            10 => 'RSASHA512',
+            11 => 'Reserved',
+            12 => 'ECC-GOST',
+            13 => 'ECDSAP256SHA256',
+            14 => 'ECDSAP384SHA384',
+            15 => 'ED25519',
+            16 => 'ED448',
+            252 => 'INDIRECT',
+            253 => 'PRIVATEDNS',
+            254 => 'PRIVATEOID'
+        ];
+    }
+
     /** Return algorithm name for given number
      *
      * @param int $algo Algorithm id

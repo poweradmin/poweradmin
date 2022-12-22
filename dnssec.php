@@ -75,38 +75,18 @@ $record_count = DnsRecord::count_zone_records($zone_id);
 $zone_templates = ZoneTemplate::get_list_zone_templ($_SESSION['userid']);
 $zone_template_id = DnsRecord::get_zone_template($zone_id);
 $keys = Dnssec::dnssec_get_keys($domain_name);
+$algorithms = Dnssec::dnssec_algorithms();
 
-echo "   <h5 class=\"mb-3\">" . _('DNSSEC keys for zone') . " \"" . $domain_name . "\"</h5>\n";
-
-echo "     <table class=\"table table-striped table-hover table-sm\">\n";
-echo "      <tr>\n";
-echo "       <th>" . _('ID') . "</th>\n";
-echo "       <th>" . _('Type') . "</th>\n";
-echo "       <th>" . _('Tag') . "</th>\n";
-echo "       <th>" . _('Algorithm') . "</th>\n";
-echo "       <th>" . _('Bits') . "</th>\n";
-echo "       <th>" . _('Active') . "</th>\n";
-echo "       <th>&nbsp;</th>\n";
-echo "      </tr>\n";
-
-foreach ($keys as $item) {
-    $button_title = $item[5] ? _('Deactivate zone key') : _('Activate zone key');
-    echo "<tr>\n";
-    echo "<td>" . $item[0] . "</td>\n";
-    echo "<td>" . $item[1] . "</td>\n";
-    echo "<td>" . $item[2] . "</td>\n";
-    echo "<td>" . Dnssec::dnssec_algorithm_to_name($item[3]) . "</td>\n";
-    echo "<td>" . $item[4] . "</td>\n";
-    echo "<td>" . ($item[5] ? _('Yes') : _('No')) . "</td>\n";
-    echo "<td>\n";
-    echo "<a class=\"btn btn-outline-primary btn-sm\" href=\"dnssec_edit_key.php?id=" . $zone_id . "&key_id=" . $item[0] . "\"><i class=\"bi bi-pencil-square\"></i> " . $button_title . "</a>\n";
-    echo "<a class=\"btn btn-outline-danger btn-sm\" href=\"dnssec_delete_key.php?id=" . $zone_id . "&key_id=" . $item[0] . "\"><i class=\"bi bi-trash\"></i> " . _('Delete zone key') . "</a>\n";
-    echo "</td>";
-    echo "</tr>\n";
-}
-
-echo "     </table>\n";
-echo "      <input class=\"btn btn-primary btn-sm\" type=\"button\" onClick=\"location.href = 'dnssec_add_key.php?id=" . $zone_id . "';\" value=\"" . _('Add new key') . "\">\n";
-echo "      <input class=\"btn btn-secondary btn-sm\" type=\"button\" onClick=\"location.href = 'dnssec_ds_dnskey.php?id=" . $zone_id . "';\" value=\"" . _('Show DS and DNSKEY') . "\">\n";
+$app->render('dnssec.html', [
+    'domain_name' => $domain_name,
+    'domain_type' => $domain_type,
+    'keys' => $keys,
+    'pdnssec_use' => $pdnssec_use,
+    'record_count' => $record_count,
+    'zone_id' => $zone_id,
+    'zone_template_id' => $zone_template_id,
+    'zone_templates' => $zone_templates,
+    'algorithms' => $algorithms,
+]);
 
 include_once("inc/footer.inc.php");
