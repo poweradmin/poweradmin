@@ -78,10 +78,12 @@ class DeleteDomainController extends BaseController
         }
 
         if (DnsRecord::delete_domain($zone_id)) {
-            success(SUC_ZONE_DEL);
             Logger::log_info(sprintf('client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
                 $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                 $zone_info['name'], $zone_info['type']), $zone_id);
+
+            $this->setMessage('list_zones', 'success', SUC_ZONE_DEL);
+            $this->redirect('list_zones.php');
         }
     }
 
