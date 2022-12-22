@@ -289,6 +289,25 @@ class Dnssec
         ];
     }
 
+    public static function dnssec_algorithm_names()
+    {
+        return [
+            'rsamd5' => 'RSAMD5',
+            'dh' => 'DH',
+            'dsa' => 'DSA',
+            'ecc' => 'ECC',
+            'rsasha1' => 'RSASHA1',
+            'rsasha1-nsec3' => 'RSASHA1-NSEC3-SHA1',
+            'rsasha256' => 'RSASHA256',
+            'rsasha512' => 'RSASHA512',
+            'gost' => 'ECC-GOST',
+            'ecdsa256' => 'ECDSAP256SHA256',
+            'ecdsa384' => 'ECDSAP384SHA384',
+            'ed25519' => 'ED25519',
+            'ed448' => 'ED448',
+        ];
+    }
+
     /** Return algorithm name for given number
      *
      * @param int $algo Algorithm id
