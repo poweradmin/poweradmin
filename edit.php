@@ -57,16 +57,7 @@ class EditController extends BaseController {
             $row_start = ($_GET["start"] - 1) * $iface_rowamount;
         }
 
-        $record_sort_by = 'name';
-        if (isset($_GET["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["record_sort_by"])) {
-            $record_sort_by = $_GET["record_sort_by"];
-            $_SESSION["record_sort_by"] = $_GET["record_sort_by"];
-        } elseif (isset($_POST["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_POST["record_sort_by"])) {
-            $record_sort_by = $_POST["record_sort_by"];
-            $_SESSION["record_sort_by"] = $_POST["record_sort_by"];
-        } elseif (isset($_SESSION["record_sort_by"])) {
-            $record_sort_by = $_SESSION["record_sort_by"];
-        }
+        $record_sort_by = $this->getSortBy();
 
         if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
             error(ERR_INV_INPUT);
@@ -264,6 +255,24 @@ class EditController extends BaseController {
             'record_types' => RecordType::getTypes(),
             'iface_add_reverse_record' => $this->config('iface_add_reverse_record'),
         ]);
+    }
+
+    /**
+     * @return mixed|string
+     */
+    public function getSortBy()
+    {
+        $record_sort_by = 'name';
+        if (isset($_GET["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["record_sort_by"])) {
+            $record_sort_by = $_GET["record_sort_by"];
+            $_SESSION["record_sort_by"] = $_GET["record_sort_by"];
+        } elseif (isset($_POST["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_POST["record_sort_by"])) {
+            $record_sort_by = $_POST["record_sort_by"];
+            $_SESSION["record_sort_by"] = $_POST["record_sort_by"];
+        } elseif (isset($_SESSION["record_sort_by"])) {
+            $record_sort_by = $_SESSION["record_sort_by"];
+        }
+        return $record_sort_by;
     }
 }
 

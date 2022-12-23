@@ -14,12 +14,24 @@
 <form method="post" action="">
     <table class="table table-striped table-hover table-sm">
         <tr>
-            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=id">{% trans 'Id' %}</a></th>
-            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=name">{% trans 'Name' %}</a></th>
-            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=type">{% trans 'Type' %}</a></th>
-            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=content">{% trans 'Content' %}</a></th>
-            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=prio">{% trans 'Priority' %}</a></th>
-            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=ttl">{% trans 'TTL' %}</a></th>
+            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=id">{% trans 'Id' %}</a>
+                {% if record_sort_by == 'id' %}<i class="bi bi-arrow-down"></i>{% endif %}
+            </th>
+            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=name">{% trans 'Name' %}</a>
+                {% if record_sort_by == 'name' %}<i class="bi bi-arrow-down"></i>{% endif %}
+            </th>
+            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=type">{% trans 'Type' %}</a>
+                {% if record_sort_by == 'type' %}<i class="bi bi-arrow-down"></i>{% endif %}
+            </th>
+            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=content">{% trans 'Content' %}</a>
+                {% if record_sort_by == 'content' %}<i class="bi bi-arrow-down"></i>{% endif %}
+            </th>
+            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=prio">{% trans 'Priority' %}</a>
+                {% if record_sort_by == 'prio' %}<i class="bi bi-arrow-down"></i>{% endif %}
+            </th>
+            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=ttl">{% trans 'TTL' %}</a>
+                {% if record_sort_by == 'ttl' %}<i class="bi bi-arrow-down"></i>{% endif %}
+            </th>
             <th>&nbsp;</th>
         </tr>
         {% for r in records %}
