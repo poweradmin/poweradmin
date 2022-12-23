@@ -162,7 +162,11 @@
     </table>
     <input class="btn btn-outline-secondary btn-sm" type="submit" name="commit" value="{% trans 'Add record' %}">
     {% if rev %}
-    <input class="form-check-input" type="checkbox" name="reverse"><span class="text-secondary">{% trans 'Add also reverse record' %}</span>
+    &nbsp;
+    <span class="align-middle">
+        <input class="form-check-input" type="checkbox" name="reverse">
+        <span class="text-secondary"> {% trans 'Add also reverse record' %}</span>
+    </span>
     {% endif %}
 </form>
 {% endif %}
