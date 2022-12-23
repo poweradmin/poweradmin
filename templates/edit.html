@@ -5,7 +5,7 @@
 {% endif %}
 
 <div>
-    {{ pagination }}
+    {{ pagination | raw }}
 </div>
 
 {% if records == "-1" %}
