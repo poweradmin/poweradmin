@@ -48,7 +48,6 @@ class EditController extends BaseController {
 
     public function run(): void
     {
-        $pdnssec_use = $this->config('pdnssec_use');
         $iface_rowamount = $this->config('iface_rowamount');
         $iface_zone_comments = $this->config('iface_zone_comments');
 
@@ -107,11 +106,7 @@ class EditController extends BaseController {
                     success(SUC_ZONE_NOCHANGE);
                 }
 
-                if ($pdnssec_use) {
-                    if (Dnssec::dnssec_rectify_zone($_GET['id'])) {
-                        success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
-                    }
-                }
+                $this->config('pdnssec_use') && Dnssec::dnssec_rectify_zone($_GET['id']);
             } else {
                 error(ERR_ZONE_UPD);
             }

@@ -43,8 +43,6 @@ class EditRecordController extends BaseController {
 
     public function run(): void
     {
-        $pdnssec_use = $this->config('pdnssec_use');
-
         $perm_view = Permission::getViewPermission();
         $perm_edit = Permission::getEditPermission();
 
@@ -65,7 +63,7 @@ class EditRecordController extends BaseController {
         }
 
         if ($this->isPost()) {
-            $this->saveRecord($zid, $pdnssec_use);
+            $this->saveRecord($zid);
         }
 
         $this->showRecordEditForm($record_id, $zone_type, $zid, $perm_edit, $user_is_zone_owner);
@@ -91,7 +89,7 @@ class EditRecordController extends BaseController {
         ]);
     }
 
-    public function saveRecord($zid, $pdnssec_use): void
+    public function saveRecord($zid): void
     {
         $old_record_info = DnsRecord::get_record_from_id($_POST["rid"]);
         $ret_val = DnsRecord::edit_record($_POST);
@@ -108,9 +106,7 @@ class EditRecordController extends BaseController {
                 $new_record_info['type'], $new_record_info['name'], $new_record_info['content'], $new_record_info['ttl'], $new_record_info['prio']),
                 $zid);
 
-            if ($pdnssec_use && Dnssec::dnssec_rectify_zone($zid)) {
-                success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
-            }
+            $this->config('pdnssec_use') && Dnssec::dnssec_rectify_zone($zid);
 
             $this->setMessage('edit', 'success', SUC_RECORD_UPD);
             $this->redirect('edit.php', ['id' => $zid]);

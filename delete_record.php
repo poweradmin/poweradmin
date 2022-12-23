@@ -72,10 +72,7 @@ class DeleteRecordController extends BaseController {
                 DnsRecord::delete_record_zone_templ($record_id);
                 DnsRecord::update_soa_serial($zid);
 
-                $pdnssec_use = $this->config('pdnssec_use');
-                if ($pdnssec_use && Dnssec::dnssec_rectify_zone($zid)) {
-                    success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
-                }
+                $this->config('pdnssec_use') && Dnssec::dnssec_rectify_zone($zid);
 
                 $this->setMessage('edit', 'success', SUC_RECORD_DEL);
                 $this->redirect('edit.php', ['id' => $zid]);

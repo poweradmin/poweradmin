@@ -145,11 +145,7 @@ class AddRecordController extends BaseController
                         $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                         $content_rev, $fqdn_name, $ttl, $prio), $zone_id);
 
-                    $pdnssec_use = $this->config('pdnssec_use');
-
-                    if ($pdnssec_use && Dnssec::dnssec_rectify_zone($zone_rev_id)) {
-                        success(SUC_EXEC_PDNSSEC_RECTIFY_ZONE);
-                    }
+                    $this->config('pdnssec_use') && Dnssec::dnssec_rectify_zone($zone_rev_id);
                 }
             } elseif (isset($content_rev)) {
                 error(sprintf(ERR_REVERS_ZONE_NOT_EXIST, $content_rev));
