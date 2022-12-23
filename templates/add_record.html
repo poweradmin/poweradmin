@@ -1,4 +1,4 @@
-<h5 class="mb-3">{% trans 'Add record to zone' %}</h5>
+<h5 class="mb-3">{% trans 'Add record to zone' %} "<a href="edit.php?id={{ zone_id }}">{{ zone_name }}</a>"</h5>
 <form class="needs-validation" method="post" novalidate>
     <input type="hidden" name="domain" value="{{ zone_id }}">
     <table class="table table-striped table-sm">
@@ -11,7 +11,7 @@
             <td>{% trans 'TTL' %}</td>
         </tr>
         <tr>
-            <td><input class="form-control form-control-sm" type="text" name="name" value="{{ name }}">"{{ zone_name }}"
+            <td><input class="form-control form-control-sm" type="text" name="name" value="{{ name }}">.{{ zone_name }}
             </td>
             <td>IN</td>
             <td>
