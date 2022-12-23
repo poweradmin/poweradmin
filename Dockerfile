@@ -28,6 +28,10 @@ RUN git clone https://github.com/poweradmin/poweradmin.git /var/www/html
 RUN sqlite3 /opt/pdns.db < /var/www/html/sql/pdns/4.7.x/schema.sqlite3.sql
 RUN sqlite3 /opt/pdns.db < /var/www/html/sql/poweradmin-sqlite-db-structure.sql
 
+RUN chown www-data:www-data /opt/pdns.db
+RUN chown -R www-data:www-data /opt
+RUN chmod -R 0775 /opt
+
 RUN echo '<?php' >> /var/www/html/inc/config.inc.php
 RUN echo '$db_type="sqlite";' >> /var/www/html/inc/config.inc.php
 RUN echo '$db_file="/opt/pdns.db";' >> /var/www/html/inc/config.inc.php
@@ -35,4 +39,3 @@ RUN echo '$ignore_install_dir=true;' >> /var/www/html/inc/config.inc.php
 RUN echo '$session_key="V@v!y(A6hZk@3NJrJ%C2PgYQmCmpspai6Vh_fo$w^^8QF@";' >> /var/www/html/inc/config.inc.php
 
 EXPOSE 80
-
