@@ -115,30 +115,8 @@
     <input class="btn btn-secondary btn-sm" type="submit" name="sign_zone" value="{% trans 'Sign this zone' %}">
     {% endif %}
     {% endif %}
-
-    {% if perm_zone_master_add %}
-    <hr>
-
-    <table>
-        <tr>
-            <td><strong>{% trans 'Save as new template' %}</strong></td>
-        </tr>
-        <tr>
-            <td>{% trans 'Template Name' %}</td>
-            <td><input class="form-control form-control-sm" type="text" name="templ_name" value=""></td>
-        </tr>
-        <tr>
-            <td>{% trans 'Template Description' %}</td>
-            <td><input class="form-control form-control-sm" type="text" name="templ_descr" value=""></td>
-        </tr>
-    </table>
-
-    <input class="btn btn-secondary btn-sm" type="submit" name="save_as" value="{% trans 'Save as template' %}">
-    {% endif %}
-
 </form>
 <hr>
-{% endif %}
 
 {% if perm_edit == "all" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "1" %}
 {% if domain_type != "SLAVE" %}
@@ -160,15 +138,15 @@
                 <select class="form-select form-select-sm" name="type">
                     {% set rev = false %}
                     {% for record_type in record_types %}
-                        {% set add = "" %}
-                        {% if is_rev_zone and record_type == "PTR" %}
-                        {% set add = "SELECTED" %}
-                        {% endif %}
+                    {% set add = "" %}
+                    {% if is_rev_zone and record_type == "PTR" %}
+                    {% set add = "SELECTED" %}
+                    {% endif %}
 
-                        {% if iface_add_reverse_record and record_type == "A" %}
-                        {% set add = "SELECTED" %}
-                        {% set rev = true %}
-                        {% endif %}
+                    {% if iface_add_reverse_record and record_type == "A" %}
+                    {% set add = "SELECTED" %}
+                    {% set rev = true %}
+                    {% endif %}
                     <option {{ add }} value="{{ record_type }}">{{ record_type }}</option>
                     {% endfor %}
                 </select>
@@ -189,6 +167,29 @@
 </form>
 {% endif %}
 
+<hr>
+{% endif %}
+
+{% if perm_zone_master_add %}
+<form method="post" action="">
+    <table>
+        <tr>
+            <td><strong>{% trans 'Save as new template' %}</strong></td>
+        </tr>
+        <tr>
+            <td>{% trans 'Template Name' %}</td>
+            <td><input class="form-control form-control-sm" type="text" name="templ_name" value=""></td>
+        </tr>
+        <tr>
+            <td>{% trans 'Template Description' %}</td>
+            <td><input class="form-control form-control-sm" type="text" name="templ_descr" value=""></td>
+        </tr>
+    </table>
+
+    <input class="btn btn-secondary btn-sm" type="submit" name="save_as" value="{% trans 'Save as template' %}">
+    {% endif %}
+
+</form>
 <hr>
 {% endif %}
 
