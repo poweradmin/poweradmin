@@ -98,7 +98,7 @@ class DnsSecAddKeyController extends \Poweradmin\BaseController {
         $domain_name = DnsRecord::get_domain_name_by_id($zone_id);
         if (isset($_POST["submit"])) {
             if (Dnssec::dnssec_add_zone_key($domain_name, $key_type, $bits, $algorithm)) {
-                $this->setMessage('dnssec', 'success', SUC_EXEC_PDNSSEC_ADD_ZONE_KEY);
+                $this->setMessage('dnssec', 'success', _('Zone key has been added successfully.'));
                 $this->redirect('dnssec.php', [id => $zone_id]);
             } else {
                 error(ERR_EXEC_PDNSSEC_ADD_ZONE_KEY);
