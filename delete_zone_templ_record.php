@@ -62,7 +62,7 @@ class DeleteZoneTemplRecordController extends BaseController {
         $owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
         if ($confirm == '1' && $owner) {
             if (ZoneTemplate::delete_zone_templ_record($record_id)) {
-                $this->setMessage('edit_zone_templ', 'success', SUC_RECORD_DEL);
+                $this->setMessage('edit_zone_templ', 'success', _('The record has been deleted successfully.'));
                 $this->redirect('edit_zone_templ.php', ['id' => $zone_templ_id]);
             }
             include_once('inc/footer.inc.php');

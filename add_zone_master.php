@@ -81,7 +81,7 @@ class AddZoneMasterController extends BaseController
             $this->setMessage('add_zone_master', 'error', ERR_DOMAIN_EXISTS);
             $this->showForm();
         } elseif (DnsRecord::add_domain($zone, $owner, $dom_type, '', $zone_template)) {
-            $this->setMessage('list_zones', 'success', SUC_ZONE_ADD);
+            $this->setMessage('list_zones', 'success', _('Zone has been added successfully.'));
 
             $zone_id = DnsRecord::get_zone_id_from_name($zone);
             Logger::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',

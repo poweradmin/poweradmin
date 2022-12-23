@@ -46,7 +46,7 @@ class Dnssec
         }
 
         if (!file_exists($pdnssec_command) || !is_executable($pdnssec_command)) {
-            error(ERR_EXEC_PDNSSEC);
+            error(_('Failed to call pdnssec utility.'));
             return false;
         }
 
@@ -146,13 +146,13 @@ class Dnssec
             }
 
             if ($return_code != 0) {
-                error(ERR_EXEC_PDNSSEC_RECTIFY_ZONE);
+                error(_('Failed to rectify zone.'));
                 return false;
             }
 
             return true;
         } else if ($count >= 1) {
-            error(ERR_EXEC_PDNSSEC);
+            error(_('Failed to call pdnssec utility.'));
             return false;
         }
 
@@ -171,7 +171,7 @@ class Dnssec
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
-            error(ERR_EXEC_PDNSSEC_SECURE_ZONE);
+            error(_('Failed to secure zone.'));
             return false;
         }
 
@@ -193,7 +193,7 @@ class Dnssec
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
-            error(ERR_EXEC_PDNSSEC_DISABLE_ZONE);
+            error(_('Failed to disable DNSSEC.'));
             return false;
         }
 
@@ -239,7 +239,7 @@ class Dnssec
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
-            error(ERR_EXEC_PDNSSEC_SHOW_ZONE);
+            error(_('Failed to get DNSSEC key details.'));
             return false;
         }
 
@@ -451,7 +451,7 @@ class Dnssec
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
-            error(ERR_EXEC_PDNSSEC_SHOW_ZONE);
+            error(_('Failed to get DNSSEC key details.'));
             return false;
         }
 
@@ -479,7 +479,7 @@ class Dnssec
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
-            error(ERR_EXEC_PDNSSEC_SHOW_ZONE);
+            error(_('Failed to active DNSSEC key.'));
             return false;
         }
 
@@ -502,7 +502,7 @@ class Dnssec
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
-            error(ERR_EXEC_PDNSSEC_SHOW_ZONE);
+            error(_('Failed to deactivate DNSSEC key.'));
             return false;
         }
 
@@ -525,7 +525,7 @@ class Dnssec
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
-            error(ERR_EXEC_PDNSSEC_SHOW_ZONE);
+            error(_('Failed to get DNSSEC key details.'));
             return false;
         }
 
@@ -565,7 +565,7 @@ class Dnssec
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
-            error(ERR_EXEC_PDNSSEC_ADD_ZONE_KEY);
+            error(_('Failed to add new DNSSEC key.'));
             return false;
         }
 
@@ -588,7 +588,7 @@ class Dnssec
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
-            error(ERR_EXEC_PDNSSEC_ADD_ZONE_KEY);
+            error(_('Failed to remove DNSSEC key.'));
             return false;
         }
 

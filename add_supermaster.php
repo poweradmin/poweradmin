@@ -56,8 +56,8 @@ class AddSuperMasterController extends BaseController
     private function addSuperMaster($master_ip, $ns_name, $account)
     {
         if (DnsRecord::add_supermaster($master_ip, $ns_name, $account)) {
-            success(SUC_SM_ADD);
-            $this->showSuperMasters();
+            $this->setMessage('list_supermasters', success, _('The supermaster has been added successfully.'));
+            $this->redirect('list_supermasters.php');
         } else {
             $this->showAddSuperMaster($master_ip, $ns_name, $account);
         }
@@ -72,15 +72,6 @@ class AddSuperMasterController extends BaseController
             'account' => htmlspecialchars($account),
             'perm_view_others' => do_hook('verify_permission', 'user_view_others'),
             'session_uid' => $_SESSION['userid']
-        ]);
-    }
-
-    private function showSuperMasters()
-    {
-        $this->render('list_supermasters.html', [
-            'perm_sm_add' => do_hook('verify_permission', 'supermaster_add'),
-            'perm_sm_edit' => do_hook('verify_permission', 'supermaster_edit'),
-            'supermasters' => DnsRecord::get_supermasters()
         ]);
     }
 }

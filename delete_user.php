@@ -74,7 +74,7 @@ class DeleteUserController extends BaseController {
             }
 
             if (do_hook('delete_user', $uid, $zones)) {
-                $this->setMessage('users', 'success', SUC_USER_DEL);
+                $this->setMessage('users', 'success', _('The user has been deleted successfully.'));
                 $this->redirect('users.php');
             }
         } else {

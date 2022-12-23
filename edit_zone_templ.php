@@ -136,7 +136,7 @@ class EditZoneTemplController extends BaseController
             include_once('inc/footer.inc.php');
             exit;
         }
-        $this->setMessage('edit_zone_templ', 'success', SUC_ZONE_TEMPL_UPD);
+        $this->setMessage('edit_zone_templ', 'success', _('Zone template has been updated successfully.'));
         ZoneTemplate::edit_zone_templ($_POST, $zone_templ_id);
     }
 
@@ -146,7 +146,7 @@ class EditZoneTemplController extends BaseController
         foreach ($zones as $zone) {
             DnsRecord::update_zone_records($zone['id'], $zone_templ_id);
         }
-        $this->setMessage('edit_zone_templ', 'success', SUC_ZONES_UPD);
+        $this->setMessage('edit_zone_templ', 'success', _('Zones have been updated successfully.'));
     }
 }
 

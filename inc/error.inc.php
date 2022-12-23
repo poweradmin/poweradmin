@@ -128,39 +128,6 @@ define("ERR_DNS_HTML_TAGS", _('You cannot use html tags for this type of record.
 define("ERR_DNS_TXT_MISSING_QUOTES", _('Add quotes around TXT record content.'));
 define("ERR_DNS_SPF_CONTENT", _('The content of the SPF record is invalid'));
 
-/* DNSSEC */
-define('ERR_EXEC_PDNSSEC', _('Failed to call pdnssec utility.'));
-define('ERR_EXEC_PDNSSEC_ADD_ZONE_KEY', _('Failed to add new DNSSEC key.'));
-define('ERR_EXEC_PDNSSEC_DISABLE_ZONE', _('Failed to deactivate DNSSEC keys.'));
-define('ERR_EXEC_PDNSSEC_SECURE_ZONE', _('Failed to secure zone.'));
-define('ERR_EXEC_PDNSSEC_SHOW_ZONE', _('Failed to get DNSSEC key details.'));
-define('ERR_EXEC_PDNSSEC_RECTIFY_ZONE', _('Failed to rectify zone.'));
-define('ERR_EXEC_PDNSSEC_PRESIGNED_ZONE', _('Failed to change presigned mode'));
-define('ERR_PDNSSEC_DEL_ZONE_KEY', _('Failed to delete DNSSEC key.'));
-
-/* GOOD! */
-define("SUC_ZONE_ADD", _('Zone has been added successfully.'));
-define("SUC_ZONES_ADD", _('Zones has been added successfully.'));
-define("SUC_ZONE_DEL", _('Zone has been deleted successfully.'));
-define("SUC_ZONES_DEL", _('Zones have been deleted successfully.'));
-define("SUC_ZONE_UPD", _('Zone has been updated successfully.'));
-define("SUC_ZONE_NOCHANGE", _('Zone did not have any record changes.'));
-define("SUC_ZONES_UPD", _('Zones have been updated successfully.'));
-define("SUC_USER_UPD", _('The user has been updated successfully.'));
-define("SUC_USER_ADD", _('The user has been created successfully.'));
-define("SUC_USER_DEL", _('The user has been deleted successfully.'));
-define("SUC_RECORD_UPD", _('The record has been updated successfully.'));
-define("SUC_RECORD_DEL", _('The record has been deleted successfully.'));
-define("SUC_COMMENT_UPD", _('The comment has been updated successfully.'));
-define("SUC_SM_DEL", _('The supermaster has been deleted successfully.'));
-define("SUC_SM_ADD", _('The supermaster has been added successfully.'));
-define("SUC_PERM_TEMPL_ADD", _('The permission template has been added successfully.'));
-define("SUC_PERM_TEMPL_UPD", _('The permission template has been updated successfully.'));
-define("SUC_PERM_TEMPL_DEL", _('The permission template has been deleted successfully.'));
-define("SUC_ZONE_TEMPL_ADD", _('Zone template has been added successfully.'));
-define("SUC_ZONE_TEMPL_UPD", _('Zone template has been updated successfully.'));
-define("SUC_ZONE_TEMPL_DEL", _('Zone template has been deleted successfully.'));
-
 /** Print error message (toolkit.inc)
  *
  * @param string $msg Error message

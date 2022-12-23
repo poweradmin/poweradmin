@@ -61,7 +61,7 @@ class DeleteZoneTemplController extends BaseController
         if ($v->validate()) {
             $zone_templ_id = htmlspecialchars($_GET['id']);
             ZoneTemplate::delete_zone_templ($zone_templ_id);
-            success(SUC_ZONE_TEMPL_DEL);
+            success(_('Zone template has been deleted successfully.'));
 
             $perm_zone_master_add = do_hook('verify_permission', 'zone_master_add');
 

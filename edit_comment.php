@@ -74,11 +74,10 @@ class EditCommentController extends BaseController {
                 error(ERR_PERM_EDIT_COMMENT);
             } else {
                 DnsRecord::edit_zone_comment($zone_id, $_POST['comment']);
-                $this->setMessage('edit', 'success', SUC_COMMENT_UPD);
+                $this->setMessage('edit', 'success', _('The comment has been updated successfully.'));
                 $this->redirect('edit.php', ['id' => $zone_id]);
             }
         }
-
 
         $this->showCommentForm($zone_id, $perm_edit_comment);
     }

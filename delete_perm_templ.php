@@ -62,7 +62,7 @@ class DeletePermTemplController extends BaseController
         }
 
         if (do_hook('delete_perm_templ', $perm_templ_id)) {
-            $this->setMessage('list_perm_templ', 'success', SUC_PERM_TEMPL_DEL);
+            $this->setMessage('list_perm_templ', 'success', _('The permission template has been deleted successfully.'));
             $this->redirect('list_perm_templ.php');
         }
 

@@ -82,7 +82,7 @@ class DeleteDomainController extends BaseController
                 $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                 $zone_info['name'], $zone_info['type']), $zone_id);
 
-            $this->setMessage('list_zones', 'success', SUC_ZONE_DEL);
+            $this->setMessage('list_zones', 'success', _('Zone has been deleted successfully.'));
             $this->redirect('list_zones.php');
         }
     }

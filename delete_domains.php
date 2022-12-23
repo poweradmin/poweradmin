@@ -67,9 +67,9 @@ class DeleteDomainsController extends BaseController {
             }
 
             if (count($deleted_zones) == 1) {
-                $this->setMessage('list_zones', 'success', SUC_ZONE_DEL);
+                $this->setMessage('list_zones', 'success', _('Zone has been deleted successfully.'));
             } else {
-                $this->setMessage('list_zones', 'success', SUC_ZONES_DEL);
+                $this->setMessage('list_zones', 'success', _('Zones have been deleted successfully.'));
             }
             $this->redirect('list_zones.php');
         }

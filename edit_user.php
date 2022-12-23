@@ -111,7 +111,7 @@ class EditUserController extends BaseController
             if ($i_username != "" && $i_perm_templ > "0" && $i_fullname) {
                 $active = !isset($i_active);
                 if (do_hook('edit_user', $edit_id, $i_username, $i_fullname, $i_email, $i_perm_templ, $i_description, $active, $i_password)) {
-                    $this->setMessage('users', 'success', SUC_USER_UPD);
+                    $this->setMessage('users', 'success', _('The user has been updated successfully.'));
                     $this->redirect('users.php');
                 }
             }

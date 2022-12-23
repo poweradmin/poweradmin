@@ -80,7 +80,7 @@ class DnsSecDeleteKeyController extends BaseController
         }
 
         if ($user_is_zone_owner != "1") {
-            error(ERR_PDNSSEC_DEL_ZONE_KEY);
+            error(_('Failed to delete DNSSEC key.'));
         }
 
         if ($confirm == '1' && Dnssec::dnssec_remove_zone_key($domain_name, $key_id)) {

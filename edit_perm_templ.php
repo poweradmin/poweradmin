@@ -67,9 +67,9 @@ class EditPermTemplController extends BaseController
 
         if ($v->validate()) {
             do_hook('update_perm_templ_details', $_POST);
-            success(SUC_RECORD_UPD);
 
-            $this->showListPermTempl();
+            $this->setMessage('list_perm_templ', 'success', _('The permission template has been updated successfully.'));
+            $this->redirect('list_perm_templ.php');
         } else {
             $this->showErrors($v->errors());
         }
@@ -83,13 +83,6 @@ class EditPermTemplController extends BaseController
             'templ' => do_hook('get_permission_template_details', $id),
             'perms_templ' => do_hook('get_permissions_by_template_id', $id),
             'perms_avail' => do_hook('get_permissions_by_template_id')
-        ]);
-    }
-
-    private function showListPermTempl()
-    {
-        $this->render('list_perm_templ.html', [
-            'permission_templates' => do_hook('list_permission_templates')
         ]);
     }
 }

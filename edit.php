@@ -101,9 +101,9 @@ class EditController extends BaseController {
                 DnsRecord::update_soa_serial($_GET['id']);
 
                 if ($one_record_changed) {
-                    success(SUC_ZONE_UPD);
+                    success(_('Zone has been updated successfully.'));
                 } else {
-                    success(SUC_ZONE_NOCHANGE);
+                    success(_('Zone did not have any record changes.'));
                 }
 
                 $this->config('pdnssec_use') && Dnssec::dnssec_rectify_zone($_GET['id']);
@@ -118,7 +118,7 @@ class EditController extends BaseController {
             } elseif ($_POST['templ_name'] == '') {
                 error(ERR_ZONE_TEMPL_IS_EMPTY);
             } else {
-                success(SUC_ZONE_TEMPL_ADD);
+                success(_('Zone template has been added successfully.'));
                 $records = DnsRecord::get_records_from_domain_id($zone_id);
                 ZoneTemplate::add_zone_templ_save_as($_POST['templ_name'], $_POST['templ_descr'], $_SESSION['userid'], $records, DnsRecord::get_domain_name_by_id($zone_id));
             }

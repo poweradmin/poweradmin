@@ -108,7 +108,7 @@ class EditRecordController extends BaseController {
 
             $this->config('pdnssec_use') && Dnssec::dnssec_rectify_zone($zid);
 
-            $this->setMessage('edit', 'success', SUC_RECORD_UPD);
+            $this->setMessage('edit', 'success', _('The record has been updated successfully.'));
             $this->redirect('edit.php', ['id' => $zid]);
         }
     }

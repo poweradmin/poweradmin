@@ -57,7 +57,7 @@ class AddUserController extends BaseController {
 
         if ($v->validate()) {
             if (do_hook('add_new_user', $_POST)) {
-                $this->setMessage('users', 'success', SUC_USER_ADD);
+                $this->setMessage('users', 'success', _('The user has been created successfully.'));
                 $this->redirect('users.php');
             } else {
                 $this->showForm();

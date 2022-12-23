@@ -79,7 +79,7 @@ class DnsSecEditKeyController extends \Poweradmin\BaseController {
 
         }
         if ($user_is_zone_owner != "1") {
-            error(ERR_PDNSSEC_DEL_ZONE_KEY);
+            error(_('Failed to delete DNSSEC key.'));
         }
 
         $key_info = Dnssec::dnssec_get_zone_key($domain_name, $key_id);

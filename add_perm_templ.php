@@ -61,7 +61,7 @@ class AddPermTemplController extends BaseController
 
         if ($v->validate()) {
             do_hook('add_perm_templ', $_POST);
-            $this->setMessage('list_perm_templ', 'success', SUC_PERM_TEMPL_ADD);
+            $this->setMessage('list_perm_templ', 'success', _('The permission template has been added successfully.'));
             $this->redirect('list_perm_templ.php');
         } else {
             $this->showErrors($v->errors());

@@ -88,7 +88,7 @@ class AddZoneSlaveController extends BaseController
                     $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                     $zone, $master), $zone_id);
 
-                $this->setMessage('list_zones', 'success', SUC_ZONE_ADD);
+                $this->setMessage('list_zones', 'success', _('Zone has been added successfully.'));
                 $this->redirect('list_zones.php');
             }
         }

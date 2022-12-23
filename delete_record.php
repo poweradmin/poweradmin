@@ -58,7 +58,6 @@ class DeleteRecordController extends BaseController {
         if (isset($_GET['confirm'])) {
             $record_info = DnsRecord::get_record_from_id($record_id);
             if (DnsRecord::delete_record($record_id)) {
-                success("<a href=\"edit.php?id=" . $zid . "\">" . SUC_RECORD_DEL . "</a>");
                 if (isset($record_info['prio'])) {
                     Logger::log_info(sprintf('client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s priority:%s',
                         $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
@@ -74,7 +73,7 @@ class DeleteRecordController extends BaseController {
 
                 $this->config('pdnssec_use') && Dnssec::dnssec_rectify_zone($zid);
 
-                $this->setMessage('edit', 'success', SUC_RECORD_DEL);
+                $this->setMessage('edit', 'success', _('The record has been deleted successfully.'));
                 $this->redirect('edit.php', ['id' => $zid]);
             }
         }
