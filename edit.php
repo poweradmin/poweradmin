@@ -49,7 +49,6 @@ class EditController extends BaseController {
     public function run(): void
     {
         $pdnssec_use = $this->config('pdnssec_use');
-        $iface_add_reverse_record = $this->config('iface_add_reverse_record');
         $iface_rowamount = $this->config('iface_rowamount');
         $iface_zone_comments = $this->config('iface_zone_comments');
 
@@ -263,6 +262,7 @@ class EditController extends BaseController {
             'dns_ttl' => $this->config('dns_ttl'),
             'is_rev_zone' => preg_match('/i(p6|n-addr).arpa/i', $zone_name),
             'record_types' => RecordType::getTypes(),
+            'iface_add_reverse_record' => $this->config('iface_add_reverse_record'),
         ]);
     }
 }
