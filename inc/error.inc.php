@@ -78,14 +78,14 @@ define("ERR_DNS_HTML_TAGS", _('You cannot use html tags for this type of record.
 define("ERR_DNS_TXT_MISSING_QUOTES", _('Add quotes around TXT record content.'));
 define("ERR_DNS_SPF_CONTENT", _('The content of the SPF record is invalid'));
 
-/** Print error message (toolkit.inc)
+/** Print error message
  *
  * @param string $msg Error message
- * @param string $name Offending DNS record name
+ * @param string|null $name Offending DNS record name
  *
  * @return null
  */
-function error($msg, $name = null) {
+function error(string $msg, string $name = null) {
         if ($name == null) {
                 echo "     <div class=\"alert alert-danger\"><strong>Error:</strong> " . $msg . "</div>\n";
         } else {
