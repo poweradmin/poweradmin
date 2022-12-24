@@ -26,7 +26,7 @@
  *
  * @return null
  */
-function success($msg) {
+function success(string $msg) {
     if ($msg) {
         echo "     <div class=\"alert alert-success\">" . $msg . "</div>\n";
     } else {
