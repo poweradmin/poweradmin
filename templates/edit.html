@@ -35,7 +35,8 @@
             <th>&nbsp;</th>
         </tr>
         {% for r in records %}
-        {% if not r['type'] == "SOA" and r['type'] == "NS" and perm_edit == "own_as_client" %}
+
+        {% if r['type'] != "SOA" and r['type'] != "NS" %}
         <input type="hidden" name="record[{{ r['id'] }}][rid]" value="{{ r['id'] }}">
         <input type="hidden" name="record[{{ r['id'] }}][zid]" value="{{ zone_id }}">
         {% endif %}
@@ -49,9 +50,9 @@
             <td>{{ r['ttl'] }}</td>
             {% else %}
             <td class="col-sm-2"><input class="form-control form-control-sm" type="text"
-                                        name="{{ record[r['id']] }}[name]" value="{{ r['name'] }}"></td>
+                                        name="record[{{ r['id'] }}][name]" value="{{ r['name'] }}"></td>
             <td class="col-sm-1">
-                <select class="form-select form-select-sm" name="{{ record[r['id']] }}[type]">
+                <select class="form-select form-select-sm" name="record[{{ r['id'] }}][type]">
                     {% set found_selected_type = false %}
                     {% for type_available in types %}
                     {% if type_available == r['type'] %}
@@ -144,13 +145,7 @@
             <td>{% trans 'TTL' %}</td>
         </tr>
         <tr>
-            <td><input class="form-control form-control-sm" type="text" name="name" value="">.
-                {% if idn_zone_name %}
-                {{ idn_zone_name }}
-                {% else %}
-                {{ zone_name }}
-                {% endif %}
-            </td>
+            <td><input class="form-control form-control-sm" type="text" name="name" value="">.{{ idn_zone_name ?: zone_name }}</td>
             <td>IN</td>
             <td>
                 <select class="form-select form-select-sm" name="type">

@@ -77,11 +77,18 @@ class EditRecordController extends BaseController {
         $record = DnsRecord::get_record_from_id($_GET["id"]);
         $record['record_name'] = trim(str_replace(htmlspecialchars($zone_name), '', htmlspecialchars($record["name"])), '.');
 
+        if (preg_match("/^xn--/", $zone_name)) {
+            $idn_zone_name = idn_to_utf8($zone_name, IDNA_NONTRANSITIONAL_TO_ASCII);
+        } else {
+            $idn_zone_name = "";
+        }
+
         $this->render('edit_record.html', [
             'record_id' => $record_id,
             'record' => $record,
             'recordTypes' => $recordTypes,
             'zone_name' => $zone_name,
+            'idn_zone_name' => $idn_zone_name,
             'zone_type' => $zone_type,
             'zid' => $zid,
             'perm_edit' => $perm_edit,

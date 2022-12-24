@@ -92,10 +92,19 @@ class DeleteRecordController extends BaseController {
 
     public function showQuestion(string $record_id, $zid, int $zone_id): void
     {
+        $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
+
+        if (preg_match("/^xn--/", $zone_name)) {
+            $idn_zone_name = idn_to_utf8($zone_name, IDNA_NONTRANSITIONAL_TO_ASCII);
+        } else {
+            $idn_zone_name = "";
+        }
+
         $this->render('delete_record.html', [
             'record_id' => $record_id,
             'zid' => $zid,
-            'zone_name' => DnsRecord::get_domain_name_by_id($zone_id),
+            'zone_name' => $zone_name,
+            'idn_zone_name' => $idn_zone_name,
             'record_info' => DnsRecord::get_record_from_id($record_id),
         ]);
     }

@@ -96,6 +96,12 @@ class AddRecordController extends BaseController
         $iface_add_reverse_record = $this->config('iface_add_reverse_record');
         $is_reverse_zone = preg_match('/i(p6|n-addr).arpa/i', $zone_name);
 
+        if (preg_match("/^xn--/", $zone_name)) {
+            $idn_zone_name = idn_to_utf8($zone_name, IDNA_NONTRANSITIONAL_TO_ASCII);
+        } else {
+            $idn_zone_name = "";
+        }
+
         $this->render('add_record.html', [
             'types' => RecordType::getTypes(),
             'name' => '',
@@ -105,6 +111,7 @@ class AddRecordController extends BaseController
             'prio' => $prio,
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
+            'idn_zone_name' => $idn_zone_name,
             'is_reverse_zone' => $is_reverse_zone,
             'iface_add_reverse_record' => $iface_add_reverse_record,
         ]);
