@@ -426,125 +426,95 @@ msgstr "Unbekannter Datenbank Typ in inc/config.inc.php."
 msgid "If you specify an MX record it must be a hostname."
 msgstr "Wenn Sie einen MX Eintrag definieren, dann muzlig; es ein Hostname sein."
 
-#: inc/error.inc.php:27
 msgid "You do not have the permission to perform searches."
 msgstr "Sie haben nicht die Berechtigung zum Suchen."
 
-#: inc/error.inc.php:28
 msgid "You do not have the permission to add a record to this zone."
 msgstr "Sie haben f&uuml;r diese Zone nicht die Berechtigung zum hinzuf&uuml;gen eines Eintrages."
 
-#: inc/error.inc.php:29
 msgid "You do not have the permission to edit this record."
 msgstr "Sie haben nicht die Berechtigung zum Editieren dieses Datensatzes."
 
-#: inc/error.inc.php:30
 msgid "You do not have the permission to view this record."
 msgstr "Sie haben nicht die Berechtigung zum Ansehen dieses Eintrages."
 
-#: inc/error.inc.php:31
 msgid "You do not have the permission to delete this record."
 msgstr "Sie haben nicht die Berechtigung diesen Eintrag l&ouml;schen zu k&ouml;nnen."
 
-#: inc/error.inc.php:32
 msgid "You do not have the permission to add a master zone."
 msgstr "Sie haben nicht die Berechtigung zum Hinzuf&uuml;gen einer Master Zone."
 
-#: inc/error.inc.php:33
 msgid "You do not have the permission to add a slave zone."
 msgstr "Sie haben nicht die Berechtigung zum Hinzuf&uuml;gen einer Slave Zone"
 
-#: inc/error.inc.php:34
 msgid "You do not have the permission to delete a zone."
 msgstr "Sie haben nicht die Berechtigung zum L&ouml;schen einer Zone."
 
-#: inc/error.inc.php:35
 msgid "You do not have the permission to delete a supermaster."
 msgstr "Sie haben nicht die Berechtigung zum L&ouml;schen eines Supermasters."
 
-#: inc/error.inc.php:36
 msgid "You do not have the permission to view this zone."
 msgstr "Sie haben nicht die Berechtigung zum Anzeigen dieser Zone."
 
-#: inc/error.inc.php:37
 msgid "You do not have the permission to edit this user."
 msgstr "Sie haben nicht die Berechtigung zur Bearbeitung dieses Benutzers."
 
-#: inc/error.inc.php:38
 msgid "You do not have the permission to edit permission templates."
 msgstr "Sie haben nicht die Berechtigung zum Editieren von Berechtigungsvorlagen."
 
-#: inc/error.inc.php:39
 msgid "You do not have the permission to delete permission templates."
 msgstr "Sie haben nicht die Berechtigung zum L&ouml;schen von Berechtigungsvorlagen."
 
-#: inc/error.inc.php:40
 msgid "You do not have the permission to add a new user."
 msgstr "Sie haben nicht die Berechtigung zum Hinzuf&uuml;gen eines neuen Benutzers."
 
-#: inc/error.inc.php:41
 msgid "You do not have the permission to delete this user."
 msgstr "Sie haben nicht die Berechtigung zum L&ouml;schen dieses Benutzers."
 
-#: inc/error.inc.php:44
 msgid "This is an invalid zone name."
 msgstr "Dies ist ein ung&uuml;ltiger Zonenname."
 
-#: inc/error.inc.php:45
 msgid "There is already a supermaster with this IP address."
 msgstr "Es existiert bereits ein Supermaster mit dieser IP Adresse."
 
-#: inc/error.inc.php:46
 msgid "There is already a zone with this name."
 msgstr "Es existiert bereits eine Zone mit diesem Namen."
 
-#: inc/error.inc.php:49
 msgid "Username exist already, please choose another one."
 msgstr "Benutzername existiert bereits, bitte w&auml;hlen Sie einen anderen..."
 
-#: inc/error.inc.php:50
 msgid "User does not exist."
 msgstr "Benutzer existiert nicht."
 
-#: inc/error.inc.php:51
 msgid "You did not enter the correct current password."
 msgstr "Sie haben nicht das korrekte Passwort eingegeben."
 
-#: inc/error.inc.php:52
 msgid "The two new password fields do not match."
 msgstr "Die zwei Passw&ouml;rter stimmen nicht &uuml;berein."
 
-#: inc/error.inc.php:53
 msgid "This template is assigned to at least one user."
 msgstr "Diese Vorlage ist zumindest einem Benutzer zugewiesen."
 
-#: inc/error.inc.php:56
 msgid "Invalid or unexpected input given."
 msgstr "Ung&uuml;ltiger bzw. unerwarteter Input."
 
-#: inc/error.inc.php:57
 #, php-format
 msgid "Invalid argument(s) given to function %s"
 msgstr "Ung&uuml;ltige(s) Argument(e) zur Funktion %s angegeben"
 
-#: inc/error.inc.php:58
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "Ung&uuml;ltige(s) Argument(e) zur Funktion %s %s angegeben"
 
-#: inc/error.inc.php:59
 msgid "Unknown error."
 msgstr "Unbekannter Fehler."
 
-#: inc/error.inc.php:60
 msgid "Enter a valid email address."
 msgstr "Geben Sie eine g&uuml;ltige Email-Adresse ein."
 
-#: inc/error.inc.php:63
 msgid "Your content field doesnt have a legit value."
 msgstr "Ihr Eingabefeld besitzt keinen g&uuml;ltigen Wert."
 
-#: inc/error.inc.php:64
 msgid "Invalid hostname."
 msgstr "Ung&uuml;ltiger Hostname."
 
@@ -563,19 +533,15 @@ msgstr "Der angegebene Hostname beinhaltet zu viele Schr&auml;gstriche."
 msgid "Unknown record type."
 msgstr "Unbekannter Datensatz-Typ."
 
-#: inc/error.inc.php:66
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "Dies ist keine g&uuml;ltige IPv4 bzw. IPv6 Adresse."
 
-#: inc/error.inc.php:67
 msgid "This is not a valid IPv6 address."
 msgstr "Dies ist keine g&uuml;ltige IPv6 Adresse."
 
-#: inc/error.inc.php:68
 msgid "This is not a valid IPv4 address."
 msgstr "Dies ist keine g&uuml;ltige IPv4 Adresse."
 
-#: inc/error.inc.php:69
 msgid "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
 msgstr "Dies ist kein g&uuml;ltiger CNAME. Haben Sie diesem Eintrag einen MX oder NS Eintrag zugewiesen?"
 
@@ -597,63 +563,48 @@ msgstr "Ung&uuml;ltiger Wert f&uuml;r das TTL Feld. Es sollte ein numerischer We
 msgid "Invalid value for prio field. It should be numeric."
 msgstr "Ung&uuml;ltiger Wert f&uuml;r das Priorit&auml;ts Feld. Es sollte ein numerischer Wert sein."
 
-#: inc/error.inc.php:71
 msgid "NS records must be a hostnames."
 msgstr "NS Eintr&auml;ge m&uuml;ssen Hostnamen sein."
 
-#: inc/error.inc.php:73
 msgid "A prio field should be numeric."
 msgstr "Ein Priorit&auml;ts Feld sollte numerisch sein."
 
-#: inc/error.inc.php:74
 msgid "At least one of the five last SOA data fields is not numeric."
 msgstr "Zumindest eines der f&uuml;nf letzten SOA Daten Felder ist nicht numerisch."
 
-#: inc/error.inc.php:75
 msgid "You can only have five numeric fields in the SOA record."
 msgstr "Ein SOA Eintrag kann nur f&uuml;nf numerische Felder beinhalten."
 
-#: inc/error.inc.php:76
 msgid "The first part of your SOA record does not contain a valid hostname for a DNS server."
 msgstr "Der erste Teil Ihres SOA Eintrags beinhaltet f&uuml;r einen DNS Server keinen g&uuml;ltigen Hostnamen."
 
-#: inc/error.inc.php:79
 msgid "Zone has been added successfully."
 msgstr "Die Zone wurde erfolgreich hinzugef&uuml;gt."
 
-#: inc/error.inc.php:80
 msgid "Zone has been deleted successfully."
 msgstr "Die Zone wurde erfolgreich gel&ouml;scht."
 
-#: inc/error.inc.php:81
 msgid "The user has been updated successfully."
 msgstr "Der Benutzer wurde erfolgreich ge&auml;ndert."
 
-#: inc/error.inc.php:82
 msgid "The user has been created successfully."
 msgstr "Der Benutzer wurde erfolgreich hinzugef&uuml;gt."
 
-#: inc/error.inc.php:83
 msgid "The user has been deleted successfully."
 msgstr "Der Benutzer wurde erfolgreich gel&ouml;scht."
 
-#: inc/error.inc.php:84
 msgid "The record has been updated successfully."
 msgstr "Der Eintrag wurde erfolgreich ge&auml;ndert."
 
-#: inc/error.inc.php:85
 msgid "The record has been deleted successfully."
 msgstr "Der Eintrag wurde erfolgreich gel&ouml;scht."
 
-#: inc/error.inc.php:85
 msgid "The supermaster has been deleted successfully."
 msgstr "Der Supermaster wurde erfolgreich gel&ouml;scht."
 
-#: inc/error.inc.php:87
 msgid "The supermaster has been added successfully."
 msgstr "Der Supermaster wurde erfolgreich hinzugef&uuml;gt."
 
-#: inc/error.inc.php:88
 msgid "The permission template has been deleted successfully."
 msgstr "Die Berechtigungsvorlage wurde erfolgreich gel&ouml;scht."
 

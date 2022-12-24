@@ -11,7 +11,7 @@ if (!@include_once('../inc/config.inc.php')) {
     error(_('You have to create a config.inc.php!'));
 }
 
-require '../inc/error.inc.php';
+require '../inc/messages.inc.php';
 require '../inc/database.inc.php';
 require '../inc/file.inc.php';
 require '../inc/migrations.inc.php';

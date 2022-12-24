@@ -37,7 +37,7 @@ use Poweradmin\Validation;
 use Poweradmin\Logger;
 
 require_once 'inc/toolkit.inc.php';
-require_once 'inc/message.inc.php';
+require_once 'inc/messages.inc.php';
 
 class DeleteRecordController extends BaseController {
 

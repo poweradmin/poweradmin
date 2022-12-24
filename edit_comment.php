@@ -35,7 +35,7 @@ use Poweradmin\Permission;
 use Poweradmin\Validation;
 
 require_once 'inc/toolkit.inc.php';
-require_once 'inc/message.inc.php';
+require_once 'inc/messages.inc.php';
 
 class EditCommentController extends BaseController {
 

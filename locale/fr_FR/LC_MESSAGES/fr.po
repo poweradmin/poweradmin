@@ -481,356 +481,273 @@ msgstr "Connexion"
 msgid "Go"
 msgstr "Exécuter"
 
-#: inc/error.inc.php:23
 msgid "You do not have the permission to perform searches."
 msgstr "Vous n'avez pas les droits pour faire des recherches."
 
-#: inc/error.inc.php:24
 msgid "You do not have the permission to add a record to this zone."
 msgstr "Vous n'avez pas les droits pour ajouter un enregistrement à cette zone."
 
-#: inc/error.inc.php:25
 msgid "You do not have the permission to edit this record."
 msgstr "Vous n'avez pas les droits pour modifier cet enregistrement."
 
-#: inc/error.inc.php:26
 msgid "You do not have the permission to view this record."
 msgstr "Vous n'avez pas les droits pour voir cet enregistrement."
 
-#: inc/error.inc.php:27
 msgid "You do not have the permission to delete this record."
 msgstr "Vous n'avez pas les droits pour supprimer cet enregistrement."
 
-#: inc/error.inc.php:28
 msgid "You do not have the permission to add a master zone."
 msgstr "Vous n'avez pas les droits pour ajouter une zone maître."
 
-#: inc/error.inc.php:29
 msgid "You do not have the permission to add a slave zone."
 msgstr "Vous n'avez pas les droits pour ajouter une zone esclave."
 
-#: inc/error.inc.php:30
 msgid "You do not have the permission to delete a zone."
 msgstr "Vous n'avez pas les droits pour supprimer des zones."
 
-#: inc/error.inc.php:31
 msgid "You do not have the permission to view this comment."
 msgstr "Vous n'avez pas les droits pour voir ce commentaire."
 
-#: inc/error.inc.php:32
 msgid "You do not have the permission to edit this comment."
 msgstr "Vous n'avez pas les droits pour modifier ce commentaire."
 
-#: inc/error.inc.php:33
 msgid "You do not have the permission to delete a supermaster."
 msgstr "Vous n'avez pas les droits pour supprimer un supermaître."
 
-#: inc/error.inc.php:34
 msgid "You do not have the permission to view this zone."
 msgstr "Vous n'avez pas les droits pour voir cette zone."
 
-#: inc/error.inc.php:35
 msgid "You do not have the permission to edit this user."
 msgstr "Vous n'avez pas les droits pour modifier cet utilisateur."
 
-#: inc/error.inc.php:36
 msgid "You do not have the permission to edit permission templates."
 msgstr "Vous n'avez pas les droits pour modifier les droits de gabarit."
 
-#: inc/error.inc.php:37
 msgid "You do not have the permission to delete permission templates."
 msgstr "Vous n'avez pas les droits pour supprimer les droits de gabarit."
 
-#: inc/error.inc.php:38
 msgid "You do not have the permission to add a new user."
 msgstr "Vous n'avez pas les droits pour ajouter un utilisateur."
 
-#: inc/error.inc.php:39
 msgid "You do not have the permission to delete this user."
 msgstr "Vous n'avez pas les droits pour supprimer cet utilisateur."
 
-#: inc/error.inc.php:40
 msgid "You do not have the permission to edit zone templates."
 msgstr "Vous n'avez pas les droits pour modifier les gabarits de zone."
 
-#: inc/error.inc.php:41
 msgid "You do not have the permission to delete zone templates."
 msgstr "Vous n'avez pas les droits pour supprimer les gabarits de zone."
 
-#: inc/error.inc.php:42
 msgid "You do not have the permission to add a zone templates."
 msgstr "Vous n'avez pas les droits pour ajouter un gabarit de zone."
 
-#: inc/error.inc.php:45
 msgid "This is an invalid zone name."
 msgstr "Ceci ,n'est pas un nom de zone valide."
 
-#: inc/error.inc.php:46
 msgid "There is already a supermaster with this IP address."
 msgstr "Il existe déjà un supermaître avec cette adresse IP."
 
-#: inc/error.inc.php:47
 msgid "There is already a zone with this name."
 msgstr "Il existe déjà une zone portant ce nom."
 
-#: inc/error.inc.php:50
 msgid "Username exist already, please choose another one."
 msgstr "Cet utilisateur existe déjà. Choisissez en un autre."
 
-#: inc/error.inc.php:51
 msgid "User does not exist."
 msgstr "L'utilisateur n'existe pas."
 
-#: inc/error.inc.php:52
 msgid "You did not enter the correct current password."
 msgstr "Vous n'avez pas donné le bon mot de passe actuel."
 
-#: inc/error.inc.php:53
 msgid "The two new password fields do not match."
 msgstr "Les deux mots de passe sont différents."
 
-#: inc/error.inc.php:54
 msgid "This template is assigned to at least one user."
 msgstr "Ce gabarit est assigné a au moins une personne."
 
-#: inc/error.inc.php:57
 msgid "Invalid or unexpected input given."
 msgstr "Saisie invalide ou inattendu."
 
-#: inc/error.inc.php:58
 #, php-format
 msgid "Invalid argument(s) given to function %s"
 msgstr "Un argument invalide a été donné à la fonction %s"
 
-#: inc/error.inc.php:59
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "Un argument invalide a été donné à la fonction %s %s"
 
-#: inc/error.inc.php:60
 msgid "Unknown error."
 msgstr "Erreur inconnue."
 
-#: inc/error.inc.php:61
 msgid "Enter a valid email address."
 msgstr "Entrez une adresse de courrier électronique valable."
 
-#: inc/error.inc.php:62
 msgid "There is no zone with this ID."
 msgstr "Il n'y a aucune zone avec cet ID."
 
-#: inc/error.inc.php:63
 msgid "There is no zone template with this ID."
 msgstr "Il n'y a aucun gabarit de zone avec cet ID."
 
-#: inc/error.inc.php:64
 msgid "The <a href=\"install/\">install/</a> directory exists, you must remove it first before proceeding."
 msgstr ""
 "Le repertoire <a href=\"install/\">install/</a> existe, vous devez le retirer "
 "avant de continuer."
 
-#: inc/error.inc.php:67
 msgid "No database name has been set in config.inc.php."
 msgstr "Le nom de la base de données n'a pas été trouvé dans config.inc.php."
 
-#: inc/error.inc.php:68
 msgid "No database host has been set in config.inc.php."
 msgstr ""
 "Le serveur de la base de données n'a pas été trouvé dans config.inc.php."
 
-#: inc/error.inc.php:69
 msgid "No database username has been set in config.inc.php."
 msgstr ""
 "L'utilisateur de la base de données n'a pas été trouvé dans config.inc.php."
 
-#: inc/error.inc.php:70
 msgid "No database password has been set in config.inc.php."
 msgstr ""
 "Le mot de passe de la base de données n'a pas été trouvé dans "
 "config.inc.php."
 
-#: inc/error.inc.php:71
 msgid "No or unknown database type has been set in config.inc.php."
 msgstr "Le type de la base de données n'a pas été trouvé dans config.inc.php."
 
-#: inc/error.inc.php:74
 msgid "Your content field doesnt have a legit value."
 msgstr "La valeur du champ contenu n'est pas valable."
 
-#: inc/error.inc.php:75
 msgid "Invalid hostname."
 msgstr "Nom de machine invalide."
 
-#: inc/error.inc.php:76
 msgid "You have invalid characters in your hostname."
 msgstr "Il y a des caractères invalides dans votre nom de machine."
 
-#: inc/error.inc.php:77
 msgid "A hostname can not start or end with a dash."
 msgstr "Un nom de machine ne peut pas commencer ou finir avec un tiret."
 
-#: inc/error.inc.php:78
 msgid "Given hostname or one of the labels is too short or too long."
 msgstr ""
 "Le nom de machine donné ou l'une de ses étiquettes est trop long ou trop "
 "court."
 
-#: inc/error.inc.php:79
 msgid "Given hostname has too many slashes."
 msgstr "Le nom de machine donné contient trop de tirets."
 
-#: inc/error.inc.php:80
 msgid "Unknown record type."
 msgstr "Type d'enregistrement inconnu."
 
-#: inc/error.inc.php:81
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "Ceci n'est pas une adresse IPv4 ou IPv6 valide."
 
-#: inc/error.inc.php:82
 msgid "This is not a valid IPv6 address."
 msgstr "Ceci n'est pas une adresse IPv6 valide."
 
-#: inc/error.inc.php:83
 msgid "This is not a valid IPv4 address."
 msgstr "Ceci n'est pas une adresse IPv4 valide."
 
-#: inc/error.inc.php:84
 msgid "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
 msgstr ""
 "Ceci n'est pas un CNAME valide. Avez vous assigné un enregistrement MX ou NS "
 "à l'enregistrement ?"
 
-#: inc/error.inc.php:85
 msgid "This is not a valid record. There is already exists a CNAME with this name."
 msgstr ""
 "Ceci n'est pas un enregistrement valide. Il existe déjà un CNAME avec ce "
 "nom."
 
-#: inc/error.inc.php:86
 msgid "This is not a valid CNAME. There is already exists an A, AAAA or CNAME with this name."
 msgstr ""
 "Ceci n'est pas un CNAME valide. Il existe déjà un A, AAAA ou CNAME avec ce "
 "nom."
 
-#: inc/error.inc.php:87
 msgid "You can not point a NS or MX record to a CNAME record. Remove or rename the CNAME record first, or take another name."
 msgstr ""
 "Vous ne pouvez pas faire pointer un enregistrement NS ou MX vers un "
 "enregistrement CNAME. Retirez ou renommez l'enregistrement CNAME d'abord ou "
 "choisissez un autre nom."
 
-#: inc/error.inc.php:88
 msgid "NS records must be a hostnames."
 msgstr "Les enregistrements NS doivent être des noms de machines."
 
-#: inc/error.inc.php:89
 msgid "A prio field should be numeric."
 msgstr "Un champ de priorité doit être numérique."
 
-#: inc/error.inc.php:90
 msgid "Invalid value for name field of SOA record. It should be the name of the zone."
 msgstr ""
 "Valeur invalide pour le champ nom de l'enregistrement SOA. Il devrait être "
 "le nom de la zone."
 
-#: inc/error.inc.php:91
 msgid "You have an error in the MNAME field of the SOA record."
 msgstr "Vous avez une erreur dans le champ MNAME de l'enregistrement SOA."
 
-#: inc/error.inc.php:92
 msgid "Invalid value for content field of HINFO record."
 msgstr "La valeur du champ contenu pour l'enregistrement HINFO est invalide."
 
-#: inc/error.inc.php:93
 msgid "The hostname is too long."
 msgstr "Le nom de machine est trop long."
 
-#: inc/error.inc.php:94
 msgid "You are using an invalid top level domain."
 msgstr "Vous utilisez un nom de domaine racine invalide."
 
-#: inc/error.inc.php:95
 msgid "Invalid value for TTL field. It should be numeric."
 msgstr "La valeur du champ TTL est invalide. Il devrait être numérique."
 
-#: inc/error.inc.php:96
 msgid "Invalid value for prio field. It should be numeric."
 msgstr "La valeur du champ priorité est invalide. Il devrait être numérique."
 
-#: inc/error.inc.php:97
 msgid "Invalid value for name field of SRV record."
 msgstr "La valeur du champ nom pour l'enregistrement SRV est invalide."
 
-#: inc/error.inc.php:98
 msgid "Invalid value for the priority field of the SRV record."
 msgstr "La valeur du champ priorité pour l'enregistrement SRV est invalide."
 
-#: inc/error.inc.php:99
 msgid "Invalid value for the weight field of the SRV record."
 msgstr "La valeur du champ poids pour l'enregistrement SRV est invalide."
 
-#: inc/error.inc.php:100
 msgid "Invalid SRV target."
 msgstr "Cible SRV invalide."
 
-#: inc/error.inc.php:101
 msgid "Invalid characters have been used in this record."
 msgstr "Des caractères invalides ont été utilisés dans cet enregistrement."
 
-#: inc/error.inc.php:104
 msgid "Zone has been added successfully."
 msgstr "La zone a été ajouté avec succès."
 
-#: inc/error.inc.php:105
 msgid "Zone has been deleted successfully."
 msgstr "La zone a été supprimé avec succès."
 
-#: inc/error.inc.php:106
 msgid "The user has been updated successfully."
 msgstr "L'utilisateur a été mis à jour avec succès."
 
-#: inc/error.inc.php:107
 msgid "The user has been created successfully."
 msgstr "L'utilisateur a été ajouté avec succès."
 
-#: inc/error.inc.php:108
 msgid "The user has been deleted successfully."
 msgstr "L'utilisateur a été supprimé avec succès."
 
-#: inc/error.inc.php:109
 msgid "The record has been updated successfully."
 msgstr "L'enregistrement a été mis à jour avec succès."
 
-#: inc/error.inc.php:110
 msgid "The record has been deleted successfully."
 msgstr "L'enregistrement a été supprimé avec succès."
 
-#: inc/error.inc.php:111
 msgid "The comment has been updated successfully."
 msgstr "Le commentaire a été mis à jour avec succès."
 
-#: inc/error.inc.php:112
 msgid "The supermaster has been deleted successfully."
 msgstr "Le supermaître a été supprimé avec succès."
 
-#: inc/error.inc.php:113
 msgid "The supermaster has been added successfully."
 msgstr "Le supermaître a été ajouté avec succès."
 
-#: inc/error.inc.php:114
 msgid "The permission template has been deleted successfully."
 msgstr "Le gabarit de droits a été supprimé avec succès."
 
-#: inc/error.inc.php:115
 msgid "Zone template has been added successfully."
 msgstr "Le gabarit de zone a été ajouté avec succès."
 
-#: inc/error.inc.php:116
 msgid "Zone template has been updated successfully."
 msgstr "Le gabarit de zone a été mis à jour avec succès."
 
-#: inc/error.inc.php:117
 msgid "Zone template has been deleted successfully."
 msgstr "Le gabarit de zone a été supprimé avec succès."
 

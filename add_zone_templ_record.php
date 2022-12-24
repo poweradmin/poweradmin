@@ -34,7 +34,7 @@ use Poweradmin\RecordType;
 use Poweradmin\ZoneTemplate;
 
 require_once 'inc/toolkit.inc.php';
-require_once 'inc/message.inc.php';
+require_once 'inc/messages.inc.php';
 
 class AddZoneTemplRecordController extends BaseController {
 

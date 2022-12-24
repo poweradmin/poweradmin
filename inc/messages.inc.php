@@ -33,3 +33,19 @@ function success(string $msg) {
         echo "     <div class=\"alert alert-success\">" . _('Something has been successfully performed. What exactly, however, will remain a mystery.') . "</div>\n";
     }
 }
+
+/** Print error message
+ *
+ * @param string $msg Error message
+ * @param string|null $name Offending DNS record name
+ *
+ * @return null
+ */
+function error(string $msg, string $name = null)
+{
+    if ($name == null) {
+        echo "     <div class=\"alert alert-danger\"><strong>Error:</strong> " . $msg . "</div>\n";
+    } else {
+        echo "     <div class=\"alert alert-danger\"><strong>Error:</strong> " . $msg . " (Record: " . $name . ")</b></div>\n";
+    }
+}

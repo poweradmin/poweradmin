@@ -403,374 +403,285 @@ msgstr "Giriş"
 msgid "Go"
 msgstr "Git"
 
-#: inc/error.inc.php:24
 msgid "You do not have the permission to perform searches."
 msgstr "Arama yapmaya yetkiniz yok."
 
-#: inc/error.inc.php:25
 msgid "You do not have the permission to add a record to this zone."
 msgstr "Bu bölgeye bir kayıt ekleme yetkiniz yok."
 
-#: inc/error.inc.php:26
 msgid "You do not have the permission to edit this record."
 msgstr "Bu kaydı güncelleme yetkiniz yok."
 
-#: inc/error.inc.php:27
 msgid "You do not have the permission to view this record."
 msgstr "Bu kaydı görüntüleme yetkiniz yok."
 
-#: inc/error.inc.php:28
 msgid "You do not have the permission to delete this record."
 msgstr "Bu kaydı silme yetkiniz yok."
 
-#: inc/error.inc.php:29
 msgid "You do not have the permission to add a master zone."
 msgstr "Ana bölge ekleme yetkiniz yok."
 
-#: inc/error.inc.php:30
 msgid "You do not have the permission to add a slave zone."
 msgstr "Bağımlı bölge ekleme yetkiniz yok."
 
-#: inc/error.inc.php:31
 msgid "You do not have the permission to delete a zone."
 msgstr "Bir bölgeyi silme yetkiniz yok."
 
-#: inc/error.inc.php:32
 msgid "You do not have the permission to view this comment."
 msgstr "Bu açıklamayı görüntüleme yetkiniz yok."
 
-#: inc/error.inc.php:33
 msgid "You do not have the permission to edit this comment."
 msgstr "Bu açıklamayı güncelleme yetkiniz yok."
 
-#: inc/error.inc.php:34
 msgid "You do not have the permission to delete a supermaster."
 msgstr "Bir ana kurucuyu silmeye yetkiniz yok."
 
-#: inc/error.inc.php:35
 msgid "You do not have the permission to view this zone."
 msgstr "Bu bölgeyi görüntülemeye yetkiniz yok."
 
-#: inc/error.inc.php:36
 msgid "You do not have the permission to edit this user."
 msgstr "Bu kullanıcıyı güncelleme yetkiniz yok."
 
-#: inc/error.inc.php:37
 msgid "You do not have the permission to edit permission templates."
 msgstr "İzin şablonlarını güncelleme yetkiniz yok."
 
-#: inc/error.inc.php:38
 msgid "You do not have the permission to delete permission templates."
 msgstr "İzin şablonlarını silmeye yetkiniz yok."
 
-#: inc/error.inc.php:39
 msgid "You do not have the permission to add a new user."
 msgstr "Yeni bir kullanıcı eklemeye  yetkiniz yok."
 
-#: inc/error.inc.php:40
 msgid "You do not have the permission to delete this user."
 msgstr "Bu kullanıcıyı silmeye  yetkiniz yok."
 
-#: inc/error.inc.php:41
 msgid "You do not have the permission to edit zone templates."
 msgstr "Bölge şablonlarını güncellemeye  yetkiniz yok."
 
-#: inc/error.inc.php:42
 msgid "You do not have the permission to delete zone templates."
 msgstr "Bölge şablonlarını silmeye yetkiniz yok."
 
-#: inc/error.inc.php:43
 msgid "You do not have the permission to add a zone template."
 msgstr "Bir bölge şablonu eklemeye  yetkiniz yok."
 
-#: inc/error.inc.php:46
 msgid "This is an invalid zone name."
 msgstr "Bu geçersiz bir bölge adı."
 
-#: inc/error.inc.php:47
 msgid "There is already a supermaster with this IP address."
 msgstr "Bu IP adresine sahip başka bir ana kurucu bulunmakta."
 
-#: inc/error.inc.php:48
 msgid "There is already a zone with this name."
 msgstr "Bu ada sahip başka bir bölge bulunmakta."
 
-#: inc/error.inc.php:51
 msgid "Username exist already, please choose another one."
 msgstr "Kullanıcı adı halihazırda mevcut, lütfen bir başkasını seçiniz."
 
-#: inc/error.inc.php:52
 msgid "User does not exist."
 msgstr "Kullanıcı mevcut değil"
 
-#: inc/error.inc.php:53
 msgid "You did not enter the correct current password."
 msgstr "Şu anki şifrenizi doğru şekilde girmediniz."
 
-#: inc/error.inc.php:54
 msgid "The two new password fields do not match."
 msgstr "Her iki yeni şifre alanı aynı değil."
 
-#: inc/error.inc.php:55
 msgid "This template is assigned to at least one user."
 msgstr "Bu şablon en az bir kullacıya atanmıştır."
 
-#: inc/error.inc.php:58
 msgid "Invalid or unexpected input given."
 msgstr "Geçersiz yada umulmadık girdi tahsisi."
 
-#: inc/error.inc.php:59
 #, php-format
 msgid "Invalid argument(s) given to function %s"
 msgstr "%s fonksiyonuna geçersiz argüman(lar) tahsis edildi."
 
-#: inc/error.inc.php:60
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "%s %s fonksiyonuna geçersiz argüman(lar) tahsis edildi."
 
-#: inc/error.inc.php:61
 msgid "Unknown error."
 msgstr "Bilinmeyen hata."
 
-#: inc/error.inc.php:62
 msgid "Enter a valid email address."
 msgstr "Geçerli bir e-posta adresi giriniz."
 
-#: inc/error.inc.php:63
 msgid "There is no zone with this ID."
 msgstr "Bu ID'ye sahip bir bölge yok."
 
-#: inc/error.inc.php:64
 msgid "There is no zone template with this ID."
 msgstr "Bu ID'ye sahip bölge şablonu bulunmamakta."
 
-#: inc/error.inc.php:65
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
 msgstr "<a href=\"install/\">Kurulum/</a> dizini mevcut, ilerlemeden önce dizini silmelisiniz."
 
-#: inc/error.inc.php:66
 msgid ""
 "Zone template with this name already exists, please choose another one."
 msgstr "Bu isimde başka bir bölge şablonu bulunmakta, lütfen bir başkasını seçiniz."
 
-#: inc/error.inc.php:67
 msgid "Template name can't be an empty string."
 msgstr "Şablon adı boş bir dizgi olamaz."
 
-#: inc/error.inc.php:70
 msgid "No database name has been set in config.inc.php."
 msgstr "config.inc.php içerisinde veri tabanı adı tanımlanmamış."
 
-#: inc/error.inc.php:71
 msgid "No database host has been set in config.inc.php."
 msgstr "config.inc.php içerisinde veri tabanı makinası tanımlanmamış."
 
-#: inc/error.inc.php:72
 msgid "No database username has been set in config.inc.php."
 msgstr "config.inc.php içerisinde kullanıcı adı tanımlanmamış."
 
-#: inc/error.inc.php:73
 msgid "No database password has been set in config.inc.php."
 msgstr "config.inc.php içerisinde şifre tanımlanmamış."
 
-#: inc/error.inc.php:74
 msgid "No or unknown database type has been set in config.inc.php."
 msgstr "config.inc.php içerisinde veri tabanı adı tanımlanmamış yada bilinmiyor."
 
-#: inc/error.inc.php:75
 msgid "No database file has been set in config.inc.php."
 msgstr "config.inc.php içerisinde veritabanı dosyası tanımlanmamış."
 
-#: inc/error.inc.php:76
 msgid ""
 "It seems that you forgot to update the database after Poweradmin upgrade to "
 "new version."
 msgstr "Poweradmin'i yeni sürüme yükseltmenin ardından veritabanını güncellenmeyi unuttugunuz anlaşılmakta."
 
-#: inc/error.inc.php:79
 msgid "Your content field doesnt have a legit value."
 msgstr "İçerik alanınız meşru bir değere sahip değil."
 
-#: inc/error.inc.php:80
 msgid "Invalid hostname."
 msgstr "Geçersiz makine adı."
 
-#: inc/error.inc.php:81
 msgid "You have invalid characters in your hostname."
 msgstr "Makina adınız geçersiz karakterlere sahip."
 
-#: inc/error.inc.php:82
 msgid "A hostname can not start or end with a dash."
 msgstr "Makina adı çizgi ile başlayamaz yada bitemez."
 
-#: inc/error.inc.php:83
 msgid "Given hostname or one of the labels is too short or too long."
 msgstr "Verilern makina adı yada etiketlerden birisi ya çok kısa yada çok uzun."
 
-#: inc/error.inc.php:84
 msgid "Given hostname has too many slashes."
 msgstr "Verilen makina adı çok fazla taksime sahip."
 
-#: inc/error.inc.php:85
 msgid "Unknown record type."
 msgstr "Bilinmeyen kayıt türü."
 
-#: inc/error.inc.php:86
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "Bu geçersiz bir IPv4 yada IPv6 adresi."
 
-#: inc/error.inc.php:87
 msgid "This is not a valid IPv6 address."
 msgstr "Bu geçersiz bir IPv6 adresi."
 
-#: inc/error.inc.php:88
 msgid "This is not a valid IPv4 address."
 msgstr "Bu geçersiz bir IPv4 adresi."
 
-#: inc/error.inc.php:89
 msgid ""
 "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
 msgstr "Bu geçersiz bir CNAME. Kayda MX yada NS kaydı atadınız mı?"
 
-#: inc/error.inc.php:90
 msgid ""
 "This is not a valid record. There is already exists a CNAME with this name."
 msgstr "Bu geçersiz bir kayıt. Halihazırda bu isimde bir CNAME bulunmakta."
 
-#: inc/error.inc.php:91
 msgid ""
 "This is not a valid CNAME. There is already exists an A, AAAA or CNAME with "
 "this name."
 msgstr "Bu geçersiz bir CNAME. Halihazırda bu isimde bir A, AAAA, yada CNAME bulunmakta."
 
-#: inc/error.inc.php:92
 msgid ""
 "You can not point a NS or MX record to a CNAME record. Remove or rame the "
 "CNAME record first, or take another name."
 msgstr "CNAME kaydına NS yada MX kaydı yöneltemezsiniz. İlk olarak CNAME kaydını silin yada adını değiştirin veya başka bir isim alın."
 
-#: inc/error.inc.php:93
 msgid "NS records must be a hostnames."
 msgstr "NS kaydı bir makina adı olmalıdır."
 
-#: inc/error.inc.php:94
 msgid "A prio field should be numeric."
 msgstr "prio alanı rakam olmalıdır."
 
-#: inc/error.inc.php:95
 msgid ""
 "Invalid value for name field of SOA record. It should be the name of the "
 "zone."
 msgstr "SOA kaydı isim alanı için geçersiz değer. Bölge adı olmalıdır."
 
-#: inc/error.inc.php:96
 msgid "You have an error in the MNAME field of the SOA record."
 msgstr "SOA kaydı MNAME alanında bir hatanız var."
 
-#: inc/error.inc.php:97
 msgid "Invalid value for content field of HINFO record."
 msgstr "HINFO kaydı içerik alanı için geçersiz değer."
 
-#: inc/error.inc.php:98
 msgid "The hostname is too long."
 msgstr "Makina adı çok uzun."
 
-#: inc/error.inc.php:99
 msgid "You are using an invalid top level domain."
 msgstr "Geçersiz bir üst seviye alan adı kullanıyorsunuz."
 
-#: inc/error.inc.php:100
 msgid "Invalid value for TTL field. It should be numeric."
 msgstr "TTL alanı için geçersiz değer. Değer rakam olmalıdır."
 
-#: inc/error.inc.php:101
 msgid "Invalid value for prio field. It should be numeric."
 msgstr "prio alanı için geçersiz değer. Değer sayı olmalı."
 
-#: inc/error.inc.php:102
 msgid "Invalid value for name field of SRV record."
 msgstr "SRV kaydı ad alanı için geçersiz değer."
 
-#: inc/error.inc.php:103
 msgid "Invalid value for the priority field of the SRV record."
 msgstr "SRV kaydı prio alanı için geçersiz değer."
 
-#: inc/error.inc.php:104
 msgid "Invalid value for the weight field of the SRV record."
 msgstr "SRV kaydı etki alanı için geçersiz değer."
 
-#: inc/error.inc.php:105
 msgid "Invalid SRV target."
 msgstr "Geçersiz SRV hedefi."
 
-#: inc/error.inc.php:106
 msgid "Invalid characters have been used in this record."
 msgstr "Bu kayıtta geçersiz karakterler kullanılmış."
 
-#: inc/error.inc.php:109
 msgid "Zone has been added successfully."
 msgstr "Bölge başarıyla eklendi."
 
-#: inc/error.inc.php:110
 msgid "Zone has been deleted successfully."
 msgstr "Bölge başarıyla silindi."
 
-#: inc/error.inc.php:111
 msgid "Zones have been updated successfully."
 msgstr "Bölge başarıyla güncellendi."
 
-#: inc/error.inc.php:112
 msgid "The user has been updated successfully."
 msgstr "Kullanıcı başarıyla güncellendi."
 
-#: inc/error.inc.php:113
 msgid "The user has been created successfully."
 msgstr "Yeni kullanıcı başarıyla oluşturuldu."
 
-#: inc/error.inc.php:114
 msgid "The user has been deleted successfully."
 msgstr "Kullanıcı başarıyla silindi"
 
-#: inc/error.inc.php:115
 msgid "The record has been updated successfully."
 msgstr "Kayıt başarıyla güncellendi."
 
-#: inc/error.inc.php:116
 msgid "The record has been deleted successfully."
 msgstr "Kayıt başarıyla silindi."
 
-#: inc/error.inc.php:117
 msgid "The comment has been updated successfully."
 msgstr "Açıklama başarıyla güncellendi."
 
-#: inc/error.inc.php:118
 msgid "The supermaster has been deleted successfully."
 msgstr "Ana kurucu başarıyla silindi."
 
-#: inc/error.inc.php:119
 msgid "The supermaster has been added successfully."
 msgstr "Ana kurucu başarıyla eklendi."
 
-#: inc/error.inc.php:120
 msgid "The permission template has been updated successfully."
 msgstr "İzin şablonunu başarıyla güncellendi."
 
-#: inc/error.inc.php:121
 msgid "The permission template has been deleted successfully."
 msgstr "İzin şablonu başarıyşa silindi."
 
-#: inc/error.inc.php:122
 msgid "Zone template has been added successfully."
 msgstr "Bölge şablonu başarıyla eklendi."
 
-#: inc/error.inc.php:123
 msgid "Zone template has been updated successfully."
 msgstr "Bölge şablonunu başarıyla güncellendi."
 
-#: inc/error.inc.php:124
 msgid "Zone template has been deleted successfully."
 msgstr "Bölge şablonunu başarıyla silindi."
 

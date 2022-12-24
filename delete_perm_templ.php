@@ -32,7 +32,7 @@
 use Poweradmin\BaseController;
 
 require_once 'inc/toolkit.inc.php';
-require_once 'inc/message.inc.php';
+require_once 'inc/messages.inc.php';
 
 class DeletePermTemplController extends BaseController
 {

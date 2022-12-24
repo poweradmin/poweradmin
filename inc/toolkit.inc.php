@@ -21,7 +21,7 @@
 
 include_once 'config-me.inc.php';
 
-require_once 'error.inc.php';
+require_once 'messages.inc.php';
 
 if (!@include_once('config.inc.php')) {
     if (!file_exists('install')) {

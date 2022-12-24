@@ -36,7 +36,7 @@ use Poweradmin\Logger;
 use Poweradmin\Permission;
 
 require_once 'inc/toolkit.inc.php';
-require_once 'inc/message.inc.php';
+require_once 'inc/messages.inc.php';
 
 class DeleteDomainController extends BaseController
 {
