@@ -118,9 +118,9 @@ class EditController extends BaseController {
             } elseif ($_POST['templ_name'] == '') {
                 error(_('Template name can\'t be an empty string.'));
             } else {
-                success(_('Zone template has been added successfully.'));
                 $records = DnsRecord::get_records_from_domain_id($zone_id);
                 ZoneTemplate::add_zone_templ_save_as($_POST['templ_name'], $_POST['templ_descr'], $_SESSION['userid'], $records, DnsRecord::get_domain_name_by_id($zone_id));
+                $this->setMessage('edit', 'success', _('Zone template has been added successfully.'));
             }
         }
 
