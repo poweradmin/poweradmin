@@ -140,11 +140,11 @@ class AddRecordController extends BaseController
                 $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
                 $fqdn_name = sprintf("%s.%s", $name, $zone_name);
                 if (DnsRecord::add_record($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
-                    success(" <a href=\"edit.php?id=" . $zone_rev_id . "\"> " . _('The PTR-record was successfully added.') . "</a>");
                     Logger::log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
                         $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                         $content_rev, $fqdn_name, $ttl, $prio), $zone_id);
 
+                    success(" <a href=\"edit.php?id=" . $zone_rev_id . "\"> " . _('The PTR-record was successfully added.') . "</a>");
                     $this->config('pdnssec_use') && Dnssec::dnssec_rectify_zone($zone_rev_id);
                 }
             } elseif (isset($content_rev)) {
