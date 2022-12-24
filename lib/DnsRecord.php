@@ -1459,7 +1459,7 @@ class DnsRecord
      * @param string $sort_records_by Column to sort record results
      * @return array|array[]
      */
-    public static function search_zone_and_record($parameters, $permission_view, $sort_zones_by, $sort_records_by)
+    public static function search_zone_and_record($parameters, $permission_view, $sort_zones_by, $sort_records_by, $iface_rowamount)
     {
         global $db;
         global $iface_search_group_records;
@@ -1504,7 +1504,8 @@ class DnsRecord
                 (domains.name LIKE ' . $db->quote($search_string, 'text') .
                 ($parameters['reverse'] ? ' OR domains.name LIKE ' . $reverse_search_string : '') . ') ' .
                 ($permission_view == 'own' ? ' AND z.owner = ' . $db->quote($_SESSION['userid'], 'integer') : '') .
-                ' ORDER BY ' . $sort_zones_by . ', z.owner';
+                ' ORDER BY ' . $sort_zones_by . ', z.owner' .
+                ' LIMIT ' . $iface_rowamount;
 
             $zonesResponse = $db->query($zonesQuery);
 
@@ -1552,7 +1553,8 @@ class DnsRecord
                 ($parameters['reverse'] ? ' OR records.name LIKE ' . $reverse_search_string . ' OR records.content LIKE ' . $reverse_search_string : '') . ')' .
                 ($permission_view == 'own' ? 'AND z.owner = ' . $db->quote($_SESSION['userid'], 'integer') : '') .
                 ($iface_search_group_records ? ' GROUP BY records.name, records.content ' : '') . // May not work correctly with MySQL strict mode
-                ' ORDER BY ' . $sort_records_by;
+                ' ORDER BY ' . $sort_records_by .
+                ' LIMIT ' . $iface_rowamount;
 
             $recordsResponse = $db->query($recordsQuery);
 

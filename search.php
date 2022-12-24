@@ -65,12 +65,18 @@ class SearchController extends BaseController
             $parameters['wildcard'] = $_POST['wildcard'] ?? false;
             $parameters['reverse'] = $_POST['reverse'] ?? false;
 
+            $iface_rowamount = $this->config('iface_rowamount');
             $searchResult = DnsRecord::search_zone_and_record(
                 $parameters,
                 Permission::getViewPermission(),
                 $zone_sort_by,
-                $record_sort_by
+                $record_sort_by,
+                $iface_rowamount,
             );
+
+            if (count($searchResult['zones']) == $iface_rowamount || count($searchResult['records']) == $iface_rowamount) {
+                $this->setMessage('search', 'warn', sprintf(_('Search results are limited to %s entries.'), $iface_rowamount));
+            }
         }
 
         $this->showSearchForm($parameters, $searchResult, $zone_sort_by, $record_sort_by);
