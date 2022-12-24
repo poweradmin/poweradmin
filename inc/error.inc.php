@@ -20,24 +20,6 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/* PERMISSIONS */
-define("ERR_PERM_SEARCH", _("You do not have the permission to perform searches."));
-define("ERR_PERM_ADD_RECORD", _("You do not have the permission to add a record to this zone."));
-define("ERR_PERM_ADD_RECORD_SOA", _("You do not have the permission to add SOA record."));
-define("ERR_PERM_ADD_RECORD_NS", _("You do not have the permission to add NS record."));
-define("ERR_PERM_EDIT_RECORD", _("You do not have the permission to edit this record."));
-define("ERR_PERM_EDIT_RECORD_SOA", _("You do not have the permission to edit this SOA record."));
-define("ERR_PERM_EDIT_RECORD_NS", _("You do not have the permission to edit this NS record."));
-define("ERR_PERM_VIEW_RECORD", _("You do not have the permission to view this record."));
-define("ERR_PERM_DEL_RECORD", _("You do not have the permission to delete this record."));
-define("ERR_PERM_ADD_ZONE_MASTER", _("You do not have the permission to add a master zone."));
-define("ERR_PERM_ADD_ZONE_SLAVE", _("You do not have the permission to add a slave zone."));
-define("ERR_PERM_DEL_ZONE", _("You do not have the permission to delete a zone."));
-define("ERR_PERM_VIEW_COMMENT", _("You do not have the permission to view this comment."));
-define("ERR_PERM_EDIT_COMMENT", _("You do not have the permission to edit this comment."));
-define("ERR_PERM_DEL_SM", _("You do not have the permission to delete a supermaster."));
-define("ERR_PERM_VIEW_ZONE", _("You do not have the permission to view this zone."));
-
 /* OTHER */
 define("ERR_INV_INPUT", _('Invalid or unexpected input given.'));
 define("ERR_INV_ARG", _('Invalid argument(s) given to function %s'));

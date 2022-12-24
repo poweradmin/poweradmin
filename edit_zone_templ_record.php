@@ -54,7 +54,7 @@ class EditZoneTemplRecordController extends BaseController {
 
         $zone_master_add = do_hook('verify_permission', 'zone_master_add');
         $owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
-        $this->checkCondition(!$zone_master_add || !$owner, ERR_PERM_VIEW_RECORD);
+        $this->checkCondition(!$zone_master_add || !$owner, _("You do not have the permission to view this record."));
 
         if ($this->isPost()) {
             $this->updateZoneTemplateRecord($zone_templ_id);

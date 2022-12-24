@@ -56,7 +56,7 @@ class DeleteDomainController extends BaseController
 
         $perm_edit = Permission::getEditPermission();
         $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
-        $this->checkCondition($perm_edit != "all" && ($perm_edit != "own" || !$user_is_zone_owner), ERR_PERM_DEL_ZONE);
+        $this->checkCondition($perm_edit != "all" && ($perm_edit != "own" || !$user_is_zone_owner), _("You do not have the permission to delete a zone."));
 
         if (isset($_GET['confirm'])) {
             $this->deleteDomain($zone_id);

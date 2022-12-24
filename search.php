@@ -40,7 +40,7 @@ class SearchController extends BaseController
 
     public function run(): void
     {
-        $this->checkPermission('search', ERR_PERM_SEARCH);
+        $this->checkPermission('search', _("You do not have the permission to perform searches."));
 
         $parameters = [
             'query' => '',

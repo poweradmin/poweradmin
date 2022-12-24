@@ -63,7 +63,7 @@ class DnsSecDsDnsKeyController extends BaseController {
         $perm_view = Permission::getViewPermission();
 
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
-            error(ERR_PERM_VIEW_ZONE);
+            error(_("You do not have the permission to view this zone."));
             include_once("inc/footer.inc.php");
             exit();
         }

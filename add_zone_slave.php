@@ -42,7 +42,7 @@ class AddZoneSlaveController extends BaseController
 
     public function run(): void
     {
-        $this->checkPermission('zone_slave_add', ERR_PERM_ADD_ZONE_SLAVE);
+        $this->checkPermission('zone_slave_add', _("You do not have the permission to add a slave zone."));
 
         if ($this->isPost()) {
             $this->addZone();

@@ -56,7 +56,7 @@ class DnsSecController extends BaseController {
         (do_hook('verify_permission', 'user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
 
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
-            error(ERR_PERM_VIEW_ZONE);
+            error(_("You do not have the permission to view this zone."));
             include_once("inc/footer.inc.php");
             exit();
         }

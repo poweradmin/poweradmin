@@ -298,7 +298,7 @@ class DnsRecord
         $zone_type = self::get_domain_type($zone_id);
 
         if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
-            error(ERR_PERM_EDIT_COMMENT);
+            error(_("You do not have the permission to edit this comment."));
             return false;
         } else {
             global $db;
@@ -337,16 +337,16 @@ class DnsRecord
         $zone_type = self::get_domain_type($record['zid']);
 
         if ($record['type'] == 'SOA' && $perm_edit == "own_as_client") {
-            error(ERR_PERM_EDIT_RECORD_SOA);
+            error(_("You do not have the permission to edit this SOA record."));
             return false;
         }
         if ($record['type'] == 'NS' && $perm_edit == "own_as_client") {
-            error(ERR_PERM_EDIT_RECORD_NS);
+            error(_("You do not have the permission to edit this NS record."));
             return false;
         }
 
         if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
-            error(ERR_PERM_EDIT_RECORD);
+            error(_("You do not have the permission to edit this record."));
             return false;
         } else {
             global $db;
@@ -390,16 +390,16 @@ class DnsRecord
         $zone_type = self::get_domain_type($zone_id);
 
         if ($type == 'SOA' && $perm_edit == "own_as_client") {
-            error(ERR_PERM_ADD_RECORD_SOA);
+            error(_("You do not have the permission to add SOA record."));
             return false;
         }
         if ($type == 'NS' && $perm_edit == "own_as_client") {
-            error(ERR_PERM_ADD_RECORD_NS);
+            error(_("You do not have the permission to add NS record."));
             return false;
         }
 
         if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
-            error(ERR_PERM_ADD_RECORD);
+            error(_("You do not have the permission to add a record to this zone."));
             return false;
         } else {
             $db->beginTransaction();
@@ -547,7 +547,7 @@ class DnsRecord
                 return true;
             }
         } else {
-            error(ERR_PERM_DEL_RECORD);
+            error(_("You do not have the permission to delete this record."));
             return false;
         }
     }
@@ -694,14 +694,14 @@ class DnsRecord
                 error(sprintf(ERR_INV_ARG, "add_domain"));
             }
         } else {
-            error(ERR_PERM_ADD_ZONE_MASTER);
+            error(_("You do not have the permission to add a master zone."));
             return false;
         }
     }
 
     /** Deletes a domain by a given id
      *
-     * Function always succeeds. If the field is not found in the database, thats what we want anyway.
+     * Function always succeeds. If the field is not found in the database, that's what we want anyway.
      *
      * @param int $id Zone ID
      *
@@ -726,7 +726,7 @@ class DnsRecord
                 return false;
             }
         } else {
-            error(ERR_PERM_DEL_ZONE);
+            error(_("You do not have the permission to delete a zone."));
         }
     }
 
@@ -889,7 +889,7 @@ class DnsRecord
         $perm_view = Permission::getViewPermission();
 
         if ($perm_view == "none") {
-            error(ERR_PERM_VIEW_ZONE);
+            error(_("You do not have the permission to view this zone."));
         } else {
             global $db;
 
@@ -1089,7 +1089,7 @@ class DnsRecord
 
         $sql_add = '';
         if ($perm != "own" && $perm != "all") {
-            error(ERR_PERM_VIEW_ZONE);
+            error(_("You do not have the permission to view this zone."));
             return false;
         } else {
             if ($perm == "own") {
@@ -1735,7 +1735,7 @@ class DnsRecord
                     error(sprintf(ERR_INV_ARGC, "delete_domain", "id must be a number"));
                 }
             } else {
-                error(ERR_PERM_DEL_ZONE);
+                error(_("You do not have the permission to delete a zone."));
             }
 
             if ($zone_master_add == "1" || $zone_slave_add == "1") {
@@ -1840,7 +1840,7 @@ class DnsRecord
                     $error = true;
                 }
             } else {
-                error(ERR_PERM_DEL_ZONE);
+                error(_("You do not have the permission to delete a zone."));
                 $error = true;
             }
         }

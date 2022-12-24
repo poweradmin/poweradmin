@@ -70,7 +70,7 @@ class DeleteZoneTemplRecordController extends BaseController {
         }
 
         if (!(do_hook('verify_permission', 'zone_master_add')) || !$owner) {
-            error(ERR_PERM_DEL_RECORD);
+            error(_("You do not have the permission to delete this record."));
             include_once('inc/footer.inc.php');
             exit;
         }

@@ -257,7 +257,7 @@ class ZoneTemplate
         global $db;
 
         if (!(do_hook('verify_permission', 'zone_master_add'))) {
-            error(ERR_PERM_ADD_RECORD);
+            error(_("You do not have the permission to add a record to this zone."));
             return false;
         } else {
             if ($content == '') {
@@ -296,7 +296,7 @@ class ZoneTemplate
         global $db;
 
         if (!(do_hook('verify_permission', 'zone_master_add'))) {
-            error(ERR_PERM_EDIT_RECORD);
+            error(_("You do not have the permission to edit this record."));
             return false;
         } else {
             if ("" != $record['name']) {
@@ -327,7 +327,7 @@ class ZoneTemplate
         global $db;
 
         if (!(do_hook('verify_permission', 'zone_master_add'))) {
-            error(ERR_PERM_DEL_RECORD);
+            error(_("You do not have the permission to delete this record."));
             return false;
         } else {
             $query = "DELETE FROM zone_templ_records WHERE id = " . $db->quote($rid, 'integer');

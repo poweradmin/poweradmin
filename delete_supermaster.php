@@ -39,7 +39,7 @@ class DeleteSuperMasterController extends BaseController {
 
     public function run(): void
     {
-        $this->checkPermission('supermaster_edit', ERR_PERM_DEL_SM);
+        $this->checkPermission('supermaster_edit', _("You do not have the permission to delete a supermaster."));
 
         if (isset($_GET['confirm'])) {
             $this->deleteSuperMaster();

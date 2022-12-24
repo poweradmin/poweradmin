@@ -44,7 +44,7 @@ class EditCommentController extends BaseController {
         $iface_zone_comments = $this->config('iface_zone_comments');
 
         if (!$iface_zone_comments) {
-            error(ERR_PERM_EDIT_COMMENT);
+            error(_("You do not have the permission to edit this comment."));
             include_once('inc/footer.inc.php');
             exit;
         }
@@ -61,7 +61,7 @@ class EditCommentController extends BaseController {
 
         $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
-            error(ERR_PERM_VIEW_COMMENT);
+            error(_("You do not have the permission to view this comment."));
             include_once("inc/footer.inc.php");
             exit;
         }
@@ -71,7 +71,7 @@ class EditCommentController extends BaseController {
 
         if (isset($_POST["commit"])) {
             if ($perm_edit_comment) {
-                error(ERR_PERM_EDIT_COMMENT);
+                error(_("You do not have the permission to edit this comment."));
             } else {
                 DnsRecord::edit_zone_comment($zone_id, $_POST['comment']);
                 $this->setMessage('edit', 'success', _('The comment has been updated successfully.'));

@@ -81,7 +81,7 @@ class DeleteDomainsController extends BaseController {
         $this->render('delete_domains.html', [
             'perm_edit' => Permission::getEditPermission(),
             'zones' => $zones,
-            'error' => ERR_PERM_DEL_ZONE
+            'error' => _("You do not have the permission to delete a zone.")
         ]);
     }
 

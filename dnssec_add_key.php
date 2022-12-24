@@ -48,7 +48,7 @@ class DnsSecAddKeyController extends \Poweradmin\BaseController {
         $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
 
         if ($user_is_zone_owner == "0") {
-            error(ERR_PERM_VIEW_ZONE);
+            error(_("You do not have the permission to view this zone."));
             include_once("inc/footer.inc.php");
             exit();
         }

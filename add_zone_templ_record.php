@@ -49,7 +49,7 @@ class AddZoneTemplRecordController extends BaseController {
         $zone_templ_id = htmlspecialchars($_GET['id']);
         $owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
 
-        $this->checkCondition(!do_hook('verify_permission' , 'zone_master_add' ) || !$owner, ERR_PERM_ADD_RECORD);
+        $this->checkCondition(!do_hook('verify_permission' , 'zone_master_add' ) || !$owner, _("You do not have the permission to add a record to this zone."));
 
         if ($this->isPost()) {
             $v = new Valitron\Validator($_POST);

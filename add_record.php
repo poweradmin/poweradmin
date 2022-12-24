@@ -54,7 +54,7 @@ class AddRecordController extends BaseController
         $this->checkCondition($zone_type == "SLAVE"
             || $perm_edit == "none"
             || ($perm_edit == "own" || $perm_edit == "own_as_client")
-            && !$user_is_zone_owner, ERR_PERM_ADD_RECORD
+            && !$user_is_zone_owner, _("You do not have the permission to add a record to this zone.")
         );
 
         if ($this->isPost()) {
