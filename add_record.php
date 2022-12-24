@@ -144,7 +144,6 @@ class AddRecordController extends BaseController
                         $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                         $content_rev, $fqdn_name, $ttl, $prio), $zone_id);
 
-                    success(" <a href=\"edit.php?id=" . $zone_rev_id . "\"> " . _('The PTR-record was successfully added.') . "</a>");
                     $this->config('pdnssec_use') && Dnssec::dnssec_rectify_zone($zone_rev_id);
                 }
             } elseif (isset($content_rev)) {
