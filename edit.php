@@ -244,6 +244,7 @@ class EditController extends BaseController {
             'row_amount' => $iface_rowamount,
             'record_sort_by' => $record_sort_by,
             'pagination' => show_pages($record_count, $iface_rowamount, $zone_id),
+            'pdnssec_use' => $this->config('pdnssec_use'),
             'is_secured' => Dnssec::dnssec_is_zone_secured($zone_name),
             'session_userid' => $_SESSION["userid"],
             'dns_ttl' => $this->config('dns_ttl'),
