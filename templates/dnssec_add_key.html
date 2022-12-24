@@ -1,4 +1,9 @@
-<h5 class="mb-3">{% trans 'Add key for zone' %} {{ domain_name }}</h5>
+{% if idn_zone_name %}
+<h5 class="mb-3">{% trans 'Add key for zone' %} "<a href="dnssec.php?id={{ zone_id }}">{{ idn_zone_name }}</a>" ({{ domain_name }})</h5>
+{% else %}
+<h5 class="mb-3">{% trans 'Add key for zone' %} "<a href="dnssec.php?id={{ zone_id }}">{{ domain_name }}</a>"</h5>
+{% endif %}
+
 <form class="needs-validation" method="post" action="dnssec_add_key.php?id={{ zone_id }}" novalidate>
     <table>
         <tr>
@@ -52,5 +57,3 @@
         </tr>
     </table>
 </form>
-<br/>
-<a href='dnssec.php?id="{{ zone_id }}"'>Back to DNSSEC {{ domain_name }}</a>

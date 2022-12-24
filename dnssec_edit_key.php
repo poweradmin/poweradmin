@@ -98,8 +98,15 @@ class DnsSecEditKeyController extends \Poweradmin\BaseController {
             }
         }
 
+        if (preg_match("/^xn--/", $domain_name)) {
+            $idn_zone_name = idn_to_utf8($domain_name, IDNA_NONTRANSITIONAL_TO_ASCII);
+        } else {
+            $idn_zone_name = "";
+        }
+
         $this->render('dnssec_edit_key.html', [
             'domain_name' => $domain_name,
+            'idn_zone_name' => $idn_zone_name,
             'key_id' => $key_id,
             'key_info' => Dnssec::dnssec_get_zone_key($domain_name, $key_id),
             'user_is_zone_owner' => $user_is_zone_owner,

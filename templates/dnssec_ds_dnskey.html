@@ -1,4 +1,8 @@
+{% if idn_zone_name %}
+<h5 class="mb-3">{% trans 'DNSSEC public records for zone' %} "<a href='dnssec.php?id={{ zone_id }}'>{{ idn_zone_name }}</a>" ({{ domain_name }})</h5>
+{% else %}
 <h5 class="mb-3">{% trans 'DNSSEC public records for zone' %} "<a href='dnssec.php?id={{ zone_id }}'>{{ domain_name }}</a>"</h5>
+{% endif %}
 
 <h5 class="mb-3">{% trans 'DNSKEY' %}</h5>
 {% for record in dnskey_records %}

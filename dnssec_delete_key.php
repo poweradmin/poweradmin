@@ -95,8 +95,15 @@ class DnsSecDeleteKeyController extends BaseController
     {
         $key_info = Dnssec::dnssec_get_zone_key($domain_name, $key_id);
 
+        if (preg_match("/^xn--/", $domain_name)) {
+            $idn_zone_name = idn_to_utf8($domain_name, IDNA_NONTRANSITIONAL_TO_ASCII);
+        } else {
+            $idn_zone_name = "";
+        }
+
         $this->render('dnssec_delete_key.html', [
             'domain_name' => $domain_name,
+            'idn_zone_name' => $idn_zone_name,
             'key_id' => $key_id,
             'key_info' => $key_info,
             'algorithms' => DnsSec::dnssec_algorithms(),

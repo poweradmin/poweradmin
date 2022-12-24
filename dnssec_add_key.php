@@ -105,9 +105,16 @@ class DnsSecAddKeyController extends \Poweradmin\BaseController {
             }
         }
 
+        if (preg_match("/^xn--/", $domain_name)) {
+            $idn_zone_name = idn_to_utf8($domain_name, IDNA_NONTRANSITIONAL_TO_ASCII);
+        } else {
+            $idn_zone_name = "";
+        }
+
         $this->render('dnssec_add_key.html', [
             'zone_id' => $zone_id,
             'domain_name' => $domain_name,
+            'idn_zone_name' => $idn_zone_name,
             'key_type' => $key_type,
             'bits' => $bits,
             'algorithm' => $algorithm,

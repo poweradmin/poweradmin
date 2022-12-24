@@ -73,8 +73,15 @@ class DnsSecController extends BaseController {
     public function showDnsSecKeys(string $zone_id): void
     {
         $domain_name = DnsRecord::get_domain_name_by_id($zone_id);
+        if (preg_match("/^xn--/", $domain_name)) {
+            $idn_zone_name = idn_to_utf8($domain_name, IDNA_NONTRANSITIONAL_TO_ASCII);
+        } else {
+            $idn_zone_name = "";
+        }
+
         $this->render('dnssec.html', [
             'domain_name' => $domain_name,
+            'idn_zone_name' => $idn_zone_name,
             'domain_type' => DnsRecord::get_domain_type($zone_id),
             'keys' => Dnssec::dnssec_get_keys($domain_name),
             'pdnssec_use' => $this->config('pdnssec_use'),

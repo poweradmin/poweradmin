@@ -10,7 +10,13 @@
 {% set active = 'No' %}
 {% endif %}
 
-{% trans 'Domain' %}: {{ domain_name }}<br>
+{% trans 'Domain' %}:
+{% if idn_zone_name %}
+{{ idn_zone_name }} ({{ domain_name }})
+{% else %}
+{{ domain_name }}
+{% endif %}
+<br>
 {% trans 'Id' %}: {{ key_info[0] }}<br>
 {% trans 'Type' %}: {{ key_info[1] }}<br>
 {% trans 'Tag' %}: {{ key_info[2] }}<br>
