@@ -292,14 +292,14 @@ class Dns
                     return false;
                 }
                 if (!self::is_valid_rr_soa_content($content)) {
-                    error(ERR_DNS_CONTENT);
+                    error(_('Your content field doesnt have a legit value.'));
                     return false;
                 }
                 break;
 
             case "SPF":
                 if (!self::is_valid_spf($content)) {
-                    error(ERR_DNS_SPF_CONTENT);
+                    error(_('The content of the SPF record is invalid'));
                     return false;
                 }
                 if (!self::has_quotes_arround($content)) {
@@ -351,7 +351,7 @@ class Dns
                 break;
 
             default:
-                error(ERR_DNS_RR_TYPE);
+                error(_('Unknown record type.'));
                 return false;
         }
 
@@ -385,7 +385,7 @@ class Dns
 
         # The full domain name may not exceed a total length of 253 characters.
         if (strlen($hostname) > 253) {
-            error(ERR_DNS_HN_TOO_LONG);
+            error(_('The hostname is too long.'));
             return false;
         }
 
@@ -399,26 +399,26 @@ class Dns
         foreach ($hostname_labels as $hostname_label) {
             if ($wildcard == 1 && !isset($first)) {
                 if (!preg_match('/^(\*|[\w\-\/]+)$/', $hostname_label)) {
-                    error(ERR_DNS_HN_INV_CHARS);
+                    error(_('You have invalid characters in your hostname.'));
                     return false;
                 }
                 $first = 1;
             } else {
                 if (!preg_match('/^[\w\-\/]+$/', $hostname_label)) {
-                    error(ERR_DNS_HN_INV_CHARS);
+                    error(_('You have invalid characters in your hostname.'));
                     return false;
                 }
             }
             if (substr($hostname_label, 0, 1) == "-") {
-                error(ERR_DNS_HN_DASH);
+                error(_('A hostname can not start or end with a dash.'));
                 return false;
             }
             if (substr($hostname_label, -1, 1) == "-") {
-                error(ERR_DNS_HN_DASH);
+                error(_('A hostname can not start or end with a dash.'));
                 return false;
             }
             if (strlen($hostname_label) < 1 || strlen($hostname_label) > 63) {
-                error(ERR_DNS_HN_LENGTH);
+                error(_('Given hostname or one of the labels is too short or too long.'));
                 return false;
             }
         }
@@ -430,26 +430,26 @@ class Dns
                 $array = explode("/", $hostname_labels[1]);
             }
             if (count($array) != 2) {
-                error(ERR_DNS_HOSTNAME);
+                error(_('Invalid hostname.'));
                 return false;
             }
             if (!is_numeric($array[0]) || $array[0] < 0 || $array[0] > 255) {
-                error(ERR_DNS_HOSTNAME);
+                error(_('Invalid hostname.'));
                 return false;
             }
             if (!is_numeric($array[1]) || $array[1] < 25 || $array[1] > 31) {
-                error(ERR_DNS_HOSTNAME);
+                error(_('Invalid hostname.'));
                 return false;
             }
         } else {
             if (substr_count($hostname, "/") > 0) {
-                error(ERR_DNS_HN_SLASH);
+                error(_('Given hostname has too many slashes.'));
                 return false;
             }
         }
 
         if ($dns_strict_tld_check && !TopLevelDomain::isValidTopLevelDomain($hostname)) {
-            error(ERR_DNS_INV_TLD);
+            error(_('You are using an invalid top level domain.'));
             return false;
         }
 
@@ -469,7 +469,7 @@ class Dns
 
         if (filter_var($ipv4, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === FALSE) {
             if ($answer) {
-                error(ERR_DNS_IPV4);
+                error(_('This is not a valid IPv4 address.'));
             }
             return false;
         }
@@ -490,7 +490,7 @@ class Dns
 
         if (filter_var($ipv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === FALSE) {
             if ($answer) {
-                error(ERR_DNS_IPV6);
+                error(_('This is not a valid IPv6 address.'));
             }
             return false;
         }
@@ -542,7 +542,7 @@ class Dns
     public static function is_valid_printable($string)
     {
         if (!preg_match('/^[[:print:]]+$/', trim($string))) {
-            error(ERR_DNS_PRINTABLE);
+            error(_('Invalid characters have been used in this record.'));
             return false;
         }
         return true;
@@ -556,7 +556,7 @@ class Dns
     public static function has_html_tags($string)
     {
         if (preg_match('/[<>]/', trim($string))) {
-            error(ERR_DNS_HTML_TAGS);
+            error(_('You cannot use html tags for this type of record.'));
             return true;
         }
         return false;
@@ -575,7 +575,7 @@ class Dns
         }
 
         if (substr($string, 0, 1) != '"' || substr($string, -1) != '"') {
-            error(ERR_DNS_TXT_MISSING_QUOTES);
+            error(_('Add quotes around TXT record content.'));
             return false;
         }
 
@@ -601,7 +601,7 @@ class Dns
         $response = $db->queryOne($query);
 
         if (!empty($response)) {
-            error(ERR_DNS_CNAME);
+            error(_('This is not a valid CNAME. Did you assign an MX or NS record to the record?'));
             return false;
         }
 
@@ -626,7 +626,7 @@ class Dns
 
         $response = $db->queryOne($query);
         if ($response) {
-            error(ERR_DNS_CNAME_EXISTS);
+            error(_('This is not a valid record. There is already exists a CNAME with this name.'));
             return false;
         }
         return true;
@@ -649,7 +649,7 @@ class Dns
 
         $response = $db->queryOne($query);
         if ($response) {
-            error(ERR_DNS_CNAME_UNIQUE);
+            error(_('This is not a valid CNAME. There already exists a record with this name.'));
             return false;
         }
         return true;
@@ -665,7 +665,7 @@ class Dns
     {
 
         if ($name == $zone) {
-            error(ERR_DNS_CNAME_EMPTY);
+            error(_('Empty CNAME records are not allowed.'));
             return false;
         }
         return true;
@@ -687,7 +687,7 @@ class Dns
 
         $response = $db->queryOne($query);
         if ($response) {
-            error(ERR_DNS_NON_ALIAS_TARGET);
+            error(_('You can not point a NS or MX record to a CNAME record. Remove or rename the CNAME record first, or take another name.'));
             return false;
         }
         return true;
@@ -710,7 +710,7 @@ class Dns
 
         for ($i = 0; ($i < 2); $i++) {
             if (!preg_match("/^([^\s]{1,1000})|\"([^\"]{1,998}\")$/i", $fields[$i])) {
-                error(ERR_DNS_HINFO_INV_CONTENT);
+                error(_('Invalid value for content field of HINFO record.'));
                 return false;
             }
         }
@@ -795,7 +795,7 @@ class Dns
     public static function is_valid_rr_soa_name($name, $zone)
     {
         if ($name != $zone) {
-            error(ERR_DNS_SOA_NAME);
+            error(_('Invalid value for name field of SOA record. It should be the name of the zone.'));
             return false;
         }
         return true;
@@ -814,7 +814,7 @@ class Dns
     {
         if ($type == "MX" || $type == "SRV") {
             if (!is_numeric($prio) || $prio < 0 || $prio > 65535) {
-                error(ERR_DNS_INV_PRIO);
+                error(_('Invalid value for prio field. It should be numeric.'));
                 return false;
             }
         } else {
@@ -834,21 +834,21 @@ class Dns
     {
 
         if (strlen($name) > 255) {
-            error(ERR_DNS_HN_TOO_LONG);
+            error(_('The hostname is too long.'));
             return false;
         }
 
         $fields = explode('.', $name, 3);
         if (!preg_match('/^_[\w\-]+$/i', $fields[0])) {
-            error(ERR_DNS_SRV_NAME_SERVICE, $name);
+            error(_('Invalid service value in name field of SRV record.'), $name);
             return false;
         }
         if (!preg_match('/^_[\w]+$/i', $fields[1])) {
-            error(ERR_DNS_SRV_NAME_PROTO, $name);
+            error(_('Invalid protocol value in name field of SRV record.'), $name);
             return false;
         }
         if (!self::is_valid_hostname_fqdn($fields[2], 0)) {
-            error(ERR_DNS_SRV_NAME, $name);
+            error(_('Invalid FQDN value in name field of SRV record.'), $name);
             return false;
         }
         $name = join('.', $fields);
@@ -865,15 +865,15 @@ class Dns
     {
         $fields = preg_split("/\s+/", trim($content), 3);
         if (!is_numeric($fields[0]) || $fields[0] < 0 || $fields[0] > 65535) {
-            error(ERR_DNS_SRV_WGHT, $name);
+            error(_('Invalid value for the priority field of the SRV record.'), $name);
             return false;
         }
         if (!is_numeric($fields[1]) || $fields[1] < 0 || $fields[1] > 65535) {
-            error(ERR_DNS_SRV_PORT, $name);
+            error(_('Invalid value for the weight field of the SRV record.'), $name);
             return false;
         }
         if ($fields[2] == "" || ($fields[2] != "." && !self::is_valid_hostname_fqdn($fields[2], 0))) {
-            error(ERR_DNS_SRV_TRGT, $name);
+            error(_('Invalid SRV target.'), $name);
             return false;
         }
         $content = join(' ', $fields);
@@ -895,7 +895,7 @@ class Dns
         }
 
         if (!is_numeric($ttl) || $ttl < 0 || $ttl > 2147483647) {
-            error(ERR_DNS_INV_TTL);
+            error(_('Invalid value for TTL field. It should be numeric.'));
             return false;
         }
 

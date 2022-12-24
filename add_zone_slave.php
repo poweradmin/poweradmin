@@ -70,7 +70,7 @@ class AddZoneSlaveController extends BaseController
         $zone = idn_to_ascii(trim($_POST['domain']), IDNA_NONTRANSITIONAL_TO_ASCII);
 
         if (!Dns::is_valid_hostname_fqdn($zone, 0)) {
-            error(ERR_DNS_HOSTNAME);
+            error(_('Invalid hostname.'));
             $this->showForm();
         } elseif ($dns_third_level_check && DnsRecord::get_domain_level($zone) > 2 && DnsRecord::domain_exists(DnsRecord::get_second_level_domain($zone))) {
             error(_('There is already a zone with this name.'));
@@ -79,7 +79,7 @@ class AddZoneSlaveController extends BaseController
             error(_('There is already a zone with this name.'));
             $this->showForm();
         } elseif (!Dns::are_multiple_valid_ips($master)) {
-            error(ERR_DNS_IP);
+            error(_('This is not a valid IPv4 or IPv6 address.'));
             $this->showForm();
         } else {
             if (DnsRecord::add_domain($zone, $owner, $type, $master, 'none')) {

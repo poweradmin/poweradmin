@@ -261,7 +261,7 @@ class ZoneTemplate
             return false;
         } else {
             if ($content == '') {
-                error(ERR_DNS_CONTENT);
+                error(_('Your content field doesnt have a legit value.'));
                 return false;
             }
 
@@ -276,7 +276,7 @@ class ZoneTemplate
                 $db->query($query);
                 return true;
             } else {
-                error(ERR_DNS_HOSTNAME);
+                error(_('Invalid hostname.'));
                 return false;
             }
         }
@@ -310,7 +310,7 @@ class ZoneTemplate
                 $db->query($query);
                 return true;
             } else {
-                error(ERR_DNS_HOSTNAME);
+                error(_('Invalid hostname.'));
                 return false;
             }
         }

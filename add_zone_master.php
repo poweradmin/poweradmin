@@ -72,7 +72,7 @@ class AddZoneMasterController extends BaseController
         $zone_template = $_POST['zone_template'] ?? "none";
 
         if (!Dns::is_valid_hostname_fqdn($zone, 0)) {
-            $this->setMessage('add_zone_master', 'error', ERR_DNS_HOSTNAME);
+            $this->setMessage('add_zone_master', 'error', _('Invalid hostname.'));
             $this->showForm();
         } elseif ($dns_third_level_check && DnsRecord::get_domain_level($zone) > 2 && DnsRecord::domain_exists(DnsRecord::get_second_level_domain($zone))) {
             $this->setMessage('add_zone_master', 'error', _('There is already a zone with this name.'));

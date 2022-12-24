@@ -441,11 +441,11 @@ class DnsRecord
     {
         global $db;
         if (!Dns::is_valid_ipv4($master_ip) && !Dns::is_valid_ipv6($master_ip)) {
-            error(ERR_DNS_IP);
+            error(_('This is not a valid IPv4 or IPv6 address.'));
             return false;
         }
         if (!Dns::is_valid_hostname_fqdn($ns_name, 0)) {
-            error(ERR_DNS_HOSTNAME);
+            error(_('Invalid hostname.'));
             return false;
         }
         if (!self::validate_account($account)) {

@@ -70,7 +70,7 @@ class BulkRegistrationController extends BaseController {
         $failed_domains = [];
         foreach ($domains as $domain) {
             if (!Dns::is_valid_hostname_fqdn($domain, 0)) {
-                $failed_domains[] = $domain . " - " . ERR_DNS_HOSTNAME;
+                $failed_domains[] = $domain . " - " . _('Invalid hostname.');
             } elseif (DnsRecord::domain_exists($domain)) {
                 $failed_domains[] = $domain . " - " . _('There is already a zone with this name.');
             } elseif (DnsRecord::add_domain($domain, $_POST['owner'], $dom_type, '', $zone_template)) {
