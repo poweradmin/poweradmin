@@ -94,7 +94,8 @@ class EditController extends BaseController {
             }
 
             if ($iface_zone_comments) {
-                DnsRecord::edit_zone_comment($_GET['id'], $_POST['comment']);
+                $zone_comment = $_POST['zone_comment'] ?? '';
+                DnsRecord::edit_zone_comment($_GET['id'], $zone_comment);
             }
 
             if (false === $error) {
@@ -103,7 +104,7 @@ class EditController extends BaseController {
                 if ($one_record_changed) {
                     success(_('Zone has been updated successfully.'));
                 } else {
-                    success(_('Zone did not have any record changes.'));
+                    $this->setMessage('edit', 'success', (_('Zone did not have any record changes.')));
                 }
 
                 $this->config('pdnssec_use') && Dnssec::dnssec_rectify_zone($_GET['id']);
