@@ -73,7 +73,6 @@ class EditController extends BaseController {
                 foreach ($_POST['record'] as $record) {
                     $old_record_info = DnsRecord::get_record_from_id($record['rid']);
 
-                    // Check if a record changed and save the state
                     $log = new RecordLog();
                     $log->log_prior($record['rid'], $record['zid']);
                     if (!$log->has_changed($record)) {
@@ -86,7 +85,6 @@ class EditController extends BaseController {
                     if (false === $edit_record) {
                         $error = true;
                     } else {
-                        // Log the state after saving and write it to logging table
                         $log->log_after($record['rid']);
                         $log->write();
                     }
@@ -102,7 +100,7 @@ class EditController extends BaseController {
                 DnsRecord::update_soa_serial($_GET['id']);
 
                 if ($one_record_changed) {
-                    success(_('Zone has been updated successfully.'));
+                    $this->setMessage('edit', 'success', _('Zone has been updated successfully.'));
                 } else {
                     $this->setMessage('edit', 'success', (_('Zone did not have any record changes.')));
                 }
