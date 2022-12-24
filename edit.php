@@ -75,6 +75,7 @@ class EditController extends BaseController {
 
                     $log = new RecordLog();
                     $log->log_prior($record['rid'], $record['zid']);
+
                     if (!$log->has_changed($record)) {
                         continue;
                     } else {
@@ -102,7 +103,7 @@ class EditController extends BaseController {
                 if ($one_record_changed) {
                     $this->setMessage('edit', 'success', _('Zone has been updated successfully.'));
                 } else {
-                    $this->setMessage('edit', 'success', (_('Zone did not have any record changes.')));
+                    $this->setMessage('edit', 'warn', (_('Zone did not have any record changes.')));
                 }
 
                 $this->config('pdnssec_use') && Dnssec::dnssec_rectify_zone($_GET['id']);

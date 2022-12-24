@@ -60,7 +60,6 @@ class RecordLog
         // Make $record_copy and $record_prior_copy compatible
         $record_copy['id'] = $record_copy['rid'];
         $record_copy['domain_id'] = $record_copy['zid'];
-        unset($record_copy['zid']);
         unset($record_copy['rid']);
 
         // Do the comparison
