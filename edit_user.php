@@ -55,7 +55,7 @@ class EditUserController extends BaseController
         }
 
         if (($edit_id != $_SESSION["userid"] || $perm_edit_own != "1") && ($edit_id == $_SESSION["userid"] || $perm_edit_others != "1")) {
-            error(ERR_PERM_EDIT_USER);
+            error(_("You do not have the permission to edit this user."));
             include_once("inc/footer.inc.php");
             exit;
         }

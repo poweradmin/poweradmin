@@ -42,7 +42,7 @@ class EditZoneTemplController extends BaseController
 
     public function run(): void
     {
-        $this->checkPermission('zone_master_add', ERR_PERM_EDIT_ZONE_TEMPL);
+        $this->checkPermission('zone_master_add', _("You do not have the permission to edit zone templates."));
 
         $v = new Valitron\Validator($_GET);
         $v->rules([

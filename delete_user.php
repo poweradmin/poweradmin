@@ -57,7 +57,7 @@ class DeleteUserController extends BaseController {
         }
 
         if (($uid != $_SESSION['userid'] && !$perm_edit_others) || ($uid == $_SESSION['userid'] && !$perm_is_godlike)) {
-            error(ERR_PERM_DEL_USER);
+            error(_("You do not have the permission to delete this user."));
             include_once("inc/footer.inc.php");
             exit;
         }

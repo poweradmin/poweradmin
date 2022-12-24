@@ -41,7 +41,7 @@ class DeleteZoneTemplController extends BaseController
     {
         $zone_templ_id = htmlspecialchars($_GET['id']);
         $owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
-        $this->checkCondition(!do_hook('verify_permission', 'zone_master_add') || !$owner, ERR_PERM_DEL_ZONE_TEMPL);
+        $this->checkCondition(!do_hook('verify_permission', 'zone_master_add') || !$owner, _("You do not have the permission to delete zone templates."));
 
         if (isset($_GET['confirm'])) {
             $this->deleteZoneTempl();

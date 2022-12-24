@@ -39,7 +39,7 @@ class AddZoneTemplateController extends BaseController
 {
     public function run(): void
     {
-        $this->checkPermission('zone_master_add', ERR_PERM_ADD_ZONE_TEMPL);
+        $this->checkPermission('zone_master_add', _("You do not have the permission to add a zone template."));
 
         if ($this->isPost()) {
             $this->addZoneTemplate();

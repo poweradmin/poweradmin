@@ -39,7 +39,7 @@ class AddUserController extends BaseController {
 
     public function run(): void
     {
-        $this->checkPermission('user_add_new', ERR_PERM_ADD_USER);
+        $this->checkPermission('user_add_new', _("You do not have the permission to add a new user."));
 
         if ($this->isPost()) {
             $this->addUser();

@@ -37,15 +37,6 @@ define("ERR_PERM_VIEW_COMMENT", _("You do not have the permission to view this c
 define("ERR_PERM_EDIT_COMMENT", _("You do not have the permission to edit this comment."));
 define("ERR_PERM_DEL_SM", _("You do not have the permission to delete a supermaster."));
 define("ERR_PERM_VIEW_ZONE", _("You do not have the permission to view this zone."));
-define("ERR_PERM_EDIT_USER", _("You do not have the permission to edit this user."));
-define("ERR_PERM_ADD_PERM_TEMPL", _("You do not have the permission to add permission templates."));
-define("ERR_PERM_EDIT_PERM_TEMPL", _("You do not have the permission to edit permission templates."));
-define("ERR_PERM_DEL_PERM_TEMPL", _("You do not have the permission to delete permission templates."));
-define("ERR_PERM_ADD_USER", _("You do not have the permission to add a new user."));
-define("ERR_PERM_DEL_USER", _("You do not have the permission to delete this user."));
-define("ERR_PERM_EDIT_ZONE_TEMPL", _("You do not have the permission to edit zone templates."));
-define("ERR_PERM_DEL_ZONE_TEMPL", _("You do not have the permission to delete zone templates."));
-define("ERR_PERM_ADD_ZONE_TEMPL", _("You do not have the permission to add a zone template."));
 
 /* OTHER */
 define("ERR_INV_INPUT", _('Invalid or unexpected input given.'));

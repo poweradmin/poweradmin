@@ -218,7 +218,7 @@ function delete_user_local($uid, $zones)
     global $db;
 
     if (($uid != $_SESSION ['userid'] && !do_hook('verify_permission', 'user_edit_others')) || ($uid == $_SESSION ['userid'] && !do_hook('verify_permission', 'user_edit_own'))) {
-        error(ERR_PERM_DEL_USER);
+        error(_("You do not have the permission to delete this user."));
         return false;
     } else {
 
@@ -254,7 +254,7 @@ function delete_perm_templ_local($ptid)
 {
     global $db;
     if (!(do_hook('verify_permission', 'user_edit_templ_perm'))) {
-        error(ERR_PERM_DEL_PERM_TEMPL);
+        error(_("You do not have the permission to delete permission templates."));
     } else {
         $query = "SELECT id FROM users WHERE perm_templ = " . $ptid;
         $response = $db->queryOne($query);
@@ -355,7 +355,7 @@ email = " . $db->quote($email, 'text') . ",";
 
         $db->query($query);
     } else {
-        error(ERR_PERM_EDIT_USER);
+        error(_("You do not have the permission to edit this user."));
         return false;
     }
     return true;
@@ -787,7 +787,7 @@ function update_user_details_local($details)
 
         $db->query($query);
     } else {
-        error(ERR_PERM_EDIT_USER);
+        error(_("You do not have the permission to edit this user."));
         return false;
     }
     return true;
@@ -806,7 +806,7 @@ function add_new_user_local($details)
     global $ldap_use;
 
     if (!do_hook('verify_permission', 'user_add_new')) {
-        error(ERR_PERM_ADD_USER);
+        error(_("You do not have the permission to add a new user."));
         return false;
     } elseif (user_exists($details ['username'])) {
         error(_('Username exist already, please choose another one.'));

@@ -38,7 +38,7 @@ class ListZoneTemplController extends BaseController {
 
     public function run(): void
     {
-        $this->checkPermission('zone_master_add', ERR_PERM_EDIT_ZONE_TEMPL);
+        $this->checkPermission('zone_master_add', _("You do not have the permission to edit zone templates."));
 
         $this->showListZoneTempl();
     }

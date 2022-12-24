@@ -39,7 +39,7 @@ class EditPermTemplController extends BaseController
 
     public function run(): void
     {
-        $this->checkPermission('templ_perm_edit', ERR_PERM_EDIT_PERM_TEMPL);
+        $this->checkPermission('templ_perm_edit', _("You do not have the permission to edit permission templates."));
 
         $v = new Valitron\Validator($_GET);
         $v->rules([

@@ -61,7 +61,7 @@ class ZoneTemplate
 
         $zone_name_exists = ZoneTemplate::zone_templ_name_exists($details['templ_name']);
         if (!(do_hook('verify_permission', 'zone_master_add'))) {
-            error(ERR_PERM_ADD_ZONE_TEMPL);
+            error(_("You do not have the permission to add a zone template."));
             return false;
         } elseif ($zone_name_exists != '0') {
             error(ERR_ZONE_TEMPL_EXIST);
@@ -106,7 +106,7 @@ class ZoneTemplate
         global $db;
 
         if (!(do_hook('verify_permission', 'zone_master_add'))) {
-            error(ERR_PERM_DEL_ZONE_TEMPL);
+            error(_("You do not have the permission to delete zone templates."));
             return false;
         } else {
             // Delete the zone template
@@ -138,7 +138,7 @@ class ZoneTemplate
         global $db;
 
         if (!(do_hook('verify_permission', 'zone_master_add'))) {
-            error(ERR_PERM_DEL_ZONE_TEMPL);
+            error(_("You do not have the permission to delete zone templates."));
             return false;
         } else {
             $query = "DELETE FROM zone_templ"
@@ -373,7 +373,7 @@ class ZoneTemplate
         global $db_type;
 
         if (!(do_hook('verify_permission', 'zone_master_add'))) {
-            error(ERR_PERM_ADD_ZONE_TEMPL);
+            error(_("You do not have the permission to add a zone template."));
             return false;
         } else {
             $result = $db->beginTransaction();
@@ -470,7 +470,7 @@ class ZoneTemplate
         global $db;
         $zone_name_exists = ZoneTemplate::zone_templ_name_exists($details['templ_name'], $zone_templ_id);
         if (!(do_hook('verify_permission', 'zone_master_add'))) {
-            error(ERR_PERM_ADD_ZONE_TEMPL);
+            error(_("You do not have the permission to add a zone template."));
             return false;
         } elseif ($zone_name_exists != '0') {
             error(ERR_ZONE_TEMPL_EXIST);
