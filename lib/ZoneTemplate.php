@@ -64,7 +64,7 @@ class ZoneTemplate
             error(_("You do not have the permission to add a zone template."));
             return false;
         } elseif ($zone_name_exists != '0') {
-            error(ERR_ZONE_TEMPL_EXIST);
+            error(_('Zone template with this name already exists, please choose another one.'));
         } else {
             $query = "INSERT INTO zone_templ (name, descr, owner)
 			VALUES ("
@@ -202,7 +202,7 @@ class ZoneTemplate
                 return -1;
             }
         } else {
-            error(sprintf(ERR_INV_ARG, "get_zone_templ_record_from_id"));
+            error(sprintf(_('Invalid argument(s) given to function %s'), "get_zone_templ_record_from_id"));
         }
     }
 
@@ -234,7 +234,7 @@ class ZoneTemplate
             }
             return ($retcount > 0 ? $ret : -1);
         } else {
-            error(sprintf(ERR_INV_ARG, "get_zone_templ_records"));
+            error(sprintf(_('Invalid argument(s) given to function %s'), "get_zone_templ_records"));
         }
     }
 
@@ -473,7 +473,7 @@ class ZoneTemplate
             error(_("You do not have the permission to add a zone template."));
             return false;
         } elseif ($zone_name_exists != '0') {
-            error(ERR_ZONE_TEMPL_EXIST);
+            error(_('Zone template with this name already exists, please choose another one.'));
             return false;
         } else {
             $query = "UPDATE zone_templ

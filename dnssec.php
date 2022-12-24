@@ -44,7 +44,7 @@ class DnsSecController extends BaseController {
     public function run(): void
     {
         if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
-            error(ERR_INV_INPUT);
+            error(_('Invalid or unexpected input given.'));
             include_once('inc/footer.inc.php');
             exit;
         }
@@ -62,7 +62,7 @@ class DnsSecController extends BaseController {
         }
 
         if (DnsRecord::zone_id_exists($zone_id) == "0") {
-            error(ERR_ZONE_NOT_EXIST);
+            error(_('There is no zone with this ID.'));
             include_once("inc/footer.inc.php");
             exit();
         }

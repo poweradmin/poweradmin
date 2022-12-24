@@ -38,7 +38,7 @@ if (isset($_SESSION["userlang"])) {
 if ($iface_lang != 'en_EN') {
     $locale = setlocale(LC_ALL, $iface_lang, $iface_lang . '.UTF-8');
     if ($locale == false) {
-        error(ERR_LOCALE_FAILURE);
+        error(_('Failed to set locale. Selected locale may be unsupported on this system. Please contact your administrator.'));
     }
 
     $gettext_domain = 'messages';

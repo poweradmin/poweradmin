@@ -299,7 +299,7 @@ function edit_user_local($id, $user, $fullname, $email, $perm_templ, $descriptio
     if (($id == $_SESSION ["userid"] && $perm_edit_own == "1") || ($id != $_SESSION ["userid"] && $perm_edit_others == "1")) {
 
         if (!Validation::is_valid_email($email)) {
-            error(ERR_INV_EMAIL);
+            error(_('Enter a valid email address.'));
             return false;
         }
 
@@ -425,7 +425,7 @@ function get_fullname_from_userid_local($id)
         $r = $response->fetch();
         return $r["fullname"];
     } else {
-        error(ERR_INV_ARG);
+        error(_('Invalid argument(s) given to function %s'));
         return false;
     }
 }
@@ -452,7 +452,7 @@ function get_owner_from_id_local($id)
             error(_('User does not exist.'));
         }
     }
-    error(ERR_INV_ARG);
+    error(_('Invalid argument(s) given to function %s'));
 }
 
 /**
@@ -478,7 +478,7 @@ function get_fullnames_owners_from_domainid_local($id)
         }
         return "";
     }
-    error(ERR_INV_ARG);
+    error(_('Invalid argument(s) given to function %s'));
 }
 
 /**
@@ -499,7 +499,7 @@ function verify_user_is_owner_zoneid_local($zoneid)
 				AND zones.domain_id = " . $db->quote($zoneid, 'integer'));
         return (bool)$response;
     }
-    error(ERR_INV_ARG);
+    error(_('Invalid argument(s) given to function %s'));
 }
 
 /**
@@ -721,7 +721,7 @@ function update_user_details_local($details)
     if (($details ['uid'] == $_SESSION ["userid"] && $perm_edit_own == "1") || ($details ['uid'] != $_SESSION ["userid"] && $perm_edit_others == "1")) {
 
         if (!Validation::is_valid_email($details ['email'])) {
-            error(ERR_INV_EMAIL);
+            error(_('Enter a valid email address.'));
             return false;
         }
 
@@ -812,10 +812,10 @@ function add_new_user_local($details)
         error(_('Username exist already, please choose another one.'));
         return false;
     } elseif ($details ['username'] === '') {
-        error(ERR_INV_USERNAME);
+        error(_('Enter a valid user name.'));
         return false;
     } elseif (!Validation::is_valid_email($details ['email'])) {
-        error(ERR_INV_EMAIL);
+        error(_('Enter a valid email address.'));
         return false;
     } elseif ($details ['active'] == 1) {
         $active = 1;

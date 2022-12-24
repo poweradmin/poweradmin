@@ -148,7 +148,7 @@ class AddRecordController extends BaseController
                     $this->config('pdnssec_use') && Dnssec::dnssec_rectify_zone($zone_rev_id);
                 }
             } elseif (isset($content_rev)) {
-                error(sprintf(ERR_REVERS_ZONE_NOT_EXIST, $content_rev));
+                error(sprintf(_('There is no matching reverse-zone for: %s.'), $content_rev));
             }
         }
     }

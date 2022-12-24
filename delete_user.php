@@ -45,7 +45,7 @@ class DeleteUserController extends BaseController {
         $perm_is_godlike = do_hook('verify_permission', 'user_is_ueberuser');
 
         if (!(isset($_GET['id']) && Validation::is_number($_GET['id']))) {
-            error(ERR_INV_INPUT);
+            error(_('Invalid or unexpected input given.'));
             include_once("inc/footer.inc.php");
             exit;
         }

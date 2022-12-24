@@ -59,7 +59,7 @@ class EditController extends BaseController {
         $record_sort_by = $this->getSortBy();
 
         if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
-            error(ERR_INV_INPUT);
+            error(_('Invalid or unexpected input given.'));
             include_once("inc/footer.inc.php");
             exit;
         }
@@ -108,15 +108,15 @@ class EditController extends BaseController {
 
                 $this->config('pdnssec_use') && Dnssec::dnssec_rectify_zone($_GET['id']);
             } else {
-                error(ERR_ZONE_UPD);
+                error(_('Zone has not been updated successfully.'));
             }
         }
 
         if (isset($_POST['save_as'])) {
             if (ZoneTemplate::zone_templ_name_exists($_POST['templ_name'])) {
-                error(ERR_ZONE_TEMPL_EXIST);
+                error(_('Zone template with this name already exists, please choose another one.'));
             } elseif ($_POST['templ_name'] == '') {
-                error(ERR_ZONE_TEMPL_IS_EMPTY);
+                error(_('Template name can\'t be an empty string.'));
             } else {
                 success(_('Zone template has been added successfully.'));
                 $records = DnsRecord::get_records_from_domain_id($zone_id);
@@ -176,7 +176,7 @@ class EditController extends BaseController {
         }
 
         if (DnsRecord::zone_id_exists($zone_id) == "0") {
-            error(ERR_ZONE_NOT_EXIST);
+            error(_('There is no zone with this ID.'));
             include_once("inc/footer.inc.php");
             exit();
         }

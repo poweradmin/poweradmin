@@ -55,7 +55,7 @@ class EditZoneTemplController extends BaseController
 
         $zone_templ_id = htmlspecialchars($_GET['id']);
         if (ZoneTemplate::zone_templ_id_exists($zone_templ_id) == "0") {
-            $this->showErrors([[ERR_ZONE_TEMPL_NOT_EXIST]]);
+            $this->showError(_('There is no zone template with this ID.'));
         }
 
         if ($this->isPost()) {
@@ -132,7 +132,7 @@ class EditZoneTemplController extends BaseController
     public function updateTemplateNameAndDescription(string $zone_templ_id): void
     {
         if (!isset($_POST['templ_name']) || $_POST['templ_name'] == "") {
-            error(ERR_INV_INPUT);
+            error(_('Invalid or unexpected input given.'));
             include_once('inc/footer.inc.php');
             exit;
         }

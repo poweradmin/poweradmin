@@ -54,7 +54,7 @@ class DnsSecAddKeyController extends \Poweradmin\BaseController {
         }
 
         if (DnsRecord::zone_id_exists($zone_id) == "0") {
-            error(ERR_ZONE_NOT_EXIST);
+            error(_('There is no zone with this ID.'));
             include_once("inc/footer.inc.php");
             exit();
         }
@@ -64,7 +64,7 @@ class DnsSecAddKeyController extends \Poweradmin\BaseController {
             $key_type = $_POST['key_type'];
 
             if ($key_type != 'ksk' && $key_type != 'zsk') {
-                error(ERR_INV_INPUT);
+                error(_('Invalid or unexpected input given.'));
                 include_once("inc/footer.inc.php");
                 exit;
             }
@@ -76,7 +76,7 @@ class DnsSecAddKeyController extends \Poweradmin\BaseController {
 
             $valid_values = array('2048', '1024', '768', '384', '256');
             if (!in_array($bits, $valid_values)) {
-                error(ERR_INV_INPUT);
+                error(_('Invalid or unexpected input given.'));
                 include_once("inc/footer.inc.php");
                 exit;
             }
@@ -89,7 +89,7 @@ class DnsSecAddKeyController extends \Poweradmin\BaseController {
             // To check the supported DNSSEC algorithms in your build of PowerDNS, run pdnsutil list-algorithms.
             $valid_algorithm = array('rsasha1', 'rsasha1-nsec3', 'rsasha256', 'rsasha512', 'ecdsa256', 'ecdsa384', 'ed25519', 'ed448');
             if (!in_array($algorithm, $valid_algorithm)) {
-                error(ERR_INV_INPUT);
+                error(_('Invalid or unexpected input given.'));
                 include_once("inc/footer.inc.php");
                 exit;
             }

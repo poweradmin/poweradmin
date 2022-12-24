@@ -60,7 +60,7 @@ class DnsSecDeleteKeyController extends BaseController
         $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
 
         if ($zone_id == "-1") {
-            error(ERR_INV_INPUT);
+            error(_('Invalid or unexpected input given.'));
             include_once("inc/footer.inc.php");
             exit;
         }
@@ -68,13 +68,13 @@ class DnsSecDeleteKeyController extends BaseController
         $domain_name = DnsRecord::get_domain_name_by_id($zone_id);
 
         if ($key_id == "-1") {
-            error(ERR_INV_INPUT);
+            error(_('Invalid or unexpected input given.'));
             include_once("inc/footer.inc.php");
             exit;
         }
 
         if (!Dnssec::dnssec_zone_key_exists($domain_name, $key_id)) {
-            error(ERR_INV_INPUT);
+            error(_('Invalid or unexpected input given.'));
             include_once("inc/footer.inc.php");
             exit;
         }

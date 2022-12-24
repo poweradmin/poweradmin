@@ -53,7 +53,7 @@ class EditCommentController extends BaseController {
         $perm_edit = Permission::getEditPermission();
 
         if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
-            error(ERR_INV_INPUT);
+            error(_('Invalid or unexpected input given.'));
             include_once('inc/footer.inc.php');
             exit;
         }

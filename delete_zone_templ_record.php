@@ -41,14 +41,14 @@ class DeleteZoneTemplRecordController extends BaseController {
     public function run(): void
     {
         if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
-            error(ERR_INV_INPUT);
+            error(_('Invalid or unexpected input given.'));
             include_once('inc/footer.inc.php');
             exit;
         }
         $record_id = htmlspecialchars($_GET['id']);
 
         if (!isset($_GET['zone_templ_id']) || !Validation::is_number($_GET['zone_templ_id'])) {
-            error(ERR_INV_INPUT);
+            error(_('Invalid or unexpected input given.'));
             include_once('inc/footer.inc.php');
             exit;
         }

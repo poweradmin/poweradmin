@@ -85,7 +85,7 @@ class BulkRegistrationController extends BaseController {
             $this->setMessage('list_zones', 'success', _('Zones has been added successfully.'));
             $this->redirect('list_zones.php');
         } else {
-            $this->setMessage('bulk_registration', 'warn', ERR_ZONES_ADD);
+            $this->setMessage('bulk_registration', 'warn', _('Some zone(s) could not be added.'));
             $this->showBulkRegistrationForm(array_unique($failed_domains));
         }
     }

@@ -43,7 +43,7 @@ $vars = [
     'iface_style' => $iface_style == 'example' ? 'ignite' : $iface_style,
     'file_version' => time(),
     'custom_header' => file_exists('templates/custom/header.html'),
-    'install_error' => !$ignore_install_dir && file_exists('install') ? ERR_INSTALL_DIR_EXISTS : false,
+    'install_error' => !$ignore_install_dir && file_exists('install') ? _('The <a href="install/">install/</a> directory exists, you must remove it first before proceeding.') : false,
 ];
 
 $app = AppFactory::create();
@@ -64,7 +64,7 @@ if (isset($_SESSION["userid"])) {
         'perm_is_godlike' => $perm_is_godlike,
         'perm_templ_perm_edit' => do_hook('verify_permission', 'templ_perm_edit'),
         'perm_add_new' => do_hook('verify_permission', 'user_add_new'),
-        'session_key_error' => $perm_is_godlike && $session_key == 'p0w3r4dm1n' ? ERR_DEFAULT_CRYPTOKEY_USED : false,
+        'session_key_error' => $perm_is_godlike && $session_key == 'p0w3r4dm1n' ? _('Default session encryption key is used, please set it in your configuration file.') : false,
         'auth_used' => $_SESSION["auth_used"] != "ldap",
         'dblog_use' => $dblog_use
     ]);

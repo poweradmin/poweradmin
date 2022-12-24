@@ -41,7 +41,7 @@ class Dnssec
         global $pdnssec_command;
 
         if (!function_exists('exec')) {
-            error(ERR_EXEC_NOT_ALLOWED);
+            error(_('Failed to call function exec. Make sure that exec is not listed in disable_functions at php.ini'));
             return false;
         }
 

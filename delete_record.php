@@ -44,7 +44,7 @@ class DeleteRecordController extends BaseController {
     public function run(): void
     {
         if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
-            error(ERR_INV_INPUT);
+            error(_('Invalid or unexpected input given.'));
             include_once('inc/footer.inc.php');
             exit;
         }
@@ -52,7 +52,7 @@ class DeleteRecordController extends BaseController {
         $record_id = htmlspecialchars($_GET['id']);
         $zid = DnsRecord::get_zone_id_from_record_id($record_id);
         if ($zid == NULL) {
-            $this->showError(ERR_ZONE_NOT_EXIST);
+            $this->showError(_('There is no zone with this ID.'));
         }
 
         if (isset($_GET['confirm'])) {

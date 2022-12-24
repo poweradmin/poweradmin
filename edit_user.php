@@ -49,7 +49,7 @@ class EditUserController extends BaseController
         do_hook('verify_permission', 'user_edit_others') ? $perm_edit_others = "1" : $perm_edit_others = "0";
 
         if ($edit_id == "-1") {
-            error(ERR_INV_INPUT);
+            error(_('Invalid or unexpected input given.'));
             include_once("inc/footer.inc.php");
             exit;
         }
@@ -106,7 +106,7 @@ class EditUserController extends BaseController
         }
 
         if ($i_username == "-1" || $i_fullname == "-1" || $i_email < "1" || $i_description == "-1" || $i_password == "-1") {
-            error(ERR_INV_INPUT);
+            error(_('Invalid or unexpected input given.'));
         } else {
             if ($i_username != "" && $i_perm_templ > "0" && $i_fullname) {
                 $active = !isset($i_active);
