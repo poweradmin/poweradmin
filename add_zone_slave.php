@@ -73,10 +73,10 @@ class AddZoneSlaveController extends BaseController
             error(ERR_DNS_HOSTNAME);
             $this->showForm();
         } elseif ($dns_third_level_check && DnsRecord::get_domain_level($zone) > 2 && DnsRecord::domain_exists(DnsRecord::get_second_level_domain($zone))) {
-            error(ERR_DOMAIN_EXISTS);
+            error(_('There is already a zone with this name.'));
             $this->showForm();
         } elseif (DnsRecord::domain_exists($zone) || DnsRecord::record_name_exists($zone)) {
-            error(ERR_DOMAIN_EXISTS);
+            error(_('There is already a zone with this name.'));
             $this->showForm();
         } elseif (!Dns::are_multiple_valid_ips($master)) {
             error(ERR_DNS_IP);

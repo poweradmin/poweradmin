@@ -122,7 +122,7 @@ class EditUserController extends BaseController
     {
         $users = do_hook('get_user_detail_list', $edit_id);
         if (empty($users)) {
-            error(ERR_USER_NOT_EXIST);
+            error(_('User does not exist.'));
             include_once("inc/footer.inc.php");
             exit;
         }

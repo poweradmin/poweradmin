@@ -453,7 +453,7 @@ class DnsRecord
             return false;
         }
         if (self::supermaster_ip_name_exists($master_ip, $ns_name)) {
-            error(ERR_SM_EXISTS);
+            error(_('There is already a supermaster with this IP address and hostname.'));
             return false;
         } else {
             $db->query("INSERT INTO supermasters VALUES (" . $db->quote($master_ip, 'text') . ", " . $db->quote($ns_name, 'text') . ", " . $db->quote($account, 'text') . ")");
@@ -999,7 +999,7 @@ class DnsRecord
             $result = $db->queryRow("SELECT id FROM domains WHERE name=" . $db->quote($domain, 'text'));
             return ($result ? true : false);
         } else {
-            error(ERR_DOMAIN_INVALID);
+            error(_('This is an invalid zone name.'));
         }
     }
 

@@ -128,7 +128,7 @@ class PDOLayer extends PDOCommon {
         } elseif ($db_type == 'sqlite') {
             $query = "SELECT name FROM sqlite_master WHERE type='table'";
         } else {
-            die(ERR_DB_UNK_TYPE);
+            die(_('Unknown database type.'));
         }
 
         $result = $this->query($query);

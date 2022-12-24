@@ -61,7 +61,7 @@ class DeleteSuperMasterController extends BaseController {
 
         if ($v->validate()) {
              if (!DnsRecord::supermaster_ip_name_exists($master_ip, $ns_name)) {
-                error(ERR_SM_NOT_EXISTS);
+                error(_('Super master does not exist.'));
              }
 
             if (DnsRecord::delete_supermaster($master_ip, $ns_name)) {

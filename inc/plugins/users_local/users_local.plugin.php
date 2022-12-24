@@ -260,7 +260,7 @@ function delete_perm_templ_local($ptid)
         $response = $db->queryOne($query);
 
         if ($response) {
-            error(ERR_PERM_TEMPL_ASSIGNED);
+            error(_('This template is assigned to at least one user.'));
             return false;
         } else {
             $query = "DELETE FROM perm_templ_items WHERE templ_id = " . $ptid;
@@ -330,7 +330,7 @@ function edit_user_local($id, $user, $fullname, $email, $perm_templ, $descriptio
             $query = "SELECT id FROM users WHERE username = " . $db->quote($user, 'text');
             $response = $db->queryOne($query);
             if ($response) {
-                error(ERR_USER_EXIST);
+                error(_('Username exist already, please choose another one.'));
                 return false;
             }
         }
@@ -390,7 +390,7 @@ function change_user_pass_local(array $details)
     global $db;
 
     if ($details['new_password'] != $details['new_password2']) {
-        error(ERR_USER_MATCH_NEW_PASS);
+        error(_('The two new password fields do not match.'));
         return false;
     }
 
@@ -404,7 +404,7 @@ function change_user_pass_local(array $details)
         logout(_('Password has been changed, please login.'), 'success');
     }
 
-    error(ERR_USER_WRONG_CURRENT_PASS);
+    error(_('You did not enter the correct current password.'));
     return false;
 }
 
@@ -449,7 +449,7 @@ function get_owner_from_id_local($id)
         if ($response) {
             return $response ["fullname"];
         } else {
-            error(ERR_USER_NOT_EXIST);
+            error(_('User does not exist.'));
         }
     }
     error(ERR_INV_ARG);
@@ -756,7 +756,7 @@ function update_user_details_local($details)
             $query = "SELECT id FROM users WHERE username = " . $db->quote($details ['username'], 'text');
             $response = $db->queryOne($query);
             if ($response) {
-                error(ERR_USER_EXIST);
+                error(_('Username exist already, please choose another one.'));
                 return false;
             }
         }
@@ -809,7 +809,7 @@ function add_new_user_local($details)
         error(ERR_PERM_ADD_USER);
         return false;
     } elseif (user_exists($details ['username'])) {
-        error(ERR_USER_EXIST);
+        error(_('Username exist already, please choose another one.'));
         return false;
     } elseif ($details ['username'] === '') {
         error(ERR_INV_USERNAME);

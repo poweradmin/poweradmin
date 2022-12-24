@@ -47,19 +47,6 @@ define("ERR_PERM_EDIT_ZONE_TEMPL", _("You do not have the permission to edit zon
 define("ERR_PERM_DEL_ZONE_TEMPL", _("You do not have the permission to delete zone templates."));
 define("ERR_PERM_ADD_ZONE_TEMPL", _("You do not have the permission to add a zone template."));
 
-/* DOMAIN STUFF */
-define("ERR_DOMAIN_INVALID", _('This is an invalid zone name.'));
-define("ERR_SM_EXISTS", _('There is already a supermaster with this IP address and hostname.'));
-define("ERR_SM_NOT_EXISTS", _('Super master does not exist.'));
-define("ERR_DOMAIN_EXISTS", _('There is already a zone with this name.'));
-
-/* USER STUFF */
-define("ERR_USER_EXIST", _('Username exist already, please choose another one.'));
-define("ERR_USER_NOT_EXIST", _('User does not exist.'));
-define("ERR_USER_WRONG_CURRENT_PASS", _('You did not enter the correct current password.'));
-define("ERR_USER_MATCH_NEW_PASS", _('The two new password fields do not match.'));
-define("ERR_PERM_TEMPL_ASSIGNED", _('This template is assigned to at least one user.'));
-
 /* OTHER */
 define("ERR_INV_INPUT", _('Invalid or unexpected input given.'));
 define("ERR_INV_ARG", _('Invalid argument(s) given to function %s'));
@@ -80,16 +67,6 @@ define("ERR_EXEC_NOT_ALLOWED", _('Failed to call function exec. Make sure that e
 define("ERR_ZONE_MUST_HAVE_OWNER", _('There must be at least one owner for a zone.'));
 define("ERR_ZONE_OWNER_EXISTS", _('The selected user already owns the zone.'));
 define("ERR_ZONES_ADD", _('Some zone(s) could not be added.'));
-
-/* DATABASE */
-define("ERR_DB_NO_DB_NAME", _('No database name has been set in config.inc.php.'));
-define("ERR_DB_NO_DB_HOST", _('No database host has been set in config.inc.php.'));
-define("ERR_DB_NO_DB_USER", _('No database username has been set in config.inc.php.'));
-define("ERR_DB_NO_DB_PASS", _('No database password has been set in config.inc.php.'));
-define("ERR_DB_NO_DB_TYPE", _('No or unknown database type has been set in config.inc.php.'));
-define("ERR_DB_NO_DB_FILE", _('No database file has been set in config.inc.php.'));
-define("ERR_DB_NO_DB_UPDATE", _('It seems that you forgot to update the database after Poweradmin upgrade to new version.'));
-define("ERR_DB_UNK_TYPE", _('Unknown database type.'));
 
 /* DNS */
 define("ERR_DNS_CONTENT", _('Your content field doesnt have a legit value.'));

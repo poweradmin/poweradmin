@@ -51,7 +51,7 @@ function dbConnect($isQuiet = true) {
     if (!(isset($db_type) && $db_type == 'mysql' || $db_type == 'mysqli' || $db_type == 'pgsql' || $db_type == 'sqlite' || $db_type == 'sqlite3')) {
         include_once("header.inc.php");
         if (!file_exists('install')) {
-            error(ERR_DB_NO_DB_TYPE);
+            error(_('No or unknown database type has been set in config.inc.php.'));
         }
         include_once("footer.inc.php");
         exit;
@@ -59,28 +59,28 @@ function dbConnect($isQuiet = true) {
 
     if ($db_type != 'sqlite' && $db_type != 'sqlite3' && !(isset($db_user) && $db_user != "")) {
 //        include_once("header.inc.php");
-        error(ERR_DB_NO_DB_USER);
+        error(_('No database username has been set in config.inc.php.'));
         include_once("footer.inc.php");
         exit;
     }
 
     if ($db_type != 'sqlite' && $db_type != 'sqlite3' && !(isset($db_pass) && $db_pass != '')) {
         include_once("header.inc.php");
-        error(ERR_DB_NO_DB_PASS);
+        error(_('No database password has been set in config.inc.php.'));
         include_once("footer.inc.php");
         exit;
     }
 
     if ($db_type != 'sqlite' && $db_type != 'sqlite3' && !(isset($db_host) && $db_host != '')) {
         include_once("header.inc.php");
-        error(ERR_DB_NO_DB_HOST);
+        error(_('No database host has been set in config.inc.php.'));
         include_once("footer.inc.php");
         exit;
     }
 
     if ($db_type != 'sqlite' && $db_type != 'sqlite3' && !(isset($db_name) && $db_name != '')) {
         include_once("header.inc.php");
-        error(ERR_DB_NO_DB_NAME);
+        error(_('No database name has been set in config.inc.php.'));
         include_once("footer.inc.php");
         exit;
     }
@@ -95,7 +95,7 @@ function dbConnect($isQuiet = true) {
 
     if (($db_type == 'sqlite' || $db_type == 'sqlite3') && (!(isset($db_file) && $db_file != ''))) {
         include_once("header.inc.php");
-        error(ERR_DB_NO_DB_FILE);
+        error(_('No database file has been set in config.inc.php.'));
         include_once("footer.inc.php");
         exit;
     }
@@ -132,7 +132,7 @@ function dbConnect($isQuiet = true) {
         $sql_regexp = "~";
     } else {
         include_once("header.inc.php");
-        error(ERR_DB_NO_DB_TYPE);
+        error(_('No or unknown database type has been set in config.inc.php.'));
         include_once("footer.inc.php");
         exit;
     }
