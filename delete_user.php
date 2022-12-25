@@ -63,22 +63,19 @@ class DeleteUserController extends BaseController {
 
     public function deleteUser(string $uid): void
     {
-        if (do_hook('is_valid_user', $uid)) {
-            $zones = array();
-            if (isset($_POST['zone'])) {
-                $zones = $_POST['zone'];
-            }
-
-            if (do_hook('delete_user', $uid, $zones)) {
-                $this->setMessage('users', 'success', _('The user has been deleted successfully.'));
-                $this->redirect('users.php');
-            }
-        } else {
-            header("Location: users.php");
-            exit;
+        if (!do_hook('is_valid_user', $uid)) {
+            $this->showError(_('User does not exist.'));
         }
-        include_once("inc/footer.inc.php");
-        exit;
+
+        $zones = array();
+        if (isset($_POST['zone'])) {
+            $zones = $_POST['zone'];
+        }
+
+        if (do_hook('delete_user', $uid, $zones)) {
+            $this->setMessage('users', 'success', _('The user has been deleted successfully.'));
+            $this->redirect('users.php');
+        }
     }
 
     public function showQuestion(string $uid): void

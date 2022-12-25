@@ -43,8 +43,7 @@ class DeleteDomainsController extends BaseController {
     {
         $zone_ids = $_POST['zone_id'];
         if (!$zone_ids) {
-            header("Location: list_zones.php");
-            exit;
+            $this->showError(_('Invalid or unexpected input given.'));
         }
 
         if (isset($_POST['confirm'])) {

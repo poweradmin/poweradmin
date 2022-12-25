@@ -29,7 +29,6 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\AppFactory;
 use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
 use Poweradmin\Validation;

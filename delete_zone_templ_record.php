@@ -59,10 +59,10 @@ class DeleteZoneTemplRecordController extends BaseController {
         if ($confirm == '1' && $owner) {
             if (ZoneTemplate::delete_zone_templ_record($record_id)) {
                 $this->setMessage('edit_zone_templ', 'success', _('The record has been deleted successfully.'));
-                $this->redirect('edit_zone_templ.php', ['id' => $zone_templ_id]);
+            } else {
+                $this->setMessage('edit_zone_templ', 'error', _('The record could not be deleted.'));
             }
-            include_once('inc/footer.inc.php');
-            exit;
+            $this->redirect('edit_zone_templ.php', ['id' => $zone_templ_id]);
         }
 
         if (!(do_hook('verify_permission', 'zone_master_add')) || !$owner) {
