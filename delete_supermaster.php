@@ -35,7 +35,8 @@ use Poweradmin\DnsRecord;
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/messages.inc.php';
 
-class DeleteSuperMasterController extends BaseController {
+class DeleteSuperMasterController extends BaseController
+{
 
     public function run(): void
     {
@@ -60,9 +61,10 @@ class DeleteSuperMasterController extends BaseController {
         $ns_name = htmlspecialchars($_GET['ns_name']);
 
         if ($v->validate()) {
-             if (!DnsRecord::supermaster_ip_name_exists($master_ip, $ns_name)) {
-                error(_('Super master does not exist.'));
-             }
+            if (!DnsRecord::supermaster_ip_name_exists($master_ip, $ns_name)) {
+                $this->setMessage('list_supermasters', 'error', _('Super master does not exist.'));
+                $this->redirect('list_supermasters.php');
+            }
 
             if (DnsRecord::delete_supermaster($master_ip, $ns_name)) {
                 $this->setMessage('list_supermasters', 'success', _('The supermaster has been deleted successfully.'));

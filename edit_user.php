@@ -103,13 +103,11 @@ class EditUserController extends BaseController
         }
 
         if ($i_username == "-1" || $i_fullname == "-1" || $i_email < "1" || $i_description == "-1" || $i_password == "-1") {
-            error(_('Invalid or unexpected input given.'));
-        } else {
-            if ($i_username != "" && $i_perm_templ > "0" && $i_fullname) {
-                if (do_hook('edit_user', $edit_id, $i_username, $i_fullname, $i_email, $i_perm_templ, $i_description, $i_active, $i_password)) {
-                    $this->setMessage('users', 'success', _('The user has been updated successfully.'));
-                    $this->redirect('users.php');
-                }
+            $this->showError(_('Invalid or unexpected input given.'));
+        } elseif ($i_username != "" && $i_perm_templ > "0" && $i_fullname) {
+            if (do_hook('edit_user', $edit_id, $i_username, $i_fullname, $i_email, $i_perm_templ, $i_description, $i_active, $i_password)) {
+                $this->setMessage('users', 'success', _('The user has been updated successfully.'));
+                $this->redirect('users.php');
             }
         }
     }

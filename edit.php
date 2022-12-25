@@ -106,15 +106,15 @@ class EditController extends BaseController {
 
                 $this->config('pdnssec_use') && Dnssec::dnssec_rectify_zone($_GET['id']);
             } else {
-                error(_('Zone has not been updated successfully.'));
+                $this->showError(_('Zone has not been updated successfully.'));
             }
         }
 
         if (isset($_POST['save_as'])) {
             if (ZoneTemplate::zone_templ_name_exists($_POST['templ_name'])) {
-                error(_('Zone template with this name already exists, please choose another one.'));
+                $this->showError(_('Zone template with this name already exists, please choose another one.'));
             } elseif ($_POST['templ_name'] == '') {
-                error(_('Template name can\'t be an empty string.'));
+                $this->showError(_('Template name can\'t be an empty string.'));
             } else {
                 $records = DnsRecord::get_records_from_domain_id($zone_id);
                 ZoneTemplate::add_zone_templ_save_as($_POST['templ_name'], $_POST['templ_descr'], $_SESSION['userid'], $records, DnsRecord::get_domain_name_by_id($zone_id));
