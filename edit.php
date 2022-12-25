@@ -181,11 +181,13 @@ class EditController extends BaseController {
             DnsRecord::update_soa_serial($zone_id);
             Dnssec::dnssec_secure_zone($zone_name);
             Dnssec::dnssec_rectify_zone($zone_id);
+            $this->setMessage('edit', 'success', _('Zone has been signed successfully.'));
         }
 
         if (isset($_POST['unsign_zone'])) {
             Dnssec::dnssec_unsecure_zone($zone_name);
             DnsRecord::update_soa_serial($zone_id);
+            $this->setMessage('edit', 'success', _('Zone has been unsigned successfully.'));
         }
 
         $domain_type = DnsRecord::get_domain_type($zone_id);

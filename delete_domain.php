@@ -100,9 +100,16 @@ class DeleteDomainController extends BaseController
             }
         }
 
+        if (preg_match("/^xn--/", $zone_info['name'])) {
+            $idn_zone_name = idn_to_utf8($zone_info['name'], IDNA_NONTRANSITIONAL_TO_ASCII);
+        } else {
+            $idn_zone_name = "";
+        }
+
         $this->render('delete_domain.html', [
             'zone_id' => $zone_id,
             'zone_info' => $zone_info,
+            'idn_zone_name' => $idn_zone_name,
             'zone_owners' => $zone_owners,
             'slave_master_exists' => $slave_master_exists,
         ]);

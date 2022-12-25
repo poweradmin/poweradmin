@@ -1,3 +1,10 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans 'Home' %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans 'Search' %}</li>
+    </ol>
+</nav>
+
 <h5 class="mb-3">{% trans 'Search zones and records' %}</h5>
 <span class="text-secondary">{% trans 'Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) in pattern matches any single character, a percent sign (%) matches any string of zero or more characters.' %}</span>
 <form class="needs-validation" name="search_form" action="search.php" method="POST" novalidate>

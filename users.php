@@ -65,7 +65,8 @@ class UsersController extends BaseController
             'perm_templates' => do_hook('list_permission_templates'),
             'users' => do_hook('get_user_detail_list', ""),
             'ldap_use' => $this->config('ldap_use'),
-            'session_userid' => $_SESSION["userid"]
+            'session_userid' => $_SESSION["userid"],
+            'perm_add_new' => do_hook('verify_permission', 'user_add_new'),
         ]);
     }
 }

@@ -1,3 +1,12 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans 'Home' %}</a></li>
+        <li class="breadcrumb-item"><a href="users.php">{% trans 'Users' %}</a></li>
+        <li class="breadcrumb-item"><a href="list_perm_templ.php">{% trans 'Permission templates' %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans 'Edit' %}</li>
+    </ol>
+</nav>
+
 <h5 class="mb-3">{% trans 'Edit permission template' %}</h5>
 <form class="needs-validation" method="post" action="" novalidate>
     <input type="hidden" name="templ_id" value="{{ id }}">

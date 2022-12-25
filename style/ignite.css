@@ -50,3 +50,13 @@ footer a, footer a:hover {
 .form-select.is-valid, .was-validated .form-select:valid {
     border-color: #ced4da;
 }
+
+.breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    list-style: none;
+    background-color: rgb(248, 249, 250);
+    border-radius: 0.25rem;
+}

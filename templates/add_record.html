@@ -1,7 +1,21 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans 'Home' %}</a></li>
+        <li class="breadcrumb-item">
+            {% if idn_zone_name %}
+            <a href="edit.php?id={{ zone_id }}">{{ idn_zone_name }}</a>
+            {% else %}
+            <a href="edit.php?id={{ zone_id }}">{{ zone_name }}</a>
+            {% endif %}
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans 'Add record' %}</li>
+    </ol>
+</nav>
+
 {% if idn_zone_name %}
-<h5 class="mb-3">{% trans 'Add record to zone' %} "<a href="edit.php?id={{ zone_id }}">{{ idn_zone_name }}</a>" ({{ zone_name }})</h5>
+<h5 class="mb-3">{% trans 'Add record to zone' %} "{{ idn_zone_name }}" ({{ zone_name }})</h5>
 {% else %}
-<h5 class="mb-3">{% trans 'Add record to zone' %} "<a href="edit.php?id={{ zone_id }}">{{ zone_name }}</a>"</h5>
+<h5 class="mb-3">{% trans 'Add record to zone' %} "{{ zone_name }}"</h5>
 {% endif %}
 
 <form class="needs-validation" method="post" novalidate>

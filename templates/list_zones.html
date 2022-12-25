@@ -1,3 +1,10 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Zones</li>
+    </ol>
+</nav>
+
 <h5 class="mb-3">{% trans 'List zones' %}</h5>
 <div class="pb-3 text-secondary">{% trans 'Total number of zones:' %} {{ count_zones_view }}</div>
 
@@ -101,5 +108,14 @@
     {% if count_zones_view != 0 %}
     <input type="submit" name="commit" value="{% trans 'Delete zone(s)' %}" class="btn btn-primary btn-sm">
     {% endif %}
+    {% endif %}
+
+    {% if perm_zone_master_add %}
+    <input class="btn btn-secondary btn-sm" type="button" name="add_master"
+           onclick="location.href = 'add_zone_master.php'" value="{% trans 'Add master zone' %}">
+    {% endif %}
+    {% if perm_zone_slave_add %}
+    <input class="btn btn-secondary btn-sm" type="button" name="add_slave"
+           onclick="location.href = 'add_zone_slave.php'" value="{% trans 'Add slave zone' %}">
     {% endif %}
 </form>

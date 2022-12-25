@@ -1,3 +1,11 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans 'Home' %}</a></li>
+        <li class="breadcrumb-item"><a href="list_zones.php">{% trans 'Zones' %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans 'Bulk registration' %}</li>
+    </ol>
+</nav>
+
 <h5 class="mb-3">{% trans 'Bulk registration' %}</h5>
 
 <form class="needs-validation" method="post" action="bulk_registration.php" novalidate>

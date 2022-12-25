@@ -109,7 +109,9 @@ class ListZonesController extends BaseController {
             'letters' => show_letters($letter_start, $_SESSION["userid"]),
             'pagination' => show_pages($count_zones_all_letterstart, $iface_rowamount),
             'session_userlogin' => $_SESSION['userlogin'],
-            'perm_edit' => $perm_edit
+            'perm_edit' => $perm_edit,
+            'perm_zone_master_add' => do_hook('verify_permission', 'zone_master_add'),
+            'perm_zone_slave_add' => do_hook('verify_permission', 'zone_slave_add'),
         ]);
     }
 }

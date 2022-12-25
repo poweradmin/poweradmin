@@ -1,4 +1,24 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans 'Home' %}</a></li>
+        <li class="breadcrumb-item"><a href="list_zones.php">{% trans 'Zones' %}</a></li>
+        <li class="breadcrumb-item"><a href="edit.php?id={{ zone_id }}">
+            {% if idn_zone_name %}
+            {{ idn_zone_name }}
+            {% else %}
+            {{ zone_info['name'] }}
+            {% endif %}
+        </a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans 'Delete Zone' %}</li>
+    </ol>
+</nav>
+
+{% if idn_zone_name %}
+<h5 class="mb-3">{% trans 'Delete zone' %} "{{ idn_zone_name }}" ({{ zone_info['name'] }})</h5>
+{% else %}
 <h5 class="mb-3">{% trans 'Delete zone' %} "{{ zone_info['name'] }}"</h5>
+{% endif %}
+
 {% trans 'Owner' %}: {{ zone_owners }}<br>
 {% trans 'Type' %}: {{ zone_info['type'] }}
 

@@ -1,3 +1,10 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans 'Home' %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans 'Users' %}</li>
+    </ol>
+</nav>
+
 <h5 class="mb-3">{% trans 'User administration' %}</h5>
 
 <form method="post" action="users.php">
@@ -104,5 +111,10 @@
     {% if permissions['user_edit_own'] or permissions['user_edit_others'] %}
     <input type="submit" class="btn btn-primary btn-sm" name="commit" value="{% trans 'Commit changes' %}">
     <input type="reset" class="btn btn-secondary btn-sm" name="reset" value="{% trans 'Reset changes' %}">
+    {% endif %}
+
+    {% if perm_add_new %}
+    <input class="btn btn-secondary btn-sm" type="button" name="add_slave"
+           onclick="location.href = 'add_user.php'" value="{% trans 'Add user' %}">
     {% endif %}
 </form>
