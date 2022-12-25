@@ -101,16 +101,16 @@ class EditUserController extends BaseController
             $i_perm_templ = $_POST['perm_templ'];
         }
 
+        $i_active = false;
         if (isset($_POST['active']) && Validation::is_number($_POST['active'])) {
-            $i_active = $_POST['active'];
+            $i_active = true;
         }
 
         if ($i_username == "-1" || $i_fullname == "-1" || $i_email < "1" || $i_description == "-1" || $i_password == "-1") {
             error(_('Invalid or unexpected input given.'));
         } else {
             if ($i_username != "" && $i_perm_templ > "0" && $i_fullname) {
-                $active = !isset($i_active);
-                if (do_hook('edit_user', $edit_id, $i_username, $i_fullname, $i_email, $i_perm_templ, $i_description, $active, $i_password)) {
+                if (do_hook('edit_user', $edit_id, $i_username, $i_fullname, $i_email, $i_perm_templ, $i_description, $i_active, $i_password)) {
                     $this->setMessage('users', 'success', _('The user has been updated successfully.'));
                     $this->redirect('users.php');
                 }
@@ -132,7 +132,7 @@ class EditUserController extends BaseController
         $permission_templates = do_hook('list_permission_templates');
         $user_permissions = do_hook('get_permissions_by_template_id', $user['tpl_id']);
 
-        (($user['active']) == "1") ? $check = " CHECKED" : $check = "";
+        ($user['active']) == "1" ? $check = " CHECKED" : $check = "";
         $name = $user['fullname'] ?: $user['username'];
 
         $this->render('edit_user.html', [
