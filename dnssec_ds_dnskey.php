@@ -51,9 +51,7 @@ class DnsSecDsDnsKeyController extends BaseController {
         }
 
         if ($zone_id == "-1") {
-            error(_('Invalid or unexpected input given.'));
-            include_once('inc/footer.inc.php');
-            exit;
+            $this->showError(_('Invalid or unexpected input given.'));
         }
 
         $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
@@ -63,15 +61,11 @@ class DnsSecDsDnsKeyController extends BaseController {
         $perm_view = Permission::getViewPermission();
 
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
-            error(_("You do not have the permission to view this zone."));
-            include_once("inc/footer.inc.php");
-            exit();
+            $this->showError(_("You do not have the permission to view this zone."));
         }
 
         if (DnsRecord::zone_id_exists($zone_id) == "0") {
-            error(_('There is no zone with this ID.'));
-            include_once("inc/footer.inc.php");
-            exit();
+            $this->showError(_('There is no zone with this ID.'));
         }
 
         $this->showKeys($zone_id, $pdnssec_use);

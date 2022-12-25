@@ -48,15 +48,11 @@ class DnsSecAddKeyController extends \Poweradmin\BaseController {
         $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
 
         if ($user_is_zone_owner == "0") {
-            error(_("You do not have the permission to view this zone."));
-            include_once("inc/footer.inc.php");
-            exit();
+            $this->showError(_("You do not have the permission to view this zone."));
         }
 
         if (DnsRecord::zone_id_exists($zone_id) == "0") {
-            error(_('There is no zone with this ID.'));
-            include_once("inc/footer.inc.php");
-            exit();
+            $this->showError(_('There is no zone with this ID.'));
         }
 
         $key_type = "";
@@ -64,9 +60,7 @@ class DnsSecAddKeyController extends \Poweradmin\BaseController {
             $key_type = $_POST['key_type'];
 
             if ($key_type != 'ksk' && $key_type != 'zsk') {
-                error(_('Invalid or unexpected input given.'));
-                include_once("inc/footer.inc.php");
-                exit;
+                $this->showError(_('Invalid or unexpected input given.'));
             }
         }
 
@@ -76,9 +70,7 @@ class DnsSecAddKeyController extends \Poweradmin\BaseController {
 
             $valid_values = array('2048', '1024', '768', '384', '256');
             if (!in_array($bits, $valid_values)) {
-                error(_('Invalid or unexpected input given.'));
-                include_once("inc/footer.inc.php");
-                exit;
+                $this->showError(_('Invalid or unexpected input given.'));
             }
         }
 
@@ -89,9 +81,7 @@ class DnsSecAddKeyController extends \Poweradmin\BaseController {
             // To check the supported DNSSEC algorithms in your build of PowerDNS, run pdnsutil list-algorithms.
             $valid_algorithm = array('rsasha1', 'rsasha1-nsec3', 'rsasha256', 'rsasha512', 'ecdsa256', 'ecdsa384', 'ed25519', 'ed448');
             if (!in_array($algorithm, $valid_algorithm)) {
-                error(_('Invalid or unexpected input given.'));
-                include_once("inc/footer.inc.php");
-                exit;
+                $this->showError(_('Invalid or unexpected input given.'));
             }
         }
 

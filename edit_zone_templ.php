@@ -132,9 +132,7 @@ class EditZoneTemplController extends BaseController
     public function updateTemplateNameAndDescription(string $zone_templ_id): void
     {
         if (!isset($_POST['templ_name']) || $_POST['templ_name'] == "") {
-            error(_('Invalid or unexpected input given.'));
-            include_once('inc/footer.inc.php');
-            exit;
+            $this->showError(_('Invalid or unexpected input given.'));
         }
         $this->setMessage('edit_zone_templ', 'success', _('Zone template has been updated successfully.'));
         ZoneTemplate::edit_zone_templ($_POST, $zone_templ_id);

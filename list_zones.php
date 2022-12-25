@@ -93,9 +93,7 @@ class ListZonesController extends BaseController {
         }
 
         if ($perm_view == "none") {
-            error(_('You do not have the permission to see any zones.'));
-            include_once('inc/footer.inc.php');
-            exit;
+            $this->showError(_('You do not have the permission to see any zones.'));
         }
 
         $this->render('list_zones.html', [

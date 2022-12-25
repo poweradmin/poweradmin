@@ -44,9 +44,7 @@ class DeleteRecordController extends BaseController {
     public function run(): void
     {
         if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
-            error(_('Invalid or unexpected input given.'));
-            include_once('inc/footer.inc.php');
-            exit;
+            $this->showError(_('Invalid or unexpected input given.'));
         }
 
         $record_id = htmlspecialchars($_GET['id']);

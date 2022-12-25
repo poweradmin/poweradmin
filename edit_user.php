@@ -49,15 +49,11 @@ class EditUserController extends BaseController
         do_hook('verify_permission', 'user_edit_others') ? $perm_edit_others = "1" : $perm_edit_others = "0";
 
         if ($edit_id == "-1") {
-            error(_('Invalid or unexpected input given.'));
-            include_once("inc/footer.inc.php");
-            exit;
+            $this->showError(_('Invalid or unexpected input given.'));
         }
 
         if (($edit_id != $_SESSION["userid"] || $perm_edit_own != "1") && ($edit_id == $_SESSION["userid"] || $perm_edit_others != "1")) {
-            error(_("You do not have the permission to edit this user."));
-            include_once("inc/footer.inc.php");
-            exit;
+            $this->showError(_("You do not have the permission to edit this user."));
         }
 
         if ($this->isPost()) {
@@ -122,9 +118,7 @@ class EditUserController extends BaseController
     {
         $users = do_hook('get_user_detail_list', $edit_id);
         if (empty($users)) {
-            error(_('User does not exist.'));
-            include_once("inc/footer.inc.php");
-            exit;
+            $this->showError(_('User does not exist.'));
         }
 
         $user = $users[0];

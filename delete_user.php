@@ -45,9 +45,7 @@ class DeleteUserController extends BaseController {
         $perm_is_godlike = do_hook('verify_permission', 'user_is_ueberuser');
 
         if (!(isset($_GET['id']) && Validation::is_number($_GET['id']))) {
-            error(_('Invalid or unexpected input given.'));
-            include_once("inc/footer.inc.php");
-            exit;
+            $this->showError(_('Invalid or unexpected input given.'));
         }
 
         $uid = htmlspecialchars($_GET['id']);
@@ -57,9 +55,7 @@ class DeleteUserController extends BaseController {
         }
 
         if (($uid != $_SESSION['userid'] && !$perm_edit_others) || ($uid == $_SESSION['userid'] && !$perm_is_godlike)) {
-            error(_("You do not have the permission to delete this user."));
-            include_once("inc/footer.inc.php");
-            exit;
+            $this->showError(_("You do not have the permission to delete this user."));
         }
 
         $this->showQuestion($uid);

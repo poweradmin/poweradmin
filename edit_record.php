@@ -53,9 +53,7 @@ class EditRecordController extends BaseController {
         $zone_type = DnsRecord::get_domain_type($zid);
 
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
-            error(_("You do not have the permission to view this record."));
-            include_once("inc/footer.inc.php");
-            exit;
+            $this->showError(_("You do not have the permission to view this record."));
         }
 
         if ($zone_type == "SLAVE" || $perm_edit == "none" || ($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0") {

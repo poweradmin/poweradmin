@@ -59,9 +59,7 @@ class EditController extends BaseController {
         $record_sort_by = $this->getSortBy();
 
         if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
-            error(_('Invalid or unexpected input given.'));
-            include_once("inc/footer.inc.php");
-            exit;
+            $this->showError(_('Invalid or unexpected input given.'));
         }
         $zone_id = htmlspecialchars($_GET['id']);
 
@@ -170,15 +168,11 @@ class EditController extends BaseController {
         }
 
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
-            error(_("You do not have the permission to view this zone."));
-            include_once("inc/footer.inc.php");
-            exit();
+            $this->showError(_("You do not have the permission to view this zone."));
         }
 
         if (DnsRecord::zone_id_exists($zone_id) == "0") {
-            error(_('There is no zone with this ID.'));
-            include_once("inc/footer.inc.php");
-            exit();
+            $this->showError(_('There is no zone with this ID.'));
         }
 
         $zone_name = DnsRecord::get_domain_name_by_id($zone_id);

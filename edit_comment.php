@@ -44,26 +44,20 @@ class EditCommentController extends BaseController {
         $iface_zone_comments = $this->config('iface_zone_comments');
 
         if (!$iface_zone_comments) {
-            error(_("You do not have the permission to edit this comment."));
-            include_once('inc/footer.inc.php');
-            exit;
+            $this->showError(_("You do not have the permission to edit this comment."));
         }
 
         $perm_view = Permission::getViewPermission();
         $perm_edit = Permission::getEditPermission();
 
         if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
-            error(_('Invalid or unexpected input given.'));
-            include_once('inc/footer.inc.php');
-            exit;
+            $this->showError(_('Invalid or unexpected input given.'));
         }
         $zone_id = htmlspecialchars($_GET['id']);
 
         $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
-            error(_("You do not have the permission to view this comment."));
-            include_once("inc/footer.inc.php");
-            exit;
+            $this->showError(_("You do not have the permission to view this comment."));
         }
 
         $zone_type = DnsRecord::get_domain_type($zone_id);

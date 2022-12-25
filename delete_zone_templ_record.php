@@ -41,16 +41,12 @@ class DeleteZoneTemplRecordController extends BaseController {
     public function run(): void
     {
         if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
-            error(_('Invalid or unexpected input given.'));
-            include_once('inc/footer.inc.php');
-            exit;
+            $this->showError(_('Invalid or unexpected input given.'));
         }
         $record_id = htmlspecialchars($_GET['id']);
 
         if (!isset($_GET['zone_templ_id']) || !Validation::is_number($_GET['zone_templ_id'])) {
-            error(_('Invalid or unexpected input given.'));
-            include_once('inc/footer.inc.php');
-            exit;
+            $this->showError(_('Invalid or unexpected input given.'));
         }
         $zone_templ_id = htmlspecialchars($_GET['zone_templ_id']);
 
@@ -70,9 +66,7 @@ class DeleteZoneTemplRecordController extends BaseController {
         }
 
         if (!(do_hook('verify_permission', 'zone_master_add')) || !$owner) {
-            error(_("You do not have the permission to delete this record."));
-            include_once('inc/footer.inc.php');
-            exit;
+            $this->showError(_("You do not have the permission to delete this record."));
         }
 
         $templ_details = ZoneTemplate::get_zone_templ_details($zone_templ_id);
