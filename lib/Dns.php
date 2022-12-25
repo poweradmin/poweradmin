@@ -485,7 +485,7 @@ class Dns
      *
      * @return boolean true if valid, false otherwise
      */
-    public static function is_valid_ipv6($ipv6, $answer = true)
+    public static function is_valid_ipv6($ipv6, $answer = false)
     {
 
         if (filter_var($ipv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === FALSE) {
