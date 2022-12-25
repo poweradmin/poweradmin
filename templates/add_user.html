@@ -14,7 +14,9 @@
         </tr>
         <tr>
             <td>{% trans 'Password' %}</td>
-            <td><input class="form-control form-control-sm" id="password" name="password" value=""></td>
+            <td><input class="form-control form-control-sm" id="password" name="password" value="" {% if not ldap_use %}required{% endif %}>
+                {% if not ldap_use %}<div class="invalid-feedback">{% trans 'Provide user password' %}</div>{% endif %}
+            </td>
         </tr>
         <tr>
             <td>{% trans 'Email address' %}</td>
