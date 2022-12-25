@@ -48,7 +48,7 @@ class EditPermTemplController extends BaseController
         ]);
 
         if (!$v->validate()) {
-            $this->showErrors($v->errors());
+            $this->showFirstError($v->errors());
         }
 
         if ($this->isPost()) {
@@ -71,7 +71,7 @@ class EditPermTemplController extends BaseController
             $this->setMessage('list_perm_templ', 'success', _('The permission template has been updated successfully.'));
             $this->redirect('list_perm_templ.php');
         } else {
-            $this->showErrors($v->errors());
+            $this->showFirstError($v->errors());
         }
     }
 

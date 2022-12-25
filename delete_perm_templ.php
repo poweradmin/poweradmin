@@ -58,7 +58,7 @@ class DeletePermTemplController extends BaseController
 
         $perm_templ_id = htmlspecialchars($_GET['id']);
         if (!$v->validate()) {
-            $this->showErrors($v->errors());
+            $this->showFirstError($v->errors());
         }
 
         if (do_hook('delete_perm_templ', $perm_templ_id)) {

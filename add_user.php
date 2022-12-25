@@ -63,7 +63,7 @@ class AddUserController extends BaseController {
                 $this->showForm();
             }
         } else {
-            $this->showErrors($v->errors());
+            $this->showFirstError($v->errors());
         }
     }
 

@@ -59,7 +59,7 @@ class AddZoneSlaveController extends BaseController
             'integer' => ['owner'],
         ]);
         if (!$v->validate()) {
-            $this->showErrors($v->errors());
+            $this->showFirstError($v->errors());
         }
 
         $dns_third_level_check = $this->config('dns_third_level_check');

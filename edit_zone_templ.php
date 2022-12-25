@@ -50,7 +50,7 @@ class EditZoneTemplController extends BaseController
             'integer' => ['id'],
         ]);
         if (!$v->validate()) {
-            $this->showErrors($v->errors());
+            $this->showFirstError($v->errors());
         }
 
         $zone_templ_id = htmlspecialchars($_GET['id']);

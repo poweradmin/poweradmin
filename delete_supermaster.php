@@ -69,7 +69,7 @@ class DeleteSuperMasterController extends BaseController {
                 $this->redirect('list_supermasters.php');
             }
         } else {
-            $this->showErrors($v->errors());
+            $this->showFirstError($v->errors());
         }
     }
 
