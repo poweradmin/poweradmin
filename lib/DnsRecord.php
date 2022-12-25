@@ -1136,6 +1136,7 @@ class DnsRecord
 
         $query .= " WHERE 1=1" . $sql_add . "
                     GROUP BY domains.name, domains.id, domains.type, users.username, users.fullname
+                    " . ($iface_zone_comments ? ", zones.comment" : "") . "
                     ORDER BY " . $sql_sortby;
 
         if ($letterstart != 'all') {
