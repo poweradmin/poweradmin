@@ -20,6 +20,11 @@ other [options](https://github.com/PowerDNS/pdns/wiki/WebFrontends).
 * MySQL/MariaDB, PostgreSQL or SQLite database
 * PowerDNS authoritative server 4.0.0+
 
+## Tested on
+| Poweradmin | PHP            | PowerDNS | MariaDB | MySQL  | PostgreSQL | SQLite |
+|------------|----------------|----------|---------|--------|------------|--------|
+| 3.4.0      | 7.4.3 / 8.1.12 | 4.2.1    | 10.10.2 | 8.0.31 | 15.1       | 3.34.1 |
+
 ## Installation
 Install the following dependencies:
 
