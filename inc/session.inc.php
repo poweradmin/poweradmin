@@ -56,7 +56,7 @@ function auth(string $msg = "", string $type = "success") {
     }
     ?>
     <h5><?php echo _('Log in'); ?></h5>
-    <form class="needs-validation" method="post" action="<?php echo htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES); ?>" novalidate>
+    <form class="needs-validation" method="post" action="index.php" novalidate>
         <input type="hidden" name="query_string" value="<?php echo htmlentities($_SERVER["QUERY_STRING"]); ?>">
         <div class="row g-2 col-sm-4">
             <div>

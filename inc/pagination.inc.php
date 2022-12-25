@@ -50,7 +50,7 @@ function show_pages($amount, $rowamount, $id = '') {
     $result .= "<nav><ul class=\"pagination\">";
 
     if ($lastpage > $num & $start > 1) {
-        $result .= '<li class="page-item"><a class="page-link" href=" ' . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES);
+        $result .= '<li class="page-item"><a class="page-link" href=" ';
         $result .= '?start=' . ($start - 1);
         if ($id != '') {
             $result .= '&id=' . $id;
@@ -61,7 +61,7 @@ function show_pages($amount, $rowamount, $id = '') {
     }
 
     if ($start != 1) {
-        $result .= '<li class="page-item"><a class="page-link" href=" ' . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES);
+        $result .= '<li class="page-item"><a class="page-link" href=" ';
         $result .= '?start=1';
         if ($id != '') {
             $result .= '&id=' . $id;
@@ -78,7 +78,7 @@ function show_pages($amount, $rowamount, $id = '') {
         if ($start == $i) {
             $result .= '<li class="page-item active"><span class="page-link">' . $i . '</span></li>';
         } elseif ($i != $lastpage & $i != 1) {
-            $result .= '<li class="page-item"><a class="page-link" href=" ' . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES);
+            $result .= '<li class="page-item"><a class="page-link" href="';
             $result .= '?start=' . $i;
             if ($id != '') {
                 $result .= '&id=' . $id;
@@ -93,7 +93,7 @@ function show_pages($amount, $rowamount, $id = '') {
         if (min(($startpage + $num), $lastpage) < ($lastpage - 1)) {
             $result .= '<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">..</a></li>';
         }
-        $result .= '<li class="page-item"><a class="page-link" href=" ' . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES);
+        $result .= '<li class="page-item"><a class="page-link" href="';
         $result .= '?start=' . $lastpage;
         if ($id != '') {
             $result .= '&id=' . $id;
@@ -104,7 +104,7 @@ function show_pages($amount, $rowamount, $id = '') {
     }
 
     if ($lastpage > $num & $start < $lastpage) {
-        $result .= '<li class="page-item"><a class="page-link" href=" ' . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES);
+        $result .= '<li class="page-item"><a class="page-link" href="';
         $result .= '?start=' . ($start + 1);
         if ($id != '') {
             $result .= '&id=' . $id;
@@ -160,7 +160,7 @@ function show_letters($letterstart, $userid) {
     if ($letterstart == "1") {
         $result .= '<li class="page-item active"><span class="page-link" tabindex="-1">0-9</span></li>';
     } elseif ($digits_available) {
-        $result .= "<li class=\"page-item\"><a class=\"page-link\" href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=1\">0-9</a></li>";
+        $result .= "<li class=\"page-item\"><a class=\"page-link\" href=\"?letter=1\">0-9</a></li>";
     } else {
         $result .= '<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">0-9</a></li>';
     }
@@ -169,7 +169,7 @@ function show_letters($letterstart, $userid) {
         if ($letter == $letterstart) {
             $result .= '<li class="page-item active"><span class="page-link" tabindex="-1">' . $letter . '</span></li>';
         } elseif (in_array($letter, $available_chars)) {
-            $result .= "<li class=\"page-item\"><a class=\"page-link\" href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=" . $letter . "\">" . $letter . "</a></li>";
+            $result .= "<li class=\"page-item\"><a class=\"page-link\" href=\"?letter=" . $letter . "\">" . $letter . "</a></li>";
         } else {
             $result .= '<li class="page-item disabled"><span class="page-link" tabindex="-1">' . $letter . '</span></li>';
         }
@@ -178,7 +178,7 @@ function show_letters($letterstart, $userid) {
     if ($letterstart == 'all') {
         $result .= '<li class="page-item active"><a class="page-link" href="#" tabindex="-1">' . _('Show all') . '</a></li>';
     } else {
-        $result .= "<li class=\"page-item\"><a class=\"page-link\" href=\"" . htmlentities($_SERVER["PHP_SELF"], ENT_QUOTES) . "?letter=all\">" . _('Show all') . '</a></li>';
+        $result .= "<li class=\"page-item\"><a class=\"page-link\" href=\"?letter=all\">" . _('Show all') . '</a></li>';
     }
 
     $result .= "</ul>";
