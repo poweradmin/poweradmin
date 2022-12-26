@@ -91,7 +91,7 @@ class DeleteDomainsController extends BaseController {
             $zones[$zone_id]['id'] = $zone_id;
             $zones[$zone_id] = DnsRecord::get_zone_info_from_id($zone_id);
             $zones[$zone_id]['owner'] = do_hook('get_fullnames_owners_from_domainid', $zone_id);
-            $zones[$zone_id]['is_owner'] = $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
+            $zones[$zone_id]['is_owner'] = do_hook('verify_user_is_owner_zoneid', $zone_id);
 
             $zones[$zone_id]['has_supermaster'] = false;
             $zones[$zone_id]['slave_master'] = null;
@@ -101,6 +101,12 @@ class DeleteDomainsController extends BaseController {
                 if (DnsRecord::supermaster_exists($slave_master)) {
                     $zones[$zone_id]['has_supermaster'] = true;
                 }
+            }
+
+            if (preg_match("/^xn--/", $zones[$zone_id]['name'])) {
+                $zones[$zone_id]['idn_zone_name'] = idn_to_utf8($zones[$zone_id]['name'], IDNA_NONTRANSITIONAL_TO_ASCII);
+            } else {
+                $zones[$zone_id]['idn_zone_name'] = "";
             }
         }
         return $zones;

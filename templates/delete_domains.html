@@ -20,7 +20,13 @@
         {% for zone in zones %}
         <tr>
             <input type="hidden" name="zone_id[]" value="{{ zone['id'] }}">
-            <td>{{ zone['name'] }}</td>
+            <td>
+                {% if zone['idn_zone_name'] %}
+                {{ zone['idn_zone_name'] }} ({{ zone['name'] }})
+                {% else %}
+                {{ zone['name'] }}
+                {% endif %}
+            </td>
             <td>{{ zone['owner'] }}</td>
             <td>{{ zone['type'] }}</td>
 
