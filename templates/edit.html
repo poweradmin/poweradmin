@@ -56,13 +56,13 @@
         <input type="hidden" name="record[{{ r['id'] }}][zid]" value="{{ zone_id }}">
         {% endif %}
         <tr>
-            <td class="col-sm-1">{{ r['id'] }}</td>
+            <td>{{ r['id'] }}</td>
             {% if r['type'] == "SOA" or r['type'] == "NS" and perm_edit == "own_as_client" %}
-            <td>{{ r['name'] }}</td>
-            <td>{{ r['type'] }}</td>
+            <td class="col-sm-2">{{ r['name'] }}</td>
+            <td class="col-sm-1">{{ r['type'] }}</td>
             <td>{{ r['content'] }}</td>
             <td>&nbsp;</td>
-            <td>{{ r['ttl'] }}</td>
+            <td class="col-sm-1">{{ r['ttl'] }}</td>
             {% else %}
             <td class="col-sm-2"><input class="form-control form-control-sm" type="text"
                                         name="record[{{ r['id'] }}][name]" value="{{ r['name'] }}"></td>
@@ -83,7 +83,7 @@
                     {% endif %}
                 </select>
             </td>
-            <td class="col-sm-2"><input class="form-control form-control-sm" type="text"
+            <td><input class="form-control form-control-sm" type="text"
                                         name="record[{{ r['id'] }}][content]" value="{{ r['content'] }}"></td>
             <td class="col-sm-1"><input class="form-control form-control-sm" type="text"
                                         id="priority_field_{{ r['id'] }}" name="record[{{ r['id'] }}][prio]"
@@ -160,9 +160,9 @@
             <td>{% trans 'TTL' %}</td>
         </tr>
         <tr>
-            <td><input class="form-control form-control-sm" type="text" name="name" value="">.{{ idn_zone_name ?: zone_name }}</td>
+            <td class="col-sm-2"><input class="form-control form-control-sm" type="text" name="name" value="">.{{ idn_zone_name ?: zone_name }}</td>
             <td>IN</td>
-            <td>
+            <td class="col-sm-1">
                 <select class="form-select form-select-sm" name="type">
                     {% set rev = false %}
                     {% for record_type in record_types %}
@@ -182,8 +182,8 @@
             <td><input class="form-control form-control-sm" type="text" name="content" value="" required>
                 <div class="invalid-feedback">{% trans 'Provide content' %}</div>
             </td>
-            <td><input class="form-control form-control-sm" type="text" name="prio" value=""></td>
-            <td><input class="form-control form-control-sm" type="text" name="ttl" value="{{ dns_ttl }}" required>
+            <td class="col-sm-1"><input class="form-control form-control-sm" type="text" name="prio" value=""></td>
+            <td class="col-sm-1"><input class="form-control form-control-sm" type="text" name="ttl" value="{{ dns_ttl }}" required>
                 <div class="invalid-feedback">{% trans 'Provide TTL' %}</div>
             </td>
         </tr>

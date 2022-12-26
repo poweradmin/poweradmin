@@ -91,7 +91,6 @@ class AddRecordController extends BaseController
     {
         $zone_id = htmlspecialchars($_GET['id']);
         $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
-        $prio = 10;
         $ttl = $this->config('dns_ttl');
         $iface_add_reverse_record = $this->config('iface_add_reverse_record');
         $is_reverse_zone = preg_match('/i(p6|n-addr).arpa/i', $zone_name);
@@ -104,11 +103,11 @@ class AddRecordController extends BaseController
 
         $this->render('add_record.html', [
             'types' => RecordType::getTypes(),
-            'name' => '',
-            'type' => '',
-            'content' => '',
-            'ttl' => $ttl,
-            'prio' => $prio,
+            'name' => $_POST['name'] ?: '',
+            'type' => $_POST['type'] ?: '',
+            'content' => $_POST['content'] ?: '',
+            'ttl' => $_POST['ttl'] ?: $ttl,
+            'prio' => $_POST['prio'] ?: '',
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,
@@ -174,6 +173,8 @@ class AddRecordController extends BaseController
             }
 
             $this->setMessage('add_record', 'success', _('The record was successfully added.'));
+        } else {
+            $this->setMessage('add_record', 'error', _('This record was not valid and could not be added.'));
         }
     }
 }

@@ -156,6 +156,9 @@ class Dns
                 break;
 
             case 'DS': // TODO: implement validation
+                if (!self::is_valid_ds($content)) {
+                    return false;
+                }
                 break;
 
             case 'EUI48': // TODO: implement validation
@@ -935,6 +938,15 @@ class Dns
             return false;
         } else {
             return true;
+        }
+    }
+
+    public static function is_valid_ds($content): bool
+    {
+        if (preg_match("/^([0-9]+) ([0-9]+) ([0-9]+) ([a-f0-9]+)$/i", $content)) {
+            return true;
+        } else {
+            return false;
         }
     }
 }
