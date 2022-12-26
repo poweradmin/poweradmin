@@ -248,7 +248,13 @@
         {% for owner in owners %}
         <tr>
             <form method="post" action="edit.php?id={{ zone_id }}">
-                <td>{{ owner["fullname"] }}</td>
+                <td>
+                    {% if owner["fullname"] %}
+                    {{ owner["fullname"] }}
+                    {% else %}
+                    {{ owner["username"] }}
+                    {% endif %}
+                </td>
                 <td>
                     <input type="hidden" name="delete_owner" value="{{ owner['id'] }}">
                     <input class="btn btn-outline-danger btn-sm" type="submit" name="co" value="{% trans 'Delete' %}">

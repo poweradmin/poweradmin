@@ -35,6 +35,7 @@
             <th><a href="list_zones.php?zone_sort_by=owner">{% trans 'Owner' %}</a> {{ zone_sort_by == 'owner' ? '<i
                     class="bi bi-arrow-down"></i>' : "" }}
             </th>
+            <th>{% trans 'Full name' %}</th>
 
             {% if iface_zonelist_serial %}
             <th>{% trans 'Serial' %}</th>
@@ -74,6 +75,11 @@
                 {{ owner }}<br>
                 {% endfor %}
             </td>
+            <td>
+                {% for full_name in zone['full_names'] %}
+                {{ full_name }}<br>
+                {% endfor %}
+            </td>
 
             {% if iface_zonelist_serial %}
             <td>{{ zone["serial"] }}</td>
@@ -85,11 +91,11 @@
             <td>
                 <a class="btn btn-outline-primary btn-sm" href="edit.php?name={{ zone['name'] }}&id={{ zone['id'] }}">
                     <i class="bi bi-pencil-square"></i>
-                    {% trans 'Edit zone' %}</a>
+                    {% trans 'Edit' %}</a>
                 {% if perm_edit == "all" or (perm_edit == "own" and user_is_zone_owner) %}
                 <a class="btn btn-outline-danger btn-sm"
                    href="delete_domain.php?name={{ zone['name'] }}&id={{ zone['id'] }}">
-                    <i class="bi bi-trash"></i> {% trans 'Delete zone' %}
+                    <i class="bi bi-trash"></i> {% trans 'Delete' %}
                 </a>
                 {% endif %}
             </td>
