@@ -146,7 +146,6 @@ class Dnssec
             }
 
             if ($return_code != 0) {
-                error(_('Failed to rectify zone.'));
                 return false;
             }
 
