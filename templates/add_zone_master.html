@@ -51,7 +51,7 @@
                 <select class="form-select form-select-sm" name="zone_template">
                     <option value="none">none</option>
                     {% for zone_template in zone_templates %}
-                    <option value="{{ zone_template['id'] }}">"{{ zone_template['name'] }}"</option>
+                    <option value="{{ zone_template['id'] }}">{{ zone_template['name'] }}</option>
                     {% endfor %}
                 </select>
             </td>

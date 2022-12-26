@@ -78,10 +78,20 @@ class EditCommentController extends BaseController {
 
     public function showCommentForm(string $zone_id, bool $perm_edit_comment): void
     {
+        $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
+
+        if (preg_match("/^xn--/", $zone_name)) {
+            $idn_zone_name = idn_to_utf8($zone_name, IDNA_NONTRANSITIONAL_TO_ASCII);
+        } else {
+            $idn_zone_name = "";
+        }
+
         $this->render('edit_comment.html', [
             'zone_id' => $zone_id,
             'comment' => DnsRecord::get_zone_comment($zone_id),
-            'disabled' => $perm_edit_comment
+            'disabled' => $perm_edit_comment,
+            'zone_name' => $zone_name,
+            'idn_zone_name' => $idn_zone_name,
         ]);
     }
 }
