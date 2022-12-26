@@ -1,14 +1,14 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans 'Home' %}</a></li>
-        <li class="breadcrumb-item"><a href="edit.php?id={{ zone_id }}">
+        <li class="breadcrumb-item"><a href="edit.php?id={{ zid }}">
             {% if idn_zone_name %}
             {{ idn_zone_name }}
             {% else %}
-            {{ zone_info['name'] }}
+            {{ zone_name }}
             {% endif %}
         </a></li>
-        <li class="breadcrumb-item active" aria-current="page">{% trans 'Delete Zone' %}</li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans 'Edit record' %}</li>
     </ol>
 </nav>
 
