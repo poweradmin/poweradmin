@@ -69,8 +69,6 @@ class EditController extends BaseController {
 
             if (isset($_POST['record'])) {
                 foreach ($_POST['record'] as $record) {
-                    $old_record_info = DnsRecord::get_record_from_id($record['rid']);
-
                     $log = new RecordLog();
                     $log->log_prior($record['rid'], $record['zid']);
 
@@ -249,9 +247,6 @@ class EditController extends BaseController {
         ]);
     }
 
-    /**
-     * @return mixed|string
-     */
     public function getSortBy()
     {
         $record_sort_by = 'name';
