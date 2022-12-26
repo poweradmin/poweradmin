@@ -34,23 +34,23 @@
         </tr>
         {% for record in records %}
         <tr>
-            <td>{{record['name']}}</td>
-            <td>{{record['type']}}</td>
-            <td>{{record['content']}}</td>
+            <td class="col-sm-2">{{record['name']}}</td>
+            <td class="col-sm-1">{{record['type']}}</td>
+            <td class="col-sm-3">{{record['content']}}</td>
             {% if (record['type'] == "MX") or (record['type'] == "SRV") %}
-            <td>{{record['prio']}}</td>
+            <td class="col-sm-1">{{record['prio']}}</td>
             {% else %}
-            <td>&nbsp;</td>
+            <td class="col-sm-1">&nbsp;</td>
             {% endif %}
-            <td>{{record['ttl']}}</td>
+            <td class="col-sm-1">{{record['ttl']}}</td>
             <td>
                 <input type="hidden" name="record[{{record['id']}}][rid]" value="{{record['id']}}">
                 <a class="btn btn-outline-primary btn-sm"
                    href="edit_zone_templ_record.php?id={{record['id']}}&amp;zone_templ_id={{zone_templ_id}}">
-                    <i class="bi bi-pencil-square"></i> {% trans 'Edit record' %}</a>
+                    <i class="bi bi-pencil-square"></i> {% trans 'Edit' %}</a>
                 <a class="btn btn-outline-danger btn-sm"
                    href="delete_zone_templ_record.php?id={{record['id']}}&amp;zone_templ_id={{zone_templ_id}}">
-                    <i class="bi bi-trash"></i> {% trans 'Delete record' %}</a>
+                    <i class="bi bi-trash"></i> {% trans 'Delete' %}</a>
             </td>
         </tr>
         {% endfor %}

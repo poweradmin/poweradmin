@@ -24,12 +24,12 @@
     {% endif %}
     {% for template in zone_templates %}
     <tr>
-        <td>{{ template['name'] }}</td>
-        <td>{{ template['descr'] }}</td>
+        <td class="col-sm-2">{{ template['name'] }}</td>
+        <td class="col-sm-3">{{ template['descr'] }}</td>
         {% if perm_zone_master_add %}
         <td>
-            <a class="btn btn-outline-primary btn-sm" href="edit_zone_templ.php?id={{ template['id'] }}"><i class="bi bi-pencil-square"></i> {% trans 'Edit template' %}</a>
-            <a class="btn btn-outline-danger btn-sm" href="delete_zone_templ.php?id={{ template['id'] }}"><i class="bi bi-trash"></i> {% trans 'Delete template' %}</a>
+            <a class="btn btn-outline-primary btn-sm" href="edit_zone_templ.php?id={{ template['id'] }}"><i class="bi bi-pencil-square"></i> {% trans 'Edit' %}</a>
+            <a class="btn btn-outline-danger btn-sm" href="delete_zone_templ.php?id={{ template['id'] }}"><i class="bi bi-trash"></i> {% trans 'Delete' %}</a>
         </td>
         {% else %}
         <td>&nbsp;</td>
