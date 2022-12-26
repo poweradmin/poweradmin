@@ -105,7 +105,15 @@ class DbZoneLogger
             'offset' => $offset
         ]);
 
-        return $stmt->fetchAll();
+        $records = $stmt->fetchAll();
+
+        foreach ($records as &$record) {
+            $details = str_replace(" ", "<br>", $record['event']);
+            $details = str_replace(":", ': ', $details);
+            $record['details'] = $details;
+        }
+
+        return $records;
     }
 
     public static function check_if_domain_exist($domain_searched): bool
