@@ -84,7 +84,9 @@ class AddRecordController extends BaseController
 
         $this->createReverseRecord($name, $type, $content, $zone_id, $ttl, $prio);
 
-        $this->createRecord($zone_id, $name, $type, $content, $ttl, $prio);
+        if ($this->createRecord($zone_id, $name, $type, $content, $ttl, $prio)) {
+            unset($_POST);
+        }
     }
 
     private function showForm()
@@ -158,7 +160,7 @@ class AddRecordController extends BaseController
         }
     }
 
-    public function createRecord(string $zone_id, $name, $type, $content, $ttl, $prio): void
+    public function createRecord(string $zone_id, $name, $type, $content, $ttl, $prio): bool
     {
         $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
 
@@ -173,8 +175,10 @@ class AddRecordController extends BaseController
             }
 
             $this->setMessage('add_record', 'success', _('The record was successfully added.'));
+            return true;
         } else {
             $this->setMessage('add_record', 'error', _('This record was not valid and could not be added.'));
+            return false;
         }
     }
 }
