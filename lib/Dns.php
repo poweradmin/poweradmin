@@ -155,7 +155,7 @@ class Dns
             case 'DNSKEY': // TODO: implement validation
                 break;
 
-            case 'DS': // TODO: implement validation
+            case 'DS':
                 if (!self::is_valid_ds($content)) {
                     return false;
                 }
