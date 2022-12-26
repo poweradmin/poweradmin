@@ -1,6 +1,6 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.php">Home</a></li>
+        <li class="breadcrumb-item"><a href="index.php">{% trans 'Home' %}</a></li>
         <li class="breadcrumb-item"><a href="edit.php?id={{ zone_id }}">
             {% if idn_zone_name %}
             {{ idn_zone_name }}
@@ -8,7 +8,7 @@
             {{ zone_info['name'] }}
             {% endif %}
         </a></li>
-        <li class="breadcrumb-item active" aria-current="page">Delete Zone</li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans 'Delete Zone' %}</li>
     </ol>
 </nav>
 

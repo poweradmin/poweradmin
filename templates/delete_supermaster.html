@@ -1,5 +1,12 @@
-<h5 class="mb-3">{% trans 'Delete supermaster' %} "{{ master_ip }}"</h5>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans 'Home' %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php">{% trans 'Supermasters' %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans 'Delete supermaster' %}</li>
+    </ol>
+</nav>
 
+<h5 class="mb-3">{% trans 'Delete supermaster' %} "{{ master_ip }}"</h5>
 <p>
     {% trans 'Hostname in NS record' %}: {{ info['ns_name'] }}<br>
     {% trans 'Account' %}: {{ info['account'] }}
