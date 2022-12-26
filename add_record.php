@@ -103,11 +103,11 @@ class AddRecordController extends BaseController
 
         $this->render('add_record.html', [
             'types' => RecordType::getTypes(),
-            'name' => $_POST['name'] ?: '',
-            'type' => $_POST['type'] ?: '',
-            'content' => $_POST['content'] ?: '',
-            'ttl' => $_POST['ttl'] ?: $ttl,
-            'prio' => $_POST['prio'] ?: '',
+            'name' => $_POST['name'] ?? '',
+            'type' => $_POST['type'] ?? '',
+            'content' => $_POST['content'] ?? '',
+            'ttl' => $_POST['ttl'] ?? $ttl,
+            'prio' => $_POST['prio'] ?? '',
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,
