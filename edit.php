@@ -89,8 +89,12 @@ class EditController extends BaseController {
             }
 
             if ($iface_zone_comments) {
-                $zone_comment = $_POST['zone_comment'] ?? '';
-                DnsRecord::edit_zone_comment($_GET['id'], $zone_comment);
+                $raw_zone_comment = DnsRecord::get_zone_comment($zone_id);
+                $zone_comment = $_POST['comment'] ?? '';
+                if ($raw_zone_comment != $zone_comment) {
+                    DnsRecord::edit_zone_comment($_GET['id'], $zone_comment);
+                    $one_record_changed = true;
+                }
             }
 
             if (false === $error) {
