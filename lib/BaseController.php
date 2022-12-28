@@ -128,7 +128,6 @@ EOF;
     {
         if (!do_hook('verify_permission', $permission)) {
             error($errorMessage);
-            include_once('inc/footer.inc.php');
             exit;
         }
     }
