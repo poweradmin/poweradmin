@@ -119,7 +119,6 @@ EOF;
     {
         if ($condition) {
             error($errorMessage);
-            include_once('inc/footer.inc.php');
             exit;
         }
     }
