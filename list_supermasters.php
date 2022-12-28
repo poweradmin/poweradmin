@@ -39,6 +39,8 @@ class ListSuperMastersController extends BaseController
 
     public function run(): void
     {
+        $this->checkPermission('supermaster_view', _("You do not have the permission to view supermasters."));
+
         $this->showSuperMasters();
     }
 
