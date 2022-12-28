@@ -44,7 +44,8 @@ class ListZonesController extends BaseController {
         $perm_view_zone_others = do_hook('zone_content_view_others');
         $perm_zone_master_add = do_hook('zone_master_add');
         $perm_zone_slave_add = do_hook('zone_slave_add');
-        $permission_check = !$perm_view_zone_own && !$perm_view_zone_others && !$perm_zone_master_add && !$perm_zone_slave_add;
+        $perm_is_godlike = do_hook('verify_permission', 'user_is_ueberuser');
+        $permission_check = !$perm_is_godlike && !$perm_view_zone_own && !$perm_view_zone_others && !$perm_zone_master_add && !$perm_zone_slave_add;
 
         $this->checkCondition($permission_check, _('You do not have sufficient permissions to view this page.'));
 
