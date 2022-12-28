@@ -19,14 +19,14 @@
     <tbody>
     {% for server in supermasters %}
     <tr>
-        <td>{{ server['master_ip'] }}</td>
-        <td>{{ server['ns_name'] }}</td>
-        <td>{{ server['account'] }}</td>
+        <td class="col-sm-3">{{ server['master_ip'] }}</td>
+        <td class="col-sm-3">{{ server['ns_name'] }}</td>
+        <td class="col-sm-2">{{ server['account'] }}</td>
         {% if perm_sm_edit %}
         <td>
             <a class="btn btn-outline-danger btn-sm"
                href="delete_supermaster.php?master_ip={{ server['master_ip'] }}&amp;ns_name={{ server['ns_name'] }}">
-                <i class="bi bi-trash"></i> {% trans 'Delete supermaster' %}
+                <i class="bi bi-trash"></i> {% trans 'Delete' %}
             </a>
         </td>
         {% else %}
