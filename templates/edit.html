@@ -29,7 +29,7 @@
         <td>{% trans 'This zone does not have any records.' %}</td>
     </tr>
 </table>
-<hr/>
+<hr>
 {% else %}
 <form method="post" action="">
     <table class="table table-striped table-hover table-sm">
@@ -207,7 +207,6 @@
     </span>
     {% endif %}
 </form>
-<hr>
 {% endif %}
 
 {% if perm_zone_master_add and domain_type != "SLAVE"%}
@@ -265,7 +264,13 @@
         {% else %}
         {% for owner in owners %}
         <tr>
-            <td>{{ owner["fullname"] }}</td>
+            <td>
+                {% if owner["fullname"] %}
+                {{ owner["fullname"] }}
+                {% else %}
+                {{ owner["username"] }}
+                {% endif %}
+            </td>
             <td>&nbsp;</td>
         </tr>
         {% endfor %}
