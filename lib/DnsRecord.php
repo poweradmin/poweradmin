@@ -591,15 +591,11 @@ class DnsRecord
      */
     public static function add_domain($domain, $owner, $type, $slave_master, $zone_template)
     {
-        if (do_hook('verify_permission', 'zone_master_add')) {
-            $zone_master_add = "1";
-        }
-        if (do_hook('verify_permission', 'zone_slave_add')) {
-            $zone_slave_add = "1";
-        }
+        $zone_master_add = do_hook('verify_permission', 'zone_master_add');
+        $zone_slave_add = do_hook('verify_permission', 'zone_slave_add');
 
         // TODO: make sure only one is possible if only one is enabled
-        if ($zone_master_add == "1" || $zone_slave_add == "1") {
+        if ($zone_master_add || $zone_slave_add) {
 
             global $db;
             global $dns_ns1;
