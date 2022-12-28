@@ -25,9 +25,21 @@
             <select class="form-select form-select-sm" id="account" name="account">
                 {% for user in users %}
                 {% if user['id'] == session_uid %}
-                <option value="{{ user['username'] }}" selected>{{ user['fullname'] }}</option>
+                <option value="{{ user['username'] }}" selected>
+                    {% if user['fullname'] %}
+                    {{ user['fullname'] }}
+                    {% else %}
+                    {{ user['username'] }}
+                    {% endif %}
+                </option>
                 {% elseif perm_view_others %}}
-                <option value="{{ user['username'] }}">{{ user['fullname'] }}</option>
+                <option value="{{ user['username'] }}">
+                    {% if user['fullname'] %}
+                    {{ user['fullname'] }}
+                    {% else %}
+                    {{ user['username'] }}
+                    {% endif %}
+                </option>
                 {% endif %}
                 {% endfor %}
             </select>
