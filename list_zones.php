@@ -42,10 +42,8 @@ class ListZonesController extends BaseController {
     {
         $perm_view_zone_own = do_hook('verify_permission', 'zone_content_view_own');
         $perm_view_zone_others = do_hook('verify_permission', 'zone_content_view_others');
-        $perm_zone_master_add = do_hook('verify_permission', 'zone_master_add');
-        $perm_zone_slave_add = do_hook('verify_permission', 'zone_slave_add');
-        $permission_check = !$perm_view_zone_own || !$perm_view_zone_others || !$perm_zone_master_add || !$perm_zone_slave_add;
 
+        $permission_check = !($perm_view_zone_own || $perm_view_zone_others);
         $this->checkCondition($permission_check, _('You do not have sufficient permissions to view this page.'));
 
         $this->listZones();
