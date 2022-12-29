@@ -643,7 +643,7 @@ function add_perm_templ_local($details)
     global $db_type;
 
     $query = "INSERT INTO perm_templ (name, descr)
-			VALUES (" . $db->quote($details ['templ_name'], 'text') . ", " . $db->quote($details ['templ_descr'], 'text') . ")";
+			VALUES (" . $db->quote($details['templ_name'], 'text') . ", " . $db->quote($details['templ_descr'], 'text') . ")";
 
     $db->query($query);
 
@@ -677,9 +677,9 @@ function update_perm_templ_details_local($details)
     // Fix permission template name and description first.
 
     $query = "UPDATE perm_templ
-			SET name = " . $db->quote($details ['templ_name'], 'text') . ",
-			descr = " . $db->quote($details ['templ_descr'], 'text') . "
-			WHERE id = " . $db->quote($details ['templ_id'], 'integer');
+			SET name = " . $db->quote($details['templ_name'], 'text') . ",
+			descr = " . $db->quote($details['templ_descr'], 'text') . "
+			WHERE id = " . $db->quote($details['templ_id'], 'integer');
     $db->query($query);
 
     // Now, update list of permissions assigned to this template. We could do
@@ -689,12 +689,12 @@ function update_perm_templ_details_local($details)
     // like too much work. Just delete all the permissions currently assigned to
     // the template, than assign all the permissions the template should have.
 
-    $query = "DELETE FROM perm_templ_items WHERE templ_id = " . $details ['templ_id'];
+    $query = "DELETE FROM perm_templ_items WHERE templ_id = " . $details['templ_id'];
     $db->query($query);
 
-    if (isset($details ['perm_id'])) {
-        foreach ($details ['perm_id'] as $perm_id) {
-            $query = "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . $db->quote($details ['templ_id'], 'integer') . "," . $db->quote($perm_id, 'integer') . ")";
+    if (isset($details['perm_id'])) {
+        foreach ($details['perm_id'] as $perm_id) {
+            $query = "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . $db->quote($details['templ_id'], 'integer') . "," . $db->quote($perm_id, 'integer') . ")";
             $db->query($query);
         }
     }
@@ -718,19 +718,19 @@ function update_user_details_local($details)
     do_hook('verify_permission', 'templ_perm_edit') ? $perm_templ_perm_edit = "1" : $perm_templ_perm_edit = "0";
     do_hook('verify_permission', 'user_is_ueberuser') ? $perm_is_godlike = "1" : $perm_is_godlike = "0";
 
-    if (($details ['uid'] == $_SESSION ["userid"] && $perm_edit_own == "1") || ($details ['uid'] != $_SESSION ["userid"] && $perm_edit_others == "1")) {
+    if (($details['uid'] == $_SESSION ["userid"] && $perm_edit_own == "1") || ($details['uid'] != $_SESSION ["userid"] && $perm_edit_others == "1")) {
 
-        if (!Validation::is_valid_email($details ['email'])) {
+        if (!Validation::is_valid_email($details['email'])) {
             error(_('Enter a valid email address.'));
             return false;
         }
 
-        if (!isset($details ['active']) || $details ['active'] != "on") {
+        if (!isset($details['active']) || $details['active'] != "on") {
             $active = 0;
         } else {
             $active = 1;
         }
-        if (isset($details ['use_ldap'])) {
+        if (isset($details['use_ldap'])) {
             $use_ldap = 1;
         } else {
             $use_ldap = 0;
@@ -744,16 +744,16 @@ function update_user_details_local($details)
         // current username is not the same as the username that was given by the
         // user, the username should apparently changed. If so, check if the "new"
         // username already exists.
-        $query = "SELECT username FROM users WHERE id = " . $db->quote($details ['uid'], 'integer');
+        $query = "SELECT username FROM users WHERE id = " . $db->quote($details['uid'], 'integer');
         $response = $db->query($query);
 
         $usercheck = $response->fetch();
 
-        if ($usercheck ['username'] != $details ['username']) {
+        if ($usercheck ['username'] != $details['username']) {
             // Username of user ID in the database is different from the name
             // we have been given. User wants a change of username. Now, make
             // sure it doesn't already exist.
-            $query = "SELECT id FROM users WHERE username = " . $db->quote($details ['username'], 'text');
+            $query = "SELECT id FROM users WHERE username = " . $db->quote($details['username'], 'text');
             $response = $db->queryOne($query);
             if ($response) {
                 error(_('Username exist already, please choose another one.'));
@@ -764,14 +764,14 @@ function update_user_details_local($details)
         // So, user doesn't want to change username or, if he wants, there is not
         // another user that goes by the wanted username. So, go ahead!
 
-        $query = "UPDATE users SET username = " . $db->quote($details ['username'], 'text') . ",
-            fullname = " . $db->quote($details ['fullname'], 'text') . ",
-            email = " . $db->quote($details ['email'], 'text') . ",
+        $query = "UPDATE users SET username = " . $db->quote($details['username'], 'text') . ",
+            fullname = " . $db->quote($details['fullname'], 'text') . ",
+            email = " . $db->quote($details['email'], 'text') . ",
             active = " . $db->quote($active, 'integer');
 
         // If the user is allowed to change the permission template, set it.
         if ($perm_templ_perm_edit == "1") {
-            $query .= ", perm_templ = " . $db->quote($details ['templ_id'], 'integer');
+            $query .= ", perm_templ = " . $db->quote($details['templ_id'], 'integer');
         }
 
         // If the user is allowed to change the use_ldap flag, set it.
@@ -779,11 +779,11 @@ function update_user_details_local($details)
             $query .= ", use_ldap = " . $db->quote($use_ldap, 'integer');
         }
 
-        if (isset($details ['password']) && $details ['password'] != "") {
+        if (isset($details['password']) && $details['password'] != "") {
             $query .= ", password = " . $db->quote(Password::hash($details['password'], 'text'));
         }
 
-        $query .= " WHERE id = " . $db->quote($details ['uid'], 'integer');
+        $query .= " WHERE id = " . $db->quote($details['uid'], 'integer');
 
         $db->query($query);
     } else {
@@ -808,16 +808,16 @@ function add_new_user_local($details)
     if (!do_hook('verify_permission', 'user_add_new')) {
         error(_("You do not have the permission to add a new user."));
         return false;
-    } elseif (user_exists($details ['username'])) {
+    } elseif (user_exists($details['username'])) {
         error(_('Username exist already, please choose another one.'));
         return false;
-    } elseif ($details ['username'] === '') {
+    } elseif ($details['username'] === '') {
         error(_('Enter a valid user name.'));
         return false;
-    } elseif (!Validation::is_valid_email($details ['email'])) {
+    } elseif (!Validation::is_valid_email($details['email'])) {
         error(_('Enter a valid email address.'));
         return false;
-    } elseif ($details ['active'] == 1) {
+    } elseif ($details['active'] == 1) {
         $active = 1;
     } else {
         $active = 0;
@@ -836,9 +836,9 @@ function add_new_user_local($details)
 
     $password_hash = Password::hash($details['password']);
 
-    $query .= " active, use_ldap) VALUES (" . $db->quote($details ['username'], 'text') . ", " . $db->quote($password_hash, 'text') . ", " . $db->quote($details ['fullname'], 'text') . ", " . $db->quote($details ['email'], 'text') . ", " . $db->quote($details ['descr'], 'text') . ", ";
+    $query .= " active, use_ldap) VALUES (" . $db->quote($details['username'], 'text') . ", " . $db->quote($password_hash, 'text') . ", " . $db->quote($details['fullname'], 'text') . ", " . $db->quote($details['email'], 'text') . ", " . $db->quote($details['descr'], 'text') . ", ";
     if (do_hook('verify_permission', 'user_edit_templ_perm')) {
-        $query .= $db->quote($details ['perm_templ'], 'integer') . ", ";
+        $query .= $db->quote($details['perm_templ'], 'integer') . ", ";
     }
     $query .= $db->quote($active, 'integer') . ", " . $db->quote($use_ldap, 'integer') . ")";
     $db->query($query);
