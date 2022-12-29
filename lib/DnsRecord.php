@@ -1493,6 +1493,7 @@ class DnsRecord
                 z.owner,
                 u.id as user_id,
                 u.fullname,
+                u.username,
                 record_count.count_records
             FROM
                 domains
@@ -1518,7 +1519,7 @@ class DnsRecord
                     $zone_owner_ids = [];
                     foreach ($zone_array as $zone_entry) {
                         $zone_owner_ids[] = $zone_entry['owner'];
-                        $zone_owner_fullnames[] = $zone_entry['fullname'];
+                        $zone_owner_fullnames[] = $zone_entry['fullname'] != "" ? $zone_entry['fullname'] : $zone_entry['username'];
                     }
                     $zones[$zone_id][0]['owner'] = implode(', ', $zone_owner_ids);
                     $zones[$zone_id][0]['fullname'] = implode(', ', $zone_owner_fullnames);
