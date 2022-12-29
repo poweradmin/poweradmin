@@ -56,7 +56,7 @@
         </tr>
         {% for r in records %}
 
-        {% if r['type'] != "SOA" and r['type'] != "NS" %}
+        {% if not(r['type'] == "SOA" or (r['type'] == "NS" and perm_edit == "own_as_client")) %}
         <input type="hidden" name="record[{{ r['id'] }}][rid]" value="{{ r['id'] }}">
         <input type="hidden" name="record[{{ r['id'] }}][zid]" value="{{ zone_id }}">
         {% endif %}
