@@ -66,7 +66,7 @@ class UsersController extends BaseController
                 'user_view_others',
                 'user_edit_own',
                 'user_edit_others',
-                'templ_perm_edit',
+                'user_edit_templ_perm',
                 'user_is_ueberuser',
             ),
             'perm_templates' => do_hook('list_permission_templates'),
