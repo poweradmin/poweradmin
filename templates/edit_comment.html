@@ -26,7 +26,9 @@
                   id="floatingTextarea" {% if disabled %}disabled{% endif %}>{{ comment }}</textarea>
     </div>
     <div class="pt-3">
+        {% if not disabled %}
         <input type="submit" name="commit" value="{% trans 'Commit changes' %}" class="btn btn-primary btn-sm">
         <input type="reset" name="reset" value="{% trans 'Reset changes' %}" class="btn btn-secondary btn-sm">
+        {% endif %}
     </div>
 </form>
