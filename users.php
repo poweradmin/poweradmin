@@ -47,8 +47,15 @@ class UsersController extends BaseController
 
     private function updateUsers()
     {
+        $success = false;
         foreach ($_POST['user'] as $user) {
-            do_hook('update_user_details', $user);
+            $result = do_hook('update_user_details', $user);
+            if ($result) {
+                $success = true;
+            }
+        }
+        if ($success) {
+            $this->setMessage('users', 'success', _('User details updated'));
         }
     }
 
