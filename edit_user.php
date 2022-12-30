@@ -45,14 +45,14 @@ class EditUserController extends BaseController
             $edit_id = $_GET['id'];
         }
 
-        do_hook('verify_permission', 'user_edit_own') ? $perm_edit_own = "1" : $perm_edit_own = "0";
-        do_hook('verify_permission', 'user_edit_others') ? $perm_edit_others = "1" : $perm_edit_others = "0";
+        $perm_edit_own = do_hook('verify_permission', 'user_edit_own');
+        $perm_edit_others = do_hook('verify_permission', 'user_edit_others');
 
         if ($edit_id == "-1") {
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
-        if (($edit_id != $_SESSION["userid"] || $perm_edit_own != "1") && ($edit_id == $_SESSION["userid"] || $perm_edit_others != "1")) {
+        if (($edit_id != $_SESSION["userid"] || !$perm_edit_own) && ($edit_id == $_SESSION["userid"] || !$perm_edit_others)) {
             $this->showError(_("You do not have the permission to edit this user."));
         }
 
@@ -69,9 +69,7 @@ class EditUserController extends BaseController
         $i_fullname = "-1";
         $i_email = "-1";
         $i_description = "-1";
-        $i_password = "-1";
         $i_perm_templ = "0";
-        $i_active = "0";
 
         if (isset($_POST['username'])) {
             $i_username = $_POST['username'];
@@ -95,6 +93,9 @@ class EditUserController extends BaseController
 
         if (isset($_POST['perm_templ']) && Validation::is_number($_POST['perm_templ'])) {
             $i_perm_templ = $_POST['perm_templ'];
+        } else {
+            $user_details = do_hook('get_user_detail_list', $edit_id);
+            $i_perm_templ = $user_details[0]['tpl_id'];
         }
 
         $i_active = false;
@@ -102,13 +103,19 @@ class EditUserController extends BaseController
             $i_active = true;
         }
 
-        if ($i_username == "-1" || $i_fullname == "-1" || $i_email < "1" || $i_description == "-1" || $i_password == "-1") {
+        if ($i_username == "-1" || $i_fullname == "-1" || $i_email < "1" || $i_description == "-1") {
             $this->showError(_('Invalid or unexpected input given.'));
-        } elseif ($i_username != "" && $i_perm_templ > "0" && $i_fullname) {
+        }
+
+        if ($i_username != "" && $i_perm_templ > "0" && $i_fullname) {
             if (do_hook('edit_user', $edit_id, $i_username, $i_fullname, $i_email, $i_perm_templ, $i_description, $i_active, $i_password)) {
                 $this->setMessage('users', 'success', _('The user has been updated successfully.'));
                 $this->redirect('users.php');
+            } else {
+                $this->setMessage('edit_user', 'error', _('The user could not be updated.'));
             }
+        } else {
+            $this->setMessage('edit_user', 'error', _('The user could not be updated.'));
         }
     }
 
@@ -121,6 +128,8 @@ class EditUserController extends BaseController
 
         $user = $users[0];
         $edit_templ_perm = do_hook('verify_permission', 'user_edit_templ_perm');
+        $passwd_edit_others_perm = do_hook('verify_permission', 'user_passwd_edit_others');
+        $edit_own_perm = do_hook('verify_permission', 'user_edit_own');
         $permission_templates = do_hook('list_permission_templates');
         $user_permissions = do_hook('get_permissions_by_template_id', $user['tpl_id']);
 
@@ -131,8 +140,11 @@ class EditUserController extends BaseController
             'edit_id' => $edit_id,
             'name' => $name,
             'user' => $user,
+            'session_user_id' => $_SESSION['userid'],
             'check' => $check,
             'edit_templ_perm' => $edit_templ_perm,
+            'edit_own_perm' => $edit_own_perm,
+            'perm_passwd_edit_others' => $passwd_edit_others_perm,
             'permission_templates' => $permission_templates,
             'user_permissions' => $user_permissions,
         ]);

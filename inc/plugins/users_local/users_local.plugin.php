@@ -293,10 +293,10 @@ function edit_user_local($id, $user, $fullname, $email, $perm_templ, $descriptio
 {
     global $db;
 
-    do_hook('verify_permission', 'user_edit_own') ? $perm_edit_own = "1" : $perm_edit_own = "0";
-    do_hook('verify_permission', 'user_edit_others') ? $perm_edit_others = "1" : $perm_edit_others = "0";
+    $perm_edit_own = do_hook('verify_permission', 'user_edit_own');
+    $perm_edit_others = do_hook('verify_permission', 'user_edit_others');
 
-    if (($id == $_SESSION ["userid"] && $perm_edit_own == "1") || ($id != $_SESSION ["userid"] && $perm_edit_others == "1")) {
+    if (($id == $_SESSION ["userid"] && $perm_edit_own) || ($id != $_SESSION ["userid"] && $perm_edit_others)) {
 
         if (!Validation::is_valid_email($email)) {
             error(_('Enter a valid email address.'));
@@ -347,7 +347,9 @@ email = " . $db->quote($email, 'text') . ",";
         $query .= "description = " . $db->quote($description, 'text') . ",
 				active = " . $db->quote($active, 'integer');
 
-        if ($password != "") {
+        $edit_own_perm = do_hook('verify_permission', 'user_edit_own');
+        $passwd_edit_others_perm = do_hook('verify_permission', 'user_passwd_edit_others');
+        if ($password != "" && $edit_own_perm || $passwd_edit_others_perm) {
             $query .= ", password = " . $db->quote(Password::hash($password), 'text');
         }
 
@@ -713,12 +715,12 @@ function update_user_details_local($details)
 {
     global $db;
 
-    do_hook('verify_permission', 'user_edit_own') ? $perm_edit_own = "1" : $perm_edit_own = "0";
-    do_hook('verify_permission', 'user_edit_others') ? $perm_edit_others = "1" : $perm_edit_others = "0";
-    do_hook('verify_permission', 'templ_perm_edit') ? $perm_templ_perm_edit = "1" : $perm_templ_perm_edit = "0";
-    do_hook('verify_permission', 'user_is_ueberuser') ? $perm_is_godlike = "1" : $perm_is_godlike = "0";
+    $perm_edit_own = (bool)do_hook('verify_permission', 'user_edit_own');
+    $perm_edit_others = (bool)do_hook('verify_permission', 'user_edit_others');
+    $perm_templ_perm_edit = (bool)do_hook('verify_permission', 'templ_perm_edit');
+    $perm_is_godlike = (bool)do_hook('verify_permission', 'user_is_ueberuser');
 
-    if (($details['uid'] == $_SESSION ["userid"] && $perm_edit_own == "1") || ($details['uid'] != $_SESSION ["userid"] && $perm_edit_others == "1")) {
+    if (($details['uid'] == $_SESSION ["userid"] && $perm_edit_own) || ($details['uid'] != $_SESSION ["userid"] && $perm_edit_others)) {
 
         if (!Validation::is_valid_email($details['email'])) {
             error(_('Enter a valid email address.'));
@@ -779,7 +781,8 @@ function update_user_details_local($details)
             $query .= ", use_ldap = " . $db->quote($use_ldap, 'integer');
         }
 
-        if (isset($details['password']) && $details['password'] != "") {
+        $passwd_edit_others_perm = (bool)do_hook('verify_permission', 'user_passwd_edit_others');
+        if (isset($details['password']) && $details['password'] != "" && $passwd_edit_others_perm) {
             $query .= ", password = " . $db->quote(Password::hash($details['password'], 'text'));
         }
 
