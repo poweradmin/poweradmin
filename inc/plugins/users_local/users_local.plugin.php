@@ -829,16 +829,16 @@ function add_new_user_local($details)
         $use_ldap = 0;
     }
 
-    $query = "INSERT INTO users (username, password, fullname, email, description,";
-    if (do_hook('verify_permission', 'user_edit_templ_perm')) {
-        $query .= ' perm_templ,';
-    }
+    $query = "INSERT INTO users (username, password, fullname, email, description, perm_templ,";
 
     $password_hash = Password::hash($details['password']);
 
     $query .= " active, use_ldap) VALUES (" . $db->quote($details['username'], 'text') . ", " . $db->quote($password_hash, 'text') . ", " . $db->quote($details['fullname'], 'text') . ", " . $db->quote($details['email'], 'text') . ", " . $db->quote($details['descr'], 'text') . ", ";
     if (do_hook('verify_permission', 'user_edit_templ_perm')) {
         $query .= $db->quote($details['perm_templ'], 'integer') . ", ";
+    } else {
+        $current_user = do_hook('get_user_detail_list', $_SESSION['userid']);
+        $query .= $db->quote($current_user[0]['tpl_id'], 'integer') . ", ";
     }
     $query .= $db->quote($active, 'integer') . ", " . $db->quote($use_ldap, 'integer') . ")";
     $db->query($query);
