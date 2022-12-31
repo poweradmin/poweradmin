@@ -84,12 +84,12 @@
             <td>
                 <input type="hidden" name="user[{{ user_uid }}][uid]" value="{{ user_uid }}">
                 <a class="btn btn-outline-primary btn-sm" href="edit_user.php?id={{ user_uid }}">
-                    <i class="bi bi-pencil-square"></i> {% trans 'Edit user' %}
+                    <i class="bi bi-pencil-square"></i> {% trans 'Edit' %}
                 </a>
 
                 {% if user['uid'] != session_userid %}
                 <a class="btn btn-outline-danger btn-sm" href="delete_user.php?id={{ user['uid'] }}">
-                    <i class="bi bi-trash"></i> {% trans 'Delete user' %}
+                    <i class="bi bi-trash"></i> {% trans 'Delete' %}
                 </a>
                 {% endif %}
             </td>

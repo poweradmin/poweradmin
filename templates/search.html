@@ -76,10 +76,10 @@
                 {% if edit_permission == 'all' or ((edit_permission == 'own' or edit_permission == 'own_as_client') and zone['user_id'] == user_id) %}
                 <a class="btn btn-outline-primary btn-sm"
                    href="edit.php?name={{ zone['name'] }}&id={{ zone['id'] }}">
-                    <i class="bi bi-pencil-square"></i> {% trans 'Edit zone' %}</a>
+                    <i class="bi bi-pencil-square"></i> {% trans 'Edit' %}</a>
                 <a class="btn btn-outline-danger btn-sm"
                    href="delete_domain.php?name={{ zone['name'] }}&id={{ zone['id'] }}">
-                    <i class="bi bi-trash"></i> {% trans 'Delete zone' %}</a>
+                    <i class="bi bi-trash"></i> {% trans 'Delete' %}</a>
                 {% endif %}
             </td>
         </tr>
@@ -120,10 +120,10 @@
                 {% if edit_permission == 'all' or ((edit_permission == 'own' or edit_permission == 'own_as_client') and record['user_id'] == user_id) %}
                 <a class="btn btn-outline-primary btn-sm"
                    href="edit_record.php?domain={{ record['domain_id'] }}&id={{ record['id'] }}">
-                    <i class="bi bi-pencil-square"></i> {% trans 'Edit zone' %}</a>
+                    <i class="bi bi-pencil-square"></i> {% trans 'Edit' %}</a>
                 <a class="btn btn-outline-danger btn-sm"
                    href="delete_record.php?domain={{ record['domain_id'] }}&id={{ record['id'] }}">
-                    <i class="bi bi-trash"></i> {% trans 'Delete zone' %}</a>
+                    <i class="bi bi-trash"></i> {% trans 'Delete' %}</a>
                 {% endif %}
             </td>
         </tr>
