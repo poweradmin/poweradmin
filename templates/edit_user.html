@@ -68,14 +68,12 @@
     </table>
 </form>
 
-<p>
 <div class="pt-3 text-secondary">
     {% trans 'This user has been assigned the permission template' %} "{{ user['tpl_name'] }}".<br>
     {% if user['tpl_descr'] != "" %}
     {% trans 'The description for this template is' %}: "{{ user['tpl_descr'] }}".<br>
     {% endif %}
     {% trans 'Based on this template, this user has the following permissions' %}:
-    </p>
     <ul>
         {% for item in user_permissions %}
         {% set descr = item['descr'] %}
