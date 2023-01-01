@@ -84,7 +84,7 @@
                     <option {{ add }} value="{{ type_available }}">{{ type_available }}</option>
                     {% endfor %}
                     {% if not found_selected_type %}
-                    <option SELECTED value="{{ r['type'] }}"><i>{{ r['type'] }}</i></option>
+                    <option selected value="{{ r['type'] }}">{{ r['type'] }}</option>
                     {% endif %}
                 </select>
             </td>

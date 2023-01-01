@@ -61,7 +61,7 @@
                     {% endfor %}
 
                     {% if not found_selected_type %}
-                    <option SELECTED value="{{ record['type'] }}"><i>{{ record['type'] }}</i></option>
+                    <option selected value="{{ record['type'] }}">{{ record['type'] }}</option>
                     {% endif %}
                 </select>
             </td>

@@ -11,17 +11,18 @@
 <h5 class="mb-3">{% trans 'Edit record in zone template' %} "{{ templ_details['name'] }}"</h5>
 <form class="needs-validation" method="post"
       action="edit_zone_templ_record.php?zone_templ_id={{ zone_templ_id }}&id={{ record_id }}" novalidate>
+    <input type="hidden" name="rid" value="{{ record_id }}">
+    <input type="hidden" name="zid" value="{{ zone_templ_id }}">
+
     <table class="table table-striped table-hover table-sm">
         <tr>
-            <th>{% trans 'Name' %}</td>
-            <th>&nbsp;</td>
-            <th>{% trans 'Type' %}</td>
-            <th>{% trans 'Content' %}</td>
-            <th>{% trans 'Priority' %}</td>
-            <th>{% trans 'TTL' %}</td>
+            <th>{% trans 'Name' %}</th>
+            <th>&nbsp;</th>
+            <th>{% trans 'Type' %}</th>
+            <th>{% trans 'Content' %}</th>
+            <th>{% trans 'Priority' %}</th>
+            <th>{% trans 'TTL' %}</th>
         </tr>
-        <input type="hidden" name="rid" value="{{ record_id }}">
-        <input type="hidden" name="zid" value="{{ zone_templ_id }}">
         <tr>
             <td><input class="form-control form-control-sm" type="text" name="name" value="{{ record['name'] }}"></td>
             <td>IN</td>
@@ -39,7 +40,7 @@
                     {% endfor %}
 
                     {% if not found_selected_type %}
-                    <option SELECTED value="{{ record['type'] }}"><i>{{ record['type'] }}</i></option>
+                    <option selected value="{{ record['type'] }}">{{ record['type'] }}</option>
                     {% endif %}
                 </select>
             </td>
