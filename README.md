@@ -15,7 +15,7 @@ other [options](https://github.com/PowerDNS/pdns/wiki/WebFrontends).
 * PHP gettext extension
 * PHP openssl extension
 * PHP pdo extension
-* PHP pdo-mysql or pdo-pgsql extension
+* PHP pdo-mysql, pdo-pgsql or pdo-sqlite extension
 * PHP ldap extension (optional)
 * MySQL/MariaDB, PostgreSQL or SQLite database
 * PowerDNS authoritative server 4.0.0+
