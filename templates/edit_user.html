@@ -24,8 +24,12 @@
         </tr>
         <tr>
             <td>{% trans 'Password' %}</td>
-            <td><input class="form-control form-control-sm" type="password" name="password"
-                       {% if not perm_passwd_edit_others and (edit_own_perm and user['uid'] != session_user_id) %}disabled{% endif %}>
+            <td>
+                <div class="input-group">
+                    <input class="form-control form-control-sm" type="password" id="password" name="password"
+                           {% if not perm_passwd_edit_others and (edit_own_perm and user['uid'] != session_user_id) %}disabled{% endif %}>
+                    <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showPassword('password', 'eye')"><i class="bi bi-eye-fill" id="eye"></i></button>
+                </div>
             </td>
         </tr>
         <tr>

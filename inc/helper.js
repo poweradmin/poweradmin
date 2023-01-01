@@ -31,7 +31,7 @@ function disablePasswordField() {
 function toggleZoneCheckboxes() {
     const select_state = document.getElementById("select_zones");
     const checkboxes = document.getElementsByName("zone_id[]");
-    for (let index=0; index < checkboxes.length; index++){
+    for (let index = 0; index < checkboxes.length; index++) {
         checkboxes[index].checked = select_state.checked;
     }
 }
@@ -44,4 +44,12 @@ function zone_sort_by(sortbytype) {
 function record_sort_by(sortbytype) {
     document.search_form.record_sort_by.value = sortbytype;
     document.getElementsByName("do_search")[0].click();
+}
+
+function showPassword(passwordInputId, iconId) {
+    const password = document.getElementById(passwordInputId);
+    const icon = document.getElementById(iconId);
+    password.type = password.type === "password" ? "text" : "password";
+    icon.classList.toggle("bi-eye-fill");
+    icon.classList.toggle("bi-eye-slash-fill");
 }
