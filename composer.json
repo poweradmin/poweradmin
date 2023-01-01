@@ -12,7 +12,7 @@
     "chat": "https://gitter.im/poweradmin/poweradmin"
   },
   "require": {
-    "php": ">=7.4.3",
+    "php": ">=8.0",
     "ext-intl": "*",
     "ext-gettext": "*",
     "ext-openssl": "*",
