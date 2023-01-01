@@ -7,7 +7,7 @@
 # Log in with the following username and password:
 # admin / testadmin
 
-FROM php:8.1.13-apache
+FROM php:8.0.25-apache
 
 ENV DEBIAN_FRONTEND noninteractive
 
