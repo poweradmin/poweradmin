@@ -12,14 +12,15 @@
     "chat": "https://gitter.im/poweradmin/poweradmin"
   },
   "require": {
-    "php": ">=8.0",
+    "php": ">=8.1",
     "ext-intl": "*",
     "ext-gettext": "*",
     "ext-openssl": "*",
     "ext-pdo": "*",
     "twig/twig": "^v2.15",
     "twig/extensions": "^v1.5",
-    "vlucas/valitron": "^1.4"
+    "vlucas/valitron": "^1.4",
+    "symfony/twig-bridge": "^6.2"
   },
   "autoload": {
     "psr-4": {

@@ -1,13 +1,16 @@
 # This Dockerfile is intended only for testing.
 #
 # Usage:
-#    docker build --no-cache -t poweradmin .
-#    docker run -d --name poweradmin -p 80:80 poweradmin
+#   docker build --no-cache -t poweradmin .
+#   docker run -d --name poweradmin -p 80:80 poweradmin
+#
+#   Alternatively, you can run the program with a current folder mounted:
+#   docker run -d --name poweradmin -p 80:80 -v $(pwd):/var/www/html poweradmin
 #
 # Log in with the following username and password:
 # admin / testadmin
 
-FROM php:8.0.25-apache
+FROM php:8.1.13-apache
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -15,6 +18,7 @@ RUN apt-get update && apt-get install -y \
     sqlite3 \
     libicu67 \
     libicu-dev \
+    locales-all \
     git
 
 RUN docker-php-ext-configure gettext && \

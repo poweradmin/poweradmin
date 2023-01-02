@@ -2,6 +2,31 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [9.2.23] - 2022-12-28
+
+### Fixed
+
+* [#971](https://github.com/sebastianbergmann/php-code-coverage/issues/971): PHP report does not handle serialized code coverage data larger than 2 GB
+* [#974](https://github.com/sebastianbergmann/php-code-coverage/issues/974): Executable line analysis fails for declarations with enumerations and unions
+
+## [9.2.22] - 2022-12-18
+
+### Fixed
+
+* [#969](https://github.com/sebastianbergmann/php-code-coverage/pull/969): Fixed identifying line with `throw` as executable
+
+## [9.2.21] - 2022-12-14
+
+### Changed
+
+* [#964](https://github.com/sebastianbergmann/php-code-coverage/pull/964): Changed how executable lines are identified
+
+## [9.2.20] - 2022-12-13
+
+### Fixed
+
+* [#960](https://github.com/sebastianbergmann/php-code-coverage/issues/960): New body font-size is way too big
+
 ## [9.2.19] - 2022-11-18
 
 ### Fixed
@@ -433,6 +458,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * This component is no longer supported on PHP 7.1
 
+[9.2.23]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.22...9.2.23
+[9.2.22]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.21...9.2.22
+[9.2.21]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.20...9.2.21
+[9.2.20]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.19...9.2.20
 [9.2.19]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.18...9.2.19
 [9.2.18]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.17...9.2.18
 [9.2.17]: https://github.com/sebastianbergmann/php-code-coverage/compare/9.2.16...9.2.17

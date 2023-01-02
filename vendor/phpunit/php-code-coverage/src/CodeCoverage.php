@@ -485,9 +485,16 @@ final class CodeCoverage
                 continue;
             }
 
+            $linesToBranchMap = $this->analyser()->executableLinesIn($filename);
+
             $data->keepLineCoverageDataOnlyForLines(
                 $filename,
-                $this->analyser()->executableLinesIn($filename)
+                array_keys($linesToBranchMap)
+            );
+
+            $data->markExecutableLineByBranch(
+                $filename,
+                $linesToBranchMap
             );
         }
     }
@@ -643,7 +650,7 @@ final class CodeCoverage
             } catch (\ReflectionException $e) {
                 throw new ReflectionException(
                     $e->getMessage(),
-                    (int) $e->getCode(),
+                    $e->getCode(),
                     $e
                 );
             }
