@@ -68,8 +68,8 @@ function auth(string $msg = "", string $type = "success") {
                 <label for="password" class="form-label"><?php echo _('Password'); ?></label>
                 <div class="input-group">
                     <input type="password" class="form-control form-control-sm" id="password" name="password" required>
-                    <div class="invalid-feedback"><?php echo _('Please provide a password'); ?></div>
                     <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showPassword('password', 'eye')"><i class="bi bi-eye-fill" id="eye"></i></button>
+                    <div class="invalid-feedback"><?php echo _('Please provide a password'); ?></div>
                 </div>
             </div>
             <div>
