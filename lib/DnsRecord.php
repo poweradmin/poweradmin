@@ -103,7 +103,7 @@ class DnsRecord
      *
      * @return string Date +1 day
      */
-    public static function get_next_date($curr_date)
+    public static function get_next_date(string $curr_date): string
     {
         return date('Ymd', strtotime('+1 day', strtotime($curr_date)));
     }
@@ -127,11 +127,11 @@ class DnsRecord
      * date is reached - in which case perhaps ritual suicide is the best option."
      * http://www.zytrax.com/books/dns/ch9/serial.html
      *
-     * @param string|int $curr_serial Current Serial No
+     * @param int|string $curr_serial Current Serial No
      *
      * @return string|int Next serial number
      */
-    public static function get_next_serial($curr_serial)
+    public static function get_next_serial(int|string $curr_serial): int|string
     {
         // Autoserial
         if ($curr_serial == 0) {
@@ -220,12 +220,16 @@ class DnsRecord
      *
      * Returns SOA record with incremented serial number
      *
-     * @param int $soa_rec Current SOA record
+     * @param string $soa_rec Current SOA record
      *
      * @return string true if success
      */
-    public static function get_updated_soa_record($soa_rec)
+    public static function get_updated_soa_record(string $soa_rec): string
     {
+        if (empty($soa_rec)) {
+            return '';
+        }
+
         $curr_serial = self::get_soa_serial($soa_rec);
         $new_serial = self::get_next_serial($curr_serial);
 

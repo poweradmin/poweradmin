@@ -102,4 +102,10 @@ class DnsRecordTest extends TestCase
         $this->assertSame(DnsRecord::get_second_level_domain('www.example.com'), 'example.com');
         $this->assertSame(DnsRecord::get_second_level_domain('ftp.ru.example.com'), 'example.com');
     }
+
+    public function testGetNextDate() {
+        $this->assertSame(DnsRecord::get_next_date('20110526'), '20110527');
+        $this->assertSame(DnsRecord::get_next_date('20101231'), '20110101');
+        $this->assertSame(DnsRecord::get_next_date('20110228'), '20110301');
+    }
 }
