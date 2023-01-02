@@ -91,4 +91,15 @@ class DnsRecordTest extends TestCase
         $expected = sprintf( "%s00", date('Ymd', strtotime("+2 day")));
         $this->assertSame($expected, DnsRecord::get_next_serial($given));
     }
+
+    public function testGetDomainLevel() {
+        $this->assertSame(DnsRecord::get_domain_level('com'), 1);
+        $this->assertSame(DnsRecord::get_domain_level('example.com'), 2);
+        $this->assertSame(DnsRecord::get_domain_level('www.example.com'), 3);
+    }
+
+    public function testGetSecondLevelDomain() {
+        $this->assertSame(DnsRecord::get_second_level_domain('www.example.com'), 'example.com');
+        $this->assertSame(DnsRecord::get_second_level_domain('ftp.ru.example.com'), 'example.com');
+    }
 }
