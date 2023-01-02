@@ -36,7 +36,9 @@ global $iface_title;
 global $ignore_install_dir;
 global $session_key;
 
-header('Content-type: text/html; charset=utf-8');
+if (!headers_sent()) {
+    header('Content-type: text/html; charset=utf-8');
+}
 
 $vars = [
     'iface_title' => $iface_title,
