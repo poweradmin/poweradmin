@@ -21,31 +21,30 @@
 
 namespace Poweradmin;
 
-class Session {
+class Session
+{
 
     public static function encrypt_password($password, $session_key): string
     {
-        return base64_encode(
-            openssl_encrypt(
-                $password,
-                'aes-256-cbc',
-                hash('sha256', $session_key),
-                OPENSSL_RAW_DATA,
-                substr(hash('sha256', hash('sha256', $session_key), TRUE), 0, 16)
-            )
-        );
+        $key = self::computeKey($session_key);
+        $iv = self::computeIV($key);
+        return openssl_encrypt($password, 'aes-256-cbc', $key, 0, $iv);
     }
 
     public static function decrypt_password($password, $session_key): string
     {
-        return rtrim(
-            openssl_decrypt(
-                base64_decode($password),
-                'aes-256-cbc',
-                hash('sha256', $session_key),
-                OPENSSL_RAW_DATA,
-                substr(hash('sha256', hash('sha256', $session_key), TRUE), 0, 16)
-            ), "\0"
-        );
+        $key = self::computeKey($session_key);
+        $iv = self::computeIV($key);
+        return rtrim(openssl_decrypt($password, 'aes-256-cbc', $key,0, $iv), "\0");
+    }
+
+    private static function computeKey($session_key): string
+    {
+        return hash('sha256', $session_key);
+    }
+
+    private static function computeIV(string $key): string
+    {
+        return substr(hash('sha256', $key, TRUE), 0, 16);
     }
 }
