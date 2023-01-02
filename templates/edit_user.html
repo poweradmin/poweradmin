@@ -81,7 +81,7 @@
     <ul>
         {% for item in user_permissions %}
         {% set descr = item['descr'] %}
-        <li>{% trans descr %} ({{ item['name'] }})</li>
+        <li>{% trans %}%descr%{% endtrans %} ({{ item['name'] }})</li>
         {% endfor %}
     </ul>
 </div>

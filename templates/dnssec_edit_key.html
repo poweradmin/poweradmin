@@ -46,7 +46,7 @@
 {% trans %}Tag{% endtrans %}: {{ key_info[2] }}<br>
 {% trans %}Algorithm{% endtrans %}: {{ algorithms[key_info[3]] }}<br>
 {% trans %}Bits{% endtrans %}: {{ key_info[4] }}<br>
-{% trans %}Active{% endtrans %}: {% trans active %}<br>
+{% trans %}Active{% endtrans %}: {% trans %}%active%{% endtrans %}<br>
 <p>{% trans %}Are you sure?{% endtrans %}</p>
 <input class="btn btn-primary btn-sm" type="button"
        onClick="location.href='dnssec_edit_key.php?id={{ zone_id }}&key_id={{ key_id }}&confirm=1'"
