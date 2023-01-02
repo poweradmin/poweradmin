@@ -25,7 +25,7 @@ namespace Poweradmin;
 class TopLevelDomain
 {
 
-    // Updated on 2022-09-11 - 1487 TLDs
+    // Updated on 2023-01-02 - 1481 TLDs
     // http://data.iana.org/TLD/tlds-alpha-by-domain.txt
     // for w in `cat tlds-alpha-by-domain.txt`; do echo -n "\"$w\", " | tr '[:upper:]' '[:lower:]'; done | fold -s -w 79 | sed -e 's/^/  /g'
     const TOP_LEVEL_DOMAINS = array(
@@ -116,12 +116,12 @@ class TopLevelDomain
         "leclerc", "lefrak", "legal", "lego", "lexus", "lgbt", "li", "lidl", "life",
         "lifeinsurance", "lifestyle", "lighting", "like", "lilly", "limited", "limo",
         "lincoln", "linde", "link", "lipsy", "live", "living", "lk", "llc", "llp",
-        "loan", "loans", "locker", "locus", "loft", "lol", "london", "lotte", "lotto",
-        "love", "lpl", "lplfinancial", "lr", "ls", "lt", "ltd", "ltda", "lu",
-        "lundbeck", "luxe", "luxury", "lv", "ly", "ma", "macys", "madrid", "maif",
-        "maison", "makeup", "man", "management", "mango", "map", "market",
-        "marketing", "markets", "marriott", "marshalls", "maserati", "mattel", "mba",
-        "mc", "mckinsey", "md", "me", "med", "media", "meet", "melbourne", "meme",
+        "loan", "loans", "locker", "locus", "lol", "london", "lotte", "lotto", "love",
+        "lpl", "lplfinancial", "lr", "ls", "lt", "ltd", "ltda", "lu", "lundbeck",
+        "luxe", "luxury", "lv", "ly", "ma", "macys", "madrid", "maif", "maison",
+        "makeup", "man", "management", "mango", "map", "market", "marketing",
+        "markets", "marriott", "marshalls", "maserati", "mattel", "mba", "mc",
+        "mckinsey", "md", "me", "med", "media", "meet", "melbourne", "meme",
         "memorial", "men", "menu", "merckmsd", "mg", "mh", "miami", "microsoft",
         "mil", "mini", "mint", "mit", "mitsubishi", "mk", "ml", "mlb", "mls", "mm",
         "mma", "mn", "mo", "mobi", "mobile", "moda", "moe", "moi", "mom", "monash",
@@ -156,12 +156,12 @@ class TopLevelDomain
         "sandvikcoromant", "sanofi", "sap", "sarl", "sas", "save", "saxo", "sb",
         "sbi", "sbs", "sc", "sca", "scb", "schaeffler", "schmidt", "scholarships",
         "school", "schule", "schwarz", "science", "scot", "sd", "se", "search",
-        "seat", "secure", "security", "seek", "select", "sener", "services", "ses",
-        "seven", "sew", "sex", "sexy", "sfr", "sg", "sh", "shangrila", "sharp",
-        "shaw", "shell", "shia", "shiksha", "shoes", "shop", "shopping", "shouji",
-        "show", "showtime", "si", "silk", "sina", "singles", "site", "sj", "sk",
-        "ski", "skin", "sky", "skype", "sl", "sling", "sm", "smart", "smile", "sn",
-        "sncf", "so", "soccer", "social", "softbank", "software", "sohu", "solar",
+        "seat", "secure", "security", "seek", "select", "sener", "services", "seven",
+        "sew", "sex", "sexy", "sfr", "sg", "sh", "shangrila", "sharp", "shaw",
+        "shell", "shia", "shiksha", "shoes", "shop", "shopping", "shouji", "show",
+        "showtime", "si", "silk", "sina", "singles", "site", "sj", "sk", "ski",
+        "skin", "sky", "skype", "sl", "sling", "sm", "smart", "smile", "sn", "sncf",
+        "so", "soccer", "social", "softbank", "software", "sohu", "solar",
         "solutions", "song", "sony", "soy", "spa", "space", "sport", "spot", "sr",
         "srl", "ss", "st", "stada", "staples", "star", "statebank", "statefarm",
         "stc", "stcgroup", "stockholm", "storage", "store", "stream", "studio",
