@@ -17,7 +17,7 @@
     "ext-gettext": "*",
     "ext-openssl": "*",
     "ext-pdo": "*",
-    "twig/twig": "^v2.15",
+    "twig/twig": "^v3.5",
     "vlucas/valitron": "^1.4",
     "symfony/twig-bridge": "^6.2",
     "symfony/translation": "^6.2"
