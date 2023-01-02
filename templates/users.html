@@ -109,8 +109,8 @@
     </table>
 
     {% if permissions['user_edit_own'] or permissions['user_edit_others'] %}
-    <input type="submit" class="btn btn-primary btn-sm" name="commit" value="{% trans %}Commit changes{% endtrans %}">
-    <input type="reset" class="btn btn-secondary btn-sm" name="reset" value="{% trans %}Reset changes{% endtrans %}">
+    <input type="submit" class="btn btn-primary btn-sm" name="commit" value="{% trans %}Update{% endtrans %}">
+    <input type="reset" class="btn btn-secondary btn-sm" name="reset" value="{% trans %}Reset{% endtrans %}">
     {% endif %}
 
     {% if perm_add_new %}
