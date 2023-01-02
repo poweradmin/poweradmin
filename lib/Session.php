@@ -23,7 +23,8 @@ namespace Poweradmin;
 
 class Session {
 
-    public static function encrypt_password($password, $session_key) {
+    public static function encrypt_password($password, $session_key): string
+    {
         return base64_encode(
             openssl_encrypt(
                 $password,
@@ -35,7 +36,8 @@ class Session {
         );
     }
 
-    public static function decrypt_password($password, $session_key) {
+    public static function decrypt_password($password, $session_key): string
+    {
         return rtrim(
             openssl_decrypt(
                 base64_decode($password),
