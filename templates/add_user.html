@@ -1,43 +1,43 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.php">{% trans 'Home' %}</a></li>
-        <li class="breadcrumb-item"><a href="users.php">{% trans 'Users' %}</a></li>
-        <li class="breadcrumb-item active" aria-current="page">{% trans 'Add user' %}</li>
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="users.php">{% trans %}Users{% endtrans %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans %}Add user{% endtrans %}</li>
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans 'Add user' %}</h5>
+<h5 class="mb-3">{% trans %}Add user{% endtrans %}</h5>
 <form class="needs-validation" method="post" action="add_user.php" novalidate>
     <table>
         <tr>
-            <td>{% trans 'Username' %}</td>
+            <td>{% trans %}Username{% endtrans %}</td>
             <td><input class="form-control form-control-sm" type="text" name="username" value="{{ username }}" required>
-                <div class="invalid-feedback">{% trans 'Provide user name' %}</div>
+                <div class="invalid-feedback">{% trans %}Provide user name{% endtrans %}</div>
             </td>
         </tr>
         <tr>
-            <td>{% trans 'Fullname' %}</td>
+            <td>{% trans %}Fullname{% endtrans %}</td>
             <td><input class="form-control form-control-sm" type="text" name="fullname" value="{{ fullname }}"></td>
         </tr>
         <tr>
-            <td>{% trans 'Password' %}</td>
+            <td>{% trans %}Password{% endtrans %}</td>
             <td>
                 <div class="input-group">
                     <input class="form-control form-control-sm" type="password" id="password" name="password" value="" {% if not ldap_use %}required{% endif %}>
                     <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showPassword('password', 'eye')"><i class="bi bi-eye-fill" id="eye"></i></button>
-                    {% if not ldap_use %}<div class="invalid-feedback">{% trans 'Provide user password' %}</div>{% endif %}
+                    {% if not ldap_use %}<div class="invalid-feedback">{% trans %}Provide user password{% endtrans %}</div>{% endif %}
                 </div>
             </td>
         </tr>
         <tr>
-            <td>{% trans 'Email address' %}</td>
+            <td>{% trans %}Email address{% endtrans %}</td>
             <td><input class="form-control form-control-sm" type="text" name="email" value="{{ email }}" required>
-                <div class="invalid-feedback">{% trans 'Provide email' %}</div>
+                <div class="invalid-feedback">{% trans %}Provide email{% endtrans %}</div>
             </td>
         </tr>
         {% if user_edit_templ_perm %}
         <tr>
-            <td>{% trans 'Permission template' %}</td>
+            <td>{% trans %}Permission template{% endtrans %}</td>
             <td>
                 <select class="form-select form-select-sm" name="perm_templ">
                     {% for template in user_templates %}
@@ -53,24 +53,24 @@
         </tr>
         {% endif %}
         <tr>
-            <td>{% trans 'Description' %}</td>
+            <td>{% trans %}Description{% endtrans %}</td>
             <td><textarea class="form-control form-control-sm" rows="4" cols="30" class="inputarea" name="descr">{{ description }}</textarea>
             </td>
         </tr>
         <tr>
-            <td>{% trans 'Enabled' %}</td>
+            <td>{% trans %}Enabled{% endtrans %}</td>
             <td><input class="form-check-input" type="checkbox" name="active" value="1" {{ active_checked }}></td>
         </tr>
         {% if ldap_use %}
         <tr>
-            <td>{% trans 'LDAP Authentication' %}</td>
+            <td>{% trans %}LDAP Authentication{% endtrans %}</td>
             <td><input class="form-check-input" id="ldap" type="checkbox" name="use_ldap" value="1"
                        onclick="disablePasswordField()" {{ use_ldap_checked }}></td>
         </tr>
         {% endif %}
         <tr>
             <td>&nbsp;</td>
-            <td><input class="btn btn-primary btn-sm" type="submit" name="commit" value="{% trans 'Commit changes' %}">
+            <td><input class="btn btn-primary btn-sm" type="submit" name="commit" value="{% trans %}Commit changes{% endtrans %}">
             </td>
     </table>
 </form>

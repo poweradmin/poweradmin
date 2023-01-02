@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.php">{% trans 'Home' %}</a></li>
-        <li class="breadcrumb-item"><a href="list_zones.php">{% trans 'Zones' %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="list_zones.php">{% trans %}Zones{% endtrans %}</a></li>
         <li class="breadcrumb-item">
             {% if idn_zone_name %}
             <a href="edit.php?id={{ zone_id }}">{{ idn_zone_name }}</a>
@@ -9,14 +9,14 @@
             <a href="edit.php?id={{ zone_id }}">{{ zone_name }}</a>
             {% endif %}
         </li>
-        <li class="breadcrumb-item active" aria-current="page">{% trans 'Edit comment' %}</li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans %}Edit comment{% endtrans %}</li>
     </ol>
 </nav>
 
 {% if idn_zone_name %}
-<h5 class="mb-3">{% trans 'Edit comment in zone' %} "{{ idn_zone_name }}" ({{ zone_name }})</h5>
+<h5 class="mb-3">{% trans %}Edit comment in zone{% endtrans %} "{{ idn_zone_name }}" ({{ zone_name }})</h5>
 {% else %}
-<h5 class="mb-3">{% trans 'Edit comment in zone' %} "{{ zone_name }}"</h5>
+<h5 class="mb-3">{% trans %}Edit comment in zone{% endtrans %} "{{ zone_name }}"</h5>
 {% endif %}
 
 <form method="post" action="edit_comment.php?id={{ zone_id }}">
@@ -27,8 +27,8 @@
     </div>
     <div class="pt-3">
         {% if not disabled %}
-        <input type="submit" name="commit" value="{% trans 'Commit changes' %}" class="btn btn-primary btn-sm">
-        <input type="reset" name="reset" value="{% trans 'Reset changes' %}" class="btn btn-secondary btn-sm">
+        <input type="submit" name="commit" value="{% trans %}Commit changes{% endtrans %}" class="btn btn-primary btn-sm">
+        <input type="reset" name="reset" value="{% trans %}Reset changes{% endtrans %}" class="btn btn-secondary btn-sm">
         {% endif %}
     </div>
 </form>

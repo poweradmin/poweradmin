@@ -1,17 +1,17 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.php">{% trans 'Home' %}</a></li>
-        <li class="breadcrumb-item"><a href="list_zones.php">{% trans 'Zones' %}</a></li>
-        <li class="breadcrumb-item active" aria-current="page">{% trans 'Bulk registration' %}</li>
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="list_zones.php">{% trans %}Zones{% endtrans %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans %}Bulk registration{% endtrans %}</li>
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans 'Bulk registration' %}</h5>
+<h5 class="mb-3">{% trans %}Bulk registration{% endtrans %}</h5>
 
 <form class="needs-validation" method="post" action="bulk_registration.php" novalidate>
     <table class="table">
         <tr>
-            <td>{% trans 'Owner' %}:</td>
+            <td>{% trans %}Owner{% endtrans %}:</td>
             <td>
                 <select class="form-select form-select-sm" name="owner">
                     {% for user in users %}
@@ -25,7 +25,7 @@
             </td>
         </tr>
         <tr>
-            <td>{% trans 'Type' %}:</td>
+            <td>{% trans %}Type{% endtrans %}:</td>
             <td>
                 <select class="form-select form-select-sm" name="dom_type">
                     {% for type in available_zone_types %}
@@ -40,7 +40,7 @@
             </td>
         </tr>
         <tr>
-            <td>{% trans 'Template' %}:</td>
+            <td>{% trans %}Template{% endtrans %}:</td>
             <td>
                 <select class="form-select form-select-sm" name="zone_template">
                     <option value="none">none</option>
@@ -52,12 +52,12 @@
         </tr>
 
         <tr>
-            <td>{% trans 'Zones' %}:</td>
+            <td>{% trans %}Zones{% endtrans %}:</td>
             <td>
-                <div>{% trans 'Type one domain per line' %}:</div>
+                <div>{% trans %}Type one domain per line{% endtrans %}:</div>
                 <div>
                     <textarea class="form-control form-control-sm" name="domains" rows="10" required>{% if failed_domains %}{{ failed_domains | join('\n') }}{% endif %}</textarea>
-                    <div class="invalid-feedback">{% trans 'Provide a domain name(s)' %}</div>
+                    <div class="invalid-feedback">{% trans %}Provide a domain name(s){% endtrans %}</div>
                 </div>
             </td>
         </tr>
@@ -65,7 +65,7 @@
         <tr>
             <td>&nbsp;</td>
             <td>
-                <input type="submit" class="btn btn-primary btn-sm" name="submit" value="{% trans 'Add zones' %}">
+                <input type="submit" class="btn btn-primary btn-sm" name="submit" value="{% trans %}Add zones{% endtrans %}">
             </td>
         </tr>
     </table>

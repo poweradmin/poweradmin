@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.php">{% trans 'Home' %}</a></li>
-        <li class="breadcrumb-item"><a href="list_zones.php">{% trans 'Zones' %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="list_zones.php">{% trans %}Zones{% endtrans %}</a></li>
         <li class="breadcrumb-item">
             {% if idn_zone_name %}
             <a href="edit.php?id={{ zone_id }}">{{ idn_zone_name }}</a>
@@ -10,22 +10,22 @@
             {% endif %}
         </li>
         <li class="breadcrumb-item">
-            <a href="dnssec.php?id={{ zone_id }}">{% trans 'DNSSEC' %}</a>
+            <a href="dnssec.php?id={{ zone_id }}">{% trans %}DNSSEC{% endtrans %}</a>
         </li>
         <li class="breadcrumb-item active" aria-current="page">
             {% if key_info[5] %}
-            {% trans 'Deactivate key' %}
+            {% trans %}Deactivate key{% endtrans %}
             {% else %}
-            {% trans 'Activate key' %}
+            {% trans %}Activate key{% endtrans %}
             {% endif %}
         </li>
     </ol>
 </nav>
 
 {% if key_info[5] %}
-<h5 class="mb-3">{% trans 'Deactivate zone key' %}</h5>
+<h5 class="mb-3">{% trans %}Deactivate zone key{% endtrans %}</h5>
 {% else %}
-<h5 class="mb-3">{% trans 'Activate zone key' %}</h5>
+<h5 class="mb-3">{% trans %}Activate zone key{% endtrans %}</h5>
 {% endif %}
 
 {% if key_info[5] %}
@@ -34,21 +34,21 @@
 {% set active = 'No' %}
 {% endif %}
 
-{% trans 'Domain' %}:
+{% trans %}Domain{% endtrans %}:
 {% if idn_zone_name %}
 {{ idn_zone_name }} ({{ domain_name }})
 {% else %}
 {{ domain_name }}
 {% endif %}
 <br>
-{% trans 'Id' %}: {{ key_info[0] }}<br>
-{% trans 'Type' %}: {{ key_info[1] }}<br>
-{% trans 'Tag' %}: {{ key_info[2] }}<br>
-{% trans 'Algorithm' %}: {{ algorithms[key_info[3]] }}<br>
-{% trans 'Bits' %}: {{ key_info[4] }}<br>
-{% trans 'Active' %}: {% trans active %}<br>
-<p>{% trans 'Are you sure?' %}</p>
+{% trans %}Id{% endtrans %}: {{ key_info[0] }}<br>
+{% trans %}Type{% endtrans %}: {{ key_info[1] }}<br>
+{% trans %}Tag{% endtrans %}: {{ key_info[2] }}<br>
+{% trans %}Algorithm{% endtrans %}: {{ algorithms[key_info[3]] }}<br>
+{% trans %}Bits{% endtrans %}: {{ key_info[4] }}<br>
+{% trans %}Active{% endtrans %}: {% trans active %}<br>
+<p>{% trans %}Are you sure?{% endtrans %}</p>
 <input class="btn btn-primary btn-sm" type="button"
        onClick="location.href='dnssec_edit_key.php?id={{ zone_id }}&key_id={{ key_id }}&confirm=1'"
-       value="{% trans 'Yes' %}">
-<input class="btn btn-secondary btn-sm" type="button" onClick="location.href='dnssec.php?id={{ zone_id }}'" value="{% trans 'No' %}">
+       value="{% trans %}Yes{% endtrans %}">
+<input class="btn btn-secondary btn-sm" type="button" onClick="location.href='dnssec.php?id={{ zone_id }}'" value="{% trans %}No{% endtrans %}">

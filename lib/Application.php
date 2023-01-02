@@ -22,9 +22,11 @@
 
 namespace Poweradmin;
 
+use Symfony\Bridge\Twig\Extension\TranslationExtension;
+use Symfony\Component\Translation\Loader\PoFileLoader;
+use Symfony\Component\Translation\Translator;
 use Twig\Environment;
 use Twig\Error\Error;
-use Twig\Extensions\I18nExtension;
 use Twig\Loader\FilesystemLoader;
 
 class Application {
@@ -35,7 +37,13 @@ class Application {
     public function __construct() {
         $loader = new FilesystemLoader('templates');
         $this->templateRenderer = new Environment($loader, [ 'debug' => false ]);
-        $this->templateRenderer->addExtension(new I18nExtension());
+
+        global $iface_lang;
+        $translator = new Translator($iface_lang);
+        $translator->addLoader('po', new PoFileLoader());
+        $translator->addResource('po', $this->getLocaleFile($iface_lang), $iface_lang);
+
+        $this->templateRenderer->addExtension(new TranslationExtension($translator));
         $this->configuration = new Configuration();
     }
 
@@ -49,5 +57,14 @@ class Application {
 
     public function config($name) {
         return str_replace(['"',"'"], "", $this->configuration->get($name));
+    }
+
+    public function getLocaleFile(string $iface_lang): string
+    {
+        if (in_array($iface_lang, ['cs_CZ', 'de_DE', 'fr_FR', 'ja_JP', 'nb_NO', 'nl_NL', 'pl_PL', 'ru_RU', 'tr_TR', 'zh_CN'])) {
+            $short_locale = substr($iface_lang, 0, 2);
+            return "locale/$iface_lang/LC_MESSAGES/$short_locale.po";
+        }
+        return "locale/en_EN/LC_MESSAGES/en.po";
     }
 }

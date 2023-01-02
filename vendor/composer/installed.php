@@ -3,7 +3,7 @@
         'name' => 'poweradmin/poweradmin',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '01313bac2fadfc3e4f8ef50548c0dd07863b1b0d',
+        'reference' => '951aca0fbc774590dca8e7bdf5d455b7ca91531d',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -112,7 +112,7 @@
         'poweradmin/poweradmin' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '01313bac2fadfc3e4f8ef50548c0dd07863b1b0d',
+            'reference' => '951aca0fbc774590dca8e7bdf5d455b7ca91531d',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -289,6 +289,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'symfony/translation' => array(
+            'pretty_version' => 'v6.2.3',
+            'version' => '6.2.3.0',
+            'reference' => 'a2a15404ef4c15d92c205718eb828b225a144379',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../symfony/translation',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'symfony/translation-contracts' => array(
             'pretty_version' => 'v3.2.0',
             'version' => '3.2.0.0',
@@ -297,6 +306,12 @@
             'install_path' => __DIR__ . '/../symfony/translation-contracts',
             'aliases' => array(),
             'dev_requirement' => false,
+        ),
+        'symfony/translation-implementation' => array(
+            'dev_requirement' => false,
+            'provided' => array(
+                0 => '2.3|3.0',
+            ),
         ),
         'symfony/twig-bridge' => array(
             'pretty_version' => 'v6.2.3',
@@ -315,15 +330,6 @@
             'install_path' => __DIR__ . '/../theseer/tokenizer',
             'aliases' => array(),
             'dev_requirement' => true,
-        ),
-        'twig/extensions' => array(
-            'pretty_version' => 'v1.5.4',
-            'version' => '1.5.4.0',
-            'reference' => '57873c8b0c1be51caa47df2cdb824490beb16202',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../twig/extensions',
-            'aliases' => array(),
-            'dev_requirement' => false,
         ),
         'twig/twig' => array(
             'pretty_version' => 'v2.15.4',

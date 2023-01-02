@@ -1,19 +1,19 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.php">{% trans 'Home' %}</a></li>
-        <li class="breadcrumb-item"><a href="list_zones.php">{% trans 'Zones' %}</a></li>
-        <li class="breadcrumb-item active" aria-current="page">{% trans 'Delete Zones' %}</li>
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="list_zones.php">{% trans %}Zones{% endtrans %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans %}Delete Zones{% endtrans %}</li>
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans 'Delete zones' %}</h5>
+<h5 class="mb-3">{% trans %}Delete zones{% endtrans %}</h5>
 <form method="post" action="delete_domains.php">
     <table class="table table-striped table-hover table-sm">
         <thead>
-        <th>{% trans 'Name' %}</th>
-        <th>{% trans 'Owner' %}</th>
-        <th>{% trans 'Type' %}</th>
-        <th>{% trans 'Note' %}</th>
+        <th>{% trans %}Name{% endtrans %}</th>
+        <th>{% trans %}Owner{% endtrans %}</th>
+        <th>{% trans %}Type{% endtrans %}</th>
+        <th>{% trans %}Note{% endtrans %}</th>
         </thead>
         <tbody>
 
@@ -36,9 +36,9 @@
                 {% endif %}
 
                 {% if zone['has_supermaster'] %}
-                {% trans 'You are about to delete a slave zone of which the master nameserver is a supermaster. Deleting
+                {% trans %}You are about to delete a slave zone of which the master nameserver is a supermaster. Deleting
                 the zone now, will result in temporary removal only. Whenever the supermaster sends a notification for
-                this zone, it will be added again!' %}
+                this zone, it will be added again!{% endtrans %}
                 {% endif %}
             </td>
         </tr>
@@ -46,8 +46,8 @@
 
         </tbody>
     </table>
-    <p>{% trans 'Are you sure?' %}</p>
-    <input class="btn btn-primary btn-sm" type="submit" name="confirm" value="{% trans 'Yes' %}">
+    <p>{% trans %}Are you sure?{% endtrans %}</p>
+    <input class="btn btn-primary btn-sm" type="submit" name="confirm" value="{% trans %}Yes{% endtrans %}">
     <input class="btn btn-secondary btn-sm" type="button" onClick="location.href='list_zones.php'"
-           value="{% trans 'No' %}">
+           value="{% trans %}No{% endtrans %}">
 </form>

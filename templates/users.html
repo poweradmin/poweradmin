@@ -1,26 +1,26 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.php">{% trans 'Home' %}</a></li>
-        <li class="breadcrumb-item active" aria-current="page">{% trans 'Users' %}</li>
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans %}Users{% endtrans %}</li>
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans 'User administration' %}</h5>
+<h5 class="mb-3">{% trans %}User administration{% endtrans %}</h5>
 
 <form method="post" action="users.php">
     <table class="table table-striped table-hover table-sm">
         <thead>
         <tr>
-            <th>{% trans 'Username' %}</th>
-            <th>{% trans 'Fullname' %}</th>
-            <th>{% trans 'Email address' %}</th>
-            <th>{% trans 'Template' %}</th>
+            <th>{% trans %}Username{% endtrans %}</th>
+            <th>{% trans %}Fullname{% endtrans %}</th>
+            <th>{% trans %}Email address{% endtrans %}</th>
+            <th>{% trans %}Template{% endtrans %}</th>
 
             {% if ldap_use %}
-            <th>{% trans 'LDAP' %}</th>
+            <th>{% trans %}LDAP{% endtrans %}</th>
             {% endif %}
 
-            <th>{% trans 'Enabled' %}</th>
+            <th>{% trans %}Enabled{% endtrans %}</th>
             <th></th>
         </tr>
         </thead>
@@ -84,12 +84,12 @@
             <td>
                 <input type="hidden" name="user[{{ user_uid }}][uid]" value="{{ user_uid }}">
                 <a class="btn btn-outline-primary btn-sm" href="edit_user.php?id={{ user_uid }}">
-                    <i class="bi bi-pencil-square"></i> {% trans 'Edit' %}
+                    <i class="bi bi-pencil-square"></i> {% trans %}Edit{% endtrans %}
                 </a>
 
                 {% if user['uid'] != session_userid %}
                 <a class="btn btn-outline-danger btn-sm" href="delete_user.php?id={{ user['uid'] }}">
-                    <i class="bi bi-trash"></i> {% trans 'Delete' %}
+                    <i class="bi bi-trash"></i> {% trans %}Delete{% endtrans %}
                 </a>
                 {% endif %}
             </td>
@@ -109,12 +109,12 @@
     </table>
 
     {% if permissions['user_edit_own'] or permissions['user_edit_others'] %}
-    <input type="submit" class="btn btn-primary btn-sm" name="commit" value="{% trans 'Commit changes' %}">
-    <input type="reset" class="btn btn-secondary btn-sm" name="reset" value="{% trans 'Reset changes' %}">
+    <input type="submit" class="btn btn-primary btn-sm" name="commit" value="{% trans %}Commit changes{% endtrans %}">
+    <input type="reset" class="btn btn-secondary btn-sm" name="reset" value="{% trans %}Reset changes{% endtrans %}">
     {% endif %}
 
     {% if perm_add_new %}
     <input class="btn btn-secondary btn-sm" type="button" name="add_slave"
-           onclick="location.href = 'add_user.php'" value="{% trans 'Add user' %}">
+           onclick="location.href = 'add_user.php'" value="{% trans %}Add user{% endtrans %}">
     {% endif %}
 </form>

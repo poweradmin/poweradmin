@@ -1,23 +1,23 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.php">{% trans 'Home' %}</a></li>
-        <li class="breadcrumb-item"><a href="list_zones.php">{% trans 'Zones' %}</a></li>
-        <li class="breadcrumb-item active" aria-current="page">{% trans 'Add master zone' %}</li>
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="list_zones.php">{% trans %}Zones{% endtrans %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans %}Add master zone{% endtrans %}</li>
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans 'Add master zone' %}</h5>
+<h5 class="mb-3">{% trans %}Add master zone{% endtrans %}</h5>
 <form class="needs-validation" method="post" action="add_zone_master.php" novalidate>
     <table>
         <tr>
-            <td style="vertical-align: top" class="pt-1">{% trans 'Zone name' %}:</td>
+            <td style="vertical-align: top" class="pt-1">{% trans %}Zone name{% endtrans %}:</td>
             <td>
                 <input class="form-control form-control-sm" type="text" name="domain" value="" required>
-                <div class="invalid-feedback">{% trans 'Provide zone name' %}</div>
+                <div class="invalid-feedback">{% trans %}Provide zone name{% endtrans %}</div>
             </td>
         </tr>
         <tr>
-            <td>{% trans 'Owner' %}:</td>
+            <td>{% trans %}Owner{% endtrans %}:</td>
             <td>
                 <select class="form-select form-select-sm" name="owner">
                     {% for user in users %}
@@ -31,7 +31,7 @@
             </td>
         </tr>
         <tr>
-            <td>{% trans 'Type' %}:</td>
+            <td>{% trans %}Type{% endtrans %}:</td>
             <td>
                 <select class="form-select form-select-sm" name="dom_type">
                     {% for type in available_zone_types %}
@@ -46,7 +46,7 @@
             </td>
         </tr>
         <tr>
-            <td>{% trans 'Template' %}:</td>
+            <td>{% trans %}Template{% endtrans %}:</td>
             <td>
                 <select class="form-select form-select-sm" name="zone_template">
                     <option value="none">none</option>
@@ -59,14 +59,14 @@
 
         {% if pdnssec_use %}
         <tr>
-            <td>{% trans 'DNSSEC' %}:</td>
+            <td>{% trans %}DNSSEC{% endtrans %}:</td>
             <td><input class="form-check-input" type="checkbox" name="dnssec" value="1" checked></td>
         </tr>
         {% endif %}
         <tr>
             <td>&nbsp;</td>
             <td>
-                <input class="btn btn-primary btn-sm" type="submit" name="submit" value="{% trans 'Add zone' %}">
+                <input class="btn btn-primary btn-sm" type="submit" name="submit" value="{% trans %}Add zone{% endtrans %}">
             </td>
         </tr>
     </table>

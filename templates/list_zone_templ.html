@@ -1,17 +1,17 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.php">{% trans 'Home' %}</a></li>
-        <li class="breadcrumb-item"><a href="list_zones.php">{% trans 'Zones' %}</a></li>
-        <li class="breadcrumb-item active" aria-current="page">{% trans 'Zone templates' %}</li>
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="list_zones.php">{% trans %}Zones{% endtrans %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans %}Zone templates{% endtrans %}</li>
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans 'Zone templates for' %} "{{ user_name }}"</h5>
+<h5 class="mb-3">{% trans %}Zone templates for{% endtrans %} "{{ user_name }}"</h5>
 <table class="table table-striped table-hover table-sm">
     <thead>
     <tr>
-        <th>{% trans 'Name' %}</th>
-        <th>{% trans 'Description' %}</th>
+        <th>{% trans %}Name{% endtrans %}</th>
+        <th>{% trans %}Description{% endtrans %}</th>
         <th>&nbsp;</th>
     </tr>
     </thead>
@@ -19,7 +19,7 @@
     <tbody>
     {% if not zone_templates %}
     <tr>
-        <td colspan="4">{% trans 'No results found' %}</td>
+        <td colspan="4">{% trans %}No results found{% endtrans %}</td>
     </tr>
     {% endif %}
     {% for template in zone_templates %}
@@ -28,8 +28,8 @@
         <td class="col-sm-3">{{ template['descr'] }}</td>
         {% if perm_zone_master_add %}
         <td>
-            <a class="btn btn-outline-primary btn-sm" href="edit_zone_templ.php?id={{ template['id'] }}"><i class="bi bi-pencil-square"></i> {% trans 'Edit' %}</a>
-            <a class="btn btn-outline-danger btn-sm" href="delete_zone_templ.php?id={{ template['id'] }}"><i class="bi bi-trash"></i> {% trans 'Delete' %}</a>
+            <a class="btn btn-outline-primary btn-sm" href="edit_zone_templ.php?id={{ template['id'] }}"><i class="bi bi-pencil-square"></i> {% trans %}Edit{% endtrans %}</a>
+            <a class="btn btn-outline-danger btn-sm" href="delete_zone_templ.php?id={{ template['id'] }}"><i class="bi bi-trash"></i> {% trans %}Delete{% endtrans %}</a>
         </td>
         {% else %}
         <td>&nbsp;</td>
@@ -40,5 +40,5 @@
 
 </table>
 <div>
-    <a class="btn btn-primary btn-sm" href="add_zone_templ.php">{% trans 'Add zone template' %}</a>
+    <a class="btn btn-primary btn-sm" href="add_zone_templ.php">{% trans %}Add zone template{% endtrans %}</a>
 </div>

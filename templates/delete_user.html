@@ -1,29 +1,29 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.php">{% trans 'Home' %}</a></li>
-        <li class="breadcrumb-item"><a href="users.php">{% trans 'Users' %}</a></li>
-        <li class="breadcrumb-item active" aria-current="page">{% trans 'Delete user' %}</li>
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="users.php">{% trans %}Users{% endtrans %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans %}Delete user{% endtrans %}</li>
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans 'Delete user' %} "{{ name }}"</h5>
+<h5 class="mb-3">{% trans %}Delete user{% endtrans %} "{{ name }}"</h5>
 <form method="post" action="">
     <table class="table table-striped table-sm">
 
         {% if zones_count > 0 %}
         <tr>
             <td colspan="5">
-                {% trans 'You are about to delete a user. This user is owner for a number of zones. Please decide what
-                to do with these zones.' %}
+                {% trans %}You are about to delete a user. This user is owner for a number of zones. Please decide what
+                to do with these zones.{% endtrans %}
             </td>
         </tr>
 
         <tr>
-            <th>{% trans 'Zone' %}</th>
-            <th>{% trans 'Delete' %}</th>
-            <th>{% trans 'Leave' %}</th>
-            <th>{% trans 'Add new owner' %}</th>
-            <th>{% trans 'Owner to be added' %}</th>
+            <th>{% trans %}Zone{% endtrans %}</th>
+            <th>{% trans %}Delete{% endtrans %}</th>
+            <th>{% trans %}Leave{% endtrans %}</th>
+            <th>{% trans %}Add new owner{% endtrans %}</th>
+            <th>{% trans %}Owner to be added{% endtrans %}</th>
         </tr>
 
         {% for zone in zones %}
@@ -49,11 +49,11 @@
         <tr>
             <td colspan="5">
 
-                {% trans 'Are you sure?' %}
+                {% trans %}Are you sure?{% endtrans %}
             </td>
         </tr>
 
     </table>
-    <input class="btn btn-primary btn-sm" type="submit" name="commit" value="{% trans 'Yes' %}">
-    <input class="btn btn-secondary btn-sm" type="button" onClick="location.href='users.php'" value="{% trans 'No' %}">
+    <input class="btn btn-primary btn-sm" type="submit" name="commit" value="{% trans %}Yes{% endtrans %}">
+    <input class="btn btn-secondary btn-sm" type="button" onClick="location.href='users.php'" value="{% trans %}No{% endtrans %}">
 </form>

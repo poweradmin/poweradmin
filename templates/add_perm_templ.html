@@ -1,22 +1,22 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.php">{% trans 'Home' %}</a></li>
-        <li class="breadcrumb-item"><a href="users.php">{% trans 'Users' %}</a></li>
-        <li class="breadcrumb-item"><a href="list_perm_templ.php">{% trans 'Permission templates' %}</a></li>
-        <li class="breadcrumb-item active" aria-current="page">{% trans 'Add' %}</li>
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="users.php">{% trans %}Users{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="list_perm_templ.php">{% trans %}Permission templates{% endtrans %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans %}Add{% endtrans %}</li>
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans 'Add permission template' %}</h5>
+<h5 class="mb-3">{% trans %}Add permission template{% endtrans %}</h5>
 <form class="needs-validation" method="post" action="add_perm_templ.php" novalidate>
     <div class="col-sm-3">
         <div class="mb-2">
-            <label for="templ_name" class="form-label">{% trans 'Name' %}</label>
+            <label for="templ_name" class="form-label">{% trans %}Name{% endtrans %}</label>
             <input class="form-control form-control-sm" type="text" id="templ_name" name="templ_name" value="" required>
-            <div class="invalid-feedback">{% trans 'Provide a name for your template' %}</div>
+            <div class="invalid-feedback">{% trans %}Provide a name for your template{% endtrans %}</div>
         </div>
         <div class="mb-2">
-            <label for="templ_descr" class="form-label">{% trans 'Description' %}</label>
+            <label for="templ_descr" class="form-label">{% trans %}Description{% endtrans %}</label>
             <input class="form-control form-control-sm" type="text" id="templ_descr" name="templ_descr" value="">
         </div>
     </div>
@@ -27,8 +27,8 @@
         <thead>
         <tr>
             <th>&nbsp;</th>
-            <th>{% trans 'Name' %}</th>
-            <th>{% trans 'Description' %}</th>
+            <th>{% trans %}Name{% endtrans %}</th>
+            <th>{% trans %}Description{% endtrans %}</th>
         </tr>
         </thead>
         <tbody>
@@ -37,12 +37,12 @@
         <tr>
             <td><input class="form-check-input" type="checkbox" name="perm_id[]" value="{{ perm['id'] }}"></td>
             <td>{{ perm['name'] }}</td>
-            <td>{% trans descr %}</td>
+            <td>{% trans %}%descr%{% endtrans %}</td>
         </tr>
         {% endfor %}
         </tbody>
     </table>
     <div class="pt-3">
-        <input type="submit" class="btn btn-primary btn-sm" name="commit" value="{% trans 'Commit changes' %}">
+        <input type="submit" class="btn btn-primary btn-sm" name="commit" value="{% trans %}Commit changes{% endtrans %}">
     </div>
 </form>

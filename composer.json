@@ -18,9 +18,9 @@
     "ext-openssl": "*",
     "ext-pdo": "*",
     "twig/twig": "^v2.15",
-    "twig/extensions": "^v1.5",
     "vlucas/valitron": "^1.4",
-    "symfony/twig-bridge": "^6.2"
+    "symfony/twig-bridge": "^6.2",
+    "symfony/translation": "^6.2"
   },
   "autoload": {
     "psr-4": {

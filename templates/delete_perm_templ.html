@@ -1,14 +1,14 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.php">{% trans 'Home' %}</a></li>
-        <li class="breadcrumb-item"><a href="users.php">{% trans 'Users' %}</a></li>
-        <li class="breadcrumb-item"><a href="list_perm_templ.php">{% trans 'Permission templates' %}</a></li>
-        <li class="breadcrumb-item active" aria-current="page">{% trans 'Delete' %}</li>
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="users.php">{% trans %}Users{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="list_perm_templ.php">{% trans %}Permission templates{% endtrans %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans %}Delete{% endtrans %}</li>
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans 'Delete permission template' %} "{{ templ_name }}"</h5>
+<h5 class="mb-3">{% trans %}Delete permission template{% endtrans %} "{{ templ_name }}"</h5>
 
-<p>{% trans 'Are you sure?' %}</p>
-<input type="button" class="btn btn-primary btn-sm" onClick="location.href='delete_perm_templ.php?id={{ perm_templ_id }}&confirm=1'" value="{% trans 'Yes' %}">
-<input type="button" class="btn btn-secondary btn-sm" onClick="location.href='list_perm_templ.php'" value="{% trans 'No' %}">
+<p>{% trans %}Are you sure?{% endtrans %}</p>
+<input type="button" class="btn btn-primary btn-sm" onClick="location.href='delete_perm_templ.php?id={{ perm_templ_id }}&confirm=1'" value="{% trans %}Yes{% endtrans %}">
+<input type="button" class="btn btn-secondary btn-sm" onClick="location.href='list_perm_templ.php'" value="{% trans %}No{% endtrans %}">

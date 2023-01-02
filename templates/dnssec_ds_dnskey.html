@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.php">{% trans 'Home' %}</a></li>
-        <li class="breadcrumb-item"><a href="list_zones.php">{% trans 'Zones' %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="list_zones.php">{% trans %}Zones{% endtrans %}</a></li>
         <li class="breadcrumb-item">
             {% if idn_zone_name %}
             <a href="edit.php?id={{ zone_id }}">{{ idn_zone_name }}</a>
@@ -10,27 +10,27 @@
             {% endif %}
         </li>
         <li class="breadcrumb-item">
-            <a href="dnssec.php?id={{ zone_id }}">{% trans 'DNSSEC' %}</a>
+            <a href="dnssec.php?id={{ zone_id }}">{% trans %}DNSSEC{% endtrans %}</a>
         </li>
         <li class="breadcrumb-item active" aria-current="page">
-            {% trans 'DS and DNS keys' %}
+            {% trans %}DS and DNS keys{% endtrans %}
         </li>
     </ol>
 </nav>
 
 {% if idn_zone_name %}
-<h5 class="mb-3">{% trans 'DNSSEC public records for zone' %} "{{ idn_zone_name }}" ({{ domain_name }})</h5>
+<h5 class="mb-3">{% trans %}DNSSEC public records for zone{% endtrans %} "{{ idn_zone_name }}" ({{ domain_name }})</h5>
 {% else %}
-<h5 class="mb-3">{% trans 'DNSSEC public records for zone' %} "{{ domain_name }}"</h5>
+<h5 class="mb-3">{% trans %}DNSSEC public records for zone{% endtrans %} "{{ domain_name }}"</h5>
 {% endif %}
 
-<h5 class="mb-3">{% trans 'DNSKEY' %}</h5>
+<h5 class="mb-3">{% trans %}DNSKEY{% endtrans %}</h5>
 {% for record in dnskey_records %}
 {{ record }}<br/>
 {% endfor %}
 <br>
 
-<h5 class="mb-3">{% trans 'DS record' %}</h5>
+<h5 class="mb-3">{% trans %}DS record{% endtrans %}</h5>
 {% for record in ds_records %}
 {{ record }}<br/>
 {% endfor %}

@@ -1,27 +1,27 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.php">{% trans 'Home' %}</a></li>
-        <li class="breadcrumb-item"><a href="list_supermasters.php">{% trans 'Supermasters' %}</a></li>
-        <li class="breadcrumb-item active" aria-current="page">{% trans 'Add supermaster' %}</li>
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="list_supermasters.php">{% trans %}Supermasters{% endtrans %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans %}Add supermaster{% endtrans %}</li>
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans 'Add supermaster' %}</h5>
+<h5 class="mb-3">{% trans %}Add supermaster{% endtrans %}</h5>
 <form class="needs-validation" method="post" action="add_supermaster.php" novalidate>
     <div class="col-sm-3">
         <div class="mb-2">
-            <label for="master_ip" class="form-label">{% trans 'IP address of supermaster' %}</label>
+            <label for="master_ip" class="form-label">{% trans %}IP address of supermaster{% endtrans %}</label>
             <input class="form-control form-control-sm" type="text" id="master_ip" name="master_ip" value="{{ master_ip }}"
                    required>
-            <div class="invalid-feedback">{% trans 'Provide ip address' %}</div>
+            <div class="invalid-feedback">{% trans %}Provide ip address{% endtrans %}</div>
         </div>
         <div class="mb-2">
-            <label for="ns_name" class="form-label">{% trans 'Hostname in NS record' %}</label>
+            <label for="ns_name" class="form-label">{% trans %}Hostname in NS record{% endtrans %}</label>
             <input class="form-control form-control-sm" type="text" id="ns_name" name="ns_name" value="{{ ns_name }}" required>
-            <div class="invalid-feedback">{% trans 'Provide host name' %}</div>
+            <div class="invalid-feedback">{% trans %}Provide host name{% endtrans %}</div>
         </div>
         <div class="mb-4">
-            <label for="account" class="form-label">{% trans 'Account' %}</label>
+            <label for="account" class="form-label">{% trans %}Account{% endtrans %}</label>
             <select class="form-select form-select-sm" id="account" name="account">
                 {% for user in users %}
                 {% if user['id'] == session_uid %}
@@ -32,7 +32,7 @@
                     {{ user['username'] }}
                     {% endif %}
                 </option>
-                {% elseif perm_view_others %}}
+                {% elseif perm_view_others %}
                 <option value="{{ user['username'] }}">
                     {% if user['fullname'] %}
                     {{ user['fullname'] }}
@@ -45,7 +45,7 @@
             </select>
         </div>
         <div class="mb-2">
-            <input class="btn btn-primary btn-sm" type="submit" name="submit" value="{% trans 'Add supermaster' %}">
+            <input class="btn btn-primary btn-sm" type="submit" name="submit" value="{% trans %}Add supermaster{% endtrans %}">
         </div>
     </div>
 </form>
