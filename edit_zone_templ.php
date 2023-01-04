@@ -72,9 +72,10 @@ class EditZoneTemplController extends BaseController
     private function updateZoneTemplate(string $zone_templ_id)
     {
         $owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
+        $perm_godlike = do_hook('verify_permission', 'user_is_ueberuser');
 
-        if (isset($_POST['edit']) && $owner) {
-            $this->updateTemplateNameAndDescription($zone_templ_id);
+        if (isset($_POST['edit']) && $owner || $perm_godlike) {
+            $this->updateZoneTemplateDetails($zone_templ_id);
         }
 
 //        if (isset($_POST['save_as'])) {
@@ -107,6 +108,7 @@ class EditZoneTemplController extends BaseController
             'pagination' => show_pages($record_count, $iface_rowamount, $zone_templ_id),
             'records' => $records = ZoneTemplate::get_zone_templ_records($zone_templ_id, $row_start, $iface_rowamount, $record_sort_by),
             'zone_templ_id' => $zone_templ_id,
+            'perm_is_godlike' => do_hook('verify_permission', 'user_is_ueberuser'),
         ]);
     }
 
@@ -134,13 +136,14 @@ class EditZoneTemplController extends BaseController
         return $record_sort_by;
     }
 
-    public function updateTemplateNameAndDescription(string $zone_templ_id): void
+    public function updateZoneTemplateDetails(string $zone_templ_id): void
     {
         if (!isset($_POST['templ_name']) || $_POST['templ_name'] == "") {
             $this->showError(_('Invalid or unexpected input given.'));
         }
-        $this->setMessage('edit_zone_templ', 'success', _('Zone template has been updated successfully.'));
-        ZoneTemplate::edit_zone_templ($_POST, $zone_templ_id);
+        ZoneTemplate::edit_zone_templ($_POST, $zone_templ_id, $_SESSION['userid']);
+        $this->setMessage('list_zone_templ', 'success', _('Zone template has been updated successfully.'));
+        $this->redirect('list_zone_templ.php');
     }
 
     public function updateZoneRecords(string $zone_templ_id): void

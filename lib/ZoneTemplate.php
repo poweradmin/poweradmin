@@ -475,7 +475,7 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public static function edit_zone_templ($details, $zone_templ_id)
+    public static function edit_zone_templ($details, $zone_templ_id, $user_id)
     {
         global $db;
         $zone_name_exists = ZoneTemplate::zone_templ_name_exists($details['templ_name'], $zone_templ_id);
@@ -486,12 +486,24 @@ class ZoneTemplate
             error(_('Zone template with this name already exists, please choose another one.'));
             return false;
         } else {
-            $query = "UPDATE zone_templ
-			SET name=" . $db->quote($details['templ_name'], 'text') . ",
-			descr=" . $db->quote($details['templ_descr'], 'text') . "
-			WHERE id=" . $db->quote($zone_templ_id, 'integer');
+            $query = 'UPDATE zone_templ SET name=:templ_name, descr=:templ_descr';
+            $params = [
+                "templ_name" => $details['templ_name'],
+                "templ_descr" => $details['templ_descr'],
+                "templ_id" => $zone_templ_id
+            ];
 
-            $db->query($query);
+            if (isset($details['templ_global'])) {
+                $query .= ', owner=0';
+            } else {
+                $query .= ', owner=:templ_owner';
+                $params['templ_owner'] = $user_id;
+            }
+            $query .= ' WHERE id=:templ_id';
+            $stmt = $db->prepare($query);
+
+            $stmt->execute($params);
+
             return true;
         }
     }
