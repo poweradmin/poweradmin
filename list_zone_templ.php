@@ -50,7 +50,8 @@ class ListZoneTemplController extends BaseController {
         $this->render('list_zone_templ.html', [
             'perm_zone_master_add' => $perm_zone_master_add,
             'user_name' => do_hook('get_fullname_from_userid', $_SESSION['userid']) ?: $_SESSION['userlogin'],
-            'zone_templates' => ZoneTemplate::get_list_zone_templ($_SESSION['userid'])
+            'zone_templates' => ZoneTemplate::get_list_zone_templ($_SESSION['userid']),
+            'perm_is_godlike' => do_hook('verify_permission', 'user_is_ueberuser'),
         ]);
     }
 }

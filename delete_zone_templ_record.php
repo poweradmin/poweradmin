@@ -56,17 +56,18 @@ class DeleteZoneTemplRecordController extends BaseController {
         }
 
         $owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
-        if ($confirm == '1' && $owner) {
+        $perm_godlike = do_hook('verify_permission', 'user_is_ueberuser');
+        $perm_master_add = do_hook('verify_permission', 'zone_master_add');
+
+        $this->checkCondition(!($perm_godlike || $perm_master_add && $owner), _("You do not have the permission to delete this record."));
+
+        if ($confirm == '1') {
             if (ZoneTemplate::delete_zone_templ_record($record_id)) {
                 $this->setMessage('edit_zone_templ', 'success', _('The record has been deleted successfully.'));
             } else {
                 $this->setMessage('edit_zone_templ', 'error', _('The record could not be deleted.'));
             }
             $this->redirect('edit_zone_templ.php', ['id' => $zone_templ_id]);
-        }
-
-        if (!(do_hook('verify_permission', 'zone_master_add')) || !$owner) {
-            $this->showError(_("You do not have the permission to delete this record."));
         }
 
         $templ_details = ZoneTemplate::get_zone_templ_details($zone_templ_id);

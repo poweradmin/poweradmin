@@ -38,12 +38,23 @@ class ZoneTemplate
      *
      * @return mixed[] array of zone templates [id,name,descr]
      */
-    public static function get_list_zone_templ($userid)
-    {
+    public static function get_list_zone_templ(int $userid): array {
         global $db;
 
-        $stmt = $db->prepare("SELECT id, name, descr FROM zone_templ WHERE owner = :uid ORDER BY name");
-        $stmt->execute(["uid" => $userid]);
+        $query = "SELECT zone_templ.id, zone_templ.name, zone_templ.descr, users.username, users.fullname
+              FROM zone_templ
+              LEFT JOIN users ON zone_templ.owner = users.id";
+        $params = [];
+
+        if (!do_hook('verify_permission', 'user_is_ueberuser')) {
+            $query .= " WHERE zone_templ.owner = :userid OR zone_templ.owner = 0";
+            $params[':userid'] = $userid;
+        }
+
+        $query .= " ORDER BY zone_templ.name";
+
+        $stmt = $db->prepare($query);
+        $stmt->execute($params);
 
         return $stmt->fetchAll();
     }
@@ -66,15 +77,15 @@ class ZoneTemplate
         } elseif ($zone_name_exists != '0') {
             error(_('Zone template with this name already exists, please choose another one.'));
         } else {
-            $query = "INSERT INTO zone_templ (name, descr, owner)
-			VALUES ("
-                . $db->quote($details['templ_name'], 'text') . ", "
-                . $db->quote($details['templ_descr'], 'text') . ", "
-                . $db->quote($userid, 'integer') . ")";
-
-            $db->query($query);
+            $stmt = $db->prepare("INSERT INTO zone_templ (name, descr, owner) VALUES (:name, :descr, :owner)");
+            $stmt->execute([
+                ':name' => $details['templ_name'],
+                ':descr' => $details['templ_descr'],
+                ':owner' => isset($details['templ_global']) ? 0 : $userid
+            ]);
             return true;
         }
+        return false;
     }
 
     /** Get name and description of template based on template ID

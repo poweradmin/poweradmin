@@ -51,7 +51,8 @@ class AddZoneTemplateController extends BaseController
     private function showAddZoneTemplate()
     {
         $this->render('add_zone_templ.html', [
-            'user_name' => do_hook('get_fullname_from_userid', $_SESSION['userid']) ?: $_SESSION['userlogin']
+            'user_name' => do_hook('get_fullname_from_userid', $_SESSION['userid']) ?: $_SESSION['userlogin'],
+            'perm_is_godlike' => do_hook('verify_permission', 'user_is_ueberuser'),
         ]);
     }
 
@@ -74,6 +75,7 @@ class AddZoneTemplateController extends BaseController
                 'user_name' => do_hook('get_fullname_from_userid', $_SESSION['userid']) ?: $_SESSION['userlogin'],
                 'templ_name' => htmlspecialchars($_POST['templ_name']),
                 'templ_descr' => htmlspecialchars($_POST['templ_descr']),
+                'perm_is_godlike' => do_hook('verify_permission', 'user_is_ueberuser')
             ]);
         }
     }

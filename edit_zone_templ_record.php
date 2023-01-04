@@ -52,9 +52,10 @@ class EditZoneTemplRecordController extends BaseController {
         $record_id = htmlspecialchars($_GET['id']);
         $zone_templ_id = htmlspecialchars($_GET['zone_templ_id']);
 
-        $zone_master_add = do_hook('verify_permission', 'zone_master_add');
         $owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
-        $this->checkCondition(!$zone_master_add || !$owner, _("You do not have the permission to view this record."));
+        $perm_godlike = do_hook('verify_permission', 'user_is_ueberuser');
+        $perm_master_add = do_hook('verify_permission', 'zone_master_add');
+        $this->checkCondition(!($perm_godlike || $perm_master_add && $owner), _("You do not have the permission to delete zone templates."));
 
         if ($this->isPost()) {
             $this->updateZoneTemplateRecord($zone_templ_id);
