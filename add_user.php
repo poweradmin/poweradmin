@@ -30,7 +30,6 @@
  */
 
 use Poweradmin\BaseController;
-use Poweradmin\Permission;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/messages.inc.php';
@@ -99,23 +98,6 @@ class AddUserController extends BaseController {
             'user_edit_templ_perm' => $user_edit_templ_perm,
             'user_templates' => $user_templates,
             'ldap_use' => $this->config('ldap_use'),
-        ]);
-    }
-
-    private function showUsers()
-    {
-        $this->render('users.html', [
-            'permissions' => Permission::getPermissions(
-                'user_view_others',
-                'user_edit_own',
-                'user_edit_others',
-                'templ_perm_edit',
-                'user_is_ueberuser',
-            ),
-            'perm_templates' => do_hook('list_permission_templates'),
-            'users' => do_hook('get_user_detail_list', ""),
-            'ldap_use' => $this->config('ldap_use'),
-            'session_userid' => $_SESSION["userid"]
         ]);
     }
 }
