@@ -41,6 +41,10 @@
             <th>{% trans %}Serial{% endtrans %}</th>
             {% endif %}
 
+            {% if iface_zonelist_template %}
+            <th>{% trans %}Template{% endtrans %}</th>
+            {% endif %}
+
             {% if pdnssec_use %}
             <th>{% trans %}DNSSEC{% endtrans %}</th>
             {% endif %}
@@ -83,6 +87,10 @@
 
             {% if iface_zonelist_serial %}
             <td>{{ zone["serial"] }}</td>
+            {% endif %}
+
+            {% if iface_zonelist_template %}
+            <td>{{ zone["template"] }}</td>
             {% endif %}
 
             {% if pdnssec_use %}

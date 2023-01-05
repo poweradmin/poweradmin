@@ -38,6 +38,7 @@ $iface_templates = 'templates';
 $iface_rowamount = 10;
 $iface_expire = 1800;
 $iface_zonelist_serial = false;
+$iface_zonelist_template = false;
 $iface_title = 'Poweradmin';
 $iface_add_reverse_record = true; // Displays a checkbox for adding a reverse record
 $iface_zone_type_default = 'MASTER'; // or 'NATIVE'

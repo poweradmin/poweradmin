@@ -88,6 +88,17 @@ class ZoneTemplate
         return false;
     }
 
+    public static function get_zone_templ_name($zone_id)
+    {
+        global $db;
+
+        $stmt = $db->prepare("SELECT zt.name FROM zones z JOIN zone_templ zt ON zt.id = z.zone_templ_id WHERE z.domain_id = :zone_id");
+        $stmt->execute([':zone_id' => $zone_id]);
+        $result = $stmt->fetch();
+
+        return $result ? $result['name']: '';
+    }
+
     /** Get name and description of template based on template ID
      *
      * @param int $zone_templ_id Zone template ID

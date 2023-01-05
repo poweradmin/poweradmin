@@ -1082,6 +1082,7 @@ class DnsRecord
         global $pdnssec_use;
         global $iface_zone_comments;
         global $iface_zonelist_serial;
+        global $iface_zonelist_template;
 
         if ($letterstart == '_') {
             $letterstart = '\_';
@@ -1163,6 +1164,10 @@ class DnsRecord
 
             if ($iface_zonelist_serial) {
                 $ret[$r["name"]]["serial"] = self::get_serial_by_zid($r["id"]);
+            }
+
+            if ($iface_zonelist_template) {
+                $ret[$r["name"]]["template"] = ZoneTemplate::get_zone_templ_name($r["id"]);
             }
         }
 

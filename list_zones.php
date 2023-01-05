@@ -53,6 +53,7 @@ class ListZonesController extends BaseController {
     {
         $pdnssec_use = $this->config('pdnssec_use');
         $iface_zonelist_serial = $this->config('iface_zonelist_serial');
+        $iface_zonelist_template = $this->config('iface_zonelist_template');
         $iface_rowamount = $this->config('iface_rowamount');
 
         $row_start = 0;
@@ -111,6 +112,7 @@ class ListZonesController extends BaseController {
             'iface_rowamount' => $iface_rowamount,
             'zone_sort_by' => $zone_sort_by,
             'iface_zonelist_serial' => $iface_zonelist_serial,
+            'iface_zonelist_template' => $iface_zonelist_template,
             'pdnssec_use' => $pdnssec_use,
             'letters' => show_letters($letter_start, $_SESSION["userid"]),
             'pagination' => show_pages($count_zones_all_letterstart, $iface_rowamount),
