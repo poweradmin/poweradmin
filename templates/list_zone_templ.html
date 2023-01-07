@@ -14,6 +14,7 @@
         <th>{% trans %}Description{% endtrans %}</th>
         <th>{% trans %}Owner{% endtrans %}</th>
         <th>{% trans %}Type{% endtrans %}</th>
+        <th>{% trans %}Zones linked{% endtrans %}</th>
         <th>&nbsp;</th>
     </tr>
     </thead>
@@ -27,7 +28,7 @@
     {% for template in zone_templates %}
     <tr>
         <td class="col-sm-2">{{ template['name'] }}</td>
-        <td class="col-sm-3">{{ template['descr'] }}</td>
+        <td class="col-sm-2">{{ template['descr'] }}</td>
         <td class="col-sm-2">
             {% if template['fullname'] %}
             {{ template['fullname'] }}
@@ -37,13 +38,14 @@
             -
             {% endif %}
         </td>
-        <td col-sm-2>
+        <td class="col-sm-1">
             {% if template['username'] %}
             {% trans %}private{% endtrans %}
             {% else %}
             {% trans %}global{% endtrans %}
             {% endif %}
         </td>
+        <td class="col-sm-1">{{ template['zones_linked'] }}</td>
         {% if (perm_zone_master_add and template['username']) or perm_is_godlike %}
         <td>
             <a class="btn btn-outline-primary btn-sm" href="edit_zone_templ.php?id={{ template['id'] }}"><i class="bi bi-pencil-square"></i> {% trans %}Edit{% endtrans %}</a>

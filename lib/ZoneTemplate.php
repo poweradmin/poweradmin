@@ -38,20 +38,23 @@ class ZoneTemplate
      *
      * @return mixed[] array of zone templates [id,name,descr]
      */
-    public static function get_list_zone_templ(int $userid): array {
+    public static function get_list_zone_templ(int $userid): array
+    {
         global $db;
 
-        $query = "SELECT zone_templ.id, zone_templ.name, zone_templ.descr, users.username, users.fullname
-              FROM zone_templ
-              LEFT JOIN users ON zone_templ.owner = users.id";
+        $query = "SELECT zt.id, zt.name, zt.descr, u.username, u.fullname, COUNT(z.zone_templ_id) as zones_linked
+            FROM zone_templ zt
+            LEFT JOIN users u ON zt.owner = u.id
+            LEFT JOIN zones z ON zt.id = z.zone_templ_id
+            GROUP BY zt.id, zt.name, zt.descr, u.username, u.fullname";
         $params = [];
 
         if (!do_hook('verify_permission', 'user_is_ueberuser')) {
-            $query .= " WHERE zone_templ.owner = :userid OR zone_templ.owner = 0";
+            $query .= " WHERE zt.owner = :userid OR zt.owner = 0";
             $params[':userid'] = $userid;
         }
 
-        $query .= " ORDER BY zone_templ.name";
+        $query .= " ORDER BY zt.name";
 
         $stmt = $db->prepare($query);
         $stmt->execute($params);
@@ -96,7 +99,7 @@ class ZoneTemplate
         $stmt->execute([':zone_id' => $zone_id]);
         $result = $stmt->fetch();
 
-        return $result ? $result['name']: '';
+        return $result ? $result['name'] : '';
     }
 
     /** Get name and description of template based on template ID
@@ -238,7 +241,7 @@ class ZoneTemplate
      * @param string $sortby Column to sort by (default='name')
      *
      * @return mixed[] zone template records numerically indexed
-     * [id,zone_templd_id,name,type,content,ttl,pro] or -1 if nothing is found
+     * [id,zone_templd_id,name,type,content,ttl,pro] or empty array if nothing is found
      */
     public static function get_zone_templ_records($id, $rowstart = 0, $rowamount = 999999, $sortby = 'name')
     {
@@ -254,7 +257,7 @@ class ZoneTemplate
                 $ret[$retcount] = ZoneTemplate::get_zone_templ_record_from_id($r["id"]);
                 $retcount++;
             }
-            return ($retcount > 0 ? $ret : -1);
+            return ($retcount > 0 ? $ret : []);
         } else {
             error(sprintf(_('Invalid argument(s) given to function %s'), "get_zone_templ_records"));
         }

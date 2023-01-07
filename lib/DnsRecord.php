@@ -1735,7 +1735,7 @@ class DnsRecord
         $soa_rec = self::get_soa_record($zone_id);
         $db->beginTransaction();
 
-        if (0 != $zone_template_id) {
+        if ($zone_template_id != 0) {
             if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
                 if (is_numeric($zone_id)) {
                     $db->exec("DELETE FROM records WHERE id IN (SELECT record_id FROM records_zone_templ WHERE "
@@ -1748,14 +1748,9 @@ class DnsRecord
             } else {
                 error(_("You do not have the permission to delete a zone."));
             }
-
             if ($zone_master_add == "1" || $zone_slave_add == "1") {
                 $domain = self::get_domain_name_by_id($zone_id);
                 $templ_records = ZoneTemplate::get_zone_templ_records($zone_template_id);
-
-                if ($templ_records == -1) {
-                    return;
-                }
 
                 foreach ($templ_records as $r) {
                     //fixme: appears to be a bug and regex match should occur against $domain
