@@ -441,9 +441,9 @@ class ZoneTemplate
      * @param int $zone_templ_id zone template id
      * @param int $userid user id
      *
-     * @return mixed[] array of zones [id,name,type,count_records]
+     * @return array array of zones ids
      */
-    public static function get_list_zone_use_templ($zone_templ_id, $userid)
+    public static function get_list_zone_use_templ(int $zone_templ_id, int $userid): array
     {
         global $db;
 
@@ -472,12 +472,7 @@ class ZoneTemplate
 
         $zone_list = array();
         while ($zone = $result->fetch()) {
-            $zone_list[] = array(
-                "id" => $zone['id'],
-                "name" => $zone['name'],
-                "type" => $zone['type'],
-                "count_records" => $zone['count_records']
-            );
+            $zone_list[] = $zone['id'];
         }
         return $zone_list;
     }

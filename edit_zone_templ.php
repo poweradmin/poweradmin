@@ -149,8 +149,8 @@ class EditZoneTemplController extends BaseController
     public function updateZoneRecords(string $zone_templ_id): void
     {
         $zones = ZoneTemplate::get_list_zone_use_templ($zone_templ_id, $_SESSION['userid']);
-        foreach ($zones as $zone) {
-            DnsRecord::update_zone_records($zone['id'], $zone_templ_id);
+        foreach ($zones as $zone_id) {
+            DnsRecord::update_zone_records($zone_id, $zone_templ_id);
         }
         $this->setMessage('edit_zone_templ', 'success', _('Zones have been updated successfully.'));
     }
