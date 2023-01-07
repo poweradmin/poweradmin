@@ -74,7 +74,7 @@ class EditZoneTemplController extends BaseController
         $owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
         $perm_godlike = do_hook('verify_permission', 'user_is_ueberuser');
 
-        if (isset($_POST['edit']) && $owner || $perm_godlike) {
+        if (isset($_POST['edit']) && ($owner || $perm_godlike)) {
             $this->updateZoneTemplateDetails($zone_templ_id);
         }
 
