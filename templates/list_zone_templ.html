@@ -10,6 +10,7 @@
 <table class="table table-striped table-hover table-sm">
     <thead>
     <tr>
+        <th>{% trans %}In use{% endtrans%}</th>
         <th>{% trans %}Name{% endtrans %}</th>
         <th>{% trans %}Description{% endtrans %}</th>
         <th>{% trans %}Owner{% endtrans %}</th>
@@ -27,9 +28,16 @@
     {% endif %}
     {% for template in zone_templates %}
     <tr>
+        <td class="col-sm-1">
+            {% if template['zones_linked'] == '0' %}
+            <i class="bi bi-circle"></i>
+            {% else %}
+            <i class="bi bi-check-circle"></i>
+            {% endif %}
+        </td>
         <td class="col-sm-2">{{ template['name'] }}</td>
         <td class="col-sm-2">{{ template['descr'] }}</td>
-        <td class="col-sm-2">
+        <td class="col-sm-1">
             {% if template['fullname'] %}
             {{ template['fullname'] }}
             {% elseif template['username'] %}
@@ -45,9 +53,9 @@
             {% trans %}global{% endtrans %}
             {% endif %}
         </td>
-        <td class="col-sm-1">{{ template['zones_linked'] }}</td>
+        <td class="col-sm-1 {% if template['zones_linked'] == '0' %}table-warning{% endif %}">{{ template['zones_linked'] }}</td>
         {% if (perm_zone_master_add and template['username']) or perm_is_godlike %}
-        <td>
+        <td class="col-sm-2">
             <a class="btn btn-outline-primary btn-sm" href="edit_zone_templ.php?id={{ template['id'] }}"><i class="bi bi-pencil-square"></i> {% trans %}Edit{% endtrans %}</a>
             <a class="btn btn-outline-danger btn-sm" href="delete_zone_templ.php?id={{ template['id'] }}"><i class="bi bi-trash"></i> {% trans %}Delete{% endtrans %}</a>
         </td>
