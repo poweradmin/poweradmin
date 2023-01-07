@@ -1738,9 +1738,13 @@ class DnsRecord
         if ($zone_template_id != 0) {
             if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
                 if (is_numeric($zone_id)) {
-                    $db->exec("DELETE r, rzt FROM records r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE "
-                        . "rzt.domain_id = " . $db->quote($zone_id, 'integer') . " AND "
-                        . "rzt.zone_templ_id = " . $db->quote($zone_template_id, 'integer'));
+                    if ($db_type == 'pgsql') {
+                        $query = "DELETE FROM records r USING records_zone_templ rzt WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id AND r.id = rzt.record_id";
+                    } else {
+                        $query = "DELETE r, rzt FROM records r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id";
+                    }
+                    $stmt = $db->prepare($query);
+                    $stmt->execute(array(':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id));
                 } else {
                     error(sprintf(_('Invalid argument(s) given to function %s %s'), "delete_domain", "id must be a number"));
                 }
