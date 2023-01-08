@@ -86,10 +86,12 @@ class RecordType
         'TSIG',
         'TXT',
         'URI',
-        'WKS'
+        'WKS',
+        'ZONEMD',
     );
 
-    public static function getTypes() {
+    public static function getTypes()
+    {
         return self::RECORD_TYPES;
     }
 }
