@@ -104,7 +104,7 @@
             "own_as_client" %}
             <td>&nbsp;</td>
             {% else %}
-            <td>
+            <td class="col-sm-2">
                 <a class="btn btn-outline-primary btn-sm" href="edit_record.php?id={{ r['id'] }}&domain={{ zone_id }}">
                     <i class="bi bi-pencil-square"></i> {% trans %}Edit{% endtrans %}</a>
                 <a class="btn btn-outline-danger btn-sm" href="delete_record.php?id={{ r['id'] }}&domain={{ zone_id }}">
@@ -143,9 +143,11 @@
     {% if is_secured %}
     <input class="btn btn-secondary btn-sm" type="button" name="dnssec"
            onclick="location.href = 'dnssec.php?id={{ zone_id }}'" value="{% trans %}DNSSEC{% endtrans %}">
-    <input class="btn btn-secondary btn-sm" type="submit" name="unsign_zone" value="{% trans %}Unsign this zone{% endtrans %}">
+    <input class="btn btn-secondary btn-sm" type="submit" name="unsign_zone"
+           value="{% trans %}Unsign this zone{% endtrans %}">
     {% else %}
-    <input class="btn btn-secondary btn-sm" type="submit" name="sign_zone" value="{% trans %}Sign this zone{% endtrans %}">
+    <input class="btn btn-secondary btn-sm" type="submit" name="sign_zone"
+           value="{% trans %}Sign this zone{% endtrans %}">
     {% endif %}
     {% endif %}
 </form>
@@ -197,7 +199,8 @@
             </td>
         </tr>
     </table>
-    <input class="btn btn-outline-secondary btn-sm" type="submit" name="commit" value="{% trans %}Add record{% endtrans %}">
+    <input class="btn btn-outline-secondary btn-sm" type="submit" name="commit"
+           value="{% trans %}Add record{% endtrans %}">
 
     {% if not is_reverse_zone and rev %}
     <span class="align-middle">
@@ -226,7 +229,8 @@
         </tr>
     </table>
 
-    <input class="btn btn-secondary btn-sm" type="submit" name="save_as" value="{% trans %}Save as template{% endtrans %}">
+    <input class="btn btn-secondary btn-sm" type="submit" name="save_as"
+           value="{% trans %}Save as template{% endtrans %}">
     {% endif %}
 
 </form>
@@ -257,7 +261,8 @@
                 </td>
                 <td>
                     <input type="hidden" name="delete_owner" value="{{ owner['id'] }}">
-                    <input class="btn btn-outline-danger btn-sm" type="submit" name="co" value="{% trans %}Delete{% endtrans %}">
+                    <input class="btn btn-outline-danger btn-sm" type="submit" name="co"
+                           value="{% trans %}Delete{% endtrans %}">
                 </td>
             </form>
         </tr>
@@ -303,7 +308,8 @@
                     </select>
                 </td>
                 <td>
-                    <input class="btn btn-outline-secondary btn-sm" type="submit" name="co" value="{% trans %}Add{% endtrans %}">
+                    <input class="btn btn-outline-secondary btn-sm" type="submit" name="co"
+                           value="{% trans %}Add{% endtrans %}">
                 </td>
             </tr>
         </form>
