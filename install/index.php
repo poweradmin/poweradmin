@@ -30,8 +30,10 @@
 
 // Dependencies
 use Poweradmin\Password;
+use Symfony\Bridge\Twig\Extension\TranslationExtension;
+use Symfony\Component\Translation\Loader\PoFileLoader;
+use Symfony\Component\Translation\Translator;
 use Twig\Environment;
-use Twig\Extensions\I18nExtension;
 use Twig\Loader\FilesystemLoader;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
@@ -63,7 +65,10 @@ if (isset($_POST['language']) && $_POST['language'] != 'en_EN') {
 // Initialize Twig template engine
 $loader = new FilesystemLoader('templates');
 $twig = new Environment($loader);
-$twig->addExtension(new I18nExtension());
+$translator = new Translator($language);
+$translator->addLoader('po', new PoFileLoader());
+$translator->addResource('po', getLocaleFile($language), $language);
+$twig->addExtension(new TranslationExtension($translator));
 
 // Display header
 $current_step = isset($_POST['step']) && is_numeric($_POST['step']) ? $_POST['step'] : 1;
@@ -343,3 +348,12 @@ switch ($current_step) {
 }
 
 echo $twig->render('footer.html');
+
+function getLocaleFile(string $iface_lang): string
+{
+    if (in_array($iface_lang, ['cs_CZ', 'de_DE', 'fr_FR', 'ja_JP', 'nb_NO', 'nl_NL', 'pl_PL', 'ru_RU', 'tr_TR', 'zh_CN'])) {
+        $short_locale = substr($iface_lang, 0, 2);
+        return "../locale/$iface_lang/LC_MESSAGES/$short_locale.po";
+    }
+    return "../locale/en_EN/LC_MESSAGES/en.po";
+}
