@@ -557,14 +557,14 @@ $def_tables = array(
 );
 
 // Tables from PowerDNS
-$grantTables = array('supermasters', 'domains', 'records');
+$grantTables = array('supermasters', 'domains', 'domainmetadata', 'cryptokeys', 'records');
 // Include PowerAdmin tables
 foreach ($def_tables as $table) {
     $grantTables[] = $table['table_name'];
 }
 
 // For PostgreSQL you need to grant access to sequences
-$grantSequences = array('domains_id_seq', 'records_id_seq');
+$grantSequences = array('domains_id_seq', 'domainmetadata_id_seq', 'cryptokeys_id_seq', 'records_id_seq');
 foreach ($def_tables as $table) {
     // ignore tables without primary key
     if ($table['table_name'] == 'migrations') { continue; }
