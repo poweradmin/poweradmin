@@ -209,9 +209,6 @@ switch ($current_step) {
             echo "<p><code>$ createuser -E -P " . htmlspecialchars($pa_db_user) . "<br>" .
             "Enter password for new role: " . htmlspecialchars($pa_db_pass) . "<br>" .
             "Enter it again: " . htmlspecialchars($pa_db_pass) . "<br>" .
-            "Shall the new role be a superuser? (y/n) n<br>" .
-            "Shall the new user be allowed to create databases? (y/n) n<br>" .
-            "Shall the new user be allowed to create more new users? (y/n) n<br>" .
             "CREATE USER<br>" .
             "$ psql " . htmlspecialchars($db_name) . "<br>";
             echo "psql> ";
