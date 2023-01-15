@@ -111,6 +111,7 @@ class AddZoneMasterController extends BaseController
             'users' => do_hook('show_users'),
             'zone_templates' => ZoneTemplate::get_list_zone_templ($_SESSION['userid']),
             'iface_zone_type_default' => $this->config('iface_zone_type_default'),
+            'pdnssec_use' => $this->config('pdnssec_use'),
         ]);
     }
 }
