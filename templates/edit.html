@@ -295,7 +295,7 @@
 
                         {% if user["id"] == session_userid %}
                         <option {{ add }} value="{{ user['id'] }}">{{ user["fullname"] }}</option>
-                        {% elseif perm_view_others == "1" %}
+                        {% elseif perm_view_others %}
                         <option value="{{ user['id'] }}">
                             {% if user["fullname"] %}
                             {{ user["fullname"] }}

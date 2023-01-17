@@ -135,14 +135,9 @@ class EditController extends BaseController {
             $perm_meta_edit = "none";
         }
 
-        $perm_zone_master_add = do_hook('verify_permission', 'zone_master_add');
-        $perm_zone_slave_add = do_hook('verify_permission', 'zone_slave_add');
-
         $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
 
         $meta_edit = $perm_meta_edit == "all" || ($perm_meta_edit == "own" && $user_is_zone_owner == "1");
-
-        (do_hook('verify_permission', 'user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
 
         if (isset($_POST['slave_master_change']) && is_numeric($_POST["domain"])) {
             DnsRecord::change_zone_slave_master($_POST['domain'], $_POST['new_master']);
@@ -234,9 +229,8 @@ class EditController extends BaseController {
             'perm_edit' => $perm_edit,
             'perm_meta_edit' => $perm_meta_edit,
             'meta_edit' => $meta_edit,
-            'perm_zone_master_add' => $perm_zone_master_add,
-            'perm_zone_slave_add' => $perm_zone_slave_add,
-            'perm_view_others' => $perm_view_others,
+            'perm_zone_master_add' => do_hook('verify_permission', 'zone_master_add'),
+            'perm_view_others' => do_hook('verify_permission', 'user_view_others'),
             'user_is_zone_owner' => $user_is_zone_owner,
             'zone_types' => $types,
             'row_start' => $row_start,

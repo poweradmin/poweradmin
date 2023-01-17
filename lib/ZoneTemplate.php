@@ -45,8 +45,7 @@ class ZoneTemplate
         $query = "SELECT zt.id, zt.name, zt.descr, u.username, u.fullname, COUNT(z.zone_templ_id) as zones_linked
             FROM zone_templ zt
             LEFT JOIN users u ON zt.owner = u.id
-            LEFT JOIN zones z ON zt.id = z.zone_templ_id
-            GROUP BY zt.id, zt.name, zt.descr, u.username, u.fullname";
+            LEFT JOIN zones z ON zt.id = z.zone_templ_id";
         $params = [];
 
         if (!do_hook('verify_permission', 'user_is_ueberuser')) {
@@ -54,7 +53,7 @@ class ZoneTemplate
             $params[':userid'] = $userid;
         }
 
-        $query .= " ORDER BY zt.name";
+        $query .= " GROUP BY zt.id, zt.name, zt.descr, u.username, u.fullname ORDER BY zt.name";
 
         $stmt = $db->prepare($query);
         $stmt->execute($params);
