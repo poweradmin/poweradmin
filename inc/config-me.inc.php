@@ -94,3 +94,8 @@ $ignore_install_dir = false;
 
 // Displays the memory consumption and execution time of an application
 $display_stats = false;
+
+// Experimental setting that controls how concurrent updates are handled
+// last_writer_wins - the last update wins
+// only_latest_version - updated allowed only if the data is the latest version
+$experimental_edit_conflict_resolution = 'last_writer_wins'; // only_latest_version

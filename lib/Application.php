@@ -56,7 +56,8 @@ class Application {
     }
 
     public function config($name) {
-        return str_replace(['"',"'"], "", $this->configuration->get($name));
+        $raw_value = $this->configuration->get($name);
+        return $raw_value ? str_replace(['"', "'"], "", $raw_value) : null;
     }
 
     public function getLocaleFile(string $iface_lang): string

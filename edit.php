@@ -66,24 +66,32 @@ class EditController extends BaseController {
         if (isset($_POST['commit'])) {
             $error = false;
             $one_record_changed = false;
+            $serial_mismatch = false;
 
             if (isset($_POST['record'])) {
-                foreach ($_POST['record'] as $record) {
-                    $log = new RecordLog();
-                    $log->log_prior($record['rid'], $record['zid']);
+                $soa_record = DnsRecord::get_soa_record($zone_id);
+                $current_serial = DnsRecord::get_soa_serial($soa_record);
 
-                    if (!$log->has_changed($record)) {
-                        continue;
-                    } else {
-                        $one_record_changed = true;
-                    }
+                if (isset($_POST['serial']) && $_POST['serial'] != $current_serial) {
+                    $serial_mismatch = true;
+                } else {
+                    foreach ($_POST['record'] as $record) {
+                        $log = new RecordLog();
+                        $log->log_prior($record['rid'], $record['zid']);
 
-                    $edit_record = DnsRecord::edit_record($record);
-                    if (false === $edit_record) {
-                        $error = true;
-                    } else {
-                        $log->log_after($record['rid']);
-                        $log->write();
+                        if (!$log->has_changed($record)) {
+                            continue;
+                        } else {
+                            $one_record_changed = true;
+                        }
+
+                        $edit_record = DnsRecord::edit_record($record);
+                        if (false === $edit_record) {
+                            $error = true;
+                        } else {
+                            $log->log_after($record['rid']);
+                            $log->write();
+                        }
                     }
                 }
             }
@@ -97,16 +105,21 @@ class EditController extends BaseController {
                 }
             }
 
-            if (false === $error) {
-                DnsRecord::update_soa_serial($_GET['id']);
-
-                if ($one_record_changed) {
-                    $this->setMessage('edit', 'success', _('Zone has been updated successfully.'));
+            if ($error === false) {
+                $experimental_edit_conflict_resolution = $this->config('experimental_edit_conflict_resolution');
+                if ($serial_mismatch && $experimental_edit_conflict_resolution == 'only_latest_version') {
+                    $this->setMessage('edit', 'warn', (_('Request has expired, please try again.')));
                 } else {
-                    $this->setMessage('edit', 'warn', (_('Zone did not have any record changes.')));
-                }
+                    DnsRecord::update_soa_serial($_GET['id']);
 
-                $this->config('pdnssec_use') && Dnssec::dnssec_rectify_zone($_GET['id']);
+                    if ($one_record_changed) {
+                        $this->setMessage('edit', 'success', _('Zone has been updated successfully.'));
+                    } else {
+                        $this->setMessage('edit', 'warn', (_('Zone did not have any record changes.')));
+                    }
+
+                    $this->config('pdnssec_use') && Dnssec::dnssec_rectify_zone($_GET['id']);
+                }
             } else {
                 $this->showError(_('Zone has not been updated successfully.'));
             }
@@ -210,6 +223,8 @@ class EditController extends BaseController {
         $records = DnsRecord::get_records_from_domain_id($zone_id, $row_start, $iface_rowamount, $record_sort_by);
         $owners = DnsRecord::get_users_from_domain_id($zone_id);
 
+        $soa_record = DnsRecord::get_soa_record($zone_id);
+
         $this->render('edit.html', [
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
@@ -245,6 +260,7 @@ class EditController extends BaseController {
             'record_types' => RecordType::getTypes(),
             'iface_add_reverse_record' => $this->config('iface_add_reverse_record'),
             'iface_zone_comments' => $this->config('iface_zone_comments'),
+            'serial' => DnsRecord::get_soa_serial($soa_record)
         ]);
     }
 
