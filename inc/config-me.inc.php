@@ -97,5 +97,6 @@ $display_stats = false;
 
 // Experimental setting that controls how concurrent updates are handled
 // last_writer_wins - the last update wins
-// only_latest_version - updated allowed only if the data is the latest version
-$experimental_edit_conflict_resolution = 'last_writer_wins'; // only_latest_version
+// only_latest_version - update allowed only if the data is the latest version
+// 3_way_merge - 3-way merge (not implemented yet)
+$experimental_edit_conflict_resolution = 'last_writer_wins';
