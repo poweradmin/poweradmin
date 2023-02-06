@@ -48,4 +48,15 @@ class DnsTest extends TestCase
         $this->assertFalse(Dns::is_valid_loc('9 10 S 12 22 33.4 E -110000.00m 2m 34 3m'));
     }
 
+    public function testIs_valid_rr_prio()
+    {
+        $this->assertTrue(Dns::is_valid_rr_prio(10, "MX"));
+        $this->assertTrue(Dns::is_valid_rr_prio(65535, "SRV"));
+        $this->assertFalse(Dns::is_valid_rr_prio(-1, "MX"));
+        $this->assertFalse(Dns::is_valid_rr_prio("foo", "SRV"));
+        $this->assertFalse(Dns::is_valid_rr_prio(10, "A"));
+        $this->assertFalse(Dns::is_valid_rr_prio("foo", "A"));
+        $this->assertTrue(Dns::is_valid_rr_prio("0", "A"));
+    }
+
 }

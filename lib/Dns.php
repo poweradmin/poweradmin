@@ -60,7 +60,7 @@ class Dns
      *
      * @return boolean true on success, false otherwise
      */
-    public static function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl)
+    public static function validate_input($rid, $zid, $type, $content, $name, $prio, $ttl)
     {
         $zone = DnsRecord::get_domain_name_by_id($zid);    // TODO check for return
 
@@ -359,8 +359,10 @@ class Dns
         }
 
         if (!self::is_valid_rr_prio($prio, $type)) {
+            error(_('Invalid value for prio field. It should be numeric.'));
             return false;
         }
+
         if (!self::is_valid_rr_ttl($ttl)) {
             return false;
         }
@@ -806,25 +808,16 @@ class Dns
 
     /** Check if Priority is valid
      *
-     * Check if MX or SRV priority is within range, otherwise set to 0
+     * Check if MX or SRV priority is within range
      *
      * @param mixed $prio Priority
      * @param string $type Record type
      *
      * @return boolean true if valid, false otherwise
      */
-    public static function is_valid_rr_prio(&$prio, $type)
+    public static function is_valid_rr_prio($prio, $type)
     {
-        if ($type == "MX" || $type == "SRV") {
-            if (!is_numeric($prio) || $prio < 0 || $prio > 65535) {
-                error(_('Invalid value for prio field. It should be numeric.'));
-                return false;
-            }
-        } else {
-            $prio = 0;
-        }
-
-        return true;
+        return ($type == "MX" || $type == "SRV") && (is_numeric($prio) && $prio >= 0 && $prio <= 65535) || is_numeric($prio) && $prio == 0;
     }
 
     /** Check if SRV name is valid
