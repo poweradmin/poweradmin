@@ -79,12 +79,9 @@ class EditZoneTemplRecordController extends BaseController {
 
     public function updateZoneTemplateRecord(string $zone_templ_id): void
     {
-        $ret_val = ZoneTemplate::edit_zone_templ_record($_POST);
-        if ($ret_val == "1") {
+        if (ZoneTemplate::edit_zone_templ_record($_POST)) {
             $this->setMessage('edit_zone_templ', 'success', _('Zone template has been updated successfully.'));
             $this->redirect('edit_zone_templ.php', ['id' => $zone_templ_id]);
-        } else {
-            echo "     <div class=\"alert alert-danger\">" . $ret_val . "</div>\n";
         }
     }
 }

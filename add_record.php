@@ -109,7 +109,7 @@ class AddRecordController extends BaseController
             'type' => $_POST['type'] ?? '',
             'content' => $_POST['content'] ?? '',
             'ttl' => $_POST['ttl'] ?? $ttl,
-            'prio' => $_POST['prio'] ?? '',
+            'prio' => $_POST['prio'] ?? 0,
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,

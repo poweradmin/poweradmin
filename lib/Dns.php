@@ -359,7 +359,7 @@ class Dns
         }
 
         if (!self::is_valid_rr_prio($prio, $type)) {
-            error(_('Invalid value for prio field. It should be numeric.'));
+            error(_('Invalid value for prio field.'));
             return false;
         }
 

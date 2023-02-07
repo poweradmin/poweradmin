@@ -38,12 +38,15 @@
                 <input class="form-control form-control-sm" type="text" name="content" value="{{ content }}" required>
                 <div class="invalid-feedback">{% trans %}Provide content for your zone record{% endtrans %}</div>
             </td>
-            <td><input class="form-control form-control-sm" type="text" name="prio" value="{{ prio }}" required></td>
-            <td><input class="form-control form-control-sm" type="text" name="ttl" value="{{ ttl }}" required></td>
+            <td><input class="form-control form-control-sm" type="number" name="prio" value="{{ prio }}" min="0"
+                       max="65535" pattern="[0-9]*" required></td>
+            <td><input class="form-control form-control-sm" type="number" name="ttl" value="{{ ttl }}" min="0"
+                       max="2147483647" pattern="[0-9]*" required></td>
         </tr>
         <tr>
             <td colspan="6">
-                <div><input class="btn btn-primary btn-sm" type="submit" name="commit" value="{% trans %}Add record{% endtrans %}">
+                <div><input class="btn btn-primary btn-sm" type="submit" name="commit"
+                            value="{% trans %}Add record{% endtrans %}">
                 </div>
             </td>
         </tr>
@@ -56,8 +59,10 @@
             <td colspan="6">{% trans %}The following placeholders can be used in template records{% endtrans %}</td>
         </tr>
         <tr>
-            <td colspan="6"><br>&nbsp;&nbsp;&nbsp;&nbsp; * [ZONE] - {% trans %}substituted with current zone name{% endtrans %}<br>
-                &nbsp;&nbsp;&nbsp;&nbsp; * [SERIAL] - {% trans %}substituted with current date and 2 numbers{% endtrans %}
+            <td colspan="6"><br>&nbsp;&nbsp;&nbsp;&nbsp; * [ZONE] - {% trans %}substituted with current zone name{%
+                endtrans %}<br>
+                &nbsp;&nbsp;&nbsp;&nbsp; * [SERIAL] - {% trans %}substituted with current date and 2 numbers{% endtrans
+                %}
                 (YYYYMMDD + 00)<br>
                 &nbsp;&nbsp;&nbsp;&nbsp; * [NS1] - {% trans %}substituted with 1st name server{% endtrans %}<br>
                 &nbsp;&nbsp;&nbsp;&nbsp; * [NS2] - {% trans %}substituted with 2nd name server{% endtrans %}<br>

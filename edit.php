@@ -121,7 +121,7 @@ class EditController extends BaseController {
                     $this->config('pdnssec_use') && Dnssec::dnssec_rectify_zone($_GET['id']);
                 }
             } else {
-                $this->showError(_('Zone has not been updated successfully.'));
+                $this->setMessage('edit', 'error', _('Zone has not been updated successfully.'));
             }
         }
 

@@ -32,7 +32,8 @@
         </tr>
         </thead>
         <tr>
-            {% if zone_type == "SLAVE" or perm_edit == "none" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "0" %}
+            {% if zone_type == "SLAVE" or perm_edit == "none" or (perm_edit == "own" or perm_edit == "own_as_client")
+            and user_is_zone_owner == "0" %}
             <td>{{ record["name"] }}</td>
             <td>IN</td>
             <td>{{ record["type"] }}</td>
@@ -51,12 +52,12 @@
                 <select class="form-select form-select-sm" name="type">
                     {% set found_selected_type = false %}
                     {% for type_available in recordTypes %}
-                        {% if type_available == record["type"] %}
-                            {% set add = "SELECTED" %}
-                            {% set found_selected_type = true %}
-                        {% else %}
-                            {% set add = "" %}
-                        {% endif %}
+                    {% if type_available == record["type"] %}
+                    {% set add = "SELECTED" %}
+                    {% set found_selected_type = true %}
+                    {% else %}
+                    {% set add = "" %}
+                    {% endif %}
                     <option {{ add }} value="{{ type_available }}">{{ type_available }}</option>
                     {% endfor %}
 
@@ -69,8 +70,10 @@
                        required>
                 <div class="invalid-feedback">{% trans %}Provide content{% endtrans %}</div>
             </td>
-            <td><input class="form-control form-control-sm" type="text" name="prio" value="{{ record['prio'] }}"></td>
-            <td><input class="form-control form-control-sm" type="text" name="ttl" value="{{ record['ttl'] }}"></td>
+            <td><input class="form-control form-control-sm" type="number" name="prio" min="0" max="65535"
+                       pattern="[0-9]*" value="{{ record['prio'] }}"></td>
+            <td><input class="form-control form-control-sm" type="number" name="ttl" min="0" max="2147483647"
+                       pattern="[0-9]*" value="{{ record['ttl'] }}"></td>
             {% endif %}
         </tr>
     </table>

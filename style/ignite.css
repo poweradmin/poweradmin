@@ -60,3 +60,9 @@ footer a, footer a:hover {
     background-color: rgb(248, 249, 250);
     border-radius: 0.25rem;
 }
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}

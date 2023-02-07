@@ -283,27 +283,33 @@ class ZoneTemplate
         if (!(do_hook('verify_permission', 'zone_master_add'))) {
             error(_("You do not have the permission to add a record to this zone."));
             return false;
-        } else {
-            if ($content == '') {
-                error(_('Your content field doesnt have a legit value.'));
-                return false;
-            }
-
-            if ($name != '') {
-                $query = "INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES ("
-                    . $db->quote($zone_templ_id, 'integer') . ","
-                    . $db->quote($name, 'text') . ","
-                    . $db->quote($type, 'text') . ","
-                    . $db->quote($content, 'text') . ","
-                    . $db->quote($ttl, 'integer') . ","
-                    . $db->quote($prio, 'integer') . ")";
-                $db->query($query);
-                return true;
-            } else {
-                error(_('Invalid hostname.'));
-                return false;
-            }
         }
+
+        if ($content == '') {
+            error(_('Your content field doesnt have a legit value.'));
+            return false;
+        }
+
+        if ($name == '') {
+            error(_('Invalid hostname.'));
+            return false;
+        }
+
+        if (!Dns::is_valid_rr_prio($prio, $type)) {
+            error(_('Invalid value for prio field.'));
+            return false;
+        }
+
+        $query = "INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES ("
+            . $db->quote($zone_templ_id, 'integer') . ","
+            . $db->quote($name, 'text') . ","
+            . $db->quote($type, 'text') . ","
+            . $db->quote($content, 'text') . ","
+            . $db->quote($ttl, 'integer') . ","
+            . $db->quote($prio, 'integer') . ")";
+        $db->query($query);
+
+        return true;
     }
 
     /** Modify zone template reocrd
@@ -322,22 +328,27 @@ class ZoneTemplate
         if (!(do_hook('verify_permission', 'zone_master_add'))) {
             error(_("You do not have the permission to edit this record."));
             return false;
-        } else {
-            if ("" != $record['name']) {
-                $query = "UPDATE zone_templ_records
+        }
+
+        if ($record['name'] == "") {
+            error(_('Invalid hostname.'));
+            return false;
+        }
+
+        if (!Dns::is_valid_rr_prio($record['prio'], $record['type'])) {
+            error(_('Invalid value for prio field.'));
+            return false;
+        }
+
+        $query = "UPDATE zone_templ_records
                                 SET name=" . $db->quote($record['name'], 'text') . ",
                                 type=" . $db->quote($record['type'], 'text') . ",
                                 content=" . $db->quote($record['content'], 'text') . ",
                                 ttl=" . $db->quote($record['ttl'], 'integer') . ",
                                 prio=" . $db->quote(isset($record['prio']) ? $record['prio'] : 0, 'integer') . "
                                 WHERE id=" . $db->quote($record['rid'], 'integer');
-                $db->query($query);
-                return true;
-            } else {
-                error(_('Invalid hostname.'));
-                return false;
-            }
-        }
+        $db->query($query);
+        return true;
     }
 
     /** Delete a record for a zone template by a given id

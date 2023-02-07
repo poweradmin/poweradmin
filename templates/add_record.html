@@ -31,7 +31,9 @@
             <td>{% trans %}TTL{% endtrans %}</td>
         </tr>
         <tr>
-            <td class="col-sm-2"><input class="form-control form-control-sm" type="text" name="name" value="{{ name }}">.{{ idn_zone_name ?: zone_name }}</td>
+            <td class="col-sm-2"><input class="form-control form-control-sm" type="text" name="name" value="{{ name }}">.{{
+                idn_zone_name ?: zone_name }}
+            </td>
             <td>IN</td>
             <td class="col-sm-1">
                 <select class="form-select form-select-sm" name="type">
@@ -49,8 +51,10 @@
             <td><input class="form-control form-control-sm" type="text" name="content" value="{{ content }}" required>
                 <div class="invalid-feedback">{% trans %}Provide content{% endtrans %}</div>
             </td>
-            <td class="col-sm-1"><input class="form-control form-control-sm" type="text" name="prio" value="{{ prio }}"></td>
-            <td class="col-sm-1"><input class="form-control form-control-sm" type="text" name="ttl" value="{{ ttl }}"></td>
+            <td class="col-sm-1"><input class="form-control form-control-sm" type="number" name="prio"
+                                        value="{{ prio }}" min="0" max="65535" pattern="[0-9]*"></td>
+            <td class="col-sm-1"><input class="form-control form-control-sm" type="number" name="ttl" value="{{ ttl }}"
+                                        min="0" max="2147483647" pattern="[0-9]*" required></td>
         </tr>
     </table>
     <br>
