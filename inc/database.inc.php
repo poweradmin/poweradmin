@@ -138,14 +138,3 @@ function dbConnect($isQuiet = true) {
     }
     return $db;
 }
-
-// SUBSTR/SUBSTRING selector
-function dbfunc_substr()
-{
-    global $db_type;
-    if ($db_type == "sqlite") {
-        return "SUBSTR";
-    } else {
-        return "SUBSTRING";
-    }
-}

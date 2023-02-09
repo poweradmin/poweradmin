@@ -20,6 +20,8 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Poweradmin\DbCompat;
+
 /** Print paging menu
  *
  * @param int $amount Total number of items
@@ -128,8 +130,9 @@ function show_pages($amount, $rowamount, $id = '') {
  */
 function show_letters($letterstart, $userid) {
     global $db;
+    global $db_type;
 
-    $query = "SELECT DISTINCT ".dbfunc_substr()."(domains.name, 1, 1) AS letter FROM domains";
+    $query = "SELECT DISTINCT " . DbCompat::substr($db_type) . "(domains.name, 1, 1) AS letter FROM domains";
 
     $allow_view_others = zone_content_view_others($userid);
     if (!$allow_view_others) {

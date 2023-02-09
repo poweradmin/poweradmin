@@ -1097,9 +1097,9 @@ class DnsRecord
                 $sql_add = " AND zones.domain_id = domains.id AND zones.owner = " . $db->quote($userid, 'integer');
             }
             if ($letterstart != 'all' && $letterstart != 1) {
-                $sql_add .= " AND " . dbfunc_substr() . "(domains.name,1,1) = " . $db->quote($letterstart, 'text') . " ";
+                $sql_add .= " AND " . DbCompat::substr($db_type) . "(domains.name,1,1) = " . $db->quote($letterstart, 'text') . " ";
             } elseif ($letterstart == 1) {
-                $sql_add .= " AND " . dbfunc_substr() . "(domains.name,1,1) " . $sql_regexp . " '[0-9]'";
+                $sql_add .= " AND " . DbCompat::substr($db_type) . "(domains.name,1,1) " . $sql_regexp . " '[0-9]'";
             }
         }
 
@@ -1186,6 +1186,7 @@ class DnsRecord
     public static function zone_count_ng($perm, $letterstart = 'all')
     {
         global $db;
+        global $db_type;
         global $sql_regexp;
 
         $tables = 'domains';
@@ -1204,7 +1205,7 @@ class DnsRecord
         if ($letterstart != 'all' && $letterstart != 1) {
             $query_addon .= " AND domains.name LIKE " . $db->quote($letterstart . "%", 'text') . " ";
         } elseif ($letterstart == 1) {
-            $query_addon .= " AND " . dbfunc_substr() . "(domains.name,1,1) " . $sql_regexp . " '[0-9]'";
+            $query_addon .= " AND " . DbCompat::substr($db_type) . "(domains.name,1,1) " . $sql_regexp . " '[0-9]'";
         }
 
         $query = "SELECT COUNT(domains.id) AS count_zones FROM {$tables} WHERE 1=1 {$query_addon}";
