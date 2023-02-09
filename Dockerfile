@@ -7,7 +7,7 @@
 #   Alternatively, you can run the program with a current folder mounted:
 #   docker run -d --name poweradmin -p 80:80 -v $(pwd):/var/www/html poweradmin
 #
-# Log in with the following username and password:
+# Open your browser and navigate to "localhost", then log in using the provided username and password
 # admin / testadmin
 
 FROM php:8.1.14-apache
