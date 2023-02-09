@@ -29,7 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-include_once 'PDOLayer.php';
+require_once 'PDOLayer.php';
 
 /**  Connect to Database
  *
