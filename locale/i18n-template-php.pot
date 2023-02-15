@@ -17,693 +17,1986 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: delete_domain.php:59 delete_domains.php:84 lib/DnsRecord.php:729
-#: lib/DnsRecord.php:1738 lib/DnsRecord.php:1843
-msgid "You do not have the permission to delete a zone."
-msgstr ""
-
-#: delete_domain.php:85 delete_domains.php:70
-msgid "Zone has been deleted successfully."
-msgstr ""
-
-#: migrations/201405302318_add_relations_to_zone_templates.php:11
-#: inc/toolkit.inc.php:28
-msgid "You have to create a config.inc.php!"
-msgstr ""
-
-#: add_zone_templ.php:42 lib/ZoneTemplate.php:64 lib/ZoneTemplate.php:376
-#: lib/ZoneTemplate.php:472
-msgid "You do not have the permission to add a zone template."
-msgstr ""
-
-#: add_zone_templ.php:70 edit.php:123
-msgid "Zone template has been added successfully."
-msgstr ""
-
-#: add_zone_slave.php:45
-msgid "You do not have the permission to add a slave zone."
-msgstr ""
-
-#: add_zone_slave.php:73 bulk_registration.php:73 add_zone_master.php:75
-#: lib/Dns.php:433 lib/Dns.php:437 lib/Dns.php:441 lib/DnsRecord.php:448
-#: lib/ZoneTemplate.php:279 lib/ZoneTemplate.php:313
-msgid "Invalid hostname."
-msgstr ""
-
-#: add_zone_slave.php:76 add_zone_slave.php:79 bulk_registration.php:75
-#: add_zone_master.php:78 add_zone_master.php:81
-msgid "There is already a zone with this name."
-msgstr ""
-
-#: add_zone_slave.php:82 lib/DnsRecord.php:444
-msgid "This is not a valid IPv4 or IPv6 address."
-msgstr ""
-
-#: add_zone_slave.php:91 add_zone_master.php:84
-msgid "Zone has been added successfully."
-msgstr ""
-
-#: delete_record.php:47 dnssec.php:47 dnssec_edit_key.php:62
-#: dnssec_edit_key.php:70 dnssec_edit_key.php:76 delete_user.php:48
-#: edit_user.php:52 edit_user.php:109 dnssec_delete_key.php:63
-#: dnssec_delete_key.php:71 dnssec_delete_key.php:77
-#: delete_zone_templ_record.php:44 delete_zone_templ_record.php:51
-#: edit_comment.php:56 dnssec_ds_dnskey.php:54 edit_zone_templ.php:135
-#: edit.php:62 dnssec_add_key.php:67 dnssec_add_key.php:79
-#: dnssec_add_key.php:92
+#: /dnssec_delete_key.php
+#: /delete_user.php
+#: /edit_comment.php
+#: /edit_user.php
+#: /edit.php
+#: /delete_domains.php
+#: /dnssec_ds_dnskey.php
+#: /dnssec_edit_key.php
+#: /dnssec_add_key.php
+#: /delete_record.php
+#: /edit_zone_templ.php
+#: /dnssec.php
+#: /delete_zone_templ_record.php
 msgid "Invalid or unexpected input given."
 msgstr ""
 
-#: delete_record.php:55 dnssec.php:65 dnssec_ds_dnskey.php:72 edit.php:179
-#: dnssec_add_key.php:57
-msgid "There is no zone with this ID."
-msgstr ""
-
-#: delete_record.php:76 delete_zone_templ_record.php:65
-msgid "The record has been deleted successfully."
-msgstr ""
-
-#: delete_record.php:87 edit_record.php:62 lib/DnsRecord.php:349
-#: lib/ZoneTemplate.php:299
-msgid "You do not have the permission to edit this record."
-msgstr ""
-
-#: dnssec.php:59 dnssec_ds_dnskey.php:66 lib/DnsRecord.php:892
-#: lib/DnsRecord.php:1092 edit.php:173 dnssec_add_key.php:51
-msgid "You do not have the permission to view this zone."
-msgstr ""
-
-#: inc/messages.inc.php:33
-msgid "Something has been successfully performed. What exactly, however, will remain a mystery."
-msgstr ""
-
-#: inc/plugins/users_local/users_local.plugin.php:221 delete_user.php:60
-msgid "You do not have the permission to delete this user."
-msgstr ""
-
-#: inc/plugins/users_local/users_local.plugin.php:257 delete_perm_templ.php:42
-msgid "You do not have the permission to delete permission templates."
-msgstr ""
-
-#: inc/plugins/users_local/users_local.plugin.php:263
-msgid "This template is assigned to at least one user."
-msgstr ""
-
-#: inc/plugins/users_local/users_local.plugin.php:302
-#: inc/plugins/users_local/users_local.plugin.php:724
-#: inc/plugins/users_local/users_local.plugin.php:818
-msgid "Enter a valid email address."
-msgstr ""
-
-#: inc/plugins/users_local/users_local.plugin.php:333
-#: inc/plugins/users_local/users_local.plugin.php:759
-#: inc/plugins/users_local/users_local.plugin.php:812
-msgid "Username exist already, please choose another one."
-msgstr ""
-
-#: inc/plugins/users_local/users_local.plugin.php:358
-#: inc/plugins/users_local/users_local.plugin.php:790 edit_user.php:58
-msgid "You do not have the permission to edit this user."
-msgstr ""
-
-#: inc/plugins/users_local/users_local.plugin.php:393
-msgid "The two new password fields do not match."
-msgstr ""
-
-#: inc/plugins/users_local/users_local.plugin.php:404
-msgid "Password has been changed, please login."
-msgstr ""
-
-#: inc/plugins/users_local/users_local.plugin.php:407
-msgid "You did not enter the correct current password."
-msgstr ""
-
-#: inc/plugins/users_local/users_local.plugin.php:428
-#: inc/plugins/users_local/users_local.plugin.php:455
-#: inc/plugins/users_local/users_local.plugin.php:481
-#: inc/plugins/users_local/users_local.plugin.php:502 lib/DnsRecord.php:694
-#: lib/DnsRecord.php:1238 lib/DnsRecord.php:1259 lib/DnsRecord.php:1585
-#: lib/DnsRecord.php:1601 lib/DnsRecord.php:1626 lib/DnsRecord.php:1648
-#: lib/ZoneTemplate.php:205 lib/ZoneTemplate.php:237
-#, php-format
-msgid "Invalid argument(s) given to function %s"
-msgstr ""
-
-#: inc/plugins/users_local/users_local.plugin.php:452 edit_user.php:125
-msgid "User does not exist."
-msgstr ""
-
-#: inc/plugins/users_local/users_local.plugin.php:809 add_user.php:42
-msgid "You do not have the permission to add a new user."
-msgstr ""
-
-#: inc/plugins/users_local/users_local.plugin.php:815
-msgid "Enter a valid user name."
-msgstr ""
-
-#: inc/plugins/auth_local/auth_local.plugin.php:53
-msgid "You have logged out."
-msgstr ""
-
-#: inc/plugins/auth_local/auth_local.plugin.php:64
-msgid "An empty password is not allowed"
-msgstr ""
-
-#: inc/plugins/auth_local/auth_local.plugin.php:70
-msgid "Session expired, please login again."
-msgstr ""
-
-#: inc/plugins/auth_local/auth_local.plugin.php:117
-msgid "Failed to connect to LDAP server!"
-msgstr ""
-
-#: inc/plugins/auth_local/auth_local.plugin.php:127
-msgid "Failed to bind to LDAP server!"
-msgstr ""
-
-#: inc/plugins/auth_local/auth_local.plugin.php:138
-msgid "Failed to search LDAP."
-msgstr ""
-
-#: inc/plugins/auth_local/auth_local.plugin.php:152
-msgid "Failed to authenticate against LDAP."
-msgstr ""
-
-#: inc/plugins/auth_local/auth_local.plugin.php:163
-#: inc/plugins/auth_local/auth_local.plugin.php:173
-msgid "LDAP Authentication failed!"
-msgstr ""
-
-#: inc/plugins/auth_local/auth_local.plugin.php:222
-#: inc/plugins/auth_local/auth_local.plugin.php:228
-msgid "Authentication failed!"
-msgstr ""
-
-#: inc/pagination.inc.php:59
-msgid "Previous"
-msgstr ""
-
-#: inc/pagination.inc.php:113
-msgid "Next"
-msgstr ""
-
-#: inc/pagination.inc.php:156
-msgid "Show zones beginning with"
-msgstr ""
-
-#: inc/pagination.inc.php:179 inc/pagination.inc.php:181
-msgid "Show all"
-msgstr ""
-
-#: inc/header.inc.php:46
-msgid "The <a href=\"install/\">install/</a> directory exists, you must remove it first before proceeding."
-msgstr ""
-
-#: inc/header.inc.php:67
-msgid "Default session encryption key is used, please set it in your configuration file."
-msgstr ""
-
-#: inc/database.inc.php:54 inc/database.inc.php:135
-msgid "No or unknown database type has been set in config.inc.php."
-msgstr ""
-
-#: inc/database.inc.php:62
-msgid "No database username has been set in config.inc.php."
-msgstr ""
-
-#: inc/database.inc.php:69
-msgid "No database password has been set in config.inc.php."
-msgstr ""
-
-#: inc/database.inc.php:76
-msgid "No database host has been set in config.inc.php."
-msgstr ""
-
-#: inc/database.inc.php:83
-msgid "No database name has been set in config.inc.php."
-msgstr ""
-
-#: inc/database.inc.php:98
-msgid "No database file has been set in config.inc.php."
-msgstr ""
-
-#: inc/i18n.inc.php:41 install/index.php:53
-msgid "Failed to set locale. Selected locale may be unsupported on this system. Please contact your administrator."
-msgstr ""
-
-#: inc/PDOLayer.php:131
-msgid "Unknown database type."
-msgstr ""
-
-#: inc/session.inc.php:58
-msgid "Log in"
-msgstr ""
-
-#: inc/session.inc.php:63
-msgid "Username"
-msgstr ""
-
-#: inc/session.inc.php:65
-msgid "Please provide a username"
-msgstr ""
-
-#: inc/session.inc.php:68
-msgid "Password"
-msgstr ""
-
-#: inc/session.inc.php:70
-msgid "Please provide a password"
-msgstr ""
-
-#: inc/session.inc.php:73
-msgid "Language"
-msgstr ""
-
-#: inc/session.inc.php:86
-msgid "<option selected value=\""
-msgstr ""
-
-#: inc/session.inc.php:88
-msgid "<option value=\""
-msgstr ""
-
-#: inc/session.inc.php:95
-msgid "Go"
-msgstr ""
-
-#: add_user.php:60
-msgid "The user has been created successfully."
-msgstr ""
-
-#: install/index.php:73
-msgid "There is already a configuration file in place, so the installation will be skipped."
-msgstr ""
-
-#: install/index.php:93
-msgid "Updating database..."
-msgstr ""
-
-#: install/index.php:147
-msgid "done!"
-msgstr ""
-
-#: install/index.php:187
-msgid "You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert and update records in the PowerDNS database."
-msgstr ""
-
-#: install/index.php:198
-msgid "In MySQL you should now perform the following command:"
-msgstr ""
-
-#: install/index.php:203
-msgid "On PgSQL you would use:"
-msgstr ""
-
-#: install/index.php:221
-msgid "After you have added the new user, proceed with this installation procedure."
-msgstr ""
-
-#: install/index.php:240
-msgid "Go to step"
-msgstr ""
-
-#: dnssec_edit_key.php:82 dnssec_delete_key.php:83
+#: /dnssec_delete_key.php
+#: /dnssec_edit_key.php
 msgid "Failed to delete DNSSEC key."
 msgstr ""
 
-#: dnssec_edit_key.php:90
-msgid "Zone key has been successfully deactivated."
-msgstr ""
-
-#: dnssec_edit_key.php:95
-msgid "Zone key has been successfully activated."
-msgstr ""
-
-#: edit_record.php:56 edit_zone_templ_record.php:57
-msgid "You do not have the permission to view this record."
-msgstr ""
-
-#: edit_record.php:111
-msgid "The record has been updated successfully."
-msgstr ""
-
-#: list_perm_templ.php:41 edit_perm_templ.php:42
-msgid "You do not have the permission to edit permission templates."
-msgstr ""
-
-#: delete_user.php:77
-msgid "The user has been deleted successfully."
-msgstr ""
-
-#: edit_user.php:114
-msgid "The user has been updated successfully."
-msgstr ""
-
-#: add_zone_templ_record.php:52 lib/DnsRecord.php:402 lib/ZoneTemplate.php:260
-#: add_record.php:57
-msgid "You do not have the permission to add a record to this zone."
-msgstr ""
-
-#: bulk_registration.php:45 add_zone_master.php:47 lib/DnsRecord.php:697
-msgid "You do not have the permission to add a master zone."
-msgstr ""
-
-#: bulk_registration.php:85
-msgid "Zones has been added successfully."
-msgstr ""
-
-#: bulk_registration.php:88
-msgid "Some zone(s) could not be added."
-msgstr ""
-
-#: dnssec_delete_key.php:87
+#: /dnssec_delete_key.php
 msgid "Zone key has been deleted successfully."
 msgstr ""
 
-#: delete_domains.php:72
-msgid "Zones have been deleted successfully."
+#: /delete_user.php
+#: /inc/plugins/users_local/users_local.plugin.php
+msgid "You do not have the permission to delete this user."
 msgstr ""
 
-#: delete_zone_templ_record.php:73 lib/DnsRecord.php:550
-#: lib/ZoneTemplate.php:330
-msgid "You do not have the permission to delete this record."
+#: /delete_user.php
+#: /edit_user.php
+#: /inc/plugins/users_local/users_local.plugin.php
+msgid "User does not exist."
 msgstr ""
 
-#: add_supermaster.php:43
-msgid "You do not have the permission to add a new supermaster."
+#: /delete_user.php
+msgid "The user has been deleted successfully."
 msgstr ""
 
-#: add_supermaster.php:59
-msgid "The supermaster has been added successfully."
+#: /list_zones.php
+msgid "You do not have sufficient permissions to view this page."
 msgstr ""
 
-#: edit_perm_templ.php:71
-msgid "The permission template has been updated successfully."
-msgstr ""
-
-#: edit_comment.php:47 edit_comment.php:74 lib/DnsRecord.php:301
-msgid "You do not have the permission to edit this comment."
-msgstr ""
-
-#: edit_comment.php:64
-msgid "You do not have the permission to view this comment."
-msgstr ""
-
-#: edit_comment.php:77
-msgid "The comment has been updated successfully."
-msgstr ""
-
-#: search.php:43
-msgid "You do not have the permission to perform searches."
-msgstr ""
-
-#: delete_perm_templ.php:65
-msgid "The permission template has been deleted successfully."
-msgstr ""
-
-#: list_zone_templ.php:41 edit_zone_templ.php:45
-msgid "You do not have the permission to edit zone templates."
-msgstr ""
-
-#: list_zones.php:96
+#: /list_zones.php
 msgid "You do not have the permission to see any zones."
 msgstr ""
 
-#: add_perm_templ.php:41
-msgid "You do not have the permission to add permission templates."
+#: /edit_comment.php
+#: /lib/DnsRecord.php
+msgid "You do not have the permission to edit this comment."
 msgstr ""
 
-#: add_perm_templ.php:64
-msgid "The permission template has been added successfully."
+#: /edit_comment.php
+msgid "You do not have the permission to view this comment."
 msgstr ""
 
-#: lib/Dnssec.php:44
-msgid "Failed to call function exec. Make sure that exec is not listed in disable_functions at php.ini"
+#: /edit_comment.php
+msgid "The comment has been updated successfully."
 msgstr ""
 
-#: lib/Dnssec.php:49 lib/Dnssec.php:155
-msgid "Failed to call pdnssec utility."
+#: /migrations/201405302318_add_relations_to_zone_templates.php
+#: /inc/toolkit.inc.php
+msgid "You have to create a config.inc.php!"
 msgstr ""
 
-#: lib/Dnssec.php:149
-msgid "Failed to rectify zone."
+#: /edit_user.php
+#: /inc/plugins/users_local/users_local.plugin.php
+msgid "You do not have the permission to edit this user."
 msgstr ""
 
-#: lib/Dnssec.php:174
-msgid "Failed to secure zone."
+#: /edit_user.php
+msgid "The user has been updated successfully."
 msgstr ""
 
-#: lib/Dnssec.php:196
-msgid "Failed to disable DNSSEC."
+#: /edit_user.php
+msgid "The user could not be updated."
 msgstr ""
 
-#: lib/Dnssec.php:242 lib/Dnssec.php:454 lib/Dnssec.php:528
-msgid "Failed to get DNSSEC key details."
-msgstr ""
-
-#: lib/Dnssec.php:482
-msgid "Failed to active DNSSEC key."
-msgstr ""
-
-#: lib/Dnssec.php:505
-msgid "Failed to deactivate DNSSEC key."
-msgstr ""
-
-#: lib/Dnssec.php:568 dnssec_add_key.php:104
-msgid "Failed to add new DNSSEC key."
-msgstr ""
-
-#: lib/Dnssec.php:591
-msgid "Failed to remove DNSSEC key."
-msgstr ""
-
-#: lib/Dns.php:295 lib/ZoneTemplate.php:264
-msgid "Your content field doesnt have a legit value."
-msgstr ""
-
-#: lib/Dns.php:302
-msgid "The content of the SPF record is invalid"
-msgstr ""
-
-#: lib/Dns.php:354
-msgid "Unknown record type."
-msgstr ""
-
-#: lib/Dns.php:388 lib/Dns.php:837
-msgid "The hostname is too long."
-msgstr ""
-
-#: lib/Dns.php:402 lib/Dns.php:408
-msgid "You have invalid characters in your hostname."
-msgstr ""
-
-#: lib/Dns.php:413 lib/Dns.php:417
-msgid "A hostname can not start or end with a dash."
-msgstr ""
-
-#: lib/Dns.php:421
-msgid "Given hostname or one of the labels is too short or too long."
-msgstr ""
-
-#: lib/Dns.php:446
-msgid "Given hostname has too many slashes."
-msgstr ""
-
-#: lib/Dns.php:452
-msgid "You are using an invalid top level domain."
-msgstr ""
-
-#: lib/Dns.php:472
-msgid "This is not a valid IPv4 address."
-msgstr ""
-
-#: lib/Dns.php:493
-msgid "This is not a valid IPv6 address."
-msgstr ""
-
-#: lib/Dns.php:545
-msgid "Invalid characters have been used in this record."
-msgstr ""
-
-#: lib/Dns.php:559
-msgid "You cannot use html tags for this type of record."
-msgstr ""
-
-#: lib/Dns.php:578
-msgid "Add quotes around TXT record content."
-msgstr ""
-
-#: lib/Dns.php:604
-msgid "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
-msgstr ""
-
-#: lib/Dns.php:629
-msgid "This is not a valid record. There is already exists a CNAME with this name."
-msgstr ""
-
-#: lib/Dns.php:652
-msgid "This is not a valid CNAME. There already exists a record with this name."
-msgstr ""
-
-#: lib/Dns.php:668
-msgid "Empty CNAME records are not allowed."
-msgstr ""
-
-#: lib/Dns.php:690
-msgid "You can not point a NS or MX record to a CNAME record. Remove or rename the CNAME record first, or take another name."
-msgstr ""
-
-#: lib/Dns.php:713
-msgid "Invalid value for content field of HINFO record."
-msgstr ""
-
-#: lib/Dns.php:798
-msgid "Invalid value for name field of SOA record. It should be the name of the zone."
-msgstr ""
-
-#: lib/Dns.php:817
-msgid "Invalid value for prio field. It should be numeric."
-msgstr ""
-
-#: lib/Dns.php:843
-msgid "Invalid service value in name field of SRV record."
-msgstr ""
-
-#: lib/Dns.php:847
-msgid "Invalid protocol value in name field of SRV record."
-msgstr ""
-
-#: lib/Dns.php:851
-msgid "Invalid FQDN value in name field of SRV record."
-msgstr ""
-
-#: lib/Dns.php:868
-msgid "Invalid value for the priority field of the SRV record."
-msgstr ""
-
-#: lib/Dns.php:872
-msgid "Invalid value for the weight field of the SRV record."
-msgstr ""
-
-#: lib/Dns.php:876
-msgid "Invalid SRV target."
-msgstr ""
-
-#: lib/Dns.php:898
-msgid "Invalid value for TTL field. It should be numeric."
-msgstr ""
-
-#: lib/DnsRecord.php:340
-msgid "You do not have the permission to edit this SOA record."
-msgstr ""
-
-#: lib/DnsRecord.php:344
-msgid "You do not have the permission to edit this NS record."
-msgstr ""
-
-#: lib/DnsRecord.php:393
-msgid "You do not have the permission to add SOA record."
-msgstr ""
-
-#: lib/DnsRecord.php:397
-msgid "You do not have the permission to add NS record."
-msgstr ""
-
-#: lib/DnsRecord.php:452 lib/DnsRecord.php:481 lib/DnsRecord.php:506
-#: lib/DnsRecord.php:690 lib/DnsRecord.php:725 lib/DnsRecord.php:748
-#: lib/DnsRecord.php:781 lib/DnsRecord.php:807 lib/DnsRecord.php:834
-#: lib/DnsRecord.php:857 lib/DnsRecord.php:878 lib/DnsRecord.php:1043
-#: lib/DnsRecord.php:1062 lib/DnsRecord.php:1645 lib/DnsRecord.php:1666
-#: lib/DnsRecord.php:1735 lib/DnsRecord.php:1839
-#, php-format
-msgid "Invalid argument(s) given to function %s %s"
-msgstr ""
-
-#: lib/DnsRecord.php:456
-msgid "There is already a supermaster with this IP address and hostname."
-msgstr ""
-
-#: lib/DnsRecord.php:543
-msgid "You are trying to delete the SOA record. You are not allowed to remove it, unless you remove the entire zone."
-msgstr ""
-
-#: lib/DnsRecord.php:777
-msgid "The selected user already owns the zone."
-msgstr ""
-
-#: lib/DnsRecord.php:803
-msgid "There must be at least one owner for a zone."
-msgstr ""
-
-#: lib/DnsRecord.php:1002
-msgid "This is an invalid zone name."
-msgstr ""
-
-#: lib/ZoneTemplate.php:67 lib/ZoneTemplate.php:475 edit.php:117
-msgid "Zone template with this name already exists, please choose another one."
-msgstr ""
-
-#: lib/ZoneTemplate.php:109 lib/ZoneTemplate.php:141 delete_zone_templ.php:44
+#: /add_zone_templ_record.php
+#: /lib/ZoneTemplate.php
+#: /edit_zone_templ_record.php
+#: /delete_zone_templ.php
+#: /edit_zone_templ.php
 msgid "You do not have the permission to delete zone templates."
 msgstr ""
 
-#: delete_supermaster.php:42
+#: /add_user.php
+#: /inc/plugins/users_local/users_local.plugin.php
+msgid "You do not have the permission to add a new user."
+msgstr ""
+
+#: /add_user.php
+msgid "The user has been created successfully."
+msgstr ""
+
+#: /add_supermaster.php
+msgid "You do not have the permission to add a new supermaster."
+msgstr ""
+
+#: /add_supermaster.php
+msgid "The supermaster has been added successfully."
+msgstr ""
+
+#: /install/index.php
+#: /inc/i18n.inc.php
+msgid "Failed to set locale. Selected locale may be unsupported on this system. Please contact your administrator."
+msgstr ""
+
+#: /install/index.php
+msgid "There is already a configuration file in place, so the installation will be skipped."
+msgstr ""
+
+#: /install/index.php
+msgid "Updating database..."
+msgstr ""
+
+#: /install/index.php
+msgid "done!"
+msgstr ""
+
+#: /install/index.php
+msgid "You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert and update records in the PowerDNS database."
+msgstr ""
+
+#: /install/index.php
+msgid "In MySQL you should now perform the following command:"
+msgstr ""
+
+#: /install/index.php
+msgid "On PgSQL you would use:"
+msgstr ""
+
+#: /install/index.php
+msgid "After you have added the new user, proceed with this installation procedure."
+msgstr ""
+
+#: /install/index.php
+msgid "Go to step"
+msgstr ""
+
+#: /delete_supermaster.php
 msgid "You do not have the permission to delete a supermaster."
 msgstr ""
 
-#: delete_supermaster.php:64
+#: /delete_supermaster.php
 msgid "Super master does not exist."
 msgstr ""
 
-#: delete_supermaster.php:68
+#: /delete_supermaster.php
 msgid "The supermaster has been deleted successfully."
 msgstr ""
 
-#: edit_zone_templ_record.php:83 edit_zone_templ.php:139
-msgid "Zone template has been updated successfully."
+#: /add_zone_master.php
+#: /bulk_registration.php
+#: /lib/DnsRecord.php
+msgid "You do not have the permission to add a master zone."
 msgstr ""
 
-#: edit_zone_templ.php:58
-msgid "There is no zone template with this ID."
+#: /add_zone_master.php
+#: /add_zone_slave.php
+#: /bulk_registration.php
+#: /lib/ZoneTemplate.php
+#: /lib/DnsRecord.php
+#: /lib/Dns.php
+msgid "Invalid hostname."
 msgstr ""
 
-#: edit_zone_templ.php:149
-msgid "Zones have been updated successfully."
+#: /add_zone_master.php
+#: /add_zone_slave.php
+#: /bulk_registration.php
+msgid "There is already a zone with this name."
 msgstr ""
 
-#: add_record.php:147
-msgid "The PTR-record was successfully added."
+#: /add_zone_master.php
+#: /add_zone_slave.php
+msgid "Zone has been added successfully."
 msgstr ""
 
-#: add_record.php:151
-#, php-format
-msgid "There is no matching reverse-zone for: %s."
+#: /edit.php
+msgid "Request has expired, please try again."
 msgstr ""
 
-#: add_record.php:170
-msgid "The record was successfully added."
-msgstr ""
-
-#: edit.php:104
+#: /edit.php
 msgid "Zone has been updated successfully."
 msgstr ""
 
-#: edit.php:106
+#: /edit.php
 msgid "Zone did not have any record changes."
 msgstr ""
 
-#: edit.php:111
+#: /edit.php
 msgid "Zone has not been updated successfully."
 msgstr ""
 
-#: edit.php:119
-msgid "Template name can't be an empty string."
+#: /edit.php
+#: /lib/ZoneTemplate.php
+msgid "Zone template with this name already exists, please choose another one."
 msgstr ""
 
-#: dnssec_add_key.php:101
+#: /edit.php
+msgid "Template name can\'t be an empty string."
+msgstr ""
+
+#: /edit.php
+#: /add_zone_templ.php
+msgid "Zone template has been added successfully."
+msgstr ""
+
+#: /edit.php
+#: /dnssec_ds_dnskey.php
+#: /lib/DnsRecord.php
+#: /dnssec_add_key.php
+#: /dnssec.php
+msgid "You do not have the permission to view this zone."
+msgstr ""
+
+#: /edit.php
+#: /dnssec_ds_dnskey.php
+#: /dnssec_add_key.php
+#: /delete_record.php
+#: /dnssec.php
+msgid "There is no zone with this ID."
+msgstr ""
+
+#: /edit.php
+msgid "Zone has been signed successfully."
+msgstr ""
+
+#: /edit.php
+msgid "Zone has been unsigned successfully."
+msgstr ""
+
+#: /delete_domains.php
+#: /delete_domain.php
+msgid "Zone has been deleted successfully."
+msgstr ""
+
+#: /delete_domains.php
+msgid "Zones have been deleted successfully."
+msgstr ""
+
+#: /delete_domains.php
+#: /delete_domain.php
+#: /lib/DnsRecord.php
+msgid "You do not have the permission to delete a zone."
+msgstr ""
+
+#: /add_zone_slave.php
+msgid "You do not have the permission to add a slave zone."
+msgstr ""
+
+#: /add_zone_slave.php
+#: /lib/DnsRecord.php
+msgid "This is not a valid IPv4 or IPv6 address."
+msgstr ""
+
+#: /bulk_registration.php
+msgid "Zones has been added successfully."
+msgstr ""
+
+#: /bulk_registration.php
+msgid "Some zone(s) could not be added."
+msgstr ""
+
+#: /add_perm_templ.php
+msgid "You do not have the permission to add permission templates."
+msgstr ""
+
+#: /add_perm_templ.php
+msgid "The permission template has been added successfully."
+msgstr ""
+
+#: /list_perm_templ.php
+#: /edit_perm_templ.php
+msgid "You do not have the permission to edit permission templates."
+msgstr ""
+
+#: /lib/ZoneTemplate.php
+#: /add_zone_templ.php
+msgid "You do not have the permission to add a zone template."
+msgstr ""
+
+#: /lib/ZoneTemplate.php
+#: /lib/DnsRecord.php
+#: /inc/plugins/users_local/users_local.plugin.php
+msgid "Invalid argument(s) given to function %s"
+msgstr ""
+
+#: /lib/ZoneTemplate.php
+#: /lib/DnsRecord.php
+#: /add_record.php
+msgid "You do not have the permission to add a record to this zone."
+msgstr ""
+
+#: /lib/ZoneTemplate.php
+#: /lib/Dns.php
+msgid "Your content field doesnt have a legit value."
+msgstr ""
+
+#: /lib/ZoneTemplate.php
+#: /lib/Dns.php
+msgid "Invalid value for prio field."
+msgstr ""
+
+#: /lib/ZoneTemplate.php
+#: /lib/DnsRecord.php
+#: /delete_record.php
+#: /edit_record.php
+msgid "You do not have the permission to edit this record."
+msgstr ""
+
+#: /lib/ZoneTemplate.php
+#: /lib/DnsRecord.php
+#: /delete_zone_templ_record.php
+msgid "You do not have the permission to delete this record."
+msgstr ""
+
+#: /lib/DnsRecord.php
+msgid "You do not have the permission to edit this SOA record."
+msgstr ""
+
+#: /lib/DnsRecord.php
+msgid "You do not have the permission to edit this NS record."
+msgstr ""
+
+#: /lib/DnsRecord.php
+msgid "You do not have the permission to add SOA record."
+msgstr ""
+
+#: /lib/DnsRecord.php
+msgid "You do not have the permission to add NS record."
+msgstr ""
+
+#: /lib/DnsRecord.php
+msgid "Invalid argument(s) given to function %s %s"
+msgstr ""
+
+#: /lib/DnsRecord.php
+msgid "There is already a supermaster with this IP address and hostname."
+msgstr ""
+
+#: /lib/DnsRecord.php
+msgid "You are trying to delete the SOA record. You are not allowed to remove it, unless you remove the entire zone."
+msgstr ""
+
+#: /lib/DnsRecord.php
+msgid "The selected user already owns the zone."
+msgstr ""
+
+#: /lib/DnsRecord.php
+msgid "There must be at least one owner for a zone."
+msgstr ""
+
+#: /lib/DnsRecord.php
+msgid "This is an invalid zone name."
+msgstr ""
+
+#: /lib/Dns.php
+msgid "The content of the SPF record is invalid"
+msgstr ""
+
+#: /lib/Dns.php
+msgid "Unknown record type."
+msgstr ""
+
+#: /lib/Dns.php
+msgid "The hostname is too long."
+msgstr ""
+
+#: /lib/Dns.php
+msgid "You have invalid characters in your hostname."
+msgstr ""
+
+#: /lib/Dns.php
+msgid "A hostname can not start or end with a dash."
+msgstr ""
+
+#: /lib/Dns.php
+msgid "Given hostname or one of the labels is too short or too long."
+msgstr ""
+
+#: /lib/Dns.php
+msgid "Given hostname has too many slashes."
+msgstr ""
+
+#: /lib/Dns.php
+msgid "You are using an invalid top level domain."
+msgstr ""
+
+#: /lib/Dns.php
+msgid "This is not a valid IPv4 address."
+msgstr ""
+
+#: /lib/Dns.php
+msgid "This is not a valid IPv6 address."
+msgstr ""
+
+#: /lib/Dns.php
+msgid "Invalid characters have been used in this record."
+msgstr ""
+
+#: /lib/Dns.php
+msgid "You cannot use html tags for this type of record."
+msgstr ""
+
+#: /lib/Dns.php
+msgid "Add quotes around TXT record content."
+msgstr ""
+
+#: /lib/Dns.php
+msgid "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
+msgstr ""
+
+#: /lib/Dns.php
+msgid "This is not a valid record. There is already exists a CNAME with this name."
+msgstr ""
+
+#: /lib/Dns.php
+msgid "This is not a valid CNAME. There already exists a record with this name."
+msgstr ""
+
+#: /lib/Dns.php
+msgid "Empty CNAME records are not allowed."
+msgstr ""
+
+#: /lib/Dns.php
+msgid "You can not point a NS or MX record to a CNAME record. Remove or rename the CNAME record first, or take another name."
+msgstr ""
+
+#: /lib/Dns.php
+msgid "Invalid value for content field of HINFO record."
+msgstr ""
+
+#: /lib/Dns.php
+msgid "Invalid value for name field of SOA record. It should be the name of the zone."
+msgstr ""
+
+#: /lib/Dns.php
+msgid "Invalid service value in name field of SRV record."
+msgstr ""
+
+#: /lib/Dns.php
+msgid "Invalid protocol value in name field of SRV record."
+msgstr ""
+
+#: /lib/Dns.php
+msgid "Invalid FQDN value in name field of SRV record."
+msgstr ""
+
+#: /lib/Dns.php
+msgid "Invalid value for the priority field of the SRV record."
+msgstr ""
+
+#: /lib/Dns.php
+msgid "Invalid value for the weight field of the SRV record."
+msgstr ""
+
+#: /lib/Dns.php
+msgid "Invalid SRV target."
+msgstr ""
+
+#: /lib/Dns.php
+msgid "Invalid value for TTL field. It should be numeric."
+msgstr ""
+
+#: /lib/Dnssec.php
+msgid "Failed to call function exec. Make sure that exec is not listed in disable_functions at php.ini"
+msgstr ""
+
+#: /lib/Dnssec.php
+msgid "Failed to call pdnssec utility."
+msgstr ""
+
+#: /lib/Dnssec.php
+msgid "Failed to secure zone."
+msgstr ""
+
+#: /lib/Dnssec.php
+msgid "Failed to disable DNSSEC."
+msgstr ""
+
+#: /lib/Dnssec.php
+msgid "Failed to get DNSSEC key details."
+msgstr ""
+
+#: /lib/Dnssec.php
+msgid "Failed to active DNSSEC key."
+msgstr ""
+
+#: /lib/Dnssec.php
+msgid "Failed to deactivate DNSSEC key."
+msgstr ""
+
+#: /lib/Dnssec.php
+#: /dnssec_add_key.php
+msgid "Failed to add new DNSSEC key."
+msgstr ""
+
+#: /lib/Dnssec.php
+msgid "Failed to remove DNSSEC key."
+msgstr ""
+
+#: /dnssec_edit_key.php
+msgid "Zone key has been successfully deactivated."
+msgstr ""
+
+#: /dnssec_edit_key.php
+msgid "Zone key has been successfully activated."
+msgstr ""
+
+#: /inc/header.inc.php
+msgid "The <a href=\"install/\">install/</a> directory exists, you must remove it first before proceeding."
+msgstr ""
+
+#: /inc/header.inc.php
+msgid "Default session encryption key is used, please set it in your configuration file."
+msgstr ""
+
+#: /inc/session.inc.php
+msgid "Log in"
+msgstr ""
+
+#: /inc/session.inc.php
+msgid "Username"
+msgstr ""
+
+#: /inc/session.inc.php
+msgid "Please provide a username"
+msgstr ""
+
+#: /inc/session.inc.php
+msgid "Password"
+msgstr ""
+
+#: /inc/session.inc.php
+msgid "Please provide a password"
+msgstr ""
+
+#: /inc/session.inc.php
+msgid "Language"
+msgstr ""
+
+#: /inc/session.inc.php
+msgid "Go"
+msgstr ""
+
+#: /inc/PDOLayer.php
+msgid "Unknown database type."
+msgstr ""
+
+#: /inc/pagination.inc.php
+msgid "Previous"
+msgstr ""
+
+#: /inc/pagination.inc.php
+msgid "Next"
+msgstr ""
+
+#: /inc/pagination.inc.php
+msgid "Show zones beginning with"
+msgstr ""
+
+#: /inc/pagination.inc.php
+msgid "Show all"
+msgstr ""
+
+#: /inc/database.inc.php
+msgid "No or unknown database type has been set in config.inc.php."
+msgstr ""
+
+#: /inc/database.inc.php
+msgid "No database username has been set in config.inc.php."
+msgstr ""
+
+#: /inc/database.inc.php
+msgid "No database password has been set in config.inc.php."
+msgstr ""
+
+#: /inc/database.inc.php
+msgid "No database host has been set in config.inc.php."
+msgstr ""
+
+#: /inc/database.inc.php
+msgid "No database name has been set in config.inc.php."
+msgstr ""
+
+#: /inc/database.inc.php
+msgid "No database file has been set in config.inc.php."
+msgstr ""
+
+#: /inc/messages.inc.php
+msgid "Something has been successfully performed. What exactly, however, will remain a mystery."
+msgstr ""
+
+#: /inc/plugins/auth_local/auth_local.plugin.php
+msgid "You have logged out."
+msgstr ""
+
+#: /inc/plugins/auth_local/auth_local.plugin.php
+msgid "An empty password is not allowed"
+msgstr ""
+
+#: /inc/plugins/auth_local/auth_local.plugin.php
+msgid "Session expired, please login again."
+msgstr ""
+
+#: /inc/plugins/auth_local/auth_local.plugin.php
+msgid "Failed to connect to LDAP server!"
+msgstr ""
+
+#: /inc/plugins/auth_local/auth_local.plugin.php
+msgid "Failed to bind to LDAP server!"
+msgstr ""
+
+#: /inc/plugins/auth_local/auth_local.plugin.php
+msgid "Failed to search LDAP."
+msgstr ""
+
+#: /inc/plugins/auth_local/auth_local.plugin.php
+msgid "Failed to authenticate against LDAP."
+msgstr ""
+
+#: /inc/plugins/auth_local/auth_local.plugin.php
+msgid "LDAP Authentication failed!"
+msgstr ""
+
+#: /inc/plugins/auth_local/auth_local.plugin.php
+msgid "Authentication failed!"
+msgstr ""
+
+#: /inc/plugins/users_local/users_local.plugin.php
+#: /delete_perm_templ.php
+msgid "You do not have the permission to delete permission templates."
+msgstr ""
+
+#: /inc/plugins/users_local/users_local.plugin.php
+msgid "This template is assigned to at least one user."
+msgstr ""
+
+#: /inc/plugins/users_local/users_local.plugin.php
+msgid "Enter a valid email address."
+msgstr ""
+
+#: /inc/plugins/users_local/users_local.plugin.php
+msgid "Username exist already, please choose another one."
+msgstr ""
+
+#: /inc/plugins/users_local/users_local.plugin.php
+msgid "The two new password fields do not match."
+msgstr ""
+
+#: /inc/plugins/users_local/users_local.plugin.php
+msgid "Password has been changed, please login."
+msgstr ""
+
+#: /inc/plugins/users_local/users_local.plugin.php
+msgid "You did not enter the correct current password."
+msgstr ""
+
+#: /inc/plugins/users_local/users_local.plugin.php
+msgid "Enter a valid user name."
+msgstr ""
+
+#: /edit_perm_templ.php
+msgid "The permission template has been updated successfully."
+msgstr ""
+
+#: /edit_zone_templ_record.php
+#: /edit_zone_templ.php
+msgid "Zone template has been updated successfully."
+msgstr ""
+
+#: /search.php
+msgid "You do not have the permission to perform searches."
+msgstr ""
+
+#: /search.php
+msgid "Search results are limited to %s entries."
+msgstr ""
+
+#: /delete_zone_templ.php
+msgid "Zone template has been deleted successfully."
+msgstr ""
+
+#: /dnssec_add_key.php
 msgid "Zone key has been added successfully."
 msgstr ""
 
-#: delete_zone_templ.php:65
-msgid "Zone template has been deleted successfully."
+#: /list_supermasters.php
+msgid "You do not have the permission to view supermasters."
+msgstr ""
+
+#: /delete_record.php
+#: /delete_zone_templ_record.php
+msgid "The record has been deleted successfully."
+msgstr ""
+
+#: /list_zone_templ.php
+msgid "You do not have the permission to edit zone templates."
+msgstr ""
+
+#: /edit_zone_templ.php
+msgid "There is no zone template with this ID."
+msgstr ""
+
+#: /edit_zone_templ.php
+msgid "Zones have been updated successfully."
+msgstr ""
+
+#: /delete_perm_templ.php
+msgid "The permission template has been deleted successfully."
+msgstr ""
+
+#: /add_record.php
+msgid "There is no matching reverse-zone for: %s."
+msgstr ""
+
+#: /add_record.php
+msgid "The record was successfully added."
+msgstr ""
+
+#: /add_record.php
+msgid "This record was not valid and could not be added."
+msgstr ""
+
+#: /users.php
+msgid "User details updated"
+msgstr ""
+
+#: /delete_zone_templ_record.php
+msgid "The record could not be deleted."
+msgstr ""
+
+#: /edit_record.php
+msgid "You do not have the permission to view this record."
+msgstr ""
+
+#: /edit_record.php
+msgid "The record has been updated successfully."
+msgstr ""
+
+#: /install/templates/step3.html
+msgid "Provide the name username"
+msgstr ""
+
+#: /install/templates/step3.html
+#: /templates/add_user.html
+msgid "Provide user password"
+msgstr ""
+
+#: /install/templates/step3.html
+#: /install/templates/step4.html
+msgid "The password for this username."
+msgstr ""
+
+#: /install/templates/step3.html
+msgid "Database type"
+msgstr ""
+
+#: /install/templates/step3.html
+msgid "The type of the PowerDNS database."
+msgstr ""
+
+#: /install/templates/step3.html
+msgid "Hostname"
+msgstr ""
+
+#: /install/templates/step3.html
+msgid "Provide the hostname"
+msgstr ""
+
+#: /install/templates/step3.html
+msgid "The hostname on which the PowerDNS database resides. Frequently, this will be \"localhost\"."
+msgstr ""
+
+#: /install/templates/step3.html
+msgid "DB Port"
+msgstr ""
+
+#: /install/templates/step3.html
+msgid "Provide database port"
+msgstr ""
+
+#: /install/templates/step3.html
+msgid "The port the database server is listening on."
+msgstr ""
+
+#: /install/templates/step3.html
+msgid "Database"
+msgstr ""
+
+#: /install/templates/step3.html
+msgid "Provide the name of the database"
+msgstr ""
+
+#: /install/templates/step3.html
+msgid "The name of the PowerDNS database."
+msgstr ""
+
+#: /install/templates/step3.html
+msgid "The path and filename to the PowerDNS SQLite database."
+msgstr ""
+
+#: /install/templates/step3.html
+msgid "DB charset"
+msgstr ""
+
+#: /install/templates/step3.html
+msgid "DB collation"
+msgstr ""
+
+#: /install/templates/step3.html
+msgid "Poweradmin administrator password"
+msgstr ""
+
+#: /install/templates/step3.html
+msgid "Provide a password"
+msgstr ""
+
+#: /install/templates/step7.html
+msgid "Now we have finished the configuration."
+msgstr ""
+
+#: /install/templates/step7.html
+msgid "If you want support for the URLs used by other dynamic DNS providers, run \"cp install/htaccess.dist .htaccess\" and enable mod_rewrite in Apache."
+msgstr ""
+
+#: /install/templates/step7.html
+msgid "You should (must!) remove the directory \"install/\" from the Poweradmin root directory. You will not be able to use Poweradmin if it exists. Do it now."
+msgstr ""
+
+#: /install/templates/step7.html
+msgid "After you have removed the directory, you can login to <a href=\"../index.php\">Poweradmin</a>."
+msgstr ""
+
+#: /install/templates/header.html
+msgid "Installation step"
+msgstr ""
+
+#: /install/templates/step6.html
+msgid "The installer was able to write to the file \""
+msgstr ""
+
+#: /install/templates/step6.html
+msgid "\". A basic configuration, based on the details you have given, has been created."
+msgstr ""
+
+#: /install/templates/step6.html
+msgid "The installer is unable to write to the file \""
+msgstr ""
+
+#: /install/templates/step6.html
+msgid "\" (which is in itself good). The configuration is printed here. You should now create the file \""
+msgstr ""
+
+#: /install/templates/step6.html
+msgid "\" in the Poweradmin root directory yourself. It should contain the following few lines:"
+msgstr ""
+
+#: /install/templates/step2.html
+msgid "This installer expects you to have a PowerDNS database accessable from this server. This installer also expects you to have never ran Poweradmin before, or that you want to overwrite the Poweradmin part of the database. If you have had Poweradmin running before, any data in the following tables will be destroyed: perm_items, perm_templ, perm_templ_items, users and zones. This installer will, of course, not touch the data in the PowerDNS tables of the database. However, it is recommended that you create a backup of your database before proceeding."
+msgstr ""
+
+#: /install/templates/step2.html
+msgid "The alternative for this installer is a manual installation. Refer to the poweradmin.org website if you want to go down that road."
+msgstr ""
+
+#: /install/templates/step2.html
+msgid "Finally, if you see any errors during the installation process, a problem report would be appreciated. You can report problems (and ask for help) on the <a href=\"https://github.com/poweradmin/poweradmin/issues\" target=\"blank\">poweradmin</a> issues."
+msgstr ""
+
+#: /install/templates/step2.html
+msgid "Do you want to proceed now?"
+msgstr ""
+
+#: /install/templates/step4.html
+msgid "Now we will gather all details for the configuration itself."
+msgstr ""
+
+#: /install/templates/step4.html
+msgid "The username for Poweradmin. This new user will have limited rights only."
+msgstr ""
+
+#: /install/templates/step4.html
+msgid "Hostmaster"
+msgstr ""
+
+#: /install/templates/step4.html
+msgid "Primary nameserver"
+msgstr ""
+
+#: /install/templates/step4.html
+msgid "Secondary nameserver"
+msgstr ""
+
+#: /vendor/symfony/twig-bridge/Extension/TranslationExtension.php
+msgid "Symfony is great!"
+msgstr ""
+
+#: /vendor/symfony/twig-bridge/TokenParser/TransTokenParser.php
+msgid "message"
+msgstr ""
+
+#: /templates/edit_user.html
+#: /templates/delete_zone_templ.html
+#: /templates/edit_record.html
+#: /templates/dnssec_edit_key.html
+#: /templates/delete_perm_templ.html
+#: /templates/add_zone_templ_record.html
+#: /templates/list_log_zones.html
+#: /templates/edit_comment.html
+#: /templates/list_perm_templ.html
+#: /templates/list_supermasters.html
+#: /templates/add_zone_templ.html
+#: /templates/delete_supermaster.html
+#: /templates/add_record.html
+#: /templates/edit.html
+#: /templates/list_log_users.html
+#: /templates/bulk_registration.html
+#: /templates/list_zones.html
+#: /templates/users.html
+#: /templates/delete_zone_templ_record.html
+#: /templates/dnssec_add_key.html
+#: /templates/dnssec.html
+#: /templates/add_perm_templ.html
+#: /templates/edit_zone_templ_record.html
+#: /templates/edit_zone_templ.html
+#: /templates/edit_perm_templ.html
+#: /templates/delete_user.html
+#: /templates/dnssec_ds_dnskey.html
+#: /templates/add_supermaster.html
+#: /templates/add_zone_master.html
+#: /templates/change_password.html
+#: /templates/add_zone_slave.html
+#: /templates/delete_domain.html
+#: /templates/add_user.html
+#: /templates/list_zone_templ.html
+#: /templates/dnssec_delete_key.html
+#: /templates/search.html
+#: /templates/delete_record.html
+#: /templates/delete_domains.html
+msgid "Home"
+msgstr ""
+
+#: /templates/edit_user.html
+#: /templates/delete_perm_templ.html
+#: /templates/list_perm_templ.html
+#: /templates/list_log_users.html
+#: /templates/header.html
+#: /templates/users.html
+#: /templates/add_perm_templ.html
+#: /templates/edit_perm_templ.html
+#: /templates/delete_user.html
+#: /templates/add_user.html
+msgid "Users"
+msgstr ""
+
+#: /templates/edit_user.html
+msgid "Edit user"
+msgstr ""
+
+#: /templates/edit_user.html
+#: /templates/add_user.html
+msgid "Provide user name"
+msgstr ""
+
+#: /templates/edit_user.html
+#: /templates/users.html
+#: /templates/add_user.html
+msgid "Fullname"
+msgstr ""
+
+#: /templates/edit_user.html
+#: /templates/users.html
+#: /templates/add_user.html
+msgid "Email address"
+msgstr ""
+
+#: /templates/edit_user.html
+#: /templates/add_user.html
+msgid "Provide email"
+msgstr ""
+
+#: /templates/edit_user.html
+#: /templates/add_user.html
+msgid "Permission template"
+msgstr ""
+
+#: /templates/edit_user.html
+#: /templates/list_perm_templ.html
+#: /templates/add_zone_templ.html
+#: /templates/add_perm_templ.html
+#: /templates/edit_zone_templ.html
+#: /templates/edit_perm_templ.html
+#: /templates/add_user.html
+#: /templates/list_zone_templ.html
+msgid "Description"
+msgstr ""
+
+#: /templates/edit_user.html
+#: /templates/users.html
+#: /templates/add_user.html
+msgid "Enabled"
+msgstr ""
+
+#: /templates/edit_user.html
+#: /templates/edit_record.html
+#: /templates/edit_comment.html
+#: /templates/edit.html
+#: /templates/users.html
+#: /templates/add_perm_templ.html
+#: /templates/edit_zone_templ_record.html
+#: /templates/edit_zone_templ.html
+#: /templates/edit_perm_templ.html
+#: /templates/add_user.html
+msgid "Update"
+msgstr ""
+
+#: /templates/edit_user.html
+#: /templates/edit_record.html
+#: /templates/edit_comment.html
+#: /templates/edit.html
+#: /templates/users.html
+#: /templates/edit_zone_templ_record.html
+msgid "Reset"
+msgstr ""
+
+#: /templates/edit_user.html
+msgid "This user has been assigned the permission template"
+msgstr ""
+
+#: /templates/edit_user.html
+msgid "The description for this template is"
+msgstr ""
+
+#: /templates/edit_user.html
+msgid "Based on this template, this user has the following permissions"
+msgstr ""
+
+#: /templates/edit_user.html
+#: /templates/add_perm_templ.html
+#: /templates/edit_perm_templ.html
+msgid "%descr%"
+msgstr ""
+
+#: /templates/delete_zone_templ.html
+#: /templates/edit_record.html
+#: /templates/dnssec_edit_key.html
+#: /templates/add_zone_templ_record.html
+#: /templates/list_log_zones.html
+#: /templates/edit_comment.html
+#: /templates/add_zone_templ.html
+#: /templates/add_record.html
+#: /templates/edit.html
+#: /templates/header.html
+#: /templates/bulk_registration.html
+#: /templates/list_zones.html
+#: /templates/delete_zone_templ_record.html
+#: /templates/dnssec_add_key.html
+#: /templates/dnssec.html
+#: /templates/edit_zone_templ_record.html
+#: /templates/edit_zone_templ.html
+#: /templates/dnssec_ds_dnskey.html
+#: /templates/add_zone_master.html
+#: /templates/add_zone_slave.html
+#: /templates/delete_domain.html
+#: /templates/list_zone_templ.html
+#: /templates/dnssec_delete_key.html
+#: /templates/search.html
+#: /templates/delete_record.html
+#: /templates/delete_domains.html
+msgid "Zones"
+msgstr ""
+
+#: /templates/delete_zone_templ.html
+#: /templates/add_zone_templ_record.html
+#: /templates/add_zone_templ.html
+#: /templates/delete_zone_templ_record.html
+#: /templates/edit_zone_templ_record.html
+#: /templates/edit_zone_templ.html
+#: /templates/list_zone_templ.html
+msgid "Zone templates"
+msgstr ""
+
+#: /templates/delete_zone_templ.html
+msgid "Delete template"
+msgstr ""
+
+#: /templates/delete_zone_templ.html
+msgid "Delete zone template"
+msgstr ""
+
+#: /templates/delete_zone_templ.html
+#: /templates/dnssec_edit_key.html
+#: /templates/delete_perm_templ.html
+#: /templates/delete_supermaster.html
+#: /templates/delete_zone_templ_record.html
+#: /templates/delete_user.html
+#: /templates/delete_domain.html
+#: /templates/dnssec_delete_key.html
+#: /templates/delete_record.html
+#: /templates/delete_domains.html
+msgid "Are you sure?"
+msgstr ""
+
+#: /templates/delete_zone_templ.html
+#: /templates/dnssec_edit_key.html
+#: /templates/delete_perm_templ.html
+#: /templates/delete_supermaster.html
+#: /templates/delete_zone_templ_record.html
+#: /templates/delete_user.html
+#: /templates/delete_domain.html
+#: /templates/dnssec_delete_key.html
+#: /templates/delete_record.html
+#: /templates/delete_domains.html
+msgid "Yes"
+msgstr ""
+
+#: /templates/delete_zone_templ.html
+#: /templates/dnssec_edit_key.html
+#: /templates/delete_perm_templ.html
+#: /templates/delete_supermaster.html
+#: /templates/delete_zone_templ_record.html
+#: /templates/delete_user.html
+#: /templates/delete_domain.html
+#: /templates/dnssec_delete_key.html
+#: /templates/delete_record.html
+#: /templates/delete_domains.html
+msgid "No"
+msgstr ""
+
+#: /templates/index_list.html
+#: /templates/index_cards.html
+msgid "Welcome"
+msgstr ""
+
+#: /templates/index_list.html
+#: /templates/search.html
+msgid "Search zones and records"
+msgstr ""
+
+#: /templates/index_list.html
+#: /templates/header.html
+#: /templates/list_zones.html
+#: /templates/index_cards.html
+msgid "List zones"
+msgstr ""
+
+#: /templates/index_list.html
+#: /templates/header.html
+msgid "List zone templates"
+msgstr ""
+
+#: /templates/index_list.html
+#: /templates/list_supermasters.html
+msgid "List supermasters"
+msgstr ""
+
+#: /templates/index_list.html
+#: /templates/header.html
+#: /templates/list_zones.html
+#: /templates/add_zone_master.html
+msgid "Add master zone"
+msgstr ""
+
+#: /templates/index_list.html
+#: /templates/header.html
+#: /templates/list_zones.html
+#: /templates/add_zone_slave.html
+msgid "Add slave zone"
+msgstr ""
+
+#: /templates/index_list.html
+#: /templates/list_supermasters.html
+#: /templates/add_supermaster.html
+msgid "Add supermaster"
+msgstr ""
+
+#: /templates/index_list.html
+#: /templates/header.html
+#: /templates/bulk_registration.html
+msgid "Bulk registration"
+msgstr ""
+
+#: /templates/index_list.html
+#: /templates/list_log_zones.html
+#: /templates/header.html
+#: /templates/index_cards.html
+msgid "Zone logs"
+msgstr ""
+
+#: /templates/index_list.html
+#: /templates/header.html
+#: /templates/change_password.html
+msgid "Change password"
+msgstr ""
+
+#: /templates/index_list.html
+#: /templates/header.html
+#: /templates/users.html
+msgid "User administration"
+msgstr ""
+
+#: /templates/index_list.html
+#: /templates/header.html
+msgid "List permission templates"
+msgstr ""
+
+#: /templates/index_list.html
+#: /templates/header.html
+#: /templates/index_cards.html
+msgid "Logout"
+msgstr ""
+
+#: /templates/edit_record.html
+#: /templates/edit_zone_templ_record.html
+msgid "Edit record"
+msgstr ""
+
+#: /templates/edit_record.html
+msgid "Edit record in zone"
+msgstr ""
+
+#: /templates/edit_record.html
+#: /templates/add_zone_templ_record.html
+#: /templates/list_perm_templ.html
+#: /templates/add_zone_templ.html
+#: /templates/add_record.html
+#: /templates/edit.html
+#: /templates/list_zones.html
+#: /templates/add_perm_templ.html
+#: /templates/edit_zone_templ_record.html
+#: /templates/edit_zone_templ.html
+#: /templates/edit_perm_templ.html
+#: /templates/list_zone_templ.html
+#: /templates/search.html
+#: /templates/delete_domains.html
+msgid "Name"
+msgstr ""
+
+#: /templates/edit_record.html
+#: /templates/dnssec_edit_key.html
+#: /templates/add_zone_templ_record.html
+#: /templates/add_record.html
+#: /templates/edit.html
+#: /templates/bulk_registration.html
+#: /templates/list_zones.html
+#: /templates/dnssec.html
+#: /templates/edit_zone_templ_record.html
+#: /templates/add_zone_master.html
+#: /templates/delete_domain.html
+#: /templates/list_zone_templ.html
+#: /templates/dnssec_delete_key.html
+#: /templates/search.html
+#: /templates/delete_domains.html
+msgid "Type"
+msgstr ""
+
+#: /templates/edit_record.html
+#: /templates/add_zone_templ_record.html
+#: /templates/add_record.html
+#: /templates/edit.html
+#: /templates/edit_zone_templ_record.html
+#: /templates/search.html
+msgid "Content"
+msgstr ""
+
+#: /templates/edit_record.html
+#: /templates/add_zone_templ_record.html
+#: /templates/add_record.html
+#: /templates/edit.html
+#: /templates/edit_zone_templ_record.html
+#: /templates/search.html
+msgid "Priority"
+msgstr ""
+
+#: /templates/edit_record.html
+#: /templates/add_zone_templ_record.html
+#: /templates/add_record.html
+#: /templates/edit.html
+#: /templates/edit_zone_templ_record.html
+#: /templates/search.html
+msgid "TTL"
+msgstr ""
+
+#: /templates/edit_record.html
+#: /templates/add_record.html
+#: /templates/edit.html
+#: /templates/edit_zone_templ_record.html
+msgid "Provide content"
+msgstr ""
+
+#: /templates/dnssec_edit_key.html
+#: /templates/edit.html
+#: /templates/list_zones.html
+#: /templates/dnssec_add_key.html
+#: /templates/dnssec.html
+#: /templates/dnssec_ds_dnskey.html
+#: /templates/add_zone_master.html
+#: /templates/dnssec_delete_key.html
+msgid "DNSSEC"
+msgstr ""
+
+#: /templates/dnssec_edit_key.html
+msgid "Deactivate key"
+msgstr ""
+
+#: /templates/dnssec_edit_key.html
+msgid "Activate key"
+msgstr ""
+
+#: /templates/dnssec_edit_key.html
+msgid "Deactivate zone key"
+msgstr ""
+
+#: /templates/dnssec_edit_key.html
+msgid "Activate zone key"
+msgstr ""
+
+#: /templates/dnssec_edit_key.html
+#: /templates/dnssec_delete_key.html
+msgid "Domain"
+msgstr ""
+
+#: /templates/dnssec_edit_key.html
+#: /templates/list_log_zones.html
+#: /templates/edit.html
+#: /templates/list_log_users.html
+#: /templates/dnssec_delete_key.html
+msgid "Id"
+msgstr ""
+
+#: /templates/dnssec_edit_key.html
+#: /templates/dnssec.html
+#: /templates/dnssec_delete_key.html
+msgid "Tag"
+msgstr ""
+
+#: /templates/dnssec_edit_key.html
+#: /templates/dnssec_add_key.html
+#: /templates/dnssec.html
+#: /templates/dnssec_delete_key.html
+msgid "Algorithm"
+msgstr ""
+
+#: /templates/dnssec_edit_key.html
+#: /templates/dnssec.html
+#: /templates/dnssec_delete_key.html
+msgid "Bits"
+msgstr ""
+
+#: /templates/dnssec_edit_key.html
+#: /templates/dnssec.html
+#: /templates/dnssec_delete_key.html
+msgid "Active"
+msgstr ""
+
+#: /templates/dnssec_edit_key.html
+#: /templates/dnssec.html
+#: /templates/dnssec_delete_key.html
+msgid "%active%"
+msgstr ""
+
+#: /templates/delete_perm_templ.html
+#: /templates/list_perm_templ.html
+#: /templates/add_perm_templ.html
+#: /templates/edit_perm_templ.html
+msgid "Permission templates"
+msgstr ""
+
+#: /templates/delete_perm_templ.html
+#: /templates/list_perm_templ.html
+#: /templates/list_supermasters.html
+#: /templates/edit.html
+#: /templates/list_zones.html
+#: /templates/users.html
+#: /templates/edit_zone_templ.html
+#: /templates/delete_user.html
+#: /templates/list_zone_templ.html
+#: /templates/search.html
+msgid "Delete"
+msgstr ""
+
+#: /templates/delete_perm_templ.html
+msgid "Delete permission template"
+msgstr ""
+
+#: /templates/add_zone_templ_record.html
+#: /templates/add_record.html
+#: /templates/edit.html
+#: /templates/edit_zone_templ.html
+msgid "Add record"
+msgstr ""
+
+#: /templates/add_zone_templ_record.html
+msgid "Add record to zone template"
+msgstr ""
+
+#: /templates/add_zone_templ_record.html
+msgid "Provide content for your zone record"
+msgstr ""
+
+#: /templates/add_zone_templ_record.html
+#: /templates/edit_zone_templ.html
+msgid "Hint:"
+msgstr ""
+
+#: /templates/add_zone_templ_record.html
+#: /templates/edit_zone_templ.html
+msgid "The following placeholders can be used in template records"
+msgstr ""
+
+#: /templates/add_zone_templ_record.html
+#: /templates/edit_zone_templ.html
+msgid "substituted with 1st name server"
+msgstr ""
+
+#: /templates/add_zone_templ_record.html
+#: /templates/edit_zone_templ.html
+msgid "substituted with 2nd name server"
+msgstr ""
+
+#: /templates/add_zone_templ_record.html
+#: /templates/edit_zone_templ.html
+msgid "substituted with 3rd name server"
+msgstr ""
+
+#: /templates/add_zone_templ_record.html
+#: /templates/edit_zone_templ.html
+msgid "substituted with 4th name server"
+msgstr ""
+
+#: /templates/add_zone_templ_record.html
+#: /templates/edit_zone_templ.html
+msgid "substituted with hostmaster"
+msgstr ""
+
+#: /templates/add_zone_templ_record.html
+#: /templates/edit_zone_templ.html
+msgid "Examples:"
+msgstr ""
+
+#: /templates/add_zone_templ_record.html
+#: /templates/edit_zone_templ.html
+msgid "To add a wildcard record put *.[ZONE] in the name field."
+msgstr ""
+
+#: /templates/add_zone_templ_record.html
+#: /templates/edit_zone_templ.html
+msgid "Use just [ZONE] to have the domain itself return a value."
+msgstr ""
+
+#: /templates/list_log_zones.html
+#: /templates/list_log_users.html
+msgid "Total number of logs:"
+msgstr ""
+
+#: /templates/list_log_zones.html
+msgid "Search logs by domain"
+msgstr ""
+
+#: /templates/list_log_zones.html
+#: /templates/list_log_users.html
+#: /templates/header.html
+#: /templates/search.html
+msgid "Search"
+msgstr ""
+
+#: /templates/list_log_zones.html
+#: /templates/list_log_users.html
+#: /templates/search.html
+msgid "Clear"
+msgstr ""
+
+#: /templates/list_log_zones.html
+#: /templates/list_log_users.html
+msgid "Event"
+msgstr ""
+
+#: /templates/list_log_zones.html
+#: /templates/list_log_users.html
+msgid "Created at"
+msgstr ""
+
+#: /templates/list_log_zones.html
+msgid "Details"
+msgstr ""
+
+#: /templates/list_log_zones.html
+#: /templates/list_log_users.html
+msgid "No logs found"
+msgstr ""
+
+#: /templates/edit_comment.html
+#: /templates/edit.html
+msgid "Edit comment"
+msgstr ""
+
+#: /templates/edit_comment.html
+msgid "Edit comment in zone"
+msgstr ""
+
+#: /templates/list_perm_templ.html
+#: /templates/edit.html
+#: /templates/list_zones.html
+#: /templates/users.html
+#: /templates/edit_zone_templ.html
+#: /templates/edit_perm_templ.html
+#: /templates/list_zone_templ.html
+#: /templates/search.html
+msgid "Edit"
+msgstr ""
+
+#: /templates/list_perm_templ.html
+#: /templates/header.html
+#: /templates/add_perm_templ.html
+msgid "Add permission template"
+msgstr ""
+
+#: /templates/list_supermasters.html
+#: /templates/delete_supermaster.html
+#: /templates/add_supermaster.html
+msgid "Supermasters"
+msgstr ""
+
+#: /templates/list_supermasters.html
+#: /templates/add_supermaster.html
+msgid "IP address of supermaster"
+msgstr ""
+
+#: /templates/list_supermasters.html
+#: /templates/delete_supermaster.html
+#: /templates/add_supermaster.html
+msgid "Hostname in NS record"
+msgstr ""
+
+#: /templates/list_supermasters.html
+#: /templates/delete_supermaster.html
+#: /templates/header.html
+#: /templates/add_supermaster.html
+msgid "Account"
+msgstr ""
+
+#: /templates/list_supermasters.html
+msgid "There are no supermasters to show in this listing."
+msgstr ""
+
+#: /templates/add_zone_templ.html
+msgid "Add template"
+msgstr ""
+
+#: /templates/add_zone_templ.html
+msgid "Add zone template for"
+msgstr ""
+
+#: /templates/add_zone_templ.html
+#: /templates/add_perm_templ.html
+#: /templates/edit_zone_templ.html
+#: /templates/edit_perm_templ.html
+msgid "Provide a name for your template"
+msgstr ""
+
+#: /templates/add_zone_templ.html
+#: /templates/edit_zone_templ.html
+msgid "Everyone could use it (global)?"
+msgstr ""
+
+#: /templates/add_zone_templ.html
+#: /templates/header.html
+#: /templates/list_zone_templ.html
+msgid "Add zone template"
+msgstr ""
+
+#: /templates/delete_supermaster.html
+msgid "Delete supermaster"
+msgstr ""
+
+#: /templates/add_record.html
+msgid "Add record to zone"
+msgstr ""
+
+#: /templates/add_record.html
+#: /templates/edit.html
+msgid "Add also reverse record"
+msgstr ""
+
+#: /templates/edit.html
+msgid "Edit zone"
+msgstr ""
+
+#: /templates/edit.html
+msgid "This zone does not have any records."
+msgstr ""
+
+#: /templates/edit.html
+msgid "Comments"
+msgstr ""
+
+#: /templates/edit.html
+msgid "Unsign this zone"
+msgstr ""
+
+#: /templates/edit.html
+msgid "Sign this zone"
+msgstr ""
+
+#: /templates/edit.html
+msgid "Provide TTL"
+msgstr ""
+
+#: /templates/edit.html
+msgid "Save as new template"
+msgstr ""
+
+#: /templates/edit.html
+#: /templates/edit_zone_templ.html
+msgid "Template Name"
+msgstr ""
+
+#: /templates/edit.html
+#: /templates/edit_zone_templ.html
+msgid "Template Description"
+msgstr ""
+
+#: /templates/edit.html
+#: /templates/edit_zone_templ.html
+msgid "Save as template"
+msgstr ""
+
+#: /templates/edit.html
+msgid "Owner of zone"
+msgstr ""
+
+#: /templates/edit.html
+msgid "No owner set for this zone."
+msgstr ""
+
+#: /templates/edit.html
+#: /templates/add_perm_templ.html
+msgid "Add"
+msgstr ""
+
+#: /templates/edit.html
+msgid "Change"
+msgstr ""
+
+#: /templates/edit.html
+#: /templates/add_zone_slave.html
+msgid "IP address of master NS"
+msgstr ""
+
+#: /templates/edit.html
+#: /templates/bulk_registration.html
+#: /templates/list_zones.html
+#: /templates/users.html
+#: /templates/add_zone_master.html
+msgid "Template"
+msgstr ""
+
+#: /templates/list_log_users.html
+#: /templates/header.html
+msgid "User logs"
+msgstr ""
+
+#: /templates/list_log_users.html
+msgid "Search logs by user"
+msgstr ""
+
+#: /templates/header.html
+#: /templates/users.html
+#: /templates/add_user.html
+msgid "Add user"
+msgstr ""
+
+#: /templates/header.html
+msgid "Templates"
+msgstr ""
+
+#: /templates/bulk_registration.html
+#: /templates/list_zones.html
+#: /templates/add_zone_master.html
+#: /templates/add_zone_slave.html
+#: /templates/delete_domain.html
+#: /templates/list_zone_templ.html
+#: /templates/search.html
+#: /templates/delete_domains.html
+msgid "Owner"
+msgstr ""
+
+#: /templates/bulk_registration.html
+msgid "Type one domain per line"
+msgstr ""
+
+#: /templates/bulk_registration.html
+msgid "Provide a domain name(s)"
+msgstr ""
+
+#: /templates/bulk_registration.html
+msgid "Add zones"
+msgstr ""
+
+#: /templates/list_zones.html
+msgid "Total number of zones:"
+msgstr ""
+
+#: /templates/list_zones.html
+msgid "There are no zones to show in this listing."
+msgstr ""
+
+#: /templates/list_zones.html
+#: /templates/search.html
+msgid "Records"
+msgstr ""
+
+#: /templates/list_zones.html
+msgid "Full name"
+msgstr ""
+
+#: /templates/list_zones.html
+msgid "Serial"
+msgstr ""
+
+#: /templates/list_zones.html
+msgid "Delete zone(s)"
+msgstr ""
+
+#: /templates/users.html
+msgid "LDAP"
+msgstr ""
+
+#: /templates/delete_zone_templ_record.html
+msgid "Delete record"
+msgstr ""
+
+#: /templates/delete_zone_templ_record.html
+msgid "Delete record in zone template"
+msgstr ""
+
+#: /templates/dnssec_add_key.html
+msgid "Add key"
+msgstr ""
+
+#: /templates/dnssec_add_key.html
+msgid "Add key for zone"
+msgstr ""
+
+#: /templates/dnssec_add_key.html
+msgid "Key type"
+msgstr ""
+
+#: /templates/dnssec_add_key.html
+msgid "Select key type"
+msgstr ""
+
+#: /templates/dnssec_add_key.html
+msgid "Bits in length"
+msgstr ""
+
+#: /templates/dnssec_add_key.html
+msgid "Select bits length"
+msgstr ""
+
+#: /templates/dnssec_add_key.html
+msgid "Select algorithm"
+msgstr ""
+
+#: /templates/dnssec.html
+msgid "DNSSEC keys for zone"
+msgstr ""
+
+#: /templates/dnssec.html
+msgid "ID"
+msgstr ""
+
+#: /templates/dnssec.html
+msgid "%button_title%"
+msgstr ""
+
+#: /templates/dnssec.html
+#: /templates/dnssec_delete_key.html
+msgid "Delete zone key"
+msgstr ""
+
+#: /templates/dnssec.html
+msgid "Add new key"
+msgstr ""
+
+#: /templates/dnssec.html
+msgid "Show DS and DNSKEY"
+msgstr ""
+
+#: /templates/edit_zone_templ_record.html
+msgid "Edit record in zone template"
+msgstr ""
+
+#: /templates/edit_zone_templ.html
+msgid "Edit template"
+msgstr ""
+
+#: /templates/edit_zone_templ.html
+msgid "Edit zone template"
+msgstr ""
+
+#: /templates/edit_zone_templ.html
+msgid "This zone template does not have any records yet."
+msgstr ""
+
+#: /templates/edit_zone_templ.html
+msgid "Update zones"
+msgstr ""
+
+#: /templates/edit_perm_templ.html
+msgid "Edit permission template"
+msgstr ""
+
+#: /templates/delete_user.html
+msgid "Delete user"
+msgstr ""
+
+#: /templates/delete_user.html
+msgid "Zone"
+msgstr ""
+
+#: /templates/delete_user.html
+msgid "Leave"
+msgstr ""
+
+#: /templates/delete_user.html
+msgid "Add new owner"
+msgstr ""
+
+#: /templates/delete_user.html
+msgid "Owner to be added"
+msgstr ""
+
+#: /templates/dnssec_ds_dnskey.html
+msgid "DS and DNS keys"
+msgstr ""
+
+#: /templates/dnssec_ds_dnskey.html
+msgid "DNSSEC public records for zone"
+msgstr ""
+
+#: /templates/dnssec_ds_dnskey.html
+msgid "DNSKEY"
+msgstr ""
+
+#: /templates/dnssec_ds_dnskey.html
+msgid "DS record"
+msgstr ""
+
+#: /templates/add_supermaster.html
+#: /templates/add_zone_slave.html
+msgid "Provide ip address"
+msgstr ""
+
+#: /templates/add_supermaster.html
+msgid "Provide host name"
+msgstr ""
+
+#: /templates/add_zone_master.html
+#: /templates/add_zone_slave.html
+msgid "Zone name"
+msgstr ""
+
+#: /templates/add_zone_master.html
+#: /templates/add_zone_slave.html
+msgid "Provide zone name"
+msgstr ""
+
+#: /templates/change_password.html
+msgid "Current password"
+msgstr ""
+
+#: /templates/change_password.html
+msgid "Provide current password"
+msgstr ""
+
+#: /templates/change_password.html
+msgid "New password"
+msgstr ""
+
+#: /templates/change_password.html
+msgid "Provide new password"
+msgstr ""
+
+#: /templates/change_password.html
+msgid "Repeat password"
+msgstr ""
+
+#: /templates/add_zone_slave.html
+msgid "Add zone"
+msgstr ""
+
+#: /templates/delete_domain.html
+msgid "Delete Zone"
+msgstr ""
+
+#: /templates/delete_domain.html
+msgid "Delete zone"
+msgstr ""
+
+#: /templates/add_user.html
+msgid "LDAP Authentication"
+msgstr ""
+
+#: /templates/list_zone_templ.html
+msgid "Zone templates for"
+msgstr ""
+
+#: /templates/list_zone_templ.html
+msgid "In use"
+msgstr ""
+
+#: /templates/list_zone_templ.html
+msgid "Zones linked"
+msgstr ""
+
+#: /templates/list_zone_templ.html
+#: /templates/search.html
+msgid "No results found"
+msgstr ""
+
+#: /templates/list_zone_templ.html
+msgid "private"
+msgstr ""
+
+#: /templates/list_zone_templ.html
+msgid "global"
+msgstr ""
+
+#: /templates/dnssec_delete_key.html
+msgid "Delete key"
+msgstr ""
+
+#: /templates/search.html
+msgid "Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) in pattern matches any single character, a percent sign (%) matches any string of zero or more characters."
+msgstr ""
+
+#: /templates/search.html
+msgid "Provide a keyword for your search"
+msgstr ""
+
+#: /templates/search.html
+msgid "Wildcard"
+msgstr ""
+
+#: /templates/search.html
+msgid "Reverse"
+msgstr ""
+
+#: /templates/search.html
+msgid "Zones found"
+msgstr ""
+
+#: /templates/search.html
+msgid "Records found"
+msgstr ""
+
+#: /templates/delete_record.html
+msgid "Delete Record"
+msgstr ""
+
+#: /templates/delete_record.html
+msgid "Delete record in zone"
+msgstr ""
+
+#: /templates/delete_record.html
+msgid "You are trying to delete a record that is needed for this zone to work."
+msgstr ""
+
+#: /templates/delete_domains.html
+msgid "Delete Zones"
+msgstr ""
+
+#: /templates/delete_domains.html
+msgid "Delete zones"
+msgstr ""
+
+#: /templates/delete_domains.html
+msgid "Note"
 msgstr ""
