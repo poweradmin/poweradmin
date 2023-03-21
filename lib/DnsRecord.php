@@ -1470,7 +1470,7 @@ class DnsRecord
      */
     public static function search_zone_and_record($parameters, $permission_view, $sort_zones_by, $sort_records_by, $iface_rowamount)
     {
-        global $db;
+        global $db, $db_type;
         global $iface_search_group_records;
 
         $return = array('zones' => array(), 'records' => array());
@@ -1491,6 +1491,19 @@ class DnsRecord
 
         $needle = idn_to_ascii(trim($parameters['query']), IDNA_NONTRANSITIONAL_TO_ASCII);
         $search_string = ($parameters['wildcard'] ? '%' : '') . $needle . ($parameters['wildcard'] ? '%' : '');
+
+        $originalSqlMode = '';
+
+        if ($db_type === 'mysql') {
+            $originalSqlMode = $db->queryOne("SELECT @@GLOBAL.sql_mode");
+
+            if (str_contains($originalSqlMode, 'ONLY_FULL_GROUP_BY')) {
+                $newSqlMode = str_replace('ONLY_FULL_GROUP_BY,', '', $originalSqlMode);
+                $db->exec("SET SESSION sql_mode = '$newSqlMode'");
+            } else {
+                $originalSqlMode = '';
+            }
+        }
 
         if ($parameters['zones']) {
             $zonesQuery = '
@@ -1573,6 +1586,10 @@ class DnsRecord
                 $found_record['name'] = idn_to_utf8($found_record['name'], IDNA_NONTRANSITIONAL_TO_ASCII);
                 $return['records'][] = $found_record;
             }
+        }
+
+        if ($db_type === 'mysql' && $originalSqlMode !== '') {
+            $db->exec("SET SESSION sql_mode = '$originalSqlMode'");
         }
 
         return $return;
