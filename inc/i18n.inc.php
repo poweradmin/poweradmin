@@ -35,9 +35,9 @@ if (isset($_SESSION["userlang"])) {
     $iface_lang = $_SESSION["userlang"];
 }
 
-if ($iface_lang != 'en_EN') {
+if ($iface_lang != 'en_EN' && $iface_lang != 'en_US.UTF-8') {
     $locale = setlocale(LC_ALL, $iface_lang, $iface_lang . '.UTF-8');
-    if ($locale == false) {
+    if (!$locale) {
         error(_('Failed to set locale. Selected locale may be unsupported on this system. Please contact your administrator.'));
     }
 
