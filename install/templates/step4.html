@@ -9,7 +9,12 @@
         </tr>
         <tr>
             <td>{% trans %}Password{% endtrans %}</td>
-            <td><input class="form-control form-control-sm" type="password" name="pa_db_pass" value="" autocomplete="off"></td>
+            <td>
+                <div class="input-group">
+                    <input class="form-control form-control-sm" type="password" id="pa_db_pass" name="pa_db_pass" value="" autocomplete="off">
+                    <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showPassword('pa_db_pass', 'eye1')"><i class="bi bi-eye-fill" id="eye1"></i></button>
+                </div>
+            </td>
             <td>{% trans %}The password for this username.{% endtrans %}</td>
         </tr>
         {% endif %}

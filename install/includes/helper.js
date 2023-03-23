@@ -84,3 +84,10 @@ function updateFormFields(db_type) {
     }
 }
 
+function showPassword(passwordInputId, iconId) {
+    const password = document.getElementById(passwordInputId);
+    const icon = document.getElementById(iconId);
+    password.type = password.type === "password" ? "text" : "password";
+    icon.classList.toggle("bi-eye-fill");
+    icon.classList.toggle("bi-eye-slash-fill");
+}
