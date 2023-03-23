@@ -23,7 +23,7 @@ other [options](https://github.com/PowerDNS/pdns/wiki/WebFrontends).
 ## Tested on
 | Poweradmin | PHP            | PowerDNS | MariaDB | MySQL  | PostgreSQL | SQLite |
 |------------|----------------|----------|---------|--------|------------|--------|
-| 3.5.x      | 8.1.13         | 4.5.3    | 10.11.2 | 8.0.32 | 15.2       | 3.34.1 |
+| 3.5.x      | 8.1.17         | 4.5.3    | 10.11.2 | 8.0.32 | 15.2       | 3.34.1 |
 | 3.4.x      | 7.4.3 / 8.1.12 | 4.2.1    | 10.10.2 | 8.0.31 | 15.1       | 3.34.1 |
 
 ## Installation

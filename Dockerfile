@@ -10,7 +10,7 @@
 # Open your browser and navigate to "localhost", then log in using the provided username and password
 # admin / testadmin
 
-FROM php:8.1.15-apache
+FROM php:8.1.17-apache
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -19,6 +19,7 @@ RUN apt-get update && apt-get install -y \
     libicu67 \
     libicu-dev \
     locales-all \
+    libpq-dev \
     git
 
 RUN docker-php-ext-configure gettext && \
@@ -26,6 +27,18 @@ RUN docker-php-ext-configure gettext && \
 
 RUN docker-php-ext-configure intl && \
     docker-php-ext-install -j$(nproc) intl
+
+RUN docker-php-ext-configure mysqli && \
+    docker-php-ext-install -j$(nproc) mysqli
+
+RUN docker-php-ext-configure pdo && \
+    docker-php-ext-install -j$(nproc) pdo
+
+RUN docker-php-ext-configure pdo_mysql && \
+    docker-php-ext-install -j$(nproc) pdo_mysql
+
+RUN docker-php-ext-configure pdo_pgsql && \
+    docker-php-ext-install -j$(nproc) pdo_pgsql
 
 RUN git clone https://github.com/poweradmin/poweradmin.git /var/www/html
 
