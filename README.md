@@ -10,7 +10,7 @@ It is independently funded and maintained. If this project does not meet your ne
 other [options](https://github.com/PowerDNS/pdns/wiki/WebFrontends).
 
 ## Requirements
-* PHP 7.4.3+
+* PHP 8.1
 * PHP intl extension
 * PHP gettext extension
 * PHP openssl extension
