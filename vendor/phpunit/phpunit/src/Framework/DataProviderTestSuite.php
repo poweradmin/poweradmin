@@ -10,7 +10,8 @@
 namespace PHPUnit\Framework;
 
 use function explode;
-use PHPUnit\Util\Test as TestUtil;
+use PHPUnit\Framework\TestSize\TestSize;
+use PHPUnit\Metadata\Api\Groups;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
@@ -18,18 +19,19 @@ use PHPUnit\Util\Test as TestUtil;
 final class DataProviderTestSuite extends TestSuite
 {
     /**
-     * @var list<ExecutionOrderDependency>
+     * @psalm-var list<ExecutionOrderDependency>
      */
-    private $dependencies = [];
+    private array $dependencies   = [];
+    private ?array $providedTests = null;
 
     /**
-     * @param list<ExecutionOrderDependency> $dependencies
+     * @psalm-param list<ExecutionOrderDependency> $dependencies
      */
     public function setDependencies(array $dependencies): void
     {
         $this->dependencies = $dependencies;
 
-        foreach ($this->tests as $test) {
+        foreach ($this->tests() as $test) {
             if (!$test instanceof TestCase) {
                 // @codeCoverageIgnoreStart
                 continue;
@@ -40,7 +42,7 @@ final class DataProviderTestSuite extends TestSuite
     }
 
     /**
-     * @return list<ExecutionOrderDependency>
+     * @psalm-return list<ExecutionOrderDependency>
      */
     public function provides(): array
     {
@@ -52,7 +54,7 @@ final class DataProviderTestSuite extends TestSuite
     }
 
     /**
-     * @return list<ExecutionOrderDependency>
+     * @psalm-return list<ExecutionOrderDependency>
      */
     public function requires(): array
     {
@@ -62,14 +64,12 @@ final class DataProviderTestSuite extends TestSuite
     }
 
     /**
-     * Returns the size of the each test created using the data provider(s).
-     *
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * Returns the size of each test created using the data provider(s).
      */
-    public function getSize(): int
+    public function size(): TestSize
     {
         [$className, $methodName] = explode('::', $this->getName());
 
-        return TestUtil::getSize($className, $methodName);
+        return (new Groups)->size($className, $methodName);
     }
 }

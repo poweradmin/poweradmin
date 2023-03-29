@@ -33,22 +33,22 @@ use PHPUnit\Framework\Exception;
  */
 class DefaultPhpProcess extends AbstractPhpProcess
 {
-    /**
-     * @var string
-     */
-    protected $tempFile;
+    private ?string $tempFile = null;
 
     /**
      * Runs a single job (PHP code) using a separate PHP process.
      *
+     * @psalm-return array{stdout: string, stderr: string}
+     *
      * @throws Exception
+     * @throws PhpProcessException
      */
     public function runJob(string $job, array $settings = []): array
     {
         if ($this->stdin || $this->useTemporaryFile()) {
-            if (!($this->tempFile = tempnam(sys_get_temp_dir(), 'PHPUnit')) ||
+            if (!($this->tempFile = tempnam(sys_get_temp_dir(), 'phpunit_')) ||
                 file_put_contents($this->tempFile, $job) === false) {
-                throw new Exception(
+                throw new PhpProcessException(
                     'Unable to write temporary file'
                 );
             }
@@ -70,7 +70,10 @@ class DefaultPhpProcess extends AbstractPhpProcess
     /**
      * Handles creating the child process and returning the STDOUT and STDERR.
      *
+     * @psalm-return array{stdout: string, stderr: string}
+     *
      * @throws Exception
+     * @throws PhpProcessException
      */
     protected function runProcess(string $job, array $settings): array
     {
@@ -105,7 +108,7 @@ class DefaultPhpProcess extends AbstractPhpProcess
         );
 
         if (!is_resource($process)) {
-            throw new Exception(
+            throw new PhpProcessException(
                 'Unable to spawn worker process'
             );
         }
@@ -135,7 +138,7 @@ class DefaultPhpProcess extends AbstractPhpProcess
                 if ($n === 0) {
                     proc_terminate($process, 9);
 
-                    throw new Exception(
+                    throw new PhpProcessException(
                         sprintf(
                             'Job execution aborted after %d seconds',
                             $this->timeout

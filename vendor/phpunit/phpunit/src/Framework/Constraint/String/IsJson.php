@@ -29,10 +29,8 @@ final class IsJson extends Constraint
     /**
      * Evaluates the constraint for parameter $other. Returns true if the
      * constraint is met, false otherwise.
-     *
-     * @param mixed $other value or object to evaluate
      */
-    protected function matches($other): bool
+    protected function matches(mixed $other): bool
     {
         if ($other === '') {
             return false;
@@ -52,26 +50,32 @@ final class IsJson extends Constraint
      *
      * The beginning of failure messages is "Failed asserting that" in most
      * cases. This method should return the second part of that sentence.
-     *
-     * @param mixed $other evaluated value or object
-     *
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
-    protected function failureDescription($other): string
+    protected function failureDescription(mixed $other): string
     {
         if ($other === '') {
             return 'an empty string is valid JSON';
         }
 
         json_decode($other);
-        $error = (string) JsonMatchesErrorMessageProvider::determineJsonError(
-            (string) json_last_error()
-        );
 
         return sprintf(
             '%s is valid JSON (%s)',
             $this->exporter()->shortenedExport($other),
-            $error
+            $this->determineJsonError(json_last_error())
         );
+    }
+
+    private function determineJsonError(int $error): string
+    {
+        return match ($error) {
+            JSON_ERROR_NONE           => '',
+            JSON_ERROR_DEPTH          => 'Maximum stack depth exceeded',
+            JSON_ERROR_STATE_MISMATCH => 'Underflow or the modes mismatch',
+            JSON_ERROR_CTRL_CHAR      => 'Unexpected control character found',
+            JSON_ERROR_SYNTAX         => 'Syntax error, malformed JSON',
+            JSON_ERROR_UTF8           => 'Malformed UTF-8 characters, possibly incorrectly encoded',
+            default                   => 'Unknown error',
+        };
     }
 }

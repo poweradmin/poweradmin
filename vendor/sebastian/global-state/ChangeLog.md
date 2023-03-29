@@ -2,6 +2,20 @@
 
 All notable changes in `sebastian/global-state` are documented in this file using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 
+## [6.0.0] - 2023-02-03
+
+### Changed
+
+* Renamed `SebastianBergmann\GlobalState\ExcludeList::addStaticAttribute()` to `SebastianBergmann\GlobalState\ExcludeList::addStaticProperty()`
+* Renamed `SebastianBergmann\GlobalState\ExcludeList::isStaticAttributeExcluded()` to `SebastianBergmann\GlobalState\ExcludeList::isStaticPropertyExcluded()`
+* Renamed `SebastianBergmann\GlobalState\Restorer::restoreStaticAttributes()` to `SebastianBergmann\GlobalState\Restorer::restoreStaticProperties()`
+* Renamed `SebastianBergmann\GlobalState\Snapshot::staticAttributes()` to `SebastianBergmann\GlobalState\Snapshot::staticProperties()`
+
+### Removed
+
+* Removed `SebastianBergmann\GlobalState\Restorer::restoreFunctions()`
+* This component is no longer supported on PHP 7.3, PHP 7.4 and PHP 8.0
+
 ## [5.0.5] - 2022-02-14
 
 ### Fixed
@@ -66,6 +80,7 @@ All notable changes in `sebastian/global-state` are documented in this file usin
 
 * This component is no longer supported on PHP 7.0 and PHP 7.1
 
+[6.0.0]: https://github.com/sebastianbergmann/global-state/compare/5.0.5...6.0.0
 [5.0.5]: https://github.com/sebastianbergmann/global-state/compare/5.0.4...5.0.5
 [5.0.4]: https://github.com/sebastianbergmann/global-state/compare/5.0.3...5.0.4
 [5.0.3]: https://github.com/sebastianbergmann/global-state/compare/5.0.2...5.0.3

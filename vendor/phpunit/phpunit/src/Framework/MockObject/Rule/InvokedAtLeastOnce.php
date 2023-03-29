@@ -30,7 +30,7 @@ final class InvokedAtLeastOnce extends InvocationOrder
      */
     public function verify(): void
     {
-        $count = $this->getInvocationCount();
+        $count = $this->numberOfInvocations();
 
         if ($count < 1) {
             throw new ExpectationFailedException(
@@ -42,9 +42,5 @@ final class InvokedAtLeastOnce extends InvocationOrder
     public function matches(BaseInvocation $invocation): bool
     {
         return true;
-    }
-
-    protected function invokedDo(BaseInvocation $invocation): void
-    {
     }
 }

@@ -11,18 +11,18 @@ namespace PHPUnit\Framework\MockObject;
 
 use function array_map;
 use function explode;
-use function get_class;
 use function implode;
 use function in_array;
 use function interface_exists;
 use function is_object;
 use function sprintf;
-use function strpos;
+use function str_contains;
+use function str_starts_with;
 use function strtolower;
 use function substr;
-use Doctrine\Instantiator\Instantiator;
 use PHPUnit\Framework\SelfDescribing;
 use PHPUnit\Util\Cloner;
+use ReflectionClass;
 use SebastianBergmann\Exporter\Exporter;
 use stdClass;
 use Throwable;
@@ -32,40 +32,13 @@ use Throwable;
  */
 final class Invocation implements SelfDescribing
 {
-    /**
-     * @var string
-     */
-    private $className;
-
-    /**
-     * @var string
-     */
-    private $methodName;
-
-    /**
-     * @var array
-     */
-    private $parameters;
-
-    /**
-     * @var string
-     */
-    private $returnType;
-
-    /**
-     * @var bool
-     */
-    private $isReturnTypeNullable = false;
-
-    /**
-     * @var bool
-     */
-    private $proxiedCall;
-
-    /**
-     * @var object
-     */
-    private $object;
+    private readonly string $className;
+    private readonly string $methodName;
+    private array $parameters;
+    private readonly string $returnType;
+    private bool $isReturnTypeNullable = false;
+    private readonly bool $proxiedCall;
+    private readonly object $object;
 
     public function __construct(string $className, string $methodName, array $parameters, string $returnType, object $object, bool $cloneObjects = false, bool $proxiedCall = false)
     {
@@ -79,7 +52,7 @@ final class Invocation implements SelfDescribing
             $returnType = 'string';
         }
 
-        if (strpos($returnType, '?') === 0) {
+        if (str_starts_with($returnType, '?')) {
             $returnType                 = substr($returnType, 1);
             $this->isReturnTypeNullable = true;
         }
@@ -97,27 +70,25 @@ final class Invocation implements SelfDescribing
         }
     }
 
-    public function getClassName(): string
+    public function className(): string
     {
         return $this->className;
     }
 
-    public function getMethodName(): string
+    public function methodName(): string
     {
         return $this->methodName;
     }
 
-    public function getParameters(): array
+    public function parameters(): array
     {
         return $this->parameters;
     }
 
     /**
-     * @throws RuntimeException
-     *
-     * @return mixed Mocked return value
+     * @throws Exception
      */
-    public function generateReturnValue()
+    public function generateReturnValue(): mixed
     {
         if ($this->isReturnTypeNullable || $this->proxiedCall) {
             return null;
@@ -127,14 +98,14 @@ final class Invocation implements SelfDescribing
         $union                      = false;
         $unionContainsIntersections = false;
 
-        if (strpos($this->returnType, '|') !== false) {
+        if (str_contains($this->returnType, '|')) {
             $types = explode('|', $this->returnType);
             $union = true;
 
-            if (strpos($this->returnType, '(') !== false) {
+            if (str_contains($this->returnType, '(')) {
                 $unionContainsIntersections = true;
             }
-        } elseif (strpos($this->returnType, '&') !== false) {
+        } elseif (str_contains($this->returnType, '&')) {
             $types        = explode('&', $this->returnType);
             $intersection = true;
         } else {
@@ -178,14 +149,16 @@ final class Invocation implements SelfDescribing
 
             if (in_array('static', $types, true)) {
                 try {
-                    return (new Instantiator)->instantiate(get_class($this->object));
-                } catch (Throwable $t) {
-                    throw new RuntimeException(
-                        $t->getMessage(),
-                        (int) $t->getCode(),
-                        $t
+                    return (new ReflectionClass($this->object::class))->newInstanceWithoutConstructor();
+                    // @codeCoverageIgnoreStart
+                } catch (\ReflectionException $e) {
+                    throw new ReflectionException(
+                        $e->getMessage(),
+                        $e->getCode(),
+                        $e
                     );
                 }
+                // @codeCoverageIgnoreEnd
             }
 
             if (in_array('object', $types, true)) {
@@ -280,7 +253,7 @@ final class Invocation implements SelfDescribing
         );
     }
 
-    public function getObject(): object
+    public function object(): object
     {
         return $this->object;
     }

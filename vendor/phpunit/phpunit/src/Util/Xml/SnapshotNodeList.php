@@ -24,9 +24,9 @@ use IteratorAggregate;
 final class SnapshotNodeList implements Countable, IteratorAggregate
 {
     /**
-     * @var DOMNode[]
+     * @psalm-var list<DOMNode>
      */
-    private $nodes = [];
+    private array $nodes = [];
 
     public static function fromNodeList(DOMNodeList $list): self
     {

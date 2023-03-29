@@ -20,17 +20,10 @@ use SebastianBergmann\Comparator\Factory as ComparatorFactory;
  */
 final class IsEqualWithDelta extends Constraint
 {
-    /**
-     * @var mixed
-     */
-    private $value;
+    private readonly mixed $value;
+    private readonly float $delta;
 
-    /**
-     * @var float
-     */
-    private $delta;
-
-    public function __construct($value, float $delta)
+    public function __construct(mixed $value, float $delta)
     {
         $this->value = $value;
         $this->delta = $delta;
@@ -48,7 +41,7 @@ final class IsEqualWithDelta extends Constraint
      *
      * @throws ExpectationFailedException
      */
-    public function evaluate($other, string $description = '', bool $returnResult = false): ?bool
+    public function evaluate(mixed $other, string $description = '', bool $returnResult = false): ?bool
     {
         // If $this->value and $other are identical, they are also equal.
         // This is the most common path and will allow us to skip
@@ -86,8 +79,6 @@ final class IsEqualWithDelta extends Constraint
 
     /**
      * Returns a string representation of the constraint.
-     *
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function toString(): string
     {

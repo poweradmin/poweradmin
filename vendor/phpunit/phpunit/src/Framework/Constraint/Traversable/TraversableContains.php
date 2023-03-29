@@ -17,20 +17,15 @@ use function sprintf;
  */
 abstract class TraversableContains extends Constraint
 {
-    /**
-     * @var mixed
-     */
-    private $value;
+    private readonly mixed $value;
 
-    public function __construct($value)
+    public function __construct(mixed $value)
     {
         $this->value = $value;
     }
 
     /**
      * Returns a string representation of the constraint.
-     *
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function toString(): string
     {
@@ -42,12 +37,8 @@ abstract class TraversableContains extends Constraint
      *
      * The beginning of failure messages is "Failed asserting that" in most
      * cases. This method should return the second part of that sentence.
-     *
-     * @param mixed $other evaluated value or object
-     *
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
-    protected function failureDescription($other): string
+    protected function failureDescription(mixed $other): string
     {
         return sprintf(
             '%s %s',
@@ -56,7 +47,7 @@ abstract class TraversableContains extends Constraint
         );
     }
 
-    protected function value()
+    protected function value(): mixed
     {
         return $this->value;
     }

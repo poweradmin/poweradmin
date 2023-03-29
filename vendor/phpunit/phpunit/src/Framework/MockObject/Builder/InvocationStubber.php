@@ -19,47 +19,22 @@ interface InvocationStubber
 {
     public function will(Stub $stub): Identity;
 
-    /** @return self */
-    public function willReturn($value, ...$nextValues)/*: self */;
+    public function willReturn(mixed $value, mixed ...$nextValues): self;
+
+    public function willReturnReference(mixed &$reference): self;
 
     /**
-     * @param mixed $reference
-     *
-     * @return self
+     * @psalm-param array<int, array<int, mixed>> $valueMap
      */
-    public function willReturnReference(&$reference)/*: self */;
+    public function willReturnMap(array $valueMap): self;
 
-    /**
-     * @param array<int, array<int, mixed>> $valueMap
-     *
-     * @return self
-     */
-    public function willReturnMap(array $valueMap)/*: self */;
+    public function willReturnArgument(int $argumentIndex): self;
 
-    /**
-     * @param int $argumentIndex
-     *
-     * @return self
-     */
-    public function willReturnArgument($argumentIndex)/*: self */;
+    public function willReturnCallback(callable $callback): self;
 
-    /**
-     * @param callable $callback
-     *
-     * @return self
-     */
-    public function willReturnCallback($callback)/*: self */;
+    public function willReturnSelf(): self;
 
-    /** @return self */
-    public function willReturnSelf()/*: self */;
+    public function willReturnOnConsecutiveCalls(mixed ...$values): self;
 
-    /**
-     * @param mixed $values
-     *
-     * @return self
-     */
-    public function willReturnOnConsecutiveCalls(...$values)/*: self */;
-
-    /** @return self */
-    public function willThrowException(Throwable $exception)/*: self */;
+    public function willThrowException(Throwable $exception): self;
 }

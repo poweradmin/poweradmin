@@ -19,7 +19,6 @@ use function json_decode;
 use function json_encode;
 use function json_last_error;
 use function ksort;
-use PHPUnit\Framework\Exception;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
@@ -27,18 +26,14 @@ use PHPUnit\Framework\Exception;
 final class Json
 {
     /**
-     * Prettify json string.
-     *
-     * @throws \PHPUnit\Framework\Exception
+     * @throws InvalidJsonException
      */
     public static function prettify(string $json): string
     {
         $decodedJson = json_decode($json, false);
 
         if (json_last_error()) {
-            throw new Exception(
-                'Cannot prettify invalid json'
-            );
+            throw new InvalidJsonException;
         }
 
         return json_encode($decodedJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
@@ -73,7 +68,7 @@ final class Json
      * Sort all array keys to ensure both the expected and actual values have
      * their keys in the same order.
      */
-    private static function recursiveSort(&$json): void
+    private static function recursiveSort(mixed &$json): void
     {
         if (!is_array($json)) {
             // If the object is not empty, change it to an associative array
@@ -91,7 +86,7 @@ final class Json
 
         ksort($json);
 
-        foreach ($json as $key => &$value) {
+        foreach ($json as &$value) {
             self::recursiveSort($value);
         }
     }

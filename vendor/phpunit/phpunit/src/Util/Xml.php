@@ -10,49 +10,17 @@
 namespace PHPUnit\Util;
 
 use const ENT_QUOTES;
-use function assert;
-use function class_exists;
 use function htmlspecialchars;
 use function mb_convert_encoding;
 use function ord;
 use function preg_replace;
-use function settype;
 use function strlen;
-use DOMCharacterData;
-use DOMDocument;
-use DOMElement;
-use DOMNode;
-use DOMText;
-use ReflectionClass;
-use ReflectionException;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
  */
 final class Xml
 {
-    /**
-     * @deprecated Only used by assertEqualXMLStructure()
-     */
-    public static function import(DOMElement $element): DOMElement
-    {
-        return (new DOMDocument)->importNode($element, true);
-    }
-
-    /**
-     * @deprecated Only used by assertEqualXMLStructure()
-     */
-    public static function removeCharacterDataNodes(DOMNode $node): void
-    {
-        if ($node->hasChildNodes()) {
-            for ($i = $node->childNodes->length - 1; $i >= 0; $i--) {
-                if (($child = $node->childNodes->item($i)) instanceof DOMCharacterData) {
-                    $node->removeChild($child);
-                }
-            }
-        }
-    }
-
     /**
      * Escapes a string for the use in XML documents.
      *
@@ -71,88 +39,6 @@ final class Xml
                 ENT_QUOTES
             )
         );
-    }
-
-    /**
-     * "Convert" a DOMElement object into a PHP variable.
-     */
-    public static function xmlToVariable(DOMElement $element)
-    {
-        $variable = null;
-
-        switch ($element->tagName) {
-            case 'array':
-                $variable = [];
-
-                foreach ($element->childNodes as $entry) {
-                    if (!$entry instanceof DOMElement || $entry->tagName !== 'element') {
-                        continue;
-                    }
-                    $item = $entry->childNodes->item(0);
-
-                    if ($item instanceof DOMText) {
-                        $item = $entry->childNodes->item(1);
-                    }
-
-                    $value = self::xmlToVariable($item);
-
-                    if ($entry->hasAttribute('key')) {
-                        $variable[(string) $entry->getAttribute('key')] = $value;
-                    } else {
-                        $variable[] = $value;
-                    }
-                }
-
-                break;
-
-            case 'object':
-                $className = $element->getAttribute('class');
-
-                if ($element->hasChildNodes()) {
-                    $arguments       = $element->childNodes->item(0)->childNodes;
-                    $constructorArgs = [];
-
-                    foreach ($arguments as $argument) {
-                        if ($argument instanceof DOMElement) {
-                            $constructorArgs[] = self::xmlToVariable($argument);
-                        }
-                    }
-
-                    try {
-                        assert(class_exists($className));
-
-                        $variable = (new ReflectionClass($className))->newInstanceArgs($constructorArgs);
-                        // @codeCoverageIgnoreStart
-                    } catch (ReflectionException $e) {
-                        throw new Exception(
-                            $e->getMessage(),
-                            $e->getCode(),
-                            $e
-                        );
-                    }
-                    // @codeCoverageIgnoreEnd
-                } else {
-                    $variable = new $className;
-                }
-
-                break;
-
-            case 'boolean':
-                $variable = $element->textContent === 'true';
-
-                break;
-
-            case 'integer':
-            case 'double':
-            case 'string':
-                $variable = $element->textContent;
-
-                settype($variable, $element->tagName);
-
-                break;
-        }
-
-        return $variable;
     }
 
     private static function convertToUtf8(string $string): string

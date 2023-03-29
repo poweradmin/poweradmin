@@ -12,6 +12,7 @@ namespace PHPUnit\Util;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionMethod;
 
 /**
@@ -20,33 +21,53 @@ use ReflectionMethod;
 final class Reflection
 {
     /**
-     * @psalm-return list<ReflectionMethod>
+     * @psalm-param class-string $className
+     * @psalm-param non-empty-string $methodName
+     *
+     * @psalm-return array{file: string, line: int}
      */
-    public function publicMethodsInTestClass(ReflectionClass $class): array
+    public static function sourceLocationFor(string $className, string $methodName): array
     {
-        return $this->filterMethods($class, ReflectionMethod::IS_PUBLIC);
+        try {
+            $reflector = new ReflectionMethod($className, $methodName);
+
+            $file = $reflector->getFileName();
+            $line = $reflector->getStartLine();
+        } catch (ReflectionException) {
+            $file = 'unknown';
+            $line = 0;
+        }
+
+        return [
+            'file' => $file,
+            'line' => $line,
+        ];
     }
 
     /**
      * @psalm-return list<ReflectionMethod>
      */
-    public function methodsInTestClass(ReflectionClass $class): array
+    public static function publicMethodsInTestClass(ReflectionClass $class): array
     {
-        return $this->filterMethods($class, null);
+        return self::filterMethods($class, ReflectionMethod::IS_PUBLIC);
     }
 
     /**
      * @psalm-return list<ReflectionMethod>
      */
-    private function filterMethods(ReflectionClass $class, ?int $filter): array
+    public static function methodsInTestClass(ReflectionClass $class): array
+    {
+        return self::filterMethods($class, null);
+    }
+
+    /**
+     * @psalm-return list<ReflectionMethod>
+     */
+    private static function filterMethods(ReflectionClass $class, ?int $filter): array
     {
         $methods = [];
 
-        // PHP <7.3.5 throw error when null is passed
-        // to ReflectionClass::getMethods() when strict_types is enabled.
-        $classMethods = $filter === null ? $class->getMethods() : $class->getMethods($filter);
-
-        foreach ($classMethods as $method) {
+        foreach ($class->getMethods($filter) as $method) {
             if ($method->getDeclaringClass()->getName() === TestCase::class) {
                 continue;
             }

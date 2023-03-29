@@ -17,15 +17,8 @@ use DOMElement;
  */
 abstract class Node
 {
-    /**
-     * @var DOMDocument
-     */
-    private $dom;
-
-    /**
-     * @var DOMElement
-     */
-    private $contextNode;
+    private DOMDocument $dom;
+    private DOMElement $contextNode;
 
     public function __construct(DOMElement $context)
     {

@@ -14,23 +14,15 @@ namespace PHPUnit\Framework\Constraint;
  */
 final class LessThan extends Constraint
 {
-    /**
-     * @var float|int
-     */
-    private $value;
+    private readonly mixed $value;
 
-    /**
-     * @param float|int $value
-     */
-    public function __construct($value)
+    public function __construct(mixed $value)
     {
         $this->value = $value;
     }
 
     /**
      * Returns a string representation of the constraint.
-     *
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function toString(): string
     {
@@ -40,10 +32,8 @@ final class LessThan extends Constraint
     /**
      * Evaluates the constraint for parameter $other. Returns true if the
      * constraint is met, false otherwise.
-     *
-     * @param mixed $other value or object to evaluate
      */
-    protected function matches($other): bool
+    protected function matches(mixed $other): bool
     {
         return $this->value > $other;
     }

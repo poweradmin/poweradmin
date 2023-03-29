@@ -17,11 +17,12 @@ use function dirname;
 use function explode;
 use function implode;
 use function is_file;
+use function str_ends_with;
 use function str_replace;
-use function strpos;
+use function str_starts_with;
 use function substr;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
-use SebastianBergmann\CodeCoverage\ProcessedCodeCoverageData;
+use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
 
 /**
@@ -29,10 +30,7 @@ use SebastianBergmann\CodeCoverage\StaticAnalysis\FileAnalyser;
  */
 final class Builder
 {
-    /**
-     * @var FileAnalyser
-     */
-    private $analyser;
+    private readonly FileAnalyser $analyser;
 
     public function __construct(FileAnalyser $analyser)
     {
@@ -57,12 +55,15 @@ final class Builder
         return $root;
     }
 
+    /**
+     * @psalm-param array<string, array{size: string, status: string}> $tests
+     */
     private function addItems(Directory $root, array $items, array $tests): void
     {
         foreach ($items as $key => $value) {
             $key = (string) $key;
 
-            if (substr($key, -2) === '/f') {
+            if (str_ends_with($key, '/f')) {
                 $key      = substr($key, 0, -2);
                 $filename = $root->pathAsString() . DIRECTORY_SEPARATOR . $key;
 
@@ -214,7 +215,7 @@ final class Builder
 
         for ($i = 0; $i < $max; $i++) {
             // strip phar:// prefixes
-            if (strpos($paths[$i], 'phar://') === 0) {
+            if (str_starts_with($paths[$i], 'phar://')) {
                 $paths[$i] = substr($paths[$i], 7);
                 $paths[$i] = str_replace('/', DIRECTORY_SEPARATOR, $paths[$i]);
             }

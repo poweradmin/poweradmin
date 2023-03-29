@@ -9,30 +9,31 @@
  */
 namespace PHPUnit\Framework\Constraint;
 
+use function is_string;
 use function mb_stripos;
 use function mb_strtolower;
 use function sprintf;
-use function strpos;
+use function str_contains;
+use function strtr;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
  */
 final class StringContains extends Constraint
 {
-    /**
-     * @var string
-     */
-    private $string;
+    private readonly string $string;
+    private readonly bool $ignoreCase;
+    private readonly bool $ignoreLineEndings;
 
-    /**
-     * @var bool
-     */
-    private $ignoreCase;
-
-    public function __construct(string $string, bool $ignoreCase = false)
+    public function __construct(string $string, bool $ignoreCase = false, bool $ignoreLineEndings = false)
     {
-        $this->string     = $string;
-        $this->ignoreCase = $ignoreCase;
+        if ($ignoreLineEndings) {
+            $string = $this->normalizeLineEndings($string);
+        }
+
+        $this->string            = $string;
+        $this->ignoreCase        = $ignoreCase;
+        $this->ignoreLineEndings = $ignoreLineEndings;
     }
 
     /**
@@ -40,10 +41,10 @@ final class StringContains extends Constraint
      */
     public function toString(): string
     {
+        $string = $this->string;
+
         if ($this->ignoreCase) {
             $string = mb_strtolower($this->string, 'UTF-8');
-        } else {
-            $string = $this->string;
         }
 
         return sprintf(
@@ -55,13 +56,19 @@ final class StringContains extends Constraint
     /**
      * Evaluates the constraint for parameter $other. Returns true if the
      * constraint is met, false otherwise.
-     *
-     * @param mixed $other value or object to evaluate
      */
-    protected function matches($other): bool
+    protected function matches(mixed $other): bool
     {
         if ('' === $this->string) {
             return true;
+        }
+
+        if (!is_string($other)) {
+            return false;
+        }
+
+        if ($this->ignoreLineEndings) {
+            $other = $this->normalizeLineEndings($other);
         }
 
         if ($this->ignoreCase) {
@@ -80,6 +87,17 @@ final class StringContains extends Constraint
          * Additionally, we want this method to be binary safe so we can check if some binary data is in other binary
          * data.
          */
-        return strpos($other, $this->string) !== false;
+        return str_contains($other, $this->string);
+    }
+
+    private function normalizeLineEndings(string $string): string
+    {
+        return strtr(
+            $string,
+            [
+                "\r\n" => "\n",
+                "\r"   => "\n",
+            ]
+        );
     }
 }

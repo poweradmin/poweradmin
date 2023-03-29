@@ -26,7 +26,6 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\Node\UnionType;
-use PhpParser\NodeAbstract;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
 use SebastianBergmann\Complexity\CyclomaticComplexityCalculatingVisitor;
@@ -39,17 +38,17 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
     /**
      * @psalm-var array<string,array{name: string, namespacedName: string, namespace: string, startLine: int, endLine: int, methods: array<string,array{methodName: string, signature: string, visibility: string, startLine: int, endLine: int, ccn: int}>}>
      */
-    private $classes = [];
+    private array $classes = [];
 
     /**
      * @psalm-var array<string,array{name: string, namespacedName: string, namespace: string, startLine: int, endLine: int, methods: array<string,array{methodName: string, signature: string, visibility: string, startLine: int, endLine: int, ccn: int}>}>
      */
-    private $traits = [];
+    private array $traits = [];
 
     /**
      * @psalm-var array<string,array{name: string, namespacedName: string, namespace: string, signature: string, startLine: int, endLine: int, ccn: int}>
      */
-    private $functions = [];
+    private array $functions = [];
 
     public function enterNode(Node $node): void
     {
@@ -108,13 +107,8 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
         return $this->functions;
     }
 
-    /**
-     * @psalm-param ClassMethod|Function_ $node
-     */
-    private function cyclomaticComplexity(Node $node): int
+    private function cyclomaticComplexity(ClassMethod|Function_ $node): int
     {
-        assert($node instanceof ClassMethod || $node instanceof Function_);
-
         $nodes = $node->getStmts();
 
         if ($nodes === null) {
@@ -133,13 +127,8 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
         return $cyclomaticComplexityCalculatingVisitor->cyclomaticComplexity();
     }
 
-    /**
-     * @psalm-param ClassMethod|Function_ $node
-     */
-    private function signature(Node $node): string
+    private function signature(ClassMethod|Function_ $node): string
     {
-        assert($node instanceof ClassMethod || $node instanceof Function_);
-
         $signature  = ($node->returnsByRef() ? '&' : '') . $node->name->toString() . '(';
         $parameters = [];
 
@@ -170,13 +159,8 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
         return $signature;
     }
 
-    /**
-     * @psalm-param Identifier|Name|ComplexType $type
-     */
-    private function type(Node $type): string
+    private function type(Identifier|Name|ComplexType $type): string
     {
-        assert($type instanceof Identifier || $type instanceof Name || $type instanceof ComplexType);
-
         if ($type instanceof NullableType) {
             return '?' . $type->type;
         }
@@ -331,10 +315,7 @@ final class CodeUnitFindingVisitor extends NodeVisitorAbstract
         return implode('&', $types);
     }
 
-    /**
-     * @psalm-param Identifier|Name $node $node
-     */
-    private function typeAsString(NodeAbstract $node): string
+    private function typeAsString(Identifier|Name $node): string
     {
         if ($node instanceof Name) {
             return $node->toCodeString();
