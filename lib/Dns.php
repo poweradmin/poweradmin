@@ -60,7 +60,7 @@ class Dns
      *
      * @return boolean true on success, false otherwise
      */
-    public static function validate_input($rid, $zid, $type, $content, $name, $prio, $ttl)
+    public static function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl)
     {
         $zone = DnsRecord::get_domain_name_by_id($zid);    // TODO check for return
 
