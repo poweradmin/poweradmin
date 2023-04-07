@@ -69,6 +69,7 @@ $dns_third_level_check = false;       // Do not allow the creation of third-leve
 $syslog_use = false;
 $syslog_ident = 'poweradmin';
 // On Windows usually only LOG_USER is available
+// See <https://www.php.net/manual/en/function.openlog.php> for available facilities.
 $syslog_facility = LOG_USER;
 
 // Keeping track of record and zone changes in the database
