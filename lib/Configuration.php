@@ -76,6 +76,10 @@ class Configuration
             return $tokenValue === 'true';
         }
 
+        if (defined($tokenValue)) {
+            return constant($tokenValue);
+        }
+
         return $tokenValue;
     }
 
