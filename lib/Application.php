@@ -52,6 +52,10 @@ class Application {
         $this->showValidationErrors($validator);
 
         $iface_lang = $this->config('iface_lang');
+        if (isset($_SESSION["userlang"])) {
+            $iface_lang = $_SESSION["userlang"];
+        }
+
         $translator = new Translator($iface_lang);
         $translator->addLoader('po', new PoFileLoader());
         $translator->addResource('po', $this->getLocaleFile($iface_lang), $iface_lang);
