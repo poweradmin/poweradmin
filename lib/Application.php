@@ -39,6 +39,8 @@ class Application {
         $loader = new FilesystemLoader('templates');
         $this->templateRenderer = new Environment($loader, [ 'debug' => false ]);
 
+        $this->configuration = new Configuration();
+
         global $syslog_use, $syslog_ident, $syslog_facility;
         $config = [
             'syslog_use' => $syslog_use,
@@ -49,14 +51,12 @@ class Application {
         $validator = new ConfigValidator($config);
         $this->showValidationErrors($validator);
 
-        global $iface_lang;
+        $iface_lang = $this->config('iface_lang');
         $translator = new Translator($iface_lang);
         $translator->addLoader('po', new PoFileLoader());
         $translator->addResource('po', $this->getLocaleFile($iface_lang), $iface_lang);
 
         $this->templateRenderer->addExtension(new TranslationExtension($translator));
-
-        $this->configuration = new Configuration();
     }
 
     public function render($template, $params = []): void
@@ -69,8 +69,7 @@ class Application {
     }
 
     public function config($name) {
-        $raw_value = $this->configuration->get($name);
-        return $raw_value ? str_replace(['"', "'"], "", $raw_value) : null;
+        return $this->configuration->getSanitized($name);
     }
 
     public function getLocaleFile(string $iface_lang): string

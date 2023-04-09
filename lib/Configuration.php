@@ -31,7 +31,7 @@ namespace Poweradmin;
  */
 class Configuration
 {
-    protected $config = array();
+    protected array $config = array();
 
     public function __construct()
     {
@@ -83,5 +83,10 @@ class Configuration
         } else {
             return null;
         }
+    }
+
+    public function getSanitized($name) {
+        $raw_value = $this->get($name);
+        return $raw_value ? str_replace(['"', "'"], "", $raw_value) : null;
     }
 }
