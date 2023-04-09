@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\LdapUserEventLogger;
 use Poweradmin\Password;
 use Poweradmin\Session;
@@ -56,7 +57,8 @@ function authenticate_local() {
     // If a user had just entered his/her login && password, store them in our session.
     if (isset($_POST["authenticate"])) {
         if ($_POST['password'] != '') {
-            $_SESSION["userpwd"] = Session::encrypt_password($_POST['password'], $session_key);
+            $passwordEncryptionService = new PasswordEncryptionService($session_key);
+            $_SESSION["userpwd"] = $passwordEncryptionService->encrypt($_POST['password']);
 
             $_SESSION["userlogin"] = $_POST["username"];
             $_SESSION["userlang"] = $_POST["userlang"];
@@ -154,7 +156,8 @@ function LDAPAuthenticate() {
         }
         $user_dn = $entries[0]["dn"];
 
-        $session_pass = Session::decrypt_password($_SESSION['userpwd'], $session_key);
+        $passwordEncryptionService = new PasswordEncryptionService($session_key);
+        $session_pass = $passwordEncryptionService->decrypt($_SESSION['userpwd']);
         $ldapbind = ldap_bind($ldapconn, $user_dn, $session_pass);
         if (!$ldapbind) {
             if (isset($_POST["authenticate"])) {
@@ -195,8 +198,8 @@ function SQLAuthenticate() {
     global $session_key;
 
     if (isset($_SESSION["userlogin"]) && isset($_SESSION["userpwd"])) {
-        //Username and password are set, lets try to authenticate.
-        $session_pass = Session::decrypt_password($_SESSION["userpwd"], $session_key);
+        $passwordEncryptionService = new PasswordEncryptionService($session_key);
+        $session_pass = $passwordEncryptionService->decrypt($_SESSION['userpwd']);
 
         $rowObj = $db->queryRow("SELECT id, fullname, password FROM users WHERE username=" . $db->quote($_SESSION["userlogin"], 'text') . " AND active=1 AND use_ldap=0");
 
