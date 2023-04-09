@@ -18,6 +18,7 @@ class PasswordEncryptionService
         if (empty($password)) {
             return '';
         }
+
         $key = $this->computeKey();
         $iv = $this->computeIV();
 
@@ -26,6 +27,10 @@ class PasswordEncryptionService
 
     public function decrypt(string $password): string
     {
+        if (empty($password)) {
+            return '';
+        }
+
         $key = $this->computeKey();
 
         list($encryptedPassword, $iv) = explode(':', $password, 2);
