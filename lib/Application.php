@@ -22,6 +22,7 @@
 
 namespace Poweradmin;
 
+use Poweradmin\Infrastructure\ConfigValidator;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Symfony\Component\Translation\Loader\PoFileLoader;
 use Symfony\Component\Translation\Translator;
@@ -31,12 +32,22 @@ use Twig\Loader\FilesystemLoader;
 
 class Application {
 
-    protected $templateRenderer;
-    protected $configuration;
+    protected Environment $templateRenderer;
+    protected Configuration $configuration;
 
     public function __construct() {
         $loader = new FilesystemLoader('templates');
         $this->templateRenderer = new Environment($loader, [ 'debug' => false ]);
+
+        global $syslog_use, $syslog_ident, $syslog_facility;
+        $config = [
+            'syslog_use' => $syslog_use,
+            'syslog_ident' => $syslog_ident,
+            'syslog_facility' => $syslog_facility,
+        ];
+
+        $validator = new ConfigValidator($config);
+        $this->showValidationErrors($validator);
 
         global $iface_lang;
         $translator = new Translator($iface_lang);
@@ -44,10 +55,12 @@ class Application {
         $translator->addResource('po', $this->getLocaleFile($iface_lang), $iface_lang);
 
         $this->templateRenderer->addExtension(new TranslationExtension($translator));
+
         $this->configuration = new Configuration();
     }
 
-    public function render($template, $params = []) {
+    public function render($template, $params = []): void
+    {
         try {
             echo $this->templateRenderer->render($template, $params);
         } catch (Error $e) {
@@ -67,5 +80,16 @@ class Application {
             return "locale/$iface_lang/LC_MESSAGES/$short_locale.po";
         }
         return "locale/en_EN/LC_MESSAGES/en.po";
+    }
+
+    public function showValidationErrors(ConfigValidator $validator): void
+    {
+        if (!$validator->validate()) {
+            $errors = $validator->getErrors();
+            foreach ($errors as $error) {
+                error("Invalid configuration: $error");
+            }
+            exit(1);
+        }
     }
 }
