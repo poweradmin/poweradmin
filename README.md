@@ -57,7 +57,7 @@ yum install -y php-pgsql
 Download the project files
 * Via Git:
   * Clone the repository: ```git clone https://github.com/poweradmin/poweradmin.git```
-  * Select latest tag (for example v3.4.2) or skip this if you want to run from master: ```git checkout tags/v3.4.2```
+  * Select latest tag (for example v3.5.1) or skip this if you want to run from master: ```git checkout tags/v3.5.1```
 * Via releases:
   * Get the latest file from [releases](https://github.com/poweradmin/poweradmin/releases)
 
