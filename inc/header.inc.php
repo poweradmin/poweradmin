@@ -30,6 +30,7 @@
  */
 
 use Poweradmin\AppFactory;
+use Poweradmin\Infrastructure\UI\Web\ThemeManager;
 
 global $iface_style;
 global $iface_title;
@@ -40,9 +41,11 @@ if (!headers_sent()) {
     header('Content-type: text/html; charset=utf-8');
 }
 
+$themeManager = new ThemeManager($iface_style);
+
 $vars = [
     'iface_title' => $iface_title,
-    'iface_style' => $iface_style == 'example' ? 'ignite' : $iface_style,
+    'iface_style' => $themeManager->getSelectedTheme(),
     'file_version' => time(),
     'custom_header' => file_exists('templates/custom/header.html'),
     'install_error' => !$ignore_install_dir && file_exists('install') ? _('The <a href="install/">install/</a> directory exists, you must remove it first before proceeding.') : false,
