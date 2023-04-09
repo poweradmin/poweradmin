@@ -73,7 +73,7 @@ class Application {
     }
 
     public function config($name) {
-        return $this->configuration->getSanitized($name);
+        return $this->configuration->get($name);
     }
 
     public function getLocaleFile(string $iface_lang): string

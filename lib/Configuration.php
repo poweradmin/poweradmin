@@ -21,72 +21,71 @@
 
 namespace Poweradmin;
 
-/**
- *  Configuration file functions
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2023 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
 class Configuration
 {
-    protected array $config = array();
+    protected array $config;
 
-    public function __construct()
+    public function __construct(
+        string $defaultConfigFile = 'inc/config-me.inc.php',
+        string $customConfigFile = 'inc/config.inc.php'
+    )
     {
-        $default_config = file_exists('inc/config-me.inc.php') ? $this->parseConfig('inc/config-me.inc.php') : [];
-        $custom_config = array();
-        if (file_exists('inc/config.inc.php')) {
-            $custom_config = $this->parseConfig('inc/config.inc.php');
-        }
-        $this->config = array_merge($default_config, $custom_config);
+        $defaultConfig = $this->loadAndParseConfig($defaultConfigFile);
+        $customConfig = $this->loadAndParseConfig($customConfigFile);
+        $this->config = array_merge($defaultConfig, $customConfig);
     }
 
-    private function parseConfig($fileName): array
+    private function loadAndParseConfig(string $fileName): array
     {
-        $default_config_content = file_get_contents($fileName);
-        $tokens = token_get_all($default_config_content);
-        $last_token = null;
-        $configItems = array();
+        if (!file_exists($fileName)) {
+            return [];
+        }
+
+        $configContent = file_get_contents($fileName);
+        $tokens = token_get_all($configContent);
+        $lastToken = null;
+        $configItems = [];
+
         foreach ($tokens as $token) {
             if (is_array($token)) {
-                $token_type = $token[0];
-                $token_value = $token[1];
-                switch ($token_type) {
+                [$tokenType, $tokenValue] = $token;
+
+                switch ($tokenType) {
                     case T_VARIABLE:
-                        $last_token = substr($token_value, 1);
+                        $lastToken = substr($tokenValue, 1);
                         break;
                     case T_STRING:
                     case T_CONSTANT_ENCAPSED_STRING:
-                        if ($token_value == 'true' || $token_value == 'false') {
-                            $configItems[$last_token] = $token_value == 'true';
-                        } else {
-                            $configItems[$last_token] = $token_value;
-                        }
+                        $configItems[$lastToken] = $this->parseTokenValue($tokenValue);
                         break;
                     case T_LNUMBER:
-                        $configItems[$last_token] = intval($token_value);
+                        $configItems[$lastToken] = intval($tokenValue);
                         break;
                     default:
                         break;
                 }
             }
         }
+
         return $configItems;
+    }
+
+    private function parseTokenValue(string $tokenValue)
+    {
+        if ($tokenValue === 'true' || $tokenValue === 'false') {
+            return $tokenValue === 'true';
+        }
+
+        return $tokenValue;
     }
 
     public function get($name)
     {
         if (array_key_exists($name, $this->config)) {
-            return $this->config[$name];
+            $value = $this->config[$name];
+            return str_replace(['"', "'"], "", $value);
         } else {
             return null;
         }
-    }
-
-    public function getSanitized($name) {
-        $raw_value = $this->get($name);
-        return $raw_value ? str_replace(['"', "'"], "", $raw_value) : null;
     }
 }
