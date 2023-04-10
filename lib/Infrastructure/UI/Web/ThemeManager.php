@@ -18,7 +18,11 @@ class ThemeManager
         $this->styleDir = $style_dir ?? self::DEFAULT_STYLE_DIR;
         $this->availableThemes = $this->getAvailableThemes();
 
-        if ($style && $this->isThemeAvailable($style)) {
+        $themeFromCookie = $this->getThemeFromCookie();
+
+        if ($themeFromCookie && $this->isThemeAvailable($themeFromCookie)) {
+            $this->selectedTheme = $themeFromCookie;
+        } elseif ($style && $this->isThemeAvailable($style)) {
             $this->selectedTheme = $style;
         } else {
             $this->selectedTheme = self::DEFAULT_THEME;
@@ -51,6 +55,14 @@ class ThemeManager
     public function getSelectedTheme(): string
     {
         return $this->selectedTheme;
+    }
+
+    private function getThemeFromCookie(): ?string
+    {
+        if (isset($_COOKIE['theme']) && in_array($_COOKIE['theme'], ['ignite', 'spark'])) {
+            return $_COOKIE['theme'];
+        }
+        return null;
     }
 }
 

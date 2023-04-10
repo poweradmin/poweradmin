@@ -7,6 +7,11 @@ class ThemeManagerTest extends TestCase
 {
     private string $testStyleDir;
 
+    private function setCookieTheme(string $theme): void
+    {
+        $_COOKIE['theme'] = $theme;
+    }
+
     protected function setUp(): void
     {
         $this->testStyleDir = dirname(__DIR__) . '/style/';
@@ -39,5 +44,36 @@ class ThemeManagerTest extends TestCase
 
         $this->assertEquals('ignite', $themeManager->getSelectedTheme());
     }
-}
 
+    public function testThemeFromCookie()
+    {
+        $this->setCookieTheme('spark');
+        $themeManager = new ThemeManager(null, $this->testStyleDir);
+
+        $this->assertEquals('spark', $themeManager->getSelectedTheme());
+    }
+
+    public function testInvalidThemeFromCookie()
+    {
+        $this->setCookieTheme('nonexistent');
+        $themeManager = new ThemeManager(null, $this->testStyleDir);
+
+        $this->assertEquals('ignite', $themeManager->getSelectedTheme());
+    }
+
+    public function testValidThemeFromCookieWithCustomTheme()
+    {
+        $this->setCookieTheme('spark');
+        $themeManager = new ThemeManager('ignite', $this->testStyleDir);
+
+        $this->assertEquals('spark', $themeManager->getSelectedTheme());
+    }
+
+    public function testInvalidThemeFromCookieWithCustomTheme()
+    {
+        $this->setCookieTheme('nonexistent');
+        $themeManager = new ThemeManager('spark', $this->testStyleDir);
+
+        $this->assertEquals('spark', $themeManager->getSelectedTheme());
+    }
+}
