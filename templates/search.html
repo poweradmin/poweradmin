@@ -47,7 +47,7 @@
     </div>
 </form>
 
-{% if zones_found %}
+{% if has_zones %}
 <div class="pb-3">
     <h5 class="mb-3 pt-3 border-top">{% trans %}Zones found{% endtrans %}</h5>
     <table class="table table-striped table-hover table-sm">
@@ -61,12 +61,7 @@
         </tr>
         </thead>
         <tbody>
-        {% if not search_result['zones'] %}
-        <tr>
-            <td colspan="5">{% trans %}No results found{% endtrans %}</td>
-        </tr>
-        {% endif %}
-        {% for zone in search_result['zones'] %}
+        {% for zone in found_zones %}
         <tr>
             <td>{{ zone['name'] }}</td>
             <td>{{ zone['type'] }}</td>
@@ -89,7 +84,7 @@
 </div>
 {% endif %}
 
-{% if records_found %}
+{% if has_records %}
 <div class="pb-3">
     <h5 class="mb-3 pt-3 border-top">{% trans %}Records found{% endtrans %}</h5>
     <table class="table table-striped table-hover table-sm">
@@ -104,12 +99,7 @@
         </tr>
         </thead>
         <tbody>
-        {% if not search_result['records'] %}
-        <tr>
-            <td colspan="6">{% trans %}No results found{% endtrans %}</td>
-        </tr>
-        {% endif %}
-        {% for record in search_result['records'] %}
+        {% for record in found_records %}
         <tr>
             <td>{{ record['name'] }}</td>
             <td>{{ record['type'] }}</td>

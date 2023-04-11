@@ -92,9 +92,10 @@ class SearchController extends BaseController
             'search_by_records' => $parameters['records'],
             'search_by_wildcard' => $parameters['wildcard'],
             'search_by_reverse' => $parameters['reverse'],
-            'zones_found' => is_array($searchResult['zones']),
-            'records_found' => is_array($searchResult['records']),
-            'search_result' => $searchResult,
+            'has_zones' => is_array($searchResult['zones']) && count($searchResult['zones']) > 0,
+            'has_records' => is_array($searchResult['records']) && count($searchResult['records']) > 0,
+            'found_zones' => $searchResult['zones'],
+            'found_records' => $searchResult['records'],
             'edit_permission' => Permission::getEditPermission(),
             'user_id' => $_SESSION['userid'],
         ]);
