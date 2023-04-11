@@ -370,7 +370,7 @@ email = " . $db->quote($email, 'text') . ",";
  * @param string $password New password
  * @return void
  */
-function update_user_password($id, $password)
+function update_user_password($id, $password): void
 {
     global $db;
     $query = "UPDATE users SET password = " . $db->quote(Password::hash($password), 'text') . " WHERE id = " . $db->quote($id, 'integer');

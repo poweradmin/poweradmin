@@ -45,7 +45,8 @@ require_once 'inc/redirect.inc.php';
  *
  * @return null
  */
-function authenticate_local() {
+function authenticate_local()
+{
     global $iface_expire;
     global $session_key;
     global $ldap_use;
@@ -82,7 +83,8 @@ function authenticate_local() {
     }
 }
 
-function userUsesLDAP() {
+function userUsesLDAP()
+{
     if (!isset($_SESSION["userlogin"])) {
         return false;
     }
@@ -96,7 +98,8 @@ function userUsesLDAP() {
     return false;
 }
 
-function LDAPAuthenticate() {
+function LDAPAuthenticate()
+{
     global $db;
     global $session_key;
     global $ldap_uri;
@@ -193,49 +196,64 @@ function LDAPAuthenticate() {
     }
 }
 
-function SQLAuthenticate() {
+function SQLAuthenticate(): void
+{
     global $db;
     global $session_key;
 
-    if (isset($_SESSION["userlogin"]) && isset($_SESSION["userpwd"])) {
-        $passwordEncryptionService = new PasswordEncryptionService($session_key);
-        $session_pass = $passwordEncryptionService->decrypt($_SESSION['userpwd']);
-
-        $rowObj = $db->queryRow("SELECT id, fullname, password FROM users WHERE username=" . $db->quote($_SESSION["userlogin"], 'text') . " AND active=1 AND use_ldap=0");
-
-        if ($rowObj) {
-            if (Password::verify($session_pass, $rowObj['password'])) {
-                if (Password::needs_rehash($rowObj['password'])) {
-                    update_user_password($rowObj["id"], $session_pass);
-                }
-
-                $_SESSION["userid"] = $rowObj["id"];
-                $_SESSION["name"] = $rowObj["fullname"];
-                $_SESSION["auth_used"] = "internal";
-
-                if (isset($_POST["authenticate"])) {
-                    UserEventLogger::log_successful_auth();
-                    //If a user has just authenticated, redirect him to requested page
-                    session_write_close();
-                    $redirect_url = ($_POST["query_string"] ? $_SERVER['SCRIPT_NAME'] . "?" . $_POST["query_string"] : $_SERVER['SCRIPT_NAME']);
-                    clean_page($redirect_url);
-                }
-            } else if (isset($_POST['authenticate'])) {
-                UserEventLogger::log_failed_auth();
-                auth(_('Authentication failed!'), 'danger');
-            } else {
-                auth();
-            }
-        } else if (isset($_POST['authenticate'])) {
-            UserEventLogger::log_failed_auth();
-            auth(_('Authentication failed!'), 'danger');
-        } else {
-            unset($_SESSION["userpwd"]);
-            unset($_SESSION["userlogin"]);
-            auth();
-        }
-    } else {
+    if (!isset($_SESSION["userlogin"]) || !isset($_SESSION["userpwd"])) {
         // No username and password set, show auth form (again).
+        auth();
+        return;
+    }
+
+    $passwordEncryptionService = new PasswordEncryptionService($session_key);
+    $session_pass = $passwordEncryptionService->decrypt($_SESSION['userpwd']);
+
+    $stmt = $db->prepare("SELECT id, fullname, password, active FROM users WHERE username=:username AND use_ldap=0");
+    $stmt->bindParam(':username', $_SESSION["userlogin"]);
+    $stmt->execute();
+    $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$rowObj) {
+        handleFailedAuthentication();
+        return;
+    }
+
+    if (!Password::verify($session_pass, $rowObj['password'])) {
+        handleFailedAuthentication();
+        return;
+    }
+
+    if ($rowObj['active'] != 1) {
+        auth(_('The user account is disabled.'), 'danger');
+        return;
+    }
+
+    if (Password::needs_rehash($rowObj['password'])) {
+        update_user_password($rowObj["id"], $session_pass);
+    }
+
+    $_SESSION["userid"] = $rowObj["id"];
+    $_SESSION["name"] = $rowObj["fullname"];
+    $_SESSION["auth_used"] = "internal";
+
+    if (isset($_POST["authenticate"])) {
+        UserEventLogger::log_successful_auth();
+        session_write_close();
+        $redirect_url = $_POST["query_string"] ? $_SERVER['SCRIPT_NAME'] . "?" . $_POST["query_string"] : $_SERVER['SCRIPT_NAME'];
+        clean_page($redirect_url);
+    }
+}
+
+function handleFailedAuthentication(): void
+{
+    if (isset($_POST['authenticate'])) {
+        UserEventLogger::log_failed_auth();
+        auth(_('Authentication failed!'), 'danger');
+    } else {
+        unset($_SESSION["userpwd"]);
+        unset($_SESSION["userlogin"]);
         auth();
     }
 }
