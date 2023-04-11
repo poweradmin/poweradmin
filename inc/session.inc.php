@@ -32,6 +32,7 @@ use Poweradmin\CountryCode;
  * @return null
  */
 function logout(string $msg = "", string $type = "") {
+    session_regenerate_id(true);
     session_unset();
     session_destroy();
     session_write_close();

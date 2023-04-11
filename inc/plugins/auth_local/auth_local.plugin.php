@@ -234,6 +234,8 @@ function SQLAuthenticate(): void
         update_user_password($rowObj["id"], $session_pass);
     }
 
+    session_regenerate_id(true);
+
     $_SESSION["userid"] = $rowObj["id"];
     $_SESSION["name"] = $rowObj["fullname"];
     $_SESSION["auth_used"] = "internal";
