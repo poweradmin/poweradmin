@@ -32,7 +32,6 @@
 use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\LdapUserEventLogger;
 use Poweradmin\Password;
-use Poweradmin\Session;
 use Poweradmin\UserEventLogger;
 
 require_once 'inc/session.inc.php';
