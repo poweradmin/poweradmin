@@ -399,7 +399,7 @@ return array(
     'PHPUnit\\Framework\\MockObject\\UnmockedCloneMethod' => $vendorDir . '/phpunit/phpunit/src/Framework/MockObject/Api/UnmockedCloneMethod.php',
     'PHPUnit\\Framework\\MockObject\\Verifiable' => $vendorDir . '/phpunit/phpunit/src/Framework/MockObject/Verifiable.php',
     'PHPUnit\\Framework\\NoChildTestSuiteException' => $vendorDir . '/phpunit/phpunit/src/Framework/Exception/NoChildTestSuiteException.php',
-    'PHPUnit\\Framework\\PhptAssertionFailedError' => $vendorDir . '/phpunit/phpunit/src/Framework/Exception/PhptAssertionFailedError.php',
+    'PHPUnit\\Framework\\PhptAssertionFailedError' => $vendorDir . '/phpunit/phpunit/src/Framework/Exception/PHPTAssertionFailedError.php',
     'PHPUnit\\Framework\\ProcessIsolationException' => $vendorDir . '/phpunit/phpunit/src/Framework/Exception/ProcessIsolationException.php',
     'PHPUnit\\Framework\\Reorderable' => $vendorDir . '/phpunit/phpunit/src/Framework/Reorderable.php',
     'PHPUnit\\Framework\\SelfDescribing' => $vendorDir . '/phpunit/phpunit/src/Framework/SelfDescribing.php',
