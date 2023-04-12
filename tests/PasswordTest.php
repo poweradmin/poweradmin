@@ -5,7 +5,7 @@ use Poweradmin\Password;
 
 class PasswordTest extends TestCase
 {
-    protected $password;
+    protected Password $password;
 
     protected function setUp(): void
     {

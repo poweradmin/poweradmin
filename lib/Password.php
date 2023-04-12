@@ -57,11 +57,17 @@ class Password {
 
         if ($hash_type === 'md5salt') {
             return $this->_strsafecmp($this->mix_salt($this->extract_salt($hash), $password), $hash);
-        } elseif ($hash_type === 'bcrypt') {
+        }
+
+        if ($hash_type === 'bcrypt') {
             return password_verify($password, $hash);
-        } else {
+        }
+
+        if ($hash_type === 'md5') {
             return $this->_strsafecmp(md5($password), $hash);
         }
+
+        throw new InvalidArgumentException('Unable to determine hash algorithm');
     }
 
     public function needs_rehash($hash): bool {
