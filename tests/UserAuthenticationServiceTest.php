@@ -1,18 +1,18 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Password;
+use Poweradmin\UserAuthenticationService;
 
-class PasswordTest extends TestCase
+class UserAuthenticationServiceTest extends TestCase
 {
-    protected Password $password;
+    protected UserAuthenticationService $password;
 
     protected function setUp(): void
     {
         global $password_encryption_cost;
         $password_encryption_cost = 10;
 
-        $this->password = new Password();
+        $this->password = new UserAuthenticationService();
     }
 
     public function testSaltLength(): void
@@ -338,5 +338,41 @@ class PasswordTest extends TestCase
         $extracted_salt = $this->password->extract_salt($invalid_hash);
 
         $this->assertEquals('', $extracted_salt, 'Empty salt should be returned if the hash is invalid');
+    }
+
+    public function testHashAndVerifySpecialChars(): void
+    {
+        global $password_encryption;
+        $password_encryption = 'bcrypt';
+        $password = 'test_p@$$w0rd!';
+
+        $hash = $this->password->hash($password);
+        $result = $this->password->verify($password, $hash);
+
+        $this->assertTrue($result, 'Password verification should be successful for a password containing special characters');
+    }
+
+    public function testHashAndVerifyLongPassword(): void
+    {
+        global $password_encryption;
+        $password_encryption = 'bcrypt';
+        $password = str_repeat('a', 4096);
+
+        $hash = $this->password->hash($password);
+        $result = $this->password->verify($password, $hash);
+
+        $this->assertTrue($result, 'Password verification should be successful for a very long password');
+    }
+
+    public function testHashAndVerifyUnicodePassword(): void
+    {
+        global $password_encryption;
+        $password_encryption = 'bcrypt';
+        $password = 'tést_pàsswórd';
+
+        $hash = $this->password->hash($password);
+        $result = $this->password->verify($password, $hash);
+
+        $this->assertTrue($result, 'Password verification should be successful for a unicode password');
     }
 }

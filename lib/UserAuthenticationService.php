@@ -23,7 +23,7 @@ namespace Poweradmin;
 
 use InvalidArgumentException;
 
-class Password
+class UserAuthenticationService
 {
 
     public function salt($len = 5): string

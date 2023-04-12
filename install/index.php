@@ -29,7 +29,7 @@
  */
 
 // Dependencies
-use Poweradmin\Password;
+use Poweradmin\UserAuthenticationService;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Symfony\Component\Translation\Loader\PoFileLoader;
 use Symfony\Component\Translation\Translator;
@@ -146,7 +146,7 @@ switch ($current_step) {
         $perm_templ_items_query = $db->prepare("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (?, 53)");
         $perm_templ_items_query->execute(array($perm_templ_row['id']));
 
-        $password = new Password();
+        $password = new UserAuthenticationService();
         $user_query = $db->prepare("INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('admin', ?, 'Administrator', 'admin@example.net', 'Administrator with full rights.', ?, 1, 0)");
         $user_query->execute(array($password->hash($pa_pass), $perm_templ_row['id']));
 
@@ -252,7 +252,7 @@ switch ($current_step) {
         // For SQLite we should provide path to db file
         $db_file = $_POST['db_type'] =='sqlite' ? $db_file = $_POST['db_name'] : '';
 
-        $password = new Password();
+        $password = new UserAuthenticationService();
         $session_key = $password->salt(SESSION_KEY_LENGTH);
         $iface_lang = $language;
         $dns_hostmaster = $_POST['dns_hostmaster'];
@@ -316,7 +316,7 @@ switch ($current_step) {
             $config_file_created = true;
         }
 
-        $password = new Password();
+        $password = new UserAuthenticationService();
         echo $twig->render('step6.html', array(
             'next_step' => (int)htmlspecialchars($current_step)+1,
             'language' => htmlspecialchars($language),

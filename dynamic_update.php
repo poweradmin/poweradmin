@@ -31,7 +31,7 @@
  */
 
 use Poweradmin\DnsRecord;
-use Poweradmin\Password;
+use Poweradmin\UserAuthenticationService;
 
 require 'inc/config.inc.php';
 require 'inc/database.inc.php';
@@ -188,7 +188,7 @@ $user = $db->queryRow("SELECT users.id, users.password FROM users, perm_templ, p
                             OR perm_items.name = 'zone_content_edit_others'
                         )");
 
-$password = new Password();
+$password = new UserAuthenticationService();
 if (!$user || !$password->verify($auth_password, $user['password'])) {
     return status_exit('badauth2');
 }

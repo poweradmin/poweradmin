@@ -31,7 +31,7 @@
  */
 
 use Poweradmin\DnsRecord;
-use Poweradmin\Password;
+use Poweradmin\UserAuthenticationService;
 use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
 
@@ -350,7 +350,7 @@ email = " . $db->quote($email, 'text') . ",";
         $edit_own_perm = do_hook('verify_permission', 'user_edit_own');
         $passwd_edit_others_perm = do_hook('verify_permission', 'user_passwd_edit_others');
         if ($user_password != "" && $edit_own_perm || $passwd_edit_others_perm) {
-            $password = new Password();
+            $password = new UserAuthenticationService();
             $query .= ", password = " . $db->quote($password->hash($user_password), 'text');
         }
 
@@ -375,7 +375,7 @@ function update_user_password($id, $user_pass): void
 {
     global $db;
 
-    $password = new Password();
+    $password = new UserAuthenticationService();
     $query = "UPDATE users SET password = " . $db->quote($password->hash($user_pass), 'text') . " WHERE id = " . $db->quote($id, 'integer');
     $db->query($query);
 }
@@ -402,7 +402,7 @@ function change_user_pass_local(array $details)
     $query = "SELECT id, password FROM users WHERE username = {$db->quote($_SESSION ["userlogin"], 'text')}";
     $response = $db->queryRow($query);
 
-    $password = new Password();
+    $password = new UserAuthenticationService();
     if ($password->verify($details['old_password'], $response['password'])) {
         $query = "UPDATE users SET password = {$db->quote($password->hash($details['new_password']), 'text')} WHERE id = {$db->quote($response['id'], 'integer')}";
         $db->query($query);
@@ -787,7 +787,7 @@ function update_user_details_local($details)
 
         $passwd_edit_others_perm = (bool)do_hook('verify_permission', 'user_passwd_edit_others');
         if (isset($details['password']) && $details['password'] != "" && $passwd_edit_others_perm) {
-            $password = new Password();
+            $password = new UserAuthenticationService();
             $query .= ", password = " . $db->quote($password->hash($details['password'], 'text'));
         }
 
@@ -839,7 +839,7 @@ function add_new_user_local($details)
 
     $query = "INSERT INTO users (username, password, fullname, email, description, perm_templ,";
 
-    $password = new Password();
+    $password = new UserAuthenticationService();
     $password_hash = $password->hash($details['password']);
 
     $query .= " active, use_ldap) VALUES (" . $db->quote($details['username'], 'text') . ", " . $db->quote($password_hash, 'text') . ", " . $db->quote($details['fullname'], 'text') . ", " . $db->quote($details['email'], 'text') . ", " . $db->quote($details['descr'], 'text') . ", ";

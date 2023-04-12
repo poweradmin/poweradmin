@@ -31,7 +31,7 @@
 
 use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\LdapUserEventLogger;
-use Poweradmin\Password;
+use Poweradmin\UserAuthenticationService;
 use Poweradmin\UserEventLogger;
 
 require_once 'inc/session.inc.php';
@@ -219,7 +219,7 @@ function SQLAuthenticate(): void
         return;
     }
 
-    $password = new Password();
+    $password = new UserAuthenticationService();
     if (!$password->verify($session_pass, $rowObj['password'])) {
         handleFailedAuthentication();
         return;
