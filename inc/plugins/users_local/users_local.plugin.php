@@ -350,8 +350,8 @@ email = " . $db->quote($email, 'text') . ",";
         $edit_own_perm = do_hook('verify_permission', 'user_edit_own');
         $passwd_edit_others_perm = do_hook('verify_permission', 'user_passwd_edit_others');
         if ($user_password != "" && $edit_own_perm || $passwd_edit_others_perm) {
-            $password = new UserAuthenticationService();
-            $query .= ", password = " . $db->quote($password->hashPassword($user_password), 'text');
+            $userAuthService = new UserAuthenticationService();
+            $query .= ", password = " . $db->quote($userAuthService->hashPassword($user_password), 'text');
         }
 
         $query .= " WHERE id = " . $db->quote($id, 'integer');
@@ -375,8 +375,8 @@ function update_user_password($id, $user_pass): void
 {
     global $db;
 
-    $password = new UserAuthenticationService();
-    $query = "UPDATE users SET password = " . $db->quote($password->hashPassword($user_pass), 'text') . " WHERE id = " . $db->quote($id, 'integer');
+    $userAuthService = new UserAuthenticationService();
+    $query = "UPDATE users SET password = " . $db->quote($userAuthService->hashPassword($user_pass), 'text') . " WHERE id = " . $db->quote($id, 'integer');
     $db->query($query);
 }
 
@@ -402,9 +402,9 @@ function change_user_pass_local(array $details)
     $query = "SELECT id, password FROM users WHERE username = {$db->quote($_SESSION ["userlogin"], 'text')}";
     $response = $db->queryRow($query);
 
-    $password = new UserAuthenticationService();
-    if ($password->verifyPassword($details['old_password'], $response['password'])) {
-        $query = "UPDATE users SET password = {$db->quote($password->hashPassword($details['new_password']), 'text')} WHERE id = {$db->quote($response['id'], 'integer')}";
+    $userAuthService = new UserAuthenticationService();
+    if ($userAuthService->verifyPassword($details['old_password'], $response['password'])) {
+        $query = "UPDATE users SET password = {$db->quote($userAuthService->hashPassword($details['new_password']), 'text')} WHERE id = {$db->quote($response['id'], 'integer')}";
         $db->query($query);
 
         logout(_('Password has been changed, please login.'), 'success');
@@ -787,8 +787,8 @@ function update_user_details_local($details)
 
         $passwd_edit_others_perm = (bool)do_hook('verify_permission', 'user_passwd_edit_others');
         if (isset($details['password']) && $details['password'] != "" && $passwd_edit_others_perm) {
-            $password = new UserAuthenticationService();
-            $query .= ", password = " . $db->quote($password->hashPassword($details['password'], 'text'));
+            $userAuthService = new UserAuthenticationService();
+            $query .= ", password = " . $db->quote($userAuthService->hashPassword($details['password'], 'text'));
         }
 
         $query .= " WHERE id = " . $db->quote($details['uid'], 'integer');
@@ -839,8 +839,8 @@ function add_new_user_local($details)
 
     $query = "INSERT INTO users (username, password, fullname, email, description, perm_templ,";
 
-    $password = new UserAuthenticationService();
-    $password_hash = $password->hashPassword($details['password']);
+    $userAuthService = new UserAuthenticationService();
+    $password_hash = $userAuthService->hashPassword($details['password']);
 
     $query .= " active, use_ldap) VALUES (" . $db->quote($details['username'], 'text') . ", " . $db->quote($password_hash, 'text') . ", " . $db->quote($details['fullname'], 'text') . ", " . $db->quote($details['email'], 'text') . ", " . $db->quote($details['descr'], 'text') . ", ";
     if (do_hook('verify_permission', 'user_edit_templ_perm')) {

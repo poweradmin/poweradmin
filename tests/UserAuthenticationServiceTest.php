@@ -5,27 +5,27 @@ use Poweradmin\Application\Services\UserAuthenticationService;
 
 class UserAuthenticationServiceTest extends TestCase
 {
-    protected UserAuthenticationService $password;
+    protected UserAuthenticationService $userAuthService;
 
     protected function setUp(): void
     {
         global $password_encryption_cost;
         $password_encryption_cost = 10;
 
-        $this->password = new UserAuthenticationService();
+        $this->userAuthService = new UserAuthenticationService();
     }
 
     public function testSaltLength(): void
     {
         $len = 5;
-        $salt = $this->password->generateSalt($len);
+        $salt = $this->userAuthService->generateSalt($len);
         $this->assertEquals($len, strlen($salt), 'Generated salt length should match the input length');
     }
 
     public function testSaltCharacters(): void
     {
         $len = 10;
-        $salt = $this->password->generateSalt($len);
+        $salt = $this->userAuthService->generateSalt($len);
         $valid_characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890@#$%^*()_-!';
         $valid_characters_array = str_split($valid_characters);
 
@@ -37,22 +37,22 @@ class UserAuthenticationServiceTest extends TestCase
     public function testSaltEdgeCaseZeroLength(): void
     {
         $len = 0;
-        $salt = $this->password->generateSalt($len);
+        $salt = $this->userAuthService->generateSalt($len);
         $this->assertEquals($len, strlen($salt), 'Generated salt length should be 0 when input length is 0');
     }
 
     public function testSaltEdgeCaseNegativeLength(): void
     {
         $len = -5;
-        $salt = $this->password->generateSalt($len);
+        $salt = $this->userAuthService->generateSalt($len);
         $this->assertEmpty($salt, 'Generated salt should be empty when input length is negative');
     }
 
     public function testSaltUniqueness(): void
     {
         $len = 10;
-        $salt1 = $this->password->generateSalt($len);
-        $salt2 = $this->password->generateSalt($len);
+        $salt1 = $this->userAuthService->generateSalt($len);
+        $salt2 = $this->userAuthService->generateSalt($len);
 
         $this->assertNotEquals($salt1, $salt2, 'Two generated salts should not be equal');
     }
@@ -63,7 +63,7 @@ class UserAuthenticationServiceTest extends TestCase
         $password_encryption = 'md5';
         $password = 'test_password';
 
-        $hash = $this->password->hashPassword($password);
+        $hash = $this->userAuthService->hashPassword($password);
         $this->assertEquals(md5($password), $hash, 'Generated hash should match MD5 hash');
     }
 
@@ -73,9 +73,9 @@ class UserAuthenticationServiceTest extends TestCase
         $password_encryption = 'md5salt';
         $password = 'test_password';
 
-        $hash = $this->password->hashPassword($password);
-        $salt = $this->password->extractUserSalt($hash);
-        $expected_hash = $this->password->combineSalts($salt, $password);
+        $hash = $this->userAuthService->hashPassword($password);
+        $salt = $this->userAuthService->extractUserSalt($hash);
+        $expected_hash = $this->userAuthService->combineSalts($salt, $password);
 
         $this->assertEquals($expected_hash, $hash, 'Generated hash should match MD5 hash with salt');
     }
@@ -86,7 +86,7 @@ class UserAuthenticationServiceTest extends TestCase
         $password_encryption = 'bcrypt';
         $password = 'test_password';
 
-        $hash = $this->password->hashPassword($password);
+        $hash = $this->userAuthService->hashPassword($password);
         $this->assertTrue(password_verify($password, $hash), 'Generated hash should match bcrypt hash');
     }
 
@@ -96,7 +96,7 @@ class UserAuthenticationServiceTest extends TestCase
         $password_encryption = 'md5';
         $password = '';
 
-        $hash = $this->password->hashPassword($password);
+        $hash = $this->userAuthService->hashPassword($password);
         $this->assertEquals(md5($password), $hash, 'Generated hash should match MD5 hash for an empty password');
     }
 
@@ -106,8 +106,8 @@ class UserAuthenticationServiceTest extends TestCase
         $password_encryption = 'md5';
         $password = 'test_password';
 
-        $hash = $this->password->hashPassword($password);
-        $result = $this->password->verifyPassword($password, $hash);
+        $hash = $this->userAuthService->hashPassword($password);
+        $result = $this->userAuthService->verifyPassword($password, $hash);
 
         $this->assertTrue($result, 'Password verification should be successful for MD5 hash');
     }
@@ -118,8 +118,8 @@ class UserAuthenticationServiceTest extends TestCase
         $password_encryption = 'md5salt';
         $password = 'test_password';
 
-        $hash = $this->password->hashPassword($password);
-        $result = $this->password->verifyPassword($password, $hash);
+        $hash = $this->userAuthService->hashPassword($password);
+        $result = $this->userAuthService->verifyPassword($password, $hash);
 
         $this->assertTrue($result, 'Password verification should be successful for MD5 hash with salt');
     }
@@ -130,8 +130,8 @@ class UserAuthenticationServiceTest extends TestCase
         $password_encryption = 'bcrypt';
         $password = 'test_password';
 
-        $hash = $this->password->hashPassword($password);
-        $result = $this->password->verifyPassword($password, $hash);
+        $hash = $this->userAuthService->hashPassword($password);
+        $result = $this->userAuthService->verifyPassword($password, $hash);
 
         $this->assertTrue($result, 'Password verification should be successful for bcrypt hash');
     }
@@ -143,8 +143,8 @@ class UserAuthenticationServiceTest extends TestCase
         $password = 'test_password';
         $incorrect_password = 'wrong_password';
 
-        $hash = $this->password->hashPassword($password);
-        $result = $this->password->verifyPassword($incorrect_password, $hash);
+        $hash = $this->userAuthService->hashPassword($password);
+        $result = $this->userAuthService->verifyPassword($incorrect_password, $hash);
 
         $this->assertFalse($result, 'Password verification should fail for an incorrect password');
     }
@@ -156,8 +156,8 @@ class UserAuthenticationServiceTest extends TestCase
         $password = 'test_password';
         $empty_password = '';
 
-        $hash = $this->password->hashPassword($password);
-        $result = $this->password->verifyPassword($empty_password, $hash);
+        $hash = $this->userAuthService->hashPassword($password);
+        $result = $this->userAuthService->verifyPassword($empty_password, $hash);
 
         $this->assertFalse($result, 'Password verification should fail for an empty password');
     }
@@ -169,8 +169,8 @@ class UserAuthenticationServiceTest extends TestCase
         $password_encryption_cost = 10;
         $password = 'test_password';
 
-        $hash = $this->password->hashPassword($password);
-        $result = $this->password->requiresRehash($hash);
+        $hash = $this->userAuthService->hashPassword($password);
+        $result = $this->userAuthService->requiresRehash($hash);
 
         $this->assertFalse($result, 'Password hash should not need rehash for correct bcrypt cost');
     }
@@ -182,9 +182,9 @@ class UserAuthenticationServiceTest extends TestCase
         $password_encryption_cost = 10;
         $password = 'test_password';
 
-        $hash = $this->password->hashPassword($password);
+        $hash = $this->userAuthService->hashPassword($password);
         $password_encryption_cost = 12;
-        $result = $this->password->requiresRehash($hash);
+        $result = $this->userAuthService->requiresRehash($hash);
 
         $this->assertTrue($result, 'Password hash should need rehash for changed bcrypt cost');
     }
@@ -195,9 +195,9 @@ class UserAuthenticationServiceTest extends TestCase
         $password_encryption = 'md5';
         $password = 'test_password';
 
-        $hash = $this->password->hashPassword($password);
+        $hash = $this->userAuthService->hashPassword($password);
         $password_encryption = 'bcrypt';
-        $result = $this->password->requiresRehash($hash);
+        $result = $this->userAuthService->requiresRehash($hash);
 
         $this->assertTrue($result, 'Password hash should need rehash for changed encryption method');
     }
@@ -207,13 +207,13 @@ class UserAuthenticationServiceTest extends TestCase
         $invalid_hash = 'invalid_hash';
 
         $this->expectException(InvalidArgumentException::class);
-        $this->password->requiresRehash($invalid_hash);
+        $this->userAuthService->requiresRehash($invalid_hash);
     }
 
     public function testDetermineHashAlgorithmMd5(): void
     {
         $md5_hash = md5('test_password');
-        $hash_type = $this->password->identifyHashAlgorithm($md5_hash);
+        $hash_type = $this->userAuthService->identifyHashAlgorithm($md5_hash);
 
         $this->assertEquals('md5', $hash_type, 'Hash type should be determined as MD5');
     }
@@ -224,8 +224,8 @@ class UserAuthenticationServiceTest extends TestCase
         $password_encryption = 'md5salt';
         $password = 'test_password';
 
-        $md5salt_hash = $this->password->hashPassword($password);
-        $hash_type = $this->password->identifyHashAlgorithm($md5salt_hash);
+        $md5salt_hash = $this->userAuthService->hashPassword($password);
+        $hash_type = $this->userAuthService->identifyHashAlgorithm($md5salt_hash);
 
         $this->assertEquals('md5salt', $hash_type, 'Hash type should be determined as MD5 with salt');
     }
@@ -236,8 +236,8 @@ class UserAuthenticationServiceTest extends TestCase
         $password_encryption = 'bcrypt';
         $password = 'test_password';
 
-        $bcrypt_hash = $this->password->hashPassword($password);
-        $hash_type = $this->password->identifyHashAlgorithm($bcrypt_hash);
+        $bcrypt_hash = $this->userAuthService->hashPassword($password);
+        $hash_type = $this->userAuthService->identifyHashAlgorithm($bcrypt_hash);
 
         $this->assertEquals('bcrypt', $hash_type, 'Hash type should be determined as bcrypt');
     }
@@ -247,14 +247,14 @@ class UserAuthenticationServiceTest extends TestCase
         $invalid_hash = 'invalid_hash';
 
         $this->expectException(InvalidArgumentException::class);
-        $this->password->identifyHashAlgorithm($invalid_hash);
+        $this->userAuthService->identifyHashAlgorithm($invalid_hash);
     }
 
     public function testGenMixSalt(): void
     {
         $password = 'test_password';
 
-        $md5salt_hash = $this->password->generateCombinedSalt($password);
+        $md5salt_hash = $this->userAuthService->generateCombinedSalt($password);
         $hash_parts = explode(':', $md5salt_hash);
 
         $this->assertCount(2, $hash_parts, 'MD5 with salt hash should contain two parts separated by a colon');
@@ -266,7 +266,7 @@ class UserAuthenticationServiceTest extends TestCase
     {
         $password = '';
 
-        $md5salt_hash = $this->password->generateCombinedSalt($password);
+        $md5salt_hash = $this->userAuthService->generateCombinedSalt($password);
         $hash_parts = explode(':', $md5salt_hash);
 
         $this->assertCount(2, $hash_parts, 'MD5 with salt hash should contain two parts separated by a colon');
@@ -279,7 +279,7 @@ class UserAuthenticationServiceTest extends TestCase
         $password = 'test_password';
         $salt = 'abcde';
 
-        $md5salt_hash = $this->password->combineSalts($salt, $password);
+        $md5salt_hash = $this->userAuthService->combineSalts($salt, $password);
         $hash_parts = explode(':', $md5salt_hash);
 
         $this->assertCount(2, $hash_parts, 'MD5 with salt hash should contain two parts separated by a colon');
@@ -292,7 +292,7 @@ class UserAuthenticationServiceTest extends TestCase
         $password = '';
         $salt = 'abcde';
 
-        $md5salt_hash = $this->password->combineSalts($salt, $password);
+        $md5salt_hash = $this->userAuthService->combineSalts($salt, $password);
         $hash_parts = explode(':', $md5salt_hash);
 
         $this->assertCount(2, $hash_parts, 'MD5 with salt hash should contain two parts separated by a colon');
@@ -305,7 +305,7 @@ class UserAuthenticationServiceTest extends TestCase
         $password = 'test_password';
         $salt = '';
 
-        $md5salt_hash = $this->password->combineSalts($salt, $password);
+        $md5salt_hash = $this->userAuthService->combineSalts($salt, $password);
         $hash_parts = explode(':', $md5salt_hash);
 
         $this->assertCount(2, $hash_parts, 'MD5 with salt hash should contain two parts separated by a colon');
@@ -317,7 +317,7 @@ class UserAuthenticationServiceTest extends TestCase
     {
         $md5salt_hash = '0cc175b9c0f1b6a831c399e269772661:abcde';
 
-        $extracted_salt = $this->password->extractUserSalt($md5salt_hash);
+        $extracted_salt = $this->userAuthService->extractUserSalt($md5salt_hash);
 
         $this->assertEquals('abcde', $extracted_salt, 'Salt should be extracted correctly from the MD5 with salt hash');
     }
@@ -326,7 +326,7 @@ class UserAuthenticationServiceTest extends TestCase
     {
         $md5_hash = '0cc175b9c0f1b6a831c399e269772661';
 
-        $extracted_salt = $this->password->extractUserSalt($md5_hash);
+        $extracted_salt = $this->userAuthService->extractUserSalt($md5_hash);
 
         $this->assertEquals('', $extracted_salt, 'Empty salt should be returned if the hash does not contain a salt');
     }
@@ -335,7 +335,7 @@ class UserAuthenticationServiceTest extends TestCase
     {
         $invalid_hash = 'invalid_hash';
 
-        $extracted_salt = $this->password->extractUserSalt($invalid_hash);
+        $extracted_salt = $this->userAuthService->extractUserSalt($invalid_hash);
 
         $this->assertEquals('', $extracted_salt, 'Empty salt should be returned if the hash is invalid');
     }
@@ -346,8 +346,8 @@ class UserAuthenticationServiceTest extends TestCase
         $password_encryption = 'bcrypt';
         $password = 'test_p@$$w0rd!';
 
-        $hash = $this->password->hashPassword($password);
-        $result = $this->password->verifyPassword($password, $hash);
+        $hash = $this->userAuthService->hashPassword($password);
+        $result = $this->userAuthService->verifyPassword($password, $hash);
 
         $this->assertTrue($result, 'Password verification should be successful for a password containing special characters');
     }
@@ -358,8 +358,8 @@ class UserAuthenticationServiceTest extends TestCase
         $password_encryption = 'bcrypt';
         $password = str_repeat('a', 4096);
 
-        $hash = $this->password->hashPassword($password);
-        $result = $this->password->verifyPassword($password, $hash);
+        $hash = $this->userAuthService->hashPassword($password);
+        $result = $this->userAuthService->verifyPassword($password, $hash);
 
         $this->assertTrue($result, 'Password verification should be successful for a very long password');
     }
@@ -370,8 +370,8 @@ class UserAuthenticationServiceTest extends TestCase
         $password_encryption = 'bcrypt';
         $password = 'tést_pàsswórd';
 
-        $hash = $this->password->hashPassword($password);
-        $result = $this->password->verifyPassword($password, $hash);
+        $hash = $this->userAuthService->hashPassword($password);
+        $result = $this->userAuthService->verifyPassword($password, $hash);
 
         $this->assertTrue($result, 'Password verification should be successful for a unicode password');
     }
