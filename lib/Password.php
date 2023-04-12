@@ -21,6 +21,8 @@
 
 namespace Poweradmin;
 
+use InvalidArgumentException;
+
 /**
  *  Password functions
  *
@@ -63,7 +65,7 @@ class Password {
     }
 
     public static function verify($password, $hash) {
-        $hash_type = self::get_hash_type($hash);
+        $hash_type = self::determine_hash_algorithm($hash);
 
         if ($hash_type === 'md5salt') {
             return self::_strsafecmp(self::mix_salt(self::extract_salt($hash), $password), $hash);
@@ -77,7 +79,7 @@ class Password {
     public static function needs_rehash($hash) {
         global $password_encryption, $password_encryption_cost;
 
-        $hash_type = self::get_hash_type($hash);
+        $hash_type = self::determine_hash_algorithm($hash);
 
         if ($hash_type == 'bcrypt') {
             return password_needs_rehash($hash, PASSWORD_BCRYPT, ['cost' => $password_encryption_cost]);
@@ -86,18 +88,22 @@ class Password {
         }
     }
 
-    private static function get_hash_type($hash) {
-        $hash_type = null;
-
+    private static function determine_hash_algorithm($hash): string
+    {
         if (preg_match('/^[a-f0-9]{32}$/', $hash)) {
-            $hash_type = 'md5';
-        } else if (preg_match('/^[a-f0-9]{32}:[a-zA-Z0-9@#$%^*()_\-!]{5}$/', $hash)) {
-            $hash_type = 'md5salt';
-        } else if (preg_match('/^\$2y\$/', $hash)) {
-            $hash_type = 'bcrypt';
+            return 'md5';
         }
 
-        return $hash_type;
+        if (preg_match('/^[a-f0-9]{32}:[a-zA-Z0-9@#$%^*()_\-!]{5}$/', $hash)) {
+            return 'md5salt';
+        }
+
+        if (preg_match('/^\$2[ayb]\$/', $hash)) {
+            return 'bcrypt';
+        }
+
+        // Throw an exception if the hash type cannot be determined
+        throw new InvalidArgumentException('Unable to determine hash algorithm');
     }
 
     /**
