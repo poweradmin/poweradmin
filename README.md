@@ -80,7 +80,7 @@ Go to the installed system in your browser
 ## Troubleshooting
 
 Whenever you experience a blank page or other weird behavior, check your http server logs for PHP errors. Alternatively,
-you can add a code block with error output to the browser (e.g. index.php file if it fails):
+you can add a code block with error output to the browser (for instance, index.php if it fails):
 
 ```php
 ini_set('display_errors', 1);
