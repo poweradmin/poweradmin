@@ -23,23 +23,8 @@ namespace Poweradmin;
 
 use InvalidArgumentException;
 
-/**
- *  Password functions
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2023 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
 class Password {
 
-    /**
-     * Generate random salt for encryption
-     *
-     * @param int $len salt length (default=5)
-     *
-     * @return string salt string
-     */
     public static function salt($len = 5) {
         $valid_characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890@#$%^*()_-!';
         $valid_len = strlen($valid_characters) - 1;
@@ -106,50 +91,19 @@ class Password {
         throw new InvalidArgumentException('Unable to determine hash algorithm');
     }
 
-    /**
-     * Generate random salt and salted password
-     *
-     * @param string $pass password
-     *
-     * @return string salted password
-     */
     private static function gen_mix_salt($pass) {
         $salt = self::salt();
         return self::mix_salt($salt, $pass);
     }
 
-    /**
-     * Generate salted password
-     *
-     * @param string $salt salt
-     * @param string $pass password
-     *
-     * @return string salted password
-     */
     private static function mix_salt($salt, $pass) {
         return md5($salt . $pass) . ':' . $salt;
     }
 
-    /**
-     * Extract salt from password
-     *
-     * @param string $password salted password
-     *
-     * @return string salt
-     */
     private static function extract_salt($password) {
         return substr(strstr($password, ':'), 1);
     }
 
-    /**
-     *
-     * @see https://github.com/ircmaxell/password_compat
-     *
-     * @param string $str1 The first string
-     * @param string $str2 The second string
-     *
-     * @return bool true if they are equal, otherwise - false
-     */
     private static function _strsafecmp($str1, $str2) {
         if (!is_string($str1) || !is_string($str2) || strlen($str1) !== strlen($str2)) {
             return false;
