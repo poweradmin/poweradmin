@@ -23,7 +23,8 @@ namespace Poweradmin;
 
 use InvalidArgumentException;
 
-class Password {
+class Password
+{
 
     public function salt($len = 5): string
     {
@@ -42,13 +43,27 @@ class Password {
     {
         global $password_encryption, $password_encryption_cost;
 
+        if ($password_encryption === 'bcrypt') {
+            return password_hash($password, PASSWORD_BCRYPT, array('cost' => $password_encryption_cost));
+        }
+
+        if ($password_encryption === 'argon2i') {
+            return password_hash($password, PASSWORD_ARGON2I);
+        }
+
+        if ($password_encryption === 'argon2id') {
+            return password_hash($password, PASSWORD_ARGON2ID);
+        }
+
         if ($password_encryption === 'md5salt') {
             return $this->gen_mix_salt($password);
-        } elseif ($password_encryption === 'bcrypt') {
-            return password_hash($password, PASSWORD_BCRYPT, array('cost' => $password_encryption_cost));
-        } else {
+        }
+
+        if ($password_encryption === 'md5') {
             return md5($password);
         }
+
+        throw new InvalidArgumentException('Invalid password encryption method');
     }
 
     public function verify($password, $hash): bool
@@ -59,7 +74,7 @@ class Password {
             return $this->_strsafecmp($this->mix_salt($this->extract_salt($hash), $password), $hash);
         }
 
-        if ($hash_type === 'bcrypt') {
+        if ($hash_type === 'bcrypt' || $hash_type === 'argon2i' || $hash_type === 'argon2id') {
             return password_verify($password, $hash);
         }
 
@@ -70,16 +85,32 @@ class Password {
         throw new InvalidArgumentException('Unable to determine hash algorithm');
     }
 
-    public function needs_rehash($hash): bool {
+    public function needs_rehash($hash): bool
+    {
         global $password_encryption, $password_encryption_cost;
 
         $hash_type = $this->determine_hash_algorithm($hash);
+        if ($hash_type == "unknown") {
+            throw new InvalidArgumentException('Unable to determine hash algorithm');
+        }
+
+        if ($hash_type !== $password_encryption) {
+            return true;
+        }
 
         if ($hash_type == 'bcrypt') {
             return password_needs_rehash($hash, PASSWORD_BCRYPT, ['cost' => $password_encryption_cost]);
-        } else if ($hash_type !== $password_encryption) {
-            return true;
         }
+
+        if ($hash_type == 'argon2i') {
+            return password_needs_rehash($hash, PASSWORD_ARGON2I);
+        }
+
+        if ($hash_type == 'argon2id') {
+            return password_needs_rehash($hash, PASSWORD_ARGON2ID);
+        }
+
+        return false;
     }
 
     public function determine_hash_algorithm($hash): string
@@ -92,8 +123,9 @@ class Password {
             return 'md5salt';
         }
 
-        if (preg_match('/^\$2[ayb]\$/', $hash)) {
-            return 'bcrypt';
+        $hash_info = password_get_info($hash);
+        if ($hash_info['algo'] != null) {
+            return $hash_info['algoName'];
         }
 
         // Throw an exception if the hash type cannot be determined

@@ -289,7 +289,7 @@ function delete_perm_templ_local($ptid)
  *
  * @return boolean true if succesful, false otherwise
  */
-function edit_user_local($id, $user, $fullname, $email, $perm_templ, $description, $active, $password)
+function edit_user_local($id, $user, $fullname, $email, $perm_templ, $description, $active, $user_password)
 {
     global $db;
 
@@ -349,9 +349,9 @@ email = " . $db->quote($email, 'text') . ",";
 
         $edit_own_perm = do_hook('verify_permission', 'user_edit_own');
         $passwd_edit_others_perm = do_hook('verify_permission', 'user_passwd_edit_others');
-        if ($password != "" && $edit_own_perm || $passwd_edit_others_perm) {
+        if ($user_password != "" && $edit_own_perm || $passwd_edit_others_perm) {
             $password = new Password();
-            $query .= ", password = " . $db->quote($password->hash($password), 'text');
+            $query .= ", password = " . $db->quote($password->hash($user_password), 'text');
         }
 
         $query .= " WHERE id = " . $db->quote($id, 'integer');
@@ -371,12 +371,12 @@ email = " . $db->quote($email, 'text') . ",";
  * @param string $password New password
  * @return void
  */
-function update_user_password($id, $password): void
+function update_user_password($id, $user_pass): void
 {
     global $db;
 
     $password = new Password();
-    $query = "UPDATE users SET password = " . $db->quote($password->hash($password), 'text') . " WHERE id = " . $db->quote($id, 'integer');
+    $query = "UPDATE users SET password = " . $db->quote($password->hash($user_pass), 'text') . " WHERE id = " . $db->quote($id, 'integer');
     $db->query($query);
 }
 
@@ -404,7 +404,6 @@ function change_user_pass_local(array $details)
 
     $password = new Password();
     if ($password->verify($details['old_password'], $response['password'])) {
-        $password = new Password();
         $query = "UPDATE users SET password = {$db->quote($password->hash($details['new_password']), 'text')} WHERE id = {$db->quote($response['id'], 'integer')}";
         $db->query($query);
 
