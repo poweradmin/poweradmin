@@ -350,6 +350,7 @@ email = " . $db->quote($email, 'text') . ",";
 
         $edit_own_perm = do_hook('verify_permission', 'user_edit_own');
         $passwd_edit_others_perm = do_hook('verify_permission', 'user_passwd_edit_others');
+
         if ($user_password != "" && $edit_own_perm || $passwd_edit_others_perm) {
             $config = new Configuration();
             $userAuthService = new UserAuthenticationService(
@@ -385,7 +386,7 @@ function update_user_password($id, $user_pass): void
         $config->get('password_encryption'),
         $config->get('password_encryption_cost')
     );
-    $query = "UPDATE users SET password = " . $db->quote($userAuthService->hashPassword($user_pass), 'text') . " WHERE id = " . $db->quote($id, 'integer');
+    $query = "UPDATE users SET password = " . $db->quote($userAuthService->hashPassword($user_pass), 'text') . " WHERE id = " . $db->quote($id
     $db->query($query);
 }
 
