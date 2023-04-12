@@ -29,9 +29,9 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Application\Services\UserAuthenticationService;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\LdapUserEventLogger;
-use Poweradmin\UserAuthenticationService;
 use Poweradmin\UserEventLogger;
 
 require_once 'inc/session.inc.php';

@@ -30,8 +30,8 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Application\Services\UserAuthenticationService;
 use Poweradmin\DnsRecord;
-use Poweradmin\UserAuthenticationService;
 
 require 'inc/config.inc.php';
 require 'inc/database.inc.php';

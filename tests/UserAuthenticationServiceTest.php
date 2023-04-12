@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\UserAuthenticationService;
+use Poweradmin\Application\Services\UserAuthenticationService;
 
 class UserAuthenticationServiceTest extends TestCase
 {

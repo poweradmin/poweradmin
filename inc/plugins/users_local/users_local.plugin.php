@@ -30,8 +30,8 @@
  *
  */
 
+use Poweradmin\Application\Services\UserAuthenticationService;
 use Poweradmin\DnsRecord;
-use Poweradmin\UserAuthenticationService;
 use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
 
