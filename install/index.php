@@ -148,7 +148,7 @@ switch ($current_step) {
 
         $password = new UserAuthenticationService();
         $user_query = $db->prepare("INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('admin', ?, 'Administrator', 'admin@example.net', 'Administrator with full rights.', ?, 1, 0)");
-        $user_query->execute(array($password->hash($pa_pass), $perm_templ_row['id']));
+        $user_query->execute(array($password->hashPassword($pa_pass), $perm_templ_row['id']));
 
         echo _('done!') . "</p>";
 
@@ -253,7 +253,7 @@ switch ($current_step) {
         $db_file = $_POST['db_type'] =='sqlite' ? $db_file = $_POST['db_name'] : '';
 
         $password = new UserAuthenticationService();
-        $session_key = $password->salt(SESSION_KEY_LENGTH);
+        $session_key = $password->generateSalt(SESSION_KEY_LENGTH);
         $iface_lang = $language;
         $dns_hostmaster = $_POST['dns_hostmaster'];
         $dns_ns1 = $_POST['dns_ns1'];
@@ -322,7 +322,7 @@ switch ($current_step) {
             'language' => htmlspecialchars($language),
             'config_file_created' => $config_file_created,
             'local_config_file' => $local_config_file,
-            'session_key' => $password->salt(SESSION_KEY_LENGTH),
+            'session_key' => $password->generateSalt(SESSION_KEY_LENGTH),
             'iface_lang' => htmlspecialchars($language),
             'dns_hostmaster' => htmlspecialchars($dns_hostmaster),
             'dns_ns1' => htmlspecialchars($dns_ns1),

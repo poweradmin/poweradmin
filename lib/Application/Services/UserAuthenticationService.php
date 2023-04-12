@@ -26,7 +26,7 @@ use InvalidArgumentException;
 class UserAuthenticationService
 {
 
-    public function salt($len = 5): string
+    public function generateSalt($len = 5): string
     {
         $valid_characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890@#$%^*()_-!';
         $valid_len = strlen($valid_characters) - 1;
@@ -39,7 +39,7 @@ class UserAuthenticationService
         return $salt;
     }
 
-    public function hash($password): string
+    public function hashPassword($password): string
     {
         global $password_encryption, $password_encryption_cost;
 
@@ -56,7 +56,7 @@ class UserAuthenticationService
         }
 
         if ($password_encryption === 'md5salt') {
-            return $this->gen_mix_salt($password);
+            return $this->generateCombinedSalt($password);
         }
 
         if ($password_encryption === 'md5') {
@@ -66,12 +66,12 @@ class UserAuthenticationService
         throw new InvalidArgumentException('Invalid password encryption method');
     }
 
-    public function verify($password, $hash): bool
+    public function verifyPassword($password, $hash): bool
     {
-        $hash_type = $this->determine_hash_algorithm($hash);
+        $hash_type = $this->identifyHashAlgorithm($hash);
 
         if ($hash_type === 'md5salt') {
-            return $this->_strsafecmp($this->mix_salt($this->extract_salt($hash), $password), $hash);
+            return $this->constantTimeComparison($this->combineSalts($this->extractUserSalt($hash), $password), $hash);
         }
 
         if ($hash_type === 'bcrypt' || $hash_type === 'argon2i' || $hash_type === 'argon2id') {
@@ -79,17 +79,17 @@ class UserAuthenticationService
         }
 
         if ($hash_type === 'md5') {
-            return $this->_strsafecmp(md5($password), $hash);
+            return $this->constantTimeComparison(md5($password), $hash);
         }
 
         throw new InvalidArgumentException('Unable to determine hash algorithm');
     }
 
-    public function needs_rehash($hash): bool
+    public function requiresRehash($hash): bool
     {
         global $password_encryption, $password_encryption_cost;
 
-        $hash_type = $this->determine_hash_algorithm($hash);
+        $hash_type = $this->identifyHashAlgorithm($hash);
         if ($hash_type == "unknown") {
             throw new InvalidArgumentException('Unable to determine hash algorithm');
         }
@@ -113,7 +113,7 @@ class UserAuthenticationService
         return false;
     }
 
-    public function determine_hash_algorithm($hash): string
+    public function identifyHashAlgorithm($hash): string
     {
         if (preg_match('/^[a-f0-9]{32}$/', $hash)) {
             return 'md5';
@@ -132,23 +132,23 @@ class UserAuthenticationService
         throw new InvalidArgumentException('Unable to determine hash algorithm');
     }
 
-    public function gen_mix_salt($pass): string
+    public function generateCombinedSalt($pass): string
     {
-        $salt = $this->salt();
-        return $this->mix_salt($salt, $pass);
+        $salt = $this->generateSalt();
+        return $this->combineSalts($salt, $pass);
     }
 
-    public function mix_salt($salt, $pass): string
+    public function combineSalts($salt, $pass): string
     {
         return md5($salt . $pass) . ':' . $salt;
     }
 
-    public function extract_salt($password): string
+    public function extractUserSalt($password): string
     {
         return substr(strstr($password, ':'), 1);
     }
 
-    private function _strsafecmp($str1, $str2): bool
+    private function constantTimeComparison($str1, $str2): bool
     {
         if (!is_string($str1) || !is_string($str2) || strlen($str1) !== strlen($str2)) {
             return false;

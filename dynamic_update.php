@@ -189,7 +189,7 @@ $user = $db->queryRow("SELECT users.id, users.password FROM users, perm_templ, p
                         )");
 
 $password = new UserAuthenticationService();
-if (!$user || !$password->verify($auth_password, $user['password'])) {
+if (!$user || !$password->verifyPassword($auth_password, $user['password'])) {
     return status_exit('badauth2');
 }
 

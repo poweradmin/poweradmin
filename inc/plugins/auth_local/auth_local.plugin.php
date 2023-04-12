@@ -220,7 +220,7 @@ function SQLAuthenticate(): void
     }
 
     $password = new UserAuthenticationService();
-    if (!$password->verify($session_pass, $rowObj['password'])) {
+    if (!$password->verifyPassword($session_pass, $rowObj['password'])) {
         handleFailedAuthentication();
         return;
     }
@@ -230,7 +230,7 @@ function SQLAuthenticate(): void
         return;
     }
 
-    if ($password->needs_rehash($rowObj['password'])) {
+    if ($password->requiresRehash($rowObj['password'])) {
         update_user_password($rowObj["id"], $session_pass);
     }
 
