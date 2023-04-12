@@ -188,7 +188,8 @@ $user = $db->queryRow("SELECT users.id, users.password FROM users, perm_templ, p
                             OR perm_items.name = 'zone_content_edit_others'
                         )");
 
-if (!$user || !Password::verify($auth_password, $user['password'])) {
+$password = new Password();
+if (!$user || !$password->verify($auth_password, $user['password'])) {
     return status_exit('badauth2');
 }
 

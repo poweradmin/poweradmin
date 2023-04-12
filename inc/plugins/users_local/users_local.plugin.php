@@ -350,7 +350,8 @@ email = " . $db->quote($email, 'text') . ",";
         $edit_own_perm = do_hook('verify_permission', 'user_edit_own');
         $passwd_edit_others_perm = do_hook('verify_permission', 'user_passwd_edit_others');
         if ($password != "" && $edit_own_perm || $passwd_edit_others_perm) {
-            $query .= ", password = " . $db->quote(Password::hash($password), 'text');
+            $password = new Password();
+            $query .= ", password = " . $db->quote($password->hash($password), 'text');
         }
 
         $query .= " WHERE id = " . $db->quote($id, 'integer');
@@ -373,7 +374,9 @@ email = " . $db->quote($email, 'text') . ",";
 function update_user_password($id, $password): void
 {
     global $db;
-    $query = "UPDATE users SET password = " . $db->quote(Password::hash($password), 'text') . " WHERE id = " . $db->quote($id, 'integer');
+
+    $password = new Password();
+    $query = "UPDATE users SET password = " . $db->quote($password->hash($password), 'text') . " WHERE id = " . $db->quote($id, 'integer');
     $db->query($query);
 }
 
@@ -399,8 +402,10 @@ function change_user_pass_local(array $details)
     $query = "SELECT id, password FROM users WHERE username = {$db->quote($_SESSION ["userlogin"], 'text')}";
     $response = $db->queryRow($query);
 
-    if (Password::verify($details['old_password'], $response['password'])) {
-        $query = "UPDATE users SET password = {$db->quote(Password::hash($details['new_password']), 'text')} WHERE id = {$db->quote($response['id'], 'integer')}";
+    $password = new Password();
+    if ($password->verify($details['old_password'], $response['password'])) {
+        $password = new Password();
+        $query = "UPDATE users SET password = {$db->quote($password->hash($details['new_password']), 'text')} WHERE id = {$db->quote($response['id'], 'integer')}";
         $db->query($query);
 
         logout(_('Password has been changed, please login.'), 'success');
@@ -783,7 +788,8 @@ function update_user_details_local($details)
 
         $passwd_edit_others_perm = (bool)do_hook('verify_permission', 'user_passwd_edit_others');
         if (isset($details['password']) && $details['password'] != "" && $passwd_edit_others_perm) {
-            $query .= ", password = " . $db->quote(Password::hash($details['password'], 'text'));
+            $password = new Password();
+            $query .= ", password = " . $db->quote($password->hash($details['password'], 'text'));
         }
 
         $query .= " WHERE id = " . $db->quote($details['uid'], 'integer');
@@ -834,7 +840,8 @@ function add_new_user_local($details)
 
     $query = "INSERT INTO users (username, password, fullname, email, description, perm_templ,";
 
-    $password_hash = Password::hash($details['password']);
+    $password = new Password();
+    $password_hash = $password->hash($details['password']);
 
     $query .= " active, use_ldap) VALUES (" . $db->quote($details['username'], 'text') . ", " . $db->quote($password_hash, 'text') . ", " . $db->quote($details['fullname'], 'text') . ", " . $db->quote($details['email'], 'text') . ", " . $db->quote($details['descr'], 'text') . ", ";
     if (do_hook('verify_permission', 'user_edit_templ_perm')) {

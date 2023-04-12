@@ -25,7 +25,8 @@ use InvalidArgumentException;
 
 class Password {
 
-    public static function salt($len = 5) {
+    public function salt($len = 5): string
+    {
         $valid_characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890@#$%^*()_-!';
         $valid_len = strlen($valid_characters) - 1;
         $salt = '';
@@ -37,11 +38,12 @@ class Password {
         return $salt;
     }
 
-    public static function hash($password) {
+    public function hash($password): string
+    {
         global $password_encryption, $password_encryption_cost;
 
         if ($password_encryption === 'md5salt') {
-            return self::gen_mix_salt($password);
+            return $this->gen_mix_salt($password);
         } elseif ($password_encryption === 'bcrypt') {
             return password_hash($password, PASSWORD_BCRYPT, array('cost' => $password_encryption_cost));
         } else {
@@ -49,22 +51,23 @@ class Password {
         }
     }
 
-    public static function verify($password, $hash) {
-        $hash_type = self::determine_hash_algorithm($hash);
+    public function verify($password, $hash): bool
+    {
+        $hash_type = $this->determine_hash_algorithm($hash);
 
         if ($hash_type === 'md5salt') {
-            return self::_strsafecmp(self::mix_salt(self::extract_salt($hash), $password), $hash);
+            return $this->_strsafecmp($this->mix_salt($this->extract_salt($hash), $password), $hash);
         } elseif ($hash_type === 'bcrypt') {
             return password_verify($password, $hash);
         } else {
-            return self::_strsafecmp(md5($password), $hash);
+            return $this->_strsafecmp(md5($password), $hash);
         }
     }
 
-    public static function needs_rehash($hash) {
+    public function needs_rehash($hash): bool {
         global $password_encryption, $password_encryption_cost;
 
-        $hash_type = self::determine_hash_algorithm($hash);
+        $hash_type = $this->determine_hash_algorithm($hash);
 
         if ($hash_type == 'bcrypt') {
             return password_needs_rehash($hash, PASSWORD_BCRYPT, ['cost' => $password_encryption_cost]);
@@ -73,7 +76,7 @@ class Password {
         }
     }
 
-    private static function determine_hash_algorithm($hash): string
+    private function determine_hash_algorithm($hash): string
     {
         if (preg_match('/^[a-f0-9]{32}$/', $hash)) {
             return 'md5';
@@ -90,21 +93,24 @@ class Password {
         // Throw an exception if the hash type cannot be determined
         throw new InvalidArgumentException('Unable to determine hash algorithm');
     }
-
-    private static function gen_mix_salt($pass) {
-        $salt = self::salt();
-        return self::mix_salt($salt, $pass);
+    private function gen_mix_salt($pass): string
+    {
+        $salt = $this->salt();
+        return $this->mix_salt($salt, $pass);
     }
 
-    private static function mix_salt($salt, $pass) {
+    private function mix_salt($salt, $pass): string
+    {
         return md5($salt . $pass) . ':' . $salt;
     }
 
-    private static function extract_salt($password) {
+    private function extract_salt($password): string
+    {
         return substr(strstr($password, ':'), 1);
     }
 
-    private static function _strsafecmp($str1, $str2) {
+    private function _strsafecmp($str1, $str2): bool
+    {
         if (!is_string($str1) || !is_string($str2) || strlen($str1) !== strlen($str2)) {
             return false;
         }
