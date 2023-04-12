@@ -76,7 +76,7 @@ class Password {
         }
     }
 
-    private function determine_hash_algorithm($hash): string
+    public function determine_hash_algorithm($hash): string
     {
         if (preg_match('/^[a-f0-9]{32}$/', $hash)) {
             return 'md5';
@@ -93,18 +93,19 @@ class Password {
         // Throw an exception if the hash type cannot be determined
         throw new InvalidArgumentException('Unable to determine hash algorithm');
     }
-    private function gen_mix_salt($pass): string
+
+    public function gen_mix_salt($pass): string
     {
         $salt = $this->salt();
         return $this->mix_salt($salt, $pass);
     }
 
-    private function mix_salt($salt, $pass): string
+    public function mix_salt($salt, $pass): string
     {
         return md5($salt . $pass) . ':' . $salt;
     }
 
-    private function extract_salt($password): string
+    public function extract_salt($password): string
     {
         return substr(strstr($password, ':'), 1);
     }
