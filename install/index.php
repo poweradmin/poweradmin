@@ -81,6 +81,8 @@ if ($current_step == 1 && file_exists('../inc/config.inc.php')) {
     exit;
 }
 
+$config = new Configuration('../inc/config-me.inc.php');
+
 switch ($current_step) {
 
     case 1:
@@ -140,14 +142,33 @@ switch ($current_step) {
         }
 
         // Create an administrator user with the appropriate permissions
-        $db->query("INSERT INTO perm_templ (name, descr) VALUES ('Administrator', 'Administrator template with full rights.')");
-        $result = $db->query("SELECT id FROM perm_templ WHERE name = 'Administrator'");
-        $perm_templ_row = $result->fetch();
+        $admin_name = 'Administrator';
+        $admin_descr = 'Administrator template with full rights.';
+        $stmt = $db->prepare("INSERT INTO perm_templ (name, descr) VALUES (:name, :descr)");
+        $stmt->bindParam(":name", $admin_name);
+        $stmt->bindParam(":descr", $admin_descr);
+        $stmt->execute();
 
-        $perm_templ_items_query = $db->prepare("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (?, 53)");
-        $perm_templ_items_query->execute(array($perm_templ_row['id']));
+        $stmt = $db->prepare("SELECT id FROM perm_templ WHERE name = :name");
+        $stmt->bindParam(":name", $admin_name);
+        $stmt->execute();
 
-        $config = new Configuration();
+        $perm_templ_row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $perm_templ_id = $perm_templ_row['id'];
+
+        $uber_admin_user = 'user_is_ueberuser';
+        $stmt = $db->prepare("SELECT id FROM perm_items WHERE name = :name");
+        $stmt->bindParam(":name", $uber_admin_user);
+        $stmt->execute();
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $uber_admin_user_id = $row['id'];
+
+        $perm_templ_items_query = $db->prepare("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (:perm_templ_id, :uber_admin_user_id)");
+        $perm_templ_items_query->bindParam(":perm_templ_id", $perm_templ_id);
+        $perm_templ_items_query->bindParam(":uber_admin_user_id", $uber_admin_user_id);
+        $perm_templ_items_query->execute();
+
         $userAuthService = new UserAuthenticationService(
             $config->get('password_encryption'),
             $config->get('password_encryption_cost')
@@ -257,7 +278,6 @@ switch ($current_step) {
         // For SQLite we should provide path to db file
         $db_file = $_POST['db_type'] =='sqlite' ? $db_file = $_POST['db_name'] : '';
 
-        $config = new Configuration();
         $userAuthService = new UserAuthenticationService(
             $config->get('password_encryption'),
             $config->get('password_encryption_cost')
@@ -326,7 +346,6 @@ switch ($current_step) {
             $config_file_created = true;
         }
 
-        $config = new Configuration();
         $userAuthService = new UserAuthenticationService(
             $config->get('password_encryption'),
             $config->get('password_encryption_cost')
