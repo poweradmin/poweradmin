@@ -100,7 +100,7 @@ class DeleteRecordController extends BaseController {
 
         $this->render('delete_record.html', [
             'record_id' => $record_id,
-            'zid' => $zid,
+            'zone_id' => $zid,
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,
             'record_info' => DnsRecord::get_record_from_id($record_id),
