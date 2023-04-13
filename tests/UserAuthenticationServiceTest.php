@@ -81,7 +81,6 @@ class UserAuthenticationServiceTest extends TestCase
 
     public function testHashBcrypt(): void
     {
-        $password_encryption = 'bcrypt';
         $password = 'test_password';
 
         $hash = $this->userAuthService->hashPassword($password);
@@ -102,8 +101,9 @@ class UserAuthenticationServiceTest extends TestCase
         $password_encryption = 'md5';
         $password = 'test_password';
 
-        $hash = $this->userAuthService->hashPassword($password);
-        $result = $this->userAuthService->verifyPassword($password, $hash);
+        $userAuthService = new UserAuthenticationService($password_encryption);
+        $hash = $userAuthService->hashPassword($password);
+        $result = $userAuthService->verifyPassword($password, $hash);
 
         $this->assertTrue($result, 'Password verification should be successful for MD5 hash');
     }
@@ -113,15 +113,15 @@ class UserAuthenticationServiceTest extends TestCase
         $password_encryption = 'md5salt';
         $password = 'test_password';
 
-        $hash = $this->userAuthService->hashPassword($password);
-        $result = $this->userAuthService->verifyPassword($password, $hash);
+        $userAuthService = new UserAuthenticationService($password_encryption);
+        $hash = $userAuthService->hashPassword($password);
+        $result = $userAuthService->verifyPassword($password, $hash);
 
         $this->assertTrue($result, 'Password verification should be successful for MD5 hash with salt');
     }
 
     public function testVerifyBcrypt(): void
     {
-        $password_encryption = 'bcrypt';
         $password = 'test_password';
 
         $hash = $this->userAuthService->hashPassword($password);
@@ -136,8 +136,9 @@ class UserAuthenticationServiceTest extends TestCase
         $password = 'test_password';
         $incorrect_password = 'wrong_password';
 
-        $hash = $this->userAuthService->hashPassword($password);
-        $result = $this->userAuthService->verifyPassword($incorrect_password, $hash);
+        $userAuthService = new UserAuthenticationService($password_encryption);
+        $hash = $userAuthService->hashPassword($password);
+        $result = $userAuthService->verifyPassword($incorrect_password, $hash);
 
         $this->assertFalse($result, 'Password verification should fail for an incorrect password');
     }
@@ -148,8 +149,9 @@ class UserAuthenticationServiceTest extends TestCase
         $password = 'test_password';
         $empty_password = '';
 
-        $hash = $this->userAuthService->hashPassword($password);
-        $result = $this->userAuthService->verifyPassword($empty_password, $hash);
+        $userAuthService = new UserAuthenticationService($password_encryption);
+        $hash = $userAuthService->hashPassword($password);
+        $result = $userAuthService->verifyPassword($empty_password, $hash);
 
         $this->assertFalse($result, 'Password verification should fail for an empty password');
     }
@@ -160,34 +162,35 @@ class UserAuthenticationServiceTest extends TestCase
         $password_encryption_cost = 10;
         $password = 'test_password';
 
-        $hash = $this->userAuthService->hashPassword($password);
-        $result = $this->userAuthService->requiresRehash($hash);
+        $userAuthService = new UserAuthenticationService($password_encryption, $password_encryption_cost);
+        $hash = $userAuthService->hashPassword($password);
+        $result = $userAuthService->requiresRehash($hash);
 
         $this->assertFalse($result, 'Password hash should not need rehash for correct bcrypt cost');
     }
 
     public function testNeedsRehashBcryptChangedCost(): void
     {
-        $userAuthService1 = new UserAuthenticationService('bcrypt', 10);
+        $userAuthServiceOld = new UserAuthenticationService('bcrypt', 10);
         $password = 'test_password';
 
-        $hash = $userAuthService1->hashPassword($password);
+        $hash = $userAuthServiceOld->hashPassword($password);
 
-        $userAuthService2 = new UserAuthenticationService('bcrypt', 11);
-        $result = $userAuthService2->requiresRehash($hash);
+        $userAuthServiceNew = new UserAuthenticationService('bcrypt', 11);
+        $result = $userAuthServiceNew->requiresRehash($hash);
 
         $this->assertTrue($result, 'Password hash should need rehash for changed bcrypt cost');
     }
 
     public function testNeedsRehashChangedEncryption(): void
     {
-        $userAuthService1 = new UserAuthenticationService('md5');
+        $userAuthServiceOld = new UserAuthenticationService('md5');
         $password = 'test_password';
 
-        $hash = $userAuthService1->hashPassword($password);
+        $hash = $userAuthServiceOld->hashPassword($password);
 
-        $userAuthService2 = new UserAuthenticationService('bcrypt');
-        $result = $userAuthService2->requiresRehash($hash);
+        $userAuthServiceNew = new UserAuthenticationService('bcrypt');
+        $result = $userAuthServiceNew->requiresRehash($hash);
 
         $this->assertTrue($result, 'Password hash should need rehash for changed encryption method');
     }
@@ -221,7 +224,6 @@ class UserAuthenticationServiceTest extends TestCase
 
     public function testDetermineHashAlgorithmBcrypt(): void
     {
-        $password_encryption = 'bcrypt';
         $password = 'test_password';
 
         $bcrypt_hash = $this->userAuthService->hashPassword($password);
@@ -330,7 +332,6 @@ class UserAuthenticationServiceTest extends TestCase
 
     public function testHashAndVerifySpecialChars(): void
     {
-        $password_encryption = 'bcrypt';
         $password = 'test_p@$$w0rd!';
 
         $hash = $this->userAuthService->hashPassword($password);
@@ -341,7 +342,6 @@ class UserAuthenticationServiceTest extends TestCase
 
     public function testHashAndVerifyLongPassword(): void
     {
-        $password_encryption = 'bcrypt';
         $password = str_repeat('a', 4096);
 
         $hash = $this->userAuthService->hashPassword($password);
@@ -352,7 +352,6 @@ class UserAuthenticationServiceTest extends TestCase
 
     public function testHashAndVerifyUnicodePassword(): void
     {
-        $password_encryption = 'bcrypt';
         $password = 'tést_pàsswórd';
 
         $hash = $this->userAuthService->hashPassword($password);
