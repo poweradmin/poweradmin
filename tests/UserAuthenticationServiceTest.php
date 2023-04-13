@@ -9,10 +9,10 @@ class UserAuthenticationServiceTest extends TestCase
 
     protected function setUp(): void
     {
-        global $password_encryption_cost;
-        $password_encryption_cost = 10;
+        $passwordEncryption = 'bcrypt';
+        $passwordEncryptionCost = 12;
 
-        $this->userAuthService = new UserAuthenticationService();
+        $this->userAuthService = new UserAuthenticationService($passwordEncryption, $passwordEncryptionCost);
     }
 
     public function testSaltLength(): void
@@ -59,30 +59,28 @@ class UserAuthenticationServiceTest extends TestCase
 
     public function testHashMd5(): void
     {
-        global $password_encryption;
         $password_encryption = 'md5';
         $password = 'test_password';
 
-        $hash = $this->userAuthService->hashPassword($password);
+        $userAuthService = new UserAuthenticationService($password_encryption);
+        $hash = $userAuthService->hashPassword($password);
         $this->assertEquals(md5($password), $hash, 'Generated hash should match MD5 hash');
     }
 
     public function testHashMd5Salt(): void
     {
-        global $password_encryption;
-        $password_encryption = 'md5salt';
+        $userAuthService = new UserAuthenticationService('md5salt');
         $password = 'test_password';
 
-        $hash = $this->userAuthService->hashPassword($password);
-        $salt = $this->userAuthService->extractUserSalt($hash);
-        $expected_hash = $this->userAuthService->combineSalts($salt, $password);
+        $hash = $userAuthService->hashPassword($password);
+        $salt = $userAuthService->extractUserSalt($hash);
+        $expected_hash = $userAuthService->combineSalts($salt, $password);
 
         $this->assertEquals($expected_hash, $hash, 'Generated hash should match MD5 hash with salt');
     }
 
     public function testHashBcrypt(): void
     {
-        global $password_encryption;
         $password_encryption = 'bcrypt';
         $password = 'test_password';
 
@@ -92,17 +90,15 @@ class UserAuthenticationServiceTest extends TestCase
 
     public function testHashEdgeCaseEmptyPassword(): void
     {
-        global $password_encryption;
-        $password_encryption = 'md5';
+        $userAuthService = new UserAuthenticationService('md5');
         $password = '';
 
-        $hash = $this->userAuthService->hashPassword($password);
+        $hash = $userAuthService->hashPassword($password);
         $this->assertEquals(md5($password), $hash, 'Generated hash should match MD5 hash for an empty password');
     }
 
     public function testVerifyMd5(): void
     {
-        global $password_encryption;
         $password_encryption = 'md5';
         $password = 'test_password';
 
@@ -114,7 +110,6 @@ class UserAuthenticationServiceTest extends TestCase
 
     public function testVerifyMd5Salt(): void
     {
-        global $password_encryption;
         $password_encryption = 'md5salt';
         $password = 'test_password';
 
@@ -126,7 +121,6 @@ class UserAuthenticationServiceTest extends TestCase
 
     public function testVerifyBcrypt(): void
     {
-        global $password_encryption;
         $password_encryption = 'bcrypt';
         $password = 'test_password';
 
@@ -138,7 +132,6 @@ class UserAuthenticationServiceTest extends TestCase
 
     public function testVerifyEdgeCaseIncorrectPassword(): void
     {
-        global $password_encryption;
         $password_encryption = 'md5';
         $password = 'test_password';
         $incorrect_password = 'wrong_password';
@@ -151,7 +144,6 @@ class UserAuthenticationServiceTest extends TestCase
 
     public function testVerifyEdgeCaseEmptyPassword(): void
     {
-        global $password_encryption;
         $password_encryption = 'md5';
         $password = 'test_password';
         $empty_password = '';
@@ -164,7 +156,6 @@ class UserAuthenticationServiceTest extends TestCase
 
     public function testNeedsRehashBcrypt(): void
     {
-        global $password_encryption, $password_encryption_cost;
         $password_encryption = 'bcrypt';
         $password_encryption_cost = 10;
         $password = 'test_password';
@@ -177,27 +168,26 @@ class UserAuthenticationServiceTest extends TestCase
 
     public function testNeedsRehashBcryptChangedCost(): void
     {
-        global $password_encryption, $password_encryption_cost;
-        $password_encryption = 'bcrypt';
-        $password_encryption_cost = 10;
+        $userAuthService1 = new UserAuthenticationService('bcrypt', 10);
         $password = 'test_password';
 
-        $hash = $this->userAuthService->hashPassword($password);
-        $password_encryption_cost = 12;
-        $result = $this->userAuthService->requiresRehash($hash);
+        $hash = $userAuthService1->hashPassword($password);
+
+        $userAuthService2 = new UserAuthenticationService('bcrypt', 11);
+        $result = $userAuthService2->requiresRehash($hash);
 
         $this->assertTrue($result, 'Password hash should need rehash for changed bcrypt cost');
     }
 
     public function testNeedsRehashChangedEncryption(): void
     {
-        global $password_encryption;
-        $password_encryption = 'md5';
+        $userAuthService1 = new UserAuthenticationService('md5');
         $password = 'test_password';
 
-        $hash = $this->userAuthService->hashPassword($password);
-        $password_encryption = 'bcrypt';
-        $result = $this->userAuthService->requiresRehash($hash);
+        $hash = $userAuthService1->hashPassword($password);
+
+        $userAuthService2 = new UserAuthenticationService('bcrypt');
+        $result = $userAuthService2->requiresRehash($hash);
 
         $this->assertTrue($result, 'Password hash should need rehash for changed encryption method');
     }
@@ -220,19 +210,17 @@ class UserAuthenticationServiceTest extends TestCase
 
     public function testDetermineHashAlgorithmMd5Salt(): void
     {
-        global $password_encryption;
-        $password_encryption = 'md5salt';
+        $userAuthService = new UserAuthenticationService('md5salt');
         $password = 'test_password';
 
-        $md5salt_hash = $this->userAuthService->hashPassword($password);
-        $hash_type = $this->userAuthService->identifyHashAlgorithm($md5salt_hash);
+        $md5salt_hash = $userAuthService->hashPassword($password);
+        $hash_type = $userAuthService->identifyHashAlgorithm($md5salt_hash);
 
         $this->assertEquals('md5salt', $hash_type, 'Hash type should be determined as MD5 with salt');
     }
 
     public function testDetermineHashAlgorithmBcrypt(): void
     {
-        global $password_encryption;
         $password_encryption = 'bcrypt';
         $password = 'test_password';
 
@@ -342,7 +330,6 @@ class UserAuthenticationServiceTest extends TestCase
 
     public function testHashAndVerifySpecialChars(): void
     {
-        global $password_encryption;
         $password_encryption = 'bcrypt';
         $password = 'test_p@$$w0rd!';
 
@@ -354,7 +341,6 @@ class UserAuthenticationServiceTest extends TestCase
 
     public function testHashAndVerifyLongPassword(): void
     {
-        global $password_encryption;
         $password_encryption = 'bcrypt';
         $password = str_repeat('a', 4096);
 
@@ -366,7 +352,6 @@ class UserAuthenticationServiceTest extends TestCase
 
     public function testHashAndVerifyUnicodePassword(): void
     {
-        global $password_encryption;
         $password_encryption = 'bcrypt';
         $password = 'tést_pàsswórd';
 

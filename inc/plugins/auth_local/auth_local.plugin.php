@@ -219,7 +219,8 @@ function SQLAuthenticate(): void
         return;
     }
 
-    $userAuthService = new UserAuthenticationService();
+    global $password_encryption, $password_encryption_cost;
+    $userAuthService = new UserAuthenticationService($password_encryption, $password_encryption_cost);
     if (!$userAuthService->verifyPassword($session_pass, $rowObj['password'])) {
         handleFailedAuthentication();
         return;

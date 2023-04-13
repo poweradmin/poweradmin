@@ -25,6 +25,14 @@ use InvalidArgumentException;
 
 class UserAuthenticationService
 {
+    private string $passwordEncryption;
+    private int $passwordEncryptionCost;
+
+    public function __construct(string $passwordEncryption = 'bcrypt', int $passwordEncryptionCost = 10)
+    {
+        $this->passwordEncryption = $passwordEncryption;
+        $this->passwordEncryptionCost = $passwordEncryptionCost;
+    }
 
     public function generateSalt($len = 5): string
     {
@@ -41,25 +49,23 @@ class UserAuthenticationService
 
     public function hashPassword($password): string
     {
-        global $password_encryption, $password_encryption_cost;
-
-        if ($password_encryption === 'bcrypt') {
-            return password_hash($password, PASSWORD_BCRYPT, array('cost' => $password_encryption_cost));
+        if ($this->passwordEncryption === 'bcrypt') {
+            return password_hash($password, PASSWORD_BCRYPT, array('cost' => $this->passwordEncryptionCost));
         }
 
-        if ($password_encryption === 'argon2i') {
+        if ($this->passwordEncryption === 'argon2i') {
             return password_hash($password, PASSWORD_ARGON2I);
         }
 
-        if ($password_encryption === 'argon2id') {
+        if ($this->passwordEncryption === 'argon2id') {
             return password_hash($password, PASSWORD_ARGON2ID);
         }
 
-        if ($password_encryption === 'md5salt') {
+        if ($this->passwordEncryption === 'md5salt') {
             return $this->generateCombinedSalt($password);
         }
 
-        if ($password_encryption === 'md5') {
+        if ($this->passwordEncryption === 'md5') {
             return md5($password);
         }
 
@@ -87,19 +93,17 @@ class UserAuthenticationService
 
     public function requiresRehash($hash): bool
     {
-        global $password_encryption, $password_encryption_cost;
-
         $hash_type = $this->identifyHashAlgorithm($hash);
         if ($hash_type == "unknown") {
             throw new InvalidArgumentException('Unable to determine hash algorithm');
         }
 
-        if ($hash_type !== $password_encryption) {
+        if ($hash_type !== $this->passwordEncryption) {
             return true;
         }
 
         if ($hash_type == 'bcrypt') {
-            return password_needs_rehash($hash, PASSWORD_BCRYPT, ['cost' => $password_encryption_cost]);
+            return password_needs_rehash($hash, PASSWORD_BCRYPT, ['cost' => $this->passwordEncryptionCost]);
         }
 
         if ($hash_type == 'argon2i') {

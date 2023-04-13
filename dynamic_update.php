@@ -188,7 +188,8 @@ $user = $db->queryRow("SELECT users.id, users.password FROM users, perm_templ, p
                             OR perm_items.name = 'zone_content_edit_others'
                         )");
 
-$userAuthService = new UserAuthenticationService();
+global $password_encryption, $password_encryption_cost;
+$userAuthService = new UserAuthenticationService($password_encryption, $password_encryption_cost);
 if (!$user || !$userAuthService->verifyPassword($auth_password, $user['password'])) {
     return status_exit('badauth2');
 }
