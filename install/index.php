@@ -76,7 +76,7 @@ $current_step = isset($_POST['step']) && is_numeric($_POST['step']) ? $_POST['st
 echo $twig->render('header.html', array('current_step' => htmlspecialchars($current_step), 'file_version' => time()));
 
 if ($current_step == 1 && file_exists('../inc/config.inc.php')) {
-    echo "<p class='alert alert-danger'>". _('There is already a configuration file in place, so the installation will be skipped.') ."</p>";
+    echo "<p class='alert alert-danger'>" . _('There is already a configuration file in place, so the installation will be skipped.') . "</p>";
     echo $twig->render('footer.html');
     exit;
 }
@@ -142,39 +142,29 @@ switch ($current_step) {
         }
 
         // Create an administrator user with the appropriate permissions
-        $admin_name = 'Administrator';
-        $admin_descr = 'Administrator template with full rights.';
+        $adminName = 'Administrator';
+        $adminDescr = 'Administrator template with full rights.';
         $stmt = $db->prepare("INSERT INTO perm_templ (name, descr) VALUES (:name, :descr)");
-        $stmt->bindParam(":name", $admin_name);
-        $stmt->bindParam(":descr", $admin_descr);
-        $stmt->execute();
+        $stmt->execute([':name' => $adminName, ':descr' => $adminDescr]);
 
-        $stmt = $db->prepare("SELECT id FROM perm_templ WHERE name = :name");
-        $stmt->bindParam(":name", $admin_name);
-        $stmt->execute();
+        $permTemplId = $db->lastInsertId();
 
-        $perm_templ_row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $perm_templ_id = $perm_templ_row['id'];
-
-        $uber_admin_user = 'user_is_ueberuser';
+        $uberAdminUser = 'user_is_ueberuser';
         $stmt = $db->prepare("SELECT id FROM perm_items WHERE name = :name");
-        $stmt->bindParam(":name", $uber_admin_user);
-        $stmt->execute();
+        $stmt->execute([':name' => $uberAdminUser]);
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $uber_admin_user_id = $row['id'];
+        $uberAdminUserId = $row['id'];
 
-        $perm_templ_items_query = $db->prepare("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (:perm_templ_id, :uber_admin_user_id)");
-        $perm_templ_items_query->bindParam(":perm_templ_id", $perm_templ_id);
-        $perm_templ_items_query->bindParam(":uber_admin_user_id", $uber_admin_user_id);
-        $perm_templ_items_query->execute();
+        $permTemplItemsQuery = $db->prepare("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (:perm_templ_id, :uber_admin_user_id)");
+        $permTemplItemsQuery->execute([':perm_templ_id' => $permTemplId, ':uber_admin_user_id' => $uberAdminUserId]);
 
         $userAuthService = new UserAuthenticationService(
             $config->get('password_encryption'),
             $config->get('password_encryption_cost')
         );
         $user_query = $db->prepare("INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('admin', ?, 'Administrator', 'admin@example.net', 'Administrator with full rights.', ?, 1, 0)");
-        $user_query->execute(array($userAuthService->hashPassword($pa_pass), $perm_templ_row['id']));
+        $user_query->execute(array($userAuthService->hashPassword($pa_pass), $permTemplId));
 
         echo _('done!') . "</p>";
 
@@ -234,10 +224,10 @@ switch ($current_step) {
         } elseif ($db_type == 'pgsql') {
             echo _('On PgSQL you would use:') . "</p>";
             echo "<p><code>$ createuser -E -P " . htmlspecialchars($pa_db_user) . "<br>" .
-            "Enter password for new role: " . htmlspecialchars($pa_db_pass) . "<br>" .
-            "Enter it again: " . htmlspecialchars($pa_db_pass) . "<br>" .
-            "CREATE USER<br>" .
-            "$ psql " . htmlspecialchars($db_name) . "<br>";
+                "Enter password for new role: " . htmlspecialchars($pa_db_pass) . "<br>" .
+                "Enter it again: " . htmlspecialchars($pa_db_pass) . "<br>" .
+                "CREATE USER<br>" .
+                "$ psql " . htmlspecialchars($db_name) . "<br>";
             echo "psql> ";
             foreach ($grantTables as $tableName) {
                 echo "GRANT SELECT, INSERT, DELETE, UPDATE ON " . $tableName . " TO " . htmlspecialchars($pa_db_user) . ";<br />";
@@ -273,10 +263,10 @@ switch ($current_step) {
     case 6:
         // No need to set database port if it's standard port for that db
         $db_port = ($_POST['db_type'] == 'mysql' && $_POST['db_port'] != 3306)
-            || ($_POST['db_type'] == 'pgsql' && $_POST['db_port'] != 5432) ? $_POST['db_port'] : '';
+        || ($_POST['db_type'] == 'pgsql' && $_POST['db_port'] != 5432) ? $_POST['db_port'] : '';
 
         // For SQLite we should provide path to db file
-        $db_file = $_POST['db_type'] =='sqlite' ? $db_file = $_POST['db_name'] : '';
+        $db_file = $_POST['db_type'] == 'sqlite' ? $db_file = $_POST['db_name'] : '';
 
         $userAuthService = new UserAuthenticationService(
             $config->get('password_encryption'),
@@ -352,7 +342,7 @@ switch ($current_step) {
         );
 
         echo $twig->render('step6.html', array(
-            'next_step' => (int)htmlspecialchars($current_step)+1,
+            'next_step' => (int)htmlspecialchars($current_step) + 1,
             'language' => htmlspecialchars($language),
             'config_file_created' => $config_file_created,
             'local_config_file' => $local_config_file,
@@ -365,7 +355,7 @@ switch ($current_step) {
             'db_user' => htmlspecialchars($db_user),
             'db_pass' => htmlspecialchars($db_pass),
             'db_name' => htmlspecialchars($db_name),
-            'db_file' => $db_type =='sqlite' ? htmlspecialchars($db_name) : '',
+            'db_file' => $db_type == 'sqlite' ? htmlspecialchars($db_name) : '',
             'db_type' => htmlspecialchars($db_type),
             'db_port' => htmlspecialchars($db_port),
             'db_charset' => htmlspecialchars($db_charset),
