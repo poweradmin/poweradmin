@@ -31,6 +31,7 @@
  */
 
 use Poweradmin\Application\Services\UserAuthenticationService;
+use Poweradmin\Configuration;
 use Poweradmin\DnsRecord;
 
 require 'inc/config.inc.php';
@@ -188,8 +189,11 @@ $user = $db->queryRow("SELECT users.id, users.password FROM users, perm_templ, p
                             OR perm_items.name = 'zone_content_edit_others'
                         )");
 
-global $password_encryption, $password_encryption_cost;
-$userAuthService = new UserAuthenticationService($password_encryption, $password_encryption_cost);
+$config = new Configuration();
+$userAuthService = new UserAuthenticationService(
+    $config->get('password_encryption'),
+    $config->get('password_encryption_cost')
+);
 if (!$user || !$userAuthService->verifyPassword($auth_password, $user['password'])) {
     return status_exit('badauth2');
 }

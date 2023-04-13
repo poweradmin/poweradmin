@@ -30,6 +30,7 @@
  */
 
 use Poweradmin\Application\Services\UserAuthenticationService;
+use Poweradmin\Configuration;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\LdapUserEventLogger;
 use Poweradmin\UserEventLogger;
@@ -219,8 +220,12 @@ function SQLAuthenticate(): void
         return;
     }
 
-    global $password_encryption, $password_encryption_cost;
-    $userAuthService = new UserAuthenticationService($password_encryption, $password_encryption_cost);
+    $config = new Configuration();
+    $userAuthService = new UserAuthenticationService(
+        $config->get('password_encryption'),
+        $config->get('password_encryption_cost')
+    );
+
     if (!$userAuthService->verifyPassword($session_pass, $rowObj['password'])) {
         handleFailedAuthentication();
         return;
