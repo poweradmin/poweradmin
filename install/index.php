@@ -19,15 +19,6 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- *  Poweradmin installer
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2023 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 use Poweradmin\Application\Services\UserAuthenticationService;
 use Poweradmin\Configuration;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
