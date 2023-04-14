@@ -41,21 +41,8 @@ $default_config_file = dirname(__DIR__) . '/inc/config-me.inc.php';
 const SESSION_KEY_LENGTH = 46;
 
 // Localize interface
-$language = 'en_EN';
-if (isset($_POST['language']) && $_POST['language'] != 'en_EN') {
-    $language = $_POST['language'];
-
-    $locale = setlocale(LC_ALL, $language, $language . '.UTF-8');
-    if (!$locale) {
-        error(_('Failed to set locale. Selected locale may be unsupported on this system. Please contact your administrator.'));
-    }
-
-    $gettext_domain = 'messages';
-    bindtextdomain($gettext_domain, "./../locale");
-    textdomain($gettext_domain);
-    @putenv('LANG=' . $language);
-    @putenv('LANGUAGE=' . $language);
-}
+$language = getLanguageFromRequest();
+setLanguage($language);
 
 // Initialize Twig template engine
 $loader = new FilesystemLoader('templates');
