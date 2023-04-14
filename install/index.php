@@ -21,11 +21,6 @@
 
 use Poweradmin\Application\Services\UserAuthenticationService;
 use Poweradmin\Configuration;
-use Symfony\Bridge\Twig\Extension\TranslationExtension;
-use Symfony\Component\Translation\Loader\PoFileLoader;
-use Symfony\Component\Translation\Translator;
-use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
@@ -34,33 +29,21 @@ require_once dirname(__DIR__) . '/inc/i18n.inc.php';
 
 require_once 'helpers/locale_handler.php';
 require_once 'helpers/database_structure.php';
+require_once 'helpers/template_utils.php';
+require_once 'helpers/install_helpers.php';
 
-// Constants
 $local_config_file = dirname(__DIR__) . '/inc/config.inc.php';
 $default_config_file = dirname(__DIR__) . '/inc/config-me.inc.php';
 const SESSION_KEY_LENGTH = 46;
 
-// Localize interface
+// Main
 $language = getLanguageFromRequest();
 setLanguage($language);
 
-// Initialize Twig template engine
-$loader = new FilesystemLoader('templates');
-$twig = new Environment($loader);
-$translator = new Translator($language);
-$translator->addLoader('po', new PoFileLoader());
-$translator->addResource('po', getLocaleFile($language), $language);
-$twig->addExtension(new TranslationExtension($translator));
-
-// Display header
-$current_step = isset($_POST['step']) && is_numeric($_POST['step']) ? $_POST['step'] : 1;
-echo $twig->render('header.html', array('current_step' => htmlspecialchars($current_step), 'file_version' => time()));
-
-if ($current_step == 1 && file_exists($local_config_file)) {
-    echo "<p class='alert alert-danger'>" . _('There is already a configuration file in place, so the installation will be skipped.') . "</p>";
-    echo $twig->render('footer.html');
-    exit;
-}
+$twig = initializeTwigEnvironment($language);
+$current_step = getCurrentStep();
+renderHeader($twig, $current_step);
+checkConfigFile($current_step, $local_config_file, $twig);
 
 $config = new Configuration($default_config_file);
 
@@ -354,4 +337,4 @@ switch ($current_step) {
         break;
 }
 
-echo $twig->render('footer.html');
+renderFooter($twig);
