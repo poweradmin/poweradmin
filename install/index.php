@@ -37,6 +37,7 @@ require_once 'helpers/database_structure.php';
 
 // Constants
 $local_config_file = dirname(__DIR__) . '/inc/config.inc.php';
+$default_config_file = dirname(__DIR__) . '/inc/config-me.inc.php';
 const SESSION_KEY_LENGTH = 46;
 
 // Localize interface
@@ -68,13 +69,13 @@ $twig->addExtension(new TranslationExtension($translator));
 $current_step = isset($_POST['step']) && is_numeric($_POST['step']) ? $_POST['step'] : 1;
 echo $twig->render('header.html', array('current_step' => htmlspecialchars($current_step), 'file_version' => time()));
 
-if ($current_step == 1 && file_exists('../inc/config.inc.php')) {
+if ($current_step == 1 && file_exists($local_config_file)) {
     echo "<p class='alert alert-danger'>" . _('There is already a configuration file in place, so the installation will be skipped.') . "</p>";
     echo $twig->render('footer.html');
     exit;
 }
 
-$config = new Configuration('../inc/config-me.inc.php');
+$config = new Configuration($default_config_file);
 
 switch ($current_step) {
 
@@ -92,7 +93,7 @@ switch ($current_step) {
 
     case 4:
         echo "<p class='alert alert-secondary'>" . _('Updating database...') . " ";
-        include_once("../inc/config-me.inc.php");
+        include_once($default_config_file);
         $db_user = $_POST['user'];
         $db_pass = $_POST['pass'];
         $db_host = $_POST['host'];
