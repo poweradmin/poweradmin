@@ -28,7 +28,6 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-// Dependencies
 use Poweradmin\Application\Services\UserAuthenticationService;
 use Poweradmin\Configuration;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
@@ -43,6 +42,7 @@ require_once dirname(__DIR__) . '/inc/messages.inc.php';
 require_once dirname(__DIR__) . '/inc/i18n.inc.php';
 
 require_once 'helpers/locale_handler.php';
+require_once 'helpers/database_structure.php';
 
 // Constants
 $local_config_file = dirname(__DIR__) . '/inc/config.inc.php';
@@ -116,8 +116,8 @@ switch ($current_step) {
         $pa_pass = $_POST['pa_pass'];
         require_once("../inc/database.inc.php");
         $db = dbConnect($isQuiet = false);
-        include_once("database-structure.inc.php");
         $current_tables = $db->listTables();
+        $def_tables = getDefaultTables();
 
         foreach ($def_tables as $table) {
             if (in_array($table['table_name'], $current_tables)) {
@@ -206,7 +206,6 @@ switch ($current_step) {
 
         require_once("../inc/database.inc.php");
         $db = dbConnect($isQuiet = false);
-        include_once("database-structure.inc.php");
 
         echo "<p>" . _('You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert and update records in the PowerDNS database.') . " ";
         if ($db_type == 'mysql') {
@@ -231,9 +230,12 @@ switch ($current_step) {
                 "CREATE USER<br>" .
                 "$ psql " . htmlspecialchars($db_name) . "<br>";
             echo "psql> ";
+            $def_tables = getDefaultTables();
+            $grantTables = getGrantTables($def_tables);
             foreach ($grantTables as $tableName) {
                 echo "GRANT SELECT, INSERT, DELETE, UPDATE ON " . $tableName . " TO " . htmlspecialchars($pa_db_user) . ";<br />";
             }
+            $grantSequences = getGrantSequences($def_tables);
             foreach ($grantSequences as $sequenceName) {
                 echo "GRANT USAGE, SELECT ON SEQUENCE " . $sequenceName . " TO " . htmlspecialchars($pa_db_user) . ";<br />";
             }
