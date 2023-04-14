@@ -386,7 +386,7 @@ function update_user_password($id, $user_pass): void
         $config->get('password_encryption'),
         $config->get('password_encryption_cost')
     );
-    $query = "UPDATE users SET password = " . $db->quote($userAuthService->hashPassword($user_pass), 'text') . " WHERE id = " . $db->quote($id
+    $query = "UPDATE users SET password = " . $db->quote($userAuthService->hashPassword($user_pass), 'text') . " WHERE id = " . $db->quote($id, 'integer');
     $db->query($query);
 }
 
