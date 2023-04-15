@@ -64,7 +64,7 @@ add_listener('add_new_user', 'add_new_user_local');
 use Poweradmin\DependencyCheck;
 DependencyCheck::verifyExtensions();
 
-global $db_host, $db_port, $db_user, $db_pass, $db_name, $db_charset, $db_collation, $db_type;
+global $db_host, $db_port, $db_user, $db_pass, $db_name, $db_charset, $db_collation, $db_type, $db_file;
 
 $databaseCredentials = [
     'db_host' => $db_host,
@@ -75,6 +75,7 @@ $databaseCredentials = [
     'db_charset' => $db_charset,
     'db_collation' => $db_collation,
     'db_type' => $db_type,
+    'db_file' => $db_file,
 ];
 
 if ($databaseCredentials['db_type'] == 'sqlite') {
