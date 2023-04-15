@@ -22,7 +22,7 @@
 
 namespace Poweradmin;
 
-use Poweradmin\Infrastructure\ConfigValidator;
+use Poweradmin\Infrastructure\Config\ConfigValidator;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Symfony\Component\Translation\Loader\PoFileLoader;
 use Symfony\Component\Translation\Translator;

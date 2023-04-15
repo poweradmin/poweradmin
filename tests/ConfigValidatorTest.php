@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\ConfigValidator;
+use Poweradmin\Infrastructure\Config\ConfigValidator;
 
 class ConfigValidatorTest extends TestCase
 {

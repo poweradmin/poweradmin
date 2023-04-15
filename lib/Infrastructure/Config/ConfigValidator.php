@@ -19,7 +19,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Infrastructure;
+namespace Poweradmin\Infrastructure\Config;
 
 class ConfigValidator
 {
