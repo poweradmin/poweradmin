@@ -22,6 +22,10 @@
 
 namespace Poweradmin\Infrastructure\UI\Web\Form;
 
+/**
+ * LanguageCode class is used for retrieving language names based on their codes.
+ * This class contains an associative array of language codes and their corresponding names.
+ */
 class LanguageCode
 {
     private const LANGUAGE_CODES = array(
@@ -211,6 +215,12 @@ class LanguageCode
         'zu' => 'Zulu'
     );
 
+    /**
+     * Returns the language name corresponding to the given locale.
+     *
+     * @param string $locale The locale string (e.g., en_US, en_GB, etc.)
+     * @return string|null The language name if the locale is found, null otherwise.
+     */
     public static function getByLocale(string $locale): ?string
     {
         $languageCode = substr($locale, 0, 2);
