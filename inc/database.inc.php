@@ -35,16 +35,17 @@ require_once 'PDOLayer.php';
  *
  * @return object $db Database object
  */
-function dbConnect($isQuiet = true, $installerMode = false) {
-    global $db_type;
-    global $db_user;
-    global $db_pass;
-    global $db_host;
-    global $db_port;
-    global $db_name;
-    global $db_charset;
-    global $db_file;
-    global $db_debug;
+function dbConnect(array $databaseCredentials = [], $isQuiet = true, $installerMode = false)
+{
+    $db_type = $databaseCredentials['db_type'];
+    $db_user = $databaseCredentials['db_user'];
+    $db_pass = $databaseCredentials['db_pass'];
+    $db_host = $databaseCredentials['db_host'];
+    $db_port = $databaseCredentials['db_port'];
+    $db_name = $databaseCredentials['db_name'];
+    $db_charset = $databaseCredentials['db_charset'];
+    $db_file = $databaseCredentials['db_file'] ?? null;
+    $db_debug = $databaseCredentials['db_debug'] ?? false;
 
     global $sql_regexp;
 
