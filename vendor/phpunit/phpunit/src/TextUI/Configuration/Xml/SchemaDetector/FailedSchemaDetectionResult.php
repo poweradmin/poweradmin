@@ -7,25 +7,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace PHPUnit\Util\Xml;
+namespace PHPUnit\TextUI\XmlConfiguration;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
  *
  * @psalm-immutable
  */
-abstract class SchemaDetectionResult
+final class FailedSchemaDetectionResult extends SchemaDetectionResult
 {
-    public function detected(): bool
-    {
-        return false;
-    }
-
-    /**
-     * @throws XmlException
-     */
-    public function version(): string
-    {
-        throw new XmlException('No supported schema was detected');
-    }
 }

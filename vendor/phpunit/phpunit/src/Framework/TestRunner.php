@@ -30,9 +30,9 @@ use PHPUnit\Event\TestData\NoDataSetFromDataProviderException;
 use PHPUnit\Metadata\Api\CodeCoverage as CodeCoverageMetadataApi;
 use PHPUnit\Metadata\Parser\Registry as MetadataRegistry;
 use PHPUnit\Runner\CodeCoverage;
+use PHPUnit\Runner\ErrorHandler;
 use PHPUnit\TextUI\Configuration\Configuration;
 use PHPUnit\TextUI\Configuration\Registry as ConfigurationRegistry;
-use PHPUnit\Util\ErrorHandler;
 use PHPUnit\Util\GlobalState;
 use PHPUnit\Util\PHP\AbstractPhpProcess;
 use ReflectionClass;
@@ -175,7 +175,7 @@ final class TestRunner
                 CodeCoverage::instance()->stop(
                     $append,
                     $linesToBeCovered,
-                    $linesToBeUsed
+                    $linesToBeUsed,
                 );
             } catch (UnintentionallyCoveredCodeException $cce) {
                 Event\Facade::emitter()->testConsideredRisky(
@@ -287,7 +287,8 @@ final class TestRunner
             $iniSettings   = GlobalState::getIniSettingsAsString();
         }
 
-        $coverage = CodeCoverage::instance()->isActive() ? 'true' : 'false';
+        $coverage         = CodeCoverage::instance()->isActive() ? 'true' : 'false';
+        $linesToBeIgnored = var_export(CodeCoverage::instance()->linesToBeIgnored(), true);
 
         if (defined('PHPUNIT_COMPOSER_INSTALL')) {
             $composerAutoload = var_export(PHPUNIT_COMPOSER_INSTALL, true);
@@ -321,6 +322,7 @@ final class TestRunner
             'filename'                       => $class->getFileName(),
             'className'                      => $class->getName(),
             'collectCodeCoverageInformation' => $coverage,
+            'linesToBeIgnored'               => $linesToBeIgnored,
             'data'                           => $data,
             'dataName'                       => $dataName,
             'dependencyInput'                => $dependencyInput,

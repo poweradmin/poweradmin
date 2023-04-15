@@ -16,11 +16,21 @@ use function str_repeat;
 use function strlen;
 use PHPUnit\Event\EventFacadeIsSealedException;
 use PHPUnit\Event\Facade;
+use PHPUnit\Event\Test\DeprecationTriggered;
 use PHPUnit\Event\Test\Errored;
+use PHPUnit\Event\Test\NoticeTriggered;
+use PHPUnit\Event\Test\PhpDeprecationTriggered;
+use PHPUnit\Event\Test\PhpNoticeTriggered;
+use PHPUnit\Event\Test\PhpunitDeprecationTriggered;
+use PHPUnit\Event\Test\PhpunitWarningTriggered;
+use PHPUnit\Event\Test\PhpWarningTriggered;
 use PHPUnit\Event\Test\PrintedUnexpectedOutput;
+use PHPUnit\Event\Test\WarningTriggered;
 use PHPUnit\Event\TestRunner\ExecutionStarted;
 use PHPUnit\Event\UnknownSubscriberTypeException;
 use PHPUnit\Framework\TestStatus\TestStatus;
+use PHPUnit\TextUI\Configuration\Source;
+use PHPUnit\TextUI\Configuration\SourceFilter;
 use PHPUnit\TextUI\Output\Printer;
 use PHPUnit\Util\Color;
 
@@ -32,6 +42,10 @@ final class ProgressPrinter
     private readonly Printer $printer;
     private readonly bool $colors;
     private readonly int $numberOfColumns;
+    private readonly Source $source;
+    private readonly bool $restrictDeprecations;
+    private readonly bool $restrictNotices;
+    private readonly bool $restrictWarnings;
     private int $column             = 0;
     private int $numberOfTests      = 0;
     private int $numberOfTestsWidth = 0;
@@ -44,11 +58,15 @@ final class ProgressPrinter
      * @throws EventFacadeIsSealedException
      * @throws UnknownSubscriberTypeException
      */
-    public function __construct(Printer $printer, bool $colors, int $numberOfColumns, Facade $facade)
+    public function __construct(Printer $printer, Facade $facade, bool $colors, int $numberOfColumns, Source $source, bool $restrictDeprecations, bool $restrictNotices, bool $restrictWarnings)
     {
-        $this->printer         = $printer;
-        $this->colors          = $colors;
-        $this->numberOfColumns = $numberOfColumns;
+        $this->printer              = $printer;
+        $this->colors               = $colors;
+        $this->numberOfColumns      = $numberOfColumns;
+        $this->source               = $source;
+        $this->restrictDeprecations = $restrictDeprecations;
+        $this->restrictNotices      = $restrictNotices;
+        $this->restrictWarnings     = $restrictWarnings;
 
         $this->registerSubscribers($facade);
     }
@@ -87,13 +105,23 @@ final class ProgressPrinter
         $this->updateTestStatus(TestStatus::incomplete());
     }
 
-    public function testTriggeredNotice(): void
+    public function testTriggeredNotice(PhpNoticeTriggered|NoticeTriggered $event): void
     {
+        if ($this->restrictNotices && !(new SourceFilter)->includes($this->source, $event->file())) {
+            return;
+        }
+
         $this->updateTestStatus(TestStatus::notice());
     }
 
-    public function testTriggeredDeprecation(): void
+    public function testTriggeredDeprecation(PhpDeprecationTriggered|PhpunitDeprecationTriggered|DeprecationTriggered $event): void
     {
+        if (!$event instanceof PhpunitDeprecationTriggered &&
+            $this->restrictDeprecations &&
+            !(new SourceFilter)->includes($this->source, $event->file())) {
+            return;
+        }
+
         $this->updateTestStatus(TestStatus::deprecation());
     }
 
@@ -102,8 +130,14 @@ final class ProgressPrinter
         $this->updateTestStatus(TestStatus::risky());
     }
 
-    public function testTriggeredWarning(): void
+    public function testTriggeredWarning(PhpWarningTriggered|PhpunitWarningTriggered|WarningTriggered $event): void
     {
+        if (!$event instanceof PhpunitWarningTriggered &&
+            $this->restrictWarnings &&
+            !(new SourceFilter)->includes($this->source, $event->file())) {
+            return;
+        }
+
         $this->updateTestStatus(TestStatus::warning());
     }
 

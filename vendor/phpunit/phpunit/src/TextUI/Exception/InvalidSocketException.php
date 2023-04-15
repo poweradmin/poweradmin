@@ -7,17 +7,23 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace PHPUnit\Util;
+namespace PHPUnit\TextUI;
 
+use function sprintf;
 use RuntimeException;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
  */
-final class NoTestCaseObjectOnCallStackException extends RuntimeException implements Exception
+final class InvalidSocketException extends RuntimeException implements Exception
 {
-    public function __construct()
+    public function __construct(string $socket)
     {
-        parent::__construct('Cannot find TestCase object on call stack');
+        parent::__construct(
+            sprintf(
+                '"%s" does not match "socket://hostname:port" format',
+                $socket
+            )
+        );
     }
 }

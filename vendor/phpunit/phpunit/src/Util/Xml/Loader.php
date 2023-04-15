@@ -27,7 +27,7 @@ final class Loader
     /**
      * @throws XmlException
      */
-    public function loadFile(string $filename, bool $isHtml = false, bool $xinclude = false, bool $strict = false): DOMDocument
+    public function loadFile(string $filename): DOMDocument
     {
         $reporting = error_reporting(0);
         $contents  = file_get_contents($filename);
@@ -43,22 +43,16 @@ final class Loader
             );
         }
 
-        return $this->load($contents, $isHtml, $filename, $xinclude, $strict);
+        return $this->load($contents, $filename);
     }
 
     /**
      * @throws XmlException
      */
-    public function load(string $actual, bool $isHtml = false, string $filename = '', bool $xinclude = false, bool $strict = false): DOMDocument
+    public function load(string $actual, ?string $filename = null): DOMDocument
     {
         if ($actual === '') {
             throw new XmlException('Could not load XML from empty string');
-        }
-
-        // Required for XInclude on Windows.
-        if ($xinclude) {
-            $cwd = getcwd();
-            @chdir(dirname($filename));
         }
 
         $document                     = new DOMDocument;
@@ -68,18 +62,20 @@ final class Loader
         $message   = '';
         $reporting = error_reporting(0);
 
-        if ($filename !== '') {
-            // Required for XInclude
+        // Required for XInclude
+        if ($filename !== null) {
+            // Required for XInclude on Windows
+            if (DIRECTORY_SEPARATOR === '\\') {
+                $cwd = getcwd();
+                @chdir(dirname($filename));
+            }
+
             $document->documentURI = $filename;
         }
 
-        if ($isHtml) {
-            $loaded = $document->loadHTML($actual);
-        } else {
-            $loaded = $document->loadXML($actual);
-        }
+        $loaded = $document->loadXML($actual);
 
-        if (!$isHtml && $xinclude) {
+        if ($filename !== null) {
             $document->xinclude();
         }
 
@@ -94,8 +90,8 @@ final class Loader
             @chdir($cwd);
         }
 
-        if ($loaded === false || ($strict && $message !== '')) {
-            if ($filename !== '') {
+        if ($loaded === false || $message !== '') {
+            if ($filename !== null) {
                 throw new XmlException(
                     sprintf(
                         'Could not load "%s".%s',

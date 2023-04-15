@@ -68,8 +68,6 @@ use PHPUnit\TextUI\XmlConfiguration\Logging\TestDox\Html as TestDoxHtml;
 use PHPUnit\TextUI\XmlConfiguration\Logging\TestDox\Text as TestDoxText;
 use PHPUnit\Util\VersionComparisonOperator;
 use PHPUnit\Util\Xml\Loader as XmlLoader;
-use PHPUnit\Util\Xml\SchemaFinder;
-use PHPUnit\Util\Xml\Validator;
 use PHPUnit\Util\Xml\XmlException;
 use SebastianBergmann\CodeCoverage\Report\Html\Colors;
 use SebastianBergmann\CodeCoverage\Report\Thresholds;
@@ -85,7 +83,7 @@ final class Loader
     public function load(string $filename): LoadedFromFileConfiguration
     {
         try {
-            $document = (new XmlLoader)->loadFile($filename, false, true, true);
+            $document = (new XmlLoader)->loadFile($filename);
         } catch (XmlException $e) {
             throw new Exception(
                 $e->getMessage(),
@@ -98,7 +96,7 @@ final class Loader
 
         try {
             $xsdFilename = (new SchemaFinder)->find(Version::series());
-        } catch (XmlException $e) {
+        } catch (CannotFindSchemaException $e) {
             throw new Exception(
                 $e->getMessage(),
                 $e->getCode(),
@@ -110,6 +108,7 @@ final class Loader
             $filename,
             (new Validator)->validate($document, $xsdFilename),
             $this->extensions($xpath),
+            $this->source($filename, $xpath),
             $this->codeCoverage($filename, $xpath),
             $this->groups($xpath),
             $this->logging($filename, $xpath),
@@ -245,6 +244,31 @@ final class Loader
         }
 
         return $file;
+    }
+
+    private function source(string $filename, DOMXPath $xpath): Source
+    {
+        $restrictDeprecations = false;
+        $restrictNotices      = false;
+        $restrictWarnings     = false;
+
+        $element = $this->element($xpath, 'source');
+
+        if ($element) {
+            $restrictDeprecations = $this->getBooleanAttribute($element, 'restrictDeprecations', false);
+            $restrictNotices      = $this->getBooleanAttribute($element, 'restrictNotices', false);
+            $restrictWarnings     = $this->getBooleanAttribute($element, 'restrictWarnings', false);
+        }
+
+        return new Source(
+            $this->readFilterDirectories($filename, $xpath, 'source/include/directory'),
+            $this->readFilterFiles($filename, $xpath, 'source/include/file'),
+            $this->readFilterDirectories($filename, $xpath, 'source/exclude/directory'),
+            $this->readFilterFiles($filename, $xpath, 'source/exclude/file'),
+            $restrictDeprecations,
+            $restrictNotices,
+            $restrictWarnings,
+        );
     }
 
     private function codeCoverage(string $filename, DOMXPath $xpath): CodeCoverage
@@ -750,18 +774,22 @@ final class Loader
             $requireCoverageMetadata,
             $bootstrap,
             $this->getBooleanAttribute($document->documentElement, 'processIsolation', false),
+            $this->getBooleanAttribute($document->documentElement, 'failOnDeprecation', false),
             $this->getBooleanAttribute($document->documentElement, 'failOnEmptyTestSuite', false),
             $this->getBooleanAttribute($document->documentElement, 'failOnIncomplete', false),
+            $this->getBooleanAttribute($document->documentElement, 'failOnNotice', false),
             $this->getBooleanAttribute($document->documentElement, 'failOnRisky', false),
             $this->getBooleanAttribute($document->documentElement, 'failOnSkipped', false),
             $this->getBooleanAttribute($document->documentElement, 'failOnWarning', false),
             $this->getBooleanAttribute($document->documentElement, 'stopOnDefect', false),
+            $this->getBooleanAttribute($document->documentElement, 'stopOnDeprecation', false),
             $this->getBooleanAttribute($document->documentElement, 'stopOnError', false),
             $this->getBooleanAttribute($document->documentElement, 'stopOnFailure', false),
-            $this->getBooleanAttribute($document->documentElement, 'stopOnWarning', false),
             $this->getBooleanAttribute($document->documentElement, 'stopOnIncomplete', false),
+            $this->getBooleanAttribute($document->documentElement, 'stopOnNotice', false),
             $this->getBooleanAttribute($document->documentElement, 'stopOnRisky', false),
             $this->getBooleanAttribute($document->documentElement, 'stopOnSkipped', false),
+            $this->getBooleanAttribute($document->documentElement, 'stopOnWarning', false),
             $extensionsDirectory,
             $this->getBooleanAttribute($document->documentElement, 'beStrictAboutChangesToGlobalState', false),
             $this->getBooleanAttribute($document->documentElement, 'beStrictAboutOutputDuringTests', false),

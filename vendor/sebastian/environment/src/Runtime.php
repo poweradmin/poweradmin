@@ -26,7 +26,7 @@ use function php_ini_loaded_file;
 use function php_ini_scanned_files;
 use function phpversion;
 use function sprintf;
-use function strpos;
+use function strrpos;
 
 final class Runtime
 {
@@ -73,7 +73,17 @@ final class Runtime
             return false;
         }
 
-        if (strpos(ini_get('opcache.jit'), '0') === 0) {
+        if (ini_get('opcache.jit_buffer_size') === '0') {
+            return false;
+        }
+
+        $jit = ini_get('opcache.jit');
+
+        if (($jit === 'disable') || ($jit === 'off')) {
+            return false;
+        }
+
+        if (strrpos($jit, '0') === 3) {
             return false;
         }
 

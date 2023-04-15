@@ -43,7 +43,8 @@ function __phpunit_run_isolated_test()
     require_once '{filename}';
 
     if ({collectCodeCoverageInformation}) {
-        CodeCoverage::instance()->init(ConfigurationRegistry::get(), CodeCoverageFilterRegistry::instance());
+        CodeCoverage::instance()->init(ConfigurationRegistry::get(), CodeCoverageFilterRegistry::instance(), true);
+        CodeCoverage::instance()->ignoreLines({linesToBeIgnored});
     }
 
     $test = new {className}('{name}');

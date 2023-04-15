@@ -32,7 +32,7 @@
         "myclabs/deep-copy": "^1.10.1",
         "phar-io/manifest": "^2.0.3",
         "phar-io/version": "^3.0.2",
-        "phpunit/php-code-coverage": "^10.0",
+        "phpunit/php-code-coverage": "^10.1",
         "phpunit/php-file-iterator": "^4.0",
         "phpunit/php-invoker": "^4.0",
         "phpunit/php-text-template": "^3.0",
@@ -77,12 +77,13 @@
         "files": [
             "tests/_files/CoverageNamespacedFunctionTest.php",
             "tests/_files/CoveredFunction.php",
-            "tests/_files/NamespaceCoveredFunction.php"
+            "tests/_files/NamespaceCoveredFunction.php",
+            "tests/end-to-end/code-coverage/ignore-function-using-attribute/src/CoveredFunction.php"
         ]
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "10.0-dev"
+            "dev-main": "10.1-dev"
         }
     }
 }

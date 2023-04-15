@@ -7,13 +7,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace PHPUnit\Util\Xml;
+namespace PHPUnit\Event\Telemetry;
 
 /**
- * @internal This class is not covered by the backward compatibility promise for PHPUnit
- *
- * @psalm-immutable
+ * @internal This interface is not covered by the backward compatibility promise for PHPUnit
  */
-final class FailedSchemaDetectionResult extends SchemaDetectionResult
+interface GarbageCollectorStatusProvider
 {
+    public function status(): GarbageCollectorStatus;
 }

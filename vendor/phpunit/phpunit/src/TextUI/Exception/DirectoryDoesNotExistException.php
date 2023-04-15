@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace PHPUnit\Util;
+namespace PHPUnit\TextUI;
 
 use function sprintf;
 use RuntimeException;
@@ -15,14 +15,14 @@ use RuntimeException;
 /**
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
  */
-final class InvalidSocketException extends RuntimeException implements Exception
+final class DirectoryDoesNotExistException extends RuntimeException implements Exception
 {
-    public function __construct(string $socket)
+    public function __construct(string $directory)
     {
         parent::__construct(
             sprintf(
-                '"%s" does not match "socket://hostname:port" format',
-                $socket
+                'Directory "%s" does not exist and could not be created',
+                $directory
             )
         );
     }

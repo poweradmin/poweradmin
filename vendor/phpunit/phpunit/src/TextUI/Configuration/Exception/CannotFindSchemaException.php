@@ -7,23 +7,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace PHPUnit\Util;
+namespace PHPUnit\TextUI\XmlConfiguration;
 
-use function sprintf;
+use PHPUnit\TextUI\Configuration\Exception;
 use RuntimeException;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
  */
-final class DirectoryDoesNotExistException extends RuntimeException implements Exception
+final class CannotFindSchemaException extends RuntimeException implements Exception
 {
-    public function __construct(string $directory)
-    {
-        parent::__construct(
-            sprintf(
-                'Directory "%s" does not exist and could not be created',
-                $directory
-            )
-        );
-    }
 }

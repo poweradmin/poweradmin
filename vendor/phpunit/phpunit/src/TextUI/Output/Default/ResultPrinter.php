@@ -10,7 +10,6 @@
 namespace PHPUnit\TextUI\Output\Default;
 
 use const PHP_EOL;
-use function array_merge;
 use function array_reverse;
 use function assert;
 use function count;
@@ -50,7 +49,7 @@ final class ResultPrinter
     private readonly bool $displayTestsWithErrors;
     private readonly bool $displayTestsWithFailedAssertions;
     private readonly bool $displayRiskyTests;
-    private readonly bool $displayDetailsOnTestsThatTriggeredPhpunitDeprecations;
+    private readonly bool $displayPhpunitDeprecations;
     private readonly bool $displayDetailsOnIncompleteTests;
     private readonly bool $displayDetailsOnSkippedTests;
     private readonly bool $displayDetailsOnTestsThatTriggerDeprecations;
@@ -60,22 +59,22 @@ final class ResultPrinter
     private readonly bool $displayDefectsInReverseOrder;
     private bool $listPrinted = false;
 
-    public function __construct(Printer $printer, bool $displayPhpunitErrors, bool $displayPhpunitWarnings, bool $displayTestsWithErrors, bool $displayTestsWithFailedAssertions, bool $displayRiskyTests, bool $displayDetailsOnTestsThatTriggeredPhpunitDeprecations, bool $displayDetailsOnIncompleteTests, bool $displayDetailsOnSkippedTests, bool $displayDetailsOnTestsThatTriggerDeprecations, bool $displayDetailsOnTestsThatTriggerErrors, bool $displayDetailsOnTestsThatTriggerNotices, bool $displayDetailsOnTestsThatTriggerWarnings, bool $displayDefectsInReverseOrder)
+    public function __construct(Printer $printer, bool $displayPhpunitErrors, bool $displayPhpunitWarnings, bool $displayPhpunitDeprecations, bool $displayTestsWithErrors, bool $displayTestsWithFailedAssertions, bool $displayRiskyTests, bool $displayDetailsOnIncompleteTests, bool $displayDetailsOnSkippedTests, bool $displayDetailsOnTestsThatTriggerDeprecations, bool $displayDetailsOnTestsThatTriggerErrors, bool $displayDetailsOnTestsThatTriggerNotices, bool $displayDetailsOnTestsThatTriggerWarnings, bool $displayDefectsInReverseOrder)
     {
-        $this->printer                                               = $printer;
-        $this->displayPhpunitErrors                                  = $displayPhpunitErrors;
-        $this->displayPhpunitWarnings                                = $displayPhpunitWarnings;
-        $this->displayTestsWithErrors                                = $displayTestsWithErrors;
-        $this->displayTestsWithFailedAssertions                      = $displayTestsWithFailedAssertions;
-        $this->displayRiskyTests                                     = $displayRiskyTests;
-        $this->displayDetailsOnTestsThatTriggeredPhpunitDeprecations = $displayDetailsOnTestsThatTriggeredPhpunitDeprecations;
-        $this->displayDetailsOnIncompleteTests                       = $displayDetailsOnIncompleteTests;
-        $this->displayDetailsOnSkippedTests                          = $displayDetailsOnSkippedTests;
-        $this->displayDetailsOnTestsThatTriggerDeprecations          = $displayDetailsOnTestsThatTriggerDeprecations;
-        $this->displayDetailsOnTestsThatTriggerErrors                = $displayDetailsOnTestsThatTriggerErrors;
-        $this->displayDetailsOnTestsThatTriggerNotices               = $displayDetailsOnTestsThatTriggerNotices;
-        $this->displayDetailsOnTestsThatTriggerWarnings              = $displayDetailsOnTestsThatTriggerWarnings;
-        $this->displayDefectsInReverseOrder                          = $displayDefectsInReverseOrder;
+        $this->printer                                      = $printer;
+        $this->displayPhpunitErrors                         = $displayPhpunitErrors;
+        $this->displayPhpunitWarnings                       = $displayPhpunitWarnings;
+        $this->displayPhpunitDeprecations                   = $displayPhpunitDeprecations;
+        $this->displayTestsWithErrors                       = $displayTestsWithErrors;
+        $this->displayTestsWithFailedAssertions             = $displayTestsWithFailedAssertions;
+        $this->displayRiskyTests                            = $displayRiskyTests;
+        $this->displayDetailsOnIncompleteTests              = $displayDetailsOnIncompleteTests;
+        $this->displayDetailsOnSkippedTests                 = $displayDetailsOnSkippedTests;
+        $this->displayDetailsOnTestsThatTriggerDeprecations = $displayDetailsOnTestsThatTriggerDeprecations;
+        $this->displayDetailsOnTestsThatTriggerErrors       = $displayDetailsOnTestsThatTriggerErrors;
+        $this->displayDetailsOnTestsThatTriggerNotices      = $displayDetailsOnTestsThatTriggerNotices;
+        $this->displayDetailsOnTestsThatTriggerWarnings     = $displayDetailsOnTestsThatTriggerWarnings;
+        $this->displayDefectsInReverseOrder                 = $displayDefectsInReverseOrder;
     }
 
     public function print(TestResult $result): void
@@ -85,7 +84,11 @@ final class ResultPrinter
         }
 
         if ($this->displayPhpunitWarnings) {
-            $this->printPhpunitWarnings($result);
+            $this->printTestRunnerWarnings($result);
+        }
+
+        if ($this->displayPhpunitDeprecations) {
+            $this->printTestRunnerDeprecations($result);
         }
 
         if ($this->displayTestsWithErrors) {
@@ -96,12 +99,16 @@ final class ResultPrinter
             $this->printTestsWithFailedAssertions($result);
         }
 
-        if ($this->displayRiskyTests) {
-            $this->printRiskyTests($result);
+        if ($this->displayPhpunitWarnings) {
+            $this->printDetailsOnTestsThatTriggeredPhpunitWarnings($result);
         }
 
-        if ($this->displayDetailsOnTestsThatTriggeredPhpunitDeprecations) {
+        if ($this->displayPhpunitDeprecations) {
             $this->printDetailsOnTestsThatTriggeredPhpunitDeprecations($result);
+        }
+
+        if ($this->displayRiskyTests) {
+            $this->printRiskyTests($result);
         }
 
         if ($this->displayDetailsOnIncompleteTests) {
@@ -113,13 +120,13 @@ final class ResultPrinter
             $this->printSkippedTests($result);
         }
 
-        if ($this->displayDetailsOnTestsThatTriggerDeprecations) {
-            $this->printDetailsOnTestsThatTriggerPhpDeprecations($result);
-            $this->printDetailsOnTestsThatTriggerDeprecations($result);
-        }
-
         if ($this->displayDetailsOnTestsThatTriggerErrors) {
             $this->printDetailsOnTestsThatTriggerErrors($result);
+        }
+
+        if ($this->displayDetailsOnTestsThatTriggerWarnings) {
+            $this->printDetailsOnTestsThatTriggerPhpWarnings($result);
+            $this->printDetailsOnTestsThatTriggerWarnings($result);
         }
 
         if ($this->displayDetailsOnTestsThatTriggerNotices) {
@@ -127,9 +134,9 @@ final class ResultPrinter
             $this->printDetailsOnTestsThatTriggerNotices($result);
         }
 
-        if ($this->displayDetailsOnTestsThatTriggerWarnings) {
-            $this->printDetailsOnTestsThatTriggerPhpWarnings($result);
-            $this->printDetailsOnTestsThatTriggerWarnings($result);
+        if ($this->displayDetailsOnTestsThatTriggerDeprecations) {
+            $this->printDetailsOnTestsThatTriggerPhpDeprecations($result);
+            $this->printDetailsOnTestsThatTriggerDeprecations($result);
         }
     }
 
@@ -144,17 +151,32 @@ final class ResultPrinter
             return;
         }
 
-        $this->printList(
-            $result->numberOfTestsWithTestTriggeredPhpunitErrorEvents(),
-            $this->mapTestsWithIssuesEventsToElements($result->testTriggeredPhpunitErrorEvents()),
-            'PHPUnit error'
-        );
+        $elements = $this->mapTestsWithIssuesEventsToElements($result->testTriggeredPhpunitErrorEvents());
+
+        $this->printListHeaderWithNumber($elements['numberOfTestsWithIssues'], 'PHPUnit error');
+        $this->printList($elements['elements']);
     }
 
-    private function printPhpunitWarnings(TestResult $result): void
+    private function printDetailsOnTestsThatTriggeredPhpunitDeprecations(TestResult $result): void
     {
-        if (!$result->hasTestRunnerTriggeredWarningEvents() &&
-            !$result->hasTestTriggeredPhpunitWarningEvents()) {
+        if (!$result->hasTestTriggeredPhpunitDeprecationEvents()) {
+            return;
+        }
+
+        $elements = $this->mapTestsWithIssuesEventsToElements($result->testTriggeredPhpunitDeprecationEvents());
+
+        $this->printListHeaderWithNumberOfTestsAndNumberOfIssues(
+            $elements['numberOfTestsWithIssues'],
+            $elements['numberOfIssues'],
+            'PHPUnit deprecation'
+        );
+
+        $this->printList($elements['elements']);
+    }
+
+    private function printTestRunnerWarnings(TestResult $result): void
+    {
+        if (!$result->hasTestRunnerTriggeredWarningEvents()) {
             return;
         }
 
@@ -167,29 +189,44 @@ final class ResultPrinter
             ];
         }
 
-        $elements = array_merge(
-            $elements,
-            $this->mapTestsWithIssuesEventsToElements($result->testTriggeredPhpunitWarningEvents())
-        );
-
-        $this->printList(
-            $result->numberOfTestRunnerTriggeredWarningEvents() + $result->numberOfTestsWithTestTriggeredPhpunitWarningEvents(),
-            $elements,
-            'PHPUnit warning'
-        );
+        $this->printListHeaderWithNumber(count($elements), 'PHPUnit test runner warning');
+        $this->printList($elements);
     }
 
-    private function printDetailsOnTestsThatTriggeredPhpunitDeprecations(TestResult $result): void
+    private function printTestRunnerDeprecations(TestResult $result): void
     {
-        if (!$result->hasTestTriggeredPhpunitDeprecationEvents()) {
+        if (!$result->hasTestRunnerTriggeredDeprecationEvents()) {
             return;
         }
 
-        $this->printList(
-            $result->numberOfTestsWithTestTriggeredPhpunitDeprecationEvents(),
-            $this->mapTestsWithIssuesEventsToElements($result->testTriggeredPhpunitDeprecationEvents()),
-            'PHPUnit deprecation'
+        $elements = [];
+
+        foreach ($result->testRunnerTriggeredDeprecationEvents() as $event) {
+            $elements[] = [
+                'title' => $event->message(),
+                'body'  => '',
+            ];
+        }
+
+        $this->printListHeaderWithNumber(count($elements), 'PHPUnit test runner deprecation');
+        $this->printList($elements);
+    }
+
+    private function printDetailsOnTestsThatTriggeredPhpunitWarnings(TestResult $result): void
+    {
+        if (!$result->hasTestTriggeredPhpunitWarningEvents()) {
+            return;
+        }
+
+        $elements = $this->mapTestsWithIssuesEventsToElements($result->testTriggeredPhpunitWarningEvents());
+
+        $this->printListHeaderWithNumberOfTestsAndNumberOfIssues(
+            $elements['numberOfTestsWithIssues'],
+            $elements['numberOfIssues'],
+            'PHPUnit warning'
         );
+
+        $this->printList($elements['elements']);
     }
 
     private function printTestsWithErrors(TestResult $result): void
@@ -213,7 +250,8 @@ final class ResultPrinter
             ];
         }
 
-        $this->printList(count($elements), $elements, 'error');
+        $this->printListHeaderWithNumber(count($elements), 'error');
+        $this->printList($elements);
     }
 
     private function printTestsWithFailedAssertions(TestResult $result): void
@@ -237,7 +275,8 @@ final class ResultPrinter
             ];
         }
 
-        $this->printList(count($elements), $elements, 'failure');
+        $this->printListHeaderWithNumber(count($elements), 'failure');
+        $this->printList($elements);
     }
 
     private function printRiskyTests(TestResult $result): void
@@ -246,11 +285,10 @@ final class ResultPrinter
             return;
         }
 
-        $this->printList(
-            $result->numberOfTestsWithTestConsideredRiskyEvents(),
-            $this->mapTestsWithIssuesEventsToElements($result->testConsideredRiskyEvents()),
-            'risky test'
-        );
+        $elements = $this->mapTestsWithIssuesEventsToElements($result->testConsideredRiskyEvents());
+
+        $this->printListHeaderWithNumber($elements['numberOfTestsWithIssues'], 'risky test');
+        $this->printList($elements['elements']);
     }
 
     private function printIncompleteTests(TestResult $result): void
@@ -268,7 +306,8 @@ final class ResultPrinter
             ];
         }
 
-        $this->printList(count($elements), $elements, 'incomplete test');
+        $this->printListHeaderWithNumber(count($elements), 'incomplete test');
+        $this->printList($elements);
     }
 
     private function printSkippedTestSuites(TestResult $result): void
@@ -286,7 +325,8 @@ final class ResultPrinter
             ];
         }
 
-        $this->printList(count($elements), $elements, 'skipped test suite');
+        $this->printListHeaderWithNumber(count($elements), 'skipped test suite');
+        $this->printList($elements);
     }
 
     private function printSkippedTests(TestResult $result): void
@@ -304,7 +344,8 @@ final class ResultPrinter
             ];
         }
 
-        $this->printList(count($elements), $elements, 'skipped test');
+        $this->printListHeaderWithNumber(count($elements), 'skipped test');
+        $this->printList($elements);
     }
 
     private function printDetailsOnTestsThatTriggerPhpDeprecations(TestResult $result): void
@@ -313,11 +354,15 @@ final class ResultPrinter
             return;
         }
 
-        $this->printList(
-            $result->numberOfTestsWithTestTriggeredPhpDeprecationEvents(),
-            $this->mapTestsWithIssuesEventsToElements($result->testTriggeredPhpDeprecationEvents()),
+        $elements = $this->mapTestsWithIssuesEventsToElements($result->testTriggeredPhpDeprecationEvents());
+
+        $this->printListHeaderWithNumberOfTestsAndNumberOfIssues(
+            $elements['numberOfTestsWithIssues'],
+            $elements['numberOfIssues'],
             'PHP deprecation'
         );
+
+        $this->printList($elements['elements']);
     }
 
     private function printDetailsOnTestsThatTriggerDeprecations(TestResult $result): void
@@ -326,11 +371,15 @@ final class ResultPrinter
             return;
         }
 
-        $this->printList(
-            $result->numberOfTestsWithTestTriggeredDeprecationEvents(),
-            $this->mapTestsWithIssuesEventsToElements($result->testTriggeredDeprecationEvents()),
+        $elements = $this->mapTestsWithIssuesEventsToElements($result->testTriggeredDeprecationEvents());
+
+        $this->printListHeaderWithNumberOfTestsAndNumberOfIssues(
+            $elements['numberOfTestsWithIssues'],
+            $elements['numberOfIssues'],
             'deprecation'
         );
+
+        $this->printList($elements['elements']);
     }
 
     private function printDetailsOnTestsThatTriggerErrors(TestResult $result): void
@@ -339,11 +388,14 @@ final class ResultPrinter
             return;
         }
 
-        $this->printList(
-            $result->numberOfTestsWithTestTriggeredErrorEvents(),
-            $this->mapTestsWithIssuesEventsToElements($result->testTriggeredErrorEvents()),
+        $elements = $this->mapTestsWithIssuesEventsToElements($result->testTriggeredErrorEvents());
+
+        $this->printListHeaderWithNumber(
+            $elements['numberOfIssues'],
             'error'
         );
+
+        $this->printList($elements['elements']);
     }
 
     private function printDetailsOnTestsThatTriggerPhpNotices(TestResult $result): void
@@ -352,11 +404,15 @@ final class ResultPrinter
             return;
         }
 
-        $this->printList(
-            $result->numberOfTestsWithTestTriggeredPhpNoticeEvents(),
-            $this->mapTestsWithIssuesEventsToElements($result->testTriggeredPhpNoticeEvents()),
+        $elements = $this->mapTestsWithIssuesEventsToElements($result->testTriggeredPhpNoticeEvents());
+
+        $this->printListHeaderWithNumberOfTestsAndNumberOfIssues(
+            $elements['numberOfTestsWithIssues'],
+            $elements['numberOfIssues'],
             'PHP notice'
         );
+
+        $this->printList($elements['elements']);
     }
 
     private function printDetailsOnTestsThatTriggerNotices(TestResult $result): void
@@ -365,11 +421,15 @@ final class ResultPrinter
             return;
         }
 
-        $this->printList(
-            $result->numberOfTestsWithTestTriggeredNoticeEvents(),
-            $this->mapTestsWithIssuesEventsToElements($result->testTriggeredNoticeEvents()),
+        $elements = $this->mapTestsWithIssuesEventsToElements($result->testTriggeredNoticeEvents());
+
+        $this->printListHeaderWithNumberOfTestsAndNumberOfIssues(
+            $elements['numberOfTestsWithIssues'],
+            $elements['numberOfIssues'],
             'notice'
         );
+
+        $this->printList($elements['elements']);
     }
 
     private function printDetailsOnTestsThatTriggerPhpWarnings(TestResult $result): void
@@ -378,11 +438,15 @@ final class ResultPrinter
             return;
         }
 
-        $this->printList(
-            $result->numberOfTestsWithTestTriggeredPhpWarningEvents(),
-            $this->mapTestsWithIssuesEventsToElements($result->testTriggeredPhpWarningEvents()),
+        $elements = $this->mapTestsWithIssuesEventsToElements($result->testTriggeredPhpWarningEvents());
+
+        $this->printListHeaderWithNumberOfTestsAndNumberOfIssues(
+            $elements['numberOfTestsWithIssues'],
+            $elements['numberOfIssues'],
             'PHP warning'
         );
+
+        $this->printList($elements['elements']);
     }
 
     private function printDetailsOnTestsThatTriggerWarnings(TestResult $result): void
@@ -391,17 +455,45 @@ final class ResultPrinter
             return;
         }
 
-        $this->printList(
-            $result->numberOfTestsWithTestTriggeredWarningEvents(),
-            $this->mapTestsWithIssuesEventsToElements($result->testTriggeredWarningEvents()),
+        $elements = $this->mapTestsWithIssuesEventsToElements($result->testTriggeredWarningEvents());
+
+        $this->printListHeaderWithNumberOfTestsAndNumberOfIssues(
+            $elements['numberOfTestsWithIssues'],
+            $elements['numberOfIssues'],
             'warning'
+        );
+
+        $this->printList($elements['elements']);
+    }
+
+    private function printListHeaderWithNumberOfTestsAndNumberOfIssues(int $numberOfTestsWithIssues, int $numberOfIssues, string $type): void
+    {
+        $this->printListHeader(
+            sprintf(
+                "%d test%s triggered %d %s%s:\n\n",
+                $numberOfTestsWithIssues,
+                $numberOfTestsWithIssues !== 1 ? 's' : '',
+                $numberOfIssues,
+                $type,
+                $numberOfIssues !== 1 ? 's' : '',
+            )
         );
     }
 
-    /**
-     * @psalm-param list<array{title: string, body: string}> $elements
-     */
-    private function printList(int $count, array $elements, string $type): void
+    private function printListHeaderWithNumber(int $number, string $type): void
+    {
+        $this->printListHeader(
+            sprintf(
+                "There %s %d %s%s:\n\n",
+                ($number === 1) ? 'was' : 'were',
+                $number,
+                $type,
+                ($number === 1) ? '' : 's'
+            )
+        );
+    }
+
+    private function printListHeader(string $header): void
     {
         if ($this->listPrinted) {
             $this->printer->print("--\n\n");
@@ -409,16 +501,14 @@ final class ResultPrinter
 
         $this->listPrinted = true;
 
-        $this->printer->print(
-            sprintf(
-                "There %s %d %s%s:\n\n",
-                ($count === 1) ? 'was' : 'were',
-                $count,
-                $type,
-                ($count === 1) ? '' : 's'
-            )
-        );
+        $this->printer->print($header);
+    }
 
+    /**
+     * @psalm-param list<array{title: string, body: string}> $elements
+     */
+    private function printList(array $elements): void
+    {
         $i = 1;
 
         if ($this->displayDefectsInReverseOrder) {
@@ -465,11 +555,12 @@ final class ResultPrinter
     /**
      * @psalm-param array<string,list<ConsideredRisky|DeprecationTriggered|PhpDeprecationTriggered|PhpunitDeprecationTriggered|ErrorTriggered|NoticeTriggered|PhpNoticeTriggered|WarningTriggered|PhpWarningTriggered|PhpunitErrorTriggered|PhpunitWarningTriggered>> $events
      *
-     * @psalm-return list<array{title: string, body: string}>
+     * @psalm-return array{numberOfTestsWithIssues: int, numberOfIssues: int, elements: list<array{title: string, body: string}>}
      */
     private function mapTestsWithIssuesEventsToElements(array $events): array
     {
         $elements = [];
+        $issues   = 0;
 
         foreach ($events as $reasons) {
             $test         = $reasons[0]->test();
@@ -488,6 +579,8 @@ final class ResultPrinter
 
                 $body .= $this->reasonMessage($reason, $single);
                 $body .= $this->reasonLocation($reason, $single);
+
+                $issues++;
             }
 
             if (!empty($testLocation)) {
@@ -500,7 +593,11 @@ final class ResultPrinter
             ];
         }
 
-        return $elements;
+        return [
+            'numberOfTestsWithIssues' => count($events),
+            'numberOfIssues'          => $issues,
+            'elements'                => $elements,
+        ];
     }
 
     private function testLocation(Test $test): string

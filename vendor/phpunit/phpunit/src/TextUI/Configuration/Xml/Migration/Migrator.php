@@ -11,7 +11,6 @@ namespace PHPUnit\TextUI\XmlConfiguration;
 
 use function sprintf;
 use PHPUnit\Util\Xml\Loader as XmlLoader;
-use PHPUnit\Util\Xml\SchemaDetector;
 use PHPUnit\Util\Xml\XmlException;
 
 /**
@@ -38,12 +37,7 @@ final class Migrator
             );
         }
 
-        $configurationDocument = (new XmlLoader)->loadFile(
-            $filename,
-            false,
-            true,
-            true
-        );
+        $configurationDocument = (new XmlLoader)->loadFile($filename);
 
         foreach ((new MigrationBuilder)->build($origin->version()) as $migration) {
             $migration->migrate($configurationDocument);
