@@ -31,7 +31,6 @@ function step3($twig, $current_step, $language) {
 
 function step4($twig, $current_step, $default_config_file) {
     echo "<p class='alert alert-secondary'>" . _('Updating database...') . " ";
-    include_once($default_config_file);
 
     global $db_type;
     global $db_user;
