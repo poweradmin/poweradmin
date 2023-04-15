@@ -1,8 +1,13 @@
+<h5>{% trans %}Step{% endtrans %} {{ current_step }}: {% trans %}Create configuration file{% endtrans %}</h5>
+<hr>
 {% if config_file_created %}
-    <p>{% trans %}The installer was able to write to the file "{% endtrans %} {{ local_config_file }} . {% trans %}". A basic configuration, based on the details you have given, has been created.{% endtrans %}</p>
+<p>{% trans %}The installer was able to write to the file{% endtrans %} <em>{{ local_config_file }}</em>.
+    {% trans %}A basic configuration, based on the details you have given, has been created.{% endtrans %}</p>
 {% else %}
-    <p>{% trans %}The installer is unable to write to the file "{% endtrans %} {{ local_config_file }} {% trans %}" (which is in itself good). The configuration is printed here. You should now create the file "{% endtrans %}
-    {{ local_config_file }} {% trans %}" in the Poweradmin root directory yourself. It should contain the following few lines:{% endtrans %}</p>
+<p>{% trans %}The installer is unable to write to the file{% endtrans %} <em>{{ local_config_file }}</em>
+    {% trans %}(which is in itself good). The configuration is printed here. You should now create the file {% endtrans %}
+    <em>{{ local_config_file }}</em>
+    {% trans %} in the Poweradmin root directory yourself. It should contain the following few lines:{% endtrans %}</p>
 <pre>
 &lt;?php
 {% if db_file %}
@@ -36,5 +41,6 @@ $ignore_install_dir = true;
 <form method="post">
     <input type="hidden" name="step" value="{{ next_step }}">
     <input type="hidden" name="language" value="{{ language }}">
-    <input type="submit" name="submit" class="btn btn-primary btn-sm" value="{% trans %}Go to step{% endtrans %} {{ next_step }}">
+    <input type="submit" name="submit" class="btn btn-primary btn-sm"
+           value="{% trans %}Go to step{% endtrans %} {{ next_step }}">
 </form>

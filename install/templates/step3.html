@@ -1,3 +1,5 @@
+<h5>{% trans %}Step{% endtrans %} {{ current_step }}: {% trans %}Configuring Database Connection{% endtrans %}</h5>
+<hr>
 <p>{% trans %}To prepare the database for using Poweradmin, the installer needs to modify the PowerDNS database. It will
     add a number of tables and it will fill these tables with some data. If the tables are already present, the
     installer will drop them first.{% endtrans %}</p>
@@ -13,7 +15,7 @@
             <td>{% trans %}Username{% endtrans %}</td>
             <td class="w-25">
                 <input class="form-control form-control-sm" type="text" id="username" name="user" value="" required>
-                <div class="invalid-feedback">{% trans %}Provide the name username{% endtrans %}</div>
+                <div class="invalid-feedback">{% trans %}Provide the user name{% endtrans %}</div>
             </td>
             <td>{% trans %}The username to use to connect to the database, make sure the username has
                 sufficient rights to perform administrative task to the PowerDNS database (the installer wants to drop,
@@ -25,8 +27,8 @@
             <td>
                 <div class="input-group">
                     <input class="form-control form-control-sm" type="password" id="userpass" name="pass" value="" autocomplete="off" required>
-                    <div class="invalid-feedback">{% trans %}Provide user password{% endtrans %}</div>
                     <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showPassword('userpass', 'eye1')"><i class="bi bi-eye-fill" id="eye1"></i></button>
+                    <div class="invalid-feedback">{% trans %}Provide user password{% endtrans %}</div>
                 </div>
             </td>
             <td>{% trans %}The password for this username.{% endtrans %}</td>
@@ -88,8 +90,8 @@
             <td>
                 <div class="input-group">
                     <input class="form-control form-control-sm" type="password" id="pa_pass" name="pa_pass" value="" autocomplete="off" required>
-                    <div class="invalid-feedback">{% trans %}Provide a password{% endtrans %}</div>
                     <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showPassword('pa_pass', 'eye2')"><i class="bi bi-eye-fill" id="eye2"></i></button>
+                    <div class="invalid-feedback">{% trans %}Provide a password{% endtrans %}</div>
                 </div>
             </td>
             <td>{% trans %}The password of the Poweradmin administrator. This administrator has full rights to Poweradmin
