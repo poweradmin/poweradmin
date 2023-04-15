@@ -22,6 +22,8 @@
 
 namespace Poweradmin;
 
+use Poweradmin\Infrastructure\Database\DbCompat;
+
 /**
  * DNS record functions
  *

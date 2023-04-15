@@ -19,16 +19,29 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin;
+namespace Poweradmin\Infrastructure\Database;
 
-class DbCompat
+/**
+ * DbCompat class provides compatibility methods for different database types.
+ */
+final class DbCompat
 {
+    /**
+     * Mapping of database types to their corresponding substring functions.
+     */
+    private const SUBSTRING_FUNCTIONS = [
+        'sqlite' => 'SUBSTR',
+        'default' => 'SUBSTRING'
+    ];
+
+    /**
+     * Returns the appropriate substring function for the given database type.
+     *
+     * @param string $db_type The type of database (e.g., "sqlite", "mysql", etc.)
+     * @return string The substring function corresponding to the given database type.
+     */
     public static function substr(string $db_type): string
     {
-        if ($db_type == "sqlite") {
-            return "SUBSTR";
-        } else {
-            return "SUBSTRING";
-        }
+        return self::SUBSTRING_FUNCTIONS[$db_type] ?? self::SUBSTRING_FUNCTIONS['default'];
     }
 }

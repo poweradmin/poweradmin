@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use Poweradmin\DbCompat;
+use Poweradmin\Infrastructure\Database\DbCompat;
 
 /** Print paging menu
  *
