@@ -39,7 +39,21 @@ require 'inc/database.inc.php';
 
 require __DIR__ . '/vendor/autoload.php';
 
-$db = dbConnect();
+global $db_host, $db_port, $db_user, $db_pass, $db_name, $db_charset, $db_collation, $db_type, $db_file;
+
+$databaseCredentials = [
+    'db_host' => $db_host,
+    'db_port' => $db_port,
+    'db_user' => $db_user,
+    'db_pass' => $db_pass,
+    'db_name' => $db_name,
+    'db_charset' => $db_charset,
+    'db_collation' => $db_collation,
+    'db_type' => $db_type,
+    'db_file' => $db_file,
+];
+
+$db = dbConnect($databaseCredentials);
 
 /** Make sql query safe
  *

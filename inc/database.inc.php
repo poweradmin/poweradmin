@@ -35,7 +35,7 @@ require_once 'PDOLayer.php';
  *
  * @return object $db Database object
  */
-function dbConnect(array $databaseCredentials = [], $isQuiet = true, $installerMode = false)
+function dbConnect(array $databaseCredentials, $isQuiet = true, $installerMode = false)
 {
     $db_type = $databaseCredentials['db_type'];
     $db_user = $databaseCredentials['db_user'];
