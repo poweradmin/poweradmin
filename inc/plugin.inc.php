@@ -48,19 +48,6 @@ function add_listener(string $hook, $function) {
 }
 
 /**
- * Removes all listeners from the given hook
- *
- * @param string $hook
- */
-function clear_listeners(string $hook) {
-    if (!$hook) {
-        trigger_error('clear_listeners requires a hook name', E_USER_ERROR);
-    }
-    global $hook_listeners;
-    $hook_listeners [$hook] = array();
-}
-
-/**
  * Execute a hook, call registered listener functions
  */
 function do_hook() {
