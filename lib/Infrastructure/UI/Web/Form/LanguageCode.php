@@ -20,11 +20,11 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin;
+namespace Poweradmin\Infrastructure\UI\Web\Form;
 
-class CountryCode
+class LanguageCode
 {
-    private const COUNTRY_CODES = array(
+    private const LANGUAGE_CODES = array(
         'aa' => 'Afar',
         'ab' => 'Abkhaz',
         'ae' => 'Avestan',
@@ -211,8 +211,9 @@ class CountryCode
         'zu' => 'Zulu'
     );
 
-    public static function getByLocale($locale): string
+    public static function getByLocale(string $locale): ?string
     {
-        return self::COUNTRY_CODES[substr($locale, 0, 2)];
+        $languageCode = substr($locale, 0, 2);
+        return self::LANGUAGE_CODES[$languageCode] ?? null;
     }
 }
