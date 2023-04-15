@@ -12,24 +12,29 @@ function checkConfigFile($current_step, $local_config_file, $twig): void
     }
 }
 
-function renderTemplate($twig, $templateName, $data) {
+function renderTemplate($twig, $templateName, $data): void
+{
     $data['next_step'] = $data['current_step'] + 1;
     echo $twig->render($templateName, $data);
 }
 
-function step1($twig, $current_step) {
+function step1($twig, $current_step): void
+{
     renderTemplate($twig, 'step1.html', array('current_step' => $current_step));
 }
 
-function step2($twig, $current_step, $language) {
+function step2($twig, $current_step, $language): void
+{
     renderTemplate($twig, 'step2.html', array('current_step' => $current_step, 'language' => htmlspecialchars($language)));
 }
 
-function step3($twig, $current_step, $language) {
+function step3($twig, $current_step, $language): void
+{
     renderTemplate($twig, 'step3.html', array('current_step' => $current_step, 'language' => htmlspecialchars($language)));
 }
 
-function step4($twig, $current_step, $default_config_file) {
+function step4($twig, $current_step, $default_config_file): void
+{
     echo "<p class='alert alert-secondary'>" . _('Updating database...') . " ";
 
     global $db_type;
@@ -124,7 +129,8 @@ function step4($twig, $current_step, $default_config_file) {
     ));
 }
 
-function step5($twig, $current_step, $language) {
+function step5($twig, $current_step, $language): void
+{
     $current_step++;
 
     global $db_type;
@@ -214,7 +220,8 @@ function step5($twig, $current_step, $language) {
     echo "</form>";
 }
 
-function step6($twig, $current_step, $language, $default_config_file, $local_config_file) {
+function step6($twig, $current_step, $language, $default_config_file, $local_config_file): void
+{
     // No need to set database port if it's standard port for that db
     $db_port = ($_POST['db_type'] == 'mysql' && $_POST['db_port'] != 3306)
     || ($_POST['db_type'] == 'pgsql' && $_POST['db_port'] != 5432) ? $_POST['db_port'] : '';
@@ -318,7 +325,8 @@ function step6($twig, $current_step, $language, $default_config_file, $local_con
     ));
 }
 
-function step7($twig) {
+function step7($twig): void
+{
     renderTemplate($twig, 'step7.html', array(
         'current_step' => 7,
     ));
