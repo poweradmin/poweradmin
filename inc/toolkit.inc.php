@@ -61,7 +61,8 @@ add_listener('update_perm_templ_details', 'update_perm_templ_details_local');
 add_listener('update_user_details', 'update_user_details_local');
 add_listener('add_new_user', 'add_new_user_local');
 
-use Poweradmin\DependencyCheck;
+use Poweradmin\Infrastructure\DependencyCheck;
+
 DependencyCheck::verifyExtensions();
 
 global $db_host, $db_port, $db_user, $db_pass, $db_name, $db_charset, $db_collation, $db_type, $db_file;

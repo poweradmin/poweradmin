@@ -19,10 +19,18 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin;
+namespace Poweradmin\Infrastructure;
 
+use Exception;
+
+/**
+ * DependencyCheck class verifies the availability of required PHP extensions.
+ */
 class DependencyCheck
 {
+    /**
+     * Associative array of required PHP extensions and their representative functions.
+     */
     const DEPENDENCIES = array(
         'intl' => 'idn_to_utf8',
         'gettext' => 'gettext',
@@ -30,7 +38,14 @@ class DependencyCheck
         'session' => 'session_start'
     );
 
-    public static function verifyExtensions()
+    /**
+     * Verifies that required PHP extensions are installed.
+     *
+     * If any required extension is missing, the script will be terminated with an error message.
+     *
+     * @return void
+     */
+    public static function verifyExtensions(): void
     {
         foreach (array_keys(self::DEPENDENCIES) as $extension) {
             if (!function_exists(self::DEPENDENCIES[$extension])) {
