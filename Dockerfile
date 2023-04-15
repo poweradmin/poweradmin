@@ -10,7 +10,7 @@
 # Open your browser and navigate to "localhost", then log in using the provided username and password
 # admin / testadmin
 
-FROM php:8.1.17-apache
+FROM php:8.1.18-apache
 
 ENV DEBIAN_FRONTEND noninteractive
 
