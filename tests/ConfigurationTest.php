@@ -63,4 +63,54 @@ class ConfigurationTest extends TestCase
 
         $this->assertNull($config->get('foo'), 'Should return null for missing configuration files.');
     }
+
+    public function testBooleanFalseValue()
+    {
+        file_put_contents($this->tempDefaultConfigFile, '<?php $boolean_false = false;');
+        file_put_contents($this->tempCustomConfigFile, '<?php');
+
+        $config = new Configuration($this->tempDefaultConfigFile, $this->tempCustomConfigFile);
+
+        $this->assertSame(false, $config->get('boolean_false'), 'Should return the boolean false value from default config file.');
+    }
+
+    public function testConstantValueInDefaultConfigFile()
+    {
+        file_put_contents($this->tempDefaultConfigFile, '<?php $logUser = LOG_USER;');
+        file_put_contents($this->tempCustomConfigFile, '<?php');
+
+        $config = new Configuration($this->tempDefaultConfigFile, $this->tempCustomConfigFile);
+
+        $this->assertEquals(LOG_USER, $config->get('logUser'), 'Should return the constant value LOG_USER from default config file.');
+    }
+
+    public function testValueWithSurroundingWhitespace()
+    {
+        file_put_contents($this->tempDefaultConfigFile, '<?php $foo = "  bar  ";');
+        file_put_contents($this->tempCustomConfigFile, '<?php');
+
+        $config = new Configuration($this->tempDefaultConfigFile, $this->tempCustomConfigFile);
+
+        $this->assertEquals('  bar  ', $config->get('foo'), 'Should return the value with surrounding whitespace from default config file.');
+    }
+
+    public function testEmptyConfigFile()
+    {
+        file_put_contents($this->tempDefaultConfigFile, '');
+        file_put_contents($this->tempCustomConfigFile, '');
+
+        $config = new Configuration($this->tempDefaultConfigFile, $this->tempCustomConfigFile);
+
+        $this->assertNull($config->get('foo'), 'Should return null for empty configuration files.');
+    }
+
+    public function testImproperlyFormattedConfigFile()
+    {
+        file_put_contents($this->tempDefaultConfigFile, '<?php $foo = "bar');
+        file_put_contents($this->tempCustomConfigFile, '<?php');
+
+        $config = new Configuration($this->tempDefaultConfigFile, $this->tempCustomConfigFile);
+
+        $this->assertNull($config->get('foo'), 'Should return null for improperly formatted configuration files.');
+    }
 }

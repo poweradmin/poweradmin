@@ -72,8 +72,12 @@ class Configuration
 
     private function parseTokenValue(string $tokenValue)
     {
-        if ($tokenValue === 'true' || $tokenValue === 'false') {
-            return $tokenValue === 'true';
+        if (strtolower($tokenValue) === 'true') {
+            return true;
+        }
+
+        if (strtolower($tokenValue) === 'false') {
+            return false;
         }
 
         if (defined($tokenValue)) {
@@ -87,6 +91,9 @@ class Configuration
     {
         if (array_key_exists($name, $this->config)) {
             $value = $this->config[$name];
+            if (is_bool($value)) {
+                return $value;
+            }
             return str_replace(['"', "'"], "", $value);
         } else {
             return null;

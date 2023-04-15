@@ -41,11 +41,10 @@ class Application {
 
         $this->configuration = new Configuration();
 
-        global $syslog_use, $syslog_ident, $syslog_facility;
         $config = [
-            'syslog_use' => $syslog_use,
-            'syslog_ident' => $syslog_ident,
-            'syslog_facility' => $syslog_facility,
+            'syslog_use' => $this->configuration->get('syslog_use'),
+            'syslog_ident' => $this->configuration->get('syslog_ident'),
+            'syslog_facility' => $this->configuration->get('syslog_facility'),
         ];
 
         $validator = new ConfigValidator($config);
