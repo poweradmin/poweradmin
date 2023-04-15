@@ -33,12 +33,12 @@
 use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
 use Poweradmin\Dnssec;
+use Poweradmin\Domain\Enum\ZoneType;
 use Poweradmin\Permission;
 use Poweradmin\RecordLog;
 use Poweradmin\RecordType;
 use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
-use Poweradmin\ZoneType;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/pagination.inc.php';

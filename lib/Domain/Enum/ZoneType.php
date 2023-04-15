@@ -20,15 +20,29 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin;
+namespace Poweradmin\Domain\Enum;
 
+/**
+ * ZoneType class represents the different types of zones in a DNS system.
+ */
 class ZoneType
 {
-    // Array of the available zone types
-    private const ZONE_TYPES = array("MASTER", "SLAVE", "NATIVE");
+    // Visibility constants for the available zone types
+    public const MASTER = "MASTER";
+    public const SLAVE = "SLAVE";
+    public const NATIVE = "NATIVE";
 
+    /**
+     * Get an array of the available zone types.
+     *
+     * @return array The array of available zone types.
+     */
     public static function getTypes(): array
     {
-        return self::ZONE_TYPES;
+        return [
+            self::MASTER,
+            self::SLAVE,
+            self::NATIVE,
+        ];
     }
 }
