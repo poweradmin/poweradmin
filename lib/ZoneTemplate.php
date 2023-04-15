@@ -554,7 +554,7 @@ class ZoneTemplate
      *
      * @return string interpolated/parsed string
      */
-    public static function parse_template_value($val, $domain)
+    public static function parse_template_value($val, $domain): string
     {
         global $dns_ns1, $dns_ns2, $dns_ns3, $dns_ns4, $dns_hostmaster;
 
@@ -568,41 +568,5 @@ class ZoneTemplate
         $val = str_replace('[NS3]', $dns_ns3, $val);
         $val = str_replace('[NS4]', $dns_ns4, $val);
         return str_replace('[HOSTMASTER]', $dns_hostmaster, $val);
-    }
-
-    /** Add relation between zone record and template
-     *
-     * @param type $db DB link
-     * @param type $domain_id Domain id
-     * @param type $record_id Record id
-     * @param type $zone_templ_id Zone template id
-     */
-    public static function add_record_relation_to_templ($db, $domain_id, $record_id, $zone_templ_id)
-    {
-        $query = "INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES ("
-            . $db->quote($domain_id, 'integer') . ","
-            . $db->quote($record_id, 'integer') . ","
-            . $db->quote($zone_templ_id, 'integer') . ")";
-        $db->query($query);
-    }
-
-    /** Check if given relation exists
-     *
-     * @param type $db
-     * @param type $domain_id
-     * @param type $record_id
-     * @param type $zone_templ_id
-     * @return boolean true on success, false on failure
-     */
-    public static function record_relation_to_templ_exists($db, $domain_id, $record_id, $zone_templ_id)
-    {
-        $query = "SELECT COUNT(*) FROM records_zone_templ WHERE domain_id = " . $db->quote($domain_id, 'integer') .
-            " AND record_id = " . $db->quote($record_id, 'integer') . " AND zone_templ_id = " . $db->quote($zone_templ_id, 'integer');
-        $count = $db->queryOne($query);
-        if ($count == 0) {
-            return false;
-        }
-
-        return true;
     }
 }
