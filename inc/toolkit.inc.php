@@ -78,10 +78,6 @@ $databaseCredentials = [
     'db_file' => $db_file,
 ];
 
-if ($databaseCredentials['db_type'] == 'sqlite') {
-    $databaseCredentials['db_file'] = $databaseCredentials['db_name'];
-}
-
 $db = dbConnect($databaseCredentials);
 
 do_hook('authenticate');
