@@ -23,15 +23,9 @@ class SwitchThemeController extends BaseController
 
     public function run(): void
     {
-        $this->checkTheme();
         $selectedTheme = $this->getSelectedTheme();
         $this->setThemeCookie($selectedTheme);
         $this->redirectToPreviousPage();
-    }
-
-    public function checkTheme(): void
-    {
-        $this->checkCondition(!isset($this->get['theme']), _('No theme selected.'));
     }
 
     private function getSelectedTheme(): string
@@ -47,13 +41,15 @@ class SwitchThemeController extends BaseController
 
     private function redirectToPreviousPage(): void
     {
+        $previousScriptName = 'index.php';
+
         if (isset($this->server['HTTP_REFERER'])) {
             $previousScriptUrl = $this->server['HTTP_REFERER'];
-            $previousScriptName = basename(parse_url($previousScriptUrl, PHP_URL_PATH));
-            $this->redirect($previousScriptName);
-        } else {
-            $this->redirect('index.php');
+            $parsedScriptName = basename(parse_url($previousScriptUrl, PHP_URL_PATH));
+            $previousScriptName = $parsedScriptName !== '' ? $parsedScriptName : $previousScriptName;
         }
+
+        $this->redirect($previousScriptName);
     }
 }
 
