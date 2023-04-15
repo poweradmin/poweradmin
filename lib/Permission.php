@@ -22,8 +22,20 @@
 
 namespace Poweradmin;
 
+/**
+ * Class Permission
+ *
+ * This class handles permission checks for various actions.
+ */
 class Permission
 {
+    /**
+     * Get view permission.
+     *
+     * This method determines the user's permission to view content.
+     *
+     * @return string Returns "all", "own", or "none" depending on the user's view permission.
+     */
     public static function getViewPermission(): string
     {
         if (do_hook('verify_permission', 'zone_content_view_others')) {
@@ -35,6 +47,13 @@ class Permission
         }
     }
 
+    /**
+     * Get edit permission.
+     *
+     * This method determines the user's permission to edit content.
+     *
+     * @return string Returns "all", "own", "own_as_client" or "none" depending on the user's edit permission.
+     */
     public static function getEditPermission(): string
     {
         if (do_hook('verify_permission', 'zone_content_edit_others')) {
@@ -48,6 +67,13 @@ class Permission
         }
     }
 
+    /**
+     * Get permissions.
+     *
+     * This method checks a set of permissions for the user.
+     *
+     * @return array An associative array containing the permission key and its corresponding boolean value.
+     */
     public static function getPermissions(): array
     {
         $arguments = func_get_args();
