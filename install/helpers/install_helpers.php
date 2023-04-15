@@ -62,6 +62,10 @@ function step4($twig, $current_step, $default_config_file): void {
 
     echo _('done!') . "</p>";
 
+    if ($databaseCredentials['db_type'] == 'sqlite') {
+        $current_step = 5;
+    }
+
     renderTemplate($twig, 'step4.html', array_merge([
         'current_step' => $current_step,
         'language' => htmlspecialchars($_POST['language']),
@@ -110,8 +114,8 @@ function step5($twig, $current_step, $language): void
         'db_user' => htmlspecialchars($databaseCredentials['db_user']),
         'db_pass' => htmlspecialchars($databaseCredentials['db_pass']),
         'db_charset' => htmlspecialchars($databaseCredentials['db_charset']),
-        'pa_db_user' => htmlspecialchars($databaseCredentials['pa_db_user']),
-        'pa_db_pass' => htmlspecialchars($databaseCredentials['pa_db_pass']),
+        'pa_db_user' => isset($databaseCredentials['pa_db_user']) ? htmlspecialchars($databaseCredentials['pa_db_user']) : '',
+        'pa_db_pass' => isset($databaseCredentials['pa_db_pass']) ? htmlspecialchars($databaseCredentials['pa_db_pass']) : '',
         'pa_pass' => htmlspecialchars($pa_pass),
         'dns_hostmaster' => htmlspecialchars($hostmaster),
         'dns_ns1' => htmlspecialchars($dns_ns1),
@@ -143,8 +147,8 @@ function step6($twig, $current_step, $language, $default_config_file, $local_con
     $dns_ns3 = ''; // $_POST['dns_ns3'];
     $dns_ns4 = ''; // $_POST['dns_ns4'];
     $db_host = $_POST['db_host'];
-    $db_user = $_POST['pa_db_user'];
-    $db_pass = $_POST['pa_db_pass'];
+    $db_user = $_POST['pa_db_user'] ?? '';
+    $db_pass = $_POST['pa_db_pass'] ?? '';
     $db_name = $_POST['db_name'];
     $db_type = $_POST['db_type'];
     $db_charset = $_POST['db_charset'];
