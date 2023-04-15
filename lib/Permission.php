@@ -48,7 +48,7 @@ class Permission
         }
     }
 
-    public static function getPermissions()
+    public static function getPermissions(): array
     {
         $arguments = func_get_args();
         $permissions = [];
