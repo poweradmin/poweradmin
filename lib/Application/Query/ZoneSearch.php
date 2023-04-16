@@ -22,17 +22,8 @@
 
 namespace Poweradmin\Application\Query;
 
-class ZoneSearch
+class ZoneSearch extends BaseSearch
 {
-    private $db;
-    private string $db_type;
-
-    public function __construct($db, string $db_type)
-    {
-        $this->db = $db;
-        $this->db_type = $db_type;
-    }
-
     /**
      * Search for Zones
      *
@@ -57,41 +48,6 @@ class ZoneSearch
         $this->restoreSqlMode($originalSqlMode);
 
         return $foundZones;
-    }
-
-    /**
-     * Handles SQL mode for MySQL database connection by disabling 'ONLY_FULL_GROUP_BY' if needed.
-     *
-     * @return string The original SQL mode if modified, or an empty string if no change was needed or not using MySQL.
-     */
-    private function handleSqlMode(): string
-    {
-        $originalSqlMode = '';
-
-        if ($this->db_type === 'mysql') {
-            $originalSqlMode = $this->db->queryOne("SELECT @@GLOBAL.sql_mode");
-
-            if (str_contains($originalSqlMode, 'ONLY_FULL_GROUP_BY')) {
-                $newSqlMode = str_replace('ONLY_FULL_GROUP_BY,', '', $originalSqlMode);
-                $this->db->exec("SET SESSION sql_mode = '$newSqlMode'");
-            } else {
-                $originalSqlMode = '';
-            }
-        }
-        return $originalSqlMode;
-    }
-
-    /**
-     * Restores the original SQL mode for the MySQL database connection if needed.
-     *
-     * @param string $originalSqlMode The original SQL mode to be restored.
-     * @return void
-     */
-    private function restoreSqlMode(string $originalSqlMode): void
-    {
-        if ($this->db_type === 'mysql' && $originalSqlMode !== '') {
-            $this->db->exec("SET SESSION sql_mode = '$originalSqlMode'");
-        }
     }
 
     /**
@@ -120,31 +76,6 @@ class ZoneSearch
             }
         }
         return $foundZones;
-    }
-
-    /**
-     * @param array $parameters
-     * @return array
-     */
-    public function buildSearchString(array $parameters): array
-    {
-        if ($parameters['reverse']) {
-            if (filter_var($parameters['query'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-                $reverse_search_string = implode('.', array_reverse(explode('.', $parameters['query'])));
-            } elseif (filter_var($parameters['query'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-                $reverse_search_string = unpack('H*hex', inet_pton($parameters['query']));
-                $reverse_search_string = implode('.', array_reverse(str_split($reverse_search_string['hex'])));
-            } else {
-                $parameters['reverse'] = false;
-                $reverse_search_string = '';
-            }
-
-            $reverse_search_string = $this->db->quote('%' . $reverse_search_string . '%', 'text');
-        }
-
-        $needle = idn_to_ascii(trim($parameters['query']), IDNA_NONTRANSITIONAL_TO_ASCII);
-        $search_string = ($parameters['wildcard'] ? '%' : '') . $needle . ($parameters['wildcard'] ? '%' : '');
-        return array($reverse_search_string, $parameters, $search_string);
     }
 
     /**
