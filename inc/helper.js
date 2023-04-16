@@ -46,6 +46,16 @@ function record_sort_by(sortbytype) {
     document.getElementsByName("do_search")[0].click();
 }
 
+function do_search_with_zones_page(zones_page) {
+    document.search_form.zones_page.value = zones_page;
+    document.getElementsByName("do_search")[0].click();
+}
+
+function do_search_with_records_page(records_page) {
+    document.search_form.records_page.value = records_page;
+    document.getElementsByName("do_search")[0].click();
+}
+
 function showPassword(passwordInputId, iconId) {
     const password = document.getElementById(passwordInputId);
     const icon = document.getElementById(iconId);

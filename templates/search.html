@@ -10,8 +10,8 @@
 <form class="needs-validation" name="search_form" action="search.php" method="POST" novalidate>
     <input type="hidden" name="zone_sort_by" value="{{ zone_sort_by }}">
     <input type="hidden" name="record_sort_by" value="{{ record_sort_by }}">
-    <input type="hidden" name="zone_page" value="{{ zone_page }}">
-    <input type="hidden" name="record_page" value="{{ record_page }}">
+    <input type="hidden" name="zones_page" value="{{ zones_page }}">
+    <input type="hidden" name="records_page" value="{{ records_page }}">
 
     <div class="row pt-3 pb-3">
         <div class="col-sm-4">
@@ -83,6 +83,41 @@
         {% endfor %}
         </tbody>
     </table>
+
+    {% set max_visible_pages = 9 %}
+    {% set total_zone_pages = (total_zones / iface_rowamount) | round(0, 'ceil') %}
+    {% set half_visible_pages = max_visible_pages // 2 %}
+    {% set zones_start_page = (zones_page - half_visible_pages) > 0 ? (zones_page - half_visible_pages) : 1 %}
+    {% set zones_end_page = min(zones_start_page + max_visible_pages - 1, total_zone_pages) %}
+    <nav>
+        <ul class="pagination">
+            {% if zones_page > 1 %}
+            <li class="page-item"><a class="page-link" href="javascript:do_search_with_zones_page({{ zones_page - 1 }})">{% trans %}Previous{% endtrans %}</a></li>
+            {% endif %}
+
+            {% if zones_page > half_visible_pages + 1 %}
+            <li class="page-item"><a class="page-link" href="javascript:do_search_with_zones_page(1)">1</a></li>
+            <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">..</a></li>
+            {% endif %}
+
+            {% for i in zones_start_page..zones_end_page %}
+            {% if i == zones_page %}
+            <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+            {% else %}
+            <li class="page-item"><a class="page-link" href="javascript:do_search_with_zones_page({{ i }})">{{ i }}</a></li>
+            {% endif %}
+            {% endfor %}
+
+            {% if total_zone_pages > zones_end_page %}
+            <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">..</a></li>
+            <li class="page-item"><a class="page-link" href="javascript:do_search_with_zones_page({{ total_zone_pages }})">{{ total_zone_pages }}</a></li>
+            {% endif %}
+
+            {% if zones_page < total_zone_pages %}
+            <li class="page-item"><a class="page-link" href="javascript:do_search_with_zones_page({{ zones_page + 1 }})">{% trans %}Next{% endtrans %}</a></li>
+            {% endif %}
+        </ul>
+    </nav>
 </div>
 {% endif %}
 
@@ -122,5 +157,40 @@
         {% endfor %}
         </tbody>
     </table>
+
+    {% set max_visible_pages = 9 %}
+    {% set total_records_pages = (total_records / iface_rowamount) | round(0, 'ceil') %}
+    {% set half_visible_pages = max_visible_pages // 2 %}
+    {% set records_start_page = (records_page - half_visible_pages) > 0 ? (records_page - half_visible_pages) : 1 %}
+    {% set records_end_page = min(records_start_page + max_visible_pages - 1, total_records_pages) %}
+    <nav>
+        <ul class="pagination">
+            {% if records_page > 1 %}
+            <li class="page-item"><a class="page-link" href="javascript:do_search_with_records_page({{ records_page - 1 }})">{% trans %}Previous{% endtrans %}</a></li>
+            {% endif %}
+
+            {% if records_page > half_visible_pages + 1 %}
+            <li class="page-item"><a class="page-link" href="javascript:do_search_with_records_page(1)">1</a></li>
+            <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">..</a></li>
+            {% endif %}
+
+            {% for i in records_start_page..records_end_page %}
+            {% if i == records_page %}
+            <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+            {% else %}
+            <li class="page-item"><a class="page-link" href="javascript:do_search_with_records_page({{ i }})">{{ i }}</a></li>
+            {% endif %}
+            {% endfor %}
+
+            {% if total_zone_pages > records_end_page %}
+            <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">..</a></li>
+            <li class="page-item"><a class="page-link" href="javascript:do_search_with_records_page({{ total_zone_pages }})">{{ total_zone_pages }}</a></li>
+            {% endif %}
+
+            {% if records_page < total_zone_pages %}
+            <li class="page-item"><a class="page-link" href="javascript:do_search_with_records_page({{ records_page + 1 }})">{% trans %}Next{% endtrans %}</a></li>
+            {% endif %}
+        </ul>
+    </nav>
 </div>
 {% endif %}

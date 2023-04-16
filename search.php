@@ -64,6 +64,8 @@ class SearchController extends BaseController
         $_SESSION['zone_sort_by'] = $zone_sort_by;
         $_SESSION['record_sort_by'] = $record_sort_by;
 
+        $iface_rowamount = $this->config('iface_rowamount');
+
         if ($this->isPost()) {
             $parameters['query'] = !empty($_POST['query']) ? htmlspecialchars($_POST['query']) : '';
 
@@ -72,7 +74,7 @@ class SearchController extends BaseController
             $parameters['wildcard'] = $_POST['wildcard'] ?? false;
             $parameters['reverse'] = $_POST['reverse'] ?? false;
 
-            $iface_rowamount = $this->config('iface_rowamount');
+
 
             $zones_page = isset($_POST['zones_page']) ? (int)$_POST['zones_page'] : 1;
 
@@ -106,10 +108,10 @@ class SearchController extends BaseController
             $totalRecords = $recordSearch->getTotalRecords($parameters, $permission_view, $iface_search_group_records);
         }
 
-        $this->showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $record_sort_by, $totalZones, $totalRecords, $zones_page, $records_page);
+        $this->showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $record_sort_by, $totalZones, $totalRecords, $zones_page, $records_page, $iface_rowamount);
     }
 
-    private function showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $record_sort_by, $totalZones, $totalRecords, $zones_page, $records_page)
+    private function showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $record_sort_by, $totalZones, $totalRecords, $zones_page, $records_page, $iface_rowamount)
     {
         $this->render('search.html', [
             'zone_sort_by' => $zone_sort_by,
@@ -127,6 +129,7 @@ class SearchController extends BaseController
             'total_records' => $totalRecords,
             'zones_page' => $zones_page,
             'records_page' => $records_page,
+            'iface_rowamount' => $iface_rowamount,
             'edit_permission' => Permission::getEditPermission(),
             'user_id' => $_SESSION['userid'],
         ]);
