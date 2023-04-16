@@ -49,7 +49,8 @@ class SearchController extends BaseController
             'wildcard' => true,
             'reverse' => true,
         ];
-        $searchResult = ['zones' => null, 'records' => null];
+        $searchResultZones = [];
+        $searchResultRecords = [];
 
         $zone_sort_by = $this->getFromRequestOrSession('zone_sort_by');
         $record_sort_by = $this->getFromRequestOrSession('record_sort_by');
@@ -74,15 +75,18 @@ class SearchController extends BaseController
                 $iface_rowamount,
             );
 
-            if (count($searchResult['zones']) == $iface_rowamount || count($searchResult['records']) == $iface_rowamount) {
+            $searchResultZones = $searchResult['zones'];
+            $searchResultRecords = $searchResult['records'];
+
+            if (count($searchResultZones) == $iface_rowamount || count($searchResultRecords) == $iface_rowamount) {
                 $this->setMessage('search', 'warn', sprintf(_('Search results are limited to %s entries.'), $iface_rowamount));
             }
         }
 
-        $this->showSearchForm($parameters, $searchResult, $zone_sort_by, $record_sort_by);
+        $this->showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $record_sort_by);
     }
 
-    private function showSearchForm($parameters, $searchResult, $zone_sort_by, $record_sort_by)
+    private function showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $record_sort_by)
     {
         $this->render('search.html', [
             'zone_sort_by' => $zone_sort_by,
@@ -92,10 +96,10 @@ class SearchController extends BaseController
             'search_by_records' => $parameters['records'],
             'search_by_wildcard' => $parameters['wildcard'],
             'search_by_reverse' => $parameters['reverse'],
-            'has_zones' => !empty($searchResult['zones']),
-            'has_records' => !empty($searchResult['records']),
-            'found_zones' => $searchResult['zones'],
-            'found_records' => $searchResult['records'],
+            'has_zones' => !empty($searchResultZones),
+            'has_records' => !empty($searchResultRrecords),
+            'found_zones' => $searchResultZones,
+            'found_records' => $searchResultRecords,
             'edit_permission' => Permission::getEditPermission(),
             'user_id' => $_SESSION['userid'],
         ]);
