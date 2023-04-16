@@ -46,57 +46,12 @@ class ZoneSearch
     {
         $foundZones = array();
 
-        if ($parameters['reverse']) {
-            if (filter_var($parameters['query'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-                $reverse_search_string = implode('.', array_reverse(explode('.', $parameters['query'])));
-            } elseif (filter_var($parameters['query'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-                $reverse_search_string = unpack('H*hex', inet_pton($parameters['query']));
-                $reverse_search_string = implode('.', array_reverse(str_split($reverse_search_string['hex'])));
-            } else {
-                $parameters['reverse'] = false;
-                $reverse_search_string = '';
-            }
-
-            $reverse_search_string = $this->db->quote('%' . $reverse_search_string . '%', 'text');
-        }
-
-        $needle = idn_to_ascii(trim($parameters['query']), IDNA_NONTRANSITIONAL_TO_ASCII);
-        $search_string = ($parameters['wildcard'] ? '%' : '') . $needle . ($parameters['wildcard'] ? '%' : '');
+        list($reverse_search_string, $parameters, $search_string) = $this->buildSearchString($parameters);
 
         $originalSqlMode = $this->handleSqlMode();
 
         if ($parameters['zones']) {
-            $zonesQuery = '
-            SELECT
-                domains.id,
-                domains.name,
-                domains.type,
-                z.id as zone_id,
-                z.domain_id,
-                z.owner,
-                u.id as user_id,
-                u.fullname,
-                u.username,
-                record_count.count_records
-            FROM
-                domains
-            LEFT JOIN zones z on domains.id = z.domain_id
-            LEFT JOIN users u on z.owner = u.id
-            LEFT JOIN (SELECT COUNT(domain_id) AS count_records, domain_id FROM records WHERE type IS NOT NULL GROUP BY domain_id) record_count ON record_count.domain_id=domains.id
-            WHERE
-                (domains.name LIKE ' . $this->db->quote($search_string, 'text') .
-                ($parameters['reverse'] ? ' OR domains.name LIKE ' . $reverse_search_string : '') . ') ' .
-                ($permission_view == 'own' ? ' AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
-                ' ORDER BY ' . $sort_zones_by . ', z.owner' .
-                ' LIMIT ' . $iface_rowamount;
-
-            $zonesResponse = $this->db->query($zonesQuery);
-
-            $zones = [];
-            while ($zone = $zonesResponse->fetch()) {
-                $zones[$zone['id']][] = $zone;
-            }
-            $foundZones = $this->prepareFoundZones($zones);
+            $foundZones = $this->fetchZones($search_string, $parameters['reverse'], $reverse_search_string, $permission_view, $sort_zones_by, $iface_rowamount);
         }
 
         $this->restoreSqlMode($originalSqlMode);
@@ -165,6 +120,76 @@ class ZoneSearch
                 $foundZones[] = $found_zone;
             }
         }
+        return $foundZones;
+    }
+
+    /**
+     * @param array $parameters
+     * @return array
+     */
+    public function buildSearchString(array $parameters): array
+    {
+        if ($parameters['reverse']) {
+            if (filter_var($parameters['query'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+                $reverse_search_string = implode('.', array_reverse(explode('.', $parameters['query'])));
+            } elseif (filter_var($parameters['query'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+                $reverse_search_string = unpack('H*hex', inet_pton($parameters['query']));
+                $reverse_search_string = implode('.', array_reverse(str_split($reverse_search_string['hex'])));
+            } else {
+                $parameters['reverse'] = false;
+                $reverse_search_string = '';
+            }
+
+            $reverse_search_string = $this->db->quote('%' . $reverse_search_string . '%', 'text');
+        }
+
+        $needle = idn_to_ascii(trim($parameters['query']), IDNA_NONTRANSITIONAL_TO_ASCII);
+        $search_string = ($parameters['wildcard'] ? '%' : '') . $needle . ($parameters['wildcard'] ? '%' : '');
+        return array($reverse_search_string, $parameters, $search_string);
+    }
+
+    /**
+     * @param mixed $search_string
+     * @param $reverse
+     * @param mixed $reverse_search_string
+     * @param string $permission_view
+     * @param string $sort_zones_by
+     * @param int $iface_rowamount
+     * @return array
+     */
+    public function fetchZones(mixed $search_string, $reverse, mixed $reverse_search_string, string $permission_view, string $sort_zones_by, int $iface_rowamount): array
+    {
+        $zonesQuery = '
+            SELECT
+                domains.id,
+                domains.name,
+                domains.type,
+                z.id as zone_id,
+                z.domain_id,
+                z.owner,
+                u.id as user_id,
+                u.fullname,
+                u.username,
+                record_count.count_records
+            FROM
+                domains
+            LEFT JOIN zones z on domains.id = z.domain_id
+            LEFT JOIN users u on z.owner = u.id
+            LEFT JOIN (SELECT COUNT(domain_id) AS count_records, domain_id FROM records WHERE type IS NOT NULL GROUP BY domain_id) record_count ON record_count.domain_id=domains.id
+            WHERE
+                (domains.name LIKE ' . $this->db->quote($search_string, 'text') .
+            ($reverse ? ' OR domains.name LIKE ' . $reverse_search_string : '') . ') ' .
+            ($permission_view == 'own' ? ' AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
+            ' ORDER BY ' . $sort_zones_by . ', z.owner' .
+            ' LIMIT ' . $iface_rowamount;
+
+        $zonesResponse = $this->db->query($zonesQuery);
+
+        $zones = [];
+        while ($zone = $zonesResponse->fetch()) {
+            $zones[$zone['id']][] = $zone;
+        }
+        $foundZones = $this->prepareFoundZones($zones);
         return $foundZones;
     }
 }
