@@ -36,6 +36,7 @@ class ConfigValidator
     {
         $this->errors = [];
 
+        $this->validateIfaceRowAmount();
         $this->validateSyslogUse();
         if ($this->config['syslog_use']) {
             $this->validateSyslogIdent();
@@ -81,6 +82,13 @@ class ConfigValidator
         if (!in_array($this->config['syslog_facility'], $validFacilities, true)) {
             $validFacilitiesList = implode(', ', array_keys($validFacilities));
             $this->errors['syslog_facility'] = "syslog_facility must be an unquoted value and one of the following values: {$validFacilitiesList}";
+        }
+    }
+
+    private function validateIfaceRowAmount(): void
+    {
+        if (!is_int($this->config['iface_rowamount']) && $this->config['iface_rowamount'] <= 0) {
+            $this->errors['iface_rowamount'] = 'iface_rowamount must be a positive integer';
         }
     }
 }

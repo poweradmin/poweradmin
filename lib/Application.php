@@ -42,6 +42,7 @@ class Application {
         $this->configuration = new Configuration();
 
         $config = [
+            'iface_rowamount' => $this->configuration->get('iface_rowamount'),
             'syslog_use' => $this->configuration->get('syslog_use'),
             'syslog_ident' => $this->configuration->get('syslog_ident'),
             'syslog_facility' => $this->configuration->get('syslog_facility'),
