@@ -33,7 +33,7 @@ class ZoneSearch extends BaseSearch
      * @param int $iface_rowamount
      * @return array
      */
-    public function search_zones(array $parameters, string $permission_view, string $sort_zones_by, int $iface_rowamount): array
+    public function search_zones(array $parameters, string $permission_view, string $sort_zones_by, int $iface_rowamount, int $page): array
     {
         $foundZones = array();
 
@@ -42,7 +42,7 @@ class ZoneSearch extends BaseSearch
         $originalSqlMode = $this->handleSqlMode();
 
         if ($parameters['zones']) {
-            $foundZones = $this->fetchZones($search_string, $parameters['reverse'], $reverse_search_string, $permission_view, $sort_zones_by, $iface_rowamount);
+            $foundZones = $this->fetchZones($search_string, $parameters['reverse'], $reverse_search_string, $permission_view, $sort_zones_by, $iface_rowamount, $page);
         }
 
         $this->restoreSqlMode($originalSqlMode);
@@ -84,11 +84,14 @@ class ZoneSearch extends BaseSearch
      * @param mixed $reverse_search_string
      * @param string $permission_view
      * @param string $sort_zones_by
-     * @param int $iface_rowamount
+     * @param int $iface_rowamount Items per page
+     * @param int $page
      * @return array
      */
-    public function fetchZones(mixed $search_string, $reverse, mixed $reverse_search_string, string $permission_view, string $sort_zones_by, int $iface_rowamount): array
+    public function fetchZones(mixed $search_string, $reverse, mixed $reverse_search_string, string $permission_view, string $sort_zones_by, int $iface_rowamount, int $page): array
     {
+        $offset = ($page - 1) * $iface_rowamount;
+
         $zonesQuery = '
             SELECT
                 domains.id,
@@ -111,7 +114,7 @@ class ZoneSearch extends BaseSearch
             ($reverse ? ' OR domains.name LIKE ' . $reverse_search_string : '') . ') ' .
             ($permission_view == 'own' ? ' AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
             ' ORDER BY ' . $sort_zones_by . ', z.owner' .
-            ' LIMIT ' . $iface_rowamount;
+            ' LIMIT ' . $iface_rowamount . ' OFFSET ' . $offset;
 
         $zonesResponse = $this->db->query($zonesQuery);
 
@@ -119,7 +122,7 @@ class ZoneSearch extends BaseSearch
         while ($zone = $zonesResponse->fetch()) {
             $zones[$zone['id']][] = $zone;
         }
-        $foundZones = $this->prepareFoundZones($zones);
-        return $foundZones;
+
+        return $this->prepareFoundZones($zones);
     }
 }

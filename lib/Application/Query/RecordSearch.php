@@ -30,10 +30,12 @@ class RecordSearch extends BaseSearch
      * @param array $parameters Array with parameters which configures function
      * @param string $permission_view User permitted to view 'all' or 'own' zones
      * @param string $sort_records_by Column to sort record results
-     * @param int $iface_rowamount
+     * @param bool $iface_search_group_records
+     * @param int $iface_rowamount Items per page
+     * @param int $page
      * @return array
      */
-    public function search_records(array $parameters, string $permission_view, string $sort_records_by, int $iface_rowamount, bool $iface_search_group_records): array
+    public function search_records(array $parameters, string $permission_view, string $sort_records_by, bool $iface_search_group_records, int $iface_rowamount, int $page = 1): array
     {
         $foundRecords = array();
 
@@ -42,7 +44,7 @@ class RecordSearch extends BaseSearch
         $originalSqlMode = $this->handleSqlMode();
 
         if ($parameters['records']) {
-            $foundRecords = $this->fetchRecords($search_string, $parameters['reverse'], $reverse_search_string, $permission_view, $iface_search_group_records, $sort_records_by, $iface_rowamount, $foundRecords);
+            $foundRecords = $this->fetchRecords($search_string, $parameters['reverse'], $reverse_search_string, $permission_view, $iface_search_group_records, $sort_records_by, $iface_rowamount, $page);
         }
 
         $this->restoreSqlMode($originalSqlMode);
@@ -61,8 +63,10 @@ class RecordSearch extends BaseSearch
      * @param array $foundRecords
      * @return array
      */
-    public function fetchRecords(mixed $search_string, $reverse, mixed $reverse_search_string, string $permission_view, bool $iface_search_group_records, string $sort_records_by, int $iface_rowamount, array $foundRecords): array
+    public function fetchRecords(mixed $search_string, $reverse, mixed $reverse_search_string, string $permission_view, bool $iface_search_group_records, string $sort_records_by, int $iface_rowamount, int $page): array
     {
+        $offset = ($page - 1) * $iface_rowamount;
+
         $recordsQuery = '
             SELECT
                 records.id,
@@ -86,7 +90,7 @@ class RecordSearch extends BaseSearch
             ($permission_view == 'own' ? 'AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
             ($iface_search_group_records ? ' GROUP BY records.name, records.content ' : '') . // May not work correctly with MySQL strict mode
             ' ORDER BY ' . $sort_records_by .
-            ' LIMIT ' . $iface_rowamount;
+            ' LIMIT ' . $iface_rowamount . ' OFFSET ' . $offset;
 
         $recordsResponse = $this->db->query($recordsQuery);
 
@@ -95,6 +99,7 @@ class RecordSearch extends BaseSearch
             $found_record['name'] = idn_to_utf8($found_record['name'], IDNA_NONTRANSITIONAL_TO_ASCII);
             $foundRecords[] = $found_record;
         }
+
         return $foundRecords;
     }
 }
