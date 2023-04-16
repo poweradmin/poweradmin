@@ -32,7 +32,6 @@
 use Poweradmin\Application\Query\RecordSearch;
 use Poweradmin\Application\Query\ZoneSearch;
 use Poweradmin\BaseController;
-use Poweradmin\DnsRecord;
 use Poweradmin\Permission;
 
 require_once 'inc/toolkit.inc.php';

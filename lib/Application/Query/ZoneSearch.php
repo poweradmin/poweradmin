@@ -22,7 +22,8 @@
 
 namespace Poweradmin\Application\Query;
 
-class ZoneSearch {
+class ZoneSearch
+{
 
     /**
      * Search for Zones
@@ -30,9 +31,10 @@ class ZoneSearch {
      * @param array $parameters Array with parameters which configures function
      * @param string $permission_view User permitted to view 'all' or 'own' zones
      * @param string $sort_zones_by Column to sort zone results
-     * @return array|array[]
+     * @param int $iface_rowamount
+     * @return array
      */
-    public static function search_zones($parameters, $permission_view, $sort_zones_by, $iface_rowamount)
+    public static function search_zones(array $parameters, string $permission_view, string $sort_zones_by, int $iface_rowamount): array
     {
         global $db, $db_type;
 
