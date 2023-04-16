@@ -29,6 +29,8 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Application\Query\RecordSearch;
+use Poweradmin\Application\Query\ZoneSearch;
 use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
 use Poweradmin\Permission;
@@ -67,16 +69,20 @@ class SearchController extends BaseController
             $parameters['reverse'] = $_POST['reverse'] ?? false;
 
             $iface_rowamount = $this->config('iface_rowamount');
-            $searchResult = DnsRecord::search_zone_and_record(
+
+            $searchResultZones = ZoneSearch::search_zones(
                 $parameters,
                 Permission::getViewPermission(),
                 $zone_sort_by,
-                $record_sort_by,
                 $iface_rowamount,
             );
 
-            $searchResultZones = $searchResult['zones'];
-            $searchResultRecords = $searchResult['records'];
+            $searchResultRecords = RecordSearch::search_records(
+                $parameters,
+                Permission::getViewPermission(),
+                $record_sort_by,
+                $iface_rowamount,
+            );
 
             if (count($searchResultZones) == $iface_rowamount || count($searchResultRecords) == $iface_rowamount) {
                 $this->setMessage('search', 'warn', sprintf(_('Search results are limited to %s entries.'), $iface_rowamount));
@@ -97,7 +103,7 @@ class SearchController extends BaseController
             'search_by_wildcard' => $parameters['wildcard'],
             'search_by_reverse' => $parameters['reverse'],
             'has_zones' => !empty($searchResultZones),
-            'has_records' => !empty($searchResultRrecords),
+            'has_records' => !empty($searchResultRecords),
             'found_zones' => $searchResultZones,
             'found_records' => $searchResultRecords,
             'edit_permission' => Permission::getEditPermission(),
