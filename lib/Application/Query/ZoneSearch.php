@@ -66,6 +66,8 @@ class ZoneSearch
      */
     private function handleSqlMode(): string
     {
+        $originalSqlMode = '';
+
         if ($this->db_type === 'mysql') {
             $originalSqlMode = $this->db->queryOne("SELECT @@GLOBAL.sql_mode");
 
@@ -75,11 +77,8 @@ class ZoneSearch
             } else {
                 $originalSqlMode = '';
             }
-
-            return $originalSqlMode;
         }
-
-        return '';
+        return $originalSqlMode;
     }
 
     /**
@@ -88,7 +87,7 @@ class ZoneSearch
      * @param string $originalSqlMode The original SQL mode to be restored.
      * @return void
      */
-    private function restoreSqlMode($originalSqlMode): void
+    private function restoreSqlMode(string $originalSqlMode): void
     {
         if ($this->db_type === 'mysql' && $originalSqlMode !== '') {
             $this->db->exec("SET SESSION sql_mode = '$originalSqlMode'");

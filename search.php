@@ -69,7 +69,7 @@ class SearchController extends BaseController
 
             $iface_rowamount = $this->config('iface_rowamount');
 
-            global $db, $db_type, $iface_search_group_records;
+            global $db, $db_type;
             $zoneSearch = new ZoneSearch($db, $db_type);
             $searchResultZones = $zoneSearch->search_zones(
                 $parameters,

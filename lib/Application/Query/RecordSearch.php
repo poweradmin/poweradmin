@@ -48,6 +48,25 @@ class RecordSearch
 
         $foundRecords = array();
 
+        list($reverse_search_string, $parameters, $search_string) = $this->buildSearchString($parameters);
+
+        $originalSqlMode = $this->handleSqlMode();
+
+        if ($parameters['records']) {
+            $foundRecords = $this->fetchRecords($search_string, $parameters['reverse'], $reverse_search_string, $permission_view, $iface_search_group_records, $sort_records_by, $iface_rowamount, $foundRecords);
+        }
+
+        $this->restoreSqlMode($originalSqlMode);
+
+        return $foundRecords;
+    }
+
+    /**
+     * @param array $parameters
+     * @return array
+     */
+    public function buildSearchString(array $parameters): array
+    {
         if ($parameters['reverse']) {
             if (filter_var($parameters['query'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
                 $reverse_search_string = implode('.', array_reverse(explode('.', $parameters['query'])));
@@ -64,7 +83,14 @@ class RecordSearch
 
         $needle = idn_to_ascii(trim($parameters['query']), IDNA_NONTRANSITIONAL_TO_ASCII);
         $search_string = ($parameters['wildcard'] ? '%' : '') . $needle . ($parameters['wildcard'] ? '%' : '');
+        return array($reverse_search_string, $parameters, $search_string);
+    }
 
+    /**
+     * @return string
+     */
+    public function handleSqlMode(): string
+    {
         $originalSqlMode = '';
 
         if ($this->db_type === 'mysql') {
@@ -77,9 +103,34 @@ class RecordSearch
                 $originalSqlMode = '';
             }
         }
+        return $originalSqlMode;
+    }
 
-        if ($parameters['records']) {
-            $recordsQuery = '
+    /**
+     * @param string $originalSqlMode
+     * @return void
+     */
+    public function restoreSqlMode(string $originalSqlMode): void
+    {
+        if ($this->db_type === 'mysql' && $originalSqlMode !== '') {
+            $this->db->exec("SET SESSION sql_mode = '$originalSqlMode'");
+        }
+    }
+
+    /**
+     * @param mixed $search_string
+     * @param $reverse
+     * @param mixed $reverse_search_string
+     * @param string $permission_view
+     * @param bool $iface_search_group_records
+     * @param string $sort_records_by
+     * @param int $iface_rowamount
+     * @param array $foundRecords
+     * @return array
+     */
+    public function fetchRecords(mixed $search_string, $reverse, mixed $reverse_search_string, string $permission_view, bool $iface_search_group_records, string $sort_records_by, int $iface_rowamount, array $foundRecords): array
+    {
+        $recordsQuery = '
             SELECT
                 records.id,
                 records.domain_id,
@@ -98,25 +149,19 @@ class RecordSearch
             LEFT JOIN users u on z.owner = u.id
             WHERE
                 (records.name LIKE ' . $this->db->quote($search_string, 'text') . ' OR records.content LIKE ' . $this->db->quote($search_string, 'text') .
-                ($parameters['reverse'] ? ' OR records.name LIKE ' . $reverse_search_string . ' OR records.content LIKE ' . $reverse_search_string : '') . ')' .
-                ($permission_view == 'own' ? 'AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
-                ($iface_search_group_records ? ' GROUP BY records.name, records.content ' : '') . // May not work correctly with MySQL strict mode
-                ' ORDER BY ' . $sort_records_by .
-                ' LIMIT ' . $iface_rowamount;
+            ($reverse ? ' OR records.name LIKE ' . $reverse_search_string . ' OR records.content LIKE ' . $reverse_search_string : '') . ')' .
+            ($permission_view == 'own' ? 'AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
+            ($iface_search_group_records ? ' GROUP BY records.name, records.content ' : '') . // May not work correctly with MySQL strict mode
+            ' ORDER BY ' . $sort_records_by .
+            ' LIMIT ' . $iface_rowamount;
 
-            $recordsResponse = $this->db->query($recordsQuery);
+        $recordsResponse = $this->db->query($recordsQuery);
 
-            while ($record = $recordsResponse->fetch()) {
-                $found_record = $record;
-                $found_record['name'] = idn_to_utf8($found_record['name'], IDNA_NONTRANSITIONAL_TO_ASCII);
-                $foundRecords[] = $found_record;
-            }
+        while ($record = $recordsResponse->fetch()) {
+            $found_record = $record;
+            $found_record['name'] = idn_to_utf8($found_record['name'], IDNA_NONTRANSITIONAL_TO_ASCII);
+            $foundRecords[] = $found_record;
         }
-
-        if ($this->db_type === 'mysql' && $originalSqlMode !== '') {
-            $this->db->exec("SET SESSION sql_mode = '$originalSqlMode'");
-        }
-
         return $foundRecords;
     }
 }
