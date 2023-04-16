@@ -56,6 +56,28 @@ function do_search_with_records_page(records_page) {
     document.getElementsByName("do_search")[0].click();
 }
 
+const queryState = (() => {
+    let previousQuery = '';
+
+    return {
+        getPreviousQuery: function() {
+            return previousQuery;
+        },
+        setPreviousQuery: function(value) {
+            previousQuery = value;
+        }
+    };
+})();
+
+function checkQueryChange(form) {
+    const currentQuery = form.querySelector('input[name="query"]').value;
+
+    if (queryState.getPreviousQuery() !== currentQuery) {
+        form.querySelector('input[name="zones_page"]').value = 1;
+        form.querySelector('input[name="records_page"]').value = 1;
+    }
+}
+
 function showPassword(passwordInputId, iconId) {
     const password = document.getElementById(passwordInputId);
     const icon = document.getElementById(iconId);
