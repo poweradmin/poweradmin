@@ -25,13 +25,14 @@ namespace Poweradmin\Application\Query;
 class ZoneSearch extends BaseSearch
 {
     /**
-     * Search for Zones
+     * Search for zones based on specified parameters.
      *
-     * @param array $parameters Array with parameters which configures function
-     * @param string $permission_view User permitted to view 'all' or 'own' zones
-     * @param string $sort_zones_by Column to sort zone results
-     * @param int $iface_rowamount
-     * @return array
+     * @param array $parameters An array of search parameters.
+     * @param string $permission_view The permission view for the search (e.g. 'all' or 'own' zones).
+     * @param string $sort_zones_by The column to sort the zone results by.
+     * @param int $iface_rowamount The number of rows to display per page.
+     * @param int $page The current page number.
+     * @return array An array of found zones.
      */
     public function searchZones(array $parameters, string $permission_view, string $sort_zones_by, int $iface_rowamount, int $page): array
     {
@@ -75,16 +76,18 @@ class ZoneSearch extends BaseSearch
     }
 
     /**
-     * @param mixed $search_string
-     * @param $reverse
-     * @param mixed $reverse_search_string
-     * @param string $permission_view
-     * @param string $sort_zones_by
-     * @param int $iface_rowamount Items per page
-     * @param int $page
-     * @return array
+     * Fetch zones based on specified search criteria and pagination.
+     *
+     * @param mixed $search_string The search string to use for matching zones.
+     * @param bool $reverse Whether to perform a reverse search or not.
+     * @param mixed $reverse_search_string The reverse search string to use for matching zones.
+     * @param string $permission_view The permission view for the search (e.g. 'all' or 'own' zones).
+     * @param string $sort_zones_by The column to sort the zone results by.
+     * @param int $iface_rowamount The number of rows to display per page.
+     * @param int $page The current page number.
+     * @return array An array of found zones.
      */
-    public function fetchZones(mixed $search_string, $reverse, mixed $reverse_search_string, string $permission_view, string $sort_zones_by, int $iface_rowamount, int $page): array
+    public function fetchZones(mixed $search_string, bool $reverse, mixed $reverse_search_string, string $permission_view, string $sort_zones_by, int $iface_rowamount, int $page): array
     {
         $offset = ($page - 1) * $iface_rowamount;
 
@@ -122,6 +125,13 @@ class ZoneSearch extends BaseSearch
         return $this->prepareFoundZones($zones);
     }
 
+    /**
+     * Get the total number of zones based on the specified search criteria.
+     *
+     * @param array $parameters Array of parameters to configure the search.
+     * @param string $permission_view The permission view for the search (e.g. 'all' or 'own' zones).
+     * @return int The total number of zones found.
+     */
     public function getTotalZones(array $parameters, string $permission_view): int
     {
         list($reverse_search_string, $parameters, $search_string) = $this->buildSearchString($parameters);
@@ -130,13 +140,15 @@ class ZoneSearch extends BaseSearch
     }
 
     /**
-     * @param mixed $search_string
-     * @param $reverse
-     * @param mixed $reverse_search_string
-     * @param string $permission_view
-     * @return int
+     * Get the number of found zones based on the search criteria.
+     *
+     * @param mixed $search_string The search string to be used in the query.
+     * @param bool $reverse Indicates whether to search for reversed search string.
+     * @param mixed $reverse_search_string The reversed search string to be used in the query.
+     * @param string $permission_view The permission view for the search (e.g. 'all' or 'own' zones).
+     * @return int The number of zones found.
      */
-    public function getFoundZones(mixed $search_string, $reverse, mixed $reverse_search_string, string $permission_view): int
+    public function getFoundZones(mixed $search_string, bool $reverse, mixed $reverse_search_string, string $permission_view): int
     {
         $zonesQuery = '
             SELECT
