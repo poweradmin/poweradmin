@@ -24,6 +24,15 @@ namespace Poweradmin\Application\Query;
 
 class ZoneSearch
 {
+    private $db;
+    private string $db_type;
+
+    public function __construct($db, string $db_type)
+    {
+        $this->db = $db;
+        $this->db_type = $db_type;
+    }
+
     /**
      * Search for Zones
      *
@@ -35,8 +44,6 @@ class ZoneSearch
      */
     public function search_zones(array $parameters, string $permission_view, string $sort_zones_by, int $iface_rowamount): array
     {
-        global $db, $db_type;
-
         $foundZones = array();
 
         if ($parameters['reverse']) {
@@ -50,13 +57,13 @@ class ZoneSearch
                 $reverse_search_string = '';
             }
 
-            $reverse_search_string = $db->quote('%' . $reverse_search_string . '%', 'text');
+            $reverse_search_string = $this->db->quote('%' . $reverse_search_string . '%', 'text');
         }
 
         $needle = idn_to_ascii(trim($parameters['query']), IDNA_NONTRANSITIONAL_TO_ASCII);
         $search_string = ($parameters['wildcard'] ? '%' : '') . $needle . ($parameters['wildcard'] ? '%' : '');
 
-        $originalSqlMode = $this->handleSqlMode($db_type, $db);
+        $originalSqlMode = $this->handleSqlMode();
 
         if ($parameters['zones']) {
             $zonesQuery = '
@@ -77,13 +84,13 @@ class ZoneSearch
             LEFT JOIN users u on z.owner = u.id
             LEFT JOIN (SELECT COUNT(domain_id) AS count_records, domain_id FROM records WHERE type IS NOT NULL GROUP BY domain_id) record_count ON record_count.domain_id=domains.id
             WHERE
-                (domains.name LIKE ' . $db->quote($search_string, 'text') .
+                (domains.name LIKE ' . $this->db->quote($search_string, 'text') .
                 ($parameters['reverse'] ? ' OR domains.name LIKE ' . $reverse_search_string : '') . ') ' .
-                ($permission_view == 'own' ? ' AND z.owner = ' . $db->quote($_SESSION['userid'], 'integer') : '') .
+                ($permission_view == 'own' ? ' AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
                 ' ORDER BY ' . $sort_zones_by . ', z.owner' .
                 ' LIMIT ' . $iface_rowamount;
 
-            $zonesResponse = $db->query($zonesQuery);
+            $zonesResponse = $this->db->query($zonesQuery);
 
             $zones = [];
             while ($zone = $zonesResponse->fetch()) {
@@ -92,7 +99,7 @@ class ZoneSearch
             $foundZones = $this->prepareFoundZones($zones);
         }
 
-        $this->restoreSqlMode($db_type, $db, $originalSqlMode);
+        $this->restoreSqlMode($originalSqlMode);
 
         return $foundZones;
     }
@@ -100,18 +107,16 @@ class ZoneSearch
     /**
      * Handles SQL mode for MySQL database connection by disabling 'ONLY_FULL_GROUP_BY' if needed.
      *
-     * @param string $db_type The type of the database connection (e.g., 'mysql').
-     * @param object $db The database connection object.
      * @return string The original SQL mode if modified, or an empty string if no change was needed or not using MySQL.
      */
-    private function handleSqlMode(string $db_type, $db): string
+    private function handleSqlMode(): string
     {
-        if ($db_type === 'mysql') {
-            $originalSqlMode = $db->queryOne("SELECT @@GLOBAL.sql_mode");
+        if ($this->db_type === 'mysql') {
+            $originalSqlMode = $this->db->queryOne("SELECT @@GLOBAL.sql_mode");
 
             if (str_contains($originalSqlMode, 'ONLY_FULL_GROUP_BY')) {
                 $newSqlMode = str_replace('ONLY_FULL_GROUP_BY,', '', $originalSqlMode);
-                $db->exec("SET SESSION sql_mode = '$newSqlMode'");
+                $this->db->exec("SET SESSION sql_mode = '$newSqlMode'");
             } else {
                 $originalSqlMode = '';
             }
@@ -125,15 +130,13 @@ class ZoneSearch
     /**
      * Restores the original SQL mode for the MySQL database connection if needed.
      *
-     * @param string $db_type The type of the database connection (e.g., 'mysql').
-     * @param object $db The database connection object.
      * @param string $originalSqlMode The original SQL mode to be restored.
      * @return void
      */
-    private function restoreSqlMode(string $db_type, $db, string $originalSqlMode): void
+    private function restoreSqlMode($originalSqlMode): void
     {
-        if ($db_type === 'mysql' && $originalSqlMode !== '') {
-            $db->exec("SET SESSION sql_mode = '$originalSqlMode'");
+        if ($this->db_type === 'mysql' && $originalSqlMode !== '') {
+            $this->db->exec("SET SESSION sql_mode = '$originalSqlMode'");
         }
     }
 

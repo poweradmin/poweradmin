@@ -24,6 +24,15 @@ namespace Poweradmin\Application\Query;
 
 class RecordSearch
 {
+    private $db;
+    private string $db_type;
+
+    public function __construct($db, string $db_type)
+    {
+        $this->db = $db;
+        $this->db_type = $db_type;
+    }
+
     /**
      * Search for Records
      *
@@ -35,7 +44,6 @@ class RecordSearch
      */
     public function search_records(array $parameters, string $permission_view, string $sort_records_by, int $iface_rowamount): array
     {
-        global $db, $db_type;
         global $iface_search_group_records;
 
         $foundRecords = array();
@@ -51,7 +59,7 @@ class RecordSearch
                 $reverse_search_string = '';
             }
 
-            $reverse_search_string = $db->quote('%' . $reverse_search_string . '%', 'text');
+            $reverse_search_string = $this->db->quote('%' . $reverse_search_string . '%', 'text');
         }
 
         $needle = idn_to_ascii(trim($parameters['query']), IDNA_NONTRANSITIONAL_TO_ASCII);
@@ -59,12 +67,12 @@ class RecordSearch
 
         $originalSqlMode = '';
 
-        if ($db_type === 'mysql') {
-            $originalSqlMode = $db->queryOne("SELECT @@GLOBAL.sql_mode");
+        if ($this->db_type === 'mysql') {
+            $originalSqlMode = $this->db->queryOne("SELECT @@GLOBAL.sql_mode");
 
             if (str_contains($originalSqlMode, 'ONLY_FULL_GROUP_BY')) {
                 $newSqlMode = str_replace('ONLY_FULL_GROUP_BY,', '', $originalSqlMode);
-                $db->exec("SET SESSION sql_mode = '$newSqlMode'");
+                $this->db->exec("SET SESSION sql_mode = '$newSqlMode'");
             } else {
                 $originalSqlMode = '';
             }
@@ -89,14 +97,14 @@ class RecordSearch
             LEFT JOIN zones z on records.domain_id = z.domain_id
             LEFT JOIN users u on z.owner = u.id
             WHERE
-                (records.name LIKE ' . $db->quote($search_string, 'text') . ' OR records.content LIKE ' . $db->quote($search_string, 'text') .
+                (records.name LIKE ' . $this->db->quote($search_string, 'text') . ' OR records.content LIKE ' . $this->db->quote($search_string, 'text') .
                 ($parameters['reverse'] ? ' OR records.name LIKE ' . $reverse_search_string . ' OR records.content LIKE ' . $reverse_search_string : '') . ')' .
-                ($permission_view == 'own' ? 'AND z.owner = ' . $db->quote($_SESSION['userid'], 'integer') : '') .
+                ($permission_view == 'own' ? 'AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
                 ($iface_search_group_records ? ' GROUP BY records.name, records.content ' : '') . // May not work correctly with MySQL strict mode
                 ' ORDER BY ' . $sort_records_by .
                 ' LIMIT ' . $iface_rowamount;
 
-            $recordsResponse = $db->query($recordsQuery);
+            $recordsResponse = $this->db->query($recordsQuery);
 
             while ($record = $recordsResponse->fetch()) {
                 $found_record = $record;
@@ -105,8 +113,8 @@ class RecordSearch
             }
         }
 
-        if ($db_type === 'mysql' && $originalSqlMode !== '') {
-            $db->exec("SET SESSION sql_mode = '$originalSqlMode'");
+        if ($this->db_type === 'mysql' && $originalSqlMode !== '') {
+            $this->db->exec("SET SESSION sql_mode = '$originalSqlMode'");
         }
 
         return $foundRecords;

@@ -69,7 +69,8 @@ class SearchController extends BaseController
 
             $iface_rowamount = $this->config('iface_rowamount');
 
-            $zoneSearch = new ZoneSearch();
+            global $db, $db_type, $iface_search_group_records;
+            $zoneSearch = new ZoneSearch($db, $db_type);
             $searchResultZones = $zoneSearch->search_zones(
                 $parameters,
                 Permission::getViewPermission(),
@@ -77,7 +78,7 @@ class SearchController extends BaseController
                 $iface_rowamount,
             );
 
-            $recordSearch = new RecordSearch();
+            $recordSearch = new RecordSearch($db, $db_type);
             $searchResultRecords = $recordSearch->search_records(
                 $parameters,
                 Permission::getViewPermission(),
