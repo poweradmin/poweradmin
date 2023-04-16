@@ -52,6 +52,7 @@
 {% if has_zones %}
 <div class="pb-3">
     <h5 class="mb-3 pt-3 border-top">{% trans %}Zones found{% endtrans %}</h5>
+    <div class="pb-3 text-secondary">{% trans %}Total number of zones:{% endtrans %} {{ total_zones }}</div>
     <table class="table table-striped table-hover table-sm">
         <thead>
         <tr>
@@ -126,6 +127,7 @@
 {% if has_records %}
 <div class="pb-3">
     <h5 class="mb-3 pt-3 border-top">{% trans %}Records found{% endtrans %}</h5>
+    <div class="pb-3 text-secondary">{% trans %}Total number of records:{% endtrans %} {{ total_records }}</div>
     <table class="table table-striped table-hover table-sm">
         <thead>
         <tr>
