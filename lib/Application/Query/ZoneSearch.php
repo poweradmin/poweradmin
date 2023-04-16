@@ -56,18 +56,7 @@ class ZoneSearch
         $needle = idn_to_ascii(trim($parameters['query']), IDNA_NONTRANSITIONAL_TO_ASCII);
         $search_string = ($parameters['wildcard'] ? '%' : '') . $needle . ($parameters['wildcard'] ? '%' : '');
 
-        $originalSqlMode = '';
-
-        if ($db_type === 'mysql') {
-            $originalSqlMode = $db->queryOne("SELECT @@GLOBAL.sql_mode");
-
-            if (str_contains($originalSqlMode, 'ONLY_FULL_GROUP_BY')) {
-                $newSqlMode = str_replace('ONLY_FULL_GROUP_BY,', '', $originalSqlMode);
-                $db->exec("SET SESSION sql_mode = '$newSqlMode'");
-            } else {
-                $originalSqlMode = '';
-            }
-        }
+        $originalSqlMode = $this->handleSqlMode($db_type, $db);
 
         if ($parameters['zones']) {
             $zonesQuery = '
@@ -100,27 +89,79 @@ class ZoneSearch
             while ($zone = $zonesResponse->fetch()) {
                 $zones[$zone['id']][] = $zone;
             }
-            if ($zones) {
-                foreach ($zones as $zone_id => $zone_array) {
-                    $zone_owner_fullnames = [];
-                    $zone_owner_ids = [];
-                    foreach ($zone_array as $zone_entry) {
-                        $zone_owner_ids[] = $zone_entry['owner'];
-                        $zone_owner_fullnames[] = $zone_entry['fullname'] != "" ? $zone_entry['fullname'] : $zone_entry['username'];
-                    }
-                    $zones[$zone_id][0]['owner'] = implode(', ', $zone_owner_ids);
-                    $zones[$zone_id][0]['fullname'] = implode(', ', $zone_owner_fullnames);
-                    $found_zone = $zones[$zone_id][0];
-                    $found_zone['name'] = idn_to_utf8($found_zone['name'], IDNA_NONTRANSITIONAL_TO_ASCII);
-                    $foundZones[] = $found_zone;
-                }
-            }
+            $foundZones = $this->prepareFoundZones($zones);
         }
 
+        $this->restoreSqlMode($db_type, $db, $originalSqlMode);
+
+        return $foundZones;
+    }
+
+    /**
+     * Handles SQL mode for MySQL database connection by disabling 'ONLY_FULL_GROUP_BY' if needed.
+     *
+     * @param string $db_type The type of the database connection (e.g., 'mysql').
+     * @param object $db The database connection object.
+     * @return string The original SQL mode if modified, or an empty string if no change was needed or not using MySQL.
+     */
+    private function handleSqlMode(string $db_type, $db): string
+    {
+        if ($db_type === 'mysql') {
+            $originalSqlMode = $db->queryOne("SELECT @@GLOBAL.sql_mode");
+
+            if (str_contains($originalSqlMode, 'ONLY_FULL_GROUP_BY')) {
+                $newSqlMode = str_replace('ONLY_FULL_GROUP_BY,', '', $originalSqlMode);
+                $db->exec("SET SESSION sql_mode = '$newSqlMode'");
+            } else {
+                $originalSqlMode = '';
+            }
+
+            return $originalSqlMode;
+        }
+
+        return '';
+    }
+
+    /**
+     * Restores the original SQL mode for the MySQL database connection if needed.
+     *
+     * @param string $db_type The type of the database connection (e.g., 'mysql').
+     * @param object $db The database connection object.
+     * @param string $originalSqlMode The original SQL mode to be restored.
+     * @return void
+     */
+    private function restoreSqlMode(string $db_type, $db, string $originalSqlMode): void
+    {
         if ($db_type === 'mysql' && $originalSqlMode !== '') {
             $db->exec("SET SESSION sql_mode = '$originalSqlMode'");
         }
+    }
 
+    /**
+     * Prepares the list of found zones by aggregating owner details and converting domain names to UTF-8.
+     *
+     * @param array $zones An array of zone data retrieved from the database.
+     * @return array An array of prepared zone data with aggregated owner details and domain names converted to UTF-8.
+     */
+    public function prepareFoundZones(array $zones): array
+    {
+        $foundZones = [];
+
+        if ($zones) {
+            foreach ($zones as $zone_id => $zone_array) {
+                $zone_owner_fullnames = [];
+                $zone_owner_ids = [];
+                foreach ($zone_array as $zone_entry) {
+                    $zone_owner_ids[] = $zone_entry['owner'];
+                    $zone_owner_fullnames[] = $zone_entry['fullname'] != "" ? $zone_entry['fullname'] : $zone_entry['username'];
+                }
+                $zones[$zone_id][0]['owner'] = implode(', ', $zone_owner_ids);
+                $zones[$zone_id][0]['fullname'] = implode(', ', $zone_owner_fullnames);
+                $found_zone = $zones[$zone_id][0];
+                $found_zone['name'] = idn_to_utf8($found_zone['name'], IDNA_NONTRANSITIONAL_TO_ASCII);
+                $foundZones[] = $found_zone;
+            }
+        }
         return $foundZones;
     }
 }
