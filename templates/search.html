@@ -84,6 +84,7 @@
         </tbody>
     </table>
 
+    {% if total_zones > iface_rowamount %}
     {% set max_visible_pages = 9 %}
     {% set total_zone_pages = (total_zones / iface_rowamount) | round(0, 'ceil') %}
     {% set half_visible_pages = max_visible_pages // 2 %}
@@ -118,6 +119,7 @@
             {% endif %}
         </ul>
     </nav>
+    {% endif %}
 </div>
 {% endif %}
 
@@ -158,6 +160,7 @@
         </tbody>
     </table>
 
+    {% if total_zones > iface_rowamount %}
     {% set max_visible_pages = 9 %}
     {% set total_records_pages = (total_records / iface_rowamount) | round(0, 'ceil') %}
     {% set half_visible_pages = max_visible_pages // 2 %}
@@ -192,5 +195,6 @@
             {% endif %}
         </ul>
     </nav>
+    {% endif %}
 </div>
 {% endif %}
