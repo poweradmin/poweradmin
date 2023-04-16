@@ -25,15 +25,15 @@ namespace Poweradmin\Application\Query;
 class RecordSearch extends BaseSearch
 {
     /**
-     * Search for Records
+     * Search for records based on specified parameters.
      *
-     * @param array $parameters Array with parameters which configures function
-     * @param string $permission_view User permitted to view 'all' or 'own' zones
-     * @param string $sort_records_by Column to sort record results
-     * @param bool $iface_search_group_records
-     * @param int $iface_rowamount Items per page
-     * @param int $page
-     * @return array
+     * @param array $parameters An array of search parameters.
+     * @param string $permission_view The permission view for the search.
+     * @param string $sort_records_by The column to sort the records by.
+     * @param bool $iface_search_group_records Whether to group records or not.
+     * @param int $iface_rowamount The number of rows to display per page.
+     * @param int $page The current page number (default is 1).
+     * @return array An array of found records.
      */
     public function searchRecords(array $parameters, string $permission_view, string $sort_records_by, bool $iface_search_group_records, int $iface_rowamount, int $page = 1): array
     {
@@ -53,17 +53,19 @@ class RecordSearch extends BaseSearch
     }
 
     /**
-     * @param mixed $search_string
-     * @param $reverse
-     * @param mixed $reverse_search_string
-     * @param string $permission_view
-     * @param bool $iface_search_group_records
-     * @param string $sort_records_by
-     * @param int $iface_rowamount
-     * @param int $page
-     * @return array
+     * Fetch records based on the given search criteria.
+     *
+     * @param mixed $search_string The search string to use for matching records.
+     * @param bool $reverse Whether to perform a reverse search or not.
+     * @param mixed $reverse_search_string The reverse search string to use for matching records.
+     * @param string $permission_view The permission view for the search.
+     * @param bool $iface_search_group_records Whether to search group records or not.
+     * @param string $sort_records_by The column to sort the records by.
+     * @param int $iface_rowamount The number of rows to display per page.
+     * @param int $page The current page number.
+     * @return array An array of found records.
      */
-    public function fetchRecords(mixed $search_string, $reverse, mixed $reverse_search_string, string $permission_view, bool $iface_search_group_records, string $sort_records_by, int $iface_rowamount, int $page): array
+    public function fetchRecords(mixed $search_string, bool $reverse, mixed $reverse_search_string, string $permission_view, bool $iface_search_group_records, string $sort_records_by, int $iface_rowamount, int $page): array
     {
         $offset = ($page - 1) * $iface_rowamount;
 
@@ -104,6 +106,14 @@ class RecordSearch extends BaseSearch
         return $foundRecords;
     }
 
+    /**
+     * Get the total number of records based on the specified parameters.
+     *
+     * @param array $parameters An array of search parameters.
+     * @param string $permission_view The permission view for the search.
+     * @param bool $iface_search_group_records Whether to search group records or not.
+     * @return int The total number of found records.
+     */
     public function getTotalRecords(array $parameters, string $permission_view, bool $iface_search_group_records): int
     {
         list($reverse_search_string, $parameters, $search_string) = $this->buildSearchString($parameters);
@@ -116,14 +126,16 @@ class RecordSearch extends BaseSearch
     }
 
     /**
-     * @param mixed $search_string
-     * @param $reverse
-     * @param mixed $reverse_search_string
-     * @param string $permission_view
-     * @param bool $iface_search_group_records
-     * @return int
+     * Get the total number of found records based on the given search criteria.
+     *
+     * @param mixed $search_string The search string to use for matching records.
+     * @param bool $reverse Whether to perform a reverse search or not.
+     * @param mixed $reverse_search_string The reverse search string to use for matching records.
+     * @param string $permission_view The permission view for the search.
+     * @param bool $iface_search_group_records Whether to search group records or not.
+     * @return int The total number of found records.
      */
-    public function getFoundRecords(mixed $search_string, $reverse, mixed $reverse_search_string, string $permission_view, bool $iface_search_group_records): int
+    public function getFoundRecords(mixed $search_string, bool $reverse, mixed $reverse_search_string, string $permission_view, bool $iface_search_group_records): int
     {
         $recordsQuery = '
             SELECT
