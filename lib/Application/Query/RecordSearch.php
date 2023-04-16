@@ -33,10 +33,8 @@ class RecordSearch extends BaseSearch
      * @param int $iface_rowamount
      * @return array
      */
-    public function search_records(array $parameters, string $permission_view, string $sort_records_by, int $iface_rowamount): array
+    public function search_records(array $parameters, string $permission_view, string $sort_records_by, int $iface_rowamount, bool $iface_search_group_records): array
     {
-        global $iface_search_group_records;
-
         $foundRecords = array();
 
         list($reverse_search_string, $parameters, $search_string) = $this->buildSearchString($parameters);

@@ -78,12 +78,14 @@ class SearchController extends BaseController
                 $iface_rowamount,
             );
 
+            global $iface_search_group_records;
             $recordSearch = new RecordSearch($db, $db_type);
             $searchResultRecords = $recordSearch->search_records(
                 $parameters,
                 Permission::getViewPermission(),
                 $record_sort_by,
                 $iface_rowamount,
+                $iface_search_group_records
             );
 
             if (count($searchResultZones) == $iface_rowamount || count($searchResultRecords) == $iface_rowamount) {
