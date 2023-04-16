@@ -709,10 +709,6 @@ msgstr "Zonenvorlage wurde erfolgreich aktualisiert."
 msgid "You do not have the permission to perform searches."
 msgstr "Sie haben nicht die Berechtigung zum Suchen."
 
-#: /search.php
-msgid "Search results are limited to %s entries."
-msgstr "Suchergebnisse sind auf %s Einträge beschränkt."
-
 #: /delete_zone_templ.php
 msgid "Zone template has been deleted successfully."
 msgstr "Die Zonenvorlage wurde erfolgreich gelöscht."

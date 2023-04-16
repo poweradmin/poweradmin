@@ -694,10 +694,6 @@ msgstr ""
 msgid "You do not have the permission to perform searches."
 msgstr ""
 
-#: /search.php
-msgid "Search results are limited to %s entries."
-msgstr ""
-
 #: /delete_zone_templ.php
 msgid "Zone template has been deleted successfully."
 msgstr ""

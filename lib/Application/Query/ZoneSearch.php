@@ -33,19 +33,15 @@ class ZoneSearch extends BaseSearch
      * @param int $iface_rowamount
      * @return array
      */
-    public function search_zones(array $parameters, string $permission_view, string $sort_zones_by, int $iface_rowamount, int $page): array
+    public function searchZones(array $parameters, string $permission_view, string $sort_zones_by, int $iface_rowamount, int $page): array
     {
         $foundZones = array();
 
         list($reverse_search_string, $parameters, $search_string) = $this->buildSearchString($parameters);
 
-        $originalSqlMode = $this->handleSqlMode();
-
         if ($parameters['zones']) {
             $foundZones = $this->fetchZones($search_string, $parameters['reverse'], $reverse_search_string, $permission_view, $sort_zones_by, $iface_rowamount, $page);
         }
-
-        $this->restoreSqlMode($originalSqlMode);
 
         return $foundZones;
     }
@@ -124,5 +120,37 @@ class ZoneSearch extends BaseSearch
         }
 
         return $this->prepareFoundZones($zones);
+    }
+
+    public function getTotalZones(array $parameters, string $permission_view): int
+    {
+        list($reverse_search_string, $parameters, $search_string) = $this->buildSearchString($parameters);
+
+        return $this->getFoundZones($search_string, $parameters['reverse'], $reverse_search_string, $permission_view);
+    }
+
+    /**
+     * @param mixed $search_string
+     * @param $reverse
+     * @param mixed $reverse_search_string
+     * @param string $permission_view
+     * @return int
+     */
+    public function getFoundZones(mixed $search_string, $reverse, mixed $reverse_search_string, string $permission_view): int
+    {
+        $zonesQuery = '
+            SELECT
+                COUNT(*)
+            FROM
+                domains
+            LEFT JOIN zones z on domains.id = z.domain_id
+            LEFT JOIN users u on z.owner = u.id
+            LEFT JOIN (SELECT COUNT(domain_id) AS count_records, domain_id FROM records WHERE type IS NOT NULL GROUP BY domain_id) record_count ON record_count.domain_id=domains.id
+            WHERE
+                (domains.name LIKE ' . $this->db->quote($search_string, 'text') .
+            ($reverse ? ' OR domains.name LIKE ' . $reverse_search_string : '') . ') ' .
+            ($permission_view == 'own' ? ' AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '');
+
+        return (int)$this->db->queryOne($zonesQuery);
     }
 }

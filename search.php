@@ -50,8 +50,13 @@ class SearchController extends BaseController
             'wildcard' => true,
             'reverse' => true,
         ];
+
+        $totalZones = 0;
         $searchResultZones = [];
+        $zones_page = 1;
+        $totalRecords = 0;
         $searchResultRecords = [];
+        $records_page = 1;
 
         $zone_sort_by = $this->getFromRequestOrSession('zone_sort_by');
         $record_sort_by = $this->getFromRequestOrSession('record_sort_by');
@@ -71,38 +76,40 @@ class SearchController extends BaseController
 
             $zones_page = isset($_POST['zones_page']) ? (int)$_POST['zones_page'] : 1;
 
+            $permission_view = Permission::getViewPermission();
+
             global $db, $db_type;
             $zoneSearch = new ZoneSearch($db, $db_type);
-            $searchResultZones = $zoneSearch->search_zones(
+            $searchResultZones = $zoneSearch->searchZones(
                 $parameters,
-                Permission::getViewPermission(),
+                $permission_view,
                 $zone_sort_by,
                 $iface_rowamount,
                 $zones_page
             );
 
+            $totalZones = $zoneSearch->getTotalZones($parameters, $permission_view);
+
             $records_page = isset($_POST['records_page']) ? (int)$_POST['records_page'] : 1;
 
             global $iface_search_group_records;
             $recordSearch = new RecordSearch($db, $db_type);
-            $searchResultRecords = $recordSearch->search_records(
+            $searchResultRecords = $recordSearch->searchRecords(
                 $parameters,
-                Permission::getViewPermission(),
+                $permission_view,
                 $record_sort_by,
                 $iface_search_group_records,
                 $iface_rowamount,
                 $records_page,
             );
 
-            if (count($searchResultZones) == $iface_rowamount || count($searchResultRecords) == $iface_rowamount) {
-                $this->setMessage('search', 'warn', sprintf(_('Search results are limited to %s entries.'), $iface_rowamount));
-            }
+            $totalRecords = $recordSearch->getTotalRecords($parameters, $permission_view, $iface_search_group_records);
         }
 
-        $this->showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $record_sort_by);
+        $this->showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $record_sort_by, $totalZones, $totalRecords, $zones_page, $records_page);
     }
 
-    private function showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $record_sort_by)
+    private function showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $record_sort_by, $totalZones, $totalRecords, $zones_page, $records_page)
     {
         $this->render('search.html', [
             'zone_sort_by' => $zone_sort_by,
@@ -116,6 +123,10 @@ class SearchController extends BaseController
             'has_records' => !empty($searchResultRecords),
             'found_zones' => $searchResultZones,
             'found_records' => $searchResultRecords,
+            'total_zones' => $totalZones,
+            'total_records' => $totalRecords,
+            'zones_page' => $zones_page,
+            'records_page' => $records_page,
             'edit_permission' => Permission::getEditPermission(),
             'user_id' => $_SESSION['userid'],
         ]);

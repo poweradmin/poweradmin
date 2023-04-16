@@ -35,7 +35,7 @@ class RecordSearch extends BaseSearch
      * @param int $page
      * @return array
      */
-    public function search_records(array $parameters, string $permission_view, string $sort_records_by, bool $iface_search_group_records, int $iface_rowamount, int $page = 1): array
+    public function searchRecords(array $parameters, string $permission_view, string $sort_records_by, bool $iface_search_group_records, int $iface_rowamount, int $page = 1): array
     {
         $foundRecords = array();
 
@@ -60,7 +60,7 @@ class RecordSearch extends BaseSearch
      * @param bool $iface_search_group_records
      * @param string $sort_records_by
      * @param int $iface_rowamount
-     * @param array $foundRecords
+     * @param int $page
      * @return array
      */
     public function fetchRecords(mixed $search_string, $reverse, mixed $reverse_search_string, string $permission_view, bool $iface_search_group_records, string $sort_records_by, int $iface_rowamount, int $page): array
@@ -88,12 +88,13 @@ class RecordSearch extends BaseSearch
                 (records.name LIKE ' . $this->db->quote($search_string, 'text') . ' OR records.content LIKE ' . $this->db->quote($search_string, 'text') .
             ($reverse ? ' OR records.name LIKE ' . $reverse_search_string . ' OR records.content LIKE ' . $reverse_search_string : '') . ')' .
             ($permission_view == 'own' ? 'AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
-            ($iface_search_group_records ? ' GROUP BY records.name, records.content ' : '') . // May not work correctly with MySQL strict mode
+            ($iface_search_group_records ? ' GROUP BY records.name, records.content ' : '') .
             ' ORDER BY ' . $sort_records_by .
             ' LIMIT ' . $iface_rowamount . ' OFFSET ' . $offset;
 
         $recordsResponse = $this->db->query($recordsQuery);
 
+        $foundRecords = array();
         while ($record = $recordsResponse->fetch()) {
             $found_record = $record;
             $found_record['name'] = idn_to_utf8($found_record['name'], IDNA_NONTRANSITIONAL_TO_ASCII);
@@ -101,5 +102,42 @@ class RecordSearch extends BaseSearch
         }
 
         return $foundRecords;
+    }
+
+    public function getTotalRecords(array $parameters, string $permission_view, bool $iface_search_group_records): int
+    {
+        list($reverse_search_string, $parameters, $search_string) = $this->buildSearchString($parameters);
+
+        $originalSqlMode = $this->handleSqlMode();
+        $foundRecords = $this->getFoundRecords($search_string, $parameters['reverse'], $reverse_search_string, $permission_view, $iface_search_group_records);
+        $this->restoreSqlMode($originalSqlMode);
+
+        return $foundRecords;
+    }
+
+    /**
+     * @param mixed $search_string
+     * @param $reverse
+     * @param mixed $reverse_search_string
+     * @param string $permission_view
+     * @param bool $iface_search_group_records
+     * @return int
+     */
+    public function getFoundRecords(mixed $search_string, $reverse, mixed $reverse_search_string, string $permission_view, bool $iface_search_group_records): int
+    {
+        $recordsQuery = '
+            SELECT
+                COUNT(*)
+            FROM
+                records
+            LEFT JOIN zones z on records.domain_id = z.domain_id
+            LEFT JOIN users u on z.owner = u.id
+            WHERE
+                (records.name LIKE ' . $this->db->quote($search_string, 'text') . ' OR records.content LIKE ' . $this->db->quote($search_string, 'text') .
+            ($reverse ? ' OR records.name LIKE ' . $reverse_search_string . ' OR records.content LIKE ' . $reverse_search_string : '') . ')' .
+            ($permission_view == 'own' ? 'AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
+            ($iface_search_group_records ? ' GROUP BY records.name, records.content ' : '');
+
+        return (int)$this->db->queryOne($recordsQuery);
     }
 }
