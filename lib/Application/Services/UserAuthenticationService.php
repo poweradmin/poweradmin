@@ -23,6 +23,11 @@ namespace Poweradmin\Application\Services;
 
 use InvalidArgumentException;
 
+/**
+ * Class UserAuthenticationService
+ *
+ * Provides various methods for managing password hashing and verification.
+ */
 class UserAuthenticationService
 {
     private string $passwordEncryption;
@@ -34,7 +39,13 @@ class UserAuthenticationService
         $this->passwordEncryptionCost = $passwordEncryptionCost;
     }
 
-    public function generateSalt($len = 5): string
+    /**
+     * Generate a random salt string.
+     *
+     * @param int $len The length of the salt string (default is 5).
+     * @return string The generated salt string.
+     */
+    public function generateSalt(int $len = 5): string
     {
         $valid_characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890@#$%^*()_-!';
         $valid_len = strlen($valid_characters) - 1;
@@ -47,7 +58,14 @@ class UserAuthenticationService
         return $salt;
     }
 
-    public function hashPassword($password): string
+    /**
+     * Hash a password using the specified method.
+     *
+     * @param string $password The password to be hashed.
+     * @return string The hashed password.
+     * @throws InvalidArgumentException If the password encryption method is invalid.
+     */
+    public function hashPassword(string $password): string
     {
         if ($this->passwordEncryption === 'bcrypt') {
             return password_hash($password, PASSWORD_BCRYPT, array('cost' => $this->passwordEncryptionCost));
@@ -72,7 +90,15 @@ class UserAuthenticationService
         throw new InvalidArgumentException('Invalid password encryption method');
     }
 
-    public function verifyPassword($password, $hash): bool
+    /**
+     * Verify if a password matches the hashed password.
+     *
+     * @param string $password The password to be verified.
+     * @param string $hash The hashed password.
+     * @return bool True if the password matches, false otherwise.
+     * @throws InvalidArgumentException If the hash algorithm cannot be determined.
+     */
+    public function verifyPassword(string $password, string $hash): bool
     {
         $hash_type = $this->identifyHashAlgorithm($hash);
 
@@ -91,7 +117,14 @@ class UserAuthenticationService
         throw new InvalidArgumentException('Unable to determine hash algorithm');
     }
 
-    public function requiresRehash($hash): bool
+    /**
+     * Check if the hashed password requires rehashing.
+     *
+     * @param string $hash The hashed password.
+     * @return bool True if the password needs rehashing, false otherwise.
+     * @throws InvalidArgumentException If the hash algorithm cannot be determined.
+     */
+    public function requiresRehash(string $hash): bool
     {
         $hash_type = $this->identifyHashAlgorithm($hash);
         if ($hash_type == "unknown") {
@@ -117,7 +150,14 @@ class UserAuthenticationService
         return false;
     }
 
-    public function identifyHashAlgorithm($hash): string
+    /**
+     * Identify the hash algorithm used for the given hash.
+     *
+     * @param string $hash The hashed password.
+     * @return string The hash algorithm name.
+     * @throws InvalidArgumentException If the hash algorithm cannot be determined.
+     */
+    public function identifyHashAlgorithm(string $hash): string
     {
         if (preg_match('/^[a-f0-9]{32}$/', $hash)) {
             return 'md5';
@@ -136,25 +176,51 @@ class UserAuthenticationService
         throw new InvalidArgumentException('Unable to determine hash algorithm');
     }
 
-    public function generateCombinedSalt($pass): string
+    /**
+     * Generate a combined salt for the given password.
+     *
+     * @param string $pass The password.
+     * @return string The combined salt.
+     */
+    public function generateCombinedSalt(string $pass): string
     {
         $salt = $this->generateSalt();
         return $this->combineSalts($salt, $pass);
     }
 
-    public function combineSalts($salt, $pass): string
+    /**
+     * Combine a salt with a password.
+     *
+     * @param string $salt The salt.
+     * @param string $pass The password.
+     * @return string The combined salt and password.
+     */
+    public function combineSalts(string $salt, string $pass): string
     {
         return md5($salt . $pass) . ':' . $salt;
     }
 
-    public function extractUserSalt($password): string
+    /**
+     * Extract the user salt from the given password.
+     *
+     * @param string $password The password.
+     * @return string The extracted salt.
+     */
+    public function extractUserSalt(string $password): string
     {
         return substr(strstr($password, ':'), 1);
     }
 
-    private function constantTimeComparison($str1, $str2): bool
+    /**
+     * Compare two strings using a constant time algorithm.
+     *
+     * @param string $str1 The first string.
+     * @param string $str2 The second string.
+     * @return bool True if the strings are equal, false otherwise.
+     */
+    private function constantTimeComparison(string $str1, string $str2): bool
     {
-        if (!is_string($str1) || !is_string($str2) || strlen($str1) !== strlen($str2)) {
+        if (strlen($str1) !== strlen($str2)) {
             return false;
         }
 
