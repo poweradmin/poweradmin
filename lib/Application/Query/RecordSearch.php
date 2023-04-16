@@ -24,7 +24,6 @@ namespace Poweradmin\Application\Query;
 
 class RecordSearch
 {
-
     /**
      * Search for Records
      *
@@ -34,7 +33,7 @@ class RecordSearch
      * @param int $iface_rowamount
      * @return array
      */
-    public static function search_records(array $parameters, string $permission_view, string $sort_records_by, int $iface_rowamount): array
+    public function search_records(array $parameters, string $permission_view, string $sort_records_by, int $iface_rowamount): array
     {
         global $db, $db_type;
         global $iface_search_group_records;
