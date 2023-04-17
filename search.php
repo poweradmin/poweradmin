@@ -110,7 +110,7 @@ class SearchController extends BaseController
         $this->showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $record_sort_by, $totalZones, $totalRecords, $zones_page, $records_page, $iface_rowamount);
     }
 
-    private function showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $record_sort_by, $totalZones, $totalRecords, $zones_page, $records_page, $iface_rowamount)
+    private function showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $record_sort_by, $totalZones, $totalRecords, $zones_page, $records_page, $iface_rowamount): void
     {
         $this->render('search.html', [
             'zone_sort_by' => $zone_sort_by,

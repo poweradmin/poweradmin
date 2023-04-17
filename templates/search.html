@@ -201,6 +201,11 @@
 </div>
 {% endif %}
 
+{% if query is not empty and (not has_records or not has_zones) %}
+<hr>
+{% trans %}No results found{% endtrans %}
+{% endif %}
+
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         queryState.setPreviousQuery(document.search_form.query.value);
