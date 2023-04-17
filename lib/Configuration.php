@@ -70,7 +70,7 @@ class Configuration
         return $configItems;
     }
 
-    private function parseTokenValue(string $tokenValue)
+    private function parseTokenValue(string $tokenValue): mixed
     {
         if (strtolower($tokenValue) === 'true') {
             return true;
@@ -87,7 +87,7 @@ class Configuration
         return $tokenValue;
     }
 
-    public function get($name)
+    public function get($name): mixed
     {
         if (array_key_exists($name, $this->config)) {
             $value = $this->config[$name];

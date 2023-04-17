@@ -43,7 +43,7 @@ abstract class BaseController
         return $_SERVER['REQUEST_METHOD'] === 'GET';
     }
 
-    public function config(string $key)
+    public function config(string $key): mixed
     {
         return $this->app->config($key);
     }
@@ -66,7 +66,7 @@ abstract class BaseController
         exit;
     }
 
-    public function setMessage($script, $type, $content)
+    public function setMessage($script, $type, $content): void
     {
         $_SESSION['messages'][$script] = [
             'type' => $type,
@@ -74,7 +74,7 @@ abstract class BaseController
         ];
     }
 
-    public function getMessage($script)
+    public function getMessage($script): mixed
     {
         if (isset($_SESSION['messages'][$script])) {
             $messages = $_SESSION['messages'][$script];
@@ -123,7 +123,7 @@ EOF;
         }
     }
 
-    public function checkPermission(string $permission, string $errorMessage)
+    public function checkPermission(string $permission, string $errorMessage): void
     {
         if (!do_hook('verify_permission', $permission)) {
             error($errorMessage);
@@ -131,7 +131,7 @@ EOF;
         }
     }
 
-    public function showError(string $error)
+    public function showError(string $error): void
     {
         include_once 'inc/header.inc.php';
         error($error);
@@ -139,7 +139,7 @@ EOF;
         exit;
     }
 
-    public function showFirstError(array $errors)
+    public function showFirstError(array $errors): void
     {
         include_once 'inc/header.inc.php';
         $validationErrors = array_values($errors);

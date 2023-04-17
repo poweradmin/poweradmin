@@ -72,7 +72,7 @@ class Application {
         }
     }
 
-    public function config($name) {
+    public function config($name): mixed {
         return $this->configuration->get($name);
     }
 

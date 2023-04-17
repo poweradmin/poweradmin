@@ -38,7 +38,6 @@ require_once 'inc/toolkit.inc.php';
 
 class SearchController extends BaseController
 {
-
     public function run(): void
     {
         $this->checkPermission('search', _("You do not have the permission to perform searches."));
@@ -74,13 +73,13 @@ class SearchController extends BaseController
             $parameters['wildcard'] = $_POST['wildcard'] ?? false;
             $parameters['reverse'] = $_POST['reverse'] ?? false;
 
-
-
             $zones_page = isset($_POST['zones_page']) ? (int)$_POST['zones_page'] : 1;
 
             $permission_view = Permission::getViewPermission();
 
-            global $db, $db_type;
+            $db_type = $this->config('db_type');
+
+            global $db;
             $zoneSearch = new ZoneSearch($db, $db_type);
             $searchResultZones = $zoneSearch->searchZones(
                 $parameters,
@@ -94,7 +93,7 @@ class SearchController extends BaseController
 
             $records_page = isset($_POST['records_page']) ? (int)$_POST['records_page'] : 1;
 
-            global $iface_search_group_records;
+            $iface_search_group_records = $this->config('iface_search_group_records');
             $recordSearch = new RecordSearch($db, $db_type);
             $searchResultRecords = $recordSearch->searchRecords(
                 $parameters,
