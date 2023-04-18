@@ -20,7 +20,7 @@
  */
 
 use Poweradmin\Application\Services\UserAuthenticationService;
-use Poweradmin\Configuration;
+use Poweradmin\LegacyConfiguration;
 
 require_once '../inc/database.inc.php';
 require_once 'database_helpers.php';
@@ -152,7 +152,7 @@ function step6($twig, $current_step, $language, $default_config_file, $local_con
     // For SQLite we should provide path to db file
     $db_file = $_POST['db_type'] == 'sqlite' ? $db_file = $_POST['db_name'] : '';
 
-    $config = new Configuration($default_config_file);
+    $config = new LegacyConfiguration($default_config_file);
     $userAuthService = new UserAuthenticationService(
         $config->get('password_encryption'),
         $config->get('password_encryption_cost')

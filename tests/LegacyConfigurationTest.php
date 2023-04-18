@@ -1,9 +1,9 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Configuration;
+use Poweradmin\LegacyConfiguration;
 
-class ConfigurationTest extends TestCase
+class LegacyConfigurationTest extends TestCase
 {
     private string $tempDefaultConfigFile;
     private string $tempCustomConfigFile;
@@ -27,7 +27,7 @@ class ConfigurationTest extends TestCase
         file_put_contents($this->tempDefaultConfigFile, '<?php $foo = "bar"; $number = 42; $boolean = true;');
         file_put_contents($this->tempCustomConfigFile, '<?php $foo = "baz"; $extra = "extra_value"; $logUser = LOG_USER;');
 
-        $config = new Configuration($this->tempDefaultConfigFile, $this->tempCustomConfigFile);
+        $config = new LegacyConfiguration($this->tempDefaultConfigFile, $this->tempCustomConfigFile);
 
         $this->assertEquals('baz', $config->get('foo'), 'Should return the value from custom config file.');
         $this->assertEquals(42, $config->get('number'), 'Should return the value from default config file.');
@@ -42,7 +42,7 @@ class ConfigurationTest extends TestCase
         file_put_contents($this->tempDefaultConfigFile, '<?php');
         file_put_contents($this->tempCustomConfigFile, '<?php');
 
-        $config = new Configuration($this->tempDefaultConfigFile, $this->tempCustomConfigFile);
+        $config = new LegacyConfiguration($this->tempDefaultConfigFile, $this->tempCustomConfigFile);
 
         $this->assertNull($config->get('foo'), 'Should return null for non-existing keys.');
     }
@@ -52,14 +52,14 @@ class ConfigurationTest extends TestCase
         file_put_contents($this->tempDefaultConfigFile, '<?php @invalid = code;');
         file_put_contents($this->tempCustomConfigFile, '<?php $foo = ;');
 
-        $config = new Configuration($this->tempDefaultConfigFile, $this->tempCustomConfigFile);
+        $config = new LegacyConfiguration($this->tempDefaultConfigFile, $this->tempCustomConfigFile);
 
         $this->assertNull($config->get('foo'), 'Should return null for invalid configuration files.');
     }
 
     public function testMissingConfigurationFiles()
     {
-        $config = new Configuration($this->tempDefaultConfigFile . '_nonexistent', $this->tempCustomConfigFile . '_nonexistent');
+        $config = new LegacyConfiguration($this->tempDefaultConfigFile . '_nonexistent', $this->tempCustomConfigFile . '_nonexistent');
 
         $this->assertNull($config->get('foo'), 'Should return null for missing configuration files.');
     }
@@ -69,7 +69,7 @@ class ConfigurationTest extends TestCase
         file_put_contents($this->tempDefaultConfigFile, '<?php $boolean_false = false;');
         file_put_contents($this->tempCustomConfigFile, '<?php');
 
-        $config = new Configuration($this->tempDefaultConfigFile, $this->tempCustomConfigFile);
+        $config = new LegacyConfiguration($this->tempDefaultConfigFile, $this->tempCustomConfigFile);
 
         $this->assertSame(false, $config->get('boolean_false'), 'Should return the boolean false value from default config file.');
     }
@@ -79,7 +79,7 @@ class ConfigurationTest extends TestCase
         file_put_contents($this->tempDefaultConfigFile, '<?php $logUser = LOG_USER;');
         file_put_contents($this->tempCustomConfigFile, '<?php');
 
-        $config = new Configuration($this->tempDefaultConfigFile, $this->tempCustomConfigFile);
+        $config = new LegacyConfiguration($this->tempDefaultConfigFile, $this->tempCustomConfigFile);
 
         $this->assertEquals(LOG_USER, $config->get('logUser'), 'Should return the constant value LOG_USER from default config file.');
     }
@@ -89,7 +89,7 @@ class ConfigurationTest extends TestCase
         file_put_contents($this->tempDefaultConfigFile, '<?php $foo = "  bar  ";');
         file_put_contents($this->tempCustomConfigFile, '<?php');
 
-        $config = new Configuration($this->tempDefaultConfigFile, $this->tempCustomConfigFile);
+        $config = new LegacyConfiguration($this->tempDefaultConfigFile, $this->tempCustomConfigFile);
 
         $this->assertEquals('  bar  ', $config->get('foo'), 'Should return the value with surrounding whitespace from default config file.');
     }
@@ -99,7 +99,7 @@ class ConfigurationTest extends TestCase
         file_put_contents($this->tempDefaultConfigFile, '');
         file_put_contents($this->tempCustomConfigFile, '');
 
-        $config = new Configuration($this->tempDefaultConfigFile, $this->tempCustomConfigFile);
+        $config = new LegacyConfiguration($this->tempDefaultConfigFile, $this->tempCustomConfigFile);
 
         $this->assertNull($config->get('foo'), 'Should return null for empty configuration files.');
     }
@@ -109,7 +109,7 @@ class ConfigurationTest extends TestCase
         file_put_contents($this->tempDefaultConfigFile, '<?php $foo = "bar');
         file_put_contents($this->tempCustomConfigFile, '<?php');
 
-        $config = new Configuration($this->tempDefaultConfigFile, $this->tempCustomConfigFile);
+        $config = new LegacyConfiguration($this->tempDefaultConfigFile, $this->tempCustomConfigFile);
 
         $this->assertNull($config->get('foo'), 'Should return null for improperly formatted configuration files.');
     }

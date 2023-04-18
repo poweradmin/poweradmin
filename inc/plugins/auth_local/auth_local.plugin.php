@@ -30,7 +30,7 @@
  */
 
 use Poweradmin\Application\Services\UserAuthenticationService;
-use Poweradmin\Configuration;
+use Poweradmin\LegacyConfiguration;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\LdapUserEventLogger;
 use Poweradmin\UserEventLogger;
@@ -220,7 +220,7 @@ function SQLAuthenticate(): void
         return;
     }
 
-    $config = new Configuration();
+    $config = new LegacyConfiguration();
     $userAuthService = new UserAuthenticationService(
         $config->get('password_encryption'),
         $config->get('password_encryption_cost')

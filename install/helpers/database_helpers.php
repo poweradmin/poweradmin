@@ -20,7 +20,7 @@
  */
 
 use Poweradmin\Application\Services\UserAuthenticationService;
-use Poweradmin\Configuration;
+use Poweradmin\LegacyConfiguration;
 
 function updateDatabase($db, $databaseCredentials): void
 {
@@ -71,7 +71,7 @@ function createAdministratorUser($db, $pa_pass, $default_config_file) {
     $permTemplItemsQuery = $db->prepare("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (:perm_templ_id, :uber_admin_user_id)");
     $permTemplItemsQuery->execute([':perm_templ_id' => $permTemplId, ':uber_admin_user_id' => $uberAdminUserId]);
 
-    $config = new Configuration($default_config_file);
+    $config = new LegacyConfiguration($default_config_file);
     $userAuthService = new UserAuthenticationService(
         $config->get('password_encryption'),
         $config->get('password_encryption_cost')

@@ -33,13 +33,13 @@ use Twig\Loader\FilesystemLoader;
 class Application {
 
     protected Environment $templateRenderer;
-    protected Configuration $configuration;
+    protected LegacyConfiguration $configuration;
 
     public function __construct() {
         $loader = new FilesystemLoader('templates');
         $this->templateRenderer = new Environment($loader, [ 'debug' => false ]);
 
-        $this->configuration = new Configuration();
+        $this->configuration = new LegacyConfiguration();
 
         $config = [
             'iface_rowamount' => $this->configuration->get('iface_rowamount'),

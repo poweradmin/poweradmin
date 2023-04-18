@@ -31,7 +31,7 @@
  */
 
 use Poweradmin\Application\Services\UserAuthenticationService;
-use Poweradmin\Configuration;
+use Poweradmin\LegacyConfiguration;
 use Poweradmin\DnsRecord;
 
 require 'inc/config.inc.php';
@@ -203,7 +203,7 @@ $user = $db->queryRow("SELECT users.id, users.password FROM users, perm_templ, p
                             OR perm_items.name = 'zone_content_edit_others'
                         )");
 
-$config = new Configuration();
+$config = new LegacyConfiguration();
 $userAuthService = new UserAuthenticationService(
     $config->get('password_encryption'),
     $config->get('password_encryption_cost')

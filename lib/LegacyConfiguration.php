@@ -21,7 +21,7 @@
 
 namespace Poweradmin;
 
-class Configuration
+class LegacyConfiguration
 {
     protected array $config;
 

@@ -31,7 +31,7 @@
  */
 
 use Poweradmin\Application\Services\UserAuthenticationService;
-use Poweradmin\Configuration;
+use Poweradmin\LegacyConfiguration;
 use Poweradmin\DnsRecord;
 use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
@@ -352,7 +352,7 @@ email = " . $db->quote($email, 'text') . ",";
         $passwd_edit_others_perm = do_hook('verify_permission', 'user_passwd_edit_others');
 
         if ($user_password != "" && $edit_own_perm || $passwd_edit_others_perm) {
-            $config = new Configuration();
+            $config = new LegacyConfiguration();
             $userAuthService = new UserAuthenticationService(
                 $config->get('password_encryption'),
                 $config->get('password_encryption_cost')
@@ -381,7 +381,7 @@ function update_user_password($id, $user_pass): void
 {
     global $db;
 
-    $config = new Configuration();
+    $config = new LegacyConfiguration();
     $userAuthService = new UserAuthenticationService(
         $config->get('password_encryption'),
         $config->get('password_encryption_cost')
@@ -412,7 +412,7 @@ function change_user_pass_local(array $details)
     $query = "SELECT id, password FROM users WHERE username = {$db->quote($_SESSION ["userlogin"], 'text')}";
     $response = $db->queryRow($query);
 
-    $config = new Configuration();
+    $config = new LegacyConfiguration();
     $userAuthService = new UserAuthenticationService(
         $config->get('password_encryption'),
         $config->get('password_encryption_cost')
@@ -802,7 +802,7 @@ function update_user_details_local($details)
 
         $passwd_edit_others_perm = (bool)do_hook('verify_permission', 'user_passwd_edit_others');
         if (isset($details['password']) && $details['password'] != "" && $passwd_edit_others_perm) {
-            $config = new Configuration();
+            $config = new LegacyConfiguration();
             $userAuthService = new UserAuthenticationService(
                 $config->get('password_encryption'),
                 $config->get('password_encryption_cost')
@@ -858,7 +858,7 @@ function add_new_user_local($details)
 
     $query = "INSERT INTO users (username, password, fullname, email, description, perm_templ,";
 
-    $config = new Configuration();
+    $config = new LegacyConfiguration();
     $userAuthService = new UserAuthenticationService(
         $config->get('password_encryption'),
         $config->get('password_encryption_cost')
