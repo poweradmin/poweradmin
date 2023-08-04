@@ -356,14 +356,15 @@ class DnsRecord
             return false;
         } else {
             global $db;
-            if (Dns::validate_input($record['rid'], $record['zid'], $record['type'], $record['content'], $record['name'], $record['prio'], $record['ttl'])) {
+            if (Dns::validate_input($record['rid'], $record['zid'], $record['type'], $record['content'], $record['name'], $record['prio'],  $record['ttl'])) {
                 $name = strtolower($record['name']); // powerdns only searches for lower case records
                 $query = "UPDATE records
 				SET name=" . $db->quote($name, 'text') . ",
 				type=" . $db->quote($record['type'], 'text') . ",
 				content=" . $db->quote($record['content'], 'text') . ",
 				ttl=" . $db->quote($record['ttl'], 'integer') . ",
-				prio=" . $db->quote($record['prio'], 'integer') . "
+				prio=" . $db->quote($record['prio'], 'integer') . ",
+				disabled=" . $db->quote($record['disabled'], 'integer') . "
 				WHERE id=" . $db->quote($record['rid'], 'integer');
                 $db->query($query);
                 return true;
@@ -1226,7 +1227,7 @@ class DnsRecord
     {
         global $db;
         if (is_numeric($id)) {
-            $result = $db->queryRow("SELECT id, domain_id, name, type, content, ttl, prio FROM records WHERE id=" . $db->quote($id, 'integer') . " AND type IS NOT NULL");
+            $result = $db->queryRow("SELECT * FROM records WHERE id=" . $db->quote($id, 'integer') . " AND type IS NOT NULL");
             if ($result) {
                 if ($result["type"] == "" || $result["content"] == "") {
                     return -1;
@@ -1239,7 +1240,10 @@ class DnsRecord
                     "type" => $result["type"],
                     "content" => $result["content"],
                     "ttl" => $result["ttl"],
-                    "prio" => $result["prio"]
+                    "prio" => $result["prio"],
+                    "disabled" => $result["disabled"],
+                    "ordername" => $result["ordername"],
+                    "auth" => $result["auth"],
                 );
             } else {
                 return -1;
@@ -1277,7 +1281,7 @@ class DnsRecord
         }
         $sql_sortby = ($sortby == 'name' ? $natural_sort : $sortby . ', ' . $natural_sort);
 
-        $records = $db->query("SELECT id, domain_id, name, type, content, ttl, prio
+        $records = $db->query("SELECT *
                             FROM records
                             WHERE domain_id=" . $db->quote($id, 'integer') . " AND type IS NOT NULL
                             ORDER BY type = 'SOA' DESC, type = 'NS' DESC," . $sql_sortby);

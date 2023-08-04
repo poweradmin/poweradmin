@@ -46,7 +46,9 @@ function updateDatabase($db, $databaseCredentials): void
 
     $fill_perm_items = $db->prepare('INSERT INTO perm_items VALUES (?, ?, ?)');
     $def_permissions = include 'includes/permissions.php';
+    echo "456";
     $db->executeMultiple($fill_perm_items, $def_permissions);
+    echo "789";
     if (method_exists($fill_perm_items, 'free')) {
         $fill_perm_items->free();
     }

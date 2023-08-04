@@ -77,6 +77,11 @@ class EditController extends BaseController {
                 } else {
                     foreach ($_POST['record'] as $record) {
                         $log = new RecordLog();
+//                        var_dump($record);
+                        if (empty($record["disabled"])){
+                            $record['disabled'] = 0;
+                        }
+
                         $log->log_prior($record['rid'], $record['zid']);
 
                         if (!$log->has_changed($record)) {
