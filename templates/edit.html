@@ -19,8 +19,19 @@
 <h5 class="mb-3">{% trans %}Edit zone{% endtrans %} "{{ zone_name_to_display }}"</h5>
 {% endif %}
 
-<div>
-    {{ pagination | raw }}
+<div class="d-flex justify-content-between">
+    <div>{{ pagination | raw }}</div>
+    <select class="form-select w-auto cc" style="margin-bottom: 1em;" 
+    onchange="document.location=this.options[this.selectedIndex].value">
+        {% for value in row_amount_values %}
+        {% if value == row_amount %}
+        {% set add = "SELECTED" %}
+        {% else %}
+        {% set add = "" %}
+        {% endif %} 
+        <option {{ add }} value="edit.php?id={{ zone_id }}&row_amount={{ value }}">{{ value }}</option>
+        {% endfor %} 
+    </select>
 </div>
 
 {% if not records %}
@@ -35,22 +46,28 @@
     <input type="hidden" name="serial" value="{{ serial }}">
     <table class="table table-striped table-hover table-sm">
         <tr>
-            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=id">{% trans %}Id{% endtrans %}</a>
+            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=id&row_amount={{ row_amount }}">
+                {% trans %}Id{% endtrans %}</a>
                 {% if record_sort_by == 'id' %}<i class="bi bi-arrow-down"></i>{% endif %}
             </th>
-            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=name">{% trans %}Name{% endtrans %}</a>
+            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=name&row_amount={{ row_amount }}">
+                {% trans %}Name{% endtrans %}</a>
                 {% if record_sort_by == 'name' %}<i class="bi bi-arrow-down"></i>{% endif %}
             </th>
-            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=type">{% trans %}Type{% endtrans %}</a>
+            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=type&row_amount={{ row_amount }}">
+                {% trans %}Type{% endtrans %}</a>
                 {% if record_sort_by == 'type' %}<i class="bi bi-arrow-down"></i>{% endif %}
             </th>
-            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=content">{% trans %}Content{% endtrans %}</a>
+            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=content&row_amount={{ row_amount }}">
+                {% trans %}Content{% endtrans %}</a>
                 {% if record_sort_by == 'content' %}<i class="bi bi-arrow-down"></i>{% endif %}
             </th>
-            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=prio">{% trans %}Priority{% endtrans %}</a>
+            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=prio&row_amount={{ row_amount }}">
+                {% trans %}Priority{% endtrans %}</a>
                 {% if record_sort_by == 'prio' %}<i class="bi bi-arrow-down"></i>{% endif %}
             </th>
-            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=ttl">{% trans %}TTL{% endtrans %}</a>
+            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=ttl&row_amount={{ row_amount }}">
+                {% trans %}TTL{% endtrans %}</a>
                 {% if record_sort_by == 'ttl' %}<i class="bi bi-arrow-down"></i>{% endif %}
             </th>
             <th>&nbsp;</th>

@@ -48,7 +48,14 @@ class EditController extends BaseController {
 
     public function run(): void
     {
-        $iface_rowamount = $this->config('iface_rowamount');
+        if (isset($_GET["row_amount"])) {
+            $iface_rowamount = $_GET["row_amount"];
+        }
+        else {
+            $iface_rowamount = $this->config('iface_rowamount');
+        }
+        
+        $iface_rowamount_values = explode(" ", $this->config('iface_rowamount_values'));
         $iface_zone_comments = $this->config('iface_zone_comments');
 
         $row_start = 0;
@@ -250,6 +257,7 @@ class EditController extends BaseController {
             'zone_types' => $types,
             'row_start' => $row_start,
             'row_amount' => $iface_rowamount,
+            'row_amount_values' => $iface_rowamount_values,
             'record_sort_by' => $record_sort_by,
             'pagination' => show_pages($record_count, $iface_rowamount, $zone_id),
             'pdnssec_use' => $this->config('pdnssec_use'),

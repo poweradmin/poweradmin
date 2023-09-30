@@ -57,6 +57,7 @@ function show_pages($amount, $rowamount, $id = '') {
         if ($id != '') {
             $result .= '&id=' . $id;
         }
+        $result .= '&row_amount=' . $rowamount;
         $result .= '">';
         $result .= _('Previous');
         $result .= '</a></li>';
@@ -68,6 +69,7 @@ function show_pages($amount, $rowamount, $id = '') {
         if ($id != '') {
             $result .= '&id=' . $id;
         }
+        $result .= '&row_amount=' . $rowamount;
         $result .= '">';
         $result .= '1';
         $result .= '</a></li>';
@@ -85,6 +87,7 @@ function show_pages($amount, $rowamount, $id = '') {
             if ($id != '') {
                 $result .= '&id=' . $id;
             }
+            $result .= '&row_amount=' . $rowamount;
             $result .= '">';
             $result .= $i;
             $result .= '</a></li>';
@@ -100,6 +103,7 @@ function show_pages($amount, $rowamount, $id = '') {
         if ($id != '') {
             $result .= '&id=' . $id;
         }
+        $result .= '&row_amount=' . $rowamount;
         $result .= '">';
         $result .= $lastpage;
         $result .= '</a></li>';
@@ -111,6 +115,7 @@ function show_pages($amount, $rowamount, $id = '') {
         if ($id != '') {
             $result .= '&id=' . $id;
         }
+        $result .= '&row_amount=' . $rowamount;
         $result .= '">';
         $result .= _('Next');
         $result .= '</a></li>';

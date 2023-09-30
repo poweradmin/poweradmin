@@ -36,6 +36,7 @@ $iface_lang = 'en_EN';
 $iface_style = 'ignite'; // If you want a dark theme, use 'spark'
 $iface_templates = 'templates';
 $iface_rowamount = 10;
+$iface_rowamount_values = '10 20 50 100';
 $iface_expire = 1800;
 $iface_zonelist_serial = false;
 $iface_zonelist_template = false;
