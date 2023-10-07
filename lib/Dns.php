@@ -515,7 +515,7 @@ class Dns
     {
 
 // multiple master NS-records are permitted and must be separated by ,
-// eg. "192.0.0.1, 192.0.0.2, 2001:1::1"
+// e.g. "192.0.0.1, 192.0.0.2, 2001:1::1"
 
         $are_valid = false;
         $multiple_ips = explode(",", $ips);
@@ -661,7 +661,7 @@ class Dns
     }
 
     /**
-     * Check that the zone does not have a empty CNAME RR
+     * Check that the zone does not have an empty CNAME RR
      *
      * @param string $name
      * @param string $zone

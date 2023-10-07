@@ -580,7 +580,7 @@ class DnsRecord
      * A domain is name obligatory, so is an owner.
      * return values: true when succesful.
      *
-     * Empty means templates dont have to be applied.
+     * Empty means templates don't have to be applied.
      *
      * This functions eats a template and by that it inserts various records.
      * first we start checking if something in an arpa record
@@ -991,7 +991,7 @@ class DnsRecord
      * Check if a domain is already existing.
      *
      * @param string $domain Domain name
-     * @return boolean true if existing, false if it doesnt exist.
+     * @return boolean true if existing, false if it doesn't exist.
      */
     public static function domain_exists($domain)
     {
@@ -1215,7 +1215,7 @@ class DnsRecord
         return $db->queryOne($query);
     }
 
-    /** Get a Record from an Record ID
+    /** Get a Record from a Record ID
      *
      * Retrieve all fields of the record and send it back to the function caller.
      *
@@ -1696,7 +1696,7 @@ class DnsRecord
     /** Delete array of domains
      *
      * Deletes a domain by a given id.
-     * Function always succeeds. If the field is not found in the database, thats what we want anyway.
+     * Function always succeeds. If the field is not found in the database, that's what we want anyway.
      *
      * @param int[] $domains Array of Domain IDs to delete
      *

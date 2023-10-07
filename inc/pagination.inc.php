@@ -26,7 +26,7 @@ use Poweradmin\Infrastructure\Database\DbCompat;
  *
  * @param int $amount Total number of items
  * @param int $rowamount Per page number of items
- * @param int $id Page specific ID (Zone ID, Template ID, etc)
+ * @param int $id Page specific ID (Zone ID, Template ID, etc.)
  *
  * @return string $result
  */

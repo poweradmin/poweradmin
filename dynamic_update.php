@@ -170,7 +170,7 @@ if (!empty($_REQUEST['myip6'])) {
 if (valid_ip_address($given_ip) === 'AAAA') {
     $given_ip6 = $given_ip;
 }
-// Look for tag to grab the IP we coming from
+// Look for tag to grab the IP we're coming from
 if (($given_ip6 == "whatismyip") && (valid_ip_address($_SERVER['REMOTE_ADDR']) === 'AAAA')) {
     $given_ip6 = $_SERVER['REMOTE_ADDR'];
 }
@@ -183,7 +183,7 @@ if (($given_ip == "whatismyip") && (valid_ip_address($_SERVER['REMOTE_ADDR']) ==
 // Finally get safe version of the IP
 $ip = safe($given_ip);
 $ip6 = safe($given_ip6);
-// Check its ok...
+// Check it's ok...
 if ((!valid_ip_address($ip)) && (!valid_ip_address($ip6))) {
     return status_exit('dnserr');
 }

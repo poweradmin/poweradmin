@@ -110,7 +110,7 @@ function list_permission_templates_local()
 /**
  * Retrieve all users
  *
- * Its to show_users therefore the odd name. Has to be changed.
+ * It's to show_users therefore the odd name. Has to be changed.
  *
  * @param int $id Exclude User ID
  * @param int $rowstart Startring row number
@@ -277,7 +277,7 @@ function delete_perm_templ_local($ptid)
 /**
  * Modify User Details
  *
- * Edit the information of an user.. sloppy implementation with too many queries.. (2) :)
+ * Edit the information of a user. Sloppy implementation with too many queries.
  *
  * @param int $id User ID
  * @param string $user Username
@@ -286,7 +286,7 @@ function delete_perm_templ_local($ptid)
  * @param string $perm_templ Permission Template Name
  * @param string $description Description
  * @param int $active Active User
- * @param string $password Password
+ * @param string $user_password Password
  *
  * @return boolean true if succesful, false otherwise
  */
@@ -310,11 +310,11 @@ function edit_user_local($id, $user, $fullname, $email, $perm_templ, $descriptio
 
         // Before updating the database we need to check whether the user wants to
         // change the username. If the user wants to change the username, we need
-        // to make sure it doesn't already exists.
+        // to make sure it doesn't already exist.
         //
         // First find the current username of the user ID we want to change. If the
         // current username is not the same as the username that was given by the
-        // user, the username should apparently changed. If so, check if the "new"
+        // user, the username should apparently be changed. If so, check if the "new"
         // username already exists.
 
         $query = "SELECT username FROM users WHERE id = " . $db->quote($id, 'integer');
@@ -432,7 +432,7 @@ function change_user_pass_local(array $details)
 /**
  * Get User FullName from User ID
  *
- * Get a fullname when you have a userid.
+ * Get a fullname when you have an userid.
  *
  * @param int $id User ID
  *
@@ -708,7 +708,7 @@ function update_perm_templ_details_local($details)
     // currently assigned with a list of permissions that should be assigned and
     // apply the difference between these two lists to the database. That sounds
     // like too much work. Just delete all the permissions currently assigned to
-    // the template, than assign all the permissions the template should have.
+    // the template, then assign all the permissions the template should have.
 
     $query = "DELETE FROM perm_templ_items WHERE templ_id = " . $details['templ_id'];
     $db->query($query);
@@ -759,11 +759,11 @@ function update_user_details_local($details)
 
         // Before updating the database we need to check whether the user wants to
         // change the username. If the user wants to change the username, we need
-        // to make sure it doesn't already exists.
+        // to make sure it doesn't already exist.
         //
         // First find the current username of the user ID we want to change. If the
         // current username is not the same as the username that was given by the
-        // user, the username should apparently changed. If so, check if the "new"
+        // user, the username should apparently be changed. If so, check if the "new"
         // username already exists.
         $query = "SELECT username FROM users WHERE id = " . $db->quote($details['uid'], 'integer');
         $response = $db->query($query);

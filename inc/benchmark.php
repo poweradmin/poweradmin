@@ -38,7 +38,7 @@ if ($display_stats) {
 
 /** Get Human Readable Size
  *
- * Convert size to human readable units
+ * Convert size to human-readable units
  *
  * @param int $size Size to convert
  *
