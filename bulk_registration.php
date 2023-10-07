@@ -47,7 +47,7 @@ class BulkRegistrationController extends BaseController {
         if ($this->isPost()) {
             $this->doBulkRegistration();
         } else {
-            $this->showBulkRegistrationForm([]);
+            $this->showBulkRegistrationForm();
         }
     }
 

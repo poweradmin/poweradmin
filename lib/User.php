@@ -49,6 +49,6 @@ class User
 
         $user = $stmt->fetch();
 
-        return $user['username'] ? $user['username'] : "";
+        return $user['username'] ?: "";
     }
 }
