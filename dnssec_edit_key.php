@@ -81,12 +81,12 @@ class DnsSecEditKeyController extends \Poweradmin\BaseController {
             if ($key_info[5]) {
                 if (Dnssec::dnssec_deactivate_zone_key($domain_name, $key_id)) {
                     $this->setMessage('dnssec', 'success', _('Zone key has been successfully deactivated.'));
-                    $this->redirect('dnssec.php', [id => $zone_id]);
+                    $this->redirect('dnssec.php', ['id' => $zone_id]);
                 }
             } else {
                 if (Dnssec::dnssec_activate_zone_key($domain_name, $key_id)) {
                     $this->setMessage('dnssec', 'success', _('Zone key has been successfully activated.'));
-                    $this->redirect('dnssec.php', [id => $zone_id]);
+                    $this->redirect('dnssec.php', ['id' => $zone_id]);
                 }
             }
         }
