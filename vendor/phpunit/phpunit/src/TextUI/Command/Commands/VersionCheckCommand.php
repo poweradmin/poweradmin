@@ -16,6 +16,8 @@ use PHPUnit\Runner\Version;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
+ *
+ * @codeCoverageIgnore
  */
 final class VersionCheckCommand implements Command
 {
@@ -29,13 +31,13 @@ final class VersionCheckCommand implements Command
                 sprintf(
                     'You are not using the latest version of PHPUnit.' . PHP_EOL .
                     'The latest version is PHPUnit %s.' . PHP_EOL,
-                    $latestVersion
-                )
+                    $latestVersion,
+                ),
             );
         }
 
         return Result::from(
-            'You are using the latest version of PHPUnit.' . PHP_EOL
+            'You are using the latest version of PHPUnit.' . PHP_EOL,
         );
     }
 }

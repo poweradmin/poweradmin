@@ -10,28 +10,31 @@
 namespace PHPUnit\Framework\Constraint;
 
 use function is_string;
+use function mb_detect_encoding;
 use function mb_stripos;
 use function mb_strtolower;
 use function sprintf;
 use function str_contains;
+use function strlen;
 use function strtr;
+use PHPUnit\Util\Exporter;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
  */
 final class StringContains extends Constraint
 {
-    private readonly string $string;
+    private readonly string $needle;
     private readonly bool $ignoreCase;
     private readonly bool $ignoreLineEndings;
 
-    public function __construct(string $string, bool $ignoreCase = false, bool $ignoreLineEndings = false)
+    public function __construct(string $needle, bool $ignoreCase = false, bool $ignoreLineEndings = false)
     {
         if ($ignoreLineEndings) {
-            $string = $this->normalizeLineEndings($string);
+            $needle = $this->normalizeLineEndings($needle);
         }
 
-        $this->string            = $string;
+        $this->needle            = $needle;
         $this->ignoreCase        = $ignoreCase;
         $this->ignoreLineEndings = $ignoreLineEndings;
     }
@@ -41,16 +44,36 @@ final class StringContains extends Constraint
      */
     public function toString(): string
     {
-        $string = $this->string;
+        $needle = $this->needle;
 
         if ($this->ignoreCase) {
-            $string = mb_strtolower($this->string, 'UTF-8');
+            $needle = mb_strtolower($this->needle, 'UTF-8');
         }
 
         return sprintf(
-            'contains "%s"',
-            $string
+            'contains "%s" [%s](length: %s)',
+            $needle,
+            $this->getDetectedEncoding($needle),
+            strlen($needle),
         );
+    }
+
+    public function failureDescription(mixed $other): string
+    {
+        $stringifiedHaystack = Exporter::export($other, true);
+        $haystackEncoding    = $this->getDetectedEncoding($other);
+        $haystackLength      = $this->getHaystackLength($other);
+
+        $haystackInformation = sprintf(
+            '%s [%s](length: %s) ',
+            $stringifiedHaystack,
+            $haystackEncoding,
+            $haystackLength,
+        );
+
+        $needleInformation = $this->toString(true);
+
+        return $haystackInformation . $needleInformation;
     }
 
     /**
@@ -59,35 +82,69 @@ final class StringContains extends Constraint
      */
     protected function matches(mixed $other): bool
     {
-        if ('' === $this->string) {
+        $haystack = $other;
+
+        if ('' === $this->needle) {
             return true;
         }
 
-        if (!is_string($other)) {
+        if (!is_string($haystack)) {
             return false;
         }
 
         if ($this->ignoreLineEndings) {
-            $other = $this->normalizeLineEndings($other);
+            $haystack = $this->normalizeLineEndings($haystack);
         }
 
         if ($this->ignoreCase) {
             /*
-             * We must use the multi byte safe version so we can accurately compare non latin upper characters with
+             * We must use the multibyte-safe version, so we can accurately compare non-latin uppercase characters with
              * their lowercase equivalents.
              */
-            return mb_stripos($other, $this->string, 0, 'UTF-8') !== false;
+            return mb_stripos($haystack, $this->needle, 0, 'UTF-8') !== false;
         }
 
         /*
-         * Use the non multi byte safe functions to see if the string is contained in $other.
+         * Use the non-multibyte safe functions to see if the string is contained in $other.
          *
-         * This function is very fast and we don't care about the character position in the string.
+         * This function is very fast, and we don't care about the character position in the string.
          *
-         * Additionally, we want this method to be binary safe so we can check if some binary data is in other binary
+         * Additionally, we want this method to be binary safe, so we can check if some binary data is in other binary
          * data.
          */
-        return str_contains($other, $this->string);
+        return str_contains($haystack, $this->needle);
+    }
+
+    private function getDetectedEncoding(mixed $other): string
+    {
+        if ($this->ignoreCase) {
+            return 'Encoding ignored';
+        }
+
+        if (!is_string($other)) {
+            return 'Encoding detection failed';
+        }
+
+        $detectedEncoding = mb_detect_encoding($other, null, true);
+
+        if (!$detectedEncoding) {
+            return 'Encoding detection failed';
+        }
+
+        return $detectedEncoding;
+    }
+
+    private function getHaystackLength(mixed $haystack): int
+    {
+        if (!is_string($haystack)) {
+            return 0;
+        }
+
+        if ($this->ignoreLineEndings) {
+            $haystack = $this->normalizeLineEndings($haystack);
+        }
+
+        return strlen($haystack);
     }
 
     private function normalizeLineEndings(string $string): string
@@ -97,7 +154,7 @@ final class StringContains extends Constraint
             [
                 "\r\n" => "\n",
                 "\r"   => "\n",
-            ]
+            ],
         );
     }
 }

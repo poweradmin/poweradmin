@@ -132,41 +132,41 @@ final class JunitXmlLogger
     {
         $this->testSuites[$this->testSuiteLevel]->setAttribute(
             'tests',
-            (string) $this->testSuiteTests[$this->testSuiteLevel]
+            (string) $this->testSuiteTests[$this->testSuiteLevel],
         );
 
         $this->testSuites[$this->testSuiteLevel]->setAttribute(
             'assertions',
-            (string) $this->testSuiteAssertions[$this->testSuiteLevel]
+            (string) $this->testSuiteAssertions[$this->testSuiteLevel],
         );
 
         $this->testSuites[$this->testSuiteLevel]->setAttribute(
             'errors',
-            (string) $this->testSuiteErrors[$this->testSuiteLevel]
+            (string) $this->testSuiteErrors[$this->testSuiteLevel],
         );
 
         $this->testSuites[$this->testSuiteLevel]->setAttribute(
             'failures',
-            (string) $this->testSuiteFailures[$this->testSuiteLevel]
+            (string) $this->testSuiteFailures[$this->testSuiteLevel],
         );
 
         $this->testSuites[$this->testSuiteLevel]->setAttribute(
             'skipped',
-            (string) $this->testSuiteSkipped[$this->testSuiteLevel]
+            (string) $this->testSuiteSkipped[$this->testSuiteLevel],
         );
 
         $this->testSuites[$this->testSuiteLevel]->setAttribute(
             'time',
-            sprintf('%F', $this->testSuiteTimes[$this->testSuiteLevel])
+            sprintf('%F', $this->testSuiteTimes[$this->testSuiteLevel]),
         );
 
         if ($this->testSuiteLevel > 1) {
-            $this->testSuiteTests[$this->testSuiteLevel - 1] += $this->testSuiteTests[$this->testSuiteLevel];
+            $this->testSuiteTests[$this->testSuiteLevel - 1]      += $this->testSuiteTests[$this->testSuiteLevel];
             $this->testSuiteAssertions[$this->testSuiteLevel - 1] += $this->testSuiteAssertions[$this->testSuiteLevel];
-            $this->testSuiteErrors[$this->testSuiteLevel - 1] += $this->testSuiteErrors[$this->testSuiteLevel];
-            $this->testSuiteFailures[$this->testSuiteLevel - 1] += $this->testSuiteFailures[$this->testSuiteLevel];
-            $this->testSuiteSkipped[$this->testSuiteLevel - 1] += $this->testSuiteSkipped[$this->testSuiteLevel];
-            $this->testSuiteTimes[$this->testSuiteLevel - 1] += $this->testSuiteTimes[$this->testSuiteLevel];
+            $this->testSuiteErrors[$this->testSuiteLevel - 1]     += $this->testSuiteErrors[$this->testSuiteLevel];
+            $this->testSuiteFailures[$this->testSuiteLevel - 1]   += $this->testSuiteFailures[$this->testSuiteLevel];
+            $this->testSuiteSkipped[$this->testSuiteLevel - 1]    += $this->testSuiteSkipped[$this->testSuiteLevel];
+            $this->testSuiteTimes[$this->testSuiteLevel - 1]      += $this->testSuiteTimes[$this->testSuiteLevel];
         }
 
         $this->testSuiteLevel--;
@@ -244,16 +244,16 @@ final class JunitXmlLogger
 
         $this->currentTestCase->setAttribute(
             'assertions',
-            (string) $numberOfAssertionsPerformed
+            (string) $numberOfAssertionsPerformed,
         );
 
         $this->currentTestCase->setAttribute(
             'time',
-            sprintf('%F', $time)
+            sprintf('%F', $time),
         );
 
         $this->testSuites[$this->testSuiteLevel]->appendChild(
-            $this->currentTestCase
+            $this->currentTestCase,
         );
 
         $this->testSuiteTests[$this->testSuiteLevel]++;
@@ -309,12 +309,12 @@ final class JunitXmlLogger
         $throwable = $event->throwable();
         $buffer .= trim(
             $throwable->description() . PHP_EOL .
-            $throwable->stackTrace()
+            $throwable->stackTrace(),
         );
 
         $fault = $this->document->createElement(
             $type,
-            Xml::prepareString($buffer)
+            Xml::prepareString($buffer),
         );
 
         $fault->setAttribute('type', $throwable->className());
@@ -391,14 +391,14 @@ final class JunitXmlLogger
             return sprintf(
                 '%s with data set #%d',
                 $test->methodName(),
-                $dataSetName
+                $dataSetName,
             );
         }
 
         return sprintf(
             '%s with data set "%s"',
             $test->methodName(),
-            $dataSetName
+            $dataSetName,
         );
     }
 
@@ -408,7 +408,7 @@ final class JunitXmlLogger
      *
      * @psalm-assert !null $this->currentTestCase
      */
-    private function createTestCase(Prepared|MarkedIncomplete|Skipped|Errored|Failed $event): void
+    private function createTestCase(Errored|Failed|MarkedIncomplete|Prepared|Skipped $event): void
     {
         $testCase = $this->document->createElement('testcase');
 

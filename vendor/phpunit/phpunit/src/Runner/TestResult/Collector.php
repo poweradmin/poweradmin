@@ -9,7 +9,9 @@
  */
 namespace PHPUnit\TestRunner\TestResult;
 
+use function array_values;
 use function assert;
+use function implode;
 use function str_contains;
 use PHPUnit\Event\Code\TestMethod;
 use PHPUnit\Event\EventFacadeIsSealedException;
@@ -41,6 +43,7 @@ use PHPUnit\Event\TestSuite\Started as TestSuiteStarted;
 use PHPUnit\Event\TestSuite\TestSuiteForTestClass;
 use PHPUnit\Event\TestSuite\TestSuiteForTestMethodWithDataProvider;
 use PHPUnit\Event\UnknownSubscriberTypeException;
+use PHPUnit\TestRunner\TestResult\Issues\Issue;
 use PHPUnit\TextUI\Configuration\Source;
 use PHPUnit\TextUI\Configuration\SourceFilter;
 
@@ -50,14 +53,16 @@ use PHPUnit\TextUI\Configuration\SourceFilter;
 final class Collector
 {
     private readonly Source $source;
-    private readonly bool $restrictDeprecations;
-    private readonly bool $restrictNotices;
-    private readonly bool $restrictWarnings;
     private int $numberOfTests                       = 0;
     private int $numberOfTestsRun                    = 0;
     private int $numberOfAssertions                  = 0;
     private bool $prepared                           = false;
     private bool $currentTestSuiteForTestClassFailed = false;
+
+    /**
+     * @psalm-var non-negative-int
+     */
+    private int $numberOfIssuesIgnoredByBaseline = 0;
 
     /**
      * @psalm-var list<BeforeFirstTestMethodErrored|Errored>
@@ -90,44 +95,9 @@ final class Collector
     private array $testConsideredRiskyEvents = [];
 
     /**
-     * @psalm-var array<string,list<DeprecationTriggered>>
-     */
-    private array $testTriggeredDeprecationEvents = [];
-
-    /**
-     * @psalm-var array<string,list<PhpDeprecationTriggered>>
-     */
-    private array $testTriggeredPhpDeprecationEvents = [];
-
-    /**
      * @psalm-var array<string,list<PhpunitDeprecationTriggered>>
      */
     private array $testTriggeredPhpunitDeprecationEvents = [];
-
-    /**
-     * @psalm-var array<string,list<ErrorTriggered>>
-     */
-    private array $testTriggeredErrorEvents = [];
-
-    /**
-     * @psalm-var array<string,list<NoticeTriggered>>
-     */
-    private array $testTriggeredNoticeEvents = [];
-
-    /**
-     * @psalm-var array<string,list<PhpNoticeTriggered>>
-     */
-    private array $testTriggeredPhpNoticeEvents = [];
-
-    /**
-     * @psalm-var array<string,list<WarningTriggered>>
-     */
-    private array $testTriggeredWarningEvents = [];
-
-    /**
-     * @psalm-var array<string,list<PhpWarningTriggered>>
-     */
-    private array $testTriggeredPhpWarningEvents = [];
 
     /**
      * @psalm-var array<string,list<PhpunitErrorTriggered>>
@@ -150,10 +120,45 @@ final class Collector
     private array $testRunnerTriggeredDeprecationEvents = [];
 
     /**
+     * @psalm-var array<non-empty-string, Issue>
+     */
+    private array $errors = [];
+
+    /**
+     * @psalm-var array<non-empty-string, Issue>
+     */
+    private array $deprecations = [];
+
+    /**
+     * @psalm-var array<non-empty-string, Issue>
+     */
+    private array $notices = [];
+
+    /**
+     * @psalm-var array<non-empty-string, Issue>
+     */
+    private array $warnings = [];
+
+    /**
+     * @psalm-var array<non-empty-string, Issue>
+     */
+    private array $phpDeprecations = [];
+
+    /**
+     * @psalm-var array<non-empty-string, Issue>
+     */
+    private array $phpNotices = [];
+
+    /**
+     * @psalm-var array<non-empty-string, Issue>
+     */
+    private array $phpWarnings = [];
+
+    /**
      * @throws EventFacadeIsSealedException
      * @throws UnknownSubscriberTypeException
      */
-    public function __construct(Facade $facade, Source $source, bool $restrictDeprecations, bool $restrictNotices, bool $restrictWarnings)
+    public function __construct(Facade $facade, Source $source)
     {
         $facade->registerSubscribers(
             new ExecutionStartedSubscriber($this),
@@ -182,10 +187,7 @@ final class Collector
             new TestRunnerTriggeredWarningSubscriber($this),
         );
 
-        $this->source               = $source;
-        $this->restrictDeprecations = $restrictDeprecations;
-        $this->restrictNotices      = $restrictNotices;
-        $this->restrictWarnings     = $restrictWarnings;
+        $this->source = $source;
     }
 
     public function result(): TestResult
@@ -200,44 +202,20 @@ final class Collector
             $this->testSuiteSkippedEvents,
             $this->testSkippedEvents,
             $this->testMarkedIncompleteEvents,
-            $this->testTriggeredDeprecationEvents,
-            $this->testTriggeredPhpDeprecationEvents,
             $this->testTriggeredPhpunitDeprecationEvents,
-            $this->testTriggeredErrorEvents,
-            $this->testTriggeredNoticeEvents,
-            $this->testTriggeredPhpNoticeEvents,
-            $this->testTriggeredWarningEvents,
-            $this->testTriggeredPhpWarningEvents,
             $this->testTriggeredPhpunitErrorEvents,
             $this->testTriggeredPhpunitWarningEvents,
             $this->testRunnerTriggeredDeprecationEvents,
             $this->testRunnerTriggeredWarningEvents,
+            array_values($this->errors),
+            array_values($this->deprecations),
+            array_values($this->notices),
+            array_values($this->warnings),
+            array_values($this->phpDeprecations),
+            array_values($this->phpNotices),
+            array_values($this->phpWarnings),
+            $this->numberOfIssuesIgnoredByBaseline,
         );
-    }
-
-    public function hasTestErroredEvents(): bool
-    {
-        return !empty($this->testErroredEvents);
-    }
-
-    public function hasTestFailedEvents(): bool
-    {
-        return !empty($this->testFailedEvents);
-    }
-
-    public function hasTestConsideredRiskyEvents(): bool
-    {
-        return !empty($this->testConsideredRiskyEvents);
-    }
-
-    public function hasTestSkippedEvents(): bool
-    {
-        return !empty($this->testSkippedEvents);
-    }
-
-    public function hasTestMarkedIncompleteEvents(): bool
-    {
-        return !empty($this->testMarkedIncompleteEvents);
     }
 
     public function executionStarted(ExecutionStarted $event): void
@@ -370,28 +348,66 @@ final class Collector
 
     public function testTriggeredDeprecation(DeprecationTriggered $event): void
     {
-        if ($this->restrictDeprecations && !(new SourceFilter)->includes($this->source, $event->file())) {
+        if ($event->ignoredByBaseline()) {
+            $this->numberOfIssuesIgnoredByBaseline++;
+
             return;
         }
 
-        if (!isset($this->testTriggeredDeprecationEvents[$event->test()->id()])) {
-            $this->testTriggeredDeprecationEvents[$event->test()->id()] = [];
+        if (!$this->source->ignoreSuppressionOfDeprecations() && $event->wasSuppressed()) {
+            return;
         }
 
-        $this->testTriggeredDeprecationEvents[$event->test()->id()][] = $event;
+        if ($this->source->restrictDeprecations() && !(new SourceFilter)->includes($this->source, $event->file())) {
+            return;
+        }
+
+        $id = $this->issueId($event);
+
+        if (!isset($this->deprecations[$id])) {
+            $this->deprecations[$id] = Issue::from(
+                $event->file(),
+                $event->line(),
+                $event->message(),
+                $event->test(),
+            );
+
+            return;
+        }
+
+        $this->deprecations[$id]->triggeredBy($event->test());
     }
 
     public function testTriggeredPhpDeprecation(PhpDeprecationTriggered $event): void
     {
-        if ($this->restrictDeprecations && !(new SourceFilter)->includes($this->source, $event->file())) {
+        if ($event->ignoredByBaseline()) {
+            $this->numberOfIssuesIgnoredByBaseline++;
+
             return;
         }
 
-        if (!isset($this->testTriggeredPhpDeprecationEvents[$event->test()->id()])) {
-            $this->testTriggeredPhpDeprecationEvents[$event->test()->id()] = [];
+        if (!$this->source->ignoreSuppressionOfPhpDeprecations() && $event->wasSuppressed()) {
+            return;
         }
 
-        $this->testTriggeredPhpDeprecationEvents[$event->test()->id()][] = $event;
+        if ($this->source->restrictDeprecations() && !(new SourceFilter)->includes($this->source, $event->file())) {
+            return;
+        }
+
+        $id = $this->issueId($event);
+
+        if (!isset($this->phpDeprecations[$id])) {
+            $this->phpDeprecations[$id] = Issue::from(
+                $event->file(),
+                $event->line(),
+                $event->message(),
+                $event->test(),
+            );
+
+            return;
+        }
+
+        $this->phpDeprecations[$id]->triggeredBy($event->test());
     }
 
     public function testTriggeredPhpunitDeprecation(PhpunitDeprecationTriggered $event): void
@@ -405,63 +421,152 @@ final class Collector
 
     public function testTriggeredError(ErrorTriggered $event): void
     {
-        if (!isset($this->testTriggeredErrorEvents[$event->test()->id()])) {
-            $this->testTriggeredErrorEvents[$event->test()->id()] = [];
+        if (!$this->source->ignoreSuppressionOfErrors() && $event->wasSuppressed()) {
+            return;
         }
 
-        $this->testTriggeredErrorEvents[$event->test()->id()][] = $event;
+        $id = $this->issueId($event);
+
+        if (!isset($this->errors[$id])) {
+            $this->errors[$id] = Issue::from(
+                $event->file(),
+                $event->line(),
+                $event->message(),
+                $event->test(),
+            );
+
+            return;
+        }
+
+        $this->errors[$id]->triggeredBy($event->test());
     }
 
     public function testTriggeredNotice(NoticeTriggered $event): void
     {
-        if ($this->restrictNotices && !(new SourceFilter)->includes($this->source, $event->file())) {
+        if ($event->ignoredByBaseline()) {
+            $this->numberOfIssuesIgnoredByBaseline++;
+
             return;
         }
 
-        if (!isset($this->testTriggeredNoticeEvents[$event->test()->id()])) {
-            $this->testTriggeredNoticeEvents[$event->test()->id()] = [];
+        if (!$this->source->ignoreSuppressionOfNotices() && $event->wasSuppressed()) {
+            return;
         }
 
-        $this->testTriggeredNoticeEvents[$event->test()->id()][] = $event;
+        if ($this->source->restrictNotices() && !(new SourceFilter)->includes($this->source, $event->file())) {
+            return;
+        }
+
+        $id = $this->issueId($event);
+
+        if (!isset($this->notices[$id])) {
+            $this->notices[$id] = Issue::from(
+                $event->file(),
+                $event->line(),
+                $event->message(),
+                $event->test(),
+            );
+
+            return;
+        }
+
+        $this->notices[$id]->triggeredBy($event->test());
     }
 
     public function testTriggeredPhpNotice(PhpNoticeTriggered $event): void
     {
-        if ($this->restrictNotices && !(new SourceFilter)->includes($this->source, $event->file())) {
+        if ($event->ignoredByBaseline()) {
+            $this->numberOfIssuesIgnoredByBaseline++;
+
             return;
         }
 
-        if (!isset($this->testTriggeredPhpNoticeEvents[$event->test()->id()])) {
-            $this->testTriggeredPhpNoticeEvents[$event->test()->id()] = [];
+        if (!$this->source->ignoreSuppressionOfPhpNotices() && $event->wasSuppressed()) {
+            return;
         }
 
-        $this->testTriggeredPhpNoticeEvents[$event->test()->id()][] = $event;
+        if ($this->source->restrictNotices() && !(new SourceFilter)->includes($this->source, $event->file())) {
+            return;
+        }
+
+        $id = $this->issueId($event);
+
+        if (!isset($this->phpNotices[$id])) {
+            $this->phpNotices[$id] = Issue::from(
+                $event->file(),
+                $event->line(),
+                $event->message(),
+                $event->test(),
+            );
+
+            return;
+        }
+
+        $this->phpNotices[$id]->triggeredBy($event->test());
     }
 
     public function testTriggeredWarning(WarningTriggered $event): void
     {
-        if ($this->restrictWarnings && !(new SourceFilter)->includes($this->source, $event->file())) {
+        if ($event->ignoredByBaseline()) {
+            $this->numberOfIssuesIgnoredByBaseline++;
+
             return;
         }
 
-        if (!isset($this->testTriggeredWarningEvents[$event->test()->id()])) {
-            $this->testTriggeredWarningEvents[$event->test()->id()] = [];
+        if (!$this->source->ignoreSuppressionOfWarnings() && $event->wasSuppressed()) {
+            return;
         }
 
-        $this->testTriggeredWarningEvents[$event->test()->id()][] = $event;
+        if ($this->source->restrictWarnings() && !(new SourceFilter)->includes($this->source, $event->file())) {
+            return;
+        }
+
+        $id = $this->issueId($event);
+
+        if (!isset($this->warnings[$id])) {
+            $this->warnings[$id] = Issue::from(
+                $event->file(),
+                $event->line(),
+                $event->message(),
+                $event->test(),
+            );
+
+            return;
+        }
+
+        $this->warnings[$id]->triggeredBy($event->test());
     }
 
     public function testTriggeredPhpWarning(PhpWarningTriggered $event): void
     {
-        if ($this->restrictWarnings && !(new SourceFilter)->includes($this->source, $event->file())) {
+        if ($event->ignoredByBaseline()) {
+            $this->numberOfIssuesIgnoredByBaseline++;
+
             return;
         }
 
-        if (!isset($this->testTriggeredPhpWarningEvents[$event->test()->id()])) {
-            $this->testTriggeredPhpWarningEvents[$event->test()->id()] = [];
+        if (!$this->source->ignoreSuppressionOfPhpWarnings() && $event->wasSuppressed()) {
+            return;
         }
 
-        $this->testTriggeredPhpWarningEvents[$event->test()->id()][] = $event;
+        if ($this->source->restrictWarnings() && !(new SourceFilter)->includes($this->source, $event->file())) {
+            return;
+        }
+
+        $id = $this->issueId($event);
+
+        if (!isset($this->phpWarnings[$id])) {
+            $this->phpWarnings[$id] = Issue::from(
+                $event->file(),
+                $event->line(),
+                $event->message(),
+                $event->test(),
+            );
+
+            return;
+        }
+
+        $this->phpWarnings[$id]->triggeredBy($event->test());
     }
 
     public function testTriggeredPhpunitError(PhpunitErrorTriggered $event): void
@@ -492,25 +597,58 @@ final class Collector
         $this->testRunnerTriggeredWarningEvents[] = $event;
     }
 
-    public function hasDeprecationEvents(): bool
+    public function hasErroredTests(): bool
     {
-        return !empty($this->testTriggeredDeprecationEvents) ||
-               !empty($this->testTriggeredPhpDeprecationEvents) ||
+        return !empty($this->testErroredEvents);
+    }
+
+    public function hasFailedTests(): bool
+    {
+        return !empty($this->testFailedEvents);
+    }
+
+    public function hasRiskyTests(): bool
+    {
+        return !empty($this->testConsideredRiskyEvents);
+    }
+
+    public function hasSkippedTests(): bool
+    {
+        return !empty($this->testSkippedEvents);
+    }
+
+    public function hasIncompleteTests(): bool
+    {
+        return !empty($this->testMarkedIncompleteEvents);
+    }
+
+    public function hasDeprecations(): bool
+    {
+        return !empty($this->deprecations) ||
+               !empty($this->phpDeprecations) ||
                !empty($this->testTriggeredPhpunitDeprecationEvents) ||
                !empty($this->testRunnerTriggeredDeprecationEvents);
     }
 
-    public function hasNoticeEvents(): bool
+    public function hasNotices(): bool
     {
-        return !empty($this->testTriggeredNoticeEvents) ||
-               !empty($this->testTriggeredPhpNoticeEvents);
+        return !empty($this->notices) ||
+               !empty($this->phpNotices);
     }
 
-    public function hasWarningEvents(): bool
+    public function hasWarnings(): bool
     {
-        return !empty($this->testTriggeredWarningEvents) ||
-               !empty($this->testTriggeredPhpWarningEvents) ||
+        return !empty($this->warnings) ||
+               !empty($this->phpWarnings) ||
                !empty($this->testTriggeredPhpunitWarningEvents) ||
                !empty($this->testRunnerTriggeredWarningEvents);
+    }
+
+    /**
+     * @psalm-return non-empty-string
+     */
+    private function issueId(DeprecationTriggered|ErrorTriggered|NoticeTriggered|PhpDeprecationTriggered|PhpNoticeTriggered|PhpWarningTriggered|WarningTriggered $event): string
+    {
+        return implode(':', [$event->file(), $event->line(), $event->message()]);
     }
 }

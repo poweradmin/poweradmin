@@ -43,6 +43,10 @@ final class ExcludeIterator extends RecursiveFilterIterator
 
         $path = $current->getRealPath();
 
+        if ($path === false) {
+            return false;
+        }
+
         foreach ($this->exclude as $exclude) {
             if (str_starts_with($path, $exclude)) {
                 return false;

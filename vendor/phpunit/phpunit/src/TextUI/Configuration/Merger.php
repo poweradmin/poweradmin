@@ -41,12 +41,6 @@ final class Merger
      */
     public function merge(CliConfiguration $cliConfiguration, XmlConfiguration $xmlConfiguration): Configuration
     {
-        $cliArgument = null;
-
-        if ($cliConfiguration->hasArgument()) {
-            $cliArgument = $cliConfiguration->argument();
-        }
-
         $configurationFile = null;
 
         if ($xmlConfiguration->wasLoadedFromFile()) {
@@ -217,8 +211,6 @@ final class Merger
             $outputToStandardErrorStream = $xmlConfiguration->phpunit()->stderr();
         }
 
-        $maxNumberOfColumns = (new Console)->getNumberOfColumns();
-
         if ($cliConfiguration->hasColumns()) {
             $columns = $cliConfiguration->columns();
         } else {
@@ -226,19 +218,15 @@ final class Merger
         }
 
         if ($columns === 'max') {
-            $columns = $maxNumberOfColumns;
+            $columns = (new Console)->getNumberOfColumns();
         }
 
         if ($columns < 16) {
             $columns = 16;
 
             EventFacade::emitter()->testRunnerTriggeredWarning(
-                'Less than 16 columns requested, number of columns set to 16'
+                'Less than 16 columns requested, number of columns set to 16',
             );
-        }
-
-        if ($columns > $maxNumberOfColumns) {
-            $columns = $maxNumberOfColumns;
         }
 
         assert(is_int($columns));
@@ -400,7 +388,7 @@ final class Merger
 
         if ($enforceTimeLimit && !(new Invoker)->canInvokeWithTimeout()) {
             EventFacade::emitter()->testRunnerTriggeredWarning(
-                'The pcntl extension is required for enforcing time limits'
+                'The pcntl extension is required for enforcing time limits',
             );
         }
 
@@ -629,12 +617,12 @@ final class Merger
         if ($xmlConfiguration->wasLoadedFromFile() && $xmlConfiguration->hasValidationErrors()) {
             if ((new SchemaDetector)->detect($xmlConfiguration->filename())->detected()) {
                 EventFacade::emitter()->testRunnerTriggeredDeprecation(
-                    'Your XML configuration validates against a deprecated schema. Migrate your XML configuration using "--migrate-configuration"!'
+                    'Your XML configuration validates against a deprecated schema. Migrate your XML configuration using "--migrate-configuration"!',
                 );
             } else {
                 EventFacade::emitter()->testRunnerTriggeredWarning(
                     "Test results may not be as expected because the XML configuration file did not pass validation:\n" .
-                    $xmlConfiguration->validationErrors()
+                    $xmlConfiguration->validationErrors(),
                 );
             }
         }
@@ -702,31 +690,56 @@ final class Merger
             $sourceExcludeDirectories = $xmlConfiguration->codeCoverage()->excludeDirectories();
             $sourceExcludeFiles       = $xmlConfiguration->codeCoverage()->excludeFiles();
         } else {
-            foreach ($xmlConfiguration->source()->directories() as $directory) {
+            foreach ($xmlConfiguration->source()->includeDirectories() as $directory) {
                 $sourceIncludeDirectories[] = $directory;
             }
 
-            $sourceIncludeFiles       = $xmlConfiguration->source()->files();
+            $sourceIncludeFiles       = $xmlConfiguration->source()->includeFiles();
             $sourceExcludeDirectories = $xmlConfiguration->source()->excludeDirectories();
             $sourceExcludeFiles       = $xmlConfiguration->source()->excludeFiles();
         }
 
+        $useBaseline      = null;
+        $generateBaseline = null;
+
+        if (!$cliConfiguration->hasGenerateBaseline()) {
+            if ($cliConfiguration->hasUseBaseline()) {
+                $useBaseline = $cliConfiguration->useBaseline();
+            } elseif ($xmlConfiguration->source()->hasBaseline()) {
+                $useBaseline = $xmlConfiguration->source()->baseline();
+            }
+        } else {
+            $generateBaseline = $cliConfiguration->generateBaseline();
+        }
+
+        assert($useBaseline !== '');
+        assert($generateBaseline !== '');
+
         return new Configuration(
-            $cliArgument,
+            $cliConfiguration->arguments(),
             $configurationFile,
             $bootstrap,
             $cacheResult,
             $cacheDirectory,
             $coverageCacheDirectory,
             new Source(
+                $useBaseline,
+                $cliConfiguration->ignoreBaseline(),
                 FilterDirectoryCollection::fromArray($sourceIncludeDirectories),
                 $sourceIncludeFiles,
                 $sourceExcludeDirectories,
                 $sourceExcludeFiles,
+                $xmlConfiguration->source()->restrictDeprecations(),
+                $xmlConfiguration->source()->restrictNotices(),
+                $xmlConfiguration->source()->restrictWarnings(),
+                $xmlConfiguration->source()->ignoreSuppressionOfDeprecations(),
+                $xmlConfiguration->source()->ignoreSuppressionOfPhpDeprecations(),
+                $xmlConfiguration->source()->ignoreSuppressionOfErrors(),
+                $xmlConfiguration->source()->ignoreSuppressionOfNotices(),
+                $xmlConfiguration->source()->ignoreSuppressionOfPhpNotices(),
+                $xmlConfiguration->source()->ignoreSuppressionOfWarnings(),
+                $xmlConfiguration->source()->ignoreSuppressionOfPhpWarnings(),
             ),
-            $xmlConfiguration->source()->restrictDeprecations(),
-            $xmlConfiguration->source()->restrictNotices(),
-            $xmlConfiguration->source()->restrictWarnings(),
             $testResultCacheFile,
             $coverageClover,
             $coverageCobertura,
@@ -831,6 +844,9 @@ final class Merger
                 $xmlConfiguration->php()->filesVariables(),
                 $xmlConfiguration->php()->requestVariables(),
             ),
+            $xmlConfiguration->phpunit()->controlGarbageCollector(),
+            $xmlConfiguration->phpunit()->numberOfTestsBeforeGarbageCollection(),
+            $generateBaseline,
         );
     }
 }

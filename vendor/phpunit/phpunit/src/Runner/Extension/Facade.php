@@ -20,9 +20,11 @@ use PHPUnit\Event\UnknownSubscriberTypeException;
  */
 final class Facade
 {
+    private bool $replacesOutput                 = false;
     private bool $replacesProgressOutput         = false;
     private bool $replacesResultOutput           = false;
     private bool $requiresCodeCoverageCollection = false;
+    private bool $requiresExportOfObjects        = false;
 
     /**
      * @throws EventFacadeIsSealedException
@@ -50,6 +52,16 @@ final class Facade
         EventFacade::instance()->registerTracer($tracer);
     }
 
+    public function replaceOutput(): void
+    {
+        $this->replacesOutput = true;
+    }
+
+    public function replacesOutput(): bool
+    {
+        return $this->replacesOutput;
+    }
+
     public function replaceProgressOutput(): void
     {
         $this->replacesProgressOutput = true;
@@ -57,7 +69,7 @@ final class Facade
 
     public function replacesProgressOutput(): bool
     {
-        return $this->replacesProgressOutput;
+        return $this->replacesOutput || $this->replacesProgressOutput;
     }
 
     public function replaceResultOutput(): void
@@ -67,7 +79,7 @@ final class Facade
 
     public function replacesResultOutput(): bool
     {
-        return $this->replacesResultOutput;
+        return $this->replacesOutput || $this->replacesResultOutput;
     }
 
     public function requireCodeCoverageCollection(): void
@@ -78,5 +90,15 @@ final class Facade
     public function requiresCodeCoverageCollection(): bool
     {
         return $this->requiresCodeCoverageCollection;
+    }
+
+    public function requireExportOfObjects(): void
+    {
+        $this->requiresExportOfObjects = true;
+    }
+
+    public function requiresExportOfObjects(): bool
+    {
+        return $this->requiresExportOfObjects;
     }
 }

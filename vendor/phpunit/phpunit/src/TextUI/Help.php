@@ -29,8 +29,7 @@ final class Help
     private const LEFT_MARGIN = '  ';
     private const HELP_TEXT   = [
         'Usage' => [
-            ['text' => 'phpunit [options] UnitTest.php'],
-            ['text' => 'phpunit [options] <directory>'],
+            ['text' => 'phpunit [options] <directory|file> ...'],
         ],
 
         'Configuration' => [
@@ -43,6 +42,9 @@ final class Help
             ['arg' => '--cache-directory <dir>', 'desc' => 'Specify cache directory'],
             ['arg' => '--generate-configuration', 'desc' => 'Generate configuration file with suggested settings'],
             ['arg' => '--migrate-configuration', 'desc' => 'Migrate configuration file to current format'],
+            ['arg' => '--generate-baseline <file>', 'desc' => 'Generate baseline for issues'],
+            ['arg' => '--use-baseline <file>', 'desc' => 'Use baseline to ignore issues'],
+            ['arg' => '--ignore-baseline', 'desc' => 'Do not use baseline to ignore issues'],
         ],
 
         'Selection' => [
@@ -132,7 +134,7 @@ final class Help
             ['arg' => '--testdox-html <file>', 'desc' => 'Write test results in TestDox format (HTML) to file'],
             ['arg' => '--testdox-text <file>', 'desc' => 'Write test results in TestDox format (plain text) to file'],
             ['arg' => '--log-events-text <file>', 'desc' => 'Stream events as plain text to file'],
-            ['arg' => '--log-events-verbose-text <file>', 'desc' => 'Stream events as plain text (with telemetry information) to file'],
+            ['arg' => '--log-events-verbose-text <file>', 'desc' => 'Stream events as plain text with extended information to file'],
             ['arg' => '--no-logging', 'desc' => 'Ignore logging configured in the XML configuration file'],
         ],
 
@@ -253,7 +255,7 @@ final class Help
                     $arg = preg_replace_callback(
                         '/(<[^>]+>)/',
                         static fn ($matches) => Color::colorize('fg-cyan', $matches[0]),
-                        $arg
+                        $arg,
                     );
 
                     $desc = explode(PHP_EOL, wordwrap($option['desc'], $this->columnsAvailableForDescription, PHP_EOL));

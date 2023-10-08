@@ -38,7 +38,7 @@ class NotificationEmail extends TemplatedEmail
         'action_url' => null,
         'markdown' => false,
         'raw' => false,
-        'footer_text' => 'Notification e-mail sent by Symfony',
+        'footer_text' => 'Notification email sent by Symfony',
     ];
     private bool $rendered = false;
 
@@ -54,7 +54,7 @@ class NotificationEmail extends TemplatedEmail
         }
 
         if ($missingPackages) {
-            throw new \LogicException(sprintf('You cannot use "%s" if the "%s" Twig extension%s not available; try running "%s".', static::class, implode('" and "', $missingPackages), \count($missingPackages) > 1 ? 's are' : ' is', 'composer require '.implode(' ', array_keys($missingPackages))));
+            throw new \LogicException(sprintf('You cannot use "%s" if the "%s" Twig extension%s not available. Try running "%s".', static::class, implode('" and "', $missingPackages), \count($missingPackages) > 1 ? 's are' : ' is', 'composer require '.implode(' ', array_keys($missingPackages))));
         }
 
         parent::__construct($headers, $body);
@@ -88,7 +88,7 @@ class NotificationEmail extends TemplatedEmail
     public function markdown(string $content): static
     {
         if (!class_exists(MarkdownExtension::class)) {
-            throw new \LogicException(sprintf('You cannot use "%s" if the Markdown Twig extension is not available; try running "composer require twig/markdown-extra".', __METHOD__));
+            throw new \LogicException(sprintf('You cannot use "%s" if the Markdown Twig extension is not available. Try running "composer require twig/markdown-extra".', __METHOD__));
         }
 
         $this->context['markdown'] = true;

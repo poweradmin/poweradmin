@@ -1802,6 +1802,38 @@ if (!function_exists('PHPUnit\Framework\assertStringEqualsStringIgnoringLineEndi
     }
 }
 
+if (!function_exists('PHPUnit\Framework\assertFileMatchesFormat')) {
+    /**
+     * Asserts that a string matches a given format string.
+     *
+     * @throws ExpectationFailedException
+     *
+     * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
+     *
+     * @see Assert::assertFileMatchesFormat
+     */
+    function assertFileMatchesFormat(string $format, string $actualFile, string $message = ''): void
+    {
+        Assert::assertFileMatchesFormat(...func_get_args());
+    }
+}
+
+if (!function_exists('PHPUnit\Framework\assertFileMatchesFormatFile')) {
+    /**
+     * Asserts that a string matches a given format string.
+     *
+     * @throws ExpectationFailedException
+     *
+     * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
+     *
+     * @see Assert::assertFileMatchesFormatFile
+     */
+    function assertFileMatchesFormatFile(string $formatFile, string $actualFile, string $message = ''): void
+    {
+        Assert::assertFileMatchesFormatFile(...func_get_args());
+    }
+}
+
 if (!function_exists('PHPUnit\Framework\assertStringMatchesFormat')) {
     /**
      * Asserts that a string matches a given format string.
@@ -1827,6 +1859,7 @@ if (!function_exists('PHPUnit\Framework\assertStringNotMatchesFormat')) {
      * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
      *
      * @see Assert::assertStringNotMatchesFormat
+     * @deprecated https://github.com/sebastianbergmann/phpunit/issues/5472
      */
     function assertStringNotMatchesFormat(string $format, string $string, string $message = ''): void
     {
@@ -1859,6 +1892,7 @@ if (!function_exists('PHPUnit\Framework\assertStringNotMatchesFormatFile')) {
      * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
      *
      * @see Assert::assertStringNotMatchesFormatFile
+     * @deprecated https://github.com/sebastianbergmann/phpunit/issues/5472
      */
     function assertStringNotMatchesFormatFile(string $formatFile, string $string, string $message = ''): void
     {
@@ -2583,7 +2617,7 @@ if (!function_exists('PHPUnit\Framework\atLeast')) {
     function atLeast(int $requiredInvocations): InvokedAtLeastCountMatcher
     {
         return new InvokedAtLeastCountMatcher(
-            $requiredInvocations
+            $requiredInvocations,
         );
     }
 }

@@ -30,7 +30,7 @@ final class Duration
     {
         return new self(
             $seconds,
-            $nanoseconds
+            $nanoseconds,
         );
     }
 
@@ -65,8 +65,8 @@ final class Duration
     public function asString(): string
     {
         $seconds = $this->seconds();
-        $minutes = 00;
-        $hours   = 00;
+        $minutes = 0;
+        $hours   = 0;
 
         if ($seconds > 60 * 60) {
             $hours = floor($seconds / 60 / 60);
@@ -83,7 +83,7 @@ final class Duration
             $hours,
             $minutes,
             $seconds,
-            $this->nanoseconds()
+            $this->nanoseconds(),
         );
     }
 
@@ -128,8 +128,8 @@ final class Duration
             throw new InvalidArgumentException(
                 sprintf(
                     'Value for %s must not be negative.',
-                    $type
-                )
+                    $type,
+                ),
             );
         }
     }
@@ -141,7 +141,7 @@ final class Duration
     {
         if ($nanoseconds > 999999999) {
             throw new InvalidArgumentException(
-                'Value for nanoseconds must not be greater than 999999999.'
+                'Value for nanoseconds must not be greater than 999999999.',
             );
         }
     }

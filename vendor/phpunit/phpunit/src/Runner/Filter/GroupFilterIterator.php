@@ -13,6 +13,7 @@ use function array_map;
 use function array_push;
 use function in_array;
 use function spl_object_id;
+use PHPUnit\Framework\Test;
 use PHPUnit\Framework\TestSuite;
 use RecursiveFilterIterator;
 use RecursiveIterator;
@@ -27,15 +28,19 @@ abstract class GroupFilterIterator extends RecursiveFilterIterator
      */
     protected array $groupTests = [];
 
+    /**
+     * @psalm-param RecursiveIterator<int, Test> $iterator
+     * @psalm-param list<non-empty-string> $groups
+     */
     public function __construct(RecursiveIterator $iterator, array $groups, TestSuite $suite)
     {
         parent::__construct($iterator);
 
-        foreach ($suite->getGroupDetails() as $group => $tests) {
+        foreach ($suite->groupDetails() as $group => $tests) {
             if (in_array((string) $group, $groups, true)) {
                 $testHashes = array_map(
                     'spl_object_id',
-                    $tests
+                    $tests,
                 );
 
                 array_push($this->groupTests, ...$testHashes);

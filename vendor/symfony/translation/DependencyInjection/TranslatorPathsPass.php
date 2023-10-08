@@ -40,6 +40,9 @@ class TranslatorPathsPass extends AbstractRecursivePass
      */
     private array $controllers = [];
 
+    /**
+     * @return void
+     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->hasDefinition('translator')) {

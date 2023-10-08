@@ -48,10 +48,13 @@ class LintCommand extends Command
         parent::__construct();
     }
 
+    /**
+     * @return void
+     */
     protected function configure()
     {
         $this
-            ->addOption('format', null, InputOption::VALUE_REQUIRED, 'The output format')
+            ->addOption('format', null, InputOption::VALUE_REQUIRED, sprintf('The output format ("%s")', implode('", "', $this->getAvailableFormatOptions())))
             ->addOption('show-deprecations', null, InputOption::VALUE_NONE, 'Show deprecations as errors')
             ->addArgument('filename', InputArgument::IS_ARRAY, 'A file, a directory or "-" for reading from STDIN')
             ->setHelp(<<<'EOF'
@@ -140,7 +143,7 @@ EOF
         return $filesInfo;
     }
 
-    protected function findFiles(string $filename)
+    protected function findFiles(string $filename): iterable
     {
         if (is_file($filename)) {
             return [$filename];
@@ -169,17 +172,17 @@ EOF
         return ['template' => $template, 'file' => $file, 'valid' => true];
     }
 
-    private function display(InputInterface $input, OutputInterface $output, SymfonyStyle $io, array $files)
+    private function display(InputInterface $input, OutputInterface $output, SymfonyStyle $io, array $files): int
     {
         return match ($this->format) {
             'txt' => $this->displayTxt($output, $io, $files),
             'json' => $this->displayJson($output, $files),
             'github' => $this->displayTxt($output, $io, $files, true),
-            default => throw new InvalidArgumentException(sprintf('The format "%s" is not supported.', $input->getOption('format'))),
+            default => throw new InvalidArgumentException(sprintf('Supported formats are "%s".', implode('", "', $this->getAvailableFormatOptions()))),
         };
     }
 
-    private function displayTxt(OutputInterface $output, SymfonyStyle $io, array $filesInfo, bool $errorAsGithubAnnotations = false)
+    private function displayTxt(OutputInterface $output, SymfonyStyle $io, array $filesInfo, bool $errorAsGithubAnnotations = false): int
     {
         $errors = 0;
         $githubReporter = $errorAsGithubAnnotations ? new GithubActionReporter($output) : null;
@@ -202,7 +205,7 @@ EOF
         return min($errors, 1);
     }
 
-    private function displayJson(OutputInterface $output, array $filesInfo)
+    private function displayJson(OutputInterface $output, array $filesInfo): int
     {
         $errors = 0;
 
@@ -221,7 +224,7 @@ EOF
         return min($errors, 1);
     }
 
-    private function renderException(SymfonyStyle $output, string $template, Error $exception, string $file = null, GithubActionReporter $githubReporter = null)
+    private function renderException(SymfonyStyle $output, string $template, Error $exception, string $file = null, GithubActionReporter $githubReporter = null): void
     {
         $line = $exception->getTemplateLine();
 
@@ -254,7 +257,7 @@ EOF
         }
     }
 
-    private function getContext(string $template, int $line, int $context = 3)
+    private function getContext(string $template, int $line, int $context = 3): array
     {
         $lines = explode("\n", $template);
 
@@ -273,7 +276,12 @@ EOF
     public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
     {
         if ($input->mustSuggestOptionValuesFor('format')) {
-            $suggestions->suggestValues(['txt', 'json', 'github']);
+            $suggestions->suggestValues($this->getAvailableFormatOptions());
         }
+    }
+
+    private function getAvailableFormatOptions(): array
+    {
+        return ['txt', 'json', 'github'];
     }
 }

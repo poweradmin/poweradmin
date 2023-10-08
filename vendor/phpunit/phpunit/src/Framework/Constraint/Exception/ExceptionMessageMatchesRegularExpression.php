@@ -12,6 +12,7 @@ namespace PHPUnit\Framework\Constraint;
 use function preg_match;
 use function sprintf;
 use Exception;
+use PHPUnit\Util\Exporter;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
@@ -27,7 +28,7 @@ final class ExceptionMessageMatchesRegularExpression extends Constraint
 
     public function toString(): string
     {
-        return 'exception message matches ' . $this->exporter()->export($this->regularExpression);
+        return 'exception message matches ' . Exporter::export($this->regularExpression);
     }
 
     /**
@@ -45,8 +46,8 @@ final class ExceptionMessageMatchesRegularExpression extends Constraint
             throw new \PHPUnit\Framework\Exception(
                 sprintf(
                     'Invalid expected exception message regular expression given: %s',
-                    $this->regularExpression
-                )
+                    $this->regularExpression,
+                ),
             );
         }
 
@@ -64,7 +65,7 @@ final class ExceptionMessageMatchesRegularExpression extends Constraint
         return sprintf(
             "exception message '%s' matches '%s'",
             $other,
-            $this->regularExpression
+            $this->regularExpression,
         );
     }
 }

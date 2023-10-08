@@ -20,10 +20,10 @@ final class ReturnValueNotConfiguredException extends \PHPUnit\Framework\Excepti
     {
         parent::__construct(
             sprintf(
-                'Return value inference disabled and no expectation set up for %s::%s()',
+                'No return value is configured for %s::%s() and return value generation is disabled',
                 $invocation->className(),
-                $invocation->methodName()
-            )
+                $invocation->methodName(),
+            ),
         );
     }
 }

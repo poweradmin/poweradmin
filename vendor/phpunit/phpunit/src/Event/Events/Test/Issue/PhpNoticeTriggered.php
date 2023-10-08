@@ -24,17 +24,38 @@ final class PhpNoticeTriggered implements Event
 {
     private readonly Telemetry\Info $telemetryInfo;
     private readonly Test $test;
-    private readonly string $message;
-    private readonly string $file;
-    private readonly int $line;
 
-    public function __construct(Telemetry\Info $telemetryInfo, Test $test, string $message, string $file, int $line)
+    /**
+     * @psalm-var non-empty-string
+     */
+    private readonly string $message;
+
+    /**
+     * @psalm-var non-empty-string
+     */
+    private readonly string $file;
+
+    /**
+     * @psalm-var positive-int
+     */
+    private readonly int $line;
+    private readonly bool $suppressed;
+    private readonly bool $ignoredByBaseline;
+
+    /**
+     * @psalm-param non-empty-string $message
+     * @psalm-param non-empty-string $file
+     * @psalm-param positive-int $line
+     */
+    public function __construct(Telemetry\Info $telemetryInfo, Test $test, string $message, string $file, int $line, bool $suppressed, bool $ignoredByBaseline)
     {
-        $this->telemetryInfo = $telemetryInfo;
-        $this->test          = $test;
-        $this->message       = $message;
-        $this->file          = $file;
-        $this->line          = $line;
+        $this->telemetryInfo     = $telemetryInfo;
+        $this->test              = $test;
+        $this->message           = $message;
+        $this->file              = $file;
+        $this->line              = $line;
+        $this->suppressed        = $suppressed;
+        $this->ignoredByBaseline = $ignoredByBaseline;
     }
 
     public function telemetryInfo(): Telemetry\Info
@@ -47,19 +68,38 @@ final class PhpNoticeTriggered implements Event
         return $this->test;
     }
 
+    /**
+     * @psalm-return non-empty-string
+     */
     public function message(): string
     {
         return $this->message;
     }
 
+    /**
+     * @psalm-return non-empty-string
+     */
     public function file(): string
     {
         return $this->file;
     }
 
+    /**
+     * @psalm-return positive-int
+     */
     public function line(): int
     {
         return $this->line;
+    }
+
+    public function wasSuppressed(): bool
+    {
+        return $this->suppressed;
+    }
+
+    public function ignoredByBaseline(): bool
+    {
+        return $this->ignoredByBaseline;
     }
 
     public function asString(): string
@@ -70,10 +110,19 @@ final class PhpNoticeTriggered implements Event
             $message = PHP_EOL . $message;
         }
 
+        $status = '';
+
+        if ($this->ignoredByBaseline) {
+            $status = 'Baseline-Ignored ';
+        } elseif ($this->suppressed) {
+            $status = 'Suppressed ';
+        }
+
         return sprintf(
-            'Test Triggered PHP Notice (%s)%s',
+            'Test Triggered %sPHP Notice (%s)%s',
+            $status,
             $this->test->id(),
-            $message
+            $message,
         );
     }
 }

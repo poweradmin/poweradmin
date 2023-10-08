@@ -28,7 +28,7 @@ final class MigrationBuilder
             IntroduceCoverageElement::class,
             MoveAttributesFromRootToCoverage::class,
             MoveAttributesFromFilterWhitelistToCoverage::class,
-            MoveWhitelistDirectoriesToCoverage::class,
+            MoveWhitelistIncludesToCoverage::class,
             MoveWhitelistExcludesToCoverage::class,
             RemoveEmptyFilter::class,
             CoverageCloverToReport::class,
@@ -74,8 +74,8 @@ final class MigrationBuilder
             throw new MigrationBuilderException(
                 sprintf(
                     'Migration from schema version %s is not supported',
-                    $fromVersion
-                )
+                    $fromVersion,
+                ),
             );
         }
 

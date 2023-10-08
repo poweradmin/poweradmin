@@ -16,12 +16,14 @@ use const E_USER_DEPRECATED;
 use const E_USER_NOTICE;
 use const E_USER_WARNING;
 use const E_WARNING;
-use function debug_backtrace;
 use function error_reporting;
 use function restore_error_handler;
 use function set_error_handler;
 use PHPUnit\Event;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Event\Code\NoTestCaseObjectOnCallStackException;
+use PHPUnit\Runner\Baseline\Baseline;
+use PHPUnit\Runner\Baseline\Issue;
+use PHPUnit\Util\ExcludeList;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
@@ -29,6 +31,7 @@ use PHPUnit\Framework\TestCase;
 final class ErrorHandler
 {
     private static ?self $instance = null;
+    private ?Baseline $baseline    = null;
     private bool $enabled          = false;
 
     public static function instance(): self
@@ -43,78 +46,93 @@ final class ErrorHandler
     {
         $suppressed = !($errorNumber & error_reporting());
 
-        if ($suppressed) {
+        if ($suppressed && (new ExcludeList)->isExcluded($errorFile)) {
             return false;
         }
+
+        $ignoredByBaseline = $this->ignoredByBaseline($errorFile, $errorLine, $errorString);
 
         switch ($errorNumber) {
             case E_NOTICE:
             case E_STRICT:
                 Event\Facade::emitter()->testTriggeredPhpNotice(
-                    $this->testValueObjectForEvents(),
+                    Event\Code\TestMethodBuilder::fromCallStack(),
                     $errorString,
                     $errorFile,
-                    $errorLine
+                    $errorLine,
+                    $suppressed,
+                    $ignoredByBaseline,
                 );
 
-                return true;
+                break;
 
             case E_USER_NOTICE:
                 Event\Facade::emitter()->testTriggeredNotice(
-                    $this->testValueObjectForEvents(),
+                    Event\Code\TestMethodBuilder::fromCallStack(),
                     $errorString,
                     $errorFile,
-                    $errorLine
+                    $errorLine,
+                    $suppressed,
+                    $ignoredByBaseline,
                 );
 
                 break;
 
             case E_WARNING:
                 Event\Facade::emitter()->testTriggeredPhpWarning(
-                    $this->testValueObjectForEvents(),
+                    Event\Code\TestMethodBuilder::fromCallStack(),
                     $errorString,
                     $errorFile,
-                    $errorLine
+                    $errorLine,
+                    $suppressed,
+                    $ignoredByBaseline,
                 );
 
                 break;
 
             case E_USER_WARNING:
                 Event\Facade::emitter()->testTriggeredWarning(
-                    $this->testValueObjectForEvents(),
+                    Event\Code\TestMethodBuilder::fromCallStack(),
                     $errorString,
                     $errorFile,
-                    $errorLine
+                    $errorLine,
+                    $suppressed,
+                    $ignoredByBaseline,
                 );
 
                 break;
 
             case E_DEPRECATED:
                 Event\Facade::emitter()->testTriggeredPhpDeprecation(
-                    $this->testValueObjectForEvents(),
+                    Event\Code\TestMethodBuilder::fromCallStack(),
                     $errorString,
                     $errorFile,
-                    $errorLine
+                    $errorLine,
+                    $suppressed,
+                    $ignoredByBaseline,
                 );
 
                 break;
 
             case E_USER_DEPRECATED:
                 Event\Facade::emitter()->testTriggeredDeprecation(
-                    $this->testValueObjectForEvents(),
+                    Event\Code\TestMethodBuilder::fromCallStack(),
                     $errorString,
                     $errorFile,
-                    $errorLine
+                    $errorLine,
+                    $suppressed,
+                    $ignoredByBaseline,
                 );
 
                 break;
 
             case E_USER_ERROR:
                 Event\Facade::emitter()->testTriggeredError(
-                    $this->testValueObjectForEvents(),
+                    Event\Code\TestMethodBuilder::fromCallStack(),
                     $errorString,
                     $errorFile,
-                    $errorLine
+                    $errorLine,
+                    $suppressed,
                 );
 
                 break;
@@ -154,17 +172,22 @@ final class ErrorHandler
         $this->enabled = false;
     }
 
-    /**
-     * @throws NoTestCaseObjectOnCallStackException
-     */
-    private function testValueObjectForEvents(): Event\Code\Test
+    public function use(Baseline $baseline): void
     {
-        foreach (debug_backtrace() as $frame) {
-            if (isset($frame['object']) && $frame['object'] instanceof TestCase) {
-                return $frame['object']->valueObjectForEvents();
-            }
+        $this->baseline = $baseline;
+    }
+
+    /**
+     * @psalm-param non-empty-string $file
+     * @psalm-param positive-int $line
+     * @psalm-param non-empty-string $description
+     */
+    private function ignoredByBaseline(string $file, int $line, string $description): bool
+    {
+        if ($this->baseline === null) {
+            return false;
         }
 
-        throw new NoTestCaseObjectOnCallStackException;
+        return $this->baseline->has(Issue::from($file, $line, null, $description));
     }
 }

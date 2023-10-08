@@ -59,13 +59,16 @@ class DebugCommand extends Command
         $this->fileLinkFormatter = $fileLinkFormatter;
     }
 
+    /**
+     * @return void
+     */
     protected function configure()
     {
         $this
             ->setDefinition([
                 new InputArgument('name', InputArgument::OPTIONAL, 'The template name'),
                 new InputOption('filter', null, InputOption::VALUE_REQUIRED, 'Show details for all entries matching this filter'),
-                new InputOption('format', null, InputOption::VALUE_REQUIRED, 'The output format (text or json)', 'text'),
+                new InputOption('format', null, InputOption::VALUE_REQUIRED, sprintf('The output format ("%s")', implode('", "', $this->getAvailableFormatOptions())), 'text'),
             ])
             ->setHelp(<<<'EOF'
 The <info>%command.name%</info> command outputs a list of twig functions,
@@ -104,7 +107,7 @@ EOF
         match ($input->getOption('format')) {
             'text' => $name ? $this->displayPathsText($io, $name) : $this->displayGeneralText($io, $filter),
             'json' => $name ? $this->displayPathsJson($io, $name) : $this->displayGeneralJson($io, $filter),
-            default => throw new InvalidArgumentException(sprintf('The format "%s" is not supported.', $input->getOption('format'))),
+            default => throw new InvalidArgumentException(sprintf('Supported formats are "%s".', implode('", "', $this->getAvailableFormatOptions()))),
         };
 
         return 0;
@@ -117,11 +120,11 @@ EOF
         }
 
         if ($input->mustSuggestOptionValuesFor('format')) {
-            $suggestions->suggestValues(['text', 'json']);
+            $suggestions->suggestValues($this->getAvailableFormatOptions());
         }
     }
 
-    private function displayPathsText(SymfonyStyle $io, string $name)
+    private function displayPathsText(SymfonyStyle $io, string $name): void
     {
         $file = new \ArrayIterator($this->findTemplateFiles($name));
         $paths = $this->getLoaderPaths($name);
@@ -162,9 +165,7 @@ EOF
                 [$namespace, $shortname] = $this->parseTemplateName($name);
                 $alternatives = $this->findAlternatives($shortname, $shortnames);
                 if (FilesystemLoader::MAIN_NAMESPACE !== $namespace) {
-                    $alternatives = array_map(function ($shortname) use ($namespace) {
-                        return '@'.$namespace.'/'.$shortname;
-                    }, $alternatives);
+                    $alternatives = array_map(fn ($shortname) => '@'.$namespace.'/'.$shortname, $alternatives);
                 }
             }
 
@@ -198,7 +199,7 @@ EOF
         }
     }
 
-    private function displayPathsJson(SymfonyStyle $io, string $name)
+    private function displayPathsJson(SymfonyStyle $io, string $name): void
     {
         $files = $this->findTemplateFiles($name);
         $paths = $this->getLoaderPaths($name);
@@ -216,7 +217,7 @@ EOF
         $io->writeln(json_encode($data));
     }
 
-    private function displayGeneralText(SymfonyStyle $io, string $filter = null)
+    private function displayGeneralText(SymfonyStyle $io, string $filter = null): void
     {
         $decorated = $io->isDecorated();
         $types = ['functions', 'filters', 'tests', 'globals'];
@@ -250,7 +251,7 @@ EOF
         }
     }
 
-    private function displayGeneralJson(SymfonyStyle $io, ?string $filter)
+    private function displayGeneralJson(SymfonyStyle $io, ?string $filter): void
     {
         $decorated = $io->isDecorated();
         $types = ['functions', 'filters', 'tests', 'globals'];
@@ -304,7 +305,7 @@ EOF
         return $loaderPaths;
     }
 
-    private function getMetadata(string $type, mixed $entity)
+    private function getMetadata(string $type, mixed $entity): mixed
     {
         if ('globals' === $type) {
             return $entity;
@@ -543,7 +544,7 @@ EOF
         }
 
         $threshold = 1e3;
-        $alternatives = array_filter($alternatives, function ($lev) use ($threshold) { return $lev < 2 * $threshold; });
+        $alternatives = array_filter($alternatives, fn ($lev) => $lev < 2 * $threshold);
         ksort($alternatives, \SORT_NATURAL | \SORT_FLAG_CASE);
 
         return array_keys($alternatives);
@@ -594,5 +595,10 @@ EOF
         }
 
         return (string) $this->fileLinkFormatter->format($absolutePath, 1);
+    }
+
+    private function getAvailableFormatOptions(): array
+    {
+        return ['text', 'json'];
     }
 }

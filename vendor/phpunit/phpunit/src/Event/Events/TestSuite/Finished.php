@@ -41,17 +41,11 @@ final class Finished implements Event
 
     public function asString(): string
     {
-        $name = '';
-
-        if (!empty($this->testSuite->name())) {
-            $name = $this->testSuite->name() . ', ';
-        }
-
         return sprintf(
-            'Test Suite Finished (%s%d test%s)',
-            $name,
+            'Test Suite Finished (%s, %d test%s)',
+            $this->testSuite->name(),
             $this->testSuite->count(),
-            $this->testSuite->count() !== 1 ? 's' : ''
+            $this->testSuite->count() !== 1 ? 's' : '',
         );
     }
 }

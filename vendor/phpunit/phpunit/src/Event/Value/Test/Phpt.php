@@ -16,11 +16,6 @@ namespace PHPUnit\Event\Code;
  */
 final class Phpt extends Test
 {
-    public function __construct(string $file)
-    {
-        parent::__construct($file);
-    }
-
     /**
      * @psalm-assert-if-true Phpt $this
      */
@@ -29,11 +24,17 @@ final class Phpt extends Test
         return true;
     }
 
+    /**
+     * @psalm-return non-empty-string
+     */
     public function id(): string
     {
         return $this->file();
     }
 
+    /**
+     * @psalm-return non-empty-string
+     */
     public function name(): string
     {
         return $this->file();

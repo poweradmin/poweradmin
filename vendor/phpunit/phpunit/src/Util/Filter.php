@@ -53,7 +53,7 @@ final class Filter
         if (!self::frameExists($eTrace, $eFile, $eLine)) {
             array_unshift(
                 $eTrace,
-                ['file' => $eFile, 'line' => $eLine]
+                ['file' => $eFile, 'line' => $eLine],
             );
         }
 
@@ -65,7 +65,7 @@ final class Filter
                 $filteredStacktrace .= sprintf(
                     "%s:%s\n",
                     $frame['file'],
-                    $frame['line'] ?? '?'
+                    $frame['line'] ?? '?',
                 );
             }
         }
@@ -73,7 +73,7 @@ final class Filter
         return $filteredStacktrace;
     }
 
-    private static function shouldPrintFrame(array $frame, string|false $prefix, ExcludeList $excludeList): bool
+    private static function shouldPrintFrame(array $frame, false|string $prefix, ExcludeList $excludeList): bool
     {
         if (!isset($frame['file'])) {
             return false;

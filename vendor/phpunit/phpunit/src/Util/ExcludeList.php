@@ -9,7 +9,6 @@
  */
 namespace PHPUnit\Util;
 
-use const DIRECTORY_SEPARATOR;
 use function class_exists;
 use function defined;
 use function dirname;
@@ -138,6 +137,7 @@ final class ExcludeList
      */
     private static array $directories = [];
     private static bool $initialized  = false;
+    private readonly bool $enabled;
 
     /**
      * @psalm-param non-empty-string $directory
@@ -153,6 +153,15 @@ final class ExcludeList
         self::$directories[] = realpath($directory);
     }
 
+    public function __construct(?bool $enabled = null)
+    {
+        if ($enabled === null) {
+            $enabled = !defined('PHPUNIT_TESTSUITE');
+        }
+
+        $this->enabled = $enabled;
+    }
+
     /**
      * @psalm-return list<string>
      */
@@ -165,7 +174,7 @@ final class ExcludeList
 
     public function isExcluded(string $file): bool
     {
-        if (defined('PHPUNIT_TESTSUITE')) {
+        if (!$this->enabled) {
             return false;
         }
 
@@ -201,7 +210,7 @@ final class ExcludeList
         }
 
         // Hide process isolation workaround on Windows.
-        if (DIRECTORY_SEPARATOR === '\\') {
+        if (PHP_OS_FAMILY === 'Windows') {
             // tempnam() prefix is limited to first 3 chars.
             // @see https://php.net/manual/en/function.tempnam.php
             self::$directories[] = sys_get_temp_dir() . '\\PHP';
