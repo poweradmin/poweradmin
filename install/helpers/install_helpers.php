@@ -36,7 +36,8 @@ function checkConfigFile($current_step, $local_config_file, $twig): void
 
 function renderTemplate($twig, $templateName, $data): void
 {
-    $data['next_step'] = $data['current_step'] + 1;
+    $data['next_step'] = filter_var($data['current_step'], FILTER_VALIDATE_INT) ?: 0;
+    $data['next_step'] += 1;
     echo $twig->render($templateName, $data);
 }
 
