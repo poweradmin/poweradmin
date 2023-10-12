@@ -94,7 +94,7 @@ function generateDatabaseUserInstructions($db, $databaseCredentials): string
             $pa_db_host = substr($current_db_user, strpos($current_db_user, '@') + 1);
         }
 
-        $instructions .= "CREATE USER '" . htmlspecialchars($databaseCredentials['pa_db_user']) . "'@'" . htmlspecialchars($pa_db_host) . "' IDENTIFIED BY '" . htmlspecialchars($databaseCredentials['pa_db_pass']) . "';\n";
+        $instructions .= "CREATE USER '" . htmlspecialchars($databaseCredentials['pa_db_user']) . "'@'" . htmlspecialchars($pa_db_host) . "' IDENTIFIED WITH mysql_native_password BY '" . htmlspecialchars($databaseCredentials['pa_db_pass']) . "';\n";
         $instructions .= "GRANT SELECT, INSERT, UPDATE, DELETE ON " . htmlspecialchars($databaseCredentials['db_name']) . ".* TO '" . htmlspecialchars($databaseCredentials['pa_db_user']) . "'@'" . htmlspecialchars($pa_db_host) . "';\n";
     } elseif ($databaseCredentials['db_type'] == 'pgsql') {
         $instructions .= "createuser -E -P " . htmlspecialchars($databaseCredentials['pa_db_user']) . "\n";
