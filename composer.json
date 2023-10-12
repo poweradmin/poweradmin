@@ -20,7 +20,9 @@
     "twig/twig": "^v3.7.1",
     "vlucas/valitron": "^v1.4.11",
     "symfony/twig-bridge": "^v6.3.5",
-    "symfony/translation": "^v6.3.3"
+    "symfony/translation": "^v6.3.3",
+    "twbs/bootstrap": "^5.3",
+    "twbs/bootstrap-icons": "^1.11"
   },
   "autoload": {
     "psr-4": {

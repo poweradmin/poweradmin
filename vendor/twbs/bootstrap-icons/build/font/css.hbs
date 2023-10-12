@@ -1,0 +1,30 @@
+/*!
+ * Bootstrap Icons v1.11.1 (https://icons.getbootstrap.com/)
+ * Copyright 2019-2023 The Bootstrap Authors
+ * Licensed under MIT (https://github.com/twbs/icons/blob/main/LICENSE)
+ */
+
+@font-face {
+  font-display: block;
+  font-family: "{{ name }}";
+  src: {{{ fontSrc }}};
+}
+
+.{{ prefix }}::before,
+[class^="{{ prefix }}-"]::before,
+[class*=" {{ prefix }}-"]::before {
+  display: inline-block;
+  font-family: {{ name }} !important;
+  font-style: normal;
+  font-weight: normal !important;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  vertical-align: -.125em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+{{# each codepoints }}
+.{{ ../prefix }}-{{ @key }}::before { content: "\\{{ codepoint this }}"; }
+{{/ each }}

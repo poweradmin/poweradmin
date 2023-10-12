@@ -1,0 +1,12 @@
+.DS_Store
+/.hugo_build.lock
+/.cache/
+/_site/
+/node_modules/
+/resources/
+
+# Editor folders
+/.vscode/
+
+# Release zip files
+bootstrap-icons-*.zip

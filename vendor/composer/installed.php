@@ -3,7 +3,7 @@
         'name' => 'poweradmin/poweradmin',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '22fa1db649e5a836decf69d71fbb3d12f44b5c20',
+        'reference' => '5de90c5001be880adfd6b5a339f16c2194a530ca',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -103,7 +103,7 @@
         'poweradmin/poweradmin' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '22fa1db649e5a836decf69d71fbb3d12f44b5c20',
+            'reference' => '5de90c5001be880adfd6b5a339f16c2194a530ca',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -313,6 +313,24 @@
             'aliases' => array(),
             'dev_requirement' => true,
         ),
+        'twbs/bootstrap' => array(
+            'pretty_version' => 'v5.3.2',
+            'version' => '5.3.2.0',
+            'reference' => '344e912d04b5b6a04482113eff20ab416ff01048',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../twbs/bootstrap',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'twbs/bootstrap-icons' => array(
+            'pretty_version' => 'v1.11.1',
+            'version' => '1.11.1.0',
+            'reference' => '8d7bc695fb407627378cb184976b348e6a128d59',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../twbs/bootstrap-icons',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'twig/twig' => array(
             'pretty_version' => 'v3.7.1',
             'version' => '3.7.1.0',
@@ -321,6 +339,12 @@
             'install_path' => __DIR__ . '/../twig/twig',
             'aliases' => array(),
             'dev_requirement' => false,
+        ),
+        'twitter/bootstrap' => array(
+            'dev_requirement' => false,
+            'replaced' => array(
+                0 => 'v5.3.2',
+            ),
         ),
         'vlucas/valitron' => array(
             'pretty_version' => 'v1.4.11',

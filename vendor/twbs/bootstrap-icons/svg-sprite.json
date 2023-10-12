@@ -1,0 +1,46 @@
+{
+  "mode": {
+    "symbol": {
+      "dest": ".",
+      "sprite": "bootstrap-icons.svg"
+    }
+  },
+  "svg": {
+    "namespaceClassnames": false,
+    "xmlDeclaration": false
+  },
+  "shape": {
+    "transform": [
+      {
+        "svgo": {
+          "multipass": true,
+          "plugins": [
+            {
+              "name": "preset-default",
+              "params": {
+                "overrides": {
+                  "removeUnknownsAndDefaults": {
+                    "keepRoleAttr": true
+                  },
+                  "removeViewBox": false
+                }
+              }
+            },
+            "cleanupListOfValues",
+            "removeXMLNS",
+            {
+              "name": "removeAttrs",
+              "params": {
+                "attrs": [
+                  "clip-rule",
+                  "data-name",
+                  "fill"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
