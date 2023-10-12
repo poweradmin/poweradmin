@@ -21,14 +21,14 @@ other [options](https://github.com/PowerDNS/pdns/wiki/WebFrontends).
 * PHP pdo extension
 * PHP pdo-mysql, pdo-pgsql or pdo-sqlite extension
 * PHP ldap extension (optional)
-* MySQL/MariaDB, PostgreSQL or SQLite database
+* MySQL 5.7.x/8.x, MariaDB, PostgreSQL or SQLite database
 * PowerDNS authoritative server 4.0.0+
 
 ## Tested on
 
 | Poweradmin | PHP            | PowerDNS | MariaDB | MySQL  | PostgreSQL | SQLite |
 |------------|----------------|----------|---------|--------|------------|--------|
-| 3.6.x      |                |          |         |        |            |        | 
+| 3.6.x      | 8.1.2          | 4.5.3    | 11.1.2  | 8.1.0  | 16.0       | 3.40.1 |
 | 3.5.x      | 8.1.17         | 4.5.3    | 10.11.2 | 8.0.32 | 15.2       | 3.34.1 |
 | 3.4.x      | 7.4.3 / 8.1.12 | 4.2.1    | 10.10.2 | 8.0.31 | 15.1       | 3.34.1 |
 

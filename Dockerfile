@@ -1,4 +1,4 @@
-# This Dockerfile is intended only for testing.
+# This Dockerfile is intended only for TESTING.
 #
 # Usage:
 #   docker build --no-cache -t poweradmin .
@@ -10,13 +10,13 @@
 # Open your browser and navigate to "localhost", then log in using the provided username and password
 # admin / testadmin
 
-FROM php:8.1.18-apache
+FROM php:8.1.24-apache
 
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && apt-get install -y \
     sqlite3 \
-    libicu67 \
+    libicu72 \
     libicu-dev \
     locales-all \
     libpq-dev \
