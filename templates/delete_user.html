@@ -36,7 +36,7 @@
             <td>
                 <select class="form-select form-select-sm" name="zone[{{ zone['id']}}][newowner]">
                     {% for user in users %}
-                    <option value='{{ user['id'] }}">{{ user["fullname"]}}</option>
+                    <option value="{{ user['id'] }}">{{ user["fullname"]}}</option>
                     {% endfor %}
                 </select>
             </td>
