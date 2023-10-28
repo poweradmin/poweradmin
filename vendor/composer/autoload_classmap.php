@@ -399,6 +399,7 @@ return array(
     'PHPUnit\\Framework\\MockObject\\MockObject' => $vendorDir . '/phpunit/phpunit/src/Framework/MockObject/Runtime/Interface/MockObject.php',
     'PHPUnit\\Framework\\MockObject\\MockObjectApi' => $vendorDir . '/phpunit/phpunit/src/Framework/MockObject/Runtime/Api/MockObjectApi.php',
     'PHPUnit\\Framework\\MockObject\\MockObjectInternal' => $vendorDir . '/phpunit/phpunit/src/Framework/MockObject/Runtime/Interface/MockObjectInternal.php',
+    'PHPUnit\\Framework\\MockObject\\NeverReturningMethodException' => $vendorDir . '/phpunit/phpunit/src/Framework/MockObject/Exception/NeverReturningMethodException.php',
     'PHPUnit\\Framework\\MockObject\\ProxiedCloneMethod' => $vendorDir . '/phpunit/phpunit/src/Framework/MockObject/Runtime/Api/ProxiedCloneMethod.php',
     'PHPUnit\\Framework\\MockObject\\ReflectionException' => $vendorDir . '/phpunit/phpunit/src/Framework/MockObject/Exception/ReflectionException.php',
     'PHPUnit\\Framework\\MockObject\\ReturnValueGenerator' => $vendorDir . '/phpunit/phpunit/src/Framework/MockObject/Runtime/ReturnValueGenerator.php',
