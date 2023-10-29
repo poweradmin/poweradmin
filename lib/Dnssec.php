@@ -83,15 +83,17 @@ class Dnssec
                 escapeshellcmd($pdnssec_command),
                 $command,
                 escapeshellarg($domain) . ' ' . $args,
-                '2>&1')
+                $pdnssec_debug ? '2>&1' : ''
+            )
         );
 
         exec($full_command, $output, $return_code);
 
         if ($pdnssec_debug) {
             echo "<div class=\"container\"><pre>";
-            echo sprintf("Command: %s<br>", $full_command);
-            echo sprintf("Output: %s", implode("<br>", $output));
+            echo sprintf("Command: %s\n", $full_command);
+            echo sprintf("Return code: %s\n", $return_code);
+            echo sprintf("Output: %s", implode("\n", $output));
             echo "</pre></div>";
         }
 
@@ -129,7 +131,8 @@ class Dnssec
             $full_command = join(' ', array(
                 escapeshellcmd($pdnssec_command),
                 'rectify-zone',
-                escapeshellarg($domain)
+                escapeshellarg($domain),
+                $pdnssec_debug ? '2>&1' : ''
             ));
 
             if (!self::dnssec_is_pdnssec_callable()) {
@@ -140,8 +143,9 @@ class Dnssec
 
             if ($pdnssec_debug) {
                 echo "<div class=\"container\"><pre>";
-                echo sprintf("Command: %s<br>", $full_command);
-                echo sprintf("Output: %s", implode("<br>", $output));
+                echo sprintf("Command: %s\n", $full_command);
+                echo sprintf("Return code: %s\n", $return_code);
+                echo sprintf("Output: %s", implode("\n", $output));
                 echo "</pre></div>";
             }
 
