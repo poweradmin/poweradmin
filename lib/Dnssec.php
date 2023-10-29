@@ -36,7 +36,7 @@ class Dnssec
      *
      * @return boolean true on success, false on failure
      */
-    public static function dnssec_is_pdnssec_callable(): bool
+    private static function dnssec_is_pdnssec_callable(): bool
     {
         global $pdnssec_command;
 
@@ -60,7 +60,7 @@ class Dnssec
      *
      * @return array Array with output from command execution and error code
      */
-    public static function dnssec_call_pdnssec($command, $domain, $args = array()): array
+    private static function dnssec_call_pdnssec($command, $domain, $args = array()): array
     {
         global $pdnssec_command, $pdnssec_debug;
         $output = '';
@@ -381,60 +381,6 @@ class Dnssec
                 break;
             case 254:
                 $name = 'PRIVATEOID';
-                break;
-        }
-
-        return $name;
-    }
-
-    /** Return algorithm name for given short name
-     *
-     * @param string $short_name Short algorithm name
-     * @return string Algorithm name
-     */
-    public static function dnssec_shorthand_to_algorithm_name($short_name): string
-    {
-        $name = 'Unknown';
-
-        switch ($short_name) {
-            case "rsamd5":
-                $name = self::dnssec_algorithm_to_name(1);
-                break;
-            case "dh":
-                $name = self::dnssec_algorithm_to_name(2);
-                break;
-            case "dsa":
-                $name = self::dnssec_algorithm_to_name(3);
-                break;
-            case "ecc":
-                $name = self::dnssec_algorithm_to_name(4);
-                break;
-            case "rsasha1":
-                $name = self::dnssec_algorithm_to_name(5);
-                break;
-            case "rsasha1-nsec3":
-                $name = self::dnssec_algorithm_to_name(7);
-                break;
-            case "rsasha256":
-                $name = self::dnssec_algorithm_to_name(8);
-                break;
-            case "rsasha512":
-                $name = self::dnssec_algorithm_to_name(10);
-                break;
-            case "gost":
-                $name = self::dnssec_algorithm_to_name(12);
-                break;
-            case "ecdsa256":
-                $name = self::dnssec_algorithm_to_name(13);
-                break;
-            case "ecdsa384":
-                $name = self::dnssec_algorithm_to_name(14);
-                break;
-            case "ed25519":
-                $name = self::dnssec_algorithm_to_name(15);
-                break;
-            case "ed448":
-                $name = self::dnssec_algorithm_to_name(16);
                 break;
         }
 
