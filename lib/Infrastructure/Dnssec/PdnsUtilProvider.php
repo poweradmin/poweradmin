@@ -20,22 +20,14 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin;
+namespace Poweradmin\Infrastructure\Dnssec;
 
-/**
- * DNSSEC functions
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2023 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-class Dnssec
+use Poweradmin\DnsRecord;
+use Poweradmin\Domain\Dnssec\DnssecProvider;
+use Poweradmin\Logger;
+
+class PdnsUtilProvider implements DnssecProvider
 {
-    /** Check if it's possible to execute pdnsutil command
-     *
-     * @return boolean true on success, false on failure
-     */
     private static function dnssec_is_pdnssec_callable(): bool
     {
         global $pdnssec_command;
@@ -53,13 +45,6 @@ class Dnssec
         return true;
     }
 
-    /** Execute dnssec utility
-     *
-     * @param string $command Command name
-     * @param string $args Command arguments
-     *
-     * @return array Array with output from command execution and error code
-     */
     private static function dnssec_call_pdnssec($command, $domain, $args = array()): array
     {
         global $pdnssec_command, $pdnssec_debug;
@@ -100,18 +85,7 @@ class Dnssec
         return array($output, $return_code);
     }
 
-    /** Execute pdnsutil rectify-zone command for Domain ID
-     *
-     * If a Domain is dnssec enabled, or uses features as
-     * e.g. ALSO-NOTIFY, ALLOW-AXFR-FROM, TSIG-ALLOW-AXFR
-     * following has to be executed
-     * pdnsutil rectify-zone $domain
-     *
-     * @param int $domain_id Domain ID
-     *
-     * @return boolean true on success, false on failure or unnecessary
-     */
-    public static function dnssec_rectify_zone($domain_id): bool
+    public function rectifyZone(int $domainId): bool
     {
         global $db;
         global $pdnssec_command, $pdnssec_debug;
@@ -123,11 +97,11 @@ class Dnssec
          *
          * If there is any entry at domainmetadata table for this domain,
          * it is an error if pdnssec_command is not set */
-        $query = "SELECT COUNT(id) FROM domainmetadata WHERE domain_id = " . $db->quote($domain_id, 'integer');
+        $query = "SELECT COUNT(id) FROM domainmetadata WHERE domain_id = " . $db->quote($domainId, 'integer');
         $count = $db->queryOne($query);
 
         if (isset($pdnssec_command)) {
-            $domain = DnsRecord::get_domain_name_by_id($domain_id);
+            $domain = DnsRecord::get_domain_name_by_id($domainId);
             $full_command = join(' ', array(
                 escapeshellcmd($pdnssec_command),
                 'rectify-zone',
@@ -162,15 +136,9 @@ class Dnssec
         return false;
     }
 
-    /** Execute pdnsutil secure-zone command for Domain Name
-     *
-     * @param string $domain_name Domain Name
-     *
-     * @return boolean true on success, false on failure or unnecessary
-     */
-    public static function dnssec_secure_zone($domain_name): bool
+    public function secureZone(string $domainName): bool
     {
-        $call_result = self::dnssec_call_pdnssec('secure-zone', $domain_name);
+        $call_result = self::dnssec_call_pdnssec('secure-zone', $domainName);
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
@@ -179,20 +147,14 @@ class Dnssec
         }
 
         Logger::log_info(sprintf('client_ip:%s user:%s operation:dnssec_secure_zone zone:%s',
-            $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $domain_name));
+            $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $domainName));
 
         return true;
     }
 
-    /** Execute pdnsutil disable-dnssec command for Domain Name
-     *
-     * @param string $domain_name Domain Name
-     *
-     * @return boolean true on success, false on failure or unnecessary
-     */
-    public static function dnssec_unsecure_zone($domain_name): bool
+    public function unsecureZone(string $domainName): bool
     {
-        $call_result = self::dnssec_call_pdnssec('disable-dnssec', $domain_name);
+        $call_result = self::dnssec_call_pdnssec('disable-dnssec', $domainName);
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
@@ -201,18 +163,12 @@ class Dnssec
         }
 
         Logger::log_info(sprintf('client_ip:%s user:%s operation:dnssec_unsecure_zone zone:%s',
-            $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $domain_name));
+            $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $domainName));
 
         return true;
     }
 
-    /** Check if zone is secured
-     *
-     * @param string $domain_name Domain Name
-     *
-     * @return boolean true on success, false on failure
-     */
-    public static function dnssec_is_zone_secured($domain_name): bool
+    public function isZoneSecured(string $domainName): bool
     {
         global $db;
         $query = $db->prepare("SELECT
@@ -224,26 +180,20 @@ class Dnssec
                   WHERE domains.name = ?
                   GROUP BY domains.id
         ");
-        $query->execute(array($domain_name));
+        $query->execute(array($domainName));
         $row = $query->fetch();
         return $row['active_keys'] > 0 || $row['presigned'];
     }
 
-    /** Return DS records
-     *
-     * @param string $domain_name Domain Name
-     *
-     * @return array|false
-     */
-    public static function dnssec_get_ds_records($domain_name)
+    public function getDsRecords(string $domainName): array
     {
-        $call_result = self::dnssec_call_pdnssec('show-zone', $domain_name);
+        $call_result = self::dnssec_call_pdnssec('show-zone', $domainName);
         $output = $call_result[0];
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
             error(_('Failed to get DNSSEC key details.'));
-            return false;
+            return [];
         }
 
         $ds_records = array();
@@ -266,142 +216,15 @@ class Dnssec
         return $ds_records;
     }
 
-    public static function dnssec_algorithms(): array
+    public function getDnsKeyRecords(string $domainName): array
     {
-        return [
-            0 => 'Reserved',
-            1 => 'RSAMD5',
-            2 => 'DH',
-            3 => 'DSA',
-            4 => 'ECC',
-            5 => 'RSASHA1',
-            6 => 'DSA-NSEC3-SHA1',
-            7 => 'RSASHA1-NSEC3-SHA1',
-            8 => 'RSASHA256',
-            9 => 'Reserved',
-            10 => 'RSASHA512',
-            11 => 'Reserved',
-            12 => 'ECC-GOST',
-            13 => 'ECDSAP256SHA256',
-            14 => 'ECDSAP384SHA384',
-            15 => 'ED25519',
-            16 => 'ED448',
-            252 => 'INDIRECT',
-            253 => 'PRIVATEDNS',
-            254 => 'PRIVATEOID'
-        ];
-    }
-
-    public static function dnssec_algorithm_names()
-    {
-        return [
-            'rsamd5' => 'RSAMD5',
-            'dh' => 'DH',
-            'dsa' => 'DSA',
-            'ecc' => 'ECC',
-            'rsasha1' => 'RSASHA1',
-            'rsasha1-nsec3' => 'RSASHA1-NSEC3-SHA1',
-            'rsasha256' => 'RSASHA256',
-            'rsasha512' => 'RSASHA512',
-            'gost' => 'ECC-GOST',
-            'ecdsa256' => 'ECDSAP256SHA256',
-            'ecdsa384' => 'ECDSAP384SHA384',
-            'ed25519' => 'ED25519',
-            'ed448' => 'ED448',
-        ];
-    }
-
-    /** Return algorithm name for given number
-     *
-     * @param int $algo Algorithm id
-     *
-     * @return string algorithm name
-     */
-    public static function dnssec_algorithm_to_name($algo): string
-    {
-        $name = 'Unallocated/Reserved';
-
-        switch ($algo) {
-            case 0:
-                $name = 'Reserved';
-                break;
-            case 1:
-                $name = 'RSAMD5';
-                break;
-            case 2:
-                $name = 'DH';
-                break;
-            case 3:
-                $name = 'DSA';
-                break;
-            case 4:
-                $name = 'ECC';
-                break;
-            case 5:
-                $name = 'RSASHA1';
-                break;
-            case 6:
-                $name = 'DSA-NSEC3-SHA1';
-                break;
-            case 7:
-                $name = 'RSASHA1-NSEC3-SHA1';
-                break;
-            case 8:
-                $name = 'RSASHA256';
-                break;
-            case 9:
-                $name = 'Reserved';
-                break;
-            case 10:
-                $name = 'RSASHA512';
-                break;
-            case 11:
-                $name = 'Reserved';
-                break;
-            case 12:
-                $name = 'ECC-GOST';
-                break;
-            case 13:
-                $name = 'ECDSAP256SHA256';
-                break;
-            case 14:
-                $name = 'ECDSAP384SHA384';
-                break;
-            case 15:
-                $name = 'ED25519';
-                break;
-            case 16:
-                $name = 'ED448';
-                break;
-            case 252:
-                $name = 'INDIRECT';
-                break;
-            case 253:
-                $name = 'PRIVATEDNS';
-                break;
-            case 254:
-                $name = 'PRIVATEOID';
-                break;
-        }
-
-        return $name;
-    }
-
-    /** Check if zone is secured
-     *
-     * @param string $domain_name Domain Name
-     *
-     * @return array|false string containing dns key
-     */
-    public static function dnssec_get_dnskey_record($domain_name)
-    {
-        $call_result = self::dnssec_call_pdnssec('show-zone', $domain_name);
+        $call_result = self::dnssec_call_pdnssec('show-zone', $domainName);
         $output = $call_result[0];
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
             error(_('Failed to get DNSSEC key details.'));
-            return false;
+            return [];
         }
 
         $dns_keys = array();
@@ -415,16 +238,9 @@ class Dnssec
         return $dns_keys;
     }
 
-    /** Activate zone key
-     *
-     * @param string $domain_name Domain Name
-     * @param $key_id
-     *
-     * @return bool true on success, false on failure
-     */
-    public static function dnssec_activate_zone_key($domain_name, $key_id): bool
+    public function activateZoneKey(string $domainName, int $keyId): bool
     {
-        $call_result = self::dnssec_call_pdnssec('activate-zone-key', $domain_name, array($key_id));
+        $call_result = self::dnssec_call_pdnssec('activate-zone-key', $domainName, array($keyId));
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
@@ -433,21 +249,14 @@ class Dnssec
         }
 
         Logger::log_info(sprintf('client_ip:%s user:%s operation:dnssec_activate_zone_key zone:%s key_id:%s',
-            $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $domain_name, $key_id));
+            $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $domainName, $keyId));
 
         return true;
     }
 
-    /** Deactivate zone key
-     *
-     * @param string $domain_name Domain Name
-     * @param $key_id
-     *
-     * @return bool true on success, false on failure
-     */
-    public static function dnssec_deactivate_zone_key($domain_name, $key_id): bool
+    public function deactivateZoneKey(string $domainName, int $keyId): bool
     {
-        $call_result = self::dnssec_call_pdnssec('deactivate-zone-key', $domain_name, array($key_id));
+        $call_result = self::dnssec_call_pdnssec('deactivate-zone-key', $domainName, array($keyId));
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
@@ -456,26 +265,20 @@ class Dnssec
         }
 
         Logger::log_info(sprintf('client_ip:%s user:%s operation:dnssec_deactivate_zone_key zone:%s key_id:%s',
-            $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $domain_name, $key_id));
+            $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $domainName, $keyId));
 
         return true;
     }
 
-    /** Get list of existing DNSSEC keys
-     *
-     * @param string $domain_name Domain Name
-     *
-     * @return array|false
-     */
-    public static function dnssec_get_keys($domain_name)
+    public function getKeys(string $domainName): array
     {
-        $call_result = self::dnssec_call_pdnssec('show-zone', $domain_name);
+        $call_result = self::dnssec_call_pdnssec('show-zone', $domainName);
         $output = $call_result[0];
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
             error(_('Failed to get DNSSEC key details.'));
-            return false;
+            return [];
         }
 
         $keys = array();
@@ -499,18 +302,9 @@ class Dnssec
         return $keys;
     }
 
-    /** Create new DNSSEC key
-     *
-     * @param string $domain_name Domain Name
-     * @param string $key_type Key type
-     * @param string $bits Bits in length
-     * @param string $algorithm Algorithm
-     *
-     * @return boolean true on success, false on failure
-     */
-    public static function dnssec_add_zone_key($domain_name, $key_type, $bits, $algorithm): bool
+    public function addZoneKey(string $domainName, string $keyType, int $keySize, string $algorithm): bool
     {
-        $call_result = self::dnssec_call_pdnssec('add-zone-key', $domain_name, array($key_type, $bits, "inactive", $algorithm));
+        $call_result = self::dnssec_call_pdnssec('add-zone-key', $domainName, array($keyType, $keySize, "inactive", $algorithm));
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
@@ -519,21 +313,14 @@ class Dnssec
         }
 
         Logger::log_info(sprintf('client_ip:%s user:%s operation:dnssec_add_zone_key zone:%s type:%s bits:%s algorithm:%s',
-            $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $domain_name, $key_type, $bits, $algorithm));
+            $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $domainName, $keyType, $keySize, $algorithm));
 
         return true;
     }
 
-    /** Remove DNSSEC key
-     *
-     * @param string $domain_name Domain Name
-     * @param int $key_id Key ID
-     *
-     * @return boolean true on success, false on failure
-     */
-    public static function dnssec_remove_zone_key($domain_name, $key_id): bool
+    public function removeZoneKey(string $domainName, int $keyId): bool
     {
-        $call_result = self::dnssec_call_pdnssec('remove-zone-key', $domain_name, array($key_id));
+        $call_result = self::dnssec_call_pdnssec('remove-zone-key', $domainName, array($keyId));
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
@@ -542,24 +329,17 @@ class Dnssec
         }
 
         Logger::log_info(sprintf('client_ip:%s user:%s operation:dnssec_remove_zone_key zone:%s key_id:%s',
-            $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $domain_name, $key_id));
+            $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $domainName, $keyId));
 
         return true;
     }
 
-    /** Check if given key exists
-     *
-     * @param string $domain_name Domain Name
-     * @param int $key_id Key ID
-     *
-     * @return boolean true if exists, otherwise false
-     */
-    public static function dnssec_zone_key_exists($domain_name, $key_id): bool
+    public function keyExists(string $domainName, int $keyId): bool
     {
-        $keys = self::dnssec_get_keys($domain_name);
+        $keys = $this->getKeys($domainName);
 
         foreach ($keys as $key) {
-            if ($key[0] == $key_id) {
+            if ($key[0] == $keyId) {
                 return true;
             }
         }
@@ -567,19 +347,12 @@ class Dnssec
         return false;
     }
 
-    /** Return requested key
-     *
-     * @param string $domain_name Domain Name
-     * @param int $key_id Key ID
-     *
-     * @return array true if exists, otherwise false
-     */
-    public static function dnssec_get_zone_key($domain_name, $key_id): array
+    public function getZoneKey(string $domainName, int $keyId): array
     {
-        $keys = self::dnssec_get_keys($domain_name);
+        $keys = $this->getKeys($domainName);
 
         foreach ($keys as $key) {
-            if ($key[0] == $key_id) {
+            if ($key[0] == $keyId) {
                 return $key;
             }
         }

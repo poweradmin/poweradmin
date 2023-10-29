@@ -29,10 +29,11 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Application\Services\DnssecService;
 use Poweradmin\BaseController;
 use Poweradmin\Dns;
 use Poweradmin\DnsRecord;
-use Poweradmin\Dnssec;
+use Poweradmin\Infrastructure\Dnssec\PdnsUtilProvider;
 use Poweradmin\Logger;
 use Poweradmin\ZoneTemplate;
 
@@ -90,10 +91,14 @@ class AddZoneMasterController extends BaseController
 
             if ($pdnssec_use) {
                 if (isset($_POST['dnssec'])) {
-                    Dnssec::dnssec_secure_zone($zone);
+                    $provider = new PdnsUtilProvider();
+                    $service = new DnssecService($provider);
+                    $service->secureZone($zone);
                 }
 
-                Dnssec::dnssec_rectify_zone($zone_id);
+                $provider = new PdnsUtilProvider();
+                $service = new DnssecService($provider);
+                $service->rectifyZone($zone_id);
             }
 
             $this->redirect('list_zones.php');

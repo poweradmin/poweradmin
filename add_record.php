@@ -29,9 +29,10 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Application\Services\DnssecService;
 use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
-use Poweradmin\Dnssec;
+use Poweradmin\Infrastructure\Dnssec\PdnsUtilProvider;
 use Poweradmin\Permission;
 use Poweradmin\RecordType;
 use Poweradmin\Logger;
@@ -152,7 +153,11 @@ class AddRecordController extends BaseController
                         $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                         $content_rev, $fqdn_name, $ttl, $prio), $zone_id);
 
-                    $this->config('pdnssec_use') && Dnssec::dnssec_rectify_zone($zone_rev_id);
+                    if ($this->config('pdnssec_use')) {
+                        $provider = new PdnsUtilProvider();
+                        $service = new DnssecService($provider);
+                        $service->rectifyZone($zone_rev_id);
+                    }
                 }
             } elseif (isset($content_rev)) {
                 error(sprintf(_('There is no matching reverse-zone for: %s.'), $content_rev));
@@ -171,7 +176,9 @@ class AddRecordController extends BaseController
             );
 
             if ($this->config('pdnssec_use')) {
-                Dnssec::dnssec_rectify_zone($zone_id);
+                $provider = new PdnsUtilProvider();
+                $service = new DnssecService($provider);
+                $service->rectifyZone($zone_id);
             }
 
             $this->setMessage('add_record', 'success', _('The record was successfully added.'));

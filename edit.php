@@ -30,10 +30,11 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Application\Services\DnssecService;
 use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
-use Poweradmin\Dnssec;
 use Poweradmin\Domain\Enum\ZoneType;
+use Poweradmin\Infrastructure\Dnssec\PdnsUtilProvider;
 use Poweradmin\Permission;
 use Poweradmin\RecordLog;
 use Poweradmin\RecordType;
@@ -118,7 +119,11 @@ class EditController extends BaseController {
                         $this->setMessage('edit', 'warn', (_('Zone did not have any record changes.')));
                     }
 
-                    $this->config('pdnssec_use') && Dnssec::dnssec_rectify_zone($_GET['id']);
+                    if ($this->config('pdnssec_use')) {
+                        $provider = new PdnsUtilProvider();
+                        $service = new DnssecService($provider);
+                        $service->rectifyZone($_GET['id']);
+                    }
                 }
             } else {
                 $this->setMessage('edit', 'error', _('Zone has not been updated successfully.'));
@@ -189,15 +194,22 @@ class EditController extends BaseController {
 
         if (isset($_POST['sign_zone'])) {
             DnsRecord::update_soa_serial($zone_id);
-            $result = Dnssec::dnssec_secure_zone($zone_name);
-            Dnssec::dnssec_rectify_zone($zone_id);
+
+            $provider = new PdnsUtilProvider();
+            $service = new DnssecService($provider);
+            $result = $service->secureZone($zone_name);
+            $service->rectifyZone($zone_id);
+
             if ($result) {
                 $this->setMessage('edit', 'success', _('Zone has been signed successfully.'));
             }
         }
 
         if (isset($_POST['unsign_zone'])) {
-            Dnssec::dnssec_unsecure_zone($zone_name);
+            $provider = new PdnsUtilProvider();
+            $service = new DnssecService($provider);
+            $service->unsecureZone($zone_name);
+
             DnsRecord::update_soa_serial($zone_id);
             $this->setMessage('edit', 'success', _('Zone has been unsigned successfully.'));
         }
@@ -224,6 +236,9 @@ class EditController extends BaseController {
         $owners = DnsRecord::get_users_from_domain_id($zone_id);
 
         $soa_record = DnsRecord::get_soa_record($zone_id);
+
+        $provider = new PdnsUtilProvider();
+        $service = new DnssecService($provider);
 
         $this->render('edit.html', [
             'zone_id' => $zone_id,
@@ -253,7 +268,7 @@ class EditController extends BaseController {
             'record_sort_by' => $record_sort_by,
             'pagination' => show_pages($record_count, $iface_rowamount, $zone_id),
             'pdnssec_use' => $this->config('pdnssec_use'),
-            'is_secured' => Dnssec::dnssec_is_zone_secured($zone_name),
+            'is_secured' => $service->isZoneSecured($zone_name),
             'session_userid' => $_SESSION["userid"],
             'dns_ttl' => $this->config('dns_ttl'),
             'is_rev_zone' => preg_match('/i(p6|n-addr).arpa/i', $zone_name),

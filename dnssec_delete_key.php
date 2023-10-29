@@ -29,9 +29,11 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Application\Services\DnssecService;
 use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
-use Poweradmin\Dnssec;
+use Poweradmin\Domain\Dnssec\DnssecAlgorithm;
+use Poweradmin\Infrastructure\Dnssec\PdnsUtilProvider;
 use Poweradmin\Validation;
 
 require_once 'inc/toolkit.inc.php';
@@ -69,7 +71,10 @@ class DnsSecDeleteKeyController extends BaseController
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
-        if (!Dnssec::dnssec_zone_key_exists($domain_name, $key_id)) {
+        $provider = new PdnsUtilProvider();
+        $service = new DnssecService($provider);
+
+        if (!$service->keyExists($domain_name, $key_id)) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
@@ -77,7 +82,7 @@ class DnsSecDeleteKeyController extends BaseController
             $this->showError(_('Failed to delete DNSSEC key.'));
         }
 
-        if ($confirm == '1' && Dnssec::dnssec_remove_zone_key($domain_name, $key_id)) {
+        if ($confirm == '1' && $service->removeZoneKey($domain_name, $key_id)) {
             $this->setMessage('dnssec', 'success', _('Zone key has been deleted successfully.'));
             $this->redirect('dnssec.php', ['id' => $zone_id]);
         }
@@ -87,7 +92,9 @@ class DnsSecDeleteKeyController extends BaseController
 
     public function showKeyInfo($domain_name, $key_id, string $zone_id): void
     {
-        $key_info = Dnssec::dnssec_get_zone_key($domain_name, $key_id);
+        $provider = new PdnsUtilProvider();
+        $service = new DnssecService($provider);
+        $key_info = $service->getZoneKey($domain_name, $key_id);
 
         if (preg_match("/^xn--/", $domain_name)) {
             $idn_zone_name = idn_to_utf8($domain_name, IDNA_NONTRANSITIONAL_TO_ASCII);
@@ -100,7 +107,7 @@ class DnsSecDeleteKeyController extends BaseController
             'idn_zone_name' => $idn_zone_name,
             'key_id' => $key_id,
             'key_info' => $key_info,
-            'algorithms' => DnsSec::dnssec_algorithms(),
+            'algorithms' => DnssecAlgorithm::ALGORITHMS,
             'zone_id' => $zone_id,
         ]);
     }

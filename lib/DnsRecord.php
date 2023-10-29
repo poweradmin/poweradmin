@@ -22,7 +22,9 @@
 
 namespace Poweradmin;
 
+use Poweradmin\Application\Services\DnssecService;
 use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Infrastructure\Dnssec\PdnsUtilProvider;
 
 /**
  * DNS record functions
@@ -424,7 +426,9 @@ class DnsRecord
                     self::update_soa_serial($zone_id);
                 }
                 if ($pdnssec_use) {
-                    Dnssec::dnssec_rectify_zone($zone_id);
+                    $provider = new PdnsUtilProvider();
+                    $service = new DnssecService($provider);
+                    $service->rectifyZone($zone_id);
                 }
                 return true;
             } else {
@@ -1719,8 +1723,12 @@ class DnsRecord
                     $zone_type = self::get_domain_type($id);
                     if ($pdnssec_use && $zone_type == 'MASTER') {
                         $zone_name = self::get_domain_name_by_id($id);
-                        if (Dnssec::dnssec_is_zone_secured($zone_name)) {
-                            Dnssec::dnssec_unsecure_zone($zone_name);
+
+                        $provider = new PdnsUtilProvider();
+                        $service = new DnssecService($provider);
+
+                        if ($service->isZoneSecured($zone_name)) {
+                            $service->unsecureZone($zone_name);
                         }
                     }
 

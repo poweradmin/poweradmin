@@ -30,9 +30,10 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Application\Services\DnssecService;
 use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
-use Poweradmin\Dnssec;
+use Poweradmin\Infrastructure\Dnssec\PdnsUtilProvider;
 use Poweradmin\Permission;
 use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
@@ -78,8 +79,11 @@ class DnsSecDsDnsKeyController extends BaseController {
         $record_count = DnsRecord::count_zone_records($zone_id);
         $zone_templates = ZoneTemplate::get_list_zone_templ($_SESSION['userid']);
         $zone_template_id = DnsRecord::get_zone_template($zone_id);
-        $dnskey_records = Dnssec::dnssec_get_dnskey_record($domain_name);
-        $ds_records = Dnssec::dnssec_get_ds_records($domain_name);
+
+        $provider = new PdnsUtilProvider();
+        $service = new DnssecService($provider);
+        $dnskey_records = $service->getDnsKeyRecords($domain_name);
+        $ds_records = $service->getDsRecords($domain_name);
 
         if (preg_match("/^xn--/", $domain_name)) {
             $idn_zone_name = idn_to_utf8($domain_name, IDNA_NONTRANSITIONAL_TO_ASCII);

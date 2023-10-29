@@ -29,9 +29,10 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Application\Services\DnssecService;
 use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
-use Poweradmin\Dnssec;
+use Poweradmin\Infrastructure\Dnssec\PdnsUtilProvider;
 use Poweradmin\Permission;
 use Poweradmin\RecordType;
 use Poweradmin\Logger;
@@ -111,7 +112,11 @@ class EditRecordController extends BaseController {
                 $new_record_info['type'], $new_record_info['name'], $new_record_info['content'], $new_record_info['ttl'], $new_record_info['prio']),
                 $zid);
 
-            $this->config('pdnssec_use') && Dnssec::dnssec_rectify_zone($zid);
+            if ($this->config('pdnssec_use')) {
+                $provider = new PdnsUtilProvider();
+                $service = new DnssecService($provider);
+                $service->rectifyZone($zid);
+            }
 
             $this->setMessage('edit', 'success', _('The record has been updated successfully.'));
             $this->redirect('edit.php', ['id' => $zid]);

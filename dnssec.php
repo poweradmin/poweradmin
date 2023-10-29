@@ -30,9 +30,11 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Application\Services\DnssecService;
 use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
-use Poweradmin\Dnssec;
+use Poweradmin\Domain\Dnssec\DnssecAlgorithm;
+use Poweradmin\Infrastructure\Dnssec\PdnsUtilProvider;
 use Poweradmin\Permission;
 use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
@@ -73,17 +75,20 @@ class DnsSecController extends BaseController {
             $idn_zone_name = "";
         }
 
+        $provider = new PdnsUtilProvider();
+        $service = new DnssecService($provider);
+
         $this->render('dnssec.html', [
             'domain_name' => $domain_name,
             'idn_zone_name' => $idn_zone_name,
             'domain_type' => DnsRecord::get_domain_type($zone_id),
-            'keys' => Dnssec::dnssec_get_keys($domain_name),
+            'keys' => $service->getKeys($domain_name),
             'pdnssec_use' => $this->config('pdnssec_use'),
             'record_count' => DnsRecord::count_zone_records($zone_id),
             'zone_id' => $zone_id,
             'zone_template_id' => DnsRecord::get_zone_template($zone_id),
             'zone_templates' => ZoneTemplate::get_list_zone_templ($_SESSION['userid']),
-            'algorithms' => Dnssec::dnssec_algorithms(),
+            'algorithms' => DnssecAlgorithm::ALGORITHMS,
         ]);
     }
 }

@@ -29,8 +29,9 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Application\Services\DnssecService;
 use Poweradmin\DnsRecord;
-use Poweradmin\Dnssec;
+use Poweradmin\Infrastructure\Dnssec\PdnsUtilProvider;
 use Poweradmin\Validation;
 
 require_once 'inc/toolkit.inc.php';
@@ -67,7 +68,9 @@ class DnsSecEditKeyController extends \Poweradmin\BaseController {
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
-        if (!Dnssec::dnssec_zone_key_exists($domain_name, $key_id)) {
+        $provider = new PdnsUtilProvider();
+        $service = new DnssecService($provider);
+        if (!$service->keyExists($domain_name, $key_id)) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
@@ -75,16 +78,16 @@ class DnsSecEditKeyController extends \Poweradmin\BaseController {
             $this->showError(_('Failed to delete DNSSEC key.'));
         }
 
-        $key_info = Dnssec::dnssec_get_zone_key($domain_name, $key_id);
+        $key_info = $service->getZoneKey($domain_name, $key_id);
 
         if ($confirm == '1') {
             if ($key_info[5]) {
-                if (Dnssec::dnssec_deactivate_zone_key($domain_name, $key_id)) {
+                if ($service->deactivateZoneKey($domain_name, $key_id)) {
                     $this->setMessage('dnssec', 'success', _('Zone key has been successfully deactivated.'));
                     $this->redirect('dnssec.php', ['id' => $zone_id]);
                 }
             } else {
-                if (Dnssec::dnssec_activate_zone_key($domain_name, $key_id)) {
+                if ($service->activateZoneKey($domain_name, $key_id)) {
                     $this->setMessage('dnssec', 'success', _('Zone key has been successfully activated.'));
                     $this->redirect('dnssec.php', ['id' => $zone_id]);
                 }
@@ -101,7 +104,7 @@ class DnsSecEditKeyController extends \Poweradmin\BaseController {
             'domain_name' => $domain_name,
             'idn_zone_name' => $idn_zone_name,
             'key_id' => $key_id,
-            'key_info' => Dnssec::dnssec_get_zone_key($domain_name, $key_id),
+            'key_info' => $service->getZoneKey($domain_name, $key_id),
             'user_is_zone_owner' => $user_is_zone_owner,
             'zone_id' => $zone_id,
         ]);
