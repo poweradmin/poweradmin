@@ -409,38 +409,40 @@ class DnsRecord
         if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
             error(_("You do not have the permission to add a record to this zone."));
             return false;
-        } else {
-            $db->beginTransaction();
-            if (Dns::validate_input(-1, $zone_id, $type, $content, $name, $prio, $ttl)) {
-                $name = strtolower($name); // powerdns only searches for lower case records
-                $query = "INSERT INTO records (domain_id, name, type, content, ttl, prio) VALUES ("
-                    . $db->quote($zone_id, 'integer') . ","
-                    . $db->quote($name, 'text') . ","
-                    . $db->quote($type, 'text') . ","
-                    . $db->quote($content, 'text') . ","
-                    . $db->quote($ttl, 'integer') . ","
-                    . $db->quote($prio, 'integer') . ")";
-                $db->exec($query);
-                $db->commit();
-                if ($type != 'SOA') {
-                    self::update_soa_serial($zone_id);
-                }
-
-                if ($pdnssec_use) {
-                    global $pdns_api_url;
-                    global $pdns_api_key;
-
-                    $dnssecProvider = DnssecProviderFactory::create(
-                        new FakeConfiguration($pdns_api_url, $pdns_api_key)
-                    );
-                    $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
-                    $dnssecProvider->rectifyZone($zone_name);
-                }
-                return true;
-            } else {
-                return false;
-            }
         }
+
+        if (!Dns::validate_input(-1, $zone_id, $type, $content, $name, $prio, $ttl)) {
+            return false;
+        }
+
+        $db->beginTransaction();
+        $name = strtolower($name); // powerdns only searches for lower case records
+        $query = "INSERT INTO records (domain_id, name, type, content, ttl, prio) VALUES ("
+            . $db->quote($zone_id, 'integer') . ","
+            . $db->quote($name, 'text') . ","
+            . $db->quote($type, 'text') . ","
+            . $db->quote($content, 'text') . ","
+            . $db->quote($ttl, 'integer') . ","
+            . $db->quote($prio, 'integer') . ")";
+        $db->exec($query);
+        $db->commit();
+
+        if ($type != 'SOA') {
+            self::update_soa_serial($zone_id);
+        }
+
+        if ($pdnssec_use) {
+            global $pdns_api_url;
+            global $pdns_api_key;
+
+            $dnssecProvider = DnssecProviderFactory::create(
+                new FakeConfiguration($pdns_api_url, $pdns_api_key)
+            );
+            $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
+            $dnssecProvider->rectifyZone($zone_name);
+        }
+
+        return true;
     }
 
     /** Add Supermaster
