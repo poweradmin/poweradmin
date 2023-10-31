@@ -36,7 +36,7 @@ class PowerdnsApiClient {
         $this->serverName = $serverName;
     }
 
-    protected function makeRequest($method, $endpoint, $data = []): mixed
+    protected function makeRequest($method, $endpoint, $data = []): array
     {
         $url = $this->apiUrl . $endpoint;
 
@@ -55,46 +55,57 @@ class PowerdnsApiClient {
         $context = stream_context_create($options);
         $result = file_get_contents($url, false, $context);
 
-        if ($result === FALSE) {
-            throw new Exception("Error occurred while making the request.");
+        $responseCode = null;
+        if (isset($http_response_header[0])) {
+            preg_match('/\s(\d{3})\s/', $http_response_header[0], $match);
+            $responseCode = isset($match[1]) ? (int)$match[1] : null;
         }
 
-        return json_decode($result, true);
+        return [
+            'responseCode' => $responseCode,
+            'data' => json_decode($result, true)
+        ];
     }
 
-    public function rectifyZone($zone) {
+    public function rectifyZone($zone): bool
+    {
         $endpoint = "/api/v1/servers/{$this->serverName}/zones/{$zone}/rectify";
-        return $this->makeRequest('PUT', $endpoint);
+        $response = $this->makeRequest('PUT', $endpoint);
+
+        return $response && $response['responseCode'] === 200 && $response['data']['result'] === 'Rectified';
     }
 
-    public function secureZone(string $zone)
+    public function secureZone(string $zone): bool
     {
         $endpoint = "/api/v1/servers/{$this->serverName}/zones/{$zone}";
         $data = ['dnssec' => true];
-        $this->makeRequest('PUT', $endpoint, $data);
+        $response = $this->makeRequest('PUT', $endpoint, $data);
 
-        return $this->isZoneSecured($zone);
+        return $response && $response['responseCode'] === 204 && $this->isZoneSecured($zone);
     }
 
     public function unsecureZone($zone) {
         $endpoint = "/api/v1/servers/{$this->serverName}/zones/{$zone}";
         $data = ['dnssec' => false];
-        $this->makeRequest('PUT', $endpoint, $data);
+        $response = $this->makeRequest('PUT', $endpoint, $data);
 
-        return !$this->isZoneSecured($zone);
+        return $response && $response['responseCode'] === 204 && !$this->isZoneSecured($zone);
     }
 
     public function isZoneSecured(string $zone)
     {
         $endpoint = "/api/v1/servers/{$this->serverName}/zones/{$zone}";
-        $zoneDetails = $this->makeRequest('GET', $endpoint);
-        return isset($zoneDetails['dnssec']) && $zoneDetails['dnssec'];
+        $response = $this->makeRequest('GET', $endpoint);
+
+        return $response && $response['responseCode'] === 200 && isset($response['data']['dnssec']) && $response['data']['dnssec'];
     }
 
-    public function getKeys(string $zone)
+    public function getKeys(string $zone): array
     {
         $endpoint = "/api/v1/servers/{$this->serverName}/zones/{$zone}/cryptokeys";
-        return $this->makeRequest('GET', $endpoint);
+        $response = $this->makeRequest('GET', $endpoint);
+
+        return $response && $response['responseCode'] === 200 ? $response['data'] : [];
     }
 
     public function activateZoneKey(string $zone, int $keyId)
@@ -103,9 +114,9 @@ class PowerdnsApiClient {
         $data = [
             'active' => true
         ];
-        $this->makeRequest('PUT', $endpoint, $data);
+        $response = $this->makeRequest('PUT', $endpoint, $data);
 
-        return true;
+        return $response && $response['responseCode'] === 204;
     }
 
     public function deactivateZoneKey(string $zone, int $keyId)
@@ -114,12 +125,12 @@ class PowerdnsApiClient {
         $data = [
             'active' => false
         ];
-        $this->makeRequest('PUT', $endpoint, $data);
+        $response = $this->makeRequest('PUT', $endpoint, $data);
 
-        return true;
+        return $response && $response['responseCode'] === 204;
     }
 
-    public function addZoneKey(string $zone, string $keyType, int $keySize, string $algorithm)
+    public function addZoneKey(string $zone, string $keyType, int $keySize, string $algorithm): bool
     {
         $endpoint = "/api/v1/servers/{$this->serverName}/zones/{$zone}/cryptokeys";
         $data = [
@@ -130,15 +141,15 @@ class PowerdnsApiClient {
 
         $response = $this->makeRequest('POST', $endpoint, $data);
 
-        return $response && $response['published'] === true;
+        return $response && $response['responseCode'] === 201;
     }
 
-    public function removeZoneKey(string $zone, int $keyId)
+    public function removeZoneKey(string $zone, int $keyId): bool
     {
         $endpoint = "/api/v1/servers/{$this->serverName}/zones/{$zone}/cryptokeys/{$keyId}";
-        $this->makeRequest('DELETE', $endpoint);
+        $response = $this->makeRequest('DELETE', $endpoint);
 
-        return true;
+        return $response && $response['responseCode'] === 204;
     }
 }
 

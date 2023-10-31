@@ -37,8 +37,7 @@ class PdnsApiProvider implements DnssecProvider
 
     public function rectifyZone(string $zone): bool
     {
-        $response = $this->client->rectifyZone($zone);
-        return $response && $response['result'] === 'Rectified';
+        return $this->client->rectifyZone($zone);
     }
 
     public function secureZone(string $zone): bool
