@@ -85,27 +85,18 @@ class PdnsUtilProvider implements DnssecProvider
         return array($output, $return_code);
     }
 
-    public function rectifyZone(int $domainId): bool
+    public function rectifyZone(string $domainName): bool
     {
         global $db;
         global $pdnssec_command, $pdnssec_debug;
 
         $output = array();
 
-        /* if pdnssec_command is set we perform ``pdnsutil rectify-zone $domain`` on all zones,
-         * as pdns needs the "auth" column for all zones if dnssec is enabled
-         *
-         * If there is any entry at domainmetadata table for this domain,
-         * it is an error if pdnssec_command is not set */
-        $query = "SELECT COUNT(id) FROM domainmetadata WHERE domain_id = " . $db->quote($domainId, 'integer');
-        $count = $db->queryOne($query);
-
         if (isset($pdnssec_command)) {
-            $domain = DnsRecord::get_domain_name_by_id($domainId);
             $full_command = join(' ', array(
                 escapeshellcmd($pdnssec_command),
                 'rectify-zone',
-                escapeshellarg($domain),
+                escapeshellarg($domainName),
                 $pdnssec_debug ? '2>&1' : ''
             ));
 
@@ -128,9 +119,6 @@ class PdnsUtilProvider implements DnssecProvider
             }
 
             return true;
-        } else if ($count >= 1) {
-            error(_('Failed to call pdnssec utility.'));
-            return false;
         }
 
         return false;

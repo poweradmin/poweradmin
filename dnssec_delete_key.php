@@ -29,11 +29,10 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\Application\Services\DnssecService;
+use Poweradmin\Application\Dnssec\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
 use Poweradmin\Domain\Dnssec\DnssecAlgorithm;
-use Poweradmin\Infrastructure\Dnssec\PdnsUtilProvider;
 use Poweradmin\Validation;
 
 require_once 'inc/toolkit.inc.php';
@@ -71,10 +70,9 @@ class DnsSecDeleteKeyController extends BaseController
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
-        $provider = new PdnsUtilProvider();
-        $service = new DnssecService($provider);
+        $dnssecProvider = DnssecProviderFactory::create($this->getConfig());
 
-        if (!$service->keyExists($domain_name, $key_id)) {
+        if (!$dnssecProvider->keyExists($domain_name, $key_id)) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
@@ -82,7 +80,7 @@ class DnsSecDeleteKeyController extends BaseController
             $this->showError(_('Failed to delete DNSSEC key.'));
         }
 
-        if ($confirm == '1' && $service->removeZoneKey($domain_name, $key_id)) {
+        if ($confirm == '1' && $dnssecProvider->removeZoneKey($domain_name, $key_id)) {
             $this->setMessage('dnssec', 'success', _('Zone key has been deleted successfully.'));
             $this->redirect('dnssec.php', ['id' => $zone_id]);
         }
@@ -92,9 +90,8 @@ class DnsSecDeleteKeyController extends BaseController
 
     public function showKeyInfo($domain_name, $key_id, string $zone_id): void
     {
-        $provider = new PdnsUtilProvider();
-        $service = new DnssecService($provider);
-        $key_info = $service->getZoneKey($domain_name, $key_id);
+        $dnssecProvider = DnssecProviderFactory::create($this->getConfig());
+        $key_info = $dnssecProvider->getZoneKey($domain_name, $key_id);
 
         if (preg_match("/^xn--/", $domain_name)) {
             $idn_zone_name = idn_to_utf8($domain_name, IDNA_NONTRANSITIONAL_TO_ASCII);

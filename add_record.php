@@ -29,6 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Application\Dnssec\DnssecProviderFactory;
 use Poweradmin\Application\Services\DnssecService;
 use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
@@ -154,9 +155,8 @@ class AddRecordController extends BaseController
                         $content_rev, $fqdn_name, $ttl, $prio), $zone_id);
 
                     if ($this->config('pdnssec_use')) {
-                        $provider = new PdnsUtilProvider();
-                        $service = new DnssecService($provider);
-                        $service->rectifyZone($zone_rev_id);
+                        $dnssecProvider = DnssecProviderFactory::create($this->getConfig());
+                        $dnssecProvider->rectifyZone($zone_name);
                     }
                 }
             } elseif (isset($content_rev)) {
@@ -176,9 +176,8 @@ class AddRecordController extends BaseController
             );
 
             if ($this->config('pdnssec_use')) {
-                $provider = new PdnsUtilProvider();
-                $service = new DnssecService($provider);
-                $service->rectifyZone($zone_id);
+                $dnssecProvider = DnssecProviderFactory::create($this->getConfig());
+                $dnssecProvider->rectifyZone($zone_name);
             }
 
             $this->setMessage('add_record', 'success', _('The record was successfully added.'));

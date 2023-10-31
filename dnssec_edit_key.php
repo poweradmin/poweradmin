@@ -29,9 +29,9 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\Application\Services\DnssecService;
+use Poweradmin\Application\Dnssec\DnssecProviderFactory;
 use Poweradmin\DnsRecord;
-use Poweradmin\Infrastructure\Dnssec\PdnsUtilProvider;
+use Poweradmin\Domain\Dnssec\DnssecAlgorithm;
 use Poweradmin\Validation;
 
 require_once 'inc/toolkit.inc.php';
@@ -68,9 +68,8 @@ class DnsSecEditKeyController extends \Poweradmin\BaseController {
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
-        $provider = new PdnsUtilProvider();
-        $service = new DnssecService($provider);
-        if (!$service->keyExists($domain_name, $key_id)) {
+        $dnssecProvider = DnssecProviderFactory::create($this->getConfig());
+        if (!$dnssecProvider->keyExists($domain_name, $key_id)) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
@@ -78,16 +77,16 @@ class DnsSecEditKeyController extends \Poweradmin\BaseController {
             $this->showError(_('Failed to delete DNSSEC key.'));
         }
 
-        $key_info = $service->getZoneKey($domain_name, $key_id);
+        $key_info = $dnssecProvider->getZoneKey($domain_name, $key_id);
 
         if ($confirm == '1') {
             if ($key_info[5]) {
-                if ($service->deactivateZoneKey($domain_name, $key_id)) {
+                if ($dnssecProvider->deactivateZoneKey($domain_name, $key_id)) {
                     $this->setMessage('dnssec', 'success', _('Zone key has been successfully deactivated.'));
                     $this->redirect('dnssec.php', ['id' => $zone_id]);
                 }
             } else {
-                if ($service->activateZoneKey($domain_name, $key_id)) {
+                if ($dnssecProvider->activateZoneKey($domain_name, $key_id)) {
                     $this->setMessage('dnssec', 'success', _('Zone key has been successfully activated.'));
                     $this->redirect('dnssec.php', ['id' => $zone_id]);
                 }
@@ -104,7 +103,8 @@ class DnsSecEditKeyController extends \Poweradmin\BaseController {
             'domain_name' => $domain_name,
             'idn_zone_name' => $idn_zone_name,
             'key_id' => $key_id,
-            'key_info' => $service->getZoneKey($domain_name, $key_id),
+            'key_info' => $dnssecProvider->getZoneKey($domain_name, $key_id),
+            'algorithms' => DnssecAlgorithm::ALGORITHMS,
             'user_is_zone_owner' => $user_is_zone_owner,
             'zone_id' => $zone_id,
         ]);

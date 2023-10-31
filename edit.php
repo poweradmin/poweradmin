@@ -30,11 +30,10 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\Application\Services\DnssecService;
+use Poweradmin\Application\Dnssec\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
 use Poweradmin\Domain\Enum\ZoneType;
-use Poweradmin\Infrastructure\Dnssec\PdnsUtilProvider;
 use Poweradmin\Permission;
 use Poweradmin\RecordLog;
 use Poweradmin\RecordType;
@@ -63,6 +62,7 @@ class EditController extends BaseController {
             $this->showError(_('Invalid or unexpected input given.'));
         }
         $zone_id = htmlspecialchars($_GET['id']);
+        $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
 
         if (isset($_POST['commit'])) {
             $error = false;
@@ -101,7 +101,7 @@ class EditController extends BaseController {
                 $raw_zone_comment = DnsRecord::get_zone_comment($zone_id);
                 $zone_comment = $_POST['comment'] ?? '';
                 if ($raw_zone_comment != $zone_comment) {
-                    DnsRecord::edit_zone_comment($_GET['id'], $zone_comment);
+                    DnsRecord::edit_zone_comment($zone_id, $zone_comment);
                     $one_record_changed = true;
                 }
             }
@@ -111,7 +111,7 @@ class EditController extends BaseController {
                 if ($serial_mismatch && $experimental_edit_conflict_resolution == 'only_latest_version') {
                     $this->setMessage('edit', 'warn', (_('Request has expired, please try again.')));
                 } else {
-                    DnsRecord::update_soa_serial($_GET['id']);
+                    DnsRecord::update_soa_serial($zone_id);
 
                     if ($one_record_changed) {
                         $this->setMessage('edit', 'success', _('Zone has been updated successfully.'));
@@ -120,9 +120,8 @@ class EditController extends BaseController {
                     }
 
                     if ($this->config('pdnssec_use')) {
-                        $provider = new PdnsUtilProvider();
-                        $service = new DnssecService($provider);
-                        $service->rectifyZone($_GET['id']);
+                        $dnssecProvider = DnssecProviderFactory::create($this->getConfig());
+                        $dnssecProvider->rectifyZone($zone_name);
                     }
                 }
             } else {
@@ -190,15 +189,12 @@ class EditController extends BaseController {
             $this->showError(_('There is no zone with this ID.'));
         }
 
-        $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
-
         if (isset($_POST['sign_zone'])) {
             DnsRecord::update_soa_serial($zone_id);
 
-            $provider = new PdnsUtilProvider();
-            $service = new DnssecService($provider);
-            $result = $service->secureZone($zone_name);
-            $service->rectifyZone($zone_id);
+            $dnssecProvider = DnssecProviderFactory::create($this->getConfig());
+            $result = $dnssecProvider->secureZone($zone_name);
+            $dnssecProvider->rectifyZone($zone_name);
 
             if ($result) {
                 $this->setMessage('edit', 'success', _('Zone has been signed successfully.'));
@@ -206,9 +202,8 @@ class EditController extends BaseController {
         }
 
         if (isset($_POST['unsign_zone'])) {
-            $provider = new PdnsUtilProvider();
-            $service = new DnssecService($provider);
-            $service->unsecureZone($zone_name);
+            $dnssecProvider = DnssecProviderFactory::create($this->getConfig());
+            $dnssecProvider->unsecureZone($zone_name);
 
             DnsRecord::update_soa_serial($zone_id);
             $this->setMessage('edit', 'success', _('Zone has been unsigned successfully.'));
@@ -237,8 +232,7 @@ class EditController extends BaseController {
 
         $soa_record = DnsRecord::get_soa_record($zone_id);
 
-        $provider = new PdnsUtilProvider();
-        $service = new DnssecService($provider);
+        $dnssecProvider = DnssecProviderFactory::create($this->getConfig());
 
         $this->render('edit.html', [
             'zone_id' => $zone_id,
@@ -268,7 +262,7 @@ class EditController extends BaseController {
             'record_sort_by' => $record_sort_by,
             'pagination' => show_pages($record_count, $iface_rowamount, $zone_id),
             'pdnssec_use' => $this->config('pdnssec_use'),
-            'is_secured' => $service->isZoneSecured($zone_name),
+            'is_secured' => $dnssecProvider->isZoneSecured($zone_name),
             'session_userid' => $_SESSION["userid"],
             'dns_ttl' => $this->config('dns_ttl'),
             'is_rev_zone' => preg_match('/i(p6|n-addr).arpa/i', $zone_name),

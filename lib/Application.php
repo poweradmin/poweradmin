@@ -72,6 +72,11 @@ class Application {
         }
     }
 
+    public function getConfig(): LegacyConfiguration
+    {
+        return $this->configuration;
+    }
+
     public function config($name): mixed {
         return $this->configuration->get($name);
     }

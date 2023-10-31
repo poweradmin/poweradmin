@@ -29,10 +29,9 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\Application\Services\DnssecService;
+use Poweradmin\Application\Dnssec\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
-use Poweradmin\Infrastructure\Dnssec\PdnsUtilProvider;
 use Poweradmin\Logger;
 use Poweradmin\Permission;
 
@@ -74,13 +73,9 @@ class DeleteDomainController extends BaseController
         if ($pdnssec_use && $zone_info['type'] == 'MASTER') {
             $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
 
-            $provider = new PdnsUtilProvider();
-            $service = new DnssecService($provider);
-
-            if ($service->isZoneSecured($zone_name)) {
-                $provider = new PdnsUtilProvider();
-                $service = new DnssecService($provider);
-                $service->unsecureZone($zone_name);
+            $dnssecProvider = DnssecProviderFactory::create($this->getConfig());
+            if ($dnssecProvider->isZoneSecured($zone_name)) {
+                $dnssecProvider->unsecureZone($zone_name);
             }
         }
 

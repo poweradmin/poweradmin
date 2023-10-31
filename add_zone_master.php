@@ -29,11 +29,10 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\Application\Services\DnssecService;
+use Poweradmin\Application\Dnssec\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Dns;
 use Poweradmin\DnsRecord;
-use Poweradmin\Infrastructure\Dnssec\PdnsUtilProvider;
 use Poweradmin\Logger;
 use Poweradmin\ZoneTemplate;
 
@@ -67,38 +66,36 @@ class AddZoneMasterController extends BaseController
         $pdnssec_use = $this->config('pdnssec_use');
         $dns_third_level_check = $this->config('dns_third_level_check');
 
-        $zone = idn_to_ascii(trim($_POST['domain']), IDNA_NONTRANSITIONAL_TO_ASCII);
+        $zone_name = idn_to_ascii(trim($_POST['domain']), IDNA_NONTRANSITIONAL_TO_ASCII);
         $dom_type = $_POST["dom_type"];
         $owner = $_POST['owner'];
         $zone_template = $_POST['zone_template'] ?? "none";
 
-        if (!Dns::is_valid_hostname_fqdn($zone, 0)) {
+        if (!Dns::is_valid_hostname_fqdn($zone_name, 0)) {
             $this->setMessage('add_zone_master', 'error', _('Invalid hostname.'));
             $this->showForm();
-        } elseif ($dns_third_level_check && DnsRecord::get_domain_level($zone) > 2 && DnsRecord::domain_exists(DnsRecord::get_second_level_domain($zone))) {
-            $this->setMessage('add_zone_master', 'error', _('There is already a zone with this name.'));
+        } elseif ($dns_third_level_check && DnsRecord::get_domain_level($zone_name) > 2 && DnsRecord::domain_exists(DnsRecord::get_second_level_domain($zone_name))) {
+            $this->setMessage('add_zone_master', 'error', _('There is already a zone_name with this name.'));
             $this->showForm();
-        } elseif (DnsRecord::domain_exists($zone) || DnsRecord::record_name_exists($zone)) {
-            $this->setMessage('add_zone_master', 'error', _('There is already a zone with this name.'));
+        } elseif (DnsRecord::domain_exists($zone_name) || DnsRecord::record_name_exists($zone_name)) {
+            $this->setMessage('add_zone_master', 'error', _('There is already a zone_name with this name.'));
             $this->showForm();
-        } elseif (DnsRecord::add_domain($zone, $owner, $dom_type, '', $zone_template)) {
+        } elseif (DnsRecord::add_domain($zone_name, $owner, $dom_type, '', $zone_template)) {
             $this->setMessage('list_zones', 'success', _('Zone has been added successfully.'));
 
-            $zone_id = DnsRecord::get_zone_id_from_name($zone);
-            Logger::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
+            $zone_id = DnsRecord::get_zone_id_from_name($zone_name);
+            Logger::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone_name:%s zone_type:%s zone_template:%s',
                 $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                $zone, $dom_type, $zone_template), $zone_id);
+                $zone_name, $dom_type, $zone_template), $zone_id);
 
             if ($pdnssec_use) {
+                $dnssecProvider = DnssecProviderFactory::create($this->getConfig());
+
                 if (isset($_POST['dnssec'])) {
-                    $provider = new PdnsUtilProvider();
-                    $service = new DnssecService($provider);
-                    $service->secureZone($zone);
+                    $dnssecProvider->secureZone($zone_name);
                 }
 
-                $provider = new PdnsUtilProvider();
-                $service = new DnssecService($provider);
-                $service->rectifyZone($zone_id);
+                $dnssecProvider->rectifyZone($zone_name);
             }
 
             $this->redirect('list_zones.php');

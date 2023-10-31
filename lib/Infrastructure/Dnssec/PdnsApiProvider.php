@@ -1,5 +1,7 @@
 <?php
 
+namespace Poweradmin\Infrastructure\Dnssec;
+
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://www.poweradmin.org> for more details.
  *
@@ -21,71 +23,140 @@
  */
 
 use Poweradmin\Domain\Dnssec\DnssecProvider;
+use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
+use Poweradmin\LegacyConfiguration;
 
 class PdnsApiProvider implements DnssecProvider
 {
-    public function rectifyZone(int $domainId): bool
+    private PowerdnsApiClient $client;
+
+    public function __construct(PowerdnsApiClient $client)
     {
-        // TODO: Implement rectifyZone() method.
+        $this->client = $client;
+    }
+
+    public function rectifyZone(string $domainName): bool
+    {
+        $response = $this->client->rectifyZone($domainName);
+        return $response && $response['result'] === 'Rectified';
     }
 
     public function secureZone(string $domainName): bool
     {
-        // TODO: Implement secureZone() method.
+        return $this->client->secureZone($domainName);
     }
 
     public function unsecureZone(string $domainName): bool
     {
-        // TODO: Implement unsecureZone() method.
+        return $this->client->unsecureZone($domainName);
     }
 
     public function isZoneSecured(string $domainName): bool
     {
-        // TODO: Implement isZoneSecured() method.
+        return $this->client->isZoneSecured($domainName);
     }
 
     public function getDsRecords(string $domainName): array
     {
-        // TODO: Implement getDsRecords() method.
+        $result = [];
+        $keys = $this->client->getKeys($domainName);
+        foreach ($keys as $key) {
+            foreach ($key["ds"] as $ds) {
+                $result[] = $domainName . ". IN DS " . $ds;
+            }
+        }
+        return $result;
     }
 
     public function getDnsKeyRecords(string $domainName): array
     {
-        // TODO: Implement getDnsKeyRecords() method.
+        $result = [];
+        $keys = $this->client->getKeys($domainName);
+        foreach ($keys as $key) {
+            $result[] = $domainName . ". IN DNSKEY " . $key["dnskey"];
+        }
+        return $result;
     }
 
     public function activateZoneKey(string $domainName, int $keyId): bool
     {
-        // TODO: Implement activateZoneKey() method.
+        return $this->client->activateZoneKey($domainName, $keyId);
     }
 
     public function deactivateZoneKey(string $domainName, int $keyId): bool
     {
-        // TODO: Implement deactivateZoneKey() method.
+        return $this->client->deactivateZoneKey($domainName, $keyId);
     }
 
     public function getKeys(string $domainName): array
     {
-        // TODO: Implement getKeys() method.
+        $keys = $this->client->getKeys($domainName);
+
+        // TODO: review this mapping
+        $result = [];
+        foreach ($keys as $key) {
+            $ds = explode(" ", $key['ds'][0] ?? "");
+            $dnskey = explode(" ", $key['dnskey'] ?? "");
+
+            [$dsValue] = $ds;
+            [,, $dnsKeyValue] = $dnskey;
+
+            $result[] = [
+                $key['id'],
+                strtoupper($key['keytype']),
+                $dsValue,
+                $dnsKeyValue,
+                $key['bits'],
+                $key['active'],
+            ];
+        }
+        return $result;
     }
 
     public function addZoneKey(string $domainName, string $keyType, int $keySize, string $algorithm): bool
     {
-        // TODO: Implement addZoneKey() method.
+        return $this->client->addZoneKey($domainName, $keyType, $keySize, $algorithm);
     }
 
     public function removeZoneKey(string $domainName, int $keyId): bool
     {
-        // TODO: Implement removeZoneKey() method.
+        return $this->client->removeZoneKey($domainName, $keyId);
     }
 
     public function keyExists(string $domainName, int $keyId): bool
     {
-        // TODO: Implement keyExists() method.
+        $keys = $this->client->getKeys($domainName);
+
+        foreach ($keys as $key) {
+            if ($key['id'] === $keyId) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function getZoneKey(string $domainName, int $keyId): array
     {
-        // TODO: Implement getZoneKey() method.
+        $keys = $this->client->getKeys($domainName);
+
+        foreach ($keys as $key) {
+            if ($key['id'] === $keyId) {
+                $ds = explode(" ", $key['ds'][0] ?? "");
+                $dnskey = explode(" ", $key['dnskey'] ?? "");
+
+                [$dsValue] = $ds;
+                [,, $dnsKeyValue] = $dnskey;
+
+                return [
+                    $key['id'],
+                    strtoupper($key['keytype']),
+                    $dsValue,
+                    $dnsKeyValue,
+                    $key['bits'],
+                    $key['active'],
+                ];
+            }
+        }
+        return [];
     }
 }

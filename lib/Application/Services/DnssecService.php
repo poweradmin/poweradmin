@@ -31,8 +31,8 @@ class DnssecService {
         $this->provider = $provider;
     }
 
-    public function rectifyZone(int $domainId): bool {
-        return $this->provider->rectifyZone($domainId);
+    public function rectifyZone(string $domainName): bool {
+        return $this->provider->rectifyZone($domainName);
     }
     public function secureZone(string $domainName): bool {
         return $this->provider->secureZone($domainName);

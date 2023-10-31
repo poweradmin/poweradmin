@@ -43,6 +43,11 @@ abstract class BaseController
         return $_SERVER['REQUEST_METHOD'] === 'GET';
     }
 
+    public function getConfig(): LegacyConfiguration
+    {
+        return $this->app->getConfig();
+    }
+
     public function config(string $key): mixed
     {
         return $this->app->config($key);

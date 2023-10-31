@@ -22,9 +22,7 @@
 
 namespace Poweradmin;
 
-use Poweradmin\Application\Services\DnssecService;
 use Poweradmin\Infrastructure\Database\DbCompat;
-use Poweradmin\Infrastructure\Dnssec\PdnsUtilProvider;
 
 /**
  * DNS record functions
@@ -425,11 +423,10 @@ class DnsRecord
                 if ($type != 'SOA') {
                     self::update_soa_serial($zone_id);
                 }
-                if ($pdnssec_use) {
-                    $provider = new PdnsUtilProvider();
-                    $service = new DnssecService($provider);
-                    $service->rectifyZone($zone_id);
-                }
+//                if ($pdnssec_use) {
+//                    $dnssecProvider = DnssecProviderFactory::create($this->getConfig());
+//                    $dnssecProvider->rectifyZone($zone_id);
+//                }
                 return true;
             } else {
                 return false;
@@ -1724,12 +1721,10 @@ class DnsRecord
                     if ($pdnssec_use && $zone_type == 'MASTER') {
                         $zone_name = self::get_domain_name_by_id($id);
 
-                        $provider = new PdnsUtilProvider();
-                        $service = new DnssecService($provider);
-
-                        if ($service->isZoneSecured($zone_name)) {
-                            $service->unsecureZone($zone_name);
-                        }
+//                        $dnssecProvider = DnssecProviderFactory::create($this->getConfig());
+//                        if ($dnssecProvider->isZoneSecured($zone_name)) {
+//                            $dnssecProvider->unsecureZone($zone_name);
+//                        }
                     }
 
                     $db->exec("DELETE FROM zones WHERE domain_id=" . $db->quote($id, 'integer'));

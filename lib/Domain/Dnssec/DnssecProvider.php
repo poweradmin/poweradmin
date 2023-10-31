@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Dnssec;
 
 interface DnssecProvider {
-    public function rectifyZone(int $domainId): bool;
+    public function rectifyZone(string $domainName): bool;
     public function secureZone(string $domainName): bool;
     public function unsecureZone(string $domainName): bool;
     public function isZoneSecured(string $domainName): bool;

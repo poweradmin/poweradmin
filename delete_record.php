@@ -29,10 +29,9 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\Application\Services\DnssecService;
+use Poweradmin\Application\Dnssec\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
-use Poweradmin\Infrastructure\Dnssec\PdnsUtilProvider;
 use Poweradmin\Permission;
 use Poweradmin\Validation;
 use Poweradmin\Logger;
@@ -71,9 +70,9 @@ class DeleteRecordController extends BaseController {
                 DnsRecord::update_soa_serial($zid);
 
                 if ($this->config('pdnssec_use')) {
-                    $provider = new PdnsUtilProvider();
-                    $service = new DnssecService($provider);
-                    $service->rectifyZone($zid);
+                    $zone_name = DnsRecord::get_domain_name_by_id($zid);
+                    $dnssecProvider = DnssecProviderFactory::create($this->getConfig());
+                    $dnssecProvider->rectifyZone($zone_name);
                 }
 
                 $this->setMessage('edit', 'success', _('The record has been deleted successfully.'));

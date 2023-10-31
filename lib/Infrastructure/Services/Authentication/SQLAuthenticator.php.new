@@ -1,0 +1,109 @@
+<?php
+
+namespace Poweradmin\Infrastructure\Services\Authentication;
+
+use Poweradmin\Application\Services\UserAuthenticationService;
+use Poweradmin\Domain\Service\PasswordEncryptionService;
+
+require_once 'inc/session.inc.php';
+
+class SQLAuthenticator {
+    private $db;
+    private $session_key;
+    private $config;
+
+    public function __construct($db, $session_key, $config) {
+        $this->db = $db;
+        $this->session_key = $session_key;
+        $this->config = $config;
+    }
+
+    public function authenticate() {
+        if (!$this->hasValidSession()) {
+            $this->showAuthForm();
+            return;
+        }
+
+        $passwordEncryptionService = new PasswordEncryptionService($this->session_key);
+        $session_pass = $passwordEncryptionService->decrypt($_SESSION['userpwd']);
+
+        $user = $this->getUserFromDatabase();
+
+        if (!$user || !$this->isValidUser($user, $session_pass)) {
+            $this->handleFailedAuthentication();
+            return;
+        }
+
+        $this->initializeUserSession($user);
+        $this->handlePostAuthentication();
+    }
+
+    private function hasValidSession() {
+        return isset($_SESSION["userlogin"]) && isset($_SESSION["userpwd"]);
+    }
+
+    private function showAuthForm() {
+        auth();
+    }
+
+    private function getUserFromDatabase() {
+        $stmt = $this->db->prepare("SELECT id, fullname, password, active FROM users WHERE username=:username AND use_ldap=0");
+        $stmt->bindParam(':username', $_SESSION["userlogin"]);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    private function isValidUser($user, $session_pass) {
+        $userAuthService = new UserAuthenticationService(
+            $this->config->get('password_encryption'),
+            $this->config->get('password_encryption_cost')
+        );
+
+        if (!$userAuthService->verifyPassword($session_pass, $user['password'])) {
+            return false;
+        }
+
+        if ($user['active'] != 1) {
+            $this->showAuthForm('The user account is disabled.', 'danger');
+            return false;
+        }
+
+        if ($userAuthService->requiresRehash($user['password'])) {
+            $this->updateUserPassword($user["id"], $session_pass);
+        }
+
+        return true;
+    }
+
+    private function handleFailedAuthentication() {
+        // Implement the logic to handle failed authentication, e.g., logging, showing error messages, etc.
+    }
+
+    private function initializeUserSession($user) {
+        session_regenerate_id(true);
+        $_SESSION["userid"] = $user["id"];
+        $_SESSION["name"] = $user["fullname"];
+        $_SESSION["auth_used"] = "internal";
+    }
+
+    private function handlePostAuthentication() {
+        if (isset($_POST["authenticate"])) {
+            UserEventLogger::log_successful_auth();
+            session_write_close();
+            $redirect_url = $this->getRedirectUrl();
+            $this->cleanPage($redirect_url);
+        }
+    }
+
+    private function getRedirectUrl() {
+        if (isset($_POST["query_string"])) {
+            // Validate and sanitize the query_string before using it
+            return $_SERVER['SCRIPT_NAME'] . "?" . $_POST["query_string"];
+        }
+        return $_SERVER['SCRIPT_NAME'];
+    }
+
+    private function cleanPage($redirect_url) {
+        // Implement the logic to clean and redirect to the given URL
+    }
+}

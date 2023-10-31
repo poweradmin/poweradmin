@@ -29,10 +29,9 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\Application\Services\DnssecService;
+use Poweradmin\Application\Dnssec\DnssecProviderFactory;
 use Poweradmin\DnsRecord;
 use Poweradmin\Domain\Dnssec\DnssecAlgorithmName;
-use Poweradmin\Infrastructure\Dnssec\PdnsUtilProvider;
 use Poweradmin\Validation;
 
 require_once 'inc/toolkit.inc.php';
@@ -89,10 +88,8 @@ class DnsSecAddKeyController extends \Poweradmin\BaseController {
 
         $domain_name = DnsRecord::get_domain_name_by_id($zone_id);
         if (isset($_POST["submit"])) {
-            $provider = new PdnsUtilProvider();
-            $service = new DnssecService($provider);
-
-            if ($service->addZoneKey($domain_name, $key_type, $bits, $algorithm)) {
+            $dnssecProvider = DnssecProviderFactory::create($this->getConfig());
+            if ($dnssecProvider->addZoneKey($domain_name, $key_type, $bits, $algorithm)) {
                 $this->setMessage('dnssec', 'success', _('Zone key has been added successfully.'));
                 $this->redirect('dnssec.php', ['id' => $zone_id]);
             } else {
