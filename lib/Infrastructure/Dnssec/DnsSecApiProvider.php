@@ -138,7 +138,7 @@ class DnsSecApiProvider implements DnssecProvider
         [$dsValue] = $ds;
         [, , $dnsKeyValue] = $dnskey;
 
-        $res = [
+        return [
             $key['id'],
             strtoupper($key['keytype']),
             $dsValue,
@@ -146,6 +146,5 @@ class DnsSecApiProvider implements DnssecProvider
             $key['bits'],
             $key['active'],
         ];
-        return $res;
     }
 }
