@@ -78,9 +78,6 @@ class PowerdnsApiClient {
 
         $responseCode = $this->getResponseCode($http_response_header);
         $responseData = json_decode($result, true);
-        if (is_null($responseData)) {
-            return $this->errorResponse('Failed to decode JSON response');
-        }
 
         return [
             'responseCode' => $responseCode,
