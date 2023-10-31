@@ -91,15 +91,15 @@ class PowerdnsApiClient {
         return isset($zoneDetails['dnssec']) && $zoneDetails['dnssec'];
     }
 
-    public function getKeys(string $domainName)
+    public function getKeys(string $zone)
     {
-        $endpoint = "/api/v1/servers/{$this->serverName}/zones/{$domainName}/cryptokeys";
+        $endpoint = "/api/v1/servers/{$this->serverName}/zones/{$zone}/cryptokeys";
         return $this->makeRequest('GET', $endpoint);
     }
 
-    public function activateZoneKey(string $domainName, int $keyId)
+    public function activateZoneKey(string $zone, int $keyId)
     {
-        $endpoint = "/api/v1/servers/{$this->serverName}/zones/{$domainName}/cryptokeys/{$keyId}";
+        $endpoint = "/api/v1/servers/{$this->serverName}/zones/{$zone}/cryptokeys/{$keyId}";
         $data = [
             'active' => true
         ];
@@ -108,9 +108,9 @@ class PowerdnsApiClient {
         return true;
     }
 
-    public function deactivateZoneKey(string $domainName, int $keyId)
+    public function deactivateZoneKey(string $zone, int $keyId)
     {
-        $endpoint = "/api/v1/servers/{$this->serverName}/zones/{$domainName}/cryptokeys/{$keyId}";
+        $endpoint = "/api/v1/servers/{$this->serverName}/zones/{$zone}/cryptokeys/{$keyId}";
         $data = [
             'active' => false
         ];
@@ -119,9 +119,9 @@ class PowerdnsApiClient {
         return true;
     }
 
-    public function addZoneKey(string $domainName, string $keyType, int $keySize, string $algorithm)
+    public function addZoneKey(string $zone, string $keyType, int $keySize, string $algorithm)
     {
-        $endpoint = "/api/v1/servers/{$this->serverName}/zones/{$domainName}/cryptokeys";
+        $endpoint = "/api/v1/servers/{$this->serverName}/zones/{$zone}/cryptokeys";
         $data = [
             'keytype' => $keyType,
             'bits' => $keySize,
@@ -133,9 +133,9 @@ class PowerdnsApiClient {
         return $response && $response['published'] === true;
     }
 
-    public function removeZoneKey(string $domainName, int $keyId)
+    public function removeZoneKey(string $zone, int $keyId)
     {
-        $endpoint = "/api/v1/servers/{$this->serverName}/zones/{$domainName}/cryptokeys/{$keyId}";
+        $endpoint = "/api/v1/servers/{$this->serverName}/zones/{$zone}/cryptokeys/{$keyId}";
         $this->makeRequest('DELETE', $endpoint);
 
         return true;

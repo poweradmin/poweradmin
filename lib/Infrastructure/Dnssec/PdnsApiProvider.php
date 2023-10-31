@@ -35,62 +35,62 @@ class PdnsApiProvider implements DnssecProvider
         $this->client = $client;
     }
 
-    public function rectifyZone(string $domainName): bool
+    public function rectifyZone(string $zone): bool
     {
-        $response = $this->client->rectifyZone($domainName);
+        $response = $this->client->rectifyZone($zone);
         return $response && $response['result'] === 'Rectified';
     }
 
-    public function secureZone(string $domainName): bool
+    public function secureZone(string $zone): bool
     {
-        return $this->client->secureZone($domainName);
+        return $this->client->secureZone($zone);
     }
 
-    public function unsecureZone(string $domainName): bool
+    public function unsecureZone(string $zone): bool
     {
-        return $this->client->unsecureZone($domainName);
+        return $this->client->unsecureZone($zone);
     }
 
-    public function isZoneSecured(string $domainName): bool
+    public function isZoneSecured(string $zone): bool
     {
-        return $this->client->isZoneSecured($domainName);
+        return $this->client->isZoneSecured($zone);
     }
 
-    public function getDsRecords(string $domainName): array
+    public function getDsRecords(string $zone): array
     {
         $result = [];
-        $keys = $this->client->getKeys($domainName);
+        $keys = $this->client->getKeys($zone);
         foreach ($keys as $key) {
             foreach ($key["ds"] as $ds) {
-                $result[] = $domainName . ". IN DS " . $ds;
+                $result[] = $zone . ". IN DS " . $ds;
             }
         }
         return $result;
     }
 
-    public function getDnsKeyRecords(string $domainName): array
+    public function getDnsKeyRecords(string $zone): array
     {
         $result = [];
-        $keys = $this->client->getKeys($domainName);
+        $keys = $this->client->getKeys($zone);
         foreach ($keys as $key) {
-            $result[] = $domainName . ". IN DNSKEY " . $key["dnskey"];
+            $result[] = $zone . ". IN DNSKEY " . $key["dnskey"];
         }
         return $result;
     }
 
-    public function activateZoneKey(string $domainName, int $keyId): bool
+    public function activateZoneKey(string $zone, int $keyId): bool
     {
-        return $this->client->activateZoneKey($domainName, $keyId);
+        return $this->client->activateZoneKey($zone, $keyId);
     }
 
-    public function deactivateZoneKey(string $domainName, int $keyId): bool
+    public function deactivateZoneKey(string $zone, int $keyId): bool
     {
-        return $this->client->deactivateZoneKey($domainName, $keyId);
+        return $this->client->deactivateZoneKey($zone, $keyId);
     }
 
-    public function getKeys(string $domainName): array
+    public function getKeys(string $zone): array
     {
-        $keys = $this->client->getKeys($domainName);
+        $keys = $this->client->getKeys($zone);
 
         // TODO: review this mapping
         $result = [];
@@ -113,19 +113,19 @@ class PdnsApiProvider implements DnssecProvider
         return $result;
     }
 
-    public function addZoneKey(string $domainName, string $keyType, int $keySize, string $algorithm): bool
+    public function addZoneKey(string $zone, string $keyType, int $keySize, string $algorithm): bool
     {
-        return $this->client->addZoneKey($domainName, $keyType, $keySize, $algorithm);
+        return $this->client->addZoneKey($zone, $keyType, $keySize, $algorithm);
     }
 
-    public function removeZoneKey(string $domainName, int $keyId): bool
+    public function removeZoneKey(string $zone, int $keyId): bool
     {
-        return $this->client->removeZoneKey($domainName, $keyId);
+        return $this->client->removeZoneKey($zone, $keyId);
     }
 
-    public function keyExists(string $domainName, int $keyId): bool
+    public function keyExists(string $zone, int $keyId): bool
     {
-        $keys = $this->client->getKeys($domainName);
+        $keys = $this->client->getKeys($zone);
 
         foreach ($keys as $key) {
             if ($key['id'] === $keyId) {
@@ -135,9 +135,9 @@ class PdnsApiProvider implements DnssecProvider
         return false;
     }
 
-    public function getZoneKey(string $domainName, int $keyId): array
+    public function getZoneKey(string $zone, int $keyId): array
     {
-        $keys = $this->client->getKeys($domainName);
+        $keys = $this->client->getKeys($zone);
 
         foreach ($keys as $key) {
             if ($key['id'] === $keyId) {
