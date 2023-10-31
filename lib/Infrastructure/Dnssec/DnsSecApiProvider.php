@@ -130,11 +130,7 @@ class DnsSecApiProvider implements DnssecProvider
         return [];
     }
 
-    /**
-     * @param mixed $key
-     * @return array
-     */
-    public function transformKey(mixed $key): array
+    private function transformKey(mixed $key): array
     {
         $ds = explode(" ", $key['ds'][0] ?? "");
         $dnskey = explode(" ", $key['dnskey'] ?? "");
