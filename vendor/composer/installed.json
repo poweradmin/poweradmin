@@ -243,17 +243,17 @@
         },
         {
             "name": "symfony/translation",
-            "version": "v6.3.6",
-            "version_normalized": "6.3.6.0",
+            "version": "v6.3.7",
+            "version_normalized": "6.3.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/translation.git",
-                "reference": "869b26c7a9d4b8a48afdd77ab36031909c87e3a2"
+                "reference": "30212e7c87dcb79c83f6362b00bde0e0b1213499"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/translation/zipball/869b26c7a9d4b8a48afdd77ab36031909c87e3a2",
-                "reference": "869b26c7a9d4b8a48afdd77ab36031909c87e3a2",
+                "url": "https://api.github.com/repos/symfony/translation/zipball/30212e7c87dcb79c83f6362b00bde0e0b1213499",
+                "reference": "30212e7c87dcb79c83f6362b00bde0e0b1213499",
                 "shasum": ""
             },
             "require": {
@@ -290,7 +290,7 @@
                 "symfony/service-contracts": "^2.5|^3",
                 "symfony/yaml": "^5.4|^6.0"
             },
-            "time": "2023-10-17T11:32:53+00:00",
+            "time": "2023-10-28T23:11:45+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -321,7 +321,7 @@
             "description": "Provides tools to internationalize your application",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/translation/tree/v6.3.6"
+                "source": "https://github.com/symfony/translation/tree/v6.3.7"
             },
             "funding": [
                 {
