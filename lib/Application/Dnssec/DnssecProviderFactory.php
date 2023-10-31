@@ -24,7 +24,7 @@ namespace Poweradmin\Application\Dnssec;
 
 use Poweradmin\Domain\Dnssec\DnssecProvider;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
-use Poweradmin\Infrastructure\Dnssec\PdnsApiProvider;
+use Poweradmin\Infrastructure\Dnssec\DnsSecApiProvider;
 use Poweradmin\Infrastructure\Dnssec\PdnsUtilProvider;
 use Poweradmin\LegacyConfiguration;
 
@@ -38,7 +38,7 @@ class DnssecProviderFactory
                 $config->get('pdns_api_key'),
                 'localhost'
             );
-            return new PdnsApiProvider($apiClient);
+            return new DnsSecApiProvider($apiClient);
         }
         return new PdnsUtilProvider();
     }

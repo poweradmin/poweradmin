@@ -24,9 +24,8 @@ namespace Poweradmin\Infrastructure\Dnssec;
 
 use Poweradmin\Domain\Dnssec\DnssecProvider;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
-use Poweradmin\LegacyConfiguration;
 
-class PdnsApiProvider implements DnssecProvider
+class DnsSecApiProvider implements DnssecProvider
 {
     private PowerdnsApiClient $client;
 
@@ -89,25 +88,10 @@ class PdnsApiProvider implements DnssecProvider
 
     public function getKeys(string $zone): array
     {
-        $keys = $this->client->getKeys($zone);
-
-        // TODO: review this mapping
         $result = [];
+        $keys = $this->client->getKeys($zone);
         foreach ($keys as $key) {
-            $ds = explode(" ", $key['ds'][0] ?? "");
-            $dnskey = explode(" ", $key['dnskey'] ?? "");
-
-            [$dsValue] = $ds;
-            [,, $dnsKeyValue] = $dnskey;
-
-            $result[] = [
-                $key['id'],
-                strtoupper($key['keytype']),
-                $dsValue,
-                $dnsKeyValue,
-                $key['bits'],
-                $key['active'],
-            ];
+            $result[] = $this->transformKey($key);
         }
         return $result;
     }
@@ -140,22 +124,32 @@ class PdnsApiProvider implements DnssecProvider
 
         foreach ($keys as $key) {
             if ($key['id'] === $keyId) {
-                $ds = explode(" ", $key['ds'][0] ?? "");
-                $dnskey = explode(" ", $key['dnskey'] ?? "");
-
-                [$dsValue] = $ds;
-                [,, $dnsKeyValue] = $dnskey;
-
-                return [
-                    $key['id'],
-                    strtoupper($key['keytype']),
-                    $dsValue,
-                    $dnsKeyValue,
-                    $key['bits'],
-                    $key['active'],
-                ];
+                return $this->transformKey($key);
             }
         }
         return [];
+    }
+
+    /**
+     * @param mixed $key
+     * @return array
+     */
+    public function transformKey(mixed $key): array
+    {
+        $ds = explode(" ", $key['ds'][0] ?? "");
+        $dnskey = explode(" ", $key['dnskey'] ?? "");
+
+        [$dsValue] = $ds;
+        [, , $dnsKeyValue] = $dnskey;
+
+        $res = [
+            $key['id'],
+            strtoupper($key['keytype']),
+            $dsValue,
+            $dnsKeyValue,
+            $key['bits'],
+            $key['active'],
+        ];
+        return $res;
     }
 }
