@@ -34,15 +34,34 @@ class PowerdnsApiClient {
         $this->serverName = $serverName;
     }
 
+    private function errorResponse(string $message): array
+    {
+        return [
+            'responseCode' => null,
+            'data' => [],
+            'error' => $message
+        ];
+    }
+
+    private function getResponseCode($headers): ?int
+    {
+        if (isset($headers[0])) {
+            preg_match('/\s(\d{3})\s/', $headers[0], $match);
+            return isset($match[1]) ? (int)$match[1] : null;
+        }
+
+        return null;
+    }
+
     protected function makeRequest($method, $endpoint, $data = []): array
     {
         $url = $this->apiUrl . $endpoint;
 
         $options = [
             'http' => [
-                'header'  => "Content-type: application/json\r\n" .
+                'header' => "Content-type: application/json\r\n" .
                     "X-API-Key: {$this->apiKey}\r\n",
-                'method'  => strtoupper($method)
+                'method' => strtoupper($method)
             ]
         ];
 
@@ -51,17 +70,21 @@ class PowerdnsApiClient {
         }
 
         $context = stream_context_create($options);
-        $result = file_get_contents($url, false, $context);
+        $result = @file_get_contents($url, false, $context);
 
-        $responseCode = null;
-        if (isset($http_response_header[0])) {
-            preg_match('/\s(\d{3})\s/', $http_response_header[0], $match);
-            $responseCode = isset($match[1]) ? (int)$match[1] : null;
+        if ($result === false) {
+            return $this->errorResponse('Failed to fetch API response');
+        }
+
+        $responseCode = $this->getResponseCode($http_response_header);
+        $responseData = json_decode($result, true);
+        if (is_null($responseData)) {
+            return $this->errorResponse('Failed to decode JSON response');
         }
 
         return [
             'responseCode' => $responseCode,
-            'data' => json_decode($result, true)
+            'data' => $responseData
         ];
     }
 
