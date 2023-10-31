@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Infrastructure\Dnssec;
 
-use Poweradmin\DnsRecord;
 use Poweradmin\Domain\Dnssec\DnssecProvider;
 use Poweradmin\Logger;
 
@@ -87,7 +86,6 @@ class PdnsUtilProvider implements DnssecProvider
 
     public function rectifyZone(string $zone): bool
     {
-        global $db;
         global $pdnssec_command, $pdnssec_debug;
 
         $output = array();

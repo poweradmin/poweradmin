@@ -411,7 +411,7 @@ class ZoneTemplate
             error(_("You do not have the permission to add a zone template."));
             return false;
         } else {
-            $result = $db->beginTransaction();
+            $db->beginTransaction();
 
             $query = "INSERT INTO zone_templ (name, descr, owner)
 			VALUES ("
@@ -419,7 +419,7 @@ class ZoneTemplate
                 . $db->quote($description, 'text') . ", "
                 . $db->quote($userid, 'integer') . ")";
 
-            $result = $db->exec($query);
+            $db->exec($query);
 
             if ($db_type == 'pgsql') {
                 $zone_templ_id = $db->lastInsertId('zone_templ_id_seq');

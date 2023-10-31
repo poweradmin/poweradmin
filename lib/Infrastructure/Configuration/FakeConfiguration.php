@@ -1,7 +1,5 @@
 <?php
 
-namespace Poweradmin\Application\Dnssec;
-
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://www.poweradmin.org> for more details.
  *
@@ -22,25 +20,20 @@ namespace Poweradmin\Application\Dnssec;
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use Poweradmin\Domain\Dnssec\DnssecProvider;
-use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
-use Poweradmin\Infrastructure\Dnssec\DnsSecApiProvider;
-use Poweradmin\Infrastructure\Dnssec\PdnsUtilProvider;
-use Poweradmin\LegacyConfiguration;
+namespace Poweradmin\Infrastructure\Configuration;
 
-class DnssecProviderFactory
+class FakeConfiguration implements ConfigurationInterface
 {
-    public static function create(ConfigurationInterface $config): DnssecProvider
+    protected array $config;
+
+    public function __construct(?string $pdns_api_url, ?string $pdns_api_key)
     {
-        if ($config->get('pdns_api_url') && $config->get('pdns_api_key')) {
-            $apiClient = new PowerdnsApiClient(
-                $config->get('pdns_api_url'),
-                $config->get('pdns_api_key'),
-                'localhost'
-            );
-            return new DnsSecApiProvider($apiClient);
-        }
-        return new PdnsUtilProvider();
+        $this->config['pdns_api_url'] = $pdns_api_url;
+        $this->config['pdns_api_key'] = $pdns_api_key;
+    }
+
+    public function get($name): mixed
+    {
+        return array_key_exists($name, $this->config) ? $this->config[$name] : null;
     }
 }

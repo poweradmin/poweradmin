@@ -22,6 +22,8 @@
 
 namespace Poweradmin;
 
+use Poweradmin\Application\Dnssec\DnssecProviderFactory;
+use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
 use Poweradmin\Infrastructure\Database\DbCompat;
 
 /**
@@ -423,10 +425,17 @@ class DnsRecord
                 if ($type != 'SOA') {
                     self::update_soa_serial($zone_id);
                 }
-//                if ($pdnssec_use) {
-//                    $dnssecProvider = DnssecProviderFactory::create($this->getConfig());
-//                    $dnssecProvider->rectifyZone($zone_id);
-//                }
+
+                if ($pdnssec_use) {
+                    global $pdns_api_url;
+                    global $pdns_api_key;
+
+                    $dnssecProvider = DnssecProviderFactory::create(
+                        new FakeConfiguration($pdns_api_url, $pdns_api_key)
+                    );
+                    $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
+                    $dnssecProvider->rectifyZone($zone_name);
+                }
                 return true;
             } else {
                 return false;
@@ -1708,7 +1717,6 @@ class DnsRecord
         global $db;
         global $pdnssec_use;
 
-        $error = false;
         $db->beginTransaction();
 
         foreach ($domains as $id) {
@@ -1719,12 +1727,17 @@ class DnsRecord
                 if (is_numeric($id)) {
                     $zone_type = self::get_domain_type($id);
                     if ($pdnssec_use && $zone_type == 'MASTER') {
-                        $zone_name = self::get_domain_name_by_id($id);
+                        global $pdns_api_url;
+                        global $pdns_api_key;
 
-//                        $dnssecProvider = DnssecProviderFactory::create($this->getConfig());
-//                        if ($dnssecProvider->isZoneSecured($zone_name)) {
-//                            $dnssecProvider->unsecureZone($zone_name);
-//                        }
+                        $dnssecProvider = DnssecProviderFactory::create(
+                            new FakeConfiguration($pdns_api_url, $pdns_api_key)
+                        );
+
+                        $zone_name = DnsRecord::get_domain_name_by_id($id);
+                        if ($dnssecProvider->isZoneSecured($zone_name)) {
+                            $dnssecProvider->unsecureZone($zone_name);
+                        }
                     }
 
                     $db->exec("DELETE FROM zones WHERE domain_id=" . $db->quote($id, 'integer'));
@@ -1733,11 +1746,9 @@ class DnsRecord
                     $db->exec("DELETE FROM domains WHERE id=" . $db->quote($id, 'integer'));
                 } else {
                     error(sprintf(_('Invalid argument(s) given to function %s %s'), "delete_domains", "id must be a number"));
-                    $error = true;
                 }
             } else {
                 error(_("You do not have the permission to delete a zone."));
-                $error = true;
             }
         }
 
@@ -1783,39 +1794,6 @@ class DnsRecord
         $domain_parts = array_reverse($domain_parts);
         return $domain_parts[1] . '.' . $domain_parts[0];
     }
-
-    /** Get zone list which use templates
-     *
-     * @param resource $db DB link
-     *
-     * @return mixed[] Array with domain and template ids
-     */
-    public static function get_zones_with_templates($db)
-    {
-        $query = "SELECT id, domain_id, zone_templ_id FROM zones WHERE zone_templ_id <> 0";
-        $result = $db->query($query);
-        $zones = array();
-        while ($zone = $result->fetch()) {
-            $zones[] = $zone;
-        }
-        return $zones;
-    }
-
-    /** Get records by domain id
-     *
-     *
-     */
-    public static function get_records_by_domain_id($db, $domain_id)
-    {
-        $query = "SELECT id, name, type, content FROM records WHERE domain_id = " . $db->quote($domain_id, 'integer');
-        $result = $db->query($query);
-        $records = array();
-        while ($zone_records = $result->fetch()) {
-            $records[] = $zone_records;
-        }
-        return $records;
-    }
-
 
     /** Set timezone
      *

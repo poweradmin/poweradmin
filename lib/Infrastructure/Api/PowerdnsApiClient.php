@@ -22,8 +22,6 @@
 
 namespace Poweradmin\Infrastructure\Api;
 
-use Exception;
-
 class PowerdnsApiClient {
 
     protected string $apiUrl;

@@ -21,8 +21,6 @@
 
 namespace Poweradmin\Infrastructure;
 
-use Exception;
-
 /**
  * DependencyCheck class verifies the availability of required PHP extensions.
  */

@@ -1,4 +1,5 @@
 <?php
+
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://www.poweradmin.org> for more details.
  *
@@ -21,7 +22,9 @@
 
 namespace Poweradmin;
 
-class LegacyConfiguration
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+
+class LegacyConfiguration implements ConfigurationInterface
 {
     protected array $config;
 
