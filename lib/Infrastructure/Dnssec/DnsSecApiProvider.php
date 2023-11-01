@@ -24,22 +24,25 @@ namespace Poweradmin\Infrastructure\Dnssec;
 
 use Poweradmin\Domain\Dnssec\DnssecProvider;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
+use Poweradmin\Infrastructure\Logger\LoggerInterface;
 
 // TODO:
-// - Add syslog logging (if enabled)
 // - Add debug logging (if enabled)
 // - Better error handling (visual response)
 // - Move data transformation to separate class
 // - Add tests (unit, integration, functional)
 // - Provide documentation
+// - Test syslog logging
 
 class DnsSecApiProvider implements DnssecProvider
 {
     private PowerdnsApiClient $client;
+    private LoggerInterface $logger;
 
-    public function __construct(PowerdnsApiClient $client)
+    public function __construct(PowerdnsApiClient $client, LoggerInterface $logger)
     {
         $this->client = $client;
+        $this->logger = $logger;
     }
 
     public function rectifyZone(string $zone): bool
@@ -49,12 +52,20 @@ class DnsSecApiProvider implements DnssecProvider
 
     public function secureZone(string $zone): bool
     {
-        return $this->client->secureZone($zone);
+        $result = $this->client->secureZone($zone);
+
+        $this->logger->info("client_ip:{$_SERVER['REMOTE_ADDR']} user:{$_SESSION['userlogin']} operation:dnssec_secure_zone zone:{$zone} result:{$result}");
+
+        return $result;
     }
 
     public function unsecureZone(string $zone): bool
     {
-        return $this->client->unsecureZone($zone);
+        $result = $this->client->unsecureZone($zone);
+
+        $this->logger->info("client_ip:{$_SERVER['REMOTE_ADDR']} user:{$_SESSION['userlogin']} operation:dnssec_unsecure_zone zone:{$zone} result:{$result}");
+
+        return $result;
     }
 
     public function isZoneSecured(string $zone): bool
@@ -86,12 +97,20 @@ class DnsSecApiProvider implements DnssecProvider
 
     public function activateZoneKey(string $zone, int $keyId): bool
     {
-        return $this->client->activateZoneKey($zone, $keyId);
+        $result = $this->client->activateZoneKey($zone, $keyId);
+
+        $this->logger->info("client_ip:{$_SERVER['REMOTE_ADDR']} user:{$_SESSION['userlogin']} operation:dnssec_activate_zone_key zone:{$zone} key_id:{$keyId} result:{$result}");
+
+        return $result;
     }
 
     public function deactivateZoneKey(string $zone, int $keyId): bool
     {
-        return $this->client->deactivateZoneKey($zone, $keyId);
+        $result = $this->client->deactivateZoneKey($zone, $keyId);
+
+        $this->logger->info("client_ip:{$_SERVER['REMOTE_ADDR']} user:{$_SESSION['userlogin']} operation:dnssec_deactivate_zone_key zone:{$zone} key_id:{$keyId} result:{$result}");
+
+        return $result;
     }
 
     public function getKeys(string $zone): array
@@ -106,12 +125,20 @@ class DnsSecApiProvider implements DnssecProvider
 
     public function addZoneKey(string $zone, string $keyType, int $keySize, string $algorithm): bool
     {
-        return $this->client->addZoneKey($zone, $keyType, $keySize, $algorithm);
+        $result = $this->client->addZoneKey($zone, $keyType, $keySize, $algorithm);
+
+        $this->logger->info("client_ip:{$_SERVER['REMOTE_ADDR']} user:{$_SESSION['userlogin']} operation:dnssec_add_zone_key zone:{$zone} type:{$keyType} bits:{$keySize} algorithm:{$algorithm} result:{$result}");
+
+        return $result;
     }
 
     public function removeZoneKey(string $zone, int $keyId): bool
     {
-        return $this->client->removeZoneKey($zone, $keyId);
+        $result = $this->client->removeZoneKey($zone, $keyId);
+
+        $this->logger->info("client_ip:{$_SERVER['REMOTE_ADDR']} user:{$_SESSION['userlogin']} operation:dnssec_remove_zone_key zone:{$zone} key_id:{$keyId} result:{$result}");
+
+        return $result;
     }
 
     public function keyExists(string $zone, int $keyId): bool
