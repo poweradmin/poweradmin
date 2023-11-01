@@ -32,7 +32,7 @@
 use Poweradmin\Application\Dnssec\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
-use Poweradmin\Logger;
+use Poweradmin\LegacyLogger;
 use Poweradmin\Permission;
 
 require_once 'inc/toolkit.inc.php';
@@ -80,7 +80,7 @@ class DeleteDomainController extends BaseController
         }
 
         if (DnsRecord::delete_domain($zone_id)) {
-            Logger::log_info(sprintf('client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
+            LegacyLogger::log_info(sprintf('client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
                 $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                 $zone_info['name'], $zone_info['type']), $zone_id);
 

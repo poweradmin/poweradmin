@@ -25,10 +25,10 @@ namespace Poweradmin;
 class UserEventLogger
 {
     public static function log_successful_auth() {
-        Logger::log_notice(sprintf('Successful authentication attempt from [%s] for user \'%s\'', $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin']));
+        LegacyLogger::log_notice(sprintf('Successful authentication attempt from [%s] for user \'%s\'', $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin']));
     }
 
     public static function log_failed_auth() {
-        Logger::log_warn(sprintf('Failed authentication attempt from [%s] for user \'%s\'', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
+        LegacyLogger::log_warn(sprintf('Failed authentication attempt from [%s] for user \'%s\'', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
     }
 }

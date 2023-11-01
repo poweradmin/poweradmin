@@ -22,7 +22,7 @@
 
 namespace Poweradmin;
 
-class Logger
+class LegacyLogger
 {
     private static function do_log($message, $priority, $zone_id = NULL)
     {

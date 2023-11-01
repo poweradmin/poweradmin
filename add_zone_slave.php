@@ -32,7 +32,7 @@
 use Poweradmin\BaseController;
 use Poweradmin\Dns;
 use Poweradmin\DnsRecord;
-use Poweradmin\Logger;
+use Poweradmin\LegacyLogger;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/messages.inc.php';
@@ -84,7 +84,7 @@ class AddZoneSlaveController extends BaseController
         } else {
             if (DnsRecord::add_domain($zone, $owner, $type, $master, 'none')) {
                 $zone_id = DnsRecord::get_zone_id_from_name($zone);
-                Logger::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',
+                LegacyLogger::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',
                     $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                     $zone, $master), $zone_id);
 

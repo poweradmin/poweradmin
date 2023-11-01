@@ -25,26 +25,26 @@ namespace Poweradmin;
 class LdapUserEventLogger
 {
     public static function log_failed_reason($reason) {
-        Logger::log_error(sprintf('Failed LDAP authentication attempt from [%s] Reason: %s failed', $_SERVER['REMOTE_ADDR'], $reason));
+        LegacyLogger::log_error(sprintf('Failed LDAP authentication attempt from [%s] Reason: %s failed', $_SERVER['REMOTE_ADDR'], $reason));
     }
 
     public static function log_success_auth() {
-        Logger::log_notice(sprintf('Successful LDAP authentication attempt from [%s] for user \'%s\'', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
+        LegacyLogger::log_notice(sprintf('Successful LDAP authentication attempt from [%s] for user \'%s\'', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
     }
 
     public static function log_failed_auth() {
-        Logger::log_warn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: No such user', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
+        LegacyLogger::log_warn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: No such user', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
     }
 
     public static function log_failed_duplicate_auth() {
-        Logger::log_error(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: Duplicate usernames detected', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
+        LegacyLogger::log_error(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: Duplicate usernames detected', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
     }
 
     public static function log_failed_incorrect_pass() {
-        Logger::log_warn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: Incorrect password', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
+        LegacyLogger::log_warn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: Incorrect password', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
     }
 
     public static function log_failed_user_inactive() {
-        Logger::log_warn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: User is inactive', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
+        LegacyLogger::log_warn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: User is inactive', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
     }
 }

@@ -34,7 +34,7 @@ use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
 use Poweradmin\Permission;
 use Poweradmin\RecordType;
-use Poweradmin\Logger;
+use Poweradmin\LegacyLogger;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/messages.inc.php';
@@ -103,7 +103,7 @@ class EditRecordController extends BaseController {
                 DnsRecord::update_soa_serial($zid);
             }
             $new_record_info = DnsRecord::get_record_from_id($_POST["rid"]);
-            Logger::log_info(sprintf('client_ip:%s user:%s operation:edit_record'
+            LegacyLogger::log_info(sprintf('client_ip:%s user:%s operation:edit_record'
                 . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
                 . ' record_type:%s record:%s content:%s ttl:%s priority:%s',
                 $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],

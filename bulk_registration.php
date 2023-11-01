@@ -32,7 +32,7 @@
 use Poweradmin\BaseController;
 use Poweradmin\Dns;
 use Poweradmin\DnsRecord;
-use Poweradmin\Logger;
+use Poweradmin\LegacyLogger;
 use Poweradmin\ZoneTemplate;
 
 require_once 'inc/toolkit.inc.php';
@@ -75,7 +75,7 @@ class BulkRegistrationController extends BaseController {
                 $failed_domains[] = $domain . " - " . _('There is already a zone with this name.');
             } elseif (DnsRecord::add_domain($domain, $_POST['owner'], $dom_type, '', $zone_template)) {
                 $zone_id = DnsRecord::get_zone_id_from_name($domain);
-                Logger::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
+                LegacyLogger::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
                     $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                     $domain, $dom_type, $zone_template), $zone_id);
             }

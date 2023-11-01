@@ -30,13 +30,11 @@
  */
 
 use Poweradmin\Application\Dnssec\DnssecProviderFactory;
-use Poweradmin\Application\Services\DnssecService;
 use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
-use Poweradmin\Infrastructure\Dnssec\PdnsUtilProvider;
 use Poweradmin\Permission;
 use Poweradmin\RecordType;
-use Poweradmin\Logger;
+use Poweradmin\LegacyLogger;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/messages.inc.php';
@@ -150,7 +148,7 @@ class AddRecordController extends BaseController
                 $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
                 $fqdn_name = sprintf("%s.%s", $name, $zone_name);
                 if (DnsRecord::add_record($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
-                    Logger::log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
+                    LegacyLogger::log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
                         $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                         $content_rev, $fqdn_name, $ttl, $prio), $zone_id);
 
@@ -170,7 +168,7 @@ class AddRecordController extends BaseController
         $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
 
         if (DnsRecord::add_record($zone_id, $name, $type, $content, $ttl, $prio)) {
-            Logger::log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:%s record:%s.%s content:%s ttl:%s priority:%s',
+            LegacyLogger::log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:%s record:%s.%s content:%s ttl:%s priority:%s',
                 $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                 $type, $name, $zone_name, $content, $ttl, $prio), $zone_id
             );

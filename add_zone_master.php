@@ -33,7 +33,7 @@ use Poweradmin\Application\Dnssec\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Dns;
 use Poweradmin\DnsRecord;
-use Poweradmin\Logger;
+use Poweradmin\LegacyLogger;
 use Poweradmin\ZoneTemplate;
 
 require_once 'inc/toolkit.inc.php';
@@ -84,7 +84,7 @@ class AddZoneMasterController extends BaseController
             $this->setMessage('list_zones', 'success', _('Zone has been added successfully.'));
 
             $zone_id = DnsRecord::get_zone_id_from_name($zone_name);
-            Logger::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone_name:%s zone_type:%s zone_template:%s',
+            LegacyLogger::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone_name:%s zone_type:%s zone_template:%s',
                 $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                 $zone_name, $dom_type, $zone_template), $zone_id);
 

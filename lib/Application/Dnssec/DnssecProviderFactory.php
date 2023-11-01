@@ -27,7 +27,6 @@ use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Dnssec\DnsSecApiProvider;
 use Poweradmin\Infrastructure\Dnssec\PdnsUtilProvider;
-use Poweradmin\LegacyConfiguration;
 
 class DnssecProviderFactory
 {
