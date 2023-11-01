@@ -39,11 +39,13 @@ class DnssecProviderFactory
                 $config->get('pdns_api_key'),
                 'localhost'
             );
+
             // TODO: use composite logger
             $logger = new SyslogLogger(
                 $config->get('syslog_ident'),
                 $config->get('syslog_facility')
             );
+
             return new DnsSecApiProvider($apiClient, $logger);
         }
         return new PdnsUtilProvider();

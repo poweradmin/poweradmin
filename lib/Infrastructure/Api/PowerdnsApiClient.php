@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Infrastructure\Api;
 
+use Poweradmin\Domain\Exception\ApiErrorException;
+
 class PowerdnsApiClient {
 
     protected string $apiUrl;
@@ -34,13 +36,9 @@ class PowerdnsApiClient {
         $this->serverName = $serverName;
     }
 
-    private function errorResponse(string $message): array
+    private function errorResponse(string $message): void
     {
-        return [
-            'responseCode' => null,
-            'data' => [],
-            'error' => $message
-        ];
+        throw new ApiErrorException($message);
     }
 
     private function getResponseCode($headers): ?int
@@ -73,7 +71,7 @@ class PowerdnsApiClient {
         $result = @file_get_contents($url, false, $context);
 
         if ($result === false) {
-            return $this->errorResponse('Failed to fetch API response');
+            $this->errorResponse(error_get_last()['message']);
         }
 
         $responseCode = $this->getResponseCode($http_response_header);
@@ -102,7 +100,8 @@ class PowerdnsApiClient {
         return $response && $response['responseCode'] === 204 && $this->isZoneSecured($zone);
     }
 
-    public function unsecureZone($zone) {
+    public function unsecureZone($zone): bool
+    {
         $endpoint = "/api/v1/servers/{$this->serverName}/zones/{$zone}";
         $data = ['dnssec' => false];
         $response = $this->makeRequest('PUT', $endpoint, $data);
@@ -110,7 +109,7 @@ class PowerdnsApiClient {
         return $response && $response['responseCode'] === 204 && !$this->isZoneSecured($zone);
     }
 
-    public function isZoneSecured(string $zone)
+    public function isZoneSecured(string $zone): bool
     {
         $endpoint = "/api/v1/servers/{$this->serverName}/zones/{$zone}";
         $response = $this->makeRequest('GET', $endpoint);
@@ -126,7 +125,7 @@ class PowerdnsApiClient {
         return $response && $response['responseCode'] === 200 ? $response['data'] : [];
     }
 
-    public function activateZoneKey(string $zone, int $keyId)
+    public function activateZoneKey(string $zone, int $keyId): bool
     {
         $endpoint = "/api/v1/servers/{$this->serverName}/zones/{$zone}/cryptokeys/{$keyId}";
         $data = [
@@ -137,7 +136,7 @@ class PowerdnsApiClient {
         return $response && $response['responseCode'] === 204;
     }
 
-    public function deactivateZoneKey(string $zone, int $keyId)
+    public function deactivateZoneKey(string $zone, int $keyId): bool
     {
         $endpoint = "/api/v1/servers/{$this->serverName}/zones/{$zone}/cryptokeys/{$keyId}";
         $data = [
