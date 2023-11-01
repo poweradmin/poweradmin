@@ -23,13 +23,13 @@ namespace Poweradmin\Infrastructure\Dnssec;
  */
 
 use Poweradmin\Domain\Dnssec\DnssecProvider;
+use Poweradmin\Domain\Transformer\DnssecTransformer;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Logger\LoggerInterface;
 
 // TODO:
 // - Add debug logging (if enabled)
 // - Better error handling (visual response)
-// - Move data transformation to separate class
 // - Add tests (unit, integration, functional)
 // - Provide documentation
 // - Test syslog logging
@@ -38,11 +38,23 @@ class DnsSecApiProvider implements DnssecProvider
 {
     private PowerdnsApiClient $client;
     private LoggerInterface $logger;
+    private DnssecTransformer $transformer;
+    private string $clientIp;
+    private string $userLogin;
 
-    public function __construct(PowerdnsApiClient $client, LoggerInterface $logger)
+    public function __construct(
+        PowerdnsApiClient $client,
+        LoggerInterface $logger,
+        DnssecTransformer $transformer,
+        string $clientIp,
+        string $userLogin
+    )
     {
         $this->client = $client;
         $this->logger = $logger;
+        $this->transformer = $transformer;
+        $this->clientIp = $clientIp;
+        $this->userLogin = $userLogin;
     }
 
     public function rectifyZone(string $zone): bool
@@ -54,7 +66,7 @@ class DnsSecApiProvider implements DnssecProvider
     {
         $result = $this->client->secureZone($zone);
 
-        $this->logger->info("client_ip:{$_SERVER['REMOTE_ADDR']} user:{$_SESSION['userlogin']} operation:dnssec_secure_zone zone:{$zone} result:{$result}");
+        $this->logger->info("client_ip:{$this->clientIp} user:{$this->userLogin} operation:dnssec_secure_zone zone:{$zone} result:{$result}");
 
         return $result;
     }
@@ -63,7 +75,7 @@ class DnsSecApiProvider implements DnssecProvider
     {
         $result = $this->client->unsecureZone($zone);
 
-        $this->logger->info("client_ip:{$_SERVER['REMOTE_ADDR']} user:{$_SESSION['userlogin']} operation:dnssec_unsecure_zone zone:{$zone} result:{$result}");
+        $this->logger->info("client_ip:{$this->clientIp} user:{$this->userLogin} operation:dnssec_unsecure_zone zone:{$zone} result:{$result}");
 
         return $result;
     }
@@ -99,7 +111,7 @@ class DnsSecApiProvider implements DnssecProvider
     {
         $result = $this->client->activateZoneKey($zone, $keyId);
 
-        $this->logger->info("client_ip:{$_SERVER['REMOTE_ADDR']} user:{$_SESSION['userlogin']} operation:dnssec_activate_zone_key zone:{$zone} key_id:{$keyId} result:{$result}");
+        $this->logger->info("client_ip:{$this->clientIp} user:{$this->userLogin} operation:dnssec_activate_zone_key zone:{$zone} key_id:{$keyId} result:{$result}");
 
         return $result;
     }
@@ -108,7 +120,7 @@ class DnsSecApiProvider implements DnssecProvider
     {
         $result = $this->client->deactivateZoneKey($zone, $keyId);
 
-        $this->logger->info("client_ip:{$_SERVER['REMOTE_ADDR']} user:{$_SESSION['userlogin']} operation:dnssec_deactivate_zone_key zone:{$zone} key_id:{$keyId} result:{$result}");
+        $this->logger->info("client_ip:{$this->clientIp} user:{$this->userLogin} operation:dnssec_deactivate_zone_key zone:{$zone} key_id:{$keyId} result:{$result}");
 
         return $result;
     }
@@ -127,7 +139,7 @@ class DnsSecApiProvider implements DnssecProvider
     {
         $result = $this->client->addZoneKey($zone, $keyType, $keySize, $algorithm);
 
-        $this->logger->info("client_ip:{$_SERVER['REMOTE_ADDR']} user:{$_SESSION['userlogin']} operation:dnssec_add_zone_key zone:{$zone} type:{$keyType} bits:{$keySize} algorithm:{$algorithm} result:{$result}");
+        $this->logger->info("client_ip:{$this->clientIp} user:{$this->userLogin} operation:dnssec_add_zone_key zone:{$zone} type:{$keyType} bits:{$keySize} algorithm:{$algorithm} result:{$result}");
 
         return $result;
     }
@@ -136,7 +148,7 @@ class DnsSecApiProvider implements DnssecProvider
     {
         $result = $this->client->removeZoneKey($zone, $keyId);
 
-        $this->logger->info("client_ip:{$_SERVER['REMOTE_ADDR']} user:{$_SESSION['userlogin']} operation:dnssec_remove_zone_key zone:{$zone} key_id:{$keyId} result:{$result}");
+        $this->logger->info("client_ip:{$this->clientIp} user:{$this->userLogin} operation:dnssec_remove_zone_key zone:{$zone} key_id:{$keyId} result:{$result}");
 
         return $result;
     }
@@ -167,19 +179,6 @@ class DnsSecApiProvider implements DnssecProvider
 
     private function transformKey(mixed $key): array
     {
-        $ds = explode(" ", $key['ds'][0] ?? "");
-        $dnskey = explode(" ", $key['dnskey'] ?? "");
-
-        [$dsValue] = $ds;
-        [, , $dnsKeyValue] = $dnskey;
-
-        return [
-            $key['id'],
-            strtoupper($key['keytype']),
-            $dsValue,
-            $dnsKeyValue,
-            $key['bits'],
-            $key['active'],
-        ];
+        return $this->transformer->transformKey($key);
     }
 }

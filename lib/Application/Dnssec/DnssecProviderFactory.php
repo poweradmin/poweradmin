@@ -1,7 +1,5 @@
 <?php
 
-namespace Poweradmin\Application\Dnssec;
-
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://www.poweradmin.org> for more details.
  *
@@ -22,7 +20,10 @@ namespace Poweradmin\Application\Dnssec;
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+namespace Poweradmin\Application\Dnssec;
+
 use Poweradmin\Domain\Dnssec\DnssecProvider;
+use Poweradmin\Domain\Transformer\DnssecDataTransformer;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Dnssec\DnsSecApiProvider;
@@ -46,7 +47,9 @@ class DnssecProviderFactory
                 $config->get('syslog_facility')
             );
 
-            return new DnsSecApiProvider($apiClient, $logger);
+            $transformer = new DnssecDataTransformer();
+
+            return new DnsSecApiProvider($apiClient, $logger, $transformer, $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin']);
         }
         return new PdnsUtilProvider();
     }
