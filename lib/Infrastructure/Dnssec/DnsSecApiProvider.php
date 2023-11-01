@@ -33,6 +33,8 @@ use Poweradmin\Infrastructure\Logger\LoggerInterface;
 // - Add tests (unit, integration, functional)
 // - Provide documentation
 // - Test syslog logging
+// - Move logging into middleware, decorator, or event listener/subscriber
+// - define interfaces or DTOs for returned data by PowerDNS API
 
 class DnsSecApiProvider implements DnssecProvider
 {

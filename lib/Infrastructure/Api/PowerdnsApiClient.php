@@ -24,6 +24,15 @@ namespace Poweradmin\Infrastructure\Api;
 
 use Poweradmin\Domain\Exception\ApiErrorException;
 
+// TODO
+// - separate responsibilities (client, error handling, domain logic)
+// - introduce interfaces
+// - have smaller client classes for specific functionality
+// - replace URL creation with builder pattern
+// - refactor response handling into separate method
+// - extract /api/v1 into constant or make it configurable
+// - add tests (unit, integration, functional)
+
 class PowerdnsApiClient {
 
     protected string $apiUrl;
