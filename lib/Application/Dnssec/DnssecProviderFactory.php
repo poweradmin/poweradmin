@@ -28,29 +28,42 @@ use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Dnssec\DnsSecApiProvider;
 use Poweradmin\Infrastructure\Dnssec\PdnsUtilProvider;
+use Poweradmin\Infrastructure\Logger\CompositeLogger;
 use Poweradmin\Infrastructure\Logger\SyslogLogger;
 
 class DnssecProviderFactory
 {
     public static function create(ConfigurationInterface $config): DnssecProvider
     {
-        if ($config->get('pdns_api_url') && $config->get('pdns_api_key')) {
-            $apiClient = new PowerdnsApiClient(
-                $config->get('pdns_api_url'),
-                $config->get('pdns_api_key'),
-                'localhost'
-            );
+        if (!$config->get('pdns_api_url') || !$config->get('pdns_api_key')) {
+            return new PdnsUtilProvider();
+        }
 
-            // TODO: use composite logger
-            $logger = new SyslogLogger(
+        $apiClient = new PowerdnsApiClient(
+            $config->get('pdns_api_url'),
+            $config->get('pdns_api_key'),
+            'localhost'
+        );
+
+        $logger = new CompositeLogger();
+
+        if ($config->get('syslog_use')) {
+            $syslogLogger = new SyslogLogger(
                 $config->get('syslog_ident'),
                 $config->get('syslog_facility')
             );
-
-            $transformer = new DnssecDataTransformer();
-
-            return new DnsSecApiProvider($apiClient, $logger, $transformer, $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin']);
+            $logger->addLogger($syslogLogger);
         }
-        return new PdnsUtilProvider();
+
+        $transformer = new DnssecDataTransformer();
+
+        return new DnsSecApiProvider(
+            $apiClient,
+            $logger,
+            $transformer,
+            $_SERVER['REMOTE_ADDR'],
+            $_SESSION['userlogin']
+        );
+
     }
 }

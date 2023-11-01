@@ -22,41 +22,44 @@
 
 namespace Poweradmin\Infrastructure\Logger;
 
-class SyslogLogger implements LoggerInterface
+class CompositeLogger implements LoggerInterface
 {
-    private string $ident;
-    private int $facility;
+    private array $loggers;
 
-    public function __construct(string $ident = 'poweradmin', int $facility = LOG_USER)
+    public function __construct(array $loggers = [])
     {
-        $this->ident = $ident;
-        $this->facility = $facility;
+        $this->loggers = $loggers;
+    }
 
-        openlog($this->ident, LOG_PERROR, $this->facility);
+    public function addLogger(LoggerInterface $logger): void
+    {
+        $this->loggers[] = $logger;
     }
 
     public function info(string $message): void
     {
-        syslog(LOG_INFO, $message);
+        $this->logToAll('info', $message);
     }
 
     public function warn(string $message): void
     {
-        syslog(LOG_WARNING, $message);
+        $this->logToAll('warn', $message);
     }
 
     public function error(string $message): void
     {
-        syslog(LOG_ERR, $message);
+        $this->logToAll('error', $message);
     }
 
     public function notice(string $message): void
     {
-        syslog(LOG_NOTICE, $message);
+        $this->logToAll('notice', $message);
     }
 
-    public function __destruct()
+    private function logToAll(string $method, string $message): void
     {
-        closelog();
+        foreach ($this->loggers as $logger) {
+            $logger->$method($message);
+        }
     }
 }

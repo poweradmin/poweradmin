@@ -22,41 +22,31 @@
 
 namespace Poweradmin\Infrastructure\Logger;
 
-class SyslogLogger implements LoggerInterface
+class EchoLogger implements LoggerInterface
 {
-    private string $ident;
-    private int $facility;
-
-    public function __construct(string $ident = 'poweradmin', int $facility = LOG_USER)
-    {
-        $this->ident = $ident;
-        $this->facility = $facility;
-
-        openlog($this->ident, LOG_PERROR, $this->facility);
-    }
-
     public function info(string $message): void
     {
-        syslog(LOG_INFO, $message);
+        $this->output('INFO', $message);
     }
 
     public function warn(string $message): void
     {
-        syslog(LOG_WARNING, $message);
+        $this->output('WARN', $message);
     }
 
     public function error(string $message): void
     {
-        syslog(LOG_ERR, $message);
+        $this->output('ERROR', $message);
     }
 
     public function notice(string $message): void
     {
-        syslog(LOG_NOTICE, $message);
+        $this->output('NOTICE', $message);
     }
 
-    public function __destruct()
+    private function output(string $level, string $message): void
     {
-        closelog();
+        $date = date('Y-m-d H:i:s');
+        echo "<div class=\"container\"><pre>[$date] [$level] $message</pre></div>";
     }
 }
