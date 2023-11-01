@@ -26,12 +26,12 @@ use Poweradmin\Domain\Dnssec\DnssecProvider;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 
 // TODO:
-// 1. Add syslog logging (if enabled)
-// 2. Add debug logging (if enabled)
-// 3. Better error handling (exceptions)
-// 4. Move data transformation to separate class
-// 5. Add tests (unit, integration, functional)
-// 8. Update documentation
+// - Add syslog logging (if enabled)
+// - Add debug logging (if enabled)
+// - Better error handling (visual response)
+// - Move data transformation to separate class
+// - Add tests (unit, integration, functional)
+// - Provide documentation
 
 class DnsSecApiProvider implements DnssecProvider
 {
