@@ -23,17 +23,17 @@
 namespace Poweradmin\Domain\Dnssec;
 
 interface DnssecProvider {
-    public function rectifyZone(string $zone): bool;
-    public function secureZone(string $zone): bool;
-    public function unsecureZone(string $zone): bool;
-    public function isZoneSecured(string $zone): bool;
-    public function getDsRecords(string $zone): array;
-    public function getDnsKeyRecords(string $zone): array;
-    public function activateZoneKey(string $zone, int $keyId): bool;
-    public function deactivateZoneKey(string $zone, int $keyId): bool;
-    public function getKeys(string $zone): array;
-    public function addZoneKey(string $zone, string $keyType, int $keySize, string $algorithm): bool;
-    public function removeZoneKey(string $zone, int $keyId): bool;
-    public function keyExists(string $zone, int $keyId): bool;
-    public function getZoneKey(string $zone, int $keyId): array;
+    public function rectifyZone(string $zoneName): bool;
+    public function secureZone(string $zoneName): bool;
+    public function unsecureZone(string $zoneName): bool;
+    public function isZoneSecured(string $zoneName): bool;
+    public function getDsRecords(string $zoneName): array;
+    public function getDnsKeyRecords(string $zoneName): array;
+    public function activateZoneKey(string $zoneName, int $keyId): bool;
+    public function deactivateZoneKey(string $zoneName, int $keyId): bool;
+    public function getKeys(string $zoneName): array;
+    public function addZoneKey(string $zoneName, string $keyType, int $keySize, string $algorithm): bool;
+    public function removeZoneKey(string $zoneName, int $keyId): bool;
+    public function keyExists(string $zoneName, int $keyId): bool;
+    public function getZoneKey(string $zoneName, int $keyId): array;
 }

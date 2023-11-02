@@ -24,11 +24,13 @@ namespace Poweradmin\Application\Dnssec;
 
 use Poweradmin\Domain\Dnssec\DnssecProvider;
 use Poweradmin\Domain\Transformer\DnssecDataTransformer;
+use Poweradmin\Infrastructure\Api\HttpClient;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Dnssec\DnsSecApiProvider;
 use Poweradmin\Infrastructure\Dnssec\PdnsUtilProvider;
 use Poweradmin\Infrastructure\Logger\CompositeLogger;
+use Poweradmin\Infrastructure\Logger\EchoLogger;
 use Poweradmin\Infrastructure\Logger\SyslogLogger;
 
 class DnssecProviderFactory
@@ -39,11 +41,8 @@ class DnssecProviderFactory
             return new PdnsUtilProvider();
         }
 
-        $apiClient = new PowerdnsApiClient(
-            $config->get('pdns_api_url'),
-            $config->get('pdns_api_key'),
-            'localhost'
-        );
+        $httpClient = new HttpClient($config->get('pdns_api_url'), $config->get('pdns_api_key'));
+        $apiClient = new PowerdnsApiClient($httpClient, 'localhost');
 
         $logger = new CompositeLogger();
 
@@ -64,6 +63,5 @@ class DnssecProviderFactory
             $_SERVER['REMOTE_ADDR'],
             $_SESSION['userlogin']
         );
-
     }
 }

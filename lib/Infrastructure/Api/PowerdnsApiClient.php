@@ -22,160 +22,157 @@
 
 namespace Poweradmin\Infrastructure\Api;
 
-use Poweradmin\Domain\Exception\ApiErrorException;
+use Poweradmin\Domain\Model\CryptoKey;
+use Poweradmin\Domain\Model\Zone;
 
 // TODO
-// - separate responsibilities (client, error handling, domain logic)
-// - introduce interfaces
 // - have smaller client classes for specific functionality
-// - replace URL creation with builder pattern
 // - refactor response handling into separate method
-// - extract /api/v1 into constant or make it configurable
 // - add tests (unit, integration, functional)
 
 class PowerdnsApiClient {
 
-    protected string $apiUrl;
-    protected string $apiKey;
-    protected string $serverName;
+    private const API_VERSION_PATH = '/api/v1';
 
-    public function __construct($baseEndpoint, $apiKey, $serverName) {
-        $this->apiUrl = rtrim($baseEndpoint, '/');
-        $this->apiKey = $apiKey;
+    private HttpClient $httpClient;
+    private string $serverName;
+
+    public function __construct(HttpClient $httpClient, string $serverName) {
+        $this->httpClient = $httpClient;
         $this->serverName = $serverName;
     }
 
-    private function errorResponse(string $message): void
-    {
-        throw new ApiErrorException($message);
+    private function buildEndpoint(string $path): string {
+        return self::API_VERSION_PATH . "/servers/{$this->serverName}" . $path;
     }
 
-    private function getResponseCode($headers): ?int
-    {
-        if (isset($headers[0])) {
-            preg_match('/\s(\d{3})\s/', $headers[0], $match);
-            return isset($match[1]) ? (int)$match[1] : null;
-        }
-
-        return null;
-    }
-
-    protected function makeRequest($method, $endpoint, $data = []): array
-    {
-        $url = $this->apiUrl . $endpoint;
-
-        $options = [
-            'http' => [
-                'header' => "Content-type: application/json\r\n" .
-                    "X-API-Key: {$this->apiKey}\r\n",
-                'method' => strtoupper($method)
-            ]
-        ];
-
-        if (!empty($data)) {
-            $options['http']['content'] = json_encode($data);
-        }
-
-        $context = stream_context_create($options);
-        $result = @file_get_contents($url, false, $context);
-
-        if ($result === false) {
-            $this->errorResponse(error_get_last()['message']);
-        }
-
-        $responseCode = $this->getResponseCode($http_response_header);
-        $responseData = json_decode($result, true);
-
-        return [
-            'responseCode' => $responseCode,
-            'data' => $responseData
-        ];
-    }
-
-    public function rectifyZone($zone): bool
-    {
-        $endpoint = "/api/v1/servers/{$this->serverName}/zones/{$zone}/rectify";
-        $response = $this->makeRequest('PUT', $endpoint);
+    public function rectifyZone(Zone $zone): bool {
+        $endpoint = $this->buildEndpoint("/zones/{$zone->getName()}/rectify");
+        $response = $this->httpClient->makeRequest('PUT', $endpoint);
 
         return $response && $response['responseCode'] === 200 && $response['data']['result'] === 'Rectified';
     }
 
-    public function secureZone(string $zone): bool
-    {
-        $endpoint = "/api/v1/servers/{$this->serverName}/zones/{$zone}";
+    public function secureZone(Zone $zone): bool {
+        $endpoint = $this->buildEndpoint("/zones/{$zone->getName()}");
         $data = ['dnssec' => true];
-        $response = $this->makeRequest('PUT', $endpoint, $data);
+        $response = $this->httpClient->makeRequest('PUT', $endpoint, $data);
 
-        return $response && $response['responseCode'] === 204 && $this->isZoneSecured($zone);
+        return $response && $response['responseCode'] === 204;
     }
 
-    public function unsecureZone($zone): bool
-    {
-        $endpoint = "/api/v1/servers/{$this->serverName}/zones/{$zone}";
+    public function unsecureZone(Zone $zone): bool {
+        $endpoint = $this->buildEndpoint("/zones/{$zone->getName()}");
         $data = ['dnssec' => false];
-        $response = $this->makeRequest('PUT', $endpoint, $data);
-
-        return $response && $response['responseCode'] === 204 && !$this->isZoneSecured($zone);
-    }
-
-    public function isZoneSecured(string $zone): bool
-    {
-        $endpoint = "/api/v1/servers/{$this->serverName}/zones/{$zone}";
-        $response = $this->makeRequest('GET', $endpoint);
-
-        return $response && $response['responseCode'] === 200 && isset($response['data']['dnssec']) && $response['data']['dnssec'];
-    }
-
-    public function getKeys(string $zone): array
-    {
-        $endpoint = "/api/v1/servers/{$this->serverName}/zones/{$zone}/cryptokeys";
-        $response = $this->makeRequest('GET', $endpoint);
-
-        return $response && $response['responseCode'] === 200 ? $response['data'] : [];
-    }
-
-    public function activateZoneKey(string $zone, int $keyId): bool
-    {
-        $endpoint = "/api/v1/servers/{$this->serverName}/zones/{$zone}/cryptokeys/{$keyId}";
-        $data = [
-            'active' => true
-        ];
-        $response = $this->makeRequest('PUT', $endpoint, $data);
+        $response = $this->httpClient->makeRequest('PUT', $endpoint, $data);
 
         return $response && $response['responseCode'] === 204;
     }
 
-    public function deactivateZoneKey(string $zone, int $keyId): bool
-    {
-        $endpoint = "/api/v1/servers/{$this->serverName}/zones/{$zone}/cryptokeys/{$keyId}";
-        $data = [
-            'active' => false
-        ];
-        $response = $this->makeRequest('PUT', $endpoint, $data);
+    public function getAllZones(): array {
+        $endpoint = $this->buildEndpoint("/zones");
+        $response = $this->httpClient->makeRequest('GET', $endpoint);
 
-        return $response && $response['responseCode'] === 204;
+        $zones = [];
+        if ($response && $response['responseCode'] === 200) {
+            foreach ($response['data'] as $zoneData) {
+                $zones[] = new Zone($zoneData['name'], $zoneData['id'], $zoneData['dnssec']);
+            }
+        }
+
+        return $zones;
     }
 
-    public function addZoneKey(string $zone, string $keyType, int $keySize, string $algorithm): bool
-    {
-        $endpoint = "/api/v1/servers/{$this->serverName}/zones/{$zone}/cryptokeys";
+    public function createZone(Zone $zone): bool {
+        $endpoint = $this->buildEndpoint("/zones");
         $data = [
-            'keytype' => $keyType,
-            'bits' => $keySize,
-            'algorithm' => $algorithm,
+            'name' => $zone->getName(),
         ];
-
-        $response = $this->makeRequest('POST', $endpoint, $data);
+        $response = $this->httpClient->makeRequest('POST', $endpoint, $data);
 
         return $response && $response['responseCode'] === 201;
     }
 
-    public function removeZoneKey(string $zone, int $keyId): bool
-    {
-        $endpoint = "/api/v1/servers/{$this->serverName}/zones/{$zone}/cryptokeys/{$keyId}";
-        $response = $this->makeRequest('DELETE', $endpoint);
+    public function updateZone(Zone $zone): bool {
+        $endpoint = $this->buildEndpoint("/zones/{$zone->getName()}");
+        $data = [
+            'name' => $zone->getName(),
+        ];
+        $response = $this->httpClient->makeRequest('PUT', $endpoint, $data);
 
         return $response && $response['responseCode'] === 204;
     }
-}
 
+    public function deleteZone(Zone $zone): bool {
+        $endpoint = $this->buildEndpoint("/zones/{$zone->getName()}");
+        $response = $this->httpClient->makeRequest('DELETE', $endpoint);
+
+        return $response && $response['responseCode'] === 204;
+    }
+
+    public function getZoneKeys(Zone $zone): array
+    {
+        $endpoint = $this->buildEndpoint("/zones/{$zone->getName()}/cryptokeys");
+        $response = $this->httpClient->makeRequest('GET', $endpoint);
+
+        if ($response && $response['responseCode'] === 200) {
+            $keys = [];
+            foreach ($response['data'] as $keyData) {
+                $keys[] = new CryptoKey(
+                    $keyData['id'],
+                    $keyData['keytype'],
+                    $keyData['bits'],
+                    $keyData['algorithm'],
+                    $keyData['active'],
+                    $keyData['dnskey'],
+                    $keyData['ds'],
+                );
+            }
+            return $keys;
+        }
+
+        return [];
+    }
+
+    public function addZoneKey(Zone $zone, CryptoKey $key): bool {
+        $endpoint = $this->buildEndpoint("/zones/{$zone->getName()}/cryptokeys");
+        $data = [
+            'keytype' => $key->getType(),
+            'bits' => $key->getSize(),
+            'algorithm' => $key->getAlgorithm(),
+        ];
+        $response = $this->httpClient->makeRequest('POST', $endpoint, $data);
+
+        return $response && $response['responseCode'] === 201;
+    }
+
+    public function activateZoneKey(Zone $zone, CryptoKey $key): bool {
+        $endpoint = $this->buildEndpoint("/zones/{$zone->getName()}/cryptokeys/{$key->getId()}");
+        $data = ['active' => true];
+        $response = $this->httpClient->makeRequest('PUT', $endpoint, $data);
+
+        return $response && $response['responseCode'] === 204;
+    }
+
+    public function deactivateZoneKey(Zone $zone, CryptoKey $key): bool {
+        $endpoint = $this->buildEndpoint("/zones/{$zone->getName()}/cryptokeys/{$key->getId()}");
+        $data = ['active' => false];
+        $response = $this->httpClient->makeRequest('PUT', $endpoint, $data);
+
+        return $response && $response['responseCode'] === 204;
+    }
+
+    public function removeZoneKey(Zone $zone, CryptoKey $key): bool {
+        $endpoint = $this->buildEndpoint("/zones/{$zone->getName()}/cryptokeys/{$key->getId()}");
+        $response = $this->httpClient->makeRequest('DELETE', $endpoint);
+
+        return $response && $response['responseCode'] === 204;
+    }
+
+    public function isZoneSecured(Zone $zone): bool {
+        $endpoint = $this->buildEndpoint("/zones/{$zone->getName()}");
+        $response = $this->httpClient->makeRequest('GET', $endpoint);
+
+        return $response && $response['responseCode'] === 200 && isset($response['data']['dnssec']) && $response['data']['dnssec'];
+    }
+}

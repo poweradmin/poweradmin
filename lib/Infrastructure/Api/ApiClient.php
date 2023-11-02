@@ -20,23 +20,8 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Transformer;
+namespace Poweradmin\Infrastructure\Api;
 
-class DnssecDataTransformer implements DnssecTransformer {
-    public function transformKey(mixed $key): array {
-        $ds = explode(" ", $key->getDs()[0] ?? "");
-        $dnsKey = explode(" ", $key->getDnsKey() ?? "");
-
-        [$dsValue] = $ds;
-        [, , $dnsKeyValue] = $dnsKey;
-
-        return [
-            $key->getId(),
-            strtoupper($key->getType()),
-            $dsValue,
-            $dnsKeyValue,
-            $key->getSize(),
-            $key->isActive(),
-        ];
-    }
+interface ApiClient {
+    public function makeRequest(string $method, string $endpoint, array $data = []): array;
 }

@@ -84,7 +84,7 @@ class PdnsUtilProvider implements DnssecProvider
         return array($output, $return_code);
     }
 
-    public function rectifyZone(string $zone): bool
+    public function rectifyZone(string $zoneName): bool
     {
         global $pdnssec_command, $pdnssec_debug;
 
@@ -94,7 +94,7 @@ class PdnsUtilProvider implements DnssecProvider
             $full_command = join(' ', array(
                 escapeshellcmd($pdnssec_command),
                 'rectify-zone',
-                escapeshellarg($zone),
+                escapeshellarg($zoneName),
                 $pdnssec_debug ? '2>&1' : ''
             ));
 
@@ -122,9 +122,9 @@ class PdnsUtilProvider implements DnssecProvider
         return false;
     }
 
-    public function secureZone(string $zone): bool
+    public function secureZone(string $zoneName): bool
     {
-        $call_result = self::dnssec_call_pdnssec('secure-zone', $zone);
+        $call_result = self::dnssec_call_pdnssec('secure-zone', $zoneName);
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
@@ -133,14 +133,14 @@ class PdnsUtilProvider implements DnssecProvider
         }
 
         LegacyLogger::log_info(sprintf('client_ip:%s user:%s operation:dnssec_secure_zone zone:%s',
-            $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $zone));
+            $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $zoneName));
 
         return true;
     }
 
-    public function unsecureZone(string $zone): bool
+    public function unsecureZone(string $zoneName): bool
     {
-        $call_result = self::dnssec_call_pdnssec('disable-dnssec', $zone);
+        $call_result = self::dnssec_call_pdnssec('disable-dnssec', $zoneName);
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
@@ -149,12 +149,12 @@ class PdnsUtilProvider implements DnssecProvider
         }
 
         LegacyLogger::log_info(sprintf('client_ip:%s user:%s operation:dnssec_unsecure_zone zone:%s',
-            $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $zone));
+            $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $zoneName));
 
         return true;
     }
 
-    public function isZoneSecured(string $zone): bool
+    public function isZoneSecured(string $zoneName): bool
     {
         global $db;
         $query = $db->prepare("SELECT
@@ -166,14 +166,14 @@ class PdnsUtilProvider implements DnssecProvider
                   WHERE domains.name = ?
                   GROUP BY domains.id
         ");
-        $query->execute(array($zone));
+        $query->execute(array($zoneName));
         $row = $query->fetch();
         return $row['active_keys'] > 0 || $row['presigned'];
     }
 
-    public function getDsRecords(string $zone): array
+    public function getDsRecords(string $zoneName): array
     {
-        $call_result = self::dnssec_call_pdnssec('show-zone', $zone);
+        $call_result = self::dnssec_call_pdnssec('show-zone', $zoneName);
         $output = $call_result[0];
         $return_code = $call_result[1];
 
@@ -202,9 +202,9 @@ class PdnsUtilProvider implements DnssecProvider
         return $ds_records;
     }
 
-    public function getDnsKeyRecords(string $zone): array
+    public function getDnsKeyRecords(string $zoneName): array
     {
-        $call_result = self::dnssec_call_pdnssec('show-zone', $zone);
+        $call_result = self::dnssec_call_pdnssec('show-zone', $zoneName);
         $output = $call_result[0];
         $return_code = $call_result[1];
 
@@ -224,9 +224,9 @@ class PdnsUtilProvider implements DnssecProvider
         return $dns_keys;
     }
 
-    public function activateZoneKey(string $zone, int $keyId): bool
+    public function activateZoneKey(string $zoneName, int $keyId): bool
     {
-        $call_result = self::dnssec_call_pdnssec('activate-zone-key', $zone, array($keyId));
+        $call_result = self::dnssec_call_pdnssec('activate-zone-key', $zoneName, array($keyId));
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
@@ -235,14 +235,14 @@ class PdnsUtilProvider implements DnssecProvider
         }
 
         LegacyLogger::log_info(sprintf('client_ip:%s user:%s operation:dnssec_activate_zone_key zone:%s key_id:%s',
-            $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $zone, $keyId));
+            $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $zoneName, $keyId));
 
         return true;
     }
 
-    public function deactivateZoneKey(string $zone, int $keyId): bool
+    public function deactivateZoneKey(string $zoneName, int $keyId): bool
     {
-        $call_result = self::dnssec_call_pdnssec('deactivate-zone-key', $zone, array($keyId));
+        $call_result = self::dnssec_call_pdnssec('deactivate-zone-key', $zoneName, array($keyId));
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
@@ -251,14 +251,14 @@ class PdnsUtilProvider implements DnssecProvider
         }
 
         LegacyLogger::log_info(sprintf('client_ip:%s user:%s operation:dnssec_deactivate_zone_key zone:%s key_id:%s',
-            $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $zone, $keyId));
+            $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $zoneName, $keyId));
 
         return true;
     }
 
-    public function getKeys(string $zone): array
+    public function getKeys(string $zoneName): array
     {
-        $call_result = self::dnssec_call_pdnssec('show-zone', $zone);
+        $call_result = self::dnssec_call_pdnssec('show-zone', $zoneName);
         $output = $call_result[0];
         $return_code = $call_result[1];
 
@@ -288,9 +288,9 @@ class PdnsUtilProvider implements DnssecProvider
         return $keys;
     }
 
-    public function addZoneKey(string $zone, string $keyType, int $keySize, string $algorithm): bool
+    public function addZoneKey(string $zoneName, string $keyType, int $keySize, string $algorithm): bool
     {
-        $call_result = self::dnssec_call_pdnssec('add-zone-key', $zone, array($keyType, $keySize, "inactive", $algorithm));
+        $call_result = self::dnssec_call_pdnssec('add-zone-key', $zoneName, array($keyType, $keySize, "inactive", $algorithm));
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
@@ -299,14 +299,14 @@ class PdnsUtilProvider implements DnssecProvider
         }
 
         LegacyLogger::log_info(sprintf('client_ip:%s user:%s operation:dnssec_add_zone_key zone:%s type:%s bits:%s algorithm:%s',
-            $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $zone, $keyType, $keySize, $algorithm));
+            $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $zoneName, $keyType, $keySize, $algorithm));
 
         return true;
     }
 
-    public function removeZoneKey(string $zone, int $keyId): bool
+    public function removeZoneKey(string $zoneName, int $keyId): bool
     {
-        $call_result = self::dnssec_call_pdnssec('remove-zone-key', $zone, array($keyId));
+        $call_result = self::dnssec_call_pdnssec('remove-zone-key', $zoneName, array($keyId));
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
@@ -315,14 +315,14 @@ class PdnsUtilProvider implements DnssecProvider
         }
 
         LegacyLogger::log_info(sprintf('client_ip:%s user:%s operation:dnssec_remove_zone_key zone:%s key_id:%s',
-            $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $zone, $keyId));
+            $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $zoneName, $keyId));
 
         return true;
     }
 
-    public function keyExists(string $zone, int $keyId): bool
+    public function keyExists(string $zoneName, int $keyId): bool
     {
-        $keys = $this->getKeys($zone);
+        $keys = $this->getKeys($zoneName);
 
         foreach ($keys as $key) {
             if ($key[0] == $keyId) {
@@ -333,9 +333,9 @@ class PdnsUtilProvider implements DnssecProvider
         return false;
     }
 
-    public function getZoneKey(string $zone, int $keyId): array
+    public function getZoneKey(string $zoneName, int $keyId): array
     {
-        $keys = $this->getKeys($zone);
+        $keys = $this->getKeys($zoneName);
 
         foreach ($keys as $key) {
             if ($key[0] == $keyId) {

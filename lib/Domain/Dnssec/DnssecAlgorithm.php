@@ -23,7 +23,6 @@
 namespace Poweradmin\Domain\Dnssec;
 
 class DnssecAlgorithm {
-    // Constants representing the algorithms
     public const RESERVED = 0;
     public const RSAMD5 = 1;
     public const DH = 2;
@@ -45,7 +44,6 @@ class DnssecAlgorithm {
     public const PRIVATEDNS = 253;
     public const PRIVATEOID = 254;
 
-    // Associative array for easy retrieval
     public const ALGORITHMS = [
         self::RESERVED => 'Reserved',
         self::RSAMD5 => 'RSAMD5',

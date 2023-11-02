@@ -23,7 +23,6 @@
 namespace Poweradmin\Domain\Dnssec;
 
 class DnssecAlgorithmName {
-    // Constants representing the algorithm names' keys
     public const RSAMD5 = 'rsamd5';
     public const DH = 'dh';
     public const DSA = 'dsa';
@@ -38,7 +37,6 @@ class DnssecAlgorithmName {
     public const ED25519 = 'ed25519';
     public const ED448 = 'ed448';
 
-    // Associative array for easy retrieval
     public const ALGORITHM_NAMES = [
         self::RSAMD5 => 'RSAMD5',
         self::DH => 'DH',

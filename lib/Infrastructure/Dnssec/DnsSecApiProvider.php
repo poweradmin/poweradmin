@@ -23,6 +23,8 @@ namespace Poweradmin\Infrastructure\Dnssec;
  */
 
 use Poweradmin\Domain\Dnssec\DnssecProvider;
+use Poweradmin\Domain\Model\CryptoKey;
+use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Transformer\DnssecTransformer;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Logger\LoggerInterface;
@@ -46,10 +48,10 @@ class DnsSecApiProvider implements DnssecProvider
 
     public function __construct(
         PowerdnsApiClient $client,
-        LoggerInterface $logger,
+        LoggerInterface   $logger,
         DnssecTransformer $transformer,
-        string $clientIp,
-        string $userLogin
+        string            $clientIp,
+        string            $userLogin
     )
     {
         $this->client = $client;
@@ -59,128 +61,133 @@ class DnsSecApiProvider implements DnssecProvider
         $this->userLogin = $userLogin;
     }
 
-    public function rectifyZone(string $zone): bool
+    public function rectifyZone(string $zoneName): bool
     {
+        $zone = new Zone($zoneName);
         return $this->client->rectifyZone($zone);
     }
 
-    public function secureZone(string $zone): bool
+    public function secureZone(string $zoneName): bool
     {
+        $zone = new Zone($zoneName);
         $result = $this->client->secureZone($zone);
-
-        $this->logger->info("client_ip:{$this->clientIp} user:{$this->userLogin} operation:dnssec_secure_zone zone:{$zone} result:{$result}");
-
+        $this->logAction('dnssec_secure_zone', $zoneName, ['result' => $result]);
         return $result;
     }
 
-    public function unsecureZone(string $zone): bool
+    public function unsecureZone(string $zoneName): bool
     {
+        $zone = new Zone($zoneName);
         $result = $this->client->unsecureZone($zone);
-
-        $this->logger->info("client_ip:{$this->clientIp} user:{$this->userLogin} operation:dnssec_unsecure_zone zone:{$zone} result:{$result}");
-
+        $this->logAction('dnssec_unsecure_zone', $zoneName, ['result' => $result]);
         return $result;
     }
 
-    public function isZoneSecured(string $zone): bool
+    public function isZoneSecured(string $zoneName): bool
     {
+        $zone = new Zone($zoneName);
         return $this->client->isZoneSecured($zone);
     }
 
-    public function getDsRecords(string $zone): array
+    public function getDsRecords(string $zoneName): array
     {
+        $zone = new Zone($zoneName);
+        $keys = $this->client->getZoneKeys($zone);
         $result = [];
-        $keys = $this->client->getKeys($zone);
         foreach ($keys as $key) {
-            foreach ($key["ds"] as $ds) {
-                $result[] = $zone . ". IN DS " . $ds;
+            foreach ($key->getDs() as $ds) {
+                $result[] = $zoneName . ". IN DS " . $ds;
             }
         }
         return $result;
     }
 
-    public function getDnsKeyRecords(string $zone): array
+    public function getDnsKeyRecords(string $zoneName): array
     {
+        $zone = new Zone($zoneName);
+        $keys = $this->client->getZoneKeys($zone);
         $result = [];
-        $keys = $this->client->getKeys($zone);
         foreach ($keys as $key) {
-            $result[] = $zone . ". IN DNSKEY " . $key["dnskey"];
+            $result[] = $zoneName . ". IN DNSKEY " . $key->getDnsKey();
         }
         return $result;
     }
 
-    public function activateZoneKey(string $zone, int $keyId): bool
+    public function activateZoneKey(string $zoneName, int $keyId): bool
     {
-        $result = $this->client->activateZoneKey($zone, $keyId);
-
-        $this->logger->info("client_ip:{$this->clientIp} user:{$this->userLogin} operation:dnssec_activate_zone_key zone:{$zone} key_id:{$keyId} result:{$result}");
-
+        $zone = new Zone($zoneName);
+        $key = new CryptoKey($keyId);
+        $result = $this->client->activateZoneKey($zone, $key);
+        $this->logAction('dnssec_activate_zone_key', $zoneName, ['keyId' => $keyId, 'result' => $result]);
         return $result;
     }
 
-    public function deactivateZoneKey(string $zone, int $keyId): bool
+    public function deactivateZoneKey(string $zoneName, int $keyId): bool
     {
-        $result = $this->client->deactivateZoneKey($zone, $keyId);
-
-        $this->logger->info("client_ip:{$this->clientIp} user:{$this->userLogin} operation:dnssec_deactivate_zone_key zone:{$zone} key_id:{$keyId} result:{$result}");
-
+        $zone = new Zone($zoneName);
+        $key = new CryptoKey($keyId);
+        $result = $this->client->deactivateZoneKey($zone, $key);
+        $this->logAction('dnssec_deactivate_zone_key', $zoneName, ['keyId' => $keyId, 'result' => $result]);
         return $result;
     }
 
-    public function getKeys(string $zone): array
+    public function getKeys(string $zoneName): array
     {
-        $result = [];
-        $keys = $this->client->getKeys($zone);
+        $zone = new Zone($zoneName);
+        $keys = $this->client->getZoneKeys($zone);
+        return array_map([$this->transformer, 'transformKey'], $keys);
+    }
+
+    public function addZoneKey(string $zoneName, string $keyType, int $keySize, string $algorithm): bool
+    {
+        $zone = new Zone($zoneName);
+        $key = new CryptoKey(null, $keyType, $keySize, $algorithm);
+        $result = $this->client->addZoneKey($zone, $key);
+        $this->logAction('dnssec_add_zone_key', $zoneName, ['type' => $keyType, 'bits' => $keySize, 'algorithm' => $algorithm, 'result' => $result]);
+        return $result;
+    }
+
+    public function removeZoneKey(string $zoneName, int $keyId): bool
+    {
+        $zone = new Zone($zoneName);
+        $key = new CryptoKey($keyId);
+        $result = $this->client->removeZoneKey($zone, $key);
+        $this->logAction('dnssec_remove_zone_key', $zoneName, ['keyId' => $keyId, 'result' => $result]);
+        return $result;
+    }
+
+    public function keyExists(string $zoneName, int $keyId): bool
+    {
+        $zone = new Zone($zoneName);
+        $keys = $this->client->getZoneKeys($zone);
         foreach ($keys as $key) {
-            $result[] = $this->transformKey($key);
-        }
-        return $result;
-    }
-
-    public function addZoneKey(string $zone, string $keyType, int $keySize, string $algorithm): bool
-    {
-        $result = $this->client->addZoneKey($zone, $keyType, $keySize, $algorithm);
-
-        $this->logger->info("client_ip:{$this->clientIp} user:{$this->userLogin} operation:dnssec_add_zone_key zone:{$zone} type:{$keyType} bits:{$keySize} algorithm:{$algorithm} result:{$result}");
-
-        return $result;
-    }
-
-    public function removeZoneKey(string $zone, int $keyId): bool
-    {
-        $result = $this->client->removeZoneKey($zone, $keyId);
-
-        $this->logger->info("client_ip:{$this->clientIp} user:{$this->userLogin} operation:dnssec_remove_zone_key zone:{$zone} key_id:{$keyId} result:{$result}");
-
-        return $result;
-    }
-
-    public function keyExists(string $zone, int $keyId): bool
-    {
-        $keys = $this->client->getKeys($zone);
-
-        foreach ($keys as $key) {
-            if ($key['id'] === $keyId) {
+            if ($key->getId() === $keyId) {
                 return true;
             }
         }
         return false;
     }
 
-    public function getZoneKey(string $zone, int $keyId): array
+    public function getZoneKey(string $zoneName, int $keyId): array
     {
-        $keys = $this->client->getKeys($zone);
-
+        $zone = new Zone($zoneName);
+        $keys = $this->client->getZoneKeys($zone);
         foreach ($keys as $key) {
-            if ($key['id'] === $keyId) {
-                return $this->transformKey($key);
+            if ($key->getId() === $keyId) {
+                return $this->transformer->transformKey($key);
             }
         }
         return [];
     }
 
-    private function transformKey(mixed $key): array
+    private function logAction(string $action, string $zoneName, array $context = []): void
     {
-        return $this->transformer->transformKey($key);
+        $contextString = [];
+        foreach ($context as $key => $value) {
+            $contextString[] = "{$key}:{$value}";
+        }
+        $formattedContext = implode(' ', $contextString);
+
+        $this->logger->info("client_ip:{$this->clientIp} user:{$this->userLogin} operation:{$action} zone:{$zoneName} {$formattedContext}");
     }
 }
