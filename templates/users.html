@@ -36,6 +36,8 @@
 
         {% if user['use_ldap'] %}
         {% set use_ldap = 'checked' %}
+        {% else %}
+        {% set use_ldap = '' %}
         {% endif %}
 
         {% set user_uid = user['uid'] %}
