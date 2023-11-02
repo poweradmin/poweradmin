@@ -852,20 +852,19 @@ function add_new_user_local($details)
 
     if ($ldap_use && $details['use_ldap'] == 1) {
         $use_ldap = 1;
+        $password_hash = 'LDAP_USER';
     } else {
         $use_ldap = 0;
+        $config = new LegacyConfiguration();
+        $userAuthService = new UserAuthenticationService(
+            $config->get('password_encryption'),
+            $config->get('password_encryption_cost')
+        );
+        $password_hash = $userAuthService->hashPassword($details['password']);
     }
 
-    $query = "INSERT INTO users (username, password, fullname, email, description, perm_templ,";
+    $query = "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES (" . $db->quote($details['username'], 'text') . ", " . $db->quote($password_hash, 'text') . ", " . $db->quote($details['fullname'], 'text') . ", " . $db->quote($details['email'], 'text') . ", " . $db->quote($details['descr'], 'text') . ", ";
 
-    $config = new LegacyConfiguration();
-    $userAuthService = new UserAuthenticationService(
-        $config->get('password_encryption'),
-        $config->get('password_encryption_cost')
-    );
-    $password_hash = $userAuthService->hashPassword($details['password']);
-
-    $query .= " active, use_ldap) VALUES (" . $db->quote($details['username'], 'text') . ", " . $db->quote($password_hash, 'text') . ", " . $db->quote($details['fullname'], 'text') . ", " . $db->quote($details['email'], 'text') . ", " . $db->quote($details['descr'], 'text') . ", ";
     if (do_hook('verify_permission', 'user_edit_templ_perm')) {
         $query .= $db->quote($details['perm_templ'], 'integer') . ", ";
     } else {
@@ -874,5 +873,6 @@ function add_new_user_local($details)
     }
     $query .= $db->quote($active, 'integer') . ", " . $db->quote($use_ldap, 'integer') . ")";
     $db->query($query);
+
     return true;
 }
