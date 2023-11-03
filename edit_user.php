@@ -30,6 +30,7 @@
  */
 
 use Poweradmin\BaseController;
+use Poweradmin\Permission;
 use Poweradmin\Validation;
 
 require_once 'inc/toolkit.inc.php';
@@ -69,6 +70,7 @@ class EditUserController extends BaseController
         $i_fullname = "-1";
         $i_email = "-1";
         $i_description = "-1";
+        $i_password = "";
         $i_perm_templ = "0";
 
         if (isset($_POST['username'])) {
@@ -103,12 +105,17 @@ class EditUserController extends BaseController
             $i_active = true;
         }
 
+        $i_use_ldap = false;
+        if (isset($_POST['use_ldap']) && Validation::is_number($_POST['use_ldap'])) {
+            $i_use_ldap = true;
+        }
+
         if ($i_username == "-1" || $i_fullname == "-1" || $i_email < "1" || $i_description == "-1") {
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
         if ($i_username != "" && $i_perm_templ > "0" && $i_fullname) {
-            if (do_hook('edit_user', $edit_id, $i_username, $i_fullname, $i_email, $i_perm_templ, $i_description, $i_active, $i_password)) {
+            if (do_hook('edit_user', $edit_id, $i_username, $i_fullname, $i_email, $i_perm_templ, $i_description, $i_active, $i_password, $i_use_ldap)) {
                 $this->setMessage('users', 'success', _('The user has been updated successfully.'));
                 $this->redirect('users.php');
             } else {
@@ -136,6 +143,14 @@ class EditUserController extends BaseController
         ($user['active']) == "1" ? $check = " CHECKED" : $check = "";
         $name = $user['fullname'] ?: $user['username'];
 
+        $use_ldap_checked = "";
+        if ($user['use_ldap']) {
+            $use_ldap_checked = "checked";
+        }
+
+        $permissions = Permission::getPermissions('user_is_ueberuser');
+        $currentUserAdmin = $permissions['user_is_ueberuser'] && $_SESSION['userid'] == $edit_id;
+
         $this->render('edit_user.html', [
             'edit_id' => $edit_id,
             'name' => $name,
@@ -147,6 +162,8 @@ class EditUserController extends BaseController
             'perm_passwd_edit_others' => $passwd_edit_others_perm,
             'permission_templates' => $permission_templates,
             'user_permissions' => $user_permissions,
+            'ldap_use' => $this->config('ldap_use') && !$currentUserAdmin,
+            'use_ldap_checked' => $use_ldap_checked,
         ]);
     }
 }

@@ -110,89 +110,88 @@ function LDAPAuthenticate()
     global $ldap_debug;
     global $ldap_user_attribute;
 
-    if (isset($_SESSION["userlogin"]) && isset($_SESSION["userpwd"])) {
-        if ($ldap_debug) {
-            ldap_set_option(NULL, LDAP_OPT_DEBUG_LEVEL, 7);
-        }
-        $ldapconn = ldap_connect($ldap_uri);
-        if (!$ldapconn) {
-            if (isset($_POST["authenticate"])) {
-                LdapUserEventLogger::log_failed_reason('ldap_connect');
-            }
-            logout(_('Failed to connect to LDAP server!'), 'danger');
-            return;
-        }
-
-        ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, $ldap_proto);
-        $ldapbind = ldap_bind($ldapconn, $ldap_binddn, $ldap_bindpw);
-        if (!$ldapbind) {
-            if (isset($_POST["authenticate"])) {
-                LdapUserEventLogger::log_failed_reason('ldap_bind');
-            }
-            logout(_('Failed to bind to LDAP server!'), 'danger');
-            return;
-        }
-
-        $attributes = array($ldap_user_attribute, 'dn');
-        $filter = "(" . $ldap_user_attribute . "=" . $_SESSION["userlogin"] . ")";
-        $ldapsearch = ldap_search($ldapconn, $ldap_basedn, $filter, $attributes);
-        if (!$ldapsearch) {
-            if (isset($_POST["authenticate"])) {
-                LdapUserEventLogger::log_failed_reason('ldap_search');
-            }
-            logout(_('Failed to search LDAP.'), 'danger');
-            return;
-        }
-
-        //Checking first that we only found exactly 1 user, get the DN of this user.  We'll use this to perform the actual authentication.
-        $entries = ldap_get_entries($ldapconn, $ldapsearch);
-        if ($entries["count"] != 1) {
-            if (isset($_POST["authenticate"])) {
-                if ($entries["count"] == 0) {
-                    LdapUserEventLogger::log_failed_auth();
-                } else {
-                    LdapUserEventLogger::log_failed_duplicate_auth();
-                }
-            }
-            logout(_('Failed to authenticate against LDAP.'), 'danger');
-            return;
-        }
-        $user_dn = $entries[0]["dn"];
-
-        $passwordEncryptionService = new PasswordEncryptionService($session_key);
-        $session_pass = $passwordEncryptionService->decrypt($_SESSION['userpwd']);
-        $ldapbind = ldap_bind($ldapconn, $user_dn, $session_pass);
-        if (!$ldapbind) {
-            if (isset($_POST["authenticate"])) {
-                LdapUserEventLogger::log_failed_incorrect_pass();
-            }
-            auth(_('LDAP Authentication failed!'), 'danger');
-            return;
-        }
-        //LDAP AUTH SUCCESSFUL
-        //Make sure the user is 'active' and fetch id and name.
-        $rowObj = $db->queryRow("SELECT id, fullname FROM users WHERE username=" . $db->quote($_SESSION["userlogin"], 'text') . " AND active=1 AND use_ldap=1");
-        if (!$rowObj) {
-            if (isset($_POST["authenticate"])) {
-                LdapUserEventLogger::log_failed_user_inactive();
-            }
-            auth(_('LDAP Authentication failed!'), 'danger');
-            return;
-        }
-        $_SESSION["userid"] = $rowObj["id"];
-        $_SESSION["name"] = $rowObj["fullname"];
-        $_SESSION["auth_used"] = "ldap";
-
-        if (isset($_POST["authenticate"])) {
-            LdapUserEventLogger::log_success_auth();
-            //If a user has just authenticated, redirect him to requested page
-            session_write_close();
-            $redirect_url = ($_POST["query_string"] ? $_SERVER['SCRIPT_NAME'] . "?" . $_POST["query_string"] : $_SERVER['SCRIPT_NAME']);
-            clean_page($redirect_url);
-        }
-    } else {
+    if (!isset($_SESSION["userlogin"]) || !isset($_SESSION["userpwd"])) {
         //No username and password set, show auth form (again).
         auth();
+    }
+
+    if ($ldap_debug) {
+        ldap_set_option(NULL, LDAP_OPT_DEBUG_LEVEL, 7);
+    }
+
+    $ldapconn = ldap_connect($ldap_uri);
+    if (!$ldapconn) {
+        if (isset($_POST["authenticate"])) {
+            LdapUserEventLogger::log_failed_reason('ldap_connect');
+        }
+        logout(_('Failed to connect to LDAP server!'), 'danger');
+        return;
+    }
+
+    ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, $ldap_proto);
+    $ldapbind = ldap_bind($ldapconn, $ldap_binddn, $ldap_bindpw);
+    if (!$ldapbind) {
+        if (isset($_POST["authenticate"])) {
+            LdapUserEventLogger::log_failed_reason('ldap_bind');
+        }
+        logout(_('Failed to bind to LDAP server!'), 'danger');
+        return;
+    }
+
+    $attributes = array($ldap_user_attribute, 'dn');
+    $filter = "(" . $ldap_user_attribute . "=" . $_SESSION["userlogin"] . ")";
+    $ldapsearch = ldap_search($ldapconn, $ldap_basedn, $filter, $attributes);
+    if (!$ldapsearch) {
+        if (isset($_POST["authenticate"])) {
+            LdapUserEventLogger::log_failed_reason('ldap_search');
+        }
+        logout(_('Failed to search LDAP.'), 'danger');
+        return;
+    }
+
+    //Checking first that we only found exactly 1 user, get the DN of this user.  We'll use this to perform the actual authentication.
+    $entries = ldap_get_entries($ldapconn, $ldapsearch);
+    if ($entries["count"] != 1) {
+        if (isset($_POST["authenticate"])) {
+            if ($entries["count"] == 0) {
+                LdapUserEventLogger::log_failed_auth();
+            } else {
+                LdapUserEventLogger::log_failed_duplicate_auth();
+            }
+        }
+        logout(_('Failed to authenticate against LDAP.'), 'danger');
+        return;
+    }
+    $user_dn = $entries[0]["dn"];
+
+    $passwordEncryptionService = new PasswordEncryptionService($session_key);
+    $session_pass = $passwordEncryptionService->decrypt($_SESSION['userpwd']);
+    $ldapbind = ldap_bind($ldapconn, $user_dn, $session_pass);
+    if (!$ldapbind) {
+        if (isset($_POST["authenticate"])) {
+            LdapUserEventLogger::log_failed_incorrect_pass();
+        }
+        auth(_('LDAP Authentication failed!'), 'danger');
+        return;
+    }
+
+    $rowObj = $db->queryRow("SELECT id, fullname FROM users WHERE username=" . $db->quote($_SESSION["userlogin"], 'text') . " AND active=1 AND use_ldap=1");
+    if (!$rowObj) {
+        if (isset($_POST["authenticate"])) {
+            LdapUserEventLogger::log_failed_user_inactive();
+        }
+        auth(_('LDAP Authentication failed!'), 'danger');
+        return;
+    }
+    $_SESSION["userid"] = $rowObj["id"];
+    $_SESSION["name"] = $rowObj["fullname"];
+    $_SESSION["auth_used"] = "ldap";
+
+    if (isset($_POST["authenticate"])) {
+        LdapUserEventLogger::log_success_auth();
+        session_write_close();
+        $redirect_url = ($_POST["query_string"] ? $_SERVER['SCRIPT_NAME'] . "?" . $_POST["query_string"] : $_SERVER['SCRIPT_NAME']);
+        clean_page($redirect_url);
     }
 }
 

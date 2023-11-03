@@ -290,7 +290,7 @@ function delete_perm_templ_local($ptid)
  *
  * @return boolean true if succesful, false otherwise
  */
-function edit_user_local($id, $user, $fullname, $email, $perm_templ, $description, $active, $user_password)
+function edit_user_local($id, $user, $fullname, $email, $perm_templ, $description, $active, $user_password, $i_use_ldap)
 {
     global $db;
 
@@ -346,7 +346,8 @@ email = " . $db->quote($email, 'text') . ",";
             $query .= "perm_templ = " . $db->quote($perm_templ, 'integer') . ",";
         }
         $query .= "description = " . $db->quote($description, 'text') . ",
-				active = " . $db->quote($active, 'integer');
+				active = " . $db->quote($active, 'integer') . ",
+				use_ldap = " . $db->quote($i_use_ldap ?: 0, 'integer');
 
         $edit_own_perm = do_hook('verify_permission', 'user_edit_own');
         $passwd_edit_others_perm = do_hook('verify_permission', 'user_passwd_edit_others');
@@ -357,11 +358,12 @@ email = " . $db->quote($email, 'text') . ",";
                 $config->get('password_encryption'),
                 $config->get('password_encryption_cost')
             );
-            $query .= ", password = " . $db->quote($userAuthService->hashPassword($user_password), 'text');
+
+            $passwordHash = $i_use_ldap ? 'LDAP_USER' : $userAuthService->hashPassword($user_password);
+            $query .= ", password = " . $db->quote($passwordHash, 'text');
         }
 
         $query .= " WHERE id = " . $db->quote($id, 'integer');
-
         $db->query($query);
     } else {
         error(_("You do not have the permission to edit this user."));
