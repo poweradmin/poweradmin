@@ -45,7 +45,7 @@ class UsersController extends BaseController
         $this->showUsers();
     }
 
-    private function updateUsers()
+    private function updateUsers(): void
     {
         $success = false;
         foreach ($_POST['user'] as $user) {
@@ -59,7 +59,7 @@ class UsersController extends BaseController
         }
     }
 
-    private function showUsers()
+    private function showUsers(): void
     {
         $this->render('users.html', [
             'permissions' => Permission::getPermissions(

@@ -69,7 +69,7 @@ class EditZoneTemplController extends BaseController
         $this->showForm($zone_templ_id);
     }
 
-    private function updateZoneTemplate(string $zone_templ_id)
+    private function updateZoneTemplate(string $zone_templ_id): void
     {
         $owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
         $perm_godlike = do_hook('verify_permission', 'user_is_ueberuser');
@@ -78,6 +78,7 @@ class EditZoneTemplController extends BaseController
             $this->updateZoneTemplateDetails($zone_templ_id);
         }
 
+        // TODO: review this code
 //        if (isset($_POST['save_as'])) {
 //            if (ZoneTemplate::zone_templ_name_exists($_POST['templ_name'])) {
 //                error(ERR_ZONE_TEMPL_EXIST);
@@ -95,7 +96,7 @@ class EditZoneTemplController extends BaseController
         }
     }
 
-    private function showForm(string $zone_templ_id)
+    private function showForm(string $zone_templ_id): void
     {
         $iface_rowamount = $this->config('iface_rowamount');
         $row_start = $this->getRowStart($iface_rowamount);

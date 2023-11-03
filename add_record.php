@@ -63,7 +63,7 @@ class AddRecordController extends BaseController
         $this->showForm();
     }
 
-    private function addRecord()
+    private function addRecord(): void
     {
         $v = new Valitron\Validator($_POST);
         $v->rules([
@@ -89,7 +89,7 @@ class AddRecordController extends BaseController
         }
     }
 
-    private function showForm()
+    private function showForm(): void
     {
         $zone_id = htmlspecialchars($_GET['id']);
         $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
@@ -130,7 +130,7 @@ class AddRecordController extends BaseController
         }
     }
 
-    public function createReverseRecord($name, $type, $content, string $zone_id, $ttl, $prio)
+    public function createReverseRecord($name, $type, $content, string $zone_id, $ttl, $prio): void
     {
         $iface_add_reverse_record = $this->config('iface_add_reverse_record');
 

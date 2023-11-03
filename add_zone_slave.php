@@ -51,7 +51,7 @@ class AddZoneSlaveController extends BaseController
         }
     }
 
-    private function addZone()
+    private function addZone(): void
     {
         $v = new Valitron\Validator($_POST);
         $v->rules([
@@ -94,7 +94,7 @@ class AddZoneSlaveController extends BaseController
         }
     }
 
-    private function showForm()
+    private function showForm(): void
     {
         $this->render('add_zone_slave.html', [
             'users' => do_hook('show_users'),

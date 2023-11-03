@@ -51,7 +51,7 @@ class BulkRegistrationController extends BaseController {
         }
     }
 
-    private function doBulkRegistration()
+    private function doBulkRegistration(): void
     {
         $v = new Valitron\Validator($_POST);
         $v->rules([
@@ -90,7 +90,7 @@ class BulkRegistrationController extends BaseController {
         }
     }
 
-    private function showBulkRegistrationForm(array $failed_domains = [])
+    private function showBulkRegistrationForm(array $failed_domains = []): void
     {
         $this->render('bulk_registration.html', [
             'userid' => $_SESSION['userid'],

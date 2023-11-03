@@ -68,7 +68,7 @@ class AddZoneTemplRecordController extends BaseController {
         }
     }
 
-    private function addZoneTemplRecord()
+    private function addZoneTemplRecord(): void
     {
         $zone_templ_id = htmlspecialchars($_GET['id']);
         $name = $_POST['name'] ?? "[ZONE]";
@@ -86,7 +86,7 @@ class AddZoneTemplRecordController extends BaseController {
         }
     }
 
-    private function showAddZoneTemplRecord()
+    private function showAddZoneTemplRecord(): void
     {
         $zone_templ_id = htmlspecialchars($_GET['id']);
         $templ_details = ZoneTemplate::get_zone_templ_details($zone_templ_id);

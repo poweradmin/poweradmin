@@ -42,7 +42,7 @@ class IndexController extends BaseController
         $this->showIndex();
     }
 
-    private function showIndex()
+    private function showIndex(): void
     {
         $template = sprintf("index_%s.html", $this->config('iface_index'));
 

@@ -53,7 +53,7 @@ class AddZoneMasterController extends BaseController
         }
     }
 
-    private function addZone()
+    private function addZone(): void
     {
         $v = new Valitron\Validator($_POST);
         $v->rules([
@@ -102,7 +102,7 @@ class AddZoneMasterController extends BaseController
         }
     }
 
-    private function showForm()
+    private function showForm(): void
     {
         $perm_view_others = do_hook('verify_permission', 'user_view_others');
 

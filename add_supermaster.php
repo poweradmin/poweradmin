@@ -53,7 +53,7 @@ class AddSuperMasterController extends BaseController
         }
     }
 
-    private function addSuperMaster($master_ip, $ns_name, $account)
+    private function addSuperMaster($master_ip, $ns_name, $account): void
     {
         if (DnsRecord::add_supermaster($master_ip, $ns_name, $account)) {
             $this->setMessage('list_supermasters', 'success', _('The supermaster has been added successfully.'));
@@ -63,7 +63,7 @@ class AddSuperMasterController extends BaseController
         }
     }
 
-    private function showAddSuperMaster($master_ip, $ns_name, $account)
+    private function showAddSuperMaster($master_ip, $ns_name, $account): void
     {
         $this->render('add_supermaster.html', [
             'users' => do_hook('show_users'),

@@ -48,7 +48,7 @@ class DeletePermTemplController extends BaseController
         }
     }
 
-    private function deletePermTempl()
+    private function deletePermTempl(): void
     {
         $v = new Valitron\Validator($_GET);
         $v->rules([
@@ -71,7 +71,7 @@ class DeletePermTemplController extends BaseController
         ]);
     }
 
-    private function showDeletePermTempl()
+    private function showDeletePermTempl(): void
     {
         $perm_templ_id = htmlspecialchars($_GET['id']);
         $templ_details = do_hook('get_permission_template_details', $perm_templ_id);

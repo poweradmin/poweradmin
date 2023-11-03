@@ -49,7 +49,7 @@ class ListZonesController extends BaseController {
         $this->listZones();
     }
 
-    private function listZones()
+    private function listZones(): void
     {
         $pdnssec_use = $this->config('pdnssec_use');
         $iface_zonelist_serial = $this->config('iface_zonelist_serial');

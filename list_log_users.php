@@ -44,7 +44,7 @@ class ListLogUsersController extends BaseController {
         $this->showListLogUsers();
     }
 
-    private function showListLogUsers()
+    private function showListLogUsers(): void
     {
         $selected_page = 1;
         if (isset($_GET['start'])) {

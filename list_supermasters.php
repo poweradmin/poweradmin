@@ -44,7 +44,7 @@ class ListSuperMastersController extends BaseController
         $this->showSuperMasters();
     }
 
-    private function showSuperMasters()
+    private function showSuperMasters(): void
     {
         $this->render('list_supermasters.html', [
             'perm_sm_add' => do_hook('verify_permission', 'supermaster_add'),

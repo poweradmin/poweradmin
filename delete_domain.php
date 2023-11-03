@@ -65,7 +65,7 @@ class DeleteDomainController extends BaseController
         }
     }
 
-    private function deleteDomain(string $zone_id)
+    private function deleteDomain(string $zone_id): void
     {
         $zone_info = DnsRecord::get_zone_info_from_id($zone_id);
         $pdnssec_use = $this->config('pdnssec_use');
@@ -89,7 +89,7 @@ class DeleteDomainController extends BaseController
         }
     }
 
-    private function showDeleteDomain(string $zone_id)
+    private function showDeleteDomain(string $zone_id): void
     {
         $zone_info = DnsRecord::get_zone_info_from_id($zone_id);
         $zone_owners = do_hook('get_fullnames_owners_from_domainid', $zone_id);

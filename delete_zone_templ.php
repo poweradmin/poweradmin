@@ -53,7 +53,7 @@ class DeleteZoneTemplController extends BaseController
         }
     }
 
-    private function deleteZoneTempl()
+    private function deleteZoneTempl(): void
     {
         $v = new Valitron\Validator($_GET);
         $v->rules([
@@ -72,7 +72,7 @@ class DeleteZoneTemplController extends BaseController
         }
     }
 
-    private function showDeleteZoneTempl()
+    private function showDeleteZoneTempl(): void
     {
         $zone_templ_id = htmlspecialchars($_GET['id']);
         $templ_details = ZoneTemplate::get_zone_templ_details($zone_templ_id);

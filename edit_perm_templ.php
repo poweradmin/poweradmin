@@ -58,7 +58,7 @@ class EditPermTemplController extends BaseController
         }
     }
 
-    private function editPermTempl()
+    private function editPermTempl(): void
     {
         $v = new Valitron\Validator($_POST);
         $v->rules([
@@ -75,7 +75,7 @@ class EditPermTemplController extends BaseController
         }
     }
 
-    private function showEditPermTempl()
+    private function showEditPermTempl(): void
     {
         $id = htmlspecialchars($_GET['id']);
         $this->render('edit_perm_templ.html', [

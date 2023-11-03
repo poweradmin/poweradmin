@@ -47,7 +47,7 @@ class AddPermTemplController extends BaseController
         }
     }
 
-    private function addPermTempl()
+    private function addPermTempl(): void
     {
         $v = new Valitron\Validator($_POST);
         $v->rules([
@@ -68,7 +68,7 @@ class AddPermTemplController extends BaseController
         }
     }
 
-    private function showAddPermTempl()
+    private function showAddPermTempl(): void
     {
         $this->render('add_perm_templ.html', [
             'perms_avail' => do_hook('get_permissions_by_template_id'),

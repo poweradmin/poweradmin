@@ -48,7 +48,7 @@ class AddZoneTemplateController extends BaseController
         }
     }
 
-    private function showAddZoneTemplate()
+    private function showAddZoneTemplate(): void
     {
         $this->render('add_zone_templ.html', [
             'user_name' => do_hook('get_fullname_from_userid', $_SESSION['userid']) ?: $_SESSION['userlogin'],
@@ -56,7 +56,7 @@ class AddZoneTemplateController extends BaseController
         ]);
     }
 
-    private function addZoneTemplate()
+    private function addZoneTemplate(): void
     {
         $v = new Valitron\Validator($_POST);
         $v->rules([

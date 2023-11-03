@@ -49,7 +49,7 @@ class DeleteSuperMasterController extends BaseController
         }
     }
 
-    private function deleteSuperMaster()
+    private function deleteSuperMaster(): void
     {
         $v = new Valitron\Validator($_GET);
         $v->rules([
@@ -75,7 +75,7 @@ class DeleteSuperMasterController extends BaseController
         }
     }
 
-    private function showDeleteSuperMaster()
+    private function showDeleteSuperMaster(): void
     {
         $master_ip = htmlspecialchars($_GET['master_ip']);
         $info = DnsRecord::get_supermaster_info_from_ip($master_ip);

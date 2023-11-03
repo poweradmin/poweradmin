@@ -45,7 +45,7 @@ class ListLogZonesController extends BaseController
         $this->showListLogZones();
     }
 
-    private function showListLogZones()
+    private function showListLogZones(): void
     {
         $selected_page = 1;
         if (isset($_GET['start'])) {

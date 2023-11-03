@@ -47,7 +47,7 @@ class AddUserController extends BaseController {
         }
     }
 
-    private function addUser()
+    private function addUser(): void
     {
         $v = new Valitron\Validator($_POST);
         $v->rules([
@@ -66,7 +66,7 @@ class AddUserController extends BaseController {
         }
     }
 
-    private function showForm()
+    private function showForm(): void
     {
         $user_edit_templ_perm = do_hook('verify_permission', 'user_edit_templ_perm');
         $user_templates = do_hook('list_permission_templates');

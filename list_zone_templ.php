@@ -43,7 +43,7 @@ class ListZoneTemplController extends BaseController {
         $this->showListZoneTempl();
     }
 
-    private function showListZoneTempl()
+    private function showListZoneTempl(): void
     {
         $perm_zone_master_add = do_hook('verify_permission', 'zone_master_add');
 
