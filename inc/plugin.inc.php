@@ -71,5 +71,5 @@ function do_hook() {
     return false;
 }
 
-require_once 'inc/plugins/auth_local/auth_local.plugin.php';
-require_once 'inc/plugins/users_local/users_local.plugin.php';
+require_once 'inc/plugins/auth_local.plugin.php';
+require_once 'inc/plugins/users_local.plugin.php';
