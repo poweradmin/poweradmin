@@ -71,22 +71,5 @@ function do_hook() {
     return false;
 }
 
-/**
- * Look for plugins and perform imports
- */
-function import_plugins() {
-    $plugins_dir = 'inc/plugins';
-    $contents = scandir($plugins_dir);
-    foreach ($contents as $dir) {
-        if ($dir == '.' || $dir == '..') {
-            continue;
-        }
-        $plugin_file = $plugins_dir . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $dir . '.plugin.php';
-        if (file_exists($plugin_file)) {
-
-            require_once $plugin_file;
-        }
-    }
-}
-
-import_plugins();
+require_once 'inc/plugins/auth_local/auth_local.plugin.php';
+require_once 'inc/plugins/users_local/users_local.plugin.php';
