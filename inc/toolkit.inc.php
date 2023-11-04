@@ -39,8 +39,8 @@ if (!@include_once('config.inc.php')) {
 session_start();
 
 require_once 'database.inc.php';
-require_once 'inc/auth_local.php';
-require_once 'inc/users_local.php';
+require_once 'inc/authenticate.php';
+require_once 'inc/users.php';
 require_once 'i18n.inc.php';
 
 DependencyCheck::verifyExtensions();
