@@ -20,29 +20,8 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Infrastructure\Repository;
+namespace Poweradmin\Domain\Repository;
 
-use Poweradmin\Domain\Model\User;
-use Poweradmin\Domain\Repository\UserRepository;
-
-class DbUserRepository implements UserRepository {
-    private object $db;
-
-    public function __construct($db) {
-        $this->db = $db;
-    }
-
-    public function canViewOthersContent(User $user): bool {
-        $query = "SELECT DISTINCT u.id
-                  FROM users u
-                  JOIN perm_templ pt ON u.perm_templ = pt.id
-                  JOIN perm_templ_items pti ON pti.templ_id = pt.id
-                  JOIN (SELECT id FROM perm_items WHERE name IN ('zone_content_view_others', 'user_is_ueberuser')) pit ON pti.perm_id = pit.id
-                  WHERE u.id = :userId";
-
-        $stmt = $this->db->prepare($query);
-        $stmt->execute(['userId' => $user->getId()]);
-
-        return (bool)$stmt->fetchColumn();
-    }
+interface ZoneRepositoryInterface {
+    public function getDistinctStartingLetters(int $userId, bool $viewOthers): array;
 }

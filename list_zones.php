@@ -29,14 +29,29 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Application\Presenter\ZoneStartingLettersPresenter;
+use Poweradmin\Application\Service\UserService;
+use Poweradmin\Application\Service\ZoneService;
 use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Permission;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/pagination.inc.php';
 
 class ListZonesController extends BaseController {
+
+    private object $db;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        global $db;
+        $this->db = $db;
+    }
 
     public function run(): void
     {
@@ -114,13 +129,31 @@ class ListZonesController extends BaseController {
             'iface_zonelist_serial' => $iface_zonelist_serial,
             'iface_zonelist_template' => $iface_zonelist_template,
             'pdnssec_use' => $pdnssec_use,
-            'letters' => show_letters($letter_start, $_SESSION["userid"]),
+            'letters' => $this->getAvailableStartingLetters($letter_start, $_SESSION["userid"]),
             'pagination' => show_pages($count_zones_all_letterstart, $iface_rowamount),
             'session_userlogin' => $_SESSION['userlogin'],
             'perm_edit' => $perm_edit,
             'perm_zone_master_add' => verify_permission('zone_master_add'),
             'perm_zone_slave_add' => verify_permission('zone_slave_add'),
         ]);
+    }
+
+    private function getAvailableStartingLetters(string $letterStart, int $userId): string
+    {
+        $db_type = $this->config('db_type');
+
+        $zoneRepository = new DbZoneRepository($this->db, $db_type);
+        $zoneService = new ZoneService($zoneRepository);
+
+        $userRepository = new DbUserRepository($this->db);
+        $userService = new UserService($userRepository);
+        $allow_view_others = $userService->canUserViewOthersContent($userId);
+
+        $availableChars = $zoneService->getAvailableStartingLetters($userId, $allow_view_others);
+        $digitsAvailable = $zoneService->checkDigitsAvailable($availableChars);
+
+        $presenter = new ZoneStartingLettersPresenter();
+        return $presenter->present($availableChars, $digitsAvailable, $letterStart);
     }
 }
 

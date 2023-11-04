@@ -22,27 +22,41 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
-use Poweradmin\Domain\Model\User;
-use Poweradmin\Domain\Repository\UserRepository;
+use PDO;
+use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Infrastructure\Database\DbCompat;
 
-class DbUserRepository implements UserRepository {
+class DbZoneRepository implements ZoneRepositoryInterface {
     private object $db;
+    private string $db_type;
 
-    public function __construct($db) {
+    public function __construct($db, $db_type) {
         $this->db = $db;
+        $this->db_type = $db_type;
     }
 
-    public function canViewOthersContent(User $user): bool {
-        $query = "SELECT DISTINCT u.id
-                  FROM users u
-                  JOIN perm_templ pt ON u.perm_templ = pt.id
-                  JOIN perm_templ_items pti ON pti.templ_id = pt.id
-                  JOIN (SELECT id FROM perm_items WHERE name IN ('zone_content_view_others', 'user_is_ueberuser')) pit ON pti.perm_id = pit.id
-                  WHERE u.id = :userId";
+    public function getDistinctStartingLetters(int $userId, bool $viewOthers): array {
+        $query = "SELECT DISTINCT " . DbCompat::substr($this->db_type) . "(domains.name, 1, 1) AS letter FROM domains";
+
+        if (!$viewOthers) {
+            $query .= " LEFT JOIN zones ON domains.id = zones.domain_id";
+            $query .= " WHERE zones.owner = :userId";
+        }
+
+        $query .= " ORDER BY letter";
 
         $stmt = $this->db->prepare($query);
-        $stmt->execute(['userId' => $user->getId()]);
 
-        return (bool)$stmt->fetchColumn();
+        if (!$viewOthers) {
+            $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
+        }
+
+        $stmt->execute();
+
+        $letters = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+
+        return array_filter($letters, function ($letter) {
+            return ctype_alpha($letter) || is_numeric($letter);
+        });
     }
 }

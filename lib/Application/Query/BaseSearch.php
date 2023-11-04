@@ -24,7 +24,7 @@ namespace Poweradmin\Application\Query;
 
 abstract class BaseSearch
 {
-    protected $db;
+    protected object $db;
     protected string $db_type;
 
     public function __construct($db, string $db_type)
