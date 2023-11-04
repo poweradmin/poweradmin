@@ -125,12 +125,13 @@ function show_pages($amount, $rowamount, $id = '') {
 
 /** Print alphanumeric paging menu
  *
- * @param string $letterstart Starting letter/number or 'all'
+ * @param string $letterStart Starting letter/number or 'all'
  * @param int $userId Current user ID
  *
- * @return null
+ * @return string|null
  */
-function show_letters(string $letterstart, int $userId) {
+function show_letters(string $letterStart, int $userId): ?string
+{
     global $db;
     global $db_type;
 
@@ -165,7 +166,7 @@ function show_letters(string $letterstart, int $userId) {
     $result .= '<nav>';
     $result .= '<ul class="pagination pagination-sm">';
 
-    if ($letterstart == "1") {
+    if ($letterStart == "1") {
         $result .= '<li class="page-item active"><span class="page-link" tabindex="-1">0-9</span></li>';
     } elseif ($digits_available) {
         $result .= "<li class=\"page-item\"><a class=\"page-link\" href=\"?letter=1\">0-9</a></li>";
@@ -174,7 +175,7 @@ function show_letters(string $letterstart, int $userId) {
     }
 
     foreach ($char_range as $letter) {
-        if ($letter == $letterstart) {
+        if ($letter == $letterStart) {
             $result .= '<li class="page-item active"><span class="page-link" tabindex="-1">' . $letter . '</span></li>';
         } elseif (in_array($letter, $available_chars)) {
             $result .= "<li class=\"page-item\"><a class=\"page-link\" href=\"?letter=" . $letter . "\">" . $letter . "</a></li>";
@@ -183,7 +184,7 @@ function show_letters(string $letterstart, int $userId) {
         }
     }
 
-    if ($letterstart == 'all') {
+    if ($letterStart == 'all') {
         $result .= '<li class="page-item active"><a class="page-link" href="#" tabindex="-1">' . _('Show all') . '</a></li>';
     } else {
         $result .= "<li class=\"page-item\"><a class=\"page-link\" href=\"?letter=all\">" . _('Show all') . '</a></li>';
