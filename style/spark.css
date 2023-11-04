@@ -54,6 +54,11 @@ a:hover {
     border-color: #6c757d;
 }
 
+.table > thead > tr > th {
+    color: #6c757d;
+    background-color: #242424;
+}
+
 .table td {
     color: #6c757d !important;
 }
@@ -65,6 +70,10 @@ a:hover {
 
 .table-striped>tbody>tr:nth-of-type(odd)>* {
     background-color: #2c3031;
+}
+
+.table-striped>tbody>tr:nth-of-type(even)>* {
+    background-color: #242424;
 }
 
 .dropdown-menu {
