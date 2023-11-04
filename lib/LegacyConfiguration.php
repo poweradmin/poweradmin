@@ -29,7 +29,7 @@ class LegacyConfiguration implements ConfigurationInterface
     protected array $config;
 
     public function __construct(
-        string $defaultConfigFile = 'inc/config-me.inc.php',
+        string $defaultConfigFile = 'inc/config-defaults.inc.php',
         string $customConfigFile = 'inc/config.inc.php'
     )
     {

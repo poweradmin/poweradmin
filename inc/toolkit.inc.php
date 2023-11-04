@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-include_once 'config-me.inc.php';
+include_once 'config-defaults.inc.php';
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 

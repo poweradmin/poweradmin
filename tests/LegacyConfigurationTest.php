@@ -12,7 +12,7 @@ class LegacyConfigurationTest extends TestCase
     {
         $tempDir = sys_get_temp_dir();
 
-        $this->tempDefaultConfigFile = $tempDir . '/config-me.inc.php';
+        $this->tempDefaultConfigFile = $tempDir . '/config-defaults.inc.php';
         $this->tempCustomConfigFile = $tempDir . '/config.inc.php';
     }
 

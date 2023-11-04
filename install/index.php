@@ -29,7 +29,7 @@ require_once 'helpers/template_utils.php';
 require_once 'helpers/install_helpers.php';
 
 $local_config_file = dirname(__DIR__) . '/inc/config.inc.php';
-$default_config_file = dirname(__DIR__) . '/inc/config-me.inc.php';
+$default_config_file = dirname(__DIR__) . '/inc/config-defaults.inc.php';
 const SESSION_KEY_LENGTH = 46;
 
 // Main
