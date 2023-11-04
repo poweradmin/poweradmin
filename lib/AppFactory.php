@@ -23,8 +23,19 @@
 namespace Poweradmin;
 
 class AppFactory {
-    public static function create(): Application
-    {
-        return new Application();
+    private static ?Application $instance = null;
+
+    private function __construct() {}
+
+
+    public static function create(): Application {
+        if (self::$instance === null) {
+            self::$instance = new Application();
+        }
+        return self::$instance;
     }
+
+    public function __clone() {}
+
+    public function __wakeup() {}
 }
