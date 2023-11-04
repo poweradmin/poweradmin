@@ -728,7 +728,8 @@ function update_user_details_local($details)
         } else {
             $active = 1;
         }
-        if (isset($details['use_ldap'])) {
+
+        if (isset($details['use_ldap']) && $details['use_ldap'] == "1") {
             $use_ldap = 1;
         } else {
             $use_ldap = 0;

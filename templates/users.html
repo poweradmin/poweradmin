@@ -67,7 +67,10 @@
 
             {% if ldap_use %}
             {% if permissions['user_is_ueberuser'] %}
-            <td><input class="form-check-input" type="checkbox" name="user[{{ user['uid'] }}][use_ldap]" {{ use_ldap }} disabled></td>
+            <td>
+                <input class="form-check-input" type="checkbox" name="user[{{ user['uid'] }}][use_ldap]" {{ use_ldap }} disabled>
+                <input type="hidden" name="user[{{ user['uid'] }}][use_ldap]" value="{{ user['use_ldap'] }}">
+            </td>
             {% else %}
             {% if use_ldap == "checked" %}
             <td>Yes</td>
