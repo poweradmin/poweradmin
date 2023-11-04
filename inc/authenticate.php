@@ -36,7 +36,6 @@ use Poweradmin\LdapUserEventLogger;
 use Poweradmin\UserEventLogger;
 
 require_once 'inc/session.inc.php';
-require_once 'inc/redirect.inc.php';
 
 /** Authenticate Session
  *
@@ -263,4 +262,26 @@ function handleFailedAuthentication(): void
         unset($_SESSION["userlogin"]);
         auth();
     }
+}
+
+/** Send 302 Redirect with optional argument
+ *
+ * Reroute a user to a clean page of (if passed) arg
+ *
+ * @param string $arg argument string to add to url
+ *
+ * @return null
+ */
+function clean_page(string $arg = '') {
+    if (!$arg) {
+        header("Location: " . htmlentities($_SERVER['SCRIPT_NAME'], ENT_QUOTES) . "?time=" . time());
+    } else {
+        if (preg_match('!\?!si', $arg)) {
+            $add = "&time=";
+        } else {
+            $add = "?time=";
+        }
+        header("Location: $arg$add" . time());
+    }
+    exit;
 }
