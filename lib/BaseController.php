@@ -130,7 +130,7 @@ EOF;
 
     public function checkPermission(string $permission, string $errorMessage): void
     {
-        if (!do_hook('verify_permission', $permission)) {
+        if (!verify_permission_local($permission)) {
             error($errorMessage);
             exit;
         }

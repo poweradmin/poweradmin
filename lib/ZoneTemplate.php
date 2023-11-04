@@ -48,7 +48,7 @@ class ZoneTemplate
             LEFT JOIN zones z ON zt.id = z.zone_templ_id";
         $params = [];
 
-        if (!do_hook('verify_permission', 'user_is_ueberuser')) {
+        if (!verify_permission_local('user_is_ueberuser')) {
             $query .= " WHERE zt.owner = :userid OR zt.owner = 0";
             $params[':userid'] = $userid;
         }
@@ -73,7 +73,7 @@ class ZoneTemplate
         global $db;
 
         $zone_name_exists = ZoneTemplate::zone_templ_name_exists($details['templ_name']);
-        if (!(do_hook('verify_permission', 'zone_master_add'))) {
+        if (!(verify_permission_local('zone_master_add'))) {
             error(_("You do not have the permission to add a zone template."));
             return false;
         } elseif ($zone_name_exists != '0') {
@@ -129,7 +129,7 @@ class ZoneTemplate
     {
         global $db;
 
-        if (!(do_hook('verify_permission', 'zone_master_add'))) {
+        if (!(verify_permission_local('zone_master_add'))) {
             error(_("You do not have the permission to delete zone templates."));
             return false;
         } else {
@@ -161,7 +161,7 @@ class ZoneTemplate
     {
         global $db;
 
-        if (!(do_hook('verify_permission', 'zone_master_add'))) {
+        if (!(verify_permission_local('zone_master_add'))) {
             error(_("You do not have the permission to delete zone templates."));
             return false;
         } else {
@@ -280,7 +280,7 @@ class ZoneTemplate
     {
         global $db;
 
-        if (!(do_hook('verify_permission', 'zone_master_add'))) {
+        if (!(verify_permission_local('zone_master_add'))) {
             error(_("You do not have the permission to add a record to this zone."));
             return false;
         }
@@ -325,7 +325,7 @@ class ZoneTemplate
     {
         global $db;
 
-        if (!(do_hook('verify_permission', 'zone_master_add'))) {
+        if (!(verify_permission_local('zone_master_add'))) {
             error(_("You do not have the permission to edit this record."));
             return false;
         }
@@ -361,7 +361,7 @@ class ZoneTemplate
     {
         global $db;
 
-        if (!(do_hook('verify_permission', 'zone_master_add'))) {
+        if (!(verify_permission_local('zone_master_add'))) {
             error(_("You do not have the permission to delete this record."));
             return false;
         } else {
@@ -407,7 +407,7 @@ class ZoneTemplate
         global $db;
         global $db_type;
 
-        if (!(do_hook('verify_permission', 'zone_master_add'))) {
+        if (!(verify_permission_local('zone_master_add'))) {
             error(_("You do not have the permission to add a zone template."));
             return false;
         } else {
@@ -498,7 +498,7 @@ class ZoneTemplate
     {
         global $db;
         $zone_name_exists = ZoneTemplate::zone_templ_name_exists($details['templ_name'], $zone_templ_id);
-        if (!(do_hook('verify_permission', 'zone_master_add'))) {
+        if (!(verify_permission_local('zone_master_add'))) {
             error(_("You do not have the permission to add a zone template."));
             return false;
         } elseif ($zone_name_exists != '0') {

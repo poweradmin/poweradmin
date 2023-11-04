@@ -144,15 +144,15 @@ class EditController extends BaseController {
         $perm_view = Permission::getViewPermission();
         $perm_edit = Permission::getEditPermission();
 
-        if (do_hook('verify_permission', 'zone_meta_edit_others')) {
+        if (verify_permission_local('zone_meta_edit_others')) {
             $perm_meta_edit = "all";
-        } elseif (do_hook('verify_permission', 'zone_meta_edit_own')) {
+        } elseif (verify_permission_local('zone_meta_edit_own')) {
             $perm_meta_edit = "own";
         } else {
             $perm_meta_edit = "none";
         }
 
-        $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
+        $user_is_zone_owner = verify_user_is_owner_zoneid_local($zone_id);
 
         $meta_edit = $perm_meta_edit == "all" || ($perm_meta_edit == "own" && $user_is_zone_owner == "1");
 
@@ -215,7 +215,7 @@ class EditController extends BaseController {
         $zone_template_id = DnsRecord::get_zone_template($zone_id);
         $zone_template_details = ZoneTemplate::get_zone_templ_details($zone_template_id);
         $slave_master = DnsRecord::get_domain_slave_master($zone_id);
-        $users = do_hook('show_users');
+        $users = show_users_local();
 
         $zone_comment = '';
         $raw_zone_comment = DnsRecord::get_zone_comment($zone_id);
@@ -253,8 +253,8 @@ class EditController extends BaseController {
             'perm_edit' => $perm_edit,
             'perm_meta_edit' => $perm_meta_edit,
             'meta_edit' => $meta_edit,
-            'perm_zone_master_add' => do_hook('verify_permission', 'zone_master_add'),
-            'perm_view_others' => do_hook('verify_permission', 'user_view_others'),
+            'perm_zone_master_add' => verify_permission_local('zone_master_add'),
+            'perm_view_others' => verify_permission_local('user_view_others'),
             'user_is_zone_owner' => $user_is_zone_owner,
             'zone_types' => $types,
             'row_start' => $row_start,

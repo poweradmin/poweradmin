@@ -94,10 +94,10 @@ class BulkRegistrationController extends BaseController {
     {
         $this->render('bulk_registration.html', [
             'userid' => $_SESSION['userid'],
-            'perm_view_others' => do_hook('verify_permission', 'user_view_others'),
+            'perm_view_others' => verify_permission_local('user_view_others'),
             'iface_zone_type_default' => $this->config('iface_zone_type_default'),
             'available_zone_types' => array("MASTER", "NATIVE"),
-            'users' => do_hook('show_users'),
+            'users' => show_users_local(),
             'zone_templates' => ZoneTemplate::get_list_zone_templ($_SESSION['userid']),
             'failed_domains' => $failed_domains,
         ]);

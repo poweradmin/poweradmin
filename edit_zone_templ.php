@@ -44,8 +44,8 @@ class EditZoneTemplController extends BaseController
     {
         $zone_templ_id = htmlspecialchars($_GET['id']);
         $owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
-        $perm_godlike = do_hook('verify_permission', 'user_is_ueberuser');
-        $perm_master_add = do_hook('verify_permission', 'zone_master_add');
+        $perm_godlike = verify_permission_local('user_is_ueberuser');
+        $perm_master_add = verify_permission_local('zone_master_add');
 
         $this->checkCondition(!($perm_godlike || $perm_master_add && $owner), _("You do not have the permission to delete zone templates."));
 
@@ -72,7 +72,7 @@ class EditZoneTemplController extends BaseController
     private function updateZoneTemplate(string $zone_templ_id): void
     {
         $owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
-        $perm_godlike = do_hook('verify_permission', 'user_is_ueberuser');
+        $perm_godlike = verify_permission_local('user_is_ueberuser');
 
         if (isset($_POST['edit']) && ($owner || $perm_godlike)) {
             $this->updateZoneTemplateDetails($zone_templ_id);
@@ -109,7 +109,7 @@ class EditZoneTemplController extends BaseController
             'pagination' => show_pages($record_count, $iface_rowamount, $zone_templ_id),
             'records' => $records = ZoneTemplate::get_zone_templ_records($zone_templ_id, $row_start, $iface_rowamount, $record_sort_by),
             'zone_templ_id' => $zone_templ_id,
-            'perm_is_godlike' => do_hook('verify_permission', 'user_is_ueberuser'),
+            'perm_is_godlike' => verify_permission_local('user_is_ueberuser'),
         ]);
     }
 

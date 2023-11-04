@@ -41,8 +41,8 @@ class DeleteUserController extends BaseController {
 
     public function run(): void
     {
-        $perm_edit_others = do_hook('verify_permission', 'user_edit_others');
-        $perm_is_godlike = do_hook('verify_permission', 'user_is_ueberuser');
+        $perm_edit_others = verify_permission_local('user_edit_others');
+        $perm_is_godlike = verify_permission_local('user_is_ueberuser');
 
         if (!(isset($_GET['id']) && Validation::is_number($_GET['id']))) {
             $this->showError(_('Invalid or unexpected input given.'));
@@ -63,7 +63,7 @@ class DeleteUserController extends BaseController {
 
     public function deleteUser(string $uid): void
     {
-        if (!do_hook('is_valid_user', $uid)) {
+        if (!is_valid_user_local($uid)) {
             $this->showError(_('User does not exist.'));
         }
 
@@ -72,7 +72,7 @@ class DeleteUserController extends BaseController {
             $zones = $_POST['zone'];
         }
 
-        if (do_hook('delete_user', $uid, $zones)) {
+        if (delete_user_local($uid, $zones)) {
             $this->setMessage('users', 'success', _('The user has been deleted successfully.'));
             $this->redirect('users.php');
         }
@@ -80,7 +80,7 @@ class DeleteUserController extends BaseController {
 
     public function showQuestion(string $uid): void
     {
-        $name = do_hook('get_fullname_from_userid', $uid);
+        $name = get_fullname_from_userid_local($uid);
         if (!$name) {
             $name = User::get_username_by_id($uid);
         }
@@ -88,7 +88,7 @@ class DeleteUserController extends BaseController {
 
         $users = [];
         if (count($zones) > 0) {
-            $users = do_hook('show_users');
+            $users = show_users_local();
         }
 
         $this->render('delete_user.html', [

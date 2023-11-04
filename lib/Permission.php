@@ -38,9 +38,9 @@ class Permission
      */
     public static function getViewPermission(): string
     {
-        if (do_hook('verify_permission', 'zone_content_view_others')) {
+        if (verify_permission_local('zone_content_view_others')) {
             return "all";
-        } elseif (do_hook('verify_permission', 'zone_content_view_own')) {
+        } elseif (verify_permission_local('zone_content_view_own')) {
             return "own";
         } else {
             return "none";
@@ -56,11 +56,11 @@ class Permission
      */
     public static function getEditPermission(): string
     {
-        if (do_hook('verify_permission', 'zone_content_edit_others')) {
+        if (verify_permission_local('zone_content_edit_others')) {
             return "all";
-        } elseif (do_hook('verify_permission', 'zone_content_edit_own')) {
+        } elseif (verify_permission_local('zone_content_edit_own')) {
             return "own";
-        } elseif (do_hook('verify_permission', 'zone_content_edit_own_as_client')) {
+        } elseif (verify_permission_local('zone_content_edit_own_as_client')) {
             return "own_as_client";
         } else {
             return "none";
@@ -80,7 +80,7 @@ class Permission
         $permissions = [];
 
         foreach ($arguments as $argument) {
-            $permissions[$argument] = do_hook('verify_permission', $argument);
+            $permissions[$argument] = verify_permission_local($argument);
         }
 
         return $permissions;

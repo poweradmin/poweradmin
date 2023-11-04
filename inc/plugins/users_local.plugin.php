@@ -218,7 +218,7 @@ function delete_user_local($uid, $zones)
 {
     global $db;
 
-    if (($uid != $_SESSION ['userid'] && !do_hook('verify_permission', 'user_edit_others')) || ($uid == $_SESSION ['userid'] && !do_hook('verify_permission', 'user_edit_own'))) {
+    if (($uid != $_SESSION ['userid'] && !verify_permission_local('user_edit_others')) || ($uid == $_SESSION ['userid'] && !verify_permission_local('user_edit_own'))) {
         error(_("You do not have the permission to delete this user."));
         return false;
     } else {
@@ -254,7 +254,7 @@ function delete_user_local($uid, $zones)
 function delete_perm_templ_local($ptid)
 {
     global $db;
-    if (!(do_hook('verify_permission', 'user_edit_templ_perm'))) {
+    if (!(verify_permission_local('user_edit_templ_perm'))) {
         error(_("You do not have the permission to delete permission templates."));
     } else {
         $query = "SELECT id FROM users WHERE perm_templ = " . $ptid;
@@ -294,8 +294,8 @@ function edit_user_local($id, $user, $fullname, $email, $perm_templ, $descriptio
 {
     global $db;
 
-    $perm_edit_own = do_hook('verify_permission', 'user_edit_own');
-    $perm_edit_others = do_hook('verify_permission', 'user_edit_others');
+    $perm_edit_own = verify_permission_local('user_edit_own');
+    $perm_edit_others = verify_permission_local('user_edit_others');
 
     if (($id == $_SESSION ["userid"] && $perm_edit_own) || ($id != $_SESSION ["userid"] && $perm_edit_others)) {
 
@@ -342,15 +342,15 @@ function edit_user_local($id, $user, $fullname, $email, $perm_templ, $descriptio
         $query = "UPDATE users SET username = " . $db->quote($user, 'text') . ",
 fullname = " . $db->quote($fullname, 'text') . ",
 email = " . $db->quote($email, 'text') . ",";
-        if (do_hook('verify_permission', 'user_edit_templ_perm')) {
+        if (verify_permission_local('user_edit_templ_perm')) {
             $query .= "perm_templ = " . $db->quote($perm_templ, 'integer') . ",";
         }
         $query .= "description = " . $db->quote($description, 'text') . ",
 				active = " . $db->quote($active, 'integer') . ",
 				use_ldap = " . $db->quote($i_use_ldap ?: 0, 'integer');
 
-        $edit_own_perm = do_hook('verify_permission', 'user_edit_own');
-        $passwd_edit_others_perm = do_hook('verify_permission', 'user_passwd_edit_others');
+        $edit_own_perm = verify_permission_local('user_edit_own');
+        $passwd_edit_others_perm = verify_permission_local('user_passwd_edit_others');
 
         if ($user_password != "" && $edit_own_perm || $passwd_edit_others_perm) {
             $config = new LegacyConfiguration();
@@ -454,31 +454,6 @@ function get_fullname_from_userid_local($id)
 }
 
 /**
- * Get User FullName from User ID
- * fixme: Duplicate function
- *
- * Get a fullname when you have a userid.
- *
- * @param int $id User ID
- *
- * @return string Full Name
- */
-function get_owner_from_id_local($id)
-{
-    global $db;
-    if (is_numeric($id)) {
-        $response = $db->queryRow("SELECT fullname FROM users WHERE id=" . $db->quote($id, 'integer'));
-
-        if ($response) {
-            return $response ["fullname"];
-        } else {
-            error(_('User does not exist.'));
-        }
-    }
-    error(_('Invalid argument(s) given to function %s'));
-}
-
-/**
  * Get Full Names of owners for a Domain ID
  *
  * @param int $id Domain ID
@@ -545,7 +520,7 @@ function get_user_detail_list_local($specific)
     if (Validation::is_number($specific)) {
         $sql_add = "AND users.id = " . $db->quote($specific, 'integer');
     } else {
-        if (do_hook('verify_permission', 'user_view_others')) {
+        if (verify_permission_local('user_view_others')) {
             $sql_add = "";
         } else {
             $sql_add = "AND users.id = " . $db->quote($userid, 'integer');
@@ -736,10 +711,10 @@ function update_user_details_local($details)
 {
     global $db;
 
-    $perm_edit_own = (bool)do_hook('verify_permission', 'user_edit_own');
-    $perm_edit_others = (bool)do_hook('verify_permission', 'user_edit_others');
-    $perm_templ_perm_edit = (bool)do_hook('verify_permission', 'templ_perm_edit');
-    $perm_is_godlike = (bool)do_hook('verify_permission', 'user_is_ueberuser');
+    $perm_edit_own = (bool)verify_permission_local('user_edit_own');
+    $perm_edit_others = (bool)verify_permission_local('user_edit_others');
+    $perm_templ_perm_edit = (bool)verify_permission_local('templ_perm_edit');
+    $perm_is_godlike = (bool)verify_permission_local('user_is_ueberuser');
 
     if (($details['uid'] == $_SESSION ["userid"] && $perm_edit_own) || ($details['uid'] != $_SESSION ["userid"] && $perm_edit_others)) {
 
@@ -802,7 +777,7 @@ function update_user_details_local($details)
             $query .= ", use_ldap = " . $db->quote($use_ldap, 'integer');
         }
 
-        $passwd_edit_others_perm = (bool)do_hook('verify_permission', 'user_passwd_edit_others');
+        $passwd_edit_others_perm = (bool)verify_permission_local('user_passwd_edit_others');
         if (isset($details['password']) && $details['password'] != "" && $passwd_edit_others_perm) {
             $config = new LegacyConfiguration();
             $userAuthService = new UserAuthenticationService(
@@ -834,7 +809,7 @@ function add_new_user_local($details)
     global $db;
     global $ldap_use;
 
-    if (!do_hook('verify_permission', 'user_add_new')) {
+    if (!verify_permission_local('user_add_new')) {
         error(_("You do not have the permission to add a new user."));
         return false;
     } elseif (user_exists($details['username'])) {
@@ -867,10 +842,10 @@ function add_new_user_local($details)
 
     $query = "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES (" . $db->quote($details['username'], 'text') . ", " . $db->quote($password_hash, 'text') . ", " . $db->quote($details['fullname'], 'text') . ", " . $db->quote($details['email'], 'text') . ", " . $db->quote($details['descr'], 'text') . ", ";
 
-    if (do_hook('verify_permission', 'user_edit_templ_perm')) {
+    if (verify_permission_local('user_edit_templ_perm')) {
         $query .= $db->quote($details['perm_templ'], 'integer') . ", ";
     } else {
-        $current_user = do_hook('get_user_detail_list', $_SESSION['userid']);
+        $current_user = get_user_detail_list_local($_SESSION['userid']);
         $query .= $db->quote($current_user[0]['tpl_id'], 'integer') . ", ";
     }
     $query .= $db->quote($active, 'integer') . ", " . $db->quote($use_ldap, 'integer') . ")";

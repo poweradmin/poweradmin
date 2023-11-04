@@ -55,7 +55,7 @@ class DeleteDomainController extends BaseController
         $zone_id = htmlspecialchars($_GET['id']);
 
         $perm_edit = Permission::getEditPermission();
-        $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
+        $user_is_zone_owner = verify_user_is_owner_zoneid_local($zone_id);
         $this->checkCondition($perm_edit != "all" && ($perm_edit != "own" || !$user_is_zone_owner), _("You do not have the permission to delete a zone."));
 
         if (isset($_GET['confirm'])) {
@@ -92,7 +92,7 @@ class DeleteDomainController extends BaseController
     private function showDeleteDomain(string $zone_id): void
     {
         $zone_info = DnsRecord::get_zone_info_from_id($zone_id);
-        $zone_owners = do_hook('get_fullnames_owners_from_domainid', $zone_id);
+        $zone_owners = get_fullnames_owners_from_domainid_local($zone_id);
 
         $slave_master_exists = false;
         if ($zone_info['type'] == 'SLAVE') {

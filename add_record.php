@@ -49,7 +49,7 @@ class AddRecordController extends BaseController
         $perm_edit = Permission::getEditPermission();
         $zone_id = htmlspecialchars($_GET['id']);
         $zone_type = DnsRecord::get_domain_type($zone_id);
-        $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
+        $user_is_zone_owner = verify_user_is_owner_zoneid_local($zone_id);
 
         $this->checkCondition($zone_type == "SLAVE"
             || $perm_edit == "none"

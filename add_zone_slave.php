@@ -97,9 +97,9 @@ class AddZoneSlaveController extends BaseController
     private function showForm(): void
     {
         $this->render('add_zone_slave.html', [
-            'users' => do_hook('show_users'),
+            'users' => show_users_local(),
             'session_user_id' => $_SESSION['userid'],
-            'perm_view_others' => do_hook('verify_permission', 'user_view_others'),
+            'perm_view_others' => verify_permission_local('user_view_others'),
         ]);
     }
 }

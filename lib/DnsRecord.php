@@ -302,7 +302,7 @@ class DnsRecord
     {
         $perm_edit = Permission::getEditPermission();
 
-        $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
+        $user_is_zone_owner = verify_user_is_owner_zoneid_local($zone_id);
         $zone_type = self::get_domain_type($zone_id);
 
         if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
@@ -341,7 +341,7 @@ class DnsRecord
     {
         $perm_edit = Permission::getEditPermission();
 
-        $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $record['zid']);
+        $user_is_zone_owner = verify_user_is_owner_zoneid_local($record['zid']);
         $zone_type = self::get_domain_type($record['zid']);
 
         if ($record['type'] == 'SOA' && $perm_edit == "own_as_client") {
@@ -394,7 +394,7 @@ class DnsRecord
 
         $perm_edit = Permission::getEditPermission();
 
-        $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
+        $user_is_zone_owner = verify_user_is_owner_zoneid_local($zone_id);
         $zone_type = self::get_domain_type($zone_id);
 
         if ($type == 'SOA' && $perm_edit == "own_as_client") {
@@ -554,7 +554,7 @@ class DnsRecord
         $perm_edit = Permission::getEditPermission();
 
         $record = self::get_record_details_from_record_id($rid);
-        $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $record['zid']);
+        $user_is_zone_owner = verify_user_is_owner_zoneid_local($record['zid']);
 
         if ($perm_edit == "all" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "1")) {
             if ($record['type'] == "SOA") {
@@ -609,8 +609,8 @@ class DnsRecord
      */
     public static function add_domain($domain, $owner, $type, $slave_master, $zone_template)
     {
-        $zone_master_add = do_hook('verify_permission', 'zone_master_add');
-        $zone_slave_add = do_hook('verify_permission', 'zone_slave_add');
+        $zone_master_add = verify_permission_local('zone_master_add');
+        $zone_slave_add = verify_permission_local('zone_slave_add');
 
         // TODO: make sure only one is possible if only one is enabled
         if ($zone_master_add || $zone_slave_add) {
@@ -726,7 +726,7 @@ class DnsRecord
         global $db;
 
         $perm_edit = Permission::getEditPermission();
-        $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $id);
+        $user_is_zone_owner = verify_user_is_owner_zoneid_local($id);
 
         if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
             if (is_numeric($id)) {
@@ -773,8 +773,8 @@ class DnsRecord
     public static function add_owner_to_zone($zone_id, $user_id)
     {
         global $db;
-        if ((do_hook('verify_permission', 'zone_meta_edit_others')) || (do_hook('verify_permission', 'zone_meta_edit_own')) && do_hook('verify_user_is_owner_zoneid', $_GET["id"])) {
-            if (is_numeric($zone_id) && is_numeric($user_id) && do_hook('is_valid_user', $user_id)) {
+        if ((verify_permission_local('zone_meta_edit_others')) || (verify_permission_local('zone_meta_edit_own')) && verify_user_is_owner_zoneid_local($_GET["id"])) {
+            if (is_numeric($zone_id) && is_numeric($user_id) && is_valid_user_local($user_id)) {
                 if ($db->queryOne("SELECT COUNT(id) FROM zones WHERE owner=" . $db->quote($user_id, 'integer') . " AND domain_id=" . $db->quote($zone_id, 'integer')) == 0) {
                     $zone_templ_id = self::get_zone_template($zone_id);
                     if ($zone_templ_id == NULL) {
@@ -809,8 +809,8 @@ class DnsRecord
     public static function delete_owner_from_zone($zone_id, $user_id)
     {
         global $db;
-        if ((do_hook('verify_permission', 'zone_meta_edit_others')) || (do_hook('verify_permission', 'zone_meta_edit_own')) && do_hook('verify_user_is_owner_zoneid', $_GET["id"])) {
-            if (is_numeric($zone_id) && is_numeric($user_id) && do_hook('is_valid_user', $user_id)) {
+        if ((verify_permission_local('zone_meta_edit_others')) || (verify_permission_local('zone_meta_edit_own')) && verify_user_is_owner_zoneid_local($_GET["id"])) {
+            if (is_numeric($zone_id) && is_numeric($user_id) && is_valid_user_local($user_id)) {
                 if ($db->queryOne("SELECT COUNT(id) FROM zones WHERE domain_id=" . $db->quote($zone_id, 'integer')) > 1) {
                     $db->query("DELETE FROM zones WHERE owner=" . $db->quote($user_id, 'integer') . " AND domain_id=" . $db->quote($zone_id, 'integer'));
                 } else {
@@ -1618,13 +1618,13 @@ class DnsRecord
         global $db_type;
 
         $perm_edit = Permission::getEditPermission();
-        $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
+        $user_is_zone_owner = verify_user_is_owner_zoneid_local($zone_id);
 
-        if (do_hook('verify_permission', 'zone_master_add')) {
+        if (verify_permission_local('zone_master_add')) {
             $zone_master_add = "1";
         }
 
-        if (do_hook('verify_permission', 'zone_slave_add')) {
+        if (verify_permission_local('zone_slave_add')) {
             $zone_slave_add = "1";
         }
 
@@ -1723,7 +1723,7 @@ class DnsRecord
 
         foreach ($domains as $id) {
             $perm_edit = Permission::getEditPermission();
-            $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $id);
+            $user_is_zone_owner = verify_user_is_owner_zoneid_local($id);
 
             if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
                 if (is_numeric($id)) {

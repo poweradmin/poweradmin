@@ -40,8 +40,8 @@ class ListZonesController extends BaseController {
 
     public function run(): void
     {
-        $perm_view_zone_own = do_hook('verify_permission', 'zone_content_view_own');
-        $perm_view_zone_others = do_hook('verify_permission', 'zone_content_view_others');
+        $perm_view_zone_own = verify_permission_local('zone_content_view_own');
+        $perm_view_zone_others = verify_permission_local('zone_content_view_others');
 
         $permission_check = !($perm_view_zone_own || $perm_view_zone_others);
         $this->checkCondition($permission_check, _('You do not have sufficient permissions to view this page.'));
@@ -118,8 +118,8 @@ class ListZonesController extends BaseController {
             'pagination' => show_pages($count_zones_all_letterstart, $iface_rowamount),
             'session_userlogin' => $_SESSION['userlogin'],
             'perm_edit' => $perm_edit,
-            'perm_zone_master_add' => do_hook('verify_permission', 'zone_master_add'),
-            'perm_zone_slave_add' => do_hook('verify_permission', 'zone_slave_add'),
+            'perm_zone_master_add' => verify_permission_local('zone_master_add'),
+            'perm_zone_slave_add' => verify_permission_local('zone_slave_add'),
         ]);
     }
 }

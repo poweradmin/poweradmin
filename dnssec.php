@@ -50,9 +50,9 @@ class DnsSecController extends BaseController {
 
         $zone_id = htmlspecialchars($_GET['id']);
         $perm_view = Permission::getViewPermission();
-        $user_is_zone_owner = do_hook('verify_user_is_owner_zoneid', $zone_id);
+        $user_is_zone_owner = verify_user_is_owner_zoneid_local($zone_id);
 
-        (do_hook('verify_permission', 'user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
+        (verify_permission_local('user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
 
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
             $this->showError(_("You do not have the permission to view this zone."));

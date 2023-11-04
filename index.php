@@ -49,15 +49,15 @@ class IndexController extends BaseController
         $this->render($template, [
             'user_name' => empty($_SESSION["name"]) ? $_SESSION["userlogin"] : $_SESSION["name"],
             'auth_used' => $_SESSION["auth_used"],
-            'perm_search' => do_hook('verify_permission', 'search'),
-            'perm_view_zone_own' => do_hook('verify_permission', 'zone_content_view_own'),
-            'perm_view_zone_other' => do_hook('verify_permission', 'zone_content_view_others'),
-            'perm_supermaster_view' => do_hook('verify_permission', 'supermaster_view'),
-            'perm_zone_master_add' => do_hook('verify_permission', 'zone_master_add'),
-            'perm_zone_slave_add' => do_hook('verify_permission', 'zone_slave_add'),
-            'perm_supermaster_add' => do_hook('verify_permission', 'supermaster_add'),
-            'perm_is_godlike' => do_hook('verify_permission', 'user_is_ueberuser'),
-            'perm_templ_perm_edit' => do_hook('verify_permission', 'templ_perm_edit'),
+            'perm_search' => verify_permission_local('search'),
+            'perm_view_zone_own' => verify_permission_local('zone_content_view_own'),
+            'perm_view_zone_other' => verify_permission_local('zone_content_view_others'),
+            'perm_supermaster_view' => verify_permission_local('supermaster_view'),
+            'perm_zone_master_add' => verify_permission_local('zone_master_add'),
+            'perm_zone_slave_add' => verify_permission_local('zone_slave_add'),
+            'perm_supermaster_add' => verify_permission_local('supermaster_add'),
+            'perm_is_godlike' => verify_permission_local('user_is_ueberuser'),
+            'perm_templ_perm_edit' => verify_permission_local('templ_perm_edit'),
             'dblog_use' => $this->config('dblog_use')
         ]);
     }
