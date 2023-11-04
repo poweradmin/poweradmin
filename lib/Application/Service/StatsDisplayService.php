@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Application\Services;
+namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\SystemMonitoring\MemoryUsage;
 use Poweradmin\Domain\SystemMonitoring\SizeFormatter;

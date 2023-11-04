@@ -20,9 +20,9 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use Poweradmin\Application\Services\UserService;
+use Poweradmin\Application\Service\UserService;
 use Poweradmin\Infrastructure\Database\DbCompat;
-use Poweradmin\Infrastructure\Repositories\DbUserRepository;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 
 /** Print paging menu
  *

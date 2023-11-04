@@ -29,7 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\Application\Services\UserAuthenticationService;
+use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\LegacyConfiguration;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\LdapUserEventLogger;

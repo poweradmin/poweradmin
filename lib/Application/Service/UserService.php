@@ -20,16 +20,20 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Users;
+namespace Poweradmin\Application\Service;
 
-class User {
-    private int $id;
+use Poweradmin\Domain\Model\User;
+use Poweradmin\Domain\Repository\UserRepository;
 
-    public function __construct(int $id) {
-        $this->id = $id;
+class UserService {
+    private UserRepository $userRepository;
+
+    public function __construct(UserRepository $userRepository) {
+        $this->userRepository = $userRepository;
     }
 
-    public function getId(): int {
-        return $this->id;
+    public function canUserViewOthersContent(int $userId): bool {
+        $user = new User($userId);
+        return $this->userRepository->canViewOthersContent($user);
     }
 }

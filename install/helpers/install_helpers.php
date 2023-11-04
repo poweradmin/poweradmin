@@ -19,7 +19,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use Poweradmin\Application\Services\UserAuthenticationService;
+use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\LegacyConfiguration;
 
 require_once '../inc/database.inc.php';

@@ -30,7 +30,7 @@
  *
  */
 
-use Poweradmin\Application\Services\UserAuthenticationService;
+use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\Infrastructure\UI\ErrorPresenter;
 use Poweradmin\LegacyConfiguration;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Poweradmin\Application\Services;
+namespace Poweradmin\Application\Service;
 
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://www.poweradmin.org> for more details.

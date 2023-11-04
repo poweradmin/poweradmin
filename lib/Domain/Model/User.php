@@ -20,8 +20,16 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Users;
+namespace Poweradmin\Domain\Model;
 
-interface UserRepository {
-    public function canViewOthersContent(User $user): bool;
+class User {
+    private int $id;
+
+    public function __construct(int $id) {
+        $this->id = $id;
+    }
+
+    public function getId(): int {
+        return $this->id;
+    }
 }

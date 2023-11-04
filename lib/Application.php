@@ -22,7 +22,7 @@
 
 namespace Poweradmin;
 
-use Poweradmin\Application\Services\StatsDisplayService;
+use Poweradmin\Application\Service\StatsDisplayService;
 use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\Domain\SystemMonitoring\MemoryUsage;
 use Poweradmin\Domain\SystemMonitoring\Timer;
