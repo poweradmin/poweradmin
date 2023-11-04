@@ -1,4 +1,5 @@
 <?php
+
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://www.poweradmin.org> for more details.
  *
@@ -34,21 +35,23 @@ use Poweradmin\AppFactory;
 
 global $db;
 global $db_debug;
-global $display_stats;
-global $iface_style;
 
 if (is_object($db)) {
     $db->disconnect();
 }
 
+$app = AppFactory::create();
+
+$iface_style = $app->config('iface_style');
 $themeManager = new ThemeManager($iface_style);
 $selected_theme = $themeManager->getSelectedTheme();
 
-$app = AppFactory::create();
+$display_stats = $app->config('display_stats');
+
 $app->render('footer.html', [
     'version' => isset($_SESSION["userid"]) ? Version::VERSION : false,
     'custom_footer' => file_exists('templates/custom/footer.html'),
-    'display_stats' => $display_stats ? display_current_stats() : false,
+    'display_stats' => $display_stats ? $app->displayStats() : false,
     'db_queries' => $db_debug ? $db->getQueries() : false,
     'show_theme_switcher' => in_array($selected_theme, ['ignite', 'spark']),
     'iface_style' => $selected_theme,

@@ -1,4 +1,5 @@
 <?php
+
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://www.poweradmin.org> for more details.
  *
@@ -34,8 +35,6 @@ if (!@include_once('config.inc.php')) {
         $errorPresenter->present($error);
     }
 }
-
-require_once 'benchmark.php';
 
 session_start();
 

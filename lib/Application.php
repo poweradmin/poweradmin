@@ -22,8 +22,12 @@
 
 namespace Poweradmin;
 
+use Poweradmin\Application\Services\StatsDisplayService;
 use Poweradmin\Domain\Error\ErrorMessage;
+use Poweradmin\Domain\SystemMonitoring\MemoryUsage;
+use Poweradmin\Domain\SystemMonitoring\Timer;
 use Poweradmin\Infrastructure\Configuration\ConfigValidator;
+use Poweradmin\Infrastructure\SystemMonitoring\SimpleSizeFormatter;
 use Poweradmin\Infrastructure\UI\ErrorPresenter;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Symfony\Component\Translation\Loader\PoFileLoader;
@@ -32,16 +36,25 @@ use Twig\Environment;
 use Twig\Error\Error;
 use Twig\Loader\FilesystemLoader;
 
-class Application {
-
+class Application
+{
     protected Environment $templateRenderer;
     protected LegacyConfiguration $configuration;
+    protected ?StatsDisplayService $statsDisplayService = null;
 
-    public function __construct() {
+    public function __construct()
+    {
         $loader = new FilesystemLoader('templates');
-        $this->templateRenderer = new Environment($loader, [ 'debug' => false ]);
+        $this->templateRenderer = new Environment($loader, ['debug' => false]);
 
         $this->configuration = new LegacyConfiguration();
+
+        if ($this->config('display_stats')) {
+            $memoryUsage = new MemoryUsage();
+            $timer = new Timer();
+            $sizeFormatter = new SimpleSizeFormatter();
+            $this->statsDisplayService = new StatsDisplayService($memoryUsage, $timer, $sizeFormatter);
+        }
 
         $config = [
             'iface_rowamount' => $this->configuration->get('iface_rowamount'),
@@ -79,7 +92,8 @@ class Application {
         return $this->configuration;
     }
 
-    public function config($name): mixed {
+    public function config($name): mixed
+    {
         return $this->configuration->get($name);
     }
 
@@ -103,5 +117,13 @@ class Application {
             }
             exit(1);
         }
+    }
+
+    public function displayStats(): string
+    {
+        if ($this->statsDisplayService !== null) {
+            return $this->statsDisplayService->displayStats();
+        }
+        return '';
     }
 }
