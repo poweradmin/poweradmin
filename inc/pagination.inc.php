@@ -195,11 +195,10 @@ function show_letters(string $letterstart, int $userid) {
  * @param $db
  * @param int $userid Current user ID
  *
- * @return int 1 if user has permission to view other users zones content, 0 otherwise
+ * @return bool true if user has permission to view other users zones content, 0 otherwise
  */
-function zone_content_view_others($db, int $userid): int
+function zone_content_view_others($db, int $userid): bool
 {
-
     $query = "SELECT
 		DISTINCT u.id
 		FROM 	users u,
@@ -214,5 +213,5 @@ function zone_content_view_others($db, int $userid): int
 
     $result = $db->queryOne($query);
 
-    return ($result ? 1 : 0);
+    return (bool)$result;
 }
