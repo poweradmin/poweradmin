@@ -20,20 +20,6 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/** Print success message (toolkit.inc)
- *
- * @param string $msg Success message
- *
- * @return null
- */
-function success(string $msg) {
-    if ($msg) {
-        echo "     <div class=\"alert alert-success\">" . $msg . "</div>\n";
-    } else {
-        echo "     <div class=\"alert alert-success\">" . _('Something has been successfully performed. What exactly, however, will remain a mystery.') . "</div>\n";
-    }
-}
-
 /** Print error message
  *
  * @param string $msg Error message
