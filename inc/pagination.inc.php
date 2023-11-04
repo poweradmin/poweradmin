@@ -20,7 +20,9 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Poweradmin\Application\Services\UserService;
 use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Infrastructure\Repositories\DbUserRepository;
 
 /** Print paging menu
  *
@@ -124,20 +126,23 @@ function show_pages($amount, $rowamount, $id = '') {
 /** Print alphanumeric paging menu
  *
  * @param string $letterstart Starting letter/number or 'all'
- * @param int $userid Current user ID
+ * @param int $userId Current user ID
  *
  * @return null
  */
-function show_letters(string $letterstart, int $userid) {
+function show_letters(string $letterstart, int $userId) {
     global $db;
     global $db_type;
 
     $query = "SELECT DISTINCT " . DbCompat::substr($db_type) . "(domains.name, 1, 1) AS letter FROM domains";
 
-    $allow_view_others = zone_content_view_others($db, $userid);
+    $userRepository = new DbUserRepository($db);
+    $userService = new UserService($userRepository);
+    $allow_view_others = $userService->canUserViewOthersContent($userId);
+
     if (!$allow_view_others) {
         $query .= " LEFT JOIN zones ON domains.id = zones.domain_id";
-        $query .= " WHERE zones.owner = " . $userid;
+        $query .= " WHERE zones.owner = " . $userId;
     }
 
     $char_range = array_merge(range('a', 'z'), array('_'));
@@ -188,30 +193,4 @@ function show_letters(string $letterstart, int $userid) {
     $result .= "</nav>";
 
     return $result;
-}
-
-/** Check if current user allowed to view any zone content
- *
- * @param $db
- * @param int $userid Current user ID
- *
- * @return bool true if user has permission to view other users zones content, 0 otherwise
- */
-function zone_content_view_others($db, int $userid): bool
-{
-    $query = "SELECT
-		DISTINCT u.id
-		FROM 	users u,
-		        perm_templ pt,
-		        perm_templ_items pti,
-		        (SELECT id FROM perm_items WHERE name
-			    IN ('zone_content_view_others', 'user_is_ueberuser')) pit
-                WHERE u.id = " . $userid . "
-                AND u.perm_templ = pt.id
-                AND pti.templ_id = pt.id
-                AND pti.perm_id  = pit.id";
-
-    $result = $db->queryOne($query);
-
-    return (bool)$result;
 }
