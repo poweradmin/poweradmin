@@ -49,17 +49,13 @@ require_once 'inc/session.inc.php';
  * the specific permission. It returns "false" if the user doesn't have the
  * right, and "true" if the user has.
  *
- * @param array $arg Permission name
+ * @param string $arg Permission name
  *
  * @return boolean true if user has permission, false otherwise
  */
-function verify_permission($arg)
+function verify_permission(string $arg): bool
 {
-    if (is_array($arg)) {
-        $permission = $arg [0];
-    } else {
-        $permission = $arg;
-    }
+    $permission = $arg;
 
     static $cache = false;
 
@@ -69,10 +65,8 @@ function verify_permission($arg)
 
     global $db;
     if ((!isset($_SESSION['userid'])) || (!is_object($db))) {
-        return 0;
+        return false;
     }
-    // Set current user ID.
-    $userid = $_SESSION['userid'];
 
     $query = $db->prepare("SELECT
         perm_items.name AS permission
@@ -81,7 +75,7 @@ function verify_permission($arg)
         LEFT JOIN perm_templ ON perm_templ.id = perm_templ_items.templ_id
         LEFT JOIN users ON perm_templ.id = users.perm_templ
         WHERE users.id = ?");
-    $query->execute(array($userid));
+    $query->execute(array($_SESSION['userid']));
     $cache = $query->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
 
     return array_key_exists('user_is_ueberuser', $cache) || array_key_exists($permission, $cache);
