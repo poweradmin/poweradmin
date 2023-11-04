@@ -16,8 +16,8 @@ $db_pass = '';
 $db_name = '';
 $db_type = '';
 //$db_charset = 'latin1'; // or utf8
-//$db_file		= '';		# used only for SQLite, provide full path to database file
-//$db_debug		= false;	# show all SQL queries
+//$db_file = '';		# used only for SQLite, provide full path to database file
+//$db_debug	= false;	# show all SQL queries
 
 // Security settings
 // This should be changed upon install
@@ -47,14 +47,14 @@ $dns_ns2 = '';
 $dns_ns3 = '';
 $dns_ns4 = '';
 $dns_ttl = 86400;
-$dns_soa  = '28800 7200 604800 86400'; // refresh, retry, expire, minimum
+$dns_soa = '28800 7200 604800 86400'; // refresh, retry, expire, minimum
 $dns_strict_tld_check = false;
-$dns_top_level_tld_check = false;     // Do not allow the creation of top-level domains
-$dns_third_level_check = false;       // Do not allow the creation of third-level domains
+$dns_top_level_tld_check = false;   // Do not allow the creation of top-level domains
+$dns_third_level_check = false;     // Do not allow the creation of third-level domains
 
 // Timezone settings
 // See <http://www.php.net/manual/en/timezones.php> for help.
-//$timezone		= 'UTC';
+//$timezone = 'UTC';
 
 // Logging settings
 // Syslog usage - writes authentication attempts to syslog
