@@ -128,13 +128,13 @@ function show_pages($amount, $rowamount, $id = '') {
  *
  * @return null
  */
-function show_letters($letterstart, $userid) {
+function show_letters(string $letterstart, int $userid) {
     global $db;
     global $db_type;
 
     $query = "SELECT DISTINCT " . DbCompat::substr($db_type) . "(domains.name, 1, 1) AS letter FROM domains";
 
-    $allow_view_others = zone_content_view_others($userid);
+    $allow_view_others = zone_content_view_others($db, $userid);
     if (!$allow_view_others) {
         $query .= " LEFT JOIN zones ON domains.id = zones.domain_id";
         $query .= " WHERE zones.owner = " . $userid;
@@ -192,12 +192,13 @@ function show_letters($letterstart, $userid) {
 
 /** Check if current user allowed to view any zone content
  *
+ * @param $db
  * @param int $userid Current user ID
  *
  * @return int 1 if user has permission to view other users zones content, 0 otherwise
  */
-function zone_content_view_others($userid) {
-    global $db;
+function zone_content_view_others($db, int $userid): int
+{
 
     $query = "SELECT
 		DISTINCT u.id
