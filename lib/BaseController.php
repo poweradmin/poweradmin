@@ -136,7 +136,7 @@ EOF;
 
     public function checkPermission(string $permission, string $errorMessage): void
     {
-        if (!verify_permission_local($permission)) {
+        if (!verify_permission($permission)) {
             $error = new ErrorMessage($errorMessage);
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);

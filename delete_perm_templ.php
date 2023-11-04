@@ -60,20 +60,20 @@ class DeletePermTemplController extends BaseController
             $this->showFirstError($v->errors());
         }
 
-        if (delete_perm_templ_local($perm_templ_id)) {
+        if (delete_perm_templ($perm_templ_id)) {
             $this->setMessage('list_perm_templ', 'success', _('The permission template has been deleted successfully.'));
             $this->redirect('list_perm_templ.php');
         }
 
         $this->render('list_perm_templ.html', [
-            'permission_templates' => list_permission_templates_local(),
+            'permission_templates' => list_permission_templates(),
         ]);
     }
 
     private function showDeletePermTempl(): void
     {
         $perm_templ_id = htmlspecialchars($_GET['id']);
-        $templ_details = get_permission_template_details_local($perm_templ_id);
+        $templ_details = get_permission_template_details($perm_templ_id);
 
         $this->render('delete_perm_templ.html', [
             'perm_templ_id' => $perm_templ_id,

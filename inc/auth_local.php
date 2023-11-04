@@ -45,7 +45,7 @@ require_once 'inc/redirect.inc.php';
  *
  * @return null
  */
-function authenticate_local()
+function authenticate()
 {
     global $iface_expire;
     global $session_key;

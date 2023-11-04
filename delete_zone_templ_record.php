@@ -55,8 +55,8 @@ class DeleteZoneTemplRecordController extends BaseController {
         }
 
         $owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
-        $perm_godlike = verify_permission_local('user_is_ueberuser');
-        $perm_master_add = verify_permission_local('zone_master_add');
+        $perm_godlike = verify_permission('user_is_ueberuser');
+        $perm_master_add = verify_permission('zone_master_add');
 
         $this->checkCondition(!($perm_godlike || $perm_master_add && $owner), _("You do not have the permission to delete this record."));
 

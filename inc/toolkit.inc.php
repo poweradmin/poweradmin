@@ -61,4 +61,4 @@ $databaseCredentials = [
 
 $db = dbConnect($databaseCredentials);
 
-authenticate_local();
+authenticate();

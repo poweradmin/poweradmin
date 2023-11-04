@@ -55,20 +55,20 @@ $app = AppFactory::create();
 $dblog_use = $app->config('dblog_use');
 
 if (isset($_SESSION["userid"])) {
-    $perm_is_godlike = verify_permission_local('user_is_ueberuser');
+    $perm_is_godlike = verify_permission('user_is_ueberuser');
 
     $vars = array_merge($vars, [
         'user_logged_in' => isset($_SESSION["userid"]),
-        'perm_search' => verify_permission_local('search'),
-        'perm_view_zone_own' => verify_permission_local('zone_content_view_own'),
-        'perm_view_zone_other' => verify_permission_local('zone_content_view_others'),
-        'perm_supermaster_view' => verify_permission_local('supermaster_view'),
-        'perm_zone_master_add' => verify_permission_local('zone_master_add'),
-        'perm_zone_slave_add' => verify_permission_local('zone_slave_add'),
-        'perm_supermaster_add' => verify_permission_local('supermaster_add'),
+        'perm_search' => verify_permission('search'),
+        'perm_view_zone_own' => verify_permission('zone_content_view_own'),
+        'perm_view_zone_other' => verify_permission('zone_content_view_others'),
+        'perm_supermaster_view' => verify_permission('supermaster_view'),
+        'perm_zone_master_add' => verify_permission('zone_master_add'),
+        'perm_zone_slave_add' => verify_permission('zone_slave_add'),
+        'perm_supermaster_add' => verify_permission('supermaster_add'),
         'perm_is_godlike' => $perm_is_godlike,
-        'perm_templ_perm_edit' => verify_permission_local('templ_perm_edit'),
-        'perm_add_new' => verify_permission_local('user_add_new'),
+        'perm_templ_perm_edit' => verify_permission('templ_perm_edit'),
+        'perm_add_new' => verify_permission('user_add_new'),
         'session_key_error' => $perm_is_godlike && $session_key == 'p0w3r4dm1n' ? _('Default session encryption key is used, please set it in your configuration file.') : false,
         'auth_used' => $_SESSION["auth_used"] != "ldap",
         'dblog_use' => $dblog_use

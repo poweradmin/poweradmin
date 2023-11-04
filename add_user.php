@@ -54,7 +54,7 @@ class AddUserController extends BaseController {
         ]);
 
         if ($v->validate()) {
-            if (add_new_user_local($_POST)) {
+            if (add_new_user($_POST)) {
                 $this->setMessage('users', 'success', _('The user has been created successfully.'));
                 $this->redirect('users.php');
             } else {
@@ -67,8 +67,8 @@ class AddUserController extends BaseController {
 
     private function showForm(): void
     {
-        $user_edit_templ_perm = verify_permission_local('user_edit_templ_perm');
-        $user_templates = list_permission_templates_local();
+        $user_edit_templ_perm = verify_permission('user_edit_templ_perm');
+        $user_templates = list_permission_templates();
 
         $username = $_POST['username'] ?? "";
         $fullname = $_POST['fullname'] ?? "";

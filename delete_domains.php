@@ -89,8 +89,8 @@ class DeleteDomainsController extends BaseController {
         foreach ($zone_ids as $zone_id) {
             $zones[$zone_id]['id'] = $zone_id;
             $zones[$zone_id] = DnsRecord::get_zone_info_from_id($zone_id);
-            $zones[$zone_id]['owner'] = get_fullnames_owners_from_domainid_local($zone_id);
-            $zones[$zone_id]['is_owner'] = verify_user_is_owner_zoneid_local($zone_id);
+            $zones[$zone_id]['owner'] = get_fullnames_owners_from_domainid($zone_id);
+            $zones[$zone_id]['is_owner'] = verify_user_is_owner_zoneid($zone_id);
 
             $zones[$zone_id]['has_supermaster'] = false;
             $zones[$zone_id]['slave_master'] = null;

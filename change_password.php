@@ -49,7 +49,7 @@ class ChangePasswordController extends BaseController {
             ]);
 
             if ($v->validate()) {
-                change_user_pass_local($_POST);
+                change_user_pass($_POST);
             } else {
                 $this->showFirstError($v->errors());
             }

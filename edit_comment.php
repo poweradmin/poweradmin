@@ -56,7 +56,7 @@ class EditCommentController extends BaseController {
         }
         $zone_id = htmlspecialchars($_GET['id']);
 
-        $user_is_zone_owner = verify_user_is_owner_zoneid_local($zone_id);
+        $user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
             $this->showError(_("You do not have the permission to view this comment."));
         }

@@ -59,7 +59,7 @@ class AddPermTemplController extends BaseController
         ]);
 
         if ($v->validate()) {
-            add_perm_templ_local($_POST);
+            add_perm_templ($_POST);
             $this->setMessage('list_perm_templ', 'success', _('The permission template has been added successfully.'));
             $this->redirect('list_perm_templ.php');
         } else {
@@ -70,7 +70,7 @@ class AddPermTemplController extends BaseController
     private function showAddPermTempl(): void
     {
         $this->render('add_perm_templ.html', [
-            'perms_avail' => get_permissions_by_template_id_local(0)
+            'perms_avail' => get_permissions_by_template_id(0)
         ]);
     }
 }

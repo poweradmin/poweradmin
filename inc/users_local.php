@@ -53,7 +53,7 @@ require_once 'inc/session.inc.php';
  *
  * @return boolean true if user has permission, false otherwise
  */
-function verify_permission_local($arg)
+function verify_permission($arg)
 {
     if (is_array($arg)) {
         $permission = $arg [0];
@@ -92,7 +92,7 @@ function verify_permission_local($arg)
  *
  * @return mixed[] array of templates [id, name, descr]
  */
-function list_permission_templates_local()
+function list_permission_templates()
 {
     global $db;
     $query = "SELECT * FROM perm_templ ORDER BY name";
@@ -120,7 +120,7 @@ function list_permission_templates_local()
  *
  * @return mixed[] array with all users [id,username,fullname,email,description,active,numdomains]
  */
-function show_users_local($id = '', $rowstart = 0, $rowamount = 9999999)
+function show_users($id = '', $rowstart = 0, $rowamount = 9999999)
 {
 
     global $db;
@@ -178,7 +178,7 @@ function show_users_local($id = '', $rowstart = 0, $rowamount = 9999999)
  *
  * @return boolean true if user exists, false if users doesnt exist
  */
-function is_valid_user_local($id)
+function is_valid_user($id)
 {
     global $db;
     if (is_numeric($id)) {
@@ -216,11 +216,11 @@ function user_exists($user)
  *
  * @return boolean true on success, false otherwise
  */
-function delete_user_local($uid, $zones)
+function delete_user($uid, $zones)
 {
     global $db;
 
-    if (($uid != $_SESSION ['userid'] && !verify_permission_local('user_edit_others')) || ($uid == $_SESSION ['userid'] && !verify_permission_local('user_edit_own'))) {
+    if (($uid != $_SESSION ['userid'] && !verify_permission('user_edit_others')) || ($uid == $_SESSION ['userid'] && !verify_permission('user_edit_own'))) {
         $error = new ErrorMessage(_("You do not have the permission to delete this user."));
         $errorPresenter = new ErrorPresenter();
         $errorPresenter->present($error);
@@ -256,11 +256,11 @@ function delete_user_local($uid, $zones)
  *
  * @return boolean true on success, false otherwise
  */
-function delete_perm_templ_local($ptid)
+function delete_perm_templ($ptid)
 {
     global $db;
 
-    if (!(verify_permission_local('user_edit_templ_perm'))) {
+    if (!(verify_permission('user_edit_templ_perm'))) {
         $error = new ErrorMessage(_("You do not have the permission to delete permission templates."));
         $errorPresenter = new ErrorPresenter();
         $errorPresenter->present($error);
@@ -301,12 +301,12 @@ function delete_perm_templ_local($ptid)
  *
  * @return boolean true if succesful, false otherwise
  */
-function edit_user_local($id, $user, $fullname, $email, $perm_templ, $description, $active, $user_password, $i_use_ldap)
+function edit_user($id, $user, $fullname, $email, $perm_templ, $description, $active, $user_password, $i_use_ldap)
 {
     global $db;
 
-    $perm_edit_own = verify_permission_local('user_edit_own');
-    $perm_edit_others = verify_permission_local('user_edit_others');
+    $perm_edit_own = verify_permission('user_edit_own');
+    $perm_edit_others = verify_permission('user_edit_others');
 
     if (($id == $_SESSION ["userid"] && $perm_edit_own) || ($id != $_SESSION ["userid"] && $perm_edit_others)) {
 
@@ -360,15 +360,15 @@ function edit_user_local($id, $user, $fullname, $email, $perm_templ, $descriptio
         $query = "UPDATE users SET username = " . $db->quote($user, 'text') . ",
 fullname = " . $db->quote($fullname, 'text') . ",
 email = " . $db->quote($email, 'text') . ",";
-        if (verify_permission_local('user_edit_templ_perm')) {
+        if (verify_permission('user_edit_templ_perm')) {
             $query .= "perm_templ = " . $db->quote($perm_templ, 'integer') . ",";
         }
         $query .= "description = " . $db->quote($description, 'text') . ",
 				active = " . $db->quote($active, 'integer') . ",
 				use_ldap = " . $db->quote($i_use_ldap ?: 0, 'integer');
 
-        $edit_own_perm = verify_permission_local('user_edit_own');
-        $passwd_edit_others_perm = verify_permission_local('user_passwd_edit_others');
+        $edit_own_perm = verify_permission('user_edit_own');
+        $passwd_edit_others_perm = verify_permission('user_passwd_edit_others');
 
         if ($user_password != "" && $edit_own_perm || $passwd_edit_others_perm) {
             $config = new LegacyConfiguration();
@@ -422,7 +422,7 @@ function update_user_password($id, $user_pass): void
  *
  * @return null
  */
-function change_user_pass_local(array $details)
+function change_user_pass(array $details)
 {
     global $db;
 
@@ -466,7 +466,7 @@ function change_user_pass_local(array $details)
  *
  * @return string Full Name
  */
-function get_fullname_from_userid_local($id)
+function get_fullname_from_userid($id)
 {
     global $db;
     if (is_numeric($id)) {
@@ -491,7 +491,7 @@ function get_fullname_from_userid_local($id)
  * @todo also fetch the subowners
  *
  */
-function get_fullnames_owners_from_domainid_local($id)
+function get_fullnames_owners_from_domainid($id)
 {
     global $db;
     if (is_numeric($id)) {
@@ -517,7 +517,7 @@ function get_fullnames_owners_from_domainid_local($id)
  *
  * @return string|void 1 if owner, 0 if not owner
  */
-function verify_user_is_owner_zoneid_local($zoneid)
+function verify_user_is_owner_zoneid($zoneid)
 {
     global $db;
 
@@ -542,7 +542,7 @@ function verify_user_is_owner_zoneid_local($zoneid)
  *
  * @return mixed[] array of user details
  */
-function get_user_detail_list_local($specific)
+function get_user_detail_list($specific)
 {
     global $db;
     global $ldap_use;
@@ -553,7 +553,7 @@ function get_user_detail_list_local($specific)
     if (Validation::is_number($specific)) {
         $sql_add = "AND users.id = " . $db->quote($specific, 'integer');
     } else {
-        if (verify_permission_local('user_view_others')) {
+        if (verify_permission('user_view_others')) {
             $sql_add = "";
         } else {
             $sql_add = "AND users.id = " . $db->quote($userid, 'integer');
@@ -609,7 +609,7 @@ function get_user_detail_list_local($specific)
  *
  * @return mixed[] array of permissions [id,name,descr] or permission names [name]
  */
-function get_permissions_by_template_id_local($templ_id = 0, $return_name_only = false)
+function get_permissions_by_template_id($templ_id = 0, $return_name_only = false)
 {
     global $db;
 
@@ -649,7 +649,7 @@ function get_permissions_by_template_id_local($templ_id = 0, $return_name_only =
  *
  * @return mixed[] Template details
  */
-function get_permission_template_details_local($templ_id)
+function get_permission_template_details($templ_id)
 {
     global $db;
 
@@ -668,7 +668,7 @@ function get_permission_template_details_local($templ_id)
  *
  * @return boolean true on success, false otherwise
  */
-function add_perm_templ_local($details)
+function add_perm_templ($details)
 {
     global $db;
     global $db_type;
@@ -701,7 +701,7 @@ function add_perm_templ_local($details)
  *
  * @return boolean true on success, false otherwise
  */
-function update_perm_templ_details_local($details)
+function update_perm_templ_details($details)
 {
     global $db;
 
@@ -740,14 +740,14 @@ function update_perm_templ_details_local($details)
  *
  * @return boolean true on success, false otherwise
  */
-function update_user_details_local($details)
+function update_user_details($details)
 {
     global $db;
 
-    $perm_edit_own = (bool)verify_permission_local('user_edit_own');
-    $perm_edit_others = (bool)verify_permission_local('user_edit_others');
-    $perm_templ_perm_edit = (bool)verify_permission_local('templ_perm_edit');
-    $perm_is_godlike = (bool)verify_permission_local('user_is_ueberuser');
+    $perm_edit_own = (bool)verify_permission('user_edit_own');
+    $perm_edit_others = (bool)verify_permission('user_edit_others');
+    $perm_templ_perm_edit = (bool)verify_permission('templ_perm_edit');
+    $perm_is_godlike = (bool)verify_permission('user_is_ueberuser');
 
     if (($details['uid'] == $_SESSION ["userid"] && $perm_edit_own) || ($details['uid'] != $_SESSION ["userid"] && $perm_edit_others)) {
 
@@ -817,7 +817,7 @@ function update_user_details_local($details)
             $query .= ", use_ldap = " . $db->quote($use_ldap, 'integer');
         }
 
-        $passwd_edit_others_perm = (bool)verify_permission_local('user_passwd_edit_others');
+        $passwd_edit_others_perm = (bool)verify_permission('user_passwd_edit_others');
         if (isset($details['password']) && $details['password'] != "" && $passwd_edit_others_perm) {
             $config = new LegacyConfiguration();
             $userAuthService = new UserAuthenticationService(
@@ -847,12 +847,12 @@ function update_user_details_local($details)
  *
  * @return boolean true on success, false otherwise
  */
-function add_new_user_local($details)
+function add_new_user($details)
 {
     global $db;
     global $ldap_use;
 
-    if (!verify_permission_local('user_add_new')) {
+    if (!verify_permission('user_add_new')) {
         $error = new ErrorMessage(_("You do not have the permission to add a new user."));
         $errorPresenter = new ErrorPresenter();
         $errorPresenter->present($error);
@@ -897,10 +897,10 @@ function add_new_user_local($details)
 
     $query = "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES (" . $db->quote($details['username'], 'text') . ", " . $db->quote($password_hash, 'text') . ", " . $db->quote($details['fullname'], 'text') . ", " . $db->quote($details['email'], 'text') . ", " . $db->quote($details['descr'], 'text') . ", ";
 
-    if (verify_permission_local('user_edit_templ_perm')) {
+    if (verify_permission('user_edit_templ_perm')) {
         $query .= $db->quote($details['perm_templ'], 'integer') . ", ";
     } else {
-        $current_user = get_user_detail_list_local($_SESSION['userid']);
+        $current_user = get_user_detail_list($_SESSION['userid']);
         $query .= $db->quote($current_user[0]['tpl_id'], 'integer') . ", ";
     }
     $query .= $db->quote($active, 'integer') . ", " . $db->quote($use_ldap, 'integer') . ")";

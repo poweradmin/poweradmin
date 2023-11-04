@@ -45,13 +45,13 @@ class ListZoneTemplController extends BaseController {
 
     private function showListZoneTempl(): void
     {
-        $perm_zone_master_add = verify_permission_local('zone_master_add');
+        $perm_zone_master_add = verify_permission('zone_master_add');
 
         $this->render('list_zone_templ.html', [
             'perm_zone_master_add' => $perm_zone_master_add,
-            'user_name' => get_fullname_from_userid_local($_SESSION['userid']) ?: $_SESSION['userlogin'],
+            'user_name' => get_fullname_from_userid($_SESSION['userid']) ?: $_SESSION['userlogin'],
             'zone_templates' => ZoneTemplate::get_list_zone_templ($_SESSION['userid']),
-            'perm_is_godlike' => verify_permission_local('user_is_ueberuser'),
+            'perm_is_godlike' => verify_permission('user_is_ueberuser'),
         ]);
     }
 }

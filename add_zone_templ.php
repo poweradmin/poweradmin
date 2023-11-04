@@ -50,8 +50,8 @@ class AddZoneTemplateController extends BaseController
     private function showAddZoneTemplate(): void
     {
         $this->render('add_zone_templ.html', [
-            'user_name' => get_fullname_from_userid_local($_SESSION['userid']) ?: $_SESSION['userlogin'],
-            'perm_is_godlike' => verify_permission_local('user_is_ueberuser'),
+            'user_name' => get_fullname_from_userid($_SESSION['userid']) ?: $_SESSION['userlogin'],
+            'perm_is_godlike' => verify_permission('user_is_ueberuser'),
         ]);
     }
 
@@ -71,10 +71,10 @@ class AddZoneTemplateController extends BaseController
             $this->redirect('list_zone_templ.php');
         } else {
             $this->render('add_zone_templ.html', [
-                'user_name' => get_fullname_from_userid_local($_SESSION['userid']) ?: $_SESSION['userlogin'],
+                'user_name' => get_fullname_from_userid($_SESSION['userid']) ?: $_SESSION['userlogin'],
                 'templ_name' => htmlspecialchars($_POST['templ_name']),
                 'templ_descr' => htmlspecialchars($_POST['templ_descr']),
-                'perm_is_godlike' => verify_permission_local('user_is_ueberuser')
+                'perm_is_godlike' => verify_permission('user_is_ueberuser')
             ]);
         }
     }

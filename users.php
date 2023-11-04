@@ -49,7 +49,7 @@ class UsersController extends BaseController
     {
         $success = false;
         foreach ($_POST['user'] as $user) {
-            $result = update_user_details_local($user);
+            $result = update_user_details($user);
             if ($result) {
                 $success = true;
             }
@@ -69,11 +69,11 @@ class UsersController extends BaseController
                 'user_edit_templ_perm',
                 'user_is_ueberuser',
             ),
-            'perm_templates' => list_permission_templates_local(),
-            'users' => get_user_detail_list_local(""),
+            'perm_templates' => list_permission_templates(),
+            'users' => get_user_detail_list(""),
             'ldap_use' => $this->config('ldap_use'),
             'session_userid' => $_SESSION["userid"],
-            'perm_add_new' => verify_permission_local('user_add_new'),
+            'perm_add_new' => verify_permission('user_add_new'),
         ]);
     }
 }

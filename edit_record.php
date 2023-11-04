@@ -50,7 +50,7 @@ class EditRecordController extends BaseController {
         $record_id = $_GET['id'];
         $zid = DnsRecord::get_zone_id_from_record_id($record_id);
 
-        $user_is_zone_owner = verify_user_is_owner_zoneid_local($zid);
+        $user_is_zone_owner = verify_user_is_owner_zoneid($zid);
         $zone_type = DnsRecord::get_domain_type($zid);
 
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {

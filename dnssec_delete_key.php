@@ -57,7 +57,7 @@ class DnsSecDeleteKeyController extends BaseController
             $confirm = $_GET['confirm'];
         }
 
-        $user_is_zone_owner = verify_user_is_owner_zoneid_local($zone_id);
+        $user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
 
         if ($zone_id == "-1") {
             $this->showError(_('Invalid or unexpected input given.'));

@@ -46,8 +46,8 @@ class ListPermTemplController extends BaseController
     private function showListPermTempl(): void
     {
         $this->render('list_perm_templ.html', [
-            'templ_perm_add' => verify_permission_local('templ_perm_add'),
-            'permission_templates' => list_permission_templates_local(),
+            'templ_perm_add' => verify_permission('templ_perm_add'),
+            'permission_templates' => list_permission_templates(),
         ]);
     }
 }

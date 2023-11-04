@@ -65,11 +65,11 @@ class AddSuperMasterController extends BaseController
     private function showAddSuperMaster($master_ip, $ns_name, $account): void
     {
         $this->render('add_supermaster.html', [
-            'users' => show_users_local(),
+            'users' => show_users(),
             'master_ip' => htmlspecialchars($master_ip),
             'ns_name' => htmlspecialchars($ns_name),
             'account' => htmlspecialchars($account),
-            'perm_view_others' => verify_permission_local('user_view_others'),
+            'perm_view_others' => verify_permission('user_view_others'),
             'session_uid' => $_SESSION['userid']
         ]);
     }
