@@ -20,40 +20,37 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use Poweradmin\Application\Service\UserService;
-use Poweradmin\Infrastructure\Database\DbCompat;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
-
 /** Print paging menu
  *
  * @param int $amount Total number of items
- * @param int $rowamount Per page number of items
- * @param int $id Page specific ID (Zone ID, Template ID, etc.)
+ * @param int $rowAmount Per page number of items
+ * @param string $id Page specific ID (Zone ID, Template ID, etc.)
  *
  * @return string $result
  */
-function show_pages($amount, $rowamount, $id = '') {
-    if ($amount <= $rowamount || $rowamount == 0) {
+function show_pages(int $amount, int $rowAmount, string $id = ''): string
+{
+    if ($amount <= $rowAmount || $rowAmount == 0) {
         return "";
     }
 
     $num = 8;
     $result = '';
-    $lastpage = ceil($amount / $rowamount);
-    $startpage = 1;
+    $lastPage = ceil($amount / $rowAmount);
+    $startPage = 1;
 
     if (!isset($_GET["start"])) {
         $_GET["start"] = 1;
     }
     $start = $_GET["start"];
 
-    if ($lastpage > $num & $start > ($num / 2)) {
-        $startpage = ($start - ($num / 2));
+    if ($lastPage > $num & $start > ($num / 2)) {
+        $startPage = ($start - ($num / 2));
     }
 
     $result .= "<nav><ul class=\"pagination\">";
 
-    if ($lastpage > $num & $start > 1) {
+    if ($lastPage > $num & $start > 1) {
         $result .= '<li class="page-item"><a class="page-link" href=" ';
         $result .= '?start=' . ($start - 1);
         if ($id != '') {
@@ -73,15 +70,15 @@ function show_pages($amount, $rowamount, $id = '') {
         $result .= '">';
         $result .= '1';
         $result .= '</a></li>';
-        if ($startpage > 2) {
+        if ($startPage > 2) {
             $result .= '<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">..</a></li>';
         }
     }
 
-    for ($i = $startpage; $i <= min(($startpage + $num), $lastpage); $i++) {
+    for ($i = $startPage; $i <= min(($startPage + $num), $lastPage); $i++) {
         if ($start == $i) {
             $result .= '<li class="page-item active"><span class="page-link">' . $i . '</span></li>';
-        } elseif ($i != $lastpage & $i != 1) {
+        } elseif ($i != $lastPage & $i != 1) {
             $result .= '<li class="page-item"><a class="page-link" href="';
             $result .= '?start=' . $i;
             if ($id != '') {
@@ -93,21 +90,21 @@ function show_pages($amount, $rowamount, $id = '') {
         }
     }
 
-    if ($start != $lastpage) {
-        if (min(($startpage + $num), $lastpage) < ($lastpage - 1)) {
+    if ($start != $lastPage) {
+        if (min(($startPage + $num), $lastPage) < ($lastPage - 1)) {
             $result .= '<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">..</a></li>';
         }
         $result .= '<li class="page-item"><a class="page-link" href="';
-        $result .= '?start=' . $lastpage;
+        $result .= '?start=' . $lastPage;
         if ($id != '') {
             $result .= '&id=' . $id;
         }
         $result .= '">';
-        $result .= $lastpage;
+        $result .= $lastPage;
         $result .= '</a></li>';
     }
 
-    if ($lastpage > $num & $start < $lastpage) {
+    if ($lastPage > $num & $start < $lastPage) {
         $result .= '<li class="page-item"><a class="page-link" href="';
         $result .= '?start=' . ($start + 1);
         if ($id != '') {
