@@ -36,10 +36,16 @@
  * @license     http://opensource.org/licenses/BSD-2-Clause BSD
  */
 
+namespace Poweradmin;
+
+use PDO;
+use PDOStatement;
+
 /**
  * Implements common PDO methods
  */
-class PDOCommon extends PDO {
+class PDOCommon extends PDO
+{
 
     /**
      * result limit used in the next query
@@ -62,7 +68,8 @@ class PDOCommon extends PDO {
      * @param array $driver_options
      * @param boolean $isQuiet
      */
-    public function __construct($dsn, $username = '', $password = '', $driver_options = array(), $isQuiet = false) {
+    public function __construct($dsn, $username = '', $password = '', $driver_options = array(), $isQuiet = false)
+    {
         try {
             parent::__construct($dsn, $username, $password, $driver_options);
         } catch (Exception $e) {
@@ -90,7 +97,8 @@ class PDOCommon extends PDO {
      * @param mixed ...$fetchModeArgs
      * @return PDOStatement
      */
-    public function query($str, ?int $fetchMode = null, mixed ...$fetchModeArgs): PDOStatement {
+    public function query($str, ?int $fetchMode = null, mixed ...$fetchModeArgs): PDOStatement
+    {
         // check if limit has been specified. if so, modify the query
         if (!empty($this->limit)) {
             $str .= " LIMIT " . $this->limit;
@@ -108,17 +116,17 @@ class PDOCommon extends PDO {
             $obj_pdoStatement = parent::query($str);
         } catch (Exception $e) {
             error_log("[* SQL ERROR MESSAGE FOLLOWS:\n" .
-                    $e->getTraceAsString() .
-                    "\n" . $e->getMessage() .
-                    "\nFull SQL Statement:" . $str .
-                    "\n*]");
+                $e->getTraceAsString() .
+                "\n" . $e->getMessage() .
+                "\nFull SQL Statement:" . $str .
+                "\n*]");
             die("<b>An error occurred while executing the SQL statement. " .
-                    "Please contact an Administrator and report the problem.</b>" .
-                    "<br /><hr />The following query generated an error:<br />" .
-                    "<pre>" .
-                    $this->formatSQLforHTML($str) .
-                    "\n\n" . $e->getMessage() .
-                    "</pre>");
+                "Please contact an Administrator and report the problem.</b>" .
+                "<br /><hr />The following query generated an error:<br />" .
+                "<pre>" .
+                $this->formatSQLforHTML($str) .
+                "\n\n" . $e->getMessage() .
+                "</pre>");
         }
 
         return $obj_pdoStatement;
@@ -130,7 +138,8 @@ class PDOCommon extends PDO {
      * @param string $str
      * @return string
      */
-    protected function formatSQLforHTML($str) {
+    protected function formatSQLforHTML($str)
+    {
         $Keyword = array("SELECT ", "WHERE ", " ON ", "AND ", "OR ",
             "FROM ", "LIMIT ", "UNION ",
             "INNER ", "LEFT ", "RIGHT ", "JOIN ", ",",
@@ -153,7 +162,8 @@ class PDOCommon extends PDO {
      * @param string $str
      * @return array
      */
-    public function queryOne($str) {
+    public function queryOne($str)
+    {
         $result = $this->query($str);
         $row = $result->fetch(PDO::FETCH_NUM);
         if (is_bool($row)) {
@@ -168,7 +178,8 @@ class PDOCommon extends PDO {
      * @param string $str
      * @return mixed
      */
-    public function queryRow($str) {
+    public function queryRow($str)
+    {
         $obj_pdoStatement = parent::query($str);
         return $obj_pdoStatement->fetch(PDO::FETCH_ASSOC);
     }
@@ -179,7 +190,8 @@ class PDOCommon extends PDO {
      * @param int $limit
      * @param int $from
      */
-    public function setLimit($limit, $from = 0) {
+    public function setLimit($limit, $from = 0)
+    {
         $this->limit = $limit;
         $this->from = $from;
     }

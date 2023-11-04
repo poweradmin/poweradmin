@@ -28,12 +28,16 @@
  * @copyright   2010-2023 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
-require_once "PDOCommon.php";
+
+namespace Poweradmin;
+
+use PDO;
 
 /**
  * PDO access layer
  */
-class PDOLayer extends PDOCommon {
+class PDOLayer extends PDOCommon
+{
 
     /**
      * Enables/disables debugging
@@ -70,7 +74,8 @@ class PDOLayer extends PDOCommon {
      * @param string $option Option name
      * @param int $value Option value
      */
-    public function setOption($option, $value) {
+    public function setOption($option, $value)
+    {
         if ($option == 'debug' && $value == 1) {
             $this->debug = true;
         }
@@ -91,9 +96,10 @@ class PDOLayer extends PDOCommon {
      * @param string $str SQL query
      * @param int|null $fetchMode
      * @param mixed ...$fetchModeArgs
-     * @return PDOStatement
+     * @return \PDOStatement
      */
-    public function query($str, ?int $fetchMode = null, mixed ...$fetchModeArgs): PDOStatement {
+    public function query($str, ?int $fetchMode = null, mixed ...$fetchModeArgs): \PDOStatement
+    {
         if ($this->debug) {
             $this->queries[] = $str;
         }
@@ -104,11 +110,13 @@ class PDOLayer extends PDOCommon {
     /**
      * Dummy method
      */
-    public function disconnect() {
+    public function disconnect()
+    {
 
     }
 
-    public function executeMultiple($stmt, $params) {
+    public function executeMultiple($stmt, $params)
+    {
         foreach ($params as $values) {
             $stmt->execute($values);
         }
@@ -117,7 +125,8 @@ class PDOLayer extends PDOCommon {
     /**
      * List all tables in the current database
      */
-    public function listTables() {
+    public function listTables()
+    {
         $tables = array();
         $db_type = $this->getAttribute(PDO::ATTR_DRIVER_NAME);
 
@@ -145,7 +154,8 @@ class PDOLayer extends PDOCommon {
      * @param mixed[] $fields Associative array that contains the definition of each field of the new table
      * @param mixed[] $options An associative array of table options
      */
-    public function createTable($name, $fields, $options = array()) {
+    public function createTable($name, $fields, $options = array())
+    {
         $db_type = $this->getAttribute(PDO::ATTR_DRIVER_NAME);
         $query_fields = array();
 
@@ -205,7 +215,8 @@ class PDOLayer extends PDOCommon {
      *
      * @param string $name name of the table that should be dropped
      */
-    public function dropTable($name) {
+    public function dropTable($name)
+    {
         $query = "DROP TABLE $name";
         $this->exec($query);
     }

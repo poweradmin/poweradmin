@@ -31,8 +31,7 @@
 
 use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\Infrastructure\UI\ErrorPresenter;
-
-require_once 'PDOLayer.php';
+use Poweradmin\PDOLayer;
 
 /**  Connect to Database
  *
