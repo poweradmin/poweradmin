@@ -78,7 +78,11 @@ $dblog_use = false;
 // DNSSEC settings
 $pdnssec_use = false;
 $pdnssec_debug = false;
-$pdnssec_command = '/usr/bin/pdnsutil';
+$pdnssec_command = '/usr/bin/pdnsutil'; // will be deprecated in the future
+
+// PowerDNS API settings
+//$pdns_api_url = 'http://127.0.0.1:8081';
+//$pdns_api_key = '405ce585-ae47-4701-84c7-6cf1b0b35117';
 
 // LDAP settings
 $ldap_use = false;
