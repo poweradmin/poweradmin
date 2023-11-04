@@ -32,12 +32,13 @@
 use Poweradmin\Application\Dnssec\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
+use Poweradmin\Domain\Error\ErrorMessage;
+use Poweradmin\Infrastructure\UI\ErrorPresenter;
 use Poweradmin\Permission;
 use Poweradmin\RecordType;
 use Poweradmin\LegacyLogger;
 
 require_once 'inc/toolkit.inc.php';
-require_once 'inc/messages.inc.php';
 
 class AddRecordController extends BaseController
 {
@@ -158,7 +159,9 @@ class AddRecordController extends BaseController
                     }
                 }
             } elseif (isset($content_rev)) {
-                error(sprintf(_('There is no matching reverse-zone for: %s.'), $content_rev));
+                $error = new ErrorMessage(sprintf(_('There is no matching reverse-zone for: %s.'), $content_rev));
+                $errorPresenter = new ErrorPresenter();
+                $errorPresenter->present($error);
             }
         }
     }

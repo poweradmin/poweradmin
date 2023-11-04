@@ -31,11 +31,12 @@
 
 use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
+use Poweradmin\Domain\Error\ErrorMessage;
+use Poweradmin\Infrastructure\UI\ErrorPresenter;
 use Poweradmin\Permission;
 use Poweradmin\Validation;
 
 require_once 'inc/toolkit.inc.php';
-require_once 'inc/messages.inc.php';
 
 class EditCommentController extends BaseController {
 
@@ -65,7 +66,9 @@ class EditCommentController extends BaseController {
 
         if (isset($_POST["commit"])) {
             if ($perm_edit_comment) {
-                error(_("You do not have the permission to edit this comment."));
+                $error = new ErrorMessage(_("You do not have the permission to edit this comment."));
+                $errorPresenter = new ErrorPresenter();
+                $errorPresenter->present($error);
             } else {
                 DnsRecord::edit_zone_comment($zone_id, $_POST['comment']);
                 $this->setMessage('edit', 'success', _('The comment has been updated successfully.'));

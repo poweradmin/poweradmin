@@ -23,8 +23,10 @@
 namespace Poweradmin;
 
 use Poweradmin\Application\Dnssec\DnssecProviderFactory;
+use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
 use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Infrastructure\UI\ErrorPresenter;
 
 /**
  * DNS record functions
@@ -306,7 +308,10 @@ class DnsRecord
         $zone_type = self::get_domain_type($zone_id);
 
         if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
-            error(_("You do not have the permission to edit this comment."));
+            $error = new ErrorMessage(_("You do not have the permission to edit this comment."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return false;
         } else {
             global $db;
@@ -345,16 +350,25 @@ class DnsRecord
         $zone_type = self::get_domain_type($record['zid']);
 
         if ($record['type'] == 'SOA' && $perm_edit == "own_as_client") {
-            error(_("You do not have the permission to edit this SOA record."));
+            $error = new ErrorMessage(_("You do not have the permission to edit this SOA record."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return false;
         }
         if ($record['type'] == 'NS' && $perm_edit == "own_as_client") {
-            error(_("You do not have the permission to edit this NS record."));
+            $error = new ErrorMessage(_("You do not have the permission to edit this NS record."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return false;
         }
 
         if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
-            error(_("You do not have the permission to edit this record."));
+            $error = new ErrorMessage(_("You do not have the permission to edit this record."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return false;
         } else {
             global $db;
@@ -398,16 +412,25 @@ class DnsRecord
         $zone_type = self::get_domain_type($zone_id);
 
         if ($type == 'SOA' && $perm_edit == "own_as_client") {
-            error(_("You do not have the permission to add SOA record."));
+            $error = new ErrorMessage(_("You do not have the permission to add SOA record."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return false;
         }
         if ($type == 'NS' && $perm_edit == "own_as_client") {
-            error(_("You do not have the permission to add NS record."));
+            $error = new ErrorMessage(_("You do not have the permission to add NS record."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return false;
         }
 
         if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
-            error(_("You do not have the permission to add a record to this zone."));
+            $error = new ErrorMessage(_("You do not have the permission to add a record to this zone."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return false;
         }
 
@@ -459,19 +482,31 @@ class DnsRecord
     {
         global $db;
         if (!Dns::is_valid_ipv4($master_ip) && !Dns::is_valid_ipv6($master_ip)) {
-            error(_('This is not a valid IPv4 or IPv6 address.'));
+            $error = new ErrorMessage(_('This is not a valid IPv4 or IPv6 address.'));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return false;
         }
         if (!Dns::is_valid_hostname_fqdn($ns_name, 0)) {
-            error(_('Invalid hostname.'));
+            $error = new ErrorMessage(_('Invalid hostname.'));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return false;
         }
         if (!self::validate_account($account)) {
-            error(sprintf(_('Invalid argument(s) given to function %s %s'), "add_supermaster", "given account name is invalid (alpha chars only)"));
+            $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s %s'), "add_supermaster", "given account name is invalid (alpha chars only)"));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return false;
         }
         if (self::supermaster_ip_name_exists($master_ip, $ns_name)) {
-            error(_('There is already a supermaster with this IP address and hostname.'));
+            $error = new ErrorMessage(_('There is already a supermaster with this IP address and hostname.'));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return false;
         } else {
             $db->query("INSERT INTO supermasters VALUES (" . $db->quote($master_ip, 'text') . ", " . $db->quote($ns_name, 'text') . ", " . $db->quote($account, 'text') . ")");
@@ -496,7 +531,9 @@ class DnsRecord
                 " AND nameserver = " . $db->quote($ns_name, 'text'));
             return true;
         } else {
-            error(sprintf(_('Invalid argument(s) given to function %s %s'), "delete_supermaster", "No or no valid ipv4 or ipv6 address given."));
+            $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s %s'), "delete_supermaster", "No or no valid ipv4 or ipv6 address given."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
         }
         return false;
     }
@@ -521,7 +558,9 @@ class DnsRecord
                 "account" => $result["account"]
             );
         } else {
-            error(sprintf(_('Invalid argument(s) given to function %s %s'), "get_supermaster_info_from_ip", "No or no valid ipv4 or ipv6 address given."));
+            $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s %s'), "get_supermaster_info_from_ip", "No or no valid ipv4 or ipv6 address given."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
         }
     }
 
@@ -558,14 +597,19 @@ class DnsRecord
 
         if ($perm_edit == "all" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "1")) {
             if ($record['type'] == "SOA") {
-                error(_('You are trying to delete the SOA record. You are not allowed to remove it, unless you remove the entire zone.'));
+                $error = new ErrorMessage(_('You are trying to delete the SOA record. You are not allowed to remove it, unless you remove the entire zone.'));
+                $errorPresenter = new ErrorPresenter();
+                $errorPresenter->present($error);
             } else {
                 $query = "DELETE FROM records WHERE id = " . $db->quote($rid, 'integer');
                 $db->query($query);
                 return true;
             }
         } else {
-            error(_("You do not have the permission to delete this record."));
+            $error = new ErrorMessage(_("You do not have the permission to delete this record."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return false;
         }
     }
@@ -701,14 +745,21 @@ class DnsRecord
                         }
                         return true;
                     } else {
-                        error(sprintf(_('Invalid argument(s) given to function %s %s'), "add_domain", "could not create zone"));
+                        $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s %s'), "add_domain", "could not create zone"));
+                        $errorPresenter = new ErrorPresenter();
+                        $errorPresenter->present($error);
                     }
                 }
             } else {
-                error(sprintf(_('Invalid argument(s) given to function %s'), "add_domain"));
+                $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s'), "add_domain"));
+                $errorPresenter = new ErrorPresenter();
+                $errorPresenter->present($error);
             }
         } else {
-            error(_("You do not have the permission to add a master zone."));
+            $error = new ErrorMessage(_("You do not have the permission to add a master zone."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return false;
         }
     }
@@ -736,11 +787,15 @@ class DnsRecord
                 $db->query("DELETE FROM domains WHERE id=" . $db->quote($id, 'integer'));
                 return true;
             } else {
-                error(sprintf(_('Invalid argument(s) given to function %s %s'), "delete_domain", "id must be a number"));
+                $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s %s'), "delete_domain", "id must be a number"));
+                $errorPresenter = new ErrorPresenter();
+                $errorPresenter->present($error);
                 return false;
             }
         } else {
-            error(_("You do not have the permission to delete a zone."));
+            $error = new ErrorMessage(_("You do not have the permission to delete a zone."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
         }
     }
 
@@ -759,7 +814,9 @@ class DnsRecord
             $r = $result->fetch();
             return $r["domain_id"];
         } else {
-            error(sprintf(_('Invalid argument(s) given to function %s %s'), "recid_to_domid", "id must be a number"));
+            $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s %s'), "recid_to_domid", "id must be a number"));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
         }
     }
 
@@ -788,11 +845,15 @@ class DnsRecord
                     ]);
                     return true;
                 } else {
-                    error(_('The selected user already owns the zone.'));
+                    $error = new ErrorMessage(_('The selected user already owns the zone.'));
+                    $errorPresenter = new ErrorPresenter();
+                    $errorPresenter->present($error);
                     return false;
                 }
             } else {
-                error(sprintf(_('Invalid argument(s) given to function %s %s'), "add_owner_to_zone", "$zone_id / $user_id"));
+                $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s %s'), "add_owner_to_zone", "$zone_id / $user_id"));
+                $errorPresenter = new ErrorPresenter();
+                $errorPresenter->present($error);
             }
         } else {
             return false;
@@ -814,11 +875,15 @@ class DnsRecord
                 if ($db->queryOne("SELECT COUNT(id) FROM zones WHERE domain_id=" . $db->quote($zone_id, 'integer')) > 1) {
                     $db->query("DELETE FROM zones WHERE owner=" . $db->quote($user_id, 'integer') . " AND domain_id=" . $db->quote($zone_id, 'integer'));
                 } else {
-                    error(_('There must be at least one owner for a zone.'));
+                    $error = new ErrorMessage(_('There must be at least one owner for a zone.'));
+                    $errorPresenter = new ErrorPresenter();
+                    $errorPresenter->present($error);
                 }
                 return true;
             } else {
-                error(sprintf(_('Invalid argument(s) given to function %s %s'), "delete_owner_from_zone", "$zone_id / $user_id"));
+                $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s %s'), "delete_owner_from_zone", "$zone_id / $user_id"));
+                $errorPresenter = new ErrorPresenter();
+                $errorPresenter->present($error);
             }
         } else {
             return false;
@@ -840,12 +905,17 @@ class DnsRecord
             if ($result) {
                 return $result["name"];
             } else {
-                error("Domain does not exist.");
+                $error = new ErrorMessage("Domain does not exist.");
+                $errorPresenter = new ErrorPresenter();
+                $errorPresenter->present($error);
+
                 return false;
             }
         }
 
-        error(sprintf(_('Invalid argument(s) given to function %s %s'), "get_domain_name_by_id", "Not a valid domainid: $id"));
+        $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s %s'), "get_domain_name_by_id", "Not a valid domainid: $id"));
+        $errorPresenter = new ErrorPresenter();
+        $errorPresenter->present($error);
     }
 
     /** Get Zone Name from Zone ID
@@ -863,12 +933,17 @@ class DnsRecord
             if ($result) {
                 return $result["name"];
             } else {
-                error("Zone does not exist.");
+                $error = new ErrorMessage("Zone does not exist.");
+                $errorPresenter = new ErrorPresenter();
+                $errorPresenter->present($error);
+
                 return false;
             }
         }
 
-        error(sprintf(_('Invalid argument(s) given to function %s %s'), "get_domain_name_by_zone_id", "Not a valid zoneid: $zid"));
+        $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s %s'), "get_domain_name_by_zone_id", "Not a valid zoneid: $zid"));
+        $errorPresenter = new ErrorPresenter();
+        $errorPresenter->present($error);
     }
 
     /** Get zone id from name
@@ -885,11 +960,16 @@ class DnsRecord
             if ($result) {
                 return $result["id"];
             } else {
-                error("Zone does not exist.");
+                $error = new ErrorMessage("Zone does not exist.");
+                $errorPresenter = new ErrorPresenter();
+                $errorPresenter->present($error);
+
                 return false;
             }
         } else {
-            error(sprintf(_('Invalid argument(s) given to function %s %s'), "get_zone_id_from_name", "Not a valid domainname: $zname"));
+            $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s %s'), "get_zone_id_from_name", "Not a valid domainname: $zname"));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
         }
     }
 
@@ -903,7 +983,9 @@ class DnsRecord
         $perm_view = Permission::getViewPermission();
 
         if ($perm_view == "none") {
-            error(_("You do not have the permission to view this zone."));
+            $error = new ErrorMessage(_("You do not have the permission to view this zone."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
         } else {
             global $db;
 
@@ -1013,7 +1095,9 @@ class DnsRecord
             $result = $db->queryRow("SELECT id FROM domains WHERE name=" . $db->quote($domain, 'text'));
             return ($result ? true : false);
         } else {
-            error(_('This is an invalid zone name.'));
+            $error = new ErrorMessage(_('This is an invalid zone name.'));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
         }
     }
 
@@ -1054,7 +1138,9 @@ class DnsRecord
             $result = $db->queryOne("SELECT ip FROM supermasters WHERE ip = " . $db->quote($master_ip, 'text'));
             return ($result ? true : false);
         } else {
-            error(sprintf(_('Invalid argument(s) given to function %s %s'), "supermaster_exists", "No or no valid IPv4 or IPv6 address given."));
+            $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s %s'), "supermaster_exists", "No or no valid IPv4 or IPv6 address given."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
         }
     }
 
@@ -1073,7 +1159,9 @@ class DnsRecord
                 " AND nameserver = " . $db->quote($ns_name, 'text'));
             return ($result ? true : false);
         } else {
-            error(sprintf(_('Invalid argument(s) given to function %s %s'), "supermaster_exists", "No or no valid IPv4 or IPv6 address given."));
+            $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s %s'), "supermaster_exists", "No or no valid IPv4 or IPv6 address given."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
         }
     }
 
@@ -1104,7 +1192,10 @@ class DnsRecord
 
         $sql_add = '';
         if ($perm != "own" && $perm != "all") {
-            error(_("You do not have the permission to view this zone."));
+            $error = new ErrorMessage(_("You do not have the permission to view this zone."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return false;
         } else {
             if ($perm == "own") {
@@ -1257,7 +1348,9 @@ class DnsRecord
                 return -1;
             }
         } else {
-            error(sprintf(_('Invalid argument(s) given to function %s'), "get_record_from_id"));
+            $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s'), "get_record_from_id"));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
         }
     }
 
@@ -1278,7 +1371,10 @@ class DnsRecord
         global $db_type;
 
         if (!is_numeric($id)) {
-            error(sprintf(_('Invalid argument(s) given to function %s'), "get_records_from_domain_id"));
+            $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s'), "get_records_from_domain_id"));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return -1;
         }
 
@@ -1489,7 +1585,9 @@ class DnsRecord
             }
             return $type;
         } else {
-            error(sprintf(_('Invalid argument(s) given to function %s'), "get_record_from_id", "no or no valid zoneid given"));
+            $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s'), "get_record_from_id", "no or no valid zoneid given"));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
         }
     }
 
@@ -1505,7 +1603,9 @@ class DnsRecord
         if (is_numeric($id)) {
             return $db->queryOne("SELECT master FROM domains WHERE type = 'SLAVE' and id = " . $db->quote($id, 'integer'));
         } else {
-            error(sprintf(_('Invalid argument(s) given to function %s'), "get_domain_slave_master", "no or no valid zoneid given"));
+            $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s'), "get_domain_slave_master", "no or no valid zoneid given"));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
         }
     }
 
@@ -1530,7 +1630,9 @@ class DnsRecord
             }
             $result = $db->query("UPDATE domains SET type = " . $db->quote($type, 'text') . $add . " WHERE id = " . $db->quote($id, 'integer'));
         } else {
-            error(sprintf(_('Invalid argument(s) given to function %s'), "change_domain_type", "no or no valid zoneid given"));
+            $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s'), "change_domain_type", "no or no valid zoneid given"));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
         }
     }
 
@@ -1549,10 +1651,14 @@ class DnsRecord
                 $stmt = $db->prepare("UPDATE domains SET master = ? WHERE id = ?");
                 $stmt->execute(array($ip_slave_master, $zone_id));
             } else {
-                error(sprintf(_('Invalid argument(s) given to function %s %s'), "change_zone_slave_master", "This is not a valid IPv4 or IPv6 address: $ip_slave_master"));
+                $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s %s'), "change_zone_slave_master", "This is not a valid IPv4 or IPv6 address: $ip_slave_master"));
+                $errorPresenter = new ErrorPresenter();
+                $errorPresenter->present($error);
             }
         } else {
-            error(sprintf(_('Invalid argument(s) given to function %s'), "change_zone_slave_master", "no or no valid zoneid given"));
+            $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s'), "change_zone_slave_master", "no or no valid zoneid given"));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
         }
     }
 
@@ -1570,7 +1676,10 @@ class DnsRecord
             $rr_soa = $db->queryOne($query);
             $rr_soa_fields = explode(" ", $rr_soa);
         } else {
-            error(sprintf(_('Invalid argument(s) given to function %s %s'), "get_serial_by_zid", "id must be a number"));
+            $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s %s'), "get_serial_by_zid", "id must be a number"));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return false;
         }
         return $rr_soa_fields[2] ?? '';
@@ -1642,10 +1751,14 @@ class DnsRecord
                     $stmt = $db->prepare($query);
                     $stmt->execute(array(':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id));
                 } else {
-                    error(sprintf(_('Invalid argument(s) given to function %s %s'), "delete_domain", "id must be a number"));
+                    $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s %s'), "delete_domain", "id must be a number"));
+                    $errorPresenter = new ErrorPresenter();
+                    $errorPresenter->present($error);
                 }
             } else {
-                error(_("You do not have the permission to delete a zone."));
+                $error = new ErrorMessage(_("You do not have the permission to delete a zone."));
+                $errorPresenter = new ErrorPresenter();
+                $errorPresenter->present($error);
             }
             if ($zone_master_add == "1" || $zone_slave_add == "1") {
                 $domain = self::get_domain_name_by_id($zone_id);
@@ -1747,10 +1860,14 @@ class DnsRecord
                     $db->query("DELETE FROM records_zone_templ WHERE domain_id=" . $db->quote($id, 'integer'));
                     $db->exec("DELETE FROM domains WHERE id=" . $db->quote($id, 'integer'));
                 } else {
-                    error(sprintf(_('Invalid argument(s) given to function %s %s'), "delete_domains", "id must be a number"));
+                    $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s %s'), "delete_domains", "id must be a number"));
+                    $errorPresenter = new ErrorPresenter();
+                    $errorPresenter->present($error);
                 }
             } else {
-                error(_("You do not have the permission to delete a zone."));
+                $error = new ErrorMessage(_("You do not have the permission to delete a zone."));
+                $errorPresenter = new ErrorPresenter();
+                $errorPresenter->present($error);
             }
         }
 

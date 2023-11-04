@@ -21,15 +21,19 @@
 
 include_once 'config-me.inc.php';
 
-require_once 'messages.inc.php';
+require_once dirname(__DIR__) . '/vendor/autoload.php';
+
+use Poweradmin\Domain\Error\ErrorMessage;
+use Poweradmin\Infrastructure\DependencyCheck;
+use Poweradmin\Infrastructure\UI\ErrorPresenter;
 
 if (!@include_once('config.inc.php')) {
     if (!file_exists('install')) {
-        error(_('You have to create a config.inc.php!'));
+        $error = new ErrorMessage(_('You have to create a config.inc.php!'));
+        $errorPresenter = new ErrorPresenter();
+        $errorPresenter->present($error);
     }
 }
-
-require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 require_once 'benchmark.php';
 
@@ -39,8 +43,6 @@ require_once 'database.inc.php';
 require_once 'inc/auth_local.php';
 require_once 'inc/users_local.php';
 require_once 'i18n.inc.php';
-
-use Poweradmin\Infrastructure\DependencyCheck;
 
 DependencyCheck::verifyExtensions();
 

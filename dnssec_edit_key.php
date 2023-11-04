@@ -35,7 +35,6 @@ use Poweradmin\Domain\Dnssec\DnssecAlgorithm;
 use Poweradmin\Validation;
 
 require_once 'inc/toolkit.inc.php';
-require_once 'inc/messages.inc.php';
 
 class DnsSecEditKeyController extends \Poweradmin\BaseController {
 

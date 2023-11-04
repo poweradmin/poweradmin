@@ -31,6 +31,8 @@
  */
 
 use Poweradmin\Application\Services\UserAuthenticationService;
+use Poweradmin\Domain\Error\ErrorMessage;
+use Poweradmin\Infrastructure\UI\ErrorPresenter;
 use Poweradmin\LegacyConfiguration;
 use Poweradmin\DnsRecord;
 use Poweradmin\Validation;
@@ -219,7 +221,10 @@ function delete_user_local($uid, $zones)
     global $db;
 
     if (($uid != $_SESSION ['userid'] && !verify_permission_local('user_edit_others')) || ($uid == $_SESSION ['userid'] && !verify_permission_local('user_edit_own'))) {
-        error(_("You do not have the permission to delete this user."));
+        $error = new ErrorMessage(_("You do not have the permission to delete this user."));
+        $errorPresenter = new ErrorPresenter();
+        $errorPresenter->present($error);
+
         return false;
     } else {
 
@@ -254,14 +259,20 @@ function delete_user_local($uid, $zones)
 function delete_perm_templ_local($ptid)
 {
     global $db;
+
     if (!(verify_permission_local('user_edit_templ_perm'))) {
-        error(_("You do not have the permission to delete permission templates."));
+        $error = new ErrorMessage(_("You do not have the permission to delete permission templates."));
+        $errorPresenter = new ErrorPresenter();
+        $errorPresenter->present($error);
     } else {
         $query = "SELECT id FROM users WHERE perm_templ = " . $ptid;
         $response = $db->queryOne($query);
 
         if ($response) {
-            error(_('This template is assigned to at least one user.'));
+            $error = new ErrorMessage(_('This template is assigned to at least one user.'));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return false;
         } else {
             $query = "DELETE FROM perm_templ_items WHERE templ_id = " . $ptid;
@@ -300,7 +311,11 @@ function edit_user_local($id, $user, $fullname, $email, $perm_templ, $descriptio
     if (($id == $_SESSION ["userid"] && $perm_edit_own) || ($id != $_SESSION ["userid"] && $perm_edit_others)) {
 
         if (!Validation::is_valid_email($email)) {
-            error(_('Enter a valid email address.'));
+            $error = new ErrorMessage(_('Enter a valid email address.'));
+
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return false;
         }
 
@@ -331,7 +346,10 @@ function edit_user_local($id, $user, $fullname, $email, $perm_templ, $descriptio
             $query = "SELECT id FROM users WHERE username = " . $db->quote($user, 'text');
             $response = $db->queryOne($query);
             if ($response) {
-                error(_('Username exist already, please choose another one.'));
+                $error = new ErrorMessage(_('Username exist already, please choose another one.'));
+                $errorPresenter = new ErrorPresenter();
+                $errorPresenter->present($error);
+
                 return false;
             }
         }
@@ -366,7 +384,9 @@ email = " . $db->quote($email, 'text') . ",";
         $query .= " WHERE id = " . $db->quote($id, 'integer');
         $db->query($query);
     } else {
-        error(_("You do not have the permission to edit this user."));
+        $error = new ErrorMessage(_("You do not have the permission to edit this user."));
+        $errorPresenter = new ErrorPresenter();
+        $errorPresenter->present($error);
         return false;
     }
     return true;
@@ -407,7 +427,10 @@ function change_user_pass_local(array $details)
     global $db;
 
     if ($details['new_password'] != $details['new_password2']) {
-        error(_('The two new password fields do not match.'));
+        $error = new ErrorMessage(_('The two new password fields do not match.'));
+        $errorPresenter = new ErrorPresenter();
+        $errorPresenter->present($error);
+
         return false;
     }
 
@@ -427,7 +450,10 @@ function change_user_pass_local(array $details)
         logout(_('Password has been changed, please login.'), 'success');
     }
 
-    error(_('You did not enter the correct current password.'));
+    $error = new ErrorMessage(_('You did not enter the correct current password.'));
+    $errorPresenter = new ErrorPresenter();
+    $errorPresenter->present($error);
+
     return false;
 }
 
@@ -448,7 +474,10 @@ function get_fullname_from_userid_local($id)
         $r = $response->fetch();
         return $r["fullname"];
     } else {
-        error(_('Invalid argument(s) given to function %s'));
+        $error = new ErrorMessage(_('Invalid argument(s) given to function %s'));
+        $errorPresenter = new ErrorPresenter();
+        $errorPresenter->present($error);
+
         return false;
     }
 }
@@ -476,7 +505,9 @@ function get_fullnames_owners_from_domainid_local($id)
         }
         return "";
     }
-    error(_('Invalid argument(s) given to function %s'));
+    $error = new ErrorMessage(_('Invalid argument(s) given to function %s'));
+    $errorPresenter = new ErrorPresenter();
+    $errorPresenter->present($error);
 }
 
 /**
@@ -497,7 +528,9 @@ function verify_user_is_owner_zoneid_local($zoneid)
 				AND zones.domain_id = " . $db->quote($zoneid, 'integer'));
         return (bool)$response;
     }
-    error(_('Invalid argument(s) given to function %s'));
+    $error = new ErrorMessage(_('Invalid argument(s) given to function %s'));
+    $errorPresenter = new ErrorPresenter();
+    $errorPresenter->present($error);
 }
 
 /**
@@ -719,7 +752,10 @@ function update_user_details_local($details)
     if (($details['uid'] == $_SESSION ["userid"] && $perm_edit_own) || ($details['uid'] != $_SESSION ["userid"] && $perm_edit_others)) {
 
         if (!Validation::is_valid_email($details['email'])) {
-            error(_('Enter a valid email address.'));
+            $error = new ErrorMessage(_('Enter a valid email address.'));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return false;
         }
 
@@ -755,7 +791,10 @@ function update_user_details_local($details)
             $query = "SELECT id FROM users WHERE username = " . $db->quote($details['username'], 'text');
             $response = $db->queryOne($query);
             if ($response) {
-                error(_('Username exist already, please choose another one.'));
+                $error = new ErrorMessage(_('Username exist already, please choose another one.'));
+                $errorPresenter = new ErrorPresenter();
+                $errorPresenter->present($error);
+
                 return false;
             }
         }
@@ -792,7 +831,10 @@ function update_user_details_local($details)
 
         $db->query($query);
     } else {
-        error(_("You do not have the permission to edit this user."));
+        $error = new ErrorMessage(_("You do not have the permission to edit this user."));
+        $errorPresenter = new ErrorPresenter();
+        $errorPresenter->present($error);
+
         return false;
     }
     return true;
@@ -811,16 +853,28 @@ function add_new_user_local($details)
     global $ldap_use;
 
     if (!verify_permission_local('user_add_new')) {
-        error(_("You do not have the permission to add a new user."));
+        $error = new ErrorMessage(_("You do not have the permission to add a new user."));
+        $errorPresenter = new ErrorPresenter();
+        $errorPresenter->present($error);
+
         return false;
     } elseif (user_exists($details['username'])) {
-        error(_('Username exist already, please choose another one.'));
+        $error = new ErrorMessage(_('Username exist already, please choose another one.'));
+        $errorPresenter = new ErrorPresenter();
+        $errorPresenter->present($error);
+
         return false;
     } elseif ($details['username'] === '') {
-        error(_('Enter a valid user name.'));
+        $error = new ErrorMessage(_('Enter a valid user name.'));
+        $errorPresenter = new ErrorPresenter();
+        $errorPresenter->present($error);
+
         return false;
     } elseif (!Validation::is_valid_email($details['email'])) {
-        error(_('Enter a valid email address.'));
+        $error = new ErrorMessage(_('Enter a valid email address.'));
+        $errorPresenter = new ErrorPresenter();
+        $errorPresenter->present($error);
+
         return false;
     } elseif ($details['active'] == 1) {
         $active = 1;

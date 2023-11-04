@@ -29,6 +29,9 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Domain\Error\ErrorMessage;
+use Poweradmin\Infrastructure\UI\ErrorPresenter;
+
 global $iface_lang;
 
 if (isset($_SESSION["userlang"])) {
@@ -38,7 +41,9 @@ if (isset($_SESSION["userlang"])) {
 if ($iface_lang != 'en_EN' && $iface_lang != 'en_US.UTF-8') {
     $locale = setlocale(LC_ALL, $iface_lang, $iface_lang . '.UTF-8');
     if (!$locale) {
-        error(_('Failed to set locale. Selected locale may be unsupported on this system. Please contact your administrator.'));
+        $error = new ErrorMessage(_('Failed to set locale. Selected locale may be unsupported on this system. Please contact your administrator.'));
+        $errorPresenter = new ErrorPresenter();
+        $errorPresenter->present($error);
     }
 
     $gettext_domain = 'messages';

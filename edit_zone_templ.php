@@ -35,7 +35,6 @@ use Poweradmin\ZoneTemplate;
 
 require_once 'inc/toolkit.inc.php';
 require_once 'inc/pagination.inc.php';
-require_once 'inc/messages.inc.php';
 
 class EditZoneTemplController extends BaseController
 {

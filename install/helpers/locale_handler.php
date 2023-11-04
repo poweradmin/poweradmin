@@ -19,6 +19,9 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Poweradmin\Domain\Error\ErrorMessage;
+use Poweradmin\Infrastructure\UI\ErrorPresenter;
+
 function getLocaleFile(string $iface_lang): string
 {
     if (in_array($iface_lang, ['cs_CZ', 'de_DE', 'fr_FR', 'ja_JP', 'nb_NO', 'nl_NL', 'pl_PL', 'ru_RU', 'tr_TR', 'zh_CN'])) {
@@ -44,7 +47,9 @@ function setLanguage($language): void
     if ($language != 'en_EN') {
         $locale = setlocale(LC_ALL, $language, $language . '.UTF-8');
         if (!$locale) {
-            error(_('Failed to set locale. Selected locale may be unsupported on this system. Please contact your administrator.'));
+            $error = new ErrorMessage(_('Failed to set locale. Selected locale may be unsupported on this system. Please contact your administrator.'));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
         }
 
         $gettext_domain = 'messages';

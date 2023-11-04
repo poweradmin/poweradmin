@@ -20,18 +20,24 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/** Print error message
- *
- * @param string $msg Error message
- * @param string|null $name Offending DNS record name
- *
- * @return null
- */
-function error(string $msg, string $name = null)
+namespace Poweradmin\Infrastructure\UI;
+
+use Poweradmin\Domain\Error\ErrorMessage;
+
+class ErrorPresenter
 {
-    if ($name == null) {
-        echo "     <div class=\"alert alert-danger\"><strong>Error:</strong> " . $msg . "</div>\n";
-    } else {
-        echo "     <div class=\"alert alert-danger\"><strong>Error:</strong> " . $msg . " (Record: " . $name . ")</b></div>\n";
+    public function present(ErrorMessage $error): void
+    {
+        $msg = htmlspecialchars($error->getMessage(), ENT_QUOTES, 'UTF-8');
+        $name = $error->getName();
+
+        if ($name !== null) {
+            $name = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
+            $formattedError = "<div class=\"alert alert-danger\"><strong>Error:</strong> ${msg} (Record: ${name})</div>\n";
+        } else {
+            $formattedError = "<div class=\"alert alert-danger\"><strong>Error:</strong> ${msg}</div>\n";
+        }
+
+        echo $formattedError;
     }
 }

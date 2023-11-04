@@ -29,6 +29,9 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Domain\Error\ErrorMessage;
+use Poweradmin\Infrastructure\UI\ErrorPresenter;
+
 require_once 'PDOLayer.php';
 
 /**  Connect to Database
@@ -54,19 +57,27 @@ function dbConnect(array $databaseCredentials, $isQuiet = true, $installerMode =
             include_once("header.inc.php");
         }
         if (!file_exists('install')) {
-            error(_('No or unknown database type has been set in config.inc.php.'));
+            $error = new ErrorMessage(_('No or unknown database type has been set in config.inc.php.'));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
         }
+
         if (!$installerMode) {
             include_once("footer.inc.php");
         }
+
         exit;
     }
 
     if ($db_type != 'sqlite' && $db_type != 'sqlite3' && !(isset($db_user) && $db_user != "")) {
-        error(_('No database username has been set in config.inc.php.'));
+        $error = new ErrorMessage(_('No database username has been set in config.inc.php.'));
+        $errorPresenter = new ErrorPresenter();
+        $errorPresenter->present($error);
+
         if (!$installerMode) {
             include_once("footer.inc.php");
         }
+
         exit;
     }
 
@@ -74,10 +85,15 @@ function dbConnect(array $databaseCredentials, $isQuiet = true, $installerMode =
         if (!$installerMode) {
             include_once("header.inc.php");
         }
-        error(_('No database password has been set in config.inc.php.'));
+
+        $error = new ErrorMessage(_('No database password has been set in config.inc.php.'));
+        $errorPresenter = new ErrorPresenter();
+        $errorPresenter->present($error);
+
         if (!$installerMode) {
             include_once("footer.inc.php");
         }
+
         exit;
     }
 
@@ -85,7 +101,11 @@ function dbConnect(array $databaseCredentials, $isQuiet = true, $installerMode =
         if (!$installerMode) {
             include_once("header.inc.php");
         }
-        error(_('No database host has been set in config.inc.php.'));
+
+        $error = new ErrorMessage(_('No database host has been set in config.inc.php.'));
+        $errorPresenter = new ErrorPresenter();
+        $errorPresenter->present($error);
+
         if (!$installerMode) {
             include_once("footer.inc.php");
         }
@@ -96,7 +116,11 @@ function dbConnect(array $databaseCredentials, $isQuiet = true, $installerMode =
         if (!$installerMode) {
             include_once("header.inc.php");
         }
-        error(_('No database name has been set in config.inc.php.'));
+
+        $error = new ErrorMessage(_('No database name has been set in config.inc.php.'));
+        $errorPresenter = new ErrorPresenter();
+        $errorPresenter->present($error);
+
         if (!$installerMode) {
             include_once("footer.inc.php");
         }
@@ -115,10 +139,15 @@ function dbConnect(array $databaseCredentials, $isQuiet = true, $installerMode =
         if (!$installerMode) {
             include_once("header.inc.php");
         }
-        error(_('No database file has been set in config.inc.php.'));
+
+        $error = new ErrorMessage(_('No database file has been set in config.inc.php.'));
+        $errorPresenter = new ErrorPresenter();
+        $errorPresenter->present($error);
+
         if (!$installerMode) {
             include_once("footer.inc.php");
         }
+
         exit;
     }
 
@@ -156,10 +185,15 @@ function dbConnect(array $databaseCredentials, $isQuiet = true, $installerMode =
         if (!$installerMode) {
             include_once("header.inc.php");
         }
-        error(_('No or unknown database type has been set in config.inc.php.'));
+
+        $error = new ErrorMessage(_('No or unknown database type has been set in config.inc.php.'));
+        $errorPresenter = new ErrorPresenter();
+        $errorPresenter->present($error);
+
         if (!$installerMode) {
             include_once("footer.inc.php");
         }
+
         exit;
     }
     return $db;

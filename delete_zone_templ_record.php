@@ -34,7 +34,6 @@ use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
 
 require_once 'inc/toolkit.inc.php';
-require_once 'inc/messages.inc.php';
 
 class DeleteZoneTemplRecordController extends BaseController {
 

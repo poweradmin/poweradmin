@@ -22,6 +22,9 @@
 
 namespace Poweradmin;
 
+use Poweradmin\Domain\Error\ErrorMessage;
+use Poweradmin\Infrastructure\UI\ErrorPresenter;
+
 abstract class BaseController
 {
     private Application $app;
@@ -123,7 +126,10 @@ EOF;
     public function checkCondition(bool $condition, string $errorMessage): void
     {
         if ($condition) {
-            error($errorMessage);
+            $error = new ErrorMessage($errorMessage);
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             exit;
         }
     }
@@ -131,7 +137,10 @@ EOF;
     public function checkPermission(string $permission, string $errorMessage): void
     {
         if (!verify_permission_local($permission)) {
-            error($errorMessage);
+            $error = new ErrorMessage($errorMessage);
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             exit;
         }
     }
@@ -139,7 +148,11 @@ EOF;
     public function showError(string $error): void
     {
         include_once 'inc/header.inc.php';
-        error($error);
+
+        $error = new ErrorMessage($error);
+        $errorPresenter = new ErrorPresenter();
+        $errorPresenter->present($error);
+
         include_once('inc/footer.inc.php');
         exit;
     }
@@ -149,7 +162,11 @@ EOF;
         include_once 'inc/header.inc.php';
         $validationErrors = array_values($errors);
         $firstError = reset($validationErrors);
-        error($firstError[0]);
+
+        $error = new ErrorMessage($firstError[0]);
+        $errorPresenter = new ErrorPresenter();
+        $errorPresenter->present($error);
+
         include_once('inc/footer.inc.php');
         exit;
     }

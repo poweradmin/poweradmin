@@ -32,7 +32,6 @@
 use Poweradmin\BaseController;
 
 require_once 'inc/toolkit.inc.php';
-require_once 'inc/messages.inc.php';
 
 class EditPermTemplController extends BaseController
 {

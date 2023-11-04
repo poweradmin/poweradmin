@@ -35,7 +35,6 @@ use Poweradmin\User;
 use Poweradmin\Validation;
 
 require_once 'inc/toolkit.inc.php';
-require_once 'inc/messages.inc.php';
 
 class DeleteUserController extends BaseController {
 

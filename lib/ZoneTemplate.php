@@ -22,6 +22,9 @@
 
 namespace Poweradmin;
 
+use Poweradmin\Domain\Error\ErrorMessage;
+use Poweradmin\Infrastructure\UI\ErrorPresenter;
+
 /**
  *  Template functions
  *
@@ -74,10 +77,15 @@ class ZoneTemplate
 
         $zone_name_exists = ZoneTemplate::zone_templ_name_exists($details['templ_name']);
         if (!(verify_permission_local('zone_master_add'))) {
-            error(_("You do not have the permission to add a zone template."));
+            $error = new ErrorMessage(_("You do not have the permission to add a zone template."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return false;
         } elseif ($zone_name_exists != '0') {
-            error(_('Zone template with this name already exists, please choose another one.'));
+            $error = new ErrorMessage(_('Zone template with this name already exists, please choose another one.'));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
         } else {
             $stmt = $db->prepare("INSERT INTO zone_templ (name, descr, owner) VALUES (:name, :descr, :owner)");
             $stmt->execute([
@@ -130,7 +138,10 @@ class ZoneTemplate
         global $db;
 
         if (!(verify_permission_local('zone_master_add'))) {
-            error(_("You do not have the permission to delete zone templates."));
+            $error = new ErrorMessage(_("You do not have the permission to delete zone templates."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return false;
         } else {
             // Delete the zone template
@@ -162,7 +173,10 @@ class ZoneTemplate
         global $db;
 
         if (!(verify_permission_local('zone_master_add'))) {
-            error(_("You do not have the permission to delete zone templates."));
+            $error = new ErrorMessage(_("You do not have the permission to delete zone templates."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return false;
         } else {
             $query = "DELETE FROM zone_templ"
@@ -226,7 +240,9 @@ class ZoneTemplate
                 return -1;
             }
         } else {
-            error(sprintf(_('Invalid argument(s) given to function %s'), "get_zone_templ_record_from_id"));
+            $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s'), "get_zone_templ_record_from_id"));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
         }
     }
 
@@ -258,7 +274,9 @@ class ZoneTemplate
             }
             return ($retcount > 0 ? $ret : []);
         } else {
-            error(sprintf(_('Invalid argument(s) given to function %s'), "get_zone_templ_records"));
+            $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s'), "get_zone_templ_records"));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
         }
     }
 
@@ -281,22 +299,34 @@ class ZoneTemplate
         global $db;
 
         if (!(verify_permission_local('zone_master_add'))) {
-            error(_("You do not have the permission to add a record to this zone."));
+            $error = new ErrorMessage(_("You do not have the permission to add a record to this zone."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return false;
         }
 
         if ($content == '') {
-            error(_('Your content field doesnt have a legit value.'));
+            $error = new ErrorMessage(_('Your content field doesnt have a legit value.'));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return false;
         }
 
         if ($name == '') {
-            error(_('Invalid hostname.'));
+            $error = new ErrorMessage(_('Invalid hostname.'));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return false;
         }
 
         if (!Dns::is_valid_rr_prio($prio, $type)) {
-            error(_('Invalid value for prio field.'));
+            $error = new ErrorMessage(_('Invalid value for prio field.'));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return false;
         }
 
@@ -326,17 +356,26 @@ class ZoneTemplate
         global $db;
 
         if (!(verify_permission_local('zone_master_add'))) {
-            error(_("You do not have the permission to edit this record."));
+            $error = new ErrorMessage(_("You do not have the permission to edit this record."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return false;
         }
 
         if ($record['name'] == "") {
-            error(_('Invalid hostname.'));
+            $error = new ErrorMessage(_('Invalid hostname.'));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return false;
         }
 
         if (!Dns::is_valid_rr_prio($record['prio'], $record['type'])) {
-            error(_('Invalid value for prio field.'));
+            $error = new ErrorMessage(_('Invalid value for prio field.'));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return false;
         }
 
@@ -362,7 +401,10 @@ class ZoneTemplate
         global $db;
 
         if (!(verify_permission_local('zone_master_add'))) {
-            error(_("You do not have the permission to delete this record."));
+            $error = new ErrorMessage(_("You do not have the permission to delete this record."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return false;
         } else {
             $query = "DELETE FROM zone_templ_records WHERE id = " . $db->quote($rid, 'integer');
@@ -408,7 +450,10 @@ class ZoneTemplate
         global $db_type;
 
         if (!(verify_permission_local('zone_master_add'))) {
-            error(_("You do not have the permission to add a zone template."));
+            $error = new ErrorMessage(_("You do not have the permission to add a zone template."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return false;
         } else {
             $db->beginTransaction();
@@ -499,10 +544,16 @@ class ZoneTemplate
         global $db;
         $zone_name_exists = ZoneTemplate::zone_templ_name_exists($details['templ_name'], $zone_templ_id);
         if (!(verify_permission_local('zone_master_add'))) {
-            error(_("You do not have the permission to add a zone template."));
+            $error = new ErrorMessage(_("You do not have the permission to add a zone template."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return false;
         } elseif ($zone_name_exists != '0') {
-            error(_('Zone template with this name already exists, please choose another one.'));
+            $error = new ErrorMessage(_('Zone template with this name already exists, please choose another one.'));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
             return false;
         } else {
             $query = 'UPDATE zone_templ SET name=:templ_name, descr=:templ_descr';

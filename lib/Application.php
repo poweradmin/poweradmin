@@ -22,7 +22,9 @@
 
 namespace Poweradmin;
 
+use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\Infrastructure\Configuration\ConfigValidator;
+use Poweradmin\Infrastructure\UI\ErrorPresenter;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Symfony\Component\Translation\Loader\PoFileLoader;
 use Symfony\Component\Translation\Translator;
@@ -95,7 +97,9 @@ class Application {
         if (!$validator->validate()) {
             $errors = $validator->getErrors();
             foreach ($errors as $error) {
-                error("Invalid configuration: $error");
+                $error = new ErrorMessage("Invalid configuration: $error");
+                $errorPresenter = new ErrorPresenter();
+                $errorPresenter->present($error);
             }
             exit(1);
         }

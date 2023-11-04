@@ -35,7 +35,6 @@ use Poweradmin\DnsRecord;
 use Poweradmin\LegacyLogger;
 
 require_once 'inc/toolkit.inc.php';
-require_once 'inc/messages.inc.php';
 
 class AddZoneSlaveController extends BaseController
 {

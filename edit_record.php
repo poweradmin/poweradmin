@@ -32,12 +32,13 @@
 use Poweradmin\Application\Dnssec\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
+use Poweradmin\Domain\Error\ErrorMessage;
+use Poweradmin\Infrastructure\UI\ErrorPresenter;
 use Poweradmin\Permission;
 use Poweradmin\RecordType;
 use Poweradmin\LegacyLogger;
 
 require_once 'inc/toolkit.inc.php';
-require_once 'inc/messages.inc.php';
 
 class EditRecordController extends BaseController {
 
@@ -57,7 +58,9 @@ class EditRecordController extends BaseController {
         }
 
         if ($zone_type == "SLAVE" || $perm_edit == "none" || ($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0") {
-            error(_("You do not have the permission to edit this record."));
+            $error = new ErrorMessage(_("You do not have the permission to edit this record."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
         }
 
         if ($this->isPost()) {
