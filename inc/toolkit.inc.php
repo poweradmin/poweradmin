@@ -36,8 +36,8 @@ require_once 'benchmark.php';
 session_start();
 
 require_once 'database.inc.php';
-require_once 'inc/plugins/auth_local.plugin.php';
-require_once 'inc/plugins/users_local.plugin.php';
+require_once 'inc/auth_local.php';
+require_once 'inc/users_local.php';
 require_once 'i18n.inc.php';
 
 use Poweradmin\Infrastructure\DependencyCheck;
