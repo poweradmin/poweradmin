@@ -24,9 +24,9 @@ include_once 'config-defaults.inc.php';
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
+use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\Infrastructure\DependencyCheck;
-use Poweradmin\Infrastructure\UI\ErrorPresenter;
 
 if (!@include_once('config.inc.php')) {
     if (!file_exists('install')) {

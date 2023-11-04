@@ -22,8 +22,8 @@
 
 namespace Poweradmin;
 
+use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\Domain\Error\ErrorMessage;
-use Poweradmin\Infrastructure\UI\ErrorPresenter;
 
 abstract class BaseController
 {

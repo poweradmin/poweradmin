@@ -30,11 +30,11 @@
  *
  */
 
+use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\Application\Service\UserAuthenticationService;
-use Poweradmin\Domain\Error\ErrorMessage;
-use Poweradmin\Infrastructure\UI\ErrorPresenter;
-use Poweradmin\LegacyConfiguration;
 use Poweradmin\DnsRecord;
+use Poweradmin\Domain\Error\ErrorMessage;
+use Poweradmin\LegacyConfiguration;
 use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
 

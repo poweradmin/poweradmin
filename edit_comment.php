@@ -29,10 +29,10 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
 use Poweradmin\Domain\Error\ErrorMessage;
-use Poweradmin\Infrastructure\UI\ErrorPresenter;
 use Poweradmin\Permission;
 use Poweradmin\Validation;
 

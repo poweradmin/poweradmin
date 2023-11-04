@@ -22,13 +22,13 @@
 
 namespace Poweradmin;
 
+use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\Application\Service\StatsDisplayService;
 use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\Domain\SystemMonitoring\MemoryUsage;
 use Poweradmin\Domain\SystemMonitoring\Timer;
 use Poweradmin\Infrastructure\Configuration\ConfigValidator;
 use Poweradmin\Infrastructure\SystemMonitoring\SimpleSizeFormatter;
-use Poweradmin\Infrastructure\UI\ErrorPresenter;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Symfony\Component\Translation\Loader\PoFileLoader;
 use Symfony\Component\Translation\Translator;

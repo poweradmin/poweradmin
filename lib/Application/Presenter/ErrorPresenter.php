@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Infrastructure\UI;
+namespace Poweradmin\Application\Presenter;
 
 use Poweradmin\Domain\Error\ErrorMessage;
 

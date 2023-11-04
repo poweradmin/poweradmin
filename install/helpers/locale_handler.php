@@ -19,8 +19,8 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\Domain\Error\ErrorMessage;
-use Poweradmin\Infrastructure\UI\ErrorPresenter;
 
 function getLocaleFile(string $iface_lang): string
 {

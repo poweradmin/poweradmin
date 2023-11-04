@@ -23,10 +23,10 @@
 namespace Poweradmin;
 
 use Poweradmin\Application\Dnssec\DnssecProviderFactory;
+use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
 use Poweradmin\Infrastructure\Database\DbCompat;
-use Poweradmin\Infrastructure\UI\ErrorPresenter;
 
 /**
  * DNS record functions

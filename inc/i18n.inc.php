@@ -29,8 +29,8 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\Domain\Error\ErrorMessage;
-use Poweradmin\Infrastructure\UI\ErrorPresenter;
 
 global $iface_lang;
 

@@ -22,9 +22,9 @@
 
 namespace Poweradmin\Infrastructure\Dnssec;
 
+use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\Domain\Dnssec\DnssecProvider;
 use Poweradmin\Domain\Error\ErrorMessage;
-use Poweradmin\Infrastructure\UI\ErrorPresenter;
 use Poweradmin\LegacyLogger;
 
 class PdnsUtilProvider implements DnssecProvider

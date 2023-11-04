@@ -30,13 +30,13 @@
  */
 
 use Poweradmin\Application\Dnssec\DnssecProviderFactory;
+use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
 use Poweradmin\Domain\Error\ErrorMessage;
-use Poweradmin\Infrastructure\UI\ErrorPresenter;
+use Poweradmin\LegacyLogger;
 use Poweradmin\Permission;
 use Poweradmin\RecordType;
-use Poweradmin\LegacyLogger;
 
 require_once 'inc/toolkit.inc.php';
 
