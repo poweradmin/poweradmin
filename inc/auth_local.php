@@ -83,7 +83,7 @@ function authenticate_local()
     }
 }
 
-function userUsesLDAP()
+function userUsesLDAP(): bool
 {
     if (!isset($_SESSION["userlogin"])) {
         return false;
