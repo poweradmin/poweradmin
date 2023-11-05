@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Infrastructure\UI\Web\Form;
+namespace Poweradmin\Infrastructure\Web;
 
 /**
  * LanguageCode class is used for retrieving language names based on their codes.

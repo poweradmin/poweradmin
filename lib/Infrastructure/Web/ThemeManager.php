@@ -20,13 +20,13 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Infrastructure\UI\Web;
+namespace Poweradmin\Infrastructure\Web;
 
 use DirectoryIterator;
 
 class ThemeManager
 {
-    private const DEFAULT_STYLE_DIR = __DIR__ . '/../../../../style/';
+    private const DEFAULT_STYLE_DIR = __DIR__ . '/../../../style/';
     private const DEFAULT_THEME = 'ignite';
 
     private string $selectedTheme;

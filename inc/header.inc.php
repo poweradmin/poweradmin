@@ -30,7 +30,7 @@
  */
 
 use Poweradmin\AppFactory;
-use Poweradmin\Infrastructure\UI\Web\ThemeManager;
+use Poweradmin\Infrastructure\Web\ThemeManager;
 
 global $iface_style;
 global $iface_title;

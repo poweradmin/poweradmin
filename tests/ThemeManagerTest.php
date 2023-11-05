@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\UI\Web\ThemeManager;
+use Poweradmin\Infrastructure\Web\ThemeManager;
 
 class ThemeManagerTest extends TestCase
 {

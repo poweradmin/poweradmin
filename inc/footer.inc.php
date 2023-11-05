@@ -29,9 +29,9 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-use Poweradmin\Infrastructure\UI\Web\ThemeManager;
-use Poweradmin\Version;
 use Poweradmin\AppFactory;
+use Poweradmin\Infrastructure\Web\ThemeManager;
+use Poweradmin\Version;
 
 global $db;
 global $db_debug;
