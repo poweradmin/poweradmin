@@ -29,17 +29,19 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Presenter\ZoneStartingLettersPresenter;
+use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\UserService;
 use Poweradmin\Application\Service\ZoneService;
 use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
+use Poweradmin\Infrastructure\Web\HttpPaginationParameters;
 use Poweradmin\Permission;
 
 require_once 'inc/toolkit.inc.php';
-require_once 'inc/pagination.inc.php';
 
 class ListZonesController extends BaseController {
 
@@ -130,7 +132,7 @@ class ListZonesController extends BaseController {
             'iface_zonelist_template' => $iface_zonelist_template,
             'pdnssec_use' => $pdnssec_use,
             'letters' => $this->getAvailableStartingLetters($letter_start, $_SESSION["userid"]),
-            'pagination' => show_pages($count_zones_all_letterstart, $iface_rowamount),
+            'pagination' => $this->createAndPresentPagination($count_zones_all_letterstart, $iface_rowamount),
             'session_userlogin' => $_SESSION['userlogin'],
             'perm_edit' => $perm_edit,
             'perm_zone_master_add' => verify_permission('zone_master_add'),
@@ -154,6 +156,18 @@ class ListZonesController extends BaseController {
 
         $presenter = new ZoneStartingLettersPresenter();
         return $presenter->present($availableChars, $digitsAvailable, $letterStart);
+    }
+
+    private function createAndPresentPagination(int $totalItems, string $itemsPerPage): string
+    {
+        $httpParameters = new HttpPaginationParameters();
+        $currentPage = $httpParameters->getCurrentPage();
+
+        $paginationService = new PaginationService();
+        $pagination = $paginationService->createPagination($totalItems, $itemsPerPage, $currentPage);
+        $presenter = new PaginationPresenter($pagination, '?start={PageNumber}');
+
+        return $presenter->present();
     }
 }
 

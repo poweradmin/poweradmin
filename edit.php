@@ -31,9 +31,12 @@
  */
 
 use Poweradmin\Application\Dnssec\DnssecProviderFactory;
+use Poweradmin\Application\Presenter\PaginationPresenter;
+use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
 use Poweradmin\Domain\Enum\ZoneType;
+use Poweradmin\Infrastructure\Web\HttpPaginationParameters;
 use Poweradmin\Permission;
 use Poweradmin\RecordLog;
 use Poweradmin\RecordType;
@@ -41,7 +44,6 @@ use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
 
 require_once 'inc/toolkit.inc.php';
-require_once 'inc/pagination.inc.php';
 
 class EditController extends BaseController {
 
@@ -259,7 +261,7 @@ class EditController extends BaseController {
             'row_start' => $row_start,
             'row_amount' => $iface_rowamount,
             'record_sort_by' => $record_sort_by,
-            'pagination' => show_pages($record_count, $iface_rowamount, $zone_id),
+            'pagination' => $this->createAndPresentPagination($record_count, $iface_rowamount, $zone_id),
             'pdnssec_use' => $this->config('pdnssec_use'),
             'is_secured' => $dnssecProvider->isZoneSecured($zone_name),
             'session_userid' => $_SESSION["userid"],
@@ -270,6 +272,18 @@ class EditController extends BaseController {
             'iface_zone_comments' => $this->config('iface_zone_comments'),
             'serial' => DnsRecord::get_soa_serial($soa_record)
         ]);
+    }
+
+    private function createAndPresentPagination(int $totalItems, string $itemsPerPage, int $id): string
+    {
+        $httpParameters = new HttpPaginationParameters();
+        $currentPage = $httpParameters->getCurrentPage();
+
+        $paginationService = new PaginationService();
+        $pagination = $paginationService->createPagination($totalItems, $itemsPerPage, $currentPage);
+        $presenter = new PaginationPresenter($pagination, '?start={PageNumber}', $id);
+
+        return $presenter->present();
     }
 
     public function getSortBy()

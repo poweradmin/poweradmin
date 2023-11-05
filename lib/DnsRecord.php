@@ -1286,9 +1286,9 @@ class DnsRecord
      * @param string $perm 'all', 'own' uses session 'userid'
      * @param string $letterstart Starting letters to match [default='all']
      *
-     * @return array|bool|string Count of zones matched
+     * @return int Count of zones matched
      */
-    public static function zone_count_ng($perm, $letterstart = 'all')
+    public static function zone_count_ng(string $perm, string $letterstart = 'all'): int
     {
         global $db;
         global $db_type;
@@ -1298,7 +1298,7 @@ class DnsRecord
         $query_addon = '';
 
         if ($perm != "own" && $perm != "all") {
-            return "0";
+            return 0;
         }
 
         if ($perm == "own") {

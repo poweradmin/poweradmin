@@ -29,12 +29,14 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Application\Presenter\PaginationPresenter;
+use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
+use Poweradmin\Infrastructure\Web\HttpPaginationParameters;
 use Poweradmin\ZoneTemplate;
 
 require_once 'inc/toolkit.inc.php';
-require_once 'inc/pagination.inc.php';
 
 class EditZoneTemplController extends BaseController
 {
@@ -105,19 +107,34 @@ class EditZoneTemplController extends BaseController
 
         $this->render('edit_zone_templ.html', [
             'templ_details' => $templ_details,
-            'pagination' => show_pages($record_count, $iface_rowamount, $zone_templ_id),
-            'records' => $records = ZoneTemplate::get_zone_templ_records($zone_templ_id, $row_start, $iface_rowamount, $record_sort_by),
+            'pagination' => $this->createAndPresentPagination($record_count, $iface_rowamount, $zone_templ_id),
+            'records' => ZoneTemplate::get_zone_templ_records($zone_templ_id, $row_start, $iface_rowamount, $record_sort_by),
             'zone_templ_id' => $zone_templ_id,
             'perm_is_godlike' => verify_permission('user_is_ueberuser'),
         ]);
     }
 
-    public function getRowStart($iface_rowamount)
+    private function createAndPresentPagination(int $totalItems, string $itemsPerPage, int $id): string
+    {
+        $httpParameters = new HttpPaginationParameters();
+        $currentPage = $httpParameters->getCurrentPage();
+
+        $paginationService = new PaginationService();
+        $pagination = $paginationService->createPagination($totalItems, $itemsPerPage, $currentPage);
+        $presenter = new PaginationPresenter($pagination, '?start={PageNumber}', $id);
+
+        return $presenter->present();
+    }
+
+    public function getRowStart($rowAmount)
     {
         $row_start = 0;
-        if (isset($_GET["start"])) {
-            $row_start = ($_GET["start"] - 1) * $iface_rowamount;
+        $start = filter_input(INPUT_GET, "start", FILTER_VALIDATE_INT);
+
+        if ($start !== false && $start > 0) {
+            $row_start = max(0, ($start - 1) * $rowAmount);
         }
+
         return $row_start;
     }
 

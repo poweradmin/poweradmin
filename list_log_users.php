@@ -29,11 +29,13 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Application\Presenter\PaginationPresenter;
+use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
 use Poweradmin\DbUserLogger;
+use Poweradmin\Infrastructure\Web\HttpPaginationParameters;
 
 require_once 'inc/toolkit.inc.php';
-require_once 'inc/pagination.inc.php';
 
 class ListLogUsersController extends BaseController {
 
@@ -73,8 +75,20 @@ class ListLogUsersController extends BaseController {
             'data' => $logs,
             'selected_page' => $selected_page,
             'logs_per_page' => $logs_per_page,
-            'pagination' => show_pages($number_of_logs, $logs_per_page),
+            'pagination' => $this->createAndPresentPagination($number_of_logs, $logs_per_page),
         ]);
+    }
+
+    private function createAndPresentPagination(int $totalItems, string $itemsPerPage): string
+    {
+        $httpParameters = new HttpPaginationParameters();
+        $currentPage = $httpParameters->getCurrentPage();
+
+        $paginationService = new PaginationService();
+        $pagination = $paginationService->createPagination($totalItems, $itemsPerPage, $currentPage);
+        $presenter = new PaginationPresenter($pagination, '?start={PageNumber}');
+
+        return $presenter->present();
     }
 }
 
