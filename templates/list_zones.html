@@ -6,7 +6,7 @@
 </nav>
 
 <h5 class="mb-3">{% trans %}List zones{% endtrans %}</h5>
-<div class="pb-3 text-secondary">{% trans %}Total number of zones:{% endtrans %} {{ count_zones_view }}</div>
+<div class="pb-3 text-secondary">{% trans %}Total number of zones:{% endtrans %} {{ count_zones_all_letterstart }} / {{ count_zones_view }}</div>
 
 {% if count_zones_view > iface_rowamount %}
 <div>
