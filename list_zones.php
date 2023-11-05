@@ -81,17 +81,22 @@ class ListZonesController extends BaseController {
         $perm_view = Permission::getViewPermission();
         $perm_edit = Permission::getEditPermission();
 
-        $letter_start = 'a';
-        if (isset($_GET["letter"])) {
-            $letter_start = htmlspecialchars($_GET["letter"]);
-            $_SESSION["letter"] = htmlspecialchars($_GET["letter"]);
-        } elseif (isset($_SESSION["letter"])) {
-            $letter_start = $_SESSION["letter"];
+
+        $count_zones_view = DnsRecord::zone_count_ng($perm_view);
+        $count_zones_edit = DnsRecord::zone_count_ng($perm_edit);
+
+        $letter_start = 'all';
+        if ($count_zones_view > $iface_rowamount) {
+            $letter_start = 'a';
+            if (isset($_GET["letter"])) {
+                $letter_start = htmlspecialchars($_GET["letter"]);
+                $_SESSION["letter"] = htmlspecialchars($_GET["letter"]);
+            } elseif (isset($_SESSION["letter"])) {
+                $letter_start = $_SESSION["letter"];
+            }
         }
 
         $count_zones_all_letterstart = DnsRecord::zone_count_ng($perm_view, $letter_start);
-        $count_zones_view = DnsRecord::zone_count_ng($perm_view);
-        $count_zones_edit = DnsRecord::zone_count_ng($perm_edit);
 
         $zone_sort_by = 'name';
         if (isset($_GET["zone_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["zone_sort_by"])) {
