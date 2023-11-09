@@ -27,7 +27,6 @@ class AppFactory {
 
     private function __construct() {}
 
-
     public static function create(): Application {
         if (self::$instance === null) {
             self::$instance = new Application();

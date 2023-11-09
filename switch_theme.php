@@ -6,7 +6,6 @@ require_once __DIR__ . '/vendor/autoload.php';
 include_once 'inc/config-defaults.inc.php';
 @include_once('inc/config.inc.php');
 
-
 class SwitchThemeController extends BaseController
 {
     private const DEFAULT_THEME = 'ignite';
