@@ -41,11 +41,25 @@ class LoginController extends BaseController {
 
         $localePresenter = new LocalePresenter();
 
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (isset($_SESSION['message']) && isset($_SESSION['type'])) {
+            $msg = $_SESSION['message'];
+            $type = $_SESSION['type'];
+            unset($_SESSION['message']);
+            unset($_SESSION['type']);
+        } else {
+            $msg = '';
+            $type = '';
+        }
+
         $this->render('login.html', [
             'query_string' => $_SERVER['QUERY_STRING'] ?? '',
             'locale_options' => $localePresenter->generateLocaleOptions($preparedLocales),
-            'msg' => '',
-            'type' => '',
+            'msg' => $msg,
+            'type' => $type,
         ]);
     }
 }

@@ -22,18 +22,28 @@
 
 use Poweradmin\Infrastructure\Web\LanguageCode;
 
-function logout(string $msg = "", string $type = "") {
+function logout(string $msg = "", string $type = ""): void
+{
     session_regenerate_id(true);
     session_unset();
-    session_destroy();
+//    session_destroy();
     session_write_close();
     auth($msg, $type);
     exit;
 }
 
-function auth(string $msg = "", string $type = "success") {
+function auth(string $msg = "", string $type = "success"): void
+{
     $args['time'] = time();
     $url = htmlentities('login.php', ENT_QUOTES) . "?" . http_build_query($args);
+
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    $_SESSION['message'] = $msg;
+    $_SESSION['type'] = $type;
+
     header("Location: $url");
     exit;
 }
