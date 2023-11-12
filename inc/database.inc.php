@@ -20,23 +20,10 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Database functions
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2023 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\PDOLayer;
 
-/**  Connect to Database
- *
- * @return object $db Database object
- */
 function dbConnect(array $databaseCredentials, $isQuiet = true, $installerMode = false)
 {
     $db_type = $databaseCredentials['db_type'];
@@ -162,16 +149,10 @@ function dbConnect(array $databaseCredentials, $isQuiet = true, $installerMode =
 
     $db = new PDOLayer($dsn, $db_user, $db_pass, [], $isQuiet);
 
-    // http://stackoverflow.com/a/4361485/567193
-    if ($db_type === 'mysql' && $db_charset === 'utf8' && version_compare(phpversion(), '5.3.6', '<')) {
-        $db->exec('set names utf8');
-    }
-
     if (isset($db_debug) && $db_debug) {
         $db->setOption('debug', 1);
     }
 
-    /* erase info */
     $dsn = '';
 
     if ($db_type == 'mysql' || $db_type == 'mysqli') {
