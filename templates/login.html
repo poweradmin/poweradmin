@@ -1,0 +1,39 @@
+{% if msg %}
+<div class="alert alert-{{ type }} alert-dismissible fade show" role="alert">{{ msg }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
+
+<h5>{% trans %}Log in{% endtrans %}</h5>
+<form class="needs-validation" method="post" action="index.php" novalidate>
+    <input type="hidden" name="query_string" value="{{ query_string }}">
+    <div class="row g-2 col-sm-4">
+        <div>
+            <label for="username" class="form-label">{% trans %}Username{% endtrans %}</label>
+            <input type="text" class="form-control form-control-sm" id="username" name="username" required>
+            <div class="invalid-feedback">{% trans %}Please provide a username{% endtrans %}</div>
+        </div>
+        <div>
+            <label for="password" class="form-label">{% trans %}Password{% endtrans %}</label>
+            <div class="input-group">
+                <input type="password" class="form-control form-control-sm" id="password" name="password" required>
+                <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showPassword('password', 'eye')"><i class="bi bi-eye-fill" id="eye"></i></button>
+                <div class="invalid-feedback">{% trans %}Please provide a password{% endtrans %}</div>
+            </div>
+        </div>
+        <div>
+            <label for="language" class="form-label">{% trans %}Language{% endtrans %}</label>
+            <select class="form-select form-select-sm" name="userlang">
+                {{ locale_options | raw }}
+            </select>
+        </div>
+        <div>
+            <input type="submit" name="authenticate" class="btn btn-primary btn-sm" value=" {% trans %}Go{% endtrans %} ">
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+    <!--
+    document.getElementById('username').focus();
+    //-->
+</script>

@@ -20,20 +20,22 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use Poweradmin\Infrastructure\Web\LanguageCode;
+namespace Poweradmin\Application\Service;
 
-function logout(string $msg = "", string $type = "") {
-    session_regenerate_id(true);
-    session_unset();
-    session_destroy();
-    session_write_close();
-    auth($msg, $type);
-    exit;
-}
+use Poweradmin\Domain\Locale\Locale;
 
-function auth(string $msg = "", string $type = "success") {
-    $args['time'] = time();
-    $url = htmlentities('login.php', ENT_QUOTES) . "?" . http_build_query($args);
-    header("Location: $url");
-    exit;
+class LocaleService {
+    public function prepareLocales(array $localesData, string $interfaceLanguage): array {
+        $preparedLocales = [];
+        foreach ($localesData as $locale => $language) {
+            $localeEntity = new Locale($locale, $language);
+            $isSelected = $localeEntity->isSelected($interfaceLanguage);
+            $preparedLocales[] = [
+                'locale' => $localeEntity->getLocale(),
+                'language' => $localeEntity->getLanguage(),
+                'selected' => $isSelected
+            ];
+        }
+        return $preparedLocales;
+    }
 }

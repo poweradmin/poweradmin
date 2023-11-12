@@ -20,20 +20,21 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+namespace Poweradmin\Infrastructure\Repository;
+
 use Poweradmin\Infrastructure\Web\LanguageCode;
 
-function logout(string $msg = "", string $type = "") {
-    session_regenerate_id(true);
-    session_unset();
-    session_destroy();
-    session_write_close();
-    auth($msg, $type);
-    exit;
-}
+class LocaleRepository {
+    public function getLocales(): array {
+        $localeFolders = scandir('locale/');
+        $locales = [];
+        foreach ($localeFolders as $folder) {
+            if (strlen($folder) == 5) {
+                $locales[$folder] = LanguageCode::getByLocale($folder);
+            }
+        }
+        asort($locales);
 
-function auth(string $msg = "", string $type = "success") {
-    $args['time'] = time();
-    $url = htmlentities('login.php', ENT_QUOTES) . "?" . http_build_query($args);
-    header("Location: $url");
-    exit;
+        return $locales;
+    }
 }

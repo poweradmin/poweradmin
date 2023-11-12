@@ -20,20 +20,16 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use Poweradmin\Infrastructure\Web\LanguageCode;
+namespace Poweradmin\Application\Presenter;
 
-function logout(string $msg = "", string $type = "") {
-    session_regenerate_id(true);
-    session_unset();
-    session_destroy();
-    session_write_close();
-    auth($msg, $type);
-    exit;
-}
+class LocalePresenter {
 
-function auth(string $msg = "", string $type = "success") {
-    $args['time'] = time();
-    $url = htmlentities('login.php', ENT_QUOTES) . "?" . http_build_query($args);
-    header("Location: $url");
-    exit;
+    public function generateLocaleOptions(array $locales): string {
+        $html = '';
+        foreach ($locales as $locale) {
+            $selectedAttr = $locale['selected'] ? ' selected' : '';
+            $html .= '<option value="' . htmlspecialchars($locale['locale']) . '"' . $selectedAttr . '>' . htmlspecialchars($locale['language']) . '</option>';
+        }
+        return $html;
+    }
 }
