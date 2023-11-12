@@ -22,15 +22,6 @@
 
 use Poweradmin\Infrastructure\Web\LanguageCode;
 
-/** Logout the user
- *
- * Logout the user and kickback to login form
- *
- * @param string $msg Error Message
- * @param string $type Message type [default='']
- *
- * @return null
- */
 function logout(string $msg = "", string $type = "") {
     session_regenerate_id(true);
     session_unset();
@@ -40,63 +31,81 @@ function logout(string $msg = "", string $type = "") {
     exit;
 }
 
-/** Print the login form
- *
- * @param string $msg Error Message
- * @param string $type Message type [default='success', 'error']
- *
- * @return null
- */
+function get_locales(): array
+{
+    $localeFolders = scandir('locale/');
+    foreach ($localeFolders as $folder) {
+        if (strlen($folder) == 5) {
+            $locales[$folder] = LanguageCode::getByLocale($folder);
+        }
+    }
+    asort($locales);
+
+    return $locales;
+}
+
+function prepareLocales($locales, $iface_lang): array
+{
+    $preparedLocales = [];
+    foreach ($locales as $locale => $language) {
+        $isSelected = substr($locale, 0, 2) == substr($iface_lang, 0, 2);
+        $preparedLocales[] = [
+            'locale' => $locale,
+            'language' => $language,
+            'selected' => $isSelected
+        ];
+    }
+    return $preparedLocales;
+}
+
+function generateLocaleOptions($locales): string
+{
+    $html = '';
+    foreach ($locales as $locale) {
+        $selectedAttr = $locale['selected'] ? ' selected' : '';
+        $html .= '<option value="' . htmlspecialchars($locale['locale']) . '"' . $selectedAttr . '>' . htmlspecialchars($locale['language']) . '</option>';
+    }
+    return $html;
+}
+
 function auth(string $msg = "", string $type = "success") {
     include_once 'inc/header.inc.php';
     include_once 'inc/config.inc.php';
+
     global $iface_lang;
+    $locales = get_locales();
+    $preparedLocales = prepareLocales($locales, $iface_lang);
+    $localeOptions = generateLocaleOptions($preparedLocales);
 
     if ($msg) {
         print "<div class=\"alert alert-{$type}\">{$msg}</div>\n";
     }
     ?>
-    <h5><?php echo _('Log in'); ?></h5>
+    <h5><?= _('Log in'); ?></h5>
     <form class="needs-validation" method="post" action="index.php" novalidate>
-        <input type="hidden" name="query_string" value="<?php echo htmlentities($_SERVER["QUERY_STRING"]); ?>">
+        <input type="hidden" name="query_string" value="<?= htmlentities($_SERVER["QUERY_STRING"]); ?>">
         <div class="row g-2 col-sm-4">
             <div>
-                <label for="username" class="form-label"><?php echo _('Username'); ?></label>
+                <label for="username" class="form-label"><?= _('Username'); ?></label>
                 <input type="text" class="form-control form-control-sm" id="username" name="username" required>
-                <div class="invalid-feedback"><?php echo _('Please provide a username'); ?></div>
+                <div class="invalid-feedback"><?= _('Please provide a username'); ?></div>
             </div>
             <div>
-                <label for="password" class="form-label"><?php echo _('Password'); ?></label>
+                <label for="password" class="form-label"><?= _('Password'); ?></label>
                 <div class="input-group">
                     <input type="password" class="form-control form-control-sm" id="password" name="password" required>
                     <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showPassword('password', 'eye')"><i class="bi bi-eye-fill" id="eye"></i></button>
-                    <div class="invalid-feedback"><?php echo _('Please provide a password'); ?></div>
+                    <div class="invalid-feedback"><?= _('Please provide a password'); ?></div>
                 </div>
             </div>
             <div>
-                <label for="language" class="form-label"><?php echo _('Language'); ?></label>
+                <label for="language" class="form-label"><?= _('Language'); ?></label>
                 <select class="form-select form-select-sm" name="userlang">
-                    <?php
-                    // List available languages (sorted alphabetically)
-                    $locales = scandir('locale/');
-                    foreach ($locales as $locale) {
-                        if (strlen($locale) == 5) {
-                            $locales_fullname[$locale] = LanguageCode::getByLocale($locale);
-                        }
-                    }
-                    asort($locales_fullname);
-                    foreach ($locales_fullname as $locale => $language) {
-                        if (substr($locale, 0, 2) == substr($iface_lang, 0, 2)) {
-                            echo _('<option selected value="' . $locale . '">' . $language);
-                        } else {
-                            echo _('<option value="' . $locale . '">' . $language);
-                        }
-                    }
-                    ?>
+                    <?= $localeOptions; ?>
                 </select>
             </div>
             <div>
-                <input type="submit" name="authenticate" class="btn btn-primary btn-sm" value=" <?php echo _('Go'); ?> ">
+                <input type="submit" name="authenticate" class="btn btn-primary btn-sm" value=" <?= _('Go'); ?> ">
             </div>
         </div>
     </form>
