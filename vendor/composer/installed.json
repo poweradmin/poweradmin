@@ -422,17 +422,17 @@
         },
         {
             "name": "symfony/twig-bridge",
-            "version": "v6.3.5",
-            "version_normalized": "6.3.5.0",
+            "version": "v6.3.8",
+            "version_normalized": "6.3.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/twig-bridge.git",
-                "reference": "18f2cbe1d46ad43c4d3bd45e5e6279172068e064"
+                "reference": "c51407623959a626784ff302419026f56dc4e1ba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/twig-bridge/zipball/18f2cbe1d46ad43c4d3bd45e5e6279172068e064",
-                "reference": "18f2cbe1d46ad43c4d3bd45e5e6279172068e064",
+                "url": "https://api.github.com/repos/symfony/twig-bridge/zipball/c51407623959a626784ff302419026f56dc4e1ba",
+                "reference": "c51407623959a626784ff302419026f56dc4e1ba",
                 "shasum": ""
             },
             "require": {
@@ -485,7 +485,7 @@
                 "twig/inky-extra": "^2.12|^3",
                 "twig/markdown-extra": "^2.12|^3"
             },
-            "time": "2023-09-12T06:57:20+00:00",
+            "time": "2023-11-09T21:20:12+00:00",
             "type": "symfony-bridge",
             "installation-source": "dist",
             "autoload": {
@@ -513,7 +513,7 @@
             "description": "Provides integration for Twig with various Symfony components",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/twig-bridge/tree/v6.3.5"
+                "source": "https://github.com/symfony/twig-bridge/tree/v6.3.8"
             },
             "funding": [
                 {
