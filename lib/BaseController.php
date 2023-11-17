@@ -68,7 +68,7 @@ abstract class BaseController
         $this->renderFooter();
     }
 
-    public function redirect($script, $args = [])
+    public function redirect($script, $args = []): void
     {
         $args['time'] = time();
         $url = htmlentities($script, ENT_QUOTES) . "?" . http_build_query($args);
@@ -218,7 +218,8 @@ EOF;
         $this->app->render('header.html', $vars);
     }
 
-    private function renderFooter() {
+    private function renderFooter(): void
+    {
         global $db;
 
         $iface_style = $this->app->config('iface_style');
