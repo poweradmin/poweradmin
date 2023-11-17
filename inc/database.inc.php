@@ -24,14 +24,14 @@ use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\PDOLayer;
 
-function dbConnect(array $databaseCredentials, $isQuiet = true, $installerMode = false): PDOLayer
+function dbConnect(array $databaseCredentials, $isQuiet = true): PDOLayer
 {
-    validateDatabaseType($databaseCredentials['db_type'], $installerMode);
+    validateDatabaseType($databaseCredentials['db_type']);
 
     if (in_array($databaseCredentials['db_type'], ['sqlite', 'sqlite3'])) {
-        validateSQLiteCredentials($databaseCredentials, $installerMode);
+        validateSQLiteCredentials($databaseCredentials);
     } else {
-        validateCredentialsForNonSQLite($databaseCredentials, $installerMode);
+        validateCredentialsForNonSQLite($databaseCredentials);
     }
 
     $dsn = constructDSN($databaseCredentials);
@@ -49,45 +49,41 @@ function dbConnect(array $databaseCredentials, $isQuiet = true, $installerMode =
     return $db;
 }
 
-function validateDatabaseType($db_type, $installerMode): void
+function validateDatabaseType($db_type): void
 {
     if (!in_array($db_type, ['mysql', 'mysqli', 'pgsql', 'sqlite', 'sqlite3'])) {
-        showErrorAndExit(_('No or unknown database type has been set in config.inc.php.'), $installerMode);
+        showErrorAndExit(_('No or unknown database type has been set in config.inc.php.'));
     }
 }
 
-function showErrorAndExit($message, $installerMode): void
+function showErrorAndExit($message): void
 {
-    if (!$installerMode) {
-        include_once("header.inc.php");
-    }
+    // show header
 
-    if ($installerMode || file_exists('inc/config.inc.php')) {
+    if (file_exists('inc/config.inc.php')) {
         $error = new ErrorMessage($message);
         $errorPresenter = new ErrorPresenter();
         $errorPresenter->present($error);
     }
 
-    if (!$installerMode) {
-        include_once("footer.inc.php");
-    }
+    // show footer
 
     exit;
 }
 
-function validateCredentialsForNonSQLite($credentials, $installerMode): void
+function validateCredentialsForNonSQLite($credentials): void
 {
     foreach (['db_user', 'db_pass', 'db_host', 'db_name'] as $key) {
         if (empty($credentials[$key])) {
-            showErrorAndExit(_("No $key has been set in config.inc.php."), $installerMode);
+            showErrorAndExit(_("No $key has been set in config.inc.php."));
         }
     }
 }
 
-function validateSQLiteCredentials($credentials, $installerMode): void
+function validateSQLiteCredentials($credentials): void
 {
     if (empty($credentials['db_file'])) {
-        showErrorAndExit(_('No database file has been set in config.inc.php.'), $installerMode);
+        showErrorAndExit(_('No database file has been set in config.inc.php.'));
     }
 }
 
@@ -127,4 +123,3 @@ function determineSQLRegexp($db_type): string
         default => throw new Exception("Unsupported database type for regular expressions: $db_type"),
     };
 }
-

@@ -75,7 +75,7 @@ function step4($twig, $current_step, $default_config_file): void {
     }
 
     $pa_pass = $_POST['pa_pass'];
-    $db = dbConnect($databaseCredentials, $isQuiet = false, $installerMode = true);
+    $db = dbConnect($databaseCredentials, $isQuiet = false);
     updateDatabase($db, $databaseCredentials);
 
     createAdministratorUser($db, $pa_pass, $default_config_file);
@@ -120,7 +120,7 @@ function step5($twig, $current_step, $language): void
     $dns_ns1 = $_POST['dns_ns1'];
     $dns_ns2 = $_POST['dns_ns2'];
 
-    $db = dbConnect($databaseCredentials, $isQuiet = false, $installerMode = true);
+    $db = dbConnect($databaseCredentials, $isQuiet = false);
 
     $instructions = generateDatabaseUserInstructions($db, $databaseCredentials);
 
