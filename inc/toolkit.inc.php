@@ -29,6 +29,7 @@ use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\DependencyCheck;
+use Poweradmin\LegacyConfiguration;
 
 if (!@include_once('config.inc.php')) {
     if (!file_exists('install')) {
@@ -46,18 +47,18 @@ require_once 'i18n.inc.php';
 
 DependencyCheck::verifyExtensions();
 
-global $db_host, $db_port, $db_user, $db_pass, $db_name, $db_charset, $db_collation, $db_type, $db_file;
+$config = new LegacyConfiguration();
 
 $credentials = [
-    'db_host' => $db_host,
-    'db_port' => $db_port,
-    'db_user' => $db_user,
-    'db_pass' => $db_pass,
-    'db_name' => $db_name,
-    'db_charset' => $db_charset,
-    'db_collation' => $db_collation,
-    'db_type' => $db_type,
-    'db_file' => $db_file,
+    'db_host' => $config->get('db_host'),
+    'db_port' => $config->get('db_port'),
+    'db_user' => $config->get('db_user'),
+    'db_pass' => $config->get('db_pass'),
+    'db_name' => $config->get('db_name'),
+    'db_charset' => $config->get('db_charset'),
+    'db_collation' => $config->get('db_collation'),
+    'db_type' => $config->get('db_type'),
+    'db_file' => $config->get('db_file'),
 ];
 
 $databaseConnection = new PDODatabaseConnection();
