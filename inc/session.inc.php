@@ -20,8 +20,6 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use Poweradmin\Infrastructure\Web\LanguageCode;
-
 function logout(string $msg = "", string $type = ""): void
 {
     session_regenerate_id(true);

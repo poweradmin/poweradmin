@@ -38,7 +38,6 @@ use Poweradmin\LegacyConfiguration;
 use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
 
-require_once 'inc/toolkit.inc.php';
 require_once 'inc/session.inc.php';
 
 /**
