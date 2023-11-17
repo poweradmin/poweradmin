@@ -25,7 +25,9 @@ include_once 'config-defaults.inc.php';
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 use Poweradmin\Application\Presenter\ErrorPresenter;
+use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Domain\Error\ErrorMessage;
+use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\DependencyCheck;
 
 if (!@include_once('config.inc.php')) {
@@ -38,7 +40,6 @@ if (!@include_once('config.inc.php')) {
 
 session_start();
 
-require_once 'database.inc.php';
 require_once 'inc/authenticate.php';
 require_once 'inc/users.php';
 require_once 'i18n.inc.php';
@@ -47,7 +48,7 @@ DependencyCheck::verifyExtensions();
 
 global $db_host, $db_port, $db_user, $db_pass, $db_name, $db_charset, $db_collation, $db_type, $db_file;
 
-$databaseCredentials = [
+$credentials = [
     'db_host' => $db_host,
     'db_port' => $db_port,
     'db_user' => $db_user,
@@ -59,6 +60,8 @@ $databaseCredentials = [
     'db_file' => $db_file,
 ];
 
-$db = dbConnect($databaseCredentials);
+$databaseConnection = new PDODatabaseConnection();
+$databaseService = new DatabaseService($databaseConnection);
+$db = $databaseService->connect($credentials);
 
 authenticate();

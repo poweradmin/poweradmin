@@ -19,7 +19,9 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\UserAuthenticationService;
+use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\LegacyConfiguration;
 
 require_once '../inc/database.inc.php';
@@ -59,7 +61,7 @@ function step3($twig, $current_step, $language): void
 function step4($twig, $current_step, $default_config_file): void {
     echo "<p class='alert alert-secondary'>" . _('Updating database...') . " ";
 
-    $databaseCredentials = [
+    $credentials = [
         'db_user' => $_POST['user'],
         'db_pass' => $_POST['pass'],
         'db_host' => $_POST['host'],
@@ -70,19 +72,23 @@ function step4($twig, $current_step, $default_config_file): void {
         'db_type' => $_POST['type'],
     ];
 
-    if ($databaseCredentials['db_type'] == 'sqlite') {
-        $databaseCredentials['db_file'] = $databaseCredentials['db_name'];
+    if ($credentials['db_type'] == 'sqlite') {
+        $credentials['db_file'] = $credentials['db_name'];
     }
 
     $pa_pass = $_POST['pa_pass'];
-    $db = dbConnect($databaseCredentials, $isQuiet = false);
-    updateDatabase($db, $databaseCredentials);
+
+    $databaseConnection = new PDODatabaseConnection();
+    $databaseService = new DatabaseService($databaseConnection);
+    $db = $databaseService->connect($credentials);
+
+    updateDatabase($db, $credentials);
 
     createAdministratorUser($db, $pa_pass, $default_config_file);
 
     echo _('done!') . "</p>";
 
-    if ($databaseCredentials['db_type'] == 'sqlite') {
+    if ($credentials['db_type'] == 'sqlite') {
         $current_step = 5;
     }
 
@@ -90,14 +96,14 @@ function step4($twig, $current_step, $default_config_file): void {
         'current_step' => $current_step,
         'language' => htmlspecialchars($_POST['language']),
         'pa_pass' => htmlspecialchars($pa_pass),
-    ], $databaseCredentials));
+    ], $credentials));
 }
 
 function step5($twig, $current_step, $language): void
 {
     $current_step++;
 
-    $databaseCredentials = [
+    $credentials = [
         'db_user' => $_POST['db_user'],
         'db_pass' => $_POST['db_pass'],
         'db_host' => $_POST['db_host'],
@@ -108,11 +114,11 @@ function step5($twig, $current_step, $language): void
         'db_type' => $_POST['db_type'],
     ];
 
-    if ($databaseCredentials['db_type'] == 'sqlite') {
-        $databaseCredentials['db_file'] = $databaseCredentials['db_name'];
+    if ($credentials['db_type'] == 'sqlite') {
+        $credentials['db_file'] = $credentials['db_name'];
     } else {
-        $databaseCredentials['pa_db_user'] = $_POST['pa_db_user'];
-        $databaseCredentials['pa_db_pass'] = $_POST['pa_db_pass'];
+        $credentials['pa_db_user'] = $_POST['pa_db_user'];
+        $credentials['pa_db_pass'] = $_POST['pa_db_pass'];
     }
 
     $pa_pass = $_POST['pa_pass'];
@@ -120,22 +126,24 @@ function step5($twig, $current_step, $language): void
     $dns_ns1 = $_POST['dns_ns1'];
     $dns_ns2 = $_POST['dns_ns2'];
 
-    $db = dbConnect($databaseCredentials, $isQuiet = false);
+    $databaseConnection = new PDODatabaseConnection();
+    $databaseService = new DatabaseService($databaseConnection);
+    $db = $databaseService->connect($credentials);
 
-    $instructions = generateDatabaseUserInstructions($db, $databaseCredentials);
+    $instructions = generateDatabaseUserInstructions($db, $credentials);
 
     renderTemplate($twig, 'step5.html', array(
         'current_step' => $current_step,
         'language' => htmlspecialchars($language),
-        'db_host' => htmlspecialchars($databaseCredentials['db_host']),
-        'db_name' => htmlspecialchars($databaseCredentials['db_name']),
-        'db_port' => htmlspecialchars($databaseCredentials['db_port']),
-        'db_type' => htmlspecialchars($databaseCredentials['db_type']),
-        'db_user' => htmlspecialchars($databaseCredentials['db_user']),
-        'db_pass' => htmlspecialchars($databaseCredentials['db_pass']),
-        'db_charset' => htmlspecialchars($databaseCredentials['db_charset']),
-        'pa_db_user' => isset($databaseCredentials['pa_db_user']) ? htmlspecialchars($databaseCredentials['pa_db_user']) : '',
-        'pa_db_pass' => isset($databaseCredentials['pa_db_pass']) ? htmlspecialchars($databaseCredentials['pa_db_pass']) : '',
+        'db_host' => htmlspecialchars($credentials['db_host']),
+        'db_name' => htmlspecialchars($credentials['db_name']),
+        'db_port' => htmlspecialchars($credentials['db_port']),
+        'db_type' => htmlspecialchars($credentials['db_type']),
+        'db_user' => htmlspecialchars($credentials['db_user']),
+        'db_pass' => htmlspecialchars($credentials['db_pass']),
+        'db_charset' => htmlspecialchars($credentials['db_charset']),
+        'pa_db_user' => isset($credentials['pa_db_user']) ? htmlspecialchars($credentials['pa_db_user']) : '',
+        'pa_db_pass' => isset($credentials['pa_db_pass']) ? htmlspecialchars($credentials['pa_db_pass']) : '',
         'pa_pass' => htmlspecialchars($pa_pass),
         'dns_hostmaster' => htmlspecialchars($hostmaster),
         'dns_ns1' => htmlspecialchars($dns_ns1),

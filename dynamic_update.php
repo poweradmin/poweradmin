@@ -30,7 +30,9 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
+use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\UserAuthenticationService;
+use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\LegacyConfiguration;
 use Poweradmin\DnsRecord;
 
@@ -41,7 +43,7 @@ require __DIR__ . '/vendor/autoload.php';
 
 global $db_host, $db_port, $db_user, $db_pass, $db_name, $db_charset, $db_collation, $db_type, $db_file;
 
-$databaseCredentials = [
+$credentials = [
     'db_host' => $db_host,
     'db_port' => $db_port,
     'db_user' => $db_user,
@@ -53,7 +55,9 @@ $databaseCredentials = [
     'db_file' => $db_file,
 ];
 
-$db = dbConnect($databaseCredentials);
+$databaseConnection = new PDODatabaseConnection();
+$databaseService = new DatabaseService($databaseConnection);
+$db = $databaseService->connect($credentials);
 
 /** Make sql query safe
  *

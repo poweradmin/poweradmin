@@ -1180,7 +1180,6 @@ class DnsRecord
     {
         global $db;
         global $db_type;
-        global $sql_regexp;
         global $pdnssec_use;
         global $iface_zone_comments;
         global $iface_zonelist_serial;
@@ -1204,7 +1203,7 @@ class DnsRecord
             if ($letterstart != 'all' && $letterstart != 1) {
                 $sql_add .= " AND " . DbCompat::substr($db_type) . "(domains.name,1,1) = " . $db->quote($letterstart, 'text') . " ";
             } elseif ($letterstart == 1) {
-                $sql_add .= " AND " . DbCompat::substr($db_type) . "(domains.name,1,1) " . $sql_regexp . " '[0-9]'";
+                $sql_add .= " AND " . DbCompat::substr($db_type) . "(domains.name,1,1) " . DbCompat::regexp($db_type) . " '[0-9]'";
             }
         }
 
@@ -1292,7 +1291,6 @@ class DnsRecord
     {
         global $db;
         global $db_type;
-        global $sql_regexp;
 
         $tables = 'domains';
         $query_addon = '';
@@ -1310,7 +1308,7 @@ class DnsRecord
         if ($letterstart != 'all' && $letterstart != 1) {
             $query_addon .= " AND domains.name LIKE " . $db->quote($letterstart . "%", 'text') . " ";
         } elseif ($letterstart == 1) {
-            $query_addon .= " AND " . DbCompat::substr($db_type) . "(domains.name,1,1) " . $sql_regexp . " '[0-9]'";
+            $query_addon .= " AND " . DbCompat::substr($db_type) . "(domains.name,1,1) " . DbCompat::regexp($db_type) . " '[0-9]'";
         }
 
         $query = "SELECT COUNT(domains.id) AS count_zones FROM {$tables} WHERE 1=1 {$query_addon}";

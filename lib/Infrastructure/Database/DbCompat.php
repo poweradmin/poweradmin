@@ -36,6 +36,18 @@ final class DbCompat
     ];
 
     /**
+     * Mapping of database types to their corresponding regular expression functions.
+     */
+    private const REGEXP_FUNCTIONS = [
+        'mysql' => 'REGEXP',
+        'mysqli' => 'REGEXP',
+        'sqlite' => 'GLOB',
+        'sqlite3' => 'GLOB',
+        'pgsql' => '~',
+        'default' => 'REGEXP'
+    ];
+
+    /**
      * Returns the appropriate substring function for the given database type.
      *
      * @param string $db_type The type of database (e.g., "sqlite", "mysql", etc.)
@@ -44,5 +56,16 @@ final class DbCompat
     public static function substr(string $db_type): string
     {
         return self::SUBSTRING_FUNCTIONS[$db_type] ?? self::SUBSTRING_FUNCTIONS['default'];
+    }
+
+    /**
+     * Returns the appropriate regular expression function for the given database type.
+     *
+     * @param string $db_type The type of database (e.g., "mysql", "sqlite", etc.)
+     * @return string The regular expression function corresponding to the given database type.
+     */
+    public static function regexp(string $db_type): string
+    {
+        return self::REGEXP_FUNCTIONS[$db_type] ?? self::REGEXP_FUNCTIONS['default'];
     }
 }
