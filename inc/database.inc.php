@@ -24,157 +24,107 @@ use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\PDOLayer;
 
-function dbConnect(array $databaseCredentials, $isQuiet = true, $installerMode = false)
+function dbConnect(array $databaseCredentials, $isQuiet = true, $installerMode = false): PDOLayer
 {
-    $db_type = $databaseCredentials['db_type'];
-    $db_user = $databaseCredentials['db_user'];
-    $db_pass = $databaseCredentials['db_pass'];
-    $db_host = $databaseCredentials['db_host'];
-    $db_port = $databaseCredentials['db_port'];
-    $db_name = $databaseCredentials['db_name'];
-    $db_charset = $databaseCredentials['db_charset'];
-    $db_file = $databaseCredentials['db_file'] ?? null;
-    $db_debug = $databaseCredentials['db_debug'] ?? false;
+    validateDatabaseType($databaseCredentials['db_type'], $installerMode);
 
-    global $sql_regexp;
-
-    if (!(isset($db_type) && $db_type == 'mysql' || $db_type == 'mysqli' || $db_type == 'pgsql' || $db_type == 'sqlite' || $db_type == 'sqlite3')) {
-        if (!$installerMode) {
-            include_once("header.inc.php");
-        }
-        if (!file_exists('install')) {
-            $error = new ErrorMessage(_('No or unknown database type has been set in config.inc.php.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-        }
-
-        if (!$installerMode) {
-            include_once("footer.inc.php");
-        }
-
-        exit;
-    }
-
-    if ($db_type != 'sqlite' && $db_type != 'sqlite3' && !(isset($db_user) && $db_user != "")) {
-        $error = new ErrorMessage(_('No database username has been set in config.inc.php.'));
-        $errorPresenter = new ErrorPresenter();
-        $errorPresenter->present($error);
-
-        if (!$installerMode) {
-            include_once("footer.inc.php");
-        }
-
-        exit;
-    }
-
-    if ($db_type != 'sqlite' && $db_type != 'sqlite3' && !(isset($db_pass) && $db_pass != '')) {
-        if (!$installerMode) {
-            include_once("header.inc.php");
-        }
-
-        $error = new ErrorMessage(_('No database password has been set in config.inc.php.'));
-        $errorPresenter = new ErrorPresenter();
-        $errorPresenter->present($error);
-
-        if (!$installerMode) {
-            include_once("footer.inc.php");
-        }
-
-        exit;
-    }
-
-    if ($db_type != 'sqlite' && $db_type != 'sqlite3' && !(isset($db_host) && $db_host != '')) {
-        if (!$installerMode) {
-            include_once("header.inc.php");
-        }
-
-        $error = new ErrorMessage(_('No database host has been set in config.inc.php.'));
-        $errorPresenter = new ErrorPresenter();
-        $errorPresenter->present($error);
-
-        if (!$installerMode) {
-            include_once("footer.inc.php");
-        }
-        exit;
-    }
-
-    if ($db_type != 'sqlite' && $db_type != 'sqlite3' && !(isset($db_name) && $db_name != '')) {
-        if (!$installerMode) {
-            include_once("header.inc.php");
-        }
-
-        $error = new ErrorMessage(_('No database name has been set in config.inc.php.'));
-        $errorPresenter = new ErrorPresenter();
-        $errorPresenter->present($error);
-
-        if (!$installerMode) {
-            include_once("footer.inc.php");
-        }
-        exit;
-    }
-
-    if ($db_type != 'sqlite' && $db_type != 'sqlite3' && !(isset($db_port)) || $db_port == '') {
-        if ($db_type == "mysql" || $db_type == "mysqli") {
-            $db_port = 3306;
-        } else {
-            $db_port = 5432;
-        }
-    }
-
-    if (($db_type == 'sqlite' || $db_type == 'sqlite3') && (!(isset($db_file) && $db_file != ''))) {
-        if (!$installerMode) {
-            include_once("header.inc.php");
-        }
-
-        $error = new ErrorMessage(_('No database file has been set in config.inc.php.'));
-        $errorPresenter = new ErrorPresenter();
-        $errorPresenter->present($error);
-
-        if (!$installerMode) {
-            include_once("footer.inc.php");
-        }
-
-        exit;
-    }
-
-    if ($db_type == 'sqlite' || $db_type == 'sqlite3') {
-        $dsn = "$db_type:$db_file";
+    if (in_array($databaseCredentials['db_type'], ['sqlite', 'sqlite3'])) {
+        validateSQLiteCredentials($databaseCredentials, $installerMode);
     } else {
-        $dsn = "$db_type:host=$db_host;port=$db_port;dbname=$db_name";
+        validateCredentialsForNonSQLite($databaseCredentials, $installerMode);
     }
 
-    if ($db_type === 'mysql' && $db_charset === 'utf8') {
-        $dsn .= ';charset=utf8';
-    }
+    $dsn = constructDSN($databaseCredentials);
 
-    $db = new PDOLayer($dsn, $db_user, $db_pass, [], $isQuiet);
-
-    if (isset($db_debug) && $db_debug) {
+    $db = new PDOLayer($dsn, $databaseCredentials['db_user'], $databaseCredentials['db_pass'], [], $isQuiet);
+    if (isset($databaseCredentials['db_debug']) && $databaseCredentials['db_debug']) {
         $db->setOption('debug', 1);
     }
 
-    $dsn = '';
+    unset($dsn);
 
-    if ($db_type == 'mysql' || $db_type == 'mysqli') {
-        $sql_regexp = "REGEXP";
-    } else if ($db_type == 'sqlite' || $db_type == 'sqlite3') {
-        $sql_regexp = 'GLOB';
-    } elseif ($db_type == "pgsql") {
-        $sql_regexp = "~";
-    } else {
-        if (!$installerMode) {
-            include_once("header.inc.php");
-        }
+    global $sql_regexp;
+    $sql_regexp = determineSQLRegexp($databaseCredentials['db_type']);
 
-        $error = new ErrorMessage(_('No or unknown database type has been set in config.inc.php.'));
-        $errorPresenter = new ErrorPresenter();
-        $errorPresenter->present($error);
-
-        if (!$installerMode) {
-            include_once("footer.inc.php");
-        }
-
-        exit;
-    }
     return $db;
 }
+
+function validateDatabaseType($db_type, $installerMode): void
+{
+    if (!in_array($db_type, ['mysql', 'mysqli', 'pgsql', 'sqlite', 'sqlite3'])) {
+        showErrorAndExit(_('No or unknown database type has been set in config.inc.php.'), $installerMode);
+    }
+}
+
+function showErrorAndExit($message, $installerMode): void
+{
+    if (!$installerMode) {
+        include_once("header.inc.php");
+    }
+
+    if ($installerMode || file_exists('inc/config.inc.php')) {
+        $error = new ErrorMessage($message);
+        $errorPresenter = new ErrorPresenter();
+        $errorPresenter->present($error);
+    }
+
+    if (!$installerMode) {
+        include_once("footer.inc.php");
+    }
+
+    exit;
+}
+
+function validateCredentialsForNonSQLite($credentials, $installerMode): void
+{
+    foreach (['db_user', 'db_pass', 'db_host', 'db_name'] as $key) {
+        if (empty($credentials[$key])) {
+            showErrorAndExit(_("No $key has been set in config.inc.php."), $installerMode);
+        }
+    }
+}
+
+function validateSQLiteCredentials($credentials, $installerMode): void
+{
+    if (empty($credentials['db_file'])) {
+        showErrorAndExit(_('No database file has been set in config.inc.php.'), $installerMode);
+    }
+}
+
+function constructDSN($credentials): string
+{
+    $db_type = $credentials['db_type'];
+    $db_port = $credentials['db_port'] ?? getDefaultPort($db_type);
+
+    if ($db_type === 'sqlite' || $db_type === 'sqlite3') {
+        return "$db_type:{$credentials['db_file']}";
+    } else {
+        $dsn = "$db_type:host={$credentials['db_host']};port=$db_port;dbname={$credentials['db_name']}";
+
+        if ($db_type === 'mysql' && $credentials['db_charset'] === 'utf8') {
+            $dsn .= ';charset=utf8';
+        }
+
+        return $dsn;
+    }
+}
+
+function getDefaultPort($db_type): ?int
+{
+    return match ($db_type) {
+        'mysql', 'mysqli' => 3306,
+        'pgsql' => 5432,
+        default => null,
+    };
+}
+
+function determineSQLRegexp($db_type): string
+{
+    return match ($db_type) {
+        'mysql', 'mysqli' => 'REGEXP',
+        'sqlite', 'sqlite3' => 'GLOB',
+        'pgsql' => '~',
+        default => throw new Exception("Unsupported database type for regular expressions: $db_type"),
+    };
+}
+

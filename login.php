@@ -55,12 +55,16 @@ class LoginController extends BaseController {
             $type = '';
         }
 
-        $this->render('login.html', [
-            'query_string' => $_SERVER['QUERY_STRING'] ?? '',
-            'locale_options' => $localePresenter->generateLocaleOptions($preparedLocales),
-            'msg' => $msg,
-            'type' => $type,
-        ]);
+        if (!$this->config('ignore_install_dir') && file_exists('install')) {
+            $this->render('empty.html', []);
+        } else {
+            $this->render('login.html', [
+                'query_string' => $_SERVER['QUERY_STRING'] ?? '',
+                'locale_options' => $localePresenter->generateLocaleOptions($preparedLocales),
+                'msg' => $msg,
+                'type' => $type,
+            ]);
+        }
     }
 }
 
