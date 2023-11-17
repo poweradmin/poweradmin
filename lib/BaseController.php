@@ -24,6 +24,7 @@ namespace Poweradmin;
 
 use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\Domain\Error\ErrorMessage;
+use Poweradmin\Infrastructure\Web\ThemeManager;
 
 abstract class BaseController
 {
@@ -58,12 +59,13 @@ abstract class BaseController
 
     public function render(string $template, array $params): void
     {
-        include_once 'inc/header.inc.php';
+        $this->renderHeader();
 
         $this->showMessage($template);
 
         $this->app->render($template, $params);
-        include_once('inc/footer.inc.php');
+
+        $this->renderFooter();
     }
 
     public function redirect($script, $args = [])
@@ -147,19 +149,20 @@ EOF;
 
     public function showError(string $error): void
     {
-        include_once 'inc/header.inc.php';
+        $this->renderHeader();
 
         $error = new ErrorMessage($error);
         $errorPresenter = new ErrorPresenter();
         $errorPresenter->present($error);
 
-        include_once('inc/footer.inc.php');
+        $this->renderFooter();
         exit;
     }
 
     public function showFirstError(array $errors): void
     {
-        include_once 'inc/header.inc.php';
+        $this->renderHeader();
+
         $validationErrors = array_values($errors);
         $firstError = reset($validationErrors);
 
@@ -167,7 +170,74 @@ EOF;
         $errorPresenter = new ErrorPresenter();
         $errorPresenter->present($error);
 
-        include_once('inc/footer.inc.php');
+        $this->renderFooter();
         exit;
+    }
+
+    private function renderHeader(): void
+    {
+        if (!headers_sent()) {
+            header('Content-type: text/html; charset=utf-8');
+        }
+
+        $themeManager = new ThemeManager($this->app->config('iface_style'));
+        $ignore_install_dir = $this->app->config('ignore_install_dir');
+
+        $vars = [
+            'iface_title' => $this->app->config('iface_title'),
+            'iface_style' => $themeManager->getSelectedTheme(),
+            'file_version' => time(),
+            'custom_header' => file_exists('templates/custom/header.html'),
+            'install_error' => !$ignore_install_dir && file_exists('install') ? _('The <a href="install/">install/</a> directory exists, you must remove it first before proceeding.') : false,
+        ];
+
+        $dblog_use = $this->app->config('dblog_use');
+        $session_key = $this->app->config('session_key');
+
+        if (isset($_SESSION["userid"])) {
+            $perm_is_godlike = verify_permission('user_is_ueberuser');
+
+            $vars = array_merge($vars, [
+                'user_logged_in' => isset($_SESSION["userid"]),
+                'perm_search' => verify_permission('search'),
+                'perm_view_zone_own' => verify_permission('zone_content_view_own'),
+                'perm_view_zone_other' => verify_permission('zone_content_view_others'),
+                'perm_supermaster_view' => verify_permission('supermaster_view'),
+                'perm_zone_master_add' => verify_permission('zone_master_add'),
+                'perm_zone_slave_add' => verify_permission('zone_slave_add'),
+                'perm_supermaster_add' => verify_permission('supermaster_add'),
+                'perm_is_godlike' => $perm_is_godlike,
+                'perm_templ_perm_edit' => verify_permission('templ_perm_edit'),
+                'perm_add_new' => verify_permission('user_add_new'),
+                'session_key_error' => $perm_is_godlike && $session_key == 'p0w3r4dm1n' ? _('Default session encryption key is used, please set it in your configuration file.') : false,
+                'auth_used' => $_SESSION["auth_used"] != "ldap",
+                'dblog_use' => $dblog_use
+            ]);
+        }
+
+        $this->app->render('header.html', $vars);
+    }
+
+    private function renderFooter() {
+        global $db;
+
+        $iface_style = $this->app->config('iface_style');
+        $themeManager = new ThemeManager($iface_style);
+        $selected_theme = $themeManager->getSelectedTheme();
+
+        $display_stats = $this->app->config('display_stats');
+
+        $this->app->render('footer.html', [
+            'version' => isset($_SESSION["userid"]) ? Version::VERSION : false,
+            'custom_footer' => file_exists('templates/custom/footer.html'),
+            'display_stats' => $display_stats ? $this->app->displayStats() : false,
+            'db_queries' => $this->app->config('db_debug') ? $db->getQueries() : false, // FIXME
+            'show_theme_switcher' => in_array($selected_theme, ['ignite', 'spark']),
+            'iface_style' => $selected_theme,
+        ]);
+
+        if (is_object($db)) {
+            $db->disconnect();
+        }
     }
 }
