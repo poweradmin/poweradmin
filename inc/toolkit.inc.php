@@ -29,6 +29,7 @@ use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\DependencyCheck;
+use Poweradmin\LegacyAuthenticateSession;
 use Poweradmin\LegacyConfiguration;
 
 if (!file_exists('inc/config.inc.php')) {
@@ -42,7 +43,6 @@ session_start();
 
 DependencyCheck::verifyExtensions();
 
-require_once 'inc/authenticate.php';
 require_once 'inc/users.php';
 require_once 'i18n.inc.php';
 
@@ -64,4 +64,5 @@ $databaseConnection = new PDODatabaseConnection();
 $databaseService = new DatabaseService($databaseConnection);
 $db = $databaseService->connect($credentials);
 
-authenticate();
+$legacyAuthenticateSession = new LegacyAuthenticateSession();
+$legacyAuthenticateSession->authenticate();
