@@ -36,23 +36,21 @@ use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\LegacyConfiguration;
 use Poweradmin\DnsRecord;
 
-require 'inc/config.inc.php';
-require 'inc/database.inc.php';
-
 require __DIR__ . '/vendor/autoload.php';
 
-global $db_host, $db_port, $db_user, $db_pass, $db_name, $db_charset, $db_collation, $db_type, $db_file;
+$configuration = new LegacyConfiguration();
+$db_type = $configuration->get('db_type');
 
 $credentials = [
-    'db_host' => $db_host,
-    'db_port' => $db_port,
-    'db_user' => $db_user,
-    'db_pass' => $db_pass,
-    'db_name' => $db_name,
-    'db_charset' => $db_charset,
-    'db_collation' => $db_collation,
+    'db_host' => $configuration->get('db_host'),
+    'db_port' => $configuration->get('db_port'),
+    'db_user' => $configuration->get('db_user'),
+    'db_pass' => $configuration->get('db_pass'),
+    'db_name' => $configuration->get('db_name'),
+    'db_charset' => $configuration->get('db_charset'),
+    'db_collation' => $configuration->get('db_collation'),
     'db_type' => $db_type,
-    'db_file' => $db_file,
+    'db_file' => $configuration->get('db_file'),
 ];
 
 $databaseConnection = new PDODatabaseConnection();
@@ -65,15 +63,11 @@ $db = $databaseService->connect($credentials);
  *
  * @return bool|string $value Safe Value
  */
-function safe($value)
+function safe($db, $db_type, $value)
 {
-    global $db, $db_type;
-
     if ($db_type == 'mysql' || $db_type == 'sqlite') {
         $value = $db->quote($value, 'text');
         $value = substr($value, 1, -1); // remove quotes
-    } elseif ($db_type == 'pgsql') {
-        $value = pg_escape_string($value);
     } else {
         return status_exit('baddbtype');
     }
@@ -154,8 +148,8 @@ if (!isset($auth_username)) {
     return status_exit('badauth');
 }
 
-$username = safe($auth_username);
-$hostname = safe($_REQUEST['hostname']);
+$username = safe($db, $db_type, $auth_username);
+$hostname = safe($db, $db_type, $_REQUEST['hostname']);
 
 // Grab IP to use
 $given_ip = "";
@@ -185,8 +179,8 @@ if (($given_ip == "whatismyip") && (valid_ip_address($_SERVER['REMOTE_ADDR']) ==
 }
 
 // Finally get safe version of the IP
-$ip = safe($given_ip);
-$ip6 = safe($given_ip6);
+$ip = safe($db, $db_type, $given_ip);
+$ip6 = safe($db, $db_type, $given_ip6);
 // Check it's ok...
 if ((!valid_ip_address($ip)) && (!valid_ip_address($ip6))) {
     return status_exit('dnserr');
