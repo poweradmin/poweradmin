@@ -145,6 +145,7 @@ class ComposerStaticInit02fd231869a48df50cb631d6580008da
         'Poweradmin\\LdapUserEventLogger' => __DIR__ . '/../..' . '/lib/LdapUserEventLogger.php',
         'Poweradmin\\LegacyAuthenticateSession' => __DIR__ . '/../..' . '/lib/LegacyAuthenticateSession.php',
         'Poweradmin\\LegacyConfiguration' => __DIR__ . '/../..' . '/lib/LegacyConfiguration.php',
+        'Poweradmin\\LegacyLocale' => __DIR__ . '/../..' . '/lib/LegacyLocale.php',
         'Poweradmin\\LegacyLogger' => __DIR__ . '/../..' . '/lib/LegacyLogger.php',
         'Poweradmin\\LegacyUsers' => __DIR__ . '/../..' . '/lib/LegacyUsers.php',
         'Poweradmin\\PDOCommon' => __DIR__ . '/../..' . '/lib/PDOCommon.php',

@@ -31,6 +31,7 @@ use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\DependencyCheck;
 use Poweradmin\LegacyAuthenticateSession;
 use Poweradmin\LegacyConfiguration;
+use Poweradmin\LegacyLocale;
 
 if (!file_exists('inc/config.inc.php')) {
     $error = new ErrorMessage(_('The configuration file (config.inc.php) does not exist. Please use the <a href="install/">installer</a> to create it.'));
@@ -43,7 +44,9 @@ session_start();
 
 DependencyCheck::verifyExtensions();
 
-require_once 'i18n.inc.php';
+$configuration = new LegacyConfiguration();
+$iface_lang = $_SESSION["userlang"] ?? $configuration->get('iface_lang');
+LegacyLocale::setAppLocale($iface_lang);
 
 $config = new LegacyConfiguration();
 

@@ -79,6 +79,7 @@ return array(
     'Poweradmin\\LdapUserEventLogger' => $baseDir . '/lib/LdapUserEventLogger.php',
     'Poweradmin\\LegacyAuthenticateSession' => $baseDir . '/lib/LegacyAuthenticateSession.php',
     'Poweradmin\\LegacyConfiguration' => $baseDir . '/lib/LegacyConfiguration.php',
+    'Poweradmin\\LegacyLocale' => $baseDir . '/lib/LegacyLocale.php',
     'Poweradmin\\LegacyLogger' => $baseDir . '/lib/LegacyLogger.php',
     'Poweradmin\\LegacyUsers' => $baseDir . '/lib/LegacyUsers.php',
     'Poweradmin\\PDOCommon' => $baseDir . '/lib/PDOCommon.php',
