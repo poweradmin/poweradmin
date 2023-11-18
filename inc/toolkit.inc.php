@@ -31,12 +31,11 @@ use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\DependencyCheck;
 use Poweradmin\LegacyConfiguration;
 
-if (!@include_once('config.inc.php')) {
-    if (!file_exists('install')) {
-        $error = new ErrorMessage(_('You have to create a config.inc.php!'));
-        $errorPresenter = new ErrorPresenter();
-        $errorPresenter->present($error);
-    }
+if (!file_exists('config.inc.php')) {
+    $error = new ErrorMessage(_('The configuration file (config.inc.php) does not exist. Please use the <a href="install/">installer</a> to create it.'));
+    $errorPresenter = new ErrorPresenter();
+    $errorPresenter->present($error);
+    exit();
 }
 
 session_start();

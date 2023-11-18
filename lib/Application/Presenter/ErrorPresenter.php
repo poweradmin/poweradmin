@@ -28,16 +28,30 @@ class ErrorPresenter
 {
     public function present(ErrorMessage $error): void
     {
-        $msg = htmlspecialchars($error->getMessage(), ENT_QUOTES, 'UTF-8');
+        $msg = $this->sanitizeMessage($error->getMessage());
         $name = $error->getName();
 
         if ($name !== null) {
             $name = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
-            $formattedError = "<div class=\"alert alert-danger\"><strong>Error:</strong> ${msg} (Record: ${name})</div>\n";
-        } else {
-            $formattedError = "<div class=\"alert alert-danger\"><strong>Error:</strong> ${msg}</div>\n";
         }
 
-        echo $formattedError;
+        $this->renderError($msg, $name);
+    }
+
+    private function sanitizeMessage(string $message): string
+    {
+        $allowedTags = '<a>';
+        return strip_tags($message, $allowedTags);
+    }
+
+    private function renderError(string $msg, ?string $name): void
+    {
+        $errorContent = ($name !== null) ? "{$msg} (Record: {$name})" : $msg;
+
+        echo <<<HTML
+        <div class="alert alert-danger">
+            <strong>Error:</strong> {$errorContent}
+        </div>
+        HTML;
     }
 }
