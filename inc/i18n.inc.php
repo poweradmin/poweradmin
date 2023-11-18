@@ -31,8 +31,10 @@
 
 use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\Domain\Error\ErrorMessage;
+use Poweradmin\LegacyConfiguration;
 
-global $iface_lang;
+$configuration = new LegacyConfiguration();
+$iface_lang = $configuration->get('iface_lang');
 
 if (isset($_SESSION["userlang"])) {
     $iface_lang = $_SESSION["userlang"];
@@ -41,9 +43,10 @@ if (isset($_SESSION["userlang"])) {
 if ($iface_lang != 'en_EN' && $iface_lang != 'en_US.UTF-8') {
     $locale = setlocale(LC_ALL, $iface_lang, $iface_lang . '.UTF-8');
     if (!$locale) {
-        $error = new ErrorMessage(_('Failed to set locale. Selected locale may be unsupported on this system. Please contact your administrator.'));
+        $error = new ErrorMessage(_('Failed to set locale. Selected iface_lang may be unsupported on this system. Please contact your administrator.'));
         $errorPresenter = new ErrorPresenter();
         $errorPresenter->present($error);
+        exit();
     }
 
     $gettext_domain = 'messages';
