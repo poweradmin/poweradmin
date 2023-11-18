@@ -31,39 +31,56 @@ include_once 'inc/config-defaults.inc.php';
 
 class LoginController extends BaseController {
 
+    private LocaleRepository $localeRepository;
+    private LocaleService $localeService;
+    private LocalePresenter $localePresenter;
+
+    public function __construct() {
+        parent::__construct();
+
+        $this->localeRepository = new LocaleRepository();
+        $this->localeService = new LocaleService();
+        $this->localePresenter = new LocalePresenter();
+    }
+
     public function run(): void
     {
-        $localeRepository = new LocaleRepository();
-        $localesData = $localeRepository->getLocales();
+        $localesData = $this->localeRepository->getLocales();
+        $preparedLocales = $this->localeService->prepareLocales($localesData, $this->config('iface_lang'));
 
-        $localeService = new LocaleService();
-        $preparedLocales = $localeService->prepareLocales($localesData, $this->config('iface_lang'));
-
-        $localePresenter = new LocalePresenter();
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        if (isset($_SESSION['message']) && isset($_SESSION['type'])) {
-            $msg = $_SESSION['message'];
-            $type = $_SESSION['type'];
-            unset($_SESSION['message']);
-            unset($_SESSION['type']);
-        } else {
-            $msg = '';
-            $type = '';
-        }
+        $this->initializeSession();
+        list($msg, $type) = $this->getSessionMessages();
 
         if (!$this->config('ignore_install_dir') && file_exists('install')) {
             $this->render('empty.html', []);
         } else {
-            $this->render('login.html', [
-                'query_string' => $_SERVER['QUERY_STRING'] ?? '',
-                'locale_options' => $localePresenter->generateLocaleOptions($preparedLocales),
-                'msg' => $msg,
-                'type' => $type,
-            ]);
+            $this->renderLogin($preparedLocales, $msg, $type);
         }
+    }
+
+    public function initializeSession(): void
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+    }
+
+    public function getSessionMessages(): array
+    {
+        $msg = $_SESSION['message'] ?? '';
+        $type = $_SESSION['type'] ?? '';
+        unset($_SESSION['message'], $_SESSION['type']);
+        return [$msg, $type];
+    }
+
+    public function renderLogin(array $preparedLocales, string $msg, string $type): void
+    {
+        $this->render('login.html', [
+            'query_string' => $_SERVER['QUERY_STRING'] ?? '',
+            'locale_options' => $this->localePresenter->generateLocaleOptions($preparedLocales),
+            'msg' => $msg,
+            'type' => $type,
+        ]);
     }
 }
 
