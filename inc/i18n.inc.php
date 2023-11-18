@@ -34,25 +34,31 @@ use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\LegacyConfiguration;
 
 $configuration = new LegacyConfiguration();
-$iface_lang = $configuration->get('iface_lang');
+$iface_lang = $_SESSION["userlang"] ?? $configuration->get('iface_lang');
 
-if (isset($_SESSION["userlang"])) {
-    $iface_lang = $_SESSION["userlang"];
-}
+/**
+ * @param mixed $iface_lang
+ * @return void
+ */
+function setAppLocale(mixed $iface_lang): void
+{
+    if ($iface_lang == 'en_EN' || $iface_lang == 'en_US.UTF-8') {
+        return;
+    }
 
-if ($iface_lang != 'en_EN' && $iface_lang != 'en_US.UTF-8') {
-    $locale = setlocale(LC_ALL, $iface_lang, $iface_lang . '.UTF-8');
-    if (!$locale) {
-        $error = new ErrorMessage(_('Failed to set locale. Selected iface_lang may be unsupported on this system. Please contact your administrator.'));
+    if (!setlocale(LC_ALL, $iface_lang, $iface_lang . '.UTF-8')) {
+        $error = new ErrorMessage(_('Failed to set locale. Selected locale may be unsupported on this system. Please contact your administrator.'));
         $errorPresenter = new ErrorPresenter();
         $errorPresenter->present($error);
         exit();
     }
 
     $gettext_domain = 'messages';
-    bindtextdomain($gettext_domain, "./locale");
+    bindtextdomain($gettext_domain, './locale');
     bind_textdomain_codeset($gettext_domain, 'utf-8');
     textdomain($gettext_domain);
     @putenv('LANG=' . $iface_lang);
     @putenv('LANGUAGE=' . $iface_lang);
 }
+
+setAppLocale($iface_lang);
