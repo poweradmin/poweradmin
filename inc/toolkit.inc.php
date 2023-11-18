@@ -32,39 +32,62 @@ use Poweradmin\Infrastructure\DependencyCheck;
 use Poweradmin\LegacyAuthenticateSession;
 use Poweradmin\LegacyConfiguration;
 use Poweradmin\LegacyLocale;
+use Poweradmin\PDOLayer;
 
-if (!file_exists('inc/config.inc.php')) {
-    $error = new ErrorMessage(_('The configuration file (config.inc.php) does not exist. Please use the <a href="install/">installer</a> to create it.'));
-    $errorPresenter = new ErrorPresenter();
-    $errorPresenter->present($error);
-    exit();
+function checkConfigurationFile(): void
+{
+    if (!file_exists('inc/config.inc.php')) {
+        $error = new ErrorMessage(_('The configuration file (config.inc.php) does not exist. Please use the <a href="install/">installer</a> to create it.'));
+        $errorPresenter = new ErrorPresenter();
+        $errorPresenter->present($error);
+        exit();
+    }
 }
 
-session_start();
 
-DependencyCheck::verifyExtensions();
+function initializeSessionAndDependencies(): void
+{
+    session_start();
+    DependencyCheck::verifyExtensions();
+}
 
-$configuration = new LegacyConfiguration();
-$iface_lang = $_SESSION["userlang"] ?? $configuration->get('iface_lang');
-LegacyLocale::setAppLocale($iface_lang);
+function loadConfiguration(): array
+{
+    $config = new LegacyConfiguration();
+    return [
+        'iface_lang' => $_SESSION["userlang"] ?? $config->get('iface_lang'),
+        'credentials' => [
+            'db_host' => $config->get('db_host'),
+            'db_port' => $config->get('db_port'),
+            'db_user' => $config->get('db_user'),
+            'db_pass' => $config->get('db_pass'),
+            'db_name' => $config->get('db_name'),
+            'db_charset' => $config->get('db_charset'),
+            'db_collation' => $config->get('db_collation'),
+            'db_type' => $config->get('db_type'),
+            'db_file' => $config->get('db_file'),
+        ]
+    ];
+}
 
-$config = new LegacyConfiguration();
+function connectToDatabase(mixed $credentials): PDOLayer
+{
+    $databaseConnection = new PDODatabaseConnection();
+    $databaseService = new DatabaseService($databaseConnection);
+    return $databaseService->connect($credentials);
+}
 
-$credentials = [
-    'db_host' => $config->get('db_host'),
-    'db_port' => $config->get('db_port'),
-    'db_user' => $config->get('db_user'),
-    'db_pass' => $config->get('db_pass'),
-    'db_name' => $config->get('db_name'),
-    'db_charset' => $config->get('db_charset'),
-    'db_collation' => $config->get('db_collation'),
-    'db_type' => $config->get('db_type'),
-    'db_file' => $config->get('db_file'),
-];
+function authenticateUser(): void
+{
+    $legacyAuthenticateSession = new LegacyAuthenticateSession();
+    $legacyAuthenticateSession->authenticate();
+}
 
-$databaseConnection = new PDODatabaseConnection();
-$databaseService = new DatabaseService($databaseConnection);
-$db = $databaseService->connect($credentials);
+// Main Execution Flow
+checkConfigurationFile();
+initializeSessionAndDependencies();
+$config = loadConfiguration();
+LegacyLocale::setAppLocale($config['iface_lang']);
+$db = connectToDatabase($config['credentials']);
 
-$legacyAuthenticateSession = new LegacyAuthenticateSession();
-$legacyAuthenticateSession->authenticate();
+authenticateUser();
