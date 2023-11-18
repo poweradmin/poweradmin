@@ -236,7 +236,7 @@ while ($zone = $zones_query->fetch()) {
                     $no_update_necessary = true;
                 } else {
                     $update_query = $db->prepare("UPDATE records SET content =:ip6 where name=:record_name and type='AAAA'");
-                    $db->execute([':ip6' => $ip6, ':record_name' => $record['name']]);
+                    $update_query->execute([':ip6' => $ip6, ':record_name' => $record['name']]);
                     $zone_updated = true;
                     $was_updated = true;
                 }
