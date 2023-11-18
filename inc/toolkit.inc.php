@@ -43,7 +43,6 @@ session_start();
 
 DependencyCheck::verifyExtensions();
 
-require_once 'inc/users.php';
 require_once 'i18n.inc.php';
 
 $config = new LegacyConfiguration();
