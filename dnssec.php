@@ -39,8 +39,6 @@ use Poweradmin\Permission;
 use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
 
-require_once 'inc/toolkit.inc.php';
-
 class DnsSecController extends BaseController {
 
     public function run(): void

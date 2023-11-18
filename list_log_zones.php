@@ -35,8 +35,6 @@ use Poweradmin\BaseController;
 use Poweradmin\DbZoneLogger;
 use Poweradmin\Infrastructure\Web\HttpPaginationParameters;
 
-require_once 'inc/toolkit.inc.php';
-
 class ListLogZonesController extends BaseController
 {
 

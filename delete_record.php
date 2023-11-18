@@ -37,8 +37,6 @@ use Poweradmin\LegacyUsers;
 use Poweradmin\Permission;
 use Poweradmin\Validation;
 
-require_once 'inc/toolkit.inc.php';
-
 class DeleteRecordController extends BaseController {
 
     public function run(): void

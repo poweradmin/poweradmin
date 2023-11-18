@@ -37,8 +37,6 @@ use Poweradmin\Infrastructure\Web\HttpPaginationParameters;
 use Poweradmin\LegacyUsers;
 use Poweradmin\ZoneTemplate;
 
-require_once 'inc/toolkit.inc.php';
-
 class EditZoneTemplController extends BaseController
 {
 

@@ -38,8 +38,6 @@ use Poweradmin\Permission;
 use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
 
-require_once 'inc/toolkit.inc.php';
-
 class DnsSecDsDnsKeyController extends BaseController {
 
     public function run(): void

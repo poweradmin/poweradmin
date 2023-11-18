@@ -34,8 +34,6 @@ use Poweradmin\Application\Query\ZoneSearch;
 use Poweradmin\BaseController;
 use Poweradmin\Permission;
 
-require_once 'inc/toolkit.inc.php';
-
 class SearchController extends BaseController
 {
     public function run(): void

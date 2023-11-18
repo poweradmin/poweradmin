@@ -34,8 +34,6 @@ use Poweradmin\LegacyUsers;
 use Poweradmin\RecordType;
 use Poweradmin\ZoneTemplate;
 
-require_once 'inc/toolkit.inc.php';
-
 class EditZoneTemplRecordController extends BaseController {
 
     public function run(): void

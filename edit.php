@@ -44,8 +44,6 @@ use Poweradmin\RecordType;
 use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
 
-require_once 'inc/toolkit.inc.php';
-
 class EditController extends BaseController {
 
     public function run(): void

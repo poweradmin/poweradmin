@@ -36,8 +36,6 @@ use Poweradmin\Domain\Dnssec\DnssecAlgorithm;
 use Poweradmin\LegacyUsers;
 use Poweradmin\Validation;
 
-require_once 'inc/toolkit.inc.php';
-
 class DnsSecDeleteKeyController extends BaseController
 {
 

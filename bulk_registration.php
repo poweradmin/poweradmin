@@ -36,8 +36,6 @@ use Poweradmin\LegacyLogger;
 use Poweradmin\LegacyUsers;
 use Poweradmin\ZoneTemplate;
 
-require_once 'inc/toolkit.inc.php';
-
 class BulkRegistrationController extends BaseController {
 
     public function run(): void

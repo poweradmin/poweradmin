@@ -29,12 +29,17 @@ use Poweradmin\Infrastructure\Web\ThemeManager;
 abstract class BaseController
 {
     private Application $app;
+    private LegacyApplicationInitializer $init;
+    protected PDOLayer $db;
 
     abstract public function run(): void;
 
     public function __construct()
     {
         $this->app = AppFactory::create();
+
+        $this->init = new LegacyApplicationInitializer();
+        $this->db = $this->init->getDb();
     }
 
     public function isPost(): bool

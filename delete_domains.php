@@ -35,8 +35,6 @@ use Poweradmin\LegacyLogger;
 use Poweradmin\LegacyUsers;
 use Poweradmin\Permission;
 
-require_once 'inc/toolkit.inc.php';
-
 class DeleteDomainsController extends BaseController {
 
     public function run(): void

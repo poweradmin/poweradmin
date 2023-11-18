@@ -32,8 +32,6 @@
 use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
 
-require_once 'inc/toolkit.inc.php';
-
 class DeleteSuperMasterController extends BaseController
 {
 

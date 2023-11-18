@@ -37,8 +37,6 @@ use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\LegacyUsers;
 use Valitron\Validator;
 
-require_once 'inc/toolkit.inc.php';
-
 class ChangePasswordController extends BaseController {
     private AuthenticationService $authService;
 

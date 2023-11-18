@@ -33,8 +33,6 @@ use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
 use Poweradmin\LegacyUsers;
 
-require_once 'inc/toolkit.inc.php';
-
 class AddSuperMasterController extends BaseController
 {
 

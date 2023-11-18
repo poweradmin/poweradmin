@@ -35,8 +35,6 @@ use Poweradmin\LegacyUsers;
 use Poweradmin\User;
 use Poweradmin\Validation;
 
-require_once 'inc/toolkit.inc.php';
-
 class DeleteUserController extends BaseController {
 
     public function run(): void

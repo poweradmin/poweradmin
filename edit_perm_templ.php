@@ -32,8 +32,6 @@
 use Poweradmin\BaseController;
 use Poweradmin\LegacyUsers;
 
-require_once 'inc/toolkit.inc.php';
-
 class EditPermTemplController extends BaseController
 {
 

@@ -42,19 +42,7 @@ use Poweradmin\Infrastructure\Web\HttpPaginationParameters;
 use Poweradmin\LegacyUsers;
 use Poweradmin\Permission;
 
-require_once 'inc/toolkit.inc.php';
-
 class ListZonesController extends BaseController {
-
-    private object $db;
-
-    public function __construct()
-    {
-        parent::__construct();
-
-        global $db;
-        $this->db = $db;
-    }
 
     public function run(): void
     {

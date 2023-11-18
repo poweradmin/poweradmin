@@ -34,8 +34,6 @@ use Poweradmin\LegacyUsers;
 use Poweradmin\Permission;
 use Poweradmin\Validation;
 
-require_once 'inc/toolkit.inc.php';
-
 class EditUserController extends BaseController
 {
 

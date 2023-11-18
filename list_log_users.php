@@ -35,8 +35,6 @@ use Poweradmin\BaseController;
 use Poweradmin\DbUserLogger;
 use Poweradmin\Infrastructure\Web\HttpPaginationParameters;
 
-require_once 'inc/toolkit.inc.php';
-
 class ListLogUsersController extends BaseController {
 
     public function run(): void

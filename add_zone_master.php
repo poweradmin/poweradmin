@@ -37,8 +37,6 @@ use Poweradmin\LegacyLogger;
 use Poweradmin\LegacyUsers;
 use Poweradmin\ZoneTemplate;
 
-require_once 'inc/toolkit.inc.php';
-
 class AddZoneMasterController extends BaseController
 {
 

@@ -77,6 +77,7 @@ return array(
     'Poweradmin\\Infrastructure\\Web\\LanguageCode' => $baseDir . '/lib/Infrastructure/Web/LanguageCode.php',
     'Poweradmin\\Infrastructure\\Web\\ThemeManager' => $baseDir . '/lib/Infrastructure/Web/ThemeManager.php',
     'Poweradmin\\LdapUserEventLogger' => $baseDir . '/lib/LdapUserEventLogger.php',
+    'Poweradmin\\LegacyApplicationInitializer' => $baseDir . '/lib/LegacyApplicationInitializer.php',
     'Poweradmin\\LegacyAuthenticateSession' => $baseDir . '/lib/LegacyAuthenticateSession.php',
     'Poweradmin\\LegacyConfiguration' => $baseDir . '/lib/LegacyConfiguration.php',
     'Poweradmin\\LegacyLocale' => $baseDir . '/lib/LegacyLocale.php',

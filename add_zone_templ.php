@@ -33,8 +33,6 @@ use Poweradmin\BaseController;
 use Poweradmin\LegacyUsers;
 use Poweradmin\ZoneTemplate;
 
-require_once 'inc/toolkit.inc.php';
-
 class AddZoneTemplateController extends BaseController
 {
     public function run(): void

@@ -39,8 +39,6 @@ use Poweradmin\LegacyUsers;
 use Poweradmin\Permission;
 use Poweradmin\RecordType;
 
-require_once 'inc/toolkit.inc.php';
-
 class AddRecordController extends BaseController
 {
 
