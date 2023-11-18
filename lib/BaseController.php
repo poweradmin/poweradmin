@@ -34,11 +34,11 @@ abstract class BaseController
 
     abstract public function run(): void;
 
-    public function __construct()
+    public function __construct(bool $authenticate = true)
     {
         $this->app = AppFactory::create();
 
-        $this->init = new LegacyApplicationInitializer();
+        $this->init = new LegacyApplicationInitializer($authenticate);
         $this->db = $this->init->getDb();
     }
 
@@ -225,8 +225,6 @@ EOF;
 
     private function renderFooter(): void
     {
-        global $db;
-
         $iface_style = $this->app->config('iface_style');
         $themeManager = new ThemeManager($iface_style);
         $selected_theme = $themeManager->getSelectedTheme();
@@ -237,13 +235,11 @@ EOF;
             'version' => isset($_SESSION["userid"]) ? Version::VERSION : false,
             'custom_footer' => file_exists('templates/custom/footer.html'),
             'display_stats' => $display_stats ? $this->app->displayStats() : false,
-            'db_queries' => $this->app->config('db_debug') ? $db->getQueries() : false, // FIXME
+            'db_queries' => $this->app->config('db_debug') ? $this->db->getQueries() : false, // FIXME
             'show_theme_switcher' => in_array($selected_theme, ['ignite', 'spark']),
             'iface_style' => $selected_theme,
         ]);
 
-        if (is_object($db)) {
-            $db->disconnect();
-        }
+        $this->db->disconnect();
     }
 }

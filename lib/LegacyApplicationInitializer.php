@@ -33,13 +33,15 @@ class LegacyApplicationInitializer
     private LegacyConfiguration $config;
     private PDOLayer $db;
 
-    public function __construct()
+    public function __construct(bool $authenticate)
     {
         $this->checkConfigurationFile();
         $this->initializeSessionAndDependencies();
         $this->loadConfiguration();
         $this->connectToDatabase();
-        $this->authenticateUser();
+        if ($authenticate) {
+            $this->authenticateUser();
+        }
     }
 
     public function checkConfigurationFile(): void
@@ -85,7 +87,7 @@ class LegacyApplicationInitializer
 
     public function authenticateUser(): void
     {
-        $legacyAuthenticateSession = new LegacyAuthenticateSession();
+        $legacyAuthenticateSession = new LegacyAuthenticateSession($this->db, $this->config);
         $legacyAuthenticateSession->authenticate();
     }
 

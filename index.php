@@ -32,6 +32,8 @@
 use Poweradmin\BaseController;
 use Poweradmin\LegacyUsers;
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 class IndexController extends BaseController
 {
     public function run(): void
@@ -43,9 +45,11 @@ class IndexController extends BaseController
     {
         $template = sprintf("index_%s.html", $this->config('iface_index'));
 
+        $userlogin = $_SESSION["userlogin"] ?? '';
+
         $this->render($template, [
-            'user_name' => empty($_SESSION["name"]) ? $_SESSION["userlogin"] : $_SESSION["name"],
-            'auth_used' => $_SESSION["auth_used"],
+            'user_name' => empty($_SESSION["name"]) ? $userlogin : $_SESSION["name"],
+            'auth_used' => $_SESSION["auth_used"] ?? '',
             'perm_search' => LegacyUsers::verify_permission('search'),
             'perm_view_zone_own' => LegacyUsers::verify_permission('zone_content_view_own'),
             'perm_view_zone_other' => LegacyUsers::verify_permission('zone_content_view_others'),

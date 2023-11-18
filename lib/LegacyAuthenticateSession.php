@@ -13,8 +13,13 @@ use Poweradmin\Infrastructure\Service\RedirectService;
 class LegacyAuthenticateSession
 {
     private AuthenticationService $authenticationService;
+    private PDOLayer $db;
+    private LegacyConfiguration $config;
 
-    public function __construct() {
+    public function __construct(PDOLayer $db, LegacyConfiguration $config) {
+        $this->db = $db;
+        $this->config = $config;
+
         $sessionService = new SessionService();
         $redirectService = new RedirectService();
         $this->authenticationService = new AuthenticationService($sessionService, $redirectService);
@@ -29,9 +34,9 @@ class LegacyAuthenticateSession
      */
     function authenticate(): void
     {
-        global $iface_expire;
-        global $session_key;
-        global $ldap_use;
+        $iface_expire = $this->config->get('iface_expire');
+        $session_key = $this->config->get('session_key');
+        $ldap_use = $this->config->get('ldap_use');
 
         if (isset($_SESSION['userid']) && isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] == "logout") {
             $sessionEntity = new SessionEntity(_('You have logged out.'), 'success');
@@ -61,22 +66,20 @@ class LegacyAuthenticateSession
         // If the session hasn't expired yet, give our session a fresh new timestamp.
         $_SESSION["lastmod"] = time();
 
-        if ($ldap_use && self::userUsesLDAP()) {
+        if ($ldap_use && $this->userUsesLDAP()) {
             $this->LDAPAuthenticate();
         } else {
             $this->SQLAuthenticate();
         }
     }
 
-    private static function userUsesLDAP(): bool
+    private function userUsesLDAP(): bool
     {
         if (!isset($_SESSION["userlogin"])) {
             return false;
         }
 
-        global $db;
-
-        $rowObj = $db->queryRow("SELECT id FROM users WHERE username=" . $db->quote($_SESSION["userlogin"], 'text') . " AND use_ldap=1");
+        $rowObj = $this->db->queryRow("SELECT id FROM users WHERE username=" . $this->db->quote($_SESSION["userlogin"], 'text') . " AND use_ldap=1");
         if ($rowObj) {
             return true;
         }
@@ -85,15 +88,14 @@ class LegacyAuthenticateSession
 
     private function LDAPAuthenticate(): void
     {
-        global $db;
-        global $session_key;
-        global $ldap_uri;
-        global $ldap_basedn;
-        global $ldap_binddn;
-        global $ldap_bindpw;
-        global $ldap_proto;
-        global $ldap_debug;
-        global $ldap_user_attribute;
+        $session_key = $this->config->get('session_key');
+        $ldap_uri = $this->config->get('ldap_uri');
+        $ldap_basedn = $this->config->get('ldap_basedn');
+        $ldap_binddn = $this->config->get('ldap_binddn');
+        $ldap_bindpw = $this->config->get('ldap_bindpw');
+        $ldap_proto = $this->config->get('ldap_proto');
+        $ldap_debug = $this->config->get('ldap_debug');
+        $ldap_user_attribute = $this->config->get('ldap_user_attribute');
 
         if (!isset($_SESSION["userlogin"]) || !isset($_SESSION["userpwd"])) {
             $sessionEntity = new SessionEntity('', 'danger');
@@ -165,7 +167,7 @@ class LegacyAuthenticateSession
             return;
         }
 
-        $rowObj = $db->queryRow("SELECT id, fullname FROM users WHERE username=" . $db->quote($_SESSION["userlogin"], 'text') . " AND active=1 AND use_ldap=1");
+        $rowObj = $this->db->queryRow("SELECT id, fullname FROM users WHERE username=" . $this->db->quote($_SESSION["userlogin"], 'text') . " AND active=1 AND use_ldap=1");
         if (!$rowObj) {
             if (isset($_POST["authenticate"])) {
                 LdapUserEventLogger::log_failed_user_inactive();
@@ -188,8 +190,7 @@ class LegacyAuthenticateSession
 
     private function SQLAuthenticate(): void
     {
-        global $db;
-        global $session_key;
+        $session_key = $this->config->get('session_key');
 
         if (!isset($_SESSION["userlogin"]) || !isset($_SESSION["userpwd"])) {
             $sessionEntity = new SessionEntity('', 'danger');
@@ -200,7 +201,7 @@ class LegacyAuthenticateSession
         $passwordEncryptionService = new PasswordEncryptionService($session_key);
         $session_pass = $passwordEncryptionService->decrypt($_SESSION['userpwd']);
 
-        $stmt = $db->prepare("SELECT id, fullname, password, active FROM users WHERE username=:username AND use_ldap=0");
+        $stmt = $this->db->prepare("SELECT id, fullname, password, active FROM users WHERE username=:username AND use_ldap=0");
         $stmt->bindParam(':username', $_SESSION["userlogin"]);
         $stmt->execute();
         $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -228,7 +229,7 @@ class LegacyAuthenticateSession
         }
 
         if ($userAuthService->requiresRehash($rowObj['password'])) {
-            \Poweradmin\update_user_password($rowObj["id"], $session_pass);
+            update_user_password($rowObj["id"], $session_pass);
         }
 
         session_regenerate_id(true);
