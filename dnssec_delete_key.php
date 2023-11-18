@@ -33,6 +33,7 @@ use Poweradmin\Application\Dnssec\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
 use Poweradmin\Domain\Dnssec\DnssecAlgorithm;
+use Poweradmin\LegacyUsers;
 use Poweradmin\Validation;
 
 require_once 'inc/toolkit.inc.php';
@@ -57,7 +58,7 @@ class DnsSecDeleteKeyController extends BaseController
             $confirm = $_GET['confirm'];
         }
 
-        $user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
+        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($zone_id);
 
         if ($zone_id == "-1") {
             $this->showError(_('Invalid or unexpected input given.'));

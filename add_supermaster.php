@@ -31,6 +31,7 @@
 
 use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
+use Poweradmin\LegacyUsers;
 
 require_once 'inc/toolkit.inc.php';
 
@@ -65,11 +66,11 @@ class AddSuperMasterController extends BaseController
     private function showAddSuperMaster($master_ip, $ns_name, $account): void
     {
         $this->render('add_supermaster.html', [
-            'users' => show_users(),
+            'users' => LegacyUsers::show_users(),
             'master_ip' => htmlspecialchars($master_ip),
             'ns_name' => htmlspecialchars($ns_name),
             'account' => htmlspecialchars($account),
-            'perm_view_others' => verify_permission('user_view_others'),
+            'perm_view_others' => LegacyUsers::verify_permission('user_view_others'),
             'session_uid' => $_SESSION['userid']
         ]);
     }

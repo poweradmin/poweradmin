@@ -32,6 +32,7 @@
 use Poweradmin\Application\Dnssec\DnssecProviderFactory;
 use Poweradmin\DnsRecord;
 use Poweradmin\Domain\Dnssec\DnssecAlgorithmName;
+use Poweradmin\LegacyUsers;
 use Poweradmin\Validation;
 
 require_once 'inc/toolkit.inc.php';
@@ -45,7 +46,7 @@ class DnsSecAddKeyController extends \Poweradmin\BaseController {
             $zone_id = htmlspecialchars($_GET['id']);
         }
 
-        $user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
+        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($zone_id);
 
         if ($user_is_zone_owner == "0") {
             $this->showError(_("You do not have the permission to view this zone."));

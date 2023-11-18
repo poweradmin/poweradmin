@@ -38,9 +38,9 @@ class Permission
      */
     public static function getViewPermission(): string
     {
-        if (verify_permission('zone_content_view_others')) {
+        if (LegacyUsers::verify_permission('zone_content_view_others')) {
             return "all";
-        } elseif (verify_permission('zone_content_view_own')) {
+        } elseif (LegacyUsers::verify_permission('zone_content_view_own')) {
             return "own";
         } else {
             return "none";
@@ -56,11 +56,11 @@ class Permission
      */
     public static function getEditPermission(): string
     {
-        if (verify_permission('zone_content_edit_others')) {
+        if (LegacyUsers::verify_permission('zone_content_edit_others')) {
             return "all";
-        } elseif (verify_permission('zone_content_edit_own')) {
+        } elseif (LegacyUsers::verify_permission('zone_content_edit_own')) {
             return "own";
-        } elseif (verify_permission('zone_content_edit_own_as_client')) {
+        } elseif (LegacyUsers::verify_permission('zone_content_edit_own_as_client')) {
             return "own_as_client";
         } else {
             return "none";
@@ -80,7 +80,7 @@ class Permission
         $permissions = [];
 
         foreach ($arguments as $argument) {
-            $permissions[$argument] = verify_permission($argument);
+            $permissions[$argument] = LegacyUsers::verify_permission($argument);
         }
 
         return $permissions;

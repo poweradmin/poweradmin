@@ -32,9 +32,10 @@
 use Poweradmin\Application\Dnssec\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
+use Poweradmin\LegacyLogger;
+use Poweradmin\LegacyUsers;
 use Poweradmin\Permission;
 use Poweradmin\Validation;
-use Poweradmin\LegacyLogger;
 
 require_once 'inc/toolkit.inc.php';
 
@@ -83,7 +84,7 @@ class DeleteRecordController extends BaseController {
 
         $zone_info = DnsRecord::get_zone_info_from_id($zid);
         $zone_id = DnsRecord::recid_to_domid($record_id);
-        $user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
+        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($zone_id);
         if ($zone_info['type'] == "SLAVE" || $perm_edit == "none" || ($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0") {
             $this->showError(_("You do not have the permission to edit this record."));
         }

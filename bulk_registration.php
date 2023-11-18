@@ -33,6 +33,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Dns;
 use Poweradmin\DnsRecord;
 use Poweradmin\LegacyLogger;
+use Poweradmin\LegacyUsers;
 use Poweradmin\ZoneTemplate;
 
 require_once 'inc/toolkit.inc.php';
@@ -93,10 +94,10 @@ class BulkRegistrationController extends BaseController {
     {
         $this->render('bulk_registration.html', [
             'userid' => $_SESSION['userid'],
-            'perm_view_others' => verify_permission('user_view_others'),
+            'perm_view_others' => LegacyUsers::verify_permission('user_view_others'),
             'iface_zone_type_default' => $this->config('iface_zone_type_default'),
             'available_zone_types' => array("MASTER", "NATIVE"),
-            'users' => show_users(),
+            'users' => LegacyUsers::show_users(),
             'zone_templates' => ZoneTemplate::get_list_zone_templ($_SESSION['userid']),
             'failed_domains' => $failed_domains,
         ]);

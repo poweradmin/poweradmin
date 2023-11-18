@@ -35,6 +35,7 @@ use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
 use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\LegacyLogger;
+use Poweradmin\LegacyUsers;
 use Poweradmin\Permission;
 use Poweradmin\RecordType;
 
@@ -50,7 +51,7 @@ class AddRecordController extends BaseController
         $perm_edit = Permission::getEditPermission();
         $zone_id = htmlspecialchars($_GET['id']);
         $zone_type = DnsRecord::get_domain_type($zone_id);
-        $user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
+        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($zone_id);
 
         $this->checkCondition($zone_type == "SLAVE"
             || $perm_edit == "none"

@@ -30,6 +30,7 @@
  */
 
 use Poweradmin\BaseController;
+use Poweradmin\LegacyUsers;
 use Poweradmin\Permission;
 
 require_once 'inc/toolkit.inc.php';
@@ -49,7 +50,7 @@ class UsersController extends BaseController
     {
         $success = false;
         foreach ($_POST['user'] as $user) {
-            $result = update_user_details($user);
+            $result = LegacyUsers::update_user_details($user);
             if ($result) {
                 $success = true;
             }
@@ -69,11 +70,11 @@ class UsersController extends BaseController
                 'user_edit_templ_perm',
                 'user_is_ueberuser',
             ),
-            'perm_templates' => list_permission_templates(),
-            'users' => get_user_detail_list(""),
+            'perm_templates' => LegacyUsers::list_permission_templates(),
+            'users' => LegacyUsers::get_user_detail_list(""),
             'ldap_use' => $this->config('ldap_use'),
             'session_userid' => $_SESSION["userid"],
-            'perm_add_new' => verify_permission('user_add_new'),
+            'perm_add_new' => LegacyUsers::verify_permission('user_add_new'),
         ]);
     }
 }

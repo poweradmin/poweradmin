@@ -33,6 +33,7 @@ use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
 use Poweradmin\Domain\Error\ErrorMessage;
+use Poweradmin\LegacyUsers;
 use Poweradmin\Permission;
 use Poweradmin\Validation;
 
@@ -56,7 +57,7 @@ class EditCommentController extends BaseController {
         }
         $zone_id = htmlspecialchars($_GET['id']);
 
-        $user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
+        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($zone_id);
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
             $this->showError(_("You do not have the permission to view this comment."));
         }

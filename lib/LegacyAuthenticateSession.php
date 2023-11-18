@@ -229,7 +229,7 @@ class LegacyAuthenticateSession
         }
 
         if ($userAuthService->requiresRehash($rowObj['password'])) {
-            update_user_password($rowObj["id"], $session_pass);
+            \Poweradmin\update_user_password($rowObj["id"], $session_pass);
         }
 
         session_regenerate_id(true);

@@ -30,6 +30,7 @@
  */
 
 use Poweradmin\BaseController;
+use Poweradmin\LegacyUsers;
 use Poweradmin\Permission;
 use Poweradmin\Validation;
 
@@ -45,8 +46,8 @@ class EditUserController extends BaseController
             $edit_id = $_GET['id'];
         }
 
-        $perm_edit_own = verify_permission('user_edit_own');
-        $perm_edit_others = verify_permission('user_edit_others');
+        $perm_edit_own = LegacyUsers::verify_permission('user_edit_own');
+        $perm_edit_others = LegacyUsers::verify_permission('user_edit_others');
 
         if ($edit_id == "-1") {
             $this->showError(_('Invalid or unexpected input given.'));
@@ -95,7 +96,7 @@ class EditUserController extends BaseController
         if (isset($_POST['perm_templ']) && Validation::is_number($_POST['perm_templ'])) {
             $i_perm_templ = $_POST['perm_templ'];
         } else {
-            $user_details = get_user_detail_list($edit_id);
+            $user_details = LegacyUsers::get_user_detail_list($edit_id);
             $i_perm_templ = $user_details[0]['tpl_id'];
         }
 
@@ -114,7 +115,7 @@ class EditUserController extends BaseController
         }
 
         if ($i_username != "" && $i_perm_templ > "0" && $i_fullname) {
-            if (edit_user($edit_id, $i_username, $i_fullname, $i_email, $i_perm_templ, $i_description, $i_active, $i_password, $i_use_ldap)) {
+            if (LegacyUsers::edit_user($edit_id, $i_username, $i_fullname, $i_email, $i_perm_templ, $i_description, $i_active, $i_password, $i_use_ldap)) {
                 $this->setMessage('users', 'success', _('The user has been updated successfully.'));
                 $this->redirect('users.php');
             } else {
@@ -127,17 +128,17 @@ class EditUserController extends BaseController
 
     public function showUserEditForm($edit_id): void
     {
-        $users = get_user_detail_list($edit_id);
+        $users = LegacyUsers::get_user_detail_list($edit_id);
         if (empty($users)) {
             $this->showError(_('User does not exist.'));
         }
 
         $user = $users[0];
-        $edit_templ_perm = verify_permission('user_edit_templ_perm');
-        $passwd_edit_others_perm = verify_permission('user_passwd_edit_others');
-        $edit_own_perm = verify_permission('user_edit_own');
-        $permission_templates = list_permission_templates();
-        $user_permissions = get_permissions_by_template_id($user['tpl_id']);
+        $edit_templ_perm = LegacyUsers::verify_permission('user_edit_templ_perm');
+        $passwd_edit_others_perm = LegacyUsers::verify_permission('user_passwd_edit_others');
+        $edit_own_perm = LegacyUsers::verify_permission('user_edit_own');
+        $permission_templates = LegacyUsers::list_permission_templates();
+        $user_permissions = LegacyUsers::get_permissions_by_template_id($user['tpl_id']);
 
         ($user['active']) == "1" ? $check = " CHECKED" : $check = "";
         $name = $user['fullname'] ?: $user['username'];

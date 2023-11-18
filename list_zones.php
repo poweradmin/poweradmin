@@ -39,6 +39,7 @@ use Poweradmin\DnsRecord;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Infrastructure\Web\HttpPaginationParameters;
+use Poweradmin\LegacyUsers;
 use Poweradmin\Permission;
 
 require_once 'inc/toolkit.inc.php';
@@ -57,8 +58,8 @@ class ListZonesController extends BaseController {
 
     public function run(): void
     {
-        $perm_view_zone_own = verify_permission('zone_content_view_own');
-        $perm_view_zone_others = verify_permission('zone_content_view_others');
+        $perm_view_zone_own = LegacyUsers::verify_permission('zone_content_view_own');
+        $perm_view_zone_others = LegacyUsers::verify_permission('zone_content_view_others');
 
         $permission_check = !($perm_view_zone_own || $perm_view_zone_others);
         $this->checkCondition($permission_check, _('You do not have sufficient permissions to view this page.'));
@@ -140,8 +141,8 @@ class ListZonesController extends BaseController {
             'pagination' => $this->createAndPresentPagination($count_zones_all_letterstart, $iface_rowamount),
             'session_userlogin' => $_SESSION['userlogin'],
             'perm_edit' => $perm_edit,
-            'perm_zone_master_add' => verify_permission('zone_master_add'),
-            'perm_zone_slave_add' => verify_permission('zone_slave_add'),
+            'perm_zone_master_add' => LegacyUsers::verify_permission('zone_master_add'),
+            'perm_zone_slave_add' => LegacyUsers::verify_permission('zone_slave_add'),
         ]);
     }
 

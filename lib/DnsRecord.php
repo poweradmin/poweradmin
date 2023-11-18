@@ -653,8 +653,8 @@ class DnsRecord
      */
     public static function add_domain($domain, $owner, $type, $slave_master, $zone_template)
     {
-        $zone_master_add = verify_permission('zone_master_add');
-        $zone_slave_add = verify_permission('zone_slave_add');
+        $zone_master_add = LegacyUsers::verify_permission('zone_master_add');
+        $zone_slave_add = LegacyUsers::verify_permission('zone_slave_add');
 
         // TODO: make sure only one is possible if only one is enabled
         if ($zone_master_add || $zone_slave_add) {
@@ -830,7 +830,7 @@ class DnsRecord
     public static function add_owner_to_zone($zone_id, $user_id)
     {
         global $db;
-        if ((verify_permission('zone_meta_edit_others')) || (verify_permission('zone_meta_edit_own')) && verify_user_is_owner_zoneid($_GET["id"])) {
+        if ((LegacyUsers::verify_permission('zone_meta_edit_others')) || (LegacyUsers::verify_permission('zone_meta_edit_own')) && LegacyUsers::verify_user_is_owner_zoneid($_GET["id"])) {
             if (is_numeric($zone_id) && is_numeric($user_id) && is_valid_user($user_id)) {
                 if ($db->queryOne("SELECT COUNT(id) FROM zones WHERE owner=" . $db->quote($user_id, 'integer') . " AND domain_id=" . $db->quote($zone_id, 'integer')) == 0) {
                     $zone_templ_id = self::get_zone_template($zone_id);
@@ -870,7 +870,7 @@ class DnsRecord
     public static function delete_owner_from_zone($zone_id, $user_id)
     {
         global $db;
-        if ((verify_permission('zone_meta_edit_others')) || (verify_permission('zone_meta_edit_own')) && verify_user_is_owner_zoneid($_GET["id"])) {
+        if ((LegacyUsers::verify_permission('zone_meta_edit_others')) || (LegacyUsers::verify_permission('zone_meta_edit_own')) && LegacyUsers::verify_user_is_owner_zoneid($_GET["id"])) {
             if (is_numeric($zone_id) && is_numeric($user_id) && is_valid_user($user_id)) {
                 if ($db->queryOne("SELECT COUNT(id) FROM zones WHERE domain_id=" . $db->quote($zone_id, 'integer')) > 1) {
                     $db->query("DELETE FROM zones WHERE owner=" . $db->quote($user_id, 'integer') . " AND domain_id=" . $db->quote($zone_id, 'integer'));
@@ -1727,11 +1727,11 @@ class DnsRecord
         $perm_edit = Permission::getEditPermission();
         $user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
 
-        if (verify_permission('zone_master_add')) {
+        if (LegacyUsers::verify_permission('zone_master_add')) {
             $zone_master_add = "1";
         }
 
-        if (verify_permission('zone_slave_add')) {
+        if (LegacyUsers::verify_permission('zone_slave_add')) {
             $zone_slave_add = "1";
         }
 

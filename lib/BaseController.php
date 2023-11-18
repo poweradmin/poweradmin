@@ -138,7 +138,7 @@ EOF;
 
     public function checkPermission(string $permission, string $errorMessage): void
     {
-        if (!verify_permission($permission)) {
+        if (!LegacyUsers::verify_permission($permission)) {
             $error = new ErrorMessage($errorMessage);
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
@@ -195,20 +195,20 @@ EOF;
         $session_key = $this->app->config('session_key');
 
         if (isset($_SESSION["userid"])) {
-            $perm_is_godlike = verify_permission('user_is_ueberuser');
+            $perm_is_godlike = LegacyUsers::verify_permission('user_is_ueberuser');
 
             $vars = array_merge($vars, [
                 'user_logged_in' => isset($_SESSION["userid"]),
-                'perm_search' => verify_permission('search'),
-                'perm_view_zone_own' => verify_permission('zone_content_view_own'),
-                'perm_view_zone_other' => verify_permission('zone_content_view_others'),
-                'perm_supermaster_view' => verify_permission('supermaster_view'),
-                'perm_zone_master_add' => verify_permission('zone_master_add'),
-                'perm_zone_slave_add' => verify_permission('zone_slave_add'),
-                'perm_supermaster_add' => verify_permission('supermaster_add'),
+                'perm_search' => LegacyUsers::verify_permission('search'),
+                'perm_view_zone_own' => LegacyUsers::verify_permission('zone_content_view_own'),
+                'perm_view_zone_other' => LegacyUsers::verify_permission('zone_content_view_others'),
+                'perm_supermaster_view' => LegacyUsers::verify_permission('supermaster_view'),
+                'perm_zone_master_add' => LegacyUsers::verify_permission('zone_master_add'),
+                'perm_zone_slave_add' => LegacyUsers::verify_permission('zone_slave_add'),
+                'perm_supermaster_add' => LegacyUsers::verify_permission('supermaster_add'),
                 'perm_is_godlike' => $perm_is_godlike,
-                'perm_templ_perm_edit' => verify_permission('templ_perm_edit'),
-                'perm_add_new' => verify_permission('user_add_new'),
+                'perm_templ_perm_edit' => LegacyUsers::verify_permission('templ_perm_edit'),
+                'perm_add_new' => LegacyUsers::verify_permission('user_add_new'),
                 'session_key_error' => $perm_is_godlike && $session_key == 'p0w3r4dm1n' ? _('Default session encryption key is used, please set it in your configuration file.') : false,
                 'auth_used' => $_SESSION["auth_used"] != "ldap",
                 'dblog_use' => $dblog_use

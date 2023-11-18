@@ -34,6 +34,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Dns;
 use Poweradmin\DnsRecord;
 use Poweradmin\LegacyLogger;
+use Poweradmin\LegacyUsers;
 use Poweradmin\ZoneTemplate;
 
 require_once 'inc/toolkit.inc.php';
@@ -103,13 +104,13 @@ class AddZoneMasterController extends BaseController
 
     private function showForm(): void
     {
-        $perm_view_others = verify_permission('user_view_others');
+        $perm_view_others = LegacyUsers::verify_permission('user_view_others');
 
         $this->render('add_zone_master.html', [
             'perm_view_others' => $perm_view_others,
             'session_user_id' => $_SESSION['userid'],
             'available_zone_types' => array("MASTER", "NATIVE"),
-            'users' => show_users(),
+            'users' => LegacyUsers::show_users(),
             'zone_templates' => ZoneTemplate::get_list_zone_templ($_SESSION['userid']),
             'iface_zone_type_default' => $this->config('iface_zone_type_default'),
             'pdnssec_use' => $this->config('pdnssec_use'),

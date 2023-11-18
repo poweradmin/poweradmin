@@ -33,6 +33,7 @@
 use Poweradmin\Application\Dnssec\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
+use Poweradmin\LegacyUsers;
 use Poweradmin\Permission;
 use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
@@ -54,9 +55,9 @@ class DnsSecDsDnsKeyController extends BaseController {
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
-        $user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
+        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($zone_id);
 
-        (verify_permission('user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
+        (LegacyUsers::verify_permission('user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
 
         $perm_view = Permission::getViewPermission();
 

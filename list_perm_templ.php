@@ -30,6 +30,7 @@
  */
 
 use Poweradmin\BaseController;
+use Poweradmin\LegacyUsers;
 
 require_once 'inc/toolkit.inc.php';
 
@@ -46,8 +47,8 @@ class ListPermTemplController extends BaseController
     private function showListPermTempl(): void
     {
         $this->render('list_perm_templ.html', [
-            'templ_perm_add' => verify_permission('templ_perm_add'),
-            'permission_templates' => list_permission_templates(),
+            'templ_perm_add' => LegacyUsers::verify_permission('templ_perm_add'),
+            'permission_templates' => LegacyUsers::list_permission_templates(),
         ]);
     }
 }

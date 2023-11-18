@@ -33,6 +33,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Dns;
 use Poweradmin\DnsRecord;
 use Poweradmin\LegacyLogger;
+use Poweradmin\LegacyUsers;
 
 require_once 'inc/toolkit.inc.php';
 
@@ -96,9 +97,9 @@ class AddZoneSlaveController extends BaseController
     private function showForm(): void
     {
         $this->render('add_zone_slave.html', [
-            'users' => show_users(),
+            'users' => LegacyUsers::show_users(),
             'session_user_id' => $_SESSION['userid'],
-            'perm_view_others' => verify_permission('user_view_others'),
+            'perm_view_others' => LegacyUsers::verify_permission('user_view_others'),
         ]);
     }
 }
