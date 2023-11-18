@@ -38,8 +38,6 @@ use Poweradmin\LegacyConfiguration;
 use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
 
-require_once 'inc/session.inc.php';
-
 /**
  * Verify User has Permission Name
  *

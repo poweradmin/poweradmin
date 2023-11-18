@@ -24,7 +24,6 @@ use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\LegacyConfiguration;
 
-require_once '../inc/database.inc.php';
 require_once 'database_helpers.php';
 
 function checkConfigFile($current_step, $local_config_file, $twig): void
