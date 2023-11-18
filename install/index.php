@@ -21,8 +21,6 @@
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-require_once dirname(__DIR__) . '/inc/i18n.inc.php';
-
 require_once 'helpers/locale_handler.php';
 require_once 'helpers/database_structure.php';
 require_once 'helpers/template_utils.php';
