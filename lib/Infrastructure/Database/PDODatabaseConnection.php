@@ -77,7 +77,7 @@ class PDODatabaseConnection implements DatabaseConnection {
 
     private function constructDSN($credentials): string {
         $db_type = $credentials['db_type'];
-        $db_port = $credentials['db_port'] ?? $this->getDefaultPort($db_type);
+        $db_port = empty($credentials['db_port']) ? $this->getDefaultPort($db_type) : $credentials['db_port'];
 
         if ($db_type === 'sqlite' || $db_type === 'sqlite3') {
             return "$db_type:{$credentials['db_file']}";
