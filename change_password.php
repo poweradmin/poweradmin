@@ -30,11 +30,24 @@
  */
 
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\SessionEntity;
+use Poweradmin\Domain\Service\AuthenticationService;
+use Poweradmin\Domain\Service\SessionService;
+use Poweradmin\Infrastructure\Service\RedirectService;
 use Valitron\Validator;
 
 require_once 'inc/toolkit.inc.php';
 
 class ChangePasswordController extends BaseController {
+    private AuthenticationService $authService;
+
+    public function __construct() {
+        parent::__construct();
+
+        $sessionService = new SessionService();
+        $redirectService = new RedirectService();
+        $this->authService = new AuthenticationService($sessionService, $redirectService);
+    }
 
     public function run(): void
     {
@@ -49,7 +62,11 @@ class ChangePasswordController extends BaseController {
             ]);
 
             if ($v->validate()) {
-                change_user_pass($_POST);
+                $result = change_user_pass($_POST);
+                if ($result === true) {
+                    $sessionEntity = new SessionEntity(_('Password has been changed, please login.'), 'success');
+                    $this->authService->logout($sessionEntity);
+                }
             } else {
                 $this->showFirstError($v->errors());
             }

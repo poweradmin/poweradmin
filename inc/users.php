@@ -411,11 +411,11 @@ function update_user_password($id, $user_pass): void
  * Change the pass of the user.
  * The user is automatically logged out after the pass change.
  *
- * @param mixed[] $details User Details
+ * @param array $details User Details
  *
- * @return null
+ * @return bool
  */
-function change_user_pass(array $details)
+function change_user_pass(array $details): bool
 {
     global $db;
 
@@ -440,7 +440,7 @@ function change_user_pass(array $details)
         $query = "UPDATE users SET password = {$db->quote($userAuthService->hashPassword($details['new_password']), 'text')} WHERE id = {$db->quote($response['id'], 'integer')}";
         $db->query($query);
 
-        logout(_('Password has been changed, please login.'), 'success');
+        return true;
     }
 
     $error = new ErrorMessage(_('You did not enter the correct current password.'));

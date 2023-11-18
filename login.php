@@ -40,7 +40,6 @@ class LoginController extends BaseController {
         $preparedLocales = $localeService->prepareLocales($localesData, $this->config('iface_lang'));
 
         $localePresenter = new LocalePresenter();
-
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
