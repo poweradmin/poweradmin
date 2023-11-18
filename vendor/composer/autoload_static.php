@@ -146,6 +146,7 @@ class ComposerStaticInit02fd231869a48df50cb631d6580008da
         'Poweradmin\\LegacyAuthenticateSession' => __DIR__ . '/../..' . '/lib/LegacyAuthenticateSession.php',
         'Poweradmin\\LegacyConfiguration' => __DIR__ . '/../..' . '/lib/LegacyConfiguration.php',
         'Poweradmin\\LegacyLogger' => __DIR__ . '/../..' . '/lib/LegacyLogger.php',
+        'Poweradmin\\LegacyUsers' => __DIR__ . '/../..' . '/lib/LegacyUsers.php',
         'Poweradmin\\PDOCommon' => __DIR__ . '/../..' . '/lib/PDOCommon.php',
         'Poweradmin\\PDOLayer' => __DIR__ . '/../..' . '/lib/PDOLayer.php',
         'Poweradmin\\Permission' => __DIR__ . '/../..' . '/lib/Permission.php',

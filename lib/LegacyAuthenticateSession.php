@@ -96,7 +96,7 @@ class LegacyAuthenticateSession
         global $ldap_user_attribute;
 
         if (!isset($_SESSION["userlogin"]) || !isset($_SESSION["userpwd"])) {
-            $sessionEntity = new SessionEntity(_('No username and password set'), 'danger');
+            $sessionEntity = new SessionEntity('', 'danger');
             $this->authenticationService->auth($sessionEntity);
         }
 
@@ -192,8 +192,7 @@ class LegacyAuthenticateSession
         global $session_key;
 
         if (!isset($_SESSION["userlogin"]) || !isset($_SESSION["userpwd"])) {
-            // No username and password set, show auth form (again).
-            $sessionEntity = new SessionEntity(_('No username and password set'), 'danger');
+            $sessionEntity = new SessionEntity('', 'danger');
             $this->authenticationService->auth($sessionEntity);
             return;
         }

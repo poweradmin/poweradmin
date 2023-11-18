@@ -80,6 +80,7 @@ return array(
     'Poweradmin\\LegacyAuthenticateSession' => $baseDir . '/lib/LegacyAuthenticateSession.php',
     'Poweradmin\\LegacyConfiguration' => $baseDir . '/lib/LegacyConfiguration.php',
     'Poweradmin\\LegacyLogger' => $baseDir . '/lib/LegacyLogger.php',
+    'Poweradmin\\LegacyUsers' => $baseDir . '/lib/LegacyUsers.php',
     'Poweradmin\\PDOCommon' => $baseDir . '/lib/PDOCommon.php',
     'Poweradmin\\PDOLayer' => $baseDir . '/lib/PDOLayer.php',
     'Poweradmin\\Permission' => $baseDir . '/lib/Permission.php',

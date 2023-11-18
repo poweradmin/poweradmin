@@ -32,8 +32,7 @@
 use Poweradmin\BaseController;
 use Poweradmin\LegacyUsers;
 
-require 'vendor/autoload.php';
-
+require_once 'vendor/autoload.php';
 require_once 'inc/toolkit.inc.php';
 
 class IndexController extends BaseController
