@@ -30,6 +30,7 @@
  */
 
 use Poweradmin\Application\Dnssec\DnssecProviderFactory;
+use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
 use Poweradmin\Domain\Dnssec\DnssecAlgorithm;
 use Poweradmin\LegacyUsers;
@@ -37,7 +38,7 @@ use Poweradmin\Validation;
 
 require_once 'inc/toolkit.inc.php';
 
-class DnsSecEditKeyController extends \Poweradmin\BaseController {
+class DnsSecEditKeyController extends BaseController {
 
     public function run(): void
     {
