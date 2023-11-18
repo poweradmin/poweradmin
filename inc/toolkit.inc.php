@@ -31,7 +31,7 @@ use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\DependencyCheck;
 use Poweradmin\LegacyConfiguration;
 
-if (!file_exists('config.inc.php')) {
+if (!file_exists('inc/config.inc.php')) {
     $error = new ErrorMessage(_('The configuration file (config.inc.php) does not exist. Please use the <a href="install/">installer</a> to create it.'));
     $errorPresenter = new ErrorPresenter();
     $errorPresenter->present($error);
