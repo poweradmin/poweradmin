@@ -22,8 +22,10 @@
 
 namespace Poweradmin\Application\Service;
 
+use Exception;
 use Poweradmin\Domain\Connection\DatabaseConnection;
 use Poweradmin\PDOLayer;
+use RuntimeException;
 
 class DatabaseService {
     private DatabaseConnection $databaseConnection;
@@ -36,8 +38,8 @@ class DatabaseService {
     {
         try {
             return $this->databaseConnection->connect($credentials);
-        } catch (\Exception $e) {
-            throw new \RuntimeException("Database connection failed: " . $e->getMessage());
+        } catch (Exception $e) {
+            throw new RuntimeException("Database connection failed: " . $e->getMessage());
         }
     }
 }
