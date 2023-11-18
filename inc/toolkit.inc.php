@@ -41,11 +41,11 @@ if (!@include_once('config.inc.php')) {
 
 session_start();
 
+DependencyCheck::verifyExtensions();
+
 require_once 'inc/authenticate.php';
 require_once 'inc/users.php';
 require_once 'i18n.inc.php';
-
-DependencyCheck::verifyExtensions();
 
 $config = new LegacyConfiguration();
 
