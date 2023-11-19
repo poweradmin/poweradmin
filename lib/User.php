@@ -24,26 +24,24 @@ namespace Poweradmin;
 
 class User
 {
-    public static function exists($name): bool
+    public static function exists($db, $name): bool
     {
         if ($name == "") {
             return false;
         }
 
-        global $db;
         $stmt = $db->prepare("SELECT id FROM users WHERE username=:user");
         $stmt->execute(['user' => $name]);
 
         return (bool)$stmt->fetch();
     }
 
-    public static function get_username_by_id($user_id): string
+    public static function get_username_by_id($db, $user_id): string
     {
         if ($user_id == "") {
             return "";
         }
 
-        global $db;
         $stmt = $db->prepare("SELECT username FROM users WHERE id=:user_id");
         $stmt->execute(['user_id' => $user_id]);
 

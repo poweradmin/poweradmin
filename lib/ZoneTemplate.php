@@ -35,6 +35,13 @@ use Poweradmin\Domain\Error\ErrorMessage;
  */
 class ZoneTemplate
 {
+    private LegacyConfiguration $config;
+
+    public function __construct()
+    {
+        $this->config = new LegacyConfiguration();
+    }
+
     /** Get a list of all available zone templates
      *
      * @param int $userid User ID
@@ -43,8 +50,6 @@ class ZoneTemplate
      */
     public static function get_list_zone_templ($db, int $userid): array
     {
-        global $db;
-
         $query = "SELECT zt.id, zt.name, zt.descr, u.username, u.fullname, COUNT(z.zone_templ_id) as zones_linked
             FROM zone_templ zt
             LEFT JOIN users u ON zt.owner = u.id
@@ -73,7 +78,7 @@ class ZoneTemplate
      */
     public static function add_zone_templ($db, $details, $userid)
     {
-        $zone_name_exists = ZoneTemplate::zone_templ_name_exists($details['templ_name']);
+        $zone_name_exists = ZoneTemplate::zone_templ_name_exists($db, $details['templ_name']);
         if (!(LegacyUsers::verify_permission($db, 'zone_master_add'))) {
             $error = new ErrorMessage(_("You do not have the permission to add a zone template."));
             $errorPresenter = new ErrorPresenter();
@@ -96,10 +101,8 @@ class ZoneTemplate
         return false;
     }
 
-    public static function get_zone_templ_name($zone_id)
+    public static function get_zone_templ_name($db, $zone_id)
     {
-        global $db;
-
         $stmt = $db->prepare("SELECT zt.name FROM zones z JOIN zone_templ zt ON zt.id = z.zone_templ_id WHERE z.domain_id = :zone_id");
         $stmt->execute([':zone_id' => $zone_id]);
         $result = $stmt->fetch();
@@ -113,10 +116,8 @@ class ZoneTemplate
      *
      * @return mixed[] zone template details
      */
-    public static function get_zone_templ_details($zone_templ_id)
+    public static function get_zone_templ_details($db, $zone_templ_id)
     {
-        global $db;
-
         $query = "SELECT *"
             . " FROM zone_templ"
             . " WHERE id = " . $db->quote($zone_templ_id, 'integer');
@@ -186,9 +187,8 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public static function count_zone_templ_records($zone_templ_id)
+    public static function count_zone_templ_records($db, $zone_templ_id)
     {
-        global $db;
         $query = "SELECT COUNT(id) FROM zone_templ_records WHERE zone_templ_id = " . $db->quote($zone_templ_id, 'integer');
         return $db->queryOne($query);
     }
@@ -199,9 +199,8 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public static function zone_templ_id_exists($zone_templ_id)
+    public static function zone_templ_id_exists($db, $zone_templ_id)
     {
-        global $db;
         $query = "SELECT COUNT(id) FROM zone_templ WHERE id = " . $db->quote($zone_templ_id, 'integer');
         return $db->queryOne($query);
     }
@@ -215,9 +214,8 @@ class ZoneTemplate
      * @return mixed[] zone template record
      * [id,zone_templ_id,name,type,content,ttl,prio] or -1 if nothing is found
      */
-    public static function get_zone_templ_record_from_id($id)
+    public static function get_zone_templ_record_from_id($db, $id)
     {
-        global $db;
         if (is_numeric($id)) {
             $result = $db->queryRow("SELECT id, zone_templ_id, name, type, content, ttl, prio FROM zone_templ_records WHERE id=" . $db->quote($id, 'integer'));
             if ($result) {
@@ -252,10 +250,8 @@ class ZoneTemplate
      * @return mixed[] zone template records numerically indexed
      * [id,zone_templd_id,name,type,content,ttl,pro] or empty array if nothing is found
      */
-    public static function get_zone_templ_records($id, $rowstart = 0, $rowamount = 999999, $sortby = 'name')
+    public static function get_zone_templ_records($db, $id, $rowstart = 0, $rowamount = 999999, $sortby = 'name')
     {
-        global $db;
-
         if (is_numeric($id)) {
             $db->setLimit($rowamount, $rowstart);
             $result = $db->query("SELECT id FROM zone_templ_records WHERE zone_templ_id=" . $db->quote($id, 'integer') . " ORDER BY " . $sortby);
@@ -263,7 +259,7 @@ class ZoneTemplate
             $retcount = 0;
             while ($r = $result->fetch()) {
                 // Call get_record_from_id for each row.
-                $ret[$retcount] = ZoneTemplate::get_zone_templ_record_from_id($r["id"]);
+                $ret[$retcount] = ZoneTemplate::get_zone_templ_record_from_id($db, $r["id"]);
                 $retcount++;
             }
             return ($retcount > 0 ? $ret : []);
@@ -408,10 +404,8 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public static function get_zone_templ_is_owner($zone_templ_id, $userid)
+    public static function get_zone_templ_is_owner($db, $zone_templ_id, $userid)
     {
-        global $db;
-
         $query = "SELECT owner FROM zone_templ WHERE id = " . $db->quote($zone_templ_id, 'integer');
         $result = $db->queryOne($query);
 
@@ -432,10 +426,8 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public static function add_zone_templ_save_as($db, $template_name, $description, $userid, $records, $domain = null)
+    public static function add_zone_templ_save_as($db, $db_type, $template_name, $description, $userid, $records, $domain = null)
     {
-        global $db_type;
-
         if (!(LegacyUsers::verify_permission($db, 'zone_master_add'))) {
             $error = new ErrorMessage(_("You do not have the permission to add a zone template."));
             $errorPresenter = new ErrorPresenter();
@@ -485,11 +477,9 @@ class ZoneTemplate
      *
      * @return array array of zones ids
      */
-    public static function get_list_zone_use_templ(int $zone_templ_id, int $userid): array
+    public static function get_list_zone_use_templ($db, int $zone_templ_id, int $userid): array
     {
-        global $db;
-
-        $perm_edit = Permission::getEditPermission();
+        $perm_edit = Permission::getEditPermission($db);
 
         $sql_add = '';
         if ($perm_edit != "all") {
@@ -528,7 +518,7 @@ class ZoneTemplate
      */
     public static function edit_zone_templ($db, $details, $zone_templ_id, $user_id)
     {
-        $zone_name_exists = ZoneTemplate::zone_templ_name_exists($details['templ_name'], $zone_templ_id);
+        $zone_name_exists = ZoneTemplate::zone_templ_name_exists($db, $details['templ_name'], $zone_templ_id);
         if (!(LegacyUsers::verify_permission($db, 'zone_master_add'))) {
             $error = new ErrorMessage(_("You do not have the permission to add a zone template."));
             $errorPresenter = new ErrorPresenter();
@@ -571,10 +561,8 @@ class ZoneTemplate
      *
      * @return array|bool number of matching templates
      */
-    public static function zone_templ_name_exists($zone_templ_name, $zone_templ_id = null)
+    public static function zone_templ_name_exists($db, $zone_templ_name, $zone_templ_id = null)
     {
-        global $db;
-
         $sql_add = '';
         if ($zone_templ_id) {
             $sql_add = " AND id != " . $db->quote($zone_templ_id, 'integer');
@@ -591,9 +579,13 @@ class ZoneTemplate
      *
      * @return string interpolated/parsed string
      */
-    public static function parse_template_value($val, $domain): string
+    public function parse_template_value($val, $domain): string
     {
-        global $dns_ns1, $dns_ns2, $dns_ns3, $dns_ns4, $dns_hostmaster;
+        $dns_ns1 = $this->config->get('dns_ns1');
+        $dns_ns2 = $this->config->get('dns_ns2');
+        $dns_ns3 = $this->config->get('dns_ns3');
+        $dns_ns4 = $this->config->get('dns_ns4');
+        $dns_hostmaster = $this->config->get('dns_hostmaster');
 
         $serial = date("Ymd");
         $serial .= "00";

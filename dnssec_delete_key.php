@@ -36,6 +36,8 @@ use Poweradmin\Domain\Dnssec\DnssecAlgorithm;
 use Poweradmin\LegacyUsers;
 use Poweradmin\Validation;
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 class DnsSecDeleteKeyController extends BaseController
 {
 
@@ -62,13 +64,13 @@ class DnsSecDeleteKeyController extends BaseController
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
-        $domain_name = DnsRecord::get_domain_name_by_id($zone_id);
+        $domain_name = DnsRecord::get_domain_name_by_id($this->db, $zone_id);
 
         if ($key_id == "-1") {
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
-        $dnssecProvider = DnssecProviderFactory::create($this->getConfig());
+        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
         if (!$dnssecProvider->keyExists($domain_name, $key_id)) {
             $this->showError(_('Invalid or unexpected input given.'));
@@ -88,7 +90,7 @@ class DnsSecDeleteKeyController extends BaseController
 
     public function showKeyInfo($domain_name, $key_id, string $zone_id): void
     {
-        $dnssecProvider = DnssecProviderFactory::create($this->getConfig());
+        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
         $key_info = $dnssecProvider->getZoneKey($domain_name, $key_id);
 
         if (preg_match("/^xn--/", $domain_name)) {

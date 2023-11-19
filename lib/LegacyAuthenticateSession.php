@@ -15,6 +15,8 @@ class LegacyAuthenticateSession
     private AuthenticationService $authenticationService;
     private PDOLayer $db;
     private LegacyConfiguration $config;
+    private UserEventLogger $userEventLogger;
+    private LdapUserEventLogger $ldapUserEventLogger;
 
     public function __construct(PDOLayer $db, LegacyConfiguration $config) {
         $this->db = $db;
@@ -23,6 +25,9 @@ class LegacyAuthenticateSession
         $sessionService = new SessionService();
         $redirectService = new RedirectService();
         $this->authenticationService = new AuthenticationService($sessionService, $redirectService);
+
+        $this->userEventLogger = new UserEventLogger($db);
+        $this->ldapUserEventLogger = new LdapUserEventLogger($db);
     }
 
     /** Authenticate Session
@@ -109,7 +114,7 @@ class LegacyAuthenticateSession
         $ldapconn = ldap_connect($ldap_uri);
         if (!$ldapconn) {
             if (isset($_POST["authenticate"])) {
-                LdapUserEventLogger::log_failed_reason('ldap_connect');
+                $this->ldapUserEventLogger->log_failed_reason('ldap_connect');
             }
             $sessionEntity = new SessionEntity(_('Failed to connect to LDAP server!'), 'danger');
             $this->authenticationService->logout($sessionEntity);
@@ -120,7 +125,7 @@ class LegacyAuthenticateSession
         $ldapbind = ldap_bind($ldapconn, $ldap_binddn, $ldap_bindpw);
         if (!$ldapbind) {
             if (isset($_POST["authenticate"])) {
-                LdapUserEventLogger::log_failed_reason('ldap_bind');
+                $this->ldapUserEventLogger->log_failed_reason('ldap_bind');
             }
             $sessionEntity = new SessionEntity(_('Failed to bind to LDAP server!'), 'danger');
             $this->authenticationService->logout($sessionEntity);
@@ -132,7 +137,7 @@ class LegacyAuthenticateSession
         $ldapsearch = ldap_search($ldapconn, $ldap_basedn, $filter, $attributes);
         if (!$ldapsearch) {
             if (isset($_POST["authenticate"])) {
-                LdapUserEventLogger::log_failed_reason('ldap_search');
+                $this->ldapUserEventLogger->log_failed_reason('ldap_search');
             }
             $sessionEntity = new SessionEntity(_('Failed to search LDAP.'), 'danger');
             $this->authenticationService->logout($sessionEntity);
@@ -144,9 +149,9 @@ class LegacyAuthenticateSession
         if ($entries["count"] != 1) {
             if (isset($_POST["authenticate"])) {
                 if ($entries["count"] == 0) {
-                    LdapUserEventLogger::log_failed_auth();
+                    $this->ldapUserEventLogger->log_failed_auth();
                 } else {
-                    LdapUserEventLogger::log_failed_duplicate_auth();
+                    $this->ldapUserEventLogger->log_failed_duplicate_auth();
                 }
             }
             $sessionEntity = new SessionEntity(_('Failed to authenticate against LDAP.'), 'danger');
@@ -160,7 +165,7 @@ class LegacyAuthenticateSession
         $ldapbind = ldap_bind($ldapconn, $user_dn, $session_pass);
         if (!$ldapbind) {
             if (isset($_POST["authenticate"])) {
-                LdapUserEventLogger::log_failed_incorrect_pass();
+                $this->ldapUserEventLogger->log_failed_incorrect_pass();
             }
             $sessionEntity = new SessionEntity(_('LDAP Authentication failed!'), 'danger');
             $this->authenticationService->auth($sessionEntity);
@@ -170,7 +175,7 @@ class LegacyAuthenticateSession
         $rowObj = $this->db->queryRow("SELECT id, fullname FROM users WHERE username=" . $this->db->quote($_SESSION["userlogin"], 'text') . " AND active=1 AND use_ldap=1");
         if (!$rowObj) {
             if (isset($_POST["authenticate"])) {
-                LdapUserEventLogger::log_failed_user_inactive();
+                $this->ldapUserEventLogger->log_failed_user_inactive();
             }
             $sessionEntity = new SessionEntity(_('LDAP Authentication failed!'), 'danger');
             $this->authenticationService->auth($sessionEntity);
@@ -181,7 +186,7 @@ class LegacyAuthenticateSession
         $_SESSION["auth_used"] = "ldap";
 
         if (isset($_POST["authenticate"])) {
-            LdapUserEventLogger::log_success_auth();
+            $this->ldapUserEventLogger->log_success_auth();
             session_write_close();
             $redirect_url = ($_POST["query_string"] ? $_SERVER['SCRIPT_NAME'] . "?" . $_POST["query_string"] : $_SERVER['SCRIPT_NAME']);
             $this->clean_page($redirect_url);
@@ -229,7 +234,7 @@ class LegacyAuthenticateSession
         }
 
         if ($userAuthService->requiresRehash($rowObj['password'])) {
-            update_user_password($rowObj["id"], $session_pass);
+            LegacyUsers::update_user_password($this->db, $rowObj["id"], $session_pass);
         }
 
         session_regenerate_id(true);
@@ -239,7 +244,7 @@ class LegacyAuthenticateSession
         $_SESSION["auth_used"] = "internal";
 
         if (isset($_POST["authenticate"])) {
-            UserEventLogger::log_successful_auth();
+            $this->userEventLogger->log_successful_auth();
             session_write_close();
             $redirect_url = $_POST["query_string"] ? $_SERVER['SCRIPT_NAME'] . "?" . $_POST["query_string"] : $_SERVER['SCRIPT_NAME'];
             $this->clean_page($redirect_url);
@@ -249,7 +254,7 @@ class LegacyAuthenticateSession
     private function handleFailedAuthentication(): void
     {
         if (isset($_POST['authenticate'])) {
-            UserEventLogger::log_failed_auth();
+            $this->userEventLogger->log_failed_auth();
             $sessionEntity = new SessionEntity(_('Authentication failed!'), 'danger');
             $this->authenticationService->auth($sessionEntity);
         } else {

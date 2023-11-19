@@ -32,6 +32,8 @@
 use Poweradmin\BaseController;
 use Poweradmin\LegacyUsers;
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 class DeletePermTemplController extends BaseController
 {
 
@@ -59,20 +61,20 @@ class DeletePermTemplController extends BaseController
             $this->showFirstError($v->errors());
         }
 
-        if (LegacyUsers::delete_perm_templ($perm_templ_id)) {
+        if (LegacyUsers::delete_perm_templ($this->db, $perm_templ_id)) {
             $this->setMessage('list_perm_templ', 'success', _('The permission template has been deleted successfully.'));
             $this->redirect('list_perm_templ.php');
         }
 
         $this->render('list_perm_templ.html', [
-            'permission_templates' => LegacyUsers::list_permission_templates(),
+            'permission_templates' => LegacyUsers::list_permission_templates($this->db),
         ]);
     }
 
     private function showDeletePermTempl(): void
     {
         $perm_templ_id = htmlspecialchars($_GET['id']);
-        $templ_details = LegacyUsers::get_permission_template_details($perm_templ_id);
+        $templ_details = LegacyUsers::get_permission_template_details($this->db, $perm_templ_id);
 
         $this->render('delete_perm_templ.html', [
             'perm_templ_id' => $perm_templ_id,

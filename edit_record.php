@@ -39,7 +39,17 @@ use Poweradmin\LegacyUsers;
 use Poweradmin\Permission;
 use Poweradmin\RecordType;
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 class EditRecordController extends BaseController {
+
+    private LegacyLogger $logger;
+
+    public function __construct() {
+        parent::__construct();
+
+        $this->logger = new LegacyLogger($this->db);
+    }
 
     public function run(): void
     {
@@ -47,10 +57,10 @@ class EditRecordController extends BaseController {
         $perm_edit = Permission::getEditPermission($this->db);
 
         $record_id = $_GET['id'];
-        $zid = DnsRecord::get_zone_id_from_record_id($record_id);
+        $zid = DnsRecord::get_zone_id_from_record_id($this->db, $record_id);
 
         $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($this->db, $zid);
-        $zone_type = DnsRecord::get_domain_type($zid);
+        $zone_type = DnsRecord::get_domain_type($this->db, $zid);
 
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
             $this->showError(_("You do not have the permission to view this record."));
@@ -71,10 +81,10 @@ class EditRecordController extends BaseController {
 
     public function showRecordEditForm($record_id, string $zone_type, $zid, string $perm_edit, $user_is_zone_owner): void
     {
-        $zone_name = DnsRecord::get_domain_name_by_id($zid);
+        $zone_name = DnsRecord::get_domain_name_by_id($this->db, $zid);
 
         $recordTypes = RecordType::getTypes();
-        $record = DnsRecord::get_record_from_id($_GET["id"]);
+        $record = DnsRecord::get_record_from_id($this->db, $_GET["id"]);
         $record['record_name'] = trim(str_replace(htmlspecialchars($zone_name), '', htmlspecialchars($record["name"])), '.');
 
         if (preg_match("/^xn--/", $zone_name)) {
@@ -98,14 +108,14 @@ class EditRecordController extends BaseController {
 
     public function saveRecord($zid): void
     {
-        $old_record_info = DnsRecord::get_record_from_id($_POST["rid"]);
-        $ret_val = DnsRecord::edit_record($_POST);
+        $old_record_info = DnsRecord::get_record_from_id($this->db, $_POST["rid"]);
+        $ret_val = DnsRecord::edit_record($this->db, $_POST, $this->config('dns_hostmaster'));
         if ($ret_val == "1") {
             if ($_POST['type'] != "SOA") {
-                DnsRecord::update_soa_serial($zid);
+                DnsRecord::update_soa_serial($this->db, $zid);
             }
-            $new_record_info = DnsRecord::get_record_from_id($_POST["rid"]);
-            LegacyLogger::log_info(sprintf('client_ip:%s user:%s operation:edit_record'
+            $new_record_info = DnsRecord::get_record_from_id($this->db, $_POST["rid"]);
+            $this->logger->log_info(sprintf('client_ip:%s user:%s operation:edit_record'
                 . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
                 . ' record_type:%s record:%s content:%s ttl:%s priority:%s',
                 $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
@@ -114,8 +124,8 @@ class EditRecordController extends BaseController {
                 $zid);
 
             if ($this->config('pdnssec_use')) {
-                $zone_name = DnsRecord::get_domain_name_by_id($zid);
-                $dnssecProvider = DnssecProviderFactory::create($this->getConfig());
+                $zone_name = DnsRecord::get_domain_name_by_id($this->db, $zid);
+                $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
                 $dnssecProvider->rectifyZone($zone_name);
             }
 

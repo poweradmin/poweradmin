@@ -24,11 +24,19 @@ namespace Poweradmin;
 
 class UserEventLogger
 {
-    public static function log_successful_auth() {
-        LegacyLogger::log_notice(sprintf('Successful authentication attempt from [%s] for user \'%s\'', $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin']));
+    private LegacyLogger $logger;
+
+    public function __construct(PDOLayer $db) {
+        $this->logger = new LegacyLogger($db);
     }
 
-    public static function log_failed_auth() {
-        LegacyLogger::log_warn(sprintf('Failed authentication attempt from [%s] for user \'%s\'', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
+    public function log_successful_auth(): void
+    {
+        $this->logger->log_notice(sprintf('Successful authentication attempt from [%s] for user \'%s\'', $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin']));
+    }
+
+    public function log_failed_auth(): void
+    {
+        $this->logger->log_warn(sprintf('Failed authentication attempt from [%s] for user \'%s\'', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
     }
 }

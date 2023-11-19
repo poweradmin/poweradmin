@@ -24,29 +24,30 @@ namespace Poweradmin;
 
 class DbUserLogger
 {
-    public static function do_log($msg, $priority): void
-    {
-        global $db;
+    private PDOLayer $db;
 
-        $stmt = $db->prepare('INSERT INTO log_users (event, priority) VALUES (:msg, :priority)');
+    public function __construct($db) {
+        $this->db = $db;
+    }
+
+    public function do_log($msg, $priority): void
+    {
+        $stmt = $this->db->prepare('INSERT INTO log_users (event, priority) VALUES (:msg, :priority)');
         $stmt->execute([
             ':msg' => $msg,
             ':priority' => $priority,
         ]);
     }
 
-    public static function count_all_logs()
+    public function count_all_logs()
     {
-        global $db;
-        $stmt = $db->query("SELECT count(*) AS number_of_logs FROM log_users");
+        $stmt = $this->db->query("SELECT count(*) AS number_of_logs FROM log_users");
         return $stmt->fetch()['number_of_logs'];
     }
 
-
-    public static function count_logs_by_user($user)
+    public function count_logs_by_user($user)
     {
-        global $db;
-        $stmt = $db->prepare("
+        $stmt = $this->db->prepare("
                     SELECT count(log_users.id) as number_of_logs
                     FROM log_users
                     WHERE log_users.event LIKE :search_by
@@ -56,10 +57,9 @@ class DbUserLogger
         return $stmt->fetch()['number_of_logs'];
     }
 
-    public static function get_all_logs($limit, $offset)
+    public function get_all_logs($limit, $offset)
     {
-        global $db;
-        $stmt = $db->prepare("
+        $stmt = $this->db->prepare("
                     SELECT * FROM log_users
                     ORDER BY created_at DESC 
                     LIMIT :limit 
@@ -74,14 +74,13 @@ class DbUserLogger
         return $stmt->fetchAll();
     }
 
-    public static function get_logs_for_user($user, $limit, $offset)
+    public function get_logs_for_user($user, $limit, $offset)
     {
-        if (!(User::exists($user))) {
+        if (!(User::exists($this->db, $user))) {
             return array();
         }
 
-        global $db;
-        $stmt = $db->prepare("
+        $stmt = $this->db->prepare("
             SELECT * FROM log_users
             WHERE log_users.event LIKE :search_by
             LIMIT :limit 

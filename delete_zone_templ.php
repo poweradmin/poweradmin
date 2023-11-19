@@ -33,12 +33,14 @@ use Poweradmin\BaseController;
 use Poweradmin\LegacyUsers;
 use Poweradmin\ZoneTemplate;
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 class DeleteZoneTemplController extends BaseController
 {
     public function run(): void
     {
         $zone_templ_id = htmlspecialchars($_GET['id']);
-        $owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
+        $owner = ZoneTemplate::get_zone_templ_is_owner($this->db, $zone_templ_id, $_SESSION['userid']);
         $perm_godlike = LegacyUsers::verify_permission($this->db, 'user_is_ueberuser');
         $perm_master_add = LegacyUsers::verify_permission($this->db, 'zone_master_add');
 
@@ -73,7 +75,7 @@ class DeleteZoneTemplController extends BaseController
     private function showDeleteZoneTempl(): void
     {
         $zone_templ_id = htmlspecialchars($_GET['id']);
-        $templ_details = ZoneTemplate::get_zone_templ_details($zone_templ_id);
+        $templ_details = ZoneTemplate::get_zone_templ_details($this->db, $zone_templ_id);
 
         $this->render('delete_zone_templ.html', [
             'templ_name' => $templ_details['name'],

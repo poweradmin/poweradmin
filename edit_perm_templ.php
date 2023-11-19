@@ -32,6 +32,8 @@
 use Poweradmin\BaseController;
 use Poweradmin\LegacyUsers;
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 class EditPermTemplController extends BaseController
 {
 
@@ -64,7 +66,7 @@ class EditPermTemplController extends BaseController
         ]);
 
         if ($v->validate()) {
-            LegacyUsers::update_perm_templ_details($_POST);
+            LegacyUsers::update_perm_templ_details($this->db, $_POST);
 
             $this->setMessage('list_perm_templ', 'success', _('The permission template has been updated successfully.'));
             $this->redirect('list_perm_templ.php');
@@ -78,9 +80,9 @@ class EditPermTemplController extends BaseController
         $id = htmlspecialchars($_GET['id']);
         $this->render('edit_perm_templ.html', [
             'id' => $id,
-            'templ' => LegacyUsers::get_permission_template_details($id),
-            'perms_templ' => LegacyUsers::get_permissions_by_template_id($id),
-            'perms_avail' => LegacyUsers::get_permissions_by_template_id(),
+            'templ' => LegacyUsers::get_permission_template_details($this->db, $id),
+            'perms_templ' => LegacyUsers::get_permissions_by_template_id($this->db, $id),
+            'perms_avail' => LegacyUsers::get_permissions_by_template_id($this->db),
         ]);
     }
 }

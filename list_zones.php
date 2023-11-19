@@ -42,6 +42,8 @@ use Poweradmin\Infrastructure\Web\HttpPaginationParameters;
 use Poweradmin\LegacyUsers;
 use Poweradmin\Permission;
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 class ListZonesController extends BaseController {
 
     public function run(): void
@@ -67,12 +69,12 @@ class ListZonesController extends BaseController {
             $row_start = (htmlspecialchars($_GET["start"]) - 1) * $iface_rowamount;
         }
 
-        $perm_view = Permission::getViewPermission();
-        $perm_edit = Permission::getEditPermission();
+        $perm_view = Permission::getViewPermission($this->db);
+        $perm_edit = Permission::getEditPermission($this->db);
 
 
-        $count_zones_view = DnsRecord::zone_count_ng($perm_view);
-        $count_zones_edit = DnsRecord::zone_count_ng($perm_edit);
+        $count_zones_view = DnsRecord::zone_count_ng($this->db, $this->config('db_type'), $perm_view);
+        $count_zones_edit = DnsRecord::zone_count_ng($this->db, $this->config('db_type'), $perm_edit);
 
         $letter_start = 'all';
         if ($count_zones_view > $iface_rowamount) {
@@ -85,7 +87,7 @@ class ListZonesController extends BaseController {
             }
         }
 
-        $count_zones_all_letterstart = DnsRecord::zone_count_ng($perm_view, $letter_start);
+        $count_zones_all_letterstart = DnsRecord::zone_count_ng($this->db, $this->config('db_type'), $perm_view, $letter_start);
 
         $zone_sort_by = 'name';
         if (isset($_GET["zone_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["zone_sort_by"])) {
@@ -102,12 +104,13 @@ class ListZonesController extends BaseController {
             $zone_sort_by = 'name';
         }
 
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         if ($count_zones_view <= $iface_rowamount) {
-            $zones = DnsRecord::get_zones($perm_view, $_SESSION['userid'], "all", $row_start, $iface_rowamount, $zone_sort_by);
+            $zones = $dnsRecord->get_zones($perm_view, $_SESSION['userid'], "all", $row_start, $iface_rowamount, $zone_sort_by);
         } elseif ($letter_start == 'all') {
-            $zones = DnsRecord::get_zones($perm_view, $_SESSION['userid'], "all", $row_start, 'all', $zone_sort_by);
+            $zones = $dnsRecord->get_zones($perm_view, $_SESSION['userid'], "all", $row_start, 'all', $zone_sort_by);
         } else {
-            $zones = DnsRecord::get_zones($perm_view, $_SESSION['userid'], $letter_start, $row_start, $iface_rowamount, $zone_sort_by);
+            $zones = $dnsRecord->get_zones($perm_view, $_SESSION['userid'], $letter_start, $row_start, $iface_rowamount, $zone_sort_by);
         }
 
         if ($perm_view == "none") {

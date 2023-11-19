@@ -36,6 +36,8 @@ use Poweradmin\Domain\Dnssec\DnssecAlgorithm;
 use Poweradmin\LegacyUsers;
 use Poweradmin\Validation;
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 class DnsSecEditKeyController extends BaseController {
 
     public function run(): void
@@ -55,19 +57,19 @@ class DnsSecEditKeyController extends BaseController {
             $confirm = $_GET['confirm'];
         }
 
-        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($zone_id);
+        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($this->db, $zone_id);
 
         if ($zone_id == "-1") {
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
-        $domain_name = DnsRecord::get_domain_name_by_id($zone_id);
+        $domain_name = DnsRecord::get_domain_name_by_id($this->db, $zone_id);
 
         if ($key_id == "-1") {
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
-        $dnssecProvider = DnssecProviderFactory::create($this->getConfig());
+        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
         if (!$dnssecProvider->keyExists($domain_name, $key_id)) {
             $this->showError(_('Invalid or unexpected input given.'));
         }

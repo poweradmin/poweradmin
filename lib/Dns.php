@@ -63,9 +63,9 @@ class Dns
      *
      * @return boolean true on success, false otherwise
      */
-    public static function validate_input($rid, $zid, $type, &$content, &$name, &$prio, &$ttl)
+    public static function validate_input($db, $rid, $zid, $type, &$content, &$name, &$prio, &$ttl, $dns_hostmaster, $dns_ttl)
     {
-        $zone = DnsRecord::get_domain_name_by_id($zid);    // TODO check for return
+        $zone = DnsRecord::get_domain_name_by_id($db, $zid);    // TODO check for return
 
         if (!self::endsWith(strtolower($zone), strtolower($name))) {
             if (isset($name) && $name != "") {
@@ -76,7 +76,7 @@ class Dns
         }
 
         if ($type != "CNAME") {
-            if (!self::is_valid_rr_cname_exists($name, $rid)) {
+            if (!self::is_valid_rr_cname_exists($db, $name, $rid)) {
                 return false;
             }
         }
@@ -126,10 +126,10 @@ class Dns
                 break;
 
             case "CNAME":
-                if (!self::is_valid_rr_cname_name($name)) {
+                if (!self::is_valid_rr_cname_name($db, $name)) {
                     return false;
                 }
-                if (!self::is_valid_rr_cname_unique($name, $rid)) {
+                if (!self::is_valid_rr_cname_unique($db, $name, $rid)) {
                     return false;
                 }
                 if (!self::is_valid_hostname_fqdn($name, 1)) {
@@ -231,7 +231,7 @@ class Dns
                 if (!self::is_valid_hostname_fqdn($name, 1)) {
                     return false;
                 }
-                if (!self::is_valid_non_alias_target($content)) {
+                if (!self::is_valid_non_alias_target($db, $content)) {
                     return false;
                 }
                 break;
@@ -249,7 +249,7 @@ class Dns
                 if (!self::is_valid_hostname_fqdn($name, 1)) {
                     return false;
                 }
-                if (!self::is_valid_non_alias_target($content)) {
+                if (!self::is_valid_non_alias_target($db, $content)) {
                     return false;
                 }
                 break;
@@ -297,7 +297,7 @@ class Dns
                 if (!self::is_valid_hostname_fqdn($name, 1)) {
                     return false;
                 }
-                if (!self::is_valid_rr_soa_content($content)) {
+                if (!self::is_valid_rr_soa_content($content, $dns_hostmaster)) {
                     $error = new ErrorMessage(_('Your content field doesnt have a legit value.'));
                     $errorPresenter = new ErrorPresenter();
                     $errorPresenter->present($error);
@@ -378,7 +378,7 @@ class Dns
             return false;
         }
 
-        if (!self::is_valid_rr_ttl($ttl)) {
+        if (!self::is_valid_rr_ttl($ttl, $dns_ttl)) {
             return false;
         }
 
@@ -392,11 +392,8 @@ class Dns
      *
      * @return boolean true if valid, false otherwise
      */
-    public static function is_valid_hostname_fqdn(&$hostname, $wildcard)
+    public static function is_valid_hostname_fqdn(&$hostname, $wildcard, $dns_top_level_tld_check, $dns_strict_tld_check): bool
     {
-        global $dns_top_level_tld_check;
-        global $dns_strict_tld_check;
-
         if ($hostname == ".") {
             return true;
         }
@@ -656,10 +653,8 @@ class Dns
      *
      * @return boolean true if valid, false otherwise
      */
-    public static function is_valid_rr_cname_name($name)
+    public static function is_valid_rr_cname_name($db, $name)
     {
-        global $db;
-
         $query = "SELECT id FROM records
 			WHERE content = " . $db->quote($name, 'text') . "
 			AND (type = " . $db->quote('MX', 'text') . " OR type = " . $db->quote('NS', 'text') . ")";
@@ -684,10 +679,8 @@ class Dns
      *
      * @return boolean true if non-existant, false if exists
      */
-    public static function is_valid_rr_cname_exists($name, $rid)
+    public static function is_valid_rr_cname_exists($db, $name, $rid)
     {
-        global $db;
-
         $where = ($rid > 0 ? " AND id != " . $db->quote($rid, 'integer') : '');
         $query = "SELECT id FROM records
                         WHERE name = " . $db->quote($name, 'text') . $where . "
@@ -711,10 +704,8 @@ class Dns
      *
      * @return boolean true if unique, false if duplicate
      */
-    public static function is_valid_rr_cname_unique($name, $rid)
+    public static function is_valid_rr_cname_unique($db, $name, $rid)
     {
-        global $db;
-
         $where = ($rid > 0 ? " AND id != " . $db->quote($rid, 'integer') : '');
         $query = "SELECT id FROM records
                         WHERE name = " . $db->quote($name, 'text') . $where;
@@ -755,10 +746,8 @@ class Dns
      *
      * @return boolean true if not alias, false if CNAME exists
      */
-    public static function is_valid_non_alias_target($target)
+    public static function is_valid_non_alias_target($db, $target)
     {
-        global $db;
-
         $query = "SELECT id FROM records
 			WHERE name = " . $db->quote($target, 'text') . "
 			AND TYPE = " . $db->quote('CNAME', 'text');
@@ -808,9 +797,8 @@ class Dns
      *
      * @return boolean true if valid, false otherwise
      */
-    public static function is_valid_rr_soa_content(&$content)
+    public static function is_valid_rr_soa_content(&$content, $dns_hostmaster): bool
     {
-
         $fields = preg_split("/\s+/", trim($content));
         $field_count = count($fields);
 
@@ -825,7 +813,6 @@ class Dns
             if (isset($fields[1])) {
                 $addr_input = $fields[1];
             } else {
-                global $dns_hostmaster;
                 $addr_input = $dns_hostmaster;
             }
             if (!preg_match("/@/", $addr_input)) {
@@ -985,11 +972,10 @@ class Dns
      *
      * @return boolean true if valid,false otherwise
      */
-    public static function is_valid_rr_ttl(&$ttl)
+    public static function is_valid_rr_ttl(&$ttl, $dns_ttl)
     {
 
         if (!isset($ttl) || $ttl == "") {
-            global $dns_ttl;
             $ttl = $dns_ttl;
         }
 

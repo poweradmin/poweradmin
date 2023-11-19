@@ -37,13 +37,15 @@ use Poweradmin\Infrastructure\Web\HttpPaginationParameters;
 use Poweradmin\LegacyUsers;
 use Poweradmin\ZoneTemplate;
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 class EditZoneTemplController extends BaseController
 {
 
     public function run(): void
     {
         $zone_templ_id = htmlspecialchars($_GET['id']);
-        $owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
+        $owner = ZoneTemplate::get_zone_templ_is_owner($this->db, $zone_templ_id, $_SESSION['userid']);
         $perm_godlike = LegacyUsers::verify_permission($this->db, 'user_is_ueberuser');
         $perm_master_add = LegacyUsers::verify_permission($this->db, 'zone_master_add');
 
@@ -59,7 +61,7 @@ class EditZoneTemplController extends BaseController
         }
 
         $zone_templ_id = htmlspecialchars($_GET['id']);
-        if (ZoneTemplate::zone_templ_id_exists($zone_templ_id) == "0") {
+        if (ZoneTemplate::zone_templ_id_exists($this->db, $zone_templ_id) == "0") {
             $this->showError(_('There is no zone template with this ID.'));
         }
 
@@ -71,7 +73,7 @@ class EditZoneTemplController extends BaseController
 
     private function updateZoneTemplate(string $zone_templ_id): void
     {
-        $owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
+        $owner = ZoneTemplate::get_zone_templ_is_owner($this->db, $zone_templ_id, $_SESSION['userid']);
         $perm_godlike = LegacyUsers::verify_permission($this->db, 'user_is_ueberuser');
 
         if (isset($_POST['edit']) && ($owner || $perm_godlike)) {
@@ -101,13 +103,13 @@ class EditZoneTemplController extends BaseController
         $iface_rowamount = $this->config('iface_rowamount');
         $row_start = $this->getRowStart($iface_rowamount);
         $record_sort_by = $this->getSortBy();
-        $record_count = ZoneTemplate::count_zone_templ_records($zone_templ_id);
-        $templ_details = ZoneTemplate::get_zone_templ_details($zone_templ_id);
+        $record_count = ZoneTemplate::count_zone_templ_records($this->db, $zone_templ_id);
+        $templ_details = ZoneTemplate::get_zone_templ_details($this->db, $zone_templ_id);
 
         $this->render('edit_zone_templ.html', [
             'templ_details' => $templ_details,
             'pagination' => $this->createAndPresentPagination($record_count, $iface_rowamount, $zone_templ_id),
-            'records' => ZoneTemplate::get_zone_templ_records($zone_templ_id, $row_start, $iface_rowamount, $record_sort_by),
+            'records' => ZoneTemplate::get_zone_templ_records($this->db, $zone_templ_id, $row_start, $iface_rowamount, $record_sort_by),
             'zone_templ_id' => $zone_templ_id,
             'perm_is_godlike' => LegacyUsers::verify_permission($this->db, 'user_is_ueberuser'),
         ]);

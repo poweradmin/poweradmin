@@ -35,7 +35,17 @@ use Poweradmin\LegacyLogger;
 use Poweradmin\LegacyUsers;
 use Poweradmin\Permission;
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 class DeleteDomainsController extends BaseController {
+
+    private LegacyLogger $logger;
+
+    public function __construct() {
+        parent::__construct();
+
+        $this->logger = new LegacyLogger($this->db);
+    }
 
     public function run(): void
     {
@@ -53,12 +63,13 @@ class DeleteDomainsController extends BaseController {
 
     public function deleteDomains($zone_ids): void
     {
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $deleted_zones = DnsRecord::get_zone_info_from_ids($this->db, $zone_ids);
-        $delete_domains = DnsRecord::delete_domains($zone_ids);
+        $delete_domains = $dnsRecord->delete_domains($zone_ids);
 
         if ($delete_domains) {
             foreach ($deleted_zones as $deleted_zone) {
-                LegacyLogger::log_info(sprintf('client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
+                $this->logger->log_info(sprintf('client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
                     $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                     $deleted_zone['name'], $deleted_zone['type']), $deleted_zone['id']);
             }
@@ -88,15 +99,15 @@ class DeleteDomainsController extends BaseController {
         foreach ($zone_ids as $zone_id) {
             $zones[$zone_id]['id'] = $zone_id;
             $zones[$zone_id] = DnsRecord::get_zone_info_from_id($this->db, $zone_id);
-            $zones[$zone_id]['owner'] = LegacyUsers::get_fullnames_owners_from_domainid($zone_id);
+            $zones[$zone_id]['owner'] = LegacyUsers::get_fullnames_owners_from_domainid($this->db, $zone_id);
             $zones[$zone_id]['is_owner'] = LegacyUsers::verify_user_is_owner_zoneid($this->db, $zone_id);
 
             $zones[$zone_id]['has_supermaster'] = false;
             $zones[$zone_id]['slave_master'] = null;
             if ($zones[$zone_id]['type'] == "SLAVE") {
-                $slave_master = DnsRecord::get_domain_slave_master($zone_id);
+                $slave_master = DnsRecord::get_domain_slave_master($this->db, $zone_id);
                 $zones[$zone_id]['slave_master'] = $slave_master;
-                if (DnsRecord::supermaster_exists($slave_master)) {
+                if (DnsRecord::supermaster_exists($this->db, $slave_master)) {
                     $zones[$zone_id]['has_supermaster'] = true;
                 }
             }

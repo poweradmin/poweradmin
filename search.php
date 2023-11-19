@@ -34,6 +34,8 @@ use Poweradmin\Application\Query\ZoneSearch;
 use Poweradmin\BaseController;
 use Poweradmin\Permission;
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 class SearchController extends BaseController
 {
     public function run(): void
@@ -73,12 +75,11 @@ class SearchController extends BaseController
 
             $zones_page = isset($_POST['zones_page']) ? (int)$_POST['zones_page'] : 1;
 
-            $permission_view = Permission::getViewPermission();
+            $permission_view = Permission::getViewPermission($this->db);
 
             $db_type = $this->config('db_type');
 
-            global $db;
-            $zoneSearch = new ZoneSearch($db, $db_type);
+            $zoneSearch = new ZoneSearch($this->db, $db_type);
             $searchResultZones = $zoneSearch->searchZones(
                 $parameters,
                 $permission_view,
@@ -92,7 +93,7 @@ class SearchController extends BaseController
             $records_page = isset($_POST['records_page']) ? (int)$_POST['records_page'] : 1;
 
             $iface_search_group_records = $this->config('iface_search_group_records');
-            $recordSearch = new RecordSearch($db, $db_type);
+            $recordSearch = new RecordSearch($this->db, $db_type);
             $searchResultRecords = $recordSearch->searchRecords(
                 $parameters,
                 $permission_view,
@@ -127,7 +128,7 @@ class SearchController extends BaseController
             'zones_page' => $zones_page,
             'records_page' => $records_page,
             'iface_rowamount' => $iface_rowamount,
-            'edit_permission' => Permission::getEditPermission(),
+            'edit_permission' => Permission::getEditPermission($this->db),
             'user_id' => $_SESSION['userid'],
         ]);
     }

@@ -35,6 +35,8 @@ use Poweradmin\LegacyUsers;
 use Poweradmin\User;
 use Poweradmin\Validation;
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 class DeleteUserController extends BaseController {
 
     public function run(): void
@@ -61,7 +63,7 @@ class DeleteUserController extends BaseController {
 
     public function deleteUser(string $uid): void
     {
-        if (!LegacyUsers::is_valid_user($uid)) {
+        if (!LegacyUsers::is_valid_user($this->db, $uid)) {
             $this->showError(_('User does not exist.'));
         }
 
@@ -78,15 +80,16 @@ class DeleteUserController extends BaseController {
 
     public function showQuestion(string $uid): void
     {
-        $name = LegacyUsers::get_fullname_from_userid($uid);
+        $name = LegacyUsers::get_fullname_from_userid($this->db, $uid);
         if (!$name) {
-            $name = User::get_username_by_id($uid);
+            $name = User::get_username_by_id($this->db, $uid);
         }
-        $zones = DnsRecord::get_zones("own", $uid);
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $zones = $dnsRecord->get_zones( "own", $uid);
 
         $users = [];
         if (count($zones) > 0) {
-            $users = LegacyUsers::show_users();
+            $users = LegacyUsers::show_users($this->db);
         }
 
         $this->render('delete_user.html', [

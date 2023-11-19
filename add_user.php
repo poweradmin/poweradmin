@@ -32,6 +32,8 @@
 use Poweradmin\BaseController;
 use Poweradmin\LegacyUsers;
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 class AddUserController extends BaseController {
 
     public function run(): void
@@ -53,7 +55,7 @@ class AddUserController extends BaseController {
         ]);
 
         if ($v->validate()) {
-            if (LegacyUsers::add_new_user($_POST)) {
+            if (LegacyUsers::add_new_user($this->db, $_POST, $this->config('ldap_use'))) {
                 $this->setMessage('users', 'success', _('The user has been created successfully.'));
                 $this->redirect('users.php');
             } else {
@@ -67,7 +69,7 @@ class AddUserController extends BaseController {
     private function showForm(): void
     {
         $user_edit_templ_perm = LegacyUsers::verify_permission($this->db, 'user_edit_templ_perm');
-        $user_templates = LegacyUsers::list_permission_templates();
+        $user_templates = LegacyUsers::list_permission_templates($this->db);
 
         $username = $_POST['username'] ?? "";
         $fullname = $_POST['fullname'] ?? "";

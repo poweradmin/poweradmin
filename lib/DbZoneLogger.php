@@ -24,10 +24,17 @@ namespace Poweradmin;
 
 class DbZoneLogger
 {
-    public static function do_log($msg, $zone_id, $priority): void
+    private PDOLayer $db;
+    private LegacyConfiguration $config;
+
+    public function __construct($db) {
+        $this->db = $db;
+        $this->config = new LegacyConfiguration();
+    }
+
+    public function do_log($msg, $zone_id, $priority): void
     {
-        global $db;
-        $stmt = $db->prepare('INSERT INTO log_zones (zone_id, event, priority) VALUES (:zone_id, :msg, :priority)');
+        $stmt = $this->db->prepare('INSERT INTO log_zones (zone_id, event, priority) VALUES (:zone_id, :msg, :priority)');
         $stmt->execute([
             ':msg' => $msg,
             ':zone_id' => $zone_id,
@@ -35,17 +42,15 @@ class DbZoneLogger
         ]);
     }
 
-    public static function count_all_logs()
+    public function count_all_logs()
     {
-        global $db;
-        $stmt = $db->query("SELECT count(*) AS number_of_logs FROM log_zones");
+        $stmt = $this->db->query("SELECT count(*) AS number_of_logs FROM log_zones");
         return $stmt->fetch()['number_of_logs'];
     }
 
-    public static function count_logs_by_domain($domain)
+    public function count_logs_by_domain($domain)
     {
-        global $db;
-        $stmt = $db->prepare("
+        $stmt = $this->db->prepare("
                     SELECT count(domains.id) as number_of_logs
                     FROM log_zones
                     INNER JOIN domains 
@@ -57,10 +62,9 @@ class DbZoneLogger
         return $stmt->fetch()['number_of_logs'];
     }
 
-    public static function get_all_logs($limit, $offset)
+    public function get_all_logs($limit, $offset)
     {
-        global $db;
-        $stmt = $db->prepare("
+        $stmt = $this->db->prepare("
                     SELECT * FROM log_zones
                     ORDER BY created_at DESC 
                     LIMIT :limit 
@@ -83,14 +87,13 @@ class DbZoneLogger
         return $records;
     }
 
-    public static function get_logs_for_domain($domain, $limit, $offset)
+    public function get_logs_for_domain($domain, $limit, $offset)
     {
-        if (!(self::check_if_domain_exist($domain))) {
+        if (!($this->check_if_domain_exist($domain))) {
             return array();
         }
 
-        global $db;
-        $stmt = $db->prepare("
+        $stmt = $this->db->prepare("
             SELECT log_zones.id, log_zones.event, log_zones.created_at, domains.name FROM log_zones
             INNER JOIN domains ON domains.id = log_zones.zone_id 
             WHERE domains.name LIKE :search_by
@@ -116,13 +119,14 @@ class DbZoneLogger
         return $records;
     }
 
-    public static function check_if_domain_exist($domain_searched): bool
+    public function check_if_domain_exist($domain_searched): bool
     {
         if ($domain_searched == "") {
             return false;
         }
 
-        $zones = DnsRecord::get_zones('all');
+        $dnsRecord = new DnsRecord($this->db, $this->config);
+        $zones = $dnsRecord->get_zones('all');
         foreach ($zones as $zone) {
             if (strpos($zone['name'], $domain_searched) !== false) {
                 return true;

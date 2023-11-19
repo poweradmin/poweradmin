@@ -32,6 +32,8 @@
 use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 class DeleteSuperMasterController extends BaseController
 {
 
@@ -58,12 +60,12 @@ class DeleteSuperMasterController extends BaseController
         $ns_name = htmlspecialchars($_GET['ns_name']);
 
         if ($v->validate()) {
-            if (!DnsRecord::supermaster_ip_name_exists($master_ip, $ns_name)) {
+            if (!DnsRecord::supermaster_ip_name_exists($this->db, $master_ip, $ns_name)) {
                 $this->setMessage('list_supermasters', 'error', _('Super master does not exist.'));
                 $this->redirect('list_supermasters.php');
             }
 
-            if (DnsRecord::delete_supermaster($master_ip, $ns_name)) {
+            if (DnsRecord::delete_supermaster($this->db, $master_ip, $ns_name)) {
                 $this->setMessage('list_supermasters', 'success', _('The supermaster has been deleted successfully.'));
                 $this->redirect('list_supermasters.php');
             }
@@ -75,7 +77,7 @@ class DeleteSuperMasterController extends BaseController
     private function showDeleteSuperMaster(): void
     {
         $master_ip = htmlspecialchars($_GET['master_ip']);
-        $info = DnsRecord::get_supermaster_info_from_ip($master_ip);
+        $info = DnsRecord::get_supermaster_info_from_ip($this->db, $master_ip);
 
         $this->render('delete_supermaster.html', [
             'master_ip' => $master_ip,

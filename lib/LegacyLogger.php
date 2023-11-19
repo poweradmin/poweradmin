@@ -24,9 +24,20 @@ namespace Poweradmin;
 
 class LegacyLogger
 {
-    private static function do_log($message, $priority, $zone_id = NULL)
+    private PDOLayer $db;
+    private LegacyConfiguration $config;
+
+    public function __construct($db) {
+        $this->db = $db;
+        $this->config = new LegacyConfiguration();
+    }
+
+    private function do_log($message, $priority, $zone_id = NULL): void
     {
-        global $syslog_use, $syslog_ident, $syslog_facility, $dblog_use;
+        $syslog_use = $this->config->get('syslog_use');
+        $syslog_ident = $this->config->get('syslog_ident');
+        $syslog_facility = $this->config->get('syslog_facility');
+        $dblog_use = $this->config->get('dblog_use');
 
         if ($syslog_use) {
             openlog($syslog_ident, LOG_PERROR, $syslog_facility);
@@ -37,30 +48,32 @@ class LegacyLogger
         if ($dblog_use) {
             // TODO: This distinction would be better handled with special type enum
             if ($zone_id) {
-                DbZoneLogger::do_log($message, $zone_id, $priority);
+                $dbZoneLogger = new DbZoneLogger($this->db);
+                $dbZoneLogger->do_log($message, $zone_id, $priority);
             } else {
-                DbUserLogger::do_log($message, $priority);
+                $dbUserLogger = new DbUserLogger($this->db);
+                $dbUserLogger->do_log($message, $priority);
             }
         }
     }
 
-    public static function log_error($message, $zone_id = NULL)
+    public function log_error($message, $zone_id = NULL): void
     {
-        self::do_log($message, LOG_ERR, $zone_id);
+        $this->do_log($message, LOG_ERR, $zone_id);
     }
 
-    public static function log_warn($message, $zone_id = NULL)
+    public function log_warn($message, $zone_id = NULL): void
     {
-        self::do_log($message, LOG_WARNING, $zone_id);
+        $this->do_log($message, LOG_WARNING, $zone_id);
     }
 
-    public static function log_notice($message)
+    public function log_notice($message): void
     {
-        self::do_log($message, LOG_NOTICE);
+        $this->do_log($message, LOG_NOTICE);
     }
 
-    public static function log_info($message, $zone_id = NULL)
+    public function log_info($message, $zone_id = NULL): void
     {
-        self::do_log($message, LOG_INFO, $zone_id);
+        $this->do_log($message, LOG_INFO, $zone_id);
     }
 }

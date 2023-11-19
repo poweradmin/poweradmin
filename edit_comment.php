@@ -37,6 +37,8 @@ use Poweradmin\LegacyUsers;
 use Poweradmin\Permission;
 use Poweradmin\Validation;
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 class EditCommentController extends BaseController {
 
     public function run(): void
@@ -69,7 +71,7 @@ class EditCommentController extends BaseController {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
             } else {
-                DnsRecord::edit_zone_comment($zone_id, $_POST['comment']);
+                DnsRecord::edit_zone_comment($this->db, $zone_id, $_POST['comment']);
                 $this->setMessage('edit', 'success', _('The comment has been updated successfully.'));
                 $this->redirect('edit.php', ['id' => $zone_id]);
             }
@@ -80,7 +82,7 @@ class EditCommentController extends BaseController {
 
     public function showCommentForm(string $zone_id, bool $perm_edit_comment): void
     {
-        $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
+        $zone_name = DnsRecord::get_domain_name_by_id($this->db, $zone_id);
 
         if (preg_match("/^xn--/", $zone_name)) {
             $idn_zone_name = idn_to_utf8($zone_name, IDNA_NONTRANSITIONAL_TO_ASCII);
@@ -90,7 +92,7 @@ class EditCommentController extends BaseController {
 
         $this->render('edit_comment.html', [
             'zone_id' => $zone_id,
-            'comment' => DnsRecord::get_zone_comment($zone_id),
+            'comment' => DnsRecord::get_zone_comment($this->db, $zone_id),
             'disabled' => $perm_edit_comment,
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,

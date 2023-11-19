@@ -34,6 +34,8 @@ use Poweradmin\LegacyUsers;
 use Poweradmin\RecordType;
 use Poweradmin\ZoneTemplate;
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 class EditZoneTemplRecordController extends BaseController {
 
     public function run(): void
@@ -50,7 +52,7 @@ class EditZoneTemplRecordController extends BaseController {
         $record_id = htmlspecialchars($_GET['id']);
         $zone_templ_id = htmlspecialchars($_GET['zone_templ_id']);
 
-        $owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
+        $owner = ZoneTemplate::get_zone_templ_is_owner($this->db, $zone_templ_id, $_SESSION['userid']);
         $perm_godlike = LegacyUsers::verify_permission($this->db, 'user_is_ueberuser');
         $perm_master_add = LegacyUsers::verify_permission($this->db, 'zone_master_add');
         $this->checkCondition(!($perm_godlike || $perm_master_add && $owner), _("You do not have the permission to delete zone templates."));
@@ -64,13 +66,13 @@ class EditZoneTemplRecordController extends BaseController {
 
     public function showZoneTemplateRecordForm(string $record_id, string $zone_templ_id): void
     {
-        $record = ZoneTemplate::get_zone_templ_record_from_id($record_id);
+        $record = ZoneTemplate::get_zone_templ_record_from_id($this->db, $record_id);
 
         $this->render('edit_zone_templ_record.html', [
             'record' => $record,
             'zone_templ_id' => $zone_templ_id,
             'record_id' => $record_id,
-            'templ_details' => ZoneTemplate::get_zone_templ_details($zone_templ_id),
+            'templ_details' => ZoneTemplate::get_zone_templ_details($this->db, $zone_templ_id),
             'record_types' => RecordType::getTypes(),
         ]);
     }

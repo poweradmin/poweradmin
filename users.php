@@ -33,6 +33,8 @@ use Poweradmin\BaseController;
 use Poweradmin\LegacyUsers;
 use Poweradmin\Permission;
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 class UsersController extends BaseController
 {
 
@@ -48,7 +50,7 @@ class UsersController extends BaseController
     {
         $success = false;
         foreach ($_POST['user'] as $user) {
-            $result = LegacyUsers::update_user_details($user);
+            $result = LegacyUsers::update_user_details($this->db, $user);
             if ($result) {
                 $success = true;
             }
@@ -68,7 +70,7 @@ class UsersController extends BaseController
                 'user_edit_templ_perm',
                 'user_is_ueberuser',
             ),
-            'perm_templates' => LegacyUsers::list_permission_templates(),
+            'perm_templates' => LegacyUsers::list_permission_templates($this->db),
             'users' => LegacyUsers::get_user_detail_list(""),
             'ldap_use' => $this->config('ldap_use'),
             'session_userid' => $_SESSION["userid"],

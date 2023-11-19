@@ -36,7 +36,7 @@ use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\LegacyConfiguration;
 use Poweradmin\DnsRecord;
 
-require __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 $configuration = new LegacyConfiguration();
 $db_type = $configuration->get('db_type');
@@ -244,7 +244,7 @@ while ($zone = $zones_query->fetch()) {
         }
     }
     if ($zone_updated) {
-        DnsRecord::update_soa_serial($zone['domain_id']);
+        DnsRecord::update_soa_serial($this->db, $zone['domain_id']);
     }
 }
 

@@ -34,6 +34,8 @@ use Poweradmin\LegacyUsers;
 use Poweradmin\Permission;
 use Poweradmin\Validation;
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 class EditUserController extends BaseController
 {
 
@@ -94,7 +96,7 @@ class EditUserController extends BaseController
         if (isset($_POST['perm_templ']) && Validation::is_number($_POST['perm_templ'])) {
             $i_perm_templ = $_POST['perm_templ'];
         } else {
-            $user_details = LegacyUsers::get_user_detail_list($edit_id);
+            $user_details = LegacyUsers::get_user_detail_list($this->db, $edit_id, $this->config('ldap_use'));
             $i_perm_templ = $user_details[0]['tpl_id'];
         }
 
@@ -113,7 +115,7 @@ class EditUserController extends BaseController
         }
 
         if ($i_username != "" && $i_perm_templ > "0" && $i_fullname) {
-            if (LegacyUsers::edit_user($edit_id, $i_username, $i_fullname, $i_email, $i_perm_templ, $i_description, $i_active, $i_password, $i_use_ldap)) {
+            if (LegacyUsers::edit_user($this->db, $edit_id, $i_username, $i_fullname, $i_email, $i_perm_templ, $i_description, $i_active, $i_password, $i_use_ldap)) {
                 $this->setMessage('users', 'success', _('The user has been updated successfully.'));
                 $this->redirect('users.php');
             } else {
@@ -126,7 +128,7 @@ class EditUserController extends BaseController
 
     public function showUserEditForm($edit_id): void
     {
-        $users = LegacyUsers::get_user_detail_list($edit_id);
+        $users = LegacyUsers::get_user_detail_list($this->db, $edit_id, $this->config('ldap_use'));
         if (empty($users)) {
             $this->showError(_('User does not exist.'));
         }
@@ -135,8 +137,8 @@ class EditUserController extends BaseController
         $edit_templ_perm = LegacyUsers::verify_permission($this->db, 'user_edit_templ_perm');
         $passwd_edit_others_perm = LegacyUsers::verify_permission($this->db, 'user_passwd_edit_others');
         $edit_own_perm = LegacyUsers::verify_permission($this->db, 'user_edit_own');
-        $permission_templates = LegacyUsers::list_permission_templates();
-        $user_permissions = LegacyUsers::get_permissions_by_template_id($user['tpl_id']);
+        $permission_templates = LegacyUsers::list_permission_templates($this->db);
+        $user_permissions = LegacyUsers::get_permissions_by_template_id($this->db, $user['tpl_id']);
 
         ($user['active']) == "1" ? $check = " CHECKED" : $check = "";
         $name = $user['fullname'] ?: $user['username'];

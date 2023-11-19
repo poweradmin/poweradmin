@@ -35,8 +35,19 @@ use Poweradmin\DnsRecord;
 use Poweradmin\LegacyLogger;
 use Poweradmin\LegacyUsers;
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 class AddZoneSlaveController extends BaseController
 {
+
+    private LegacyLogger $logger;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->logger = new LegacyLogger($this->db);
+    }
 
     public function run(): void
     {
@@ -67,22 +78,23 @@ class AddZoneSlaveController extends BaseController
         $master = $_POST['slave_master'];
         $zone = idn_to_ascii(trim($_POST['domain']), IDNA_NONTRANSITIONAL_TO_ASCII);
 
-        if (!Dns::is_valid_hostname_fqdn($zone, 0)) {
+        if (!Dns::is_valid_hostname_fqdn($zone, 0, $this->config('dns_top_level_tld_check'), $this->config('dns_strict_tld_check'))) {
             $this->setMessage('add_zone_slave', 'error', _('Invalid hostname.'));
             $this->showForm();
-        } elseif ($dns_third_level_check && DnsRecord::get_domain_level($zone) > 2 && DnsRecord::domain_exists(DnsRecord::get_second_level_domain($zone))) {
+        } elseif ($dns_third_level_check && DnsRecord::get_domain_level($zone) > 2 && DnsRecord::domain_exists($this->db, DnsRecord::get_second_level_domain($zone))) {
             $this->setMessage('add_zone_slave', 'error', _('There is already a zone with this name.'));
             $this->showForm();
-        } elseif (DnsRecord::domain_exists($zone) || DnsRecord::record_name_exists($zone)) {
+        } elseif (DnsRecord::domain_exists($this->db, $zone) || DnsRecord::record_name_exists($this->db, $zone)) {
             $this->setMessage('add_zone_slave', 'error', _('There is already a zone with this name.'));
             $this->showForm();
         } elseif (!Dns::are_multiple_valid_ips($master)) {
             $this->setMessage('add_zone_slave', 'error', _('This is not a valid IPv4 or IPv6 address.'));
             $this->showForm();
         } else {
-            if (DnsRecord::add_domain($this->db, $zone, $owner, $type, $master, 'none')) {
-                $zone_id = DnsRecord::get_zone_id_from_name($zone);
-                LegacyLogger::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',
+            $dnsRecord = new DnsRecord($this->db);
+            if ($dnsRecord->add_domain($this->db, $zone, $owner, $type, $master, 'none')) {
+                $zone_id = DnsRecord::get_zone_id_from_name($this->db, $zone);
+                $this->logger->log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',
                     $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                     $zone, $master), $zone_id);
 
@@ -95,7 +107,7 @@ class AddZoneSlaveController extends BaseController
     private function showForm(): void
     {
         $this->render('add_zone_slave.html', [
-            'users' => LegacyUsers::show_users(),
+            'users' => LegacyUsers::show_users($this->db),
             'session_user_id' => $_SESSION['userid'],
             'perm_view_others' => LegacyUsers::verify_permission($this->db, 'user_view_others'),
         ]);

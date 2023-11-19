@@ -28,7 +28,13 @@ class RecordLog
     private $record_prior;
     private $record_after;
 
-    private $record_changed = false;
+    private bool $record_changed = false;
+    private LegacyLogger $logger;
+
+    public function __construct($db)
+    {
+        $this->logger = new LegacyLogger($db);
+    }
 
     public function log_prior($rid, $zid)
     {
@@ -43,7 +49,7 @@ class RecordLog
 
     private function getRecord($rid)
     {
-        return DnsRecord::get_record_from_id($rid);
+        return DnsRecord::get_record_from_id($this->db, $rid);
     }
 
     public function has_changed(array $record)
@@ -67,9 +73,9 @@ class RecordLog
         return $this->record_changed;
     }
 
-    public function write()
+    public function write(): void
     {
-        LegacyLogger::log_info(sprintf('client_ip:%s user:%s operation:edit_record'
+        $this->logger->log_info(sprintf('client_ip:%s user:%s operation:edit_record'
             . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
             . ' record_type:%s record:%s content:%s ttl:%s priority:%s',
             $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],

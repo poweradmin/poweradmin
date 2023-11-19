@@ -33,6 +33,8 @@ use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
 use Poweradmin\LegacyUsers;
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 class ListSuperMastersController extends BaseController
 {
 
@@ -48,7 +50,7 @@ class ListSuperMastersController extends BaseController
         $this->render('list_supermasters.html', [
             'perm_sm_add' => LegacyUsers::verify_permission($this->db, 'supermaster_add'),
             'perm_sm_edit' => LegacyUsers::verify_permission($this->db, 'supermaster_edit'),
-            'supermasters' => DnsRecord::get_supermasters()
+            'supermasters' => DnsRecord::get_supermasters($this->db)
         ]);
     }
 }

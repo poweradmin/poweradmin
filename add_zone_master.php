@@ -37,8 +37,19 @@ use Poweradmin\LegacyLogger;
 use Poweradmin\LegacyUsers;
 use Poweradmin\ZoneTemplate;
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 class AddZoneMasterController extends BaseController
 {
+
+    private LegacyLogger $logger;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->logger = new LegacyLogger($this->db);
+    }
 
     public function run(): void
     {
@@ -69,25 +80,26 @@ class AddZoneMasterController extends BaseController
         $owner = $_POST['owner'];
         $zone_template = $_POST['zone_template'] ?? "none";
 
-        if (!Dns::is_valid_hostname_fqdn($zone_name, 0)) {
+        $dnsRecord = new DnsRecord($this->db);
+        if (!Dns::is_valid_hostname_fqdn($zone_name, 0, $this->config('dns_top_level_tld_check'), $this->config('dns_strict_tld_check'))) {
             $this->setMessage('add_zone_master', 'error', _('Invalid hostname.'));
             $this->showForm();
-        } elseif ($dns_third_level_check && DnsRecord::get_domain_level($zone_name) > 2 && DnsRecord::domain_exists(DnsRecord::get_second_level_domain($zone_name))) {
+        } elseif ($dns_third_level_check && DnsRecord::get_domain_level($zone_name) > 2 && DnsRecord::domain_exists($this->db, DnsRecord::get_second_level_domain($zone_name))) {
             $this->setMessage('add_zone_master', 'error', _('There is already a zone_name with this name.'));
             $this->showForm();
-        } elseif (DnsRecord::domain_exists($zone_name) || DnsRecord::record_name_exists($zone_name)) {
+        } elseif (DnsRecord::domain_exists($this->db, $zone_name) || DnsRecord::record_name_exists($this->db, $zone_name)) {
             $this->setMessage('add_zone_master', 'error', _('There is already a zone_name with this name.'));
             $this->showForm();
-        } elseif (DnsRecord::add_domain($this->db, $zone_name, $owner, $dom_type, '', $zone_template)) {
+        } elseif ($dnsRecord->add_domain($this->db, $zone_name, $owner, $dom_type, '', $zone_template)) {
             $this->setMessage('list_zones', 'success', _('Zone has been added successfully.'));
 
-            $zone_id = DnsRecord::get_zone_id_from_name($zone_name);
-            LegacyLogger::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone_name:%s zone_type:%s zone_template:%s',
+            $zone_id = DnsRecord::get_zone_id_from_name($this->db, $zone_name);
+            $this->logger->log_info(sprintf('client_ip:%s user:%s operation:add_zone zone_name:%s zone_type:%s zone_template:%s',
                 $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                 $zone_name, $dom_type, $zone_template), $zone_id);
 
             if ($pdnssec_use) {
-                $dnssecProvider = DnssecProviderFactory::create($this->getConfig());
+                $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
                 if (isset($_POST['dnssec'])) {
                     $dnssecProvider->secureZone($zone_name);
@@ -108,7 +120,7 @@ class AddZoneMasterController extends BaseController
             'perm_view_others' => $perm_view_others,
             'session_user_id' => $_SESSION['userid'],
             'available_zone_types' => array("MASTER", "NATIVE"),
-            'users' => LegacyUsers::show_users(),
+            'users' => LegacyUsers::show_users($this->db),
             'zone_templates' => ZoneTemplate::get_list_zone_templ($this->db, $_SESSION['userid']),
             'iface_zone_type_default' => $this->config('iface_zone_type_default'),
             'pdnssec_use' => $this->config('pdnssec_use'),

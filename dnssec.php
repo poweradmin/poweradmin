@@ -39,6 +39,8 @@ use Poweradmin\Permission;
 use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 class DnsSecController extends BaseController {
 
     public function run(): void
@@ -57,7 +59,7 @@ class DnsSecController extends BaseController {
             $this->showError(_("You do not have the permission to view this zone."));
         }
 
-        if (DnsRecord::zone_id_exists($zone_id) == "0") {
+        if (DnsRecord::zone_id_exists($this->db, $zone_id) == "0") {
             $this->showError(_('There is no zone with this ID.'));
         }
 
@@ -66,24 +68,24 @@ class DnsSecController extends BaseController {
 
     public function showDnsSecKeys(string $zone_id): void
     {
-        $domain_name = DnsRecord::get_domain_name_by_id($zone_id);
+        $domain_name = DnsRecord::get_domain_name_by_id($this->db, $zone_id);
         if (preg_match("/^xn--/", $domain_name)) {
             $idn_zone_name = idn_to_utf8($domain_name, IDNA_NONTRANSITIONAL_TO_ASCII);
         } else {
             $idn_zone_name = "";
         }
 
-        $dnssecProvider = DnssecProviderFactory::create($this->getConfig());
+        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
         $this->render('dnssec.html', [
             'domain_name' => $domain_name,
             'idn_zone_name' => $idn_zone_name,
-            'domain_type' => DnsRecord::get_domain_type($zone_id),
+            'domain_type' => DnsRecord::get_domain_type($this->db, $zone_id),
             'keys' => $dnssecProvider->getKeys($domain_name),
             'pdnssec_use' => $this->config('pdnssec_use'),
-            'record_count' => DnsRecord::count_zone_records($zone_id),
+            'record_count' => DnsRecord::count_zone_records($this->db, $zone_id),
             'zone_id' => $zone_id,
-            'zone_template_id' => DnsRecord::get_zone_template($zone_id),
+            'zone_template_id' => DnsRecord::get_zone_template($this->db, $zone_id),
             'zone_templates' => ZoneTemplate::get_list_zone_templ($this->db, $_SESSION['userid']),
             'algorithms' => DnssecAlgorithm::ALGORITHMS,
         ]);

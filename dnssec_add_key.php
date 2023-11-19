@@ -36,6 +36,8 @@ use Poweradmin\Domain\Dnssec\DnssecAlgorithmName;
 use Poweradmin\LegacyUsers;
 use Poweradmin\Validation;
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 class DnsSecAddKeyController extends BaseController {
 
     public function run(): void
@@ -51,7 +53,7 @@ class DnsSecAddKeyController extends BaseController {
             $this->showError(_("You do not have the permission to view this zone."));
         }
 
-        if (DnsRecord::zone_id_exists($zone_id) == "0") {
+        if (DnsRecord::zone_id_exists($this->db, $zone_id) == "0") {
             $this->showError(_('There is no zone with this ID.'));
         }
 
@@ -85,9 +87,9 @@ class DnsSecAddKeyController extends BaseController {
             }
         }
 
-        $domain_name = DnsRecord::get_domain_name_by_id($zone_id);
+        $domain_name = DnsRecord::get_domain_name_by_id($this->db, $zone_id);
         if (isset($_POST["submit"])) {
-            $dnssecProvider = DnssecProviderFactory::create($this->getConfig());
+            $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
             if ($dnssecProvider->addZoneKey($domain_name, $key_type, $bits, $algorithm)) {
                 $this->setMessage('dnssec', 'success', _('Zone key has been added successfully.'));
                 $this->redirect('dnssec.php', ['id' => $zone_id]);

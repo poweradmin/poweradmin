@@ -39,8 +39,17 @@ use Poweradmin\LegacyUsers;
 use Poweradmin\Permission;
 use Poweradmin\RecordType;
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 class AddRecordController extends BaseController
 {
+    private LegacyLogger $logger;
+
+    public function __construct() {
+        parent::__construct();
+
+        $this->logger = new LegacyLogger($this->db);
+    }
 
     public function run(): void
     {
@@ -48,7 +57,7 @@ class AddRecordController extends BaseController
 
         $perm_edit = Permission::getEditPermission($this->db);
         $zone_id = htmlspecialchars($_GET['id']);
-        $zone_type = DnsRecord::get_domain_type($zone_id);
+        $zone_type = DnsRecord::get_domain_type($this->db, $zone_id);
         $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($this->db, $zone_id);
 
         $this->checkCondition($zone_type == "SLAVE"
@@ -92,7 +101,7 @@ class AddRecordController extends BaseController
     private function showForm(): void
     {
         $zone_id = htmlspecialchars($_GET['id']);
-        $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
+        $zone_name = DnsRecord::get_domain_name_by_id($this->db, $zone_id);
         $ttl = $this->config('dns_ttl');
         $iface_add_reverse_record = $this->config('iface_add_reverse_record');
         $is_reverse_zone = preg_match('/i(p6|n-addr).arpa/i', $zone_name);
@@ -138,22 +147,23 @@ class AddRecordController extends BaseController
             if ($type === 'A') {
                 $content_array = preg_split("/\./", $content);
                 $content_rev = sprintf("%d.%d.%d.%d.in-addr.arpa", $content_array[3], $content_array[2], $content_array[1], $content_array[0]);
-                $zone_rev_id = DnsRecord::get_best_matching_zone_id_from_name($content_rev);
+                $zone_rev_id = DnsRecord::get_best_matching_zone_id_from_name($this->db, $content_rev);
             } elseif ($type === 'AAAA') {
                 $content_rev = DnsRecord::convert_ipv6addr_to_ptrrec($content);
-                $zone_rev_id = DnsRecord::get_best_matching_zone_id_from_name($content_rev);
+                $zone_rev_id = DnsRecord::get_best_matching_zone_id_from_name($this->db, $content_rev);
             }
 
             if (isset($zone_rev_id) && $zone_rev_id != -1) {
-                $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
+                $zone_name = DnsRecord::get_domain_name_by_id($this->db, $zone_id);
                 $fqdn_name = sprintf("%s.%s", $name, $zone_name);
-                if (DnsRecord::add_record($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
-                    LegacyLogger::log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
+                $dnsRecord = new DnsRecord($this->db);
+                if ($dnsRecord->add_record($this->db, $zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
+                    $this->logger->log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
                         $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                         $content_rev, $fqdn_name, $ttl, $prio), $zone_id);
 
                     if ($this->config('pdnssec_use')) {
-                        $dnssecProvider = DnssecProviderFactory::create($this->getConfig());
+                        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
                         $dnssecProvider->rectifyZone($zone_name);
                     }
                 }
@@ -167,16 +177,17 @@ class AddRecordController extends BaseController
 
     public function createRecord(string $zone_id, $name, $type, $content, $ttl, $prio): bool
     {
-        $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
+        $zone_name = DnsRecord::get_domain_name_by_id($this->db, $zone_id);
 
-        if (DnsRecord::add_record($zone_id, $name, $type, $content, $ttl, $prio)) {
-            LegacyLogger::log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:%s record:%s.%s content:%s ttl:%s priority:%s',
+        $dnsRecord = new DnsRecord($this->db);
+        if ($dnsRecord->add_record($this->db, $zone_id, $name, $type, $content, $ttl, $prio)) {
+            $this->logger->log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:%s record:%s.%s content:%s ttl:%s priority:%s',
                 $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                 $type, $name, $zone_name, $content, $ttl, $prio), $zone_id
             );
 
             if ($this->config('pdnssec_use')) {
-                $dnssecProvider = DnssecProviderFactory::create($this->getConfig());
+                $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
                 $dnssecProvider->rectifyZone($zone_name);
             }
 

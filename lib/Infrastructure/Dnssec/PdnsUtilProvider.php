@@ -25,13 +25,23 @@ namespace Poweradmin\Infrastructure\Dnssec;
 use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\Domain\Dnssec\DnssecProvider;
 use Poweradmin\Domain\Error\ErrorMessage;
+use Poweradmin\LegacyConfiguration;
 use Poweradmin\LegacyLogger;
 
 class PdnsUtilProvider implements DnssecProvider
 {
-    private static function dnssec_is_pdnssec_callable(): bool
+    private LegacyLogger $logger;
+    private LegacyConfiguration $config;
+
+    public function __construct($db)
     {
-        global $pdnssec_command;
+        $this->logger = new LegacyLogger($db);
+        $this->config = new LegacyConfiguration();
+    }
+
+    private function dnssec_is_pdnssec_callable(): bool
+    {
+        $pdnssec_command = $this->config->get('pdnssec_command');
 
         if (!function_exists('exec')) {
             $error = new ErrorMessage(_('Failed to call function exec. Make sure that exec is not listed in disable_functions at php.ini'));
@@ -52,9 +62,11 @@ class PdnsUtilProvider implements DnssecProvider
         return true;
     }
 
-    private static function dnssec_call_pdnssec($command, $domain, $args = array()): array
+    private function dnssec_call_pdnssec($command, $domain, $args = array()): array
     {
-        global $pdnssec_command, $pdnssec_debug;
+        $pdnssec_command = $this->config->get('pdnssec_command');
+        $pdnssec_debug = $this->config->get('pdnssec_debug');
+
         $output = '';
         $return_code = -1;
 
@@ -94,7 +106,8 @@ class PdnsUtilProvider implements DnssecProvider
 
     public function rectifyZone(string $zoneName): bool
     {
-        global $pdnssec_command, $pdnssec_debug;
+        $pdnssec_command = $this->config->get('pdnssec_command');
+        $pdnssec_debug = $this->config->get('pdnssec_debug');
 
         $output = array();
 
@@ -143,7 +156,7 @@ class PdnsUtilProvider implements DnssecProvider
             return false;
         }
 
-        LegacyLogger::log_info(sprintf('client_ip:%s user:%s operation:dnssec_secure_zone zone:%s',
+        $this->logger->log_info(sprintf('client_ip:%s user:%s operation:dnssec_secure_zone zone:%s',
             $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $zoneName));
 
         return true;
@@ -168,9 +181,8 @@ class PdnsUtilProvider implements DnssecProvider
         return true;
     }
 
-    public function isZoneSecured(string $zoneName): bool
+    public function isZoneSecured($db, string $zoneName): bool
     {
-        global $db;
         $query = $db->prepare("SELECT
                   COUNT(cryptokeys.id) AS active_keys,
                   COUNT(domainmetadata.id) > 0 AS presigned

@@ -32,6 +32,8 @@
 use Poweradmin\BaseController;
 use Poweradmin\LegacyUsers;
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 class AddPermTemplController extends BaseController
 {
     public function run(): void
@@ -58,7 +60,7 @@ class AddPermTemplController extends BaseController
         ]);
 
         if ($v->validate()) {
-            LegacyUsers::add_perm_templ($_POST);
+            LegacyUsers::add_perm_templ($this->db, $this->config('db_type'), $_POST);
             $this->setMessage('list_perm_templ', 'success', _('The permission template has been added successfully.'));
             $this->redirect('list_perm_templ.php');
         } else {
@@ -69,7 +71,7 @@ class AddPermTemplController extends BaseController
     private function showAddPermTempl(): void
     {
         $this->render('add_perm_templ.html', [
-            'perms_avail' => LegacyUsers::get_permissions_by_template_id(0)
+            'perms_avail' => LegacyUsers::get_permissions_by_template_id($this->db, 0)
         ]);
     }
 }

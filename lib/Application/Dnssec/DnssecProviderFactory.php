@@ -32,13 +32,14 @@ use Poweradmin\Infrastructure\Dnssec\PdnsUtilProvider;
 use Poweradmin\Infrastructure\Logger\CompositeLogger;
 use Poweradmin\Infrastructure\Logger\EchoLogger;
 use Poweradmin\Infrastructure\Logger\SyslogLogger;
+use Poweradmin\PDOLayer;
 
 class DnssecProviderFactory
 {
-    public static function create(ConfigurationInterface $config): DnssecProvider
+    public static function create(PDOLayer $db, ConfigurationInterface $config): DnssecProvider
     {
         if (!$config->get('pdns_api_url') || !$config->get('pdns_api_key')) {
-            return new PdnsUtilProvider();
+            return new PdnsUtilProvider($db);
         }
 
         $httpClient = new HttpClient($config->get('pdns_api_url'), $config->get('pdns_api_key'));

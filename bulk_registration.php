@@ -36,7 +36,17 @@ use Poweradmin\LegacyLogger;
 use Poweradmin\LegacyUsers;
 use Poweradmin\ZoneTemplate;
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 class BulkRegistrationController extends BaseController {
+
+    private LegacyLogger $logger;
+
+    public function __construct() {
+        parent::__construct();
+
+        $this->logger = new LegacyLogger($this->db);
+    }
 
     public function run(): void
     {
@@ -66,14 +76,15 @@ class BulkRegistrationController extends BaseController {
         $zone_template = $_POST['zone_template'];
 
         $failed_domains = [];
+        $dnsRecord = new DnsRecord();
         foreach ($domains as $domain) {
-            if (!Dns::is_valid_hostname_fqdn($domain, 0)) {
+            if (!Dns::is_valid_hostname_fqdn($domain, 0, $this->config('dns_top_level_tld_check'), $this->config('dns_strict_tld_check'))) {
                 $failed_domains[] = $domain . " - " . _('Invalid hostname.');
-            } elseif (DnsRecord::domain_exists($domain)) {
+            } elseif (DnsRecord::domain_exists($this->db, $domain)) {
                 $failed_domains[] = $domain . " - " . _('There is already a zone with this name.');
-            } elseif (DnsRecord::add_domain($this->db, $domain, $_POST['owner'], $dom_type, '', $zone_template)) {
-                $zone_id = DnsRecord::get_zone_id_from_name($domain);
-                LegacyLogger::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
+            } elseif ($dnsRecord->add_domain($this->db, $domain, $_POST['owner'], $dom_type, '', $zone_template)) {
+                $zone_id = DnsRecord::get_zone_id_from_name($this->db, $domain);
+                $this->logger->log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
                     $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                     $domain, $dom_type, $zone_template), $zone_id);
             }
@@ -95,7 +106,7 @@ class BulkRegistrationController extends BaseController {
             'perm_view_others' => LegacyUsers::verify_permission($this->db, 'user_view_others'),
             'iface_zone_type_default' => $this->config('iface_zone_type_default'),
             'available_zone_types' => array("MASTER", "NATIVE"),
-            'users' => LegacyUsers::show_users(),
+            'users' => LegacyUsers::show_users($this->db),
             'zone_templates' => ZoneTemplate::get_list_zone_templ($this->db, $_SESSION['userid']),
             'failed_domains' => $failed_domains,
         ]);

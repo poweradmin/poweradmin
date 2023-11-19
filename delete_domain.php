@@ -36,8 +36,19 @@ use Poweradmin\LegacyLogger;
 use Poweradmin\LegacyUsers;
 use Poweradmin\Permission;
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 class DeleteDomainController extends BaseController
 {
+
+    private LegacyLogger $logger;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->logger = new LegacyLogger($this->db);
+    }
 
     public function run(): void
     {
@@ -69,16 +80,16 @@ class DeleteDomainController extends BaseController
         $pdnssec_use = $this->config('pdnssec_use');
 
         if ($pdnssec_use && $zone_info['type'] == 'MASTER') {
-            $zone_name = DnsRecord::get_domain_name_by_id($zone_id);
+            $zone_name = DnsRecord::get_domain_name_by_id($this->db, $zone_id);
 
-            $dnssecProvider = DnssecProviderFactory::create($this->getConfig());
-            if ($dnssecProvider->isZoneSecured($zone_name)) {
+            $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+            if ($dnssecProvider->isZoneSecured($this->db, $zone_name)) {
                 $dnssecProvider->unsecureZone($zone_name);
             }
         }
 
-        if (DnsRecord::delete_domain($zone_id)) {
-            LegacyLogger::log_info(sprintf('client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
+        if (DnsRecord::delete_domain($this->db, $zone_id)) {
+            $this->logger->log_info(sprintf('client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
                 $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                 $zone_info['name'], $zone_info['type']), $zone_id);
 
@@ -90,12 +101,12 @@ class DeleteDomainController extends BaseController
     private function showDeleteDomain(string $zone_id): void
     {
         $zone_info = DnsRecord::get_zone_info_from_id($this->db, $zone_id);
-        $zone_owners = LegacyUsers::get_fullnames_owners_from_domainid($zone_id);
+        $zone_owners = LegacyUsers::get_fullnames_owners_from_domainid($this->db, $zone_id);
 
         $slave_master_exists = false;
         if ($zone_info['type'] == 'SLAVE') {
-            $slave_master = DnsRecord::get_domain_slave_master($zone_id);
-            if (DnsRecord::supermaster_exists($slave_master)) {
+            $slave_master = DnsRecord::get_domain_slave_master($this->db, $zone_id);
+            if (DnsRecord::supermaster_exists($this->db, $slave_master)) {
                 $slave_master_exists = true;
             }
         }

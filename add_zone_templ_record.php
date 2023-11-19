@@ -34,6 +34,8 @@ use Poweradmin\LegacyUsers;
 use Poweradmin\RecordType;
 use Poweradmin\ZoneTemplate;
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 class AddZoneTemplRecordController extends BaseController {
 
     public function run(): void
@@ -45,7 +47,7 @@ class AddZoneTemplRecordController extends BaseController {
         }
 
         $zone_templ_id = htmlspecialchars($_GET['id']);
-        $owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
+        $owner = ZoneTemplate::get_zone_templ_is_owner($this->db, $zone_templ_id, $_SESSION['userid']);
         $perm_godlike = LegacyUsers::verify_permission($this->db, 'user_is_ueberuser');
         $perm_master_add = LegacyUsers::verify_permission($this->db, 'zone_master_add');
 
@@ -87,7 +89,7 @@ class AddZoneTemplRecordController extends BaseController {
     private function showAddZoneTemplRecord(): void
     {
         $zone_templ_id = htmlspecialchars($_GET['id']);
-        $templ_details = ZoneTemplate::get_zone_templ_details($zone_templ_id);
+        $templ_details = ZoneTemplate::get_zone_templ_details($this->db, $zone_templ_id);
         $name = $_POST['name'] ?? "[ZONE]";
         $type = $_POST['type'] ?? "";
         $content = $_POST['content'] ?? "";

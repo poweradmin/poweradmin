@@ -32,6 +32,8 @@
 use Poweradmin\BaseController;
 use Poweradmin\LegacyUsers;
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 class ListPermTemplController extends BaseController
 {
 
@@ -46,7 +48,7 @@ class ListPermTemplController extends BaseController
     {
         $this->render('list_perm_templ.html', [
             'templ_perm_add' => LegacyUsers::verify_permission($this->db, 'templ_perm_add'),
-            'permission_templates' => LegacyUsers::list_permission_templates(),
+            'permission_templates' => LegacyUsers::list_permission_templates($this->db),
         ]);
     }
 }
