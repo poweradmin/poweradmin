@@ -44,8 +44,8 @@ class EditZoneTemplController extends BaseController
     {
         $zone_templ_id = htmlspecialchars($_GET['id']);
         $owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
-        $perm_godlike = LegacyUsers::verify_permission('user_is_ueberuser');
-        $perm_master_add = LegacyUsers::verify_permission('zone_master_add');
+        $perm_godlike = LegacyUsers::verify_permission($this->db, 'user_is_ueberuser');
+        $perm_master_add = LegacyUsers::verify_permission($this->db, 'zone_master_add');
 
         $this->checkCondition(!($perm_godlike || $perm_master_add && $owner), _("You do not have the permission to delete zone templates."));
 
@@ -72,7 +72,7 @@ class EditZoneTemplController extends BaseController
     private function updateZoneTemplate(string $zone_templ_id): void
     {
         $owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
-        $perm_godlike = LegacyUsers::verify_permission('user_is_ueberuser');
+        $perm_godlike = LegacyUsers::verify_permission($this->db, 'user_is_ueberuser');
 
         if (isset($_POST['edit']) && ($owner || $perm_godlike)) {
             $this->updateZoneTemplateDetails($zone_templ_id);
@@ -109,7 +109,7 @@ class EditZoneTemplController extends BaseController
             'pagination' => $this->createAndPresentPagination($record_count, $iface_rowamount, $zone_templ_id),
             'records' => ZoneTemplate::get_zone_templ_records($zone_templ_id, $row_start, $iface_rowamount, $record_sort_by),
             'zone_templ_id' => $zone_templ_id,
-            'perm_is_godlike' => LegacyUsers::verify_permission('user_is_ueberuser'),
+            'perm_is_godlike' => LegacyUsers::verify_permission($this->db, 'user_is_ueberuser'),
         ]);
     }
 
@@ -157,7 +157,7 @@ class EditZoneTemplController extends BaseController
         if (!isset($_POST['templ_name']) || $_POST['templ_name'] == "") {
             $this->showError(_('Invalid or unexpected input given.'));
         }
-        ZoneTemplate::edit_zone_templ($_POST, $zone_templ_id, $_SESSION['userid']);
+        ZoneTemplate::edit_zone_templ($this->db, $_POST, $zone_templ_id, $_SESSION['userid']);
         $this->setMessage('list_zone_templ', 'success', _('Zone template has been updated successfully.'));
         $this->redirect('list_zone_templ.php');
     }
@@ -166,7 +166,7 @@ class EditZoneTemplController extends BaseController
     {
         $zones = ZoneTemplate::get_list_zone_use_templ($zone_templ_id, $_SESSION['userid']);
         foreach ($zones as $zone_id) {
-            DnsRecord::update_zone_records($zone_id, $zone_templ_id);
+            DnsRecord::update_zone_records($this->db, $zone_id, $zone_templ_id);
         }
         $this->setMessage('edit_zone_templ', 'success', _('Zones have been updated successfully.'));
     }

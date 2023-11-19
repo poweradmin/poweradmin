@@ -48,10 +48,10 @@ class DnsSecController extends BaseController {
         }
 
         $zone_id = htmlspecialchars($_GET['id']);
-        $perm_view = Permission::getViewPermission();
-        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($zone_id);
+        $perm_view = Permission::getViewPermission($this->db);
+        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($this->db, $zone_id);
 
-        (LegacyUsers::verify_permission('user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
+        (LegacyUsers::verify_permission($this->db, 'user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
 
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
             $this->showError(_("You do not have the permission to view this zone."));
@@ -84,7 +84,7 @@ class DnsSecController extends BaseController {
             'record_count' => DnsRecord::count_zone_records($zone_id),
             'zone_id' => $zone_id,
             'zone_template_id' => DnsRecord::get_zone_template($zone_id),
-            'zone_templates' => ZoneTemplate::get_list_zone_templ($_SESSION['userid']),
+            'zone_templates' => ZoneTemplate::get_list_zone_templ($this->db, $_SESSION['userid']),
             'algorithms' => DnssecAlgorithm::ALGORITHMS,
         ]);
     }

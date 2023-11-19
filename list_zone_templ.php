@@ -44,13 +44,13 @@ class ListZoneTemplController extends BaseController {
 
     private function showListZoneTempl(): void
     {
-        $perm_zone_master_add = LegacyUsers::verify_permission('zone_master_add');
+        $perm_zone_master_add = LegacyUsers::verify_permission($this->db, 'zone_master_add');
 
         $this->render('list_zone_templ.html', [
             'perm_zone_master_add' => $perm_zone_master_add,
             'user_name' => LegacyUsers::get_fullname_from_userid($_SESSION['userid']) ?: $_SESSION['userlogin'],
-            'zone_templates' => ZoneTemplate::get_list_zone_templ($_SESSION['userid']),
-            'perm_is_godlike' => LegacyUsers::verify_permission('user_is_ueberuser'),
+            'zone_templates' => ZoneTemplate::get_list_zone_templ($this->db, $_SESSION['userid']),
+            'perm_is_godlike' => LegacyUsers::verify_permission($this->db, 'user_is_ueberuser'),
         ]);
     }
 }

@@ -44,8 +44,8 @@ class EditUserController extends BaseController
             $edit_id = $_GET['id'];
         }
 
-        $perm_edit_own = LegacyUsers::verify_permission('user_edit_own');
-        $perm_edit_others = LegacyUsers::verify_permission('user_edit_others');
+        $perm_edit_own = LegacyUsers::verify_permission($this->db, 'user_edit_own');
+        $perm_edit_others = LegacyUsers::verify_permission($this->db, 'user_edit_others');
 
         if ($edit_id == "-1") {
             $this->showError(_('Invalid or unexpected input given.'));
@@ -132,9 +132,9 @@ class EditUserController extends BaseController
         }
 
         $user = $users[0];
-        $edit_templ_perm = LegacyUsers::verify_permission('user_edit_templ_perm');
-        $passwd_edit_others_perm = LegacyUsers::verify_permission('user_passwd_edit_others');
-        $edit_own_perm = LegacyUsers::verify_permission('user_edit_own');
+        $edit_templ_perm = LegacyUsers::verify_permission($this->db, 'user_edit_templ_perm');
+        $passwd_edit_others_perm = LegacyUsers::verify_permission($this->db, 'user_passwd_edit_others');
+        $edit_own_perm = LegacyUsers::verify_permission($this->db, 'user_edit_own');
         $permission_templates = LegacyUsers::list_permission_templates();
         $user_permissions = LegacyUsers::get_permissions_by_template_id($user['tpl_id']);
 
@@ -146,7 +146,7 @@ class EditUserController extends BaseController
             $use_ldap_checked = "checked";
         }
 
-        $permissions = Permission::getPermissions('user_is_ueberuser');
+        $permissions = Permission::getPermissions($this->db, 'user_is_ueberuser');
         $currentUserAdmin = $permissions['user_is_ueberuser'] && $_SESSION['userid'] == $edit_id;
 
         $this->render('edit_user.html', [

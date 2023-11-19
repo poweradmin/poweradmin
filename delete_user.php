@@ -39,8 +39,8 @@ class DeleteUserController extends BaseController {
 
     public function run(): void
     {
-        $perm_edit_others = LegacyUsers::verify_permission('user_edit_others');
-        $perm_is_godlike = LegacyUsers::verify_permission('user_is_ueberuser');
+        $perm_edit_others = LegacyUsers::verify_permission($this->db, 'user_edit_others');
+        $perm_is_godlike = LegacyUsers::verify_permission($this->db, 'user_is_ueberuser');
 
         if (!(isset($_GET['id']) && Validation::is_number($_GET['id']))) {
             $this->showError(_('Invalid or unexpected input given.'));
@@ -70,7 +70,7 @@ class DeleteUserController extends BaseController {
             $zones = $_POST['zone'];
         }
 
-        if (LegacyUsers::delete_user($uid, $zones)) {
+        if (LegacyUsers::delete_user($this->db, $uid, $zones)) {
             $this->setMessage('users', 'success', _('The user has been deleted successfully.'));
             $this->redirect('users.php');
         }

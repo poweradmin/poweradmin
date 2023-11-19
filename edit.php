@@ -136,23 +136,23 @@ class EditController extends BaseController {
                 $this->showError(_('Template name can\'t be an empty string.'));
             } else {
                 $records = DnsRecord::get_records_from_domain_id($zone_id);
-                ZoneTemplate::add_zone_templ_save_as($_POST['templ_name'], $_POST['templ_descr'], $_SESSION['userid'], $records, DnsRecord::get_domain_name_by_id($zone_id));
+                ZoneTemplate::add_zone_templ_save_as($this->db, $_POST['templ_name'], $_POST['templ_descr'], $_SESSION['userid'], $records, DnsRecord::get_domain_name_by_id($zone_id));
                 $this->setMessage('edit', 'success', _('Zone template has been added successfully.'));
             }
         }
 
-        $perm_view = Permission::getViewPermission();
-        $perm_edit = Permission::getEditPermission();
+        $perm_view = Permission::getViewPermission($this->db);
+        $perm_edit = Permission::getEditPermission($this->db);
 
-        if (LegacyUsers::verify_permission('zone_meta_edit_others')) {
+        if (LegacyUsers::verify_permission($this->db, 'zone_meta_edit_others')) {
             $perm_meta_edit = "all";
-        } elseif (LegacyUsers::verify_permission('zone_meta_edit_own')) {
+        } elseif (LegacyUsers::verify_permission($this->db, 'zone_meta_edit_own')) {
             $perm_meta_edit = "own";
         } else {
             $perm_meta_edit = "none";
         }
 
-        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($zone_id);
+        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($this->db, $zone_id);
 
         $meta_edit = $perm_meta_edit == "all" || ($perm_meta_edit == "own" && $user_is_zone_owner == "1");
 
@@ -165,10 +165,10 @@ class EditController extends BaseController {
             DnsRecord::change_zone_type($_POST['newtype'], $zone_id);
         }
         if (isset($_POST["newowner"]) && is_numeric($_POST["domain"]) && is_numeric($_POST["newowner"])) {
-            DnsRecord::add_owner_to_zone($_POST["domain"], $_POST["newowner"]);
+            DnsRecord::add_owner_to_zone($this->db, $_POST["domain"], $_POST["newowner"]);
         }
         if (isset($_POST["delete_owner"]) && is_numeric($_POST["delete_owner"])) {
-            DnsRecord::delete_owner_from_zone($zone_id, $_POST["delete_owner"]);
+            DnsRecord::delete_owner_from_zone($this->db, $zone_id, $_POST["delete_owner"]);
         }
         if (isset($_POST["template_change"])) {
             if (!isset($_POST['zone_template']) || "none" == $_POST['zone_template']) {
@@ -177,7 +177,7 @@ class EditController extends BaseController {
                 $new_zone_template = $_POST['zone_template'];
             }
             if ($_POST['current_zone_template'] != $new_zone_template) {
-                DnsRecord::update_zone_records($zone_id, $new_zone_template);
+                DnsRecord::update_zone_records($this->db, $zone_id, $new_zone_template);
             }
         }
 
@@ -211,7 +211,7 @@ class EditController extends BaseController {
 
         $domain_type = DnsRecord::get_domain_type($zone_id);
         $record_count = DnsRecord::count_zone_records($zone_id);
-        $zone_templates = ZoneTemplate::get_list_zone_templ($_SESSION['userid']);
+        $zone_templates = ZoneTemplate::get_list_zone_templ($this->db, $_SESSION['userid']);
         $zone_template_id = DnsRecord::get_zone_template($zone_id);
         $zone_template_details = ZoneTemplate::get_zone_templ_details($zone_template_id);
         $slave_master = DnsRecord::get_domain_slave_master($zone_id);
@@ -253,8 +253,8 @@ class EditController extends BaseController {
             'perm_edit' => $perm_edit,
             'perm_meta_edit' => $perm_meta_edit,
             'meta_edit' => $meta_edit,
-            'perm_zone_master_add' => LegacyUsers::verify_permission('zone_master_add'),
-            'perm_view_others' => LegacyUsers::verify_permission('user_view_others'),
+            'perm_zone_master_add' => LegacyUsers::verify_permission($this->db, 'zone_master_add'),
+            'perm_view_others' => LegacyUsers::verify_permission($this->db, 'user_view_others'),
             'user_is_zone_owner' => $user_is_zone_owner,
             'zone_types' => $types,
             'row_start' => $row_start,

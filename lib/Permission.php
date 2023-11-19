@@ -36,11 +36,11 @@ class Permission
      *
      * @return string Returns "all", "own", or "none" depending on the user's view permission.
      */
-    public static function getViewPermission(): string
+    public static function getViewPermission($db): string
     {
-        if (LegacyUsers::verify_permission('zone_content_view_others')) {
+        if (LegacyUsers::verify_permission($db, 'zone_content_view_others')) {
             return "all";
-        } elseif (LegacyUsers::verify_permission('zone_content_view_own')) {
+        } elseif (LegacyUsers::verify_permission($db, 'zone_content_view_own')) {
             return "own";
         } else {
             return "none";
@@ -54,13 +54,13 @@ class Permission
      *
      * @return string Returns "all", "own", "own_as_client" or "none" depending on the user's edit permission.
      */
-    public static function getEditPermission(): string
+    public static function getEditPermission($db): string
     {
-        if (LegacyUsers::verify_permission('zone_content_edit_others')) {
+        if (LegacyUsers::verify_permission($db,'zone_content_edit_others')) {
             return "all";
-        } elseif (LegacyUsers::verify_permission('zone_content_edit_own')) {
+        } elseif (LegacyUsers::verify_permission($db,'zone_content_edit_own')) {
             return "own";
-        } elseif (LegacyUsers::verify_permission('zone_content_edit_own_as_client')) {
+        } elseif (LegacyUsers::verify_permission($db, 'zone_content_edit_own_as_client')) {
             return "own_as_client";
         } else {
             return "none";
@@ -74,13 +74,13 @@ class Permission
      *
      * @return array An associative array containing the permission key and its corresponding boolean value.
      */
-    public static function getPermissions(): array
+    public static function getPermissions($db): array
     {
         $arguments = func_get_args();
         $permissions = [];
 
         foreach ($arguments as $argument) {
-            $permissions[$argument] = LegacyUsers::verify_permission($argument);
+            $permissions[$argument] = LegacyUsers::verify_permission($db, $argument);
         }
 
         return $permissions;

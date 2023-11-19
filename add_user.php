@@ -66,7 +66,7 @@ class AddUserController extends BaseController {
 
     private function showForm(): void
     {
-        $user_edit_templ_perm = LegacyUsers::verify_permission('user_edit_templ_perm');
+        $user_edit_templ_perm = LegacyUsers::verify_permission($this->db, 'user_edit_templ_perm');
         $user_templates = LegacyUsers::list_permission_templates();
 
         $username = $_POST['username'] ?? "";

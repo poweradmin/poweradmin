@@ -651,10 +651,10 @@ class DnsRecord
      *
      * @return boolean true on success
      */
-    public static function add_domain($domain, $owner, $type, $slave_master, $zone_template)
+    public static function add_domain($db, $domain, $owner, $type, $slave_master, $zone_template)
     {
-        $zone_master_add = LegacyUsers::verify_permission('zone_master_add');
-        $zone_slave_add = LegacyUsers::verify_permission('zone_slave_add');
+        $zone_master_add = LegacyUsers::verify_permission($db, 'zone_master_add');
+        $zone_slave_add = LegacyUsers::verify_permission($db, 'zone_slave_add');
 
         // TODO: make sure only one is possible if only one is enabled
         if ($zone_master_add || $zone_slave_add) {
@@ -827,10 +827,10 @@ class DnsRecord
      *
      * @return boolean true when succesful
      */
-    public static function add_owner_to_zone($zone_id, $user_id)
+    public static function add_owner_to_zone($db, $zone_id, $user_id)
     {
         global $db;
-        if ((LegacyUsers::verify_permission('zone_meta_edit_others')) || (LegacyUsers::verify_permission('zone_meta_edit_own')) && LegacyUsers::verify_user_is_owner_zoneid($_GET["id"])) {
+        if ((LegacyUsers::verify_permission($db, 'zone_meta_edit_others')) || (LegacyUsers::verify_permission($db, 'zone_meta_edit_own')) && LegacyUsers::verify_user_is_owner_zoneid($_GET["id"])) {
             if (is_numeric($zone_id) && is_numeric($user_id) && is_valid_user($user_id)) {
                 if ($db->queryOne("SELECT COUNT(id) FROM zones WHERE owner=" . $db->quote($user_id, 'integer') . " AND domain_id=" . $db->quote($zone_id, 'integer')) == 0) {
                     $zone_templ_id = self::get_zone_template($zone_id);
@@ -867,10 +867,10 @@ class DnsRecord
      *
      * @return boolean true on success
      */
-    public static function delete_owner_from_zone($zone_id, $user_id)
+    public static function delete_owner_from_zone($db, $zone_id, $user_id)
     {
         global $db;
-        if ((LegacyUsers::verify_permission('zone_meta_edit_others')) || (LegacyUsers::verify_permission('zone_meta_edit_own')) && LegacyUsers::verify_user_is_owner_zoneid($_GET["id"])) {
+        if ((LegacyUsers::verify_permission($db, 'zone_meta_edit_others')) || (LegacyUsers::verify_permission($db, 'zone_meta_edit_own')) && LegacyUsers::verify_user_is_owner_zoneid($_GET["id"])) {
             if (is_numeric($zone_id) && is_numeric($user_id) && is_valid_user($user_id)) {
                 if ($db->queryOne("SELECT COUNT(id) FROM zones WHERE domain_id=" . $db->quote($zone_id, 'integer')) > 1) {
                     $db->query("DELETE FROM zones WHERE owner=" . $db->quote($user_id, 'integer') . " AND domain_id=" . $db->quote($zone_id, 'integer'));
@@ -978,9 +978,9 @@ class DnsRecord
      * @param int $zid Zone ID
      * @return mixed[] array of zone details [type,name,master_ip,record_count]
      */
-    public static function get_zone_info_from_id($zid)
+    public static function get_zone_info_from_id($db, $zid)
     {
-        $perm_view = Permission::getViewPermission();
+        $perm_view = Permission::getViewPermission($db);
 
         if ($perm_view == "none") {
             $error = new ErrorMessage(_("You do not have the permission to view this zone."));
@@ -1012,11 +1012,11 @@ class DnsRecord
      * @param array $zones Zone IDs
      * @return array
      */
-    public static function get_zone_info_from_ids(array $zones): array
+    public static function get_zone_info_from_ids($db, array $zones): array
     {
         $zone_infos = array();
         foreach ($zones as $zone) {
-            $zone_info = DnsRecord::get_zone_info_from_id($zone);
+            $zone_info = DnsRecord::get_zone_info_from_id($db, $zone);
             $zone_infos[] = $zone_info;
         }
         return $zone_infos;
@@ -1718,20 +1718,19 @@ class DnsRecord
      *
      * @return null
      */
-    public static function update_zone_records($zone_id, $zone_template_id)
+    public static function update_zone_records($db, $zone_id, $zone_template_id)
     {
-        global $db;
         global $dns_ttl;
         global $db_type;
 
         $perm_edit = Permission::getEditPermission();
-        $user_is_zone_owner = verify_user_is_owner_zoneid($zone_id);
+        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($db, $zone_id);
 
-        if (LegacyUsers::verify_permission('zone_master_add')) {
+        if (LegacyUsers::verify_permission($db, 'zone_master_add')) {
             $zone_master_add = "1";
         }
 
-        if (LegacyUsers::verify_permission('zone_slave_add')) {
+        if (LegacyUsers::verify_permission($db, 'zone_slave_add')) {
             $zone_slave_add = "1";
         }
 

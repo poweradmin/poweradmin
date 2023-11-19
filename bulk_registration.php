@@ -71,7 +71,7 @@ class BulkRegistrationController extends BaseController {
                 $failed_domains[] = $domain . " - " . _('Invalid hostname.');
             } elseif (DnsRecord::domain_exists($domain)) {
                 $failed_domains[] = $domain . " - " . _('There is already a zone with this name.');
-            } elseif (DnsRecord::add_domain($domain, $_POST['owner'], $dom_type, '', $zone_template)) {
+            } elseif (DnsRecord::add_domain($this->db, $domain, $_POST['owner'], $dom_type, '', $zone_template)) {
                 $zone_id = DnsRecord::get_zone_id_from_name($domain);
                 LegacyLogger::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
                     $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
@@ -92,11 +92,11 @@ class BulkRegistrationController extends BaseController {
     {
         $this->render('bulk_registration.html', [
             'userid' => $_SESSION['userid'],
-            'perm_view_others' => LegacyUsers::verify_permission('user_view_others'),
+            'perm_view_others' => LegacyUsers::verify_permission($this->db, 'user_view_others'),
             'iface_zone_type_default' => $this->config('iface_zone_type_default'),
             'available_zone_types' => array("MASTER", "NATIVE"),
             'users' => LegacyUsers::show_users(),
-            'zone_templates' => ZoneTemplate::get_list_zone_templ($_SESSION['userid']),
+            'zone_templates' => ZoneTemplate::get_list_zone_templ($this->db, $_SESSION['userid']),
             'failed_domains' => $failed_domains,
         ]);
     }

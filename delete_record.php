@@ -78,11 +78,11 @@ class DeleteRecordController extends BaseController {
             }
         }
 
-        $perm_edit = Permission::getEditPermission();
+        $perm_edit = Permission::getEditPermission($this->db);
 
-        $zone_info = DnsRecord::get_zone_info_from_id($zid);
+        $zone_info = DnsRecord::get_zone_info_from_id($this->db, $zid);
         $zone_id = DnsRecord::recid_to_domid($record_id);
-        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($zone_id);
+        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($this->db, $zone_id);
         if ($zone_info['type'] == "SLAVE" || $perm_edit == "none" || ($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0") {
             $this->showError(_("You do not have the permission to edit this record."));
         }

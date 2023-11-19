@@ -46,10 +46,10 @@ class AddRecordController extends BaseController
     {
         $this->checkId();
 
-        $perm_edit = Permission::getEditPermission();
+        $perm_edit = Permission::getEditPermission($this->db);
         $zone_id = htmlspecialchars($_GET['id']);
         $zone_type = DnsRecord::get_domain_type($zone_id);
-        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($zone_id);
+        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($this->db, $zone_id);
 
         $this->checkCondition($zone_type == "SLAVE"
             || $perm_edit == "none"

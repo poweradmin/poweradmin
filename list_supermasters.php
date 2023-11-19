@@ -46,8 +46,8 @@ class ListSuperMastersController extends BaseController
     private function showSuperMasters(): void
     {
         $this->render('list_supermasters.html', [
-            'perm_sm_add' => LegacyUsers::verify_permission('supermaster_add'),
-            'perm_sm_edit' => LegacyUsers::verify_permission('supermaster_edit'),
+            'perm_sm_add' => LegacyUsers::verify_permission($this->db, 'supermaster_add'),
+            'perm_sm_edit' => LegacyUsers::verify_permission($this->db, 'supermaster_edit'),
             'supermasters' => DnsRecord::get_supermasters()
         ]);
     }

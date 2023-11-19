@@ -41,7 +41,7 @@ class ZoneTemplate
      *
      * @return mixed[] array of zone templates [id,name,descr]
      */
-    public static function get_list_zone_templ(int $userid): array
+    public static function get_list_zone_templ($db, int $userid): array
     {
         global $db;
 
@@ -51,7 +51,7 @@ class ZoneTemplate
             LEFT JOIN zones z ON zt.id = z.zone_templ_id";
         $params = [];
 
-        if (!LegacyUsers::verify_permission('user_is_ueberuser')) {
+        if (!LegacyUsers::verify_permission($db, 'user_is_ueberuser')) {
             $query .= " WHERE zt.owner = :userid OR zt.owner = 0";
             $params[':userid'] = $userid;
         }
@@ -71,12 +71,10 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public static function add_zone_templ($details, $userid)
+    public static function add_zone_templ($db, $details, $userid)
     {
-        global $db;
-
         $zone_name_exists = ZoneTemplate::zone_templ_name_exists($details['templ_name']);
-        if (!(LegacyUsers::verify_permission('zone_master_add'))) {
+        if (!(LegacyUsers::verify_permission($db, 'zone_master_add'))) {
             $error = new ErrorMessage(_("You do not have the permission to add a zone template."));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
@@ -133,11 +131,9 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public static function delete_zone_templ($zone_templ_id)
+    public static function delete_zone_templ($db, $zone_templ_id)
     {
-        global $db;
-
-        if (!(LegacyUsers::verify_permission('zone_master_add'))) {
+        if (!(LegacyUsers::verify_permission($db, 'zone_master_add'))) {
             $error = new ErrorMessage(_("You do not have the permission to delete zone templates."));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
@@ -168,11 +164,9 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public static function delete_zone_templ_userid($userid)
+    public static function delete_zone_templ_userid($db, $userid)
     {
-        global $db;
-
-        if (!(LegacyUsers::verify_permission('zone_master_add'))) {
+        if (!(LegacyUsers::verify_permission($db, 'zone_master_add'))) {
             $error = new ErrorMessage(_("You do not have the permission to delete zone templates."));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
@@ -294,11 +288,9 @@ class ZoneTemplate
      *
      * @return boolean true if successful, false otherwise
      */
-    public static function add_zone_templ_record($zone_templ_id, $name, $type, $content, $ttl, $prio)
+    public static function add_zone_templ_record($db, $zone_templ_id, $name, $type, $content, $ttl, $prio)
     {
-        global $db;
-
-        if (!(LegacyUsers::verify_permission('zone_master_add'))) {
+        if (!(LegacyUsers::verify_permission($db, 'zone_master_add'))) {
             $error = new ErrorMessage(_("You do not have the permission to add a record to this zone."));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
@@ -351,11 +343,9 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public static function edit_zone_templ_record($record)
+    public static function edit_zone_templ_record($db, $record)
     {
-        global $db;
-
-        if (!(LegacyUsers::verify_permission('zone_master_add'))) {
+        if (!(LegacyUsers::verify_permission($db, 'zone_master_add'))) {
             $error = new ErrorMessage(_("You do not have the permission to edit this record."));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
@@ -396,11 +386,9 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public static function delete_zone_templ_record($rid)
+    public static function delete_zone_templ_record($db, $rid)
     {
-        global $db;
-
-        if (!(LegacyUsers::verify_permission('zone_master_add'))) {
+        if (!(LegacyUsers::verify_permission($db, 'zone_master_add'))) {
             $error = new ErrorMessage(_("You do not have the permission to delete this record."));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
@@ -444,12 +432,11 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public static function add_zone_templ_save_as($template_name, $description, $userid, $records, $domain = null)
+    public static function add_zone_templ_save_as($db, $template_name, $description, $userid, $records, $domain = null)
     {
-        global $db;
         global $db_type;
 
-        if (!(LegacyUsers::verify_permission('zone_master_add'))) {
+        if (!(LegacyUsers::verify_permission($db, 'zone_master_add'))) {
             $error = new ErrorMessage(_("You do not have the permission to add a zone template."));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
@@ -539,11 +526,10 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public static function edit_zone_templ($details, $zone_templ_id, $user_id)
+    public static function edit_zone_templ($db, $details, $zone_templ_id, $user_id)
     {
-        global $db;
         $zone_name_exists = ZoneTemplate::zone_templ_name_exists($details['templ_name'], $zone_templ_id);
-        if (!(LegacyUsers::verify_permission('zone_master_add'))) {
+        if (!(LegacyUsers::verify_permission($db, 'zone_master_add'))) {
             $error = new ErrorMessage(_("You do not have the permission to add a zone template."));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);

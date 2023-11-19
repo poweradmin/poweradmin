@@ -53,7 +53,7 @@ class DeleteDomainsController extends BaseController {
 
     public function deleteDomains($zone_ids): void
     {
-        $deleted_zones = DnsRecord::get_zone_info_from_ids($zone_ids);
+        $deleted_zones = DnsRecord::get_zone_info_from_ids($this->db, $zone_ids);
         $delete_domains = DnsRecord::delete_domains($zone_ids);
 
         if ($delete_domains) {
@@ -76,7 +76,7 @@ class DeleteDomainsController extends BaseController {
     {
         $zones = $this->getZoneInfo($zone_ids);
         $this->render('delete_domains.html', [
-            'perm_edit' => Permission::getEditPermission(),
+            'perm_edit' => Permission::getEditPermission($this->db),
             'zones' => $zones,
             'error' => _("You do not have the permission to delete a zone.")
         ]);
@@ -87,9 +87,9 @@ class DeleteDomainsController extends BaseController {
         $zones = [];
         foreach ($zone_ids as $zone_id) {
             $zones[$zone_id]['id'] = $zone_id;
-            $zones[$zone_id] = DnsRecord::get_zone_info_from_id($zone_id);
+            $zones[$zone_id] = DnsRecord::get_zone_info_from_id($this->db, $zone_id);
             $zones[$zone_id]['owner'] = LegacyUsers::get_fullnames_owners_from_domainid($zone_id);
-            $zones[$zone_id]['is_owner'] = LegacyUsers::verify_user_is_owner_zoneid($zone_id);
+            $zones[$zone_id]['is_owner'] = LegacyUsers::verify_user_is_owner_zoneid($this->db, $zone_id);
 
             $zones[$zone_id]['has_supermaster'] = false;
             $zones[$zone_id]['slave_master'] = null;

@@ -80,7 +80,7 @@ class AddZoneSlaveController extends BaseController
             $this->setMessage('add_zone_slave', 'error', _('This is not a valid IPv4 or IPv6 address.'));
             $this->showForm();
         } else {
-            if (DnsRecord::add_domain($zone, $owner, $type, $master, 'none')) {
+            if (DnsRecord::add_domain($this->db, $zone, $owner, $type, $master, 'none')) {
                 $zone_id = DnsRecord::get_zone_id_from_name($zone);
                 LegacyLogger::log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',
                     $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
@@ -97,7 +97,7 @@ class AddZoneSlaveController extends BaseController
         $this->render('add_zone_slave.html', [
             'users' => LegacyUsers::show_users(),
             'session_user_id' => $_SESSION['userid'],
-            'perm_view_others' => LegacyUsers::verify_permission('user_view_others'),
+            'perm_view_others' => LegacyUsers::verify_permission($this->db, 'user_view_others'),
         ]);
     }
 }

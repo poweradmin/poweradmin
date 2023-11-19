@@ -43,13 +43,13 @@ class EditRecordController extends BaseController {
 
     public function run(): void
     {
-        $perm_view = Permission::getViewPermission();
-        $perm_edit = Permission::getEditPermission();
+        $perm_view = Permission::getViewPermission($this->db);
+        $perm_edit = Permission::getEditPermission($this->db);
 
         $record_id = $_GET['id'];
         $zid = DnsRecord::get_zone_id_from_record_id($record_id);
 
-        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($zid);
+        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($this->db, $zid);
         $zone_type = DnsRecord::get_domain_type($zid);
 
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {

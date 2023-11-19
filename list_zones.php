@@ -46,8 +46,8 @@ class ListZonesController extends BaseController {
 
     public function run(): void
     {
-        $perm_view_zone_own = LegacyUsers::verify_permission('zone_content_view_own');
-        $perm_view_zone_others = LegacyUsers::verify_permission('zone_content_view_others');
+        $perm_view_zone_own = LegacyUsers::verify_permission($this->db, 'zone_content_view_own');
+        $perm_view_zone_others = LegacyUsers::verify_permission($this->db, 'zone_content_view_others');
 
         $permission_check = !($perm_view_zone_own || $perm_view_zone_others);
         $this->checkCondition($permission_check, _('You do not have sufficient permissions to view this page.'));
@@ -129,8 +129,8 @@ class ListZonesController extends BaseController {
             'pagination' => $this->createAndPresentPagination($count_zones_all_letterstart, $iface_rowamount),
             'session_userlogin' => $_SESSION['userlogin'],
             'perm_edit' => $perm_edit,
-            'perm_zone_master_add' => LegacyUsers::verify_permission('zone_master_add'),
-            'perm_zone_slave_add' => LegacyUsers::verify_permission('zone_slave_add'),
+            'perm_zone_master_add' => LegacyUsers::verify_permission($this->db, 'zone_master_add'),
+            'perm_zone_slave_add' => LegacyUsers::verify_permission($this->db, 'zone_slave_add'),
         ]);
     }
 

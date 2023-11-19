@@ -61,7 +61,7 @@ class UsersController extends BaseController
     private function showUsers(): void
     {
         $this->render('users.html', [
-            'permissions' => Permission::getPermissions(
+            'permissions' => Permission::getPermissions($this->db,
                 'user_view_others',
                 'user_edit_own',
                 'user_edit_others',
@@ -72,7 +72,7 @@ class UsersController extends BaseController
             'users' => LegacyUsers::get_user_detail_list(""),
             'ldap_use' => $this->config('ldap_use'),
             'session_userid' => $_SESSION["userid"],
-            'perm_add_new' => LegacyUsers::verify_permission('user_add_new'),
+            'perm_add_new' => LegacyUsers::verify_permission($this->db, 'user_add_new'),
         ]);
     }
 }

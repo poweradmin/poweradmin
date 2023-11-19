@@ -46,8 +46,8 @@ class AddZoneTemplRecordController extends BaseController {
 
         $zone_templ_id = htmlspecialchars($_GET['id']);
         $owner = ZoneTemplate::get_zone_templ_is_owner($zone_templ_id, $_SESSION['userid']);
-        $perm_godlike = LegacyUsers::verify_permission('user_is_ueberuser');
-        $perm_master_add = LegacyUsers::verify_permission('zone_master_add');
+        $perm_godlike = LegacyUsers::verify_permission($this->db, 'user_is_ueberuser');
+        $perm_master_add = LegacyUsers::verify_permission($this->db, 'zone_master_add');
 
         $this->checkCondition(!($perm_godlike || $perm_master_add && $owner), _("You do not have the permission to delete zone templates."));
 
@@ -76,7 +76,7 @@ class AddZoneTemplRecordController extends BaseController {
         $dns_ttl = $this->config('dns_ttl');
         $ttl = $_POST['ttl'] ?? $dns_ttl;
 
-        if (ZoneTemplate::add_zone_templ_record($zone_templ_id, $name, $type, $content, $ttl, $prio)) {
+        if (ZoneTemplate::add_zone_templ_record($this->db, $zone_templ_id, $name, $type, $content, $ttl, $prio)) {
             $this->setMessage('edit_zone_templ', 'success', 'The record was successfully added.');
             $this->redirect('edit_zone_templ.php', ['id' => $zone_templ_id]);
         } else {

@@ -23,6 +23,9 @@
 namespace Poweradmin;
 
 use PDO;
+use Poweradmin\Application\Presenter\ErrorPresenter;
+use Poweradmin\Application\Service\UserAuthenticationService;
+use Poweradmin\Domain\Error\ErrorMessage;
 
 class LegacyUsers
 {
@@ -39,7 +42,7 @@ class LegacyUsers
      *
      * @return boolean true if user has permission, false otherwise
      */
-    public static function verify_permission(string $arg): bool
+    public static function verify_permission(object $db, string $arg): bool
     {
         $permission = $arg;
 
@@ -196,13 +199,11 @@ class LegacyUsers
      *
      * @return boolean true on success, false otherwise
      */
-    public static function delete_user($uid, $zones)
+    public static function delete_user($db, $uid, $zones)
     {
-        global $db;
-
-        if (($uid != $_SESSION ['userid'] && !self::verify_permission('user_edit_others')) || ($uid == $_SESSION ['userid'] && !self::verify_permission('user_edit_own'))) {
-            $error = new \Poweradmin\Domain\Error\ErrorMessage(_("You do not have the permission to delete this user."));
-            $errorPresenter = new \Poweradmin\Application\Presenter\ErrorPresenter();
+        if (($uid != $_SESSION ['userid'] && !self::verify_permission($db, 'user_edit_others')) || ($uid == $_SESSION ['userid'] && !self::verify_permission($db, 'user_edit_own'))) {
+            $error = new ErrorMessage(_("You do not have the permission to delete this user."));
+            $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
 
             return false;
@@ -211,9 +212,9 @@ class LegacyUsers
             if (is_array($zones)) {
                 foreach ($zones as $zone) {
                     if ($zone ['target'] == "delete") {
-                        \Poweradmin\DnsRecord::delete_domain($zone ['zid']);
+                        DnsRecord::delete_domain($zone ['zid']);
                     } elseif ($zone ['target'] == "new_owner") {
-                        \Poweradmin\DnsRecord::add_owner_to_zone($zone ['zid'], $zone ['newowner']);
+                        DnsRecord::add_owner_to_zone($db, $zone ['zid'], $zone ['newowner']);
                     }
                 }
             }
@@ -224,7 +225,7 @@ class LegacyUsers
             $query = "DELETE FROM users WHERE id = " . $db->quote($uid, 'integer');
             $db->query($query);
 
-            \Poweradmin\ZoneTemplate::delete_zone_templ_userid($uid);
+            ZoneTemplate::delete_zone_templ_userid($db, $uid);
         }
         return true;
     }
@@ -241,16 +242,16 @@ class LegacyUsers
         global $db;
 
         if (!(self::verify_permission('user_edit_templ_perm'))) {
-            $error = new \Poweradmin\Domain\Error\ErrorMessage(_("You do not have the permission to delete permission templates."));
-            $errorPresenter = new \Poweradmin\Application\Presenter\ErrorPresenter();
+            $error = new ErrorMessage(_("You do not have the permission to delete permission templates."));
+            $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
         } else {
             $query = "SELECT id FROM users WHERE perm_templ = " . $ptid;
             $response = $db->queryOne($query);
 
             if ($response) {
-                $error = new \Poweradmin\Domain\Error\ErrorMessage(_('This template is assigned to at least one user.'));
-                $errorPresenter = new \Poweradmin\Application\Presenter\ErrorPresenter();
+                $error = new ErrorMessage(_('This template is assigned to at least one user.'));
+                $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
 
                 return false;
@@ -290,10 +291,10 @@ class LegacyUsers
 
         if (($id == $_SESSION ["userid"] && $perm_edit_own) || ($id != $_SESSION ["userid"] && $perm_edit_others)) {
 
-            if (!\Poweradmin\Validation::is_valid_email($email)) {
-                $error = new \Poweradmin\Domain\Error\ErrorMessage(_('Enter a valid email address.'));
+            if (!Validation::is_valid_email($email)) {
+                $error = new ErrorMessage(_('Enter a valid email address.'));
 
-                $errorPresenter = new \Poweradmin\Application\Presenter\ErrorPresenter();
+                $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
 
                 return false;
@@ -326,8 +327,8 @@ class LegacyUsers
                 $query = "SELECT id FROM users WHERE username = " . $db->quote($user, 'text');
                 $response = $db->queryOne($query);
                 if ($response) {
-                    $error = new \Poweradmin\Domain\Error\ErrorMessage(_('Username exist already, please choose another one.'));
-                    $errorPresenter = new \Poweradmin\Application\Presenter\ErrorPresenter();
+                    $error = new ErrorMessage(_('Username exist already, please choose another one.'));
+                    $errorPresenter = new ErrorPresenter();
                     $errorPresenter->present($error);
 
                     return false;
@@ -351,8 +352,8 @@ email = " . $db->quote($email, 'text') . ",";
             $passwd_edit_others_perm = self::verify_permission('user_passwd_edit_others');
 
             if ($user_password != "" && $edit_own_perm || $passwd_edit_others_perm) {
-                $config = new \Poweradmin\LegacyConfiguration();
-                $userAuthService = new \Poweradmin\Application\Service\UserAuthenticationService(
+                $config = new LegacyConfiguration();
+                $userAuthService = new UserAuthenticationService(
                     $config->get('password_encryption'),
                     $config->get('password_encryption_cost')
                 );
@@ -364,8 +365,8 @@ email = " . $db->quote($email, 'text') . ",";
             $query .= " WHERE id = " . $db->quote($id, 'integer');
             $db->query($query);
         } else {
-            $error = new \Poweradmin\Domain\Error\ErrorMessage(_("You do not have the permission to edit this user."));
-            $errorPresenter = new \Poweradmin\Application\Presenter\ErrorPresenter();
+            $error = new ErrorMessage(_("You do not have the permission to edit this user."));
+            $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
             return false;
         }
@@ -383,8 +384,8 @@ email = " . $db->quote($email, 'text') . ",";
     {
         global $db;
 
-        $config = new \Poweradmin\LegacyConfiguration();
-        $userAuthService = new \Poweradmin\Application\Service\UserAuthenticationService(
+        $config = new LegacyConfiguration();
+        $userAuthService = new UserAuthenticationService(
             $config->get('password_encryption'),
             $config->get('password_encryption_cost')
         );
@@ -407,8 +408,8 @@ email = " . $db->quote($email, 'text') . ",";
         global $db;
 
         if ($details['new_password'] != $details['new_password2']) {
-            $error = new \Poweradmin\Domain\Error\ErrorMessage(_('The two new password fields do not match.'));
-            $errorPresenter = new \Poweradmin\Application\Presenter\ErrorPresenter();
+            $error = new ErrorMessage(_('The two new password fields do not match.'));
+            $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
 
             return false;
@@ -417,8 +418,8 @@ email = " . $db->quote($email, 'text') . ",";
         $query = "SELECT id, password FROM users WHERE username = {$db->quote($_SESSION ["userlogin"], 'text')}";
         $response = $db->queryRow($query);
 
-        $config = new \Poweradmin\LegacyConfiguration();
-        $userAuthService = new \Poweradmin\Application\Service\UserAuthenticationService(
+        $config = new LegacyConfiguration();
+        $userAuthService = new UserAuthenticationService(
             $config->get('password_encryption'),
             $config->get('password_encryption_cost')
         );
@@ -430,8 +431,8 @@ email = " . $db->quote($email, 'text') . ",";
             return true;
         }
 
-        $error = new \Poweradmin\Domain\Error\ErrorMessage(_('You did not enter the correct current password.'));
-        $errorPresenter = new \Poweradmin\Application\Presenter\ErrorPresenter();
+        $error = new ErrorMessage(_('You did not enter the correct current password.'));
+        $errorPresenter = new ErrorPresenter();
         $errorPresenter->present($error);
 
         return false;
@@ -454,8 +455,8 @@ email = " . $db->quote($email, 'text') . ",";
             $r = $response->fetch();
             return $r["fullname"];
         } else {
-            $error = new \Poweradmin\Domain\Error\ErrorMessage(_('Invalid argument(s) given to function %s'));
-            $errorPresenter = new \Poweradmin\Application\Presenter\ErrorPresenter();
+            $error = new ErrorMessage(_('Invalid argument(s) given to function %s'));
+            $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
 
             return false;
@@ -485,8 +486,8 @@ email = " . $db->quote($email, 'text') . ",";
             }
             return "";
         }
-        $error = new \Poweradmin\Domain\Error\ErrorMessage(_('Invalid argument(s) given to function %s'));
-        $errorPresenter = new \Poweradmin\Application\Presenter\ErrorPresenter();
+        $error = new ErrorMessage(_('Invalid argument(s) given to function %s'));
+        $errorPresenter = new ErrorPresenter();
         $errorPresenter->present($error);
     }
 
@@ -497,10 +498,8 @@ email = " . $db->quote($email, 'text') . ",";
      *
      * @return string|void 1 if owner, 0 if not owner
      */
-    public static function verify_user_is_owner_zoneid($zoneid)
+    public static function verify_user_is_owner_zoneid($db, $zoneid)
     {
-        global $db;
-
         $userid = $_SESSION ["userid"];
         if (is_numeric($zoneid)) {
             $response = $db->queryOne("SELECT zones.id FROM zones
@@ -508,8 +507,8 @@ email = " . $db->quote($email, 'text') . ",";
 				AND zones.domain_id = " . $db->quote($zoneid, 'integer'));
             return (bool)$response;
         }
-        $error = new \Poweradmin\Domain\Error\ErrorMessage(_('Invalid argument(s) given to function %s'));
-        $errorPresenter = new \Poweradmin\Application\Presenter\ErrorPresenter();
+        $error = new ErrorMessage(_('Invalid argument(s) given to function %s'));
+        $errorPresenter = new ErrorPresenter();
         $errorPresenter->present($error);
     }
 
@@ -530,7 +529,7 @@ email = " . $db->quote($email, 'text') . ",";
         $userid = $_SESSION ['userid'];
 
         // fixme: does this actually verify the permission?
-        if (\Poweradmin\Validation::is_number($specific)) {
+        if (Validation::is_number($specific)) {
             $sql_add = "AND users.id = " . $db->quote($specific, 'integer');
         } else {
             if (self::verify_permission('user_view_others')) {
@@ -731,9 +730,9 @@ email = " . $db->quote($email, 'text') . ",";
 
         if (($details['uid'] == $_SESSION ["userid"] && $perm_edit_own) || ($details['uid'] != $_SESSION ["userid"] && $perm_edit_others)) {
 
-            if (!\Poweradmin\Validation::is_valid_email($details['email'])) {
-                $error = new \Poweradmin\Domain\Error\ErrorMessage(_('Enter a valid email address.'));
-                $errorPresenter = new \Poweradmin\Application\Presenter\ErrorPresenter();
+            if (!Validation::is_valid_email($details['email'])) {
+                $error = new ErrorMessage(_('Enter a valid email address.'));
+                $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
 
                 return false;
@@ -771,8 +770,8 @@ email = " . $db->quote($email, 'text') . ",";
                 $query = "SELECT id FROM users WHERE username = " . $db->quote($details['username'], 'text');
                 $response = $db->queryOne($query);
                 if ($response) {
-                    $error = new \Poweradmin\Domain\Error\ErrorMessage(_('Username exist already, please choose another one.'));
-                    $errorPresenter = new \Poweradmin\Application\Presenter\ErrorPresenter();
+                    $error = new ErrorMessage(_('Username exist already, please choose another one.'));
+                    $errorPresenter = new ErrorPresenter();
                     $errorPresenter->present($error);
 
                     return false;
@@ -799,8 +798,8 @@ email = " . $db->quote($email, 'text') . ",";
 
             $passwd_edit_others_perm = (bool)self::verify_permission('user_passwd_edit_others');
             if (isset($details['password']) && $details['password'] != "" && $passwd_edit_others_perm) {
-                $config = new \Poweradmin\LegacyConfiguration();
-                $userAuthService = new \Poweradmin\Application\Service\UserAuthenticationService(
+                $config = new LegacyConfiguration();
+                $userAuthService = new UserAuthenticationService(
                     $config->get('password_encryption'),
                     $config->get('password_encryption_cost')
                 );
@@ -811,8 +810,8 @@ email = " . $db->quote($email, 'text') . ",";
 
             $db->query($query);
         } else {
-            $error = new \Poweradmin\Domain\Error\ErrorMessage(_("You do not have the permission to edit this user."));
-            $errorPresenter = new \Poweradmin\Application\Presenter\ErrorPresenter();
+            $error = new ErrorMessage(_("You do not have the permission to edit this user."));
+            $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
 
             return false;
@@ -833,26 +832,26 @@ email = " . $db->quote($email, 'text') . ",";
         global $ldap_use;
 
         if (!self::verify_permission('user_add_new')) {
-            $error = new \Poweradmin\Domain\Error\ErrorMessage(_("You do not have the permission to add a new user."));
-            $errorPresenter = new \Poweradmin\Application\Presenter\ErrorPresenter();
+            $error = new ErrorMessage(_("You do not have the permission to add a new user."));
+            $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
 
             return false;
         } elseif (self::user_exists($details['username'])) {
-            $error = new \Poweradmin\Domain\Error\ErrorMessage(_('Username exist already, please choose another one.'));
-            $errorPresenter = new \Poweradmin\Application\Presenter\ErrorPresenter();
+            $error = new ErrorMessage(_('Username exist already, please choose another one.'));
+            $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
 
             return false;
         } elseif ($details['username'] === '') {
-            $error = new \Poweradmin\Domain\Error\ErrorMessage(_('Enter a valid user name.'));
-            $errorPresenter = new \Poweradmin\Application\Presenter\ErrorPresenter();
+            $error = new ErrorMessage(_('Enter a valid user name.'));
+            $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
 
             return false;
-        } elseif (!\Poweradmin\Validation::is_valid_email($details['email'])) {
-            $error = new \Poweradmin\Domain\Error\ErrorMessage(_('Enter a valid email address.'));
-            $errorPresenter = new \Poweradmin\Application\Presenter\ErrorPresenter();
+        } elseif (!Validation::is_valid_email($details['email'])) {
+            $error = new ErrorMessage(_('Enter a valid email address.'));
+            $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
 
             return false;
@@ -867,8 +866,8 @@ email = " . $db->quote($email, 'text') . ",";
             $password_hash = 'LDAP_USER';
         } else {
             $use_ldap = 0;
-            $config = new \Poweradmin\LegacyConfiguration();
-            $userAuthService = new \Poweradmin\Application\Service\UserAuthenticationService(
+            $config = new LegacyConfiguration();
+            $userAuthService = new UserAuthenticationService(
                 $config->get('password_encryption'),
                 $config->get('password_encryption_cost')
             );

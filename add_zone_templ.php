@@ -50,7 +50,7 @@ class AddZoneTemplateController extends BaseController
     {
         $this->render('add_zone_templ.html', [
             'user_name' => LegacyUsers::get_fullname_from_userid($_SESSION['userid']) ?: $_SESSION['userlogin'],
-            'perm_is_godlike' => LegacyUsers::verify_permission('user_is_ueberuser'),
+            'perm_is_godlike' => LegacyUsers::verify_permission($this->db, 'user_is_ueberuser'),
         ]);
     }
 
@@ -65,7 +65,7 @@ class AddZoneTemplateController extends BaseController
             ],
         ]);
 
-        if (ZoneTemplate::add_zone_templ($_POST, $_SESSION['userid'])) {
+        if (ZoneTemplate::add_zone_templ($this->db, $_POST, $_SESSION['userid'])) {
             $this->setMessage('list_zone_templ', 'success', _('Zone template has been added successfully.'));
             $this->redirect('list_zone_templ.php');
         } else {
@@ -73,7 +73,7 @@ class AddZoneTemplateController extends BaseController
                 'user_name' => LegacyUsers::get_fullname_from_userid($_SESSION['userid']) ?: $_SESSION['userlogin'],
                 'templ_name' => htmlspecialchars($_POST['templ_name']),
                 'templ_descr' => htmlspecialchars($_POST['templ_descr']),
-                'perm_is_godlike' => LegacyUsers::verify_permission('user_is_ueberuser')
+                'perm_is_godlike' => LegacyUsers::verify_permission($this->db, 'user_is_ueberuser')
             ]);
         }
     }

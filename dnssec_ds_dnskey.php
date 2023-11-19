@@ -53,11 +53,11 @@ class DnsSecDsDnsKeyController extends BaseController {
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
-        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($zone_id);
+        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($this->db, $zone_id);
 
-        (LegacyUsers::verify_permission('user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
+        (LegacyUsers::verify_permission($this->db, 'user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
 
-        $perm_view = Permission::getViewPermission();
+        $perm_view = Permission::getViewPermission($this->db);
 
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
             $this->showError(_("You do not have the permission to view this zone."));
@@ -75,7 +75,7 @@ class DnsSecDsDnsKeyController extends BaseController {
         $domain_name = DnsRecord::get_domain_name_by_id($zone_id);
         $domain_type = DnsRecord::get_domain_type($zone_id);
         $record_count = DnsRecord::count_zone_records($zone_id);
-        $zone_templates = ZoneTemplate::get_list_zone_templ($_SESSION['userid']);
+        $zone_templates = ZoneTemplate::get_list_zone_templ($this->db, $_SESSION['userid']);
         $zone_template_id = DnsRecord::get_zone_template($zone_id);
 
         $dnssecProvider = DnssecProviderFactory::create($this->getConfig());

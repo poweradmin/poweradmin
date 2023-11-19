@@ -68,7 +68,7 @@ class AddSuperMasterController extends BaseController
             'master_ip' => htmlspecialchars($master_ip),
             'ns_name' => htmlspecialchars($ns_name),
             'account' => htmlspecialchars($account),
-            'perm_view_others' => LegacyUsers::verify_permission('user_view_others'),
+            'perm_view_others' => LegacyUsers::verify_permission($this->db, 'user_view_others'),
             'session_uid' => $_SESSION['userid']
         ]);
     }

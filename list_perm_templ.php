@@ -45,7 +45,7 @@ class ListPermTemplController extends BaseController
     private function showListPermTempl(): void
     {
         $this->render('list_perm_templ.html', [
-            'templ_perm_add' => LegacyUsers::verify_permission('templ_perm_add'),
+            'templ_perm_add' => LegacyUsers::verify_permission($this->db, 'templ_perm_add'),
             'permission_templates' => LegacyUsers::list_permission_templates(),
         ]);
     }

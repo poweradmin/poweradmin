@@ -47,15 +47,15 @@ class EditCommentController extends BaseController {
             $this->showError(_("You do not have the permission to edit this comment."));
         }
 
-        $perm_view = Permission::getViewPermission();
-        $perm_edit = Permission::getEditPermission();
+        $perm_view = Permission::getViewPermission($this->db);
+        $perm_edit = Permission::getEditPermission($this->db);
 
         if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
         $zone_id = htmlspecialchars($_GET['id']);
 
-        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($zone_id);
+        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($this->db, $zone_id);
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
             $this->showError(_("You do not have the permission to view this comment."));
         }
