@@ -481,23 +481,22 @@ email = " . $db->quote($email, 'text') . ",";
      *
      * Gets an array of all users and their details
      *
-     * @param int $specific User ID (optional)
+     * @param $db
+     * @param $ldap_use
+     * @param int|null $specific User ID (optional)
      *
      * @return array array of user details
      */
-    public static function get_user_detail_list($db, int $specific, $ldap_use): array
+    public static function get_user_detail_list($db, $ldap_use, ?int $specific = null): array
     {
         $userid = $_SESSION ['userid'];
 
-        // fixme: does this actually verify the permission?
-        if (Validation::is_number($specific)) {
+        if ($specific) {
             $sql_add = "AND users.id = " . $db->quote($specific, 'integer');
+        } elseif (self::verify_permission($db, 'user_view_others')) {
+            $sql_add = "";
         } else {
-            if (self::verify_permission($db, 'user_view_others')) {
-                $sql_add = "";
-            } else {
-                $sql_add = "AND users.id = " . $db->quote($userid, 'integer');
-            }
+            $sql_add = "AND users.id = " . $db->quote($userid, 'integer');
         }
 
         $query = "SELECT users.id AS uid,
@@ -826,7 +825,7 @@ email = " . $db->quote($email, 'text') . ",";
         if (self::verify_permission($db, 'user_edit_templ_perm')) {
             $query .= $db->quote($details['perm_templ'], 'integer') . ", ";
         } else {
-            $current_user = self::get_user_detail_list($db, $_SESSION['userid'], $ldap_use);
+            $current_user = self::get_user_detail_list($db, $ldap_use, $_SESSION['userid']);
             $query .= $db->quote($current_user[0]['tpl_id'], 'integer') . ", ";
         }
         $query .= $db->quote($active, 'integer') . ", " . $db->quote($use_ldap, 'integer') . ")";

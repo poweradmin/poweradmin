@@ -96,7 +96,7 @@ class EditUserController extends BaseController
         if (isset($_POST['perm_templ']) && Validation::is_number($_POST['perm_templ'])) {
             $i_perm_templ = $_POST['perm_templ'];
         } else {
-            $user_details = LegacyUsers::get_user_detail_list($this->db, $edit_id, $this->config('ldap_use'));
+            $user_details = LegacyUsers::get_user_detail_list($this->db, $this->config('ldap_use'), $edit_id);
             $i_perm_templ = $user_details[0]['tpl_id'];
         }
 
@@ -128,7 +128,7 @@ class EditUserController extends BaseController
 
     public function showUserEditForm($edit_id): void
     {
-        $users = LegacyUsers::get_user_detail_list($this->db, $edit_id, $this->config('ldap_use'));
+        $users = LegacyUsers::get_user_detail_list($this->db, $this->config('ldap_use'), $edit_id);
         if (empty($users)) {
             $this->showError(_('User does not exist.'));
         }
@@ -148,7 +148,7 @@ class EditUserController extends BaseController
             $use_ldap_checked = "checked";
         }
 
-        $permissions = Permission::getPermissions($this->db, 'user_is_ueberuser');
+        $permissions = Permission::getPermissions($this->db, ['user_is_ueberuser']);
         $currentUserAdmin = $permissions['user_is_ueberuser'] && $_SESSION['userid'] == $edit_id;
 
         $this->render('edit_user.html', [

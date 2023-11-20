@@ -72,17 +72,18 @@ class Permission
      *
      * This method checks a set of permissions for the user.
      *
+     * @param PDOLayer $db The database connection.
+     * @param array $permissions An array containing the permission keys to check.
      * @return array An associative array containing the permission key and its corresponding boolean value.
      */
-    public static function getPermissions($db): array
+    public static function getPermissions(PDOLayer $db, array $permissions): array
     {
-        $arguments = func_get_args();
-        $permissions = [];
+        $result = [];
 
-        foreach ($arguments as $argument) {
-            $permissions[$argument] = LegacyUsers::verify_permission($db, $argument);
+        foreach ($permissions as $permissionName) {
+            $result[$permissionName] = LegacyUsers::verify_permission($db, $permissionName);
         }
 
-        return $permissions;
+        return $result;
     }
 }
