@@ -90,7 +90,7 @@ class RecordType
         'ZONEMD',
     );
 
-    public static function getTypes()
+    public static function getTypes(): array
     {
         return self::RECORD_TYPES;
     }

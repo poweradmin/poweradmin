@@ -30,29 +30,31 @@ class RecordLog
 
     private bool $record_changed = false;
     private LegacyLogger $logger;
+    private PDOLayer $db;
 
     public function __construct($db)
     {
+        $this->db = $db;
         $this->logger = new LegacyLogger($db);
     }
 
-    public function log_prior($rid, $zid)
+    public function log_prior($rid, $zid): void
     {
         $this->record_prior = $this->getRecord($rid);
         $this->record_prior['zid'] = $zid;
     }
 
-    public function log_after($rid)
+    public function log_after($rid): void
     {
         $this->record_after = $this->getRecord($rid);
     }
 
-    private function getRecord($rid)
+    private function getRecord($rid): array|int
     {
         return DnsRecord::get_record_from_id($this->db, $rid);
     }
 
-    public function has_changed(array $record)
+    public function has_changed(array $record): bool
     {
         // Arrays are assigned by copy.
         // Copy arrays to avoid side effects caused by unset().

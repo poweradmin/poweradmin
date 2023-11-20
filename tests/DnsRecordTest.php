@@ -10,15 +10,12 @@ class DnsRecordTest extends TestCase
     const SOA_REC = "ns1.poweradmin.org hostmaster.poweradmin.org 2022082600 28800 7200 604800 86400";
     private DnsRecord $dnsRecord;
 
-    private PDOLayer $dbMock;
-    private LegacyConfiguration $configMock;
-
     protected function setUp(): void
     {
-        $this->dbMock = $this->createMock(PDOLayer::class);
-        $this->configMock = $this->createMock(LegacyConfiguration::class);
+        $dbMock = $this->createMock(PDOLayer::class);
+        $configMock = $this->createMock(LegacyConfiguration::class);
 
-        $this->dnsRecord = new DnsRecord($this->dbMock, $this->configMock);
+        $this->dnsRecord = new DnsRecord($dbMock, $configMock);
     }
 
     public function testGetUpdatedSoaRecordShouldReturnEmpty()

@@ -71,7 +71,7 @@ class AddPermTemplController extends BaseController
     private function showAddPermTempl(): void
     {
         $this->render('add_perm_templ.html', [
-            'perms_avail' => LegacyUsers::get_permissions_by_template_id($this->db, 0)
+            'perms_avail' => LegacyUsers::get_permissions_by_template_id($this->db)
         ]);
     }
 }

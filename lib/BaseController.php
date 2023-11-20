@@ -99,31 +99,22 @@ abstract class BaseController
         return null;
     }
 
-    public function showMessage($template)
+    public function showMessage($template): void
     {
         $script = pathinfo($template)['filename'];
 
         $message = $this->getMessage($script);
         if ($message) {
-            switch ($message['type']) {
-                case 'error':
-                    $alertClass = 'alert-danger';
-                    break;
-                case 'warn':
-                    $alertClass = 'alert-warning';
-                    break;
-                case 'success':
-                    $alertClass = 'alert-success';
-                    break;
-                case 'info':
-                    $alertClass = 'alert-info';
-                    break;
-                default:
-                    $alertClass = '';
-            }
+            $alertClass = match ($message['type']) {
+                'error' => 'alert-danger',
+                'warn' => 'alert-warning',
+                'success' => 'alert-success',
+                'info' => 'alert-info',
+                default => '',
+            };
 
             echo <<<EOF
-<div class="alert {$alertClass} alert-dismissible fade show" role="alert">{$message['content']}
+<div class="alert $alertClass alert-dismissible fade show" role="alert">{$message['content']}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 EOF;

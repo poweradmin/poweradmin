@@ -84,7 +84,7 @@ class DnsSecDsDnsKeyController extends BaseController {
         $dnskey_records = $dnssecProvider->getDnsKeyRecords($domain_name);
         $ds_records = $dnssecProvider->getDsRecords($domain_name);
 
-        if (preg_match("/^xn--/", $domain_name)) {
+        if (str_starts_with($domain_name, "xn--")) {
             $idn_zone_name = idn_to_utf8($domain_name, IDNA_NONTRANSITIONAL_TO_ASCII);
         } else {
             $idn_zone_name = "";

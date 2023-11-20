@@ -80,7 +80,7 @@ class AddZoneMasterController extends BaseController
         $owner = $_POST['owner'];
         $zone_template = $_POST['zone_template'] ?? "none";
 
-        $dnsRecord = new DnsRecord($this->db);
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         if (!Dns::is_valid_hostname_fqdn($zone_name, 0, $this->config('dns_top_level_tld_check'), $this->config('dns_strict_tld_check'))) {
             $this->setMessage('add_zone_master', 'error', _('Invalid hostname.'));
             $this->showForm();

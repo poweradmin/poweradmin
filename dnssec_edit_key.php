@@ -94,7 +94,7 @@ class DnsSecEditKeyController extends BaseController {
             }
         }
 
-        if (preg_match("/^xn--/", $domain_name)) {
+        if (str_starts_with($domain_name, "xn--")) {
             $idn_zone_name = idn_to_utf8($domain_name, IDNA_NONTRANSITIONAL_TO_ASCII);
         } else {
             $idn_zone_name = "";

@@ -256,13 +256,12 @@ class LegacyAuthenticateSession
         if (isset($_POST['authenticate'])) {
             $this->userEventLogger->log_failed_auth();
             $sessionEntity = new SessionEntity(_('Authentication failed!'), 'danger');
-            $this->authenticationService->auth($sessionEntity);
         } else {
             unset($_SESSION["userpwd"]);
             unset($_SESSION["userlogin"]);
             $sessionEntity = new SessionEntity(_('Session expired, please login again.'), 'danger');
-            $this->authenticationService->auth($sessionEntity);
         }
+        $this->authenticationService->auth($sessionEntity);
     }
 
     /** Send 302 Redirect with optional argument
@@ -278,11 +277,7 @@ class LegacyAuthenticateSession
         if (!$arg) {
             header("Location: " . htmlentities($_SERVER['SCRIPT_NAME'], ENT_QUOTES) . "?time=" . time());
         } else {
-            if (preg_match('!\?!si', $arg)) {
-                $add = "&time=";
-            } else {
-                $add = "?time=";
-            }
+            $add = preg_match('!\?!si', $arg) ? "&time=" : "?time=";
             header("Location: $arg$add" . time());
         }
         exit;

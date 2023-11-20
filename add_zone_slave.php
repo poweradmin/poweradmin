@@ -91,7 +91,7 @@ class AddZoneSlaveController extends BaseController
             $this->setMessage('add_zone_slave', 'error', _('This is not a valid IPv4 or IPv6 address.'));
             $this->showForm();
         } else {
-            $dnsRecord = new DnsRecord($this->db);
+            $dnsRecord = new DnsRecord($this->db, $this->getConfig());
             if ($dnsRecord->add_domain($this->db, $zone, $owner, $type, $master, 'none')) {
                 $zone_id = DnsRecord::get_zone_id_from_name($this->db, $zone);
                 $this->logger->log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',

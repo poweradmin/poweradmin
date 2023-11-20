@@ -184,10 +184,10 @@ class DnsSecApiProvider implements DnssecProvider
     {
         $contextString = [];
         foreach ($context as $key => $value) {
-            $contextString[] = "{$key}:{$value}";
+            $contextString[] = "$key:$value";
         }
         $formattedContext = implode(' ', $contextString);
 
-        $this->logger->info("client_ip:{$this->clientIp} user:{$this->userLogin} operation:{$action} zone:{$zoneName} {$formattedContext}");
+        $this->logger->info("client_ip:$this->clientIp user:$this->userLogin operation:$action zone:$zoneName $formattedContext");
     }
 }

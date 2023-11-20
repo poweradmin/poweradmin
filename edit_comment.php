@@ -62,7 +62,7 @@ class EditCommentController extends BaseController {
             $this->showError(_("You do not have the permission to view this comment."));
         }
 
-        $zone_type = DnsRecord::get_domain_type($zone_id);
+        $zone_type = DnsRecord::get_domain_type($this->db, $zone_id);
         $perm_edit_comment = $zone_type == "SLAVE" || $perm_edit == "none" || ($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0";
 
         if (isset($_POST["commit"])) {
@@ -84,7 +84,7 @@ class EditCommentController extends BaseController {
     {
         $zone_name = DnsRecord::get_domain_name_by_id($this->db, $zone_id);
 
-        if (preg_match("/^xn--/", $zone_name)) {
+        if (str_starts_with($zone_name, "xn--")) {
             $idn_zone_name = idn_to_utf8($zone_name, IDNA_NONTRANSITIONAL_TO_ASCII);
         } else {
             $idn_zone_name = "";

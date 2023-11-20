@@ -71,7 +71,7 @@ class UsersController extends BaseController
                 'user_is_ueberuser',
             ),
             'perm_templates' => LegacyUsers::list_permission_templates($this->db),
-            'users' => LegacyUsers::get_user_detail_list(""),
+            'users' => LegacyUsers::get_user_detail_list($this->db, "", $this->config('ldap_use')),
             'ldap_use' => $this->config('ldap_use'),
             'session_userid' => $_SESSION["userid"],
             'perm_add_new' => LegacyUsers::verify_permission($this->db, 'user_add_new'),

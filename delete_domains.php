@@ -112,7 +112,7 @@ class DeleteDomainsController extends BaseController {
                 }
             }
 
-            if (preg_match("/^xn--/", $zones[$zone_id]['name'])) {
+            if (str_starts_with($zones[$zone_id]['name'], "xn--")) {
                 $zones[$zone_id]['idn_zone_name'] = idn_to_utf8($zones[$zone_id]['name'], IDNA_NONTRANSITIONAL_TO_ASCII);
             } else {
                 $zones[$zone_id]['idn_zone_name'] = "";

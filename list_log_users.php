@@ -37,6 +37,8 @@ use Poweradmin\Infrastructure\Web\HttpPaginationParameters;
 
 class ListLogUsersController extends BaseController {
 
+    private DbUserLogger $dbUserLogger;
+
     public function __construct() {
         parent::__construct();
 
@@ -61,16 +63,16 @@ class ListLogUsersController extends BaseController {
         $logs_per_page = $this->config('iface_rowamount');
 
         if (isset($_GET['name']) && $_GET['name'] != '') {
-            $number_of_logs = $this->dbUserLogger->count_logs_by_user($this->db, $_GET['name']);
+            $number_of_logs = $this->dbUserLogger->count_logs_by_user($_GET['name']);
             $number_of_pages = ceil($number_of_logs / $logs_per_page);
             if ($number_of_logs != 0 && $selected_page > $number_of_pages) die('Unknown page');
-            $logs = $this->dbUserLogger->get_logs_for_user($this->db, $_GET['name'], $logs_per_page, ($selected_page - 1) * $logs_per_page);
+            $logs = $this->dbUserLogger->get_logs_for_user($_GET['name'], $logs_per_page, ($selected_page - 1) * $logs_per_page);
 
         } else {
             $number_of_logs = $this->dbUserLogger->count_all_logs();
             $number_of_pages = ceil($number_of_logs / $logs_per_page);
             if ($number_of_logs != 0 && $selected_page > $number_of_pages) die('Unknown page');
-            $logs = $this->dbUserLogger->get_all_logs($this->db, $logs_per_page, ($selected_page - 1) * $logs_per_page);
+            $logs = $this->dbUserLogger->get_all_logs($logs_per_page, ($selected_page - 1) * $logs_per_page);
         }
 
         $this->render('list_log_users.html', [

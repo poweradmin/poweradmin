@@ -32,6 +32,7 @@
 namespace Poweradmin;
 
 use PDO;
+use PDOStatement;
 
 /**
  * PDO access layer
@@ -43,29 +44,29 @@ class PDOLayer extends PDOCommon
      * Enables/disables debugging
      * @var boolean
      */
-    private $debug = false;
+    private bool $debug = false;
 
     /**
      * Internal storage for queries
      * @var array
      */
-    private $queries = array();
+    private array $queries = array();
 
     /**
      * Quotes a string
      *
      * @param string $string
-     * @param string $paramtype
+     * @param string $type
      * @return string Returns quoted string
      */
-    public function quote($string, $paramtype = NULL): string
+    public function quote(string $string, $type = NULL): string
     {
-        if ($paramtype == 'integer') {
-            $paramtype = PDO::PARAM_INT;
-        } elseif ($paramtype == 'text') {
-            $paramtype = PDO::PARAM_STR;
+        if ($type == 'integer') {
+            $type = PDO::PARAM_INT;
+        } elseif ($type == 'text') {
+            $type = PDO::PARAM_STR;
         }
-        return parent::quote($string, $paramtype);
+        return parent::quote($string, $type);
     }
 
     /**
@@ -74,7 +75,7 @@ class PDOLayer extends PDOCommon
      * @param string $option Option name
      * @param int $value Option value
      */
-    public function setOption($option, $value)
+    public function setOption(string $option, int $value): void
     {
         if ($option == 'debug' && $value == 1) {
             $this->debug = true;
@@ -93,18 +94,18 @@ class PDOLayer extends PDOCommon
     /**
      * Executes SQL query
      *
-     * @param string $str SQL query
+     * @param string $query SQL query
      * @param int|null $fetchMode
      * @param mixed ...$fetchModeArgs
-     * @return \PDOStatement
+     * @return PDOStatement
      */
-    public function query($str, ?int $fetchMode = null, mixed ...$fetchModeArgs): \PDOStatement
+    public function query(string $query, ?int $fetchMode = null, mixed ...$fetchModeArgs): PDOStatement
     {
         if ($this->debug) {
-            $this->queries[] = $str;
+            $this->queries[] = $query;
         }
 
-        return parent::query($str);
+        return parent::query($query);
     }
 
     /**
@@ -115,7 +116,7 @@ class PDOLayer extends PDOCommon
 
     }
 
-    public function executeMultiple($stmt, $params)
+    public function executeMultiple($stmt, $params): void
     {
         foreach ($params as $values) {
             $stmt->execute($values);
@@ -151,10 +152,10 @@ class PDOLayer extends PDOCommon
      * Create a new table
      *
      * @param string $name Name of the table that should be created
-     * @param mixed[] $fields Associative array that contains the definition of each field of the new table
-     * @param mixed[] $options An associative array of table options
+     * @param array $fields Associative array that contains the definition of each field of the new table
+     * @param array $options An associative array of table options
      */
-    public function createTable($name, $fields, $options = array())
+    public function createTable(string $name, array $fields, array $options = array()): void
     {
         $db_type = $this->getAttribute(PDO::ATTR_DRIVER_NAME);
         $query_fields = array();
@@ -215,7 +216,7 @@ class PDOLayer extends PDOCommon
      *
      * @param string $name name of the table that should be dropped
      */
-    public function dropTable($name)
+    public function dropTable(string $name): void
     {
         $query = "DROP TABLE $name";
         $this->exec($query);

@@ -166,9 +166,10 @@ class EditZoneTemplController extends BaseController
 
     public function updateZoneRecords(string $zone_templ_id): void
     {
-        $zones = ZoneTemplate::get_list_zone_use_templ($zone_templ_id, $_SESSION['userid']);
+        $zones = ZoneTemplate::get_list_zone_use_templ($this->db, $zone_templ_id, $_SESSION['userid']);
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         foreach ($zones as $zone_id) {
-            DnsRecord::update_zone_records($this->db, $zone_id, $zone_templ_id);
+            $dnsRecord->update_zone_records($this->config('db_type'), $this->config('dns_ttl'), $zone_id, $zone_templ_id);
         }
         $this->setMessage('edit_zone_templ', 'success', _('Zones have been updated successfully.'));
     }

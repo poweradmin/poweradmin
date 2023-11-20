@@ -39,7 +39,7 @@ class HttpClient implements ApiClient {
         $options = [
             'http' => [
                 'header' => "Content-type: application/json\r\n" .
-                    "X-API-Key: {$this->apiKey}\r\n",
+                    "X-API-Key: $this->apiKey\r\n",
                 'method' => strtoupper($method)
             ]
         ];

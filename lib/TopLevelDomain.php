@@ -224,13 +224,13 @@ class TopLevelDomain
     // http://tools.ietf.org/html/rfc2606#section-2
     const SPECIAL_TOP_LEVEL_DOMAINS = array('test', 'example', 'invalid', 'localhost');
 
-    static private $VALID_TOP_LEVEL_DOMAINS;
+    static private array $VALID_TOP_LEVEL_DOMAINS;
 
     private function __construct()
     {
     }
 
-    public static function init()
+    public static function init(): void
     {
         self::$VALID_TOP_LEVEL_DOMAINS = array_merge(self::TOP_LEVEL_DOMAINS, self::SPECIAL_TOP_LEVEL_DOMAINS);
     }

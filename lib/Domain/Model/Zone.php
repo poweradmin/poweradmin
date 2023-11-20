@@ -79,15 +79,11 @@ class Zone {
 
     public function activateKey(int $keyId): void {
         $key = $this->getKey($keyId);
-        if ($key) {
-            $key->activate();
-        }
+        $key?->activate();
     }
 
     public function deactivateKey(int $keyId): void {
         $key = $this->getKey($keyId);
-        if ($key) {
-            $key->deactivate();
-        }
+        $key?->deactivate();
     }
 }

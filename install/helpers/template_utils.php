@@ -26,7 +26,8 @@ use Symfony\Component\Translation\Translator;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
-function initializeTwigEnvironment($language) {
+function initializeTwigEnvironment($language): Environment
+{
     $loader = new FilesystemLoader('templates');
     $twig = new Environment($loader);
 

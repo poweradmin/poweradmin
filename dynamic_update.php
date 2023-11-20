@@ -63,7 +63,7 @@ $db = $databaseService->connect($credentials);
  *
  * @return bool|string $value Safe Value
  */
-function safe($db, $db_type, $value)
+function safe($db, $db_type, mixed $value): bool|string
 {
     if ($db_type == 'mysql' || $db_type == 'sqlite') {
         $value = $db->quote($value, 'text');
@@ -83,7 +83,7 @@ function safe($db, $db_type, $value)
  *
  * @return boolean false
  */
-function status_exit($status)
+function status_exit(string $status): bool
 {
     $verbose_codes = array(
         'badagent' => 'Your user agent is not valid.',
@@ -113,7 +113,7 @@ function status_exit($status)
  *
  * @return string A if IPv4, AAAA if IPv6 or 0 if invalid
  */
-function valid_ip_address($ip)
+function valid_ip_address(string $ip): int|string
 {
     if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
         $value = 'A';
@@ -191,7 +191,7 @@ if (!strlen($hostname)) {
 }
 
 $user = $db->queryRow("SELECT users.id, users.password FROM users, perm_templ, perm_templ_items, perm_items 
-                        WHERE users.username='{$username}'
+                        WHERE users.username='$username'
                         AND users.active=1 
                         AND perm_templ.id = users.perm_templ 
                         AND perm_templ_items.templ_id = perm_templ.id 
@@ -201,10 +201,9 @@ $user = $db->queryRow("SELECT users.id, users.password FROM users, perm_templ, p
                             OR perm_items.name = 'zone_content_edit_others'
                         )");
 
-$config = new LegacyConfiguration();
 $userAuthService = new UserAuthenticationService(
-    $config->get('password_encryption'),
-    $config->get('password_encryption_cost')
+    $configuration->get('password_encryption'),
+    $configuration->get('password_encryption_cost')
 );
 if (!$user || !$userAuthService->verifyPassword($auth_password, $user['password'])) {
     return status_exit('badauth2');
@@ -244,7 +243,8 @@ while ($zone = $zones_query->fetch()) {
         }
     }
     if ($zone_updated) {
-        DnsRecord::update_soa_serial($this->db, $zone['domain_id']);
+        $dnsRecord = new DnsRecord($db, $configuration);
+        $dnsRecord->update_soa_serial($zone['domain_id']);
     }
 }
 

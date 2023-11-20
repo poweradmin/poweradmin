@@ -26,7 +26,7 @@ interface DnssecProvider {
     public function rectifyZone(string $zoneName): bool;
     public function secureZone(string $zoneName): bool;
     public function unsecureZone(string $zoneName): bool;
-    public function isZoneSecured(object $db, string $zoneName): bool;
+    public function isZoneSecured(string $zoneName): bool;
     public function getDsRecords(string $zoneName): array;
     public function getDnsKeyRecords(string $zoneName): array;
     public function activateZoneKey(string $zoneName, int $keyId): bool;

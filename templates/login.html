@@ -23,7 +23,7 @@
         </div>
         <div>
             <label for="language" class="form-label">{% trans %}Language{% endtrans %}</label>
-            <select class="form-select form-select-sm" name="userlang">
+            <select class="form-select form-select-sm" id="language" name="userlang">
                 {{ locale_options | raw }}
             </select>
         </div>

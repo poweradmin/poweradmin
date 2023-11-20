@@ -81,7 +81,7 @@ class ConfigValidator
 
         if (!in_array($this->config['syslog_facility'], $validFacilities)) {
             $validFacilitiesList = implode(', ', array_keys($validFacilities));
-            $this->errors['syslog_facility'] = "syslog_facility must be an unquoted value and one of the following values: {$validFacilitiesList}";
+            $this->errors['syslog_facility'] = "syslog_facility must be an unquoted value and one of the following values: $validFacilitiesList";
         }
     }
 

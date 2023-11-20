@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Model;
 
+use InvalidArgumentException;
+
 class Pagination
 {
     private int $totalItems;
@@ -32,7 +34,7 @@ class Pagination
     public function __construct(int $totalItems, int $itemsPerPage, int $currentPage)
     {
         if ($itemsPerPage <= 0) {
-            throw new \InvalidArgumentException("Items per page must be greater than zero.");
+            throw new InvalidArgumentException("Items per page must be greater than zero.");
         }
 
         $this->totalItems = $totalItems;

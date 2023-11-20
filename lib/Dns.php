@@ -44,7 +44,7 @@ class Dns
      *
      * @return true if ends with specified string, otherwise false
      */
-    public static function endsWith($needle, $haystack)
+    public static function endsWith(string $needle, string $haystack): bool
     {
         $length = strlen($haystack);
         $nLength = strlen($needle);
@@ -63,7 +63,7 @@ class Dns
      *
      * @return boolean true on success, false otherwise
      */
-    public static function validate_input($db, $rid, $zid, $type, &$content, &$name, &$prio, &$ttl, $dns_hostmaster, $dns_ttl)
+    public static function validate_input($db, int $rid, int $zid, string $type, mixed &$content, mixed &$name, mixed &$prio, mixed &$ttl, $dns_hostmaster, $dns_ttl): bool
     {
         $zone = DnsRecord::get_domain_name_by_id($db, $zid);    // TODO check for return
 
@@ -92,6 +92,25 @@ class Dns
                 }
                 break;
 
+            case "AFSDB":
+            case "ALIAS":
+            case "APL":
+            case "CAA":
+            case "CDNSKEY":
+            case "CDS":
+            case "CERT":
+            case "DNAME":
+            case "L32":
+            case "L64":
+            case "LUA":
+            case "LP":
+            case "MAILA":
+            case "MAILB":
+            case "OPENPGPKEY":
+            case "SIG":
+            case "SMIMEA":
+            case "TKEY":
+            case "URI":
             case "A6": // TODO: implement validation.
                 break;
 
@@ -102,27 +121,6 @@ class Dns
                 if (!self::is_valid_hostname_fqdn($name, 1)) {
                     return false;
                 }
-                break;
-
-            case "AFSDB": // TODO: implement validation.
-                break;
-
-            case "ALIAS": // TODO: implement validation.
-                break;
-
-            case "APL": // TODO: implement validation.
-                break;
-
-            case "CAA": // TODO: implement validation.
-                break;
-
-            case "CDNSKEY": // TODO: implement validation.
-                break;
-
-            case "CDS": // TODO: implement validation.
-                break;
-
-            case "CERT": // TODO: implement validation.
                 break;
 
             case "CNAME":
@@ -143,31 +141,37 @@ class Dns
                 }
                 break;
 
+            case 'DHCID':
+            case 'DLV':
+            case 'DNSKEY':
+            case 'EUI48':
+            case 'EUI64':
+            case 'HTTPS':
+            case 'IPSECKEY':
+            case 'KEY':
+            case 'KX':
+            case 'MINFO':
+            case 'MR':
+            case 'NAPTR':
+            case 'NID':
+            case 'NSEC':
+            case 'NSEC3':
+            case 'NSEC3PARAM':
+            case 'RKEY':
+            case 'RP':
+            case 'RRSIG':
+            case 'SSHFP':
+            case 'SVCB':
+            case 'TLSA':
+            case 'TSIG':
+            case 'WKS':
             case 'CSYNC': // TODO: implement validation
-                break;
-
-            case 'DHCID': // TODO: implement validation
-                break;
-
-            case 'DLV': // TODO: implement validation
-                break;
-
-            case "DNAME": // TODO: implement validation.
-                break;
-
-            case 'DNSKEY': // TODO: implement validation
                 break;
 
             case 'DS':
                 if (!self::is_valid_ds($content)) {
                     return false;
                 }
-                break;
-
-            case 'EUI48': // TODO: implement validation
-                break;
-
-            case 'EUI64': // TODO: implement validation
                 break;
 
             case "HINFO":
@@ -179,27 +183,6 @@ class Dns
                 }
                 break;
 
-            case 'HTTPS': // TODO: implement validation
-                break;
-
-            case 'IPSECKEY': // TODO: implement validation
-                break;
-
-            case 'KEY': // TODO: implement validation
-                break;
-
-            case 'KX': // TODO: implement validation
-                break;
-
-            case "L32": // TODO: implement validation.
-                break;
-
-            case "L64": // TODO: implement validation.
-                break;
-	    
-	    case "LUA": // TODO: implement validation.
-                break;
-
             case "LOC":
                 if (!self::is_valid_loc($content)) {
                     return false;
@@ -209,21 +192,7 @@ class Dns
                 }
                 break;
 
-            case "LP": // TODO: implement validation.
-                break;
-
-            case "MAILA": // TODO: implement validation.
-                break;
-
-            case "MAILB": // TODO: implement validation.
-                break;
-
-            case 'MINFO': // TODO: implement validation
-                break;
-
-            case 'MR': // TODO: implement validation
-                break;
-
+            case "NS":
             case "MX":
                 if (!self::is_valid_hostname_fqdn($content, 0)) {
                     return false;
@@ -236,36 +205,6 @@ class Dns
                 }
                 break;
 
-            case 'NAPTR': // TODO: implement validation
-                break;
-
-            case 'NID': // TODO: implement validation
-                break;
-
-            case "NS":
-                if (!self::is_valid_hostname_fqdn($content, 0)) {
-                    return false;
-                }
-                if (!self::is_valid_hostname_fqdn($name, 1)) {
-                    return false;
-                }
-                if (!self::is_valid_non_alias_target($db, $content)) {
-                    return false;
-                }
-                break;
-
-            case 'NSEC': // TODO: implement validation
-                break;
-
-            case 'NSEC3': // TODO: implement validation
-                break;
-
-            case 'NSEC3PARAM': // TODO: implement validation
-                break;
-
-            case "OPENPGPKEY": // TODO: implement validation.
-                break;
-
             case "PTR":
                 if (!self::is_valid_hostname_fqdn($content, 0)) {
                     return false;
@@ -273,21 +212,6 @@ class Dns
                 if (!self::is_valid_hostname_fqdn($name, 1)) {
                     return false;
                 }
-                break;
-
-            case 'RKEY': // TODO: implement validation
-                break;
-
-            case 'RP': // TODO: implement validation
-                break;
-
-            case 'RRSIG': // TODO: implement validation
-                break;
-
-            case "SIG": // TODO: implement validation.
-                break;
-
-            case "SMIMEA": // TODO: implement validation.
                 break;
 
             case "SOA":
@@ -328,21 +252,6 @@ class Dns
                 }
                 break;
 
-            case 'SSHFP': // TODO: implement validation
-                break;
-
-            case 'SVCB': // TODO: implement validation
-                break;
-
-            case "TKEY": // TODO: implement validation.
-                break;
-
-            case 'TLSA': // TODO: implement validation
-                break;
-
-            case 'TSIG': // TODO: implement validation
-                break;
-
             case "TXT":
                 if (!self::is_valid_printable($name)) {
                     return false;
@@ -354,12 +263,6 @@ class Dns
                     return false;
                 }
 
-                break;
-
-            case "URI": // TODO: implement validation.
-                break;
-
-            case 'WKS': // TODO: implement validation
                 break;
 
             default:
@@ -392,7 +295,7 @@ class Dns
      *
      * @return boolean true if valid, false otherwise
      */
-    public static function is_valid_hostname_fqdn(&$hostname, $wildcard, $dns_top_level_tld_check, $dns_strict_tld_check): bool
+    public static function is_valid_hostname_fqdn(mixed &$hostname, string $wildcard, $dns_top_level_tld_check, $dns_strict_tld_check): bool
     {
         if ($hostname == ".") {
             return true;
@@ -435,14 +338,14 @@ class Dns
                     return false;
                 }
             }
-            if (substr($hostname_label, 0, 1) == "-") {
+            if (str_starts_with($hostname_label, "-")) {
                 $error = new ErrorMessage(_('A hostname can not start or end with a dash.'));
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
 
                 return false;
             }
-            if (substr($hostname_label, -1, 1) == "-") {
+            if (str_ends_with($hostname_label, "-")) {
                 $error = new ErrorMessage(_('A hostname can not start or end with a dash.'));
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -514,7 +417,7 @@ class Dns
      *
      * @return boolean true if valid, false otherwise
      */
-    public static function is_valid_ipv4($ipv4, $answer = true)
+    public static function is_valid_ipv4(string $ipv4, bool $answer = true): bool
     {
 
         if (filter_var($ipv4, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === FALSE) {
@@ -537,7 +440,7 @@ class Dns
      *
      * @return boolean true if valid, false otherwise
      */
-    public static function is_valid_ipv6($ipv6, $answer = false)
+    public static function is_valid_ipv6(string $ipv6, bool $answer = false): bool
     {
 
         if (filter_var($ipv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === FALSE) {
@@ -560,7 +463,7 @@ class Dns
      *
      * @return boolean true if valid, false otherwise
      */
-    public static function are_multiple_valid_ips($ips)
+    public static function are_multiple_valid_ips(string $ips): bool
     {
 
 // multiple master NS-records are permitted and must be separated by ,
@@ -593,7 +496,7 @@ class Dns
      *
      * @return boolean true if valid, false otherwise
      */
-    public static function is_valid_printable($string)
+    public static function is_valid_printable(string $string): bool
     {
         if (!preg_match('/^[[:print:]]+$/', trim($string))) {
             $error = new ErrorMessage(_('Invalid characters have been used in this record.'));
@@ -610,7 +513,7 @@ class Dns
      * @param string $string Input string
      * @return bool true if valid, false otherwise
      */
-    public static function has_html_tags($string)
+    public static function has_html_tags(string $string): bool
     {
         if (preg_match('/[<>]/', trim($string))) {
             $error = new ErrorMessage(_('You cannot use html tags for this type of record.'));
@@ -627,14 +530,14 @@ class Dns
      * @param string $string Input string
      * @return bool true if valid, false otherwise
      */
-    public static function has_quotes_arround($string)
+    public static function has_quotes_arround(string $string): bool
     {
         // Ignore empty line
         if (strlen($string) === 0) {
             return true;
         }
 
-        if (substr($string, 0, 1) != '"' || substr($string, -1) != '"') {
+        if (!str_starts_with($string, '"') || !str_ends_with($string, '"')) {
             $error = new ErrorMessage(_('Add quotes around TXT record content.'));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
@@ -653,7 +556,7 @@ class Dns
      *
      * @return boolean true if valid, false otherwise
      */
-    public static function is_valid_rr_cname_name($db, $name)
+    public static function is_valid_rr_cname_name($db, string $name): bool
     {
         $query = "SELECT id FROM records
 			WHERE content = " . $db->quote($name, 'text') . "
@@ -679,7 +582,7 @@ class Dns
      *
      * @return boolean true if non-existant, false if exists
      */
-    public static function is_valid_rr_cname_exists($db, $name, $rid)
+    public static function is_valid_rr_cname_exists($db, string $name, int $rid): bool
     {
         $where = ($rid > 0 ? " AND id != " . $db->quote($rid, 'integer') : '');
         $query = "SELECT id FROM records
@@ -704,7 +607,7 @@ class Dns
      *
      * @return boolean true if unique, false if duplicate
      */
-    public static function is_valid_rr_cname_unique($db, $name, $rid)
+    public static function is_valid_rr_cname_unique($db, string $name, string $rid): bool
     {
         $where = ($rid > 0 ? " AND id != " . $db->quote($rid, 'integer') : '');
         $query = "SELECT id FROM records
@@ -726,8 +629,9 @@ class Dns
      *
      * @param string $name
      * @param string $zone
+     * @return bool
      */
-    public static function is_not_empty_cname_rr($name, $zone)
+    public static function is_not_empty_cname_rr(string $name, string $zone): bool
     {
 
         if ($name == $zone) {
@@ -746,7 +650,7 @@ class Dns
      *
      * @return boolean true if not alias, false if CNAME exists
      */
-    public static function is_valid_non_alias_target($db, $target)
+    public static function is_valid_non_alias_target($db, string $target): bool
     {
         $query = "SELECT id FROM records
 			WHERE name = " . $db->quote($target, 'text') . "
@@ -769,13 +673,13 @@ class Dns
      *
      * @return boolean true if valid, false otherwise
      */
-    public static function is_valid_rr_hinfo_content($content)
+    public static function is_valid_rr_hinfo_content(string $content): bool
     {
 
         if ($content[0] == "\"") {
             $fields = preg_split('/(?<=") /', $content, 2);
         } else {
-            $fields = preg_split('/ /', $content, 2);
+            $fields = explode(' ', $content, 2);
         }
 
         for ($i = 0; ($i < 2); $i++) {
@@ -797,7 +701,7 @@ class Dns
      *
      * @return boolean true if valid, false otherwise
      */
-    public static function is_valid_rr_soa_content(&$content, $dns_hostmaster): bool
+    public static function is_valid_rr_soa_content(mixed &$content, $dns_hostmaster): bool
     {
         $fields = preg_split("/\s+/", trim($content));
         $field_count = count($fields);
@@ -810,12 +714,8 @@ class Dns
             }
             $final_soa = $fields[0];
 
-            if (isset($fields[1])) {
-                $addr_input = $fields[1];
-            } else {
-                $addr_input = $dns_hostmaster;
-            }
-            if (!preg_match("/@/", $addr_input)) {
+            $addr_input = $fields[1] ?? $dns_hostmaster;
+            if (!str_contains($addr_input, "@")) {
                 $addr_input = preg_split('/(?<!\\\)\./', $addr_input, 2);
                 $addr_to_check = str_replace("\\", "", $addr_input[0]) . "@" . $addr_input[1];
             } else {
@@ -863,7 +763,7 @@ class Dns
      *
      * @return boolean true if valid, false otherwise
      */
-    public static function is_valid_rr_soa_name($name, $zone)
+    public static function is_valid_rr_soa_name(string $name, string $zone): bool
     {
         if ($name != $zone) {
             $error = new ErrorMessage(_('Invalid value for name field of SOA record. It should be the name of the zone.'));
@@ -884,7 +784,7 @@ class Dns
      *
      * @return boolean true if valid, false otherwise
      */
-    public static function is_valid_rr_prio($prio, $type)
+    public static function is_valid_rr_prio(mixed $prio, string $type): bool
     {
         return ($type == "MX" || $type == "SRV") && (is_numeric($prio) && $prio >= 0 && $prio <= 65535) || is_numeric($prio) && $prio == 0;
     }
@@ -895,7 +795,7 @@ class Dns
      *
      * @return boolean true if valid, false otherwise
      */
-    public static function is_valid_rr_srv_name(&$name)
+    public static function is_valid_rr_srv_name(mixed &$name): bool
     {
 
         if (strlen($name) > 255) {
@@ -938,7 +838,7 @@ class Dns
      *
      * @return boolean true if valid, false otherwise
      */
-    public static function is_valid_rr_srv_content(&$content, $name)
+    public static function is_valid_rr_srv_content(mixed &$content, $name): bool
     {
         $fields = preg_split("/\s+/", trim($content), 3);
         if (!is_numeric($fields[0]) || $fields[0] < 0 || $fields[0] > 65535) {
@@ -972,7 +872,7 @@ class Dns
      *
      * @return boolean true if valid,false otherwise
      */
-    public static function is_valid_rr_ttl(&$ttl, $dns_ttl)
+    public static function is_valid_rr_ttl(int &$ttl, $dns_ttl): bool
     {
 
         if (!isset($ttl) || $ttl == "") {
@@ -996,7 +896,7 @@ class Dns
      *
      * @return boolean true if valid, false otherwise
      */
-    public static function is_valid_spf($content)
+    public static function is_valid_spf(string $content): bool
     {
         // Cleanup required quotes before validation
         $content = trim($content, '"');
@@ -1016,7 +916,7 @@ class Dns
      *
      * @return boolean true if valid, false otherwise
      */
-    public static function is_valid_loc($content)
+    public static function is_valid_loc(string $content): bool
     {
         $regex = "^(90|[1-8]\d|0?\d)( ([1-5]\d|0?\d)( ([1-5]\d|0?\d)(\.\d{1,3})?)?)? [NS] (180|1[0-7]\d|[1-9]\d|0?\d)( ([1-5]\d|0?\d)( ([1-5]\d|0?\d)(\.\d{1,3})?)?)? [EW] (-(100000(\.00)?|\d{1,5}(\.\d\d)?)|([1-3]?\d{1,7}(\.\d\d)?|4([01][0-9]{6}|2([0-7][0-9]{5}|8([0-3][0-9]{4}|4([0-8][0-9]{3}|9([0-5][0-9]{2}|6([0-6][0-9]|7[01]))))))(\.\d\d)?|42849672(\.([0-8]\d|9[0-5]))?))[m]?( (\d{1,7}|[1-8]\d{7})(\.\d\d)?[m]?){0,3}$^";
         if (!preg_match($regex, $content)) {

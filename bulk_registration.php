@@ -76,7 +76,7 @@ class BulkRegistrationController extends BaseController {
         $zone_template = $_POST['zone_template'];
 
         $failed_domains = [];
-        $dnsRecord = new DnsRecord();
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         foreach ($domains as $domain) {
             if (!Dns::is_valid_hostname_fqdn($domain, 0, $this->config('dns_top_level_tld_check'), $this->config('dns_strict_tld_check'))) {
                 $failed_domains[] = $domain . " - " . _('Invalid hostname.');

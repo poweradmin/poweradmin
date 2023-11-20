@@ -27,14 +27,17 @@ use Poweradmin\Domain\Dnssec\DnssecProvider;
 use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\LegacyConfiguration;
 use Poweradmin\LegacyLogger;
+use Poweradmin\PDOLayer;
 
 class PdnsUtilProvider implements DnssecProvider
 {
     private LegacyLogger $logger;
     private LegacyConfiguration $config;
+    private PDOLayer $db;
 
     public function __construct($db)
     {
+        $this->db = $db;
         $this->logger = new LegacyLogger($db);
         $this->config = new LegacyConfiguration();
     }
@@ -175,15 +178,15 @@ class PdnsUtilProvider implements DnssecProvider
             return false;
         }
 
-        LegacyLogger::log_info(sprintf('client_ip:%s user:%s operation:dnssec_unsecure_zone zone:%s',
+        $this->logger->log_info(sprintf('client_ip:%s user:%s operation:dnssec_unsecure_zone zone:%s',
             $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $zoneName));
 
         return true;
     }
 
-    public function isZoneSecured($db, string $zoneName): bool
+    public function isZoneSecured(string $zoneName): bool
     {
-        $query = $db->prepare("SELECT
+        $query = $this->db->prepare("SELECT
                   COUNT(cryptokeys.id) AS active_keys,
                   COUNT(domainmetadata.id) > 0 AS presigned
                   FROM domains
@@ -214,7 +217,7 @@ class PdnsUtilProvider implements DnssecProvider
         $ds_records = array();
         $id = 0;
         foreach ($output as $line) {
-            if (substr($line, 0, 2) == 'DS') {
+            if (str_starts_with($line, 'DS')) {
                 $oldid = $id;
                 $items = explode(' ', $line);
 
@@ -269,7 +272,7 @@ class PdnsUtilProvider implements DnssecProvider
             return false;
         }
 
-        LegacyLogger::log_info(sprintf('client_ip:%s user:%s operation:dnssec_activate_zone_key zone:%s key_id:%s',
+        $this->logger->log_info(sprintf('client_ip:%s user:%s operation:dnssec_activate_zone_key zone:%s key_id:%s',
             $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $zoneName, $keyId));
 
         return true;
@@ -288,7 +291,7 @@ class PdnsUtilProvider implements DnssecProvider
             return false;
         }
 
-        LegacyLogger::log_info(sprintf('client_ip:%s user:%s operation:dnssec_deactivate_zone_key zone:%s key_id:%s',
+        $this->logger->log_info(sprintf('client_ip:%s user:%s operation:dnssec_deactivate_zone_key zone:%s key_id:%s',
             $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $zoneName, $keyId));
 
         return true;
@@ -310,14 +313,14 @@ class PdnsUtilProvider implements DnssecProvider
 
         $keys = array();
         foreach ($output as $line) {
-            if (substr($line, 0, 2) == 'ID') {
+            if (str_starts_with($line, 'ID')) {
                 $items[0] = explode(' ', (explode('ID = ', $line)[1]))[0];
                 $items[1] = substr(explode(' ', (explode('ID = ', $line)[1]))[1], 1, -2);
                 $items[2] = substr(explode(' ', (explode('flags = ', $line)[1]))[0], 0, -1);
                 $items[3] = substr(explode(' ', (explode('tag = ', $line)[1]))[0], 0, -1);
                 $items[4] = substr(explode(' ', (explode('algo = ', $line)[1]))[0], 0, -1);
                 $items[5] = preg_replace('/[^0-9]/', '', explode(' ', (explode('bits = ', $line)[1]))[0]);
-                if (strpos($line, 'Active') !== false) {
+                if (str_contains($line, 'Active')) {
                     $items[6] = 1;
                 } else {
                     $items[6] = 0;
@@ -342,7 +345,7 @@ class PdnsUtilProvider implements DnssecProvider
             return false;
         }
 
-        LegacyLogger::log_info(sprintf('client_ip:%s user:%s operation:dnssec_add_zone_key zone:%s type:%s bits:%s algorithm:%s',
+        $this->logger->log_info(sprintf('client_ip:%s user:%s operation:dnssec_add_zone_key zone:%s type:%s bits:%s algorithm:%s',
             $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $zoneName, $keyType, $keySize, $algorithm));
 
         return true;
@@ -361,7 +364,7 @@ class PdnsUtilProvider implements DnssecProvider
             return false;
         }
 
-        LegacyLogger::log_info(sprintf('client_ip:%s user:%s operation:dnssec_remove_zone_key zone:%s key_id:%s',
+        $this->logger->log_info(sprintf('client_ip:%s user:%s operation:dnssec_remove_zone_key zone:%s key_id:%s',
             $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin'], $zoneName, $keyId));
 
         return true;

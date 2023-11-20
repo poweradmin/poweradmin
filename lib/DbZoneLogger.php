@@ -62,7 +62,7 @@ class DbZoneLogger
         return $stmt->fetch()['number_of_logs'];
     }
 
-    public function get_all_logs($limit, $offset)
+    public function get_all_logs($limit, $offset): bool|array
     {
         $stmt = $this->db->prepare("
                     SELECT * FROM log_zones
@@ -87,7 +87,7 @@ class DbZoneLogger
         return $records;
     }
 
-    public function get_logs_for_domain($domain, $limit, $offset)
+    public function get_logs_for_domain($domain, $limit, $offset): bool|array
     {
         if (!($this->check_if_domain_exist($domain))) {
             return array();
@@ -128,7 +128,7 @@ class DbZoneLogger
         $dnsRecord = new DnsRecord($this->db, $this->config);
         $zones = $dnsRecord->get_zones('all');
         foreach ($zones as $zone) {
-            if (strpos($zone['name'], $domain_searched) !== false) {
+            if (str_contains($zone['name'], $domain_searched)) {
                 return true;
             }
         }

@@ -53,7 +53,8 @@ function updateDatabase($db, $databaseCredentials): void
     }
 }
 
-function createAdministratorUser($db, $pa_pass, $default_config_file) {
+function createAdministratorUser($db, $pa_pass, $default_config_file): void
+{
     // Create an administrator user with the appropriate permissions
     $adminName = 'Administrator';
     $adminDescr = 'Administrator template with full rights.';

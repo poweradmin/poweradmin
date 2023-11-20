@@ -43,7 +43,7 @@ class PowerdnsApiClient {
     }
 
     private function buildEndpoint(string $path): string {
-        return self::API_VERSION_PATH . "/servers/{$this->serverName}" . $path;
+        return self::API_VERSION_PATH . "/servers/$this->serverName" . $path;
     }
 
     public function rectifyZone(Zone $zone): bool {

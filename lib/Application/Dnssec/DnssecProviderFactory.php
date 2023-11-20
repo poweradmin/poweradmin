@@ -30,7 +30,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Dnssec\DnsSecApiProvider;
 use Poweradmin\Infrastructure\Dnssec\PdnsUtilProvider;
 use Poweradmin\Infrastructure\Logger\CompositeLogger;
-use Poweradmin\Infrastructure\Logger\EchoLogger;
 use Poweradmin\Infrastructure\Logger\SyslogLogger;
 use Poweradmin\PDOLayer;
 

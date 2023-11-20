@@ -24,6 +24,9 @@
     "twbs/bootstrap": "^v5.3.2",
     "twbs/bootstrap-icons": "^v1.11.1"
   },
+  "suggest": {
+    "ext-ldap": "For LDAP support"
+  },
   "autoload": {
     "psr-4": {
       "Poweradmin\\": "lib/"

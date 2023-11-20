@@ -87,7 +87,7 @@ class EditRecordController extends BaseController {
         $record = DnsRecord::get_record_from_id($this->db, $_GET["id"]);
         $record['record_name'] = trim(str_replace(htmlspecialchars($zone_name), '', htmlspecialchars($record["name"])), '.');
 
-        if (preg_match("/^xn--/", $zone_name)) {
+        if (str_starts_with($zone_name, "xn--")) {
             $idn_zone_name = idn_to_utf8($zone_name, IDNA_NONTRANSITIONAL_TO_ASCII);
         } else {
             $idn_zone_name = "";
@@ -112,7 +112,8 @@ class EditRecordController extends BaseController {
         $ret_val = DnsRecord::edit_record($this->db, $_POST, $this->config('dns_hostmaster'));
         if ($ret_val == "1") {
             if ($_POST['type'] != "SOA") {
-                DnsRecord::update_soa_serial($this->db, $zid);
+                $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+                $dnsRecord->update_soa_serial($zid);
             }
             $new_record_info = DnsRecord::get_record_from_id($this->db, $_POST["rid"]);
             $this->logger->log_info(sprintf('client_ip:%s user:%s operation:edit_record'

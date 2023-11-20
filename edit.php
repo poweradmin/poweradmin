@@ -113,7 +113,8 @@ class EditController extends BaseController {
                 if ($serial_mismatch && $experimental_edit_conflict_resolution == 'only_latest_version') {
                     $this->setMessage('edit', 'warn', (_('Request has expired, please try again.')));
                 } else {
-                    DnsRecord::update_soa_serial($this->db, $zone_id);
+                    $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+                    $dnsRecord->update_soa_serial($zone_id);
 
                     if ($one_record_changed) {
                         $this->setMessage('edit', 'success', _('Zone has been updated successfully.'));
@@ -179,7 +180,8 @@ class EditController extends BaseController {
                 $new_zone_template = $_POST['zone_template'];
             }
             if ($_POST['current_zone_template'] != $new_zone_template) {
-                DnsRecord::update_zone_records($this->db, $this->config('db_type'), $this->config('dns_ttl'), $zone_id, $new_zone_template);
+                $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+                $dnsRecord->update_zone_records($this->config('db_type'), $this->config('dns_ttl'), $zone_id, $new_zone_template);
             }
         }
 
@@ -192,7 +194,8 @@ class EditController extends BaseController {
         }
 
         if (isset($_POST['sign_zone'])) {
-            DnsRecord::update_soa_serial($this->db, $zone_id);
+            $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+            $dnsRecord->update_soa_serial($zone_id);
 
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
             $result = $dnssecProvider->secureZone($zone_name);
@@ -207,7 +210,8 @@ class EditController extends BaseController {
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
             $dnssecProvider->unsecureZone($zone_name);
 
-            DnsRecord::update_soa_serial($this->db, $zone_id);
+            $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+            $dnsRecord->update_soa_serial($zone_id);
             $this->setMessage('edit', 'success', _('Zone has been unsigned successfully.'));
         }
 
@@ -224,7 +228,7 @@ class EditController extends BaseController {
         if ($raw_zone_comment) { $zone_comment = htmlspecialchars($raw_zone_comment); }
 
         $zone_name_to_display = DnsRecord::get_domain_name_by_id($this->db, $zone_id);
-        if (preg_match("/^xn--/", $zone_name_to_display)) {
+        if (str_starts_with($zone_name_to_display, "xn--")) {
             $idn_zone_name = idn_to_utf8($zone_name_to_display, IDNA_NONTRANSITIONAL_TO_ASCII);
         } else {
             $idn_zone_name = "";
@@ -264,7 +268,7 @@ class EditController extends BaseController {
             'record_sort_by' => $record_sort_by,
             'pagination' => $this->createAndPresentPagination($record_count, $iface_rowamount, $zone_id),
             'pdnssec_use' => $this->config('pdnssec_use'),
-            'is_secured' => $dnssecProvider->isZoneSecured($this->db, $zone_name),
+            'is_secured' => $dnssecProvider->isZoneSecured($zone_name),
             'session_userid' => $_SESSION["userid"],
             'dns_ttl' => $this->config('dns_ttl'),
             'is_rev_zone' => preg_match('/i(p6|n-addr).arpa/i', $zone_name),

@@ -47,7 +47,7 @@ class DnsSecAddKeyController extends BaseController {
             $zone_id = htmlspecialchars($_GET['id']);
         }
 
-        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($zone_id);
+        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($this->db, $zone_id);
 
         if ($user_is_zone_owner == "0") {
             $this->showError(_("You do not have the permission to view this zone."));
@@ -98,7 +98,7 @@ class DnsSecAddKeyController extends BaseController {
             }
         }
 
-        if (preg_match("/^xn--/", $domain_name)) {
+        if (str_starts_with($domain_name, "xn--")) {
             $idn_zone_name = idn_to_utf8($domain_name, IDNA_NONTRANSITIONAL_TO_ASCII);
         } else {
             $idn_zone_name = "";

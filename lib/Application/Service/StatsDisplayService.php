@@ -44,6 +44,6 @@ class StatsDisplayService
         $memoryUsage = $this->sizeFormatter->humanReadable($this->memoryUsage->calculateCurrentUsage());
         $elapsedTime = sprintf("%.5f", $this->timer->elapsedTime());
 
-        return "<div class=\"container\"><samp>Memory usage: {$memoryUsage}, elapsed time: {$elapsedTime}</samp></div>";
+        return "<div class=\"container\"><samp>Memory usage: $memoryUsage, elapsed time: $elapsedTime</samp></div>";
     }
 }

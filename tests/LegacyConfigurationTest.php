@@ -31,7 +31,7 @@ class LegacyConfigurationTest extends TestCase
 
         $this->assertEquals('baz', $config->get('foo'), 'Should return the value from custom config file.');
         $this->assertEquals(42, $config->get('number'), 'Should return the value from default config file.');
-        $this->assertEquals(true, $config->get('boolean'), 'Should return the boolean value from default config file.');
+        $this->assertTrue($config->get('boolean'), 'Should return the boolean value from default config file.');
         $this->assertEquals('extra_value', $config->get('extra'), 'Should return the value from custom config file.');
         $this->assertEquals(LOG_USER, $config->get('logUser'), 'Should return the constant value LOG_USER from custom config file.');
         $this->assertNull($config->get('non_existing_key'), 'Should return null for non-existing keys.');

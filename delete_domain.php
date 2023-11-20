@@ -83,7 +83,7 @@ class DeleteDomainController extends BaseController
             $zone_name = DnsRecord::get_domain_name_by_id($this->db, $zone_id);
 
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
-            if ($dnssecProvider->isZoneSecured($this->db, $zone_name)) {
+            if ($dnssecProvider->isZoneSecured($zone_name)) {
                 $dnssecProvider->unsecureZone($zone_name);
             }
         }
@@ -111,7 +111,7 @@ class DeleteDomainController extends BaseController
             }
         }
 
-        if (preg_match("/^xn--/", $zone_info['name'])) {
+        if (str_starts_with($zone_info['name'], "xn--")) {
             $idn_zone_name = idn_to_utf8($zone_info['name'], IDNA_NONTRANSITIONAL_TO_ASCII);
         } else {
             $idn_zone_name = "";

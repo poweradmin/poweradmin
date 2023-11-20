@@ -75,7 +75,8 @@ class DeleteRecordController extends BaseController {
                 }
 
                 DnsRecord::delete_record_zone_templ($this->db, $record_id);
-                DnsRecord::update_soa_serial($this->db, $zid);
+                $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+                $dnsRecord->update_soa_serial($zid);
 
                 if ($this->config('pdnssec_use')) {
                     $zone_name = DnsRecord::get_domain_name_by_id($this->db, $zid);
@@ -104,7 +105,7 @@ class DeleteRecordController extends BaseController {
     {
         $zone_name = DnsRecord::get_domain_name_by_id($this->db, $zone_id);
 
-        if (preg_match("/^xn--/", $zone_name)) {
+        if (str_starts_with($zone_name, "xn--")) {
             $idn_zone_name = idn_to_utf8($zone_name, IDNA_NONTRANSITIONAL_TO_ASCII);
         } else {
             $idn_zone_name = "";

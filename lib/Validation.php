@@ -30,9 +30,9 @@ class Validation
      *
      * @return boolean true if valid, false otherwise
      */
-    public static function is_valid_email($address)
+    public static function is_valid_email(string $address): bool
     {
-        $fields = preg_split("/@/", $address, 2);
+        $fields = explode("@", $address, 2);
         if ((!preg_match("/^[0-9a-z]([-_.]?[0-9a-z])*$/i", $fields[0])) || (!isset($fields[1]) || $fields[1] == '' || !Dns::is_valid_hostname_fqdn($fields[1], 0))) {
             return false;
         }
@@ -45,7 +45,7 @@ class Validation
      *
      * @return boolean true if number, false otherwise
      */
-    public static function is_number($string)
+    public static function is_number(string $string): bool
     {
         if (!preg_match("/^[0-9]+$/i", $string)) {
             return false;

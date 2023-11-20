@@ -58,7 +58,7 @@ class DnsSecDeleteKeyController extends BaseController
             $confirm = $_GET['confirm'];
         }
 
-        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($zone_id);
+        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($this->db, $zone_id);
 
         if ($zone_id == "-1") {
             $this->showError(_('Invalid or unexpected input given.'));
@@ -93,7 +93,7 @@ class DnsSecDeleteKeyController extends BaseController
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
         $key_info = $dnssecProvider->getZoneKey($domain_name, $key_id);
 
-        if (preg_match("/^xn--/", $domain_name)) {
+        if (str_starts_with($domain_name, "xn--")) {
             $idn_zone_name = idn_to_utf8($domain_name, IDNA_NONTRANSITIONAL_TO_ASCII);
         } else {
             $idn_zone_name = "";

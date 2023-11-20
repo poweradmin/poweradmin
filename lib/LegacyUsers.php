@@ -72,9 +72,9 @@ class LegacyUsers
     /**
      * Get a list of all available permission templates
      *
-     * @return mixed[] array of templates [id, name, descr]
+     * @return array array of templates [id, name, descr]
      */
-    public static function list_permission_templates($db)
+    public static function list_permission_templates($db): array
     {
         $query = "SELECT * FROM perm_templ ORDER BY name";
         $response = $db->query($query);
@@ -95,13 +95,13 @@ class LegacyUsers
      *
      * It's to show_users therefore the odd name. Has to be changed.
      *
-     * @param int $id Exclude User ID
+     * @param int|string $id Exclude User ID
      * @param int $rowstart Startring row number
      * @param int $rowamount Number of rows to return this query
      *
-     * @return mixed[] array with all users [id,username,fullname,email,description,active,numdomains]
+     * @return array array with all users [id,username,fullname,email,description,active,numdomains]
      */
-    public static function show_users($db, $id = '', $rowstart = 0, $rowamount = 9999999)
+    public static function show_users($db, int|string $id = '', int $rowstart = 0, int $rowamount = 9999999): array
     {
         $add = '';
         if (is_numeric($id)) {
@@ -157,12 +157,10 @@ class LegacyUsers
      *
      * @return boolean true if user exists, false if users doesnt exist
      */
-    public static function is_valid_user($db, $id)
+    public static function is_valid_user($db, int $id): bool
     {
-        if (is_numeric($id)) {
-            $response = $db->queryOne("SELECT id FROM users WHERE id=" . $db->quote($id, 'integer'));
-            return ($response ? true : false);
-        }
+        $response = $db->queryOne("SELECT id FROM users WHERE id=" . $db->quote($id, 'integer'));
+        return (bool)$response;
     }
 
     /**
@@ -174,10 +172,10 @@ class LegacyUsers
      *
      * @return boolean true if exists, false if not
      */
-    public static function user_exists($db, $user)
+    public static function user_exists($db, string $user): bool
     {
         $response = $db->queryOne("SELECT id FROM users WHERE username=" . $db->quote($user, 'text'));
-        return ($response ? true : false);
+        return (bool)$response;
     }
 
     /**
@@ -189,11 +187,11 @@ class LegacyUsers
      * 'target' value [delete,new_owner] and 'newowner' value
      *
      * @param int $uid User ID to delete
-     * @param mixed[] $zones Array of zones
+     * @param array $zones Array of zones
      *
      * @return boolean true on success, false otherwise
      */
-    public static function delete_user($db, $uid, $zones)
+    public static function delete_user($db, int $uid, array $zones): bool
     {
         if (($uid != $_SESSION ['userid'] && !self::verify_permission($db, 'user_edit_others')) || ($uid == $_SESSION ['userid'] && !self::verify_permission($db, 'user_edit_own'))) {
             $error = new ErrorMessage(_("You do not have the permission to delete this user."));
@@ -203,13 +201,11 @@ class LegacyUsers
             return false;
         } else {
 
-            if (is_array($zones)) {
-                foreach ($zones as $zone) {
-                    if ($zone ['target'] == "delete") {
-                        DnsRecord::delete_domain($db, $zone ['zid']);
-                    } elseif ($zone ['target'] == "new_owner") {
-                        DnsRecord::add_owner_to_zone($db, $zone ['zid'], $zone ['newowner']);
-                    }
+            foreach ($zones as $zone) {
+                if ($zone ['target'] == "delete") {
+                    DnsRecord::delete_domain($db, $zone ['zid']);
+                } elseif ($zone ['target'] == "new_owner") {
+                    DnsRecord::add_owner_to_zone($db, $zone ['zid'], $zone ['newowner']);
                 }
             }
 
@@ -231,9 +227,9 @@ class LegacyUsers
      *
      * @return boolean true on success, false otherwise
      */
-    public static function delete_perm_templ($db, $ptid)
+    public static function delete_perm_templ($db, int $ptid): bool
     {
-        if (!(self::verify_permission('user_edit_templ_perm'))) {
+        if (!(self::verify_permission($db, 'user_edit_templ_perm'))) {
             $error = new ErrorMessage(_("You do not have the permission to delete permission templates."));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
@@ -274,10 +270,10 @@ class LegacyUsers
      *
      * @return boolean true if succesful, false otherwise
      */
-    public static function edit_user($db, $id, $user, $fullname, $email, $perm_templ, $description, $active, $user_password, $i_use_ldap)
+    public static function edit_user($db, int $id, string $user, string $fullname, string $email, string $perm_templ, string $description, int $active, string $user_password, $i_use_ldap): bool
     {
-        $perm_edit_own = self::verify_permission('user_edit_own');
-        $perm_edit_others = self::verify_permission('user_edit_others');
+        $perm_edit_own = self::verify_permission($db, 'user_edit_own');
+        $perm_edit_others = self::verify_permission($db, 'user_edit_others');
 
         if (($id == $_SESSION ["userid"] && $perm_edit_own) || ($id != $_SESSION ["userid"] && $perm_edit_others)) {
 
@@ -331,15 +327,15 @@ class LegacyUsers
             $query = "UPDATE users SET username = " . $db->quote($user, 'text') . ",
 fullname = " . $db->quote($fullname, 'text') . ",
 email = " . $db->quote($email, 'text') . ",";
-            if (self::verify_permission('user_edit_templ_perm')) {
+            if (self::verify_permission($db, 'user_edit_templ_perm')) {
                 $query .= "perm_templ = " . $db->quote($perm_templ, 'integer') . ",";
             }
             $query .= "description = " . $db->quote($description, 'text') . ",
 				active = " . $db->quote($active, 'integer') . ",
 				use_ldap = " . $db->quote($i_use_ldap ?: 0, 'integer');
 
-            $edit_own_perm = self::verify_permission('user_edit_own');
-            $passwd_edit_others_perm = self::verify_permission('user_passwd_edit_others');
+            $edit_own_perm = self::verify_permission($db, 'user_edit_own');
+            $passwd_edit_others_perm = self::verify_permission($db, 'user_passwd_edit_others');
 
             if ($user_password != "" && $edit_own_perm || $passwd_edit_others_perm) {
                 $config = new LegacyConfiguration();
@@ -366,11 +362,12 @@ email = " . $db->quote($email, 'text') . ",";
     /**
      * Change User Password
      *
+     * @param $db
      * @param int $id User ID
-     * @param string $password New password
+     * @param $user_pass
      * @return void
      */
-    public static function update_user_password($db, $id, $user_pass): void
+    public static function update_user_password($db, int $id, $user_pass): void
     {
         $config = new LegacyConfiguration();
         $userAuthService = new UserAuthenticationService(
@@ -387,6 +384,7 @@ email = " . $db->quote($email, 'text') . ",";
      * Change the pass of the user.
      * The user is automatically logged out after the pass change.
      *
+     * @param $db
      * @param array $details User Details
      *
      * @return bool
@@ -433,19 +431,11 @@ email = " . $db->quote($email, 'text') . ",";
      *
      * @return string Full Name
      */
-    public static function get_fullname_from_userid($db, $id)
+    public static function get_fullname_from_userid($db, int $id): string
     {
-        if (is_numeric($id)) {
-            $response = $db->query("SELECT fullname FROM users WHERE id=" . $db->quote($id, 'integer'));
-            $r = $response->fetch();
-            return $r["fullname"];
-        } else {
-            $error = new ErrorMessage(_('Invalid argument(s) given to function %s'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
-            return false;
-        }
+        $response = $db->query("SELECT fullname FROM users WHERE id=" . $db->quote($id, 'integer'));
+        $r = $response->fetch();
+        return $r["fullname"];
     }
 
     /**
@@ -457,22 +447,17 @@ email = " . $db->quote($email, 'text') . ",";
      * @todo also fetch the subowners
      *
      */
-    public static function get_fullnames_owners_from_domainid($db, $id)
+    public static function get_fullnames_owners_from_domainid($db, int $id)
     {
-        if (is_numeric($id)) {
-            $response = $db->query("SELECT users.id, users.fullname FROM users, zones WHERE zones.domain_id=" . $db->quote($id, 'integer') . " AND zones.owner=users.id ORDER by fullname");
-            if ($response) {
-                $names = array();
-                while ($r = $response->fetch()) {
-                    $names [] = $r ['fullname'];
-                }
-                return implode(', ', $names);
+        $response = $db->query("SELECT users.id, users.fullname FROM users, zones WHERE zones.domain_id=" . $db->quote($id, 'integer') . " AND zones.owner=users.id ORDER by fullname");
+        if ($response) {
+            $names = array();
+            while ($r = $response->fetch()) {
+                $names [] = $r ['fullname'];
             }
-            return "";
+            return implode(', ', $names);
         }
-        $error = new ErrorMessage(_('Invalid argument(s) given to function %s'));
-        $errorPresenter = new ErrorPresenter();
-        $errorPresenter->present($error);
+        return "";
     }
 
     /**
@@ -480,20 +465,15 @@ email = " . $db->quote($email, 'text') . ",";
      *
      * @param int $zoneid Zone ID
      *
-     * @return string|void 1 if owner, 0 if not owner
+     * @return bool 1 if owner, 0 if not owner
      */
-    public static function verify_user_is_owner_zoneid($db, $zoneid)
+    public static function verify_user_is_owner_zoneid($db, int $zoneid): bool
     {
         $userid = $_SESSION ["userid"];
-        if (is_numeric($zoneid)) {
-            $response = $db->queryOne("SELECT zones.id FROM zones
-				WHERE zones.owner = " . $db->quote($userid, 'integer') . "
-				AND zones.domain_id = " . $db->quote($zoneid, 'integer'));
-            return (bool)$response;
-        }
-        $error = new ErrorMessage(_('Invalid argument(s) given to function %s'));
-        $errorPresenter = new ErrorPresenter();
-        $errorPresenter->present($error);
+        $response = $db->queryOne("SELECT zones.id FROM zones
+            WHERE zones.owner = " . $db->quote($userid, 'integer') . "
+            AND zones.domain_id = " . $db->quote($zoneid, 'integer'));
+        return (bool)$response;
     }
 
     /**
@@ -503,9 +483,9 @@ email = " . $db->quote($email, 'text') . ",";
      *
      * @param int $specific User ID (optional)
      *
-     * @return mixed[] array of user details
+     * @return array array of user details
      */
-    public static function get_user_detail_list($db, $specific, $ldap_use)
+    public static function get_user_detail_list($db, int $specific, $ldap_use): array
     {
         $userid = $_SESSION ['userid'];
 
@@ -513,7 +493,7 @@ email = " . $db->quote($email, 'text') . ",";
         if (Validation::is_number($specific)) {
             $sql_add = "AND users.id = " . $db->quote($specific, 'integer');
         } else {
-            if (self::verify_permission('user_view_others')) {
+            if (self::verify_permission($db, 'user_view_others')) {
                 $sql_add = "";
             } else {
                 $sql_add = "AND users.id = " . $db->quote($userid, 'integer');
@@ -567,9 +547,9 @@ email = " . $db->quote($email, 'text') . ",";
      * @param int $templ_id Template ID (optional) [default=0]
      * @param boolean $return_name_only Return name only or all details (optional) [default=false]
      *
-     * @return mixed[] array of permissions [id,name,descr] or permission names [name]
+     * @return array array of permissions [id,name,descr] or permission names [name]
      */
-    public static function get_permissions_by_template_id($db, $templ_id = 0, $return_name_only = false)
+    public static function get_permissions_by_template_id($db, int $templ_id = 0, bool $return_name_only = false): array
     {
         $limit = '';
         if ($templ_id > 0) {
@@ -587,7 +567,7 @@ email = " . $db->quote($email, 'text') . ",";
 
         $permission_list = array();
         while ($permission = $response->fetch()) {
-            if ($return_name_only == false) {
+            if (!$return_name_only) {
                 $permission_list [] = array(
                     "id" => $permission ['id'],
                     "name" => $permission ['name'],
@@ -605,9 +585,9 @@ email = " . $db->quote($email, 'text') . ",";
      *
      * @param int $templ_id Template ID
      *
-     * @return mixed[] Template details
+     * @return array Template details
      */
-    public static function get_permission_template_details($db, $templ_id)
+    public static function get_permission_template_details($db, int $templ_id): array
     {
         $query = "SELECT *
 			FROM perm_templ
@@ -620,11 +600,11 @@ email = " . $db->quote($email, 'text') . ",";
     /**
      * Add a Permission Template
      *
-     * @param mixed[] $details Permission template details [templ_name,templ_descr,perm_id]
+     * @param array $details Permission template details [templ_name,templ_descr,perm_id]
      *
      * @return boolean true on success, false otherwise
      */
-    public static function add_perm_templ($db, $db_type, $details)
+    public static function add_perm_templ($db, $db_type, array $details): bool
     {
         $query = "INSERT INTO perm_templ (name, descr)
 			VALUES (" . $db->quote($details['templ_name'], 'text') . ", " . $db->quote($details['templ_descr'], 'text') . ")";
@@ -650,11 +630,11 @@ email = " . $db->quote($email, 'text') . ",";
     /**
      * Update permission template details
      *
-     * @param mixed[] $details Permission Template Details
+     * @param array $details Permission Template Details
      *
      * @return boolean true on success, false otherwise
      */
-    public static function update_perm_templ_details($db, $details)
+    public static function update_perm_templ_details($db, array $details): bool
     {
         // Fix permission template name and description first.
 
@@ -687,16 +667,16 @@ email = " . $db->quote($email, 'text') . ",";
     /**
      * Update User Details
      *
-     * @param mixed[] $details User details
+     * @param array $details User details
      *
      * @return boolean true on success, false otherwise
      */
-    public static function update_user_details($db, $details)
+    public static function update_user_details($db, array $details): bool
     {
-        $perm_edit_own = (bool)self::verify_permission('user_edit_own');
-        $perm_edit_others = (bool)self::verify_permission('user_edit_others');
-        $perm_templ_perm_edit = (bool)self::verify_permission('templ_perm_edit');
-        $perm_is_godlike = (bool)self::verify_permission('user_is_ueberuser');
+        $perm_edit_own = self::verify_permission($db, 'user_edit_own');
+        $perm_edit_others = self::verify_permission($db, 'user_edit_others');
+        $perm_templ_perm_edit = self::verify_permission($db, 'templ_perm_edit');
+        $perm_is_godlike = self::verify_permission($db, 'user_is_ueberuser');
 
         if (($details['uid'] == $_SESSION ["userid"] && $perm_edit_own) || ($details['uid'] != $_SESSION ["userid"] && $perm_edit_others)) {
 
@@ -766,14 +746,14 @@ email = " . $db->quote($email, 'text') . ",";
                 $query .= ", use_ldap = " . $db->quote($use_ldap, 'integer');
             }
 
-            $passwd_edit_others_perm = (bool)self::verify_permission('user_passwd_edit_others');
+            $passwd_edit_others_perm = self::verify_permission($db, 'user_passwd_edit_others');
             if (isset($details['password']) && $details['password'] != "" && $passwd_edit_others_perm) {
                 $config = new LegacyConfiguration();
                 $userAuthService = new UserAuthenticationService(
                     $config->get('password_encryption'),
                     $config->get('password_encryption_cost')
                 );
-                $query .= ", password = " . $db->quote($userAuthService->hashPassword($details['password'], 'text'));
+                $query .= ", password = " . $db->quote($userAuthService->hashPassword($details['password']), 'text');
             }
 
             $query .= " WHERE id = " . $db->quote($details['uid'], 'integer');
@@ -792,11 +772,11 @@ email = " . $db->quote($email, 'text') . ",";
     /**
      * Add a new user
      *
-     * @param mixed[] $details Array of User details
+     * @param array $details Array of User details
      *
      * @return boolean true on success, false otherwise
      */
-    public static function add_new_user($db, $details, $ldap_use)
+    public static function add_new_user($db, array $details, $ldap_use): bool
     {
         if (!self::verify_permission($db, 'user_add_new')) {
             $error = new ErrorMessage(_("You do not have the permission to add a new user."));
