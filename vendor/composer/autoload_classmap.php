@@ -6,7 +6,9 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Attribute' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
+    'PhpToken' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/PhpToken.php',
     'Poweradmin\\AppFactory' => $baseDir . '/lib/AppFactory.php',
     'Poweradmin\\Application' => $baseDir . '/lib/Application.php',
     'Poweradmin\\Application\\Dnssec\\DnssecProviderFactory' => $baseDir . '/lib/Application/Dnssec/DnssecProviderFactory.php',
@@ -94,6 +96,7 @@ return array(
     'Poweradmin\\Validation' => $baseDir . '/lib/Validation.php',
     'Poweradmin\\Version' => $baseDir . '/lib/Version.php',
     'Poweradmin\\ZoneTemplate' => $baseDir . '/lib/ZoneTemplate.php',
+    'Stringable' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
     'Symfony\\Bridge\\Twig\\AppVariable' => $vendorDir . '/symfony/twig-bridge/AppVariable.php',
     'Symfony\\Bridge\\Twig\\Attribute\\Template' => $vendorDir . '/symfony/twig-bridge/Attribute/Template.php',
     'Symfony\\Bridge\\Twig\\Command\\DebugCommand' => $vendorDir . '/symfony/twig-bridge/Command/DebugCommand.php',
@@ -247,6 +250,8 @@ return array(
     'Symfony\\Contracts\\Translation\\TranslatorTrait' => $vendorDir . '/symfony/translation-contracts/TranslatorTrait.php',
     'Symfony\\Polyfill\\Ctype\\Ctype' => $vendorDir . '/symfony/polyfill-ctype/Ctype.php',
     'Symfony\\Polyfill\\Mbstring\\Mbstring' => $vendorDir . '/symfony/polyfill-mbstring/Mbstring.php',
+    'Symfony\\Polyfill\\Php80\\Php80' => $vendorDir . '/symfony/polyfill-php80/Php80.php',
+    'Symfony\\Polyfill\\Php80\\PhpToken' => $vendorDir . '/symfony/polyfill-php80/PhpToken.php',
     'Twig\\Cache\\CacheInterface' => $vendorDir . '/twig/twig/src/Cache/CacheInterface.php',
     'Twig\\Cache\\FilesystemCache' => $vendorDir . '/twig/twig/src/Cache/FilesystemCache.php',
     'Twig\\Cache\\NullCache' => $vendorDir . '/twig/twig/src/Cache/NullCache.php',
@@ -423,5 +428,7 @@ return array(
     'Twig\\TwigTest' => $vendorDir . '/twig/twig/src/TwigTest.php',
     'Twig\\Util\\DeprecationCollector' => $vendorDir . '/twig/twig/src/Util/DeprecationCollector.php',
     'Twig\\Util\\TemplateDirIterator' => $vendorDir . '/twig/twig/src/Util/TemplateDirIterator.php',
+    'UnhandledMatchError' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
     'Valitron\\Validator' => $vendorDir . '/vlucas/valitron/src/Valitron/Validator.php',
+    'ValueError' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
 );
