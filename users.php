@@ -50,7 +50,8 @@ class UsersController extends BaseController
     {
         $success = false;
         foreach ($_POST['user'] as $user) {
-            $result = LegacyUsers::update_user_details($this->db, $user);
+            $legacyUsers = new LegacyUsers($this->db, $this->getConfig());
+            $result = $legacyUsers->update_user_details($user);
             if ($result) {
                 $success = true;
             }

@@ -55,7 +55,8 @@ class AddUserController extends BaseController {
         ]);
 
         if ($v->validate()) {
-            if (LegacyUsers::add_new_user($this->db, $_POST, $this->config('ldap_use'))) {
+            $legacyUsers = new LegacyUsers($this->db, $this->getConfig());
+            if ($legacyUsers->add_new_user($_POST)) {
                 $this->setMessage('users', 'success', _('The user has been created successfully.'));
                 $this->redirect('users.php');
             } else {

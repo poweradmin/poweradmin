@@ -109,7 +109,8 @@ class EditRecordController extends BaseController {
     public function saveRecord($zid): void
     {
         $old_record_info = DnsRecord::get_record_from_id($this->db, $_POST["rid"]);
-        $ret_val = DnsRecord::edit_record($this->db, $_POST, $this->config('dns_hostmaster'));
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $ret_val = $dnsRecord->edit_record($_POST);
         if ($ret_val == "1") {
             if ($_POST['type'] != "SOA") {
                 $dnsRecord = new DnsRecord($this->db, $this->getConfig());

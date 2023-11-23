@@ -78,13 +78,15 @@ class AddZoneSlaveController extends BaseController
         $master = $_POST['slave_master'];
         $zone = idn_to_ascii(trim($_POST['domain']), IDNA_NONTRANSITIONAL_TO_ASCII);
 
-        if (!Dns::is_valid_hostname_fqdn($zone, 0, $this->config('dns_top_level_tld_check'), $this->config('dns_strict_tld_check'))) {
+        $dns = new Dns($this->db, $this->getConfig());
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        if (!$dns->is_valid_hostname_fqdn($zone, 0)) {
             $this->setMessage('add_zone_slave', 'error', _('Invalid hostname.'));
             $this->showForm();
-        } elseif ($dns_third_level_check && DnsRecord::get_domain_level($zone) > 2 && DnsRecord::domain_exists($this->db, DnsRecord::get_second_level_domain($zone))) {
+        } elseif ($dns_third_level_check && DnsRecord::get_domain_level($zone) > 2 && $dnsRecord->domain_exists(DnsRecord::get_second_level_domain($zone))) {
             $this->setMessage('add_zone_slave', 'error', _('There is already a zone with this name.'));
             $this->showForm();
-        } elseif (DnsRecord::domain_exists($this->db, $zone) || DnsRecord::record_name_exists($this->db, $zone)) {
+        } elseif ($dnsRecord->domain_exists($zone) || DnsRecord::record_name_exists($this->db, $zone)) {
             $this->setMessage('add_zone_slave', 'error', _('There is already a zone with this name.'));
             $this->showForm();
         } elseif (!Dns::are_multiple_valid_ips($master)) {

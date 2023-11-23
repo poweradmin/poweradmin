@@ -98,7 +98,7 @@ class DnsRecord
      *
      * @param string $soa_rec SOA record content
      *
-     * @return string SOA serial
+     * @return string|null SOA serial
      */
     public static function get_soa_serial(string $soa_rec): ?string
     {
@@ -339,12 +339,13 @@ class DnsRecord
      *
      * @return boolean true if successful
      */
-    public static function edit_record($db, array $record, $dns_hostmaster): bool
+    public function edit_record(array $record): bool
     {
-        $perm_edit = Permission::getEditPermission($db);
+        $dns_hostmaster = $this->config->get('dns_hostmaster');
+        $perm_edit = Permission::getEditPermission($this->db);
 
-        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($db, $record['zid']);
-        $zone_type = self::get_domain_type($db, $record['zid']);
+        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($this->db, $record['zid']);
+        $zone_type = self::get_domain_type($this->db, $record['zid']);
 
         if ($record['type'] == 'SOA' && $perm_edit == "own_as_client") {
             $error = new ErrorMessage(_("You do not have the permission to edit this SOA record."));
@@ -361,20 +362,23 @@ class DnsRecord
             return false;
         }
 
+        $dns = new Dns($this->db, $this->config);
+        $dns_ttl = $this->config->get('dns_ttl');
+
         if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
             $error = new ErrorMessage(_("You do not have the permission to edit this record."));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
-        } elseif (Dns::validate_input($db, $record['rid'], $record['zid'], $record['type'], $record['content'], $record['name'], $record['prio'], $record['ttl'], $dns_hostmaster, $dns_ttl)) {
+        } elseif ($dns->validate_input($record['rid'], $record['zid'], $record['type'], $record['content'], $record['name'], $record['prio'], $record['ttl'], $dns_hostmaster, $dns_ttl)) {
             $name = strtolower($record['name']); // powerdns only searches for lower case records
             $query = "UPDATE records
-				SET name=" . $db->quote($name, 'text') . ",
-				type=" . $db->quote($record['type'], 'text') . ",
-				content=" . $db->quote($record['content'], 'text') . ",
-				ttl=" . $db->quote($record['ttl'], 'integer') . ",
-				prio=" . $db->quote($record['prio'], 'integer') . "
-				WHERE id=" . $db->quote($record['rid'], 'integer');
-            $db->query($query);
+				SET name=" . $this->db->quote($name, 'text') . ",
+				type=" . $this->db->quote($record['type'], 'text') . ",
+				content=" . $this->db->quote($record['content'], 'text') . ",
+				ttl=" . $this->db->quote($record['ttl'], 'integer') . ",
+				prio=" . $this->db->quote($record['prio'], 'integer') . "
+				WHERE id=" . $this->db->quote($record['rid'], 'integer');
+            $this->db->query($query);
             return true;
         }
         return false;
@@ -393,12 +397,12 @@ class DnsRecord
      *
      * @return boolean true if successful
      */
-    public function add_record($db, int $zone_id, string $name, string $type, string $content, int $ttl, int $prio): bool
+    public function add_record(int $zone_id, string $name, string $type, string $content, int $ttl, int $prio): bool
     {
-        $perm_edit = Permission::getEditPermission($db);
+        $perm_edit = Permission::getEditPermission($this->db);
 
-        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($db, $zone_id);
-        $zone_type = self::get_domain_type($db, $zone_id);
+        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($this->db, $zone_id);
+        $zone_type = self::get_domain_type($this->db, $zone_id);
 
         if ($type == 'SOA' && $perm_edit == "own_as_client") {
             $error = new ErrorMessage(_("You do not have the permission to add SOA record."));
@@ -426,21 +430,22 @@ class DnsRecord
         $dns_hostmaster = $this->config->get('dns_hostmaster');
         $dns_ttl = $this->config->get('dns_ttl');
 
-        if (!Dns::validate_input($db, -1, $zone_id, $type, $content, $name, $prio, $ttl, $dns_hostmaster, $dns_ttl)) {
+        $dns = new Dns($this->db, $this->config);
+        if (!$dns->validate_input(-1, $zone_id, $type, $content, $name, $prio, $ttl, $dns_hostmaster, $dns_ttl)) {
             return false;
         }
 
-        $db->beginTransaction();
+        $this->db->beginTransaction();
         $name = strtolower($name); // powerdns only searches for lower case records
         $query = "INSERT INTO records (domain_id, name, type, content, ttl, prio) VALUES ("
-            . $db->quote($zone_id, 'integer') . ","
-            . $db->quote($name, 'text') . ","
-            . $db->quote($type, 'text') . ","
-            . $db->quote($content, 'text') . ","
-            . $db->quote($ttl, 'integer') . ","
-            . $db->quote($prio, 'integer') . ")";
-        $db->exec($query);
-        $db->commit();
+            . $this->db->quote($zone_id, 'integer') . ","
+            . $this->db->quote($name, 'text') . ","
+            . $this->db->quote($type, 'text') . ","
+            . $this->db->quote($content, 'text') . ","
+            . $this->db->quote($ttl, 'integer') . ","
+            . $this->db->quote($prio, 'integer') . ")";
+        $this->db->exec($query);
+        $this->db->commit();
 
         if ($type != 'SOA') {
             $this->update_soa_serial($zone_id);
@@ -452,10 +457,10 @@ class DnsRecord
             $pdns_api_key = $this->config->get('pdns_api_key');
 
             $dnssecProvider = DnssecProviderFactory::create(
-                $db,
+                $this->db,
                 new FakeConfiguration($pdns_api_url, $pdns_api_key)
             );
-            $zone_name = DnsRecord::get_domain_name_by_id($db, $zone_id);
+            $zone_name = DnsRecord::get_domain_name_by_id($this->db, $zone_id);
             $dnssecProvider->rectifyZone($zone_name);
         }
 
@@ -472,7 +477,7 @@ class DnsRecord
      *
      * @return boolean true on success
      */
-    public static function add_supermaster($db, string $master_ip, string $ns_name, string $account): bool
+    public function add_supermaster(string $master_ip, string $ns_name, string $account): bool
     {
         if (!Dns::is_valid_ipv4($master_ip) && !Dns::is_valid_ipv6($master_ip)) {
             $error = new ErrorMessage(_('This is not a valid IPv4 or IPv6 address.'));
@@ -481,7 +486,9 @@ class DnsRecord
 
             return false;
         }
-        if (!Dns::is_valid_hostname_fqdn($ns_name, 0)) {
+
+        $dns = new Dns($this->db, $this->config);
+        if (!$dns->is_valid_hostname_fqdn($ns_name, 0)) {
             $error = new ErrorMessage(_('Invalid hostname.'));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
@@ -495,14 +502,15 @@ class DnsRecord
 
             return false;
         }
-        if (self::supermaster_ip_name_exists($db, $master_ip, $ns_name)) {
+
+        if ($this->supermaster_ip_name_exists($master_ip, $ns_name)) {
             $error = new ErrorMessage(_('There is already a supermaster with this IP address and hostname.'));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
 
             return false;
         } else {
-            $db->query("INSERT INTO supermasters VALUES (" . $db->quote($master_ip, 'text') . ", " . $db->quote($ns_name, 'text') . ", " . $db->quote($account, 'text') . ")");
+            $this->db->query("INSERT INTO supermasters VALUES (" . $this->db->quote($master_ip, 'text') . ", " . $this->db->quote($ns_name, 'text') . ", " . $this->db->quote($account, 'text') . ")");
             return true;
         }
     }
@@ -516,11 +524,12 @@ class DnsRecord
      *
      * @return boolean true on success
      */
-    public static function delete_supermaster($db, string $master_ip, string $ns_name): bool
+    public function delete_supermaster(string $master_ip, string $ns_name): bool
     {
-        if (Dns::is_valid_ipv4($master_ip) || Dns::is_valid_ipv6($master_ip) || Dns::is_valid_hostname_fqdn($ns_name, 0)) {
-            $db->query("DELETE FROM supermasters WHERE ip = " . $db->quote($master_ip, 'text') .
-                " AND nameserver = " . $db->quote($ns_name, 'text'));
+        $dns = new Dns($this->db, $this->config);
+        if (Dns::is_valid_ipv4($master_ip) || Dns::is_valid_ipv6($master_ip) || $dns->is_valid_hostname_fqdn($ns_name, 0)) {
+            $this->db->query("DELETE FROM supermasters WHERE ip = " . $this->db->quote($master_ip, 'text') .
+                " AND nameserver = " . $this->db->quote($ns_name, 'text'));
             return true;
         } else {
             $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s %s'), "delete_supermaster", "No or no valid ipv4 or ipv6 address given."));
@@ -860,9 +869,10 @@ class DnsRecord
 
     /** Get Domain Name by domain ID
      *
+     * @param $db
      * @param int $id Domain ID
      *
-     * @return string Domain name
+     * @return bool|string Domain name
      */
     public static function get_domain_name_by_id($db, int $id): bool|string
     {
@@ -880,8 +890,9 @@ class DnsRecord
 
     /** Get zone id from name
      *
+     * @param $db
      * @param string $zname Zone name
-     * @return int Zone ID
+     * @return bool|int Zone ID
      */
     public static function get_zone_id_from_name($db, string $zname): bool|int
     {
@@ -1014,10 +1025,11 @@ class DnsRecord
      * @param string $domain Domain name
      * @return boolean true if existing, false if it doesn't exist.
      */
-    public static function domain_exists($db, string $domain): bool
+    public function domain_exists(string $domain): bool
     {
-        if (Dns::is_valid_hostname_fqdn($domain, 0)) {
-            $result = $db->queryRow("SELECT id FROM domains WHERE name=" . $db->quote($domain, 'text'));
+        $dns = new Dns($this->db, $this->config);
+        if ($dns->is_valid_hostname_fqdn($domain, 0)) {
+            $result = $this->db->queryRow("SELECT id FROM domains WHERE name=" . $this->db->quote($domain, 'text'));
             return (bool)$result;
         } else {
             $error = new ErrorMessage(_('This is an invalid zone name.'));
@@ -1073,11 +1085,12 @@ class DnsRecord
      *
      * @return boolean true if exists, false otherwise
      */
-    public static function supermaster_ip_name_exists($db, string $master_ip, string $ns_name): bool
+    public function supermaster_ip_name_exists(string $master_ip, string $ns_name): bool
     {
-        if ((Dns::is_valid_ipv4($master_ip) || Dns::is_valid_ipv6($master_ip)) && Dns::is_valid_hostname_fqdn($ns_name, 0)) {
-            $result = $db->queryOne("SELECT ip FROM supermasters WHERE ip = " . $db->quote($master_ip, 'text') .
-                " AND nameserver = " . $db->quote($ns_name, 'text'));
+        $dns = new Dns($this->db, $this->config);
+        if ((Dns::is_valid_ipv4($master_ip) || Dns::is_valid_ipv6($master_ip)) && $dns->is_valid_hostname_fqdn($ns_name, 0)) {
+            $result = $this->db->queryOne("SELECT ip FROM supermasters WHERE ip = " . $this->db->quote($master_ip, 'text') .
+                " AND nameserver = " . $this->db->quote($ns_name, 'text'));
             return (bool)$result;
         } else {
             $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s %s'), "supermaster_exists", "No or no valid IPv4 or IPv6 address given."));
@@ -1313,7 +1326,6 @@ class DnsRecord
      */
     public static function order_domain_results(array $domains, string $sortby): array
     {
-        $results = array();
         $soa = array();
         $ns = array();
 
@@ -1502,9 +1514,9 @@ class DnsRecord
      * @param string $type New Zone Type [NATIVE,MASTER,SLAVE]
      * @param int $id Zone ID
      *
-     * @return null
+     * @return void
      */
-    public static function change_zone_type($db, string $type, int $id)
+    public static function change_zone_type($db, string $type, int $id): void
     {
         $add = '';
         // It is not really necessary to clear the field that contains the IP address
@@ -1514,7 +1526,7 @@ class DnsRecord
         if ($type != "SLAVE") {
             $add = ", master=" . $db->quote('', 'text');
         }
-        $result = $db->query("UPDATE domains SET type = " . $db->quote($type, 'text') . $add . " WHERE id = " . $db->quote($id, 'integer'));
+        $db->query("UPDATE domains SET type = " . $db->quote($type, 'text') . $add . " WHERE id = " . $db->quote($id, 'integer'));
     }
 
     /** Change Slave Zone's Master IP Address

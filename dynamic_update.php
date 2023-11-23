@@ -111,7 +111,7 @@ function status_exit(string $status): bool
  *
  * @param string $ip Given IP address
  *
- * @return string A if IPv4, AAAA if IPv6 or 0 if invalid
+ * @return int|string A if IPv4, AAAA if IPv6 or 0 if invalid
  */
 function valid_ip_address(string $ip): int|string
 {

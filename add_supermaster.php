@@ -47,15 +47,16 @@ class AddSuperMasterController extends BaseController
         $account = $_POST["account"] ?? "";
 
         if ($this->isPost()) {
-            $this->addSuperMaster($this->db, $master_ip, $ns_name, $account);
+            $this->addSuperMaster($master_ip, $ns_name, $account);
         } else {
             $this->showAddSuperMaster($master_ip, $ns_name, $account);
         }
     }
 
-    private function addSuperMaster($db, $master_ip, $ns_name, $account): void
+    private function addSuperMaster($master_ip, $ns_name, $account): void
     {
-        if (DnsRecord::add_supermaster($db, $master_ip, $ns_name, $account)) {
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        if ($dnsRecord->add_supermaster($master_ip, $ns_name, $account)) {
             $this->setMessage('list_supermasters', 'success', _('The supermaster has been added successfully.'));
             $this->redirect('list_supermasters.php');
         } else {

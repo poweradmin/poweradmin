@@ -88,7 +88,8 @@ class EditController extends BaseController {
                             $one_record_changed = true;
                         }
 
-                        $edit_record = DnsRecord::edit_record($this->db, $record, $this->config('dns_hostmaster'));
+                        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+                        $edit_record = $dnsRecord->edit_record($record);
                         if (false === $edit_record) {
                             $error = true;
                         } else {

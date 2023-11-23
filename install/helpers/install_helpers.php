@@ -159,7 +159,7 @@ function step6($twig, $current_step, $language, $default_config_file, $local_con
     || ($_POST['db_type'] == 'pgsql' && $_POST['db_port'] != 5432) ? $_POST['db_port'] : '';
 
     // For SQLite we should provide path to db file
-    $db_file = $_POST['db_type'] == 'sqlite' ? $db_file = $_POST['db_name'] : '';
+    $db_file = $_POST['db_type'] == 'sqlite' ? $_POST['db_name'] : '';
 
     $config = new LegacyConfiguration($default_config_file);
     $userAuthService = new UserAuthenticationService(

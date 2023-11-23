@@ -115,7 +115,8 @@ class EditUserController extends BaseController
         }
 
         if ($i_username != "" && $i_perm_templ > "0" && $i_fullname) {
-            if (LegacyUsers::edit_user($this->db, $edit_id, $i_username, $i_fullname, $i_email, $i_perm_templ, $i_description, $i_active, $i_password, $i_use_ldap)) {
+            $legacyUsers = new LegacyUsers($this->db, $this->getConfig());
+            if ($legacyUsers->edit_user($edit_id, $i_username, $i_fullname, $i_email, $i_perm_templ, $i_description, $i_active, $i_password, $i_use_ldap)) {
                 $this->setMessage('users', 'success', _('The user has been updated successfully.'));
                 $this->redirect('users.php');
             } else {

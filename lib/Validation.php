@@ -24,16 +24,27 @@ namespace Poweradmin;
 
 class Validation
 {
+    private PDOLayer $db;
+    private LegacyConfiguration $config;
+
+    public function __construct(PDOLayer $db, LegacyConfiguration $config)
+    {
+        $this->db = $db;
+        $this->config = $config;
+    }
+
     /** Validate email address string
      *
      * @param string $address email address string
      *
      * @return boolean true if valid, false otherwise
      */
-    public static function is_valid_email(string $address): bool
+    public function is_valid_email(string $address): bool
     {
+        $dns = new Dns($this->db, $this->config);
+
         $fields = explode("@", $address, 2);
-        if ((!preg_match("/^[0-9a-z]([-_.]?[0-9a-z])*$/i", $fields[0])) || (!isset($fields[1]) || $fields[1] == '' || !Dns::is_valid_hostname_fqdn($fields[1], 0))) {
+        if ((!preg_match("/^[0-9a-z]([-_.]?[0-9a-z])*$/i", $fields[0])) || (!isset($fields[1]) || $fields[1] == '' || !$dns->is_valid_hostname_fqdn($fields[1], 0))) {
             return false;
         }
         return true;

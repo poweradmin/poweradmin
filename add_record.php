@@ -157,7 +157,7 @@ class AddRecordController extends BaseController
                 $zone_name = DnsRecord::get_domain_name_by_id($this->db, $zone_id);
                 $fqdn_name = sprintf("%s.%s", $name, $zone_name);
                 $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-                if ($dnsRecord->add_record($this->db, $zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
+                if ($dnsRecord->add_record($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
                     $this->logger->log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
                         $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                         $content_rev, $fqdn_name, $ttl, $prio), $zone_id);
@@ -180,7 +180,7 @@ class AddRecordController extends BaseController
         $zone_name = DnsRecord::get_domain_name_by_id($this->db, $zone_id);
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        if ($dnsRecord->add_record($this->db, $zone_id, $name, $type, $content, $ttl, $prio)) {
+        if ($dnsRecord->add_record($zone_id, $name, $type, $content, $ttl, $prio)) {
             $this->logger->log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:%s record:%s.%s content:%s ttl:%s priority:%s',
                 $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                 $type, $name, $zone_name, $content, $ttl, $prio), $zone_id

@@ -60,12 +60,13 @@ class DeleteSuperMasterController extends BaseController
         $ns_name = htmlspecialchars($_GET['ns_name']);
 
         if ($v->validate()) {
-            if (!DnsRecord::supermaster_ip_name_exists($this->db, $master_ip, $ns_name)) {
+            $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+            if (!$dnsRecord->supermaster_ip_name_exists($master_ip, $ns_name)) {
                 $this->setMessage('list_supermasters', 'error', _('Super master does not exist.'));
                 $this->redirect('list_supermasters.php');
             }
 
-            if (DnsRecord::delete_supermaster($this->db, $master_ip, $ns_name)) {
+            if ($dnsRecord->delete_supermaster($master_ip, $ns_name)) {
                 $this->setMessage('list_supermasters', 'success', _('The supermaster has been deleted successfully.'));
                 $this->redirect('list_supermasters.php');
             }

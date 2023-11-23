@@ -81,13 +81,14 @@ class AddZoneMasterController extends BaseController
         $zone_template = $_POST['zone_template'] ?? "none";
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        if (!Dns::is_valid_hostname_fqdn($zone_name, 0, $this->config('dns_top_level_tld_check'), $this->config('dns_strict_tld_check'))) {
+        $dns = new Dns($this->db, $this->getConfig());
+        if (!$dns->is_valid_hostname_fqdn($zone_name, 0)) {
             $this->setMessage('add_zone_master', 'error', _('Invalid hostname.'));
             $this->showForm();
-        } elseif ($dns_third_level_check && DnsRecord::get_domain_level($zone_name) > 2 && DnsRecord::domain_exists($this->db, DnsRecord::get_second_level_domain($zone_name))) {
+        } elseif ($dns_third_level_check && DnsRecord::get_domain_level($zone_name) > 2 && $dnsRecord->domain_exists(DnsRecord::get_second_level_domain($zone_name))) {
             $this->setMessage('add_zone_master', 'error', _('There is already a zone_name with this name.'));
             $this->showForm();
-        } elseif (DnsRecord::domain_exists($this->db, $zone_name) || DnsRecord::record_name_exists($this->db, $zone_name)) {
+        } elseif ($dnsRecord->domain_exists($zone_name) || DnsRecord::record_name_exists($this->db, $zone_name)) {
             $this->setMessage('add_zone_master', 'error', _('There is already a zone_name with this name.'));
             $this->showForm();
         } elseif ($dnsRecord->add_domain($this->db, $zone_name, $owner, $dom_type, '', $zone_template)) {

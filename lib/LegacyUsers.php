@@ -29,6 +29,14 @@ use Poweradmin\Domain\Error\ErrorMessage;
 
 class LegacyUsers
 {
+    private PDOLayer $db;
+    private LegacyConfiguration $config;
+
+    public function __construct(PDOLayer $db, LegacyConfiguration $config)
+    {
+        $this->db = $db;
+        $this->config = $config;
+    }
 
     /**
      * Verify User has Permission Name
@@ -270,14 +278,15 @@ class LegacyUsers
      *
      * @return boolean true if succesful, false otherwise
      */
-    public static function edit_user($db, int $id, string $user, string $fullname, string $email, string $perm_templ, string $description, int $active, string $user_password, $i_use_ldap): bool
+    public function edit_user(int $id, string $user, string $fullname, string $email, string $perm_templ, string $description, int $active, string $user_password, $i_use_ldap): bool
     {
-        $perm_edit_own = self::verify_permission($db, 'user_edit_own');
-        $perm_edit_others = self::verify_permission($db, 'user_edit_others');
+        $perm_edit_own = self::verify_permission($this->db, 'user_edit_own');
+        $perm_edit_others = self::verify_permission($this->db, 'user_edit_others');
 
         if (($id == $_SESSION ["userid"] && $perm_edit_own) || ($id != $_SESSION ["userid"] && $perm_edit_others)) {
 
-            if (!Validation::is_valid_email($email)) {
+            $validation = new Validation($this->db, $this->config);
+            if (!$validation->is_valid_email($email)) {
                 $error = new ErrorMessage(_('Enter a valid email address.'));
 
                 $errorPresenter = new ErrorPresenter();
@@ -299,8 +308,8 @@ class LegacyUsers
             // user, the username should apparently be changed. If so, check if the "new"
             // username already exists.
 
-            $query = "SELECT username FROM users WHERE id = " . $db->quote($id, 'integer');
-            $response = $db->query($query);
+            $query = "SELECT username FROM users WHERE id = " . $this->db->quote($id, 'integer');
+            $response = $this->db->query($query);
 
             $usercheck = $response->fetch();
 
@@ -310,8 +319,8 @@ class LegacyUsers
                 // we have been given. User wants a change of username. Now, make
                 // sure it doesn't already exist.
 
-                $query = "SELECT id FROM users WHERE username = " . $db->quote($user, 'text');
-                $response = $db->queryOne($query);
+                $query = "SELECT id FROM users WHERE username = " . $this->db->quote($user, 'text');
+                $response = $this->db->queryOne($query);
                 if ($response) {
                     $error = new ErrorMessage(_('Username exist already, please choose another one.'));
                     $errorPresenter = new ErrorPresenter();
@@ -324,18 +333,18 @@ class LegacyUsers
             // So, user doesn't want to change username or, if he wants, there is not
             // another user that goes by the wanted username. So, go ahead!
 
-            $query = "UPDATE users SET username = " . $db->quote($user, 'text') . ",
-fullname = " . $db->quote($fullname, 'text') . ",
-email = " . $db->quote($email, 'text') . ",";
-            if (self::verify_permission($db, 'user_edit_templ_perm')) {
-                $query .= "perm_templ = " . $db->quote($perm_templ, 'integer') . ",";
+            $query = "UPDATE users SET username = " . $this->db->quote($user, 'text') . ",
+fullname = " . $this->db->quote($fullname, 'text') . ",
+email = " . $this->db->quote($email, 'text') . ",";
+            if (self::verify_permission($this->db, 'user_edit_templ_perm')) {
+                $query .= "perm_templ = " . $this->db->quote($perm_templ, 'integer') . ",";
             }
-            $query .= "description = " . $db->quote($description, 'text') . ",
-				active = " . $db->quote($active, 'integer') . ",
-				use_ldap = " . $db->quote($i_use_ldap ?: 0, 'integer');
+            $query .= "description = " . $this->db->quote($description, 'text') . ",
+				active = " . $this->db->quote($active, 'integer') . ",
+				use_ldap = " . $this->db->quote($i_use_ldap ?: 0, 'integer');
 
-            $edit_own_perm = self::verify_permission($db, 'user_edit_own');
-            $passwd_edit_others_perm = self::verify_permission($db, 'user_passwd_edit_others');
+            $edit_own_perm = self::verify_permission($this->db, 'user_edit_own');
+            $passwd_edit_others_perm = self::verify_permission($this->db, 'user_passwd_edit_others');
 
             if ($user_password != "" && $edit_own_perm || $passwd_edit_others_perm) {
                 $config = new LegacyConfiguration();
@@ -345,11 +354,11 @@ email = " . $db->quote($email, 'text') . ",";
                 );
 
                 $passwordHash = $i_use_ldap ? 'LDAP_USER' : $userAuthService->hashPassword($user_password);
-                $query .= ", password = " . $db->quote($passwordHash, 'text');
+                $query .= ", password = " . $this->db->quote($passwordHash, 'text');
             }
 
-            $query .= " WHERE id = " . $db->quote($id, 'integer');
-            $db->query($query);
+            $query .= " WHERE id = " . $this->db->quote($id, 'integer');
+            $this->db->query($query);
         } else {
             $error = new ErrorMessage(_("You do not have the permission to edit this user."));
             $errorPresenter = new ErrorPresenter();
@@ -670,16 +679,17 @@ email = " . $db->quote($email, 'text') . ",";
      *
      * @return boolean true on success, false otherwise
      */
-    public static function update_user_details($db, array $details): bool
+    public function update_user_details(array $details): bool
     {
-        $perm_edit_own = self::verify_permission($db, 'user_edit_own');
-        $perm_edit_others = self::verify_permission($db, 'user_edit_others');
-        $perm_templ_perm_edit = self::verify_permission($db, 'templ_perm_edit');
-        $perm_is_godlike = self::verify_permission($db, 'user_is_ueberuser');
+        $perm_edit_own = self::verify_permission($this->db, 'user_edit_own');
+        $perm_edit_others = self::verify_permission($this->db, 'user_edit_others');
+        $perm_templ_perm_edit = self::verify_permission($this->db, 'templ_perm_edit');
+        $perm_is_godlike = self::verify_permission($this->db, 'user_is_ueberuser');
 
         if (($details['uid'] == $_SESSION ["userid"] && $perm_edit_own) || ($details['uid'] != $_SESSION ["userid"] && $perm_edit_others)) {
 
-            if (!Validation::is_valid_email($details['email'])) {
+            $validation = new Validation($this->db, $this->config);
+            if (!$validation->is_valid_email($details['email'])) {
                 $error = new ErrorMessage(_('Enter a valid email address.'));
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -707,8 +717,8 @@ email = " . $db->quote($email, 'text') . ",";
             // current username is not the same as the username that was given by the
             // user, the username should apparently be changed. If so, check if the "new"
             // username already exists.
-            $query = "SELECT username FROM users WHERE id = " . $db->quote($details['uid'], 'integer');
-            $response = $db->query($query);
+            $query = "SELECT username FROM users WHERE id = " . $this->db->quote($details['uid'], 'integer');
+            $response = $this->db->query($query);
 
             $usercheck = $response->fetch();
 
@@ -716,8 +726,8 @@ email = " . $db->quote($email, 'text') . ",";
                 // Username of user ID in the database is different from the name
                 // we have been given. User wants a change of username. Now, make
                 // sure it doesn't already exist.
-                $query = "SELECT id FROM users WHERE username = " . $db->quote($details['username'], 'text');
-                $response = $db->queryOne($query);
+                $query = "SELECT id FROM users WHERE username = " . $this->db->quote($details['username'], 'text');
+                $response = $this->db->queryOne($query);
                 if ($response) {
                     $error = new ErrorMessage(_('Username exist already, please choose another one.'));
                     $errorPresenter = new ErrorPresenter();
@@ -730,34 +740,34 @@ email = " . $db->quote($email, 'text') . ",";
             // So, user doesn't want to change username or, if he wants, there is not
             // another user that goes by the wanted username. So, go ahead!
 
-            $query = "UPDATE users SET username = " . $db->quote($details['username'], 'text') . ",
-            fullname = " . $db->quote($details['fullname'], 'text') . ",
-            email = " . $db->quote($details['email'], 'text') . ",
-            active = " . $db->quote($active, 'integer');
+            $query = "UPDATE users SET username = " . $this->db->quote($details['username'], 'text') . ",
+            fullname = " . $this->db->quote($details['fullname'], 'text') . ",
+            email = " . $this->db->quote($details['email'], 'text') . ",
+            active = " . $this->db->quote($active, 'integer');
 
             // If the user is allowed to change the permission template, set it.
             if ($perm_templ_perm_edit == "1") {
-                $query .= ", perm_templ = " . $db->quote($details['templ_id'], 'integer');
+                $query .= ", perm_templ = " . $this->db->quote($details['templ_id'], 'integer');
             }
 
             // If the user is allowed to change the use_ldap flag, set it.
             if ($perm_is_godlike == "1") {
-                $query .= ", use_ldap = " . $db->quote($use_ldap, 'integer');
+                $query .= ", use_ldap = " . $this->db->quote($use_ldap, 'integer');
             }
 
-            $passwd_edit_others_perm = self::verify_permission($db, 'user_passwd_edit_others');
+            $passwd_edit_others_perm = self::verify_permission($this->db, 'user_passwd_edit_others');
             if (isset($details['password']) && $details['password'] != "" && $passwd_edit_others_perm) {
                 $config = new LegacyConfiguration();
                 $userAuthService = new UserAuthenticationService(
                     $config->get('password_encryption'),
                     $config->get('password_encryption_cost')
                 );
-                $query .= ", password = " . $db->quote($userAuthService->hashPassword($details['password']), 'text');
+                $query .= ", password = " . $this->db->quote($userAuthService->hashPassword($details['password']), 'text');
             }
 
-            $query .= " WHERE id = " . $db->quote($details['uid'], 'integer');
+            $query .= " WHERE id = " . $this->db->quote($details['uid'], 'integer');
 
-            $db->query($query);
+            $this->db->query($query);
         } else {
             $error = new ErrorMessage(_("You do not have the permission to edit this user."));
             $errorPresenter = new ErrorPresenter();
@@ -775,15 +785,18 @@ email = " . $db->quote($email, 'text') . ",";
      *
      * @return boolean true on success, false otherwise
      */
-    public static function add_new_user($db, array $details, $ldap_use): bool
+    public function add_new_user(array $details): bool
     {
-        if (!self::verify_permission($db, 'user_add_new')) {
+        $ldap_use = $this->config->get('ldap_use');
+        $validation = new Validation($this->db, $this->config);
+
+        if (!self::verify_permission($this->db, 'user_add_new')) {
             $error = new ErrorMessage(_("You do not have the permission to add a new user."));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
 
             return false;
-        } elseif (self::user_exists($db, $details['username'])) {
+        } elseif (self::user_exists($this->db, $details['username'])) {
             $error = new ErrorMessage(_('Username exist already, please choose another one.'));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
@@ -795,7 +808,7 @@ email = " . $db->quote($email, 'text') . ",";
             $errorPresenter->present($error);
 
             return false;
-        } elseif (!Validation::is_valid_email($details['email'])) {
+        } elseif (!$validation->is_valid_email($details['email'])) {
             $error = new ErrorMessage(_('Enter a valid email address.'));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
@@ -820,16 +833,16 @@ email = " . $db->quote($email, 'text') . ",";
             $password_hash = $userAuthService->hashPassword($details['password']);
         }
 
-        $query = "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES (" . $db->quote($details['username'], 'text') . ", " . $db->quote($password_hash, 'text') . ", " . $db->quote($details['fullname'], 'text') . ", " . $db->quote($details['email'], 'text') . ", " . $db->quote($details['descr'], 'text') . ", ";
+        $query = "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES (" . $this->db->quote($details['username'], 'text') . ", " . $this->db->quote($password_hash, 'text') . ", " . $this->db->quote($details['fullname'], 'text') . ", " . $this->db->quote($details['email'], 'text') . ", " . $this->db->quote($details['descr'], 'text') . ", ";
 
-        if (self::verify_permission($db, 'user_edit_templ_perm')) {
-            $query .= $db->quote($details['perm_templ'], 'integer') . ", ";
+        if (self::verify_permission($this->db, 'user_edit_templ_perm')) {
+            $query .= $this->db->quote($details['perm_templ'], 'integer') . ", ";
         } else {
-            $current_user = self::get_user_detail_list($db, $ldap_use, $_SESSION['userid']);
-            $query .= $db->quote($current_user[0]['tpl_id'], 'integer') . ", ";
+            $current_user = self::get_user_detail_list($this->db, $ldap_use, $_SESSION['userid']);
+            $query .= $this->db->quote($current_user[0]['tpl_id'], 'integer') . ", ";
         }
-        $query .= $db->quote($active, 'integer') . ", " . $db->quote($use_ldap, 'integer') . ")";
-        $db->query($query);
+        $query .= $this->db->quote($active, 'integer') . ", " . $this->db->quote($use_ldap, 'integer') . ")";
+        $this->db->query($query);
 
         return true;
     }
