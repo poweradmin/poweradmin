@@ -105,10 +105,8 @@ class ListZonesController extends BaseController {
         }
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        if ($count_zones_view <= $iface_rowamount) {
+        if ($count_zones_view <= $iface_rowamount || $letter_start == 'all') {
             $zones = $dnsRecord->get_zones($perm_view, $_SESSION['userid'], "all", $row_start, $iface_rowamount, $zone_sort_by);
-        } elseif ($letter_start == 'all') {
-            $zones = $dnsRecord->get_zones($perm_view, $_SESSION['userid'], "all", $row_start, 'all', $zone_sort_by);
         } else {
             $zones = $dnsRecord->get_zones($perm_view, $_SESSION['userid'], $letter_start, $row_start, $iface_rowamount, $zone_sort_by);
         }
