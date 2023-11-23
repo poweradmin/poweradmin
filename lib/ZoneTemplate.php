@@ -71,12 +71,13 @@ class ZoneTemplate
 
     /** Add a zone template
      *
+     * @param $db
      * @param array $details zone template details
-     * @param $userid User ID that owns template
+     * @param int $userid User ID that owns template
      *
      * @return boolean true on success, false otherwise
      */
-    public static function add_zone_templ($db, array $details, User $userid): bool
+    public static function add_zone_templ($db, array $details, int $userid): bool
     {
         $zone_name_exists = ZoneTemplate::zone_templ_name_exists($db, $details['templ_name']);
         if (!(LegacyUsers::verify_permission($db, 'zone_master_add'))) {
