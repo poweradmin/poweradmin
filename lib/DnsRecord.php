@@ -284,11 +284,7 @@ class DnsRecord
         $query = "SELECT comment FROM zones WHERE domain_id = " . $db->quote($zone_id, 'integer');
         $comment = $db->queryOne($query);
 
-        if ($comment == "0") {
-            $comment = '';
-        }
-
-        return $comment;
+        return $comment ?: '';
     }
 
     /** Edit the zone comment

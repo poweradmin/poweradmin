@@ -124,7 +124,7 @@ class ZoneTemplate
             . " WHERE id = " . $db->quote($zone_templ_id, 'integer');
 
         $result = $db->query($query);
-        return $result->fetch();
+        return $result->fetch() ?: [];
     }
 
     /** Delete a zone template
