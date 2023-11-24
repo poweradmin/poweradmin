@@ -90,9 +90,9 @@ class DnsRecord
      * @param $db
      * @param int $zone_id Zone ID
      *
-     * @return int SOA content
+     * @return string SOA content
      */
-    public static function get_soa_record($db, int $zone_id): int
+    public static function get_soa_record($db, int $zone_id): string
     {
         $sqlq = "SELECT content FROM records WHERE type = " . $db->quote('SOA', 'text') . " AND domain_id = " . $db->quote($zone_id, 'integer');
         return $db->queryOne($sqlq);
@@ -1190,7 +1190,7 @@ class DnsRecord
             $ret[$r["name"]]["utf8_name"] = idn_to_utf8(htmlspecialchars($r["name"]), IDNA_NONTRANSITIONAL_TO_ASCII);
             $ret[$r["name"]]["type"] = $r["type"];
             $ret[$r["name"]]["count_records"] = $r["count_records"];
-            $ret[$r["name"]]["comment"] = $r["comment"] ?: '';
+            $ret[$r["name"]]["comment"] = $r["comment"] ?? '';
             $ret[$r["name"]]["owners"][] = $r["username"];
             $ret[$r["name"]]["full_names"][] = $r["fullname"] ?: '';
             $ret[$r["name"]]["users"][] = $r["username"];
