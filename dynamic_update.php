@@ -59,11 +59,13 @@ $db = $databaseService->connect($credentials);
 
 /** Make sql query safe
  *
+ * @param $db
+ * @param $db_type
  * @param mixed $value Unsafe Value
  *
- * @return bool|string $value Safe Value
+ * @return string $value Safe Value
  */
-function safe($db, $db_type, mixed $value): bool|string
+function safe($db, $db_type, mixed $value): string
 {
     if ($db_type == 'mysql' || $db_type == 'sqlite') {
         $value = $db->quote($value, 'text');

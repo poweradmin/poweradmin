@@ -57,7 +57,7 @@ class DbUserLogger
         return $stmt->fetch()['number_of_logs'];
     }
 
-    public function get_all_logs($limit, $offset): bool|array
+    public function get_all_logs($limit, $offset): array
     {
         $stmt = $this->db->prepare("
                     SELECT * FROM log_users
@@ -74,7 +74,7 @@ class DbUserLogger
         return $stmt->fetchAll();
     }
 
-    public function get_logs_for_user($user, $limit, $offset): bool|array
+    public function get_logs_for_user($user, $limit, $offset): array
     {
         if (!(User::exists($this->db, $user))) {
             return array();

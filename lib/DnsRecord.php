@@ -48,11 +48,12 @@ class DnsRecord
 
     /** Check if Zone ID exists
      *
+     * @param $db
      * @param int $zid Zone ID
      *
-     * @return array|boolean Domain count or false on failure
+     * @return int Domain count or false on failure
      */
-    public static function zone_id_exists($db, int $zid): bool|array
+    public static function zone_id_exists($db, int $zid): int
     {
         $query = "SELECT COUNT(id) FROM domains WHERE id = " . $db->quote($zid, 'integer');
         return $db->queryOne($query);
@@ -60,11 +61,12 @@ class DnsRecord
 
     /** Get Zone ID from Record ID
      *
+     * @param $db
      * @param int $rid Record ID
      *
-     * @return array|bool Zone ID
+     * @return int Zone ID
      */
-    public static function get_zone_id_from_record_id($db, int $rid): bool|array
+    public static function get_zone_id_from_record_id($db, int $rid): int
     {
         $query = "SELECT domain_id FROM records WHERE id = " . $db->quote($rid, 'integer');
         return $db->queryOne($query);
@@ -72,11 +74,12 @@ class DnsRecord
 
     /** Count Zone Records for Zone ID
      *
+     * @param $db
      * @param int $zone_id Zone ID
      *
-     * @return array|bool Record count
+     * @return int Record count
      */
-    public static function count_zone_records($db, int $zone_id): bool|array
+    public static function count_zone_records($db, int $zone_id): int
     {
         $sqlq = "SELECT COUNT(id) FROM records WHERE domain_id = " . $db->quote($zone_id, 'integer') . " AND type IS NOT NULL";
         return $db->queryOne($sqlq);
@@ -84,11 +87,12 @@ class DnsRecord
 
     /** Get SOA record content for Zone ID
      *
+     * @param $db
      * @param int $zone_id Zone ID
      *
-     * @return array|bool SOA content
+     * @return int SOA content
      */
-    public static function get_soa_record($db, int $zone_id): bool|array
+    public static function get_soa_record($db, int $zone_id): int
     {
         $sqlq = "SELECT content FROM records WHERE type = " . $db->quote('SOA', 'text') . " AND domain_id = " . $db->quote($zone_id, 'integer');
         return $db->queryOne($sqlq);
@@ -1546,11 +1550,12 @@ class DnsRecord
 
     /** Get Serial for Zone ID
      *
+     * @param $db
      * @param int $zid Zone ID
      *
-     * @return boolean|string Serial Number or false if not found
+     * @return string Serial Number or false if not found
      */
-    public static function get_serial_by_zid($db, int $zid): bool|string
+    public static function get_serial_by_zid($db, int $zid): string
     {
         $query = "SELECT content FROM records where TYPE = " . $db->quote('SOA', 'text') . " and domain_id = " . $db->quote($zid, 'integer');
         $rr_soa = $db->queryOne($query);
@@ -1575,11 +1580,12 @@ class DnsRecord
 
     /** Get Zone Template ID for Zone ID
      *
+     * @param $db
      * @param int $zone_id Zone ID
      *
-     * @return array|bool Zone Template ID
+     * @return int Zone Template ID
      */
-    public static function get_zone_template($db, int $zone_id): bool|array
+    public static function get_zone_template($db, int $zone_id): int
     {
         $query = "SELECT zone_templ_id FROM zones WHERE domain_id = " . $db->quote($zone_id, 'integer');
         return $db->queryOne($query);

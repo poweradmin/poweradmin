@@ -185,11 +185,12 @@ class ZoneTemplate
 
     /** Count zone template records
      *
+     * @param $db
      * @param int $zone_templ_id Zone template ID
      *
-     * @return boolean true on success, false otherwise
+     * @return int number of records
      */
-    public static function count_zone_templ_records($db, int $zone_templ_id): bool
+    public static function count_zone_templ_records($db, int $zone_templ_id): int
     {
         $query = "SELECT COUNT(id) FROM zone_templ_records WHERE zone_templ_id = " . $db->quote($zone_templ_id, 'integer');
         return $db->queryOne($query);
@@ -542,12 +543,13 @@ class ZoneTemplate
 
     /** Check if zone template name exists
      *
+     * @param $db
      * @param string $zone_templ_name zone template name
      * @param int|null $zone_templ_id zone template id (optional) [default=null]
      *
-     * @return array|bool number of matching templates
+     * @return bool number of matching templates
      */
-    public static function zone_templ_name_exists($db, string $zone_templ_name, int $zone_templ_id = null): bool|array
+    public static function zone_templ_name_exists($db, string $zone_templ_name, int $zone_templ_id = null): bool
     {
         $sql_add = '';
         if ($zone_templ_id) {

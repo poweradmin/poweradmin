@@ -35,6 +35,8 @@ use Poweradmin\BaseController;
 use Poweradmin\DbUserLogger;
 use Poweradmin\Infrastructure\Web\HttpPaginationParameters;
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 class ListLogUsersController extends BaseController {
 
     private DbUserLogger $dbUserLogger;

@@ -84,7 +84,7 @@ class EditRecordController extends BaseController {
         $zone_name = DnsRecord::get_domain_name_by_id($this->db, $zid);
 
         $recordTypes = RecordType::getTypes();
-        $record = DnsRecord::get_record_from_id($this->db, $_GET["id"]);
+        $record = DnsRecord::get_record_from_id($this->db, $record_id);
         $record['record_name'] = trim(str_replace(htmlspecialchars($zone_name), '', htmlspecialchars($record["name"])), '.');
 
         if (str_starts_with($zone_name, "xn--")) {
