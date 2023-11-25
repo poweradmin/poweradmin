@@ -8,7 +8,7 @@
     <link href="vendor/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="vendor/twbs/bootstrap-icons/font/bootstrap-icons.css">
     <link rel="stylesheet" href="style/{{ iface_style }}.css?time={{ file_version }}" type="text/css">
-    <script type="text/javascript" src="inc/helper.js?time={{ file_version }}"></script>
+    <script type="text/javascript" src="assets/helper.js?time={{ file_version }}"></script>
 </head>
 <body>
 
@@ -20,7 +20,7 @@
                 {% if custom_header %}
                 {% include ('custom/header.html') %}
                 {% else %}
-                <img class="me-2" src="images/logo.png" height="32">
+                <img class="me-2" src="assets/logo.png" height="32">
                 <span class="fs-4">{{ iface_title }}</span>
                 {% endif %}
             </a>
