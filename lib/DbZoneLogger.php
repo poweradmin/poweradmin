@@ -77,14 +77,7 @@ class DbZoneLogger
         ]);
 
         $records = $stmt->fetchAll();
-
-        foreach ($records as &$record) {
-            $details = str_replace(" ", "<br>", $record['event']);
-            $details = str_replace(":", ': ', $details);
-            $record['details'] = $details;
-        }
-
-        return $records;
+        return $this->processFetchedLogs($records);
     }
 
     public function get_logs_for_domain($domain, $limit, $offset): array
@@ -109,14 +102,7 @@ class DbZoneLogger
         ]);
 
         $records = $stmt->fetchAll();
-
-        foreach ($records as &$record) {
-            $details = str_replace(" ", "<br>", $record['event']);
-            $details = str_replace(":", ': ', $details);
-            $record['details'] = $details;
-        }
-
-        return $records;
+        return $this->processFetchedLogs($records);
     }
 
     public function check_if_domain_exist($domain_searched): bool
@@ -133,5 +119,19 @@ class DbZoneLogger
             }
         }
         return false;
+    }
+
+    private function processDetails($event): string
+    {
+        return strtr($event, [" " => "<br>", ":" => ": "]);
+    }
+
+    private function processFetchedLogs(array $records): array
+    {
+        foreach ($records as $key => $record) {
+            $records[$key]['details'] = $this->processDetails($record['event']);
+        }
+
+        return $records;
     }
 }
