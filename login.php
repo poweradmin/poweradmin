@@ -27,7 +27,7 @@ use Poweradmin\Infrastructure\Repository\LocaleRepository;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-include_once 'inc/config-defaults.inc.php';
+include_once('inc/config-defaults.inc.php');
 @include_once('inc/config.inc.php');
 
 class LoginController extends BaseController {
