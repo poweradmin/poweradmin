@@ -8,9 +8,9 @@ class ComposerStaticInit02fd231869a48df50cb631d6580008da
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+        '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
-        '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         'a1105708a18b76903365ca1c4aa61b02' => __DIR__ . '/..' . '/symfony/translation/Resources/functions.php',
     );
 
@@ -215,6 +215,8 @@ class ComposerStaticInit02fd231869a48df50cb631d6580008da
         'Symfony\\Bridge\\Twig\\Node\\StopwatchNode' => __DIR__ . '/..' . '/symfony/twig-bridge/Node/StopwatchNode.php',
         'Symfony\\Bridge\\Twig\\Node\\TransDefaultDomainNode' => __DIR__ . '/..' . '/symfony/twig-bridge/Node/TransDefaultDomainNode.php',
         'Symfony\\Bridge\\Twig\\Node\\TransNode' => __DIR__ . '/..' . '/symfony/twig-bridge/Node/TransNode.php',
+        'Symfony\\Bridge\\Twig\\Test\\FormLayoutTestCase' => __DIR__ . '/..' . '/symfony/twig-bridge/Test/FormLayoutTestCase.php',
+        'Symfony\\Bridge\\Twig\\Test\\Traits\\RuntimeLoaderProvider' => __DIR__ . '/..' . '/symfony/twig-bridge/Test/Traits/RuntimeLoaderProvider.php',
         'Symfony\\Bridge\\Twig\\TokenParser\\DumpTokenParser' => __DIR__ . '/..' . '/symfony/twig-bridge/TokenParser/DumpTokenParser.php',
         'Symfony\\Bridge\\Twig\\TokenParser\\FormThemeTokenParser' => __DIR__ . '/..' . '/symfony/twig-bridge/TokenParser/FormThemeTokenParser.php',
         'Symfony\\Bridge\\Twig\\TokenParser\\StopwatchTokenParser' => __DIR__ . '/..' . '/symfony/twig-bridge/TokenParser/StopwatchTokenParser.php',
@@ -233,6 +235,8 @@ class ComposerStaticInit02fd231869a48df50cb631d6580008da
         'Symfony\\Component\\Translation\\Command\\XliffLintCommand' => __DIR__ . '/..' . '/symfony/translation/Command/XliffLintCommand.php',
         'Symfony\\Component\\Translation\\DataCollectorTranslator' => __DIR__ . '/..' . '/symfony/translation/DataCollectorTranslator.php',
         'Symfony\\Component\\Translation\\DataCollector\\TranslationDataCollector' => __DIR__ . '/..' . '/symfony/translation/DataCollector/TranslationDataCollector.php',
+        'Symfony\\Component\\Translation\\DependencyInjection\\DataCollectorTranslatorPass' => __DIR__ . '/..' . '/symfony/translation/DependencyInjection/DataCollectorTranslatorPass.php',
+        'Symfony\\Component\\Translation\\DependencyInjection\\LoggingTranslatorPass' => __DIR__ . '/..' . '/symfony/translation/DependencyInjection/LoggingTranslatorPass.php',
         'Symfony\\Component\\Translation\\DependencyInjection\\TranslationDumperPass' => __DIR__ . '/..' . '/symfony/translation/DependencyInjection/TranslationDumperPass.php',
         'Symfony\\Component\\Translation\\DependencyInjection\\TranslationExtractorPass' => __DIR__ . '/..' . '/symfony/translation/DependencyInjection/TranslationExtractorPass.php',
         'Symfony\\Component\\Translation\\DependencyInjection\\TranslatorPass' => __DIR__ . '/..' . '/symfony/translation/DependencyInjection/TranslatorPass.php',

@@ -11,14 +11,19 @@
 
 namespace Symfony\Bridge\Twig\Extension;
 
-use Symfony\Component\HttpKernel\Debug\FileLinkFormatter;
+use Symfony\Component\ErrorHandler\ErrorRenderer\FileLinkFormatter;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
 /**
  * Twig extension relate to PHP code and used by the profiler and the default exception templates.
  *
+ * This extension should only be used for debugging tools code
+ * that is never executed in a production environment.
+ *
  * @author Fabien Potencier <fabien@symfony.com>
+ *
+ * @internal since Symfony 6.4
  */
 final class CodeExtension extends AbstractExtension
 {

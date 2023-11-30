@@ -19,8 +19,8 @@
     "ext-pdo": "*",
     "twig/twig": "^v3.7.1",
     "vlucas/valitron": "^v1.4.11",
-    "symfony/twig-bridge": "^v6.3.8",
-    "symfony/translation": "^v6.3.7",
+    "symfony/twig-bridge": "^v6.4.0",
+    "symfony/translation": "^v6.4.0",
     "twbs/bootstrap": "^v5.3.2",
     "twbs/bootstrap-icons": "^v1.11.1"
   },
