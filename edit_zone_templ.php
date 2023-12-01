@@ -60,7 +60,6 @@ class EditZoneTemplController extends BaseController
             $this->showFirstError($v->errors());
         }
 
-        $zone_templ_id = htmlspecialchars($_GET['id']);
         if (ZoneTemplate::zone_templ_id_exists($this->db, $zone_templ_id) == "0") {
             $this->showError(_('There is no zone template with this ID.'));
         }

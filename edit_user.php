@@ -74,19 +74,19 @@ class EditUserController extends BaseController
         $i_perm_templ = "0";
 
         if (isset($_POST['username'])) {
-            $i_username = $_POST['username'];
+            $i_username = htmlspecialchars($_POST['username']);
         }
 
         if (isset($_POST['fullname'])) {
-            $i_fullname = $_POST['fullname'];
+            $i_fullname = htmlspecialchars($_POST['fullname']);
         }
 
         if (isset($_POST['email'])) {
-            $i_email = $_POST['email'];
+            $i_email = htmlspecialchars($_POST['email']);
         }
 
         if (isset($_POST['description'])) {
-            $i_description = $_POST['description'];
+            $i_description = htmlspecialchars($_POST['description']);
         }
 
         if (isset($_POST['password'])) {

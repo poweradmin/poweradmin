@@ -134,13 +134,16 @@ class EditController extends BaseController {
         }
 
         if (isset($_POST['save_as'])) {
-            if (ZoneTemplate::zone_templ_name_exists($this->db, $_POST['templ_name'])) {
+            $template_name = htmlspecialchars($_POST['templ_name']) ?? '';
+            if (ZoneTemplate::zone_templ_name_exists($this->db, $template_name)) {
                 $this->showError(_('Zone template with this name already exists, please choose another one.'));
-            } elseif ($_POST['templ_name'] == '') {
+            } elseif ($template_name == '') {
                 $this->showError(_('Template name can\'t be an empty string.'));
             } else {
                 $records = DnsRecord::get_records_from_domain_id($this->db, $this->config('db_type'), $zone_id);
-                ZoneTemplate::add_zone_templ_save_as($this->db, $this->config('db_type'), $_POST['templ_name'], $_POST['templ_descr'], $_SESSION['userid'], $records, DnsRecord::get_domain_name_by_id($this->db, $zone_id));
+
+                $description = htmlspecialchars($_POST['templ_descr']) ?? '';
+                ZoneTemplate::add_zone_templ_save_as($this->db, $this->config('db_type'), $template_name, $description, $_SESSION['userid'], $records, DnsRecord::get_domain_name_by_id($this->db, $zone_id));
                 $this->setMessage('edit', 'success', _('Zone template has been added successfully.'));
             }
         }
@@ -165,15 +168,20 @@ class EditController extends BaseController {
         }
 
         $types = ZoneType::getTypes();
-        if (isset($_POST['type_change']) && in_array($_POST['newtype'], $types)) {
-            DnsRecord::change_zone_type($this->db, $_POST['newtype'], $zone_id);
+
+        $new_type = htmlspecialchars($_POST['newtype'] ?? '');
+        if (isset($_POST['type_change']) && in_array($new_type, $types)) {
+            DnsRecord::change_zone_type($this->db, $new_type, $zone_id);
         }
+
         if (isset($_POST["newowner"]) && is_numeric($_POST["domain"]) && is_numeric($_POST["newowner"])) {
             DnsRecord::add_owner_to_zone($this->db, $_POST["domain"], $_POST["newowner"]);
         }
+
         if (isset($_POST["delete_owner"]) && is_numeric($_POST["delete_owner"])) {
             DnsRecord::delete_owner_from_zone($this->db, $zone_id, $_POST["delete_owner"]);
         }
+
         if (isset($_POST["template_change"])) {
             if (!isset($_POST['zone_template']) || "none" == $_POST['zone_template']) {
                 $new_zone_template = 0;

@@ -76,6 +76,11 @@ function step4($twig, $current_step, $default_config_file): void {
         $credentials['db_file'] = $credentials['db_name'];
     }
 
+    foreach ($credentials as $key => $value) {
+        $value = strip_tags(trim($value));
+        $credentials[$key] = $value;
+    }
+
     $pa_pass = $_POST['pa_pass'];
 
     $databaseConnection = new PDODatabaseConnection();
