@@ -24,17 +24,12 @@
 <form method="post" action="">
     <table class="table table-striped table-hover table-sm">
         <tr>
-            <th><a href="edit_zone_templ.php?id=" {{zone_templ_id}}&amp;record_sort_by=name">{% trans %}Name{% endtrans
-                %}</a></th>
-            <th><a href="edit_zone_templ.php?id=" {{zone_templ_id}}&amp;record_sort_by=type">{% trans %}Type{% endtrans
-                %}</a></th>
-            <th><a href="edit_zone_templ.php?id=" {{zone_templ_id}}&amp;record_sort_by=content">{% trans %}Content{%
-                endtrans %}</a></th>
-            <th><a href="edit_zone_templ.php?id=" {{zone_templ_id}}&amp;record_sort_by=prio">{% trans %}Priority{%
-                endtrans %}</a>
+            <th><a href="edit_zone_templ.php?id={{zone_templ_id}}&amp;record_sort_by=name">{% trans %}Name{% endtrans %}</a></th>
+            <th><a href="edit_zone_templ.php?id={{zone_templ_id}}&amp;record_sort_by=type">{% trans %}Type{% endtrans %}</a></th>
+            <th><a href="edit_zone_templ.php?id={{zone_templ_id}}&amp;record_sort_by=content">{% trans %}Content{% endtrans %}</a></th>
+            <th><a href="edit_zone_templ.php?id={{zone_templ_id}}&amp;record_sort_by=prio">{% trans %}Priority{% endtrans %}</a>
             </th>
-            <th><a href="edit_zone_templ.php?id=" {{zone_templ_id}}&amp;record_sort_by=ttl">{% trans %}TTL{% endtrans
-                %}</a></th>
+            <th><a href="edit_zone_templ.php?id={{zone_templ_id}}&amp;record_sort_by=ttl">{% trans %}TTL{% endtrans %}</a></th>
             <th>&nbsp;</th>
         </tr>
         {% for record in records %}

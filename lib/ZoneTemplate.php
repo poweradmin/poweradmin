@@ -247,6 +247,9 @@ class ZoneTemplate
     {
         $db->setLimit($rowamount, $rowstart);
 
+        $allowedSortColumns = ['name', 'type', 'content', 'priority', 'ttl'];
+        $sortby = in_array($sortby, $allowedSortColumns) ? $sortby : 'name';
+
         $stmt = $db->prepare("SELECT id FROM zone_templ_records WHERE zone_templ_id = :id ORDER BY " . $sortby);
         $stmt->execute([':id' => $id]);
 
