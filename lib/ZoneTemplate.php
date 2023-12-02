@@ -246,15 +246,18 @@ class ZoneTemplate
     public static function get_zone_templ_records($db, int $id, int $rowstart = 0, int $rowamount = 999999, string $sortby = 'name'): array
     {
         $db->setLimit($rowamount, $rowstart);
-        $result = $db->query("SELECT id FROM zone_templ_records WHERE zone_templ_id=" . $db->quote($id, 'integer') . " ORDER BY " . $sortby);
+
+        $stmt = $db->prepare("SELECT id FROM zone_templ_records WHERE zone_templ_id = :id ORDER BY " . $sortby);
+        $stmt->execute([':id' => $id]);
+
         $ret[] = array();
-        $retcount = 0;
-        while ($r = $result->fetch()) {
+        $retCount = 0;
+        while ($r = $stmt->fetch()) {
             // Call get_record_from_id for each row.
-            $ret[$retcount] = ZoneTemplate::get_zone_templ_record_from_id($db, $r["id"]);
-            $retcount++;
+            $ret[$retCount] = ZoneTemplate::get_zone_templ_record_from_id($db, $r["id"]);
+            $retCount++;
         }
-        return ($retcount > 0 ? $ret : []);
+        return ($retCount > 0 ? $ret : []);
     }
 
     /** Add a record for a zone template
