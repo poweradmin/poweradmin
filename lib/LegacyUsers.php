@@ -739,20 +739,20 @@ email = " . $this->db->quote($email, 'text') . ",";
 
             // So, user doesn't want to change username or, if he wants, there is not
             // another user that goes by the wanted username. So, go ahead!
-
-            $query = "UPDATE users SET username = " . $this->db->quote($details['username'], 'text') . ",
-            fullname = " . $this->db->quote($details['fullname'], 'text') . ",
-            email = " . $this->db->quote($details['email'], 'text') . ",
-            active = " . $this->db->quote($active, 'integer');
+            $query = "UPDATE users SET
+                username = :username,
+                fullname = :fullname,
+                email = :email,
+                active = :active";
 
             // If the user is allowed to change the permission template, set it.
             if ($perm_templ_perm_edit == "1") {
-                $query .= ", perm_templ = " . $this->db->quote($details['templ_id'], 'integer');
+                $query .= ", perm_templ = :templ_id";
             }
 
             // If the user is allowed to change the use_ldap flag, set it.
             if ($perm_is_godlike == "1") {
-                $query .= ", use_ldap = " . $this->db->quote($use_ldap, 'integer');
+                $query .= ", use_ldap = :use_ldap";
             }
 
             $passwd_edit_others_perm = self::verify_permission($this->db, 'user_passwd_edit_others');
@@ -762,12 +762,32 @@ email = " . $this->db->quote($email, 'text') . ",";
                     $config->get('password_encryption'),
                     $config->get('password_encryption_cost')
                 );
-                $query .= ", password = " . $this->db->quote($userAuthService->hashPassword($details['password']), 'text');
+                $hashedPassword = $userAuthService->hashPassword($details['password']);
+                $query .= ", password = :password";
             }
 
-            $query .= " WHERE id = " . $this->db->quote($details['uid'], 'integer');
+            $query .= " WHERE id = :uid";
 
-            $this->db->query($query);
+            $stmt = $this->db->prepare($query);
+
+            $stmt->bindValue(':username', $details['username'], PDO::PARAM_STR);
+            $stmt->bindValue(':fullname', $details['fullname'], PDO::PARAM_STR);
+            $stmt->bindValue(':email', $details['email'], PDO::PARAM_STR);
+            $stmt->bindValue(':active', $active, PDO::PARAM_INT);
+
+            if ($perm_templ_perm_edit == "1") {
+                $stmt->bindValue(':templ_id', $details['templ_id'], PDO::PARAM_INT);
+            }
+            if ($perm_is_godlike == "1") {
+                $stmt->bindValue(':use_ldap', $use_ldap, PDO::PARAM_INT);
+            }
+            if (isset($details['password']) && $details['password'] != "" && $passwd_edit_others_perm) {
+                $stmt->bindValue(':password', $hashedPassword, PDO::PARAM_STR);
+            }
+
+            $stmt->bindValue(':uid', $details['uid'], PDO::PARAM_INT);
+
+            $stmt->execute();
         } else {
             $error = new ErrorMessage(_("You do not have the permission to edit this user."));
             $errorPresenter = new ErrorPresenter();
