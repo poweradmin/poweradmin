@@ -1511,6 +1511,7 @@ class DnsRecord
 
     /** Change Zone Type
      *
+     * @param $db
      * @param string $type New Zone Type [NATIVE,MASTER,SLAVE]
      * @param int $id Zone ID
      *
@@ -1519,14 +1520,20 @@ class DnsRecord
     public static function change_zone_type($db, string $type, int $id): void
     {
         $add = '';
+        $params = array(':type' => $type, ':id' => $id);
+
         // It is not really necessary to clear the field that contains the IP address
         // of the master if the type changes from slave to something else. PowerDNS will
         // ignore the field if the type isn't something else then slave. But then again,
         // it's much clearer this way.
         if ($type != "SLAVE") {
-            $add = ", master=" . $db->quote('', 'text');
+            $add = ", master = :master";
+            $params[':master'] = '';
         }
-        $db->query("UPDATE domains SET type = " . $db->quote($type, 'text') . $add . " WHERE id = " . $db->quote($id, 'integer'));
+        $query = "UPDATE domains SET type = :type" . $add . " WHERE id = :id";
+        $stmt = $db->prepare($query);
+
+        $stmt->execute($params);
     }
 
     /** Change Slave Zone's Master IP Address
