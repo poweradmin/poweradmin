@@ -442,8 +442,8 @@ class ZoneTemplate
             }
 
             foreach ($records as $record) {
-                $name = $domain ? preg_replace('/' . $domain . '/', '[ZONE]', $record['name']) : $record['name'];
-                $content = $domain ? preg_replace('/' . $domain . '/', '[ZONE]', $record['content']) : $record['content'];
+                $name = $domain ? preg_replace('/' . preg_quote($domain, '/') . '/', '[ZONE]', $record['name']) : $record['name'];
+                $content = $domain ? preg_replace('/' . preg_quote($domain, '/') . '/', '[ZONE]', $record['content']) : $record['content'];
 
                 $query2 = "INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES ("
                     . $db->quote($zone_templ_id, 'integer') . ","
