@@ -36,7 +36,7 @@ $language = getLanguageFromRequest();
 setLanguage($language);
 
 $twig = TemplateUtils::initializeTwigEnvironment($language);
-$current_step = TemplateUtils::getCurrentStep();
+$current_step = TemplateUtils::getCurrentStep($_POST);
 TemplateUtils::renderHeader($twig, $current_step);
 checkConfigFile($current_step, $local_config_file, $twig);
 

@@ -31,6 +31,9 @@ use Twig\Loader\FilesystemLoader;
 class TemplateUtils
 {
 
+    const MIN_STEP_VALUE = 1;
+    const MAX_STEP_VALUE = 7;
+
     public static function initializeTwigEnvironment($language): Environment
     {
         $loader = new FilesystemLoader('templates');
@@ -45,13 +48,19 @@ class TemplateUtils
         return $twig;
     }
 
-    public static function getCurrentStep(): int
+    public static function getCurrentStep(array $postData): int
     {
-        if (isset($_POST['step']) && is_numeric($_POST['step'])) {
-            return $_POST['step'];
+        $sanitizedData = filter_var_array($postData, [
+            'step' => ['filter' => FILTER_VALIDATE_INT, 'options' => ['default' => 1]]
+        ]);
+
+        $step = $sanitizedData['step'];
+
+        if ($step < self::MIN_STEP_VALUE || $step > self::MAX_STEP_VALUE) {
+            return 1;
         }
 
-        return 1;
+        return ($step !== false && $step !== null) ? $step : 1;
     }
 
     public static function renderHeader($twig, $current_step): void
