@@ -1677,6 +1677,7 @@ class DnsRecord
                             $record_id = $this->db->lastInsertId();
                         }
 
+                        $this->db->setLimit(0);
                         $query = "INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES ("
                             . $this->db->quote($zone_id, 'integer') . ","
                             . $this->db->quote($record_id, 'integer') . ","
