@@ -80,7 +80,7 @@ class ZoneSearch extends BaseSearch
      *
      * @param mixed $search_string The search string to use for matching zones.
      * @param bool $reverse Whether to perform a reverse search or not.
-     * @param mixed $reverse_search_string The reverse search string to use for matching zones.
+     * @param string $reverse_search_string The reverse search string to use for matching zones.
      * @param string $permission_view The permission view for the search (e.g. 'all' or 'own' zones).
      * @param string $sort_zones_by The column to sort the zone results by.
      * @param int $iface_rowamount The number of rows to display per page.
@@ -110,7 +110,7 @@ class ZoneSearch extends BaseSearch
             LEFT JOIN (SELECT COUNT(domain_id) AS count_records, domain_id FROM records WHERE type IS NOT NULL GROUP BY domain_id) record_count ON record_count.domain_id=domains.id
             WHERE
                 (domains.name LIKE ' . $this->db->quote($search_string, 'text') .
-            ($reverse ? ' OR domains.name LIKE ' . $reverse_search_string : '') . ') ' .
+            ($reverse ? ' OR domains.name LIKE ' . $this->db->quote($reverse_search_string, 'text') : '') . ') ' .
             ($permission_view == 'own' ? ' AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
             ' ORDER BY ' . $sort_zones_by . ', z.owner' .
             ' LIMIT ' . $iface_rowamount . ' OFFSET ' . $offset;

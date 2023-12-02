@@ -68,10 +68,10 @@ class SearchController extends BaseController
         if ($this->isPost()) {
             $parameters['query'] = !empty($_POST['query']) ? htmlspecialchars($_POST['query']) : '';
 
-            $parameters['zones'] = htmlspecialchars($_POST['zones']) ?? false;
-            $parameters['records'] = htmlspecialchars($_POST['records']) ?? false;
-            $parameters['wildcard'] = htmlspecialchars($_POST['wildcard']) ?? false;
-            $parameters['reverse'] = htmlspecialchars($_POST['reverse']) ?? false;
+            $parameters['zones'] = isset($_POST['zones']) ? htmlspecialchars($_POST['zones']) : false;
+            $parameters['records'] = isset($_POST['records']) ? htmlspecialchars($_POST['records']) : false;
+            $parameters['wildcard'] = isset($_POST['wildcard']) ? htmlspecialchars($_POST['wildcard']) : false;
+            $parameters['reverse'] = isset($_POST['reverse']) ? htmlspecialchars($_POST['reverse']) : false;
 
             $zones_page = isset($_POST['zones_page']) ? (int)$_POST['zones_page'] : 1;
 

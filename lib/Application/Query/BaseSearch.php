@@ -56,7 +56,7 @@ abstract class BaseSearch
                 $parameters['reverse'] = false;
             }
 
-            $reverse_search_string = $this->db->quote('%' . $reverse_search_string . '%', 'text');
+            $reverse_search_string = '%' . $reverse_search_string . '%';
         }
 
         $needle = idn_to_ascii(trim($parameters['query']), IDNA_NONTRANSITIONAL_TO_ASCII);
