@@ -88,7 +88,7 @@ class RecordSearch extends BaseSearch
             LEFT JOIN users u on z.owner = u.id
             WHERE
                 (records.name LIKE ' . $this->db->quote($search_string, 'text') . ' OR records.content LIKE ' . $this->db->quote($search_string, 'text') .
-            ($reverse ? ' OR records.name LIKE ' . $reverse_search_string . ' OR records.content LIKE ' . $reverse_search_string : '') . ')' .
+            ($reverse ? ' OR records.name LIKE ' . $this->db->quote($reverse_search_string, 'text') . ' OR records.content LIKE ' . $reverse_search_string : '') . ')' .
             ($permission_view == 'own' ? 'AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
             ($iface_search_group_records ? ' GROUP BY records.name, records.content ' : '') .
             ' ORDER BY ' . $sort_records_by .
