@@ -734,12 +734,13 @@ class LegacyUsers
             // current username is not the same as the username that was given by the
             // user, the username should apparently be changed. If so, check if the "new"
             // username already exists.
-            $query = "SELECT username FROM users WHERE id = " . $this->db->quote($details['uid'], 'integer');
-            $response = $this->db->query($query);
+            $query = "SELECT username FROM users WHERE id = :id";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':id', $details['uid'], PDO::PARAM_INT);
+            $stmt->execute();
+            $userCheck = $stmt->fetch();
 
-            $usercheck = $response->fetch();
-
-            if ($usercheck ['username'] != $details['username']) {
+            if ($userCheck['username'] != $details['username']) {
                 // Username of user ID in the database is different from the name
                 // we have been given. User wants a change of username. Now, make
                 // sure it doesn't already exist.
