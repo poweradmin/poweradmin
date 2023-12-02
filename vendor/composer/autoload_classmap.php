@@ -9,6 +9,7 @@ return array(
     'Attribute' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'PhpToken' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/PhpToken.php',
+    'PoweradminInstall\\TemplateUtils' => $baseDir . '/install/helpers/TemplateUtils.php',
     'Poweradmin\\AppFactory' => $baseDir . '/lib/AppFactory.php',
     'Poweradmin\\Application' => $baseDir . '/lib/Application.php',
     'Poweradmin\\Application\\Dnssec\\DnssecProviderFactory' => $baseDir . '/lib/Application/Dnssec/DnssecProviderFactory.php',

@@ -29,7 +29,8 @@
   },
   "autoload": {
     "psr-4": {
-      "Poweradmin\\": "lib/"
+      "Poweradmin\\": "lib/",
+      "PoweradminInstall\\": "install/helpers"
     }
   },
   "require-dev": {

@@ -35,6 +35,7 @@ class ComposerStaticInit02fd231869a48df50cb631d6580008da
         'P' => 
         array (
             'Poweradmin\\' => 11,
+            'PoweradminInstall\\' => 18,
         ),
     );
 
@@ -75,12 +76,17 @@ class ComposerStaticInit02fd231869a48df50cb631d6580008da
         array (
             0 => __DIR__ . '/../..' . '/lib',
         ),
+        'PoweradminInstall\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/install/helpers',
+        ),
     );
 
     public static $classMap = array (
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/PhpToken.php',
+        'PoweradminInstall\\TemplateUtils' => __DIR__ . '/../..' . '/install/helpers/TemplateUtils.php',
         'Poweradmin\\AppFactory' => __DIR__ . '/../..' . '/lib/AppFactory.php',
         'Poweradmin\\Application' => __DIR__ . '/../..' . '/lib/Application.php',
         'Poweradmin\\Application\\Dnssec\\DnssecProviderFactory' => __DIR__ . '/../..' . '/lib/Application/Dnssec/DnssecProviderFactory.php',

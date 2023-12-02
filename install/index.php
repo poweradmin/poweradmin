@@ -19,11 +19,12 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use PoweradminInstall\TemplateUtils;
+
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 require_once 'helpers/locale_handler.php';
 require_once 'helpers/database_structure.php';
-require_once 'helpers/template_utils.php';
 require_once 'helpers/install_helpers.php';
 
 $local_config_file = dirname(__DIR__) . '/inc/config.inc.php';
@@ -34,9 +35,9 @@ const SESSION_KEY_LENGTH = 46;
 $language = getLanguageFromRequest();
 setLanguage($language);
 
-$twig = initializeTwigEnvironment($language);
-$current_step = getCurrentStep();
-renderHeader($twig, $current_step);
+$twig = TemplateUtils::initializeTwigEnvironment($language);
+$current_step = TemplateUtils::getCurrentStep();
+TemplateUtils::renderHeader($twig, $current_step);
 checkConfigFile($current_step, $local_config_file, $twig);
 
 switch ($current_step) {
@@ -73,4 +74,4 @@ switch ($current_step) {
         break;
 }
 
-renderFooter($twig);
+TemplateUtils::renderFooter($twig);
