@@ -333,20 +333,18 @@ class LegacyUsers
             // So, user doesn't want to change username or, if he wants, there is not
             // another user that goes by the wanted username. So, go ahead!
 
-            $query = "UPDATE users SET username = " . $this->db->quote($user, 'text') . ",
-fullname = " . $this->db->quote($fullname, 'text') . ",
-email = " . $this->db->quote($email, 'text') . ",";
+            $query = "UPDATE users SET username = :username, fullname = :fullname, email = :email";
+
             if (self::verify_permission($this->db, 'user_edit_templ_perm')) {
-                $query .= "perm_templ = " . $this->db->quote($perm_templ, 'integer') . ",";
+                $query .= ", perm_templ = :perm_templ";
             }
-            $query .= "description = " . $this->db->quote($description, 'text') . ",
-				active = " . $this->db->quote($active, 'integer') . ",
-				use_ldap = " . $this->db->quote($i_use_ldap ?: 0, 'integer');
+
+            $query .= ", description = :description, active = :active, use_ldap = :use_ldap";
 
             $edit_own_perm = self::verify_permission($this->db, 'user_edit_own');
             $passwd_edit_others_perm = self::verify_permission($this->db, 'user_passwd_edit_others');
 
-            if ($user_password != "" && $edit_own_perm || $passwd_edit_others_perm) {
+            if ($user_password != "" && ($edit_own_perm || $passwd_edit_others_perm)) {
                 $config = new LegacyConfiguration();
                 $userAuthService = new UserAuthenticationService(
                     $config->get('password_encryption'),
@@ -354,11 +352,30 @@ email = " . $this->db->quote($email, 'text') . ",";
                 );
 
                 $passwordHash = $i_use_ldap ? 'LDAP_USER' : $userAuthService->hashPassword($user_password);
-                $query .= ", password = " . $this->db->quote($passwordHash, 'text');
+                $query .= ", password = :password";
             }
 
-            $query .= " WHERE id = " . $this->db->quote($id, 'integer');
-            $this->db->query($query);
+            $query .= " WHERE id = :id";
+
+            $stmt = $this->db->prepare($query);
+
+            $stmt->bindValue(':username', $user, PDO::PARAM_STR);
+            $stmt->bindValue(':fullname', $fullname, PDO::PARAM_STR);
+            $stmt->bindValue(':email', $email, PDO::PARAM_STR);
+            $stmt->bindValue(':description', $description, PDO::PARAM_STR);
+            $stmt->bindValue(':active', $active, PDO::PARAM_INT);
+            $stmt->bindValue(':use_ldap', $i_use_ldap ?: 0, PDO::PARAM_INT);
+            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+
+            if (self::verify_permission($this->db, 'user_edit_templ_perm')) {
+                $stmt->bindValue(':perm_templ', $perm_templ, PDO::PARAM_INT);
+            }
+
+            if ($user_password != "" && ($edit_own_perm || $passwd_edit_others_perm)) {
+                $stmt->bindValue(':password', $passwordHash, PDO::PARAM_STR);
+            }
+
+            $stmt->execute();
         } else {
             $error = new ErrorMessage(_("You do not have the permission to edit this user."));
             $errorPresenter = new ErrorPresenter();
