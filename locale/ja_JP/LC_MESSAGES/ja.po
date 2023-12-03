@@ -977,30 +977,30 @@ msgid ""
 msgstr "新しいユーザーを追加した後で、このインストールプロセスを継続します。"
 
 #: install/index.php:301
-msgid "The installer was able to write to the file \""
-msgstr "インストーラは、ファイル \""
+msgid "The installer was able to write to the file"
+msgstr "インストーラは、ファイル"
 
 #: install/index.php:301
 msgid ""
-"\". A basic configuration, based on the details you have given, has been "
+"A basic configuration, based on the details you have given, has been "
 "created."
-msgstr "\" へ書き込みを行いました。指定された情報に基づいて基本設定を作成しました。"
+msgstr "へ書き込みを行いました。指定された情報に基づいて基本設定を作成しました。"
 
 #: install/index.php:303
-msgid "The installer is unable to write to the file \""
-msgstr "インストーラは、ファイル \""
-
-#: install/index.php:303
-msgid ""
-"\" (which is in itself good). The configuration is printed here. You should "
-"now create the file \""
-msgstr "\" に書き込みができません (書き込みができないこと自体は構いません)。設定内容を以下に表示しますので、ファイル \""
+msgid "The installer is unable to write to the file"
+msgstr "インストーラは、ファイル"
 
 #: install/index.php:303
 msgid ""
-"\" in the Poweradmin root directory yourself. It should contain the "
+"(which is in itself good). The configuration is printed here. You should "
+"now create the file"
+msgstr "に書き込みができません (書き込みができないこと自体は構いません)。設定内容を以下に表示しますので、ファイル"
+
+#: install/index.php:303
+msgid ""
+" in the Poweradmin root directory yourself. It should contain the "
 "following few lines:"
-msgstr "\" を Poweradmin のルートディレクトリに直接作成して下さい。ファイルには表示された行を必ず含めて下さい:"
+msgstr " を Poweradmin のルートディレクトリに直接作成して下さい。ファイルには表示された行を必ず含めて下さい:"
 
 #: install/index.php:318
 msgid ""
@@ -1012,8 +1012,8 @@ msgstr "設定が完了しました。ディレクトリ \"install\" を Powerad
 #: install/index.php:319
 msgid ""
 "After you have removed the directory, you can login to <a "
-"href=\"../index.php\">Poweradmin</a> with username \"admin\" and password \""
-msgstr "ディレクトリを削除したら、<a href=\"../index.php\">Poweradmin</a> にユーザー \"admin\"、パスワード \""
+"href=\"../index.php\">Poweradmin</a> with username \"admin\" and password"
+msgstr "ディレクトリを削除したら、<a href=\"../index.php\">Poweradmin</a> にユーザー \"admin\"、パスワード"
 
 #: list_supermasters.php:51 delete_supermaster.php:45
 msgid "Delete supermaster"

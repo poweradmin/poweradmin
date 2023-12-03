@@ -854,23 +854,23 @@ msgid "Installation step"
 msgstr ""
 
 #: /install/templates/step6.html
-msgid "The installer was able to write to the file \""
+msgid "The installer was able to write to the file"
 msgstr ""
 
 #: /install/templates/step6.html
-msgid "\". A basic configuration, based on the details you have given, has been created."
+msgid "A basic configuration, based on the details you have given, has been created."
 msgstr ""
 
 #: /install/templates/step6.html
-msgid "The installer is unable to write to the file \""
+msgid "The installer is unable to write to the file"
 msgstr ""
 
 #: /install/templates/step6.html
-msgid "\" (which is in itself good). The configuration is printed here. You should now create the file \""
+msgid "(which is in itself good). The configuration is printed here. You should now create the file"
 msgstr ""
 
 #: /install/templates/step6.html
-msgid "\" in the Poweradmin root directory yourself. It should contain the following few lines:"
+msgid " in the Poweradmin root directory yourself. It should contain the following few lines:"
 msgstr ""
 
 #: /install/templates/step2.html

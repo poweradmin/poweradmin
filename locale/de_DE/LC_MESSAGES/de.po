@@ -886,33 +886,33 @@ msgid "Installation step"
 msgstr "Installationsschritt"
 
 #: /install/templates/step6.html
-msgid "The installer was able to write to the file \""
-msgstr "Der Installer konnte die Datei beschreiben \""
+msgid "The installer was able to write to the file"
+msgstr "Der Installer konnte die Datei beschreiben"
 
 #: /install/templates/step6.html
 msgid ""
-"\". A basic configuration, based on the details you have given, has been "
+"A basic configuration, based on the details you have given, has been "
 "created."
-msgstr "\". Ein Konfiguration basierend auf Ihren Angaben wurde erstellt."
+msgstr "Ein Konfiguration basierend auf Ihren Angaben wurde erstellt."
 
 #: /install/templates/step6.html
-msgid "The installer is unable to write to the file \""
-msgstr "Der Installer kann die Datei nicht beschreiben \""
+msgid "The installer is unable to write to the file"
+msgstr "Der Installer kann die Datei nicht beschreiben"
 
 #: /install/templates/step6.html
 msgid ""
-"\" (which is in itself good). The configuration is printed here. You should "
-"now create the file \""
+"(which is in itself good). The configuration is printed here. You should "
+"now create the file"
 msgstr ""
-"\" (was ansich gut ist). Die Konfiguration wird hier angezeigt. Sie sollten "
-"nun die Datei \""
+"(was ansich gut ist). Die Konfiguration wird hier angezeigt. Sie sollten "
+"nun die Datei"
 
 #: /install/templates/step6.html
 msgid ""
-"\" in the Poweradmin root directory yourself. It should contain the "
+" in the Poweradmin root directory yourself. It should contain the "
 "following few lines:"
 msgstr ""
-"\" im Poweradmin root Verzeichnis erstellen. Sie sollte folgende Zeilen "
+" im Poweradmin root Verzeichnis erstellen. Sie sollte folgende Zeilen "
 "beinhalten:"
 
 #: /install/templates/step2.html

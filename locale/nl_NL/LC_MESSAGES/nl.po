@@ -975,30 +975,30 @@ msgid ""
 msgstr "Als u de nieuwe gebruiker heeft toegevoegd, gaat u verder met de installatie procedure."
 
 #: install/index.php:301
-msgid "The installer was able to write to the file \""
-msgstr "Het installatie script kon schrijven naar het bestand \""
+msgid "The installer was able to write to the file"
+msgstr "Het installatie script kon schrijven naar het bestand"
 
 #: install/index.php:301
 msgid ""
-"\". A basic configuration, based on the details you have given, has been "
+"A basic configuration, based on the details you have given, has been "
 "created."
-msgstr "\". Een minimale configuratie, gebaseerd op de door u opgegeven details, is aangemaakt."
+msgstr "Een minimale configuratie, gebaseerd op de door u opgegeven details, is aangemaakt."
 
 #: install/index.php:303
-msgid "The installer is unable to write to the file \""
-msgstr "Het installatie script kon niet schrijven naar het bestand \""
-
-#: install/index.php:303
-msgid ""
-"\" (which is in itself good). The configuration is printed here. You should "
-"now create the file \""
-msgstr "\" (wat op zichzelf wel goed is). De configuratie is hieronder weergegeven. U moet nu het bestand \""
+msgid "The installer is unable to write to the file"
+msgstr "Het installatie script kon niet schrijven naar het bestand"
 
 #: install/index.php:303
 msgid ""
-"\" in the Poweradmin root directory yourself. It should contain the "
+"(which is in itself good). The configuration is printed here. You should "
+"now create the file"
+msgstr "(wat op zichzelf wel goed is). De configuratie is hieronder weergegeven. U moet nu het bestand"
+
+#: install/index.php:303
+msgid ""
+" in the Poweradmin root directory yourself. It should contain the "
 "following few lines:"
-msgstr "\" in de Poweradmin hoofd directory zelf aanmaken. Het moet de volgende regels bevatten:"
+msgstr " in de Poweradmin hoofd directory zelf aanmaken. Het moet de volgende regels bevatten:"
 
 #: install/index.php:318
 msgid ""
@@ -1010,8 +1010,8 @@ msgstr "De configuratie is afgerond. U moet nu de directory \"install/\" uit de 
 #: install/index.php:319
 msgid ""
 "After you have removed the directory, you can login to <a "
-"href=\"../index.php\">Poweradmin</a> with username \"admin\" and password \""
-msgstr "Nadat je de folder verwijderd hebt, kan je inloggen in <a href=\"../index.php\">Poweradmin</a> met gebruikersnaam \"admin\" en wachtwoord \""
+"href=\"../index.php\">Poweradmin</a> with username \"admin\" and password"
+msgstr "Nadat je de folder verwijderd hebt, kan je inloggen in <a href=\"../index.php\">Poweradmin</a> met gebruikersnaam \"admin\" en wachtwoord"
 
 #: list_supermasters.php:51 delete_supermaster.php:45
 msgid "Delete supermaster"

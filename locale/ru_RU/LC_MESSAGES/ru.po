@@ -686,26 +686,26 @@ msgstr "Вторичный сервер имён"
 msgid "When creating new zones using the template, this value will be used as secondary nameserver. Should be like \"ns2.example.net\"."
 msgstr "При создании новой зоны по шаблону, это значение будет подставлено как вторичный сервер имён. Пример: \"ns2.example.net\"."
 
-msgid "The installer was able to write to the file \""
-msgstr "Программа инсталляции записала конфигурацию в файл \""
+msgid "The installer was able to write to the file"
+msgstr "Программа инсталляции записала конфигурацию в файл"
 
-msgid "\". A basic configuration, based on the details you have given, has been created."
-msgstr "\". Базовая конфигурация, основанная на данных, которые вы ввели была создана."
+msgid "A basic configuration, based on the details you have given, has been created."
+msgstr "Базовая конфигурация, основанная на данных, которые вы ввели была создана."
 
-msgid "The installer is unable to write to the file \""
-msgstr "Программа инсталляции не может произвести запись в файл \""
+msgid "The installer is unable to write to the file"
+msgstr "Программа инсталляции не может произвести запись в файл"
 
-msgid "\" (which is in itself good). The configuration is printed here. You should now create the file \""
-msgstr "\" (что само по себе хорошо). Листинг файла конфигурации приведен здесь. Вы должны создать файл \""
+msgid "(which is in itself good). The configuration is printed here. You should now create the file"
+msgstr "(что само по себе хорошо). Листинг файла конфигурации приведен здесь. Вы должны создать файл"
 
-msgid "\" in the Poweradmin root directory yourself. It should contain the following few lines:"
-msgstr "\" в корневой директории Poweradmin самостоятельно. Он должен содержать следующие несколько строк:"
+msgid "in the Poweradmin root directory yourself. It should contain the following few lines:"
+msgstr "в корневой директории Poweradmin самостоятельно. Он должен содержать следующие несколько строк:"
 
 msgid "Now we have finished the configuration, you should (must!) remove the directory \"install/\" from the Poweradmin root directory. You will not be able to use Poweradmin if it exists. Do it now."
 msgstr "Конфигурирование окончено. Вы обязательно должны удалить директорию \"install/\" из корневой директории Poweradmin. Вы не сможете использовать Poweradmin не удалив данную директорию."
 
-msgid "After you have removed the directory, you can login to <a href=\"index.php\">Poweradmin</a> with username \"admin\" and password \""
-msgstr "После того, как удалите директорию, вы можете войти в систему <a href=\"index.php\">Poweradmin</a> с именем пользователя \"admin\" и паролем \""
+msgid "After you have removed the directory, you can login to <a href=\"index.php\">Poweradmin</a> with username \"admin\" and password"
+msgstr "После того, как удалите директорию, вы можете войти в систему <a href=\"index.php\">Poweradmin</a> с именем пользователя \"admin\" и паролем"
 
 msgid "Invalid value for name field of SRV record."
 msgstr "Недопустимое значение имени записи SRV."
@@ -860,8 +860,8 @@ msgstr "Порт СУБД"
 msgid "The port the database server is listening on."
 msgstr "Порт, на котором слушает СУБД."
 
-msgid "After you have removed the directory, you can login to <a href=\"../index.php\">Poweradmin</a> with username \"admin\" and password \""
-msgstr "После того, как вы удалите директорию, вы можете войти в <a href=\"../index.php\">Poweradmin</a> с именем пользователя \"admin\" и паролем \""
+msgid "After you have removed the directory, you can login to <a href=\"../index.php\">Poweradmin</a> with username \"admin\" and password"
+msgstr "После того, как вы удалите директорию, вы можете войти в <a href=\"../index.php\">Poweradmin</a> с именем пользователя \"admin\" и паролем"
 
 msgid "Add zone template for"
 msgstr "Добавить шаблон зоны для"
