@@ -63,89 +63,15 @@ class EditController extends BaseController {
         if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
-        $zone_id = htmlspecialchars($_GET['id']);
+        $zone_id = intval(htmlspecialchars($_GET['id']));
         $zone_name = DnsRecord::get_domain_name_by_id($this->db, $zone_id);
 
         if (isset($_POST['commit'])) {
-            $error = false;
-            $one_record_changed = false;
-            $serial_mismatch = false;
-
-            if (isset($_POST['record'])) {
-                $soa_record = DnsRecord::get_soa_record($this->db, $zone_id);
-                $current_serial = DnsRecord::get_soa_serial($soa_record);
-
-                if (isset($_POST['serial']) && $_POST['serial'] != $current_serial) {
-                    $serial_mismatch = true;
-                } else {
-                    foreach ($_POST['record'] as $record) {
-                        $log = new RecordLog($this->db);
-                        $log->log_prior($record['rid'], $record['zid']);
-
-                        if (!$log->has_changed($record)) {
-                            continue;
-                        } else {
-                            $one_record_changed = true;
-                        }
-
-                        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-                        $edit_record = $dnsRecord->edit_record($record);
-                        if (false === $edit_record) {
-                            $error = true;
-                        } else {
-                            $log->log_after($record['rid']);
-                            $log->write();
-                        }
-                    }
-                }
-            }
-
-            if ($iface_zone_comments) {
-                $raw_zone_comment = DnsRecord::get_zone_comment($this->db, $zone_id);
-                $zone_comment = $_POST['comment'] ?? '';
-                if ($raw_zone_comment != $zone_comment) {
-                    DnsRecord::edit_zone_comment($this->db, $zone_id, $zone_comment);
-                    $one_record_changed = true;
-                }
-            }
-
-            if ($error === false) {
-                $experimental_edit_conflict_resolution = $this->config('experimental_edit_conflict_resolution');
-                if ($serial_mismatch && $experimental_edit_conflict_resolution == 'only_latest_version') {
-                    $this->setMessage('edit', 'warn', (_('Request has expired, please try again.')));
-                } else {
-                    $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-                    $dnsRecord->update_soa_serial($zone_id);
-
-                    if ($one_record_changed) {
-                        $this->setMessage('edit', 'success', _('Zone has been updated successfully.'));
-                    } else {
-                        $this->setMessage('edit', 'warn', (_('Zone did not have any record changes.')));
-                    }
-
-                    if ($this->config('pdnssec_use')) {
-                        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
-                        $dnssecProvider->rectifyZone($zone_name);
-                    }
-                }
-            } else {
-                $this->setMessage('edit', 'error', _('Zone has not been updated successfully.'));
-            }
+            $this->saveRecords($zone_id, $iface_zone_comments, $zone_name);
         }
 
         if (isset($_POST['save_as'])) {
-            $template_name = htmlspecialchars($_POST['templ_name']) ?? '';
-            if (ZoneTemplate::zone_templ_name_exists($this->db, $template_name)) {
-                $this->showError(_('Zone template with this name already exists, please choose another one.'));
-            } elseif ($template_name == '') {
-                $this->showError(_('Template name can\'t be an empty string.'));
-            } else {
-                $records = DnsRecord::get_records_from_domain_id($this->db, $this->config('db_type'), $zone_id);
-
-                $description = htmlspecialchars($_POST['templ_descr']) ?? '';
-                ZoneTemplate::add_zone_templ_save_as($this->db, $this->config('db_type'), $template_name, $description, $_SESSION['userid'], $records, DnsRecord::get_domain_name_by_id($this->db, $zone_id));
-                $this->setMessage('edit', 'success', _('Zone template has been added successfully.'));
-            }
+            $this->saveTemplateAs($zone_id);
         }
 
         $perm_view = Permission::getViewPermission($this->db);
@@ -313,6 +239,98 @@ class EditController extends BaseController {
             $record_sort_by = $_SESSION["record_sort_by"];
         }
         return $record_sort_by;
+    }
+
+    public function saveRecords(int $zone_id, bool $iface_zone_comments, string $zone_name): void
+    {
+        $error = false;
+        $one_record_changed = false;
+        $serial_mismatch = false;
+
+        if (isset($_POST['record'])) {
+            $soa_record = DnsRecord::get_soa_record($this->db, $zone_id);
+            $current_serial = DnsRecord::get_soa_serial($soa_record);
+
+            if (isset($_POST['serial']) && $_POST['serial'] != $current_serial) {
+                $serial_mismatch = true;
+            } else {
+                foreach ($_POST['record'] as $record) {
+                    $log = new RecordLog($this->db);
+
+                    if (isset($record['disabled']) && $record['disabled'] == 'on') {
+                        $record["disabled"] = 1;
+                    } else {
+                        $record["disabled"] = 0;
+                    }
+
+                    $log->log_prior($record['rid'], $record['zid']);
+
+                    if (!$log->has_changed($record)) {
+                        continue;
+                    } else {
+                        $one_record_changed = true;
+                    }
+
+                    $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+
+                    $edit_record = $dnsRecord->edit_record($record);
+                    if (false === $edit_record) {
+                        $error = true;
+                    } else {
+                        $log->log_after($record['rid']);
+                        $log->write();
+                    }
+                }
+            }
+        }
+
+        if ($iface_zone_comments) {
+            $raw_zone_comment = DnsRecord::get_zone_comment($this->db, $zone_id);
+            $zone_comment = $_POST['comment'] ?? '';
+            if ($raw_zone_comment != $zone_comment) {
+                DnsRecord::edit_zone_comment($this->db, $zone_id, $zone_comment);
+                $one_record_changed = true;
+            }
+        }
+
+        if ($error === false) {
+            $experimental_edit_conflict_resolution = $this->config('experimental_edit_conflict_resolution');
+            if ($serial_mismatch && $experimental_edit_conflict_resolution == 'only_latest_version') {
+                $this->setMessage('edit', 'warn', (_('Request has expired, please try again.')));
+            } else {
+                $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+                $dnsRecord->update_soa_serial($zone_id);
+
+                if ($one_record_changed) {
+                    $this->setMessage('edit', 'success', _('Zone has been updated successfully.'));
+                } else {
+                    $this->setMessage('edit', 'warn', (_('Zone did not have any record changes.')));
+                }
+
+                if ($this->config('pdnssec_use')) {
+                    $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+                    $dnssecProvider->rectifyZone($zone_name);
+                }
+            }
+        } else {
+            $this->setMessage('edit', 'error', _('Zone has not been updated successfully.'));
+        }
+    }
+
+    public function saveTemplateAs(string $zone_id): void
+    {
+        $template_name = htmlspecialchars($_POST['templ_name']) ?? '';
+        if (ZoneTemplate::zone_templ_name_exists($this->db, $template_name)) {
+            $this->showError(_('Zone template with this name already exists, please choose another one.'));
+        } elseif ($template_name == '') {
+            $this->showError(_('Template name can\'t be an empty string.'));
+        } else {
+            DnsRecord::get_records_from_domain_id($this->db, $this->config('db_type'), $zone_id);
+
+            $description = htmlspecialchars($_POST['templ_descr']) ?? '';
+            ZoneTemplate::add_zone_templ_save_as($this->db, $this->config('db_type'), $template_name, $description, $_SESSION['userid'], $records, DnsRecord::get_domain_name_by_id($this->db, $zone_id));
+            $this->setMessage('edit', 'success', _('Zone template has been added successfully.'));
+        }
     }
 }
 
