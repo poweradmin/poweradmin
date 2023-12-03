@@ -47,8 +47,8 @@ class ErrorPresenter
     private function renderError(string $msg, ?string $name): void
     {
         $safeMsg = htmlspecialchars($msg, ENT_QUOTES, 'UTF-8');
-        $safeName = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
-        $errorContent = ($name !== null) ? "$safeMsg (Record: $safeName)" : $safeMsg;
+        $safeName = isset($name) ? htmlspecialchars($name, ENT_QUOTES, 'UTF-8') : null;
+        $errorContent = ($safeName !== null) ? "$safeMsg (Record: $safeName)" : $safeMsg;
 
         echo <<<HTML
         <div class="alert alert-danger">
