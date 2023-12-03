@@ -376,7 +376,8 @@ class DnsRecord
 				type=" . $this->db->quote($record['type'], 'text') . ",
 				content=" . $this->db->quote($record['content'], 'text') . ",
 				ttl=" . $this->db->quote($record['ttl'], 'integer') . ",
-				prio=" . $this->db->quote($record['prio'], 'integer') . "
+				prio=" . $this->db->quote($record['prio'], 'integer') . ",
+				disabled=" . $this->db->quote($record['disabled'], 'integer') . "
 				WHERE id=" . $this->db->quote($record['rid'], 'integer');
             $this->db->query($query);
             return true;
@@ -1255,7 +1256,7 @@ class DnsRecord
      */
     public static function get_record_from_id($db, int $id): int|array
     {
-        $result = $db->queryRow("SELECT id, domain_id, name, type, content, ttl, prio FROM records WHERE id=" . $db->quote($id, 'integer') . " AND type IS NOT NULL");
+        $result = $db->queryRow("SELECT * FROM records WHERE id=" . $db->quote($id, 'integer') . " AND type IS NOT NULL");
         if ($result) {
             if ($result["type"] == "" || $result["content"] == "") {
                 return -1;
@@ -1268,7 +1269,10 @@ class DnsRecord
                 "type" => $result["type"],
                 "content" => $result["content"],
                 "ttl" => $result["ttl"],
-                "prio" => $result["prio"]
+                "prio" => $result["prio"],
+                "disabled" => $result["disabled"],
+                "ordername" => $result["ordername"],
+                "auth" => $result["auth"],
             );
         } else {
             return -1;
@@ -1303,7 +1307,7 @@ class DnsRecord
         }
         $sql_sortby = ($sortby == 'name' ? $natural_sort : $sortby . ', ' . $natural_sort);
 
-        $records = $db->query("SELECT id, domain_id, name, type, content, ttl, prio
+        $records = $db->query("SELECT *
                             FROM records
                             WHERE domain_id=" . $db->quote($id, 'integer') . " AND type IS NOT NULL
                             ORDER BY type = 'SOA' DESC, type = 'NS' DESC," . $sql_sortby);

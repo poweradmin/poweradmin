@@ -53,6 +53,7 @@
             <th><a href="edit.php?id={{ zone_id }}&record_sort_by=ttl">{% trans %}TTL{% endtrans %}</a>
                 {% if record_sort_by == 'ttl' %}<i class="bi bi-arrow-down"></i>{% endif %}
             </th>
+            <th>{% trans %}Disabled{% endtrans %}</th>
             <th>&nbsp;</th>
         </tr>
         {% for r in records %}
@@ -69,6 +70,7 @@
             <td>{{ r['content'] }}</td>
             <td>&nbsp;</td>
             <td class="col-sm-1">{{ r['ttl'] }}</td>
+            <td>&nbsp;</td>
             {% else %}
             <td class="col-sm-2"><input class="form-control form-control-sm" type="text"
                                         name="record[{{ r['id'] }}][name]" value="{{ r['name'] }}"></td>
@@ -97,6 +99,9 @@
             <td class="col-sm-1"><input class="form-control form-control-sm" type="text"
                                         min="0" max="2147483647" pattern="[0-9]*" name="record[{{ r['id'] }}][ttl]"
                                         value="{{ r['ttl'] }}"></td>
+            <td>
+                <input class="form-check-input" type="checkbox" name="record[{{ r['id'] }}][disabled]" {% if r['disabled'] == 1 %}checked{% endif %}>
+            </td>
             {% endif %}
 
             {% if domain_type == "SLAVE" or perm_edit == "none" or (perm_edit == "own" or perm_edit ==
@@ -125,10 +130,9 @@
         <tr>
             <td>
             </td>
-            <td colspan="4"><textarea class="form-control form-control-sm" rows="5" cols="80" name="comment">{{ zone_comment }}</textarea>
+            <td colspan="6"><textarea class="form-control form-control-sm" rows="5" cols="80" name="comment">{{ zone_comment }}</textarea>
             </td>
-            <td></td>
-            <td>
+            <td colspan="2">
                 <a class="btn btn-outline-primary btn-sm" href="edit_comment.php?id={{ zone_id }}">
                     <i class="bi bi-pencil-square"></i> {% trans %}Edit comment{% endtrans %}</a>
             </td>
