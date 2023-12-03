@@ -110,7 +110,15 @@ class EditRecordController extends BaseController {
     {
         $old_record_info = DnsRecord::get_record_from_id($this->db, $_POST["rid"]);
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $ret_val = $dnsRecord->edit_record($_POST);
+
+        $postData = $_POST;
+        if (isset($postData['disabled']) && $postData['disabled'] == "on") {
+            $postData['disabled'] = 1;
+        } else {
+            $postData['disabled'] = 0;
+        }
+
+        $ret_val = $dnsRecord->edit_record($postData);
         if ($ret_val == "1") {
             if ($_POST['type'] != "SOA") {
                 $dnsRecord = new DnsRecord($this->db, $this->getConfig());
