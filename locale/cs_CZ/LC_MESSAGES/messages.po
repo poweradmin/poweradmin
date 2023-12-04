@@ -1067,4 +1067,69 @@ msgstr ""
 msgid "Zone templates for"
 msgstr ""
 
+msgid "User is allowed to add new master zones."
+msgstr "Uživatel má právo přidávat nové master zóny."
 
+msgid "User is allowed to add new slave zones."
+msgstr "Uživatel má právo přidávat nové slave zóny."
+
+msgid "User is allowed to see the content and meta data of zones he owns."
+msgstr "Uživatel má právo vidět obsah a meta data zón, které vlastní."
+
+msgid "User is allowed to edit the content of zones he owns."
+msgstr "Uživatel má právo upravit obsah zón, které vlastní."
+
+msgid "User is allowed to edit the meta data of zones he owns."
+msgstr "Uživatel má právo upravit meta data zón, které vlastní."
+
+msgid ""
+"User is allowed to see the content and meta data of zones he does not own."
+msgstr "Uživatel má právo vidět obsah a meta data zón, které nevlastní."
+
+msgid "User is allowed to edit the content of zones he does not own."
+msgstr "Uživatel má právo upravit obsah zón, které nevlastní."
+
+msgid "User is allowed to edit the meta data of zones he does not own."
+msgstr "Uživatel má právo upravit meta data zón, které nevlastní."
+
+msgid "User is allowed to perform searches."
+msgstr "Uživatel má právo vyhledávat."
+
+msgid "User is allowed to view supermasters."
+msgstr "Uživatel má právo prohlížet supermastery."
+
+msgid "User is allowed to add new supermasters."
+msgstr "Uživatel má právo přidávat nového supermastera."
+
+msgid "User is allowed to edit supermasters."
+msgstr "Uživatel má právo upravit supermastera."
+
+msgid "User has full access. God-like. Redeemer."
+msgstr "Uživatel má plný přístup. Jako bůh. Vykupitel."
+
+msgid "User is allowed to see other users and their details."
+msgstr "Uživatel má právo vidět ostatní uživatele a jejich detaily."
+
+msgid "User is allowed to add new users."
+msgstr "Uživatel má právo přidávat nové uživatele."
+
+msgid "User is allowed to edit their own details."
+msgstr "Uživatel má právo editovat jejich vlastní údaje."
+
+msgid "User is allowed to edit other users."
+msgstr "Uživatel má právo upravovat ostatní uživatele."
+
+msgid "User is allowed to edit the password of other users."
+msgstr "Uživatel má právo editovat hesla ostatních uživatelů."
+
+msgid ""
+"User is allowed to change the permission template that is assigned to a "
+"user."
+msgstr ""
+"Uživatel má právo změnit oprávnění šablonu, která je k němu přiřazena."
+
+msgid "User is allowed to add new permission templates."
+msgstr "Uživatel má právo přidávat novou šablonu oprávnění."
+
+msgid "User is allowed to edit existing permission templates."
+msgstr "Uživatel má právo upravit stávající šablony oprávnění."

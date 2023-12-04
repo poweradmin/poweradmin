@@ -1066,3 +1066,69 @@ msgstr "Herintialiseer wachtwoord"
 #: list_zone_templ.php:33
 msgid "Zone templates for"
 msgstr "Zone templates voor"
+
+msgid "User is allowed to add new master zones."
+msgstr "Gebruiker kan een master zone toevoegen."
+
+msgid "User is allowed to add new slave zones."
+msgstr "Gebruiker kan een nieuwe slave zone toevoegen."
+
+msgid "User is allowed to see the content and meta data of zones he owns."
+msgstr "Gebruiker kan de inhoud en metadata zien van de zones waartoe hij rechten heeft."
+
+msgid "User is allowed to edit the content of zones he owns."
+msgstr "Gebruiker kan de inhoud van de zones waartoe hij rechten heeft aanpassen."
+
+msgid "User is allowed to edit the meta data of zones he owns."
+msgstr "Gebruiker kan de metadata van de zones waartoe hij rechten heeft aanpassen."
+
+msgid ""
+"User is allowed to see the content and meta data of zones he does not own."
+msgstr "Gebruiker kan de inhoud en metadata zien van alle zones."
+
+msgid "User is allowed to edit the content of zones he does not own."
+msgstr "Gebruiker kan de inhoud van alle zones aanpassen."
+
+msgid "User is allowed to edit the meta data of zones he does not own."
+msgstr "Gebruiker kan de metadata van alle zones aanpassen."
+
+msgid "User is allowed to perform searches."
+msgstr "Gebruiker kan opzoekingen maken."
+
+msgid "User is allowed to view supermasters."
+msgstr "Gebruiker kan de supermasters oplijsten."
+
+msgid "User is allowed to add new supermasters."
+msgstr "Gebruiker kan supermasters toevoegen."
+
+msgid "User is allowed to edit supermasters."
+msgstr "Gebruiker kan supermasters aanpassen."
+
+msgid "User has full access. God-like. Redeemer."
+msgstr "Gebruiker heeft volledige toegang. Übermensch."
+
+msgid "User is allowed to see other users and their details."
+msgstr "Gebruiker kan andere gebruikers oplijsten en weergeven."
+
+msgid "User is allowed to add new users."
+msgstr "Gebruiker kan nieuwe gebruikers toevoegen."
+
+msgid "User is allowed to edit their own details."
+msgstr "Gebruiker kan zijn eigen details aanpassen."
+
+msgid "User is allowed to edit other users."
+msgstr "Gebruiker kan andere gebruikers aanpassen."
+
+msgid "User is allowed to edit the password of other users."
+msgstr "Gebruiker kan wachtwoorden van andere gebruikers aanpassen."
+
+msgid ""
+"User is allowed to change the permission template that is assigned to a "
+"user."
+msgstr "Gebruiker kan permissies toekennen aan andere gebruikers."
+
+msgid "User is allowed to add new permission templates."
+msgstr "Gebruiker kan nieuwe permissies aanmaken."
+
+msgid "User is allowed to edit existing permission templates."
+msgstr "Gebruiker kan bestaande permissies aanpassen."

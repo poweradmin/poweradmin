@@ -798,3 +798,66 @@ msgstr "Actif"
 #: inc/users.inc.php:364
 msgid "Password has been changed, please login."
 msgstr "Votre mot de passe a été modifié. Veuillez vous reconnecter."
+
+msgid "User is allowed to add new master zones."
+msgstr "L'utilisateur peut ajouter des zones maîtres."
+
+msgid "User is allowed to add new slave zones."
+msgstr "L'utilisateur peut ajouter des zones esclaves."
+
+msgid "User is allowed to see the content and meta data of zones he owns."
+msgstr "L'utilisateur peut voir le contenu et les méta-données de ses zones."
+
+msgid "User is allowed to edit the content of zones he owns."
+msgstr "L'utilisateur peut modifier le contenu et les méta-données de ses zones."
+
+msgid "User is allowed to edit the meta data of zones he owns."
+msgstr "L'utilisateur peut voir les méta-données de ses zones."
+
+msgid "User is allowed to see the content and meta data of zones he does not own."
+msgstr "L'utilisateur peut voir le contenu et les méta-données des zones dont il n'est pas le propriétaire."
+
+msgid "User is allowed to edit the content of zones he does not own."
+msgstr "L'utilisateur peut modifier le contenu et les méta-données des zones dont il n'est pas le propriétaire."
+
+msgid "User is allowed to edit the meta data of zones he does not own."
+msgstr "L'utilisateur peut modifier les méta-données des zones dont il n'est pas le propriétaire."
+
+msgid "User is allowed to perform searches."
+msgstr "L'utilisateur peut faire des recherches."
+
+msgid "User is allowed to view supermasters."
+msgstr "L'utilisateur peut voir les super-maîtres."
+
+msgid "User is allowed to add new supermasters."
+msgstr "L'utilisateur peut ajouter des super-maîtres."
+
+msgid "User is allowed to edit new supermasters."
+msgstr "L'utilisateur peut modifier les super-maîtres."
+
+msgid "User has full access. God-like. Redeemer."
+msgstr "L'utilisateur a tous les droits. Il est comme Dieu."
+
+msgid "User is allowed to see other users and their details."
+msgstr "L'utilisateur peut voir les autres utilisateurs et leurs infos."
+
+msgid "User is allowed to add new users."
+msgstr "L'utilisateur peut ajouter des utilisateurs."
+
+msgid "User is allowed to edit their own details."
+msgstr "L'utilisateur peut modifier ses propres infos."
+
+msgid "User is allowed to edit other users."
+msgstr "L'utilisateur peut modifier les autres utilisateurs."
+
+msgid "User is allowed to edit the password of other users."
+msgstr "L'utilisateur peut modifier le mot de passe d'autres utilisateurs."
+
+msgid "User is allowed to change the permission template that is assigned to a user."
+msgstr "L'utilisateur peut modifier le gabarit assigné à un utilisateur."
+
+msgid "User is allowed to add new permission templates."
+msgstr "L'utilisateur peut ajouter des gabarits de permissions."
+
+msgid "User is allowed to edit existing permission templates."
+msgstr "L'utilisateur peut modif des gabarits de permissions."

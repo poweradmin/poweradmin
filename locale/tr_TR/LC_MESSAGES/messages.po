@@ -1067,3 +1067,69 @@ msgstr "Şifre sıfırla"
 #: list_zone_templ.php:33
 msgid "Zone templates for"
 msgstr "Bunun için bölge şablonları"
+
+msgid "User is allowed to add new master zones."
+msgstr "Kullanıcı yeni ana bölgeler ekleyebilir."
+
+msgid "User is allowed to add new slave zones."
+msgstr "Kullanıcı yeni bağımlı bölgeler ekleyebilir."
+
+msgid "User is allowed to see the content and meta data of zones he owns."
+msgstr "Kullanıcı ona ait içeriği ve bölgelerin veri üstlerini görebilir."
+
+msgid "User is allowed to edit the content of zones he owns."
+msgstr "Kullanıcı ona ait bölgelerin içeriğini düzenleyebilir."
+
+msgid "User is allowed to edit the meta data of zones he owns."
+msgstr "Kullanıcı ona ait bölgelerin veri üstlerini düzenleyebilir."
+
+msgid ""
+"User is allowed to see the content and meta data of zones he does not own."
+msgstr "Kullanıcı ona ait olmayan içeriği ve bölgelerin veri üstlerini görebilir."
+
+msgid "User is allowed to edit the content of zones he does not own."
+msgstr "Kullanıcı ona ait olmayan bölgelerin içeriğini düzenleyebilir."
+
+msgid "User is allowed to edit the meta data of zones he does not own."
+msgstr "Kullanıcı ona ait olmayan bölgelerin veri üstlerini düzenleyebilir."
+
+msgid "User is allowed to perform searches."
+msgstr "Kullanıcı arama yapabilir."
+
+msgid "User is allowed to view supermasters."
+msgstr "Kullanıcı ana kurucuları görüntüleyebilir."
+
+msgid "User is allowed to add new supermasters."
+msgstr "Kullanıcı yeni ana kurucular ekleyebilir."
+
+msgid "User is allowed to edit supermasters."
+msgstr "Kullanıcı ana kurucuları düzenleyebilir."
+
+msgid "User has full access. God-like. Redeemer."
+msgstr "Kullanıcı tam yetkilidir. Admin."
+
+msgid "User is allowed to see other users and their details."
+msgstr "Kullanıcı diğer kullanıcıları ve ayrıntılarını görebilir."
+
+msgid "User is allowed to add new users."
+msgstr "Kullanıcı yeni kullanıcılar oluşturabilir."
+
+msgid "User is allowed to edit their own details."
+msgstr "Kullanıcı kendi bilgilerini değiştirebilir."
+
+msgid "User is allowed to edit other users."
+msgstr "Kullanıcı diğer kullanıcıların bilgilerini değiştirebilir."
+
+msgid "User is allowed to edit the password of other users."
+msgstr "Kullanıcı diğer kullanıcıların parolalarını değiştirebilir."
+
+msgid ""
+"User is allowed to change the permission template that is assigned to a "
+"user."
+msgstr "Kullanıcı bir kullanıcıya atanmış izin şablonunu değiştirebilir."
+
+msgid "User is allowed to add new permission templates."
+msgstr "Kullanıcı yeni izin şablonunları ekleyebilir."
+
+msgid "User is allowed to edit existing permission templates."
+msgstr "Kullanıcı varolan izin şablonunlarını düzenleyebilir."

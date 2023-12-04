@@ -1067,3 +1067,69 @@ msgstr "Endre passord"
 #: list_zone_templ.php:33
 msgid "Zone templates for"
 msgstr "Sone maler til"
+
+msgid "User is allowed to add new master zones."
+msgstr "Bruker kan lage nye master soner."
+
+msgid "User is allowed to add new slave zones."
+msgstr "Bruker kan lage nye slave soner."
+
+msgid "User is allowed to see the content and meta data of zones he owns."
+msgstr "Bruker kan se innhold og meta data i soner han/hun eier."
+
+msgid "User is allowed to edit the content of zones he owns."
+msgstr "Bruker kan redigere innholdet i soner han/hun eier."
+
+msgid "User is allowed to edit the meta data of zones he owns."
+msgstr "Bruker kan redigere meta data i soner han/hun eier."
+
+msgid ""
+"User is allowed to see the content and meta data of zones he does not own."
+msgstr "Bruker kan se innhold og meta data i soner han/hun ikke eier."
+
+msgid "User is allowed to edit the content of zones he does not own."
+msgstr "Bruker kan redigere innholdet i soner han/hun ikke eier."
+
+msgid "User is allowed to edit the meta data of zones he does not own."
+msgstr "Bruker kan redigere meta data i soner han/hun ikke eier."
+
+msgid "User is allowed to perform searches."
+msgstr "Bruker kan søke."
+
+msgid "User is allowed to view supermasters."
+msgstr "Bruker kan se supermastere."
+
+msgid "User is allowed to add new supermasters."
+msgstr "Bruker kan legge til nye supermastere."
+
+msgid "User is allowed to edit supermasters."
+msgstr "Bruker kan redigere supermastere."
+
+msgid "User has full access. God-like. Redeemer."
+msgstr "Bruker har alle rettigheter."
+
+msgid "User is allowed to see other users and their details."
+msgstr "Bruker kan se andre brukere og deres detaljer."
+
+msgid "User is allowed to add new users."
+msgstr "Bruker kan lage nye brukere."
+
+msgid "User is allowed to edit their own details."
+msgstr "Bruker kan redigere hans/hennes egne detaljer."
+
+msgid "User is allowed to edit other users."
+msgstr "Bruker kan redigere andre brukere."
+
+msgid "User is allowed to edit the password of other users."
+msgstr "Bruker kan endre passordet til andre brukere."
+
+msgid ""
+"User is allowed to change the permission template that is assigned to a "
+"user."
+msgstr "Bruker kan endre rettighets maler tildelt andre brukere."
+
+msgid "User is allowed to add new permission templates."
+msgstr "Bruker kan lage nye rettighets maler."
+
+msgid "User is allowed to edit existing permission templates."
+msgstr "Bruker kan redigere eksisterende rettighets maler."

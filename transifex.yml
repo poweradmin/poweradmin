@@ -1,0 +1,10 @@
+git:
+  filters:
+    - filter_type: file
+      file_format: PO
+      source_file: locale/i18n-template-php.pot
+      source_language: en
+      translation_files_expression: 'locale/<lang>/LC_MESSAGES/messages.po'
+
+  settings:
+    pr_branch_name: tx_translations_<br_unique_id>
