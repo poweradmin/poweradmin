@@ -59,9 +59,6 @@ msgstr "Ajouter l'enregistrement à la zone"
 msgid "Type"
 msgstr "Type"
 
-msgid "Priority"
-msgstr "Priorité"
-
 #: add_record.php:122 add_zone_templ_record.php:101 edit.php:106 edit.php:195
 #: edit_record.php:70 edit_zone_templ.php:71 edit_zone_templ_record.php:64
 #: search.php:121
