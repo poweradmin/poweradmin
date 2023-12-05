@@ -59,6 +59,9 @@ msgstr "Ajouter l'enregistrement à la zone"
 msgid "Type"
 msgstr "Type"
 
+msgid "Priority"
+msgstr "Priorité"
+
 #: add_record.php:122 add_zone_templ_record.php:101 edit.php:106 edit.php:195
 #: edit_record.php:70 edit_zone_templ.php:71 edit_zone_templ_record.php:64
 #: search.php:121
@@ -120,7 +123,7 @@ msgid "Password"
 msgstr "Mot de passe"
 
 #: add_user.php:50 edit_user.php:114 users.php:49
-msgid "Emailaddress"
+msgid "Email address"
 msgstr "Courrier électronique"
 
 #: add_user.php:55 edit_user.php:119
@@ -538,6 +541,9 @@ msgstr "Vous n'avez pas les droits pour modifier les gabarits de zone."
 msgid "You do not have the permission to delete zone templates."
 msgstr "Vous n'avez pas les droits pour supprimer les gabarits de zone."
 
+msgid "You do not have the permission to add a zone template."
+msgstr "Ceci ,n'est pas un nom de zone valide."
+
 msgid "You do not have the permission to add a zone templates."
 msgstr "Vous n'avez pas les droits pour ajouter un gabarit de zone."
 
@@ -861,3 +867,9 @@ msgstr "L'utilisateur peut ajouter des gabarits de permissions."
 
 msgid "User is allowed to edit existing permission templates."
 msgstr "L'utilisateur peut modif des gabarits de permissions."
+
+msgid "Template Name"
+msgstr "Ajouter un enregistrement"
+
+msgid "Zones have been updated successfully."
+msgstr "L'utilisateur a été mis à jour avec succès."
