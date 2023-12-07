@@ -1878,10 +1878,6 @@ msgstr ""
 "der Zone zwingend notwendig ist."
 
 #: /templates/delete_domains.html
-msgid "Delete Zones"
-msgstr "Zonen löschen"
-
-#: /templates/delete_domains.html
 msgid "Delete zones"
 msgstr "Zonen löschen"
 

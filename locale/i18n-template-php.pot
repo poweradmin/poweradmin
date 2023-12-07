@@ -1986,10 +1986,6 @@ msgid "You are trying to delete a record that is needed for this zone to work."
 msgstr ""
 
 #: /templates/delete_domains.html
-msgid "Delete Zones"
-msgstr ""
-
-#: /templates/delete_domains.html
 msgid "Delete zones"
 msgstr ""
 
