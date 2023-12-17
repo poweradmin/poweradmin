@@ -141,6 +141,8 @@ class LegacyUsers
         // Execute the huge query.
         $db->setLimit($rowamount, $rowstart);
         $response = $db->query($query);
+        $db->setLimit(0);
+
         $ret = array();
         while ($r = $response->fetch()) {
             $ret [] = array(

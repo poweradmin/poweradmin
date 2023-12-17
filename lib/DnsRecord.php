@@ -1182,6 +1182,7 @@ class DnsRecord
             $this->db->setLimit($rowamount, $rowstart);
         }
         $result = $this->db->query($query);
+        $this->db->setLimit(0);
 
         $ret = array();
         while ($r = $result->fetch()) {
@@ -1311,6 +1312,7 @@ class DnsRecord
                             FROM records
                             WHERE domain_id=" . $db->quote($id, 'integer') . " AND type IS NOT NULL
                             ORDER BY type = 'SOA' DESC, type = 'NS' DESC," . $sql_sortby);
+        $db->setLimit(0);
 
         if ($records) {
             $result = $records->fetchAll();
@@ -1629,6 +1631,8 @@ class DnsRecord
             if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
                 if ($db_type == 'pgsql') {
                     $query = "DELETE FROM records r USING records_zone_templ rzt WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id AND r.id = rzt.record_id";
+                } else if ($db_type == 'sqlite' || $db_type == 'sqlite3') {
+                    $query = "DELETE FROM records WHERE id IN (SELECT r.id FROM records r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id)";
                 } else {
                     $query = "DELETE r, rzt FROM records r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id";
                 }
@@ -1681,7 +1685,6 @@ class DnsRecord
                             $record_id = $this->db->lastInsertId();
                         }
 
-                        $this->db->setLimit(0);
                         $query = "INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES ("
                             . $this->db->quote($zone_id, 'integer') . ","
                             . $this->db->quote($record_id, 'integer') . ","

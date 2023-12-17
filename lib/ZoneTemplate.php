@@ -252,6 +252,7 @@ class ZoneTemplate
 
         $stmt = $db->prepare("SELECT id FROM zone_templ_records WHERE zone_templ_id = :id ORDER BY " . $sortby);
         $stmt->execute([':id' => $id]);
+        $db->setLimit(0);
 
         $ret[] = array();
         $retCount = 0;
