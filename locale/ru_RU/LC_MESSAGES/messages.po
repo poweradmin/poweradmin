@@ -63,7 +63,7 @@ msgid "Hostname in NS record"
 msgstr "Имя хоста в NS-записи"
 
 msgid "Account"
-msgstr "Учетная запись"
+msgstr "Пользователь"
 
 msgid "Add user"
 msgstr "Добавить пользователя"
@@ -225,7 +225,7 @@ msgid "List zones"
 msgstr "Список зон"
 
 msgid "List supermasters"
-msgstr "Список supermaster'ов"
+msgstr "Список supermaster"
 
 msgid "User administration"
 msgstr "Управление пользователями"
@@ -546,13 +546,13 @@ msgid "User is allowed to perform searches."
 msgstr "Пользователю разрешено производить поиск"
 
 msgid "User is allowed to view supermasters."
-msgstr "Пользователю разрешено просматривать список supermaster-серверов"
+msgstr "Пользователю разрешено просматривать список supermaster серверов"
 
 msgid "User is allowed to add new supermasters."
 msgstr "Пользователю разрешено добавлять supermaster"
 
 msgid "User is allowed to edit supermasters."
-msgstr "Пользователю разрешено редактировать supermaster-серверы"
+msgstr "Пользователю разрешено редактировать supermaster серверы"
 
 msgid "User has full access. God-like. Redeemer."
 msgstr "Пользователь имеет полный доступ. Ку три раза."
@@ -860,8 +860,8 @@ msgstr "Порт СУБД"
 msgid "The port the database server is listening on."
 msgstr "Порт, на котором слушает СУБД."
 
-msgid "After you have removed the directory, you can login to <a href=\"../index.php\">Poweradmin</a> with username \"admin\" and password"
-msgstr "После того, как вы удалите директорию, вы можете войти в <a href=\"../index.php\">Poweradmin</a> с именем пользователя \"admin\" и паролем"
+msgid "After you have removed the directory, you can login to <a href=\"../index.php\">Poweradmin</a> with username \"admin\" and password \""
+msgstr "После того, как вы удалите директорию, вы можете войти в <a href=\"../index.php\">Poweradmin</a> с именем пользователя \"admin\" и паролем \""
 
 msgid "Add zone template for"
 msgstr "Добавить шаблон зоны для"
@@ -898,3 +898,157 @@ msgstr "Зоны"
 
 msgid "Add zones"
 msgstr "Добавить зоны"
+
+msgid "List permission templates"
+msgstr "Шаблоны привилегий"
+
+msgid "Templates"
+msgstr "Шаблоны'
+
+msgid "Users"
+msgstr "Пользователи"
+
+msgid "Clear"
+msgstr "Очистеть"
+
+msgid "Номе"
+msgstr "Дом"
+
+msgid "Total number of zones:"
+msgstr "Общее количество зон:"
+
+msgid "Full name"
+msgstr "Полное имя"
+
+msgid "No results found"
+msgstr "Пусто"
+
+msgid "In use"
+msgstr "Использование"
+
+msgid "Zones linked"
+msgstr "Связанные зоны"
+
+msgid "Repeat password"
+msgstr "Повторите пароль"
+
+msgid "Update"
+msgstr "Обновить"
+
+msgid "Reset"
+msgstr "Сбросить"
+
+msgid "Edit"
+msgstr "Редактировать"
+
+msgid "Home"
+msgstr "Главная"
+
+msgid "Reverse"
+msgstr "Обратная"
+
+msgid "Zone has been unsigned successfully."
+msgstr "Подпись зоны успешно снята."
+
+msgid "Zone has been signed successfully."
+msgstr "Зона успешно подписана."
+
+msgid "Unsign this zone"
+msgstr "Снять подпись"
+
+msgid "Sign this zone"
+msgstr "Подписать зону"
+
+msgid "DNSSEC keys for zone"
+msgstr "DNSSEC ключи для зоны"
+
+msgid "Add new key"
+msgstr "Добавить ключ"
+
+msgid "Show DS and DNSKEY"
+msgstr "Показать DS и DNSKEY"
+
+msgid "DNSSEC public records for zone"
+msgstr "Публичные записи DNSSEC для зоны"
+
+msgid "DS record"
+msgstr "Запись DS"
+
+msgid "DNSKEY"
+msgstr "Ключ DNS"
+
+msgid "Deactivate zone key"
+msgstr "Отключение зоны"
+
+
+msgid "Activate zone key"
+msgstr "Включить ключ зоны"
+
+msgid "Delete zone key"
+msgstr "Удалить ключ зоны"
+
+msgid "Yes"
+msgstr "Да"
+
+msgid "No"
+msgstr "Нет"
+
+msgid "Zone key has been successfully deactivated."
+msgstr "Ключ зоны успешно отключен."
+
+msgid "Zone key has been successfully activated."
+msgstr "Ключ зоны успешно включен."
+
+msgid "Save as new template"
+msgstr "Сохранить как шаблон"
+
+msgid "Comments"
+msgstr "Комментарии"
+
+msgid "Provide zone name"
+msgstr "Укажите название зоны"
+
+msgid "Provide ip address"
+msgstr "Укажите ip-адрес"
+
+msgid "There are no supermasters to show in this listing."
+msgstr "В этом списке нет supermasters, которых можно было бы показать."
+
+msgid "Provide host name"
+msgstr "Укажите имя хоста"
+
+msgid "Provide user name"
+msgstr "Укажите имя пользователя"
+
+msgid "Provide user password"
+msgstr "Укажите пароль пользователя"
+
+msgid "Provide email"
+msgstr "Укажите адрес электронной почты"
+
+msgid "This user has been assigned the permission template"
+msgstr "Этому пользователю был назначен шаблон разрешений"
+
+msgid "User details updated"
+msgstr "Обновлены сведения о пользователе(лях)"
+
+msgid "Provide current password"
+msgstr "Пожалуйста, укажите текущий пароль"
+
+msgid "Provide new password"
+msgstr "Пожалуйста, введите новый пароль"
+
+msgid "Provide a domain name(s)"
+msgstr "Укажите доменное имя (имена)"
+
+msgid "Please provide a password"
+msgstr "Пожалуйста, укажите пароль пользователя"
+
+msgid "Please provide a username"
+msgstr "Пожалуйста, укажите имя пользователя"
+
+msgid "Provide a name for your template"
+msgstr "Укажите имя для Вашего шаблона"
+
+msgid "Domain"
+msgstr "Домен"
