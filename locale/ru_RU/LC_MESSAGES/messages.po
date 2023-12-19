@@ -903,7 +903,7 @@ msgid "List permission templates"
 msgstr "Шаблоны привилегий"
 
 msgid "Templates"
-msgstr "Шаблоны'
+msgstr "Шаблоны"
 
 msgid "Users"
 msgstr "Пользователи"
@@ -986,12 +986,6 @@ msgstr "Включить ключ зоны"
 
 msgid "Delete zone key"
 msgstr "Удалить ключ зоны"
-
-msgid "Yes"
-msgstr "Да"
-
-msgid "No"
-msgstr "Нет"
 
 msgid "Zone key has been successfully deactivated."
 msgstr "Ключ зоны успешно отключен."

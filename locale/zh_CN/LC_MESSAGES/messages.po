@@ -1366,9 +1366,5 @@ msgstr "删除记录"
 msgid "Delete record in zone"
 msgstr "删除区域中的记录"
 
-msgid "Delete zones"
-msgstr "删除区域"
-
 msgid "Note"
 msgstr "注意"
-
