@@ -160,7 +160,7 @@ class ZoneSearch extends BaseSearch
             LEFT JOIN (SELECT COUNT(domain_id) AS count_records, domain_id FROM records WHERE type IS NOT NULL GROUP BY domain_id) record_count ON record_count.domain_id=domains.id
             WHERE
                 (domains.name LIKE ' . $this->db->quote($search_string, 'text') .
-            ($reverse ? ' OR domains.name LIKE ' . $reverse_search_string : '') . ') ' .
+            ($reverse ? ' OR domains.name LIKE ' . $this->db->quote($reverse_search_string, 'text') : '') . ') ' .
             ($permission_view == 'own' ? ' AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '');
 
         return (int)$this->db->queryOne($zonesQuery);
