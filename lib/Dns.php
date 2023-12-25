@@ -247,7 +247,7 @@ class Dns
 
                     return false;
                 }
-                if (!self::has_quotes_arround($content)) {
+                if (!self::has_quotes_around($content)) {
                     return false;
                 }
                 break;
@@ -268,7 +268,7 @@ class Dns
                 if (!self::is_valid_printable($content) || self::has_html_tags($content)) {
                     return false;
                 }
-                if (!self::has_quotes_arround($content)) {
+                if (!self::is_properly_quoted($content)) {
                     return false;
                 }
 
@@ -537,12 +537,40 @@ class Dns
         return false;
     }
 
+    /** Verify that the content is properly quoted
+     *
+     * @param string $content
+     * @return bool
+     */
+    public static function is_properly_quoted(string $content): bool
+    {
+        $startsWithQuote = isset($content[0]) && $content[0] === '"';
+        $endsWithQuote = isset($content[strlen($content) - 1]) && $content[strlen($content) - 1] === '"';
+
+        if ($startsWithQuote && $endsWithQuote) {
+            $subContent = substr($content, 1, -1);
+        } else {
+            $subContent = $content;
+        }
+
+        $pattern = '/(?<!\\\\)"/';
+
+        if (preg_match($pattern, $subContent)) {
+            $error = new ErrorMessage(_('Backslashes must precede all quotes (") in TXT content'));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+            return false;
+        }
+
+        return true;
+    }
+
     /** Verify that the string is enclosed in quotes
      *
      * @param string $string Input string
      * @return bool true if valid, false otherwise
      */
-    public static function has_quotes_arround(string $string): bool
+    public static function has_quotes_around(string $string): bool
     {
         // Ignore empty line
         if (strlen($string) === 0) {

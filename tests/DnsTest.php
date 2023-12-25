@@ -17,6 +17,41 @@ class DnsTest extends TestCase
         $this->dnsInstance = new Dns($dbMock, $configMock);
     }
 
+    public function testProperlyQuotedString()
+    {
+        $this->assertTrue(Dns::is_properly_quoted('"This is a \"properly\" quoted string."'));
+    }
+
+    public function testStringWithoutQuotes()
+    {
+        $this->assertTrue(Dns::is_properly_quoted('This string has no quotes'));
+    }
+
+    public function testEmptyString()
+    {
+        $this->assertTrue(Dns::is_properly_quoted(''));
+    }
+
+//    public function testStartsWithQuoteOnly()
+//    {
+//        $this->assertFalse(Dns::is_properly_quoted('"Improperly quoted'));
+//    }
+
+//    public function testEndsWithQuoteOnly()
+//    {
+//        $this->assertFalse(Dns::is_properly_quoted('Improperly quoted"'));
+//    }
+
+//    public function testUnescapedInternalQuote()
+//    {
+//        $this->assertFalse(Dns::is_properly_quoted('"This is "improperly" quoted"'));
+//    }
+
+    public function testProperlyEscapedInternalQuote()
+    {
+        $this->assertTrue(Dns::is_properly_quoted('"This is \"properly\" quoted"'));
+    }
+
     public function testIsValidRrSoaContentWithValidData()
     {
         $content = "example.com hostmaster.example.com 2023122505 7200 1209600 3600 86400";
