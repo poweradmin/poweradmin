@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="vendor/autoload.php" backupGlobals="false"
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.0/phpunit.xsd" cacheDirectory=".phpunit.cache"
-         displayDetailsOnTestsThatTriggerDeprecations="true" colors="true" beStrictAboutTestsThatDoNotTestAnything="true"
-         backupStaticProperties="false">
+         displayDetailsOnTestsThatTriggerDeprecations="true" displayDetailsOnTestsThatTriggerErrors="true"
+         displayDetailsOnTestsThatTriggerWarnings="true" displayDetailsOnTestsThatTriggerNotices="true"
+         beStrictAboutTestsThatDoNotTestAnything="true" beStrictAboutOutputDuringTests="true"
+         backupStaticProperties="false" colors="true">
     <testsuites>
         <testsuite name="Poweradmin">
             <directory suffix="Test.php">tests</directory>
