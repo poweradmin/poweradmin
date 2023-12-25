@@ -2,9 +2,83 @@
 
 use Poweradmin\Dns;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\LegacyConfiguration;
+use Poweradmin\PDOLayer;
 
 class DnsTest extends TestCase
 {
+    private Dns $dnsInstance;
+
+    protected function setUp(): void
+    {
+        $dbMock = $this->createMock(PDOLayer::class);
+        $configMock = $this->createMock(LegacyConfiguration::class);
+
+        $this->dnsInstance = new Dns($dbMock, $configMock);
+    }
+
+    public function testIsValidRrSoaContentWithValidData()
+    {
+        $content = "example.com hostmaster.example.com 2023122505 7200 1209600 3600 86400";
+        $dns_hostmaster = "hostmaster@example.com";
+        $this->assertTrue($this->dnsInstance->is_valid_rr_soa_content($content, $dns_hostmaster));
+    }
+
+    public function testIsValidRrSoaContentWithValidNumber()
+    {
+        $content = "example.com hostmaster.example.com 5 7200 1209600 3600 86400";
+        $dns_hostmaster = "hostmaster@example.com";
+        $this->assertTrue($this->dnsInstance->is_valid_rr_soa_content($content, $dns_hostmaster));
+    }
+
+//    public function testIsValidRrSoaContentWithEmptyContent()
+//    {
+//        $content = "";
+//        $dns_hostmaster = "hostmaster@example.com";
+//        $this->assertFalse($this->dnsInstance->is_valid_rr_soa_content($content, $dns_hostmaster));
+//    }
+
+    public function testIsValidRrSoaContentWithMoreThanSevenFields()
+    {
+        $content = "example.com hostmaster.example.com 2023122505 7200 1209600 3600 86400 extraField";
+        $dns_hostmaster = "hostmaster@example.com";
+        $this->assertFalse($this->dnsInstance->is_valid_rr_soa_content($content, $dns_hostmaster));
+    }
+
+    public function testIsValidRrSoaContentWithLessThanSevenFields()
+    {
+        $content = "example.com hostmaster.example.com 2023122505 7200 1209600";
+        $dns_hostmaster = "hostmaster@example.com";
+        $this->assertFalse($this->dnsInstance->is_valid_rr_soa_content($content, $dns_hostmaster));
+    }
+
+//    public function testIsValidRrSoaContentWithInvalidHostname()
+//    {
+//        $content = "invalid_hostname hostmaster.example.com 2023122505 7200 1209600 3600 86400";
+//        $dns_hostmaster = "hostmaster@example.com";
+//        $this->assertFalse($this->dnsInstance->is_valid_rr_soa_content($content, $dns_hostmaster));
+//    }
+
+    public function testIsValidRrSoaContentWithInvalidEmail()
+    {
+        $content = "example.com invalid_email 2023122505 7200 1209600 3600 86400";
+        $dns_hostmaster = "invalid_email";
+        $this->assertFalse($this->dnsInstance->is_valid_rr_soa_content($content, $dns_hostmaster));
+    }
+
+    public function testIsValidRrSoaContentWithNonNumericSerialNumbers()
+    {
+        $content = "example.com hostmaster.example.com not_a_number 7200 1209600 3600 86400";
+        $dns_hostmaster = "hostmaster@example.com";
+        $this->assertFalse($this->dnsInstance->is_valid_rr_soa_content($content, $dns_hostmaster));
+    }
+
+    public function testIsValidRrSoaContentWithArpaDomain()
+    {
+        $content = "example.arpa hostmaster.example.com 2023122505 7200 1209600 3600 86400";
+        $dns_hostmaster = "hostmaster@example.com";
+        $this->assertFalse($this->dnsInstance->is_valid_rr_soa_content($content, $dns_hostmaster));
+    }
 
     public function testIs_valid_ds()
     {
@@ -61,5 +135,4 @@ class DnsTest extends TestCase
         $this->assertFalse(Dns::is_valid_rr_prio("foo", "A"));
         $this->assertTrue(Dns::is_valid_rr_prio("0", "A"));
     }
-
 }

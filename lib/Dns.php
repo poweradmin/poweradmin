@@ -729,7 +729,11 @@ class Dns
             $addr_input = $fields[1] ?? $dns_hostmaster;
             if (!str_contains($addr_input, "@")) {
                 $addr_input = preg_split('/(?<!\\\)\./', $addr_input, 2);
-                $addr_to_check = str_replace("\\", "", $addr_input[0]) . "@" . $addr_input[1];
+                if (count($addr_input) == 2) {
+                    $addr_to_check = str_replace("\\", "", $addr_input[0]) . "@" . $addr_input[1];
+                } else {
+                    $addr_to_check = str_replace("\\", "", $addr_input[0]);
+                }
             } else {
                 $addr_to_check = $addr_input;
             }

@@ -119,11 +119,10 @@ class EditRecordController extends BaseController {
         }
 
         $ret_val = $dnsRecord->edit_record($postData);
-        if ($ret_val == "1") {
-            if ($_POST['type'] != "SOA") {
-                $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-                $dnsRecord->update_soa_serial($zid);
-            }
+        if ($ret_val) {
+            $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+            $dnsRecord->update_soa_serial($zid);
+
             $new_record_info = DnsRecord::get_record_from_id($this->db, $_POST["rid"]);
             $this->logger->log_info(sprintf('client_ip:%s user:%s operation:edit_record'
                 . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
