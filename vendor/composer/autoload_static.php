@@ -154,6 +154,7 @@ class ComposerStaticInit02fd231869a48df50cb631d6580008da
         'Poweradmin\\Infrastructure\\Service\\RedirectService' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/RedirectService.php',
         'Poweradmin\\Infrastructure\\SystemMonitoring\\SimpleSizeFormatter' => __DIR__ . '/../..' . '/lib/Infrastructure/SystemMonitoring/SimpleSizeFormatter.php',
         'Poweradmin\\Infrastructure\\Web\\HttpPaginationParameters' => __DIR__ . '/../..' . '/lib/Infrastructure/Web/HttpPaginationParameters.php',
+        'Poweradmin\\Infrastructure\\Web\\IpAddressRetriever' => __DIR__ . '/../..' . '/lib/Infrastructure/Web/IpAddressRetriever.php',
         'Poweradmin\\Infrastructure\\Web\\LanguageCode' => __DIR__ . '/../..' . '/lib/Infrastructure/Web/LanguageCode.php',
         'Poweradmin\\Infrastructure\\Web\\ThemeManager' => __DIR__ . '/../..' . '/lib/Infrastructure/Web/ThemeManager.php',
         'Poweradmin\\LdapUserEventLogger' => __DIR__ . '/../..' . '/lib/LdapUserEventLogger.php',

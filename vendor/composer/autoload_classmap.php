@@ -77,6 +77,7 @@ return array(
     'Poweradmin\\Infrastructure\\Service\\RedirectService' => $baseDir . '/lib/Infrastructure/Service/RedirectService.php',
     'Poweradmin\\Infrastructure\\SystemMonitoring\\SimpleSizeFormatter' => $baseDir . '/lib/Infrastructure/SystemMonitoring/SimpleSizeFormatter.php',
     'Poweradmin\\Infrastructure\\Web\\HttpPaginationParameters' => $baseDir . '/lib/Infrastructure/Web/HttpPaginationParameters.php',
+    'Poweradmin\\Infrastructure\\Web\\IpAddressRetriever' => $baseDir . '/lib/Infrastructure/Web/IpAddressRetriever.php',
     'Poweradmin\\Infrastructure\\Web\\LanguageCode' => $baseDir . '/lib/Infrastructure/Web/LanguageCode.php',
     'Poweradmin\\Infrastructure\\Web\\ThemeManager' => $baseDir . '/lib/Infrastructure/Web/ThemeManager.php',
     'Poweradmin\\LdapUserEventLogger' => $baseDir . '/lib/LdapUserEventLogger.php',

@@ -1,5 +1,7 @@
 <?php
 
+namespace Poweradmin\Infrastructure\Web;
+
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://www.poweradmin.org> for more details.
  *
@@ -20,9 +22,37 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+class IpAddressRetriever
+{
+    private array $server;
 
-use Poweradmin\Infrastructure\Web\IpAddressRetriever;
+    public function __construct(array $server) {
+        $this->server = $server;
+    }
 
-$ipAddressRetriever = new IpAddressRetriever($_SERVER);
-echo htmlspecialchars($ipAddressRetriever->getClientIp());
+    /**
+     * Get the client IP address.
+     *
+     * @return string
+     */
+    function getClientIp(): string
+    {
+        $clientIpHeaders = [
+            'HTTP_CLIENT_IP',
+            'HTTP_X_FORWARDED_FOR',
+            'REMOTE_ADDR'
+        ];
+
+        foreach ($clientIpHeaders as $header) {
+            if (!empty($this->server[$header])) {
+                $ips = array_filter(explode(',', $this->server[$header]), function($ip) {
+                    return filter_var($ip, FILTER_VALIDATE_IP);
+                });
+
+                return $ips[0] ?? '';
+            }
+        }
+
+        return '';
+    }
+}
