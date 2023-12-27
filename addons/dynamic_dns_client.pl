@@ -17,8 +17,7 @@ my $verbose = 1;
 my $ip_address = LWP::Simple::get($ip_lookup_url)
     or die("Error: Could not get your global IP address!\n");
 
-# FIXME: doesn't support IPv6
-if ($ip_address !~ /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/) {
+if ($ip_address !~ /^(?:[0-9a-fA-F]{0,4}:){2}(?:[0-9a-fA-F]{0,4}:){0,5}[0-9a-fA-F]{0,4}|(?:\d{1,3}\.){3}\d{1,3}$/) {
     print "Error: Invalid global IP address! Check if Poweradmin url is correct\n";
     exit;
 }
