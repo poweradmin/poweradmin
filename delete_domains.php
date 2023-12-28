@@ -49,7 +49,7 @@ class DeleteDomainsController extends BaseController {
 
     public function run(): void
     {
-        $zone_ids = $_POST['zone_id'];
+        $zone_ids = $_POST['zone_id'] ?? null;
         if (!$zone_ids) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
