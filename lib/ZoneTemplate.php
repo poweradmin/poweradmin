@@ -439,11 +439,7 @@ class ZoneTemplate
 
             $db->exec($query);
 
-            if ($db_type == 'pgsql') {
-                $zone_templ_id = $db->lastInsertId('zone_templ_id_seq');
-            } else {
-                $zone_templ_id = $db->lastInsertId();
-            }
+            $zone_templ_id = $db->lastInsertId();
 
             foreach ($records as $record) {
                 $name = $domain ? preg_replace('/' . preg_quote($domain, '/') . '/', '[ZONE]', $record['name']) : $record['name'];

@@ -638,11 +638,7 @@ class LegacyUsers
 
         $db->query($query);
 
-        if ($db_type == 'pgsql') {
-            $perm_templ_id = $db->lastInsertId('perm_templ_id_seq');
-        } else {
-            $perm_templ_id = $db->lastInsertId();
-        }
+        $perm_templ_id = $db->lastInsertId();
 
         if (isset($details['perm_id'])) {
             foreach ($details['perm_id'] as $perm_id) {

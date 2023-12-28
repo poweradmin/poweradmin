@@ -666,11 +666,7 @@ class DnsRecord
 
                 $db->query("INSERT INTO domains (name, type) VALUES (" . $db->quote($domain, 'text') . ", " . $db->quote($type, 'text') . ")");
 
-                if ($db_type == 'pgsql') {
-                    $domain_id = $db->lastInsertId('domains_id_seq');
-                } else {
-                    $domain_id = $db->lastInsertId();
-                }
+                $domain_id = $db->lastInsertId();
 
                 $db->query("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (" . $db->quote($domain_id, 'integer') . ", " . $db->quote($owner, 'integer') . ", " . $db->quote(($zone_template == "none") ? 0 : $zone_template, 'integer') . ")");
 
@@ -725,11 +721,7 @@ class DnsRecord
                                         . $db->quote($prio, 'integer') . ")";
                                     $db->query($query);
 
-                                    if ($db_type == 'pgsql') {
-                                        $record_id = $db->lastInsertId('records_id_seq');
-                                    } else {
-                                        $record_id = $db->lastInsertId();
-                                    }
+                                    $record_id = $db->lastInsertId();
 
                                     $query = "INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES ("
                                         . $db->quote($domain_id, 'integer') . ","
