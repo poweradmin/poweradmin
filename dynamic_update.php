@@ -67,7 +67,7 @@ $db = $databaseService->connect($credentials);
  */
 function safe($db, $db_type, mixed $value): string
 {
-    if ($db_type == 'mysql' || $db_type == 'sqlite') {
+    if ($db_type == 'mysql' || $db_type == 'sqlite' || $db_type == 'pgsql') {
         $value = $db->quote($value, 'text');
         $value = substr($value, 1, -1); // remove quotes
     } else {
