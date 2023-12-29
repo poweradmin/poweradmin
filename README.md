@@ -68,7 +68,7 @@ Download the project files
 
 * Via Git:
     * Clone the repository: ```git clone https://github.com/poweradmin/poweradmin.git```
-    * Select latest tag (for example v3.6.0) or skip this if you want to run from master: ```git checkout tags/v3.6.0```
+    * Select latest tag (for example v3.7.0) or skip this if you want to run from master: ```git checkout tags/v3.7.0```
 * Via releases:
     * Get the latest file from [releases](https://github.com/poweradmin/poweradmin/releases)
 
