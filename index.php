@@ -31,6 +31,7 @@
 
 use Poweradmin\BaseController;
 use Poweradmin\LegacyUsers;
+use Poweradmin\Permission;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -47,18 +48,22 @@ class IndexController extends BaseController
 
         $userlogin = $_SESSION["userlogin"] ?? '';
 
+        $permissions = Permission::getPermissions($this->db, [
+            'perm_search',
+            'perm_view_zone_own',
+            'perm_view_zone_other',
+            'perm_supermaster_view',
+            'perm_zone_master_add',
+            'perm_zone_slave_add',
+            'perm_supermaster_add',
+            'perm_is_godlike',
+            'perm_templ_perm_edit',
+        ]);
+
         $this->render($template, [
             'user_name' => empty($_SESSION["name"]) ? $userlogin : $_SESSION["name"],
             'auth_used' => $_SESSION["auth_used"] ?? '',
-            'perm_search' => LegacyUsers::verify_permission($this->db, 'search'),
-            'perm_view_zone_own' => LegacyUsers::verify_permission($this->db,'zone_content_view_own'),
-            'perm_view_zone_other' => LegacyUsers::verify_permission($this->db,'zone_content_view_others'),
-            'perm_supermaster_view' => LegacyUsers::verify_permission($this->db,'supermaster_view'),
-            'perm_zone_master_add' => LegacyUsers::verify_permission($this->db,'zone_master_add'),
-            'perm_zone_slave_add' => LegacyUsers::verify_permission($this->db,'zone_slave_add'),
-            'perm_supermaster_add' => LegacyUsers::verify_permission($this->db,'supermaster_add'),
-            'perm_is_godlike' => LegacyUsers::verify_permission($this->db,'user_is_ueberuser'),
-            'perm_templ_perm_edit' => LegacyUsers::verify_permission($this->db,'templ_perm_edit'),
+            'permissions' => $permissions,
             'dblog_use' => $this->config('dblog_use')
         ]);
     }

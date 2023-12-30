@@ -63,17 +63,19 @@ class UsersController extends BaseController
 
     private function showUsers(): void
     {
+        $permissions = Permission::getPermissions(
+            $this->db,
+            [
+                'user_view_others',
+                'user_edit_own',
+                'user_edit_others',
+                'user_edit_templ_perm',
+                'user_is_ueberuser'
+            ]
+        );
+
         $this->render('users.html', [
-            'permissions' => Permission::getPermissions(
-                $this->db,
-                [
-                    'user_view_others',
-                    'user_edit_own',
-                    'user_edit_others',
-                    'user_edit_templ_perm',
-                    'user_is_ueberuser'
-                ]
-            ),
+            'permissions' => $permissions,
             'perm_templates' => LegacyUsers::list_permission_templates($this->db),
             'users' => LegacyUsers::get_user_detail_list($this->db, $this->config('ldap_use')),
             'ldap_use' => $this->config('ldap_use'),
