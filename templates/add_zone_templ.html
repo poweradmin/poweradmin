@@ -1,14 +1,14 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="list_zones.php">{% trans %}Zones{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="list_zone_templ.php">{% trans %}Zone templates{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=list_zones">{% trans %}Zones{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=list_zone_templ">{% trans %}Zone templates{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Add template{% endtrans %}</li>
     </ol>
 </nav>
 
 <h5 class="mb-3">{% trans %}Add zone template for{% endtrans %} {{ user_name }}</h5>
-<form class="needs-validation" method="post" action="add_zone_templ.php" novalidate>
+<form class="needs-validation" method="post" action="index.php?page=add_zone_templ" novalidate>
     <div class="col-sm-3">
         <div class="mb-2">
             <label for="templ_name" class="form-label">{% trans %}Name{% endtrans %}</label>

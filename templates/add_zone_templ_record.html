@@ -1,9 +1,9 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="list_zones.php">{% trans %}Zones{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="list_zone_templ.php">{% trans %}Zone templates{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="edit_zone_templ.php?id={{ zone_templ_id }}">{{ templ_name }}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=list_zones">{% trans %}Zones{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=list_zone_templ">{% trans %}Zone templates{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=edit_zone_templ&id={{ zone_templ_id }}">{{ templ_name }}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Add record{% endtrans %}</li>
     </ol>
 </nav>

@@ -1,12 +1,12 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="list_zones.php">{% trans %}Zones{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=list_zones">{% trans %}Zones{% endtrans %}</a></li>
         <li class="breadcrumb-item">
             {% if idn_zone_name %}
-            <a href="edit.php?id={{ zone_id }}">{{ idn_zone_name }}</a>
+            <a href="index.php?page=edit&id={{ zone_id }}">{{ idn_zone_name }}</a>
             {% else %}
-            <a href="edit.php?id={{ zone_id }}">{{ zone_name }}</a>
+            <a href="index.php?page=edit&id={{ zone_id }}">{{ zone_name }}</a>
             {% endif %}
         </li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Add record{% endtrans %}</li>

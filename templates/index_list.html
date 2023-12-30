@@ -2,63 +2,63 @@
 <ul class="list-group">
     {% if permissions['perm_search'] %}
         <li class="list-group-item list-group-item-action">
-            <i class="bi bi-search"></i> <a href="search.php">{% trans %}Search zones and records{% endtrans %}</a>
+            <i class="bi bi-search"></i> <a href="index.php?page=search">{% trans %}Search zones and records{% endtrans %}</a>
         </li>
     {% endif %}
     {% if permissions['perm_view_zone_own'] or permissions['perm_view_zone_other'] %}
         <li class="list-group-item list-group-item-action">
-            <i class="bi bi-diagram-3"></i> <a href="list_zones.php">{% trans %}List zones{% endtrans %}</a>
+            <i class="bi bi-diagram-3"></i> <a href="index.php?page=list_zones">{% trans %}List zones{% endtrans %}</a>
         </li>
     {% endif %}
     {% if permissions['perm_zone_master_add'] %}
         <li class="list-group-item list-group-item-action">
-            <i class="bi bi-files"></i> <a href="list_zone_templ.php">{% trans %}List zone templates{% endtrans %}</a>
+            <i class="bi bi-files"></i> <a href="index.php?page=list_zone_templ">{% trans %}List zone templates{% endtrans %}</a>
         </li>
     {% endif %}
     {% if permissions['perm_supermaster_view'] %}
         <li class="list-group-item list-group-item-action">
-            <i class="bi bi-hdd-rack"></i> <a href="list_supermasters.php">{% trans %}List supermasters{% endtrans %}</a>
+            <i class="bi bi-hdd-rack"></i> <a href="index.php?page=list_supermasters">{% trans %}List supermasters{% endtrans %}</a>
         </li>
     {% endif %}
     {% if permissions['perm_zone_master_add'] %}
         <li class="list-group-item list-group-item-action">
-            <i class="bi bi-plus-circle"></i> <a href="add_zone_master.php">{% trans %}Add master zone{% endtrans %}</a>
+            <i class="bi bi-plus-circle"></i> <a href="index.php?page=add_zone_master">{% trans %}Add master zone{% endtrans %}</a>
         </li>
     {% endif %}
     {% if permissions['perm_zone_slave_add'] %}
         <li class="list-group-item list-group-item-action">
-            <i class="bi bi-plus-circle-dotted"></i> <a href="add_zone_slave.php">{% trans %}Add slave zone{% endtrans %}</a>
+            <i class="bi bi-plus-circle-dotted"></i> <a href="index.php?page=add_zone_slave">{% trans %}Add slave zone{% endtrans %}</a>
         </li>
     {% endif %}
     {% if permissions['perm_supermaster_add'] %}
         <li class="list-group-item list-group-item-action">
-            <i class="bi bi-hdd-network"></i> <a href="add_supermaster.php">{% trans %}Add supermaster{% endtrans %}</a>
+            <i class="bi bi-hdd-network"></i> <a href="index.php?page=add_supermaster">{% trans %}Add supermaster{% endtrans %}</a>
         </li>
     {% endif %}
     {% if permissions['perm_zone_master_add'] %}
         <li class="list-group-item list-group-item-action">
-            <i class="bi bi-collection"></i> <a href="bulk_registration.php">{% trans %}Bulk registration{% endtrans %}</a>
+            <i class="bi bi-collection"></i> <a href="index.php?page=bulk_registration">{% trans %}Bulk registration{% endtrans %}</a>
         </li>
     {% endif %}
     {% if permissions['perm_is_godlike'] and dblog_use == true %}
     <li class="list-group-item list-group-item-action">
-        <i class="bi bi-list-ul"></i> <a href="list_log_zones.php">{% trans %}Zone logs{% endtrans %}</a>
+        <i class="bi bi-list-ul"></i> <a href="index.php?page=list_log_zones">{% trans %}Zone logs{% endtrans %}</a>
     </li>
     {% endif %}
     {% if auth_used != "ldap" %}
         <li class="list-group-item list-group-item-action">
-            <i class="bi bi-key"></i> <a href="change_password.php">{% trans %}Change password{% endtrans %}</a>
+            <i class="bi bi-key"></i> <a href="index.php?page=change_password">{% trans %}Change password{% endtrans %}</a>
         </li>
     {% endif %}
     <li class="list-group-item list-group-item-action">
-        <i class="bi bi-people"></i> <a href="users.php">{% trans %}User administration{% endtrans %}</a>
+        <i class="bi bi-people"></i> <a href="index.php?page=users">{% trans %}User administration{% endtrans %}</a>
     </li>
     {% if permissions['perm_templ_perm_edit'] %}
     <li class="list-group-item list-group-item-action">
-        <i class="bi bi-person-lock"></i> <a href="users.php">{% trans %}List permission templates{% endtrans %}</a>
+        <i class="bi bi-person-lock"></i> <a href="index.php?page=users">{% trans %}List permission templates{% endtrans %}</a>
     </li>
     {% endif %}
     <li class="list-group-item list-group-item-action">
-        <i class="bi bi-box-arrow-right"></i> <a href="index.php?logout">{% trans %}Logout{% endtrans %}</a>
+        <i class="bi bi-box-arrow-right"></i> <a href="index.php?page=logout">{% trans %}Logout{% endtrans %}</a>
     </li>
 </ul>

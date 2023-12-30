@@ -31,7 +31,7 @@ class ZoneStartingLettersPresenter {
         if ($letterStart === "1") {
             $html .= '<li class="page-item active"><span class="page-link" tabindex="-1">0-9</span></li>';
         } elseif ($digitsAvailable) {
-            $html .= "<li class=\"page-item\"><a class=\"page-link\" href=\"?letter=1\">0-9</a></li>";
+            $html .= "<li class=\"page-item\"><a class=\"page-link\" href=\"index.php?page=list_zones&letter=1\">0-9</a></li>";
         } else {
             $html .= '<li class="page-item disabled"><span class="page-link" tabindex="-1">0-9</span></li>';
         }
@@ -40,7 +40,7 @@ class ZoneStartingLettersPresenter {
             if ($letter === $letterStart) {
                 $html .= '<li class="page-item active"><span class="page-link" tabindex="-1">' . $letter . '</span></li>';
             } elseif (in_array($letter, $availableChars)) {
-                $html .= "<li class=\"page-item\"><a class=\"page-link\" href=\"?letter=" . $letter . "\">" . $letter . "</a></li>";
+                $html .= "<li class=\"page-item\"><a class=\"page-link\" href=\"index.php?page=list_zones&letter=" . $letter . "\">" . $letter . "</a></li>";
             } else {
                 $html .= '<li class="page-item disabled"><span class="page-link" tabindex="-1">' . $letter . '</span></li>';
             }
@@ -49,7 +49,7 @@ class ZoneStartingLettersPresenter {
         if ($letterStart === 'all') {
             $html .= '<li class="page-item active"><span class="page-link" href="#">' . _('Show all') . '</span></li>';
         } else {
-            $html .= "<li class=\"page-item\"><a class=\"page-link\" href=\"?letter=all\">" . _('Show all') . '</a></li>';
+            $html .= "<li class=\"page-item\"><a class=\"page-link\" href=\"index.php?page=list_zones&letter=all\">" . _('Show all') . '</a></li>';
         }
 
         $html .= "</ul>";

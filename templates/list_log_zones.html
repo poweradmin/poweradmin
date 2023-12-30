@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="list_zones.php">{% trans %}Zones{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=list_zones">{% trans %}Zones{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Zone logs{% endtrans %}</li>
     </ol>
 </nav>
@@ -21,7 +21,7 @@
                     {% trans %}Search{% endtrans %}
                 </button>
                 <div class="input-group-append">
-                    <a href="list_log_zones.php" class="btn btn-secondary btn-sm" role="button"><i
+                    <a href="index.php?page=list_log_zones" class="btn btn-secondary btn-sm" role="button"><i
                             class="bi bi-eraser"></i> {% trans %}Clear{% endtrans %}</a>
                 </div>
             </div>
@@ -29,7 +29,7 @@
     </div>
 </form>
 
-<form method="post" action="delete_domains.php">
+<form method="post" action="index.php?page=delete_domains">
 
     {% if data %}
     {{ pagination | raw }}

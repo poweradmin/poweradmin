@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="list_zones.php">{% trans %}Zones{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=list_zones">{% trans %}Zones{% endtrans %}</a></li>
         <li class="breadcrumb-item">
             {% if idn_zone_name %}
             {{ idn_zone_name }}
@@ -35,22 +35,22 @@
     <input type="hidden" name="serial" value="{{ serial }}">
     <table class="table table-striped table-hover table-sm">
         <tr>
-            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=id">{% trans %}Id{% endtrans %}</a>
+            <th><a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=id">{% trans %}Id{% endtrans %}</a>
                 {% if record_sort_by == 'id' %}<i class="bi bi-arrow-down"></i>{% endif %}
             </th>
-            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=name">{% trans %}Name{% endtrans %}</a>
+            <th><a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=name">{% trans %}Name{% endtrans %}</a>
                 {% if record_sort_by == 'name' %}<i class="bi bi-arrow-down"></i>{% endif %}
             </th>
-            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=type">{% trans %}Type{% endtrans %}</a>
+            <th><a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=type">{% trans %}Type{% endtrans %}</a>
                 {% if record_sort_by == 'type' %}<i class="bi bi-arrow-down"></i>{% endif %}
             </th>
-            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=content">{% trans %}Content{% endtrans %}</a>
+            <th><a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=content">{% trans %}Content{% endtrans %}</a>
                 {% if record_sort_by == 'content' %}<i class="bi bi-arrow-down"></i>{% endif %}
             </th>
-            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=prio">{% trans %}Priority{% endtrans %}</a>
+            <th><a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=prio">{% trans %}Priority{% endtrans %}</a>
                 {% if record_sort_by == 'prio' %}<i class="bi bi-arrow-down"></i>{% endif %}
             </th>
-            <th><a href="edit.php?id={{ zone_id }}&record_sort_by=ttl">{% trans %}TTL{% endtrans %}</a>
+            <th><a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=ttl">{% trans %}TTL{% endtrans %}</a>
                 {% if record_sort_by == 'ttl' %}<i class="bi bi-arrow-down"></i>{% endif %}
             </th>
             <th>{% trans %}Disabled{% endtrans %}</th>
@@ -112,9 +112,9 @@
             <td>&nbsp;</td>
             {% else %}
             <td class="col-sm-2">
-                <a class="btn btn-outline-primary btn-sm" href="edit_record.php?id={{ r['id'] }}&domain={{ zone_id }}">
+                <a class="btn btn-outline-primary btn-sm" href="index.php?page=edit_record&id={{ r['id'] }}&domain={{ zone_id }}">
                     <i class="bi bi-pencil-square"></i> {% trans %}Edit{% endtrans %}</a>
-                <a class="btn btn-outline-danger btn-sm" href="delete_record.php?id={{ r['id'] }}&domain={{ zone_id }}">
+                <a class="btn btn-outline-danger btn-sm" href="index.php?page=delete_record&id={{ r['id'] }}&domain={{ zone_id }}">
                     <i class="bi bi-trash"></i> {% trans %}Delete{% endtrans %}</a>
             </td>
             {% endif %}
@@ -133,7 +133,7 @@
             <td colspan="6"><textarea class="form-control form-control-sm" rows="5" cols="80" name="comment">{{ zone_comment }}</textarea>
             </td>
             <td colspan="2">
-                <a class="btn btn-outline-primary btn-sm" href="edit_comment.php?id={{ zone_id }}">
+                <a class="btn btn-outline-primary btn-sm" href="index.php?page=edit_comment&id={{ zone_id }}">
                     <i class="bi bi-pencil-square"></i> {% trans %}Edit comment{% endtrans %}</a>
             </td>
         <tr>
@@ -148,7 +148,7 @@
     {% if pdnssec_use %}
     {% if is_secured %}
     <input class="btn btn-secondary btn-sm" type="button" name="dnssec"
-           onclick="location.href = 'dnssec.php?id={{ zone_id }}'" value="{% trans %}DNSSEC{% endtrans %}">
+           onclick="location.href = 'index.php?page=dnssec&id={{ zone_id }}'" value="{% trans %}DNSSEC{% endtrans %}">
     <input class="btn btn-secondary btn-sm" type="submit" name="unsign_zone"
            value="{% trans %}Unsign this zone{% endtrans %}">
     {% else %}
@@ -162,7 +162,7 @@
 
 {% if perm_edit == "all" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "1" %}
 {% if domain_type != "SLAVE" %}
-<form class="needs-validation" method="post" action="add_record.php?id={{ zone_id }}" novalidate>
+<form class="needs-validation" method="post" action="index.php?page=add_record&id={{ zone_id }}" novalidate>
     <input type="hidden" name="domain" value="{{ zone_id }}">
     <table class="table table-striped table-hover table-sm">
         <tr>
@@ -258,7 +258,7 @@
         {% if meta_edit %}
         {% for owner in owners %}
         <tr>
-            <form method="post" action="edit.php?id={{ zone_id }}">
+            <form method="post" action="index.php?page=edit&id={{ zone_id }}">
                 <td>
                     {% if owner["fullname"] %}
                     {{ owner["fullname"] }}
@@ -291,7 +291,7 @@
         {% endif %}
 
         {% if meta_edit %}
-        <form method="post" action="edit.php?id={{ zone_id }}">
+        <form method="post" action="index.php?page=edit&id={{ zone_id }}">
             <input type="hidden" name="domain" value="{{ zone_id }}">
             <tr>
                 <td>
@@ -326,7 +326,7 @@
         </tr>
 
         {% if meta_edit %}
-        <form action="edit.php?id={{ zone_id }}" method="post">
+        <form action="index.php?page=edit&id={{ zone_id }}" method="post">
             <input type="hidden" name="domain" value="{{ zone_id }}">
             <tr>
                 <td>
@@ -359,7 +359,7 @@
         </tr>
 
         {% if meta_edit %}
-        <form action="edit.php?id={{ zone_id }}" method="post">
+        <form action="index.php?page=edit&id={{ zone_id }}" method="post">
             <input type="hidden" name="domain" value="{{ zone_id }}">
             <tr>
                 <td>
@@ -385,7 +385,7 @@
         </tr>
 
         {% if meta_edit %}
-        <form action="edit.php?id={{ zone_id }}" method="post">
+        <form action="index.php?page=edit&id={{ zone_id }}" method="post">
             <input type="hidden" name="current_zone_template" value="{{ zone_template_id }}">
             <tr>
                 <td>

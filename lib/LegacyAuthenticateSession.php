@@ -188,8 +188,7 @@ class LegacyAuthenticateSession
         if (isset($_POST["authenticate"])) {
             $this->ldapUserEventLogger->log_success_auth();
             session_write_close();
-            $redirect_url = ($_POST["query_string"] ? $_SERVER['SCRIPT_NAME'] . "?" . $_POST["query_string"] : $_SERVER['SCRIPT_NAME']);
-            $this->clean_page($redirect_url);
+            $this->authenticationService->redirectToIndex();
         }
     }
 
@@ -246,8 +245,7 @@ class LegacyAuthenticateSession
         if (isset($_POST["authenticate"])) {
             $this->userEventLogger->log_successful_auth();
             session_write_close();
-            $redirect_url = $_POST["query_string"] ? $_SERVER['SCRIPT_NAME'] . "?" . $_POST["query_string"] : $_SERVER['SCRIPT_NAME'];
-            $this->clean_page($redirect_url);
+            $this->authenticationService->redirectToIndex();
         }
     }
 
@@ -262,24 +260,5 @@ class LegacyAuthenticateSession
             $sessionEntity = new SessionEntity(_('Session expired, please login again.'), 'danger');
         }
         $this->authenticationService->auth($sessionEntity);
-    }
-
-    /** Send 302 Redirect with optional argument
-     *
-     * Reroute a user to a clean page of (if passed) arg
-     *
-     * @param string $arg argument string to add to url
-     *
-     * @return void
-     */
-    private function clean_page(string $arg = ''): void
-    {
-        if (!$arg) {
-            header("Location: " . htmlentities($_SERVER['SCRIPT_NAME'], ENT_QUOTES) . "?time=" . time());
-        } else {
-            $add = preg_match('!\?!si', $arg) ? "&time=" : "?time=";
-            header("Location: $arg$add" . time());
-        }
-        exit;
     }
 }

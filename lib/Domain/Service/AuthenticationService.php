@@ -47,7 +47,13 @@ class AuthenticationService {
 
     private function redirectToLogin(): void {
         $args['time'] = time();
-        $url = htmlentities('login.php', ENT_QUOTES) . "?" . http_build_query($args);
+        $url = htmlentities('index.php?page=login', ENT_QUOTES) . "&" . http_build_query($args);
+        $this->redirectService->redirectTo($url);
+    }
+
+    public function redirectToIndex(): void {
+        $args['time'] = time();
+        $url = htmlentities('index.php?page=index', ENT_QUOTES) . "&" . http_build_query($args);
         $this->redirectService->redirectTo($url);
     }
 }

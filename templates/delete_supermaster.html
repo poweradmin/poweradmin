@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="list_supermasters.php">{% trans %}Supermasters{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=list_supermasters">{% trans %}Supermasters{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Delete supermaster{% endtrans %}</li>
     </ol>
 </nav>
@@ -13,6 +13,6 @@
 </p>
 <p>{% trans %}Are you sure?{% endtrans %}</p>
 <input type="button" class="btn btn-primary btn-sm"
-       onClick="location.href='delete_supermaster.php?master_ip={{ master_ip }}&ns_name={{ info['ns_name'] }}&confirm=1'"
+       onClick="location.href='index.php?page=delete_supermaster&master_ip={{ master_ip }}&ns_name={{ info['ns_name'] }}&confirm=1'"
        value="{% trans %}Yes{% endtrans %}">
-<input type="button" class="btn btn-secondary btn-sm" onClick="location.href='list_supermasters.php'" value="{% trans %}No{% endtrans %}">
+<input type="button" class="btn btn-secondary btn-sm" onClick="location.href='index.php?page=list_supermasters'" value="{% trans %}No{% endtrans %}">

@@ -1,13 +1,13 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="list_supermasters.php">{% trans %}Supermasters{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=list_supermasters">{% trans %}Supermasters{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Add supermaster{% endtrans %}</li>
     </ol>
 </nav>
 
 <h5 class="mb-3">{% trans %}Add supermaster{% endtrans %}</h5>
-<form class="needs-validation" method="post" action="add_supermaster.php" novalidate>
+<form class="needs-validation" method="post" action="index.php?page=add_supermaster" novalidate>
     <div class="col-sm-3">
         <div class="mb-2">
             <label for="master_ip" class="form-label">{% trans %}IP address of supermaster{% endtrans %}</label>

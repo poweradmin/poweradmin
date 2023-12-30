@@ -1,9 +1,9 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="list_zones.php">{% trans %}Zones{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="list_zone_templ.php">{% trans %}Zone templates{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="edit_zone_templ.php?id={{ zone_templ_id }}">{{ templ_details['name'] }}</a>
+        <li class="breadcrumb-item"><a href="index.php?page=list_zones">{% trans %}Zones{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=list_zone_templ">{% trans %}Zone templates{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=edit_zone_templ&?id={{ zone_templ_id }}">{{ templ_details['name'] }}</a>
         </li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Edit record{% endtrans %}</li>
     </ol>
@@ -11,7 +11,7 @@
 
 <h5 class="mb-3">{% trans %}Edit record in zone template{% endtrans %} "{{ templ_details['name'] }}"</h5>
 <form class="needs-validation" method="post"
-      action="edit_zone_templ_record.php?zone_templ_id={{ zone_templ_id }}&id={{ record_id }}" novalidate>
+      action="index.php?page=edit_zone_templ_record&zone_templ_id={{ zone_templ_id }}&id={{ record_id }}" novalidate>
     <input type="hidden" name="rid" value="{{ record_id }}">
     <input type="hidden" name="zid" value="{{ zone_templ_id }}">
 

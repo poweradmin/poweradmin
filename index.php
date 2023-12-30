@@ -20,54 +20,55 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Script which displays available actions
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2023 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
+use Poweradmin\Application\Routing\BasicRouter;
 
-use Poweradmin\BaseController;
-use Poweradmin\LegacyUsers;
-use Poweradmin\Permission;
+require __DIR__ . '/vendor/autoload.php';
 
-require_once __DIR__ . '/vendor/autoload.php';
+$router = new BasicRouter($_GET);
+$router->setDefaultPage('index');
+$router->setPages([
+    'add_perm_templ',
+    'add_record',
+    'add_supermaster',
+    'add_user',
+    'add_zone_master',
+    'add_zone_slave',
+    'add_zone_templ_record',
+    'add_zone_templ',
+    'bulk_registration',
+    'change_password',
+    'delete_domain',
+    'delete_domains',
+    'delete_perm_templ',
+    'delete_record',
+    'delete_supermaster',
+    'delete_user',
+    'delete_zone_templ',
+    'delete_zone_templ_record',
+    'dnssec_add_key',
+    'dnssec',
+    'dnssec_delete_key',
+    'dnssec_ds_dnskey',
+    'dnssec_edit_key',
+    'edit_comment',
+    'edit',
+    'edit_perm_templ',
+    'edit_record',
+    'edit_user',
+    'edit_zone_templ',
+    'edit_zone_templ_record',
+    'index',
+    'list_log_users',
+    'list_log_zones',
+    'list_perm_templ',
+    'list_supermasters',
+    'list_zone_templ',
+    'list_zones',
+    'login',
+    'logout',
+    'search',
+    'switch_theme',
+    'users',
+]);
 
-class IndexController extends BaseController
-{
-    public function run(): void
-    {
-        $this->showIndex();
-    }
-
-    private function showIndex(): void
-    {
-        $template = sprintf("index_%s.html", $this->config('iface_index'));
-
-        $userlogin = $_SESSION["userlogin"] ?? '';
-
-        $permissions = Permission::getPermissions($this->db, [
-            'perm_search',
-            'perm_view_zone_own',
-            'perm_view_zone_other',
-            'perm_supermaster_view',
-            'perm_zone_master_add',
-            'perm_zone_slave_add',
-            'perm_supermaster_add',
-            'perm_is_godlike',
-            'perm_templ_perm_edit',
-        ]);
-
-        $this->render($template, [
-            'user_name' => empty($_SESSION["name"]) ? $userlogin : $_SESSION["name"],
-            'auth_used' => $_SESSION["auth_used"] ?? '',
-            'permissions' => $permissions,
-            'dblog_use' => $this->config('dblog_use')
-        ]);
-    }
-}
-
-$controller = new IndexController();
-$controller->run();
+$router->process();

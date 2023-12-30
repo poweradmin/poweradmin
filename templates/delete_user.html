@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="users.php">{% trans %}Users{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=users">{% trans %}Users{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Delete user{% endtrans %}</li>
     </ol>
 </nav>
@@ -52,5 +52,5 @@
 
     </table>
     <input class="btn btn-primary btn-sm" type="submit" name="commit" value="{% trans %}Yes{% endtrans %}">
-    <input class="btn btn-secondary btn-sm" type="button" onClick="location.href='users.php'" value="{% trans %}No{% endtrans %}">
+    <input class="btn btn-secondary btn-sm" type="button" onClick="location.href='index.php?page=users'" value="{% trans %}No{% endtrans %}">
 </form>

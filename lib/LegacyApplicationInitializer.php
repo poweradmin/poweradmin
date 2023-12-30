@@ -44,7 +44,7 @@ class LegacyApplicationInitializer
         }
     }
 
-    public function checkConfigurationFile(): void
+    private function checkConfigurationFile(): void
     {
         if (!file_exists('inc/config.inc.php')) {
             $error = new ErrorMessage(_('The configuration file (config.inc.php) does not exist. Please use the <a href="install/">installer</a> to create it.'));
@@ -54,19 +54,19 @@ class LegacyApplicationInitializer
         }
     }
 
-    public function initializeSessionAndDependencies(): void
+    private function initializeSessionAndDependencies(): void
     {
         session_start();
         DependencyCheck::verifyExtensions();
     }
 
-    public function loadConfiguration(): void
+    private function loadConfiguration(): void
     {
         $this->config = new LegacyConfiguration();
         LegacyLocale::setAppLocale($_SESSION["userlang"] ?? $this->config->get('iface_lang'));
     }
 
-    public function connectToDatabase(): void
+    private function connectToDatabase(): void
     {
         $credentials = [
             'db_host' => $this->config->get('db_host'),
@@ -85,7 +85,7 @@ class LegacyApplicationInitializer
         $this->db = $databaseService->connect($credentials);
     }
 
-    public function authenticateUser(): void
+    private function authenticateUser(): void
     {
         $legacyAuthenticateSession = new LegacyAuthenticateSession($this->db, $this->config);
         $legacyAuthenticateSession->authenticate();

@@ -1,13 +1,13 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="list_zones.php">{% trans %}Zones{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=list_zones">{% trans %}Zones{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Delete zones{% endtrans %}</li>
     </ol>
 </nav>
 
 <h5 class="mb-3">{% trans %}Delete zones{% endtrans %}</h5>
-<form method="post" action="delete_domains.php">
+<form method="post" action="index.php?page=delete_domains">
     <table class="table table-striped table-hover table-sm">
         <thead>
             <tr>
@@ -50,6 +50,6 @@
     </table>
     <p>{% trans %}Are you sure?{% endtrans %}</p>
     <input class="btn btn-primary btn-sm" type="submit" name="confirm" value="{% trans %}Yes{% endtrans %}">
-    <input class="btn btn-secondary btn-sm" type="button" onClick="location.href='list_zones.php'"
+    <input class="btn btn-secondary btn-sm" type="button" onClick="location.href='index.php?page=list_zones'"
            value="{% trans %}No{% endtrans %}">
 </form>

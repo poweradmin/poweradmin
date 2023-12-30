@@ -7,7 +7,7 @@
 
 <h5 class="mb-3">{% trans %}User administration{% endtrans %}</h5>
 
-<form method="post" action="users.php">
+<form method="post" action="index.php?page=users">
     <table class="table table-striped table-hover table-sm">
         <thead>
         <tr>
@@ -88,12 +88,12 @@
 
             <td>
                 <input type="hidden" name="user[{{ user_uid }}][uid]" value="{{ user_uid }}">
-                <a class="btn btn-outline-primary btn-sm" href="edit_user.php?id={{ user_uid }}">
+                <a class="btn btn-outline-primary btn-sm" href="index.php?page=edit_user&id={{ user_uid }}">
                     <i class="bi bi-pencil-square"></i> {% trans %}Edit{% endtrans %}
                 </a>
 
                 {% if user['uid'] != session_userid %}
-                <a class="btn btn-outline-danger btn-sm" href="delete_user.php?id={{ user['uid'] }}">
+                <a class="btn btn-outline-danger btn-sm" href="index.php?page=delete_user&id={{ user['uid'] }}">
                     <i class="bi bi-trash"></i> {% trans %}Delete{% endtrans %}
                 </a>
                 {% endif %}
@@ -120,6 +120,6 @@
 
     {% if perm_add_new %}
     <input class="btn btn-secondary btn-sm" type="button" name="add_slave"
-           onclick="location.href = 'add_user.php'" value="{% trans %}Add user{% endtrans %}">
+           onclick="location.href = 'index.php?page=add_user'" value="{% trans %}Add user{% endtrans %}">
     {% endif %}
 </form>

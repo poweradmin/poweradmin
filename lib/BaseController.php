@@ -47,11 +47,6 @@ abstract class BaseController
         return $_SERVER['REQUEST_METHOD'] === 'POST';
     }
 
-    public function isGet(): bool
-    {
-        return $_SERVER['REQUEST_METHOD'] === 'GET';
-    }
-
     public function getConfig(): LegacyConfiguration
     {
         return $this->app->getConfig();
@@ -65,11 +60,8 @@ abstract class BaseController
     public function render(string $template, array $params): void
     {
         $this->renderHeader();
-
         $this->showMessage($template);
-
         $this->app->render($template, $params);
-
         $this->renderFooter();
     }
 

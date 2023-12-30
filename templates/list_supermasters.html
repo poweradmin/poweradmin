@@ -25,7 +25,7 @@
         {% if perm_sm_edit %}
         <td>
             <a class="btn btn-outline-danger btn-sm"
-               href="delete_supermaster.php?master_ip={{ server['master_ip'] }}&amp;ns_name={{ server['ns_name'] }}">
+               href="index.php?page=delete_supermaster&master_ip={{ server['master_ip'] }}&amp;ns_name={{ server['ns_name'] }}">
                 <i class="bi bi-trash"></i> {% trans %}Delete{% endtrans %}
             </a>
         </td>
@@ -45,6 +45,6 @@
 </table>
 {% if perm_sm_add %}
 <div>
-    <a class="btn btn-primary btn-sm" href="add_supermaster.php">{% trans %}Add supermaster{% endtrans %}</a>
+    <a class="btn btn-primary btn-sm" href="index.php?page=add_supermaster">{% trans %}Add supermaster{% endtrans %}</a>
 </div>
 {% endif %}

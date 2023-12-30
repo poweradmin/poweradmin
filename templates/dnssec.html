@@ -1,12 +1,12 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="list_zones.php">{% trans %}Zones{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=list_zones">{% trans %}Zones{% endtrans %}</a></li>
         <li class="breadcrumb-item">
             {% if idn_zone_name %}
-            <a href="edit.php?id={{ zone_id }}">{{ idn_zone_name }}</a>
+            <a href="index.php?page=edit&id={{ zone_id }}">{{ idn_zone_name }}</a>
             {% else %}
-            <a href="edit.php?id={{ zone_id }}">{{ domain_name }}</a>
+            <a href="index.php?page=edit&id={{ zone_id }}">{{ domain_name }}</a>
             {% endif %}
         </li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}DNSSEC{% endtrans %}</li>
@@ -47,16 +47,16 @@
         <td>{% trans %}%active%{% endtrans %}</td>
         <td>
             <a class="btn btn-outline-primary btn-sm"
-               href="dnssec_edit_key.php?id={{ zone_id }}&key_id={{ item[0] }}"><i class="bi bi-pencil-square"></i>
+               href="index.php?page=dnssec_edit_key&id={{ zone_id }}&key_id={{ item[0] }}"><i class="bi bi-pencil-square"></i>
                 {% trans %}%button_title%{% endtrans %}</a>
-            <a class="btn btn-outline-danger btn-sm" href="dnssec_delete_key.php?id={{ zone_id }}&key_id={{ item[0] }}"><i
+            <a class="btn btn-outline-danger btn-sm" href="index.php?page=dnssec_delete_key&id={{ zone_id }}&key_id={{ item[0] }}"><i
                     class="bi bi-trash"></i> {% trans %}Delete zone key{% endtrans %}</a>
         </td>
     </tr>
     {% endfor %}
 
 </table>
-<input class="btn btn-primary btn-sm" type="button" onClick="location.href='dnssec_add_key.php?id={{ zone_id }}'"
+<input class="btn btn-primary btn-sm" type="button" onClick="location.href='index.php?page=dnssec_add_key&id={{ zone_id }}'"
        value="{% trans %}Add new key{% endtrans %}">
-<input class="btn btn-secondary btn-sm" type="button" onClick="location.href='dnssec_ds_dnskey.php?id={{ zone_id }}'"
+<input class="btn btn-secondary btn-sm" type="button" onClick="location.href='index.php?page=dnssec_ds_dnskey&id={{ zone_id }}'"
        value="{% trans %}Show DS and DNSKEY{% endtrans %}">

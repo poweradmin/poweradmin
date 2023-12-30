@@ -1,8 +1,8 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="list_zones.php">{% trans %}Zones{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="list_zone_templ.php">{% trans %}Zone templates{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=list_zones">{% trans %}Zones{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=list_zone_templ">{% trans %}Zone templates{% endtrans %}</a></li>
         <li class="breadcrumb-item">{{ templ_details['name'] }}</li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Edit template{% endtrans %}</li>
     </ol>
@@ -17,19 +17,19 @@
 <div class='text-secondary'>{% trans %}This zone template does not have any records yet.{% endtrans %}</div>
 <br>
 <div><input class="btn btn-primary btn-sm" type="button"
-            onClick="location.href='add_zone_templ_record.php?id={{zone_templ_id}}'"
+            onClick="location.href='index.php?page=add_zone_templ_record&id={{zone_templ_id}}'"
             value="{% trans %}Add record{% endtrans %}">
 </div>
 {% else %}
 <form method="post" action="">
     <table class="table table-striped table-hover table-sm">
         <tr>
-            <th><a href="edit_zone_templ.php?id={{zone_templ_id}}&amp;record_sort_by=name">{% trans %}Name{% endtrans %}</a></th>
-            <th><a href="edit_zone_templ.php?id={{zone_templ_id}}&amp;record_sort_by=type">{% trans %}Type{% endtrans %}</a></th>
-            <th><a href="edit_zone_templ.php?id={{zone_templ_id}}&amp;record_sort_by=content">{% trans %}Content{% endtrans %}</a></th>
-            <th><a href="edit_zone_templ.php?id={{zone_templ_id}}&amp;record_sort_by=prio">{% trans %}Priority{% endtrans %}</a>
+            <th><a href="index.php?page=edit_zone_templ&id={{zone_templ_id}}&amp;record_sort_by=name">{% trans %}Name{% endtrans %}</a></th>
+            <th><a href="index.php?page=edit_zone_templ&id={{zone_templ_id}}&amp;record_sort_by=type">{% trans %}Type{% endtrans %}</a></th>
+            <th><a href="index.php?page=edit_zone_templ&id={{zone_templ_id}}&amp;record_sort_by=content">{% trans %}Content{% endtrans %}</a></th>
+            <th><a href="index.php?page=edit_zone_templ&id={{zone_templ_id}}&amp;record_sort_by=prio">{% trans %}Priority{% endtrans %}</a>
             </th>
-            <th><a href="edit_zone_templ.php?id={{zone_templ_id}}&amp;record_sort_by=ttl">{% trans %}TTL{% endtrans %}</a></th>
+            <th><a href="index.php?page=edit_zone_templ&id={{zone_templ_id}}&amp;record_sort_by=ttl">{% trans %}TTL{% endtrans %}</a></th>
             <th>&nbsp;</th>
         </tr>
         {% for record in records %}
@@ -46,10 +46,10 @@
             <td>
                 <input type="hidden" name="record[{{record['id']}}][rid]" value="{{record['id']}}">
                 <a class="btn btn-outline-primary btn-sm"
-                   href="edit_zone_templ_record.php?id={{record['id']}}&amp;zone_templ_id={{zone_templ_id}}">
+                   href="index.php?page=edit_zone_templ_record&id={{record['id']}}&amp;zone_templ_id={{zone_templ_id}}">
                     <i class="bi bi-pencil-square"></i> {% trans %}Edit{% endtrans %}</a>
                 <a class="btn btn-outline-danger btn-sm"
-                   href="delete_zone_templ_record.php?id={{record['id']}}&amp;zone_templ_id={{zone_templ_id}}">
+                   href="index.php?page=delete_zone_templ_record&id={{record['id']}}&amp;zone_templ_id={{zone_templ_id}}">
                     <i class="bi bi-trash"></i> {% trans %}Delete{% endtrans %}</a>
             </td>
         </tr>
@@ -57,7 +57,7 @@
         <tr>
             <td colspan="6">
                 <input class="btn btn-primary btn-sm" type="button"
-                       onClick="location.href='add_zone_templ_record.php?id={{zone_templ_id}}'"
+                       onClick="location.href='index.php?page=add_zone_templ_record&id={{zone_templ_id}}'"
                        value="{% trans %}Add record{% endtrans %}">&nbsp;&nbsp
             </td>
         </tr>

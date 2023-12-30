@@ -7,7 +7,7 @@
 
 <h5 class="mb-3">{% trans %}Search zones and records{% endtrans %}</h5>
 <span class="text-secondary">{% trans %}Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) in pattern matches any single character, a percent sign (%) matches any string of zero or more characters.{% endtrans %}</span>
-<form class="needs-validation" name="search_form" action="search.php" method="POST" onsubmit="checkQueryChange(this);" novalidate>
+<form class="needs-validation" name="search_form" action="index.php?page=search" method="POST" onsubmit="checkQueryChange(this);" novalidate>
     <input type="hidden" name="zone_sort_by" value="{{ zone_sort_by }}">
     <input type="hidden" name="record_sort_by" value="{{ record_sort_by }}">
     <input type="hidden" name="zones_page" value="{{ zones_page }}">
@@ -19,7 +19,7 @@
                 <input type="text" class="form-control form-control-sm" name="query" value="{{ query }}" required>
                 <input type="submit" class="btn btn-primary btn-sm" name="do_search" value="{% trans %}Search{% endtrans %}">
                 <div class="input-group-append">
-                    <a href="search.php" class="btn btn-secondary btn-sm" role="button"><i class="bi bi-eraser"></i> {% trans %}Clear{% endtrans %}</a>
+                    <a href="index.php?page=search" class="btn btn-secondary btn-sm" role="button"><i class="bi bi-eraser"></i> {% trans %}Clear{% endtrans %}</a>
                 </div>
                 <div class="invalid-feedback">{% trans %}Provide a keyword for your search{% endtrans %}</div>
             </div>
@@ -73,10 +73,10 @@
             <td>
                 {% if edit_permission == 'all' or ((edit_permission == 'own' or edit_permission == 'own_as_client') and zone['user_id'] == user_id) %}
                 <a class="btn btn-outline-primary btn-sm"
-                   href="edit.php?name={{ zone['name'] }}&id={{ zone['id'] }}">
+                   href="index.php?page=edit&name={{ zone['name'] }}&id={{ zone['id'] }}">
                     <i class="bi bi-pencil-square"></i> {% trans %}Edit{% endtrans %}</a>
                 <a class="btn btn-outline-danger btn-sm"
-                   href="delete_domain.php?name={{ zone['name'] }}&id={{ zone['id'] }}">
+                   href="index.php?page=delete_domain&name={{ zone['name'] }}&id={{ zone['id'] }}">
                     <i class="bi bi-trash"></i> {% trans %}Delete{% endtrans %}</a>
                 {% endif %}
             </td>
@@ -150,10 +150,10 @@
             <td>
                 {% if edit_permission == 'all' or ((edit_permission == 'own' or edit_permission == 'own_as_client') and record['user_id'] == user_id) %}
                 <a class="btn btn-outline-primary btn-sm"
-                   href="edit_record.php?domain={{ record['domain_id'] }}&id={{ record['id'] }}">
+                   href="index.php?page=edit_record&domain={{ record['domain_id'] }}&id={{ record['id'] }}">
                     <i class="bi bi-pencil-square"></i> {% trans %}Edit{% endtrans %}</a>
                 <a class="btn btn-outline-danger btn-sm"
-                   href="delete_record.php?domain={{ record['domain_id'] }}&id={{ record['id'] }}">
+                   href="index.php?page=delete_record&domain={{ record['domain_id'] }}&id={{ record['id'] }}">
                     <i class="bi bi-trash"></i> {% trans %}Delete{% endtrans %}</a>
                 {% endif %}
             </td>
