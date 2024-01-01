@@ -420,7 +420,7 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public static function add_zone_templ_save_as($db, $db_type, string $template_name, string $description, int $userid, array $records, string $domain = null): bool
+    public static function add_zone_templ_save_as($db, string $template_name, string $description, int $userid, array $records, string $domain = null): bool
     {
         if (!(LegacyUsers::verify_permission($db, 'zone_master_add'))) {
             $error = new ErrorMessage(_("You do not have the permission to add a zone template."));

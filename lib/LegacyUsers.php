@@ -631,7 +631,7 @@ class LegacyUsers
      *
      * @return boolean true on success, false otherwise
      */
-    public static function add_perm_templ($db, $db_type, array $details): bool
+    public static function add_perm_templ($db, array $details): bool
     {
         $query = "INSERT INTO perm_templ (name, descr)
 			VALUES (" . $db->quote($details['templ_name'], 'text') . ", " . $db->quote($details['templ_descr'], 'text') . ")";

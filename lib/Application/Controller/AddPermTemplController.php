@@ -61,7 +61,7 @@ class AddPermTemplController extends BaseController
         ]);
 
         if ($v->validate()) {
-            LegacyUsers::add_perm_templ($this->db, $this->config('db_type'), $_POST);
+            LegacyUsers::add_perm_templ($this->db, $_POST);
             $this->setMessage('list_perm_templ', 'success', _('The permission template has been added successfully.'));
             $this->redirect('index.php', ['page'=> 'list_perm_templ']);
         } else {

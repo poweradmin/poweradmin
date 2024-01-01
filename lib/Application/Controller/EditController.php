@@ -331,7 +331,7 @@ class EditController extends BaseController
             DnsRecord::get_records_from_domain_id($this->db, $this->config('db_type'), $zone_id);
 
             $description = htmlspecialchars($_POST['templ_descr']) ?? '';
-            ZoneTemplate::add_zone_templ_save_as($this->db, $this->config('db_type'), $template_name, $description, $_SESSION['userid'], $records, DnsRecord::get_domain_name_by_id($this->db, $zone_id));
+            ZoneTemplate::add_zone_templ_save_as($this->db, $template_name, $description, $_SESSION['userid'], $records, DnsRecord::get_domain_name_by_id($this->db, $zone_id));
             $this->setMessage('edit', 'success', _('Zone template has been added successfully.'));
         }
     }
