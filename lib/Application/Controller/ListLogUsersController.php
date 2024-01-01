@@ -42,9 +42,9 @@ class ListLogUsersController extends BaseController
 
     private DbUserLogger $dbUserLogger;
 
-    public function __construct()
+    public function __construct(array $request)
     {
-        parent::__construct();
+        parent::__construct($request);
 
         $this->dbUserLogger = new DbUserLogger($this->db);
     }

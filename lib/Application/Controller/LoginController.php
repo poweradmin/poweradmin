@@ -37,9 +37,9 @@ class LoginController extends BaseController
     private LocaleService $localeService;
     private LocalePresenter $localePresenter;
 
-    public function __construct()
+    public function __construct(array $request)
     {
-        parent::__construct($authenticate = false);
+        parent::__construct($request, false);
 
         $this->localeRepository = new LocaleRepository();
         $this->localeService = new LocaleService();

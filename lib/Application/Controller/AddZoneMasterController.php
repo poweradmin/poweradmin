@@ -45,9 +45,9 @@ class AddZoneMasterController extends BaseController
 
     private LegacyLogger $logger;
 
-    public function __construct()
+    public function __construct(array $request)
     {
-        parent::__construct();
+        parent::__construct($request);
 
         $this->logger = new LegacyLogger($this->db);
     }

@@ -25,21 +25,27 @@ namespace Poweradmin;
 use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\Infrastructure\Web\ThemeManager;
+use Valitron;
 
 abstract class BaseController
 {
     private Application $app;
     private LegacyApplicationInitializer $init;
     protected PDOLayer $db;
+    private array $request;
+    private $validator;
 
     abstract public function run(): void;
 
-    public function __construct(bool $authenticate = true)
+    public function __construct(array $request, bool $authenticate = true)
     {
         $this->app = AppFactory::create();
 
         $this->init = new LegacyApplicationInitializer($authenticate);
         $this->db = $this->init->getDb();
+
+        $this->request = $request;
+        $this->validator = new Valitron\Validator($this->getRequest());
     }
 
     public function isPost(): bool
@@ -224,5 +230,24 @@ EOF;
         ]);
 
         $this->db->disconnect();
+    }
+
+    public function getRequest(): array
+    {
+        return $this->request;
+    }
+
+    public function setRequestRules(array $rules): void
+    {
+        $this->validator->rules($rules);
+    }
+
+    public function doValidateRequest(): bool
+    {
+        return $this->validator->validate();
+    }
+
+    public function showFirstValidationError(): void {
+        $this->showFirstError($this->validator->errors());
     }
 }

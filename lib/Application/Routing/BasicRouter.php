@@ -104,7 +104,7 @@ class BasicRouter
             throw new Exception("Class $controllerClassName not found");
         }
 
-        $controller = new $controllerClassName();
+        $controller = new $controllerClassName($this->request);
         $controller->run();
     }
 

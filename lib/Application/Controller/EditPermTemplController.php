@@ -70,7 +70,7 @@ class EditPermTemplController extends BaseController
             LegacyUsers::update_perm_templ_details($this->db, $_POST);
 
             $this->setMessage('list_perm_templ', 'success', _('The permission template has been updated successfully.'));
-            $this->redirect('index.php', ['page'=> 'list_perm_templ');
+            $this->redirect('index.php', ['page'=> 'list_perm_templ']);
         } else {
             $this->showFirstError($v->errors());
         }

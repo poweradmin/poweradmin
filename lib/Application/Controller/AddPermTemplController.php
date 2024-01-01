@@ -32,26 +32,53 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\LegacyUsers;
-use Valitron;
 
 class AddPermTemplController extends BaseController
 {
+    private DbPermissionTemplateRepository $permissionTemplate;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+
+        $this->permissionTemplate = new DbPermissionTemplateRepository($this->db);
+    }
+
     public function run(): void
     {
         $this->checkPermission('templ_perm_add', _("You do not have the permission to add permission templates."));
 
         if ($this->isPost()) {
-            $this->addPermTempl();
+            $this->handleFormSubmission();
         } else {
-            $this->showAddPermTempl();
+            $this->showForm();
         }
     }
 
-    private function addPermTempl(): void
+    private function handleFormSubmission(): void
     {
-        $v = new Valitron\Validator($_POST);
-        $v->rules([
+        if (!$this->validateRequest()) {
+            $this->showFirstValidationError();
+            return;
+        }
+
+        $this->permissionTemplate->addPermissionTemplate($this->getRequest());
+        $this->setMessage('list_perm_templ', 'success', _('The permission template has been added successfully.'));
+        $this->redirect('index.php', ['page' => 'list_perm_templ']);
+    }
+
+    private function showForm(): void
+    {
+        $this->render('add_perm_templ.html', [
+            'perms_avail' => LegacyUsers::get_permissions_by_template_id($this->db)
+        ]);
+    }
+
+    private function validateRequest(): bool
+    {
+        $this->setRequestRules([
             'required' => ['templ_name'],
             'lengthMax' => [
                 ['templ_name', 128],
@@ -60,19 +87,6 @@ class AddPermTemplController extends BaseController
             'array' => ['perm_id'],
         ]);
 
-        if ($v->validate()) {
-            LegacyUsers::add_perm_templ($this->db, $_POST);
-            $this->setMessage('list_perm_templ', 'success', _('The permission template has been added successfully.'));
-            $this->redirect('index.php', ['page'=> 'list_perm_templ']);
-        } else {
-            $this->showFirstError($v->errors());
-        }
-    }
-
-    private function showAddPermTempl(): void
-    {
-        $this->render('add_perm_templ.html', [
-            'perms_avail' => LegacyUsers::get_permissions_by_template_id($this->db)
-        ]);
+        return $this->doValidateRequest();
     }
 }

@@ -14,9 +14,9 @@ class SwitchThemeController extends BaseController
     private array $get;
     private array $server;
 
-    public function __construct()
+    public function __construct(array $request)
     {
-        // parent::__construct(); FIXME: this doesn't work
+        // parent::__construct($request); FIXME: this doesn't work
 
         $this->get = $_GET;
         $this->server = $_SERVER;

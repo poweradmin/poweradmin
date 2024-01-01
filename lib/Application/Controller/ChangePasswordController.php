@@ -43,9 +43,9 @@ class ChangePasswordController extends BaseController
 {
     private AuthenticationService $authService;
 
-    public function __construct()
+    public function __construct(array $request)
     {
-        parent::__construct();
+        parent::__construct($request);
 
         $sessionService = new SessionService();
         $redirectService = new RedirectService();

@@ -625,32 +625,6 @@ class LegacyUsers
     }
 
     /**
-     * Add a Permission Template
-     *
-     * @param array $details Permission template details [templ_name,templ_descr,perm_id]
-     *
-     * @return boolean true on success, false otherwise
-     */
-    public static function add_perm_templ($db, array $details): bool
-    {
-        $query = "INSERT INTO perm_templ (name, descr)
-			VALUES (" . $db->quote($details['templ_name'], 'text') . ", " . $db->quote($details['templ_descr'], 'text') . ")";
-
-        $db->query($query);
-
-        $perm_templ_id = $db->lastInsertId();
-
-        if (isset($details['perm_id'])) {
-            foreach ($details['perm_id'] as $perm_id) {
-                $query = "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . $db->quote($perm_templ_id, 'integer') . "," . $db->quote($perm_id, 'integer') . ")";
-                $db->query($query);
-            }
-        }
-
-        return true;
-    }
-
-    /**
      * Update permission template details
      *
      * @param array $details Permission Template Details
