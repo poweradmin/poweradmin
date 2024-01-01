@@ -1,4 +1,4 @@
-# Poweradmin [![Composer](https://github.com/poweradmin/poweradmin/actions/workflows/php.yml/badge.svg)](https://github.com/poweradmin/poweradmin/actions/workflows/php.yml) [![Gitter](https://badges.gitter.im/poweradmin/poweradmin.svg)](https://gitter.im/poweradmin/poweradmin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+# Poweradmin [![Composer](https://github.com/poweradmin/poweradmin/actions/workflows/php.yml/badge.svg)](https://github.com/poweradmin/poweradmin/actions/workflows/php.yml)
 
 [Poweradmin](https://www.poweradmin.org) is a friendly web-based DNS administration tool for Bert Hubert's PowerDNS
 server. The interface has full support for most of the features of PowerDNS. It has full support for all zone types (
@@ -28,6 +28,7 @@ other [options](https://github.com/PowerDNS/pdns/wiki/WebFrontends).
 
 | Poweradmin | PHP            | PowerDNS | MariaDB | MySQL  | PostgreSQL | SQLite |
 |------------|----------------|----------|---------|--------|------------|--------|
+| 3.8.x      | 8.1.2          |          |         |        |            |        |
 | 3.7.x      | 8.1.2          | 4.5.3    | 11.1.2  | 8.2.0  | 16.0       | 3.40.1 |
 | 3.6.x      | 8.1.2          | 4.5.3    | 11.1.2  | 8.1.0  | 16.0       | 3.40.1 |
 | 3.5.x      | 8.1.17         | 4.5.3    | 10.11.2 | 8.0.32 | 15.2       | 3.34.1 |
