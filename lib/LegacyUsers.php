@@ -233,34 +233,28 @@ class LegacyUsers
     /**
      * Delete Permission Template ID
      *
-     * @param int $ptid Permission template ID
+     * @param int $id Permission template ID
      *
      * @return boolean true on success, false otherwise
      */
-    public static function delete_perm_templ($db, int $ptid): bool
+    public static function delete_perm_templ($db, int $id): bool
     {
-        if (!(self::verify_permission($db, 'user_edit_templ_perm'))) {
-            $error = new ErrorMessage(_("You do not have the permission to delete permission templates."));
+        $query = "SELECT id FROM users WHERE perm_templ = " . $id;
+        $response = $db->queryOne($query);
+
+        if ($response) {
+            $error = new ErrorMessage(_('This template is assigned to at least one user.'));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
+
+            return false;
         } else {
-            $query = "SELECT id FROM users WHERE perm_templ = " . $ptid;
-            $response = $db->queryOne($query);
+            $query = "DELETE FROM perm_templ_items WHERE templ_id = " . $id;
+            $db->query($query);
 
-            if ($response) {
-                $error = new ErrorMessage(_('This template is assigned to at least one user.'));
-                $errorPresenter = new ErrorPresenter();
-                $errorPresenter->present($error);
-
-                return false;
-            } else {
-                $query = "DELETE FROM perm_templ_items WHERE templ_id = " . $ptid;
-                $db->query($query);
-
-                $query = "DELETE FROM perm_templ WHERE id = " . $ptid;
-                $db->query($query);
-                return true;
-            }
+            $query = "DELETE FROM perm_templ WHERE id = " . $id;
+            $db->query($query);
+            return true;
         }
     }
 
@@ -605,60 +599,6 @@ class LegacyUsers
             }
         }
         return $permission_list;
-    }
-
-    /**
-     * Get name and description of template from Template ID
-     *
-     * @param int $templ_id Template ID
-     *
-     * @return array Template details
-     */
-    public static function get_permission_template_details($db, int $templ_id): array
-    {
-        $query = "SELECT *
-			FROM perm_templ
-			WHERE perm_templ.id = " . $db->quote($templ_id, 'integer');
-
-        $response = $db->query($query);
-        return $response->fetch();
-    }
-
-    /**
-     * Update permission template details
-     *
-     * @param array $details Permission Template Details
-     *
-     * @return boolean true on success, false otherwise
-     */
-    public static function update_perm_templ_details($db, array $details): bool
-    {
-        // Fix permission template name and description first.
-
-        $query = "UPDATE perm_templ
-			SET name = " . $db->quote($details['templ_name'], 'text') . ",
-			descr = " . $db->quote($details['templ_descr'], 'text') . "
-			WHERE id = " . $db->quote($details['templ_id'], 'integer');
-        $db->query($query);
-
-        // Now, update list of permissions assigned to this template. We could do
-        // this The Correct Way [tm] by comparing the list of permissions that are
-        // currently assigned with a list of permissions that should be assigned and
-        // apply the difference between these two lists to the database. That sounds
-        // like too much work. Just delete all the permissions currently assigned to
-        // the template, then assign all the permissions the template should have.
-
-        $query = "DELETE FROM perm_templ_items WHERE templ_id = " . $details['templ_id'];
-        $db->query($query);
-
-        if (isset($details['perm_id'])) {
-            foreach ($details['perm_id'] as $perm_id) {
-                $query = "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . $db->quote($details['templ_id'], 'integer') . "," . $db->quote($perm_id, 'integer') . ")";
-                $db->query($query);
-            }
-        }
-
-        return true;
     }
 
     /**

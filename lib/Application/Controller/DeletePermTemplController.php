@@ -32,54 +32,67 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\LegacyUsers;
-use Valitron;
 
 class DeletePermTemplController extends BaseController
 {
+    private DbPermissionTemplateRepository $permissionTemplate;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+
+        $this->permissionTemplate = new DbPermissionTemplateRepository($this->db);
+    }
 
     public function run(): void
     {
         $this->checkPermission('user_edit_templ_perm', _("You do not have the permission to delete permission templates."));
 
         if (isset($_GET['confirm'])) {
-            $this->deletePermTempl();
+            $this->handleFormSubmission();
         } else {
-            $this->showDeletePermTempl();
+            $this->showForm();
         }
     }
 
-    private function deletePermTempl(): void
+    private function handleFormSubmission(): void
     {
-        $v = new Valitron\Validator($_GET);
-        $v->rules([
-            'required' => ['id'],
-            'integer' => ['id'],
-        ]);
-
-        $perm_templ_id = htmlspecialchars($_GET['id']);
-        if (!$v->validate()) {
-            $this->showFirstError($v->errors());
+        if (!$this->validateSubmitRequest()) {
+            $this->showFirstValidationError();
+            return;
         }
 
-        if (LegacyUsers::delete_perm_templ($this->db, $perm_templ_id)) {
+        $id = $this->getSafeRequestValue('id');
+        if (LegacyUsers::delete_perm_templ($this->db, $id)) {
             $this->setMessage('list_perm_templ', 'success', _('The permission template has been deleted successfully.'));
             $this->redirect('index.php', ['page'=> 'list_perm_templ']);
         }
 
         $this->render('list_perm_templ.html', [
-            'permission_templates' => LegacyUsers::list_permission_templates($this->db),
+            'permission_templates' => $this->permissionTemplate->listPermissionTemplates(),
         ]);
     }
 
-    private function showDeletePermTempl(): void
+    private function showForm(): void
     {
-        $perm_templ_id = htmlspecialchars($_GET['id']);
-        $templ_details = LegacyUsers::get_permission_template_details($this->db, $perm_templ_id);
+        $id = $this->getSafeRequestValue('id');
+        $templ_details = $this->permissionTemplate->getPermissionTemplateDetails($id);
 
         $this->render('delete_perm_templ.html', [
-            'perm_templ_id' => $perm_templ_id,
+            'perm_templ_id' => $id,
             'templ_name' => $templ_details['name'],
         ]);
+    }
+
+    private function validateSubmitRequest(): bool
+    {
+        $this->setRequestRules([
+            'required' => ['id'],
+            'integer' => ['id'],
+        ]);
+
+        return $this->doValidateRequest();
     }
 }

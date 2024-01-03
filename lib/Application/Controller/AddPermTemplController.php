@@ -33,7 +33,6 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
-use Poweradmin\LegacyUsers;
 
 class AddPermTemplController extends BaseController
 {
@@ -59,7 +58,7 @@ class AddPermTemplController extends BaseController
 
     private function handleFormSubmission(): void
     {
-        if (!$this->validateRequest()) {
+        if (!$this->validateSubmitRequest()) {
             $this->showFirstValidationError();
             return;
         }
@@ -72,11 +71,11 @@ class AddPermTemplController extends BaseController
     private function showForm(): void
     {
         $this->render('add_perm_templ.html', [
-            'perms_avail' => LegacyUsers::get_permissions_by_template_id($this->db)
+            'perms_avail' => $this->permissionTemplate->getPermissionsByTemplateId()
         ]);
     }
 
-    private function validateRequest(): bool
+    private function validateSubmitRequest(): bool
     {
         $this->setRequestRules([
             'required' => ['templ_name'],

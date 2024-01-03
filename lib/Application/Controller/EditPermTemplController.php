@@ -32,58 +32,76 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\LegacyUsers;
 use Valitron;
 
 class EditPermTemplController extends BaseController
 {
+    private DbPermissionTemplateRepository $permissionTemplate;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+
+        $this->permissionTemplate = new DbPermissionTemplateRepository($this->db);
+    }
 
     public function run(): void
     {
         $this->checkPermission('templ_perm_edit', _("You do not have the permission to edit permission templates."));
 
-        $v = new Valitron\Validator($_GET);
-        $v->rules([
+        if (!$this->validateRequest()) {
+            $this->showFirstValidationError();
+            return;
+        }
+
+        if ($this->isPost()) {
+            $this->handleFormSubmission();
+        } else {
+            $this->showForm();
+        }
+    }
+
+    private function handleFormSubmission(): void
+    {
+        if (!$this->validateSubmitRequest()) {
+            $this->showFirstValidationError();
+            return;
+        }
+
+        $this->permissionTemplate->updatePermissionTemplateDetails($this->getRequest());
+        $this->setMessage('list_perm_templ', 'success', _('The permission template has been updated successfully.'));
+        $this->redirect('index.php', ['page'=> 'list_perm_templ']);
+    }
+
+    private function showForm(): void
+    {
+        $id = $this->getSafeRequestValue('id');
+        $this->render('edit_perm_templ.html', [
+            'id' => $id,
+            'templ' => $this->permissionTemplate->getPermissionTemplateDetails($id),
+            'perms_templ' => $this->permissionTemplate->getPermissionsByTemplateId($id),
+            'perms_avail' => $this->permissionTemplate->getPermissionsByTemplateId(),
+        ]);
+    }
+
+    private function validateRequest(): bool
+    {
+        $this->setRequestRules([
             'required' => ['id'],
             'integer' => ['id'],
         ]);
 
-        if (!$v->validate()) {
-            $this->showFirstError($v->errors());
-        }
-
-        if ($this->isPost()) {
-            $this->editPermTempl();
-        } else {
-            $this->showEditPermTempl();
-        }
+        return $this->doValidateRequest();
     }
 
-    private function editPermTempl(): void
+    private function validateSubmitRequest(): bool
     {
-        $v = new Valitron\Validator($_POST);
-        $v->rules([
+        $this->setRequestRules([
             'required' => ['templ_name'],
         ]);
 
-        if ($v->validate()) {
-            LegacyUsers::update_perm_templ_details($this->db, $_POST);
-
-            $this->setMessage('list_perm_templ', 'success', _('The permission template has been updated successfully.'));
-            $this->redirect('index.php', ['page'=> 'list_perm_templ']);
-        } else {
-            $this->showFirstError($v->errors());
-        }
-    }
-
-    private function showEditPermTempl(): void
-    {
-        $id = htmlspecialchars($_GET['id']);
-        $this->render('edit_perm_templ.html', [
-            'id' => $id,
-            'templ' => LegacyUsers::get_permission_template_details($this->db, $id),
-            'perms_templ' => LegacyUsers::get_permissions_by_template_id($this->db, $id),
-            'perms_avail' => LegacyUsers::get_permissions_by_template_id($this->db),
-        ]);
+        return $this->doValidateRequest();
     }
 }

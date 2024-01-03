@@ -33,7 +33,7 @@ abstract class BaseController
     private LegacyApplicationInitializer $init;
     protected PDOLayer $db;
     private array $request;
-    private $validator;
+    private Valitron\Validator $validator;
 
     abstract public function run(): void;
 
@@ -235,6 +235,11 @@ EOF;
     public function getRequest(): array
     {
         return $this->request;
+    }
+
+    public function getSafeRequestValue(string $key): string
+    {
+        return htmlspecialchars($this->request[$key], ENT_QUOTES);
     }
 
     public function setRequestRules(array $rules): void
