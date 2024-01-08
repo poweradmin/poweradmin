@@ -73,9 +73,8 @@ class ListZonesController extends BaseController
         $perm_view = Permission::getViewPermission($this->db);
         $perm_edit = Permission::getEditPermission($this->db);
 
-
-        $count_zones_view = DnsRecord::zone_count_ng($this->db, $this->config('db_type'), $perm_view);
-        $count_zones_edit = DnsRecord::zone_count_ng($this->db, $this->config('db_type'), $perm_edit);
+        $count_zones_view = DnsRecord::zone_count_ng($this->db, $this->getConfig(), $perm_view);
+        $count_zones_edit = DnsRecord::zone_count_ng($this->db, $this->getConfig(), $perm_edit);
 
         $letter_start = 'all';
         if ($count_zones_view > $iface_rowamount) {
@@ -88,7 +87,7 @@ class ListZonesController extends BaseController
             }
         }
 
-        $count_zones_all_letterstart = DnsRecord::zone_count_ng($this->db, $this->config('db_type'), $perm_view, $letter_start);
+        $count_zones_all_letterstart = DnsRecord::zone_count_ng($this->db, $this->getConfig(), $perm_view, $letter_start);
 
         $zone_sort_by = 'name';
         if (isset($_GET["zone_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["zone_sort_by"])) {
@@ -138,9 +137,7 @@ class ListZonesController extends BaseController
 
     private function getAvailableStartingLetters(string $letterStart, int $userId): string
     {
-        $db_type = $this->config('db_type');
-
-        $zoneRepository = new DbZoneRepository($this->db, $db_type);
+        $zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
         $zoneService = new ZoneService($zoneRepository);
 
         $userRepository = new DbUserRepository($this->db);

@@ -66,7 +66,7 @@ class DeleteDomainsController extends BaseController
     public function deleteDomains($zone_ids): void
     {
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $deleted_zones = DnsRecord::get_zone_info_from_ids($this->db, $zone_ids);
+        $deleted_zones = $dnsRecord->get_zone_info_from_ids($zone_ids);
         $delete_domains = $dnsRecord->delete_domains($zone_ids);
 
         if ($delete_domains) {
@@ -98,18 +98,21 @@ class DeleteDomainsController extends BaseController
     private function getZoneInfo($zone_ids): array
     {
         $zones = [];
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+
         foreach ($zone_ids as $zone_id) {
             $zones[$zone_id]['id'] = $zone_id;
-            $zones[$zone_id] = DnsRecord::get_zone_info_from_id($this->db, $zone_id);
+            $zones[$zone_id] = $dnsRecord->get_zone_info_from_id($zone_id);
             $zones[$zone_id]['owner'] = LegacyUsers::get_fullnames_owners_from_domainid($this->db, $zone_id);
             $zones[$zone_id]['is_owner'] = LegacyUsers::verify_user_is_owner_zoneid($this->db, $zone_id);
 
             $zones[$zone_id]['has_supermaster'] = false;
             $zones[$zone_id]['slave_master'] = null;
             if ($zones[$zone_id]['type'] == "SLAVE") {
-                $slave_master = DnsRecord::get_domain_slave_master($this->db, $zone_id);
+                $slave_master = $dnsRecord->get_domain_slave_master($zone_id);
                 $zones[$zone_id]['slave_master'] = $slave_master;
-                if (DnsRecord::supermaster_exists($this->db, $slave_master)) {
+
+                if ($dnsRecord->supermaster_exists($slave_master)) {
                     $zones[$zone_id]['has_supermaster'] = true;
                 }
             }

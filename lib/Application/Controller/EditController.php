@@ -65,7 +65,8 @@ class EditController extends BaseController
             $this->showError(_('Invalid or unexpected input given.'));
         }
         $zone_id = intval(htmlspecialchars($_GET['id']));
-        $zone_name = DnsRecord::get_domain_name_by_id($this->db, $zone_id);
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $zone_name = $dnsRecord->get_domain_name_by_id($zone_id);
 
         if (isset($_POST['commit'])) {
             $this->saveRecords($zone_id, $iface_zone_comments, $zone_name);
@@ -91,14 +92,14 @@ class EditController extends BaseController
         $meta_edit = $perm_meta_edit == "all" || ($perm_meta_edit == "own" && $user_is_zone_owner == "1");
 
         if (isset($_POST['slave_master_change']) && is_numeric($_POST["domain"])) {
-            DnsRecord::change_zone_slave_master($this->db, $_POST['domain'], $_POST['new_master']);
+            $dnsRecord->change_zone_slave_master($_POST['domain'], $_POST['new_master']);
         }
 
         $types = ZoneType::getTypes();
 
         $new_type = htmlspecialchars($_POST['newtype'] ?? '');
         if (isset($_POST['type_change']) && in_array($new_type, $types)) {
-            DnsRecord::change_zone_type($this->db, $new_type, $zone_id);
+            $dnsRecord->change_zone_type($new_type, $zone_id);
         }
 
         if (isset($_POST["newowner"]) && is_numeric($_POST["domain"]) && is_numeric($_POST["newowner"])) {
@@ -116,7 +117,6 @@ class EditController extends BaseController
                 $new_zone_template = $_POST['zone_template'];
             }
             if ($_POST['current_zone_template'] != $new_zone_template) {
-                $dnsRecord = new DnsRecord($this->db, $this->getConfig());
                 $dnsRecord->update_zone_records($this->config('db_type'), $this->config('dns_ttl'), $zone_id, $new_zone_template);
             }
         }
@@ -125,12 +125,11 @@ class EditController extends BaseController
             $this->showError(_("You do not have the permission to view this zone."));
         }
 
-        if (DnsRecord::zone_id_exists($this->db, $zone_id) == "0") {
+        if ($dnsRecord->zone_id_exists($zone_id) == "0") {
             $this->showError(_('There is no zone with this ID.'));
         }
 
         if (isset($_POST['sign_zone'])) {
-            $dnsRecord = new DnsRecord($this->db, $this->getConfig());
             $dnsRecord->update_soa_serial($zone_id);
 
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
@@ -146,17 +145,18 @@ class EditController extends BaseController
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
             $dnssecProvider->unsecureZone($zone_name);
 
-            $dnsRecord = new DnsRecord($this->db, $this->getConfig());
             $dnsRecord->update_soa_serial($zone_id);
             $this->setMessage('edit', 'success', _('Zone has been unsigned successfully.'));
         }
 
-        $domain_type = DnsRecord::get_domain_type($this->db, $zone_id);
-        $record_count = DnsRecord::count_zone_records($this->db, $zone_id);
+        $domain_type = $dnsRecord->get_domain_type($zone_id);
+        $record_count = $dnsRecord->count_zone_records($zone_id);
         $zone_templates = ZoneTemplate::get_list_zone_templ($this->db, $_SESSION['userid']);
         $zone_template_id = DnsRecord::get_zone_template($this->db, $zone_id);
         $zone_template_details = ZoneTemplate::get_zone_templ_details($this->db, $zone_template_id);
-        $slave_master = DnsRecord::get_domain_slave_master($this->db, $zone_id);
+
+        $slave_master = $dnsRecord->get_domain_slave_master($zone_id);
+
         $users = LegacyUsers::show_users($this->db);
 
         $zone_comment = '';
@@ -165,16 +165,16 @@ class EditController extends BaseController
             $zone_comment = htmlspecialchars($raw_zone_comment);
         }
 
-        $zone_name_to_display = DnsRecord::get_domain_name_by_id($this->db, $zone_id);
+        $zone_name_to_display = $dnsRecord->get_domain_name_by_id($zone_id);
         if (str_starts_with($zone_name_to_display, "xn--")) {
             $idn_zone_name = idn_to_utf8($zone_name_to_display, IDNA_NONTRANSITIONAL_TO_ASCII);
         } else {
             $idn_zone_name = "";
         }
-        $records = DnsRecord::get_records_from_domain_id($this->db, $this->config('db_type'), $zone_id, $row_start, $iface_rowamount, $record_sort_by);
+        $records = $dnsRecord->get_records_from_domain_id($this->config('db_type'), $zone_id, $row_start, $iface_rowamount, $record_sort_by);
         $owners = DnsRecord::get_users_from_domain_id($this->db, $zone_id);
 
-        $soa_record = DnsRecord::get_soa_record($this->db, $zone_id);
+        $soa_record = $dnsRecord->get_soa_record($zone_id);
 
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
@@ -206,7 +206,7 @@ class EditController extends BaseController
             'record_sort_by' => $record_sort_by,
             'pagination' => $this->createAndPresentPagination($record_count, $iface_rowamount, $zone_id),
             'pdnssec_use' => $this->config('pdnssec_use'),
-            'is_secured' => $dnssecProvider->isZoneSecured($zone_name),
+            'is_secured' => $dnssecProvider->isZoneSecured($zone_name, $this->getConfig()),
             'session_userid' => $_SESSION["userid"],
             'dns_ttl' => $this->config('dns_ttl'),
             'is_rev_zone' => preg_match('/i(p6|n-addr).arpa/i', $zone_name),
@@ -250,15 +250,17 @@ class EditController extends BaseController
         $one_record_changed = false;
         $serial_mismatch = false;
 
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+
         if (isset($_POST['record'])) {
-            $soa_record = DnsRecord::get_soa_record($this->db, $zone_id);
+            $soa_record = $dnsRecord->get_soa_record($zone_id);
             $current_serial = DnsRecord::get_soa_serial($soa_record);
 
             if (isset($_POST['serial']) && $_POST['serial'] != $current_serial) {
                 $serial_mismatch = true;
             } else {
                 foreach ($_POST['record'] as $record) {
-                    $log = new RecordLog($this->db);
+                    $log = new RecordLog($this->db, $this->getConfig());
 
                     if (isset($record['disabled']) && $record['disabled'] == 'on') {
                         $record["disabled"] = 1;
@@ -273,8 +275,6 @@ class EditController extends BaseController
                     } else {
                         $one_record_changed = true;
                     }
-
-                    $dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
                     $edit_record = $dnsRecord->edit_record($record);
                     if (false === $edit_record) {
@@ -291,7 +291,7 @@ class EditController extends BaseController
             $raw_zone_comment = DnsRecord::get_zone_comment($this->db, $zone_id);
             $zone_comment = $_POST['comment'] ?? '';
             if ($raw_zone_comment != $zone_comment) {
-                DnsRecord::edit_zone_comment($this->db, $zone_id, $zone_comment);
+                $dnsRecord->edit_zone_comment($zone_id, $zone_comment);
                 $one_record_changed = true;
             }
         }
@@ -301,7 +301,6 @@ class EditController extends BaseController
             if ($serial_mismatch && $experimental_edit_conflict_resolution == 'only_latest_version') {
                 $this->setMessage('edit', 'warn', (_('Request has expired, please try again.')));
             } else {
-                $dnsRecord = new DnsRecord($this->db, $this->getConfig());
                 $dnsRecord->update_soa_serial($zone_id);
 
                 if ($one_record_changed) {
@@ -328,10 +327,13 @@ class EditController extends BaseController
         } elseif ($template_name == '') {
             $this->showError(_('Template name can\'t be an empty string.'));
         } else {
-            DnsRecord::get_records_from_domain_id($this->db, $this->config('db_type'), $zone_id);
+            $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+            $dnsRecord->get_records_from_domain_id($this->config('db_type'), $zone_id);
 
             $description = htmlspecialchars($_POST['templ_descr']) ?? '';
-            ZoneTemplate::add_zone_templ_save_as($this->db, $template_name, $description, $_SESSION['userid'], $records, DnsRecord::get_domain_name_by_id($this->db, $zone_id));
+
+            // FIXME: $records is undefined
+            ZoneTemplate::add_zone_templ_save_as($this->db, $template_name, $description, $_SESSION['userid'], $records, $dnsRecord->get_domain_name_by_id($zone_id));
             $this->setMessage('edit', 'success', _('Zone template has been added successfully.'));
         }
     }

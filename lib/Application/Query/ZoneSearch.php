@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Application\Query;
 
+use Poweradmin\LegacyConfiguration;
+use Poweradmin\PDOLayer;
+
 class ZoneSearch extends BaseSearch
 {
     /**
@@ -91,11 +94,15 @@ class ZoneSearch extends BaseSearch
     {
         $offset = ($page - 1) * $iface_rowamount;
 
-        $zonesQuery = '
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+        $zonesQuery = "
             SELECT
-                domains.id,
-                domains.name,
-                domains.type,
+                $domains_table.id,
+                $domains_table.name,
+                $domains_table.type,
                 z.id as zone_id,
                 z.domain_id,
                 z.owner,
@@ -104,13 +111,13 @@ class ZoneSearch extends BaseSearch
                 u.username,
                 record_count.count_records
             FROM
-                domains
-            LEFT JOIN zones z on domains.id = z.domain_id
+                $domains_table
+            LEFT JOIN zones z on $domains_table.id = z.domain_id
             LEFT JOIN users u on z.owner = u.id
-            LEFT JOIN (SELECT COUNT(domain_id) AS count_records, domain_id FROM records WHERE type IS NOT NULL GROUP BY domain_id) record_count ON record_count.domain_id=domains.id
+            LEFT JOIN (SELECT COUNT(domain_id) AS count_records, domain_id FROM $records_table WHERE type IS NOT NULL GROUP BY domain_id) record_count ON record_count.domain_id=$domains_table.id
             WHERE
-                (domains.name LIKE ' . $this->db->quote($search_string, 'text') .
-            ($reverse ? ' OR domains.name LIKE ' . $this->db->quote($reverse_search_string, 'text') : '') . ') ' .
+                ($domains_table.name LIKE " . $this->db->quote($search_string, 'text') .
+            ($reverse ? " OR $domains_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ') ' .
             ($permission_view == 'own' ? ' AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
             ' ORDER BY ' . $sort_zones_by . ', z.owner' .
             ' LIMIT ' . $iface_rowamount . ' OFFSET ' . $offset;
@@ -150,17 +157,21 @@ class ZoneSearch extends BaseSearch
      */
     public function getFoundZones(mixed $search_string, bool $reverse, mixed $reverse_search_string, string $permission_view): int
     {
-        $zonesQuery = '
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+        $zonesQuery = "
             SELECT
                 COUNT(*)
             FROM
-                domains
-            LEFT JOIN zones z on domains.id = z.domain_id
+                $domains_table
+            LEFT JOIN zones z on $domains_table.id = z.domain_id
             LEFT JOIN users u on z.owner = u.id
-            LEFT JOIN (SELECT COUNT(domain_id) AS count_records, domain_id FROM records WHERE type IS NOT NULL GROUP BY domain_id) record_count ON record_count.domain_id=domains.id
+            LEFT JOIN (SELECT COUNT(domain_id) AS count_records, domain_id FROM $records_table WHERE type IS NOT NULL GROUP BY domain_id) record_count ON record_count.domain_id=$domains_table.id
             WHERE
-                (domains.name LIKE ' . $this->db->quote($search_string, 'text') .
-            ($reverse ? ' OR domains.name LIKE ' . $this->db->quote($reverse_search_string, 'text') : '') . ') ' .
+                ($domains_table.name LIKE " . $this->db->quote($search_string, 'text') .
+            ($reverse ? " OR $domains_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ') ' .
             ($permission_view == 'own' ? ' AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '');
 
         return (int)$this->db->queryOne($zonesQuery);

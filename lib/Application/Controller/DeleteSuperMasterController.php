@@ -79,7 +79,8 @@ class DeleteSuperMasterController extends BaseController
     private function showDeleteSuperMaster(): void
     {
         $master_ip = htmlspecialchars($_GET['master_ip']);
-        $info = DnsRecord::get_supermaster_info_from_ip($this->db, $master_ip);
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $info = $dnsRecord->get_supermaster_info_from_ip($master_ip);
 
         $this->render('delete_supermaster.html', [
             'master_ip' => $master_ip,

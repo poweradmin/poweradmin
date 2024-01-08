@@ -191,6 +191,7 @@ class ComposerStaticInit02fd231869a48df50cb631d6580008da
         'Poweradmin\\Infrastructure\\Logger\\EchoLogger' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/EchoLogger.php',
         'Poweradmin\\Infrastructure\\Logger\\LoggerInterface' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/LoggerInterface.php',
         'Poweradmin\\Infrastructure\\Logger\\SyslogLogger' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/SyslogLogger.php',
+        'Poweradmin\\Infrastructure\\Repository\\DbPermissionTemplateRepository' => __DIR__ . '/../..' . '/lib/Infrastructure/Repository/DbPermissionTemplateRepository.php',
         'Poweradmin\\Infrastructure\\Repository\\DbUserRepository' => __DIR__ . '/../..' . '/lib/Infrastructure/Repository/DbUserRepository.php',
         'Poweradmin\\Infrastructure\\Repository\\DbZoneRepository' => __DIR__ . '/../..' . '/lib/Infrastructure/Repository/DbZoneRepository.php',
         'Poweradmin\\Infrastructure\\Repository\\LocaleRepository' => __DIR__ . '/../..' . '/lib/Infrastructure/Repository/LocaleRepository.php',

@@ -184,16 +184,21 @@ class PdnsUtilProvider implements DnssecProvider
         return true;
     }
 
-    public function isZoneSecured(string $zoneName): bool
+    public function isZoneSecured(string $zoneName, $config): bool
     {
+        $pdns_db_name = $config->get('pdns_db_name');
+        $cryptokeys_table = $pdns_db_name ? $pdns_db_name . '.cryptokeys' : 'cryptokeys';
+        $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
+        $domainmetadata_table = $pdns_db_name ? $pdns_db_name . '.domainmetadata' : 'domainmetadata';
+
         $query = $this->db->prepare("SELECT
-                  COUNT(cryptokeys.id) AS active_keys,
-                  COUNT(domainmetadata.id) > 0 AS presigned
-                  FROM domains
-                  LEFT JOIN cryptokeys ON domains.id = cryptokeys.domain_id
-                  LEFT JOIN domainmetadata ON domains.id = domainmetadata.domain_id AND domainmetadata.kind = 'PRESIGNED'
-                  WHERE domains.name = ?
-                  GROUP BY domains.id
+                  COUNT($cryptokeys_table.id) AS active_keys,
+                  COUNT($domainmetadata_table.id) > 0 AS presigned
+                  FROM $domains_table
+                  LEFT JOIN $cryptokeys_table ON $domains_table.id = $cryptokeys_table.domain_id
+                  LEFT JOIN $domainmetadata_table ON $domains_table.id = $domainmetadata_table.domain_id AND $domainmetadata_table.kind = 'PRESIGNED'
+                  WHERE $domains_table.name = ?
+                  GROUP BY $domains_table.id
         ");
         $query->execute(array($zoneName));
         $row = $query->fetch();

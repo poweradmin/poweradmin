@@ -83,7 +83,7 @@ class DnsSecApiProvider implements DnssecProvider
         return $result;
     }
 
-    public function isZoneSecured(string $zoneName): bool
+    public function isZoneSecured(string $zoneName, $config): bool
     {
         $zone = new Zone($zoneName);
         return $this->client->isZoneSecured($zone);

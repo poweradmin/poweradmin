@@ -36,10 +36,12 @@ use Poweradmin\Domain\Error\ErrorMessage;
 class ZoneTemplate
 {
     private LegacyConfiguration $config;
+    private PDOLayer $db;
 
-    public function __construct()
+    public function __construct(PDOLayer $db, LegacyConfiguration $config)
     {
-        $this->config = new LegacyConfiguration();
+        $this->db = $db;
+        $this->config = $config;
     }
 
     /** Get a list of all available zone templates
@@ -467,30 +469,35 @@ class ZoneTemplate
      *
      * @return array array of zones ids
      */
-    public static function get_list_zone_use_templ($db, int $zone_templ_id, int $userid): array
+    public function get_list_zone_use_templ(int $zone_templ_id, int $userid): array
     {
-        $perm_edit = Permission::getEditPermission($db);
+        $perm_edit = Permission::getEditPermission($this->db);
 
         $sql_add = '';
+
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
         if ($perm_edit != "all") {
-            $sql_add = " AND zones.domain_id = domains.id
-				AND zones.owner = " . $db->quote($userid, 'integer');
+            $sql_add = " AND zones.domain_id = $domains_table.id
+				AND zones.owner = " . $this->db->quote($userid, 'integer');
         }
 
-        $query = "SELECT domains.id,
-			domains.name,
-			domains.type,
+        $query = "SELECT $domains_table.id,
+			$domains_table.name,
+			$domains_table.type,
 			Record_Count.count_records
-			FROM domains
-			LEFT JOIN zones ON domains.id=zones.domain_id
+			FROM $domains_table
+			LEFT JOIN zones ON $domains_table.id=zones.domain_id
 			LEFT JOIN (
-				SELECT COUNT(domain_id) AS count_records, domain_id FROM records GROUP BY domain_id
-			) Record_Count ON Record_Count.domain_id=domains.id
+				SELECT COUNT(domain_id) AS count_records, domain_id FROM $records_table GROUP BY domain_id
+			) Record_Count ON Record_Count.domain_id=$domains_table.id
 			WHERE 1=1" . $sql_add . "
-                        AND zone_templ_id = " . $db->quote($zone_templ_id, 'integer') . "
-			GROUP BY domains.name, domains.id, domains.type, Record_Count.count_records";
+                        AND zone_templ_id = " . $this->db->quote($zone_templ_id, 'integer') . "
+			GROUP BY $domains_table.name, $domains_table.id, $domains_table.type, Record_Count.count_records";
 
-        $result = $db->query($query);
+        $result = $this->db->query($query);
 
         $zone_list = array();
         while ($zone = $result->fetch()) {

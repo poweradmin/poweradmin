@@ -201,31 +201,31 @@ class LegacyUsers
      *
      * @return boolean true on success, false otherwise
      */
-    public static function delete_user($db, int $uid, array $zones): bool
+    public function delete_user(int $uid, array $zones): bool
     {
-        if (($uid != $_SESSION ['userid'] && !self::verify_permission($db, 'user_edit_others')) || ($uid == $_SESSION ['userid'] && !self::verify_permission($db, 'user_edit_own'))) {
+        if (($uid != $_SESSION ['userid'] && !self::verify_permission($this->db, 'user_edit_others')) || ($uid == $_SESSION ['userid'] && !self::verify_permission($this->db, 'user_edit_own'))) {
             $error = new ErrorMessage(_("You do not have the permission to delete this user."));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
 
             return false;
         } else {
-
+            $dnsRecord = new DnsRecord($this->db, $this->config);
             foreach ($zones as $zone) {
                 if ($zone ['target'] == "delete") {
-                    DnsRecord::delete_domain($db, $zone ['zid']);
+                    $dnsRecord->delete_domain($zone ['zid']);
                 } elseif ($zone ['target'] == "new_owner") {
-                    DnsRecord::add_owner_to_zone($db, $zone ['zid'], $zone ['newowner']);
+                    DnsRecord::add_owner_to_zone($this->db, $zone ['zid'], $zone ['newowner']);
                 }
             }
 
-            $query = "DELETE FROM zones WHERE owner = " . $db->quote($uid, 'integer');
-            $db->query($query);
+            $query = "DELETE FROM zones WHERE owner = " . $this->db->quote($uid, 'integer');
+            $this->db->query($query);
 
-            $query = "DELETE FROM users WHERE id = " . $db->quote($uid, 'integer');
-            $db->query($query);
+            $query = "DELETE FROM users WHERE id = " . $this->db->quote($uid, 'integer');
+            $this->db->query($query);
 
-            ZoneTemplate::delete_zone_templ_userid($db, $uid);
+            ZoneTemplate::delete_zone_templ_userid($this->db, $uid);
         }
         return true;
     }

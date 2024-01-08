@@ -87,7 +87,7 @@ class AddZoneSlaveController extends BaseController
         } elseif ($dns_third_level_check && DnsRecord::get_domain_level($zone) > 2 && $dnsRecord->domain_exists(DnsRecord::get_second_level_domain($zone))) {
             $this->setMessage('add_zone_slave', 'error', _('There is already a zone with this name.'));
             $this->showForm();
-        } elseif ($dnsRecord->domain_exists($zone) || DnsRecord::record_name_exists($this->db, $zone)) {
+        } elseif ($dnsRecord->domain_exists($zone) || $dnsRecord->record_name_exists($zone)) {
             $this->setMessage('add_zone_slave', 'error', _('There is already a zone with this name.'));
             $this->showForm();
         } elseif (!Dns::are_multiple_valid_ips($master)) {
@@ -96,7 +96,7 @@ class AddZoneSlaveController extends BaseController
         } else {
             $dnsRecord = new DnsRecord($this->db, $this->getConfig());
             if ($dnsRecord->add_domain($this->db, $zone, $owner, $type, $master, 'none')) {
-                $zone_id = DnsRecord::get_zone_id_from_name($this->db, $zone);
+                $zone_id = $dnsRecord->get_zone_id_from_name($zone);
                 $this->logger->log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',
                     $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                     $zone, $master), $zone_id);

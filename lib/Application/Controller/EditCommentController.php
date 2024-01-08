@@ -63,7 +63,8 @@ class EditCommentController extends BaseController
             $this->showError(_("You do not have the permission to view this comment."));
         }
 
-        $zone_type = DnsRecord::get_domain_type($this->db, $zone_id);
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $zone_type = $dnsRecord->get_domain_type($zone_id);
         $perm_edit_comment = $zone_type == "SLAVE" || $perm_edit == "none" || ($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0";
 
         if (isset($_POST["commit"])) {
@@ -72,7 +73,8 @@ class EditCommentController extends BaseController
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
             } else {
-                DnsRecord::edit_zone_comment($this->db, $zone_id, $_POST['comment']);
+                $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+                $dnsRecord->edit_zone_comment($zone_id, $_POST['comment']);
                 $this->setMessage('edit', 'success', _('The comment has been updated successfully.'));
                 $this->redirect('index.php', ['page'=> 'edit', 'id' => $zone_id]);
             }
@@ -83,7 +85,8 @@ class EditCommentController extends BaseController
 
     public function showCommentForm(string $zone_id, bool $perm_edit_comment): void
     {
-        $zone_name = DnsRecord::get_domain_name_by_id($this->db, $zone_id);
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $zone_name = $dnsRecord->get_domain_name_by_id($zone_id);
 
         if (str_starts_with($zone_name, "xn--")) {
             $idn_zone_name = idn_to_utf8($zone_name, IDNA_NONTRANSITIONAL_TO_ASCII);

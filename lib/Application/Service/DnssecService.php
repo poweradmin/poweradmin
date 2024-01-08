@@ -40,8 +40,8 @@ class DnssecService {
     public function unsecureZone(string $domainName): bool {
         return $this->provider->unsecureZone($domainName);
     }
-    public function isZoneSecured(string $domainName): bool {
-        return $this->provider->isZoneSecured($domainName);
+    public function isZoneSecured(string $domainName, $config): bool {
+        return $this->provider->isZoneSecured($domainName, $config);
     }
     public function getDsRecords(string $domainName): array {
         return $this->provider->getDsRecords($domainName);

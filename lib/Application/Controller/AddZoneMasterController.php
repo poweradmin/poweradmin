@@ -89,13 +89,13 @@ class AddZoneMasterController extends BaseController
         } elseif ($dns_third_level_check && DnsRecord::get_domain_level($zone_name) > 2 && $dnsRecord->domain_exists(DnsRecord::get_second_level_domain($zone_name))) {
             $this->setMessage('add_zone_master', 'error', _('There is already a zone_name with this name.'));
             $this->showForm();
-        } elseif ($dnsRecord->domain_exists($zone_name) || DnsRecord::record_name_exists($this->db, $zone_name)) {
+        } elseif ($dnsRecord->domain_exists($zone_name) || $dnsRecord->record_name_exists($zone_name)) {
             $this->setMessage('add_zone_master', 'error', _('There is already a zone_name with this name.'));
             $this->showForm();
         } elseif ($dnsRecord->add_domain($this->db, $zone_name, $owner, $dom_type, '', $zone_template)) {
             $this->setMessage('list_zones', 'success', _('Zone has been added successfully.'));
 
-            $zone_id = DnsRecord::get_zone_id_from_name($this->db, $zone_name);
+            $zone_id = $dnsRecord->get_zone_id_from_name($zone_name);
             $this->logger->log_info(sprintf('client_ip:%s user:%s operation:add_zone zone_name:%s zone_type:%s zone_template:%s',
                 $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                 $zone_name, $dom_type, $zone_template), $zone_id);

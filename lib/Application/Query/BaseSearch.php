@@ -22,14 +22,18 @@
 
 namespace Poweradmin\Application\Query;
 
+use Poweradmin\LegacyConfiguration;
+
 abstract class BaseSearch
 {
     protected object $db;
     protected string $db_type;
+    protected LegacyConfiguration $config;
 
-    public function __construct($db, string $db_type)
+    public function __construct($db, $config, string $db_type)
     {
         $this->db = $db;
+        $this->config = $config;
         $this->db_type = $db_type;
     }
 

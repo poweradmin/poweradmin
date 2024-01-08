@@ -32,9 +32,12 @@ class RecordLog
     private LegacyLogger $logger;
     private PDOLayer $db;
 
-    public function __construct($db)
+    private LegacyConfiguration $config;
+
+    public function __construct($db, $config)
     {
         $this->db = $db;
+        $this->config = $config;
         $this->logger = new LegacyLogger($db);
     }
 
@@ -51,7 +54,8 @@ class RecordLog
 
     private function getRecord($rid): array|int
     {
-        return DnsRecord::get_record_from_id($this->db, $rid);
+        $dnsRecord = new DnsRecord($this->db, $this->config);
+        return $dnsRecord->get_record_from_id($rid);
     }
 
     public function has_changed(array $record): bool

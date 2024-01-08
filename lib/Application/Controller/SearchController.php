@@ -79,7 +79,7 @@ class SearchController extends BaseController
 
             $db_type = $this->config('db_type');
 
-            $zoneSearch = new ZoneSearch($this->db, $db_type);
+            $zoneSearch = new ZoneSearch($this->db, $this->getConfig(), $db_type);
             $searchResultZones = $zoneSearch->searchZones(
                 $parameters,
                 $permission_view,
@@ -93,7 +93,7 @@ class SearchController extends BaseController
             $records_page = isset($_POST['records_page']) ? (int)$_POST['records_page'] : 1;
 
             $iface_search_group_records = $this->config('iface_search_group_records');
-            $recordSearch = new RecordSearch($this->db, $db_type);
+            $recordSearch = new RecordSearch($this->db, $this->getConfig(), $db_type);
             $searchResultRecords = $recordSearch->searchRecords(
                 $parameters,
                 $permission_view,

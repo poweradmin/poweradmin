@@ -87,7 +87,7 @@ class BulkRegistrationController extends BaseController
             } elseif ($dnsRecord->domain_exists($domain)) {
                 $failed_domains[] = $domain . " - " . _('There is already a zone with this name.');
             } elseif ($dnsRecord->add_domain($this->db, $domain, $_POST['owner'], $dom_type, '', $zone_template)) {
-                $zone_id = DnsRecord::get_zone_id_from_name($this->db, $domain);
+                $zone_id = $dnsRecord->get_zone_id_from_name($domain);
                 $this->logger->log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
                     $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                     $domain, $dom_type, $zone_template), $zone_id);

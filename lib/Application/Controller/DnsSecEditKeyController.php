@@ -64,7 +64,8 @@ class DnsSecEditKeyController extends BaseController
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
-        $domain_name = DnsRecord::get_domain_name_by_id($this->db, $zone_id);
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $domain_name = $dnsRecord->get_domain_name_by_id($zone_id);
 
         if ($key_id == "-1") {
             $this->showError(_('Invalid or unexpected input given.'));

@@ -69,28 +69,31 @@ class RecordSearch extends BaseSearch
     {
         $offset = ($page - 1) * $iface_rowamount;
 
-        $recordsQuery = '
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+        $recordsQuery = "
             SELECT
-                records.id,
-                records.domain_id,
-                records.name,
-                records.type,
-                records.content,
-                records.ttl,
-                records.prio,
+                $records_table.id,
+                $records_table.domain_id,
+                $records_table.name,
+                $records_table.type,
+                $records_table.content,
+                $records_table.ttl,
+                $records_table.prio,
                 z.id as zone_id,
                 z.owner,
                 u.id as user_id,
                 u.fullname
             FROM
-                records
-            LEFT JOIN zones z on records.domain_id = z.domain_id
+                $records_table
+            LEFT JOIN zones z on $records_table.domain_id = z.domain_id
             LEFT JOIN users u on z.owner = u.id
             WHERE
-                (records.name LIKE ' . $this->db->quote($search_string, 'text') . ' OR records.content LIKE ' . $this->db->quote($search_string, 'text') .
-            ($reverse ? ' OR records.name LIKE ' . $this->db->quote($reverse_search_string, 'text') . ' OR records.content LIKE ' . $this->db->quote($reverse_search_string, 'text') : '') . ')' .
+                ($records_table.name LIKE " . $this->db->quote($search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($search_string, 'text') .
+            ($reverse ? " OR $records_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ')' .
             ($permission_view == 'own' ? 'AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
-            ($iface_search_group_records ? ' GROUP BY records.name, records.content ' : '') .
+            ($iface_search_group_records ? " GROUP BY $records_table.name, $records_table.content " : '') .
             ' ORDER BY ' . $sort_records_by .
             ' LIMIT ' . $iface_rowamount . ' OFFSET ' . $offset;
 
@@ -137,18 +140,21 @@ class RecordSearch extends BaseSearch
      */
     public function getFoundRecords(mixed $search_string, bool $reverse, mixed $reverse_search_string, string $permission_view, bool $iface_search_group_records): int
     {
-        $recordsQuery = '
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+        $recordsQuery = "
             SELECT
                 COUNT(*)
             FROM
-                records
-            LEFT JOIN zones z on records.domain_id = z.domain_id
+                $records_table
+            LEFT JOIN zones z on $records_table.domain_id = z.domain_id
             LEFT JOIN users u on z.owner = u.id
             WHERE
-                (records.name LIKE ' . $this->db->quote($search_string, 'text') . ' OR records.content LIKE ' . $this->db->quote($search_string, 'text') .
-            ($reverse ? ' OR records.name LIKE ' . $this->db->quote($reverse_search_string, 'text') . ' OR records.content LIKE ' . $this->db->quote($reverse_search_string, 'text') : '') . ')' .
+                ($records_table.name LIKE " . $this->db->quote($search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($search_string, 'text') .
+            ($reverse ? " OR $records_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ')' .
             ($permission_view == 'own' ? 'AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
-            ($iface_search_group_records ? ' GROUP BY records.name, records.content ' : '');
+            ($iface_search_group_records ? " GROUP BY $records_table.name, $records_table.content " : '');
 
         return (int)$this->db->queryOne($recordsQuery);
     }

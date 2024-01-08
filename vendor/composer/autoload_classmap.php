@@ -114,6 +114,7 @@ return array(
     'Poweradmin\\Infrastructure\\Logger\\EchoLogger' => $baseDir . '/lib/Infrastructure/Logger/EchoLogger.php',
     'Poweradmin\\Infrastructure\\Logger\\LoggerInterface' => $baseDir . '/lib/Infrastructure/Logger/LoggerInterface.php',
     'Poweradmin\\Infrastructure\\Logger\\SyslogLogger' => $baseDir . '/lib/Infrastructure/Logger/SyslogLogger.php',
+    'Poweradmin\\Infrastructure\\Repository\\DbPermissionTemplateRepository' => $baseDir . '/lib/Infrastructure/Repository/DbPermissionTemplateRepository.php',
     'Poweradmin\\Infrastructure\\Repository\\DbUserRepository' => $baseDir . '/lib/Infrastructure/Repository/DbUserRepository.php',
     'Poweradmin\\Infrastructure\\Repository\\DbZoneRepository' => $baseDir . '/lib/Infrastructure/Repository/DbZoneRepository.php',
     'Poweradmin\\Infrastructure\\Repository\\LocaleRepository' => $baseDir . '/lib/Infrastructure/Repository/LocaleRepository.php',

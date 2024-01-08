@@ -58,14 +58,15 @@ class DeleteRecordController extends BaseController
         }
 
         $record_id = htmlspecialchars($_GET['id']);
-        $zid = DnsRecord::get_zone_id_from_record_id($this->db, $record_id);
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $zid = $dnsRecord->get_zone_id_from_record_id($record_id);
         if ($zid == NULL) {
             $this->showError(_('There is no zone with this ID.'));
         }
 
         if (isset($_GET['confirm'])) {
-            $record_info = DnsRecord::get_record_from_id($this->db, $record_id);
-            if (DnsRecord::delete_record($this->db, $record_id)) {
+            $record_info = $dnsRecord->get_record_from_id($record_id);
+            if ($dnsRecord->delete_record($record_id)) {
                 if (isset($record_info['prio'])) {
                     $this->logger->log_info(sprintf('client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s priority:%s',
                         $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
@@ -81,7 +82,7 @@ class DeleteRecordController extends BaseController
                 $dnsRecord->update_soa_serial($zid);
 
                 if ($this->config('pdnssec_use')) {
-                    $zone_name = DnsRecord::get_domain_name_by_id($this->db, $zid);
+                    $zone_name = $dnsRecord->get_domain_name_by_id($zid);
                     $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
                     $dnssecProvider->rectifyZone($zone_name);
                 }
@@ -93,8 +94,9 @@ class DeleteRecordController extends BaseController
 
         $perm_edit = Permission::getEditPermission($this->db);
 
-        $zone_info = DnsRecord::get_zone_info_from_id($this->db, $zid);
-        $zone_id = DnsRecord::recid_to_domid($this->db, $record_id);
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $zone_info = $dnsRecord->get_zone_info_from_id($zid);
+        $zone_id = $dnsRecord->recid_to_domid($record_id);
         $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($this->db, $zone_id);
         if ($zone_info['type'] == "SLAVE" || $perm_edit == "none" || ($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0") {
             $this->showError(_("You do not have the permission to edit this record."));
@@ -105,7 +107,8 @@ class DeleteRecordController extends BaseController
 
     public function showQuestion(string $record_id, $zid, int $zone_id): void
     {
-        $zone_name = DnsRecord::get_domain_name_by_id($this->db, $zone_id);
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $zone_name = $dnsRecord->get_domain_name_by_id($zone_id);
 
         if (str_starts_with($zone_name, "xn--")) {
             $idn_zone_name = idn_to_utf8($zone_name, IDNA_NONTRANSITIONAL_TO_ASCII);
@@ -118,7 +121,7 @@ class DeleteRecordController extends BaseController
             'zone_id' => $zid,
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,
-            'record_info' => DnsRecord::get_record_from_id($this->db, $record_id),
+            'record_info' => $dnsRecord->get_record_from_id($record_id),
         ]);
     }
 }

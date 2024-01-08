@@ -47,10 +47,11 @@ class ListSuperMastersController extends BaseController
 
     private function showSuperMasters(): void
     {
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $this->render('list_supermasters.html', [
             'perm_sm_add' => LegacyUsers::verify_permission($this->db, 'supermaster_add'),
             'perm_sm_edit' => LegacyUsers::verify_permission($this->db, 'supermaster_edit'),
-            'supermasters' => DnsRecord::get_supermasters($this->db)
+            'supermasters' => $dnsRecord->get_supermasters()
         ]);
     }
 }
