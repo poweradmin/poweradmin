@@ -1251,7 +1251,7 @@ class DnsRecord
     {
         $result = $db->queryRow("SELECT * FROM records WHERE id=" . $db->quote($id, 'integer') . " AND type IS NOT NULL");
         if ($result) {
-            if ($result["type"] == "" || $result["content"] == "") {
+            if ($result["type"] == "") {
                 return -1;
             }
 
@@ -1793,9 +1793,9 @@ class DnsRecord
      *
      * Set timezone to configured tz or UTC it not set
      *
-     * @return null
+     * @return void
      */
-    public function set_timezone()
+    public function set_timezone(): void
     {
         $timezone = $this->config->get('timezone');
 
