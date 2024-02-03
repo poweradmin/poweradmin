@@ -48,15 +48,15 @@ class IndexController extends BaseController
         $userlogin = $_SESSION["userlogin"] ?? '';
 
         $permissions = Permission::getPermissions($this->db, [
-            'perm_search',
-            'perm_view_zone_own',
-            'perm_view_zone_other',
-            'perm_supermaster_view',
-            'perm_zone_master_add',
-            'perm_zone_slave_add',
-            'perm_supermaster_add',
-            'perm_is_godlike',
-            'perm_templ_perm_edit',
+            'search',
+            'zone_content_view_own',
+            'zone_content_view_others',
+            'supermaster_view',
+            'zone_master_add',
+            'zone_slave_add',
+            'supermaster_add',
+            'user_is_ueberuser',
+            'templ_perm_edit',
         ]);
 
         $this->render($template, [

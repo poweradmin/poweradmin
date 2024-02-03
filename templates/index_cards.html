@@ -1,6 +1,6 @@
 <h5 class="mb-3">{% trans %}Welcome{% endtrans %} {{ user_name }}</h5>
 <div class="row">
-    {% if permissions['perm_search'] %}
+    {% if permissions['search'] %}
     <div class="col-sm-3 mb-3">
         <div class="card">
             <div class="text-center"><i class="bi bi-search display-1"></i></div>
@@ -10,7 +10,7 @@
         </div>
     </div>
     {% endif %}
-    {% if permissions['perm_view_zone_own'] or permissions['perm_view_zone_other'] %}
+    {% if permissions['zone_content_view_own'] or permissions['zone_content_view_others'] %}
     <div class="col-sm-3 mb-3">
         <div class="card">
             <div class="text-center"><i class="bi bi-diagram-3 display-1"></i></div>
@@ -22,7 +22,7 @@
     </div>
     {% endif %}
 
-    {% if permissions['perm_zone_master_add'] %}
+    {% if permissions['zone_master_add'] %}
     <div class="col-sm-3 mb-3">
         <div class="card">
             <div class="text-center"><i class="bi bi-files display-1"></i></div>
@@ -32,7 +32,7 @@
         </div>
     </div>
     {% endif %}
-    {% if permissions['perm_supermaster_view'] %}
+    {% if permissions['supermaster_view'] %}
     <div class="col-sm-3 mb-3">
         <div class="card">
             <div class="text-center"><i class="bi bi-hdd-rack display-1"></i></div>
@@ -42,7 +42,7 @@
         </div>
     </div>
     {% endif %}
-    {% if permissions['perm_zone_master_add'] %}
+    {% if permissions['zone_master_add'] %}
     <div class="col-sm-3 mb-3">
         <div class="card">
             <div class="text-center"><i class="bi bi-plus-circle display-1"></i></div>
@@ -52,7 +52,7 @@
         </div>
     </div>
     {% endif %}
-    {% if permissions['perm_zone_slave_add'] %}
+    {% if permissions['zone_slave_add'] %}
     <div class="col-sm-3 mb-3">
         <div class="card">
             <div class="text-center"><i class="bi bi-plus-circle-dotted display-1"></i></div>
@@ -62,7 +62,7 @@
         </div>
     </div>
     {% endif %}
-    {% if permissions['perm_supermaster_add'] %}
+    {% if permissions['supermaster_add'] %}
     <div class="col-sm-3 mb-3">
         <div class="card">
             <div class="text-center"><i class="bi bi-hdd-network display-1"></i></div>
@@ -72,7 +72,7 @@
         </div>
     </div>
     {% endif %}
-    {% if permissions['perm_zone_master_add'] %}
+    {% if permissions['zone_master_add'] %}
     <div class="col-sm-3 mb-3">
         <div class="card">
             <div class="text-center"><i class="bi bi-collection display-1"></i></div>
@@ -82,7 +82,7 @@
         </div>
     </div>
     {% endif %}
-    {% if permissions['perm_is_godlike'] and dblog_use == true %}
+    {% if permissions['user_is_ueberuser'] and dblog_use == true %}
     <div class="col-sm-3 mb-3">
         <div class="card">
             <div class="text-center"><i class="bi bi-list-ul display-1"></i></div>
@@ -111,7 +111,7 @@
             </div>
         </div>
     </div>
-    {% if permissions['perm_templ_perm_edit'] %}
+    {% if permissions['templ_perm_edit'] %}
     <div class="col-sm-3 mb-3">
         <div class="card">
             <div class="text-center"><i class="bi bi-person-lock display-1"></i></div>
