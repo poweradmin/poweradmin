@@ -655,16 +655,16 @@
         },
         {
             "name": "twbs/bootstrap-icons",
-            "version": "v1.11.2",
+            "version": "v1.11.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twbs/icons.git",
-                "reference": "108565f11f099f177b31929e3eafc2c8d497fcd1"
+                "reference": "8d88686c03c3768a2d82ba4f20c3c4e1b100fa29"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twbs/icons/zipball/108565f11f099f177b31929e3eafc2c8d497fcd1",
-                "reference": "108565f11f099f177b31929e3eafc2c8d497fcd1",
+                "url": "https://api.github.com/repos/twbs/icons/zipball/8d88686c03c3768a2d82ba4f20c3c4e1b100fa29",
+                "reference": "8d88686c03c3768a2d82ba4f20c3c4e1b100fa29",
                 "shasum": ""
             },
             "type": "library",
@@ -688,9 +688,9 @@
             ],
             "support": {
                 "issues": "https://github.com/twbs/icons/issues",
-                "source": "https://github.com/twbs/icons/tree/v1.11.2"
+                "source": "https://github.com/twbs/icons/tree/v1.11.3"
             },
-            "time": "2023-11-21T20:06:00+00:00"
+            "time": "2024-01-03T15:44:45+00:00"
         },
         {
             "name": "twig/twig",
