@@ -27,12 +27,11 @@ use Poweradmin\Application\Service\LocaleService;
 use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Repository\LocaleRepository;
 
-include_once(__DIR__ .'/../../../inc/config-defaults.inc.php');
-@include_once(__DIR__ .'/../../../inc/config.inc.php');
+include_once(__DIR__ . '/../../../inc/config-defaults.inc.php');
+@include_once(__DIR__ . '/../../../inc/config.inc.php');
 
 class LoginController extends BaseController
 {
-
     private LocaleRepository $localeRepository;
     private LocaleService $localeService;
     private LocalePresenter $localePresenter;
