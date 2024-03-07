@@ -36,7 +36,7 @@ class LegacyApplicationInitializer
     public function __construct(bool $authenticate)
     {
         $this->checkConfigurationFile();
-        $this->initializeSessionAndDependencies();
+        $this->checkDependencies();
         $this->loadConfiguration();
         $this->connectToDatabase();
         if ($authenticate) {
@@ -54,9 +54,8 @@ class LegacyApplicationInitializer
         }
     }
 
-    private function initializeSessionAndDependencies(): void
+    private function checkDependencies(): void
     {
-        session_start();
         DependencyCheck::verifyExtensions();
     }
 

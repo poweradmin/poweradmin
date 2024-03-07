@@ -50,20 +50,12 @@ class LoginController extends BaseController
         $localesData = $this->localeRepository->getLocales();
         $preparedLocales = $this->localeService->prepareLocales($localesData, $this->config('iface_lang'));
 
-        $this->initializeSession();
         list($msg, $type) = $this->getSessionMessages();
 
         if (!$this->config('ignore_install_dir') && file_exists('install')) {
             $this->render('empty.html', []);
         } else {
             $this->renderLogin($preparedLocales, $msg, $type);
-        }
-    }
-
-    public function initializeSession(): void
-    {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
         }
     }
 

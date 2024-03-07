@@ -24,6 +24,8 @@ use Poweradmin\Application\Routing\BasicRouter;
 
 require __DIR__ . '/vendor/autoload.php';
 
+session_start();
+
 $router = new BasicRouter(array_merge($_GET, $_POST));
 $router->setDefaultPage('index');
 $router->setPages([

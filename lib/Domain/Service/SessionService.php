@@ -26,10 +26,6 @@ use Poweradmin\Domain\Model\SessionEntity;
 
 class SessionService {
     public function startSession(SessionEntity $sessionEntity): void {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
         $this->setSessionData($sessionEntity);
     }
 
