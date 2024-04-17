@@ -8,6 +8,7 @@ class ConfigValidatorTest extends TestCase
     public function testValidConfig(): void
     {
         $config = [
+            'iface_index' => 'cards',
             'iface_rowamount' => 10,
             'syslog_use' => false,
             'syslog_ident' => 'poweradmin',

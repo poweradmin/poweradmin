@@ -97,7 +97,6 @@ class ConfigValidator
     {
         $validIndexes = ['cards', 'list'];
         $ifaceIndex = $this->config['iface_index'] ?? null;
-        var_dump($ifaceIndex);
         if (!in_array($ifaceIndex, $validIndexes)) {
             $validIndexesList = implode(', ', $validIndexes);
             $this->errors['iface_index'] = "iface_index must be an string and one of the following values: $validIndexesList";
