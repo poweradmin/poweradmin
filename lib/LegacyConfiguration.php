@@ -102,4 +102,13 @@ class LegacyConfiguration implements ConfigurationInterface
             return null;
         }
     }
+
+    public function getAll(): array
+    {
+        $items = $this->config;
+        foreach ($items as $key => $value) {
+            $items[$key] = $this->get($key);
+        }
+        return $items;
+    }
 }

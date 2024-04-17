@@ -56,14 +56,7 @@ class Application
             $this->statsDisplayService = new StatsDisplayService($memoryUsage, $timer, $sizeFormatter);
         }
 
-        $config = [
-            'iface_rowamount' => $this->configuration->get('iface_rowamount'),
-            'syslog_use' => $this->configuration->get('syslog_use'),
-            'syslog_ident' => $this->configuration->get('syslog_ident'),
-            'syslog_facility' => $this->configuration->get('syslog_facility'),
-        ];
-
-        $validator = new ConfigValidator($config);
+        $validator = new ConfigValidator($this->configuration->getAll());
         $this->showValidationErrors($validator);
 
         $iface_lang = $this->config('iface_lang');
