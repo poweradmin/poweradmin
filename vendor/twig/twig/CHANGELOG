@@ -1,3 +1,28 @@
+# 3.9.2 (2024-04-17)
+
+ * Fix usage of display_end hook
+
+# 3.9.1 (2024-04-17)
+
+ * Fix missing `$blocks` variable in `CaptureNode`
+
+# 3.9.0 (2024-04-16)
+
+ * Add support for PHP 8.4
+ * Deprecate AbstractNodeVisitor
+ * Deprecate passing Template to Environment::resolveTemplate(), Environment::load(), and Template::loadTemplate()
+ * Add a new "yield" mode for output generation;
+   Node implementations that use "echo" or "print" should use "yield" instead;
+   all Node implementations should be flagged with `#[YieldReady]` once they've been made ready for "yield";
+   the "use_yield" Environment option can be turned on when all nodes have been made `#[YieldReady]`;
+   "yield" will be the only strategy supported in the next major version
+ * Add return type for Symfony 7 compatibility
+ * Fix premature loop exit in Security Policy lookup of allowed methods/properties
+ * Deprecate all internal extension functions in favor of methods on the extension classes
+ * Mark all extension functions as @internal
+ * Add SourcePolicyInterface to selectively enable the Sandbox based on a template's Source
+ * Throw a proper Twig exception when using cycle on an empty array
+
 # 3.8.0 (2023-11-21)
 
  * Catch errors thrown during template rendering
@@ -186,7 +211,7 @@
  * removed Parser::isReservedMacroName()
  * removed SanboxedPrintNode
  * removed Node::setTemplateName()
- * made classes maked as "@final" final
+ * made classes marked as "@final" final
  * removed InitRuntimeInterface, ExistsLoaderInterface, and SourceContextLoaderInterface
  * removed the "spaceless" tag
  * removed Twig\Environment::getBaseTemplateClass() and Twig\Environment::setBaseTemplateClass()
