@@ -29,7 +29,7 @@ use Poweradmin\Infrastructure\Database\DbCompat;
 class DbZoneRepository implements ZoneRepositoryInterface {
     private object $db;
     private string $db_type;
-    private string $pdns_db_name;
+    private ?string $pdns_db_name;
 
     public function __construct($db, $config) {
         $this->db = $db;
