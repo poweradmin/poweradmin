@@ -38,7 +38,7 @@ use Poweradmin\Domain\Dnssec\DnssecAlgorithmName;
 use Poweradmin\LegacyUsers;
 use Poweradmin\Validation;
 
-class DnsSecAddKeyController extends BaseController
+class DnssecAddKeyController extends BaseController
 {
 
     public function run(): void
