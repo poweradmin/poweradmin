@@ -40,7 +40,7 @@ use Poweradmin\Permission;
 use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
 
-class DnssecDsDnsKeyController extends BaseController
+class DnssecDsDnskeyController extends BaseController
 {
 
     public function run(): void
