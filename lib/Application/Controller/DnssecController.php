@@ -41,7 +41,7 @@ use Poweradmin\Permission;
 use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
 
-class DnsSecController extends BaseController
+class DnssecController extends BaseController
 {
 
     public function run(): void
