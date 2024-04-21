@@ -38,7 +38,7 @@ use Poweradmin\Domain\Dnssec\DnssecAlgorithm;
 use Poweradmin\LegacyUsers;
 use Poweradmin\Validation;
 
-class DnsSecDeleteKeyController extends BaseController
+class DnssecDeleteKeyController extends BaseController
 {
 
     public function run(): void
