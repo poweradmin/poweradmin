@@ -18,10 +18,11 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 /**
- * Script that handles requests to add new supermaster servers
+ * Script that handles editing of zone records
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
@@ -34,23 +35,34 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Dnssec\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
-use Poweradmin\Domain\Dnssec\DnssecAlgorithmName;
 use Poweradmin\LegacyUsers;
+use Poweradmin\Permission;
 use Poweradmin\Validation;
+use Poweradmin\ZoneTemplate;
 
-class DnsSecAddKeyController extends BaseController
+class DnssecDsDnskeyController extends BaseController
 {
 
     public function run(): void
     {
+        $pdnssec_use = $this->config('pdnssec_use');
+
         $zone_id = "-1";
         if (isset($_GET['id']) && Validation::is_number($_GET['id'])) {
             $zone_id = htmlspecialchars($_GET['id']);
         }
 
+        if ($zone_id == "-1") {
+            $this->showError(_('Invalid or unexpected input given.'));
+        }
+
         $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($this->db, $zone_id);
 
-        if ($user_is_zone_owner == "0") {
+        (LegacyUsers::verify_permission($this->db, 'user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
+
+        $perm_view = Permission::getViewPermission($this->db);
+
+        if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
             $this->showError(_("You do not have the permission to view this zone."));
         }
 
@@ -59,47 +71,22 @@ class DnsSecAddKeyController extends BaseController
             $this->showError(_('There is no zone with this ID.'));
         }
 
-        $key_type = "";
-        if (isset($_POST['key_type'])) {
-            $key_type = $_POST['key_type'];
+        $this->showKeys($zone_id, $pdnssec_use);
+    }
 
-            if ($key_type != 'ksk' && $key_type != 'zsk') {
-                $this->showError(_('Invalid or unexpected input given.'));
-            }
-        }
-
-        $bits = "";
-        if (isset($_POST["bits"])) {
-            $bits = $_POST["bits"];
-
-            $valid_values = array('2048', '1024', '768', '384', '256');
-            if (!in_array($bits, $valid_values)) {
-                $this->showError(_('Invalid or unexpected input given.'));
-            }
-        }
-
-        $algorithm = "";
-        if (isset($_POST["algorithm"])) {
-            $algorithm = $_POST["algorithm"];
-
-            // To check the supported DNSSEC algorithms in your build of PowerDNS, run pdnsutil list-algorithms.
-            $valid_algorithm = array('rsasha1', 'rsasha1-nsec3', 'rsasha256', 'rsasha512', 'ecdsa256', 'ecdsa384', 'ed25519', 'ed448');
-            if (!in_array($algorithm, $valid_algorithm)) {
-                $this->showError(_('Invalid or unexpected input given.'));
-            }
-        }
-
+    public function showKeys(string $zone_id, $pdnssec_use): void
+    {
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+
         $domain_name = $dnsRecord->get_domain_name_by_id($zone_id);
-        if (isset($_POST["submit"])) {
-            $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
-            if ($dnssecProvider->addZoneKey($domain_name, $key_type, $bits, $algorithm)) {
-                $this->setMessage('dnssec', 'success', _('Zone key has been added successfully.'));
-                $this->redirect('index.php', ['page'=> 'dnssec', 'id' => $zone_id]);
-            } else {
-                $this->setMessage('dnssec_add_key', "error", _('Failed to add new DNSSEC key.'));
-            }
-        }
+        $domain_type = $dnsRecord->get_domain_type($zone_id);
+        $record_count = $dnsRecord->count_zone_records($zone_id);
+        $zone_templates = ZoneTemplate::get_list_zone_templ($this->db, $_SESSION['userid']);
+        $zone_template_id = DnsRecord::get_zone_template($this->db, $zone_id);
+
+        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+        $dnskey_records = $dnssecProvider->getDnsKeyRecords($domain_name);
+        $ds_records = $dnssecProvider->getDsRecords($domain_name);
 
         if (str_starts_with($domain_name, "xn--")) {
             $idn_zone_name = idn_to_utf8($domain_name, IDNA_NONTRANSITIONAL_TO_ASCII);
@@ -107,14 +94,17 @@ class DnsSecAddKeyController extends BaseController
             $idn_zone_name = "";
         }
 
-        $this->render('dnssec_add_key.html', [
-            'zone_id' => $zone_id,
+        $this->render('dnssec_ds_dnskey.html', [
             'domain_name' => $domain_name,
             'idn_zone_name' => $idn_zone_name,
-            'key_type' => $key_type,
-            'bits' => $bits,
-            'algorithm' => $algorithm,
-            'algorithm_names' => DnssecAlgorithmName::ALGORITHM_NAMES
+            'domain_type' => $domain_type,
+            'dnskey_records' => $dnskey_records,
+            'ds_records' => $ds_records,
+            'pdnssec_use' => $pdnssec_use,
+            'record_count' => $record_count,
+            'zone_id' => $zone_id,
+            'zone_template_id' => $zone_template_id,
+            'zone_templates' => $zone_templates,
         ]);
     }
 }
