@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2023 Poweradmin Development Team
+ *  Copyright 2010-2024 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ use Poweradmin\Domain\Error\ErrorMessage;
  *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2023 Poweradmin Development Team
+ * @copyright   2010-2024 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class Dns
@@ -74,7 +74,8 @@ class Dns
      */
     public function validate_input(int $rid, int $zid, string $type, mixed &$content, mixed &$name, mixed &$prio, mixed &$ttl, $dns_hostmaster, $dns_ttl): bool
     {
-        $zone = DnsRecord::get_domain_name_by_id($this->db, $zid);    // TODO check for return
+        $dnsRecord = new DnsRecord($this->db, $this->config);
+        $zone = $dnsRecord->get_domain_name_by_id($zid);    // TODO check for return
 
         if (!self::endsWith(strtolower($zone), strtolower($name))) {
             if (isset($name) && $name != "") {
@@ -85,7 +86,7 @@ class Dns
         }
 
         if ($type != "CNAME") {
-            if (!self::is_valid_rr_cname_exists($this->db, $name, $rid)) {
+            if (!$this->is_valid_rr_cname_exists($name, $rid)) {
                 return false;
             }
         }
@@ -133,10 +134,10 @@ class Dns
                 break;
 
             case "CNAME":
-                if (!self::is_valid_rr_cname_name($this->db, $name)) {
+                if (!$this->is_valid_rr_cname_name($name)) {
                     return false;
                 }
-                if (!self::is_valid_rr_cname_unique($this->db, $name, $rid)) {
+                if (!$this->is_valid_rr_cname_unique($name, $rid)) {
                     return false;
                 }
                 if (!$this->is_valid_hostname_fqdn($name, 1)) {
@@ -209,7 +210,7 @@ class Dns
                 if (!$this->is_valid_hostname_fqdn($name, 1)) {
                     return false;
                 }
-                if (!self::is_valid_non_alias_target($this->db, $content)) {
+                if (!$this->is_valid_non_alias_target($content)) {
                     return false;
                 }
                 break;
@@ -596,13 +597,16 @@ class Dns
      *
      * @return boolean true if valid, false otherwise
      */
-    public static function is_valid_rr_cname_name($db, string $name): bool
+    public function is_valid_rr_cname_name(string $name): bool
     {
-        $query = "SELECT id FROM records
-			WHERE content = " . $db->quote($name, 'text') . "
-			AND (type = " . $db->quote('MX', 'text') . " OR type = " . $db->quote('NS', 'text') . ")";
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
-        $response = $db->queryOne($query);
+        $query = "SELECT id FROM $records_table
+			WHERE content = " . $this->db->quote($name, 'text') . "
+			AND (type = " . $this->db->quote('MX', 'text') . " OR type = " . $this->db->quote('NS', 'text') . ")";
+
+        $response = $this->db->queryOne($query);
 
         if (!empty($response)) {
             $error = new ErrorMessage(_('This is not a valid CNAME. Did you assign an MX or NS record to the record?'));
@@ -622,14 +626,17 @@ class Dns
      *
      * @return boolean true if non-existant, false if exists
      */
-    public static function is_valid_rr_cname_exists($db, string $name, int $rid): bool
+    public function is_valid_rr_cname_exists(string $name, int $rid): bool
     {
-        $where = ($rid > 0 ? " AND id != " . $db->quote($rid, 'integer') : '');
-        $query = "SELECT id FROM records
-                        WHERE name = " . $db->quote($name, 'text') . $where . "
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+        $where = ($rid > 0 ? " AND id != " . $this->db->quote($rid, 'integer') : '');
+        $query = "SELECT id FROM $records_table
+                        WHERE name = " . $this->db->quote($name, 'text') . $where . "
                         AND TYPE = 'CNAME'";
 
-        $response = $db->queryOne($query);
+        $response = $this->db->queryOne($query);
         if ($response) {
             $error = new ErrorMessage(_('This is not a valid record. There is already exists a CNAME with this name.'));
             $errorPresenter = new ErrorPresenter();
@@ -647,13 +654,16 @@ class Dns
      *
      * @return boolean true if unique, false if duplicate
      */
-    public static function is_valid_rr_cname_unique($db, string $name, string $rid): bool
+    public function is_valid_rr_cname_unique(string $name, string $rid): bool
     {
-        $where = ($rid > 0 ? " AND id != " . $db->quote($rid, 'integer') : '');
-        $query = "SELECT id FROM records
-                        WHERE name = " . $db->quote($name, 'text') . $where;
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
-        $response = $db->queryOne($query);
+        $where = ($rid > 0 ? " AND id != " . $this->db->quote($rid, 'integer') : '');
+        $query = "SELECT id FROM $records_table
+                        WHERE name = " . $this->db->quote($name, 'text') . $where;
+
+        $response = $this->db->queryOne($query);
         if ($response) {
             $error = new ErrorMessage(_('This is not a valid CNAME. There already exists a record with this name.'));
             $errorPresenter = new ErrorPresenter();
@@ -690,13 +700,16 @@ class Dns
      *
      * @return boolean true if not alias, false if CNAME exists
      */
-    public static function is_valid_non_alias_target($db, string $target): bool
+    public function is_valid_non_alias_target(string $target): bool
     {
-        $query = "SELECT id FROM records
-			WHERE name = " . $db->quote($target, 'text') . "
-			AND TYPE = " . $db->quote('CNAME', 'text');
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
-        $response = $db->queryOne($query);
+        $query = "SELECT id FROM $records_table
+			WHERE name = " . $this->db->quote($target, 'text') . "
+			AND TYPE = " . $this->db->quote('CNAME', 'text');
+
+        $response = $this->db->queryOne($query);
         if ($response) {
             $error = new ErrorMessage(_('You can not point a NS or MX record to a CNAME record. Remove or rename the CNAME record first, or take another name.'));
             $errorPresenter = new ErrorPresenter();

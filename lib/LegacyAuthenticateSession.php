@@ -181,6 +181,9 @@ class LegacyAuthenticateSession
             $this->authenticationService->auth($sessionEntity);
             return;
         }
+
+        session_regenerate_id(true);
+
         $_SESSION["userid"] = $rowObj["id"];
         $_SESSION["name"] = $rowObj["fullname"];
         $_SESSION["auth_used"] = "ldap";

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2023 Poweradmin Development Team
+ *  Copyright 2010-2024 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -50,12 +50,15 @@ class DbZoneLogger
 
     public function count_logs_by_domain($domain)
     {
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $domains_table = $pdns_db_name ? "$pdns_db_name.domains" : "domains";
+
         $stmt = $this->db->prepare("
-                    SELECT count(domains.id) as number_of_logs
+                    SELECT count($domains_table.id) as number_of_logs
                     FROM log_zones
-                    INNER JOIN domains 
-                    ON domains.id = log_zones.zone_id
-                    WHERE domains.name LIKE :search_by
+                    INNER JOIN $domains_table 
+                    ON $domains_table.id = log_zones.zone_id
+                    WHERE $domains_table.name LIKE :search_by
         ");
         $name = "%$domain%";
         $stmt->execute(['search_by' => $name]);
@@ -86,10 +89,13 @@ class DbZoneLogger
             return array();
         }
 
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $domains_table = $pdns_db_name ? "$pdns_db_name.domains" : "domains";
+
         $stmt = $this->db->prepare("
-            SELECT log_zones.id, log_zones.event, log_zones.created_at, domains.name FROM log_zones
-            INNER JOIN domains ON domains.id = log_zones.zone_id 
-            WHERE domains.name LIKE :search_by
+            SELECT log_zones.id, log_zones.event, log_zones.created_at, $domains_table.name FROM log_zones
+            INNER JOIN $domains_table ON $domains_table.id = log_zones.zone_id 
+            WHERE $domains_table.name LIKE :search_by
             LIMIT :limit 
             OFFSET :offset"
         );

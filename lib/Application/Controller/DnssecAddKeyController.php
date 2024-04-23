@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2023 Poweradmin Development Team
+ *  Copyright 2010-2024 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2023 Poweradmin Development Team
+ * @copyright   2010-2024 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -38,7 +38,7 @@ use Poweradmin\Domain\Dnssec\DnssecAlgorithmName;
 use Poweradmin\LegacyUsers;
 use Poweradmin\Validation;
 
-class DnsSecAddKeyController extends BaseController
+class DnssecAddKeyController extends BaseController
 {
 
     public function run(): void
@@ -54,7 +54,8 @@ class DnsSecAddKeyController extends BaseController
             $this->showError(_("You do not have the permission to view this zone."));
         }
 
-        if (DnsRecord::zone_id_exists($this->db, $zone_id) == "0") {
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        if ($dnsRecord->zone_id_exists($zone_id) == "0") {
             $this->showError(_('There is no zone with this ID.'));
         }
 
@@ -88,7 +89,8 @@ class DnsSecAddKeyController extends BaseController
             }
         }
 
-        $domain_name = DnsRecord::get_domain_name_by_id($this->db, $zone_id);
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $domain_name = $dnsRecord->get_domain_name_by_id($zone_id);
         if (isset($_POST["submit"])) {
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
             if ($dnssecProvider->addZoneKey($domain_name, $key_type, $bits, $algorithm)) {

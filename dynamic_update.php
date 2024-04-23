@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2023 Poweradmin Development Team
+ *  Copyright 2010-2024 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2023 Poweradmin Development Team
+ * @copyright   2010-2024 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -38,19 +38,22 @@ use Poweradmin\DnsRecord;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-$configuration = new LegacyConfiguration();
-$db_type = $configuration->get('db_type');
+$config = new LegacyConfiguration();
+$db_type = $config->get('db_type');
+
+$pdns_db_name = $config->get('pdns_db_name');
+$records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
 $credentials = [
-    'db_host' => $configuration->get('db_host'),
-    'db_port' => $configuration->get('db_port'),
-    'db_user' => $configuration->get('db_user'),
-    'db_pass' => $configuration->get('db_pass'),
-    'db_name' => $configuration->get('db_name'),
-    'db_charset' => $configuration->get('db_charset'),
-    'db_collation' => $configuration->get('db_collation'),
+    'db_host' => $config->get('db_host'),
+    'db_port' => $config->get('db_port'),
+    'db_user' => $config->get('db_user'),
+    'db_pass' => $config->get('db_pass'),
+    'db_name' => $config->get('db_name'),
+    'db_charset' => $config->get('db_charset'),
+    'db_collation' => $config->get('db_collation'),
     'db_type' => $db_type,
-    'db_file' => $configuration->get('db_file'),
+    'db_file' => $config->get('db_file'),
 ];
 
 $databaseConnection = new PDODatabaseConnection();
@@ -204,8 +207,8 @@ $user = $db->queryRow("SELECT users.id, users.password FROM users, perm_templ, p
                         )");
 
 $userAuthService = new UserAuthenticationService(
-    $configuration->get('password_encryption'),
-    $configuration->get('password_encryption_cost')
+    $config->get('password_encryption'),
+    $config->get('password_encryption_cost')
 );
 if (!$user || !$userAuthService->verifyPassword($auth_password, $user['password'])) {
     return status_exit('badauth2');
@@ -218,7 +221,7 @@ $no_update_necessary = false;
 
 while ($zone = $zones_query->fetch()) {
     $zone_updated = false;
-    $name_query = $db->prepare("SELECT name, type, content FROM records WHERE domain_id=:domain_id and (type = 'A' OR type = 'AAAA')");
+    $name_query = $db->prepare("SELECT name, type, content FROM $records_table WHERE domain_id=:domain_id and (type = 'A' OR type = 'AAAA')");
     $name_query->execute([':domain_id' => $zone["domain_id"]]);
 
     while ($record = $name_query->fetch()) {
@@ -227,7 +230,7 @@ while ($zone = $zones_query->fetch()) {
                 if ($ip == $record['content']) {
                     $no_update_necessary = true;
                 } else {
-                    $update_query = $db->prepare("UPDATE records SET content =:ip where name=:record_name and type='A'");
+                    $update_query = $db->prepare("UPDATE $records_table SET content =:ip where name=:record_name and type='A'");
                     $update_query->execute([':ip' => $ip, ':record_name' => $record['name']]);
                     $zone_updated = true;
                     $was_updated = true;
@@ -236,7 +239,7 @@ while ($zone = $zones_query->fetch()) {
                 if ($ip6 == $record['content']) {
                     $no_update_necessary = true;
                 } else {
-                    $update_query = $db->prepare("UPDATE records SET content =:ip6 where name=:record_name and type='AAAA'");
+                    $update_query = $db->prepare("UPDATE $records_table SET content =:ip6 where name=:record_name and type='AAAA'");
                     $update_query->execute([':ip6' => $ip6, ':record_name' => $record['name']]);
                     $zone_updated = true;
                     $was_updated = true;
@@ -245,7 +248,7 @@ while ($zone = $zones_query->fetch()) {
         }
     }
     if ($zone_updated) {
-        $dnsRecord = new DnsRecord($db, $configuration);
+        $dnsRecord = new DnsRecord($db, $config);
         $dnsRecord->update_soa_serial($zone['domain_id']);
     }
 }

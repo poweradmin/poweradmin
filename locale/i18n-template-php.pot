@@ -838,10 +838,6 @@ msgid "Now we have finished the configuration."
 msgstr ""
 
 #: /install/templates/step7.html
-msgid "If you want support for the URLs used by other dynamic DNS providers, run \"cp install/htaccess.dist .htaccess\" and enable mod_rewrite in Apache."
-msgstr ""
-
-#: /install/templates/step7.html
 msgid "You should (must!) remove the directory \"install/\" from the Poweradmin root directory. You will not be able to use Poweradmin if it exists. Do it now."
 msgstr ""
 

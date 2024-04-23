@@ -3,7 +3,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2023 Poweradmin Development Team
+ *  Copyright 2010-2024 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ class ConfigValidator
     {
         $this->errors = [];
 
+        $this->validateIfaceIndex();
         $this->validateIfaceRowAmount();
         $this->validateSyslogUse();
         if ($this->config['syslog_use']) {
@@ -89,6 +90,16 @@ class ConfigValidator
     {
         if (!is_int($this->config['iface_rowamount']) && $this->config['iface_rowamount'] <= 0) {
             $this->errors['iface_rowamount'] = 'iface_rowamount must be a positive integer';
+        }
+    }
+
+    private function validateIfaceIndex(): void
+    {
+        $validIndexes = ['cards', 'list'];
+        $ifaceIndex = $this->config['iface_index'] ?? null;
+        if (!in_array($ifaceIndex, $validIndexes)) {
+            $validIndexesList = implode(', ', $validIndexes);
+            $this->errors['iface_index'] = "iface_index must be an string and one of the following values: $validIndexesList";
         }
     }
 }

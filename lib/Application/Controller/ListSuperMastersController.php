@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2023 Poweradmin Development Team
+ *  Copyright 2010-2024 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2023 Poweradmin Development Team
+ * @copyright   2010-2024 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -47,10 +47,11 @@ class ListSuperMastersController extends BaseController
 
     private function showSuperMasters(): void
     {
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $this->render('list_supermasters.html', [
             'perm_sm_add' => LegacyUsers::verify_permission($this->db, 'supermaster_add'),
             'perm_sm_edit' => LegacyUsers::verify_permission($this->db, 'supermaster_edit'),
-            'supermasters' => DnsRecord::get_supermasters($this->db)
+            'supermasters' => $dnsRecord->get_supermasters()
         ]);
     }
 }

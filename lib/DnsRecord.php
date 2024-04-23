@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2023 Poweradmin Development Team
+ *  Copyright 2010-2024 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ use Poweradmin\Infrastructure\Database\DbCompat;
  *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2023 Poweradmin Development Team
+ * @copyright   2010-2024 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class DnsRecord
@@ -48,54 +48,62 @@ class DnsRecord
 
     /** Check if Zone ID exists
      *
-     * @param $db
      * @param int $zid Zone ID
      *
      * @return int Domain count or false on failure
      */
-    public static function zone_id_exists($db, int $zid): int
+    public function zone_id_exists(int $zid): int
     {
-        $query = "SELECT COUNT(id) FROM domains WHERE id = " . $db->quote($zid, 'integer');
-        return $db->queryOne($query);
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
+
+        $query = "SELECT COUNT(id) FROM $domains_table WHERE id = " . $this->db->quote($zid, 'integer');
+        return $this->db->queryOne($query);
     }
 
     /** Get Zone ID from Record ID
      *
-     * @param $db
      * @param int $rid Record ID
      *
      * @return int Zone ID
      */
-    public static function get_zone_id_from_record_id($db, int $rid): int
+    public function get_zone_id_from_record_id(int $rid): int
     {
-        $query = "SELECT domain_id FROM records WHERE id = " . $db->quote($rid, 'integer');
-        return $db->queryOne($query);
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+        $query = "SELECT domain_id FROM $records_table WHERE id = " . $this->db->quote($rid, 'integer');
+        return $this->db->queryOne($query);
     }
 
     /** Count Zone Records for Zone ID
      *
-     * @param $db
      * @param int $zone_id Zone ID
      *
      * @return int Record count
      */
-    public static function count_zone_records($db, int $zone_id): int
+    public function count_zone_records(int $zone_id): int
     {
-        $sqlq = "SELECT COUNT(id) FROM records WHERE domain_id = " . $db->quote($zone_id, 'integer') . " AND type IS NOT NULL";
-        return $db->queryOne($sqlq);
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+        $sqlq = "SELECT COUNT(id) FROM $records_table WHERE domain_id = " . $this->db->quote($zone_id, 'integer') . " AND type IS NOT NULL";
+        return $this->db->queryOne($sqlq);
     }
 
     /** Get SOA record content for Zone ID
      *
-     * @param $db
      * @param int $zone_id Zone ID
      *
      * @return string SOA content
      */
-    public static function get_soa_record($db, int $zone_id): string
+    public function get_soa_record(int $zone_id): string
     {
-        $sqlq = "SELECT content FROM records WHERE type = " . $db->quote('SOA', 'text') . " AND domain_id = " . $db->quote($zone_id, 'integer');
-        return $db->queryOne($sqlq);
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+        $sqlq = "SELECT content FROM $records_table WHERE type = " . $this->db->quote('SOA', 'text') . " AND domain_id = " . $this->db->quote($zone_id, 'integer');
+        return $this->db->queryOne($sqlq);
     }
 
     /** Get SOA Serial Number
@@ -202,10 +210,14 @@ class DnsRecord
      *
      * @return boolean true if success
      */
-    public static function update_soa_record($db, int $domain_id, string $content): bool
+    public function update_soa_record(int $domain_id, string $content): bool
     {
-        $sqlq = "UPDATE records SET content = " . $db->quote($content, 'text') . " WHERE domain_id = " . $db->quote($domain_id, 'integer') . " AND type = " . $db->quote('SOA', 'text');
-        $db->query($sqlq);
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+        $sqlq = "UPDATE $records_table SET content = " . $this->db->quote($content, 'text') . " WHERE domain_id = " . $this->db->quote($domain_id, 'integer') . " AND type = " . $this->db->quote('SOA', 'text');
+        $this->db->query($sqlq);
+
         return true;
     }
 
@@ -261,7 +273,7 @@ class DnsRecord
      */
     public function update_soa_serial(int $domain_id): bool
     {
-        $soa_rec = self::get_soa_record($this->db, $domain_id);
+        $soa_rec = $this->get_soa_record($domain_id);
         if ($soa_rec == NULL) {
             return false;
         }
@@ -271,7 +283,7 @@ class DnsRecord
 
         if ($curr_serial != $new_serial) {
             $soa_rec = self::set_soa_serial($soa_rec, $new_serial);
-            return self::update_soa_record($this->db, $domain_id, $soa_rec);
+            return $this->update_soa_record($domain_id, $soa_rec);
         }
 
         return true;
@@ -300,12 +312,12 @@ class DnsRecord
      *
      * @return boolean true on success
      */
-    public static function edit_zone_comment($db, int $zone_id, string $comment): bool
+    public function edit_zone_comment(int $zone_id, string $comment): bool
     {
-        $perm_edit = Permission::getEditPermission($db);
+        $perm_edit = Permission::getEditPermission($this->db);
 
-        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($db, $zone_id);
-        $zone_type = self::get_domain_type($db, $zone_id);
+        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($this->db, $zone_id);
+        $zone_type = $this->get_domain_type($zone_id);
 
         if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
             $error = new ErrorMessage(_("You do not have the permission to edit this comment."));
@@ -314,19 +326,19 @@ class DnsRecord
 
             return false;
         } else {
-            $query = "SELECT COUNT(*) FROM zones WHERE domain_id=" . $db->quote($zone_id, 'integer');
+            $query = "SELECT COUNT(*) FROM zones WHERE domain_id=" . $this->db->quote($zone_id, 'integer');
 
-            $count = $db->queryOne($query);
+            $count = $this->db->queryOne($query);
 
             if ($count > 0) {
                 $query = "UPDATE zones
-				SET comment=" . $db->quote($comment, 'text') . "
-				WHERE domain_id=" . $db->quote($zone_id, 'integer');
+				SET comment=" . $this->db->quote($comment, 'text') . "
+				WHERE domain_id=" . $this->db->quote($zone_id, 'integer');
             } else {
                 $query = "INSERT INTO zones (domain_id, owner, comment, zone_templ_id)
-				VALUES(" . $db->quote($zone_id, 'integer') . ",1," . $db->quote($comment, 'text') . ",0)";
+				VALUES(" . $this->db->quote($zone_id, 'integer') . ",1," . $this->db->quote($comment, 'text') . ",0)";
             }
-            $db->query($query);
+            $this->db->query($query);
         }
         return true;
     }
@@ -345,7 +357,7 @@ class DnsRecord
         $perm_edit = Permission::getEditPermission($this->db);
 
         $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($this->db, $record['zid']);
-        $zone_type = self::get_domain_type($this->db, $record['zid']);
+        $zone_type = $this->get_domain_type($record['zid']);
 
         if ($record['type'] == 'SOA' && $perm_edit == "own_as_client") {
             $error = new ErrorMessage(_("You do not have the permission to edit this SOA record."));
@@ -371,7 +383,11 @@ class DnsRecord
             $errorPresenter->present($error);
         } elseif ($dns->validate_input($record['rid'], $record['zid'], $record['type'], $record['content'], $record['name'], $record['prio'], $record['ttl'], $dns_hostmaster, $dns_ttl)) {
             $name = strtolower($record['name']); // powerdns only searches for lower case records
-            $query = "UPDATE records
+
+            $pdns_db_name = $this->config->get('pdns_db_name');
+            $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+            $query = "UPDATE $records_table
 				SET name=" . $this->db->quote($name, 'text') . ",
 				type=" . $this->db->quote($record['type'], 'text') . ",
 				content=" . $this->db->quote($record['content'], 'text') . ",
@@ -403,7 +419,7 @@ class DnsRecord
         $perm_edit = Permission::getEditPermission($this->db);
 
         $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($this->db, $zone_id);
-        $zone_type = self::get_domain_type($this->db, $zone_id);
+        $zone_type = $this->get_domain_type($zone_id);
 
         if ($type == 'SOA' && $perm_edit == "own_as_client") {
             $error = new ErrorMessage(_("You do not have the permission to add SOA record."));
@@ -438,7 +454,11 @@ class DnsRecord
 
         $this->db->beginTransaction();
         $name = strtolower($name); // powerdns only searches for lower case records
-        $query = "INSERT INTO records (domain_id, name, type, content, ttl, prio) VALUES ("
+
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+        $query = "INSERT INTO $records_table (domain_id, name, type, content, ttl, prio) VALUES ("
             . $this->db->quote($zone_id, 'integer') . ","
             . $this->db->quote($name, 'text') . ","
             . $this->db->quote($type, 'text') . ","
@@ -461,7 +481,8 @@ class DnsRecord
                 $this->db,
                 new FakeConfiguration($pdns_api_url, $pdns_api_key)
             );
-            $zone_name = DnsRecord::get_domain_name_by_id($this->db, $zone_id);
+            $dnsRecord = new DnsRecord($this->db, $this->config);
+            $zone_name = $dnsRecord->get_domain_name_by_id($zone_id);
             $dnssecProvider->rectifyZone($zone_name);
         }
 
@@ -511,7 +532,10 @@ class DnsRecord
 
             return false;
         } else {
-            $this->db->query("INSERT INTO supermasters VALUES (" . $this->db->quote($master_ip, 'text') . ", " . $this->db->quote($ns_name, 'text') . ", " . $this->db->quote($account, 'text') . ")");
+            $pdns_db_name = $this->config->get('pdns_db_name');
+            $supermasters_table = $pdns_db_name ? $pdns_db_name . ".supermasters" : "supermasters";
+
+            $this->db->query("INSERT INTO $supermasters_table VALUES (" . $this->db->quote($master_ip, 'text') . ", " . $this->db->quote($ns_name, 'text') . ", " . $this->db->quote($account, 'text') . ")");
             return true;
         }
     }
@@ -529,7 +553,10 @@ class DnsRecord
     {
         $dns = new Dns($this->db, $this->config);
         if (Dns::is_valid_ipv4($master_ip) || Dns::is_valid_ipv6($master_ip) || $dns->is_valid_hostname_fqdn($ns_name, 0)) {
-            $this->db->query("DELETE FROM supermasters WHERE ip = " . $this->db->quote($master_ip, 'text') .
+            $pdns_db_name = $this->config->get('pdns_db_name');
+            $supermasters_table = $pdns_db_name ? $pdns_db_name . ".supermasters" : "supermasters";
+
+            $this->db->query("DELETE FROM $supermasters_table WHERE ip = " . $this->db->quote($master_ip, 'text') .
                 " AND nameserver = " . $this->db->quote($ns_name, 'text'));
             return true;
         } else {
@@ -548,10 +575,13 @@ class DnsRecord
      *
      * @return array array of supermaster details
      */
-    public static function get_supermaster_info_from_ip($db, string $master_ip): array
+    public function get_supermaster_info_from_ip(string $master_ip): array
     {
         if (Dns::is_valid_ipv4($master_ip) || Dns::is_valid_ipv6($master_ip)) {
-            $result = $db->queryRow("SELECT ip,nameserver,account FROM supermasters WHERE ip = " . $db->quote($master_ip, 'text'));
+            $pdns_db_name = $this->config->get('pdns_db_name');
+            $supermasters_table = $pdns_db_name ? $pdns_db_name . ".supermasters" : "supermasters";
+
+            $result = $this->db->queryRow("SELECT ip,nameserver,account FROM $supermasters_table WHERE ip = " . $this->db->quote($master_ip, 'text'));
 
             return array(
                 "master_ip" => $result["ip"],
@@ -567,16 +597,18 @@ class DnsRecord
 
     /** Get record details from Record ID
      *
-     * @param $db
      * @param int $rid Record ID
      *
      * @return array array of record details [rid,zid,name,type,content,ttl,prio]
      */
-    public static function get_record_details_from_record_id($db, int $rid): array
+    public function get_record_details_from_record_id(int $rid): array
     {
-        $query = "SELECT id AS rid, domain_id AS zid, name, type, content, ttl, prio FROM records WHERE id = " . $db->quote($rid, 'integer');
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
-        $response = $db->query($query);
+        $query = "SELECT id AS rid, domain_id AS zid, name, type, content, ttl, prio FROM $records_table WHERE id = " . $this->db->quote($rid, 'integer');
+
+        $response = $this->db->query($query);
         return $response->fetch();
     }
 
@@ -586,12 +618,12 @@ class DnsRecord
      *
      * @return boolean true on success
      */
-    public static function delete_record($db, int $rid): bool
+    public function delete_record(int $rid): bool
     {
-        $perm_edit = Permission::getEditPermission($db);
+        $perm_edit = Permission::getEditPermission($this->db);
 
-        $record = self::get_record_details_from_record_id($db, $rid);
-        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($db, $record['zid']);
+        $record = $this->get_record_details_from_record_id($rid);
+        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($this->db, $record['zid']);
 
         if ($perm_edit == "all" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "1")) {
             if ($record['type'] == "SOA") {
@@ -599,8 +631,11 @@ class DnsRecord
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
             } else {
-                $query = "DELETE FROM records WHERE id = " . $db->quote($rid, 'integer');
-                $db->query($query);
+                $pdns_db_name = $this->config->get('pdns_db_name');
+                $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+                $query = "DELETE FROM $records_table WHERE id = " . $this->db->quote($rid, 'integer');
+                $this->db->query($query);
                 return true;
             }
         } else {
@@ -660,18 +695,22 @@ class DnsRecord
             $dns_ttl = $this->config->get('dns_ttl');
             $db_type = $this->config->get('db_type');
 
+            $pdns_db_name = $this->config->get('pdns_db_name');
+            $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
+            $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
             if (($domain && $owner && $zone_template) ||
                 (preg_match('/in-addr.arpa/i', $domain) && $owner && $zone_template) ||
                 $type == "SLAVE" && $domain && $owner && $slave_master) {
 
-                $db->query("INSERT INTO domains (name, type) VALUES (" . $db->quote($domain, 'text') . ", " . $db->quote($type, 'text') . ")");
+                $db->query("INSERT INTO $domains_table (name, type) VALUES (" . $db->quote($domain, 'text') . ", " . $db->quote($type, 'text') . ")");
 
                 $domain_id = $db->lastInsertId();
 
                 $db->query("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (" . $db->quote($domain_id, 'integer') . ", " . $db->quote($owner, 'integer') . ", " . $db->quote(($zone_template == "none") ? 0 : $zone_template, 'integer') . ")");
 
                 if ($type == "SLAVE") {
-                    $db->query("UPDATE domains SET master = " . $db->quote($slave_master, 'text') . " WHERE id = " . $db->quote($domain_id, 'integer'));
+                    $db->query("UPDATE $domains_table SET master = " . $db->quote($slave_master, 'text') . " WHERE id = " . $db->quote($domain_id, 'integer'));
                     return true;
                 } else {
                     if ($zone_template == "none" && $domain_id) {
@@ -685,7 +724,8 @@ class DnsRecord
                         $serial .= "00";
 
                         $dns_soa = $this->config->get('dns_soa');
-                        $query = "INSERT INTO records (domain_id, name, content, type, ttl, prio) VALUES ("
+
+                        $query = "INSERT INTO $records_table (domain_id, name, content, type, ttl, prio) VALUES ("
                             . $db->quote($domain_id, 'integer') . ","
                             . $db->quote($domain, 'text') . ","
                             . $db->quote($ns1 . ' ' . $hm . ' ' . $serial . ' ' . $dns_soa, 'text') . ","
@@ -701,7 +741,7 @@ class DnsRecord
                         if ($templ_records != -1) {
                             foreach ($templ_records as $r) {
                                 if ((preg_match('/in-addr.arpa/i', $domain) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $domain))) {
-                                    $zoneTemplate = new ZoneTemplate();
+                                    $zoneTemplate = new ZoneTemplate($this->db, $this->config);
                                     $name = $zoneTemplate->parse_template_value($r["name"], $domain);
                                     $type = $r["type"];
                                     $content = $zoneTemplate->parse_template_value($r["content"], $domain);
@@ -712,7 +752,7 @@ class DnsRecord
                                         $ttl = $dns_ttl;
                                     }
 
-                                    $query = "INSERT INTO records (domain_id, name, type, content, ttl, prio) VALUES ("
+                                    $query = "INSERT INTO $records_table (domain_id, name, type, content, ttl, prio) VALUES ("
                                         . $db->quote($domain_id, 'integer') . ","
                                         . $db->quote($name, 'text') . ","
                                         . $db->quote($type, 'text') . ","
@@ -760,16 +800,20 @@ class DnsRecord
      *
      * @return boolean true on success
      */
-    public static function delete_domain($db, int $id): bool
+    public function delete_domain(int $id): bool
     {
-        $perm_edit = Permission::getEditPermission($db);
-        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($db, $id);
+        $perm_edit = Permission::getEditPermission($this->db);
+        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($this->db, $id);
+
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
-            $db->query("DELETE FROM zones WHERE domain_id=" . $db->quote($id, 'integer'));
-            $db->query("DELETE FROM records WHERE domain_id=" . $db->quote($id, 'integer'));
-            $db->query("DELETE FROM records_zone_templ WHERE domain_id=" . $db->quote($id, 'integer'));
-            $db->query("DELETE FROM domains WHERE id=" . $db->quote($id, 'integer'));
+            $this->db->query("DELETE FROM zones WHERE domain_id=" . $this->db->quote($id, 'integer'));
+            $this->db->query("DELETE FROM $records_table WHERE domain_id=" . $this->db->quote($id, 'integer'));
+            $this->db->query("DELETE FROM records_zone_templ WHERE domain_id=" . $this->db->quote($id, 'integer'));
+            $this->db->query("DELETE FROM $domains_table WHERE id=" . $this->db->quote($id, 'integer'));
             return true;
         } else {
             $error = new ErrorMessage(_("You do not have the permission to delete a zone."));
@@ -785,9 +829,12 @@ class DnsRecord
      * @param int $id Record ID
      * @return int Domain ID of record
      */
-    public static function recid_to_domid($db, int $id): int
+    public function recid_to_domid(int $id): int
     {
-        $result = $db->query("SELECT domain_id FROM records WHERE id=" . $db->quote($id, 'integer'));
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+        $result = $this->db->query("SELECT domain_id FROM $records_table WHERE id=" . $this->db->quote($id, 'integer'));
         $r = $result->fetch();
         return $r["domain_id"];
     }
@@ -862,14 +909,16 @@ class DnsRecord
 
     /** Get Domain Name by domain ID
      *
-     * @param $db
      * @param int $id Domain ID
      *
      * @return bool|string Domain name
      */
-    public static function get_domain_name_by_id($db, int $id): bool|string
+    public function get_domain_name_by_id(int $id): bool|string
     {
-        $result = $db->queryRow("SELECT name FROM domains WHERE id=" . $db->quote($id, 'integer'));
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
+
+        $result = $this->db->queryRow("SELECT name FROM $domains_table WHERE id=" . $this->db->quote($id, 'integer'));
         if ($result) {
             return $result["name"];
         } else {
@@ -883,14 +932,16 @@ class DnsRecord
 
     /** Get zone id from name
      *
-     * @param $db
      * @param string $zname Zone name
      * @return bool|int Zone ID
      */
-    public static function get_zone_id_from_name($db, string $zname): bool|int
+    public function get_zone_id_from_name(string $zname): bool|int
     {
         if (!empty($zname)) {
-            $result = $db->queryRow("SELECT id FROM domains WHERE name=" . $db->quote($zname, 'text'));
+            $pdns_db_name = $this->config->get('pdns_db_name');
+            $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
+
+            $result = $this->db->queryRow("SELECT id FROM $domains_table WHERE name=" . $this->db->quote($zname, 'text'));
             if ($result) {
                 return $result["id"];
             } else {
@@ -912,23 +963,27 @@ class DnsRecord
      * @param int $zid Zone ID
      * @return array array of zone details [type,name,master_ip,record_count]
      */
-    public static function get_zone_info_from_id($db, int $zid): array
+    public function get_zone_info_from_id(int $zid): array
     {
-        $perm_view = Permission::getViewPermission($db);
+        $perm_view = Permission::getViewPermission($this->db);
 
         if ($perm_view == "none") {
             $error = new ErrorMessage(_("You do not have the permission to view this zone."));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
         } else {
-            $query = "SELECT domains.type AS type,
-					domains.name AS name,
-					domains.master AS master_ip,
-					count(records.domain_id) AS record_count
-					FROM domains LEFT OUTER JOIN records ON domains.id = records.domain_id
-					WHERE domains.id = " . $db->quote($zid, 'integer') . "
-					GROUP BY domains.id, domains.type, domains.name, domains.master";
-            $result = $db->queryRow($query);
+            $pdns_db_name = $this->config->get('pdns_db_name');
+            $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
+            $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+            $query = "SELECT $domains_table.type AS type,
+					$domains_table.name AS name,
+					$domains_table.master AS master_ip,
+					count($records_table.domain_id) AS record_count
+					FROM $domains_table LEFT OUTER JOIN $records_table ON $domains_table.id = $records_table.domain_id
+					WHERE $domains_table.id = " . $this->db->quote($zid, 'integer') . "
+					GROUP BY $domains_table.id, $domains_table.type, $domains_table.name, $domains_table.master";
+            $result = $this->db->queryRow($query);
             return array(
                 "id" => $zid,
                 "name" => $result['name'],
@@ -941,15 +996,15 @@ class DnsRecord
 
     /** Get Zone(s) details from Zone IDs
      *
-     * @param $db
      * @param array $zones Zone IDs
      * @return array
      */
-    public static function get_zone_info_from_ids($db, array $zones): array
+    public function get_zone_info_from_ids(array $zones): array
     {
+        $dnsRecord = new DnsRecord($this->db, $this->config);
         $zone_infos = array();
         foreach ($zones as $zone) {
-            $zone_info = DnsRecord::get_zone_info_from_id($db, $zone);
+            $zone_info = $dnsRecord->get_zone_info_from_id($zone);
             $zone_infos[] = $zone_info;
         }
         return $zone_infos;
@@ -979,21 +1034,24 @@ class DnsRecord
      *
      * @return int Zone ID
      */
-    public static function get_best_matching_zone_id_from_name($db, string $domain): int
+    public function get_best_matching_zone_id_from_name(string $domain): int
     {
-// rev-patch
-// tring to find the correct zone
-// %ip6.arpa and %in-addr.arpa is looked for
+        // rev-patch
+        // string to find the correct zone
+        // %ip6.arpa and %in-addr.arpa is looked for
 
         $match = 72; // the longest ip6.arpa has a length of 72
         $found_domain_id = -1;
 
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
+
         // get all reverse-zones
-        $query = "SELECT name, id FROM domains
-                   WHERE name like " . $db->quote('%.arpa', 'text') . "
+        $query = "SELECT name, id FROM $domains_table
+                   WHERE name like " . $this->db->quote('%.arpa', 'text') . "
                    ORDER BY length(name) DESC";
 
-        $response = $db->query($query);
+        $response = $this->db->query($query);
         if ($response) {
             while ($r = $response->fetch()) {
                 $pos = stripos($domain, $r["name"]);
@@ -1021,8 +1079,12 @@ class DnsRecord
     public function domain_exists(string $domain): bool
     {
         $dns = new Dns($this->db, $this->config);
+
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
+
         if ($dns->is_valid_hostname_fqdn($domain, 0)) {
-            $result = $this->db->queryRow("SELECT id FROM domains WHERE name=" . $this->db->quote($domain, 'text'));
+            $result = $this->db->queryRow("SELECT id FROM $domains_table WHERE name=" . $this->db->quote($domain, 'text'));
             return (bool)$result;
         } else {
             $error = new ErrorMessage(_('This is an invalid zone name.'));
@@ -1037,9 +1099,12 @@ class DnsRecord
      *
      * @return array[] supermasters detail [master_ip,ns_name,account]s
      */
-    public static function get_supermasters($db): array
+    public function get_supermasters(): array
     {
-        $result = $db->query("SELECT ip, nameserver, account FROM supermasters");
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $supermasters_table = $pdns_db_name ? $pdns_db_name . ".supermasters" : "supermasters";
+
+        $result = $this->db->query("SELECT ip, nameserver, account FROM $supermasters_table");
 
         $supermasters = array();
 
@@ -1059,10 +1124,13 @@ class DnsRecord
      *
      * @return boolean true if exists, otherwise false
      */
-    public static function supermaster_exists($db, string $master_ip): bool
+    public function supermaster_exists(string $master_ip): bool
     {
         if (Dns::is_valid_ipv4($master_ip, false) || Dns::is_valid_ipv6($master_ip)) {
-            $result = $db->queryOne("SELECT ip FROM supermasters WHERE ip = " . $db->quote($master_ip, 'text'));
+            $pdns_db_name = $this->config->get('pdns_db_name');
+            $supermasters_table = $pdns_db_name ? $pdns_db_name . ".supermasters" : "supermasters";
+
+            $result = $this->db->queryOne("SELECT ip FROM $supermasters_table WHERE ip = " . $this->db->quote($master_ip, 'text'));
             return (bool)$result;
         } else {
             $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s %s'), "supermaster_exists", "No or no valid IPv4 or IPv6 address given."));
@@ -1081,8 +1149,12 @@ class DnsRecord
     public function supermaster_ip_name_exists(string $master_ip, string $ns_name): bool
     {
         $dns = new Dns($this->db, $this->config);
+
         if ((Dns::is_valid_ipv4($master_ip) || Dns::is_valid_ipv6($master_ip)) && $dns->is_valid_hostname_fqdn($ns_name, 0)) {
-            $result = $this->db->queryOne("SELECT ip FROM supermasters WHERE ip = " . $this->db->quote($master_ip, 'text') .
+            $pdns_db_name = $this->config->get('pdns_db_name');
+            $supermasters_table = $pdns_db_name ? $pdns_db_name . ".supermasters" : "supermasters";
+
+            $result = $this->db->queryOne("SELECT ip FROM $supermasters_table WHERE ip = " . $this->db->quote($master_ip, 'text') .
                 " AND nameserver = " . $this->db->quote($ns_name, 'text'));
             return (bool)$result;
         } else {
@@ -1111,6 +1183,12 @@ class DnsRecord
         $iface_zonelist_serial = $this->config->get('iface_zonelist_serial');
         $iface_zonelist_template = $this->config->get('iface_zonelist_template');
 
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+        $cryptokeys_table = $pdns_db_name ? $pdns_db_name . '.cryptokeys' : 'cryptokeys';
+        $domainmetadata_table = $pdns_db_name ? $pdns_db_name . '.domainmetadata' : 'domainmetadata';
+
         if ($letterstart == '_') {
             $letterstart = '\_';
         }
@@ -1124,49 +1202,49 @@ class DnsRecord
             return false;
         } else {
             if ($perm == "own") {
-                $sql_add = " AND zones.domain_id = domains.id AND zones.owner = " . $this->db->quote($userid, 'integer');
+                $sql_add = " AND zones.domain_id = $domains_table.id AND zones.owner = " . $this->db->quote($userid, 'integer');
             }
             if ($letterstart != 'all' && $letterstart != 1) {
-                $sql_add .= " AND " . DbCompat::substr($db_type) . "(domains.name,1,1) = " . $this->db->quote($letterstart, 'text') . " ";
+                $sql_add .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) = " . $this->db->quote($letterstart, 'text') . " ";
             } elseif ($letterstart == 1) {
-                $sql_add .= " AND " . DbCompat::substr($db_type) . "(domains.name,1,1) " . DbCompat::regexp($db_type) . " '[0-9]'";
+                $sql_add .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) " . DbCompat::regexp($db_type) . " '[0-9]'";
             }
         }
 
         if ($sortby == 'owner') {
             $sortby = 'users.username';
         } elseif ($sortby != 'count_records') {
-            $sortby = 'domains.' . $sortby;
+            $sortby = "$domains_table." . $sortby;
         }
 
-        $natural_sort = 'domains.name';
+        $natural_sort = "$domains_table.name";
         if ($db_type == 'mysql' || $db_type == 'mysqli' || $db_type == 'sqlite' || $db_type == 'sqlite3') {
-            $natural_sort = 'domains.name+0<>0 DESC, domains.name+0, domains.name';
+            $natural_sort = "$domains_table.name+0<>0 DESC, $domains_table.name+0, $domains_table.name";
         } elseif ($db_type == 'pgsql') {
-            $natural_sort = "SUBSTRING(domains.name FROM '\.arpa$'), LENGTH(SUBSTRING(domains.name FROM '^[0-9]+')), domains.name";
+            $natural_sort = "SUBSTRING($domains_table.name FROM '\.arpa$'), LENGTH(SUBSTRING($domains_table.name FROM '^[0-9]+')), $domains_table.name";
         }
-        $sql_sortby = ($sortby == 'domains.name' ? $natural_sort : $sortby . ', ' . $natural_sort);
+        $sql_sortby = ($sortby == "$domains_table.name" ? $natural_sort : $sortby . ', ' . $natural_sort);
 
-        $query = "SELECT domains.id,
-                        domains.name,
-                        domains.type,
-                        COUNT(records.id) AS count_records,
+        $query = "SELECT $domains_table.id,
+                        $domains_table.name,
+                        $domains_table.type,
+                        COUNT($records_table.id) AS count_records,
                         users.username,
                         users.fullname
-                        " . ($pdnssec_use ? ", COUNT(cryptokeys.id) > 0 OR COUNT(domainmetadata.id) > 0 AS secured" : "") . "
+                        " . ($pdnssec_use ? ", COUNT($cryptokeys_table.id) > 0 OR COUNT($domainmetadata_table.id) > 0 AS secured" : "") . "
                         " . ($iface_zone_comments ? ", zones.comment" : "") . "
-                        FROM domains
-                        LEFT JOIN zones ON domains.id=zones.domain_id
-                        LEFT JOIN records ON records.domain_id=domains.id AND records.type IS NOT NULL
+                        FROM $domains_table
+                        LEFT JOIN zones ON $domains_table.id=zones.domain_id
+                        LEFT JOIN $records_table ON $records_table.domain_id=$domains_table.id AND $records_table.type IS NOT NULL
                         LEFT JOIN users ON users.id=zones.owner";
 
         if ($pdnssec_use) {
-            $query .= " LEFT JOIN cryptokeys ON domains.id = cryptokeys.domain_id AND cryptokeys.active
-                        LEFT JOIN domainmetadata ON domains.id = domainmetadata.domain_id AND domainmetadata.kind = 'PRESIGNED'";
+            $query .= " LEFT JOIN $cryptokeys_table ON $domains_table.id = $cryptokeys_table.domain_id AND $cryptokeys_table.active
+                        LEFT JOIN $domainmetadata_table ON $domains_table.id = $domainmetadata_table.domain_id AND $domainmetadata_table.kind = 'PRESIGNED'";
         }
 
         $query .= " WHERE 1=1" . $sql_add . "
-                    GROUP BY domains.name, domains.id, domains.type, users.username, users.fullname
+                    GROUP BY $domains_table.name, $domains_table.id, $domains_table.type, users.username, users.fullname
                     " . ($iface_zone_comments ? ", zones.comment" : "") . "
                     ORDER BY " . $sql_sortby;
 
@@ -1194,7 +1272,7 @@ class DnsRecord
             }
 
             if ($iface_zonelist_serial) {
-                $ret[$r["name"]]["serial"] = self::get_serial_by_zid($this->db, $r["id"]);
+                $ret[$r["name"]]["serial"] = $this->get_serial_by_zid($r["id"]);
             }
 
             if ($iface_zonelist_template) {
@@ -1214,9 +1292,12 @@ class DnsRecord
      *
      * @return int Count of zones matched
      */
-    public static function zone_count_ng($db, $db_type, string $perm, string $letterstart = 'all'): int
+    public static function zone_count_ng($db, $config, string $perm, string $letterstart = 'all'): int
     {
-        $tables = 'domains';
+        $pdns_db_name = $config->get('pdns_db_name');
+        $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
+
+        $tables = $domains_table;
         $query_addon = '';
 
         if ($perm != "own" && $perm != "all") {
@@ -1224,18 +1305,19 @@ class DnsRecord
         }
 
         if ($perm == "own") {
-            $query_addon = " AND zones.domain_id = domains.id
+            $query_addon = " AND zones.domain_id = $domains_table.id
                 AND zones.owner = " . $db->quote($_SESSION['userid'], 'integer');
             $tables .= ', zones';
         }
 
         if ($letterstart != 'all' && $letterstart != 1) {
-            $query_addon .= " AND domains.name LIKE " . $db->quote($letterstart . "%", 'text') . " ";
+            $query_addon .= " AND $domains_table.name LIKE " . $db->quote($letterstart . "%", 'text') . " ";
         } elseif ($letterstart == 1) {
-            $query_addon .= " AND " . DbCompat::substr($db_type) . "(domains.name,1,1) " . DbCompat::regexp($db_type) . " '[0-9]'";
+            $query_addon .= " AND " . DbCompat::substr($config->get('db_type')) . "($domains_table.name,1,1) " . DbCompat::regexp($config->get('db_type')) . " '[0-9]'";
         }
 
-        $query = "SELECT COUNT(domains.id) AS count_zones FROM $tables WHERE 1=1 $query_addon";
+
+        $query = "SELECT COUNT($domains_table.id) AS count_zones FROM $tables WHERE 1=1 $query_addon";
 
         return $db->queryOne($query);
     }
@@ -1247,9 +1329,12 @@ class DnsRecord
      * @param int $id Record ID
      * @return int|array array of record detail, or -1 if nothing found
      */
-    public static function get_record_from_id($db, int $id): int|array
+    public function get_record_from_id(int $id): int|array
     {
-        $result = $db->queryRow("SELECT * FROM records WHERE id=" . $db->quote($id, 'integer') . " AND type IS NOT NULL");
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+        $result = $this->db->queryRow("SELECT * FROM $records_table WHERE id=" . $this->db->quote($id, 'integer') . " AND type IS NOT NULL");
         if ($result) {
             if ($result["type"] == "") {
                 return -1;
@@ -1283,7 +1368,7 @@ class DnsRecord
      *
      * @return int|array array of record detail, or -1 if nothing found
      */
-    public static function get_records_from_domain_id($db, $db_type, int $id, int $rowstart = 0, int $rowamount = 999999, string $sortby = 'name'): array|int
+    public function get_records_from_domain_id($db_type, int $id, int $rowstart = 0, int $rowamount = 999999, string $sortby = 'name'): array|int
     {
         if (!is_numeric($id)) {
             $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s'), "get_records_from_domain_id"));
@@ -1293,18 +1378,21 @@ class DnsRecord
             return -1;
         }
 
-        $db->setLimit($rowamount, $rowstart);
-        $natural_sort = 'records.name';
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+        $this->db->setLimit($rowamount, $rowstart);
+        $natural_sort = "$records_table.name";
         if ($db_type == 'mysql' || $db_type == 'mysqli' || $db_type == 'sqlite' || $db_type == 'sqlite3') {
-            $natural_sort = 'records.name+0<>0 DESC, records.name+0, records.name';
+            $natural_sort = "$records_table.name+0<>0 DESC, $records_table.name+0, $records_table.name";
         }
         $sql_sortby = ($sortby == 'name' ? $natural_sort : $sortby . ', ' . $natural_sort);
 
-        $records = $db->query("SELECT *
-                            FROM records
-                            WHERE domain_id=" . $db->quote($id, 'integer') . " AND type IS NOT NULL
+        $records = $this->db->query("SELECT *
+                            FROM $records_table
+                            WHERE domain_id=" . $this->db->quote($id, 'integer') . " AND type IS NOT NULL
                             ORDER BY type = 'SOA' DESC, type = 'NS' DESC," . $sql_sortby);
-        $db->setLimit(0);
+        $this->db->setLimit(0);
 
         if ($records) {
             $result = $records->fetchAll();
@@ -1487,9 +1575,12 @@ class DnsRecord
      *
      * @return string Domain Type [NATIVE,MASTER,SLAVE]
      */
-    public static function get_domain_type($db, int $id): string
+    public function get_domain_type(int $id): string
     {
-        $type = $db->queryOne("SELECT type FROM domains WHERE id = " . $db->quote($id, 'integer'));
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
+
+        $type = $this->db->queryOne("SELECT type FROM $domains_table WHERE id = " . $this->db->quote($id, 'integer'));
         if ($type == "") {
             $type = "NATIVE";
         }
@@ -1502,9 +1593,11 @@ class DnsRecord
      *
      * @return array|bool|void Master server
      */
-    public static function get_domain_slave_master($db, int $id)
+    public function get_domain_slave_master(int $id)
     {
-        return $db->queryOne("SELECT master FROM domains WHERE type = 'SLAVE' and id = " . $db->quote($id, 'integer'));
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
+        return $this->db->queryOne("SELECT master FROM $domains_table WHERE type = 'SLAVE' and id = " . $this->db->quote($id, 'integer'));
     }
 
     /** Change Zone Type
@@ -1515,8 +1608,11 @@ class DnsRecord
      *
      * @return void
      */
-    public static function change_zone_type($db, string $type, int $id): void
+    public function change_zone_type(string $type, int $id): void
     {
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
+
         $add = '';
         $params = array(':type' => $type, ':id' => $id);
 
@@ -1528,8 +1624,8 @@ class DnsRecord
             $add = ", master = :master";
             $params[':master'] = '';
         }
-        $query = "UPDATE domains SET type = :type" . $add . " WHERE id = :id";
-        $stmt = $db->prepare($query);
+        $query = "UPDATE $domains_table SET type = :type" . $add . " WHERE id = :id";
+        $stmt = $this->db->prepare($query);
 
         $stmt->execute($params);
     }
@@ -1541,10 +1637,13 @@ class DnsRecord
      *
      * @return null
      */
-    public static function change_zone_slave_master($db, int $zone_id, string $ip_slave_master)
+    public function change_zone_slave_master(int $zone_id, string $ip_slave_master)
     {
         if (Dns::are_multiple_valid_ips($ip_slave_master)) {
-            $stmt = $db->prepare("UPDATE domains SET master = ? WHERE id = ?");
+            $pdns_db_name = $this->config->get('pdns_db_name');
+            $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
+
+            $stmt = $this->db->prepare("UPDATE $domains_table SET master = ? WHERE id = ?");
             $stmt->execute(array($ip_slave_master, $zone_id));
         } else {
             $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s %s'), "change_zone_slave_master", "This is not a valid IPv4 or IPv6 address: $ip_slave_master"));
@@ -1555,15 +1654,17 @@ class DnsRecord
 
     /** Get Serial for Zone ID
      *
-     * @param $db
      * @param int $zid Zone ID
      *
      * @return string Serial Number or false if not found
      */
-    public static function get_serial_by_zid($db, int $zid): string
+    public function get_serial_by_zid(int $zid): string
     {
-        $query = "SELECT content FROM records where TYPE = " . $db->quote('SOA', 'text') . " and domain_id = " . $db->quote($zid, 'integer');
-        $rr_soa = $db->queryOne($query);
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+        $query = "SELECT content FROM $records_table where TYPE = " . $this->db->quote('SOA', 'text') . " and domain_id = " . $this->db->quote($zid, 'integer');
+        $rr_soa = $this->db->queryOne($query);
         $rr_soa_fields = explode(" ", $rr_soa);
         return $rr_soa_fields[2] ?? '';
     }
@@ -1616,17 +1717,20 @@ class DnsRecord
             $zone_slave_add = "1";
         }
 
-        $soa_rec = self::get_soa_record($this->db, $zone_id);
+        $soa_rec = $this->get_soa_record($zone_id);
         $this->db->beginTransaction();
+
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         if ($zone_template_id != 0) {
             if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
                 if ($db_type == 'pgsql') {
-                    $query = "DELETE FROM records r USING records_zone_templ rzt WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id AND r.id = rzt.record_id";
+                    $query = "DELETE FROM $records_table r USING records_zone_templ rzt WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id AND r.id = rzt.record_id";
                 } else if ($db_type == 'sqlite' || $db_type == 'sqlite3') {
-                    $query = "DELETE FROM records WHERE id IN (SELECT r.id FROM records r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id)";
+                    $query = "DELETE FROM $records_table WHERE id IN (SELECT r.id FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id)";
                 } else {
-                    $query = "DELETE r, rzt FROM records r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id";
+                    $query = "DELETE r, rzt FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id";
                 }
                 $stmt = $this->db->prepare($query);
                 $stmt->execute(array(':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id));
@@ -1636,17 +1740,17 @@ class DnsRecord
                 $errorPresenter->present($error);
             }
             if ($zone_master_add == "1" || $zone_slave_add == "1") {
-                $domain = self::get_domain_name_by_id($this->db, $zone_id);
+                $domain = $this->get_domain_name_by_id($zone_id);
                 $templ_records = ZoneTemplate::get_zone_templ_records($this->db, $zone_template_id);
 
                 foreach ($templ_records as $r) {
                     //fixme: appears to be a bug and regex match should occur against $domain
                     if ((preg_match('/in-addr.arpa/i', $zone_id) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $zone_id))) {
-                        $zoneTemplate = new ZoneTemplate();
+                        $zoneTemplate = new ZoneTemplate($this->db, $this->config);
                         $name = $zoneTemplate->parse_template_value($r["name"], $domain);
                         $type = $r["type"];
                         if ($type == "SOA") {
-                            $this->db->exec("DELETE FROM records WHERE domain_id = " . $this->db->quote($zone_id, 'integer') . " AND type = 'SOA'");
+                            $this->db->exec("DELETE FROM $records_table WHERE domain_id = " . $this->db->quote($zone_id, 'integer') . " AND type = 'SOA'");
                             $content = $this->get_updated_soa_record($soa_rec);
                             if ($content == "") {
                                 $content = $zoneTemplate->parse_template_value($r["content"], $domain);
@@ -1662,7 +1766,7 @@ class DnsRecord
                             $ttl = $dns_ttl;
                         }
 
-                        $query = "INSERT INTO records (domain_id, name, type, content, ttl, prio) VALUES ("
+                        $query = "INSERT INTO $records_table (domain_id, name, type, content, ttl, prio) VALUES ("
                             . $this->db->quote($zone_id, 'integer') . ","
                             . $this->db->quote($name, 'text') . ","
                             . $this->db->quote($type, 'text') . ","
@@ -1706,6 +1810,9 @@ class DnsRecord
     public function delete_domains(array $domains): bool
     {
         $pdnssec_use = $this->config->get('pdnssec_use');
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $domains_table = $pdns_db_name ? "$pdns_db_name.domains" : "domains";
+        $records_table = $pdns_db_name ? "$pdns_db_name.records" : "records";
 
         $this->db->beginTransaction();
 
@@ -1715,7 +1822,7 @@ class DnsRecord
 
             if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
                 if (is_numeric($id)) {
-                    $zone_type = self::get_domain_type($this->db, $id);
+                    $zone_type = $this->get_domain_type($id);
                     if ($pdnssec_use && $zone_type == 'MASTER') {
                         $pdns_api_url = $this->config->get('pdns_api_url');
                         $pdns_api_key = $this->config->get('pdns_api_key');
@@ -1725,16 +1832,17 @@ class DnsRecord
                             new FakeConfiguration($pdns_api_url, $pdns_api_key)
                         );
 
-                        $zone_name = DnsRecord::get_domain_name_by_id($this->db, $id);
-                        if ($dnssecProvider->isZoneSecured($zone_name)) {
+                        $dnsRecord = new DnsRecord($this->db, $this->config);
+                        $zone_name = $dnsRecord->get_domain_name_by_id($id);
+                        if ($dnssecProvider->isZoneSecured($zone_name, $this->config)) {
                             $dnssecProvider->unsecureZone($zone_name);
                         }
                     }
 
                     $this->db->exec("DELETE FROM zones WHERE domain_id=" . $this->db->quote($id, 'integer'));
-                    $this->db->exec("DELETE FROM records WHERE domain_id=" . $this->db->quote($id, 'integer'));
+                    $this->db->exec("DELETE FROM $records_table WHERE domain_id=" . $this->db->quote($id, 'integer'));
                     $this->db->query("DELETE FROM records_zone_templ WHERE domain_id=" . $this->db->quote($id, 'integer'));
-                    $this->db->exec("DELETE FROM domains WHERE id=" . $this->db->quote($id, 'integer'));
+                    $this->db->exec("DELETE FROM $domains_table WHERE id=" . $this->db->quote($id, 'integer'));
                 } else {
                     $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s %s'), "delete_domains", "id must be a number"));
                     $errorPresenter = new ErrorPresenter();
@@ -1758,10 +1866,13 @@ class DnsRecord
      *
      * @return boolean true on success, false on failure
      */
-    public static function record_name_exists($db, string $name): bool
+    public function record_name_exists(string $name): bool
     {
-        $query = "SELECT COUNT(id) FROM records WHERE name = " . $db->quote($name, 'text');
-        $count = $db->queryOne($query);
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+        $query = "SELECT COUNT(id) FROM $records_table WHERE name = " . $this->db->quote($name, 'text');
+        $count = $this->db->queryOne($query);
         return $count > 0;
     }
 

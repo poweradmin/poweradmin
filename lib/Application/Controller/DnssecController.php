@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2023 Poweradmin Development Team
+ *  Copyright 2010-2024 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2023 Poweradmin Development Team
+ * @copyright   2010-2024 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -41,7 +41,7 @@ use Poweradmin\Permission;
 use Poweradmin\Validation;
 use Poweradmin\ZoneTemplate;
 
-class DnsSecController extends BaseController
+class DnssecController extends BaseController
 {
 
     public function run(): void
@@ -60,7 +60,8 @@ class DnsSecController extends BaseController
             $this->showError(_("You do not have the permission to view this zone."));
         }
 
-        if (DnsRecord::zone_id_exists($this->db, $zone_id) == "0") {
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        if ($dnsRecord->zone_id_exists($zone_id) == "0") {
             $this->showError(_('There is no zone with this ID.'));
         }
 
@@ -69,7 +70,8 @@ class DnsSecController extends BaseController
 
     public function showDnsSecKeys(string $zone_id): void
     {
-        $domain_name = DnsRecord::get_domain_name_by_id($this->db, $zone_id);
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $domain_name = $dnsRecord->get_domain_name_by_id($zone_id);
         if (str_starts_with($domain_name, "xn--")) {
             $idn_zone_name = idn_to_utf8($domain_name, IDNA_NONTRANSITIONAL_TO_ASCII);
         } else {
@@ -77,14 +79,15 @@ class DnsSecController extends BaseController
         }
 
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
         $this->render('dnssec.html', [
             'domain_name' => $domain_name,
             'idn_zone_name' => $idn_zone_name,
-            'domain_type' => DnsRecord::get_domain_type($this->db, $zone_id),
+            'domain_type' => $dnsRecord->get_domain_type($zone_id),
             'keys' => $dnssecProvider->getKeys($domain_name),
             'pdnssec_use' => $this->config('pdnssec_use'),
-            'record_count' => DnsRecord::count_zone_records($this->db, $zone_id),
+            'record_count' => $dnsRecord->count_zone_records($zone_id),
             'zone_id' => $zone_id,
             'zone_template_id' => DnsRecord::get_zone_template($this->db, $zone_id),
             'zone_templates' => ZoneTemplate::get_list_zone_templ($this->db, $_SESSION['userid']),

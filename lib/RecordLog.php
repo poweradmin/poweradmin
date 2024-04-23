@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2023 Poweradmin Development Team
+ *  Copyright 2010-2024 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,9 +32,12 @@ class RecordLog
     private LegacyLogger $logger;
     private PDOLayer $db;
 
-    public function __construct($db)
+    private LegacyConfiguration $config;
+
+    public function __construct($db, $config)
     {
         $this->db = $db;
+        $this->config = $config;
         $this->logger = new LegacyLogger($db);
     }
 
@@ -51,7 +54,8 @@ class RecordLog
 
     private function getRecord($rid): array|int
     {
-        return DnsRecord::get_record_from_id($this->db, $rid);
+        $dnsRecord = new DnsRecord($this->db, $this->config);
+        return $dnsRecord->get_record_from_id($rid);
     }
 
     public function has_changed(array $record): bool

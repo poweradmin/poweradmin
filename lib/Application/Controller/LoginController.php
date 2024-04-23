@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2023 Poweradmin Development Team
+ *  Copyright 2010-2024 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,12 +27,11 @@ use Poweradmin\Application\Service\LocaleService;
 use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Repository\LocaleRepository;
 
-include_once(__DIR__ .'/../../../inc/config-defaults.inc.php');
-@include_once(__DIR__ .'/../../../inc/config.inc.php');
+include_once(__DIR__ . '/../../../inc/config-defaults.inc.php');
+@include_once(__DIR__ . '/../../../inc/config.inc.php');
 
 class LoginController extends BaseController
 {
-
     private LocaleRepository $localeRepository;
     private LocaleService $localeService;
     private LocalePresenter $localePresenter;
@@ -51,20 +50,12 @@ class LoginController extends BaseController
         $localesData = $this->localeRepository->getLocales();
         $preparedLocales = $this->localeService->prepareLocales($localesData, $this->config('iface_lang'));
 
-        $this->initializeSession();
         list($msg, $type) = $this->getSessionMessages();
 
         if (!$this->config('ignore_install_dir') && file_exists('install')) {
             $this->render('empty.html', []);
         } else {
             $this->renderLogin($preparedLocales, $msg, $type);
-        }
-    }
-
-    public function initializeSession(): void
-    {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
         }
     }
 

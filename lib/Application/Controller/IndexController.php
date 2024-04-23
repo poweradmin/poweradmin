@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2023 Poweradmin Development Team
+ *  Copyright 2010-2024 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2023 Poweradmin Development Team
+ * @copyright   2010-2024 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -48,15 +48,15 @@ class IndexController extends BaseController
         $userlogin = $_SESSION["userlogin"] ?? '';
 
         $permissions = Permission::getPermissions($this->db, [
-            'perm_search',
-            'perm_view_zone_own',
-            'perm_view_zone_other',
-            'perm_supermaster_view',
-            'perm_zone_master_add',
-            'perm_zone_slave_add',
-            'perm_supermaster_add',
-            'perm_is_godlike',
-            'perm_templ_perm_edit',
+            'search',
+            'zone_content_view_own',
+            'zone_content_view_others',
+            'supermaster_view',
+            'zone_master_add',
+            'zone_slave_add',
+            'supermaster_add',
+            'user_is_ueberuser',
+            'templ_perm_edit',
         ]);
 
         $this->render($template, [

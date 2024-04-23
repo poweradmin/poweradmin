@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2023 Poweradmin Development Team
+ *  Copyright 2010-2024 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -101,5 +101,14 @@ class LegacyConfiguration implements ConfigurationInterface
         } else {
             return null;
         }
+    }
+
+    public function getAll(): array
+    {
+        $items = $this->config;
+        foreach ($items as $key => $value) {
+            $items[$key] = $this->get($key);
+        }
+        return $items;
     }
 }

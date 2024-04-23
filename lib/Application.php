@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2023 Poweradmin Development Team
+ *  Copyright 2010-2024 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -56,14 +56,7 @@ class Application
             $this->statsDisplayService = new StatsDisplayService($memoryUsage, $timer, $sizeFormatter);
         }
 
-        $config = [
-            'iface_rowamount' => $this->configuration->get('iface_rowamount'),
-            'syslog_use' => $this->configuration->get('syslog_use'),
-            'syslog_ident' => $this->configuration->get('syslog_ident'),
-            'syslog_facility' => $this->configuration->get('syslog_facility'),
-        ];
-
-        $validator = new ConfigValidator($config);
+        $validator = new ConfigValidator($this->configuration->getAll());
         $this->showValidationErrors($validator);
 
         $iface_lang = $this->config('iface_lang');

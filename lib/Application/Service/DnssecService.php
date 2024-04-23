@@ -6,7 +6,7 @@ namespace Poweradmin\Application\Service;
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2023 Poweradmin Development Team
+ *  Copyright 2010-2024 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -40,8 +40,8 @@ class DnssecService {
     public function unsecureZone(string $domainName): bool {
         return $this->provider->unsecureZone($domainName);
     }
-    public function isZoneSecured(string $domainName): bool {
-        return $this->provider->isZoneSecured($domainName);
+    public function isZoneSecured(string $domainName, $config): bool {
+        return $this->provider->isZoneSecured($domainName, $config);
     }
     public function getDsRecords(string $domainName): array {
         return $this->provider->getDsRecords($domainName);

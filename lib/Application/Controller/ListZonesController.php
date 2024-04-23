@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2023 Poweradmin Development Team
+ *  Copyright 2010-2024 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2023 Poweradmin Development Team
+ * @copyright   2010-2024 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -66,39 +66,38 @@ class ListZonesController extends BaseController
         $iface_rowamount = $this->config('iface_rowamount');
 
         $row_start = 0;
-        if (isset($_GET["start"])) {
-            $row_start = (htmlspecialchars($_GET["start"]) - 1) * $iface_rowamount;
+        if (isset($_GET['start'])) {
+            $row_start = (htmlspecialchars($_GET['start']) - 1) * $iface_rowamount;
         }
 
         $perm_view = Permission::getViewPermission($this->db);
         $perm_edit = Permission::getEditPermission($this->db);
 
-
-        $count_zones_view = DnsRecord::zone_count_ng($this->db, $this->config('db_type'), $perm_view);
-        $count_zones_edit = DnsRecord::zone_count_ng($this->db, $this->config('db_type'), $perm_edit);
+        $count_zones_view = DnsRecord::zone_count_ng($this->db, $this->getConfig(), $perm_view);
+        $count_zones_edit = DnsRecord::zone_count_ng($this->db, $this->getConfig(), $perm_edit);
 
         $letter_start = 'all';
         if ($count_zones_view > $iface_rowamount) {
             $letter_start = 'a';
-            if (isset($_GET["letter"])) {
-                $letter_start = htmlspecialchars($_GET["letter"]);
-                $_SESSION["letter"] = htmlspecialchars($_GET["letter"]);
-            } elseif (isset($_SESSION["letter"])) {
-                $letter_start = $_SESSION["letter"];
+            if (isset($_GET['letter'])) {
+                $letter_start = htmlspecialchars($_GET['letter']);
+                $_SESSION['letter'] = htmlspecialchars($_GET['letter']);
+            } elseif (isset($_SESSION['letter'])) {
+                $letter_start = $_SESSION['letter'];
             }
         }
 
-        $count_zones_all_letterstart = DnsRecord::zone_count_ng($this->db, $this->config('db_type'), $perm_view, $letter_start);
+        $count_zones_all_letterstart = DnsRecord::zone_count_ng($this->db, $this->getConfig(), $perm_view, $letter_start);
 
         $zone_sort_by = 'name';
-        if (isset($_GET["zone_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["zone_sort_by"])) {
-            $zone_sort_by = htmlspecialchars($_GET["zone_sort_by"]);
-            $_SESSION["list_zone_sort_by"] = htmlspecialchars($_GET["zone_sort_by"]);
-        } elseif (isset($_POST["zone_sort_by"]) && preg_match("/^[a-z_]+$/", $_POST["zone_sort_by"])) {
-            $zone_sort_by = htmlspecialchars($_POST["zone_sort_by"]);
-            $_SESSION["list_zone_sort_by"] = htmlspecialchars($_POST["zone_sort_by"]);
-        } elseif (isset($_SESSION["list_zone_sort_by"])) {
-            $zone_sort_by = $_SESSION["list_zone_sort_by"];
+        if (isset($_GET['zone_sort_by']) && preg_match("/^[a-z_]+$/", $_GET['zone_sort_by'])) {
+            $zone_sort_by = htmlspecialchars($_GET['zone_sort_by']);
+            $_SESSION['list_zone_sort_by'] = htmlspecialchars($_GET['zone_sort_by']);
+        } elseif (isset($_POST['zone_sort_by']) && preg_match("/^[a-z_]+$/", $_POST['zone_sort_by'])) {
+            $zone_sort_by = htmlspecialchars($_POST['zone_sort_by']);
+            $_SESSION['list_zone_sort_by'] = htmlspecialchars($_POST['zone_sort_by']);
+        } elseif (isset($_SESSION['list_zone_sort_by'])) {
+            $zone_sort_by = $_SESSION['list_zone_sort_by'];
         }
 
         if (!in_array($zone_sort_by, array('name', 'type', 'count_records', 'owner'))) {
@@ -107,12 +106,12 @@ class ListZonesController extends BaseController
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         if ($count_zones_view <= $iface_rowamount || $letter_start == 'all') {
-            $zones = $dnsRecord->get_zones($perm_view, $_SESSION['userid'], "all", $row_start, $iface_rowamount, $zone_sort_by);
+            $zones = $dnsRecord->get_zones($perm_view, $_SESSION['userid'], 'all', $row_start, $iface_rowamount, $zone_sort_by);
         } else {
             $zones = $dnsRecord->get_zones($perm_view, $_SESSION['userid'], $letter_start, $row_start, $iface_rowamount, $zone_sort_by);
         }
 
-        if ($perm_view == "none") {
+        if ($perm_view == 'none') {
             $this->showError(_('You do not have the permission to see any zones.'));
         }
 
@@ -127,7 +126,7 @@ class ListZonesController extends BaseController
             'iface_zonelist_serial' => $iface_zonelist_serial,
             'iface_zonelist_template' => $iface_zonelist_template,
             'pdnssec_use' => $pdnssec_use,
-            'letters' => $this->getAvailableStartingLetters($letter_start, $_SESSION["userid"]),
+            'letters' => $this->getAvailableStartingLetters($letter_start, $_SESSION['userid']),
             'pagination' => $this->createAndPresentPagination($count_zones_all_letterstart, $iface_rowamount),
             'session_userlogin' => $_SESSION['userlogin'],
             'perm_edit' => $perm_edit,
@@ -138,9 +137,7 @@ class ListZonesController extends BaseController
 
     private function getAvailableStartingLetters(string $letterStart, int $userId): string
     {
-        $db_type = $this->config('db_type');
-
-        $zoneRepository = new DbZoneRepository($this->db, $db_type);
+        $zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
         $zoneService = new ZoneService($zoneRepository);
 
         $userRepository = new DbUserRepository($this->db);

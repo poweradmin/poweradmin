@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2023 Poweradmin Development Team
+ *  Copyright 2010-2024 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,6 +23,8 @@
 use Poweradmin\Application\Routing\BasicRouter;
 
 require __DIR__ . '/vendor/autoload.php';
+
+session_start();
 
 $router = new BasicRouter(array_merge($_GET, $_POST));
 $router->setDefaultPage('index');

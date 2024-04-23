@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2023 Poweradmin Development Team
+ *  Copyright 2010-2024 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,17 +29,21 @@ use Poweradmin\Infrastructure\Database\DbCompat;
 class DbZoneRepository implements ZoneRepositoryInterface {
     private object $db;
     private string $db_type;
+    private ?string $pdns_db_name;
 
-    public function __construct($db, $db_type) {
+    public function __construct($db, $config) {
         $this->db = $db;
-        $this->db_type = $db_type;
+        $this->db_type = $config->get('db_type');
+        $this->pdns_db_name = $config->get('pdns_db_name');
     }
 
     public function getDistinctStartingLetters(int $userId, bool $viewOthers): array {
-        $query = "SELECT DISTINCT " . DbCompat::substr($this->db_type) . "(domains.name, 1, 1) AS letter FROM domains";
+        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
+
+        $query = "SELECT DISTINCT " . DbCompat::substr($this->db_type) . "($domains_table.name, 1, 1) AS letter FROM $domains_table";
 
         if (!$viewOthers) {
-            $query .= " LEFT JOIN zones ON domains.id = zones.domain_id";
+            $query .= " LEFT JOIN zones ON $domains_table.id = zones.domain_id";
             $query .= " WHERE zones.owner = :userId";
         }
 
