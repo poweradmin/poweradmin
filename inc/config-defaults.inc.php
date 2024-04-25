@@ -86,10 +86,17 @@ $ldap_use = false;
 $ldap_debug = false;
 $ldap_uri = 'ldap://domaincontroller.example.com'; // Hostname, port number not required
 $ldap_basedn = 'ou=users,dc=example,dc=com'; // The place where all users are stored
+//$ldap_group_filter = 'cn=powerdns,ou=groups,dc=example,dc=org'; // The group that has access to the application
 $ldap_binddn = 'cn=admin,dc=example,dc=com'; // OpenLDAP - full DN of the user cn=admin,dc=example,dc=com, Active Directory - Group\User
 $ldap_bindpw = 'some_password';
 $ldap_user_attribute = 'uid'; // OpenLDAP - uid, Active Directory - sAMAccountName
 $ldap_proto = 3;
+
+// LDAP search filter settings, examples:
+//$ldap_group_filter = '(memberOf=cn=powerdns,ou=groups,dc=poweradmin,dc=org)';
+//$ldap_group_filter = '(objectClass=account)';
+//$ldap_group_filter = '(objectClass=person)(memberOf=cn=admins,ou=groups,dc=poweradmin,dc=org)';
+//$ldap_group_filter = '(cn=*admin*)';
 
 // Do not use this configuration variable in production, instead remove the installation folder.
 $ignore_install_dir = false;
