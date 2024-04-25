@@ -57,8 +57,8 @@ class SearchController extends BaseController
         $searchResultRecords = [];
         $records_page = 1;
 
-        $zone_sort_by = $this->getFromRequestOrSession('zone_sort_by');
-        $record_sort_by = $this->getFromRequestOrSession('record_sort_by');
+        $zone_sort_by = $this->getSortOrder('zone_sort_by', ['name', 'type', 'count_records', 'fullname']);
+        $record_sort_by = $this->getSortOrder('record_sort_by', ['name', 'type', 'prio', 'content', 'ttl']);
 
         $_SESSION['zone_sort_by'] = $zone_sort_by;
         $_SESSION['record_sort_by'] = $record_sort_by;
@@ -133,14 +133,15 @@ class SearchController extends BaseController
         ]);
     }
 
-    private function getFromRequestOrSession($name)
+    private function getSortOrder(string $name, array $allowedValues): string
     {
-        if (isset($_POST[$name])) {
-            return $_POST[$name];
+        $sortOrder = 'name';
+
+        if (isset($_POST[$name]) && in_array($_POST[$name], $allowedValues)) {
+            $sortOrder = $_POST[$name];
+        } elseif (isset($_SESSION[$name]) && in_array($_SESSION[$name], $allowedValues)) {
+            $sortOrder = $_SESSION[$name];
         }
-        if (isset($_SESSION[$name])) {
-            return $_SESSION[$name];
-        }
-        return 'name';
+        return $sortOrder;
     }
 }
