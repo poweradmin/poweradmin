@@ -13,6 +13,7 @@
 FROM php:8.1.28-cli-alpine
 
 RUN apk add --no-cache --virtual .build-deps \
+    icu-data-full \
     gettext \
     gettext-dev \
     libintl \
