@@ -5,54 +5,50 @@
 #   docker run -d --name poweradmin -p 80:80 poweradmin
 #
 #   Alternatively, you can run the program with a current folder mounted:
-#   docker run -d --name poweradmin -p 80:80 -v $(pwd):/var/www/html poweradmin
+#   docker run -d --name poweradmin -p 80:80 -v $(pwd):/app poweradmin
 #
 # Open your browser and navigate to "localhost", then log in using the provided username and password
 # admin / testadmin
 
-FROM php:8.1.28-apache
+FROM php:8.1.28-cli-alpine
 
-ENV DEBIAN_FRONTEND noninteractive
+RUN apk add --no-cache --virtual .build-deps \
+    gettext \
+    gettext-dev \
+    libintl \
+    postgresql-dev \
+    sqlite \
+    && docker-php-ext-install -j$(nproc) \
+    gettext \
+    intl \
+    mysqli \
+    pdo \
+    pdo_mysql \
+    pdo_pgsql \
+    && rm -rf /var/cache/apk/*
 
-RUN apt-get update && apt-get install -y \
-    sqlite3 \
-    libicu72 \
-    libicu-dev \
-    locales-all \
-    libpq-dev \
-    git
+WORKDIR /app
 
-RUN docker-php-ext-configure gettext && \
-    docker-php-ext-install -j$(nproc) gettext
+COPY . .
 
-RUN docker-php-ext-configure intl && \
-    docker-php-ext-install -j$(nproc) intl
+RUN mkdir -p /db /app/inc
 
-RUN docker-php-ext-configure mysqli && \
-    docker-php-ext-install -j$(nproc) mysqli
+RUN sqlite3 /db/pdns.db < /app/sql/pdns/4.7.x/schema.sqlite3.sql
+RUN sqlite3 /db/pdns.db < /app/sql/poweradmin-sqlite-db-structure.sql
 
-RUN docker-php-ext-configure pdo && \
-    docker-php-ext-install -j$(nproc) pdo
+RUN echo '<?php' >> /app/inc/config.inc.php
+RUN echo '$db_type="sqlite";' >> /app/inc/config.inc.php
+RUN echo '$db_file="/db/pdns.db";' >> /app/inc/config.inc.php
+RUN echo '$ignore_install_dir=true;' >> /app/inc/config.inc.php
 
-RUN docker-php-ext-configure pdo_mysql && \
-    docker-php-ext-install -j$(nproc) pdo_mysql
+RUN php -r 'echo bin2hex(random_bytes(32));' > /tmp/session_key.txt
+RUN echo "\$session_key=\"$(cat /tmp/session_key.txt)\";" >> /app/inc/config.inc.php
 
-RUN docker-php-ext-configure pdo_pgsql && \
-    docker-php-ext-install -j$(nproc) pdo_pgsql
+RUN chown -R www-data:www-data /db /app \
+    && chmod -R 755 /db /app
 
-RUN git clone https://github.com/poweradmin/poweradmin.git /var/www/html
-
-RUN sqlite3 /opt/pdns.db < /var/www/html/sql/pdns/4.7.x/schema.sqlite3.sql
-RUN sqlite3 /opt/pdns.db < /var/www/html/sql/poweradmin-sqlite-db-structure.sql
-
-RUN chown www-data:www-data /opt/pdns.db
-RUN chown -R www-data:www-data /opt
-RUN chmod -R 0775 /opt
-
-RUN echo '<?php' >> /var/www/html/inc/config.inc.php
-RUN echo '$db_type="sqlite";' >> /var/www/html/inc/config.inc.php
-RUN echo '$db_file="/opt/pdns.db";' >> /var/www/html/inc/config.inc.php
-RUN echo '$ignore_install_dir=true;' >> /var/www/html/inc/config.inc.php
-RUN echo '$session_key="9b18ab4a68f8eebebf539647f810186ac53fe38a2f9dac06357d5d2191357dba";' >> /var/www/html/inc/config.inc.php
+USER www-data
 
 EXPOSE 80
+
+ENTRYPOINT ["php", "-S", "0.0.0.0:80", "-t", "/app"]
