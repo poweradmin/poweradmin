@@ -421,10 +421,10 @@ class LegacyUsers
             return false;
         }
 
-        $query = "SELECT id, password FROM users WHERE username = {$db->quote($_SESSION ["userlogin"], 'text')}";
-        
+        $query = "SELECT id, password, use_ldap FROM users WHERE username = {$db->quote($_SESSION ["userlogin"], 'text')}";
         $response = $db->queryRow($query);
-        if ($response['password'] == 'LDAP_USER') {
+        
+        if ($response['use_ldap']) {
             $error = new ErrorMessage(_('You can not change your password as LDAP user.'));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
