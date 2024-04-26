@@ -35,7 +35,7 @@ use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
 use Poweradmin\LegacyUsers;
 
-class AddSuperMasterController extends BaseController
+class AddSupermasterController extends BaseController
 {
 
     public function run(): void

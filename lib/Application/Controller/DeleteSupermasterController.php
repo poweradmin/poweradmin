@@ -35,7 +35,7 @@ use Poweradmin\BaseController;
 use Poweradmin\DnsRecord;
 use Valitron;
 
-class DeleteSuperMasterController extends BaseController
+class DeleteSupermasterController extends BaseController
 {
 
     public function run(): void
