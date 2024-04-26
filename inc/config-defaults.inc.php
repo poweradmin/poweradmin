@@ -8,7 +8,7 @@
 // Better description of available configuration settings you can find here:
 // <https://github.com/poweradmin/poweradmin/wiki/Configuration-File>
 
-// Database settings
+// Poweradmin database settings
 $db_host = '';
 $db_port = '';
 $db_user = '';
@@ -18,6 +18,9 @@ $db_type = '';
 //$db_charset = 'latin1'; // or utf8
 //$db_file = '';		# used only for SQLite, provide full path to database file
 //$db_debug	= false;	# show all SQL queries
+
+// Use a separate database for PowerDNS (this setting is experimental and not fully tested)
+//$pdns_db_name = 'powerdns';
 
 // Security settings
 // This should be changed upon install
