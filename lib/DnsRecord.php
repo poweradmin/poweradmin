@@ -1904,9 +1904,9 @@ class DnsRecord
      *
      * Set timezone to configured tz or UTC it not set
      *
-     * @return null
+     * @return void
      */
-    public function set_timezone()
+    public function set_timezone(): void
     {
         $timezone = $this->config->get('timezone');
 
