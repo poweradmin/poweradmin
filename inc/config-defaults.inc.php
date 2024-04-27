@@ -8,7 +8,7 @@
 // Better description of available configuration settings you can find here:
 // <https://github.com/poweradmin/poweradmin/wiki/Configuration-File>
 
-// Database settings
+// Poweradmin database settings
 $db_host = '';
 $db_port = '';
 $db_user = '';
@@ -18,6 +18,9 @@ $db_type = '';
 //$db_charset = 'latin1'; // or utf8
 //$db_file = '';		# used only for SQLite, provide full path to database file
 //$db_debug	= false;	# show all SQL queries
+
+// Use a separate database for PowerDNS (this setting is experimental and not fully tested)
+//$pdns_db_name = 'powerdns';
 
 // Security settings
 // This should be changed upon install
@@ -83,10 +86,17 @@ $ldap_use = false;
 $ldap_debug = false;
 $ldap_uri = 'ldap://domaincontroller.example.com'; // Hostname, port number not required
 $ldap_basedn = 'ou=users,dc=example,dc=com'; // The place where all users are stored
+//$ldap_search_filter = 'cn=powerdns,ou=groups,dc=example,dc=org'; // The group that has access to the application
 $ldap_binddn = 'cn=admin,dc=example,dc=com'; // OpenLDAP - full DN of the user cn=admin,dc=example,dc=com, Active Directory - Group\User
 $ldap_bindpw = 'some_password';
 $ldap_user_attribute = 'uid'; // OpenLDAP - uid, Active Directory - sAMAccountName
 $ldap_proto = 3;
+
+// LDAP search filter settings, examples:
+//$ldap_search_filter = '(memberOf=cn=powerdns,ou=groups,dc=poweradmin,dc=org)';
+//$ldap_search_filter = '(objectClass=account)';
+//$ldap_search_filter = '(objectClass=person)(memberOf=cn=admins,ou=groups,dc=poweradmin,dc=org)';
+//$ldap_search_filter = '(cn=*admin*)';
 
 // Do not use this configuration variable in production, instead remove the installation folder.
 $ignore_install_dir = false;
