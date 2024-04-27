@@ -1,21 +1,25 @@
 # Poweradmin related
 inc/config.inc.php
-/scripts
-/docs
-/templates/custom
+scripts
+templates/custom
 
 # Misc
 .DS_Store
-/.vagrant
+.vagrant
 
 # IDE
-/nbproject
-/.idea
-/.settings/
-/.buildpath
-/.project
-/.vscode
+nbproject
+.idea
+.settings
+.buildpath
+.project
+.vscode
+
+# phpDocumentor
+docs
+.phive
+tools
 
 # PHPUnit
-/.phpunit.cache
+.phpunit.cache
 .phpunit.result.cache
