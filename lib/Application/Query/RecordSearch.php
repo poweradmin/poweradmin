@@ -93,7 +93,7 @@ class RecordSearch extends BaseSearch
                 ($records_table.name LIKE " . $this->db->quote($search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($search_string, 'text') .
             ($reverse ? " OR $records_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ')' .
             ($permission_view == 'own' ? 'AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
-            ($iface_search_group_records ? " GROUP BY $records_table.name, $records_table.content " : '') .
+            ($iface_search_group_records ? " GROUP BY $records_table.name, $records_table.content, $records_table.id, zone_id, user_id" : '') .
             ' ORDER BY ' . $sort_records_by .
             ' LIMIT ' . $iface_rowamount . ' OFFSET ' . $offset;
 
