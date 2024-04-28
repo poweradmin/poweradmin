@@ -99,11 +99,7 @@ function generateDatabaseUserInstructions($db, $databaseCredentials): string
         $instructions .= "CREATE USER '" . htmlspecialchars($databaseCredentials['pa_db_user']) . "'@'" . htmlspecialchars($pa_db_host) . "' IDENTIFIED WITH mysql_native_password BY '" . htmlspecialchars($databaseCredentials['pa_db_pass']) . "';\n";
         $instructions .= "GRANT SELECT, INSERT, UPDATE, DELETE ON " . htmlspecialchars($databaseCredentials['db_name']) . ".* TO '" . htmlspecialchars($databaseCredentials['pa_db_user']) . "'@'" . htmlspecialchars($pa_db_host) . "';\n";
     } elseif ($databaseCredentials['db_type'] == 'pgsql') {
-        $instructions .= "createuser -E -P " . htmlspecialchars($databaseCredentials['pa_db_user']) . "\n";
-        $instructions .= "Enter password for new role: " . htmlspecialchars($databaseCredentials['pa_db_pass']) . "\n";
-        $instructions .= "Enter it again: " . htmlspecialchars($databaseCredentials['pa_db_pass']) . "\n";
-        $instructions .= "CREATE USER\n";
-        $instructions .= "psql " . htmlspecialchars($databaseCredentials['db_name']) . "\n";
+        $instructions .= "CREATE USER " . htmlspecialchars($databaseCredentials['pa_db_user']) . " WITH PASSWORD '" . htmlspecialchars($databaseCredentials['pa_db_pass']) . "';\n";
 
         $def_tables = getDefaultTables();
         $grantTables = getGrantTables($def_tables);
