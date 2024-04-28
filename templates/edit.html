@@ -91,7 +91,7 @@
                     {% endif %}
                 </select>
             </td>
-            <td><textarea class="form-control form-control-sm" name="record[{{ r['id'] }}][content]" style="height: 1em;">{{ r['content'] }}</textarea></td>
+            <td><textarea class="form-control form-control-sm" name="record[{{ r['id'] }}][content]" rows="1">{{ r['content'] }}</textarea></td>
             <td class="col-sm-1"><input class="form-control form-control-sm" type="number"
                                         id="priority_field_{{ r['id'] }}" name="record[{{ r['id'] }}][prio]"
                                         min="0" max="65535" pattern="[0-9]*" value="{{ r['prio'] }}"></td>
@@ -194,7 +194,7 @@
                     {% endfor %}
                 </select>
             </td>
-            <td><textarea class="form-control form-control-sm" name="content" style="height: 1em;" required></textarea>
+            <td><textarea class="form-control form-control-sm" name="content" rows="1" required></textarea>
                 <div class="invalid-feedback">{% trans %}Provide content{% endtrans %}</div>
             </td>
             <td class="col-sm-1"><input class="form-control form-control-sm" type="number" name="prio" value="0"
