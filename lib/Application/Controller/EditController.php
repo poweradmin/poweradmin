@@ -328,11 +328,10 @@ class EditController extends BaseController
             $this->showError(_('Template name can\'t be an empty string.'));
         } else {
             $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-            $dnsRecord->get_records_from_domain_id($this->config('db_type'), $zone_id);
+            $records = $dnsRecord->get_records_from_domain_id($this->config('db_type'), $zone_id);
 
             $description = htmlspecialchars($_POST['templ_descr']) ?? '';
 
-            // FIXME: $records is undefined
             ZoneTemplate::add_zone_templ_save_as($this->db, $template_name, $description, $_SESSION['userid'], $records, $dnsRecord->get_domain_name_by_id($zone_id));
             $this->setMessage('edit', 'success', _('Zone template has been added successfully.'));
         }
