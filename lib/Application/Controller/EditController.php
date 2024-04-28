@@ -133,12 +133,18 @@ class EditController extends BaseController
             $dnsRecord->update_soa_serial($zone_id);
 
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
-            $result = $dnssecProvider->secureZone($zone_name);
-            $dnssecProvider->rectifyZone($zone_name);
 
-            if ($result) {
-                $this->setMessage('edit', 'success', _('Zone has been signed successfully.'));
+            if ($dnssecProvider->isDnssecEnabled()) {
+                $result = $dnssecProvider->secureZone($zone_name);
+
+                if ($result) {
+                    $this->setMessage('edit', 'success', _('Zone has been signed successfully.'));
+                }
+            } else {
+                $this->setMessage('edit', 'error', _('DNSSEC is not enabled on the server.'));
             }
+
+            $dnssecProvider->rectifyZone($zone_name);
         }
 
         if (isset($_POST['unsign_zone'])) {

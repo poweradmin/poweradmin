@@ -175,4 +175,11 @@ class PowerdnsApiClient {
 
         return $response && $response['responseCode'] === 200 && isset($response['data']['dnssec']) && $response['data']['dnssec'];
     }
+
+    public function getConfig(): array {
+        $endpoint = $this->buildEndpoint("/config");
+        $response = $this->httpClient->makeRequest('GET', $endpoint);
+
+        return $response['data'];
+    }
 }

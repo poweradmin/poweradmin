@@ -400,4 +400,9 @@ class PdnsUtilProvider implements DnssecProvider
 
         return array();
     }
+
+    public function isDnssecEnabled(): bool
+    {
+        return true; // There is no way to check if DNSSEC is enabled using pdnsutil.
+    }
 }

@@ -180,6 +180,19 @@ class DnsSecApiProvider implements DnssecProvider
         return [];
     }
 
+    public function isDnssecEnabled(): bool
+    {
+        $serverConfig = $this->client->getConfig();
+
+        foreach ($serverConfig as $item) {
+            if (str_ends_with($item['name'], '-dnssec') && $item['value'] !== 'no') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private function logAction(string $action, string $zoneName, array $context = []): void
     {
         $contextString = [];

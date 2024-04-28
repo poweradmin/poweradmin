@@ -103,7 +103,7 @@ class AddZoneMasterController extends BaseController
             if ($pdnssec_use) {
                 $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
-                if (isset($_POST['dnssec'])) {
+                if (isset($_POST['dnssec']) && $dnssecProvider->isDnssecEnabled()) {
                     $dnssecProvider->secureZone($zone_name);
                 }
 

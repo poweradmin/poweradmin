@@ -36,4 +36,5 @@ interface DnssecProvider {
     public function removeZoneKey(string $zoneName, int $keyId): bool;
     public function keyExists(string $zoneName, int $keyId): bool;
     public function getZoneKey(string $zoneName, int $keyId): array;
+    public function isDnssecEnabled(): bool;
 }
