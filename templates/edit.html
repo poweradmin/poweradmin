@@ -419,3 +419,21 @@
         {% endif %}
     </table>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var textareas = document.querySelectorAll('textarea');
+
+        textareas.forEach(function(textarea) {
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = this.scrollHeight + 'px';
+            });
+
+            // Trigger the 'input' event on page load if the textarea has content
+            if (textarea.value !== '') {
+                textarea.dispatchEvent(new Event('input'));
+            }
+        });
+    });
+</script>
