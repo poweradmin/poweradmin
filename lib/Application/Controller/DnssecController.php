@@ -80,6 +80,7 @@ class DnssecController extends BaseController
 
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
 
         $this->render('dnssec.html', [
             'domain_name' => $domain_name,
@@ -90,7 +91,7 @@ class DnssecController extends BaseController
             'record_count' => $dnsRecord->count_zone_records($zone_id),
             'zone_id' => $zone_id,
             'zone_template_id' => DnsRecord::get_zone_template($this->db, $zone_id),
-            'zone_templates' => ZoneTemplate::get_list_zone_templ($this->db, $_SESSION['userid']),
+            'zone_templates' => $zone_templates->get_list_zone_templ($_SESSION['userid']),
             'algorithms' => DnssecAlgorithm::ALGORITHMS,
         ]);
     }

@@ -50,7 +50,7 @@ class ZoneTemplate
      *
      * @return array array of zone templates [id,name,descr]
      */
-    public static function get_list_zone_templ($db, int $userid): array
+    public function get_list_zone_templ(int $userid): array
     {
         $query = "SELECT zt.id, zt.name, zt.descr, u.username, u.fullname, COUNT(z.zone_templ_id) as zones_linked
             FROM zone_templ zt
@@ -58,14 +58,14 @@ class ZoneTemplate
             LEFT JOIN zones z ON zt.id = z.zone_templ_id";
         $params = [];
 
-        if (!LegacyUsers::verify_permission($db, 'user_is_ueberuser')) {
+        if (!LegacyUsers::verify_permission($this->db, 'user_is_ueberuser')) {
             $query .= " WHERE zt.owner = :userid OR zt.owner = 0";
             $params[':userid'] = $userid;
         }
 
         $query .= " GROUP BY zt.id, zt.name, zt.descr, u.username, u.fullname ORDER BY zt.name";
 
-        $stmt = $db->prepare($query);
+        $stmt = $this->db->prepare($query);
         $stmt->execute($params);
 
         return $stmt->fetchAll();

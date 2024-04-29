@@ -105,13 +105,15 @@ class BulkRegistrationController extends BaseController
 
     private function showBulkRegistrationForm(array $failed_domains = []): void
     {
+        $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
+
         $this->render('bulk_registration.html', [
             'userid' => $_SESSION['userid'],
             'perm_view_others' => LegacyUsers::verify_permission($this->db, 'user_view_others'),
             'iface_zone_type_default' => $this->config('iface_zone_type_default'),
             'available_zone_types' => array("MASTER", "NATIVE"),
             'users' => LegacyUsers::show_users($this->db),
-            'zone_templates' => ZoneTemplate::get_list_zone_templ($this->db, $_SESSION['userid']),
+            'zone_templates' => $zone_templates->get_list_zone_templ($_SESSION['userid']),
             'failed_domains' => $failed_domains,
         ]);
     }

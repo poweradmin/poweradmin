@@ -52,7 +52,6 @@ class ListZoneTemplController extends BaseController
         $this->render('list_zone_templ.html', [
             'perm_zone_master_add' => $perm_zone_master_add,
             'user_name' => LegacyUsers::get_fullname_from_userid($this->db, $_SESSION['userid']) ?: $_SESSION['userlogin'],
-            'zone_templates' => ZoneTemplate::get_list_zone_templ($this->db, $_SESSION['userid']),
             'perm_is_godlike' => LegacyUsers::verify_permission($this->db, 'user_is_ueberuser'),
         ]);
     }

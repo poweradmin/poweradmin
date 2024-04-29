@@ -117,13 +117,14 @@ class AddZoneMasterController extends BaseController
     private function showForm(): void
     {
         $perm_view_others = LegacyUsers::verify_permission($this->db, 'user_view_others');
+        $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
 
         $this->render('add_zone_master.html', [
             'perm_view_others' => $perm_view_others,
             'session_user_id' => $_SESSION['userid'],
             'available_zone_types' => array("MASTER", "NATIVE"),
             'users' => LegacyUsers::show_users($this->db),
-            'zone_templates' => ZoneTemplate::get_list_zone_templ($this->db, $_SESSION['userid']),
+            'zone_templates' => $zone_templates->get_list_zone_templ($_SESSION['userid']),
             'iface_zone_type_default' => $this->config('iface_zone_type_default'),
             'pdnssec_use' => $this->config('pdnssec_use'),
         ]);

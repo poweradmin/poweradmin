@@ -155,9 +155,11 @@ class EditController extends BaseController
             $this->setMessage('edit', 'success', _('Zone has been unsigned successfully.'));
         }
 
+        $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
+
         $domain_type = $dnsRecord->get_domain_type($zone_id);
         $record_count = $dnsRecord->count_zone_records($zone_id);
-        $zone_templates = ZoneTemplate::get_list_zone_templ($this->db, $_SESSION['userid']);
+        $zone_templates = $zone_templates->get_list_zone_templ($_SESSION['userid']);
         $zone_template_id = DnsRecord::get_zone_template($this->db, $zone_id);
         $zone_template_details = ZoneTemplate::get_zone_templ_details($this->db, $zone_template_id);
 

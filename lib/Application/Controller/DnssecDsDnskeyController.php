@@ -81,7 +81,6 @@ class DnssecDsDnskeyController extends BaseController
         $domain_name = $dnsRecord->get_domain_name_by_id($zone_id);
         $domain_type = $dnsRecord->get_domain_type($zone_id);
         $record_count = $dnsRecord->count_zone_records($zone_id);
-        $zone_templates = ZoneTemplate::get_list_zone_templ($this->db, $_SESSION['userid']);
         $zone_template_id = DnsRecord::get_zone_template($this->db, $zone_id);
 
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
@@ -104,7 +103,6 @@ class DnssecDsDnskeyController extends BaseController
             'record_count' => $record_count,
             'zone_id' => $zone_id,
             'zone_template_id' => $zone_template_id,
-            'zone_templates' => $zone_templates,
         ]);
     }
 }
