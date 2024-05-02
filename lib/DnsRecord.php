@@ -22,6 +22,8 @@
 
 namespace Poweradmin;
 
+use PDO;
+
 use Poweradmin\Application\Dnssec\DnssecProviderFactory;
 use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\Domain\Error\ErrorMessage;
@@ -458,14 +460,15 @@ class DnsRecord
         $pdns_db_name = $this->config->get('pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
-        $query = "INSERT INTO $records_table (domain_id, name, type, content, ttl, prio) VALUES ("
-            . $this->db->quote($zone_id, 'integer') . ","
-            . $this->db->quote($name, 'text') . ","
-            . $this->db->quote($type, 'text') . ","
-            . $this->db->quote($content, 'text') . ","
-            . $this->db->quote($ttl, 'integer') . ","
-            . $this->db->quote($prio, 'integer') . ")";
-        $this->db->exec($query);
+        $query = "INSERT INTO $records_table (domain_id, name, type, content, ttl, prio) VALUES (:zone_id, :name, :type, :content, :ttl, :prio)";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
+        $stmt->bindValue(':name', $name, PDO::PARAM_STR);
+        $stmt->bindValue(':type', $type, PDO::PARAM_STR);
+        $stmt->bindValue(':content', $content, PDO::PARAM_STR);
+        $stmt->bindValue(':ttl', $ttl, PDO::PARAM_INT);
+        $stmt->bindValue(':prio', $prio, PDO::PARAM_INT);
+        $stmt->execute();
         $this->db->commit();
 
         if ($type != 'SOA') {
