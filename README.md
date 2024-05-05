@@ -95,8 +95,8 @@ error_reporting(E_ALL);
 
 ### Log in
 
-![The login screen](https://www.poweradmin.org/screenshots/ignite_login.png)
+![The login screen]([https://www.poweradmin.org/screenshots/ignite_login.png](https://github.com/poweradmin/poweradmin.github.io/blob/master/screenshots/ignite_login.png))
 
 ### Zone list
 
-![List of zones](https://www.poweradmin.org/screenshots/ignite_zone_list.png)
+![List of zones]([https://www.poweradmin.org/screenshots/ignite_zone_list.png](https://github.com/poweradmin/poweradmin.github.io/blob/master/screenshots/ignite_zone_list.png))
