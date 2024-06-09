@@ -34,7 +34,7 @@ COPY . .
 
 RUN mkdir -p /db /app/inc
 
-RUN sqlite3 /db/pdns.db < /app/sql/pdns/4.7.x/schema.sqlite3.sql
+RUN sqlite3 /db/pdns.db < /app/sql/pdns/47/schema.sqlite3.sql
 RUN sqlite3 /db/pdns.db < /app/sql/poweradmin-sqlite-db-structure.sql
 
 RUN echo '<?php' > /app/inc/config.inc.php

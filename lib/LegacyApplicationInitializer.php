@@ -35,8 +35,8 @@ class LegacyApplicationInitializer
 
     public function __construct(bool $authenticate)
     {
-        $this->checkConfigurationFile();
         $this->checkDependencies();
+        $this->checkConfigurationFile();
         $this->loadConfiguration();
         $this->connectToDatabase();
         if ($authenticate) {

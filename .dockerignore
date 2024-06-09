@@ -34,6 +34,7 @@ VAGRANT.md
 
 # Misc
 **/.DS_Store
+.devcontainer
 phpdoc.dist.xml
 scripts
 transifex.yml

@@ -23,3 +23,6 @@ tools
 # PHPUnit
 .phpunit.cache
 .phpunit.result.cache
+
+# Devcontainer
+.devcontainer/pdns

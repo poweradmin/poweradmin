@@ -1,0 +1,30 @@
+{
+  "name": "Poweradmin",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "postStartCommand": {
+    "app": "sudo chmod a+x \"$(pwd)\" && sudo rm -rf /var/www/html && sudo ln -s \"$(pwd)\" /var/www/html && apachectl start"
+  },
+  "forwardPorts": [
+    "app:8080",
+    "db:3306",
+    "dns:1053",
+    "dns:8081"
+  ],
+  "portsAttributes": {
+    "app:8080": {
+      "label": "Poweradmin"
+    },
+    "db:3306": {
+      "label": "MariaDB"
+    },
+    "dns:1053": {
+      "label": "PowerDNS"
+    },
+    "dns:8081": {
+      "label": "PowerDNS API"
+    }
+  },
+  "remoteUser": "vscode"
+}

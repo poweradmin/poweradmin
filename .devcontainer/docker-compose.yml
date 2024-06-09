@@ -1,0 +1,47 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - VARIANT=${PHP_VERSION}-${DEBIAN_VERSION}
+    volumes:
+      - ../..:/workspaces:cached
+    command: sleep infinity
+    depends_on:
+      - db
+
+  db:
+    image: mariadb:${MARIADB_VERSION}
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - data:/var/lib/mysql
+      - ../sql/pdns/${PDNS_BRANCH}/schema.mysql.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: [ "CMD", "healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized" ]
+      start_period: 1m
+      start_interval: 10s
+      interval: 1m
+      timeout: 5s
+      retries: 3
+
+  dns:
+    image: powerdns/pdns-auth-${PDNS_BRANCH}:${PDNS_VERSION}
+    volumes:
+      - ./pdns.conf:/etc/powerdns/pdns.conf
+    ports:
+      - "1053:53"
+      - "1053:53/udp"
+      - "8081:8081"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  data: { }
