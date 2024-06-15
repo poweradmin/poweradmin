@@ -976,10 +976,6 @@ msgstr "Primärer Nameserver"
 msgid "Secondary nameserver"
 msgstr "Sekundärer Nameserver"
 
-#: /vendor/symfony/twig-bridge/Extension/TranslationExtension.php
-msgid "Symfony is great!"
-msgstr "Symfony ist großartig!"
-
 #: /vendor/symfony/twig-bridge/TokenParser/TransTokenParser.php
 msgid "message"
 msgstr "Nachricht"
@@ -1737,10 +1733,6 @@ msgstr "Passwort wiederholen"
 #: /templates/add_zone_slave.html
 msgid "Add zone"
 msgstr "Zone hinzufügen"
-
-#: /templates/delete_domain.html
-msgid "Delete Zone"
-msgstr "Zone löschen"
 
 #: /templates/delete_domain.html
 msgid "Delete zone"

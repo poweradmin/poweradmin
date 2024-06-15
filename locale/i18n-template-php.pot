@@ -906,10 +906,6 @@ msgstr ""
 msgid "Secondary nameserver"
 msgstr ""
 
-#: /vendor/symfony/twig-bridge/Extension/TranslationExtension.php
-msgid "Symfony is great!"
-msgstr ""
-
 #: /vendor/symfony/twig-bridge/TokenParser/TransTokenParser.php
 msgid "message"
 msgstr ""
@@ -1048,12 +1044,6 @@ msgstr ""
 
 #: /templates/edit_user.html
 msgid "Based on this template, this user has the following permissions"
-msgstr ""
-
-#: /templates/edit_user.html
-#: /templates/add_perm_templ.html
-#: /templates/edit_perm_templ.html
-msgid "%descr%"
 msgstr ""
 
 #: /templates/delete_zone_templ.html
@@ -1366,12 +1356,6 @@ msgstr ""
 #: /templates/dnssec.html
 #: /templates/dnssec_delete_key.html
 msgid "Active"
-msgstr ""
-
-#: /templates/dnssec_edit_key.html
-#: /templates/dnssec.html
-#: /templates/dnssec_delete_key.html
-msgid "%active%"
 msgstr ""
 
 #: /templates/delete_perm_templ.html
@@ -1786,10 +1770,6 @@ msgid "ID"
 msgstr ""
 
 #: /templates/dnssec.html
-msgid "%button_title%"
-msgstr ""
-
-#: /templates/dnssec.html
 #: /templates/dnssec_delete_key.html
 msgid "Delete zone key"
 msgstr ""
@@ -1903,10 +1883,6 @@ msgstr ""
 
 #: /templates/add_zone_slave.html
 msgid "Add zone"
-msgstr ""
-
-#: /templates/delete_domain.html
-msgid "Delete Zone"
 msgstr ""
 
 #: /templates/delete_domain.html

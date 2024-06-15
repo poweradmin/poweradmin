@@ -1165,9 +1165,6 @@ msgstr "最后，如果在安装过程中遇到任何错误，我们将非常感
 msgid "The username for Poweradmin. This new user will have limited rights only."
 msgstr "Poweradmin的用户名。此新用户将只有有限的权限。"
 
-msgid "Symfony is great!"
-msgstr "Symfony很棒！"
-
 msgid "message"
 msgstr "消息"
 
@@ -1329,9 +1326,6 @@ msgstr "提供当前密码"
 
 msgid "Provide new password"
 msgstr "提供新密码"
-
-msgid "Delete Zone"
-msgstr "删除区域"
 
 msgid "LDAP Authentication"
 msgstr "LDAP认证"
