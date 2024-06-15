@@ -185,50 +185,50 @@ final class CoreExtension extends AbstractExtension
     {
         return [
             // formatting filters
-            new TwigFilter('date', [self::class, 'dateFormatFilter'], ['needs_environment' => true]),
-            new TwigFilter('date_modify', [self::class, 'dateModifyFilter'], ['needs_environment' => true]),
+            new TwigFilter('date', [$this, 'formatDate']),
+            new TwigFilter('date_modify', [$this, 'modifyDate']),
             new TwigFilter('format', [self::class, 'sprintf']),
-            new TwigFilter('replace', [self::class, 'replaceFilter']),
-            new TwigFilter('number_format', [self::class, 'numberFormatFilter'], ['needs_environment' => true]),
+            new TwigFilter('replace', [self::class, 'replace']),
+            new TwigFilter('number_format', [$this, 'formatNumber']),
             new TwigFilter('abs', 'abs'),
             new TwigFilter('round', [self::class, 'round']),
 
             // encoding
-            new TwigFilter('url_encode', [self::class, 'urlencodeFilter']),
+            new TwigFilter('url_encode', [self::class, 'urlencode']),
             new TwigFilter('json_encode', 'json_encode'),
             new TwigFilter('convert_encoding', [self::class, 'convertEncoding']),
 
             // string filters
-            new TwigFilter('title', [self::class, 'titleStringFilter'], ['needs_environment' => true]),
-            new TwigFilter('capitalize', [self::class, 'capitalizeStringFilter'], ['needs_environment' => true]),
-            new TwigFilter('upper', [self::class, 'upperFilter'], ['needs_environment' => true]),
-            new TwigFilter('lower', [self::class, 'lowerFilter'], ['needs_environment' => true]),
+            new TwigFilter('title', [self::class, 'titleCase'], ['needs_charset' => true]),
+            new TwigFilter('capitalize', [self::class, 'capitalize'], ['needs_charset' => true]),
+            new TwigFilter('upper', [self::class, 'upper'], ['needs_charset' => true]),
+            new TwigFilter('lower', [self::class, 'lower'], ['needs_charset' => true]),
             new TwigFilter('striptags', [self::class, 'striptags']),
-            new TwigFilter('trim', [self::class, 'trimFilter']),
+            new TwigFilter('trim', [self::class, 'trim']),
             new TwigFilter('nl2br', [self::class, 'nl2br'], ['pre_escape' => 'html', 'is_safe' => ['html']]),
             new TwigFilter('spaceless', [self::class, 'spaceless'], ['is_safe' => ['html']]),
 
             // array helpers
-            new TwigFilter('join', [self::class, 'joinFilter']),
-            new TwigFilter('split', [self::class, 'splitFilter'], ['needs_environment' => true]),
-            new TwigFilter('sort', [self::class, 'sortFilter'], ['needs_environment' => true]),
-            new TwigFilter('merge', [self::class, 'arrayMerge']),
-            new TwigFilter('batch', [self::class, 'arrayBatch']),
-            new TwigFilter('column', [self::class, 'arrayColumn']),
-            new TwigFilter('filter', [self::class, 'arrayFilter'], ['needs_environment' => true]),
-            new TwigFilter('map', [self::class, 'arrayMap'], ['needs_environment' => true]),
-            new TwigFilter('reduce', [self::class, 'arrayReduce'], ['needs_environment' => true]),
+            new TwigFilter('join', [self::class, 'join']),
+            new TwigFilter('split', [self::class, 'split'], ['needs_charset' => true]),
+            new TwigFilter('sort', [self::class, 'sort'], ['needs_environment' => true]),
+            new TwigFilter('merge', [self::class, 'merge']),
+            new TwigFilter('batch', [self::class, 'batch']),
+            new TwigFilter('column', [self::class, 'column']),
+            new TwigFilter('filter', [self::class, 'filter'], ['needs_environment' => true]),
+            new TwigFilter('map', [self::class, 'map'], ['needs_environment' => true]),
+            new TwigFilter('reduce', [self::class, 'reduce'], ['needs_environment' => true]),
 
             // string/array filters
-            new TwigFilter('reverse', [self::class, 'reverseFilter'], ['needs_environment' => true]),
-            new TwigFilter('length', [self::class, 'lengthFilter'], ['needs_environment' => true]),
-            new TwigFilter('slice', [self::class, 'slice'], ['needs_environment' => true]),
-            new TwigFilter('first', [self::class, 'first'], ['needs_environment' => true]),
-            new TwigFilter('last', [self::class, 'last'], ['needs_environment' => true]),
+            new TwigFilter('reverse', [self::class, 'reverse'], ['needs_charset' => true]),
+            new TwigFilter('length', [self::class, 'length'], ['needs_charset' => true]),
+            new TwigFilter('slice', [self::class, 'slice'], ['needs_charset' => true]),
+            new TwigFilter('first', [self::class, 'first'], ['needs_charset' => true]),
+            new TwigFilter('last', [self::class, 'last'], ['needs_charset' => true]),
 
             // iteration and runtime
-            new TwigFilter('default', [self::class, 'defaultFilter'], ['node_class' => DefaultFilter::class]),
-            new TwigFilter('keys', [self::class, 'getArrayKeysFilter']),
+            new TwigFilter('default', [self::class, 'default'], ['node_class' => DefaultFilter::class]),
+            new TwigFilter('keys', [self::class, 'keys']),
         ];
     }
 
@@ -240,8 +240,8 @@ final class CoreExtension extends AbstractExtension
             new TwigFunction('range', 'range'),
             new TwigFunction('constant', [self::class, 'constant']),
             new TwigFunction('cycle', [self::class, 'cycle']),
-            new TwigFunction('random', [self::class, 'random'], ['needs_environment' => true]),
-            new TwigFunction('date', [self::class, 'dateConverter'], ['needs_environment' => true]),
+            new TwigFunction('random', [self::class, 'random'], ['needs_charset' => true]),
+            new TwigFunction('date', [$this, 'convertDate']),
             new TwigFunction('include', [self::class, 'include'], ['needs_environment' => true, 'needs_context' => true, 'is_safe' => ['all']]),
             new TwigFunction('source', [self::class, 'source'], ['needs_environment' => true, 'is_safe' => ['all']]),
         ];
@@ -322,14 +322,14 @@ final class CoreExtension extends AbstractExtension
      *
      * @internal
      */
-    public static function cycle($values, $position)
+    public static function cycle($values, $position): string
     {
         if (!\is_array($values) && !$values instanceof \ArrayAccess) {
             return $values;
         }
 
         if (!\count($values)) {
-            throw new RuntimeError('The "cycle" function does not work on empty arrays');
+            throw new RuntimeError('The "cycle" function does not work on empty arrays.');
         }
 
         return $values[$position % \count($values)];
@@ -350,7 +350,7 @@ final class CoreExtension extends AbstractExtension
      *
      * @internal
      */
-    public static function random(Environment $env, $values = null, $max = null)
+    public static function random(string $charset, $values = null, $max = null)
     {
         if (null === $values) {
             return null === $max ? mt_rand() : mt_rand(0, (int) $max);
@@ -376,8 +376,6 @@ final class CoreExtension extends AbstractExtension
             if ('' === $values) {
                 return '';
             }
-
-            $charset = $env->getCharset();
 
             if ('UTF-8' !== $charset) {
                 $values = self::convertEncoding($values, 'UTF-8', $charset);
@@ -408,22 +406,18 @@ final class CoreExtension extends AbstractExtension
     }
 
     /**
-     * Converts a date to the given format.
+     * Formats a date.
      *
      *   {{ post.published_at|date("m/d/Y") }}
      *
      * @param \DateTimeInterface|\DateInterval|string $date     A date
      * @param string|null                             $format   The target format, null to use the default
      * @param \DateTimeZone|string|false|null         $timezone The target timezone, null to use the default, false to leave unchanged
-     *
-     * @return string The formatted date
-     *
-     * @internal
      */
-    public static function dateFormatFilter(Environment $env, $date, $format = null, $timezone = null)
+    public function formatDate($date, $format = null, $timezone = null): string
     {
         if (null === $format) {
-            $formats = $env->getExtension(self::class)->getDateFormat();
+            $formats = $this->getDateFormat();
             $format = $date instanceof \DateInterval ? $formats[1] : $formats[0];
         }
 
@@ -431,7 +425,7 @@ final class CoreExtension extends AbstractExtension
             return $date->format($format);
         }
 
-        return self::dateConverter($env, $date, $timezone)->format($format);
+        return $this->convertDate($date, $timezone)->format($format);
     }
 
     /**
@@ -442,15 +436,13 @@ final class CoreExtension extends AbstractExtension
      * @param \DateTimeInterface|string $date     A date
      * @param string                    $modifier A modifier string
      *
-     * @return \DateTimeInterface
+     * @return \DateTime|\DateTimeImmutable
      *
      * @internal
      */
-    public static function dateModifyFilter(Environment $env, $date, $modifier)
+    public function modifyDate($date, $modifier)
     {
-        $date = self::dateConverter($env, $date, false);
-
-        return $date->modify($modifier);
+        return $this->convertDate($date, false)->modify($modifier);
     }
 
     /**
@@ -459,13 +451,19 @@ final class CoreExtension extends AbstractExtension
      * @param string|null $format
      * @param ...$values
      *
-     * @return string
-     *
      * @internal
      */
-    public static function sprintf($format, ...$values)
+    public static function sprintf($format, ...$values): string
     {
         return sprintf($format ?? '', ...$values);
+    }
+
+    /**
+     * @internal
+     */
+    public static function dateConverter(Environment $env, $date, $format = null, $timezone = null): string
+    {
+        return $env->getExtension(self::class)->formatDate($date, $format, $timezone);
     }
 
     /**
@@ -478,16 +476,14 @@ final class CoreExtension extends AbstractExtension
      * @param \DateTimeInterface|string|null  $date     A date or null to use the current time
      * @param \DateTimeZone|string|false|null $timezone The target timezone, null to use the default, false to leave unchanged
      *
-     * @return \DateTimeInterface
-     *
-     * @internal
+     * @return \DateTime|\DateTimeImmutable
      */
-    public static function dateConverter(Environment $env, $date = null, $timezone = null)
+    public function convertDate($date = null, $timezone = null)
     {
         // determine the timezone
         if (false !== $timezone) {
             if (null === $timezone) {
-                $timezone = $env->getExtension(self::class)->getTimezone();
+                $timezone = $this->getTimezone();
             } elseif (!$timezone instanceof \DateTimeZone) {
                 $timezone = new \DateTimeZone($timezone);
             }
@@ -498,7 +494,7 @@ final class CoreExtension extends AbstractExtension
             return false !== $timezone ? $date->setTimezone($timezone) : $date;
         }
 
-        if ($date instanceof \DateTimeInterface) {
+        if ($date instanceof \DateTime) {
             $date = clone $date;
             if (false !== $timezone) {
                 $date->setTimezone($timezone);
@@ -512,14 +508,14 @@ final class CoreExtension extends AbstractExtension
                 $date = 'now';
             }
 
-            return new \DateTime($date, false !== $timezone ? $timezone : $env->getExtension(self::class)->getTimezone());
+            return new \DateTime($date, false !== $timezone ? $timezone : $this->getTimezone());
         }
 
         $asString = (string) $date;
         if (ctype_digit($asString) || (!empty($asString) && '-' === $asString[0] && ctype_digit(substr($asString, 1)))) {
             $date = new \DateTime('@'.$date);
         } else {
-            $date = new \DateTime($date, $env->getExtension(self::class)->getTimezone());
+            $date = new \DateTime($date, $this->getTimezone());
         }
 
         if (false !== $timezone) {
@@ -535,11 +531,9 @@ final class CoreExtension extends AbstractExtension
      * @param string|null        $str  String to replace in
      * @param array|\Traversable $from Replace values
      *
-     * @return string
-     *
      * @internal
      */
-    public static function replaceFilter($str, $from)
+    public static function replace($str, $from): string
     {
         if (!is_iterable($from)) {
             throw new RuntimeError(sprintf('The "replace" filter expects an array or "Traversable" as replace values, got "%s".', \is_object($from) ? \get_class($from) : \gettype($from)));
@@ -575,7 +569,7 @@ final class CoreExtension extends AbstractExtension
     }
 
     /**
-     * Number format filter.
+     * Formats a number.
      *
      * All of the formatting options can be left null, in that case the defaults will
      * be used. Supplying any of the parameters will override the defaults set in the
@@ -585,14 +579,10 @@ final class CoreExtension extends AbstractExtension
      * @param int|null    $decimal      the number of decimal points to display
      * @param string|null $decimalPoint the character(s) to use for the decimal point
      * @param string|null $thousandSep  the character(s) to use for the thousands separator
-     *
-     * @return string The formatted number
-     *
-     * @internal
      */
-    public static function numberFormatFilter(Environment $env, $number, $decimal = null, $decimalPoint = null, $thousandSep = null)
+    public function formatNumber($number, $decimal = null, $decimalPoint = null, $thousandSep = null): string
     {
-        $defaults = $env->getExtension(self::class)->getNumberFormat();
+        $defaults = $this->getNumberFormat();
         if (null === $decimal) {
             $decimal = $defaults[0];
         }
@@ -613,11 +603,9 @@ final class CoreExtension extends AbstractExtension
      *
      * @param string|array|null $url A URL or an array of query parameters
      *
-     * @return string The URL encoded value
-     *
      * @internal
      */
-    public static function urlencodeFilter($url)
+    public static function urlencode($url): string
     {
         if (\is_array($url)) {
             return http_build_query($url, '', '&', \PHP_QUERY_RFC3986);
@@ -637,11 +625,9 @@ final class CoreExtension extends AbstractExtension
      *
      * @param array|\Traversable ...$arrays Any number of arrays or Traversable objects to merge
      *
-     * @return array The merged array
-     *
      * @internal
      */
-    public static function arrayMerge(...$arrays)
+    public static function merge(...$arrays): array
     {
         $result = [];
 
@@ -668,7 +654,7 @@ final class CoreExtension extends AbstractExtension
      *
      * @internal
      */
-    public static function slice(Environment $env, $item, $start, $length = null, $preserveKeys = false)
+    public static function slice(string $charset, $item, $start, $length = null, $preserveKeys = false)
     {
         if ($item instanceof \Traversable) {
             while ($item instanceof \IteratorAggregate) {
@@ -690,7 +676,7 @@ final class CoreExtension extends AbstractExtension
             return \array_slice($item, $start, $length, $preserveKeys);
         }
 
-        return mb_substr((string) $item, $start, $length, $env->getCharset());
+        return mb_substr((string) $item, $start, $length, $charset);
     }
 
     /**
@@ -702,9 +688,9 @@ final class CoreExtension extends AbstractExtension
      *
      * @internal
      */
-    public static function first(Environment $env, $item)
+    public static function first(string $charset, $item)
     {
-        $elements = self::slice($env, $item, 0, 1, false);
+        $elements = self::slice($charset, $item, 0, 1, false);
 
         return \is_string($elements) ? $elements : current($elements);
     }
@@ -718,9 +704,9 @@ final class CoreExtension extends AbstractExtension
      *
      * @internal
      */
-    public static function last(Environment $env, $item)
+    public static function last(string $charset, $item)
     {
-        $elements = self::slice($env, $item, -1, 1, false);
+        $elements = self::slice($charset, $item, -1, 1, false);
 
         return \is_string($elements) ? $elements : current($elements);
     }
@@ -743,11 +729,9 @@ final class CoreExtension extends AbstractExtension
      * @param string      $glue  The separator
      * @param string|null $and   The separator for the last pair
      *
-     * @return string The concatenated string
-     *
      * @internal
      */
-    public static function joinFilter($value, $glue = '', $and = null)
+    public static function join($value, $glue = '', $and = null): string
     {
         if (!is_iterable($value)) {
             $value = (array) $value;
@@ -789,11 +773,9 @@ final class CoreExtension extends AbstractExtension
      * @param string      $delimiter The delimiter
      * @param int|null    $limit     The limit
      *
-     * @return array The split string as an array
-     *
      * @internal
      */
-    public static function splitFilter(Environment $env, $value, $delimiter, $limit = null)
+    public static function split(string $charset, $value, $delimiter, $limit = null): array
     {
         $value = $value ?? '';
 
@@ -805,14 +787,14 @@ final class CoreExtension extends AbstractExtension
             return preg_split('/(?<!^)(?!$)/u', $value);
         }
 
-        $length = mb_strlen($value, $env->getCharset());
+        $length = mb_strlen($value, $charset);
         if ($length < $limit) {
             return [$value];
         }
 
         $r = [];
         for ($i = 0; $i < $length; $i += $limit) {
-            $r[] = mb_substr($value, $i, $limit, $env->getCharset());
+            $r[] = mb_substr($value, $i, $limit, $charset);
         }
 
         return $r;
@@ -824,7 +806,7 @@ final class CoreExtension extends AbstractExtension
     /**
      * @internal
      */
-    public static function defaultFilter($value, $default = '')
+    public static function default($value, $default = '')
     {
         if (self::testEmpty($value)) {
             return $default;
@@ -842,13 +824,9 @@ final class CoreExtension extends AbstractExtension
      *      {# ... #}
      *  {% endfor %}
      *
-     * @param array $array An array
-     *
-     * @return array The keys
-     *
      * @internal
      */
-    public static function getArrayKeysFilter($array)
+    public static function keys($array): array
     {
         if ($array instanceof \Traversable) {
             while ($array instanceof \IteratorAggregate) {
@@ -890,7 +868,7 @@ final class CoreExtension extends AbstractExtension
      *
      * @internal
      */
-    public static function reverseFilter(Environment $env, $item, $preserveKeys = false)
+    public static function reverse(string $charset, $item, $preserveKeys = false)
     {
         if ($item instanceof \Traversable) {
             return array_reverse(iterator_to_array($item), $preserveKeys);
@@ -901,8 +879,6 @@ final class CoreExtension extends AbstractExtension
         }
 
         $string = (string) $item;
-
-        $charset = $env->getCharset();
 
         if ('UTF-8' !== $charset) {
             $string = self::convertEncoding($string, 'UTF-8', $charset);
@@ -924,11 +900,9 @@ final class CoreExtension extends AbstractExtension
      *
      * @param array|\Traversable $array
      *
-     * @return array
-     *
      * @internal
      */
-    public static function sortFilter(Environment $env, $array, $arrow = null)
+    public static function sort(Environment $env, $array, $arrow = null): array
     {
         if ($array instanceof \Traversable) {
             $array = iterator_to_array($array);
@@ -1057,13 +1031,11 @@ final class CoreExtension extends AbstractExtension
     }
 
     /**
-     * @return int
-     *
      * @throws RuntimeError When an invalid pattern is used
      *
      * @internal
      */
-    public static function matches(string $regexp, ?string $str)
+    public static function matches(string $regexp, ?string $str): int
     {
         set_error_handler(function ($t, $m) use ($regexp) {
             throw new RuntimeError(sprintf('Regexp "%s" passed to "matches" is not valid', $regexp).substr($m, 12));
@@ -1082,13 +1054,11 @@ final class CoreExtension extends AbstractExtension
      * @param string|null $characterMask
      * @param string      $side
      *
-     * @return string
-     *
      * @throws RuntimeError When an invalid trimming side is used (not a string or not 'left', 'right', or 'both')
      *
      * @internal
      */
-    public static function trimFilter($string, $characterMask = null, $side = 'both')
+    public static function trim($string, $characterMask = null, $side = 'both'): string
     {
         if (null === $characterMask) {
             $characterMask = " \t\n\r\0\x0B";
@@ -1111,11 +1081,9 @@ final class CoreExtension extends AbstractExtension
      *
      * @param string|null $string
      *
-     * @return string
-     *
      * @internal
      */
-    public static function nl2br($string)
+    public static function nl2br($string): string
     {
         return nl2br($string ?? '');
     }
@@ -1125,11 +1093,9 @@ final class CoreExtension extends AbstractExtension
      *
      * @param string|null $content
      *
-     * @return string
-     *
      * @internal
      */
-    public static function spaceless($content)
+    public static function spaceless($content): string
     {
         return trim(preg_replace('/>\s+</', '><', $content ?? ''));
     }
@@ -1139,11 +1105,9 @@ final class CoreExtension extends AbstractExtension
      * @param string      $to
      * @param string      $from
      *
-     * @return string
-     *
      * @internal
      */
-    public static function convertEncoding($string, $to, $from)
+    public static function convertEncoding($string, $to, $from): string
     {
         if (!\function_exists('iconv')) {
             throw new RuntimeError('Unable to convert encoding: required function iconv() does not exist. You should install ext-iconv or symfony/polyfill-iconv.');
@@ -1157,18 +1121,16 @@ final class CoreExtension extends AbstractExtension
      *
      * @param mixed $thing A variable
      *
-     * @return int The length of the value
-     *
      * @internal
      */
-    public static function lengthFilter(Environment $env, $thing)
+    public static function length(string $charset, $thing): int
     {
         if (null === $thing) {
             return 0;
         }
 
         if (\is_scalar($thing)) {
-            return mb_strlen($thing, $env->getCharset());
+            return mb_strlen($thing, $charset);
         }
 
         if ($thing instanceof \Countable || \is_array($thing) || $thing instanceof \SimpleXMLElement) {
@@ -1180,7 +1142,7 @@ final class CoreExtension extends AbstractExtension
         }
 
         if (method_exists($thing, '__toString')) {
-            return mb_strlen((string) $thing, $env->getCharset());
+            return mb_strlen((string) $thing, $charset);
         }
 
         return 1;
@@ -1191,13 +1153,11 @@ final class CoreExtension extends AbstractExtension
      *
      * @param string|null $string A string
      *
-     * @return string The uppercased string
-     *
      * @internal
      */
-    public static function upperFilter(Environment $env, $string)
+    public static function upper(string $charset, $string): string
     {
-        return mb_strtoupper($string ?? '', $env->getCharset());
+        return mb_strtoupper($string ?? '', $charset);
     }
 
     /**
@@ -1205,13 +1165,11 @@ final class CoreExtension extends AbstractExtension
      *
      * @param string|null $string A string
      *
-     * @return string The lowercased string
-     *
      * @internal
      */
-    public static function lowerFilter(Environment $env, $string)
+    public static function lower(string $charset, $string): string
     {
-        return mb_strtolower($string ?? '', $env->getCharset());
+        return mb_strtolower($string ?? '', $charset);
     }
 
     /**
@@ -1220,11 +1178,9 @@ final class CoreExtension extends AbstractExtension
      * @param string|null          $string
      * @param string[]|string|null $allowable_tags
      *
-     * @return string
-     *
      * @internal
      */
-    public static function striptags($string, $allowable_tags = null)
+    public static function striptags($string, $allowable_tags = null): string
     {
         return strip_tags($string ?? '', $allowable_tags);
     }
@@ -1234,13 +1190,11 @@ final class CoreExtension extends AbstractExtension
      *
      * @param string|null $string A string
      *
-     * @return string The titlecased string
-     *
      * @internal
      */
-    public static function titleStringFilter(Environment $env, $string)
+    public static function titleCase(string $charset, $string): string
     {
-        return mb_convert_case($string ?? '', \MB_CASE_TITLE, $env->getCharset());
+        return mb_convert_case($string ?? '', \MB_CASE_TITLE, $charset);
     }
 
     /**
@@ -1248,14 +1202,10 @@ final class CoreExtension extends AbstractExtension
      *
      * @param string|null $string A string
      *
-     * @return string The capitalized string
-     *
      * @internal
      */
-    public static function capitalizeStringFilter(Environment $env, $string)
+    public static function capitalize(string $charset, $string): string
     {
-        $charset = $env->getCharset();
-
         return mb_strtoupper(mb_substr($string ?? '', 0, 1, $charset), $charset).mb_strtolower(mb_substr($string ?? '', 1, null, $charset), $charset);
     }
 
@@ -1316,11 +1266,9 @@ final class CoreExtension extends AbstractExtension
      *
      * @param mixed $value A variable
      *
-     * @return bool true if the value is empty, false otherwise
-     *
      * @internal
      */
-    public static function testEmpty($value)
+    public static function testEmpty($value): bool
     {
         if ($value instanceof \Countable) {
             return 0 === \count($value);
@@ -1338,27 +1286,6 @@ final class CoreExtension extends AbstractExtension
     }
 
     /**
-     * Checks if a variable is traversable.
-     *
-     *    {# evaluates to true if the foo variable is an array or a traversable object #}
-     *    {% if foo is iterable %}
-     *        {# ... #}
-     *    {% endif %}
-     *
-     * @param mixed $value A variable
-     *
-     * @return bool true if the value is traversable
-     *
-     * @deprecated since Twig 3.8, to be removed in 4.0 (use the native "is_iterable" function instead)
-     *
-     * @internal
-     */
-    public static function testIterable($value)
-    {
-        return is_iterable($value);
-    }
-
-    /**
      * Renders a template.
      *
      * @param array                        $context
@@ -1368,11 +1295,9 @@ final class CoreExtension extends AbstractExtension
      * @param bool                         $ignoreMissing Whether to ignore missing templates or not
      * @param bool                         $sandboxed     Whether to sandbox the template or not
      *
-     * @return string The rendered template
-     *
      * @internal
      */
-    public static function include(Environment $env, $context, $template, $variables = [], $withContext = true, $ignoreMissing = false, $sandboxed = false)
+    public static function include(Environment $env, $context, $template, $variables = [], $withContext = true, $ignoreMissing = false, $sandboxed = false): string
     {
         $alreadySandboxed = false;
         $sandbox = null;
@@ -1418,11 +1343,9 @@ final class CoreExtension extends AbstractExtension
      * @param string $name          The template name
      * @param bool   $ignoreMissing Whether to ignore missing templates or not
      *
-     * @return string The template source
-     *
      * @internal
      */
-    public static function source(Environment $env, $name, $ignoreMissing = false)
+    public static function source(Environment $env, $name, $ignoreMissing = false): string
     {
         $loader = $env->getLoader();
         try {
@@ -1442,7 +1365,8 @@ final class CoreExtension extends AbstractExtension
      * @param string      $constant The name of the constant
      * @param object|null $object   The object to get the constant from
      *
-     * @return string
+     * @return mixed Class constants can return many types like scalars, arrays, and
+     *               objects depending on the PHP version (\BackedEnum, \UnitEnum, etc.)
      *
      * @internal
      */
@@ -1473,11 +1397,9 @@ final class CoreExtension extends AbstractExtension
      * @param string      $constant The name of the constant
      * @param object|null $object   The object to get the constant from
      *
-     * @return bool
-     *
      * @internal
      */
-    public static function constantIsDefined($constant, $object = null)
+    public static function constantIsDefined($constant, $object = null): bool
     {
         if (null !== $object) {
             if ('class' === $constant) {
@@ -1497,11 +1419,9 @@ final class CoreExtension extends AbstractExtension
      * @param int   $size  The size of the batch
      * @param mixed $fill  A value used to fill missing items
      *
-     * @return array
-     *
      * @internal
      */
-    public static function arrayBatch($items, $size, $fill = null, $preserveKeys = true)
+    public static function batch($items, $size, $fill = null, $preserveKeys = true): array
     {
         if (!is_iterable($items)) {
             throw new RuntimeError(sprintf('The "batch" filter expects an array or "Traversable", got "%s".', \is_object($items) ? \get_class($items) : \gettype($items)));
@@ -1736,7 +1656,7 @@ final class CoreExtension extends AbstractExtension
      *
      * @internal
      */
-    public static function arrayColumn($array, $name, $index = null): array
+    public static function column($array, $name, $index = null): array
     {
         if ($array instanceof \Traversable) {
             $array = iterator_to_array($array);
@@ -1750,7 +1670,7 @@ final class CoreExtension extends AbstractExtension
     /**
      * @internal
      */
-    public static function arrayFilter(Environment $env, $array, $arrow)
+    public static function filter(Environment $env, $array, $arrow)
     {
         if (!is_iterable($array)) {
             throw new RuntimeError(sprintf('The "filter" filter expects an array or "Traversable", got "%s".', \is_object($array) ? \get_class($array) : \gettype($array)));
@@ -1769,7 +1689,7 @@ final class CoreExtension extends AbstractExtension
     /**
      * @internal
      */
-    public static function arrayMap(Environment $env, $array, $arrow)
+    public static function map(Environment $env, $array, $arrow)
     {
         self::checkArrowInSandbox($env, $arrow, 'map', 'filter');
 
@@ -1784,7 +1704,7 @@ final class CoreExtension extends AbstractExtension
     /**
      * @internal
      */
-    public static function arrayReduce(Environment $env, $array, $arrow, $initial = null)
+    public static function reduce(Environment $env, $array, $arrow, $initial = null)
     {
         self::checkArrowInSandbox($env, $arrow, 'reduce', 'filter');
 
@@ -1837,7 +1757,7 @@ final class CoreExtension extends AbstractExtension
      */
     public static function checkArrowInSandbox(Environment $env, $arrow, $thing, $type)
     {
-        if (!$arrow instanceof \Closure && $env->hasExtension('\Twig\Extension\SandboxExtension') && $env->getExtension('\Twig\Extension\SandboxExtension')->isSandboxed()) {
+        if (!$arrow instanceof \Closure && $env->hasExtension(SandboxExtension::class) && $env->getExtension(SandboxExtension::class)->isSandboxed()) {
             throw new RuntimeError(sprintf('The callable passed to the "%s" %s must be a Closure in sandbox mode.', $thing, $type));
         }
     }

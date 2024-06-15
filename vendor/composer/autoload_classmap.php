@@ -443,6 +443,7 @@ return array(
     'Twig\\RuntimeLoader\\ContainerRuntimeLoader' => $vendorDir . '/twig/twig/src/RuntimeLoader/ContainerRuntimeLoader.php',
     'Twig\\RuntimeLoader\\FactoryRuntimeLoader' => $vendorDir . '/twig/twig/src/RuntimeLoader/FactoryRuntimeLoader.php',
     'Twig\\RuntimeLoader\\RuntimeLoaderInterface' => $vendorDir . '/twig/twig/src/RuntimeLoader/RuntimeLoaderInterface.php',
+    'Twig\\Runtime\\EscaperRuntime' => $vendorDir . '/twig/twig/src/Runtime/EscaperRuntime.php',
     'Twig\\Sandbox\\SecurityError' => $vendorDir . '/twig/twig/src/Sandbox/SecurityError.php',
     'Twig\\Sandbox\\SecurityNotAllowedFilterError' => $vendorDir . '/twig/twig/src/Sandbox/SecurityNotAllowedFilterError.php',
     'Twig\\Sandbox\\SecurityNotAllowedFunctionError' => $vendorDir . '/twig/twig/src/Sandbox/SecurityNotAllowedFunctionError.php',
