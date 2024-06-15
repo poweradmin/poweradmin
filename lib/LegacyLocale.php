@@ -40,7 +40,7 @@ class LegacyLocale
             return;
         }
 
-        if ($locale == 'en_EN' || $locale == 'en_US.UTF-8') {
+        if ($locale == 'en_EN' || $locale == 'en_EN.UTF-8') {
             return;
         }
 

@@ -92,11 +92,11 @@ class Application
 
     public function getLocaleFile(string $iface_lang): string
     {
-        $supportedLocales = new SupportedLocales();
-        if (in_array($iface_lang, $supportedLocales->getLocales())) {
+        $supportedLocales = explode(',', $this->config('iface_enabled_languages'));
+        if (in_array($iface_lang, $supportedLocales)) {
             return "locale/$iface_lang/LC_MESSAGES/messages.po";
         }
-        return "locale/en_EN/LC_MESSAGES/en.po";
+        return "locale/en_EN/LC_MESSAGES/messages.po";
     }
 
     public function showValidationErrors(ConfigValidator $validator): void

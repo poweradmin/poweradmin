@@ -68,8 +68,8 @@ class LegacyApplicationInitializer
 
     private function loadLocale(): void
     {
-        $supportedLocales = new SupportedLocales();
-        $this->locale = new LegacyLocale($supportedLocales->getLocales(), './locale');
+        $supportedLocales = explode(',', $this->config->get('iface_enabled_languages'));
+        $this->locale = new LegacyLocale($supportedLocales, './locale');
 
         $userLang = $_SESSION["userlang"] ?? $this->config->get('iface_lang');
         $this->locale->setLocale($userLang);

@@ -21,12 +21,14 @@
                 <div class="invalid-feedback">{% trans %}Please provide a password{% endtrans %}</div>
             </div>
         </div>
+        {% if locale_options|split('/option')|length > 2 %}
         <div>
             <label for="language" class="form-label">{% trans %}Language{% endtrans %}</label>
             <select class="form-select form-select-sm" id="language" name="userlang">
                 {{ locale_options | raw }}
             </select>
         </div>
+        {% endif %}
         <div>
             <input type="submit" name="authenticate" class="btn btn-primary btn-sm" value=" {% trans %}Go{% endtrans %} ">
         </div>

@@ -30,6 +30,7 @@ $password_encryption_cost = 12; // needed for bcrypt
 
 // Interface settings
 $iface_lang = 'en_EN';
+$iface_enabled_languages = 'cs_CZ,de_DE,en_EN,fr_FR,ja_JP,lt_LT,nb_NO,nl_NL,pl_PL,ru_RU,tr_TR,zh_CN';
 $iface_style = 'ignite'; // If you want a dark theme, use 'spark'
 $iface_templates = 'templates';
 $iface_rowamount = 10;

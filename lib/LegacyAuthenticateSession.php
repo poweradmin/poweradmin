@@ -55,7 +55,7 @@ class LegacyAuthenticateSession
                 $_SESSION["userpwd"] = $passwordEncryptionService->encrypt($_POST['password']);
 
                 $_SESSION["userlogin"] = $_POST["username"];
-                $_SESSION["userlang"] = $_POST["userlang"];
+                $_SESSION["userlang"] = $_POST["userlang"] ?? $this->config->get('iface_lang');
             } else {
                 $sessionEntity = new SessionEntity(_('An empty password is not allowed'), 'danger');
                 $this->authenticationService->auth($sessionEntity);

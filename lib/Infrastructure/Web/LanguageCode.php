@@ -218,7 +218,7 @@ class LanguageCode
     /**
      * Returns the language name corresponding to the given locale.
      *
-     * @param string $locale The locale string (e.g., en_US, en_GB, etc.)
+     * @param string $locale The locale string (e.g., en_EN, de_DE, etc.)
      * @return string|null The language name if the locale is found, null otherwise.
      */
     public static function getByLocale(string $locale): ?string

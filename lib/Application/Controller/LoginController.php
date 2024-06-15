@@ -25,14 +25,13 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Presenter\LocalePresenter;
 use Poweradmin\Application\Service\LocaleService;
 use Poweradmin\BaseController;
-use Poweradmin\Infrastructure\Repository\LocaleRepository;
+use Poweradmin\Infrastructure\Web\LanguageCode;
 
 include_once(__DIR__ . '/../../../inc/config-defaults.inc.php');
 @include_once(__DIR__ . '/../../../inc/config.inc.php');
 
 class LoginController extends BaseController
 {
-    private LocaleRepository $localeRepository;
     private LocaleService $localeService;
     private LocalePresenter $localePresenter;
 
@@ -40,14 +39,13 @@ class LoginController extends BaseController
     {
         parent::__construct($request, false);
 
-        $this->localeRepository = new LocaleRepository();
         $this->localeService = new LocaleService();
         $this->localePresenter = new LocalePresenter();
     }
 
     public function run(): void
     {
-        $localesData = $this->localeRepository->getLocales();
+        $localesData = $this->getLocalesData();
         $preparedLocales = $this->localeService->prepareLocales($localesData, $this->config('iface_lang'));
 
         list($msg, $type) = $this->getSessionMessages();
@@ -59,7 +57,7 @@ class LoginController extends BaseController
         }
     }
 
-    public function getSessionMessages(): array
+    private function getSessionMessages(): array
     {
         $msg = $_SESSION['message'] ?? '';
         $type = $_SESSION['type'] ?? '';
@@ -67,7 +65,7 @@ class LoginController extends BaseController
         return [$msg, $type];
     }
 
-    public function renderLogin(array $preparedLocales, string $msg, string $type): void
+    private function renderLogin(array $preparedLocales, string $msg, string $type): void
     {
         $this->render('login.html', [
             'query_string' => $_SERVER['QUERY_STRING'] ?? '',
@@ -75,5 +73,17 @@ class LoginController extends BaseController
             'msg' => $msg,
             'type' => $type,
         ]);
+    }
+
+    private function getLocalesData(): array
+    {
+        $locales = explode(',', $this->config('iface_enabled_languages'));
+        $localesData = [];
+        foreach ($locales as $locale) {
+            $localesData[$locale] = LanguageCode::getByLocale($locale);
+        }
+        asort($localesData);
+
+        return $localesData;
     }
 }

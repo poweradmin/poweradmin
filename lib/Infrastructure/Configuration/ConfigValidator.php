@@ -38,6 +38,7 @@ class ConfigValidator
 
         $this->validateIfaceIndex();
         $this->validateIfaceRowAmount();
+        $this->validateIfaceLang();
         $this->validateSyslogUse();
         if ($this->config['syslog_use']) {
             $this->validateSyslogIdent();
@@ -100,6 +101,25 @@ class ConfigValidator
         if (!in_array($ifaceIndex, $validIndexes)) {
             $validIndexesList = implode(', ', $validIndexes);
             $this->errors['iface_index'] = "iface_index must be an string and one of the following values: $validIndexesList";
+        }
+    }
+
+    private function validateIfaceLang(): void
+    {
+        if (!is_string($this->config['iface_lang']) || empty($this->config['iface_lang'])) {
+            $this->errors['iface_lang'] = 'iface_lang must be a non-empty string';
+        }
+
+        $enabledLanguages = explode(',', $this->config['iface_enabled_languages']);
+        if (!in_array($this->config['iface_lang'], $enabledLanguages)) {
+            $this->errors['iface_lang'] = 'iface_lang must be one of the enabled languages';
+        }
+
+        foreach ($enabledLanguages as $language) {
+            if (!is_string($language) || empty($language)) {
+                $this->errors['iface_enabled_languages'] = 'iface_enabled_languages must be a non-empty string and contain a list of languages separated by commas';
+                break;
+            }
         }
     }
 }
