@@ -333,7 +333,7 @@ class EditController extends BaseController
         if (ZoneTemplate::zone_templ_name_exists($this->db, $template_name)) {
             $this->showError(_('Zone template with this name already exists, please choose another one.'));
         } elseif ($template_name == '') {
-            $this->showError(_('Template name can\'t be an empty string.'));
+            $this->showError(_("Template name can't be an empty string."));
         } else {
             $dnsRecord = new DnsRecord($this->db, $this->getConfig());
             $records = $dnsRecord->get_records_from_domain_id($this->config('db_type'), $zone_id);

@@ -31,6 +31,7 @@ use Poweradmin\Infrastructure\DependencyCheck;
 class LegacyApplicationInitializer
 {
     private LegacyConfiguration $config;
+    private LegacyLocale $locale;
     private PDOLayer $db;
 
     public function __construct(bool $authenticate)
@@ -38,6 +39,7 @@ class LegacyApplicationInitializer
         $this->checkDependencies();
         $this->checkConfigurationFile();
         $this->loadConfiguration();
+        $this->loadLocale();
         $this->connectToDatabase();
         if ($authenticate) {
             $this->authenticateUser();
@@ -62,7 +64,15 @@ class LegacyApplicationInitializer
     private function loadConfiguration(): void
     {
         $this->config = new LegacyConfiguration();
-        LegacyLocale::setAppLocale($_SESSION["userlang"] ?? $this->config->get('iface_lang'));
+    }
+
+    private function loadLocale(): void
+    {
+        $supportedLocales = new SupportedLocales();
+        $this->locale = new LegacyLocale($supportedLocales->getLocales(), './locale');
+
+        $userLang = $_SESSION["userlang"] ?? $this->config->get('iface_lang');
+        $this->locale->setLocale($userLang);
     }
 
     private function connectToDatabase(): void

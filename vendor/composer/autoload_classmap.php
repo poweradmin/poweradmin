@@ -136,6 +136,7 @@ return array(
     'Poweradmin\\Permission' => $baseDir . '/lib/Permission.php',
     'Poweradmin\\RecordLog' => $baseDir . '/lib/RecordLog.php',
     'Poweradmin\\RecordType' => $baseDir . '/lib/RecordType.php',
+    'Poweradmin\\SupportedLocales' => $baseDir . '/lib/SupportedLocales.php',
     'Poweradmin\\TopLevelDomain' => $baseDir . '/lib/TopLevelDomain.php',
     'Poweradmin\\User' => $baseDir . '/lib/User.php',
     'Poweradmin\\UserEventLogger' => $baseDir . '/lib/UserEventLogger.php',

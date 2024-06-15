@@ -217,6 +217,7 @@ class ComposerStaticInit02fd231869a48df50cb631d6580008da
         'Poweradmin\\Permission' => __DIR__ . '/../..' . '/lib/Permission.php',
         'Poweradmin\\RecordLog' => __DIR__ . '/../..' . '/lib/RecordLog.php',
         'Poweradmin\\RecordType' => __DIR__ . '/../..' . '/lib/RecordType.php',
+        'Poweradmin\\SupportedLocales' => __DIR__ . '/../..' . '/lib/SupportedLocales.php',
         'Poweradmin\\TopLevelDomain' => __DIR__ . '/../..' . '/lib/TopLevelDomain.php',
         'Poweradmin\\User' => __DIR__ . '/../..' . '/lib/User.php',
         'Poweradmin\\UserEventLogger' => __DIR__ . '/../..' . '/lib/UserEventLogger.php',

@@ -22,29 +22,49 @@
 
 namespace Poweradmin;
 
-use Poweradmin\Application\Presenter\ErrorPresenter;
-use Poweradmin\Domain\Error\ErrorMessage;
-
 class LegacyLocale
 {
-    public static function setAppLocale(string $iface_lang): void
+    private array $supportedLocales;
+    private string $localeDirectory;
+
+    public function __construct(array $supportedLocales, string $localeDirectory)
     {
-        if ($iface_lang == 'en_EN' || $iface_lang == 'en_US.UTF-8') {
+        $this->supportedLocales = $supportedLocales;
+        $this->localeDirectory = $localeDirectory;
+    }
+
+    public function setLocale(string $locale): void
+    {
+        if (!in_array($locale, $this->supportedLocales)) {
+            error_log("The provided locale '{$locale}' is not supported. Please choose a supported locale.");
             return;
         }
 
-        if (!setlocale(LC_ALL, $iface_lang, $iface_lang . '.UTF-8')) {
-            $error = new ErrorMessage(_('Failed to set locale. Selected locale may be unsupported on this system. Please contact your administrator.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-            exit();
+        if ($locale == 'en_EN' || $locale == 'en_US.UTF-8') {
+            return;
+        }
+
+        $locales = [
+            $locale . '.UTF-8',
+            $locale . '.utf8',
+            $locale,
+        ];
+
+        if (!setlocale(LC_ALL, $locales)) {
+            error_log("Failed to set locale '{$locale}'. Selected locale may be unsupported on this system.");
+            return;
+        }
+
+        if (!is_dir($this->localeDirectory) || !is_readable($this->localeDirectory)) {
+            error_log("The directory '{$this->localeDirectory}' does not exist or is not readable.");
+            return;
         }
 
         $gettext_domain = 'messages';
-        bindtextdomain($gettext_domain, './locale');
+        bindtextdomain($gettext_domain, $this->localeDirectory);
         bind_textdomain_codeset($gettext_domain, 'utf-8');
         textdomain($gettext_domain);
-        @putenv('LANG=' . $iface_lang);
-        @putenv('LANGUAGE=' . $iface_lang);
+        @putenv('LANG=' . $locale);
+        @putenv('LANGUAGE=' . $locale);
     }
 }

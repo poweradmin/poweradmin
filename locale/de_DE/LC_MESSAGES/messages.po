@@ -5,7 +5,7 @@
 # Georg K&auml;fer <gkaefer@backbone.co.at>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: poweradmin 2.0.3\n"
+"Project-Id-Version: Poweradmin\n"
 "Report-Msgid-Bugs-To: https://github.com/poweradmin/poweradmin/issues\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: 2023-02-12 15:00+0100\n"
@@ -1274,21 +1274,6 @@ msgstr "Zonenschlüssel löschen"
 msgid "Activate zone key"
 msgstr "Zonenschlüssel aktivieren"
 
-#: /templates/dnssec_edit_key.html /templates/dnssec_delete_key.html
-msgid "Domain"
-msgstr ""
-
-#: /templates/dnssec_edit_key.html /templates/list_log_zones.html
-#: /templates/edit.html /templates/list_log_users.html
-#: /templates/dnssec_delete_key.html
-msgid "Id"
-msgstr ""
-
-#: /templates/dnssec_edit_key.html /templates/dnssec.html
-#: /templates/dnssec_delete_key.html
-msgid "Tag"
-msgstr ""
-
 #: /templates/dnssec_edit_key.html /templates/dnssec_add_key.html
 #: /templates/dnssec.html /templates/dnssec_delete_key.html
 msgid "Algorithm"
@@ -1296,18 +1281,8 @@ msgstr "Algorithmus"
 
 #: /templates/dnssec_edit_key.html /templates/dnssec.html
 #: /templates/dnssec_delete_key.html
-msgid "Bits"
-msgstr ""
-
-#: /templates/dnssec_edit_key.html /templates/dnssec.html
-#: /templates/dnssec_delete_key.html
 msgid "Active"
 msgstr "Aktiv"
-
-#: /templates/dnssec_edit_key.html /templates/dnssec.html
-#: /templates/dnssec_delete_key.html
-msgid "%active%"
-msgstr ""
 
 #: /templates/delete_perm_templ.html /templates/list_perm_templ.html
 #: /templates/add_perm_templ.html /templates/edit_perm_templ.html
@@ -1402,16 +1377,8 @@ msgid "Clear"
 msgstr "Leeren"
 
 #: /templates/list_log_zones.html /templates/list_log_users.html
-msgid "Event"
-msgstr ""
-
-#: /templates/list_log_zones.html /templates/list_log_users.html
 msgid "Created at"
 msgstr "Erstellt am"
-
-#: /templates/list_log_zones.html
-msgid "Details"
-msgstr ""
 
 #: /templates/list_log_zones.html /templates/list_log_users.html
 msgid "No logs found"
@@ -1619,10 +1586,6 @@ msgstr "Seriennummer"
 msgid "Delete zone(s)"
 msgstr "Zone(n) löschen"
 
-#: /templates/users.html
-msgid "LDAP"
-msgstr ""
-
 #: /templates/delete_zone_templ_record.html
 msgid "Delete record"
 msgstr "Eintrag löschen"
@@ -1666,10 +1629,6 @@ msgstr "DNSSEC Schlüssel für die Zone"
 #: /templates/dnssec.html
 msgid "ID"
 msgstr "ID"
-
-#: /templates/dnssec.html
-msgid "%button_title%"
-msgstr ""
 
 #: /templates/dnssec.html /templates/dnssec_delete_key.html
 msgid "Delete zone key"
@@ -1734,10 +1693,6 @@ msgstr "DS und DNS Schlüssel"
 #: /templates/dnssec_ds_dnskey.html
 msgid "DNSSEC public records for zone"
 msgstr "Öffentliche DNSSEC-Einträge für die Zone"
-
-#: /templates/dnssec_ds_dnskey.html
-msgid "DNSKEY"
-msgstr ""
 
 #: /templates/dnssec_ds_dnskey.html
 msgid "DS record"
@@ -1837,14 +1792,6 @@ msgstr ""
 #: /templates/search.html
 msgid "Provide a keyword for your search"
 msgstr "Geben Sie ein Suchwort an"
-
-#: /templates/search.html
-msgid "Wildcard"
-msgstr ""
-
-#: /templates/search.html
-msgid "Reverse"
-msgstr ""
 
 #: /templates/search.html
 msgid "Zones found"

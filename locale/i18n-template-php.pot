@@ -1,13 +1,14 @@
-# Poweradmin translation.
-# Copyright (C) 2022 Poweradmin Development Team
+# Poweradmin translation template
+#
+# Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+# Copyright 2010-2024 Poweradmin Development Team
 # This file is distributed under the same license as the Poweradmin package.
-# Rejo Zenger <rejo@poweradmin.org>, 2008.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 3.3.0\n"
-"Report-Msgid-Bugs-To: edmondas@poweradmin.org\n"
+"Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
 "POT-Creation-Date: 2022-12-24 10:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
@@ -218,7 +219,7 @@ msgid "Zone template with this name already exists, please choose another one."
 msgstr ""
 
 #: /edit.php
-msgid "Template name can\'t be an empty string."
+msgid "Template name can't be an empty string."
 msgstr ""
 
 #: /edit.php

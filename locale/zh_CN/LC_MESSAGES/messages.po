@@ -1177,9 +1177,6 @@ msgstr "提供用户名"
 msgid "Provide email"
 msgstr "提供电子邮件"
 
-msgid "%descr%"
-msgstr ""
-
 msgid "Zone logs"
 msgstr "区域日志"
 
@@ -1293,9 +1290,6 @@ msgstr "区域的DNSSEC密钥"
 
 msgid "ID"
 msgstr "ID"
-
-msgid "%button_title%"
-msgstr ""
 
 msgid "Delete zone key"
 msgstr "删除区域密钥"

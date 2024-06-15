@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Poweradmin 2.1.7\n"
+"Project-Id-Version: Poweradmin\n"
 "Report-Msgid-Bugs-To: root@hangover.org.ru\n"
 "POT-Creation-Date: 2009-12-05 15:50+0300\n"
 "PO-Revision-Date: 2014-03-19 17:55+0700\n"
