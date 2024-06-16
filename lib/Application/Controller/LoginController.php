@@ -67,9 +67,12 @@ class LoginController extends BaseController
 
     private function renderLogin(array $preparedLocales, string $msg, string $type): void
     {
+        $locales = explode(',', $this->config('iface_enabled_languages'));
+        $showLanguageSelector = count($locales) > 1;
         $this->render('login.html', [
             'query_string' => $_SERVER['QUERY_STRING'] ?? '',
             'locale_options' => $this->localePresenter->generateLocaleOptions($preparedLocales),
+            'show_language_selector' => $showLanguageSelector,
             'msg' => $msg,
             'type' => $type,
         ]);
