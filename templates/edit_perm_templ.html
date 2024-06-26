@@ -46,7 +46,7 @@
             {% endfor %}
             <td><input class="form-check-input" type="checkbox" name="perm_id[]" value="{{ permission['id'] }}" {{ has_perm }}></td>
             <td>{{ permission['name'] }}</td>
-            <td>{% trans %}%descr%{% endtrans %}</td>
+            <td>{{ descr|trans }}</td>
         </tr>
         {% endfor %}
         </tbody>

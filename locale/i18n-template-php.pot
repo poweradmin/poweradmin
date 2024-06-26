@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 3.8.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2024-06-22 09:32+0300\n"
+"POT-Creation-Date: 2024-06-26 07:39+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -812,11 +812,6 @@ msgstr ""
 msgid "Active"
 msgstr ""
 
-#: templates/dnssec_edit_key.html:49 templates/dnssec.html:47
-#: templates/dnssec_delete_key.html:40
-msgid "%active%"
-msgstr ""
-
 #: templates/dnssec_edit_key.html:50 templates/delete_user.html:48
 #: templates/delete_perm_templ.html:12 templates/delete_record.html:49
 #: templates/delete_domain.html:31 templates/delete_domains.html:49
@@ -918,10 +913,6 @@ msgstr ""
 
 #: templates/dnssec.html:24
 msgid "ID"
-msgstr ""
-
-#: templates/dnssec.html:51
-msgid "%button_title%"
 msgstr ""
 
 #: templates/dnssec.html:53 templates/dnssec_delete_key.html:21
@@ -1266,11 +1257,6 @@ msgstr ""
 
 #: templates/edit_user.html:87
 msgid "Based on this template, this user has the following permissions"
-msgstr ""
-
-#: templates/edit_user.html:91 templates/add_perm_templ.html:40
-#: templates/edit_perm_templ.html:49
-msgid "%descr%"
 msgstr ""
 
 #: templates/add_perm_templ.html:5 templates/delete_perm_templ.html:5
