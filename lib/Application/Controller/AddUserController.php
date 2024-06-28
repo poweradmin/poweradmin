@@ -43,6 +43,7 @@ class AddUserController extends BaseController
         $this->checkPermission('user_add_new', _("You do not have the permission to add a new user."));
 
         if ($this->isPost()) {
+            $this->validateCsrfToken();
             $this->addUser();
         } else {
             $this->showForm();

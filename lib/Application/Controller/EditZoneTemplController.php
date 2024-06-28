@@ -66,6 +66,7 @@ class EditZoneTemplController extends BaseController
         }
 
         if ($this->isPost()) {
+            $this->validateCsrfToken();
             $this->updateZoneTemplate($zone_templ_id);
         }
         $this->showForm($zone_templ_id);

@@ -47,6 +47,7 @@ class AddSupermasterController extends BaseController
         $account = $_POST["account"] ?? "";
 
         if ($this->isPost()) {
+            $this->validateCsrfToken();
             $this->addSuperMaster($master_ip, $ns_name, $account);
         } else {
             $this->showAddSuperMaster($master_ip, $ns_name, $account);

@@ -56,6 +56,8 @@ class AddZoneTemplRecordController extends BaseController
         $this->checkCondition(!($perm_godlike || $perm_master_add && $owner), _("You do not have the permission to delete zone templates."));
 
         if ($this->isPost()) {
+            $this->validateCsrfToken();
+
             $v = new Valitron\Validator($_POST);
             $v->rules(['required' => [
                 'name', 'type', 'content', 'prio', 'ttl'

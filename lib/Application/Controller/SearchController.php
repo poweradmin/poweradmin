@@ -66,6 +66,8 @@ class SearchController extends BaseController
         $iface_rowamount = $this->config('iface_rowamount');
 
         if ($this->isPost()) {
+            $this->validateCsrfToken();
+
             $parameters['query'] = !empty($_POST['query']) ? htmlspecialchars($_POST['query']) : '';
 
             $parameters['zones'] = isset($_POST['zones']) ? htmlspecialchars($_POST['zones']) : false;

@@ -69,10 +69,12 @@ class EditController extends BaseController
         $zone_name = $dnsRecord->get_domain_name_by_id($zone_id);
 
         if (isset($_POST['commit'])) {
+            $this->validateCsrfToken();
             $this->saveRecords($zone_id, $iface_zone_comments, $zone_name);
         }
 
         if (isset($_POST['save_as'])) {
+            $this->validateCsrfToken();
             $this->saveTemplateAs($zone_id);
         }
 
@@ -92,6 +94,7 @@ class EditController extends BaseController
         $meta_edit = $perm_meta_edit == "all" || ($perm_meta_edit == "own" && $user_is_zone_owner == "1");
 
         if (isset($_POST['slave_master_change']) && is_numeric($_POST["domain"])) {
+            $this->validateCsrfToken();
             $dnsRecord->change_zone_slave_master($_POST['domain'], $_POST['new_master']);
         }
 
@@ -99,18 +102,22 @@ class EditController extends BaseController
 
         $new_type = htmlspecialchars($_POST['newtype'] ?? '');
         if (isset($_POST['type_change']) && in_array($new_type, $types)) {
+            $this->validateCsrfToken();
             $dnsRecord->change_zone_type($new_type, $zone_id);
         }
 
         if (isset($_POST["newowner"]) && is_numeric($_POST["domain"]) && is_numeric($_POST["newowner"])) {
+            $this->validateCsrfToken();
             DnsRecord::add_owner_to_zone($this->db, $_POST["domain"], $_POST["newowner"]);
         }
 
         if (isset($_POST["delete_owner"]) && is_numeric($_POST["delete_owner"])) {
+            $this->validateCsrfToken();
             DnsRecord::delete_owner_from_zone($this->db, $zone_id, $_POST["delete_owner"]);
         }
 
         if (isset($_POST["template_change"])) {
+            $this->validateCsrfToken();
             if (!isset($_POST['zone_template']) || "none" == $_POST['zone_template']) {
                 $new_zone_template = 0;
             } else {
@@ -130,6 +137,7 @@ class EditController extends BaseController
         }
 
         if (isset($_POST['sign_zone'])) {
+            $this->validateCsrfToken();
             $dnsRecord->update_soa_serial($zone_id);
 
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
@@ -148,6 +156,8 @@ class EditController extends BaseController
         }
 
         if (isset($_POST['unsign_zone'])) {
+            $this->validateCsrfToken();
+
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
             $dnssecProvider->unsecureZone($zone_name);
 

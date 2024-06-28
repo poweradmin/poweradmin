@@ -23,6 +23,7 @@
 namespace Poweradmin;
 
 use Poweradmin\Application\Presenter\ErrorPresenter;
+use Poweradmin\Application\Security\CsrfTokenService;
 use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\Infrastructure\Web\ThemeManager;
 use Valitron;
@@ -34,6 +35,7 @@ abstract class BaseController
     protected PDOLayer $db;
     private array $request;
     private Valitron\Validator $validator;
+    private CsrfTokenService $csrfTokenService;
 
     abstract public function run(): void;
 
@@ -46,6 +48,8 @@ abstract class BaseController
 
         $this->request = $request;
         $this->validator = new Valitron\Validator($this->getRequest());
+
+        $this->csrfTokenService = new CsrfTokenService();
     }
 
     public function isPost(): bool
@@ -67,8 +71,21 @@ abstract class BaseController
     {
         $this->renderHeader();
         $this->showMessage($template);
+        $params['csrf_token'] = $this->csrfTokenService->getToken();
         $this->app->render($template, $params);
         $this->renderFooter();
+    }
+
+    public function validateCsrfToken(): void
+    {
+        $token = $this->getSafeRequestValue('_token');
+        if (!$this->csrfTokenService->validateToken($token)) {
+            $error = new ErrorMessage(_('Invalid CSRF token.'));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
+            exit;
+        }
     }
 
     public function redirect($script, $args = []): void
@@ -239,6 +256,10 @@ EOF;
 
     public function getSafeRequestValue(string $key): string
     {
+        if (!array_key_exists($key, $this->request)) {
+            return '';
+        }
+
         return htmlspecialchars($this->request[$key], ENT_QUOTES);
     }
 

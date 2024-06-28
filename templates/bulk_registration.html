@@ -9,6 +9,7 @@
 <h5 class="mb-3">{% trans %}Bulk registration{% endtrans %}</h5>
 
 <form class="needs-validation" method="post" action="index.php?page=bulk_registration" novalidate>
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
     <table class="table">
         <tr>
             <td>{% trans %}Owner{% endtrans %}:</td>

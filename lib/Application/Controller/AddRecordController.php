@@ -70,6 +70,7 @@ class AddRecordController extends BaseController
         );
 
         if ($this->isPost()) {
+            $this->validateCsrfToken();
             $this->addRecord();
         }
         $this->showForm();

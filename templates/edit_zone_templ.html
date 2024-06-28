@@ -22,6 +22,7 @@
 </div>
 {% else %}
 <form method="post" action="">
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
     <table class="table table-striped table-hover table-sm">
         <tr>
             <th><a href="index.php?page=edit_zone_templ&id={{zone_templ_id}}&amp;record_sort_by=name">{% trans %}Name{% endtrans %}</a></th>
@@ -99,6 +100,7 @@
 </form>
 <!--<hr>-->
 <!--<form class="needs-validation" method="post" action="" novalidate>-->
+<!--    <input type="hidden" name="_token" value="{{ csrf_token }}">-->
 <!--    <table>-->
 <!--        <tr>-->
 <!--            <td colspan="6"><strong>Save as new template:</strong></td>-->
@@ -121,6 +123,7 @@
 
 <hr>
 <form class="needs-validation" method="post" action="" novalidate>
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
     <table>
         <tr>
             <td style="vertical-align: top" class="pt-1">{% trans %}Name{% endtrans %}</td>

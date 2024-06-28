@@ -43,6 +43,7 @@ class AddZoneTemplController extends BaseController
         $this->checkPermission('zone_master_add', _("You do not have the permission to add a zone template."));
 
         if ($this->isPost()) {
+            $this->validateCsrfToken();
             $this->addZoneTemplate();
         } else {
             $this->showAddZoneTemplate();

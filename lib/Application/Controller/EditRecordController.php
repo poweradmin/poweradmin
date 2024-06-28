@@ -78,6 +78,7 @@ class EditRecordController extends BaseController
         }
 
         if ($this->isPost()) {
+            $this->validateCsrfToken();
             $this->saveRecord($zid);
         }
 

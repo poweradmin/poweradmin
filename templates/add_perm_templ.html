@@ -9,6 +9,7 @@
 
 <h5 class="mb-3">{% trans %}Add permission template{% endtrans %}</h5>
 <form class="needs-validation" method="post" action="index.php?page=add_perm_templ" novalidate>
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
     <div class="col-sm-3">
         <div class="mb-2">
             <label for="templ_name" class="form-label">{% trans %}Name{% endtrans %}</label>

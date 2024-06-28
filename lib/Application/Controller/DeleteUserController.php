@@ -52,6 +52,7 @@ class DeleteUserController extends BaseController
         $uid = htmlspecialchars($_GET['id']);
 
         if ($this->isPost()) {
+            $this->validateCsrfToken();
             $this->deleteUser($uid);
         }
 

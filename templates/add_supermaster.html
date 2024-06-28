@@ -8,6 +8,7 @@
 
 <h5 class="mb-3">{% trans %}Add supermaster{% endtrans %}</h5>
 <form class="needs-validation" method="post" action="index.php?page=add_supermaster" novalidate>
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
     <div class="col-sm-3">
         <div class="mb-2">
             <label for="master_ip" class="form-label">{% trans %}IP address of supermaster{% endtrans %}</label>

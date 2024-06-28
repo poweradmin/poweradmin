@@ -55,6 +55,8 @@ class ChangePasswordController extends BaseController
     public function run(): void
     {
         if ($this->isPost()) {
+            $this->validateCsrfToken();
+
             $v = new Validator($_POST);
             $v->rules([
                 'required' => [

@@ -8,6 +8,7 @@
 
 <h5 class="mb-3">{% trans %}Add user{% endtrans %}</h5>
 <form class="needs-validation" method="post" action="index.php?page=add_user" novalidate>
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
     <table>
         <tr>
             <td>{% trans %}Username{% endtrans %}</td>

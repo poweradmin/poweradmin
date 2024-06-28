@@ -41,6 +41,7 @@ class UsersController extends BaseController
     public function run(): void
     {
         if ($this->isPost()) {
+            $this->validateCsrfToken();
             $this->updateUsers();
         }
         $this->showUsers();

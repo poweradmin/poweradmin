@@ -68,6 +68,8 @@ class EditCommentController extends BaseController
         $perm_edit_comment = $zone_type == "SLAVE" || $perm_edit == "none" || ($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0";
 
         if (isset($_POST["commit"])) {
+            $this->validateCsrfToken();
+
             if ($perm_edit_comment) {
                 $error = new ErrorMessage(_("You do not have the permission to edit this comment."));
                 $errorPresenter = new ErrorPresenter();

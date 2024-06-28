@@ -92,6 +92,8 @@ class DnssecAddKeyController extends BaseController
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $domain_name = $dnsRecord->get_domain_name_by_id($zone_id);
         if (isset($_POST["submit"])) {
+            $this->validateCsrfToken();
+
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
             if ($dnssecProvider->addZoneKey($domain_name, $key_type, $bits, $algorithm)) {
                 $this->setMessage('dnssec', 'success', _('Zone key has been added successfully.'));

@@ -58,6 +58,7 @@ class EditUserController extends BaseController
         }
 
         if ($this->isPost()) {
+            $this->validateCsrfToken();
             $this->saveUser($edit_id);
         }
 

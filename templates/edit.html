@@ -32,6 +32,7 @@
 <hr>
 {% else %}
 <form class="needs-validation" method="post" action="" novalidate>
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
     <input type="hidden" name="serial" value="{{ serial }}">
     <table class="table table-striped table-hover table-sm">
         <tr>
@@ -162,6 +163,7 @@
 {% if perm_edit == "all" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "1" %}
 {% if domain_type != "SLAVE" %}
 <form class="needs-validation" method="post" action="index.php?page=add_record&id={{ zone_id }}" novalidate>
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
     <input type="hidden" name="domain" value="{{ zone_id }}">
     <table class="table table-striped table-hover table-sm">
         <tr>
@@ -221,6 +223,7 @@
 
 {% if perm_zone_master_add and domain_type != "SLAVE"%}
 <form method="post" action="">
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
     <table>
         <tr>
             <td><strong>{% trans %}Save as new template{% endtrans %}</strong></td>
@@ -258,6 +261,7 @@
         {% for owner in owners %}
         <tr>
             <form method="post" action="index.php?page=edit&id={{ zone_id }}">
+                <input type="hidden" name="_token" value="{{ csrf_token }}">
                 <td>
                     {% if owner["fullname"] %}
                     {{ owner["fullname"] }}
@@ -291,6 +295,7 @@
 
         {% if meta_edit %}
         <form method="post" action="index.php?page=edit&id={{ zone_id }}">
+            <input type="hidden" name="_token" value="{{ csrf_token }}">
             <input type="hidden" name="domain" value="{{ zone_id }}">
             <tr>
                 <td>
@@ -326,6 +331,7 @@
 
         {% if meta_edit %}
         <form action="index.php?page=edit&id={{ zone_id }}" method="post">
+            <input type="hidden" name="_token" value="{{ csrf_token }}">
             <input type="hidden" name="domain" value="{{ zone_id }}">
             <tr>
                 <td>
@@ -359,6 +365,7 @@
 
         {% if meta_edit %}
         <form action="index.php?page=edit&id={{ zone_id }}" method="post">
+            <input type="hidden" name="_token" value="{{ csrf_token }}">
             <input type="hidden" name="domain" value="{{ zone_id }}">
             <tr>
                 <td>
@@ -385,6 +392,7 @@
 
         {% if meta_edit %}
         <form action="index.php?page=edit&id={{ zone_id }}" method="post">
+            <input type="hidden" name="_token" value="{{ csrf_token }}">
             <input type="hidden" name="current_zone_template" value="{{ zone_template_id }}">
             <tr>
                 <td>

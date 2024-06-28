@@ -8,6 +8,7 @@
 
 <h5 class="mb-3">{% trans %}Delete zones{% endtrans %}</h5>
 <form method="post" action="index.php?page=delete_domains">
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
     <table class="table table-striped table-hover table-sm">
         <thead>
             <tr>
