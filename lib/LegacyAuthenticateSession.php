@@ -3,6 +3,7 @@
 namespace Poweradmin;
 
 use PDO;
+use Poweradmin\Application\Security\CsrfTokenService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
@@ -17,6 +18,7 @@ class LegacyAuthenticateSession
     private LegacyConfiguration $config;
     private UserEventLogger $userEventLogger;
     private LdapUserEventLogger $ldapUserEventLogger;
+    private CsrfTokenService $csrfTokenService;
 
     public function __construct(PDOLayer $db, LegacyConfiguration $config) {
         $this->db = $db;
@@ -25,6 +27,7 @@ class LegacyAuthenticateSession
         $sessionService = new SessionService();
         $redirectService = new RedirectService();
         $this->authenticationService = new AuthenticationService($sessionService, $redirectService);
+        $this->csrfTokenService = new CsrfTokenService();
 
         $this->userEventLogger = new UserEventLogger($db);
         $this->ldapUserEventLogger = new LdapUserEventLogger($db);
@@ -194,11 +197,15 @@ class LegacyAuthenticateSession
 
         session_regenerate_id(true);
 
-        $_SESSION["userid"] = $rowObj["id"];
-        $_SESSION["name"] = $rowObj["fullname"];
-        $_SESSION["auth_used"] = "ldap";
+        $_SESSION['userid'] = $rowObj['id'];
+        $_SESSION['name'] = $rowObj['fullname'];
+        $_SESSION['auth_used'] = 'ldap';
 
-        if (isset($_POST["authenticate"])) {
+        if (!isset($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = $this->csrfTokenService->generateToken();
+        }
+
+        if (isset($_POST['authenticate'])) {
             $this->ldapUserEventLogger->log_success_auth();
             session_write_close();
             $this->authenticationService->redirectToIndex();
@@ -251,11 +258,15 @@ class LegacyAuthenticateSession
 
         session_regenerate_id(true);
 
-        $_SESSION["userid"] = $rowObj["id"];
-        $_SESSION["name"] = $rowObj["fullname"];
-        $_SESSION["auth_used"] = "internal";
+        $_SESSION['userid'] = $rowObj['id'];
+        $_SESSION['name'] = $rowObj['fullname'];
+        $_SESSION['auth_used'] = 'internal';
 
-        if (isset($_POST["authenticate"])) {
+        if (!isset($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = $this->csrfTokenService->generateToken();
+        }
+
+        if (isset($_POST['authenticate'])) {
             $this->userEventLogger->log_successful_auth();
             session_write_close();
             $this->authenticationService->redirectToIndex();

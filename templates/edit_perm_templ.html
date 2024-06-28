@@ -9,6 +9,7 @@
 
 <h5 class="mb-3">{% trans %}Edit permission template{% endtrans %}</h5>
 <form class="needs-validation" method="post" action="" novalidate>
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
     <input type="hidden" name="templ_id" value="{{ id }}">
 
     <div class="col-sm-3">

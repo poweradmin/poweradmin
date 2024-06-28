@@ -23,6 +23,7 @@
 {% endif %}
 
 <form class="needs-validation" method="post" action="index.php?page=dnssec_add_key&id={{ zone_id }}" novalidate>
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
     <table>
         <tr>
             <td style="vertical-align: top" class="pt-1">{% trans %}Key type{% endtrans %}</td>

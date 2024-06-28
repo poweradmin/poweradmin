@@ -8,6 +8,7 @@
 
 <h5 class="mb-3">{% trans %}Edit user{% endtrans %} "{{ name }}"</h5>
 <form class="needs-validation" method="post" action="" novalidate>
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
     <input type="hidden" name="number" value="{{ edit_id }}">
     <table>
         <tr>

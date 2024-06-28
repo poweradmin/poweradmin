@@ -8,6 +8,7 @@
 <h5 class="mb-3">{% trans %}Search zones and records{% endtrans %}</h5>
 <span class="text-secondary">{% trans %}Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) in pattern matches any single character, a percent sign (%) matches any string of zero or more characters.{% endtrans %}</span>
 <form class="needs-validation" name="search_form" action="index.php?page=search" method="POST" onsubmit="checkQueryChange(this);" novalidate>
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
     <input type="hidden" name="zone_sort_by" value="{{ zone_sort_by }}">
     <input type="hidden" name="record_sort_by" value="{{ record_sort_by }}">
     <input type="hidden" name="zones_page" value="{{ zones_page }}">

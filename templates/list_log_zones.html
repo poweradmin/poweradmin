@@ -30,7 +30,7 @@
 </form>
 
 <form method="post" action="index.php?page=delete_domains">
-
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
     {% if data %}
     {{ pagination | raw }}
     <table class="table table-striped table-bordered mt-2">
