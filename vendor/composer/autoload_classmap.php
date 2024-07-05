@@ -63,6 +63,7 @@ return array(
     'Poweradmin\\Application\\Query\\RecordSearch' => $baseDir . '/lib/Application/Query/RecordSearch.php',
     'Poweradmin\\Application\\Query\\ZoneSearch' => $baseDir . '/lib/Application/Query/ZoneSearch.php',
     'Poweradmin\\Application\\Routing\\BasicRouter' => $baseDir . '/lib/Application/Routing/BasicRouter.php',
+    'Poweradmin\\Application\\Security\\CsrfTokenService' => $baseDir . '/lib/Application/Security/CsrfTokenService.php',
     'Poweradmin\\Application\\Service\\DatabaseService' => $baseDir . '/lib/Application/Service/DatabaseService.php',
     'Poweradmin\\Application\\Service\\DnssecService' => $baseDir . '/lib/Application/Service/DnssecService.php',
     'Poweradmin\\Application\\Service\\LocaleService' => $baseDir . '/lib/Application/Service/LocaleService.php',

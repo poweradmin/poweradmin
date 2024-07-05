@@ -144,6 +144,7 @@ class ComposerStaticInit02fd231869a48df50cb631d6580008da
         'Poweradmin\\Application\\Query\\RecordSearch' => __DIR__ . '/../..' . '/lib/Application/Query/RecordSearch.php',
         'Poweradmin\\Application\\Query\\ZoneSearch' => __DIR__ . '/../..' . '/lib/Application/Query/ZoneSearch.php',
         'Poweradmin\\Application\\Routing\\BasicRouter' => __DIR__ . '/../..' . '/lib/Application/Routing/BasicRouter.php',
+        'Poweradmin\\Application\\Security\\CsrfTokenService' => __DIR__ . '/../..' . '/lib/Application/Security/CsrfTokenService.php',
         'Poweradmin\\Application\\Service\\DatabaseService' => __DIR__ . '/../..' . '/lib/Application/Service/DatabaseService.php',
         'Poweradmin\\Application\\Service\\DnssecService' => __DIR__ . '/../..' . '/lib/Application/Service/DnssecService.php',
         'Poweradmin\\Application\\Service\\LocaleService' => __DIR__ . '/../..' . '/lib/Application/Service/LocaleService.php',
