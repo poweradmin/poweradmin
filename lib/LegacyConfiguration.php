@@ -44,6 +44,10 @@ class LegacyConfiguration implements ConfigurationInterface
             return [];
         }
 
+        if (!function_exists('token_get_all')) {
+            die("You have to install the PHP tokenizer extension!");
+        }
+
         $configContent = file_get_contents($fileName);
         $tokens = token_get_all($configContent);
         $lastToken = null;

@@ -33,7 +33,9 @@ class DependencyCheck
         'intl' => 'idn_to_utf8',
         'gettext' => 'gettext',
         'openssl' => 'openssl_encrypt',
-        'session' => 'session_start'
+        'session' => 'session_start',
+        'tokenizer' => 'token_get_all',
+        'filter' => 'filter_var',
     );
 
     /**

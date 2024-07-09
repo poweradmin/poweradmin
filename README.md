@@ -18,6 +18,8 @@ other [options](https://github.com/PowerDNS/pdns/wiki/WebFrontends).
 * PHP intl extension
 * PHP gettext extension
 * PHP openssl extension
+* PHP filter extension
+* PHP tokenizer extension
 * PHP pdo extension
 * PHP pdo-mysql, pdo-pgsql or pdo-sqlite extension
 * PHP ldap extension (optional)
