@@ -268,8 +268,8 @@ class LegacyAuthenticateSession
         $_SESSION['name'] = $rowObj['fullname'];
         $_SESSION['auth_used'] = 'internal';
 
-        if (!isset($_SESSION['login_token'])) {
-            $_SESSION['login_token'] = $this->csrfTokenService->generateToken();
+        if (!isset($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = $this->csrfTokenService->generateToken();
         }
 
         if (isset($_POST['authenticate'])) {
