@@ -36,10 +36,10 @@ class CsrfTokenService {
         return $_SESSION['csrf_token'] ?? '';
     }
 
-    public function validateToken(string $token): bool {
-        if (!isset($_SESSION['csrf_token'])) {
+    public function validateToken(string $token, string $session_var = 'csrf_token'): bool {
+        if (!isset($_SESSION[$session_var])) {
             return false;
         }
-        return hash_equals($_SESSION['csrf_token'], $token);
+        return hash_equals($_SESSION[$session_var], $token);
     }
 }

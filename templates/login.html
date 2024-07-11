@@ -6,6 +6,7 @@
 
 <h5>{% trans %}Log in{% endtrans %}</h5>
 <form class="needs-validation" method="post" action="index.php" novalidate>
+    <input type="hidden" name="_token" value="{{ login_token }}">
     <input type="hidden" name="query_string" value="{{ query_string }}">
     <div class="row g-2 col-sm-4">
         <div>

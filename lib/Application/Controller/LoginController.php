@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Presenter\LocalePresenter;
+use Poweradmin\Application\Security\CsrfTokenService;
 use Poweradmin\Application\Service\LocaleService;
 use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Web\LanguageCode;
@@ -34,6 +35,7 @@ class LoginController extends BaseController
 {
     private LocaleService $localeService;
     private LocalePresenter $localePresenter;
+    private CsrfTokenService $csrfTokenService;
 
     public function __construct(array $request)
     {
@@ -41,6 +43,7 @@ class LoginController extends BaseController
 
         $this->localeService = new LocaleService();
         $this->localePresenter = new LocalePresenter();
+        $this->csrfTokenService = new CsrfTokenService();
     }
 
     public function run(): void
@@ -69,7 +72,12 @@ class LoginController extends BaseController
     {
         $locales = explode(',', $this->config('iface_enabled_languages'));
         $showLanguageSelector = count($locales) > 1;
+
+        $loginToken = $this->csrfTokenService->generateToken();
+        $_SESSION['login_token'] = $loginToken;
+
         $this->render('login.html', [
+            'login_token' => $loginToken,
             'query_string' => $_SERVER['QUERY_STRING'] ?? '',
             'locale_options' => $this->localePresenter->generateLocaleOptions($preparedLocales),
             'show_language_selector' => $showLanguageSelector,

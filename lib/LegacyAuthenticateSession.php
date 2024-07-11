@@ -51,6 +51,12 @@ class LegacyAuthenticateSession
             $this->authenticationService->logout($sessionEntity);
         }
 
+        $login_token = $_POST['_token'] ?? '';
+        if (isset($_POST['authenticate']) && !$this->csrfTokenService->validateToken($login_token, 'login_token')) {
+            $sessionEntity = new SessionEntity(_('Invalid CSRF token.'), 'danger');
+            $this->authenticationService->auth($sessionEntity);
+        }
+
         // If a user had just entered his/her login && password, store them in our session.
         if (isset($_POST["authenticate"])) {
             if ($_POST['password'] != '') {
@@ -262,8 +268,8 @@ class LegacyAuthenticateSession
         $_SESSION['name'] = $rowObj['fullname'];
         $_SESSION['auth_used'] = 'internal';
 
-        if (!isset($_SESSION['csrf_token'])) {
-            $_SESSION['csrf_token'] = $this->csrfTokenService->generateToken();
+        if (!isset($_SESSION['login_token'])) {
+            $_SESSION['login_token'] = $this->csrfTokenService->generateToken();
         }
 
         if (isset($_POST['authenticate'])) {
