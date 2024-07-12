@@ -633,6 +633,7 @@ class DnsRecord
                 $error = new ErrorMessage(_('You are trying to delete the SOA record. You are not allowed to remove it, unless you remove the entire zone.'));
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
+                return false;
             } else {
                 $pdns_db_name = $this->config->get('pdns_db_name');
                 $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
