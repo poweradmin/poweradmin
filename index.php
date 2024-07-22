@@ -28,6 +28,11 @@ if (!function_exists('session_start')) {
     die("You have to install the PHP session extension!");
 }
 
+session_set_cookie_params([
+    'secure' => true,
+    'httponly' => true,
+]);
+
 session_start();
 
 $router = new BasicRouter(array_merge($_GET, $_POST));

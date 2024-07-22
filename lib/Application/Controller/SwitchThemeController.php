@@ -38,8 +38,8 @@ class SwitchThemeController extends BaseController
     private function setThemeCookie(string $selectedTheme): void
     {
         setcookie("theme", $selectedTheme, [
-            'HttpOnly' => true,
-            'SameSite' => 'Lax'
+            'httponly' => true,
+            'secure' => true,
         ]);
     }
 
