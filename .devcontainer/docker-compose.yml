@@ -18,14 +18,15 @@ services:
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
+      DB_IMAGE: ${DB_IMAGE}
     volumes:
       - data:/var/lib/mysql
       - ../sql/pdns/${PDNS_BRANCH}/schema.mysql.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./custom-healthcheck.sh:/custom-healthcheck.sh
     ports:
       - "3306:3306"
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
-#      test: [ "CMD", "healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized" ]
+      test: ["CMD", "/custom-healthcheck.sh"]
       start_period: 1m
       start_interval: 10s
       interval: 1m
