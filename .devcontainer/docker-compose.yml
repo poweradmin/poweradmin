@@ -9,18 +9,19 @@ services:
       - ../..:/workspaces:cached
     command: sleep infinity
     depends_on:
-      - db
+      - mysql
+      - pgsql
 
-  db:
-    image: ${DB_IMAGE}:${DB_VERSION}
+  mysql:
+    image: ${MYSQL_IMAGE}:${MYSQL_VERSION}
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
-      DB_IMAGE: ${DB_IMAGE}
+      MYSQL_IMAGE: ${MYSQL_IMAGE}
     volumes:
-      - data:/var/lib/mysql
+      - mysql-data:/var/lib/mysql
       - ../sql/pdns/${PDNS_BRANCH}/schema.mysql.sql:/docker-entrypoint-initdb.d/init.sql
       - ./custom-healthcheck.sh:/custom-healthcheck.sh
     ports:
@@ -33,6 +34,18 @@ services:
       timeout: 5s
       retries: 3
 
+  pgsql:
+    image: ${PGSQL_IMAGE}:${PGSQL_VERSION}
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - pgsql-data:/var/lib/postgresql/data
+      - ../sql/pdns/${PDNS_BRANCH}/schema.pgsql.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+
   dns:
     image: powerdns/pdns-auth-${PDNS_BRANCH}:${PDNS_VERSION}
     volumes:
@@ -42,8 +55,9 @@ services:
       - "1053:53/udp"
       - "8081:8081"
     depends_on:
-      db:
+      mysql:
         condition: service_healthy
 
 volumes:
-  data: { }
+  mysql-data: { }
+  pgsql-data: { }

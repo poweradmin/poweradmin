@@ -1,6 +1,6 @@
 #!/bin/bash
 
-case "$DB_IMAGE" in
+case "$MYSQL_IMAGE" in
   mysql*)
     mysqladmin ping -h "localhost"
     ;;
