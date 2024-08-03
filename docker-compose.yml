@@ -1,7 +1,3 @@
-# The file is intended for testing only, not for production.
-
-version: '3.9'
-
 services:
   mariadb:
     image: mariadb:latest
@@ -17,42 +13,3 @@ services:
       - db_network
     restart: unless-stopped
 
-  postgres:
-    image: postgres
-    container_name: postgres
-    environment:
-      POSTGRES_PASSWORD: changeme
-      POSTGRES_DB: pdns
-      POSTGRES_USER: pdns
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - db_network
-    restart: unless-stopped
-
-  adminer:
-    image: adminer
-    container_name: adminer
-    ports:
-      - "8080:8080"
-    networks:
-      - db_network
-    restart: unless-stopped
-
-  poweradmin:
-    container_name: poweradmin
-    image: poweradmin
-    ports:
-      - "80:80"
-    networks:
-      - db_network
-    volumes:
-      - .:/var/www/html
-
-networks:
-  db_network:
-    driver: bridge
-
-volumes:
-  mariadb_data:
-  postgres_data:

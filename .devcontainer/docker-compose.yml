@@ -1,5 +1,6 @@
 services:
   app:
+    container_name: poweradmin
     build:
       context: .
       dockerfile: Dockerfile
@@ -14,6 +15,7 @@ services:
 
   mysql:
     image: ${MYSQL_IMAGE}:${MYSQL_VERSION}
+    container_name: mariadb
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
@@ -21,7 +23,7 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_IMAGE: ${MYSQL_IMAGE}
     volumes:
-      - mysql-data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
       - ../sql/pdns/${PDNS_BRANCH}/schema.mysql.sql:/docker-entrypoint-initdb.d/init.sql
       - ./custom-healthcheck.sh:/custom-healthcheck.sh
     ports:
@@ -36,12 +38,13 @@ services:
 
   pgsql:
     image: ${PGSQL_IMAGE}:${PGSQL_VERSION}
+    container_name: postgres
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - pgsql-data:/var/lib/postgresql/data
+      - pgsql_data:/var/lib/postgresql/data
       - ../sql/pdns/${PDNS_BRANCH}/schema.pgsql.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
@@ -59,6 +62,7 @@ services:
 
   dns:
     image: powerdns/pdns-auth-${PDNS_BRANCH}:${PDNS_VERSION}
+    container_name: powerdns
     volumes:
       - ./pdns.conf:/etc/powerdns/pdns.conf
     ports:
@@ -70,5 +74,5 @@ services:
         condition: service_healthy
 
 volumes:
-  mysql-data: { }
-  pgsql-data: { }
+  mysql_data: { }
+  pgsql_data: { }
