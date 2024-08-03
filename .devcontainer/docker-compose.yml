@@ -27,10 +27,10 @@ services:
     ports:
       - "3306:3306"
     healthcheck:
-      test: ["CMD", "/custom-healthcheck.sh"]
+      test: [ "CMD", "/custom-healthcheck.sh" ]
       start_period: 1m
       start_interval: 10s
-      interval: 1m
+      interval: 30s
       timeout: 5s
       retries: 3
 
@@ -45,6 +45,17 @@ services:
       - ../sql/pdns/${PDNS_BRANCH}/schema.pgsql.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    ports:
+      - "8090:8080"
 
   dns:
     image: powerdns/pdns-auth-${PDNS_BRANCH}:${PDNS_VERSION}

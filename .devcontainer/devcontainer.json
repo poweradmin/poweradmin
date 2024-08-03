@@ -10,6 +10,7 @@
     "app:8080",
     "mysql:3306",
     "pgsql:5432",
+    "adminer:8090",
     "dns:1053",
     "dns:8081"
   ],
@@ -22,6 +23,9 @@
     },
     "pgsql:5432": {
       "label": "PostgreSQL"
+    },
+    "adminer:8090": {
+      "label": "Adminer"
     },
     "dns:1053": {
       "label": "PowerDNS"
