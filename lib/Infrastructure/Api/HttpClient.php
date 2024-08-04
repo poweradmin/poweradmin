@@ -40,7 +40,8 @@ class HttpClient implements ApiClient {
             'http' => [
                 'header' => "Content-type: application/json\r\n" .
                     "X-API-Key: $this->apiKey\r\n",
-                'method' => strtoupper($method)
+                'method' => strtoupper($method),
+                'ignore_errors' => true,
             ]
         ];
 
@@ -49,14 +50,14 @@ class HttpClient implements ApiClient {
         }
 
         $context = stream_context_create($options);
-        $result = @file_get_contents($url, false, $context);
-
-        if ($result === false) {
-            throw new ApiErrorException(error_get_last()['message']);
-        }
+        $response = @file_get_contents($url, false, $context);
 
         $responseCode = $this->getResponseCode($http_response_header);
-        $responseData = json_decode($result, true);
+        $responseData = json_decode($response, true);
+
+        if ($responseCode >= 400) {
+            throw new ApiErrorException($responseData['error'] ?? 'An unknown API error occurred');
+        }
 
         return [
             'responseCode' => $responseCode,
