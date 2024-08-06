@@ -96,8 +96,8 @@ function generateDatabaseUserInstructions($db, $databaseCredentials): string
             $pa_db_host = substr($current_db_user, strpos($current_db_user, '@') + 1);
         }
 
-        $instructions .= "CREATE USER '" . htmlspecialchars($databaseCredentials['pa_db_user']) . "'@'" . htmlspecialchars($pa_db_host) . "' IDENTIFIED BY '" . htmlspecialchars($databaseCredentials['pa_db_pass']) . "';\n";
-        $instructions .= "GRANT SELECT, INSERT, UPDATE, DELETE ON " . htmlspecialchars($databaseCredentials['db_name']) . ".* TO '" . htmlspecialchars($databaseCredentials['pa_db_user']) . "'@'" . htmlspecialchars($pa_db_host) . "';\n";
+        $instructions .= "CREATE USER '" . htmlspecialchars($databaseCredentials['pa_db_user']) . "'@'%' IDENTIFIED BY '" . htmlspecialchars($databaseCredentials['pa_db_pass']) . "';\n";
+        $instructions .= "GRANT SELECT, INSERT, UPDATE, DELETE ON " . htmlspecialchars($databaseCredentials['db_name']) . ".* TO '" . htmlspecialchars($databaseCredentials['pa_db_user']) . "'@'%';\n";
     } elseif ($databaseCredentials['db_type'] == 'pgsql') {
         $instructions .= "CREATE USER " . htmlspecialchars($databaseCredentials['pa_db_user']) . " WITH PASSWORD '" . htmlspecialchars($databaseCredentials['pa_db_pass']) . "';\n";
 
