@@ -71,6 +71,7 @@ class ChangePasswordController extends BaseController
                 if ($result === true) {
                     $sessionEntity = new SessionEntity(_('Password has been changed, please login.'), 'success');
                     $this->authService->logout($sessionEntity);
+                    return;
                 }
             } else {
                 $this->showFirstError($v->errors());

@@ -49,12 +49,14 @@ class LegacyAuthenticateSession
         if (isset($_SESSION['userid']) && isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] == "logout") {
             $sessionEntity = new SessionEntity(_('You have logged out.'), 'success');
             $this->authenticationService->logout($sessionEntity);
+            return;
         }
 
         $login_token = $_POST['_token'] ?? '';
         if (isset($_POST['authenticate']) && !$this->csrfTokenService->validateToken($login_token, 'login_token')) {
             $sessionEntity = new SessionEntity(_('Invalid CSRF token.'), 'danger');
             $this->authenticationService->auth($sessionEntity);
+            return;
         }
 
         // If a user had just entered his/her login && password, store them in our session.
@@ -68,6 +70,7 @@ class LegacyAuthenticateSession
             } else {
                 $sessionEntity = new SessionEntity(_('An empty password is not allowed'), 'danger');
                 $this->authenticationService->auth($sessionEntity);
+                return;
             }
         }
 
@@ -75,6 +78,7 @@ class LegacyAuthenticateSession
         if ((isset($_SESSION["userid"])) && ($_SESSION["lastmod"] != "") && ((time() - $_SESSION["lastmod"]) > $iface_expire)) {
             $sessionEntity = new SessionEntity(_('Session expired, please login again.'), 'danger');
             $this->authenticationService->logout($sessionEntity);
+            return;
         }
 
         // If the session hasn't expired yet, give our session a fresh new timestamp.
