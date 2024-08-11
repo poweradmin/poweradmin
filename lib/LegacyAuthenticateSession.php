@@ -197,7 +197,12 @@ class LegacyAuthenticateSession
             return;
         }
 
-        $rowObj = $this->db->queryRow("SELECT id, fullname FROM users WHERE username=" . $this->db->quote($_SESSION["userlogin"], 'text') . " AND active=1 AND use_ldap=1");
+        $stmt = $this->db->prepare("SELECT id, fullname FROM users WHERE username = :username AND active = 1 AND use_ldap = 1");
+        $stmt->execute([
+            'username' => $_SESSION["userlogin"]
+        ]);
+        $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
+
         if (!$rowObj) {
             if (isset($_POST["authenticate"])) {
                 $this->ldapUserEventLogger->log_failed_user_inactive();
