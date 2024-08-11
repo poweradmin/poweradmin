@@ -97,11 +97,13 @@ class LegacyAuthenticateSession
             return false;
         }
 
-        $rowObj = $this->db->queryRow("SELECT id FROM users WHERE username=" . $this->db->quote($_SESSION["userlogin"], 'text') . " AND use_ldap=1");
-        if ($rowObj) {
-            return true;
-        }
-        return false;
+        $stmt = $this->db->prepare("SELECT id FROM users WHERE username = :username AND use_ldap = 1");
+        $stmt->execute([
+            'username' => $_SESSION["userlogin"]
+        ]);
+        $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $rowObj !== false;
     }
 
     private function LDAPAuthenticate(): void
