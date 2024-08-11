@@ -765,7 +765,8 @@ class Dns
             if (!$this->is_valid_hostname_fqdn($fields[0], 0) || preg_match('/\.arpa\.?$/', $fields[0])) {
                 return false;
             }
-            $final_soa = $fields[0];
+	    // is_valid_hostname_fqdn strips the trailing dot which is required for a properly formed SOA, add it back
+            $final_soa = $fields[0] . ".";
 
             $addr_input = $fields[1] ?? $dns_hostmaster;
             if (!str_contains($addr_input, "@")) {
