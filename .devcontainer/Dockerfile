@@ -3,8 +3,8 @@ ARG VARIANT
 FROM mcr.microsoft.com/devcontainers/php:1-${VARIANT}
 
 RUN apt-get -y update \
-  && apt-get install -y git libpq-dev libicu-dev locales \
-  && docker-php-ext-install intl gettext pdo pdo_mysql pdo_pgsql \
+  && apt-get install -y git libpq-dev libldap2-dev libicu-dev locales \
+  && docker-php-ext-install intl gettext pdo pdo_mysql pdo_pgsql ldap \
   && sed -i '/^#.* cs_CZ.UTF-8 UTF-8/s/^# //' /etc/locale.gen \
   && sed -i '/^#.* de_DE.UTF-8 UTF-8/s/^# //' /etc/locale.gen \
   && sed -i '/^#.* fr_FR.UTF-8 UTF-8/s/^# //' /etc/locale.gen \

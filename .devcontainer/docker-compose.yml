@@ -60,6 +60,24 @@ services:
     ports:
       - "8090:8080"
 
+  ldap:
+    image: dinkel/openldap
+    container_name: ldap
+    environment:
+      - SLAPD_PASSWORD=poweradmin
+      - SLAPD_DOMAIN=poweradmin.org
+      - SLAPD_ADDITIONAL_MODULES=memberof
+    ports:
+      - 389:389
+
+  ldapadmin:
+    image: osixia/phpldapadmin:0.9.0
+    container_name: ldapadmin
+    environment:
+      - PHPLDAPADMIN_LDAP_HOSTS=ldap
+    ports:
+      - 8443:443
+
   dns:
     image: powerdns/pdns-auth-${PDNS_BRANCH}:${PDNS_VERSION}
     container_name: powerdns
