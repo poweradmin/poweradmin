@@ -28,8 +28,9 @@ if (!function_exists('session_start')) {
     die("You have to install the PHP session extension!");
 }
 
+$secure = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
 session_set_cookie_params([
-    'secure' => true,
+    'secure' => $secure,
     'httponly' => true,
 ]);
 
