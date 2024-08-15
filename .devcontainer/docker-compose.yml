@@ -37,6 +37,8 @@ services:
   mysql:
     image: ${MYSQL_IMAGE}:${MYSQL_VERSION}
     container_name: mariadb
+    networks:
+      - internal
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
@@ -60,6 +62,8 @@ services:
   pgsql:
     image: ${PGSQL_IMAGE}:${PGSQL_VERSION}
     container_name: postgres
+    networks:
+      - internal
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
@@ -78,12 +82,16 @@ services:
   adminer:
     image: adminer
     container_name: adminer
+    networks:
+      - internal
     ports:
       - "8090:8080"
 
   ldap:
     image: dinkel/openldap
     container_name: ldap
+    networks:
+      - internal
     environment:
       - SLAPD_PASSWORD=poweradmin
       - SLAPD_DOMAIN=poweradmin.org
@@ -94,6 +102,8 @@ services:
   ldapadmin:
     image: osixia/phpldapadmin:0.9.0
     container_name: ldapadmin
+    networks:
+      - internal
     environment:
       - PHPLDAPADMIN_LDAP_HOSTS=ldap
     ports:
@@ -102,6 +112,8 @@ services:
   dns:
     image: powerdns/pdns-auth-${PDNS_BRANCH}:${PDNS_VERSION}
     container_name: powerdns
+    networks:
+      - internal
     volumes:
       - ./conf/pdns.conf:/etc/powerdns/pdns.conf
     ports:
