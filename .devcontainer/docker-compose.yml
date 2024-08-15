@@ -5,13 +5,34 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        - VARIANT=${PHP_VERSION}-${DEBIAN_VERSION}
+        - VARIANT=${PHP_VERSION}-fpm-${DEBIAN_VERSION}
     volumes:
+      - ../.:/app
+      - ./conf/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+      - ./conf/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
       - ../..:/workspaces:cached
-    command: sleep infinity
+    networks:
+      - internal
+    ports:
+      - "9000:9000"
+    environment:
+      - PHP_IDE_CONFIG=serverName=localhost
     depends_on:
       - mysql
       - pgsql
+
+  webserver:
+    image: nginx:latest
+    container_name: webserver
+    networks:
+      - internal
+    ports:
+      - "8080:80"
+    volumes:
+      - ./conf/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ../.:/app
+    depends_on:
+      - app
 
   mysql:
     image: ${MYSQL_IMAGE}:${MYSQL_VERSION}
@@ -25,7 +46,7 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
       - ../sql/pdns/${PDNS_BRANCH}/schema.mysql.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./custom-healthcheck.sh:/custom-healthcheck.sh
+      - ./scripts/custom-healthcheck.sh:/custom-healthcheck.sh
     ports:
       - "3306:3306"
     healthcheck:
@@ -82,7 +103,7 @@ services:
     image: powerdns/pdns-auth-${PDNS_BRANCH}:${PDNS_VERSION}
     container_name: powerdns
     volumes:
-      - ./pdns.conf:/etc/powerdns/pdns.conf
+      - ./conf/pdns.conf:/etc/powerdns/pdns.conf
     ports:
       - "1053:53"
       - "1053:53/udp"
@@ -94,3 +115,7 @@ services:
 volumes:
   mysql_data: { }
   pgsql_data: { }
+
+networks:
+  internal:
+    driver: bridge

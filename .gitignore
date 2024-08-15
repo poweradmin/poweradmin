@@ -25,4 +25,4 @@ tools
 .phpunit.result.cache
 
 # Devcontainer
-.devcontainer/pdns
+.devcontainer/scripts/pdns

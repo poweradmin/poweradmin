@@ -3,11 +3,8 @@
   "dockerComposeFile": "docker-compose.yml",
   "service": "app",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
-  "postStartCommand": {
-    "app": "sudo chmod a+x \"$(pwd)\" && sudo rm -rf /var/www/html && sudo ln -s \"$(pwd)\" /var/www/html && apachectl start"
-  },
   "forwardPorts": [
-    "app:8080",
+    "app:9000",
     "mysql:3306",
     "pgsql:5432",
     "adminer:8090",
@@ -15,7 +12,7 @@
     "dns:8081"
   ],
   "portsAttributes": {
-    "app:8080": {
+    "app:9000": {
       "label": "Poweradmin"
     },
     "mysql:3306": {
@@ -33,6 +30,5 @@
     "dns:8081": {
       "label": "PowerDNS API"
     }
-  },
-  "remoteUser": "vscode"
+  }
 }
