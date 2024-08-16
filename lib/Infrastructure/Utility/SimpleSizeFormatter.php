@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Utility;
 
-use Poweradmin\Domain\SystemMonitoring\SizeFormatter;
+use Poweradmin\Domain\Utility\SizeFormatter;
 
 class SimpleSizeFormatter implements SizeFormatter
 {

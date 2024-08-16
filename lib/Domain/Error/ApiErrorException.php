@@ -20,9 +20,8 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\SystemMonitoring;
+namespace Poweradmin\Domain\Error;
 
-interface SizeFormatter
-{
-    public function humanReadable(int $size): string;
-}
+use RuntimeException;
+
+class ApiErrorException extends RuntimeException {}

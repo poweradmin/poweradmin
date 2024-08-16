@@ -20,29 +20,23 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Enum;
+namespace Poweradmin\Domain\Utility;
 
-/**
- * ZoneType class represents the different types of zones in a DNS system.
- */
-class ZoneType
-{
-    // Visibility constants for the available zone types
-    public const MASTER = "MASTER";
-    public const SLAVE = "SLAVE";
-    public const NATIVE = "NATIVE";
+class DnssecDataTransformer implements DnssecTransformer {
+    public function transformKey(mixed $key): array {
+        $ds = explode(" ", $key->getDs()[0] ?? "");
+        $dnsKey = explode(" ", $key->getDnsKey() ?? "");
 
-    /**
-     * Get an array of the available zone types.
-     *
-     * @return array The array of available zone types.
-     */
-    public static function getTypes(): array
-    {
+        [$dsValue] = $ds;
+        [, , $dnsKeyValue] = $dnsKey;
+
         return [
-            self::MASTER,
-            self::SLAVE,
-            self::NATIVE,
+            $key->getId(),
+            strtoupper($key->getType()),
+            $dsValue,
+            $dnsKeyValue,
+            $key->getSize(),
+            $key->isActive(),
         ];
     }
 }

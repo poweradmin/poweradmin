@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Dnssec;
+namespace Poweradmin\Domain\Model;
 
 class DnssecAlgorithmName {
     public const RSAMD5 = 'rsamd5';

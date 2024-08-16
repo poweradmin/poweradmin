@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Dnssec;
+namespace Poweradmin\Domain\Service;
 
 interface DnssecProvider {
     public function rectifyZone(string $zoneName): bool;

@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Dnssec;
+namespace Poweradmin\Domain\Model;
 
 class DnssecAlgorithm {
     public const RESERVED = 0;

@@ -20,8 +20,8 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Exception;
+namespace Poweradmin\Domain\Utility;
 
-use RuntimeException;
-
-class ApiErrorException extends RuntimeException {}
+interface DnssecTransformer {
+    public function transformKey(mixed $key): array;
+}

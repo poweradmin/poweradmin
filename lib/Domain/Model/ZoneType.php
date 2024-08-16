@@ -20,19 +20,29 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\SystemMonitoring;
+namespace Poweradmin\Domain\Model;
 
-class MemoryUsage
+/**
+ * ZoneType class represents the different types of zones in a DNS system.
+ */
+class ZoneType
 {
-    private int $startMemory;
+    // Visibility constants for the available zone types
+    public const MASTER = "MASTER";
+    public const SLAVE = "SLAVE";
+    public const NATIVE = "NATIVE";
 
-    public function __construct()
+    /**
+     * Get an array of the available zone types.
+     *
+     * @return array The array of available zone types.
+     */
+    public static function getTypes(): array
     {
-        $this->startMemory = memory_get_usage();
-    }
-
-    public function calculateCurrentUsage(): int
-    {
-        return memory_get_usage() - $this->startMemory;
+        return [
+            self::MASTER,
+            self::SLAVE,
+            self::NATIVE,
+        ];
     }
 }

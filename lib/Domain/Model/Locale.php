@@ -1,6 +1,6 @@
 <?php
 
-namespace Poweradmin\Domain\Locale;
+namespace Poweradmin\Domain\Model;
 
 class Locale {
     private string $locale;

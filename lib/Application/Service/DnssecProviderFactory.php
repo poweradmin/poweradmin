@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Application\Service;
 
-use Poweradmin\Domain\Dnssec\DnssecProvider;
-use Poweradmin\Domain\Transformer\DnssecDataTransformer;
+use Poweradmin\Domain\Service\DnssecProvider;
+use Poweradmin\Domain\Utility\DnssecDataTransformer;
 use Poweradmin\Infrastructure\Api\HttpClient;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;

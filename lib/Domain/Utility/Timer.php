@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\SystemMonitoring;
+namespace Poweradmin\Domain\Utility;
 
 class Timer
 {

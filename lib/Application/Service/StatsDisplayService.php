@@ -22,9 +22,9 @@
 
 namespace Poweradmin\Application\Service;
 
-use Poweradmin\Domain\SystemMonitoring\MemoryUsage;
-use Poweradmin\Domain\SystemMonitoring\SizeFormatter;
-use Poweradmin\Domain\SystemMonitoring\Timer;
+use Poweradmin\Domain\Utility\MemoryUsage;
+use Poweradmin\Domain\Utility\SizeFormatter;
+use Poweradmin\Domain\Utility\Timer;
 
 class StatsDisplayService
 {

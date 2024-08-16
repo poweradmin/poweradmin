@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Api;
 
-use Poweradmin\Domain\Exception\ApiErrorException;
+use Poweradmin\Domain\Error\ApiErrorException;
 
 class HttpClient implements ApiClient {
 

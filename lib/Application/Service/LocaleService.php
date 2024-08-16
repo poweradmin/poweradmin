@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Application\Service;
 
-use Poweradmin\Domain\Locale\Locale;
+use Poweradmin\Domain\Model\Locale;
 
 class LocaleService {
     public function prepareLocales(array $localesData, string $interfaceLanguage): array {

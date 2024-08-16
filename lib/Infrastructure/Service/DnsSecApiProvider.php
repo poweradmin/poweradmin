@@ -22,10 +22,10 @@ namespace Poweradmin\Infrastructure\Service;
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use Poweradmin\Domain\Dnssec\DnssecProvider;
 use Poweradmin\Domain\Model\CryptoKey;
 use Poweradmin\Domain\Model\Zone;
-use Poweradmin\Domain\Transformer\DnssecTransformer;
+use Poweradmin\Domain\Service\DnssecProvider;
+use Poweradmin\Domain\Utility\DnssecTransformer;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Logger\LoggerInterface;
 

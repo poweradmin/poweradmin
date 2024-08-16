@@ -22,7 +22,7 @@ namespace Poweradmin\Application\Service;
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use Poweradmin\Domain\Dnssec\DnssecProvider;
+use Poweradmin\Domain\Service\DnssecProvider;
 
 class DnssecService {
     private DnssecProvider $provider;

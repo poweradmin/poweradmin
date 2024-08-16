@@ -24,8 +24,8 @@ namespace Poweradmin\Infrastructure\Service;
 
 use Poweradmin\AppConfiguration;
 use Poweradmin\Application\Presenter\ErrorPresenter;
-use Poweradmin\Domain\Dnssec\DnssecProvider;
 use Poweradmin\Domain\Error\ErrorMessage;
+use Poweradmin\Domain\Service\DnssecProvider;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 

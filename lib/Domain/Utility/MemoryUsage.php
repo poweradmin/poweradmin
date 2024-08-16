@@ -20,8 +20,19 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Transformer;
+namespace Poweradmin\Domain\Utility;
 
-interface DnssecTransformer {
-    public function transformKey(mixed $key): array;
+class MemoryUsage
+{
+    private int $startMemory;
+
+    public function __construct()
+    {
+        $this->startMemory = memory_get_usage();
+    }
+
+    public function calculateCurrentUsage(): int
+    {
+        return memory_get_usage() - $this->startMemory;
+    }
 }
