@@ -22,7 +22,10 @@
 
 namespace Poweradmin;
 
+use PDO;
+use Poweradmin\Application\Security\CsrfTokenService;
 use Poweradmin\Domain\Model\SessionEntity;
+use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
 
 class LdapAuthenticator
@@ -105,6 +108,7 @@ class LdapAuthenticator
             return;
         }
 
+        //Checking first that we only found exactly 1 user, get the DN of this user.  We'll use this to perform the actual authentication.
         $entries = ldap_get_entries($ldapconn, $ldapsearch);
         if ($entries["count"] != 1) {
             if (isset($_POST["authenticate"])) {

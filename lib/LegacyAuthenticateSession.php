@@ -24,7 +24,6 @@ namespace Poweradmin;
 
 use PDO;
 use Poweradmin\Application\Security\CsrfTokenService;
-use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
@@ -39,6 +38,8 @@ class LegacyAuthenticateSession
     private UserEventLogger $userEventLogger;
     private LdapUserEventLogger $ldapUserEventLogger;
     private CsrfTokenService $csrfTokenService;
+    private LdapAuthenticator $ldapAuthenticator;
+    private SqlAuthenticator $sqlAuthenticator;
 
     public function __construct(PDOLayer $db, LegacyConfiguration $config) {
         $this->db = $db;
@@ -51,6 +52,9 @@ class LegacyAuthenticateSession
 
         $this->userEventLogger = new UserEventLogger($db);
         $this->ldapUserEventLogger = new LdapUserEventLogger($db);
+
+        $this->ldapAuthenticator = new LdapAuthenticator($db, $config, $this->ldapUserEventLogger, $this->authenticationService, $this->csrfTokenService);
+        $this->sqlAuthenticator = new SqlAuthenticator($db, $config, $this->userEventLogger, $this->authenticationService, $this->csrfTokenService);
     }
 
     /** Authenticate Session
@@ -105,9 +109,9 @@ class LegacyAuthenticateSession
         $_SESSION["lastmod"] = time();
 
         if ($ldap_use && $this->userUsesLDAP()) {
-            $this->LDAPAuthenticate();
+            $this->ldapAuthenticator->authenticate();
         } else {
-            $this->SQLAuthenticate();
+            $this->sqlAuthenticator->authenticate();
         }
     }
 
@@ -124,202 +128,5 @@ class LegacyAuthenticateSession
         $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return $rowObj !== false;
-    }
-
-    private function LDAPAuthenticate(): void
-    {
-        $session_key = $this->config->get('session_key');
-        $ldap_uri = $this->config->get('ldap_uri');
-        $ldap_basedn = $this->config->get('ldap_basedn');
-        $ldap_search_filter = $this->config->get('ldap_search_filter');
-        $ldap_binddn = $this->config->get('ldap_binddn');
-        $ldap_bindpw = $this->config->get('ldap_bindpw');
-        $ldap_proto = $this->config->get('ldap_proto');
-        $ldap_debug = $this->config->get('ldap_debug');
-        $ldap_user_attribute = $this->config->get('ldap_user_attribute');
-
-        if (!isset($_SESSION["userlogin"]) || !isset($_SESSION["userpwd"])) {
-            $sessionEntity = new SessionEntity('', 'danger');
-            $this->authenticationService->auth($sessionEntity);
-        }
-
-        if ($ldap_debug) {
-            ldap_set_option(NULL, LDAP_OPT_DEBUG_LEVEL, 7);
-        }
-
-        $ldapconn = ldap_connect($ldap_uri);
-        if (!$ldapconn) {
-            if (isset($_POST["authenticate"])) {
-                $this->ldapUserEventLogger->log_failed_reason('ldap_connect');
-            }
-            $sessionEntity = new SessionEntity(_('Failed to connect to LDAP server!'), 'danger');
-            $this->authenticationService->logout($sessionEntity);
-            return;
-        }
-
-        ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, $ldap_proto);
-        $ldapbind = ldap_bind($ldapconn, $ldap_binddn, $ldap_bindpw);
-        if (!$ldapbind) {
-            if (isset($_POST["authenticate"])) {
-                $this->ldapUserEventLogger->log_failed_reason('ldap_bind');
-            }
-            $sessionEntity = new SessionEntity(_('Failed to bind to LDAP server!'), 'danger');
-            $this->authenticationService->logout($sessionEntity);
-            return;
-        }
-
-        $attributes = array($ldap_user_attribute, 'dn');
-        $filter = $ldap_search_filter
-            ? "(&($ldap_user_attribute={$_SESSION['userlogin']})$ldap_search_filter)"
-            : "($ldap_user_attribute={$_SESSION['userlogin']})";
-
-        if ($ldap_debug) {
-            echo "<div class=\"container\"><pre>";
-            echo sprintf("LDAP search filter: %s\n", $filter);
-            echo "</pre></div>";
-        }
-
-        $ldapsearch = ldap_search($ldapconn, $ldap_basedn, $filter, $attributes);
-        if (!$ldapsearch) {
-            if (isset($_POST["authenticate"])) {
-                $this->ldapUserEventLogger->log_failed_reason('ldap_search');
-            }
-            $sessionEntity = new SessionEntity(_('Failed to search LDAP.'), 'danger');
-            $this->authenticationService->logout($sessionEntity);
-            return;
-        }
-
-        //Checking first that we only found exactly 1 user, get the DN of this user.  We'll use this to perform the actual authentication.
-        $entries = ldap_get_entries($ldapconn, $ldapsearch);
-        if ($entries["count"] != 1) {
-            if (isset($_POST["authenticate"])) {
-                if ($entries["count"] == 0) {
-                    $this->ldapUserEventLogger->log_failed_auth();
-                } else {
-                    $this->ldapUserEventLogger->log_failed_duplicate_auth();
-                }
-            }
-            $sessionEntity = new SessionEntity(_('Failed to authenticate against LDAP.'), 'danger');
-            $this->authenticationService->logout($sessionEntity);
-            return;
-        }
-        $user_dn = $entries[0]["dn"];
-
-        $passwordEncryptionService = new PasswordEncryptionService($session_key);
-        $session_pass = $passwordEncryptionService->decrypt($_SESSION['userpwd']);
-        $ldapbind = ldap_bind($ldapconn, $user_dn, $session_pass);
-        if (!$ldapbind) {
-            if (isset($_POST["authenticate"])) {
-                $this->ldapUserEventLogger->log_failed_incorrect_pass();
-            }
-            $sessionEntity = new SessionEntity(_('LDAP Authentication failed!'), 'danger');
-            $this->authenticationService->auth($sessionEntity);
-            return;
-        }
-
-        $stmt = $this->db->prepare("SELECT id, fullname FROM users WHERE username = :username AND active = 1 AND use_ldap = 1");
-        $stmt->execute([
-            'username' => $_SESSION["userlogin"]
-        ]);
-        $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$rowObj) {
-            if (isset($_POST["authenticate"])) {
-                $this->ldapUserEventLogger->log_failed_user_inactive();
-            }
-            $sessionEntity = new SessionEntity(_('LDAP Authentication failed!'), 'danger');
-            $this->authenticationService->auth($sessionEntity);
-            return;
-        }
-
-        session_regenerate_id(true);
-
-        $_SESSION['userid'] = $rowObj['id'];
-        $_SESSION['name'] = $rowObj['fullname'];
-        $_SESSION['auth_used'] = 'ldap';
-
-        if (!isset($_SESSION['csrf_token'])) {
-            $_SESSION['csrf_token'] = $this->csrfTokenService->generateToken();
-        }
-
-        if (isset($_POST['authenticate'])) {
-            $this->ldapUserEventLogger->log_success_auth();
-            session_write_close();
-            $this->authenticationService->redirectToIndex();
-        }
-    }
-
-    private function SQLAuthenticate(): void
-    {
-        $session_key = $this->config->get('session_key');
-
-        if (!isset($_SESSION["userlogin"]) || !isset($_SESSION["userpwd"])) {
-            $sessionEntity = new SessionEntity('', 'danger');
-            $this->authenticationService->auth($sessionEntity);
-            return;
-        }
-
-        $passwordEncryptionService = new PasswordEncryptionService($session_key);
-        $session_pass = $passwordEncryptionService->decrypt($_SESSION['userpwd']);
-
-        $stmt = $this->db->prepare("SELECT id, fullname, password, active FROM users WHERE username=:username AND use_ldap=0");
-        $stmt->bindParam(':username', $_SESSION["userlogin"]);
-        $stmt->execute();
-        $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$rowObj) {
-            $this->handleFailedAuthentication();
-            return;
-        }
-
-        $config = new LegacyConfiguration();
-        $userAuthService = new UserAuthenticationService(
-            $config->get('password_encryption'),
-            $config->get('password_encryption_cost')
-        );
-
-        if (!$userAuthService->verifyPassword($session_pass, $rowObj['password'])) {
-            $this->handleFailedAuthentication();
-            return;
-        }
-
-        if ($rowObj['active'] != 1) {
-            $sessionEntity = new SessionEntity(_('The user account is disabled.'), 'danger');
-            $this->authenticationService->auth($sessionEntity);
-            return;
-        }
-
-        if ($userAuthService->requiresRehash($rowObj['password'])) {
-            LegacyUsers::update_user_password($this->db, $rowObj["id"], $session_pass);
-        }
-
-        session_regenerate_id(true);
-
-        $_SESSION['userid'] = $rowObj['id'];
-        $_SESSION['name'] = $rowObj['fullname'];
-        $_SESSION['auth_used'] = 'internal';
-
-        if (!isset($_SESSION['csrf_token'])) {
-            $_SESSION['csrf_token'] = $this->csrfTokenService->generateToken();
-        }
-
-        if (isset($_POST['authenticate'])) {
-            $this->userEventLogger->log_successful_auth();
-            session_write_close();
-            $this->authenticationService->redirectToIndex();
-        }
-    }
-
-    private function handleFailedAuthentication(): void
-    {
-        if (isset($_POST['authenticate'])) {
-            $this->userEventLogger->log_failed_auth();
-            $sessionEntity = new SessionEntity(_('Authentication failed!'), 'danger');
-        } else {
-            unset($_SESSION["userpwd"]);
-            unset($_SESSION["userlogin"]);
-            $sessionEntity = new SessionEntity(_('Session expired, please login again.'), 'danger');
-        }
-        $this->authenticationService->auth($sessionEntity);
     }
 }
