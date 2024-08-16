@@ -1,6 +1,5 @@
 ARG VARIANT
 
-#FROM mcr.microsoft.com/devcontainers/php:1-${VARIANT}
 FROM php:${VARIANT}
 
 RUN apt-get -y update
