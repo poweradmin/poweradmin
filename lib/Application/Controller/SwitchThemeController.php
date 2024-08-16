@@ -37,9 +37,10 @@ class SwitchThemeController extends BaseController
 
     private function setThemeCookie(string $selectedTheme): void
     {
+        $secure = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
         setcookie("theme", $selectedTheme, [
+            'secure' => $secure,
             'httponly' => true,
-            'secure' => true,
         ]);
     }
 
