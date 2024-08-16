@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Application\Security;
+namespace Poweradmin\Application\Service;
 
 class CsrfTokenService {
     const TOKEN_LENGTH = 40;

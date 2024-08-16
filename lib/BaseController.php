@@ -23,7 +23,7 @@
 namespace Poweradmin;
 
 use Poweradmin\Application\Presenter\ErrorPresenter;
-use Poweradmin\Application\Security\CsrfTokenService;
+use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\Infrastructure\Web\ThemeManager;
 use Valitron;

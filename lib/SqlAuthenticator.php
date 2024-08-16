@@ -23,11 +23,11 @@
 namespace Poweradmin;
 
 use PDO;
-use Poweradmin\Application\Security\CsrfTokenService;
+use Poweradmin\Application\Service\CsrfTokenService;
+use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
-use Poweradmin\Application\Service\UserAuthenticationService;
 
 class SqlAuthenticator
 {

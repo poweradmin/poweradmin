@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Presenter\LocalePresenter;
-use Poweradmin\Application\Security\CsrfTokenService;
+use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\LocaleService;
 use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Web\LanguageCode;
