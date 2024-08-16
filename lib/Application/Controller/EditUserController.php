@@ -32,9 +32,9 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\LegacyUsers;
-use Poweradmin\Permission;
-use Poweradmin\Validation;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\Validator;
 
 class EditUserController extends BaseController
 {
@@ -42,12 +42,12 @@ class EditUserController extends BaseController
     public function run(): void
     {
         $edit_id = "-1";
-        if (isset($_GET['id']) && Validation::is_number($_GET['id'])) {
+        if (isset($_GET['id']) && Validator::is_number($_GET['id'])) {
             $edit_id = $_GET['id'];
         }
 
-        $perm_edit_own = LegacyUsers::verify_permission($this->db, 'user_edit_own');
-        $perm_edit_others = LegacyUsers::verify_permission($this->db, 'user_edit_others');
+        $perm_edit_own = UserManager::verify_permission($this->db, 'user_edit_own');
+        $perm_edit_others = UserManager::verify_permission($this->db, 'user_edit_others');
 
         if ($edit_id == "-1") {
             $this->showError(_('Invalid or unexpected input given.'));
@@ -94,20 +94,20 @@ class EditUserController extends BaseController
             $i_password = $_POST['password'];
         }
 
-        if (isset($_POST['perm_templ']) && Validation::is_number($_POST['perm_templ'])) {
+        if (isset($_POST['perm_templ']) && Validator::is_number($_POST['perm_templ'])) {
             $i_perm_templ = $_POST['perm_templ'];
         } else {
-            $user_details = LegacyUsers::get_user_detail_list($this->db, $this->config('ldap_use'), $edit_id);
+            $user_details = UserManager::get_user_detail_list($this->db, $this->config('ldap_use'), $edit_id);
             $i_perm_templ = $user_details[0]['tpl_id'];
         }
 
         $i_active = false;
-        if (isset($_POST['active']) && Validation::is_number($_POST['active'])) {
+        if (isset($_POST['active']) && Validator::is_number($_POST['active'])) {
             $i_active = true;
         }
 
         $i_use_ldap = false;
-        if (isset($_POST['use_ldap']) && Validation::is_number($_POST['use_ldap'])) {
+        if (isset($_POST['use_ldap']) && Validator::is_number($_POST['use_ldap'])) {
             $i_use_ldap = true;
         }
 
@@ -116,7 +116,7 @@ class EditUserController extends BaseController
         }
 
         if ($i_username != "" && $i_perm_templ > "0" && $i_fullname) {
-            $legacyUsers = new LegacyUsers($this->db, $this->getConfig());
+            $legacyUsers = new UserManager($this->db, $this->getConfig());
             if ($legacyUsers->edit_user($edit_id, $i_username, $i_fullname, $i_email, $i_perm_templ, $i_description, $i_active, $i_password, $i_use_ldap)) {
                 $this->setMessage('users', 'success', _('The user has been updated successfully.'));
                 $this->redirect('index.php', ['page'=> 'users']);
@@ -130,17 +130,17 @@ class EditUserController extends BaseController
 
     public function showUserEditForm($edit_id): void
     {
-        $users = LegacyUsers::get_user_detail_list($this->db, $this->config('ldap_use'), $edit_id);
+        $users = UserManager::get_user_detail_list($this->db, $this->config('ldap_use'), $edit_id);
         if (empty($users)) {
             $this->showError(_('User does not exist.'));
         }
 
         $user = $users[0];
-        $edit_templ_perm = LegacyUsers::verify_permission($this->db, 'user_edit_templ_perm');
-        $passwd_edit_others_perm = LegacyUsers::verify_permission($this->db, 'user_passwd_edit_others');
-        $edit_own_perm = LegacyUsers::verify_permission($this->db, 'user_edit_own');
-        $permission_templates = LegacyUsers::list_permission_templates($this->db);
-        $user_permissions = LegacyUsers::get_permissions_by_template_id($this->db, $user['tpl_id']);
+        $edit_templ_perm = UserManager::verify_permission($this->db, 'user_edit_templ_perm');
+        $passwd_edit_others_perm = UserManager::verify_permission($this->db, 'user_passwd_edit_others');
+        $edit_own_perm = UserManager::verify_permission($this->db, 'user_edit_own');
+        $permission_templates = UserManager::list_permission_templates($this->db);
+        $user_permissions = UserManager::get_permissions_by_template_id($this->db, $user['tpl_id']);
 
         ($user['active']) == "1" ? $check = " CHECKED" : $check = "";
         $name = $user['fullname'] ?: $user['username'];

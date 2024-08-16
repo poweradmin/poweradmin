@@ -32,8 +32,8 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\LegacyUsers;
-use Poweradmin\ZoneTemplate;
+use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Model\ZoneTemplate;
 use Valitron;
 
 class DeleteZoneTemplController extends BaseController
@@ -42,8 +42,8 @@ class DeleteZoneTemplController extends BaseController
     {
         $zone_templ_id = htmlspecialchars($_GET['id']);
         $owner = ZoneTemplate::get_zone_templ_is_owner($this->db, $zone_templ_id, $_SESSION['userid']);
-        $perm_godlike = LegacyUsers::verify_permission($this->db, 'user_is_ueberuser');
-        $perm_master_add = LegacyUsers::verify_permission($this->db, 'zone_master_add');
+        $perm_godlike = UserManager::verify_permission($this->db, 'user_is_ueberuser');
+        $perm_master_add = UserManager::verify_permission($this->db, 'zone_master_add');
 
         $this->checkCondition(!($perm_godlike || $perm_master_add && $owner), _("You do not have the permission to delete zone templates."));
 

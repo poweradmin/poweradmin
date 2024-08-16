@@ -22,7 +22,7 @@
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-use Poweradmin\Infrastructure\Web\IpAddressRetriever;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 $ipAddressRetriever = new IpAddressRetriever($_SERVER);
 echo htmlspecialchars($ipAddressRetriever->getClientIp());

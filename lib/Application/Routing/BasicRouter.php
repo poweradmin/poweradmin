@@ -30,7 +30,7 @@ use Exception;
  * BasicRouter is a simple router class that routes requests to the appropriate controller
  * based on the 'page' parameter in the request.
  *
- * @package Poweradmin\Application\Routing
+ * @package Poweradmin\AppManager\Routing
  */
 class BasicRouter
 {

@@ -33,8 +33,6 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
-use Poweradmin\LegacyUsers;
-use Valitron;
 
 class EditPermTemplController extends BaseController
 {

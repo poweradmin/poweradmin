@@ -26,7 +26,7 @@ use Poweradmin\Application\Presenter\LocalePresenter;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\LocaleService;
 use Poweradmin\BaseController;
-use Poweradmin\Infrastructure\Web\LanguageCode;
+use Poweradmin\Infrastructure\Utility\LanguageCode;
 
 include_once(__DIR__ . '/../../../inc/config-defaults.inc.php');
 @include_once(__DIR__ . '/../../../inc/config.inc.php');

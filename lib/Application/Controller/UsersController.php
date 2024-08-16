@@ -32,8 +32,8 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\LegacyUsers;
-use Poweradmin\Permission;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\UserManager;
 
 class UsersController extends BaseController
 {
@@ -51,7 +51,7 @@ class UsersController extends BaseController
     {
         $success = false;
         foreach ($_POST['user'] as $user) {
-            $legacyUsers = new LegacyUsers($this->db, $this->getConfig());
+            $legacyUsers = new UserManager($this->db, $this->getConfig());
             $result = $legacyUsers->update_user_details($user);
             if ($result) {
                 $success = true;
@@ -77,11 +77,11 @@ class UsersController extends BaseController
 
         $this->render('users.html', [
             'permissions' => $permissions,
-            'perm_templates' => LegacyUsers::list_permission_templates($this->db),
-            'users' => LegacyUsers::get_user_detail_list($this->db, $this->config('ldap_use')),
+            'perm_templates' => UserManager::list_permission_templates($this->db),
+            'users' => UserManager::get_user_detail_list($this->db, $this->config('ldap_use')),
             'ldap_use' => $this->config('ldap_use'),
             'session_userid' => $_SESSION["userid"],
-            'perm_add_new' => LegacyUsers::verify_permission($this->db, 'user_add_new'),
+            'perm_add_new' => UserManager::verify_permission($this->db, 'user_add_new'),
         ]);
     }
 }

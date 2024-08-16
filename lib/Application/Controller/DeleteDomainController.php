@@ -31,12 +31,12 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Dnssec\DnssecProviderFactory;
+use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
-use Poweradmin\DnsRecord;
-use Poweradmin\LegacyLogger;
-use Poweradmin\LegacyUsers;
-use Poweradmin\Permission;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Valitron;
 
 class DeleteDomainController extends BaseController
@@ -65,7 +65,7 @@ class DeleteDomainController extends BaseController
         $zone_id = htmlspecialchars($_GET['id']);
 
         $perm_edit = Permission::getEditPermission($this->db);
-        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($this->db, $zone_id);
+        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
         $this->checkCondition($perm_edit != "all" && ($perm_edit != "own" || !$user_is_zone_owner), _("You do not have the permission to delete a zone."));
 
         if (isset($_GET['confirm'])) {
@@ -104,7 +104,7 @@ class DeleteDomainController extends BaseController
     {
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $zone_info = $dnsRecord->get_zone_info_from_id($zone_id);
-        $zone_owners = LegacyUsers::get_fullnames_owners_from_domainid($this->db, $zone_id);
+        $zone_owners = UserManager::get_fullnames_owners_from_domainid($this->db, $zone_id);
 
         $slave_master_exists = false;
         if ($zone_info['type'] == 'SLAVE') {

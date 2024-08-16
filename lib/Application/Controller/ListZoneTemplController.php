@@ -32,8 +32,8 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\LegacyUsers;
-use Poweradmin\ZoneTemplate;
+use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Model\ZoneTemplate;
 
 class ListZoneTemplController extends BaseController
 {
@@ -47,16 +47,16 @@ class ListZoneTemplController extends BaseController
 
     private function showListZoneTempl(): void
     {
-        $perm_zone_master_add = LegacyUsers::verify_permission($this->db, 'zone_master_add');
+        $perm_zone_master_add = UserManager::verify_permission($this->db, 'zone_master_add');
 
         $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
         $zone_templates->get_list_zone_templ($_SESSION['userid']);
 
         $this->render('list_zone_templ.html', [
             'perm_zone_master_add' => $perm_zone_master_add,
-            'user_name' => LegacyUsers::get_fullname_from_userid($this->db, $_SESSION['userid']) ?: $_SESSION['userlogin'],
+            'user_name' => UserManager::get_fullname_from_userid($this->db, $_SESSION['userid']) ?: $_SESSION['userlogin'],
             'zone_templates' => $zone_templates->get_list_zone_templ($_SESSION['userid']),
-            'perm_is_godlike' => LegacyUsers::verify_permission($this->db, 'user_is_ueberuser'),
+            'perm_is_godlike' => UserManager::verify_permission($this->db, 'user_is_ueberuser'),
         ]);
     }
 }

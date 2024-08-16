@@ -32,29 +32,29 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Dnssec\DnssecProviderFactory;
+use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
-use Poweradmin\DnsRecord;
 use Poweradmin\Domain\Dnssec\DnssecAlgorithm;
-use Poweradmin\LegacyUsers;
-use Poweradmin\Permission;
-use Poweradmin\Validation;
-use Poweradmin\ZoneTemplate;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\Validator;
 
 class DnssecController extends BaseController
 {
 
     public function run(): void
     {
-        if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
+        if (!isset($_GET['id']) || !Validator::is_number($_GET['id'])) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
         $zone_id = htmlspecialchars($_GET['id']);
         $perm_view = Permission::getViewPermission($this->db);
-        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($this->db, $zone_id);
+        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
 
-        (LegacyUsers::verify_permission($this->db, 'user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
+        (UserManager::verify_permission($this->db, 'user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
 
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
             $this->showError(_("You do not have the permission to view this zone."));

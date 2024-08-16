@@ -23,10 +23,9 @@
 namespace Poweradmin\Infrastructure\Database;
 
 use Exception;
-use Poweradmin\Domain\Connection\DatabaseConnection;
 use PDO;
 use PDOException;
-use Poweradmin\PDOLayer;
+use Poweradmin\Domain\Connection\DatabaseConnection;
 
 class PDODatabaseConnection implements DatabaseConnection {
     public function connect(array $credentials): PDOLayer

@@ -24,7 +24,7 @@ namespace Poweradmin\Application\Service;
 
 use Exception;
 use Poweradmin\Domain\Connection\DatabaseConnection;
-use Poweradmin\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOLayer;
 use RuntimeException;
 
 class DatabaseService {

@@ -32,19 +32,19 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Dnssec\DnssecProviderFactory;
 use Poweradmin\Application\Presenter\PaginationPresenter;
+use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
-use Poweradmin\DnsRecord;
 use Poweradmin\Domain\Enum\ZoneType;
-use Poweradmin\Infrastructure\Web\HttpPaginationParameters;
-use Poweradmin\LegacyUsers;
-use Poweradmin\Permission;
-use Poweradmin\RecordLog;
-use Poweradmin\RecordType;
-use Poweradmin\Validation;
-use Poweradmin\ZoneTemplate;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\RecordLog;
+use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\Validator;
+use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 
 class EditController extends BaseController
 {
@@ -61,7 +61,7 @@ class EditController extends BaseController
 
         $record_sort_by = $this->getSortBy();
 
-        if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
+        if (!isset($_GET['id']) || !Validator::is_number($_GET['id'])) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
         $zone_id = intval(htmlspecialchars($_GET['id']));
@@ -81,15 +81,15 @@ class EditController extends BaseController
         $perm_view = Permission::getViewPermission($this->db);
         $perm_edit = Permission::getEditPermission($this->db);
 
-        if (LegacyUsers::verify_permission($this->db, 'zone_meta_edit_others')) {
+        if (UserManager::verify_permission($this->db, 'zone_meta_edit_others')) {
             $perm_meta_edit = "all";
-        } elseif (LegacyUsers::verify_permission($this->db, 'zone_meta_edit_own')) {
+        } elseif (UserManager::verify_permission($this->db, 'zone_meta_edit_own')) {
             $perm_meta_edit = "own";
         } else {
             $perm_meta_edit = "none";
         }
 
-        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($this->db, $zone_id);
+        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
 
         $meta_edit = $perm_meta_edit == "all" || ($perm_meta_edit == "own" && $user_is_zone_owner == "1");
 
@@ -175,7 +175,7 @@ class EditController extends BaseController
 
         $slave_master = $dnsRecord->get_domain_slave_master($zone_id);
 
-        $users = LegacyUsers::show_users($this->db);
+        $users = UserManager::show_users($this->db);
 
         $zone_comment = '';
         $raw_zone_comment = DnsRecord::get_zone_comment($this->db, $zone_id);
@@ -215,8 +215,8 @@ class EditController extends BaseController
             'perm_edit' => $perm_edit,
             'perm_meta_edit' => $perm_meta_edit,
             'meta_edit' => $meta_edit,
-            'perm_zone_master_add' => LegacyUsers::verify_permission($this->db, 'zone_master_add'),
-            'perm_view_others' => LegacyUsers::verify_permission($this->db, 'user_view_others'),
+            'perm_zone_master_add' => UserManager::verify_permission($this->db, 'zone_master_add'),
+            'perm_view_others' => UserManager::verify_permission($this->db, 'user_view_others'),
             'user_is_zone_owner' => $user_is_zone_owner,
             'zone_types' => $types,
             'row_start' => $row_start,

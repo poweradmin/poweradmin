@@ -33,10 +33,10 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\SessionEntity;
+use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\SessionService;
 use Poweradmin\Infrastructure\Service\RedirectService;
-use Poweradmin\LegacyUsers;
 use Valitron\Validator;
 
 class ChangePasswordController extends BaseController
@@ -67,7 +67,7 @@ class ChangePasswordController extends BaseController
             ]);
 
             if ($v->validate()) {
-                $result = LegacyUsers::change_user_pass($this->db, $_POST);
+                $result = UserManager::change_user_pass($this->db, $_POST);
                 if ($result === true) {
                     $sessionEntity = new SessionEntity(_('Password has been changed, please login.'), 'success');
                     $this->authService->logout($sessionEntity);

@@ -34,10 +34,10 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
-use Poweradmin\DnsRecord;
-use Poweradmin\Infrastructure\Web\HttpPaginationParameters;
-use Poweradmin\LegacyUsers;
-use Poweradmin\ZoneTemplate;
+use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Valitron;
 
 class EditZoneTemplController extends BaseController
@@ -47,8 +47,8 @@ class EditZoneTemplController extends BaseController
     {
         $zone_templ_id = htmlspecialchars($_GET['id']);
         $owner = ZoneTemplate::get_zone_templ_is_owner($this->db, $zone_templ_id, $_SESSION['userid']);
-        $perm_godlike = LegacyUsers::verify_permission($this->db, 'user_is_ueberuser');
-        $perm_master_add = LegacyUsers::verify_permission($this->db, 'zone_master_add');
+        $perm_godlike = UserManager::verify_permission($this->db, 'user_is_ueberuser');
+        $perm_master_add = UserManager::verify_permission($this->db, 'zone_master_add');
 
         $this->checkCondition(!($perm_godlike || $perm_master_add && $owner), _("You do not have the permission to delete zone templates."));
 
@@ -75,7 +75,7 @@ class EditZoneTemplController extends BaseController
     private function updateZoneTemplate(string $zone_templ_id): void
     {
         $owner = ZoneTemplate::get_zone_templ_is_owner($this->db, $zone_templ_id, $_SESSION['userid']);
-        $perm_godlike = LegacyUsers::verify_permission($this->db, 'user_is_ueberuser');
+        $perm_godlike = UserManager::verify_permission($this->db, 'user_is_ueberuser');
 
         if (isset($_POST['edit']) && ($owner || $perm_godlike)) {
             $this->updateZoneTemplateDetails($zone_templ_id);
@@ -112,7 +112,7 @@ class EditZoneTemplController extends BaseController
             'pagination' => $this->createAndPresentPagination($record_count, $iface_rowamount, $zone_templ_id),
             'records' => ZoneTemplate::get_zone_templ_records($this->db, $zone_templ_id, $row_start, $iface_rowamount, $record_sort_by),
             'zone_templ_id' => $zone_templ_id,
-            'perm_is_godlike' => LegacyUsers::verify_permission($this->db, 'user_is_ueberuser'),
+            'perm_is_godlike' => UserManager::verify_permission($this->db, 'user_is_ueberuser'),
         ]);
     }
 

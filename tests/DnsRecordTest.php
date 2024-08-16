@@ -1,9 +1,9 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\DnsRecord;
-use Poweradmin\LegacyConfiguration;
-use Poweradmin\PDOLayer;
+use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\AppConfiguration;
 
 class DnsRecordTest extends TestCase
 {
@@ -13,7 +13,7 @@ class DnsRecordTest extends TestCase
     protected function setUp(): void
     {
         $dbMock = $this->createMock(PDOLayer::class);
-        $configMock = $this->createMock(LegacyConfiguration::class);
+        $configMock = $this->createMock(AppConfiguration::class);
 
         $this->dnsRecord = new DnsRecord($dbMock, $configMock);
     }

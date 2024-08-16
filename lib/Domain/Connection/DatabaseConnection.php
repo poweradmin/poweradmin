@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Domain\Connection;
 
-use Poweradmin\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOLayer;
 
 interface DatabaseConnection {
     public function connect(array $credentials): PDOLayer;

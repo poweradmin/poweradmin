@@ -32,10 +32,10 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\Dns;
-use Poweradmin\DnsRecord;
-use Poweradmin\LegacyLogger;
-use Poweradmin\LegacyUsers;
+use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\Dns;
+use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Valitron;
 
 class AddZoneSlaveController extends BaseController
@@ -111,9 +111,9 @@ class AddZoneSlaveController extends BaseController
     private function showForm(): void
     {
         $this->render('add_zone_slave.html', [
-            'users' => LegacyUsers::show_users($this->db),
+            'users' => UserManager::show_users($this->db),
             'session_user_id' => $_SESSION['userid'],
-            'perm_view_others' => LegacyUsers::verify_permission($this->db, 'user_view_others'),
+            'perm_view_others' => UserManager::verify_permission($this->db, 'user_view_others'),
         ]);
     }
 }

@@ -32,20 +32,20 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\DnsRecord;
-use Poweradmin\LegacyUsers;
-use Poweradmin\User;
-use Poweradmin\Validation;
+use Poweradmin\Domain\Model\UserEntity;
+use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\Validator;
 
 class DeleteUserController extends BaseController
 {
 
     public function run(): void
     {
-        $perm_edit_others = LegacyUsers::verify_permission($this->db, 'user_edit_others');
-        $perm_is_godlike = LegacyUsers::verify_permission($this->db, 'user_is_ueberuser');
+        $perm_edit_others = UserManager::verify_permission($this->db, 'user_edit_others');
+        $perm_is_godlike = UserManager::verify_permission($this->db, 'user_is_ueberuser');
 
-        if (!(isset($_GET['id']) && Validation::is_number($_GET['id']))) {
+        if (!(isset($_GET['id']) && Validator::is_number($_GET['id']))) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
@@ -65,7 +65,7 @@ class DeleteUserController extends BaseController
 
     public function deleteUser(string $uid): void
     {
-        if (!LegacyUsers::is_valid_user($this->db, $uid)) {
+        if (!UserManager::is_valid_user($this->db, $uid)) {
             $this->showError(_('User does not exist.'));
         }
 
@@ -74,7 +74,7 @@ class DeleteUserController extends BaseController
             $zones = $_POST['zone'];
         }
 
-        $legacyUsers = new LegacyUsers($this->db, $this->getConfig());
+        $legacyUsers = new UserManager($this->db, $this->getConfig());
         if ($legacyUsers->delete_user($uid, $zones)) {
             $this->setMessage('users', 'success', _('The user has been deleted successfully.'));
             $this->redirect('index.php', ['page'=> 'users']);
@@ -83,16 +83,16 @@ class DeleteUserController extends BaseController
 
     public function showQuestion(string $uid): void
     {
-        $name = LegacyUsers::get_fullname_from_userid($this->db, $uid);
+        $name = UserManager::get_fullname_from_userid($this->db, $uid);
         if (!$name) {
-            $name = User::get_username_by_id($this->db, $uid);
+            $name = UserEntity::get_username_by_id($this->db, $uid);
         }
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $zones = $dnsRecord->get_zones("own", $uid);
 
         $users = [];
         if (count($zones) > 0) {
-            $users = LegacyUsers::show_users($this->db);
+            $users = UserManager::show_users($this->db);
         }
 
         $this->render('delete_user.html', [

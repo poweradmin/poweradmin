@@ -31,12 +31,12 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Dnssec\DnssecProviderFactory;
+use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
-use Poweradmin\DnsRecord;
 use Poweradmin\Domain\Dnssec\DnssecAlgorithm;
-use Poweradmin\LegacyUsers;
-use Poweradmin\Validation;
+use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\Validator;
 
 class DnssecDeleteKeyController extends BaseController
 {
@@ -44,21 +44,21 @@ class DnssecDeleteKeyController extends BaseController
     public function run(): void
     {
         $zone_id = "-1";
-        if (isset($_GET['id']) && Validation::is_number($_GET['id'])) {
+        if (isset($_GET['id']) && Validator::is_number($_GET['id'])) {
             $zone_id = htmlspecialchars($_GET['id']);
         }
 
         $key_id = "-1";
-        if (isset($_GET['key_id']) && Validation::is_number($_GET['key_id'])) {
+        if (isset($_GET['key_id']) && Validator::is_number($_GET['key_id'])) {
             $key_id = (int)$_GET['key_id'];
         }
 
         $confirm = "-1";
-        if (isset($_GET['confirm']) && Validation::is_number($_GET['confirm'])) {
+        if (isset($_GET['confirm']) && Validator::is_number($_GET['confirm'])) {
             $confirm = $_GET['confirm'];
         }
 
-        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($this->db, $zone_id);
+        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
 
         if ($zone_id == "-1") {
             $this->showError(_('Invalid or unexpected input given.'));

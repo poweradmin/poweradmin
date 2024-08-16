@@ -32,33 +32,33 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\LegacyUsers;
-use Poweradmin\Validation;
-use Poweradmin\ZoneTemplate;
+use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Service\Validator;
 
 class DeleteZoneTemplRecordController extends BaseController
 {
 
     public function run(): void
     {
-        if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
+        if (!isset($_GET['id']) || !Validator::is_number($_GET['id'])) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
         $record_id = htmlspecialchars($_GET['id']);
 
-        if (!isset($_GET['zone_templ_id']) || !Validation::is_number($_GET['zone_templ_id'])) {
+        if (!isset($_GET['zone_templ_id']) || !Validator::is_number($_GET['zone_templ_id'])) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
         $zone_templ_id = htmlspecialchars($_GET['zone_templ_id']);
 
         $confirm = "-1";
-        if (isset($_GET['confirm']) && Validation::is_number($_GET['confirm'])) {
+        if (isset($_GET['confirm']) && Validator::is_number($_GET['confirm'])) {
             $confirm = $_GET['confirm'];
         }
 
         $owner = ZoneTemplate::get_zone_templ_is_owner($this->db, $zone_templ_id, $_SESSION['userid']);
-        $perm_godlike = LegacyUsers::verify_permission($this->db, 'user_is_ueberuser');
-        $perm_master_add = LegacyUsers::verify_permission($this->db, 'zone_master_add');
+        $perm_godlike = UserManager::verify_permission($this->db, 'user_is_ueberuser');
+        $perm_master_add = UserManager::verify_permission($this->db, 'zone_master_add');
 
         $this->checkCondition(!($perm_godlike || $perm_master_add && $owner), _("You do not have the permission to delete this record."));
 

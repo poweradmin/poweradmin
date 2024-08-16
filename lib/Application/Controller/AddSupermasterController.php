@@ -32,8 +32,8 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\DnsRecord;
-use Poweradmin\LegacyUsers;
+use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\DnsRecord;
 
 class AddSupermasterController extends BaseController
 {
@@ -68,11 +68,11 @@ class AddSupermasterController extends BaseController
     private function showAddSuperMaster($master_ip, $ns_name, $account): void
     {
         $this->render('add_supermaster.html', [
-            'users' => LegacyUsers::show_users($this->db),
+            'users' => UserManager::show_users($this->db),
             'master_ip' => htmlspecialchars($master_ip),
             'ns_name' => htmlspecialchars($ns_name),
             'account' => htmlspecialchars($account),
-            'perm_view_others' => LegacyUsers::verify_permission($this->db, 'user_view_others'),
+            'perm_view_others' => UserManager::verify_permission($this->db, 'user_view_others'),
             'session_uid' => $_SESSION['userid']
         ]);
     }

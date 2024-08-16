@@ -32,7 +32,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\DnsRecord;
+use Poweradmin\Domain\Service\DnsRecord;
 use Valitron;
 
 class DeleteSupermasterController extends BaseController

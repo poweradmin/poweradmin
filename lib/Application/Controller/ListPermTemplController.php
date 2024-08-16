@@ -32,7 +32,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\LegacyUsers;
+use Poweradmin\Domain\Model\UserManager;
 
 class ListPermTemplController extends BaseController
 {
@@ -47,8 +47,8 @@ class ListPermTemplController extends BaseController
     private function showListPermTempl(): void
     {
         $this->render('list_perm_templ.html', [
-            'templ_perm_add' => LegacyUsers::verify_permission($this->db, 'templ_perm_add'),
-            'permission_templates' => LegacyUsers::list_permission_templates($this->db),
+            'templ_perm_add' => UserManager::verify_permission($this->db, 'templ_perm_add'),
+            'permission_templates' => UserManager::list_permission_templates($this->db),
         ]);
     }
 }

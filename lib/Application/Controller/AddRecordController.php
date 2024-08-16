@@ -31,15 +31,15 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Dnssec\DnssecProviderFactory;
 use Poweradmin\Application\Presenter\ErrorPresenter;
+use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
-use Poweradmin\DnsRecord;
 use Poweradmin\Domain\Error\ErrorMessage;
-use Poweradmin\LegacyLogger;
-use Poweradmin\LegacyUsers;
-use Poweradmin\Permission;
-use Poweradmin\RecordType;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Valitron;
 
 class AddRecordController extends BaseController
@@ -61,7 +61,7 @@ class AddRecordController extends BaseController
         $zone_id = htmlspecialchars($_GET['id']);
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $zone_type = $dnsRecord->get_domain_type($zone_id);
-        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($this->db, $zone_id);
+        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
 
         $this->checkCondition($zone_type == "SLAVE"
             || $perm_edit == "none"

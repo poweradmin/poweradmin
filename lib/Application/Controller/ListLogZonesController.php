@@ -34,8 +34,8 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
-use Poweradmin\DbZoneLogger;
-use Poweradmin\Infrastructure\Web\HttpPaginationParameters;
+use Poweradmin\Infrastructure\Logger\DbZoneLogger;
+use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 
 class ListLogZonesController extends BaseController
 {

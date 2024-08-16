@@ -37,20 +37,20 @@ use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\UserService;
 use Poweradmin\Application\Service\ZoneService;
 use Poweradmin\BaseController;
-use Poweradmin\DnsRecord;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
-use Poweradmin\Infrastructure\Web\HttpPaginationParameters;
-use Poweradmin\LegacyUsers;
-use Poweradmin\Permission;
+use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 
 class ListZonesController extends BaseController
 {
 
     public function run(): void
     {
-        $perm_view_zone_own = LegacyUsers::verify_permission($this->db, 'zone_content_view_own');
-        $perm_view_zone_others = LegacyUsers::verify_permission($this->db, 'zone_content_view_others');
+        $perm_view_zone_own = UserManager::verify_permission($this->db, 'zone_content_view_own');
+        $perm_view_zone_others = UserManager::verify_permission($this->db, 'zone_content_view_others');
 
         $permission_check = !($perm_view_zone_own || $perm_view_zone_others);
         $this->checkCondition($permission_check, _('You do not have sufficient permissions to view this page.'));
@@ -130,8 +130,8 @@ class ListZonesController extends BaseController
             'pagination' => $this->createAndPresentPagination($count_zones_all_letterstart, $iface_rowamount),
             'session_userlogin' => $_SESSION['userlogin'],
             'perm_edit' => $perm_edit,
-            'perm_zone_master_add' => LegacyUsers::verify_permission($this->db, 'zone_master_add'),
-            'perm_zone_slave_add' => LegacyUsers::verify_permission($this->db, 'zone_slave_add'),
+            'perm_zone_master_add' => UserManager::verify_permission($this->db, 'zone_master_add'),
+            'perm_zone_slave_add' => UserManager::verify_permission($this->db, 'zone_slave_add'),
         ]);
     }
 

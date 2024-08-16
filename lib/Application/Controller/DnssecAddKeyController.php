@@ -31,12 +31,12 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Dnssec\DnssecProviderFactory;
+use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
-use Poweradmin\DnsRecord;
 use Poweradmin\Domain\Dnssec\DnssecAlgorithmName;
-use Poweradmin\LegacyUsers;
-use Poweradmin\Validation;
+use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\Validator;
 
 class DnssecAddKeyController extends BaseController
 {
@@ -44,11 +44,11 @@ class DnssecAddKeyController extends BaseController
     public function run(): void
     {
         $zone_id = "-1";
-        if (isset($_GET['id']) && Validation::is_number($_GET['id'])) {
+        if (isset($_GET['id']) && Validator::is_number($_GET['id'])) {
             $zone_id = htmlspecialchars($_GET['id']);
         }
 
-        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($this->db, $zone_id);
+        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
 
         if ($user_is_zone_owner == "0") {
             $this->showError(_("You do not have the permission to view this zone."));

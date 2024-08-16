@@ -32,7 +32,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\Permission;
+use Poweradmin\Domain\Model\Permission;
 
 class IndexController extends BaseController
 {

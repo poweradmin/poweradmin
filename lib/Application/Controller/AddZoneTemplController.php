@@ -32,8 +32,8 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\LegacyUsers;
-use Poweradmin\ZoneTemplate;
+use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Model\ZoneTemplate;
 use Valitron;
 
 class AddZoneTemplController extends BaseController
@@ -53,8 +53,8 @@ class AddZoneTemplController extends BaseController
     private function showAddZoneTemplate(): void
     {
         $this->render('add_zone_templ.html', [
-            'user_name' => LegacyUsers::get_fullname_from_userid($this->db, $_SESSION['userid']) ?: $_SESSION['userlogin'],
-            'perm_is_godlike' => LegacyUsers::verify_permission($this->db, 'user_is_ueberuser'),
+            'user_name' => UserManager::get_fullname_from_userid($this->db, $_SESSION['userid']) ?: $_SESSION['userlogin'],
+            'perm_is_godlike' => UserManager::verify_permission($this->db, 'user_is_ueberuser'),
         ]);
     }
 
@@ -74,10 +74,10 @@ class AddZoneTemplController extends BaseController
             $this->redirect('index.php', ['page'=> 'list_zone_templ']);
         } else {
             $this->render('add_zone_templ.html', [
-                'user_name' => LegacyUsers::get_fullname_from_userid($this->db, $_SESSION['userid']) ?: $_SESSION['userlogin'],
+                'user_name' => UserManager::get_fullname_from_userid($this->db, $_SESSION['userid']) ?: $_SESSION['userlogin'],
                 'templ_name' => htmlspecialchars($_POST['templ_name']),
                 'templ_descr' => htmlspecialchars($_POST['templ_descr']),
-                'perm_is_godlike' => LegacyUsers::verify_permission($this->db, 'user_is_ueberuser')
+                'perm_is_godlike' => UserManager::verify_permission($this->db, 'user_is_ueberuser')
             ]);
         }
     }

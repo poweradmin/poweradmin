@@ -22,9 +22,6 @@
 
 namespace Poweradmin\Application\Query;
 
-use Poweradmin\LegacyConfiguration;
-use Poweradmin\PDOLayer;
-
 class ZoneSearch extends BaseSearch
 {
     /**

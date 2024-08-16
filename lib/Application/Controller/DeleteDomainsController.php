@@ -32,10 +32,10 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\DnsRecord;
-use Poweradmin\LegacyLogger;
-use Poweradmin\LegacyUsers;
-use Poweradmin\Permission;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 
 class DeleteDomainsController extends BaseController
 {
@@ -103,8 +103,8 @@ class DeleteDomainsController extends BaseController
         foreach ($zone_ids as $zone_id) {
             $zones[$zone_id]['id'] = $zone_id;
             $zones[$zone_id] = $dnsRecord->get_zone_info_from_id($zone_id);
-            $zones[$zone_id]['owner'] = LegacyUsers::get_fullnames_owners_from_domainid($this->db, $zone_id);
-            $zones[$zone_id]['is_owner'] = LegacyUsers::verify_user_is_owner_zoneid($this->db, $zone_id);
+            $zones[$zone_id]['owner'] = UserManager::get_fullnames_owners_from_domainid($this->db, $zone_id);
+            $zones[$zone_id]['is_owner'] = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
 
             $zones[$zone_id]['has_supermaster'] = false;
             $zones[$zone_id]['slave_master'] = null;

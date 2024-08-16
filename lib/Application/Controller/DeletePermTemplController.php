@@ -32,8 +32,8 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
-use Poweradmin\LegacyUsers;
 
 class DeletePermTemplController extends BaseController
 {
@@ -65,7 +65,7 @@ class DeletePermTemplController extends BaseController
         }
 
         $id = $this->getSafeRequestValue('id');
-        if (LegacyUsers::delete_perm_templ($this->db, $id)) {
+        if (UserManager::delete_perm_templ($this->db, $id)) {
             $this->setMessage('list_perm_templ', 'success', _('The permission template has been deleted successfully.'));
             $this->redirect('index.php', ['page'=> 'list_perm_templ']);
         }

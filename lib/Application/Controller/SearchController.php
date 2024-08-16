@@ -34,7 +34,7 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Query\RecordSearch;
 use Poweradmin\Application\Query\ZoneSearch;
 use Poweradmin\BaseController;
-use Poweradmin\Permission;
+use Poweradmin\Domain\Model\Permission;
 
 class SearchController extends BaseController
 {

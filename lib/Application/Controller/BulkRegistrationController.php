@@ -32,11 +32,11 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\Dns;
-use Poweradmin\DnsRecord;
-use Poweradmin\LegacyLogger;
-use Poweradmin\LegacyUsers;
-use Poweradmin\ZoneTemplate;
+use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Service\Dns;
+use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Valitron;
 
 class BulkRegistrationController extends BaseController
@@ -110,10 +110,10 @@ class BulkRegistrationController extends BaseController
 
         $this->render('bulk_registration.html', [
             'userid' => $_SESSION['userid'],
-            'perm_view_others' => LegacyUsers::verify_permission($this->db, 'user_view_others'),
+            'perm_view_others' => UserManager::verify_permission($this->db, 'user_view_others'),
             'iface_zone_type_default' => $this->config('iface_zone_type_default'),
             'available_zone_types' => array("MASTER", "NATIVE"),
-            'users' => LegacyUsers::show_users($this->db),
+            'users' => UserManager::show_users($this->db),
             'zone_templates' => $zone_templates->get_list_zone_templ($_SESSION['userid']),
             'failed_domains' => $failed_domains,
         ]);

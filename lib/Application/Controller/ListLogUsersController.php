@@ -34,8 +34,8 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
-use Poweradmin\DbUserLogger;
-use Poweradmin\Infrastructure\Web\HttpPaginationParameters;
+use Poweradmin\Infrastructure\Logger\DbUserLogger;
+use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 
 class ListLogUsersController extends BaseController
 {

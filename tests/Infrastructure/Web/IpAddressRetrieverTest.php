@@ -2,8 +2,8 @@
 
 namespace Infrastructure\Web;
 
-use Poweradmin\Infrastructure\Web\IpAddressRetriever;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class IpAddressRetrieverTest extends TestCase
 {

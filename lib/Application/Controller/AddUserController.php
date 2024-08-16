@@ -32,7 +32,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\LegacyUsers;
+use Poweradmin\Domain\Model\UserManager;
 use Valitron;
 
 class AddUserController extends BaseController
@@ -58,7 +58,7 @@ class AddUserController extends BaseController
         ]);
 
         if ($v->validate()) {
-            $legacyUsers = new LegacyUsers($this->db, $this->getConfig());
+            $legacyUsers = new UserManager($this->db, $this->getConfig());
             if ($legacyUsers->add_new_user($_POST)) {
                 $this->setMessage('users', 'success', _('The user has been created successfully.'));
                 $this->redirect('index.php', ['page'=> 'users']);
@@ -72,8 +72,8 @@ class AddUserController extends BaseController
 
     private function showForm(): void
     {
-        $user_edit_templ_perm = LegacyUsers::verify_permission($this->db, 'user_edit_templ_perm');
-        $user_templates = LegacyUsers::list_permission_templates($this->db);
+        $user_edit_templ_perm = UserManager::verify_permission($this->db, 'user_edit_templ_perm');
+        $user_templates = UserManager::list_permission_templates($this->db);
 
         $username = $_POST['username'] ?? "";
         $fullname = $_POST['fullname'] ?? "";

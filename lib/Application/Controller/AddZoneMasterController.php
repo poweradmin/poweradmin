@@ -31,13 +31,13 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Dnssec\DnssecProviderFactory;
+use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
-use Poweradmin\Dns;
-use Poweradmin\DnsRecord;
-use Poweradmin\LegacyLogger;
-use Poweradmin\LegacyUsers;
-use Poweradmin\ZoneTemplate;
+use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Service\Dns;
+use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Valitron;
 
 class AddZoneMasterController extends BaseController
@@ -117,14 +117,14 @@ class AddZoneMasterController extends BaseController
 
     private function showForm(): void
     {
-        $perm_view_others = LegacyUsers::verify_permission($this->db, 'user_view_others');
+        $perm_view_others = UserManager::verify_permission($this->db, 'user_view_others');
         $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
 
         $this->render('add_zone_master.html', [
             'perm_view_others' => $perm_view_others,
             'session_user_id' => $_SESSION['userid'],
             'available_zone_types' => array("MASTER", "NATIVE"),
-            'users' => LegacyUsers::show_users($this->db),
+            'users' => UserManager::show_users($this->db),
             'zone_templates' => $zone_templates->get_list_zone_templ($_SESSION['userid']),
             'iface_zone_type_default' => $this->config('iface_zone_type_default'),
             'pdnssec_use' => $this->config('pdnssec_use'),

@@ -33,11 +33,11 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\BaseController;
-use Poweradmin\DnsRecord;
 use Poweradmin\Domain\Error\ErrorMessage;
-use Poweradmin\LegacyUsers;
-use Poweradmin\Permission;
-use Poweradmin\Validation;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\Validator;
 
 class EditCommentController extends BaseController
 {
@@ -53,12 +53,12 @@ class EditCommentController extends BaseController
         $perm_view = Permission::getViewPermission($this->db);
         $perm_edit = Permission::getEditPermission($this->db);
 
-        if (!isset($_GET['id']) || !Validation::is_number($_GET['id'])) {
+        if (!isset($_GET['id']) || !Validator::is_number($_GET['id'])) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
         $zone_id = htmlspecialchars($_GET['id']);
 
-        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($this->db, $zone_id);
+        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
             $this->showError(_("You do not have the permission to view this comment."));
         }

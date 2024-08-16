@@ -23,7 +23,7 @@
 use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
-use Poweradmin\LegacyConfiguration;
+use Poweradmin\AppConfiguration;
 
 require_once 'database_helpers.php';
 
@@ -166,7 +166,7 @@ function step6($twig, $current_step, $language, $default_config_file, $local_con
     // For SQLite we should provide path to db file
     $db_file = $_POST['db_type'] == 'sqlite' ? $_POST['db_name'] : '';
 
-    $config = new LegacyConfiguration($default_config_file);
+    $config = new AppConfiguration($default_config_file);
     $userAuthService = new UserAuthenticationService(
         $config->get('password_encryption'),
         $config->get('password_encryption_cost')

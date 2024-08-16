@@ -31,15 +31,15 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Dnssec\DnssecProviderFactory;
 use Poweradmin\Application\Presenter\ErrorPresenter;
+use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
-use Poweradmin\DnsRecord;
 use Poweradmin\Domain\Error\ErrorMessage;
-use Poweradmin\LegacyLogger;
-use Poweradmin\LegacyUsers;
-use Poweradmin\Permission;
-use Poweradmin\RecordType;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 
 class EditRecordController extends BaseController
 {
@@ -62,7 +62,7 @@ class EditRecordController extends BaseController
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $zid = $dnsRecord->get_zone_id_from_record_id($record_id);
 
-        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($this->db, $zid);
+        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zid);
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $zone_type = $dnsRecord->get_domain_type($zid);

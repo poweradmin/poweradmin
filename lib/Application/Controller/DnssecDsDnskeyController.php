@@ -32,13 +32,12 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Dnssec\DnssecProviderFactory;
+use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
-use Poweradmin\DnsRecord;
-use Poweradmin\LegacyUsers;
-use Poweradmin\Permission;
-use Poweradmin\Validation;
-use Poweradmin\ZoneTemplate;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\Validator;
 
 class DnssecDsDnskeyController extends BaseController
 {
@@ -48,7 +47,7 @@ class DnssecDsDnskeyController extends BaseController
         $pdnssec_use = $this->config('pdnssec_use');
 
         $zone_id = "-1";
-        if (isset($_GET['id']) && Validation::is_number($_GET['id'])) {
+        if (isset($_GET['id']) && Validator::is_number($_GET['id'])) {
             $zone_id = htmlspecialchars($_GET['id']);
         }
 
@@ -56,9 +55,9 @@ class DnssecDsDnskeyController extends BaseController
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
-        $user_is_zone_owner = LegacyUsers::verify_user_is_owner_zoneid($this->db, $zone_id);
+        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
 
-        (LegacyUsers::verify_permission($this->db, 'user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
+        (UserManager::verify_permission($this->db, 'user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
 
         $perm_view = Permission::getViewPermission($this->db);
 

@@ -32,13 +32,13 @@
 
 use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\UserAuthenticationService;
+use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
-use Poweradmin\LegacyConfiguration;
-use Poweradmin\DnsRecord;
+use Poweradmin\AppConfiguration;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-$config = new LegacyConfiguration();
+$config = new AppConfiguration();
 $db_type = $config->get('db_type');
 
 $pdns_db_name = $config->get('pdns_db_name');
