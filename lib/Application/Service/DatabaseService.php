@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use Exception;
-use Poweradmin\Domain\Connection\DatabaseConnection;
+use Poweradmin\Domain\Service\DatabaseConnection;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use RuntimeException;
 
