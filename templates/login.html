@@ -11,13 +11,13 @@
     <div class="row g-2 col-sm-4">
         <div>
             <label for="username" class="form-label">{% trans %}Username{% endtrans %}</label>
-            <input type="text" class="form-control form-control-sm" id="username" name="username" required>
+            <input type="text" data-testid="username-input" class="form-control form-control-sm" id="username" name="username" required>
             <div class="invalid-feedback">{% trans %}Please provide a username{% endtrans %}</div>
         </div>
         <div>
             <label for="password" class="form-label">{% trans %}Password{% endtrans %}</label>
             <div class="input-group">
-                <input type="password" class="form-control form-control-sm" id="password" name="password" required>
+                <input type="password" data-testid="password-input" class="form-control form-control-sm" id="password" name="password" required>
                 <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showPassword('password', 'eye')"><i class="bi bi-eye-fill" id="eye"></i></button>
                 <div class="invalid-feedback">{% trans %}Please provide a password{% endtrans %}</div>
             </div>
@@ -31,7 +31,7 @@
         </div>
         {% endif %}
         <div>
-            <input type="submit" name="authenticate" class="btn btn-primary btn-sm" value=" {% trans %}Go{% endtrans %} ">
+            <input type="submit" data-testid="login-button" name="authenticate" class="btn btn-primary btn-sm" value=" {% trans %}Go{% endtrans %} ">
         </div>
     </div>
 </form>

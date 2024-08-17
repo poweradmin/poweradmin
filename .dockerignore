@@ -26,11 +26,6 @@ docs
 .phive
 tools
 
-# Vagrant
-vagrant
-Vagrantfile
-VAGRANT.md
-
 # Misc
 **/.DS_Store
 .devcontainer
@@ -38,3 +33,18 @@ phpdoc.dist.xml
 scripts
 transifex.yml
 *.md
+
+# Node.js
+package.json
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Cypress
+cypress/
+cypress.config.js
+cypress/videos
+cypress/screenshots

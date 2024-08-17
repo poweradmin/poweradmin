@@ -134,7 +134,7 @@
 {% if user_logged_in %}
 {% if session_key_error %}
 <div class="container">
-    <div class="alert alert-danger"><strong>Error:</strong> {{ session_key_error | raw }}</div>
+    <div data-testid="error-message" class="alert alert-danger"><strong>Error:</strong> {{ session_key_error | raw }}</div>
 </div>
 {% endif %}
 {% endif %}
