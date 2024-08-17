@@ -21,6 +21,7 @@
  */
 
 use Poweradmin\Application\Routing\BasicRouter;
+use Poweradmin\Pages;
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -38,49 +39,5 @@ session_start();
 
 $router = new BasicRouter(array_merge($_GET, $_POST));
 $router->setDefaultPage('index');
-$router->setPages([
-    'add_perm_templ',
-    'add_record',
-    'add_supermaster',
-    'add_user',
-    'add_zone_master',
-    'add_zone_slave',
-    'add_zone_templ_record',
-    'add_zone_templ',
-    'bulk_registration',
-    'change_password',
-    'delete_domain',
-    'delete_domains',
-    'delete_perm_templ',
-    'delete_record',
-    'delete_supermaster',
-    'delete_user',
-    'delete_zone_templ',
-    'delete_zone_templ_record',
-    'dnssec_add_key',
-    'dnssec',
-    'dnssec_delete_key',
-    'dnssec_ds_dnskey',
-    'dnssec_edit_key',
-    'edit_comment',
-    'edit',
-    'edit_perm_templ',
-    'edit_record',
-    'edit_user',
-    'edit_zone_templ',
-    'edit_zone_templ_record',
-    'index',
-    'list_log_users',
-    'list_log_zones',
-    'list_perm_templ',
-    'list_supermasters',
-    'list_zone_templ',
-    'list_zones',
-    'login',
-    'logout',
-    'search',
-    'switch_theme',
-    'users',
-]);
-
+$router->setPages(Pages::getPages());
 $router->process();
