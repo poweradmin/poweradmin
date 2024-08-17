@@ -19,6 +19,6 @@ describe('Login Authentication', () => {
         cy.get('[data-testid="username-input"]').type(users.invalidUser.username);
         cy.get('[data-testid="password-input"]').type(users.invalidUser.password);
         cy.get('[data-testid="login-button"]').click();
-        // cy.get('[data-testid="error-message"]').should('be.visible');
+        cy.get('[data-testid="session-error"]').should('be.visible');
     });
 });
