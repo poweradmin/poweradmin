@@ -11,6 +11,7 @@ services:
       - ./conf/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
       - ./conf/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
       - ../..:/workspaces:cached
+      - sqlite_data:/data
     networks:
       - internal
     ports:
@@ -20,6 +21,7 @@ services:
     depends_on:
       - mysql
       - pgsql
+      - sqlite
 
   webserver:
     image: nginx:latest
