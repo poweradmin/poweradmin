@@ -1,6 +1,6 @@
 # Poweradmin related
 inc/config.inc.php
-scripts
+/scripts
 templates/custom
 
 # OS generated files

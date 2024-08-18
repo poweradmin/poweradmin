@@ -79,6 +79,18 @@ services:
       timeout: 5s
       retries: 3
 
+  sqlite:
+    image: keinos/sqlite3
+    container_name: sqlite
+    user: "0:0"
+    volumes:
+      - sqlite_data:/data
+      - ../sql/pdns/47/schema.sqlite3.sql:/schema.sqlite3.sql
+      - ./scripts/create-sqlite-db.sh:/init-db.sh
+    command: ["/bin/sh", "-c", "/init-db.sh && sqlite3"]
+    stdin_open: true
+    tty: true
+
   adminer:
     image: adminer
     container_name: adminer
@@ -127,6 +139,7 @@ services:
 volumes:
   mysql_data: { }
   pgsql_data: { }
+  sqlite_data: {}
 
 networks:
   internal:
