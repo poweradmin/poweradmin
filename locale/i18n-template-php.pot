@@ -1762,7 +1762,7 @@ msgstr ""
 
 #: install/templates/step2.html:3
 msgid ""
-"This installer expects you to have a PowerDNS database accessable from this "
+"This installer expects you to have a PowerDNS database accessible from this "
 "server. This installer also expects you to have never ran Poweradmin before, "
 "or that you want to overwrite the Poweradmin part of the database. If you "
 "have had Poweradmin running before, any data in the following tables will be "
