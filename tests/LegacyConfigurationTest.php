@@ -113,4 +113,20 @@ class LegacyConfigurationTest extends TestCase
 
         $this->assertNull($config->get('foo'), 'Should return null for improperly formatted configuration files.');
     }
+
+    public function testGetConfigValueWithDefault()
+    {
+        file_put_contents($this->tempDefaultConfigFile, '<?php $foo = "bar"; $number = 42; $boolean = true;');
+        file_put_contents($this->tempCustomConfigFile, '<?php $foo = "baz"; $extra = "extra_value"; $logUser = LOG_USER;');
+
+        $config = new AppConfiguration($this->tempDefaultConfigFile, $this->tempCustomConfigFile);
+
+        $this->assertEquals('default_value', $config->get('non_existing_key', 'default_value'), 'Should return the default value for non-existing keys.');
+
+        $this->assertEquals('baz', $config->get('foo', 'default_value'), 'Should return the value from custom config file, not the default value.');
+
+        $this->assertEquals(100, $config->get('non_existing_number', 100), 'Should return the default integer value for non-existing keys.');
+        $this->assertTrue($config->get('non_existing_boolean', true), 'Should return the default boolean value for non-existing keys.');
+        $this->assertEquals(['key' => 'value'], $config->get('non_existing_array', ['key' => 'value']), 'Should return the default array value for non-existing keys.');
+    }
 }

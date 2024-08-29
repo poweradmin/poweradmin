@@ -110,3 +110,7 @@ $display_stats = false;
 // only_latest_version - update allowed only if the data is the latest version
 // 3_way_merge - 3-way merge (not implemented yet)
 $experimental_edit_conflict_resolution = 'last_writer_wins';
+
+// CSRF token validation settings
+$login_token_validation = true; // Enable or disable login token validation
+$global_token_validation = true; // Enable or disable global token validation

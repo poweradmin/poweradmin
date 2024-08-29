@@ -80,6 +80,10 @@ abstract class BaseController
 
     public function validateCsrfToken(): void
     {
+        if (!$this->app->config('global_token_validation', true)) {
+            return;
+        }
+
         $token = $this->getSafeRequestValue('_token');
         if (!$this->csrfTokenService->validateToken($token)) {
             $error = new ErrorMessage(_('Invalid CSRF token.'));

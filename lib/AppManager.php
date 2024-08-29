@@ -85,9 +85,9 @@ class AppManager
         return $this->configuration;
     }
 
-    public function config($name): mixed
+    public function config($name, $default = null): mixed
     {
-        return $this->configuration->get($name);
+        return $this->configuration->get($name, $default);
     }
 
     public function getLocaleFile(string $iface_lang): string

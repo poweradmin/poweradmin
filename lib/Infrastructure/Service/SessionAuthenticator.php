@@ -74,6 +74,8 @@ class SessionAuthenticator
         $iface_expire = $this->config->get('iface_expire');
         $session_key = $this->config->get('session_key');
         $ldap_use = $this->config->get('ldap_use');
+        $login_token_validation = $this->config->isLoginTokenValidationEnabled();
+        $global_token_validation = $this->config->isGlobalTokenValidationEnabled();
 
         if (isset($_SESSION['userid']) && isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] == "logout") {
             $sessionEntity = new SessionEntity(_('You have logged out.'), 'success');
@@ -82,7 +84,10 @@ class SessionAuthenticator
         }
 
         $login_token = $_POST['_token'] ?? '';
-        if (isset($_POST['authenticate']) && !$this->csrfTokenService->validateToken($login_token, 'login_token')) {
+        if (($login_token_validation || $global_token_validation)
+            && isset($_POST['authenticate'])
+            && !$this->csrfTokenService->validateToken($login_token, 'login_token')
+        ) {
             $sessionEntity = new SessionEntity(_('Invalid CSRF token.'), 'danger');
             $this->authenticationService->auth($sessionEntity);
             return;

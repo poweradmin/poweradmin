@@ -94,7 +94,7 @@ class AppConfiguration implements ConfigurationInterface
         return $tokenValue;
     }
 
-    public function get($name): mixed
+    public function get($name, $default = null): mixed
     {
         if (array_key_exists($name, $this->config)) {
             $value = $this->config[$name];
@@ -103,7 +103,7 @@ class AppConfiguration implements ConfigurationInterface
             }
             return str_replace(['"', "'"], "", $value);
         } else {
-            return null;
+            return $default;
         }
     }
 
@@ -114,5 +114,13 @@ class AppConfiguration implements ConfigurationInterface
             $items[$key] = $this->get($key);
         }
         return $items;
+    }
+
+    public function isLoginTokenValidationEnabled(): bool {
+        return $this->get('login_token_validation', true);
+    }
+
+    public function isGlobalTokenValidationEnabled(): bool {
+        return $this->get('global_token_validation', true);
     }
 }
