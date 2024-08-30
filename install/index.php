@@ -47,31 +47,31 @@ checkConfigFile($current_step, $local_config_file, $twig);
 switch ($current_step) {
 
     case 1:
-        step1($twig, $current_step);
+        step1ChooseLanguage($twig, $current_step);
         break;
 
     case 2:
-        step2($twig, $current_step, $language);
+        step2GettingReady($twig, $current_step, $language);
         break;
 
     case 3:
-        step3($twig, $current_step, $language);
+        step3ConfiguringDatabase($twig, $current_step, $language);
         break;
 
     case 4:
-        step4($twig, $current_step, $default_config_file);
+        step4SetupAccountAndNameServers($twig, $current_step, $default_config_file);
         break;
 
     case 5:
-        step5($twig, $current_step, $language);
+        step5CreateLimitedRightsUser($twig, $current_step, $language);
         break;
 
     case 6:
-        step6($twig, $current_step, $language, $default_config_file, $local_config_file);
+        step6CreateConfigurationFile($twig, $current_step, $language, $default_config_file, $local_config_file);
         break;
 
     case 7:
-        step7($twig);
+        step7InstallationComplete($twig);
         break;
 
     default:

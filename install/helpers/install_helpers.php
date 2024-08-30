@@ -43,22 +43,22 @@ function renderTemplate($twig, $templateName, $data): void
     echo $twig->render($templateName, $data);
 }
 
-function step1($twig, $current_step): void
+function step1ChooseLanguage($twig, $current_step): void
 {
     renderTemplate($twig, 'step1.html', array('current_step' => $current_step));
 }
 
-function step2($twig, $current_step, $language): void
+function step2GettingReady($twig, $current_step, $language): void
 {
     renderTemplate($twig, 'step2.html', array('current_step' => $current_step, 'language' => htmlspecialchars($language)));
 }
 
-function step3($twig, $current_step, $language): void
+function step3ConfiguringDatabase($twig, $current_step, $language): void
 {
     renderTemplate($twig, 'step3.html', array('current_step' => $current_step, 'language' => htmlspecialchars($language)));
 }
 
-function step4($twig, $current_step, $default_config_file): void {
+function step4SetupAccountAndNameServers($twig, $current_step, $default_config_file): void {
     echo "<p class='alert alert-secondary'>" . _('Updating database...') . " ";
 
     $credentials = [
@@ -104,7 +104,7 @@ function step4($twig, $current_step, $default_config_file): void {
     ], $credentials));
 }
 
-function step5($twig, $current_step, $language): void
+function step5CreateLimitedRightsUser($twig, $current_step, $language): void
 {
     $current_step++;
 
@@ -157,7 +157,7 @@ function step5($twig, $current_step, $language): void
     ));
 }
 
-function step6($twig, $current_step, $language, $default_config_file, $local_config_file): void
+function step6CreateConfigurationFile($twig, $current_step, $language, $default_config_file, $local_config_file): void
 {
     // No need to set database port if it's standard port for that db
     $db_port = ($_POST['db_type'] == 'mysql' && $_POST['db_port'] != 3306)
@@ -262,7 +262,7 @@ function step6($twig, $current_step, $language, $default_config_file, $local_con
     ));
 }
 
-function step7($twig): void
+function step7InstallationComplete($twig): void
 {
     renderTemplate($twig, 'step7.html', array(
         'current_step' => 7,
