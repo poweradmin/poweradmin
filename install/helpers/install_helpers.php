@@ -32,7 +32,7 @@ function checkConfigFile($current_step, $local_config_file, $twig): void
 {
     if (file_exists($local_config_file)) {
         if ($current_step == InstallationSteps::STEP_INSTALLATION_COMPLETE) {
-            return; // Allow step 7
+            return; // Allow last step to be shown
         } else {
             echo "<p class='alert alert-danger'>" . _('There is already a configuration file in place, so the installation will be skipped.') . "</p>";
             echo $twig->render('footer.html');
@@ -99,7 +99,7 @@ function step4SetupAccountAndNameServers($twig, $current_step, $default_config_f
     echo _('done!') . "</p>";
 
     if ($credentials['db_type'] == 'sqlite') {
-        $current_step = 5;
+        $current_step = InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER;
     }
 
     renderTemplate($twig, 'step4.html', array_merge([
@@ -270,6 +270,6 @@ function step6CreateConfigurationFile($twig, $current_step, $language, $default_
 function step7InstallationComplete($twig): void
 {
     renderTemplate($twig, 'step7.html', array(
-        'current_step' => 7,
+        'current_step' => InstallationSteps::STEP_INSTALLATION_COMPLETE,
     ));
 }
