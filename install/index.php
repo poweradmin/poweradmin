@@ -22,6 +22,7 @@
 
 declare(strict_types=1);
 
+use PoweradminInstall\InstallationSteps;
 use PoweradminInstall\TemplateUtils;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
@@ -46,31 +47,31 @@ checkConfigFile($current_step, $local_config_file, $twig);
 
 switch ($current_step) {
 
-    case 1:
+    case InstallationSteps::STEP_CHOOSE_LANGUAGE:
         step1ChooseLanguage($twig, $current_step);
         break;
 
-    case 2:
+    case InstallationSteps::STEP_GETTING_READY:
         step2GettingReady($twig, $current_step, $language);
         break;
 
-    case 3:
+    case InstallationSteps::STEP_CONFIGURING_DATABASE:
         step3ConfiguringDatabase($twig, $current_step, $language);
         break;
 
-    case 4:
+    case InstallationSteps::STEP_SETUP_ACCOUNT_AND_NAMESERVERS:
         step4SetupAccountAndNameServers($twig, $current_step, $default_config_file);
         break;
 
-    case 5:
+    case InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER:
         step5CreateLimitedRightsUser($twig, $current_step, $language);
         break;
 
-    case 6:
+    case InstallationSteps::STEP_CREATE_CONFIGURATION_FILE:
         step6CreateConfigurationFile($twig, $current_step, $language, $default_config_file, $local_config_file);
         break;
 
-    case 7:
+    case InstallationSteps::STEP_INSTALLATION_COMPLETE:
         step7InstallationComplete($twig);
         break;
 

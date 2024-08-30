@@ -24,15 +24,20 @@ use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\AppConfiguration;
+use PoweradminInstall\InstallationSteps;
 
 require_once 'database_helpers.php';
 
 function checkConfigFile($current_step, $local_config_file, $twig): void
 {
-    if ($current_step == 1 && file_exists($local_config_file)) {
-        echo "<p class='alert alert-danger'>" . _('There is already a configuration file in place, so the installation will be skipped.') . "</p>";
-        echo $twig->render('footer.html');
-        exit;
+    if (file_exists($local_config_file)) {
+        if ($current_step == InstallationSteps::STEP_INSTALLATION_COMPLETE) {
+            return; // Allow step 7
+        } else {
+            echo "<p class='alert alert-danger'>" . _('There is already a configuration file in place, so the installation will be skipped.') . "</p>";
+            echo $twig->render('footer.html');
+            exit;
+        }
     }
 }
 

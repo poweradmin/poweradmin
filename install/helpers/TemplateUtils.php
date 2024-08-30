@@ -31,8 +31,8 @@ use Twig\Loader\FilesystemLoader;
 class TemplateUtils
 {
 
-    const MIN_STEP_VALUE = 1;
-    const MAX_STEP_VALUE = 7;
+    const MIN_STEP_VALUE = InstallationSteps::STEP_CHOOSE_LANGUAGE;
+    const MAX_STEP_VALUE = installationSteps::STEP_INSTALLATION_COMPLETE;
 
     public static function initializeTwigEnvironment($language): Environment
     {
@@ -51,16 +51,19 @@ class TemplateUtils
     public static function getCurrentStep(array $postData): int
     {
         $sanitizedData = filter_var_array($postData, [
-            'step' => ['filter' => FILTER_VALIDATE_INT, 'options' => ['default' => 1]]
+            'step' => [
+                'filter' => FILTER_VALIDATE_INT,
+                'options' => ['default' => InstallationSteps::STEP_CHOOSE_LANGUAGE]
+            ]
         ]);
 
         $step = $sanitizedData['step'];
 
         if ($step < self::MIN_STEP_VALUE || $step > self::MAX_STEP_VALUE) {
-            return 1;
+            return InstallationSteps::STEP_CHOOSE_LANGUAGE;
         }
 
-        return ($step !== false && $step !== null) ? $step : 1;
+        return ($step !== false && $step !== null) ? $step : InstallationSteps::STEP_CHOOSE_LANGUAGE;
     }
 
     public static function renderHeader($twig, $current_step): void
