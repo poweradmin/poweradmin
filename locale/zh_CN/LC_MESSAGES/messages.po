@@ -847,12 +847,6 @@ msgstr "在MySQL中，现在应执行以下命令："
 msgid "On PgSQL you would use:"
 msgstr "在PgSQL中，您将使用以下命令："
 
-msgid "The installer was able to write to the file"
-msgstr "安装程序已成功写入文件"
-
-msgid "The installer is unable to write to the file"
-msgstr "安装程序无法写入文件"
-
 msgid "Serial"
 msgstr "序列号"
 
@@ -1144,11 +1138,8 @@ msgstr "您应该（必须！）从Poweradmin根目录中删除目录“install/
 msgid "After you have removed the directory, you can login to <a href=\"../index.php\">Poweradmin</a>."
 msgstr "删除目录后，您可以登录到<a href=\"../index.php\">Poweradmin</a>。"
 
-msgid "A basic configuration, based on the details you have given, has been created."
-msgstr "已根据您提供的详细信息创建了基本配置。"
-
-msgid "(which is in itself good). The configuration is printed here. You should now create the file "
-msgstr "本身是好的）。这里打印了配置信息。现在您应该创建文件“"
+msgid "You should now create the file "
+msgstr "现在您应该创建文件“"
 
 msgid "in the Poweradmin root directory yourself. It should contain the following few lines:"
 msgstr "在Poweradmin根目录中。文件应包含以下几行内容："

@@ -230,16 +230,6 @@ function step6CreateConfigurationFile($twig, $current_step, $language, $default_
         file_get_contents('includes/config_template.php')
     );
 
-    // Try to create configuration file
-    $config_file_created = false;
-
-    if (is_writeable($local_config_file)) {
-        $local_config = fopen($local_config_file, "w");
-        fwrite($local_config, $configuration);
-        fclose($local_config);
-        $config_file_created = true;
-    }
-
     $userAuthService = new UserAuthenticationService(
         $config->get('password_encryption'),
         $config->get('password_encryption_cost')
@@ -248,7 +238,6 @@ function step6CreateConfigurationFile($twig, $current_step, $language, $default_
     renderTemplate($twig, 'step6.html', array(
         'current_step' => (int)htmlspecialchars($current_step),
         'language' => htmlspecialchars($language),
-        'config_file_created' => $config_file_created,
         'local_config_file' => $local_config_file,
         'session_key' => $userAuthService->generateSalt(SESSION_KEY_LENGTH),
         'iface_lang' => htmlspecialchars($language),

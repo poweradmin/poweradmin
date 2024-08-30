@@ -975,25 +975,11 @@ msgid ""
 "After you have added the new user, proceed with this installation procedure."
 msgstr "Fortsett med installeringen etter at du har opprettet en ny bruker."
 
-#: install/index.php:301
-msgid "The installer was able to write to the file"
-msgstr "Innstallerings programmet kunne skrive til filen"
-
-#: install/index.php:301
-msgid ""
-"A basic configuration, based on the details you have given, has been "
-"created."
-msgstr "En standard konfigurering, basert på informasjonen du har oppgitt, er nå lagret."
-
-#: install/index.php:303
-msgid "The installer is unable to write to the file"
-msgstr "Innstallerings programmet kunne ikke skrive til filen"
-
 #: install/index.php:303
 msgid ""
-"(which is in itself good). The configuration is printed here. You should "
+"You should "
 "now create the file"
-msgstr "(noe som er bra). Konfigureringen er skrevet ut her. Du må nå opprette filen"
+msgstr "Du må nå opprette filen"
 
 #: install/index.php:303
 msgid ""

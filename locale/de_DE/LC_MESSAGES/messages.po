@@ -877,25 +877,11 @@ msgid "Installation step"
 msgstr "Installationsschritt"
 
 #: /install/templates/step6.html
-msgid "The installer was able to write to the file"
-msgstr "Der Installer konnte die Datei beschreiben"
-
-#: /install/templates/step6.html
 msgid ""
-"A basic configuration, based on the details you have given, has been "
-"created."
-msgstr "Ein Konfiguration basierend auf Ihren Angaben wurde erstellt."
-
-#: /install/templates/step6.html
-msgid "The installer is unable to write to the file"
-msgstr "Der Installer kann die Datei nicht beschreiben"
-
-#: /install/templates/step6.html
-msgid ""
-"(which is in itself good). The configuration is printed here. You should "
+"You should "
 "now create the file"
 msgstr ""
-"(was ansich gut ist). Die Konfiguration wird hier angezeigt. Sie sollten "
+"Sie sollten "
 "nun die Datei"
 
 #: /install/templates/step6.html

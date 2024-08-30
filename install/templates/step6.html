@@ -1,11 +1,7 @@
 <h5>{% trans %}Step{% endtrans %} {{ current_step }}: {% trans %}Create configuration file{% endtrans %}</h5>
 <hr>
-{% if config_file_created %}
-<p>{% trans %}The installer was able to write to the file{% endtrans %} <em>{{ local_config_file }}</em>.
-    {% trans %}A basic configuration, based on the details you have given, has been created.{% endtrans %}</p>
-{% else %}
-<p>{% trans %}The installer is unable to write to the file{% endtrans %} <em>{{ local_config_file }}</em>
-    {% trans %}(which is in itself good). The configuration is printed here. You should now create the file {% endtrans %}
+<p>
+    {% trans %}You should now create the file {% endtrans %}
     <em>{{ local_config_file }}</em>
     {% trans %} in the Poweradmin root directory yourself. It should contain the following few lines:{% endtrans %}</p>
 <pre>
@@ -36,7 +32,6 @@ $dns_ns2 = '{{ dns_ns2 }}';
 
 $ignore_install_dir = true;
 </pre>
-{% endif %}
 
 <form method="post">
     <input type="hidden" name="step" value="{{ next_step }}">
