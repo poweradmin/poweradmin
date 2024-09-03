@@ -101,17 +101,31 @@ services:
     ports:
       - "8090:8080"
 
+#  ldap:
+#    image: dinkel/openldap
+#    container_name: ldap
+#    networks:
+#      - internal
+#    environment:
+#      - SLAPD_PASSWORD=poweradmin
+#      - SLAPD_DOMAIN=poweradmin.org
+#      - SLAPD_ADDITIONAL_MODULES=memberof
+#    ports:
+#      - 389:389
+
   ldap:
-    image: dinkel/openldap
+    image: osixia/openldap:1.5.0
     container_name: ldap
     networks:
       - internal
     environment:
-      - SLAPD_PASSWORD=poweradmin
-      - SLAPD_DOMAIN=poweradmin.org
-      - SLAPD_ADDITIONAL_MODULES=memberof
+      - LDAP_ORGANISATION=poweradmin
+      - LDAP_DOMAIN=poweradmin.org
+      - "LDAP_BASE_DN=dc=poweradmin,dc=org"
+      - LDAP_ADMIN_PASSWORD=poweradmin
     ports:
       - 389:389
+      - 636:636
 
   ldapadmin:
     image: osixia/phpldapadmin:0.9.0
