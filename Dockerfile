@@ -36,6 +36,7 @@ RUN mkdir -p /db /app/inc
 
 RUN sqlite3 /db/pdns.db < /app/sql/pdns/47/schema.sqlite3.sql
 RUN sqlite3 /db/pdns.db < /app/sql/poweradmin-sqlite-db-structure.sql
+RUN rm -rf /app/sql
 
 RUN echo '<?php' > /app/inc/config.inc.php
 RUN echo '$db_type="sqlite";' >> /app/inc/config.inc.php

@@ -1,6 +1,5 @@
 # Poweradmin related files
 install/
-sql/
 
 # Version Control
 .gitignore
