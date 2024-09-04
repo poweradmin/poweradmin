@@ -169,16 +169,10 @@ function step6CreateConfigurationFile($twig, $current_step, $language, $default_
     || ($_POST['db_type'] == 'pgsql' && $_POST['db_port'] != 5432) ? $_POST['db_port'] : '';
 
     // For SQLite we should provide path to db file
-    $db_file = $_POST['db_type'] == 'sqlite' ? $_POST['db_name'] : '';
+    $db_file = $_POST['db_type'] == 'sqlite' ? htmlspecialchars($_POST['db_name']) : '';
 
     $config = new AppConfiguration($default_config_file);
-    $userAuthService = new UserAuthenticationService(
-        $config->get('password_encryption'),
-        $config->get('password_encryption_cost')
-    );
 
-    $session_key = $userAuthService->generateSalt(SESSION_KEY_LENGTH);
-    $iface_lang = $language;
     $dns_hostmaster = $_POST['dns_hostmaster'];
     $dns_ns1 = $_POST['dns_ns1'];
     $dns_ns2 = $_POST['dns_ns2'];
@@ -210,7 +204,7 @@ function step6CreateConfigurationFile($twig, $current_step, $language, $default_
         'db_user' => htmlspecialchars($db_user),
         'db_pass' => htmlspecialchars($db_pass),
         'db_name' => htmlspecialchars($db_name),
-        'db_file' => $db_type == 'sqlite' ? htmlspecialchars($db_name) : '',
+        'db_file' => $db_file,
         'db_type' => htmlspecialchars($db_type),
         'db_port' => htmlspecialchars($db_port),
         'db_charset' => htmlspecialchars($db_charset),
