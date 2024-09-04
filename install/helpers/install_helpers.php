@@ -192,44 +192,6 @@ function step6CreateConfigurationFile($twig, $current_step, $language, $default_
     $db_charset = $_POST['db_charset'];
     $pa_pass = $_POST['pa_pass'];
 
-    $configuration = str_replace(
-        [
-            '%dbType%',
-            '%dbFile%',
-            '%dbHost%',
-            '%dbPort%',
-            '%dbUser%',
-            '%dbPassword%',
-            '%dbName%',
-            '%dbCharset%',
-            '%sessionKey%',
-            '%locale%',
-            '%hostMaster%',
-            '%primaryNameServer%',
-            '%secondaryNameServer%',
-            '%thirdNameServer%',
-            '%fourthNameServer%',
-        ],
-        [
-            $db_type,
-            $db_file,
-            $db_host,
-            $db_port,
-            $db_user,
-            $db_pass,
-            $db_name,
-            $db_charset,
-            $session_key,
-            $iface_lang,
-            $dns_hostmaster,
-            $dns_ns1,
-            $dns_ns2,
-            $dns_ns3,
-            $dns_ns4,
-        ],
-        file_get_contents('includes/config_template.php')
-    );
-
     $userAuthService = new UserAuthenticationService(
         $config->get('password_encryption'),
         $config->get('password_encryption_cost')
