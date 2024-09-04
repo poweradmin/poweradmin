@@ -32,7 +32,7 @@ class TemplateUtils
 {
 
     const MIN_STEP_VALUE = InstallationSteps::STEP_CHOOSE_LANGUAGE;
-    const MAX_STEP_VALUE = installationSteps::STEP_INSTALLATION_COMPLETE;
+    const MAX_STEP_VALUE = InstallationSteps::STEP_INSTALLATION_COMPLETE;
 
     public static function initializeTwigEnvironment($language): Environment
     {
