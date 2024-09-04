@@ -40,7 +40,6 @@ RUN sqlite3 /db/pdns.db < /app/sql/poweradmin-sqlite-db-structure.sql
 RUN echo '<?php' > /app/inc/config.inc.php
 RUN echo '$db_type="sqlite";' >> /app/inc/config.inc.php
 RUN echo '$db_file="/db/pdns.db";' >> /app/inc/config.inc.php
-RUN echo '$ignore_install_dir=true;' >> /app/inc/config.inc.php
 
 RUN php -r 'echo bin2hex(random_bytes(32));' > /tmp/session_key.txt
 RUN echo "\$session_key=\"$(cat /tmp/session_key.txt)\";" >> /app/inc/config.inc.php

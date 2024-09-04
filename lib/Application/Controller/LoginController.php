@@ -53,7 +53,7 @@ class LoginController extends BaseController
 
         list($msg, $type) = $this->getSessionMessages();
 
-        if (!$this->config('ignore_install_dir') && file_exists('install')) {
+        if (file_exists('install')) {
             $this->render('empty.html', []);
         } else {
             $this->renderLogin($preparedLocales, $msg, $type);

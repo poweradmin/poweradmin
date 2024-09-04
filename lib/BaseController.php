@@ -198,14 +198,13 @@ EOF;
         }
 
         $themeManager = new ThemeManager($this->app->config('iface_style'));
-        $ignore_install_dir = $this->app->config('ignore_install_dir');
 
         $vars = [
             'iface_title' => $this->app->config('iface_title'),
             'iface_style' => $themeManager->getSelectedTheme(),
             'file_version' => time(),
             'custom_header' => file_exists('templates/custom/header.html'),
-            'install_error' => !$ignore_install_dir && file_exists('install') ? _('The <a href="install/">install/</a> directory exists, you must remove it first before proceeding.') : false,
+            'install_error' => file_exists('install') ? _('The <a href="install/">install/</a> directory exists, you must remove it first before proceeding.') : false,
         ];
 
         $dblog_use = $this->app->config('dblog_use');

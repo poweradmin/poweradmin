@@ -99,9 +99,6 @@ $ldap_proto = 3;
 //$ldap_search_filter = '(objectClass=person)(memberOf=cn=admins,ou=groups,dc=poweradmin,dc=org)';
 //$ldap_search_filter = '(cn=*admin*)';
 
-// Do not use this configuration variable in production, instead remove the installation folder.
-$ignore_install_dir = false;
-
 // Displays the memory consumption and execution time of an application
 $display_stats = false;
 

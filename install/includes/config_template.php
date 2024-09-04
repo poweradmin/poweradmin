@@ -17,5 +17,3 @@ $dns_ns1 = '%primaryNameServer%';
 $dns_ns2 = '%secondaryNameServer%';
 $dns_ns3 = '%thirdNameServer%';
 $dns_ns4 = '%fourthNameServer%';
-
-$ignore_install_dir = true;
