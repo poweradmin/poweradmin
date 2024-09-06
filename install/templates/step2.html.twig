@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    {% trans %}Step{% endtrans %} {{ current_step }}: {% trans %}Getting ready for installation{% endtrans %}
+{% endblock %}
+
+{% block content %}
+    <p>{% trans %}This installer expects you to have a PowerDNS database accessible from this server. This installer also expects you to have never ran Poweradmin before, or that you want to overwrite the Poweradmin part of the database. If you have had Poweradmin running before, any data in the following tables will be destroyed: perm_items, perm_templ, perm_templ_items, users and zones. This installer will, of course, not touch the data in the PowerDNS tables of the database. However, it is recommended that you create a backup of your database before proceeding.{% endtrans %}</p>
+    <p>{% trans %}The alternative for this installer is a manual installation. Refer to the poweradmin.org website if you want to go down that road.{% endtrans %}</p>
+    <p>{% trans %}Finally, if you see any errors during the installation process, a problem report would be appreciated. You can report problems (and ask for help) on the
+            <a href="https://github.com/poweradmin/poweradmin/issues"
+               target="blank">poweradmin</a> issues.{% endtrans %}</p>
+    <p>{% trans %}Do you want to proceed now?{% endtrans %}</p>
+
+    <form method="post">
+        <input type="hidden" name="language" value="{{ language }}">
+        <input type="hidden" name="step" value="{{ next_step }}">
+        <input type="submit" name="submit" class="btn btn-primary btn-sm"
+               value="{% trans %}Go to step{% endtrans %} {{ next_step }}">
+    </form>
+{% endblock %}

@@ -45,22 +45,31 @@ function renderTemplate($twig, $templateName, $data): void
 {
     $data['next_step'] = filter_var($data['current_step'], FILTER_VALIDATE_INT) ?: 0;
     $data['next_step'] += 1;
+    $data['file_version'] = time();
     echo $twig->render($templateName, $data);
 }
 
 function step1ChooseLanguage($twig, $current_step): void
 {
-    renderTemplate($twig, 'step1.html', array('current_step' => $current_step));
+    renderTemplate($twig, 'step1.html.twig', array(
+        'current_step' => $current_step
+    ));
 }
 
 function step2GettingReady($twig, $current_step, $language): void
 {
-    renderTemplate($twig, 'step2.html', array('current_step' => $current_step, 'language' => htmlspecialchars($language)));
+    renderTemplate($twig, 'step2.html.twig', array(
+        'current_step' => $current_step,
+        'language' => htmlspecialchars($language)
+    ));
 }
 
 function step3ConfiguringDatabase($twig, $current_step, $language): void
 {
-    renderTemplate($twig, 'step3.html', array('current_step' => $current_step, 'language' => htmlspecialchars($language)));
+    renderTemplate($twig, 'step3.html.twig', array(
+        'current_step' => $current_step,
+        'language' => htmlspecialchars($language)
+    ));
 }
 
 function step4SetupAccountAndNameServers($twig, $current_step, $default_config_file): void {
@@ -102,7 +111,7 @@ function step4SetupAccountAndNameServers($twig, $current_step, $default_config_f
         $current_step = InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER;
     }
 
-    renderTemplate($twig, 'step4.html', array_merge([
+    renderTemplate($twig, 'step4.html.twig', array_merge([
         'current_step' => $current_step,
         'language' => htmlspecialchars($_POST['language']),
         'pa_pass' => htmlspecialchars($pa_pass),
@@ -142,7 +151,7 @@ function step5CreateLimitedRightsUser($twig, $current_step, $language): void
 
     $instructions = generateDatabaseUserInstructions($db, $credentials);
 
-    renderTemplate($twig, 'step5.html', array(
+    renderTemplate($twig, 'step5.html.twig', array(
         'current_step' => $current_step,
         'language' => htmlspecialchars($language),
         'db_host' => htmlspecialchars($credentials['db_host']),
@@ -191,7 +200,7 @@ function step6CreateConfigurationFile($twig, $current_step, $language, $default_
         $config->get('password_encryption_cost')
     );
 
-    renderTemplate($twig, 'step6.html', array(
+    renderTemplate($twig, 'step6.html.twig', array(
         'current_step' => (int)htmlspecialchars($current_step),
         'language' => htmlspecialchars($language),
         'local_config_file' => $local_config_file,
@@ -214,7 +223,7 @@ function step6CreateConfigurationFile($twig, $current_step, $language, $default_
 
 function step7InstallationComplete($twig): void
 {
-    renderTemplate($twig, 'step7.html', array(
+    renderTemplate($twig, 'step7.html.twig', array(
         'current_step' => InstallationSteps::STEP_INSTALLATION_COMPLETE,
     ));
 }

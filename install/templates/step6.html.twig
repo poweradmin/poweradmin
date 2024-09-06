@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {% trans %}Step{% endtrans %} {{ current_step }}: {% trans %}Create configuration file{% endtrans %}
+{% endblock %}
+
+{% block content %}
+    <p>
+        {% trans %}You should now create the file {% endtrans %}
+        <em>{{ local_config_file }}</em>
+        {% trans %} in the Poweradmin root directory yourself. It should contain the following few lines:{% endtrans %}</p>
+
+<pre>
+&lt;?php
+{% if db_file %}
+$db_file = '{{ db_name }}';
+{% else %}
+$db_host = '{{ db_host }}';
+$db_name = '{{ db_name }}';
+{% endif %}
+$db_user = '{{ db_user }}';
+$db_pass = '{{ db_pass }}';
+{% if db_port %}
+$db_port = '{{ db_port }}';
+{% endif %}
+$db_type = '{{ db_type }}';
+{% if db_charset %}
+$db_charset = '{{ db_charset }}';
+{% endif %}
+
+$session_key = '{{ session_key }}';
+
+$iface_lang = '{{ language }}';
+
+$dns_hostmaster = '{{ dns_hostmaster }}';
+$dns_ns1 = '{{ dns_ns1 }}';
+$dns_ns2 = '{{ dns_ns2 }}';
+</pre>
+
+    <form method="post">
+        <input type="hidden" name="step" value="{{ next_step }}">
+        <input type="hidden" name="language" value="{{ language }}">
+        <input type="submit" name="submit" class="btn btn-primary btn-sm"
+               value="{% trans %}Go to step{% endtrans %} {{ next_step }}">
+    </form>
+{% endblock %}

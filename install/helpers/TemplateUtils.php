@@ -65,17 +65,4 @@ class TemplateUtils
 
         return ($step !== false && $step !== null) ? $step : InstallationSteps::STEP_CHOOSE_LANGUAGE;
     }
-
-    public static function renderHeader($twig, $current_step): void
-    {
-        echo $twig->render('header.html', array(
-            'current_step' => htmlspecialchars($current_step),
-            'file_version' => time()
-        ));
-    }
-
-    public static function renderFooter($twig): void
-    {
-        echo $twig->render('footer.html');
-    }
 }
