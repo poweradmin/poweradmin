@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Poweradmin</title>
+    <link href="../vendor/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../vendor/twbs/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel=stylesheet href="../style/ignite.css?time={{ file_version }}" type="text/css">
+    <script type="text/javascript" src="includes/helper.js?time={{ file_version }}"></script>
+</head>
+<body>
+    <header class="mb-4 border-bottom">
+        <div class="container">
+            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                <a class="py-4 d-flex align-items-center my-2 my-lg-0 me-lg-auto text-black text-decoration-none"
+                   href="index.php">
+                    <img class="me-2" src="../assets/logo.png" height="32">
+                    <span class="fs-4">Poweradmin</span>
+                </a>
+                <h5 class="text-secondary">{% trans %}Installation step{% endtrans %} {{ current_step }}</h5>
+            </div>
+        </div>
+    </header>
+
+    <main class="container pb-3 flex-shrink-0">
+        <h5>{% block title %}{% endblock %}</h5>
+        <hr>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer py-3 bg-light border">
+        <div class="container">
+            <a href="https://www.poweradmin.org">a complete(r) <strong>Poweradmin</strong></a>
+        </div>
+    </footer>
+
+    <script src="../vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        (function () {
+            'use strict'
+
+            const forms = document.querySelectorAll('.needs-validation');
+
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
+</body>
+</html>
