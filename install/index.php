@@ -30,7 +30,7 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 require_once 'helpers/locale_handler.php';
 require_once 'helpers/database_structure.php';
 require_once 'helpers/install_helpers.php';
-require_once 'helpers/permissions.php';
+require_once 'helpers/PermissionHelper.php';
 
 $local_config_file = dirname(__DIR__) . '/inc/config.inc.php';
 $default_config_file = dirname(__DIR__) . '/inc/config-defaults.inc.php';
