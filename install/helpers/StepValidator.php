@@ -22,33 +22,13 @@
 
 namespace PoweradminInstall;
 
-use Symfony\Bridge\Twig\Extension\TranslationExtension;
-use Symfony\Component\Translation\Loader\PoFileLoader;
-use Symfony\Component\Translation\Translator;
-use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
-
-class TemplateUtils
+class StepValidator
 {
 
     const MIN_STEP_VALUE = InstallationSteps::STEP_CHOOSE_LANGUAGE;
     const MAX_STEP_VALUE = InstallationSteps::STEP_INSTALLATION_COMPLETE;
 
-    public static function initializeTwigEnvironment($language): Environment
-    {
-        $loader = new FilesystemLoader('templates');
-        $twig = new Environment($loader);
-
-        $translator = new Translator($language);
-        $translator->addLoader('po', new PoFileLoader());
-        $translator->addResource('po', (new LocaleHandler)->getLocaleFile($language), $language);
-
-        $twig->addExtension(new TranslationExtension($translator));
-
-        return $twig;
-    }
-
-    public static function getCurrentStep(array $postData): int
+    public function getCurrentStep(array $postData): int
     {
         $sanitizedData = filter_var_array($postData, [
             'step' => [
