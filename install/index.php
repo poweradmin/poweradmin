@@ -23,22 +23,22 @@
 declare(strict_types=1);
 
 use PoweradminInstall\InstallationSteps;
+use PoweradminInstall\LocaleHandler;
 use PoweradminInstall\TemplateUtils;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-require_once 'helpers/locale_handler.php';
 require_once 'helpers/database_structure.php';
 require_once 'helpers/install_helpers.php';
-require_once 'helpers/PermissionHelper.php';
 
 $local_config_file = dirname(__DIR__) . '/inc/config.inc.php';
 $default_config_file = dirname(__DIR__) . '/inc/config-defaults.inc.php';
 const SESSION_KEY_LENGTH = 46;
 
 // Main
-$language = getLanguageFromRequest();
-setLanguage($language);
+$localeHandler = new LocaleHandler;
+$language = ($localeHandler)->getLanguageFromRequest();
+$localeHandler->setLanguage($language);
 
 $twig = TemplateUtils::initializeTwigEnvironment($language);
 $current_step = TemplateUtils::getCurrentStep($_POST);

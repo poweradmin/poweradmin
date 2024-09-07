@@ -41,7 +41,7 @@ class TemplateUtils
 
         $translator = new Translator($language);
         $translator->addLoader('po', new PoFileLoader());
-        $translator->addResource('po', getLocaleFile($language), $language);
+        $translator->addResource('po', (new LocaleHandler)->getLocaleFile($language), $language);
 
         $twig->addExtension(new TranslationExtension($translator));
 
