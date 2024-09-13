@@ -16,8 +16,8 @@ $db_pass = '';
 $db_name = '';
 $db_type = '';
 //$db_charset = 'latin1'; // or utf8
-//$db_file = '';		# used only for SQLite, provide full path to database file
-//$db_debug	= false;	# show all SQL queries
+//$db_file = ''; # used only for SQLite, provide full path to database file
+//$db_debug = false; # show all SQL queries
 
 // Use a separate database for PowerDNS (this setting is experimental and not fully tested)
 //$pdns_db_name = 'powerdns';
