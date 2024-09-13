@@ -32,6 +32,9 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
+    - name: Lint install folder
+      run: composer check:install
+
     - name: Run test suite
       run: composer test
 
