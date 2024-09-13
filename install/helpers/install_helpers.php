@@ -26,8 +26,6 @@ use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\AppConfiguration;
 use PoweradminInstall\InstallationSteps;
 
-require_once 'database_helpers.php';
-
 function checkConfigFile($current_step, $local_config_file, $twig): void
 {
     if (file_exists($local_config_file)) {
