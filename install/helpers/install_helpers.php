@@ -72,7 +72,8 @@ function step3ConfiguringDatabase($twig, $current_step, $language): void
     ));
 }
 
-function step4SetupAccountAndNameServers($twig, $current_step, $default_config_file): void {
+function step4SetupAccountAndNameServers($twig, $current_step, $default_config_file): void
+{
     echo "<p class='alert alert-secondary'>" . _('Updating database...') . " ";
 
     $credentials = [

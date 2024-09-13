@@ -25,8 +25,8 @@ namespace PoweradminInstall;
 class StepValidator
 {
 
-    const MIN_STEP_VALUE = InstallationSteps::STEP_CHOOSE_LANGUAGE;
-    const MAX_STEP_VALUE = InstallationSteps::STEP_INSTALLATION_COMPLETE;
+    private const MIN_STEP_VALUE = InstallationSteps::STEP_CHOOSE_LANGUAGE;
+    private const MAX_STEP_VALUE = InstallationSteps::STEP_INSTALLATION_COMPLETE;
 
     public function getCurrentStep(array $postData): int
     {

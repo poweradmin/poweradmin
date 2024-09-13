@@ -22,12 +22,13 @@
 
 namespace PoweradminInstall;
 
-class InstallationSteps {
-    const STEP_CHOOSE_LANGUAGE = 1;
-    const STEP_GETTING_READY = 2;
-    const STEP_CONFIGURING_DATABASE = 3;
-    const STEP_SETUP_ACCOUNT_AND_NAMESERVERS = 4;
-    const STEP_CREATE_LIMITED_RIGHTS_USER = 5;
-    const STEP_CREATE_CONFIGURATION_FILE = 6;
-    const STEP_INSTALLATION_COMPLETE = 7;
+class InstallationSteps
+{
+    public const STEP_CHOOSE_LANGUAGE = 1;
+    public const STEP_GETTING_READY = 2;
+    public const STEP_CONFIGURING_DATABASE = 3;
+    public const STEP_SETUP_ACCOUNT_AND_NAMESERVERS = 4;
+    public const STEP_CREATE_LIMITED_RIGHTS_USER = 5;
+    public const STEP_CREATE_CONFIGURATION_FILE = 6;
+    public const STEP_INSTALLATION_COMPLETE = 7;
 }

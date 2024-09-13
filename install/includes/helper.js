@@ -18,7 +18,8 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-function updateFormFields(db_type) {
+function updateFormFields(db_type)
+{
     const db_name_title = document.getElementById('db_name_title');
     const db_path_title = document.getElementById('db_path_title');
     const username_row = document.getElementById('username_row');
@@ -84,7 +85,8 @@ function updateFormFields(db_type) {
     }
 }
 
-function showPassword(passwordInputId, iconId) {
+function showPassword(passwordInputId, iconId)
+{
     const password = document.getElementById(passwordInputId);
     const icon = document.getElementById(iconId);
     password.type = password.type === "password" ? "text" : "password";

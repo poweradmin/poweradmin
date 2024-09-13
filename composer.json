@@ -34,10 +34,13 @@
     }
   },
   "require-dev": {
-    "phpunit/phpunit": "^10.4.2"
+    "phpunit/phpunit": "^10.4.2",
+    "squizlabs/php_codesniffer": "*"
   },
   "scripts": {
     "docs": "tools/phpDocumentor",
-    "tests": "phpunit"
+    "tests": "phpunit",
+    "check:install": "phpcs --standard=phpcs.xml install",
+    "check": "phpcs --config-set "
   }
 }

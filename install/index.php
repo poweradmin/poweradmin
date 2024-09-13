@@ -49,7 +49,6 @@ $current_step = $stepValidator->getCurrentStep($_POST);
 checkConfigFile($current_step, $local_config_file, $twigEnvironment);
 
 switch ($current_step) {
-
     case InstallationSteps::STEP_CHOOSE_LANGUAGE:
         step1ChooseLanguage($twigEnvironment, $current_step);
         break;
@@ -71,7 +70,13 @@ switch ($current_step) {
         break;
 
     case InstallationSteps::STEP_CREATE_CONFIGURATION_FILE:
-        step6CreateConfigurationFile($twigEnvironment, $current_step, $language, $default_config_file, $local_config_file);
+        step6CreateConfigurationFile(
+            $twigEnvironment,
+            $current_step,
+            $language,
+            $default_config_file,
+            $local_config_file
+        );
         break;
 
     case InstallationSteps::STEP_INSTALLATION_COMPLETE:

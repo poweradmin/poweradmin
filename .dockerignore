@@ -32,6 +32,7 @@ tools
 # Misc
 **/.DS_Store
 .devcontainer
+phpcs.xml
 phpdoc.dist.xml
 scripts
 transifex.yml

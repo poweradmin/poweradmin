@@ -24,7 +24,6 @@ namespace PoweradminInstall;
 
 class PermissionHelper
 {
-
     /**
      * Get the permission mappings.
      *
