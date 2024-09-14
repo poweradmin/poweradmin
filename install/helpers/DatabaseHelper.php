@@ -110,19 +110,19 @@ class DatabaseHelper
                 $pa_db_host = substr($current_db_user, strpos($current_db_user, '@') + 1);
             }
 
-            $instructions .= "CREATE USER '" . htmlspecialchars($this->databaseCredentials['pa_db_user']) . "'@'%' IDENTIFIED BY '" . htmlspecialchars($databaseCredentials['pa_db_pass']) . "';\n";
-            $instructions .= "GRANT SELECT, INSERT, UPDATE, DELETE ON " . htmlspecialchars($databaseCredentials['db_name']) . ".* TO '" . htmlspecialchars($databaseCredentials['pa_db_user']) . "'@'%';\n";
+            $instructions .= "CREATE USER '" . htmlspecialchars($this->databaseCredentials['pa_db_user']) . "'@'%' IDENTIFIED BY '" . htmlspecialchars($this->databaseCredentials['pa_db_pass']) . "';\n";
+            $instructions .= "GRANT SELECT, INSERT, UPDATE, DELETE ON " . htmlspecialchars($this->databaseCredentials['db_name']) . ".* TO '" . htmlspecialchars($this->databaseCredentials['pa_db_user']) . "'@'%';\n";
         } elseif ($this->databaseCredentials['db_type'] == 'pgsql') {
-            $instructions .= "CREATE USER " . htmlspecialchars($this->databaseCredentials['pa_db_user']) . " WITH PASSWORD '" . htmlspecialchars($databaseCredentials['pa_db_pass']) . "';\n";
+            $instructions .= "CREATE USER " . htmlspecialchars($this->databaseCredentials['pa_db_user']) . " WITH PASSWORD '" . htmlspecialchars($this->databaseCredentials['pa_db_pass']) . "';\n";
 
             $def_tables = DatabaseStructureHelper::getDefaultTables();
             $grantTables = $this->getGrantTables($def_tables);
             foreach ($grantTables as $tableName) {
-                $instructions .= "GRANT SELECT, INSERT, DELETE, UPDATE ON " . $tableName . " TO " . htmlspecialchars($databaseCredentials['pa_db_user']) . ";\n";
+                $instructions .= "GRANT SELECT, INSERT, DELETE, UPDATE ON " . $tableName . " TO " . htmlspecialchars($this->databaseCredentials['pa_db_user']) . ";\n";
             }
             $grantSequences = $this->getGrantSequences($def_tables);
             foreach ($grantSequences as $sequenceName) {
-                $instructions .= "GRANT USAGE, SELECT ON SEQUENCE " . $sequenceName . " TO " . htmlspecialchars($databaseCredentials['pa_db_user']) . ";\n";
+                $instructions .= "GRANT USAGE, SELECT ON SEQUENCE " . $sequenceName . " TO " . htmlspecialchars($this->databaseCredentials['pa_db_user']) . ";\n";
             }
         }
 
