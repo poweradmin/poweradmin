@@ -1452,6 +1452,9 @@ class DnsRecord
             case 'ttl':
                 usort($domains, [$this, 'sort_domain_results_by_ttl']);
                 break;
+            case 'disabled':
+                usort($domains, [$this, 'sort_domain_results_by_disabled']);
+                break;
             case 'name':
             default:
                 usort($domains, [$this, 'sort_domain_results_by_name']);
@@ -1545,6 +1548,22 @@ class DnsRecord
     {
         if ($a['ttl'] != $b['ttl']) {
             return strnatcmp($a['ttl'], $b['ttl']);
+        } else {
+            return strnatcmp($a['name'], $b['name']);
+        }
+    }
+
+    /** Sort records by disabled
+     *
+     * @param array $a A
+     * @param array $b B
+     *
+     * @return int result of strnatcmp
+     */
+    private function sort_domain_results_by_disabled(array $a, array $b): int
+    {
+        if ($a['disabled'] != $b['disabled']) {
+            return strnatcmp($a['disabled'], $b['disabled']);
         } else {
             return strnatcmp($a['name'], $b['name']);
         }

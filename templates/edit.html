@@ -36,25 +36,34 @@
     <input type="hidden" name="serial" value="{{ serial }}">
     <table class="table table-striped table-hover table-sm">
         <tr>
-            <th><a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=id">{% trans %}Id{% endtrans %}</a>
+            <th>
+                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=id">{% trans %}Id{% endtrans %}</a>
                 {% if record_sort_by == 'id' %}<i class="bi bi-arrow-down"></i>{% endif %}
             </th>
-            <th><a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=name">{% trans %}Name{% endtrans %}</a>
+            <th>
+                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=name">{% trans %}Name{% endtrans %}</a>
                 {% if record_sort_by == 'name' %}<i class="bi bi-arrow-down"></i>{% endif %}
             </th>
-            <th><a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=type">{% trans %}Type{% endtrans %}</a>
+            <th>
+                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=type">{% trans %}Type{% endtrans %}</a>
                 {% if record_sort_by == 'type' %}<i class="bi bi-arrow-down"></i>{% endif %}
             </th>
-            <th><a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=content">{% trans %}Content{% endtrans %}</a>
+            <th>
+                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=content">{% trans %}Content{% endtrans %}</a>
                 {% if record_sort_by == 'content' %}<i class="bi bi-arrow-down"></i>{% endif %}
             </th>
-            <th><a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=prio">{% trans %}Priority{% endtrans %}</a>
+            <th>
+                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=prio">{% trans %}Priority{% endtrans %}</a>
                 {% if record_sort_by == 'prio' %}<i class="bi bi-arrow-down"></i>{% endif %}
             </th>
-            <th><a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=ttl">{% trans %}TTL{% endtrans %}</a>
+            <th>
+                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=ttl">{% trans %}TTL{% endtrans %}</a>
                 {% if record_sort_by == 'ttl' %}<i class="bi bi-arrow-down"></i>{% endif %}
             </th>
-            <th>{% trans %}Disabled{% endtrans %}</th>
+            <th>
+                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=disabled">{% trans %}Disabled{% endtrans %}</a>
+                {% if record_sort_by == 'disabled' %}<i class="bi bi-arrow-down"></i>{% endif %}
+            </th>
             <th>&nbsp;</th>
         </tr>
         {% for r in records %}

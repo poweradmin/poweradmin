@@ -59,7 +59,7 @@ class EditController extends BaseController
             $row_start = ($_GET["start"] - 1) * $iface_rowamount;
         }
 
-        $record_sort_by = $this->getSortBy();
+        $record_sort_by = $this->getSortBy('record_sort_by', ['id', 'name', 'type', 'content', 'prio', 'ttl', 'disabled']);
 
         if (!isset($_GET['id']) || !Validator::is_number($_GET['id'])) {
             $this->showError(_('Invalid or unexpected input given.'));
@@ -247,19 +247,19 @@ class EditController extends BaseController
         return $presenter->present();
     }
 
-    public function getSortBy()
+    public function getSortBy(string $name, array $allowedValues)
     {
-        $record_sort_by = 'name';
-        if (isset($_GET["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["record_sort_by"])) {
-            $record_sort_by = $_GET["record_sort_by"];
-            $_SESSION["record_sort_by"] = $_GET["record_sort_by"];
-        } elseif (isset($_POST["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_POST["record_sort_by"])) {
-            $record_sort_by = $_POST["record_sort_by"];
-            $_SESSION["record_sort_by"] = $_POST["record_sort_by"];
-        } elseif (isset($_SESSION["record_sort_by"])) {
-            $record_sort_by = $_SESSION["record_sort_by"];
+        $sortOrder = 'name';
+
+        foreach ([$_GET, $_POST, $_SESSION] as $source) {
+            if (isset($source[$name]) && in_array($source[$name], $allowedValues)) {
+                $sortOrder = $source[$name];
+                $_SESSION[$name] = $source[$name];
+                break;
+            }
         }
-        return $record_sort_by;
+
+        return $sortOrder;
     }
 
     public function saveRecords(int $zone_id, bool $iface_zone_comments, string $zone_name): void
