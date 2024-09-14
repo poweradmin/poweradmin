@@ -29,8 +29,6 @@ use PoweradminInstall\TwigEnvironmentInitializer;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-require_once 'helpers/database_structure.php';
-require_once 'helpers/database_helpers.php';
 require_once 'helpers/install_helpers.php';
 
 $local_config_file = dirname(__DIR__) . '/inc/config.inc.php';

@@ -40,7 +40,7 @@ class DatabaseHelper
     public function updateDatabase(): void
     {
         $current_tables = $this->db->listTables();
-        $def_tables = getDefaultTables();
+        $def_tables = DatabaseStructureHelper::getDefaultTables();
 
         foreach ($def_tables as $table) {
             if (in_array($table['table_name'], $current_tables)) {
@@ -115,17 +115,48 @@ class DatabaseHelper
         } elseif ($this->databaseCredentials['db_type'] == 'pgsql') {
             $instructions .= "CREATE USER " . htmlspecialchars($this->databaseCredentials['pa_db_user']) . " WITH PASSWORD '" . htmlspecialchars($databaseCredentials['pa_db_pass']) . "';\n";
 
-            $def_tables = getDefaultTables();
-            $grantTables = getGrantTables($def_tables);
+            $def_tables = DatabaseStructureHelper::getDefaultTables();
+            $grantTables = $this->getGrantTables($def_tables);
             foreach ($grantTables as $tableName) {
                 $instructions .= "GRANT SELECT, INSERT, DELETE, UPDATE ON " . $tableName . " TO " . htmlspecialchars($databaseCredentials['pa_db_user']) . ";\n";
             }
-            $grantSequences = getGrantSequences($def_tables);
+            $grantSequences = $this->getGrantSequences($def_tables);
             foreach ($grantSequences as $sequenceName) {
                 $instructions .= "GRANT USAGE, SELECT ON SEQUENCE " . $sequenceName . " TO " . htmlspecialchars($databaseCredentials['pa_db_user']) . ";\n";
             }
         }
 
         return $instructions;
+    }
+
+    private function getGrantTables($def_tables): array
+    {
+        // Tables from PowerDNS
+        $grantTables = array('supermasters', 'domains', 'domainmetadata', 'cryptokeys', 'records');
+
+        // Include PowerAdmin tables
+        foreach ($def_tables as $table) {
+            $grantTables[] = $table['table_name'];
+        }
+
+        return $grantTables;
+    }
+
+    private function getGrantSequences($def_tables): array
+    {
+        // For PostgreSQL you need to grant access to sequences
+        $grantSequences = array('domains_id_seq', 'domainmetadata_id_seq', 'cryptokeys_id_seq', 'records_id_seq');
+        foreach ($def_tables as $table) {
+            // ignore tables without primary key
+            if ($table['table_name'] == 'migrations') {
+                continue;
+            }
+            if ($table['table_name'] == 'records_zone_templ') {
+                continue;
+            }
+            $grantSequences[] = $table['table_name'] . '_id_seq';
+        }
+
+        return $grantSequences;
     }
 }
