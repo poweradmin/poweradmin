@@ -37,7 +37,14 @@ session_set_cookie_params([
 
 session_start();
 
-$router = new BasicRouter(array_merge($_GET, $_POST));
+$router = new BasicRouter($_REQUEST);
+
 $router->setDefaultPage('index');
 $router->setPages(Pages::getPages());
-$router->process();
+
+try {
+    $router->process();
+} catch (Exception $e) {
+    error_log($e->getMessage());
+    echo 'An error occurred while processing the request.';
+}
