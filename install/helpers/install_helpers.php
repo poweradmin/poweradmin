@@ -24,6 +24,7 @@ use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\AppConfiguration;
+use PoweradminInstall\DatabaseHelper;
 use PoweradminInstall\InstallationSteps;
 
 function checkConfigFile($current_step, $local_config_file, $twig): void
@@ -99,9 +100,9 @@ function step4SetupAccountAndNameServers($twig, $current_step, $default_config_f
     $databaseService = new DatabaseService($databaseConnection);
     $db = $databaseService->connect($credentials);
 
-    updateDatabase($db, $credentials);
-
-    createAdministratorUser($db, $pa_pass, $default_config_file);
+    $databaseHelper = new DatabaseHelper($db, $credentials);
+    $databaseHelper->updateDatabase();
+    $databaseHelper->createAdministratorUser($pa_pass, $default_config_file);
 
     echo _('done!') . "</p>";
 
@@ -147,7 +148,8 @@ function step5CreateLimitedRightsUser($twig, $current_step, $language): void
     $databaseService = new DatabaseService($databaseConnection);
     $db = $databaseService->connect($credentials);
 
-    $instructions = generateDatabaseUserInstructions($db, $credentials);
+    $databaseHelper = new DatabaseHelper($db, $credentials);
+    $instructions = $databaseHelper->generateDatabaseUserInstructions();
 
     renderTemplate($twig, 'step5.html.twig', array(
         'current_step' => $current_step,
