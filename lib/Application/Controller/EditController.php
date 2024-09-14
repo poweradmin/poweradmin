@@ -247,7 +247,7 @@ class EditController extends BaseController
         return $presenter->present();
     }
 
-    public function getSortBy(string $name, array $allowedValues)
+    public function getSortBy(string $name, array $allowedValues): string
     {
         $sortOrder = 'name';
 

@@ -103,7 +103,7 @@ class EditZoneTemplController extends BaseController
     {
         $iface_rowamount = $this->config('iface_rowamount');
         $row_start = $this->getRowStart($iface_rowamount);
-        $record_sort_by = $this->getSortBy();
+        $record_sort_by = $this->getSortBy('record_sort_by', ['name', 'type', 'content', 'ttl', 'prio']);
         $record_count = ZoneTemplate::count_zone_templ_records($this->db, $zone_templ_id);
         $templ_details = ZoneTemplate::get_zone_templ_details($this->db, $zone_templ_id);
 
@@ -140,19 +140,19 @@ class EditZoneTemplController extends BaseController
         return $row_start;
     }
 
-    public function getSortBy()
+    public function getSortBy(string $name, array $allowedValues): string
     {
-        $record_sort_by = 'name';
-        if (isset($_GET["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_GET["record_sort_by"])) {
-            $record_sort_by = $_GET["record_sort_by"];
-            $_SESSION["record_sort_by"] = $_GET["record_sort_by"];
-        } elseif (isset($_POST["record_sort_by"]) && preg_match("/^[a-z_]+$/", $_POST["record_sort_by"])) {
-            $record_sort_by = $_POST["record_sort_by"];
-            $_SESSION["record_sort_by"] = $_POST["record_sort_by"];
-        } elseif (isset($_SESSION["record_sort_by"])) {
-            $record_sort_by = $_SESSION["record_sort_by"];
+        $sortOrder = 'name';
+
+        foreach ([$_GET, $_POST, $_SESSION] as $source) {
+            if (isset($source[$name]) && in_array($source[$name], $allowedValues)) {
+                $sortOrder = $source[$name];
+                $_SESSION[$name] = $source[$name];
+                break;
+            }
         }
-        return $record_sort_by;
+
+        return $sortOrder;
     }
 
     public function updateZoneTemplateDetails(string $zone_templ_id): void
