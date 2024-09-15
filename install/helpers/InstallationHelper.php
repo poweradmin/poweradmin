@@ -31,16 +31,19 @@ use Twig\Environment;
 class InstallationHelper
 {
     private Environment $twig;
+    private int $currentStep;
+    private const SESSION_KEY_LENGTH = 46;
 
-    public function __construct(Environment $twig)
+    public function __construct(Environment $twig, int $currentStep)
     {
         $this->twig = $twig;
+        $this->currentStep = $currentStep;
     }
 
-    public function checkConfigFile($current_step, $local_config_file): void
+    public function checkConfigFile($local_config_file): void
     {
         if (file_exists($local_config_file)) {
-            if ($current_step == InstallationSteps::STEP_INSTALLATION_COMPLETE) {
+            if ($this->currentStep == InstallationSteps::STEP_INSTALLATION_COMPLETE) {
                 return; // Allow last step to be shown
             } else {
                 echo "<p class='alert alert-danger'>" . _('There is already a configuration file in place, so the installation will be skipped.') . "</p>";
@@ -57,30 +60,30 @@ class InstallationHelper
         echo $this->twig->render($templateName, $data);
     }
 
-    function step1ChooseLanguage($current_step): void
+    function step1ChooseLanguage(): void
     {
         $this->renderTemplate('step1.html.twig', array(
-            'current_step' => $current_step
+            'current_step' => $this->currentStep
         ));
     }
 
-    function step2GettingReady($current_step, $language): void
+    function step2GettingReady($language): void
     {
         $this->renderTemplate('step2.html.twig', array(
-            'current_step' => $current_step,
+            'current_step' => $this->currentStep,
             'language' => htmlspecialchars($language)
         ));
     }
 
-    function step3ConfiguringDatabase($current_step, $language): void
+    function step3ConfiguringDatabase($language): void
     {
         $this->renderTemplate('step3.html.twig', array(
-            'current_step' => $current_step,
+            'current_step' => $this->currentStep,
             'language' => htmlspecialchars($language)
         ));
     }
 
-    function step4SetupAccountAndNameServers($current_step, $default_config_file): void
+    function step4SetupAccountAndNameServers($default_config_file): void
     {
         echo "<p class='alert alert-secondary'>" . _('Updating database...') . " ";
 
@@ -117,19 +120,19 @@ class InstallationHelper
         echo _('done!') . "</p>";
 
         if ($credentials['db_type'] == 'sqlite') {
-            $current_step = InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER;
+            $this->currentStep = InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER;
         }
 
         $this->renderTemplate('step4.html.twig', array_merge([
-            'current_step' => $current_step,
+            'current_step' => $this->currentStep,
             'language' => htmlspecialchars($_POST['language']),
             'pa_pass' => htmlspecialchars($pa_pass),
         ], $credentials));
     }
 
-    function step5CreateLimitedRightsUser($current_step, $language): void
+    function step5CreateLimitedRightsUser($language): void
     {
-        $current_step++;
+        $this->currentStep++;
 
         $credentials = [
             'db_user' => $_POST['db_user'],
@@ -162,7 +165,7 @@ class InstallationHelper
         $instructions = $databaseHelper->generateDatabaseUserInstructions();
 
         $this->renderTemplate('step5.html.twig', array(
-            'current_step' => $current_step,
+            'current_step' => $this->currentStep,
             'language' => htmlspecialchars($language),
             'db_host' => htmlspecialchars($credentials['db_host']),
             'db_name' => htmlspecialchars($credentials['db_name']),
@@ -181,7 +184,7 @@ class InstallationHelper
         ));
     }
 
-    function step6CreateConfigurationFile($current_step, $language, $default_config_file, $local_config_file): void
+    function step6CreateConfigurationFile($language, $default_config_file, $local_config_file): void
     {
         // No need to set database port if it's standard port for that db
         $db_port = ($_POST['db_type'] == 'mysql' && $_POST['db_port'] != 3306)
@@ -211,10 +214,10 @@ class InstallationHelper
         );
 
         $this->renderTemplate('step6.html.twig', array(
-            'current_step' => (int)htmlspecialchars($current_step),
+            'current_step' => (int)htmlspecialchars($this->currentStep),
             'language' => htmlspecialchars($language),
             'local_config_file' => $local_config_file,
-            'session_key' => $userAuthService->generateSalt(SESSION_KEY_LENGTH),
+            'session_key' => $userAuthService->generateSalt(self::SESSION_KEY_LENGTH),
             'iface_lang' => htmlspecialchars($language),
             'dns_hostmaster' => htmlspecialchars($dns_hostmaster),
             'dns_ns1' => htmlspecialchars($dns_ns1),

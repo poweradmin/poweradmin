@@ -35,9 +35,8 @@ ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
 error_reporting(E_ALL) ;
 
-$local_config_file = dirname(__DIR__) . '/inc/config.inc.php';
-$default_config_file = dirname(__DIR__) . '/inc/config-defaults.inc.php';
-const SESSION_KEY_LENGTH = 46;
+$localConfigFile = dirname(__DIR__) . '/inc/config.inc.php';
+$defaultConfigFile = dirname(__DIR__) . '/inc/config-defaults.inc.php';
 
 // Main
 $request = Request::createFromGlobals();
@@ -51,38 +50,37 @@ $twigEnvironment = $twigEnvironmentInitializer->initialize($language);
 
 $stepValidator = new StepValidator();
 $step = $request->get('step', InstallationSteps::STEP_CHOOSE_LANGUAGE);
-$current_step = $stepValidator->getCurrentStep($step);
+$currentStep = $stepValidator->getCurrentStep($step);
 
-$installationHelper = new InstallationHelper($twigEnvironment);
-$installationHelper->checkConfigFile($current_step, $local_config_file);
+$installationHelper = new InstallationHelper($twigEnvironment, $currentStep);
+$installationHelper->checkConfigFile($localConfigFile);
 
-switch ($current_step) {
+switch ($currentStep) {
     case InstallationSteps::STEP_CHOOSE_LANGUAGE:
-        $installationHelper->step1ChooseLanguage($current_step);
+        $installationHelper->step1ChooseLanguage();
         break;
 
     case InstallationSteps::STEP_GETTING_READY:
-        $installationHelper->step2GettingReady($current_step, $language);
+        $installationHelper->step2GettingReady($language);
         break;
 
     case InstallationSteps::STEP_CONFIGURING_DATABASE:
-        $installationHelper->step3ConfiguringDatabase($current_step, $language);
+        $installationHelper->step3ConfiguringDatabase($language);
         break;
 
     case InstallationSteps::STEP_SETUP_ACCOUNT_AND_NAMESERVERS:
-        $installationHelper->step4SetupAccountAndNameServers($current_step, $default_config_file);
+        $installationHelper->step4SetupAccountAndNameServers($defaultConfigFile);
         break;
 
     case InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER:
-        $installationHelper->step5CreateLimitedRightsUser($current_step, $language);
+        $installationHelper->step5CreateLimitedRightsUser($language);
         break;
 
     case InstallationSteps::STEP_CREATE_CONFIGURATION_FILE:
         $installationHelper->step6CreateConfigurationFile(
-            $current_step,
             $language,
-            $default_config_file,
-            $local_config_file
+            $defaultConfigFile,
+            $localConfigFile
         );
         break;
 
