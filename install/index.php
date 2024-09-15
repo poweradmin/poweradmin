@@ -26,8 +26,13 @@ use PoweradminInstall\InstallationSteps;
 use PoweradminInstall\LocaleHandler;
 use PoweradminInstall\StepValidator;
 use PoweradminInstall\TwigEnvironmentInitializer;
+use Symfony\Component\HttpFoundation\Request;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
+
+ini_set( 'display_errors', '1');
+ini_set( 'display_startup_errors', '1');
+error_reporting (E_ALL) ;
 
 require_once 'helpers/install_helpers.php';
 
@@ -36,6 +41,8 @@ $default_config_file = dirname(__DIR__) . '/inc/config-defaults.inc.php';
 const SESSION_KEY_LENGTH = 46;
 
 // Main
+$request = Request::createFromGlobals();
+
 $localeHandler = new LocaleHandler();
 $language = $localeHandler->getLanguageFromRequest();
 $localeHandler->setLanguage($language);
