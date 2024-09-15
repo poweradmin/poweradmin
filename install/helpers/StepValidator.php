@@ -28,21 +28,17 @@ class StepValidator
     private const MIN_STEP_VALUE = InstallationSteps::STEP_CHOOSE_LANGUAGE;
     private const MAX_STEP_VALUE = InstallationSteps::STEP_INSTALLATION_COMPLETE;
 
-    public function getCurrentStep(array $postData): int
+    public function getCurrentStep(mixed $step): int
     {
-        $sanitizedData = filter_var_array($postData, [
-            'step' => [
-                'filter' => FILTER_VALIDATE_INT,
-                'options' => ['default' => InstallationSteps::STEP_CHOOSE_LANGUAGE]
+        if (is_string($step)) {
+            $step = trim($step);
+        }
+        $filteredStep = filter_var($step, FILTER_VALIDATE_INT, [
+            'options' => [
+                'min_range' => self::MIN_STEP_VALUE,
+                'max_range' => self::MAX_STEP_VALUE
             ]
         ]);
-
-        $step = $sanitizedData['step'];
-
-        if ($step < self::MIN_STEP_VALUE || $step > self::MAX_STEP_VALUE) {
-            return InstallationSteps::STEP_CHOOSE_LANGUAGE;
-        }
-
-        return ($step !== false && $step !== null) ? $step : InstallationSteps::STEP_CHOOSE_LANGUAGE;
+        return $filteredStep !== false ? $filteredStep : InstallationSteps::STEP_CHOOSE_LANGUAGE;
     }
 }

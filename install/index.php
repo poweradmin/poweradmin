@@ -51,7 +51,8 @@ $twigEnvironmentInitializer = new TwigEnvironmentInitializer($localeHandler);
 $twigEnvironment = $twigEnvironmentInitializer->initialize($language);
 
 $stepValidator = new StepValidator();
-$current_step = $stepValidator->getCurrentStep($_POST);
+$step = $request->get('step', InstallationSteps::STEP_CHOOSE_LANGUAGE);
+$current_step = $stepValidator->getCurrentStep($step);
 checkConfigFile($current_step, $local_config_file, $twigEnvironment);
 
 switch ($current_step) {

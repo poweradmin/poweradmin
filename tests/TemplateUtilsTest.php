@@ -5,93 +5,99 @@ use PoweradminInstall\StepValidator;
 
 class TemplateUtilsTest extends TestCase
 {
-
-    public function testCanGetStepFromPostRequest(): void
+    public function testCanGetStepFromValidInput(): void
     {
-        $postData = ['step' => 3];
         $stepValidator = new StepValidator();
-        $this->assertEquals(3, $stepValidator->getCurrentStep($postData));
-        
-        unset($_POST['step']);
+        $this->assertEquals(3, $stepValidator->getCurrentStep(3));
     }
 
-    public function testCanReturnDefaultStepWhenNotInPostRequest(): void
+    public function testCanReturnDefaultStepWhenInputIsEmpty(): void
     {
-        $postData = [];
         $stepValidator = new StepValidator();
-        $this->assertEquals(1, $stepValidator->getCurrentStep($postData));
+        $this->assertEquals(1, $stepValidator->getCurrentStep(null));
     }
 
-    public function testCanHandleNonNumericStepInPostRequest(): void
+    public function testCanHandleNonNumericStep(): void
     {
-        $postData = ['step' => 'non-numeric'];
         $stepValidator = new StepValidator();
-        $this->assertEquals(1, $stepValidator->getCurrentStep($postData));
-
-        unset($_POST['step']);
+        $this->assertEquals(1, $stepValidator->getCurrentStep('non-numeric'));
     }
 
-    public function testGetCurrentStepWithVeryLargeNumber()
+    public function testGetCurrentStepWithVeryLargeNumber(): void
     {
-        $postData = ['step' => '999999999999999999999999'];
         $stepValidator = new StepValidator();
-        $result = $stepValidator->getCurrentStep($postData);
-        $this->assertEquals(1, $result);
+        $this->assertEquals(1, $stepValidator->getCurrentStep('999999999999999999999999'));
     }
 
-    public function testGetCurrentStepWithNegativeNumber()
+    public function testGetCurrentStepWithNegativeNumber(): void
     {
-        $postData = ['step' => '-5'];
         $stepValidator = new StepValidator();
-        $result = $stepValidator->getCurrentStep($postData);
-        $this->assertEquals(1, $result);
+        $this->assertEquals(1, $stepValidator->getCurrentStep(-5));
     }
 
-    public function testGetCurrentStepWithZero()
+    public function testGetCurrentStepWithZero(): void
     {
-        $postData = ['step' => '0'];
         $stepValidator = new StepValidator();
-        $result = $stepValidator->getCurrentStep($postData);
-        $this->assertEquals(1, $result);
+        $this->assertEquals(1, $stepValidator->getCurrentStep(0));
     }
 
-    public function testGetCurrentStepWithFloat()
+    public function testGetCurrentStepWithFloat(): void
     {
-        $postData = ['step' => '3.5'];
         $stepValidator = new StepValidator();
-        $result = $stepValidator->getCurrentStep($postData);
-        $this->assertEquals(1, $result);
+        $this->assertEquals(1, $stepValidator->getCurrentStep(3.5));
     }
 
-    public function testGetCurrentStepWithStringNumber()
+    public function testGetCurrentStepWithStringNumber(): void
     {
-        $postData = ['step' => '5'];
         $stepValidator = new StepValidator();
-        $result = $stepValidator->getCurrentStep($postData);
-        $this->assertEquals(5, $result);
+        $this->assertEquals(5, $stepValidator->getCurrentStep('5'));
     }
 
-    public function testGetCurrentStepWithNonAsciiNumbers()
+    public function testGetCurrentStepWithNonAsciiNumbers(): void
     {
-        $postData = ['step' => '٣'];
         $stepValidator = new StepValidator();
-        $result = $stepValidator->getCurrentStep($postData);
-        $this->assertEquals(1, $result);
+        $this->assertEquals(1, $stepValidator->getCurrentStep('٣'));
     }
 
-    public function testGetCurrentStepWithInjection()
+    public function testGetCurrentStepWithInjection(): void
     {
-        $postData = ['step' => '<script>alert("test")</script>'];
         $stepValidator = new StepValidator();
-        $result = $stepValidator->getCurrentStep($postData);
-        $this->assertEquals(1, $result);
+        $this->assertEquals(1, $stepValidator->getCurrentStep('<script>alert("test")</script>'));
     }
 
-    public function testGetCurrentStepWithArray()
+    public function testGetCurrentStepWithArray(): void
     {
-        $postData = ['step' => ['1', '2']];
         $stepValidator = new StepValidator();
-        $result = $stepValidator->getCurrentStep($postData);
-        $this->assertEquals(1, $result);
+        $this->assertEquals(1, $stepValidator->getCurrentStep(['1', '2']));
+    }
+
+    public function testGetCurrentStepWithLeadingWhitespace(): void
+    {
+        $stepValidator = new StepValidator();
+        $this->assertEquals(1, $stepValidator->getCurrentStep(' 42'));
+    }
+
+    public function testGetCurrentStepWithTrailingWhitespace(): void
+    {
+        $stepValidator = new StepValidator();
+        $this->assertEquals(1, $stepValidator->getCurrentStep('42 '));
+    }
+
+    public function testGetCurrentStepWithInternalWhitespace(): void
+    {
+        $stepValidator = new StepValidator();
+        $this->assertEquals(1, $stepValidator->getCurrentStep('4 2'));
+    }
+
+    public function testGetCurrentStepWithEmptyString(): void
+    {
+        $stepValidator = new StepValidator();
+        $this->assertEquals(1, $stepValidator->getCurrentStep(''));
+    }
+
+    public function testGetCurrentStepWithSpecialCharacters(): void
+    {
+        $stepValidator = new StepValidator();
+        $this->assertEquals(1, $stepValidator->getCurrentStep('4@2'));
     }
 }
