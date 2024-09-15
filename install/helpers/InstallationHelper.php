@@ -73,7 +73,7 @@ class InstallationHelper
     {
         $this->renderTemplate('step2.html.twig', array(
             'current_step' => $this->currentStep,
-            'language' => htmlspecialchars($this->language)
+            'language' => $this->language
         ));
     }
 
@@ -81,7 +81,7 @@ class InstallationHelper
     {
         $this->renderTemplate('step3.html.twig', array(
             'current_step' => $this->currentStep,
-            'language' => htmlspecialchars($this->language)
+            'language' => $this->language
         ));
     }
 
@@ -168,7 +168,7 @@ class InstallationHelper
 
         $this->renderTemplate('step5.html.twig', array(
             'current_step' => $this->currentStep,
-            'language' => htmlspecialchars($this->language),
+            'language' => $this->language,
             'db_host' => htmlspecialchars($credentials['db_host']),
             'db_name' => htmlspecialchars($credentials['db_name']),
             'db_port' => htmlspecialchars($credentials['db_port']),
@@ -217,10 +217,10 @@ class InstallationHelper
 
         $this->renderTemplate('step6.html.twig', array(
             'current_step' => (int)htmlspecialchars($this->currentStep),
-            'language' => htmlspecialchars($this->language),
+            'language' => $this->language,
             'local_config_file' => $local_config_file,
             'session_key' => $userAuthService->generateSalt(self::SESSION_KEY_LENGTH),
-            'iface_lang' => htmlspecialchars($this->language),
+            'iface_lang' => $this->language,
             'dns_hostmaster' => htmlspecialchars($dns_hostmaster),
             'dns_ns1' => htmlspecialchars($dns_ns1),
             'dns_ns2' => htmlspecialchars($dns_ns2),
