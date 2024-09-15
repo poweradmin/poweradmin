@@ -198,8 +198,8 @@ class InstallationHelper
         $dns_hostmaster = $_POST['dns_hostmaster'];
         $dns_ns1 = $_POST['dns_ns1'];
         $dns_ns2 = $_POST['dns_ns2'];
-        $dns_ns3 = ''; // $_POST['dns_ns3'];
-        $dns_ns4 = ''; // $_POST['dns_ns4'];
+//        $dns_ns3 = $_POST['dns_ns3'];
+//        $dns_ns4 = $_POST['dns_ns4'];
         $db_host = $_POST['db_host'];
         $db_user = $_POST['pa_db_user'] ?? '';
         $db_pass = $_POST['pa_db_pass'] ?? '';

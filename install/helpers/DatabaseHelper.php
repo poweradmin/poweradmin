@@ -25,13 +25,14 @@ namespace PoweradminInstall;
 use PDO;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\AppConfiguration;
+use Poweradmin\Infrastructure\Database\PDOLayer;
 
 class DatabaseHelper
 {
-    private $db;
-    private $databaseCredentials;
+    private PDOLayer $db;
+    private array $databaseCredentials;
 
-    public function __construct($db, $databaseCredentials)
+    public function __construct(PDOLayer $db, array $databaseCredentials)
     {
         $this->db = $db;
         $this->databaseCredentials = $databaseCredentials;
@@ -101,15 +102,6 @@ class DatabaseHelper
         $instructions = "";
 
         if ($this->databaseCredentials['db_type'] == 'mysql') {
-            $pa_db_host = $this->databaseCredentials['db_host'];
-
-            $sql = 'SELECT USER()';
-            $result = $this->db->queryRow($sql);
-            if (isset($result['user()'])) {
-                $current_db_user = $result['user()'];
-                $pa_db_host = substr($current_db_user, strpos($current_db_user, '@') + 1);
-            }
-
             $instructions .= "CREATE USER '" . htmlspecialchars($this->databaseCredentials['pa_db_user']) . "'@'%' IDENTIFIED BY '" . htmlspecialchars($this->databaseCredentials['pa_db_pass']) . "';\n";
             $instructions .= "GRANT SELECT, INSERT, UPDATE, DELETE ON " . htmlspecialchars($this->databaseCredentials['db_name']) . ".* TO '" . htmlspecialchars($this->databaseCredentials['pa_db_user']) . "'@'%';\n";
         } elseif ($this->databaseCredentials['db_type'] == 'pgsql') {
