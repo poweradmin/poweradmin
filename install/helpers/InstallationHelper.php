@@ -32,12 +32,14 @@ class InstallationHelper
 {
     private Environment $twig;
     private int $currentStep;
+    private string $language;
     private const SESSION_KEY_LENGTH = 46;
 
-    public function __construct(Environment $twig, int $currentStep)
+    public function __construct(Environment $twig, int $currentStep, string $language)
     {
         $this->twig = $twig;
         $this->currentStep = $currentStep;
+        $this->language = $language;
     }
 
     public function checkConfigFile($local_config_file): void
@@ -67,19 +69,19 @@ class InstallationHelper
         ));
     }
 
-    public function step2GettingReady($language): void
+    public function step2GettingReady(): void
     {
         $this->renderTemplate('step2.html.twig', array(
             'current_step' => $this->currentStep,
-            'language' => htmlspecialchars($language)
+            'language' => htmlspecialchars($this->language)
         ));
     }
 
-    public function step3ConfiguringDatabase($language): void
+    public function step3ConfiguringDatabase(): void
     {
         $this->renderTemplate('step3.html.twig', array(
             'current_step' => $this->currentStep,
-            'language' => htmlspecialchars($language)
+            'language' => htmlspecialchars($this->language)
         ));
     }
 
@@ -130,7 +132,7 @@ class InstallationHelper
         ], $credentials));
     }
 
-    public function step5CreateLimitedRightsUser($language): void
+    public function step5CreateLimitedRightsUser(): void
     {
         $this->currentStep++;
 
@@ -166,7 +168,7 @@ class InstallationHelper
 
         $this->renderTemplate('step5.html.twig', array(
             'current_step' => $this->currentStep,
-            'language' => htmlspecialchars($language),
+            'language' => htmlspecialchars($this->language),
             'db_host' => htmlspecialchars($credentials['db_host']),
             'db_name' => htmlspecialchars($credentials['db_name']),
             'db_port' => htmlspecialchars($credentials['db_port']),
@@ -184,7 +186,7 @@ class InstallationHelper
         ));
     }
 
-    public function step6CreateConfigurationFile($language, $default_config_file, $local_config_file): void
+    public function step6CreateConfigurationFile($default_config_file, $local_config_file): void
     {
         // No need to set database port if it's standard port for that db
         $db_port = ($_POST['db_type'] == 'mysql' && $_POST['db_port'] != 3306)
@@ -215,10 +217,10 @@ class InstallationHelper
 
         $this->renderTemplate('step6.html.twig', array(
             'current_step' => (int)htmlspecialchars($this->currentStep),
-            'language' => htmlspecialchars($language),
+            'language' => htmlspecialchars($this->language),
             'local_config_file' => $local_config_file,
             'session_key' => $userAuthService->generateSalt(self::SESSION_KEY_LENGTH),
-            'iface_lang' => htmlspecialchars($language),
+            'iface_lang' => htmlspecialchars($this->language),
             'dns_hostmaster' => htmlspecialchars($dns_hostmaster),
             'dns_ns1' => htmlspecialchars($dns_ns1),
             'dns_ns2' => htmlspecialchars($dns_ns2),

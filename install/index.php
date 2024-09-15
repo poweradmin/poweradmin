@@ -53,7 +53,7 @@ $stepValidator = new StepValidator();
 $step = $request->get('step', InstallationSteps::STEP_CHOOSE_LANGUAGE);
 $currentStep = $stepValidator->getCurrentStep($step);
 
-$installationHelper = new InstallationHelper($twigEnvironment, $currentStep);
+$installationHelper = new InstallationHelper($twigEnvironment, $currentStep, $currentLanguage);
 $installationHelper->checkConfigFile($localConfigFile);
 
 switch ($currentStep) {
@@ -62,11 +62,11 @@ switch ($currentStep) {
         break;
 
     case InstallationSteps::STEP_GETTING_READY:
-        $installationHelper->step2GettingReady($currentLanguage);
+        $installationHelper->step2GettingReady();
         break;
 
     case InstallationSteps::STEP_CONFIGURING_DATABASE:
-        $installationHelper->step3ConfiguringDatabase($currentLanguage);
+        $installationHelper->step3ConfiguringDatabase();
         break;
 
     case InstallationSteps::STEP_SETUP_ACCOUNT_AND_NAMESERVERS:
@@ -74,12 +74,11 @@ switch ($currentStep) {
         break;
 
     case InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER:
-        $installationHelper->step5CreateLimitedRightsUser($currentLanguage);
+        $installationHelper->step5CreateLimitedRightsUser();
         break;
 
     case InstallationSteps::STEP_CREATE_CONFIGURATION_FILE:
         $installationHelper->step6CreateConfigurationFile(
-            $currentLanguage,
             $defaultConfigFile,
             $localConfigFile
         );
