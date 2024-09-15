@@ -60,14 +60,14 @@ class InstallationHelper
         echo $this->twig->render($templateName, $data);
     }
 
-    function step1ChooseLanguage(): void
+    public function step1ChooseLanguage(): void
     {
         $this->renderTemplate('step1.html.twig', array(
             'current_step' => $this->currentStep
         ));
     }
 
-    function step2GettingReady($language): void
+    public function step2GettingReady($language): void
     {
         $this->renderTemplate('step2.html.twig', array(
             'current_step' => $this->currentStep,
@@ -75,7 +75,7 @@ class InstallationHelper
         ));
     }
 
-    function step3ConfiguringDatabase($language): void
+    public function step3ConfiguringDatabase($language): void
     {
         $this->renderTemplate('step3.html.twig', array(
             'current_step' => $this->currentStep,
@@ -83,7 +83,7 @@ class InstallationHelper
         ));
     }
 
-    function step4SetupAccountAndNameServers($default_config_file): void
+    public function step4SetupAccountAndNameServers($default_config_file): void
     {
         echo "<p class='alert alert-secondary'>" . _('Updating database...') . " ";
 
@@ -130,7 +130,7 @@ class InstallationHelper
         ], $credentials));
     }
 
-    function step5CreateLimitedRightsUser($language): void
+    public function step5CreateLimitedRightsUser($language): void
     {
         $this->currentStep++;
 
@@ -184,7 +184,7 @@ class InstallationHelper
         ));
     }
 
-    function step6CreateConfigurationFile($language, $default_config_file, $local_config_file): void
+    public function step6CreateConfigurationFile($language, $default_config_file, $local_config_file): void
     {
         // No need to set database port if it's standard port for that db
         $db_port = ($_POST['db_type'] == 'mysql' && $_POST['db_port'] != 3306)
@@ -234,7 +234,7 @@ class InstallationHelper
         ));
     }
 
-    function step7InstallationComplete(): void
+    public function step7InstallationComplete(): void
     {
         $this->renderTemplate('step7.html.twig', array(
             'current_step' => InstallationSteps::STEP_INSTALLATION_COMPLETE,
