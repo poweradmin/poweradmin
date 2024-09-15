@@ -33,12 +33,14 @@ class StepValidator
         if (is_string($step)) {
             $step = trim($step);
         }
+
         $filteredStep = filter_var($step, FILTER_VALIDATE_INT, [
             'options' => [
                 'min_range' => self::MIN_STEP_VALUE,
                 'max_range' => self::MAX_STEP_VALUE
             ]
         ]);
+
         return $filteredStep !== false ? $filteredStep : InstallationSteps::STEP_CHOOSE_LANGUAGE;
     }
 }
