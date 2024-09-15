@@ -22,6 +22,7 @@
 
 declare(strict_types=1);
 
+use PoweradminInstall\InstallationHelper;
 use PoweradminInstall\InstallationSteps;
 use PoweradminInstall\LocaleHandler;
 use PoweradminInstall\StepValidator;
@@ -33,8 +34,6 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
 error_reporting(E_ALL) ;
-
-require_once 'helpers/install_helpers.php';
 
 $local_config_file = dirname(__DIR__) . '/inc/config.inc.php';
 $default_config_file = dirname(__DIR__) . '/inc/config-defaults.inc.php';
@@ -53,32 +52,33 @@ $twigEnvironment = $twigEnvironmentInitializer->initialize($language);
 $stepValidator = new StepValidator();
 $step = $request->get('step', InstallationSteps::STEP_CHOOSE_LANGUAGE);
 $current_step = $stepValidator->getCurrentStep($step);
-checkConfigFile($current_step, $local_config_file, $twigEnvironment);
+
+$installationHelper = new InstallationHelper($twigEnvironment);
+$installationHelper->checkConfigFile($current_step, $local_config_file);
 
 switch ($current_step) {
     case InstallationSteps::STEP_CHOOSE_LANGUAGE:
-        step1ChooseLanguage($twigEnvironment, $current_step);
+        $installationHelper->step1ChooseLanguage($current_step);
         break;
 
     case InstallationSteps::STEP_GETTING_READY:
-        step2GettingReady($twigEnvironment, $current_step, $language);
+        $installationHelper->step2GettingReady($current_step, $language);
         break;
 
     case InstallationSteps::STEP_CONFIGURING_DATABASE:
-        step3ConfiguringDatabase($twigEnvironment, $current_step, $language);
+        $installationHelper->step3ConfiguringDatabase($current_step, $language);
         break;
 
     case InstallationSteps::STEP_SETUP_ACCOUNT_AND_NAMESERVERS:
-        step4SetupAccountAndNameServers($twigEnvironment, $current_step, $default_config_file);
+        $installationHelper->step4SetupAccountAndNameServers($current_step, $default_config_file);
         break;
 
     case InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER:
-        step5CreateLimitedRightsUser($twigEnvironment, $current_step, $language);
+        $installationHelper->step5CreateLimitedRightsUser($current_step, $language);
         break;
 
     case InstallationSteps::STEP_CREATE_CONFIGURATION_FILE:
-        step6CreateConfigurationFile(
-            $twigEnvironment,
+        $installationHelper->step6CreateConfigurationFile(
             $current_step,
             $language,
             $default_config_file,
@@ -87,7 +87,7 @@ switch ($current_step) {
         break;
 
     case InstallationSteps::STEP_INSTALLATION_COMPLETE:
-        step7InstallationComplete($twigEnvironment);
+        $installationHelper->step7InstallationComplete();
         break;
 
     default:
