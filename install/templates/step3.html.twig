@@ -16,6 +16,17 @@
     <form class="needs-validation" method="post" novalidate>
         <table class="table table-sm">
             <tbody>
+            <tr>
+                <td width="210">{% trans %}Database type{% endtrans %}</td>
+                <td>
+                    <select class="form-select form-select-sm" name="type" onChange="updateFormFields(this.value)">
+                        <option value="mysql">MySQL</option>
+                        <option value="pgsql">PostgreSQL</option>
+                        <option value="sqlite">SQLite</option>
+                    </select>
+                </td>
+                <td>{% trans %}The type of the PowerDNS database.{% endtrans %}</td>
+            </tr>
             <tr id="username_row">
                 <td>{% trans %}Username{% endtrans %}</td>
                 <td class="w-25">
@@ -37,17 +48,6 @@
                     </div>
                 </td>
                 <td>{% trans %}The password for this username.{% endtrans %}</td>
-            </tr>
-            <tr>
-                <td width="210">{% trans %}Database type{% endtrans %}</td>
-                <td>
-                    <select class="form-select form-select-sm" name="type" onChange="updateFormFields(this.value)">
-                        <option value="mysql">MySQL</option>
-                        <option value="pgsql">PostgreSQL</option>
-                        <option value="sqlite">SQLite</option>
-                    </select>
-                </td>
-                <td>{% trans %}The type of the PowerDNS database.{% endtrans %}</td>
             </tr>
             <tr id="hostname_row">
                 <td>{% trans %}Hostname{% endtrans %}</td>
