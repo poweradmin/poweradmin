@@ -23,7 +23,7 @@
     "symfony/translation": "^v6.4.0",
     "twbs/bootstrap": "^v5.3.3",
     "twbs/bootstrap-icons": "^v1.11.3",
-    "symfony/http-foundation": "6.4.10"
+    "symfony/http-foundation": "^6.4.10"
   },
   "suggest": {
     "ext-ldap": "For LDAP support"
