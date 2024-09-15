@@ -27,32 +27,32 @@ use Poweradmin\Domain\Error\ErrorMessage;
 
 class LocaleHandler
 {
+    public const DEFAULT_LANGUAGE = 'en_EN';
+
     private const SUPPORTED_LANGUAGES = [
         'cs_CZ', 'de_DE', 'fr_FR', 'ja_JP', 'lt_LT', 'nb_NO', 'nl_NL', 'pl_PL', 'ru_RU', 'tr_TR', 'zh_CN', 'en_EN'
     ];
 
-    public function getLocaleFile(string $iface_lang): string
+    public function getLocaleFile(string $language): string
     {
-        if ($this->isSupportedLanguage($iface_lang)) {
-            return dirname(__DIR__, 2) . "/locale/$iface_lang/LC_MESSAGES/messages.po";
+        if ($this->isSupportedLanguage($language)) {
+            return dirname(__DIR__, 2) . "/locale/$language/LC_MESSAGES/messages.po";
         }
-        return dirname(__DIR__, 2) . "/locale/en_EN/LC_MESSAGES/messages.po";
+        return dirname(__DIR__, 2) . "/locale/" . self::DEFAULT_LANGUAGE . "/LC_MESSAGES/messages.po";
     }
 
-    public function getLanguageFromRequest(): string
+    public function getCurrentLanguage(mixed $language): string
     {
-        $defaultLanguage = 'en_EN';
-
-        if (isset($_POST['language']) && $this->isSupportedLanguage($_POST['language'])) {
-            return $_POST['language'];
+        if ($this->isSupportedLanguage($language)) {
+            return $language;
         }
 
-        return $defaultLanguage;
+        return self::DEFAULT_LANGUAGE;
     }
 
-    public function setLanguage($language): void
+    public function setLanguage(string $language): void
     {
-        if ($language != 'en_EN') {
+        if ($language != self::DEFAULT_LANGUAGE) {
             $locales = [
                 $language . '.UTF-8',
                 $language . '.utf8',

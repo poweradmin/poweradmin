@@ -42,11 +42,12 @@ $defaultConfigFile = dirname(__DIR__) . '/inc/config-defaults.inc.php';
 $request = Request::createFromGlobals();
 
 $localeHandler = new LocaleHandler();
-$language = $localeHandler->getLanguageFromRequest();
-$localeHandler->setLanguage($language);
+$language = $request->get('language', LocaleHandler::DEFAULT_LANGUAGE);
+$currentLanguage = $localeHandler->getCurrentLanguage($language);
+$localeHandler->setLanguage($currentLanguage);
 
 $twigEnvironmentInitializer = new TwigEnvironmentInitializer($localeHandler);
-$twigEnvironment = $twigEnvironmentInitializer->initialize($language);
+$twigEnvironment = $twigEnvironmentInitializer->initialize($currentLanguage);
 
 $stepValidator = new StepValidator();
 $step = $request->get('step', InstallationSteps::STEP_CHOOSE_LANGUAGE);
@@ -61,11 +62,11 @@ switch ($currentStep) {
         break;
 
     case InstallationSteps::STEP_GETTING_READY:
-        $installationHelper->step2GettingReady($language);
+        $installationHelper->step2GettingReady($currentLanguage);
         break;
 
     case InstallationSteps::STEP_CONFIGURING_DATABASE:
-        $installationHelper->step3ConfiguringDatabase($language);
+        $installationHelper->step3ConfiguringDatabase($currentLanguage);
         break;
 
     case InstallationSteps::STEP_SETUP_ACCOUNT_AND_NAMESERVERS:
@@ -73,12 +74,12 @@ switch ($currentStep) {
         break;
 
     case InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER:
-        $installationHelper->step5CreateLimitedRightsUser($language);
+        $installationHelper->step5CreateLimitedRightsUser($currentLanguage);
         break;
 
     case InstallationSteps::STEP_CREATE_CONFIGURATION_FILE:
         $installationHelper->step6CreateConfigurationFile(
-            $language,
+            $currentLanguage,
             $defaultConfigFile,
             $localConfigFile
         );
