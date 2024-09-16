@@ -27,6 +27,7 @@
         <input type="hidden" name="dns_ns2" value="{{ dns_ns2 }}">
         <input type="hidden" name="step" value="{{ current_step }}">
         <input type="hidden" name="language" value="{{ language }}">
-        <input type="submit" name="submit" class="btn btn-primary btn-sm" value="{% trans %}Go to step{% endtrans %} {{ current_step }}">
+        <input type="hidden" name="step" value="{{ next_step }}">
+        <input type="submit" name="submit" class="btn btn-primary btn-sm" value="{% trans %}Go to step{% endtrans %} {{ next_step }}">
     </form>
 {% endblock %}

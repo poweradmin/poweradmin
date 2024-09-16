@@ -121,8 +121,6 @@ class InstallationHelper
 
     public function step5CreateLimitedRightsUser(Request $request): void
     {
-        $this->currentStep++;
-
         $credentials = [
             'db_user' => $request->get('db_user'),
             'db_pass' => $request->get('db_pass'),
