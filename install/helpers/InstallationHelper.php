@@ -227,7 +227,6 @@ class InstallationHelper
             'db_type' => $db_type,
             'db_port' => $db_port,
             'db_charset' => $db_charset,
-            'pa_pass' => $pa_pass
         ));
     }
 
