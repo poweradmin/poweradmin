@@ -31,13 +31,15 @@ use Twig\Environment;
 
 class InstallationHelper
 {
+    private Request $request;
     private Environment $twig;
     private int $currentStep;
     private string $language;
     private const SESSION_KEY_LENGTH = 46;
 
-    public function __construct(Environment $twig, int $currentStep, string $language)
+    public function __construct(Request $request, Environment $twig, int $currentStep, string $language)
     {
+        $this->request = $request;
         $this->twig = $twig;
         $this->currentStep = $currentStep;
         $this->language = $language;
@@ -86,26 +88,26 @@ class InstallationHelper
         ));
     }
 
-    public function step4SetupAccountAndNameServers(Request $request, string $default_config_file): void
+    public function step4SetupAccountAndNameServers(string $default_config_file): void
     {
         echo "<p class='alert alert-secondary'>" . _('Updating database...') . " ";
 
         $credentials = [
-            'db_user' => $request->get('db_user'),
-            'db_pass' => $request->get('db_pass'),
-            'db_host' => $request->get('db_host'),
-            'db_port' => $request->get('db_port'),
-            'db_name' => $request->get('db_name'),
-            'db_charset' => $request->get('db_charset'),
-            'db_collation' => $request->get('db_collation'),
-            'db_type' => $request->get('db_type'),
+            'db_user' => $this->request->get('db_user'),
+            'db_pass' => $this->request->get('db_pass'),
+            'db_host' => $this->request->get('db_host'),
+            'db_port' => $this->request->get('db_port'),
+            'db_name' => $this->request->get('db_name'),
+            'db_charset' => $this->request->get('db_charset'),
+            'db_collation' => $this->request->get('db_collation'),
+            'db_type' => $this->request->get('db_type'),
         ];
 
         if ($credentials['db_type'] == 'sqlite') {
             $credentials['db_file'] = $credentials['db_name'];
         }
 
-        $pa_pass = $request->get('pa_pass');
+        $pa_pass = $this->request->get('pa_pass');
 
         $databaseConnection = new PDODatabaseConnection();
         $databaseService = new DatabaseService($databaseConnection);
@@ -123,35 +125,35 @@ class InstallationHelper
 
         $this->renderTemplate('step4.html.twig', array_merge([
             'current_step' => $this->currentStep,
-            'language' => $request->get('language'),
+            'language' => $this->request->get('language'),
             'pa_pass' => $pa_pass,
         ], $credentials));
     }
 
-    public function step5CreateLimitedRightsUser(Request $request): void
+    public function step5CreateLimitedRightsUser(): void
     {
         $credentials = [
-            'db_user' => $request->get('db_user'),
-            'db_pass' => $request->get('db_pass'),
-            'db_host' => $request->get('db_host'),
-            'db_port' => $request->get('db_port'),
-            'db_name' => $request->get('db_name'),
-            'db_charset' => $request->get('db_charset'),
-            'db_collation' => $request->get('db_collation'),
-            'db_type' => $request->get('db_type'),
+            'db_user' => $this->request->get('db_user'),
+            'db_pass' => $this->request->get('db_pass'),
+            'db_host' => $this->request->get('db_host'),
+            'db_port' => $this->request->get('db_port'),
+            'db_name' => $this->request->get('db_name'),
+            'db_charset' => $this->request->get('db_charset'),
+            'db_collation' => $this->request->get('db_collation'),
+            'db_type' => $this->request->get('db_type'),
         ];
 
         if ($credentials['db_type'] == 'sqlite') {
             $credentials['db_file'] = $credentials['db_name'];
         } else {
-            $credentials['pa_db_user'] = $request->get('pa_db_user');
-            $credentials['pa_db_pass'] = $request->get('pa_db_pass');
+            $credentials['pa_db_user'] = $this->request->get('pa_db_user');
+            $credentials['pa_db_pass'] = $this->request->get('pa_db_pass');
         }
 
-        $pa_pass = $request->get('pa_pass');
-        $hostmaster = $request->get('dns_hostmaster');
-        $dns_ns1 = $request->get('dns_ns1');
-        $dns_ns2 = $request->get('dns_ns2');
+        $pa_pass = $this->request->get('pa_pass');
+        $hostmaster = $this->request->get('dns_hostmaster');
+        $dns_ns1 = $this->request->get('dns_ns1');
+        $dns_ns2 = $this->request->get('dns_ns2');
 
         $databaseConnection = new PDODatabaseConnection();
         $databaseService = new DatabaseService($databaseConnection);
@@ -180,29 +182,29 @@ class InstallationHelper
         ));
     }
 
-    public function step6CreateConfigurationFile(Request $request, string $default_config_file, string $local_config_file): void
+    public function step6CreateConfigurationFile(string $default_config_file, string $local_config_file): void
     {
         // No need to set database port if it's standard port for that db
-        $db_port = ($request->get('db_type') == 'mysql' && $request->get('db_port') != 3306)
-        || ($request->get('db_type') == 'pgsql' && $request->get('db_port') != 5432) ? $request->get('db_port') : '';
+        $db_port = ($this->request->get('db_type') == 'mysql' && $this->request->get('db_port') != 3306)
+        || ($this->request->get('db_type') == 'pgsql' && $this->request->get('db_port') != 5432) ? $this->request->get('db_port') : '';
 
         // For SQLite we should provide path to db file
-        $db_file = $request->get('db_type') == 'sqlite' ? $request->get('db_name') : '';
+        $db_file = $this->request->get('db_type') == 'sqlite' ? $this->request->get('db_name') : '';
 
         $config = new AppConfiguration($default_config_file);
 
-        $dns_hostmaster = $request->get('dns_hostmaster');
-        $dns_ns1 = $request->get('dns_ns1');
-        $dns_ns2 = $request->get('dns_ns2');
-//        $dns_ns3 = $request->get('dns_ns3');
-//        $dns_ns4 = $request->get('dns_ns4');
-        $db_host = $request->get('db_host');
-        $db_user = $request->get('pa_db_user') ?? '';
-        $db_pass = $request->get('pa_db_pass') ?? '';
-        $db_name = $request->get('db_name');
-        $db_type = $request->get('db_type');
-        $db_charset = $request->get('db_charset');
-        $pa_pass = $request->get('pa_pass');
+        $dns_hostmaster = $this->request->get('dns_hostmaster');
+        $dns_ns1 = $this->request->get('dns_ns1');
+        $dns_ns2 = $this->request->get('dns_ns2');
+//        $dns_ns3 = $this->request->get('dns_ns3');
+//        $dns_ns4 = $this->request->get('dns_ns4');
+        $db_host = $this->request->get('db_host');
+        $db_user = $this->request->get('pa_db_user') ?? '';
+        $db_pass = $this->request->get('pa_db_pass') ?? '';
+        $db_name = $this->request->get('db_name');
+        $db_type = $this->request->get('db_type');
+        $db_charset = $this->request->get('db_charset');
+        $pa_pass = $this->request->get('pa_pass');
 
         $userAuthService = new UserAuthenticationService(
             $config->get('password_encryption'),
