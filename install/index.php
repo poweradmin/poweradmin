@@ -70,15 +70,16 @@ switch ($currentStep) {
         break;
 
     case InstallationSteps::STEP_SETUP_ACCOUNT_AND_NAMESERVERS:
-        $installationHelper->step4SetupAccountAndNameServers($defaultConfigFile);
+        $installationHelper->step4SetupAccountAndNameServers($request, $defaultConfigFile);
         break;
 
     case InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER:
-        $installationHelper->step5CreateLimitedRightsUser();
+        $installationHelper->step5CreateLimitedRightsUser($request);
         break;
 
     case InstallationSteps::STEP_CREATE_CONFIGURATION_FILE:
         $installationHelper->step6CreateConfigurationFile(
+            $request,
             $defaultConfigFile,
             $localConfigFile
         );

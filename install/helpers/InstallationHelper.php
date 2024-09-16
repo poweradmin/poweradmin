@@ -26,6 +26,7 @@ use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\AppConfiguration;
+use Symfony\Component\HttpFoundation\Request;
 use Twig\Environment;
 
 class InstallationHelper
@@ -42,7 +43,7 @@ class InstallationHelper
         $this->language = $language;
     }
 
-    public function checkConfigFile($local_config_file): void
+    public function checkConfigFile(string $local_config_file): void
     {
         if (file_exists($local_config_file)) {
             if ($this->currentStep == InstallationSteps::STEP_INSTALLATION_COMPLETE) {
@@ -54,7 +55,7 @@ class InstallationHelper
         }
     }
 
-    private function renderTemplate($templateName, $data): void
+    private function renderTemplate(string $templateName, array $data): void
     {
         $data['next_step'] = filter_var($data['current_step'], FILTER_VALIDATE_INT) ?: 0;
         $data['next_step'] += 1;
@@ -85,31 +86,17 @@ class InstallationHelper
         ));
     }
 
-    public function step4SetupAccountAndNameServers($default_config_file): void
+    public function step4SetupAccountAndNameServers(Request $request, string $default_config_file): void
     {
         echo "<p class='alert alert-secondary'>" . _('Updating database...') . " ";
 
-        $credentials = [
-            'db_user' => $_POST['user'],
-            'db_pass' => $_POST['pass'],
-            'db_host' => $_POST['host'],
-            'db_port' => $_POST['dbport'],
-            'db_name' => $_POST['name'],
-            'db_charset' => $_POST['charset'],
-            'db_collation' => $_POST['collation'],
-            'db_type' => $_POST['type'],
-        ];
-
-        if ($credentials['db_type'] == 'sqlite') {
-            $credentials['db_file'] = $credentials['db_name'];
-        }
+        $credentials = $this->getDatabaseCredentials($request);
+        $pa_pass = $request->get('pa_pass');
 
         foreach ($credentials as $key => $value) {
             $value = strip_tags(trim($value));
             $credentials[$key] = $value;
         }
-
-        $pa_pass = $_POST['pa_pass'];
 
         $databaseConnection = new PDODatabaseConnection();
         $databaseService = new DatabaseService($databaseConnection);
@@ -127,37 +114,37 @@ class InstallationHelper
 
         $this->renderTemplate('step4.html.twig', array_merge([
             'current_step' => $this->currentStep,
-            'language' => htmlspecialchars($_POST['language']),
-            'pa_pass' => htmlspecialchars($pa_pass),
+            'language' => $request->get('language'),
+            'pa_pass' => $pa_pass,
         ], $credentials));
     }
 
-    public function step5CreateLimitedRightsUser(): void
+    public function step5CreateLimitedRightsUser(Request $request): void
     {
         $this->currentStep++;
 
         $credentials = [
-            'db_user' => $_POST['db_user'],
-            'db_pass' => $_POST['db_pass'],
-            'db_host' => $_POST['db_host'],
-            'db_port' => $_POST['db_port'],
-            'db_name' => $_POST['db_name'],
-            'db_charset' => $_POST['db_charset'],
-            'db_collation' => $_POST['db_collation'],
-            'db_type' => $_POST['db_type'],
+            'db_user' => $request->get('db_user'),
+            'db_pass' => $request->get('db_pass'),
+            'db_host' => $request->get('db_host'),
+            'db_port' => $request->get('db_port'),
+            'db_name' => $request->get('db_name'),
+            'db_charset' => $request->get('db_charset'),
+            'db_collation' => $request->get('db_collation'),
+            'db_type' => $request->get('db_type'),
         ];
 
         if ($credentials['db_type'] == 'sqlite') {
             $credentials['db_file'] = $credentials['db_name'];
         } else {
-            $credentials['pa_db_user'] = $_POST['pa_db_user'];
-            $credentials['pa_db_pass'] = $_POST['pa_db_pass'];
+            $credentials['pa_db_user'] = $request->get('pa_db_user');
+            $credentials['pa_db_pass'] = $request->get('pa_db_pass');
         }
 
-        $pa_pass = $_POST['pa_pass'];
-        $hostmaster = $_POST['dns_hostmaster'];
-        $dns_ns1 = $_POST['dns_ns1'];
-        $dns_ns2 = $_POST['dns_ns2'];
+        $pa_pass = $request->get('pa_pass');
+        $hostmaster = $request->get('dns_hostmaster');
+        $dns_ns1 = $request->get('dns_ns1');
+        $dns_ns2 = $request->get('dns_ns2');
 
         $databaseConnection = new PDODatabaseConnection();
         $databaseService = new DatabaseService($databaseConnection);
@@ -186,29 +173,29 @@ class InstallationHelper
         ));
     }
 
-    public function step6CreateConfigurationFile($default_config_file, $local_config_file): void
+    public function step6CreateConfigurationFile(Request $request, string $default_config_file, string $local_config_file): void
     {
         // No need to set database port if it's standard port for that db
-        $db_port = ($_POST['db_type'] == 'mysql' && $_POST['db_port'] != 3306)
-        || ($_POST['db_type'] == 'pgsql' && $_POST['db_port'] != 5432) ? $_POST['db_port'] : '';
+        $db_port = ($request->get('db_type') == 'mysql' && $request->get('db_port') != 3306)
+        || ($request->get('db_type') == 'pgsql' && $request->get('db_port') != 5432) ? $request->get('db_port') : '';
 
         // For SQLite we should provide path to db file
-        $db_file = $_POST['db_type'] == 'sqlite' ? htmlspecialchars($_POST['db_name']) : '';
+        $db_file = $request->get('db_type') == 'sqlite' ? htmlspecialchars($request->get('db_name')) : '';
 
         $config = new AppConfiguration($default_config_file);
 
-        $dns_hostmaster = $_POST['dns_hostmaster'];
-        $dns_ns1 = $_POST['dns_ns1'];
-        $dns_ns2 = $_POST['dns_ns2'];
-//        $dns_ns3 = $_POST['dns_ns3'];
-//        $dns_ns4 = $_POST['dns_ns4'];
-        $db_host = $_POST['db_host'];
-        $db_user = $_POST['pa_db_user'] ?? '';
-        $db_pass = $_POST['pa_db_pass'] ?? '';
-        $db_name = $_POST['db_name'];
-        $db_type = $_POST['db_type'];
-        $db_charset = $_POST['db_charset'];
-        $pa_pass = $_POST['pa_pass'];
+        $dns_hostmaster = $request->get('dns_hostmaster');
+        $dns_ns1 = $request->get('dns_ns1');
+        $dns_ns2 = $request->get('dns_ns2');
+//        $dns_ns3 = $request->get('dns_ns3');
+//        $dns_ns4 = $request->get('dns_ns4');
+        $db_host = $request->get('db_host');
+        $db_user = $request->get('pa_db_user') ?? '';
+        $db_pass = $request->get('pa_db_pass') ?? '';
+        $db_name = $request->get('db_name');
+        $db_type = $request->get('db_type');
+        $db_charset = $request->get('db_charset');
+        $pa_pass = $request->get('pa_pass');
 
         $userAuthService = new UserAuthenticationService(
             $config->get('password_encryption'),
@@ -241,5 +228,25 @@ class InstallationHelper
         $this->renderTemplate('step7.html.twig', array(
             'current_step' => InstallationSteps::STEP_INSTALLATION_COMPLETE,
         ));
+    }
+
+    public function getDatabaseCredentials(Request $request): array
+    {
+        $credentials = [
+            'db_user' => $request->get('user'),
+            'db_pass' => $request->get('pass'),
+            'db_host' => $request->get('host'),
+            'db_port' => $request->get('dbport'),
+            'db_name' => $request->get('name'),
+            'db_charset' => $request->get('charset'),
+            'db_collation' => $request->get('collation'),
+            'db_type' => $request->get('type'),
+        ];
+
+        if ($credentials['db_type'] == 'sqlite') {
+            $credentials['db_file'] = $credentials['db_name'];
+        }
+
+        return $credentials;
     }
 }
