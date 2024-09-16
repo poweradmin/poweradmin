@@ -216,7 +216,6 @@ class InstallationHelper
             'language' => $this->language,
             'local_config_file' => $local_config_file,
             'session_key' => $userAuthService->generateSalt(self::SESSION_KEY_LENGTH),
-            'iface_lang' => $this->language,
             'dns_hostmaster' => $dns_hostmaster,
             'dns_ns1' => $dns_ns1,
             'dns_ns2' => $dns_ns2,
