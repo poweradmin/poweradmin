@@ -35,6 +35,12 @@ $iface_lang = '{{ language }}';
 $dns_hostmaster = '{{ dns_hostmaster }}';
 $dns_ns1 = '{{ dns_ns1 }}';
 $dns_ns2 = '{{ dns_ns2 }}';
+{% if dns_ns3 %}
+$dns_ns3 = '{{ dns_ns3 }}';
+{% endif %}
+{% if dns_ns4 %}
+$dns_ns4 = '{{ dns_ns4 }}';
+{% endif %}
 </pre>
 
     <form method="post">

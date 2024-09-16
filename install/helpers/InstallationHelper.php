@@ -154,6 +154,8 @@ class InstallationHelper
         $hostmaster = $this->request->get('dns_hostmaster');
         $dns_ns1 = $this->request->get('dns_ns1');
         $dns_ns2 = $this->request->get('dns_ns2');
+        $dns_ns3 = $this->request->get('dns_ns3');
+        $dns_ns4 = $this->request->get('dns_ns4');
 
         $databaseConnection = new PDODatabaseConnection();
         $databaseService = new DatabaseService($databaseConnection);
@@ -178,6 +180,8 @@ class InstallationHelper
             'dns_hostmaster' => $hostmaster,
             'dns_ns1' => $dns_ns1,
             'dns_ns2' => $dns_ns2,
+            'dns_ns3' => $dns_ns3,
+            'dns_ns4' => $dns_ns4,
             'instructions' => $instructions
         ));
     }
@@ -196,15 +200,14 @@ class InstallationHelper
         $dns_hostmaster = $this->request->get('dns_hostmaster');
         $dns_ns1 = $this->request->get('dns_ns1');
         $dns_ns2 = $this->request->get('dns_ns2');
-//        $dns_ns3 = $this->request->get('dns_ns3');
-//        $dns_ns4 = $this->request->get('dns_ns4');
+        $dns_ns3 = $this->request->get('dns_ns3');
+        $dns_ns4 = $this->request->get('dns_ns4');
         $db_host = $this->request->get('db_host');
         $db_user = $this->request->get('pa_db_user') ?? '';
         $db_pass = $this->request->get('pa_db_pass') ?? '';
         $db_name = $this->request->get('db_name');
         $db_type = $this->request->get('db_type');
         $db_charset = $this->request->get('db_charset');
-        $pa_pass = $this->request->get('pa_pass');
 
         $userAuthService = new UserAuthenticationService(
             $config->get('password_encryption'),
@@ -219,6 +222,8 @@ class InstallationHelper
             'dns_hostmaster' => $dns_hostmaster,
             'dns_ns1' => $dns_ns1,
             'dns_ns2' => $dns_ns2,
+            'dns_ns3' => $dns_ns3,
+            'dns_ns4' => $dns_ns4,
             'db_host' => $db_host,
             'db_user' => $db_user,
             'db_pass' => $db_pass,

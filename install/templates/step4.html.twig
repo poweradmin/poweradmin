@@ -59,6 +59,24 @@
                     Should be like "ns2.example.net".{% endtrans %}
                 </td>
             </tr>
+            <tr>
+                <td>{% trans %}Tertiary Nameserver{% endtrans %}</td>
+                <td>
+                    <input class="form-control form-control-sm" type="text" name="dns_ns3" value="">
+                </td>
+                <td>{% trans %}When creating new zones using the template, this value will be used as tertiary nameserver.
+                        Should be like "ns3.example.net".{% endtrans %}
+                </td>
+            </tr>
+            <tr>
+                <td>{% trans %}Quaternary Nameserver{% endtrans %}</td>
+                <td>
+                    <input class="form-control form-control-sm" type="text" name="dns_ns4" value="">
+                </td>
+                <td>{% trans %}When creating new zones using the template, this value will be used as quaternary nameserver.
+                        Should be like "ns4.example.net".{% endtrans %}
+                </td>
+            </tr>
         </table>
         <br>
         <input type="hidden" name="db_user" value="{{ db_user }}">
