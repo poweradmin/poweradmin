@@ -90,13 +90,22 @@ class InstallationHelper
     {
         echo "<p class='alert alert-secondary'>" . _('Updating database...') . " ";
 
-        $credentials = $this->getDatabaseCredentials($request);
-        $pa_pass = $request->get('pa_pass');
+        $credentials = [
+            'db_user' => $request->get('db_user'),
+            'db_pass' => $request->get('db_pass'),
+            'db_host' => $request->get('db_host'),
+            'db_port' => $request->get('db_port'),
+            'db_name' => $request->get('db_name'),
+            'db_charset' => $request->get('db_charset'),
+            'db_collation' => $request->get('db_collation'),
+            'db_type' => $request->get('db_type'),
+        ];
 
-        foreach ($credentials as $key => $value) {
-            $value = strip_tags(trim($value));
-            $credentials[$key] = $value;
+        if ($credentials['db_type'] == 'sqlite') {
+            $credentials['db_file'] = $credentials['db_name'];
         }
+
+        $pa_pass = $request->get('pa_pass');
 
         $databaseConnection = new PDODatabaseConnection();
         $databaseService = new DatabaseService($databaseConnection);
@@ -154,19 +163,19 @@ class InstallationHelper
         $this->renderTemplate('step5.html.twig', array(
             'current_step' => $this->currentStep,
             'language' => $this->language,
-            'db_host' => htmlspecialchars($credentials['db_host']),
-            'db_name' => htmlspecialchars($credentials['db_name']),
-            'db_port' => htmlspecialchars($credentials['db_port']),
-            'db_type' => htmlspecialchars($credentials['db_type']),
-            'db_user' => htmlspecialchars($credentials['db_user']),
-            'db_pass' => htmlspecialchars($credentials['db_pass']),
-            'db_charset' => htmlspecialchars($credentials['db_charset']),
-            'pa_db_user' => isset($credentials['pa_db_user']) ? htmlspecialchars($credentials['pa_db_user']) : '',
-            'pa_db_pass' => isset($credentials['pa_db_pass']) ? htmlspecialchars($credentials['pa_db_pass']) : '',
-            'pa_pass' => htmlspecialchars($pa_pass),
-            'dns_hostmaster' => htmlspecialchars($hostmaster),
-            'dns_ns1' => htmlspecialchars($dns_ns1),
-            'dns_ns2' => htmlspecialchars($dns_ns2),
+            'db_host' => $credentials['db_host'],
+            'db_name' => $credentials['db_name'],
+            'db_port' => $credentials['db_port'],
+            'db_type' => $credentials['db_type'],
+            'db_user' => $credentials['db_user'],
+            'db_pass' => $credentials['db_pass'],
+            'db_charset' => $credentials['db_charset'],
+            'pa_db_user' => $credentials['pa_db_user'] ?? '',
+            'pa_db_pass' => $credentials['pa_db_pass'] ?? '',
+            'pa_pass' => $pa_pass,
+            'dns_hostmaster' => $hostmaster,
+            'dns_ns1' => $dns_ns1,
+            'dns_ns2' => $dns_ns2,
             'instructions' => $instructions
         ));
     }
@@ -178,7 +187,7 @@ class InstallationHelper
         || ($request->get('db_type') == 'pgsql' && $request->get('db_port') != 5432) ? $request->get('db_port') : '';
 
         // For SQLite we should provide path to db file
-        $db_file = $request->get('db_type') == 'sqlite' ? htmlspecialchars($request->get('db_name')) : '';
+        $db_file = $request->get('db_type') == 'sqlite' ? $request->get('db_name') : '';
 
         $config = new AppConfiguration($default_config_file);
 
@@ -201,23 +210,23 @@ class InstallationHelper
         );
 
         $this->renderTemplate('step6.html.twig', array(
-            'current_step' => (int)htmlspecialchars($this->currentStep),
+            'current_step' => $this->currentStep,
             'language' => $this->language,
             'local_config_file' => $local_config_file,
             'session_key' => $userAuthService->generateSalt(self::SESSION_KEY_LENGTH),
             'iface_lang' => $this->language,
-            'dns_hostmaster' => htmlspecialchars($dns_hostmaster),
-            'dns_ns1' => htmlspecialchars($dns_ns1),
-            'dns_ns2' => htmlspecialchars($dns_ns2),
-            'db_host' => htmlspecialchars($db_host),
-            'db_user' => htmlspecialchars($db_user),
-            'db_pass' => htmlspecialchars($db_pass),
-            'db_name' => htmlspecialchars($db_name),
+            'dns_hostmaster' => $dns_hostmaster,
+            'dns_ns1' => $dns_ns1,
+            'dns_ns2' => $dns_ns2,
+            'db_host' => $db_host,
+            'db_user' => $db_user,
+            'db_pass' => $db_pass,
+            'db_name' => $db_name,
             'db_file' => $db_file,
-            'db_type' => htmlspecialchars($db_type),
-            'db_port' => htmlspecialchars($db_port),
-            'db_charset' => htmlspecialchars($db_charset),
-            'pa_pass' => htmlspecialchars($pa_pass)
+            'db_type' => $db_type,
+            'db_port' => $db_port,
+            'db_charset' => $db_charset,
+            'pa_pass' => $pa_pass
         ));
     }
 
@@ -226,25 +235,5 @@ class InstallationHelper
         $this->renderTemplate('step7.html.twig', array(
             'current_step' => InstallationSteps::STEP_INSTALLATION_COMPLETE,
         ));
-    }
-
-    public function getDatabaseCredentials(Request $request): array
-    {
-        $credentials = [
-            'db_user' => $request->get('user'),
-            'db_pass' => $request->get('pass'),
-            'db_host' => $request->get('host'),
-            'db_port' => $request->get('dbport'),
-            'db_name' => $request->get('name'),
-            'db_charset' => $request->get('charset'),
-            'db_collation' => $request->get('collation'),
-            'db_type' => $request->get('type'),
-        ];
-
-        if ($credentials['db_type'] == 'sqlite') {
-            $credentials['db_file'] = $credentials['db_name'];
-        }
-
-        return $credentials;
     }
 }
