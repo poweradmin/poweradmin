@@ -17,20 +17,22 @@
         <table class="table table-sm">
             <tbody>
             <tr>
-                <td width="210">{% trans %}Database type{% endtrans %}</td>
+                <td class="col-md-2">{% trans %}Database type{% endtrans %}</td>
                 <td>
-                    <select class="form-select form-select-sm" name="db_type" onChange="updateFormFields(this.value)">
+                    <select id="db_type" class="form-select form-select-sm" name="db_type" onChange="updateFormFields(this.value)">
                         <option value="mysql">MySQL</option>
                         <option value="pgsql">PostgreSQL</option>
                         <option value="sqlite">SQLite</option>
                     </select>
                 </td>
-                <td>{% trans %}The type of the PowerDNS database.{% endtrans %}</td>
+                <td>
+                    <label for="db_type">{% trans %}The type of the PowerDNS database.{% endtrans %}</label>
+                </td>
             </tr>
             <tr id="username_row">
                 <td>{% trans %}Username{% endtrans %}</td>
                 <td class="w-25">
-                    <input class="form-control form-control-sm" type="text" id="username" name="db_user" value="" required>
+                    <input id="username" class="form-control form-control-sm" type="text" name="db_user" value="" required>
                     <div class="invalid-feedback">{% trans %}Provide the user name{% endtrans %}</div>
                 </td>
                 <td>{% trans %}The username to use to connect to the database, make sure the username has

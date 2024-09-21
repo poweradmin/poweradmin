@@ -6,14 +6,14 @@
 
 {% block content %}
     <form method="post">
-        <input class="form-check-input" type="radio" name="language" value="en_EN" checked> I prefer to proceed in english.<br>
-        <input class="form-check-input" type="radio" name="language" value="nl_NL"> Ik ga graag verder in het Nederlands.<br>
-        <input class="form-check-input" type="radio" name="language" value="de_DE"> Ich mache in Deutsch weiter.<br>
-        <input class="form-check-input" type="radio" name="language" value="ja_JP"> 日本語で続ける<br>
-        <input class="form-check-input" type="radio" name="language" value="pl_PL"> Chcę kontynuować po polsku.<br>
-        <input class="form-check-input" type="radio" name="language" value="fr_FR"> Je préfère continuer en français.<br>
-        <input class="form-check-input" type="radio" name="language" value="nb_NO"> Jeg ønsker å forsette på norsk.<br>
-        <input class="form-check-input" type="radio" name="language" value="zh_CN"> 简体中文<br>
+        <input id="language_en_EN" class="form-check-input" type="radio" name="language" value="en_EN" checked> <label for="language_en_EN">I prefer to proceed in english.</label><br>
+        <input id="language_nl_NL" class="form-check-input" type="radio" name="language" value="nl_NL"> <label for="language_nl_NL">Ik ga graag verder in het Nederlands.</label><br>
+        <input id="language_de_DE" class="form-check-input" type="radio" name="language" value="de_DE"> <label for="language_de_DE">Ich mache in Deutsch weiter.</label><br>
+        <input id="language_ja_JP" class="form-check-input" type="radio" name="language" value="ja_JP"> <label for="language_ja_JP">日本語で続ける</label><br>
+        <input id="language_pl_PL" class="form-check-input" type="radio" name="language" value="pl_PL"> <label for="language_pl_PL">Chcę kontynuować po polsku.</label><br>
+        <input id="language_fr_FR" class="form-check-input" type="radio" name="language" value="fr_FR"> <label for="language_fr_FR">Je préfère continuer en français.</label><br>
+        <input id="language_nb_NO" class="form-check-input" type="radio" name="language" value="nb_NO"> <label for="language_nb_NO">Jeg ønsker å forsette på norsk.</label><br>
+        <input id="language_zh_CN" class="form-check-input" type="radio" name="language" value="zh_CN"> <label for="language_zh_CN">简体中文</label><br>
         <input type="hidden" name="step" value="{{ next_step }}">
         <br>
         <input type="submit" name="submit" class="btn btn-primary btn-sm" value="{% trans %}Go to step{% endtrans %} {{ next_step }}">

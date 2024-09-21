@@ -28,6 +28,9 @@ use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\AppConfiguration;
 use Symfony\Component\HttpFoundation\Request;
 use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 class InstallationHelper
 {
@@ -62,7 +65,11 @@ class InstallationHelper
         $data['next_step'] = filter_var($data['current_step'], FILTER_VALIDATE_INT) ?: 0;
         $data['next_step'] += 1;
         $data['file_version'] = time();
-        echo $this->twig->render($templateName, $data);
+        try {
+            echo $this->twig->render($templateName, $data);
+        } catch (LoaderError|RuntimeError|SyntaxError $e) {
+            echo "<p class='alert alert-danger'>" . _('Error rendering template') . ": " . $e->getMessage() . "</p>";
+        }
     }
 
     public function step1ChooseLanguage(): void

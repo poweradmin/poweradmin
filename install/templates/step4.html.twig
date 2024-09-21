@@ -12,8 +12,8 @@
             <tr>
                 <td>{% trans %}Username{% endtrans %}</td>
                 <td class="w-25">
-                    <input class="form-control form-control-sm" type="text" name="pa_db_user" value="" required>
-                    <div class="invalid-feedback">{% trans %}Provide the user name{% endtrans %}</div>
+                    <input id="pa_db_user" class="form-control form-control-sm" type="text" name="pa_db_user" value="" required>
+                    <label for="pa_db_user" class="invalid-feedback">{% trans %}Provide the user name{% endtrans %}</label>
                 </td>
                 <td>{% trans %}The username for Poweradmin. This new user will have limited rights only.{% endtrans %}</td>
             </tr>
@@ -21,9 +21,9 @@
                 <td>{% trans %}Password{% endtrans %}</td>
                 <td>
                     <div class="input-group">
-                        <input class="form-control form-control-sm" type="password" id="pa_db_pass" name="pa_db_pass" value="" autocomplete="off" required>
+                        <input id="pa_db_pass" class="form-control form-control-sm" type="password" name="pa_db_pass" value="" autocomplete="off" required>
                         <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showPassword('pa_db_pass', 'eye1')"><i class="bi bi-eye-fill" id="eye1"></i></button>
-                        <div class="invalid-feedback">{% trans %}Provide the user password{% endtrans %}</div>
+                        <label for="pa_db_pass" class="invalid-feedback">{% trans %}Provide the user password{% endtrans %}</label>
                     </div>
                 </td>
                 <td>{% trans %}The password for this username.{% endtrans %}</td>
@@ -32,8 +32,10 @@
             <tr>
                 <td>{% trans %}Hostmaster{% endtrans %}</td>
                 <td>
-                    <input class="form-control form-control-sm" type="text" name="dns_hostmaster" value="" placeholder="hostmaster.example.net" required>
-                    <div class="invalid-feedback">{% trans %}Provide the DNS hostmaster{% endtrans %}</div>
+                    <input id="dns_hostmaster" class="form-control form-control-sm" type="text" name="dns_hostmaster"
+                           value="" placeholder="hostmaster.example.net" required>
+                    <label for="dns_hostmaster"
+                           class="invalid-feedback">{% trans %}Provide the DNS hostmaster{% endtrans %}</label>
                 </td>
                 <td>{% trans %}When creating SOA records and no hostmaster is provided, this value here will be used.{% endtrans %}
                 </td>
@@ -41,35 +43,43 @@
             <tr>
                 <td>{% trans %}Primary nameserver{% endtrans %}</td>
                 <td>
-                    <input class="form-control form-control-sm" type="text" name="dns_ns1" value="" placeholder="ns1.example.net" required>
+                    <input id="dns_ns1" class="form-control form-control-sm" type="text" name="dns_ns1" value=""
+                           placeholder="ns1.example.net" required>
                     <div class="invalid-feedback">{% trans %}Provide the primary nameserver{% endtrans %}</div>
                 </td>
-                <td>{% trans %}When creating new zones using the template, this value will be used as primary nameserver.{% endtrans %}
+                <td>
+                    <label for="dns_ns1">{% trans %}When creating new zones using the template, this value will be used as primary nameserver.{% endtrans %}</label>
                 </td>
             </tr>
             <tr>
                 <td>{% trans %}Secondary nameserver{% endtrans %}</td>
                 <td>
-                    <input class="form-control form-control-sm" type="text" name="dns_ns2" value="" placeholder="ns2.example.net" required>
+                    <input id="dns_ns2" class="form-control form-control-sm" type="text" name="dns_ns2" value=""
+                           placeholder="ns2.example.net" required>
                     <div class="invalid-feedback">{% trans %}Provide the secondary nameserver{% endtrans %}</div>
                 </td>
-                <td>{% trans %}When creating new zones using the template, this value will be used as secondary nameserver.{% endtrans %}
+                <td>
+                    <label for="dns_ns2"> {% trans %}When creating new zones using the template, this value will be used as secondary nameserver.{% endtrans %}</label>
                 </td>
             </tr>
             <tr>
                 <td>{% trans %}Tertiary Nameserver{% endtrans %}</td>
                 <td>
-                    <input class="form-control form-control-sm" type="text" name="dns_ns3" value="" placeholder="ns3.example.net">
+                    <input id="dns_ns3" class="form-control form-control-sm" type="text" name="dns_ns3" value=""
+                           placeholder="ns3.example.net">
                 </td>
-                <td>{% trans %}When creating new zones using the template, this value will be used as tertiary nameserver.{% endtrans %}
+                <td>
+                    <label for="dns_ns3">{% trans %}When creating new zones using the template, this value will be used as tertiary nameserver.{% endtrans %}</label>
                 </td>
             </tr>
             <tr>
                 <td>{% trans %}Quaternary Nameserver{% endtrans %}</td>
                 <td>
-                    <input class="form-control form-control-sm" type="text" name="dns_ns4" value="" placeholder="ns4.example.net">
+                    <input id="dns_ns4" class="form-control form-control-sm" type="text" name="dns_ns4" value=""
+                           placeholder="ns4.example.net">
                 </td>
-                <td>{% trans %}When creating new zones using the template, this value will be used as quaternary nameserver.{% endtrans %}
+                <td>
+                    <label for="dns_ns4">{% trans %}When creating new zones using the template, this value will be used as quaternary nameserver.{% endtrans %}</label>
                 </td>
             </tr>
         </table>
