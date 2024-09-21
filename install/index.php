@@ -35,59 +35,81 @@ ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
 error_reporting(E_ALL) ;
 
-$localConfigFile = dirname(__DIR__) . '/inc/config.inc.php';
-$defaultConfigFile = dirname(__DIR__) . '/inc/config-defaults.inc.php';
+class Installer
+{
+    private Request $request;
+    private LocaleHandler $localeHandler;
+    private StepValidator $stepValidator;
+    private InstallationHelper $installationHelper;
+    private string $localConfigFile;
+    private string $defaultConfigFile;
 
-// Main
-$request = Request::createFromGlobals();
+    public function __construct()
+    {
+        $this->localConfigFile = dirname(__DIR__) . '/inc/config.inc.php';
+        $this->defaultConfigFile = dirname(__DIR__) . '/inc/config-defaults.inc.php';
+        $this->request = Request::createFromGlobals();
+        $this->localeHandler = new LocaleHandler();
+        $this->stepValidator = new StepValidator();
+    }
 
-$localeHandler = new LocaleHandler();
-$language = $request->get('language', LocaleHandler::DEFAULT_LANGUAGE);
-$currentLanguage = $localeHandler->getCurrentLanguage($language);
-$localeHandler->setLanguage($currentLanguage);
+    public function initialize(): void
+    {
+        $language = $this->request->get('language', LocaleHandler::DEFAULT_LANGUAGE);
+        $currentLanguage = $this->localeHandler->getCurrentLanguage($language);
+        $this->localeHandler->setLanguage($currentLanguage);
 
-$twigEnvironmentInitializer = new TwigEnvironmentInitializer($localeHandler);
-$twigEnvironment = $twigEnvironmentInitializer->initialize($currentLanguage);
+        $twigEnvironmentInitializer = new TwigEnvironmentInitializer($this->localeHandler);
+        $twigEnvironment = $twigEnvironmentInitializer->initialize($currentLanguage);
 
-$stepValidator = new StepValidator();
-$step = $request->get('step', InstallationSteps::STEP_CHOOSE_LANGUAGE);
-$currentStep = $stepValidator->getCurrentStep($step);
+        $step = $this->request->get('step', InstallationSteps::STEP_CHOOSE_LANGUAGE);
+        $currentStep = $this->stepValidator->getCurrentStep($step);
 
-$installationHelper = new InstallationHelper($request, $twigEnvironment, $currentStep, $currentLanguage);
-$installationHelper->checkConfigFile($localConfigFile);
+        $this->installationHelper = new InstallationHelper($this->request, $twigEnvironment, $currentStep, $currentLanguage);
+        $this->installationHelper->checkConfigFile($this->localConfigFile);
 
-switch ($currentStep) {
-    case InstallationSteps::STEP_CHOOSE_LANGUAGE:
-        $installationHelper->step1ChooseLanguage();
-        break;
+        $this->handleStep($currentStep);
+    }
 
-    case InstallationSteps::STEP_GETTING_READY:
-        $installationHelper->step2GettingReady();
-        break;
+    private function handleStep($currentStep): void
+    {
+        switch ($currentStep) {
+            case InstallationSteps::STEP_CHOOSE_LANGUAGE:
+                $this->installationHelper->step1ChooseLanguage();
+                break;
 
-    case InstallationSteps::STEP_CONFIGURING_DATABASE:
-        $installationHelper->step3ConfiguringDatabase();
-        break;
+            case InstallationSteps::STEP_GETTING_READY:
+                $this->installationHelper->step2GettingReady();
+                break;
 
-    case InstallationSteps::STEP_SETUP_ACCOUNT_AND_NAMESERVERS:
-        $installationHelper->step4SetupAccountAndNameServers($defaultConfigFile);
-        break;
+            case InstallationSteps::STEP_CONFIGURING_DATABASE:
+                $this->installationHelper->step3ConfiguringDatabase();
+                break;
 
-    case InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER:
-        $installationHelper->step5CreateLimitedRightsUser();
-        break;
+            case InstallationSteps::STEP_SETUP_ACCOUNT_AND_NAMESERVERS:
+                $this->installationHelper->step4SetupAccountAndNameServers($this->defaultConfigFile);
+                break;
 
-    case InstallationSteps::STEP_CREATE_CONFIGURATION_FILE:
-        $installationHelper->step6CreateConfigurationFile(
-            $defaultConfigFile,
-            $localConfigFile
-        );
-        break;
+            case InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER:
+                $this->installationHelper->step5CreateLimitedRightsUser();
+                break;
 
-    case InstallationSteps::STEP_INSTALLATION_COMPLETE:
-        $installationHelper->step7InstallationComplete();
-        break;
+            case InstallationSteps::STEP_CREATE_CONFIGURATION_FILE:
+                $this->installationHelper->step6CreateConfigurationFile(
+                    $this->defaultConfigFile,
+                    $this->localConfigFile
+                );
+                break;
 
-    default:
-        break;
+            case InstallationSteps::STEP_INSTALLATION_COMPLETE:
+                $this->installationHelper->step7InstallationComplete();
+                break;
+
+            default:
+                break;
+        }
+    }
 }
+
+$installer = new Installer();
+$installer->initialize();
