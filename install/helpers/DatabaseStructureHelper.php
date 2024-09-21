@@ -392,7 +392,7 @@ class DatabaseStructureHelper
                     'content' => array
                     (
                         'notnull' => 1,
-                        'length' => 255,
+                        'length' => 2048,
                         'fixed' => 0,
                         'default' => 0,
                         'type' => 'text',
