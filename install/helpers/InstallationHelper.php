@@ -99,16 +99,7 @@ class InstallationHelper
     {
         echo "<p class='alert alert-secondary'>" . _('Updating database...') . " ";
 
-        $credentials = [
-            'db_user' => $this->request->get('db_user'),
-            'db_pass' => $this->request->get('db_pass'),
-            'db_host' => $this->request->get('db_host'),
-            'db_port' => $this->request->get('db_port'),
-            'db_name' => $this->request->get('db_name'),
-            'db_charset' => $this->request->get('db_charset'),
-            'db_collation' => $this->request->get('db_collation'),
-            'db_type' => $this->request->get('db_type'),
-        ];
+        $credentials = $this->getCredentials();
 
         if ($credentials['db_type'] == 'sqlite') {
             $credentials['db_file'] = $credentials['db_name'];
@@ -139,16 +130,7 @@ class InstallationHelper
 
     public function step5CreateLimitedRightsUser(): void
     {
-        $credentials = [
-            'db_user' => $this->request->get('db_user'),
-            'db_pass' => $this->request->get('db_pass'),
-            'db_host' => $this->request->get('db_host'),
-            'db_port' => $this->request->get('db_port'),
-            'db_name' => $this->request->get('db_name'),
-            'db_charset' => $this->request->get('db_charset'),
-            'db_collation' => $this->request->get('db_collation'),
-            'db_type' => $this->request->get('db_type'),
-        ];
+        $credentials = $this->getCredentials();
 
         if ($credentials['db_type'] == 'sqlite') {
             $credentials['db_file'] = $credentials['db_name'];
@@ -247,5 +229,19 @@ class InstallationHelper
         $this->renderTemplate('step7.html.twig', array(
             'current_step' => InstallationSteps::STEP_INSTALLATION_COMPLETE,
         ));
+    }
+
+    public function getCredentials(): array
+    {
+        return [
+            'db_user' => $this->request->get('db_user'),
+            'db_pass' => $this->request->get('db_pass'),
+            'db_host' => $this->request->get('db_host'),
+            'db_port' => $this->request->get('db_port'),
+            'db_name' => $this->request->get('db_name'),
+            'db_charset' => $this->request->get('db_charset'),
+            'db_collation' => $this->request->get('db_collation'),
+            'db_type' => $this->request->get('db_type'),
+        ];
     }
 }
