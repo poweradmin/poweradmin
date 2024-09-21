@@ -67,7 +67,7 @@ class InstallationHelper
         $data['file_version'] = time();
         try {
             echo $this->twig->render($templateName, $data);
-        } catch (LoaderError|RuntimeError|SyntaxError $e) {
+        } catch (LoaderError | RuntimeError | SyntaxError $e) {
             echo "<p class='alert alert-danger'>" . _('Error rendering template') . ": " . $e->getMessage() . "</p>";
         }
     }
