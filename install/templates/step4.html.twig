@@ -32,49 +32,44 @@
             <tr>
                 <td>{% trans %}Hostmaster{% endtrans %}</td>
                 <td>
-                    <input class="form-control form-control-sm" type="text" name="dns_hostmaster" value="" required>
+                    <input class="form-control form-control-sm" type="text" name="dns_hostmaster" value="" placeholder="hostmaster.example.net" required>
                     <div class="invalid-feedback">{% trans %}Provide the DNS hostmaster{% endtrans %}</div>
                 </td>
-                <td>{% trans %}When creating SOA records and no hostmaster is provided, this value here will be used. Should
-                    be in the form "hostmaster.example.net".{% endtrans %}
+                <td>{% trans %}When creating SOA records and no hostmaster is provided, this value here will be used.{% endtrans %}
                 </td>
             </tr>
             <tr>
                 <td>{% trans %}Primary nameserver{% endtrans %}</td>
                 <td>
-                    <input class="form-control form-control-sm" type="text" name="dns_ns1" value="" required>
+                    <input class="form-control form-control-sm" type="text" name="dns_ns1" value="" placeholder="ns1.example.net" required>
                     <div class="invalid-feedback">{% trans %}Provide the primary nameserver{% endtrans %}</div>
                 </td>
-                <td>{% trans %}When creating new zones using the template, this value will be used as primary nameserver.
-                    Should be like "ns1.example.net".{% endtrans %}
+                <td>{% trans %}When creating new zones using the template, this value will be used as primary nameserver.{% endtrans %}
                 </td>
             </tr>
             <tr>
                 <td>{% trans %}Secondary nameserver{% endtrans %}</td>
                 <td>
-                    <input class="form-control form-control-sm" type="text" name="dns_ns2" value="" required>
+                    <input class="form-control form-control-sm" type="text" name="dns_ns2" value="" placeholder="ns2.example.net" required>
                     <div class="invalid-feedback">{% trans %}Provide the secondary nameserver{% endtrans %}</div>
                 </td>
-                <td>{% trans %}When creating new zones using the template, this value will be used as secondary nameserver.
-                    Should be like "ns2.example.net".{% endtrans %}
+                <td>{% trans %}When creating new zones using the template, this value will be used as secondary nameserver.{% endtrans %}
                 </td>
             </tr>
             <tr>
                 <td>{% trans %}Tertiary Nameserver{% endtrans %}</td>
                 <td>
-                    <input class="form-control form-control-sm" type="text" name="dns_ns3" value="">
+                    <input class="form-control form-control-sm" type="text" name="dns_ns3" value="" placeholder="ns3.example.net">
                 </td>
-                <td>{% trans %}When creating new zones using the template, this value will be used as tertiary nameserver.
-                        Should be like "ns3.example.net".{% endtrans %}
+                <td>{% trans %}When creating new zones using the template, this value will be used as tertiary nameserver.{% endtrans %}
                 </td>
             </tr>
             <tr>
                 <td>{% trans %}Quaternary Nameserver{% endtrans %}</td>
                 <td>
-                    <input class="form-control form-control-sm" type="text" name="dns_ns4" value="">
+                    <input class="form-control form-control-sm" type="text" name="dns_ns4" value="" placeholder="ns4.example.net">
                 </td>
-                <td>{% trans %}When creating new zones using the template, this value will be used as quaternary nameserver.
-                        Should be like "ns4.example.net".{% endtrans %}
+                <td>{% trans %}When creating new zones using the template, this value will be used as quaternary nameserver.{% endtrans %}
                 </td>
             </tr>
         </table>

@@ -671,20 +671,20 @@ msgstr "Имя пользователя для Poweradmin. Этот новый �
 msgid "Hostmaster"
 msgstr "Hostmaster"
 
-msgid "When creating SOA records and no hostmaster is provided, this value here will be used. Should be in the form \"hostmaster.example.net\"."
-msgstr "Если вы не укажете hostmaster'а при создании SOA-записи, это значение будет подставлено. Пример: \"hostmaster.example.net\"."
+msgid "When creating SOA records and no hostmaster is provided, this value here will be used."
+msgstr "Если вы не укажете hostmaster'а при создании SOA-записи, это значение будет подставлено."
 
 msgid "Primary nameserver"
 msgstr "Первичный сервер имён"
 
-msgid "When creating new zones using the template, this value will be used as primary nameserver. Should be like \"ns1.example.net\"."
-msgstr "При создании новой зоны по шаблону, это значение будет подставлено как первичный сервер имён. Пример: \"ns1.example.net\"."
+msgid "When creating new zones using the template, this value will be used as primary nameserver."
+msgstr "При создании новой зоны по шаблону, это значение будет подставлено как первичный сервер имён."
 
 msgid "Secondary nameserver"
 msgstr "Вторичный сервер имён"
 
-msgid "When creating new zones using the template, this value will be used as secondary nameserver. Should be like \"ns2.example.net\"."
-msgstr "При создании новой зоны по шаблону, это значение будет подставлено как вторичный сервер имён. Пример: \"ns2.example.net\"."
+msgid "When creating new zones using the template, this value will be used as secondary nameserver."
+msgstr "При создании новой зоны по шаблону, это значение будет подставлено как вторичный сервер имён."
 
 msgid "You should now create the file"
 msgstr "Вы должны создать файл"

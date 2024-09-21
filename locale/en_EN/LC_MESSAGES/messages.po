@@ -957,10 +957,10 @@ msgstr "Hostmaster"
 #: install/index.php:184
 msgid ""
 "When creating SOA records and no hostmaster is provided, this value here "
-"will be used. Should be in the form \"hostmaster.example.net\"."
+"will be used."
 msgstr ""
 "When creating SOA records and no hostmaster is provided, this value here "
-"will be used. Should be in the form \"hostmaster.example.net\"."
+"will be used."
 
 #: install/index.php:187
 msgid "Primary nameserver"
@@ -969,10 +969,10 @@ msgstr "Primary nameserver"
 #: install/index.php:189
 msgid ""
 "When creating new zones using the template, this value will be used as "
-"primary nameserver. Should be like \"ns1.example.net\"."
+"primary nameserver."
 msgstr ""
 "When creating new zones using the template, this value will be used as "
-"primary nameserver. Should be like \"ns1.example.net\"."
+"primary nameserver."
 
 #: install/index.php:192
 msgid "Secondary nameserver"
@@ -981,10 +981,10 @@ msgstr "Secondary nameserver"
 #: install/index.php:194
 msgid ""
 "When creating new zones using the template, this value will be used as "
-"secondary nameserver. Should be like \"ns2.example.net\"."
+"secondary nameserver."
 msgstr ""
 "When creating new zones using the template, this value will be used as "
-"secondary nameserver. Should be like \"ns2.example.net\"."
+"secondary nameserver."
 
 #: install/index.php:230
 msgid ""
