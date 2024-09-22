@@ -21,17 +21,24 @@ use Twig\Source;
 /**
  * Represents a module node.
  *
- * Consider this class as being final. If you need to customize the behavior of
- * the generated class, consider adding nodes to the following nodes: display_start,
- * display_end, constructor_start, constructor_end, and class_end.
+ * If you need to customize the behavior of the generated class, add nodes to
+ * the following nodes: display_start, display_end, constructor_start,
+ * constructor_end, and class_end.
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
 #[YieldReady]
 final class ModuleNode extends Node
 {
+    /**
+     * @param BodyNode $body
+     */
     public function __construct(Node $body, ?AbstractExpression $parent, Node $blocks, Node $macros, Node $traits, $embeddedTemplates, Source $source)
     {
+        if (!$body instanceof BodyNode) {
+            trigger_deprecation('twig/twig', '3.12', \sprintf('Not passing a "%s" instance as the "body" argument of the "%s" constructor is deprecated.', BodyNode::class, static::class));
+        }
+
         $nodes = [
             'body' => $body,
             'blocks' => $blocks,
@@ -108,7 +115,7 @@ final class ModuleNode extends Node
         $parent = $this->getNode('parent');
 
         $compiler
-            ->write("protected function doGetParent(array \$context)\n", "{\n")
+            ->write("protected function doGetParent(array \$context): bool|string|Template|TemplateWrapper\n", "{\n")
             ->indent()
             ->addDebugInfo($parent)
             ->write('return ')
@@ -153,7 +160,9 @@ final class ModuleNode extends Node
                 ->write("use Twig\Sandbox\SecurityNotAllowedFilterError;\n")
                 ->write("use Twig\Sandbox\SecurityNotAllowedFunctionError;\n")
                 ->write("use Twig\Source;\n")
-                ->write("use Twig\Template;\n\n")
+                ->write("use Twig\Template;\n")
+                ->write("use Twig\TemplateWrapper;\n")
+                ->write("\n")
             ;
         }
         $compiler
@@ -163,8 +172,11 @@ final class ModuleNode extends Node
             ->raw(" extends Template\n")
             ->write("{\n")
             ->indent()
-            ->write("private \$source;\n")
-            ->write("private \$macros = [];\n\n")
+            ->write("private Source \$source;\n")
+            ->write("/**\n")
+            ->write(" * @var array<string, Template>\n")
+            ->write(" */\n")
+            ->write("private array \$macros = [];\n\n")
         ;
     }
 
@@ -306,7 +318,7 @@ final class ModuleNode extends Node
     protected function compileDisplay(Compiler $compiler)
     {
         $compiler
-            ->write("protected function doDisplay(array \$context, array \$blocks = [])\n", "{\n")
+            ->write("protected function doDisplay(array \$context, array \$blocks = []): iterable\n", "{\n")
             ->indent()
             ->write("\$macros = \$this->macros;\n")
             ->subcompile($this->getNode('display_start'))
@@ -341,7 +353,7 @@ final class ModuleNode extends Node
         $compiler->subcompile($this->getNode('display_end'));
 
         if (!$this->hasNode('parent')) {
-            $compiler->write("return; yield '';\n"); // ensure at least one yield call even for templates with no output
+            $compiler->write("yield from [];\n");
         }
 
         $compiler
@@ -370,7 +382,7 @@ final class ModuleNode extends Node
             ->write("/**\n")
             ->write(" * @codeCoverageIgnore\n")
             ->write(" */\n")
-            ->write("public function getTemplateName()\n", "{\n")
+            ->write("public function getTemplateName(): string\n", "{\n")
             ->indent()
             ->write('return ')
             ->repr($this->getSourceContext()->getName())
@@ -406,14 +418,6 @@ final class ModuleNode extends Node
                     continue;
                 }
 
-                if ($node instanceof TextNode && ctype_space($node->getAttribute('data'))) {
-                    continue;
-                }
-
-                if ($node instanceof BlockReferenceNode) {
-                    continue;
-                }
-
                 $traitable = false;
                 break;
             }
@@ -427,7 +431,7 @@ final class ModuleNode extends Node
             ->write("/**\n")
             ->write(" * @codeCoverageIgnore\n")
             ->write(" */\n")
-            ->write("public function isTraitable()\n", "{\n")
+            ->write("public function isTraitable(): bool\n", "{\n")
             ->indent()
             ->write("return false;\n")
             ->outdent()
@@ -441,7 +445,7 @@ final class ModuleNode extends Node
             ->write("/**\n")
             ->write(" * @codeCoverageIgnore\n")
             ->write(" */\n")
-            ->write("public function getDebugInfo()\n", "{\n")
+            ->write("public function getDebugInfo(): array\n", "{\n")
             ->indent()
             ->write(\sprintf("return %s;\n", str_replace("\n", '', var_export(array_reverse($compiler->getDebugInfo(), true), true))))
             ->outdent()
@@ -452,7 +456,7 @@ final class ModuleNode extends Node
     protected function compileGetSourceContext(Compiler $compiler)
     {
         $compiler
-            ->write("public function getSourceContext()\n", "{\n")
+            ->write("public function getSourceContext(): Source\n", "{\n")
             ->indent()
             ->write('return new Source(')
             ->string($compiler->getEnvironment()->isDebug() ? $this->getSourceContext()->getCode() : '')
@@ -481,20 +485,5 @@ final class ModuleNode extends Node
         } else {
             throw new \LogicException('Trait templates can only be constant nodes.');
         }
-    }
-
-    private function hasNodeOutputNodes(Node $node): bool
-    {
-        if ($node instanceof NodeOutputInterface) {
-            return true;
-        }
-
-        foreach ($node as $child) {
-            if ($this->hasNodeOutputNodes($child)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }
