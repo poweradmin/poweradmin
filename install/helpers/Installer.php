@@ -22,6 +22,12 @@
 
 namespace PoweradminInstall;
 
+use PoweradminInstall\Validators\ConfiguringDatabaseValidator;
+use PoweradminInstall\Validators\CreateConfigurationFileValidator;
+use PoweradminInstall\Validators\CreateLimitedRightsUserValidator;
+use PoweradminInstall\Validators\EmptyValidator;
+use PoweradminInstall\Validators\SetupAccountAndNameServersValidator;
+use PoweradminInstall\Validators\StepValidatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class Installer
@@ -62,6 +68,10 @@ class Installer
 
     private function handleStep($currentStep): void
     {
+        $previousStep = $currentStep - 1;
+        $validator = $this->getStepValidator($previousStep);
+        $errors = $validator->validate($this->request);
+
         switch ($currentStep) {
             case InstallationSteps::STEP_CHOOSE_LANGUAGE:
                 $this->installationHelper->step1ChooseLanguage();
@@ -97,5 +107,16 @@ class Installer
             default:
                 break;
         }
+    }
+
+    private function getStepValidator($currentStep): StepValidatorInterface
+    {
+        return match ($currentStep) {
+            InstallationSteps::STEP_CONFIGURING_DATABASE => new ConfiguringDatabaseValidator($this->request),
+            InstallationSteps::STEP_SETUP_ACCOUNT_AND_NAMESERVERS => new SetupAccountAndNameServersValidator($this->request),
+            InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER => new CreateLimitedRightsUserValidator($this->request),
+            InstallationSteps::STEP_CREATE_CONFIGURATION_FILE => new CreateConfigurationFileValidator($this->request),
+            default => new EmptyValidator($this->request),
+        };
     }
 }

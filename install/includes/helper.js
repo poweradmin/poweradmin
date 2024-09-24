@@ -29,7 +29,7 @@ function updateFormFields(db_type)
     const hostname_row = document.getElementById('hostname_row');
     const host = document.getElementById('host');
     const dbport_row = document.getElementById('dbport_row');
-    const dbport = document.getElementById('dbport');
+    const db_port = document.getElementById('db_port');
 
     switch (db_type) {
         case 'mysql':
@@ -46,11 +46,11 @@ function updateFormFields(db_type)
             username.required = true;
             userpass.required = true;
             host.required = true;
-            dbport.required = true;
+            db_port.required = true;
             break;
 
         case 'pgsql':
-            dbport.value = '5432';
+            db_port.value = '5432';
             host.value = 'localhost';
 
             db_name_title.style.display = '';
@@ -63,11 +63,11 @@ function updateFormFields(db_type)
             username.required = true;
             userpass.required = true;
             host.required = true;
-            dbport.required = true;
+            db_port.required = true;
             break;
 
         default: // SQLite
-            dbport.value = "";
+            db_port.value = "";
             host.value = "";
 
             db_name_title.style.display = 'none';
@@ -80,7 +80,7 @@ function updateFormFields(db_type)
             username.required = false;
             userpass.required = false;
             host.required = false;
-            dbport.required = false;
+            db_port.required = false;
             break;
     }
 }

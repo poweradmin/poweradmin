@@ -46,6 +46,7 @@
     "check:inc": "phpcs --standard=phpcs.xml inc",
     "check:install": "phpcs --standard=phpcs.xml install",
     "check:lib": "phpcs --standard=phpcs.xml lib",
-    "check:tests": "phpcs --standard=phpcs.xml tests"
+    "check:tests": "phpcs --standard=phpcs.xml tests",
+    "fix:install": "phpcbf --standard=phpcs.xml install"
   }
 }
