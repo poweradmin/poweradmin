@@ -25,7 +25,7 @@ namespace PoweradminInstall\Validators;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class ConfiguringDatabaseValidatorAbstract extends AbstractStepValidator
+class ConfiguringDatabaseValidator extends AbstractStepValidator
 {
     public function validate(): array
     {

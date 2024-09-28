@@ -22,12 +22,12 @@
 
 namespace PoweradminInstall;
 
-use PoweradminInstall\Validators\ConfiguringDatabaseValidatorAbstract;
-use PoweradminInstall\Validators\CreateConfigurationFileValidatorAbstract;
-use PoweradminInstall\Validators\CreateLimitedRightsUserValidatorAbstract;
-use PoweradminInstall\Validators\EmptyValidatorAbstract;
+use PoweradminInstall\Validators\ConfiguringDatabaseValidator;
+use PoweradminInstall\Validators\CreateConfigurationFileValidator;
+use PoweradminInstall\Validators\CreateLimitedRightsUserValidator;
+use PoweradminInstall\Validators\EmptyValidator;
 use PoweradminInstall\Validators\GettingReadyValidator;
-use PoweradminInstall\Validators\SetupAccountAndNameServersValidatorAbstract;
+use PoweradminInstall\Validators\SetupAccountAndNameServersValidator;
 use PoweradminInstall\Validators\AbstractStepValidator;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -114,11 +114,11 @@ class Installer
     {
         return match ($step) {
             InstallationSteps::STEP_GETTING_READY => new GettingReadyValidator($this->request),
-            InstallationSteps::STEP_CONFIGURING_DATABASE => new ConfiguringDatabaseValidatorAbstract($this->request),
-            InstallationSteps::STEP_SETUP_ACCOUNT_AND_NAMESERVERS => new SetupAccountAndNameServersValidatorAbstract($this->request),
-            InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER => new CreateLimitedRightsUserValidatorAbstract($this->request),
-            InstallationSteps::STEP_CREATE_CONFIGURATION_FILE => new CreateConfigurationFileValidatorAbstract($this->request),
-            default => new EmptyValidatorAbstract($this->request),
+            InstallationSteps::STEP_CONFIGURING_DATABASE => new ConfiguringDatabaseValidator($this->request),
+            InstallationSteps::STEP_SETUP_ACCOUNT_AND_NAMESERVERS => new SetupAccountAndNameServersValidator($this->request),
+            InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER => new CreateLimitedRightsUserValidator($this->request),
+            InstallationSteps::STEP_CREATE_CONFIGURATION_FILE => new CreateConfigurationFileValidator($this->request),
+            default => new EmptyValidator($this->request),
         };
     }
 }

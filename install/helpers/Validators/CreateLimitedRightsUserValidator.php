@@ -22,13 +22,10 @@
 
 namespace PoweradminInstall\Validators;
 
-use Symfony\Component\HttpFoundation\Request;
-
-class EmptyValidatorAbstract extends AbstractStepValidator
+class CreateLimitedRightsUserValidator extends AbstractStepValidator
 {
     public function validate(): array
     {
-        // Default validator returns no errors
         return [];
     }
 }

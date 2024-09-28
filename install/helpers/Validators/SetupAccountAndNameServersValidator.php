@@ -22,7 +22,9 @@
 
 namespace PoweradminInstall\Validators;
 
-class CreateConfigurationFileValidatorAbstract extends AbstractStepValidator
+use Symfony\Component\HttpFoundation\Request;
+
+class SetupAccountAndNameServersValidator extends AbstractStepValidator
 {
     public function validate(): array
     {

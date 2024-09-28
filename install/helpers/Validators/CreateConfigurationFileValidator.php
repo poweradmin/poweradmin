@@ -22,7 +22,7 @@
 
 namespace PoweradminInstall\Validators;
 
-class CreateLimitedRightsUserValidatorAbstract extends AbstractStepValidator
+class CreateConfigurationFileValidator extends AbstractStepValidator
 {
     public function validate(): array
     {
