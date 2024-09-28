@@ -24,12 +24,9 @@ namespace PoweradminInstall\Validators;
 
 use PoweradminInstall\InstallationSteps;
 use PoweradminInstall\LocaleHandler;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Validator\Validation;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class GettingReadyValidatorAbstract extends AbstractStepValidator
+class GettingReadyValidator extends AbstractStepValidator
 {
     public function validate(): array
     {

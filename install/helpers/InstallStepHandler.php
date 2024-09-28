@@ -32,7 +32,7 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
-class InstallationHelper
+class InstallStepHandler
 {
     private Request $request;
     private Environment $twig;

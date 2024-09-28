@@ -26,7 +26,7 @@ use PoweradminInstall\Validators\ConfiguringDatabaseValidatorAbstract;
 use PoweradminInstall\Validators\CreateConfigurationFileValidatorAbstract;
 use PoweradminInstall\Validators\CreateLimitedRightsUserValidatorAbstract;
 use PoweradminInstall\Validators\EmptyValidatorAbstract;
-use PoweradminInstall\Validators\GettingReadyValidatorAbstract;
+use PoweradminInstall\Validators\GettingReadyValidator;
 use PoweradminInstall\Validators\InstallationCompleteValidatorAbstract;
 use PoweradminInstall\Validators\SetupAccountAndNameServersValidatorAbstract;
 use PoweradminInstall\Validators\AbstractStepValidator;
@@ -37,7 +37,7 @@ class Installer
     private Request $request;
     private LocaleHandler $localeHandler;
     private StepValidator $stepValidator;
-    private InstallationHelper $installationHelper;
+    private InstallStepHandler $installStepHandler;
     private string $localConfigFile;
     private string $defaultConfigFile;
 
@@ -62,8 +62,8 @@ class Installer
         $step = $this->request->get('step', InstallationSteps::STEP_CHOOSE_LANGUAGE);
         $currentStep = $this->stepValidator->getCurrentStep($step);
 
-        $this->installationHelper = new InstallationHelper($this->request, $twigEnvironment, $currentStep, $currentLanguage);
-        $this->installationHelper->checkConfigFile($this->localConfigFile);
+        $this->installStepHandler = new InstallStepHandler($this->request, $twigEnvironment, $currentStep, $currentLanguage);
+        $this->installStepHandler->checkConfigFile($this->localConfigFile);
 
         $this->handleStep($currentStep);
     }
@@ -76,34 +76,34 @@ class Installer
 
         switch ($currentStep) {
             case InstallationSteps::STEP_CHOOSE_LANGUAGE:
-                $this->installationHelper->step1ChooseLanguage();
+                $this->installStepHandler->step1ChooseLanguage();
                 break;
 
             case InstallationSteps::STEP_GETTING_READY:
-                $this->installationHelper->step2GettingReady();
+                $this->installStepHandler->step2GettingReady();
                 break;
 
             case InstallationSteps::STEP_CONFIGURING_DATABASE:
-                $this->installationHelper->step3ConfiguringDatabase();
+                $this->installStepHandler->step3ConfiguringDatabase();
                 break;
 
             case InstallationSteps::STEP_SETUP_ACCOUNT_AND_NAMESERVERS:
-                $this->installationHelper->step4SetupAccountAndNameServers($this->defaultConfigFile);
+                $this->installStepHandler->step4SetupAccountAndNameServers($this->defaultConfigFile);
                 break;
 
             case InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER:
-                $this->installationHelper->step5CreateLimitedRightsUser();
+                $this->installStepHandler->step5CreateLimitedRightsUser();
                 break;
 
             case InstallationSteps::STEP_CREATE_CONFIGURATION_FILE:
-                $this->installationHelper->step6CreateConfigurationFile(
+                $this->installStepHandler->step6CreateConfigurationFile(
                     $this->defaultConfigFile,
                     $this->localConfigFile
                 );
                 break;
 
             case InstallationSteps::STEP_INSTALLATION_COMPLETE:
-                $this->installationHelper->step7InstallationComplete();
+                $this->installStepHandler->step7InstallationComplete();
                 break;
 
             default:
@@ -114,7 +114,7 @@ class Installer
     private function getStepValidator($step): AbstractStepValidator
     {
         return match ($step) {
-            InstallationSteps::STEP_GETTING_READY => new GettingReadyValidatorAbstract($this->request),
+            InstallationSteps::STEP_GETTING_READY => new GettingReadyValidator($this->request),
             InstallationSteps::STEP_CONFIGURING_DATABASE => new ConfiguringDatabaseValidatorAbstract($this->request),
             InstallationSteps::STEP_SETUP_ACCOUNT_AND_NAMESERVERS => new SetupAccountAndNameServersValidatorAbstract($this->request),
             InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER => new CreateLimitedRightsUserValidatorAbstract($this->request),
