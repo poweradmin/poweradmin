@@ -22,25 +22,12 @@
 
 namespace PoweradminInstall\Validators;
 
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
-use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class ConfiguringDatabaseValidator implements StepValidatorInterface
+class ConfiguringDatabaseValidatorAbstract extends AbstractStepValidator
 {
-
-    private Request $request;
-    private ValidatorInterface $validator;
-
-    public function __construct(Request $request)
-    {
-        $this->request = $request;
-        $this->validator = Validation::createValidator();
-    }
-
-    public function validate(Request $request): array
+    public function validate(): array
     {
         $constraints = new Assert\Collection([
             'step' => [

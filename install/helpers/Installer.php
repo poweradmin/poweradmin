@@ -22,14 +22,14 @@
 
 namespace PoweradminInstall;
 
-use PoweradminInstall\Validators\ConfiguringDatabaseValidator;
-use PoweradminInstall\Validators\CreateConfigurationFileValidator;
-use PoweradminInstall\Validators\CreateLimitedRightsUserValidator;
-use PoweradminInstall\Validators\EmptyValidator;
-use PoweradminInstall\Validators\GettingReadyValidator;
-use PoweradminInstall\Validators\InstallationCompleteValidator;
-use PoweradminInstall\Validators\SetupAccountAndNameServersValidator;
-use PoweradminInstall\Validators\StepValidatorInterface;
+use PoweradminInstall\Validators\ConfiguringDatabaseValidatorAbstract;
+use PoweradminInstall\Validators\CreateConfigurationFileValidatorAbstract;
+use PoweradminInstall\Validators\CreateLimitedRightsUserValidatorAbstract;
+use PoweradminInstall\Validators\EmptyValidatorAbstract;
+use PoweradminInstall\Validators\GettingReadyValidatorAbstract;
+use PoweradminInstall\Validators\InstallationCompleteValidatorAbstract;
+use PoweradminInstall\Validators\SetupAccountAndNameServersValidatorAbstract;
+use PoweradminInstall\Validators\AbstractStepValidator;
 use Symfony\Component\HttpFoundation\Request;
 
 class Installer
@@ -72,7 +72,7 @@ class Installer
     {
         $previousStep = $currentStep - 1;
         $validator = $this->getStepValidator($previousStep);
-        $errors = $validator->validate($this->request);
+        $errors = $validator->validate();
 
         switch ($currentStep) {
             case InstallationSteps::STEP_CHOOSE_LANGUAGE:
@@ -111,16 +111,16 @@ class Installer
         }
     }
 
-    private function getStepValidator($step): StepValidatorInterface
+    private function getStepValidator($step): AbstractStepValidator
     {
         return match ($step) {
-            InstallationSteps::STEP_GETTING_READY => new GettingReadyValidator($this->request),
-            InstallationSteps::STEP_CONFIGURING_DATABASE => new ConfiguringDatabaseValidator($this->request),
-            InstallationSteps::STEP_SETUP_ACCOUNT_AND_NAMESERVERS => new SetupAccountAndNameServersValidator($this->request),
-            InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER => new CreateLimitedRightsUserValidator($this->request),
-            InstallationSteps::STEP_CREATE_CONFIGURATION_FILE => new CreateConfigurationFileValidator($this->request),
-            InstallationSteps::STEP_INSTALLATION_COMPLETE => new InstallationCompleteValidator($this->request),
-            default => new EmptyValidator($this->request),
+            InstallationSteps::STEP_GETTING_READY => new GettingReadyValidatorAbstract($this->request),
+            InstallationSteps::STEP_CONFIGURING_DATABASE => new ConfiguringDatabaseValidatorAbstract($this->request),
+            InstallationSteps::STEP_SETUP_ACCOUNT_AND_NAMESERVERS => new SetupAccountAndNameServersValidatorAbstract($this->request),
+            InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER => new CreateLimitedRightsUserValidatorAbstract($this->request),
+            InstallationSteps::STEP_CREATE_CONFIGURATION_FILE => new CreateConfigurationFileValidatorAbstract($this->request),
+            InstallationSteps::STEP_INSTALLATION_COMPLETE => new InstallationCompleteValidatorAbstract($this->request),
+            default => new EmptyValidatorAbstract($this->request),
         };
     }
 }

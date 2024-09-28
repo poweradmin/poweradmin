@@ -22,20 +22,10 @@
 
 namespace PoweradminInstall\Validators;
 
-use Symfony\Component\HttpFoundation\Request;
-
-class EmptyValidator implements StepValidatorInterface
+class CreateConfigurationFileValidatorAbstract extends AbstractStepValidator
 {
-    private Request $request;
-
-    public function __construct(Request $request)
+    public function validate(): array
     {
-        $this->request = $request;
-    }
-
-    public function validate(Request $request): array
-    {
-        // Default validator returns no errors
         return [];
     }
 }

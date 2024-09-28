@@ -29,19 +29,9 @@ use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class GettingReadyValidator implements StepValidatorInterface
+class GettingReadyValidatorAbstract extends AbstractStepValidator
 {
-
-    private Request $request;
-    private ValidatorInterface $validator;
-
-    public function __construct(Request $request)
-    {
-        $this->request = $request;
-        $this->validator = Validation::createValidator();
-    }
-
-    public function validate(Request $request): array
+    public function validate(): array
     {
         $constraints = new Assert\Collection([
             'submit' => [

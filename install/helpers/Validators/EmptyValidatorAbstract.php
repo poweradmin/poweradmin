@@ -24,8 +24,11 @@ namespace PoweradminInstall\Validators;
 
 use Symfony\Component\HttpFoundation\Request;
 
-interface StepValidatorInterface
+class EmptyValidatorAbstract extends AbstractStepValidator
 {
-
-    public function validate(Request $request): array;
+    public function validate(): array
+    {
+        // Default validator returns no errors
+        return [];
+    }
 }

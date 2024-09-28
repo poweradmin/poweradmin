@@ -23,19 +23,10 @@
 namespace PoweradminInstall\Validators;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Validator\Constraints as Assert;
 
-class InstallationCompleteValidator implements StepValidatorInterface
+class SetupAccountAndNameServersValidatorAbstract extends AbstractStepValidator
 {
-
-    private Request $request;
-
-    public function __construct(Request $request)
-    {
-        $this->request = $request;
-    }
-
-    public function validate(Request $request): array
+    public function validate(): array
     {
         return [];
     }
