@@ -26,6 +26,8 @@ use PoweradminInstall\Validators\ConfiguringDatabaseValidator;
 use PoweradminInstall\Validators\CreateConfigurationFileValidator;
 use PoweradminInstall\Validators\CreateLimitedRightsUserValidator;
 use PoweradminInstall\Validators\EmptyValidator;
+use PoweradminInstall\Validators\GettingReadyValidator;
+use PoweradminInstall\Validators\InstallationCompleteValidator;
 use PoweradminInstall\Validators\SetupAccountAndNameServersValidator;
 use PoweradminInstall\Validators\StepValidatorInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -109,13 +111,15 @@ class Installer
         }
     }
 
-    private function getStepValidator($currentStep): StepValidatorInterface
+    private function getStepValidator($step): StepValidatorInterface
     {
-        return match ($currentStep) {
+        return match ($step) {
+            InstallationSteps::STEP_GETTING_READY => new GettingReadyValidator($this->request),
             InstallationSteps::STEP_CONFIGURING_DATABASE => new ConfiguringDatabaseValidator($this->request),
             InstallationSteps::STEP_SETUP_ACCOUNT_AND_NAMESERVERS => new SetupAccountAndNameServersValidator($this->request),
             InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER => new CreateLimitedRightsUserValidator($this->request),
             InstallationSteps::STEP_CREATE_CONFIGURATION_FILE => new CreateConfigurationFileValidator($this->request),
+            InstallationSteps::STEP_INSTALLATION_COMPLETE => new InstallationCompleteValidator($this->request),
             default => new EmptyValidator($this->request),
         };
     }
