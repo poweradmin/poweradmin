@@ -27,7 +27,6 @@ use PoweradminInstall\Validators\CreateConfigurationFileValidatorAbstract;
 use PoweradminInstall\Validators\CreateLimitedRightsUserValidatorAbstract;
 use PoweradminInstall\Validators\EmptyValidatorAbstract;
 use PoweradminInstall\Validators\GettingReadyValidator;
-use PoweradminInstall\Validators\InstallationCompleteValidatorAbstract;
 use PoweradminInstall\Validators\SetupAccountAndNameServersValidatorAbstract;
 use PoweradminInstall\Validators\AbstractStepValidator;
 use Symfony\Component\HttpFoundation\Request;
@@ -119,7 +118,6 @@ class Installer
             InstallationSteps::STEP_SETUP_ACCOUNT_AND_NAMESERVERS => new SetupAccountAndNameServersValidatorAbstract($this->request),
             InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER => new CreateLimitedRightsUserValidatorAbstract($this->request),
             InstallationSteps::STEP_CREATE_CONFIGURATION_FILE => new CreateConfigurationFileValidatorAbstract($this->request),
-            InstallationSteps::STEP_INSTALLATION_COMPLETE => new InstallationCompleteValidatorAbstract($this->request),
             default => new EmptyValidatorAbstract($this->request),
         };
     }

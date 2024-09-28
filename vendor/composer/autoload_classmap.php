@@ -33,7 +33,6 @@ return array(
     'PoweradminInstall\\Validators\\CreateLimitedRightsUserValidatorAbstract' => $baseDir . '/install/helpers/Validators/CreateLimitedRightsUserValidatorAbstract.php',
     'PoweradminInstall\\Validators\\EmptyValidatorAbstract' => $baseDir . '/install/helpers/Validators/EmptyValidatorAbstract.php',
     'PoweradminInstall\\Validators\\GettingReadyValidator' => $baseDir . '/install/helpers/Validators/GettingReadyValidator.php',
-    'PoweradminInstall\\Validators\\InstallationCompleteValidatorAbstract' => $baseDir . '/install/helpers/Validators/InstallationCompleteValidatorAbstract.php',
     'PoweradminInstall\\Validators\\SetupAccountAndNameServersValidatorAbstract' => $baseDir . '/install/helpers/Validators/SetupAccountAndNameServersValidatorAbstract.php',
     'PoweradminInstall\\Validators\\ValidationErrorHelper' => $baseDir . '/install/helpers/Validators/ValidationErrorHelper.php',
     'Poweradmin\\AppConfiguration' => $baseDir . '/lib/AppConfiguration.php',

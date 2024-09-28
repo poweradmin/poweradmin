@@ -130,7 +130,6 @@ class ComposerStaticInit1dab89e42c6bd529040213c23957bbde
         'PoweradminInstall\\Validators\\CreateLimitedRightsUserValidatorAbstract' => __DIR__ . '/../..' . '/install/helpers/Validators/CreateLimitedRightsUserValidatorAbstract.php',
         'PoweradminInstall\\Validators\\EmptyValidatorAbstract' => __DIR__ . '/../..' . '/install/helpers/Validators/EmptyValidatorAbstract.php',
         'PoweradminInstall\\Validators\\GettingReadyValidator' => __DIR__ . '/../..' . '/install/helpers/Validators/GettingReadyValidator.php',
-        'PoweradminInstall\\Validators\\InstallationCompleteValidatorAbstract' => __DIR__ . '/../..' . '/install/helpers/Validators/InstallationCompleteValidatorAbstract.php',
         'PoweradminInstall\\Validators\\SetupAccountAndNameServersValidatorAbstract' => __DIR__ . '/../..' . '/install/helpers/Validators/SetupAccountAndNameServersValidatorAbstract.php',
         'PoweradminInstall\\Validators\\ValidationErrorHelper' => __DIR__ . '/../..' . '/install/helpers/Validators/ValidationErrorHelper.php',
         'Poweradmin\\AppConfiguration' => __DIR__ . '/../..' . '/lib/AppConfiguration.php',
