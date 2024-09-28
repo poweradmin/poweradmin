@@ -22,21 +22,18 @@
 
 namespace PoweradminInstall\Validators;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 
-class InstallationCompleteValidator implements StepValidatorInterface
+class ValidationErrorHelper
 {
-
-    private Request $request;
-
-    public function __construct(Request $request)
+    public static function formatErrors(ConstraintViolationListInterface $violations): array
     {
-        $this->request = $request;
-    }
-
-    public function validate(Request $request): array
-    {
-        return [];
+        $errors = [];
+        foreach ($violations as $violation) {
+            $propertyPath = $violation->getPropertyPath();
+            $cleanedPropertyPath = str_replace(['[', ']'], '', $propertyPath);
+            $errors[$cleanedPropertyPath] = $violation->getMessage();
+        }
+        return $errors;
     }
 }

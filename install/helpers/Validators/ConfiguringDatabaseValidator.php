@@ -22,7 +22,6 @@
 
 namespace PoweradminInstall\Validators;
 
-use PoweradminInstall\InstallationSteps;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Validation;
@@ -43,7 +42,6 @@ class ConfiguringDatabaseValidator implements StepValidatorInterface
 
     public function validate(Request $request): array
     {
-        var_dump($request->request->all());
         $constraints = new Assert\Collection([
             'step' => [
                 new Assert\NotBlank(),
@@ -87,17 +85,7 @@ class ConfiguringDatabaseValidator implements StepValidatorInterface
         $input = $this->request->request->all();
         $violations = $this->validator->validate($input, $constraints);
 
-        if (count($violations) > 0) {
-            $errors = [];
-            foreach ($violations as $violation) {
-                $propertyPath = preg_replace('/[\[\]]/', '', $violation->getPropertyPath());
-                $errors[$propertyPath] = $violation->getMessage();
-            }
-            var_dump($errors);
-            return $errors;
-        }
-
-        return [];
+        return ValidationErrorHelper::formatErrors($violations);
     }
 
     public function validateDbUser($dbUser, ExecutionContextInterface $context): void

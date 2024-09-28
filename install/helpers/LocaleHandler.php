@@ -33,6 +33,11 @@ class LocaleHandler
         'cs_CZ', 'de_DE', 'fr_FR', 'ja_JP', 'lt_LT', 'nb_NO', 'nl_NL', 'pl_PL', 'ru_RU', 'tr_TR', 'zh_CN', 'en_EN'
     ];
 
+    public static function getAvailableLanguages(): array
+    {
+        return self::SUPPORTED_LANGUAGES;
+    }
+
     public function getLocaleFile(string $language): string
     {
         if ($this->isSupportedLanguage($language)) {
