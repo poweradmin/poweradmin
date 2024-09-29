@@ -22,10 +22,35 @@
 
 namespace PoweradminInstall\Validators;
 
+use PoweradminInstall\InstallationSteps;
+use PoweradminInstall\LocaleHandler;
+use Symfony\Component\Validator\Constraints as Assert;
+
 class CreateConfigurationFileValidator extends AbstractStepValidator
 {
     public function validate(): array
     {
-        return [];
+        $constraints = new Assert\Collection([
+            'submit' => [
+                new Assert\NotBlank(),
+            ],
+            'step' => [
+                new Assert\NotBlank(),
+                new Assert\EqualTo([
+                    'value' => InstallationSteps::STEP_INSTALLATION_COMPLETE,
+                    'message' => 'The step must be equal to ' . InstallationSteps::STEP_INSTALLATION_COMPLETE
+                ])
+            ],
+            'language' => [
+                new Assert\NotBlank(),
+                new Assert\Choice(['choices' => LocaleHandler::getAvailableLanguages()]),
+            ]
+        ]);
+
+        $input = $this->request->request->all();
+        $violations = $this->validator->validate($input, $constraints);
+        var_dump($violations);
+
+        return ValidationErrorHelper::formatErrors($violations);
     }
 }
