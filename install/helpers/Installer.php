@@ -52,15 +52,24 @@ class Installer
 
     public function initialize(): void
     {
+        $step = $this->request->get('step', InstallationSteps::STEP_CHOOSE_LANGUAGE);
+        $currentStep = $this->stepValidator->getCurrentStep($step);
+
+        // Validate the previous step
+        $validator = $this->getStepValidator($currentStep - 1);
+        $errors = $validator->validate();
+
+        if (isset($errors['language'])) {
+            ErrorHandler::handleLanguageError();
+            $currentStep = InstallationSteps::STEP_CHOOSE_LANGUAGE;
+        }
+
         $language = $this->request->get('language', LocaleHandler::DEFAULT_LANGUAGE);
         $currentLanguage = $this->localeHandler->getCurrentLanguage($language);
         $this->localeHandler->setLanguage($currentLanguage);
 
         $twigEnvironmentInitializer = new TwigEnvironmentInitializer($this->localeHandler);
         $twigEnvironment = $twigEnvironmentInitializer->initialize($currentLanguage);
-
-        $step = $this->request->get('step', InstallationSteps::STEP_CHOOSE_LANGUAGE);
-        $currentStep = $this->stepValidator->getCurrentStep($step);
 
         $this->installStepHandler = new InstallStepHandler($this->request, $twigEnvironment, $currentStep, $currentLanguage);
         $this->installStepHandler->checkConfigFile($this->localConfigFile);
@@ -70,15 +79,6 @@ class Installer
 
     private function handleStep($currentStep): void
     {
-        $previousStep = $currentStep - 1;
-        $validator = $this->getStepValidator($previousStep);
-        $errors = $validator->validate();
-
-        if (isset($errors['language'])) {
-            ErrorHandler::handleLanguageError();
-            $currentStep = InstallationSteps::STEP_CHOOSE_LANGUAGE;
-        }
-
         switch ($currentStep) {
             case InstallationSteps::STEP_CHOOSE_LANGUAGE:
                 $this->installStepHandler->step1ChooseLanguage();
