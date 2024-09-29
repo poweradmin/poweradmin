@@ -22,6 +22,7 @@
 
 namespace PoweradminInstall\Validators;
 
+use PoweradminInstall\LocaleHandler;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -35,6 +36,7 @@ class ConfiguringDatabaseValidator extends AbstractStepValidator
             ],
             'language' => [
                 new Assert\NotBlank(),
+                new Assert\Choice(['choices' => LocaleHandler::getAvailableLanguages()]),
             ],
             'db_type' => [
                 new Assert\NotBlank(),

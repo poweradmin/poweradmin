@@ -49,7 +49,6 @@ class CreateConfigurationFileValidator extends AbstractStepValidator
 
         $input = $this->request->request->all();
         $violations = $this->validator->validate($input, $constraints);
-        var_dump($violations);
 
         return ValidationErrorHelper::formatErrors($violations);
     }

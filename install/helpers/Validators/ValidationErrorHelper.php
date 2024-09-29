@@ -29,11 +29,13 @@ class ValidationErrorHelper
     public static function formatErrors(ConstraintViolationListInterface $violations): array
     {
         $errors = [];
+
         foreach ($violations as $violation) {
             $propertyPath = $violation->getPropertyPath();
             $cleanedPropertyPath = str_replace(['[', ']'], '', $propertyPath);
             $errors[$cleanedPropertyPath] = $violation->getMessage();
         }
+
         return $errors;
     }
 }
