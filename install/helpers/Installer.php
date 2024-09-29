@@ -64,6 +64,11 @@ class Installer
             $currentStep = InstallationSteps::STEP_CHOOSE_LANGUAGE;
         }
 
+        // If there are errors, go back to the previous step
+        if (!empty($errors)) {
+            $currentStep--;
+        }
+
         $language = $this->request->get('language', LocaleHandler::DEFAULT_LANGUAGE);
         $currentLanguage = $this->localeHandler->getCurrentLanguage($language);
         $this->localeHandler->setLanguage($currentLanguage);
@@ -74,10 +79,10 @@ class Installer
         $this->installStepHandler = new InstallStepHandler($this->request, $twigEnvironment, $currentStep, $currentLanguage);
         $this->installStepHandler->checkConfigFile($this->localConfigFile);
 
-        $this->handleStep($currentStep);
+        $this->handleStep($currentStep, $errors);
     }
 
-    private function handleStep($currentStep): void
+    private function handleStep(int $currentStep, array $errors): void
     {
         switch ($currentStep) {
             case InstallationSteps::STEP_CHOOSE_LANGUAGE:
@@ -89,7 +94,7 @@ class Installer
                 break;
 
             case InstallationSteps::STEP_CONFIGURING_DATABASE:
-                $this->installStepHandler->step3ConfiguringDatabase();
+                $this->installStepHandler->step3ConfiguringDatabase($errors);
                 break;
 
             case InstallationSteps::STEP_SETUP_ACCOUNT_AND_NAMESERVERS:

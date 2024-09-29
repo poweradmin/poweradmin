@@ -87,11 +87,12 @@ class InstallStepHandler
         ));
     }
 
-    public function step3ConfiguringDatabase(): void
+    public function step3ConfiguringDatabase(array $errors): void
     {
         $this->renderTemplate('step3.html.twig', array(
             'current_step' => $this->currentStep,
-            'language' => $this->language
+            'language' => $this->language,
+            'errors' => $errors,
         ));
     }
 
