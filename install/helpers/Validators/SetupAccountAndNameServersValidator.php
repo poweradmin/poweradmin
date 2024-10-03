@@ -44,7 +44,55 @@ class SetupAccountAndNameServersValidator extends AbstractStepValidator
             'language' => [
                 new Assert\NotBlank(),
                 new Assert\Choice(['choices' => LocaleHandler::getAvailableLanguages()]),
-            ]
+            ],
+            'pa_db_user' => [
+                new Assert\NotBlank(),
+            ],
+            'pa_db_pass' => [
+                new Assert\NotBlank(),
+            ],
+            'dns_hostmaster' => [
+                new Assert\NotBlank(),
+            ],
+            'dns_ns1' => [
+                new Assert\NotBlank(),
+            ],
+            'dns_ns2' => [
+                new Assert\NotBlank(),
+            ],
+            'dns_ns3' => [
+                new Assert\Optional(),
+            ],
+            'dns_ns4' => [
+                new Assert\Optional(),
+            ],
+            'db_user' => [
+                new Assert\NotBlank(),
+            ],
+            'db_pass' => [
+                new Assert\NotBlank(),
+            ],
+            'db_host' => [
+                new Assert\NotBlank(),
+            ],
+            'db_port' => [
+                new Assert\NotBlank(),
+            ],
+            'db_name' => [
+                new Assert\NotBlank(),
+            ],
+            'db_type' => [
+                new Assert\NotBlank(),
+            ],
+            'db_charset' => [
+                new Assert\Optional(),
+            ],
+            'db_collation' => [
+                new Assert\Optional(),
+            ],
+            'pa_pass' => [
+                new Assert\NotBlank(),
+            ],
         ]);
 
         $input = $this->request->request->all();

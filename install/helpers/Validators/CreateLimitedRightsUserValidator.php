@@ -44,7 +44,52 @@ class CreateLimitedRightsUserValidator extends AbstractStepValidator
             'language' => [
                 new Assert\NotBlank(),
                 new Assert\Choice(['choices' => LocaleHandler::getAvailableLanguages()]),
-            ]
+            ],
+            'db_pass' => [
+                new Assert\NotBlank(),
+            ],
+            'db_host' => [
+                new Assert\NotBlank(),
+            ],
+            'db_name' => [
+                new Assert\NotBlank(),
+            ],
+            'db_port' => [
+                new Assert\NotBlank(),
+            ],
+            'db_user' => [
+                new Assert\NotBlank(),
+            ],
+            'db_type' => [
+                new Assert\NotBlank(),
+            ],
+            'db_charset' => [
+                new Assert\Optional(),
+            ],
+            'pa_db_user' => [
+                new Assert\NotBlank(),
+            ],
+            'pa_db_pass' => [
+                new Assert\NotBlank(),
+            ],
+            'pa_pass' => [
+                new Assert\NotBlank(),
+            ],
+            'dns_hostmaster' => [
+                new Assert\NotBlank(),
+            ],
+            'dns_ns1' => [
+                new Assert\NotBlank(),
+            ],
+            'dns_ns2' => [
+                new Assert\NotBlank(),
+            ],
+            'dns_ns3' => [
+                new Assert\Optional()
+            ],
+            'dns_ns4' => [
+                new Assert\Optional()
+            ],
         ]);
 
         $input = $this->request->request->all();

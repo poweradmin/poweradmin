@@ -31,6 +31,9 @@ class ConfiguringDatabaseValidator extends AbstractStepValidator
     public function validate(): array
     {
         $constraints = new Assert\Collection([
+            'submit' => [
+                new Assert\NotBlank(),
+            ],
             'step' => [
                 new Assert\NotBlank(),
             ],
