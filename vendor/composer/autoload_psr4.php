@@ -17,6 +17,7 @@ return array(
     'Symfony\\Component\\Translation\\' => array($vendorDir . '/symfony/translation'),
     'Symfony\\Component\\HttpFoundation\\' => array($vendorDir . '/symfony/http-foundation'),
     'Symfony\\Bridge\\Twig\\' => array($vendorDir . '/symfony/twig-bridge'),
+    'Psr\\Log\\' => array($vendorDir . '/psr/log/src'),
     'Poweradmin\\' => array($baseDir . '/lib'),
     'PoweradminInstall\\' => array($baseDir . '/install/helpers'),
 );

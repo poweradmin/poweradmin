@@ -42,6 +42,7 @@ class ComposerStaticInit1dab89e42c6bd529040213c23957bbde
         ),
         'P' => 
         array (
+            'Psr\\Log\\' => 8,
             'Poweradmin\\' => 11,
             'PoweradminInstall\\' => 18,
         ),
@@ -91,6 +92,10 @@ class ComposerStaticInit1dab89e42c6bd529040213c23957bbde
         'Symfony\\Bridge\\Twig\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/twig-bridge',
+        ),
+        'Psr\\Log\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/log/src',
         ),
         'Poweradmin\\' => 
         array (
@@ -269,6 +274,14 @@ class ComposerStaticInit1dab89e42c6bd529040213c23957bbde
         'Poweradmin\\LocaleManager' => __DIR__ . '/../..' . '/lib/LocaleManager.php',
         'Poweradmin\\Pages' => __DIR__ . '/../..' . '/lib/Pages.php',
         'Poweradmin\\Version' => __DIR__ . '/../..' . '/lib/Version.php',
+        'Psr\\Log\\AbstractLogger' => __DIR__ . '/..' . '/psr/log/src/AbstractLogger.php',
+        'Psr\\Log\\InvalidArgumentException' => __DIR__ . '/..' . '/psr/log/src/InvalidArgumentException.php',
+        'Psr\\Log\\LogLevel' => __DIR__ . '/..' . '/psr/log/src/LogLevel.php',
+        'Psr\\Log\\LoggerAwareInterface' => __DIR__ . '/..' . '/psr/log/src/LoggerAwareInterface.php',
+        'Psr\\Log\\LoggerAwareTrait' => __DIR__ . '/..' . '/psr/log/src/LoggerAwareTrait.php',
+        'Psr\\Log\\LoggerInterface' => __DIR__ . '/..' . '/psr/log/src/LoggerInterface.php',
+        'Psr\\Log\\LoggerTrait' => __DIR__ . '/..' . '/psr/log/src/LoggerTrait.php',
+        'Psr\\Log\\NullLogger' => __DIR__ . '/..' . '/psr/log/src/NullLogger.php',
         'ReturnTypeWillChange' => __DIR__ . '/..' . '/symfony/polyfill-php81/Resources/stubs/ReturnTypeWillChange.php',
         'SQLite3Exception' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/SQLite3Exception.php',
         'Symfony\\Bridge\\Twig\\AppVariable' => __DIR__ . '/..' . '/symfony/twig-bridge/AppVariable.php',

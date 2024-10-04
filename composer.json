@@ -24,7 +24,8 @@
     "twbs/bootstrap": "^v5.3.3",
     "twbs/bootstrap-icons": "^v1.11.3",
     "symfony/http-foundation": "^6.4.12",
-    "symfony/validator": "^6.4.12"
+    "symfony/validator": "^6.4.12",
+    "psr/log": "^3.0.2"
   },
   "suggest": {
     "ext-ldap": "For LDAP support"
