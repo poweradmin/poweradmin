@@ -36,10 +36,12 @@
     <input type="hidden" name="serial" value="{{ serial }}">
     <table class="table table-striped table-hover table-sm">
         <tr>
+            {% if iface_edit_show_id %}
             <th>
                 <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=id">{% trans %}Id{% endtrans %}</a>
                 {% if record_sort_by == 'id' %}<i class="bi bi-arrow-down"></i>{% endif %}
             </th>
+            {% endif %}
             <th>
                 <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=name">{% trans %}Name{% endtrans %}</a>
                 {% if record_sort_by == 'name' %}<i class="bi bi-arrow-down"></i>{% endif %}
@@ -73,7 +75,9 @@
         <input type="hidden" name="record[{{ r['id'] }}][zid]" value="{{ zone_id }}">
         {% endif %}
         <tr>
+            {% if iface_edit_show_id %}
             <td>{{ r['id'] }}</td>
+            {% endif %}
             {% if r['type'] == "SOA" or r['type'] == "NS" and perm_edit == "own_as_client" %}
             <td class="col-sm-2">{{ r['name'] }}</td>
             <td class="col-sm-1">{{ r['type'] }}</td>
@@ -137,8 +141,9 @@
             <td colspan="7">{% trans %}Comments{% endtrans %}:</td>
         </tr>
         <tr>
-            <td>
-            </td>
+            {% if iface_edit_show_id %}
+            <td></td>
+            {% endif %}
             <td colspan="6"><textarea class="form-control form-control-sm" rows="5" cols="80" name="comment">{{ zone_comment }}</textarea>
             </td>
             <td colspan="2">
