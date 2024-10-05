@@ -27,7 +27,7 @@ class NativeLogHandler implements LogHandlerInterface
 
     public function handle(array $context = []): void
     {
-        $output = self::DEFAULT_FORMAT;
+        $output = self::DEFAULT_LOG_FORMAT;
         foreach ($context as $var => $val) {
             $output = str_replace('%' . $var . '%', $val, $output);
         }

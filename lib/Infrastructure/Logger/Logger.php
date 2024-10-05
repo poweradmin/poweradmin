@@ -28,26 +28,26 @@ use Stringable;
 
 class Logger extends AbstractLogger
 {
-    private const DEFAULT_DATETIME_FORMAT = 'c';
+    private const ISO8601_DATETIME_FORMAT = 'c';
 
-    private LogHandlerInterface $handler;
+    private LogHandlerInterface $logHandler;
 
     public function __construct(LogHandlerInterface $handler)
     {
-        $this->handler = $handler;
+        $this->logHandler = $handler;
     }
 
     public function log($level, Stringable|string $message, array $context = []): void
     {
-        $timestamp = (new DateTimeImmutable())->format(self::DEFAULT_DATETIME_FORMAT);
-        $this->handler->handle([
-            'message' => self::interpolate((string)$message, $context),
+        $timestamp = (new DateTimeImmutable())->format(self::ISO8601_DATETIME_FORMAT);
+        $this->logHandler->handle([
+            'message' => self::interpolateMessage((string)$message, $context),
             'level' => strtoupper($level),
             'timestamp' => ($timestamp),
         ]);
     }
 
-    function interpolate(string $message, array $context = []): string
+    function interpolateMessage(string $message, array $context = []): string
     {
         $replace = array();
         foreach ($context as $key => $val) {
