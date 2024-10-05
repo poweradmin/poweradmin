@@ -52,7 +52,7 @@ class SessionAuthenticator extends LoggingService
 
     public function __construct(PDOLayer $db, AppConfiguration $config) {
         $shortClassName = (new ReflectionClass(self::class))->getShortName();
-        parent::__construct(new Logger(LoggerHandlerFactory::create($config->getAll())), $shortClassName);
+        parent::__construct(new Logger(LoggerHandlerFactory::create($config->getAll()), $config->get('logger_level')), $shortClassName);
 
         $this->db = $db;
         $this->config = $config;

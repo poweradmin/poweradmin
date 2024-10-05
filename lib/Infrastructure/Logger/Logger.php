@@ -31,23 +31,43 @@ class Logger extends AbstractLogger
     private const ISO8601_DATETIME_FORMAT = 'c';
 
     private LogHandlerInterface $logHandler;
+    private string $logLevel;
 
-    public function __construct(LogHandlerInterface $handler)
+    private const LEVELS = [
+        'emergency' => 0,
+        'alert' => 1,
+        'critical' => 2,
+        'error' => 3,
+        'warning' => 4,
+        'notice' => 5,
+        'info' => 6,
+        'debug' => 7,
+    ];
+
+    public function __construct(LogHandlerInterface $handler, string $logLevel)
     {
         $this->logHandler = $handler;
+        $this->logLevel = $logLevel;
     }
 
     public function log($level, Stringable|string $message, array $context = []): void
     {
+        if (!$this->shouldLog($level)) {
+            return;
+        }
+
         $timestamp = (new DateTimeImmutable())->format(self::ISO8601_DATETIME_FORMAT);
 
+        $classname = '';
         if (array_key_exists('classname', $context)) {
-            $message = "[{classname}] $message";
+            $classname = "[{$context['classname']}]";
         }
+
         $this->logHandler->handle([
             'message' => self::interpolateMessage((string)$message, $context),
             'level' => strtoupper($level),
             'timestamp' => ($timestamp),
+            'classname' => $classname,
         ]);
     }
 
@@ -61,5 +81,10 @@ class Logger extends AbstractLogger
         }
 
         return strtr($message, $replace);
+    }
+
+    private function shouldLog(string $level)
+    {
+        return self::LEVELS[$level] <= self::LEVELS[$this->logLevel];
     }
 }
