@@ -52,7 +52,7 @@ class LdapAuthenticator
 
     public function authenticate(): void
     {
-        $this->logger->log('info', 'Starting LDAP authentication process.');
+        $this->logger->log('info', '[LdapAuthenticator] Starting LDAP authentication process.');
 
         $session_key = $this->config->get('session_key');
         $ldap_uri = $this->config->get('ldap_uri');
@@ -65,10 +65,10 @@ class LdapAuthenticator
         $ldap_user_attribute = $this->config->get('ldap_user_attribute');
 
         if (!isset($_SESSION["userlogin"]) || !isset($_SESSION["userpwd"])) {
-            $this->logger->log('warning', 'Session variables userlogin or userpwd are not set.');
+            $this->logger->log('warning', '[LdapAuthenticator] Session variables userlogin or userpwd are not set.');
             $sessionEntity = new SessionEntity('', 'danger');
             $this->authenticationService->auth($sessionEntity);
-            $this->logger->log('info', 'LDAP authentication process ended due to missing session variables.');
+            $this->logger->log('info', '[LdapAuthenticator] LDAP authentication process ended due to missing session variables.');
             return;
         }
 
@@ -78,26 +78,26 @@ class LdapAuthenticator
 
         $ldapconn = ldap_connect($ldap_uri);
         if (!$ldapconn) {
-            $this->logger->log('error', 'Failed to connect to LDAP server.');
+            $this->logger->log('error', '[LdapAuthenticator] Failed to connect to LDAP server.');
             if (isset($_POST["authenticate"])) {
                 $this->ldapUserEventLogger->log_failed_reason('ldap_connect');
             }
             $sessionEntity = new SessionEntity(_('Failed to connect to LDAP server!'), 'danger');
             $this->authenticationService->logout($sessionEntity);
-            $this->logger->log('info', 'LDAP authentication process ended due to connection failure.');
+            $this->logger->log('info', '[LdapAuthenticator] LDAP authentication process ended due to connection failure.');
             return;
         }
 
         ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, $ldap_proto);
         $ldapbind = ldap_bind($ldapconn, $ldap_binddn, $ldap_bindpw);
         if (!$ldapbind) {
-            $this->logger->log('error', 'Failed to bind to LDAP server.');
+            $this->logger->log('error', '[LdapAuthenticator] Failed to bind to LDAP server.');
             if (isset($_POST["authenticate"])) {
                 $this->ldapUserEventLogger->log_failed_reason('ldap_bind');
             }
             $sessionEntity = new SessionEntity(_('Failed to bind to LDAP server!'), 'danger');
             $this->authenticationService->logout($sessionEntity);
-            $this->logger->log('info', 'LDAP authentication process ended due to bind failure.');
+            $this->logger->log('info', '[LdapAuthenticator] LDAP authentication process ended due to bind failure.');
             return;
         }
 
@@ -114,19 +114,19 @@ class LdapAuthenticator
 
         $ldapsearch = ldap_search($ldapconn, $ldap_basedn, $filter, $attributes);
         if (!$ldapsearch) {
-            $this->logger->log('error', 'Failed to search LDAP.');
+            $this->logger->log('error', '[LdapAuthenticator] Failed to search LDAP.');
             if (isset($_POST["authenticate"])) {
                 $this->ldapUserEventLogger->log_failed_reason('ldap_search');
             }
             $sessionEntity = new SessionEntity(_('Failed to search LDAP.'), 'danger');
             $this->authenticationService->logout($sessionEntity);
-            $this->logger->log('info', 'LDAP authentication process ended due to search failure.');
+            $this->logger->log('info', '[LdapAuthenticator] LDAP authentication process ended due to search failure.');
             return;
         }
 
         $entries = ldap_get_entries($ldapconn, $ldapsearch);
         if ($entries["count"] != 1) {
-            $this->logger->log('warning', 'LDAP search did not return exactly one user. Count: {count}', ['count' => $entries["count"]]);
+            $this->logger->log('warning', '[LdapAuthenticator] LDAP search did not return exactly one user. Count: {count}', ['count' => $entries["count"]]);
             if (isset($_POST["authenticate"])) {
                 if ($entries["count"] == 0) {
                     $this->ldapUserEventLogger->log_failed_auth();
@@ -136,7 +136,7 @@ class LdapAuthenticator
             }
             $sessionEntity = new SessionEntity(_('Failed to authenticate against LDAP.'), 'danger');
             $this->authenticationService->logout($sessionEntity);
-            $this->logger->log('info', 'LDAP authentication process ended due to incorrect user count.');
+            $this->logger->log('info', '[LdapAuthenticator] LDAP authentication process ended due to incorrect user count.');
             return;
         }
         $user_dn = $entries[0]["dn"];
@@ -145,13 +145,13 @@ class LdapAuthenticator
         $session_pass = $passwordEncryptionService->decrypt($_SESSION['userpwd']);
         $ldapbind = ldap_bind($ldapconn, $user_dn, $session_pass);
         if (!$ldapbind) {
-            $this->logger->log('warning', 'LDAP authentication failed for user: {username}', ['username' => $_SESSION['userlogin']]);
+            $this->logger->log('warning', '[LdapAuthenticator] LDAP authentication failed for user: {username}', ['username' => $_SESSION['userlogin']]);
             if (isset($_POST["authenticate"])) {
                 $this->ldapUserEventLogger->log_failed_incorrect_pass();
             }
             $sessionEntity = new SessionEntity(_('LDAP Authentication failed!'), 'danger');
             $this->authenticationService->auth($sessionEntity);
-            $this->logger->log('info', 'LDAP authentication process ended due to incorrect password.');
+            $this->logger->log('info', '[LdapAuthenticator] LDAP authentication process ended due to incorrect password.');
             return;
         }
 
@@ -162,18 +162,18 @@ class LdapAuthenticator
         $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$rowObj) {
-            $this->logger->log('warning', 'No active LDAP user found with the provided username: {username}', ['username' => $_SESSION["userlogin"]]);
+            $this->logger->log('warning', '[LdapAuthenticator] No active LDAP user found with the provided username: {username}', ['username' => $_SESSION["userlogin"]]);
             if (isset($_POST["authenticate"])) {
                 $this->ldapUserEventLogger->log_failed_user_inactive();
             }
             $sessionEntity = new SessionEntity(_('LDAP Authentication failed!'), 'danger');
             $this->authenticationService->auth($sessionEntity);
-            $this->logger->log('info', 'LDAP authentication process ended due to no active user found.');
+            $this->logger->log('info', '[LdapAuthenticator] LDAP authentication process ended due to no active user found.');
             return;
         }
 
         session_regenerate_id(true);
-        $this->logger->log('info', 'Session ID regenerated for user: {username}', ['username' => $_SESSION["userlogin"]]);
+        $this->logger->log('info', '[LdapAuthenticator] Session ID regenerated for user: {username}', ['username' => $_SESSION["userlogin"]]);
 
         $_SESSION['userid'] = $rowObj['id'];
         $_SESSION['name'] = $rowObj['fullname'];
@@ -181,7 +181,7 @@ class LdapAuthenticator
 
         if (!isset($_SESSION['csrf_token'])) {
             $_SESSION['csrf_token'] = $this->csrfTokenService->generateToken();
-            $this->logger->log('info', 'CSRF token generated for user: {username}', ['username' => $_SESSION["userlogin"]]);
+            $this->logger->log('info', '[LdapAuthenticator] CSRF token generated for user: {username}', ['username' => $_SESSION["userlogin"]]);
         }
 
         if (isset($_POST['authenticate'])) {
@@ -190,6 +190,6 @@ class LdapAuthenticator
             $this->authenticationService->redirectToIndex();
         }
 
-        $this->logger->log('info', 'LDAP authentication process completed successfully for user: {username}', ['username' => $_SESSION["userlogin"]]);
+        $this->logger->log('info', '[LdapAuthenticator] LDAP authentication process completed successfully for user: {username}', ['username' => $_SESSION["userlogin"]]);
     }
 }
