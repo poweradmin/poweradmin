@@ -81,6 +81,7 @@ class RecordSearch extends BaseSearch
                 $records_table.content,
                 $records_table.ttl,
                 $records_table.prio,
+                $records_table.disabled,
                 z.id as zone_id,
                 z.owner,
                 u.id as user_id,
@@ -103,6 +104,7 @@ class RecordSearch extends BaseSearch
         while ($record = $recordsResponse->fetch()) {
             $found_record = $record;
             $found_record['name'] = idn_to_utf8($found_record['name'], IDNA_NONTRANSITIONAL_TO_ASCII);
+            $found_record['disabled'] = $found_record['disabled'] == '1' ? _('Yes') : _('No');
             $foundRecords[] = $found_record;
         }
 

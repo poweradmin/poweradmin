@@ -137,6 +137,7 @@
             <th><a href="javascript:record_sort_by('prio');">{% trans %}Priority{% endtrans %}</a> {% if record_sort_by == 'prio' %}<i class="bi bi-arrow-down"></i>{% endif %}</th>
             <th><a href="javascript:record_sort_by('content');">{% trans %}Content{% endtrans %}</a> {% if record_sort_by == 'content' %}<i class="bi bi-arrow-down"></i>{% endif %}</th>
             <th><a href="javascript:record_sort_by('ttl');">{% trans %}TTL{% endtrans %}</a> {% if record_sort_by == 'ttl' %}<i class="bi bi-arrow-down"></i>{% endif %}</th>
+            <th>{% trans %}Disabled{% endtrans %}</th>
             <th></th>
         </tr>
         </thead>
@@ -148,6 +149,7 @@
             <td>{{ record['prio'] }}</td>
             <td>{{ record['content'] }}</td>
             <td>{{ record['ttl'] }}</td>
+            <td>{{ record['disabled'] }}</td>
             <td>
                 {% if edit_permission == 'all' or ((edit_permission == 'own' or edit_permission == 'own_as_client') and record['user_id'] == user_id) %}
                 <a class="btn btn-outline-primary btn-sm"
