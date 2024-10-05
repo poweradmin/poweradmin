@@ -29,6 +29,7 @@ use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\Infrastructure\Logger\LdapUserEventLogger;
 use Poweradmin\AppConfiguration;
+use Poweradmin\Infrastructure\Logger\Logger;
 
 class LdapAuthenticator
 {
@@ -37,18 +38,22 @@ class LdapAuthenticator
     private LdapUserEventLogger $ldapUserEventLogger;
     private AuthenticationService $authenticationService;
     private CsrfTokenService $csrfTokenService;
+    private Logger $logger;
 
-    public function __construct(PDOLayer $db, AppConfiguration $config, LdapUserEventLogger $ldapUserEventLogger, AuthenticationService $authenticationService, CsrfTokenService $csrfTokenService)
+    public function __construct(PDOLayer $db, AppConfiguration $config, LdapUserEventLogger $ldapUserEventLogger, AuthenticationService $authenticationService, CsrfTokenService $csrfTokenService, Logger $logger)
     {
         $this->db = $db;
         $this->config = $config;
         $this->ldapUserEventLogger = $ldapUserEventLogger;
         $this->authenticationService = $authenticationService;
         $this->csrfTokenService = $csrfTokenService;
+        $this->logger = $logger;
     }
 
     public function authenticate(): void
     {
+        $this->logger->log('info', 'Starting LDAP authentication process.');
+
         $session_key = $this->config->get('session_key');
         $ldap_uri = $this->config->get('ldap_uri');
         $ldap_basedn = $this->config->get('ldap_basedn');
@@ -60,8 +65,11 @@ class LdapAuthenticator
         $ldap_user_attribute = $this->config->get('ldap_user_attribute');
 
         if (!isset($_SESSION["userlogin"]) || !isset($_SESSION["userpwd"])) {
+            $this->logger->log('warning', 'Session variables userlogin or userpwd are not set.');
             $sessionEntity = new SessionEntity('', 'danger');
             $this->authenticationService->auth($sessionEntity);
+            $this->logger->log('info', 'LDAP authentication process ended due to missing session variables.');
+            return;
         }
 
         if ($ldap_debug) {
@@ -70,22 +78,26 @@ class LdapAuthenticator
 
         $ldapconn = ldap_connect($ldap_uri);
         if (!$ldapconn) {
+            $this->logger->log('error', 'Failed to connect to LDAP server.');
             if (isset($_POST["authenticate"])) {
                 $this->ldapUserEventLogger->log_failed_reason('ldap_connect');
             }
             $sessionEntity = new SessionEntity(_('Failed to connect to LDAP server!'), 'danger');
             $this->authenticationService->logout($sessionEntity);
+            $this->logger->log('info', 'LDAP authentication process ended due to connection failure.');
             return;
         }
 
         ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, $ldap_proto);
         $ldapbind = ldap_bind($ldapconn, $ldap_binddn, $ldap_bindpw);
         if (!$ldapbind) {
+            $this->logger->log('error', 'Failed to bind to LDAP server.');
             if (isset($_POST["authenticate"])) {
                 $this->ldapUserEventLogger->log_failed_reason('ldap_bind');
             }
             $sessionEntity = new SessionEntity(_('Failed to bind to LDAP server!'), 'danger');
             $this->authenticationService->logout($sessionEntity);
+            $this->logger->log('info', 'LDAP authentication process ended due to bind failure.');
             return;
         }
 
@@ -102,17 +114,19 @@ class LdapAuthenticator
 
         $ldapsearch = ldap_search($ldapconn, $ldap_basedn, $filter, $attributes);
         if (!$ldapsearch) {
+            $this->logger->log('error', 'Failed to search LDAP.');
             if (isset($_POST["authenticate"])) {
                 $this->ldapUserEventLogger->log_failed_reason('ldap_search');
             }
             $sessionEntity = new SessionEntity(_('Failed to search LDAP.'), 'danger');
             $this->authenticationService->logout($sessionEntity);
+            $this->logger->log('info', 'LDAP authentication process ended due to search failure.');
             return;
         }
 
-        //Checking first that we only found exactly 1 user, get the DN of this user.  We'll use this to perform the actual authentication.
         $entries = ldap_get_entries($ldapconn, $ldapsearch);
         if ($entries["count"] != 1) {
+            $this->logger->log('warning', 'LDAP search did not return exactly one user. Count: {count}', ['count' => $entries["count"]]);
             if (isset($_POST["authenticate"])) {
                 if ($entries["count"] == 0) {
                     $this->ldapUserEventLogger->log_failed_auth();
@@ -122,6 +136,7 @@ class LdapAuthenticator
             }
             $sessionEntity = new SessionEntity(_('Failed to authenticate against LDAP.'), 'danger');
             $this->authenticationService->logout($sessionEntity);
+            $this->logger->log('info', 'LDAP authentication process ended due to incorrect user count.');
             return;
         }
         $user_dn = $entries[0]["dn"];
@@ -130,11 +145,13 @@ class LdapAuthenticator
         $session_pass = $passwordEncryptionService->decrypt($_SESSION['userpwd']);
         $ldapbind = ldap_bind($ldapconn, $user_dn, $session_pass);
         if (!$ldapbind) {
+            $this->logger->log('warning', 'LDAP authentication failed for user: {username}', ['username' => $_SESSION['userlogin']]);
             if (isset($_POST["authenticate"])) {
                 $this->ldapUserEventLogger->log_failed_incorrect_pass();
             }
             $sessionEntity = new SessionEntity(_('LDAP Authentication failed!'), 'danger');
             $this->authenticationService->auth($sessionEntity);
+            $this->logger->log('info', 'LDAP authentication process ended due to incorrect password.');
             return;
         }
 
@@ -145,15 +162,18 @@ class LdapAuthenticator
         $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$rowObj) {
+            $this->logger->log('warning', 'No active LDAP user found with the provided username: {username}', ['username' => $_SESSION["userlogin"]]);
             if (isset($_POST["authenticate"])) {
                 $this->ldapUserEventLogger->log_failed_user_inactive();
             }
             $sessionEntity = new SessionEntity(_('LDAP Authentication failed!'), 'danger');
             $this->authenticationService->auth($sessionEntity);
+            $this->logger->log('info', 'LDAP authentication process ended due to no active user found.');
             return;
         }
 
         session_regenerate_id(true);
+        $this->logger->log('info', 'Session ID regenerated for user: {username}', ['username' => $_SESSION["userlogin"]]);
 
         $_SESSION['userid'] = $rowObj['id'];
         $_SESSION['name'] = $rowObj['fullname'];
@@ -161,6 +181,7 @@ class LdapAuthenticator
 
         if (!isset($_SESSION['csrf_token'])) {
             $_SESSION['csrf_token'] = $this->csrfTokenService->generateToken();
+            $this->logger->log('info', 'CSRF token generated for user: {username}', ['username' => $_SESSION["userlogin"]]);
         }
 
         if (isset($_POST['authenticate'])) {
@@ -168,5 +189,7 @@ class LdapAuthenticator
             session_write_close();
             $this->authenticationService->redirectToIndex();
         }
+
+        $this->logger->log('info', 'LDAP authentication process completed successfully for user: {username}', ['username' => $_SESSION["userlogin"]]);
     }
 }
