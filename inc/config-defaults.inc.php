@@ -61,7 +61,7 @@ $dns_third_level_check = false;     // Do not allow the creation of third-level 
 //$timezone = 'UTC';
 
 // Logging settings
-$logger_type = 'none'; // none, native
+$logger_type = 'null'; // null, native
 $logger_level = 'info'; // debug, info, notice, warning, error, critical, alert, emergency
 
 // Syslog usage - writes authentication attempts to syslog

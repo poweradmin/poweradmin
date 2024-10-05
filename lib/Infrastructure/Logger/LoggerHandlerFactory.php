@@ -28,7 +28,7 @@ class LoggerHandlerFactory
     {
         return match ($config['logger_type']) {
             'native' => new NativeLogHandler(),
-            default => new NoneLogHandler(),
+            default => new NullLogHandler(),
         };
     }
 }

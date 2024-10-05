@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Logger;
 
-class NoneLogHandler implements LogHandlerInterface
+class NullLogHandler implements LogHandlerInterface
 {
 
     public function handle(array $context = []): void
