@@ -22,44 +22,8 @@
 
 namespace Poweradmin\Infrastructure\Logger;
 
-class CompositeLogger implements LoggerInterface
+interface LogHandlerInterface
 {
-    private array $loggers;
-
-    public function __construct(array $loggers = [])
-    {
-        $this->loggers = $loggers;
-    }
-
-    public function addLogger(LoggerInterface $logger): void
-    {
-        $this->loggers[] = $logger;
-    }
-
-    public function info(string $message): void
-    {
-        $this->logToAll('info', $message);
-    }
-
-    public function warn(string $message): void
-    {
-        $this->logToAll('warn', $message);
-    }
-
-    public function error(string $message): void
-    {
-        $this->logToAll('error', $message);
-    }
-
-    public function notice(string $message): void
-    {
-        $this->logToAll('notice', $message);
-    }
-
-    private function logToAll(string $method, string $message): void
-    {
-        foreach ($this->loggers as $logger) {
-            $logger->$method($message);
-        }
-    }
+    public const DEFAULT_FORMAT = '%timestamp% [%level%]: %message%';
+    public function handle(array $context = []): void;
 }

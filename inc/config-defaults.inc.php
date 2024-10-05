@@ -61,6 +61,9 @@ $dns_third_level_check = false;     // Do not allow the creation of third-level 
 //$timezone = 'UTC';
 
 // Logging settings
+$logger_type = 'none'; // none, native
+$logger_level = 'info'; // debug, info, notice, warning, error, critical, alert, emergency
+
 // Syslog usage - writes authentication attempts to syslog
 // This facility could be used in combination with fail2ban to
 // ban IPs with break-in attempts

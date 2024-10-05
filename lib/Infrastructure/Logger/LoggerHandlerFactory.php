@@ -22,10 +22,13 @@
 
 namespace Poweradmin\Infrastructure\Logger;
 
-interface LoggerInterface
+class LoggerHandlerFactory
 {
-    public function info(string $message): void;
-    public function warn(string $message): void;
-    public function error(string $message): void;
-    public function notice(string $message): void;
+    public static function create(array $config): LogHandlerInterface
+    {
+        return match ($config['logger_type']) {
+            'native' => new NativeLogHandler(),
+            default => new NoneLogHandler(),
+        };
+    }
 }

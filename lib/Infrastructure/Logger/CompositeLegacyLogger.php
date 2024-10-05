@@ -22,31 +22,44 @@
 
 namespace Poweradmin\Infrastructure\Logger;
 
-class EchoLogger implements LoggerInterface
+class CompositeLegacyLogger implements LegacyLoggerInterface
 {
+    private array $loggers;
+
+    public function __construct(array $loggers = [])
+    {
+        $this->loggers = $loggers;
+    }
+
+    public function addLogger(LegacyLoggerInterface $logger): void
+    {
+        $this->loggers[] = $logger;
+    }
+
     public function info(string $message): void
     {
-        $this->output('INFO', $message);
+        $this->logToAll('info', $message);
     }
 
     public function warn(string $message): void
     {
-        $this->output('WARN', $message);
+        $this->logToAll('warn', $message);
     }
 
     public function error(string $message): void
     {
-        $this->output('ERROR', $message);
+        $this->logToAll('error', $message);
     }
 
     public function notice(string $message): void
     {
-        $this->output('NOTICE', $message);
+        $this->logToAll('notice', $message);
     }
 
-    private function output(string $level, string $message): void
+    private function logToAll(string $method, string $message): void
     {
-        $date = date('Y-m-d H:i:s');
-        echo "<div class=\"container\"><pre>[$date] [$level] $message</pre></div>";
+        foreach ($this->loggers as $logger) {
+            $logger->$method($message);
+        }
     }
 }

@@ -27,7 +27,7 @@ use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Service\DnssecProvider;
 use Poweradmin\Domain\Utility\DnssecTransformer;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
-use Poweradmin\Infrastructure\Logger\LoggerInterface;
+use Poweradmin\Infrastructure\Logger\LegacyLoggerInterface;
 
 // TODO:
 // - Add debug logging (if enabled)
@@ -41,17 +41,17 @@ use Poweradmin\Infrastructure\Logger\LoggerInterface;
 class DnsSecApiProvider implements DnssecProvider
 {
     private PowerdnsApiClient $client;
-    private LoggerInterface $logger;
+    private LegacyLoggerInterface $logger;
     private DnssecTransformer $transformer;
     private string $clientIp;
     private string $userLogin;
 
     public function __construct(
-        PowerdnsApiClient $client,
-        LoggerInterface   $logger,
-        DnssecTransformer $transformer,
-        string            $clientIp,
-        string            $userLogin
+        PowerdnsApiClient     $client,
+        LegacyLoggerInterface $logger,
+        DnssecTransformer     $transformer,
+        string                $clientIp,
+        string                $userLogin
     )
     {
         $this->client = $client;

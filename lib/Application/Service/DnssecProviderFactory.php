@@ -28,8 +28,8 @@ use Poweradmin\Infrastructure\Api\HttpClient;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\PDOLayer;
-use Poweradmin\Infrastructure\Logger\CompositeLogger;
-use Poweradmin\Infrastructure\Logger\SyslogLogger;
+use Poweradmin\Infrastructure\Logger\CompositeLegacyLogger;
+use Poweradmin\Infrastructure\Logger\SyslogLegacyLogger;
 use Poweradmin\Infrastructure\Service\DnsSecApiProvider;
 use Poweradmin\Infrastructure\Service\PdnsUtilProvider;
 
@@ -44,10 +44,10 @@ class DnssecProviderFactory
         $httpClient = new HttpClient($config->get('pdns_api_url'), $config->get('pdns_api_key'));
         $apiClient = new PowerdnsApiClient($httpClient, 'localhost');
 
-        $logger = new CompositeLogger();
+        $logger = new CompositeLegacyLogger();
 
         if ($config->get('syslog_use')) {
-            $syslogLogger = new SyslogLogger(
+            $syslogLogger = new SyslogLegacyLogger(
                 $config->get('syslog_ident'),
                 $config->get('syslog_facility')
             );
