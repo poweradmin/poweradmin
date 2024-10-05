@@ -30,39 +30,42 @@ use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\AppConfiguration;
 use Poweradmin\Infrastructure\Logger\Logger;
+use ReflectionClass;
 
-class SqlAuthenticator
+class SqlAuthenticator extends LoggingService
 {
     private PDOLayer $db;
     private AppConfiguration $config;
     private UserEventLogger $userEventLogger;
     private AuthenticationService $authenticationService;
     private CsrfTokenService $csrfTokenService;
-    private Logger $logger;
 
     public function __construct(PDOLayer $db, AppConfiguration $config, UserEventLogger $userEventLogger, AuthenticationService $authenticationService, CsrfTokenService $csrfTokenService, Logger $logger)
     {
+        $shortClassName = (new ReflectionClass(self::class))->getShortName();
+        parent::__construct($logger, $shortClassName);
+
         $this->db = $db;
+
         $this->config = $config;
         $this->userEventLogger = $userEventLogger;
         $this->authenticationService = $authenticationService;
         $this->csrfTokenService = $csrfTokenService;
-        $this->logger = $logger;
     }
 
     public function authenticate(): void
     {
-        $this->logger->info('[SqlAuthenticator] Starting authentication process.');
+        $this->logInfo('Starting authentication process.');
 
         $session_key = $this->config->get('session_key');
 
         if (!isset($_SESSION["userlogin"]) || !isset($_SESSION["userpwd"])) {
-            $this->logger->warning('[SqlAuthenticator] Session variables userlogin or userpwd are not set.');
+            $this->logWarning('Session variables userlogin or userpwd are not set.');
 
             $sessionEntity = new SessionEntity('', 'danger');
             $this->authenticationService->auth($sessionEntity);
 
-            $this->logger->info( '[SqlAuthenticator] Authentication process ended due to missing session variables.');
+            $this->logInfo( 'Authentication process ended due to missing session variables.');
             return;
         }
 
@@ -75,10 +78,10 @@ class SqlAuthenticator
         $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$rowObj) {
-            $this->logger->warning('[SqlAuthenticator] No user found with the provided username: {username}', ['username' => $_SESSION["userlogin"]]);
+            $this->logWarning('No user found with the provided username: {username}', ['username' => $_SESSION["userlogin"]]);
             $this->handleFailedAuthentication();
 
-            $this->logger->info( '[SqlAuthenticator] Authentication process ended due to no user found.');
+            $this->logInfo( 'Authentication process ended due to no user found.');
             return;
         }
 
@@ -89,29 +92,29 @@ class SqlAuthenticator
         );
 
         if (!$userAuthService->verifyPassword($session_pass, $rowObj['password'])) {
-            $this->logger->warning('[SqlAuthenticator] Password verification failed for user {username}', ['username' => $_SESSION["userlogin"]]);
+            $this->logWarning('Password verification failed for user {username}', ['username' => $_SESSION["userlogin"]]);
             $this->handleFailedAuthentication();
 
-            $this->logger->info( '[SqlAuthenticator] Authentication process ended due to password verification failure.');
+            $this->logInfo( 'Authentication process ended due to password verification failure.');
             return;
         }
 
         if ($rowObj['active'] != 1) {
-            $this->logger->warning('[SqlAuthenticator] User account is disabled for user {username}', ['username' => $_SESSION["userlogin"]]);
+            $this->logWarning('User account is disabled for user {username}', ['username' => $_SESSION["userlogin"]]);
             $sessionEntity = new SessionEntity(_('The user account is disabled.'), 'danger');
             $this->authenticationService->auth($sessionEntity);
 
-            $this->logger->info('[SqlAuthenticator] Authentication process ended due to disabled user account.');
+            $this->logInfo('Authentication process ended due to disabled user account.');
             return;
         }
 
         if ($userAuthService->requiresRehash($rowObj['password'])) {
-            $this->logger->info('[SqlAuthenticator] Password requires rehashing for user {username}', ['username' => $_SESSION["userlogin"]]);
+            $this->logInfo('Password requires rehashing for user {username}', ['username' => $_SESSION["userlogin"]]);
             UserManager::update_user_password($this->db, $rowObj["id"], $session_pass);
         }
 
         session_regenerate_id(true);
-        $this->logger->info('[SqlAuthenticator] Session ID regenerated for user {username}', ['username' => $_SESSION["userlogin"]]);
+        $this->logInfo('Session ID regenerated for user {username}', ['username' => $_SESSION["userlogin"]]);
 
         $_SESSION['userid'] = $rowObj['id'];
         $_SESSION['name'] = $rowObj['fullname'];
@@ -119,7 +122,7 @@ class SqlAuthenticator
 
         if (!isset($_SESSION['csrf_token'])) {
             $_SESSION['csrf_token'] = $this->csrfTokenService->generateToken();
-            $this->logger->info('[SqlAuthenticator] CSRF token generated for user {username}', ['username' => $_SESSION["userlogin"]]);
+            $this->logInfo('CSRF token generated for user {username}', ['username' => $_SESSION["userlogin"]]);
         }
 
         if (isset($_POST['authenticate'])) {
@@ -128,12 +131,12 @@ class SqlAuthenticator
             $this->authenticationService->redirectToIndex();
         }
 
-        $this->logger->info('[SqlAuthenticator] Authentication process completed successfully for user {username}', ['username' => $_SESSION["userlogin"]]);
+        $this->logInfo('Authentication process completed successfully for user {username}', ['username' => $_SESSION["userlogin"]]);
     }
 
     private function handleFailedAuthentication(): void
     {
-        $this->logger->info('[SqlAuthenticator] Handling failed authentication.');
+        $this->logInfo('Handling failed authentication.');
 
         if (isset($_POST['authenticate'])) {
             $this->userEventLogger->log_failed_auth();
@@ -145,6 +148,6 @@ class SqlAuthenticator
         }
         $this->authenticationService->auth($sessionEntity);
 
-        $this->logger->info('[SqlAuthenticator] Failed authentication handled.');
+        $this->logInfo('Failed authentication handled.');
     }
 }

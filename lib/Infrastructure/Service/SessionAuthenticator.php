@@ -24,6 +24,7 @@ namespace Poweradmin\Infrastructure\Service;
 
 use PDO;
 use Poweradmin\AppConfiguration;
+use Poweradmin\Application\Service\LoggingService;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\LdapAuthenticator;
 use Poweradmin\Application\Service\SqlAuthenticator;
@@ -36,8 +37,9 @@ use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\Infrastructure\Logger\LdapUserEventLogger;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
+use ReflectionClass;
 
-class SessionAuthenticator
+class SessionAuthenticator extends LoggingService
 {
     private AuthenticationService $authenticationService;
     private PDOLayer $db;
@@ -47,9 +49,11 @@ class SessionAuthenticator
     private CsrfTokenService $csrfTokenService;
     private LdapAuthenticator $ldapAuthenticator;
     private SqlAuthenticator $sqlAuthenticator;
-    private Logger $logger;
 
     public function __construct(PDOLayer $db, AppConfiguration $config) {
+        $shortClassName = (new ReflectionClass(self::class))->getShortName();
+        parent::__construct(new Logger(LoggerHandlerFactory::create($config->getAll())), $shortClassName);
+
         $this->db = $db;
         $this->config = $config;
 
@@ -60,8 +64,6 @@ class SessionAuthenticator
 
         $this->userEventLogger = new UserEventLogger($db);
         $this->ldapUserEventLogger = new LdapUserEventLogger($db);
-        $handler = LoggerHandlerFactory::create($config->getAll());
-        $this->logger = new Logger($handler);
 
         $this->ldapAuthenticator = new LdapAuthenticator($db, $config, $this->ldapUserEventLogger, $this->authenticationService, $this->csrfTokenService, $this->logger);
         $this->sqlAuthenticator = new SqlAuthenticator($db, $config, $this->userEventLogger, $this->authenticationService, $this->csrfTokenService, $this->logger);
@@ -76,7 +78,7 @@ class SessionAuthenticator
      */
     function authenticate(): void
     {
-        $this->logger->debug('[SessionAuthenticator] Starting authentication process');
+        $this->logDebug('Starting authentication process');
 
         $iface_expire = $this->config->get('iface_expire');
         $session_key = $this->config->get('session_key');
@@ -85,11 +87,11 @@ class SessionAuthenticator
         $global_token_validation = $this->config->isGlobalTokenValidationEnabled();
 
         if (isset($_SESSION['userid']) && isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] == "logout") {
-            $this->logger->info('[SessionAuthenticator] User {userid} requested logout', ['userid' => $_SESSION['userid']]);
+            $this->logInfo('User {userid} requested logout', ['userid' => $_SESSION['userid']]);
             $sessionEntity = new SessionEntity(_('You have logged out.'), 'success');
             $this->authenticationService->logout($sessionEntity);
 
-            $this->logger->debug('[SessionAuthenticator] Logout process completed for user {userid}', ['userid' => $_SESSION['userid']]);
+            $this->logDebug('Logout process completed for user {userid}', ['userid' => $_SESSION['userid']]);
             return;
         }
 
@@ -98,72 +100,72 @@ class SessionAuthenticator
             && isset($_POST['authenticate'])
             && !$this->csrfTokenService->validateToken($login_token, 'login_token')
         ) {
-            $this->logger->warning('[SessionAuthenticator] Invalid CSRF token for user {username}', ['username' => $_POST['username'] ?? 'unknown']);
+            $this->logWarning('Invalid CSRF token for user {username}', ['username' => $_POST['username'] ?? 'unknown']);
 
             $sessionEntity = new SessionEntity(_('Invalid CSRF token.'), 'danger');
             $this->authenticationService->auth($sessionEntity);
 
-            $this->logger->debug('[SessionAuthenticator] CSRF token validation failed for user {username}', ['username' => $_POST['username'] ?? 'unknown']);
+            $this->logDebug('CSRF token validation failed for user {username}', ['username' => $_POST['username'] ?? 'unknown']);
             return;
         }
 
         // If a user had just entered his/her login && password, store them in our session.
         if (isset($_POST["authenticate"])) {
-            $this->logger->debug('[SessionAuthenticator] User {username} attempting to authenticate', ['username' => $_POST["username"] ?? 'unknown']);
+            $this->logDebug('User {username} attempting to authenticate', ['username' => $_POST["username"] ?? 'unknown']);
 
             if ($_POST['password'] != '') {
                 $passwordEncryptionService = new PasswordEncryptionService($session_key);
                 $_SESSION["userpwd"] = $passwordEncryptionService->encrypt($_POST['password']);
-                $this->logger->debug('[SessionAuthenticator] Password encrypted for user {username}', ['username' => $_POST["username"]]);
+                $this->logDebug('Password encrypted for user {username}', ['username' => $_POST["username"]]);
 
                 $_SESSION["userlogin"] = $_POST["username"];
-                $this->logger->debug('[SessionAuthenticator] User login set for user {username}', ['username' => $_POST["username"]]);
+                $this->logDebug('User login set for user {username}', ['username' => $_POST["username"]]);
 
                 $_SESSION["userlang"] = $_POST["userlang"] ?? $this->config->get('iface_lang');
-                $this->logger->debug('[SessionAuthenticator] User language set for user {username}', ['username' => $_POST["username"]]);
+                $this->logDebug('User language set for user {username}', ['username' => $_POST["username"]]);
 
-                $this->logger->info('[SessionAuthenticator] User {username} authenticated', ['username' => $_POST["username"]]);
+                $this->logInfo('User {username} authenticated', ['username' => $_POST["username"]]);
             } else {
-                $this->logger->error('[SessionAuthenticator] Empty password attempt for user {username}', ['username' => $_POST["username"] ?? 'unknown']);
+                $this->logError('Empty password attempt for user {username}', ['username' => $_POST["username"] ?? 'unknown']);
 
                 $sessionEntity = new SessionEntity(_('An empty password is not allowed'), 'danger');
                 $this->authenticationService->auth($sessionEntity);
 
-                $this->logger->debug('[SessionAuthenticator] Authentication failed due to empty password for user {username}', ['username' => $_POST["username"] ?? 'unknown']);
+                $this->logDebug('Authentication failed due to empty password for user {username}', ['username' => $_POST["username"] ?? 'unknown']);
                 return;
             }
         }
 
         // Check if the session hasn't expired yet.
         if ((isset($_SESSION["userid"])) && ($_SESSION["lastmod"] != "") && ((time() - $_SESSION["lastmod"]) > $iface_expire)) {
-            $this->logger->info('[SessionAuthenticator] Session expired for user {userid}', ['userid' => $_SESSION["userid"]]);
+            $this->logInfo('Session expired for user {userid}', ['userid' => $_SESSION["userid"]]);
 
             $sessionEntity = new SessionEntity(_('Session expired, please login again.'), 'danger');
             $this->authenticationService->logout($sessionEntity);
 
-            $this->logger->debug('[SessionAuthenticator] Session expired and user {userid} logged out', ['userid' => $_SESSION["userid"]]);
+            $this->logDebug('Session expired and user {userid} logged out', ['userid' => $_SESSION["userid"]]);
             return;
         }
 
         // If the session hasn't expired yet, give our session a fresh new timestamp.
         $_SESSION["lastmod"] = time();
-        $this->logger->debug('[SessionAuthenticator] Session timestamp updated for user {username}', ['username' => $_SESSION["userlogin"] ?? 'unknown']);
+        $this->logDebug('Session timestamp updated for user {username}', ['username' => $_SESSION["userlogin"] ?? 'unknown']);
 
         if ($ldap_use && $this->userUsesLDAP()) {
-            $this->logger->info('[SessionAuthenticator] User {username} uses LDAP for authentication', ['username' => $_SESSION["userlogin"]]);
+            $this->logInfo('User {username} uses LDAP for authentication', ['username' => $_SESSION["userlogin"]]);
             $this->ldapAuthenticator->authenticate();
         } else {
-            $this->logger->info('[SessionAuthenticator] User {username} uses SQL for authentication', ['username' => $_SESSION["userlogin"] ?? 'unknown']);
+            $this->logInfo('User {username} uses SQL for authentication', ['username' => $_SESSION["userlogin"] ?? 'unknown']);
             $this->sqlAuthenticator->authenticate();
         }
 
-        $this->logger->debug('[SessionAuthenticator] Authentication process completed for user {username}', ['username' => $_SESSION["userlogin"] ?? 'unknown']);
+        $this->logDebug('Authentication process completed for user {username}', ['username' => $_SESSION["userlogin"] ?? 'unknown']);
     }
 
     private function userUsesLDAP(): bool
     {
         if (!isset($_SESSION["userlogin"])) {
-            $this->logger->debug('[SessionAuthenticator] No user login found in session');
+            $this->logDebug('No user login found in session');
             return false;
         }
 
@@ -173,10 +175,10 @@ class SessionAuthenticator
         ]);
         $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $this->logger->debug('[SessionAuthenticator] Checked LDAP usage for user {username}', ['username' => $_SESSION["userlogin"]]);
+        $this->logDebug('Checked LDAP usage for user {username}', ['username' => $_SESSION["userlogin"]]);
 
         $ldapUsage = $rowObj !== false;
-        $this->logger->debug('[SessionAuthenticator] LDAP usage for user {username}: {ldapUsage}', ['username' => $_SESSION["userlogin"], 'ldapUsage' => $ldapUsage]);
+        $this->logDebug('LDAP usage for user {username}: {ldapUsage}', ['username' => $_SESSION["userlogin"], 'ldapUsage' => $ldapUsage]);
 
         return $ldapUsage;
     }

@@ -40,6 +40,10 @@ class Logger extends AbstractLogger
     public function log($level, Stringable|string $message, array $context = []): void
     {
         $timestamp = (new DateTimeImmutable())->format(self::ISO8601_DATETIME_FORMAT);
+
+        if (array_key_exists('classname', $context)) {
+            $message = "[{classname}] $message";
+        }
         $this->logHandler->handle([
             'message' => self::interpolateMessage((string)$message, $context),
             'level' => strtoupper($level),
