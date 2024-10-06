@@ -94,7 +94,7 @@ class RecordSearch extends BaseSearch
                 ($records_table.name LIKE " . $this->db->quote($search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($search_string, 'text') .
             ($reverse ? " OR $records_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ')' .
             ($permission_view == 'own' ? 'AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
-            ($iface_search_group_records ? " GROUP BY $records_table.name, $records_table.content, $records_table.id, zone_id, user_id" : '') .
+            ($iface_search_group_records ? " GROUP BY $records_table.name, $records_table.content " : '') .
             ' ORDER BY ' . $sort_records_by .
             ' LIMIT ' . $iface_rowamount . ' OFFSET ' . $offset;
 
@@ -144,19 +144,24 @@ class RecordSearch extends BaseSearch
     {
         $pdns_db_name = $this->config->get('pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+        $groupByClause = $iface_search_group_records ? "GROUP BY $records_table.name, $records_table.content" : '';
 
         $recordsQuery = "
             SELECT
                 COUNT(*)
-            FROM
-                $records_table
-            LEFT JOIN zones z on $records_table.domain_id = z.domain_id
-            LEFT JOIN users u on z.owner = u.id
-            WHERE
-                ($records_table.name LIKE " . $this->db->quote($search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($search_string, 'text') .
-            ($reverse ? " OR $records_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ')' .
-            ($permission_view == 'own' ? 'AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
-            ($iface_search_group_records ? " GROUP BY $records_table.name, $records_table.content " : '');
+            FROM (
+                SELECT
+                    $records_table.id
+                FROM
+                    $records_table
+                LEFT JOIN zones z on $records_table.domain_id = z.domain_id
+                LEFT JOIN users u on z.owner = u.id
+                WHERE
+                    ($records_table.name LIKE " . $this->db->quote($search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($search_string, 'text') .
+                ($reverse ? " OR $records_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ')' .
+                ($permission_view == 'own' ? 'AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
+                " $groupByClause
+            ) as grouped_records";
 
         return (int)$this->db->queryOne($recordsQuery);
     }
