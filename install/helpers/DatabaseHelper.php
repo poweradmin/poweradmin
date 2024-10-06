@@ -102,8 +102,21 @@ class DatabaseHelper
         $instructions = "";
 
         if ($this->databaseCredentials['db_type'] == 'mysql') {
-            $instructions .= "CREATE USER '" . htmlspecialchars($this->databaseCredentials['pa_db_user']) . "'@'%' IDENTIFIED BY '" . htmlspecialchars($this->databaseCredentials['pa_db_pass']) . "';\n";
-            $instructions .= "GRANT SELECT, INSERT, UPDATE, DELETE ON " . htmlspecialchars($this->databaseCredentials['db_name']) . ".* TO '" . htmlspecialchars($this->databaseCredentials['pa_db_user']) . "'@'%';\n";
+            $db_hosts = ['%', $this->databaseCredentials['db_host']];
+
+            $user = htmlspecialchars($this->databaseCredentials['pa_db_user']);
+            $pass = htmlspecialchars($this->databaseCredentials['pa_db_pass']);
+            $db = htmlspecialchars($this->databaseCredentials['db_name']);
+
+            $db_hosts = array_unique(array_map('htmlspecialchars', $db_hosts));
+
+            $statements = [];
+            foreach ($db_hosts as $host) {
+                $statements[] = "CREATE USER '$user'@'$host' IDENTIFIED BY '$pass';\n" .
+                    "GRANT SELECT, INSERT, UPDATE, DELETE ON $db.* TO '$user'@'$host';\n";
+            }
+
+            $instructions = implode("\n" . _('or') . "\n\n", $statements);
         } elseif ($this->databaseCredentials['db_type'] == 'pgsql') {
             $instructions .= "CREATE USER " . htmlspecialchars($this->databaseCredentials['pa_db_user']) . " WITH PASSWORD '" . htmlspecialchars($this->databaseCredentials['pa_db_pass']) . "';\n";
 
