@@ -1,20 +1,35 @@
 # Poweradmin [![Composer](https://github.com/poweradmin/poweradmin/actions/workflows/php.yml/badge.svg)](https://github.com/poweradmin/poweradmin/actions/workflows/php.yml)
 
-[Poweradmin](https://www.poweradmin.org) is a friendly web-based DNS administration tool for PowerDNS server.
-The interface has full support for most of the features of PowerDNS. It has full support for all zone types (
-master, native and slave), for supermasters for automatic provisioning of slave zones, full support for IPv6 and comes
-with multi-language support.
+[Poweradmin](https://www.poweradmin.org) is a friendly web-based DNS administration tool for PowerDNS server. The
+interface supports most of
+the features of PowerDNS. It is a hybrid solution that uses SQL for most operations and has PowerDNS support for DNSSEC
+operations.
+
+## Features
+
+- Supports all zone types (master, native, and slave)
+- Supermasters for automatic provisioning of slave zones
+- IPv6 support
+- Multi-language support
+- DNSSEC operations
+- Light and dark themes
+- Ability to add reverse records
+- LDAP authentication support with custom filter
 
 ## Disclaimer
 
-This project is not affiliated with [PowerDNS.com](https://www.powerdns.com/index.html)
-, [Open-Xchange](https://www.open-xchange.com), or any other third parties.
-It is independently funded and maintained. If this project does not meet your needs, please check out these
-other [options](https://github.com/PowerDNS/pdns/wiki/WebFrontends).
+This project is not associated with [PowerDNS.com](https://www.powerdns.com/index.html)
+, [Open-Xchange](https://www.open-xchange.com), or any other external parties.
+It is independently funded and maintained. If this project does not fulfill your requirements, please explore these
+alternative [options](https://github.com/PowerDNS/pdns/wiki/WebFrontends).
+
+## License
+
+This project is licensed under the GNU General Public License v3.0. See the LICENSE file for more details.
 
 ## Requirements
 
-* PHP 8.1
+* PHP 8.1 or higher (including 8.2, 8.3, 8.4, etc.)
 * PHP intl extension
 * PHP gettext extension
 * PHP openssl extension
@@ -41,10 +56,10 @@ other [options](https://github.com/PowerDNS/pdns/wiki/WebFrontends).
 
 Install the following dependencies:
 
-On Debian based Systems:
+On Debian-based systems and their derivatives:
 
 ```sh
-apt install php-intl
+apt install php-intl php-gettext php-openssl php-filter php-tokenizer php-pdo
 
 For MySQL/MariaDB
 apt install php-mysqlnd
@@ -56,43 +71,32 @@ For SQLite
 apt install php-sqlite3
 ```
 
-On RHEL based Systems:
+On Red Hat Enterprise Linux (RHEL) and its derivatives:
 
 ```sh
-yum install -y php-intl
+dnf install -y php-intl php-gettext php-openssl php-filter php-tokenizer php-pdo
 
 For MySQL/MariaDB
-yum install -y php-mysqlnd
+dnf install -y php-mysqlnd
 
 For PostgreSQL
-yum install -y php-pgsql
+dnf install -y php-pgsql
 ```
 
 Download the project files
 
 * Via Git:
     * Clone the repository: ```git clone https://github.com/poweradmin/poweradmin.git```
-    * Select latest tag (for example v3.7.0) or skip this if you want to run from master: ```git checkout tags/v3.7.0```
+    * Select latest tag (for example v3.8.0) or skip this if you want to run from master: ```git checkout tags/v3.8.0```
 * Via releases:
     * Get the latest file from [releases](https://github.com/poweradmin/poweradmin/releases)
 
 Go to the installed system in your browser
 
-* Visit http(s)://URL/install/ and follow the installation steps
-* Once the installation is complete, remove the `install` folder
+* Visit http(s)://URL/install/ and follow the installation steps.
+* Once the installation is complete, remove the `install` folder.
 * Point your browser to: http(s)://URL
 * Log in using the default 'admin' username and the password created during setup (provided in step 3).
-
-## Troubleshooting
-
-Whenever you experience a blank page or other weird behavior, check your http server logs for PHP errors. Alternatively,
-you can add a code block with error output to the browser (for instance, index.php if it fails):
-
-```php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-```
 
 ## Screenshots
 
@@ -103,3 +107,73 @@ error_reporting(E_ALL);
 ### Zone list
 
 ![List of zones](https://raw.githubusercontent.com/poweradmin/poweradmin.github.io/master/screenshots/ignite_zone_list.png)
+
+### Debug Settings
+
+To help diagnose issues, you can enable various debug settings in the `inc/config.inc.php` file. Below are the available
+debug settings and how to enable them:
+
+1. **PHP Error Reporting**: To display PHP errors directly in the browser, add the following lines to your `index.php`
+   or any other entry point file:
+    ```php
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+    ```
+
+2. **Logger Settings**: Configure the logging settings to use the native type and debug level. Currently, these settings
+   are used only for logging authentication issues:
+    ```php
+    $logger_type = 'native';
+    $logger_level = 'debug';
+    ```
+
+3. **Database Debugging**: Enable or disable database debugging. When enabled, detailed database operations and errors
+   will be logged:
+    ```php
+    $db_debug = true;
+    ```
+
+4. **DNSSEC Debugging**: Enable or disable DNSSEC debugging. When enabled, detailed DNSSEC operations and errors will be
+   logged:
+    ```php
+    $pdnssec_debug = true;
+    ```
+
+5. **LDAP Debugging**: Enable or disable LDAP debugging. When enabled, detailed LDAP operations and errors will be
+   logged:
+    ```php
+    $ldap_debug = true;
+    ```
+
+By enabling these settings, you can gain more insight into the application's behavior and troubleshoot issues more
+effectively.
+
+## Contributing
+
+### Steps to Contribute
+
+1. **Fork the Repository**: Use the "Fork" button on the repository page to create a copy of the repository under your
+   GitHub account.
+2. **Clone the Forked Repository**: Download the forked repository to your local machine.
+3. **Create a New Branch**: Create a new branch for your feature or bugfix.
+4. **Make Changes**: Make your changes to the codebase.
+5. **Commit Changes**: Save your changes with a descriptive commit message.
+6. **Push Changes**: Upload your changes to your forked repository.
+7. **Create a Pull Request**: Go to the original repository and create a pull request from your forked repository.
+
+### Partial Acceptance
+
+Please note that while I am open to contributions, I might only take the good parts of your submission or rewrite it to
+keep in sync with the overall style and structure of the project. However, I will still keep a reference to you as the
+original contributor.
+
+### Code Review
+
+All contributions will be reviewed. Feedback will be provided, and you may be asked to make additional changes.
+
+### Testing
+
+Ensure that your changes are well-tested.
+
+Thank you for your contributions!
