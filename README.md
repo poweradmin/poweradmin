@@ -30,6 +30,7 @@ other [options](https://github.com/PowerDNS/pdns/wiki/WebFrontends).
 
 | Poweradmin | PHP            | PowerDNS | MariaDB | MySQL  | PostgreSQL | SQLite |
 |------------|----------------|----------|---------|--------|------------|--------|
+| 3.9.x      | 8.1.30         | 4.5.5    | 10.11.9 | -      | 16.3       | 3.45.3 |
 | 3.8.x      | 8.1.28         | 4.5.5    | 10.11.8 | -      | 16.3       | 3.45.3 |
 | 3.7.x      | 8.1.2          | 4.5.3    | 11.1.2  | 8.2.0  | 16.0       | 3.40.1 |
 | 3.6.x      | 8.1.2          | 4.5.3    | 11.1.2  | 8.1.0  | 16.0       | 3.40.1 |
@@ -80,7 +81,7 @@ Go to the installed system in your browser
 * Visit http(s)://URL/install/ and follow the installation steps
 * Once the installation is complete, remove the `install` folder
 * Point your browser to: http(s)://URL
-* Log in using the credentials created during setup
+* Log in using the default 'admin' username and the password created during setup (provided in step 3).
 
 ## Troubleshooting
 
