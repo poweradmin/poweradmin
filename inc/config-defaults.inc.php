@@ -89,7 +89,7 @@ $pdnssec_command = '/usr/bin/pdnsutil'; // will be deprecated in the future
 // LDAP settings
 $ldap_use = false;
 $ldap_debug = false;
-$ldap_uri = 'ldap://domaincontroller.example.com'; // Hostname, port number not required
+$ldap_uri = 'ldap://domaincontroller.example.com'; // Hostname, port number not required, use ldaps:// for SSL
 $ldap_basedn = 'ou=users,dc=example,dc=com'; // The place where all users are stored
 //$ldap_search_filter = 'cn=powerdns,ou=groups,dc=example,dc=org'; // The group that has access to the application
 $ldap_binddn = 'cn=admin,dc=example,dc=com'; // OpenLDAP - full DN of the user cn=admin,dc=example,dc=com, Active Directory - Group\User
