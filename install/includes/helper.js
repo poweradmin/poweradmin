@@ -33,7 +33,7 @@ function updateFormFields(db_type)
 
     switch (db_type) {
         case 'mysql':
-            dbport.value = "3306";
+            db_port.value = "3306";
             host.value = 'localhost';
 
             db_name_title.style.display = '';
