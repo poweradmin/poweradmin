@@ -83,10 +83,26 @@ class ConfiguringDatabaseValidator extends AbstractStepValidator
     public function validateDbUser($dbUser, ExecutionContextInterface $context): void
     {
         $input = $context->getRoot();
-        if (in_array($input['db_type'], ['mysql', 'pgsql']) && empty($dbUser)) {
-            $context->buildViolation('This value should not be blank.')
-                ->atPath('db_user')
-                ->addViolation();
+        if (in_array($input['db_type'], ['mysql', 'pgsql'])) {
+            if (empty($dbUser)) {
+                $context->buildViolation('This value should not be blank.')
+                    ->atPath('db_user')
+                    ->addViolation();
+            } else {
+                $maxLength = $input['db_type'] === 'mysql' ? 32 : 63;
+
+                if (mb_strlen($dbUser) > $maxLength) {
+                    $context->buildViolation("This value is too long. It should have {$maxLength} characters or less.")
+                        ->atPath('db_user')
+                        ->addViolation();
+                }
+
+//                if (!preg_match('/^[a-zA-Z0-9_]+$/', $dbUser)) {
+//                    $context->buildViolation('This value contains invalid characters. Only letters, numbers, and underscores are allowed.')
+//                        ->atPath('db_user')
+//                        ->addViolation();
+//                }
+            }
         }
     }
 
