@@ -166,7 +166,7 @@ effectively.
 
 Please note that while I am open to contributions, I might only take the good parts of your submission or rewrite it to
 keep in sync with the overall style and structure of the project. However, I will still keep a reference to you as the
-original contributor.
+original contributor. This will be mentioned in the release notes.
 
 ### Code Review
 
