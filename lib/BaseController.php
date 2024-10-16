@@ -335,8 +335,8 @@ EOF;
     protected function redirectToPreviousPage(array $server): void
     {
         $defaultUrl = 'index.php';
-
         $referer = $server['HTTP_REFERER'] ?? '';
+
         if (!empty($referer) && filter_var($referer, FILTER_VALIDATE_URL)) {
             $parsedUrl = parse_url($referer);
             $queryParams = [];
@@ -348,12 +348,8 @@ EOF;
             if ($page && $page !== 'switch_theme' && in_array($page, Pages::GetPages())) {
                 $params = $this->sanitizeQueryParams($queryParams);
                 $path = $parsedUrl['path'] ?? '/index.php';
-                $url = $path;
-                if (!empty($params)) {
-                    $url .= '?' . http_build_query($params);
-                }
-                $sanitizedUrl = filter_var($url, FILTER_SANITIZE_URL);
-                $this->sendRedirect($sanitizedUrl);
+                $url = $path . (!empty($params) ? '?' . http_build_query($params) : '');
+                $this->sendRedirect(filter_var($url, FILTER_SANITIZE_URL));
                 return;
             }
         }
