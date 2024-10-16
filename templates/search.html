@@ -74,10 +74,10 @@
             <td>
                 {% if edit_permission == 'all' or ((edit_permission == 'own' or edit_permission == 'own_as_client') and zone['user_id'] == user_id) %}
                 <a class="btn btn-outline-primary btn-sm"
-                   href="index.php?page=edit&name={{ zone['name'] }}&id={{ zone['id'] }}">
+                   href="index.php?page=edit&id={{ zone['id'] }}">
                     <i class="bi bi-pencil-square"></i> {% trans %}Edit{% endtrans %}</a>
                 <a class="btn btn-outline-danger btn-sm"
-                   href="index.php?page=delete_domain&name={{ zone['name'] }}&id={{ zone['id'] }}">
+                   href="index.php?page=delete_domain&id={{ zone['id'] }}">
                     <i class="bi bi-trash"></i> {% trans %}Delete{% endtrans %}</a>
                 {% endif %}
             </td>

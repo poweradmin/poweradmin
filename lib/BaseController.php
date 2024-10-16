@@ -96,10 +96,8 @@ abstract class BaseController
 
     public function redirect($script, $args = []): void
     {
-        $args['time'] = time();
-        $url = htmlentities($script, ENT_QUOTES) . "?" . http_build_query($args);
-        header("Location: $url");
-        exit;
+        $url = $this->buildUrl($script, $args);
+        $this->sendRedirect($url);
     }
 
     public function setMessage($script, $type, $content): void
@@ -280,5 +278,124 @@ EOF;
 
     public function showFirstValidationError(): void {
         $this->showFirstError($this->validator->errors());
+    }
+
+    private function sendRedirect(string $url): void
+    {
+        header("Location: $url");
+        exit;
+    }
+
+    private function parseQueryParams(array $parsedUrl): array
+    {
+        $existingQueryParams = [];
+        if (isset($parsedUrl['query'])) {
+            parse_str($parsedUrl['query'], $existingQueryParams);
+        }
+        return $existingQueryParams;
+    }
+
+    private function buildUrl($script, mixed $args): string
+    {
+        $parsedUrl = parse_url($script);
+        $existingQueryParams = $this->parseQueryParams($parsedUrl);
+
+        $args['time'] = time();
+        $queryParams = array_merge($existingQueryParams, $args);
+
+        $queryString = http_build_query($queryParams);
+
+        if (isset($parsedUrl['query'])) {
+            return $script . "&" . $queryString;
+        } else {
+            return $script . "?" . $queryString;
+        }
+    }
+
+    protected function redirectToPreviousPage(array $server): void
+    {
+        $previousScriptName = 'index.php';
+
+        $referer = $server['HTTP_REFERER'] ?? '';
+        if ($this->hasValidReferer($referer)) {
+            $parsedUrl = parse_url($referer);
+            $queryParams = $this->parseQueryParams($parsedUrl);
+
+            if ($this->isValidPage($queryParams)) {
+                $previousScriptName = $this->buildPreviousScriptUrl($queryParams);
+            }
+        }
+
+        $sanitizedUrl = $this->getSanitizedUrl($previousScriptName);
+        $this->redirect($sanitizedUrl);
+    }
+
+    private function hasValidReferer(string $referer): bool
+    {
+        return isset($referer) && filter_var($referer, FILTER_VALIDATE_URL);
+    }
+
+    private function isValidPage(array $queryParams): bool
+    {
+        return !empty($queryParams['page']);
+    }
+
+    private function buildPreviousScriptUrl(array $queryParams): string
+    {
+        $url = 'index.php';
+        $params = [];
+
+        $page = $queryParams['page'] ?? null;
+        if ($page && $page !== 'switch_theme' && in_array($page, Pages::GetPages())) {
+            $params['page'] = $page;
+        }
+
+        $allowedParams = [
+            'id' => ['filter' => FILTER_VALIDATE_INT, 'options' => ['min_range' => 1]],
+            'start' => ['filter' => FILTER_VALIDATE_INT, 'options' => ['min_range' => 1]],
+            'confirm' => ['callback' => function($value) {
+                return $value === '1' ? '1' : null;
+            }],
+            'zone_templ_id' => ['filter' => FILTER_VALIDATE_INT, 'options' => ['min_range' => 1]],
+            'letter' => ['callback' => function($value) {
+                return preg_match('/^(?:[0-9]|[a-z]|all)$/i', $value) ? $value : null;
+            }],
+            'record_sort_by' => ['callback' => function($value) {
+                $allowedSortFields = ['type', 'name', 'content', 'ttl', 'prio'];
+                return in_array($value, $allowedSortFields, true) ? $value : null;
+            }],
+            'ns_name' => ['filter' => FILTER_VALIDATE_DOMAIN],
+            'master_ip' => ['filter' => FILTER_VALIDATE_IP],
+            // Add more parameters and their validation rules here
+        ];
+
+        foreach ($allowedParams as $param => $rule) {
+            if (isset($queryParams[$param])) {
+                $value = $queryParams[$param];
+                $validValue = null;
+
+                if (isset($rule['filter'])) {
+                    $options = $rule['options'] ?? [];
+                    $validValue = filter_var($value, $rule['filter'], ['options' => $options]);
+                } elseif (isset($rule['callback']) && is_callable($rule['callback'])) {
+                    $validValue = $rule['callback']($value);
+                }
+
+                if ($validValue !== false && $validValue !== null) {
+                    $params[$param] = $validValue;
+                }
+            }
+        }
+
+        if (!empty($params)) {
+            $url .= '?' . http_build_query($params);
+        }
+
+        return $url;
+    }
+
+    private function getSanitizedUrl(string $previousScriptName): string
+    {
+        return filter_var($previousScriptName, FILTER_SANITIZE_URL);
     }
 }

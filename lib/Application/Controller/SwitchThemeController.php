@@ -30,6 +30,7 @@ include_once(__DIR__ . '/../../../inc/config-defaults.inc.php');
 class SwitchThemeController extends BaseController
 {
     private const DEFAULT_THEME = 'ignite';
+    private const DARK_THEME = 'spark';
 
     private array $get;
     private array $server;
@@ -46,13 +47,13 @@ class SwitchThemeController extends BaseController
     {
         $selectedTheme = $this->getSelectedTheme();
         $this->setThemeCookie($selectedTheme);
-        $this->redirectToPreviousPage();
+        $this->redirectToPreviousPage($this->server);
     }
 
     private function getSelectedTheme(): string
     {
-        $theme = htmlspecialchars($this->get['theme']);
-        return $theme === 'spark' ? 'spark' : self::DEFAULT_THEME;
+        $theme = $this->get['theme'] ?? '';
+        return $theme === self::DARK_THEME ? self::DARK_THEME : self::DEFAULT_THEME;
     }
 
     private function setThemeCookie(string $selectedTheme): void
@@ -62,20 +63,5 @@ class SwitchThemeController extends BaseController
             'secure' => $secure,
             'httponly' => true,
         ]);
-    }
-
-    private function redirectToPreviousPage(): void
-    {
-        $previousScriptName = 'index.php';
-
-        if (isset($this->server['HTTP_REFERER'])) {
-            $previousScriptUrlParts = parse_url($this->server['HTTP_REFERER']);
-            parse_str($previousScriptUrlParts['query'], $previousScriptUrlQueryParts);
-            $previousScriptName = $previousScriptUrlQueryParts['page'] === 'switch_theme' ? 'index.php' : 'index.php?page=' . $previousScriptUrlQueryParts['page'];
-        }
-
-        $previousScriptName = htmlspecialchars($previousScriptName, ENT_QUOTES, 'UTF-8');
-
-        $this->redirect($previousScriptName);
     }
 }
