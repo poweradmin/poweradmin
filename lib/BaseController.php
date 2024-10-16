@@ -286,63 +286,8 @@ EOF;
         exit;
     }
 
-    private function parseQueryParams(array $parsedUrl): array
+    private function sanitizeQueryParams(array $queryParams): array
     {
-        $existingQueryParams = [];
-        if (isset($parsedUrl['query'])) {
-            parse_str($parsedUrl['query'], $existingQueryParams);
-        }
-        return $existingQueryParams;
-    }
-
-    private function buildUrl($script, mixed $args): string
-    {
-        $parsedUrl = parse_url($script);
-        $existingQueryParams = $this->parseQueryParams($parsedUrl);
-
-        $args['time'] = time();
-        $queryParams = array_merge($existingQueryParams, $args);
-
-        $queryString = http_build_query($queryParams);
-
-        if (isset($parsedUrl['query'])) {
-            return $script . "&" . $queryString;
-        } else {
-            return $script . "?" . $queryString;
-        }
-    }
-
-    protected function redirectToPreviousPage(array $server): void
-    {
-        $previousScriptName = 'index.php';
-
-        $referer = $server['HTTP_REFERER'] ?? '';
-        if ($this->hasValidReferer($referer)) {
-            $parsedUrl = parse_url($referer);
-            $queryParams = $this->parseQueryParams($parsedUrl);
-
-            if ($this->isValidPage($queryParams)) {
-                $previousScriptName = $this->buildPreviousScriptUrl($queryParams);
-            }
-        }
-
-        $sanitizedUrl = $this->getSanitizedUrl($previousScriptName);
-        $this->redirect($sanitizedUrl);
-    }
-
-    private function hasValidReferer(string $referer): bool
-    {
-        return isset($referer) && filter_var($referer, FILTER_VALIDATE_URL);
-    }
-
-    private function isValidPage(array $queryParams): bool
-    {
-        return !empty($queryParams['page']);
-    }
-
-    private function buildPreviousScriptUrl(array $queryParams): string
-    {
-        $url = 'index.php';
         $params = [];
 
         $page = $queryParams['page'] ?? null;
@@ -351,34 +296,31 @@ EOF;
         }
 
         $allowedParams = [
-            'id' => ['filter' => FILTER_VALIDATE_INT, 'options' => ['min_range' => 1]],
-            'start' => ['filter' => FILTER_VALIDATE_INT, 'options' => ['min_range' => 1]],
-            'confirm' => ['callback' => function($value) {
+            'id' => FILTER_VALIDATE_INT,
+            'start' => FILTER_VALIDATE_INT,
+            'confirm' => function($value) {
                 return $value === '1' ? '1' : null;
-            }],
-            'zone_templ_id' => ['filter' => FILTER_VALIDATE_INT, 'options' => ['min_range' => 1]],
-            'letter' => ['callback' => function($value) {
+            },
+            'zone_templ_id' => FILTER_VALIDATE_INT,
+            'letter' => function($value) {
                 return preg_match('/^(?:[0-9]|[a-z]|all)$/i', $value) ? $value : null;
-            }],
-            'record_sort_by' => ['callback' => function($value) {
+            },
+            'record_sort_by' => function($value) {
                 $allowedSortFields = ['type', 'name', 'content', 'ttl', 'prio'];
                 return in_array($value, $allowedSortFields, true) ? $value : null;
-            }],
-            'ns_name' => ['filter' => FILTER_VALIDATE_DOMAIN],
-            'master_ip' => ['filter' => FILTER_VALIDATE_IP],
-            // Add more parameters and their validation rules here
+            },
+            'ns_name' => FILTER_VALIDATE_DOMAIN,
+            'master_ip' => FILTER_VALIDATE_IP,
+            // TODO: Add more parameters and their validation rules here
         ];
 
         foreach ($allowedParams as $param => $rule) {
             if (isset($queryParams[$param])) {
                 $value = $queryParams[$param];
-                $validValue = null;
-
-                if (isset($rule['filter'])) {
-                    $options = $rule['options'] ?? [];
-                    $validValue = filter_var($value, $rule['filter'], ['options' => $options]);
-                } elseif (isset($rule['callback']) && is_callable($rule['callback'])) {
-                    $validValue = $rule['callback']($value);
+                if (is_callable($rule)) {
+                    $validValue = $rule($value);
+                } else {
+                    $validValue = filter_var($value, $rule);
                 }
 
                 if ($validValue !== false && $validValue !== null) {
@@ -387,15 +329,35 @@ EOF;
             }
         }
 
-        if (!empty($params)) {
-            $url .= '?' . http_build_query($params);
-        }
-
-        return $url;
+        return $params;
     }
 
-    private function getSanitizedUrl(string $previousScriptName): string
+    protected function redirectToPreviousPage(array $server): void
     {
-        return filter_var($previousScriptName, FILTER_SANITIZE_URL);
+        $defaultUrl = 'index.php';
+
+        $referer = $server['HTTP_REFERER'] ?? '';
+        if (!empty($referer) && filter_var($referer, FILTER_VALIDATE_URL)) {
+            $parsedUrl = parse_url($referer);
+            $queryParams = [];
+            if (isset($parsedUrl['query'])) {
+                parse_str($parsedUrl['query'], $queryParams);
+            }
+
+            $page = $queryParams['page'] ?? null;
+            if ($page && $page !== 'switch_theme' && in_array($page, Pages::GetPages())) {
+                $params = $this->sanitizeQueryParams($queryParams);
+                $path = $parsedUrl['path'] ?? '/index.php';
+                $url = $path;
+                if (!empty($params)) {
+                    $url .= '?' . http_build_query($params);
+                }
+                $sanitizedUrl = filter_var($url, FILTER_SANITIZE_URL);
+                $this->sendRedirect($sanitizedUrl);
+                return;
+            }
+        }
+
+        $this->sendRedirect($defaultUrl);
     }
 }
