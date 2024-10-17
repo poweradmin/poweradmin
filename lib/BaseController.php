@@ -297,21 +297,16 @@ EOF;
 
         $allowedParams = [
             'id' => FILTER_VALIDATE_INT,
-            'start' => FILTER_VALIDATE_INT,
-            'confirm' => function($value) {
-                return $value === '1' ? '1' : null;
-            },
-            'zone_templ_id' => FILTER_VALIDATE_INT,
-            'letter' => function($value) {
-                return preg_match('/^(?:[0-9]|[a-z]|all)$/i', $value) ? $value : null;
-            },
-            'record_sort_by' => function($value) {
-                $allowedSortFields = ['type', 'name', 'content', 'ttl', 'prio'];
-                return in_array($value, $allowedSortFields, true) ? $value : null;
-            },
-            'ns_name' => FILTER_VALIDATE_DOMAIN,
+            'confirm' => fn($value) => $value === '1' ? '1' : null,
+            'domain_id' => FILTER_VALIDATE_INT,
+            'key_id' => FILTER_VALIDATE_INT,
+            'letter' => fn($value) => preg_match('/^(?:[0-9]|[a-z]|all)$/i', $value) ? $value : null,
             'master_ip' => FILTER_VALIDATE_IP,
-            // TODO: Add more parameters and their validation rules here
+            'ns_name' => FILTER_VALIDATE_DOMAIN,
+            'record_sort_by' => fn($value) => in_array($value, ['id', 'name', 'type', 'content', 'prio', 'ttl', 'disabled'], true) ? $value : null,
+            'start' => FILTER_VALIDATE_INT,
+            'zone_sort_by' => fn($value) => in_array($value, ['name', 'type', 'count_records', 'owner'], true) ? $value : null,
+            'zone_templ_id' => FILTER_VALIDATE_INT,
         ];
 
         foreach ($allowedParams as $param => $rule) {
