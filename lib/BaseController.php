@@ -282,7 +282,16 @@ EOF;
 
     private function sendRedirect(string $url): void
     {
-        header("Location: $url");
+        # TODO: read hosts from config
+        $allowedHosts = [];
+
+        $parsedUrl = parse_url($url);
+        if (isset($parsedUrl['host']) && !empty($allowedHosts) && !in_array($parsedUrl['host'], $allowedHosts)) {
+            $url = '/';
+        }
+
+        $sanitizeUrl = filter_var($url, FILTER_SANITIZE_URL);
+        header("Location: $sanitizeUrl");
         exit;
     }
 
@@ -336,7 +345,7 @@ EOF;
                 $params = $this->sanitizeQueryParams($queryParams);
                 $path = $parsedUrl['path'] ?? '/index.php';
                 $url = $path . (!empty($params) ? '?' . http_build_query($params) : '');
-                $this->sendRedirect(filter_var($url, FILTER_SANITIZE_URL));
+                $this->sendRedirect($url);
                 return;
             }
         }
