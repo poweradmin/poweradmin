@@ -199,6 +199,7 @@ class ComposerStaticInit1dab89e42c6bd529040213c23957bbde
         'Poweradmin\\Application\\Service\\DnssecService' => __DIR__ . '/../..' . '/lib/Application/Service/DnssecService.php',
         'Poweradmin\\Application\\Service\\LdapAuthenticator' => __DIR__ . '/../..' . '/lib/Application/Service/LdapAuthenticator.php',
         'Poweradmin\\Application\\Service\\LocaleService' => __DIR__ . '/../..' . '/lib/Application/Service/LocaleService.php',
+        'Poweradmin\\Application\\Service\\LoggingService' => __DIR__ . '/../..' . '/lib/Application/Service/LoggingService.php',
         'Poweradmin\\Application\\Service\\PaginationService' => __DIR__ . '/../..' . '/lib/Application/Service/PaginationService.php',
         'Poweradmin\\Application\\Service\\SqlAuthenticator' => __DIR__ . '/../..' . '/lib/Application/Service/SqlAuthenticator.php',
         'Poweradmin\\Application\\Service\\StatsDisplayService' => __DIR__ . '/../..' . '/lib/Application/Service/StatsDisplayService.php',

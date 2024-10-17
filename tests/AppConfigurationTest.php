@@ -3,7 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use Poweradmin\AppConfiguration;
 
-class LegacyConfigurationTest extends TestCase
+class AppConfigurationTest extends TestCase
 {
     private string $tempDefaultConfigFile;
     private string $tempCustomConfigFile;

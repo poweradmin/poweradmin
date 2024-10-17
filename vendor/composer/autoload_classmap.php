@@ -97,6 +97,7 @@ return array(
     'Poweradmin\\Application\\Service\\DnssecService' => $baseDir . '/lib/Application/Service/DnssecService.php',
     'Poweradmin\\Application\\Service\\LdapAuthenticator' => $baseDir . '/lib/Application/Service/LdapAuthenticator.php',
     'Poweradmin\\Application\\Service\\LocaleService' => $baseDir . '/lib/Application/Service/LocaleService.php',
+    'Poweradmin\\Application\\Service\\LoggingService' => $baseDir . '/lib/Application/Service/LoggingService.php',
     'Poweradmin\\Application\\Service\\PaginationService' => $baseDir . '/lib/Application/Service/PaginationService.php',
     'Poweradmin\\Application\\Service\\SqlAuthenticator' => $baseDir . '/lib/Application/Service/SqlAuthenticator.php',
     'Poweradmin\\Application\\Service\\StatsDisplayService' => $baseDir . '/lib/Application/Service/StatsDisplayService.php',
