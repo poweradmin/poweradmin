@@ -290,11 +290,6 @@ EOF;
     {
         $params = [];
 
-        $page = $queryParams['page'] ?? null;
-        if ($page && $page !== 'switch_theme' && in_array($page, Pages::GetPages())) {
-            $params['page'] = $page;
-        }
-
         $allowedParams = [
             'id' => FILTER_VALIDATE_INT,
             'confirm' => fn($value) => $value === '1' ? '1' : null,
@@ -305,6 +300,7 @@ EOF;
             'ns_name' => FILTER_VALIDATE_DOMAIN,
             'record_sort_by' => fn($value) => in_array($value, ['id', 'name', 'type', 'content', 'prio', 'ttl', 'disabled'], true) ? $value : null,
             'start' => FILTER_VALIDATE_INT,
+            'page' => fn($value) => ($value && $value !== 'switch_theme' && in_array($value, Pages::GetPages())) ? $value : null,
             'zone_sort_by' => fn($value) => in_array($value, ['name', 'type', 'count_records', 'owner'], true) ? $value : null,
             'zone_templ_id' => FILTER_VALIDATE_INT,
         ];
@@ -312,11 +308,7 @@ EOF;
         foreach ($allowedParams as $param => $rule) {
             if (isset($queryParams[$param])) {
                 $value = $queryParams[$param];
-                if (is_callable($rule)) {
-                    $validValue = $rule($value);
-                } else {
-                    $validValue = filter_var($value, $rule);
-                }
+                $validValue = is_callable($rule) ? $rule($value) : filter_var($value, $rule);
 
                 if ($validValue !== false && $validValue !== null) {
                     $params[$param] = $validValue;
