@@ -280,6 +280,32 @@ EOF;
         $this->showFirstError($this->validator->errors());
     }
 
+    private function buildUrl($script, mixed $args): string
+    {
+        $parsedUrl = parse_url($script);
+        $existingQueryParams = $this->parseQueryParams($parsedUrl);
+
+        $args['time'] = time();
+        $queryParams = array_merge($existingQueryParams, $args);
+
+        $queryString = http_build_query($queryParams);
+
+        if (isset($parsedUrl['query'])) {
+            return $script . "&" . $queryString;
+        } else {
+            return $script . "?" . $queryString;
+        }
+    }
+
+    private function parseQueryParams(array $parsedUrl): array
+    {
+        $existingQueryParams = [];
+        if (isset($parsedUrl['query'])) {
+            parse_str($parsedUrl['query'], $existingQueryParams);
+        }
+        return $existingQueryParams;
+    }
+
     private function sendRedirect(string $url): void
     {
         # TODO: read hosts from config
