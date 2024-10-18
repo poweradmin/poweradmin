@@ -15,13 +15,9 @@
             </div>
             <div class="col-md-6 d-flex justify-content-end">
                 {% if show_theme_switcher %}
-                {% if iface_style == 'ignite' %}
-                <a class="btn btn-outline-secondary btn-sm" href="index.php?page=switch_theme&theme=spark"><i
-                        class="bi bi-moon"></i></a>
-                {% else %}
-                <a class="btn btn-outline-secondary btn-sm" href="index.php?page=switch_theme&theme=ignite"><i
-                        class="bi bi-sun"></i></a>
-                {% endif %}
+                <button class="btn btn-outline-secondary btn-sm" id="theme-switcher">
+                    <i class="bi" id="theme-icon"></i>
+                </button>
                 {% endif %}
             </div>
         </div>
@@ -71,6 +67,33 @@
 
     const alertList = document.querySelectorAll('.alert')
     const alerts = [...alertList].map(element => new bootstrap.Alert(element))
+
+    const themeSwitcher = document.getElementById('theme-switcher');
+    const themeIcon = document.getElementById('theme-icon');
+    const themeStylesheet = document.getElementById('theme-stylesheet');
+    const ifaceStyle = '{{ iface_style }}';
+
+    let currentTheme = localStorage.getItem('theme');
+    if (currentTheme !== 'ignite' && currentTheme !== 'spark') {
+        currentTheme = ifaceStyle || 'ignite';
+    }
+
+    function initializeTheme() {
+        document.body.classList.add(currentTheme);
+        themeIcon.classList.add(currentTheme === 'ignite' ? 'bi-moon' : 'bi-sun');
+        themeStylesheet.href = `style/${currentTheme}.css?time={{ file_version }}`;
+    }
+
+    themeSwitcher.addEventListener('click', () => {
+        const newTheme = currentTheme === 'ignite' ? 'spark' : 'ignite';
+        document.body.classList.replace(currentTheme, newTheme);
+        themeIcon.classList.replace(currentTheme === 'ignite' ? 'bi-moon' : 'bi-sun', newTheme === 'ignite' ? 'bi-moon' : 'bi-sun');
+        themeStylesheet.href = `style/${newTheme}.css?time={{ file_version }}`;
+        localStorage.setItem('theme', newTheme);
+        currentTheme = newTheme;
+    });
+
+    initializeTheme();
 </script>
 </body>
 </html>
