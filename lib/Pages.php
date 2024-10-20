@@ -67,7 +67,6 @@ class Pages
             'login',
             'logout',
             'search',
-            'switch_theme',
             'users',
         ];
     }
