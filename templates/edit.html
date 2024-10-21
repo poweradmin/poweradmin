@@ -57,7 +57,7 @@
                 <input class="form-control form-control-sm" type="text" name="name" value="">
             </td>
             <td class="col-sm-1">
-                <select class="form-select form-select-sm" name="type">
+                <select id="recordTypeSelect" class="form-select form-select-sm" name="type" onchange="updateContentInput()">
                     {% set rev = false %}
                     {% for record_type in record_types %}
                     {% set add = "" %}
@@ -74,7 +74,9 @@
                 </select>
             </td>
             <td>
-                <textarea class="form-control form-control-sm" name="content" rows="1" required></textarea>
+                <div id="contentInputContainer">
+                    <textarea class="form-control form-control-sm" name="content" required></textarea>
+                </div>
                 <div class="invalid-feedback">{% trans %}Provide content{% endtrans %}</div>
             </td>
             <td class="col-sm-1"><input class="form-control form-control-sm" type="number" name="prio" value="0"
@@ -174,7 +176,7 @@
                     {% endif %}
                 </select>
             </td>
-            <td><textarea class="form-control form-control-sm" name="record[{{ r['id'] }}][content]" rows="1">{{ r['content'] }}</textarea></td>
+            <td><input class="form-control form-control-sm" type="text" name="record[{{ r['id'] }}][content]" value="{{ r['content'] }}"></td>
             <td class="col-sm-1"><input class="form-control form-control-sm" type="number"
                                         id="priority_field_{{ r['id'] }}" name="record[{{ r['id'] }}][prio]"
                                         min="0" max="65535" pattern="[0-9]*" value="{{ r['prio'] }}"></td>
@@ -264,7 +266,7 @@
             </td>
             <td>IN</td>
             <td class="col-sm-1">
-                <select class="form-select form-select-sm" name="type">
+                <select id="recordTypeSelect"  class="form-select form-select-sm" name="type" onchange="updateContentInput()">
                     {% set rev = false %}
                     {% for record_type in record_types %}
                     {% set add = "" %}
@@ -280,7 +282,10 @@
                     {% endfor %}
                 </select>
             </td>
-            <td><textarea class="form-control form-control-sm" name="content" rows="1" required></textarea>
+            <td>
+                <div id="contentInputContainer">
+                    <input id="recordContent" class="form-control form-control-sm" type="text" name="content" value="" required>
+                </div>
                 <div class="invalid-feedback">{% trans %}Provide content{% endtrans %}</div>
             </td>
             <td class="col-sm-1"><input class="form-control form-control-sm" type="number" name="prio" value="0"
