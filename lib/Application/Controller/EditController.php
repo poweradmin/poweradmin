@@ -229,7 +229,7 @@ class EditController extends BaseController
             'is_secured' => $dnssecProvider->isZoneSecured($zone_name, $this->getConfig()),
             'session_userid' => $_SESSION["userid"],
             'dns_ttl' => $this->config('dns_ttl'),
-            'is_rev_zone' => preg_match('/i(p6|n-addr).arpa/i', $zone_name),
+            'is_reverse_zone' => preg_match('/i(p6|n-addr).arpa/i', $zone_name),
             'record_types' => RecordType::getTypes(),
             'iface_add_reverse_record' => $this->config('iface_add_reverse_record'),
             'iface_zone_comments' => $this->config('iface_zone_comments'),
