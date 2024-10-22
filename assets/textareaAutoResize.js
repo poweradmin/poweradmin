@@ -13,12 +13,13 @@ function updateContentInput() {
 
     if (!elements.select || !elements.container) return;
 
-    const value = elements.container.dataset.initialValue || '';
+    const currentInput = document.getElementById('recordContent');
+    const currentValue = currentInput ? currentInput.value : '';
     const isTextarea = textareaTypes.has(elements.select.value);
 
     elements.container.innerHTML = isTextarea
-        ? `<textarea id="recordContent" class="form-control form-control-sm" name="content" rows="1" required>${value}</textarea>`
-        : `<input id="recordContent" class="form-control form-control-sm" type="text" name="content" value="${value}" required>`;
+        ? `<textarea id="recordContent" class="form-control form-control-sm" name="content" rows="1" required>${currentValue}</textarea>`
+        : `<input id="recordContent" class="form-control form-control-sm" type="text" name="content" value="${currentValue}" required>`;
 
     if (isTextarea) {
         const textarea = document.getElementById('recordContent');
