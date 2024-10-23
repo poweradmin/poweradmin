@@ -552,8 +552,9 @@ class UserManager
 
         $response = $db->query($query);
 
+        $userList = array();
         while ($user = $response->fetch()) {
-            $userlist [] = array(
+            $userList[] = array(
                 "uid" => $user ['uid'],
                 "username" => $user ['username'],
                 "fullname" => $user ['fullname'],
@@ -566,7 +567,7 @@ class UserManager
                 "tpl_descr" => $user ['tpl_descr']
             );
         }
-        return $userlist;
+        return $userList;
     }
 
     /**
