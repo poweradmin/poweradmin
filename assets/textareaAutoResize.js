@@ -28,6 +28,7 @@ function updateContentInput(selectId, containerId, contentId) {
             textarea.style.height = `${textarea.scrollHeight}px`;
         };
 
+        textarea.removeEventListener('input', adjustHeight);
         textarea.addEventListener('input', adjustHeight);
         if (textarea.value) adjustHeight();
     }
