@@ -37,7 +37,7 @@
             </td>
             <td>IN</td>
             <td class="col-sm-1">
-                <select id="recordTypeSelect" class="form-select form-select-sm" name="type" onchange="updateContentInput()">
+                <select id="recordTypeSelect" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelect', 'contentInputContainer', 'recordContent')">
                     {% for record_type in types %}
                     {% set add = '' %}
                     {% if type == record_type %}
@@ -73,4 +73,4 @@
     {% endif %}
 </form>
 
-<script src="assets/textareaAutoResize.js"></script>
+<script src="assets/textareaAutoResize.js?time={{ file_version }}"></script>

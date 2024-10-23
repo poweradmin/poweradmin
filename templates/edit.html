@@ -57,7 +57,7 @@
                 <input class="form-control form-control-sm" type="text" name="name" value="">
             </td>
             <td class="col-sm-1">
-                <select id="recordTypeSelect" class="form-select form-select-sm" name="type" onchange="updateContentInput()">
+                <select id="recordTypeSelectTop" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelectTop', 'contentInputContainerTop', 'recordContentTop')">
                     {% set rev = false %}
                     {% for record_type in record_types %}
                     {% set add = "" %}
@@ -74,8 +74,8 @@
                 </select>
             </td>
             <td>
-                <div id="contentInputContainer">
-                    <textarea class="form-control form-control-sm" name="content" required></textarea>
+                <div id="contentInputContainerTop">
+                    <input id="recordContentTop" class="form-control form-control-sm" type="text" name="content" value="" required>
                 </div>
                 <div class="invalid-feedback">{% trans %}Provide content{% endtrans %}</div>
             </td>
@@ -160,7 +160,7 @@
             <td class="col-sm-2"><input class="form-control form-control-sm" type="text"
                                         name="record[{{ r['id'] }}][name]" value="{{ r['name'] }}"></td>
             <td class="col-sm-1">
-                <select class="form-select form-select-sm" name="record[{{ r['id'] }}][type]">
+                <select id="recordTypeSelect{{ r['id'] }}" class="form-select form-select-sm" name="record[{{ r['id'] }}][type]" onchange="updateContentInput('recordTypeSelect{{ r['id'] }}', 'contentInputContainer{{ r['id'] }}', 'recordContent{{ r['id'] }}')">
                     {% set found_selected_type = false %}
                     {% for type_available in types %}
                     {% if type_available == r['type'] %}
@@ -176,14 +176,18 @@
                     {% endif %}
                 </select>
             </td>
-            <td><input class="form-control form-control-sm" type="text" name="record[{{ r['id'] }}][content]" value="{{ r['content'] }}"></td>
+            <td>
+                <div id="contentInputContainer{{ r['id'] }}">
+                    <input id="recordContent{{ r['id'] }}" class="form-control form-control-sm" type="text" name="record[{{ r['id'] }}][content]" value="{{ r['content'] }}">
+                </div>
+            </td>
             <td class="col-sm-1"><input class="form-control form-control-sm" type="number"
                                         id="priority_field_{{ r['id'] }}" name="record[{{ r['id'] }}][prio]"
                                         min="0" max="65535" pattern="[0-9]*" value="{{ r['prio'] }}"></td>
             <td class="col-sm-1"><input class="form-control form-control-sm" type="text"
                                         min="0" max="2147483647" pattern="[0-9]*" name="record[{{ r['id'] }}][ttl]"
                                         value="{{ r['ttl'] }}"></td>
-            <td>
+            <td class="text-center">
                 <input class="form-check-input" type="checkbox" name="record[{{ r['id'] }}][disabled]" {% if r['disabled'] == 1 %}checked{% endif %}>
             </td>
             {% endif %}
@@ -266,7 +270,7 @@
             </td>
             <td>IN</td>
             <td class="col-sm-1">
-                <select id="recordTypeSelect"  class="form-select form-select-sm" name="type" onchange="updateContentInput()">
+                <select id="recordTypeSelectBottom"  class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelectBottom', 'contentInputContainerBottom', 'recordContentBottom')">
                     {% set rev = false %}
                     {% for record_type in record_types %}
                     {% set add = "" %}
@@ -283,8 +287,8 @@
                 </select>
             </td>
             <td>
-                <div id="contentInputContainer">
-                    <input id="recordContent" class="form-control form-control-sm" type="text" name="content" value="" required>
+                <div id="contentInputContainerBottom">
+                    <input id="recordContentBottom" class="form-control form-control-sm" type="text" name="content" value="" required>
                 </div>
                 <div class="invalid-feedback">{% trans %}Provide content{% endtrans %}</div>
             </td>
@@ -522,4 +526,4 @@
     </div>
 </div>
 
-<script src="assets/textareaAutoResize.js"></script>
+<script src="assets/textareaAutoResize.js?time={{ file_version }}"></script>

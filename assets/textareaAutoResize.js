@@ -5,24 +5,24 @@ const textareaTypes = new Set([
     'TLSA', 'TKEY', 'TSIG', 'TXT', 'URI', 'ZONEMD'
 ]);
 
-function updateContentInput() {
+function updateContentInput(selectId, containerId, contentId) {
     const elements = {
-        select: document.getElementById('recordTypeSelect'),
-        container: document.getElementById('contentInputContainer')
+        select: document.getElementById(selectId),
+        container: document.getElementById(containerId)
     };
 
     if (!elements.select || !elements.container) return;
 
-    const currentInput = document.getElementById('recordContent');
+    const currentInput = document.getElementById(contentId);
     const currentValue = currentInput ? currentInput.value : '';
     const isTextarea = textareaTypes.has(elements.select.value);
 
     elements.container.innerHTML = isTextarea
-        ? `<textarea id="recordContent" class="form-control form-control-sm" name="content" rows="1" required>${currentValue}</textarea>`
-        : `<input id="recordContent" class="form-control form-control-sm" type="text" name="content" value="${currentValue}" required>`;
+        ? `<textarea id="${contentId}" class="form-control form-control-sm" name="content" rows="1" required>${currentValue}</textarea>`
+        : `<input id="${contentId}" class="form-control form-control-sm" type="text" name="content" value="${currentValue}" required>`;
 
     if (isTextarea) {
-        const textarea = document.getElementById('recordContent');
+        const textarea = document.getElementById(contentId);
         const adjustHeight = () => {
             textarea.style.height = 'auto';
             textarea.style.height = `${textarea.scrollHeight}px`;
@@ -33,15 +33,20 @@ function updateContentInput() {
     }
 }
 
-
 document.addEventListener('DOMContentLoaded', function() {
-    const container = document.getElementById('contentInputContainer');
-    const record = document.getElementById('recordContent');
-    const select = document.getElementById('recordTypeSelect');
+    const containers = document.querySelectorAll('[id^="contentInputContainer"]');
+    containers.forEach(container => {
+        const baseString = "contentInputContainer";
+        const suffix = container.id.slice(baseString.length);
 
-    if (container && record && select) {
-        container.dataset.initialValue = record.value;
-        updateContentInput();
-        select.addEventListener('change', updateContentInput);
-    }
+        const selectId = `recordTypeSelect${suffix}`;
+        const contentId = `recordContent${suffix}`;
+        const select = document.getElementById(selectId);
+
+        if (container && select) {
+            container.dataset.initialValue = document.getElementById(contentId).value;
+            updateContentInput(selectId, container.id, contentId);
+            select.addEventListener('change', () => updateContentInput(selectId, container.id, contentId));
+        }
+    });
 });

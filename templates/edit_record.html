@@ -51,7 +51,7 @@
             </td>
             <td>IN</td>
             <td>
-                <select id="recordTypeSelect" class="form-select form-select-sm" name="type" onchange="updateContentInput()">
+                <select id="recordTypeSelect" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelect', 'contentInputContainer', 'recordContent')">
                     {% set found_selected_type = false %}
                     {% for type_available in recordTypes %}
                     {% if type_available == record["type"] %}
@@ -88,4 +88,4 @@
     <input class="btn btn-secondary btn-sm" type="reset" name="reset" value="{% trans %}Reset{% endtrans %}">&nbsp;&nbsp;
 </form>
 
-<script src="assets/textareaAutoResize.js"></script>
+<script src="assets/textareaAutoResize.js?time={{ file_version }}"></script>
