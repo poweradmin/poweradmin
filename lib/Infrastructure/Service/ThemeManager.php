@@ -33,7 +33,7 @@ class ThemeManager
     private array $availableThemes;
     private string $styleDir;
 
-    public function __construct(string $style = null, string $style_dir = null)
+    public function __construct(?string $style = null, ?string $style_dir = null)
     {
         $this->styleDir = $style_dir ?? self::DEFAULT_STYLE_DIR;
         $this->availableThemes = $this->getAvailableThemes();
