@@ -15,11 +15,12 @@ function updateContentInput(selectId, containerId, contentId) {
 
     const currentInput = document.getElementById(contentId);
     const currentValue = currentInput ? currentInput.value : '';
+    const currentName = currentInput ? currentInput.name : 'content';
     const isTextarea = textareaTypes.has(elements.select.value);
 
     elements.container.innerHTML = isTextarea
-        ? `<textarea id="${contentId}" class="form-control form-control-sm" name="content" rows="1" required>${currentValue}</textarea>`
-        : `<input id="${contentId}" class="form-control form-control-sm" type="text" name="content" value="${currentValue}" required>`;
+        ? `<textarea id="${contentId}" class="form-control form-control-sm" name="${currentName}" rows="1" required>${currentValue}</textarea>`
+        : `<input id="${contentId}" class="form-control form-control-sm" type="text" name="${currentName}" value="${currentValue}" required>`;
 
     if (isTextarea) {
         const textarea = document.getElementById(contentId);
