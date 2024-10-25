@@ -562,7 +562,7 @@ class ZoneTemplate
      *
      * @return bool number of matching templates
      */
-    public static function zone_templ_name_exists($db, ?string $zone_templ_name, int $zone_templ_id = null): bool
+    public static function zone_templ_name_exists($db, ?string $zone_templ_name, ?int $zone_templ_id = null): bool
     {
         $sql_add = '';
         if ($zone_templ_id) {
