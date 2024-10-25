@@ -29,7 +29,7 @@ abstract class LoggingService
     protected Logger $logger;
     private ?string $className;
 
-    public function __construct(Logger $logger, string $className = null)
+    public function __construct(Logger $logger, ?string $className = null)
     {
         $this->logger = $logger;
         $this->className = $className;
