@@ -29,11 +29,11 @@ class PaginationPresenter
     private Pagination $pagination;
 
     private string $urlPattern;
-    private ?string $id;
+    private string $id;
 
     private int $numDisplayPages = 8;
 
-    public function __construct(Pagination $pagination, string $urlPattern, ?string $id = null)
+    public function __construct(Pagination $pagination, string $urlPattern, string $id = '')
     {
         $this->pagination = $pagination;
         $this->urlPattern = $urlPattern;
@@ -95,7 +95,7 @@ class PaginationPresenter
     private function createPageUrl(int $pageNumber): string
     {
         $url = str_replace('{PageNumber}', $pageNumber, $this->urlPattern);
-        if ($this->id !== null) {
+        if ($this->id !== '') {
             $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?') . 'id=' . urlencode($this->id);
         }
         return $url;
