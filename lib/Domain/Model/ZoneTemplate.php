@@ -425,7 +425,7 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public static function add_zone_templ_save_as($db, string $template_name, string $description, int $userid, array $records, ?string $domain = null): bool
+    public static function add_zone_templ_save_as($db, string $template_name, string $description, int $userid, array $records, string $domain = ''): bool
     {
         if (!(UserManager::verify_permission($db, 'zone_master_add'))) {
             $error = new ErrorMessage(_("You do not have the permission to add a zone template."));
@@ -447,8 +447,8 @@ class ZoneTemplate
             $zone_templ_id = $db->lastInsertId();
 
             foreach ($records as $record) {
-                $name = $domain ? preg_replace('/' . preg_quote($domain, '/') . '/', '[ZONE]', $record['name']) : $record['name'];
-                $content = $domain ? preg_replace('/' . preg_quote($domain, '/') . '/', '[ZONE]', $record['content']) : $record['content'];
+                $name = !empty($domain) ? preg_replace('/' . preg_quote($domain, '/') . '/', '[ZONE]', $record['name']) : $record['name'];
+                $content = !empty($domain) ? preg_replace('/' . preg_quote($domain, '/') . '/', '[ZONE]', $record['content']) : $record['content'];
 
                 $query2 = "INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES ("
                     . $db->quote($zone_templ_id, 'integer') . ","

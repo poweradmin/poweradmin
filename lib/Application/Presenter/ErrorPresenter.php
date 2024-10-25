@@ -31,7 +31,7 @@ class ErrorPresenter
         $msg = $this->sanitizeMessage($error->getMessage());
         $name = $error->getName();
 
-        if ($name !== '') {
+        if (!empty($name)) {
             $name = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
         }
 
