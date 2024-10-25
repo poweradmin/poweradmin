@@ -33,9 +33,9 @@ class ThemeManager
     private array $availableThemes;
     private string $styleDir;
 
-    public function __construct(?string $style = null, ?string $style_dir = null)
+    public function __construct(string $style = self::DEFAULT_THEME, string $style_dir = self::DEFAULT_STYLE_DIR)
     {
-        $this->styleDir = $style_dir ?? self::DEFAULT_STYLE_DIR;
+        $this->styleDir = $style_dir;
         $this->availableThemes = $this->getAvailableThemes();
 
         $themeFromCookie = $this->getThemeFromCookie();

@@ -195,7 +195,8 @@ EOF;
             header('Content-type: text/html; charset=utf-8');
         }
 
-        $themeManager = new ThemeManager($this->app->config('iface_style'));
+        $style = $this->app->config('iface_style');
+        $themeManager = new ThemeManager($style);
 
         $vars = [
             'iface_title' => $this->app->config('iface_title'),
@@ -234,8 +235,8 @@ EOF;
 
     private function renderFooter(): void
     {
-        $iface_style = $this->app->config('iface_style');
-        $themeManager = new ThemeManager($iface_style);
+        $style = $this->app->config('iface_style');
+        $themeManager = new ThemeManager($style);
         $selected_theme = $themeManager->getSelectedTheme();
 
         $display_stats = $this->app->config('display_stats');

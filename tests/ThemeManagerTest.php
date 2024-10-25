@@ -48,7 +48,7 @@ class ThemeManagerTest extends TestCase
     public function testThemeFromCookie()
     {
         $this->setCookieTheme('spark');
-        $themeManager = new ThemeManager(null, $this->testStyleDir);
+        $themeManager = new ThemeManager('ignite', $this->testStyleDir);
 
         $this->assertEquals('spark', $themeManager->getSelectedTheme());
     }
@@ -56,7 +56,7 @@ class ThemeManagerTest extends TestCase
     public function testInvalidThemeFromCookie()
     {
         $this->setCookieTheme('nonexistent');
-        $themeManager = new ThemeManager(null, $this->testStyleDir);
+        $themeManager = new ThemeManager('ignite', $this->testStyleDir);
 
         $this->assertEquals('ignite', $themeManager->getSelectedTheme());
     }
