@@ -425,7 +425,7 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public static function add_zone_templ_save_as($db, string $template_name, string $description, int $userid, array $records, string $domain = null): bool
+    public static function add_zone_templ_save_as($db, string $template_name, string $description, int $userid, array $records, ?string $domain = null): bool
     {
         if (!(UserManager::verify_permission($db, 'zone_master_add'))) {
             $error = new ErrorMessage(_("You do not have the permission to add a zone template."));
@@ -562,7 +562,7 @@ class ZoneTemplate
      *
      * @return bool number of matching templates
      */
-    public static function zone_templ_name_exists($db, string $zone_templ_name, int $zone_templ_id = null): bool
+    public static function zone_templ_name_exists($db, ?string $zone_templ_name, int $zone_templ_id = null): bool
     {
         $sql_add = '';
         if ($zone_templ_id) {
