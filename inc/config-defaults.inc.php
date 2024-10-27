@@ -39,6 +39,7 @@ $iface_zonelist_serial = false;
 $iface_zonelist_template = false;
 $iface_title = 'Poweradmin';
 $iface_add_reverse_record = true; // Displays a checkbox for adding a reverse record
+$iface_add_forward_record = false; // Displays a checkbox for adding a forward record
 $iface_zone_type_default = 'MASTER'; // or 'NATIVE'
 $iface_zone_comments = true; // Show or hide zone comments
 $iface_index = 'cards'; // or list

@@ -939,6 +939,19 @@ class DnsRecord
         }
     }
 
+    public function get_domain_id_by_name(string $name): bool|int
+    {
+        if (!empty($name)) {
+            $pdns_db_name = $this->config->get('pdns_db_name');
+            $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
+
+            $result = $this->db->queryRow("SELECT id FROM $domains_table WHERE name=" . $this->db->quote($name, 'text'));
+            return $result ? $result['id'] : false;
+        }
+
+        return false;
+    }
+
     /** Get zone id from name
      *
      * @param string $zname Zone name

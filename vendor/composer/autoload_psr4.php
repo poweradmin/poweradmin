@@ -20,4 +20,5 @@ return array(
     'Psr\\Log\\' => array($vendorDir . '/psr/log/src'),
     'Poweradmin\\' => array($baseDir . '/lib'),
     'PoweradminInstall\\' => array($baseDir . '/install/helpers'),
+    'Pdp\\' => array($vendorDir . '/jeremykendall/php-domain-parser/src'),
 );
