@@ -106,7 +106,7 @@ class AddZoneTemplRecordController extends BaseController
             'zone_templ_id' => $zone_templ_id,
             'name' => htmlspecialchars($name),
             'type' => htmlspecialchars($type),
-            'record_types' => RecordType::getTypes(),
+            'record_types' => RecordType::getAllTypes(),
             'content' => htmlspecialchars($content),
             'prio' => htmlspecialchars($prio),
             'ttl' => htmlspecialchars($ttl),

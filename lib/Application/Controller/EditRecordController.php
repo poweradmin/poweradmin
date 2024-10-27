@@ -90,7 +90,7 @@ class EditRecordController extends BaseController
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $zone_name = $dnsRecord->get_domain_name_by_id($zid);
 
-        $recordTypes = RecordType::getTypes();
+        $recordTypes = RecordType::getAllTypes();
         $record = $dnsRecord->get_record_from_id($record_id);
         $record['record_name'] = trim(str_replace(htmlspecialchars($zone_name), '', htmlspecialchars($record["name"])), '.');
 

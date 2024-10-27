@@ -61,7 +61,7 @@
                     {% set rev = false %}
                     {% for record_type in record_types %}
                     {% set add = "" %}
-                    {% if is_rev_zone and record_type == "PTR" %}
+                    {% if is_reverse_zone and record_type == "PTR" %}
                     {% set add = "SELECTED" %}
                     {% endif %}
 
@@ -302,7 +302,7 @@
                     {% set rev = false %}
                     {% for record_type in record_types %}
                     {% set add = "" %}
-                    {% if is_rev_zone and record_type == "PTR" %}
+                    {% if is_reverse_zone and record_type == "PTR" %}
                     {% set add = "SELECTED" %}
                     {% endif %}
 
@@ -336,6 +336,13 @@
         &nbsp;
         <input class="form-check-input" type="checkbox" name="reverse">
         <span class="text-secondary"> {% trans %}Add also reverse record{% endtrans %}</span>
+    </span>
+    {% endif %}
+    {% if is_reverse_zone and iface_add_forward_record %}
+    <span class="align-middle">
+        &nbsp;
+        <input class="form-check-input" type="checkbox" name="forward">
+        <span class="text-secondary"> {% trans %}Add also forward record{% endtrans %}</span>
     </span>
     {% endif %}
 </form>

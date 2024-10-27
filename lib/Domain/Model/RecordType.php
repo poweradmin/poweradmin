@@ -27,25 +27,53 @@ class RecordType
     // The following is a list of supported record types by PowerDNS
     // https://doc.powerdns.com/authoritative/appendices/types.html
 
-    // Array of possible record types
-    private const RECORD_TYPES = array(
+    // Common record types for forward zones
+    private const FORWARD_ZONE_COMMON_RECORDS = [
         'A',
-        'A6',
         'AAAA',
+        'CNAME',
+        'MX',
+        'NS',
+        'SOA',
+        'SRV',
+        'TXT',
+    ];
+
+    // Common record types for reverse zones
+    private const REVERSE_ZONE_COMMON_RECORDS = [
+        'CNAME',
+        'LOC',
+        'NS',
+        'PTR',
+        'SOA',
+        'TXT',
+    ];
+
+    // DNSSEC-related record types
+    private const DNSSEC_TYPES = [
+        'CDNSKEY',
+        'CDS',
+        'DNSKEY',
+        'DS',
+        'NSEC',
+        'NSEC3',
+        'NSEC3PARAM',
+        'RRSIG',
+        'ZONEMD',
+    ];
+
+    // Less common but valid records
+    private const LESS_COMMON_RECORDS = [
+        'A6',
         'AFSDB',
         'ALIAS',
         'APL',
         'CAA',
-        'CDNSKEY',
-        'CDS',
         'CERT',
-        'CNAME',
         'CSYNC',
         'DHCID',
         'DLV',
         'DNAME',
-        'DNSKEY',
-        'DS',
         'EUI48',
         'EUI64',
         'HINFO',
@@ -62,36 +90,82 @@ class RecordType
         'MAILB',
         'MINFO',
         'MR',
-        'MX',
         'NAPTR',
         'NID',
-        'NS',
-        'NSEC',
-        'NSEC3',
-        'NSEC3PARAM',
         'OPENPGPKEY',
-        'PTR',
         'RKEY',
         'RP',
-        'RRSIG',
         'SIG',
         'SMIMEA',
-        'SOA',
         'SPF',
-        'SRV',
         'SSHFP',
         'SVCB',
         'TKEY',
         'TLSA',
         'TSIG',
-        'TXT',
         'URI',
         'WKS',
-        'ZONEMD',
-    );
+    ];
 
-    public static function getTypes(): array
+    // Private constructor to prevent instantiation
+    private function __construct()
     {
-        return self::RECORD_TYPES;
+    }
+
+    /**
+     * Get all record types.
+     *
+     * @return array
+     */
+    public static function getAllTypes(): array
+    {
+        $types = array_merge(
+            self::FORWARD_ZONE_COMMON_RECORDS,
+            self::REVERSE_ZONE_COMMON_RECORDS,
+            self::DNSSEC_TYPES,
+            self::LESS_COMMON_RECORDS
+        );
+        sort($types);
+        return $types;
+    }
+
+    /**
+     * Get forward zone record types.
+     *
+     * @param bool $isDnsSecEnabled
+     * @return array
+     */
+    public static function getForwardZoneTypes(bool $isDnsSecEnabled): array
+    {
+        $types = array_merge(self::FORWARD_ZONE_COMMON_RECORDS, self::LESS_COMMON_RECORDS);
+        return self::mergeDnsSecTypes($types, $isDnsSecEnabled);
+    }
+
+    /**
+     * Get reverse zone record types.
+     *
+     * @param bool $isDnsSecEnabled
+     * @return array
+     */
+    public static function getReverseZoneTypes(bool $isDnsSecEnabled): array
+    {
+        $types = self::REVERSE_ZONE_COMMON_RECORDS;
+        return self::mergeDnsSecTypes($types, $isDnsSecEnabled);
+    }
+
+    /**
+     * Merge DNSSEC types if enabled.
+     *
+     * @param array $types
+     * @param bool $isDnsSecEnabled
+     * @return array
+     */
+    private static function mergeDnsSecTypes(array $types, bool $isDnsSecEnabled): array
+    {
+        if ($isDnsSecEnabled) {
+            $types = array_merge($types, self::DNSSEC_TYPES);
+        }
+        sort($types);
+        return $types;
     }
 }

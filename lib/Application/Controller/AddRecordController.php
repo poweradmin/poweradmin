@@ -39,6 +39,7 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Valitron;
 
@@ -95,7 +96,12 @@ class AddRecordController extends BaseController
         $ttl = $_POST['ttl'];
         $zone_id = htmlspecialchars($_GET['id']);
 
-        $this->createReverseRecord($name, $type, $content, $zone_id, $ttl, $prio);
+        if (isset($_POST["reverse"])) {
+            $this->createReverseRecord($name, $type, $content, $zone_id, $ttl, $prio);
+        }
+        if (isset($_POST['forward'])) {
+            $this->createForwardRecord($name, $type, $content, $zone_id);
+        }
 
         if ($this->createRecord($zone_id, $name, $type, $content, $ttl, $prio)) {
             unset($_POST);
@@ -107,9 +113,10 @@ class AddRecordController extends BaseController
         $zone_id = htmlspecialchars($_GET['id']);
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $zone_name = $dnsRecord->get_domain_name_by_id($zone_id);
+        $isReverseZone = DnsHelper::isReverseZone($zone_name);
+
         $ttl = $this->config('dns_ttl');
-        $iface_add_reverse_record = $this->config('iface_add_reverse_record');
-        $is_reverse_zone = preg_match('/i(p6|n-addr).arpa/i', $zone_name);
+        $isDnsSecEnabled = $this->config('pdnssec_use');
 
         if (str_starts_with($zone_name, "xn--")) {
             $idn_zone_name = idn_to_utf8($zone_name, IDNA_NONTRANSITIONAL_TO_ASCII);
@@ -118,7 +125,7 @@ class AddRecordController extends BaseController
         }
 
         $this->render('add_record.html', [
-            'types' => RecordType::getTypes(),
+            'types' => $isReverseZone ? RecordType::getReverseZoneTypes($isDnsSecEnabled) : RecordType::getForwardZoneTypes($isDnsSecEnabled),
             'name' => $_POST['name'] ?? '',
             'type' => $_POST['type'] ?? '',
             'content' => $_POST['content'] ?? '',
@@ -127,8 +134,9 @@ class AddRecordController extends BaseController
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,
-            'is_reverse_zone' => $is_reverse_zone,
-            'iface_add_reverse_record' => $iface_add_reverse_record,
+            'is_reverse_zone' => $isReverseZone,
+            'iface_add_reverse_record' => $this->config('iface_add_reverse_record'),
+            'iface_add_forward_record' => $this->config('iface_add_forward_record'),
         ]);
     }
 
@@ -149,7 +157,7 @@ class AddRecordController extends BaseController
         $iface_add_reverse_record = $this->config('iface_add_reverse_record');
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
-        if ((isset($_POST["reverse"])) && $name && $iface_add_reverse_record) {
+        if ($name && $iface_add_reverse_record) {
             if ($type === 'A') {
                 $content_array = preg_split("/\./", $content);
                 $content_rev = sprintf("%d.%d.%d.%d.in-addr.arpa", $content_array[3], $content_array[2], $content_array[1], $content_array[0]);
@@ -203,6 +211,67 @@ class AddRecordController extends BaseController
         } else {
             $this->setMessage('add_record', 'error', _('This record was not valid and could not be added.'));
             return false;
+        }
+    }
+
+    private function createForwardRecord(string $name, string $type, string $content, string $zone_id): void
+    {
+        $iface_add_forward_record = $this->config('iface_add_forward_record');
+
+        $registeredDomain = DnsHelper::getRegisteredDomain($content);
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+
+        $domainId = $dnsRecord->get_domain_id_by_name($registeredDomain);
+        if ($domainId === false) {
+            $error = new ErrorMessage(sprintf(_('There is no matching forward-zone for: %s.'), $content));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+            return;
+        }
+
+        if ($name && $iface_add_forward_record && $type === 'PTR') {
+            $zone_name = $dnsRecord->get_domain_name_by_id($zone_id);
+
+            $ipv4_suffix = '.in-addr.arpa';
+            if (str_ends_with($zone_name, $ipv4_suffix)) {
+                $proposedReverseIP = $name . "." . str_replace($ipv4_suffix, '', $zone_name);
+                $ipParts = explode('.', $proposedReverseIP);
+                $proposedIP = implode('.', array_reverse($ipParts));
+
+                if (filter_var($proposedIP, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+                    $domainName = DnsHelper::getSubDomainName($content);
+                    $result = $dnsRecord->add_record($domainId, $domainName, 'PTR', $proposedIP, $this->config('dns_ttl'), 0);
+                    // FIXME: not visible in the UI
+                    if ($result) {
+                        $this->setMessage('add_record', 'success', _('The forward record was successfully added.'));
+                    } else {
+                        $this->setMessage('add_record', 'error', _('This forward record was not valid and could not be added.'));
+                    }
+                }
+            }
+
+            // TODO: test implementation
+            $ipv6_suffix = '.ip6.arpa';
+            if (str_ends_with($zone_name, $ipv6_suffix)) {
+                $proposedReverseIP = $name . "." . str_replace($ipv6_suffix, '', $zone_name);
+                $ipParts = explode('.', $proposedReverseIP);
+                $proposedIP = DnsRecord::convert_ipv6addr_to_ptrrec(implode(':', array_reverse($ipParts)));
+
+                if (filter_var($proposedIP, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+                    $domainName = DnsHelper::getSubDomainName($content);
+                    $result = $dnsRecord->add_record($domainId, $domainName, 'PTR', $proposedIP, $this->config('dns_ttl'), 0);
+                    // FIXME: not visible in the UI
+                    if ($result) {
+                        $this->setMessage('add_record', 'success', _('The forward record was successfully added.'));
+                    } else {
+                        $this->setMessage('add_record', 'error', _('This forward record was not valid and could not be added.'));
+                    }
+                }
+            }
+        } else {
+            $error = new ErrorMessage(_('This record was not valid and could not be added.'));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
         }
     }
 }

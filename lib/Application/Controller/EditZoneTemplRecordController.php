@@ -76,7 +76,7 @@ class EditZoneTemplRecordController extends BaseController
             'zone_templ_id' => $zone_templ_id,
             'record_id' => $record_id,
             'templ_details' => ZoneTemplate::get_zone_templ_details($this->db, $zone_templ_id),
-            'record_types' => RecordType::getTypes(),
+            'record_types' => RecordType::getAllTypes(),
         ]);
     }
 
