@@ -183,7 +183,6 @@ class ComposerStaticInit1dab89e42c6bd529040213c23957bbde
         'Poweradmin\\Application\\Controller\\LoginController' => __DIR__ . '/../..' . '/lib/Application/Controller/LoginController.php',
         'Poweradmin\\Application\\Controller\\LogoutController' => __DIR__ . '/../..' . '/lib/Application/Controller/LogoutController.php',
         'Poweradmin\\Application\\Controller\\SearchController' => __DIR__ . '/../..' . '/lib/Application/Controller/SearchController.php',
-        'Poweradmin\\Application\\Controller\\SwitchThemeController' => __DIR__ . '/../..' . '/lib/Application/Controller/SwitchThemeController.php',
         'Poweradmin\\Application\\Controller\\UsersController' => __DIR__ . '/../..' . '/lib/Application/Controller/UsersController.php',
         'Poweradmin\\Application\\Presenter\\ErrorPresenter' => __DIR__ . '/../..' . '/lib/Application/Presenter/ErrorPresenter.php',
         'Poweradmin\\Application\\Presenter\\LocalePresenter' => __DIR__ . '/../..' . '/lib/Application/Presenter/LocalePresenter.php',

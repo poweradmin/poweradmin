@@ -58,7 +58,7 @@ class Installer
         $step = $this->request->get('step', InstallationSteps::STEP_CHOOSE_LANGUAGE);
         $currentStep = $this->stepValidator->getCurrentStep($step);
 
-        $errors = $this->validatePreviousStep($currentStep -1);
+        $errors = $this->validatePreviousStep($currentStep - 1);
 
         if ($this->hasLanguageError($errors)) {
             $currentStep = InstallationSteps::STEP_CHOOSE_LANGUAGE;
