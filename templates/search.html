@@ -13,6 +13,8 @@
     <input type="hidden" name="record_sort_by" value="{{ record_sort_by }}">
     <input type="hidden" name="zones_page" value="{{ zones_page }}">
     <input type="hidden" name="records_page" value="{{ records_page }}">
+    <input type="hidden" name="zone_sort_by_direction" value="{{ zone_sort_direction }}">
+    <input type="hidden" name="record_sort_by_direction" value="{{ record_sort_direction }}">
 
     <div class="row pt-3 pb-3">
         <div class="col-sm-4">
@@ -57,10 +59,30 @@
     <table class="table table-striped table-hover table-sm">
         <thead>
         <tr>
-            <th><a href="javascript:zone_sort_by('name');">{% trans %}Name{% endtrans %}</a> {% if zone_sort_by == 'name' %}<i class="bi bi-arrow-down"></i>{% endif %}</th>
-            <th><a href="javascript:zone_sort_by('type');">{% trans %}Type{% endtrans %}</a> {% if zone_sort_by == 'type' %}<i class="bi bi-arrow-down"></i>{% endif %} </th>
-            <th><a href="javascript:zone_sort_by('count_records');">{% trans %}Records{% endtrans %}</a> {% if zone_sort_by == 'count_records' %}<i class="bi bi-arrow-down"></i>{% endif %}</th>
-            <th><a href="javascript:zone_sort_by('fullname');">{% trans %}Owner{% endtrans %}</a> {% if zone_sort_by == 'fullname' %}<i class="bi bi-arrow-down"></i>{% endif %}</th>
+            <th>
+                <a href="javascript:zone_sort_by('name');">{% trans %}Name{% endtrans %}</a>
+                {% if zone_sort_by == 'name' %}
+                    <i class="bi bi-arrow-{{ zone_sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
+                {% endif %}
+            </th>
+            <th>
+                <a href="javascript:zone_sort_by('type');">{% trans %}Type{% endtrans %}</a>
+                {% if zone_sort_by == 'type' %}
+                    <i class="bi bi-arrow-{{ zone_sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
+                {% endif %}
+            </th>
+            <th>
+                <a href="javascript:zone_sort_by('count_records');">{% trans %}Records{% endtrans %}</a>
+                {% if zone_sort_by == 'count_records' %}
+                    <i class="bi bi-arrow-{{ zone_sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
+                {% endif %}
+            </th>
+            <th>
+                <a href="javascript:zone_sort_by('fullname');">{% trans %}Owner{% endtrans %}</a>
+                {% if zone_sort_by == 'fullname' %}
+                    <i class="bi bi-arrow-{{ zone_sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
+                {% endif %}
+            </th>
             <th></th>
         </tr>
         </thead>
@@ -132,11 +154,36 @@
     <table class="table table-striped table-hover table-sm">
         <thead>
         <tr>
-            <th><a href="javascript:record_sort_by('name');">{% trans %}Name{% endtrans %}</a> {% if record_sort_by == 'name' %}<i class="bi bi-arrow-down"></i>{% endif %}</th>
-            <th><a href="javascript:record_sort_by('type');">{% trans %}Type{% endtrans %}</a> {% if record_sort_by == 'type' %}<i class="bi bi-arrow-down"></i>{% endif %}</th>
-            <th><a href="javascript:record_sort_by('prio');">{% trans %}Priority{% endtrans %}</a> {% if record_sort_by == 'prio' %}<i class="bi bi-arrow-down"></i>{% endif %}</th>
-            <th><a href="javascript:record_sort_by('content');">{% trans %}Content{% endtrans %}</a> {% if record_sort_by == 'content' %}<i class="bi bi-arrow-down"></i>{% endif %}</th>
-            <th><a href="javascript:record_sort_by('ttl');">{% trans %}TTL{% endtrans %}</a> {% if record_sort_by == 'ttl' %}<i class="bi bi-arrow-down"></i>{% endif %}</th>
+            <th>
+                <a href="javascript:record_sort_by('name');">{% trans %}Name{% endtrans %}</a>
+                {% if record_sort_by == 'name' %}
+                    <i class="bi bi-arrow-{{ record_sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
+                {% endif %}
+            </th>
+            <th>
+                <a href="javascript:record_sort_by('type');">{% trans %}Type{% endtrans %}</a>
+                {% if record_sort_by == 'type' %}
+                    <i class="bi bi-arrow-{{ record_sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
+                {% endif %}
+            </th>
+            <th>
+                <a href="javascript:record_sort_by('prio');">{% trans %}Priority{% endtrans %}</a>
+                {% if record_sort_by == 'prio' %}
+                    <i class="bi bi-arrow-{{ record_sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
+                {% endif %}
+            </th>
+            <th>
+                <a href="javascript:record_sort_by('content');">{% trans %}Content{% endtrans %}</a>
+                {% if record_sort_by == 'content' %}
+                    <i class="bi bi-arrow-{{ record_sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
+                {% endif %}
+            </th>
+            <th>
+                <a href="javascript:record_sort_by('ttl');">{% trans %}TTL{% endtrans %}</a>
+                {% if record_sort_by == 'ttl' %}
+                    <i class="bi bi-arrow-{{ record_sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
+                {% endif %}
+            </th>
             <th>{% trans %}Disabled{% endtrans %}</th>
             <th></th>
         </tr>

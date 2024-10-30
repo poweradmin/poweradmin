@@ -36,14 +36,34 @@ function toggleZoneCheckboxes() {
     }
 }
 
-function zone_sort_by(sortbytype) {
-    document.search_form.zone_sort_by.value = sortbytype;
-    document.getElementsByName("do_search")[0].click();
+function zone_sort_by(column) {
+    const form = document.search_form;
+    const currentSortBy = form.zone_sort_by.value;
+    const currentSortDirection = form.zone_sort_by_direction.value;
+
+    if (currentSortBy === column) {
+        form.zone_sort_by_direction.value = currentSortDirection === 'ASC' ? 'DESC' : 'ASC';
+    } else {
+        form.zone_sort_by.value = column;
+        form.zone_sort_by_direction.value = 'ASC';
+    }
+
+    form.submit();
 }
 
-function record_sort_by(sortbytype) {
-    document.search_form.record_sort_by.value = sortbytype;
-    document.getElementsByName("do_search")[0].click();
+function record_sort_by(column) {
+    const form = document.search_form;
+    const currentSortBy = form.record_sort_by.value;
+    const currentSortDirection = form.record_sort_by_direction.value;
+
+    if (currentSortBy === column) {
+        form.record_sort_by_direction.value = currentSortDirection === 'ASC' ? 'DESC' : 'ASC';
+    } else {
+        form.record_sort_by.value = column;
+        form.record_sort_by_direction.value = 'ASC';
+    }
+
+    form.submit();
 }
 
 function do_search_with_zones_page(zones_page) {

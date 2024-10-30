@@ -34,14 +34,14 @@ class ZoneSearch extends BaseSearch
      * @param int $page The current page number.
      * @return array An array of found zones.
      */
-    public function searchZones(array $parameters, string $permission_view, string $sort_zones_by, int $iface_rowamount, int $page): array
+    public function searchZones(array $parameters, string $permission_view, string $sort_zones_by, string $zone_sort_direction, int $iface_rowamount, int $page): array
     {
         $foundZones = array();
 
         list($reverse_search_string, $parameters, $search_string) = $this->buildSearchString($parameters);
 
         if ($parameters['zones']) {
-            $foundZones = $this->fetchZones($search_string, $parameters['reverse'], $reverse_search_string, $permission_view, $sort_zones_by, $iface_rowamount, $page);
+            $foundZones = $this->fetchZones($search_string, $parameters['reverse'], $reverse_search_string, $permission_view, $sort_zones_by, $zone_sort_direction, $iface_rowamount, $page);
         }
 
         return $foundZones;
@@ -87,7 +87,7 @@ class ZoneSearch extends BaseSearch
      * @param int $page The current page number.
      * @return array An array of found zones.
      */
-    public function fetchZones(mixed $search_string, bool $reverse, mixed $reverse_search_string, string $permission_view, string $sort_zones_by, int $iface_rowamount, int $page): array
+    public function fetchZones(mixed $search_string, bool $reverse, mixed $reverse_search_string, string $permission_view, string $sort_zones_by, string $zone_sort_direction, int $iface_rowamount, int $page): array
     {
         $offset = ($page - 1) * $iface_rowamount;
 
@@ -116,7 +116,7 @@ class ZoneSearch extends BaseSearch
                 ($domains_table.name LIKE " . $this->db->quote($search_string, 'text') .
             ($reverse ? " OR $domains_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ') ' .
             ($permission_view == 'own' ? ' AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
-            ' ORDER BY ' . $sort_zones_by . ', z.owner' .
+            ' ORDER BY ' . $sort_zones_by . ' ' . $zone_sort_direction . ', z.owner' .
             ' LIMIT ' . $iface_rowamount . ' OFFSET ' . $offset;
 
         $zonesResponse = $this->db->query($zonesQuery);
