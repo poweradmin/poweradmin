@@ -41,10 +41,13 @@ class Installer
     private string $localConfigFile;
     private string $defaultConfigFile;
 
+    private const LOCAL_CONFIG_FILE_PATH = '/inc/config.inc.php';
+    private const DEFAULT_CONFIG_FILE_PATH = '/inc/config-defaults.inc.php';
+
     public function __construct()
     {
-        $this->localConfigFile = dirname(__DIR__, 2) . '/inc/config.inc.php';
-        $this->defaultConfigFile = dirname(__DIR__, 2) . '/inc/config-defaults.inc.php';
+        $this->localConfigFile = dirname(__DIR__, 2) . self::LOCAL_CONFIG_FILE_PATH;
+        $this->defaultConfigFile = dirname(__DIR__, 2) . self::DEFAULT_CONFIG_FILE_PATH;
         $this->request = Request::createFromGlobals();
         $this->localeHandler = new LocaleHandler();
         $this->stepValidator = new StepValidator();
@@ -55,12 +58,9 @@ class Installer
         $step = $this->request->get('step', InstallationSteps::STEP_CHOOSE_LANGUAGE);
         $currentStep = $this->stepValidator->getCurrentStep($step);
 
-        // Validate the previous step
-        $validator = $this->getStepValidator($currentStep - 1);
-        $errors = $validator->validate();
+        $errors = $this->validatePreviousStep($currentStep -1);
 
-        if (isset($errors['language'])) {
-            ErrorHandler::handleLanguageError();
+        if ($this->hasLanguageError($errors)) {
             $currentStep = InstallationSteps::STEP_CHOOSE_LANGUAGE;
         }
 
@@ -69,12 +69,8 @@ class Installer
             $currentStep--;
         }
 
-        $language = $this->request->get('language', LocaleHandler::DEFAULT_LANGUAGE);
-        $currentLanguage = $this->localeHandler->getCurrentLanguage($language);
-        $this->localeHandler->setLanguage($currentLanguage);
-
-        $twigEnvironmentInitializer = new TwigEnvironmentInitializer($this->localeHandler);
-        $twigEnvironment = $twigEnvironmentInitializer->initialize($currentLanguage);
+        $currentLanguage = $this->initializeLocaleHandler();
+        $twigEnvironment = $this->initializeTwigEnvironment($currentLanguage);
 
         $this->installStepHandler = new InstallStepHandler($this->request, $twigEnvironment, $currentStep, $currentLanguage);
         $this->installStepHandler->checkConfigFile($this->localConfigFile);
@@ -132,5 +128,34 @@ class Installer
             InstallationSteps::STEP_CREATE_CONFIGURATION_FILE => new CreateConfigurationFileValidator($this->request),
             default => new EmptyValidator($this->request),
         };
+    }
+
+    private function validatePreviousStep(int $previousStep): array
+    {
+        $validator = $this->getStepValidator($previousStep);
+        return $validator->validate();
+    }
+
+    private function hasLanguageError(array $errors): bool
+    {
+        if (isset($errors['language'])) {
+            ErrorHandler::displayLanguageError();
+            return true;
+        }
+        return false;
+    }
+
+    private function initializeLocaleHandler(): string
+    {
+        $language = $this->request->get('language', LocaleHandler::DEFAULT_LANGUAGE);
+        $currentLanguage = $this->localeHandler->getCurrentLanguage($language);
+        $this->localeHandler->setLanguage($currentLanguage);
+        return $currentLanguage;
+    }
+
+    private function initializeTwigEnvironment(string $currentLanguage): \Twig\Environment
+    {
+        $twigEnvironmentInitializer = new TwigEnvironmentInitializer($this->localeHandler);
+        return $twigEnvironmentInitializer->initialize($currentLanguage);
     }
 }
