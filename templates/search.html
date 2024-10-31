@@ -184,7 +184,12 @@
                     <i class="bi bi-arrow-{{ record_sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
                 {% endif %}
             </th>
-            <th>{% trans %}Disabled{% endtrans %}</th>
+            <th>
+                <a href="javascript:record_sort_by('disabled');">{% trans %}Disabled{% endtrans %}</a>
+                {% if record_sort_by == 'disabled' %}
+                <i class="bi bi-arrow-{{ record_sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
+                {% endif %}
+            </th>
             <th></th>
         </tr>
         </thead>

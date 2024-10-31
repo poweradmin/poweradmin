@@ -58,7 +58,7 @@ class SearchController extends BaseController
         $records_page = 1;
 
         list($zone_sort_by, $zone_sort_direction) = $this->getSortOrder('zone_sort_by', ['name', 'type', 'count_records', 'fullname']);
-        list($record_sort_by, $record_sort_direction) = $this->getSortOrder('record_sort_by', ['name', 'type', 'prio', 'content', 'ttl']);
+        list($record_sort_by, $record_sort_direction) = $this->getSortOrder('record_sort_by', ['name', 'type', 'prio', 'content', 'ttl', 'disabled']);
 
         $_SESSION['zone_sort_by'] = $zone_sort_by;
         $_SESSION['zone_sort_by_direction'] = $zone_sort_direction;
