@@ -46,5 +46,5 @@ try {
     $router->process();
 } catch (Exception $e) {
     error_log($e->getMessage());
-    echo 'An error occurred while processing the request.';
+    echo 'An error occurred while processing the request: ' . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');
 }

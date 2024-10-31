@@ -31,7 +31,7 @@ class ErrorPresenter
         $msg = $this->sanitizeMessage($error->getMessage());
         $name = $error->getName();
 
-        if ($name !== null) {
+        if (!empty($name)) {
             $name = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
         }
 
@@ -44,9 +44,9 @@ class ErrorPresenter
         return strip_tags($message, $allowedTags);
     }
 
-    private function renderError(string $msg, ?string $name): void
+    private function renderError(string $msg, string $name): void
     {
-        $safeName = isset($name) ? htmlspecialchars($name, ENT_QUOTES, 'UTF-8') : null;
+        $safeName = !empty($name) ? htmlspecialchars($name, ENT_QUOTES, 'UTF-8') : null;
         $errorContent = ($safeName !== null) ? "$msg (Record: $safeName)" : $msg;
 
         echo <<<HTML

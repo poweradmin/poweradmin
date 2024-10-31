@@ -35,7 +35,7 @@ class RecordSearch extends BaseSearch
      * @param int $page The current page number (default is 1).
      * @return array An array of found records.
      */
-    public function searchRecords(array $parameters, string $permission_view, string $sort_records_by, bool $iface_search_group_records, int $iface_rowamount, int $page = 1): array
+    public function searchRecords(array $parameters, string $permission_view, string $sort_records_by, string $record_sort_direction, bool $iface_search_group_records, int $iface_rowamount, int $page = 1): array
     {
         $foundRecords = array();
 
@@ -44,7 +44,7 @@ class RecordSearch extends BaseSearch
         $originalSqlMode = $this->handleSqlMode();
 
         if ($parameters['records']) {
-            $foundRecords = $this->fetchRecords($search_string, $parameters['reverse'], $reverse_search_string, $permission_view, $iface_search_group_records, $sort_records_by, $iface_rowamount, $page);
+            $foundRecords = $this->fetchRecords($search_string, $parameters['reverse'], $reverse_search_string, $permission_view, $iface_search_group_records, $sort_records_by, $record_sort_direction, $iface_rowamount, $page);
         }
 
         $this->restoreSqlMode($originalSqlMode);
@@ -65,7 +65,7 @@ class RecordSearch extends BaseSearch
      * @param int $page The current page number.
      * @return array An array of found records.
      */
-    public function fetchRecords(mixed $search_string, bool $reverse, mixed $reverse_search_string, string $permission_view, bool $iface_search_group_records, string $sort_records_by, int $iface_rowamount, int $page): array
+    public function fetchRecords(mixed $search_string, bool $reverse, mixed $reverse_search_string, string $permission_view, bool $iface_search_group_records, string $sort_records_by, string $record_sort_direction, int $iface_rowamount, int $page): array
     {
         $offset = ($page - 1) * $iface_rowamount;
 
@@ -95,7 +95,7 @@ class RecordSearch extends BaseSearch
             ($reverse ? " OR $records_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ')' .
             ($permission_view == 'own' ? 'AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
             ($iface_search_group_records ? " GROUP BY $records_table.name, $records_table.content " : '') .
-            ' ORDER BY ' . $sort_records_by .
+            ' ORDER BY ' . $sort_records_by . ' ' . $record_sort_direction .
             ' LIMIT ' . $iface_rowamount . ' OFFSET ' . $offset;
 
         $recordsResponse = $this->db->query($recordsQuery);

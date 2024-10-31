@@ -1183,7 +1183,7 @@ class DnsRecord
      *
      * @return boolean|array false or array of zone details [id,name,type,count_records]
      */
-    public function get_zones(string $perm, int $userid = 0, string $letterstart = 'all', int $rowstart = 0, int $rowamount = 999999, string $sortby = 'name'): bool|array
+    public function get_zones(string $perm, int $userid = 0, string $letterstart = 'all', int $rowstart = 0, int $rowamount = 999999, string $sortby = 'name', string $sortDirection = 'ASC'): bool|array
     {
         $db_type = $this->config->get('db_type');
         $pdnssec_use = $this->config->get('pdnssec_use');
@@ -1221,8 +1221,10 @@ class DnsRecord
 
         if ($sortby == 'owner') {
             $sortby = 'users.username';
-        } elseif ($sortby != 'count_records') {
-            $sortby = "$domains_table." . $sortby;
+        } elseif ($sortby == 'count_records') {
+            $sortby = "COUNT($records_table.id)";
+        } else {
+            $sortby = "$domains_table.$sortby";
         }
 
         $natural_sort = "$domains_table.name";
@@ -1231,7 +1233,8 @@ class DnsRecord
         } elseif ($db_type == 'pgsql') {
             $natural_sort = "SUBSTRING($domains_table.name FROM '\.arpa$'), LENGTH(SUBSTRING($domains_table.name FROM '^[0-9]+')), $domains_table.name";
         }
-        $sql_sortby = ($sortby == "$domains_table.name" ? $natural_sort : $sortby . ', ' . $natural_sort);
+        // TODO: review natural sorting if it still works after adding sort direction
+        $sql_sortby = ($sortby . " " . $sortDirection . ', ' . $natural_sort);
 
         $query = "SELECT $domains_table.id,
                         $domains_table.name,

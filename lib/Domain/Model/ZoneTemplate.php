@@ -425,7 +425,7 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public static function add_zone_templ_save_as($db, string $template_name, string $description, int $userid, array $records, string $domain = null): bool
+    public static function add_zone_templ_save_as($db, string $template_name, string $description, int $userid, array $records, string $domain = ''): bool
     {
         if (!(UserManager::verify_permission($db, 'zone_master_add'))) {
             $error = new ErrorMessage(_("You do not have the permission to add a zone template."));
@@ -447,8 +447,8 @@ class ZoneTemplate
             $zone_templ_id = $db->lastInsertId();
 
             foreach ($records as $record) {
-                $name = $domain ? preg_replace('/' . preg_quote($domain, '/') . '/', '[ZONE]', $record['name']) : $record['name'];
-                $content = $domain ? preg_replace('/' . preg_quote($domain, '/') . '/', '[ZONE]', $record['content']) : $record['content'];
+                $name = !empty($domain) ? preg_replace('/' . preg_quote($domain, '/') . '/', '[ZONE]', $record['name']) : $record['name'];
+                $content = !empty($domain) ? preg_replace('/' . preg_quote($domain, '/') . '/', '[ZONE]', $record['content']) : $record['content'];
 
                 $query2 = "INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES ("
                     . $db->quote($zone_templ_id, 'integer') . ","
@@ -518,7 +518,7 @@ class ZoneTemplate
      */
     public static function edit_zone_templ($db, array $details, int $zone_templ_id, $user_id): bool
     {
-        $zone_name_exists = ZoneTemplate::zone_templ_name_exists($db, $details['templ_name'], $zone_templ_id);
+        $zone_name_exists = ZoneTemplate::zone_templ_name_and_id_exists($db, $details['templ_name'], $zone_templ_id);
         if (!(UserManager::verify_permission($db, 'zone_master_add'))) {
             $error = new ErrorMessage(_("You do not have the permission to add a zone template."));
             $errorPresenter = new ErrorPresenter();
@@ -558,18 +558,26 @@ class ZoneTemplate
      *
      * @param $db
      * @param string $zone_templ_name zone template name
-     * @param int|null $zone_templ_id zone template id (optional) [default=null]
      *
      * @return bool number of matching templates
      */
-    public static function zone_templ_name_exists($db, string $zone_templ_name, int $zone_templ_id = null): bool
+    public static function zone_templ_name_exists($db, string $zone_templ_name): bool
     {
-        $sql_add = '';
-        if ($zone_templ_id) {
-            $sql_add = " AND id != " . $db->quote($zone_templ_id, 'integer');
-        }
+        $query = "SELECT COUNT(id) FROM zone_templ WHERE name = " . $db->quote($zone_templ_name, 'text');
+        return $db->queryOne($query);
+    }
 
-        $query = "SELECT COUNT(id) FROM zone_templ WHERE name = " . $db->quote($zone_templ_name, 'text') . $sql_add;
+    /** Check if zone template name and id exists
+     *
+     * @param $db
+     * @param string $zone_templ_name zone template name
+     * @param int $zone_templ_id zone template id
+     *
+     * @return bool number of matching templates
+     */
+    public static function zone_templ_name_and_id_exists($db, string $zone_templ_name, int $zone_templ_id): bool
+    {
+        $query = "SELECT COUNT(id) FROM zone_templ WHERE name = {$db->quote($zone_templ_name, 'text')} AND id != {$db->quote($zone_templ_id, 'integer')}";
         return $db->queryOne($query);
     }
 

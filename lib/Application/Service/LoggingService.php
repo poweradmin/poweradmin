@@ -27,9 +27,9 @@ use Poweradmin\Infrastructure\Logger\Logger;
 abstract class LoggingService
 {
     protected Logger $logger;
-    private ?string $className;
+    private string $className;
 
-    public function __construct(Logger $logger, string $className = null)
+    public function __construct(Logger $logger, string $className = '')
     {
         $this->logger = $logger;
         $this->className = $className;
@@ -37,7 +37,7 @@ abstract class LoggingService
 
     protected function logDebug(string $message, array $context = []): void
     {
-        if ($this->className) {
+        if (!empty($this->className)) {
             $context['classname'] = $this->className;
         }
         $this->logger->debug($message, $context);
@@ -45,7 +45,7 @@ abstract class LoggingService
 
     protected function logInfo(string $message, array $context = []): void
     {
-        if ($this->className) {
+        if (!empty($this->className)) {
             $context['classname'] = $this->className;
         }
         $this->logger->info($message, $context);
@@ -53,7 +53,7 @@ abstract class LoggingService
 
     protected function logWarning(string $message, array $context = []): void
     {
-        if ($this->className) {
+        if (!empty($this->className)) {
             $context['classname'] = $this->className;
         }
         $this->logger->warning($message, $context);
@@ -61,7 +61,7 @@ abstract class LoggingService
 
     protected function logError(string $message, array $context = []): void
     {
-        if ($this->className) {
+        if (!empty($this->className)) {
             $context['classname'] = $this->className;
         }
         $this->logger->error($message, $context);

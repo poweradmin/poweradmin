@@ -235,7 +235,8 @@ class EditController extends BaseController
             'iface_zone_comments' => $this->config('iface_zone_comments'),
             'iface_edit_show_id' => $iface_show_id,
             'iface_edit_add_record_top' => $iface_edit_add_record_top,
-            'serial' => DnsRecord::get_soa_serial($soa_record)
+            'serial' => DnsRecord::get_soa_serial($soa_record),
+            'file_version' => time()
         ]);
     }
 

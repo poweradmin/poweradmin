@@ -24,7 +24,7 @@ namespace PoweradminInstall;
 
 class ErrorHandler
 {
-    public static function handleLanguageError(): void
+    public static function displayLanguageError(): void
     {
         echo "<p class='alert alert-danger'>" . _('Please select a language to proceed with the installation.') . "</p>";
     }

@@ -22,19 +22,31 @@
         {% else %}
         <thead>
         <tr>
-            <th><input type="checkbox" class="form-check-input" id="select_zones" onClick="toggleZoneCheckboxes()"/>
+            <th>
+                <input type="checkbox" class="form-check-input" id="select_zones" onClick="toggleZoneCheckboxes()"/>
             </th>
-            <th><a href="index.php?page=list_zones&zone_sort_by=name">{% trans %}Name{% endtrans %}</a> {{ zone_sort_by == 'name' ? '<i
-                    class="bi bi-arrow-down"></i>' : "" }}
+            <th>
+                <a href="index.php?page=list_zones&zone_sort_by=name&zone_sort_by_direction={{ zone_sort_by == 'name' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                    {% trans %}Name{% endtrans %}
+                </a>
+                {{ zone_sort_by == 'name' ? (zone_sort_direction == 'ASC' ? '<i class="bi bi-arrow-down"></i>' : '<i class="bi bi-arrow-up"></i>') : '' }}
             </th>
-            <th><a href="index.php?page=list_zones&zone_sort_by=type">{% trans %}Type{% endtrans %}</a> {{ zone_sort_by == 'type' ? '<i
-                    class="bi bi-arrow-down"></i>' : "" }}
+            <th>
+                <a href="index.php?page=list_zones&zone_sort_by=type&zone_sort_by_direction={{ zone_sort_by == 'type' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                    {% trans %}Type{% endtrans %}</a>
+                {{ zone_sort_by == 'type' ? (zone_sort_direction == 'ASC' ? '<i class="bi bi-arrow-down"></i>' : '<i class="bi bi-arrow-up"></i>') : '' }}
             </th>
-            <th><a href="index.php?page=list_zones&zone_sort_by=count_records">{% trans %}Records{% endtrans %}</a> {{ zone_sort_by ==
-                'count_records' ? '<i class="bi bi-arrow-down"></i>' : "" }}
+            <th>
+                <a href="index.php?page=list_zones&zone_sort_by=count_records&zone_sort_by_direction={{ zone_sort_by == 'count_records' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                    {% trans %}Records{% endtrans %}
+                </a>
+                {{ zone_sort_by == 'count_records' ? (zone_sort_direction == 'ASC' ? '<i class="bi bi-arrow-down"></i>' : '<i class="bi bi-arrow-up"></i>') : '' }}
             </th>
-            <th><a href="index.php?page=list_zones&zone_sort_by=owner">{% trans %}Owner{% endtrans %}</a> {{ zone_sort_by == 'owner' ? '<i
-                    class="bi bi-arrow-down"></i>' : "" }}
+            <th>
+                <a href="index.php?page=list_zones&zone_sort_by=owner&zone_sort_by_direction={{ zone_sort_by == 'owner' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                    {% trans %}Owner{% endtrans %}
+                </a>
+                {{ zone_sort_by == 'owner' ? (zone_sort_direction == 'ASC' ? '<i class="bi bi-arrow-down"></i>' : '<i class="bi bi-arrow-up"></i>') : '' }}
             </th>
             <th>{% trans %}Full name{% endtrans %}</th>
 

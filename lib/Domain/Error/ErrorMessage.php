@@ -25,9 +25,9 @@ namespace Poweradmin\Domain\Error;
 class ErrorMessage
 {
     private string $message;
-    private ?string $name;
+    private string $name;
 
-    public function __construct(string $message, ?string $name = null)
+    public function __construct(string $message, string $name = '')
     {
         $this->message = $message;
         $this->name = $name;

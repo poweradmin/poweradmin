@@ -81,7 +81,6 @@ return array(
     'Poweradmin\\Application\\Controller\\LoginController' => $baseDir . '/lib/Application/Controller/LoginController.php',
     'Poweradmin\\Application\\Controller\\LogoutController' => $baseDir . '/lib/Application/Controller/LogoutController.php',
     'Poweradmin\\Application\\Controller\\SearchController' => $baseDir . '/lib/Application/Controller/SearchController.php',
-    'Poweradmin\\Application\\Controller\\SwitchThemeController' => $baseDir . '/lib/Application/Controller/SwitchThemeController.php',
     'Poweradmin\\Application\\Controller\\UsersController' => $baseDir . '/lib/Application/Controller/UsersController.php',
     'Poweradmin\\Application\\Presenter\\ErrorPresenter' => $baseDir . '/lib/Application/Presenter/ErrorPresenter.php',
     'Poweradmin\\Application\\Presenter\\LocalePresenter' => $baseDir . '/lib/Application/Presenter/LocalePresenter.php',

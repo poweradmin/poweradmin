@@ -57,11 +57,13 @@ class SearchController extends BaseController
         $searchResultRecords = [];
         $records_page = 1;
 
-        $zone_sort_by = $this->getSortOrder('zone_sort_by', ['name', 'type', 'count_records', 'fullname']);
-        $record_sort_by = $this->getSortOrder('record_sort_by', ['name', 'type', 'prio', 'content', 'ttl']);
+        list($zone_sort_by, $zone_sort_direction) = $this->getSortOrder('zone_sort_by', ['name', 'type', 'count_records', 'fullname']);
+        list($record_sort_by, $record_sort_direction) = $this->getSortOrder('record_sort_by', ['name', 'type', 'prio', 'content', 'ttl', 'disabled']);
 
         $_SESSION['zone_sort_by'] = $zone_sort_by;
+        $_SESSION['zone_sort_by_direction'] = $zone_sort_direction;
         $_SESSION['record_sort_by'] = $record_sort_by;
+        $_SESSION['record_sort_by_direction'] = $record_sort_direction;
 
         $iface_rowamount = $this->config('iface_rowamount');
 
@@ -86,6 +88,7 @@ class SearchController extends BaseController
                 $parameters,
                 $permission_view,
                 $zone_sort_by,
+                $zone_sort_direction,
                 $iface_rowamount,
                 $zones_page
             );
@@ -100,6 +103,7 @@ class SearchController extends BaseController
                 $parameters,
                 $permission_view,
                 $record_sort_by,
+                $record_sort_direction,
                 $iface_search_group_records,
                 $iface_rowamount,
                 $records_page,
@@ -108,14 +112,16 @@ class SearchController extends BaseController
             $totalRecords = $recordSearch->getTotalRecords($parameters, $permission_view, $iface_search_group_records);
         }
 
-        $this->showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $record_sort_by, $totalZones, $totalRecords, $zones_page, $records_page, $iface_rowamount);
+        $this->showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $zone_sort_direction, $record_sort_by, $record_sort_direction, $totalZones, $totalRecords, $zones_page, $records_page, $iface_rowamount);
     }
 
-    private function showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $record_sort_by, $totalZones, $totalRecords, $zones_page, $records_page, $iface_rowamount): void
+    private function showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $zone_sort_direction, $record_sort_by, $record_sort_direction, $totalZones, $totalRecords, $zones_page, $records_page, $iface_rowamount): void
     {
         $this->render('search.html', [
             'zone_sort_by' => $zone_sort_by,
+            'zone_sort_direction' => $zone_sort_direction,
             'record_sort_by' => $record_sort_by,
+            'record_sort_direction' => $record_sort_direction,
             'query' => $parameters['query'],
             'search_by_zones' => $parameters['zones'],
             'search_by_records' => $parameters['records'],
@@ -135,15 +141,23 @@ class SearchController extends BaseController
         ]);
     }
 
-    private function getSortOrder(string $name, array $allowedValues): string
+    private function getSortOrder(string $name, array $allowedValues): array
     {
         $sortOrder = 'name';
+        $sortDirection = 'ASC';
 
         if (isset($_POST[$name]) && in_array($_POST[$name], $allowedValues)) {
             $sortOrder = $_POST[$name];
         } elseif (isset($_SESSION[$name]) && in_array($_SESSION[$name], $allowedValues)) {
             $sortOrder = $_SESSION[$name];
         }
-        return $sortOrder;
+
+        if (isset($_POST[$name . '_direction']) && in_array(strtoupper($_POST[$name . '_direction']), ['ASC', 'DESC'])) {
+            $sortDirection = strtoupper($_POST[$name . '_direction']);
+        } elseif (isset($_SESSION[$name . '_direction']) && in_array(strtoupper($_SESSION[$name . '_direction']), ['ASC', 'DESC'])) {
+            $sortDirection = strtoupper($_SESSION[$name . '_direction']);
+        }
+
+        return [$sortOrder, $sortDirection];
     }
 }

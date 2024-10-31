@@ -89,26 +89,13 @@ class ListZonesController extends BaseController
 
         $count_zones_all_letterstart = DnsRecord::zone_count_ng($this->db, $this->getConfig(), $perm_view, $letter_start);
 
-        $zone_sort_by = 'name';
-        if (isset($_GET['zone_sort_by']) && preg_match("/^[a-z_]+$/", $_GET['zone_sort_by'])) {
-            $zone_sort_by = htmlspecialchars($_GET['zone_sort_by']);
-            $_SESSION['list_zone_sort_by'] = htmlspecialchars($_GET['zone_sort_by']);
-        } elseif (isset($_POST['zone_sort_by']) && preg_match("/^[a-z_]+$/", $_POST['zone_sort_by'])) {
-            $zone_sort_by = htmlspecialchars($_POST['zone_sort_by']);
-            $_SESSION['list_zone_sort_by'] = htmlspecialchars($_POST['zone_sort_by']);
-        } elseif (isset($_SESSION['list_zone_sort_by'])) {
-            $zone_sort_by = $_SESSION['list_zone_sort_by'];
-        }
-
-        if (!in_array($zone_sort_by, array('name', 'type', 'count_records', 'owner'))) {
-            $zone_sort_by = 'name';
-        }
+        list($zone_sort_by, $zone_sort_direction) = $this->getZoneSortOrder('zone_sort_by', ['name', 'type', 'count_records', 'owner']);
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         if ($count_zones_view <= $iface_rowamount || $letter_start == 'all') {
-            $zones = $dnsRecord->get_zones($perm_view, $_SESSION['userid'], 'all', $row_start, $iface_rowamount, $zone_sort_by);
+            $zones = $dnsRecord->get_zones($perm_view, $_SESSION['userid'], 'all', $row_start, $iface_rowamount, $zone_sort_by, $zone_sort_direction);
         } else {
-            $zones = $dnsRecord->get_zones($perm_view, $_SESSION['userid'], $letter_start, $row_start, $iface_rowamount, $zone_sort_by);
+            $zones = $dnsRecord->get_zones($perm_view, $_SESSION['userid'], $letter_start, $row_start, $iface_rowamount, $zone_sort_by, $zone_sort_direction);
         }
 
         if ($perm_view == 'none') {
@@ -123,6 +110,7 @@ class ListZonesController extends BaseController
             'letter_start' => $letter_start,
             'iface_rowamount' => $iface_rowamount,
             'zone_sort_by' => $zone_sort_by,
+            'zone_sort_direction' => $zone_sort_direction,
             'iface_zonelist_serial' => $iface_zonelist_serial,
             'iface_zonelist_template' => $iface_zonelist_template,
             'pdnssec_use' => $pdnssec_use,
@@ -161,5 +149,37 @@ class ListZonesController extends BaseController
         $presenter = new PaginationPresenter($pagination, 'index.php?page=list_zones&start={PageNumber}');
 
         return $presenter->present();
+    }
+
+    public function getZoneSortOrder(string $name, array $allowedValues): array
+    {
+        $zone_sort_by = 'name';
+        $zone_sort_direction = 'ASC';
+
+        if (isset($_GET[$name]) && preg_match("/^[a-z_]+$/", $_GET[$name])) {
+            $zone_sort_by = htmlspecialchars($_GET[$name]);
+            $_SESSION['list_zone_sort_by'] = htmlspecialchars($_GET[$name]);
+        } elseif (isset($_POST[$name]) && preg_match("/^[a-z_]+$/", $_POST[$name])) {
+            $zone_sort_by = htmlspecialchars($_POST[$name]);
+            $_SESSION['list_zone_sort_by'] = htmlspecialchars($_POST[$name]);
+        } elseif (isset($_SESSION['list_zone_sort_by'])) {
+            $zone_sort_by = $_SESSION['list_zone_sort_by'];
+        }
+
+        if (!in_array($zone_sort_by, $allowedValues)) {
+            $zone_sort_by = 'name';
+        }
+
+        if (isset($_GET[$name . '_direction']) && in_array(strtoupper($_GET[$name . '_direction']), ['ASC', 'DESC'])) {
+            $zone_sort_direction = strtoupper($_GET[$name . '_direction']);
+            $_SESSION['list_zone_sort_by_direction'] = strtoupper($_GET[$name . '_direction']);
+        } elseif (isset($_POST[$name . '_direction']) && in_array(strtoupper($_POST[$name . '_direction']), ['ASC', 'DESC'])) {
+            $zone_sort_direction = strtoupper($_POST[$name . '_direction']);
+            $_SESSION['list_zone_sort_by_direction'] = strtoupper($_POST[$name . '_direction']);
+        } elseif (isset($_SESSION['list_zone_sort_by_direction'])) {
+            $zone_sort_direction = $_SESSION['list_zone_sort_by_direction'];
+        }
+
+        return [$zone_sort_by, $zone_sort_direction];
     }
 }

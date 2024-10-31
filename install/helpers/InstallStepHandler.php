@@ -119,7 +119,7 @@ class InstallStepHandler
         echo _('done!') . "</p>";
 
         if ($credentials['db_type'] == 'sqlite') {
-            $this->currentStep = InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER;
+            $this->currentStep = InstallationSteps::STEP_CREATE_CONFIGURATION_FILE;
         }
 
         $this->renderTemplate('step4.html.twig', array_merge([
