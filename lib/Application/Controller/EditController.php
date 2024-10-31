@@ -62,6 +62,7 @@ class EditController extends BaseController
         }
 
         $record_sort_by = $this->getSortBy('record_sort_by', ['id', 'name', 'type', 'content', 'prio', 'ttl', 'disabled']);
+        $sort_direction = $this->getSortDirection('sort_direction');
 
         if (!isset($_GET['id']) || !Validator::is_number($_GET['id'])) {
             $this->showError(_('Invalid or unexpected input given.'));
@@ -191,7 +192,7 @@ class EditController extends BaseController
         } else {
             $idn_zone_name = "";
         }
-        $records = $dnsRecord->get_records_from_domain_id($this->config('db_type'), $zone_id, $row_start, $iface_rowamount, $record_sort_by);
+        $records = $dnsRecord->get_records_from_domain_id($this->config('db_type'), $zone_id, $row_start, $iface_rowamount, $record_sort_by, $sort_direction);
         $owners = DnsRecord::get_users_from_domain_id($this->db, $zone_id);
 
         $soa_record = $dnsRecord->get_soa_record($zone_id);
@@ -224,6 +225,7 @@ class EditController extends BaseController
             'row_start' => $row_start,
             'row_amount' => $iface_rowamount,
             'record_sort_by' => $record_sort_by,
+            'sort_direction' => $sort_direction,
             'pagination' => $this->createAndPresentPagination($record_count, $iface_rowamount, $zone_id),
             'pdnssec_use' => $this->config('pdnssec_use'),
             'is_secured' => $dnssecProvider->isZoneSecured($zone_name, $this->getConfig()),
@@ -265,6 +267,22 @@ class EditController extends BaseController
         }
 
         return $sortOrder;
+    }
+
+
+    private function getSortDirection(string $name): string
+    {
+        $sortDirection = 'ASC';
+
+        foreach ([$_GET, $_POST, $_SESSION] as $source) {
+            if (isset($source[$name]) && in_array($source[$name], ['ASC', 'DESC'])) {
+                $sortDirection = $source[$name];
+                $_SESSION[$name] = $source[$name];
+                break;
+            }
+        }
+
+        return $sortDirection;
     }
 
     public function saveRecords(int $zone_id, bool $iface_zone_comments, string $zone_name): void

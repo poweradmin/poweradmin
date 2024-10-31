@@ -1379,7 +1379,7 @@ class DnsRecord
      *
      * @return int|array array of record detail, or -1 if nothing found
      */
-    public function get_records_from_domain_id($db_type, int $id, int $rowstart = 0, int $rowamount = 999999, string $sortby = 'name'): array|int
+    public function get_records_from_domain_id($db_type, int $id, int $rowstart = 0, int $rowamount = 999999, string $sortby = 'name', string $sortDirection = 'ASC'): array|int
     {
         if (!is_numeric($id)) {
             $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s'), "get_records_from_domain_id"));
@@ -1397,7 +1397,7 @@ class DnsRecord
         if ($db_type == 'mysql' || $db_type == 'mysqli' || $db_type == 'sqlite' || $db_type == 'sqlite3') {
             $natural_sort = "$records_table.name+0<>0 DESC, $records_table.name+0, $records_table.name";
         }
-        $sql_sortby = ($sortby == 'name' ? $natural_sort : $sortby . ', ' . $natural_sort);
+        $sql_sortby = ($sortby == 'name' ? $natural_sort : $sortby) . ' ' . $sortDirection . ', ' . $natural_sort;
 
         $records = $this->db->query("SELECT *
                             FROM $records_table
