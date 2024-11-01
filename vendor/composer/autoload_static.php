@@ -276,6 +276,7 @@ class ComposerStaticInit1dab89e42c6bd529040213c23957bbde
         'Poweradmin\\Infrastructure\\Utility\\IpAddressRetriever' => __DIR__ . '/../..' . '/lib/Infrastructure/Utility/IpAddressRetriever.php',
         'Poweradmin\\Infrastructure\\Utility\\LanguageCode' => __DIR__ . '/../..' . '/lib/Infrastructure/Utility/LanguageCode.php',
         'Poweradmin\\Infrastructure\\Utility\\SimpleSizeFormatter' => __DIR__ . '/../..' . '/lib/Infrastructure/Utility/SimpleSizeFormatter.php',
+        'Poweradmin\\Infrastructure\\Utility\\SortHelper' => __DIR__ . '/../..' . '/lib/Infrastructure/Utility/SortHelper.php',
         'Poweradmin\\LocaleManager' => __DIR__ . '/../..' . '/lib/LocaleManager.php',
         'Poweradmin\\Pages' => __DIR__ . '/../..' . '/lib/Pages.php',
         'Poweradmin\\Version' => __DIR__ . '/../..' . '/lib/Version.php',

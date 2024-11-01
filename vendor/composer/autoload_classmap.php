@@ -174,6 +174,7 @@ return array(
     'Poweradmin\\Infrastructure\\Utility\\IpAddressRetriever' => $baseDir . '/lib/Infrastructure/Utility/IpAddressRetriever.php',
     'Poweradmin\\Infrastructure\\Utility\\LanguageCode' => $baseDir . '/lib/Infrastructure/Utility/LanguageCode.php',
     'Poweradmin\\Infrastructure\\Utility\\SimpleSizeFormatter' => $baseDir . '/lib/Infrastructure/Utility/SimpleSizeFormatter.php',
+    'Poweradmin\\Infrastructure\\Utility\\SortHelper' => $baseDir . '/lib/Infrastructure/Utility/SortHelper.php',
     'Poweradmin\\LocaleManager' => $baseDir . '/lib/LocaleManager.php',
     'Poweradmin\\Pages' => $baseDir . '/lib/Pages.php',
     'Poweradmin\\Version' => $baseDir . '/lib/Version.php',
