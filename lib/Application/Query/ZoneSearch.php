@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Application\Query;
 
+use Poweradmin\Infrastructure\Utility\SortHelper;
+
 class ZoneSearch extends BaseSearch
 {
     /**
@@ -95,6 +97,9 @@ class ZoneSearch extends BaseSearch
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
+        $db_type = $this->config->get('db_type');
+        $sort_zones_by = $sort_zones_by === 'name' ? SortHelper::getNaturalSort($domains_table, $db_type, $zone_sort_direction) : "$sort_zones_by $zone_sort_direction";
+
         $zonesQuery = "
             SELECT
                 $domains_table.id,
@@ -116,7 +121,7 @@ class ZoneSearch extends BaseSearch
                 ($domains_table.name LIKE " . $this->db->quote($search_string, 'text') .
             ($reverse ? " OR $domains_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ') ' .
             ($permission_view == 'own' ? ' AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
-            ' ORDER BY ' . $sort_zones_by . ' ' . $zone_sort_direction . ', z.owner' .
+            ' ORDER BY ' . $sort_zones_by .
             ' LIMIT ' . $iface_rowamount . ' OFFSET ' . $offset;
 
         $zonesResponse = $this->db->query($zonesQuery);

@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Application\Query;
 
+use Poweradmin\Infrastructure\Utility\SortHelper;
+
 class RecordSearch extends BaseSearch
 {
     /**
@@ -72,6 +74,9 @@ class RecordSearch extends BaseSearch
         $pdns_db_name = $this->config->get('pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
+        $db_type = $this->config->get('db_type');
+        $sort_records_by = $sort_records_by === 'name' ? SortHelper::getNaturalSort($records_table, $db_type, $record_sort_direction) : "$sort_records_by $record_sort_direction";
+
         $recordsQuery = "
             SELECT
                 $records_table.id,
@@ -95,7 +100,7 @@ class RecordSearch extends BaseSearch
             ($reverse ? " OR $records_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ')' .
             ($permission_view == 'own' ? 'AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
             ($iface_search_group_records ? " GROUP BY $records_table.name, $records_table.content " : '') .
-            ' ORDER BY ' . $sort_records_by . ' ' . $record_sort_direction .
+            ' ORDER BY ' . $sort_records_by .
             ' LIMIT ' . $iface_rowamount . ' OFFSET ' . $offset;
 
         $recordsResponse = $this->db->query($recordsQuery);
