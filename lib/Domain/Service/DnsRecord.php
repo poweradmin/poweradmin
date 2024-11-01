@@ -1227,14 +1227,7 @@ class DnsRecord
             $sortby = "$domains_table.$sortby";
         }
 
-        $natural_sort = "$domains_table.name";
-        if ($db_type == 'mysql' || $db_type == 'mysqli' || $db_type == 'sqlite' || $db_type == 'sqlite3') {
-            $natural_sort = "$domains_table.name+0<>0 DESC, $domains_table.name+0, $domains_table.name";
-        } elseif ($db_type == 'pgsql') {
-            $natural_sort = "SUBSTRING($domains_table.name FROM '\.arpa$'), LENGTH(SUBSTRING($domains_table.name FROM '^[0-9]+')), $domains_table.name";
-        }
-        // TODO: review natural sorting if it still works after adding sort direction
-        $sql_sortby = ($sortby . " " . $sortDirection . ', ' . $natural_sort);
+        $sql_sortby = $sortby == "$domains_table.name" ? $this->getNaturalSort($domains_table, $db_type, $sortDirection) : $sortby . " " . $sortDirection;
 
         $query = "SELECT $domains_table.id,
                         $domains_table.name,
@@ -1393,16 +1386,17 @@ class DnsRecord
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         $this->db->setLimit($rowamount, $rowstart);
-        $natural_sort = "$records_table.name";
-        if ($db_type == 'mysql' || $db_type == 'mysqli' || $db_type == 'sqlite' || $db_type == 'sqlite3') {
-            $natural_sort = "$records_table.name+0<>0 DESC, $records_table.name+0, $records_table.name";
-        }
-        $sql_sortby = ($sortby == 'name' ? $natural_sort : $sortby) . ' ' . $sortDirection . ', ' . $natural_sort;
 
-        $records = $this->db->query("SELECT *
-                            FROM $records_table
-                            WHERE domain_id=" . $this->db->quote($id, 'integer') . " AND type IS NOT NULL
-                            ORDER BY type = 'SOA' DESC, type = 'NS' DESC," . $sql_sortby);
+        if ($sortby == 'name') {
+            $sortby = "$records_table.name";
+        }
+        $sql_sortby = $sortby == "$records_table.name" ? $this->getNaturalSort($records_table, $db_type, $sortDirection) : $sortby . " " . $sortDirection;
+
+        $query = "SELECT * FROM $records_table
+                    WHERE domain_id=" . $this->db->quote($id, 'integer') . " AND type IS NOT NULL
+                    ORDER BY " . $sql_sortby;
+
+        $records = $this->db->query($query);
         $this->db->setLimit(0);
 
         if ($records) {
@@ -1411,7 +1405,7 @@ class DnsRecord
             return -1;
         }
 
-        return $this->order_domain_results($result, $sortby);
+        return $result;
     }
 
     /** Sort Domain Records intelligently
@@ -1466,6 +1460,32 @@ class DnsRecord
 
         $results = array_merge($soa, $ns);
         return array_merge($results, $domains);
+    }
+
+    /**
+     * Get the natural sort for the given database type
+     *
+     * @param string $table
+     * @param mixed $db_type
+     * @param string $direction
+     * @return string
+     */
+    public function getNaturalSort(string $table, string $db_type, string $direction = 'ASC'): string
+    {
+        $name_field = "$table.name";
+        $direction = strtoupper($direction);
+        if ($direction !== 'ASC' && $direction !== 'DESC') {
+            $direction = 'ASC';
+        }
+
+        $natural_sort = match ($db_type) {
+            'mysql', 'mysqli' => "CAST(REGEXP_SUBSTR($name_field, '[0-9]+') AS UNSIGNED) $direction, $name_field $direction",
+            'sqlite', 'sqlite3' => "CAST(substr($name_field, 1, instr($name_field, '.') - 1) AS INTEGER) $direction, $name_field $direction",
+            'pgsql' => "CAST((REGEXP_MATCHES($name_field, '[0-9]+'))[1] AS INTEGER) $direction, $name_field $direction",
+            default => "$name_field $direction",
+        };
+
+        return $natural_sort;
     }
 
     /** Sort records by id
