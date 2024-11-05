@@ -33,6 +33,7 @@ use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Utility\SortHelper;
 
 /**
  * DNS record functions
@@ -1227,14 +1228,7 @@ class DnsRecord
             $sortby = "$domains_table.$sortby";
         }
 
-        $natural_sort = "$domains_table.name";
-        if ($db_type == 'mysql' || $db_type == 'mysqli' || $db_type == 'sqlite' || $db_type == 'sqlite3') {
-            $natural_sort = "$domains_table.name+0<>0 DESC, $domains_table.name+0, $domains_table.name";
-        } elseif ($db_type == 'pgsql') {
-            $natural_sort = "SUBSTRING($domains_table.name FROM '\.arpa$'), LENGTH(SUBSTRING($domains_table.name FROM '^[0-9]+')), $domains_table.name";
-        }
-        // TODO: review natural sorting if it still works after adding sort direction
-        $sql_sortby = ($sortby . " " . $sortDirection . ', ' . $natural_sort);
+        $sql_sortby = $sortby == "$domains_table.name" ? SortHelper::getNaturalSort($domains_table, $db_type, $sortDirection) : $sortby . " " . $sortDirection;
 
         $query = "SELECT $domains_table.id,
                         $domains_table.name,
@@ -1379,7 +1373,7 @@ class DnsRecord
      *
      * @return int|array array of record detail, or -1 if nothing found
      */
-    public function get_records_from_domain_id($db_type, int $id, int $rowstart = 0, int $rowamount = 999999, string $sortby = 'name'): array|int
+    public function get_records_from_domain_id($db_type, int $id, int $rowstart = 0, int $rowamount = 999999, string $sortby = 'name', string $sortDirection = 'ASC'): array|int
     {
         if (!is_numeric($id)) {
             $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s'), "get_records_from_domain_id"));
@@ -1393,16 +1387,17 @@ class DnsRecord
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         $this->db->setLimit($rowamount, $rowstart);
-        $natural_sort = "$records_table.name";
-        if ($db_type == 'mysql' || $db_type == 'mysqli' || $db_type == 'sqlite' || $db_type == 'sqlite3') {
-            $natural_sort = "$records_table.name+0<>0 DESC, $records_table.name+0, $records_table.name";
-        }
-        $sql_sortby = ($sortby == 'name' ? $natural_sort : $sortby . ', ' . $natural_sort);
 
-        $records = $this->db->query("SELECT *
-                            FROM $records_table
-                            WHERE domain_id=" . $this->db->quote($id, 'integer') . " AND type IS NOT NULL
-                            ORDER BY type = 'SOA' DESC, type = 'NS' DESC," . $sql_sortby);
+        if ($sortby == 'name') {
+            $sortby = "$records_table.name";
+        }
+        $sql_sortby = $sortby == "$records_table.name" ? SortHelper::getNaturalSort($records_table, $db_type, $sortDirection) : $sortby . " " . $sortDirection;
+
+        $query = "SELECT * FROM $records_table
+                    WHERE domain_id=" . $this->db->quote($id, 'integer') . " AND type IS NOT NULL
+                    ORDER BY " . $sql_sortby;
+
+        $records = $this->db->query($query);
         $this->db->setLimit(0);
 
         if ($records) {
@@ -1411,165 +1406,7 @@ class DnsRecord
             return -1;
         }
 
-        return $this->order_domain_results($result, $sortby);
-    }
-
-    /** Sort Domain Records intelligently
-     *
-     * @param string[] $domains Array of domains
-     * @param string $sortby Column to sort by [default='name','type','content','prio','ttl']
-     *
-     * @return array array of records detail
-     */
-    public function order_domain_results(array $domains, string $sortby): array
-    {
-        $soa = array();
-        $ns = array();
-
-        foreach ($domains as $key => $domain) {
-            switch ($domain['type']) {
-                case 'SOA':
-                    $soa[] = $domain;
-                    unset($domains[$key]);
-                    break;
-                case 'NS':
-                    $ns[] = $domain;
-                    unset($domains[$key]);
-                    break;
-            }
-        }
-
-        switch ($sortby) {
-            case 'id':
-                usort($domains, [$this, 'sort_domain_results_by_id']);
-                break;
-            case 'type':
-                usort($domains, [$this, 'sort_domain_results_by_type']);
-                break;
-            case 'content':
-                usort($domains, [$this, 'sort_domain_results_by_content']);
-                break;
-            case 'prio':
-                usort($domains, [$this, 'sort_domain_results_by_prio']);
-                break;
-            case 'ttl':
-                usort($domains, [$this, 'sort_domain_results_by_ttl']);
-                break;
-            case 'disabled':
-                usort($domains, [$this, 'sort_domain_results_by_disabled']);
-                break;
-            case 'name':
-            default:
-                usort($domains, [$this, 'sort_domain_results_by_name']);
-                break;
-        }
-
-        $results = array_merge($soa, $ns);
-        return array_merge($results, $domains);
-    }
-
-    /** Sort records by id
-     *
-     * @param array $a A
-     * @param array $b B
-     *
-     * @return int result of strnatcmp
-     */
-    private function sort_domain_results_by_id(array $a, array $b): int
-    {
-        return strnatcmp($a['id'], $b['id']);
-    }
-
-    /** Sort records by name
-     *
-     * @param array $a A
-     * @param array $b B
-     *
-     * @return int result of strnatcmp
-     */
-    private function sort_domain_results_by_name(array $a, array $b): int
-    {
-        return strnatcmp($a['name'], $b['name']);
-    }
-
-    /** Sort records by type
-     *
-     * @param array $a A
-     * @param array $b B
-     *
-     * @return int result of strnatcmp
-     */
-    private function sort_domain_results_by_type(array $a, array $b): int
-    {
-        if ($a['type'] != $b['type']) {
-            return strnatcmp($a['type'], $b['type']);
-        } else {
-            return strnatcmp($a['name'], $b['name']);
-        }
-    }
-
-    /** Sort records by content
-     *
-     * @param array $a A
-     * @param array $b B
-     *
-     * @return int result of strnatcmp
-     */
-    private function sort_domain_results_by_content(array $a, array $b): int
-    {
-        if ($a['content'] != $b['content']) {
-            return strnatcmp($a['content'], $b['content']);
-        } else {
-            return strnatcmp($a['name'], $b['name']);
-        }
-    }
-
-    /** Sort records by prio
-     *
-     * @param array $a A
-     * @param array $b B
-     *
-     * @return int result of strnatcmp
-     */
-    private function sort_domain_results_by_prio(array $a, array $b): int
-    {
-        if ($a['prio'] != $b['prio']) {
-            return strnatcmp($a['prio'], $b['prio']);
-        } else {
-            return strnatcmp($a['name'], $b['name']);
-        }
-    }
-
-    /** Sort records by TTL
-     *
-     * @param array $a A
-     * @param array $b B
-     *
-     * @return int result of strnatcmp
-     */
-    private function sort_domain_results_by_ttl(array $a, array $b): int
-    {
-        if ($a['ttl'] != $b['ttl']) {
-            return strnatcmp($a['ttl'], $b['ttl']);
-        } else {
-            return strnatcmp($a['name'], $b['name']);
-        }
-    }
-
-    /** Sort records by disabled
-     *
-     * @param array $a A
-     * @param array $b B
-     *
-     * @return int result of strnatcmp
-     */
-    private function sort_domain_results_by_disabled(array $a, array $b): int
-    {
-        if ($a['disabled'] != $b['disabled']) {
-            return strnatcmp($a['disabled'], $b['disabled']);
-        } else {
-            return strnatcmp($a['name'], $b['name']);
-        }
+        return $result;
     }
 
     /** Get list of owners for Domain ID
