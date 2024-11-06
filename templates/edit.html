@@ -111,59 +111,59 @@
             <th>
                 <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=id&sort_direction={{ sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                     {% trans %}Id{% endtrans %}
-                    {% if record_sort_by == 'id' %}
-                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
-                    {% endif %}
                 </a>
+                {% if record_sort_by == 'id' %}
+                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
+                {% endif %}
             </th>
             {% endif %}
             <th>
                 <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=name&sort_direction={{ sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                     {% trans %}Name{% endtrans %}
-                    {% if record_sort_by == 'name' %}
-                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
-                    {% endif %}
                 </a>
+                {% if record_sort_by == 'name' %}
+                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
+                {% endif %}
             </th>
             <th>
                 <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=type&sort_direction={{ sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                     {% trans %}Type{% endtrans %}
-                    {% if record_sort_by == 'type' %}
-                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
-                    {% endif %}
                 </a>
+                {% if record_sort_by == 'type' %}
+                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
+                {% endif %}
             </th>
             <th>
                 <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=content&sort_direction={{ sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                     {% trans %}Content{% endtrans %}
-                    {% if record_sort_by == 'content' %}
-                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
-                    {% endif %}
                 </a>
+                {% if record_sort_by == 'content' %}
+                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
+                {% endif %}
             </th>
             <th>
                 <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=prio&sort_direction={{ sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                     {% trans %}Priority{% endtrans %}
-                    {% if record_sort_by == 'prio' %}
-                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'dow' : 'up' }}"></i>
-                    {% endif %}
                 </a>
+                {% if record_sort_by == 'prio' %}
+                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
+                {% endif %}
             </th>
             <th>
                 <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=ttl&sort_direction={{ sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                     {% trans %}TTL{% endtrans %}
-                    {% if record_sort_by == 'ttl' %}
-                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
-                    {% endif %}
                 </a>
+                {% if record_sort_by == 'ttl' %}
+                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
+                {% endif %}
             </th>
             <th>
                 <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=disabled&sort_direction={{ sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                     {% trans %}Disabled{% endtrans %}
-                    {% if record_sort_by == 'disabled' %}
-                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
-                    {% endif %}
                 </a>
+                {% if record_sort_by == 'disabled' %}
+                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
+                {% endif %}
             </th>
             <th>&nbsp;</th>
         </tr>

@@ -1392,6 +1392,9 @@ class DnsRecord
             $sortby = "$records_table.name";
         }
         $sql_sortby = $sortby == "$records_table.name" ? SortHelper::getNaturalSort($records_table, $db_type, $sortDirection) : $sortby . " " . $sortDirection;
+        if ($sortby == "$records_table.name" and $sortDirection == 'ASC') {
+            $sql_sortby = "type = 'SOA' DESC, type = 'NS' DESC, ". $sql_sortby;
+        }
 
         $query = "SELECT * FROM $records_table
                     WHERE domain_id=" . $this->db->quote($id, 'integer') . " AND type IS NOT NULL
