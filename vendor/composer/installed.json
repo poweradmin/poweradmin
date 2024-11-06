@@ -125,17 +125,17 @@
         },
         {
             "name": "symfony/http-foundation",
-            "version": "v6.4.12",
-            "version_normalized": "6.4.12.0",
+            "version": "v6.4.14",
+            "version_normalized": "6.4.14.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-foundation.git",
-                "reference": "133ac043875f59c26c55e79cf074562127cce4d2"
+                "reference": "ba020a321a95519303a3f09ec2824d34d601c388"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/133ac043875f59c26c55e79cf074562127cce4d2",
-                "reference": "133ac043875f59c26c55e79cf074562127cce4d2",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/ba020a321a95519303a3f09ec2824d34d601c388",
+                "reference": "ba020a321a95519303a3f09ec2824d34d601c388",
                 "shasum": ""
             },
             "require": {
@@ -157,7 +157,7 @@
                 "symfony/mime": "^5.4|^6.0|^7.0",
                 "symfony/rate-limiter": "^5.4|^6.0|^7.0"
             },
-            "time": "2024-09-20T08:18:25+00:00",
+            "time": "2024-11-05T16:39:55+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -185,7 +185,7 @@
             "description": "Defines an object-oriented layer for the HTTP specification",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/http-foundation/tree/v6.4.12"
+                "source": "https://github.com/symfony/http-foundation/tree/v6.4.14"
             },
             "funding": [
                 {
@@ -528,17 +528,17 @@
         },
         {
             "name": "symfony/translation",
-            "version": "v6.4.12",
-            "version_normalized": "6.4.12.0",
+            "version": "v6.4.13",
+            "version_normalized": "6.4.13.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/translation.git",
-                "reference": "cf8360b8352b086be620fae8342c4d96e391a489"
+                "reference": "bee9bfabfa8b4045a66bf82520e492cddbaffa66"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/translation/zipball/cf8360b8352b086be620fae8342c4d96e391a489",
-                "reference": "cf8360b8352b086be620fae8342c4d96e391a489",
+                "url": "https://api.github.com/repos/symfony/translation/zipball/bee9bfabfa8b4045a66bf82520e492cddbaffa66",
+                "reference": "bee9bfabfa8b4045a66bf82520e492cddbaffa66",
                 "shasum": ""
             },
             "require": {
@@ -575,7 +575,7 @@
                 "symfony/service-contracts": "^2.5|^3",
                 "symfony/yaml": "^5.4|^6.0|^7.0"
             },
-            "time": "2024-09-16T06:02:54+00:00",
+            "time": "2024-09-27T18:14:25+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -606,7 +606,7 @@
             "description": "Provides tools to internationalize your application",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/translation/tree/v6.4.12"
+                "source": "https://github.com/symfony/translation/tree/v6.4.13"
             },
             "funding": [
                 {
@@ -707,17 +707,17 @@
         },
         {
             "name": "symfony/twig-bridge",
-            "version": "v6.4.12",
-            "version_normalized": "6.4.12.0",
+            "version": "v6.4.13",
+            "version_normalized": "6.4.13.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/twig-bridge.git",
-                "reference": "09c0df13f822a1b80c5972ca1aa9eeb1288e1194"
+                "reference": "ec3511eef0576f378b2758da9e1c157086babd59"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/twig-bridge/zipball/09c0df13f822a1b80c5972ca1aa9eeb1288e1194",
-                "reference": "09c0df13f822a1b80c5972ca1aa9eeb1288e1194",
+                "url": "https://api.github.com/repos/symfony/twig-bridge/zipball/ec3511eef0576f378b2758da9e1c157086babd59",
+                "reference": "ec3511eef0576f378b2758da9e1c157086babd59",
                 "shasum": ""
             },
             "require": {
@@ -771,7 +771,7 @@
                 "twig/inky-extra": "^2.12|^3",
                 "twig/markdown-extra": "^2.12|^3"
             },
-            "time": "2024-09-15T06:35:36+00:00",
+            "time": "2024-10-25T15:07:50+00:00",
             "type": "symfony-bridge",
             "installation-source": "dist",
             "autoload": {
@@ -799,7 +799,7 @@
             "description": "Provides integration for Twig with various Symfony components",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/twig-bridge/tree/v6.4.12"
+                "source": "https://github.com/symfony/twig-bridge/tree/v6.4.13"
             },
             "funding": [
                 {
@@ -819,17 +819,17 @@
         },
         {
             "name": "symfony/validator",
-            "version": "v6.4.12",
-            "version_normalized": "6.4.12.0",
+            "version": "v6.4.14",
+            "version_normalized": "6.4.14.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/validator.git",
-                "reference": "6da1f0a1ee73d060a411d832cbe0539cfe9bbaa0"
+                "reference": "dc259b85e59a6569e205966d447dec0a7d95facf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/validator/zipball/6da1f0a1ee73d060a411d832cbe0539cfe9bbaa0",
-                "reference": "6da1f0a1ee73d060a411d832cbe0539cfe9bbaa0",
+                "url": "https://api.github.com/repos/symfony/validator/zipball/dc259b85e59a6569e205966d447dec0a7d95facf",
+                "reference": "dc259b85e59a6569e205966d447dec0a7d95facf",
                 "shasum": ""
             },
             "require": {
@@ -870,7 +870,7 @@
                 "symfony/translation": "^5.4.35|~6.3.12|^6.4.3|^7.0.3",
                 "symfony/yaml": "^5.4|^6.0|^7.0"
             },
-            "time": "2024-09-20T08:18:25+00:00",
+            "time": "2024-11-04T11:33:53+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -899,7 +899,7 @@
             "description": "Provides tools to validate values",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/validator/tree/v6.4.12"
+                "source": "https://github.com/symfony/validator/tree/v6.4.14"
             },
             "funding": [
                 {
