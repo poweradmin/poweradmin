@@ -75,7 +75,7 @@ class RecordSearch extends BaseSearch
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         $db_type = $this->config->get('db_type');
-        $sort_records_by = $sort_records_by === 'name' ? SortHelper::getNaturalSort($records_table, $db_type, $record_sort_direction) : "$sort_records_by $record_sort_direction";
+        $sort_records_by = $sort_records_by === 'name' ? SortHelper::getRecordSortOrder($records_table, $db_type, $record_sort_direction) : "$sort_records_by $record_sort_direction";
 
         $recordsQuery = "
             SELECT

@@ -1228,7 +1228,7 @@ class DnsRecord
             $sortby = "$domains_table.$sortby";
         }
 
-        $sql_sortby = $sortby == "$domains_table.name" ? SortHelper::getNaturalSort($domains_table, $db_type, $sortDirection) : $sortby . " " . $sortDirection;
+        $sql_sortby = $sortby == "$domains_table.name" ? SortHelper::getZoneSortOrder($domains_table, $db_type, $sortDirection) : $sortby . " " . $sortDirection;
 
         $query = "SELECT $domains_table.id,
                         $domains_table.name,
@@ -1392,7 +1392,7 @@ class DnsRecord
             $sortby = "$records_table.name";
         }
         $sql_sortby = $sortby == "$records_table.name" ? SortHelper::getNaturalSort($records_table, $db_type, $sortDirection) : $sortby . " " . $sortDirection;
-        if ($sortby == "$records_table.name" && $sortDirection == 'ASC') {
+        if ($sortby == "$records_table.name" and $sortDirection == 'ASC') {
             $sql_sortby = "type = 'SOA' DESC, type = 'NS' DESC, ". $sql_sortby;
         }
 

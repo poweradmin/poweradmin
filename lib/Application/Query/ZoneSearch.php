@@ -98,7 +98,7 @@ class ZoneSearch extends BaseSearch
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         $db_type = $this->config->get('db_type');
-        $sort_zones_by = $sort_zones_by === 'name' ? SortHelper::getNaturalSort($domains_table, $db_type, $zone_sort_direction) : "$sort_zones_by $zone_sort_direction";
+        $sort_zones_by = $sort_zones_by === 'name' ? SortHelper::getZoneSortOrder($domains_table, $db_type, $zone_sort_direction) : "$sort_zones_by $zone_sort_direction";
 
         $zonesQuery = "
             SELECT
