@@ -109,7 +109,7 @@
         <tr>
             {% if iface_edit_show_id %}
             <th>
-                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=id&sort_direction={{ sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=id&sort_direction={{ record_sort_by == 'id' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                     {% trans %}Id{% endtrans %}
                 </a>
                 {% if record_sort_by == 'id' %}
@@ -118,7 +118,7 @@
             </th>
             {% endif %}
             <th>
-                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=name&sort_direction={{ sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=name&sort_direction={{ record_sort_by == 'name' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                     {% trans %}Name{% endtrans %}
                 </a>
                 {% if record_sort_by == 'name' %}
@@ -126,7 +126,7 @@
                 {% endif %}
             </th>
             <th>
-                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=type&sort_direction={{ sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=type&sort_direction={{ record_sort_by == 'type' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                     {% trans %}Type{% endtrans %}
                 </a>
                 {% if record_sort_by == 'type' %}
@@ -134,7 +134,7 @@
                 {% endif %}
             </th>
             <th>
-                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=content&sort_direction={{ sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=content&sort_direction={{ record_sort_by == 'content' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                     {% trans %}Content{% endtrans %}
                 </a>
                 {% if record_sort_by == 'content' %}
@@ -142,7 +142,7 @@
                 {% endif %}
             </th>
             <th>
-                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=prio&sort_direction={{ sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=prio&sort_direction={{ record_sort_by == 'prio' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                     {% trans %}Priority{% endtrans %}
                 </a>
                 {% if record_sort_by == 'prio' %}
@@ -150,7 +150,7 @@
                 {% endif %}
             </th>
             <th>
-                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=ttl&sort_direction={{ sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=ttl&sort_direction={{ record_sort_by == 'ttl' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                     {% trans %}TTL{% endtrans %}
                 </a>
                 {% if record_sort_by == 'ttl' %}
@@ -158,7 +158,7 @@
                 {% endif %}
             </th>
             <th>
-                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=disabled&sort_direction={{ sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=disabled&sort_direction={{ record_sort_by == 'disabled' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                     {% trans %}Disabled{% endtrans %}
                 </a>
                 {% if record_sort_by == 'disabled' %}
