@@ -42,7 +42,7 @@
   },
   "scripts": {
     "docs": "tools/phpDocumentor",
-    "tests": "phpunit",
+    "tests": "phpunit --exclude-group manual",
     "check:index": "phpcs --standard=phpcs.xml index.php",
     "check:inc": "phpcs --standard=phpcs.xml inc",
     "check:install": "phpcs --standard=phpcs.xml install",

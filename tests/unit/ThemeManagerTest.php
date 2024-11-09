@@ -1,5 +1,7 @@
 <?php
 
+namespace unit;
+
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Service\ThemeManager;
 
@@ -14,7 +16,7 @@ class ThemeManagerTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->testStyleDir = dirname(__DIR__) . '/style/';
+        $this->testStyleDir = dirname(__DIR__, 2) . '/style/';
     }
 
     public function testDefaultTheme()

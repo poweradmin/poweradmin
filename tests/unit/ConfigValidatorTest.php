@@ -1,5 +1,7 @@
 <?php
 
+namespace unit;
+
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Configuration\ConfigValidator;
 
