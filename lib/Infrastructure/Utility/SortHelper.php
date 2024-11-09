@@ -28,11 +28,11 @@ class SortHelper
      * Get the zone sort order based on the database type.
      *
      * @param string $table
-     * @param mixed $db_type
+     * @param mixed $dbType
      * @param string $direction
      * @return string
      */
-    public static function getZoneSortOrder(string $table, string $db_type, string $direction = 'ASC'): string
+    public static function getZoneSortOrder(string $table, string $dbType, string $direction = 'ASC'): string
     {
         $nameField = "$table.name";
         $direction = strtoupper($direction);
@@ -41,10 +41,10 @@ class SortHelper
             $direction = 'ASC';
         }
 
-        $naturalSort = match ($db_type) {
-            'mysql', 'mysqli' => "CASE WHEN $nameField LIKE '%.arpa' THEN 1 ELSE 0 END DESC, CAST(REGEXP_SUBSTR($nameField, '^[0-9]+') AS UNSIGNED) $direction, $nameField $direction",
-            'sqlite', 'sqlite3' => "CASE WHEN $nameField LIKE '%.arpa' THEN 1 ELSE 0 END DESC, CAST(substr($nameField, 1, instr($nameField, '.') - 1) AS INTEGER) $direction, $nameField $direction",
-            'pgsql' => "CASE WHEN $nameField LIKE '%.arpa' THEN 1 ELSE 0 END DESC, CAST((REGEXP_MATCHES($nameField, '^[0-9]+'))[1] AS INTEGER) $direction, $nameField $direction",
+        $naturalSort = match ($dbType) {
+            'mysql', 'mysqli' => "CASE WHEN {$nameField} LIKE '%.arpa' THEN 1 ELSE 0 END DESC, CAST(REGEXP_SUBSTR({$nameField}, '^[0-9]+') AS UNSIGNED) $direction, $nameField $direction",
+            'sqlite', 'sqlite3' => "CASE WHEN {$nameField} LIKE '%.arpa' THEN 1 ELSE 0 END DESC, CAST(substr({$nameField}, 1, instr({$nameField}, '.') - 1) AS INTEGER) $direction, $nameField {$direction}",
+            'pgsql' => "CASE WHEN {$nameField} LIKE '%.arpa' THEN 1 ELSE 0 END DESC, CAST((REGEXP_MATCHES({$nameField}, '^[0-9]+'))[1] AS INTEGER) $direction, $nameField $direction",
             default => "$nameField $direction",
         };
 
@@ -55,26 +55,26 @@ class SortHelper
      * Get the record sort order based on the database type.
      *
      * @param string $table
-     * @param mixed $db_type
+     * @param mixed $dbType
      * @param string $direction
      * @return string
      */
-    public static function getRecordSortOrder(string $table, string $db_type, string $direction = 'ASC'): string
+    public static function getRecordSortOrder(string $table, string $dbType, string $direction = 'ASC'): string
     {
-        $name_field = "$table.name";
+        $nameField = "$table.name";
         $direction = strtoupper($direction);
 
         if (!in_array($direction, ['ASC', 'DESC'])) {
             $direction = 'ASC';
         }
 
-        $natural_sort = match ($db_type) {
-            'mysql', 'mysqli' => "CAST(REGEXP_SUBSTR($name_field, '[0-9]+') AS UNSIGNED) $direction, $name_field $direction",
-            'sqlite', 'sqlite3' => "CAST(substr($name_field, 1, instr($name_field, '.') - 1) AS INTEGER) $direction, $name_field $direction",
-            'pgsql' => "CAST((REGEXP_MATCHES($name_field, '[0-9]+'))[1] AS INTEGER) $direction, $name_field $direction",
-            default => "$name_field $direction",
+        $naturalSort = match ($dbType) {
+            'mysql', 'mysqli' => "CAST(REGEXP_SUBSTR($nameField, '^[0-9]+') AS UNSIGNED) $direction, $nameField $direction",
+            'sqlite', 'sqlite3' => "CAST(substr($nameField, 1, instr($nameField, '.') - 1) AS INTEGER) $direction, $nameField $direction",
+            'pgsql' => "CAST((REGEXP_MATCHES($nameField, '^[0-9]+'))[1] AS INTEGER) $direction, $nameField $direction",
+            default => "$nameField $direction",
         };
 
-        return $natural_sort;
+        return $naturalSort;
     }
 }
