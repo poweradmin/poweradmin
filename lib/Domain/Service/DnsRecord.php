@@ -1391,7 +1391,7 @@ class DnsRecord
         if ($sortby == 'name') {
             $sortby = "$records_table.name";
         }
-        $sql_sortby = $sortby == "$records_table.name" ? SortHelper::getNaturalSort($records_table, $db_type, $sortDirection) : $sortby . " " . $sortDirection;
+        $sql_sortby = $sortby == "$records_table.name" ? SortHelper::getRecordSortOrder($records_table, $db_type, $sortDirection) : $sortby . " " . $sortDirection;
         if ($sortby == "$records_table.name" and $sortDirection == 'ASC') {
             $sql_sortby = "type = 'SOA' DESC, type = 'NS' DESC, ". $sql_sortby;
         }
