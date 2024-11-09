@@ -1392,7 +1392,7 @@ class DnsRecord
             $sortby = "$records_table.name";
         }
         $sql_sortby = $sortby == "$records_table.name" ? SortHelper::getNaturalSort($records_table, $db_type, $sortDirection) : $sortby . " " . $sortDirection;
-        if ($sortby == "$records_table.name" and $sortDirection == 'ASC') {
+        if ($sortby == "$records_table.name" && $sortDirection == 'ASC') {
             $sql_sortby = "type = 'SOA' DESC, type = 'NS' DESC, ". $sql_sortby;
         }
 
