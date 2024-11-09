@@ -42,9 +42,9 @@ class SortHelper
         }
 
         $naturalSort = match ($dbType) {
-            'mysql', 'mysqli' => "CASE WHEN $nameField LIKE '%.arpa' THEN 1 ELSE 0 END DESC, CAST(REGEXP_SUBSTR($nameField, '^[0-9]+') AS UNSIGNED) $direction, $nameField $direction",
+            'mysql', 'mysqli' => "CASE WHEN $nameField LIKE '%.arpa' THEN 1 ELSE 0 END DESC, SUBSTRING_INDEX($nameField, '.', 1) + 0 $direction, $nameField $direction",
             'sqlite', 'sqlite3' => "CASE WHEN $nameField LIKE '%.arpa' THEN 1 ELSE 0 END DESC, CAST(substr($nameField, 1, instr($nameField, '.') - 1) AS INTEGER) $direction, $nameField $direction",
-            'pgsql' => "CASE WHEN $nameField LIKE '%.arpa' THEN 1 ELSE 0 END DESC, CAST((REGEXP_MATCHES($nameField, '^[0-9]+'))[1] AS INTEGER) $direction, $nameField $direction",
+            'pgsql' => "CASE WHEN $nameField LIKE '%.arpa' THEN 1 ELSE 0 END DESC, CAST(split_part($nameField, '.', 1) AS INTEGER) $direction, $nameField $direction",
             default => "$nameField $direction",
         };
 
