@@ -125,6 +125,94 @@ class SortHelperIntegrationTest extends TestCase
         );
     }
 
+    public function testGetNaturalSortPgSQLExample()
+    {
+        $this->runTestForDatabase(
+            $this->pgsqlConnection,
+            'pgsql',
+            'ASC',
+            self::EXAMPLE_TEST_DATA,
+            self::EXAMPLE_EXPECTED_ORDER_ASC
+        );
+    }
+
+    public function testGetNaturalSortPgSQLExampleDesc()
+    {
+        $this->runTestForDatabase(
+            $this->pgsqlConnection,
+            'pgsql',
+            'DESC',
+            self::EXAMPLE_TEST_DATA,
+            array_reverse(self::EXAMPLE_EXPECTED_ORDER_ASC)
+        );
+    }
+
+    public function testGetNaturalSortPgSQLArpa()
+    {
+        $this->runTestForDatabase(
+            $this->pgsqlConnection,
+            'pgsql',
+            'ASC',
+            self::ARPA_TEST_DATA,
+            self::ARPA_EXPECTED_ORDER_ASC
+        );
+    }
+
+    public function testGetNaturalSortPgSQLArpaDesc()
+    {
+        $this->runTestForDatabase(
+            $this->pgsqlConnection,
+            'pgsql',
+            'DESC',
+            self::ARPA_TEST_DATA,
+            array_reverse(self::ARPA_EXPECTED_ORDER_ASC)
+        );
+    }
+
+    public function testGetNaturalSortSQLiteExample()
+    {
+        $this->runTestForDatabase(
+            $this->sqliteConnection,
+            'sqlite',
+            'ASC',
+            self::EXAMPLE_TEST_DATA,
+            self::EXAMPLE_EXPECTED_ORDER_ASC
+        );
+    }
+
+    public function testGetNaturalSortSQLiteExampleDesc()
+    {
+        $this->runTestForDatabase(
+            $this->sqliteConnection,
+            'sqlite',
+            'DESC',
+            self::EXAMPLE_TEST_DATA,
+            array_reverse(self::EXAMPLE_EXPECTED_ORDER_ASC)
+        );
+    }
+
+    public function testGetNaturalSortSQLiteArpa()
+    {
+        $this->runTestForDatabase(
+            $this->sqliteConnection,
+            'sqlite',
+            'ASC',
+            self::ARPA_TEST_DATA,
+            self::ARPA_EXPECTED_ORDER_ASC
+        );
+    }
+
+    public function testGetNaturalSortSQLiteArpaDesc()
+    {
+        $this->runTestForDatabase(
+            $this->sqliteConnection,
+            'sqlite',
+            'DESC',
+            self::ARPA_TEST_DATA,
+            array_reverse(self::ARPA_EXPECTED_ORDER_ASC)
+        );
+    }
+
     private function runTestForDatabase(PDO $connection, string $dbType, string $direction, array $testData, array $expectedOrder)
     {
         $table = 'test_table';
