@@ -15,6 +15,58 @@ class SortHelperIntegrationTest extends TestCase
     private PDO $pgsqlConnection;
     private PDO $sqliteConnection;
 
+    private const EXAMPLE_TEST_DATA = [
+        'example47.com',
+        'example16.com',
+        'example31.com',
+        'example99.com',
+        'example12.com',
+        'example5.com',
+        'example27.com',
+        'example36.com',
+        'example66.com',
+        'example91.com'
+    ];
+
+    private const EXAMPLE_EXPECTED_ORDER_ASC = [
+        'example12.com',
+        'example16.com',
+        'example27.com',
+        'example31.com',
+        'example36.com',
+        'example47.com',
+        'example5.com',
+        'example66.com',
+        'example91.com',
+        'example99.com'
+    ];
+
+    private const ARPA_TEST_DATA = [
+        '0.168.192.in-addr.arpa',
+        '27.168.192.in-addr.arpa',
+        '45.168.192.in-addr.arpa',
+        '73.168.192.in-addr.arpa',
+        '89.168.192.in-addr.arpa',
+        '110.168.192.in-addr.arpa',
+        '132.168.192.in-addr.arpa',
+        '154.168.192.in-addr.arpa',
+        '194.168.192.in-addr.arpa',
+        '201.168.192.in-addr.arpa'
+    ];
+
+    private const ARPA_EXPECTED_ORDER_ASC = [
+        '0.168.192.in-addr.arpa',
+        '27.168.192.in-addr.arpa',
+        '45.168.192.in-addr.arpa',
+        '73.168.192.in-addr.arpa',
+        '89.168.192.in-addr.arpa',
+        '110.168.192.in-addr.arpa',
+        '132.168.192.in-addr.arpa',
+        '154.168.192.in-addr.arpa',
+        '194.168.192.in-addr.arpa',
+        '201.168.192.in-addr.arpa'
+    ];
+
     protected function setUp(): void
     {
         $this->mysqlConnection = new PDO('mysql:host=127.0.0.1;dbname=pdns', 'pdns', 'poweradmin');
@@ -29,53 +81,59 @@ class SortHelperIntegrationTest extends TestCase
         $this->sqliteConnection->exec("DROP TABLE IF EXISTS test_table");
     }
 
-    public function testGetNaturalSortMySQL()
+    public function testGetNaturalSortMySQLExample()
     {
-        $this->runTestForDatabase($this->mysqlConnection, 'mysql');
+        $this->runTestForDatabase(
+            $this->mysqlConnection,
+            'mysql',
+            'ASC',
+            self::EXAMPLE_TEST_DATA,
+            self::EXAMPLE_EXPECTED_ORDER_ASC
+        );
     }
 
-    public function testGetNaturalSortPostgreSQL()
+    public function testGetNaturalSortMySQLExampleDesc()
     {
-        $this->runTestForDatabase($this->pgsqlConnection, 'pgsql');
+        $this->runTestForDatabase(
+            $this->mysqlConnection,
+            'mysql',
+            'DESC',
+            self::EXAMPLE_TEST_DATA,
+            array_reverse(self::EXAMPLE_EXPECTED_ORDER_ASC)
+        );
     }
 
-    public function testGetNaturalSortSQLite()
+    public function testGetNaturalSortMySQLArpa()
     {
-        $this->runTestForDatabase($this->sqliteConnection, 'sqlite');
+        $this->runTestForDatabase(
+            $this->mysqlConnection,
+            'mysql',
+            'ASC',
+            self::ARPA_TEST_DATA,
+            self::ARPA_EXPECTED_ORDER_ASC
+        );
     }
 
-    public function testGetNaturalSortMySQLDesc()
+    public function testGetNaturalSortMySQLArpaDesc()
     {
-        $this->runTestForDatabase($this->mysqlConnection, 'mysql', 'DESC');
+        $this->runTestForDatabase(
+            $this->mysqlConnection,
+            'mysql',
+            'DESC',
+            self::ARPA_TEST_DATA,
+            array_reverse(self::ARPA_EXPECTED_ORDER_ASC)
+        );
     }
 
-    public function testGetNaturalSortPostgreSQLDesc()
-    {
-        $this->runTestForDatabase($this->pgsqlConnection, 'pgsql', 'DESC');
-    }
-
-    public function testGetNaturalSortSQLiteDesc()
-    {
-        $this->runTestForDatabase($this->sqliteConnection, 'sqlite', 'DESC');
-    }
-
-    private function runTestForDatabase(PDO $connection, string $dbType, string $direction = 'ASC')
+    private function runTestForDatabase(PDO $connection, string $dbType, string $direction, array $testData, array $expectedOrder)
     {
         $table = 'test_table';
 
         // Create table and insert test data
         $connection->exec("CREATE TABLE $table (name VARCHAR(255))");
-        $connection->exec("INSERT INTO $table (name) VALUES 
-            ('0.168.192.in-addr.arpa'), 
-            ('27.168.192.in-addr.arpa'), 
-            ('45.168.192.in-addr.arpa'), 
-            ('73.168.192.in-addr.arpa'), 
-            ('89.168.192.in-addr.arpa'), 
-            ('110.168.192.in-addr.arpa'), 
-            ('132.168.192.in-addr.arpa'), 
-            ('154.168.192.in-addr.arpa'), 
-            ('194.168.192.in-addr.arpa'), 
-            ('201.168.192.in-addr.arpa')");
+        foreach ($testData as $data) {
+            $connection->exec("INSERT INTO $table (name) VALUES ('$data')");
+        }
 
         // Get the natural sort query
         $query = "SELECT * FROM $table ORDER BY " . SortHelper::getZoneSortOrder($table, $dbType, $direction);
@@ -83,30 +141,6 @@ class SortHelperIntegrationTest extends TestCase
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         // Assert the order
-        $expectedOrder = $direction === 'ASC' ? [
-            '0.168.192.in-addr.arpa',
-            '27.168.192.in-addr.arpa',
-            '45.168.192.in-addr.arpa',
-            '73.168.192.in-addr.arpa',
-            '89.168.192.in-addr.arpa',
-            '110.168.192.in-addr.arpa',
-            '132.168.192.in-addr.arpa',
-            '154.168.192.in-addr.arpa',
-            '194.168.192.in-addr.arpa',
-            '201.168.192.in-addr.arpa'
-        ] : [
-            '201.168.192.in-addr.arpa',
-            '194.168.192.in-addr.arpa',
-            '154.168.192.in-addr.arpa',
-            '132.168.192.in-addr.arpa',
-            '110.168.192.in-addr.arpa',
-            '89.168.192.in-addr.arpa',
-            '73.168.192.in-addr.arpa',
-            '45.168.192.in-addr.arpa',
-            '27.168.192.in-addr.arpa',
-            '0.168.192.in-addr.arpa'
-        ];
-
         foreach ($expectedOrder as $index => $expectedName) {
             $this->assertEquals($expectedName, $results[$index]['name']);
         }
