@@ -67,6 +67,25 @@ class SortHelperIntegrationTest extends TestCase
         '201.168.192.in-addr.arpa'
     ];
 
+    // Test data from ticket https://github.com/poweradmin/poweradmin/issues/80
+    private const RECORD_SORT_PTR_RECORDS = [
+        '15.192.168.1.in-addr.arpa',
+        '251.192.168.1.in-addr.arpa',
+        '1.192.168.1.in-addr.arpa',
+        '100.192.168.1.in-addr.arpa',
+        '20.192.168.1.in-addr.arpa',
+        '10.192.168.1.in-addr.arpa'
+    ];
+
+    private const RECORD_SORT_PTR_RECORDS_EXPECTED_ORDER_ASC = [
+        '1.192.168.1.in-addr.arpa',
+        '10.192.168.1.in-addr.arpa',
+        '15.192.168.1.in-addr.arpa',
+        '20.192.168.1.in-addr.arpa',
+        '100.192.168.1.in-addr.arpa',
+        '251.192.168.1.in-addr.arpa'
+    ];
+
     protected function setUp(): void
     {
         $this->mysqlConnection = new PDO('mysql:host=127.0.0.1;dbname=pdns', 'pdns', 'poweradmin');
@@ -255,8 +274,8 @@ class SortHelperIntegrationTest extends TestCase
             $this->mysqlConnection,
             'mysql',
             'ASC',
-            self::ZONE_SORT_ARPA_TEST_DATA,
-            self::ZONE_SORT_ARPA_EXPECTED_ORDER_ASC,
+            self::RECORD_SORT_PTR_RECORDS,
+            self::RECORD_SORT_PTR_RECORDS_EXPECTED_ORDER_ASC,
             'getRecordSortOrder'
         );
     }
@@ -267,8 +286,8 @@ class SortHelperIntegrationTest extends TestCase
             $this->mysqlConnection,
             'mysql',
             'DESC',
-            self::ZONE_SORT_ARPA_TEST_DATA,
-            array_reverse(self::ZONE_SORT_ARPA_EXPECTED_ORDER_ASC),
+            self::RECORD_SORT_PTR_RECORDS,
+            array_reverse(self::RECORD_SORT_PTR_RECORDS_EXPECTED_ORDER_ASC),
             'getRecordSortOrder'
         );
     }
@@ -303,8 +322,8 @@ class SortHelperIntegrationTest extends TestCase
             $this->pgsqlConnection,
             'pgsql',
             'ASC',
-            self::ZONE_SORT_ARPA_TEST_DATA,
-            self::ZONE_SORT_ARPA_EXPECTED_ORDER_ASC,
+            self::RECORD_SORT_PTR_RECORDS,
+            self::RECORD_SORT_PTR_RECORDS_EXPECTED_ORDER_ASC,
             'getRecordSortOrder'
         );
     }
@@ -315,8 +334,8 @@ class SortHelperIntegrationTest extends TestCase
             $this->pgsqlConnection,
             'pgsql',
             'DESC',
-            self::ZONE_SORT_ARPA_TEST_DATA,
-            array_reverse(self::ZONE_SORT_ARPA_EXPECTED_ORDER_ASC),
+            self::RECORD_SORT_PTR_RECORDS,
+            array_reverse(self::RECORD_SORT_PTR_RECORDS_EXPECTED_ORDER_ASC),
             'getRecordSortOrder'
         );
     }
@@ -351,8 +370,8 @@ class SortHelperIntegrationTest extends TestCase
             $this->sqliteConnection,
             'sqlite',
             'ASC',
-            self::ZONE_SORT_ARPA_TEST_DATA,
-            self::ZONE_SORT_ARPA_EXPECTED_ORDER_ASC,
+            self::RECORD_SORT_PTR_RECORDS,
+            self::RECORD_SORT_PTR_RECORDS_EXPECTED_ORDER_ASC,
             'getRecordSortOrder'
         );
     }
@@ -363,8 +382,8 @@ class SortHelperIntegrationTest extends TestCase
             $this->sqliteConnection,
             'sqlite',
             'DESC',
-            self::ZONE_SORT_ARPA_TEST_DATA,
-            array_reverse(self::ZONE_SORT_ARPA_EXPECTED_ORDER_ASC),
+            self::RECORD_SORT_PTR_RECORDS,
+            array_reverse(self::RECORD_SORT_PTR_RECORDS_EXPECTED_ORDER_ASC),
             'getRecordSortOrder'
         );
     }
