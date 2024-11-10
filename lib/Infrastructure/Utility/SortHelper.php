@@ -69,6 +69,7 @@ class SortHelper
 
         $naturalSort = match ($dbType) {
             'mysql', 'mysqli', 'sqlite', 'sqlite3' => "$nameField+0<>0 $direction, $nameField+0 $direction, $nameField $direction",
+            'pgsql' => "SUBSTRING($nameField FROM '\.arpa$') $direction, LENGTH(SUBSTRING($nameField FROM '^[0-9]+')) $direction, $nameField $direction",
             default => "$nameField $direction",
         };
 

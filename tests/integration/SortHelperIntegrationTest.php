@@ -15,7 +15,7 @@ class SortHelperIntegrationTest extends TestCase
     private PDO $pgsqlConnection;
     private PDO $sqliteConnection;
 
-    private const EXAMPLE_TEST_DATA = [
+    private const ZONE_SORT_TEST_DATA = [
         'example47.com',
         'example16.com',
         'example31.com',
@@ -28,7 +28,7 @@ class SortHelperIntegrationTest extends TestCase
         'example91.com'
     ];
 
-    private const EXAMPLE_EXPECTED_ORDER_ASC = [
+    private const ZONE_SORT_EXPECTED_ORDER_ASC = [
         'example12.com',
         'example16.com',
         'example27.com',
@@ -41,7 +41,7 @@ class SortHelperIntegrationTest extends TestCase
         'example99.com'
     ];
 
-    private const ARPA_TEST_DATA = [
+    private const ZONE_SORT_ARPA_TEST_DATA = [
         '0.168.192.in-addr.arpa',
         '27.168.192.in-addr.arpa',
         '45.168.192.in-addr.arpa',
@@ -54,7 +54,7 @@ class SortHelperIntegrationTest extends TestCase
         '201.168.192.in-addr.arpa'
     ];
 
-    private const ARPA_EXPECTED_ORDER_ASC = [
+    private const ZONE_SORT_ARPA_EXPECTED_ORDER_ASC = [
         '0.168.192.in-addr.arpa',
         '27.168.192.in-addr.arpa',
         '45.168.192.in-addr.arpa',
@@ -87,8 +87,8 @@ class SortHelperIntegrationTest extends TestCase
             $this->mysqlConnection,
             'mysql',
             'ASC',
-            self::EXAMPLE_TEST_DATA,
-            self::EXAMPLE_EXPECTED_ORDER_ASC,
+            self::ZONE_SORT_TEST_DATA,
+            self::ZONE_SORT_EXPECTED_ORDER_ASC,
             'getZoneSortOrder'
         );
     }
@@ -99,8 +99,8 @@ class SortHelperIntegrationTest extends TestCase
             $this->mysqlConnection,
             'mysql',
             'DESC',
-            self::EXAMPLE_TEST_DATA,
-            array_reverse(self::EXAMPLE_EXPECTED_ORDER_ASC),
+            self::ZONE_SORT_TEST_DATA,
+            array_reverse(self::ZONE_SORT_EXPECTED_ORDER_ASC),
             'getZoneSortOrder'
         );
     }
@@ -111,8 +111,8 @@ class SortHelperIntegrationTest extends TestCase
             $this->mysqlConnection,
             'mysql',
             'ASC',
-            self::ARPA_TEST_DATA,
-            self::ARPA_EXPECTED_ORDER_ASC,
+            self::ZONE_SORT_ARPA_TEST_DATA,
+            self::ZONE_SORT_ARPA_EXPECTED_ORDER_ASC,
             'getZoneSortOrder'
         );
     }
@@ -123,8 +123,8 @@ class SortHelperIntegrationTest extends TestCase
             $this->mysqlConnection,
             'mysql',
             'DESC',
-            self::ARPA_TEST_DATA,
-            array_reverse(self::ARPA_EXPECTED_ORDER_ASC),
+            self::ZONE_SORT_ARPA_TEST_DATA,
+            array_reverse(self::ZONE_SORT_ARPA_EXPECTED_ORDER_ASC),
             'getZoneSortOrder'
         );
     }
@@ -135,8 +135,8 @@ class SortHelperIntegrationTest extends TestCase
             $this->pgsqlConnection,
             'pgsql',
             'ASC',
-            self::EXAMPLE_TEST_DATA,
-            self::EXAMPLE_EXPECTED_ORDER_ASC,
+            self::ZONE_SORT_TEST_DATA,
+            self::ZONE_SORT_EXPECTED_ORDER_ASC,
             'getZoneSortOrder'
         );
     }
@@ -147,8 +147,8 @@ class SortHelperIntegrationTest extends TestCase
             $this->pgsqlConnection,
             'pgsql',
             'DESC',
-            self::EXAMPLE_TEST_DATA,
-            array_reverse(self::EXAMPLE_EXPECTED_ORDER_ASC),
+            self::ZONE_SORT_TEST_DATA,
+            array_reverse(self::ZONE_SORT_EXPECTED_ORDER_ASC),
             'getZoneSortOrder'
         );
     }
@@ -159,8 +159,8 @@ class SortHelperIntegrationTest extends TestCase
             $this->pgsqlConnection,
             'pgsql',
             'ASC',
-            self::ARPA_TEST_DATA,
-            self::ARPA_EXPECTED_ORDER_ASC,
+            self::ZONE_SORT_ARPA_TEST_DATA,
+            self::ZONE_SORT_ARPA_EXPECTED_ORDER_ASC,
             'getZoneSortOrder'
         );
     }
@@ -171,8 +171,8 @@ class SortHelperIntegrationTest extends TestCase
             $this->pgsqlConnection,
             'pgsql',
             'DESC',
-            self::ARPA_TEST_DATA,
-            array_reverse(self::ARPA_EXPECTED_ORDER_ASC),
+            self::ZONE_SORT_ARPA_TEST_DATA,
+            array_reverse(self::ZONE_SORT_ARPA_EXPECTED_ORDER_ASC),
             'getZoneSortOrder'
         );
     }
@@ -183,8 +183,8 @@ class SortHelperIntegrationTest extends TestCase
             $this->sqliteConnection,
             'sqlite',
             'ASC',
-            self::EXAMPLE_TEST_DATA,
-            self::EXAMPLE_EXPECTED_ORDER_ASC,
+            self::ZONE_SORT_TEST_DATA,
+            self::ZONE_SORT_EXPECTED_ORDER_ASC,
             'getZoneSortOrder'
         );
     }
@@ -195,8 +195,8 @@ class SortHelperIntegrationTest extends TestCase
             $this->sqliteConnection,
             'sqlite',
             'DESC',
-            self::EXAMPLE_TEST_DATA,
-            array_reverse(self::EXAMPLE_EXPECTED_ORDER_ASC),
+            self::ZONE_SORT_TEST_DATA,
+            array_reverse(self::ZONE_SORT_EXPECTED_ORDER_ASC),
             'getZoneSortOrder'
         );
     }
@@ -207,8 +207,8 @@ class SortHelperIntegrationTest extends TestCase
             $this->sqliteConnection,
             'sqlite',
             'ASC',
-            self::ARPA_TEST_DATA,
-            self::ARPA_EXPECTED_ORDER_ASC,
+            self::ZONE_SORT_ARPA_TEST_DATA,
+            self::ZONE_SORT_ARPA_EXPECTED_ORDER_ASC,
             'getZoneSortOrder'
         );
     }
@@ -219,8 +219,8 @@ class SortHelperIntegrationTest extends TestCase
             $this->sqliteConnection,
             'sqlite',
             'DESC',
-            self::ARPA_TEST_DATA,
-            array_reverse(self::ARPA_EXPECTED_ORDER_ASC),
+            self::ZONE_SORT_ARPA_TEST_DATA,
+            array_reverse(self::ZONE_SORT_ARPA_EXPECTED_ORDER_ASC),
             'getZoneSortOrder'
         );
     }
@@ -231,8 +231,8 @@ class SortHelperIntegrationTest extends TestCase
             $this->mysqlConnection,
             'mysql',
             'ASC',
-            self::EXAMPLE_TEST_DATA,
-            self::EXAMPLE_EXPECTED_ORDER_ASC,
+            self::ZONE_SORT_TEST_DATA,
+            self::ZONE_SORT_EXPECTED_ORDER_ASC,
             'getRecordSortOrder'
         );
     }
@@ -243,8 +243,8 @@ class SortHelperIntegrationTest extends TestCase
             $this->mysqlConnection,
             'mysql',
             'DESC',
-            self::EXAMPLE_TEST_DATA,
-            array_reverse(self::EXAMPLE_EXPECTED_ORDER_ASC),
+            self::ZONE_SORT_TEST_DATA,
+            array_reverse(self::ZONE_SORT_EXPECTED_ORDER_ASC),
             'getRecordSortOrder'
         );
     }
@@ -255,8 +255,8 @@ class SortHelperIntegrationTest extends TestCase
             $this->mysqlConnection,
             'mysql',
             'ASC',
-            self::ARPA_TEST_DATA,
-            self::ARPA_EXPECTED_ORDER_ASC,
+            self::ZONE_SORT_ARPA_TEST_DATA,
+            self::ZONE_SORT_ARPA_EXPECTED_ORDER_ASC,
             'getRecordSortOrder'
         );
     }
@@ -267,8 +267,8 @@ class SortHelperIntegrationTest extends TestCase
             $this->mysqlConnection,
             'mysql',
             'DESC',
-            self::ARPA_TEST_DATA,
-            array_reverse(self::ARPA_EXPECTED_ORDER_ASC),
+            self::ZONE_SORT_ARPA_TEST_DATA,
+            array_reverse(self::ZONE_SORT_ARPA_EXPECTED_ORDER_ASC),
             'getRecordSortOrder'
         );
     }
@@ -279,8 +279,8 @@ class SortHelperIntegrationTest extends TestCase
             $this->pgsqlConnection,
             'pgsql',
             'ASC',
-            self::EXAMPLE_TEST_DATA,
-            self::EXAMPLE_EXPECTED_ORDER_ASC,
+            self::ZONE_SORT_TEST_DATA,
+            self::ZONE_SORT_EXPECTED_ORDER_ASC,
             'getRecordSortOrder'
         );
     }
@@ -291,8 +291,8 @@ class SortHelperIntegrationTest extends TestCase
             $this->pgsqlConnection,
             'pgsql',
             'DESC',
-            self::EXAMPLE_TEST_DATA,
-            array_reverse(self::EXAMPLE_EXPECTED_ORDER_ASC),
+            self::ZONE_SORT_TEST_DATA,
+            array_reverse(self::ZONE_SORT_EXPECTED_ORDER_ASC),
             'getRecordSortOrder'
         );
     }
@@ -303,8 +303,8 @@ class SortHelperIntegrationTest extends TestCase
             $this->pgsqlConnection,
             'pgsql',
             'ASC',
-            self::ARPA_TEST_DATA,
-            self::ARPA_EXPECTED_ORDER_ASC,
+            self::ZONE_SORT_ARPA_TEST_DATA,
+            self::ZONE_SORT_ARPA_EXPECTED_ORDER_ASC,
             'getRecordSortOrder'
         );
     }
@@ -315,8 +315,8 @@ class SortHelperIntegrationTest extends TestCase
             $this->pgsqlConnection,
             'pgsql',
             'DESC',
-            self::ARPA_TEST_DATA,
-            array_reverse(self::ARPA_EXPECTED_ORDER_ASC),
+            self::ZONE_SORT_ARPA_TEST_DATA,
+            array_reverse(self::ZONE_SORT_ARPA_EXPECTED_ORDER_ASC),
             'getRecordSortOrder'
         );
     }
@@ -327,8 +327,8 @@ class SortHelperIntegrationTest extends TestCase
             $this->sqliteConnection,
             'sqlite',
             'ASC',
-            self::EXAMPLE_TEST_DATA,
-            self::EXAMPLE_EXPECTED_ORDER_ASC,
+            self::ZONE_SORT_TEST_DATA,
+            self::ZONE_SORT_EXPECTED_ORDER_ASC,
             'getRecordSortOrder'
         );
     }
@@ -339,8 +339,8 @@ class SortHelperIntegrationTest extends TestCase
             $this->sqliteConnection,
             'sqlite',
             'DESC',
-            self::EXAMPLE_TEST_DATA,
-            array_reverse(self::EXAMPLE_EXPECTED_ORDER_ASC),
+            self::ZONE_SORT_TEST_DATA,
+            array_reverse(self::ZONE_SORT_EXPECTED_ORDER_ASC),
             'getRecordSortOrder'
         );
     }
@@ -351,8 +351,8 @@ class SortHelperIntegrationTest extends TestCase
             $this->sqliteConnection,
             'sqlite',
             'ASC',
-            self::ARPA_TEST_DATA,
-            self::ARPA_EXPECTED_ORDER_ASC,
+            self::ZONE_SORT_ARPA_TEST_DATA,
+            self::ZONE_SORT_ARPA_EXPECTED_ORDER_ASC,
             'getRecordSortOrder'
         );
     }
@@ -363,8 +363,8 @@ class SortHelperIntegrationTest extends TestCase
             $this->sqliteConnection,
             'sqlite',
             'DESC',
-            self::ARPA_TEST_DATA,
-            array_reverse(self::ARPA_EXPECTED_ORDER_ASC),
+            self::ZONE_SORT_ARPA_TEST_DATA,
+            array_reverse(self::ZONE_SORT_ARPA_EXPECTED_ORDER_ASC),
             'getRecordSortOrder'
         );
     }
