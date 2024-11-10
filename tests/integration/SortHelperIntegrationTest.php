@@ -81,139 +81,295 @@ class SortHelperIntegrationTest extends TestCase
         $this->sqliteConnection->exec("DROP TABLE IF EXISTS test_table");
     }
 
-    public function testGetNaturalSortMySQLExample()
+    public function testGetZoneSortOrderMySQLExample()
     {
-        $this->runTestForDatabase(
+        $this->runDatabaseTest(
             $this->mysqlConnection,
             'mysql',
             'ASC',
             self::EXAMPLE_TEST_DATA,
-            self::EXAMPLE_EXPECTED_ORDER_ASC
+            self::EXAMPLE_EXPECTED_ORDER_ASC,
+            'getZoneSortOrder'
         );
     }
 
-    public function testGetNaturalSortMySQLExampleDesc()
+    public function testGetZoneSortOrderMySQLExampleDesc()
     {
-        $this->runTestForDatabase(
+        $this->runDatabaseTest(
             $this->mysqlConnection,
             'mysql',
             'DESC',
             self::EXAMPLE_TEST_DATA,
-            array_reverse(self::EXAMPLE_EXPECTED_ORDER_ASC)
+            array_reverse(self::EXAMPLE_EXPECTED_ORDER_ASC),
+            'getZoneSortOrder'
         );
     }
 
-    public function testGetNaturalSortMySQLArpa()
+    public function testGetZoneSortOrderMySQLArpa()
     {
-        $this->runTestForDatabase(
+        $this->runDatabaseTest(
             $this->mysqlConnection,
             'mysql',
             'ASC',
             self::ARPA_TEST_DATA,
-            self::ARPA_EXPECTED_ORDER_ASC
+            self::ARPA_EXPECTED_ORDER_ASC,
+            'getZoneSortOrder'
         );
     }
 
-    public function testGetNaturalSortMySQLArpaDesc()
+    public function testGetZoneSortOrderMySQLArpaDesc()
     {
-        $this->runTestForDatabase(
+        $this->runDatabaseTest(
             $this->mysqlConnection,
             'mysql',
             'DESC',
             self::ARPA_TEST_DATA,
-            array_reverse(self::ARPA_EXPECTED_ORDER_ASC)
+            array_reverse(self::ARPA_EXPECTED_ORDER_ASC),
+            'getZoneSortOrder'
         );
     }
 
-    public function testGetNaturalSortPgSQLExample()
+    public function testGetZoneSortOrderPgSQLExample()
     {
-        $this->runTestForDatabase(
+        $this->runDatabaseTest(
             $this->pgsqlConnection,
             'pgsql',
             'ASC',
             self::EXAMPLE_TEST_DATA,
-            self::EXAMPLE_EXPECTED_ORDER_ASC
+            self::EXAMPLE_EXPECTED_ORDER_ASC,
+            'getZoneSortOrder'
         );
     }
 
-    public function testGetNaturalSortPgSQLExampleDesc()
+    public function testGetZoneSortOrderPgSQLExampleDesc()
     {
-        $this->runTestForDatabase(
+        $this->runDatabaseTest(
             $this->pgsqlConnection,
             'pgsql',
             'DESC',
             self::EXAMPLE_TEST_DATA,
-            array_reverse(self::EXAMPLE_EXPECTED_ORDER_ASC)
+            array_reverse(self::EXAMPLE_EXPECTED_ORDER_ASC),
+            'getZoneSortOrder'
         );
     }
 
-    public function testGetNaturalSortPgSQLArpa()
+    public function testGetZoneSortOrderPgSQLArpa()
     {
-        $this->runTestForDatabase(
+        $this->runDatabaseTest(
             $this->pgsqlConnection,
             'pgsql',
             'ASC',
             self::ARPA_TEST_DATA,
-            self::ARPA_EXPECTED_ORDER_ASC
+            self::ARPA_EXPECTED_ORDER_ASC,
+            'getZoneSortOrder'
         );
     }
 
-    public function testGetNaturalSortPgSQLArpaDesc()
+    public function testGetZoneSortOrderPgSQLArpaDesc()
     {
-        $this->runTestForDatabase(
+        $this->runDatabaseTest(
             $this->pgsqlConnection,
             'pgsql',
             'DESC',
             self::ARPA_TEST_DATA,
-            array_reverse(self::ARPA_EXPECTED_ORDER_ASC)
+            array_reverse(self::ARPA_EXPECTED_ORDER_ASC),
+            'getZoneSortOrder'
         );
     }
 
-    public function testGetNaturalSortSQLiteExample()
+    public function testGetZoneSortOrderSQLiteExample()
     {
-        $this->runTestForDatabase(
+        $this->runDatabaseTest(
             $this->sqliteConnection,
             'sqlite',
             'ASC',
             self::EXAMPLE_TEST_DATA,
-            self::EXAMPLE_EXPECTED_ORDER_ASC
+            self::EXAMPLE_EXPECTED_ORDER_ASC,
+            'getZoneSortOrder'
         );
     }
 
-    public function testGetNaturalSortSQLiteExampleDesc()
+    public function testGetZoneSortOrderSQLiteExampleDesc()
     {
-        $this->runTestForDatabase(
+        $this->runDatabaseTest(
             $this->sqliteConnection,
             'sqlite',
             'DESC',
             self::EXAMPLE_TEST_DATA,
-            array_reverse(self::EXAMPLE_EXPECTED_ORDER_ASC)
+            array_reverse(self::EXAMPLE_EXPECTED_ORDER_ASC),
+            'getZoneSortOrder'
         );
     }
 
-    public function testGetNaturalSortSQLiteArpa()
+    public function testGetZoneSortOrderSQLiteArpa()
     {
-        $this->runTestForDatabase(
+        $this->runDatabaseTest(
             $this->sqliteConnection,
             'sqlite',
             'ASC',
             self::ARPA_TEST_DATA,
-            self::ARPA_EXPECTED_ORDER_ASC
+            self::ARPA_EXPECTED_ORDER_ASC,
+            'getZoneSortOrder'
         );
     }
 
-    public function testGetNaturalSortSQLiteArpaDesc()
+    public function testGetZoneSortOrderSQLiteArpaDesc()
     {
-        $this->runTestForDatabase(
+        $this->runDatabaseTest(
             $this->sqliteConnection,
             'sqlite',
             'DESC',
             self::ARPA_TEST_DATA,
-            array_reverse(self::ARPA_EXPECTED_ORDER_ASC)
+            array_reverse(self::ARPA_EXPECTED_ORDER_ASC),
+            'getZoneSortOrder'
         );
     }
 
-    private function runTestForDatabase(PDO $connection, string $dbType, string $direction, array $testData, array $expectedOrder)
+    public function testGetRecordSortOrderMySQLAsc()
+    {
+        $this->runDatabaseTest(
+            $this->mysqlConnection,
+            'mysql',
+            'ASC',
+            self::EXAMPLE_TEST_DATA,
+            self::EXAMPLE_EXPECTED_ORDER_ASC,
+            'getRecordSortOrder'
+        );
+    }
+
+    public function testGetRecordSortOrderMySQLDesc()
+    {
+        $this->runDatabaseTest(
+            $this->mysqlConnection,
+            'mysql',
+            'DESC',
+            self::EXAMPLE_TEST_DATA,
+            array_reverse(self::EXAMPLE_EXPECTED_ORDER_ASC),
+            'getRecordSortOrder'
+        );
+    }
+
+    public function testGetRecordSortOrderMySQLArpaAsc()
+    {
+        $this->runDatabaseTest(
+            $this->mysqlConnection,
+            'mysql',
+            'ASC',
+            self::ARPA_TEST_DATA,
+            self::ARPA_EXPECTED_ORDER_ASC,
+            'getRecordSortOrder'
+        );
+    }
+
+    public function testGetRecordSortOrderMySQLArpaDesc()
+    {
+        $this->runDatabaseTest(
+            $this->mysqlConnection,
+            'mysql',
+            'DESC',
+            self::ARPA_TEST_DATA,
+            array_reverse(self::ARPA_EXPECTED_ORDER_ASC),
+            'getRecordSortOrder'
+        );
+    }
+
+    public function testGetRecordSortOrderPgSQLAsc()
+    {
+        $this->runDatabaseTest(
+            $this->pgsqlConnection,
+            'pgsql',
+            'ASC',
+            self::EXAMPLE_TEST_DATA,
+            self::EXAMPLE_EXPECTED_ORDER_ASC,
+            'getRecordSortOrder'
+        );
+    }
+
+    public function testGetRecordSortOrderPgSQLDesc()
+    {
+        $this->runDatabaseTest(
+            $this->pgsqlConnection,
+            'pgsql',
+            'DESC',
+            self::EXAMPLE_TEST_DATA,
+            array_reverse(self::EXAMPLE_EXPECTED_ORDER_ASC),
+            'getRecordSortOrder'
+        );
+    }
+
+    public function testGetRecordSortOrderPgSQLArpaAsc()
+    {
+        $this->runDatabaseTest(
+            $this->pgsqlConnection,
+            'pgsql',
+            'ASC',
+            self::ARPA_TEST_DATA,
+            self::ARPA_EXPECTED_ORDER_ASC,
+            'getRecordSortOrder'
+        );
+    }
+
+    public function testGetRecordSortOrderPgSQLArpaDesc()
+    {
+        $this->runDatabaseTest(
+            $this->pgsqlConnection,
+            'pgsql',
+            'DESC',
+            self::ARPA_TEST_DATA,
+            array_reverse(self::ARPA_EXPECTED_ORDER_ASC),
+            'getRecordSortOrder'
+        );
+    }
+
+    public function testGetRecordSortOrderSQLiteAsc()
+    {
+        $this->runDatabaseTest(
+            $this->sqliteConnection,
+            'sqlite',
+            'ASC',
+            self::EXAMPLE_TEST_DATA,
+            self::EXAMPLE_EXPECTED_ORDER_ASC,
+            'getRecordSortOrder'
+        );
+    }
+
+    public function testGetRecordSortOrderSQLiteDesc()
+    {
+        $this->runDatabaseTest(
+            $this->sqliteConnection,
+            'sqlite',
+            'DESC',
+            self::EXAMPLE_TEST_DATA,
+            array_reverse(self::EXAMPLE_EXPECTED_ORDER_ASC),
+            'getRecordSortOrder'
+        );
+    }
+
+    public function testGetRecordSortOrderSQLiteArpaAsc()
+    {
+        $this->runDatabaseTest(
+            $this->sqliteConnection,
+            'sqlite',
+            'ASC',
+            self::ARPA_TEST_DATA,
+            self::ARPA_EXPECTED_ORDER_ASC,
+            'getRecordSortOrder'
+        );
+    }
+
+    public function testGetRecordSortOrderSQLiteArpaDesc()
+    {
+        $this->runDatabaseTest(
+            $this->sqliteConnection,
+            'sqlite',
+            'DESC',
+            self::ARPA_TEST_DATA,
+            array_reverse(self::ARPA_EXPECTED_ORDER_ASC),
+            'getRecordSortOrder'
+        );
+    }
+
+    private function runDatabaseTest(PDO $connection, string $dbType, string $direction, array $testData, array $expectedOrder, string $sortMethod): void
     {
         $table = 'test_table';
 
@@ -224,7 +380,7 @@ class SortHelperIntegrationTest extends TestCase
         }
 
         // Get the natural sort query
-        $query = "SELECT * FROM $table ORDER BY " . SortHelper::getZoneSortOrder($table, $dbType, $direction);
+        $query = "SELECT * FROM $table ORDER BY " . SortHelper::$sortMethod($table, $dbType, $direction);
         $stmt = $connection->query($query);
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
