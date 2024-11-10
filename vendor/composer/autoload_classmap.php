@@ -135,6 +135,7 @@ return array(
     'Poweradmin\\Domain\\Service\\Validator' => $baseDir . '/lib/Domain/Service/Validator.php',
     'Poweradmin\\Domain\\Utility\\DnssecDataTransformer' => $baseDir . '/lib/Domain/Utility/DnssecDataTransformer.php',
     'Poweradmin\\Domain\\Utility\\DnssecTransformer' => $baseDir . '/lib/Domain/Utility/DnssecTransformer.php',
+    'Poweradmin\\Domain\\Utility\\DomainHelper' => $baseDir . '/lib/Domain/Utility/DomainHelper.php',
     'Poweradmin\\Domain\\Utility\\MemoryUsage' => $baseDir . '/lib/Domain/Utility/MemoryUsage.php',
     'Poweradmin\\Domain\\Utility\\SizeFormatter' => $baseDir . '/lib/Domain/Utility/SizeFormatter.php',
     'Poweradmin\\Domain\\Utility\\Timer' => $baseDir . '/lib/Domain/Utility/Timer.php',

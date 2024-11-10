@@ -237,6 +237,7 @@ class ComposerStaticInit1dab89e42c6bd529040213c23957bbde
         'Poweradmin\\Domain\\Service\\Validator' => __DIR__ . '/../..' . '/lib/Domain/Service/Validator.php',
         'Poweradmin\\Domain\\Utility\\DnssecDataTransformer' => __DIR__ . '/../..' . '/lib/Domain/Utility/DnssecDataTransformer.php',
         'Poweradmin\\Domain\\Utility\\DnssecTransformer' => __DIR__ . '/../..' . '/lib/Domain/Utility/DnssecTransformer.php',
+        'Poweradmin\\Domain\\Utility\\DomainHelper' => __DIR__ . '/../..' . '/lib/Domain/Utility/DomainHelper.php',
         'Poweradmin\\Domain\\Utility\\MemoryUsage' => __DIR__ . '/../..' . '/lib/Domain/Utility/MemoryUsage.php',
         'Poweradmin\\Domain\\Utility\\SizeFormatter' => __DIR__ . '/../..' . '/lib/Domain/Utility/SizeFormatter.php',
         'Poweradmin\\Domain\\Utility\\Timer' => __DIR__ . '/../..' . '/lib/Domain/Utility/Timer.php',
