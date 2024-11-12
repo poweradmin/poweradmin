@@ -78,7 +78,7 @@ class EditController extends BaseController
 
         if (isset($_POST['save_as'])) {
             $this->validateCsrfToken();
-            $this->saveTemplateAs($zone_id);
+            $this->saveAsTemplate($zone_id);
         }
 
         $perm_view = Permission::getViewPermission($this->db);
@@ -360,7 +360,7 @@ class EditController extends BaseController
         }
     }
 
-    public function saveTemplateAs(string $zone_id): void
+    public function saveAsTemplate(string $zone_id): void
     {
         $template_name = htmlspecialchars($_POST['templ_name']) ?? '';
         if (ZoneTemplate::zone_templ_name_exists($this->db, $template_name)) {
@@ -373,7 +373,12 @@ class EditController extends BaseController
 
             $description = htmlspecialchars($_POST['templ_descr']) ?? '';
 
-            ZoneTemplate::add_zone_templ_save_as($this->db, $template_name, $description, $_SESSION['userid'], $records, $dnsRecord->get_domain_name_by_id($zone_id));
+            $options = [
+                'NS1' => $this->config('dns_ns1') ?? '',
+                'HOSTMASTER' => $this->config('dns_hostmaster') ?? '',
+            ];
+
+            ZoneTemplate::add_zone_templ_save_as($this->db, $template_name, $description, $_SESSION['userid'], $records, $options, $dnsRecord->get_domain_name_by_id($zone_id));
             $this->setMessage('edit', 'success', _('Zone template has been added successfully.'));
         }
     }
