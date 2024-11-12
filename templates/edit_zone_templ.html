@@ -37,7 +37,7 @@
         <tr>
             <td class="col-sm-2">{{record['name']}}</td>
             <td class="col-sm-1">{{record['type']}}</td>
-            <td class="col-sm-3"><input class="form-control form-control-sm" type="text" name="content" value="{{record['content']}}" disabled></td>
+            <td class="col-sm-5"><input class="form-control form-control-sm" type="text" name="content" value="{{record['content']}}" disabled></td>
             {% if (record['type'] == "MX") or (record['type'] == "SRV") %}
             <td class="col-sm-1">{{record['prio']}}</td>
             {% else %}
