@@ -27,8 +27,8 @@ class RecordType
     // The following is a list of supported record types by PowerDNS
     // https://doc.powerdns.com/authoritative/appendices/types.html
 
-    // Common record types for forward zones
-    private const FORWARD_ZONE_COMMON_RECORDS = [
+    // Common record types for domain zones
+    private const DOMAIN_ZONE_COMMON_RECORDS = [
         'A',
         'AAAA',
         'CNAME',
@@ -120,7 +120,7 @@ class RecordType
     public static function getAllTypes(): array
     {
         $types = array_merge(
-            self::FORWARD_ZONE_COMMON_RECORDS,
+            self::DOMAIN_ZONE_COMMON_RECORDS,
             self::REVERSE_ZONE_COMMON_RECORDS,
             self::DNSSEC_TYPES,
             self::LESS_COMMON_RECORDS
@@ -130,14 +130,14 @@ class RecordType
     }
 
     /**
-     * Get forward zone record types.
+     * Get domain zone record types.
      *
      * @param bool $isDnsSecEnabled
      * @return array
      */
-    public static function getForwardZoneTypes(bool $isDnsSecEnabled): array
+    public static function getDomainZoneTypes(bool $isDnsSecEnabled): array
     {
-        $types = array_merge(self::FORWARD_ZONE_COMMON_RECORDS, self::LESS_COMMON_RECORDS);
+        $types = array_merge(self::DOMAIN_ZONE_COMMON_RECORDS, self::LESS_COMMON_RECORDS);
         return self::mergeDnsSecTypes($types, $isDnsSecEnabled);
     }
 

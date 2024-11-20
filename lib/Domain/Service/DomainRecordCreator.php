@@ -27,7 +27,7 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 
-class ForwardRecordCreator
+class DomainRecordCreator
 {
     private AppConfiguration $config;
     private LegacyLogger $logger;
@@ -43,17 +43,17 @@ class ForwardRecordCreator
         $this->dnsRecord = $dnsRecord;
     }
 
-    public function createForwardRecord(string $name, string $type, string $content, string $zone_id): array
+    public function addDomainRecord(string $name, string $type, string $content, string $zone_id): array
     {
-        $iface_add_forward_record = $this->config->get('iface_add_forward_record');
+        $iface_add_domain_record = $this->config->get('iface_add_domain_record');
 
         $registeredDomain = DnsHelper::getRegisteredDomain($content);
         $domainId = $this->dnsRecord->get_domain_id_by_name($registeredDomain);
         if ($domainId === false) {
-            return $this->errorResponse(sprintf(_('There is no matching forward-zone for: %s.'), $content));
+            return $this->errorResponse(sprintf(_('There is no managed zone for domain: %s.'), $content));
         }
 
-        if ($name && $iface_add_forward_record && $type === 'PTR') {
+        if ($name && $iface_add_domain_record && $type === 'PTR') {
             $zone_name = $this->dnsRecord->get_domain_name_by_id($zone_id);
 
             if (str_ends_with($zone_name, self::IPV4_SUFFIX)) {
@@ -63,11 +63,11 @@ class ForwardRecordCreator
             if (str_ends_with($zone_name, self::IPV6_SUFFIX)) {
                 // FIXME: not fully implemented and tested
                 // return $this->processIPv6($name, $zone_name, $content, $domainId);
-                return $this->errorResponse(_('Adding IPv6 forward records is not yet supported.'));
+                return $this->errorResponse(_('Adding IPv6 domain records from reverse zones is not supported yet.'));
             }
         }
 
-        return $this->errorResponse(_('This forward record was not valid and could not be added.'));
+        return $this->errorResponse(_('This domain record was not valid and could not be added.'));
     }
 
     private function processIPv4(string $name, string $zone_name, string $content, int $domainId): array
@@ -76,7 +76,7 @@ class ForwardRecordCreator
         if (filter_var($proposedIP, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
             return $this->addRecord($domainId, $content, $proposedIP);
         }
-        return $this->errorResponse(_('This forward record was not valid and could not be added.'));
+        return $this->errorResponse(_('This domain record was not valid and could not be added.'));
     }
 
     private function processIPv6(string $name, string $zone_name, string $content, int $domainId): array
@@ -85,7 +85,7 @@ class ForwardRecordCreator
         if (filter_var($proposedIP, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
             return $this->addRecord($domainId, $content, $proposedIP);
         }
-        return $this->errorResponse(_('This forward record was not valid and could not be added.'));
+        return $this->errorResponse(_('This domain record was not valid and could not be added.'));
     }
 
     private function addRecord(int $domainId, string $content, string $proposedIP): array
@@ -96,10 +96,10 @@ class ForwardRecordCreator
             return [
                 'success' => true,
                 'type' => 'success',
-                'message' => _('The forward record was successfully added.')
+                'message' => _('The domain record was successfully added.')
             ];
         } else {
-            return $this->errorResponse(_('This forward record was not valid and could not be added.'));
+            return $this->errorResponse(_('This domain record was not valid and could not be added.'));
         }
     }
 

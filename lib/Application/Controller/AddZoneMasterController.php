@@ -127,7 +127,7 @@ class AddZoneMasterController extends BaseController
             'users' => UserManager::show_users($this->db),
             'zone_templates' => $zone_templates->get_list_zone_templ($_SESSION['userid']),
             'iface_zone_type_default' => $this->config('iface_zone_type_default'),
-            'iface_add_forward_record' => $this->config('iface_add_forward_record'),
+            'iface_add_domain_record' => $this->config('iface_add_domain_record'),
             'pdnssec_use' => $this->config('pdnssec_use'),
         ]);
     }

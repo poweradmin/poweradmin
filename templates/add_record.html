@@ -71,11 +71,11 @@
         <span class="text-secondary"> {% trans %}Also add a PTR record in the matching zone{% endtrans %}</span>
     </span>
     {% endif %}
-    {% if is_reverse_zone and iface_add_forward_record %}
+    {% if is_reverse_zone and iface_add_domain_record %}
     <span class="align-middle">
         &nbsp;
-        <input class="form-check-input" type="checkbox" name="forward">
-        <span class="text-secondary"> {% trans %}Add also forward record{% endtrans %}</span>
+        <input class="form-check-input" type="checkbox" name="domain">
+        <span class="text-secondary"> {% trans %}Also add an A/AAAA record in the matching zone{% endtrans %}</span>
     </span>
     {% endif %}
 </form>

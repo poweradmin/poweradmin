@@ -37,7 +37,7 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
-use Poweradmin\Domain\Service\ForwardRecordCreator;
+use Poweradmin\Domain\Service\DomainRecordCreator;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -100,8 +100,8 @@ class AddRecordController extends BaseController
         if (isset($_POST["reverse"])) {
             $this->createReverseRecord($name, $type, $content, $zone_id, $ttl, $prio);
         }
-        if (isset($_POST['forward'])) {
-            $this->createForwardRecord($name, $type, $content, $zone_id);
+        if (isset($_POST['domain'])) {
+            $this->createDomainRecord($name, $type, $content, $zone_id);
         }
 
         if ($this->createRecord($zone_id, $name, $type, $content, $ttl, $prio)) {
@@ -125,7 +125,7 @@ class AddRecordController extends BaseController
         }
 
         $this->render('add_record.html', [
-            'types' => $isReverseZone ? RecordType::getReverseZoneTypes($isDnsSecEnabled) : RecordType::getForwardZoneTypes($isDnsSecEnabled),
+            'types' => $isReverseZone ? RecordType::getReverseZoneTypes($isDnsSecEnabled) : RecordType::getDomainZoneTypes($isDnsSecEnabled),
             'name' => $_POST['name'] ?? '',
             'type' => $_POST['type'] ?? '',
             'content' => $_POST['content'] ?? '',
@@ -136,7 +136,7 @@ class AddRecordController extends BaseController
             'idn_zone_name' => $idn_zone_name,
             'is_reverse_zone' => $isReverseZone,
             'iface_add_reverse_record' => $this->config('iface_add_reverse_record'),
-            'iface_add_forward_record' => $this->config('iface_add_forward_record'),
+            'iface_add_domain_record' => $this->config('iface_add_domain_record'),
         ]);
     }
 
@@ -180,10 +180,10 @@ class AddRecordController extends BaseController
         }
     }
 
-    private function createForwardRecord(string $name, string $type, string $content, string $zone_id): void
+    private function createDomainRecord(string $name, string $type, string $content, string $zone_id): void
     {
-        $forwardRecordCreator = new ForwardRecordCreator($this->getConfig(), $this->logger, $this->dnsRecord);
-        $result = $forwardRecordCreator->createForwardRecord($name, $type, $content, $zone_id);
+        $domainRecordCreator = new DomainRecordCreator($this->getConfig(), $this->logger, $this->dnsRecord);
+        $result = $domainRecordCreator->addDomainRecord($name, $type, $content, $zone_id);
         if ($result['success']) {
             $this->setMessage('add_record', 'success', $result['message']);
         } else {

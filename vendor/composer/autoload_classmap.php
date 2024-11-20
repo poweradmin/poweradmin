@@ -170,7 +170,7 @@ return array(
     'Poweradmin\\Domain\\Service\\Dns' => $baseDir . '/lib/Domain/Service/Dns.php',
     'Poweradmin\\Domain\\Service\\DnsRecord' => $baseDir . '/lib/Domain/Service/DnsRecord.php',
     'Poweradmin\\Domain\\Service\\DnssecProvider' => $baseDir . '/lib/Domain/Service/DnssecProvider.php',
-    'Poweradmin\\Domain\\Service\\ForwardRecordCreator' => $baseDir . '/lib/Domain/Service/ForwardRecordCreator.php',
+    'Poweradmin\\Domain\\Service\\DomainRecordCreator' => $baseDir . '/lib/Domain/Service/DomainRecordCreator.php',
     'Poweradmin\\Domain\\Service\\PasswordEncryptionService' => $baseDir . '/lib/Domain/Service/PasswordEncryptionService.php',
     'Poweradmin\\Domain\\Service\\ReverseRecordCreator' => $baseDir . '/lib/Domain/Service/ReverseRecordCreator.php',
     'Poweradmin\\Domain\\Service\\SessionService' => $baseDir . '/lib/Domain/Service/SessionService.php',
