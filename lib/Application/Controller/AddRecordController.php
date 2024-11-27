@@ -100,7 +100,7 @@ class AddRecordController extends BaseController
         if (isset($_POST["reverse"])) {
             $this->createReverseRecord($name, $type, $content, $zone_id, $ttl, $prio);
         }
-        if (isset($_POST['domain'])) {
+        if (isset($_POST['create_domain_record'])) {
             $this->createDomainRecord($name, $type, $content, $zone_id);
         }
 
