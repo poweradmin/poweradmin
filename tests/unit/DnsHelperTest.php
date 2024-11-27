@@ -1,9 +1,9 @@
 <?php
 
-namespace Domain\Utility;
+namespace unit;
 
-use Poweradmin\Domain\Utility\DnsHelper;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Utility\DnsHelper;
 
 class DnsHelperTest extends TestCase
 {
