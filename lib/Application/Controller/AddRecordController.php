@@ -31,26 +31,29 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\DomainRecordCreator;
+use Poweradmin\Domain\Service\ReverseRecordCreator;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Valitron;
 
 class AddRecordController extends BaseController
 {
     private LegacyLogger $logger;
+    private DnsRecord $dnsRecord;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
         $this->logger = new LegacyLogger($this->db);
+        $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
     }
 
     public function run(): void
@@ -59,8 +62,7 @@ class AddRecordController extends BaseController
 
         $perm_edit = Permission::getEditPermission($this->db);
         $zone_id = htmlspecialchars($_GET['id']);
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $zone_type = $dnsRecord->get_domain_type($zone_id);
+        $zone_type = $this->dnsRecord->get_domain_type($zone_id);
         $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
 
         $this->checkCondition($zone_type == "SLAVE"
@@ -95,7 +97,12 @@ class AddRecordController extends BaseController
         $ttl = $_POST['ttl'];
         $zone_id = htmlspecialchars($_GET['id']);
 
-        $this->createReverseRecord($name, $type, $content, $zone_id, $ttl, $prio);
+        if (isset($_POST["reverse"])) {
+            $this->createReverseRecord($name, $type, $content, $zone_id, $ttl, $prio);
+        }
+        if (isset($_POST['create_domain_record'])) {
+            $this->createDomainRecord($name, $type, $content, $zone_id);
+        }
 
         if ($this->createRecord($zone_id, $name, $type, $content, $ttl, $prio)) {
             unset($_POST);
@@ -105,11 +112,11 @@ class AddRecordController extends BaseController
     private function showForm(): void
     {
         $zone_id = htmlspecialchars($_GET['id']);
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $zone_name = $dnsRecord->get_domain_name_by_id($zone_id);
+        $zone_name = $this->dnsRecord->get_domain_name_by_id($zone_id);
+        $isReverseZone = DnsHelper::isReverseZone($zone_name);
+
         $ttl = $this->config('dns_ttl');
-        $iface_add_reverse_record = $this->config('iface_add_reverse_record');
-        $is_reverse_zone = preg_match('/i(p6|n-addr).arpa/i', $zone_name);
+        $isDnsSecEnabled = $this->config('pdnssec_use');
 
         if (str_starts_with($zone_name, "xn--")) {
             $idn_zone_name = idn_to_utf8($zone_name, IDNA_NONTRANSITIONAL_TO_ASCII);
@@ -118,7 +125,7 @@ class AddRecordController extends BaseController
         }
 
         $this->render('add_record.html', [
-            'types' => RecordType::getTypes(),
+            'types' => $isReverseZone ? RecordType::getReverseZoneTypes($isDnsSecEnabled) : RecordType::getDomainZoneTypes($isDnsSecEnabled),
             'name' => $_POST['name'] ?? '',
             'type' => $_POST['type'] ?? '',
             'content' => $_POST['content'] ?? '',
@@ -127,8 +134,9 @@ class AddRecordController extends BaseController
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,
-            'is_reverse_zone' => $is_reverse_zone,
-            'iface_add_reverse_record' => $iface_add_reverse_record,
+            'is_reverse_zone' => $isReverseZone,
+            'iface_add_reverse_record' => $this->config('iface_add_reverse_record'),
+            'iface_add_domain_record' => $this->config('iface_add_domain_record'),
         ]);
     }
 
@@ -146,48 +154,14 @@ class AddRecordController extends BaseController
 
     public function createReverseRecord($name, $type, $content, string $zone_id, $ttl, $prio): void
     {
-        $iface_add_reverse_record = $this->config('iface_add_reverse_record');
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-
-        if ((isset($_POST["reverse"])) && $name && $iface_add_reverse_record) {
-            if ($type === 'A') {
-                $content_array = preg_split("/\./", $content);
-                $content_rev = sprintf("%d.%d.%d.%d.in-addr.arpa", $content_array[3], $content_array[2], $content_array[1], $content_array[0]);
-                $zone_rev_id = $dnsRecord->get_best_matching_zone_id_from_name($content_rev);
-            } elseif ($type === 'AAAA') {
-                $content_rev = DnsRecord::convert_ipv6addr_to_ptrrec($content);
-                $zone_rev_id = $dnsRecord->get_best_matching_zone_id_from_name($content_rev);
-            }
-
-            if (isset($zone_rev_id) && $zone_rev_id != -1) {
-                $zone_name = $dnsRecord->get_domain_name_by_id($zone_id);
-                $fqdn_name = sprintf("%s.%s", $name, $zone_name);
-                $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-                if ($dnsRecord->add_record($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
-                    $this->logger->log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
-                        $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                        $content_rev, $fqdn_name, $ttl, $prio), $zone_id);
-
-                    if ($this->config('pdnssec_use')) {
-                        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
-                        $dnssecProvider->rectifyZone($zone_name);
-                    }
-                }
-            } elseif (isset($content_rev)) {
-                $error = new ErrorMessage(sprintf(_('There is no matching reverse-zone for: %s.'), $content_rev));
-                $errorPresenter = new ErrorPresenter();
-                $errorPresenter->present($error);
-            }
-        }
+        $reverseRecordCreator = new ReverseRecordCreator($this->db, $this->getConfig(), $this->logger);
+        $reverseRecordCreator->createReverseRecord($name, $type, $content, $zone_id, $ttl, $prio);
     }
 
     public function createRecord(string $zone_id, $name, $type, $content, $ttl, $prio): bool
     {
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $zone_name = $dnsRecord->get_domain_name_by_id($zone_id);
-
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        if ($dnsRecord->add_record($zone_id, $name, $type, $content, $ttl, $prio)) {
+        $zone_name = $this->dnsRecord->get_domain_name_by_id($zone_id);
+        if ($this->dnsRecord->add_record($zone_id, $name, $type, $content, $ttl, $prio)) {
             $this->logger->log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:%s record:%s.%s content:%s ttl:%s priority:%s',
                 $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                 $type, $name, $zone_name, $content, $ttl, $prio), $zone_id
@@ -203,6 +177,17 @@ class AddRecordController extends BaseController
         } else {
             $this->setMessage('add_record', 'error', _('This record was not valid and could not be added.'));
             return false;
+        }
+    }
+
+    private function createDomainRecord(string $name, string $type, string $content, string $zone_id): void
+    {
+        $domainRecordCreator = new DomainRecordCreator($this->getConfig(), $this->logger, $this->dnsRecord);
+        $result = $domainRecordCreator->addDomainRecord($name, $type, $content, $zone_id);
+        if ($result['success']) {
+            $this->setMessage('add_record', 'success', $result['message']);
+        } else {
+            $this->setMessage('add_record', 'error', $result['message']);
         }
     }
 }

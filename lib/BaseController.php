@@ -102,13 +102,16 @@ abstract class BaseController
 
     public function setMessage($script, $type, $content): void
     {
-        $_SESSION['messages'][$script] = [
+        if (!isset($_SESSION['messages'][$script])) {
+            $_SESSION['messages'][$script] = [];
+        }
+        $_SESSION['messages'][$script][] = [
             'type' => $type,
             'content' => $content
         ];
     }
 
-    public function getMessage($script): mixed
+    public function getMessages($script): mixed
     {
         if (isset($_SESSION['messages'][$script])) {
             $messages = $_SESSION['messages'][$script];
@@ -122,21 +125,23 @@ abstract class BaseController
     {
         $script = pathinfo($template)['filename'];
 
-        $message = $this->getMessage($script);
-        if ($message) {
-            $alertClass = match ($message['type']) {
-                'error' => 'alert-danger',
-                'warn' => 'alert-warning',
-                'success' => 'alert-success',
-                'info' => 'alert-info',
-                default => '',
-            };
+        $messages = $this->getMessages($script);
+        if ($messages) {
+            foreach ($messages as $message) {
+                $alertClass = match ($message['type']) {
+                    'error' => 'alert-danger',
+                    'warn' => 'alert-warning',
+                    'success' => 'alert-success',
+                    'info' => 'alert-info',
+                    default => '',
+                };
 
-            echo <<<EOF
+                echo <<<EOF
 <div class="alert $alertClass alert-dismissible fade show" role="alert">{$message['content']}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 EOF;
+            }
         }
     }
 

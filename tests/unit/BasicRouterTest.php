@@ -1,10 +1,10 @@
 <?php
 
-namespace Application\Routing;
+namespace unit;
 
 use Error;
-use Poweradmin\Application\Routing\BasicRouter;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Routing\BasicRouter;
 
 class BasicRouterTest extends TestCase
 {

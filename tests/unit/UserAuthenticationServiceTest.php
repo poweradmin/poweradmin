@@ -1,5 +1,8 @@
 <?php
 
+namespace unit;
+
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\UserAuthenticationService;
 

@@ -939,6 +939,19 @@ class DnsRecord
         }
     }
 
+    public function get_domain_id_by_name(string $name): bool|int
+    {
+        if (!empty($name)) {
+            $pdns_db_name = $this->config->get('pdns_db_name');
+            $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
+
+            $result = $this->db->queryRow("SELECT id FROM $domains_table WHERE name=" . $this->db->quote($name, 'text'));
+            return $result ? $result['id'] : false;
+        }
+
+        return false;
+    }
+
     /** Get zone id from name
      *
      * @param string $zname Zone name
@@ -1228,7 +1241,7 @@ class DnsRecord
             $sortby = "$domains_table.$sortby";
         }
 
-        $sql_sortby = $sortby == "$domains_table.name" ? SortHelper::getNaturalSort($domains_table, $db_type, $sortDirection) : $sortby . " " . $sortDirection;
+        $sql_sortby = $sortby == "$domains_table.name" ? SortHelper::getZoneSortOrder($domains_table, $db_type, $sortDirection) : $sortby . " " . $sortDirection;
 
         $query = "SELECT $domains_table.id,
                         $domains_table.name,
@@ -1391,7 +1404,10 @@ class DnsRecord
         if ($sortby == 'name') {
             $sortby = "$records_table.name";
         }
-        $sql_sortby = $sortby == "$records_table.name" ? SortHelper::getNaturalSort($records_table, $db_type, $sortDirection) : $sortby . " " . $sortDirection;
+        $sql_sortby = $sortby == "$records_table.name" ? SortHelper::getRecordSortOrder($records_table, $db_type, $sortDirection) : $sortby . " " . $sortDirection;
+        if ($sortby == "$records_table.name" and $sortDirection == 'ASC') {
+            $sql_sortby = "type = 'SOA' DESC, type = 'NS' DESC, ". $sql_sortby;
+        }
 
         $query = "SELECT * FROM $records_table
                     WHERE domain_id=" . $this->db->quote($id, 'integer') . " AND type IS NOT NULL

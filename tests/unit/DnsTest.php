@@ -1,9 +1,11 @@
 <?php
 
+namespace unit;
+
 use PHPUnit\Framework\TestCase;
+use Poweradmin\AppConfiguration;
 use Poweradmin\Domain\Service\Dns;
 use Poweradmin\Infrastructure\Database\PDOLayer;
-use Poweradmin\AppConfiguration;
 
 class DnsTest extends TestCase
 {
@@ -126,7 +128,8 @@ class DnsTest extends TestCase
         $this->assertFalse(Dns::is_valid_ds("invalid"));
     }
 
-    public function testIsValidLocation() {
+    public function testIsValidLocation()
+    {
         $this->assertTrue(Dns::is_valid_loc('37 23 30.900 N 121 59 19.000 W 7.00m 100.00m 100.00m 2.00m'));
         $this->assertTrue(Dns::is_valid_loc('42 21 54 N 71 06 18 W -24m 30m'));
         $this->assertTrue(Dns::is_valid_loc('42 21 43.952 N 71 5 6.344 W -24m 1m 200m'));

@@ -1,6 +1,6 @@
 <?php
 
-namespace Infrastructure\Web;
+namespace unit;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;

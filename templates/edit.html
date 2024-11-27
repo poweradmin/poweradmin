@@ -46,7 +46,14 @@
             <th>{% trans %}Content{% endtrans %}</th>
             <th>{% trans %}Priority{% endtrans %}</th>
             <th>{% trans %}TTL{% endtrans %}</th>
-            <th>{% trans %}Add reverse{% endtrans %}</th>
+            <th class="text-center">
+                {% if not is_reverse_zone and iface_add_reverse_record %}
+                    {% trans %}Add PTR{% endtrans %}
+                {% endif %}
+                {% if is_reverse_zone and iface_add_domain_record %}
+                    {% trans %}Add A/AAAA{% endtrans %}
+                {% endif %}
+            </th>
             <th></th>
         </tr>
         <tr>
@@ -61,7 +68,7 @@
                     {% set rev = false %}
                     {% for record_type in record_types %}
                     {% set add = "" %}
-                    {% if is_rev_zone and record_type == "PTR" %}
+                    {% if is_reverse_zone and record_type == "PTR" %}
                     {% set add = "SELECTED" %}
                     {% endif %}
 
@@ -86,9 +93,14 @@
                 <div class="invalid-feedback">{% trans %}Provide TTL{% endtrans %}</div>
             </td>
             <td class="col-sm-1 text-center">
-                {% if not is_reverse_zone and rev %}
+                {% if not is_reverse_zone and iface_add_reverse_record %}
                 <span class="align-middle">
                     <input class="form-check-input" type="checkbox" name="reverse">
+                </span>
+                {% endif %}
+                {% if is_reverse_zone and iface_add_domain_record %}
+                <span class="align-middle">
+                    <input class="form-check-input" type="checkbox" name="create_domain_record">
                 </span>
                 {% endif %}
             </td>
@@ -109,61 +121,61 @@
         <tr>
             {% if iface_edit_show_id %}
             <th>
-                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=id&sort_direction={{ sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=id&sort_direction={{ record_sort_by == 'id' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                     {% trans %}Id{% endtrans %}
-                    {% if record_sort_by == 'id' %}
-                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
-                    {% endif %}
                 </a>
+                {% if record_sort_by == 'id' %}
+                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
+                {% endif %}
             </th>
             {% endif %}
             <th>
-                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=name&sort_direction={{ sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=name&sort_direction={{ record_sort_by == 'name' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                     {% trans %}Name{% endtrans %}
-                    {% if record_sort_by == 'name' %}
-                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
-                    {% endif %}
                 </a>
+                {% if record_sort_by == 'name' %}
+                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
+                {% endif %}
             </th>
             <th>
-                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=type&sort_direction={{ sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=type&sort_direction={{ record_sort_by == 'type' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                     {% trans %}Type{% endtrans %}
-                    {% if record_sort_by == 'type' %}
-                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
-                    {% endif %}
                 </a>
+                {% if record_sort_by == 'type' %}
+                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
+                {% endif %}
             </th>
             <th>
-                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=content&sort_direction={{ sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=content&sort_direction={{ record_sort_by == 'content' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                     {% trans %}Content{% endtrans %}
-                    {% if record_sort_by == 'content' %}
-                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
-                    {% endif %}
                 </a>
+                {% if record_sort_by == 'content' %}
+                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
+                {% endif %}
             </th>
             <th>
-                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=prio&sort_direction={{ sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=prio&sort_direction={{ record_sort_by == 'prio' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                     {% trans %}Priority{% endtrans %}
-                    {% if record_sort_by == 'prio' %}
-                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'dow' : 'up' }}"></i>
-                    {% endif %}
                 </a>
+                {% if record_sort_by == 'prio' %}
+                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
+                {% endif %}
             </th>
             <th>
-                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=ttl&sort_direction={{ sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=ttl&sort_direction={{ record_sort_by == 'ttl' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                     {% trans %}TTL{% endtrans %}
-                    {% if record_sort_by == 'ttl' %}
-                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
-                    {% endif %}
                 </a>
+                {% if record_sort_by == 'ttl' %}
+                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
+                {% endif %}
             </th>
             <th>
-                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=disabled&sort_direction={{ sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=disabled&sort_direction={{ record_sort_by == 'disabled' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                     {% trans %}Disabled{% endtrans %}
-                    {% if record_sort_by == 'disabled' %}
-                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
-                    {% endif %}
                 </a>
+                {% if record_sort_by == 'disabled' %}
+                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
+                {% endif %}
             </th>
             <th>&nbsp;</th>
         </tr>
@@ -302,7 +314,7 @@
                     {% set rev = false %}
                     {% for record_type in record_types %}
                     {% set add = "" %}
-                    {% if is_rev_zone and record_type == "PTR" %}
+                    {% if is_reverse_zone and record_type == "PTR" %}
                     {% set add = "SELECTED" %}
                     {% endif %}
 
@@ -335,7 +347,14 @@
     <span class="align-middle">
         &nbsp;
         <input class="form-check-input" type="checkbox" name="reverse">
-        <span class="text-secondary"> {% trans %}Add also reverse record{% endtrans %}</span>
+        <span class="text-secondary"> {% trans %}Also add a PTR record in the matching zone{% endtrans %}</span>
+    </span>
+    {% endif %}
+    {% if is_reverse_zone and iface_add_domain_record %}
+    <span class="align-middle">
+        &nbsp;
+        <input class="form-check-input" type="checkbox" name="create_domain_record">
+        <span class="text-secondary"> {% trans %}Also add an A/AAAA record in the matching zone{% endtrans %}</span>
     </span>
     {% endif %}
 </form>
@@ -346,7 +365,7 @@
     <div class="row">
         <div class="col">
             {% if perm_zone_master_add and domain_type != "SLAVE"%}
-            <form method="post" action="">
+            <form class="needs-validation" method="post" action="" novalidate>
                 <input type="hidden" name="_token" value="{{ csrf_token }}">
                 <table>
                     <tr>
@@ -354,7 +373,10 @@
                     </tr>
                     <tr>
                         <td>{% trans %}Template Name{% endtrans %}</td>
-                        <td><input class="form-control form-control-sm" type="text" name="templ_name" value=""></td>
+                        <td>
+                            <input class="form-control form-control-sm" type="text" name="templ_name" value="" required>
+                            <div class="invalid-feedback">{% trans %}Provide template name{% endtrans %}</div>
+                        </td>
                     </tr>
                     <tr>
                         <td>{% trans %}Template Description{% endtrans %}</td>

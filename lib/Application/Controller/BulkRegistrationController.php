@@ -36,6 +36,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\Dns;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Utility\DomainHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Valitron;
 
@@ -75,7 +76,7 @@ class BulkRegistrationController extends BaseController
             $this->showFirstError($v->errors());
         }
 
-        $domains = $this->getDomains($_POST['domains']);
+        $domains = DomainHelper::getDomains($_POST['domains']);
         $dom_type = $_POST["dom_type"];
         $zone_template = $_POST['zone_template'];
 
@@ -117,19 +118,5 @@ class BulkRegistrationController extends BaseController
             'zone_templates' => $zone_templates->get_list_zone_templ($_SESSION['userid']),
             'failed_domains' => $failed_domains,
         ]);
-    }
-
-    public function getDomains($array): array
-    {
-        $domains = explode("\r\n", $array);
-        foreach ($domains as $key => $domain) {
-            $domain = idn_to_ascii(trim($domain), IDNA_NONTRANSITIONAL_TO_ASCII);
-            if ($domain == '') {
-                unset($domains[$key]);
-            } else {
-                $domains[$key] = $domain;
-            }
-        }
-        return $domains;
     }
 }

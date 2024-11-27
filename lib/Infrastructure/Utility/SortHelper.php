@@ -25,28 +25,54 @@ namespace Poweradmin\Infrastructure\Utility;
 class SortHelper
 {
     /**
-     * Get the natural sort for the given database type
+     * Get the zone sort order based on the database type.
      *
      * @param string $table
-     * @param mixed $db_type
+     * @param mixed $dbType
      * @param string $direction
      * @return string
      */
-    public static function getNaturalSort(string $table, string $db_type, string $direction = 'ASC'): string
+    public static function getZoneSortOrder(string $table, string $dbType, string $direction = 'ASC'): string
     {
-        $name_field = "$table.name";
+        $nameField = "$table.name";
         $direction = strtoupper($direction);
-        if ($direction !== 'ASC' && $direction !== 'DESC') {
+
+        if (!in_array($direction, ['ASC', 'DESC'])) {
             $direction = 'ASC';
         }
 
-        $natural_sort = match ($db_type) {
-            'mysql', 'mysqli' => "CAST(REGEXP_SUBSTR($name_field, '[0-9]+') AS UNSIGNED) $direction, $name_field $direction",
-            'sqlite', 'sqlite3' => "CAST(substr($name_field, 1, instr($name_field, '.') - 1) AS INTEGER) $direction, $name_field $direction",
-            'pgsql' => "CAST((REGEXP_MATCHES($name_field, '[0-9]+'))[1] AS INTEGER) $direction, $name_field $direction",
-            default => "$name_field $direction",
+        $naturalSort = match ($dbType) {
+            'mysql', 'mysqli', 'sqlite', 'sqlite3' => "$nameField+0<>0 $direction, $nameField+0 $direction, $nameField $direction",
+            'pgsql' => "SUBSTRING($nameField FROM '\.arpa$') $direction, LENGTH(SUBSTRING($nameField FROM '^[0-9]+')) $direction, $nameField $direction",
+            default => "$nameField $direction",
         };
 
-        return $natural_sort;
+        return $naturalSort;
+    }
+
+    /**
+     * Get the record sort order based on the database type.
+     *
+     * @param string $table
+     * @param mixed $dbType
+     * @param string $direction
+     * @return string
+     */
+    public static function getRecordSortOrder(string $table, string $dbType, string $direction = 'ASC'): string
+    {
+        $nameField = "$table.name";
+        $direction = strtoupper($direction);
+
+        if (!in_array($direction, ['ASC', 'DESC'])) {
+            $direction = 'ASC';
+        }
+
+        $naturalSort = match ($dbType) {
+            'mysql', 'mysqli', 'sqlite', 'sqlite3' => "$nameField+0<>0 $direction, $nameField+0 $direction, $nameField $direction",
+            'pgsql' => "SUBSTRING($nameField FROM '\.arpa$') $direction, LENGTH(SUBSTRING($nameField FROM '^[0-9]+')) $direction, $nameField $direction",
+            default => "$nameField $direction",
+        };
+
+        return $naturalSort;
     }
 }

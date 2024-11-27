@@ -1,9 +1,11 @@
 <?php
 
+namespace unit;
+
 use PHPUnit\Framework\TestCase;
+use Poweradmin\AppConfiguration;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Infrastructure\Database\PDOLayer;
-use Poweradmin\AppConfiguration;
 
 class DnsRecordTest extends TestCase
 {
@@ -61,72 +63,75 @@ class DnsRecordTest extends TestCase
 
     public function testGetNextSerialShouldIncrementDateIfMaxRevisionAndToday()
     {
-        $given = sprintf( "%s99", date('Ymd'));
-        $expected = sprintf( "%s00", date('Ymd', strtotime("+1 day")));
+        $given = sprintf("%s99", date('Ymd'));
+        $expected = sprintf("%s00", date('Ymd', strtotime("+1 day")));
         $result = $this->dnsRecord->get_next_serial($given);
         $this->assertSame($expected, $result);
     }
 
     public function testGetNextSerialShouldReturnIncrementedRevisionIfToday()
     {
-        $given = sprintf( "%s01", date('Ymd'));
-        $expected = sprintf( "%s02", date('Ymd'));
+        $given = sprintf("%s01", date('Ymd'));
+        $expected = sprintf("%s02", date('Ymd'));
         $result = $this->dnsRecord->get_next_serial($given);
         $this->assertSame($expected, $result);
     }
 
     public function testGetNextSerialShouldReStartRevisionFromTodayIfInFuture()
     {
-        $given = sprintf( "%s01", date('Ymd', strtotime("+3 day")));
-        $expected = sprintf( "%s02", date('Ymd', strtotime("+3 day")));
+        $given = sprintf("%s01", date('Ymd', strtotime("+3 day")));
+        $expected = sprintf("%s02", date('Ymd', strtotime("+3 day")));
         $result = $this->dnsRecord->get_next_serial($given);
         $this->assertSame($expected, $result);
     }
 
     public function testGetNextSerialShouldReStartRevisionFromTodayIfInFutureAndMaxPerDay()
     {
-        $given = sprintf( "%s99", date('Ymd', strtotime("+3 day")));
-        $expected = sprintf( "%s00", date('Ymd', strtotime("+4 day")));
+        $given = sprintf("%s99", date('Ymd', strtotime("+3 day")));
+        $expected = sprintf("%s00", date('Ymd', strtotime("+4 day")));
         $result = $this->dnsRecord->get_next_serial($given);
         $this->assertSame($expected, $result);
     }
 
     public function testGetNextSerialShouldRestartRevisionFromTodayIfInThePast()
     {
-        $given = sprintf( "%s01", date('Ymd', strtotime("-4 day")));
-        $expected = sprintf( "%s00", date('Ymd'));
+        $given = sprintf("%s01", date('Ymd', strtotime("-4 day")));
+        $expected = sprintf("%s00", date('Ymd'));
         $result = $this->dnsRecord->get_next_serial($given);
         $this->assertSame($expected, $result);
     }
 
     public function testGetNextSerialShouldIncrementSerialWhenInFuture()
     {
-        $given = sprintf( "%s01", date('Ymd', strtotime("+1 day")));
-        $expected = sprintf( "%s02", date('Ymd', strtotime("+1 day")));
+        $given = sprintf("%s01", date('Ymd', strtotime("+1 day")));
+        $expected = sprintf("%s02", date('Ymd', strtotime("+1 day")));
         $result = $this->dnsRecord->get_next_serial($given);
         $this->assertSame($expected, $result);
     }
 
     public function testGetNextSerialShouldIncrementDayWhenInFuture()
     {
-        $given = sprintf( "%s99", date('Ymd', strtotime("+1 day")));
-        $expected = sprintf( "%s00", date('Ymd', strtotime("+2 day")));
+        $given = sprintf("%s99", date('Ymd', strtotime("+1 day")));
+        $expected = sprintf("%s00", date('Ymd', strtotime("+2 day")));
         $result = $this->dnsRecord->get_next_serial($given);
         $this->assertSame($expected, $result);
     }
 
-    public function testGetDomainLevel() {
+    public function testGetDomainLevel()
+    {
         $this->assertSame(DnsRecord::get_domain_level('com'), 1);
         $this->assertSame(DnsRecord::get_domain_level('example.com'), 2);
         $this->assertSame(DnsRecord::get_domain_level('www.example.com'), 3);
     }
 
-    public function testGetSecondLevelDomain() {
+    public function testGetSecondLevelDomain()
+    {
         $this->assertSame(DnsRecord::get_second_level_domain('www.example.com'), 'example.com');
         $this->assertSame(DnsRecord::get_second_level_domain('ftp.ru.example.com'), 'example.com');
     }
 
-    public function testGetNextDate() {
+    public function testGetNextDate()
+    {
         $this->assertSame(DnsRecord::get_next_date('20110526'), '20110527');
         $this->assertSame(DnsRecord::get_next_date('20101231'), '20110101');
         $this->assertSame(DnsRecord::get_next_date('20110228'), '20110301');

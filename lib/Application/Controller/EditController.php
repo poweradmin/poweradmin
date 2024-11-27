@@ -44,6 +44,7 @@ use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 
 class EditController extends BaseController
@@ -78,7 +79,7 @@ class EditController extends BaseController
 
         if (isset($_POST['save_as'])) {
             $this->validateCsrfToken();
-            $this->saveTemplateAs($zone_id);
+            $this->saveAsTemplate($zone_id);
         }
 
         $perm_view = Permission::getViewPermission($this->db);
@@ -197,7 +198,10 @@ class EditController extends BaseController
 
         $soa_record = $dnsRecord->get_soa_record($zone_id);
 
+        $isDnsSecEnabled = $this->config('pdnssec_use');
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+
+        $isReverseZone = DnsHelper::isReverseZone($zone_name);
 
         $this->render('edit.html', [
             'zone_id' => $zone_id,
@@ -227,13 +231,14 @@ class EditController extends BaseController
             'record_sort_by' => $record_sort_by,
             'sort_direction' => $sort_direction,
             'pagination' => $this->createAndPresentPagination($record_count, $iface_rowamount, $zone_id),
-            'pdnssec_use' => $this->config('pdnssec_use'),
+            'pdnssec_use' => $isDnsSecEnabled,
             'is_secured' => $dnssecProvider->isZoneSecured($zone_name, $this->getConfig()),
             'session_userid' => $_SESSION["userid"],
             'dns_ttl' => $this->config('dns_ttl'),
-            'is_reverse_zone' => preg_match('/i(p6|n-addr).arpa/i', $zone_name),
-            'record_types' => RecordType::getTypes(),
+            'is_reverse_zone' => $isReverseZone,
+            'record_types' => $isReverseZone ? RecordType::getReverseZoneTypes($isDnsSecEnabled) : RecordType::getDomainZoneTypes($isDnsSecEnabled),
             'iface_add_reverse_record' => $this->config('iface_add_reverse_record'),
+            'iface_add_domain_record' => $this->config('iface_add_domain_record'),
             'iface_zone_comments' => $this->config('iface_zone_comments'),
             'iface_edit_show_id' => $iface_show_id,
             'iface_edit_add_record_top' => $iface_edit_add_record_top,
@@ -360,7 +365,7 @@ class EditController extends BaseController
         }
     }
 
-    public function saveTemplateAs(string $zone_id): void
+    public function saveAsTemplate(string $zone_id): void
     {
         $template_name = htmlspecialchars($_POST['templ_name']) ?? '';
         if (ZoneTemplate::zone_templ_name_exists($this->db, $template_name)) {
@@ -373,7 +378,12 @@ class EditController extends BaseController
 
             $description = htmlspecialchars($_POST['templ_descr']) ?? '';
 
-            ZoneTemplate::add_zone_templ_save_as($this->db, $template_name, $description, $_SESSION['userid'], $records, $dnsRecord->get_domain_name_by_id($zone_id));
+            $options = [
+                'NS1' => $this->config('dns_ns1') ?? '',
+                'HOSTMASTER' => $this->config('dns_hostmaster') ?? '',
+            ];
+
+            ZoneTemplate::add_zone_templ_save_as($this->db, $template_name, $description, $_SESSION['userid'], $records, $options, $dnsRecord->get_domain_name_by_id($zone_id));
             $this->setMessage('edit', 'success', _('Zone template has been added successfully.'));
         }
     }

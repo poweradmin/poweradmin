@@ -47,6 +47,43 @@ class ZoneTemplate
         $this->config = $config;
     }
 
+    /**
+     * @param string $domain
+     * @param array $record
+     * @param array $options
+     * @return array
+     */
+    public static function replaceWithTemplatePlaceholders(string $domain, array $record, array $options = []): array
+    {
+        if (empty($domain)) {
+            return [$record['name'], $record['content']];
+        }
+
+        $pattern = '/(\.)?' . preg_quote($domain, '/') . '$/';
+        $name = preg_replace($pattern, '$1[ZONE]', $record['name']);
+        $content = preg_replace($pattern, '$1[ZONE]', $record['content']);
+
+        if (isset($record['type']) && $record['type'] === 'SOA') {
+            $parts = explode(' ', $content);
+
+            if (isset($options['NS1']) && $parts[0] === $options['NS1']) {
+                $parts[0] = '[NS1]';
+            }
+
+            if (isset($options['HOSTMASTER']) && $parts[1] === $options['HOSTMASTER']) {
+                $parts[1] = '[HOSTMASTER]';
+            }
+
+            if (preg_match('/\d{10}/', $parts[2])) {
+                $parts[2] = '[SERIAL]';
+            }
+
+            $content = implode(' ', $parts);
+        }
+
+        return [$name, $content];
+    }
+
     /** Get a list of all available zone templates
      *
      * @param int $userid User ID
@@ -417,15 +454,17 @@ class ZoneTemplate
 
     /** Add a zone template from zone / another template
      *
+     * @param $db
      * @param string $template_name template name
      * @param string $description description
      * @param int $userid user id
      * @param array $records array of zone records
-     * @param string|null $domain domain to substitute with '[ZONE]' (optional) [default=null]
+     * @param array $options
+     * @param string $domain domain to substitute with '[ZONE]' (optional) [default=null]
      *
      * @return boolean true on success, false otherwise
      */
-    public static function add_zone_templ_save_as($db, string $template_name, string $description, int $userid, array $records, string $domain = ''): bool
+    public static function add_zone_templ_save_as($db, string $template_name, string $description, int $userid, array $records, array $options, string $domain = ''): bool
     {
         if (!(UserManager::verify_permission($db, 'zone_master_add'))) {
             $error = new ErrorMessage(_("You do not have the permission to add a zone template."));
@@ -447,8 +486,7 @@ class ZoneTemplate
             $zone_templ_id = $db->lastInsertId();
 
             foreach ($records as $record) {
-                $name = !empty($domain) ? preg_replace('/' . preg_quote($domain, '/') . '/', '[ZONE]', $record['name']) : $record['name'];
-                $content = !empty($domain) ? preg_replace('/' . preg_quote($domain, '/') . '/', '[ZONE]', $record['content']) : $record['content'];
+                list($name, $content) = self::replaceWithTemplatePlaceholders($domain, $record, $options);
 
                 $query2 = "INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES ("
                     . $db->quote($zone_templ_id, 'integer') . ","
