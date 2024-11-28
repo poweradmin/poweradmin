@@ -13,14 +13,14 @@
         <tr>
             <td style="vertical-align: top" class="pt-1">{% trans %}Zone name{% endtrans %}:</td>
             <td>
-                <input class="form-control form-control-sm" type="text" name="domain" value="" required>
+                <input data-testid="zone-name-input" class="form-control form-control-sm" type="text" name="domain" value="" required>
                 <div class="invalid-feedback">{% trans %}Provide zone name{% endtrans %}</div>
             </td>
         </tr>
         <tr>
             <td>{% trans %}Owner{% endtrans %}:</td>
             <td>
-                <select class="form-select form-select-sm" name="owner">
+                <select data-testid="zone-owner-select" class="form-select form-select-sm" name="owner">
                     {% for user in users %}
                     {% if user['id'] == session_user_id %}
                     <option value="{{ user['id'] }}" selected>{{ user['fullname'] }}</option>
@@ -34,7 +34,7 @@
         <tr>
             <td>{% trans %}Type{% endtrans %}:</td>
             <td>
-                <select class="form-select form-select-sm" name="dom_type">
+                <select data-testid="zone-type-select" class="form-select form-select-sm" name="dom_type">
                     {% for type in available_zone_types %}
                     {% if type == iface_zone_type_default %}
                     {% set selected = 'selected' %}
@@ -49,7 +49,7 @@
         <tr>
             <td>{% trans %}Template{% endtrans %}:</td>
             <td>
-                <select class="form-select form-select-sm" name="zone_template">
+                <select data-testid="zone-template-select" class="form-select form-select-sm" name="zone_template">
                     <option value="none">none</option>
                     {% for zone_template in zone_templates %}
                     <option value="{{ zone_template['id'] }}">{{ zone_template['name'] }}</option>
@@ -61,13 +61,13 @@
         {% if pdnssec_use %}
         <tr>
             <td>{% trans %}DNSSEC{% endtrans %}:</td>
-            <td><input class="form-check-input" type="checkbox" name="dnssec" value="1" checked></td>
+            <td><input data-testid="dnssec-checkbox" class="form-check-input" type="checkbox" name="dnssec" value="1" checked></td>
         </tr>
         {% endif %}
         <tr>
             <td>&nbsp;</td>
             <td>
-                <input class="btn btn-primary btn-sm" type="submit" name="submit" value="{% trans %}Add zone{% endtrans  %}">
+                <input data-testid="add-zone-button" class="btn btn-primary btn-sm" type="submit" name="submit" value="{% trans %}Add zone{% endtrans  %}">
             </td>
         </tr>
     </table>

@@ -137,7 +137,7 @@ abstract class BaseController
                 };
 
                 echo <<<EOF
-<div class="alert $alertClass alert-dismissible fade show" role="alert">{$message['content']}
+<div class="alert $alertClass alert-dismissible fade show" role="alert" data-testid="alert-message">{$message['content']}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 EOF;
