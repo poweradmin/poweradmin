@@ -25,6 +25,21 @@ describe('Master Zone Management', () => {
         cy.get('[data-testid="alert-message"]').should('contain', 'Zone has been added successfully.');
     });
 
+    it('should add a record to a master zone successfully', () => {
+        cy.get('[data-testid="list-zones-link"]').click();
+
+        cy.contains('tr', 'example.com').within(() => {
+            cy.get('[data-testid^="edit-zone-"]').click();
+        });
+
+        cy.get('[data-testid="record-name-input"]').type('www');
+        cy.get('[data-testid="record-content-input"]').type('192.168.1.1');
+        cy.get('[data-testid="add-reverse-record-checkbox"]').check();
+        cy.get('[data-testid="add-record-button"]').click();
+
+        cy.get('[data-testid="alert-message"]').should('contain', 'The record was successfully added.');
+    });
+
     it('should delete a master zone successfully', () => {
         cy.get('[data-testid="list-zones-link"]').click();
 

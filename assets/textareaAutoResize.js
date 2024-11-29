@@ -20,7 +20,7 @@ function updateContentInput(selectId, containerId, contentId) {
 
     elements.container.innerHTML = isTextarea
         ? `<textarea id="${contentId}" class="form-control form-control-sm" name="${currentName}" rows="1" required>${currentValue}</textarea>`
-        : `<input id="${contentId}" class="form-control form-control-sm" type="text" name="${currentName}" value="${currentValue}" required>`;
+        : `<input id="${contentId}" class="form-control form-control-sm" type="text" name="${currentName}" value="${currentValue}" data-testid="record-content-input" required>`;
 
     if (isTextarea) {
         const textarea = document.getElementById(contentId);
