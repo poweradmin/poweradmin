@@ -15,4 +15,37 @@ describe('Master Zone Management', () => {
         cy.url().should('include', '/index.php?page=list_zones');
         cy.get('[data-testid="alert-message"]').should('contain', 'Zone has been added successfully.');
     });
+
+    it('should add a reverse zone successfully', () => {
+        cy.get('[data-testid="add-master-zone-link"]').click();
+        cy.get('[data-testid="zone-name-input"]').type('1.168.192.in-addr.arpa');
+        cy.get('[data-testid="add-zone-button"]').click();
+
+        cy.url().should('include', '/index.php?page=list_zones');
+        cy.get('[data-testid="alert-message"]').should('contain', 'Zone has been added successfully.');
+    });
+
+    it('should delete a master zone successfully', () => {
+        cy.get('[data-testid="list-zones-link"]').click();
+
+        cy.contains('tr', 'example.com').within(() => {
+            cy.get('[data-testid^="delete-zone-"]').click();
+        });
+
+        cy.get('[data-testid="confirm-delete-zone"]').click();
+
+        cy.get('[data-testid="alert-message"]').should('contain', 'Zone has been deleted successfully.');
+    });
+
+    it('should delete a reverse zone successfully', () => {
+        cy.get('[data-testid="list-zones-link"]').click();
+
+        cy.contains('tr', '1.168.192.in-addr.arpa').within(() => {
+            cy.get('[data-testid^="delete-zone-"]').click();
+        });
+
+        cy.get('[data-testid="confirm-delete-zone"]').click();
+
+        cy.get('[data-testid="alert-message"]').should('contain', 'Zone has been deleted successfully.');
+    });
 });

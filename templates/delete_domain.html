@@ -30,5 +30,5 @@
 
 <p>{% trans %}Are you sure?{% endtrans %}</p>
 <input type="button" class="btn btn-primary btn-sm" onClick="location.href='index.php?page=delete_domain&id={{ zone_id }}&confirm=1'"
-       value="{% trans %}Yes{% endtrans %}">
-<input type="button" class="btn btn-secondary btn-sm" onClick="location.href='index.php?page=list_zones'" value="{% trans %}No{% endtrans %}">
+       value="{% trans %}Yes{% endtrans %}" data-testid="confirm-delete-zone">
+<input type="button" class="btn btn-secondary btn-sm" onClick="location.href='index.php?page=list_zones'" value="{% trans %}No{% endtrans %}" data-testid="cancel-delete-zone">
