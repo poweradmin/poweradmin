@@ -3,11 +3,10 @@
 # This file is distributed under the same license as the Poweradmin package.
 # Riccardo Bessone <riccardo@bess.one>, 2024.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 3.8.0\n"
-"Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
+"Report-Msgid-Bugs-To: riccardo@bess.one\n"
 "POT-Creation-Date: 2024-06-26 07:39+0300\n"
 "PO-Revision-Date: 2024-12-05 12:48+0100\n"
 "Last-Translator: Riccardo Bessone <riccardo@bess.one>\n"
