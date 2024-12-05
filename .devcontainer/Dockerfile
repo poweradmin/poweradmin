@@ -16,6 +16,7 @@ RUN echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/error_reporting.
 RUN sed -i '/^#.* cs_CZ.UTF-8 UTF-8/s/^# //' /etc/locale.gen \
   && sed -i '/^#.* de_DE.UTF-8 UTF-8/s/^# //' /etc/locale.gen \
   && sed -i '/^#.* fr_FR.UTF-8 UTF-8/s/^# //' /etc/locale.gen \
+  && sed -i '/^#.* it_IT.UTF-8 UTF-8/s/^# //' /etc/locale.gen \
   && sed -i '/^#.* ja_JP.UTF-8 UTF-8/s/^# //' /etc/locale.gen \
   && sed -i '/^#.* lt_LT.UTF-8 UTF-8/s/^# //' /etc/locale.gen \
   && sed -i '/^#.* nb_NO.UTF-8 UTF-8/s/^# //' /etc/locale.gen \

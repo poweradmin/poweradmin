@@ -30,7 +30,7 @@ class LocaleHandler
     public const DEFAULT_LANGUAGE = 'en_EN';
 
     private const SUPPORTED_LANGUAGES = [
-        'cs_CZ', 'de_DE', 'fr_FR', 'ja_JP', 'lt_LT', 'nb_NO', 'nl_NL', 'pl_PL', 'ru_RU', 'tr_TR', 'zh_CN', 'en_EN'
+        'cs_CZ', 'de_DE', 'fr_FR', 'it_IT', 'ja_JP', 'lt_LT', 'nb_NO', 'nl_NL', 'pl_PL', 'ru_RU', 'tr_TR', 'zh_CN', 'en_EN'
     ];
 
     public static function getAvailableLanguages(): array
