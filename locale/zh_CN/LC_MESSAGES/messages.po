@@ -9,1338 +9,2189 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 3.5.1\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-30 12:50+0200\n"
+"Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
+"POT-Creation-Date: 2024-12-05 20:07+0200\n"
 "PO-Revision-Date: 2023-12-03 17:52+0200\n"
 "Last-Translator: TechQI <techqi@126.com>\n"
 "Language-Team: Chinese\n"
+"Language: cn\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: cn\n"
 
-msgid "Home"
-msgstr "主页"
-
-msgid "Zones"
-msgstr "区域"
-
-msgid "Templates"
-msgstr "模板"
-
-msgid "List zone templates"
-msgstr "区域模板列表"
-
-msgid "List permission templates"
-msgstr "权限模板列表"
-
-msgid "Bulk registration"
-msgstr "批量注册"
-
-msgid "Users"
-msgstr "用户"
-
-msgid "Add permission template"
-msgstr "添加权限模板"
-
-msgid "Zone templates"
-msgstr "区域模板"
-
-msgid "Add template"
-msgstr "添加模板"
-
-msgid "Supermasters"
-msgstr "超级主服务器"
-
-msgid "Name"
-msgstr "名称"
-
-msgid "Description"
-msgstr "描述"
-
-msgid "Commit changes"
-msgstr "提交修改"
-
-msgid "The record was succesfully added."
-msgstr "记录已添加"
-
-msgid "Add record to zone"
-msgstr "添加记录到区域"
-
-msgid "Type"
-msgstr "类型"
-
-msgid "Priority"
-msgstr "优先级"
-
-msgid "Content"
-msgstr "内容"
-
-msgid "TTL"
-msgstr "TTL"
-
-msgid "Add record"
-msgstr "添加记录"
-
-msgid "Add also reverse record"
-msgstr "同时添加反向记录"
-
-msgid "Add supermaster"
-msgstr "添加超级主机"
-
-msgid "You do not have the permission to add a new supermaster."
-msgstr "您没有权限添加新超级主服务器。"
-
-msgid "IP address of supermaster"
-msgstr "超级主服务器的IP地址"
-
-msgid "Hostname in NS record"
-msgstr "NS记录中的主机名"
-
-msgid "Account"
-msgstr "账号"
-
-msgid "Add user"
-msgstr "添加用户"
-
-msgid "Username"
-msgstr "用户名"
-
-msgid "Fullname"
-msgstr "全名"
-
-msgid "Full name"
-msgstr "全名"
-
-msgid "Password"
-msgstr "密码"
-
-msgid "Email address"
-msgstr "电子邮件地址"
-
-msgid "Permission template"
-msgstr "权限模板"
-
-msgid "Enabled"
-msgstr "启用"
-
-msgid "IP address of web- or mailserver is invalid."
-msgstr "无效的web或邮件服务器IP地址"
-
-msgid "Add master zone"
-msgstr "添加主区域"
-
-msgid "Zone name"
-msgstr "区域名称"
-
-msgid "IP address of webserver"
-msgstr "web服务器的IP地址"
-
-msgid "IP address of mailserver"
-msgstr "邮件服务器的IP地址"
-
-msgid "Owner"
-msgstr "所有者"
-
-msgid "Create zone without applying records-template"
-msgstr "创建不应用记录模板的域"
-
-msgid "Type one domain per line"
-msgstr "每行输入一个域名"
-
-msgid "Add zone"
-msgstr "添加区域"
-
-msgid "Add zones"
-msgstr "添加区域"
-
-msgid "Add slave zone"
-msgstr "添加从区域"
-
-msgid "Add zone template"
-msgstr "添加区域模板"
-
-msgid "Zone templates for"
-msgstr "区域模板："
-
-msgid "Add zone template for"
-msgstr "添加区域模板用于"
-
-msgid "Everyone could use it (global)?"
-msgstr "所有人都可以使用吗？（全局）"
-
-msgid "In use"
-msgstr "已使用"
-
-msgid "Zones linked"
-msgstr "已关联区域"
-
-msgid "Delete zone template"
-msgstr "删除区域模板"
-
-msgid "Edit zone template"
-msgstr "编辑区域模板"
-
-msgid "Update zones"
-msgstr "更新区域"
-
-msgid "IP address of master NS"
-msgstr "主DNS服务器的IP地址"
-
-msgid "Change password"
-msgstr "更改密码"
-
-msgid "Current password"
-msgstr "当前密码"
-
-msgid "New password"
-msgstr "新密码"
-
-msgid "Repeat password"
-msgstr "重复密码"
-
-msgid "Delete zone"
-msgstr "删除区域"
-
-msgid "Are you sure?"
-msgstr "确定吗？"
-
-msgid "Yes"
-msgstr "是"
-
-msgid "No"
-msgstr "否"
-
-msgid "Delete permission template"
-msgstr "删除权限模板"
-
-msgid "Delete record"
-msgstr "删除记录"
-
-msgid "You are trying to delete a record that is needed for this zone to work."
-msgstr "您正试图删除此区域所需的记录。"
-
-msgid "Delete supermaster"
-msgstr "删除超级主服务器"
-
-msgid "Delete user"
-msgstr "删除用户"
-
-msgid "Zone"
-msgstr "区域"
-
-msgid "Delete"
-msgstr "删除"
-
-msgid "Leave"
-msgstr "离开"
-
-msgid "Add new owner"
-msgstr "添加新所有者"
-
-msgid "Owner to be added"
-msgstr "要添加的所有者"
-
-msgid "Really delete this user?"
-msgstr "确定删除这个用户？"
-
-msgid "Edit permission template"
-msgstr "编辑权限模板"
-
-msgid "Edit zone"
-msgstr "编辑区域"
-
-msgid "This zone does not have any records."
-msgstr "该区域没有任何记录。"
-
-msgid "Edit record"
-msgstr "编辑记录"
-
-msgid "Owner of zone"
-msgstr "区域所有者"
-
-msgid "No owner set for this zone."
-msgstr "此区域未设置所有者。"
-
-msgid "Add"
-msgstr "添加"
-
-msgid "Change"
-msgstr "更改"
-
-msgid "Edit"
-msgstr "编辑"
-
-msgid "Update"
-msgstr "更新"
-
-msgid "Reset"
-msgstr "重置"
-
-msgid "Clear"
-msgstr "清除"
-
-msgid "Edit record in zone"
-msgstr "编辑区域内的记录"
-
-msgid "Edit user"
-msgstr "编辑用户"
-
-msgid "Welcome"
-msgstr "欢迎"
-
-msgid "Index"
-msgstr "首页"
-
-msgid "Search zones and records"
-msgstr "搜索区域和记录"
-
-msgid "Wildcard"
-msgstr "通配符"
-
-msgid "Reverse"
-msgstr "反向"
-
-msgid "No results found"
-msgstr "未找到结果"
-
-msgid "List zones"
-msgstr "区域列表"
-
-msgid "Total number of zones:"
-msgstr "区域总数："
-
-msgid "Delete zone(s)"
-msgstr "删除区域"
-
-msgid "List supermasters"
-msgstr "超级主机列表"
-
-msgid "User administration"
-msgstr "用户管理"
-
-msgid "Logout"
-msgstr "登出"
-
-msgid "Permission templates"
-msgstr "权限模板"
-
-msgid "Edit template"
-msgstr "编辑模板"
-
-msgid "Delete template"
-msgstr "删除模板"
-
-msgid "There are no supermasters to show in this listing."
-msgstr "此列表中没有超级主服务器可显示。"
-
-msgid "There are no zones to show in this listing."
-msgstr "在此列表中没有可显示的区域。"
-
-msgid "You do not have the permission to see any zones."
-msgstr "您没有权限查看任何区域。"
-
-msgid "Records"
-msgstr "记录"
-
-msgid "View zone"
-msgstr "查看域名"
-
-msgid "Zones found"
-msgstr "找到区域"
-
-msgid "Master"
-msgstr "主"
-
-msgid "Records found"
-msgstr "找到记录"
-
-msgid "Query"
-msgstr "输入"
-
-msgid "Enter a hostname or IP address"
-msgstr "输入一个主机或者IP地址"
-
-msgid "Search"
-msgstr "搜索"
-
-msgid "Template"
-msgstr "模板"
-
-msgid "Session expired, please login again."
-msgstr "会话已过期，请重新登录。"
-
-msgid "Authentication failed!"
-msgstr "认证失败！"
-
-msgid "Log in"
-msgstr "登录"
-
-msgid "Go"
-msgstr "前进"
-
-msgid "You have logged out."
-msgstr "您已退出登录。"
-
-msgid "Oops! An error occured!"
-msgstr "哦豁！出错了……"
-
-msgid "Unknown database type in inc/config.inc.php."
-msgstr "在inc/config.inc.php文件中没有能识别的数据库类型"
-
-msgid "If you specify an MX record it must be a hostname."
-msgstr "指定的MX记录必须是一个主机"
-
-msgid "You do not have the permission to perform searches."
-msgstr "您没有权限执行查询"
-
-msgid "You do not have the permission to add a record to this zone."
-msgstr "您没有权限向此区域添加记录。"
-
-msgid "You do not have the permission to edit this record."
-msgstr "您没有权限编辑此记录。"
-
-msgid "You do not have the permission to view this record."
-msgstr "您没有查看此记录的权限。"
-
-msgid "You do not have the permission to delete this record."
-msgstr "您没有权限删除此记录。"
-
-msgid "You do not have the permission to add a master zone."
-msgstr "您没有权限添加主区域。"
-
-msgid "You do not have the permission to add a slave zone."
-msgstr "您没有权限添加从区域。"
-
-msgid "You do not have the permission to delete a zone."
-msgstr "您没有权限删除区域。"
-
-msgid "You do not have the permission to delete a supermaster."
-msgstr "您没有权限删除超级主服务器。"
-
-msgid "You do not have the permission to view this zone."
-msgstr "您没有权限查看此区域。"
-
-msgid "You do not have the permission to edit this user."
-msgstr "您没有权限编辑此用户。"
-
-msgid "You do not have the permission to edit permission templates."
-msgstr "您没有权限编辑权限模板。"
-
-msgid "You do not have the permission to delete permission templates."
-msgstr "您没有删除权限模板的权限。"
-
-msgid "You do not have the permission to add a new user."
-msgstr "您没有权限添加新用户。"
-
-msgid "You do not have the permission to delete this user."
-msgstr "您没有权限删除此用户。"
-
-msgid "This is an invalid zone name."
-msgstr "这是无效的区域名称。"
-
-msgid "There is already a supermaster with this IP address."
-msgstr "已经有一个主解析服务器是这个ip地址了"
-
-msgid "There is already a zone with this name."
-msgstr "已经存在具有此名称的区域。"
-
-msgid "Username exist already, please choose another one."
-msgstr "用户名已经存在，请另选一个"
-
-msgid "User does not exist."
-msgstr "用户不存在。"
-
-msgid "You did not enter the correct current password."
-msgstr "您未输入正确的当前密码。"
-
-msgid "The two new password fields do not match."
-msgstr "两个新密码字段不匹配。"
-
-msgid "This template is assigned to at least one user."
-msgstr "此模板已分配给至少一个用户。"
-
-msgid "Invalid or unexpected input given."
-msgstr "输入无效或不符合预期。"
-
-msgid "Invalid argument(s) given to function %s"
-msgstr "函数%s给定的参数无效"
-
-msgid "Invalid argument(s) given to function %s %s"
-msgstr "函数%s给定的参数无效 %s"
-
-msgid "Unknown error."
-msgstr "未知错误"
-
-msgid "Enter a valid email address."
-msgstr "请输入有效的电子邮件地址。"
-
-msgid "Your content field doesnt have a legit value."
-msgstr "您的内容字段没有合法值"
-
-msgid "Invalid hostname."
-msgstr "无效的主机名。"
-
-msgid "Invalid record type! You should not even been able to get that here."
-msgstr "记录类型无效！您甚至不应该在这里看到它"
-
-msgid "This is not a valid IPv4 or IPv6 address."
-msgstr "这不是有效的IPv4或IPv6地址。"
-
-msgid "This is not a valid IPv6 address."
-msgstr "这不是有效的IPv6地址。"
-
-msgid "This is not a valid IPv4 address."
-msgstr "这不是有效的IPv4地址。"
-
-msgid "NS records must be a hostnames."
-msgstr "NS记录必须是一个主机名"
-
-msgid "A prio field should be numeric."
-msgstr "PRIO字段应该是一个数字"
-
-msgid "At least one of the five last SOA data fields is not numeric."
-msgstr "SOA记录最后五个数据字段中至少有一个不是数字"
-
-msgid "You can only have five numeric fields in the SOA record."
-msgstr "SOA记录中只能有五个数字字段"
-
-msgid "Zone has been added succesfully."
-msgstr "域名已添加"
-
-msgid "Zone has been deleted succesfully."
-msgstr "域名已删除"
-
-msgid "Zone template has been added successfully."
-msgstr "区域模板已成功添加。"
-
-msgid "Zone template has been deleted successfully."
-msgstr "区域模板已成功删除。"
-
-msgid "The user has been updated succesfully."
-msgstr "用户已更新"
-
-msgid "The user has been created succesfully."
-msgstr "用户已创建"
-
-msgid "The user has been deleted succesfully."
-msgstr "用户已删除"
-
-msgid "The record has been updated succesfully."
-msgstr "记录已更新"
-
-msgid "The record has been deleted succesfully."
-msgstr "记录已删除"
-
-msgid "The supermaster has been deleted succesfully."
-msgstr "主解析服务器已删除"
-
-msgid "The supermaster has been added succesfully."
-msgstr "主解析服务器已添加"
-
-msgid "The permission template has been deleted succesfully."
-msgstr "权限模板已删除"
-
-msgid "Function returned an error (multiple zones matching this zone ID)."
-msgstr "函数返回一个错误（多个域匹配这个域的ID）"
-
-msgid "You have to create a config.inc.php!"
-msgstr "您必须创建一个config.inc.php文件！"
-
-msgid "Show zones beginning with"
-msgstr "显示以...开头的区域"
-
-msgid "Success!"
-msgstr "成功"
-
-msgid "Successful!"
-msgstr "成功的"
-
-msgid "back"
-msgstr "后退"
-
-msgid "Inactive"
-msgstr "无效"
-
-msgid "Active"
-msgstr "启用"
-
-msgid "Password has been changed, please login."
-msgstr "密码已更改，请登录。"
-
-msgid "Zone template with this name already exists, please choose another one."
-msgstr "具有此名称的区域模板已存在，请选择其他名称。"
-
-msgid "The record was successfully added."
-msgstr "记录已成功添加。"
-
-msgid "Emailaddress"
-msgstr "Email地址"
-
-msgid "Add record to zone template"
-msgstr "向区域模板添加记录"
-
-msgid "Hint:"
-msgstr "提示："
-
-msgid "The following placeholders can be used in template records"
-msgstr "模板记录中可以使用以下占位符"
-
-msgid "substituted with current zone name"
-msgstr "替换为当前域名称"
-
-msgid "substituted with current date and 2 numbers"
-msgstr "替换为当前日期以及2个数字"
-
-msgid "substituted with 1st name server"
-msgstr "用第一个名称服务器替换"
-
-msgid "substituted with 2nd name server"
-msgstr "用第二个名称服务器替换"
-
-msgid "substituted with 3rd name server"
-msgstr "用第三个名称服务器替换"
-
-msgid "substituted with 4th name server"
-msgstr "用第四个名称服务器替换"
-
-msgid "substituted with hostmaster"
-msgstr "用hostmaster替换"
-
-msgid "Examples:"
-msgstr "示例："
-
-msgid "To add a wildcard record put *.[ZONE] in the name field."
-msgstr "要添加通配符记录，请在名称字段中输入*.[ZONE]。"
-
-msgid "Use just [ZONE] to have the domain itself return a value."
-msgstr "仅使用[ZONE]将使域名本身返回一个值。"
-
-msgid "Delete zones"
-msgstr "删除区域"
-
-msgid "Comments"
-msgstr "评论"
-
-msgid "Edit comment"
-msgstr "编辑评论"
-
-msgid "Template Name"
-msgstr "模板名称"
-
-msgid "Template Description"
-msgstr "模板描述"
-
-msgid "Reset changes"
-msgstr "重置修改"
-
-msgid "Save as template"
-msgstr "保存为模板"
-
-msgid "Save as new template"
-msgstr "保存为新模板"
-
-msgid "Edit comment in zone"
-msgstr "在区域内编辑评论"
-
-msgid "This user has been assigned the permission template"
-msgstr "此用户已被分配权限模板"
-
-msgid "The description for this template is"
-msgstr "此模板的描述为"
-
-msgid "Based on this template, this user has the following permissions"
-msgstr "基于此模板，此用户具有以下权限"
-
-msgid "This template zone does not have any records yet."
-msgstr "此域模板还没有任何解析记录"
-
-msgid "Edit record in zone template"
-msgstr "编辑区域模板中的记录"
-
-msgid "You do not have the permission to view this comment."
-msgstr "您没有权限查看此评论。"
-
-msgid "You do not have the permission to edit this comment."
-msgstr "您没有权限编辑此评论。"
-
-msgid "You do not have the permission to edit zone templates."
-msgstr "您没有权限编辑域模板"
-
-msgid "You do not have the permission to delete zone templates."
-msgstr "您没有权限删除区域模板。"
-
-msgid "You do not have the permission to add a zone template."
-msgstr "您没有权限添加区域模板。"
-
-msgid "There is no zone with this ID."
-msgstr "没有此ID的区域。"
-
-msgid "There is no zone template with this ID."
-msgstr "没有该ID的区域模板。"
-
-msgid "Template name can't be an empty string."
-msgstr "模板名称不能为空字符串。"
-
-msgid "No database name has been set in config.inc.php."
-msgstr "在config.inc.php中没有设置数据库名称。"
-
-msgid "No database host has been set in config.inc.php."
-msgstr "在config.inc.php中没有设置数据库主机。"
-
-msgid "No database username has been set in config.inc.php."
-msgstr "在config.inc.php中没有设置数据库用户名。"
-
-msgid "No database password has been set in config.inc.php."
-msgstr "在config.inc.php中没有设置数据库密码。"
-
-msgid "No or unknown database type has been set in config.inc.php."
-msgstr "在config.inc.php中没有设置数据库类型或设置了未知的数据库类型。"
-
-msgid "You have invalid characters in your hostname."
-msgstr "您的主机名包含无效字符。"
-
-msgid "A hostname can not start or end with a dash."
-msgstr "主机名不能以减号开头或结尾"
-
-msgid "Given hostname or one of the labels is too short or too long."
-msgstr "给定的主机名或其中一个标签过短或过长。"
-
-msgid "Given hostname has too many slashes."
-msgstr "给定的主机名包含太多斜杠。"
-
-msgid "Unknown record type."
-msgstr "未知的记录类型。"
-
-msgid "You have an error in the MNAME field of the SOA record."
-msgstr "您SOA记录中的MNAME字段存在错误"
-
-msgid "Invalid value for content field of HINFO record."
-msgstr "HINFO记录的内容字段值无效。"
-
-msgid "The hostname is too long."
-msgstr "主机名太长。"
-
-msgid "You are using an invalid top level domain."
-msgstr "您正在使用无效的顶级域名。"
-
-msgid "Invalid value for TTL field. It should be numeric."
-msgstr "TTL字段值无效。应为数字。"
-
-msgid "Invalid value for prio field. It should be numeric."
-msgstr "无效的优先级，它应该是数字"
-
-msgid "Invalid value for name field of SRV record."
-msgstr "SRV记录的名称无效"
-
-msgid "Invalid value for the priority field of the SRV record."
-msgstr "SRV记录的优先级字段值无效。"
-
-msgid "Invalid value for the weight field of the SRV record."
-msgstr "SRV记录的权重字段值无效。"
-
-msgid "Invalid SRV target."
-msgstr "无效的SRV目标。"
-
-msgid "Invalid characters have been used in this record."
-msgstr "此记录中使用了无效字符。"
-
-msgid "Zone has been added successfully."
-msgstr "区域已成功添加。"
-
-msgid "Zone has been deleted successfully."
-msgstr "区域已成功删除。"
-
-msgid "Zones have been updated successfully."
-msgstr "区域已成功更新。"
-
-msgid "The user has been updated successfully."
-msgstr "用户已成功更新。"
-
-msgid "The user has been created successfully."
-msgstr "用户已成功创建。"
-
-msgid "The user has been deleted successfully."
-msgstr "用户已成功删除。"
-
-msgid "The record has been updated successfully."
-msgstr "记录已成功更新。"
-
-msgid "The record has been deleted successfully."
-msgstr "记录已成功删除。"
-
-msgid "The comment has been updated successfully."
-msgstr "评论已成功更新。"
-
-msgid "The supermaster has been deleted successfully."
-msgstr "超级主服务器已成功删除。"
-
-msgid "The supermaster has been added successfully."
-msgstr "超级主服务器已成功添加。"
-
-msgid "The permission template has been updated successfully."
-msgstr "权限模板已成功更新。"
-
-msgid "The permission template has been deleted successfully."
-msgstr "权限模板已成功删除。"
-
-msgid "Zone template has been updated successfully."
-msgstr "区域模板已成功更新。"
-
-msgid "Installation step"
-msgstr "安装步骤"
-
-msgid "Go to step"
-msgstr "进入步骤"
-
-msgid "Do you want to proceed now?"
-msgstr "您是否要立即继续？"
-
-msgid "The password for this username."
-msgstr "此用户名的密码。"
-
-msgid "Hostname"
-msgstr "主机名"
-
-msgid "DB Port"
-msgstr "数据库端口"
-
-msgid "The port the database server is listening on."
-msgstr "数据库服务器正在侦听的端口。"
-
-msgid "Database"
-msgstr "数据库"
-
-msgid "The name of the PowerDNS database."
-msgstr "PowerDNS数据库的名称。"
-
-msgid "Database type"
-msgstr "数据库类型"
-
-msgid "The type of the PowerDNS database."
-msgstr "PowerDNS数据库的类型。"
-
-msgid "Poweradmin administrator password"
-msgstr "Poweradmin管理员密码"
-
-msgid "Updating database..."
-msgstr "正在更新数据库..."
-
-msgid "done!"
-msgstr "完成！"
-
-msgid "Now we will gather all details for the configuration itself."
-msgstr "现在我们将收集有关配置本身的所有详细信息。"
-
-msgid "Hostmaster"
-msgstr "主域名服务器管理员"
-
-msgid "Primary nameserver"
-msgstr "主域名服务器"
-
-msgid "Secondary nameserver"
-msgstr "辅助域名服务器"
-
-msgid "In MySQL you should now perform the following command:"
-msgstr "在MySQL中，现在应执行以下命令："
-
-msgid "On PgSQL you would use:"
-msgstr "在PgSQL中，您将使用以下命令："
-
-msgid "Serial"
-msgstr "序列号"
-
-msgid "Reset Password"
-msgstr "重置密码"
-
-msgid "Registered Email Address"
-msgstr "注册Email"
-
-msgid "Failed to delete DNSSEC key."
-msgstr "删除DNSSEC密钥失败。"
-
-msgid "Zone key has been deleted successfully."
-msgstr "区域密钥已成功删除。"
-
-msgid "You do not have sufficient permissions to view this page."
-msgstr "您没有足够的权限查看此页面。"
-
-msgid "The user could not be updated."
-msgstr "无法更新用户。"
-
-msgid "Failed to set locale. Selected locale may be unsupported on this system. Please contact your administrator."
-msgstr "设置区域设置失败。在此系统上，所选区域设置可能不受支持。请联系您的管理员。"
-
-msgid "There is already a configuration file in place, so the installation will be skipped."
-msgstr "已经存在配置文件，因此将跳过安装过程。"
-
-msgid "You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert, and update records in the PowerDNS database."
-msgstr "现在您想为Poweradmin提供有限的权限，以便它可以更新表中的数据。为此，您应该创建一个新用户，并为其授予在PowerDNS数据库中选择、删除、插入和更新记录的权限。"
-
-msgid "After you have added the new user, proceed with this installation procedure."
-msgstr "添加新用户后，请继续进行此安装过程。"
-
-msgid "Supermaster does not exist."
-msgstr "超级主服务器不存在。"
-
-msgid "Request has expired, please try again."
-msgstr "请求已过期，请重试。"
-
-msgid "Zone has been updated successfully."
-msgstr "区域已成功更新。"
-
-msgid "Zone did not have any record changes."
-msgstr "区域没有进行任何记录更改。"
-
-msgid "Zone has not been updated successfully."
-msgstr "区域更新未成功。"
-
-msgid "Zone has been signed successfully."
-msgstr "区域已成功签名。"
-
-msgid "Zone has been unsigned successfully."
-msgstr "区域已成功取消签名。"
-
-msgid "Zones have been deleted successfully."
-msgstr "区域已成功删除。"
-
-msgid "Zones have been added successfully."
-msgstr "区域已成功添加。"
-
-msgid "Some zone(s) could not be added."
-msgstr "部分区域未能成功添加。"
-
-msgid "You do not have the permission to add permission templates."
-msgstr "您没有权限添加权限模板。"
-
-msgid "The permission template has been added successfully."
-msgstr "权限模板已成功添加。"
-
-msgid "Your content field doesn't have a legit value."
-msgstr "您的内容字段没有合法值。"
-
-msgid "Invalid value for the prio field."
-msgstr "优先级字段的值无效。"
-
-msgid "You do not have the permission to edit this SOA record."
-msgstr "您没有权限编辑此SOA记录。"
-
-msgid "You do not have the permission to edit this NS record."
-msgstr "您没有权限编辑此NS记录。"
-
-msgid "You do not have the permission to add an SOA record."
-msgstr "您没有权限添加SOA记录。"
-
-msgid "You do not have the permission to add an NS record."
-msgstr "您没有权限添加NS记录。"
-
-msgid "There is already a supermaster with this IP address and hostname."
-msgstr "已经存在具有此IP地址和主机名的超级主服务器。"
-
-msgid "You are trying to delete the SOA record. You are not allowed to remove it, unless you remove the entire zone."
-msgstr "您正在尝试删除SOA记录。除非删除整个区域，否则不允许删除它。"
-
-msgid "The selected user already owns the zone."
-msgstr "所选用户已拥有该区域。"
-
-msgid "There must be at least one owner for a zone."
-msgstr "区域必须至少有一个所有者。"
-
-msgid "The content of the SPF record is invalid"
-msgstr "SPF记录的内容无效"
-
-msgid "A hostname cannot start or end with a dash."
-msgstr "主机名不能以破折号开头或结尾。"
-
-msgid "You cannot use HTML tags for this type of record."
-msgstr "您不能在此类型的记录中使用HTML标签。"
-
-msgid "Add quotes around TXT record content."
-msgstr "在TXT记录内容周围添加引号。"
-
-msgid "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
-msgstr "这不是有效的CNAME记录。您是否将MX或NS记录分配给了此记录？"
-
-msgid "This is not a valid record. There already exists a CNAME with this name."
-msgstr "这不是有效的记录。已经存在具有此名称的CNAME记录。"
-
-msgid "This is not a valid CNAME. There already exists a record with this name."
-msgstr "这不是有效的CNAME记录。已经存在具有此名称的记录。"
-
-msgid "Empty CNAME records are not allowed."
-msgstr "不允许空的CNAME记录。"
-
-msgid "You cannot point an NS or MX record to a CNAME record. Remove or rename the CNAME record first, or take another name."
-msgstr "您不能将NS或MX记录指向CNAME记录。请先删除或重命名CNAME记录，或者选择另一个名称。"
-
-msgid "Invalid value for name field of SOA record. It should be the name of the zone."
-msgstr "SOA记录的名称字段值无效。应为区域的名称。"
-
-msgid "Invalid service value in name field of SRV record."
-msgstr "SRV记录的名称字段中的服务值无效。"
-
-msgid "Invalid protocol value in name field of SRV record."
-msgstr "SRV记录的名称字段中的协议值无效。"
-
-msgid "Invalid FQDN value in name field of SRV record."
-msgstr "SRV记录的名称字段中的FQDN值无效。"
-
-msgid "Failed to call function exec. Make sure that exec is not listed in disable_functions at php.ini"
-msgstr "调用exec函数失败。请确保php.ini中未将exec列入disable_functions列表。"
-
-msgid "Failed to call pdnssec utility."
-msgstr "调用pdnssec工具失败。"
-
-msgid "Failed to secure zone."
-msgstr "保护区域失败。"
-
-msgid "Failed to disable DNSSEC."
-msgstr "禁用DNSSEC失败。"
-
-msgid "Failed to get DNSSEC key details."
-msgstr "获取DNSSEC密钥详情失败。"
-
-msgid "Failed to activate DNSSEC key."
-msgstr "激活DNSSEC密钥失败。"
-
-msgid "Failed to deactivate DNSSEC key."
-msgstr "停用DNSSEC密钥失败。"
-
-msgid "Failed to add a new DNSSEC key."
-msgstr "添加新的DNSSEC密钥失败。"
-
-msgid "Failed to remove DNSSEC key."
-msgstr "删除DNSSEC密钥失败。"
-
-msgid "Zone key has been successfully deactivated."
-msgstr "区域密钥已成功停用。"
-
-msgid "Zone key has been successfully activated."
-msgstr "区域密钥已成功激活。"
-
-msgid "The <a href=\"install/\">install/</a> directory exists, you must remove it first before proceeding."
+#: lib/AppInitializer.php:54
+msgid ""
+"The configuration file (config.inc.php) does not exist. Please use the <a "
+"href=\"install/\">installer</a> to create it."
+msgstr ""
+"The configuration file (config.inc.php) does not exist. Please use the <a "
+"href=\"install/\">installer</a> to create it."
+
+#: lib/BaseController.php:89
+#: lib/Infrastructure/Service/SessionAuthenticator.php:105
+msgid "Invalid CSRF token."
+msgstr "Invalid CSRF token."
+
+#: lib/BaseController.php:211
+msgid ""
+"The <a href=\"install/\">install/</a> directory exists, you must remove it "
+"first before proceeding."
 msgstr "存在< a href=\"install/\">install/</a>目录，请在继续之前先将其删除。"
 
-msgid "Default session encryption key is used, please set it in your configuration file."
+#: lib/BaseController.php:232
+msgid ""
+"Default session encryption key is used, please set it in your configuration "
+"file."
 msgstr "正在使用默认会话加密密钥，请在配置文件中设置。"
 
-msgid "Please provide a username"
-msgstr "请提供用户名"
-
-msgid "Please provide a password"
-msgstr "请提供密码"
-
-msgid "Language"
-msgstr "语言"
-
-msgid "Unknown database type."
-msgstr "未知的数据库类型。"
-
+#: lib/Application/Presenter/PaginationPresenter.php:52
+#: templates/search.html:120 templates/search.html:229
 msgid "Previous"
 msgstr "上一页"
 
+#: lib/Application/Presenter/PaginationPresenter.php:79
+#: templates/search.html:142 templates/search.html:251
 msgid "Next"
 msgstr "下一页"
 
+#: lib/Application/Presenter/ZoneStartingLettersPresenter.php:27
+msgid "Show zones beginning with"
+msgstr "显示以...开头的区域"
+
+#: lib/Application/Presenter/ZoneStartingLettersPresenter.php:50
+#: lib/Application/Presenter/ZoneStartingLettersPresenter.php:52
 msgid "Show all"
 msgstr "显示全部"
 
-msgid "No database file has been set in config.inc.php."
-msgstr "在config.inc.php中没有设置数据库文件。"
+#: lib/Application/Controller/DeleteUserController.php:49
+#: lib/Application/Controller/EditCommentController.php:57
+#: lib/Application/Controller/DeleteRecordController.php:57
+#: lib/Application/Controller/DeleteZoneTemplRecordController.php:45
+#: lib/Application/Controller/DeleteZoneTemplRecordController.php:50
+#: lib/Application/Controller/EditZoneTemplController.php:161
+#: lib/Application/Controller/DnssecDsDnskeyController.php:55
+#: lib/Application/Controller/EditController.php:69
+#: lib/Application/Controller/DeleteDomainsController.php:56
+#: lib/Application/Controller/DnssecEditKeyController.php:64
+#: lib/Application/Controller/DnssecEditKeyController.php:71
+#: lib/Application/Controller/DnssecEditKeyController.php:76
+#: lib/Application/Controller/DnssecDeleteKeyController.php:64
+#: lib/Application/Controller/DnssecDeleteKeyController.php:71
+#: lib/Application/Controller/DnssecDeleteKeyController.php:77
+#: lib/Application/Controller/EditUserController.php:53
+#: lib/Application/Controller/EditUserController.php:115
+#: lib/Application/Controller/DnssecController.php:50
+#: lib/Application/Controller/DnssecAddKeyController.php:67
+#: lib/Application/Controller/DnssecAddKeyController.php:77
+#: lib/Application/Controller/DnssecAddKeyController.php:88
+msgid "Invalid or unexpected input given."
+msgstr "输入无效或不符合预期。"
 
-msgid "Something has been successfully performed. What exactly, however, will remain a mystery."
-msgstr "某些操作已成功完成。但是具体是什么，将仍然是个谜。"
+#: lib/Application/Controller/DeleteUserController.php:60
+#: lib/Domain/Model/UserManager.php:211
+msgid "You do not have the permission to delete this user."
+msgstr "您没有权限删除此用户。"
 
-msgid "An empty password is not allowed."
-msgstr "不允许为空密码。"
+#: lib/Application/Controller/DeleteUserController.php:69
+#: lib/Application/Controller/EditUserController.php:135
+msgid "User does not exist."
+msgstr "用户不存在。"
 
-msgid "Failed to connect to the LDAP server!"
-msgstr "连接LDAP服务器失败！"
+#: lib/Application/Controller/DeleteUserController.php:79
+msgid "The user has been deleted successfully."
+msgstr "用户已成功删除。"
 
-msgid "Failed to bind to the LDAP server!"
-msgstr "绑定到LDAP服务器失败！"
+#: lib/Application/Controller/EditCommentController.php:50
+#: lib/Application/Controller/EditCommentController.php:74
+#: lib/Domain/Service/DnsRecord.php:330
+msgid "You do not have the permission to edit this comment."
+msgstr "您没有权限编辑此评论。"
 
-msgid "Failed to search LDAP."
-msgstr "搜索LDAP失败。"
+#: lib/Application/Controller/EditCommentController.php:63
+msgid "You do not have the permission to view this comment."
+msgstr "您没有权限查看此评论。"
 
-msgid "Failed to authenticate against LDAP."
-msgstr "LDAP身份验证失败。"
+#: lib/Application/Controller/EditCommentController.php:80
+msgid "The comment has been updated successfully."
+msgstr "评论已成功更新。"
 
-msgid "LDAP Authentication failed!"
-msgstr "LDAP认证失败！"
+#: lib/Application/Controller/DeleteRecordController.php:64
+#: lib/Application/Controller/DnssecDsDnskeyController.php:70
+#: lib/Application/Controller/EditController.php:140
+#: lib/Application/Controller/DnssecController.php:65
+#: lib/Application/Controller/DnssecAddKeyController.php:59
+msgid "There is no zone with this ID."
+msgstr "没有此ID的区域。"
 
-msgid "Username already exists, please choose another one."
-msgstr "用户名已存在，请选择另一个。"
+#: lib/Application/Controller/DeleteRecordController.php:90
+#: lib/Application/Controller/DeleteZoneTemplRecordController.php:67
+msgid "The record has been deleted successfully."
+msgstr "记录已成功删除。"
 
-msgid "Enter a valid username."
-msgstr "请输入有效的用户名。"
+#: lib/Application/Controller/DeleteRecordController.php:102
+#: lib/Application/Controller/EditRecordController.php:75
+#: lib/Domain/Model/ZoneTemplate.php:381 lib/Domain/Service/DnsRecord.php:388
+msgid "You do not have the permission to edit this record."
+msgstr "您没有权限编辑此记录。"
 
-msgid "You do not have permission to perform searches."
-msgstr "您没有执行搜索的权限。"
+#: lib/Application/Controller/ListSupermastersController.php:43
+msgid "You do not have the permission to view supermasters."
+msgstr "You do not have the permission to view supermasters."
 
-msgid "Zone key has been added successfully."
-msgstr "区域密钥已成功添加。"
+#: lib/Application/Controller/EditPermTemplController.php:50
+#: lib/Application/Controller/ListPermTemplController.php:42
+msgid "You do not have the permission to edit permission templates."
+msgstr "您没有权限编辑权限模板。"
 
-msgid "You do not have permission to view supermasters."
-msgstr "您没有查看超级主机的权限。"
+#: lib/Application/Controller/EditPermTemplController.php:74
+msgid "The permission template has been updated successfully."
+msgstr "权限模板已成功更新。"
 
-msgid "You do not have permission to edit zone templates."
-msgstr "您没有编辑区域模板的权限。"
+#: lib/Application/Controller/SearchController.php:43
+msgid "You do not have the permission to perform searches."
+msgstr "您没有权限执行查询"
 
-msgid "There is no matching reverse-zone for: %s."
-msgstr "没有与之匹配的反向区域：%s。"
+#: lib/Application/Controller/AddUserController.php:43
+#: lib/Domain/Model/UserManager.php:757
+msgid "You do not have the permission to add a new user."
+msgstr "您没有权限添加新用户。"
 
-msgid "This record was not valid and could not be added."
-msgstr "此记录无效，无法添加。"
+#: lib/Application/Controller/AddUserController.php:63
+msgid "The user has been created successfully."
+msgstr "用户已成功创建。"
 
-msgid "User details updated"
-msgstr "用户详情已更新"
+#: lib/Application/Controller/DeleteZoneTemplRecordController.php:63
+#: lib/Domain/Model/ZoneTemplate.php:424 lib/Domain/Service/DnsRecord.php:651
+msgid "You do not have the permission to delete this record."
+msgstr "您没有权限删除此记录。"
 
+#: lib/Application/Controller/DeleteZoneTemplRecordController.php:69
 msgid "The record could not be deleted."
 msgstr "无法删除记录。"
 
-msgid "Provide the name username"
-msgstr "提供用户名"
+#: lib/Application/Controller/UsersController.php:61
+msgid "User details updated"
+msgstr "用户详情已更新"
 
-msgid "Provide user password"
-msgstr "提供用户密码"
+#: lib/Application/Controller/EditZoneTemplController.php:53
+#: lib/Application/Controller/EditZoneTemplRecordController.php:60
+#: lib/Application/Controller/DeleteZoneTemplController.php:48
+#: lib/Application/Controller/AddZoneTemplRecordController.php:56
+#: lib/Domain/Model/ZoneTemplate.php:181 lib/Domain/Model/ZoneTemplate.php:215
+msgid "You do not have the permission to delete zone templates."
+msgstr "您没有权限删除区域模板。"
 
-msgid "Provide the hostname"
-msgstr "提供主机名"
+#: lib/Application/Controller/EditZoneTemplController.php:65
+msgid "There is no zone template with this ID."
+msgstr "没有该ID的区域模板。"
 
-msgid "The hostname on which the PowerDNS database resides. Frequently, this will be \"localhost\"."
-msgstr "PowerDNS数据库所在的主机名。通常为“localhost”。"
+#: lib/Application/Controller/EditZoneTemplController.php:164
+#: lib/Application/Controller/EditZoneTemplRecordController.php:86
+msgid "Zone template has been updated successfully."
+msgstr "区域模板已成功更新。"
 
-msgid "Provide database port"
-msgstr "提供数据库端口"
+#: lib/Application/Controller/EditZoneTemplController.php:176
+msgid "Zones have been updated successfully."
+msgstr "区域已成功更新。"
 
-msgid "Provide the name of the database"
-msgstr "提供数据库名称"
+#: lib/Application/Controller/DnssecDsDnskeyController.php:65
+#: lib/Application/Controller/EditController.php:136
+#: lib/Application/Controller/DnssecController.php:60
+#: lib/Application/Controller/DnssecAddKeyController.php:54
+#: lib/Domain/Service/DnsRecord.php:993 lib/Domain/Service/DnsRecord.php:1220
+msgid "You do not have the permission to view this zone."
+msgstr "您没有权限查看此区域。"
 
-msgid "The path and filename to the PowerDNS SQLite database."
-msgstr "PowerDNS SQLite数据库的路径和文件名。"
+#: lib/Application/Controller/EditController.php:153
+msgid "Zone has been signed successfully."
+msgstr "区域已成功签名。"
 
-msgid "DB charset"
-msgstr "数据库字符集"
+#: lib/Application/Controller/EditController.php:156
+msgid "DNSSEC is not enabled on the server."
+msgstr "DNSSEC is not enabled on the server."
 
-msgid "DB collation"
-msgstr "数据库排序规则"
+#: lib/Application/Controller/EditController.php:169
+msgid "Zone has been unsigned successfully."
+msgstr "区域已成功取消签名。"
 
-msgid "Provide a password"
-msgstr "提供密码"
+#: lib/Application/Controller/EditController.php:348
+msgid "Request has expired, please try again."
+msgstr "请求已过期，请重试。"
 
-msgid "Now we have finished the configuration."
-msgstr "现在我们已经完成了配置。"
+#: lib/Application/Controller/EditController.php:353
+msgid "Zone has been updated successfully."
+msgstr "区域已成功更新。"
 
-msgid "You should (must!) remove the directory \"install/\" from the Poweradmin root directory. You will not be able to use Poweradmin if it exists. Do it now."
-msgstr "您应该（必须！）从Poweradmin根目录中删除目录“install/”。如果存在该目录，您将无法使用Poweradmin。现在就去做吧。"
+#: lib/Application/Controller/EditController.php:355
+msgid "Zone did not have any record changes."
+msgstr "区域没有进行任何记录更改。"
 
-msgid "After you have removed the directory, you can login to <a href=\"../index.php\">Poweradmin</a>."
-msgstr "删除目录后，您可以登录到<a href=\"../index.php\">Poweradmin</a>。"
+#: lib/Application/Controller/EditController.php:364
+msgid "Zone has not been updated successfully."
+msgstr "区域更新未成功。"
 
-msgid "You should now create the file "
-msgstr "现在您应该创建文件“"
+#: lib/Application/Controller/EditController.php:372
+#: lib/Domain/Model/ZoneTemplate.php:132 lib/Domain/Model/ZoneTemplate.php:567
+msgid "Zone template with this name already exists, please choose another one."
+msgstr "具有此名称的区域模板已存在，请选择其他名称。"
 
-msgid "in the Poweradmin root directory yourself. It should contain the following few lines:"
-msgstr "在Poweradmin根目录中。文件应包含以下几行内容："
+#: lib/Application/Controller/EditController.php:374
+msgid "Template name can't be an empty string."
+msgstr "模板名称不能为空字符串。"
 
-msgid "This installer expects you to have a PowerDNS database accessible from this server. This installer also expects you to have never run Poweradmin before, or that you want to overwrite the Poweradmin part of the database. If you have had Poweradmin running before, any data in the following tables will be destroyed: perm_items, perm_templ, perm_templ_items, users, and zones. This installer will, of course, not touch the data in the PowerDNS tables of the database. However, it is recommended that you create a backup of your database before proceeding."
-msgstr "此安装程序预期您可以从此服务器访问PowerDNS数据库。此安装程序还预期您以前从未运行过Poweradmin，或者您希望覆盖数据库的Poweradmin部分。如果以前已经运行过Poweradmin，则以下表中的任何数据都将被销毁：perm_items、perm_templ、perm_templ_items、users和zones。当然，此安装程序不会触及数据库中PowerDNS表的数据。但是，建议您在继续之前创建数据库备份。"
+#: lib/Application/Controller/EditController.php:387
+#: lib/Application/Controller/AddZoneTemplController.php:73
+msgid "Zone template has been added successfully."
+msgstr "区域模板已成功添加。"
 
-msgid "The alternative for this installer is a manual installation. Refer to the poweradmin.org website if you want to go down that road."
-msgstr "此安装程序的替代方案是手动安装。如果您想选择手动安装，请参阅poweradmin.org网站。"
+#: lib/Application/Controller/AddRecordController.php:71
+#: lib/Domain/Model/ZoneTemplate.php:326 lib/Domain/Service/DnsRecord.php:447
+msgid "You do not have the permission to add a record to this zone."
+msgstr "您没有权限向此区域添加记录。"
 
-msgid "Finally, if you see any errors during the installation process, a problem report would be appreciated. You can report problems (and ask for help) on the <a href=\"https://github.com/poweradmin/poweradmin/issues\target=\"blank\">poweradmin</a> issues."
-msgstr "最后，如果在安装过程中遇到任何错误，我们将非常感谢您报告问题。您可以在<a href=\"https://github.com/poweradmin/poweradmin/issues\" target=\"blank\">poweradmin</a>问题页面上报告问题（并寻求帮助）。"
+#: lib/Application/Controller/AddRecordController.php:175
+msgid "The record was successfully added."
+msgstr "记录已成功添加。"
 
-msgid "The username for Poweradmin. This new user will have limited rights only."
-msgstr "Poweradmin的用户名。此新用户将只有有限的权限。"
+#: lib/Application/Controller/AddRecordController.php:178
+msgid "This record was not valid and could not be added."
+msgstr "此记录无效，无法添加。"
 
-msgid "message"
-msgstr "消息"
+#: lib/Application/Controller/DeleteDomainsController.php:80
+#: lib/Application/Controller/DeleteDomainController.php:98
+msgid "Zone has been deleted successfully."
+msgstr "区域已成功删除。"
 
-msgid "Provide user name"
-msgstr "提供用户名"
+#: lib/Application/Controller/DeleteDomainsController.php:82
+msgid "Zones have been deleted successfully."
+msgstr "区域已成功删除。"
 
-msgid "Provide email"
-msgstr "提供电子邮件"
+#: lib/Application/Controller/DeleteDomainsController.php:94
+#: lib/Application/Controller/DeleteDomainController.php:69
+#: lib/Domain/Service/DnsRecord.php:828 lib/Domain/Service/DnsRecord.php:1621
+#: lib/Domain/Service/DnsRecord.php:1735
+msgid "You do not have the permission to delete a zone."
+msgstr "您没有权限删除区域。"
 
-msgid "Zone logs"
-msgstr "区域日志"
+#: lib/Application/Controller/AddZoneMasterController.php:57
+#: lib/Application/Controller/BulkRegistrationController.php:57
+#: lib/Domain/Service/DnsRecord.php:796
+msgid "You do not have the permission to add a master zone."
+msgstr "您没有权限添加主区域。"
 
-msgid "Provide content"
-msgstr "提供内容"
+#: lib/Application/Controller/AddZoneMasterController.php:88
+#: lib/Application/Controller/AddZoneSlaveController.php:86
+#: lib/Application/Controller/BulkRegistrationController.php:88
+#: lib/Domain/Model/ZoneTemplate.php:342 lib/Domain/Model/ZoneTemplate.php:389
+#: lib/Domain/Service/Dns.php:387 lib/Domain/Service/Dns.php:394
+#: lib/Domain/Service/Dns.php:401 lib/Domain/Service/DnsRecord.php:522
+msgid "Invalid hostname."
+msgstr "无效的主机名。"
 
+#: lib/Application/Controller/AddZoneMasterController.php:91
+#: lib/Application/Controller/AddZoneMasterController.php:94
+#: lib/Application/Controller/AddZoneSlaveController.php:89
+#: lib/Application/Controller/AddZoneSlaveController.php:92
+#: lib/Application/Controller/BulkRegistrationController.php:90
+msgid "There is already a zone with this name."
+msgstr "已经存在具有此名称的区域。"
+
+#: lib/Application/Controller/AddZoneMasterController.php:97
+#: lib/Application/Controller/AddZoneSlaveController.php:105
+msgid "Zone has been added successfully."
+msgstr "区域已成功添加。"
+
+#: lib/Application/Controller/ListZonesController.php:56
+msgid "You do not have sufficient permissions to view this page."
+msgstr "您没有足够的权限查看此页面。"
+
+#: lib/Application/Controller/ListZonesController.php:102
+msgid "You do not have the permission to see any zones."
+msgstr "您没有权限查看任何区域。"
+
+#: lib/Application/Controller/ListZoneTemplController.php:43
+msgid "You do not have the permission to edit zone templates."
+msgstr "您没有权限编辑域模板"
+
+#: lib/Application/Controller/DnssecEditKeyController.php:80
+#: lib/Application/Controller/DnssecDeleteKeyController.php:81
+msgid "Failed to delete DNSSEC key."
+msgstr "删除DNSSEC密钥失败。"
+
+#: lib/Application/Controller/DnssecEditKeyController.php:88
+msgid "Zone key has been successfully deactivated."
+msgstr "区域密钥已成功停用。"
+
+#: lib/Application/Controller/DnssecEditKeyController.php:93
+msgid "Zone key has been successfully activated."
+msgstr "区域密钥已成功激活。"
+
+#: lib/Application/Controller/DnssecDeleteKeyController.php:85
+msgid "Zone key has been deleted successfully."
+msgstr "区域密钥已成功删除。"
+
+#: lib/Application/Controller/AddPermTemplController.php:50
+msgid "You do not have the permission to add permission templates."
+msgstr "您没有权限添加权限模板。"
+
+#: lib/Application/Controller/AddPermTemplController.php:69
+msgid "The permission template has been added successfully."
+msgstr "权限模板已成功添加。"
+
+#: lib/Application/Controller/LogoutController.php:46
+#: lib/Infrastructure/Service/SessionAuthenticator.php:91
+msgid "You have logged out."
+msgstr "您已退出登录。"
+
+#: lib/Application/Controller/AddZoneTemplController.php:43
+#: lib/Domain/Model/ZoneTemplate.php:126 lib/Domain/Model/ZoneTemplate.php:470
+#: lib/Domain/Model/ZoneTemplate.php:561
+msgid "You do not have the permission to add a zone template."
+msgstr "您没有权限添加区域模板。"
+
+#: lib/Application/Controller/AddZoneSlaveController.php:55
+msgid "You do not have the permission to add a slave zone."
+msgstr "您没有权限添加从区域。"
+
+#: lib/Application/Controller/AddZoneSlaveController.php:95
+#: lib/Domain/Service/DnsRecord.php:513
+msgid "This is not a valid IPv4 or IPv6 address."
+msgstr "这不是有效的IPv4或IPv6地址。"
+
+#: lib/Application/Controller/DeleteZoneTemplController.php:69
+msgid "Zone template has been deleted successfully."
+msgstr "区域模板已成功删除。"
+
+#: lib/Application/Controller/AddSupermasterController.php:43
+msgid "You do not have the permission to add a new supermaster."
+msgstr "您没有权限添加新超级主服务器。"
+
+#: lib/Application/Controller/AddSupermasterController.php:61
+msgid "The supermaster has been added successfully."
+msgstr "超级主服务器已成功添加。"
+
+#: lib/Application/Controller/EditUserController.php:57
+#: lib/Domain/Model/UserManager.php:380 lib/Domain/Model/UserManager.php:735
+msgid "You do not have the permission to edit this user."
+msgstr "您没有权限编辑此用户。"
+
+#: lib/Application/Controller/EditUserController.php:121
+msgid "The user has been updated successfully."
+msgstr "用户已成功更新。"
+
+#: lib/Application/Controller/EditUserController.php:124
+#: lib/Application/Controller/EditUserController.php:127
+msgid "The user could not be updated."
+msgstr "无法更新用户。"
+
+#: lib/Application/Controller/DeletePermTemplController.php:51
+msgid "You do not have the permission to delete permission templates."
+msgstr "您没有删除权限模板的权限。"
+
+#: lib/Application/Controller/DeletePermTemplController.php:69
+msgid "The permission template has been deleted successfully."
+msgstr "权限模板已成功删除。"
+
+#: lib/Application/Controller/EditRecordController.php:71
+msgid "You do not have the permission to view this record."
+msgstr "您没有查看此记录的权限。"
+
+#: lib/Application/Controller/EditRecordController.php:148
+msgid "The record has been updated successfully."
+msgstr "记录已成功更新。"
+
+#: lib/Application/Controller/ChangePasswordController.php:72
+msgid "Password has been changed, please login."
+msgstr "密码已更改，请登录。"
+
+#: lib/Application/Controller/DnssecAddKeyController.php:99
+msgid "Zone key has been added successfully."
+msgstr "区域密钥已成功添加。"
+
+#: lib/Application/Controller/DnssecAddKeyController.php:102
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:346
+msgid "Failed to add new DNSSEC key."
+msgstr "Failed to add new DNSSEC key."
+
+#: lib/Application/Controller/DeleteSupermasterController.php:43
+msgid "You do not have the permission to delete a supermaster."
+msgstr "您没有权限删除超级主服务器。"
+
+#: lib/Application/Controller/DeleteSupermasterController.php:66
+msgid "Super master does not exist."
+msgstr "Super master does not exist."
+
+#: lib/Application/Controller/DeleteSupermasterController.php:71
+msgid "The supermaster has been deleted successfully."
+msgstr "超级主服务器已成功删除。"
+
+#: lib/Application/Controller/BulkRegistrationController.php:100
+msgid "Zones has been added successfully."
+msgstr "Zones has been added successfully."
+
+#: lib/Application/Controller/BulkRegistrationController.php:103
+msgid "Some zone(s) could not be added."
+msgstr "部分区域未能成功添加。"
+
+#: lib/Application/Service/SqlAuthenticator.php:104
+msgid "The user account is disabled."
+msgstr "The user account is disabled."
+
+#: lib/Application/Service/SqlAuthenticator.php:143
+msgid "Authentication failed!"
+msgstr "认证失败！"
+
+#: lib/Application/Service/SqlAuthenticator.php:147
+#: lib/Infrastructure/Service/SessionAuthenticator.php:143
+msgid "Session expired, please login again."
+msgstr "会话已过期，请重新登录。"
+
+#: lib/Application/Service/LdapAuthenticator.php:87
+msgid "Failed to connect to LDAP server!"
+msgstr "Failed to connect to LDAP server!"
+
+#: lib/Application/Service/LdapAuthenticator.php:100
+msgid "Failed to bind to LDAP server!"
+msgstr "Failed to bind to LDAP server!"
+
+#: lib/Application/Service/LdapAuthenticator.php:123
+msgid "Failed to search LDAP."
+msgstr "搜索LDAP失败。"
+
+#: lib/Application/Service/LdapAuthenticator.php:139
+msgid "Failed to authenticate against LDAP."
+msgstr "LDAP身份验证失败。"
+
+#: lib/Application/Service/LdapAuthenticator.php:154
+#: lib/Application/Service/LdapAuthenticator.php:171
+msgid "LDAP Authentication failed!"
+msgstr "LDAP认证失败！"
+
+#: lib/Application/Query/RecordSearch.php:112 templates/dnssec_edit_key.html:53
+#: templates/delete_user.html:54 templates/delete_perm_templ.html:13
+#: templates/users.html:77 templates/users.html:109 templates/users.html:110
+#: templates/delete_record.html:51 templates/delete_domain.html:33
+#: templates/delete_domains.html:51 templates/delete_supermaster.html:17
+#: templates/delete_zone_templ.html:13
+#: templates/delete_zone_templ_record.html:36
+#: templates/dnssec_delete_key.html:45
+msgid "Yes"
+msgstr "是"
+
+#: lib/Application/Query/RecordSearch.php:112 templates/dnssec_edit_key.html:54
+#: templates/delete_user.html:55 templates/delete_perm_templ.html:14
+#: templates/users.html:79 templates/users.html:109 templates/users.html:110
+#: templates/delete_record.html:52 templates/delete_domain.html:34
+#: templates/delete_domains.html:53 templates/delete_supermaster.html:18
+#: templates/delete_zone_templ.html:15
+#: templates/delete_zone_templ_record.html:37
+#: templates/dnssec_delete_key.html:47
+msgid "No"
+msgstr "否"
+
+#: lib/Infrastructure/Database/PDOLayer.php:141
+msgid "Unknown database type."
+msgstr "未知的数据库类型。"
+
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:195
+#: lib/Domain/Model/UserManager.php:250
+msgid "This template is assigned to at least one user."
+msgstr "此模板已分配给至少一个用户。"
+
+#: lib/Infrastructure/Service/SessionAuthenticator.php:131
+msgid "An empty password is not allowed"
+msgstr "An empty password is not allowed"
+
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:50
+msgid ""
+"Failed to call function exec. Make sure that exec is not listed in "
+"disable_functions at php.ini"
+msgstr "调用exec函数失败。请确保php.ini中未将exec列入disable_functions列表。"
+
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:58
+msgid "Failed to call pdnssec utility."
+msgstr "调用pdnssec工具失败。"
+
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:155
+msgid "Failed to secure zone."
+msgstr "保护区域失败。"
+
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:174
+msgid "Failed to disable DNSSEC."
+msgstr "禁用DNSSEC失败。"
+
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:215
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:249
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:312
+msgid "Failed to get DNSSEC key details."
+msgstr "获取DNSSEC密钥详情失败。"
+
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:273
+msgid "Failed to active DNSSEC key."
+msgstr "Failed to active DNSSEC key."
+
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:292
+msgid "Failed to deactivate DNSSEC key."
+msgstr "停用DNSSEC密钥失败。"
+
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:365
+msgid "Failed to remove DNSSEC key."
+msgstr "删除DNSSEC密钥失败。"
+
+#: lib/Domain/Model/UserManager.php:290 lib/Domain/Model/UserManager.php:635
+#: lib/Domain/Model/UserManager.php:775
+msgid "Enter a valid email address."
+msgstr "请输入有效的电子邮件地址。"
+
+#: lib/Domain/Model/UserManager.php:325 lib/Domain/Model/UserManager.php:675
+#: lib/Domain/Model/UserManager.php:763
+msgid "Username exist already, please choose another one."
+msgstr "用户名已经存在，请另选一个"
+
+#: lib/Domain/Model/UserManager.php:421
+msgid "The two new password fields do not match."
+msgstr "两个新密码字段不匹配。"
+
+#: lib/Domain/Model/UserManager.php:432
+msgid "You can not change your password as LDAP user."
+msgstr "You can not change your password as LDAP user."
+
+#: lib/Domain/Model/UserManager.php:452
+msgid "You did not enter the correct current password."
+msgstr "您未输入正确的当前密码。"
+
+#: lib/Domain/Model/UserManager.php:769
+msgid "Enter a valid user name."
+msgstr "Enter a valid user name."
+
+#: lib/Domain/Model/ZoneTemplate.php:334 lib/Domain/Service/Dns.php:238
+msgid "Your content field doesnt have a legit value."
+msgstr "您的内容字段没有合法值"
+
+#: lib/Domain/Model/ZoneTemplate.php:350 lib/Domain/Model/ZoneTemplate.php:397
+#: lib/Domain/Service/Dns.php:290
+msgid "Invalid value for prio field."
+msgstr "Invalid value for prio field."
+
+#: lib/Domain/Service/Dns.php:248
+msgid "The content of the SPF record is invalid"
+msgstr "SPF记录的内容无效"
+
+#: lib/Domain/Service/Dns.php:282
+msgid "Unknown record type."
+msgstr "未知的记录类型。"
+
+#: lib/Domain/Service/Dns.php:324 lib/Domain/Service/Dns.php:862
+msgid "The hostname is too long."
+msgstr "主机名太长。"
+
+#: lib/Domain/Service/Dns.php:341 lib/Domain/Service/Dns.php:350
+msgid "You have invalid characters in your hostname."
+msgstr "您的主机名包含无效字符。"
+
+#: lib/Domain/Service/Dns.php:358 lib/Domain/Service/Dns.php:365
+msgid "A hostname can not start or end with a dash."
+msgstr "主机名不能以减号开头或结尾"
+
+#: lib/Domain/Service/Dns.php:372
+msgid "Given hostname or one of the labels is too short or too long."
+msgstr "给定的主机名或其中一个标签过短或过长。"
+
+#: lib/Domain/Service/Dns.php:409
+msgid "Given hostname has too many slashes."
+msgstr "给定的主机名包含太多斜杠。"
+
+#: lib/Domain/Service/Dns.php:418
+msgid "You are using an invalid top level domain."
+msgstr "您正在使用无效的顶级域名。"
+
+#: lib/Domain/Service/Dns.php:441
+msgid "This is not a valid IPv4 address."
+msgstr "这不是有效的IPv4地址。"
+
+#: lib/Domain/Service/Dns.php:464
+msgid "This is not a valid IPv6 address."
+msgstr "这不是有效的IPv6地址。"
+
+#: lib/Domain/Service/Dns.php:518
+msgid "Invalid characters have been used in this record."
+msgstr "此记录中使用了无效字符。"
+
+#: lib/Domain/Service/Dns.php:535
+msgid "You cannot use html tags for this type of record."
+msgstr "You cannot use html tags for this type of record."
+
+#: lib/Domain/Service/Dns.php:563
+msgid "Backslashes must precede all quotes (\") in TXT content"
+msgstr "Backslashes must precede all quotes (\") in TXT content"
+
+#: lib/Domain/Service/Dns.php:585
+msgid "Add quotes around TXT record content."
+msgstr "在TXT记录内容周围添加引号。"
+
+#: lib/Domain/Service/Dns.php:615
+msgid ""
+"This is not a valid CNAME. Did you assign an MX or NS record to the record?"
+msgstr "这不是有效的CNAME记录。您是否将MX或NS记录分配给了此记录？"
+
+#: lib/Domain/Service/Dns.php:644
+msgid ""
+"This is not a valid record. There is already exists a CNAME with this name."
+msgstr ""
+"This is not a valid record. There is already exists a CNAME with this name."
+
+#: lib/Domain/Service/Dns.php:671
+msgid ""
+"This is not a valid CNAME. There already exists a record with this name."
+msgstr "这不是有效的CNAME记录。已经存在具有此名称的记录。"
+
+#: lib/Domain/Service/Dns.php:691
+msgid "Empty CNAME records are not allowed."
+msgstr "不允许空的CNAME记录。"
+
+#: lib/Domain/Service/Dns.php:717
+msgid ""
+"You can not point a NS or MX record to a CNAME record. Remove or rename the "
+"CNAME record first, or take another name."
+msgstr ""
+"You can not point a NS or MX record to a CNAME record. Remove or rename the "
+"CNAME record first, or take another name."
+
+#: lib/Domain/Service/Dns.php:743
+msgid "Invalid value for content field of HINFO record."
+msgstr "HINFO记录的内容字段值无效。"
+
+#: lib/Domain/Service/Dns.php:830
+msgid ""
+"Invalid value for name field of SOA record. It should be the name of the "
+"zone."
+msgstr "SOA记录的名称字段值无效。应为区域的名称。"
+
+#: lib/Domain/Service/Dns.php:871
+msgid "Invalid service value in name field of SRV record."
+msgstr "SRV记录的名称字段中的服务值无效。"
+
+#: lib/Domain/Service/Dns.php:878
+msgid "Invalid protocol value in name field of SRV record."
+msgstr "SRV记录的名称字段中的协议值无效。"
+
+#: lib/Domain/Service/Dns.php:885
+msgid "Invalid FQDN value in name field of SRV record."
+msgstr "SRV记录的名称字段中的FQDN值无效。"
+
+#: lib/Domain/Service/Dns.php:905
+msgid "Invalid value for the priority field of the SRV record."
+msgstr "SRV记录的优先级字段值无效。"
+
+#: lib/Domain/Service/Dns.php:912
+msgid "Invalid value for the weight field of the SRV record."
+msgstr "SRV记录的权重字段值无效。"
+
+#: lib/Domain/Service/Dns.php:919
+msgid "Invalid SRV target."
+msgstr "无效的SRV目标。"
+
+#: lib/Domain/Service/Dns.php:943
+msgid "Invalid value for TTL field. It should be numeric."
+msgstr "TTL字段值无效。应为数字。"
+
+#: lib/Domain/Service/DomainRecordCreator.php:53
+#, php-format
+msgid "There is no managed zone for domain: %s."
+msgstr "There is no managed zone for domain: %s."
+
+#: lib/Domain/Service/DomainRecordCreator.php:66
+msgid "Adding IPv6 domain records from reverse zones is not supported yet."
+msgstr "Adding IPv6 domain records from reverse zones is not supported yet."
+
+#: lib/Domain/Service/DomainRecordCreator.php:70
+#: lib/Domain/Service/DomainRecordCreator.php:79
+#: lib/Domain/Service/DomainRecordCreator.php:88
+#: lib/Domain/Service/DomainRecordCreator.php:102
+msgid "This domain record was not valid and could not be added."
+msgstr "This domain record was not valid and could not be added."
+
+#: lib/Domain/Service/DomainRecordCreator.php:99
+msgid "The domain record was successfully added."
+msgstr "The domain record was successfully added."
+
+#: lib/Domain/Service/DnsRecord.php:370
+msgid "You do not have the permission to edit this SOA record."
+msgstr "您没有权限编辑此SOA记录。"
+
+#: lib/Domain/Service/DnsRecord.php:377
+msgid "You do not have the permission to edit this NS record."
+msgstr "您没有权限编辑此NS记录。"
+
+#: lib/Domain/Service/DnsRecord.php:432
+msgid "You do not have the permission to add SOA record."
+msgstr "You do not have the permission to add SOA record."
+
+#: lib/Domain/Service/DnsRecord.php:439
+msgid "You do not have the permission to add NS record."
+msgstr "You do not have the permission to add NS record."
+
+#: lib/Domain/Service/DnsRecord.php:529 lib/Domain/Service/DnsRecord.php:571
+#: lib/Domain/Service/DnsRecord.php:600 lib/Domain/Service/DnsRecord.php:785
+#: lib/Domain/Service/DnsRecord.php:881 lib/Domain/Service/DnsRecord.php:910
+#: lib/Domain/Service/DnsRecord.php:977 lib/Domain/Service/DnsRecord.php:1158
+#: lib/Domain/Service/DnsRecord.php:1183 lib/Domain/Service/DnsRecord.php:1532
+#: lib/Domain/Service/DnsRecord.php:1730
+#, php-format
+msgid "Invalid argument(s) given to function %s %s"
+msgstr "函数%s给定的参数无效 %s"
+
+#: lib/Domain/Service/DnsRecord.php:537
+msgid "There is already a supermaster with this IP address and hostname."
+msgstr "已经存在具有此IP地址和主机名的超级主服务器。"
+
+#: lib/Domain/Service/DnsRecord.php:638
+msgid ""
+"You are trying to delete the SOA record. You are not allowed to remove it, "
+"unless you remove the entire zone."
+msgstr "您正在尝试删除SOA记录。除非删除整个区域，否则不允许删除它。"
+
+#: lib/Domain/Service/DnsRecord.php:791 lib/Domain/Service/DnsRecord.php:1392
+#, php-format
+msgid "Invalid argument(s) given to function %s"
+msgstr "函数%s给定的参数无效"
+
+#: lib/Domain/Service/DnsRecord.php:875
+msgid "The selected user already owns the zone."
+msgstr "所选用户已拥有该区域。"
+
+#: lib/Domain/Service/DnsRecord.php:904
+msgid "There must be at least one owner for a zone."
+msgstr "区域必须至少有一个所有者。"
+
+#: lib/Domain/Service/DnsRecord.php:1112
+msgid "This is an invalid zone name."
+msgstr "这是无效的区域名称。"
+
+#: lib/Domain/Service/ReverseRecordCreator.php:57
+#, php-format
+msgid "There is no matching reverse-zone for: %s."
+msgstr "没有与之匹配的反向区域：%s。"
+
+#: templates/dnssec_edit_key.html:3 templates/edit_zone_templ_record.html:3
+#: templates/dnssec.html:3 templates/edit_record.html:3
+#: templates/edit_comment.html:3 templates/add_zone_templ.html:3
+#: templates/list_log_zones.html:3 templates/delete_user.html:3
+#: templates/list_zones.html:3 templates/dnssec_add_key.html:3
+#: templates/edit_user.html:3 templates/add_perm_templ.html:3
+#: templates/add_supermaster.html:3 templates/add_zone_templ_record.html:3
+#: templates/delete_perm_templ.html:3 templates/edit.html:3
+#: templates/users.html:3 templates/delete_record.html:3
+#: templates/add_user.html:3 templates/add_zone_master.html:3
+#: templates/list_zone_templ.html:3 templates/change_password.html:3
+#: templates/edit_zone_templ.html:3 templates/list_supermasters.html:3
+#: templates/bulk_registration.html:3 templates/delete_domain.html:3
+#: templates/search.html:3 templates/delete_domains.html:3
+#: templates/delete_supermaster.html:3 templates/list_log_users.html:3
+#: templates/add_zone_slave.html:3 templates/delete_zone_templ.html:3
+#: templates/dnssec_ds_dnskey.html:3 templates/add_record.html:3
+#: templates/edit_perm_templ.html:3 templates/delete_zone_templ_record.html:3
+#: templates/dnssec_delete_key.html:3 templates/list_perm_templ.html:3
+msgid "Home"
+msgstr "主页"
+
+#: templates/dnssec_edit_key.html:4 templates/edit_zone_templ_record.html:4
+#: templates/dnssec.html:4 templates/edit_record.html:4
+#: templates/edit_comment.html:4 templates/add_zone_templ.html:4
+#: templates/list_log_zones.html:4 templates/list_zones.html:4
+#: templates/dnssec_add_key.html:4 templates/add_zone_templ_record.html:4
+#: templates/edit.html:4 templates/delete_record.html:4
+#: templates/add_zone_master.html:4 templates/list_zone_templ.html:4
+#: templates/edit_zone_templ.html:4 templates/bulk_registration.html:4
+#: templates/bulk_registration.html:56 templates/delete_domain.html:4
+#: templates/search.html:34 templates/delete_domains.html:4
+#: templates/add_zone_slave.html:4 templates/delete_zone_templ.html:4
+#: templates/header.html:40 templates/dnssec_ds_dnskey.html:4
+#: templates/add_record.html:4 templates/delete_zone_templ_record.html:4
+#: templates/dnssec_delete_key.html:4
+msgid "Zones"
+msgstr "区域"
+
+#: templates/dnssec_edit_key.html:13 templates/dnssec.html:12
+#: templates/list_zones.html:62 templates/dnssec_add_key.html:13
+#: templates/edit.html:281 templates/add_zone_master.html:63
+#: templates/dnssec_ds_dnskey.html:13 templates/dnssec_delete_key.html:13
 msgid "DNSSEC"
 msgstr "DNSSEC"
 
+#: templates/dnssec_edit_key.html:17
 msgid "Deactivate key"
 msgstr "停用密钥"
 
+#: templates/dnssec_edit_key.html:19
 msgid "Activate key"
 msgstr "激活密钥"
 
+#: templates/dnssec_edit_key.html:26
 msgid "Deactivate zone key"
 msgstr "停用区域密钥"
 
+#: templates/dnssec_edit_key.html:28
 msgid "Activate zone key"
 msgstr "激活区域密钥"
 
+#: templates/dnssec_edit_key.html:37 templates/dnssec_delete_key.html:28
 msgid "Domain"
 msgstr "域名"
 
+#: templates/dnssec_edit_key.html:44 templates/list_log_zones.html:39
+#: templates/edit.html:125 templates/list_log_users.html:39
+#: templates/dnssec_delete_key.html:35
 msgid "Id"
 msgstr "标识符"
 
+#: templates/dnssec_edit_key.html:45 templates/edit_zone_templ_record.html:23
+#: templates/dnssec.html:25 templates/edit_record.html:29
+#: templates/list_zones.html:36 templates/add_zone_templ_record.html:20
+#: templates/edit.html:45 templates/edit.html:142 templates/edit.html:302
+#: templates/edit.html:474 templates/add_zone_master.html:35
+#: templates/list_zone_templ.html:17 templates/edit_zone_templ.html:29
+#: templates/bulk_registration.html:29 templates/delete_domain.html:23
+#: templates/search.html:69 templates/search.html:164
+#: templates/delete_domains.html:17 templates/add_record.html:29
+#: templates/dnssec_delete_key.html:36
+msgid "Type"
+msgstr "类型"
+
+#: templates/dnssec_edit_key.html:46 templates/dnssec.html:26
+#: templates/dnssec_delete_key.html:37
 msgid "Tag"
 msgstr "标签"
 
+#: templates/dnssec_edit_key.html:47 templates/dnssec.html:27
+#: templates/dnssec_add_key.html:54 templates/dnssec_delete_key.html:38
 msgid "Algorithm"
 msgstr "算法"
 
+#: templates/dnssec_edit_key.html:48 templates/dnssec.html:28
+#: templates/dnssec_delete_key.html:39
 msgid "Bits"
 msgstr "位数"
 
-msgid "%active%"
-msgstr "%active%"
+#: templates/dnssec_edit_key.html:49 templates/dnssec.html:29
+#: templates/dnssec_delete_key.html:40
+msgid "Active"
+msgstr "启用"
 
-msgid "Provide content for your zone record"
-msgstr "为您的区域记录提供内容"
+#: templates/dnssec_edit_key.html:50 templates/delete_user.html:49
+#: templates/delete_perm_templ.html:12 templates/delete_record.html:49
+#: templates/delete_domain.html:31 templates/delete_domains.html:50
+#: templates/delete_supermaster.html:14 templates/delete_zone_templ.html:11
+#: templates/delete_zone_templ_record.html:33
+#: templates/dnssec_delete_key.html:42
+msgid "Are you sure?"
+msgstr "确定吗？"
 
-msgid "Total number of logs:"
-msgstr "日志总数："
+#: templates/edit_zone_templ_record.html:5 templates/add_zone_templ.html:5
+#: templates/add_zone_templ_record.html:5 templates/list_zone_templ.html:5
+#: templates/edit_zone_templ.html:5 templates/delete_zone_templ.html:5
+#: templates/delete_zone_templ_record.html:5
+msgid "Zone templates"
+msgstr "区域模板"
 
-msgid "Search logs by domain"
-msgstr "按域名搜索日志"
+#: templates/edit_zone_templ_record.html:8 templates/edit_record.html:12
+msgid "Edit record"
+msgstr "编辑记录"
 
-msgid "Event"
-msgstr "事件"
+#: templates/edit_zone_templ_record.html:12
+msgid "Edit record in zone template"
+msgstr "编辑区域模板中的记录"
 
-msgid "Created at"
-msgstr "创建于"
+#: templates/edit_zone_templ_record.html:21 templates/edit_record.html:27
+#: templates/add_zone_templ.html:15 templates/list_zones.html:30
+#: templates/add_perm_templ.html:15 templates/add_perm_templ.html:31
+#: templates/add_zone_templ_record.html:18 templates/edit.html:44
+#: templates/edit.html:134 templates/edit.html:300
+#: templates/list_zone_templ.html:14 templates/edit_zone_templ.html:28
+#: templates/edit_zone_templ.html:129 templates/search.html:63
+#: templates/search.html:158 templates/delete_domains.html:15
+#: templates/add_record.html:27 templates/edit_perm_templ.html:17
+#: templates/edit_perm_templ.html:33 templates/list_perm_templ.html:13
+msgid "Name"
+msgstr "名称"
 
-msgid "Details"
-msgstr "详情"
+#: templates/edit_zone_templ_record.html:24 templates/edit_record.html:30
+#: templates/add_zone_templ_record.html:21 templates/edit.html:46
+#: templates/edit.html:150 templates/edit.html:303
+#: templates/edit_zone_templ.html:30 templates/search.html:176
+#: templates/add_record.html:30
+msgid "Content"
+msgstr "内容"
 
-msgid "No logs found"
-msgstr "未找到日志"
+#: templates/edit_zone_templ_record.html:25 templates/edit_record.html:31
+#: templates/add_zone_templ_record.html:22 templates/edit.html:47
+#: templates/edit.html:158 templates/edit.html:304
+#: templates/edit_zone_templ.html:31 templates/search.html:170
+#: templates/add_record.html:31
+msgid "Priority"
+msgstr "优先级"
 
-msgid "Provide a name for your template"
-msgstr "为您的模板提供名称"
+#: templates/edit_zone_templ_record.html:26 templates/edit_record.html:32
+#: templates/add_zone_templ_record.html:23 templates/edit.html:48
+#: templates/edit.html:166 templates/edit.html:305
+#: templates/edit_zone_templ.html:33 templates/search.html:182
+#: templates/add_record.html:32
+msgid "TTL"
+msgstr "TTL"
 
-msgid "Unsign this zone"
-msgstr "取消对该区域的签名"
+#: templates/edit_zone_templ_record.html:51 templates/edit_record.html:75
+#: templates/edit.html:87 templates/edit.html:333 templates/add_record.html:56
+msgid "Provide content"
+msgstr "提供内容"
 
-msgid "Sign this zone"
-msgstr "对该区域进行签名"
+#: templates/edit_zone_templ_record.html:60 templates/edit_record.html:87
+#: templates/edit_comment.html:31 templates/edit_user.html:77
+#: templates/add_perm_templ.html:47 templates/edit.html:274
+#: templates/users.html:119 templates/edit_zone_templ.html:152
+#: templates/edit_perm_templ.html:55
+msgid "Update"
+msgstr "更新"
 
-msgid "Provide TTL"
-msgstr "提供TTL"
+#: templates/edit_zone_templ_record.html:61 templates/edit_record.html:88
+#: templates/edit_comment.html:32 templates/edit_user.html:78
+#: templates/edit.html:275 templates/users.html:120
+msgid "Reset"
+msgstr "重置"
 
-msgid "User logs"
-msgstr "用户日志"
-
-msgid "Search logs by user"
-msgstr "按用户搜索日志"
-
-msgid "Provide a domain name(s)"
-msgstr "提供域名"
-
-msgid "LDAP"
-msgstr "LDAP"
-
-msgid "Delete record in zone template"
-msgstr "删除区域模板中的记录"
-
-msgid "Add key"
-msgstr "添加密钥"
-
-msgid "Add key for zone"
-msgstr "为区域添加密钥"
-
-msgid "Key type"
-msgstr "密钥类型"
-
-msgid "Select key type"
-msgstr "选择密钥类型"
-
-msgid "Bits in length"
-msgstr "位长度"
-
-msgid "Select bits length"
-msgstr "选择位长度"
-
-msgid "Select algorithm"
-msgstr "选择算法"
-
+#: templates/dnssec.html:17 templates/dnssec.html:19
 msgid "DNSSEC keys for zone"
 msgstr "区域的DNSSEC密钥"
 
+#: templates/dnssec.html:24
 msgid "ID"
 msgstr "ID"
 
+#: templates/dnssec.html:53 templates/dnssec_delete_key.html:21
 msgid "Delete zone key"
 msgstr "删除区域密钥"
 
+#: templates/dnssec.html:60
 msgid "Add new key"
 msgstr "添加新密钥"
 
+#: templates/dnssec.html:62
 msgid "Show DS and DNSKEY"
 msgstr "显示DS和DNSKEY"
 
-msgid "This zone template does not have any records yet."
-msgstr "该区域模板还没有任何记录。"
+#: templates/edit_record.html:17 templates/edit_record.html:19
+msgid "Edit record in zone"
+msgstr "编辑区域内的记录"
 
-msgid "DS and DNS keys"
-msgstr "DS和DNS密钥"
+#: templates/edit_record.html:33 templates/edit.html:174
+#: templates/search.html:188
+msgid "Disabled"
+msgstr "Disabled"
 
-msgid "DNSSEC public records for zone"
-msgstr "区域的DNSSEC公共记录"
+#: templates/edit_comment.html:12 templates/edit.html:267
+msgid "Edit comment"
+msgstr "编辑评论"
 
-msgid "DNSKEY"
-msgstr "DNS密钥"
+#: templates/edit_comment.html:17 templates/edit_comment.html:19
+msgid "Edit comment in zone"
+msgstr "在区域内编辑评论"
 
-msgid "DS record"
-msgstr "DS记录"
+#: templates/add_zone_templ.html:6
+msgid "Add template"
+msgstr "添加模板"
 
-msgid "Provide ip address"
-msgstr "提供IP地址"
+#: templates/add_zone_templ.html:10
+msgid "Add zone template for"
+msgstr "添加区域模板用于"
 
-msgid "Provide host name"
-msgstr "提供主机名"
+#: templates/add_zone_templ.html:17 templates/add_perm_templ.html:17
+#: templates/edit_zone_templ.html:112 templates/edit_zone_templ.html:133
+#: templates/edit_perm_templ.html:19
+msgid "Provide a name for your template"
+msgstr "为您的模板提供名称"
 
-msgid "Provide zone name"
-msgstr "提供区域名称"
+#: templates/add_zone_templ.html:20 templates/edit_user.html:60
+#: templates/add_perm_templ.html:20 templates/add_perm_templ.html:32
+#: templates/add_user.html:57 templates/list_zone_templ.html:15
+#: templates/edit_zone_templ.html:137 templates/edit_perm_templ.html:22
+#: templates/edit_perm_templ.html:34 templates/list_perm_templ.html:14
+msgid "Description"
+msgstr "描述"
 
-msgid "Provide current password"
-msgstr "提供当前密码"
+#: templates/add_zone_templ.html:26 templates/edit_zone_templ.html:146
+msgid "Everyone could use it (global)?"
+msgstr "所有人都可以使用吗？（全局）"
 
-msgid "Provide new password"
-msgstr "提供新密码"
+#: templates/add_zone_templ.html:30 templates/list_zone_templ.html:71
+#: templates/header.html:106
+msgid "Add zone template"
+msgstr "添加区域模板"
 
+#: templates/list_log_zones.html:5 templates/list_log_zones.html:9
+#: templates/index_list.html:45 templates/index_cards.html:90
+#: templates/header.html:62
+msgid "Zone logs"
+msgstr "区域日志"
+
+#: templates/list_log_zones.html:10 templates/list_log_users.html:10
+msgid "Total number of logs:"
+msgstr "日志总数："
+
+#: templates/list_log_zones.html:17
+msgid "Search logs by domain"
+msgstr "按域名搜索日志"
+
+#: templates/list_log_zones.html:21 templates/search.html:4
+#: templates/search.html:23 templates/list_log_users.html:21
+#: templates/header.html:32
+msgid "Search"
+msgstr "搜索"
+
+#: templates/list_log_zones.html:25 templates/search.html:25
+#: templates/list_log_users.html:25
+msgid "Clear"
+msgstr "清除"
+
+#: templates/list_log_zones.html:40 templates/list_log_users.html:40
+msgid "Event"
+msgstr "事件"
+
+#: templates/list_log_zones.html:41 templates/list_log_users.html:41
+msgid "Created at"
+msgstr "创建于"
+
+#: templates/list_log_zones.html:53
+msgid "Details"
+msgstr "详情"
+
+#: templates/list_log_zones.html:64 templates/list_log_users.html:56
+msgid "No logs found"
+msgstr "未找到日志"
+
+#: templates/index_list.html:1 templates/index_cards.html:1
+msgid "Welcome"
+msgstr "欢迎"
+
+#: templates/index_list.html:5 templates/search.html:8
+#: templates/index_cards.html:8
+msgid "Search zones and records"
+msgstr "搜索区域和记录"
+
+#: templates/index_list.html:10 templates/list_zones.html:8
+#: templates/index_cards.html:18 templates/header.html:43
+msgid "List zones"
+msgstr "区域列表"
+
+#: templates/index_list.html:15 templates/index_cards.html:30
+#: templates/header.html:104
+msgid "List zone templates"
+msgstr "区域模板列表"
+
+#: templates/index_list.html:20 templates/list_supermasters.html:8
+#: templates/index_cards.html:40
+msgid "List supermasters"
+msgstr "超级主机列表"
+
+#: templates/index_list.html:25 templates/list_zones.html:141
+#: templates/add_zone_master.html:5 templates/add_zone_master.html:9
+#: templates/index_cards.html:50 templates/header.html:47
+msgid "Add master zone"
+msgstr "添加主区域"
+
+#: templates/index_list.html:30 templates/list_zones.html:145
+#: templates/add_zone_slave.html:5 templates/add_zone_slave.html:9
+#: templates/index_cards.html:60 templates/header.html:51
+msgid "Add slave zone"
+msgstr "添加从区域"
+
+#: templates/index_list.html:35 templates/add_supermaster.html:5
+#: templates/add_supermaster.html:9 templates/add_supermaster.html:49
+#: templates/list_supermasters.html:48 templates/index_cards.html:70
+msgid "Add supermaster"
+msgstr "添加超级主机"
+
+#: templates/index_list.html:40 templates/bulk_registration.html:5
+#: templates/bulk_registration.html:9 templates/index_cards.html:80
+#: templates/header.html:55
+msgid "Bulk registration"
+msgstr "批量注册"
+
+#: templates/index_list.html:50 templates/change_password.html:4
+#: templates/change_password.html:8 templates/change_password.html:37
+#: templates/index_cards.html:101 templates/header.html:117
+msgid "Change password"
+msgstr "更改密码"
+
+#: templates/index_list.html:54 templates/users.html:8
+#: templates/index_cards.html:110 templates/header.html:73
+msgid "User administration"
+msgstr "用户管理"
+
+#: templates/index_list.html:58 templates/index_cards.html:119
+#: templates/header.html:82
+msgid "List permission templates"
+msgstr "权限模板列表"
+
+#: templates/index_list.html:62 templates/index_cards.html:128
+#: templates/header.html:119
+msgid "Logout"
+msgstr "登出"
+
+#: templates/delete_user.html:4 templates/edit_user.html:4
+#: templates/add_perm_templ.html:4 templates/delete_perm_templ.html:4
+#: templates/users.html:4 templates/add_user.html:4
+#: templates/list_log_users.html:4 templates/header.html:71
+#: templates/edit_perm_templ.html:4 templates/list_perm_templ.html:4
+msgid "Users"
+msgstr "用户"
+
+#: templates/delete_user.html:5 templates/delete_user.html:9
+msgid "Delete user"
+msgstr "删除用户"
+
+#: templates/delete_user.html:17
+msgid ""
+"You are about to delete a user. This user is owner for a number of zones. "
+"Please decide what to do with these zones."
+msgstr ""
+"You are about to delete a user. This user is owner for a number of zones. "
+"Please decide what to do with these zones."
+
+#: templates/delete_user.html:22
+msgid "Zone"
+msgstr "区域"
+
+#: templates/delete_user.html:23 templates/list_zones.html:118
+#: templates/delete_perm_templ.html:6 templates/edit.html:246
+#: templates/edit.html:420 templates/users.html:98
+#: templates/list_zone_templ.html:60 templates/edit_zone_templ.html:54
+#: templates/list_supermasters.html:29 templates/search.html:103
+#: templates/search.html:212 templates/list_perm_templ.html:25
+msgid "Delete"
+msgstr "删除"
+
+#: templates/delete_user.html:24
+msgid "Leave"
+msgstr "离开"
+
+#: templates/delete_user.html:25
+msgid "Add new owner"
+msgstr "添加新所有者"
+
+#: templates/delete_user.html:26
+msgid "Owner to be added"
+msgstr "要添加的所有者"
+
+#: templates/list_zones.html:9 templates/search.html:58
+msgid "Total number of zones:"
+msgstr "区域总数："
+
+#: templates/list_zones.html:21
+msgid "There are no zones to show in this listing."
+msgstr "在此列表中没有可显示的区域。"
+
+#: templates/list_zones.html:41 templates/search.html:39
+#: templates/search.html:75
+msgid "Records"
+msgstr "记录"
+
+#: templates/list_zones.html:47 templates/add_zone_master.html:21
+#: templates/list_zone_templ.html:16 templates/bulk_registration.html:15
+#: templates/delete_domain.html:22 templates/search.html:81
+#: templates/delete_domains.html:16 templates/add_zone_slave.html:28
+msgid "Owner"
+msgstr "所有者"
+
+#: templates/list_zones.html:51
+msgid "Full name"
+msgstr "全名"
+
+#: templates/list_zones.html:54
+msgid "Serial"
+msgstr "序列号"
+
+#: templates/list_zones.html:58 templates/edit.html:535 templates/users.html:18
+#: templates/add_zone_master.html:50 templates/bulk_registration.html:44
+msgid "Template"
+msgstr "模板"
+
+#: templates/list_zones.html:115 templates/edit.html:12 templates/edit.html:244
+#: templates/users.html:93 templates/list_zone_templ.html:59
+#: templates/edit_zone_templ.html:51 templates/search.html:100
+#: templates/search.html:209 templates/edit_perm_templ.html:6
+#: templates/list_perm_templ.html:24
+msgid "Edit"
+msgstr "编辑"
+
+#: templates/list_zones.html:135
+msgid "Delete zone(s)"
+msgstr "删除区域"
+
+#: templates/dnssec_add_key.html:15 templates/dnssec_add_key.html:74
+msgid "Add key"
+msgstr "添加密钥"
+
+#: templates/dnssec_add_key.html:20 templates/dnssec_add_key.html:22
+msgid "Add key for zone"
+msgstr "为区域添加密钥"
+
+#: templates/dnssec_add_key.html:29
+msgid "Key type"
+msgstr "密钥类型"
+
+#: templates/dnssec_add_key.html:36
+msgid "Select key type"
+msgstr "选择密钥类型"
+
+#: templates/dnssec_add_key.html:40
+msgid "Bits in length"
+msgstr "位长度"
+
+#: templates/dnssec_add_key.html:50
+msgid "Select bits length"
+msgstr "选择位长度"
+
+#: templates/dnssec_add_key.html:68
+msgid "Select algorithm"
+msgstr "选择算法"
+
+#: templates/edit_user.html:5 templates/edit_user.html:9
+msgid "Edit user"
+msgstr "编辑用户"
+
+#: templates/edit_user.html:15 templates/login.html:13 templates/users.html:15
+#: templates/add_user.html:14
+msgid "Username"
+msgstr "用户名"
+
+#: templates/edit_user.html:18 templates/add_user.html:16
+msgid "Provide user name"
+msgstr "提供用户名"
+
+#: templates/edit_user.html:22 templates/users.html:16
+#: templates/add_user.html:20
+msgid "Fullname"
+msgstr "全名"
+
+#: templates/edit_user.html:27 templates/login.html:18
+#: templates/add_user.html:24
+msgid "Password"
+msgstr "密码"
+
+#: templates/edit_user.html:37 templates/users.html:17
+#: templates/add_user.html:34
+msgid "Email address"
+msgstr "电子邮件地址"
+
+#: templates/edit_user.html:40 templates/add_user.html:36
+msgid "Provide email"
+msgstr "提供电子邮件"
+
+#: templates/edit_user.html:45 templates/add_user.html:41
+msgid "Permission template"
+msgstr "权限模板"
+
+#: templates/edit_user.html:65 templates/users.html:24
+#: templates/add_user.html:62
+msgid "Enabled"
+msgstr "启用"
+
+#: templates/edit_user.html:70 templates/add_user.html:67
 msgid "LDAP Authentication"
 msgstr "LDAP认证"
 
-msgid "private"
-msgstr "私有"
+#: templates/edit_user.html:84
+msgid "This user has been assigned the permission template"
+msgstr "此用户已被分配权限模板"
 
-msgid "global"
-msgstr "全局"
+#: templates/edit_user.html:86
+msgid "The description for this template is"
+msgstr "此模板的描述为"
 
-msgid "Delete key"
-msgstr "删除密钥"
+#: templates/edit_user.html:88
+msgid "Based on this template, this user has the following permissions"
+msgstr "基于此模板，此用户具有以下权限"
 
-msgid "Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) in pattern matches any single character, a percent sign (%) matches any string of zero or more characters."
-msgstr "输入主机名或IP地址。支持SQL LIKE语法：模式中的下划线(_)匹配任意单个字符，百分号(%)匹配任意零个或多个字符。"
+#: templates/add_perm_templ.html:5 templates/delete_perm_templ.html:5
+#: templates/edit_perm_templ.html:5 templates/list_perm_templ.html:5
+#: templates/list_perm_templ.html:9
+msgid "Permission templates"
+msgstr "权限模板"
 
-msgid "Provide a keyword for your search"
-msgstr "为搜索提供关键词"
+#: templates/add_perm_templ.html:6 templates/edit.html:468
+#: templates/add_user.html:74
+msgid "Add"
+msgstr "添加"
 
+#: templates/add_perm_templ.html:10 templates/header.html:84
+#: templates/list_perm_templ.html:33
+msgid "Add permission template"
+msgstr "添加权限模板"
+
+#: templates/add_supermaster.html:4 templates/list_supermasters.html:4
+#: templates/delete_supermaster.html:4
+msgid "Supermasters"
+msgstr "超级主服务器"
+
+#: templates/add_supermaster.html:14 templates/list_supermasters.html:13
+msgid "IP address of supermaster"
+msgstr "超级主服务器的IP地址"
+
+#: templates/add_supermaster.html:17 templates/add_zone_slave.html:24
+msgid "Provide ip address"
+msgstr "提供IP地址"
+
+#: templates/add_supermaster.html:20 templates/list_supermasters.html:14
+#: templates/delete_supermaster.html:11
+msgid "Hostname in NS record"
+msgstr "NS记录中的主机名"
+
+#: templates/add_supermaster.html:22
+msgid "Provide host name"
+msgstr "提供主机名"
+
+#: templates/add_supermaster.html:25 templates/list_supermasters.html:15
+#: templates/delete_supermaster.html:12 templates/header.html:114
+msgid "Account"
+msgstr "账号"
+
+#: templates/login.html:7
+msgid "Log in"
+msgstr "登录"
+
+#: templates/login.html:15
+msgid "Please provide a username"
+msgstr "请提供用户名"
+
+#: templates/login.html:22
+msgid "Please provide a password"
+msgstr "请提供密码"
+
+#: templates/login.html:27
+msgid "Language"
+msgstr "语言"
+
+#: templates/login.html:34
+msgid "Go"
+msgstr "前进"
+
+#: templates/add_zone_templ_record.html:7
+#: templates/add_zone_templ_record.html:50 templates/edit.html:109
+#: templates/edit.html:344 templates/edit_zone_templ.html:21
+#: templates/edit_zone_templ.html:62 templates/add_record.html:12
+#: templates/add_record.html:65
+msgid "Add record"
+msgstr "添加记录"
+
+#: templates/add_zone_templ_record.html:11
+msgid "Add record to zone template"
+msgstr "向区域模板添加记录"
+
+#: templates/add_zone_templ_record.html:40
+msgid "Provide content for your zone record"
+msgstr "为您的区域记录提供内容"
+
+#: templates/add_zone_templ_record.html:57 templates/edit_zone_templ.html:71
+msgid "Hint:"
+msgstr "提示："
+
+#: templates/add_zone_templ_record.html:60 templates/edit_zone_templ.html:74
+msgid "The following placeholders can be used in template records"
+msgstr "模板记录中可以使用以下占位符"
+
+#: templates/add_zone_templ_record.html:63
+msgid "substituted with current zone name"
+msgstr "替换为当前域名称"
+
+#: templates/add_zone_templ_record.html:64
+msgid "substituted with current date and 2 numbers"
+msgstr "替换为当前日期以及2个数字"
+
+#: templates/add_zone_templ_record.html:66 templates/edit_zone_templ.html:82
+msgid "substituted with 1st name server"
+msgstr "用第一个名称服务器替换"
+
+#: templates/add_zone_templ_record.html:67 templates/edit_zone_templ.html:83
+msgid "substituted with 2nd name server"
+msgstr "用第二个名称服务器替换"
+
+#: templates/add_zone_templ_record.html:68 templates/edit_zone_templ.html:84
+msgid "substituted with 3rd name server"
+msgstr "用第三个名称服务器替换"
+
+#: templates/add_zone_templ_record.html:69 templates/edit_zone_templ.html:85
+msgid "substituted with 4th name server"
+msgstr "用第四个名称服务器替换"
+
+#: templates/add_zone_templ_record.html:70 templates/edit_zone_templ.html:86
+msgid "substituted with hostmaster"
+msgstr "用hostmaster替换"
+
+#: templates/add_zone_templ_record.html:74 templates/edit_zone_templ.html:90
+msgid "Examples:"
+msgstr "示例："
+
+#: templates/add_zone_templ_record.html:77 templates/edit_zone_templ.html:93
+msgid ""
+"To add a subdomain foo in a zone template you would put foo.[ZONE] into the "
+"name field."
+msgstr ""
+"To add a subdomain foo in a zone template you would put foo.[ZONE] into the "
+"name field."
+
+#: templates/add_zone_templ_record.html:78 templates/edit_zone_templ.html:94
+msgid "To add a wildcard record put *.[ZONE] in the name field."
+msgstr "要添加通配符记录，请在名称字段中输入*.[ZONE]。"
+
+#: templates/add_zone_templ_record.html:79 templates/edit_zone_templ.html:95
+msgid "Use just [ZONE] to have the domain itself return a value."
+msgstr "仅使用[ZONE]将使域名本身返回一个值。"
+
+#: templates/add_zone_templ_record.html:80 templates/edit_zone_templ.html:96
+msgid ""
+"For the SOA record, place [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 "
+"86400 in the content field."
+msgstr ""
+"For the SOA record, place [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 "
+"86400 in the content field."
+
+#: templates/delete_perm_templ.html:10
+msgid "Delete permission template"
+msgstr "删除权限模板"
+
+#: templates/edit.html:17 templates/edit.html:19
+msgid "Edit zone"
+msgstr "编辑区域"
+
+#: templates/edit.html:29
+msgid "This zone does not have any records."
+msgstr "该区域没有任何记录。"
+
+#: templates/edit.html:51
+msgid "Add PTR"
+msgstr "Add PTR"
+
+#: templates/edit.html:54
+msgid "Add A/AAAA"
+msgstr "Add A/AAAA"
+
+#: templates/edit.html:93 templates/edit.html:339
+msgid "Provide TTL"
+msgstr "提供TTL"
+
+#: templates/edit.html:257
+msgid "Comments"
+msgstr "评论"
+
+#: templates/edit.html:283
+msgid "Unsign this zone"
+msgstr "取消对该区域的签名"
+
+#: templates/edit.html:286
+msgid "Sign this zone"
+msgstr "对该区域进行签名"
+
+#: templates/edit.html:350 templates/add_record.html:71
+msgid "Also add a PTR record in the matching zone"
+msgstr "Also add a PTR record in the matching zone"
+
+#: templates/edit.html:357 templates/add_record.html:78
+msgid "Also add an A/AAAA record in the matching zone"
+msgstr "Also add an A/AAAA record in the matching zone"
+
+#: templates/edit.html:372
+msgid "Save as new template"
+msgstr "保存为新模板"
+
+#: templates/edit.html:375 templates/edit_zone_templ.html:109
+msgid "Template Name"
+msgstr "模板名称"
+
+#: templates/edit.html:378
+msgid "Provide template name"
+msgstr "Provide template name"
+
+#: templates/edit.html:382 templates/edit_zone_templ.html:116
+msgid "Template Description"
+msgstr "模板描述"
+
+#: templates/edit.html:388 templates/edit_zone_templ.html:120
+msgid "Save as template"
+msgstr "保存为模板"
+
+#: templates/edit.html:397
+msgid "Owner of zone"
+msgstr "区域所有者"
+
+#: templates/edit.html:402
+msgid "No owner set for this zone."
+msgstr "此区域未设置所有者。"
+
+#: templates/edit.html:495 templates/edit.html:522 templates/edit.html:557
+msgid "Change"
+msgstr "更改"
+
+#: templates/edit.html:508 templates/add_zone_slave.html:21
+msgid "IP address of master NS"
+msgstr "主DNS服务器的IP地址"
+
+#: templates/users.html:21
+msgid "LDAP"
+msgstr "LDAP"
+
+#: templates/users.html:125 templates/add_user.html:5 templates/add_user.html:9
+#: templates/header.html:75
+msgid "Add user"
+msgstr "添加用户"
+
+#: templates/delete_record.html:12
 msgid "Delete Record"
 msgstr "删除记录"
 
+#: templates/delete_record.html:17 templates/delete_record.html:19
 msgid "Delete record in zone"
 msgstr "删除区域中的记录"
 
+#: templates/delete_record.html:47
+msgid "You are trying to delete a record that is needed for this zone to work."
+msgstr "您正试图删除此区域所需的记录。"
+
+#: templates/add_user.html:29
+msgid "Provide user password"
+msgstr "提供用户密码"
+
+#: templates/add_zone_master.html:14 templates/add_zone_slave.html:14
+msgid "Zone name"
+msgstr "区域名称"
+
+#: templates/add_zone_master.html:17 templates/add_zone_slave.html:17
+msgid "Provide zone name"
+msgstr "提供区域名称"
+
+#: templates/add_zone_master.html:70 templates/add_zone_slave.html:56
+msgid "Add zone"
+msgstr "添加区域"
+
+#: templates/list_zone_templ.html:9
+msgid "Zone templates for"
+msgstr "区域模板："
+
+#: templates/list_zone_templ.html:13
+msgid "In use"
+msgstr "已使用"
+
+#: templates/list_zone_templ.html:18
+msgid "Zones linked"
+msgstr "已关联区域"
+
+#: templates/list_zone_templ.html:26 templates/search.html:261
+msgid "No results found"
+msgstr "未找到结果"
+
+#: templates/list_zone_templ.html:51
+msgid "private"
+msgstr "私有"
+
+#: templates/list_zone_templ.html:53
+msgid "global"
+msgstr "全局"
+
+#: templates/change_password.html:13
+msgid "Current password"
+msgstr "当前密码"
+
+#: templates/change_password.html:17
+msgid "Provide current password"
+msgstr "提供当前密码"
+
+#: templates/change_password.html:21
+msgid "New password"
+msgstr "新密码"
+
+#: templates/change_password.html:25 templates/change_password.html:33
+msgid "Provide new password"
+msgstr "提供新密码"
+
+#: templates/change_password.html:29
+msgid "Repeat password"
+msgstr "重复密码"
+
+#: templates/edit_zone_templ.html:7
+msgid "Edit template"
+msgstr "编辑模板"
+
+#: templates/edit_zone_templ.html:11
+msgid "Edit zone template"
+msgstr "编辑区域模板"
+
+#: templates/edit_zone_templ.html:17
+msgid "This zone template does not have any records yet."
+msgstr "该区域模板还没有任何记录。"
+
+#: templates/edit_zone_templ.html:67
+msgid "Update zones"
+msgstr "更新区域"
+
+#: templates/list_supermasters.html:40
+msgid "There are no supermasters to show in this listing."
+msgstr "此列表中没有超级主服务器可显示。"
+
+#: templates/bulk_registration.html:58
+msgid "Type one domain per line"
+msgstr "每行输入一个域名"
+
+#: templates/bulk_registration.html:61
+msgid "Provide a domain name(s)"
+msgstr "提供域名"
+
+#: templates/bulk_registration.html:69
+msgid "Add zones"
+msgstr "添加区域"
+
+#: templates/delete_domain.html:12
+msgid "Delete Zone"
+msgstr "Delete Zone"
+
+#: templates/delete_domain.html:17 templates/delete_domain.html:19
+msgid "Delete zone"
+msgstr "删除区域"
+
+#: templates/delete_domain.html:27 templates/delete_domains.html:42
+msgid ""
+"You are about to delete a slave zone of which the master nameserver is a "
+"supermaster. Deleting the zone now, will result in temporary removal only. "
+"Whenever the supermaster sends a notification for this zone, it will be "
+"added again!"
+msgstr ""
+"You are about to delete a slave zone of which the master nameserver is a "
+"supermaster. Deleting the zone now, will result in temporary removal only. "
+"Whenever the supermaster sends a notification for this zone, it will be "
+"added again!"
+
+#: templates/search.html:9
+msgid ""
+"Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) "
+"in pattern matches any single character, a percent sign (%) matches any "
+"string of zero or more characters."
+msgstr ""
+"输入主机名或IP地址。支持SQL LIKE语法：模式中的下划线(_)匹配任意单个字符，百分"
+"号(%)匹配任意零个或多个字符。"
+
+#: templates/search.html:27
+msgid "Provide a keyword for your search"
+msgstr "为搜索提供关键词"
+
+#: templates/search.html:44
+msgid "Wildcard"
+msgstr "通配符"
+
+#: templates/search.html:49
+msgid "Reverse"
+msgstr "反向"
+
+#: templates/search.html:57
+msgid "Zones found"
+msgstr "找到区域"
+
+#: templates/search.html:152
+msgid "Records found"
+msgstr "找到记录"
+
+#: templates/search.html:153
+msgid "Total number of records:"
+msgstr "Total number of records:"
+
+#: templates/delete_domains.html:5 templates/delete_domains.html:9
+msgid "Delete zones"
+msgstr "删除区域"
+
+#: templates/delete_domains.html:18
 msgid "Note"
 msgstr "注意"
+
+#: templates/delete_supermaster.html:5 templates/delete_supermaster.html:9
+msgid "Delete supermaster"
+msgstr "删除超级主服务器"
+
+#: templates/list_log_users.html:5 templates/list_log_users.html:9
+#: templates/header.html:91
+msgid "User logs"
+msgstr "用户日志"
+
+#: templates/list_log_users.html:17
+msgid "Search logs by user"
+msgstr "按用户搜索日志"
+
+#: templates/delete_zone_templ.html:6
+msgid "Delete template"
+msgstr "删除模板"
+
+#: templates/delete_zone_templ.html:10
+msgid "Delete zone template"
+msgstr "删除区域模板"
+
+#: templates/header.html:101
+msgid "Templates"
+msgstr "模板"
+
+#: templates/dnssec_ds_dnskey.html:16
+msgid "DS and DNS keys"
+msgstr "DS和DNS密钥"
+
+#: templates/dnssec_ds_dnskey.html:22 templates/dnssec_ds_dnskey.html:24
+msgid "DNSSEC public records for zone"
+msgstr "区域的DNSSEC公共记录"
+
+#: templates/dnssec_ds_dnskey.html:27
+msgid "DNSKEY"
+msgstr "DNS密钥"
+
+#: templates/dnssec_ds_dnskey.html:33
+msgid "DS record"
+msgstr "DS记录"
+
+#: templates/add_record.html:17 templates/add_record.html:19
+msgid "Add record to zone"
+msgstr "添加记录到区域"
+
+#: templates/edit_perm_templ.html:10
+msgid "Edit permission template"
+msgstr "编辑权限模板"
+
+#: templates/delete_zone_templ_record.html:7
+msgid "Delete record"
+msgstr "删除记录"
+
+#: templates/delete_zone_templ_record.html:11
+msgid "Delete record in zone template"
+msgstr "删除区域模板中的记录"
+
+#: templates/dnssec_delete_key.html:16
+msgid "Delete key"
+msgstr "删除密钥"
+
+#: install/helpers/InstallStepHandler.php:57
+msgid ""
+"There is already a configuration file in place, so the installation will be "
+"skipped."
+msgstr "已经存在配置文件，因此将跳过安装过程。"
+
+#: install/helpers/InstallStepHandler.php:71
+msgid "Error rendering template"
+msgstr "Error rendering template"
+
+#: install/helpers/InstallStepHandler.php:101
+msgid "Updating database..."
+msgstr "正在更新数据库..."
+
+#: install/helpers/InstallStepHandler.php:119
+msgid "done!"
+msgstr "完成！"
+
+#: install/helpers/DatabaseHelper.php:119
+msgid "or"
+msgstr "or"
+
+#: install/helpers/ErrorHandler.php:29
+msgid "Please select a language to proceed with the installation."
+msgstr "Please select a language to proceed with the installation."
+
+#: install/helpers/LocaleHandler.php:87
+msgid ""
+"Failed to set locale. Selected locale may be unsupported on this system. "
+"Please contact your administrator."
+msgstr ""
+"设置区域设置失败。在此系统上，所选区域设置可能不受支持。请联系您的管理员。"
+
+#~ msgid "Commit changes"
+#~ msgstr "提交修改"
+
+#~ msgid "The record was succesfully added."
+#~ msgstr "记录已添加"
+
+#~ msgid "Add also reverse record"
+#~ msgstr "同时添加反向记录"
+
+#~ msgid "IP address of web- or mailserver is invalid."
+#~ msgstr "无效的web或邮件服务器IP地址"
+
+#~ msgid "IP address of webserver"
+#~ msgstr "web服务器的IP地址"
+
+#~ msgid "IP address of mailserver"
+#~ msgstr "邮件服务器的IP地址"
+
+#~ msgid "Create zone without applying records-template"
+#~ msgstr "创建不应用记录模板的域"
+
+#~ msgid "Really delete this user?"
+#~ msgstr "确定删除这个用户？"
+
+#~ msgid "Index"
+#~ msgstr "首页"
+
+#~ msgid "View zone"
+#~ msgstr "查看域名"
+
+#~ msgid "Master"
+#~ msgstr "主"
+
+#~ msgid "Query"
+#~ msgstr "输入"
+
+#~ msgid "Enter a hostname or IP address"
+#~ msgstr "输入一个主机或者IP地址"
+
+#~ msgid "Oops! An error occured!"
+#~ msgstr "哦豁！出错了……"
+
+#~ msgid "Unknown database type in inc/config.inc.php."
+#~ msgstr "在inc/config.inc.php文件中没有能识别的数据库类型"
+
+#~ msgid "If you specify an MX record it must be a hostname."
+#~ msgstr "指定的MX记录必须是一个主机"
+
+#~ msgid "There is already a supermaster with this IP address."
+#~ msgstr "已经有一个主解析服务器是这个ip地址了"
+
+#~ msgid "Unknown error."
+#~ msgstr "未知错误"
+
+#~ msgid "Invalid record type! You should not even been able to get that here."
+#~ msgstr "记录类型无效！您甚至不应该在这里看到它"
+
+#~ msgid "NS records must be a hostnames."
+#~ msgstr "NS记录必须是一个主机名"
+
+#~ msgid "A prio field should be numeric."
+#~ msgstr "PRIO字段应该是一个数字"
+
+#~ msgid "At least one of the five last SOA data fields is not numeric."
+#~ msgstr "SOA记录最后五个数据字段中至少有一个不是数字"
+
+#~ msgid "You can only have five numeric fields in the SOA record."
+#~ msgstr "SOA记录中只能有五个数字字段"
+
+#~ msgid "Zone has been added succesfully."
+#~ msgstr "域名已添加"
+
+#~ msgid "Zone has been deleted succesfully."
+#~ msgstr "域名已删除"
+
+#~ msgid "The user has been updated succesfully."
+#~ msgstr "用户已更新"
+
+#~ msgid "The user has been created succesfully."
+#~ msgstr "用户已创建"
+
+#~ msgid "The user has been deleted succesfully."
+#~ msgstr "用户已删除"
+
+#~ msgid "The record has been updated succesfully."
+#~ msgstr "记录已更新"
+
+#~ msgid "The record has been deleted succesfully."
+#~ msgstr "记录已删除"
+
+#~ msgid "The supermaster has been deleted succesfully."
+#~ msgstr "主解析服务器已删除"
+
+#~ msgid "The supermaster has been added succesfully."
+#~ msgstr "主解析服务器已添加"
+
+#~ msgid "The permission template has been deleted succesfully."
+#~ msgstr "权限模板已删除"
+
+#~ msgid "Function returned an error (multiple zones matching this zone ID)."
+#~ msgstr "函数返回一个错误（多个域匹配这个域的ID）"
+
+#~ msgid "You have to create a config.inc.php!"
+#~ msgstr "您必须创建一个config.inc.php文件！"
+
+#~ msgid "Success!"
+#~ msgstr "成功"
+
+#~ msgid "Successful!"
+#~ msgstr "成功的"
+
+#~ msgid "back"
+#~ msgstr "后退"
+
+#~ msgid "Inactive"
+#~ msgstr "无效"
+
+#~ msgid "Emailaddress"
+#~ msgstr "Email地址"
+
+#~ msgid "Reset changes"
+#~ msgstr "重置修改"
+
+#~ msgid "This template zone does not have any records yet."
+#~ msgstr "此域模板还没有任何解析记录"
+
+#~ msgid "No database name has been set in config.inc.php."
+#~ msgstr "在config.inc.php中没有设置数据库名称。"
+
+#~ msgid "No database host has been set in config.inc.php."
+#~ msgstr "在config.inc.php中没有设置数据库主机。"
+
+#~ msgid "No database username has been set in config.inc.php."
+#~ msgstr "在config.inc.php中没有设置数据库用户名。"
+
+#~ msgid "No database password has been set in config.inc.php."
+#~ msgstr "在config.inc.php中没有设置数据库密码。"
+
+#~ msgid "No or unknown database type has been set in config.inc.php."
+#~ msgstr "在config.inc.php中没有设置数据库类型或设置了未知的数据库类型。"
+
+#~ msgid "You have an error in the MNAME field of the SOA record."
+#~ msgstr "您SOA记录中的MNAME字段存在错误"
+
+#~ msgid "Invalid value for prio field. It should be numeric."
+#~ msgstr "无效的优先级，它应该是数字"
+
+#~ msgid "Invalid value for name field of SRV record."
+#~ msgstr "SRV记录的名称无效"
+
+#~ msgid "Installation step"
+#~ msgstr "安装步骤"
+
+#~ msgid "Go to step"
+#~ msgstr "进入步骤"
+
+#~ msgid "Do you want to proceed now?"
+#~ msgstr "您是否要立即继续？"
+
+#~ msgid "The password for this username."
+#~ msgstr "此用户名的密码。"
+
+#~ msgid "Hostname"
+#~ msgstr "主机名"
+
+#~ msgid "DB Port"
+#~ msgstr "数据库端口"
+
+#~ msgid "The port the database server is listening on."
+#~ msgstr "数据库服务器正在侦听的端口。"
+
+#~ msgid "Database"
+#~ msgstr "数据库"
+
+#~ msgid "The name of the PowerDNS database."
+#~ msgstr "PowerDNS数据库的名称。"
+
+#~ msgid "Database type"
+#~ msgstr "数据库类型"
+
+#~ msgid "The type of the PowerDNS database."
+#~ msgstr "PowerDNS数据库的类型。"
+
+#~ msgid "Poweradmin administrator password"
+#~ msgstr "Poweradmin管理员密码"
+
+#~ msgid "Now we will gather all details for the configuration itself."
+#~ msgstr "现在我们将收集有关配置本身的所有详细信息。"
+
+#~ msgid "Hostmaster"
+#~ msgstr "主域名服务器管理员"
+
+#~ msgid "Primary nameserver"
+#~ msgstr "主域名服务器"
+
+#~ msgid "Secondary nameserver"
+#~ msgstr "辅助域名服务器"
+
+#~ msgid "In MySQL you should now perform the following command:"
+#~ msgstr "在MySQL中，现在应执行以下命令："
+
+#~ msgid "On PgSQL you would use:"
+#~ msgstr "在PgSQL中，您将使用以下命令："
+
+#~ msgid "Reset Password"
+#~ msgstr "重置密码"
+
+#~ msgid "Registered Email Address"
+#~ msgstr "注册Email"
+
+#~ msgid ""
+#~ "You now want to give limited rights to Poweradmin so it can update the "
+#~ "data in the tables. To do this, you should create a new user and give it "
+#~ "rights to select, delete, insert, and update records in the PowerDNS "
+#~ "database."
+#~ msgstr ""
+#~ "现在您想为Poweradmin提供有限的权限，以便它可以更新表中的数据。为此，您应该"
+#~ "创建一个新用户，并为其授予在PowerDNS数据库中选择、删除、插入和更新记录的权"
+#~ "限。"
+
+#~ msgid ""
+#~ "After you have added the new user, proceed with this installation "
+#~ "procedure."
+#~ msgstr "添加新用户后，请继续进行此安装过程。"
+
+#~ msgid "Supermaster does not exist."
+#~ msgstr "超级主服务器不存在。"
+
+#~ msgid "Zones have been added successfully."
+#~ msgstr "区域已成功添加。"
+
+#~ msgid "Your content field doesn't have a legit value."
+#~ msgstr "您的内容字段没有合法值。"
+
+#~ msgid "Invalid value for the prio field."
+#~ msgstr "优先级字段的值无效。"
+
+#~ msgid "You do not have the permission to add an SOA record."
+#~ msgstr "您没有权限添加SOA记录。"
+
+#~ msgid "You do not have the permission to add an NS record."
+#~ msgstr "您没有权限添加NS记录。"
+
+#~ msgid "A hostname cannot start or end with a dash."
+#~ msgstr "主机名不能以破折号开头或结尾。"
+
+#~ msgid "You cannot use HTML tags for this type of record."
+#~ msgstr "您不能在此类型的记录中使用HTML标签。"
+
+#~ msgid ""
+#~ "This is not a valid record. There already exists a CNAME with this name."
+#~ msgstr "这不是有效的记录。已经存在具有此名称的CNAME记录。"
+
+#~ msgid ""
+#~ "You cannot point an NS or MX record to a CNAME record. Remove or rename "
+#~ "the CNAME record first, or take another name."
+#~ msgstr ""
+#~ "您不能将NS或MX记录指向CNAME记录。请先删除或重命名CNAME记录，或者选择另一个"
+#~ "名称。"
+
+#~ msgid "Failed to activate DNSSEC key."
+#~ msgstr "激活DNSSEC密钥失败。"
+
+#~ msgid "Failed to add a new DNSSEC key."
+#~ msgstr "添加新的DNSSEC密钥失败。"
+
+#~ msgid "No database file has been set in config.inc.php."
+#~ msgstr "在config.inc.php中没有设置数据库文件。"
+
+#~ msgid ""
+#~ "Something has been successfully performed. What exactly, however, will "
+#~ "remain a mystery."
+#~ msgstr "某些操作已成功完成。但是具体是什么，将仍然是个谜。"
+
+#~ msgid "An empty password is not allowed."
+#~ msgstr "不允许为空密码。"
+
+#~ msgid "Failed to connect to the LDAP server!"
+#~ msgstr "连接LDAP服务器失败！"
+
+#~ msgid "Failed to bind to the LDAP server!"
+#~ msgstr "绑定到LDAP服务器失败！"
+
+#~ msgid "Username already exists, please choose another one."
+#~ msgstr "用户名已存在，请选择另一个。"
+
+#~ msgid "Enter a valid username."
+#~ msgstr "请输入有效的用户名。"
+
+#~ msgid "You do not have permission to perform searches."
+#~ msgstr "您没有执行搜索的权限。"
+
+#~ msgid "You do not have permission to view supermasters."
+#~ msgstr "您没有查看超级主机的权限。"
+
+#~ msgid "You do not have permission to edit zone templates."
+#~ msgstr "您没有编辑区域模板的权限。"
+
+#~ msgid "Provide the name username"
+#~ msgstr "提供用户名"
+
+#~ msgid "Provide the hostname"
+#~ msgstr "提供主机名"
+
+#~ msgid ""
+#~ "The hostname on which the PowerDNS database resides. Frequently, this "
+#~ "will be \"localhost\"."
+#~ msgstr "PowerDNS数据库所在的主机名。通常为“localhost”。"
+
+#~ msgid "Provide database port"
+#~ msgstr "提供数据库端口"
+
+#~ msgid "Provide the name of the database"
+#~ msgstr "提供数据库名称"
+
+#~ msgid "The path and filename to the PowerDNS SQLite database."
+#~ msgstr "PowerDNS SQLite数据库的路径和文件名。"
+
+#~ msgid "DB charset"
+#~ msgstr "数据库字符集"
+
+#~ msgid "DB collation"
+#~ msgstr "数据库排序规则"
+
+#~ msgid "Provide a password"
+#~ msgstr "提供密码"
+
+#~ msgid "Now we have finished the configuration."
+#~ msgstr "现在我们已经完成了配置。"
+
+#~ msgid ""
+#~ "You should (must!) remove the directory \"install/\" from the Poweradmin "
+#~ "root directory. You will not be able to use Poweradmin if it exists. Do "
+#~ "it now."
+#~ msgstr ""
+#~ "您应该（必须！）从Poweradmin根目录中删除目录“install/”。如果存在该目录，您"
+#~ "将无法使用Poweradmin。现在就去做吧。"
+
+#~ msgid ""
+#~ "After you have removed the directory, you can login to <a href=\"../index."
+#~ "php\">Poweradmin</a>."
+#~ msgstr "删除目录后，您可以登录到<a href=\"../index.php\">Poweradmin</a>。"
+
+#~ msgid "You should now create the file "
+#~ msgstr "现在您应该创建文件“"
+
+#~ msgid ""
+#~ "in the Poweradmin root directory yourself. It should contain the "
+#~ "following few lines:"
+#~ msgstr "在Poweradmin根目录中。文件应包含以下几行内容："
+
+#~ msgid ""
+#~ "This installer expects you to have a PowerDNS database accessible from "
+#~ "this server. This installer also expects you to have never run Poweradmin "
+#~ "before, or that you want to overwrite the Poweradmin part of the "
+#~ "database. If you have had Poweradmin running before, any data in the "
+#~ "following tables will be destroyed: perm_items, perm_templ, "
+#~ "perm_templ_items, users, and zones. This installer will, of course, not "
+#~ "touch the data in the PowerDNS tables of the database. However, it is "
+#~ "recommended that you create a backup of your database before proceeding."
+#~ msgstr ""
+#~ "此安装程序预期您可以从此服务器访问PowerDNS数据库。此安装程序还预期您以前从"
+#~ "未运行过Poweradmin，或者您希望覆盖数据库的Poweradmin部分。如果以前已经运行"
+#~ "过Poweradmin，则以下表中的任何数据都将被销毁：perm_items、perm_templ、"
+#~ "perm_templ_items、users和zones。当然，此安装程序不会触及数据库中PowerDNS表"
+#~ "的数据。但是，建议您在继续之前创建数据库备份。"
+
+#~ msgid ""
+#~ "The alternative for this installer is a manual installation. Refer to the "
+#~ "poweradmin.org website if you want to go down that road."
+#~ msgstr ""
+#~ "此安装程序的替代方案是手动安装。如果您想选择手动安装，请参阅poweradmin.org"
+#~ "网站。"
+
+#~ msgid ""
+#~ "Finally, if you see any errors during the installation process, a problem "
+#~ "report would be appreciated. You can report problems (and ask for help) "
+#~ "on the <a href=\"https://github.com/poweradmin/poweradmin/"
+#~ "issues\target=\"blank\">poweradmin</a> issues."
+#~ msgstr ""
+#~ "最后，如果在安装过程中遇到任何错误，我们将非常感谢您报告问题。您可以在<a "
+#~ "href=\"https://github.com/poweradmin/poweradmin/issues\" "
+#~ "target=\"blank\">poweradmin</a>问题页面上报告问题（并寻求帮助）。"
+
+#~ msgid ""
+#~ "The username for Poweradmin. This new user will have limited rights only."
+#~ msgstr "Poweradmin的用户名。此新用户将只有有限的权限。"
+
+#~ msgid "message"
+#~ msgstr "消息"
+
+#~ msgid "%active%"
+#~ msgstr "%active%"
