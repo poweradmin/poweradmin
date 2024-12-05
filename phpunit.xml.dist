@@ -6,8 +6,11 @@
          beStrictAboutTestsThatDoNotTestAnything="true" beStrictAboutOutputDuringTests="true"
          backupStaticProperties="false" colors="true">
     <testsuites>
-        <testsuite name="Poweradmin">
-            <directory suffix="Test.php">tests</directory>
+        <testsuite name="unit">
+            <directory>tests/unit</directory>
+        </testsuite>
+        <testsuite name="integration">
+            <directory>tests/integration</directory>
         </testsuite>
     </testsuites>
 </phpunit>
