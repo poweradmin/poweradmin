@@ -1378,6 +1378,7 @@ msgid "Examples:"
 msgstr ""
 
 #: templates/add_zone_templ_record.html:76
+#: templates/edit_zone_templ.html:92
 msgid ""
 "To add a subdomain foo in a zone template you would put foo.[ZONE] into the "
 "name field."
@@ -1556,12 +1557,6 @@ msgstr ""
 
 #: templates/edit_zone_templ.html:66
 msgid "Update zones"
-msgstr ""
-
-#: templates/edit_zone_templ.html:92
-msgid ""
-"To add a subdomain foo in a zonetemplate you would put foo.[ZONE] into the "
-"name field."
 msgstr ""
 
 #: templates/list_supermasters.html:40
