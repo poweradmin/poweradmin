@@ -36,5 +36,5 @@ jobs:
       run: composer check:install
 
     - name: Run test suite
-      run: composer test
+      run: composer tests
 

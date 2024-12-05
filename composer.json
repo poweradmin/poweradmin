@@ -43,7 +43,7 @@
   },
   "scripts": {
     "docs": "tools/phpDocumentor",
-    "tests": "phpunit --testsuite unit ",
+    "tests": "phpunit --testsuite unit",
     "tests:integration": "phpunit --testsuite integration",
     "check:index": "phpcs --standard=phpcs.xml index.php",
     "check:inc": "phpcs --standard=phpcs.xml inc",
