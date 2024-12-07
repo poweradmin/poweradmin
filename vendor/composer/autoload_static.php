@@ -11,9 +11,10 @@ class ComposerStaticInit1dab89e42c6bd529040213c23957bbde
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '72142d7b40a3a0b14e91825290b5ad82' => __DIR__ . '/..' . '/cakephp/core/functions.php',
+        '23c18046f52bef3eea034657bafda50f' => __DIR__ . '/..' . '/symfony/polyfill-php81/bootstrap.php',
         '8825ede83f2f289127722d4e842cf7e8' => __DIR__ . '/..' . '/symfony/polyfill-intl-grapheme/bootstrap.php',
         'e69f7f6ee287b969198c3c9d6777bd38' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/bootstrap.php',
-        '23c18046f52bef3eea034657bafda50f' => __DIR__ . '/..' . '/symfony/polyfill-php81/bootstrap.php',
+        'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         '662a729f963d39afe703c9d9b7ab4a8c' => __DIR__ . '/..' . '/symfony/polyfill-php83/bootstrap.php',
         'b6b991a57620e2fb6b2f66f03fe9ddc2' => __DIR__ . '/..' . '/symfony/string/Resources/functions.php',
         '948ad5488880985ff1c06721a4e447fe' => __DIR__ . '/..' . '/cakephp/utility/bootstrap.php',
@@ -37,6 +38,7 @@ class ComposerStaticInit1dab89e42c6bd529040213c23957bbde
         array (
             'Symfony\\Polyfill\\Php83\\' => 23,
             'Symfony\\Polyfill\\Php81\\' => 23,
+            'Symfony\\Polyfill\\Php80\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Polyfill\\Intl\\Normalizer\\' => 33,
             'Symfony\\Polyfill\\Intl\\Grapheme\\' => 31,
@@ -93,6 +95,10 @@ class ComposerStaticInit1dab89e42c6bd529040213c23957bbde
         'Symfony\\Polyfill\\Php81\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php81',
+        ),
+        'Symfony\\Polyfill\\Php80\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
         ),
         'Symfony\\Polyfill\\Mbstring\\' => 
         array (
@@ -209,6 +215,7 @@ class ComposerStaticInit1dab89e42c6bd529040213c23957bbde
     );
 
     public static $classMap = array (
+        'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'CURLStringFile' => __DIR__ . '/..' . '/symfony/polyfill-php81/Resources/stubs/CURLStringFile.php',
         'Cake\\Chronos\\Chronos' => __DIR__ . '/..' . '/cakephp/chronos/src/Chronos.php',
         'Cake\\Chronos\\ChronosDate' => __DIR__ . '/..' . '/cakephp/chronos/src/ChronosDate.php',
@@ -545,6 +552,7 @@ class ComposerStaticInit1dab89e42c6bd529040213c23957bbde
         'Phinx\\Util\\Literal' => __DIR__ . '/..' . '/robmorgan/phinx/src/Phinx/Util/Literal.php',
         'Phinx\\Util\\Util' => __DIR__ . '/..' . '/robmorgan/phinx/src/Phinx/Util/Util.php',
         'Phinx\\Wrapper\\TextWrapper' => __DIR__ . '/..' . '/robmorgan/phinx/src/Phinx/Wrapper/TextWrapper.php',
+        'PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/PhpToken.php',
         'PoweradminInstall\\DatabaseHelper' => __DIR__ . '/../..' . '/install/helpers/DatabaseHelper.php',
         'PoweradminInstall\\DatabaseStructureHelper' => __DIR__ . '/../..' . '/install/helpers/DatabaseStructureHelper.php',
         'PoweradminInstall\\ErrorHandler' => __DIR__ . '/../..' . '/install/helpers/ErrorHandler.php',
@@ -727,6 +735,7 @@ class ComposerStaticInit1dab89e42c6bd529040213c23957bbde
         'Psr\\SimpleCache\\InvalidArgumentException' => __DIR__ . '/..' . '/psr/simple-cache/src/InvalidArgumentException.php',
         'ReturnTypeWillChange' => __DIR__ . '/..' . '/symfony/polyfill-php81/Resources/stubs/ReturnTypeWillChange.php',
         'SQLite3Exception' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/SQLite3Exception.php',
+        'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
         'Symfony\\Bridge\\Twig\\AppVariable' => __DIR__ . '/..' . '/symfony/twig-bridge/AppVariable.php',
         'Symfony\\Bridge\\Twig\\Attribute\\Template' => __DIR__ . '/..' . '/symfony/twig-bridge/Attribute/Template.php',
         'Symfony\\Bridge\\Twig\\Command\\DebugCommand' => __DIR__ . '/..' . '/symfony/twig-bridge/Command/DebugCommand.php',
@@ -810,14 +819,10 @@ class ComposerStaticInit1dab89e42c6bd529040213c23957bbde
         'Symfony\\Component\\Config\\Definition\\Builder\\NumericNodeDefinition' => __DIR__ . '/..' . '/symfony/config/Definition/Builder/NumericNodeDefinition.php',
         'Symfony\\Component\\Config\\Definition\\Builder\\ParentNodeDefinitionInterface' => __DIR__ . '/..' . '/symfony/config/Definition/Builder/ParentNodeDefinitionInterface.php',
         'Symfony\\Component\\Config\\Definition\\Builder\\ScalarNodeDefinition' => __DIR__ . '/..' . '/symfony/config/Definition/Builder/ScalarNodeDefinition.php',
-        'Symfony\\Component\\Config\\Definition\\Builder\\StringNodeDefinition' => __DIR__ . '/..' . '/symfony/config/Definition/Builder/StringNodeDefinition.php',
         'Symfony\\Component\\Config\\Definition\\Builder\\TreeBuilder' => __DIR__ . '/..' . '/symfony/config/Definition/Builder/TreeBuilder.php',
         'Symfony\\Component\\Config\\Definition\\Builder\\ValidationBuilder' => __DIR__ . '/..' . '/symfony/config/Definition/Builder/ValidationBuilder.php',
         'Symfony\\Component\\Config\\Definition\\Builder\\VariableNodeDefinition' => __DIR__ . '/..' . '/symfony/config/Definition/Builder/VariableNodeDefinition.php',
-        'Symfony\\Component\\Config\\Definition\\ConfigurableInterface' => __DIR__ . '/..' . '/symfony/config/Definition/ConfigurableInterface.php',
-        'Symfony\\Component\\Config\\Definition\\Configuration' => __DIR__ . '/..' . '/symfony/config/Definition/Configuration.php',
         'Symfony\\Component\\Config\\Definition\\ConfigurationInterface' => __DIR__ . '/..' . '/symfony/config/Definition/ConfigurationInterface.php',
-        'Symfony\\Component\\Config\\Definition\\Configurator\\DefinitionConfigurator' => __DIR__ . '/..' . '/symfony/config/Definition/Configurator/DefinitionConfigurator.php',
         'Symfony\\Component\\Config\\Definition\\Dumper\\XmlReferenceDumper' => __DIR__ . '/..' . '/symfony/config/Definition/Dumper/XmlReferenceDumper.php',
         'Symfony\\Component\\Config\\Definition\\Dumper\\YamlReferenceDumper' => __DIR__ . '/..' . '/symfony/config/Definition/Dumper/YamlReferenceDumper.php',
         'Symfony\\Component\\Config\\Definition\\EnumNode' => __DIR__ . '/..' . '/symfony/config/Definition/EnumNode.php',
@@ -830,23 +835,19 @@ class ComposerStaticInit1dab89e42c6bd529040213c23957bbde
         'Symfony\\Component\\Config\\Definition\\Exception\\UnsetKeyException' => __DIR__ . '/..' . '/symfony/config/Definition/Exception/UnsetKeyException.php',
         'Symfony\\Component\\Config\\Definition\\FloatNode' => __DIR__ . '/..' . '/symfony/config/Definition/FloatNode.php',
         'Symfony\\Component\\Config\\Definition\\IntegerNode' => __DIR__ . '/..' . '/symfony/config/Definition/IntegerNode.php',
-        'Symfony\\Component\\Config\\Definition\\Loader\\DefinitionFileLoader' => __DIR__ . '/..' . '/symfony/config/Definition/Loader/DefinitionFileLoader.php',
         'Symfony\\Component\\Config\\Definition\\NodeInterface' => __DIR__ . '/..' . '/symfony/config/Definition/NodeInterface.php',
         'Symfony\\Component\\Config\\Definition\\NumericNode' => __DIR__ . '/..' . '/symfony/config/Definition/NumericNode.php',
         'Symfony\\Component\\Config\\Definition\\Processor' => __DIR__ . '/..' . '/symfony/config/Definition/Processor.php',
         'Symfony\\Component\\Config\\Definition\\PrototypeNodeInterface' => __DIR__ . '/..' . '/symfony/config/Definition/PrototypeNodeInterface.php',
         'Symfony\\Component\\Config\\Definition\\PrototypedArrayNode' => __DIR__ . '/..' . '/symfony/config/Definition/PrototypedArrayNode.php',
         'Symfony\\Component\\Config\\Definition\\ScalarNode' => __DIR__ . '/..' . '/symfony/config/Definition/ScalarNode.php',
-        'Symfony\\Component\\Config\\Definition\\StringNode' => __DIR__ . '/..' . '/symfony/config/Definition/StringNode.php',
         'Symfony\\Component\\Config\\Definition\\VariableNode' => __DIR__ . '/..' . '/symfony/config/Definition/VariableNode.php',
         'Symfony\\Component\\Config\\Exception\\FileLoaderImportCircularReferenceException' => __DIR__ . '/..' . '/symfony/config/Exception/FileLoaderImportCircularReferenceException.php',
         'Symfony\\Component\\Config\\Exception\\FileLocatorFileNotFoundException' => __DIR__ . '/..' . '/symfony/config/Exception/FileLocatorFileNotFoundException.php',
         'Symfony\\Component\\Config\\Exception\\LoaderLoadException' => __DIR__ . '/..' . '/symfony/config/Exception/LoaderLoadException.php',
-        'Symfony\\Component\\Config\\Exception\\LogicException' => __DIR__ . '/..' . '/symfony/config/Exception/LogicException.php',
         'Symfony\\Component\\Config\\FileLocator' => __DIR__ . '/..' . '/symfony/config/FileLocator.php',
         'Symfony\\Component\\Config\\FileLocatorInterface' => __DIR__ . '/..' . '/symfony/config/FileLocatorInterface.php',
         'Symfony\\Component\\Config\\Loader\\DelegatingLoader' => __DIR__ . '/..' . '/symfony/config/Loader/DelegatingLoader.php',
-        'Symfony\\Component\\Config\\Loader\\DirectoryAwareLoaderInterface' => __DIR__ . '/..' . '/symfony/config/Loader/DirectoryAwareLoaderInterface.php',
         'Symfony\\Component\\Config\\Loader\\FileLoader' => __DIR__ . '/..' . '/symfony/config/Loader/FileLoader.php',
         'Symfony\\Component\\Config\\Loader\\GlobFileLoader' => __DIR__ . '/..' . '/symfony/config/Loader/GlobFileLoader.php',
         'Symfony\\Component\\Config\\Loader\\Loader' => __DIR__ . '/..' . '/symfony/config/Loader/Loader.php',
@@ -867,7 +868,6 @@ class ComposerStaticInit1dab89e42c6bd529040213c23957bbde
         'Symfony\\Component\\Config\\Resource\\ResourceInterface' => __DIR__ . '/..' . '/symfony/config/Resource/ResourceInterface.php',
         'Symfony\\Component\\Config\\Resource\\SelfCheckingResourceChecker' => __DIR__ . '/..' . '/symfony/config/Resource/SelfCheckingResourceChecker.php',
         'Symfony\\Component\\Config\\Resource\\SelfCheckingResourceInterface' => __DIR__ . '/..' . '/symfony/config/Resource/SelfCheckingResourceInterface.php',
-        'Symfony\\Component\\Config\\Resource\\SkippingResourceChecker' => __DIR__ . '/..' . '/symfony/config/Resource/SkippingResourceChecker.php',
         'Symfony\\Component\\Config\\Util\\Exception\\InvalidXmlException' => __DIR__ . '/..' . '/symfony/config/Util/Exception/InvalidXmlException.php',
         'Symfony\\Component\\Config\\Util\\Exception\\XmlParsingException' => __DIR__ . '/..' . '/symfony/config/Util/Exception/XmlParsingException.php',
         'Symfony\\Component\\Config\\Util\\XmlUtils' => __DIR__ . '/..' . '/symfony/config/Util/XmlUtils.php',
@@ -1456,6 +1456,8 @@ class ComposerStaticInit1dab89e42c6bd529040213c23957bbde
         'Symfony\\Polyfill\\Intl\\Grapheme\\Grapheme' => __DIR__ . '/..' . '/symfony/polyfill-intl-grapheme/Grapheme.php',
         'Symfony\\Polyfill\\Intl\\Normalizer\\Normalizer' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/Normalizer.php',
         'Symfony\\Polyfill\\Mbstring\\Mbstring' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/Mbstring.php',
+        'Symfony\\Polyfill\\Php80\\Php80' => __DIR__ . '/..' . '/symfony/polyfill-php80/Php80.php',
+        'Symfony\\Polyfill\\Php80\\PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/PhpToken.php',
         'Symfony\\Polyfill\\Php81\\Php81' => __DIR__ . '/..' . '/symfony/polyfill-php81/Php81.php',
         'Symfony\\Polyfill\\Php83\\Php83' => __DIR__ . '/..' . '/symfony/polyfill-php83/Php83.php',
         'Twig\\AbstractTwigCallable' => __DIR__ . '/..' . '/twig/twig/src/AbstractTwigCallable.php',
@@ -1652,7 +1654,9 @@ class ComposerStaticInit1dab89e42c6bd529040213c23957bbde
         'Twig\\Util\\DeprecationCollector' => __DIR__ . '/..' . '/twig/twig/src/Util/DeprecationCollector.php',
         'Twig\\Util\\ReflectionCallable' => __DIR__ . '/..' . '/twig/twig/src/Util/ReflectionCallable.php',
         'Twig\\Util\\TemplateDirIterator' => __DIR__ . '/..' . '/twig/twig/src/Util/TemplateDirIterator.php',
+        'UnhandledMatchError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
         'Valitron\\Validator' => __DIR__ . '/..' . '/vlucas/valitron/src/Valitron/Validator.php',
+        'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

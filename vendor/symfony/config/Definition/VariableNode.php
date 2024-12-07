@@ -23,22 +23,28 @@ use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
  */
 class VariableNode extends BaseNode implements PrototypeNodeInterface
 {
-    protected bool $defaultValueSet = false;
-    protected mixed $defaultValue = null;
-    protected bool $allowEmptyValue = true;
+    protected $defaultValueSet = false;
+    protected $defaultValue;
+    protected $allowEmptyValue = true;
 
-    public function setDefaultValue(mixed $value): void
+    public function setDefaultValue($value)
     {
         $this->defaultValueSet = true;
         $this->defaultValue = $value;
     }
 
-    public function hasDefaultValue(): bool
+    /**
+     * {@inheritdoc}
+     */
+    public function hasDefaultValue()
     {
         return $this->defaultValueSet;
     }
 
-    public function getDefaultValue(): mixed
+    /**
+     * {@inheritdoc}
+     */
+    public function getDefaultValue()
     {
         $v = $this->defaultValue;
 
@@ -50,26 +56,35 @@ class VariableNode extends BaseNode implements PrototypeNodeInterface
      *
      * @param bool $boolean True if this entity will accept empty values
      */
-    public function setAllowEmptyValue(bool $boolean): void
+    public function setAllowEmptyValue(bool $boolean)
     {
         $this->allowEmptyValue = $boolean;
     }
 
-    public function setName(string $name): void
+    /**
+     * {@inheritdoc}
+     */
+    public function setName(string $name)
     {
         $this->name = $name;
     }
 
-    protected function validateType(mixed $value): void
+    /**
+     * {@inheritdoc}
+     */
+    protected function validateType($value)
     {
     }
 
-    protected function finalizeValue(mixed $value): mixed
+    /**
+     * {@inheritdoc}
+     */
+    protected function finalizeValue($value)
     {
         // deny environment variables only when using custom validators
         // this avoids ever passing an empty value to final validation closures
         if (!$this->allowEmptyValue && $this->isHandlingPlaceholder() && $this->finalValidationClosures) {
-            $e = new InvalidConfigurationException(\sprintf('The path "%s" cannot contain an environment variable when empty values are not allowed by definition and are validated.', $this->getPath()));
+            $e = new InvalidConfigurationException(sprintf('The path "%s" cannot contain an environment variable when empty values are not allowed by definition and are validated.', $this->getPath()));
             if ($hint = $this->getInfo()) {
                 $e->addHint($hint);
             }
@@ -79,7 +94,7 @@ class VariableNode extends BaseNode implements PrototypeNodeInterface
         }
 
         if (!$this->allowEmptyValue && $this->isValueEmpty($value)) {
-            $ex = new InvalidConfigurationException(\sprintf('The path "%s" cannot contain an empty value, but got %s.', $this->getPath(), json_encode($value)));
+            $ex = new InvalidConfigurationException(sprintf('The path "%s" cannot contain an empty value, but got %s.', $this->getPath(), json_encode($value)));
             if ($hint = $this->getInfo()) {
                 $ex->addHint($hint);
             }
@@ -91,12 +106,18 @@ class VariableNode extends BaseNode implements PrototypeNodeInterface
         return $value;
     }
 
-    protected function normalizeValue(mixed $value): mixed
+    /**
+     * {@inheritdoc}
+     */
+    protected function normalizeValue($value)
     {
         return $value;
     }
 
-    protected function mergeValues(mixed $leftSide, mixed $rightSide): mixed
+    /**
+     * {@inheritdoc}
+     */
+    protected function mergeValues($leftSide, $rightSide)
     {
         return $rightSide;
     }
@@ -108,10 +129,14 @@ class VariableNode extends BaseNode implements PrototypeNodeInterface
      * method may be overridden by subtypes to better match their understanding
      * of empty data.
      *
+     * @param mixed $value
+     *
+     * @return bool
+     *
      * @see finalizeValue()
      */
-    protected function isValueEmpty(mixed $value): bool
+    protected function isValueEmpty($value)
     {
-        return !$value;
+        return empty($value);
     }
 }

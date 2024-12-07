@@ -11,9 +11,7 @@
 
 namespace Symfony\Component\Config;
 
-use Symfony\Component\Config\Resource\ResourceInterface;
 use Symfony\Component\Config\Resource\SelfCheckingResourceChecker;
-use Symfony\Component\Config\Resource\SkippingResourceChecker;
 
 /**
  * ConfigCache caches arbitrary content in files on disk.
@@ -27,27 +25,22 @@ use Symfony\Component\Config\Resource\SkippingResourceChecker;
  */
 class ConfigCache extends ResourceCheckerConfigCache
 {
+    private $debug;
+
     /**
-     * @param string                                 $file                 The absolute cache path
-     * @param bool                                   $debug                Whether debugging is enabled or not
-     * @param string|null                            $metaFile             The absolute path to the meta file
-     * @param class-string<ResourceInterface>[]|null $skippedResourceTypes
+     * @param string $file  The absolute cache path
+     * @param bool   $debug Whether debugging is enabled or not
      */
-    public function __construct(
-        string $file,
-        private bool $debug,
-        ?string $metaFile = null,
-        array|null $skippedResourceTypes = null,
-    ) {
+    public function __construct(string $file, bool $debug)
+    {
+        $this->debug = $debug;
+
         $checkers = [];
-        if ($this->debug) {
-            if (null !== $skippedResourceTypes) {
-                $checkers[] = new SkippingResourceChecker($skippedResourceTypes);
-            }
-            $checkers[] = new SelfCheckingResourceChecker();
+        if (true === $this->debug) {
+            $checkers = [new SelfCheckingResourceChecker()];
         }
 
-        parent::__construct($file, $checkers, $metaFile);
+        parent::__construct($file, $checkers);
     }
 
     /**
@@ -55,8 +48,10 @@ class ConfigCache extends ResourceCheckerConfigCache
      *
      * This implementation always returns true when debug is off and the
      * cache file exists.
+     *
+     * @return bool
      */
-    public function isFresh(): bool
+    public function isFresh()
     {
         if (!$this->debug && is_file($this->getPath())) {
             return true;

@@ -20,22 +20,25 @@ namespace Symfony\Component\Config\Builder;
  */
 class ClassBuilder
 {
-    private string $name;
+    /** @var string */
+    private $namespace;
+
+    /** @var string */
+    private $name;
 
     /** @var Property[] */
-    private array $properties = [];
+    private $properties = [];
 
     /** @var Method[] */
-    private array $methods = [];
-    private array $require = [];
-    private array $use = [];
-    private array $implements = [];
-    private bool $allowExtraKeys = false;
+    private $methods = [];
+    private $require = [];
+    private $use = [];
+    private $implements = [];
+    private $allowExtraKeys = false;
 
-    public function __construct(
-        private string $namespace,
-        string $name,
-    ) {
+    public function __construct(string $namespace, string $name)
+    {
+        $this->namespace = $namespace;
         $this->name = ucfirst($this->camelCase($name)).'Config';
     }
 
@@ -63,11 +66,11 @@ class ClassBuilder
                 }
                 unset($path[$key]);
             }
-            $require .= \sprintf('require_once __DIR__.\DIRECTORY_SEPARATOR.\'%s\';', implode('\'.\DIRECTORY_SEPARATOR.\'', $path))."\n";
+            $require .= sprintf('require_once __DIR__.\DIRECTORY_SEPARATOR.\'%s\';', implode('\'.\DIRECTORY_SEPARATOR.\'', $path))."\n";
         }
         $use = $require ? "\n" : '';
         foreach (array_keys($this->use) as $statement) {
-            $use .= \sprintf('use %s;', $statement)."\n";
+            $use .= sprintf('use %s;', $statement)."\n";
         }
 
         $implements = [] === $this->implements ? '' : 'implements '.implode(', ', $this->implements);
@@ -82,7 +85,7 @@ class ClassBuilder
             }
         }
 
-        return strtr('<?php
+        $content = strtr('<?php
 
 namespace NAMESPACE;
 
@@ -95,6 +98,8 @@ class CLASS IMPLEMENTS
 BODY
 }
 ', ['NAMESPACE' => $this->namespace, 'REQUIRE' => $require, 'USE' => $use, 'CLASS' => $this->getName(), 'IMPLEMENTS' => $implements, 'BODY' => $body]);
+
+        return $content;
     }
 
     public function addRequire(self $class): void
@@ -124,8 +129,8 @@ BODY
             $property->setType($classType);
         }
         $this->properties[] = $property;
-        $defaultValue = null !== $defaultValue ? \sprintf(' = %s', $defaultValue) : '';
-        $property->setContent(\sprintf('private $%s%s;', $property->getName(), $defaultValue));
+        $defaultValue = null !== $defaultValue ? sprintf(' = %s', $defaultValue) : '';
+        $property->setContent(sprintf('private $%s%s;', $property->getName(), $defaultValue));
 
         return $property;
     }

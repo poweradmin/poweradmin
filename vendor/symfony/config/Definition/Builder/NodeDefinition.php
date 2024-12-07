@@ -22,21 +22,21 @@ use Symfony\Component\Config\Definition\NodeInterface;
  */
 abstract class NodeDefinition implements NodeParentInterface
 {
-    protected ?string $name = null;
-    protected NormalizationBuilder $normalization;
-    protected ValidationBuilder $validation;
-    protected mixed $defaultValue;
-    protected bool $default = false;
-    protected bool $required = false;
-    protected array $deprecation = [];
-    protected MergeBuilder $merge;
-    protected bool $allowEmptyValue = true;
-    protected mixed $nullEquivalent = null;
-    protected mixed $trueEquivalent = true;
-    protected mixed $falseEquivalent = false;
-    protected string $pathSeparator = BaseNode::DEFAULT_PATH_SEPARATOR;
-    protected NodeParentInterface|NodeInterface|null $parent;
-    protected array $attributes = [];
+    protected $name;
+    protected $normalization;
+    protected $validation;
+    protected $defaultValue;
+    protected $default = false;
+    protected $required = false;
+    protected $deprecation = [];
+    protected $merge;
+    protected $allowEmptyValue = true;
+    protected $nullEquivalent;
+    protected $trueEquivalent = true;
+    protected $falseEquivalent = false;
+    protected $pathSeparator = BaseNode::DEFAULT_PATH_SEPARATOR;
+    protected $parent;
+    protected $attributes = [];
 
     public function __construct(?string $name, ?NodeParentInterface $parent = null)
     {
@@ -49,7 +49,7 @@ abstract class NodeDefinition implements NodeParentInterface
      *
      * @return $this
      */
-    public function setParent(NodeParentInterface $parent): static
+    public function setParent(NodeParentInterface $parent)
     {
         $this->parent = $parent;
 
@@ -61,7 +61,7 @@ abstract class NodeDefinition implements NodeParentInterface
      *
      * @return $this
      */
-    public function info(string $info): static
+    public function info(string $info)
     {
         return $this->attribute('info', $info);
     }
@@ -69,9 +69,11 @@ abstract class NodeDefinition implements NodeParentInterface
     /**
      * Sets example configuration.
      *
+     * @param string|array $example
+     *
      * @return $this
      */
-    public function example(string|array $example): static
+    public function example($example)
     {
         return $this->attribute('example', $example);
     }
@@ -79,9 +81,11 @@ abstract class NodeDefinition implements NodeParentInterface
     /**
      * Sets an attribute on the node.
      *
+     * @param mixed $value
+     *
      * @return $this
      */
-    public function attribute(string $key, mixed $value): static
+    public function attribute(string $key, $value)
     {
         $this->attributes[$key] = $value;
 
@@ -91,33 +95,29 @@ abstract class NodeDefinition implements NodeParentInterface
     /**
      * Returns the parent node.
      *
-     * @return NodeParentInterface|NodeBuilder|self|ArrayNodeDefinition|VariableNodeDefinition
+     * @return NodeParentInterface|NodeBuilder|NodeDefinition|ArrayNodeDefinition|VariableNodeDefinition|null
      */
-    public function end(): NodeParentInterface
+    public function end()
     {
         return $this->parent;
     }
 
     /**
      * Creates the node.
+     *
+     * @return NodeInterface
      */
-    public function getNode(bool $forceRootNode = false): NodeInterface
+    public function getNode(bool $forceRootNode = false)
     {
         if ($forceRootNode) {
             $this->parent = null;
         }
 
-        if (isset($this->normalization)) {
-            $allowedTypes = [];
-            foreach ($this->normalization->before as $expr) {
-                $allowedTypes[] = $expr->allowedTypes;
-            }
-            $allowedTypes = array_unique($allowedTypes);
+        if (null !== $this->normalization) {
             $this->normalization->before = ExprBuilder::buildExpressions($this->normalization->before);
-            $this->normalization->declaredTypes = $allowedTypes;
         }
 
-        if (isset($this->validation)) {
+        if (null !== $this->validation) {
             $this->validation->rules = ExprBuilder::buildExpressions($this->validation->rules);
         }
 
@@ -132,9 +132,11 @@ abstract class NodeDefinition implements NodeParentInterface
     /**
      * Sets the default value.
      *
+     * @param mixed $value The default value
+     *
      * @return $this
      */
-    public function defaultValue(mixed $value): static
+    public function defaultValue($value)
     {
         $this->default = true;
         $this->defaultValue = $value;
@@ -147,7 +149,7 @@ abstract class NodeDefinition implements NodeParentInterface
      *
      * @return $this
      */
-    public function isRequired(): static
+    public function isRequired()
     {
         $this->required = true;
 
@@ -166,8 +168,21 @@ abstract class NodeDefinition implements NodeParentInterface
      *
      * @return $this
      */
-    public function setDeprecated(string $package, string $version, string $message = 'The child node "%node%" at path "%path%" is deprecated.'): static
+    public function setDeprecated(/* string $package, string $version, string $message = 'The child node "%node%" at path "%path%" is deprecated.' */)
     {
+        $args = \func_get_args();
+
+        if (\func_num_args() < 2) {
+            trigger_deprecation('symfony/config', '5.1', 'The signature of method "%s()" requires 3 arguments: "string $package, string $version, string $message", not defining them is deprecated.', __METHOD__);
+
+            $message = $args[0] ?? 'The child node "%node%" at path "%path%" is deprecated.';
+            $package = $version = '';
+        } else {
+            $package = (string) $args[0];
+            $version = (string) $args[1];
+            $message = (string) ($args[2] ?? 'The child node "%node%" at path "%path%" is deprecated.');
+        }
+
         $this->deprecation = [
             'package' => $package,
             'version' => $version,
@@ -180,9 +195,11 @@ abstract class NodeDefinition implements NodeParentInterface
     /**
      * Sets the equivalent value used when the node contains null.
      *
+     * @param mixed $value
+     *
      * @return $this
      */
-    public function treatNullLike(mixed $value): static
+    public function treatNullLike($value)
     {
         $this->nullEquivalent = $value;
 
@@ -192,9 +209,11 @@ abstract class NodeDefinition implements NodeParentInterface
     /**
      * Sets the equivalent value used when the node contains true.
      *
+     * @param mixed $value
+     *
      * @return $this
      */
-    public function treatTrueLike(mixed $value): static
+    public function treatTrueLike($value)
     {
         $this->trueEquivalent = $value;
 
@@ -204,9 +223,11 @@ abstract class NodeDefinition implements NodeParentInterface
     /**
      * Sets the equivalent value used when the node contains false.
      *
+     * @param mixed $value
+     *
      * @return $this
      */
-    public function treatFalseLike(mixed $value): static
+    public function treatFalseLike($value)
     {
         $this->falseEquivalent = $value;
 
@@ -218,7 +239,7 @@ abstract class NodeDefinition implements NodeParentInterface
      *
      * @return $this
      */
-    public function defaultNull(): static
+    public function defaultNull()
     {
         return $this->defaultValue(null);
     }
@@ -228,7 +249,7 @@ abstract class NodeDefinition implements NodeParentInterface
      *
      * @return $this
      */
-    public function defaultTrue(): static
+    public function defaultTrue()
     {
         return $this->defaultValue(true);
     }
@@ -238,15 +259,17 @@ abstract class NodeDefinition implements NodeParentInterface
      *
      * @return $this
      */
-    public function defaultFalse(): static
+    public function defaultFalse()
     {
         return $this->defaultValue(false);
     }
 
     /**
      * Sets an expression to run before the normalization.
+     *
+     * @return ExprBuilder
      */
-    public function beforeNormalization(): ExprBuilder
+    public function beforeNormalization()
     {
         return $this->normalization()->before();
     }
@@ -256,7 +279,7 @@ abstract class NodeDefinition implements NodeParentInterface
      *
      * @return $this
      */
-    public function cannotBeEmpty(): static
+    public function cannotBeEmpty()
     {
         $this->allowEmptyValue = false;
 
@@ -269,8 +292,10 @@ abstract class NodeDefinition implements NodeParentInterface
      * The expression receives the value of the node and must return it. It can
      * modify it.
      * An exception should be thrown when the node is not valid.
+     *
+     * @return ExprBuilder
      */
-    public function validate(): ExprBuilder
+    public function validate()
     {
         return $this->validation()->rule();
     }
@@ -280,7 +305,7 @@ abstract class NodeDefinition implements NodeParentInterface
      *
      * @return $this
      */
-    public function cannotBeOverwritten(bool $deny = true): static
+    public function cannotBeOverwritten(bool $deny = true)
     {
         $this->merge()->denyOverwrite($deny);
 
@@ -289,41 +314,61 @@ abstract class NodeDefinition implements NodeParentInterface
 
     /**
      * Gets the builder for validation rules.
+     *
+     * @return ValidationBuilder
      */
-    protected function validation(): ValidationBuilder
+    protected function validation()
     {
-        return $this->validation ??= new ValidationBuilder($this);
+        if (null === $this->validation) {
+            $this->validation = new ValidationBuilder($this);
+        }
+
+        return $this->validation;
     }
 
     /**
      * Gets the builder for merging rules.
+     *
+     * @return MergeBuilder
      */
-    protected function merge(): MergeBuilder
+    protected function merge()
     {
-        return $this->merge ??= new MergeBuilder($this);
+        if (null === $this->merge) {
+            $this->merge = new MergeBuilder($this);
+        }
+
+        return $this->merge;
     }
 
     /**
      * Gets the builder for normalization rules.
+     *
+     * @return NormalizationBuilder
      */
-    protected function normalization(): NormalizationBuilder
+    protected function normalization()
     {
-        return $this->normalization ??= new NormalizationBuilder($this);
+        if (null === $this->normalization) {
+            $this->normalization = new NormalizationBuilder($this);
+        }
+
+        return $this->normalization;
     }
 
     /**
      * Instantiate and configure the node according to this definition.
      *
+     * @return NodeInterface
+     *
      * @throws InvalidDefinitionException When the definition is invalid
      */
-    abstract protected function createNode(): NodeInterface;
+    abstract protected function createNode();
 
     /**
      * Set PathSeparator to use.
      *
      * @return $this
      */
-    public function setPathSeparator(string $separator): static
+    public function setPathSeparator(string $separator)
     {
         if ($this instanceof ParentNodeDefinitionInterface) {
             foreach ($this->getChildNodeDefinitions() as $child) {

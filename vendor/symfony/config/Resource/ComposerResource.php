@@ -20,9 +20,9 @@ namespace Symfony\Component\Config\Resource;
  */
 class ComposerResource implements SelfCheckingResourceInterface
 {
-    private array $vendors;
+    private $vendors;
 
-    private static array $runtimeVendors;
+    private static $runtimeVendors;
 
     public function __construct()
     {
@@ -40,6 +40,9 @@ class ComposerResource implements SelfCheckingResourceInterface
         return __CLASS__;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function isFresh(int $timestamp): bool
     {
         self::refresh();
@@ -47,7 +50,7 @@ class ComposerResource implements SelfCheckingResourceInterface
         return array_values(self::$runtimeVendors) === array_values($this->vendors);
     }
 
-    private static function refresh(): void
+    private static function refresh()
     {
         self::$runtimeVendors = [];
 

@@ -20,26 +20,33 @@ use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
  */
 class NumericNode extends ScalarNode
 {
-    public function __construct(
-        ?string $name,
-        ?NodeInterface $parent = null,
-        protected int|float|null $min = null,
-        protected int|float|null $max = null,
-        string $pathSeparator = BaseNode::DEFAULT_PATH_SEPARATOR,
-    ) {
+    protected $min;
+    protected $max;
+
+    /**
+     * @param int|float|null $min
+     * @param int|float|null $max
+     */
+    public function __construct(?string $name, ?NodeInterface $parent = null, $min = null, $max = null, string $pathSeparator = BaseNode::DEFAULT_PATH_SEPARATOR)
+    {
         parent::__construct($name, $parent, $pathSeparator);
+        $this->min = $min;
+        $this->max = $max;
     }
 
-    protected function finalizeValue(mixed $value): mixed
+    /**
+     * {@inheritdoc}
+     */
+    protected function finalizeValue($value)
     {
         $value = parent::finalizeValue($value);
 
         $errorMsg = null;
         if (isset($this->min) && $value < $this->min) {
-            $errorMsg = \sprintf('The value %s is too small for path "%s". Should be greater than or equal to %s', $value, $this->getPath(), $this->min);
+            $errorMsg = sprintf('The value %s is too small for path "%s". Should be greater than or equal to %s', $value, $this->getPath(), $this->min);
         }
         if (isset($this->max) && $value > $this->max) {
-            $errorMsg = \sprintf('The value %s is too big for path "%s". Should be less than or equal to %s', $value, $this->getPath(), $this->max);
+            $errorMsg = sprintf('The value %s is too big for path "%s". Should be less than or equal to %s', $value, $this->getPath(), $this->max);
         }
         if (isset($errorMsg)) {
             $ex = new InvalidConfigurationException($errorMsg);
@@ -50,7 +57,10 @@ class NumericNode extends ScalarNode
         return $value;
     }
 
-    protected function isValueEmpty(mixed $value): bool
+    /**
+     * {@inheritdoc}
+     */
+    protected function isValueEmpty($value)
     {
         // a numeric value cannot be empty
         return false;

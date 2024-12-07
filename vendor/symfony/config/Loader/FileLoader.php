@@ -25,29 +25,32 @@ use Symfony\Component\Config\Resource\GlobResource;
  */
 abstract class FileLoader extends Loader
 {
-    protected static array $loading = [];
+    protected static $loading = [];
 
-    private ?string $currentDir = null;
+    protected $locator;
 
-    public function __construct(
-        protected FileLocatorInterface $locator,
-        ?string $env = null,
-    ) {
+    private $currentDir;
+
+    public function __construct(FileLocatorInterface $locator, ?string $env = null)
+    {
+        $this->locator = $locator;
         parent::__construct($env);
     }
 
     /**
      * Sets the current directory.
      */
-    public function setCurrentDir(string $dir): void
+    public function setCurrentDir(string $dir)
     {
         $this->currentDir = $dir;
     }
 
     /**
      * Returns the file locator used by this loader.
+     *
+     * @return FileLocatorInterface
      */
-    public function getLocator(): FileLocatorInterface
+    public function getLocator()
     {
         return $this->locator;
     }
@@ -61,11 +64,13 @@ abstract class FileLoader extends Loader
      * @param string|null          $sourceResource The original resource importing the new resource
      * @param string|string[]|null $exclude        Glob patterns to exclude from the import
      *
+     * @return mixed
+     *
      * @throws LoaderLoadException
      * @throws FileLoaderImportCircularReferenceException
      * @throws FileLocatorFileNotFoundException
      */
-    public function import(mixed $resource, ?string $type = null, bool $ignoreErrors = false, ?string $sourceResource = null, string|array|null $exclude = null): mixed
+    public function import($resource, ?string $type = null, bool $ignoreErrors = false, ?string $sourceResource = null, $exclude = null)
     {
         if (\is_string($resource) && \strlen($resource) !== ($i = strcspn($resource, '*?{[')) && !str_contains($resource, "\n")) {
             $excluded = [];
@@ -96,7 +101,7 @@ abstract class FileLoader extends Loader
     /**
      * @internal
      */
-    protected function glob(string $pattern, bool $recursive, array|GlobResource|null &$resource = null, bool $ignoreErrors = false, bool $forExclusion = false, array $excluded = []): iterable
+    protected function glob(string $pattern, bool $recursive, &$resource = null, bool $ignoreErrors = false, bool $forExclusion = false, array $excluded = [])
     {
         if (\strlen($pattern) === $i = strcspn($pattern, '*?{[')) {
             $prefix = $pattern;
@@ -128,20 +133,12 @@ abstract class FileLoader extends Loader
         yield from $resource;
     }
 
-    private function doImport(mixed $resource, ?string $type = null, bool $ignoreErrors = false, ?string $sourceResource = null): mixed
+    private function doImport($resource, ?string $type = null, bool $ignoreErrors = false, ?string $sourceResource = null)
     {
         try {
             $loader = $this->resolve($resource, $type);
 
-            if ($loader instanceof DirectoryAwareLoaderInterface) {
-                $loader = $loader->forDirectory($this->currentDir);
-            }
-
-            if (!$loader instanceof self) {
-                return $loader->load($resource, $type);
-            }
-
-            if (null !== $this->currentDir) {
+            if ($loader instanceof self && null !== $this->currentDir) {
                 $resource = $loader->getLocator()->locate($resource, $this->currentDir, false);
             }
 

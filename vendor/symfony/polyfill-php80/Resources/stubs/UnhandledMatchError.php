@@ -9,8 +9,8 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Component\Config\Exception;
-
-class LogicException extends \LogicException
-{
+if (\PHP_VERSION_ID < 80000) {
+    class UnhandledMatchError extends Error
+    {
+    }
 }
