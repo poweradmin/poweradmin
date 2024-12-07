@@ -1,17 +1,6 @@
 CHANGELOG
 =========
 
-7.2
----
-
- * Add `TruncateMode` enum to handle more truncate methods
- * Add the `AbstractString::kebab()` method
-
-7.1
----
-
- * Add `localeLower()`, `localeUpper()`, `localeTitle()` methods to `AbstractUnicodeString`
-
 6.2
 ---
 

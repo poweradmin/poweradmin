@@ -23,11 +23,16 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 class ConsoleEvent extends Event
 {
-    public function __construct(
-        protected ?Command $command,
-        private InputInterface $input,
-        private OutputInterface $output,
-    ) {
+    protected $command;
+
+    private InputInterface $input;
+    private OutputInterface $output;
+
+    public function __construct(?Command $command, InputInterface $input, OutputInterface $output)
+    {
+        $this->command = $command;
+        $this->input = $input;
+        $this->output = $output;
     }
 
     /**

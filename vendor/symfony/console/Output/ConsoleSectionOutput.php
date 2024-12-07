@@ -60,10 +60,12 @@ class ConsoleSectionOutput extends StreamOutput
      * Clears previous output for this section.
      *
      * @param int $lines Number of lines to clear. If null, then the entire output of this section is cleared
+     *
+     * @return void
      */
-    public function clear(?int $lines = null): void
+    public function clear(?int $lines = null)
     {
-        if (!$this->content || !$this->isDecorated()) {
+        if (empty($this->content) || !$this->isDecorated()) {
             return;
         }
 
@@ -81,8 +83,10 @@ class ConsoleSectionOutput extends StreamOutput
 
     /**
      * Overwrites the previous output with a new message.
+     *
+     * @return void
      */
-    public function overwrite(string|iterable $message): void
+    public function overwrite(string|iterable $message)
     {
         $this->clear();
         $this->writeln($message);
@@ -158,7 +162,10 @@ class ConsoleSectionOutput extends StreamOutput
         ++$this->lines;
     }
 
-    protected function doWrite(string $message, bool $newline): void
+    /**
+     * @return void
+     */
+    protected function doWrite(string $message, bool $newline)
     {
         // Simulate newline behavior for consistent output formatting, avoiding extra logic
         if (!$newline && str_ends_with($message, \PHP_EOL)) {
@@ -222,7 +229,7 @@ class ConsoleSectionOutput extends StreamOutput
 
         if ($numberOfLinesToClear > 0) {
             // move cursor up n lines
-            parent::doWrite(\sprintf("\x1b[%dA", $numberOfLinesToClear), false);
+            parent::doWrite(sprintf("\x1b[%dA", $numberOfLinesToClear), false);
             // erase to end of screen
             parent::doWrite("\x1b[0J", false);
         }

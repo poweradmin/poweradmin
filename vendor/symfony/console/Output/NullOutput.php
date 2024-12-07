@@ -26,7 +26,10 @@ class NullOutput implements OutputInterface
 {
     private NullOutputFormatter $formatter;
 
-    public function setFormatter(OutputFormatterInterface $formatter): void
+    /**
+     * @return void
+     */
+    public function setFormatter(OutputFormatterInterface $formatter)
     {
         // do nothing
     }
@@ -37,7 +40,10 @@ class NullOutput implements OutputInterface
         return $this->formatter ??= new NullOutputFormatter();
     }
 
-    public function setDecorated(bool $decorated): void
+    /**
+     * @return void
+     */
+    public function setDecorated(bool $decorated)
     {
         // do nothing
     }
@@ -47,24 +53,22 @@ class NullOutput implements OutputInterface
         return false;
     }
 
-    public function setVerbosity(int $level): void
+    /**
+     * @return void
+     */
+    public function setVerbosity(int $level)
     {
         // do nothing
     }
 
     public function getVerbosity(): int
     {
-        return self::VERBOSITY_SILENT;
-    }
-
-    public function isSilent(): bool
-    {
-        return true;
+        return self::VERBOSITY_QUIET;
     }
 
     public function isQuiet(): bool
     {
-        return false;
+        return true;
     }
 
     public function isVerbose(): bool
@@ -82,12 +86,18 @@ class NullOutput implements OutputInterface
         return false;
     }
 
-    public function writeln(string|iterable $messages, int $options = self::OUTPUT_NORMAL): void
+    /**
+     * @return void
+     */
+    public function writeln(string|iterable $messages, int $options = self::OUTPUT_NORMAL)
     {
         // do nothing
     }
 
-    public function write(string|iterable $messages, bool $newline = false, int $options = self::OUTPUT_NORMAL): void
+    /**
+     * @return void
+     */
+    public function write(string|iterable $messages, bool $newline = false, int $options = self::OUTPUT_NORMAL)
     {
         // do nothing
     }

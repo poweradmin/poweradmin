@@ -17,14 +17,13 @@ use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 /**
  * Base class for output classes.
  *
- * There are six levels of verbosity:
+ * There are five levels of verbosity:
  *
  *  * normal: no option passed (normal output)
  *  * verbose: -v (more output)
  *  * very verbose: -vv (highly extended output)
  *  * debug: -vvv (all debug output)
- *  * quiet: -q (only output errors)
- *  * silent: --silent (no output)
+ *  * quiet: -q (no output)
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
@@ -45,7 +44,10 @@ abstract class Output implements OutputInterface
         $this->formatter->setDecorated($decorated);
     }
 
-    public function setFormatter(OutputFormatterInterface $formatter): void
+    /**
+     * @return void
+     */
+    public function setFormatter(OutputFormatterInterface $formatter)
     {
         $this->formatter = $formatter;
     }
@@ -55,7 +57,10 @@ abstract class Output implements OutputInterface
         return $this->formatter;
     }
 
-    public function setDecorated(bool $decorated): void
+    /**
+     * @return void
+     */
+    public function setDecorated(bool $decorated)
     {
         $this->formatter->setDecorated($decorated);
     }
@@ -65,7 +70,10 @@ abstract class Output implements OutputInterface
         return $this->formatter->isDecorated();
     }
 
-    public function setVerbosity(int $level): void
+    /**
+     * @return void
+     */
+    public function setVerbosity(int $level)
     {
         $this->verbosity = $level;
     }
@@ -73,11 +81,6 @@ abstract class Output implements OutputInterface
     public function getVerbosity(): int
     {
         return $this->verbosity;
-    }
-
-    public function isSilent(): bool
-    {
-        return self::VERBOSITY_SILENT === $this->verbosity;
     }
 
     public function isQuiet(): bool
@@ -100,12 +103,18 @@ abstract class Output implements OutputInterface
         return self::VERBOSITY_DEBUG <= $this->verbosity;
     }
 
-    public function writeln(string|iterable $messages, int $options = self::OUTPUT_NORMAL): void
+    /**
+     * @return void
+     */
+    public function writeln(string|iterable $messages, int $options = self::OUTPUT_NORMAL)
     {
         $this->write($messages, true, $options);
     }
 
-    public function write(string|iterable $messages, bool $newline = false, int $options = self::OUTPUT_NORMAL): void
+    /**
+     * @return void
+     */
+    public function write(string|iterable $messages, bool $newline = false, int $options = self::OUTPUT_NORMAL)
     {
         if (!is_iterable($messages)) {
             $messages = [$messages];
@@ -139,6 +148,8 @@ abstract class Output implements OutputInterface
 
     /**
      * Writes a message to the output.
+     *
+     * @return void
      */
-    abstract protected function doWrite(string $message, bool $newline): void;
+    abstract protected function doWrite(string $message, bool $newline);
 }

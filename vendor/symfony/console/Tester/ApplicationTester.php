@@ -28,9 +28,11 @@ class ApplicationTester
 {
     use TesterTrait;
 
-    public function __construct(
-        private Application $application,
-    ) {
+    private Application $application;
+
+    public function __construct(Application $application)
+    {
+        $this->application = $application;
     }
 
     /**

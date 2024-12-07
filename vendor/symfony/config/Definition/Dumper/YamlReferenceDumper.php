@@ -27,13 +27,19 @@ use Symfony\Component\Yaml\Inline;
  */
 class YamlReferenceDumper
 {
-    private $reference;
+    private ?string $reference = null;
 
+    /**
+     * @return string
+     */
     public function dump(ConfigurationInterface $configuration)
     {
         return $this->dumpNode($configuration->getConfigTreeBuilder()->buildTree());
     }
 
+    /**
+     * @return string
+     */
     public function dumpAtPath(ConfigurationInterface $configuration, string $path)
     {
         $rootNode = $node = $configuration->getConfigTreeBuilder()->buildTree();
@@ -60,6 +66,9 @@ class YamlReferenceDumper
         return $this->dumpNode($node);
     }
 
+    /**
+     * @return string
+     */
     public function dumpNode(NodeInterface $node)
     {
         $this->reference = '';
@@ -70,7 +79,7 @@ class YamlReferenceDumper
         return $ref;
     }
 
-    private function writeNode(NodeInterface $node, ?NodeInterface $parentNode = null, int $depth = 0, bool $prototypedArray = false)
+    private function writeNode(NodeInterface $node, ?NodeInterface $parentNode = null, int $depth = 0, bool $prototypedArray = false): void
     {
         $comments = [];
         $default = '';
@@ -93,7 +102,7 @@ class YamlReferenceDumper
                 $default = '[]';
             }
         } elseif ($node instanceof EnumNode) {
-            $comments[] = 'One of '.implode('; ', array_map('json_encode', $node->getValues()));
+            $comments[] = 'One of '.$node->getPermissibleValues('; ');
             $default = $node->hasDefaultValue() ? Inline::dump($node->getDefaultValue()) : '~';
         } else {
             $default = '~';
@@ -162,7 +171,7 @@ class YamlReferenceDumper
 
             $this->writeLine('# '.$message.':', $depth * 4 + 4);
 
-            $this->writeArray(array_map([Inline::class, 'dump'], $example), $depth + 1, true);
+            $this->writeArray(array_map(Inline::dump(...), $example), $depth + 1, true);
         }
 
         if ($children) {
@@ -175,7 +184,7 @@ class YamlReferenceDumper
     /**
      * Outputs a single config reference line.
      */
-    private function writeLine(string $text, int $indent = 0)
+    private function writeLine(string $text, int $indent = 0): void
     {
         $indent = \strlen($text) + $indent;
         $format = '%'.$indent.'s';
@@ -183,9 +192,9 @@ class YamlReferenceDumper
         $this->reference .= sprintf($format, $text)."\n";
     }
 
-    private function writeArray(array $array, int $depth, bool $asComment = false)
+    private function writeArray(array $array, int $depth, bool $asComment = false): void
     {
-        $isIndexed = array_values($array) === $array;
+        $isIndexed = array_is_list($array);
 
         foreach ($array as $key => $value) {
             if (\is_array($value)) {

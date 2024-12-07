@@ -21,14 +21,11 @@ class FishCompletionOutput implements CompletionOutputInterface
 {
     public function write(CompletionSuggestions $suggestions, OutputInterface $output): void
     {
-        $values = [];
-        foreach ($suggestions->getValueSuggestions() as $value) {
-            $values[] = $value->getValue().($value->getDescription() ? "\t".$value->getDescription() : '');
-        }
+        $values = $suggestions->getValueSuggestions();
         foreach ($suggestions->getOptionSuggestions() as $option) {
-            $values[] = '--'.$option->getName().($option->getDescription() ? "\t".$option->getDescription() : '');
+            $values[] = '--'.$option->getName();
             if ($option->isNegatable()) {
-                $values[] = '--no-'.$option->getName().($option->getDescription() ? "\t".$option->getDescription() : '');
+                $values[] = '--no-'.$option->getName();
             }
         }
         $output->write(implode("\n", $values));

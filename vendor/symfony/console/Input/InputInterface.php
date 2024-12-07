@@ -18,6 +18,9 @@ use Symfony\Component\Console\Exception\RuntimeException;
  * InputInterface is the interface implemented by all input classes.
  *
  * @author Fabien Potencier <fabien@symfony.com>
+ *
+ * @method string __toString() Returns a stringified representation of the args passed to the command.
+ *                             InputArguments MUST be escaped as well as the InputOption values passed to the command.
  */
 interface InputInterface
 {
@@ -50,22 +53,28 @@ interface InputInterface
      * @param string|array                     $values     The value(s) to look for in the raw parameters (can be an array)
      * @param string|bool|int|float|array|null $default    The default value to return if no result is found
      * @param bool                             $onlyParams Only check real parameters, skip those following an end of options (--) signal
+     *
+     * @return mixed
      */
-    public function getParameterOption(string|array $values, string|bool|int|float|array|null $default = false, bool $onlyParams = false): mixed;
+    public function getParameterOption(string|array $values, string|bool|int|float|array|null $default = false, bool $onlyParams = false);
 
     /**
      * Binds the current Input instance with the given arguments and options.
      *
+     * @return void
+     *
      * @throws RuntimeException
      */
-    public function bind(InputDefinition $definition): void;
+    public function bind(InputDefinition $definition);
 
     /**
      * Validates the input.
      *
+     * @return void
+     *
      * @throws RuntimeException When not enough arguments are given
      */
-    public function validate(): void;
+    public function validate();
 
     /**
      * Returns all the given arguments merged with the default values.
@@ -77,16 +86,20 @@ interface InputInterface
     /**
      * Returns the argument value for a given argument name.
      *
+     * @return mixed
+     *
      * @throws InvalidArgumentException When argument given doesn't exist
      */
-    public function getArgument(string $name): mixed;
+    public function getArgument(string $name);
 
     /**
      * Sets an argument value by name.
      *
+     * @return void
+     *
      * @throws InvalidArgumentException When argument given doesn't exist
      */
-    public function setArgument(string $name, mixed $value): void;
+    public function setArgument(string $name, mixed $value);
 
     /**
      * Returns true if an InputArgument object exists by name or position.
@@ -103,16 +116,20 @@ interface InputInterface
     /**
      * Returns the option value for a given option name.
      *
+     * @return mixed
+     *
      * @throws InvalidArgumentException When option given doesn't exist
      */
-    public function getOption(string $name): mixed;
+    public function getOption(string $name);
 
     /**
      * Sets an option value by name.
      *
+     * @return void
+     *
      * @throws InvalidArgumentException When option given doesn't exist
      */
-    public function setOption(string $name, mixed $value): void;
+    public function setOption(string $name, mixed $value);
 
     /**
      * Returns true if an InputOption object exists by name.
@@ -126,13 +143,8 @@ interface InputInterface
 
     /**
      * Sets the input interactivity.
-     */
-    public function setInteractive(bool $interactive): void;
-
-    /**
-     * Returns a stringified representation of the args passed to the command.
      *
-     * InputArguments MUST be escaped as well as the InputOption values passed to the command.
+     * @return void
      */
-    public function __toString(): string;
+    public function setInteractive(bool $interactive);
 }

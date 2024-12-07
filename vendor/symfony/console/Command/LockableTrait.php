@@ -26,8 +26,6 @@ trait LockableTrait
 {
     private ?LockInterface $lock = null;
 
-    private ?LockFactory $lockFactory = null;
-
     /**
      * Locks a command.
      */
@@ -41,17 +39,13 @@ trait LockableTrait
             throw new LogicException('A lock is already in place.');
         }
 
-        if (null === $this->lockFactory) {
-            if (SemaphoreStore::isSupported()) {
-                $store = new SemaphoreStore();
-            } else {
-                $store = new FlockStore();
-            }
-
-            $this->lockFactory = (new LockFactory($store));
+        if (SemaphoreStore::isSupported()) {
+            $store = new SemaphoreStore();
+        } else {
+            $store = new FlockStore();
         }
 
-        $this->lock = $this->lockFactory->createLock($name ?: $this->getName());
+        $this->lock = (new LockFactory($store))->createLock($name ?: $this->getName());
         if (!$this->lock->acquire($blocking)) {
             $this->lock = null;
 

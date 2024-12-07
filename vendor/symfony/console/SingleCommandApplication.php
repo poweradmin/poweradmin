@@ -67,6 +67,6 @@ class SingleCommandApplication extends Command
             $this->running = false;
         }
 
-        return $ret;
+        return $ret ?? 1;
     }
 }

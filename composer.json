@@ -27,8 +27,10 @@
     "symfony/validator": "^6.4.14",
     "psr/log": "^3.0.2",
     "jeremykendall/php-domain-parser": "^6.3",
-    "symfony/config": "^5.4.46",
-    "robmorgan/phinx": "^0.16.5"
+    "symfony/config": "^6.4.14",
+    "symfony/console": "^6.4.15",
+    "robmorgan/phinx": "^0.16.5",
+    "symfony/string": "^6.4.15"
   },
   "suggest": {
     "ext-ldap": "For LDAP support"

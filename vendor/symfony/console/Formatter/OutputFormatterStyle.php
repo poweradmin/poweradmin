@@ -38,13 +38,25 @@ class OutputFormatterStyle implements OutputFormatterStyleInterface
         $this->color = new Color($this->foreground = $foreground ?: '', $this->background = $background ?: '', $this->options = $options);
     }
 
-    public function setForeground(?string $color): void
+    /**
+     * @return void
+     */
+    public function setForeground(?string $color = null)
     {
+        if (1 > \func_num_args()) {
+            trigger_deprecation('symfony/console', '6.2', 'Calling "%s()" without any arguments is deprecated, pass null explicitly instead.', __METHOD__);
+        }
         $this->color = new Color($this->foreground = $color ?: '', $this->background, $this->options);
     }
 
-    public function setBackground(?string $color): void
+    /**
+     * @return void
+     */
+    public function setBackground(?string $color = null)
     {
+        if (1 > \func_num_args()) {
+            trigger_deprecation('symfony/console', '6.2', 'Calling "%s()" without any arguments is deprecated, pass null explicitly instead.', __METHOD__);
+        }
         $this->color = new Color($this->foreground, $this->background = $color ?: '', $this->options);
     }
 
@@ -53,13 +65,19 @@ class OutputFormatterStyle implements OutputFormatterStyleInterface
         $this->href = $url;
     }
 
-    public function setOption(string $option): void
+    /**
+     * @return void
+     */
+    public function setOption(string $option)
     {
         $this->options[] = $option;
         $this->color = new Color($this->foreground, $this->background, $this->options);
     }
 
-    public function unsetOption(string $option): void
+    /**
+     * @return void
+     */
+    public function unsetOption(string $option)
     {
         $pos = array_search($option, $this->options);
         if (false !== $pos) {
@@ -69,7 +87,10 @@ class OutputFormatterStyle implements OutputFormatterStyleInterface
         $this->color = new Color($this->foreground, $this->background, $this->options);
     }
 
-    public function setOptions(array $options): void
+    /**
+     * @return void
+     */
+    public function setOptions(array $options)
     {
         $this->color = new Color($this->foreground, $this->background, $this->options = $options);
     }
