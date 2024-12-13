@@ -4,7 +4,7 @@ FROM php:${VARIANT}
 
 RUN apt-get -y update
 
-RUN apt-get install -y git libpq-dev libldap2-dev libicu-dev locales
+RUN apt-get install -y git sqlite3 libpq-dev libldap2-dev libicu-dev locales
 RUN docker-php-ext-install intl gettext pdo pdo_mysql pdo_pgsql ldap
 #RUN pecl install xdebug && docker-php-ext-enable xdebug
 
