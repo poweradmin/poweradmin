@@ -2,7 +2,7 @@
 
 [Poweradmin](https://www.poweradmin.org) is a friendly web-based DNS administration tool for PowerDNS server. The
 interface supports most of
-the features of PowerDNS. It is a hybrid solution that uses SQL for most operations and has PowerDNS support for DNSSEC
+the features of PowerDNS. It is a hybrid solution that uses SQL for most operations and has PowerDNS API support for DNSSEC
 operations.
 
 ## Features
