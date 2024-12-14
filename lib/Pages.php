@@ -66,6 +66,7 @@ class Pages
             'list_zones',
             'login',
             'logout',
+            'migrations',
             'search',
             'users',
         ];

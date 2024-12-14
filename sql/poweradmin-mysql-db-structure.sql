@@ -130,7 +130,7 @@ CREATE TABLE `zone_templ_records` (
                                       `zone_templ_id` int(11) NOT NULL,
                                       `name` varchar(255) NOT NULL,
                                       `type` varchar(6) NOT NULL,
-                                      `content` varchar(255) NOT NULL,
+                                      `content` varchar(2048) NOT NULL,
                                       `ttl` int(11) NOT NULL,
                                       `prio` int(11) NOT NULL,
                                       PRIMARY KEY (`id`)

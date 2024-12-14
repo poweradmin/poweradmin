@@ -33,7 +33,7 @@ return [
     ],
     'environments' => [
         'default_migration_table' => 'migrations',
-        'default_database' => $config->get('db_type'),
+        'default_environment' => $config->get('db_type'),
         'mysql'                   => [
             'adapter' => 'mysql',
             'host'    => $config->get('db_host'),

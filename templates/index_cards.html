@@ -130,4 +130,14 @@
             </div>
         </div>
     </div>
+    {% if permissions['user_is_ueberuser'] %}
+    <div class="col-sm-3 mb-3">
+        <div class="card">
+            <div class="text-center"><i class="bi bi-database-up display-1"></i></div>
+            <div class="card-body">
+                <div class="row"><a href="index.php?page=migrations" class="btn btn-light btn-block" data-testid="list-permission-templates-link">{% trans %}Migrations{% endtrans %}</a></div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>

@@ -129,7 +129,7 @@ CREATE TABLE "public"."zone_templ_records" (
                                                "zone_templ_id" integer,
                                                "name" character varying(255),
                                                "type" character varying(6),
-                                               "content" character varying(255),
+                                               "content" character varying(2048),
                                                "ttl" integer,
                                                "prio" integer,
                                                CONSTRAINT "zone_templ_records_pkey" PRIMARY KEY ("id")
