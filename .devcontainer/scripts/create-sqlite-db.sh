@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -euo pipefail
+
 DB_PATH="/data/db"
 DB_FILE="$DB_PATH/powerdns.db"
 
