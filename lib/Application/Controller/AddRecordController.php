@@ -32,6 +32,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Service\DnssecProviderFactory;
+use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordType;
@@ -41,12 +42,14 @@ use Poweradmin\Domain\Service\DomainRecordCreator;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Valitron;
 
 class AddRecordController extends BaseController
 {
     private LegacyLogger $logger;
     private DnsRecord $dnsRecord;
+    private RecordCommentService $recordCommentService;
 
     public function __construct(array $request)
     {
@@ -54,6 +57,8 @@ class AddRecordController extends BaseController
 
         $this->logger = new LegacyLogger($this->db);
         $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $recordCommentRepository = new DbRecordCommentRepository($this->db);
+        $this->recordCommentService = new RecordCommentService($recordCommentRepository);
     }
 
     public function run(): void
@@ -95,6 +100,7 @@ class AddRecordController extends BaseController
         $type = $_POST['type'];
         $prio = $_POST['prio'];
         $ttl = $_POST['ttl'];
+        $comment = $_POST['comment'] ?? '';
         $zone_id = htmlspecialchars($_GET['id']);
 
         if (isset($_POST["reverse"])) {
@@ -104,7 +110,7 @@ class AddRecordController extends BaseController
             $this->createDomainRecord($name, $type, $content, $zone_id);
         }
 
-        if ($this->createRecord($zone_id, $name, $type, $content, $ttl, $prio)) {
+        if ($this->createRecord($zone_id, $name, $type, $content, $ttl, $prio, $comment)) {
             unset($_POST);
         }
     }
@@ -158,7 +164,7 @@ class AddRecordController extends BaseController
         $reverseRecordCreator->createReverseRecord($name, $type, $content, $zone_id, $ttl, $prio);
     }
 
-    public function createRecord(string $zone_id, $name, $type, $content, $ttl, $prio): bool
+    public function createRecord(string $zone_id, $name, $type, $content, $ttl, $prio, $comment): bool
     {
         $zone_name = $this->dnsRecord->get_domain_name_by_id($zone_id);
         if ($this->dnsRecord->add_record($zone_id, $name, $type, $content, $ttl, $prio)) {
@@ -170,6 +176,10 @@ class AddRecordController extends BaseController
             if ($this->config('pdnssec_use')) {
                 $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
                 $dnssecProvider->rectifyZone($zone_name);
+            }
+
+            if ($comment != '') {
+                $this->recordCommentService->createComment($zone_id, $name . $zone_name, $type, $comment, $_SESSION['userlogin']);
             }
 
             $this->setMessage('add_record', 'success', _('The record was successfully added.'));
