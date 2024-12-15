@@ -63,7 +63,8 @@ class IndexController extends BaseController
             'user_name' => empty($_SESSION["name"]) ? $userlogin : $_SESSION["name"],
             'auth_used' => $_SESSION["auth_used"] ?? '',
             'permissions' => $permissions,
-            'dblog_use' => $this->config('dblog_use')
+            'dblog_use' => $this->config('dblog_use'),
+            'migrations_show' => $this->config('iface_migrations_show'),
         ]);
     }
 }

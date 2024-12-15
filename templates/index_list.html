@@ -61,7 +61,7 @@
     <li class="list-group-item list-group-item-action">
         <i class="bi bi-box-arrow-right"></i> <a href="index.php?page=logout">{% trans %}Logout{% endtrans %}</a>
     </li>
-    {% if permissions['user_is_ueberuser'] %}
+    {% if permissions['user_is_ueberuser'] and migrations_show %}
     <li class="list-group-item list-group-item-action">
         <i class="bi bi-database-up"></i> <a href="index.php?page=migrations">{% trans %}Migrations{% endtrans %}</a>
     </li>
