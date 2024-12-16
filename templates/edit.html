@@ -303,6 +303,9 @@
             <th>{% trans %}Content{% endtrans %}</th>
             <th>{% trans %}Priority{% endtrans %}</th>
             <th>{% trans %}TTL{% endtrans %}</th>
+            {% if iface_record_comments %}
+                <th>{% trans %}Comment{% endtrans %}</th>
+            {% endif %}
         </tr>
         <tr>
             <td class="col-sm-2"><input class="form-control form-control-sm" type="text" name="name" value="" data-testid="record-name-input">.{{
@@ -338,6 +341,9 @@
                                         min="0" max="2147483647" pattern="[0-9]*" value="{{ dns_ttl }}" required>
                 <div class="invalid-feedback">{% trans %}Provide TTL{% endtrans %}</div>
             </td>
+            {% if iface_record_comments %}
+                <td><input class="form-control form-control-sm" type="text" name="comment" value=""></td>
+            {% endif %}
         </tr>
     </table>
     <input class="btn btn-outline-secondary btn-sm" type="submit" name="commit"

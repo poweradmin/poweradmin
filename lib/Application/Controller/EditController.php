@@ -56,6 +56,7 @@ class EditController extends BaseController
         $iface_zone_comments = $this->config('iface_zone_comments');
         $iface_show_id = $this->config('iface_edit_show_id');
         $iface_edit_add_record_top = $this->config('iface_edit_add_record_top');
+        $iface_record_comments = $this->config('iface_record_comments');
 
         $row_start = 0;
         if (isset($_GET["start"])) {
@@ -242,6 +243,7 @@ class EditController extends BaseController
             'iface_zone_comments' => $this->config('iface_zone_comments'),
             'iface_edit_show_id' => $iface_show_id,
             'iface_edit_add_record_top' => $iface_edit_add_record_top,
+            'iface_record_comments' => $iface_record_comments,
             'serial' => DnsRecord::get_soa_serial($soa_record),
             'file_version' => time()
         ]);

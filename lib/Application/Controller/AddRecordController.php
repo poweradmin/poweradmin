@@ -143,6 +143,7 @@ class AddRecordController extends BaseController
             'is_reverse_zone' => $isReverseZone,
             'iface_add_reverse_record' => $this->config('iface_add_reverse_record'),
             'iface_add_domain_record' => $this->config('iface_add_domain_record'),
+            'iface_record_comments' => $this->config('iface_record_comments'),
         ]);
     }
 
