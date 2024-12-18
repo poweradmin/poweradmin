@@ -1383,10 +1383,12 @@ class DnsRecord
      * @param int $rowstart Starting row [default=0]
      * @param int $rowamount Number of rows to return in this query [default=999999]
      * @param string $sortby Column to sort by [default='name']
+     * @param string $sortDirection Sort direction [default='ASC']
+     * @param bool $fetchComments Whether to fetch record comments [default=false]
      *
      * @return int|array array of record detail, or -1 if nothing found
      */
-    public function get_records_from_domain_id($db_type, int $id, int $rowstart = 0, int $rowamount = 999999, string $sortby = 'name', string $sortDirection = 'ASC'): array|int
+    public function get_records_from_domain_id($db_type, int $id, int $rowstart = 0, int $rowamount = 999999, string $sortby = 'name', string $sortDirection = 'ASC', bool $fetchComments = false): array|int
     {
         if (!is_numeric($id)) {
             $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s'), "get_records_from_domain_id"));
@@ -1398,6 +1400,7 @@ class DnsRecord
 
         $pdns_db_name = $this->config->get('pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+        $comments_table = $pdns_db_name ? $pdns_db_name . '.comments' : 'comments';
 
         $this->db->setLimit($rowamount, $rowstart);
 
@@ -1406,12 +1409,14 @@ class DnsRecord
         }
         $sql_sortby = $sortby == "$records_table.name" ? SortHelper::getRecordSortOrder($records_table, $db_type, $sortDirection) : $sortby . " " . $sortDirection;
         if ($sortby == "$records_table.name" and $sortDirection == 'ASC') {
-            $sql_sortby = "type = 'SOA' DESC, type = 'NS' DESC, ". $sql_sortby;
+            $sql_sortby = "$records_table.type = 'SOA' DESC, $records_table.type = 'NS' DESC, ". $sql_sortby;
         }
 
-        $query = "SELECT * FROM $records_table
-                    WHERE domain_id=" . $this->db->quote($id, 'integer') . " AND type IS NOT NULL
-                    ORDER BY " . $sql_sortby;
+        $query = "SELECT $records_table.*, " . ($fetchComments ? "$comments_table.comment" : "NULL AS comment") . "
+              FROM $records_table
+              " . ($fetchComments ? "LEFT JOIN $comments_table ON $records_table.domain_id = $comments_table.domain_id AND $records_table.name = $comments_table.name AND $records_table.type = $comments_table.type" : "") . "
+              WHERE $records_table.domain_id=" . $this->db->quote($id, 'integer') . " AND $records_table.type IS NOT NULL
+              ORDER BY " . $sql_sortby;
 
         $records = $this->db->query($query);
         $this->db->setLimit(0);

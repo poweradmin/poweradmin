@@ -169,6 +169,9 @@
                     <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
                 {% endif %}
             </th>
+            {% if iface_record_comments %}
+            <th>{% trans %}Comment{% endtrans %}</th>
+            {% endif %}
             <th>
                 <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=disabled&sort_direction={{ record_sort_by == 'disabled' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                     {% trans %}Disabled{% endtrans %}
@@ -195,6 +198,9 @@
             <td>{{ r['content'] }}</td>
             <td>&nbsp;</td>
             <td class="col-sm-1">{{ r['ttl'] }}</td>
+            {% if iface_record_comments %}
+            <td>{{ r['comment'] }}</td>
+            {% endif %}
             <td>&nbsp;</td>
             {% else %}
             <td class="col-sm-2"><input class="form-control form-control-sm" type="text"
@@ -227,6 +233,10 @@
             <td class="col-sm-1"><input class="form-control form-control-sm" type="text"
                                         min="0" max="2147483647" pattern="[0-9]*" name="record[{{ r['id'] }}][ttl]"
                                         value="{{ r['ttl'] }}"></td>
+            {% if iface_record_comments %}
+            <td><input class="form-control form-control-sm" type="text" name="record[{{ r['id'] }}][comment]"
+                       value="{{ r['comment'] }}"></td>
+            {% endif %}
             <td class="text-center">
                 <input class="form-check-input" type="checkbox" name="record[{{ r['id'] }}][disabled]" {% if r['disabled'] == 1 %}checked{% endif %}>
             </td>
@@ -239,11 +249,11 @@
             "own_as_client" %}
             <td>&nbsp;</td>
             {% else %}
-            <td class="col-sm-2">
+            <td class="{{ iface_record_comments ? 'col-sm-1' : 'col-sm-2' }}">
                 <a class="btn btn-outline-primary btn-sm" href="index.php?page=edit_record&id={{ r['id'] }}&domain={{ zone_id }}">
-                    <i class="bi bi-pencil-square"></i> {% trans %}Edit{% endtrans %}</a>
+                    <i class="bi bi-pencil-square"></i> {% if not iface_record_comments %}{% trans %}Edit{% endtrans %}{% endif %}</a>
                 <a class="btn btn-outline-danger btn-sm" href="index.php?page=delete_record&id={{ r['id'] }}&domain={{ zone_id }}">
-                    <i class="bi bi-trash"></i> {% trans %}Delete{% endtrans %}</a>
+                    <i class="bi bi-trash"></i> {% if not iface_record_comments %}{% trans %}Delete{% endtrans %}{% endif %}</a>
             </td>
             {% endif %}
         </tr>

@@ -194,7 +194,7 @@ class EditController extends BaseController
         } else {
             $idn_zone_name = "";
         }
-        $records = $dnsRecord->get_records_from_domain_id($this->config('db_type'), $zone_id, $row_start, $iface_rowamount, $record_sort_by, $sort_direction);
+        $records = $dnsRecord->get_records_from_domain_id($this->config('db_type'), $zone_id, $row_start, $iface_rowamount, $record_sort_by, $sort_direction, $iface_record_comments);
         $owners = DnsRecord::get_users_from_domain_id($this->db, $zone_id);
 
         $soa_record = $dnsRecord->get_soa_record($zone_id);
