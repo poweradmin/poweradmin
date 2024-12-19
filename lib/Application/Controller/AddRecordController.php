@@ -180,7 +180,8 @@ class AddRecordController extends BaseController
             }
 
             if ($comment != '') {
-                $this->recordCommentService->createComment($zone_id, $name . $zone_name, $type, $comment, $_SESSION['userlogin']);
+                $full_name = "$name.$zone_name";
+                $this->recordCommentService->createComment($zone_id, $full_name, $type, $comment, $_SESSION['userlogin']);
             }
 
             $this->setMessage('add_record', 'success', _('The record was successfully added.'));

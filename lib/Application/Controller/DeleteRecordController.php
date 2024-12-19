@@ -38,17 +38,20 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 
 class DeleteRecordController extends BaseController
 {
 
     private LegacyLogger $logger;
+    private DbRecordCommentRepository $recordCommentRepository;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
         $this->logger = new LegacyLogger($this->db);
+        $this->recordCommentRepository = new DbRecordCommentRepository($this->db);
     }
 
     public function run(): void
@@ -59,10 +62,13 @@ class DeleteRecordController extends BaseController
 
         $record_id = htmlspecialchars($_GET['id']);
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+
         $zid = $dnsRecord->get_zone_id_from_record_id($record_id);
         if ($zid == NULL) {
             $this->showError(_('There is no zone with this ID.'));
         }
+
+        $domain_id = $dnsRecord->recid_to_domid($record_id);
 
         if (isset($_GET['confirm'])) {
             $record_info = $dnsRecord->get_record_from_id($record_id);
@@ -81,6 +87,8 @@ class DeleteRecordController extends BaseController
                 $dnsRecord = new DnsRecord($this->db, $this->getConfig());
                 $dnsRecord->update_soa_serial($zid);
 
+                $this->recordCommentRepository->deleteCommentByDomainIdNameAndType($domain_id, $record_info['name'], $record_info['type']);
+
                 if ($this->config('pdnssec_use')) {
                     $zone_name = $dnsRecord->get_domain_name_by_id($zid);
                     $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
@@ -96,13 +104,12 @@ class DeleteRecordController extends BaseController
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $zone_info = $dnsRecord->get_zone_info_from_id($zid);
-        $zone_id = $dnsRecord->recid_to_domid($record_id);
-        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
+        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $domain_id);
         if ($zone_info['type'] == "SLAVE" || $perm_edit == "none" || ($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0") {
             $this->showError(_("You do not have the permission to edit this record."));
         }
 
-        $this->showQuestion($record_id, $zid, $zone_id);
+        $this->showQuestion($record_id, $zid, $domain_id);
     }
 
     public function showQuestion(string $record_id, $zid, int $zone_id): void

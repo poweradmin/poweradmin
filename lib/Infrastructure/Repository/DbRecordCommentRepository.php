@@ -102,6 +102,16 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface {
         return $stmt->execute([':id' => $commentId]);
     }
 
+    public function deleteCommentByDomainIdNameAndType(string $domainId, string $name, string $type): bool
+    {
+        $query = "DELETE FROM comments WHERE domain_id = :domain_id AND name = :name AND type = :type";
+        $stmt = $this->connection->prepare($query);
+        $stmt->bindParam(':domain_id', $domainId);
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':type', $type);
+        return $stmt->execute();
+    }
+
     public function findById(int $commentId): ?RecordComment
     {
         $stmt = $this->connection->prepare(
