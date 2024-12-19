@@ -45,6 +45,7 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Utility\DnsHelper;
+use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 
 class EditController extends BaseController
@@ -299,6 +300,7 @@ class EditController extends BaseController
         $serial_mismatch = false;
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $recordCommentRepository = new DbRecordCommentRepository($this->db);
 
         if (isset($_POST['record'])) {
             $soa_record = $dnsRecord->get_soa_record($zone_id);
@@ -330,6 +332,11 @@ class EditController extends BaseController
                     } else {
                         $log->log_after($record['rid']);
                         $log->write();
+
+                        // Update the related record comment
+                        if (isset($record['comment'])) {
+                            $recordCommentRepository->updateCommentByDomainIdNameAndType($record['zid'], $record['name'], $record['type'], $record['comment']);
+                        }
                     }
                 }
             }

@@ -40,17 +40,20 @@ use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 
 class EditRecordController extends BaseController
 {
 
     private LegacyLogger $logger;
+    private DbRecordCommentRepository $recordCommentRepository;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
         $this->logger = new LegacyLogger($this->db);
+        $this->recordCommentRepository = new DbRecordCommentRepository($this->db);
     }
 
     public function run(): void
@@ -100,6 +103,9 @@ class EditRecordController extends BaseController
             $idn_zone_name = "";
         }
 
+        $iface_record_comments = $this->config('iface_record_comments');
+        $comment = $this->recordCommentRepository->findCommentByDomainIdNameAndType($zid, $record['name'], $record['type']);
+
         $this->render('edit_record.html', [
             'record_id' => $record_id,
             'record' => $record,
@@ -110,6 +116,8 @@ class EditRecordController extends BaseController
             'zid' => $zid,
             'perm_edit' => $perm_edit,
             'user_is_zone_owner' => $user_is_zone_owner,
+            'iface_record_comments' => $iface_record_comments,
+            'comment' => $comment,
         ]);
     }
 
@@ -127,7 +135,6 @@ class EditRecordController extends BaseController
 
         $ret_val = $dnsRecord->edit_record($postData);
         if ($ret_val) {
-            $dnsRecord = new DnsRecord($this->db, $this->getConfig());
             $dnsRecord->update_soa_serial($zid);
 
             $new_record_info = $dnsRecord->get_record_from_id($_POST["rid"]);
@@ -138,6 +145,8 @@ class EditRecordController extends BaseController
                 $old_record_info['type'], $old_record_info['name'], $old_record_info['content'], $old_record_info['ttl'], $old_record_info['prio'],
                 $new_record_info['type'], $new_record_info['name'], $new_record_info['content'], $new_record_info['ttl'], $new_record_info['prio']),
                 $zid);
+
+            $this->recordCommentRepository->updateCommentByDomainIdNameAndType($zid, $new_record_info['name'], $new_record_info['type'], $postData['comment']);
 
             if ($this->config('pdnssec_use')) {
                 $zone_name = $dnsRecord->get_domain_name_by_id($zid);

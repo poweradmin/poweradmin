@@ -93,6 +93,17 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface {
         return $comment;
     }
 
+    public function updateCommentByDomainIdNameAndType(string $domainId, string $name, string $type, string $newComment): bool
+    {
+        $query = "UPDATE comments SET comment = :comment WHERE domain_id = :domain_id AND name = :name AND type = :type";
+        $stmt = $this->connection->prepare($query);
+        $stmt->bindParam(':comment', $newComment);
+        $stmt->bindParam(':domain_id', $domainId);
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':type', $type);
+        return $stmt->execute();
+    }
+
     public function delete(int $commentId): bool
     {
         $stmt = $this->connection->prepare(
@@ -150,5 +161,18 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface {
                 $data['comment']
             );
         }, $results);
+    }
+
+    public function findCommentByDomainIdNameAndType(string $domainId, string $name, string $type): ?string
+    {
+        $query = "SELECT comment FROM comments WHERE domain_id = :domain_id AND name = :name AND type = :type";
+        $stmt = $this->connection->prepare($query);
+        $stmt->bindParam(':domain_id', $domainId);
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':type', $type);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? $result['comment'] : null;
     }
 }
