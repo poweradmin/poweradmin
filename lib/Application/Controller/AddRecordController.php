@@ -179,10 +179,8 @@ class AddRecordController extends BaseController
                 $dnssecProvider->rectifyZone($zone_name);
             }
 
-            if ($comment != '') {
-                $full_name = "$name.$zone_name";
-                $this->recordCommentService->createComment($zone_id, $full_name, $type, $comment, $_SESSION['userlogin']);
-            }
+            $full_name = "$name.$zone_name";
+            $this->recordCommentService->createComment($zone_id, $full_name, $type, $comment, $_SESSION['userlogin']);
 
             $this->setMessage('add_record', 'success', _('The record was successfully added.'));
             return true;

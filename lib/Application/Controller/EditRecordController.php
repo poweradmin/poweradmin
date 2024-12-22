@@ -148,7 +148,8 @@ class EditRecordController extends BaseController
                 $new_record_info['type'], $new_record_info['name'], $new_record_info['content'], $new_record_info['ttl'], $new_record_info['prio']),
                 $zid);
 
-            $this->recordCommentService->updateComment($zid, $new_record_info['name'], $new_record_info['type'], $postData['comment'], $_SESSION['userlogin']);
+            $this->recordCommentService->deleteComment($zid, $old_record_info['name'], $old_record_info['type']);
+            $this->recordCommentService->createComment($zid, $new_record_info['name'], $new_record_info['type'], $_POST['comment'], $_SESSION['userlogin']);
 
             if ($this->config('pdnssec_use')) {
                 $zone_name = $dnsRecord->get_domain_name_by_id($zid);

@@ -63,6 +63,11 @@ class RecordLog
         return $dnsRecord->get_record_from_id($rid);
     }
 
+    public function getRecordCopy(): array
+    {
+        return $this->record_prior;
+    }
+
     public function has_changed(array $record): bool
     {
         // Arrays are assigned by copy.
