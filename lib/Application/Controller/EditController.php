@@ -35,6 +35,7 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\PaginationService;
+use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordLog;
@@ -50,6 +51,14 @@ use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 
 class EditController extends BaseController
 {
+    private RecordCommentService $recordCommentService;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+        $recordCommentRepository = new DbRecordCommentRepository($this->db);
+        $this->recordCommentService = new RecordCommentService($recordCommentRepository);
+    }
 
     public function run(): void
     {
@@ -300,7 +309,6 @@ class EditController extends BaseController
         $serial_mismatch = false;
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $recordCommentRepository = new DbRecordCommentRepository($this->db);
 
         if (isset($_POST['record'])) {
             $soa_record = $dnsRecord->get_soa_record($zone_id);
@@ -333,9 +341,8 @@ class EditController extends BaseController
                         $log->log_after($record['rid']);
                         $log->write();
 
-                        // Update the related record comment
                         if (isset($record['comment'])) {
-                            $recordCommentRepository->updateCommentByDomainIdNameAndType($record['zid'], $record['name'], $record['type'], $record['comment']);
+                            $this->recordCommentService->updateComment($zone_id, $record['name'], $record['type'], $record['comment'], $_SESSION['userlogin']);
                         }
                     }
                 }

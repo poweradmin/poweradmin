@@ -32,6 +32,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Service\DnssecProviderFactory;
+use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
@@ -44,14 +45,15 @@ class DeleteRecordController extends BaseController
 {
 
     private LegacyLogger $logger;
-    private DbRecordCommentRepository $recordCommentRepository;
+    private RecordCommentService $recordCommentService;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
         $this->logger = new LegacyLogger($this->db);
-        $this->recordCommentRepository = new DbRecordCommentRepository($this->db);
+        $recordCommentRepository = new DbRecordCommentRepository($this->db);
+        $this->recordCommentService = new RecordCommentService($recordCommentRepository);
     }
 
     public function run(): void
@@ -87,7 +89,7 @@ class DeleteRecordController extends BaseController
                 $dnsRecord = new DnsRecord($this->db, $this->getConfig());
                 $dnsRecord->update_soa_serial($zid);
 
-                $this->recordCommentRepository->deleteCommentByDomainIdNameAndType($domain_id, $record_info['name'], $record_info['type']);
+                $this->recordCommentService->deleteComment($domain_id, $record_info['name'], $record_info['type']);
 
                 if ($this->config('pdnssec_use')) {
                     $zone_name = $dnsRecord->get_domain_name_by_id($zid);

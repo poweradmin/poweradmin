@@ -33,6 +33,7 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\Application\Service\DnssecProviderFactory;
+use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\Domain\Model\Permission;
@@ -46,14 +47,15 @@ class EditRecordController extends BaseController
 {
 
     private LegacyLogger $logger;
-    private DbRecordCommentRepository $recordCommentRepository;
+    private RecordCommentService $recordCommentService;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
         $this->logger = new LegacyLogger($this->db);
-        $this->recordCommentRepository = new DbRecordCommentRepository($this->db);
+        $recordCommentRepository = new DbRecordCommentRepository($this->db);
+        $this->recordCommentService = new RecordCommentService($recordCommentRepository);
     }
 
     public function run(): void
@@ -104,7 +106,7 @@ class EditRecordController extends BaseController
         }
 
         $iface_record_comments = $this->config('iface_record_comments');
-        $comment = $this->recordCommentRepository->findCommentByDomainIdNameAndType($zid, $record['name'], $record['type']);
+        $comment = $this->recordCommentService->findComment($zid, $record['name'], $record['type']);
 
         $this->render('edit_record.html', [
             'record_id' => $record_id,
@@ -146,7 +148,7 @@ class EditRecordController extends BaseController
                 $new_record_info['type'], $new_record_info['name'], $new_record_info['content'], $new_record_info['ttl'], $new_record_info['prio']),
                 $zid);
 
-            $this->recordCommentRepository->updateCommentByDomainIdNameAndType($zid, $new_record_info['name'], $new_record_info['type'], $postData['comment']);
+            $this->recordCommentService->updateComment($zid, $new_record_info['name'], $new_record_info['type'], $postData['comment'], $_SESSION['userlogin']);
 
             if ($this->config('pdnssec_use')) {
                 $zone_name = $dnsRecord->get_domain_name_by_id($zid);

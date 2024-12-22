@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Service;
 
-use InvalidArgumentException;
 use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
 
@@ -40,36 +39,37 @@ class RecordCommentService
         string $name,
         string $type,
         string $comment,
-        ?string $account = null
+        string $account
     ): RecordComment {
         $recordComment = RecordComment::create($domainId, $name, $type, $comment, $account);
         return $this->recordCommentRepository->add($recordComment);
     }
 
     public function updateComment(
-        int $commentId,
-        ?string $name = null,
-        ?string $type = null,
-        ?string $comment = null,
-        ?string $account = null
-    ): RecordComment {
-        $existingComment = $this->recordCommentRepository->findById($commentId);
+        int $domainId,
+        string $name,
+        string $type,
+        string $comment,
+        string $account
+    ): void {
+        $foundComment = $this->recordCommentRepository->findCommentByDomainIdNameAndType($domainId, $name, $type);
 
-        if (!$existingComment) {
-            throw new InvalidArgumentException("Record Comment not found");
+        if (!$foundComment) {
+            $this->createComment($domainId, $name, $type, $comment, $account);
+        } elseif ($comment == '') {
+            $this->recordCommentRepository->deleteCommentByDomainIdNameAndType($domainId, $name, $type);
+        } else {
+            $this->recordCommentRepository->updateCommentByDomainIdNameAndType($domainId, $name, $type, $comment);
         }
-
-        $updatedComment = $existingComment->update($name, $type, $comment, $account);
-        return $this->recordCommentRepository->update($updatedComment);
     }
 
-    public function deleteComment(int $commentId): bool
+    public function deleteComment(int $domainId, string $name, string $type): bool
     {
-        return $this->recordCommentRepository->delete($commentId);
+        return $this->recordCommentRepository->deleteCommentByDomainIdNameAndType($domainId, $name, $type);
     }
 
-    public function getCommentsByDomainId(int $domainId): array
+    public function findComment(int $domainId, string $name, string $type): ?string
     {
-        return $this->recordCommentRepository->findByDomainId($domainId);
+        return $this->recordCommentRepository->findCommentByDomainIdNameAndType($domainId, $name, $type);
     }
 }
