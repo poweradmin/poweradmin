@@ -27,8 +27,6 @@ use Poweradmin\Domain\Model\RecordComment;
 interface RecordCommentRepositoryInterface
 {
     public function add(RecordComment $comment): RecordComment;
-    public function update(RecordComment $comment): RecordComment;
-    public function delete(int $commentId): bool;
-    public function findById(int $commentId): ?RecordComment;
-    public function findByDomainId(int $domainId): array;
+    public function delete(int $domainId, string $name, string $type): bool;
+    public function findBy(int $domainId, string $name, string $type): ?RecordComment;
 }

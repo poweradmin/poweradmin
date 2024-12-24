@@ -27,9 +27,9 @@ use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
 
 class DbRecordCommentRepository implements RecordCommentRepositoryInterface {
-    private object $connection;
+    private PDO $connection;
 
-    public function __construct($connection)
+    public function __construct(PDO $connection)
     {
         $this->connection = $connection;
     }
@@ -63,116 +63,36 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface {
         );
     }
 
-    public function update(RecordComment $comment): RecordComment
-    {
-        if ($comment->getId() === null) {
-            throw new \InvalidArgumentException("Record Comment must have an ID to update");
-        }
-
-        $stmt = $this->connection->prepare(
-            "UPDATE comments 
-             SET domain_id = :domain_id, 
-                 name = :name, 
-                 type = :type, 
-                 modified_at = :modified_at, 
-                 account = :account, 
-                 comment = :comment 
-             WHERE id = :id"
-        );
-
-        $stmt->execute([
-            ':id' => $comment->getId(),
-            ':domain_id' => $comment->getDomainId(),
-            ':name' => $comment->getName(),
-            ':type' => $comment->getType(),
-            ':modified_at' => $comment->getModifiedAt(),
-            ':account' => $comment->getAccount(),
-            ':comment' => $comment->getComment()
-        ]);
-
-        return $comment;
-    }
-
-    public function updateCommentByDomainIdNameAndType(string $domainId, string $name, string $type, string $newComment): bool
-    {
-        $query = "UPDATE comments SET comment = :comment WHERE domain_id = :domain_id AND name = :name AND type = :type";
-        $stmt = $this->connection->prepare($query);
-        $stmt->bindParam(':comment', $newComment);
-        $stmt->bindParam(':domain_id', $domainId);
-        $stmt->bindParam(':name', $name);
-        $stmt->bindParam(':type', $type);
-        return $stmt->execute();
-    }
-
-    public function delete(int $commentId): bool
-    {
-        $stmt = $this->connection->prepare(
-            "DELETE FROM comments WHERE id = :id"
-        );
-
-        return $stmt->execute([':id' => $commentId]);
-    }
-
-    public function deleteCommentByDomainIdNameAndType(string $domainId, string $name, string $type): bool
+    public function delete(int $domainId, string $name, string $type): bool
     {
         $query = "DELETE FROM comments WHERE domain_id = :domain_id AND name = :name AND type = :type";
         $stmt = $this->connection->prepare($query);
-        $stmt->bindParam(':domain_id', $domainId);
-        $stmt->bindParam(':name', $name);
-        $stmt->bindParam(':type', $type);
-        return $stmt->execute();
+        return $stmt->execute([
+            ':domain_id' => $domainId,
+            ':name' => $name,
+            ':type' => $type
+        ]);
     }
 
-    public function findById(int $commentId): ?RecordComment
+    public function findBy(int $domainId, string $name, string $type): ?RecordComment
     {
-        $stmt = $this->connection->prepare(
-            "SELECT * FROM comments WHERE id = :id"
-        );
-        $stmt->execute([':id' => $commentId]);
-        $data = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        return $data ? new RecordComment(
-            (int)$data['id'],
-            (int)$data['domain_id'],
-            $data['name'],
-            $data['type'],
-            (int)$data['modified_at'],
-            $data['account'],
-            $data['comment']
-        ) : null;
-    }
-
-    public function findByDomainId(int $domainId): array
-    {
-        $stmt = $this->connection->prepare(
-            "SELECT * FROM comments WHERE domain_id = :domain_id"
-        );
-        $stmt->execute([':domain_id' => $domainId]);
-        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        return array_map(function($data) {
-            return new RecordComment(
-                (int)$data['id'],
-                (int)$data['domain_id'],
-                $data['name'],
-                $data['type'],
-                (int)$data['modified_at'],
-                $data['account'],
-                $data['comment']
-            );
-        }, $results);
-    }
-
-    public function findCommentByDomainIdNameAndType(string $domainId, string $name, string $type): ?string
-    {
-        $query = "SELECT comment FROM comments WHERE domain_id = :domain_id AND name = :name AND type = :type";
+        $query = "SELECT * FROM comments WHERE domain_id = :domain_id AND name = :name AND type = :type";
         $stmt = $this->connection->prepare($query);
-        $stmt->bindParam(':domain_id', $domainId);
-        $stmt->bindParam(':name', $name);
-        $stmt->bindParam(':type', $type);
-        $stmt->execute();
+        $stmt->execute([
+            ':domain_id' => $domainId,
+            ':name' => $name,
+            ':type' => $type
+        ]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return $result ? $result['comment'] : null;
+        return $result ? new RecordComment(
+            $result['id'],
+            $result['domain_id'],
+            $result['name'],
+            $result['type'],
+            $result['modified_at'],
+            $result['account'],
+            $result['comment']
+        ): null;
     }
 }

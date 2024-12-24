@@ -106,7 +106,7 @@ class EditRecordController extends BaseController
         }
 
         $iface_record_comments = $this->config('iface_record_comments');
-        $comment = $this->recordCommentService->findComment($zid, $record['name'], $record['type']);
+        $recordComment = $this->recordCommentService->findComment($zid, $record['name'], $record['type']);
 
         $this->render('edit_record.html', [
             'record_id' => $record_id,
@@ -119,7 +119,7 @@ class EditRecordController extends BaseController
             'perm_edit' => $perm_edit,
             'user_is_zone_owner' => $user_is_zone_owner,
             'iface_record_comments' => $iface_record_comments,
-            'comment' => $comment,
+            'comment' => $recordComment->getComment(),
         ]);
     }
 

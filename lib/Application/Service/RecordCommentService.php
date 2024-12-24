@@ -51,11 +51,11 @@ class RecordCommentService
 
     public function deleteComment(int $domainId, string $name, string $type): bool
     {
-        return $this->recordCommentRepository->deleteCommentByDomainIdNameAndType($domainId, $name, $type);
+        return $this->recordCommentRepository->delete($domainId, $name, $type);
     }
 
-    public function findComment(int $domainId, string $name, string $type): ?string
+    public function findComment(int $domainId, string $name, string $type): ?RecordComment
     {
-        return $this->recordCommentRepository->findCommentByDomainIdNameAndType($domainId, $name, $type);
+        return $this->recordCommentRepository->findBy($domainId, $name, $type);
     }
 }
