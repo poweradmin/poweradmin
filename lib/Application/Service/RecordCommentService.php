@@ -56,6 +56,6 @@ class RecordCommentService
 
     public function findComment(int $domainId, string $name, string $type): ?RecordComment
     {
-        return $this->recordCommentRepository->findBy($domainId, $name, $type);
+        return $this->recordCommentRepository->find($domainId, $name, $type);
     }
 }

@@ -74,7 +74,7 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface {
         ]);
     }
 
-    public function findBy(int $domainId, string $name, string $type): ?RecordComment
+    public function find(int $domainId, string $name, string $type): ?RecordComment
     {
         $query = "SELECT * FROM comments WHERE domain_id = :domain_id AND name = :name AND type = :type";
         $stmt = $this->connection->prepare($query);
