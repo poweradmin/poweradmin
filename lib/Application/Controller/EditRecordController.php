@@ -119,7 +119,7 @@ class EditRecordController extends BaseController
             'perm_edit' => $perm_edit,
             'user_is_zone_owner' => $user_is_zone_owner,
             'iface_record_comments' => $iface_record_comments,
-            'comment' => $recordComment->getComment(),
+            'comment' => $recordComment ? $recordComment->getComment() : '',
         ]);
     }
 
