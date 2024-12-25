@@ -76,7 +76,8 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface {
 
     public function find(int $domainId, string $name, string $type): ?RecordComment
     {
-        $query = "SELECT * FROM comments WHERE domain_id = :domain_id AND name = :name AND type = :type";
+        // Currently only one comment per record is supported
+        $query = "SELECT * FROM comments WHERE domain_id = :domain_id AND name = :name AND type = :type LIMIT 1";
         $stmt = $this->connection->prepare($query);
         $stmt->execute([
             ':domain_id' => $domainId,
