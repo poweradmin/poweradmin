@@ -1805,4 +1805,17 @@ class DnsRecord
             date_default_timezone_set('UTC');
         }
     }
+
+    public function has_similar_records($domain_id, $name, $type, $record_id): bool {
+        $query = "SELECT COUNT(*) FROM records
+              WHERE domain_id = :domain_id AND name = :name AND type = :type AND id != :record_id";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([
+            ':domain_id' => $domain_id,
+            ':name' => $name,
+            ':type' => $type,
+            ':record_id' => $record_id
+        ]);
+        return (bool)$stmt->fetchColumn();
+    }
 }
