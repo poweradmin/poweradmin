@@ -1413,10 +1413,11 @@ class DnsRecord
         }
 
         $query = "SELECT $records_table.*, " . ($fetchComments ? "$comments_table.comment" : "NULL AS comment") . "
-              FROM $records_table
-              " . ($fetchComments ? "LEFT JOIN $comments_table ON $records_table.domain_id = $comments_table.domain_id AND $records_table.name = $comments_table.name AND $records_table.type = $comments_table.type" : "") . "
-              WHERE $records_table.domain_id=" . $this->db->quote($id, 'integer') . " AND $records_table.type IS NOT NULL
-              ORDER BY " . $sql_sortby;
+            FROM $records_table
+            " . ($fetchComments ? "LEFT JOIN $comments_table ON $records_table.domain_id = $comments_table.domain_id AND $records_table.name = $comments_table.name AND $records_table.type = $comments_table.type" : "") . "
+            WHERE $records_table.domain_id=" . $this->db->quote($id, 'integer') . " AND $records_table.type IS NOT NULL
+            " . ($fetchComments ? "GROUP BY $records_table.id" : "") . "
+            ORDER BY " . $sql_sortby;
 
         $records = $this->db->query($query);
         $this->db->setLimit(0);
