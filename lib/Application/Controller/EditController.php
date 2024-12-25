@@ -342,8 +342,15 @@ class EditController extends BaseController
                         $log->write();
 
                         $recordCopy = $log->getRecordCopy();
-                        $this->recordCommentService->deleteComment($zone_id, $recordCopy['name'], $recordCopy['type']);
-                        $this->recordCommentService->createComment($zone_id, $record['name'], $record['type'], $record['comment'], $_SESSION['userlogin']);
+                        $this->recordCommentService->updateComment(
+                            $zone_id,
+                            $recordCopy['name'],
+                            $recordCopy['type'],
+                            $record['name'],
+                            $record['type'],
+                            $record['comment'],
+                            $_SESSION['userlogin']
+                        );
                     }
                 }
             }
