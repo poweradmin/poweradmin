@@ -54,6 +54,24 @@ class RecordCommentService
         return $this->recordCommentRepository->delete($domainId, $name, $type);
     }
 
+    public function updateComment(
+        int $domainId,
+        string $oldName,
+        string $oldType,
+        string $newName,
+        string $newType,
+        string $comment,
+        string $account
+    ): ?RecordComment {
+        if ($comment === '') {
+            $this->deleteComment($domainId, $oldName, $oldType);
+            return null;
+        }
+
+        $recordComment = RecordComment::create($domainId, $newName, $newType, $comment, $account);
+        return $this->recordCommentRepository->update($domainId, $oldName, $oldType, $recordComment);
+    }
+
     public function findComment(int $domainId, string $name, string $type): ?RecordComment
     {
         return $this->recordCommentRepository->find($domainId, $name, $type);

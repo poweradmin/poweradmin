@@ -96,4 +96,40 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface {
             $result['comment']
         ): null;
     }
+
+    public function update(int $domainId, string $oldName, string $oldType, RecordComment $comment): ?RecordComment
+    {
+        $stmt = $this->connection->prepare(
+            "UPDATE comments
+         SET name = :new_name,
+             type = :new_type,
+             modified_at = :modified_at,
+             account = :account,
+             comment = :comment
+         WHERE domain_id = :domain_id
+         AND name = :old_name
+         AND type = :old_type"
+        );
+
+        $success = $stmt->execute([
+            ':domain_id' => $domainId,
+            ':old_name' => $oldName,
+            ':old_type' => $oldType,
+            ':new_name' => $comment->getName(),
+            ':new_type' => $comment->getType(),
+            ':modified_at' => $comment->getModifiedAt(),
+            ':account' => $comment->getAccount(),
+            ':comment' => $comment->getComment()
+        ]);
+
+        if (!$success) {
+            return null;
+        }
+
+        if ($stmt->rowCount() === 0) {
+            return $this->add($comment);
+        }
+
+        return $this->find($domainId, $comment->getName(), $comment->getType());
+    }
 }
