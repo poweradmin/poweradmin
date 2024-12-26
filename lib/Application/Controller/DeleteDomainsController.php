@@ -53,7 +53,9 @@ class DeleteDomainsController extends BaseController
     {
         $zone_ids = $_POST['zone_id'] ?? null;
         if (!$zone_ids) {
-            $this->showError(_('Invalid or unexpected input given.'));
+            $this->setMessage('list_zones', 'error', _('No zone selected for deletion.'));
+            $this->redirect('index.php', ['page' => 'list_zones']);
+            return;
         }
 
         if (isset($_POST['confirm'])) {
