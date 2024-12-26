@@ -139,44 +139,45 @@ class EditRecordController extends BaseController
         }
 
         $ret_val = $dnsRecord->edit_record($postData);
-        if ($ret_val) {
-            $dnsRecord->update_soa_serial($zid);
-
-            $new_record_info = $dnsRecord->get_record_from_id($_POST["rid"]);
-            $this->logger->log_info(sprintf('client_ip:%s user:%s operation:edit_record'
-                . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
-                . ' record_type:%s record:%s content:%s ttl:%s priority:%s',
-                $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                $old_record_info['type'], $old_record_info['name'], $old_record_info['content'], $old_record_info['ttl'], $old_record_info['prio'],
-                $new_record_info['type'], $new_record_info['name'], $new_record_info['content'], $new_record_info['ttl'], $new_record_info['prio']),
-                $zid);
-
-            $this->recordCommentService->updateComment(
-                $zid,
-                $old_record_info['name'],
-                $old_record_info['type'],
-                $new_record_info['name'],
-                $new_record_info['type'],
-                $_POST['comment'],
-                $_SESSION['userlogin']
-            );
-
-            $this->updateRelatedRecordComments($dnsRecord, $old_record_info, $new_record_info, $_POST['comment'], $_SESSION['userlogin']);
-
-            if ($this->config('pdnssec_use')) {
-                $zone_name = $dnsRecord->get_domain_name_by_id($zid);
-                $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
-                $dnssecProvider->rectifyZone($zone_name);
-            }
-
-            $this->setMessage('edit', 'success', _('The record has been updated successfully.'));
-            $this->redirect('index.php', ['page' => 'edit', 'id' => $zid]);
+        if (!$ret_val) {
+            return;
         }
+
+        $dnsRecord->update_soa_serial($zid);
+
+        $new_record_info = $dnsRecord->get_record_from_id($_POST["rid"]);
+        $this->logger->log_info(sprintf('client_ip:%s user:%s operation:edit_record'
+            . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
+            . ' record_type:%s record:%s content:%s ttl:%s priority:%s',
+            $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
+            $old_record_info['type'], $old_record_info['name'], $old_record_info['content'], $old_record_info['ttl'], $old_record_info['prio'],
+            $new_record_info['type'], $new_record_info['name'], $new_record_info['content'], $new_record_info['ttl'], $new_record_info['prio']),
+            $zid);
+
+        $this->recordCommentService->updateComment(
+            $zid,
+            $old_record_info['name'],
+            $old_record_info['type'],
+            $new_record_info['name'],
+            $new_record_info['type'],
+            $_POST['comment'],
+            $_SESSION['userlogin']
+        );
+
+        $this->updateRelatedRecordComments($dnsRecord, $new_record_info, $_POST['comment'], $_SESSION['userlogin']);
+
+        if ($this->config('pdnssec_use')) {
+            $zone_name = $dnsRecord->get_domain_name_by_id($zid);
+            $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+            $dnssecProvider->rectifyZone($zone_name);
+        }
+
+        $this->setMessage('edit', 'success', _('The record has been updated successfully.'));
+        $this->redirect('index.php', ['page' => 'edit', 'id' => $zid]);
     }
 
     private function updateRelatedRecordComments(
         DnsRecord $dnsRecord,
-        array     $old_record_info,
         array     $new_record_info,
         string    $comment,
         string    $userLogin
