@@ -61,7 +61,7 @@ class AddRecordController extends BaseController
         $this->logger = new LegacyLogger($this->db);
         $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
-        $recordCommentRepository = new DbRecordCommentRepository($this->db);
+        $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
         $recordCommentService = new RecordCommentService($recordCommentRepository);
         $commentSyncService = new RecordCommentSyncService($recordCommentService);
 

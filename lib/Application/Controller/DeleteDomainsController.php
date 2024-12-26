@@ -31,22 +31,27 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 
 class DeleteDomainsController extends BaseController
 {
 
     private LegacyLogger $logger;
+    private RecordCommentService $recordCommentService;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
         $this->logger = new LegacyLogger($this->db);
+        $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
+        $this->recordCommentService = new RecordCommentService($recordCommentRepository);
     }
 
     public function run(): void
@@ -76,6 +81,10 @@ class DeleteDomainsController extends BaseController
                 $this->logger->log_info(sprintf('client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
                     $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                     $deleted_zone['name'], $deleted_zone['type']), $deleted_zone['id']);
+            }
+
+            foreach ($zone_ids as $zone_id) {
+                $this->recordCommentService->deleteCommentsByDomainId($zone_id);
             }
 
             if (count($deleted_zones) == 1) {

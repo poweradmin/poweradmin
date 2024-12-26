@@ -28,6 +28,8 @@ interface RecordCommentRepositoryInterface
 {
     public function add(RecordComment $comment): RecordComment;
     public function delete(int $domainId, string $name, string $type): bool;
+    public function deleteByDomainId(string $domainId): void;
+
     public function find(int $domainId, string $name, string $type): ?RecordComment;
     public function update(int $domainId, string $oldName, string $oldType, RecordComment $comment): ?RecordComment;
 }

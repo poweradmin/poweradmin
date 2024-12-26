@@ -23,21 +23,25 @@
 namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
+use Poweradmin\AppConfiguration;
 use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
 
 class DbRecordCommentRepository implements RecordCommentRepositoryInterface {
     private PDO $connection;
+    private string $comments_table;
 
-    public function __construct(PDO $connection)
+    public function __construct(PDO $connection, AppConfiguration $config)
     {
         $this->connection = $connection;
+        $pdns_db_name = $config->get('pdns_db_name');
+        $this->comments_table = $pdns_db_name ? $pdns_db_name . '.comments' : 'comments';
     }
 
     public function add(RecordComment $comment): RecordComment
     {
         $stmt = $this->connection->prepare(
-            "INSERT INTO comments (domain_id, name, type, modified_at, account, comment) 
+            "INSERT INTO {$this->comments_table} (domain_id, name, type, modified_at, account, comment)
              VALUES (:domain_id, :name, :type, :modified_at, :account, :comment)"
         );
 
@@ -65,7 +69,7 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface {
 
     public function delete(int $domainId, string $name, string $type): bool
     {
-        $query = "DELETE FROM comments WHERE domain_id = :domain_id AND name = :name AND type = :type";
+        $query = "DELETE FROM {$this->comments_table} WHERE domain_id = :domain_id AND name = :name AND type = :type";
         $stmt = $this->connection->prepare($query);
         return $stmt->execute([
             ':domain_id' => $domainId,
@@ -74,10 +78,17 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface {
         ]);
     }
 
+    public function deleteByDomainId(string $domainId): void
+    {
+        $stmt = $this->connection->prepare("DELETE FROM {$this->comments_table} WHERE domain_id = :domainId");
+        $stmt->bindParam(':domainId', $domainId);
+        $stmt->execute();
+    }
+
     public function find(int $domainId, string $name, string $type): ?RecordComment
     {
         // Currently only one comment per record is supported
-        $query = "SELECT * FROM comments WHERE domain_id = :domain_id AND name = :name AND type = :type LIMIT 1";
+        $query = "SELECT * FROM {$this->comments_table} WHERE domain_id = :domain_id AND name = :name AND type = :type LIMIT 1";
         $stmt = $this->connection->prepare($query);
         $stmt->execute([
             ':domain_id' => $domainId,
@@ -100,7 +111,7 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface {
     public function update(int $domainId, string $oldName, string $oldType, RecordComment $comment): ?RecordComment
     {
         $stmt = $this->connection->prepare(
-            "UPDATE comments
+            "UPDATE {$this->comments_table}
          SET name = :new_name,
              type = :new_type,
              modified_at = :modified_at,

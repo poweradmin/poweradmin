@@ -52,7 +52,7 @@ class DeleteRecordController extends BaseController
         parent::__construct($request);
 
         $this->logger = new LegacyLogger($this->db);
-        $recordCommentRepository = new DbRecordCommentRepository($this->db);
+        $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
     }
 
