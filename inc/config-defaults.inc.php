@@ -120,4 +120,5 @@ $experimental_edit_conflict_resolution = 'last_writer_wins';
 $login_token_validation = true; // Enable or disable login token validation
 $global_token_validation = true; // Enable or disable global token validation
 
+// Other settings
 $record_comments_sync = false; // Enable bidirectional comment synchronization between A and PTR records
