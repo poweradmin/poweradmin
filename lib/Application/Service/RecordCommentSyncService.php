@@ -22,10 +22,10 @@
 
 namespace Poweradmin\Application\Service;
 
-use Poweradmin\Domain\Service\DnsRecord;
-
 class RecordCommentSyncService
 {
+    const RECORD_TYPE_A = 'A';
+    const RECORD_TYPE_PTR = 'PTR';
     private RecordCommentService $commentService;
 
     public function __construct(RecordCommentService $commentService)
@@ -41,8 +41,8 @@ class RecordCommentSyncService
         string $comment,
         string $account
     ): void {
-        $this->commentService->createComment($domainId, $domainFullName, 'A', $comment, $account);
-        $this->commentService->createComment($ptrZoneId, $ptrName, 'PTR', $comment, $account);
+        $this->commentService->createComment($domainId, $domainFullName, self::RECORD_TYPE_A, $comment, $account);
+        $this->commentService->createComment($ptrZoneId, $ptrName, self::RECORD_TYPE_PTR, $comment, $account);
     }
 
     public function syncCommentsForDomainRecord(
@@ -53,8 +53,8 @@ class RecordCommentSyncService
         string $comment,
         string $account
     ): void {
-        $this->commentService->createComment($ptrZoneId, $ptrName, 'PTR', $comment, $account);
-        $this->commentService->createComment($domainId, $recordContent, 'A', $comment, $account);
+        $this->commentService->createComment($ptrZoneId, $ptrName, self::RECORD_TYPE_PTR, $comment, $account);
+        $this->commentService->createComment($domainId, $recordContent, self::RECORD_TYPE_A, $comment, $account);
     }
 
     public function updatePtrRecordComment(
@@ -64,7 +64,7 @@ class RecordCommentSyncService
         string $comment,
         string $account
     ): void {
-        $this->commentService->updateComment($ptrZoneId, $oldPtrName, 'PTR', $newPtrName, 'PTR', $comment, $account);
+        $this->commentService->updateComment($ptrZoneId, $oldPtrName, self::RECORD_TYPE_PTR, $newPtrName, self::RECORD_TYPE_PTR, $comment, $account);
     }
 
     public function updateARecordComment(
@@ -74,6 +74,6 @@ class RecordCommentSyncService
         string $comment,
         string $account
     ): void {
-        $this->commentService->updateComment($ptrZoneId, $oldPtrName, 'A', $newPtrName, 'A', $comment, $account);
+        $this->commentService->updateComment($ptrZoneId, $oldPtrName, self::RECORD_TYPE_A, $newPtrName, self::RECORD_TYPE_A, $comment, $account);
     }
 }
