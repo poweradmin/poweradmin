@@ -36,6 +36,7 @@ use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\RecordCommentService;
+use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordLog;
@@ -52,12 +53,14 @@ use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 class EditController extends BaseController
 {
     private RecordCommentService $recordCommentService;
+    private RecordCommentSyncService $commentSyncService;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
         $recordCommentRepository = new DbRecordCommentRepository($this->db);
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
+        $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService);
     }
 
     public function run(): void
@@ -348,6 +351,13 @@ class EditController extends BaseController
                             $recordCopy['type'],
                             $record['name'],
                             $record['type'],
+                            $record['comment'],
+                            $_SESSION['userlogin']
+                        );
+
+                        $this->commentSyncService->updateRelatedRecordComments(
+                            $dnsRecord,
+                            $record,
                             $record['comment'],
                             $_SESSION['userlogin']
                         );

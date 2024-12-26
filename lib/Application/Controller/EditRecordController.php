@@ -41,7 +41,6 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
-use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 
@@ -50,6 +49,7 @@ class EditRecordController extends BaseController
 
     private LegacyLogger $logger;
     private RecordCommentService $recordCommentService;
+    private RecordCommentSyncService $commentSyncService;
 
     public function __construct(array $request)
     {
@@ -164,7 +164,12 @@ class EditRecordController extends BaseController
             $_SESSION['userlogin']
         );
 
-        $this->updateRelatedRecordComments($dnsRecord, $new_record_info, $_POST['comment'], $_SESSION['userlogin']);
+        $this->commentSyncService->updateRelatedRecordComments(
+            $dnsRecord,
+            $new_record_info,
+            $_POST['comment'],
+            $_SESSION['userlogin']
+        );
 
         if ($this->config('pdnssec_use')) {
             $zone_name = $dnsRecord->get_domain_name_by_id($zid);
@@ -174,41 +179,5 @@ class EditRecordController extends BaseController
 
         $this->setMessage('edit', 'success', _('The record has been updated successfully.'));
         $this->redirect('index.php', ['page' => 'edit', 'id' => $zid]);
-    }
-
-    private function updateRelatedRecordComments(
-        DnsRecord $dnsRecord,
-        array     $new_record_info,
-        string    $comment,
-        string    $userLogin
-    ): void
-    {
-        if ($new_record_info['type'] === 'A' || $new_record_info['type'] === 'AAAA') {
-            $ptrName = $new_record_info['type'] === 'A'
-                ? DnsRecord::convert_ipv4addr_to_ptrrec($new_record_info['content'])
-                : DnsRecord::convert_ipv6addr_to_ptrrec($new_record_info['content']);
-            $ptrZoneId = $dnsRecord->get_best_matching_zone_id_from_name($ptrName);
-            if ($ptrZoneId !== -1) {
-                $this->commentSyncService->updatePtrRecordComment(
-                    $ptrZoneId,
-                    $ptrName,
-                    $ptrName,
-                    $comment,
-                    $userLogin
-                );
-            }
-        } elseif ($new_record_info['type'] === 'PTR') {
-            $domainName = DnsHelper::getRegisteredDomain($new_record_info['content']);
-            $contentDomainId = $dnsRecord->get_domain_id_by_name($domainName);
-            if ($contentDomainId !== false) {
-                $this->commentSyncService->updateARecordComment(
-                    $contentDomainId,
-                    $new_record_info['content'],
-                    $new_record_info['content'],
-                    $comment,
-                    $userLogin
-                );
-            }
-        }
     }
 }

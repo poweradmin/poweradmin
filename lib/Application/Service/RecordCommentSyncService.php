@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Application\Service;
 
+use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Utility\DnsHelper;
+
 class RecordCommentSyncService
 {
     const RECORD_TYPE_A = 'A';
@@ -75,5 +78,41 @@ class RecordCommentSyncService
         string $account
     ): void {
         $this->commentService->updateComment($ptrZoneId, $oldPtrName, self::RECORD_TYPE_A, $newPtrName, self::RECORD_TYPE_A, $comment, $account);
+    }
+
+    public function updateRelatedRecordComments(
+        DnsRecord $dnsRecord,
+        array     $new_record_info,
+        string    $comment,
+        string    $userLogin
+    ): void
+    {
+        if ($new_record_info['type'] === 'A' || $new_record_info['type'] === 'AAAA') {
+            $ptrName = $new_record_info['type'] === 'A'
+                ? DnsRecord::convert_ipv4addr_to_ptrrec($new_record_info['content'])
+                : DnsRecord::convert_ipv6addr_to_ptrrec($new_record_info['content']);
+            $ptrZoneId = $dnsRecord->get_best_matching_zone_id_from_name($ptrName);
+            if ($ptrZoneId !== -1) {
+                $this->updatePtrRecordComment(
+                    $ptrZoneId,
+                    $ptrName,
+                    $ptrName,
+                    $comment,
+                    $userLogin
+                );
+            }
+        } elseif ($new_record_info['type'] === 'PTR') {
+            $domainName = DnsHelper::getRegisteredDomain($new_record_info['content']);
+            $contentDomainId = $dnsRecord->get_domain_id_by_name($domainName);
+            if ($contentDomainId !== false) {
+                $this->updateARecordComment(
+                    $contentDomainId,
+                    $new_record_info['content'],
+                    $new_record_info['content'],
+                    $comment,
+                    $userLogin
+                );
+            }
+        }
     }
 }
