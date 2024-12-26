@@ -36,14 +36,17 @@ class DomainRecordCreator
     private const IPV4_SUFFIX = '.in-addr.arpa';
     private const IPV6_SUFFIX = '.ip6.arpa';
 
-    public function __construct(AppConfiguration $config, LegacyLogger $logger, DnsRecord $dnsRecord)
-    {
+    public function __construct(
+        AppConfiguration $config,
+        LegacyLogger $logger,
+        DnsRecord $dnsRecord,
+    ) {
         $this->config = $config;
         $this->logger = $logger;
         $this->dnsRecord = $dnsRecord;
     }
 
-    public function addDomainRecord(string $name, string $type, string $content, string $zone_id): array
+    public function addDomainRecord(string $name, string $type, string $content, string $zone_id, string $comment = '', string $account = ''): array
     {
         $iface_add_domain_record = $this->config->get('iface_add_domain_record');
 
@@ -57,7 +60,7 @@ class DomainRecordCreator
             $zone_name = $this->dnsRecord->get_domain_name_by_id($zone_id);
 
             if (str_ends_with($zone_name, self::IPV4_SUFFIX)) {
-                return $this->processIPv4($name, $zone_name, $content, $domainId);
+                return $this->processIPv4($name, $zone_name, $content, $domainId, $comment, $account);
             }
 
             if (str_ends_with($zone_name, self::IPV6_SUFFIX)) {
@@ -70,37 +73,38 @@ class DomainRecordCreator
         return $this->errorResponse(_('This domain record was not valid and could not be added.'));
     }
 
-    private function processIPv4(string $name, string $zone_name, string $content, int $domainId): array
+    private function processIPv4(string $name, string $zone_name, string $content, int $domainId, string $comment, string $account): array
     {
         $proposedIP = IpHelper::getProposedIPv4($name, $zone_name, self::IPV4_SUFFIX);
         if (filter_var($proposedIP, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-            return $this->addRecord($domainId, $content, $proposedIP);
+            return $this->addRecord($domainId, $content, $proposedIP, $comment, $account);
         }
         return $this->errorResponse(_('This domain record was not valid and could not be added.'));
     }
 
-    private function processIPv6(string $name, string $zone_name, string $content, int $domainId): array
+    private function processIPv6(string $name, string $zone_name, string $content, int $domainId, string $comment, string $account): array
     {
         $proposedIP = IpHelper::getProposedIPv6($name, $zone_name, self::IPV6_SUFFIX);
         if (filter_var($proposedIP, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-            return $this->addRecord($domainId, $content, $proposedIP);
+            return $this->addRecord($domainId, $content, $proposedIP, $comment, $account);
         }
         return $this->errorResponse(_('This domain record was not valid and could not be added.'));
     }
 
-    private function addRecord(int $domainId, string $content, string $proposedIP): array
+    private function addRecord(int $domainId, string $content, string $proposedIP, string $comment, string $account): array
     {
         $domainName = DnsHelper::getSubDomainName($content);
         $result = $this->dnsRecord->add_record($domainId, $domainName, 'A', $proposedIP, $this->config->get('dns_ttl'), 0);
+
         if ($result) {
             return [
                 'success' => true,
                 'type' => 'success',
                 'message' => _('The domain record was successfully added.')
             ];
-        } else {
-            return $this->errorResponse(_('This domain record was not valid and could not be added.'));
         }
+
+        return $this->errorResponse(_('This domain record was not valid and could not be added.'));
     }
 
     private function errorResponse(string $message): array

@@ -31,8 +31,9 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RecordCommentService;
+use Poweradmin\Application\Service\RecordCommentSyncService;
+use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordType;
@@ -49,7 +50,9 @@ class AddRecordController extends BaseController
 {
     private LegacyLogger $logger;
     private DnsRecord $dnsRecord;
-    private RecordCommentService $recordCommentService;
+    private DomainRecordCreator $domainRecordCreator;
+    private ReverseRecordCreator $reverseRecordCreator;
+    private RecordManagerService $recordManager;
 
     public function __construct(array $request)
     {
@@ -57,8 +60,32 @@ class AddRecordController extends BaseController
 
         $this->logger = new LegacyLogger($this->db);
         $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
+
         $recordCommentRepository = new DbRecordCommentRepository($this->db);
-        $this->recordCommentService = new RecordCommentService($recordCommentRepository);
+        $recordCommentService = new RecordCommentService($recordCommentRepository);
+        $commentSyncService = new RecordCommentSyncService($recordCommentService, $this->dnsRecord);
+
+        $this->recordManager = new RecordManagerService(
+            $this->db,
+            $this->dnsRecord,
+            $recordCommentService,
+            $commentSyncService,
+            $this->logger,
+            $this->getConfig()
+        );
+
+        $this->domainRecordCreator = new DomainRecordCreator(
+            $this->getConfig(),
+            $this->logger,
+            $this->dnsRecord,
+        );
+
+        $this->reverseRecordCreator = new ReverseRecordCreator(
+            $this->db,
+            $this->getConfig(),
+            $this->logger,
+            $this->dnsRecord
+        );
     }
 
     public function run(): void
@@ -103,14 +130,13 @@ class AddRecordController extends BaseController
         $comment = $_POST['comment'] ?? '';
         $zone_id = htmlspecialchars($_GET['id']);
 
-        if (isset($_POST["reverse"])) {
-            $this->createReverseRecord($name, $type, $content, $zone_id, $ttl, $prio);
-        }
-        if (isset($_POST['create_domain_record'])) {
-            $this->createDomainRecord($name, $type, $content, $zone_id);
+        if (isset($_POST['reverse'])) {
+            $this->createReverseRecord($name, $type, $content, $zone_id, $ttl, $prio, $comment);
+        } else if (isset($_POST['create_domain_record'])) {
+            $this->createDomainRecord($name, $type, $content, $zone_id, $comment);
         }
 
-        if ($this->createRecord($zone_id, $name, $type, $content, $ttl, $prio, $comment)) {
+        if ($this->createRecord((int)$zone_id, $name, $type, $content, $ttl, $prio, $comment)) {
             unset($_POST);
         }
     }
@@ -159,41 +185,54 @@ class AddRecordController extends BaseController
         }
     }
 
-    public function createReverseRecord($name, $type, $content, string $zone_id, $ttl, $prio): void
+    private function createRecord(int $zone_id, $name, $type, $content, $ttl, $prio, $comment): bool
     {
-        $reverseRecordCreator = new ReverseRecordCreator($this->db, $this->getConfig(), $this->logger);
-        $reverseRecordCreator->createReverseRecord($name, $type, $content, $zone_id, $ttl, $prio);
-    }
+        $success = $this->recordManager->createRecord(
+            $zone_id,
+            $name,
+            $type,
+            $content,
+            $ttl,
+            $prio,
+            $comment,
+            $_SESSION['userlogin'],
+            $_SERVER['REMOTE_ADDR']
+        );
 
-    public function createRecord(string $zone_id, $name, $type, $content, $ttl, $prio, $comment): bool
-    {
-        $zone_name = $this->dnsRecord->get_domain_name_by_id($zone_id);
-        if ($this->dnsRecord->add_record($zone_id, $name, $type, $content, $ttl, $prio)) {
-            $this->logger->log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:%s record:%s.%s content:%s ttl:%s priority:%s',
-                $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                $type, $name, $zone_name, $content, $ttl, $prio), $zone_id
-            );
-
-            if ($this->config('pdnssec_use')) {
-                $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
-                $dnssecProvider->rectifyZone($zone_name);
-            }
-
-            $full_name = "$name.$zone_name";
-            $this->recordCommentService->createComment($zone_id, $full_name, $type, $comment, $_SESSION['userlogin']);
-
+        if ($success) {
             $this->setMessage('add_record', 'success', _('The record was successfully added.'));
             return true;
-        } else {
-            $this->setMessage('add_record', 'error', _('This record was not valid and could not be added.'));
-            return false;
         }
+
+        $this->setMessage('add_record', 'error', _('This record was not valid and could not be added.'));
+        return false;
     }
 
-    private function createDomainRecord(string $name, string $type, string $content, string $zone_id): void
+    private function createReverseRecord($name, $type, $content, string $zone_id, $ttl, $prio, string $comment): void
     {
-        $domainRecordCreator = new DomainRecordCreator($this->getConfig(), $this->logger, $this->dnsRecord);
-        $result = $domainRecordCreator->addDomainRecord($name, $type, $content, $zone_id);
+        $this->reverseRecordCreator->createReverseRecord(
+            $name,
+            $type,
+            $content,
+            $zone_id,
+            $ttl,
+            $prio,
+            $comment,
+            $_SESSION['userlogin']
+        );
+    }
+
+    private function createDomainRecord(string $name, string $type, string $content, string $zone_id, string $comment): void
+    {
+        $result = $this->domainRecordCreator->addDomainRecord(
+            $name,
+            $type,
+            $content,
+            $zone_id,
+            $comment,
+            $_SESSION['userlogin']
+        );
+
         if ($result['success']) {
             $this->setMessage('add_record', 'success', $result['message']);
         } else {

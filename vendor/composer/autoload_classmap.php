@@ -424,6 +424,8 @@ return array(
     'Poweradmin\\Application\\Service\\LoggingService' => $baseDir . '/lib/Application/Service/LoggingService.php',
     'Poweradmin\\Application\\Service\\PaginationService' => $baseDir . '/lib/Application/Service/PaginationService.php',
     'Poweradmin\\Application\\Service\\RecordCommentService' => $baseDir . '/lib/Application/Service/RecordCommentService.php',
+    'Poweradmin\\Application\\Service\\RecordCommentSyncService' => $baseDir . '/lib/Application/Service/RecordCommentSyncService.php',
+    'Poweradmin\\Application\\Service\\RecordManagerService' => $baseDir . '/lib/Application/Service/RecordManagerService.php',
     'Poweradmin\\Application\\Service\\SqlAuthenticator' => $baseDir . '/lib/Application/Service/SqlAuthenticator.php',
     'Poweradmin\\Application\\Service\\StatsDisplayService' => $baseDir . '/lib/Application/Service/StatsDisplayService.php',
     'Poweradmin\\Application\\Service\\UserAuthenticationService' => $baseDir . '/lib/Application/Service/UserAuthenticationService.php',

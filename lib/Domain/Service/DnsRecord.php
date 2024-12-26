@@ -941,15 +941,20 @@ class DnsRecord
 
     public function get_domain_id_by_name(string $name): bool|int
     {
-        if (!empty($name)) {
-            $pdns_db_name = $this->config->get('pdns_db_name');
-            $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
-
-            $result = $this->db->queryRow("SELECT id FROM $domains_table WHERE name=" . $this->db->quote($name, 'text'));
-            return $result ? $result['id'] : false;
+        if (empty($name)) {
+            return false;
         }
 
-        return false;
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
+
+        $query = "SELECT id FROM $domains_table WHERE name = :name";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':name', $name);
+        $stmt->execute();
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ? $result['id'] : false;
     }
 
     /** Get zone id from name
@@ -1030,6 +1035,12 @@ class DnsRecord
             $zone_infos[] = $zone_info;
         }
         return $zone_infos;
+    }
+
+    public static function convert_ipv4addr_to_ptrrec(string $ip): string
+    {
+        $ip_octets = explode('.', $ip);
+        return implode('.', array_reverse($ip_octets)) . '.in-addr.arpa';
     }
 
     /** Convert IPv6 Address to PTR

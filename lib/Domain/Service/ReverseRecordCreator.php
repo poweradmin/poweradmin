@@ -34,25 +34,30 @@ class ReverseRecordCreator
     private PDOLayer $db;
     private AppConfiguration $config;
     private LegacyLogger $logger;
+    private DnsRecord $dnsRecord;
 
-    public function __construct($db, $config, $logger)
-    {
+    public function __construct(
+        PDOLayer $db,
+        AppConfiguration $config,
+        LegacyLogger$logger,
+        DnsRecord $dnsRecord
+    ) {
         $this->db = $db;
         $this->config = $config;
         $this->logger = $logger;
+        $this->dnsRecord = $dnsRecord;
     }
 
-    public function createReverseRecord($name, $type, $content, string $zone_id, $ttl, $prio): void
+    public function createReverseRecord($name, $type, $content, string $zone_id, $ttl, $prio, string $comment = '', string $account = ''): void
     {
         $iface_add_reverse_record = $this->config->get('iface_add_reverse_record');
-        $dnsRecord = new DnsRecord($this->db, $this->config);
 
         if ($name && $iface_add_reverse_record) {
             $content_rev = $this->getContentRev($type, $content);
-            $zone_rev_id = $dnsRecord->get_best_matching_zone_id_from_name($content_rev);
+            $zone_rev_id = $this->dnsRecord->get_best_matching_zone_id_from_name($content_rev);
 
             if ($zone_rev_id != -1) {
-                $this->addReverseRecord($dnsRecord, $zone_id, $zone_rev_id, $name, $content_rev, $ttl, $prio);
+                $this->addReverseRecord($zone_id, $zone_rev_id, $name, $content_rev, $ttl, $prio, $comment, $account);
             } elseif (isset($content_rev)) {
                 $this->presentError(sprintf(_('There is no matching reverse-zone for: %s.'), $content_rev));
             }
@@ -70,11 +75,12 @@ class ReverseRecordCreator
         return null;
     }
 
-    private function addReverseRecord($dnsRecord, $zone_id, $zone_rev_id, $name, $content_rev, $ttl, $prio): void
+    private function addReverseRecord($zone_id, $zone_rev_id, $name, $content_rev, $ttl, $prio, string $comment, string $account): void
     {
-        $zone_name = $dnsRecord->get_domain_name_by_id($zone_id);
+        $zone_name = $this->dnsRecord->get_domain_name_by_id($zone_id);
         $fqdn_name = sprintf("%s.%s", $name, $zone_name);
-        if ($dnsRecord->add_record($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
+
+        if ($this->dnsRecord->add_record($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
             $this->logger->log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
                 $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
                 $content_rev, $fqdn_name, $ttl, $prio), $zone_id);

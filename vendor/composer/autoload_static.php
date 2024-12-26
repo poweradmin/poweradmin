@@ -627,6 +627,8 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
         'Poweradmin\\Application\\Service\\LoggingService' => __DIR__ . '/../..' . '/lib/Application/Service/LoggingService.php',
         'Poweradmin\\Application\\Service\\PaginationService' => __DIR__ . '/../..' . '/lib/Application/Service/PaginationService.php',
         'Poweradmin\\Application\\Service\\RecordCommentService' => __DIR__ . '/../..' . '/lib/Application/Service/RecordCommentService.php',
+        'Poweradmin\\Application\\Service\\RecordCommentSyncService' => __DIR__ . '/../..' . '/lib/Application/Service/RecordCommentSyncService.php',
+        'Poweradmin\\Application\\Service\\RecordManagerService' => __DIR__ . '/../..' . '/lib/Application/Service/RecordManagerService.php',
         'Poweradmin\\Application\\Service\\SqlAuthenticator' => __DIR__ . '/../..' . '/lib/Application/Service/SqlAuthenticator.php',
         'Poweradmin\\Application\\Service\\StatsDisplayService' => __DIR__ . '/../..' . '/lib/Application/Service/StatsDisplayService.php',
         'Poweradmin\\Application\\Service\\UserAuthenticationService' => __DIR__ . '/../..' . '/lib/Application/Service/UserAuthenticationService.php',
