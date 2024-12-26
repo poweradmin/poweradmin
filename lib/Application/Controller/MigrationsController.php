@@ -109,7 +109,6 @@ class MigrationsController extends BaseController
             case 'mysql':
                 $query = $this->db->query("SHOW GRANTS FOR CURRENT_USER");
                 $result = $query->fetchAll();
-                var_dump($result);
                 break;
             case 'pgsql':
                 $query = $this->db->query("SELECT has_schema_privilege(current_user, 'public', 'CREATE') AS can_create");

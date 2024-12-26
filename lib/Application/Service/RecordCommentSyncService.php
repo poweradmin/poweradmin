@@ -36,30 +36,30 @@ class RecordCommentSyncService
     }
 
     public function syncCommentsForPtrRecord(
-        int $domainId,
-        int $ptrZoneId,
-        string $name,
+        int    $domainId,
+        int    $ptrZoneId,
+        string $recordContent,
         string $ptrName,
         string $comment,
         string $account
     ): void {
-        $domainFullName = $this->getFullName($name, $domainId);
+        $domainFullName = $this->getFullName($recordContent, $domainId);
         $this->commentService->createComment($domainId, $domainFullName, 'A', $comment, $account);
 
         $this->commentService->createComment($ptrZoneId, $ptrName, 'PTR', $comment, $account);
     }
 
     public function syncCommentsForDomainRecord(
-        int $domainId,
-        int $ptrZoneId,
-        string $fullDomainName,
+        int    $domainId,
+        int    $ptrZoneId,
+        string $recordContent,
         string $ptrName,
         string $comment,
         string $account
     ): void {
         $this->commentService->createComment($ptrZoneId, $ptrName, 'PTR', $comment, $account);
 
-        $this->commentService->createComment($domainId, $fullDomainName, 'A', $comment, $account);
+        $this->commentService->createComment($domainId, $recordContent, 'A', $comment, $account);
     }
 
     private function getFullName(string $name, int $domainId): string
