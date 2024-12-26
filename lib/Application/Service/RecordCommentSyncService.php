@@ -28,6 +28,7 @@ use Poweradmin\Domain\Utility\DnsHelper;
 class RecordCommentSyncService
 {
     const RECORD_TYPE_A = 'A';
+    const RECORD_TYPE_AAAA = 'AAAA';
     const RECORD_TYPE_PTR = 'PTR';
     private RecordCommentService $commentService;
 
@@ -37,8 +38,8 @@ class RecordCommentSyncService
     }
 
     public function syncCommentsForPtrRecord(
-        int    $domainId,
-        int    $ptrZoneId,
+        int $domainId,
+        int $ptrZoneId,
         string $domainFullName,
         string $ptrName,
         string $comment,
@@ -49,8 +50,8 @@ class RecordCommentSyncService
     }
 
     public function syncCommentsForDomainRecord(
-        int    $domainId,
-        int    $ptrZoneId,
+        int $domainId,
+        int $ptrZoneId,
         string $recordContent,
         string $ptrName,
         string $comment,
@@ -61,7 +62,7 @@ class RecordCommentSyncService
     }
 
     public function updatePtrRecordComment(
-        int    $ptrZoneId,
+        int $ptrZoneId,
         string $oldPtrName,
         string $newPtrName,
         string $comment,
@@ -71,7 +72,7 @@ class RecordCommentSyncService
     }
 
     public function updateARecordComment(
-        int    $ptrZoneId,
+        int $ptrZoneId,
         string $oldPtrName,
         string $newPtrName,
         string $comment,
@@ -82,36 +83,23 @@ class RecordCommentSyncService
 
     public function updateRelatedRecordComments(
         DnsRecord $dnsRecord,
-        array     $new_record_info,
-        string    $comment,
-        string    $userLogin
-    ): void
-    {
-        if ($new_record_info['type'] === 'A' || $new_record_info['type'] === 'AAAA') {
-            $ptrName = $new_record_info['type'] === 'A'
-                ? DnsRecord::convert_ipv4addr_to_ptrrec($new_record_info['content'])
-                : DnsRecord::convert_ipv6addr_to_ptrrec($new_record_info['content']);
+        array $newRecordInfo,
+        string $comment,
+        string $userLogin
+    ): void {
+        if (in_array($newRecordInfo['type'], [self::RECORD_TYPE_A, self::RECORD_TYPE_AAAA])) {
+            $ptrName = $newRecordInfo['type'] === self::RECORD_TYPE_A
+                ? DnsRecord::convert_ipv4addr_to_ptrrec($newRecordInfo['content'])
+                : DnsRecord::convert_ipv6addr_to_ptrrec($newRecordInfo['content']);
             $ptrZoneId = $dnsRecord->get_best_matching_zone_id_from_name($ptrName);
             if ($ptrZoneId !== -1) {
-                $this->updatePtrRecordComment(
-                    $ptrZoneId,
-                    $ptrName,
-                    $ptrName,
-                    $comment,
-                    $userLogin
-                );
+                $this->updatePtrRecordComment($ptrZoneId, $ptrName, $ptrName, $comment, $userLogin);
             }
-        } elseif ($new_record_info['type'] === 'PTR') {
-            $domainName = DnsHelper::getRegisteredDomain($new_record_info['content']);
+        } elseif ($newRecordInfo['type'] === self::RECORD_TYPE_PTR) {
+            $domainName = DnsHelper::getRegisteredDomain($newRecordInfo['content']);
             $contentDomainId = $dnsRecord->get_domain_id_by_name($domainName);
             if ($contentDomainId !== false) {
-                $this->updateARecordComment(
-                    $contentDomainId,
-                    $new_record_info['content'],
-                    $new_record_info['content'],
-                    $comment,
-                    $userLogin
-                );
+                $this->updateARecordComment($contentDomainId, $newRecordInfo['content'], $newRecordInfo['content'], $comment, $userLogin);
             }
         }
     }
