@@ -56,4 +56,24 @@ class RecordCommentSyncService
         $this->commentService->createComment($ptrZoneId, $ptrName, 'PTR', $comment, $account);
         $this->commentService->createComment($domainId, $recordContent, 'A', $comment, $account);
     }
+
+    public function updatePtrRecordComment(
+        int    $ptrZoneId,
+        string $oldPtrName,
+        string $newPtrName,
+        string $comment,
+        string $account
+    ): void {
+        $this->commentService->updateComment($ptrZoneId, $oldPtrName, 'PTR', $newPtrName, 'PTR', $comment, $account);
+    }
+
+    public function updateARecordComment(
+        int    $ptrZoneId,
+        string $oldPtrName,
+        string $newPtrName,
+        string $comment,
+        string $account
+    ): void {
+        $this->commentService->updateComment($ptrZoneId, $oldPtrName, 'A', $newPtrName, 'A', $comment, $account);
+    }
 }
