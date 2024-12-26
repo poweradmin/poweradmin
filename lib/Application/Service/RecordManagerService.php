@@ -135,7 +135,7 @@ class RecordManagerService
             $this->commentSyncService->syncCommentsForPtrRecord(
                 $zone_id,
                 $ptrZoneId,
-                $name,
+                $full_name,
                 $ptrName,
                 $comment,
                 $userlogin

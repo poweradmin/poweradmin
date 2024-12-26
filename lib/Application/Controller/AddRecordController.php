@@ -63,7 +63,7 @@ class AddRecordController extends BaseController
 
         $recordCommentRepository = new DbRecordCommentRepository($this->db);
         $recordCommentService = new RecordCommentService($recordCommentRepository);
-        $commentSyncService = new RecordCommentSyncService($recordCommentService, $this->dnsRecord);
+        $commentSyncService = new RecordCommentSyncService($recordCommentService);
 
         $this->recordManager = new RecordManagerService(
             $this->db,

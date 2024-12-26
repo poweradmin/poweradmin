@@ -27,25 +27,21 @@ use Poweradmin\Domain\Service\DnsRecord;
 class RecordCommentSyncService
 {
     private RecordCommentService $commentService;
-    private DnsRecord $dnsRecord;
 
-    public function __construct(RecordCommentService $commentService, DnsRecord $dnsRecord)
+    public function __construct(RecordCommentService $commentService)
     {
         $this->commentService = $commentService;
-        $this->dnsRecord = $dnsRecord;
     }
 
     public function syncCommentsForPtrRecord(
         int    $domainId,
         int    $ptrZoneId,
-        string $recordContent,
+        string $domainFullName,
         string $ptrName,
         string $comment,
         string $account
     ): void {
-        $domainFullName = $this->getFullName($recordContent, $domainId);
         $this->commentService->createComment($domainId, $domainFullName, 'A', $comment, $account);
-
         $this->commentService->createComment($ptrZoneId, $ptrName, 'PTR', $comment, $account);
     }
 
@@ -58,13 +54,6 @@ class RecordCommentSyncService
         string $account
     ): void {
         $this->commentService->createComment($ptrZoneId, $ptrName, 'PTR', $comment, $account);
-
         $this->commentService->createComment($domainId, $recordContent, 'A', $comment, $account);
-    }
-
-    private function getFullName(string $name, int $domainId): string
-    {
-        $zoneName = $this->dnsRecord->get_domain_name_by_id($domainId);
-        return sprintf("%s.%s", $name, $zoneName);
     }
 }
