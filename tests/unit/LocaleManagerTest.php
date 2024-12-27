@@ -7,14 +7,28 @@ use Poweradmin\LocaleManager;
 
 class LocaleManagerTest extends TestCase
 {
+    private $originalErrorReporting;
+    private $originalLogDestination;
     private array $supportedLocales;
     private LocaleManager $localeManager;
 
     protected function setUp(): void
     {
+        $this->originalErrorReporting = error_reporting();
+        $this->originalLogDestination = ini_get('error_log');
+        error_reporting(0);
+        ini_set('error_log', '/dev/null');
+
         $this->supportedLocales = ['en_US', 'fr_FR'];
         $localeDirectory = dirname('locales', 2);
         $this->localeManager = new LocaleManager($this->supportedLocales, $localeDirectory);
+    }
+
+    protected function tearDown(): void
+    {
+        // Restore the original error reporting settings
+        error_reporting($this->originalErrorReporting);
+        ini_set('error_log', $this->originalLogDestination);
     }
 
 //    public function testSetsLocaleWhenSupportedLocaleProvided()
