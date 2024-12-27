@@ -112,7 +112,7 @@ class Connection implements ConnectionInterface
      *
      * ### Available options:
      *
-     * - `driver` Sort name or FCQN for driver.
+     * - `driver` Sort name or FQCN for driver.
      * - `log` Boolean indicating whether to use query logging.
      * - `name` Connection name.
      * - `cacheMetaData` Boolean indicating whether metadata (datasource schemas) should be cached.
@@ -301,7 +301,7 @@ class Connection implements ConnectionInterface
     public function selectQuery(
         ExpressionInterface|Closure|array|string|float|int $fields = [],
         array|string $table = [],
-        array $types = []
+        array $types = [],
     ): SelectQuery {
         return $this->queryFactory()->select($fields, $table, $types);
     }
@@ -332,7 +332,7 @@ class Connection implements ConnectionInterface
         ExpressionInterface|string|null $table = null,
         array $values = [],
         array $conditions = [],
-        array $types = []
+        array $types = [],
     ): UpdateQuery {
         return $this->queryFactory()->update($table, $values, $conditions, $types);
     }
@@ -378,7 +378,7 @@ class Connection implements ConnectionInterface
             return $this->_schemaCollection = new CachedCollection(
                 new SchemaCollection($this),
                 empty($this->_config['cacheKeyPrefix']) ? $this->configName() : $this->_config['cacheKeyPrefix'],
-                $this->getCacher()
+                $this->getCacher(),
             );
         }
 
@@ -766,7 +766,7 @@ class Connection implements ConnectionInterface
         if (!class_exists(Cache::class)) {
             throw new CakeException(
                 'To use caching you must either set a cacher using Connection::setCacher()' .
-                ' or require the cakephp/cache package in your composer config.'
+                ' or require the cakephp/cache package in your composer config.',
             );
         }
 

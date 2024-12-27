@@ -146,10 +146,10 @@ abstract class IntegrationTestCase extends TestCase
                 throw new \InvalidArgumentException(\sprintf('Test "%s" is not valid.', str_replace($fixturesDir.'/', '', $file)));
             }
 
-            $tests[] = [str_replace($fixturesDir.'/', '', $file), $message, $condition, $templates, $exception, $outputs, $deprecation];
+            $tests[str_replace($fixturesDir.'/', '', $file)] = [str_replace($fixturesDir.'/', '', $file), $message, $condition, $templates, $exception, $outputs, $deprecation];
         }
 
-        if ($legacyTests && empty($tests)) {
+        if ($legacyTests && !$tests) {
             // add a dummy test to avoid a PHPUnit message
             return [['not', '-', '', [], '', []]];
         }
@@ -245,7 +245,7 @@ abstract class IntegrationTestCase extends TestCase
                 $output = trim($template->render(eval($match[1].';')), "\n ");
             } catch (\Exception $e) {
                 if (false !== $exception) {
-                    $this->assertSame(trim($exception), trim(\sprintf('%s: %s', \get_class($e), $e->getMessage())));
+                    $this->assertStringMatchesFormat(trim($exception), trim(\sprintf('%s: %s', \get_class($e), $e->getMessage())));
 
                     return;
                 }

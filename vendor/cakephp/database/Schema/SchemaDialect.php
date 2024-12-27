@@ -101,7 +101,7 @@ abstract class SchemaDialect
      * Convert foreign key constraints references to a valid
      * stringified list
      *
-     * @param list<string>|string $references The referenced columns of a foreign key constraint statement
+     * @param array<string>|string $references The referenced columns of a foreign key constraint statement
      * @return string
      */
     protected function _convertConstraintColumns(array|string $references): string
@@ -112,7 +112,7 @@ abstract class SchemaDialect
 
         return implode(', ', array_map(
             $this->_driver->quoteIdentifier(...),
-            $references
+            $references,
         ));
     }
 
@@ -129,7 +129,7 @@ abstract class SchemaDialect
     protected function _getTypeSpecificColumnSql(
         string $columnType,
         TableSchemaInterface $schema,
-        string $column
+        string $column,
     ): ?string {
         if (!TypeFactory::getMap($columnType)) {
             return null;
@@ -176,7 +176,7 @@ abstract class SchemaDialect
     {
         $sql = sprintf(
             'DROP TABLE %s',
-            $this->_driver->quoteIdentifier($schema->name())
+            $this->_driver->quoteIdentifier($schema->name()),
         );
 
         return [$sql];
@@ -274,16 +274,16 @@ abstract class SchemaDialect
      * Generate the SQL to create a table.
      *
      * @param \Cake\Database\Schema\TableSchema $schema Table instance.
-     * @param list<string> $columns The columns to go inside the table.
-     * @param list<string> $constraints The constraints for the table.
-     * @param list<string> $indexes The indexes for the table.
+     * @param array<string> $columns The columns to go inside the table.
+     * @param array<string> $constraints The constraints for the table.
+     * @param array<string> $indexes The indexes for the table.
      * @return list<string> SQL statements to create a table.
      */
     abstract public function createTableSql(
         TableSchema $schema,
         array $columns,
         array $constraints,
-        array $indexes
+        array $indexes,
     ): array;
 
     /**

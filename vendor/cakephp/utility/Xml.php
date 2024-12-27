@@ -159,7 +159,7 @@ class Xml
                 }
 
                 return $xml;
-            }
+            },
         );
     }
 
@@ -191,7 +191,7 @@ class Xml
                 }
 
                 return $xml;
-            }
+            },
         );
     }
 
@@ -315,7 +315,7 @@ class Xml
         DOMDocument $dom,
         DOMDocument|DOMElement $node,
         mixed $data,
-        string $format
+        string $format,
     ): void {
         if (!$data || !is_array($data)) {
             return;
@@ -465,7 +465,7 @@ class Xml
      * @param \SimpleXMLElement $xml SimpleXMLElement object
      * @param array<string, mixed> $parentData Parent array with data
      * @param string $ns Namespace of current child
-     * @param list<string> $namespaces List of namespaces in XML
+     * @param array<string> $namespaces List of namespaces in XML
      * @return void
      */
     protected static function _toArray(SimpleXMLElement $xml, array &$parentData, string $ns, array $namespaces): void
@@ -473,9 +473,7 @@ class Xml
         $data = [];
 
         foreach ($namespaces as $namespace) {
-            /** @var \SimpleXMLElement $attributes */
             $attributes = $xml->attributes($namespace, true);
-            /** @var string $key */
             foreach ($attributes as $key => $value) {
                 if ($namespace) {
                     $key = $namespace . ':' . $key;

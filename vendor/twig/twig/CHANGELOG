@@ -1,3 +1,61 @@
+# 3.17.1 (2024-XX-XX)
+
+ * Fix the null coalescing operator when the test returns null
+ * Fix the Elvis operator when used as '? :' instead of '?:'
+
+# 3.17.0 (2024-12-10)
+
+ * Fix ArrayAccess with objects as keys
+ * Support underscores in number literals
+ * Deprecate `ConditionalExpression` and `NullCoalesceExpression` (use `ConditionalTernary` and `NullCoalesceBinary` instead)
+
+# 3.16.0 (2024-11-29)
+
+ * Deprecate `InlinePrint`
+ * Fix having macro variables starting with an underscore
+ * Deprecate not passing a `Source` instance to `TokenStream`
+ * Deprecate returning `null` from `TwigFilter::getSafe()` and `TwigFunction::getSafe()`, return `[]` instead
+
+# 3.15.0 (2024-11-17)
+ 
+ * [BC BREAK] Add support for accessing class constants with the dot operator;
+   this can be a BC break if you don't use UPPERCASE constant names
+ * Add Spanish inflector support for the `plural` and `singular` filters in the String extension
+ * Deprecate `TempNameExpression` in favor of `LocalVariable`
+ * Deprecate `NameExpression` in favor of `ContextVariable`
+ * Deprecate `AssignNameExpression` in favor of `AssignContextVariable`
+ * Remove `MacroAutoImportNodeVisitor`
+ * Deprecate `MethodCallExpression` in favor of `MacroReferenceExpression`
+ * Fix support for the "is defined" test on `_self.xxx` (auto-imported) macros
+ * Fix support for the "is defined" test on inherited macros
+ * Add named arguments support for the dot operator arguments (`foo.bar(some: arg)`)
+ * Add named arguments support for macros
+ * Add a new `guard` tag that allows to test if some Twig callables are available at compilation time
+ * Allow arrow functions everywhere
+ * Deprecate passing a string or an array to Twig callable arguments accepting arrow functions (pass a `\Closure`)
+ * Add support for triggering deprecations for future operator precedence changes
+ * Deprecate using the `not` unary operator in an expression with ``*``, ``/``, ``//``, or ``%`` without using explicit parentheses to clarify precedence
+ * Deprecate using the `??` binary operator without explicit parentheses
+ * Deprecate using the `~` binary operator in an expression with `+` or `-` without using parentheses to clarify precedence
+ * Deprecate not passing `AbstractExpression` args to most constructor arguments for classes extending `AbstractExpression`
+ * Fix `power` expressions with a negative number in parenthesis (`(-1) ** 2`)
+ * Deprecate instantiating `Node` directly. Use `EmptyNode` or `Nodes` instead.
+ * Add support for inline comments
+ * Add `Profile::getStartTime()` and `Profile::getEndTime()`
+ * Fix "ignore missing" when used on an "embed" tag
+ * Fix the possibility to override an aliased block (via use)
+ * Add template cache hot reload
+ * Allow Twig callable argument names to be free-form (snake-case or camelCase) independently of the PHP callable signature
+   They were automatically converted to snake-cased before
+ * Deprecate the `attribute` function; use the `.` notation and wrap the name with parenthesis instead
+ * Add support for argument unpackaging
+ * Add JSON support for the file extension escaping strategy
+ * Support Markup instances (and any other \Stringable) as dynamic mapping keys
+ * Deprecate the `sandbox` tag
+ * Improve the way one can deprecate a Twig callable (use `deprecation_info` instead of the other callable options)
+ * Add the `enum` function
+ * Add support for logical `xor` operator
+
 # 3.14.2 (2024-11-07)
 
  * Fix an infinite recursion in the sandbox code

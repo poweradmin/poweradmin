@@ -13,7 +13,6 @@
 namespace Twig;
 
 use Twig\Error\Error;
-use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 
 /**
@@ -37,6 +36,7 @@ abstract class Template
     protected $parents = [];
     protected $blocks = [];
     protected $traits = [];
+    protected $traitAliases = [];
     protected $extensions = [];
     protected $sandbox;
 
@@ -80,23 +80,16 @@ abstract class Template
             return $this->parent;
         }
 
-        try {
-            if (!$parent = $this->doGetParent($context)) {
-                return false;
-            }
+        if (!$parent = $this->doGetParent($context)) {
+            return false;
+        }
 
-            if ($parent instanceof self || $parent instanceof TemplateWrapper) {
-                return $this->parents[$parent->getSourceContext()->getName()] = $parent;
-            }
+        if ($parent instanceof self || $parent instanceof TemplateWrapper) {
+            return $this->parents[$parent->getSourceContext()->getName()] = $parent;
+        }
 
-            if (!isset($this->parents[$parent])) {
-                $this->parents[$parent] = $this->loadTemplate($parent);
-            }
-        } catch (LoaderError $e) {
-            $e->setSourceContext(null);
-            $e->guess();
-
-            throw $e;
+        if (!isset($this->parents[$parent])) {
+            $this->parents[$parent] = $this->loadTemplate($parent);
         }
 
         return $this->parents[$parent];
@@ -325,6 +318,7 @@ abstract class Template
 
     /**
      * @internal
+     * @return $this
      */
     public function unwrap(): self
     {
@@ -477,12 +471,41 @@ abstract class Template
     public function yieldParentBlock($name, array $context, array $blocks = []): iterable
     {
         if (isset($this->traits[$name])) {
-            yield from $this->traits[$name][0]->yieldBlock($name, $context, $blocks, false);
+            yield from $this->traits[$name][0]->yieldBlock($this->traitAliases[$name] ?? $name, $context, $blocks, false);
         } elseif ($parent = $this->getParent($context)) {
             yield from $parent->unwrap()->yieldBlock($name, $context, $blocks, false);
         } else {
             throw new RuntimeError(\sprintf('The template has no parent and no traits defining the "%s" block.', $name), -1, $this->getSourceContext());
         }
+    }
+
+    protected function hasMacro(string $name, array $context): bool
+    {
+        if (method_exists($this, $name)) {
+            return true;
+        }
+
+        if (!$parent = $this->getParent($context)) {
+            return false;
+        }
+
+        return $parent->hasMacro($name, $context);
+    }
+
+    protected function getTemplateForMacro(string $name, array $context, int $line, Source $source): Template
+    {
+        if (method_exists($this, $name)) {
+            return $this;
+        }
+
+        $parent = $this;
+        while ($parent = $parent->getParent($context)) {
+            if (method_exists($parent, $name)) {
+                return $parent;
+            }
+        }
+
+        throw new RuntimeError(\sprintf('Macro "%s" is not defined in template "%s".', substr($name, \strlen('macro_')), $this->getTemplateName()), $line, $source);
     }
 
     /**

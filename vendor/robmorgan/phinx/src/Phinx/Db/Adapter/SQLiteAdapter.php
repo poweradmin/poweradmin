@@ -139,6 +139,17 @@ class SQLiteAdapter extends PdoAdapter
     }
 
     /**
+     * Check if the given options represent a memory database
+     *
+     * @param array $options Options to check
+     * @return bool
+     */
+    public static function isMemory(array $options): bool
+    {
+        return !empty($options['memory']) || ($options['name'] ?? '') === static::MEMORY;
+    }
+
+    /**
      * {@inheritDoc}
      *
      * @throws \RuntimeException
@@ -171,7 +182,7 @@ class SQLiteAdapter extends PdoAdapter
                 $dsn = 'sqlite:file:' . ($options['name'] ?? '') . '?' . implode('&', $params);
             } else {
                 // use a memory database if the option was specified
-                if (!empty($options['memory']) || $options['name'] === static::MEMORY) {
+                if (SQLiteAdapter::isMemory($options)) {
                     $dsn = 'sqlite:' . static::MEMORY;
                 } else {
                     $dsn = 'sqlite:' . $options['name'] . $this->suffix;
@@ -204,7 +215,7 @@ class SQLiteAdapter extends PdoAdapter
      */
     public static function getSuffix(array $options): string
     {
-        if ($options['name'] === self::MEMORY) {
+        if (SQLiteAdapter::isMemory($options)) {
             return '';
         }
 
@@ -712,7 +723,8 @@ PCRE_PATTERN;
         foreach ($rows as $columnInfo) {
             $column = new Column();
             $type = $this->getPhinxType($columnInfo['type']);
-            $default = $this->parseDefaultValue($columnInfo['dflt_value'], $type['name']);
+            // $type['name'] is string|Literal, convert it to be a string
+            $default = $this->parseDefaultValue($columnInfo['dflt_value'], (string)$type['name']);
 
             $column->setName($columnInfo['name'])
                 // SQLite on PHP 8.1 returns int for notnull, older versions return a string
@@ -1794,7 +1806,7 @@ PCRE_PATTERN;
         if ($sqlTypeDef === null) {
             // in SQLite columns can legitimately have null as a type, which is distinct from the empty string
             $name = null;
-        } elseif (!preg_match('/^([a-z]+)(_(?:integer|float|text|blob))?(?:\((\d+)(?:,(\d+))?\))?$/i', $sqlTypeDef, $match)) {
+        } elseif (!preg_match('/^([a-z]+)(_(?:integer|float|text|blob))?(?:\((\d+)(?:,[ ]*(\d+))?\))?$/i', $sqlTypeDef, $match)) {
             // doesn't match the pattern of a type we'd know about
             $name = Literal::from($sqlTypeDef);
         } else {

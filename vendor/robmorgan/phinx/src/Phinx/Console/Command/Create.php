@@ -36,6 +36,15 @@ class Create extends AbstractCommand
      */
     public const CREATION_INTERFACE = 'Phinx\Migration\CreationInterface';
 
+    // PHP keywords from https://www.php.net/manual/en/reserved.keywords.php
+    private array $keywords = [
+        'abstract', 'and', 'array', 'as', 'break', 'callable', 'case', 'catch', 'class', 'clone', 'const',
+        'continue', 'declare', 'default', 'die', 'do', 'echo', 'else', 'elseif', 'empty', 'enddeclare', 'endfor',
+        'endforeach', 'endif', 'endswitch', 'endwhile', 'eval', 'exit', 'extends', 'final', 'finally', 'for', 'foreach',
+        'function', 'global', 'goto', 'if', 'implements', 'include', 'include_once', 'instanceof', 'insteadof', 'interface',
+        'isset', 'list', 'namespace', 'new', 'or', 'parent', 'private', 'protected', 'public', 'return','static',
+    ];
+
     /**
      * {@inheritDoc}
      *
@@ -167,10 +176,21 @@ class Create extends AbstractCommand
 
         $path = realpath($path);
         $className = $input->getArgument('name');
+        if ($className !== null && in_array(strtolower($className), $this->keywords)) {
+            throw new InvalidArgumentException(sprintf(
+                'The migration class name "%s" is a reserved PHP keyword. Please choose a different class name.',
+                $className
+            ));
+        }
+
+        $offset = 0;
+        do {
+            $timestamp = Util::getCurrentTimestamp($offset++);
+        } while (!Util::isUniqueTimestamp($path, $timestamp));
+
         if ($className === null) {
-            $currentTimestamp = Util::getCurrentTimestamp();
-            $className = 'V' . $currentTimestamp;
-            $fileName = $currentTimestamp . '.php';
+            $className = 'V' . $timestamp;
+            $fileName = '';
         } else {
             if (!Util::isValidPhinxClassName($className)) {
                 throw new InvalidArgumentException(sprintf(
@@ -179,9 +199,9 @@ class Create extends AbstractCommand
                 ));
             }
 
-            // Compute the file path
-            $fileName = Util::mapClassNameToFileName($className);
+            $fileName = Util::toSnakeCase($className);
         }
+        $fileName = $timestamp . $fileName . '.php';
 
         if (!Util::isUniqueMigrationClassName($className, $path)) {
             throw new InvalidArgumentException(sprintf(

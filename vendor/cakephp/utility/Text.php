@@ -81,7 +81,7 @@ class Text
             // 48 bits for "node"
             random_int(0, 65535),
             random_int(0, 65535),
-            random_int(0, 65535)
+            random_int(0, 65535),
         );
     }
 
@@ -99,7 +99,7 @@ class Text
         string $data,
         string $separator = ',',
         string $leftBound = '(',
-        string $rightBound = ')'
+        string $rightBound = ')',
     ): array {
         if (!$data) {
             return [];
@@ -206,13 +206,13 @@ class Text
             '/(?<!%s)%s%%s%s/',
             preg_quote($options['escape'], '/'),
             str_replace('%', '%%', preg_quote($options['before'], '/')),
-            str_replace('%', '%%', preg_quote($options['after'], '/'))
+            str_replace('%', '%%', preg_quote($options['after'], '/')),
         );
 
         $dataKeys = array_keys($data);
         $hashKeys = array_map(
             fn ($str) => hash('xxh128', $str),
-            $dataKeys
+            $dataKeys,
         );
         /** @var array<string, string> $tempData */
         $tempData = array_combine($dataKeys, $hashKeys);
@@ -270,7 +270,7 @@ class Text
                     '/[\s]*[a-z]+=(")(%s%s%s[\s]*)+\\1/i',
                     preg_quote($options['before'], '/'),
                     $clean['word'],
-                    preg_quote($options['after'], '/')
+                    preg_quote($options['after'], '/'),
                 );
                 $str = (string)preg_replace($kleenex, $clean['replacement'], $str);
                 if ($clean['andText']) {
@@ -294,7 +294,7 @@ class Text
                     $clean['gap'],
                     preg_quote($options['before'], '/'),
                     $clean['word'],
-                    preg_quote($options['after'], '/')
+                    preg_quote($options['after'], '/'),
                 );
                 $str = (string)preg_replace($kleenex, $clean['replacement'], $str);
                 break;
@@ -473,7 +473,7 @@ class Text
      * - `limit` A limit, optional, defaults to -1 (none)
      *
      * @param string $text Text to search the phrase in.
-     * @param list<string>|string $phrase The phrase or phrases that will be searched.
+     * @param array<string>|string $phrase The phrase or phrases that will be searched.
      * @param array<string, mixed> $options An array of HTML attributes and options.
      * @return string The highlighted text
      * @link https://book.cakephp.org/5/en/core-libraries/text.html#highlighting-substrings
@@ -518,7 +518,7 @@ class Text
             sprintf($options['regex'], $phrase),
             $options['format'],
             $text,
-            $options['limit']
+            $options['limit'],
         );
     }
 
@@ -610,7 +610,7 @@ class Text
                     if (
                         !preg_match(
                             '/img|br|input|hr|area|base|basefont|col|frame|isindex|link|meta|param/i',
-                            $tag[2]
+                            $tag[2],
                         )
                     ) {
                         if (preg_match('/<[\w]+[^>]*>/', $tag[0])) {
@@ -718,7 +718,7 @@ class Text
 
                 return str_repeat(' ', $strlen($utf8, 'UTF-8'));
             },
-            $text
+            $text,
         );
 
         return $strlen($replace);
@@ -890,7 +890,7 @@ class Text
     /**
      * Creates a comma separated list where the last two items are joined with 'and', forming natural language.
      *
-     * @param list<string> $list The list to be joined.
+     * @param array<string> $list The list to be joined.
      * @param string|null $and The word used to join the last and second last items together with. Defaults to 'and'.
      * @param string $separator The separator used to join all the other items together. Defaults to ', '.
      * @return string The glued together string.

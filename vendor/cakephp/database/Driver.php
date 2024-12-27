@@ -35,7 +35,6 @@ use Cake\Database\Schema\SchemaDialect;
 use Cake\Database\Schema\TableSchema;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Database\Statement\Statement;
-use Closure;
 use InvalidArgumentException;
 use PDO;
 use PDOException;
@@ -155,7 +154,7 @@ abstract class Driver
     {
         if (empty($config['username']) && !empty($config['login'])) {
             throw new InvalidArgumentException(
-                'Please pass "username" instead of "login" for connecting to the database'
+                'Please pass "username" instead of "login" for connecting to the database',
             );
         }
         $config += $this->_baseConfig + ['log' => false];
@@ -192,7 +191,7 @@ abstract class Driver
             $dsn,
             $config['username'] ?: null,
             $config['password'] ?: null,
-            $config['flags']
+            $config['flags'],
         );
 
         $retry = new CommandRetry(new ErrorCodeWaitStrategy(static::RETRY_ERROR_CODES, 5), 4);
@@ -205,7 +204,7 @@ abstract class Driver
                     'reason' => $e->getMessage(),
                 ],
                 null,
-                $e
+                $e,
             );
         } finally {
             $this->connectRetries = $retry->getRetries();
@@ -371,7 +370,7 @@ abstract class Driver
     protected function createQueryException(
         PDOException $exception,
         StatementInterface $statement,
-        ?array $params = null
+        ?array $params = null,
     ): QueryException {
         $loggedQuery = new LoggedQuery();
         $loggedQuery->setContext([
@@ -396,7 +395,7 @@ abstract class Driver
         } catch (PDOException $e) {
             throw new QueryException(
                 $query instanceof Query ? $query->sql() : $query,
-                $e
+                $e,
             );
         }
 
@@ -416,7 +415,7 @@ abstract class Driver
             $decorators = $query->getResultDecorators();
             if ($query->isResultsCastingEnabled()) {
                 $typeConverter = new FieldTypeConverter($query->getSelectTypeMap(), $this);
-                array_unshift($decorators, Closure::fromCallable($typeConverter));
+                array_unshift($decorators, $typeConverter(...));
             }
 
             return $decorators;
@@ -551,7 +550,7 @@ abstract class Driver
             $query instanceof DeleteQuery => $this->_deleteQueryTranslator($query),
             default => throw new InvalidArgumentException(sprintf(
                 'Instance of SelectQuery, UpdateQuery, InsertQuery, DeleteQuery expected. Found `%s` instead.',
-                get_debug_type($query)
+                get_debug_type($query),
             )),
         };
 
@@ -676,7 +675,7 @@ abstract class Driver
         if ($query->clause('join')) {
             throw new DatabaseException(
                 'Aliases are being removed from conditions for UPDATE/DELETE queries, ' .
-                'this can break references to joined tables.'
+                'this can break references to joined tables.',
             );
         }
 
@@ -963,7 +962,7 @@ abstract class Driver
         if ($className === null) {
             throw new CakeException(
                 'For logging you must either set the `log` config to a FQCN which implemnts Psr\Log\LoggerInterface' .
-                ' or require the cakephp/log package in your composer config.'
+                ' or require the cakephp/log package in your composer config.',
             );
         }
 

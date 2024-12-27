@@ -64,17 +64,17 @@
         },
         {
             "name": "cakephp/core",
-            "version": "5.1.2",
-            "version_normalized": "5.1.2.0",
+            "version": "5.1.4",
+            "version_normalized": "5.1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/core.git",
-                "reference": "70f99f5df4dde8677ddcf6245654a8b937f7786b"
+                "reference": "fdd2ab323284cc8475decaeaad4a3398aa90ff91"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/core/zipball/70f99f5df4dde8677ddcf6245654a8b937f7786b",
-                "reference": "70f99f5df4dde8677ddcf6245654a8b937f7786b",
+                "url": "https://api.github.com/repos/cakephp/core/zipball/fdd2ab323284cc8475decaeaad4a3398aa90ff91",
+                "reference": "fdd2ab323284cc8475decaeaad4a3398aa90ff91",
                 "shasum": ""
             },
             "require": {
@@ -91,7 +91,7 @@
                 "cakephp/event": "To use PluginApplicationInterface or plugin applications.",
                 "league/container": "To use Container and ServiceProvider classes"
             },
-            "time": "2024-10-31T06:55:29+00:00",
+            "time": "2024-11-30T18:47:29+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -129,17 +129,17 @@
         },
         {
             "name": "cakephp/database",
-            "version": "5.1.2",
-            "version_normalized": "5.1.2.0",
+            "version": "5.1.4",
+            "version_normalized": "5.1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/database.git",
-                "reference": "0266cba5968f089cbca8785dbae4450623a6f055"
+                "reference": "3a872d4ef14424679d30d2045eaca2643c967d64"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/database/zipball/0266cba5968f089cbca8785dbae4450623a6f055",
-                "reference": "0266cba5968f089cbca8785dbae4450623a6f055",
+                "url": "https://api.github.com/repos/cakephp/database/zipball/3a872d4ef14424679d30d2045eaca2643c967d64",
+                "reference": "3a872d4ef14424679d30d2045eaca2643c967d64",
                 "shasum": ""
             },
             "require": {
@@ -157,7 +157,7 @@
                 "cakephp/i18n": "If you are using locale-aware datetime formats.",
                 "cakephp/log": "If you want to use query logging without providing a logger yourself."
             },
-            "time": "2024-11-02T13:34:55+00:00",
+            "time": "2024-12-12T13:08:46+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -194,17 +194,17 @@
         },
         {
             "name": "cakephp/datasource",
-            "version": "5.1.2",
-            "version_normalized": "5.1.2.0",
+            "version": "5.1.4",
+            "version_normalized": "5.1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/datasource.git",
-                "reference": "9ffde854a988cadc740f419b602f9872260908a8"
+                "reference": "34b9617febd47649011e8914a4dbb21194a78504"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/datasource/zipball/9ffde854a988cadc740f419b602f9872260908a8",
-                "reference": "9ffde854a988cadc740f419b602f9872260908a8",
+                "url": "https://api.github.com/repos/cakephp/datasource/zipball/34b9617febd47649011e8914a4dbb21194a78504",
+                "reference": "34b9617febd47649011e8914a4dbb21194a78504",
                 "shasum": ""
             },
             "require": {
@@ -222,7 +222,7 @@
                 "cakephp/collection": "If you decide to use ResultSetInterface.",
                 "cakephp/utility": "If you decide to use EntityTrait."
             },
-            "time": "2024-10-17T08:33:47+00:00",
+            "time": "2024-12-12T02:27:02+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -259,17 +259,17 @@
         },
         {
             "name": "cakephp/utility",
-            "version": "5.1.2",
-            "version_normalized": "5.1.2.0",
+            "version": "5.1.4",
+            "version_normalized": "5.1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/utility.git",
-                "reference": "a1a503e9ef96761242eb260df0e04eb0e068e5cd"
+                "reference": "943342ca3c0fc3cccb9f789340ff7eb5eceb1839"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/utility/zipball/a1a503e9ef96761242eb260df0e04eb0e068e5cd",
-                "reference": "a1a503e9ef96761242eb260df0e04eb0e068e5cd",
+                "url": "https://api.github.com/repos/cakephp/utility/zipball/943342ca3c0fc3cccb9f789340ff7eb5eceb1839",
+                "reference": "943342ca3c0fc3cccb9f789340ff7eb5eceb1839",
                 "shasum": ""
             },
             "require": {
@@ -280,7 +280,7 @@
                 "ext-intl": "To use Text::transliterate() or Text::slug()",
                 "lib-ICU": "To use Text::transliterate() or Text::slug()"
             },
-            "time": "2024-11-08T14:07:41+00:00",
+            "time": "2024-11-30T18:47:29+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -716,17 +716,17 @@
         },
         {
             "name": "robmorgan/phinx",
-            "version": "0.16.5",
-            "version_normalized": "0.16.5.0",
+            "version": "0.16.6",
+            "version_normalized": "0.16.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/phinx.git",
-                "reference": "31d837c17d6dc294d44f0b17331066548ac8c032"
+                "reference": "5bad10934336e8cf45d50d529cabfcbe7fe287c5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/phinx/zipball/31d837c17d6dc294d44f0b17331066548ac8c032",
-                "reference": "31d837c17d6dc294d44f0b17331066548ac8c032",
+                "url": "https://api.github.com/repos/cakephp/phinx/zipball/5bad10934336e8cf45d50d529cabfcbe7fe287c5",
+                "reference": "5bad10934336e8cf45d50d529cabfcbe7fe287c5",
                 "shasum": ""
             },
             "require": {
@@ -750,7 +750,7 @@
                 "ext-pdo": "PDO extension is needed",
                 "symfony/yaml": "Install if using YAML configuration format"
             },
-            "time": "2024-10-03T15:41:04+00:00",
+            "time": "2024-12-20T23:02:54+00:00",
             "bin": [
                 "bin/phinx"
             ],
@@ -800,7 +800,7 @@
             ],
             "support": {
                 "issues": "https://github.com/cakephp/phinx/issues",
-                "source": "https://github.com/cakephp/phinx/tree/0.16.5"
+                "source": "https://github.com/cakephp/phinx/tree/0.16.6"
             },
             "install-path": "../robmorgan/phinx"
         },
@@ -981,31 +981,31 @@
         },
         {
             "name": "symfony/deprecation-contracts",
-            "version": "v3.5.0",
-            "version_normalized": "3.5.0.0",
+            "version": "v3.5.1",
+            "version_normalized": "3.5.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/deprecation-contracts.git",
-                "reference": "0e0d29ce1f20deffb4ab1b016a7257c4f1e789a1"
+                "reference": "74c71c939a79f7d5bf3c1ce9f5ea37ba0114c6f6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/0e0d29ce1f20deffb4ab1b016a7257c4f1e789a1",
-                "reference": "0e0d29ce1f20deffb4ab1b016a7257c4f1e789a1",
+                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/74c71c939a79f7d5bf3c1ce9f5ea37ba0114c6f6",
+                "reference": "74c71c939a79f7d5bf3c1ce9f5ea37ba0114c6f6",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.1"
             },
-            "time": "2024-04-18T09:32:20+00:00",
+            "time": "2024-09-25T14:20:29+00:00",
             "type": "library",
             "extra": {
+                "thanks": {
+                    "url": "https://github.com/symfony/contracts",
+                    "name": "symfony/contracts"
+                },
                 "branch-alias": {
                     "dev-main": "3.5-dev"
-                },
-                "thanks": {
-                    "name": "symfony/contracts",
-                    "url": "https://github.com/symfony/contracts"
                 }
             },
             "installation-source": "dist",
@@ -1031,7 +1031,7 @@
             "description": "A generic function and convention to trigger deprecation notices",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/deprecation-contracts/tree/v3.5.0"
+                "source": "https://github.com/symfony/deprecation-contracts/tree/v3.5.1"
             },
             "funding": [
                 {
@@ -1961,31 +1961,31 @@
         },
         {
             "name": "symfony/translation-contracts",
-            "version": "v3.5.0",
-            "version_normalized": "3.5.0.0",
+            "version": "v3.5.1",
+            "version_normalized": "3.5.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/translation-contracts.git",
-                "reference": "b9d2189887bb6b2e0367a9fc7136c5239ab9b05a"
+                "reference": "4667ff3bd513750603a09c8dedbea942487fb07c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/translation-contracts/zipball/b9d2189887bb6b2e0367a9fc7136c5239ab9b05a",
-                "reference": "b9d2189887bb6b2e0367a9fc7136c5239ab9b05a",
+                "url": "https://api.github.com/repos/symfony/translation-contracts/zipball/4667ff3bd513750603a09c8dedbea942487fb07c",
+                "reference": "4667ff3bd513750603a09c8dedbea942487fb07c",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.1"
             },
-            "time": "2024-04-18T09:32:20+00:00",
+            "time": "2024-09-25T14:20:29+00:00",
             "type": "library",
             "extra": {
+                "thanks": {
+                    "url": "https://github.com/symfony/contracts",
+                    "name": "symfony/contracts"
+                },
                 "branch-alias": {
                     "dev-main": "3.5-dev"
-                },
-                "thanks": {
-                    "name": "symfony/contracts",
-                    "url": "https://github.com/symfony/contracts"
                 }
             },
             "installation-source": "dist",
@@ -2022,7 +2022,7 @@
                 "standards"
             ],
             "support": {
-                "source": "https://github.com/symfony/translation-contracts/tree/v3.5.0"
+                "source": "https://github.com/symfony/translation-contracts/tree/v3.5.1"
             },
             "funding": [
                 {
@@ -2349,17 +2349,17 @@
         },
         {
             "name": "twig/twig",
-            "version": "v3.14.2",
-            "version_normalized": "3.14.2.0",
+            "version": "v3.17.1",
+            "version_normalized": "3.17.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "0b6f9d8370bb3b7f1ce5313ed8feb0fafd6e399a"
+                "reference": "677ef8da6497a03048192aeeb5aa3018e379ac71"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/0b6f9d8370bb3b7f1ce5313ed8feb0fafd6e399a",
-                "reference": "0b6f9d8370bb3b7f1ce5313ed8feb0fafd6e399a",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/677ef8da6497a03048192aeeb5aa3018e379ac71",
+                "reference": "677ef8da6497a03048192aeeb5aa3018e379ac71",
                 "shasum": ""
             },
             "require": {
@@ -2370,10 +2370,11 @@
                 "symfony/polyfill-php81": "^1.29"
             },
             "require-dev": {
+                "phpstan/phpstan": "^2.0",
                 "psr/container": "^1.0|^2.0",
                 "symfony/phpunit-bridge": "^5.4.9|^6.4|^7.0"
             },
-            "time": "2024-11-07T12:36:22+00:00",
+            "time": "2024-12-12T09:58:10+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -2415,7 +2416,7 @@
             ],
             "support": {
                 "issues": "https://github.com/twigphp/Twig/issues",
-                "source": "https://github.com/twigphp/Twig/tree/v3.14.2"
+                "source": "https://github.com/twigphp/Twig/tree/v3.17.1"
             },
             "funding": [
                 {

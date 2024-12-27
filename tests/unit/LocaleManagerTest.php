@@ -13,7 +13,7 @@ class LocaleManagerTest extends TestCase
     protected function setUp(): void
     {
         $this->supportedLocales = ['en_US', 'fr_FR'];
-        $localeDirectory = dirname(dirname('locales'));
+        $localeDirectory = dirname('locales', 2);
         $this->localeManager = new LocaleManager($this->supportedLocales, $localeDirectory);
     }
 
