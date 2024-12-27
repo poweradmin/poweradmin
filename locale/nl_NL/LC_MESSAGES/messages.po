@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2024-12-05 20:07+0200\n"
+"POT-Creation-Date: 2024-12-27 21:22+0200\n"
 "PO-Revision-Date: 2012-02-14 08:14+0000\n"
 "Last-Translator: fdammeke <fabian@dammekens.be>\n"
 "Language-Team: Dutch\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: lib/AppInitializer.php:54
+#: lib/AppInitializer.php:71
 msgid ""
 "The configuration file (config.inc.php) does not exist. Please use the <a "
 "href=\"install/\">installer</a> to create it."
@@ -26,12 +26,12 @@ msgstr ""
 "The configuration file (config.inc.php) does not exist. Please use the <a "
 "href=\"install/\">installer</a> to create it."
 
-#: lib/BaseController.php:89
+#: lib/BaseController.php:128
 #: lib/Infrastructure/Service/SessionAuthenticator.php:105
 msgid "Invalid CSRF token."
 msgstr "Invalid CSRF token."
 
-#: lib/BaseController.php:211
+#: lib/BaseController.php:299
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
@@ -39,7 +39,7 @@ msgstr ""
 "De <a href=\"install/\">install/</a> folder bestaat nog, je moet deze eerst "
 "verwijderen alvorens verder te gaan."
 
-#: lib/BaseController.php:232
+#: lib/BaseController.php:320
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -68,13 +68,12 @@ msgstr "Show all"
 
 #: lib/Application/Controller/DeleteUserController.php:49
 #: lib/Application/Controller/EditCommentController.php:57
-#: lib/Application/Controller/DeleteRecordController.php:57
+#: lib/Application/Controller/DeleteRecordController.php:62
 #: lib/Application/Controller/DeleteZoneTemplRecordController.php:45
 #: lib/Application/Controller/DeleteZoneTemplRecordController.php:50
 #: lib/Application/Controller/EditZoneTemplController.php:161
 #: lib/Application/Controller/DnssecDsDnskeyController.php:55
-#: lib/Application/Controller/EditController.php:69
-#: lib/Application/Controller/DeleteDomainsController.php:56
+#: lib/Application/Controller/EditController.php:83
 #: lib/Application/Controller/DnssecEditKeyController.php:64
 #: lib/Application/Controller/DnssecEditKeyController.php:71
 #: lib/Application/Controller/DnssecEditKeyController.php:76
@@ -118,21 +117,29 @@ msgstr "Je hebt geen toestemming om deze commentaar te lezen"
 msgid "The comment has been updated successfully."
 msgstr "De commentaar is aangepast"
 
-#: lib/Application/Controller/DeleteRecordController.php:64
+#: lib/Application/Controller/DeleteRecordController.php:70
 #: lib/Application/Controller/DnssecDsDnskeyController.php:70
-#: lib/Application/Controller/EditController.php:140
+#: lib/Application/Controller/EditController.php:154
 #: lib/Application/Controller/DnssecController.php:65
 #: lib/Application/Controller/DnssecAddKeyController.php:59
 msgid "There is no zone with this ID."
 msgstr "Er bestaat geen zone met dit ID."
 
-#: lib/Application/Controller/DeleteRecordController.php:90
+#: lib/Application/Controller/DeleteRecordController.php:100
 #: lib/Application/Controller/DeleteZoneTemplRecordController.php:67
 msgid "The record has been deleted successfully."
 msgstr "Het record is succesvol verwijderd."
 
 #: lib/Application/Controller/DeleteRecordController.php:102
-#: lib/Application/Controller/EditRecordController.php:75
+msgid ""
+"The record was deleted but the comment was preserved because similar records "
+"exist."
+msgstr ""
+"The record was deleted but the comment was preserved because similar records "
+"exist."
+
+#: lib/Application/Controller/DeleteRecordController.php:115
+#: lib/Application/Controller/EditRecordController.php:83
 #: lib/Domain/Model/ZoneTemplate.php:381 lib/Domain/Service/DnsRecord.php:388
 msgid "You do not have the permission to edit this record."
 msgstr "U heeft onvoldoende rechten voor het wijzigen van dit record."
@@ -155,7 +162,6 @@ msgid "You do not have the permission to perform searches."
 msgstr "U heeft onvoldoende rechten voor het uitvoeren van zoekopdrachten."
 
 #: lib/Application/Controller/AddUserController.php:43
-#: lib/Domain/Model/UserManager.php:757
 msgid "You do not have the permission to add a new user."
 msgstr "U heeft onvoldoende rechten voor het toevoegen van een gebruiker."
 
@@ -198,84 +204,108 @@ msgid "Zones have been updated successfully."
 msgstr "De zone is aangepast"
 
 #: lib/Application/Controller/DnssecDsDnskeyController.php:65
-#: lib/Application/Controller/EditController.php:136
+#: lib/Application/Controller/EditController.php:150
 #: lib/Application/Controller/DnssecController.php:60
 #: lib/Application/Controller/DnssecAddKeyController.php:54
-#: lib/Domain/Service/DnsRecord.php:993 lib/Domain/Service/DnsRecord.php:1220
+#: lib/Domain/Service/DnsRecord.php:998 lib/Domain/Service/DnsRecord.php:1231
 msgid "You do not have the permission to view this zone."
 msgstr "U heeft onvoldoende rechten voor het zien van deze zone."
 
-#: lib/Application/Controller/EditController.php:153
+#: lib/Application/Controller/EditController.php:167
 msgid "Zone has been signed successfully."
 msgstr "Zone has been signed successfully."
 
-#: lib/Application/Controller/EditController.php:156
+#: lib/Application/Controller/EditController.php:170
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC is not enabled on the server."
 
-#: lib/Application/Controller/EditController.php:169
+#: lib/Application/Controller/EditController.php:183
 msgid "Zone has been unsigned successfully."
 msgstr "Zone has been unsigned successfully."
 
-#: lib/Application/Controller/EditController.php:348
+#: lib/Application/Controller/EditController.php:381
 msgid "Request has expired, please try again."
 msgstr "Request has expired, please try again."
 
-#: lib/Application/Controller/EditController.php:353
+#: lib/Application/Controller/EditController.php:386
 msgid "Zone has been updated successfully."
 msgstr "Zone has been updated successfully."
 
-#: lib/Application/Controller/EditController.php:355
+#: lib/Application/Controller/EditController.php:388
 msgid "Zone did not have any record changes."
 msgstr "Zone did not have any record changes."
 
-#: lib/Application/Controller/EditController.php:364
+#: lib/Application/Controller/EditController.php:397
 msgid "Zone has not been updated successfully."
 msgstr "Zone has not been updated successfully."
 
-#: lib/Application/Controller/EditController.php:372
+#: lib/Application/Controller/EditController.php:405
 #: lib/Domain/Model/ZoneTemplate.php:132 lib/Domain/Model/ZoneTemplate.php:567
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "Zone template met deze naam bestaat al, kies een andere."
 
-#: lib/Application/Controller/EditController.php:374
+#: lib/Application/Controller/EditController.php:407
 msgid "Template name can't be an empty string."
 msgstr "De template naam moet ingevuld zijn"
 
-#: lib/Application/Controller/EditController.php:387
+#: lib/Application/Controller/EditController.php:420
 #: lib/Application/Controller/AddZoneTemplController.php:73
 msgid "Zone template has been added successfully."
 msgstr "De zone template is toegevoegd"
 
-#: lib/Application/Controller/AddRecordController.php:71
+#: lib/Application/Controller/AddRecordController.php:103
 #: lib/Domain/Model/ZoneTemplate.php:326 lib/Domain/Service/DnsRecord.php:447
 msgid "You do not have the permission to add a record to this zone."
 msgstr ""
 "U heeft onvoldoende rechten voor het toevoegen van een record aan deze zone."
 
-#: lib/Application/Controller/AddRecordController.php:175
+#: lib/Application/Controller/AddRecordController.php:203
 msgid "The record was successfully added."
 msgstr "Record succesvol toegevoegd."
 
-#: lib/Application/Controller/AddRecordController.php:178
+#: lib/Application/Controller/AddRecordController.php:207
 msgid "This record was not valid and could not be added."
 msgstr "This record was not valid and could not be added."
 
-#: lib/Application/Controller/DeleteDomainsController.php:80
-#: lib/Application/Controller/DeleteDomainController.php:98
+#: lib/Application/Controller/DeleteDomainsController.php:61
+msgid "No zone selected for deletion."
+msgstr "No zone selected for deletion."
+
+#: lib/Application/Controller/DeleteDomainsController.php:91
+#: lib/Application/Controller/DeleteDomainController.php:105
 msgid "Zone has been deleted successfully."
 msgstr "Zone is succesvol verwijderd."
 
-#: lib/Application/Controller/DeleteDomainsController.php:82
+#: lib/Application/Controller/DeleteDomainsController.php:93
 msgid "Zones have been deleted successfully."
 msgstr "Zones have been deleted successfully."
 
-#: lib/Application/Controller/DeleteDomainsController.php:94
-#: lib/Application/Controller/DeleteDomainController.php:69
-#: lib/Domain/Service/DnsRecord.php:828 lib/Domain/Service/DnsRecord.php:1621
-#: lib/Domain/Service/DnsRecord.php:1735
+#: lib/Application/Controller/DeleteDomainsController.php:105
+#: lib/Application/Controller/DeleteDomainController.php:74
+#: lib/Domain/Service/DnsRecord.php:828 lib/Domain/Service/DnsRecord.php:1638
+#: lib/Domain/Service/DnsRecord.php:1752
 msgid "You do not have the permission to delete a zone."
 msgstr "U heeft onvoldoende rechten voor het verwijderen van een zone."
+
+#: lib/Application/Controller/MigrationsController.php:37
+msgid "You do not have the permission to access the migrations."
+msgstr "You do not have the permission to access the migrations."
+
+#: lib/Application/Controller/MigrationsController.php:42
+msgid ""
+"Old migrations table detected. Please remove the `migrations` table before "
+"proceeding."
+msgstr ""
+"Old migrations table detected. Please remove the `migrations` table before "
+"proceeding."
+
+#: lib/Application/Controller/MigrationsController.php:49
+msgid ""
+"Database access check failed. Please ensure the current database user has "
+"the necessary permissions to create and alter tables."
+msgstr ""
+"Database access check failed. Please ensure the current database user has "
+"the necessary permissions to create and alter tables."
 
 #: lib/Application/Controller/AddZoneMasterController.php:57
 #: lib/Application/Controller/BulkRegistrationController.php:57
@@ -375,7 +405,7 @@ msgid "The supermaster has been added successfully."
 msgstr "De supermaster is succesvol toegevoegd."
 
 #: lib/Application/Controller/EditUserController.php:57
-#: lib/Domain/Model/UserManager.php:380 lib/Domain/Model/UserManager.php:735
+#: lib/Domain/Model/UserManager.php:380
 msgid "You do not have the permission to edit this user."
 msgstr "U heeft onvoldoende rechten voor het wijzigen van deze gebruiker."
 
@@ -397,11 +427,11 @@ msgstr ""
 msgid "The permission template has been deleted successfully."
 msgstr "Het permissie template is succesvol verwijderd."
 
-#: lib/Application/Controller/EditRecordController.php:71
+#: lib/Application/Controller/EditRecordController.php:79
 msgid "You do not have the permission to view this record."
 msgstr "U heeft onvoldoende rechten voor het zien van dit record."
 
-#: lib/Application/Controller/EditRecordController.php:148
+#: lib/Application/Controller/EditRecordController.php:180
 msgid "The record has been updated successfully."
 msgstr "Het record is succesvol gewijzigd."
 
@@ -545,31 +575,17 @@ msgstr "Failed to deactivate DNSSEC key."
 msgid "Failed to remove DNSSEC key."
 msgstr "Failed to remove DNSSEC key."
 
-#: lib/Domain/Model/UserManager.php:290 lib/Domain/Model/UserManager.php:635
-#: lib/Domain/Model/UserManager.php:775
+#: lib/Domain/Model/UserManager.php:290
 msgid "Enter a valid email address."
 msgstr "Specificeer een geldig e-mailadres."
 
-#: lib/Domain/Model/UserManager.php:325 lib/Domain/Model/UserManager.php:675
-#: lib/Domain/Model/UserManager.php:763
+#: lib/Domain/Model/UserManager.php:325
 msgid "Username exist already, please choose another one."
 msgstr "Gebruikersnaam is ongeldig, kies een andere naam."
 
 #: lib/Domain/Model/UserManager.php:421
 msgid "The two new password fields do not match."
 msgstr "De twee nieuwe wachtwoorden komen niet overeen."
-
-#: lib/Domain/Model/UserManager.php:432
-msgid "You can not change your password as LDAP user."
-msgstr "You can not change your password as LDAP user."
-
-#: lib/Domain/Model/UserManager.php:452
-msgid "You did not enter the correct current password."
-msgstr "Het opgegeven huidige wachtwoord is niet correct."
-
-#: lib/Domain/Model/UserManager.php:769
-msgid "Enter a valid user name."
-msgstr "Enter a valid user name."
 
 #: lib/Domain/Model/ZoneTemplate.php:334 lib/Domain/Service/Dns.php:238
 msgid "Your content field doesnt have a legit value."
@@ -707,23 +723,23 @@ msgstr "Ongeldig SRV target."
 msgid "Invalid value for TTL field. It should be numeric."
 msgstr "Ongeldige waarde het TTL veld. Het moet numeriek zijn."
 
-#: lib/Domain/Service/DomainRecordCreator.php:53
+#: lib/Domain/Service/DomainRecordCreator.php:56
 #, php-format
 msgid "There is no managed zone for domain: %s."
 msgstr "There is no managed zone for domain: %s."
 
-#: lib/Domain/Service/DomainRecordCreator.php:66
+#: lib/Domain/Service/DomainRecordCreator.php:69
 msgid "Adding IPv6 domain records from reverse zones is not supported yet."
 msgstr "Adding IPv6 domain records from reverse zones is not supported yet."
 
-#: lib/Domain/Service/DomainRecordCreator.php:70
-#: lib/Domain/Service/DomainRecordCreator.php:79
-#: lib/Domain/Service/DomainRecordCreator.php:88
-#: lib/Domain/Service/DomainRecordCreator.php:102
+#: lib/Domain/Service/DomainRecordCreator.php:73
+#: lib/Domain/Service/DomainRecordCreator.php:82
+#: lib/Domain/Service/DomainRecordCreator.php:91
+#: lib/Domain/Service/DomainRecordCreator.php:107
 msgid "This domain record was not valid and could not be added."
 msgstr "This domain record was not valid and could not be added."
 
-#: lib/Domain/Service/DomainRecordCreator.php:99
+#: lib/Domain/Service/DomainRecordCreator.php:103
 msgid "The domain record was successfully added."
 msgstr "The domain record was successfully added."
 
@@ -746,9 +762,9 @@ msgstr "You do not have the permission to add NS record."
 #: lib/Domain/Service/DnsRecord.php:529 lib/Domain/Service/DnsRecord.php:571
 #: lib/Domain/Service/DnsRecord.php:600 lib/Domain/Service/DnsRecord.php:785
 #: lib/Domain/Service/DnsRecord.php:881 lib/Domain/Service/DnsRecord.php:910
-#: lib/Domain/Service/DnsRecord.php:977 lib/Domain/Service/DnsRecord.php:1158
-#: lib/Domain/Service/DnsRecord.php:1183 lib/Domain/Service/DnsRecord.php:1532
-#: lib/Domain/Service/DnsRecord.php:1730
+#: lib/Domain/Service/DnsRecord.php:982 lib/Domain/Service/DnsRecord.php:1169
+#: lib/Domain/Service/DnsRecord.php:1194 lib/Domain/Service/DnsRecord.php:1549
+#: lib/Domain/Service/DnsRecord.php:1747
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "Er zijn ongeldige opties meegegeven aan functie %s %s"
@@ -765,7 +781,7 @@ msgstr ""
 "U probeert een SOA record te verwijderen. U kunt dit record niet "
 "verwijderen, tenzij u de hele zone verwijderd."
 
-#: lib/Domain/Service/DnsRecord.php:791 lib/Domain/Service/DnsRecord.php:1392
+#: lib/Domain/Service/DnsRecord.php:791 lib/Domain/Service/DnsRecord.php:1405
 #, php-format
 msgid "Invalid argument(s) given to function %s"
 msgstr "Er zijn ongeldige opties meegegeven aan functie %s"
@@ -778,24 +794,24 @@ msgstr "The selected user already owns the zone."
 msgid "There must be at least one owner for a zone."
 msgstr "There must be at least one owner for a zone."
 
-#: lib/Domain/Service/DnsRecord.php:1112
+#: lib/Domain/Service/DnsRecord.php:1123
 msgid "This is an invalid zone name."
 msgstr "Dit is een ongeldige zone naam."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:57
+#: lib/Domain/Service/ReverseRecordCreator.php:62
 #, php-format
 msgid "There is no matching reverse-zone for: %s."
 msgstr "There is no matching reverse-zone for: %s."
 
 #: templates/dnssec_edit_key.html:3 templates/edit_zone_templ_record.html:3
 #: templates/dnssec.html:3 templates/edit_record.html:3
-#: templates/edit_comment.html:3 templates/add_zone_templ.html:3
-#: templates/list_log_zones.html:3 templates/delete_user.html:3
-#: templates/list_zones.html:3 templates/dnssec_add_key.html:3
-#: templates/edit_user.html:3 templates/add_perm_templ.html:3
-#: templates/add_supermaster.html:3 templates/add_zone_templ_record.html:3
-#: templates/delete_perm_templ.html:3 templates/edit.html:3
-#: templates/users.html:3 templates/delete_record.html:3
+#: templates/migrations.html:3 templates/edit_comment.html:3
+#: templates/add_zone_templ.html:3 templates/list_log_zones.html:3
+#: templates/delete_user.html:3 templates/list_zones.html:3
+#: templates/dnssec_add_key.html:3 templates/edit_user.html:3
+#: templates/add_perm_templ.html:3 templates/add_supermaster.html:3
+#: templates/add_zone_templ_record.html:3 templates/delete_perm_templ.html:3
+#: templates/edit.html:3 templates/users.html:3 templates/delete_record.html:3
 #: templates/add_user.html:3 templates/add_zone_master.html:3
 #: templates/list_zone_templ.html:3 templates/change_password.html:3
 #: templates/edit_zone_templ.html:3 templates/list_supermasters.html:3
@@ -828,7 +844,7 @@ msgstr "Zones"
 
 #: templates/dnssec_edit_key.html:13 templates/dnssec.html:12
 #: templates/list_zones.html:62 templates/dnssec_add_key.html:13
-#: templates/edit.html:281 templates/add_zone_master.html:63
+#: templates/edit.html:291 templates/add_zone_master.html:63
 #: templates/dnssec_ds_dnskey.html:13 templates/dnssec_delete_key.html:13
 msgid "DNSSEC"
 msgstr "DNSSEC"
@@ -862,8 +878,8 @@ msgstr "Id"
 #: templates/dnssec_edit_key.html:45 templates/edit_zone_templ_record.html:23
 #: templates/dnssec.html:25 templates/edit_record.html:29
 #: templates/list_zones.html:36 templates/add_zone_templ_record.html:20
-#: templates/edit.html:45 templates/edit.html:142 templates/edit.html:302
-#: templates/edit.html:474 templates/add_zone_master.html:35
+#: templates/edit.html:45 templates/edit.html:142 templates/edit.html:312
+#: templates/edit.html:490 templates/add_zone_master.html:35
 #: templates/list_zone_templ.html:17 templates/edit_zone_templ.html:29
 #: templates/bulk_registration.html:29 templates/delete_domain.html:23
 #: templates/search.html:69 templates/search.html:164
@@ -920,7 +936,7 @@ msgstr "Wijzigen record in zone template"
 #: templates/add_zone_templ.html:15 templates/list_zones.html:30
 #: templates/add_perm_templ.html:15 templates/add_perm_templ.html:31
 #: templates/add_zone_templ_record.html:18 templates/edit.html:44
-#: templates/edit.html:134 templates/edit.html:300
+#: templates/edit.html:134 templates/edit.html:310
 #: templates/list_zone_templ.html:14 templates/edit_zone_templ.html:28
 #: templates/edit_zone_templ.html:129 templates/search.html:63
 #: templates/search.html:158 templates/delete_domains.html:15
@@ -931,7 +947,7 @@ msgstr "Naam"
 
 #: templates/edit_zone_templ_record.html:24 templates/edit_record.html:30
 #: templates/add_zone_templ_record.html:21 templates/edit.html:46
-#: templates/edit.html:150 templates/edit.html:303
+#: templates/edit.html:150 templates/edit.html:313
 #: templates/edit_zone_templ.html:30 templates/search.html:176
 #: templates/add_record.html:30
 msgid "Content"
@@ -939,7 +955,7 @@ msgstr "Content"
 
 #: templates/edit_zone_templ_record.html:25 templates/edit_record.html:31
 #: templates/add_zone_templ_record.html:22 templates/edit.html:47
-#: templates/edit.html:158 templates/edit.html:304
+#: templates/edit.html:158 templates/edit.html:314
 #: templates/edit_zone_templ.html:31 templates/search.html:170
 #: templates/add_record.html:31
 msgid "Priority"
@@ -947,28 +963,28 @@ msgstr "Prioriteit"
 
 #: templates/edit_zone_templ_record.html:26 templates/edit_record.html:32
 #: templates/add_zone_templ_record.html:23 templates/edit.html:48
-#: templates/edit.html:166 templates/edit.html:305
+#: templates/edit.html:166 templates/edit.html:315
 #: templates/edit_zone_templ.html:33 templates/search.html:182
 #: templates/add_record.html:32
 msgid "TTL"
 msgstr "TTL"
 
-#: templates/edit_zone_templ_record.html:51 templates/edit_record.html:75
-#: templates/edit.html:87 templates/edit.html:333 templates/add_record.html:56
+#: templates/edit_zone_templ_record.html:51 templates/edit_record.html:82
+#: templates/edit.html:87 templates/edit.html:346 templates/add_record.html:59
 msgid "Provide content"
 msgstr "Provide content"
 
-#: templates/edit_zone_templ_record.html:60 templates/edit_record.html:87
+#: templates/edit_zone_templ_record.html:60 templates/edit_record.html:99
 #: templates/edit_comment.html:31 templates/edit_user.html:77
-#: templates/add_perm_templ.html:47 templates/edit.html:274
+#: templates/add_perm_templ.html:47 templates/edit.html:284
 #: templates/users.html:119 templates/edit_zone_templ.html:152
 #: templates/edit_perm_templ.html:55
 msgid "Update"
 msgstr "Update"
 
-#: templates/edit_zone_templ_record.html:61 templates/edit_record.html:88
+#: templates/edit_zone_templ_record.html:61 templates/edit_record.html:100
 #: templates/edit_comment.html:32 templates/edit_user.html:78
-#: templates/edit.html:275 templates/users.html:120
+#: templates/edit.html:285 templates/users.html:120
 msgid "Reset"
 msgstr "Reset"
 
@@ -996,12 +1012,22 @@ msgstr "Show DS and DNSKEY"
 msgid "Edit record in zone"
 msgstr "Wijzigen record in zone"
 
-#: templates/edit_record.html:33 templates/edit.html:174
+#: templates/edit_record.html:34 templates/edit.html:173
+#: templates/edit.html:317 templates/add_record.html:34
+msgid "Comment"
+msgstr "Comment"
+
+#: templates/edit_record.html:36 templates/edit.html:177
 #: templates/search.html:188
 msgid "Disabled"
 msgstr "Disabled"
 
-#: templates/edit_comment.html:12 templates/edit.html:267
+#: templates/migrations.html:4 templates/migrations.html:8
+#: templates/index_list.html:66 templates/index_cards.html:138
+msgid "Migrations"
+msgstr "Migrations"
+
+#: templates/edit_comment.html:12 templates/edit.html:277
 msgid "Edit comment"
 msgstr "Commentaar aanpassen"
 
@@ -1175,8 +1201,8 @@ msgid "Zone"
 msgstr "Zone"
 
 #: templates/delete_user.html:23 templates/list_zones.html:118
-#: templates/delete_perm_templ.html:6 templates/edit.html:246
-#: templates/edit.html:420 templates/users.html:98
+#: templates/delete_perm_templ.html:6 templates/edit.html:256
+#: templates/edit.html:436 templates/users.html:98
 #: templates/list_zone_templ.html:60 templates/edit_zone_templ.html:54
 #: templates/list_supermasters.html:29 templates/search.html:103
 #: templates/search.html:212 templates/list_perm_templ.html:25
@@ -1223,12 +1249,12 @@ msgstr "Full name"
 msgid "Serial"
 msgstr "Serial"
 
-#: templates/list_zones.html:58 templates/edit.html:535 templates/users.html:18
+#: templates/list_zones.html:58 templates/edit.html:551 templates/users.html:18
 #: templates/add_zone_master.html:50 templates/bulk_registration.html:44
 msgid "Template"
 msgstr "Template"
 
-#: templates/list_zones.html:115 templates/edit.html:12 templates/edit.html:244
+#: templates/list_zones.html:115 templates/edit.html:12 templates/edit.html:254
 #: templates/users.html:93 templates/list_zone_templ.html:59
 #: templates/edit_zone_templ.html:51 templates/search.html:100
 #: templates/search.html:209 templates/edit_perm_templ.html:6
@@ -1331,7 +1357,7 @@ msgstr "Gebaseerd op dit template heeft de gebruiker de volgende rechten"
 msgid "Permission templates"
 msgstr "Permissie templates"
 
-#: templates/add_perm_templ.html:6 templates/edit.html:468
+#: templates/add_perm_templ.html:6 templates/edit.html:484
 #: templates/add_user.html:74
 msgid "Add"
 msgstr "Toevoegen"
@@ -1390,9 +1416,9 @@ msgstr "Start"
 
 #: templates/add_zone_templ_record.html:7
 #: templates/add_zone_templ_record.html:50 templates/edit.html:109
-#: templates/edit.html:344 templates/edit_zone_templ.html:21
+#: templates/edit.html:360 templates/edit_zone_templ.html:21
 #: templates/edit_zone_templ.html:62 templates/add_record.html:12
-#: templates/add_record.html:65
+#: templates/add_record.html:71
 msgid "Add record"
 msgstr "Record toevoegen"
 
@@ -1488,63 +1514,63 @@ msgstr "Add PTR"
 msgid "Add A/AAAA"
 msgstr "Add A/AAAA"
 
-#: templates/edit.html:93 templates/edit.html:339
+#: templates/edit.html:93 templates/edit.html:352
 msgid "Provide TTL"
 msgstr "Provide TTL"
 
-#: templates/edit.html:257
+#: templates/edit.html:267
 msgid "Comments"
 msgstr "Comments"
 
-#: templates/edit.html:283
+#: templates/edit.html:293
 msgid "Unsign this zone"
 msgstr "Unsign this zone"
 
-#: templates/edit.html:286
+#: templates/edit.html:296
 msgid "Sign this zone"
 msgstr "Sign this zone"
 
-#: templates/edit.html:350 templates/add_record.html:71
+#: templates/edit.html:366 templates/add_record.html:77
 msgid "Also add a PTR record in the matching zone"
 msgstr "Also add a PTR record in the matching zone"
 
-#: templates/edit.html:357 templates/add_record.html:78
+#: templates/edit.html:373 templates/add_record.html:84
 msgid "Also add an A/AAAA record in the matching zone"
 msgstr "Also add an A/AAAA record in the matching zone"
 
-#: templates/edit.html:372
+#: templates/edit.html:388
 msgid "Save as new template"
 msgstr "Save as new template"
 
-#: templates/edit.html:375 templates/edit_zone_templ.html:109
+#: templates/edit.html:391 templates/edit_zone_templ.html:109
 msgid "Template Name"
 msgstr "Template naam"
 
-#: templates/edit.html:378
+#: templates/edit.html:394
 msgid "Provide template name"
 msgstr "Provide template name"
 
-#: templates/edit.html:382 templates/edit_zone_templ.html:116
+#: templates/edit.html:398 templates/edit_zone_templ.html:116
 msgid "Template Description"
 msgstr "Beschrijving template"
 
-#: templates/edit.html:388 templates/edit_zone_templ.html:120
+#: templates/edit.html:404 templates/edit_zone_templ.html:120
 msgid "Save as template"
 msgstr "Sla als template op"
 
-#: templates/edit.html:397
+#: templates/edit.html:413
 msgid "Owner of zone"
 msgstr "Eigenaar van de zone"
 
-#: templates/edit.html:402
+#: templates/edit.html:418
 msgid "No owner set for this zone."
 msgstr "Geen eigenaar voor deze zone."
 
-#: templates/edit.html:495 templates/edit.html:522 templates/edit.html:557
+#: templates/edit.html:511 templates/edit.html:538 templates/edit.html:573
 msgid "Change"
 msgstr "Wijzigen"
 
-#: templates/edit.html:508 templates/add_zone_slave.html:21
+#: templates/edit.html:524 templates/add_zone_slave.html:21
 msgid "IP address of master NS"
 msgstr "IP adres van master NS"
 
@@ -1821,6 +1847,15 @@ msgid ""
 msgstr ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
+
+#~ msgid "You can not change your password as LDAP user."
+#~ msgstr "You can not change your password as LDAP user."
+
+#~ msgid "You did not enter the correct current password."
+#~ msgstr "Het opgegeven huidige wachtwoord is niet correct."
+
+#~ msgid "Enter a valid user name."
+#~ msgstr "Enter a valid user name."
 
 #~ msgid "Commit changes"
 #~ msgstr "Wijzigingen doorvoeren"
@@ -2164,11 +2199,11 @@ msgstr ""
 #~ "Poweradmin als deze directory bestaat."
 
 #~ msgid ""
-#~ "After you have removed the directory, you can login to <a href=\"../index."
-#~ "php\">Poweradmin</a> with username \"admin\" and password"
+#~ "After you have removed the directory, you can login to <a href=\"../"
+#~ "index.php\">Poweradmin</a> with username \"admin\" and password"
 #~ msgstr ""
-#~ "Nadat je de folder verwijderd hebt, kan je inloggen in <a href=\"../index."
-#~ "php\">Poweradmin</a> met gebruikersnaam \"admin\" en wachtwoord"
+#~ "Nadat je de folder verwijderd hebt, kan je inloggen in <a href=\"../"
+#~ "index.php\">Poweradmin</a> met gebruikersnaam \"admin\" en wachtwoord"
 
 #~ msgid "Really delete this user?"
 #~ msgstr "Wilt u deze gebruiker echt verwijderen?"
