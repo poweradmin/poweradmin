@@ -24,5 +24,5 @@ namespace Poweradmin\Infrastructure\Configuration;
 
 interface ConfigurationInterface
 {
-    public function get($name): mixed;
+    public function get(string $name): mixed;
 }

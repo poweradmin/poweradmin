@@ -30,12 +30,25 @@ use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\Infrastructure\Service\SessionAuthenticator;
 use Poweradmin\Infrastructure\Utility\DependencyCheck;
 
+/**
+ * Class AppInitializer
+ *
+ * Initializes the application by checking dependencies, loading configuration,
+ * setting locale, connecting to the database, and optionally authenticating the user.
+ */
 class AppInitializer
 {
+    /** @var AppConfiguration $config Application configuration */
     private AppConfiguration $config;
-    private LocaleManager $locale;
+
+    /** @var PDOLayer $db Database connection layer */
     private PDOLayer $db;
 
+    /**
+     * AppInitializer constructor.
+     *
+     * @param bool $authenticate Whether to authenticate the user
+     */
     public function __construct(bool $authenticate)
     {
         $this->checkDependencies();
@@ -48,6 +61,10 @@ class AppInitializer
         }
     }
 
+    /**
+     * Checks if the configuration file exists.
+     * If not, presents an error message and exits the application.
+     */
     private function checkConfigurationFile(): void
     {
         if (!file_exists('inc/config.inc.php')) {
@@ -58,25 +75,37 @@ class AppInitializer
         }
     }
 
+    /**
+     * Checks if all required dependencies are installed.
+     */
     private function checkDependencies(): void
     {
         DependencyCheck::verifyExtensions();
     }
 
+    /**
+     * Loads the application configuration.
+     */
     private function loadConfiguration(): void
     {
         $this->config = new AppConfiguration();
     }
 
+    /**
+     * Loads and sets the locale based on the configuration or user session.
+     */
     private function loadLocale(): void
     {
         $supportedLocales = explode(',', $this->config->get('iface_enabled_languages'));
-        $this->locale = new LocaleManager($supportedLocales, './locale');
+        $locale = new LocaleManager($supportedLocales, './locale');
 
         $userLang = $_SESSION["userlang"] ?? $this->config->get('iface_lang');
-        $this->locale->setLocale($userLang);
+        $locale->setLocale($userLang);
     }
 
+    /**
+     * Connects to the database using the configuration settings.
+     */
     private function connectToDatabase(): void
     {
         $credentials = [
@@ -96,12 +125,20 @@ class AppInitializer
         $this->db = $databaseService->connect($credentials);
     }
 
+    /**
+     * Authenticates the user using session data.
+     */
     private function authenticateUser(): void
     {
         $legacyAuthenticateSession = new SessionAuthenticator($this->db, $this->config);
         $legacyAuthenticateSession->authenticate();
     }
 
+    /**
+     * Gets the database connection.
+     *
+     * @return PDOLayer The database connection
+     */
     public function getDb(): PDOLayer
     {
         return $this->db;

@@ -22,25 +22,53 @@
 
 namespace Poweradmin;
 
+/**
+ * Class LocaleManager
+ * Manages locale settings for the application.
+ */
 class LocaleManager
 {
+    /**
+     * @var array $supportedLocales List of supported locales.
+     */
     private array $supportedLocales;
+
+    /**
+     * @var string $localeDirectory Directory where locale files are stored.
+     */
     private string $localeDirectory;
 
+    /**
+     * LocaleManager constructor.
+     *
+     * @param array $supportedLocales List of supported locales.
+     * @param string $localeDirectory Directory where locale files are stored.
+     */
     public function __construct(array $supportedLocales, string $localeDirectory)
     {
         $this->supportedLocales = $supportedLocales;
         $this->localeDirectory = $localeDirectory;
     }
 
+    /**
+     * Sets the locale for the application.
+     *
+     * @param string $locale The locale to set.
+     * @return void
+     */
     public function setLocale(string $locale): void
     {
         if (!in_array($locale, $this->supportedLocales)) {
-            error_log("The provided locale '{$locale}' is not supported. Please choose a supported locale.");
+            error_log("The provided locale '$locale' is not supported. Please choose a supported locale.");
             return;
         }
 
         if ($locale == 'en_EN' || $locale == 'en_EN.UTF-8') {
+            return;
+        }
+
+        if (!is_dir($this->localeDirectory) || !is_readable($this->localeDirectory)) {
+            error_log("The directory '$this->localeDirectory' does not exist or is not readable.");
             return;
         }
 
@@ -51,12 +79,7 @@ class LocaleManager
         ];
 
         if (!setlocale(LC_ALL, $locales)) {
-            error_log("Failed to set locale '{$locale}'. Selected locale may be unsupported on this system.");
-            return;
-        }
-
-        if (!is_dir($this->localeDirectory) || !is_readable($this->localeDirectory)) {
-            error_log("The directory '{$this->localeDirectory}' does not exist or is not readable.");
+            error_log("Failed to set locale '$locale'. Selected locale may be unsupported on this system.");
             return;
         }
 

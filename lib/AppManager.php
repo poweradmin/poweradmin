@@ -36,12 +36,26 @@ use Twig\Environment;
 use Twig\Error\Error;
 use Twig\Loader\FilesystemLoader;
 
+/**
+ * Class AppManager
+ *
+ * Manages the application configuration, template rendering, and statistics display.
+ */
 class AppManager
 {
+    /** @var Environment $templateRenderer The Twig template renderer */
     protected Environment $templateRenderer;
+
+    /** @var AppConfiguration $configuration The application configuration */
     protected AppConfiguration $configuration;
+
+    /** @var StatsDisplayService|null $statsDisplayService The service for displaying statistics */
     protected ?StatsDisplayService $statsDisplayService = null;
 
+    /**
+     * AppManager constructor.
+     * Initializes the template renderer, configuration, and optional statistics display service.
+     */
     public function __construct()
     {
         $loader = new FilesystemLoader('templates');
@@ -71,7 +85,13 @@ class AppManager
         $this->templateRenderer->addExtension(new TranslationExtension($translator));
     }
 
-    public function render($template, $params = []): void
+    /**
+     * Renders a template with the given parameters.
+     *
+     * @param string $template The template file to render
+     * @param array $params The parameters to pass to the template
+     */
+    public function render(string $template, array $params = []): void
     {
         try {
             echo $this->templateRenderer->render($template, $params);
@@ -80,16 +100,34 @@ class AppManager
         }
     }
 
+    /**
+     * Gets the application configuration.
+     *
+     * @return AppConfiguration The application configuration
+     */
     public function getConfig(): AppConfiguration
     {
         return $this->configuration;
     }
 
-    public function config($name, $default = null): mixed
+    /**
+     * Gets a configuration value by name.
+     *
+     * @param string $name The name of the configuration value
+     * @param mixed|null $default The default value if the configuration value is not found
+     * @return mixed The configuration value
+     */
+    public function config(string $name, mixed $default = null): mixed
     {
         return $this->configuration->get($name, $default);
     }
 
+    /**
+     * Gets the locale file path for the given interface language.
+     *
+     * @param string $iface_lang The interface language
+     * @return string The path to the locale file
+     */
     public function getLocaleFile(string $iface_lang): string
     {
         $supportedLocales = explode(',', $this->config('iface_enabled_languages'));
@@ -99,6 +137,11 @@ class AppManager
         return "locale/en_EN/LC_MESSAGES/messages.po";
     }
 
+    /**
+     * Displays validation errors if the configuration is invalid.
+     *
+     * @param ConfigValidator $validator The configuration validator
+     */
     public function showValidationErrors(ConfigValidator $validator): void
     {
         if (!$validator->validate()) {
@@ -112,6 +155,11 @@ class AppManager
         }
     }
 
+    /**
+     * Displays the application statistics.
+     *
+     * @return string The statistics display
+     */
     public function displayStats(): string
     {
         if ($this->statsDisplayService !== null) {

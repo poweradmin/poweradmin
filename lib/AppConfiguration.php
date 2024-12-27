@@ -24,10 +24,26 @@ namespace Poweradmin;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
+/**
+ * Class AppConfiguration
+ *
+ * This class handles the loading and parsing of configuration files for the Poweradmin application.
+ *
+ * @package Poweradmin
+ */
 class AppConfiguration implements ConfigurationInterface
 {
+    /**
+     * @var array The configuration settings.
+     */
     protected array $config;
 
+    /**
+     * AppConfiguration constructor.
+     *
+     * @param string $defaultConfigFile Path to the default configuration file.
+     * @param string $customConfigFile Path to the custom configuration file.
+     */
     public function __construct(
         string $defaultConfigFile = 'inc/config-defaults.inc.php',
         string $customConfigFile = 'inc/config.inc.php'
@@ -38,6 +54,12 @@ class AppConfiguration implements ConfigurationInterface
         $this->config = array_merge($defaultConfig, $customConfig);
     }
 
+    /**
+     * Loads and parses a configuration file.
+     *
+     * @param string $fileName Path to the configuration file.
+     * @return array The parsed configuration settings.
+     */
     private function loadAndParseConfig(string $fileName): array
     {
         if (!file_exists($fileName)) {
@@ -77,6 +99,12 @@ class AppConfiguration implements ConfigurationInterface
         return $configItems;
     }
 
+    /**
+     * Parses a token value.
+     *
+     * @param string $tokenValue The token value to parse.
+     * @return mixed The parsed value.
+     */
     private function parseTokenValue(string $tokenValue): mixed
     {
         if (strtolower($tokenValue) === 'true') {
@@ -94,7 +122,14 @@ class AppConfiguration implements ConfigurationInterface
         return $tokenValue;
     }
 
-    public function get($name, $default = null): mixed
+    /**
+     * Gets a configuration value.
+     *
+     * @param string $name The name of the configuration setting.
+     * @param mixed $default The default value to return if the setting is not found.
+     * @return mixed The configuration value.
+     */
+    public function get(string $name, mixed $default = null): mixed
     {
         if (array_key_exists($name, $this->config)) {
             $value = $this->config[$name];
@@ -107,6 +142,11 @@ class AppConfiguration implements ConfigurationInterface
         }
     }
 
+    /**
+     * Gets all configuration values.
+     *
+     * @return array All configuration settings.
+     */
     public function getAll(): array
     {
         $items = $this->config;
@@ -116,10 +156,20 @@ class AppConfiguration implements ConfigurationInterface
         return $items;
     }
 
+    /**
+     * Checks if login token validation is enabled.
+     *
+     * @return bool True if login token validation is enabled, false otherwise.
+     */
     public function isLoginTokenValidationEnabled(): bool {
         return $this->get('login_token_validation', true);
     }
 
+    /**
+     * Checks if global token validation is enabled.
+     *
+     * @return bool True if global token validation is enabled, false otherwise.
+     */
     public function isGlobalTokenValidationEnabled(): bool {
         return $this->get('global_token_validation', true);
     }

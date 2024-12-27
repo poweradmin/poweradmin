@@ -22,8 +22,23 @@
 
 namespace Poweradmin;
 
+/**
+ * Class Pages
+ *
+ * This class provides a static method to retrieve a list of page identifiers.
+ *
+ * @package Poweradmin
+ */
 class Pages
 {
+    /**
+     * Get a list of page identifiers.
+     *
+     * This method returns an array of strings, each representing a page identifier
+     * used in the Poweradmin application.
+     *
+     * @return array An array of page identifiers.
+     */
     public static function getPages(): array
     {
         return [

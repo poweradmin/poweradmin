@@ -22,11 +22,26 @@
 
 namespace Poweradmin;
 
+/**
+ * Class AppFactory
+ * @package Poweradmin
+ */
 class AppFactory {
+    /**
+     * @var AppManager|null
+     */
     private static ?AppManager $instance = null;
 
+    /**
+     * Prevents instantiation of the class.
+     */
     private function __construct() {}
 
+    /**
+     * Creates and returns the singleton instance of AppManager.
+     *
+     * @return AppManager
+     */
     public static function create(): AppManager {
         if (self::$instance === null) {
             self::$instance = new AppManager();
@@ -34,7 +49,13 @@ class AppFactory {
         return self::$instance;
     }
 
+    /**
+     * Prevents cloning of the instance.
+     */
     public function __clone() {}
 
+    /**
+     * Prevents unserializing of the instance.
+     */
     public function __wakeup() {}
 }
