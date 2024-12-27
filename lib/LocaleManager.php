@@ -72,21 +72,17 @@ class LocaleManager
             return;
         }
 
-        $locales = [
-            $locale . '.UTF-8',
-            $locale . '.utf8',
-            $locale,
-        ];
+        $locales = ["$locale.UTF-8", "$locale.utf8", $locale];
 
         if (!setlocale(LC_ALL, $locales)) {
             error_log("Failed to set locale '$locale'. Selected locale may be unsupported on this system.");
             return;
         }
 
-        $gettext_domain = 'messages';
-        bindtextdomain($gettext_domain, $this->localeDirectory);
-        bind_textdomain_codeset($gettext_domain, 'utf-8');
-        textdomain($gettext_domain);
+        $domain = 'messages';
+        bindtextdomain($domain, $this->localeDirectory);
+        bind_textdomain_codeset($domain, 'utf-8');
+        textdomain($domain);
         @putenv('LANG=' . $locale);
         @putenv('LANGUAGE=' . $locale);
     }
