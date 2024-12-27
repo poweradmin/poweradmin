@@ -47,8 +47,7 @@ class AppConfiguration implements ConfigurationInterface
     public function __construct(
         string $defaultConfigFile = 'inc/config-defaults.inc.php',
         string $customConfigFile = 'inc/config.inc.php'
-    )
-    {
+    ) {
         $defaultConfig = $this->loadAndParseConfig($defaultConfigFile);
         $customConfig = $this->loadAndParseConfig($customConfigFile);
         $this->config = array_merge($defaultConfig, $customConfig);
@@ -85,10 +84,11 @@ class AppConfiguration implements ConfigurationInterface
                         break;
                     case T_STRING:
                     case T_CONSTANT_ENCAPSED_STRING:
-                        $configItems[$lastToken] = $this->parseTokenValue($tokenValue);
-                        break;
                     case T_LNUMBER:
-                        $configItems[$lastToken] = intval($tokenValue);
+                        if ($lastToken !== null) {
+                            $configItems[$lastToken] = $this->parseTokenValue($tokenValue);
+                            $lastToken = null;
+                        }
                         break;
                     default:
                         break;
@@ -105,7 +105,7 @@ class AppConfiguration implements ConfigurationInterface
      * @param string $tokenValue The token value to parse.
      * @return mixed The parsed value.
      */
-    private function parseTokenValue(string $tokenValue): mixed
+    public function parseTokenValue(string $tokenValue): mixed
     {
         if (strtolower($tokenValue) === 'true') {
             return true;
@@ -115,11 +115,15 @@ class AppConfiguration implements ConfigurationInterface
             return false;
         }
 
+        if (is_numeric($tokenValue)) {
+            return $tokenValue + 0; // Convert to int or float
+        }
+
         if (defined($tokenValue)) {
             return constant($tokenValue);
         }
 
-        return $tokenValue;
+        return trim($tokenValue, "'\"");
     }
 
     /**
@@ -161,7 +165,8 @@ class AppConfiguration implements ConfigurationInterface
      *
      * @return bool True if login token validation is enabled, false otherwise.
      */
-    public function isLoginTokenValidationEnabled(): bool {
+    public function isLoginTokenValidationEnabled(): bool
+    {
         return $this->get('login_token_validation', true);
     }
 
@@ -170,7 +175,8 @@ class AppConfiguration implements ConfigurationInterface
      *
      * @return bool True if global token validation is enabled, false otherwise.
      */
-    public function isGlobalTokenValidationEnabled(): bool {
+    public function isGlobalTokenValidationEnabled(): bool
+    {
         return $this->get('global_token_validation', true);
     }
 }

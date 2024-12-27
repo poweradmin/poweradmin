@@ -131,4 +131,46 @@ class AppConfigurationTest extends TestCase
         $this->assertTrue($config->get('non_existing_boolean', true), 'Should return the default boolean value for non-existing keys.');
         $this->assertEquals(['key' => 'value'], $config->get('non_existing_array', ['key' => 'value']), 'Should return the default array value for non-existing keys.');
     }
+
+    public function testParseTokenValueTrue()
+    {
+        $config = new AppConfiguration();
+        $result = $config->parseTokenValue('true');
+        $this->assertTrue($result);
+    }
+
+    public function testParseTokenValueFalse()
+    {
+        $config = new AppConfiguration();
+        $result = $config->parseTokenValue('false');
+        $this->assertFalse($result);
+    }
+
+    public function testParseTokenValueNumeric()
+    {
+        $config = new AppConfiguration();
+        $result = $config->parseTokenValue('123');
+        $this->assertSame(123, $result);
+
+        $result = $config->parseTokenValue('123.45');
+        $this->assertSame(123.45, $result);
+    }
+
+    public function testParseTokenValueConstant()
+    {
+        define('MY_CONSTANT', 'constant_value');
+        $config = new AppConfiguration();
+        $result = $config->parseTokenValue('MY_CONSTANT');
+        $this->assertSame('constant_value', $result);
+    }
+
+    public function testParseTokenValueString()
+    {
+        $config = new AppConfiguration();
+        $result = $config->parseTokenValue('"string_value"');
+        $this->assertSame('string_value', $result);
+
+        $result = $config->parseTokenValue("'string_value'");
+        $this->assertSame('string_value', $result);
+    }
 }
