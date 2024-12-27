@@ -27,6 +27,9 @@ alternative [options](https://github.com/PowerDNS/pdns/wiki/WebFrontends).
 
 This project is licensed under the GNU General Public License v3.0. See the LICENSE file for more details.
 
+## Supported by
+[![JetBrains logo.](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)](https://jb.gg/OpenSourceSupport)
+
 ## Requirements
 
 * PHP 8.1 or higher (including 8.2, 8.3, 8.4, etc.)
