@@ -207,7 +207,7 @@ class UserManager
      */
     public function delete_user(int $uid, array $zones): bool
     {
-        if (($uid != $_SESSION ['userid'] && !self::verify_permission($this->db, 'user_edit_others')) || ($uid == $_SESSION ['userid'] && !self::verify_permission($this->db, 'user_edit_own'))) {
+        if (($uid != $_SESSION['userid'] && !self::verify_permission($this->db, 'user_edit_others')) || ($uid == $_SESSION['userid'] && !self::verify_permission($this->db, 'user_edit_own'))) {
             $error = new ErrorMessage(_("You do not have the permission to delete this user."));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
@@ -283,7 +283,7 @@ class UserManager
         $perm_edit_own = self::verify_permission($this->db, 'user_edit_own');
         $perm_edit_others = self::verify_permission($this->db, 'user_edit_others');
 
-        if (($id == $_SESSION ["userid"] && $perm_edit_own) || ($id != $_SESSION ["userid"] && $perm_edit_others)) {
+        if (($id == $_SESSION["userid"] && $perm_edit_own) || ($id != $_SESSION["userid"] && $perm_edit_others)) {
 
             $validation = new Validator($this->db, $this->config);
             if (!$validation->is_valid_email($email)) {
@@ -425,7 +425,7 @@ class UserManager
             return false;
         }
 
-        $query = "SELECT id, password, use_ldap FROM users WHERE username = {$db->quote($_SESSION ["userlogin"], 'text')}";
+        $query = "SELECT id, password, use_ldap FROM users WHERE username = {$db->quote($_SESSION["userlogin"], 'text')}";
         $response = $db->queryRow($query);
         
         if ($response['use_ldap']) {
@@ -503,7 +503,7 @@ class UserManager
      */
     public static function verify_user_is_owner_zoneid($db, int $zoneid): bool
     {
-        $userid = $_SESSION ["userid"];
+        $userid = $_SESSION["userid"];
         $response = $db->queryOne("SELECT zones.id FROM zones
             WHERE zones.owner = " . $db->quote($userid, 'integer') . "
             AND zones.domain_id = " . $db->quote($zoneid, 'integer'));
@@ -523,7 +523,7 @@ class UserManager
      */
     public static function get_user_detail_list($db, $ldap_use, ?int $specific = null): array
     {
-        $userid = $_SESSION ['userid'];
+        $userid = $_SESSION['userid'];
 
         if ($specific) {
             $sql_add = "AND users.id = " . $db->quote($specific, 'integer');
@@ -628,7 +628,7 @@ class UserManager
         $perm_templ_perm_edit = self::verify_permission($this->db, 'templ_perm_edit');
         $perm_is_godlike = self::verify_permission($this->db, 'user_is_ueberuser');
 
-        if (($details['uid'] == $_SESSION ["userid"] && $perm_edit_own) || ($details['uid'] != $_SESSION ["userid"] && $perm_edit_others)) {
+        if (($details['uid'] == $_SESSION["userid"] && $perm_edit_own) || ($details['uid'] != $_SESSION["userid"] && $perm_edit_others)) {
 
             $validation = new Validator($this->db, $this->config);
             if (!$validation->is_valid_email($details['email'])) {
