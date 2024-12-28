@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2024-12-27 21:22+0200\n"
+"POT-Creation-Date: 2024-12-28 20:04+0200\n"
 "PO-Revision-Date: 2012-02-14 08:14+0000\n"
 "Last-Translator: Yura Cagran <community@avoxip.com>\n"
 "Language-Team: Turkish\n"
@@ -839,7 +839,7 @@ msgstr "Zones"
 
 #: templates/dnssec_edit_key.html:13 templates/dnssec.html:12
 #: templates/list_zones.html:62 templates/dnssec_add_key.html:13
-#: templates/edit.html:291 templates/add_zone_master.html:63
+#: templates/edit.html:299 templates/add_zone_master.html:63
 #: templates/dnssec_ds_dnskey.html:13 templates/dnssec_delete_key.html:13
 msgid "DNSSEC"
 msgstr "DNSSEC"
@@ -865,7 +865,7 @@ msgid "Domain"
 msgstr "Domain"
 
 #: templates/dnssec_edit_key.html:44 templates/list_log_zones.html:39
-#: templates/edit.html:125 templates/list_log_users.html:39
+#: templates/edit.html:133 templates/list_log_users.html:39
 #: templates/dnssec_delete_key.html:35
 msgid "Id"
 msgstr "Id"
@@ -873,8 +873,8 @@ msgstr "Id"
 #: templates/dnssec_edit_key.html:45 templates/edit_zone_templ_record.html:23
 #: templates/dnssec.html:25 templates/edit_record.html:29
 #: templates/list_zones.html:36 templates/add_zone_templ_record.html:20
-#: templates/edit.html:45 templates/edit.html:142 templates/edit.html:312
-#: templates/edit.html:490 templates/add_zone_master.html:35
+#: templates/edit.html:28 templates/edit.html:150 templates/edit.html:320
+#: templates/edit.html:498 templates/add_zone_master.html:35
 #: templates/list_zone_templ.html:17 templates/edit_zone_templ.html:29
 #: templates/bulk_registration.html:29 templates/delete_domain.html:23
 #: templates/search.html:69 templates/search.html:164
@@ -930,8 +930,8 @@ msgstr "Bölge şablonundaki kaydı düzenle"
 #: templates/edit_zone_templ_record.html:21 templates/edit_record.html:27
 #: templates/add_zone_templ.html:15 templates/list_zones.html:30
 #: templates/add_perm_templ.html:15 templates/add_perm_templ.html:31
-#: templates/add_zone_templ_record.html:18 templates/edit.html:44
-#: templates/edit.html:134 templates/edit.html:310
+#: templates/add_zone_templ_record.html:18 templates/edit.html:27
+#: templates/edit.html:142 templates/edit.html:318
 #: templates/list_zone_templ.html:14 templates/edit_zone_templ.html:28
 #: templates/edit_zone_templ.html:129 templates/search.html:63
 #: templates/search.html:158 templates/delete_domains.html:15
@@ -941,45 +941,44 @@ msgid "Name"
 msgstr "Ad"
 
 #: templates/edit_zone_templ_record.html:24 templates/edit_record.html:30
-#: templates/add_zone_templ_record.html:21 templates/edit.html:46
-#: templates/edit.html:150 templates/edit.html:313
+#: templates/add_zone_templ_record.html:21 templates/edit.html:29
+#: templates/edit.html:158 templates/edit.html:321
 #: templates/edit_zone_templ.html:30 templates/search.html:176
 #: templates/add_record.html:30
 msgid "Content"
 msgstr "İçerik"
 
 #: templates/edit_zone_templ_record.html:25 templates/edit_record.html:31
-#: templates/add_zone_templ_record.html:22 templates/edit.html:47
-#: templates/edit.html:158 templates/edit.html:314
+#: templates/add_zone_templ_record.html:22 templates/edit.html:30
+#: templates/edit.html:166 templates/edit.html:322
 #: templates/edit_zone_templ.html:31 templates/search.html:170
 #: templates/add_record.html:31
 msgid "Priority"
 msgstr "Öncelik"
 
 #: templates/edit_zone_templ_record.html:26 templates/edit_record.html:32
-#: templates/add_zone_templ_record.html:23 templates/edit.html:48
-#: templates/edit.html:166 templates/edit.html:315
+#: templates/add_zone_templ_record.html:23 templates/edit.html:31
+#: templates/edit.html:174 templates/edit.html:323
 #: templates/edit_zone_templ.html:33 templates/search.html:182
 #: templates/add_record.html:32
 msgid "TTL"
 msgstr "TTL"
 
 #: templates/edit_zone_templ_record.html:51 templates/edit_record.html:82
-#: templates/edit.html:87 templates/edit.html:346 templates/add_record.html:59
+#: templates/edit.html:73 templates/edit.html:354 templates/add_record.html:59
 msgid "Provide content"
 msgstr "Provide content"
 
 #: templates/edit_zone_templ_record.html:60 templates/edit_record.html:99
 #: templates/edit_comment.html:31 templates/edit_user.html:77
-#: templates/add_perm_templ.html:47 templates/edit.html:284
-#: templates/users.html:119 templates/edit_zone_templ.html:152
-#: templates/edit_perm_templ.html:55
+#: templates/add_perm_templ.html:47 templates/users.html:119
+#: templates/edit_zone_templ.html:152 templates/edit_perm_templ.html:55
 msgid "Update"
 msgstr "Update"
 
 #: templates/edit_zone_templ_record.html:61 templates/edit_record.html:100
 #: templates/edit_comment.html:32 templates/edit_user.html:78
-#: templates/edit.html:285 templates/users.html:120
+#: templates/edit.html:293 templates/users.html:120
 msgid "Reset"
 msgstr "Reset"
 
@@ -1007,12 +1006,12 @@ msgstr "Show DS and DNSKEY"
 msgid "Edit record in zone"
 msgstr "Bölgedeki kaydı düzenle"
 
-#: templates/edit_record.html:34 templates/edit.html:173
-#: templates/edit.html:317 templates/add_record.html:34
+#: templates/edit_record.html:34 templates/edit.html:33 templates/edit.html:181
+#: templates/edit.html:325 templates/add_record.html:34
 msgid "Comment"
 msgstr "Comment"
 
-#: templates/edit_record.html:36 templates/edit.html:177
+#: templates/edit_record.html:36 templates/edit.html:185
 #: templates/search.html:188
 msgid "Disabled"
 msgstr "Disabled"
@@ -1022,7 +1021,7 @@ msgstr "Disabled"
 msgid "Migrations"
 msgstr "Migrations"
 
-#: templates/edit_comment.html:12 templates/edit.html:277
+#: templates/edit_comment.html:12 templates/edit.html:285
 msgid "Edit comment"
 msgstr "Açıklamayı düzenle"
 
@@ -1196,8 +1195,8 @@ msgid "Zone"
 msgstr "Bölge"
 
 #: templates/delete_user.html:23 templates/list_zones.html:118
-#: templates/delete_perm_templ.html:6 templates/edit.html:256
-#: templates/edit.html:436 templates/users.html:98
+#: templates/delete_perm_templ.html:6 templates/edit.html:264
+#: templates/edit.html:444 templates/users.html:98
 #: templates/list_zone_templ.html:60 templates/edit_zone_templ.html:54
 #: templates/list_supermasters.html:29 templates/search.html:103
 #: templates/search.html:212 templates/list_perm_templ.html:25
@@ -1244,12 +1243,12 @@ msgstr "Full name"
 msgid "Serial"
 msgstr "Seri numarası"
 
-#: templates/list_zones.html:58 templates/edit.html:551 templates/users.html:18
+#: templates/list_zones.html:58 templates/edit.html:559 templates/users.html:18
 #: templates/add_zone_master.html:50 templates/bulk_registration.html:44
 msgid "Template"
 msgstr "Şablon"
 
-#: templates/list_zones.html:115 templates/edit.html:12 templates/edit.html:254
+#: templates/list_zones.html:115 templates/edit.html:12 templates/edit.html:262
 #: templates/users.html:93 templates/list_zone_templ.html:59
 #: templates/edit_zone_templ.html:51 templates/search.html:100
 #: templates/search.html:209 templates/edit_perm_templ.html:6
@@ -1352,7 +1351,7 @@ msgstr "Bu şablon temelinde, bu kullanıcı aşağıdaki izinlere sahiptir"
 msgid "Permission templates"
 msgstr "İzin şablonları"
 
-#: templates/add_perm_templ.html:6 templates/edit.html:484
+#: templates/add_perm_templ.html:6 templates/edit.html:492
 #: templates/add_user.html:74
 msgid "Add"
 msgstr "Ekle"
@@ -1410,8 +1409,8 @@ msgid "Go"
 msgstr "Git"
 
 #: templates/add_zone_templ_record.html:7
-#: templates/add_zone_templ_record.html:50 templates/edit.html:109
-#: templates/edit.html:360 templates/edit_zone_templ.html:21
+#: templates/add_zone_templ_record.html:50 templates/edit.html:98
+#: templates/edit.html:368 templates/edit_zone_templ.html:21
 #: templates/edit_zone_templ.html:62 templates/add_record.html:12
 #: templates/add_record.html:71
 msgid "Add record"
@@ -1493,79 +1492,87 @@ msgstr ""
 msgid "Delete permission template"
 msgstr "İzin şablonunu sil"
 
-#: templates/edit.html:17 templates/edit.html:19
-msgid "Edit zone"
-msgstr "Bölgeyi güncelle"
+#: templates/edit.html:17
+msgid "Add new record"
+msgstr "Add new record"
 
-#: templates/edit.html:29
-msgid "This zone does not have any records."
-msgstr "This zone does not have any records."
-
-#: templates/edit.html:51
+#: templates/edit.html:37
 msgid "Add PTR"
 msgstr "Add PTR"
 
-#: templates/edit.html:54
+#: templates/edit.html:40
 msgid "Add A/AAAA"
 msgstr "Add A/AAAA"
 
-#: templates/edit.html:93 templates/edit.html:352
+#: templates/edit.html:79 templates/edit.html:360
 msgid "Provide TTL"
 msgstr "Provide TTL"
 
-#: templates/edit.html:267
+#: templates/edit.html:107 templates/edit.html:109
+msgid "Edit zone"
+msgstr "Bölgeyi güncelle"
+
+#: templates/edit.html:119
+msgid "This zone does not have any records."
+msgstr "This zone does not have any records."
+
+#: templates/edit.html:275
 msgid "Comments"
 msgstr "Comments"
 
-#: templates/edit.html:293
+#: templates/edit.html:292
+msgid "Save changes"
+msgstr "Save changes"
+
+#: templates/edit.html:301
 msgid "Unsign this zone"
 msgstr "Unsign this zone"
 
-#: templates/edit.html:296
+#: templates/edit.html:304
 msgid "Sign this zone"
 msgstr "Sign this zone"
 
-#: templates/edit.html:366 templates/add_record.html:77
+#: templates/edit.html:374 templates/add_record.html:77
 msgid "Also add a PTR record in the matching zone"
 msgstr "Also add a PTR record in the matching zone"
 
-#: templates/edit.html:373 templates/add_record.html:84
+#: templates/edit.html:381 templates/add_record.html:84
 msgid "Also add an A/AAAA record in the matching zone"
 msgstr "Also add an A/AAAA record in the matching zone"
 
-#: templates/edit.html:388
+#: templates/edit.html:396
 msgid "Save as new template"
 msgstr "Save as new template"
 
-#: templates/edit.html:391 templates/edit_zone_templ.html:109
+#: templates/edit.html:399 templates/edit_zone_templ.html:109
 msgid "Template Name"
 msgstr "Şablon Adı"
 
-#: templates/edit.html:394
+#: templates/edit.html:402
 msgid "Provide template name"
 msgstr "Provide template name"
 
-#: templates/edit.html:398 templates/edit_zone_templ.html:116
+#: templates/edit.html:406 templates/edit_zone_templ.html:116
 msgid "Template Description"
 msgstr "Şablon Tanımı"
 
-#: templates/edit.html:404 templates/edit_zone_templ.html:120
+#: templates/edit.html:412 templates/edit_zone_templ.html:120
 msgid "Save as template"
 msgstr "Şablon olarak kaydet"
 
-#: templates/edit.html:413
+#: templates/edit.html:421
 msgid "Owner of zone"
 msgstr "Bölgenin sahibi"
 
-#: templates/edit.html:418
+#: templates/edit.html:426
 msgid "No owner set for this zone."
 msgstr "Bu bölgenin sahibi bulunmamakta."
 
-#: templates/edit.html:511 templates/edit.html:538 templates/edit.html:573
+#: templates/edit.html:519 templates/edit.html:546 templates/edit.html:581
 msgid "Change"
 msgstr "Değiştir"
 
-#: templates/edit.html:524 templates/add_zone_slave.html:21
+#: templates/edit.html:532 templates/add_zone_slave.html:21
 msgid "IP address of master NS"
 msgstr "Ana ad sunucusunun IP adresi"
 
