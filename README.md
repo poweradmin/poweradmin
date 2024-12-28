@@ -2,7 +2,8 @@
 
 [Poweradmin](https://www.poweradmin.org) is a friendly web-based DNS administration tool for PowerDNS server. The
 interface supports most of
-the features of PowerDNS. It is a hybrid solution that uses SQL for most operations and has PowerDNS API support for DNSSEC
+the features of PowerDNS. It is a hybrid solution that uses SQL for most operations and has PowerDNS API support for
+DNSSEC
 operations.
 
 ## Features
@@ -28,6 +29,7 @@ alternative [options](https://github.com/PowerDNS/pdns/wiki/WebFrontends).
 This project is licensed under the GNU General Public License v3.0. See the LICENSE file for more details.
 
 ## Supported by
+
 [![JetBrains logo.](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)](https://jb.gg/OpenSourceSupport)
 
 ## Requirements
@@ -59,7 +61,9 @@ This project is licensed under the GNU General Public License v3.0. See the LICE
 
 To install PowerAdmin onto your system there are a few dependencies, they are listed below.
 
-On Debian-based systems and their derivatives (with sodo or as root):
+On Debian-based systems and their derivatives (with sudo or as root, Debian 12 or later recommended):
+> **Note:** `php-fpm` is required only if you plan to use Nginx or choose not to use `mod_php` with Apache.
+
 ```sh
 apt install php php-intl php-php-gettext php-tokenizer php-fpm
 
@@ -74,6 +78,7 @@ apt install php-sqlite3
 ```
 
 On Red Hat Enterprise Linux (RHEL) and its derivatives:
+
 ```sh
 dnf install -y php php-intl php-gettext php-pdo php-fpm
 
@@ -85,14 +90,20 @@ dnf install -y php-pgsql
 ```
 
 To get PowerAdmin working on your preferred webserver (Apache/NGINX for example), download the source-code from GitHub.
+Note that Ubuntu has an Apache server by default, so the following NGINX configuration is only needed for Debian or
+custom installations:
 
 * Via Git:
     * Clone the repository: ```git clone https://github.com/poweradmin/poweradmin.git```
-    * Select latest tag (for example v3.8.1) or skip this if you want to run from master: ```git checkout tags/v3.8.1```
+    * Change directory to the cloned repository: ```cd poweradmin```
+    * Select the latest stable tag (for example v3.8.1): ```git checkout tags/v3.8.1```
+    * Alternatively, you can use the master branch, but it might be unstable as it is used for development:
+      ```git checkout master```
 * Via releases:
     * Get the latest file from [releases](https://github.com/poweradmin/poweradmin/releases)
 
 For NGINX create a configuration file that looks like this (done on Debian), of course adjust values to your liking:
+
 ```
 server {
     listen 80;
@@ -112,12 +123,15 @@ server {
         include fastcgi_params;
     }
 
+    # Deny access to .htaccess and .htpasswd files for security reasons
     location ~ /\.ht {
         deny all;
     }
 }
 ```
-After this, make sure to reload the configuration files and that everything is present. Then you can navigate to the installed system in your browser
+
+After this, make sure to reload the configuration files and that everything is present. Then you can navigate to the
+installed system in your browser
 
 * Visit http(s)://HOSTNAME/install/ and follow the installation steps.
 * Once the installation is complete, remove the `install` folder.
