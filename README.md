@@ -3,8 +3,7 @@
 [Poweradmin](https://www.poweradmin.org) is a friendly web-based DNS administration tool for PowerDNS server. The
 interface supports most of
 the features of PowerDNS. It is a hybrid solution that uses SQL for most operations and has PowerDNS API support for
-DNSSEC
-operations.
+DNSSEC operations.
 
 ## Features
 
@@ -142,11 +141,11 @@ installed system in your browser
 
 ### Log in
 
-![The login screen](https://raw.githubusercontent.com/poweradmin/poweradmin.github.io/master/screenshots/ignite_login.png)
+![The login screen](https://docs.poweradmin.org/screenshots/ignite_login.png)
 
 ### Zone list
 
-![List of zones](https://raw.githubusercontent.com/poweradmin/poweradmin.github.io/master/screenshots/ignite_zone_list.png)
+![List of zones](https://docs.poweradmin.org/screenshots/ignite_zone_list.png)
 
 ### Debug Settings
 
