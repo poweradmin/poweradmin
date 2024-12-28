@@ -125,6 +125,14 @@
 <form class="needs-validation" method="post" action="" novalidate>
     <input type="hidden" name="_token" value="{{ csrf_token }}">
     <input type="hidden" name="serial" value="{{ serial }}">
+
+    <p>
+        {% if perm_edit != "none" and iface_edit_save_changes_top %}
+        <input class="btn btn-primary btn-sm" type="submit" name="commit" value="{% trans %}Save changes{% endtrans %}">
+        <input class="btn btn-secondary btn-sm" type="reset" name="reset" value="{% trans %}Reset{% endtrans %}">
+        {% endif %}
+    </p>
+
     <table class="table table-striped table-hover table-sm">
         <tr>
             {% if iface_edit_show_id %}
@@ -272,7 +280,7 @@
             {% if iface_edit_show_id %}
             <td></td>
             {% endif %}
-            <td colspan="7">{% trans %}Comments{% endtrans %}:</td>
+            <td colspan="{% if not iface_record_comments %}7{% else %}9{% endif %}">{% trans %}Comments{% endtrans %}:</td>
         </tr>
         <tr>
             {% if iface_edit_show_id %}
@@ -288,7 +296,7 @@
             {% endif %}
     </table>
 
-    {% if perm_edit != "none" %}
+    {% if perm_edit != "none" and not iface_edit_save_changes_top %}
     <input class="btn btn-primary btn-sm" type="submit" name="commit" value="{% trans %}Save changes{% endtrans %}">
     <input class="btn btn-secondary btn-sm" type="reset" name="reset" value="{% trans %}Reset{% endtrans %}">
     {% endif %}

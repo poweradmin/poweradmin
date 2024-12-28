@@ -46,7 +46,8 @@ $iface_record_comments = false; // Show or hide record comments
 $iface_index = 'cards'; // or list
 $iface_search_group_records = false; // Group records by name and content in search results
 $iface_edit_show_id = true; // Show or hide record ID in edit form
-$iface_edit_add_record_top = false; // Add new record on top of the list
+$iface_edit_add_record_top = false; // Add new record fields on top of the list
+$iface_edit_save_changes_top = false; // Save changes button on top of the list
 $iface_migrations_show = false; // Show or hide migrations in the menu
 
 // Predefined DNS settings
