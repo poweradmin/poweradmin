@@ -57,36 +57,34 @@ This project is licensed under the GNU General Public License v3.0. See the LICE
 
 ## Installation
 
-Install the following dependencies:
+To install PowerAdmin onto your system there are a few dependencies, they are listed below.
 
-On Debian-based systems and their derivatives:
-
+On Debian-based systems and their derivatives (with sodo or as root):
 ```sh
-apt install php-intl php-gettext php-openssl php-filter php-tokenizer php-pdo
+apt install php php-intl php-php-gettext php-tokenizer php-fpm
 
-For MySQL/MariaDB
-apt install php-mysqlnd
+#For MySQL/MariaDB
+apt install php-mysql
 
-For PostgreSQL
+#For PostgreSQL
 apt install php-pgsql
 
-For SQLite
+#For SQLite
 apt install php-sqlite3
 ```
 
 On Red Hat Enterprise Linux (RHEL) and its derivatives:
-
 ```sh
-dnf install -y php-intl php-gettext php-openssl php-filter php-tokenizer php-pdo
+dnf install -y php php-intl php-gettext php-pdo php-fpm
 
-For MySQL/MariaDB
+#For MySQL/MariaDB
 dnf install -y php-mysqlnd
 
-For PostgreSQL
+#For PostgreSQL
 dnf install -y php-pgsql
 ```
 
-Download the project files
+To get PowerAdmin working on your preferred webserver (Apache/NGINX for example), download the source-code from GitHub.
 
 * Via Git:
     * Clone the repository: ```git clone https://github.com/poweradmin/poweradmin.git```
@@ -94,9 +92,34 @@ Download the project files
 * Via releases:
     * Get the latest file from [releases](https://github.com/poweradmin/poweradmin/releases)
 
-Go to the installed system in your browser
+For NGINX create a configuration file that looks like this (done on Debian), of course adjust values to your liking:
+```
+server {
+    listen 80;
+    server_name localhost;
 
-* Visit http(s)://URL/install/ and follow the installation steps.
+    root /var/www/html;
+    index index.php index.html index.htm;
+
+    location / {
+        try_files $uri $uri/ /index.php?$args;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+}
+```
+After this, make sure to reload the configuration files and that everything is present. Then you can navigate to the installed system in your browser
+
+* Visit http(s)://HOSTNAME/install/ and follow the installation steps.
 * Once the installation is complete, remove the `install` folder.
 * Point your browser to: http(s)://URL
 * Log in using the default 'admin' username and the password created during setup (provided in step 3).
