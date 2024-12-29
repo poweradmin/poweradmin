@@ -48,7 +48,7 @@ $iface_search_group_records = false; // Group records by name and content in sea
 $iface_edit_show_id = true; // Show or hide record ID in edit form
 $iface_edit_add_record_top = false; // Add new record fields on top of the list
 $iface_edit_save_changes_top = false; // Save changes button on top of the list
-$iface_migrations_show = false; // Show or hide migrations in the menu
+$iface_migrations_show = false; // Show or hide migrations in the menu (experimental)
 
 // Predefined DNS settings
 $dns_hostmaster = '';
