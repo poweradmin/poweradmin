@@ -85,7 +85,7 @@ class RecordLog
         unset($record_copy['rid']);
 
         // Do the comparison
-        $this->record_changed = ($record_copy != $record_prior_copy);
+        $this->record_changed = !empty(array_diff_assoc($record_copy, $record_prior_copy));
         return $this->record_changed;
     }
 
