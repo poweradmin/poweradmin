@@ -12,16 +12,7 @@
     <p>{% trans %}To do all of this, the installer needs to access the database with an account which has sufficient rights.
         If you trust the installer, you may give it the username and password of the database user root. Otherwise, make
         sure the user has enough rights, before actually proceeding.{% endtrans %}</p>
-
     <hr>
-
-    {% if errors is not empty %}
-        <p class="alert alert-danger">
-        {% for error in errors %}
-            {{ error }}
-        {% endfor %}
-        </p>
-    {% endif %}
 
     <form class="needs-validation" method="post" novalidate>
         <table class="table table-sm">

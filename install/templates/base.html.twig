@@ -10,6 +10,12 @@
     <script type="text/javascript" src="includes/helper.js?time={{ file_version }}"></script>
 </head>
 <body>
+    {% if errors is not empty %}
+        <p class="alert alert-danger">
+            {{ errors|first }}
+        </p>
+    {% endif %}
+
     <header class="mb-4 border-bottom">
         <div class="container">
             <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
@@ -22,7 +28,6 @@
             </div>
         </div>
     </header>
-
     <main class="container pb-3 flex-shrink-0">
         <h5>{% block title %}{% endblock %}</h5>
         <hr>
