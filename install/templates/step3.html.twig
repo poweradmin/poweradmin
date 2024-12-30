@@ -13,6 +13,16 @@
         If you trust the installer, you may give it the username and password of the database user root. Otherwise, make
         sure the user has enough rights, before actually proceeding.{% endtrans %}</p>
 
+    <hr>
+
+    {% if errors is not empty %}
+        <p class="alert alert-danger">
+        {% for error in errors %}
+            {{ error }}
+        {% endfor %}
+        </p>
+    {% endif %}
+
     <form class="needs-validation" method="post" novalidate>
         <table class="table table-sm">
             <tbody>
@@ -20,9 +30,9 @@
                 <td class="col-md-2">{% trans %}Database type{% endtrans %}</td>
                 <td>
                     <select id="db_type" class="form-select form-select-sm" name="db_type" onChange="updateFormFields(this.value)">
-                        <option value="mysql">MySQL</option>
-                        <option value="pgsql">PostgreSQL</option>
-                        <option value="sqlite">SQLite</option>
+                        <option value="mysql" {% if db_type == 'mysql' %}selected{% endif %}>MySQL</option>
+                        <option value="pgsql" {% if db_type == 'pgsql' %}selected{% endif %}>PostgreSQL</option>
+                        <option value="sqlite" {% if db_type == 'sqlite' %}selected{% endif %}>SQLite</option>
                     </select>
                 </td>
                 <td>
@@ -32,7 +42,7 @@
             <tr id="username_row">
                 <td>{% trans %}Username{% endtrans %}</td>
                 <td class="w-25">
-                    <input id="username" class="form-control form-control-sm" type="text" name="db_user" value="" required>
+                    <input id="username" class="form-control form-control-sm" type="text" name="db_user" value="{{ db_user }}" required>
                     <div class="invalid-feedback">{% trans %}Provide the user name{% endtrans %}</div>
                 </td>
                 <td>{% trans %}The username to use to connect to the database, make sure the username has
@@ -44,7 +54,7 @@
                 <td>{% trans %}Password{% endtrans %}</td>
                 <td>
                     <div class="input-group">
-                        <input class="form-control form-control-sm" type="password" id="userpass" name="db_pass" value="" autocomplete="off" required>
+                        <input class="form-control form-control-sm" type="password" id="userpass" name="db_pass" value="{{ db_pass }}" autocomplete="off" required>
                         <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showPassword('userpass', 'eye1')"><i class="bi bi-eye-fill" id="eye1"></i></button>
                         <div class="invalid-feedback">{% trans %}Provide user password{% endtrans %}</div>
                     </div>
@@ -54,7 +64,7 @@
             <tr id="hostname_row">
                 <td>{% trans %}Hostname{% endtrans %}</td>
                 <td>
-                    <input class="form-control form-control-sm" type="text" id="host" name="db_host" value="localhost" required>
+                    <input class="form-control form-control-sm" type="text" id="host" name="db_host" value="{{ db_host|default('localhost') }}" required>
                     <div class="invalid-feedback">{% trans %}Provide the hostname{% endtrans %}</div>
                 </td>
                 <td>{% trans %}The hostname on which the PowerDNS database resides. Frequently, this will be "localhost".{% endtrans %}
@@ -63,7 +73,7 @@
             <tr id="dbport_row">
                 <td>{% trans %}DB Port{% endtrans %}</td>
                 <td>
-                    <input class="form-control form-control-sm" type="text" id="db_port" name="db_port" value="3306" required>
+                    <input class="form-control form-control-sm" type="text" id="db_port" name="db_port" value="{{ db_port|default('3306') }}" required>
                     <div class="invalid-feedback">{% trans %}Provide database port{% endtrans %}</div>
                 </td>
                 <td>{% trans %}The port the database server is listening on.{% endtrans %}</td>
@@ -71,23 +81,23 @@
             <tr>
                 <td>{% trans %}Database{% endtrans %}</td>
                 <td>
-                    <input class="form-control form-control-sm" type="text" name="db_name" value="" required>
+                    <input class="form-control form-control-sm" type="text" name="db_name" value="{{ db_name }}" required>
                     <div class="invalid-feedback">{% trans %}Provide the name of the database{% endtrans %}</div>
                 </td>
                 <td><span id="db_name_title">{% trans %}The name of the PowerDNS database.{% endtrans %}</span>
                     <span id="db_path_title" style="display: none;">{% trans %}The path and filename to the PowerDNS SQLite database.{% endtrans %}</span>
                 </td>
             </tr>
-            <tr>
+            <tr id="db_charset_row">
                 <td>{% trans %}DB charset{% endtrans %}</td>
-                <td><input class="form-control form-control-sm" type="text" name="db_charset" value=""></td>
+                <td><input class="form-control form-control-sm" type="text" name="db_charset" value="{{ db_charset }}"></td>
                 <td>{% trans %}The charset (encoding) which will be used for new tables. Leave it empty then default database
                     charset will be used.{% endtrans %}
                 </td>
             </tr>
-            <tr>
+            <tr id="db_collation_row">
                 <td>{% trans %}DB collation{% endtrans %}</td>
-                <td><input class="form-control form-control-sm" type="text" name="db_collation" value=""></td>
+                <td><input class="form-control form-control-sm" type="text" name="db_collation" value="{{ db_collation }}"></td>
                 <td>{% trans %}Set of rules for comparing characters in database. Leave it empty then default database
                     collation will be used.{% endtrans %}
                 </td>
@@ -113,4 +123,15 @@
         <input type="hidden" name="language" value="{{ language }}">
         <input type="submit" name="submit" class="btn btn-primary btn-sm" value="{% trans %}Go to step{% endtrans %} {{ next_step }}">
     </form>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const dbTypeElement = document.getElementById('db_type');
+            if (dbTypeElement) {
+                updateFormFields(dbTypeElement.value);
+            }
+        });
+    </script>
 {% endblock %}

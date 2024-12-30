@@ -22,6 +22,7 @@
 
 namespace PoweradminInstall\Validators;
 
+use PDO;
 use PoweradminInstall\LocaleHandler;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -62,6 +63,7 @@ class ConfiguringDatabaseValidator extends AbstractStepValidator
             ],
             'db_name' => [
                 new Assert\NotBlank(),
+                new Assert\Callback([$this, 'validateDbName']),
             ],
             'db_charset' => [
                 new Assert\Optional(),
@@ -123,6 +125,70 @@ class ConfiguringDatabaseValidator extends AbstractStepValidator
             $context->buildViolation('This value should not be blank.')
                 ->atPath('db_host')
                 ->addViolation();
+        }
+    }
+
+    public function validateDbName($dbName, ExecutionContextInterface $context): void
+    {
+        $input = $context->getRoot();
+        if ($input['db_type'] === 'sqlite') {
+            if (!file_exists($dbName)) {
+                $context->buildViolation('Database file does not exist')
+                    ->addViolation();
+                return;
+            }
+
+            $realPath = realpath($dbName);
+            if ($realPath === false) {
+                $context->buildViolation('Invalid database path')
+                    ->addViolation();
+                return;
+            }
+            $dbName = $realPath;
+
+            if (str_contains($dbName, '../') || str_contains($dbName, '..\\')) {
+                $context->buildViolation('Directory traversal is not allowed')
+                    ->addViolation();
+                return;
+            }
+
+            if (!preg_match('/\.(sqlite3?|db3?|sqlite-journal)$/', $dbName)) {
+                $context->buildViolation('Database file must have a valid SQLite extension (.sqlite, .sqlite3, .db, .db3)')
+                    ->addViolation();
+                return;
+            }
+
+            if (file_exists($dbName)) {
+                if (!is_readable($dbName)) {
+                    $context->buildViolation('Database file is not readable')
+                        ->addViolation();
+                    return;
+                }
+
+                if (!is_writable($dbName)) {
+                    $context->buildViolation('Database file is not writable')
+                        ->addViolation();
+                    return;
+                }
+
+                $pdo = new PDO("sqlite:{$dbName}");
+
+                $stmt = $pdo->query('SELECT 1');
+                if ($stmt === false) {
+                    $context->buildViolation('Failed to query database')
+                        ->addViolation();
+                    return;
+                }
+
+                $version = $pdo->query('SELECT sqlite_version()')->fetchColumn();
+                if (version_compare($version, '3.0.0', '<')) {
+                    $context->buildViolation('Unsupported SQLite version')
+                        ->addViolation();
+                    return;
+                }
+
+                $pdo = null;
+            }
         }
     }
 }

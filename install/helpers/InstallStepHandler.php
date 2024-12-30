@@ -89,11 +89,22 @@ class InstallStepHandler
 
     public function step3ConfiguringDatabase(array $errors): void
     {
-        $this->renderTemplate('step3.html.twig', array(
+        $inputData = [
+            'db_user' => $this->request->get('db_user'),
+            'db_pass' => $this->request->get('db_pass'),
+            'db_host' => $this->request->get('db_host'),
+            'db_port' => $this->request->get('db_port'),
+            'db_name' => $this->request->get('db_name'),
+            'db_charset' => $this->request->get('db_charset'),
+            'db_collation' => $this->request->get('db_collation'),
+            'db_type' => $this->request->get('db_type'),
+        ];
+
+        $this->renderTemplate('step3.html.twig', array_merge([
             'current_step' => $this->currentStep,
             'language' => $this->language,
             'errors' => $errors,
-        ));
+        ], $inputData));
     }
 
     public function step4SetupAccountAndNameServers(string $default_config_file): void
