@@ -353,14 +353,14 @@ class EditController extends BaseController
                             $recordCopy['type'],
                             $record['name'],
                             $record['type'],
-                            $record['comment'],
+                            $record['comment'] ?? '',
                             $_SESSION['userlogin']
                         );
 
                         $this->commentSyncService->updateRelatedRecordComments(
                             $dnsRecord,
                             $record,
-                            $record['comment'],
+                            $record['comment'] ?? '',
                             $_SESSION['userlogin']
                         );
                     }
