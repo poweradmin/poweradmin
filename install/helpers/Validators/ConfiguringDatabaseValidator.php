@@ -67,7 +67,6 @@ class ConfiguringDatabaseValidator extends AbstractStepValidator
             ],
             'db_port' => [
                 new Assert\NotBlank(),
-                new Assert\Type('string'),
                 new Assert\Callback([$this, 'validateDbPort']),
             ],
             'db_name' => [

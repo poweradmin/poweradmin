@@ -26,16 +26,16 @@ function updateFormFields(db_type)
     const username = document.getElementById('username');
     const password_row = document.getElementById('password_row');
     const userpass = document.getElementById('userpass');
-    const hostname_row = document.getElementById('hostname_row');
+    const db_hostname_row = document.getElementById('db_hostname_row');
     const host = document.getElementById('host');
-    const dbport_row = document.getElementById('dbport_row');
+    const db_port_row = document.getElementById('db_port_row');
     const db_port = document.getElementById('db_port');
     const db_charset_row = document.getElementById('db_charset_row');
     const db_collation_row = document.getElementById('db_collation_row');
 
     switch (db_type) {
         case 'mysql':
-            if (db_port.value === "") {
+            if (db_port.value === "" || db_port.value === "5432") {
                 db_port.value = "3306";
             }
             if (host.value === "") {
@@ -46,8 +46,8 @@ function updateFormFields(db_type)
             db_path_title.style.display = 'none';
             username_row.style.display = '';
             password_row.style.display = '';
-            hostname_row.style.display = '';
-            dbport_row.style.display = '';
+            db_hostname_row.style.display = '';
+            db_port_row.style.display = '';
             db_charset_row.style.display = '';
             db_collation_row.style.display = '';
 
@@ -58,7 +58,7 @@ function updateFormFields(db_type)
             break;
 
         case 'pgsql':
-            if (db_port.value === "") {
+            if (db_port.value === "" || db_port.value === "3306") {
                 db_port.value = '5432';
             }
             if (host.value === "") {
@@ -69,8 +69,8 @@ function updateFormFields(db_type)
             db_path_title.style.display = 'none';
             username_row.style.display = '';
             password_row.style.display = '';
-            hostname_row.style.display = '';
-            dbport_row.style.display = '';
+            db_hostname_row.style.display = '';
+            db_port_row.style.display = '';
             db_charset_row.style.display = '';
             db_collation_row.style.display = '';
 
@@ -88,8 +88,8 @@ function updateFormFields(db_type)
             db_path_title.style.display = '';
             username_row.style.display = 'none';
             password_row.style.display = 'none';
-            hostname_row.style.display = 'none';
-            dbport_row.style.display = 'none';
+            db_hostname_row.style.display = 'none';
+            db_port_row.style.display = 'none';
             db_charset_row.style.display = 'none';
             db_collation_row.style.display = 'none';
 

@@ -98,6 +98,7 @@ class InstallStepHandler
             'db_charset' => $this->request->get('db_charset'),
             'db_collation' => $this->request->get('db_collation'),
             'db_type' => $this->request->get('db_type'),
+            'pa_pass' => $this->request->get('pa_pass'),
         ];
 
         $this->renderTemplate('step3.html.twig', array_merge([
