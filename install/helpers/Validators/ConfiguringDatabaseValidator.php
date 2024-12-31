@@ -160,13 +160,13 @@ class ConfiguringDatabaseValidator extends AbstractStepValidator
 
             if (file_exists($dbName)) {
                 if (!is_readable($dbName)) {
-                    $context->buildViolation('Database file is not readable')
+                    $context->buildViolation('Database file is not readable by the web server')
                         ->addViolation();
                     return;
                 }
 
                 if (!is_writable($dbName)) {
-                    $context->buildViolation('Database file is not writable')
+                    $context->buildViolation('Database file is not writable by the web server')
                         ->addViolation();
                     return;
                 }
@@ -182,7 +182,7 @@ class ConfiguringDatabaseValidator extends AbstractStepValidator
 
                 $version = $pdo->query('SELECT sqlite_version()')->fetchColumn();
                 if (version_compare($version, '3.0.0', '<')) {
-                    $context->buildViolation('Unsupported SQLite version')
+                    $context->buildViolation('Unsupported SQLite version (minimum required: 3.0.0)')
                         ->addViolation();
                     return;
                 }
