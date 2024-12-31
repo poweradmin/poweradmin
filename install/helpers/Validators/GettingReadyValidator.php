@@ -43,7 +43,10 @@ class GettingReadyValidator extends AbstractStepValidator
             ],
             'language' => [
                 new Assert\NotBlank(),
-                new Assert\Choice(['choices' => LocaleHandler::getAvailableLanguages()]),
+                new Assert\Choice([
+                    'choices' => LocaleHandler::getAvailableLanguages(),
+                    'message' => 'The selected language is not valid.'
+                ]),
             ]
         ]);
 

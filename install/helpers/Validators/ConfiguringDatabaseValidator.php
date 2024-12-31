@@ -60,6 +60,7 @@ class ConfiguringDatabaseValidator extends AbstractStepValidator
             ],
             'db_port' => [
                 new Assert\Optional(),
+                new Assert\Type('integer'),
             ],
             'db_name' => [
                 new Assert\NotBlank(),
@@ -67,9 +68,11 @@ class ConfiguringDatabaseValidator extends AbstractStepValidator
             ],
             'db_charset' => [
                 new Assert\Optional(),
+                new Assert\Type('string'),
             ],
             'db_collation' => [
                 new Assert\Optional(),
+                new Assert\Type('string'),
             ],
             'pa_pass' => [
                 new Assert\NotBlank(),
@@ -112,7 +115,7 @@ class ConfiguringDatabaseValidator extends AbstractStepValidator
     {
         $input = $context->getRoot();
         if (in_array($input['db_type'], ['mysql', 'pgsql']) && empty($dbPass)) {
-            $context->buildViolation('This value should not be blank.')
+            $context->buildViolation('DB password should not be blank.')
                 ->atPath('db_pass')
                 ->addViolation();
         }
@@ -122,7 +125,7 @@ class ConfiguringDatabaseValidator extends AbstractStepValidator
     {
         $input = $context->getRoot();
         if (in_array($input['db_type'], ['mysql', 'pgsql']) && empty($dbHost)) {
-            $context->buildViolation('This value should not be blank.')
+            $context->buildViolation('DB host should not be blank.')
                 ->atPath('db_host')
                 ->addViolation();
         }
@@ -133,14 +136,14 @@ class ConfiguringDatabaseValidator extends AbstractStepValidator
         $input = $context->getRoot();
         if ($input['db_type'] === 'sqlite') {
             if (!file_exists($dbName)) {
-                $context->buildViolation('Database file does not exist')
+                $context->buildViolation('SQLite database file does not exist')
                     ->addViolation();
                 return;
             }
 
             $realPath = realpath($dbName);
             if ($realPath === false) {
-                $context->buildViolation('Invalid database path')
+                $context->buildViolation('Invalid database path to SQLite file')
                     ->addViolation();
                 return;
             }
@@ -160,13 +163,13 @@ class ConfiguringDatabaseValidator extends AbstractStepValidator
 
             if (file_exists($dbName)) {
                 if (!is_readable($dbName)) {
-                    $context->buildViolation('Database file is not readable by the web server')
+                    $context->buildViolation('SQLite database file is not readable by the web server')
                         ->addViolation();
                     return;
                 }
 
                 if (!is_writable($dbName)) {
-                    $context->buildViolation('Database file is not writable by the web server')
+                    $context->buildViolation('SQLite database file is not writable by the web server')
                         ->addViolation();
                     return;
                 }
@@ -175,7 +178,7 @@ class ConfiguringDatabaseValidator extends AbstractStepValidator
 
                 $stmt = $pdo->query('SELECT 1');
                 if ($stmt === false) {
-                    $context->buildViolation('Failed to query database')
+                    $context->buildViolation('Failed to query SQLite database')
                         ->addViolation();
                     return;
                 }
