@@ -31,8 +31,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class ConfiguringDatabaseValidator extends AbstractStepValidator
 {
-    const MYSQL_MAX_USERNAME_LENGTH = 32;
-    const PGSQL_MAX_USERNAME_LENGTH = 63;
+    private const MYSQL_MAX_USERNAME_LENGTH = 32;
+    private const PGSQL_MAX_USERNAME_LENGTH = 63;
     private const MIN_PORT = 1;
     private const MAX_PORT = 65535;
 
@@ -113,7 +113,7 @@ class ConfiguringDatabaseValidator extends AbstractStepValidator
                 $maxLength = $input['db_type'] === 'mysql' ? self::MYSQL_MAX_USERNAME_LENGTH : self::PGSQL_MAX_USERNAME_LENGTH;
 
                 if (mb_strlen($dbUser) > $maxLength) {
-                    $context->buildViolation("This value is too long. It should have {$maxLength} characters or less.")
+                    $context->buildViolation("This value is too long. It should have $maxLength characters or less.")
                         ->atPath('db_user')
                         ->addViolation();
                 }
@@ -249,7 +249,7 @@ class ConfiguringDatabaseValidator extends AbstractStepValidator
                         return;
                     }
 
-                    $pdo = new PDO("sqlite:{$dbName}", null, null, [
+                    $pdo = new PDO("sqlite:$dbName", null, null, [
                         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                         PDO::ATTR_TIMEOUT => 5
                     ]);
@@ -307,10 +307,10 @@ class ConfiguringDatabaseValidator extends AbstractStepValidator
         switch ($input['db_type']) {
             case 'mysql':
                 $port = $input['db_port'] ?? 3306;
-                return "mysql:host={$input['db_host']};port={$port};dbname={$input['db_name']}";
+                return "mysql:host={$input['db_host']};port=$port;dbname={$input['db_name']}";
             case 'pgsql':
                 $port = $input['db_port'] ?? 5432;
-                return "pgsql:host={$input['db_host']};port={$port};dbname={$input['db_name']}";
+                return "pgsql:host={$input['db_host']};port=$port;dbname={$input['db_name']}";
             case 'sqlite':
                 return "sqlite:{$input['db_name']}";
             default:
