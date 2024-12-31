@@ -25,9 +25,15 @@ namespace PoweradminInstall\Validators;
 use PoweradminInstall\InstallationSteps;
 use PoweradminInstall\LocaleHandler;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class SetupAccountAndNameServersValidator extends AbstractStepValidator
 {
+    private const DNS_HOSTNAME_REGEX = '/^(?!-)[A-Za-z0-9-]{1,63}(?<!-)(\.[A-Za-z0-9-]{1,63})*\.?$/';
+
     public function validate(): array
     {
         $constraints = new Assert\Collection([
@@ -53,18 +59,65 @@ class SetupAccountAndNameServersValidator extends AbstractStepValidator
             ],
             'dns_hostmaster' => [
                 new Assert\NotBlank(),
+                new Length([
+                    'max' => 255,
+                    'maxMessage' => 'The hostmaster hostname cannot be longer than {{ limit }} characters'
+                ]),
+                new Regex([
+                    'pattern' => self::DNS_HOSTNAME_REGEX,
+                    'message' => 'The hostmaster must be a valid hostname'
+                ]),
+                new Callback([$this, 'validateHostname'])
             ],
             'dns_ns1' => [
                 new Assert\NotBlank(),
+                new Length([
+                    'max' => 255,
+                    'maxMessage' => 'The 1st nameserver hostname cannot be longer than {{ limit }} characters'
+                ]),
+                new Regex([
+                    'pattern' => self::DNS_HOSTNAME_REGEX,
+                    'message' => 'The 1st nameserver must be a valid hostname'
+                ]),
+                new Callback([$this, 'validateNameserver'])
             ],
             'dns_ns2' => [
                 new Assert\NotBlank(),
+                new Length([
+                    'max' => 255,
+                    'maxMessage' => 'The 2nd nameserver hostname cannot be longer than {{ limit }} characters'
+                ]),
+                new Regex([
+                    'pattern' => self::DNS_HOSTNAME_REGEX,
+                    'message' => 'The 2nd nameserver must be a valid hostname'
+                ]),
+                new Callback([$this, 'validateNameserver'])
             ],
             'dns_ns3' => [
-                new Assert\Optional(),
+                new Assert\Optional([
+                    new Length([
+                        'max' => 255,
+                        'maxMessage' => 'The 3rd nameserver hostname cannot be longer than {{ limit }} characters'
+                    ]),
+                    new Regex([
+                        'pattern' => self::DNS_HOSTNAME_REGEX,
+                        'message' => 'The 3rd nameserver must be a valid hostname'
+                    ]),
+                    new Callback([$this, 'validateNameserver'])
+                ])
             ],
             'dns_ns4' => [
-                new Assert\Optional(),
+                new Assert\Optional([
+                    new Length([
+                        'max' => 255,
+                        'maxMessage' => 'The 4th nameserver hostname cannot be longer than {{ limit }} characters'
+                    ]),
+                    new Regex([
+                        'pattern' => self::DNS_HOSTNAME_REGEX,
+                        'message' => 'The 4th nameserver must be a valid hostname'
+                    ]),
+                    new Callback([$this, 'validateNameserver'])
+                ])
             ],
             'db_user' => [
                 new Assert\NotBlank(),
@@ -99,5 +152,65 @@ class SetupAccountAndNameServersValidator extends AbstractStepValidator
         $violations = $this->validator->validate($input, $constraints);
 
         return ValidationErrorHelper::formatErrors($violations);
+    }
+
+    public function validateHostname($value, ExecutionContextInterface $context): void
+    {
+        $labels = explode('.', $value);
+
+        if (str_ends_with($value, '.')) {
+            array_pop($labels);
+        }
+
+        foreach ($labels as $label) {
+            if (strlen($label) > 63) {
+                $context->buildViolation('Each part of the hostname cannot exceed 63 characters.')
+                    ->addViolation();
+                break;
+            }
+
+            if (!preg_match('/^(?!-)[A-Za-z0-9-]+(?<!-)$/', $label)) {
+                $context->buildViolation('Each part of the hostname can only contain letters, numbers, and hyphens, and cannot start or end with a hyphen.')
+                    ->addViolation();
+                break;
+            }
+        }
+
+        if (count($labels) < 2) {
+            $context->buildViolation('The hostname must be fully qualified with at least two parts.')
+                ->addViolation();
+        }
+    }
+
+    public function validateNameserver($value, ExecutionContextInterface $context): void
+    {
+        if (empty($value)) {
+            return;
+        }
+
+        $labels = explode('.', $value);
+
+        if (str_ends_with($value, '.')) {
+            array_pop($labels);
+        }
+
+        foreach ($labels as $label) {
+            if (strlen($label) > 63) {
+                $context->buildViolation('Each part of the nameserver hostname cannot exceed 63 characters.')
+                    ->addViolation();
+                break;
+            }
+
+            if (!preg_match('/^(?!-)[A-Za-z0-9-]+(?<!-)$/', $label)) {
+                $context->buildViolation('Each part of the nameserver hostname can only contain letters, numbers, and hyphens, and cannot start or end with a hyphen.')
+                    ->addViolation();
+                break;
+            }
+        }
+
+        if (count($labels) < 2) {
+            $context->buildViolation('The nameserver must be a fully qualified domain name with at least two parts.')
+                ->addViolation();
+        }
     }
 }

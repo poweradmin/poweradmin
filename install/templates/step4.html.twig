@@ -12,7 +12,7 @@
             <tr>
                 <td>{% trans %}Username{% endtrans %}</td>
                 <td class="w-25">
-                    <input id="pa_db_user" class="form-control form-control-sm" type="text" name="pa_db_user" value="" required>
+                    <input id="pa_db_user" class="form-control form-control-sm" type="text" name="pa_db_user" value="{{ pa_db_user }}" required>
                     <label for="pa_db_user" class="invalid-feedback">{% trans %}Provide the user name{% endtrans %}</label>
                 </td>
                 <td>{% trans %}Poweradmin database username with restricted access. Not for web UI login.{% endtrans %}</td>
@@ -21,7 +21,7 @@
                 <td>{% trans %}Password{% endtrans %}</td>
                 <td>
                     <div class="input-group">
-                        <input id="pa_db_pass" class="form-control form-control-sm" type="password" name="pa_db_pass" value="" autocomplete="off" required>
+                        <input id="pa_db_pass" class="form-control form-control-sm" type="password" name="pa_db_pass" value="{{ pa_db_pass }}" autocomplete="off" required>
                         <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showPassword('pa_db_pass', 'eye1')"><i class="bi bi-eye-fill" id="eye1"></i></button>
                         <label for="pa_db_pass" class="invalid-feedback">{% trans %}Provide the user password{% endtrans %}</label>
                     </div>
@@ -33,7 +33,7 @@
                 <td>{% trans %}Hostmaster{% endtrans %}</td>
                 <td>
                     <input id="dns_hostmaster" class="form-control form-control-sm" type="text" name="dns_hostmaster"
-                           value="" placeholder="hostmaster.example.net" required>
+                           value="{{ dns_hostmaster }}" placeholder="hostmaster.example.net" required>
                     <label for="dns_hostmaster"
                            class="invalid-feedback">{% trans %}Provide the DNS hostmaster{% endtrans %}</label>
                 </td>
@@ -43,7 +43,7 @@
             <tr>
                 <td>{% trans %}Primary nameserver{% endtrans %}</td>
                 <td>
-                    <input id="dns_ns1" class="form-control form-control-sm" type="text" name="dns_ns1" value=""
+                    <input id="dns_ns1" class="form-control form-control-sm" type="text" name="dns_ns1" value="{{ dns_ns1 }}"
                            placeholder="ns1.example.net" required>
                     <div class="invalid-feedback">{% trans %}Provide the primary nameserver{% endtrans %}</div>
                 </td>
@@ -54,7 +54,7 @@
             <tr>
                 <td>{% trans %}Secondary nameserver{% endtrans %}</td>
                 <td>
-                    <input id="dns_ns2" class="form-control form-control-sm" type="text" name="dns_ns2" value=""
+                    <input id="dns_ns2" class="form-control form-control-sm" type="text" name="dns_ns2" value="{{ dns_ns2 }}"
                            placeholder="ns2.example.net" required>
                     <div class="invalid-feedback">{% trans %}Provide the secondary nameserver{% endtrans %}</div>
                 </td>
@@ -65,7 +65,7 @@
             <tr>
                 <td>{% trans %}Tertiary Nameserver{% endtrans %}</td>
                 <td>
-                    <input id="dns_ns3" class="form-control form-control-sm" type="text" name="dns_ns3" value=""
+                    <input id="dns_ns3" class="form-control form-control-sm" type="text" name="dns_ns3" value="{{ dns_ns3 }}"
                            placeholder="ns3.example.net">
                 </td>
                 <td>
@@ -75,7 +75,7 @@
             <tr>
                 <td>{% trans %}Quaternary Nameserver{% endtrans %}</td>
                 <td>
-                    <input id="dns_ns4" class="form-control form-control-sm" type="text" name="dns_ns4" value=""
+                    <input id="dns_ns4" class="form-control form-control-sm" type="text" name="dns_ns4" value="{{ dns_ns4 }}"
                            placeholder="ns4.example.net">
                 </td>
                 <td>

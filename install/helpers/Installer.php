@@ -86,7 +86,7 @@ class Installer
                 break;
 
             case InstallationSteps::STEP_GETTING_READY:
-                $this->installStepHandler->step2GettingReady();
+                $this->installStepHandler->step2GettingReady($errors);
                 break;
 
             case InstallationSteps::STEP_CONFIGURING_DATABASE:
@@ -94,15 +94,16 @@ class Installer
                 break;
 
             case InstallationSteps::STEP_SETUP_ACCOUNT_AND_NAMESERVERS:
-                $this->installStepHandler->step4SetupAccountAndNameServers($this->defaultConfigFile);
+                $this->installStepHandler->step4SetupAccountAndNameServers($errors, $this->defaultConfigFile);
                 break;
 
             case InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER:
-                $this->installStepHandler->step5CreateLimitedRightsUser();
+                $this->installStepHandler->step5CreateLimitedRightsUser($errors);
                 break;
 
             case InstallationSteps::STEP_CREATE_CONFIGURATION_FILE:
                 $this->installStepHandler->step6CreateConfigurationFile(
+                    $errors,
                     $this->defaultConfigFile,
                     $this->localConfigFile
                 );

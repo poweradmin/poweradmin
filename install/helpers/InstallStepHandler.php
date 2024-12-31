@@ -79,7 +79,7 @@ class InstallStepHandler
         ));
     }
 
-    public function step2GettingReady(): void
+    public function step2GettingReady(array $errors): void
     {
         $this->renderTemplate('step2.html.twig', array(
             'current_step' => $this->currentStep,
@@ -107,7 +107,7 @@ class InstallStepHandler
         ], $inputData));
     }
 
-    public function step4SetupAccountAndNameServers(string $default_config_file): void
+    public function step4SetupAccountAndNameServers(array $errors, string $default_config_file): void
     {
         echo "<p class='alert alert-secondary'>" . _('Updating database...') . " ";
 
@@ -133,14 +133,25 @@ class InstallStepHandler
             $this->currentStep = InstallationSteps::STEP_CREATE_CONFIGURATION_FILE;
         }
 
+        $inputData = [
+            'pa_db_user' => $this->request->get('pa_db_user'),
+            'pa_db_pass' => $this->request->get('pa_db_pass'),
+            'dns_hostmaster' => $this->request->get('dns_hostmaster'),
+            'dns_ns1' => $this->request->get('dns_ns1'),
+            'dns_ns2' => $this->request->get('dns_ns2'),
+            'dns_ns3' => $this->request->get('dns_ns3'),
+            'dns_ns4' => $this->request->get('dns_ns4'),
+        ];
+
         $this->renderTemplate('step4.html.twig', array_merge([
             'current_step' => $this->currentStep,
             'language' => $this->request->get('language'),
             'pa_pass' => $pa_pass,
-        ], $credentials));
+            'errors' => $errors,
+        ], $credentials, $inputData));
     }
 
-    public function step5CreateLimitedRightsUser(): void
+    public function step5CreateLimitedRightsUser(array $errors): void
     {
         $credentials = $this->getCredentials();
 
@@ -183,11 +194,12 @@ class InstallStepHandler
             'dns_ns2' => $dns_ns2,
             'dns_ns3' => $dns_ns3,
             'dns_ns4' => $dns_ns4,
-            'instructions' => $instructions
+            'instructions' => $instructions,
+            'errors' => $errors,
         ));
     }
 
-    public function step6CreateConfigurationFile(string $default_config_file, string $local_config_file): void
+    public function step6CreateConfigurationFile(array $errors, string $default_config_file, string $local_config_file): void
     {
         // No need to set database port if it's standard port for that db
         $db_port = ($this->request->get('db_type') == 'mysql' && $this->request->get('db_port') != 3306)
@@ -233,6 +245,7 @@ class InstallStepHandler
             'db_type' => $db_type,
             'db_port' => $db_port,
             'db_charset' => $db_charset,
+            'errors' => $errors,
         ));
     }
 
