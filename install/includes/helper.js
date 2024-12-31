@@ -35,8 +35,12 @@ function updateFormFields(db_type)
 
     switch (db_type) {
         case 'mysql':
-            db_port.value = "3306";
-            host.value = 'localhost';
+            if (db_port.value === "") {
+                db_port.value = "3306";
+            }
+            if (host.value === "") {
+                host.value = 'localhost';
+            }
 
             db_name_title.style.display = '';
             db_path_title.style.display = 'none';
@@ -54,8 +58,12 @@ function updateFormFields(db_type)
             break;
 
         case 'pgsql':
-            db_port.value = '5432';
-            host.value = 'localhost';
+            if (db_port.value === "") {
+                db_port.value = '5432';
+            }
+            if (host.value === "") {
+                host.value = 'localhost';
+            }
 
             db_name_title.style.display = '';
             db_path_title.style.display = 'none';
