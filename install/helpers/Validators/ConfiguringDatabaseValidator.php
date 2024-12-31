@@ -160,9 +160,11 @@ class ConfiguringDatabaseValidator extends AbstractStepValidator
                 ->addViolation();
         }
 
-        if (!filter_var($dbHost, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) &&
+        if (
+            !filter_var($dbHost, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) &&
             !filter_var($dbHost, FILTER_VALIDATE_IP) &&
-            $dbHost !== 'localhost') {
+            $dbHost !== 'localhost'
+        ) {
             $context->buildViolation('Invalid hostname or IP address.')
                 ->atPath('db_host')
                 ->addViolation();
@@ -260,7 +262,6 @@ class ConfiguringDatabaseValidator extends AbstractStepValidator
                     }
 
                     $pdo = null;
-
                 } catch (PDOException $e) {
                     $context->buildViolation('Database error: ' . $e->getMessage())
                         ->addViolation();
