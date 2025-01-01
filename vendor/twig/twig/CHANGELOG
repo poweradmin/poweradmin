@@ -1,7 +1,14 @@
-# 3.17.1 (2024-XX-XX)
+# 3.18.0 (2024-12-29)
+
+ * Fix unary operator precedence change
+ * Ignore `SyntaxError` exceptions from undefined handlers when using the `guard` tag
+ * Add a way to stream template rendering (`TemplateWrapper::stream()` and `TemplateWrapper::streamBlock()`)
+
+# 3.17.1 (2024-12-12)
 
  * Fix the null coalescing operator when the test returns null
  * Fix the Elvis operator when used as '? :' instead of '?:'
+ * Support for invoking closures
 
 # 3.17.0 (2024-12-10)
 
