@@ -27,6 +27,7 @@ use PDO;
 use PDOException;
 use Poweradmin\Application\Service\CsrfTokenService;
 use PoweradminInstall\LocaleHandler;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -36,6 +37,13 @@ class ConfiguringDatabaseValidator extends AbstractStepValidator
     private const PGSQL_MAX_USERNAME_LENGTH = 63;
     private const MIN_PORT = 1;
     private const MAX_PORT = 65535;
+    private array $config;
+
+    public function __construct(Request $request)
+    {
+        parent::__construct($request);
+        $this->config = require __DIR__ . '/../../config.php';
+    }
 
     public function validate(): array
     {
@@ -89,13 +97,10 @@ class ConfiguringDatabaseValidator extends AbstractStepValidator
             'pa_pass' => [
                 new Assert\NotBlank(),
                 new Assert\Length([
-                    'min' => 6,
+                    'min' => $this->config['password_policy']['min_length'],
                     'minMessage' => 'Poweradmin administrator password must be at least 6 characters long'
                 ]),
-                new Assert\Regex([
-                    'pattern' => '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/',
-                    'message' => 'Poweradmin administrator password must contain at least one uppercase letter, one lowercase letter, and one number',
-                ]),
+                new Assert\Callback([$this, 'validateLoginPassword']),
             ],
         ]);
 
@@ -144,12 +149,6 @@ class ConfiguringDatabaseValidator extends AbstractStepValidator
         $input = $context->getRoot();
         if (in_array($input['db_type'], ['mysql', 'pgsql']) && empty($dbPass)) {
             $context->buildViolation('DB password should not be blank.')
-                ->atPath('db_pass')
-                ->addViolation();
-        }
-
-        if (strlen($dbPass) < 8) {
-            $context->buildViolation('Password should be at least 8 characters long.')
                 ->atPath('db_pass')
                 ->addViolation();
         }
@@ -330,5 +329,34 @@ class ConfiguringDatabaseValidator extends AbstractStepValidator
     public function validateDbCollation($collation, ExecutionContextInterface $context): void
     {
         // Implementation needed - requires supported collation list
+    }
+
+    public function validateLoginPassword($paPass, ExecutionContextInterface $context): void
+    {
+        $policy = $this->config['password_policy'];
+
+        if ($policy['require_uppercase'] && !preg_match('/[A-Z]/', $paPass)) {
+            $context->buildViolation('Password must contain at least one uppercase letter.')
+                ->atPath('pa_pass')
+                ->addViolation();
+        }
+
+        if ($policy['require_lowercase'] && !preg_match('/[a-z]/', $paPass)) {
+            $context->buildViolation('Password must contain at least one lowercase letter.')
+                ->atPath('pa_pass')
+                ->addViolation();
+        }
+
+        if ($policy['require_numbers'] && !preg_match('/\d/', $paPass)) {
+            $context->buildViolation('Password must contain at least one number.')
+                ->atPath('pa_pass')
+                ->addViolation();
+        }
+
+        if ($policy['require_special'] && !preg_match('/[' . preg_quote($policy['special_characters'], '/') . ']/', $paPass)) {
+            $context->buildViolation('Password must contain at least one special character.')
+                ->atPath('pa_pass')
+                ->addViolation();
+        }
     }
 }
