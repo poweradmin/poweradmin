@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2024 Poweradmin Development Team
+ *  Copyright 2010-2025 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ namespace Poweradmin\Domain\Model;
 class TopLevelDomain
 {
 
-    // Updated on 2024-01-01 - 1445 TLDs
+    // Updated on 2025-01-01 - 1445 TLDs
     // http://data.iana.org/TLD/tlds-alpha-by-domain.txt
     // for w in `cat tlds-alpha-by-domain.txt`; do echo -n "\"$w\", " | tr '[:upper:]' '[:lower:]'; done | fold -s -w 79 | sed -e 's/^/  /g'
     const TOP_LEVEL_DOMAINS = array(
