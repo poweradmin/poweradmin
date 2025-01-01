@@ -11,6 +11,7 @@
     <p>{% trans %}Do you want to proceed now?{% endtrans %}</p>
 
     <form method="post">
+        <input type="hidden" name="install_token" value="{{ install_token }}">
         <input type="hidden" name="language" value="{{ language }}">
         <input type="hidden" name="step" value="{{ next_step }}">
         <input type="submit" name="submit" class="btn btn-primary btn-sm"

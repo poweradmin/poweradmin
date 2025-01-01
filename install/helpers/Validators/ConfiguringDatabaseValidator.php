@@ -25,6 +25,7 @@ namespace PoweradminInstall\Validators;
 use InvalidArgumentException;
 use PDO;
 use PDOException;
+use Poweradmin\Application\Service\CsrfTokenService;
 use PoweradminInstall\LocaleHandler;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -39,6 +40,10 @@ class ConfiguringDatabaseValidator extends AbstractStepValidator
     public function validate(): array
     {
         $constraints = new Assert\Collection([
+            'install_token' => [
+                new Assert\NotBlank(),
+                new Assert\Length(['min' => CsrfTokenService::TOKEN_LENGTH, 'max' => CsrfTokenService::TOKEN_LENGTH]),
+            ],
             'submit' => [
                 new Assert\NotBlank(),
             ],

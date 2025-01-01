@@ -7,6 +7,7 @@
 {% block content %}
     <p>{% trans %}Now we will gather all details for the configuration itself.{% endtrans %}</p>
     <form class="needs-validation" method="post" novalidate>
+        <input type="hidden" name="install_token" value="{{ install_token }}">
         <table class="table table-sm">
             {% if db_type != 'sqlite' %}
             <tr>

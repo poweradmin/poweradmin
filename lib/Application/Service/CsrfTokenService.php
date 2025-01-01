@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 class CsrfTokenService {
-    const TOKEN_LENGTH = 40;
+    public const TOKEN_LENGTH = 40;
 
     public function generateToken(): string {
         $bytesNeeded = (int) ceil(4 * self::TOKEN_LENGTH / 3);

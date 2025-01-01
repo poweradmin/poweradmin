@@ -26,9 +26,15 @@ use PoweradminInstall\Installer;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
+if (!function_exists('session_start')) {
+    die("You have to install the PHP session extension!");
+}
+
 ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
 error_reporting(E_ALL) ;
+
+session_start();
 
 $installer = new Installer();
 $installer->initialize();

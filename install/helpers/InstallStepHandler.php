@@ -72,19 +72,21 @@ class InstallStepHandler
         }
     }
 
-    public function step1ChooseLanguage(): void
+    public function step1ChooseLanguage(array $errors): void
     {
         $this->renderTemplate('step1.html.twig', array(
-            'current_step' => $this->currentStep
+            'current_step' => $this->currentStep,
+            'errors' => $errors,
         ));
     }
 
     public function step2GettingReady(array $errors): void
     {
-        $this->renderTemplate('step2.html.twig', array(
+        $this->renderTemplate('step2.html.twig', [
             'current_step' => $this->currentStep,
-            'language' => $this->language
-        ));
+            'language' => $this->language,
+            'errors' => $errors,
+        ]);
     }
 
     public function step3ConfiguringDatabase(array $errors): void

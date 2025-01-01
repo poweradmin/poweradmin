@@ -22,6 +22,7 @@
 
 namespace PoweradminInstall;
 
+use Poweradmin\Application\Service\CsrfTokenService;
 use PoweradminInstall\Validators\AbstractStepValidator;
 use PoweradminInstall\Validators\ChooseLanguageValidator;
 use PoweradminInstall\Validators\ConfiguringDatabaseValidator;
@@ -31,6 +32,7 @@ use PoweradminInstall\Validators\EmptyValidator;
 use PoweradminInstall\Validators\GettingReadyValidator;
 use PoweradminInstall\Validators\SetupAccountAndNameServersValidator;
 use Symfony\Component\HttpFoundation\Request;
+use Twig\Environment;
 
 class Installer
 {
@@ -38,6 +40,7 @@ class Installer
     private LocaleHandler $localeHandler;
     private StepValidator $stepValidator;
     private InstallStepHandler $installStepHandler;
+    private CsrfTokenService $csrfTokenService;
     private string $localConfigFile;
     private string $defaultConfigFile;
 
@@ -51,6 +54,7 @@ class Installer
         $this->request = Request::createFromGlobals();
         $this->localeHandler = new LocaleHandler();
         $this->stepValidator = new StepValidator();
+        $this->csrfTokenService = new CsrfTokenService();
     }
 
     public function initialize(): void
@@ -69,6 +73,9 @@ class Installer
             $currentStep--;
         }
 
+        $installToken = $this->csrfTokenService->generateToken();
+        $_SESSION['install_token'] = $installToken;
+
         $currentLanguage = $this->initializeLocaleHandler();
         $twigEnvironment = $this->initializeTwigEnvironment($currentLanguage);
 
@@ -82,7 +89,7 @@ class Installer
     {
         switch ($currentStep) {
             case InstallationSteps::STEP_CHOOSE_LANGUAGE:
-                $this->installStepHandler->step1ChooseLanguage();
+                $this->installStepHandler->step1ChooseLanguage($errors);
                 break;
 
             case InstallationSteps::STEP_GETTING_READY:
@@ -134,6 +141,14 @@ class Installer
     private function validatePreviousStep(int $previousStep): array
     {
         $validator = $this->getStepValidator($previousStep);
+
+        if ($this->request->isMethod('POST')) {
+            $token = $this->request->get('install_token');
+            if (!$this->csrfTokenService->validateToken($token, 'install_token')) {
+                return ['csrf' => 'Invalid security token'];
+            }
+        }
+
         return $validator->validate();
     }
 
@@ -154,9 +169,13 @@ class Installer
         return $currentLanguage;
     }
 
-    private function initializeTwigEnvironment(string $currentLanguage): \Twig\Environment
+    private function initializeTwigEnvironment(string $currentLanguage): Environment
     {
         $twigEnvironmentInitializer = new TwigEnvironmentInitializer($this->localeHandler);
-        return $twigEnvironmentInitializer->initialize($currentLanguage);
+        $environment = $twigEnvironmentInitializer->initialize($currentLanguage);
+
+        $environment->addGlobal('install_token', $_SESSION['install_token'] ?? '');
+
+        return $environment;
     }
 }

@@ -12,6 +12,7 @@
     <pre>{{ instructions }}</pre>
     <p>{% trans %}After you have added the new user, proceed with this installation procedure.{% endtrans %}</p>
     <form method="post">
+        <input type="hidden" name="install_token" value="{{ install_token }}">
         <input type="hidden" name="db_host" value="{{ db_host }}">
         <input type="hidden" name="db_name" value="{{ db_name }}">
         <input type="hidden" name="db_port" value="{{ db_port }}">

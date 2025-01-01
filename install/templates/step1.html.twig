@@ -6,6 +6,7 @@
 
 {% block content %}
     <form method="post">
+        <input type="hidden" name="install_token" value="{{ install_token }}">
         <div class="form-check">
             <input id="language_en_EN" class="form-check-input" type="radio" name="language" value="en_EN" checked>
             <label for="language_en_EN">I prefer to proceed in English</label>

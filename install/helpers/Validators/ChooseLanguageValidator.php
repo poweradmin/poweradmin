@@ -2,6 +2,7 @@
 
 namespace PoweradminInstall\Validators;
 
+use Poweradmin\Application\Service\CsrfTokenService;
 use PoweradminInstall\InstallationSteps;
 use PoweradminInstall\LocaleHandler;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -12,6 +13,10 @@ class ChooseLanguageValidator extends AbstractStepValidator
     public function validate(): array
     {
         $constraints = new Assert\Collection([
+            'install_token' => [
+                new Assert\NotBlank(),
+                new Assert\Length(['min' => CsrfTokenService::TOKEN_LENGTH, 'max' => CsrfTokenService::TOKEN_LENGTH]),
+            ],
             'submit' => [
                 new Assert\NotBlank(),
             ],
