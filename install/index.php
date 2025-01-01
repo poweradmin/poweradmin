@@ -20,21 +20,20 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-declare(strict_types=1);
+namespace PoweradminInstall;
 
-use PoweradminInstall\Installer;
+use Symfony\Component\HttpFoundation\Request;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 if (!function_exists('session_start')) {
-    die("You have to install the PHP session extension!");
+    exit("Error: PHP session extension is not installed. Please install it to proceed.");
 }
 
-ini_set('display_errors', '1');
-ini_set('display_startup_errors', '1');
-error_reporting(E_ALL) ;
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-session_start();
-
-$installer = new Installer();
+$request = Request::createFromGlobals();
+$installer = new Installer($request);
 $installer->initialize();

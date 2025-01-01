@@ -49,11 +49,11 @@ class Installer
     private const DEFAULT_CONFIG_FILE_PATH = '/inc/config-defaults.inc.php';
     private const INSTALL_CONFIG_PATH = '/config.php';
 
-    public function __construct()
+    public function __construct(Request $request)
     {
         $this->localConfigFile = dirname(__DIR__, 2) . self::LOCAL_CONFIG_FILE_PATH;
         $this->defaultConfigFile = dirname(__DIR__, 2) . self::DEFAULT_CONFIG_FILE_PATH;
-        $this->request = Request::createFromGlobals();
+        $this->request = $request;
         $this->localeHandler = new LocaleHandler();
         $this->stepValidator = new StepValidator();
         $this->csrfTokenService = new CsrfTokenService();
