@@ -345,6 +345,7 @@ return array(
     'PoweradminInstall\\DatabaseHelper' => $baseDir . '/install/helpers/DatabaseHelper.php',
     'PoweradminInstall\\DatabaseStructureHelper' => $baseDir . '/install/helpers/DatabaseStructureHelper.php',
     'PoweradminInstall\\ErrorHandler' => $baseDir . '/install/helpers/ErrorHandler.php',
+    'PoweradminInstall\\InstallSecurityService' => $baseDir . '/install/helpers/InstallSecurityService.php',
     'PoweradminInstall\\InstallStepHandler' => $baseDir . '/install/helpers/InstallStepHandler.php',
     'PoweradminInstall\\InstallationSteps' => $baseDir . '/install/helpers/InstallationSteps.php',
     'PoweradminInstall\\Installer' => $baseDir . '/install/helpers/Installer.php',

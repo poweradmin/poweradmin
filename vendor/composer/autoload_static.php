@@ -548,6 +548,7 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
         'PoweradminInstall\\DatabaseHelper' => __DIR__ . '/../..' . '/install/helpers/DatabaseHelper.php',
         'PoweradminInstall\\DatabaseStructureHelper' => __DIR__ . '/../..' . '/install/helpers/DatabaseStructureHelper.php',
         'PoweradminInstall\\ErrorHandler' => __DIR__ . '/../..' . '/install/helpers/ErrorHandler.php',
+        'PoweradminInstall\\InstallSecurityService' => __DIR__ . '/../..' . '/install/helpers/InstallSecurityService.php',
         'PoweradminInstall\\InstallStepHandler' => __DIR__ . '/../..' . '/install/helpers/InstallStepHandler.php',
         'PoweradminInstall\\InstallationSteps' => __DIR__ . '/../..' . '/install/helpers/InstallationSteps.php',
         'PoweradminInstall\\Installer' => __DIR__ . '/../..' . '/install/helpers/Installer.php',

@@ -41,11 +41,13 @@ class Installer
     private StepValidator $stepValidator;
     private InstallStepHandler $installStepHandler;
     private CsrfTokenService $csrfTokenService;
+    private InstallSecurityService $securityService;
     private string $localConfigFile;
-    private string $defaultConfigFile;
 
+    private string $defaultConfigFile;
     private const LOCAL_CONFIG_FILE_PATH = '/inc/config.inc.php';
     private const DEFAULT_CONFIG_FILE_PATH = '/inc/config-defaults.inc.php';
+    private const INSTALL_CONFIG_PATH = '/config.php';
 
     public function __construct()
     {
@@ -55,10 +57,20 @@ class Installer
         $this->localeHandler = new LocaleHandler();
         $this->stepValidator = new StepValidator();
         $this->csrfTokenService = new CsrfTokenService();
+        $this->securityService = new InstallSecurityService(
+            dirname(__DIR__) . self::INSTALL_CONFIG_PATH,
+            $this->csrfTokenService
+        );
     }
 
     public function initialize(): void
     {
+        $securityErrors = $this->securityService->validateRequest($this->request);
+        if (!empty($securityErrors)) {
+            $this->handleSecurityErrors($securityErrors);
+            return;
+        }
+
         $step = $this->request->get('step', InstallationSteps::STEP_CHOOSE_LANGUAGE);
         $currentStep = $this->stepValidator->getCurrentStep($step);
 
@@ -79,10 +91,23 @@ class Installer
         $currentLanguage = $this->initializeLocaleHandler();
         $twigEnvironment = $this->initializeTwigEnvironment($currentLanguage);
 
-        $this->installStepHandler = new InstallStepHandler($this->request, $twigEnvironment, $currentStep, $currentLanguage);
+        $this->installStepHandler = new InstallStepHandler(
+            $this->request,
+            $twigEnvironment,
+            $currentStep,
+            $currentLanguage
+        );
         $this->installStepHandler->checkConfigFile($this->localConfigFile);
 
         $this->handleStep($currentStep, $errors);
+    }
+
+    private function handleSecurityErrors(array $errors): void
+    {
+        header('HTTP/1.1 403 Forbidden');
+        header('Content-Type: text/plain');
+        echo implode("\n", $errors);
+        exit();
     }
 
     private function handleStep(int $currentStep, array $errors): void
@@ -141,14 +166,6 @@ class Installer
     private function validatePreviousStep(int $previousStep): array
     {
         $validator = $this->getStepValidator($previousStep);
-
-        if ($this->request->isMethod('POST')) {
-            $token = $this->request->get('install_token');
-            if (!$this->csrfTokenService->validateToken($token, 'install_token')) {
-                return ['csrf' => 'Invalid security token'];
-            }
-        }
-
         return $validator->validate();
     }
 
