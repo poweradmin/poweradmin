@@ -128,9 +128,10 @@ server {
     }
 }
 ```
+With the above NGINX configuration, make sure to also move all the files in the PowerAdmin (repository) directory to the root declared in the configuration (in the example: `root /var/www/html;`). Once this is done, reload your NGINX installation and it should be applied.
+Then you can navigate to the installed system in your browser
 
-After this, make sure to reload the configuration files and that everything is present. Then you can navigate to the
-installed system in your browser
+> **Note:** You can also safely remove the default index.html (or derivative).
 
 * Visit http(s)://HOSTNAME/install/ and follow the installation steps.
 * Once the installation is complete, remove the `install` folder.
