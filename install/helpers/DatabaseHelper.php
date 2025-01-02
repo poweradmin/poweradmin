@@ -139,7 +139,7 @@ class DatabaseHelper
         // Tables from PowerDNS
         $grantTables = array('supermasters', 'domains', 'domainmetadata', 'cryptokeys', 'records', 'comments');
 
-        // Include PowerAdmin tables
+        // Include Poweradmin tables
         foreach ($def_tables as $table) {
             $grantTables[] = $table['table_name'];
         }

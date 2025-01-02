@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <phpdoc>
-    <title>PowerAdmin</title>
+    <title>Poweradmin</title>
     <parser>
         <target>docs</target>
         <markers>

@@ -13,11 +13,11 @@ dyndns = "mydynamicdns.example.com"
 url = "http://www.example.com/poweradmin"
 verbose = 1
 
-parser = argparse.ArgumentParser(description='Client for PowerAdmin dynamic DNS')
-parser.add_argument('-l', '--login', dest='login', help='PowerAdmin user name')
-parser.add_argument('-p', '--password', dest='password', help='PowerAdmin user password')
+parser = argparse.ArgumentParser(description='Client for Poweradmin dynamic DNS')
+parser.add_argument('-l', '--login', dest='login', help='Poweradmin user name')
+parser.add_argument('-p', '--password', dest='password', help='Poweradmin user password')
 parser.add_argument('-d', '--dyndns', dest='dyndns', help='Dynamic DNS name')
-parser.add_argument('-u', '--url', dest='url', help='PowerAdmin URL')
+parser.add_argument('-u', '--url', dest='url', help='Poweradmin URL')
 parser.add_argument('-v', '--verbose', dest='verbose', help='Output verbosity')
 args = parser.parse_args()
 

@@ -58,7 +58,7 @@ This project is licensed under the GNU General Public License v3.0. See the LICE
 
 ## Installation
 
-To install PowerAdmin onto your system there are a few dependencies, they are listed below.
+To install Poweradmin onto your system there are a few dependencies, they are listed below.
 
 On Debian-based systems and their derivatives (with sudo or as root, Debian 12 or later recommended):
 > **Note:** `php-fpm` is required only if you plan to use Nginx or choose not to use `mod_php` with Apache.
@@ -88,7 +88,7 @@ dnf install -y php-mysqlnd
 dnf install -y php-pgsql
 ```
 
-To get PowerAdmin working on your preferred webserver (Apache/NGINX for example), download the source-code from GitHub.
+To get Poweradmin working on your preferred webserver (Apache/NGINX for example), download the source-code from GitHub.
 Note that Ubuntu has an Apache server by default, so the following NGINX configuration is only needed for Debian or
 custom installations:
 
@@ -128,7 +128,7 @@ server {
     }
 }
 ```
-With the above NGINX configuration, make sure to also move all the files in the PowerAdmin (repository) directory to the root declared in the configuration (in the example: `root /var/www/html;`). Once this is done, reload your NGINX installation and it should be applied.
+With the above NGINX configuration, make sure to also move all the files in the Poweradmin (repository) directory to the root declared in the configuration (in the example: `root /var/www/html;`). Once this is done, reload your NGINX installation and it should be applied.
 Then you can navigate to the installed system in your browser
 
 > **Note:** You can also safely remove the default index.html (or derivative).
