@@ -58,10 +58,11 @@ class AppManager
      */
     public function __construct()
     {
-        $loader = new FilesystemLoader('templates');
-        $this->templateRenderer = new Environment($loader, ['debug' => false]);
-
         $this->configuration = new AppConfiguration();
+
+        $templates = $this->config('iface_templates');
+        $loader = new FilesystemLoader($templates);
+        $this->templateRenderer = new Environment($loader, ['debug' => false]);
 
         if ($this->config('display_stats')) {
             $memoryUsage = new MemoryUsage();
