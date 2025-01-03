@@ -796,16 +796,25 @@ class UserManager
             $password_hash = $userAuthService->hashPassword($details['password']);
         }
 
-        $query = "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES (" . $this->db->quote($details['username'], 'text') . ", " . $this->db->quote($password_hash, 'text') . ", " . $this->db->quote($details['fullname'], 'text') . ", " . $this->db->quote($details['email'], 'text') . ", " . $this->db->quote($details['descr'], 'text') . ", ";
+        $query = "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES (:username, :password, :fullname, :email, :description, :perm_templ, :active, :use_ldap)";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':username', $details['username']);
+        $stmt->bindValue(':password', $password_hash);
+        $stmt->bindValue(':fullname', $details['fullname']);
+        $stmt->bindValue(':email', $details['email']);
+        $stmt->bindValue(':description', $details['descr']);
 
         if (self::verify_permission($this->db, 'user_edit_templ_perm')) {
-            $query .= $this->db->quote($details['perm_templ'], 'integer') . ", ";
+            $stmt->bindValue(':perm_templ', $details['perm_templ'], PDO::PARAM_INT);
         } else {
             $current_user = self::get_user_detail_list($this->db, $ldap_use, $_SESSION['userid']);
-            $query .= $this->db->quote($current_user[0]['tpl_id'], 'integer') . ", ";
+            $stmt->bindValue(':perm_templ', $current_user[0]['tpl_id'], PDO::PARAM_INT);
         }
-        $query .= $this->db->quote($active, 'integer') . ", " . $this->db->quote($use_ldap, 'integer') . ")";
-        $this->db->query($query);
+
+        $stmt->bindValue(':active', $active, PDO::PARAM_INT);
+        $stmt->bindValue(':use_ldap', $use_ldap, PDO::PARAM_INT);
+        $stmt->execute();
 
         return true;
     }
