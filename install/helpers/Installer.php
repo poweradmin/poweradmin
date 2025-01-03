@@ -89,6 +89,11 @@ class Installer
 
         $errors = $this->validatePreviousStep($currentStep - 1);
 
+        if ($this->hasLanguageError($errors)) {
+            echo 'Please select a language to proceed with the installation.';
+            $currentStep = InstallationSteps::STEP_CHOOSE_LANGUAGE;
+        }
+
         // If there are errors, go back to the previous step
         if (!empty($errors)) {
             $currentStep--;
@@ -175,6 +180,14 @@ class Installer
     {
         $validator = $this->getStepValidator($previousStep);
         return $validator->validate();
+    }
+
+    private function hasLanguageError(array $errors): bool
+    {
+        if (isset($errors['language'])) {
+            return true;
+        }
+        return false;
     }
 
     private function initializeLocaleHandler(): string
