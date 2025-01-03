@@ -720,14 +720,24 @@ class DnsRecord
                 (preg_match('/in-addr.arpa/i', $domain) && $owner && $zone_template) ||
                 $type == "SLAVE" && $domain && $owner && $slave_master) {
 
-                $db->query("INSERT INTO $domains_table (name, type) VALUES (" . $db->quote($domain, 'text') . ", " . $db->quote($type, 'text') . ")");
+                $stmt = $db->prepare("INSERT INTO $domains_table (name, type) VALUES (:domain, :type)");
+                $stmt->bindValue(':domain', $domain, PDO::PARAM_STR);
+                $stmt->bindValue(':type', $type, PDO::PARAM_STR);
+                $stmt->execute();
 
                 $domain_id = $db->lastInsertId();
 
-                $db->query("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (" . $db->quote($domain_id, 'integer') . ", " . $db->quote($owner, 'integer') . ", " . $db->quote(($zone_template == "none") ? 0 : $zone_template, 'integer') . ")");
+                $stmt = $db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (:domain_id, :owner, :zone_template)");
+                $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
+                $stmt->bindValue(':owner', $owner, PDO::PARAM_INT);
+                $stmt->bindValue(':zone_template', ($zone_template == "none") ? 0 : $zone_template, PDO::PARAM_INT);
+                $stmt->execute();
 
                 if ($type == "SLAVE") {
-                    $db->query("UPDATE $domains_table SET master = " . $db->quote($slave_master, 'text') . " WHERE id = " . $db->quote($domain_id, 'integer'));
+                    $stmt = $db->prepare("UPDATE $domains_table SET master = :slave_master WHERE id = :domain_id");
+                    $stmt->bindValue(':slave_master', $slave_master, PDO::PARAM_STR);
+                    $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
+                    $stmt->execute();
                     return true;
                 } else {
                     if ($zone_template == "none" && $domain_id) {
@@ -736,10 +746,7 @@ class DnsRecord
                         $ttl = $dns_ttl;
 
                         $this->set_timezone();
-
-                        $serial = date("Ymd");
-                        $serial .= "00";
-
+                        $serial = date("Ymd") . "00";
                         $dns_soa = $this->config->get('dns_soa');
 
                         $query = "INSERT INTO $records_table (domain_id, name, content, type, ttl, prio) VALUES ("
