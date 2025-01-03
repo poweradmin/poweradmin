@@ -57,22 +57,32 @@ class DeleteSupermasterController extends BaseController
             'ip' => ['master_ip'],
         ]);
 
-        $master_ip = htmlspecialchars($_GET['master_ip']);
-        $ns_name = htmlspecialchars($_GET['ns_name']);
-
-        if ($v->validate()) {
-            $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-            if (!$dnsRecord->supermaster_ip_name_exists($master_ip, $ns_name)) {
-                $this->setMessage('list_supermasters', 'error', _('Super master does not exist.'));
-                $this->redirect('index.php', ['page'=> 'list_supermasters']);
-            }
-
-            if ($dnsRecord->delete_supermaster($master_ip, $ns_name)) {
-                $this->setMessage('list_supermasters', 'success', _('The supermaster has been deleted successfully.'));
-                $this->redirect('index.php', ['page'=> 'list_supermasters']);
-            }
-        } else {
+        if (!$v->validate()) {
             $this->showFirstError($v->errors());
+            return;
+        }
+
+        $master_ip = filter_input(INPUT_GET, 'master_ip', FILTER_VALIDATE_IP);
+        $ns_name = filter_input(INPUT_GET, 'ns_name', FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME);
+
+        if ($master_ip === false) {
+            $this->setMessage('list_supermasters', 'error', _('Invalid IP address.'));
+            $this->redirect('index.php', ['page'=> 'list_supermasters']);
+        }
+
+        if (empty($ns_name)) {
+            $this->setMessage('list_supermasters', 'error', _('Invalid NS name.'));
+            $this->redirect('index.php', ['page'=> 'list_supermasters']);
+        }
+
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        if (!$dnsRecord->supermaster_ip_name_exists($master_ip, $ns_name)) {
+            $this->setMessage('list_supermasters', 'error', _('Super master does not exist.'));
+            $this->redirect('index.php', ['page' => 'list_supermasters']);
+        }
+        if ($dnsRecord->delete_supermaster($master_ip, $ns_name)) {
+            $this->setMessage('list_supermasters', 'success', _('The supermaster has been deleted successfully.'));
+            $this->redirect('index.php', ['page' => 'list_supermasters']);
         }
     }
 
