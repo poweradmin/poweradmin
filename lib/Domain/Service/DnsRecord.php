@@ -546,7 +546,12 @@ class DnsRecord
             $pdns_db_name = $this->config->get('pdns_db_name');
             $supermasters_table = $pdns_db_name ? $pdns_db_name . ".supermasters" : "supermasters";
 
-            $this->db->query("INSERT INTO $supermasters_table VALUES (" . $this->db->quote($master_ip, 'text') . ", " . $this->db->quote($ns_name, 'text') . ", " . $this->db->quote($account, 'text') . ")");
+            $stmt = $this->db->prepare("INSERT INTO $supermasters_table (ip, nameserver, account) VALUES (:master_ip, :ns_name, :account)");
+            $stmt->execute([
+                ':master_ip' => $master_ip,
+                ':ns_name' => $ns_name,
+                ':account' => $account
+            ]);
             return true;
         }
     }
