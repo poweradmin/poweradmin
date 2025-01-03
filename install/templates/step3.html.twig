@@ -82,17 +82,21 @@
             </tr>
             <tr id="db_charset_row">
                 <td>{% trans %}DB charset{% endtrans %}</td>
-                <td><input class="form-control form-control-sm" type="text" name="db_charset" value="{{ db_charset }}"></td>
-                <td>{% trans %}The charset (encoding) which will be used for new tables. Leave it empty then default database
-                    charset will be used.{% endtrans %}
+                <td>
+                    <select class="form-select form-select-sm" name="db_charset">
+                        <option value="">{% trans %}Use default{% endtrans %}</option>
+                    </select>
                 </td>
+                <td>{% trans %}The charset (encoding) which will be used for new tables. Leave it empty then default database charset will be used.{% endtrans %}</td>
             </tr>
             <tr id="db_collation_row">
                 <td>{% trans %}DB collation{% endtrans %}</td>
-                <td><input class="form-control form-control-sm" type="text" name="db_collation" value="{{ db_collation }}"></td>
-                <td>{% trans %}Set of rules for comparing characters in database. Leave it empty then default database
-                    collation will be used.{% endtrans %}
+                <td>
+                    <select class="form-select form-select-sm" name="db_collation">
+                        <option value="">{% trans %}Use default{% endtrans %}</option>
+                    </select>
                 </td>
+                <td>{% trans %}Set of rules for comparing characters in database. Leave it empty then default database collation will be used.{% endtrans %}</td>
             </tr>
             <tr>
                 <td>{% trans %}Poweradmin administrator password{% endtrans %}</td>
@@ -120,10 +124,42 @@
 
 {% block javascripts %}
     <script>
+        const charsets = {{ charsets|json_encode|raw }};
+        const collations = {{ collations|json_encode|raw }};
+
+        function updateDatabaseFields(dbType) {
+            const charsetSelect = document.querySelector('select[name="db_charset"]');
+            const collationSelect = document.querySelector('select[name="db_collation"]');
+
+            const charsetOptions = charsets[dbType] || [];
+            const collationOptions = collations[dbType] || [];
+
+            charsetSelect.innerHTML = '<option value="">{% trans %}Use default{% endtrans %}</option>';
+            charsetOptions.forEach(charset => {
+                const option = document.createElement('option');
+                option.value = charset;
+                option.textContent = charset;
+                charsetSelect.appendChild(option);
+            });
+
+            collationSelect.innerHTML = '<option value="">{% trans %}Use default{% endtrans %}</option>';
+            collationOptions.forEach(collation => {
+                const option = document.createElement('option');
+                option.value = collation;
+                option.textContent = collation;
+                collationSelect.appendChild(option);
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             const dbTypeElement = document.getElementById('db_type');
             if (dbTypeElement) {
                 updateFormFields(dbTypeElement.value);
+                updateDatabaseFields(dbTypeElement.value);
+
+                dbTypeElement.addEventListener('change', function() {
+                    updateDatabaseFields(this.value);
+                });
             }
         });
     </script>

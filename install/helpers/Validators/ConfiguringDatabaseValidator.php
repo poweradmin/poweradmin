@@ -310,6 +310,9 @@ class ConfiguringDatabaseValidator extends BaseValidator
 
     public function validateDbCharset(string $charset, ExecutionContextInterface $context): void
     {
+        if (empty($charset)) {
+            return;
+        }
         $charset = strtolower($charset);
         $input = $context->getRoot();
         $dbType = $input['db_type'];
@@ -319,22 +322,22 @@ class ConfiguringDatabaseValidator extends BaseValidator
         if (isset($charsets[$dbType])) {
             $validCharsets = $charsets[$dbType];
         } else {
-            $context->buildViolation('Unsupported database type: {{ type }}')
-                ->setParameter('{{ type }}', $dbType)
+            $context->buildViolation('Unsupported database type')
                 ->addViolation();
             return;
         }
 
         if (!in_array($charset, $validCharsets, true)) {
-            $context->buildViolation('Invalid character set "{{ charset }}" for {{ type }}')
-                ->setParameter('{{ charset }}', $charset)
-                ->setParameter('{{ type }}', $dbType)
+            $context->buildViolation('Invalid database character set')
                 ->addViolation();
         }
     }
 
     public function validateDbCollation($collation, ExecutionContextInterface $context): void
     {
+        if (empty($collation)) {
+            return;
+        }
         $collation = strtolower($collation);
         $input = $context->getRoot();
         $dbType = $input['db_type'];
@@ -344,16 +347,14 @@ class ConfiguringDatabaseValidator extends BaseValidator
         if (isset($collations[$dbType])) {
             $validCollations = $collations[$dbType];
         } else {
-            $context->buildViolation('Unsupported database type: {{ type }}')
+            $context->buildViolation('Unsupported database type')
                 ->setParameter('{{ type }}', $dbType)
                 ->addViolation();
             return;
         }
 
         if (!in_array($collation, $validCollations, true)) {
-            $context->buildViolation('Invalid collation "{{ collation }}" for {{ type }}')
-                ->setParameter('{{ collation }}', $collation)
-                ->setParameter('{{ type }}', $dbType)
+            $context->buildViolation('Invalid database collation')
                 ->addViolation();
         }
     }

@@ -80,6 +80,9 @@ class InstallStepHandler
 
     public function step3ConfiguringDatabase(array $errors): void
     {
+        $charsets = require __DIR__ . '/../charsets.php';
+        $collations = require __DIR__ . '/../collations.php';
+
         $inputData = [
             'db_user' => $this->request->get('db_user'),
             'db_pass' => $this->request->get('db_pass'),
@@ -96,6 +99,8 @@ class InstallStepHandler
             'current_step' => $this->currentStep,
             'language' => $this->language,
             'errors' => $errors,
+            'charsets' => $charsets ?? [],
+            'collations' => $collations ?? [],
         ], $inputData));
     }
 

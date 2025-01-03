@@ -3,7 +3,7 @@
 return [
     // CSRF Protection
     'csrf' => [
-        'enabled' => true,
+        'enabled' => false,
     ],
 
     // IP Access Control
