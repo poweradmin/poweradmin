@@ -354,14 +354,16 @@ class ZoneTemplate
             return false;
         }
 
-        $query = "INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES ("
-            . $db->quote($zone_templ_id, 'integer') . ","
-            . $db->quote($name, 'text') . ","
-            . $db->quote($type, 'text') . ","
-            . $db->quote($content, 'text') . ","
-            . $db->quote($ttl, 'integer') . ","
-            . $db->quote($prio, 'integer') . ")";
-        $db->query($query);
+        $query = "INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES (:zone_templ_id, :name, :type, :content, :ttl, :prio)";
+        $stmt = $db->prepare($query);
+        $stmt->execute([
+            ':zone_templ_id' => $zone_templ_id,
+            ':name' => $name,
+            ':type' => $type,
+            ':content' => $content,
+            ':ttl' => $ttl,
+            ':prio' => $prio
+        ]);
 
         return true;
     }
