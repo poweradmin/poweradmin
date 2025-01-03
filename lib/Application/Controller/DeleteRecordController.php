@@ -98,7 +98,7 @@ class DeleteRecordController extends BaseController
                 if (!$dnsRecord->has_similar_records($domain_id, $record_info['name'], $record_info['type'], $record_id)) {
                     $this->recordCommentService->deleteComment($domain_id, $record_info['name'], $record_info['type']);
                     $this->setMessage('edit', 'success', _('The record has been deleted successfully.'));
-                } else {
+                } else if ($this->config('comments_enabled')) {
                     $this->setMessage('edit', 'warn', _('The record was deleted but the comment was preserved because similar records exist.'));
                 }
 
