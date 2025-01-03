@@ -326,7 +326,7 @@ class ConfiguringDatabaseValidator extends BaseValidator
                 'cp1256', 'cp1257', 'binary', 'geostd8', 'cp932',
                 'eucjpms'
             ];
-        } else if ($input['db_type'] === 'pgsql') {
+        } elseif ($input['db_type'] === 'pgsql') {
             $validCharsets = [
                 'utf8', 'unicode', 'win', 'win1250', 'win1251',
                 'win1252', 'win1253', 'win1254', 'win1255', 'win1256',
