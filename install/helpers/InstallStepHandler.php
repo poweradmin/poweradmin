@@ -48,18 +48,6 @@ class InstallStepHandler
         $this->language = $language;
     }
 
-    public function checkConfigFile(string $local_config_file): void
-    {
-        if (file_exists($local_config_file)) {
-            if ($this->currentStep == InstallationSteps::STEP_INSTALLATION_COMPLETE) {
-                return; // Allow last step to be shown
-            } else {
-                echo "<p class='alert alert-danger'>" . _('There is already a configuration file in place, so the installation will be skipped.') . "</p>";
-                exit;
-            }
-        }
-    }
-
     private function renderTemplate(string $templateName, array $data): void
     {
         $data['next_step'] = filter_var($data['current_step'], FILTER_VALIDATE_INT) ?: 0;
