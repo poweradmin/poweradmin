@@ -526,45 +526,55 @@ class UserManager
         $userid = $_SESSION['userid'];
 
         if ($specific) {
-            $sql_add = "AND users.id = " . $db->quote($specific, 'integer');
+            $sql_add = "AND users.id = :specific";
         } elseif (self::verify_permission($db, 'user_view_others')) {
             $sql_add = "";
         } else {
-            $sql_add = "AND users.id = " . $db->quote($userid, 'integer');
+            $sql_add = "AND users.id = :userid";
         }
 
         $query = "SELECT users.id AS uid,
-			username,
-			fullname,
-			email,
-			description AS descr,
-			active,";
+        username,
+        fullname,
+        email,
+        description AS descr,
+        active,";
+
         if ($ldap_use) {
             $query .= "use_ldap,";
         }
 
         $query .= "perm_templ.id AS tpl_id,
-			perm_templ.name AS tpl_name,
-			perm_templ.descr AS tpl_descr
-			FROM users, perm_templ
-			WHERE users.perm_templ = perm_templ.id " . $sql_add . "
-			ORDER BY username";
+        perm_templ.name AS tpl_name,
+        perm_templ.descr AS tpl_descr
+        FROM users, perm_templ
+        WHERE users.perm_templ = perm_templ.id " . $sql_add . "
+        ORDER BY username";
 
-        $response = $db->query($query);
+        $stmt = $db->prepare($query);
+
+        if ($specific) {
+            $stmt->bindValue(':specific', $specific, PDO::PARAM_INT);
+        } elseif (!self::verify_permission($db, 'user_view_others')) {
+            $stmt->bindValue(':userid', $userid, PDO::PARAM_INT);
+        }
+
+        $stmt->execute();
+        $response = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $userList = array();
-        while ($user = $response->fetch()) {
+        foreach ($response as $user) {
             $userList[] = array(
-                "uid" => $user ['uid'],
-                "username" => $user ['username'],
-                "fullname" => $user ['fullname'],
-                "email" => $user ['email'],
-                "descr" => $user ['descr'],
-                "active" => $user ['active'],
+                "uid" => $user['uid'],
+                "username" => $user['username'],
+                "fullname" => $user['fullname'],
+                "email" => $user['email'],
+                "descr" => $user['descr'],
+                "active" => $user['active'],
                 "use_ldap" => $user['use_ldap'] ?? 0,
-                "tpl_id" => $user ['tpl_id'],
-                "tpl_name" => $user ['tpl_name'],
-                "tpl_descr" => $user ['tpl_descr']
+                "tpl_id" => $user['tpl_id'],
+                "tpl_name" => $user['tpl_name'],
+                "tpl_descr" => $user['tpl_descr']
             );
         }
         return $userList;
