@@ -23,13 +23,13 @@
 namespace PoweradminInstall;
 
 use Poweradmin\Application\Service\CsrfTokenService;
-use RuntimeException;
 use Symfony\Component\HttpFoundation\Request;
 
 class InstallSecurityService
 {
     private array $config;
     private CsrfTokenService $csrfTokenService;
+    private const DEFAULT_IP = '0.0.0.0';
 
     public function __construct(array $config, CsrfTokenService $csrfTokenService)
     {
@@ -48,9 +48,9 @@ class InstallSecurityService
         if ($this->config['csrf']['enabled'] && $request->isMethod('POST')) {
             $token = $request->get('install_token');
             if (empty($token)) {
-                $errors['csrf'] = 'Security token is required';
+                $errors['csrf'] = 'Security Token Missing: A required security token was not provided. Please refresh the page and try again.';
             } elseif (!$this->csrfTokenService->validateToken($token, 'install_token')) {
-                $errors['csrf'] = 'Invalid security token';
+                $errors['csrf'] = 'Invalid Security Token: The provided token is invalid. Please refresh the page and try again.';
             }
         }
 
@@ -91,27 +91,25 @@ class InstallSecurityService
 
     private function getClientIp(): string
     {
-        $headers = [
-            'HTTP_CLIENT_IP',
-            'HTTP_X_FORWARDED_FOR',
-            'HTTP_X_FORWARDED',
-            'HTTP_X_CLUSTER_CLIENT_IP',
-            'HTTP_FORWARDED_FOR',
-            'HTTP_FORWARDED',
-            'REMOTE_ADDR'
-        ];
 
-        foreach ($headers as $header) {
-            if (isset($_SERVER[$header])) {
-                foreach (explode(',', $_SERVER[$header]) as $ip) {
-                    $ip = trim($ip);
-                    if (filter_var($ip, FILTER_VALIDATE_IP)) {
-                        return $ip;
-                    }
-                }
+        $hasForwardedForHeader = isset($_SERVER['HTTP_X_FORWARDED_FOR']);
+        $hasRemoteAddress = isset($_SERVER['REMOTE_ADDR']);
+
+        if ($hasRemoteAddress && $hasForwardedForHeader) {
+            $forwardedIps = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+            $clientIp = trim(end($forwardedIps));
+
+            if (filter_var($clientIp, FILTER_VALIDATE_IP)) {
+                return $clientIp;
             }
         }
 
-        return '0.0.0.0';
+        if ($hasRemoteAddress) {
+            return filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP)
+                ? $_SERVER['REMOTE_ADDR']
+                : self::DEFAULT_IP;
+        }
+
+        return self::DEFAULT_IP;
     }
 }
