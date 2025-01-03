@@ -25,13 +25,11 @@ namespace PoweradminInstall\Validators;
 use InvalidArgumentException;
 use PDO;
 use PDOException;
-use Poweradmin\Application\Service\CsrfTokenService;
-use PoweradminInstall\LocaleHandler;
-use Symfony\Component\HttpFoundation\Request;
+use PoweradminInstall\InstallationSteps;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class ConfiguringDatabaseValidator extends AbstractStepValidator
+class ConfiguringDatabaseValidator extends BaseValidator
 {
     private const MYSQL_MAX_USERNAME_LENGTH = 32;
     private const PGSQL_MAX_USERNAME_LENGTH = 63;
@@ -40,65 +38,58 @@ class ConfiguringDatabaseValidator extends AbstractStepValidator
 
     public function validate(): array
     {
-        $constraints = new Assert\Collection([
-            'submit' => [
-                new Assert\NotBlank(),
-            ],
-            'step' => [
-                new Assert\NotBlank(),
-            ],
-            'language' => [
-                new Assert\NotBlank(),
-                new Assert\Choice(['choices' => LocaleHandler::getAvailableLanguages()]),
-            ],
-            'db_type' => [
-                new Assert\NotBlank(),
-                new Assert\Choice(['choices' => ['mysql', 'pgsql', 'sqlite']]),
-            ],
-            'db_user' => [
-                new Assert\Optional(),
-                new Assert\Callback([$this, 'validateDbUser']),
-            ],
-            'db_pass' => [
-                new Assert\Optional(),
-                new Assert\Callback([$this, 'validateDbPass']),
-            ],
-            'db_host' => [
-                new Assert\Optional(),
-                new Assert\Callback([$this, 'validateDbHost']),
-            ],
-            'db_port' => [
-                new Assert\NotBlank(),
-                new Assert\Callback([$this, 'validateDbPort']),
-            ],
-            'db_name' => [
-                new Assert\NotBlank(),
-                new Assert\Callback([$this, 'validateDbName']),
-            ],
-            'db_charset' => [
-                new Assert\Optional(),
-                new Assert\Callback([$this, 'validateDbCharset']),
-            ],
-            'db_collation' => [
-                new Assert\Optional(),
-                new Assert\Callback([$this, 'validateDbCollation']),
-            ],
-            'pa_pass' => [
-                new Assert\NotBlank(),
-                new Assert\Length([
-                    'min' => $this->config['password_policy']['min_length'],
-                    'minMessage' => 'Poweradmin administrator password must be at least 6 characters long'
-                ]),
-                new Assert\Callback([$this, 'validateLoginPassword']),
-            ],
-        ]);
-
-        if ($this->config['csrf']['enabled'] ?? true) {
-            $constraints['install_token'] = [
-                new Assert\NotBlank(),
-                new Assert\Length(['min' => CsrfTokenService::TOKEN_LENGTH, 'max' => CsrfTokenService::TOKEN_LENGTH]),
-            ];
-        }
+        $constraints = new Assert\Collection(array_merge(
+            $this->getBaseConstraints(),
+            [
+                'step' => [
+                    new Assert\NotBlank(),
+                    new Assert\EqualTo([
+                        'value' => InstallationSteps::STEP_CONFIGURING_DATABASE,
+                        'message' => 'The step must be equal to ' . InstallationSteps::STEP_CONFIGURING_DATABASE
+                    ])
+                ],
+                'db_type' => [
+                    new Assert\NotBlank(),
+                    new Assert\Choice(['choices' => ['mysql', 'pgsql', 'sqlite']]),
+                ],
+                'db_user' => [
+                    new Assert\Optional(),
+                    new Assert\Callback([$this, 'validateDbUser']),
+                ],
+                'db_pass' => [
+                    new Assert\Optional(),
+                    new Assert\Callback([$this, 'validateDbPass']),
+                ],
+                'db_host' => [
+                    new Assert\Optional(),
+                    new Assert\Callback([$this, 'validateDbHost']),
+                ],
+                'db_port' => [
+                    new Assert\NotBlank(),
+                    new Assert\Callback([$this, 'validateDbPort']),
+                ],
+                'db_name' => [
+                    new Assert\NotBlank(),
+                    new Assert\Callback([$this, 'validateDbName']),
+                ],
+                'db_charset' => [
+                    new Assert\Optional(),
+                    new Assert\Callback([$this, 'validateDbCharset']),
+                ],
+                'db_collation' => [
+                    new Assert\Optional(),
+                    new Assert\Callback([$this, 'validateDbCollation']),
+                ],
+                'pa_pass' => [
+                    new Assert\NotBlank(),
+                    new Assert\Length([
+                        'min' => $this->config['password_policy']['min_length'],
+                        'minMessage' => 'Poweradmin administrator password must be at least 6 characters long'
+                    ]),
+                    new Assert\Callback([$this, 'validateLoginPassword']),
+                ],
+            ]
+        ));
 
         $input = $this->request->request->all();
         $violations = $this->validator->validate($input, $constraints);
@@ -179,7 +170,7 @@ class ConfiguringDatabaseValidator extends AbstractStepValidator
             return;
         }
 
-        $port = (int) $port;
+        $port = (int)$port;
         if ($port < self::MIN_PORT || $port > self::MAX_PORT) {
             $context->buildViolation('Port must be between {{ min }} and {{ max }}')
                 ->setParameter('{{ min }}', self::MIN_PORT)

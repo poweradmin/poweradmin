@@ -24,33 +24,25 @@ namespace PoweradminInstall\Validators;
 
 use Poweradmin\Application\Service\CsrfTokenService;
 use PoweradminInstall\InstallationSteps;
-use PoweradminInstall\LocaleHandler;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-class SetupAccountAndNameServersValidator extends AbstractStepValidator
+class SetupAccountAndNameServersValidator extends BaseValidator
 {
     private const DNS_HOSTNAME_REGEX = '/^(?!-)[A-Za-z0-9-]{1,63}(?<!-)(\.[A-Za-z0-9-]{1,63})*\.?$/';
 
     public function validate(): array
     {
         $constraints = new Assert\Collection([
-            'submit' => [
-                new Assert\NotBlank(),
-            ],
             'step' => [
                 new Assert\NotBlank(),
                 new Assert\EqualTo([
                     'value' => InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER,
                     'message' => 'The step must be equal to ' . InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER
                 ])
-            ],
-            'language' => [
-                new Assert\NotBlank(),
-                new Assert\Choice(['choices' => LocaleHandler::getAvailableLanguages()]),
             ],
             'pa_db_user' => [
                 new Assert\NotBlank(),

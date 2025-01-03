@@ -22,83 +22,70 @@
 
 namespace PoweradminInstall\Validators;
 
-use Poweradmin\Application\Service\CsrfTokenService;
 use PoweradminInstall\InstallationSteps;
-use PoweradminInstall\LocaleHandler;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class CreateLimitedRightsUserValidator extends AbstractStepValidator
+class CreateLimitedRightsUserValidator extends BaseValidator
 {
     public function validate(): array
     {
-        $constraints = new Assert\Collection([
-            'submit' => [
-                new Assert\NotBlank(),
-            ],
-            'step' => [
-                new Assert\NotBlank(),
-                new Assert\EqualTo([
-                    'value' => InstallationSteps::STEP_CREATE_CONFIGURATION_FILE,
-                    'message' => 'The step must be equal to ' . InstallationSteps::STEP_CREATE_CONFIGURATION_FILE
-                ])
-            ],
-            'language' => [
-                new Assert\NotBlank(),
-                new Assert\Choice(['choices' => LocaleHandler::getAvailableLanguages()]),
-            ],
-            'db_pass' => [
-                new Assert\NotBlank(),
-            ],
-            'db_host' => [
-                new Assert\NotBlank(),
-            ],
-            'db_name' => [
-                new Assert\NotBlank(),
-            ],
-            'db_port' => [
-                new Assert\NotBlank(),
-            ],
-            'db_user' => [
-                new Assert\NotBlank(),
-            ],
-            'db_type' => [
-                new Assert\NotBlank(),
-            ],
-            'db_charset' => [
-                new Assert\Optional(),
-            ],
-            'pa_db_user' => [
-                new Assert\NotBlank(),
-            ],
-            'pa_db_pass' => [
-                new Assert\NotBlank(),
-            ],
-            'pa_pass' => [
-                new Assert\NotBlank(),
-            ],
-            'dns_hostmaster' => [
-                new Assert\NotBlank(),
-            ],
-            'dns_ns1' => [
-                new Assert\NotBlank(),
-            ],
-            'dns_ns2' => [
-                new Assert\NotBlank(),
-            ],
-            'dns_ns3' => [
-                new Assert\Optional()
-            ],
-            'dns_ns4' => [
-                new Assert\Optional()
-            ],
-        ]);
-
-        if ($this->config['csrf']['enabled'] ?? true) {
-            $constraints['install_token'] = [
-                new Assert\NotBlank(),
-                new Assert\Length(['min' => CsrfTokenService::TOKEN_LENGTH, 'max' => CsrfTokenService::TOKEN_LENGTH]),
-            ];
-        }
+        $constraints = new Assert\Collection(array_merge(
+            $this->getBaseConstraints(),
+            [
+                'step' => [
+                    new Assert\NotBlank(),
+                    new Assert\EqualTo([
+                        'value' => InstallationSteps::STEP_CREATE_CONFIGURATION_FILE,
+                        'message' => 'The step must be equal to ' . InstallationSteps::STEP_CREATE_CONFIGURATION_FILE
+                    ])
+                ],
+                'db_pass' => [
+                    new Assert\NotBlank(),
+                ],
+                'db_host' => [
+                    new Assert\NotBlank(),
+                ],
+                'db_name' => [
+                    new Assert\NotBlank(),
+                ],
+                'db_port' => [
+                    new Assert\NotBlank(),
+                ],
+                'db_user' => [
+                    new Assert\NotBlank(),
+                ],
+                'db_type' => [
+                    new Assert\NotBlank(),
+                ],
+                'db_charset' => [
+                    new Assert\Optional(),
+                ],
+                'pa_db_user' => [
+                    new Assert\NotBlank(),
+                ],
+                'pa_db_pass' => [
+                    new Assert\NotBlank(),
+                ],
+                'pa_pass' => [
+                    new Assert\NotBlank(),
+                ],
+                'dns_hostmaster' => [
+                    new Assert\NotBlank(),
+                ],
+                'dns_ns1' => [
+                    new Assert\NotBlank(),
+                ],
+                'dns_ns2' => [
+                    new Assert\NotBlank(),
+                ],
+                'dns_ns3' => [
+                    new Assert\Optional()
+                ],
+                'dns_ns4' => [
+                    new Assert\Optional()
+                ],
+            ]
+        ));
 
         $input = $this->request->request->all();
         $violations = $this->validator->validate($input, $constraints);
