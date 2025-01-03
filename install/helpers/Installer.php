@@ -31,6 +31,7 @@ use PoweradminInstall\Validators\CreateLimitedRightsUserValidator;
 use PoweradminInstall\Validators\EmptyValidator;
 use PoweradminInstall\Validators\GettingReadyValidator;
 use PoweradminInstall\Validators\SetupAccountAndNameServersValidator;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\Request;
 use Twig\Environment;
 
@@ -43,22 +44,26 @@ class Installer
     private CsrfTokenService $csrfTokenService;
     private InstallSecurityService $securityService;
     private string $localConfigFile;
-
     private string $defaultConfigFile;
+    private string $installConfigFile;
     private const LOCAL_CONFIG_FILE_PATH = '/inc/config.inc.php';
     private const DEFAULT_CONFIG_FILE_PATH = '/inc/config-defaults.inc.php';
     private const INSTALL_CONFIG_PATH = '/config.php';
+    private array $config;
 
     public function __construct(Request $request)
     {
         $this->localConfigFile = dirname(__DIR__, 2) . self::LOCAL_CONFIG_FILE_PATH;
         $this->defaultConfigFile = dirname(__DIR__, 2) . self::DEFAULT_CONFIG_FILE_PATH;
+        $this->installConfigFile = dirname(__DIR__) . self::INSTALL_CONFIG_PATH;
+
         $this->request = $request;
         $this->localeHandler = new LocaleHandler();
         $this->stepValidator = new StepValidator();
         $this->csrfTokenService = new CsrfTokenService();
+        $this->config = $this->loadConfig($this->installConfigFile);
         $this->securityService = new InstallSecurityService(
-            dirname(__DIR__) . self::INSTALL_CONFIG_PATH,
+            $this->config,
             $this->csrfTokenService
         );
     }
@@ -85,6 +90,7 @@ class Installer
         $errors = $this->validatePreviousStep($currentStep - 1);
 
         if ($this->hasLanguageError($errors)) {
+            echo 'Please select a language to proceed with the installation.';
             $currentStep = InstallationSteps::STEP_CHOOSE_LANGUAGE;
         }
 
@@ -160,13 +166,13 @@ class Installer
     private function getStepValidator($step): AbstractStepValidator
     {
         return match ($step) {
-            InstallationSteps::STEP_CHOOSE_LANGUAGE => new ChooseLanguageValidator($this->request),
-            InstallationSteps::STEP_GETTING_READY => new GettingReadyValidator($this->request),
-            InstallationSteps::STEP_CONFIGURING_DATABASE => new ConfiguringDatabaseValidator($this->request),
-            InstallationSteps::STEP_SETUP_ACCOUNT_AND_NAMESERVERS => new SetupAccountAndNameServersValidator($this->request),
-            InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER => new CreateLimitedRightsUserValidator($this->request),
-            InstallationSteps::STEP_CREATE_CONFIGURATION_FILE => new CreateConfigurationFileValidator($this->request),
-            default => new EmptyValidator($this->request),
+            InstallationSteps::STEP_CHOOSE_LANGUAGE => new ChooseLanguageValidator($this->request, $this->config),
+            InstallationSteps::STEP_GETTING_READY => new GettingReadyValidator($this->request, $this->config),
+            InstallationSteps::STEP_CONFIGURING_DATABASE => new ConfiguringDatabaseValidator($this->request, $this->config),
+            InstallationSteps::STEP_SETUP_ACCOUNT_AND_NAMESERVERS => new SetupAccountAndNameServersValidator($this->request, $this->config),
+            InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER => new CreateLimitedRightsUserValidator($this->request, $this->config),
+            InstallationSteps::STEP_CREATE_CONFIGURATION_FILE => new CreateConfigurationFileValidator($this->request, $this->config),
+            default => new EmptyValidator($this->request, $this->config),
         };
     }
 
@@ -179,7 +185,6 @@ class Installer
     private function hasLanguageError(array $errors): bool
     {
         if (isset($errors['language'])) {
-            ErrorHandler::displayLanguageError();
             return true;
         }
         return false;
@@ -201,5 +206,21 @@ class Installer
         $environment->addGlobal('install_token', $_SESSION['install_token'] ?? '');
 
         return $environment;
+    }
+
+
+    private function loadConfig(string $configPath): array
+    {
+        if (!file_exists($configPath)) {
+            throw new RuntimeException("Configuration file not found: $configPath");
+        }
+
+        $config = require $configPath;
+
+        if (!is_array($config)) {
+            throw new RuntimeException("Invalid configuration format");
+        }
+
+        return $config;
     }
 }

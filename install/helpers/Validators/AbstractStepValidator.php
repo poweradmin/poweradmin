@@ -30,10 +30,12 @@ abstract class AbstractStepValidator
 {
     protected Request $request;
     protected ValidatorInterface $validator;
+    protected array $config;
 
-    public function __construct(Request $request)
+    public function __construct(Request $request, array $config)
     {
         $this->request = $request;
+        $this->config = $config;
         $this->validator = Validation::createValidator();
     }
 

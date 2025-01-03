@@ -9,14 +9,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class ChooseLanguageValidator extends AbstractStepValidator
 {
-
     public function validate(): array
     {
         $constraints = new Assert\Collection([
-            'install_token' => [
-                new Assert\NotBlank(),
-                new Assert\Length(['min' => CsrfTokenService::TOKEN_LENGTH, 'max' => CsrfTokenService::TOKEN_LENGTH]),
-            ],
             'submit' => [
                 new Assert\NotBlank(),
             ],
@@ -32,6 +27,13 @@ class ChooseLanguageValidator extends AbstractStepValidator
                 new Assert\Choice(['choices' => LocaleHandler::getAvailableLanguages()]),
             ]
         ]);
+
+        if ($this->config['csrf']['enabled'] ?? true) {
+            $constraints['install_token'] = [
+                new Assert\NotBlank(),
+                new Assert\Length(['min' => CsrfTokenService::TOKEN_LENGTH, 'max' => CsrfTokenService::TOKEN_LENGTH]),
+            ];
+        }
 
         $input = $this->request->request->all();
         $violations = $this->validator->validate($input, $constraints);

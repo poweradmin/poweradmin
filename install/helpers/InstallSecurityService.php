@@ -31,9 +31,9 @@ class InstallSecurityService
     private array $config;
     private CsrfTokenService $csrfTokenService;
 
-    public function __construct(string $configPath, CsrfTokenService $csrfTokenService)
+    public function __construct(array $config, CsrfTokenService $csrfTokenService)
     {
-        $this->config = $this->loadConfig($configPath);
+        $this->config = $config;
         $this->csrfTokenService = $csrfTokenService;
     }
 
@@ -113,20 +113,5 @@ class InstallSecurityService
         }
 
         return '0.0.0.0';
-    }
-
-    private function loadConfig(string $configPath): array
-    {
-        if (!file_exists($configPath)) {
-            throw new RuntimeException("Configuration file not found: $configPath");
-        }
-
-        $config = require $configPath;
-
-        if (!is_array($config)) {
-            throw new RuntimeException("Invalid configuration format");
-        }
-
-        return $config;
     }
 }

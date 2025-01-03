@@ -37,21 +37,10 @@ class ConfiguringDatabaseValidator extends AbstractStepValidator
     private const PGSQL_MAX_USERNAME_LENGTH = 63;
     private const MIN_PORT = 1;
     private const MAX_PORT = 65535;
-    private array $config;
-
-    public function __construct(Request $request)
-    {
-        parent::__construct($request);
-        $this->config = require __DIR__ . '/../../config.php';
-    }
 
     public function validate(): array
     {
         $constraints = new Assert\Collection([
-            'install_token' => [
-                new Assert\NotBlank(),
-                new Assert\Length(['min' => CsrfTokenService::TOKEN_LENGTH, 'max' => CsrfTokenService::TOKEN_LENGTH]),
-            ],
             'submit' => [
                 new Assert\NotBlank(),
             ],
@@ -103,6 +92,13 @@ class ConfiguringDatabaseValidator extends AbstractStepValidator
                 new Assert\Callback([$this, 'validateLoginPassword']),
             ],
         ]);
+
+        if ($this->config['csrf']['enabled'] ?? true) {
+            $constraints['install_token'] = [
+                new Assert\NotBlank(),
+                new Assert\Length(['min' => CsrfTokenService::TOKEN_LENGTH, 'max' => CsrfTokenService::TOKEN_LENGTH]),
+            ];
+        }
 
         $input = $this->request->request->all();
         $violations = $this->validator->validate($input, $constraints);
