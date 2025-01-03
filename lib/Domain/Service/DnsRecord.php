@@ -333,19 +333,22 @@ class DnsRecord
 
             return false;
         } else {
-            $query = "SELECT COUNT(*) FROM zones WHERE domain_id=" . $this->db->quote($zone_id, 'integer');
+            $query = "SELECT COUNT(*) FROM zones WHERE domain_id = :zone_id";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
+            $stmt->execute();
 
-            $count = $this->db->queryOne($query);
+            $count = $stmt->fetchColumn();
 
             if ($count > 0) {
-                $query = "UPDATE zones
-				SET comment=" . $this->db->quote($comment, 'text') . "
-				WHERE domain_id=" . $this->db->quote($zone_id, 'integer');
+                $query = "UPDATE zones SET comment = :comment WHERE domain_id = :zone_id";
             } else {
-                $query = "INSERT INTO zones (domain_id, owner, comment, zone_templ_id)
-				VALUES(" . $this->db->quote($zone_id, 'integer') . ",1," . $this->db->quote($comment, 'text') . ",0)";
+                $query = "INSERT INTO zones (domain_id, owner, comment, zone_templ_id) VALUES (:zone_id, 1, :comment, 0)";
             }
-            $this->db->query($query);
+            $stmt = $this->db->prepare($query);
+            $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
+            $stmt->bindValue(':comment', $comment, PDO::PARAM_STR);
+            $stmt->execute();
         }
         return true;
     }
