@@ -97,7 +97,8 @@ class AppManager
         try {
             echo $this->templateRenderer->render($template, $params);
         } catch (Error $e) {
-            die($e->getMessage());
+            error_log($e->getMessage());
+            die('An error occurred while rendering the template.');
         }
     }
 

@@ -74,7 +74,7 @@ class PDOCommon extends PDO
             parent::__construct($dsn, $username, $password, $driver_options);
         } catch (Exception $e) {
             error_log($e->getMessage());
-            die("Unable to connect to the database server. {$e->getMessage()}");
+            die("Unable to connect to the database server.");
         }
         $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         // only allow one statement per query
@@ -116,13 +116,7 @@ class PDOCommon extends PDO
                 "\n" . $e->getMessage() .
                 "\nFull SQL Statement:" . $query .
                 "\n*]");
-            die("<b>An error occurred while executing the SQL statement. " .
-                "Please contact an Administrator and report the problem.</b>" .
-                "<br /><hr />The following query generated an error:<br />" .
-                "<pre>" .
-                $this->formatSQLforHTML($query) .
-                "\n\n" . $e->getMessage() .
-                "</pre>");
+            die("An error occurred while executing the SQL statement.");
         }
 
         return $obj_pdoStatement;

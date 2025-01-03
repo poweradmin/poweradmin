@@ -68,7 +68,8 @@ class InstallStepHandler
         try {
             echo $this->twig->render($templateName, $data);
         } catch (LoaderError | RuntimeError | SyntaxError $e) {
-            echo "<p class='alert alert-danger'>" . _('Error rendering template') . ": " . $e->getMessage() . "</p>";
+            error_log($e->getMessage());
+            echo "An error occurred while rendering the template.";
         }
     }
 
