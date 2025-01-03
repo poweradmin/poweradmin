@@ -65,14 +65,22 @@ class Installer
 
     public function initialize(): void
     {
+        $rawStep = $this->request->get('step', InstallationSteps::STEP_CHOOSE_LANGUAGE);
+        $currentStep = $this->stepValidator->getCurrentStep($rawStep);
+
+        if (file_exists($this->localConfigFile)) {
+            // Only allow viewing the final step if installation is complete
+            if ($currentStep !== InstallationSteps::STEP_INSTALLATION_COMPLETE) {
+                echo 'There is already a configuration file in place, so the installation will be skipped.';
+                exit;
+            }
+        }
+
         $securityErrors = $this->securityService->validateRequest($this->request);
         if (!empty($securityErrors)) {
             $this->handleSecurityErrors($securityErrors);
             return;
         }
-
-        $step = $this->request->get('step', InstallationSteps::STEP_CHOOSE_LANGUAGE);
-        $currentStep = $this->stepValidator->getCurrentStep($step);
 
         $errors = $this->validatePreviousStep($currentStep - 1);
 
@@ -97,7 +105,6 @@ class Installer
             $currentStep,
             $currentLanguage
         );
-        $this->installStepHandler->checkConfigFile($this->localConfigFile);
 
         $this->handleStep($currentStep, $errors);
     }
