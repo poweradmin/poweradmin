@@ -77,8 +77,9 @@ class BulkRegistrationController extends BaseController
         }
 
         $domains = DomainHelper::getDomains($_POST['domains']);
-        $dom_type = $_POST["dom_type"];
+        $dom_type = $_POST['dom_type'];
         $zone_template = $_POST['zone_template'];
+        $owner = (int)$_POST['owner'];
 
         $failed_domains = [];
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
@@ -88,7 +89,7 @@ class BulkRegistrationController extends BaseController
                 $failed_domains[] = $domain . " - " . _('Invalid hostname.');
             } elseif ($dnsRecord->domain_exists($domain)) {
                 $failed_domains[] = $domain . " - " . _('There is already a zone with this name.');
-            } elseif ($dnsRecord->add_domain($this->db, $domain, $_POST['owner'], $dom_type, '', $zone_template)) {
+            } elseif ($dnsRecord->add_domain($this->db, $domain, $owner, $dom_type, '', $zone_template)) {
                 $zone_id = $dnsRecord->get_zone_id_from_name($domain);
                 $this->logger->log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
                     $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
