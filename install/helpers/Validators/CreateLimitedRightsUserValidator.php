@@ -28,12 +28,16 @@ use Symfony\Component\Validator\Constraints as Assert;
 class CreateLimitedRightsUserValidator extends BaseValidator
 {
     use DatabaseValidationTrait;
+    use UserPasswordValidationTrait;
+    use DnsValidationTrait;
 
     public function validate(): array
     {
         $constraints = new Assert\Collection(array_merge(
             $this->getBaseConstraints(),
             $this->getDatabaseConstraints(),
+            $this->getPasswordValidationConstraints(),
+            $this->getDnsValidationConstraints(),
             [
                 'step' => [
                     new Assert\NotBlank(),
@@ -47,24 +51,6 @@ class CreateLimitedRightsUserValidator extends BaseValidator
                 ],
                 'pa_db_pass' => [
                     new Assert\NotBlank(),
-                ],
-                'pa_pass' => [
-                    new Assert\NotBlank(),
-                ],
-                'dns_hostmaster' => [
-                    new Assert\NotBlank(),
-                ],
-                'dns_ns1' => [
-                    new Assert\NotBlank(),
-                ],
-                'dns_ns2' => [
-                    new Assert\NotBlank(),
-                ],
-                'dns_ns3' => [
-                    new Assert\Optional()
-                ],
-                'dns_ns4' => [
-                    new Assert\Optional()
                 ],
             ]
         ));

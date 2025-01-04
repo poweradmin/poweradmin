@@ -22,34 +22,21 @@
 
 namespace PoweradminInstall\Validators;
 
-use PoweradminInstall\InstallationSteps;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class ConfiguringDatabaseValidator extends BaseValidator
+trait UserPasswordValidationTrait
 {
-    use DatabaseValidationTrait;
-    use UserPasswordValidationTrait;
-
-    public function validate(): array
+    public function getPasswordValidationConstraints(): array
     {
-        $constraints = new Assert\Collection(array_merge(
-            $this->getBaseConstraints(),
-            $this->getDatabaseConstraints(),
-            $this->getPasswordValidationConstraints(),
-            [
-                'step' => [
-                    new Assert\NotBlank(),
-                    new Assert\EqualTo([
-                        'value' => InstallationSteps::STEP_SETUP_ACCOUNT_AND_NAMESERVERS,
-                        'message' => 'The step must be equal to ' . InstallationSteps::STEP_SETUP_ACCOUNT_AND_NAMESERVERS
-                    ])
-                ],
-            ]
-        ));
-
-        $input = $this->request->request->all();
-        $violations = $this->validator->validate($input, $constraints);
-
-        return ValidationErrorHelper::formatErrors($violations);
+        return [
+            'pa_pass' => [
+                new Assert\NotBlank(),
+                new Assert\Length([
+                    'min' => $this->config['password_policy']['min_length'],
+                    'minMessage' => 'Poweradmin administrator password must be at least 6 characters long'
+                ]),
+                new Assert\Callback([$this, 'validateLoginPassword']),
+            ],
+        ];
     }
 }
