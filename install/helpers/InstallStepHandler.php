@@ -22,6 +22,7 @@
 
 namespace PoweradminInstall;
 
+use Exception;
 use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
@@ -108,11 +109,6 @@ class InstallStepHandler
     {
         $credentials = $this->getCredentials();
 
-        if (empty($credentials['db_type'])) {
-            echo "Database type must be specified.";
-            exit;
-        }
-
         if ($credentials['db_type'] == 'sqlite') {
             $credentials['db_file'] = $credentials['db_name'];
         }
@@ -121,7 +117,12 @@ class InstallStepHandler
 
         $databaseConnection = new PDODatabaseConnection();
         $databaseService = new DatabaseService($databaseConnection);
-        $db = $databaseService->connect($credentials);
+        try {
+            $db = $databaseService->connect($credentials);
+        } catch (Exception $e) {
+            echo "Error: " . $e->getMessage();
+            exit;
+        }
 
         echo "<p class='alert alert-secondary'>" . _('Updating database...') . " ";
 
@@ -157,11 +158,6 @@ class InstallStepHandler
     {
         $credentials = $this->getCredentials();
 
-        if (empty($credentials['db_type'])) {
-            echo "Database type must be specified.";
-            exit;
-        }
-
         if ($credentials['db_type'] == 'sqlite') {
             $credentials['db_file'] = $credentials['db_name'];
         } else {
@@ -178,7 +174,12 @@ class InstallStepHandler
 
         $databaseConnection = new PDODatabaseConnection();
         $databaseService = new DatabaseService($databaseConnection);
-        $db = $databaseService->connect($credentials);
+        try {
+            $db = $databaseService->connect($credentials);
+        } catch (Exception $e) {
+            echo "Error: " . $e->getMessage();
+            exit;
+        }
 
         $databaseHelper = new DatabaseHelper($db, $credentials);
         $instructions = $databaseHelper->generateDatabaseUserInstructions();
