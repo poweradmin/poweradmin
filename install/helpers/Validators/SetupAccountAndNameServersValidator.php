@@ -151,30 +151,7 @@ class SetupAccountAndNameServersValidator extends BaseValidator
 
     public function validateHostname($value, ExecutionContextInterface $context): void
     {
-        $labels = explode('.', $value);
-
-        if (str_ends_with($value, '.')) {
-            array_pop($labels);
-        }
-
-        foreach ($labels as $label) {
-            if (strlen($label) > 63) {
-                $context->buildViolation('Each part of the hostname cannot exceed 63 characters.')
-                    ->addViolation();
-                break;
-            }
-
-            if (!preg_match('/^(?!-)[A-Za-z0-9-]+(?<!-)$/', $label)) {
-                $context->buildViolation('Each part of the hostname can only contain letters, numbers, and hyphens, and cannot start or end with a hyphen.')
-                    ->addViolation();
-                break;
-            }
-        }
-
-        if (count($labels) < 2) {
-            $context->buildViolation('The hostname must be fully qualified with at least two parts.')
-                ->addViolation();
-        }
+        $this->validateFQDN($value, $context, 'hostname');
     }
 
     public function validateNameserver($value, ExecutionContextInterface $context): void
@@ -183,6 +160,11 @@ class SetupAccountAndNameServersValidator extends BaseValidator
             return;
         }
 
+        $this->validateFQDN($value, $context, 'nameserver');
+    }
+
+    public function validateFQDN(string $value, ExecutionContextInterface $context, string $type): void
+    {
         $labels = explode('.', $value);
 
         if (str_ends_with($value, '.')) {
@@ -204,7 +186,7 @@ class SetupAccountAndNameServersValidator extends BaseValidator
         }
 
         if (count($labels) < 2) {
-            $context->buildViolation('The nameserver must be a fully qualified domain name with at least two parts.')
+            $context->buildViolation("The $type must be a fully qualified domain name with at least two parts.")
                 ->addViolation();
         }
     }
