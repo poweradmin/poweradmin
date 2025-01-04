@@ -358,6 +358,8 @@ return array(
     'PoweradminInstall\\Validators\\ConfiguringDatabaseValidator' => $baseDir . '/install/helpers/Validators/ConfiguringDatabaseValidator.php',
     'PoweradminInstall\\Validators\\CreateConfigurationFileValidator' => $baseDir . '/install/helpers/Validators/CreateConfigurationFileValidator.php',
     'PoweradminInstall\\Validators\\CreateLimitedRightsUserValidator' => $baseDir . '/install/helpers/Validators/CreateLimitedRightsUserValidator.php',
+    'PoweradminInstall\\Validators\\DatabaseValidationConstants' => $baseDir . '/install/helpers/Validators/DatabaseValidationConstants.php',
+    'PoweradminInstall\\Validators\\DatabaseValidationTrait' => $baseDir . '/install/helpers/Validators/DatabaseValidationTrait.php',
     'PoweradminInstall\\Validators\\EmptyValidator' => $baseDir . '/install/helpers/Validators/EmptyValidator.php',
     'PoweradminInstall\\Validators\\GettingReadyValidator' => $baseDir . '/install/helpers/Validators/GettingReadyValidator.php',
     'PoweradminInstall\\Validators\\SetupAccountAndNameServersValidator' => $baseDir . '/install/helpers/Validators/SetupAccountAndNameServersValidator.php',
