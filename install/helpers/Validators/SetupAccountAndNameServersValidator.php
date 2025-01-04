@@ -22,7 +22,6 @@
 
 namespace PoweradminInstall\Validators;
 
-use Poweradmin\Application\Service\CsrfTokenService;
 use PoweradminInstall\InstallationSteps;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\Callback;
@@ -36,117 +35,113 @@ class SetupAccountAndNameServersValidator extends BaseValidator
 
     public function validate(): array
     {
-        $constraints = new Assert\Collection([
-            'step' => [
-                new Assert\NotBlank(),
-                new Assert\EqualTo([
-                    'value' => InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER,
-                    'message' => 'The step must be equal to ' . InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER
-                ])
-            ],
-            'pa_db_user' => [
-                new Assert\NotBlank(),
-            ],
-            'pa_db_pass' => [
-                new Assert\NotBlank(),
-            ],
-            'dns_hostmaster' => [
-                new Assert\NotBlank(),
-                new Length([
-                    'max' => 255,
-                    'maxMessage' => 'The hostmaster hostname cannot be longer than {{ limit }} characters'
-                ]),
-                new Regex([
-                    'pattern' => self::DNS_HOSTNAME_REGEX,
-                    'message' => 'The hostmaster must be a valid hostname'
-                ]),
-                new Callback([$this, 'validateHostname'])
-            ],
-            'dns_ns1' => [
-                new Assert\NotBlank(),
-                new Length([
-                    'max' => 255,
-                    'maxMessage' => 'The 1st nameserver hostname cannot be longer than {{ limit }} characters'
-                ]),
-                new Regex([
-                    'pattern' => self::DNS_HOSTNAME_REGEX,
-                    'message' => 'The 1st nameserver must be a valid hostname'
-                ]),
-                new Callback([$this, 'validateNameserver'])
-            ],
-            'dns_ns2' => [
-                new Assert\NotBlank(),
-                new Length([
-                    'max' => 255,
-                    'maxMessage' => 'The 2nd nameserver hostname cannot be longer than {{ limit }} characters'
-                ]),
-                new Regex([
-                    'pattern' => self::DNS_HOSTNAME_REGEX,
-                    'message' => 'The 2nd nameserver must be a valid hostname'
-                ]),
-                new Callback([$this, 'validateNameserver'])
-            ],
-            'dns_ns3' => [
-                new Assert\Optional([
+        $constraints = new Assert\Collection(array_merge(
+            $this->getBaseConstraints(),
+            [
+                'step' => [
+                    new Assert\NotBlank(),
+                    new Assert\EqualTo([
+                        'value' => InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER,
+                        'message' => 'The step must be equal to ' . InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER
+                    ])
+                ],
+                'pa_db_user' => [
+                    new Assert\NotBlank(),
+                ],
+                'pa_db_pass' => [
+                    new Assert\NotBlank(),
+                ],
+                'dns_hostmaster' => [
+                    new Assert\NotBlank(),
                     new Length([
                         'max' => 255,
-                        'maxMessage' => 'The 3rd nameserver hostname cannot be longer than {{ limit }} characters'
+                        'maxMessage' => 'The hostmaster hostname cannot be longer than {{ limit }} characters'
                     ]),
                     new Regex([
                         'pattern' => self::DNS_HOSTNAME_REGEX,
-                        'message' => 'The 3rd nameserver must be a valid hostname'
+                        'message' => 'The hostmaster must be a valid hostname'
                     ]),
-                    new Callback([$this, 'validateNameserver'])
-                ])
-            ],
-            'dns_ns4' => [
-                new Assert\Optional([
+                    new Callback([$this, 'validateHostname'])
+                ],
+                'dns_ns1' => [
+                    new Assert\NotBlank(),
                     new Length([
                         'max' => 255,
-                        'maxMessage' => 'The 4th nameserver hostname cannot be longer than {{ limit }} characters'
+                        'maxMessage' => 'The 1st nameserver hostname cannot be longer than {{ limit }} characters'
                     ]),
                     new Regex([
                         'pattern' => self::DNS_HOSTNAME_REGEX,
-                        'message' => 'The 4th nameserver must be a valid hostname'
+                        'message' => 'The 1st nameserver must be a valid hostname'
                     ]),
                     new Callback([$this, 'validateNameserver'])
-                ])
-            ],
-            'db_user' => [
-                new Assert\NotBlank(),
-            ],
-            'db_pass' => [
-                new Assert\NotBlank(),
-            ],
-            'db_host' => [
-                new Assert\NotBlank(),
-            ],
-            'db_port' => [
-                new Assert\NotBlank(),
-            ],
-            'db_name' => [
-                new Assert\NotBlank(),
-            ],
-            'db_type' => [
-                new Assert\NotBlank(),
-            ],
-            'db_charset' => [
-                new Assert\Optional(),
-            ],
-            'db_collation' => [
-                new Assert\Optional(),
-            ],
-            'pa_pass' => [
-                new Assert\NotBlank(),
-            ],
-        ]);
-
-        if ($this->config['csrf']['enabled'] ?? true) {
-            $constraints['install_token'] = [
-                new Assert\NotBlank(),
-                new Assert\Length(['min' => CsrfTokenService::TOKEN_LENGTH, 'max' => CsrfTokenService::TOKEN_LENGTH]),
-            ];
-        }
+                ],
+                'dns_ns2' => [
+                    new Assert\NotBlank(),
+                    new Length([
+                        'max' => 255,
+                        'maxMessage' => 'The 2nd nameserver hostname cannot be longer than {{ limit }} characters'
+                    ]),
+                    new Regex([
+                        'pattern' => self::DNS_HOSTNAME_REGEX,
+                        'message' => 'The 2nd nameserver must be a valid hostname'
+                    ]),
+                    new Callback([$this, 'validateNameserver'])
+                ],
+                'dns_ns3' => [
+                    new Assert\Optional([
+                        new Length([
+                            'max' => 255,
+                            'maxMessage' => 'The 3rd nameserver hostname cannot be longer than {{ limit }} characters'
+                        ]),
+                        new Regex([
+                            'pattern' => self::DNS_HOSTNAME_REGEX,
+                            'message' => 'The 3rd nameserver must be a valid hostname'
+                        ]),
+                        new Callback([$this, 'validateNameserver'])
+                    ])
+                ],
+                'dns_ns4' => [
+                    new Assert\Optional([
+                        new Length([
+                            'max' => 255,
+                            'maxMessage' => 'The 4th nameserver hostname cannot be longer than {{ limit }} characters'
+                        ]),
+                        new Regex([
+                            'pattern' => self::DNS_HOSTNAME_REGEX,
+                            'message' => 'The 4th nameserver must be a valid hostname'
+                        ]),
+                        new Callback([$this, 'validateNameserver'])
+                    ])
+                ],
+                'db_user' => [
+                    new Assert\NotBlank(),
+                ],
+                'db_pass' => [
+                    new Assert\NotBlank(),
+                ],
+                'db_host' => [
+                    new Assert\NotBlank(),
+                ],
+                'db_port' => [
+                    new Assert\NotBlank(),
+                ],
+                'db_name' => [
+                    new Assert\NotBlank(),
+                ],
+                'db_type' => [
+                    new Assert\NotBlank(),
+                ],
+                'db_charset' => [
+                    new Assert\Optional(),
+                ],
+                'db_collation' => [
+                    new Assert\Optional(),
+                ],
+                'pa_pass' => [
+                    new Assert\NotBlank(),
+                ],
+            ]
+        ));
 
         $input = $this->request->request->all();
         $violations = $this->validator->validate($input, $constraints);

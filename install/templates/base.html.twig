@@ -11,8 +11,9 @@
 </head>
 <body>
     {% if errors is not empty %}
+        {%- set first_key = (errors|keys)|first -%}
         <p class="alert alert-danger">
-            {{ errors|first }}
+            {{ first_key }}: {{ errors[first_key] }}
         </p>
     {% endif %}
 

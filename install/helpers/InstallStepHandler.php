@@ -106,9 +106,12 @@ class InstallStepHandler
 
     public function step4SetupAccountAndNameServers(array $errors, string $default_config_file): void
     {
-        echo "<p class='alert alert-secondary'>" . _('Updating database...') . " ";
-
         $credentials = $this->getCredentials();
+
+        if (empty($credentials['db_type'])) {
+            echo "Database type must be specified.";
+            exit;
+        }
 
         if ($credentials['db_type'] == 'sqlite') {
             $credentials['db_file'] = $credentials['db_name'];
@@ -119,6 +122,8 @@ class InstallStepHandler
         $databaseConnection = new PDODatabaseConnection();
         $databaseService = new DatabaseService($databaseConnection);
         $db = $databaseService->connect($credentials);
+
+        echo "<p class='alert alert-secondary'>" . _('Updating database...') . " ";
 
         $databaseHelper = new DatabaseHelper($db, $credentials);
         $databaseHelper->updateDatabase();
@@ -151,6 +156,11 @@ class InstallStepHandler
     public function step5CreateLimitedRightsUser(array $errors): void
     {
         $credentials = $this->getCredentials();
+
+        if (empty($credentials['db_type'])) {
+            echo "Database type must be specified.";
+            exit;
+        }
 
         if ($credentials['db_type'] == 'sqlite') {
             $credentials['db_file'] = $credentials['db_name'];
