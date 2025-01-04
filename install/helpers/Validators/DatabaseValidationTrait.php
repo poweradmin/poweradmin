@@ -258,6 +258,7 @@ trait DatabaseValidationTrait
         if (empty($charset)) {
             return;
         }
+
         $charset = strtolower($charset);
         $input = $context->getRoot();
         $dbType = $input['db_type'];
@@ -283,6 +284,7 @@ trait DatabaseValidationTrait
         if (empty($collation)) {
             return;
         }
+
         $collation = strtolower($collation);
         $input = $context->getRoot();
         $dbType = $input['db_type'];

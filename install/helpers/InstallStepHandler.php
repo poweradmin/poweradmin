@@ -183,6 +183,7 @@ class InstallStepHandler
             'db_user' => $credentials['db_user'],
             'db_pass' => $credentials['db_pass'],
             'db_charset' => $credentials['db_charset'],
+            'db_collation' => $credentials['db_collation'],
             'pa_db_user' => $credentials['pa_db_user'] ?? '',
             'pa_db_pass' => $credentials['pa_db_pass'] ?? '',
             'pa_pass' => $pa_pass,
@@ -218,6 +219,7 @@ class InstallStepHandler
         $db_name = $this->request->get('db_name');
         $db_type = $this->request->get('db_type');
         $db_charset = $this->request->get('db_charset');
+        $db_collation = $this->request->get('db_collation');
 
         $userAuthService = new UserAuthenticationService(
             $config->get('password_encryption'),
@@ -242,6 +244,7 @@ class InstallStepHandler
             'db_type' => $db_type,
             'db_port' => $db_port,
             'db_charset' => $db_charset,
+            'db_collation' => $db_collation,
             'errors' => $errors,
         ));
     }
