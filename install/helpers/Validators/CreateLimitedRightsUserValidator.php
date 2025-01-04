@@ -27,10 +27,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class CreateLimitedRightsUserValidator extends BaseValidator
 {
+    use DatabaseValidationTrait;
+
     public function validate(): array
     {
         $constraints = new Assert\Collection(array_merge(
             $this->getBaseConstraints(),
+            $this->getDatabaseConstraints(),
             [
                 'step' => [
                     new Assert\NotBlank(),
@@ -38,27 +41,6 @@ class CreateLimitedRightsUserValidator extends BaseValidator
                         'value' => InstallationSteps::STEP_CREATE_CONFIGURATION_FILE,
                         'message' => 'The step must be equal to ' . InstallationSteps::STEP_CREATE_CONFIGURATION_FILE
                     ])
-                ],
-                'db_pass' => [
-                    new Assert\NotBlank(),
-                ],
-                'db_host' => [
-                    new Assert\NotBlank(),
-                ],
-                'db_name' => [
-                    new Assert\NotBlank(),
-                ],
-                'db_port' => [
-                    new Assert\NotBlank(),
-                ],
-                'db_user' => [
-                    new Assert\NotBlank(),
-                ],
-                'db_type' => [
-                    new Assert\NotBlank(),
-                ],
-                'db_charset' => [
-                    new Assert\Optional(),
                 ],
                 'pa_db_user' => [
                     new Assert\NotBlank(),

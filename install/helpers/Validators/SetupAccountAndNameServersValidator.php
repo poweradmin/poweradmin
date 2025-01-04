@@ -33,10 +33,13 @@ class SetupAccountAndNameServersValidator extends BaseValidator
 {
     private const DNS_HOSTNAME_REGEX = '/^(?!-)[A-Za-z0-9-]{1,63}(?<!-)(\.[A-Za-z0-9-]{1,63})*\.?$/';
 
+    use DatabaseValidationTrait;
+
     public function validate(): array
     {
         $constraints = new Assert\Collection(array_merge(
             $this->getBaseConstraints(),
+            $this->getDatabaseConstraints(),
             [
                 'step' => [
                     new Assert\NotBlank(),
@@ -112,30 +115,6 @@ class SetupAccountAndNameServersValidator extends BaseValidator
                         ]),
                         new Callback([$this, 'validateNameserver'])
                     ])
-                ],
-                'db_user' => [
-                    new Assert\NotBlank(),
-                ],
-                'db_pass' => [
-                    new Assert\NotBlank(),
-                ],
-                'db_host' => [
-                    new Assert\NotBlank(),
-                ],
-                'db_port' => [
-                    new Assert\NotBlank(),
-                ],
-                'db_name' => [
-                    new Assert\NotBlank(),
-                ],
-                'db_type' => [
-                    new Assert\NotBlank(),
-                ],
-                'db_charset' => [
-                    new Assert\Optional(),
-                ],
-                'db_collation' => [
-                    new Assert\Optional(),
                 ],
                 'pa_pass' => [
                     new Assert\NotBlank(),

@@ -117,12 +117,7 @@ class InstallStepHandler
 
         $databaseConnection = new PDODatabaseConnection();
         $databaseService = new DatabaseService($databaseConnection);
-        try {
-            $db = $databaseService->connect($credentials);
-        } catch (Exception $e) {
-            echo "Error: " . $e->getMessage();
-            exit;
-        }
+        $db = $databaseService->connect($credentials);
 
         echo "<p class='alert alert-secondary'>" . _('Updating database...') . " ";
 
@@ -174,13 +169,7 @@ class InstallStepHandler
 
         $databaseConnection = new PDODatabaseConnection();
         $databaseService = new DatabaseService($databaseConnection);
-        try {
-            $db = $databaseService->connect($credentials);
-        } catch (Exception $e) {
-            echo "Error: " . $e->getMessage();
-            exit;
-        }
-
+        $db = $databaseService->connect($credentials);
         $databaseHelper = new DatabaseHelper($db, $credentials);
         $instructions = $databaseHelper->generateDatabaseUserInstructions();
 
