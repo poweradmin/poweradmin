@@ -30,6 +30,7 @@ class SetupAccountAndNameServersValidator extends BaseValidator
     use DatabaseValidationTrait;
     use UserPasswordValidationTrait;
     use DnsValidationTrait;
+    use DbUserValidationTrait;
 
     public function validate(): array
     {
@@ -38,6 +39,7 @@ class SetupAccountAndNameServersValidator extends BaseValidator
             $this->getDatabaseConstraints(),
             $this->getPasswordValidationConstraints(),
             $this->getDnsValidationConstraints(),
+            $this->getUserConstraints(),
             [
                 'step' => [
                     new Assert\NotBlank(),
@@ -45,12 +47,6 @@ class SetupAccountAndNameServersValidator extends BaseValidator
                         'value' => InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER,
                         'message' => 'The step must be equal to ' . InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER
                     ])
-                ],
-                'pa_db_user' => [
-                    new Assert\NotBlank(),
-                ],
-                'pa_db_pass' => [
-                    new Assert\NotBlank(),
                 ],
             ]
         ));
