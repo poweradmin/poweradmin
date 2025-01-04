@@ -23,6 +23,7 @@
 namespace PoweradminInstall\Validators;
 
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 trait UserPasswordValidationTrait
 {
@@ -38,5 +39,30 @@ trait UserPasswordValidationTrait
                 new Assert\Callback([$this, 'validateLoginPassword']),
             ],
         ];
+    }
+
+    public function validateLoginPassword($paPass, ExecutionContextInterface $context): void
+    {
+        $policy = $this->config['password_policy'];
+        if ($policy['require_uppercase'] && !preg_match('/[A-Z]/', $paPass)) {
+            $context->buildViolation('Password must contain at least one uppercase letter.')
+                ->atPath('pa_pass')
+                ->addViolation();
+        }
+        if ($policy['require_lowercase'] && !preg_match('/[a-z]/', $paPass)) {
+            $context->buildViolation('Password must contain at least one lowercase letter.')
+                ->atPath('pa_pass')
+                ->addViolation();
+        }
+        if ($policy['require_numbers'] && !preg_match('/\d/', $paPass)) {
+            $context->buildViolation('Password must contain at least one number.')
+                ->atPath('pa_pass')
+                ->addViolation();
+        }
+        if ($policy['require_special'] && !preg_match('/[' . preg_quote($policy['special_characters'], '/') . ']/', $paPass)) {
+            $context->buildViolation('Password must contain at least one special character.')
+                ->atPath('pa_pass')
+                ->addViolation();
+        }
     }
 }
