@@ -264,32 +264,6 @@ class ConfiguringDatabaseValidator extends BaseValidator
                     ->addViolation();
                 return;
         }
-
-        // Test full database connection for MySQL and PostgreSQL
-        if (in_array($input['db_type'], ['mysql', 'pgsql'])) {
-            if ($error = $this->testDatabaseConnection($input)) {
-                $context->buildViolation('Database connection failed: ' . $error)
-                    ->addViolation();
-            }
-        }
-    }
-
-    private function testDatabaseConnection(array $input): ?string
-    {
-        try {
-            $dsn = $this->buildDsn($input);
-            $options = [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_TIMEOUT => 5,
-            ];
-
-            $pdo = new PDO($dsn, $input['db_user'] ?? null, $input['db_pass'] ?? null, $options);
-            $pdo->query('SELECT 1');
-
-            return null;
-        } catch (PDOException $e) {
-            return $e->getMessage();
-        }
     }
 
     private function buildDsn(array $input): string
