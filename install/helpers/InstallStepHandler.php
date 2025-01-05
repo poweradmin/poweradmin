@@ -22,7 +22,6 @@
 
 namespace PoweradminInstall;
 
-use Exception;
 use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
