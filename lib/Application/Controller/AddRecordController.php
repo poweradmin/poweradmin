@@ -130,14 +130,24 @@ class AddRecordController extends BaseController
         $comment = $_POST['comment'] ?? '';
         $zone_id = (int)$_GET['id'];
 
-        if ($this->createRecord($zone_id, $name, $type, $content, $ttl, $prio, $comment)) {
-            if (isset($_POST['reverse'])) {
-                $this->createReverseRecord($name, $type, $content, $zone_id, $ttl, $prio, $comment);
-            } else if (isset($_POST['create_domain_record'])) {
-                $this->createDomainRecord($name, $type, $content, $zone_id, $comment);
-            }
-            unset($_POST);
+        if (!$this->createRecord($zone_id, $name, $type, $content, $ttl, $prio, $comment)) {
+            $this->setMessage('add_record', 'error', _('This record was not valid and could not be added.'));
+            return;
         }
+
+        if (isset($_POST['reverse'])) {
+            $reverseRecord = $this->createReverseRecord($name, $type, $content, $zone_id, $ttl, $prio, $comment);
+            $message = $reverseRecord ? _('Record successfully added. A matching PTR record was also created.') : _('The record was successfully added.');
+            $this->setMessage('add_record', 'success', $message);
+        } else if (isset($_POST['create_domain_record'])) {
+            $domainRecord = $this->createDomainRecord($name, $type, $content, $zone_id, $comment);
+            $message = $domainRecord ? _('Record successfully added. A matching A record was also created.') : _('The record was successfully added.');
+            $this->setMessage('add_record', 'success', $message);
+        } else {
+            $this->setMessage('add_record', 'success', _('The record was successfully added.'));
+        }
+
+        unset($_POST);
     }
 
     private function showForm(): void
@@ -186,7 +196,7 @@ class AddRecordController extends BaseController
 
     private function createRecord(int $zone_id, $name, $type, $content, $ttl, $prio, $comment): bool
     {
-        $success = $this->recordManager->createRecord(
+        return $this->recordManager->createRecord(
             $zone_id,
             $name,
             $type,
@@ -197,19 +207,11 @@ class AddRecordController extends BaseController
             $_SESSION['userlogin'],
             $_SERVER['REMOTE_ADDR']
         );
-
-        if ($success) {
-            $this->setMessage('add_record', 'success', _('The record was successfully added.'));
-            return true;
-        }
-
-        $this->setMessage('add_record', 'error', _('This record was not valid and could not be added.'));
-        return false;
     }
 
-    private function createReverseRecord($name, $type, $content, string $zone_id, $ttl, $prio, string $comment): void
+    private function createReverseRecord($name, $type, $content, string $zone_id, $ttl, $prio, string $comment): bool
     {
-        $this->reverseRecordCreator->createReverseRecord(
+        $result = $this->reverseRecordCreator->createReverseRecord(
             $name,
             $type,
             $content,
@@ -219,9 +221,16 @@ class AddRecordController extends BaseController
             $comment,
             $_SESSION['userlogin']
         );
+
+        if ($result['success']) {
+            return true;
+        } else {
+            $this->setMessage('add_record', 'error', $result['message']);
+            return false;
+        }
     }
 
-    private function createDomainRecord(string $name, string $type, string $content, string $zone_id, string $comment): void
+    private function createDomainRecord(string $name, string $type, string $content, string $zone_id, string $comment): bool
     {
         $result = $this->domainRecordCreator->addDomainRecord(
             $name,
@@ -233,9 +242,10 @@ class AddRecordController extends BaseController
         );
 
         if ($result['success']) {
-            $this->setMessage('add_record', 'success', $result['message']);
+            return true;
         } else {
             $this->setMessage('add_record', 'error', $result['message']);
+            return false;
         }
     }
 }

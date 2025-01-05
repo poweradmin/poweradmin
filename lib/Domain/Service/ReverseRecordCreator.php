@@ -48,20 +48,28 @@ class ReverseRecordCreator
         $this->dnsRecord = $dnsRecord;
     }
 
-    public function createReverseRecord($name, $type, $content, string $zone_id, $ttl, $prio, string $comment = '', string $account = ''): void
+    public function createReverseRecord($name, $type, $content, string $zone_id, $ttl, $prio, string $comment = '', string $account = ''): array
     {
-        $iface_add_reverse_record = $this->config->get('iface_add_reverse_record');
+        $isReverseRecordAllowed = $this->config->get('iface_add_reverse_record');
 
-        if ($name && $iface_add_reverse_record) {
-            $content_rev = $this->getContentRev($type, $content);
-            $zone_rev_id = $this->dnsRecord->get_best_matching_zone_id_from_name($content_rev);
-
-            if ($zone_rev_id != -1) {
-                $this->addReverseRecord($zone_id, $zone_rev_id, $name, $content_rev, $ttl, $prio, $comment, $account);
-            } elseif (isset($content_rev)) {
-                $this->presentError(sprintf(_('There is no matching reverse-zone for: %s.'), $content_rev));
-            }
+        if (!$name || !$isReverseRecordAllowed) {
+            return $this->createErrorResponse('The name is missing or reverse record creation is not allowed.');
         }
+
+        $contentRev = $this->getContentRev($type, $content);
+        $zoneRevId = $this->dnsRecord->get_best_matching_zone_id_from_name($contentRev);
+
+        if ($zoneRevId === -1) {
+            return $this->createErrorResponse(sprintf(_('There is no matching reverse-zone for: %s.'), $contentRev));
+        }
+
+        $isRecordAdded = $this->addReverseRecord($zone_id, $zoneRevId, $name, $contentRev, $ttl, $prio, $comment, $account);
+
+        if ($isRecordAdded) {
+            return $this->createSuccessResponse('Reverse record added');
+        }
+
+        return $this->createErrorResponse('Failed to create a reverse record due to an unknown error.');
     }
 
     private function getContentRev($type, $content): ?string
@@ -75,7 +83,7 @@ class ReverseRecordCreator
         return null;
     }
 
-    private function addReverseRecord($zone_id, $zone_rev_id, $name, $content_rev, $ttl, $prio, string $comment, string $account): void
+    private function addReverseRecord($zone_id, $zone_rev_id, $name, $content_rev, $ttl, $prio, string $comment, string $account): bool
     {
         $zone_name = $this->dnsRecord->get_domain_name_by_id($zone_id);
         $fqdn_name = sprintf("%s.%s", $name, $zone_name);
@@ -89,13 +97,28 @@ class ReverseRecordCreator
                 $dnssecProvider = DnssecProviderFactory::create($this->db, $this->config);
                 $dnssecProvider->rectifyZone($zone_name);
             }
+
+            return true;
         }
+
+        return false;
     }
 
-    private function presentError(string $message): void
+    private function createSuccessResponse(string $message): array
     {
-        $error = new ErrorMessage($message);
-        $errorPresenter = new ErrorPresenter();
-        $errorPresenter->present($error);
+        return [
+            'success' => true,
+            'type' => 'success',
+            'message' => $message,
+        ];
+    }
+
+    private function createErrorResponse(string $message): array
+    {
+        return [
+            'success' => false,
+            'type' => 'error',
+            'message' => $message,
+        ];
     }
 }
