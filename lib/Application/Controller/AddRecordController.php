@@ -128,15 +128,14 @@ class AddRecordController extends BaseController
         $prio = $_POST['prio'];
         $ttl = $_POST['ttl'];
         $comment = $_POST['comment'] ?? '';
-        $zone_id = htmlspecialchars($_GET['id']);
+        $zone_id = (int)$_GET['id'];
 
-        if (isset($_POST['reverse'])) {
-            $this->createReverseRecord($name, $type, $content, $zone_id, $ttl, $prio, $comment);
-        } else if (isset($_POST['create_domain_record'])) {
-            $this->createDomainRecord($name, $type, $content, $zone_id, $comment);
-        }
-
-        if ($this->createRecord((int)$zone_id, $name, $type, $content, $ttl, $prio, $comment)) {
+        if ($this->createRecord($zone_id, $name, $type, $content, $ttl, $prio, $comment)) {
+            if (isset($_POST['reverse'])) {
+                $this->createReverseRecord($name, $type, $content, $zone_id, $ttl, $prio, $comment);
+            } else if (isset($_POST['create_domain_record'])) {
+                $this->createDomainRecord($name, $type, $content, $zone_id, $comment);
+            }
             unset($_POST);
         }
     }
