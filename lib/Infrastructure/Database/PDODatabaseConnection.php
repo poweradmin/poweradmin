@@ -32,7 +32,7 @@ class PDODatabaseConnection implements DatabaseConnection {
     {
         $this->validateDatabaseType($credentials['db_type']);
 
-        if (in_array($credentials['db_type'], ['sqlite', 'sqlite3'])) {
+        if ($credentials['db_type'] == 'sqlite') {
             $this->validateSQLiteCredentials($credentials);
         } else {
             $this->validateCredentialsForNonSQLite($credentials);
@@ -55,7 +55,7 @@ class PDODatabaseConnection implements DatabaseConnection {
     }
 
     private function validateDatabaseType($db_type): void {
-        if (!in_array($db_type, ['mysql', 'mysqli', 'pgsql', 'sqlite', 'sqlite3'])) {
+        if (!in_array($db_type, ['mysql', 'mysqli', 'pgsql', 'sqlite'])) {
             $this->showErrorAndExit('No or unknown database type has been set.');
         }
     }
@@ -78,7 +78,7 @@ class PDODatabaseConnection implements DatabaseConnection {
         $db_type = $credentials['db_type'];
         $db_port = empty($credentials['db_port']) ? $this->getDefaultPort($db_type) : $credentials['db_port'];
 
-        if ($db_type === 'sqlite' || $db_type === 'sqlite3') {
+        if ($db_type === 'sqlite') {
             return "$db_type:{$credentials['db_file']}";
         } else {
             $dsn = "$db_type:host={$credentials['db_host']};port=$db_port;dbname={$credentials['db_name']}";

@@ -50,7 +50,7 @@ trait DatabaseValidationTrait
                 new Assert\Callback([$this, 'validateDbHost']),
             ],
             'db_port' => [
-                new Assert\NotBlank(),
+                new Assert\Optional(),
                 new Assert\Callback([$this, 'validateDbPort']),
             ],
             'db_name' => [
@@ -121,7 +121,7 @@ trait DatabaseValidationTrait
                 ->addViolation();
         }
 
-        if (
+        if ($input['db_type'] != 'sqlite' &&
             !filter_var($dbHost, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) &&
             !filter_var($dbHost, FILTER_VALIDATE_IP) &&
             $dbHost !== 'localhost'
@@ -134,7 +134,8 @@ trait DatabaseValidationTrait
 
     public function validateDbPort($port, ExecutionContextInterface $context): void
     {
-        if (!ctype_digit($port)) {
+        $input = $context->getRoot();
+        if ($input['db_type'] != 'sqlite' && !ctype_digit($port)) {
             $context->buildViolation('Port must be a valid number.')
                 ->atPath('db_port')
                 ->addViolation();
@@ -142,7 +143,7 @@ trait DatabaseValidationTrait
         }
 
         $port = (int)$port;
-        if ($port < DatabaseValidationConstants::MIN_PORT->value || $port > DatabaseValidationConstants::MAX_PORT->value) {
+        if ($input['db_type'] != 'sqlite' && $port < DatabaseValidationConstants::MIN_PORT->value || $port > DatabaseValidationConstants::MAX_PORT->value) {
             $context->buildViolation('Port must be between {{ min }} and {{ max }}')
                 ->setParameter('{{ min }}', DatabaseValidationConstants::MIN_PORT->value)
                 ->setParameter('{{ max }}', DatabaseValidationConstants::MAX_PORT->value)
@@ -198,8 +199,8 @@ trait DatabaseValidationTrait
                     }
                     $dbName = $realPath;
 
-                    if (!preg_match('/\.(sqlite3?|db3?)$/', $dbName)) {
-                        $context->buildViolation('Database file must have a valid SQLite extension (.sqlite, .sqlite3, .db, .db3)')
+                    if (!preg_match('/\.(sqlite3?|db)$/', $dbName)) {
+                        $context->buildViolation('Database file must have a valid SQLite extension (.sqlite, .sqlite3, .db)')
                             ->addViolation();
                         return;
                     }

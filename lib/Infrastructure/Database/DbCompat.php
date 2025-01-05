@@ -42,7 +42,6 @@ final class DbCompat
         'mysql' => 'REGEXP',
         'mysqli' => 'REGEXP',
         'sqlite' => 'GLOB',
-        'sqlite3' => 'GLOB',
         'pgsql' => '~',
         'default' => 'REGEXP'
     ];

@@ -1642,7 +1642,7 @@ class DnsRecord
             if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
                 if ($db_type == 'pgsql') {
                     $query = "DELETE FROM $records_table r USING records_zone_templ rzt WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id AND r.id = rzt.record_id";
-                } else if ($db_type == 'sqlite' || $db_type == 'sqlite3') {
+                } else if ($db_type == 'sqlite') {
                     $query = "DELETE FROM $records_table WHERE id IN (SELECT r.id FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id)";
                 } else {
                     $query = "DELETE r, rzt FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id";
