@@ -360,6 +360,7 @@ return array(
     'PoweradminInstall\\Validators\\CreateLimitedRightsUserValidator' => $baseDir . '/install/helpers/Validators/CreateLimitedRightsUserValidator.php',
     'PoweradminInstall\\Validators\\DatabaseValidationConstants' => $baseDir . '/install/helpers/Validators/DatabaseValidationConstants.php',
     'PoweradminInstall\\Validators\\DatabaseValidationTrait' => $baseDir . '/install/helpers/Validators/DatabaseValidationTrait.php',
+    'PoweradminInstall\\Validators\\DbUserValidationTrait' => $baseDir . '/install/helpers/Validators/DbUserValidationTrait.php',
     'PoweradminInstall\\Validators\\DnsValidationTrait' => $baseDir . '/install/helpers/Validators/DnsValidationTrait.php',
     'PoweradminInstall\\Validators\\EmptyValidator' => $baseDir . '/install/helpers/Validators/EmptyValidator.php',
     'PoweradminInstall\\Validators\\GettingReadyValidator' => $baseDir . '/install/helpers/Validators/GettingReadyValidator.php',

@@ -121,7 +121,8 @@ trait DatabaseValidationTrait
                 ->addViolation();
         }
 
-        if ($input['db_type'] != 'sqlite' &&
+        if (
+            $input['db_type'] != 'sqlite' &&
             !filter_var($dbHost, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) &&
             !filter_var($dbHost, FILTER_VALIDATE_IP) &&
             $dbHost !== 'localhost'
