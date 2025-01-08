@@ -243,14 +243,14 @@
                     <input id="recordContent{{ r['id'] }}" class="form-control form-control-sm" type="text" name="record[{{ r['id'] }}][content]" value="{{ r['content'] }}">
                 </div>
             </td>
-            <td class="col-sm-1"><input class="form-control form-control-sm" type="number"
+            <td><input class="form-control form-control-sm" type="number"
                                         id="priority_field_{{ r['id'] }}" name="record[{{ r['id'] }}][prio]"
                                         min="0" max="65535" pattern="[0-9]*" value="{{ r['prio'] }}"></td>
             <td class="col-sm-1"><input class="form-control form-control-sm" type="text"
                                         min="0" max="2147483647" pattern="[0-9]*" name="record[{{ r['id'] }}][ttl]"
                                         value="{{ r['ttl'] }}"></td>
             {% if iface_record_comments %}
-            <td><input class="form-control form-control-sm" type="text" name="record[{{ r['id'] }}][comment]"
+            <td class="col-sm-3"><input class="form-control form-control-sm" type="text" name="record[{{ r['id'] }}][comment]"
                        value="{{ r['comment'] }}"></td>
             {% endif %}
             <td class="text-center">
@@ -258,11 +258,9 @@
             </td>
             {% endif %}
 
-            {% if domain_type == "SLAVE" or perm_edit == "none" or (perm_edit == "own" or perm_edit ==
-            "own_as_client") and user_is_zone_owner == "0" %}
+            {% if domain_type == "SLAVE" or perm_edit == "none" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "0" %}
             <td>&nbsp;</td>
-            {% elseif r['type'] == "SOA" and perm_edit != "all" or r['type'] == "NS" and perm_edit ==
-            "own_as_client" %}
+            {% elseif r['type'] == "SOA" and perm_edit != "all" or r['type'] == "NS" and perm_edit == "own_as_client" %}
             <td>&nbsp;</td>
             {% else %}
             <td class="{{ iface_record_comments ? 'col-sm-1' : 'col-sm-2' }}">
