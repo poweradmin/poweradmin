@@ -50,11 +50,24 @@
   },
   "scripts": {
     "docs": "tools/phpDocumentor",
+
     "tests": "phpunit --testsuite unit",
     "tests:integration": "phpunit --testsuite integration",
+
+    "check:index": "phpcs --standard=phpcs.xml index.php",
+    "check:inc": "phpcs --standard=phpcs.xml inc",
+    "check:install": "phpcs --standard=phpcs.xml inc",
+    "check:lib": "phpcs --standard=phpcs.xml lib",
+    "check:tests": "phpcs --standard=phpcs.xml tests",
+
     "format:all": "phpcbf --standard=phpcs.xml index.php inc install lib tests",
-    "style:all": "php-cs-fixer fix -- index.php inc install lib tests",
-    "check:all": "phpcs --standard=phpcs.xml index.php inc install lib tests",
+
+    "style:index": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix -- index.php",
+    "style:inc": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix -- inc",
+    "style:install": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix -- install",
+    "style:lib": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix -- lib",
+    "style:tests": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix -- tests",
+
     "analyse:all": "phpstan analyse index.php inc install lib tests"
   }
 }

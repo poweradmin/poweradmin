@@ -32,17 +32,11 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
-#    - name: Format code
-#      run: composer format:all
-#
-#    - name: Style code
-#      run: composer style:all
-#
-#    - name: Check code
-#      run: composer check:all
-#
+    - name: Check code
+      run: composer run check:install
+
 #    - name: Analyse code
-#      run: composer check:all
+#      run: composer run analyse:all
 
     - name: Run test suite
       run: composer tests
