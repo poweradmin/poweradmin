@@ -42,3 +42,6 @@ npm-debug.log*
 # Cypress
 cypress/videos
 cypress/screenshots
+
+# PHP tools
+.php-cs-fixer.cache

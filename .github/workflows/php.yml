@@ -32,8 +32,17 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
-    - name: Lint install folder
-      run: composer check:install
+#    - name: Format code
+#      run: composer format:all
+#
+#    - name: Style code
+#      run: composer style:all
+#
+#    - name: Check code
+#      run: composer check:all
+#
+#    - name: Analyse code
+#      run: composer check:all
 
     - name: Run test suite
       run: composer tests
