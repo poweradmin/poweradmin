@@ -33,7 +33,7 @@ jobs:
       run: composer install --prefer-dist --no-progress
 
     - name: Check code
-      run: composer check:install
+      run: composer check:all
 
 #    - name: Analyse code
 #      run: composer analyse:all

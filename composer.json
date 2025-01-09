@@ -54,11 +54,8 @@
     "tests": "phpunit --testsuite unit",
     "tests:integration": "phpunit --testsuite integration",
 
-    "check:index": "phpcs --standard=phpcs.xml index.php",
-    "check:inc": "phpcs --standard=phpcs.xml inc",
-    "check:install": "phpcs --standard=phpcs.xml install",
     "check:lib": "phpcs --standard=phpcs.xml lib",
-    "check:tests": "phpcs --standard=phpcs.xml tests",
+    "check:all": "phpcs --standard=phpcs.xml index.php inc install tests",
 
     "format:index": "phpcbf --standard=phpcs.xml index.php",
     "format:inc": "phpcbf --standard=phpcs.xml inc",
