@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Domain\Utility;
 
-use Poweradmin\Domain\Service\DnsRecord;
 
 class IpHelper
 {

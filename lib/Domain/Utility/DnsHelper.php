@@ -26,7 +26,6 @@ namespace Poweradmin\Domain\Utility;
 use Pdp\CannotProcessHost;
 use Pdp\Rules;
 use Pdp\Domain;
-use Pdp\TopLevelDomains;
 
 class DnsHelper
 {
