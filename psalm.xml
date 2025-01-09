@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<psalm>
+    <projectFiles>
+        <file name="index.php" />
+        <directory name="inc" />
+        <directory name="install" />
+        <directory name="lib" />
+        <directory name="tests" />
+    </projectFiles>
+</psalm>

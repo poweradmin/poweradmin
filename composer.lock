@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "691c60e05f22ef83dae833e45c1d990f",
+    "content-hash": "6b4e313dd56b322d4f7fe85cdc7820ac",
     "packages": [
         {
             "name": "cakephp/chronos",
@@ -5793,6 +5793,58 @@
                 }
             ],
             "time": "2024-03-03T12:36:25+00:00"
+        },
+        {
+            "name": "vimeo/psalm",
+            "version": "0.3.14",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/vimeo/psalm.git",
+                "reference": "a14b03c057b312cf097cfbe464a27284c8f735c0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/vimeo/psalm/zipball/a14b03c057b312cf097cfbe464a27284c8f735c0",
+                "reference": "a14b03c057b312cf097cfbe464a27284c8f735c0",
+                "shasum": ""
+            },
+            "require": {
+                "nikic/php-parser": ">=3.0.2",
+                "php": ">=5.5"
+            },
+            "require-dev": {
+                "phpunit/phpunit": ">=5.7.4",
+                "squizlabs/php_codesniffer": "^2.7"
+            },
+            "bin": [
+                "bin/psalm"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Psalm\\": "src/Psalm"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matthew Brown"
+                }
+            ],
+            "description": "A static analysis tool for finding errors in PHP applications",
+            "keywords": [
+                "code",
+                "inspection",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/vimeo/psalm/issues",
+                "source": "https://github.com/vimeo/psalm/tree/0.3.14"
+            },
+            "time": "2017-01-19T06:32:35+00:00"
         }
     ],
     "aliases": [],
