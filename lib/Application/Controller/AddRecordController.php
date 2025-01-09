@@ -100,8 +100,7 @@ class AddRecordController extends BaseController
         $this->checkCondition($zone_type == "SLAVE"
             || $perm_edit == "none"
             || ($perm_edit == "own" || $perm_edit == "own_as_client")
-            && !$user_is_zone_owner, _("You do not have the permission to add a record to this zone.")
-        );
+            && !$user_is_zone_owner, _("You do not have the permission to add a record to this zone."));
 
         if ($this->isPost()) {
             $this->validateCsrfToken();
@@ -139,7 +138,7 @@ class AddRecordController extends BaseController
             $reverseRecord = $this->createReverseRecord($name, $type, $content, $zone_id, $ttl, $prio, $comment);
             $message = $reverseRecord ? _('Record successfully added. A matching PTR record was also created.') : _('The record was successfully added.');
             $this->setMessage('add_record', 'success', $message);
-        } else if (isset($_POST['create_domain_record'])) {
+        } elseif (isset($_POST['create_domain_record'])) {
             $domainRecord = $this->createDomainRecord($name, $type, $content, $zone_id, $comment);
             $message = $domainRecord ? _('Record successfully added. A matching A record was also created.') : _('The record was successfully added.');
             $this->setMessage('add_record', 'success', $message);

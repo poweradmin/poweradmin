@@ -27,7 +27,8 @@ use Poweradmin\AppConfiguration;
 use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
 
-class DbRecordCommentRepository implements RecordCommentRepositoryInterface {
+class DbRecordCommentRepository implements RecordCommentRepositoryInterface
+{
     private PDO $connection;
     private string $comments_table;
 
@@ -105,7 +106,7 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface {
             $result['modified_at'],
             $result['account'],
             $result['comment']
-        ): null;
+        ) : null;
     }
 
     public function update(int $domainId, string $oldName, string $oldType, RecordComment $comment): ?RecordComment

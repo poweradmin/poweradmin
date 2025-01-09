@@ -31,7 +31,8 @@ class DbZoneLogger
     private PDOLayer $db;
     private AppConfiguration $config;
 
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->db = $db;
         $this->config = new AppConfiguration();
     }
@@ -101,8 +102,7 @@ class DbZoneLogger
             INNER JOIN $domains_table ON $domains_table.id = log_zones.zone_id 
             WHERE $domains_table.name LIKE :search_by
             LIMIT :limit 
-            OFFSET :offset"
-        );
+            OFFSET :offset");
 
         $domain = "%$domain%";
         $stmt->execute([

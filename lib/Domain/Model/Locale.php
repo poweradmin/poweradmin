@@ -22,16 +22,19 @@
 
 namespace Poweradmin\Domain\Model;
 
-class Locale {
+class Locale
+{
     private string $locale;
     private string $language;
 
-    public function __construct(string $locale, string $language) {
+    public function __construct(string $locale, string $language)
+    {
         $this->locale = $locale;
         $this->language = $language;
     }
 
-    public function isSelected(string $interfaceLanguage): bool {
+    public function isSelected(string $interfaceLanguage): bool
+    {
         return substr($this->locale, 0, 2) == substr($interfaceLanguage, 0, 2);
     }
 

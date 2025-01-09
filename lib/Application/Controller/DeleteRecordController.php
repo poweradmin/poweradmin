@@ -66,7 +66,7 @@ class DeleteRecordController extends BaseController
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
         $zid = $dnsRecord->get_zone_id_from_record_id($record_id);
-        if ($zid == NULL) {
+        if ($zid == null) {
             $this->showError(_('There is no zone with this ID.'));
         }
 
@@ -76,13 +76,26 @@ class DeleteRecordController extends BaseController
             $record_info = $dnsRecord->get_record_from_id($record_id);
             if ($dnsRecord->delete_record($record_id)) {
                 if (isset($record_info['prio'])) {
-                    $this->logger->log_info(sprintf('client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s priority:%s',
-                        $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                        $record_info['type'], $record_info['name'], $record_info['content'], $record_info['ttl'], $record_info['prio']), $zid);
+                    $this->logger->log_info(sprintf(
+                        'client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s priority:%s',
+                        $_SERVER['REMOTE_ADDR'],
+                        $_SESSION["userlogin"],
+                        $record_info['type'],
+                        $record_info['name'],
+                        $record_info['content'],
+                        $record_info['ttl'],
+                        $record_info['prio']
+                    ), $zid);
                 } else {
-                    $this->logger->log_info(sprintf('client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s',
-                        $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                        $record_info['type'], $record_info['name'], $record_info['content'], $record_info['ttl']), $zid);
+                    $this->logger->log_info(sprintf(
+                        'client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s',
+                        $_SERVER['REMOTE_ADDR'],
+                        $_SESSION["userlogin"],
+                        $record_info['type'],
+                        $record_info['name'],
+                        $record_info['content'],
+                        $record_info['ttl']
+                    ), $zid);
                 }
 
                 DnsRecord::delete_record_zone_templ($this->db, $record_id);
@@ -98,11 +111,11 @@ class DeleteRecordController extends BaseController
                 if (!$dnsRecord->has_similar_records($domain_id, $record_info['name'], $record_info['type'], $record_id)) {
                     $this->recordCommentService->deleteComment($domain_id, $record_info['name'], $record_info['type']);
                     $this->setMessage('edit', 'success', _('The record has been deleted successfully.'));
-                } else if ($this->config('comments_enabled')) {
+                } elseif ($this->config('comments_enabled')) {
                     $this->setMessage('edit', 'warn', _('The record was deleted but the comment was preserved because similar records exist.'));
                 }
 
-                $this->redirect('index.php', ['page'=> 'edit', 'id' => $zid]);
+                $this->redirect('index.php', ['page' => 'edit', 'id' => $zid]);
             }
         }
 

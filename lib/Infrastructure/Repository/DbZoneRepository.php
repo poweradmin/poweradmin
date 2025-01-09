@@ -26,18 +26,21 @@ use PDO;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Infrastructure\Database\DbCompat;
 
-class DbZoneRepository implements ZoneRepositoryInterface {
+class DbZoneRepository implements ZoneRepositoryInterface
+{
     private object $db;
     private string $db_type;
     private ?string $pdns_db_name;
 
-    public function __construct($db, $config) {
+    public function __construct($db, $config)
+    {
         $this->db = $db;
         $this->db_type = $config->get('db_type');
         $this->pdns_db_name = $config->get('pdns_db_name');
     }
 
-    public function getDistinctStartingLetters(int $userId, bool $viewOthers): array {
+    public function getDistinctStartingLetters(int $userId, bool $viewOthers): array
+    {
         $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
 
         $query = "SELECT DISTINCT " . DbCompat::substr($this->db_type) . "($domains_table.name, 1, 1) AS letter FROM $domains_table";

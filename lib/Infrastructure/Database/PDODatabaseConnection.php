@@ -27,7 +27,8 @@ use PDO;
 use PDOException;
 use Poweradmin\Domain\Service\DatabaseConnection;
 
-class PDODatabaseConnection implements DatabaseConnection {
+class PDODatabaseConnection implements DatabaseConnection
+{
     public function connect(array $credentials): PDOLayer
     {
         $this->validateDatabaseType($credentials['db_type']);
@@ -54,13 +55,15 @@ class PDODatabaseConnection implements DatabaseConnection {
         }
     }
 
-    private function validateDatabaseType($db_type): void {
+    private function validateDatabaseType($db_type): void
+    {
         if (!in_array($db_type, ['mysql', 'mysqli', 'pgsql', 'sqlite'])) {
             $this->showErrorAndExit('No or unknown database type has been set.');
         }
     }
 
-    private function validateCredentialsForNonSQLite($credentials): void {
+    private function validateCredentialsForNonSQLite($credentials): void
+    {
         foreach (['db_user', 'db_pass', 'db_host', 'db_name'] as $key) {
             if (empty($credentials[$key])) {
                 $this->showErrorAndExit("No $key has been set.");
@@ -68,13 +71,15 @@ class PDODatabaseConnection implements DatabaseConnection {
         }
     }
 
-    private function validateSQLiteCredentials($credentials): void {
+    private function validateSQLiteCredentials($credentials): void
+    {
         if (empty($credentials['db_file'])) {
             $this->showErrorAndExit('No database file has been set.');
         }
     }
 
-    private function constructDSN($credentials): string {
+    private function constructDSN($credentials): string
+    {
         $db_type = $credentials['db_type'];
         $db_port = empty($credentials['db_port']) ? $this->getDefaultPort($db_type) : $credentials['db_port'];
 
@@ -91,7 +96,8 @@ class PDODatabaseConnection implements DatabaseConnection {
         }
     }
 
-    private function showErrorAndExit($message): void {
+    private function showErrorAndExit($message): void
+    {
         // Implement error handling and exit logic
         throw new Exception(_($message));
     }

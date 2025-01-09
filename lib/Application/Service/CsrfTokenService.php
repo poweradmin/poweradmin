@@ -22,21 +22,25 @@
 
 namespace Poweradmin\Application\Service;
 
-class CsrfTokenService {
+class CsrfTokenService
+{
     public const TOKEN_LENGTH = 40;
 
-    public function generateToken(): string {
+    public function generateToken(): string
+    {
         $bytesNeeded = (int) ceil(4 * self::TOKEN_LENGTH / 3);
         $bytes = random_bytes($bytesNeeded);
         $token = rtrim(strtr(base64_encode($bytes), '+/', '-_'), '=');
         return substr($token, 0, self::TOKEN_LENGTH);
     }
 
-    public function getToken(string $session_var = 'csrf_token'): string {
+    public function getToken(string $session_var = 'csrf_token'): string
+    {
         return $_SESSION[$session_var] ?? '';
     }
 
-    public function validateToken(string $token, string $session_var = 'csrf_token'): bool {
+    public function validateToken(string $token, string $session_var = 'csrf_token'): bool
+    {
         if (!isset($_SESSION[$session_var])) {
             return false;
         }

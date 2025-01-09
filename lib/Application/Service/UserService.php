@@ -25,14 +25,17 @@ namespace Poweradmin\Application\Service;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\UserRepository;
 
-class UserService {
+class UserService
+{
     private UserRepository $userRepository;
 
-    public function __construct(UserRepository $userRepository) {
+    public function __construct(UserRepository $userRepository)
+    {
         $this->userRepository = $userRepository;
     }
 
-    public function canUserViewOthersContent(int $userId): bool {
+    public function canUserViewOthersContent(int $userId): bool
+    {
         $user = new User($userId);
         return $this->userRepository->canViewOthersContent($user);
     }

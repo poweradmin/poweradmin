@@ -162,7 +162,7 @@ class EditZoneTemplController extends BaseController
         }
         ZoneTemplate::edit_zone_templ($this->db, $_POST, $zone_templ_id, $_SESSION['userid']);
         $this->setMessage('list_zone_templ', 'success', _('Zone template has been updated successfully.'));
-        $this->redirect('index.php', ['page'=> 'list_zone_templ']);
+        $this->redirect('index.php', ['page' => 'list_zone_templ']);
     }
 
     public function updateZoneRecords(string $zone_templ_id): void

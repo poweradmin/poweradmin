@@ -84,7 +84,7 @@ class EditZoneTemplRecordController extends BaseController
     {
         if (ZoneTemplate::edit_zone_templ_record($this->db, $_POST)) {
             $this->setMessage('edit_zone_templ', 'success', _('Zone template has been updated successfully.'));
-            $this->redirect('index.php', ['page'=> 'edit_zone_templ', 'id' => $zone_templ_id]);
+            $this->redirect('index.php', ['page' => 'edit_zone_templ', 'id' => $zone_templ_id]);
         }
     }
 }

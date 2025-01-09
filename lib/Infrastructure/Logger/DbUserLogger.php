@@ -29,7 +29,8 @@ class DbUserLogger
 {
     private PDOLayer $db;
 
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->db = $db;
     }
 
@@ -87,8 +88,7 @@ class DbUserLogger
             SELECT * FROM log_users
             WHERE log_users.event LIKE :search_by
             LIMIT :limit 
-            OFFSET :offset"
-        );
+            OFFSET :offset");
 
         $user = "%'$user'%";
         $stmt->execute([

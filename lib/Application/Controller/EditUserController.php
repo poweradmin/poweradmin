@@ -119,7 +119,7 @@ class EditUserController extends BaseController
             $legacyUsers = new UserManager($this->db, $this->getConfig());
             if ($legacyUsers->edit_user($edit_id, $i_username, $i_fullname, $i_email, $i_perm_templ, $i_description, $i_active, $i_password, $i_use_ldap)) {
                 $this->setMessage('users', 'success', _('The user has been updated successfully.'));
-                $this->redirect('index.php', ['page'=> 'users']);
+                $this->redirect('index.php', ['page' => 'users']);
             } else {
                 $this->setMessage('edit_user', 'error', _('The user could not be updated.'));
             }

@@ -78,7 +78,7 @@ class EditCommentController extends BaseController
                 $dnsRecord = new DnsRecord($this->db, $this->getConfig());
                 $dnsRecord->edit_zone_comment($zone_id, $_POST['comment']);
                 $this->setMessage('edit', 'success', _('The comment has been updated successfully.'));
-                $this->redirect('index.php', ['page'=> 'edit', 'id' => $zone_id]);
+                $this->redirect('index.php', ['page' => 'edit', 'id' => $zone_id]);
             }
         }
 

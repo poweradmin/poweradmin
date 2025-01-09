@@ -24,50 +24,65 @@ namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Service\DnssecProvider;
 
-class DnssecService {
+class DnssecService
+{
     private DnssecProvider $provider;
 
-    public function __construct(DnssecProvider $provider) {
+    public function __construct(DnssecProvider $provider)
+    {
         $this->provider = $provider;
     }
 
-    public function rectifyZone(string $domainName): bool {
+    public function rectifyZone(string $domainName): bool
+    {
         return $this->provider->rectifyZone($domainName);
     }
-    public function secureZone(string $domainName): bool {
+    public function secureZone(string $domainName): bool
+    {
         return $this->provider->secureZone($domainName);
     }
-    public function unsecureZone(string $domainName): bool {
+    public function unsecureZone(string $domainName): bool
+    {
         return $this->provider->unsecureZone($domainName);
     }
-    public function isZoneSecured(string $domainName, $config): bool {
+    public function isZoneSecured(string $domainName, $config): bool
+    {
         return $this->provider->isZoneSecured($domainName, $config);
     }
-    public function getDsRecords(string $domainName): array {
+    public function getDsRecords(string $domainName): array
+    {
         return $this->provider->getDsRecords($domainName);
     }
-    public function getDnsKeyRecords(string $domainName): array {
+    public function getDnsKeyRecords(string $domainName): array
+    {
         return $this->provider->getDnsKeyRecords($domainName);
     }
-    public function activateZoneKey(string $domainName, int $keyId): bool {
+    public function activateZoneKey(string $domainName, int $keyId): bool
+    {
         return $this->provider->activateZoneKey($domainName, $keyId);
     }
-    public function deactivateZoneKey(string $domainName, int $keyId): bool {
+    public function deactivateZoneKey(string $domainName, int $keyId): bool
+    {
         return $this->provider->deactivateZoneKey($domainName, $keyId);
     }
-    public function getKeys(string $domainName): array {
+    public function getKeys(string $domainName): array
+    {
         return $this->provider->getKeys($domainName);
     }
-    public function addZoneKey(string $domainName, string $keyType, int $keySize, string $algorithm): bool {
+    public function addZoneKey(string $domainName, string $keyType, int $keySize, string $algorithm): bool
+    {
         return $this->provider->addZoneKey($domainName, $keyType, $keySize, $algorithm);
     }
-    public function removeZoneKey(string $domainName, int $keyId): bool {
+    public function removeZoneKey(string $domainName, int $keyId): bool
+    {
         return $this->provider->removeZoneKey($domainName, $keyId);
     }
-    public function keyExists(string $domainName, int $keyId): bool {
+    public function keyExists(string $domainName, int $keyId): bool
+    {
         return $this->provider->keyExists($domainName, $keyId);
     }
-    public function getZoneKey(string $domainName, int $keyId): array {
+    public function getZoneKey(string $domainName, int $keyId): array
+    {
         return $this->provider->getZoneKey($domainName, $keyId);
     }
 }

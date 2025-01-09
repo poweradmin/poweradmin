@@ -97,9 +97,14 @@ class AddZoneMasterController extends BaseController
             $this->setMessage('list_zones', 'success', _('Zone has been added successfully.'));
 
             $zone_id = $dnsRecord->get_zone_id_from_name($zone_name);
-            $this->logger->log_info(sprintf('client_ip:%s user:%s operation:add_zone zone_name:%s zone_type:%s zone_template:%s',
-                $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                $zone_name, $dom_type, $zone_template), $zone_id);
+            $this->logger->log_info(sprintf(
+                'client_ip:%s user:%s operation:add_zone zone_name:%s zone_type:%s zone_template:%s',
+                $_SERVER['REMOTE_ADDR'],
+                $_SESSION["userlogin"],
+                $zone_name,
+                $dom_type,
+                $zone_template
+            ), $zone_id);
 
             if ($pdnssec_use) {
                 $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
@@ -111,7 +116,7 @@ class AddZoneMasterController extends BaseController
                 $dnssecProvider->rectifyZone($zone_name);
             }
 
-            $this->redirect('index.php', ['page'=> 'list_zones']);
+            $this->redirect('index.php', ['page' => 'list_zones']);
         }
     }
 

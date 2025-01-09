@@ -47,13 +47,12 @@ class DnsSecApiProvider implements DnssecProvider
     private string $userLogin;
 
     public function __construct(
-        PowerdnsApiClient     $client,
+        PowerdnsApiClient $client,
         LegacyLoggerInterface $logger,
-        DnssecTransformer     $transformer,
-        string                $clientIp,
-        string                $userLogin
-    )
-    {
+        DnssecTransformer $transformer,
+        string $clientIp,
+        string $userLogin
+    ) {
         $this->client = $client;
         $this->logger = $logger;
         $this->transformer = $transformer;

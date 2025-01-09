@@ -61,7 +61,9 @@ class ListLogUsersController extends BaseController
         $selected_page = 1;
         if (isset($_GET['start'])) {
             is_numeric($_GET['start']) ? $selected_page = $_GET['start'] : die("Unknown page.");
-            if ($selected_page < 0) die('Unknown page.');
+            if ($selected_page < 0) {
+                die('Unknown page.');
+            }
         }
 
         $logs_per_page = $this->config('iface_rowamount');
@@ -69,13 +71,16 @@ class ListLogUsersController extends BaseController
         if (isset($_GET['name']) && $_GET['name'] != '') {
             $number_of_logs = $this->dbUserLogger->count_logs_by_user($_GET['name']);
             $number_of_pages = ceil($number_of_logs / $logs_per_page);
-            if ($number_of_logs != 0 && $selected_page > $number_of_pages) die('Unknown page');
+            if ($number_of_logs != 0 && $selected_page > $number_of_pages) {
+                die('Unknown page');
+            }
             $logs = $this->dbUserLogger->get_logs_for_user($_GET['name'], $logs_per_page, ($selected_page - 1) * $logs_per_page);
-
         } else {
             $number_of_logs = $this->dbUserLogger->count_all_logs();
             $number_of_pages = ceil($number_of_logs / $logs_per_page);
-            if ($number_of_logs != 0 && $selected_page > $number_of_pages) die('Unknown page');
+            if ($number_of_logs != 0 && $selected_page > $number_of_pages) {
+                die('Unknown page');
+            }
             $logs = $this->dbUserLogger->get_all_logs($logs_per_page, ($selected_page - 1) * $logs_per_page);
         }
 

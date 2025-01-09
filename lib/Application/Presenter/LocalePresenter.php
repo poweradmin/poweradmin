@@ -22,9 +22,11 @@
 
 namespace Poweradmin\Application\Presenter;
 
-class LocalePresenter {
+class LocalePresenter
+{
 
-    public function generateLocaleOptions(array $locales): string {
+    public function generateLocaleOptions(array $locales): string
+    {
         $html = '';
         foreach ($locales as $locale) {
             $selectedAttr = $locale['selected'] ? ' selected' : '';

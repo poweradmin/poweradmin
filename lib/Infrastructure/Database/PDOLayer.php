@@ -59,7 +59,7 @@ class PDOLayer extends PDOCommon
      * @param string $type
      * @return string Returns quoted string
      */
-    public function quote(string $string, $type = NULL): string
+    public function quote(string $string, $type = null): string
     {
         if ($type == 'integer') {
             $type = PDO::PARAM_INT;
@@ -113,7 +113,6 @@ class PDOLayer extends PDOCommon
      */
     public function disconnect()
     {
-
     }
 
     public function executeMultiple($stmt, $params): void
@@ -221,5 +220,4 @@ class PDOLayer extends PDOCommon
         $query = "DROP TABLE $name";
         $this->exec($query);
     }
-
 }

@@ -61,7 +61,7 @@ class AddUserController extends BaseController
             $legacyUsers = new UserManager($this->db, $this->getConfig());
             if ($legacyUsers->add_new_user($_POST)) {
                 $this->setMessage('users', 'success', _('The user has been created successfully.'));
-                $this->redirect('index.php', ['page'=> 'users']);
+                $this->redirect('index.php', ['page' => 'users']);
             } else {
                 $this->showForm();
             }

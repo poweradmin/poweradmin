@@ -24,17 +24,20 @@ namespace Poweradmin\Infrastructure\Api;
 
 use Poweradmin\Domain\Error\ApiErrorException;
 
-class HttpClient implements ApiClient {
+class HttpClient implements ApiClient
+{
 
     private string $apiUrl;
     private string $apiKey;
 
-    public function __construct(string $baseEndpoint, string $apiKey) {
+    public function __construct(string $baseEndpoint, string $apiKey)
+    {
         $this->apiUrl = rtrim($baseEndpoint, '/');
         $this->apiKey = $apiKey;
     }
 
-    public function makeRequest(string $method, string $endpoint, array $data = []): array {
+    public function makeRequest(string $method, string $endpoint, array $data = []): array
+    {
         $url = $this->apiUrl . $endpoint;
         $options = [
             'http' => [
@@ -65,7 +68,8 @@ class HttpClient implements ApiClient {
         ];
     }
 
-    private function getResponseCode(array $headers): ?int {
+    private function getResponseCode(array $headers): ?int
+    {
         if (isset($headers[0])) {
             preg_match('/\s(\d{3})\s/', $headers[0], $match);
             return isset($match[1]) ? (int)$match[1] : null;

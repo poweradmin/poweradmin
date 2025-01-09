@@ -67,7 +67,7 @@ class DeleteZoneTemplController extends BaseController
             ZoneTemplate::delete_zone_templ($this->db, $zone_templ_id);
 
             $this->setMessage('list_zone_templ', 'success', _('Zone template has been deleted successfully.'));
-            $this->redirect('index.php', ['page'=> 'list_zone_templ']);
+            $this->redirect('index.php', ['page' => 'list_zone_templ']);
         } else {
             $this->showFirstError($v->errors());
         }

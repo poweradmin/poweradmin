@@ -98,12 +98,16 @@ class AddZoneSlaveController extends BaseController
             $dnsRecord = new DnsRecord($this->db, $this->getConfig());
             if ($dnsRecord->add_domain($this->db, $zone, $owner, $type, $master, 'none')) {
                 $zone_id = $dnsRecord->get_zone_id_from_name($zone);
-                $this->logger->log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',
-                    $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                    $zone, $master), $zone_id);
+                $this->logger->log_info(sprintf(
+                    'client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',
+                    $_SERVER['REMOTE_ADDR'],
+                    $_SESSION["userlogin"],
+                    $zone,
+                    $master
+                ), $zone_id);
 
                 $this->setMessage('list_zones', 'success', _('Zone has been added successfully.'));
-                $this->redirect('index.php', ['page'=> 'list_zones']);
+                $this->redirect('index.php', ['page' => 'list_zones']);
             }
         }
     }

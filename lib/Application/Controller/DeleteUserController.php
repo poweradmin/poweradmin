@@ -77,7 +77,7 @@ class DeleteUserController extends BaseController
         $legacyUsers = new UserManager($this->db, $this->getConfig());
         if ($legacyUsers->delete_user($uid, $zones)) {
             $this->setMessage('users', 'success', _('The user has been deleted successfully.'));
-            $this->redirect('index.php', ['page'=> 'users']);
+            $this->redirect('index.php', ['page' => 'users']);
         }
     }
 

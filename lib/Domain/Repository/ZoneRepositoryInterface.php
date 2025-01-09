@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Repository;
 
-interface ZoneRepositoryInterface {
+interface ZoneRepositoryInterface
+{
     public function getDistinctStartingLetters(int $userId, bool $viewOthers): array;
 }

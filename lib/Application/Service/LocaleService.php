@@ -24,8 +24,10 @@ namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Model\Locale;
 
-class LocaleService {
-    public function prepareLocales(array $localesData, string $interfaceLanguage): array {
+class LocaleService
+{
+    public function prepareLocales(array $localesData, string $interfaceLanguage): array
+    {
         $preparedLocales = [];
         foreach ($localesData as $locale => $language) {
             $localeEntity = new Locale($locale, $language);

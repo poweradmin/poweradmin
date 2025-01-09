@@ -37,7 +37,7 @@ class ReverseRecordCreator
     public function __construct(
         PDOLayer $db,
         AppConfiguration $config,
-        LegacyLogger$logger,
+        LegacyLogger $logger,
         DnsRecord $dnsRecord
     ) {
         $this->db = $db;
@@ -87,9 +87,15 @@ class ReverseRecordCreator
         $fqdn_name = sprintf("%s.%s", $name, $zone_name);
 
         if ($this->dnsRecord->add_record($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
-            $this->logger->log_info(sprintf('client_ip:%s user:%s operation:add_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
-                $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                $content_rev, $fqdn_name, $ttl, $prio), $zone_id);
+            $this->logger->log_info(sprintf(
+                'client_ip:%s user:%s operation:add_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
+                $_SERVER['REMOTE_ADDR'],
+                $_SESSION["userlogin"],
+                $content_rev,
+                $fqdn_name,
+                $ttl,
+                $prio
+            ), $zone_id);
 
             if ($this->config->get('pdnssec_use')) {
                 $dnssecProvider = DnssecProviderFactory::create($this->db, $this->config);

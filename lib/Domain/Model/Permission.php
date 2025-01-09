@@ -58,9 +58,9 @@ class Permission
      */
     public static function getEditPermission($db): string
     {
-        if (UserManager::verify_permission($db,'zone_content_edit_others')) {
+        if (UserManager::verify_permission($db, 'zone_content_edit_others')) {
             return "all";
-        } elseif (UserManager::verify_permission($db,'zone_content_edit_own')) {
+        } elseif (UserManager::verify_permission($db, 'zone_content_edit_own')) {
             return "own";
         } elseif (UserManager::verify_permission($db, 'zone_content_edit_own_as_client')) {
             return "own_as_client";

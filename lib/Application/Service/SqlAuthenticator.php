@@ -65,7 +65,7 @@ class SqlAuthenticator extends LoggingService
             $sessionEntity = new SessionEntity('', 'danger');
             $this->authenticationService->auth($sessionEntity);
 
-            $this->logInfo( 'Authentication process ended due to missing session variables.');
+            $this->logInfo('Authentication process ended due to missing session variables.');
             return;
         }
 
@@ -81,7 +81,7 @@ class SqlAuthenticator extends LoggingService
             $this->logWarning('No user found with the provided username: {username}', ['username' => $_SESSION["userlogin"]]);
             $this->handleFailedAuthentication();
 
-            $this->logInfo( 'Authentication process ended due to no user found.');
+            $this->logInfo('Authentication process ended due to no user found.');
             return;
         }
 
@@ -95,7 +95,7 @@ class SqlAuthenticator extends LoggingService
             $this->logWarning('Password verification failed for user {username}', ['username' => $_SESSION["userlogin"]]);
             $this->handleFailedAuthentication();
 
-            $this->logInfo( 'Authentication process ended due to password verification failure.');
+            $this->logInfo('Authentication process ended due to password verification failure.');
             return;
         }
 

@@ -22,8 +22,10 @@
 
 namespace Poweradmin\Infrastructure\Service;
 
-class RedirectService {
-    public function redirectTo(string $url): void {
+class RedirectService
+{
+    public function redirectTo(string $url): void
+    {
         header("Location: $url");
         exit;
     }

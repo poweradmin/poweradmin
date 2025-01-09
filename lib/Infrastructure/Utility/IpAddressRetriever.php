@@ -26,7 +26,8 @@ class IpAddressRetriever
 {
     private array $server;
 
-    public function __construct(array $server) {
+    public function __construct(array $server)
+    {
         $this->server = $server;
     }
 
@@ -45,7 +46,7 @@ class IpAddressRetriever
 
         foreach ($clientIpHeaders as $header) {
             if (!empty($this->server[$header])) {
-                $ips = array_filter(explode(',', $this->server[$header]), function($ip) {
+                $ips = array_filter(explode(',', $this->server[$header]), function ($ip) {
                     return filter_var($ip, FILTER_VALIDATE_IP);
                 });
 

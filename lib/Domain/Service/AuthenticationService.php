@@ -25,33 +25,39 @@ namespace Poweradmin\Domain\Service;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Infrastructure\Service\RedirectService;
 
-class AuthenticationService {
+class AuthenticationService
+{
     private SessionService $sessionService;
     private RedirectService $redirectService;
 
-    public function __construct(SessionService $sessionService, RedirectService $redirectService) {
+    public function __construct(SessionService $sessionService, RedirectService $redirectService)
+    {
         $this->sessionService = $sessionService;
         $this->redirectService = $redirectService;
     }
 
-    public function logout(SessionEntity $sessionEntity): void {
+    public function logout(SessionEntity $sessionEntity): void
+    {
         $this->sessionService->endSession();
         $this->sessionService->setSessionData($sessionEntity);
         $this->redirectToLogin();
     }
 
-    public function auth(SessionEntity $sessionEntity): void {
+    public function auth(SessionEntity $sessionEntity): void
+    {
         $this->sessionService->startSession($sessionEntity);
         $this->redirectToLogin();
     }
 
-    private function redirectToLogin(): void {
+    private function redirectToLogin(): void
+    {
         $args['time'] = time();
         $url = htmlentities('index.php?page=login', ENT_QUOTES) . "&" . http_build_query($args);
         $this->redirectService->redirectTo($url);
     }
 
-    public function redirectToIndex(): void {
+    public function redirectToIndex(): void
+    {
         $args['time'] = time();
         $url = htmlentities('index.php?page=index', ENT_QUOTES) . "&" . http_build_query($args);
         $this->redirectService->redirectTo($url);

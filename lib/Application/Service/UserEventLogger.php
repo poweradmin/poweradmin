@@ -29,7 +29,8 @@ class UserEventLogger
 {
     private LegacyLogger $logger;
 
-    public function __construct(PDOLayer $db) {
+    public function __construct(PDOLayer $db)
+    {
         $this->logger = new LegacyLogger($db);
     }
 

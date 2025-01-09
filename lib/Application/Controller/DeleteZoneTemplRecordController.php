@@ -68,7 +68,7 @@ class DeleteZoneTemplRecordController extends BaseController
             } else {
                 $this->setMessage('edit_zone_templ', 'error', _('The record could not be deleted.'));
             }
-            $this->redirect('index.php', ['page'=> 'edit_zone_templ', 'id' => $zone_templ_id]);
+            $this->redirect('index.php', ['page' => 'edit_zone_templ', 'id' => $zone_templ_id]);
         }
 
         $templ_details = ZoneTemplate::get_zone_templ_details($this->db, $zone_templ_id);

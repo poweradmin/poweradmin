@@ -25,14 +25,17 @@ namespace Poweradmin\Infrastructure\Repository;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\UserRepository;
 
-class DbUserRepository implements UserRepository {
+class DbUserRepository implements UserRepository
+{
     private object $db;
 
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->db = $db;
     }
 
-    public function canViewOthersContent(User $user): bool {
+    public function canViewOthersContent(User $user): bool
+    {
         $query = "SELECT DISTINCT u.id
                   FROM users u
                   JOIN perm_templ pt ON u.perm_templ = pt.id

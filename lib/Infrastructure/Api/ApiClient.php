@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Api;
 
-interface ApiClient {
+interface ApiClient
+{
     public function makeRequest(string $method, string $endpoint, array $data = []): array;
 }

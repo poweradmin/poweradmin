@@ -284,7 +284,6 @@ class UserManager
         $perm_edit_others = self::verify_permission($this->db, 'user_edit_others');
 
         if (($id == $_SESSION["userid"] && $perm_edit_own) || ($id != $_SESSION["userid"] && $perm_edit_others)) {
-
             $validation = new Validator($this->db, $this->config);
             if (!$validation->is_valid_email($email)) {
                 $error = new ErrorMessage(_('Enter a valid email address.'));
@@ -314,7 +313,6 @@ class UserManager
             $usercheck = $response->fetch();
 
             if ($usercheck ['username'] != $user) {
-
                 // Username of user ID in the database is different from the name
                 // we have been given. User wants a change of username. Now, make
                 // sure it doesn't already exist.
@@ -427,7 +425,7 @@ class UserManager
 
         $query = "SELECT id, password, use_ldap FROM users WHERE username = {$db->quote($_SESSION["userlogin"], 'text')}";
         $response = $db->queryRow($query);
-        
+
         if ($response['use_ldap']) {
             $error = new ErrorMessage(_('You can not change your password as LDAP user.'));
             $errorPresenter = new ErrorPresenter();
@@ -639,7 +637,6 @@ class UserManager
         $perm_is_godlike = self::verify_permission($this->db, 'user_is_ueberuser');
 
         if (($details['uid'] == $_SESSION["userid"] && $perm_edit_own) || ($details['uid'] != $_SESSION["userid"] && $perm_edit_others)) {
-
             $validation = new Validator($this->db, $this->config);
             if (!$validation->is_valid_email($details['email'])) {
                 $error = new ErrorMessage(_('Enter a valid email address.'));

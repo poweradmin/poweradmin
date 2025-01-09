@@ -30,12 +30,13 @@ class LegacyLogger
     private PDOLayer $db;
     private AppConfiguration $config;
 
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->db = $db;
         $this->config = new AppConfiguration();
     }
 
-    private function do_log($message, $priority, $zone_id = NULL): void
+    private function do_log($message, $priority, $zone_id = null): void
     {
         $syslog_use = $this->config->get('syslog_use');
         $syslog_ident = $this->config->get('syslog_ident');
@@ -60,12 +61,12 @@ class LegacyLogger
         }
     }
 
-    public function log_error($message, $zone_id = NULL): void
+    public function log_error($message, $zone_id = null): void
     {
         $this->do_log($message, LOG_ERR, $zone_id);
     }
 
-    public function log_warn($message, $zone_id = NULL): void
+    public function log_warn($message, $zone_id = null): void
     {
         $this->do_log($message, LOG_WARNING, $zone_id);
     }
@@ -75,7 +76,7 @@ class LegacyLogger
         $this->do_log($message, LOG_NOTICE);
     }
 
-    public function log_info($message, $zone_id = NULL): void
+    public function log_info($message, $zone_id = null): void
     {
         $this->do_log($message, LOG_INFO, $zone_id);
     }

@@ -24,17 +24,21 @@ namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Model\SessionEntity;
 
-class SessionService {
-    public function startSession(SessionEntity $sessionEntity): void {
+class SessionService
+{
+    public function startSession(SessionEntity $sessionEntity): void
+    {
         $this->setSessionData($sessionEntity);
     }
 
-    public function endSession(): void {
+    public function endSession(): void
+    {
         session_regenerate_id(true);
         session_unset();
     }
 
-    public function setSessionData(SessionEntity $sessionEntity): void {
+    public function setSessionData(SessionEntity $sessionEntity): void
+    {
         $_SESSION['message'] = $sessionEntity->getMessage();
         $_SESSION['type'] = $sessionEntity->getType();
     }

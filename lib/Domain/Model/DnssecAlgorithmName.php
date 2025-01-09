@@ -22,7 +22,8 @@
 
 namespace Poweradmin\Domain\Model;
 
-class DnssecAlgorithmName {
+class DnssecAlgorithmName
+{
     public const RSAMD5 = 'rsamd5';
     public const DH = 'dh';
     public const DSA = 'dsa';

@@ -22,8 +22,10 @@
 
 namespace Poweradmin\Application\Presenter;
 
-class ZoneStartingLettersPresenter {
-    public function present(array $availableChars, bool $digitsAvailable, string $letterStart): string {
+class ZoneStartingLettersPresenter
+{
+    public function present(array $availableChars, bool $digitsAvailable, string $letterStart): string
+    {
         $html = '<span class="text-secondary">' . _('Show zones beginning with') . "</span><br>";
         $html .= '<nav>';
         $html .= '<ul class="pagination pagination-sm">';

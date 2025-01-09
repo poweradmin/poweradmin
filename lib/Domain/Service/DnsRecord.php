@@ -48,7 +48,8 @@ class DnsRecord
     private AppConfiguration $config;
     private PDOLayer $db;
 
-    public function __construct(PDOLayer $db, AppConfiguration $config) {
+    public function __construct(PDOLayer $db, AppConfiguration $config)
+    {
         $this->db = $db;
         $this->config = $config;
     }
@@ -281,7 +282,7 @@ class DnsRecord
     public function update_soa_serial(int $domain_id): bool
     {
         $soa_rec = $this->get_soa_record($domain_id);
-        if ($soa_rec == NULL) {
+        if ($soa_rec == null) {
             return false;
         }
 
@@ -706,7 +707,6 @@ class DnsRecord
 
         // TODO: make sure only one is possible if only one is enabled
         if ($zone_master_add || $zone_slave_add) {
-
             $dns_ns1 = $this->config->get('dns_ns1');
             $dns_hostmaster = $this->config->get('dns_hostmaster');
             $dns_ttl = $this->config->get('dns_ttl');
@@ -716,10 +716,11 @@ class DnsRecord
             $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
             $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
-            if (($domain && $owner && $zone_template) ||
+            if (
+                ($domain && $owner && $zone_template) ||
                 (preg_match('/in-addr.arpa/i', $domain) && $owner && $zone_template) ||
-                $type == "SLAVE" && $domain && $owner && $slave_master) {
-
+                $type == "SLAVE" && $domain && $owner && $slave_master
+            ) {
                 $stmt = $db->prepare("INSERT INTO $domains_table (name, type) VALUES (:domain, :type)");
                 $stmt->bindValue(':domain', $domain, PDO::PARAM_STR);
                 $stmt->bindValue(':type', $type, PDO::PARAM_STR);
@@ -876,7 +877,7 @@ class DnsRecord
             if (UserManager::is_valid_user($db, $user_id)) {
                 if ($db->queryOne("SELECT COUNT(id) FROM zones WHERE owner=" . $db->quote($user_id, 'integer') . " AND domain_id=" . $db->quote($zone_id, 'integer')) == 0) {
                     $zone_templ_id = self::get_zone_template($db, $zone_id);
-                    if ($zone_templ_id == NULL) {
+                    if ($zone_templ_id == null) {
                         $zone_templ_id = 0;
                     }
                     $stmt = $db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES(:zone_id, :user_id, :zone_templ_id)");
@@ -1435,7 +1436,7 @@ class DnsRecord
         }
         $sql_sortby = $sortby == "$records_table.name" ? SortHelper::getRecordSortOrder($records_table, $db_type, $sortDirection) : $sortby . " " . $sortDirection;
         if ($sortby == "$records_table.name" and $sortDirection == 'ASC') {
-            $sql_sortby = "$records_table.type = 'SOA' DESC, $records_table.type = 'NS' DESC, ". $sql_sortby;
+            $sql_sortby = "$records_table.type = 'SOA' DESC, $records_table.type = 'NS' DESC, " . $sql_sortby;
         }
 
         $query = "SELECT $records_table.*, " . ($fetchComments ? "$comments_table.comment" : "NULL AS comment") . "
@@ -1642,7 +1643,7 @@ class DnsRecord
             if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
                 if ($db_type == 'pgsql') {
                     $query = "DELETE FROM $records_table r USING records_zone_templ rzt WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id AND r.id = rzt.record_id";
-                } else if ($db_type == 'sqlite') {
+                } elseif ($db_type == 'sqlite') {
                     $query = "DELETE FROM $records_table WHERE id IN (SELECT r.id FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id)";
                 } else {
                     $query = "DELETE r, rzt FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id";
@@ -1827,12 +1828,13 @@ class DnsRecord
 
         if (isset($timezone)) {
             date_default_timezone_set($timezone);
-        } else if (!ini_get('date.timezone')) {
+        } elseif (!ini_get('date.timezone')) {
             date_default_timezone_set('UTC');
         }
     }
 
-    public function has_similar_records($domain_id, $name, $type, $record_id): bool {
+    public function has_similar_records($domain_id, $name, $type, $record_id): bool
+    {
         $query = "SELECT COUNT(*) FROM records
               WHERE domain_id = :domain_id AND name = :name AND type = :type AND id != :record_id";
         $stmt = $this->db->prepare($query);

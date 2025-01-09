@@ -163,7 +163,7 @@ class DbPermissionTemplateRepository
      *
      * @return array array of templates [id, name, descr]
      */
-    public  function listPermissionTemplates(): array
+    public function listPermissionTemplates(): array
     {
         $query = "SELECT * FROM perm_templ ORDER BY name";
         $response = $this->db->query($query);

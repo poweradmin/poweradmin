@@ -54,7 +54,7 @@ class LdapAuthenticator extends LoggingService
 
     public function authenticate(): void
     {
-        $this->logInfo( 'Starting LDAP authentication process.');
+        $this->logInfo('Starting LDAP authentication process.');
 
         $session_key = $this->config->get('session_key');
         $ldap_uri = $this->config->get('ldap_uri');
@@ -70,12 +70,12 @@ class LdapAuthenticator extends LoggingService
             $this->logWarning('Session variables userlogin or userpwd are not set.');
             $sessionEntity = new SessionEntity('', 'danger');
             $this->authenticationService->auth($sessionEntity);
-            $this->logInfo( 'LDAP authentication process ended due to missing session variables.');
+            $this->logInfo('LDAP authentication process ended due to missing session variables.');
             return;
         }
 
         if ($ldap_debug) {
-            ldap_set_option(NULL, LDAP_OPT_DEBUG_LEVEL, 7);
+            ldap_set_option(null, LDAP_OPT_DEBUG_LEVEL, 7);
         }
 
         $ldapconn = ldap_connect($ldap_uri);
@@ -122,7 +122,7 @@ class LdapAuthenticator extends LoggingService
             }
             $sessionEntity = new SessionEntity(_('Failed to search LDAP.'), 'danger');
             $this->authenticationService->logout($sessionEntity);
-            $this->logInfo( 'LDAP authentication process ended due to search failure.');
+            $this->logInfo('LDAP authentication process ended due to search failure.');
             return;
         }
 
@@ -153,7 +153,7 @@ class LdapAuthenticator extends LoggingService
             }
             $sessionEntity = new SessionEntity(_('LDAP Authentication failed!'), 'danger');
             $this->authenticationService->auth($sessionEntity);
-            $this->logInfo( 'LDAP authentication process ended due to incorrect password.');
+            $this->logInfo('LDAP authentication process ended due to incorrect password.');
             return;
         }
 
@@ -170,12 +170,12 @@ class LdapAuthenticator extends LoggingService
             }
             $sessionEntity = new SessionEntity(_('LDAP Authentication failed!'), 'danger');
             $this->authenticationService->auth($sessionEntity);
-            $this->logInfo( 'LDAP authentication process ended due to no active user found.');
+            $this->logInfo('LDAP authentication process ended due to no active user found.');
             return;
         }
 
         session_regenerate_id(true);
-        $this->logInfo( 'Session ID regenerated for user {username}', ['username' => $_SESSION["userlogin"]]);
+        $this->logInfo('Session ID regenerated for user {username}', ['username' => $_SESSION["userlogin"]]);
 
         $_SESSION['userid'] = $rowObj['id'];
         $_SESSION['name'] = $rowObj['fullname'];
@@ -183,7 +183,7 @@ class LdapAuthenticator extends LoggingService
 
         if (!isset($_SESSION['csrf_token'])) {
             $_SESSION['csrf_token'] = $this->csrfTokenService->generateToken();
-            $this->logInfo( 'CSRF token generated for user {username}', ['username' => $_SESSION["userlogin"]]);
+            $this->logInfo('CSRF token generated for user {username}', ['username' => $_SESSION["userlogin"]]);
         }
 
         if (isset($_POST['authenticate'])) {
@@ -192,6 +192,6 @@ class LdapAuthenticator extends LoggingService
             $this->authenticationService->redirectToIndex();
         }
 
-        $this->logInfo( 'LDAP authentication process completed successfully for user {username}', ['username' => $_SESSION["userlogin"]]);
+        $this->logInfo('LDAP authentication process completed successfully for user {username}', ['username' => $_SESSION["userlogin"]]);
     }
 }

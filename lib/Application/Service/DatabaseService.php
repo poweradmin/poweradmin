@@ -27,10 +27,12 @@ use Poweradmin\Domain\Service\DatabaseConnection;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use RuntimeException;
 
-class DatabaseService {
+class DatabaseService
+{
     private DatabaseConnection $databaseConnection;
 
-    public function __construct(DatabaseConnection $databaseConnection) {
+    public function __construct(DatabaseConnection $databaseConnection)
+    {
         $this->databaseConnection = $databaseConnection;
     }
 

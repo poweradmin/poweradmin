@@ -22,7 +22,8 @@
 
 namespace Poweradmin\Domain\Model;
 
-class RecordComment {
+class RecordComment
+{
     private ?int $id;
     private int $domainId;
     private string $name;
@@ -49,13 +50,34 @@ class RecordComment {
         $this->comment = $comment;
     }
 
-    public function getId(): ?int { return $this->id; }
-    public function getDomainId(): int { return $this->domainId; }
-    public function getName(): string { return $this->name; }
-    public function getType(): string { return $this->type; }
-    public function getModifiedAt(): int { return $this->modifiedAt; }
-    public function getAccount(): ?string { return $this->account; }
-    public function getComment(): string { return $this->comment; }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+    public function getDomainId(): int
+    {
+        return $this->domainId;
+    }
+    public function getName(): string
+    {
+        return $this->name;
+    }
+    public function getType(): string
+    {
+        return $this->type;
+    }
+    public function getModifiedAt(): int
+    {
+        return $this->modifiedAt;
+    }
+    public function getAccount(): ?string
+    {
+        return $this->account;
+    }
+    public function getComment(): string
+    {
+        return $this->comment;
+    }
 
     public static function create(
         int $domainId,

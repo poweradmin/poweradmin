@@ -78,9 +78,13 @@ class DeleteDomainsController extends BaseController
 
         if ($delete_domains) {
             foreach ($deleted_zones as $deleted_zone) {
-                $this->logger->log_info(sprintf('client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
-                    $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                    $deleted_zone['name'], $deleted_zone['type']), $deleted_zone['id']);
+                $this->logger->log_info(sprintf(
+                    'client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
+                    $_SERVER['REMOTE_ADDR'],
+                    $_SESSION["userlogin"],
+                    $deleted_zone['name'],
+                    $deleted_zone['type']
+                ), $deleted_zone['id']);
             }
 
             foreach ($zone_ids as $zone_id) {
@@ -92,7 +96,7 @@ class DeleteDomainsController extends BaseController
             } else {
                 $this->setMessage('list_zones', 'success', _('Zones have been deleted successfully.'));
             }
-            $this->redirect('index.php', ['page'=> 'list_zones']);
+            $this->redirect('index.php', ['page' => 'list_zones']);
         }
     }
 

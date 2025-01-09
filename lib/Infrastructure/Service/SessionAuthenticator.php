@@ -50,7 +50,8 @@ class SessionAuthenticator extends LoggingService
     private LdapAuthenticator $ldapAuthenticator;
     private SqlAuthenticator $sqlAuthenticator;
 
-    public function __construct(PDOLayer $db, AppConfiguration $config) {
+    public function __construct(PDOLayer $db, AppConfiguration $config)
+    {
         $shortClassName = (new ReflectionClass(self::class))->getShortName();
         parent::__construct(new Logger(LoggerHandlerFactory::create($config->getAll()), $config->get('logger_level')), $shortClassName);
 
@@ -96,7 +97,8 @@ class SessionAuthenticator extends LoggingService
         }
 
         $login_token = $_POST['_token'] ?? '';
-        if (($login_token_validation || $global_token_validation)
+        if (
+            ($login_token_validation || $global_token_validation)
             && isset($_POST['authenticate'])
             && !$this->csrfTokenService->validateToken($login_token, 'login_token')
         ) {

@@ -22,39 +22,47 @@
 
 namespace Poweradmin\Domain\Model;
 
-class Zone {
+class Zone
+{
 
     private string $name;
     private bool $isSecured;
     private array $keys;
 
-    public function __construct(string $name, bool $isSecured = false, array $keys = []) {
+    public function __construct(string $name, bool $isSecured = false, array $keys = [])
+    {
         $this->name = $name;
         $this->isSecured = $isSecured;
         $this->keys = $keys;
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         return $this->name;
     }
 
-    public function isSecured(): bool {
+    public function isSecured(): bool
+    {
         return $this->isSecured;
     }
 
-    public function secure(): void {
+    public function secure(): void
+    {
         $this->isSecured = true;
     }
 
-    public function unsecure(): void {
+    public function unsecure(): void
+    {
         $this->isSecured = false;
     }
 
-    public function addKey(CryptoKey $key): void {
+    public function addKey(CryptoKey $key): void
+    {
         $this->keys[] = $key;
     }
 
-    public function removeKey(int $keyId): void {
+    public function removeKey(int $keyId): void
+    {
         foreach ($this->keys as $index => $key) {
             if ($key->getId() === $keyId) {
                 unset($this->keys[$index]);
@@ -64,11 +72,13 @@ class Zone {
         }
     }
 
-    public function getKeys(): array {
+    public function getKeys(): array
+    {
         return $this->keys;
     }
 
-    public function getKey(int $keyId): ?CryptoKey {
+    public function getKey(int $keyId): ?CryptoKey
+    {
         foreach ($this->keys as $key) {
             if ($key->getId() === $keyId) {
                 return $key;
@@ -77,12 +87,14 @@ class Zone {
         return null;
     }
 
-    public function activateKey(int $keyId): void {
+    public function activateKey(int $keyId): void
+    {
         $key = $this->getKey($keyId);
         $key?->activate();
     }
 
-    public function deactivateKey(int $keyId): void {
+    public function deactivateKey(int $keyId): void
+    {
         $key = $this->getKey($keyId);
         $key?->deactivate();
     }

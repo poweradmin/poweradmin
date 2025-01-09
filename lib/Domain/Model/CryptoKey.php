@@ -34,15 +34,14 @@ class CryptoKey
     private ?array $ds;
 
     public function __construct(
-        ?int    $id,
+        ?int $id,
         ?string $type = null,
-        ?int    $size = null,
+        ?int $size = null,
         ?string $algorithm = null,
-        bool    $isActive = false,
+        bool $isActive = false,
         ?string $dnskey = null,
-        ?array  $ds = null
-    )
-    {
+        ?array $ds = null
+    ) {
         $this->id = $id;
         $this->type = $type;
         $this->size = $size;

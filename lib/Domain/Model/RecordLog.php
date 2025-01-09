@@ -91,13 +91,22 @@ class RecordLog
 
     public function write(): void
     {
-        $this->logger->log_info(sprintf('client_ip:%s user:%s operation:edit_record'
+        $this->logger->log_info(sprintf(
+            'client_ip:%s user:%s operation:edit_record'
             . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
             . ' record_type:%s record:%s content:%s ttl:%s priority:%s',
-            $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-            $this->record_prior['type'], $this->record_prior['name'],
-            $this->record_prior['content'], $this->record_prior['ttl'], $this->record_prior['prio'],
-            $this->record_after['type'], $this->record_after['name'],
-            $this->record_after['content'], $this->record_after['ttl'], $this->record_after['prio']), $this->record_prior['zid']);
+            $_SERVER['REMOTE_ADDR'],
+            $_SESSION["userlogin"],
+            $this->record_prior['type'],
+            $this->record_prior['name'],
+            $this->record_prior['content'],
+            $this->record_prior['ttl'],
+            $this->record_prior['prio'],
+            $this->record_after['type'],
+            $this->record_after['name'],
+            $this->record_after['content'],
+            $this->record_after['ttl'],
+            $this->record_after['prio']
+        ), $this->record_prior['zid']);
     }
 }

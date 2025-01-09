@@ -84,7 +84,7 @@ class AddZoneTemplRecordController extends BaseController
 
         if (ZoneTemplate::add_zone_templ_record($this->db, $zone_templ_id, $name, $type, $content, $ttl, $prio)) {
             $this->setMessage('edit_zone_templ', 'success', 'The record was successfully added.');
-            $this->redirect('index.php', ['page'=> 'edit_zone_templ', 'id' => $zone_templ_id]);
+            $this->redirect('index.php', ['page' => 'edit_zone_templ', 'id' => $zone_templ_id]);
         } else {
             $this->showAddZoneTemplRecord();
         }

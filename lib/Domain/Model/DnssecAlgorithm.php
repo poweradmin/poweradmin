@@ -22,7 +22,8 @@
 
 namespace Poweradmin\Domain\Model;
 
-class DnssecAlgorithm {
+class DnssecAlgorithm
+{
     public const RESERVED = 0;
     public const RSAMD5 = 1;
     public const DH = 2;

@@ -83,7 +83,7 @@ class DnssecDeleteKeyController extends BaseController
 
         if ($confirm == '1' && $dnssecProvider->removeZoneKey($domain_name, $key_id)) {
             $this->setMessage('dnssec', 'success', _('Zone key has been deleted successfully.'));
-            $this->redirect('index.php', ['page'=> 'dnssec', 'id' => $zone_id]);
+            $this->redirect('index.php', ['page' => 'dnssec', 'id' => $zone_id]);
         }
 
         $this->showKeyInfo($domain_name, $key_id, $zone_id);

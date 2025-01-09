@@ -85,4 +85,3 @@ class ThemeManager
         return null;
     }
 }
-

@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Repository;
 
 use Poweradmin\Domain\Model\User;
 
-interface UserRepository {
+interface UserRepository
+{
     public function canViewOthersContent(User $user): bool;
 }

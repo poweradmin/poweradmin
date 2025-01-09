@@ -95,7 +95,6 @@ class Dns
         }
 
         switch ($type) {
-
             case "A":
                 if (!self::is_valid_ipv4($content)) {
                     return false;
@@ -436,7 +435,7 @@ class Dns
     public static function is_valid_ipv4(string $ipv4, bool $answer = true): bool
     {
 
-        if (filter_var($ipv4, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === FALSE) {
+        if (filter_var($ipv4, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === false) {
             if ($answer) {
                 $error = new ErrorMessage(_('This is not a valid IPv4 address.'));
                 $errorPresenter = new ErrorPresenter();
@@ -459,7 +458,7 @@ class Dns
     public static function is_valid_ipv6(string $ipv6, bool $answer = false): bool
     {
 
-        if (filter_var($ipv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === FALSE) {
+        if (filter_var($ipv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === false) {
             if ($answer) {
                 $error = new ErrorMessage(_('This is not a valid IPv6 address.'));
                 $errorPresenter = new ErrorPresenter();

@@ -24,4 +24,6 @@ namespace Poweradmin\Domain\Error;
 
 use RuntimeException;
 
-class ApiErrorException extends RuntimeException {}
+class ApiErrorException extends RuntimeException
+{
+}

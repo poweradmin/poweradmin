@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Infrastructure\Database\PDOLayer;
 
-interface DatabaseConnection {
+interface DatabaseConnection
+{
     public function connect(array $credentials): PDOLayer;
 }

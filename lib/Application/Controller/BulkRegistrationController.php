@@ -91,15 +91,20 @@ class BulkRegistrationController extends BaseController
                 $failed_domains[] = $domain . " - " . _('There is already a zone with this name.');
             } elseif ($dnsRecord->add_domain($this->db, $domain, $owner, $dom_type, '', $zone_template)) {
                 $zone_id = $dnsRecord->get_zone_id_from_name($domain);
-                $this->logger->log_info(sprintf('client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
-                    $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"],
-                    $domain, $dom_type, $zone_template), $zone_id);
+                $this->logger->log_info(sprintf(
+                    'client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
+                    $_SERVER['REMOTE_ADDR'],
+                    $_SESSION["userlogin"],
+                    $domain,
+                    $dom_type,
+                    $zone_template
+                ), $zone_id);
             }
         }
 
         if (!$failed_domains) {
             $this->setMessage('list_zones', 'success', _('Zones has been added successfully.'));
-            $this->redirect('index.php', ['page'=> 'list_zones']);
+            $this->redirect('index.php', ['page' => 'list_zones']);
         } else {
             $this->setMessage('bulk_registration', 'warn', _('Some zone(s) could not be added.'));
             $this->showBulkRegistrationForm(array_unique($failed_domains));
