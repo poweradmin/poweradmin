@@ -9,7 +9,7 @@ use Poweradmin\Infrastructure\Database\PDOLayer;
 
 class DnsRecordTest extends TestCase
 {
-    const SOA_REC = "ns1.poweradmin.org hostmaster.poweradmin.org 2022082600 28800 7200 604800 86400";
+    private const SOA_REC = "ns1.poweradmin.org hostmaster.poweradmin.org 2022082600 28800 7200 604800 86400";
     private DnsRecord $dnsRecord;
 
     protected function setUp(): void

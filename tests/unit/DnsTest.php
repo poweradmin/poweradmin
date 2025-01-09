@@ -117,7 +117,7 @@ class DnsTest extends TestCase
         $this->assertFalse($this->dnsInstance->is_valid_rr_soa_content($content, $dns_hostmaster));
     }
 
-    public function testIs_valid_ds()
+    public function testIsValidDS()
     {
         $this->assertTrue(Dns::is_valid_ds("45342 13 2 348dedbedc0cddcc4f2605ba42d428223672e5e913762c68f29d8547baa680c0"));
         $this->assertTrue(Dns::is_valid_ds("2371 13 2 1F987CC6583E92DF0890718C42"));
@@ -155,7 +155,7 @@ class DnsTest extends TestCase
         $this->assertFalse(Dns::is_valid_loc('32 7 19 S 186 2 25 E 10m'));
 
         # lat. maxed to 90
-//		$this->assertFalse(is_valid_loc('92 21 28.764 N 71 00 51.617 W -44m 2000m'));
+//      $this->assertFalse(is_valid_loc('92 21 28.764 N 71 00 51.617 W -44m 2000m'));
         # alt maxes to 42849672.95
         $this->assertFalse(Dns::is_valid_loc('90 59 59.9 N 10 18 E 42849672.96m 1m'));
 
@@ -163,7 +163,7 @@ class DnsTest extends TestCase
         $this->assertFalse(Dns::is_valid_loc('9 10 S 12 22 33.4 E -110000.00m 2m 34 3m'));
     }
 
-    public function testIs_valid_rr_prio()
+    public function testIsValidRRPrio()
     {
         $this->assertTrue(Dns::is_valid_rr_prio(10, "MX"));
         $this->assertTrue(Dns::is_valid_rr_prio(65535, "SRV"));
