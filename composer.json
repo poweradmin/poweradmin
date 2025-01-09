@@ -56,10 +56,15 @@
 
     "check:index": "phpcs --standard=phpcs.xml index.php",
     "check:inc": "phpcs --standard=phpcs.xml inc",
-    "check:install": "phpcs --standard=phpcs.xml inc",
+    "check:install": "phpcs --standard=phpcs.xml install",
     "check:lib": "phpcs --standard=phpcs.xml lib",
     "check:tests": "phpcs --standard=phpcs.xml tests",
 
+    "format:index": "phpcbf --standard=phpcs.xml index.php",
+    "format:inc": "phpcbf --standard=phpcs.xml inc",
+    "format:install": "phpcbf --standard=phpcs.xml install",
+    "format:lib": "phpcbf --standard=phpcs.xml lib",
+    "format:tests": "phpcbf --standard=phpcs.xml tests",
     "format:all": "phpcbf --standard=phpcs.xml index.php inc install lib tests",
 
     "style:index": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix -- index.php",
