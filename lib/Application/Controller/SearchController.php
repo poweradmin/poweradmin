@@ -48,6 +48,7 @@ class SearchController extends BaseController
             'records' => true,
             'wildcard' => true,
             'reverse' => true,
+            'comments' => false,
         ];
 
         $totalZones = 0;
@@ -78,6 +79,7 @@ class SearchController extends BaseController
             $parameters['records'] = isset($_POST['records']) ? htmlspecialchars($_POST['records']) : false;
             $parameters['wildcard'] = isset($_POST['wildcard']) ? htmlspecialchars($_POST['wildcard']) : false;
             $parameters['reverse'] = isset($_POST['reverse']) ? htmlspecialchars($_POST['reverse']) : false;
+            $parameters['comments'] = isset($_POST['comments']) ? htmlspecialchars($_POST['comments']) : false;
 
             $zones_page = isset($_POST['zones_page']) ? (int)$_POST['zones_page'] : 1;
 
@@ -129,6 +131,7 @@ class SearchController extends BaseController
             'query' => $parameters['query'],
             'search_by_zones' => $parameters['zones'],
             'search_by_records' => $parameters['records'],
+            'search_by_comments' => $parameters['comments'],
             'search_by_wildcard' => $parameters['wildcard'],
             'search_by_reverse' => $parameters['reverse'],
             'has_zones' => !empty($searchResultZones),

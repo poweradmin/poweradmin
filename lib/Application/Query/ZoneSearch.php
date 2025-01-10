@@ -45,7 +45,7 @@ class ZoneSearch extends BaseSearch
         list($reverse_search_string, $parameters, $search_string) = $this->buildSearchString($parameters);
 
         if ($parameters['zones']) {
-            $foundZones = $this->fetchZones($search_string, $parameters['reverse'], $reverse_search_string, $permission_view, $sort_zones_by, $zone_sort_direction, $iface_rowamount, $iface_zone_comments, $page);
+            $foundZones = $this->fetchZones($parameters, $search_string, $parameters['reverse'], $reverse_search_string, $permission_view, $sort_zones_by, $zone_sort_direction, $iface_rowamount, $iface_zone_comments, $page);
         }
 
         return $foundZones;
@@ -82,16 +82,19 @@ class ZoneSearch extends BaseSearch
     /**
      * Fetch zones based on specified search criteria and pagination.
      *
+     * @param array $parameters An array of search parameters.
      * @param mixed $search_string The search string to use for matching zones.
      * @param bool $reverse Whether to perform a reverse search or not.
      * @param string $reverse_search_string The reverse search string to use for matching zones.
      * @param string $permission_view The permission view for the search (e.g. 'all' or 'own' zones).
      * @param string $sort_zones_by The column to sort the zone results by.
+     * @param string $zone_sort_direction The direction to sort the zones in.
      * @param int $iface_rowamount The number of rows to display per page.
+     * @param bool $iface_zone_comments Whether to display zone comments or not.
      * @param int $page The current page number.
      * @return array An array of found zones.
      */
-    public function fetchZones(mixed $search_string, bool $reverse, mixed $reverse_search_string, string $permission_view, string $sort_zones_by, string $zone_sort_direction, int $iface_rowamount, bool $iface_zone_comments, int $page): array
+    public function fetchZones(array $parameters, mixed $search_string, bool $reverse, mixed $reverse_search_string, string $permission_view, string $sort_zones_by, string $zone_sort_direction, int $iface_rowamount, bool $iface_zone_comments, int $page): array
     {
         $offset = ($page - 1) * $iface_rowamount;
 
@@ -125,6 +128,7 @@ class ZoneSearch extends BaseSearch
             WHERE
                 ($domains_table.name LIKE " . $this->db->quote($search_string, 'text') .
             ($reverse ? " OR $domains_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ') ' .
+            ($parameters['comments'] ? " OR z.comment LIKE " . $this->db->quote($search_string, 'text') : '') . ' ' .
             ($permission_view == 'own' ? ' AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
             ' ORDER BY ' . $sort_zones_by .
             ' LIMIT ' . $iface_rowamount . ' OFFSET ' . $offset;
@@ -150,35 +154,36 @@ class ZoneSearch extends BaseSearch
     {
         list($reverse_search_string, $parameters, $search_string) = $this->buildSearchString($parameters);
 
-        return $this->getFoundZones($search_string, $parameters['reverse'], $reverse_search_string, $permission_view);
+        return $this->getFoundZones($parameters, $search_string, $parameters['reverse'], $reverse_search_string, $permission_view);
     }
 
     /**
      * Get the number of found zones based on the search criteria.
      *
+     * @param array $parameters An array of search parameters.
      * @param mixed $search_string The search string to be used in the query.
-     * @param bool $reverse Indicates whether to search for reversed search string.
      * @param mixed $reverse_search_string The reversed search string to be used in the query.
      * @param string $permission_view The permission view for the search (e.g. 'all' or 'own' zones).
      * @return int The number of zones found.
      */
-    public function getFoundZones(mixed $search_string, bool $reverse, mixed $reverse_search_string, string $permission_view): int
+    public function getFoundZones(array $parameters, mixed $search_string, mixed $reverse_search_string, string $permission_view): int
     {
         $pdns_db_name = $this->config->get('pdns_db_name');
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         $zonesQuery = "
-            SELECT
-                COUNT(*)
-            FROM
-                $domains_table
-            LEFT JOIN zones z on $domains_table.id = z.domain_id
-            LEFT JOIN users u on z.owner = u.id
-            LEFT JOIN (SELECT COUNT(domain_id) AS count_records, domain_id FROM $records_table WHERE type IS NOT NULL GROUP BY domain_id) record_count ON record_count.domain_id=$domains_table.id
-            WHERE
-                ($domains_table.name LIKE " . $this->db->quote($search_string, 'text') .
-            ($reverse ? " OR $domains_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ') ' .
+        SELECT
+            COUNT(*)
+        FROM
+            $domains_table
+        LEFT JOIN zones z on $domains_table.id = z.domain_id
+        LEFT JOIN users u on z.owner = u.id
+        LEFT JOIN (SELECT COUNT(domain_id) AS count_records, domain_id FROM $records_table WHERE type IS NOT NULL GROUP BY domain_id) record_count ON record_count.domain_id=$domains_table.id
+        WHERE
+            ($domains_table.name LIKE " . $this->db->quote($search_string, 'text') .
+            ($parameters['reverse'] ? " OR $domains_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ') ' .
+            ($parameters['comments'] ? " OR z.comment LIKE " . $this->db->quote($search_string, 'text') : '') . ' ' .
             ($permission_view == 'own' ? ' AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '');
 
         return (int)$this->db->queryOne($zonesQuery);

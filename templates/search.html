@@ -48,6 +48,13 @@
                        value="true" {% if search_by_reverse %}checked{% endif %}>
                 <label class="form-check-label" for="inlineCheckbox4">{% trans %}Reverse{% endtrans %}</label>
             </div>
+            {% if iface_zone_comments or iface_record_comments %}
+            <div class="form-check form-check-inline">
+                <input type="checkbox" class="form-check-input" name="comments" id="inlineCheckbox5"
+                       value="true" {% if search_by_comments %}checked{% endif %}>
+                <label class="form-check-label" for="inlineCheckbox5">{% trans %}Comments{% endtrans %}</label>
+            </div>
+            {% endif %}
         </div>
     </div>
 </form>

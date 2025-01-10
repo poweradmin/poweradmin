@@ -63,6 +63,10 @@ abstract class BaseSearch
             $reverse_search_string = '%' . $reverse_search_string . '%';
         }
 
+        if (isset($parameters['comments']) && $parameters['comments']) {
+            $parameters['wildcard'] = true;
+        }
+
         $needle = idn_to_ascii(trim($parameters['query']), IDNA_NONTRANSITIONAL_TO_ASCII);
         $search_string = ($parameters['wildcard'] ? '%' : '') . $needle . ($parameters['wildcard'] ? '%' : '');
         return array($reverse_search_string, $parameters, $search_string);
