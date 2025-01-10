@@ -32,8 +32,10 @@ class RecordSearch extends BaseSearch
      * @param array $parameters An array of search parameters.
      * @param string $permission_view The permission view for the search.
      * @param string $sort_records_by The column to sort the records by.
+     * @param string $record_sort_direction
      * @param bool $iface_search_group_records Whether to group records or not.
      * @param int $iface_rowamount The number of rows to display per page.
+     * @param bool $iface_record_comments Whether to display record comments or not.
      * @param int $page The current page number (default is 1).
      * @return array An array of found records.
      */
@@ -104,7 +106,7 @@ class RecordSearch extends BaseSearch
         WHERE
             ($records_table.name LIKE " . $this->db->quote($search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($search_string, 'text') .
             ($reverse ? " OR $records_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ')' .
-            ($parameters['comments'] ? " OR c.comment LIKE " . $this->db->quote($search_string, 'text') : '') .
+            ($iface_record_comments && $parameters['comments'] ? " OR c.comment LIKE " . $this->db->quote($search_string, 'text') : '') .
             ($permission_view == 'own' ? 'AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
             ($iface_search_group_records ? " GROUP BY $records_table.name, $records_table.content " : '') .
             ' ORDER BY ' . $sort_records_by .

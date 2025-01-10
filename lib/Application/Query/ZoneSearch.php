@@ -128,7 +128,7 @@ class ZoneSearch extends BaseSearch
             WHERE
                 ($domains_table.name LIKE " . $this->db->quote($search_string, 'text') .
             ($reverse ? " OR $domains_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ') ' .
-            ($parameters['comments'] ? " OR z.comment LIKE " . $this->db->quote($search_string, 'text') : '') . ' ' .
+            ($iface_zone_comments && $parameters['comments'] ? " OR z.comment LIKE " . $this->db->quote($search_string, 'text') : '') . ' ' .
             ($permission_view == 'own' ? ' AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
             ' ORDER BY ' . $sort_zones_by .
             ' LIMIT ' . $iface_rowamount . ' OFFSET ' . $offset;
