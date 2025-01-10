@@ -5,12 +5,16 @@
 {% endblock %}
 
 {% block content %}
-    <p>{% trans %}You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you
-        should create a new user and give it rights to select, delete, insert, and update records in the PowerDNS
-        database.{% endtrans %}</p>
-    <p>{% trans %}Execute the following commands based on your database:{% endtrans %}</p>
-    <pre>{{ instructions }}</pre>
-    <p>{% trans %}After you have added the new user, proceed with this installation procedure.{% endtrans %}</p>
+    {% if db_type != 'sqlite' %}
+        <p>{% trans %}You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you
+                should create a new user and give it rights to select, delete, insert, and update records in the PowerDNS
+                database.{% endtrans %}</p>
+        <p>{% trans %}Execute the following commands based on your database:{% endtrans %}</p>
+        <pre>{{ instructions }}</pre>
+        <p>{% trans %}After you have added the new user, proceed with this installation procedure.{% endtrans %}</p>
+    {% else %}
+        <p>{% trans %}Since you are using SQLite, there is no need to create a new user with limited rights.{% endtrans %}</p>
+    {% endif %}
     <form method="post">
         <input type="hidden" name="install_token" value="{{ install_token }}">
         <input type="hidden" name="db_host" value="{{ db_host }}">

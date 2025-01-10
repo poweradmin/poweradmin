@@ -26,8 +26,15 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 trait DbUserValidationTrait
 {
-    public function getUserConstraints(): array
+    public function getUserConstraints(string $dbType): array
     {
+        if ($dbType === 'sqlite') {
+            return [
+                'pa_db_user' => [new Assert\Optional()],
+                'pa_db_pass' => [new Assert\Optional()],
+            ];
+        }
+
         return [
             'pa_db_user' => [
                 new Assert\NotBlank(),

@@ -34,12 +34,15 @@ class CreateLimitedRightsUserValidator extends BaseValidator
 
     public function validate(): array
     {
+        $input = $this->request->request->all();
+        $dbType = $input['db_type'] ?? null;
+
         $constraints = new Assert\Collection(array_merge(
             $this->getBaseConstraints(),
             $this->getDatabaseConstraints(),
             $this->getPasswordValidationConstraints(),
             $this->getDnsValidationConstraints(),
-            $this->getUserConstraints(),
+            $this->getUserConstraints($dbType),
             [
                 'step' => [
                     new Assert\NotBlank(),

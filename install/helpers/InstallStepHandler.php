@@ -126,9 +126,7 @@ class InstallStepHandler
 
         echo _('done!') . "</p>";
 
-        if ($credentials['db_type'] == 'sqlite') {
-            $this->currentStep = InstallationSteps::STEP_CREATE_CONFIGURATION_FILE;
-        }
+
 
         $inputData = [
             'pa_db_user' => $this->request->get('pa_db_user'),
