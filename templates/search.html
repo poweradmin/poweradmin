@@ -218,7 +218,7 @@
             {% if iface_record_comments %}
                 <td>{{ record['comment'] }}</td>
             {% endif %}
-            <td>
+            <td class="col-sm-1">
                 {% if edit_permission == 'all' or ((edit_permission == 'own' or edit_permission == 'own_as_client') and record['user_id'] == user_id) %}
                 <a class="btn btn-outline-primary btn-sm"
                    href="index.php?page=edit_record&domain={{ record['domain_id'] }}&id={{ record['id'] }}">
