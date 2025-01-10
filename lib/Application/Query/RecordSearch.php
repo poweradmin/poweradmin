@@ -37,7 +37,7 @@ class RecordSearch extends BaseSearch
      * @param int $page The current page number (default is 1).
      * @return array An array of found records.
      */
-    public function searchRecords(array $parameters, string $permission_view, string $sort_records_by, string $record_sort_direction, bool $iface_search_group_records, int $iface_rowamount, int $page = 1): array
+    public function searchRecords(array $parameters, string $permission_view, string $sort_records_by, string $record_sort_direction, bool $iface_search_group_records, int $iface_rowamount, bool $iface_record_comments, int $page = 1): array
     {
         $foundRecords = array();
 
@@ -46,7 +46,7 @@ class RecordSearch extends BaseSearch
         $originalSqlMode = $this->handleSqlMode();
 
         if ($parameters['records']) {
-            $foundRecords = $this->fetchRecords($search_string, $parameters['reverse'], $reverse_search_string, $permission_view, $iface_search_group_records, $sort_records_by, $record_sort_direction, $iface_rowamount, $page);
+            $foundRecords = $this->fetchRecords($search_string, $parameters['reverse'], $reverse_search_string, $permission_view, $iface_search_group_records, $sort_records_by, $record_sort_direction, $iface_rowamount, $iface_record_comments, $page);
         }
 
         $this->restoreSqlMode($originalSqlMode);
@@ -67,36 +67,39 @@ class RecordSearch extends BaseSearch
      * @param int $page The current page number.
      * @return array An array of found records.
      */
-    public function fetchRecords(mixed $search_string, bool $reverse, mixed $reverse_search_string, string $permission_view, bool $iface_search_group_records, string $sort_records_by, string $record_sort_direction, int $iface_rowamount, int $page): array
+    public function fetchRecords(mixed $search_string, bool $reverse, mixed $reverse_search_string, string $permission_view, bool $iface_search_group_records, string $sort_records_by, string $record_sort_direction, int $iface_rowamount, bool $iface_record_comments, int $page): array
     {
         $offset = ($page - 1) * $iface_rowamount;
 
         $pdns_db_name = $this->config->get('pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+        $comments_table = $pdns_db_name ? $pdns_db_name . '.comments' : 'comments';
 
         $db_type = $this->config->get('db_type');
         $sort_records_by = $sort_records_by === 'name' ? SortHelper::getRecordSortOrder($records_table, $db_type, $record_sort_direction) : "$sort_records_by $record_sort_direction";
 
         $recordsQuery = "
-            SELECT
-                $records_table.id,
-                $records_table.domain_id,
-                $records_table.name,
-                $records_table.type,
-                $records_table.content,
-                $records_table.ttl,
-                $records_table.prio,
-                $records_table.disabled,
-                z.id as zone_id,
-                z.owner,
-                u.id as user_id,
-                u.fullname
-            FROM
-                $records_table
-            LEFT JOIN zones z on $records_table.domain_id = z.domain_id
-            LEFT JOIN users u on z.owner = u.id
-            WHERE
-                ($records_table.name LIKE " . $this->db->quote($search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($search_string, 'text') .
+        SELECT
+            $records_table.id,
+            $records_table.domain_id,
+            $records_table.name,
+            $records_table.type,
+            $records_table.content,
+            $records_table.ttl,
+            $records_table.prio,
+            $records_table.disabled,
+            z.id as zone_id,
+            z.owner,
+            u.id as user_id,
+            u.fullname" .
+            ($iface_record_comments ? ", c.comment" : "") . "
+        FROM
+            $records_table
+        LEFT JOIN zones z on $records_table.domain_id = z.domain_id
+        LEFT JOIN users u on z.owner = u.id" .
+            ($iface_record_comments ? " LEFT JOIN $comments_table c on $records_table.domain_id = c.domain_id AND $records_table.name = c.name AND $records_table.type = c.type" : "") . "
+        WHERE
+            ($records_table.name LIKE " . $this->db->quote($search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($search_string, 'text') .
             ($reverse ? " OR $records_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ')' .
             ($permission_view == 'own' ? 'AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
             ($iface_search_group_records ? " GROUP BY $records_table.name, $records_table.content " : '') .

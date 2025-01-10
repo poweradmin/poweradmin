@@ -66,6 +66,8 @@ class SearchController extends BaseController
         $_SESSION['record_sort_by_direction'] = $record_sort_direction;
 
         $iface_rowamount = $this->config('iface_rowamount');
+        $iface_zone_comments = $this->config('iface_zone_comments');
+        $iface_record_comments = $this->config('iface_record_comments');
 
         if ($this->isPost()) {
             $this->validateCsrfToken();
@@ -90,6 +92,7 @@ class SearchController extends BaseController
                 $zone_sort_by,
                 $zone_sort_direction,
                 $iface_rowamount,
+                $iface_zone_comments,
                 $zones_page
             );
 
@@ -106,16 +109,17 @@ class SearchController extends BaseController
                 $record_sort_direction,
                 $iface_search_group_records,
                 $iface_rowamount,
+                $iface_record_comments,
                 $records_page,
             );
 
             $totalRecords = $recordSearch->getTotalRecords($parameters, $permission_view, $iface_search_group_records);
         }
 
-        $this->showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $zone_sort_direction, $record_sort_by, $record_sort_direction, $totalZones, $totalRecords, $zones_page, $records_page, $iface_rowamount);
+        $this->showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $zone_sort_direction, $record_sort_by, $record_sort_direction, $totalZones, $totalRecords, $zones_page, $records_page, $iface_rowamount, $iface_zone_comments, $iface_record_comments);
     }
 
-    private function showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $zone_sort_direction, $record_sort_by, $record_sort_direction, $totalZones, $totalRecords, $zones_page, $records_page, $iface_rowamount): void
+    private function showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $zone_sort_direction, $record_sort_by, $record_sort_direction, $totalZones, $totalRecords, $zones_page, $records_page, $iface_rowamount, $iface_zone_comments, $iface_record_comments): void
     {
         $this->render('search.html', [
             'zone_sort_by' => $zone_sort_by,
@@ -136,6 +140,8 @@ class SearchController extends BaseController
             'zones_page' => $zones_page,
             'records_page' => $records_page,
             'iface_rowamount' => $iface_rowamount,
+            'iface_zone_comments' => $iface_zone_comments,
+            'iface_record_comments' => $iface_record_comments,
             'edit_permission' => Permission::getEditPermission($this->db),
             'user_id' => $_SESSION['userid'],
         ]);

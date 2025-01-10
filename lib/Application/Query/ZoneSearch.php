@@ -32,18 +32,20 @@ class ZoneSearch extends BaseSearch
      * @param array $parameters An array of search parameters.
      * @param string $permission_view The permission view for the search (e.g. 'all' or 'own' zones).
      * @param string $sort_zones_by The column to sort the zone results by.
+     * @param string $zone_sort_direction
      * @param int $iface_rowamount The number of rows to display per page.
+     * @param bool $iface_zone_comments The number of zone comments to display.
      * @param int $page The current page number.
      * @return array An array of found zones.
      */
-    public function searchZones(array $parameters, string $permission_view, string $sort_zones_by, string $zone_sort_direction, int $iface_rowamount, int $page): array
+    public function searchZones(array $parameters, string $permission_view, string $sort_zones_by, string $zone_sort_direction, int $iface_rowamount, bool $iface_zone_comments, int $page): array
     {
         $foundZones = array();
 
         list($reverse_search_string, $parameters, $search_string) = $this->buildSearchString($parameters);
 
         if ($parameters['zones']) {
-            $foundZones = $this->fetchZones($search_string, $parameters['reverse'], $reverse_search_string, $permission_view, $sort_zones_by, $zone_sort_direction, $iface_rowamount, $page);
+            $foundZones = $this->fetchZones($search_string, $parameters['reverse'], $reverse_search_string, $permission_view, $sort_zones_by, $zone_sort_direction, $iface_rowamount, $iface_zone_comments, $page);
         }
 
         return $foundZones;
@@ -89,7 +91,7 @@ class ZoneSearch extends BaseSearch
      * @param int $page The current page number.
      * @return array An array of found zones.
      */
-    public function fetchZones(mixed $search_string, bool $reverse, mixed $reverse_search_string, string $permission_view, string $sort_zones_by, string $zone_sort_direction, int $iface_rowamount, int $page): array
+    public function fetchZones(mixed $search_string, bool $reverse, mixed $reverse_search_string, string $permission_view, string $sort_zones_by, string $zone_sort_direction, int $iface_rowamount, bool $iface_zone_comments, int $page): array
     {
         $offset = ($page - 1) * $iface_rowamount;
 
@@ -99,6 +101,8 @@ class ZoneSearch extends BaseSearch
 
         $db_type = $this->config->get('db_type');
         $sort_zones_by = $sort_zones_by === 'name' ? SortHelper::getZoneSortOrder($domains_table, $db_type, $zone_sort_direction) : "$sort_zones_by $zone_sort_direction";
+
+        $comment_field = $iface_zone_comments ? ', z.comment' : '';
 
         $zonesQuery = "
             SELECT
@@ -112,6 +116,7 @@ class ZoneSearch extends BaseSearch
                 u.fullname,
                 u.username,
                 record_count.count_records
+                $comment_field
             FROM
                 $domains_table
             LEFT JOIN zones z on $domains_table.id = z.domain_id
