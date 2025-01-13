@@ -20,7 +20,7 @@ return [
         ]
     ],
 
-    // Password Requirements
+    // Admin user password requirements
     'password_policy' => [
         'min_length' => 6,
         'require_uppercase' => true,
