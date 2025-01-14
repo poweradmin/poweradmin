@@ -173,14 +173,14 @@ class EditRecordController extends BaseController
             $old_record_info['type'],
             $new_record_info['name'],
             $new_record_info['type'],
-            $_POST['comment'],
+            $_POST['comment'] ?? '',
             $_SESSION['userlogin']
         );
 
         $this->commentSyncService->updateRelatedRecordComments(
             $dnsRecord,
             $new_record_info,
-            $_POST['comment'],
+            $_POST['comment'] ?? '',
             $_SESSION['userlogin']
         );
 
