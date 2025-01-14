@@ -46,7 +46,7 @@ class PaginationPresenter
             return '';
         }
 
-        $html = '<nav><ul class="pagination">';
+        $html = '<nav><ul class="pagination d-flex flex-wrap">';
 
         if ($this->pagination->hasPreviousPage()) {
             $html .= $this->pageItem($this->pagination->getPreviousPage(), _('Previous'), false);
