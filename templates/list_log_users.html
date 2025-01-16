@@ -7,15 +7,15 @@
 </nav>
 
 <h5 class="mb-3">{% trans %}User logs{% endtrans %}</h5>
-<div class="text-secondary">{% trans %}Total number of logs:{% endtrans %} {{ number_of_logs }}</div><br>
 
-<form>
+<form method="GET">
+    <input type="hidden" name="page" value="list_log_users">
     <div class="row pb-3">
         <div class="col-sm-4">
             <div class="input-group">
                 <input name="name" id="name" type="text" class="form-control form-control-sm"
                        placeholder="{% trans %}Search logs by user{% endtrans %}"
-                       {% if name %}value="{{ name }}" %} {% endif %}>
+                       {% if name %}value="{{ name }}"{% endif %}>
                 <button for="name" type="submit" class="btn btn-primary btn-sm"><i
                         class="bi bi-search"></i>
                     {% trans %}Search{% endtrans %}
@@ -29,30 +29,33 @@
     </div>
 </form>
 
-<form method="post" action="index.php?page=delete_domains">
-    <input type="hidden" name="_token" value="{{ csrf_token }}">
-    {% if data %}
-    {{ pagination | raw }}
-    <table class="table table-striped table-bordered mt-2">
-        <thead>
-        <tr>
-            <th>{% trans %}Id{% endtrans %}</th>
-            <th>{% trans %}Event{% endtrans %}</th>
-            <th>{% trans %}Created at{% endtrans %}</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for row in data %}
-        <tr>
-            <td>{{ row['id'] }}</td>
-            <td>{{ row['event'] }}</td>
-            <td>{{ row['created_at'] }}</td>
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    {{ pagination | raw }}
-    {% else %}
-    {% trans %}No logs found{% endtrans %}
-    {% endif %}
-</form>
+<div class="text-secondary">{% trans %}Total number of logs:{% endtrans %} {{ number_of_logs }}</div><br>
+
+{% if data %}
+{{ pagination | raw }}
+<table class="table table-striped table-hover table-sm">
+    <thead>
+    <tr>
+        {% if iface_edit_show_id %}
+        <th>{% trans %}Id{% endtrans %}</th>
+        {% endif %}
+        <th>{% trans %}Event{% endtrans %}</th>
+        <th>{% trans %}Created at{% endtrans %}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for row in data %}
+    <tr>
+        {% if iface_edit_show_id %}
+        <td>{{ row['id'] }}</td>
+        {% endif %}
+        <td>{{ row['event'] }}</td>
+        <td>{{ row['created_at'] }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{{ pagination | raw }}
+{% else %}
+{% trans %}No logs found{% endtrans %}
+{% endif %}
