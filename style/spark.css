@@ -162,3 +162,14 @@ input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
+
+.modal-header {
+    background-color: #242424 !important;
+}
+.modal-header .btn-close {
+    background-color: #b7b7b8;
+}
+
+.modal-body {
+    background-color: #181a1c;
+}
