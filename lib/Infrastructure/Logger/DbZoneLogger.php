@@ -101,6 +101,7 @@ class DbZoneLogger
             SELECT log_zones.id, log_zones.event, log_zones.created_at, $domains_table.name FROM log_zones
             INNER JOIN $domains_table ON $domains_table.id = log_zones.zone_id 
             WHERE $domains_table.name LIKE :search_by
+            ORDER BY log_zones.created_at DESC
             LIMIT :limit 
             OFFSET :offset");
 
