@@ -16,14 +16,12 @@
                 <input name="name" id="name" type="text" class="form-control form-control-sm"
                        placeholder="{% trans %}Search logs by user{% endtrans %}"
                        {% if name %}value="{{ name }}"{% endif %}>
-                <button for="name" type="submit" class="btn btn-primary btn-sm"><i
-                        class="bi bi-search"></i>
-                    {% trans %}Search{% endtrans %}
+                <button for="name" type="submit" class="btn btn-primary btn-sm">
+                    <i class="bi bi-search"></i> {% trans %}Search{% endtrans %}
                 </button>
-                <div class="input-group-append">
-                    <a href="index.php?page=list_log_users" class="btn btn-secondary btn-sm" role="button"><i
-                            class="bi bi-eraser"></i> {% trans %}Clear{% endtrans %}</a>
-                </div>
+                <a href="index.php?page=list_log_users" class="btn btn-secondary btn-sm" role="button">
+                    <i class="bi bi-eraser"></i> {% trans %}Clear{% endtrans %}
+                </a>
             </div>
         </div>
     </div>
