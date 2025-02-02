@@ -826,17 +826,15 @@ abstract class Driver
      */
     public function isConnected(): bool
     {
-        if ($this->pdo !== null) {
-            try {
-                $connected = (bool)$this->pdo->query('SELECT 1');
-            } catch (PDOException) {
-                $connected = false;
-            }
-        } else {
-            $connected = false;
+        if ($this->pdo === null) {
+            return false;
         }
 
-        return $connected;
+        try {
+            return (bool)$this->pdo->query('SELECT 1');
+        } catch (PDOException) {
+            return false;
+        }
     }
 
     /**
