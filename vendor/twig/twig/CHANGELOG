@@ -1,3 +1,18 @@
+# 3.19.0 (2025-01-28)
+
+ * Fix a security issue where escaping was missing when using `??`
+ * Deprecate `Token::getType()`, use `Token::test()` instead
+ * Add `Token::toEnglish()`
+ * Add `ForElseNode`
+ * Deprecate `Twig\ExpressionParser::parseOnlyArguments()` and
+  `Twig\ExpressionParser::parseArguments()` (use
+  `Twig\ExpressionParser::parseNamedArguments()` instead)
+ * Fix `constant()` behavior when used with `??`
+ * Add the `invoke` filter
+ * Make `{}` optional for the `types` tag
+ * Add `LastModifiedExtensionInterface` and implementation in `AbstractExtension` to track modification of runtime classes
+ * Ignore static properties when using the dot operator
+
 # 3.18.0 (2024-12-29)
 
  * Fix unary operator precedence change

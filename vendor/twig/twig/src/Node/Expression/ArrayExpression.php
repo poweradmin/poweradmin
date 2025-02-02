@@ -13,6 +13,7 @@ namespace Twig\Node\Expression;
 
 use Twig\Compiler;
 use Twig\Node\Expression\Unary\StringCastUnary;
+use Twig\Node\Expression\Variable\ContextVariable;
 
 class ArrayExpression extends AbstractExpression
 {
@@ -99,7 +100,7 @@ class ArrayExpression extends AbstractExpression
                 ++$nextIndex;
             } else {
                 $key = null;
-                if ($pair['key'] instanceof NameExpression) {
+                if ($pair['key'] instanceof ContextVariable) {
                     $pair['key'] = new StringCastUnary($pair['key'], $pair['key']->getTemplateLine());
                 }
                 if ($pair['key'] instanceof TempNameExpression) {
