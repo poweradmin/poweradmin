@@ -885,11 +885,9 @@ trait EntityTrait
      */
     public function isDirty(?string $field = null): bool
     {
-        if ($field === null) {
-            return !empty($this->_dirty);
-        }
-
-        return isset($this->_dirty[$field]);
+        return $field === null
+            ? $this->_dirty !== []
+            : isset($this->_dirty[$field]);
     }
 
     /**

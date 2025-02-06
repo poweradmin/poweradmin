@@ -358,11 +358,13 @@ class PostgresSchemaDialect extends SchemaDialect
         c.conname AS name,
         c.contype AS type,
         a.attname AS column_name,
+        array_position(c.conkey, a.attnum) AS column_order,
         c.confmatchtype AS match_type,
         c.confupdtype AS on_update,
         c.confdeltype AS on_delete,
         c.confrelid::regclass AS references_table,
-        ab.attname AS references_field
+        ab.attname AS references_field,
+        array_position(c.confkey, ab.attnum) AS references_field_order
         FROM pg_catalog.pg_namespace n
         INNER JOIN pg_catalog.pg_class cl ON (n.oid = cl.relnamespace)
         INNER JOIN pg_catalog.pg_constraint c ON (n.oid = c.connamespace)
@@ -370,9 +372,8 @@ class PostgresSchemaDialect extends SchemaDialect
         INNER JOIN pg_catalog.pg_attribute ab ON (a.attrelid = cl.oid AND c.confrelid = ab.attrelid AND ab.attnum = ANY(c.confkey))
         WHERE n.nspname = ?
         AND cl.relname = ?
-        ORDER BY name, a.attnum, ab.attnum DESC';
+        ORDER BY name, column_order ASC, references_field_order ASC';
         // phpcs:enable Generic.Files.LineLength
-
         $schema = empty($config['schema']) ? 'public' : $config['schema'];
 
         return [$sql, [$schema, $tableName]];

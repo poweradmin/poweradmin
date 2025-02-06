@@ -38,9 +38,9 @@ class Collection implements CollectionInterface
     /**
      * Schema dialect instance.
      *
-     * @var \Cake\Database\Schema\SchemaDialect
+     * @var \Cake\Database\Schema\SchemaDialect|null
      */
-    protected SchemaDialect $_dialect;
+    protected ?SchemaDialect $_dialect = null;
 
     /**
      * Constructor.
@@ -50,7 +50,6 @@ class Collection implements CollectionInterface
     public function __construct(Connection $connection)
     {
         $this->_connection = $connection;
-        $this->_dialect = $connection->getDriver()->schemaDialect();
     }
 
     /**
@@ -60,7 +59,7 @@ class Collection implements CollectionInterface
      */
     public function listTablesWithoutViews(): array
     {
-        [$sql, $params] = $this->_dialect->listTablesWithoutViewsSql($this->_connection->getDriver()->config());
+        [$sql, $params] = $this->getDialect()->listTablesWithoutViewsSql($this->_connection->getDriver()->config());
         $result = [];
         $statement = $this->_connection->execute($sql, $params);
         while ($row = $statement->fetch()) {
@@ -77,7 +76,7 @@ class Collection implements CollectionInterface
      */
     public function listTables(): array
     {
-        [$sql, $params] = $this->_dialect->listTablesSql($this->_connection->getDriver()->config());
+        [$sql, $params] = $this->getDialect()->listTablesSql($this->_connection->getDriver()->config());
         $result = [];
         $statement = $this->_connection->execute($sql, $params);
         while ($row = $statement->fetch()) {
@@ -148,7 +147,7 @@ class Collection implements CollectionInterface
         $describeMethod = "describe{$stage}Sql";
         $convertMethod = "convert{$stage}Description";
 
-        [$sql, $params] = $this->_dialect->{$describeMethod}($name, $config);
+        [$sql, $params] = $this->getDialect()->{$describeMethod}($name, $config);
         if (!$sql) {
             return;
         }
@@ -158,7 +157,17 @@ class Collection implements CollectionInterface
             throw new DatabaseException($e->getMessage(), 500, $e);
         }
         foreach ($statement->fetchAll('assoc') as $row) {
-            $this->_dialect->{$convertMethod}($schema, $row);
+            $this->getDialect()->{$convertMethod}($schema, $row);
         }
+    }
+
+    /**
+     * Setups the schema dialect to be used for this collection.
+     *
+     * @return \Cake\Database\Schema\SchemaDialect
+     */
+    protected function getDialect(): SchemaDialect
+    {
+        return $this->_dialect ??= $this->_connection->getDriver()->schemaDialect();
     }
 }
