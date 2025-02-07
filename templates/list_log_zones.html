@@ -7,60 +7,82 @@
 </nav>
 
 <h5 class="mb-3">{% trans %}Zone logs{% endtrans %}</h5>
-<div class="text-secondary">{% trans %}Total number of logs:{% endtrans %} {{ number_of_logs }}</div><br>
 
-<form>
+<form method="GET">
+    <input type="hidden" name="page" value="list_log_zones">
     <div class="row pb-3">
         <div class="col-sm-4">
             <div class="input-group">
                 <input name="name" id="name" type="text" class="form-control form-control-sm"
                        placeholder="{% trans %}Search logs by domain{% endtrans %}"
-                       {% if name %}value="{{ name }}" %} {% endif %}>
-                <button for="name" type="submit" class="btn btn-primary btn-sm"><i
-                        class="bi bi-search"></i>
-                    {% trans %}Search{% endtrans %}
+                       {% if name %}value="{{ name }}"{% endif %}>
+                <button for="name" type="submit" class="btn btn-primary btn-sm">
+                    <i class="bi bi-search"></i> {% trans %}Search{% endtrans %}
                 </button>
-                <div class="input-group-append">
-                    <a href="index.php?page=list_log_zones" class="btn btn-secondary btn-sm" role="button"><i
-                            class="bi bi-eraser"></i> {% trans %}Clear{% endtrans %}</a>
-                </div>
+                <a href="index.php?page=list_log_zones" class="btn btn-secondary btn-sm" role="button">
+                    <i class="bi bi-eraser"></i> {% trans %}Clear{% endtrans %}
+                </a>
             </div>
         </div>
     </div>
 </form>
 
-<form method="post" action="index.php?page=delete_domains">
-    <input type="hidden" name="_token" value="{{ csrf_token }}">
-    {% if data %}
-    {{ pagination | raw }}
-    <table class="table table-striped table-bordered mt-2">
-        <thead>
-        <tr>
-            <th>{% trans %}Id{% endtrans %}</th>
-            <th>{% trans %}Event{% endtrans %}</th>
-            <th>{% trans %}Created at{% endtrans %}</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for row in data %}
-        <tr>
-            <td>{{ row['id'] }}</td>
-            <td>{{ row['event'] }}</td>
-            <td>{{ row['created_at'] }}</td>
-            <td>
-                <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="popover"
-                        data-bs-title="{% trans %}Details{% endtrans %}"
-                        data-bs-content="{{ row['details'] }}">
-                    <i class="bi bi-eye"></i>
-                </button>
-            </td>
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    {{ pagination | raw }}
-    {% else %}
-    {% trans %}No logs found{% endtrans %}
-    {% endif %}
-</form>
+<div class="text-secondary">{% trans %}Total number of logs:{% endtrans %} {{ number_of_logs }}</div><br>
+
+{% if data %}
+{{ pagination | raw }}
+<table class="table table-striped table-hover table-sm">
+    <thead>
+    <tr>
+        {% if iface_edit_show_id %}
+        <th>{% trans %}Id{% endtrans %}</th>
+        {% endif %}
+        <th>{% trans %}Event{% endtrans %}</th>
+        <th>{% trans %}Created at{% endtrans %}</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for row in data %}
+    <tr>
+        {% if iface_edit_show_id %}
+        <td>{{ row['id'] }}</td>
+        {% endif %}
+        <td>{{ row['event'] }}</td>
+        <td class="text-nowrap">{{ row['created_at'] }}</td>
+        <td class="text-nowrap">
+            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#logModal" data-bs-content="{{ row['details'] }}">
+                <i class="bi bi-eye"></i> {% trans %}Details{% endtrans %}
+            </button>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{{ pagination | raw }}
+
+<div class="modal fade" tabindex="-1" id="logModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-body-secondary">
+                <h5 class="modal-title">{% trans %}Details{% endtrans %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+const logModal = document.getElementById('logModal')
+if (logModal) {
+    logModal.addEventListener('show.bs.modal', event => {
+        const button = event.relatedTarget
+        const recipient = button.getAttribute('data-bs-content')
+        logModal.querySelector('.modal-body').innerHTML  = recipient
+    })
+}
+</script>
+{% else %}
+{% trans %}No logs found{% endtrans %}
+{% endif %}

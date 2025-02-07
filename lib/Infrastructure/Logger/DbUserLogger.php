@@ -87,6 +87,7 @@ class DbUserLogger
         $stmt = $this->db->prepare("
             SELECT * FROM log_users
             WHERE log_users.event LIKE :search_by
+            ORDER BY created_at DESC
             LIMIT :limit 
             OFFSET :offset");
 
