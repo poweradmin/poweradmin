@@ -607,3 +607,15 @@
 </div>
 
 <script src="assets/textareaAutoResize.js?time={{ file_version }}"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.form-check-input').forEach(checkbox => {
+            const row = checkbox.closest('tr');
+            const toggleOpacity = () => row.classList.toggle('opacity-25', checkbox.checked);
+
+            checkbox.addEventListener('change', toggleOpacity);
+            toggleOpacity();
+        });
+    });
+</script>
