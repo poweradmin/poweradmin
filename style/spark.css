@@ -163,10 +163,11 @@ input[type=number]::-webkit-outer-spin-button {
     margin: 0;
 }
 
-.modal-header {
+.modal-header, .modal-footer {
     background-color: #242424 !important;
 }
-.modal-header .btn-close {
+
+.modal-header .btn-close, .modal-footer .btn-close {
     background-color: #b7b7b8;
 }
 

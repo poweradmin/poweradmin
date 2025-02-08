@@ -66,22 +66,24 @@
         <div class="modal-content">
             <div class="modal-header bg-body-secondary">
                 <h5 class="modal-title">{% trans %}Details{% endtrans %}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">{% trans %}Close{% endtrans %}</button>
             </div>
         </div>
     </div>
 </div>
 <script>
-const logModal = document.getElementById('logModal')
-if (logModal) {
-    logModal.addEventListener('show.bs.modal', event => {
-        const button = event.relatedTarget
-        const recipient = button.getAttribute('data-bs-content')
-        logModal.querySelector('.modal-body').innerHTML  = recipient
-    })
-}
+    const logDetailsModal = document.getElementById('logModal');
+    if (logDetailsModal) {
+        logDetailsModal.addEventListener('show.bs.modal', event => {
+            const triggerButton = event.relatedTarget;
+            const logDetailsContent = triggerButton.getAttribute('data-bs-content');
+            logDetailsModal.querySelector('.modal-body').innerHTML = logDetailsContent;
+        });
+    }
 </script>
 {% else %}
 {% trans %}No logs found{% endtrans %}
