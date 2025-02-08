@@ -66,7 +66,6 @@ class EditController extends BaseController
     public function run(): void
     {
         $iface_rowamount = $this->config('iface_rowamount');
-        $iface_zone_comments = $this->config('iface_zone_comments');
         $iface_show_id = $this->config('iface_edit_show_id');
         $iface_edit_add_record_top = $this->config('iface_edit_add_record_top');
         $iface_edit_save_changes_top = $this->config('iface_edit_save_changes_top');
@@ -89,7 +88,7 @@ class EditController extends BaseController
 
         if (isset($_POST['commit'])) {
             $this->validateCsrfToken();
-            $this->saveRecords($zone_id, $iface_zone_comments, $zone_name);
+            $this->saveRecords($zone_id, $zone_name);
         }
 
         if (isset($_POST['save_as'])) {
@@ -307,11 +306,12 @@ class EditController extends BaseController
         return $sortDirection;
     }
 
-    public function saveRecords(int $zone_id, bool $iface_zone_comments, string $zone_name): void
+    public function saveRecords(int $zone_id, string $zone_name): void
     {
         $error = false;
         $one_record_changed = false;
         $serial_mismatch = false;
+        $updatedRecordComments = [];
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
@@ -319,7 +319,7 @@ class EditController extends BaseController
             $soa_record = $dnsRecord->get_soa_record($zone_id);
             $current_serial = DnsRecord::get_soa_serial($soa_record);
 
-            if (isset($_POST['serial']) && $_POST['serial'] != $current_serial) {
+            if ($this->isSerialMismatch($current_serial)) {
                 $serial_mismatch = true;
             } else {
                 foreach ($_POST['record'] as $record) {
@@ -331,7 +331,13 @@ class EditController extends BaseController
                         $record["disabled"] = 0;
                     }
 
-                    $log->log_prior($record['rid'], $record['zid']);
+                    $comment = '';
+                    if ($this->config('iface_record_comments')) {
+                        $recordComment = $this->recordCommentService->findComment($zone_id, $record['name'], $record['type']);
+                        $comment = $recordComment->getComment() ?? '';
+                    }
+
+                    $log->log_prior($record['rid'], $record['zid'], $comment);
 
                     if (!$log->has_changed($record)) {
                         continue;
@@ -346,58 +352,41 @@ class EditController extends BaseController
                         $log->log_after($record['rid']);
                         $log->write();
 
-                        $recordCopy = $log->getRecordCopy();
-                        $this->recordCommentService->updateComment(
-                            $zone_id,
-                            $recordCopy['name'],
-                            $recordCopy['type'],
-                            $record['name'],
-                            $record['type'],
-                            $record['comment'] ?? '',
-                            $_SESSION['userlogin']
-                        );
+                        if ($this->config('iface_record_comments')) {
+                            $recordCopy = $log->getRecordCopy();
+                            $recordKey = $recordCopy['name'] . '|' . $recordCopy['type'];
 
-                        $this->commentSyncService->updateRelatedRecordComments(
-                            $dnsRecord,
-                            $record,
-                            $record['comment'] ?? '',
-                            $_SESSION['userlogin']
-                        );
+                            if (!isset($updatedRecordComments[$recordKey])) {
+                                $this->recordCommentService->updateComment(
+                                    $zone_id,
+                                    $recordCopy['name'],
+                                    $recordCopy['type'],
+                                    $record['name'],
+                                    $record['type'],
+                                    $record['comment'] ?? '',
+                                    $_SESSION['userlogin']
+                                );
+
+                                $this->commentSyncService->updateRelatedRecordComments(
+                                    $dnsRecord,
+                                    $record,
+                                    $record['comment'] ?? '',
+                                    $_SESSION['userlogin']
+                                );
+
+                                $updatedRecordComments[$recordKey] = true;
+                            }
+                        }
                     }
                 }
             }
         }
 
-        if ($iface_zone_comments) {
-            $raw_zone_comment = DnsRecord::get_zone_comment($this->db, $zone_id);
-            $zone_comment = $_POST['comment'] ?? '';
-            if ($raw_zone_comment != $zone_comment) {
-                $dnsRecord->edit_zone_comment($zone_id, $zone_comment);
-                $one_record_changed = true;
-            }
+        if ($this->config('iface_zone_comments')) {
+            $one_record_changed = $this->processZoneComment($zone_id, $dnsRecord, $one_record_changed);
         }
 
-        if ($error === false) {
-            $experimental_edit_conflict_resolution = $this->config('experimental_edit_conflict_resolution');
-            if ($serial_mismatch && $experimental_edit_conflict_resolution == 'only_latest_version') {
-                $this->setMessage('edit', 'warn', (_('Request has expired, please try again.')));
-            } else {
-                $dnsRecord->update_soa_serial($zone_id);
-
-                if ($one_record_changed) {
-                    $this->setMessage('edit', 'success', _('Zone has been updated successfully.'));
-                } else {
-                    $this->setMessage('edit', 'warn', (_('Zone did not have any record changes.')));
-                }
-
-                if ($this->config('pdnssec_use')) {
-                    $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
-                    $dnssecProvider->rectifyZone($zone_name);
-                }
-            }
-        } else {
-            $this->setMessage('edit', 'error', _('Zone has not been updated successfully.'));
-        }
+        $this->finalizeSave($error, $serial_mismatch, $dnsRecord, $zone_id, $one_record_changed, $zone_name);
     }
 
     public function saveAsTemplate(string $zone_id): void
@@ -420,6 +409,72 @@ class EditController extends BaseController
 
             ZoneTemplate::add_zone_templ_save_as($this->db, $template_name, $description, $_SESSION['userid'], $records, $options, $dnsRecord->get_domain_name_by_id($zone_id));
             $this->setMessage('edit', 'success', _('Zone template has been added successfully.'));
+        }
+    }
+
+    /**
+     * Check if the serial is mismatched
+     *
+     * @param string $current_serial
+     * @return bool
+     */
+    public function isSerialMismatch(string $current_serial): bool
+    {
+        return isset($_POST['serial']) && $_POST['serial'] != $current_serial;
+    }
+
+    /**
+     * Process zone comment
+     *
+     * @param int $zone_id
+     * @param DnsRecord $dnsRecord
+     * @param bool $one_record_changed
+     * @return bool
+     */
+    public function processZoneComment(int $zone_id, DnsRecord $dnsRecord, bool $one_record_changed): bool
+    {
+        $raw_zone_comment = DnsRecord::get_zone_comment($this->db, $zone_id);
+        $zone_comment = $_POST['comment'] ?? '';
+        if ($raw_zone_comment != $zone_comment) {
+            $dnsRecord->edit_zone_comment($zone_id, $zone_comment);
+            $one_record_changed = true;
+        }
+        return $one_record_changed;
+    }
+
+    /**
+     * Finalize save
+     *
+     * @param bool $error
+     * @param bool $serial_mismatch
+     * @param DnsRecord $dnsRecord
+     * @param int $zone_id
+     * @param bool $one_record_changed
+     * @param string $zone_name
+     * @return void
+     */
+    public function finalizeSave(bool $error, bool $serial_mismatch, DnsRecord $dnsRecord, int $zone_id, bool $one_record_changed, string $zone_name): void
+    {
+        if ($error === false) {
+            $experimental_edit_conflict_resolution = $this->config('experimental_edit_conflict_resolution');
+            if ($serial_mismatch && $experimental_edit_conflict_resolution == 'only_latest_version') {
+                $this->setMessage('edit', 'warn', (_('Request has expired, please try again.')));
+            } else {
+                $dnsRecord->update_soa_serial($zone_id);
+
+                if ($one_record_changed) {
+                    $this->setMessage('edit', 'success', _('Zone has been updated successfully.'));
+                } else {
+                    $this->setMessage('edit', 'warn', (_('Zone did not have any record changes.')));
+                }
+
+                if ($this->config('pdnssec_use')) {
+                    $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+                    $dnssecProvider->rectifyZone($zone_name);
+                }
+            }
+        } else {
+            $this->setMessage('edit', 'error', _('Zone has not been updated successfully.'));
         }
     }
 }

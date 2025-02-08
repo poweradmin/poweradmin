@@ -45,6 +45,9 @@ class RecordCommentService
             return null;
         }
 
+        // Remove existing comments to avoid duplicates for the same record name and type
+        $this->deleteComment($domainId, $name, $type);
+
         $recordComment = RecordComment::create($domainId, $name, $type, $comment, $account);
         return $this->recordCommentRepository->add($recordComment);
     }
@@ -68,10 +71,7 @@ class RecordCommentService
         string $comment,
         string $account
     ): ?RecordComment {
-        if ($comment === '') {
-            $this->deleteComment($domainId, $oldName, $oldType);
-            return null;
-        }
+        $this->deleteComment($domainId, $oldName, $oldType);
 
         $recordComment = RecordComment::create($domainId, $newName, $newType, $comment, $account);
         return $this->recordCommentRepository->update($domainId, $oldName, $oldType, $recordComment);

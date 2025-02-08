@@ -46,10 +46,11 @@ class RecordLog
         $this->logger = new LegacyLogger($db);
     }
 
-    public function log_prior($rid, $zid): void
+    public function log_prior($rid, $zid, $comment): void
     {
         $this->record_prior = $this->getRecord($rid);
         $this->record_prior['zid'] = $zid;
+        $this->record_prior['comment'] = $comment;
     }
 
     public function log_after($rid): void
