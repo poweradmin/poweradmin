@@ -1439,11 +1439,18 @@ class DnsRecord
             $sql_sortby = "$records_table.type = 'SOA' DESC, $records_table.type = 'NS' DESC, " . $sql_sortby;
         }
 
-        $query = "SELECT $records_table.*, " . ($fetchComments ? "$comments_table.comment" : "NULL AS comment") . "
+        $query = "SELECT $records_table.*,
+            " . ($fetchComments ? "(
+                SELECT comment
+                FROM $comments_table
+                WHERE $records_table.domain_id = $comments_table.domain_id
+                AND $records_table.name = $comments_table.name
+                AND $records_table.type = $comments_table.type
+                LIMIT 1
+            )" : "NULL") . " AS comment
             FROM $records_table
-            " . ($fetchComments ? "LEFT JOIN $comments_table ON $records_table.domain_id = $comments_table.domain_id AND $records_table.name = $comments_table.name AND $records_table.type = $comments_table.type" : "") . "
-            WHERE $records_table.domain_id=" . $this->db->quote($id, 'integer') . " AND $records_table.type IS NOT NULL
-            " . ($fetchComments ? "GROUP BY $records_table.id, $comments_table.comment" : "") . "
+            WHERE $records_table.domain_id=" . $this->db->quote($id, 'integer') . "
+            AND $records_table.type IS NOT NULL
             ORDER BY " . $sql_sortby;
 
         $records = $this->db->query($query);
