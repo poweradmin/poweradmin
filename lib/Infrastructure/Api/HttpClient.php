@@ -55,6 +55,11 @@ class HttpClient implements ApiClient
         $context = stream_context_create($options);
         $response = @file_get_contents($url, false, $context);
 
+        if ($response === false) {
+            $error = error_get_last();
+            throw new ApiErrorException($error['message'] ?? 'An unknown API error occurred');
+        }
+
         $responseCode = $this->getResponseCode($http_response_header);
         $responseData = json_decode($response, true);
 

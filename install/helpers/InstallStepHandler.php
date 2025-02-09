@@ -126,8 +126,6 @@ class InstallStepHandler
 
         echo _('done!') . "</p>";
 
-
-
         $inputData = [
             'pa_db_user' => $this->request->get('pa_db_user'),
             'pa_db_pass' => $this->request->get('pa_db_pass'),

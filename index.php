@@ -22,8 +22,12 @@
 
 use Poweradmin\Application\Routing\BasicRouter;
 use Poweradmin\Pages;
+use Poweradmin\Infrastructure\Configuration\ConfigLoader;
 
 require __DIR__ . '/vendor/autoload.php';
+
+$configFile = __DIR__ . '/config/app.php';
+$config = ConfigLoader::load($configFile);
 
 if (!function_exists('session_start')) {
     die("You have to install the PHP session extension!");
@@ -46,5 +50,10 @@ try {
     $router->process();
 } catch (Exception $e) {
     error_log($e->getMessage());
-    echo 'An error occurred while processing the request.';
+
+    if ($config['display_errors']) {
+        echo 'An error occurred while processing the request: ' . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');
+    } else {
+        echo 'An error occurred while processing the request.';
+    }
 }
