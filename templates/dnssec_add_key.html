@@ -30,8 +30,8 @@
             <td>
                 <select class="form-select form-select-sm" name="key_type" required>
                     <option value=""></option>
-                    <option value="ksk">KSK</option>
-                    <option value="zsk">ZSK</option>
+                    <option value="ksk" {{ key_type == 'ksk' ? 'selected' : '' }}>KSK</option>
+                    <option value="zsk" {{ key_type == 'zsk' ? 'selected' : '' }}>ZSK</option>
                 </select>
                 <div class="invalid-feedback">{% trans %}Select key type{% endtrans %}</div>
             </td>
@@ -41,11 +41,11 @@
             <td>
                 <select class="form-select form-select-sm" name="bits" required>
                     <option value=""></option>
-                    <option value="2048">2048</option>
-                    <option value="1024">1024</option>
-                    <option value="768">768</option>
-                    <option value="384">384</option>
-                    <option value="256">256</option>
+                    <option value="2048" {{ bits == '2048' ? 'selected' : '' }}>2048</option>
+                    <option value="1024" {{ bits == '1024' ? 'selected' : '' }}>1024</option>
+                    <option value="768" {{ bits == '768' ? 'selected' : '' }}>768</option>
+                    <option value="384" {{ bits == '384' ? 'selected' : '' }}>384</option>
+                    <option value="256" {{ bits == '256' ? 'selected' : '' }}>256</option>
                 </select>
                 <div class="invalid-feedback">{% trans %}Select bits length{% endtrans %}</div>
             </td>
@@ -56,14 +56,9 @@
 
                 <select class="form-select form-select-sm" name="algorithm" required>
                     <option value=""></option>
-                    <option value="rsasha1">{{ algorithm_names['rsasha1'] }}</option>
-                    <option value="rsasha1-nsec3-sha1">{{ algorithm_names['rsasha1-nsec3-sha1'] }}</option>
-                    <option value="rsasha256">{{ algorithm_names['rsasha256'] }}</option>
-                    <option value="rsasha512">{{ algorithm_names['rsasha512'] }}</option>
-                    <option value="ecdsa256">{{ algorithm_names['ecdsa256'] }}</option>
-                    <option value="ecdsa384">{{ algorithm_names['ecdsa384'] }}</option>
-                    <option value="ed25519">{{ algorithm_names['ed25519'] }}</option>
-                    <option value="ed448">{{ algorithm_names['ed448'] }}</option>
+                    {% for alg, name in algorithm_names %}
+                    <option value="{{ alg }}" {{ algorithm == alg ? 'selected' : '' }}>{{ name }}</option>
+                    {% endfor %}
                 </select>
                 <div class="invalid-feedback">{% trans %}Select algorithm{% endtrans %}</div>
             </td>

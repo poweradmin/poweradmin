@@ -31,6 +31,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Exception;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\DnssecAlgorithmName;
@@ -95,11 +96,15 @@ class DnssecAddKeyController extends BaseController
             $this->validateCsrfToken();
 
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
-            if ($dnssecProvider->addZoneKey($domain_name, $key_type, $bits, $algorithm)) {
-                $this->setMessage('dnssec', 'success', _('Zone key has been added successfully.'));
-                $this->redirect('index.php', ['page' => 'dnssec', 'id' => $zone_id]);
-            } else {
-                $this->setMessage('dnssec_add_key', "error", _('Failed to add new DNSSEC key.'));
+            try {
+                if ($dnssecProvider->addZoneKey($domain_name, $key_type, $bits, $algorithm)) {
+                    $this->setMessage('dnssec', 'success', _('Zone key has been added successfully.'));
+                    $this->redirect('index.php', ['page' => 'dnssec', 'id' => $zone_id]);
+                } else {
+                    $this->setMessage('dnssec_add_key', 'error', _('Failed to add new DNSSEC key.'));
+                }
+            } catch (Exception $e) {
+                $this->setMessage('dnssec_add_key', 'error', _('An error occurred while adding the DNSSEC key: ') . $e->getMessage());
             }
         }
 
