@@ -200,6 +200,6 @@ class DnsSecApiProvider implements DnssecProvider
         }
         $formattedContext = implode(' ', $contextString);
 
-        $this->logInfo("client_ip:$this->clientIp user:$this->userLogin operation:$action zone:$zoneName $formattedContext");
+        $this->logger->info("client_ip:$this->clientIp user:$this->userLogin operation:$action zone:$zoneName $formattedContext");
     }
 }
