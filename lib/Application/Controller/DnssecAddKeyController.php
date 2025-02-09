@@ -83,7 +83,7 @@ class DnssecAddKeyController extends BaseController
             $algorithm = $_POST["algorithm"];
 
             // To check the supported DNSSEC algorithms in your build of PowerDNS, run pdnsutil list-algorithms.
-            $valid_algorithm = array('rsasha1', 'rsasha1-nsec3', 'rsasha256', 'rsasha512', 'ecdsa256', 'ecdsa384', 'ed25519', 'ed448');
+            $valid_algorithm = array('rsasha1', 'rsasha1-nsec3-sha1', 'rsasha256', 'rsasha512', 'ecdsa256', 'ecdsa384', 'ed25519', 'ed448');
             if (!in_array($algorithm, $valid_algorithm)) {
                 $this->showError(_('Invalid or unexpected input given.'));
             }

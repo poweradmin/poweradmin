@@ -29,7 +29,7 @@ class DnssecAlgorithmName
     public const DSA = 'dsa';
     public const ECC = 'ecc';
     public const RSASHA1 = 'rsasha1';
-    public const RSASHA1_NSEC3 = 'rsasha1-nsec3';
+    public const RSASHA1_NSEC3_SHA1 = 'rsasha1-nsec3-sha1';
     public const RSASHA256 = 'rsasha256';
     public const RSASHA512 = 'rsasha512';
     public const GOST = 'gost';
@@ -44,7 +44,7 @@ class DnssecAlgorithmName
         self::DSA => 'DSA',
         self::ECC => 'ECC',
         self::RSASHA1 => 'RSASHA1',
-        self::RSASHA1_NSEC3 => 'RSASHA1-NSEC3-SHA1',
+        self::RSASHA1_NSEC3_SHA1 => 'RSASHA1-NSEC3-SHA1',
         self::RSASHA256 => 'RSASHA256',
         self::RSASHA512 => 'RSASHA512',
         self::GOST => 'ECC-GOST',
