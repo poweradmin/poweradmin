@@ -5,6 +5,15 @@ const textareaTypes = new Set([
     'TLSA', 'TKEY', 'TSIG', 'TXT', 'URI', 'ZONEMD'
 ]);
 
+function escapeHtml(unsafe) {
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
 function updateContentInput(selectId, containerId, contentId) {
     const elements = {
         select: document.getElementById(selectId),
@@ -19,9 +28,11 @@ function updateContentInput(selectId, containerId, contentId) {
     const currentName = currentInput ? currentInput.name : 'content';
     const isTextarea = textareaTypes.has(elements.select.value);
 
+    const escapedValue = escapeHtml(currentValue);
+
     elements.container.innerHTML = isTextarea
-        ? `<textarea id="${contentId}" class="${currentClasses}" name="${currentName}" rows="1" required>${currentValue}</textarea>`
-        : `<input id="${contentId}" class="${currentClasses}" type="text" name="${currentName}" value="${currentValue}" data-testid="record-content-input" required>`;
+        ? `<textarea id="${contentId}" class="${currentClasses}" name="${currentName}" rows="1" required>${escapedValue}</textarea>`
+        : `<input id="${contentId}" class="${currentClasses}" type="text" name="${currentName}" value="${escapedValue}" data-testid="record-content-input" required>`;
 
     if (isTextarea) {
         const textarea = document.getElementById(contentId);
