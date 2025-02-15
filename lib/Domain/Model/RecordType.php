@@ -125,6 +125,7 @@ class RecordType
             self::DNSSEC_TYPES,
             self::LESS_COMMON_RECORDS
         );
+        $types = array_unique($types);
         sort($types);
         return $types;
     }
