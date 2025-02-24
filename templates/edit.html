@@ -287,7 +287,7 @@
             <td colspan="6"><textarea class="form-control form-control-sm" rows="5" cols="80" name="comment">{{ zone_comment }}</textarea>
             </td>
             <td colspan="2">
-                <a class="btn btn-outline-primary btn-sm" href="index.php?page=edit_comment&id={{ zone_id }}">
+                <a class="btn btn-outline-primary btn-sm" {% if perm_edit == 'none' %}disabled{% endif %}" href="index.php?page=edit_comment&id={{ zone_id }}">
                     <i class="bi bi-pencil-square"></i> {% trans %}Edit comment{% endtrans %}</a>
             </td>
         <tr>
