@@ -334,7 +334,7 @@ class EditController extends BaseController
                     $comment = '';
                     if ($this->config('iface_record_comments')) {
                         $recordComment = $this->recordCommentService->findComment($zone_id, $record['name'], $record['type']);
-                        $comment = $recordComment->getComment() ?? '';
+                        $comment = $recordComment && $recordComment->getComment() ?? '';
                     }
 
                     $log->log_prior($record['rid'], $record['zid'], $comment);
