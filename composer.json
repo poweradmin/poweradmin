@@ -80,5 +80,21 @@
     "check:phpmd:install": "phpmd install ansi cleancode,codesize,controversial,design,naming,unusedcode",
     "check:phpmd:lib": "phpmd lib ansi cleancode,codesize,controversial,design,naming,unusedcode",
     "check:phpmd:tests": "phpmd tests ansi cleancode,codesize,controversial,design,naming,unusedcode"
+  },
+  "archive": {
+    "exclude": [
+      "install/",
+      ".gitignore",
+      ".github",
+      "tests",
+      "phpunit.xml.dist",
+      ".dockerignore",
+      ".devcontainer",
+      "phpcs.xml",
+      "phpdoc.dist.xml",
+      "transifex.yml",
+      "package.json",
+      "cypress/"
+    ]
   }
 }
