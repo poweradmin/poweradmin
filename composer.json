@@ -79,7 +79,12 @@
     "check:phpmd:inc": "phpmd inc ansi cleancode,codesize,controversial,design,naming,unusedcode",
     "check:phpmd:install": "phpmd install ansi cleancode,codesize,controversial,design,naming,unusedcode",
     "check:phpmd:lib": "phpmd lib ansi cleancode,codesize,controversial,design,naming,unusedcode",
-    "check:phpmd:tests": "phpmd tests ansi cleancode,codesize,controversial,design,naming,unusedcode"
+    "check:phpmd:tests": "phpmd tests ansi cleancode,codesize,controversial,design,naming,unusedcode",
+
+    "post-create-project-cmd": [
+      "rm -rf install/",
+      "rm -rf tests/"
+    ]
   },
   "archive": {
     "exclude": [
