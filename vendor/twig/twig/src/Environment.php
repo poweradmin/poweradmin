@@ -44,10 +44,10 @@ use Twig\TokenParser\TokenParserInterface;
  */
 class Environment
 {
-    public const VERSION = '3.19.0';
-    public const VERSION_ID = 31900;
+    public const VERSION = '3.20.0';
+    public const VERSION_ID = 32000;
     public const MAJOR_VERSION = 3;
-    public const MINOR_VERSION = 19;
+    public const MINOR_VERSION = 20;
     public const RELEASE_VERSION = 0;
     public const EXTRA_VERSION = '';
 
@@ -736,6 +736,9 @@ class Environment
         return $this->extensionSet->getTokenParser($name);
     }
 
+    /**
+     * @param callable(string): (TokenParserInterface|false) $callable
+     */
     public function registerUndefinedTokenParserCallback(callable $callable): void
     {
         $this->extensionSet->registerUndefinedTokenParserCallback($callable);
@@ -775,6 +778,9 @@ class Environment
         return $this->extensionSet->getFilter($name);
     }
 
+    /**
+     * @param callable(string): (TwigFilter|false) $callable
+     */
     public function registerUndefinedFilterCallback(callable $callable): void
     {
         $this->extensionSet->registerUndefinedFilterCallback($callable);
@@ -838,6 +844,9 @@ class Environment
         return $this->extensionSet->getFunction($name);
     }
 
+    /**
+     * @param callable(string): (TwigFunction|false) $callable
+     */
     public function registerUndefinedFunctionCallback(callable $callable): void
     {
         $this->extensionSet->registerUndefinedFunctionCallback($callable);

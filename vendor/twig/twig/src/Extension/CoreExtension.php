@@ -576,7 +576,7 @@ final class CoreExtension extends AbstractExtension
         if (ctype_digit($asString) || ('' !== $asString && '-' === $asString[0] && ctype_digit(substr($asString, 1)))) {
             $date = new \DateTime('@'.$date);
         } else {
-            $date = new \DateTime($date, $this->getTimezone());
+            $date = new \DateTime($date);
         }
 
         if (false !== $timezone) {

@@ -13,7 +13,6 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
         '72142d7b40a3a0b14e91825290b5ad82' => __DIR__ . '/..' . '/cakephp/core/functions.php',
         '8825ede83f2f289127722d4e842cf7e8' => __DIR__ . '/..' . '/symfony/polyfill-intl-grapheme/bootstrap.php',
         'e69f7f6ee287b969198c3c9d6777bd38' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/bootstrap.php',
-        '23c18046f52bef3eea034657bafda50f' => __DIR__ . '/..' . '/symfony/polyfill-php81/bootstrap.php',
         '662a729f963d39afe703c9d9b7ab4a8c' => __DIR__ . '/..' . '/symfony/polyfill-php83/bootstrap.php',
         'b6b991a57620e2fb6b2f66f03fe9ddc2' => __DIR__ . '/..' . '/symfony/string/Resources/functions.php',
         '948ad5488880985ff1c06721a4e447fe' => __DIR__ . '/..' . '/cakephp/utility/bootstrap.php',
@@ -36,7 +35,6 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
         'S' => 
         array (
             'Symfony\\Polyfill\\Php83\\' => 23,
-            'Symfony\\Polyfill\\Php81\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Polyfill\\Intl\\Normalizer\\' => 33,
             'Symfony\\Polyfill\\Intl\\Grapheme\\' => 31,
@@ -89,10 +87,6 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
         'Symfony\\Polyfill\\Php83\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php83',
-        ),
-        'Symfony\\Polyfill\\Php81\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/polyfill-php81',
         ),
         'Symfony\\Polyfill\\Mbstring\\' => 
         array (
@@ -209,7 +203,6 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
     );
 
     public static $classMap = array (
-        'CURLStringFile' => __DIR__ . '/..' . '/symfony/polyfill-php81/Resources/stubs/CURLStringFile.php',
         'Cake\\Chronos\\Chronos' => __DIR__ . '/..' . '/cakephp/chronos/src/Chronos.php',
         'Cake\\Chronos\\ChronosDate' => __DIR__ . '/..' . '/cakephp/chronos/src/ChronosDate.php',
         'Cake\\Chronos\\ChronosTime' => __DIR__ . '/..' . '/cakephp/chronos/src/ChronosTime.php',
@@ -685,6 +678,7 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
         'Poweradmin\\Infrastructure\\Api\\ApiClient' => __DIR__ . '/../..' . '/lib/Infrastructure/Api/ApiClient.php',
         'Poweradmin\\Infrastructure\\Api\\HttpClient' => __DIR__ . '/../..' . '/lib/Infrastructure/Api/HttpClient.php',
         'Poweradmin\\Infrastructure\\Api\\PowerdnsApiClient' => __DIR__ . '/../..' . '/lib/Infrastructure/Api/PowerdnsApiClient.php',
+        'Poweradmin\\Infrastructure\\Configuration\\ConfigLoader' => __DIR__ . '/../..' . '/lib/Infrastructure/Configuration/ConfigLoader.php',
         'Poweradmin\\Infrastructure\\Configuration\\ConfigValidator' => __DIR__ . '/../..' . '/lib/Infrastructure/Configuration/ConfigValidator.php',
         'Poweradmin\\Infrastructure\\Configuration\\ConfigurationInterface' => __DIR__ . '/../..' . '/lib/Infrastructure/Configuration/ConfigurationInterface.php',
         'Poweradmin\\Infrastructure\\Configuration\\FakeConfiguration' => __DIR__ . '/../..' . '/lib/Infrastructure/Configuration/FakeConfiguration.php',
@@ -738,7 +732,6 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
         'Psr\\SimpleCache\\CacheException' => __DIR__ . '/..' . '/psr/simple-cache/src/CacheException.php',
         'Psr\\SimpleCache\\CacheInterface' => __DIR__ . '/..' . '/psr/simple-cache/src/CacheInterface.php',
         'Psr\\SimpleCache\\InvalidArgumentException' => __DIR__ . '/..' . '/psr/simple-cache/src/InvalidArgumentException.php',
-        'ReturnTypeWillChange' => __DIR__ . '/..' . '/symfony/polyfill-php81/Resources/stubs/ReturnTypeWillChange.php',
         'SQLite3Exception' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/SQLite3Exception.php',
         'Symfony\\Bridge\\Twig\\AppVariable' => __DIR__ . '/..' . '/symfony/twig-bridge/AppVariable.php',
         'Symfony\\Bridge\\Twig\\Attribute\\Template' => __DIR__ . '/..' . '/symfony/twig-bridge/Attribute/Template.php',
@@ -1462,7 +1455,6 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
         'Symfony\\Polyfill\\Intl\\Grapheme\\Grapheme' => __DIR__ . '/..' . '/symfony/polyfill-intl-grapheme/Grapheme.php',
         'Symfony\\Polyfill\\Intl\\Normalizer\\Normalizer' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/Normalizer.php',
         'Symfony\\Polyfill\\Mbstring\\Mbstring' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/Mbstring.php',
-        'Symfony\\Polyfill\\Php81\\Php81' => __DIR__ . '/..' . '/symfony/polyfill-php81/Php81.php',
         'Symfony\\Polyfill\\Php83\\Php83' => __DIR__ . '/..' . '/symfony/polyfill-php83/Php83.php',
         'Twig\\AbstractTwigCallable' => __DIR__ . '/..' . '/twig/twig/src/AbstractTwigCallable.php',
         'Twig\\Attribute\\FirstClassTwigCallableReady' => __DIR__ . '/..' . '/twig/twig/src/Attribute/FirstClassTwigCallableReady.php',
@@ -1530,6 +1522,7 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
         'Twig\\Node\\Expression\\Binary\\AbstractBinary' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Binary/AbstractBinary.php',
         'Twig\\Node\\Expression\\Binary\\AddBinary' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Binary/AddBinary.php',
         'Twig\\Node\\Expression\\Binary\\AndBinary' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Binary/AndBinary.php',
+        'Twig\\Node\\Expression\\Binary\\BinaryInterface' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Binary/BinaryInterface.php',
         'Twig\\Node\\Expression\\Binary\\BitwiseAndBinary' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Binary/BitwiseAndBinary.php',
         'Twig\\Node\\Expression\\Binary\\BitwiseOrBinary' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Binary/BitwiseOrBinary.php',
         'Twig\\Node\\Expression\\Binary\\BitwiseXorBinary' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Binary/BitwiseXorBinary.php',
@@ -1593,6 +1586,7 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
         'Twig\\Node\\Expression\\Unary\\PosUnary' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Unary/PosUnary.php',
         'Twig\\Node\\Expression\\Unary\\SpreadUnary' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Unary/SpreadUnary.php',
         'Twig\\Node\\Expression\\Unary\\StringCastUnary' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Unary/StringCastUnary.php',
+        'Twig\\Node\\Expression\\Unary\\UnaryInterface' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Unary/UnaryInterface.php',
         'Twig\\Node\\Expression\\Variable\\AssignContextVariable' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Variable/AssignContextVariable.php',
         'Twig\\Node\\Expression\\Variable\\AssignTemplateVariable' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Variable/AssignTemplateVariable.php',
         'Twig\\Node\\Expression\\Variable\\ContextVariable' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Variable/ContextVariable.php',

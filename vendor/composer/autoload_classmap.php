@@ -6,7 +6,6 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'CURLStringFile' => $vendorDir . '/symfony/polyfill-php81/Resources/stubs/CURLStringFile.php',
     'Cake\\Chronos\\Chronos' => $vendorDir . '/cakephp/chronos/src/Chronos.php',
     'Cake\\Chronos\\ChronosDate' => $vendorDir . '/cakephp/chronos/src/ChronosDate.php',
     'Cake\\Chronos\\ChronosTime' => $vendorDir . '/cakephp/chronos/src/ChronosTime.php',
@@ -482,6 +481,7 @@ return array(
     'Poweradmin\\Infrastructure\\Api\\ApiClient' => $baseDir . '/lib/Infrastructure/Api/ApiClient.php',
     'Poweradmin\\Infrastructure\\Api\\HttpClient' => $baseDir . '/lib/Infrastructure/Api/HttpClient.php',
     'Poweradmin\\Infrastructure\\Api\\PowerdnsApiClient' => $baseDir . '/lib/Infrastructure/Api/PowerdnsApiClient.php',
+    'Poweradmin\\Infrastructure\\Configuration\\ConfigLoader' => $baseDir . '/lib/Infrastructure/Configuration/ConfigLoader.php',
     'Poweradmin\\Infrastructure\\Configuration\\ConfigValidator' => $baseDir . '/lib/Infrastructure/Configuration/ConfigValidator.php',
     'Poweradmin\\Infrastructure\\Configuration\\ConfigurationInterface' => $baseDir . '/lib/Infrastructure/Configuration/ConfigurationInterface.php',
     'Poweradmin\\Infrastructure\\Configuration\\FakeConfiguration' => $baseDir . '/lib/Infrastructure/Configuration/FakeConfiguration.php',
@@ -535,7 +535,6 @@ return array(
     'Psr\\SimpleCache\\CacheException' => $vendorDir . '/psr/simple-cache/src/CacheException.php',
     'Psr\\SimpleCache\\CacheInterface' => $vendorDir . '/psr/simple-cache/src/CacheInterface.php',
     'Psr\\SimpleCache\\InvalidArgumentException' => $vendorDir . '/psr/simple-cache/src/InvalidArgumentException.php',
-    'ReturnTypeWillChange' => $vendorDir . '/symfony/polyfill-php81/Resources/stubs/ReturnTypeWillChange.php',
     'SQLite3Exception' => $vendorDir . '/symfony/polyfill-php83/Resources/stubs/SQLite3Exception.php',
     'Symfony\\Bridge\\Twig\\AppVariable' => $vendorDir . '/symfony/twig-bridge/AppVariable.php',
     'Symfony\\Bridge\\Twig\\Attribute\\Template' => $vendorDir . '/symfony/twig-bridge/Attribute/Template.php',
@@ -1259,7 +1258,6 @@ return array(
     'Symfony\\Polyfill\\Intl\\Grapheme\\Grapheme' => $vendorDir . '/symfony/polyfill-intl-grapheme/Grapheme.php',
     'Symfony\\Polyfill\\Intl\\Normalizer\\Normalizer' => $vendorDir . '/symfony/polyfill-intl-normalizer/Normalizer.php',
     'Symfony\\Polyfill\\Mbstring\\Mbstring' => $vendorDir . '/symfony/polyfill-mbstring/Mbstring.php',
-    'Symfony\\Polyfill\\Php81\\Php81' => $vendorDir . '/symfony/polyfill-php81/Php81.php',
     'Symfony\\Polyfill\\Php83\\Php83' => $vendorDir . '/symfony/polyfill-php83/Php83.php',
     'Twig\\AbstractTwigCallable' => $vendorDir . '/twig/twig/src/AbstractTwigCallable.php',
     'Twig\\Attribute\\FirstClassTwigCallableReady' => $vendorDir . '/twig/twig/src/Attribute/FirstClassTwigCallableReady.php',
@@ -1327,6 +1325,7 @@ return array(
     'Twig\\Node\\Expression\\Binary\\AbstractBinary' => $vendorDir . '/twig/twig/src/Node/Expression/Binary/AbstractBinary.php',
     'Twig\\Node\\Expression\\Binary\\AddBinary' => $vendorDir . '/twig/twig/src/Node/Expression/Binary/AddBinary.php',
     'Twig\\Node\\Expression\\Binary\\AndBinary' => $vendorDir . '/twig/twig/src/Node/Expression/Binary/AndBinary.php',
+    'Twig\\Node\\Expression\\Binary\\BinaryInterface' => $vendorDir . '/twig/twig/src/Node/Expression/Binary/BinaryInterface.php',
     'Twig\\Node\\Expression\\Binary\\BitwiseAndBinary' => $vendorDir . '/twig/twig/src/Node/Expression/Binary/BitwiseAndBinary.php',
     'Twig\\Node\\Expression\\Binary\\BitwiseOrBinary' => $vendorDir . '/twig/twig/src/Node/Expression/Binary/BitwiseOrBinary.php',
     'Twig\\Node\\Expression\\Binary\\BitwiseXorBinary' => $vendorDir . '/twig/twig/src/Node/Expression/Binary/BitwiseXorBinary.php',
@@ -1390,6 +1389,7 @@ return array(
     'Twig\\Node\\Expression\\Unary\\PosUnary' => $vendorDir . '/twig/twig/src/Node/Expression/Unary/PosUnary.php',
     'Twig\\Node\\Expression\\Unary\\SpreadUnary' => $vendorDir . '/twig/twig/src/Node/Expression/Unary/SpreadUnary.php',
     'Twig\\Node\\Expression\\Unary\\StringCastUnary' => $vendorDir . '/twig/twig/src/Node/Expression/Unary/StringCastUnary.php',
+    'Twig\\Node\\Expression\\Unary\\UnaryInterface' => $vendorDir . '/twig/twig/src/Node/Expression/Unary/UnaryInterface.php',
     'Twig\\Node\\Expression\\Variable\\AssignContextVariable' => $vendorDir . '/twig/twig/src/Node/Expression/Variable/AssignContextVariable.php',
     'Twig\\Node\\Expression\\Variable\\AssignTemplateVariable' => $vendorDir . '/twig/twig/src/Node/Expression/Variable/AssignTemplateVariable.php',
     'Twig\\Node\\Expression\\Variable\\ContextVariable' => $vendorDir . '/twig/twig/src/Node/Expression/Variable/ContextVariable.php',
