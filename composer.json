@@ -31,7 +31,11 @@
     "symfony/console": "^6.4.17",
     "symfony/filesystem": "^v6.4.13",
     "robmorgan/phinx": "^0.16.6",
-    "symfony/string": "^6.4.15"
+    "symfony/string": "^6.4.15",
+    "cakephp/core": "^5.1.6",
+    "cakephp/database": "^5.1.6",
+    "cakephp/datasource": "^5.1.6",
+    "cakephp/utility": "^5.1.6"
   },
   "suggest": {
     "ext-ldap": "For LDAP support"

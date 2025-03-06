@@ -64,17 +64,17 @@
         },
         {
             "name": "cakephp/core",
-            "version": "5.1.5",
-            "version_normalized": "5.1.5.0",
+            "version": "5.1.6",
+            "version_normalized": "5.1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/core.git",
-                "reference": "3d303f84dfc243b8e9e806904a57c2b6e2e81050"
+                "reference": "a444d4e993b40da3bc53fccb669b3937b11911be"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/core/zipball/3d303f84dfc243b8e9e806904a57c2b6e2e81050",
-                "reference": "3d303f84dfc243b8e9e806904a57c2b6e2e81050",
+                "url": "https://api.github.com/repos/cakephp/core/zipball/a444d4e993b40da3bc53fccb669b3937b11911be",
+                "reference": "a444d4e993b40da3bc53fccb669b3937b11911be",
                 "shasum": ""
             },
             "require": {
@@ -91,7 +91,7 @@
                 "cakephp/event": "To use PluginApplicationInterface or plugin applications.",
                 "league/container": "To use Container and ServiceProvider classes"
             },
-            "time": "2024-12-27T19:02:05+00:00",
+            "time": "2025-01-30T19:58:11+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -129,17 +129,17 @@
         },
         {
             "name": "cakephp/database",
-            "version": "5.1.5",
-            "version_normalized": "5.1.5.0",
+            "version": "5.1.6",
+            "version_normalized": "5.1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/database.git",
-                "reference": "560eccd214f17f438840d04ec585443ff4fb77fb"
+                "reference": "004d1050f6017809cc83fe7c7aad833303a48327"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/database/zipball/560eccd214f17f438840d04ec585443ff4fb77fb",
-                "reference": "560eccd214f17f438840d04ec585443ff4fb77fb",
+                "url": "https://api.github.com/repos/cakephp/database/zipball/004d1050f6017809cc83fe7c7aad833303a48327",
+                "reference": "004d1050f6017809cc83fe7c7aad833303a48327",
                 "shasum": ""
             },
             "require": {
@@ -157,7 +157,7 @@
                 "cakephp/i18n": "If you are using locale-aware datetime formats.",
                 "cakephp/log": "If you want to use query logging without providing a logger yourself."
             },
-            "time": "2025-01-15T19:10:23+00:00",
+            "time": "2025-02-09T07:12:20+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -194,17 +194,17 @@
         },
         {
             "name": "cakephp/datasource",
-            "version": "5.1.5",
-            "version_normalized": "5.1.5.0",
+            "version": "5.1.6",
+            "version_normalized": "5.1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/datasource.git",
-                "reference": "d00164edbde14e01d215478ce509192092f8f1fc"
+                "reference": "49c4e6864213b00ea3ce21874c6a5cfbfb3c8556"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/datasource/zipball/d00164edbde14e01d215478ce509192092f8f1fc",
-                "reference": "d00164edbde14e01d215478ce509192092f8f1fc",
+                "url": "https://api.github.com/repos/cakephp/datasource/zipball/49c4e6864213b00ea3ce21874c6a5cfbfb3c8556",
+                "reference": "49c4e6864213b00ea3ce21874c6a5cfbfb3c8556",
                 "shasum": ""
             },
             "require": {
@@ -222,7 +222,7 @@
                 "cakephp/collection": "If you decide to use ResultSetInterface.",
                 "cakephp/utility": "If you decide to use EntityTrait."
             },
-            "time": "2025-01-07T13:15:08+00:00",
+            "time": "2025-02-04T02:45:22+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -259,8 +259,8 @@
         },
         {
             "name": "cakephp/utility",
-            "version": "5.1.5",
-            "version_normalized": "5.1.5.0",
+            "version": "5.1.6",
+            "version_normalized": "5.1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/utility.git",

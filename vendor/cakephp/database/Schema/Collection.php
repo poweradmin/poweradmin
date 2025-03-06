@@ -18,6 +18,7 @@ namespace Cake\Database\Schema;
 
 use Cake\Database\Connection;
 use Cake\Database\Exception\DatabaseException;
+use PDO;
 use PDOException;
 
 /**
@@ -156,7 +157,7 @@ class Collection implements CollectionInterface
         } catch (PDOException $e) {
             throw new DatabaseException($e->getMessage(), 500, $e);
         }
-        foreach ($statement->fetchAll('assoc') as $row) {
+        foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $this->getDialect()->{$convertMethod}($schema, $row);
         }
     }
