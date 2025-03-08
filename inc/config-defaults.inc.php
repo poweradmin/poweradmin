@@ -61,6 +61,7 @@ $dns_soa = '28800 7200 604800 86400'; // refresh, retry, expire, minimum
 $dns_strict_tld_check = false;
 $dns_top_level_tld_check = false;   // Do not allow the creation of top-level domains
 $dns_third_level_check = false;     // Do not allow the creation of third-level domains
+$dns_txt_auto_quote = false;        // Automatically quote TXT records
 
 // Timezone settings
 // See <http://www.php.net/manual/en/timezones.php> for help.
