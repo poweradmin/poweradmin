@@ -1,0 +1,16 @@
+.devcontainer/ export-ignore
+.github/ export-ignore
+cypress/ export-ignore
+tests/ export-ignore
+.dockerignore export-ignore
+.gitignore export-ignore
+.php-cs-fixer.php export-ignore
+cypress.config.js export-ignore
+DEVELOPMENT.md export-ignore
+package.json export-ignore
+phinx.php export-ignore
+phpcs.xml export-ignore
+phpdoc.dist.xml export-ignore
+phpunit.xml.dist export-ignore
+psalm.xml export-ignore
+transifex.yml export-ignore
