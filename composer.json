@@ -92,18 +92,23 @@
   },
   "archive": {
     "exclude": [
-      "install/",
-      ".gitignore",
-      ".github",
-      "tests",
-      "phpunit.xml.dist",
-      ".dockerignore",
       ".devcontainer",
+      ".github",
+      "cypress/",
+      "install/",
+      "tests",
+      ".dockerignore",
+      ".gitignore",
+      ".php-cs-fixer.php",
+      "cypress.config.js",
+      "DEVELOPMENT.md",
+      "package.json",
+      "phinx.php",
       "phpcs.xml",
       "phpdoc.dist.xml",
-      "transifex.yml",
-      "package.json",
-      "cypress/"
+      "phpunit.xml.dist",
+      "psalm.xml",
+      "transifex.yml"
     ]
   }
 }
