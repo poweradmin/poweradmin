@@ -9,8 +9,18 @@
     "forum": "https://github.com/poweradmin/poweradmin/discussions",
     "wiki": "https://github.com/poweradmin/poweradmin/wiki",
     "source": "https://github.com/poweradmin/poweradmin",
-    "chat": "https://gitter.im/poweradmin/poweradmin"
+    "docs": "https://docs.poweradmin.org"
   },
+  "funding": [
+    {
+      "type": "opencollective",
+      "url": "https://opencollective.com/poweradmin"
+    },
+    {
+      "type": "other",
+      "url": "https://paypal.me/egirkantas"
+    }
+  ],
   "require": {
     "php": ">=8.1",
     "ext-intl": "*",
