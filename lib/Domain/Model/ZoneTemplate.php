@@ -320,9 +320,9 @@ class ZoneTemplate
      *
      * @return boolean true if successful, false otherwise
      */
-    public static function add_zone_templ_record($db, int $zone_templ_id, string $name, string $type, string $content, int $ttl, int $prio): bool
+    public function add_zone_templ_record(int $zone_templ_id, string $name, string $type, string $content, int $ttl, int $prio): bool
     {
-        if (!(UserManager::verify_permission($db, 'zone_master_add'))) {
+        if (!(UserManager::verify_permission($this->db, 'zone_master_add'))) {
             $error = new ErrorMessage(_("You do not have the permission to add a record to this zone."));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
@@ -354,8 +354,16 @@ class ZoneTemplate
             return false;
         }
 
+        // Add double quotes to content if it is a TXT record and dns_txt_auto_quote is enabled
+        if ($type === 'TXT' && $this->config->get('dns_txt_auto_quote')) {
+            $content = trim($content);
+            if ($content !== '' && (!str_starts_with($content, '"') || !str_ends_with($content, '"'))) {
+                $content = '"' . $content . '"';
+            }
+        }
+
         $query = "INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES (:zone_templ_id, :name, :type, :content, :ttl, :prio)";
-        $stmt = $db->prepare($query);
+        $stmt = $this->db->prepare($query);
         $stmt->execute([
             ':zone_templ_id' => $zone_templ_id,
             ':name' => $name,
@@ -377,9 +385,9 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public static function edit_zone_templ_record($db, array $record): bool
+    public function edit_zone_templ_record(array $record): bool
     {
-        if (!(UserManager::verify_permission($db, 'zone_master_add'))) {
+        if (!(UserManager::verify_permission($this->db, 'zone_master_add'))) {
             $error = new ErrorMessage(_("You do not have the permission to edit this record."));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
@@ -403,6 +411,14 @@ class ZoneTemplate
             return false;
         }
 
+        // Add double quotes to content if it is a TXT record and dns_txt_auto_quote is enabled
+        if ($record['type'] === 'TXT' && $this->config->get('dns_txt_auto_quote')) {
+            $record['content'] = trim($record['content']);
+            if ($record['content'] !== '' && (!str_starts_with($record['content'], '"') || !str_ends_with($record['content'], '"'))) {
+                $record['content'] = '"' . $record['content'] . '"';
+            }
+        }
+
         $query = "UPDATE zone_templ_records
                                 SET name=" . $db->quote($record['name'], 'text') . ",
                                 type=" . $db->quote($record['type'], 'text') . ",
@@ -410,7 +426,8 @@ class ZoneTemplate
                                 ttl=" . $db->quote($record['ttl'], 'integer') . ",
                                 prio=" . $db->quote($record['prio'] ?? 0, 'integer') . "
                                 WHERE id=" . $db->quote($record['rid'], 'integer');
-        $db->query($query);
+        $this->db->query($query);
+
         return true;
     }
 
