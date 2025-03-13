@@ -82,7 +82,9 @@ class AddZoneTemplRecordController extends BaseController
         $dns_ttl = $this->config('dns_ttl');
         $ttl = $_POST['ttl'] ?? $dns_ttl;
 
-        if (ZoneTemplate::add_zone_templ_record($this->db, $zone_templ_id, $name, $type, $content, $ttl, $prio)) {
+        $template = new ZoneTemplate($this->db, $this->getConfig());
+
+        if ($template->add_zone_templ_record($zone_templ_id, $name, $type, $content, $ttl, $prio)) {
             $this->setMessage('edit_zone_templ', 'success', 'The record was successfully added.');
             $this->redirect('index.php', ['page' => 'edit_zone_templ', 'id' => $zone_templ_id]);
         } else {
