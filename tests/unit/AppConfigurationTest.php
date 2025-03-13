@@ -173,4 +173,24 @@ class AppConfigurationTest extends TestCase
         $result = $config->parseTokenValue("'string_value'");
         $this->assertSame('string_value', $result);
     }
+
+    public function testSingleQuotesWithDoubleQuoteInside()
+    {
+        file_put_contents($this->tempDefaultConfigFile, '<?php $foo = \'bar"baz\';');
+        file_put_contents($this->tempCustomConfigFile, '<?php');
+
+        $config = new AppConfiguration($this->tempDefaultConfigFile, $this->tempCustomConfigFile);
+
+        $this->assertEquals('bar"baz', $config->get('foo'), 'Should return the value with a double quote inside single quotes.');
+    }
+
+    public function testDoubleQuotesWithSingleQuoteInside()
+    {
+        file_put_contents($this->tempDefaultConfigFile, '<?php $foo = "bar\'baz";');
+        file_put_contents($this->tempCustomConfigFile, '<?php');
+
+        $config = new AppConfiguration($this->tempDefaultConfigFile, $this->tempCustomConfigFile);
+
+        $this->assertEquals("bar'baz", $config->get('foo'), 'Should return the value with a single quote inside double quotes.');
+    }
 }

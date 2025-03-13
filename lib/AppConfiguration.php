@@ -47,7 +47,8 @@ class AppConfiguration implements ConfigurationInterface
     public function __construct(
         string $defaultConfigFile = 'inc/config-defaults.inc.php',
         string $customConfigFile = 'inc/config.inc.php'
-    ) {
+    )
+    {
         $defaultConfig = $this->loadAndParseConfig($defaultConfigFile);
         $customConfig = $this->loadAndParseConfig($customConfigFile);
         $this->config = array_merge($defaultConfig, $customConfig);
@@ -136,11 +137,7 @@ class AppConfiguration implements ConfigurationInterface
     public function get(string $name, mixed $default = null): mixed
     {
         if (array_key_exists($name, $this->config)) {
-            $value = $this->config[$name];
-            if (is_bool($value)) {
-                return $value;
-            }
-            return str_replace(['"', "'"], "", $value);
+            return $this->config[$name];
         } else {
             return $default;
         }
