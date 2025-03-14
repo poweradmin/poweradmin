@@ -49,7 +49,6 @@ class DnsRecord
     private PDOLayer $db;
     private DnsFormatter $dnsFormatter;
 
-
     public function __construct(PDOLayer $db, AppConfiguration $config)
     {
         $this->db = $db;

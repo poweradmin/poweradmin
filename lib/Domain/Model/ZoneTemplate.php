@@ -30,7 +30,7 @@ use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\AppConfiguration;
 
 /**
- *  Template functions
+ * Template functions
  *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
@@ -41,6 +41,7 @@ class ZoneTemplate
 {
     private AppConfiguration $config;
     private PDOLayer $db;
+    private DnsFormatter $dnsFormatter;
 
     public function __construct(PDOLayer $db, AppConfiguration $config)
     {
@@ -50,6 +51,8 @@ class ZoneTemplate
     }
 
     /**
+     * Replace domain and specific placeholders in DNS records with template placeholders
+     *
      * @param string $domain
      * @param array $record
      * @param array $options
@@ -86,7 +89,8 @@ class ZoneTemplate
         return [$name, $content];
     }
 
-    /** Get a list of all available zone templates
+    /**
+     * Get a list of all available zone templates
      *
      * @param int $userid User ID
      *
@@ -113,7 +117,8 @@ class ZoneTemplate
         return $stmt->fetchAll();
     }
 
-    /** Add a zone template
+    /**
+     * Add a zone template
      *
      * @param $db
      * @param array $details zone template details
@@ -155,7 +160,8 @@ class ZoneTemplate
         return $result ? $result['name'] : '';
     }
 
-    /** Get name and description of template based on template ID
+    /**
+     * Get name and description of template based on template ID
      *
      * @param int $zone_templ_id Zone template ID
      *
@@ -204,7 +210,8 @@ class ZoneTemplate
         }
     }
 
-    /** Delete all zone templates for specific user
+    /**
+     * Delete all zone templates for specific user
      *
      * @param $db
      * @param int $userid User ID
@@ -227,7 +234,8 @@ class ZoneTemplate
         }
     }
 
-    /** Count zone template records
+    /**
+     * Count zone template records
      *
      * @param $db
      * @param int $zone_templ_id Zone template ID
@@ -240,7 +248,8 @@ class ZoneTemplate
         return $db->queryOne($query);
     }
 
-    /** Check if zone template exist
+    /**
+     * Check if zone template exist
      *
      * @param int $zone_templ_id Zone template ID
      *
@@ -252,7 +261,8 @@ class ZoneTemplate
         return $db->queryOne($query);
     }
 
-    /** Get a zone template record from an id
+    /**
+     * Get a zone template record from an id
      *
      * Retrieve all fields of the record and send it back to the function caller.
      *
@@ -275,7 +285,8 @@ class ZoneTemplate
         ) : [];
     }
 
-    /** Get all zone template records from a zone template id
+    /**
+     * Get all zone template records from a zone template id
      *
      * Retrieve all fields of the records and send it back to the function caller.
      *
@@ -308,7 +319,8 @@ class ZoneTemplate
         return ($retCount > 0 ? $ret : []);
     }
 
-    /** Add a record for a zone template
+    /**
+     * Add a record for a zone template
      *
      * This function validates and if correct it inserts it into the database.
      * TODO: actual validation?
@@ -373,7 +385,8 @@ class ZoneTemplate
         return true;
     }
 
-    /** Modify zone template reocrd
+    /**
+     * Modify zone template record
      *
      * Edit a record for a zone template.
      * This function validates it if correct it inserts it into the database.
@@ -423,7 +436,8 @@ class ZoneTemplate
         return true;
     }
 
-    /** Delete a record for a zone template by a given id
+    /**
+     * Delete a record for a zone template by a given id
      *
      * @param int $rid template record id
      *
@@ -444,7 +458,8 @@ class ZoneTemplate
         }
     }
 
-    /** Check if the session user is the owner for the zone template
+    /**
+     * Check if the session user is the owner for the zone template
      *
      * @param int $zone_templ_id zone template id
      * @param int $userid user id
@@ -463,7 +478,8 @@ class ZoneTemplate
         }
     }
 
-    /** Add a zone template from zone / another template
+    /**
+     * Add a zone template from zone / another template
      *
      * @param $db
      * @param string $template_name template name
@@ -514,7 +530,8 @@ class ZoneTemplate
         return true;
     }
 
-    /** Get list of all zones using template
+    /**
+     * Get list of all zones using template
      *
      * @param int $zone_templ_id zone template id
      * @param int $userid user id
@@ -558,7 +575,8 @@ class ZoneTemplate
         return $zone_list;
     }
 
-    /** Modify zone template
+    /**
+     * Modify zone template
      *
      * @param array $details array of new zone template details
      * @param int $zone_templ_id zone template id
@@ -603,7 +621,8 @@ class ZoneTemplate
         }
     }
 
-    /** Check if zone template name exists
+    /**
+     * Check if zone template name exists
      *
      * @param $db
      * @param string $zone_templ_name zone template name
@@ -616,7 +635,8 @@ class ZoneTemplate
         return $db->queryOne($query);
     }
 
-    /** Check if zone template name and id exists
+    /**
+     * Check if zone template name and id exists
      *
      * @param $db
      * @param string $zone_templ_name zone template name
@@ -630,7 +650,8 @@ class ZoneTemplate
         return $db->queryOne($query);
     }
 
-    /** Parse string and substitute domain and serial
+    /**
+     * Parse string and substitute domain and serial
      *
      * @param string $val string to parse containing tokens '[ZONE]' and '[SERIAL]'
      * @param string $domain domain to substitute for '[ZONE]'
