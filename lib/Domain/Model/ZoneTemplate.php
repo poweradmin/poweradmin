@@ -25,6 +25,7 @@ namespace Poweradmin\Domain\Model;
 use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\Domain\Service\Dns;
+use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\AppConfiguration;
 
@@ -45,6 +46,7 @@ class ZoneTemplate
     {
         $this->db = $db;
         $this->config = $config;
+        $this->dnsFormatter = new DnsFormatter($config);
     }
 
     /**
@@ -355,12 +357,7 @@ class ZoneTemplate
         }
 
         // Add double quotes to content if it is a TXT record and dns_txt_auto_quote is enabled
-        if ($type === 'TXT' && $this->config->get('dns_txt_auto_quote')) {
-            $content = trim($content);
-            if ($content !== '' && (!str_starts_with($content, '"') || !str_ends_with($content, '"'))) {
-                $content = '"' . $content . '"';
-            }
-        }
+        $content = $this->dnsFormatter->formatContent($type, $content);
 
         $query = "INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES (:zone_templ_id, :name, :type, :content, :ttl, :prio)";
         $stmt = $this->db->prepare($query);
@@ -412,20 +409,15 @@ class ZoneTemplate
         }
 
         // Add double quotes to content if it is a TXT record and dns_txt_auto_quote is enabled
-        if ($record['type'] === 'TXT' && $this->config->get('dns_txt_auto_quote')) {
-            $record['content'] = trim($record['content']);
-            if ($record['content'] !== '' && (!str_starts_with($record['content'], '"') || !str_ends_with($record['content'], '"'))) {
-                $record['content'] = '"' . $record['content'] . '"';
-            }
-        }
+        $record['content'] = $this->dnsFormatter->formatContent($record['type'], $record['content']);
 
         $query = "UPDATE zone_templ_records
-                                SET name=" . $db->quote($record['name'], 'text') . ",
-                                type=" . $db->quote($record['type'], 'text') . ",
-                                content=" . $db->quote($record['content'], 'text') . ",
-                                ttl=" . $db->quote($record['ttl'], 'integer') . ",
-                                prio=" . $db->quote($record['prio'] ?? 0, 'integer') . "
-                                WHERE id=" . $db->quote($record['rid'], 'integer');
+                                SET name=" . $this->db->quote($record['name'], 'text') . ",
+                                type=" . $this->db->quote($record['type'], 'text') . ",
+                                content=" . $this->db->quote($record['content'], 'text') . ",
+                                ttl=" . $this->db->quote($record['ttl'], 'integer') . ",
+                                prio=" . $this->db->quote($record['prio'] ?? 0, 'integer') . "
+                                WHERE id=" . $this->db->quote($record['rid'], 'integer');
         $this->db->query($query);
 
         return true;

@@ -47,11 +47,14 @@ class DnsRecord
 {
     private AppConfiguration $config;
     private PDOLayer $db;
+    private DnsFormatter $dnsFormatter;
+
 
     public function __construct(PDOLayer $db, AppConfiguration $config)
     {
         $this->db = $db;
         $this->config = $config;
+        $this->dnsFormatter = new DnsFormatter($config);
     }
 
     /** Check if Zone ID exists
@@ -386,12 +389,7 @@ class DnsRecord
         }
 
         // Add double quotes to content if it is a TXT record and dns_txt_auto_quote is enabled
-        if ($record['type'] === 'TXT' && $this->config->get('dns_txt_auto_quote')) {
-            $record['content'] = trim($record['content']);
-            if ($record['content'] !== '' && (!str_starts_with($record['content'], '"') || !str_ends_with($record['content'], '"'))) {
-                $record['content'] = '"' . $record['content'] . '"';
-            }
-        }
+        $record['content'] = $this->dnsFormatter->formatContent($record['type'], $record['content']);
 
         $dns = new Dns($this->db, $this->config);
         $dns_ttl = $this->config->get('dns_ttl');
@@ -467,12 +465,7 @@ class DnsRecord
         $dns_ttl = $this->config->get('dns_ttl');
 
         // Add double quotes to content if it is a TXT record and dns_txt_auto_quote is enabled
-        if ($type === 'TXT' && $this->config->get('dns_txt_auto_quote')) {
-            $content = trim($content);
-            if ($content !== '' && (!str_starts_with($content, '"') || !str_ends_with($content, '"'))) {
-                $content = '"' . $content . '"';
-            }
-        }
+        $content = $this->dnsFormatter->formatContent($type, $content);
 
         $dns = new Dns($this->db, $this->config);
         if (!$dns->validate_input(-1, $zone_id, $type, $content, $name, $prio, $ttl, $dns_hostmaster, $dns_ttl)) {
