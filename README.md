@@ -128,7 +128,10 @@ server {
     }
 }
 ```
-With the above NGINX configuration, make sure to also move all the files in the Poweradmin (repository) directory to the root declared in the configuration (in the example: `root /var/www/html;`). Once this is done, reload your NGINX installation and it should be applied.
+
+With the above NGINX configuration, make sure to also move all the files in the Poweradmin (repository) directory to the
+root declared in the configuration (in the example: `root /var/www/html;`). Once this is done, reload your NGINX
+installation and it should be applied.
 Then you can navigate to the installed system in your browser
 
 > **Note:** You can also safely remove the default index.html (or derivative).
@@ -191,29 +194,25 @@ effectively.
 
 ## Contributing
 
-### Steps to Contribute
+We welcome contributions to improve Poweradmin. If you'd like to contribute, please follow the standard GitHub workflow
+of forking the repository, creating a branch, making changes, and submitting a pull request.
 
-1. **Fork the Repository**: Use the "Fork" button on the repository page to create a copy of the repository under your
-   GitHub account.
-2. **Clone the Forked Repository**: Download the forked repository to your local machine.
-3. **Create a New Branch**: Create a new branch for your feature or bugfix.
-4. **Make Changes**: Make your changes to the codebase.
-5. **Commit Changes**: Save your changes with a descriptive commit message.
-6. **Push Changes**: Upload your changes to your forked repository.
-7. **Create a Pull Request**: Go to the original repository and create a pull request from your forked repository.
+### Contribution Guidelines
 
-### Partial Acceptance
+1. **Code Quality**: Ensure your code follows the project's style and standards
+2. **Testing**: Test your changes thoroughly before submitting
+3. **Documentation**: Include appropriate documentation for new features
 
-Please note that while I am open to contributions, I might only take the good parts of your submission or rewrite it to
-keep in sync with the overall style and structure of the project. However, I will still keep a reference to you as the
-original contributor. This will be mentioned in the release notes.
+### Attribution Policy
 
-### Code Review
+All meaningful contributions are credited in release notes. Please note:
 
-All contributions will be reviewed. Feedback will be provided, and you may be asked to make additional changes.
+- Sometimes similar ideas come from multiple contributors; implementation quality determines which is merged
+- Contributions may be partially accepted or rewritten to maintain project consistency
+- Even if your exact code isn't used, your ideas will still be credited if they influence the final implementation
 
-### Testing
-
-Ensure that your changes are well-tested.
+Please forgive me if I occasionally miss crediting someone in the release notes. Managing a project and preparing new
+versions while tracking all contributions is challenging. If you notice your contribution hasn't been acknowledged,
+please reach out - I'm always open to corrections and want to ensure everyone receives proper recognition.
 
 Thank you for your contributions!
