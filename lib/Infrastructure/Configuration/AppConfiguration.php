@@ -22,16 +22,26 @@
 
 namespace Poweradmin\Infrastructure\Configuration;
 
-class ConfigLoader
+use Poweradmin\Domain\Config\AppConfigDefaults;
+
+class AppConfiguration implements ConfigurationInterface
 {
-    public static function load(string $configFile): array
+    private array $config;
+
+    public function __construct()
     {
-        if (file_exists($configFile)) {
-            return require $configFile;
-        } else {
-            return [
-                'display_errors' => false, // Default configuration
-            ];
+        $this->config = array_merge(
+            AppConfigDefaults::getDefaults(),
+            require __DIR__ . '/../../../config/app.php'
+        );
+    }
+
+    public function get(string $key = null): mixed
+    {
+        if ($key === null) {
+            return $this->config;
         }
+
+        return $this->config[$key] ?? null;
     }
 }

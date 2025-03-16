@@ -30,6 +30,7 @@
     <files>
         <directory>.</directory>
         <ignore>addons/*</ignore>
+        <ignore>config/*</ignore>
         <ignore>install/*</ignore>
         <ignore>logs/*</ignore>
         <ignore>tests/*</ignore>

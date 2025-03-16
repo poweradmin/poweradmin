@@ -1,6 +1,6 @@
 # Poweradmin related
 inc/config.inc.php
-config/app.php
+config/
 /scripts
 templates/custom
 

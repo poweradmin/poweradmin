@@ -20,9 +20,14 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Infrastructure\Configuration;
+namespace Poweradmin\Domain\Config;
 
-interface ConfigurationInterface
+class AppConfigDefaults
 {
-    public function get(string $key): mixed;
+    public static function getDefaults(): array
+    {
+        return [
+            'display_errors' => false,
+        ];
+    }
 }

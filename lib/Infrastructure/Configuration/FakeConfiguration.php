@@ -32,8 +32,8 @@ class FakeConfiguration implements ConfigurationInterface
         $this->config['pdns_api_key'] = $pdns_api_key;
     }
 
-    public function get($name): mixed
+    public function get(string $key): mixed
     {
-        return array_key_exists($name, $this->config) ? $this->config[$name] : null;
+        return array_key_exists($key, $this->config) ? $this->config[$key] : null;
     }
 }
