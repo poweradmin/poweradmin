@@ -8,12 +8,9 @@ that people believe in what I'm building.
 
 If your name is missing from the lists below, please [contact me](https://github.com/edmondas).
 
-## Companies
+## Organizations
 
 * HLkomm Telekommunikations GmbH
-
-## Institutions
-
 * IRAM (Institut de Radioastronomie Millimétrique)
 
 ## Individuals
