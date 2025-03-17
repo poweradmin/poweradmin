@@ -7,6 +7,7 @@ tests/ export-ignore
 .php-cs-fixer.php export-ignore
 cypress.config.js export-ignore
 DEVELOPMENT.md export-ignore
+DONORS.md export-ignore
 package.json export-ignore
 phinx.php export-ignore
 phpcs.xml export-ignore
