@@ -1,8 +1,12 @@
 # Donors to the Poweradmin project
 
-Poweradmin is a non-profit project developed by a community of voluntary
-[contributors](https://github.com/poweradmin/poweradmin/graphs/contributors), with occasional paid contributions
-thanks to the financial support from companies and generous donors.
+As the sole maintainer of Poweradmin, a non-profit project, I work alongside our amazing community of voluntary
+[contributors](https://github.com/poweradmin/poweradmin/graphs/contributors). I am deeply grateful for all the generous
+donations I receive from individuals, organizations, and businesses. These donations help me keep the project running and
+continue its development. Every contribution not only supports the project financially but also encourages me by showing
+that people believe in what I'm building.
+
+If your name is missing from the lists below, please [contact me](https://github.com/edmondas).
 
 ## Companies
 
