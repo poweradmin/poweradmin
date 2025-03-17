@@ -20,22 +20,28 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Application\Service;
+namespace Poweradmin\Infrastructure\Configuration;
 
-use Poweradmin\Domain\Model\UserId;
-use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Domain\Config\PasswordPolicyDefaults;
 
-class UserService
+class PasswordPolicyConfig
 {
-    private UserRepository $userRepository;
+    private array $config;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct()
     {
-        $this->userRepository = $userRepository;
+        $this->config = array_merge(
+            PasswordPolicyDefaults::getDefaults(),
+            require __DIR__ . '/../../../config/password_policy.php'
+        );
     }
 
-    public function canUserViewOthersContent(int $userId): bool
+    public function get(string $key = null)
     {
-        return $this->userRepository->canViewOthersContent(new UserId($userId));
+        if ($key === null) {
+            return $this->config;
+        }
+
+        return $this->config[$key] ?? null;
     }
 }

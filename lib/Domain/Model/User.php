@@ -24,15 +24,24 @@ namespace Poweradmin\Domain\Model;
 
 class User
 {
-    private int $id;
-
-    public function __construct(int $id)
-    {
-        $this->id = $id;
-    }
+    public function __construct(
+        private readonly int $id,
+        private readonly string $password,
+        private readonly bool $useLdap
+    ) {}
 
     public function getId(): int
     {
         return $this->id;
+    }
+
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    public function isLdapUser(): bool
+    {
+        return $this->useLdap;
     }
 }

@@ -22,7 +22,9 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
+use PDO;
 use Poweradmin\Domain\Model\User;
+use Poweradmin\Domain\Model\UserId;
 use Poweradmin\Domain\Repository\UserRepository;
 
 class DbUserRepository implements UserRepository
@@ -34,7 +36,7 @@ class DbUserRepository implements UserRepository
         $this->db = $db;
     }
 
-    public function canViewOthersContent(User $user): bool
+    public function canViewOthersContent(UserId $user): bool
     {
         $query = "SELECT DISTINCT u.id
                   FROM users u
@@ -47,5 +49,24 @@ class DbUserRepository implements UserRepository
         $stmt->execute(['userId' => $user->getId()]);
 
         return (bool)$stmt->fetchColumn();
+    }
+
+    public function findByUsername(string $username): ?User
+    {
+        $stmt = $this->db->prepare('SELECT id, password, use_ldap FROM users WHERE username = ?');
+        $stmt->execute([$username]);
+
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$data) {
+            return null;
+        }
+
+        return new User($data['id'], $data['password'], (bool)$data['use_ldap']);
+    }
+
+    public function updatePassword(int $userId, string $hashedPassword): bool
+    {
+        $stmt = $this->db->prepare('UPDATE users SET password = ? WHERE id = ?');
+        return $stmt->execute([$hashedPassword, $userId]);
     }
 }

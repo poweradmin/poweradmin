@@ -403,58 +403,6 @@ class UserManager
     }
 
     /**
-     * Change User Password
-     *
-     * Change the pass of the user.
-     * The user is automatically logged out after the pass change.
-     *
-     * @param $db
-     * @param array $details User Details
-     *
-     * @return bool
-     */
-    public static function change_user_pass($db, array $details): bool
-    {
-        if ($details['new_password'] != $details['new_password2']) {
-            $error = new ErrorMessage(_('The two new password fields do not match.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
-            return false;
-        }
-
-        $query = "SELECT id, password, use_ldap FROM users WHERE username = {$db->quote($_SESSION["userlogin"], 'text')}";
-        $response = $db->queryRow($query);
-
-        if ($response['use_ldap']) {
-            $error = new ErrorMessage(_('You can not change your password as LDAP user.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
-            return false;
-        }
-
-        $config = new AppConfiguration();
-        $userAuthService = new UserAuthenticationService(
-            $config->get('password_encryption'),
-            $config->get('password_encryption_cost')
-        );
-
-        if ($userAuthService->verifyPassword($details['old_password'], $response['password'])) {
-            $query = "UPDATE users SET password = {$db->quote($userAuthService->hashPassword($details['new_password']), 'text')} WHERE id = {$db->quote($response['id'], 'integer')}";
-            $db->query($query);
-
-            return true;
-        }
-
-        $error = new ErrorMessage(_('You did not enter the correct current password.'));
-        $errorPresenter = new ErrorPresenter();
-        $errorPresenter->present($error);
-
-        return false;
-    }
-
-    /**
      * Get User FullName from User ID
      *
      * Get a fullname when you have an userid.

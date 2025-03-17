@@ -31,53 +31,142 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Service\PasswordChangeService;
+use Poweradmin\Application\Service\PasswordPolicyService;
+use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\SessionEntity;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\SessionService;
+use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Infrastructure\Configuration\PasswordPolicyConfig;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Valitron\Validator;
 
 class ChangePasswordController extends BaseController
 {
     private AuthenticationService $authService;
+    private PasswordPolicyService $passwordPolicyService;
+    private Request $request;
+    private PasswordChangeService $passwordChangeService;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
+        $this->request = new Request();
         $sessionService = new SessionService();
         $redirectService = new RedirectService();
         $this->authService = new AuthenticationService($sessionService, $redirectService);
+        $this->passwordPolicyService = new PasswordPolicyService(new PasswordPolicyConfig());
+        $userAuthService = new UserAuthenticationService(
+            $this->config('password_encryption'),
+            $this->config('password_encryption_cost')
+        );
+        $userRepository = new DbUserRepository($this->db);
+        $userContextService = new UserContextService();
+        $this->passwordChangeService = new PasswordChangeService($userRepository, $userAuthService, $userContextService);
     }
+
+    private const VALIDATION_CONFIG = [
+        'rules' => [
+            'required' => [
+                ['old_password'],
+                ['new_password'],
+                ['new_password2'],
+            ],
+            'equals' => [
+                ['new_password2', 'new_password'],
+            ]
+        ],
+        'labels' => [
+            'old_password' => 'Current password',
+            'new_password' => 'New password',
+            'new_password2' => 'Repeat password'
+        ]
+    ];
 
     public function run(): void
     {
-        if ($this->isPost()) {
-            $this->validateCsrfToken();
+        $policyConfig = $this->passwordPolicyService->getPolicyConfig();
 
-            $v = new Validator($_POST);
-            $v->rules([
-                'required' => [
-                    ['old_password'],
-                    ['new_password'],
-                    ['new_password2'],
-                ]
-            ]);
-
-            if ($v->validate()) {
-                $result = UserManager::change_user_pass($this->db, $_POST);
-                if ($result === true) {
-                    $sessionEntity = new SessionEntity(_('Password has been changed, please login.'), 'success');
-                    $this->authService->logout($sessionEntity);
-                    return;
-                }
-            } else {
-                $this->showFirstError($v->errors());
-            }
+        if (!$this->isPost()) {
+            $this->renderChangePasswordForm($policyConfig);
+            return;
         }
 
-        $this->render('change_password.html', []);
+        $this->validateCsrfToken();
+
+        if (!$this->validateInput()) {
+            $this->renderChangePasswordForm($policyConfig);
+            return;
+        }
+
+        if (!$this->validatePasswordPolicy()) {
+            $this->renderChangePasswordForm($policyConfig);
+            return;
+        }
+
+        if (!$this->processPasswordChange()) {
+            $this->renderChangePasswordForm($policyConfig);
+        }
+    }
+
+    private function renderChangePasswordForm(array $policyConfig): void
+    {
+        $this->render('change_password.html', [
+            'password_policy' => $policyConfig,
+        ]);
+    }
+
+    private function validateInput(): bool
+    {
+        $validator = new Validator($this->request->getPostParams());
+        $validator->rules(self::VALIDATION_CONFIG['rules']);
+        $validator->labels(self::VALIDATION_CONFIG['labels']);
+
+        if (!$validator->validate()) {
+            $validationErrors = $validator->errors();
+            $firstError = reset($validationErrors);
+            $errorMessage = is_array($firstError) ? reset($firstError) : $firstError;
+            $this->setMessage('change_password', 'error', $errorMessage);
+            return false;
+        }
+
+        return true;
+    }
+
+    private function processPasswordChange(): bool
+    {
+        [$success, $message] = $this->passwordChangeService->changePassword(
+            $this->request->getPostParam('old_password'),
+            $this->request->getPostParam('new_password')
+        );
+
+        if ($success) {
+            $sessionEntity = new SessionEntity($message, 'success');
+            $this->authService->logout($sessionEntity);
+            return true;
+        }
+
+        // TODO: Consider logging the error instead of displaying this message to the user
+        // $this->setMessage('change_password', 'error', _('Failed to change password'));
+        $this->setMessage('change_password', 'error', $message);
+        return false;
+    }
+
+    private function validatePasswordPolicy(): bool
+    {
+        $newPassword = $this->request->getPostParam('new_password');
+        $policyErrors = $this->passwordPolicyService->validatePassword($newPassword);
+
+        if (!empty($policyErrors)) {
+            $this->setMessage('change_password', 'error', array_shift($policyErrors));
+            return false;
+        }
+
+        return true;
     }
 }

@@ -23,8 +23,11 @@
 namespace Poweradmin\Domain\Repository;
 
 use Poweradmin\Domain\Model\User;
+use Poweradmin\Domain\Model\UserId;
 
 interface UserRepository
 {
-    public function canViewOthersContent(User $user): bool;
+    public function canViewOthersContent(UserId $user): bool;
+    public function findByUsername(string $username): ?User;
+    public function updatePassword(int $userId, string $hashedPassword): bool;
 }
