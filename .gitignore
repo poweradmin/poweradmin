@@ -1,8 +1,8 @@
 # Poweradmin related
-inc/config.inc.php
-config/
+/inc/config.inc.php
+/config
 /scripts
-templates/custom
+/templates/custom
 
 # OS generated files
 .DS_Store
@@ -13,36 +13,36 @@ ehthumbs.db
 Thumbs.db
 
 # IDE
-nbproject
-.idea
-.settings
-.buildpath
-.project
-.vscode
+/nbproject
+/.idea
+/.settings
+/.buildpath
+/.project
+/.vscode
 
 # phpDocumentor
-docs
-.phive
-tools
+/docs
+/.phive
+/tools
 
 # PHPUnit
-.phpunit.cache
-.phpunit.result.cache
+/.phpunit.cache
+/.phpunit.result.cache
 
 # Devcontainer
-.devcontainer/scripts/pdns
+/.devcontainer/scripts/pdns
 
 # Dependency directories
-node_modules/
+/node_modules/
 
 # Logs
-logs
-*.log
-npm-debug.log*
+/logs
+/*.log
+/npm-debug.log*
 
 # Cypress
-cypress/videos
-cypress/screenshots
+/cypress/videos
+/cypress/screenshots
 
 # PHP tools
-.php-cs-fixer.cache
+/.php-cs-fixer.cache
