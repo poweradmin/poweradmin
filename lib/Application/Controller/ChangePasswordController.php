@@ -52,24 +52,6 @@ class ChangePasswordController extends BaseController
     private Request $request;
     private PasswordChangeService $passwordChangeService;
 
-    public function __construct(array $request)
-    {
-        parent::__construct($request);
-
-        $this->request = new Request();
-        $sessionService = new SessionService();
-        $redirectService = new RedirectService();
-        $this->authService = new AuthenticationService($sessionService, $redirectService);
-        $this->passwordPolicyService = new PasswordPolicyService(new PasswordPolicyConfig());
-        $userAuthService = new UserAuthenticationService(
-            $this->config('password_encryption'),
-            $this->config('password_encryption_cost')
-        );
-        $userRepository = new DbUserRepository($this->db);
-        $userContextService = new UserContextService();
-        $this->passwordChangeService = new PasswordChangeService($userRepository, $userAuthService, $userContextService);
-    }
-
     private const VALIDATION_CONFIG = [
         'rules' => [
             'required' => [
@@ -87,6 +69,24 @@ class ChangePasswordController extends BaseController
             'new_password2' => 'Repeat password'
         ]
     ];
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+
+        $this->request = new Request();
+        $sessionService = new SessionService();
+        $redirectService = new RedirectService();
+        $this->authService = new AuthenticationService($sessionService, $redirectService);
+        $this->passwordPolicyService = new PasswordPolicyService(new PasswordPolicyConfig());
+        $userAuthService = new UserAuthenticationService(
+            $this->config('password_encryption'),
+            $this->config('password_encryption_cost')
+        );
+        $userRepository = new DbUserRepository($this->db);
+        $userContextService = new UserContextService();
+        $this->passwordChangeService = new PasswordChangeService($userRepository, $userAuthService, $userContextService);
+    }
 
     public function run(): void
     {
@@ -152,7 +152,6 @@ class ChangePasswordController extends BaseController
         }
 
         // TODO: Consider logging the error instead of displaying this message to the user
-        // $this->setMessage('change_password', 'error', _('Failed to change password'));
         $this->setMessage('change_password', 'error', $message);
         return false;
     }
