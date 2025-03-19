@@ -7,6 +7,37 @@
 </nav>
 
 <h5 class="mb-3">{% trans %}Edit user{% endtrans %} "{{ name }}"</h5>
+
+<div class="row g-2 col-sm-4 mb-3">
+    <div class="alert alert-info" role="alert">
+        <h6 class="alert-heading">{% trans %}Password Requirements{% endtrans %}:</h6>
+        <ul class="mb-0 small">
+            {% if password_policy.enabled %}
+            {% if password_policy.min_length %}
+            <li>{% trans %}Minimum length{% endtrans %}: {{ password_policy.min_length }} {% trans %}characters{% endtrans %}</li>
+            {% endif %}
+            {% if password_policy.require_uppercase %}
+            <li>{% trans %}Must contain uppercase letters{% endtrans %}</li>
+            {% endif %}
+            {% if password_policy.require_lowercase %}
+            <li>{% trans %}Must contain lowercase letters{% endtrans %}</li>
+            {% endif %}
+            {% if password_policy.require_numbers %}
+            <li>{% trans %}Must contain numbers{% endtrans %}</li>
+            {% endif %}
+            {% if password_policy.require_special %}
+            <li>
+                {% trans %}Must contain special characters{% endtrans %}
+                <br><span class="text-muted">({{ password_policy.special_characters }})</span>
+            </li>
+            {% endif %}
+            {% else %}
+            <li>{% trans %}No specific password requirements{% endtrans %}</li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+
 <form class="needs-validation" method="post" action="" novalidate>
     <input type="hidden" name="_token" value="{{ csrf_token }}">
     <input type="hidden" name="number" value="{{ edit_id }}">

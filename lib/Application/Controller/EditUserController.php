@@ -31,141 +31,192 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Domain\Service\Validator;
+use Poweradmin\Infrastructure\Configuration\PasswordPolicyConfig;
+use Valitron\Validator;
 
 class EditUserController extends BaseController
 {
+    private Request $request;
+    private PasswordPolicyService $passwordPolicyService;
+
+    private const VALIDATION_CONFIG = [
+        'rules' => [
+            'required' => [
+                ['username'],
+                ['email'],
+            ]
+        ],
+        'labels' => [
+            'username' => 'Username',
+            'email' => 'Email address'
+        ]
+    ];
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+
+        $this->request = new Request();
+        $this->passwordPolicyService = new PasswordPolicyService(new PasswordPolicyConfig());
+    }
 
     public function run(): void
     {
-        $edit_id = "-1";
-        if (isset($_GET['id']) && Validator::is_number($_GET['id'])) {
-            $edit_id = $_GET['id'];
-        }
-
-        $perm_edit_own = UserManager::verify_permission($this->db, 'user_edit_own');
-        $perm_edit_others = UserManager::verify_permission($this->db, 'user_edit_others');
-
-        if ($edit_id == "-1") {
+        $edit_id = $this->request->getQueryParam('id');
+        if (!is_numeric($edit_id)) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
-        if (($edit_id != $_SESSION["userid"] || !$perm_edit_own) && ($edit_id == $_SESSION["userid"] || !$perm_edit_others)) {
-            $this->showError(_("You do not have the permission to edit this user."));
-        }
+        $this->checkEditPermissions($edit_id);
+
+        $policyConfig = $this->passwordPolicyService->getPolicyConfig();
 
         if ($this->isPost()) {
             $this->validateCsrfToken();
-            $this->saveUser($edit_id);
+            $this->updateUser($edit_id, $policyConfig);
+        } else {
+            $this->showUserEditForm($edit_id, $policyConfig);
         }
-
-        $this->showUserEditForm($edit_id);
     }
 
-    public function saveUser($edit_id): void
+    private function updateUser(int $edit_id, array $policyConfig): void
     {
-        $i_username = "-1";
-        $i_fullname = "-1";
-        $i_email = "-1";
-        $i_description = "-1";
-        $i_password = "";
-        $i_perm_templ = "0";
-
-        if (isset($_POST['username'])) {
-            $i_username = htmlspecialchars($_POST['username']);
+        if (!$this->validateInput()) {
+            $this->showUserEditForm($edit_id, $policyConfig);
+            return;
         }
 
-        if (isset($_POST['fullname'])) {
-            $i_fullname = htmlspecialchars($_POST['fullname']);
+        if (!$this->validatePasswordPolicy()) {
+            $this->showUserEditForm($edit_id, $policyConfig);
+            return;
         }
 
-        if (isset($_POST['email'])) {
-            $i_email = htmlspecialchars($_POST['email']);
-        }
+        $params = $this->prepareUserData();
+        $legacyUsers = new UserManager($this->db, $this->getConfig());
 
-        if (isset($_POST['description'])) {
-            $i_description = htmlspecialchars($_POST['description']);
-        }
-
-        if (isset($_POST['password'])) {
-            $i_password = $_POST['password'];
-        }
-
-        if (isset($_POST['perm_templ']) && Validator::is_number($_POST['perm_templ'])) {
-            $i_perm_templ = $_POST['perm_templ'];
-        } else {
-            $user_details = UserManager::get_user_detail_list($this->db, $this->config('ldap_use'), $edit_id);
-            $i_perm_templ = $user_details[0]['tpl_id'];
-        }
-
-        $i_active = false;
-        if (isset($_POST['active']) && Validator::is_number($_POST['active'])) {
-            $i_active = true;
-        }
-
-        $i_use_ldap = false;
-        if (isset($_POST['use_ldap']) && Validator::is_number($_POST['use_ldap'])) {
-            $i_use_ldap = true;
-        }
-
-        if ($i_username == "-1" || $i_fullname == "-1" || $i_email < "1" || $i_description == "-1") {
-            $this->showError(_('Invalid or unexpected input given.'));
-        }
-
-        if ($i_username != "" && $i_perm_templ > "0" && $i_fullname) {
-            $legacyUsers = new UserManager($this->db, $this->getConfig());
-            if ($legacyUsers->edit_user($edit_id, $i_username, $i_fullname, $i_email, $i_perm_templ, $i_description, $i_active, $i_password, $i_use_ldap)) {
-                $this->setMessage('users', 'success', _('The user has been updated successfully.'));
-                $this->redirect('index.php', ['page' => 'users']);
-            } else {
-                $this->setMessage('edit_user', 'error', _('The user could not be updated.'));
-            }
+        if ($legacyUsers->edit_user(
+            $edit_id,
+            $params['username'],
+            $params['fullname'],
+            $params['email'],
+            $params['perm_templ'],
+            $params['description'],
+            $params['active'],
+            $params['password'],
+            $params['use_ldap']
+        )) {
+            $this->setMessage('users', 'success', _('The user has been updated successfully.'));
+            $this->redirect('index.php', ['page' => 'users']);
         } else {
             $this->setMessage('edit_user', 'error', _('The user could not be updated.'));
+            $this->showUserEditForm($edit_id, $policyConfig);
         }
     }
 
-    public function showUserEditForm($edit_id): void
+    private function validateInput(): bool
+    {
+        $validator = new Validator($this->request->getPostParams());
+        $validator->rules(self::VALIDATION_CONFIG['rules']);
+        $validator->labels(self::VALIDATION_CONFIG['labels']);
+
+        if (!$validator->validate()) {
+            $validationErrors = $validator->errors();
+            $firstError = reset($validationErrors);
+            $errorMessage = is_array($firstError) ? reset($firstError) : $firstError;
+            $this->setMessage('edit_user', 'error', $errorMessage);
+            return false;
+        }
+
+        return true;
+    }
+
+    private function validatePasswordPolicy(): bool
+    {
+        $password = $this->request->getPostParam('password');
+        if (empty($password) || $this->request->getPostParam('use_ldap')) {
+            return true;
+        }
+
+        $policyErrors = $this->passwordPolicyService->validatePassword($password);
+        if (!empty($policyErrors)) {
+            $this->setMessage('edit_user', 'error', array_shift($policyErrors));
+            return false;
+        }
+
+        return true;
+    }
+
+    private function checkEditPermissions(int $edit_id): void
+    {
+        $isOwnProfile = $edit_id === (int)$_SESSION['userid'];
+        $canEditOwn = UserManager::verify_permission($this->db, 'user_edit_own');
+        $canEditOthers = UserManager::verify_permission($this->db, 'user_edit_others');
+
+        if ((!$isOwnProfile || !$canEditOwn) && ($isOwnProfile || !$canEditOthers)) {
+            $this->showError(_('You do not have the permission to edit this user.'));
+        }
+    }
+
+    private function prepareUserData(): array
+    {
+        return [
+            'username' => htmlspecialchars($this->request->getPostParam('username')),
+            'fullname' => htmlspecialchars($this->request->getPostParam('fullname')),
+            'email' => htmlspecialchars($this->request->getPostParam('email')),
+            'description' => htmlspecialchars($this->request->getPostParam('description')),
+            'password' => $this->request->getPostParam('password', ''),
+            'perm_templ' => $this->request->getPostParam('perm_templ'),
+            'active' => $this->request->getPostParam('active') === '1',
+            'use_ldap' => $this->request->getPostParam('use_ldap') === '1'
+        ];
+    }
+
+    public function showUserEditForm(int $edit_id, array $policyConfig): void
+    {
+        $user = $this->getUserDetails($edit_id);
+        $permissions = $this->getUserPermissions($edit_id, $user);
+
+        $this->render('edit_user.html', [
+            'edit_id' => $edit_id,
+            'name' => $user['fullname'] ?: $user['username'],
+            'user' => $user,
+            'session_user_id' => $_SESSION['userid'],
+            'check' => $user['active'] == "1" ? " CHECKED" : "",
+            'edit_templ_perm' => $permissions['edit_templ_perm'],
+            'edit_own_perm' => $permissions['edit_own'],
+            'perm_passwd_edit_others' => $permissions['passwd_edit_others'],
+            'permission_templates' => UserManager::list_permission_templates($this->db),
+            'user_permissions' => UserManager::get_permissions_by_template_id($this->db, $user['tpl_id']),
+            'ldap_use' => $this->config('ldap_use') && !$permissions['is_admin'],
+            'use_ldap_checked' => $user['use_ldap'] ? "checked" : "",
+            'password_policy' => $policyConfig,
+        ]);
+    }
+
+    private function getUserPermissions(int $edit_id, array $user): array
+    {
+        return [
+            'edit_templ_perm' => UserManager::verify_permission($this->db, 'user_edit_templ_perm'),
+            'passwd_edit_others' => UserManager::verify_permission($this->db, 'user_passwd_edit_others'),
+            'edit_own' => UserManager::verify_permission($this->db, 'user_edit_own'),
+            'is_admin' => Permission::getPermissions($this->db, ['user_is_ueberuser'])['user_is_ueberuser']
+                && $_SESSION['userid'] == $edit_id
+        ];
+    }
+
+    private function getUserDetails(int $edit_id): array
     {
         $users = UserManager::get_user_detail_list($this->db, $this->config('ldap_use'), $edit_id);
+
         if (empty($users)) {
             $this->showError(_('User does not exist.'));
         }
 
-        $user = $users[0];
-        $edit_templ_perm = UserManager::verify_permission($this->db, 'user_edit_templ_perm');
-        $passwd_edit_others_perm = UserManager::verify_permission($this->db, 'user_passwd_edit_others');
-        $edit_own_perm = UserManager::verify_permission($this->db, 'user_edit_own');
-        $permission_templates = UserManager::list_permission_templates($this->db);
-        $user_permissions = UserManager::get_permissions_by_template_id($this->db, $user['tpl_id']);
-
-        ($user['active']) == "1" ? $check = " CHECKED" : $check = "";
-        $name = $user['fullname'] ?: $user['username'];
-
-        $use_ldap_checked = "";
-        if ($user['use_ldap']) {
-            $use_ldap_checked = "checked";
-        }
-
-        $permissions = Permission::getPermissions($this->db, ['user_is_ueberuser']);
-        $currentUserAdmin = $permissions['user_is_ueberuser'] && $_SESSION['userid'] == $edit_id;
-
-        $this->render('edit_user.html', [
-            'edit_id' => $edit_id,
-            'name' => $name,
-            'user' => $user,
-            'session_user_id' => $_SESSION['userid'],
-            'check' => $check,
-            'edit_templ_perm' => $edit_templ_perm,
-            'edit_own_perm' => $edit_own_perm,
-            'perm_passwd_edit_others' => $passwd_edit_others_perm,
-            'permission_templates' => $permission_templates,
-            'user_permissions' => $user_permissions,
-            'ldap_use' => $this->config('ldap_use') && !$currentUserAdmin,
-            'use_ldap_checked' => $use_ldap_checked,
-        ]);
+        return $users[0];
     }
 }
