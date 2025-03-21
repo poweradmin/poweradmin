@@ -28,4 +28,9 @@ class UserContextService
     {
         return $_SESSION['userlogin'] ?? null;
     }
+
+    public function getLoggedInUserId(): ?int
+    {
+        return $_SESSION['userid'] ?? null;
+    }
 }

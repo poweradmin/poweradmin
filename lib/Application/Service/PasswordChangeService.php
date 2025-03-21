@@ -38,7 +38,8 @@ class PasswordChangeService
         private readonly UserRepository $userRepository,
         private readonly UserAuthenticationService $authService,
         private readonly UserContextService $userContextService,
-    ) {}
+    ) {
+    }
 
     public function changePassword(string $oldPassword, string $newPassword): array
     {

@@ -36,13 +36,14 @@ use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\PasswordPolicyConfig;
 use Valitron\Validator;
 
 class EditUserController extends BaseController
 {
     private Request $request;
-    private PasswordPolicyService $passwordPolicyService;
+    private PasswordPolicyService $policyService;
 
     private const VALIDATION_CONFIG = [
         'rules' => [
@@ -57,64 +58,68 @@ class EditUserController extends BaseController
         ]
     ];
 
-    public function __construct(array $request)
-    {
+    public function __construct(
+        array $request,
+        private readonly UserContextService $userContextService,
+    ) {
         parent::__construct($request);
 
         $this->request = new Request();
-        $this->passwordPolicyService = new PasswordPolicyService(new PasswordPolicyConfig());
+        $this->policyService = new PasswordPolicyService(new PasswordPolicyConfig());
     }
 
     public function run(): void
     {
-        $edit_id = $this->request->getQueryParam('id');
-        if (!is_numeric($edit_id)) {
+        $editId = $this->request->getQueryParam('id');
+        if (!is_numeric($editId)) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
-        $this->checkEditPermissions($edit_id);
+        $this->checkEditPermissions($editId);
 
-        $policyConfig = $this->passwordPolicyService->getPolicyConfig();
+        $policyConfig = $this->policyService->getPolicyConfig();
 
         if ($this->isPost()) {
             $this->validateCsrfToken();
-            $this->updateUser($edit_id, $policyConfig);
+            $this->updateUser($editId, $policyConfig);
         } else {
-            $this->showUserEditForm($edit_id, $policyConfig);
+            $this->showUserEditForm($editId, $policyConfig);
         }
     }
 
-    private function updateUser(int $edit_id, array $policyConfig): void
+    private function updateUser(int $editId, array $policyConfig): void
     {
         if (!$this->validateInput()) {
-            $this->showUserEditForm($edit_id, $policyConfig);
+            $this->showUserEditForm($editId, $policyConfig);
             return;
         }
 
         if (!$this->validatePasswordPolicy()) {
-            $this->showUserEditForm($edit_id, $policyConfig);
+            $this->showUserEditForm($editId, $policyConfig);
             return;
         }
 
         $params = $this->prepareUserData();
         $legacyUsers = new UserManager($this->db, $this->getConfig());
 
-        if ($legacyUsers->edit_user(
-            $edit_id,
-            $params['username'],
-            $params['fullname'],
-            $params['email'],
-            $params['perm_templ'],
-            $params['description'],
-            $params['active'],
-            $params['password'],
-            $params['use_ldap']
-        )) {
+        if (
+            $legacyUsers->edit_user(
+                $editId,
+                $params['username'],
+                $params['fullname'],
+                $params['email'],
+                $params['perm_templ'],
+                $params['description'],
+                $params['active'],
+                $params['password'],
+                $params['use_ldap']
+            )
+        ) {
             $this->setMessage('users', 'success', _('The user has been updated successfully.'));
             $this->redirect('index.php', ['page' => 'users']);
         } else {
             $this->setMessage('edit_user', 'error', _('The user could not be updated.'));
-            $this->showUserEditForm($edit_id, $policyConfig);
+            $this->showUserEditForm($editId, $policyConfig);
         }
     }
 
@@ -142,7 +147,7 @@ class EditUserController extends BaseController
             return true;
         }
 
-        $policyErrors = $this->passwordPolicyService->validatePassword($password);
+        $policyErrors = $this->policyService->validatePassword($password);
         if (!empty($policyErrors)) {
             $this->setMessage('edit_user', 'error', array_shift($policyErrors));
             return false;
@@ -151,9 +156,9 @@ class EditUserController extends BaseController
         return true;
     }
 
-    private function checkEditPermissions(int $edit_id): void
+    private function checkEditPermissions(int $editId): void
     {
-        $isOwnProfile = $edit_id === (int)$_SESSION['userid'];
+        $isOwnProfile = $editId === $this->userContextService->getLoggedInUserId();
         $canEditOwn = UserManager::verify_permission($this->db, 'user_edit_own');
         $canEditOthers = UserManager::verify_permission($this->db, 'user_edit_others');
 
@@ -176,16 +181,16 @@ class EditUserController extends BaseController
         ];
     }
 
-    public function showUserEditForm(int $edit_id, array $policyConfig): void
+    public function showUserEditForm(int $editId, array $policyConfig): void
     {
-        $user = $this->getUserDetails($edit_id);
-        $permissions = $this->getUserPermissions($edit_id, $user);
+        $user = $this->getUserDetails($editId);
+        $permissions = $this->getUserPermissions($editId, $user);
 
         $this->render('edit_user.html', [
-            'edit_id' => $edit_id,
+            'edit_id' => $editId,
             'name' => $user['fullname'] ?: $user['username'],
             'user' => $user,
-            'session_user_id' => $_SESSION['userid'],
+            'session_user_id' => $this->userContextService->getLoggedInUserId(),
             'check' => $user['active'] == "1" ? " CHECKED" : "",
             'edit_templ_perm' => $permissions['edit_templ_perm'],
             'edit_own_perm' => $permissions['edit_own'],
@@ -198,20 +203,20 @@ class EditUserController extends BaseController
         ]);
     }
 
-    private function getUserPermissions(int $edit_id, array $user): array
+    private function getUserPermissions(int $editId, array $user): array
     {
         return [
             'edit_templ_perm' => UserManager::verify_permission($this->db, 'user_edit_templ_perm'),
             'passwd_edit_others' => UserManager::verify_permission($this->db, 'user_passwd_edit_others'),
             'edit_own' => UserManager::verify_permission($this->db, 'user_edit_own'),
             'is_admin' => Permission::getPermissions($this->db, ['user_is_ueberuser'])['user_is_ueberuser']
-                && $_SESSION['userid'] == $edit_id
+                && $this->userContextService->getLoggedInUserId() == $editId
         ];
     }
 
-    private function getUserDetails(int $edit_id): array
+    private function getUserDetails(int $editId): array
     {
-        $users = UserManager::get_user_detail_list($this->db, $this->config('ldap_use'), $edit_id);
+        $users = UserManager::get_user_detail_list($this->db, $this->config('ldap_use'), $editId);
 
         if (empty($users)) {
             $this->showError(_('User does not exist.'));
