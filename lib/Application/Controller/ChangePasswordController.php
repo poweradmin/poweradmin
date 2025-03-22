@@ -48,9 +48,9 @@ use Valitron\Validator;
 class ChangePasswordController extends BaseController
 {
     private AuthenticationService $authService;
-    private PasswordPolicyService $passwordPolicyService;
+    private PasswordPolicyService $policyService;
     private Request $request;
-    private PasswordChangeService $passwordChangeService;
+    private PasswordChangeService $passwordService;
 
     private const VALIDATION_CONFIG = [
         'rules' => [
@@ -78,19 +78,19 @@ class ChangePasswordController extends BaseController
         $sessionService = new SessionService();
         $redirectService = new RedirectService();
         $this->authService = new AuthenticationService($sessionService, $redirectService);
-        $this->passwordPolicyService = new PasswordPolicyService(new PasswordPolicyConfig());
+        $this->policyService = new PasswordPolicyService(new PasswordPolicyConfig());
         $userAuthService = new UserAuthenticationService(
             $this->config('password_encryption'),
             $this->config('password_encryption_cost')
         );
         $userRepository = new DbUserRepository($this->db);
         $userContextService = new UserContextService();
-        $this->passwordChangeService = new PasswordChangeService($userRepository, $userAuthService, $userContextService);
+        $this->passwordService = new PasswordChangeService($userRepository, $userAuthService, $userContextService);
     }
 
     public function run(): void
     {
-        $policyConfig = $this->passwordPolicyService->getPolicyConfig();
+        $policyConfig = $this->policyService->getPolicyConfig();
 
         if (!$this->isPost()) {
             $this->renderChangePasswordForm($policyConfig);
@@ -140,7 +140,7 @@ class ChangePasswordController extends BaseController
 
     private function processPasswordChange(): bool
     {
-        [$success, $message] = $this->passwordChangeService->changePassword(
+        [$success, $message] = $this->passwordService->changePassword(
             $this->request->getPostParam('old_password'),
             $this->request->getPostParam('new_password')
         );
@@ -159,7 +159,7 @@ class ChangePasswordController extends BaseController
     private function validatePasswordPolicy(): bool
     {
         $newPassword = $this->request->getPostParam('new_password');
-        $policyErrors = $this->passwordPolicyService->validatePassword($newPassword);
+        $policyErrors = $this->policyService->validatePassword($newPassword);
 
         if (!empty($policyErrors)) {
             $this->setMessage('change_password', 'error', array_shift($policyErrors));
