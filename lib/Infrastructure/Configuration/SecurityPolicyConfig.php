@@ -20,28 +20,33 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Config;
+namespace Poweradmin\Infrastructure\Configuration;
 
-class PasswordPolicyDefaults
+use Poweradmin\Domain\Config\SecurityPolicyDefaults;
+
+class SecurityPolicyConfig
 {
-    public static function getDefaults(): array
+    private array $config;
+
+    public function __construct()
     {
-        return [
-            'enable_password_rules' => false,
-            'min_length' => 6,
-            'require_uppercase' => true,
-            'require_lowercase' => true,
-            'require_numbers' => true,
-            'require_special' => false,
-            'special_characters' => '!@#$%^&*()+-=[]{}|;:,.<>?',
+        $this->config = SecurityPolicyDefaults::getDefaults();
 
-            // TODO: not implemented yet
-            'enable_expiration' => false,
-            'max_age_days' => 90,
+        $securityPolicyFile = __DIR__ . '/../../../config/security_policy.php';
+        if (file_exists($securityPolicyFile)) {
+            $this->config = array_merge(
+                $this->config,
+                require $securityPolicyFile
+            );
+        }
+    }
 
-            // TODO: not implemented yet
-            'enable_reuse_prevention' => false,
-            'prevent_reuse' => 5,
-        ];
+    public function get(string $key = null)
+    {
+        if ($key === null) {
+            return $this->config;
+        }
+
+        return $this->config[$key] ?? null;
     }
 }

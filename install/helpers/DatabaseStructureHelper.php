@@ -580,6 +580,69 @@ class DatabaseStructureHelper
                     ),
                 )
             ),
+            array(
+                'table_name' => 'login_attempts',
+                'options' => array('type' => 'innodb'),
+                'fields' => array(
+                    'id' => array(
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'default' => 0,
+                        'autoincrement' => 1,
+                        'type' => 'integer',
+                        'name' => 'id',
+                        'table' => 'login_attempts',
+                        'flags' => 'primary_keynot_null'
+                    ),
+                    'user_id' => array(
+                        'notnull' => 0,
+                        'unsigned' => 0,
+                        'default' => null,
+                        'type' => 'integer',
+                        'name' => 'user_id',
+                        'table' => 'login_attempts',
+                        'flags' => ''
+                    ),
+                    'ip_address' => array(
+                        'notnull' => 1,
+                        'length' => 45,
+                        'fixed' => 0,
+                        'type' => 'text',
+                        'name' => 'ip_address',
+                        'table' => 'login_attempts',
+                        'flags' => 'not_null'
+                    ),
+                    'timestamp' => array(
+                        'notnull' => 1,
+                        'type' => 'integer',
+                        'name' => 'timestamp',
+                        'table' => 'login_attempts',
+                        'flags' => 'not_null'
+                    ),
+                    'successful' => array(
+                        'notnull' => 1,
+                        'length' => 1,
+                        'unsigned' => 0,
+                        'default' => 0,
+                        'type' => 'integer',
+                        'name' => 'successful',
+                        'table' => 'login_attempts',
+                        'flags' => 'not_null'
+                    )
+                ),
+                'indexes' => array(
+                    'idx_login_attempts_user_id' => array('user_id'),
+                    'idx_login_attempts_ip_address' => array('ip_address'),
+                    'idx_login_attempts_timestamp' => array('timestamp')
+                ),
+                'foreign_keys' => array(
+                    'fk_login_attempts_users' => array(
+                        'table' => 'users',
+                        'fields' => array('user_id' => 'id'),
+                        'ondelete' => 'SET NULL'
+                    )
+                )
+            )
         );
     }
 }

@@ -39,22 +39,43 @@ class LdapAuthenticator extends LoggingService
     private LdapUserEventLogger $ldapUserEventLogger;
     private AuthenticationService $authenticationService;
     private CsrfTokenService $csrfTokenService;
+    private LoginAttemptService $loginAttemptService;
 
-    public function __construct(PDOLayer $db, AppConfiguration $config, LdapUserEventLogger $ldapUserEventLogger, AuthenticationService $authenticationService, CsrfTokenService $csrfTokenService, Logger $logger)
+    public function __construct(
+        PDOLayer              $connection,
+        AppConfiguration      $config,
+        LdapUserEventLogger   $ldapUserEventLogger,
+        AuthenticationService $authService,
+        CsrfTokenService      $csrfTokenService,
+        Logger                $logger,
+        LoginAttemptService   $loginAttemptService
+    )
     {
         $shortClassName = (new ReflectionClass(self::class))->getShortName();
         parent::__construct($logger, $shortClassName);
 
-        $this->db = $db;
+        $this->db = $connection;
         $this->config = $config;
         $this->ldapUserEventLogger = $ldapUserEventLogger;
-        $this->authenticationService = $authenticationService;
+        $this->authenticationService = $authService;
         $this->csrfTokenService = $csrfTokenService;
+        $this->loginAttemptService = $loginAttemptService;
     }
 
     public function authenticate(): void
     {
         $this->logInfo('Starting LDAP authentication process.');
+
+        $ipAddress = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+        $username = $_SESSION["userlogin"] ?? '';
+
+        // Check if the account is locked
+        if ($this->loginAttemptService->isAccountLocked($username, $ipAddress)) {
+            $this->logWarning('Account is locked for LDAP user {username}', ['username' => $username]);
+            $sessionEntity = new SessionEntity(_('Account is temporarily locked. Please try again later.'), 'danger');
+            $this->authenticationService->auth($sessionEntity);
+            return;
+        }
 
         $session_key = $this->config->get('session_key');
         $ldap_uri = $this->config->get('ldap_uri');
@@ -94,14 +115,21 @@ class LdapAuthenticator extends LoggingService
         $ldapbind = ldap_bind($ldapconn, $ldap_binddn, $ldap_bindpw);
         if (!$ldapbind) {
             $this->logError('Failed to bind to LDAP server.');
+
             if (isset($_POST["authenticate"])) {
                 $this->ldapUserEventLogger->log_failed_reason('ldap_bind');
             }
+
+            $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
+
             $sessionEntity = new SessionEntity(_('Failed to bind to LDAP server!'), 'danger');
             $this->authenticationService->logout($sessionEntity);
+
             $this->logInfo('LDAP authentication process ended due to bind failure.');
             return;
         }
+
+        $this->loginAttemptService->recordAttempt($username, $ipAddress, true);
 
         $attributes = array($ldap_user_attribute, 'dn');
         $filter = $ldap_search_filter

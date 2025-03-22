@@ -22,26 +22,18 @@
 
 namespace Poweradmin\Domain\Config;
 
-class PasswordPolicyDefaults
+class SecurityPolicyDefaults
 {
     public static function getDefaults(): array
     {
         return [
-            'enable_password_rules' => false,
-            'min_length' => 6,
-            'require_uppercase' => true,
-            'require_lowercase' => true,
-            'require_numbers' => true,
-            'require_special' => false,
-            'special_characters' => '!@#$%^&*()+-=[]{}|;:,.<>?',
-
-            // TODO: not implemented yet
-            'enable_expiration' => false,
-            'max_age_days' => 90,
-
-            // TODO: not implemented yet
-            'enable_reuse_prevention' => false,
-            'prevent_reuse' => 5,
+            'enable_lockout' => false,
+            'lockout_attempts' => 5,
+            'lockout_duration' => 15, // Duration in minutes
+            'track_ip_address' => true,
+            'whitelist_ip_addresses' => [],
+            'blacklist_ip_addresses' => [],
         ];
     }
 }
+

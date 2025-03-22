@@ -30,10 +30,15 @@ class PasswordPolicyConfig
 
     public function __construct()
     {
-        $this->config = array_merge(
-            PasswordPolicyDefaults::getDefaults(),
-            require __DIR__ . '/../../../config/password_policy.php'
-        );
+        $this->config = PasswordPolicyDefaults::getDefaults();
+
+        $passwordPolicyFile = __DIR__ . '/../../../config/password_policy.php';
+        if (file_exists($passwordPolicyFile)) {
+            $this->config = array_merge(
+                $this->config,
+                require $passwordPolicyFile
+            );
+        }
     }
 
     public function get(string $key = null)

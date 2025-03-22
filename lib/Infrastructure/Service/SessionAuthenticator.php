@@ -27,12 +27,14 @@ use Poweradmin\AppConfiguration;
 use Poweradmin\Application\Service\LoggingService;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\LdapAuthenticator;
+use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\SqlAuthenticator;
 use Poweradmin\Application\Service\UserEventLogger;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Domain\Service\SessionService;
+use Poweradmin\Infrastructure\Configuration\SecurityPolicyConfig;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\Infrastructure\Logger\LdapUserEventLogger;
 use Poweradmin\Infrastructure\Logger\Logger;
@@ -41,7 +43,7 @@ use ReflectionClass;
 
 class SessionAuthenticator extends LoggingService
 {
-    private AuthenticationService $authenticationService;
+    private AuthenticationService $authService;
     private PDOLayer $db;
     private AppConfiguration $config;
     private UserEventLogger $userEventLogger;
@@ -50,24 +52,43 @@ class SessionAuthenticator extends LoggingService
     private LdapAuthenticator $ldapAuthenticator;
     private SqlAuthenticator $sqlAuthenticator;
 
-    public function __construct(PDOLayer $db, AppConfiguration $config)
+    public function __construct(PDOLayer $connection, AppConfiguration $config)
     {
         $shortClassName = (new ReflectionClass(self::class))->getShortName();
         parent::__construct(new Logger(LoggerHandlerFactory::create($config->getAll()), $config->get('logger_level')), $shortClassName);
 
-        $this->db = $db;
+        $this->db = $connection;
         $this->config = $config;
 
         $sessionService = new SessionService();
         $redirectService = new RedirectService();
-        $this->authenticationService = new AuthenticationService($sessionService, $redirectService);
+        $this->authService = new AuthenticationService($sessionService, $redirectService);
         $this->csrfTokenService = new CsrfTokenService();
 
-        $this->userEventLogger = new UserEventLogger($db);
-        $this->ldapUserEventLogger = new LdapUserEventLogger($db);
+        $this->userEventLogger = new UserEventLogger($connection);
+        $this->ldapUserEventLogger = new LdapUserEventLogger($connection);
 
-        $this->ldapAuthenticator = new LdapAuthenticator($db, $config, $this->ldapUserEventLogger, $this->authenticationService, $this->csrfTokenService, $this->logger);
-        $this->sqlAuthenticator = new SqlAuthenticator($db, $config, $this->userEventLogger, $this->authenticationService, $this->csrfTokenService, $this->logger);
+        $this->securityPolicy = new SecurityPolicyConfig();
+        $this->loginAttemptService = new LoginAttemptService($connection, $this->securityPolicy);
+
+        $this->ldapAuthenticator = new LdapAuthenticator(
+            $connection,
+            $config,
+            $this->ldapUserEventLogger,
+            $this->authService,
+            $this->csrfTokenService,
+            $this->logger,
+            $this->loginAttemptService
+        );
+        $this->sqlAuthenticator = new SqlAuthenticator(
+            $connection,
+            $config,
+            $this->userEventLogger,
+            $this->authService,
+            $this->csrfTokenService,
+            $this->logger,
+            $this->loginAttemptService
+        );
     }
 
     /** Authenticate Session
@@ -77,7 +98,7 @@ class SessionAuthenticator extends LoggingService
      *
      * @return void
      */
-    function authenticate(): void
+    public function authenticate(): void
     {
         $this->logDebug('Starting authentication process');
 
@@ -90,7 +111,7 @@ class SessionAuthenticator extends LoggingService
         if (isset($_SESSION['userid']) && isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] == "logout") {
             $this->logInfo('User {userid} requested logout', ['userid' => $_SESSION['userid']]);
             $sessionEntity = new SessionEntity(_('You have logged out.'), 'success');
-            $this->authenticationService->logout($sessionEntity);
+            $this->authService->logout($sessionEntity);
 
             $this->logDebug('Logout process completed for user {userid}', ['userid' => $_SESSION['userid']]);
             return;
@@ -105,7 +126,7 @@ class SessionAuthenticator extends LoggingService
             $this->logWarning('Invalid CSRF token for user {username}', ['username' => $_POST['username'] ?? 'unknown']);
 
             $sessionEntity = new SessionEntity(_('Invalid CSRF token.'), 'danger');
-            $this->authenticationService->auth($sessionEntity);
+            $this->authService->auth($sessionEntity);
 
             $this->logDebug('CSRF token validation failed for user {username}', ['username' => $_POST['username'] ?? 'unknown']);
             return;
@@ -131,7 +152,7 @@ class SessionAuthenticator extends LoggingService
                 $this->logError('Empty password attempt for user {username}', ['username' => $_POST["username"] ?? 'unknown']);
 
                 $sessionEntity = new SessionEntity(_('An empty password is not allowed'), 'danger');
-                $this->authenticationService->auth($sessionEntity);
+                $this->authService->auth($sessionEntity);
 
                 $this->logDebug('Authentication failed due to empty password for user {username}', ['username' => $_POST["username"] ?? 'unknown']);
                 return;
@@ -143,7 +164,7 @@ class SessionAuthenticator extends LoggingService
             $this->logInfo('Session expired for user {userid}', ['userid' => $_SESSION["userid"]]);
 
             $sessionEntity = new SessionEntity(_('Session expired, please login again.'), 'danger');
-            $this->authenticationService->logout($sessionEntity);
+            $this->authService->logout($sessionEntity);
 
             $this->logDebug('Session expired and user {userid} logged out', ['userid' => $_SESSION["userid"]]);
             return;

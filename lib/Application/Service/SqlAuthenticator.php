@@ -34,45 +34,64 @@ use ReflectionClass;
 
 class SqlAuthenticator extends LoggingService
 {
-    private PDOLayer $db;
+    private PDOLayer $connection;
     private AppConfiguration $config;
     private UserEventLogger $userEventLogger;
-    private AuthenticationService $authenticationService;
+    private AuthenticationService $authService;
     private CsrfTokenService $csrfTokenService;
+    private LoginAttemptService $loginAttemptService;
 
-    public function __construct(PDOLayer $db, AppConfiguration $config, UserEventLogger $userEventLogger, AuthenticationService $authenticationService, CsrfTokenService $csrfTokenService, Logger $logger)
-    {
+    public function __construct(
+        PDOLayer $connection,
+        AppConfiguration $config,
+        UserEventLogger $userEventLogger,
+        AuthenticationService $authService,
+        CsrfTokenService $csrfTokenService,
+        Logger $logger,
+        LoginAttemptService $loginAttemptService
+    ) {
         $shortClassName = (new ReflectionClass(self::class))->getShortName();
         parent::__construct($logger, $shortClassName);
 
-        $this->db = $db;
+        $this->connection = $connection;
 
         $this->config = $config;
         $this->userEventLogger = $userEventLogger;
-        $this->authenticationService = $authenticationService;
+        $this->authService = $authService;
         $this->csrfTokenService = $csrfTokenService;
+        $this->loginAttemptService = $loginAttemptService;
     }
 
     public function authenticate(): void
     {
         $this->logInfo('Starting authentication process.');
 
-        $session_key = $this->config->get('session_key');
+        $ipAddress = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+        $username = $_SESSION["userlogin"] ?? '';
+
+        if ($this->loginAttemptService->isAccountLocked($username, $ipAddress)) {
+            $this->logWarning('Account is locked for user {username}', ['username' => $username]);
+            $sessionEntity = new SessionEntity(_('Account is temporarily locked. Please try again later.'), 'danger');
+            $this->authService->auth($sessionEntity);
+            return;
+        }
+
+        $sessionKey = $this->config->get('session_key');
 
         if (!isset($_SESSION["userlogin"]) || !isset($_SESSION["userpwd"])) {
             $this->logWarning('Session variables userlogin or userpwd are not set.');
 
             $sessionEntity = new SessionEntity('', 'danger');
-            $this->authenticationService->auth($sessionEntity);
+            $this->authService->auth($sessionEntity);
 
             $this->logInfo('Authentication process ended due to missing session variables.');
             return;
         }
 
-        $passwordEncryptionService = new PasswordEncryptionService($session_key);
-        $session_pass = $passwordEncryptionService->decrypt($_SESSION['userpwd']);
+        $encryptionService = new PasswordEncryptionService($sessionKey);
+        $sessionPassword = $encryptionService->decrypt($_SESSION['userpwd']);
 
-        $stmt = $this->db->prepare("SELECT id, fullname, password, active FROM users WHERE username=:username AND use_ldap=0");
+        $stmt = $this->connection->prepare("SELECT id, fullname, password, active FROM users WHERE username=:username AND use_ldap=0");
         $stmt->bindParam(':username', $_SESSION["userlogin"]);
         $stmt->execute();
         $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -91,8 +110,9 @@ class SqlAuthenticator extends LoggingService
             $config->get('password_encryption_cost')
         );
 
-        if (!$userAuthService->verifyPassword($session_pass, $rowObj['password'])) {
+        if (!$userAuthService->verifyPassword($sessionPassword, $rowObj['password'])) {
             $this->logWarning('Password verification failed for user {username}', ['username' => $_SESSION["userlogin"]]);
+            $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
             $this->handleFailedAuthentication();
 
             $this->logInfo('Authentication process ended due to password verification failure.');
@@ -102,7 +122,7 @@ class SqlAuthenticator extends LoggingService
         if ($rowObj['active'] != 1) {
             $this->logWarning('User account is disabled for user {username}', ['username' => $_SESSION["userlogin"]]);
             $sessionEntity = new SessionEntity(_('The user account is disabled.'), 'danger');
-            $this->authenticationService->auth($sessionEntity);
+            $this->authService->auth($sessionEntity);
 
             $this->logInfo('Authentication process ended due to disabled user account.');
             return;
@@ -110,7 +130,7 @@ class SqlAuthenticator extends LoggingService
 
         if ($userAuthService->requiresRehash($rowObj['password'])) {
             $this->logInfo('Password requires rehashing for user {username}', ['username' => $_SESSION["userlogin"]]);
-            UserManager::update_user_password($this->db, $rowObj["id"], $session_pass);
+            UserManager::update_user_password($this->connection, $rowObj["id"], $sessionPassword);
         }
 
         session_regenerate_id(true);
@@ -126,9 +146,10 @@ class SqlAuthenticator extends LoggingService
         }
 
         if (isset($_POST['authenticate'])) {
+            $this->loginAttemptService->recordAttempt($username, $ipAddress, true);
             $this->userEventLogger->log_successful_auth();
             session_write_close();
-            $this->authenticationService->redirectToIndex();
+            $this->authService->redirectToIndex();
         }
 
         $this->logInfo('Authentication process completed successfully for user {username}', ['username' => $_SESSION["userlogin"]]);
@@ -146,7 +167,7 @@ class SqlAuthenticator extends LoggingService
             unset($_SESSION["userlogin"]);
             $sessionEntity = new SessionEntity(_('Session expired, please login again.'), 'danger');
         }
-        $this->authenticationService->auth($sessionEntity);
+        $this->authService->auth($sessionEntity);
 
         $this->logInfo('Failed authentication handled.');
     }
