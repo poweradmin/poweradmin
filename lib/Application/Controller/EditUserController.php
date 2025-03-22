@@ -57,15 +57,16 @@ class EditUserController extends BaseController
             'email' => 'Email address'
         ]
     ];
+    private readonly UserContextService $userContextService;
 
     public function __construct(
-        array $request,
-        private readonly UserContextService $userContextService,
+        array $request
     ) {
         parent::__construct($request);
 
         $this->request = new Request();
         $this->policyService = new PasswordPolicyService(new PasswordPolicyConfig());
+        $this->userContextService = new UserContextService();
     }
 
     public function run(): void
@@ -184,7 +185,7 @@ class EditUserController extends BaseController
     public function showUserEditForm(int $editId, array $policyConfig): void
     {
         $user = $this->getUserDetails($editId);
-        $permissions = $this->getUserPermissions($editId, $user);
+        $permissions = $this->getUserPermissions($editId);
 
         $this->render('edit_user.html', [
             'edit_id' => $editId,
@@ -203,14 +204,16 @@ class EditUserController extends BaseController
         ]);
     }
 
-    private function getUserPermissions(int $editId, array $user): array
+    private function getUserPermissions(int $editId): array
     {
+        $isCurrentUser = $this->userContextService->getLoggedInUserId() == $editId;
+
         return [
             'edit_templ_perm' => UserManager::verify_permission($this->db, 'user_edit_templ_perm'),
             'passwd_edit_others' => UserManager::verify_permission($this->db, 'user_passwd_edit_others'),
             'edit_own' => UserManager::verify_permission($this->db, 'user_edit_own'),
             'is_admin' => Permission::getPermissions($this->db, ['user_is_ueberuser'])['user_is_ueberuser']
-                && $this->userContextService->getLoggedInUserId() == $editId
+                && $isCurrentUser
         ];
     }
 
