@@ -30,10 +30,15 @@ class AppConfiguration implements ConfigurationInterface
 
     public function __construct()
     {
-        $this->config = array_merge(
-            AppConfigDefaults::getDefaults(),
-            require __DIR__ . '/../../../config/app.php'
-        );
+        $this->config = AppConfigDefaults::getDefaults();
+
+        $appConfigFile = __DIR__ . '/../../../config/app.php';
+        if (file_exists($appConfigFile)) {
+            $this->config = array_merge(
+                $this->config,
+                require $appConfigFile
+            );
+        }
     }
 
     public function get(string $key = null): mixed
