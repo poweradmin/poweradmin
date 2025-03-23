@@ -32,6 +32,8 @@ class SecurityPolicyDefaults
             'lockout_duration' => 15, // Duration in minutes
             'track_ip_address' => true,
             'clear_attempts_on_success' => true,
+
+            # TODO: Implement these features
             'whitelist_ip_addresses' => [],
             'blacklist_ip_addresses' => [],
         ];
