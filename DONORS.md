@@ -1,19 +1,19 @@
-# Donors to the Poweradmin project
+# Financial Support and Donations
 
 As the sole maintainer of Poweradmin, a non-profit project, I work alongside our amazing community of voluntary
-[contributors](https://github.com/poweradmin/poweradmin/graphs/contributors). I am deeply grateful for all the generous
-donations I receive from individuals, organizations, and businesses. These donations help me keep the project running and
-continue its development. Every contribution not only supports the project financially but also encourages me by showing
-that people believe in what I'm building.
+[contributors](https://github.com/poweradmin/poweradmin/graphs/contributors). I am deeply grateful for both individual
+donations and financial support from organizations. While personal donations help maintain the project, companies often
+provide financial support for implementing new features or fixing specific issues. This combined support enables
+continuous development and improvement of the project.
 
 If your name is missing from the lists below, please [contact me](https://github.com/edmondas).
 
-## Organizations
+## Organizations Supporting Development
 
 * HLkomm Telekommunikations GmbH
 * IRAM (Institut de Radioastronomie Millimétrique)
 
-## Individuals
+## Individual Donors
 
 * Stefano Rizzetto
 * Asher Manangan
