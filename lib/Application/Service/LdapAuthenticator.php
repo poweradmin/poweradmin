@@ -111,6 +111,7 @@ class LdapAuthenticator extends LoggingService
         }
 
         ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, $ldap_proto);
+        ldap_set_option($ldapconn, LDAP_OPT_REFERRALS, 0);
 
         if (!(@ldap_bind($ldapconn, $ldap_binddn, $ldap_bindpw))) {
             $this->logError('Failed to bind to LDAP server.');
