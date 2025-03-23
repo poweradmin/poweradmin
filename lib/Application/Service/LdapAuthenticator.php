@@ -111,15 +111,13 @@ class LdapAuthenticator extends LoggingService
         }
 
         ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, $ldap_proto);
-        $ldapbind = ldap_bind($ldapconn, $ldap_binddn, $ldap_bindpw);
-        if (!$ldapbind) {
+
+        if (!(@ldap_bind($ldapconn, $ldap_binddn, $ldap_bindpw))) {
             $this->logError('Failed to bind to LDAP server.');
 
             if (isset($_POST["authenticate"])) {
                 $this->ldapUserEventLogger->log_failed_reason('ldap_bind');
             }
-
-            $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
 
             $sessionEntity = new SessionEntity(_('Failed to bind to LDAP server!'), 'danger');
             $this->authenticationService->logout($sessionEntity);
@@ -127,8 +125,6 @@ class LdapAuthenticator extends LoggingService
             $this->logInfo('LDAP authentication process ended due to bind failure.');
             return;
         }
-
-        $this->loginAttemptService->recordAttempt($username, $ipAddress, true);
 
         $attributes = array($ldap_user_attribute, 'dn');
         $filter = $ldap_search_filter
@@ -141,7 +137,7 @@ class LdapAuthenticator extends LoggingService
             echo "</pre></div>";
         }
 
-        $ldapsearch = ldap_search($ldapconn, $ldap_basedn, $filter, $attributes);
+        $ldapsearch = @ldap_search($ldapconn, $ldap_basedn, $filter, $attributes);
         if (!$ldapsearch) {
             $this->logError('Failed to search LDAP.');
             if (isset($_POST["authenticate"])) {
@@ -172,17 +168,19 @@ class LdapAuthenticator extends LoggingService
 
         $passwordEncryptionService = new PasswordEncryptionService($session_key);
         $session_pass = $passwordEncryptionService->decrypt($_SESSION['userpwd']);
-        $ldapbind = ldap_bind($ldapconn, $user_dn, $session_pass);
-        if (!$ldapbind) {
+        if (!@ldap_bind($ldapconn, $user_dn, $session_pass)) {
             $this->logWarning('LDAP authentication failed for user {username}', ['username' => $_SESSION['userlogin']]);
             if (isset($_POST["authenticate"])) {
                 $this->ldapUserEventLogger->log_failed_incorrect_pass();
+                $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
             }
             $sessionEntity = new SessionEntity(_('LDAP Authentication failed!'), 'danger');
             $this->authenticationService->auth($sessionEntity);
             $this->logInfo('LDAP authentication process ended due to incorrect password.');
             return;
         }
+
+        $this->loginAttemptService->recordAttempt($username, $ipAddress, true);
 
         $stmt = $this->db->prepare("SELECT id, fullname FROM users WHERE username = :username AND active = 1 AND use_ldap = 1");
         $stmt->execute([

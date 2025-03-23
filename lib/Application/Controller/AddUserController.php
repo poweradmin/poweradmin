@@ -110,8 +110,8 @@ class AddUserController extends BaseController
         $perm_templ = $this->request->getPostParam('perm_templ', '1');
         $description = $this->request->getPostParam('descr', '');
 
-        $active_checked = $this->request->getPostParam('active') === '1' ? 'checked' : '';
-        $use_ldap_checked = $this->request->getPostParam('use_ldap', '1') === '1' ? 'checked' : '';
+        $active_checked = $this->request->getPostParam('active', '1') === '1' ? 'checked' : '';
+        $use_ldap_checked = $this->request->getPostParam('use_ldap') === '1' ? 'checked' : '';
 
         $this->render('add_user.html', [
             'username' => $username,
