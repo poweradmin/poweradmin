@@ -29,11 +29,11 @@ use Poweradmin\Infrastructure\Database\PDOLayer;
 class LoginAttemptService
 {
     private SecurityPolicyConfig $securityPolicy;
-    private PDOLayer $db;
+    private PDOLayer $connection;
 
-    public function __construct(PDOLayer $db, SecurityPolicyConfig $securityPolicy)
+    public function __construct(PDOLayer $connection, SecurityPolicyConfig $securityPolicy)
     {
-        $this->db = $db;
+        $this->connection = $connection;
         $this->securityPolicy = $securityPolicy;
     }
 
@@ -45,10 +45,14 @@ class LoginAttemptService
 
         $userId = $this->getUserId($username);
 
-        $stmt = $this->db->prepare("
-            INSERT INTO login_attempts (user_id, ip_address, timestamp, successful)
-            VALUES (:user_id, :ip_address, :timestamp, :successful)
-        ");
+        if ($successful && $this->securityPolicy->get('clear_attempts_on_success')) {
+            $this->clearFailedAttempts($userId, $ipAddress);
+        }
+
+        $stmt = $this->connection->prepare("
+        INSERT INTO login_attempts (user_id, ip_address, timestamp, successful)
+        VALUES (:user_id, :ip_address, :timestamp, :successful)
+    ");
 
         $stmt->execute([
             'user_id' => $userId,
@@ -74,27 +78,25 @@ class LoginAttemptService
         $lockoutDuration = $this->securityPolicy->get('lockout_duration') * 60;
         $cutoffTime = time() - $lockoutDuration;
         $maxAttempts = $this->securityPolicy->get('lockout_attempts');
+        $trackIpAddress = $this->securityPolicy->get('track_ip_address');
 
-        $sql = "SELECT COUNT(*) as attempts 
-                FROM login_attempts
-                WHERE user_id = :user_id 
-                AND successful = 0
-                AND timestamp > :cutoff_time";
+        $sql = "SELECT COUNT(*) as attempts
+            FROM login_attempts
+            WHERE user_id = :user_id
+            AND successful = 0
+            AND timestamp > :cutoff_time";
 
-        if ($this->securityPolicy->get('track_ip_address')) {
-            $sql .= " AND ip_address = :ip_address";
-        }
-
-        $stmt = $this->db->prepare($sql);
         $params = [
             'user_id' => $userId,
             'cutoff_time' => $cutoffTime
         ];
 
-        if ($this->securityPolicy->get('track_ip_address')) {
+        if ($trackIpAddress) {
+            $sql .= " AND ip_address = :ip_address";
             $params['ip_address'] = $ipAddress;
         }
 
+        $stmt = $this->connection->prepare($sql);
         $stmt->execute($params);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -103,7 +105,7 @@ class LoginAttemptService
 
     private function getUserId(string $username): ?int
     {
-        $stmt = $this->db->prepare("
+        $stmt = $this->connection->prepare("
             SELECT id FROM users 
             WHERE username = :username
         ");
@@ -119,11 +121,30 @@ class LoginAttemptService
         $lockoutDuration = $this->securityPolicy->get('lockout_duration') * 60;
         $cutoffTime = time() - $lockoutDuration;
 
-        $stmt = $this->db->prepare("
+        $stmt = $this->connection->prepare("
             DELETE FROM login_attempts
             WHERE timestamp < :cutoff_time
         ");
 
         $stmt->execute(['cutoff_time' => $cutoffTime]);
+    }
+
+    private function clearFailedAttempts(?int $userId, string $ipAddress): void
+    {
+        if ($userId === null) {
+            return;
+        }
+
+        $sql = "DELETE FROM login_attempts WHERE user_id = :user_id";
+
+        $params = ['user_id' => $userId];
+
+        if ($this->securityPolicy->get('track_ip_address')) {
+            $sql .= " AND ip_address = :ip_address";
+            $params['ip_address'] = $ipAddress;
+        }
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute($params);
     }
 }

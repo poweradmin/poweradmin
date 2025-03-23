@@ -42,15 +42,14 @@ class LdapAuthenticator extends LoggingService
     private LoginAttemptService $loginAttemptService;
 
     public function __construct(
-        PDOLayer              $connection,
-        AppConfiguration      $config,
-        LdapUserEventLogger   $ldapUserEventLogger,
+        PDOLayer $connection,
+        AppConfiguration $config,
+        LdapUserEventLogger $ldapUserEventLogger,
         AuthenticationService $authService,
-        CsrfTokenService      $csrfTokenService,
-        Logger                $logger,
-        LoginAttemptService   $loginAttemptService
-    )
-    {
+        CsrfTokenService $csrfTokenService,
+        Logger $logger,
+        LoginAttemptService $loginAttemptService
+    ) {
         $shortClassName = (new ReflectionClass(self::class))->getShortName();
         parent::__construct($logger, $shortClassName);
 
