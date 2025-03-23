@@ -113,8 +113,10 @@
                        href="#"
                        role="button">{% trans %}Account{% endtrans %}</a>
                     <ul class="dropdown-menu">
+                        {% if auth_used %}
                         <li><a class="dropdown-item"
                                href="index.php?page=change_password">{% trans %}Change password{% endtrans %}</a></li>
+                        {% endif %}
                         <li><a class="dropdown-item"
                                href="index.php?page=logout">{% trans %}Logout{% endtrans %}</a></li>
                     </ul>

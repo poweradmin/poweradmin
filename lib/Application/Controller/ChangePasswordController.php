@@ -90,6 +90,8 @@ class ChangePasswordController extends BaseController
 
     public function run(): void
     {
+        $this->checkCondition($_SESSION["auth_used"] == 'ldap', _('LDAP users cannot change their password here. Please contact your administrator.'));
+
         $policyConfig = $this->policyService->getPolicyConfig();
 
         if (!$this->isPost()) {
