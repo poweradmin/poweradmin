@@ -22,18 +22,24 @@
 
 namespace Poweradmin\Infrastructure\Configuration;
 
-class FakeConfiguration implements ConfigurationInterface
+class ConfigurationRegistry
 {
-    protected array $config;
+    private static array $configurations = [];
 
-    public function __construct(?string $pdnsApiUrl, ?string $pdnsApiKey)
+    public static function register(string $name, ConfigurationInterface $config): void
     {
-        $this->config['pdns_api_url'] = $pdnsApiUrl;
-        $this->config['pdns_api_key'] = $pdnsApiKey;
+        self::$configurations[$name] = $config;
     }
 
-    public function get(string $key = null): mixed
+    public static function get(string $name): ?ConfigurationInterface
     {
-        return array_key_exists($key, $this->config) ? $this->config[$key] : null;
+        return self::$configurations[$name] ?? null;
+    }
+
+    public static function getAll(): array
+    {
+        return array_map(function ($config) {
+            return $config->get();
+        }, self::$configurations);
     }
 }

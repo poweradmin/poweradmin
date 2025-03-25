@@ -24,7 +24,7 @@ namespace Poweradmin\Infrastructure\Configuration;
 
 use Poweradmin\Domain\Config\SecurityPolicyDefaults;
 
-class SecurityPolicyConfig
+class SecurityPolicyConfig implements ConfigurationInterface
 {
     private array $config;
 
@@ -41,7 +41,7 @@ class SecurityPolicyConfig
         }
     }
 
-    public function get(string $key = null)
+    public function get(string $key = null): mixed
     {
         if ($key === null) {
             return $this->config;

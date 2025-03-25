@@ -130,11 +130,11 @@ class AppConfiguration implements ConfigurationInterface
     /**
      * Gets a configuration value.
      *
-     * @param string $key The name of the configuration setting.
+     * @param string|null $key The name of the configuration setting.
      * @param mixed $default The default value to return if the setting is not found.
      * @return mixed The configuration value.
      */
-    public function get(string $key, mixed $default = null): mixed
+    public function get(string $key = null, mixed $default = null): mixed
     {
         if (array_key_exists($key, $this->config)) {
             return $this->config[$key];
