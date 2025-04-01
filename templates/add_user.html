@@ -62,6 +62,29 @@
             </td>
         </tr>
         <tr>
+            <td>{% trans %}Auto-generate password{% endtrans %}</td>
+            <td>
+                <div class="d-flex align-items-center">
+                    <input class="form-check-input me-2" id="auto_generate" type="checkbox" name="auto_generate_password" value="1" 
+                           onclick="togglePasswordField(); disablePasswordField(); toggleEmailOption();">
+                    <i class="bi bi-info-circle text-primary" data-bs-toggle="tooltip" data-bs-placement="right" 
+                       title="{% trans %}Generate a secure password that meets all requirements{% endtrans %}"></i>
+                </div>
+            </td>
+        </tr>
+        {% if mail_enabled %}
+        <tr id="send_email_row" style="display: none;">
+            <td>{% trans %}Send password by email{% endtrans %}</td>
+            <td>
+                <div class="d-flex align-items-center">
+                    <input class="form-check-input me-2" id="send_email" type="checkbox" name="send_email" value="1" checked>
+                    <i class="bi bi-info-circle text-primary" data-bs-toggle="tooltip" data-bs-placement="right" 
+                       title="{% trans %}Send login credentials to user's email address{% endtrans %}"></i>
+                </div>
+            </td>
+        </tr>
+        {% endif %}
+        <tr>
             <td>{% trans %}Email address{% endtrans %}</td>
             <td><input class="form-control form-control-sm" type="text" name="email" value="{{ email }}" required>
                 <div class="invalid-feedback">{% trans %}Provide email{% endtrans %}</div>
@@ -106,3 +129,100 @@
             </td>
     </table>
 </form>
+
+<script>
+function togglePasswordField() {
+    const autoGenerateCheckbox = document.getElementById('auto_generate');
+    const passwordField = document.getElementById('password');
+    const ldapCheckbox = document.getElementById('ldap');
+
+    // If auto-generate is checked
+    if (autoGenerateCheckbox.checked) {
+        // Disable password field
+        passwordField.disabled = true;
+        passwordField.required = false;
+
+        // If LDAP checkbox exists, uncheck it
+        if (ldapCheckbox) {
+            ldapCheckbox.checked = false;
+        }
+    } else {
+        // If LDAP is not checked, enable password field
+        if (!ldapCheckbox || !ldapCheckbox.checked) {
+            passwordField.disabled = false;
+            passwordField.required = true;
+        }
+    }
+}
+
+function toggleEmailOption() {
+    const autoGenerateCheckbox = document.getElementById('auto_generate');
+    const sendEmailRow = document.getElementById('send_email_row');
+
+    // Only proceed if mail is enabled and the row exists
+    if (sendEmailRow) {
+        if (autoGenerateCheckbox.checked) {
+            sendEmailRow.style.display = ''; // Show the row
+        } else {
+            sendEmailRow.style.display = 'none'; // Hide the row
+        }
+    }
+}
+
+// Ensure LDAP and auto-generate checkboxes interact properly
+function disablePasswordField() {
+    const ldapCheckbox = document.getElementById('ldap');
+    const autoGenerateCheckbox = document.getElementById('auto_generate');
+    const passwordField = document.getElementById('password');
+
+    if (ldapCheckbox && ldapCheckbox.checked) {
+        // When LDAP is checked, disable password field and auto-generate
+        passwordField.disabled = true;
+        passwordField.required = false;
+
+        if (autoGenerateCheckbox) {
+            // Uncheck auto-generate checkbox
+            autoGenerateCheckbox.checked = false;
+            autoGenerateCheckbox.disabled = true;
+        }
+    } else {
+        // When LDAP is unchecked
+        if (autoGenerateCheckbox && autoGenerateCheckbox.checked) {
+            // If auto-generate is checked, disable password field
+            passwordField.disabled = true;
+            passwordField.required = false;
+        } else {
+            // Otherwise enable password field
+            passwordField.disabled = false;
+            passwordField.required = true;
+        }
+
+        if (autoGenerateCheckbox) {
+            autoGenerateCheckbox.disabled = false;
+        }
+    }
+}
+
+// Initialize fields on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle initial state
+    const ldapCheckbox = document.getElementById('ldap');
+    if (ldapCheckbox) {
+        disablePasswordField();
+    }
+
+    const autoGenerateCheckbox = document.getElementById('auto_generate');
+    if (autoGenerateCheckbox) {
+        togglePasswordField();
+        toggleEmailOption();
+    }
+
+    // Initialize Bootstrap tooltips
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl, {
+            container: 'body'
+        });
+    });
+});
+</script>

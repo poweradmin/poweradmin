@@ -32,15 +32,21 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Service\MailService;
+use Poweradmin\Application\Service\PasswordGenerationService;
 use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Infrastructure\Configuration\MailConfig;
 use Poweradmin\Infrastructure\Configuration\PasswordPolicyConfig;
+use Poweradmin\Infrastructure\Configuration\UiConfig;
 use Valitron\Validator;
 
 class AddUserController extends BaseController
 {
     private PasswordPolicyService $passwordPolicyService;
+    private PasswordGenerationService $passwordGenerationService;
+    private MailService $mailService;
     private Request $request;
 
     private const VALIDATION_CONFIG = [
@@ -61,7 +67,13 @@ class AddUserController extends BaseController
         parent::__construct($request);
 
         $this->request = new Request();
-        $this->passwordPolicyService = new PasswordPolicyService(new PasswordPolicyConfig());
+        $passwordPolicyConfig = new PasswordPolicyConfig();
+        $this->passwordPolicyService = new PasswordPolicyService($passwordPolicyConfig);
+        $this->passwordGenerationService = new PasswordGenerationService($passwordPolicyConfig);
+
+        // Initialize mail service
+        $mailConfig = new MailConfig();
+        $this->mailService = new MailService($mailConfig);
     }
 
     public function run(): void
@@ -91,8 +103,54 @@ class AddUserController extends BaseController
         }
 
         $legacyUsers = new UserManager($this->db, $this->getConfig());
-        if ($legacyUsers->add_new_user($this->request->getPostParams())) {
-            $this->setMessage('users', 'success', _('The user has been created successfully.'));
+        $userParams = $this->request->getPostParams();
+
+        // Handle auto-generated password
+        $generatedPassword = '';
+        if (!$this->request->getPostParam('use_ldap') && $this->request->getPostParam('auto_generate_password')) {
+            $generatedPassword = $this->passwordGenerationService->generatePassword();
+            $userParams['password'] = $generatedPassword;
+        }
+
+        if ($legacyUsers->add_new_user($userParams)) {
+            $successMessage = _('The user has been created successfully.');
+
+            // Handle generated password and email sending
+            if (!empty($generatedPassword)) {
+                $uiConfig = new UiConfig();
+                $showGeneratedPasswords = $uiConfig->get('show_generated_passwords');
+
+                // Display the generated password to the admin if allowed by configuration
+                if ($showGeneratedPasswords) {
+                    $successMessage .= ' ' . sprintf(_('Generated password: %s'), '<strong>' . $generatedPassword . '</strong>');
+                }
+
+                // Send email with credentials if mail is enabled and checkbox is checked
+                $mailConfig = new MailConfig();
+                $mailEnabled = $mailConfig->get('mail_enabled');
+
+                if ($mailEnabled && $userParams['email'] && $this->request->getPostParam('send_email')) {
+                    $emailSent = $this->mailService->sendNewAccountEmail(
+                        $userParams['email'],
+                        $userParams['username'],
+                        $generatedPassword,
+                        $userParams['fullname'] ?? ''
+                    );
+
+                    if ($emailSent) {
+                        $successMessage .= ' ' . _('Login details have been sent to the user via email.');
+                    } else {
+                        $successMessage .= ' ' . _('NOTE: Failed to send login details via email.');
+                    }
+                }
+
+                // If password is not shown to admin and not sent by email, inform admin
+                if (!$showGeneratedPasswords && !($mailEnabled && $userParams['email'] && $this->request->getPostParam('send_email'))) {
+                    $successMessage .= ' ' . _('A password was generated but is not displayed for security reasons.');
+                }
+            }
+
+            $this->setMessage('users', 'success', $successMessage);
             $this->redirect('index.php', ['page' => 'users']);
         } else {
             $this->renderAddUserForm($policyConfig);
@@ -113,6 +171,10 @@ class AddUserController extends BaseController
         $active_checked = $this->request->getPostParam('active', '1') === '1' ? 'checked' : '';
         $use_ldap_checked = $this->request->getPostParam('use_ldap') === '1' ? 'checked' : '';
 
+        // Check if mail functionality is enabled
+        $mailConfig = new MailConfig();
+        $mail_enabled = $mailConfig->get('mail_enabled');
+
         $this->render('add_user.html', [
             'username' => $username,
             'fullname' => $fullname,
@@ -125,16 +187,18 @@ class AddUserController extends BaseController
             'user_templates' => $user_templates,
             'ldap_use' => $this->config('ldap_use'),
             'password_policy' => $policyConfig,
+            'mail_enabled' => $mail_enabled,
         ]);
     }
 
-    private function validateInput(): bool {
+    private function validateInput(): bool
+    {
         $validator = new Validator($this->request->getPostParams());
         $validator->rules(self::VALIDATION_CONFIG['rules']);
         $validator->labels(self::VALIDATION_CONFIG['labels']);
 
-        // Add password validation for non-LDAP users
-        if (!$this->request->getPostParam('use_ldap')) {
+        // Add password validation for non-LDAP users (unless auto-generate is checked)
+        if (!$this->request->getPostParam('use_ldap') && !$this->request->getPostParam('auto_generate_password')) {
             $validator->rule('required', 'password');
         }
 
@@ -152,6 +216,11 @@ class AddUserController extends BaseController
     private function validatePasswordPolicy(): bool
     {
         if ($this->request->getPostParam('use_ldap')) {
+            return true;
+        }
+
+        // Skip validation if we're auto-generating a password
+        if ($this->request->getPostParam('auto_generate_password')) {
             return true;
         }
 

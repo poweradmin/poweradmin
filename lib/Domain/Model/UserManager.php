@@ -732,13 +732,12 @@ class UserManager
             $errorPresenter->present($error);
 
             return false;
-        } elseif ($details['active'] == 1) {
-            $active = 1;
-        } else {
-            $active = 0;
         }
 
-        if ($ldap_use && $details['use_ldap'] == 1) {
+        // Set active status (defaults to 0 if not set)
+        $active = isset($details['active']) && $details['active'] == 1 ? 1 : 0;
+
+        if ($ldap_use && isset($details['use_ldap']) && $details['use_ldap'] == 1) {
             $use_ldap = 1;
             $password_hash = 'LDAP_USER';
         } else {
@@ -756,9 +755,9 @@ class UserManager
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':username', $details['username']);
         $stmt->bindValue(':password', $password_hash);
-        $stmt->bindValue(':fullname', $details['fullname']);
+        $stmt->bindValue(':fullname', $details['fullname'] ?? '');
         $stmt->bindValue(':email', $details['email']);
-        $stmt->bindValue(':description', $details['descr']);
+        $stmt->bindValue(':description', $details['descr'] ?? '');
 
         if (self::verify_permission($this->db, 'user_edit_templ_perm')) {
             $stmt->bindValue(':perm_templ', $details['perm_templ'], PDO::PARAM_INT);
