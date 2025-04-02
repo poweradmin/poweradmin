@@ -1,13 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}
-    {% trans %}Step{% endtrans %} {{ current_step }}: {% trans %}Setup of account and name servers{% endtrans %}
-{% endblock %}
-
 {% block content %}
     <div class="card">
         <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">{% trans %}Setup Account and Name Servers{% endtrans %}</h5>
+            <h5 class="mb-0">{% trans %}Step{% endtrans %} {{ current_step }}: {% trans %}Setup account and name servers{% endtrans %}</h5>
         </div>
         <div class="card-body">
             <div class="alert alert-info mb-4">

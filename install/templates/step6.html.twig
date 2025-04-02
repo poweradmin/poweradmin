@@ -1,19 +1,19 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}
-    {% trans %}Step{% endtrans %} {{ current_step }}: {% trans %}Create configuration file{% endtrans %}
-{% endblock %}
-
 {% block content %}
-    <div class="alert alert-success">
-        <strong>{% trans %}Configuration File:{% endtrans %}</strong> {% trans %}Create the file {% endtrans %}
-        <em>config/settings.php</em>
-        {% trans %} with the following content:{% endtrans %}
-    </div>
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">{% trans %}Step{% endtrans %} {{ current_step }}: {% trans %}Create configuration file{% endtrans %}</h5>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-success">
+                <strong>{% trans %}Configuration File:{% endtrans %}</strong> {% trans %}Create the file {% endtrans %}
+                <em>config/settings.php</em>
+                {% trans %} with the following content:{% endtrans %}
+            </div>
 
-    <div class="p-3 bg-light rounded">
-        <h5>{% trans %}Configuration Format{% endtrans %}</h5>
-        <pre class="bg-dark text-light p-3 rounded">
+            <div class="p-3 bg-light rounded">
+                <pre class="bg-dark text-light p-3 rounded">
 &lt;?php
 
 /**
@@ -75,12 +75,15 @@ return [
     ],
 ];
 </pre>
+            </div>
 
-    <form method="post" class="mt-4">
-        <input type="hidden" name="install_token" value="{{ install_token }}">
-        <input type="hidden" name="step" value="{{ next_step }}">
-        <input type="hidden" name="language" value="{{ language }}">
-        <input type="submit" name="submit" class="btn btn-primary btn-sm"
-               value="{% trans %}Go to step{% endtrans %} {{ next_step }}">
-    </form>
+            <form method="post" class="mt-4">
+                <input type="hidden" name="install_token" value="{{ install_token }}">
+                <input type="hidden" name="step" value="{{ next_step }}">
+                <input type="hidden" name="language" value="{{ language }}">
+                <input type="submit" name="submit" class="btn btn-primary"
+                       value="{% trans %}Go to step{% endtrans %} {{ next_step }}">
+            </form>
+        </div>
+    </div>
 {% endblock %}

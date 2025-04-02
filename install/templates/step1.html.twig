@@ -1,13 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}
-    {% trans %}Step{% endtrans %} {{ current_step }}: {% trans %}Choose a language for installation{% endtrans %}
-{% endblock %}
-
 {% block content %}
     <div class="card">
         <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">{% trans %}Select Installation Language{% endtrans %}</h5>
+            <h5 class="mb-0">{% trans %}Step{% endtrans %} {{ current_step }}: {% trans %}Choose a language for installation{% endtrans %}</h5>
         </div>
         <div class="card-body">
             <form method="post">
