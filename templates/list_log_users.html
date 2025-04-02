@@ -34,7 +34,7 @@
 <table class="table table-striped table-hover table-sm">
     <thead>
     <tr>
-        {% if iface_edit_show_id %}
+        {% if iface_edit_show_id is defined and iface_edit_show_id %}
         <th>{% trans %}Id{% endtrans %}</th>
         {% endif %}
         <th>{% trans %}Event{% endtrans %}</th>
@@ -44,7 +44,7 @@
     <tbody>
     {% for row in data %}
     <tr>
-        {% if iface_edit_show_id %}
+        {% if iface_edit_show_id is defined and iface_edit_show_id %}
         <td>{{ row['id'] }}</td>
         {% endif %}
         <td>{{ row['event'] }}</td>

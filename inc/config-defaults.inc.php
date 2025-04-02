@@ -45,9 +45,12 @@ $iface_zone_comments = true; // Show or hide zone comments
 $iface_record_comments = false; // Show or hide record comments
 $iface_index = 'cards'; // or list
 $iface_search_group_records = false; // Group records by name and content in search results
-$iface_edit_show_id = true; // Show or hide record ID in edit form
-$iface_edit_add_record_top = false; // Add new record fields on top of the list
-$iface_edit_save_changes_top = false; // Save changes button on top of the list
+
+// The following settings have been moved to config/ui.php:
+// $iface_edit_show_id -> show_record_id_column
+// $iface_edit_add_record_top -> position_record_form_top
+// $iface_edit_save_changes_top -> position_save_button_top
+
 $iface_migrations_show = false; // Show or hide migrations in the menu (experimental)
 
 // Predefined DNS settings

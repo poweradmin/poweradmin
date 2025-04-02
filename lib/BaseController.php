@@ -26,6 +26,7 @@ use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Infrastructure\Configuration\UiConfig;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\Infrastructure\Service\ThemeManager;
 use Valitron;
@@ -96,7 +97,15 @@ abstract class BaseController
      */
     public function config(string $key): mixed
     {
-        return $this->app->config($key);
+        // Handle renamed settings that moved to UiConfig
+        $uiConfig = new UiConfig();
+
+        return match ($key) {
+            'iface_edit_show_id' => $uiConfig->get('show_record_id_column'),
+            'iface_edit_add_record_top' => $uiConfig->get('position_record_form_top'),
+            'iface_edit_save_changes_top' => $uiConfig->get('position_save_button_top'),
+            default => $this->app->config($key),
+        };
     }
 
     /**

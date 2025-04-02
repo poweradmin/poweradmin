@@ -29,7 +29,14 @@ class UiConfigDefaults
         return [
             // User Interface settings
             'show_generated_passwords' => true,  // Whether to show generated passwords in the admin UI
-            
+
+            // Table display settings
+            'show_record_id_column' => true,     // Whether to show ID columns in tables and forms
+
+            // Form layout settings
+            'position_record_form_top' => false, // Whether to show the "Add new record" form at the top of the page
+            'position_save_button_top' => false, // Whether to show the "Save changes" button at the top of the page
+
             // Visual settings (for future expansion)
             'records_per_page' => 50,            // Default number of items to show per page
             'default_sort_order' => 'asc',       // Default sort direction

@@ -34,6 +34,7 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
+use Poweradmin\Infrastructure\Configuration\UiConfig;
 use Poweradmin\Infrastructure\Logger\DbUserLogger;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 
@@ -84,6 +85,8 @@ class ListLogUsersController extends BaseController
             $logs = $this->dbUserLogger->get_all_logs($logs_per_page, ($selected_page - 1) * $logs_per_page);
         }
 
+        $uiConfig = new UiConfig();
+
         $this->render('list_log_users.html', [
             'number_of_logs' => $number_of_logs,
             'name' => isset($_GET['name']) ? htmlspecialchars($_GET['name']) : null,
@@ -91,6 +94,7 @@ class ListLogUsersController extends BaseController
             'selected_page' => $selected_page,
             'logs_per_page' => $logs_per_page,
             'pagination' => $this->createAndPresentPagination($number_of_logs, $logs_per_page),
+            'iface_edit_show_id' => $uiConfig->get('show_record_id_column'),
         ]);
     }
 
