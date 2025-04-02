@@ -5,37 +5,59 @@
 {% endblock %}
 
 {% block content %}
-    {% if db_type != 'sqlite' %}
-        <p>{% trans %}You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you
-                should create a new user and give it rights to select, delete, insert, and update records in the PowerDNS
-                database.{% endtrans %}</p>
-        <p>{% trans %}Execute the following commands based on your database:{% endtrans %}</p>
-        <pre>{{ instructions }}</pre>
-        <p>{% trans %}After you have added the new user, proceed with this installation procedure.{% endtrans %}</p>
-    {% else %}
-        <p>{% trans %}Since you are using SQLite, there is no need to create a new user with limited rights.{% endtrans %}</p>
-    {% endif %}
-    <form method="post">
-        <input type="hidden" name="install_token" value="{{ install_token }}">
-        <input type="hidden" name="db_host" value="{{ db_host }}">
-        <input type="hidden" name="db_name" value="{{ db_name }}">
-        <input type="hidden" name="db_port" value="{{ db_port }}">
-        <input type="hidden" name="db_type" value="{{ db_type }}">
-        <input type="hidden" name="db_user" value="{{ db_user }}">
-        <input type="hidden" name="db_pass" value="{{ db_pass }}">
-        <input type="hidden" name="db_charset" value="{{ db_charset }}">
-        <input type="hidden" name="db_collation" value="{{ db_collation }}">
-        <input type="hidden" name="pa_db_user" value="{{ pa_db_user }}">
-        <input type="hidden" name="pa_db_pass" value="{{ pa_db_pass }}">
-        <input type="hidden" name="pa_pass" value="{{ pa_pass }}">
-        <input type="hidden" name="dns_hostmaster" value="{{ dns_hostmaster }}">
-        <input type="hidden" name="dns_ns1" value="{{ dns_ns1 }}">
-        <input type="hidden" name="dns_ns2" value="{{ dns_ns2 }}">
-        <input type="hidden" name="dns_ns3" value="{{ dns_ns3 }}">
-        <input type="hidden" name="dns_ns4" value="{{ dns_ns4 }}">
-        <input type="hidden" name="step" value="{{ current_step }}">
-        <input type="hidden" name="language" value="{{ language }}">
-        <input type="hidden" name="step" value="{{ next_step }}">
-        <input type="submit" name="submit" class="btn btn-primary btn-sm" value="{% trans %}Go to step{% endtrans %} {{ next_step }}">
-    </form>
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">{% trans %}Database User Setup{% endtrans %}</h5>
+        </div>
+        <div class="card-body">
+            {% if db_type != 'sqlite' %}
+                <div class="alert alert-info">
+                    <h5>{% trans %}Limited Database Rights{% endtrans %}</h5>
+                    <p>{% trans %}You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you
+                        should create a new user and give it rights to select, delete, insert, and update records in the PowerDNS
+                        database.{% endtrans %}</p>
+                </div>
+
+                <div class="card mb-4 bg-light">
+                    <div class="card-header">
+                        <h5 class="mb-0">{% trans %}Database Commands{% endtrans %}</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>{% trans %}Execute the following commands based on your database:{% endtrans %}</p>
+                        <pre class="bg-dark text-light p-3 rounded">{{ instructions }}</pre>
+                    </div>
+                </div>
+
+                <p class="mb-4">{% trans %}After you have added the new user, proceed with this installation procedure.{% endtrans %}</p>
+            {% else %}
+                <div class="alert alert-success">
+                    <p>{% trans %}Since you are using SQLite, there is no need to create a new user with limited rights.{% endtrans %}</p>
+                </div>
+            {% endif %}
+
+            <form method="post">
+                <input type="hidden" name="install_token" value="{{ install_token }}">
+                <input type="hidden" name="db_host" value="{{ db_host }}">
+                <input type="hidden" name="db_name" value="{{ db_name }}">
+                <input type="hidden" name="db_port" value="{{ db_port }}">
+                <input type="hidden" name="db_type" value="{{ db_type }}">
+                <input type="hidden" name="db_user" value="{{ db_user }}">
+                <input type="hidden" name="db_pass" value="{{ db_pass }}">
+                <input type="hidden" name="db_charset" value="{{ db_charset }}">
+                <input type="hidden" name="db_collation" value="{{ db_collation }}">
+                <input type="hidden" name="pa_db_user" value="{{ pa_db_user }}">
+                <input type="hidden" name="pa_db_pass" value="{{ pa_db_pass }}">
+                <input type="hidden" name="pa_pass" value="{{ pa_pass }}">
+                <input type="hidden" name="dns_hostmaster" value="{{ dns_hostmaster }}">
+                <input type="hidden" name="dns_ns1" value="{{ dns_ns1 }}">
+                <input type="hidden" name="dns_ns2" value="{{ dns_ns2 }}">
+                <input type="hidden" name="dns_ns3" value="{{ dns_ns3 }}">
+                <input type="hidden" name="dns_ns4" value="{{ dns_ns4 }}">
+                <input type="hidden" name="step" value="{{ current_step }}">
+                <input type="hidden" name="language" value="{{ language }}">
+                <input type="hidden" name="step" value="{{ next_step }}">
+                <input type="submit" name="submit" class="btn btn-primary" value="{% trans %}Go to step{% endtrans %} {{ next_step }}">
+            </form>
+        </div>
+    </div>
 {% endblock %}

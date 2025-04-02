@@ -41,12 +41,12 @@ class PasswordPolicyConfig implements ConfigurationInterface
         }
     }
 
-    public function get(string $key = null): mixed
+    public function get(string $key = null, mixed $default = null): mixed
     {
         if ($key === null) {
             return $this->config;
         }
 
-        return $this->config[$key] ?? null;
+        return $this->config[$key] ?? $default;
     }
 }

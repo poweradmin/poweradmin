@@ -22,9 +22,15 @@
 
 namespace Poweradmin\Infrastructure\Configuration;
 
-use Poweradmin\Domain\Config\MailConfigDefaults;
+use Poweradmin\Domain\Config\UiConfigDefaults;
 
-class MailConfig implements ConfigurationInterface
+/**
+ * InterfaceConfig class for managing interface-related configuration
+ * 
+ * This class replaces UiConfig and directly maps to the 'interface' section
+ * of the settings.php configuration file.
+ */
+class InterfaceConfig implements ConfigurationInterface
 {
     private array $config;
     private ConfigurationManager $configManager;
@@ -32,8 +38,8 @@ class MailConfig implements ConfigurationInterface
     public function __construct()
     {
         // Get default settings
-        $this->config = MailConfigDefaults::getDefaults();
-
+        $this->config = UiConfigDefaults::getDefaults();
+        
         // Load settings from the central configuration manager
         $this->configManager = ConfigurationManager::getInstance();
         $this->configManager->initialize();
@@ -42,21 +48,33 @@ class MailConfig implements ConfigurationInterface
     public function get(string $key = null, mixed $default = null): mixed
     {
         if ($key === null) {
-            return array_merge($this->config, $this->configManager->getGroup('mail'));
+            return array_merge($this->config, $this->configManager->getGroup('interface'));
         }
-
-        // Check if the setting exists in the mail group
-        $mailSettings = $this->configManager->getGroup('mail');
-        if (isset($mailSettings[$key])) {
-            return $mailSettings[$key];
+        
+        // Map old UI config keys to new interface settings keys
+        $keyMapping = [
+            'show_record_id_column' => 'show_record_id',
+            'position_record_form_top' => 'position_record_form_top',
+            'position_save_button_top' => 'position_save_button_top',
+            // Legacy iface_ mappings
+            'iface_lang' => 'language',
+            'iface_enabled_languages' => 'enabled_languages',
+            'iface_style' => 'theme',
+            'iface_title' => 'title',
+            'iface_expire' => 'session_timeout',
+            'iface_rowamount' => 'rows_per_page',
+            'iface_index' => 'index_display',
+        ];
+        
+        $lookupKey = $keyMapping[$key] ?? $key;
+        
+        // Check if the setting exists in the interface group
+        $interfaceSettings = $this->configManager->getGroup('interface');
+        if (isset($interfaceSettings[$lookupKey])) {
+            return $interfaceSettings[$lookupKey];
         }
-
+        
         // Fall back to default configurations
         return $this->config[$key] ?? $default;
-    }
-
-    public function isEnabled(): bool
-    {
-        return (bool)$this->get('enabled', false);
     }
 }

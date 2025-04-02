@@ -1,6 +1,6 @@
 # Poweradmin related
 /inc/config.inc.php
-/config
+/config/settings.php
 /scripts
 /templates/custom
 

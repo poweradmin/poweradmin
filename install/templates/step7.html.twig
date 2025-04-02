@@ -5,8 +5,27 @@
 {% endblock %}
 
 {% block content %}
-    <p>{% trans %}Now we have finished the configuration.{% endtrans %}</p>
-    <p>{% trans %}You should (must!) remove the directory "install/" from the Poweradmin root directory. You will not be able to use Poweradmin if it exists. Do it now.{% endtrans %}</p>
-    <p>{% trans %}After you have removed the directory, you can login to <a href="../index.php">Poweradmin</a>.{% endtrans %}</p>
-    <p>{% trans %}Use the default username "admin" and the password set in step 3.{% endtrans %}</p>
+    <div class="alert alert-success">
+        <h4>{% trans %}Installation Complete!{% endtrans %}</h4>
+        <p>{% trans %}Congratulations! Your Poweradmin installation is now configured.{% endtrans %}</p>
+    </div>
+
+    <div class="alert alert-warning">
+        <h5>{% trans %}Important Security Notice{% endtrans %}</h5>
+        <p><strong>{% trans %}You must remove the "install/" directory from the Poweradmin root directory.{% endtrans %}</strong></p>
+        <p>{% trans %}Poweradmin will not function if the install directory exists, as a security measure.{% endtrans %}</p>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">{% trans %}Next Steps{% endtrans %}</h5>
+        </div>
+        <div class="card-body">
+            <ol>
+                <li>{% trans %}Remove the "install/" directory from your server{% endtrans %}</li>
+                <li>{% trans %}Login to <a href="../index.php">Poweradmin</a> using the default username "admin" and the password you set in step 3{% endtrans %}</li>
+                <li>{% trans %}Begin configuring your DNS zones and records{% endtrans %}</li>
+            </ol>
+        </div>
+    </div>
 {% endblock %}

@@ -44,9 +44,11 @@ class Installer
     private CsrfTokenService $csrfTokenService;
     private InstallSecurityService $securityService;
     private string $localConfigFile;
+    private string $newConfigFile;
     private string $defaultConfigFile;
     private string $installConfigFile;
-    private const LOCAL_CONFIG_FILE_PATH = '/inc/config.inc.php';
+    private const LOCAL_CONFIG_FILE_PATH = '/inc/config.inc.php'; // Legacy format
+    private const NEW_CONFIG_FILE_PATH = '/config/settings.php'; // New format
     private const DEFAULT_CONFIG_FILE_PATH = '/inc/config-defaults.inc.php';
     private const INSTALL_CONFIG_PATH = '/config.php';
     private array $config;
@@ -54,6 +56,7 @@ class Installer
     public function __construct(Request $request)
     {
         $this->localConfigFile = dirname(__DIR__, 2) . self::LOCAL_CONFIG_FILE_PATH;
+        $this->newConfigFile = dirname(__DIR__, 2) . self::NEW_CONFIG_FILE_PATH;
         $this->defaultConfigFile = dirname(__DIR__, 2) . self::DEFAULT_CONFIG_FILE_PATH;
         $this->installConfigFile = dirname(__DIR__) . self::INSTALL_CONFIG_PATH;
 
@@ -73,7 +76,7 @@ class Installer
         $rawStep = $this->request->get('step', InstallationSteps::STEP_CHOOSE_LANGUAGE);
         $currentStep = $this->stepValidator->getCurrentStep($rawStep);
 
-        if (file_exists($this->localConfigFile)) {
+        if (file_exists($this->localConfigFile) || file_exists($this->newConfigFile)) {
             // Only allow viewing the final step if installation is complete
             if ($currentStep !== InstallationSteps::STEP_INSTALLATION_COMPLETE) {
                 echo 'There is already a configuration file in place, so the installation will be skipped.';
@@ -150,7 +153,8 @@ class Installer
                 $this->installStepHandler->step6CreateConfigurationFile(
                     $errors,
                     $this->defaultConfigFile,
-                    $this->localConfigFile
+                    $this->localConfigFile,
+                    $this->newConfigFile
                 );
                 break;
 

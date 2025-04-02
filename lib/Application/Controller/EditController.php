@@ -47,7 +47,7 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Infrastructure\Configuration\UiConfig;
+use Poweradmin\Infrastructure\Configuration\InterfaceConfig;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 
@@ -67,10 +67,10 @@ class EditController extends BaseController
     public function run(): void
     {
         $iface_rowamount = $this->config('iface_rowamount');
-        $uiConfig = new UiConfig();
-        $iface_show_id = $uiConfig->get('show_record_id_column');
-        $iface_edit_add_record_top = $uiConfig->get('position_record_form_top');
-        $iface_edit_save_changes_top = $uiConfig->get('position_save_button_top');
+        $interfaceConfig = new InterfaceConfig();
+        $iface_show_id = $interfaceConfig->get('show_record_id');
+        $iface_edit_add_record_top = $interfaceConfig->get('position_record_form_top');
+        $iface_edit_save_changes_top = $interfaceConfig->get('position_save_button_top');
         $iface_record_comments = $this->config('iface_record_comments');
 
         $row_start = 0;

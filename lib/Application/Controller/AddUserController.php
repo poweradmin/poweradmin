@@ -39,7 +39,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Configuration\MailConfig;
 use Poweradmin\Infrastructure\Configuration\PasswordPolicyConfig;
-use Poweradmin\Infrastructure\Configuration\UiConfig;
+use Poweradmin\Infrastructure\Configuration\InterfaceConfig;
 use Valitron\Validator;
 
 class AddUserController extends BaseController
@@ -117,8 +117,8 @@ class AddUserController extends BaseController
 
             // Handle generated password and email sending
             if (!empty($generatedPassword)) {
-                $uiConfig = new UiConfig();
-                $showGeneratedPasswords = $uiConfig->get('show_generated_passwords');
+                $interfaceConfig = new InterfaceConfig();
+                $showGeneratedPasswords = $interfaceConfig->get('show_generated_passwords');
 
                 // Display the generated password to the admin if allowed by configuration
                 if ($showGeneratedPasswords) {

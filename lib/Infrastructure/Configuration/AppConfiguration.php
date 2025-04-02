@@ -27,26 +27,32 @@ use Poweradmin\Domain\Config\AppConfigDefaults;
 class AppConfiguration implements ConfigurationInterface
 {
     private array $config;
+    private ConfigurationManager $configManager;
 
     public function __construct()
     {
+        // Get default settings
         $this->config = AppConfigDefaults::getDefaults();
 
-        $appConfigFile = __DIR__ . '/../../../config/app.php';
-        if (file_exists($appConfigFile)) {
-            $this->config = array_merge(
-                $this->config,
-                require $appConfigFile
-            );
-        }
+        // Load settings from the central configuration manager
+        $this->configManager = ConfigurationManager::getInstance();
+        $this->configManager->initialize();
     }
 
-    public function get(string $key = null): mixed
+    public function get(string $key = null, mixed $default = null): mixed
     {
         if ($key === null) {
-            return $this->config;
+            return array_merge($this->config, $this->configManager->getAll());
         }
 
-        return $this->config[$key] ?? null;
+        // First check the central configuration
+        foreach (['database', 'security', 'misc'] as $group) {
+            if (isset($this->configManager->getGroup($group)[$key])) {
+                return $this->configManager->getGroup($group)[$key];
+            }
+        }
+
+        // Fall back to default configurations
+        return $this->config[$key] ?? $default;
     }
 }

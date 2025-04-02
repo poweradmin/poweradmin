@@ -27,26 +27,40 @@ use Poweradmin\Domain\Config\UiConfigDefaults;
 class UiConfig implements ConfigurationInterface
 {
     private array $config;
+    private ConfigurationManager $configManager;
 
     public function __construct()
     {
+        // Get default settings
         $this->config = UiConfigDefaults::getDefaults();
 
-        $uiConfigFile = __DIR__ . '/../../../config/ui.php';
-        if (file_exists($uiConfigFile)) {
-            $this->config = array_merge(
-                $this->config,
-                require $uiConfigFile
-            );
-        }
+        // Load settings from the central configuration manager
+        $this->configManager = ConfigurationManager::getInstance();
+        $this->configManager->initialize();
     }
 
-    public function get(string $key = null): mixed
+    public function get(string $key = null, mixed $default = null): mixed
     {
         if ($key === null) {
-            return $this->config;
+            return array_merge($this->config, $this->configManager->getGroup('interface'));
         }
 
-        return $this->config[$key] ?? null;
+        // Map old config keys to new interface settings keys
+        $keyMapping = [
+            'show_record_id_column' => 'show_record_id',
+            'position_record_form_top' => 'position_record_form_top',
+            'position_save_button_top' => 'position_save_button_top',
+        ];
+
+        $lookupKey = $keyMapping[$key] ?? $key;
+
+        // Check if the setting exists in the interface group
+        $interfaceSettings = $this->configManager->getGroup('interface');
+        if (isset($interfaceSettings[$lookupKey])) {
+            return $interfaceSettings[$lookupKey];
+        }
+
+        // Fall back to default configurations
+        return $this->config[$key] ?? $default;
     }
 }

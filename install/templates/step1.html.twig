@@ -5,46 +5,60 @@
 {% endblock %}
 
 {% block content %}
-    <form method="post">
-        <input type="hidden" name="install_token" value="{{ install_token }}">
-        <div class="form-check">
-            <input id="language_en_EN" class="form-check-input" type="radio" name="language" value="en_EN" checked>
-            <label for="language_en_EN">I prefer to proceed in English</label>
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">{% trans %}Select Installation Language{% endtrans %}</h5>
         </div>
-        <div class="form-check">
-            <input id="language_nl_NL" class="form-check-input" type="radio" name="language" value="nl_NL">
-            <label for="language_nl_NL">Ik ga graag verder in het Nederlands</label>
+        <div class="card-body">
+            <form method="post">
+                <input type="hidden" name="install_token" value="{{ install_token }}">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-check mb-2">
+                            <input id="language_en_EN" class="form-check-input" type="radio" name="language" value="en_EN" checked>
+                            <label for="language_en_EN">I prefer to proceed in English</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input id="language_nl_NL" class="form-check-input" type="radio" name="language" value="nl_NL">
+                            <label for="language_nl_NL">Ik ga graag verder in het Nederlands</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input id="language_de_DE" class="form-check-input" type="radio" name="language" value="de_DE">
+                            <label for="language_de_DE">Ich mache in Deutsch weiter</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input id="language_it_IT" class="form-check-input" type="radio" name="language" value="it_IT">
+                            <label for="language_it_IT">Preferisco procedere in italiano</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input id="language_ja_JP" class="form-check-input" type="radio" name="language" value="ja_JP">
+                            <label for="language_ja_JP">日本語で続ける</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-check mb-2">
+                            <input id="language_pl_PL" class="form-check-input" type="radio" name="language" value="pl_PL">
+                            <label for="language_pl_PL">Chcę kontynuować po polsku</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input id="language_fr_FR" class="form-check-input" type="radio" name="language" value="fr_FR">
+                            <label for="language_fr_FR">Je préfère continuer en français</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input id="language_nb_NO" class="form-check-input" type="radio" name="language" value="nb_NO">
+                            <label for="language_nb_NO">Jeg ønsker å forsette på norsk</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input id="language_zh_CN" class="form-check-input" type="radio" name="language" value="zh_CN">
+                            <label for="language_zh_CN">简体中文</label>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" name="step" value="{{ next_step }}">
+                <div class="mt-3">
+                    <input type="submit" name="submit" class="btn btn-primary" value="{% trans %}Go to step{% endtrans %} {{ next_step }}">
+                </div>
+            </form>
         </div>
-        <div class="form-check">
-            <input id="language_de_DE" class="form-check-input" type="radio" name="language" value="de_DE">
-            <label for="language_de_DE">Ich mache in Deutsch weiter</label>
-        </div>
-        <div class="form-check">
-            <input id="language_it_IT" class="form-check-input" type="radio" name="language" value="it_IT">
-            <label for="language_it_IT">Preferisco procedere in italiano</label>
-        </div>
-        <div class="form-check">
-            <input id="language_ja_JP" class="form-check-input" type="radio" name="language" value="ja_JP">
-            <label for="language_ja_JP">日本語で続ける</label>
-        </div>
-        <div class="form-check">
-            <input id="language_pl_PL" class="form-check-input" type="radio" name="language" value="pl_PL">
-            <label for="language_pl_PL">Chcę kontynuować po polsku</label>
-        </div>
-        <div class="form-check">
-            <input id="language_fr_FR" class="form-check-input" type="radio" name="language" value="fr_FR">
-            <label for="language_fr_FR">Je préfère continuer en français</label>
-        </div>
-        <div class="form-check">
-            <input id="language_nb_NO" class="form-check-input" type="radio" name="language" value="nb_NO">
-            <label for="language_nb_NO">Jeg ønsker å forsette på norsk</label>
-        </div>
-        <div class="form-check">
-            <input id="language_zh_CN" class="form-check-input" type="radio" name="language" value="zh_CN">
-            <label for="language_zh_CN">简体中文</label>
-        </div>
-        <input type="hidden" name="step" value="{{ next_step }}">
-        <br>
-        <input type="submit" name="submit" class="btn btn-primary btn-sm" value="{% trans %}Go to step{% endtrans %} {{ next_step }}">
-    </form>
+    </div>
 {% endblock %}

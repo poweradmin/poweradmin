@@ -192,7 +192,7 @@ class InstallStepHandler
         ));
     }
 
-    public function step6CreateConfigurationFile(array $errors, string $default_config_file, string $local_config_file): void
+    public function step6CreateConfigurationFile(array $errors, string $default_config_file, string $local_config_file, string $new_config_file): void
     {
         // No need to set database port if it's standard port for that db
         $db_port = ($this->request->get('db_type') == 'mysql' && $this->request->get('db_port') != 3306)
@@ -221,11 +221,18 @@ class InstallStepHandler
             $config->get('password_encryption_cost')
         );
 
+        $sessionKey = $userAuthService->generateSalt(self::SESSION_KEY_LENGTH);
+
+        // Format display paths for the UI (remove leading slashes)
+        $displayLocalConfigFile = 'inc/config.inc.php';
+        $displayNewConfigFile = 'config/settings.php';
+
         $this->renderTemplate('step6.html.twig', array(
             'current_step' => $this->currentStep,
             'language' => $this->language,
-            'local_config_file' => $local_config_file,
-            'session_key' => $userAuthService->generateSalt(self::SESSION_KEY_LENGTH),
+            'local_config_file' => $displayLocalConfigFile,
+            'new_config_file' => $displayNewConfigFile,
+            'session_key' => $sessionKey,
             'dns_hostmaster' => $dns_hostmaster,
             'dns_ns1' => $dns_ns1,
             'dns_ns2' => $dns_ns2,

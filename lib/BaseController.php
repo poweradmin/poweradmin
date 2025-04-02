@@ -24,7 +24,7 @@ namespace Poweradmin;
 
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Infrastructure\Configuration\UiConfig;
+use Poweradmin\Infrastructure\Configuration\InterfaceConfig;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Service\ThemeManager;
@@ -98,13 +98,16 @@ abstract class BaseController
      */
     public function config(string $key): mixed
     {
-        // Handle renamed settings that moved to UiConfig
-        $uiConfig = new UiConfig();
+        // Handle renamed settings that moved to InterfaceConfig
+        $interfaceConfig = new InterfaceConfig();
 
         return match ($key) {
-            'iface_edit_show_id' => $uiConfig->get('show_record_id_column'),
-            'iface_edit_add_record_top' => $uiConfig->get('position_record_form_top'),
-            'iface_edit_save_changes_top' => $uiConfig->get('position_save_button_top'),
+            'iface_edit_show_id' => $interfaceConfig->get('show_record_id'),
+            'iface_edit_add_record_top' => $interfaceConfig->get('position_record_form_top'),
+            'iface_edit_save_changes_top' => $interfaceConfig->get('position_save_button_top'),
+            'iface_lang' => $interfaceConfig->get('language'),
+            'iface_style' => $interfaceConfig->get('theme'),
+            'iface_rowamount' => $interfaceConfig->get('rows_per_page'),
             default => $this->app->config($key),
         };
     }
