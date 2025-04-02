@@ -114,17 +114,38 @@ class InstallStepHandler
 
         $pa_pass = $this->request->get('pa_pass');
 
-        $databaseConnection = new PDODatabaseConnection();
-        $databaseService = new DatabaseService($databaseConnection);
-        $db = $databaseService->connect($credentials);
+        try {
+            $databaseConnection = new PDODatabaseConnection();
+            $databaseService = new DatabaseService($databaseConnection);
+            $db = $databaseService->connect($credentials);
 
-        echo "<p class='alert alert-secondary'>" . _('Updating database...') . " ";
+            echo "<p class='alert alert-secondary'>" . _('Updating database...') . " ";
 
-        $databaseHelper = new DatabaseHelper($db, $credentials);
-        $databaseHelper->updateDatabase();
-        $databaseHelper->createAdministratorUser($pa_pass, $default_config_file);
+            $databaseHelper = new DatabaseHelper($db, $credentials);
+            $databaseHelper->updateDatabase();
+            $databaseHelper->createAdministratorUser($pa_pass, $default_config_file);
 
-        echo _('done!') . "</p>";
+            echo _('done!') . "</p>";
+        } catch (\Exception $e) {
+            // Display the error in a user-friendly way
+            echo "<div class='alert alert-danger'>";
+            echo "<h5>" . _('Database Error') . "</h5>";
+            echo "<p>" . $e->getMessage() . "</p>";
+
+            if ($credentials['db_type'] == 'sqlite') {
+                echo "<p><strong>" . _('Suggestions:') . "</strong></p>";
+                echo "<ul>";
+                echo "<li>" . _('Make sure the SQLite database file exists') . "</li>";
+                echo "<li>" . _('Check that the web server has read and write permissions for the database file') . "</li>";
+                echo "<li>" . _('Verify the full path to the database file is correct and accessible') . "</li>";
+                echo "</ul>";
+            }
+
+            echo "</div>";
+
+            // Return so we don't continue with the form rendering
+            return;
+        }
 
         $inputData = [
             'pa_db_user' => $this->request->get('pa_db_user'),

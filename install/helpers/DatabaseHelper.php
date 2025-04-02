@@ -40,6 +40,11 @@ class DatabaseHelper
 
     public function updateDatabase(): void
     {
+        // For SQLite, verify file permissions before proceeding
+        if (isset($this->databaseCredentials['db_type']) && $this->databaseCredentials['db_type'] === 'sqlite') {
+            $this->verifySQLiteAccess();
+        }
+
         $current_tables = $this->db->listTables();
         $def_tables = DatabaseStructureHelper::getDefaultTables();
 
@@ -50,11 +55,11 @@ class DatabaseHelper
 
             $options = $table['options'];
 
-            if ($this->databaseCredentials['db_charset']) {
+            if (isset($this->databaseCredentials['db_charset']) && $this->databaseCredentials['db_charset']) {
                 $options['charset'] = $this->databaseCredentials['db_charset'];
             }
 
-            if ($this->databaseCredentials['db_collation']) {
+            if (isset($this->databaseCredentials['db_collation']) && $this->databaseCredentials['db_collation']) {
                 $options['collation'] = $this->databaseCredentials['db_collation'];
             }
             $this->db->createTable($table['table_name'], $table['fields'], $options);
@@ -65,6 +70,53 @@ class DatabaseHelper
         $this->db->executeMultiple($fill_perm_items, $def_permissions);
         if (method_exists($fill_perm_items, 'free')) {
             $fill_perm_items->free();
+        }
+    }
+
+    /**
+     * Verify that the SQLite database file is accessible and writable
+     *
+     * @throws \RuntimeException If there are any permission or access issues
+     */
+    private function verifySQLiteAccess(): void
+    {
+        $dbFile = isset($this->databaseCredentials['db_file']) ? $this->databaseCredentials['db_file'] : $this->databaseCredentials['db_name'];
+
+        // Check if the database file exists
+        if (!file_exists($dbFile)) {
+            throw new \RuntimeException(sprintf(
+                _('The SQLite database file %s does not exist. Please create the database file before proceeding.'),
+                $dbFile
+            ));
+        }
+
+        // Check if the file is readable
+        if (!is_readable($dbFile)) {
+            throw new \RuntimeException(sprintf(
+                _('The SQLite database file %s is not readable. Please check file permissions.'),
+                $dbFile
+            ));
+        }
+
+        // Check if the file is writable
+        if (!is_writable($dbFile)) {
+            throw new \RuntimeException(sprintf(
+                _('The SQLite database file %s is not writable. Please check file permissions.'),
+                $dbFile
+            ));
+        }
+
+        // Check if we can actually open the database file
+        try {
+            $testConn = new \PDO("sqlite:{$dbFile}");
+            $testConn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+            $testConn->exec('PRAGMA quick_check');
+        } catch (\PDOException $e) {
+            throw new \RuntimeException(sprintf(
+                _('Could not access the SQLite database file %s: %s'),
+                $dbFile,
+                $e->getMessage()
+            ));
         }
     }
 

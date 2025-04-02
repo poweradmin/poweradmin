@@ -97,7 +97,19 @@
                             </div>
                             <div class="col-md-5">
                                 <span class="form-text" id="db_name_title">{% trans %}The name of the PowerDNS database.{% endtrans %}</span>
-                                <span class="form-text" id="db_path_title" style="display: none;">{% trans %}The path and filename to the PowerDNS SQLite database.{% endtrans %}</span>
+                                <span class="form-text" id="db_path_title" style="display: none;">
+                                    {% trans %}The full absolute path to the PowerDNS SQLite database file.{% endtrans %}
+                                    <div class="alert alert-warning mt-2 mb-0">
+                                        <small>
+                                            <strong>{% trans %}Important for SQLite:{% endtrans %}</strong>
+                                            <ul class="mb-0">
+                                                <li>{% trans %}The database file must already exist.{% endtrans %}</li>
+                                                <li>{% trans %}The web server user must have read and write permissions to this file.{% endtrans %}</li>
+                                                <li>{% trans %}Use an absolute path (e.g., /var/lib/powerdns/pdns.sqlite) not a relative path.{% endtrans %}</li>
+                                            </ul>
+                                        </small>
+                                    </div>
+                                </span>
                             </div>
                         </div>
 
@@ -201,6 +213,89 @@
             });
         }
 
+        function updateFormFields(dbType) {
+            // Fields to show/hide based on DB type
+            const usernameRow = document.getElementById('username_row');
+            const passwordRow = document.getElementById('password_row');
+            const hostnameRow = document.getElementById('db_hostname_row');
+            const portRow = document.getElementById('db_port_row');
+            const charsetRow = document.getElementById('db_charset_row');
+            const collationRow = document.getElementById('db_collation_row');
+
+            // Input fields
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('userpass');
+            const hostnameInput = document.getElementById('host');
+            const portInput = document.getElementById('db_port');
+
+            // Text labels for database field
+            const dbNameTitle = document.getElementById('db_name_title');
+            const dbPathTitle = document.getElementById('db_path_title');
+
+            // Database name/path input field
+            const dbNameInput = document.getElementById('db_name');
+
+            if (dbType === 'sqlite') {
+                // For SQLite, hide user/pass/host/port fields
+                usernameRow.style.display = 'none';
+                passwordRow.style.display = 'none';
+                hostnameRow.style.display = 'none';
+                portRow.style.display = 'none';
+                charsetRow.style.display = 'none';
+                collationRow.style.display = 'none';
+
+                // Remove 'required' attribute from hidden fields
+                usernameInput.removeAttribute('required');
+                passwordInput.removeAttribute('required');
+                hostnameInput.removeAttribute('required');
+                portInput.removeAttribute('required');
+
+                // Show SQLite-specific help text and hide MySQL/PostgreSQL help
+                dbNameTitle.style.display = 'none';
+                dbPathTitle.style.display = 'block';
+
+                // Update input placeholder for SQLite
+                dbNameInput.placeholder = '/path/to/database.sqlite';
+
+                // If the field is empty, suggest a default path
+                if (!dbNameInput.value) {
+                    dbNameInput.value = '/var/lib/powerdns/pdns.sqlite';
+                }
+            } else {
+                // For MySQL/PostgreSQL, show all fields
+                usernameRow.style.display = '';
+                passwordRow.style.display = '';
+                hostnameRow.style.display = '';
+                portRow.style.display = '';
+                charsetRow.style.display = '';
+                collationRow.style.display = '';
+
+                // Add 'required' attribute back to visible fields
+                usernameInput.setAttribute('required', '');
+                passwordInput.setAttribute('required', '');
+                hostnameInput.setAttribute('required', '');
+                portInput.setAttribute('required', '');
+
+                // Show MySQL/PostgreSQL-specific help text and hide SQLite help
+                dbNameTitle.style.display = 'block';
+                dbPathTitle.style.display = 'none';
+
+                // Update input placeholder for MySQL/PostgreSQL
+                dbNameInput.placeholder = 'powerdns';
+
+                // Update port if it's one of the standard ports
+                if (dbType === 'mysql' && (!portInput.value || portInput.value === '5432')) {
+                    portInput.value = '3306';
+                } else if (dbType === 'pgsql' && (!portInput.value || portInput.value === '3306')) {
+                    portInput.value = '5432';
+                }
+            }
+
+            // Reset validation state when changing database type
+            const form = document.querySelector('form.needs-validation');
+            form.classList.remove('was-validated');
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             const dbTypeElement = document.getElementById('db_type');
             if (dbTypeElement) {
@@ -208,6 +303,7 @@
                 updateDatabaseFields(dbTypeElement.value);
 
                 dbTypeElement.addEventListener('change', function() {
+                    updateFormFields(this.value);
                     updateDatabaseFields(this.value);
                 });
             }
