@@ -136,11 +136,18 @@ class AppConfiguration implements ConfigurationInterface
      */
     public function get(string $key = null, mixed $default = null): mixed
     {
+        // If no key is provided, return all config
+        if ($key === null) {
+            return $this->getAll();
+        }
+        
+        // Check for legacy config keys first for backward compatibility
         if (array_key_exists($key, $this->config)) {
             return $this->config[$key];
-        } else {
-            return $default;
         }
+        
+        // Otherwise return the default
+        return $default;
     }
 
     /**

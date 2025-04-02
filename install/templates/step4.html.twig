@@ -89,24 +89,28 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="dns_ns3" class="col-md-3 col-form-label">{% trans %}Tertiary Nameserver{% endtrans %}</label>
+                            <label for="dns_ns3" class="col-md-3 col-form-label">
+                                {% trans %}Tertiary Nameserver{% endtrans %} <span class="text-muted">({% trans %}optional{% endtrans %})</span>
+                            </label>
                             <div class="col-md-4">
                                 <input id="dns_ns3" class="form-control" type="text" name="dns_ns3" value="{{ dns_ns3 }}"
                                        placeholder="ns3.example.net">
                             </div>
                             <div class="col-md-5">
-                                <span class="form-text">{% trans %}When creating new zones using the template, this value will be used as tertiary nameserver.{% endtrans %}</span>
+                                <span class="form-text">{% trans %}When creating new zones using the template, this optional value will be used as tertiary nameserver.{% endtrans %}</span>
                             </div>
                         </div>
 
                         <div class="row mb-3">
-                            <label for="dns_ns4" class="col-md-3 col-form-label">{% trans %}Quaternary Nameserver{% endtrans %}</label>
+                            <label for="dns_ns4" class="col-md-3 col-form-label">
+                                {% trans %}Quaternary Nameserver{% endtrans %} <span class="text-muted">({% trans %}optional{% endtrans %})</span>
+                            </label>
                             <div class="col-md-4">
                                 <input id="dns_ns4" class="form-control" type="text" name="dns_ns4" value="{{ dns_ns4 }}"
                                        placeholder="ns4.example.net">
                             </div>
                             <div class="col-md-5">
-                                <span class="form-text">{% trans %}When creating new zones using the template, this value will be used as quaternary nameserver.{% endtrans %}</span>
+                                <span class="form-text">{% trans %}When creating new zones using the template, this optional value will be used as quaternary nameserver.{% endtrans %}</span>
                             </div>
                         </div>
                     </div>

@@ -332,6 +332,9 @@ class ConfigurationManager
         if (isset($legacyConfig['display_stats'])) {
             $newConfig['misc']['display_stats'] = $legacyConfig['display_stats'];
         }
+        if (isset($legacyConfig['display_errors'])) {
+            $newConfig['misc']['display_errors'] = $legacyConfig['display_errors'];
+        }
         if (isset($legacyConfig['timezone'])) {
             $newConfig['misc']['timezone'] = $legacyConfig['timezone'];
         }

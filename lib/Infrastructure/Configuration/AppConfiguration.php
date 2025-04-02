@@ -51,6 +51,11 @@ class AppConfiguration implements ConfigurationInterface
                 return $this->configManager->getGroup($group)[$key];
             }
         }
+        
+        // For certain settings, check specific groups with proper defaults
+        if ($key === 'display_errors') {
+            return $this->configManager->get('misc', 'display_errors', $this->config['display_errors'] ?? false);
+        }
 
         // Fall back to default configurations
         return $this->config[$key] ?? $default;

@@ -66,12 +66,19 @@ return [
         'hostmaster' => '{{ dns_hostmaster }}',
         'ns1' => '{{ dns_ns1 }}',
         'ns2' => '{{ dns_ns2 }}',
-{% if dns_ns3 %}
+{% if dns_ns3 is defined and dns_ns3 is not empty %}
         'ns3' => '{{ dns_ns3 }}',
 {% endif %}
-{% if dns_ns4 %}
+{% if dns_ns4 is defined and dns_ns4 is not empty %}
         'ns4' => '{{ dns_ns4 }}',
 {% endif %}
+    ],
+
+    /**
+     * Miscellaneous Settings
+     */
+    'misc' => [
+        'display_errors' => false, // Set to true to show detailed error messages (not recommended in production)
     ],
 ];
 </pre>

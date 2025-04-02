@@ -113,17 +113,37 @@ class AppInitializer
      */
     private function connectToDatabase(): void
     {
-        $credentials = [
-            'db_host' => $this->config->get('db_host'),
-            'db_port' => $this->config->get('db_port'),
-            'db_user' => $this->config->get('db_user'),
-            'db_pass' => $this->config->get('db_pass'),
-            'db_name' => $this->config->get('db_name'),
-            'db_charset' => $this->config->get('db_charset'),
-            'db_collation' => $this->config->get('db_collation'),
-            'db_type' => $this->config->get('db_type'),
-            'db_file' => $this->config->get('db_file'),
-        ];
+        // Check if we're using the new configuration format (config/settings.php)
+        $dbConfig = $this->config->get('database', []);
+        
+        // If new config format is being used (database group exists and has type set)
+        if (!empty($dbConfig) && isset($dbConfig['type'])) {
+            // Using new configuration format (settings.php)
+            $credentials = [
+                'db_host' => $dbConfig['host'] ?? '',
+                'db_port' => $dbConfig['port'] ?? '',
+                'db_user' => $dbConfig['user'] ?? '',
+                'db_pass' => $dbConfig['password'] ?? '',
+                'db_name' => $dbConfig['name'] ?? '',
+                'db_charset' => $dbConfig['charset'] ?? '',
+                'db_collation' => $dbConfig['collation'] ?? '',
+                'db_type' => $dbConfig['type'] ?? '',
+                'db_file' => $dbConfig['file'] ?? '',
+            ];
+        } else {
+            // Using legacy configuration format (config.inc.php)
+            $credentials = [
+                'db_host' => $this->config->get('db_host', ''),
+                'db_port' => $this->config->get('db_port', ''),
+                'db_user' => $this->config->get('db_user', ''),
+                'db_pass' => $this->config->get('db_pass', ''),
+                'db_name' => $this->config->get('db_name', ''),
+                'db_charset' => $this->config->get('db_charset', ''),
+                'db_collation' => $this->config->get('db_collation', ''),
+                'db_type' => $this->config->get('db_type', ''),
+                'db_file' => $this->config->get('db_file', ''),
+            ];
+        }
 
         $databaseConnection = new PDODatabaseConnection();
         $databaseService = new DatabaseService($databaseConnection);
