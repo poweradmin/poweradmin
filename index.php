@@ -22,6 +22,7 @@
 
 use Poweradmin\Application\Routing\BasicRouter;
 use Poweradmin\Infrastructure\Configuration\AppConfiguration;
+use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Pages;
 
 require __DIR__ . '/vendor/autoload.php';
@@ -29,7 +30,8 @@ require __DIR__ . '/vendor/autoload.php';
 $config = new AppConfiguration();
 
 if (!function_exists('session_start')) {
-    die("You have to install the PHP session extension!");
+    require_once __DIR__ . '/lib/Infrastructure/Service/MessageService.php';
+    MessageService::displayStaticSystemError("You have to install the PHP session extension!");
 }
 
 $secure = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';

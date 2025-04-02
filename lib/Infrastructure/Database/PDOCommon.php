@@ -41,6 +41,7 @@ namespace Poweradmin\Infrastructure\Database;
 use Exception;
 use PDO;
 use PDOStatement;
+use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * Implements common PDO methods
@@ -74,7 +75,10 @@ class PDOCommon extends PDO
             parent::__construct($dsn, $username, $password, $driver_options);
         } catch (Exception $e) {
             error_log($e->getMessage());
-            die("Unable to connect to the database server.");
+            // Use MessageService for consistent error display
+            require_once dirname(__DIR__, 3) . '/lib/Infrastructure/Service/MessageService.php';
+            $messageService = new MessageService();
+            $messageService->displayDirectSystemError("Unable to connect to the database server. Please check your database configuration.");
         }
         $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         // only allow one statement per query
@@ -116,7 +120,11 @@ class PDOCommon extends PDO
                 "\n" . $e->getMessage() .
                 "\nFull SQL Statement:" . $query .
                 "\n*]");
-            die("An error occurred while executing the SQL statement.");
+
+            // Use MessageService for consistent error display
+            require_once dirname(__DIR__, 3) . '/lib/Infrastructure/Service/MessageService.php';
+            $messageService = new MessageService();
+            $messageService->displayDirectSystemError("An error occurred while executing the SQL statement. Please check the error logs for details.");
         }
 
         return $obj_pdoStatement;

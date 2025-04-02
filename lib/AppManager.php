@@ -97,7 +97,8 @@ class AppManager
             echo $this->templateRenderer->render($template, $params);
         } catch (Error $e) {
             error_log($e->getMessage());
-            die('An error occurred while rendering the template.');
+            $messageService = new MessageService();
+            $messageService->displayDirectSystemError('An error occurred while rendering the template: ' . $e->getMessage());
         }
     }
 
@@ -147,10 +148,21 @@ class AppManager
     {
         if (!$validator->validate()) {
             $errors = $validator->getErrors();
-            foreach ($errors as $error) {
-                MessageService::addStaticSystemError("Invalid configuration: $error");
+            $messageService = new MessageService();
+
+            // If there's only one error, display it directly
+            if (count($errors) === 1) {
+                $messageService->displayDirectSystemError("Invalid configuration: " . $errors[0]);
             }
-            exit(1);
+            // If there are multiple errors, format them as a list
+            elseif (count($errors) > 1) {
+                $errorMessage = "Invalid configuration:<ul>";
+                foreach ($errors as $error) {
+                    $errorMessage .= "<li>" . htmlspecialchars($error, ENT_QUOTES) . "</li>";
+                }
+                $errorMessage .= "</ul>";
+                $messageService->displayDirectSystemError($errorMessage);
+            }
         }
     }
 

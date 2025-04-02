@@ -246,9 +246,9 @@ class UserManager
         $response = $db->queryOne($query);
 
         if ($response) {
-            // Since this is a static method, we can't use the instance messageService
-            // Consider refactoring to use a static method or restructuring the class
-            MessageService::addStaticSystemError(_('This template is assigned to at least one user.'));
+            // Create a new MessageService instance since this is a static method
+            $messageService = new MessageService();
+            $messageService->addSystemError(_('This template is assigned to at least one user.'));
 
             return false;
         } else {

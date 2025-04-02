@@ -68,8 +68,9 @@ class AppInitializer
     {
         if (!file_exists('inc/config.inc.php')) {
             $messageService = new MessageService();
-            MessageService::addStaticSystemError(_('The configuration file (config.inc.php) does not exist. Please use the <a href="install/">installer</a> to create it.'));
-            exit();
+            $messageService->displayHtmlError(
+                _('The configuration file (config.inc.php) does not exist. Please use the <a href="install/">installer</a> to create it.')
+            );
         }
     }
 

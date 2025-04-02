@@ -31,6 +31,7 @@ class MessageService
 
     /**
      * Add a message to be displayed for a specific script
+     * Prevents duplicate messages from being added
      *
      * @param string $script The script to set the message for
      * @param string $type The type of message (error, warn, success, info)
@@ -47,10 +48,24 @@ class MessageService
             $content = sprintf('%s (Record: %s)', $content, $recordName);
         }
 
-        $_SESSION['messages'][$script][] = [
+        $newMessage = [
             'type' => $type,
             'content' => $content
         ];
+
+        // Check if this message already exists to prevent duplicates
+        $isDuplicate = false;
+        foreach ($_SESSION['messages'][$script] as $existingMessage) {
+            if ($existingMessage['type'] === $type && $existingMessage['content'] === $content) {
+                $isDuplicate = true;
+                break;
+            }
+        }
+
+        // Only add the message if it's not a duplicate
+        if (!$isDuplicate) {
+            $_SESSION['messages'][$script][] = $newMessage;
+        }
     }
 
     /**
@@ -159,14 +174,135 @@ EOF;
     }
 
     /**
-     * Static method to add a system error message for static contexts
+     * Options for configuring system error display
+     */
+    private array $errorOptions = [
+        'recordName' => null,
+        'exit' => true,
+        'allowHtml' => false
+    ];
+
+    /**
+     * Set record name context for the error message
+     *
+     * @param string $recordName The record name to provide context for
+     * @return $this For method chaining
+     */
+    public function withRecordContext(string $recordName): self
+    {
+        $this->errorOptions['recordName'] = $recordName;
+        return $this;
+    }
+
+    /**
+     * Allow HTML in the error message
+     *
+     * @return $this For method chaining
+     */
+    public function allowHtml(): self
+    {
+        $this->errorOptions['allowHtml'] = true;
+        return $this;
+    }
+
+    /**
+     * Don't exit the script after displaying the error
+     *
+     * @return $this For method chaining
+     */
+    public function dontExit(): self
+    {
+        $this->errorOptions['exit'] = false;
+        return $this;
+    }
+
+    /**
+     * Reset error options to default values
+     */
+    private function resetErrorOptions(): void
+    {
+        $this->errorOptions = [
+            'recordName' => null,
+            'exit' => true,
+            'allowHtml' => false
+        ];
+    }
+
+    /**
+     * Display a system error directly with basic HTML
+     * Useful for critical errors before the header/footer can be rendered
      *
      * @param string $error The error message to display
-     * @param string|null $recordName Optional record name for context
      */
-    public static function addStaticSystemError(string $error, ?string $recordName = null): void
+    public function displayDirectSystemError(string $error): void
     {
-        $messageService = new self();
-        $messageService->addSystemError($error, $recordName);
+        // Extract options and reset for next call
+        $recordName = $this->errorOptions['recordName'];
+        $exit = $this->errorOptions['exit'];
+        $allowHtml = $this->errorOptions['allowHtml'];
+        $this->resetErrorOptions();
+
+        if ($recordName !== null) {
+            $error = sprintf('%s (Record: %s)', $error, $recordName);
+        }
+
+        // First store the error in the session for later display if needed
+        $this->addSystemError($error, $recordName);
+
+        // Process the error message based on allowHtml parameter
+        $processedError = $allowHtml ? $error : htmlspecialchars($error, ENT_QUOTES);
+
+        // Check if headers have been sent - if not, we can output a complete HTML page
+        if (!headers_sent()) {
+            echo '<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Poweradmin - Error</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+        .alert-danger { background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 15px; border-radius: 4px; margin-bottom: 20px; }
+        a { color: #007bff; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="alert-danger" role="alert">
+        <strong>Error:</strong> ' . $processedError . '
+    </div>
+</body>
+</html>';
+        } else {
+            // Headers already sent, output just the message
+            echo '<div class="alert-danger" role="alert" style="background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+    <strong>Error:</strong> ' . $processedError . '
+</div>';
+        }
+
+        if ($exit) {
+            exit();
+        }
+    }
+
+    /**
+     * Display a system error with HTML content
+     * Convenience method that automatically sets allowHtml to true
+     *
+     * @param string $error The HTML error message to display
+     */
+    public function displayHtmlError(string $error): void
+    {
+        $this->allowHtml()->displayDirectSystemError($error);
+    }
+
+    /**
+     * Get a new instance of MessageService for static contexts
+     *
+     * @return static A new MessageService instance
+     */
+    public static function create(): static
+    {
+        return new static();
     }
 }

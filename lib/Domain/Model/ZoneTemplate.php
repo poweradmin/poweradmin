@@ -127,18 +127,17 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public static function add_zone_templ($db, array $details, int $userid): bool
+    public function add_zone_templ(array $details, int $userid): bool
     {
-        $messageService = new MessageService();
-        $zone_name_exists = ZoneTemplate::zone_templ_name_exists($db, $details['templ_name']);
+        $zone_name_exists = $this->zone_templ_name_exists($details['templ_name']);
 
-        if (!(UserManager::verify_permission($db, 'zone_master_add'))) {
-            MessageService::addStaticSystemError(_("You do not have the permission to add a zone template."));
+        if (!(UserManager::verify_permission($this->db, 'zone_master_add'))) {
+            $this->messageService->addSystemError(_("You do not have the permission to add a zone template."));
             return false;
         } elseif ($zone_name_exists != '0') {
-            MessageService::addStaticSystemError(_('Zone template with this name already exists, please choose another one.'));
+            $this->messageService->addSystemError(_('Zone template with this name already exists, please choose another one.'));
         } else {
-            $stmt = $db->prepare("INSERT INTO zone_templ (name, descr, owner) VALUES (:name, :descr, :owner)");
+            $stmt = $this->db->prepare("INSERT INTO zone_templ (name, descr, owner) VALUES (:name, :descr, :owner)");
             $stmt->execute([
                 ':name' => $details['templ_name'],
                 ':descr' => $details['templ_descr'],
@@ -627,10 +626,10 @@ class ZoneTemplate
      *
      * @return bool number of matching templates
      */
-    public static function zone_templ_name_exists($db, string $zone_templ_name): bool
+    public function zone_templ_name_exists(string $zone_templ_name): bool
     {
-        $query = "SELECT COUNT(id) FROM zone_templ WHERE name = " . $db->quote($zone_templ_name, 'text');
-        return $db->queryOne($query);
+        $query = "SELECT COUNT(id) FROM zone_templ WHERE name = " . $this->db->quote($zone_templ_name, 'text');
+        return $this->db->queryOne($query);
     }
 
     /**

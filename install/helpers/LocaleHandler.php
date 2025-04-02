@@ -83,6 +83,7 @@ class LocaleHandler
 
     public function handleError(): void
     {
-        MessageService::addStaticSystemError(_('Failed to set locale. Selected locale may be unsupported on this system. Please contact your administrator.'));
+        $messageService = new MessageService();
+        $messageService->addSystemError(_('Failed to set locale. Selected locale may be unsupported on this system. Please contact your administrator.'));
     }
 }

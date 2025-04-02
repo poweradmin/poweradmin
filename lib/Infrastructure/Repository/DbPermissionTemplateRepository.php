@@ -191,7 +191,8 @@ class DbPermissionTemplateRepository
         $response = $this->db->queryOne($query);
 
         if ($response) {
-            MessageService::addStaticSystemError(_('This template is assigned to at least one user.'));
+            $messageService = new MessageService();
+            $messageService->addSystemError(_('This template is assigned to at least one user.'));
 
             return false;
         } else {
