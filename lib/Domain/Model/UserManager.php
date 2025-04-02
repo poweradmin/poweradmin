@@ -24,22 +24,23 @@ namespace Poweradmin\Domain\Model;
 
 use PDO;
 use Poweradmin\AppConfiguration;
-use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\Application\Service\UserAuthenticationService;
-use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Service\MessageService;
 
 class UserManager
 {
     private PDOLayer $db;
     private AppConfiguration $config;
+    private MessageService $messageService;
 
     public function __construct(PDOLayer $db, AppConfiguration $config)
     {
         $this->db = $db;
         $this->config = $config;
+        $this->messageService = new MessageService();
     }
 
     /**
@@ -208,9 +209,7 @@ class UserManager
     public function delete_user(int $uid, array $zones): bool
     {
         if (($uid != $_SESSION['userid'] && !self::verify_permission($this->db, 'user_edit_others')) || ($uid == $_SESSION['userid'] && !self::verify_permission($this->db, 'user_edit_own'))) {
-            $error = new ErrorMessage(_("You do not have the permission to delete this user."));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            $this->messageService->addSystemError(_("You do not have the permission to delete this user."));
 
             return false;
         } else {
@@ -247,9 +246,9 @@ class UserManager
         $response = $db->queryOne($query);
 
         if ($response) {
-            $error = new ErrorMessage(_('This template is assigned to at least one user.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            // Since this is a static method, we can't use the instance messageService
+            // Consider refactoring to use a static method or restructuring the class
+            MessageService::addStaticSystemError(_('This template is assigned to at least one user.'));
 
             return false;
         } else {
@@ -286,10 +285,7 @@ class UserManager
         if (($id == $_SESSION["userid"] && $perm_edit_own) || ($id != $_SESSION["userid"] && $perm_edit_others)) {
             $validation = new Validator($this->db, $this->config);
             if (!$validation->is_valid_email($email)) {
-                $error = new ErrorMessage(_('Enter a valid email address.'));
-
-                $errorPresenter = new ErrorPresenter();
-                $errorPresenter->present($error);
+                $this->messageService->addSystemError(_('Enter a valid email address.'));
 
                 return false;
             }
@@ -320,9 +316,7 @@ class UserManager
                 $query = "SELECT id FROM users WHERE username = " . $this->db->quote($user, 'text');
                 $response = $this->db->queryOne($query);
                 if ($response) {
-                    $error = new ErrorMessage(_('Username exist already, please choose another one.'));
-                    $errorPresenter = new ErrorPresenter();
-                    $errorPresenter->present($error);
+                    $this->messageService->addSystemError(_('Username exist already, please choose another one.'));
 
                     return false;
                 }
@@ -375,9 +369,7 @@ class UserManager
 
             $stmt->execute();
         } else {
-            $error = new ErrorMessage(_("You do not have the permission to edit this user."));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            $this->messageService->addSystemError(_("You do not have the permission to edit this user."));
             return false;
         }
         return true;
@@ -587,9 +579,7 @@ class UserManager
         if (($details['uid'] == $_SESSION["userid"] && $perm_edit_own) || ($details['uid'] != $_SESSION["userid"] && $perm_edit_others)) {
             $validation = new Validator($this->db, $this->config);
             if (!$validation->is_valid_email($details['email'])) {
-                $error = new ErrorMessage(_('Enter a valid email address.'));
-                $errorPresenter = new ErrorPresenter();
-                $errorPresenter->present($error);
+                $this->messageService->addSystemError(_('Enter a valid email address.'));
 
                 return false;
             }
@@ -627,9 +617,7 @@ class UserManager
                 $query = "SELECT id FROM users WHERE username = " . $this->db->quote($details['username'], 'text');
                 $response = $this->db->queryOne($query);
                 if ($response) {
-                    $error = new ErrorMessage(_('Username exist already, please choose another one.'));
-                    $errorPresenter = new ErrorPresenter();
-                    $errorPresenter->present($error);
+                    $this->messageService->addSystemError(_('Username exist already, please choose another one.'));
 
                     return false;
                 }
@@ -687,9 +675,7 @@ class UserManager
 
             $stmt->execute();
         } else {
-            $error = new ErrorMessage(_("You do not have the permission to edit this user."));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            $this->messageService->addSystemError(_("You do not have the permission to edit this user."));
 
             return false;
         }
@@ -709,27 +695,19 @@ class UserManager
         $validation = new Validator($this->db, $this->config);
 
         if (!self::verify_permission($this->db, 'user_add_new')) {
-            $error = new ErrorMessage(_("You do not have the permission to add a new user."));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            $this->messageService->addSystemError(_("You do not have the permission to add a new user."));
 
             return false;
         } elseif (self::user_exists($this->db, $details['username'])) {
-            $error = new ErrorMessage(_('Username exist already, please choose another one.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            $this->messageService->addSystemError(_('Username exist already, please choose another one.'));
 
             return false;
         } elseif ($details['username'] === '') {
-            $error = new ErrorMessage(_('Enter a valid user name.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            $this->messageService->addSystemError(_('Enter a valid user name.'));
 
             return false;
         } elseif (!$validation->is_valid_email($details['email'])) {
-            $error = new ErrorMessage(_('Enter a valid email address.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            $this->messageService->addSystemError(_('Enter a valid email address.'));
 
             return false;
         }

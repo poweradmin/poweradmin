@@ -142,3 +142,11 @@
 {% endif %}
 
 <main class="container pb-3 flex-shrink-0">
+{% if system_messages is defined and system_messages %}
+    {% for message in system_messages %}
+    <div class="alert alert-{% if message.type == 'error' %}danger{% elseif message.type == 'warn' %}warning{% else %}{{ message.type }}{% endif %} alert-dismissible fade show" role="alert" data-testid="system-message">
+        <strong>{% if message.type == 'error' %}Error:{% elseif message.type == 'warn' %}Warning:{% elseif message.type == 'success' %}Success:{% else %}Info:{% endif %}</strong> {{ message.content | raw }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+{% endif %}

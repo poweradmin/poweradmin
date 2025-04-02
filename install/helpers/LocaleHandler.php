@@ -22,8 +22,7 @@
 
 namespace PoweradminInstall;
 
-use Poweradmin\Application\Presenter\ErrorPresenter;
-use Poweradmin\Domain\Error\ErrorMessage;
+use Poweradmin\Infrastructure\Service\MessageService;
 
 class LocaleHandler
 {
@@ -84,8 +83,6 @@ class LocaleHandler
 
     public function handleError(): void
     {
-        $error = new ErrorMessage(_('Failed to set locale. Selected locale may be unsupported on this system. Please contact your administrator.'));
-        $errorPresenter = new ErrorPresenter();
-        $errorPresenter->present($error);
+        MessageService::addStaticSystemError(_('Failed to set locale. Selected locale may be unsupported on this system. Please contact your administrator.'));
     }
 }

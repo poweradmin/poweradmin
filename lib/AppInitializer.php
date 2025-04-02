@@ -22,11 +22,10 @@
 
 namespace Poweradmin;
 
-use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\Application\Service\DatabaseService;
-use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Service\SessionAuthenticator;
 use Poweradmin\Infrastructure\Utility\DependencyCheck;
 
@@ -68,9 +67,8 @@ class AppInitializer
     private function checkConfigurationFile(): void
     {
         if (!file_exists('inc/config.inc.php')) {
-            $error = new ErrorMessage(_('The configuration file (config.inc.php) does not exist. Please use the <a href="install/">installer</a> to create it.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            $messageService = new MessageService();
+            MessageService::addStaticSystemError(_('The configuration file (config.inc.php) does not exist. Please use the <a href="install/">installer</a> to create it.'));
             exit();
         }
     }

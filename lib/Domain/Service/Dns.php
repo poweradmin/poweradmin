@@ -23,8 +23,7 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\AppConfiguration;
-use Poweradmin\Application\Presenter\ErrorPresenter;
-use Poweradmin\Domain\Error\ErrorMessage;
+use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Model\TopLevelDomain;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 
@@ -40,11 +39,13 @@ class Dns
 {
     private AppConfiguration $config;
     private PDOLayer $db;
+    private MessageService $messageService;
 
     public function __construct(PDOLayer $db, AppConfiguration $config)
     {
         $this->db = $db;
         $this->config = $config;
+        $this->messageService = new MessageService();
     }
 
     /** Matches end of string
@@ -234,9 +235,7 @@ class Dns
                     return false;
                 }
                 if (!$this->is_valid_rr_soa_content($content, $dns_hostmaster)) {
-                    $error = new ErrorMessage(_('Your content field doesnt have a legit value.'));
-                    $errorPresenter = new ErrorPresenter();
-                    $errorPresenter->present($error);
+                    $this->messageService->addSystemError(_('Your content field doesnt have a legit value.'));
 
                     return false;
                 }
@@ -244,9 +243,7 @@ class Dns
 
             case "SPF":
                 if (!self::is_valid_spf($content)) {
-                    $error = new ErrorMessage(_('The content of the SPF record is invalid'));
-                    $errorPresenter = new ErrorPresenter();
-                    $errorPresenter->present($error);
+                    $this->messageService->addSystemError(_('The content of the SPF record is invalid'));
 
                     return false;
                 }
@@ -278,17 +275,13 @@ class Dns
                 break;
 
             default:
-                $error = new ErrorMessage(_('Unknown record type.'));
-                $errorPresenter = new ErrorPresenter();
-                $errorPresenter->present($error);
+                $this->messageService->addSystemError(_('Unknown record type.'));
 
                 return false;
         }
 
         if (!self::is_valid_rr_prio($prio, $type)) {
-            $error = new ErrorMessage(_('Invalid value for prio field.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            $this->messageService->addSystemError(_('Invalid value for prio field.'));
 
             return false;
         }

@@ -23,23 +23,24 @@
 namespace Poweradmin\Infrastructure\Service;
 
 use Poweradmin\AppConfiguration;
-use Poweradmin\Application\Presenter\ErrorPresenter;
-use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\Domain\Service\DnssecProvider;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Service\MessageService;
 
 class PdnsUtilProvider implements DnssecProvider
 {
     private LegacyLogger $logger;
     private AppConfiguration $config;
     private PDOLayer $db;
+    private MessageService $messageService;
 
     public function __construct($db)
     {
         $this->db = $db;
         $this->logger = new LegacyLogger($db);
         $this->config = new AppConfiguration();
+        $this->messageService = new MessageService();
     }
 
     private function dnssec_is_pdnssec_callable(): bool
@@ -47,17 +48,13 @@ class PdnsUtilProvider implements DnssecProvider
         $pdnssec_command = $this->config->get('pdnssec_command');
 
         if (!function_exists('exec')) {
-            $error = new ErrorMessage(_('Failed to call function exec. Make sure that exec is not listed in disable_functions at php.ini'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            $this->messageService->addError('system', _('Failed to call function exec. Make sure that exec is not listed in disable_functions at php.ini'));
 
             return false;
         }
 
         if (!file_exists($pdnssec_command) || !is_executable($pdnssec_command)) {
-            $error = new ErrorMessage(_('Failed to call pdnssec utility.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            $this->messageService->addError('system', _('Failed to call pdnssec utility.'));
 
             return false;
         }
@@ -151,9 +148,7 @@ class PdnsUtilProvider implements DnssecProvider
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
-            $error = new ErrorMessage(_('Failed to secure zone.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            $this->messageService->addError('system', _('Failed to secure zone.'));
 
             return false;
         }
@@ -174,9 +169,7 @@ class PdnsUtilProvider implements DnssecProvider
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
-            $error = new ErrorMessage(_('Failed to disable DNSSEC.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            $this->messageService->addError('system', _('Failed to disable DNSSEC.'));
 
             return false;
         }
@@ -219,9 +212,7 @@ class PdnsUtilProvider implements DnssecProvider
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
-            $error = new ErrorMessage(_('Failed to get DNSSEC key details.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            $this->messageService->addError('system', _('Failed to get DNSSEC key details.'));
 
             return [];
         }
@@ -253,9 +244,7 @@ class PdnsUtilProvider implements DnssecProvider
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
-            $error = new ErrorMessage(_('Failed to get DNSSEC key details.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            $this->messageService->addError('system', _('Failed to get DNSSEC key details.'));
 
             return [];
         }
@@ -277,9 +266,7 @@ class PdnsUtilProvider implements DnssecProvider
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
-            $error = new ErrorMessage(_('Failed to active DNSSEC key.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            $this->messageService->addError('system', _('Failed to active DNSSEC key.'));
 
             return false;
         }
@@ -301,9 +288,7 @@ class PdnsUtilProvider implements DnssecProvider
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
-            $error = new ErrorMessage(_('Failed to deactivate DNSSEC key.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            $this->messageService->addError('system', _('Failed to deactivate DNSSEC key.'));
 
             return false;
         }
@@ -326,9 +311,7 @@ class PdnsUtilProvider implements DnssecProvider
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
-            $error = new ErrorMessage(_('Failed to get DNSSEC key details.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            $this->messageService->addError('system', _('Failed to get DNSSEC key details.'));
 
             return [];
         }
@@ -360,9 +343,7 @@ class PdnsUtilProvider implements DnssecProvider
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
-            $error = new ErrorMessage(_('Failed to add new DNSSEC key.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            $this->messageService->addError('system', _('Failed to add new DNSSEC key.'));
 
             return false;
         }
@@ -386,9 +367,7 @@ class PdnsUtilProvider implements DnssecProvider
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
-            $error = new ErrorMessage(_('Failed to remove DNSSEC key.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            $this->messageService->addError('system', _('Failed to remove DNSSEC key.'));
 
             return false;
         }

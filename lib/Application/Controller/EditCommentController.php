@@ -31,9 +31,8 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Error\ErrorMessage;
+use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
@@ -71,9 +70,8 @@ class EditCommentController extends BaseController
             $this->validateCsrfToken();
 
             if ($perm_edit_comment) {
-                $error = new ErrorMessage(_("You do not have the permission to edit this comment."));
-                $errorPresenter = new ErrorPresenter();
-                $errorPresenter->present($error);
+                $messageService = new MessageService();
+                $messageService->addSystemError(_("You do not have the permission to edit this comment."));
             } else {
                 $dnsRecord = new DnsRecord($this->db, $this->getConfig());
                 $dnsRecord->edit_zone_comment($zone_id, $_POST['comment']);

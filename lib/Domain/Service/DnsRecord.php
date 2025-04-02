@@ -24,9 +24,8 @@ namespace Poweradmin\Domain\Service;
 
 use PDO;
 use Poweradmin\AppConfiguration;
-use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\Application\Service\DnssecProviderFactory;
-use Poweradmin\Domain\Error\ErrorMessage;
+use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
@@ -48,12 +47,14 @@ class DnsRecord
     private AppConfiguration $config;
     private PDOLayer $db;
     private DnsFormatter $dnsFormatter;
+    private MessageService $messageService;
 
     public function __construct(PDOLayer $db, AppConfiguration $config)
     {
         $this->db = $db;
         $this->config = $config;
         $this->dnsFormatter = new DnsFormatter($config);
+        $this->messageService = new MessageService();
     }
 
     /** Check if Zone ID exists
@@ -330,9 +331,7 @@ class DnsRecord
         $zone_type = $this->get_domain_type($zone_id);
 
         if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
-            $error = new ErrorMessage(_("You do not have the permission to edit this comment."));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            $this->messageService->addSystemError(_("You do not have the permission to edit this comment."));
 
             return false;
         } else {
@@ -373,16 +372,12 @@ class DnsRecord
         $zone_type = $this->get_domain_type($record['zid']);
 
         if ($record['type'] == 'SOA' && $perm_edit == "own_as_client") {
-            $error = new ErrorMessage(_("You do not have the permission to edit this SOA record."));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            $this->messageService->addSystemError(_("You do not have the permission to edit this SOA record."));
 
             return false;
         }
         if ($record['type'] == 'NS' && $perm_edit == "own_as_client") {
-            $error = new ErrorMessage(_("You do not have the permission to edit this NS record."));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            $this->messageService->addSystemError(_("You do not have the permission to edit this NS record."));
 
             return false;
         }
@@ -394,9 +389,7 @@ class DnsRecord
         $dns_ttl = $this->config->get('dns_ttl');
 
         if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
-            $error = new ErrorMessage(_("You do not have the permission to edit this record."));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            $this->messageService->addSystemError(_("You do not have the permission to edit this record."));
         } elseif ($dns->validate_input($record['rid'], $record['zid'], $record['type'], $record['content'], $record['name'], $record['prio'], $record['ttl'], $dns_hostmaster, $dns_ttl)) {
             $name = strtolower($record['name']); // powerdns only searches for lower case records
 
@@ -522,33 +515,25 @@ class DnsRecord
     public function add_supermaster(string $master_ip, string $ns_name, string $account): bool
     {
         if (!Dns::is_valid_ipv4($master_ip) && !Dns::is_valid_ipv6($master_ip)) {
-            $error = new ErrorMessage(_('This is not a valid IPv4 or IPv6 address.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            $this->messageService->addSystemError(_('This is not a valid IPv4 or IPv6 address.'));
 
             return false;
         }
 
         $dns = new Dns($this->db, $this->config);
         if (!$dns->is_valid_hostname_fqdn($ns_name, 0)) {
-            $error = new ErrorMessage(_('Invalid hostname.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            $this->messageService->addSystemError(_('Invalid hostname.'));
 
             return false;
         }
         if (!self::validate_account($account)) {
-            $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s %s'), "add_supermaster", "given account name is invalid (alpha chars only)"));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "add_supermaster", "given account name is invalid (alpha chars only)"));
 
             return false;
         }
 
         if ($this->supermaster_ip_name_exists($master_ip, $ns_name)) {
-            $error = new ErrorMessage(_('There is already a supermaster with this IP address and hostname.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            $this->messageService->addSystemError(_('There is already a supermaster with this IP address and hostname.'));
 
             return false;
         } else {

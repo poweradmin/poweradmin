@@ -23,8 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use Exception;
-use Poweradmin\Application\Presenter\ErrorPresenter;
-use Poweradmin\Domain\Error\ErrorMessage;
+use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Configuration\MailConfig;
 use Poweradmin\Infrastructure\Logger\LegacyLoggerInterface;
 

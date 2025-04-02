@@ -22,12 +22,11 @@
 
 namespace Poweradmin;
 
-use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\Application\Service\CsrfTokenService;
-use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Configuration\UiConfig;
 use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Service\ThemeManager;
 use Valitron;
 
@@ -44,6 +43,7 @@ abstract class BaseController
     private array $request;
     private Valitron\Validator $validator;
     private CsrfTokenService $csrfTokenService;
+    private MessageService $messageService;
 
     /**
      * Abstract method to be implemented by subclasses to run the controller logic.
@@ -67,6 +67,7 @@ abstract class BaseController
         $this->validator = new Valitron\Validator($this->getRequest());
 
         $this->csrfTokenService = new CsrfTokenService();
+        $this->messageService = new MessageService();
     }
 
     /**
@@ -116,8 +117,16 @@ abstract class BaseController
      */
     public function render(string $template, array $params): void
     {
-        $this->renderHeader();
+        // Get system messages before rendering
+        $systemMessages = $this->messageService->getMessages('system');
+
+        // Pass system messages to header template
+        $this->renderHeader($systemMessages);
+
+        // Show template-specific messages
         $this->showMessage($template);
+
+        // Render main template
         $params['csrf_token'] = $this->csrfTokenService->getToken();
         $this->app->render($template, $params);
         $this->renderFooter();
@@ -134,10 +143,9 @@ abstract class BaseController
 
         $token = $this->getSafeRequestValue('_token');
         if (!$this->csrfTokenService->validateToken($token)) {
-            $error = new ErrorMessage(_('Invalid CSRF token.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+            $this->renderHeader();
+            $this->messageService->addSystemError(_('Invalid CSRF token.'));
+            $this->renderFooter();
             exit;
         }
     }
@@ -163,13 +171,7 @@ abstract class BaseController
      */
     public function setMessage(string $script, string $type, string $content): void
     {
-        if (!isset($_SESSION['messages'][$script])) {
-            $_SESSION['messages'][$script] = [];
-        }
-        $_SESSION['messages'][$script][] = [
-            'type' => $type,
-            'content' => $content
-        ];
+        $this->messageService->addMessage($script, $type, $content);
     }
 
     /**
@@ -180,12 +182,7 @@ abstract class BaseController
      */
     public function getMessages(string $script): mixed
     {
-        if (isset($_SESSION['messages'][$script])) {
-            $messages = $_SESSION['messages'][$script];
-            unset($_SESSION['messages'][$script]);
-            return $messages;
-        }
-        return null;
+        return $this->messageService->getMessages($script);
     }
 
     /**
@@ -195,26 +192,7 @@ abstract class BaseController
      */
     public function showMessage(string $template): void
     {
-        $script = pathinfo($template)['filename'];
-
-        $messages = $this->getMessages($script);
-        if ($messages) {
-            foreach ($messages as $message) {
-                $alertClass = match ($message['type']) {
-                    'error' => 'alert-danger',
-                    'warn' => 'alert-warning',
-                    'success' => 'alert-success',
-                    'info' => 'alert-info',
-                    default => '',
-                };
-
-                echo <<<EOF
-<div class="alert $alertClass alert-dismissible fade show" role="alert" data-testid="alert-message">{$message['content']}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-EOF;
-            }
-        }
+        echo $this->messageService->renderMessages($template);
     }
 
     /**
@@ -226,10 +204,13 @@ EOF;
     public function checkCondition(bool $condition, string $errorMessage): void
     {
         if ($condition) {
-            $error = new ErrorMessage($errorMessage);
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            // Add as system message
+            $this->addSystemMessage('error', $errorMessage);
 
+            // Render the page with the message
+            $systemMessages = $this->messageService->getMessages('system');
+            $this->renderHeader($systemMessages);
+            $this->renderFooter();
             exit;
         }
     }
@@ -243,10 +224,13 @@ EOF;
     public function checkPermission(string $permission, string $errorMessage): void
     {
         if (!UserManager::verify_permission($this->db, $permission)) {
-            $error = new ErrorMessage($errorMessage);
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            // Add as system message
+            $this->addSystemMessage('error', $errorMessage);
 
+            // Render the page with the message
+            $systemMessages = $this->messageService->getMessages('system');
+            $this->renderHeader($systemMessages);
+            $this->renderFooter();
             exit;
         }
     }
@@ -255,15 +239,21 @@ EOF;
      * Displays an error message.
      *
      * @param string $error The error message to display.
+     * @param string|null $recordName Optional record name for context
      */
-    public function showError(string $error): void
+    public function showError(string $error, ?string $recordName = null): void
     {
-        $this->renderHeader();
+        // Format the error with record name if provided
+        if ($recordName !== null) {
+            $error = sprintf('%s (Record: %s)', $error, $recordName);
+        }
 
-        $error = new ErrorMessage($error);
-        $errorPresenter = new ErrorPresenter();
-        $errorPresenter->present($error);
+        // Add as system message
+        $this->addSystemMessage('error', $error);
 
+        // Render the page with the message
+        $systemMessages = $this->messageService->getMessages('system');
+        $this->renderHeader($systemMessages);
         $this->renderFooter();
         exit;
     }
@@ -275,23 +265,25 @@ EOF;
      */
     public function showFirstError(array $errors): void
     {
-        $this->renderHeader();
-
         $validationErrors = array_values($errors);
         $firstError = reset($validationErrors);
 
-        $error = new ErrorMessage($firstError[0]);
-        $errorPresenter = new ErrorPresenter();
-        $errorPresenter->present($error);
+        // Add as system message so it appears in the right place
+        $this->addSystemMessage('error', $firstError[0]);
 
+        // Render the page with the message
+        $systemMessages = $this->messageService->getMessages('system');
+        $this->renderHeader($systemMessages);
         $this->renderFooter();
         exit;
     }
 
     /**
      * Renders the header of the page.
+     *
+     * @param array|null $systemMessages System messages to be displayed
      */
-    private function renderHeader(): void
+    private function renderHeader(?array $systemMessages = null): void
     {
         if (!headers_sent()) {
             header('Content-type: text/html; charset=utf-8');
@@ -330,6 +322,11 @@ EOF;
                 'auth_used' => $_SESSION["auth_used"] != "ldap",
                 'dblog_use' => $dblog_use
             ]);
+        }
+
+        // Add system messages to header template variables
+        if ($systemMessages) {
+            $vars['system_messages'] = $systemMessages;
         }
 
         $this->app->render('header.html', $vars);
@@ -409,6 +406,17 @@ EOF;
     public function showFirstValidationError(): void
     {
         $this->showFirstError($this->validator->errors());
+    }
+
+    /**
+     * Adds a system-wide message that will be displayed on any page
+     *
+     * @param string $type The type of message (error, warn, success, info)
+     * @param string $content The content of the message
+     */
+    public function addSystemMessage(string $type, string $content): void
+    {
+        $this->messageService->addMessage('system', $type, $content);
     }
 
     /**

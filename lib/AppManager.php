@@ -22,9 +22,8 @@
 
 namespace Poweradmin;
 
-use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\Application\Service\StatsDisplayService;
-use Poweradmin\Domain\Error\ErrorMessage;
+use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Utility\MemoryUsage;
 use Poweradmin\Domain\Utility\Timer;
 use Poweradmin\Infrastructure\Configuration\ConfigValidator;
@@ -149,9 +148,7 @@ class AppManager
         if (!$validator->validate()) {
             $errors = $validator->getErrors();
             foreach ($errors as $error) {
-                $error = new ErrorMessage("Invalid configuration: $error");
-                $errorPresenter = new ErrorPresenter();
-                $errorPresenter->present($error);
+                MessageService::addStaticSystemError("Invalid configuration: $error");
             }
             exit(1);
         }

@@ -22,8 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
-use Poweradmin\Application\Presenter\ErrorPresenter;
-use Poweradmin\Domain\Error\ErrorMessage;
+use Poweradmin\Infrastructure\Service\MessageService;
 
 class DbPermissionTemplateRepository
 {
@@ -192,9 +191,7 @@ class DbPermissionTemplateRepository
         $response = $this->db->queryOne($query);
 
         if ($response) {
-            $error = new ErrorMessage(_('This template is assigned to at least one user.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            MessageService::addStaticSystemError(_('This template is assigned to at least one user.'));
 
             return false;
         } else {

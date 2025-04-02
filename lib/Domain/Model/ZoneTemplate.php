@@ -22,11 +22,10 @@
 
 namespace Poweradmin\Domain\Model;
 
-use Poweradmin\Application\Presenter\ErrorPresenter;
-use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\Domain\Service\Dns;
 use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\AppConfiguration;
 
 /**
@@ -42,12 +41,14 @@ class ZoneTemplate
     private AppConfiguration $config;
     private PDOLayer $db;
     private DnsFormatter $dnsFormatter;
+    private MessageService $messageService;
 
     public function __construct(PDOLayer $db, AppConfiguration $config)
     {
         $this->db = $db;
         $this->config = $config;
         $this->dnsFormatter = new DnsFormatter($config);
+        $this->messageService = new MessageService();
     }
 
     /**
@@ -128,17 +129,14 @@ class ZoneTemplate
      */
     public static function add_zone_templ($db, array $details, int $userid): bool
     {
+        $messageService = new MessageService();
         $zone_name_exists = ZoneTemplate::zone_templ_name_exists($db, $details['templ_name']);
-        if (!(UserManager::verify_permission($db, 'zone_master_add'))) {
-            $error = new ErrorMessage(_("You do not have the permission to add a zone template."));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
 
+        if (!(UserManager::verify_permission($db, 'zone_master_add'))) {
+            MessageService::addStaticSystemError(_("You do not have the permission to add a zone template."));
             return false;
         } elseif ($zone_name_exists != '0') {
-            $error = new ErrorMessage(_('Zone template with this name already exists, please choose another one.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            MessageService::addStaticSystemError(_('Zone template with this name already exists, please choose another one.'));
         } else {
             $stmt = $db->prepare("INSERT INTO zone_templ (name, descr, owner) VALUES (:name, :descr, :owner)");
             $stmt->execute([
