@@ -22,8 +22,6 @@
 
 namespace Poweradmin\Infrastructure\Configuration;
 
-use Poweradmin\Infrastructure\Service\MessageService;
-
 /**
  * Class ConfigurationManager
  *
@@ -45,7 +43,7 @@ class ConfigurationManager
 
     /**
      * Get the singleton instance
-     * 
+     *
      * @return ConfigurationManager
      */
     public static function getInstance(): ConfigurationManager
@@ -53,13 +51,13 @@ class ConfigurationManager
         if (self::$instance === null) {
             self::$instance = new self();
         }
-        
+
         return self::$instance;
     }
 
     /**
      * Initialize the configuration
-     * 
+     *
      * @return void
      */
     public function initialize(): void
@@ -68,30 +66,49 @@ class ConfigurationManager
             return;
         }
 
-        // Load default values from legacy config if it exists
-        // This ensures backward compatibility
-        $legacyConfig = [];
-        $legacyDefaultConfigFile = __DIR__ . '/../../../inc/config-defaults.inc.php';
-        $legacyCustomConfigFile = __DIR__ . '/../../../inc/config.inc.php';
+        // Initialize with empty settings
+        $this->settings = [
+            'database' => [],
+            'security' => [],
+            'interface' => [],
+            'dns' => [],
+            'mail' => [],
+            'dnssec' => [],
+            'pdns_api' => [],
+            'logging' => [],
+            'ldap' => [],
+            'misc' => [],
+        ];
 
-        if (file_exists($legacyDefaultConfigFile)) {
-            $legacyConfig = $this->loadLegacyConfig($legacyDefaultConfigFile);
+        // Load default values first
+        $defaultConfigFile = __DIR__ . '/../../../config/settings.defaults.php';
+        if (file_exists($defaultConfigFile)) {
+            $defaultSettings = require $defaultConfigFile;
+            if (is_array($defaultSettings)) {
+                $this->settings = array_replace_recursive($this->settings, $defaultSettings);
+            }
         }
 
-        // Override with custom legacy config if it exists
-        if (file_exists($legacyCustomConfigFile)) {
-            $legacyConfig = array_merge($legacyConfig, $this->loadLegacyConfig($legacyCustomConfigFile));
-        }
-
-        // Convert legacy config to new structure
-        $this->settings = $this->convertLegacyConfig($legacyConfig);
-
-        // Load new configuration file if it exists
+        // First try to load new configuration file
         $newConfigFile = __DIR__ . '/../../../config/settings.php';
+        $newConfigExists = false;
+
         if (file_exists($newConfigFile)) {
             $newSettings = require $newConfigFile;
             if (is_array($newSettings)) {
                 $this->settings = array_replace_recursive($this->settings, $newSettings);
+                $newConfigExists = true;
+            }
+        }
+
+        // Fall back to legacy config if new config doesn't exist
+        if (!$newConfigExists) {
+            $legacyConfig = [];
+            $legacyCustomConfigFile = __DIR__ . '/../../../inc/config.inc.php';
+
+            if (file_exists($legacyCustomConfigFile)) {
+                $legacyConfig = $this->loadLegacyConfig($legacyCustomConfigFile);
+                $this->settings = array_replace_recursive($this->settings, $this->convertLegacyConfig($legacyConfig));
             }
         }
 
@@ -100,20 +117,20 @@ class ConfigurationManager
 
     /**
      * Load configuration values from a legacy config file
-     * 
+     *
      * @param string $filePath Path to the configuration file
      * @return array Parsed configuration settings
      */
     private function loadLegacyConfig(string $filePath): array
     {
         $config = [];
-        
+
         // Include the file to load variables
         include $filePath;
-        
+
         // Extract PHP variables from included file
         $extractedVars = get_defined_vars();
-        
+
         // Process each variable
         foreach ($extractedVars as $name => $value) {
             // Skip local variables and this object
@@ -121,13 +138,13 @@ class ConfigurationManager
                 $config[$name] = $value;
             }
         }
-        
+
         return $config;
     }
 
     /**
      * Convert legacy configuration to new structure
-     * 
+     *
      * @param array $legacyConfig Legacy configuration array
      * @return array Converted configuration
      */
@@ -145,6 +162,11 @@ class ConfigurationManager
             'ldap' => [],
             'misc' => [],
         ];
+
+        // In the database section:
+        if (isset($legacyConfig['pdns_db_name'])) {
+            $newConfig['database']['pdns_name'] = $legacyConfig['pdns_db_name'];
+        }
 
         // Database settings
         foreach (['db_host', 'db_port', 'db_user', 'db_pass', 'db_name', 'db_type', 'db_charset', 'db_file', 'db_debug'] as $key) {
@@ -174,64 +196,41 @@ class ConfigurationManager
             $newConfig['security']['global_token_validation'] = $legacyConfig['global_token_validation'];
         }
 
-        // Interface settings
-        foreach ($legacyConfig as $key => $value) {
-            if (strpos($key, 'iface_') === 0) {
-                $newKey = str_replace('iface_', '', $key);
-                
-                // Map special cases
-                switch ($newKey) {
-                    case 'lang':
-                        $newKey = 'language';
-                        break;
-                    case 'enabled_languages':
-                        $newKey = 'enabled_languages';
-                        break;
-                    case 'style':
-                        $newKey = 'theme';
-                        break;
-                    case 'expire':
-                        $newKey = 'session_timeout';
-                        break;
-                    case 'rowamount':
-                        $newKey = 'rows_per_page';
-                        break;
-                    case 'zonelist_serial':
-                        $newKey = 'display_serial_in_zone_list';
-                        break;
-                    case 'zonelist_template':
-                        $newKey = 'display_template_in_zone_list';
-                        break;
-                    case 'edit_show_id':
-                        $newKey = 'show_record_id';
-                        break;
-                    case 'edit_add_record_top':
-                        $newKey = 'position_record_form_top';
-                        break;
-                    case 'edit_save_changes_top':
-                        $newKey = 'position_save_button_top';
-                        break;
-                    case 'zone_comments':
-                        $newKey = 'show_zone_comments';
-                        break;
-                    case 'record_comments':
-                        $newKey = 'show_record_comments';
-                        break;
-                    case 'search_group_records':
-                        $newKey = 'search_group_records';
-                        break;
-                    case 'add_reverse_record':
-                        $newKey = 'add_reverse_record';
-                        break;
-                    case 'add_domain_record':
-                        $newKey = 'add_domain_record';
-                        break;
-                    case 'migrations_show':
-                        $newKey = 'show_migrations';
-                        break;
-                }
-                
-                $newConfig['interface'][$newKey] = $value;
+        // In the interface section:
+        if (isset($legacyConfig['iface_templates'])) {
+            $newConfig['interface']['templates_path'] = $legacyConfig['iface_templates'];
+        }
+
+        // Interface settings mapping
+        $interfaceMapping = [
+            'iface_lang' => 'language',
+            'iface_enabled_languages' => 'enabled_languages',
+            'iface_style' => 'theme',
+            'iface_title' => 'title',
+            'iface_expire' => 'session_timeout',
+            'iface_rowamount' => 'rows_per_page',
+            'iface_index' => 'index_display',
+            'show_record_id_column' => 'show_record_id',
+            'position_record_form_top' => 'position_record_form_top',
+            'position_save_button_top' => 'position_save_button_top',
+            'iface_zonelist_serial' => 'display_serial_in_zone_list',
+            'iface_zonelist_template' => 'display_template_in_zone_list',
+            'iface_edit_show_id' => 'show_record_id',
+            'iface_edit_add_record_top' => 'position_record_form_top',
+            'iface_edit_save_changes_top' => 'position_save_button_top',
+            'iface_zone_comments' => 'show_zone_comments',
+            'iface_record_comments' => 'show_record_comments',
+            'iface_search_group_records' => 'search_group_records',
+            'iface_add_reverse_record' => 'add_reverse_record',
+            'iface_add_domain_record' => 'add_domain_record',
+            'iface_migrations_show' => 'show_migrations',
+            'iface_zone_type_default' => 'zone_type_default'
+        ];
+
+        // Process interface settings
+        foreach ($interfaceMapping as $oldKey => $newKey) {
+            if (isset($legacyConfig[$oldKey])) {
+                $newConfig['interface'][$newKey] = $legacyConfig[$oldKey];
             }
         }
 
@@ -239,7 +238,7 @@ class ConfigurationManager
         foreach (['dns_hostmaster', 'dns_ns1', 'dns_ns2', 'dns_ns3', 'dns_ns4', 'dns_ttl', 'dns_soa', 'dns_strict_tld_check', 'dns_top_level_tld_check', 'dns_third_level_check', 'dns_txt_auto_quote'] as $key) {
             if (isset($legacyConfig[$key])) {
                 $newKey = str_replace('dns_', '', $key);
-                
+
                 // Handle SOA values specifically
                 if ($newKey === 'soa' && is_string($legacyConfig[$key])) {
                     $soaValues = explode(' ', $legacyConfig[$key]);
@@ -350,7 +349,7 @@ class ConfigurationManager
 
     /**
      * Get a configuration value by its key
-     * 
+     *
      * @param string $group Configuration group
      * @param string $key Configuration key
      * @param mixed $default Default value if not found
@@ -371,7 +370,7 @@ class ConfigurationManager
 
     /**
      * Get an entire configuration group
-     * 
+     *
      * @param string $group Configuration group
      * @return array Configuration group values
      */
@@ -386,7 +385,7 @@ class ConfigurationManager
 
     /**
      * Get all configuration settings
-     * 
+     *
      * @return array All settings
      */
     public function getAll(): array

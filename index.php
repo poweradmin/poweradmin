@@ -21,17 +21,18 @@
  */
 
 use Poweradmin\Application\Routing\BasicRouter;
-use Poweradmin\Infrastructure\Configuration\AppConfiguration;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Pages;
 
 require __DIR__ . '/vendor/autoload.php';
 
-$config = new AppConfiguration();
+$configManager = ConfigurationManager::getInstance();
+$configManager->initialize();
 
 if (!function_exists('session_start')) {
     require_once __DIR__ . '/lib/Infrastructure/Service/MessageService.php';
-    MessageService::displayStaticSystemError("You have to install the PHP session extension!");
+    MessageService::create()->displayDirectSystemError("You have to install the PHP session extension!");
 }
 
 $secure = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
@@ -52,7 +53,7 @@ try {
 } catch (Exception $e) {
     error_log($e->getMessage());
 
-    if ($config->get('display_errors')) {
+    if ($configManager->get('misc', 'display_errors', false)) {
         echo 'An error occurred while processing the request: ' . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');
     } else {
         echo 'An error occurred while processing the request.';

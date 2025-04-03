@@ -23,19 +23,19 @@
 namespace Poweradmin\Application\Service;
 
 use Exception;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Configuration\MailConfig;
 use Poweradmin\Infrastructure\Logger\LegacyLoggerInterface;
+use Psr\Log\LoggerInterface;
 
 class MailService
 {
-    private MailConfig $config;
+    private ConfigurationManager $config;
     private ?LegacyLoggerInterface $logger;
 
-    public function __construct(
-        MailConfig $config,
-        ?LegacyLoggerInterface $logger = null
-    ) {
+    public function __construct(ConfigurationManager $config, ?LoggerInterface $logger = null)
+    {
         $this->config = $config;
         $this->logger = $logger;
     }

@@ -9,14 +9,14 @@ This directory contains the configuration files for Poweradmin.
 
 ## Configuration Files
 
-- `settings.sample.php`: Sample configuration file with all available settings and their default values
+- `settings.defaults.php`: Sample configuration file with all available settings and their default values
 - `settings.php`: Your actual configuration (copy from sample and modify)
 
 ## How to Configure Poweradmin
 
 1. Copy the sample configuration file:
    ```
-   cp settings.sample.php settings.php
+   cp settings.defaults.php settings.php
    ```
 
 2. Edit `settings.php` to match your environment:

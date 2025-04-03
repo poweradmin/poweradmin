@@ -28,14 +28,14 @@ use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\Infrastructure\Logger\LdapUserEventLogger;
-use Poweradmin\AppConfiguration;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
 use ReflectionClass;
 
 class LdapAuthenticator extends LoggingService
 {
     private PDOLayer $db;
-    private AppConfiguration $config;
+    private ConfigurationManager $configManager;
     private LdapUserEventLogger $ldapUserEventLogger;
     private AuthenticationService $authenticationService;
     private CsrfTokenService $csrfTokenService;
@@ -43,7 +43,7 @@ class LdapAuthenticator extends LoggingService
 
     public function __construct(
         PDOLayer $connection,
-        AppConfiguration $config,
+        ConfigurationManager $configManager,
         LdapUserEventLogger $ldapUserEventLogger,
         AuthenticationService $authService,
         CsrfTokenService $csrfTokenService,
@@ -54,7 +54,7 @@ class LdapAuthenticator extends LoggingService
         parent::__construct($logger, $shortClassName);
 
         $this->db = $connection;
-        $this->config = $config;
+        $this->configManager = $configManager;
         $this->ldapUserEventLogger = $ldapUserEventLogger;
         $this->authenticationService = $authService;
         $this->csrfTokenService = $csrfTokenService;
@@ -76,15 +76,15 @@ class LdapAuthenticator extends LoggingService
             return;
         }
 
-        $session_key = $this->config->get('session_key');
-        $ldap_uri = $this->config->get('ldap_uri');
-        $ldap_basedn = $this->config->get('ldap_basedn');
-        $ldap_search_filter = $this->config->get('ldap_search_filter');
-        $ldap_binddn = $this->config->get('ldap_binddn');
-        $ldap_bindpw = $this->config->get('ldap_bindpw');
-        $ldap_proto = $this->config->get('ldap_proto');
-        $ldap_debug = $this->config->get('ldap_debug');
-        $ldap_user_attribute = $this->config->get('ldap_user_attribute');
+        $session_key = $this->configManager->get('security', 'session_key', '');
+        $ldap_uri = $this->configManager->get('ldap', 'uri', '');
+        $ldap_basedn = $this->configManager->get('ldap', 'base_dn', '');
+        $ldap_search_filter = $this->configManager->get('ldap', 'search_filter', '');
+        $ldap_binddn = $this->configManager->get('ldap', 'bind_dn', '');
+        $ldap_bindpw = $this->configManager->get('ldap', 'bind_password', '');
+        $ldap_proto = $this->configManager->get('ldap', 'protocol_version', 3);
+        $ldap_debug = $this->configManager->get('ldap', 'debug', false);
+        $ldap_user_attribute = $this->configManager->get('ldap', 'user_attribute', 'uid');
 
         if (!isset($_SESSION["userlogin"]) || !isset($_SESSION["userpwd"])) {
             $this->logWarning('Session variables userlogin or userpwd are not set.');

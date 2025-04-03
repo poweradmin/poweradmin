@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Domain\Config;
 
-class AppConfigDefaults
+class MiscConfigDefaults
 {
     public static function getDefaults(): array
     {

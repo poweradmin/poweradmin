@@ -24,7 +24,7 @@ namespace Poweradmin;
 
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Infrastructure\Configuration\InterfaceConfig;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Service\ThemeManager;
@@ -44,6 +44,7 @@ abstract class BaseController
     private Valitron\Validator $validator;
     private CsrfTokenService $csrfTokenService;
     private MessageService $messageService;
+    private ConfigurationManager $configManager;
 
     /**
      * Abstract method to be implemented by subclasses to run the controller logic.
@@ -68,6 +69,7 @@ abstract class BaseController
 
         $this->csrfTokenService = new CsrfTokenService();
         $this->messageService = new MessageService();
+        $this->configManager = ConfigurationManager::getInstance();
     }
 
     /**
@@ -98,17 +100,22 @@ abstract class BaseController
      */
     public function config(string $key): mixed
     {
-        // Handle renamed settings that moved to InterfaceConfig
-        $interfaceConfig = new InterfaceConfig();
-
+        // Map legacy UI keys to interface settings
         return match ($key) {
-            'iface_edit_show_id' => $interfaceConfig->get('show_record_id'),
-            'iface_edit_add_record_top' => $interfaceConfig->get('position_record_form_top'),
-            'iface_edit_save_changes_top' => $interfaceConfig->get('position_save_button_top'),
-            'iface_lang' => $interfaceConfig->get('language'),
-            'iface_style' => $interfaceConfig->get('theme'),
-            'iface_rowamount' => $interfaceConfig->get('rows_per_page'),
-            default => $this->app->config($key),
+            'index_display' => $this->configManager->get('interface', 'index_display'),
+            'iface_edit_show_id' => $this->configManager->get('interface', 'show_record_id'),
+            'iface_edit_add_record_top' => $this->configManager->get('interface', 'position_record_form_top'),
+            'iface_edit_save_changes_top' => $this->configManager->get('interface', 'position_save_button_top'),
+            'iface_lang' => $this->configManager->get('interface', 'language'),
+            'iface_style' => $this->configManager->get('interface', 'theme'),
+            'iface_rowamount' => $this->configManager->get('interface', 'rows_per_page'),
+            'iface_title' => $this->configManager->get('interface', 'title'),
+            'db_debug' => $this->configManager->get('database', 'debug'),
+            'dblog_use' => $this->configManager->get('logging', 'database_enabled'),
+            'session_key' => $this->configManager->get('security', 'session_key'),
+            'global_token_validation' => $this->configManager->get('security', 'global_token_validation', true),
+            'display_stats' => $this->configManager->get('misc', 'display_stats'),
+            default => $this->configManager->get('misc', $key),
         };
     }
 
@@ -140,7 +147,7 @@ abstract class BaseController
      */
     public function validateCsrfToken(): void
     {
-        if (!$this->app->config('global_token_validation', true)) {
+        if (!$this->config('global_token_validation')) {
             return;
         }
 
@@ -292,19 +299,19 @@ abstract class BaseController
             header('Content-type: text/html; charset=utf-8');
         }
 
-        $style = $this->app->config('iface_style');
+        $style = $this->configManager->get('interface', 'theme', 'ignite');
         $themeManager = new ThemeManager($style);
 
         $vars = [
-            'iface_title' => $this->app->config('iface_title'),
+            'iface_title' => $this->configManager->get('interface', 'title'),
             'iface_style' => $themeManager->getSelectedTheme(),
             'file_version' => time(),
             'custom_header' => file_exists('templates/custom/header.html'),
             'install_error' => file_exists('install') ? _('The <a href="install/">install/</a> directory exists, you must remove it first before proceeding.') : false,
         ];
 
-        $dblog_use = $this->app->config('dblog_use');
-        $session_key = $this->app->config('session_key');
+        $dblog_use = $this->configManager->get('logging', 'database_enabled');
+        $session_key = $this->configManager->get('security', 'session_key');
 
         if (isset($_SESSION["userid"])) {
             $perm_is_godlike = UserManager::verify_permission($this->db, 'user_is_ueberuser');
@@ -340,17 +347,18 @@ abstract class BaseController
      */
     private function renderFooter(): void
     {
-        $style = $this->app->config('iface_style');
+        $style = $this->configManager->get('interface', 'theme', 'ignite');
         $themeManager = new ThemeManager($style);
         $selected_theme = $themeManager->getSelectedTheme();
 
-        $display_stats = $this->app->config('display_stats');
+        $display_stats = $this->configManager->get('misc', 'display_stats');
+        $db_debug = $this->configManager->get('database', 'debug');
 
         $this->app->render('footer.html', [
             'version' => isset($_SESSION["userid"]) ? Version::VERSION : false,
             'custom_footer' => file_exists('templates/custom/footer.html'),
             'display_stats' => $display_stats ? $this->app->displayStats() : false,
-            'db_queries' => $this->app->config('db_debug') ? $this->db->getQueries() : false, // FIXME
+            'db_queries' => $db_debug ? $this->db->getQueries() : false,
             'show_theme_switcher' => in_array($selected_theme, ['ignite', 'spark']),
             'iface_style' => $selected_theme,
         ]);

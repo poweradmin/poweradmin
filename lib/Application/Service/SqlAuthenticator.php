@@ -28,14 +28,14 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Infrastructure\Database\PDOLayer;
-use Poweradmin\AppConfiguration;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
 use ReflectionClass;
 
 class SqlAuthenticator extends LoggingService
 {
     private PDOLayer $connection;
-    private AppConfiguration $config;
+    private ConfigurationManager $configManager;
     private UserEventLogger $userEventLogger;
     private AuthenticationService $authService;
     private CsrfTokenService $csrfTokenService;
@@ -43,7 +43,7 @@ class SqlAuthenticator extends LoggingService
 
     public function __construct(
         PDOLayer $connection,
-        AppConfiguration $config,
+        ConfigurationManager $configManager,
         UserEventLogger $userEventLogger,
         AuthenticationService $authService,
         CsrfTokenService $csrfTokenService,
@@ -55,7 +55,7 @@ class SqlAuthenticator extends LoggingService
 
         $this->connection = $connection;
 
-        $this->config = $config;
+        $this->configManager = $configManager;
         $this->userEventLogger = $userEventLogger;
         $this->authService = $authService;
         $this->csrfTokenService = $csrfTokenService;
@@ -76,7 +76,7 @@ class SqlAuthenticator extends LoggingService
             return;
         }
 
-        $sessionKey = $this->config->get('session_key');
+        $sessionKey = $this->configManager->get('security', 'session_key', '');
 
         if (!isset($_SESSION["userlogin"]) || !isset($_SESSION["userpwd"])) {
             $this->logWarning('Session variables userlogin or userpwd are not set.');
@@ -104,11 +104,10 @@ class SqlAuthenticator extends LoggingService
             return;
         }
 
-        $config = new AppConfiguration();
-        $userAuthService = new UserAuthenticationService(
-            $config->get('password_encryption'),
-            $config->get('password_encryption_cost')
-        );
+        $passwordEncryption = $this->configManager->get('security', 'password_encryption', 'bcrypt');
+        $passwordCost = $this->configManager->get('security', 'password_cost', 12);
+
+        $userAuthService = new UserAuthenticationService($passwordEncryption, $passwordCost);
 
         if (!$userAuthService->verifyPassword($sessionPassword, $rowObj['password'])) {
             $this->logWarning('Password verification failed for user {username}', ['username' => $_SESSION["userlogin"]]);
@@ -172,3 +171,4 @@ class SqlAuthenticator extends LoggingService
         $this->logInfo('Failed authentication handled.');
     }
 }
+

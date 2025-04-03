@@ -43,7 +43,7 @@ class IndexController extends BaseController
 
     private function showIndex(): void
     {
-        $template = sprintf("index_%s.html", $this->config('iface_index'));
+        $template = sprintf("index_%s.html", $this->config('index_display'));
 
         $userlogin = $_SESSION["userlogin"] ?? '';
 

@@ -23,12 +23,12 @@
 namespace Poweradmin\Infrastructure\Service;
 
 use PDO;
-use Poweradmin\AppConfiguration;
 use Poweradmin\Application\Service\LoggingService;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\LdapAuthenticator;
 use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\SqlAuthenticator;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Application\Service\UserEventLogger;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
@@ -45,20 +45,21 @@ class SessionAuthenticator extends LoggingService
 {
     private AuthenticationService $authService;
     private PDOLayer $db;
-    private AppConfiguration $config;
+    private ConfigurationManager $configManager;
     private UserEventLogger $userEventLogger;
     private LdapUserEventLogger $ldapUserEventLogger;
     private CsrfTokenService $csrfTokenService;
     private LdapAuthenticator $ldapAuthenticator;
     private SqlAuthenticator $sqlAuthenticator;
 
-    public function __construct(PDOLayer $connection, AppConfiguration $config)
+    public function __construct(PDOLayer $connection, ConfigurationManager $configManager)
     {
         $shortClassName = (new ReflectionClass(self::class))->getShortName();
-        parent::__construct(new Logger(LoggerHandlerFactory::create($config->getAll()), $config->get('logger_level')), $shortClassName);
+        $loggerLevel = $configManager->get('logging', 'level', 'info');
+        parent::__construct(new Logger(LoggerHandlerFactory::create($configManager->getAll()), $loggerLevel), $shortClassName);
 
         $this->db = $connection;
-        $this->config = $config;
+        $this->configManager = $configManager;
 
         $sessionService = new SessionService();
         $redirectService = new RedirectService();
@@ -73,7 +74,7 @@ class SessionAuthenticator extends LoggingService
 
         $this->ldapAuthenticator = new LdapAuthenticator(
             $connection,
-            $config,
+            $configManager,
             $this->ldapUserEventLogger,
             $this->authService,
             $this->csrfTokenService,
@@ -82,7 +83,7 @@ class SessionAuthenticator extends LoggingService
         );
         $this->sqlAuthenticator = new SqlAuthenticator(
             $connection,
-            $config,
+            $configManager,
             $this->userEventLogger,
             $this->authService,
             $this->csrfTokenService,
@@ -102,11 +103,11 @@ class SessionAuthenticator extends LoggingService
     {
         $this->logDebug('Starting authentication process');
 
-        $iface_expire = $this->config->get('iface_expire');
-        $session_key = $this->config->get('session_key');
-        $ldap_use = $this->config->get('ldap_use');
-        $login_token_validation = $this->config->isLoginTokenValidationEnabled();
-        $global_token_validation = $this->config->isGlobalTokenValidationEnabled();
+        $iface_expire = $this->configManager->get('interface', 'session_timeout', 1800);
+        $session_key = $this->configManager->get('security', 'session_key', '');
+        $ldap_use = $this->configManager->get('ldap', 'enabled', false);
+        $login_token_validation = $this->configManager->get('security', 'login_token_validation', true);
+        $global_token_validation = $this->configManager->get('security', 'global_token_validation', true);
 
         if (isset($_SESSION['userid']) && isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] == "logout") {
             $this->logInfo('User {userid} requested logout', ['userid' => $_SESSION['userid']]);
@@ -144,7 +145,7 @@ class SessionAuthenticator extends LoggingService
                 $_SESSION["userlogin"] = $_POST["username"];
                 $this->logDebug('User login set for user {username}', ['username' => $_POST["username"]]);
 
-                $_SESSION["userlang"] = $_POST["userlang"] ?? $this->config->get('iface_lang');
+                $_SESSION["userlang"] = $_POST["userlang"] ?? $this->configManager->get('interface', 'language', 'en_EN');
                 $this->logDebug('User language set for user {username}', ['username' => $_POST["username"]]);
 
                 $this->logInfo('User {username} authenticated', ['username' => $_POST["username"]]);

@@ -26,7 +26,15 @@ class LoggerHandlerFactory
 {
     public static function create(array $config): LogHandlerInterface
     {
-        return match ($config['logger_type']) {
+        // First check in the new structure
+        if (isset($config['logging']) && isset($config['logging']['type'])) {
+            $loggerType = $config['logging']['type'];
+        } else {
+            // Fall back to legacy config
+            $loggerType = $config['logger_type'] ?? 'null';
+        }
+
+        return match ($loggerType) {
             'native' => new NativeLogHandler(),
             default => new NullLogHandler(),
         };

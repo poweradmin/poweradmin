@@ -37,9 +37,8 @@ use Poweradmin\Application\Service\PasswordGenerationService;
 use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Infrastructure\Configuration\MailConfig;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Configuration\PasswordPolicyConfig;
-use Poweradmin\Infrastructure\Configuration\InterfaceConfig;
 use Valitron\Validator;
 
 class AddUserController extends BaseController
@@ -72,8 +71,8 @@ class AddUserController extends BaseController
         $this->passwordGenerationService = new PasswordGenerationService($passwordPolicyConfig);
 
         // Initialize mail service
-        $mailConfig = new MailConfig();
-        $this->mailService = new MailService($mailConfig);
+        $configManager = ConfigurationManager::getInstance();
+        $this->mailService = new MailService($configManager);
     }
 
     public function run(): void
@@ -117,8 +116,8 @@ class AddUserController extends BaseController
 
             // Handle generated password and email sending
             if (!empty($generatedPassword)) {
-                $interfaceConfig = new InterfaceConfig();
-                $showGeneratedPasswords = $interfaceConfig->get('show_generated_passwords');
+                $configManager = ConfigurationManager::getInstance();
+                $showGeneratedPasswords = $configManager->get('interface', 'show_generated_passwords', false);
 
                 // Display the generated password to the admin if allowed by configuration
                 if ($showGeneratedPasswords) {
@@ -126,8 +125,8 @@ class AddUserController extends BaseController
                 }
 
                 // Send email with credentials if mail is enabled and checkbox is checked
-                $mailConfig = new MailConfig();
-                $mailEnabled = $mailConfig->get('mail_enabled');
+                $configManager = ConfigurationManager::getInstance();
+                $mailEnabled = $configManager->get('mail', 'enabled', false);
 
                 if ($mailEnabled && $userParams['email'] && $this->request->getPostParam('send_email')) {
                     $emailSent = $this->mailService->sendNewAccountEmail(
@@ -172,8 +171,8 @@ class AddUserController extends BaseController
         $use_ldap_checked = $this->request->getPostParam('use_ldap') === '1' ? 'checked' : '';
 
         // Check if mail functionality is enabled
-        $mailConfig = new MailConfig();
-        $mail_enabled = $mailConfig->get('mail_enabled');
+        $configManager = ConfigurationManager::getInstance();
+        $mail_enabled = $configManager->get('mail', 'enabled', false);
 
         $this->render('add_user.html', [
             'username' => $username,

@@ -70,7 +70,7 @@ class LoginController extends BaseController
 
     private function renderLogin(array $preparedLocales, string $msg, string $type): void
     {
-        $locales = explode(',', $this->config('iface_enabled_languages'));
+        $locales = explode(',', $this->config('iface_enabled_languages') ?? 'en_US');
         $showLanguageSelector = count($locales) > 1;
 
         $loginToken = $this->csrfTokenService->generateToken();
@@ -88,7 +88,8 @@ class LoginController extends BaseController
 
     private function getLocalesData(): array
     {
-        $locales = explode(',', $this->config('iface_enabled_languages'));
+        $enabledLanguages = $this->config('iface_enabled_languages') ?? 'en_US';
+        $locales = explode(',', $enabledLanguages);
         $localesData = [];
         foreach ($locales as $locale) {
             $localesData[$locale] = LanguageCode::getByLocale($locale);

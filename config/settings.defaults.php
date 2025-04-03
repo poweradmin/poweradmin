@@ -17,7 +17,7 @@ return [
         'password' => 'your_password',
         'name' => 'powerdns',
         'type' => 'mysql',     // Options: 'mysql', 'pgsql', 'sqlite'
-        'charset' => 'utf8',
+        'charset' => 'latin1', // or 'utf8',
         'file' => '',          // Only used for SQLite, provide full path to database file
         'debug' => false,      // Show all SQL queries
     ],

@@ -34,7 +34,7 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
-use Poweradmin\Infrastructure\Configuration\InterfaceConfig;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\DbZoneLogger;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 
@@ -66,7 +66,8 @@ class ListLogZonesController extends BaseController
             }
         }
 
-        $logs_per_page = $this->config('iface_rowamount');
+        $configManager = ConfigurationManager::getInstance();
+        $logs_per_page = $configManager->get('interface', 'rows_per_page', 50);
 
         if (isset($_GET['name']) && $_GET['name'] != '') {
             $number_of_logs = $this->dbZoneLogger->count_logs_by_domain(idn_to_ascii($_GET['name']));
@@ -84,8 +85,6 @@ class ListLogZonesController extends BaseController
             $logs = $this->dbZoneLogger->get_all_logs($logs_per_page, ($selected_page - 1) * $logs_per_page);
         }
 
-        $interfaceConfig = new InterfaceConfig();
-
         $this->render('list_log_zones.html', [
             'number_of_logs' => $number_of_logs,
             'name' => isset($_GET['name']) ? htmlspecialchars($_GET['name']) : null,
@@ -93,7 +92,7 @@ class ListLogZonesController extends BaseController
             'selected_page' => $selected_page,
             'logs_per_page' => $logs_per_page,
             'pagination' => $this->createAndPresentPagination($number_of_logs, $logs_per_page),
-            'iface_edit_show_id' => $uiConfig->get('show_record_id_column'),
+            'iface_edit_show_id' => $configManager->get('interface', 'show_record_id', false),
         ]);
     }
 

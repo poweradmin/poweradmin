@@ -23,6 +23,7 @@
 namespace Poweradmin;
 
 use Poweradmin\Application\Service\DatabaseService;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -37,8 +38,8 @@ use Poweradmin\Infrastructure\Utility\DependencyCheck;
  */
 class AppInitializer
 {
-    /** @var AppConfiguration $config Application configuration */
-    private AppConfiguration $config;
+    /** @var ConfigurationManager $configManager Configuration manager */
+    private ConfigurationManager $configManager;
 
     /** @var PDOLayer $db Database connection layer */
     private PDOLayer $db;
@@ -93,7 +94,8 @@ class AppInitializer
      */
     private function loadConfiguration(): void
     {
-        $this->config = new AppConfiguration();
+        $this->configManager = ConfigurationManager::getInstance();
+        $this->configManager->initialize();
     }
 
     /**
@@ -101,10 +103,17 @@ class AppInitializer
      */
     private function loadLocale(): void
     {
-        $supportedLocales = explode(',', $this->config->get('iface_enabled_languages'));
+        $enabledLanguages = $this->configManager->get('interface', 'enabled_languages');
+        if (!$enabledLanguages) {
+            // Fallback to legacy config key
+            $enabledLanguages = $this->configManager->get('interface', 'enabled_languages', 'en_EN');
+        }
+
+        $supportedLocales = explode(',', $enabledLanguages);
         $locale = new LocaleManager($supportedLocales, './locale');
 
-        $userLang = $_SESSION["userlang"] ?? $this->config->get('iface_lang');
+        $defaultLanguage = $this->configManager->get('interface', 'language', 'en_EN');
+        $userLang = $_SESSION["userlang"] ?? $defaultLanguage;
         $locale->setLocale($userLang);
     }
 
@@ -113,37 +122,21 @@ class AppInitializer
      */
     private function connectToDatabase(): void
     {
-        // Check if we're using the new configuration format (config/settings.php)
-        $dbConfig = $this->config->get('database', []);
+        // Get database configuration from the database section
+        $dbConfig = $this->configManager->getGroup('database');
         
-        // If new config format is being used (database group exists and has type set)
-        if (!empty($dbConfig) && isset($dbConfig['type'])) {
-            // Using new configuration format (settings.php)
-            $credentials = [
-                'db_host' => $dbConfig['host'] ?? '',
-                'db_port' => $dbConfig['port'] ?? '',
-                'db_user' => $dbConfig['user'] ?? '',
-                'db_pass' => $dbConfig['password'] ?? '',
-                'db_name' => $dbConfig['name'] ?? '',
-                'db_charset' => $dbConfig['charset'] ?? '',
-                'db_collation' => $dbConfig['collation'] ?? '',
-                'db_type' => $dbConfig['type'] ?? '',
-                'db_file' => $dbConfig['file'] ?? '',
-            ];
-        } else {
-            // Using legacy configuration format (config.inc.php)
-            $credentials = [
-                'db_host' => $this->config->get('db_host', ''),
-                'db_port' => $this->config->get('db_port', ''),
-                'db_user' => $this->config->get('db_user', ''),
-                'db_pass' => $this->config->get('db_pass', ''),
-                'db_name' => $this->config->get('db_name', ''),
-                'db_charset' => $this->config->get('db_charset', ''),
-                'db_collation' => $this->config->get('db_collation', ''),
-                'db_type' => $this->config->get('db_type', ''),
-                'db_file' => $this->config->get('db_file', ''),
-            ];
-        }
+        // Map database configuration to the credentials expected by PDODatabaseConnection
+        $credentials = [
+            'db_host' => $dbConfig['host'] ?? '',
+            'db_port' => $dbConfig['port'] ?? '',
+            'db_user' => $dbConfig['user'] ?? '',
+            'db_pass' => $dbConfig['password'] ?? '',
+            'db_name' => $dbConfig['name'] ?? '',
+            'db_charset' => $dbConfig['charset'] ?? '',
+            'db_collation' => $dbConfig['collation'] ?? '',
+            'db_type' => $dbConfig['type'] ?? '',
+            'db_file' => $dbConfig['file'] ?? '',
+        ];
 
         $databaseConnection = new PDODatabaseConnection();
         $databaseService = new DatabaseService($databaseConnection);
@@ -155,8 +148,8 @@ class AppInitializer
      */
     private function authenticateUser(): void
     {
-        $legacyAuthenticateSession = new SessionAuthenticator($this->db, $this->config);
-        $legacyAuthenticateSession->authenticate();
+        $sessionAuthenticator = new SessionAuthenticator($this->db, $this->configManager);
+        $sessionAuthenticator->authenticate();
     }
 
     /**
