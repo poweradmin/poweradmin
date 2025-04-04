@@ -39,13 +39,13 @@ class LoginAttemptService
 
     public function recordAttempt(string $username, string $ipAddress, bool $successful): void
     {
-        if (!$this->configManager->get('security', 'account_lockout.enable_lockout', false)) {
+        if (!$this->configManager->get('security', 'account_lockout.enable_lockout')) {
             return;
         }
 
         $userId = $this->getUserId($username);
 
-        if ($successful && $this->configManager->get('security', 'account_lockout.clear_attempts_on_success', true)) {
+        if ($successful && $this->configManager->get('security', 'account_lockout.clear_attempts_on_success')) {
             $this->clearFailedAttempts($userId, $ipAddress);
         }
 
@@ -67,19 +67,19 @@ class LoginAttemptService
     public function isAccountLocked(string $username, string $ipAddress): bool
     {
         // Use the updated ConfigurationManager with dot notation support
-        $lockoutEnabled = $this->configManager->get('security', 'account_lockout.enable_lockout', false);
+        $lockoutEnabled = $this->configManager->get('security', 'account_lockout.enable_lockout');
         if (!$lockoutEnabled) {
             return false;
         }
 
         // Check IP whitelist first (whitelist takes priority over blacklist)
-        $whitelistedIps = $this->configManager->get('security', 'account_lockout.whitelist_ip_addresses', []);
+        $whitelistedIps = $this->configManager->get('security', 'account_lockout.whitelist_ip_addresses');
         if (!empty($whitelistedIps) && $this->isIpInList($ipAddress, $whitelistedIps)) {
             return false; // This IP is whitelisted, never lock it
         }
 
         // Check IP blacklist next
-        $blacklistedIps = $this->configManager->get('security', 'account_lockout.blacklist_ip_addresses', []);
+        $blacklistedIps = $this->configManager->get('security', 'account_lockout.blacklist_ip_addresses');
         if (!empty($blacklistedIps) && $this->isIpInList($ipAddress, $blacklistedIps)) {
             return true; // This IP is blacklisted, consider it locked
         }
@@ -89,10 +89,10 @@ class LoginAttemptService
             return false;
         }
 
-        $lockoutDuration = $this->configManager->get('security', 'account_lockout.lockout_duration', 15) * 60;
+        $lockoutDuration = $this->configManager->get('security', 'account_lockout.lockout_duration') * 60;
         $cutoffTime = time() - $lockoutDuration;
-        $maxAttempts = $this->configManager->get('security', 'account_lockout.lockout_attempts', 5);
-        $trackIpAddress = $this->configManager->get('security', 'account_lockout.track_ip_address', true);
+        $maxAttempts = $this->configManager->get('security', 'account_lockout.lockout_attempts');
+        $trackIpAddress = $this->configManager->get('security', 'account_lockout.track_ip_address');
 
         $sql = "SELECT COUNT(*) as attempts
             FROM login_attempts
@@ -182,7 +182,7 @@ class LoginAttemptService
 
     private function cleanupOldAttempts(): void
     {
-        $lockoutDuration = $this->configManager->get('security', 'account_lockout.lockout_duration', 15) * 60;
+        $lockoutDuration = $this->configManager->get('security', 'account_lockout.lockout_duration') * 60;
         $cutoffTime = time() - $lockoutDuration;
 
         $stmt = $this->connection->prepare("
@@ -203,7 +203,7 @@ class LoginAttemptService
 
         $params = ['user_id' => $userId];
 
-        if ($this->configManager->get('security', 'account_lockout.track_ip_address', true)) {
+        if ($this->configManager->get('security', 'account_lockout.track_ip_address')) {
             $sql .= " AND ip_address = :ip_address";
             $params['ip_address'] = $ipAddress;
         }

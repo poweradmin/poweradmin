@@ -352,10 +352,9 @@ class ConfigurationManager
      *
      * @param string $group Configuration group
      * @param string $key Configuration key, can use dot notation for nested values (e.g. 'account_lockout.enable_lockout')
-     * @param mixed $default Default value if not found
      * @return mixed Configuration value
      */
-    public function get(string $group, string $key, mixed $default = null): mixed
+    public function get(string $group, string $key): mixed
     {
         if (!$this->initialized) {
             $this->initialize();
@@ -368,7 +367,7 @@ class ConfigurationManager
 
             foreach ($path as $pathPart) {
                 if (!isset($value[$pathPart])) {
-                    return $default;
+                    return null;
                 }
                 $value = $value[$pathPart];
             }
@@ -381,7 +380,7 @@ class ConfigurationManager
             return $this->settings[$group][$key];
         }
 
-        return $default;
+        return null;
     }
 
     /**

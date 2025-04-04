@@ -81,7 +81,7 @@ class SqlAuthenticator extends LoggingService
             return;
         }
 
-        $sessionKey = $this->configManager->get('security', 'session_key', '');
+        $sessionKey = $this->configManager->get('security', 'session_key');
 
         if (!isset($_SESSION["userlogin"]) || !isset($_SESSION["userpwd"])) {
             $this->logWarning('Session variables userlogin or userpwd are not set.');
@@ -109,8 +109,8 @@ class SqlAuthenticator extends LoggingService
             return;
         }
 
-        $passwordEncryption = $this->configManager->get('security', 'password_encryption', 'bcrypt');
-        $passwordCost = $this->configManager->get('security', 'password_cost', 12);
+        $passwordEncryption = $this->configManager->get('security', 'password_encryption');
+        $passwordCost = $this->configManager->get('security', 'password_cost');
 
         $userAuthService = new UserAuthenticationService($passwordEncryption, $passwordCost);
 
