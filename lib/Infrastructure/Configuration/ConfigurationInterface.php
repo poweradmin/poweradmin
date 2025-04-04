@@ -31,5 +31,5 @@ interface ConfigurationInterface
      * @param mixed|null $default Default value if key is not found
      * @return mixed Configuration value or default if not found
      */
-    public function get(string $key = null, mixed $default = null): mixed;
+    public function get(?string $key = null, mixed $default = null): mixed;
 }
