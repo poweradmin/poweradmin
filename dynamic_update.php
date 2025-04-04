@@ -130,21 +130,76 @@ function valid_ip_address(string $ip): int|string
     return $value;
 }
 
+/**
+ * Parse, trim and validate a comma-separated list of IPs by type.
+ *
+ * @param string $raw_ip_input Comma-separated IP string
+ * @param string $type 'A' or 'AAAA'
+ *
+ * @return array Filtered list of valid IPs
+ */
+function extract_valid_ips(string $raw_ip_input, string $type): array
+{
+    $ip_array = array_map('trim', explode(',', $raw_ip_input));
+    return array_filter($ip_array, function ($ip) use ($type) {
+        return valid_ip_address($ip) === $type;
+    });
+}
+
+/** Synchronize A or AAAA DNS records with a new set of IP addresses
+ *
+ * @param object $db PDO database connection
+ * @param string $records_table Name of the records table
+ * @param int $domain_id ID of the domain/zone
+ * @param string $hostname Fully-qualified domain name to update
+ * @param string $type Record type ('A' or 'AAAA')
+ * @param array $new_ips List of new IP addresses to apply
+ *
+ * @return bool True if any changes were made, false otherwise
+ */
+function sync_dns_records($db, $records_table, int $domain_id, string $hostname, string $type, array $new_ips): bool 
+{
+    $zone_updated = false;
+
+    $existing = [];
+    $query = $db->prepare("SELECT id, content FROM $records_table WHERE domain_id = :domain_id AND name = :hostname AND type = :type");
+    $query->execute([':domain_id' => $domain_id, ':hostname' => $hostname, ':type' => $type]);
+    while ($row = $query->fetch()) {
+        $existing[$row['content']] = $row['id'];
+    }
+
+    foreach ($new_ips as $ip) {
+        if (isset($existing[$ip])) {
+            unset($existing[$ip]);
+        } else {
+            $insert = $db->prepare("INSERT INTO $records_table (domain_id, name, type, content, ttl, prio, change_date)
+                VALUES (:domain_id, :hostname, :type, :ip, 60, NULL, UNIX_TIMESTAMP())");
+            $insert->execute([
+                ':domain_id' => $domain_id,
+                ':hostname' => $hostname,
+                ':type' => $type,
+                ':ip' => $ip
+            ]);
+            $zone_updated = true;
+        }
+    }
+
+    foreach ($existing as $ip => $record_id) {
+        $delete = $db->prepare("DELETE FROM $records_table WHERE id = :id");
+        $delete->execute([':id' => $record_id]);
+        $zone_updated = true;
+    }
+
+    return $zone_updated;
+}
+
 if (!(isset($_SERVER)) && !$_SERVER['HTTP_USER_AGENT']) {
     return status_exit('badagent');
 }
 
 // Grab username & password based on HTTP auth, alternatively the query string
-if (isset($_SERVER['PHP_AUTH_USER'])) {
-    $auth_username = $_SERVER['PHP_AUTH_USER'];
-} elseif (isset($_REQUEST['username'])) {
-    $auth_username = $_REQUEST['username'];
-}
-if (isset($_SERVER['PHP_AUTH_PW'])) {
-    $auth_password = $_SERVER['PHP_AUTH_PW'];
-} elseif (isset($_REQUEST['password'])) {
-    $auth_password = $_REQUEST['password'];
-}
+$auth_username = $_SERVER['PHP_AUTH_USER'] ?? $_REQUEST['username'] ?? null;
+$auth_password = $_SERVER['PHP_AUTH_PW'] ?? $_REQUEST['password'] ?? null;
 
 // If we still don't have a username, throw up
 if (!isset($auth_username)) {
@@ -156,45 +211,48 @@ if (!isset($auth_username)) {
 $username = safe($db, $db_type, $auth_username);
 $hostname = safe($db, $db_type, $_REQUEST['hostname']);
 
-// Grab IP to use
-$given_ip = "";
-$given_ip6 = "";
-if (!empty($_REQUEST['myip'])) {
-    $given_ip = $_REQUEST['myip'];
-} elseif (!empty($_REQUEST['ip'])) {
-    $given_ip = $_REQUEST['ip'];
+// === Dynamic IP handling starts here ===
+
+$given_ip = $_REQUEST['myip'] ?? $_REQUEST['ip'] ?? '';
+$given_ip6 = $_REQUEST['myip6'] ?? $_REQUEST['ip6'] ?? '';
+
+// Handle special case: "whatismyip"
+if ($given_ip === 'whatismyip') {
+    if (valid_ip_address($_SERVER['REMOTE_ADDR']) === 'A') {
+        $given_ip = $_SERVER['REMOTE_ADDR'];
+    } elseif (valid_ip_address($_SERVER['REMOTE_ADDR']) === 'AAAA' && !$given_ip6) {
+        $given_ip6 = $_SERVER['REMOTE_ADDR'];
+        $given_ip = '';
+    }
 }
-if (!empty($_REQUEST['myip6'])) {
-    $given_ip6 = $_REQUEST['myip6'];
-} elseif (!empty($_REQUEST['ip6'])) {
-    $given_ip6 = $_REQUEST['ip6'];
+if ($given_ip6 === 'whatismyip') {
+    if (valid_ip_address($_SERVER['REMOTE_ADDR']) === 'AAAA') {
+        $given_ip6 = $_SERVER['REMOTE_ADDR'];
+    }
 }
 
-if (valid_ip_address($given_ip) === 'AAAA') {
-    $given_ip6 = $given_ip;
-}
-// Look for tag to grab the IP we're coming from
-if (($given_ip6 == "whatismyip") && (valid_ip_address($_SERVER['REMOTE_ADDR']) === 'AAAA')) {
-    $given_ip6 = $_SERVER['REMOTE_ADDR'];
-}
-if (($given_ip == "whatismyip") && (valid_ip_address($_SERVER['REMOTE_ADDR']) === 'A')) {
-    $given_ip = $_SERVER['REMOTE_ADDR'];
-} elseif (($given_ip == "whatismyip") && (valid_ip_address($_SERVER['REMOTE_ADDR']) === 'AAAA') && (!(valid_ip_address($given_ip6) === 'AAAA'))) {
-    $given_ip6 = $_SERVER['REMOTE_ADDR'];
-}
-
-// Finally get safe version of the IP
-$ip = safe($db, $db_type, $given_ip);
-$ip6 = safe($db, $db_type, $given_ip6);
-// Check it's ok...
-if ((!valid_ip_address($ip)) && (!valid_ip_address($ip6))) {
-    return status_exit('dnserr');
-}
-
+// Validate hostname
 if (!strlen($hostname)) {
     return status_exit('notfqdn');
 }
 
+// Parse and validate comma-separated IP lists
+$dualstack_update = isset($_REQUEST['dualstack_update']) && $_REQUEST['dualstack_update'] === '1';
+$ip_v4_input = safe($db, $db_type, $given_ip);
+$ip_v6_input = safe($db, $db_type, $given_ip6);
+
+$ip_v4_list = extract_valid_ips($ip_v4_input, 'A');
+$ip_v6_list = extract_valid_ips($ip_v6_input, 'AAAA');
+
+sort($ip_v4_list);
+sort($ip_v6_list);
+
+// Validate IP input: at least one valid IPv4 or IPv6 address must be present
+if (empty($ip_v4_list) && empty($ip_v6_list)) {
+    return status_exit('dnserr');
+}
+
+// Authenticate user and check permissions
 $user = $db->queryRow("SELECT users.id, users.password FROM users, perm_templ, perm_templ_items, perm_items 
                         WHERE users.username='$username'
                         AND users.active=1 
@@ -211,6 +269,7 @@ $userAuthService = new UserAuthenticationService(
     $config->get('password_encryption'),
     $config->get('password_encryption_cost')
 );
+
 if (!$user || !$userAuthService->verifyPassword($auth_password, $user['password'])) {
     return status_exit('badauth2');
 }
@@ -222,32 +281,21 @@ $no_update_necessary = false;
 
 while ($zone = $zones_query->fetch()) {
     $zone_updated = false;
-    $name_query = $db->prepare("SELECT name, type, content FROM $records_table WHERE domain_id=:domain_id and (type = 'A' OR type = 'AAAA')");
-    $name_query->execute([':domain_id' => $zone["domain_id"]]);
 
-    while ($record = $name_query->fetch()) {
-        if ($hostname == $record['name']) {
-            if (($record['type'] == 'A') && (valid_ip_address($ip) === 'A')) {
-                if ($ip == $record['content']) {
-                    $no_update_necessary = true;
-                } else {
-                    $update_query = $db->prepare("UPDATE $records_table SET content =:ip where name=:record_name and type='A'");
-                    $update_query->execute([':ip' => $ip, ':record_name' => $record['name']]);
-                    $zone_updated = true;
-                    $was_updated = true;
-                }
-            } elseif (($record['type'] == 'AAAA') && (valid_ip_address($ip6) === 'AAAA')) {
-                if ($ip6 == $record['content']) {
-                    $no_update_necessary = true;
-                } else {
-                    $update_query = $db->prepare("UPDATE $records_table SET content =:ip6 where name=:record_name and type='AAAA'");
-                    $update_query->execute([':ip6' => $ip6, ':record_name' => $record['name']]);
-                    $zone_updated = true;
-                    $was_updated = true;
-                }
-            }
+    if ($dualstack_update || !empty($ip_v4_list)) {
+        if (sync_dns_records($db, $records_table, $zone['domain_id'], $hostname, 'A', $ip_v4_list)) {
+            $zone_updated = true;
+            $was_updated = true;
         }
     }
+
+    if ($dualstack_update || !empty($ip_v6_list)) {
+        if (sync_dns_records($db, $records_table, $zone['domain_id'], $hostname, 'AAAA', $ip_v6_list)) {
+            $zone_updated = true;
+            $was_updated = true;
+        }
+    }
+
     if ($zone_updated) {
         $dnsRecord = new DnsRecord($db, $config);
         $dnsRecord->update_soa_serial($zone['domain_id']);
