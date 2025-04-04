@@ -23,29 +23,29 @@
 namespace Poweradmin\Application\Service;
 
 use PDO;
-use Poweradmin\Infrastructure\Configuration\SecurityPolicyConfig;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 
 class LoginAttemptService
 {
-    private SecurityPolicyConfig $securityPolicy;
+    private ConfigurationManager $configManager;
     private PDOLayer $connection;
 
-    public function __construct(PDOLayer $connection, SecurityPolicyConfig $securityPolicy)
+    public function __construct(PDOLayer $connection, ConfigurationManager $configManager = null)
     {
         $this->connection = $connection;
-        $this->securityPolicy = $securityPolicy;
+        $this->configManager = $configManager ?? ConfigurationManager::getInstance();
     }
 
     public function recordAttempt(string $username, string $ipAddress, bool $successful): void
     {
-        if (!$this->securityPolicy->get('enable_lockout')) {
+        if (!$this->configManager->get('security', 'account_lockout.enable_lockout', false)) {
             return;
         }
 
         $userId = $this->getUserId($username);
 
-        if ($successful && $this->securityPolicy->get('clear_attempts_on_success')) {
+        if ($successful && $this->configManager->get('security', 'account_lockout.clear_attempts_on_success', true)) {
             $this->clearFailedAttempts($userId, $ipAddress);
         }
 
@@ -66,7 +66,7 @@ class LoginAttemptService
 
     public function isAccountLocked(string $username, string $ipAddress): bool
     {
-        if (!$this->securityPolicy->get('enable_lockout')) {
+        if (!$this->configManager->get('security', 'account_lockout.enable_lockout', false)) {
             return false;
         }
 
@@ -75,10 +75,10 @@ class LoginAttemptService
             return false;
         }
 
-        $lockoutDuration = $this->securityPolicy->get('lockout_duration') * 60;
+        $lockoutDuration = $this->configManager->get('security', 'account_lockout.lockout_duration', 15) * 60;
         $cutoffTime = time() - $lockoutDuration;
-        $maxAttempts = $this->securityPolicy->get('lockout_attempts');
-        $trackIpAddress = $this->securityPolicy->get('track_ip_address');
+        $maxAttempts = $this->configManager->get('security', 'account_lockout.lockout_attempts', 5);
+        $trackIpAddress = $this->configManager->get('security', 'account_lockout.track_ip_address', true);
 
         $sql = "SELECT COUNT(*) as attempts
             FROM login_attempts
@@ -118,7 +118,7 @@ class LoginAttemptService
 
     private function cleanupOldAttempts(): void
     {
-        $lockoutDuration = $this->securityPolicy->get('lockout_duration') * 60;
+        $lockoutDuration = $this->configManager->get('security', 'account_lockout.lockout_duration', 15) * 60;
         $cutoffTime = time() - $lockoutDuration;
 
         $stmt = $this->connection->prepare("
@@ -139,7 +139,7 @@ class LoginAttemptService
 
         $params = ['user_id' => $userId];
 
-        if ($this->securityPolicy->get('track_ip_address')) {
+        if ($this->configManager->get('security', 'account_lockout.track_ip_address', true)) {
             $sql .= " AND ip_address = :ip_address";
             $params['ip_address'] = $ipAddress;
         }

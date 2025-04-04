@@ -37,7 +37,6 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Configuration\PasswordPolicyConfig;
 use Valitron\Validator;
 
 class EditUserController extends BaseController
@@ -65,7 +64,7 @@ class EditUserController extends BaseController
         parent::__construct($request);
 
         $this->request = new Request();
-        $this->policyService = new PasswordPolicyService(new PasswordPolicyConfig());
+        $this->policyService = new PasswordPolicyService();
         $this->userContextService = new UserContextService();
     }
 

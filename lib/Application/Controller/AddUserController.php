@@ -38,7 +38,6 @@ use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Configuration\PasswordPolicyConfig;
 use Valitron\Validator;
 
 class AddUserController extends BaseController
@@ -66,12 +65,11 @@ class AddUserController extends BaseController
         parent::__construct($request);
 
         $this->request = new Request();
-        $passwordPolicyConfig = new PasswordPolicyConfig();
-        $this->passwordPolicyService = new PasswordPolicyService($passwordPolicyConfig);
-        $this->passwordGenerationService = new PasswordGenerationService($passwordPolicyConfig);
+        $configManager = ConfigurationManager::getInstance();
+        $this->passwordPolicyService = new PasswordPolicyService($configManager);
+        $this->passwordGenerationService = new PasswordGenerationService($configManager);
 
         // Initialize mail service
-        $configManager = ConfigurationManager::getInstance();
         $this->mailService = new MailService($configManager);
     }
 

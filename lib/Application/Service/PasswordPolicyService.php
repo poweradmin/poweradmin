@@ -22,40 +22,41 @@
 
 namespace Poweradmin\Application\Service;
 
-use Poweradmin\Infrastructure\Configuration\PasswordPolicyConfig;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 class PasswordPolicyService
 {
-    private PasswordPolicyConfig $config;
+    private ConfigurationManager $configManager;
 
-    public function __construct(PasswordPolicyConfig $config)
+    public function __construct(ConfigurationManager $configManager = null)
     {
-        $this->config = $config;
+        $this->configManager = $configManager ?? ConfigurationManager::getInstance();
     }
 
     public function validatePassword(string $password): array
     {
         $errors = [];
 
-        if ($this->config->get('enable_password_rules')) {
-            if (strlen($password) < $this->config->get('min_length')) {
-                $errors[] = "Password must be at least {$this->config->get('min_length')} characters long";
+        if ($this->configManager->get('security', 'password_policy.enable_password_rules', false)) {
+            $minLength = $this->configManager->get('security', 'password_policy.min_length', 6);
+            if (strlen($password) < $minLength) {
+                $errors[] = "Password must be at least {$minLength} characters long";
             }
 
-            if ($this->config->get('require_uppercase') && !preg_match('/[A-Z]/', $password)) {
+            if ($this->configManager->get('security', 'password_policy.require_uppercase', true) && !preg_match('/[A-Z]/', $password)) {
                 $errors[] = 'Password must contain at least one uppercase letter';
             }
 
-            if ($this->config->get('require_lowercase') && !preg_match('/[a-z]/', $password)) {
+            if ($this->configManager->get('security', 'password_policy.require_lowercase', true) && !preg_match('/[a-z]/', $password)) {
                 $errors[] = 'Password must contain at least one lowercase letter';
             }
 
-            if ($this->config->get('require_numbers') && !preg_match('/[0-9]/', $password)) {
+            if ($this->configManager->get('security', 'password_policy.require_numbers', true) && !preg_match('/[0-9]/', $password)) {
                 $errors[] = 'Password must contain at least one number';
             }
 
-            if ($this->config->get('require_special')) {
-                $specialChars = preg_quote($this->config->get('special_characters'), '/');
+            if ($this->configManager->get('security', 'password_policy.require_special', false)) {
+                $specialChars = preg_quote($this->configManager->get('security', 'password_policy.special_characters', '!@#$%^&*()+-=[]{}|;:,.<>?'), '/');
                 if (!preg_match("/[$specialChars]/", $password)) {
                     $errors[] = 'Password must contain at least one special character';
                 }
@@ -68,13 +69,13 @@ class PasswordPolicyService
     public function getPolicyConfig(): array
     {
         return [
-            'enabled' => $this->config->get('enable_password_rules'),
-            'min_length' => $this->config->get('min_length'),
-            'require_uppercase' => $this->config->get('require_uppercase'),
-            'require_lowercase' => $this->config->get('require_lowercase'),
-            'require_numbers' => $this->config->get('require_numbers'),
-            'require_special' => $this->config->get('require_special'),
-            'special_characters' => $this->config->get('special_characters'),
+            'enabled' => $this->configManager->get('security', 'password_policy.enable_password_rules', false),
+            'min_length' => $this->configManager->get('security', 'password_policy.min_length', 6),
+            'require_uppercase' => $this->configManager->get('security', 'password_policy.require_uppercase', true),
+            'require_lowercase' => $this->configManager->get('security', 'password_policy.require_lowercase', true),
+            'require_numbers' => $this->configManager->get('security', 'password_policy.require_numbers', true),
+            'require_special' => $this->configManager->get('security', 'password_policy.require_special', false),
+            'special_characters' => $this->configManager->get('security', 'password_policy.special_characters', '!@#$%^&*()+-=[]{}|;:,.<>?'),
         ];
     }
 }

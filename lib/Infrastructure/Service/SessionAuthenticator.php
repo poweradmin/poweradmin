@@ -34,7 +34,6 @@ use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Domain\Service\SessionService;
-use Poweradmin\Infrastructure\Configuration\SecurityPolicyConfig;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\Infrastructure\Logger\LdapUserEventLogger;
 use Poweradmin\Infrastructure\Logger\Logger;
@@ -69,8 +68,7 @@ class SessionAuthenticator extends LoggingService
         $this->userEventLogger = new UserEventLogger($connection);
         $this->ldapUserEventLogger = new LdapUserEventLogger($connection);
 
-        $this->securityPolicy = new SecurityPolicyConfig();
-        $this->loginAttemptService = new LoginAttemptService($connection, $this->securityPolicy);
+        $this->loginAttemptService = new LoginAttemptService($connection, $this->configManager);
 
         $this->ldapAuthenticator = new LdapAuthenticator(
             $connection,

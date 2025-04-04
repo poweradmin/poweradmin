@@ -25,14 +25,13 @@ namespace Poweradmin\Application\Service;
 use Exception;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
-use Poweradmin\Infrastructure\Configuration\MailConfig;
 use Poweradmin\Infrastructure\Logger\LegacyLoggerInterface;
 use Psr\Log\LoggerInterface;
 
 class MailService
 {
     private ConfigurationManager $config;
-    private ?LegacyLoggerInterface $logger;
+    private ?LoggerInterface $logger;
 
     public function __construct(ConfigurationManager $config, ?LoggerInterface $logger = null)
     {
@@ -58,13 +57,13 @@ class MailService
         array $headers = []
     ): bool {
         // Check if mail functionality is enabled
-        if (!$this->config->isEnabled()) {
+        if (!$this->config->get('mail', 'enabled', false)) {
             $this->logWarning('Mail sending failed: mail functionality is disabled in configuration');
             return false;
         }
 
         // Determine which transport to use
-        $transportType = $this->config->get('mail_transport');
+        $transportType = $this->config->get('mail', 'transport', 'smtp');
 
         try {
             switch ($transportType) {
@@ -97,7 +96,7 @@ class MailService
         string $password,
         string $fullname = ''
     ): bool {
-        $subject = $this->config->get('password_email_subject');
+        $subject = $this->config->get('mail', 'password_email_subject', 'Your new account information');
 
         // Create both HTML and plain text versions of the email
         $htmlBody = $this->getNewAccountEmailHtml($username, $password, $fullname);
@@ -112,8 +111,8 @@ class MailService
     private function getNewAccountEmailHtml(string $username, string $password, string $fullname): string
     {
         $greeting = empty($fullname) ? 'Hello' : "Hello $fullname";
-        $emailTitle = $this->config->get('email_title');
-        $emailSignature = $this->config->get('email_signature');
+        $emailTitle = $this->config->get('mail', 'email_title', 'Your DNS Account Information');
+        $emailSignature = $this->config->get('mail', 'email_signature', 'DNS Admin');
         
         return '<!DOCTYPE html>
 <html>
@@ -148,8 +147,8 @@ class MailService
     private function getNewAccountEmailPlain(string $username, string $password, string $fullname): string
     {
         $greeting = empty($fullname) ? 'Hello' : "Hello $fullname";
-        $emailTitle = $this->config->get('email_title');
-        $emailSignature = $this->config->get('email_signature');
+        $emailTitle = $this->config->get('mail', 'email_title', 'Your DNS Account Information');
+        $emailSignature = $this->config->get('mail', 'email_signature', 'DNS Admin');
 
         return $greeting . ",\n\n" .
             "Your account has been created. Here are your login details:\n\n" .
@@ -171,8 +170,8 @@ class MailService
         string $plainBody,
         array $headers
     ): bool {
-        $fromEmail = $this->config->get('mail_from');
-        $fromName = $this->config->get('mail_from_name');
+        $fromEmail = $this->config->get('mail', 'from', 'poweradmin@example.com');
+        $fromName = $this->config->get('mail', 'from_name', '');
 
         // Set up email headers
         $mailHeaders = $this->getBaseHeaders($fromEmail, $fromName, $plainBody !== '');
@@ -201,9 +200,9 @@ class MailService
         string $plainBody,
         array $headers
     ): bool {
-        $fromEmail = $this->config->get('mail_from');
-        $fromName = $this->config->get('mail_from_name');
-        $sendmailPath = $this->config->get('sendmail_path');
+        $fromEmail = $this->config->get('mail', 'from', 'poweradmin@example.com');
+        $fromName = $this->config->get('mail', 'from_name', '');
+        $sendmailPath = $this->config->get('mail', 'sendmail_path', '/usr/sbin/sendmail -bs');
 
         // Set up email headers
         $mailHeaders = $this->getBaseHeaders($fromEmail, $fromName, $plainBody !== '');
@@ -250,11 +249,11 @@ class MailService
         string $plainBody,
         array $headers
     ): bool {
-        $host = $this->config->get('smtp_host');
-        $port = $this->config->get('smtp_port');
-        $encryption = $this->config->get('smtp_encryption');
-        $fromEmail = $this->config->get('mail_from');
-        $fromName = $this->config->get('mail_from_name');
+        $host = $this->config->get('mail', 'host', 'localhost');
+        $port = $this->config->get('mail', 'port', 25);
+        $encryption = $this->config->get('mail', 'encryption', '');
+        $fromEmail = $this->config->get('mail', 'from', 'poweradmin@example.com');
+        $fromName = $this->config->get('mail', 'from_name', '');
 
         // Set prefix for encrypted connections
         $prefix = '';
@@ -288,9 +287,9 @@ class MailService
             }
 
             // Authenticate if required
-            if ($this->config->get('smtp_auth')) {
-                $username = $this->config->get('smtp_username');
-                $password = $this->config->get('smtp_password');
+            if ($this->config->get('mail', 'auth', false)) {
+                $username = $this->config->get('mail', 'username', '');
+                $password = $this->config->get('mail', 'password', '');
 
                 $this->sendSmtpCommand($socket, "AUTH LOGIN");
                 $this->sendSmtpCommand($socket, base64_encode($username));

@@ -22,11 +22,11 @@
 
 namespace Poweradmin\Application\Service;
 
-use Poweradmin\Infrastructure\Configuration\PasswordPolicyConfig;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 class PasswordGenerationService
 {
-    private PasswordPolicyConfig $config;
+    private ConfigurationManager $configManager;
 
     // Default settings used when password policy is disabled
     private array $defaultSettings = [
@@ -38,9 +38,9 @@ class PasswordGenerationService
         'special_characters' => '!@#$%^&*()-_=+[]{}|;:,.<>?'
     ];
 
-    public function __construct(PasswordPolicyConfig $config)
+    public function __construct(ConfigurationManager $configManager = null)
     {
-        $this->config = $config;
+        $this->configManager = $configManager ?? ConfigurationManager::getInstance();
     }
 
     /**
@@ -52,7 +52,7 @@ class PasswordGenerationService
     public function generatePassword(?int $length = null): string
     {
         // Determine if we should use policy settings or defaults
-        $usePolicy = $this->config->get('enable_password_rules');
+        $usePolicy = $this->configManager->get('security', 'password_policy.enable_password_rules', false);
 
         // Get the appropriate settings (policy or default)
         $settings = $this->getSettings($usePolicy);
@@ -121,12 +121,12 @@ class PasswordGenerationService
     {
         if ($usePolicy) {
             return [
-                'min_length' => $this->config->get('min_length'),
-                'require_uppercase' => $this->config->get('require_uppercase'),
-                'require_lowercase' => $this->config->get('require_lowercase'),
-                'require_numbers' => $this->config->get('require_numbers'),
-                'require_special' => $this->config->get('require_special'),
-                'special_characters' => $this->config->get('special_characters')
+                'min_length' => $this->configManager->get('security', 'password_policy.min_length', 6),
+                'require_uppercase' => $this->configManager->get('security', 'password_policy.require_uppercase', true),
+                'require_lowercase' => $this->configManager->get('security', 'password_policy.require_lowercase', true),
+                'require_numbers' => $this->configManager->get('security', 'password_policy.require_numbers', true),
+                'require_special' => $this->configManager->get('security', 'password_policy.require_special', false),
+                'special_characters' => $this->configManager->get('security', 'password_policy.special_characters', '!@#$%^&*()+-=[]{}|;:,.<>?')
             ];
         }
 

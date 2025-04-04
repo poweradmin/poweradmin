@@ -31,6 +31,32 @@ return [
         'password_cost' => 12,                   // Cost factor for bcrypt
         'login_token_validation' => true,        // Enable token validation for login form
         'global_token_validation' => true,       // Enable token validation for all forms
+        'password_policy' => [
+            // Basic password rules
+            'enable_password_rules' => false,    // Enable password policy enforcement
+            'min_length' => 6,                   // Minimum password length
+            'require_uppercase' => true,         // Require at least one uppercase letter
+            'require_lowercase' => true,         // Require at least one lowercase letter
+            'require_numbers' => true,           // Require at least one number
+            'require_special' => false,          // Require at least one special character
+            'special_characters' => '!@#$%^&*()+-=[]{}|;:,.<>?',  // Allowed special characters
+
+            // Future features (not implemented)
+            'enable_expiration' => false,        // [NOT IMPLEMENTED] Enable password expiration
+            'max_age_days' => 90,               // [NOT IMPLEMENTED] Maximum password age in days
+            'enable_reuse_prevention' => false,  // [NOT IMPLEMENTED] Prevent password reuse
+            'prevent_reuse' => 5,               // [NOT IMPLEMENTED] Number of previous passwords to remember
+        ],
+        'account_lockout' => [
+            'enable_lockout' => false,           // Enable account lockout after failed login attempts
+            'lockout_attempts' => 5,             // Number of attempts before lockout
+            'lockout_duration' => 15,            // Duration in minutes
+            'track_ip_address' => true,          // Lock accounts based on IP address
+            'clear_attempts_on_success' => true, // Clear failed attempts after successful login
+            // Future features
+            'whitelist_ip_addresses' => [],      // [NOT IMPLEMENTED] IP addresses to never lock out
+            'blacklist_ip_addresses' => [],      // [NOT IMPLEMENTED] IP addresses to always block
+        ],
     ],
 
     /**
@@ -93,11 +119,24 @@ return [
     'mail' => [
         'enabled' => false,                        // Enable email functionality
         'from' => 'poweradmin@example.com',        // Default "from" address
+        'from_name' => '',                         // Default "from" name
+        'transport' => 'smtp',                     // Transport method: smtp, sendmail, or php
+
+        // SMTP settings
         'host' => 'smtp.example.com',              // SMTP server hostname
         'port' => 587,                             // SMTP server port
         'username' => '',                          // SMTP authentication username
         'password' => '',                          // SMTP authentication password
         'encryption' => 'tls',                     // Options: 'tls', 'ssl', ''
+        'auth' => false,                           // Whether SMTP requires authentication
+
+        // Sendmail settings
+        'sendmail_path' => '/usr/sbin/sendmail -bs', // Path to sendmail binary
+
+        // Email templates
+        'password_email_subject' => 'Your new account information',
+        'email_signature' => 'DNS Admin',
+        'email_title' => 'Your DNS Account Information'
     ],
     
     /**

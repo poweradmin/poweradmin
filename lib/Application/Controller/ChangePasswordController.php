@@ -40,7 +40,7 @@ use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\SessionService;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Configuration\PasswordPolicyConfig;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Valitron\Validator;
@@ -78,7 +78,7 @@ class ChangePasswordController extends BaseController
         $sessionService = new SessionService();
         $redirectService = new RedirectService();
         $this->authService = new AuthenticationService($sessionService, $redirectService);
-        $this->policyService = new PasswordPolicyService(new PasswordPolicyConfig());
+        $this->policyService = new PasswordPolicyService();
         $userAuthService = new UserAuthenticationService(
             $this->config('password_encryption'),
             $this->config('password_encryption_cost')

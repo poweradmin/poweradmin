@@ -163,24 +163,4 @@ class AppConfiguration implements ConfigurationInterface
         }
         return $items;
     }
-
-    /**
-     * Checks if login token validation is enabled.
-     *
-     * @return bool True if login token validation is enabled, false otherwise.
-     */
-    public function isLoginTokenValidationEnabled(): bool
-    {
-        return $this->get('login_token_validation', true);
-    }
-
-    /**
-     * Checks if global token validation is enabled.
-     *
-     * @return bool True if global token validation is enabled, false otherwise.
-     */
-    public function isGlobalTokenValidationEnabled(): bool
-    {
-        return $this->get('global_token_validation', true);
-    }
 }
