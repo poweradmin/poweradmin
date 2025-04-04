@@ -31,7 +31,7 @@ class LoginAttemptService
     private ConfigurationManager $configManager;
     private PDOLayer $connection;
 
-    public function __construct(PDOLayer $connection, ConfigurationManager $configManager = null)
+    public function __construct(PDOLayer $connection, ?ConfigurationManager $configManager = null)
     {
         $this->connection = $connection;
         $this->configManager = $configManager ?? ConfigurationManager::getInstance();
