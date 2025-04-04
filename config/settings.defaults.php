@@ -53,9 +53,8 @@ return [
             'lockout_duration' => 15,            // Duration in minutes
             'track_ip_address' => true,          // Lock accounts based on IP address
             'clear_attempts_on_success' => true, // Clear failed attempts after successful login
-            // Future features
-            'whitelist_ip_addresses' => [],      // [NOT IMPLEMENTED] IP addresses to never lock out
-            'blacklist_ip_addresses' => [],      // [NOT IMPLEMENTED] IP addresses to always block
+            'whitelist_ip_addresses' => [],      // IP addresses to never lock out (supports IPs, CIDRs, wildcards) - takes priority over blacklist
+            'blacklist_ip_addresses' => [],      // IP addresses to always block (supports IPs, CIDRs, wildcards)
         ],
     ],
 

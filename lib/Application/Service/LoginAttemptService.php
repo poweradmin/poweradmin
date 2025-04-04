@@ -66,8 +66,22 @@ class LoginAttemptService
 
     public function isAccountLocked(string $username, string $ipAddress): bool
     {
-        if (!$this->configManager->get('security', 'account_lockout.enable_lockout', false)) {
+        // Use the updated ConfigurationManager with dot notation support
+        $lockoutEnabled = $this->configManager->get('security', 'account_lockout.enable_lockout', false);
+        if (!$lockoutEnabled) {
             return false;
+        }
+
+        // Check IP whitelist first (whitelist takes priority over blacklist)
+        $whitelistedIps = $this->configManager->get('security', 'account_lockout.whitelist_ip_addresses', []);
+        if (!empty($whitelistedIps) && $this->isIpInList($ipAddress, $whitelistedIps)) {
+            return false; // This IP is whitelisted, never lock it
+        }
+
+        // Check IP blacklist next
+        $blacklistedIps = $this->configManager->get('security', 'account_lockout.blacklist_ip_addresses', []);
+        if (!empty($blacklistedIps) && $this->isIpInList($ipAddress, $blacklistedIps)) {
+            return true; // This IP is blacklisted, consider it locked
         }
 
         $userId = $this->getUserId($username);
@@ -101,6 +115,56 @@ class LoginAttemptService
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return (int)$result['attempts'] >= $maxAttempts;
+    }
+
+    /**
+     * Check if an IP address is in the given list.
+     * Supports individual IPs, CIDRs (e.g., 192.168.1.0/24), and wildcards (e.g., 192.168.1.*)
+     *
+     * @param string $ipAddress The IP address to check
+     * @param array $ipList List of IPs/CIDRs/wildcards to match against
+     * @return bool True if the IP is in the list
+     */
+    private function isIpInList(string $ipAddress, array $ipList): bool
+    {
+        if (empty($ipAddress) || empty($ipList)) {
+            return false;
+        }
+
+        // Convert the IP to a long integer for faster comparison
+        $ip = ip2long($ipAddress);
+        if ($ip === false) {
+            return false; // Invalid IP address
+        }
+
+        foreach ($ipList as $listItem) {
+            // Exact match
+            if ($listItem === $ipAddress) {
+                return true;
+            }
+
+            // CIDR notation (e.g., 192.168.1.0/24)
+            if (strpos($listItem, '/') !== false) {
+                list($subnet, $bits) = explode('/', $listItem);
+                $subnet = ip2long($subnet);
+                if ($subnet !== false) {
+                    $mask = -1 << (32 - (int)$bits);
+                    if (($ip & $mask) === ($subnet & $mask)) {
+                        return true;
+                    }
+                }
+            }
+
+            // Wildcard notation (e.g., 192.168.1.*)
+            if (strpos($listItem, '*') !== false) {
+                $pattern = '/^' . str_replace(['.', '*'], ['\\.', '[0-9]+'], $listItem) . '$/';
+                if (preg_match($pattern, $ipAddress)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private function getUserId(string $username): ?int

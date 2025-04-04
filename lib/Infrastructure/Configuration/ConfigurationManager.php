@@ -351,7 +351,7 @@ class ConfigurationManager
      * Get a configuration value by its key
      *
      * @param string $group Configuration group
-     * @param string $key Configuration key
+     * @param string $key Configuration key, can use dot notation for nested values (e.g. 'account_lockout.enable_lockout')
      * @param mixed $default Default value if not found
      * @return mixed Configuration value
      */
@@ -361,6 +361,22 @@ class ConfigurationManager
             $this->initialize();
         }
 
+        // Handle nested keys with dot notation
+        if (str_contains($key, '.')) {
+            $path = explode('.', $key);
+            $value = $this->settings[$group] ?? null;
+
+            foreach ($path as $pathPart) {
+                if (!isset($value[$pathPart])) {
+                    return $default;
+                }
+                $value = $value[$pathPart];
+            }
+
+            return $value;
+        }
+
+        // Handle direct key
         if (isset($this->settings[$group][$key])) {
             return $this->settings[$group][$key];
         }

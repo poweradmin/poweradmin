@@ -30,6 +30,7 @@ use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use ReflectionClass;
 
 class SqlAuthenticator extends LoggingService
@@ -40,6 +41,7 @@ class SqlAuthenticator extends LoggingService
     private AuthenticationService $authService;
     private CsrfTokenService $csrfTokenService;
     private LoginAttemptService $loginAttemptService;
+    private array $serverParams;
 
     public function __construct(
         PDOLayer $connection,
@@ -48,25 +50,28 @@ class SqlAuthenticator extends LoggingService
         AuthenticationService $authService,
         CsrfTokenService $csrfTokenService,
         Logger $logger,
-        LoginAttemptService $loginAttemptService
+        LoginAttemptService $loginAttemptService,
+        array $serverParams = []
     ) {
         $shortClassName = (new ReflectionClass(self::class))->getShortName();
         parent::__construct($logger, $shortClassName);
 
         $this->connection = $connection;
-
         $this->configManager = $configManager;
         $this->userEventLogger = $userEventLogger;
         $this->authService = $authService;
         $this->csrfTokenService = $csrfTokenService;
         $this->loginAttemptService = $loginAttemptService;
+        $this->serverParams = $serverParams ?: $_SERVER;
     }
 
     public function authenticate(): void
     {
         $this->logInfo('Starting authentication process.');
 
-        $ipAddress = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+        // Get the client IP using the IpAddressRetriever
+        $ipRetriever = new IpAddressRetriever($this->serverParams);
+        $ipAddress = $ipRetriever->getClientIp() ?: '0.0.0.0';
         $username = $_SESSION["userlogin"] ?? '';
 
         if ($this->loginAttemptService->isAccountLocked($username, $ipAddress)) {
