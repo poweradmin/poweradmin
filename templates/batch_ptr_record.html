@@ -24,80 +24,99 @@
         <strong>{{ 'Batch PTR Records'|trans }}</strong>
     </div>
     <div class="card-body">
-        <p>{{ 'Create multiple PTR (reverse DNS) records at once for an IP range'|trans }}</p>
+        <p class="small text-muted mb-3">{{ 'Create multiple PTR (reverse DNS) records at once for an IP range'|trans }}</p>
 
         <form class="needs-validation" method="post" action="index.php?page=batch_ptr_record{% if has_zone_id %}&id={{ zone_id }}{% endif %}" novalidate>
             <input type="hidden" name="_token" value="{{ csrf_token }}">
 
-            <div class="form-group mb-3">
-                <label for="network_type" class="form-label">{{ 'IP Version'|trans }}</label>
-                <select id="network_type" name="network_type" class="form-select">
-                    <option value="ipv4" {% if network_type == 'ipv4' %}selected{% endif %}>{{ 'IPv4 (/24 network)'|trans }}</option>
-                    <option value="ipv6" {% if network_type == 'ipv6' %}selected{% endif %}>{{ 'IPv6 (/64 network)'|trans }}</option>
-                </select>
+            <div class="row g-2">
+                <div class="col-md-3">
+                    <div class="form-group mb-2">
+                        <label for="network_type" class="form-label small">{{ 'IP Version'|trans }}</label>
+                        <select id="network_type" name="network_type" class="form-select form-select-sm">
+                            <option value="ipv4" {% if network_type == 'ipv4' %}selected{% endif %}>{{ 'IPv4 (/24 network)'|trans }}</option>
+                            <option value="ipv6" {% if network_type == 'ipv6' %}selected{% endif %}>{{ 'IPv6 (/64 network)'|trans }}</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="form-group mb-2">
+                        <label for="network_prefix" class="form-label small">{{ 'Network Prefix'|trans }}</label>
+                        <input type="text" id="network_prefix" name="network_prefix" value="{{ network_prefix }}" class="form-control form-control-sm" required>
+                        <div class="invalid-feedback small">{% trans %}Please provide a network prefix{% endtrans %}</div>
+                        <small class="form-text text-muted small ipv4-help">{{ 'e.g., "192.168.1"'|trans }}</small>
+                        <small class="form-text text-muted small ipv6-help">{{ 'e.g., "2001:db8:1:1"'|trans }}</small>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="form-group mb-2">
+                        <label for="host_prefix" class="form-label small">{{ 'Host Prefix'|trans }}</label>
+                        <input type="text" id="host_prefix" name="host_prefix" value="{{ host_prefix }}" class="form-control form-control-sm" required>
+                        <div class="invalid-feedback small">{% trans %}Required{% endtrans %}</div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group mb-2">
+                        <label for="domain" class="form-label small">{{ 'Domain'|trans }}</label>
+                        <input type="text" id="domain" name="domain" value="{{ domain }}" class="form-control form-control-sm" required>
+                        <div class="invalid-feedback small">{% trans %}Required{% endtrans %}</div>
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group mb-3">
-                <label for="network_prefix" class="form-label">{{ 'Network Prefix'|trans }}</label>
-                <input type="text" id="network_prefix" name="network_prefix" value="{{ network_prefix }}" class="form-control" required>
-                <div class="invalid-feedback">{% trans %}Please provide a network prefix{% endtrans %}</div>
-                <small class="form-text text-muted ipv4-help">{{ 'For IPv4, enter the first 3 octets (e.g., "192.168.1")'|trans }}</small>
-                <small class="form-text text-muted ipv6-help">{{ 'For IPv6, enter the /64 prefix (e.g., "2001:db8:1:1")'|trans }}</small>
+            <div class="row g-2 mt-1">
+                <div class="col-md-2 ipv6-count">
+                    <div class="form-group mb-2">
+                        <label for="ipv6_count" class="form-label small">{{ 'IPv6 Count'|trans }}</label>
+                        <input type="number" id="ipv6_count" name="ipv6_count" value="{{ ipv6_count }}" min="1" max="1000" class="form-control form-control-sm" required>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="form-group mb-2">
+                        <label for="ttl" class="form-label small">{{ 'TTL'|trans }}</label>
+                        <input type="number" id="ttl" name="ttl" value="{{ ttl }}" min="0" max="2147483647" pattern="[0-9]*" class="form-control form-control-sm" required>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="form-group mb-2">
+                        <label for="priority" class="form-label small">{{ 'Priority'|trans }}</label>
+                        <input type="number" id="priority" name="priority" value="{{ priority }}" min="0" max="65535" pattern="[0-9]*" class="form-control form-control-sm">
+                    </div>
+                </div>
+
+                {% if iface_record_comments %}
+                <div class="col-md-6">
+                    <div class="form-group mb-2">
+                        <label for="comment" class="form-label small">{{ 'Comment'|trans }}</label>
+                        <input type="text" id="comment" name="comment" value="{{ comment }}" class="form-control form-control-sm">
+                    </div>
+                </div>
+                {% endif %}
             </div>
 
-            <div class="form-group mb-3">
-                <label for="host_prefix" class="form-label">{{ 'Host Prefix'|trans }}</label>
-                <input type="text" id="host_prefix" name="host_prefix" value="{{ host_prefix }}" class="form-control" required>
-                <div class="invalid-feedback">{% trans %}Please provide a host prefix{% endtrans %}</div>
-                <small class="form-text text-muted">{{ 'Prefix for the hostname (e.g., "host" becomes "host-1.example.com")'|trans }}</small>
+            <div class="row mt-3">
+                <div class="col-md-12">
+                    <div class="alert alert-warning py-2 small">
+                        <strong>{{ 'Warning'|trans }}:</strong> {{ 'This will create multiple PTR records at once. For IPv4, a full /24 network (256 records) will be created.'|trans }}
+                    </div>
+                    
+                    <div class="alert alert-info py-2 small">
+                        <strong>{{ 'Note'|trans }}:</strong> {{ 'You must have the appropriate reverse zone already created in PowerDNS before using this feature. For example, for the network 192.168.1.0/24, you need a reverse zone for 1.168.192.in-addr.arpa.'|trans }}
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group mb-3">
-                <label for="domain" class="form-label">{{ 'Domain'|trans }}</label>
-                <input type="text" id="domain" name="domain" value="{{ domain }}" class="form-control" required>
-                <div class="invalid-feedback">{% trans %}Please provide a domain{% endtrans %}</div>
-                <small class="form-text text-muted">{{ 'Domain suffix for PTR records (e.g., "example.com")'|trans }}</small>
-            </div>
-
-            <div class="form-group mb-3 ipv6-count">
-                <label for="ipv6_count" class="form-label">{{ 'Number of IPv6 Records'|trans }}</label>
-                <input type="number" id="ipv6_count" name="ipv6_count" value="{{ ipv6_count }}" min="1" max="1000" class="form-control" required>
-                <div class="invalid-feedback">{% trans %}Please enter a number between 1 and 1000{% endtrans %}</div>
-                <small class="form-text text-muted">{{ 'For IPv6, limit the number of records to create (max 1000)'|trans }}</small>
-            </div>
-
-            <div class="form-group mb-3">
-                <label for="ttl" class="form-label">{{ 'TTL'|trans }}</label>
-                <input type="number" id="ttl" name="ttl" value="{{ ttl }}" min="0" max="2147483647" pattern="[0-9]*" class="form-control" required>
-                <div class="invalid-feedback">{% trans %}Please provide a TTL value{% endtrans %}</div>
-            </div>
-
-            <div class="form-group mb-3">
-                <label for="priority" class="form-label">{{ 'Priority'|trans }}</label>
-                <input type="number" id="priority" name="priority" value="{{ priority }}" min="0" max="65535" pattern="[0-9]*" class="form-control">
-            </div>
-
-            {% if iface_record_comments %}
-            <div class="form-group mb-3">
-                <label for="comment" class="form-label">{{ 'Comment'|trans }}</label>
-                <textarea id="comment" name="comment" class="form-control">{{ comment }}</textarea>
-            </div>
-            {% endif %}
-
-            <div class="alert alert-warning">
-                <strong>{{ 'Warning'|trans }}:</strong> {{ 'This will create multiple PTR records at once. For IPv4, a full /24 network (256 records) will be created.'|trans }}
-            </div>
-            
-            <div class="alert alert-info">
-                <strong>{{ 'Note'|trans }}:</strong> {{ 'You must have the appropriate reverse zone already created in PowerDNS before using this feature. For example, for the network 192.168.1.0/24, you need a reverse zone for 1.168.192.in-addr.arpa.'|trans }}
-            </div>
-
-            <div class="mb-3">
-                <button type="submit" class="btn btn-primary">{{ 'Create PTR Records'|trans }}</button>
+            <div class="mt-2">
+                <button type="submit" class="btn btn-primary btn-sm">{{ 'Create PTR Records'|trans }}</button>
                 {% if has_zone_id %}
-                <a href="index.php?page=edit&id={{ zone_id }}" class="btn btn-secondary">{{ 'Cancel'|trans }}</a>
+                <a href="index.php?page=edit&id={{ zone_id }}" class="btn btn-secondary btn-sm">{{ 'Cancel'|trans }}</a>
                 {% else %}
-                <a href="index.php" class="btn btn-secondary">{{ 'Cancel'|trans }}</a>
+                <a href="index.php" class="btn btn-secondary btn-sm">{{ 'Cancel'|trans }}</a>
                 {% endif %}
             </div>
         </form>
