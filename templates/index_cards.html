@@ -1,151 +1,148 @@
 <h5 class="mb-3">{% trans %}Welcome{% endtrans %} {{ user_name }}</h5>
-<div class="row">
+<div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-2">
     {% if permissions['search'] %}
-    <div class="col-sm-3 mb-3">
-        <div class="card">
-            <div class="text-center"><i class="bi bi-search display-1"></i></div>
-            <div class="card-body">
-                <div class="row"><a href="index.php?page=search" class="btn btn-light btn-block" data-testid="search-link">{% trans %}Search zones and records{% endtrans %}</a></div>
+    <div class="col mb-2">
+        <div class="card h-100">
+            <div class="text-center p-2"><i class="bi bi-search display-4"></i></div>
+            <div class="card-body d-flex align-items-end pb-2">
+                <a href="index.php?page=search" class="btn btn-light btn-sm w-100" data-testid="search-link">{% trans %}Search zones and records{% endtrans %}</a>
             </div>
         </div>
     </div>
     {% endif %}
     {% if permissions['zone_content_view_own'] or permissions['zone_content_view_others'] %}
-    <div class="col-sm-3 mb-3">
-        <div class="card">
-            <div class="text-center"><i class="bi bi-diagram-3 display-1"></i></div>
-            <div class="card-body">
-                <div class="row"><a href="index.php?page=list_zones" class="btn btn-light btn-block" data-testid="list-zones-link">{% trans %}List zones{% endtrans %}</a>
-                </div>
+    <div class="col mb-2">
+        <div class="card h-100">
+            <div class="text-center p-2"><i class="bi bi-diagram-3 display-4"></i></div>
+            <div class="card-body d-flex align-items-end pb-2">
+                <a href="index.php?page=list_zones" class="btn btn-light btn-sm w-100" data-testid="list-zones-link">{% trans %}List zones{% endtrans %}</a>
             </div>
         </div>
     </div>
     {% endif %}
 
     {% if permissions['zone_master_add'] %}
-    <div class="col-sm-3 mb-3">
-        <div class="card">
-            <div class="text-center"><i class="bi bi-files display-1"></i></div>
-            <div class="card-body">
-                <div class="row"><a href="index.php?page=list_zone_templ" class="btn btn-light btn-block" data-testid="list-zone-templates-link">{% trans %}List zone templates{% endtrans %}</a></div>
+    <div class="col mb-2">
+        <div class="card h-100">
+            <div class="text-center p-2"><i class="bi bi-files display-4"></i></div>
+            <div class="card-body d-flex align-items-end pb-2">
+                <a href="index.php?page=list_zone_templ" class="btn btn-light btn-sm w-100" data-testid="list-zone-templates-link">{% trans %}List zone templates{% endtrans %}</a>
             </div>
         </div>
     </div>
     {% endif %}
     {% if permissions['supermaster_view'] %}
-    <div class="col-sm-3 mb-3">
-        <div class="card">
-            <div class="text-center"><i class="bi bi-hdd-rack display-1"></i></div>
-            <div class="card-body">
-                <div class="row"><a href="index.php?page=list_supermasters" class="btn btn-light btn-hdd-rack" data-testid="list-supermasters-link">{% trans %}List supermasters{% endtrans %}</a></div>
+    <div class="col mb-2">
+        <div class="card h-100">
+            <div class="text-center p-2"><i class="bi bi-hdd-rack display-4"></i></div>
+            <div class="card-body d-flex align-items-end pb-2">
+                <a href="index.php?page=list_supermasters" class="btn btn-light btn-sm w-100" data-testid="list-supermasters-link">{% trans %}List supermasters{% endtrans %}</a>
             </div>
         </div>
     </div>
     {% endif %}
     {% if permissions['zone_master_add'] %}
-    <div class="col-sm-3 mb-3">
-        <div class="card">
-            <div class="text-center"><i class="bi bi-plus-circle display-1"></i></div>
-            <div class="card-body">
-                <div class="row"><a href="index.php?page=add_zone_master" class="btn btn-light btn-block" data-testid="add-master-zone-link">{% trans %}Add master zone{% endtrans %}</a></div>
+    <div class="col mb-2">
+        <div class="card h-100">
+            <div class="text-center p-2"><i class="bi bi-plus-circle display-4"></i></div>
+            <div class="card-body d-flex align-items-end pb-2">
+                <a href="index.php?page=add_zone_master" class="btn btn-light btn-sm w-100" data-testid="add-master-zone-link">{% trans %}Add master zone{% endtrans %}</a>
             </div>
         </div>
     </div>
     {% endif %}
     {% if permissions['zone_slave_add'] %}
-    <div class="col-sm-3 mb-3">
-        <div class="card">
-            <div class="text-center"><i class="bi bi-plus-circle-dotted display-1"></i></div>
-            <div class="card-body">
-                <div class="row"><a href="index.php?page=add_zone_slave" class="btn btn-light btn-block" data-testid="add-slave-zone-link">{% trans %}Add slave zone{% endtrans %}</a></div>
+    <div class="col mb-2">
+        <div class="card h-100">
+            <div class="text-center p-2"><i class="bi bi-plus-circle-dotted display-4"></i></div>
+            <div class="card-body d-flex align-items-end pb-2">
+                <a href="index.php?page=add_zone_slave" class="btn btn-light btn-sm w-100" data-testid="add-slave-zone-link">{% trans %}Add slave zone{% endtrans %}</a>
             </div>
         </div>
     </div>
     {% endif %}
     {% if permissions['supermaster_add'] %}
-    <div class="col-sm-3 mb-3">
-        <div class="card">
-            <div class="text-center"><i class="bi bi-hdd-network display-1"></i></div>
-            <div class="card-body">
-                <div class="row"><a href="index.php?page=add_supermaster" class="btn btn-light btn-block" data-testid="add-supermaster-link">{% trans %}Add supermaster{% endtrans %}</a></div>
+    <div class="col mb-2">
+        <div class="card h-100">
+            <div class="text-center p-2"><i class="bi bi-hdd-network display-4"></i></div>
+            <div class="card-body d-flex align-items-end pb-2">
+                <a href="index.php?page=add_supermaster" class="btn btn-light btn-sm w-100" data-testid="add-supermaster-link">{% trans %}Add supermaster{% endtrans %}</a>
             </div>
         </div>
     </div>
     {% endif %}
     {% if permissions['zone_master_add'] %}
-    <div class="col-sm-3 mb-3">
-        <div class="card">
-            <div class="text-center"><i class="bi bi-collection display-1"></i></div>
-            <div class="card-body">
-                <div class="row"><a href="index.php?page=bulk_registration" class="btn btn-light btn-block" data-testid="bulk-registration-link">{% trans %}Bulk registration{% endtrans %}</a></div>
+    <div class="col mb-2">
+        <div class="card h-100">
+            <div class="text-center p-2"><i class="bi bi-collection display-4"></i></div>
+            <div class="card-body d-flex align-items-end pb-2">
+                <a href="index.php?page=bulk_registration" class="btn btn-light btn-sm w-100" data-testid="bulk-registration-link">{% trans %}Bulk registration{% endtrans %}</a>
             </div>
         </div>
     </div>
     {% endif %}
     {% if iface_add_reverse_record and (permissions['zone_content_edit_own'] or permissions['zone_content_edit_others']) %}
-    <div class="col-sm-3 mb-3">
-        <div class="card">
-            <div class="text-center"><i class="bi bi-arrow-repeat display-1"></i></div>
-            <div class="card-body">
-                <div class="row"><a href="index.php?page=batch_ptr_record" class="btn btn-light btn-block" data-testid="batch-ptr-records-link">{% trans %}Batch PTR Records{% endtrans %}</a></div>
+    <div class="col mb-2">
+        <div class="card h-100">
+            <div class="text-center p-2"><i class="bi bi-arrow-repeat display-4"></i></div>
+            <div class="card-body d-flex align-items-end pb-2">
+                <a href="index.php?page=batch_ptr_record" class="btn btn-light btn-sm w-100" data-testid="batch-ptr-records-link">{% trans %}Batch PTR Records{% endtrans %}</a>
             </div>
         </div>
     </div>
     {% endif %}
     {% if permissions['user_is_ueberuser'] and dblog_use == true %}
-    <div class="col-sm-3 mb-3">
-        <div class="card">
-            <div class="text-center"><i class="bi bi-list-ul display-1"></i></div>
-            <div class="card-body">
-                <div class="row"><a href="index.php?page=list_log_zones" class="btn btn-light btn-block" data-testid="zone-logs-link">{% trans %}Zone logs{% endtrans %}</a>
-                </div>
+    <div class="col mb-2">
+        <div class="card h-100">
+            <div class="text-center p-2"><i class="bi bi-list-ul display-4"></i></div>
+            <div class="card-body d-flex align-items-end pb-2">
+                <a href="index.php?page=list_log_zones" class="btn btn-light btn-sm w-100" data-testid="zone-logs-link">{% trans %}Zone logs{% endtrans %}</a>
             </div>
         </div>
     </div>
     {% endif %}
     {% if auth_used != "ldap" %}
-    <div class="col-sm-3 mb-3">
-        <div class="card">
-            <div class="text-center"><i class="bi bi-key display-1"></i></div>
-            <div class="card-body">
-                <div class="row"><a href="index.php?page=change_password" class="btn btn-light btn-block" data-testid="change-password-link">{% trans %}Change password{% endtrans %}</a></div>
+    <div class="col mb-2">
+        <div class="card h-100">
+            <div class="text-center p-2"><i class="bi bi-key display-4"></i></div>
+            <div class="card-body d-flex align-items-end pb-2">
+                <a href="index.php?page=change_password" class="btn btn-light btn-sm w-100" data-testid="change-password-link">{% trans %}Change password{% endtrans %}</a>
             </div>
         </div>
     </div>
     {% endif %}
-    <div class="col-sm-3 mb-3">
-        <div class="card">
-            <div class="text-center"><i class="bi bi-people display-1"></i></div>
-            <div class="card-body">
-                <div class="row"><a href="index.php?page=users" class="btn btn-light btn-block" data-testid="user-administration-link">{% trans %}User administration{% endtrans %}</a></div>
+    <div class="col mb-2">
+        <div class="card h-100">
+            <div class="text-center p-2"><i class="bi bi-people display-4"></i></div>
+            <div class="card-body d-flex align-items-end pb-2">
+                <a href="index.php?page=users" class="btn btn-light btn-sm w-100" data-testid="user-administration-link">{% trans %}User administration{% endtrans %}</a>
             </div>
         </div>
     </div>
     {% if permissions['templ_perm_edit'] %}
-    <div class="col-sm-3 mb-3">
-        <div class="card">
-            <div class="text-center"><i class="bi bi-person-lock display-1"></i></div>
-            <div class="card-body">
-                <div class="row"><a href="index.php?page=list_perm_templ" class="btn btn-light btn-block" data-testid="list-permission-templates-link">{% trans %}List permission templates{% endtrans %}</a></div>
+    <div class="col mb-2">
+        <div class="card h-100">
+            <div class="text-center p-2"><i class="bi bi-person-lock display-4"></i></div>
+            <div class="card-body d-flex align-items-end pb-2">
+                <a href="index.php?page=list_perm_templ" class="btn btn-light btn-sm w-100" data-testid="list-permission-templates-link">{% trans %}List permission templates{% endtrans %}</a>
             </div>
         </div>
     </div>
     {% endif %}
-    <div class="col-sm-3 mb-3">
-        <div class="card">
-            <div class="text-center"><i class="bi bi-box-arrow-right display-1"></i></div>
-            <div class="card-body">
-                <div class="row"><a href="index.php?page=logout" class="btn btn-light btn-block" data-testid="logout-link">{% trans %}Logout{% endtrans %}</a>
-                </div>
+    <div class="col mb-2">
+        <div class="card h-100">
+            <div class="text-center p-2"><i class="bi bi-box-arrow-right display-4"></i></div>
+            <div class="card-body d-flex align-items-end pb-2">
+                <a href="index.php?page=logout" class="btn btn-light btn-sm w-100" data-testid="logout-link">{% trans %}Logout{% endtrans %}</a>
             </div>
         </div>
     </div>
     {% if permissions['user_is_ueberuser'] and migrations_show %}
-    <div class="col-sm-3 mb-3">
-        <div class="card">
-            <div class="text-center"><i class="bi bi-database-up display-1"></i></div>
-            <div class="card-body">
-                <div class="row"><a href="index.php?page=migrations" class="btn btn-light btn-block" data-testid="list-permission-templates-link">{% trans %}Migrations{% endtrans %}</a></div>
+    <div class="col mb-2">
+        <div class="card h-100">
+            <div class="text-center p-2"><i class="bi bi-database-up display-4"></i></div>
+            <div class="card-body d-flex align-items-end pb-2">
+                <a href="index.php?page=migrations" class="btn btn-light btn-sm w-100" data-testid="migrations-link">{% trans %}Migrations{% endtrans %}</a>
             </div>
         </div>
     </div>
