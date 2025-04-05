@@ -26,6 +26,7 @@ use PDO;
 use Poweradmin\AppConfiguration;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
@@ -431,26 +432,15 @@ class DnsRecord
         $zone_type = $this->get_domain_type($zone_id);
 
         if ($type == 'SOA' && $perm_edit == "own_as_client") {
-            $error = new ErrorMessage(_("You do not have the permission to add SOA record."));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
-            return false;
+            throw new \Exception(_("You do not have the permission to add SOA record."));
         }
+        
         if ($type == 'NS' && $perm_edit == "own_as_client") {
-            $error = new ErrorMessage(_("You do not have the permission to add NS record."));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
-            return false;
+            throw new \Exception(_("You do not have the permission to add NS record."));
         }
 
         if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
-            $error = new ErrorMessage(_("You do not have the permission to add a record to this zone."));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
-            return false;
+            throw new \Exception(_("You do not have the permission to add a record to this zone."));
         }
 
         $dns_hostmaster = $this->config->get('dns_hostmaster');

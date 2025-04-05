@@ -65,6 +65,7 @@ class IndexController extends BaseController
             'permissions' => $permissions,
             'dblog_use' => $this->config('dblog_use'),
             'migrations_show' => $this->config('iface_migrations_show'),
+            'iface_add_reverse_record' => $this->config('interface', 'add_reverse_record', true),
         ]);
     }
 }

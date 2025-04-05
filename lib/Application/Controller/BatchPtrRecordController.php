@@ -65,31 +65,53 @@ class BatchPtrRecordController extends BaseController
 
     public function run(): void
     {
-        $this->checkId();
+        // Check if batch PTR records are enabled
+        $isReverseRecordAllowed = $this->config('interface', 'add_reverse_record', true);
+        $this->checkCondition(!$isReverseRecordAllowed, _("Batch PTR record creation is not enabled."));
+        
+        // Check if user has permission to use this feature
+        $perm_zone_master_add = UserManager::verify_permission($this->db, 'zone_master_add');
+        $perm_zone_slave_add = UserManager::verify_permission($this->db, 'zone_slave_add');
+        $this->checkCondition(!$perm_zone_master_add && !$perm_zone_slave_add, 
+            _("You do not have permission to add zones."));
+        
+        // Check if we have a specific zone_id
+        $hasZoneId = isset($_GET['id']) && !empty($_GET['id']);
+        
+        if ($hasZoneId) {
+            $this->checkId();
+            $zone_id = htmlspecialchars($_GET['id']);
+            $zone_type = $this->dnsRecord->get_domain_type($zone_id);
+            $perm_edit = Permission::getEditPermission($this->db);
+            $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
 
-        $perm_edit = Permission::getEditPermission($this->db);
-        $zone_id = htmlspecialchars($_GET['id']);
-        $zone_type = $this->dnsRecord->get_domain_type($zone_id);
-        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
+            // Only check permissions if accessing from a specific zone
+            $this->checkCondition($zone_type == "SLAVE"
+                || $perm_edit == "none"
+                || ($perm_edit == "own" || $perm_edit == "own_as_client")
+                && !$user_is_zone_owner, _("You do not have the permission to add records to this zone."));
+        }
 
-        $this->checkCondition($zone_type == "SLAVE"
-            || $perm_edit == "none"
-            || ($perm_edit == "own" || $perm_edit == "own_as_client")
-            && !$user_is_zone_owner, _("You do not have the permission to add records to this zone."));
-
+        // Preserve form data in case of errors
+        $formData = [];
         if ($this->isPost()) {
+            $formData = $_POST;
             try {
                 $this->validateCsrfToken();
-                $this->addBatchPtrRecords();
+                if ($this->addBatchPtrRecords()) {
+                    // Clear form data on success
+                    $formData = [];
+                }
             } catch (\Exception $e) {
                 $this->setMessage('batch_ptr_record', 'error', $e->getMessage());
+                // Keep form data in case of error
             }
         }
         
-        $this->showForm();
+        $this->showForm($formData);
     }
 
-    private function addBatchPtrRecords(): void
+    private function addBatchPtrRecords(): bool
     {
         $v = new Valitron\Validator($_POST);
         $v->rules([
@@ -99,7 +121,7 @@ class BatchPtrRecordController extends BaseController
 
         if (!$v->validate()) {
             $this->showFirstError($v->errors());
-            return;
+            return false;
         }
         
         $networkType = $_POST['network_type'] ?? '';
@@ -109,7 +131,7 @@ class BatchPtrRecordController extends BaseController
         $ttl = isset($_POST['ttl']) ? (int)$_POST['ttl'] : 0;
         $prio = (int)($_POST['priority'] ?? 0);
         $comment = $_POST['comment'] ?? '';
-        $zone_id = (int)$_GET['id'];
+        $zone_id = isset($_GET['id']) ? (int)$_GET['id'] : 0; // Use 0 when no zone_id is provided
         $ipv6_count = isset($_POST['ipv6_count']) ? (int)$_POST['ipv6_count'] : 256;
         
         try {
@@ -140,43 +162,54 @@ class BatchPtrRecordController extends BaseController
 
             if ($result['success']) {
                 $this->setMessage('batch_ptr_record', 'success', $result['message']);
+                return true;
             } else {
                 $this->setMessage('batch_ptr_record', 'error', $result['message']);
+                return false;
             }
         } catch (\Exception $e) {
             $this->setMessage('batch_ptr_record', 'error', $e->getMessage());
+            return false;
         }
-
-        unset($_POST);
     }
 
-    private function showForm(): void
+    private function showForm(array $formData = []): void
     {
-        $zone_id = htmlspecialchars($_GET['id']);
-        $zone_name = $this->dnsRecord->get_domain_name_by_id($zone_id);
-        $isReverseZone = DnsHelper::isReverseZone($zone_name);
-
+        $hasZoneId = isset($_GET['id']) && !empty($_GET['id']);
         $ttl = $this->config('dns', 'ttl', 86400);
         $file_version = time();
+        
+        if ($hasZoneId) {
+            $zone_id = htmlspecialchars($_GET['id']);
+            $zone_name = $this->dnsRecord->get_domain_name_by_id($zone_id);
+            $isReverseZone = DnsHelper::isReverseZone($zone_name);
 
-        if (str_starts_with($zone_name, "xn--")) {
-            $idn_zone_name = idn_to_utf8($zone_name, IDNA_NONTRANSITIONAL_TO_ASCII);
+            if (str_starts_with($zone_name, "xn--")) {
+                $idn_zone_name = idn_to_utf8($zone_name, IDNA_NONTRANSITIONAL_TO_ASCII);
+            } else {
+                $idn_zone_name = "";
+            }
         } else {
-            $idn_zone_name = "";
+            $zone_id = null;
+            $zone_name = '';
+            $idn_zone_name = '';
+            $isReverseZone = false;
         }
 
         $this->render('batch_ptr_record.html', [
-            'network_type' => $_POST['network_type'] ?? 'ipv4',
-            'network_prefix' => $_POST['network_prefix'] ?? '',
-            'host_prefix' => $_POST['host_prefix'] ?? 'host',
-            'domain' => $_POST['domain'] ?? '',
-            'ttl' => $_POST['ttl'] ?? $ttl,
-            'priority' => $_POST['priority'] ?? 0,
-            'ipv6_count' => $_POST['ipv6_count'] ?? 256,
+            'network_type' => $formData['network_type'] ?? 'ipv4',
+            'network_prefix' => $formData['network_prefix'] ?? '',
+            'host_prefix' => $formData['host_prefix'] ?? 'host',
+            'domain' => $formData['domain'] ?? '',
+            'ttl' => $formData['ttl'] ?? $ttl,
+            'priority' => $formData['priority'] ?? 0,
+            'ipv6_count' => $formData['ipv6_count'] ?? 256,
+            'comment' => $formData['comment'] ?? '',
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,
             'is_reverse_zone' => $isReverseZone,
+            'has_zone_id' => $hasZoneId,
             'file_version' => $file_version,
             'iface_record_comments' => $this->config('interface', 'show_record_comments', false),
         ]);

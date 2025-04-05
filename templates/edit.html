@@ -390,15 +390,6 @@
         <span class="text-secondary"> {% trans %}Also add an A/AAAA record in the matching zone{% endtrans %}</span>
     </span>
     {% endif %}
-
-    {% if iface_add_reverse_record %}
-    <span class="d-block mt-2">
-        <a href="index.php?page=batch_ptr_record&id={{ zone_id }}" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-collection"></i> {% trans %}Batch PTR Records{% endtrans %}
-        </a>
-        <span class="text-secondary"> {% trans %}Create multiple PTR records for IPv4 /24 or IPv6 /64 networks{% endtrans %}</span>
-    </span>
-    {% endif %}
 </form>
 <hr>
 {% endif %}

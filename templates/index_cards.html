@@ -82,6 +82,16 @@
         </div>
     </div>
     {% endif %}
+    {% if iface_add_reverse_record and (permissions['zone_master_add'] or permissions['zone_slave_add']) %}
+    <div class="col-sm-3 mb-3">
+        <div class="card">
+            <div class="text-center"><i class="bi bi-arrow-repeat display-1"></i></div>
+            <div class="card-body">
+                <div class="row"><a href="index.php?page=batch_ptr_record" class="btn btn-light btn-block" data-testid="batch-ptr-records-link">{% trans %}Batch PTR Records{% endtrans %}</a></div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
     {% if permissions['user_is_ueberuser'] and dblog_use == true %}
     <div class="col-sm-3 mb-3">
         <div class="card">
