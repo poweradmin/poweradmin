@@ -152,47 +152,6 @@ Then you can navigate to the installed system in your browser
 
 ![List of zones](https://docs.poweradmin.org/screenshots/ignite_zone_list.png)
 
-### Debug Settings
-
-To help diagnose issues, you can enable various debug settings in the `inc/config.inc.php` file. Below are the available
-debug settings and how to enable them:
-
-1. **PHP Error Reporting**: To display PHP errors directly in the browser, add the following lines to your `index.php`
-   or any other entry point file:
-    ```php
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL);
-    ```
-
-2. **Logger Settings**: Configure the logging settings to use the native type and debug level. Currently, these settings
-   are used only for logging authentication issues:
-    ```php
-    $logger_type = 'native';
-    $logger_level = 'debug';
-    ```
-
-3. **Database Debugging**: Enable or disable database debugging. When enabled, detailed database operations and errors
-   will be logged:
-    ```php
-    $db_debug = true;
-    ```
-
-4. **DNSSEC Debugging**: Enable or disable DNSSEC debugging. When enabled, detailed DNSSEC operations and errors will be
-   logged:
-    ```php
-    $pdnssec_debug = true;
-    ```
-
-5. **LDAP Debugging**: Enable or disable LDAP debugging. When enabled, detailed LDAP operations and errors will be
-   logged:
-    ```php
-    $ldap_debug = true;
-    ```
-
-By enabling these settings, you can gain more insight into the application's behavior and troubleshoot issues more
-effectively.
-
 ## Contributing
 
 We welcome contributions to improve Poweradmin. If you'd like to contribute, please follow the standard GitHub workflow
