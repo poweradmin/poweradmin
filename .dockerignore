@@ -36,7 +36,9 @@ phpcs.xml
 phpdoc.dist.xml
 scripts
 transifex.yml
-*.md
+# Keep README.md but exclude other markdown files
+DEVELOPMENT.md
+DONORS.md
 
 # Node.js
 package.json

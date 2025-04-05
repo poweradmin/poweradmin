@@ -46,3 +46,6 @@ Thumbs.db
 
 # PHP tools
 /.php-cs-fixer.cache
+
+# Test plans are versioned but excluded from production packages
+# See tests/plans/ directory

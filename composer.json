@@ -112,6 +112,7 @@
       ".php-cs-fixer.php",
       "cypress.config.js",
       "DEVELOPMENT.md",
+      "DONORS.md",
       "package.json",
       "phinx.php",
       "phpcs.xml",
