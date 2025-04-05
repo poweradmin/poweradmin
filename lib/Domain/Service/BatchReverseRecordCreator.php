@@ -99,6 +99,7 @@ class BatchReverseRecordCreator
         }
 
         $successCount = 0;
+        $skipCount = 0;
         $failCount = 0;
         $errors = [];
 
@@ -109,8 +110,11 @@ class BatchReverseRecordCreator
             $testReverseDomain = DnsRecord::convert_ipv4addr_to_ptrrec($testIp);
             $testFqdn = $hostPrefix . '-0.' . $domain;
             
-            // Test if the reverse zone exists for this network
-            $this->addReverseRecord($zone_id, $testReverseDomain, $testFqdn, $ttl, $prio, $comment, $account);
+            // Get the reverse zone ID
+            $test_zone_rev_id = $this->dnsRecord->get_best_matching_zone_id_from_name($testReverseDomain);
+            if ($test_zone_rev_id === -1) {
+                throw new \Exception("No matching reverse zone found for $testReverseDomain");
+            }
             
             // If we get here, the reverse zone exists, so proceed with creating all records
             for ($i = 0; $i < 256; $i++) {
@@ -120,6 +124,15 @@ class BatchReverseRecordCreator
 
                 // Convert IP to reverse notation
                 $reverseDomain = DnsRecord::convert_ipv4addr_to_ptrrec($ip);
+                
+                // Check if record already exists before trying to add it
+                $record_exists = $this->dnsRecord->record_exists($test_zone_rev_id, $reverseDomain, 'PTR', $fqdn);
+                
+                if ($record_exists) {
+                    $skipCount++;
+                    continue;
+                }
+                
                 try {
                     $result = $this->addReverseRecord($zone_id, $reverseDomain, $fqdn, $ttl, $prio, $comment, $account);
                     if ($result) {
@@ -137,14 +150,22 @@ class BatchReverseRecordCreator
             return $this->createErrorResponse('No matching reverse zone found for this network prefix. Please create the reverse zone first.');
         }
 
-        if ($successCount === 0) {
+        if ($successCount === 0 && $skipCount === 0) {
             return $this->createErrorResponse('Failed to create any PTR records. ' . implode(' ', array_slice($errors, 0, 3)) . (count($errors) > 3 ? '...' : ''));
         }
 
+        $message = "Created $successCount PTR records successfully";
+        if ($skipCount > 0) {
+            $message .= " ($skipCount skipped as they already exist)";
+        }
+        if ($failCount > 0) {
+            $message .= " ($failCount failed)";
+        }
+        
         return [
             'success' => true,
             'type' => 'success',
-            'message' => "Created $successCount PTR records successfully" . ($failCount > 0 ? " ($failCount failed)" : ""),
+            'message' => $message,
             'errors' => $errors
         ];
     }
@@ -193,6 +214,7 @@ class BatchReverseRecordCreator
         }
 
         $successCount = 0;
+        $skipCount = 0;
         $failCount = 0;
         $errors = [];
 
@@ -206,8 +228,11 @@ class BatchReverseRecordCreator
             $testReverseDomain = DnsRecord::convert_ipv6addr_to_ptrrec($testIp);
             $testFqdn = $hostPrefix . '-0.' . $domain;
             
-            // Test if the reverse zone exists for this network
-            $this->addReverseRecord($zone_id, $testReverseDomain, $testFqdn, $ttl, $prio, $comment, $account);
+            // Get the reverse zone ID
+            $test_zone_rev_id = $this->dnsRecord->get_best_matching_zone_id_from_name($testReverseDomain);
+            if ($test_zone_rev_id === -1) {
+                throw new \Exception("No matching reverse zone found for $testReverseDomain");
+            }
             
             // If we get here, the reverse zone exists, so proceed with creating all records
             for ($i = 0; $i < $count; $i++) {
@@ -219,6 +244,15 @@ class BatchReverseRecordCreator
 
                 // Convert IP to reverse notation
                 $reverseDomain = DnsRecord::convert_ipv6addr_to_ptrrec($ip);
+                
+                // Check if record already exists before trying to add it
+                $record_exists = $this->dnsRecord->record_exists($test_zone_rev_id, $reverseDomain, 'PTR', $fqdn);
+                
+                if ($record_exists) {
+                    $skipCount++;
+                    continue;
+                }
+                
                 try {
                     $result = $this->addReverseRecord($zone_id, $reverseDomain, $fqdn, $ttl, $prio, $comment, $account);
                     if ($result) {
@@ -236,14 +270,22 @@ class BatchReverseRecordCreator
             return $this->createErrorResponse('No matching reverse zone found for this IPv6 network prefix. Please create the reverse zone first.');
         }
 
-        if ($successCount === 0) {
+        if ($successCount === 0 && $skipCount === 0) {
             return $this->createErrorResponse('Failed to create any IPv6 PTR records. ' . implode(' ', array_slice($errors, 0, 3)) . (count($errors) > 3 ? '...' : ''));
         }
 
+        $message = "Created $successCount IPv6 PTR records successfully";
+        if ($skipCount > 0) {
+            $message .= " ($skipCount skipped as they already exist)";
+        }
+        if ($failCount > 0) {
+            $message .= " ($failCount failed)";
+        }
+        
         return [
             'success' => true,
             'type' => 'success',
-            'message' => "Created $successCount IPv6 PTR records successfully" . ($failCount > 0 ? " ($failCount failed)" : ""),
+            'message' => $message,
             'errors' => $errors
         ];
     }
@@ -254,6 +296,12 @@ class BatchReverseRecordCreator
 
         if ($zone_rev_id === -1) {
             throw new \Exception("No matching reverse zone found for $content_rev");
+        }
+        
+        // Check if the record already exists to prevent duplicates
+        if ($this->dnsRecord->record_exists($zone_rev_id, $content_rev, 'PTR', $fqdn_name)) {
+            // Record already exists, consider it a success but don't log it
+            return true;
         }
 
         try {

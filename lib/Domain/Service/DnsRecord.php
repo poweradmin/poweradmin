@@ -1836,4 +1836,28 @@ class DnsRecord
         ]);
         return (bool)$stmt->fetchColumn();
     }
+    
+    /**
+     * Check if a record with the given parameters already exists
+     *
+     * @param int $domain_id Domain ID
+     * @param string $name Record name
+     * @param string $type Record type
+     * @param string $content Record content
+     * @return bool True if record exists, false otherwise
+     */
+    public function record_exists(int $domain_id, string $name, string $type, string $content): bool
+    {
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+        $query = "SELECT COUNT(*) FROM $records_table 
+                  WHERE domain_id = " . $this->db->quote($domain_id, 'integer') . " 
+                  AND name = " . $this->db->quote($name, 'text') . " 
+                  AND type = " . $this->db->quote($type, 'text') . " 
+                  AND content = " . $this->db->quote($content, 'text');
+                  
+        $response = $this->db->query($query);
+        return (int)$response->fetchColumn() > 0;
+    }
 }
