@@ -18,8 +18,9 @@ DNSSEC operations.
 
 ## Disclaimer
 
-This project is not associated with [PowerDNS.com](https://www.powerdns.com/index.html)
-, [Open-Xchange](https://www.open-xchange.com), or any other external parties.
+This project is not associated
+with [PowerDNS.com](https://www.powerdns.com/index.html), [Open-Xchange](https://www.open-xchange.com), or any other
+external parties.
 It is independently funded and maintained. If this project does not fulfill your requirements, please explore these
 alternative [options](https://github.com/PowerDNS/pdns/wiki/WebFrontends).
 
@@ -34,14 +35,7 @@ This project is licensed under the GNU General Public License v3.0. See the LICE
 ## Requirements
 
 * PHP 8.1 or higher (including 8.2, 8.3, 8.4, etc.)
-* PHP intl extension
-* PHP gettext extension
-* PHP openssl extension
-* PHP filter extension
-* PHP tokenizer extension
-* PHP pdo extension
-* PHP pdo-mysql, pdo-pgsql or pdo-sqlite extension
-* PHP ldap extension (optional)
+* PHP extensions: intl, gettext, openssl, filter, tokenizer, pdo, pdo-mysql/pdo-pgsql/pdo-sqlite, ldap (optional)
 * MySQL 5.7.x/8.x, MariaDB, PostgreSQL or SQLite database
 * PowerDNS authoritative server 4.0.0+
 
@@ -97,7 +91,7 @@ custom installations:
     * Clone the repository: ```git clone https://github.com/poweradmin/poweradmin.git```
     * Change directory to the cloned repository: ```cd poweradmin```
     * Select the latest stable tag (for example v3.8.1): ```git checkout tags/v3.8.1```
-    * Alternatively, you can use the master branch, but it might be unstable as it is used for development:
+    * ⚠️ **Warning**: The master branch is used for development and may be unstable at times. Use at your own risk:
       ```git checkout master```
 * Via releases:
     * Get the latest file from [releases](https://github.com/poweradmin/poweradmin/releases)
