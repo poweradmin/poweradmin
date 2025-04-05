@@ -33,6 +33,7 @@ footer a, footer a:hover {
     color: rgb(108, 117, 125);
 }
 
+/* Form validation styles */
 .form-control.is-valid, .was-validated .form-control:valid {
     border-color: inherit !important;
     background-image: inherit !important;
