@@ -50,6 +50,7 @@ class Pages
             'add_zone_slave',
             'add_zone_templ_record',
             'add_zone_templ',
+            'batch_ptr_record',
             'bulk_registration',
             'change_password',
             'delete_domain',

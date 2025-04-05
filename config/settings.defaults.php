@@ -73,7 +73,7 @@ return [
         // UI Element Settings
         'show_record_id' => true,             // Show record ID column in edit mode
         'position_record_form_top' => false,  // Position the "Add record" form at the top of the page
-        'position_save_button_top' => true,   // Position the "Save changes" button at the top of the page
+        'position_save_button_top' => false,  // Position the "Save changes" button at the top of the page
         'show_zone_comments' => true,         // Show or hide zone comments
         'show_record_comments' => false,      // Show or hide record comments
         'display_serial_in_zone_list' => false,

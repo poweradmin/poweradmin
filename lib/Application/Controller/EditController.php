@@ -144,7 +144,7 @@ class EditController extends BaseController
                 $new_zone_template = $_POST['zone_template'];
             }
             if ($_POST['current_zone_template'] != $new_zone_template) {
-                $dnsRecord->update_zone_records($this->config('db_type'), $this->config('dns_ttl'), $zone_id, $new_zone_template);
+                $dnsRecord->update_zone_records($this->config('database', 'type', 'mysql'), $this->config('dns', 'ttl', 86400), $zone_id, $new_zone_template);
             }
         }
 
@@ -209,12 +209,13 @@ class EditController extends BaseController
         } else {
             $idn_zone_name = "";
         }
-        $records = $dnsRecord->get_records_from_domain_id($this->config('db_type'), $zone_id, $row_start, $iface_rowamount, $record_sort_by, $sort_direction, $iface_record_comments);
+        $records = $dnsRecord->get_records_from_domain_id($this->config('database', 'type', 'mysql'), $zone_id, $row_start, $iface_rowamount, $record_sort_by, $sort_direction, $iface_record_comments);
         $owners = DnsRecord::get_users_from_domain_id($this->db, $zone_id);
 
         $soa_record = $dnsRecord->get_soa_record($zone_id);
 
-        $isDnsSecEnabled = $this->config('pdnssec_use');
+        // Access DNSSEC enabled setting from the new configuration path with a default value of false
+        $isDnsSecEnabled = $this->config('dnssec', 'enabled', false);
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
         $isReverseZone = DnsHelper::isReverseZone($zone_name);
