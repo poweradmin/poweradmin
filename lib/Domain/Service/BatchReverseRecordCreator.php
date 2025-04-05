@@ -84,14 +84,14 @@ class BatchReverseRecordCreator
 
         // Count the octets in the prefix
         $octetCount = substr_count($networkPrefix, '.') + 1;
-        
+
         if ($octetCount !== 3) {
             return $this->createErrorResponse('Network prefix must consist of 3 octets (e.g., "192.168.1").');
         }
 
         // Validate network prefix format
         $octets = explode('.', $networkPrefix);
-        
+
         foreach ($octets as $octet) {
             if (!is_numeric($octet) || $octet < 0 || $octet > 255) {
                 return $this->createErrorResponse('Invalid network prefix. Each octet must be between 0 and 255.');
@@ -109,13 +109,13 @@ class BatchReverseRecordCreator
             $testIp = $networkPrefix . '.0';
             $testReverseDomain = DnsRecord::convert_ipv4addr_to_ptrrec($testIp);
             $testFqdn = $hostPrefix . '-0.' . $domain;
-            
+
             // Get the reverse zone ID
             $test_zone_rev_id = $this->dnsRecord->get_best_matching_zone_id_from_name($testReverseDomain);
             if ($test_zone_rev_id === -1) {
                 throw new \Exception("No matching reverse zone found for $testReverseDomain");
             }
-            
+
             // If we get here, the reverse zone exists, so proceed with creating all records
             for ($i = 0; $i < 256; $i++) {
                 $ip = $networkPrefix . '.' . $i;
@@ -124,15 +124,15 @@ class BatchReverseRecordCreator
 
                 // Convert IP to reverse notation
                 $reverseDomain = DnsRecord::convert_ipv4addr_to_ptrrec($ip);
-                
+
                 // Check if record already exists before trying to add it
                 $record_exists = $this->dnsRecord->record_exists($test_zone_rev_id, $reverseDomain, 'PTR', $fqdn);
-                
+
                 if ($record_exists) {
                     $skipCount++;
                     continue;
                 }
-                
+
                 try {
                     $result = $this->addReverseRecord($zone_id, $reverseDomain, $fqdn, $ttl, $prio, $comment, $account);
                     if ($result) {
@@ -161,7 +161,7 @@ class BatchReverseRecordCreator
         if ($failCount > 0) {
             $message .= " ($failCount failed)";
         }
-        
+
         return [
             'success' => true,
             'type' => 'success',
@@ -225,21 +225,21 @@ class BatchReverseRecordCreator
         try {
             // First check if we can create at least one record to validate zone existence
             $testIp = $networkPrefix . '::1';
-            
+
             // Try multiple methods to find the right format for the reverse zone
             $testReverseDomain = DnsRecord::convert_ipv6addr_to_ptrrec($testIp);
             $testReverseDomainFixed = $this->convertIPv6ToPTR($testIp);
             $networkReverseZone = $this->getIPv6ReverseZone($networkPrefix);
-            
+
             // Add support for known IPv6 reverse zone format
             $hardcodedZone = '0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa';
-            
+
             $testFqdn = $hostPrefix . '-0.' . $domain;
-            
+
             // Try all methods to get the reverse zone ID
             $test_zone_rev_id = $this->dnsRecord->get_best_matching_zone_id_from_name($testReverseDomain);
             $useMethod = 'standard';
-            
+
             // If standard method fails, try our fixed method
             if ($test_zone_rev_id === -1) {
                 $test_zone_rev_id = $this->dnsRecord->get_best_matching_zone_id_from_name($testReverseDomainFixed);
@@ -247,7 +247,7 @@ class BatchReverseRecordCreator
                     $useMethod = 'fixed';
                 }
             }
-            
+
             // If both methods fail, try the network zone method
             if ($test_zone_rev_id === -1) {
                 $test_zone_rev_id = $this->dnsRecord->get_best_matching_zone_id_from_name($networkReverseZone);
@@ -255,7 +255,7 @@ class BatchReverseRecordCreator
                     $useMethod = 'network';
                 }
             }
-            
+
             // Try with the exact hardcoded zone format
             if (strpos($networkPrefix, '2001:db8:1:1') === 0) {
                 $zone_id_test = $this->dnsRecord->get_domain_id_by_name($hardcodedZone);
@@ -269,13 +269,13 @@ class BatchReverseRecordCreator
                     }
                 }
             }
-            
+
             // If all methods fail, throw an exception
             if ($test_zone_rev_id === -1) {
                 $error = "No matching reverse zone found for this IPv6 network prefix. Please create the appropriate reverse zone first.";
                 throw new \Exception($error);
             }
-            
+
             // If we get here, the reverse zone exists, so proceed with creating all records
             for ($i = 0; $i < $count; $i++) {
                 // Generate a hex value for the last part
@@ -304,10 +304,10 @@ class BatchReverseRecordCreator
                     case 'hardcoded':
                         // Use specific hardcoded format for the known zone
                         // For 2001:db8:1:1::X, a format like X.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa
-                        
+
                         // First try to directly use the standard conversion
                         $reverseDomain = DnsRecord::convert_ipv6addr_to_ptrrec($ip);
-                        
+
                         // If needed, use the simplified format for specific known zones
                         if (strpos($networkPrefix, '2001:db8:1:1') === 0) {
                             $lastHex = dechex($i);
@@ -318,15 +318,15 @@ class BatchReverseRecordCreator
                         // Use standard method
                         $reverseDomain = DnsRecord::convert_ipv6addr_to_ptrrec($ip);
                 }
-                
+
                 // Check if record already exists before trying to add it
                 $record_exists = $this->dnsRecord->record_exists($test_zone_rev_id, $reverseDomain, 'PTR', $fqdn);
-                
+
                 if ($record_exists) {
                     $skipCount++;
                     continue;
                 }
-                
+
                 try {
                     $result = $this->addReverseRecord($zone_id, $reverseDomain, $fqdn, $ttl, $prio, $comment, $account);
                     if ($result) {
@@ -355,7 +355,7 @@ class BatchReverseRecordCreator
         if ($failCount > 0) {
             $message .= " ($failCount failed)";
         }
-        
+
         return [
             'success' => true,
             'type' => 'success',
@@ -373,7 +373,7 @@ class BatchReverseRecordCreator
             // Fix the missing dot before ip6.arpa
             $fixed_content_rev = str_replace('ip6.arpa', '.ip6.arpa', $content_rev);
             $zone_rev_id = $this->dnsRecord->get_best_matching_zone_id_from_name($fixed_content_rev);
-            
+
             if ($zone_rev_id !== -1) {
                 // Update the content_rev to use the fixed version
                 $content_rev = $fixed_content_rev;
@@ -383,7 +383,7 @@ class BatchReverseRecordCreator
         if ($zone_rev_id === -1) {
             throw new \Exception("No matching reverse zone found for $content_rev");
         }
-        
+
         // Check if the record already exists to prevent duplicates
         if ($this->dnsRecord->record_exists($zone_rev_id, $content_rev, 'PTR', $fqdn_name)) {
             // Record already exists, consider it a success but don't log it
@@ -392,7 +392,7 @@ class BatchReverseRecordCreator
 
         try {
             $result = $this->dnsRecord->add_record($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio);
-            
+
             if ($result) {
                 $this->logger->log_info(sprintf(
                     'client_ip:%s user:%s operation:add_batch_ptr_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
@@ -405,7 +405,7 @@ class BatchReverseRecordCreator
                 ), $zone_id);
 
                 $isDnssecEnabled = $this->configManager->get('dnssec', 'enabled');
-                
+
                 if ($isDnssecEnabled) {
                     $dnssecProvider = DnssecProviderFactory::create($this->db, $this->config);
                     $zone_name = $this->dnsRecord->get_domain_name_by_id($zone_rev_id);
@@ -438,11 +438,11 @@ class BatchReverseRecordCreator
             'message' => $message,
         ];
     }
-    
+
     /**
      * Expand an IPv6 address to its full form
      * This helps with debugging the exact format used in conversion
-     * 
+     *
      * @param string $ip IPv6 address, potentially in compressed form
      * @return string Expanded IPv6 address
      */
@@ -450,20 +450,20 @@ class BatchReverseRecordCreator
     {
         $binary = inet_pton($ip);
         $hex = bin2hex($binary);
-        
+
         // Format as 8 groups of 4 hex digits
         $parts = [];
         for ($i = 0; $i < 8; $i++) {
             $parts[] = substr($hex, $i * 4, 4);
         }
-        
+
         return implode(':', $parts);
     }
-    
+
     /**
      * Convert an IPv6 address to its PTR record form
      * This method is more compatible with how PowerDNS stores IPv6 reverse zones
-     * 
+     *
      * @param string $ip IPv6 address
      * @return string PTR record form
      */
@@ -482,24 +482,24 @@ class BatchReverseRecordCreator
             // If it's already expanded, just remove colons
             $hex = str_replace(':', '', $ip);
         }
-        
+
         // For a /64 network, we only need the first 16 characters of the hex string
         // which corresponds to the first 64 bits of the IPv6 address
         $networkHex = substr($hex, 0, 16);
-        
+
         // Reverse the hex digits and separate with dots
         $nibbles = str_split($networkHex);
         $reversed = implode('.', array_reverse($nibbles));
-        
+
         // Add the ip6.arpa suffix
         return $reversed . '.ip6.arpa';
     }
-    
+
     /**
      * Gets a shorter version of the IPv6 reverse zone
      * For example, for 2001:db8:1:1 network, returns 1.1.0.0.8.b.d.0.1.0.0.2.ip6.arpa
      * This matches the common way reverse zones are set up
-     * 
+     *
      * @param string $networkPrefix The IPv6 network prefix
      * @return string The reverse zone portion
      */
@@ -507,19 +507,18 @@ class BatchReverseRecordCreator
     {
         // Add zeros to form a complete IPv6 address
         $fullAddress = $networkPrefix . '::';
-        
+
         // Expand to full form
         $expanded = $this->expandIPv6($fullAddress);
         $noColons = str_replace(':', '', $expanded);
-        
+
         // For a /64 network, we need the first 16 hex digits (64 bits)
         $networkPart = substr($noColons, 0, 16);
-        
+
         // Reverse and add dots
         $nibbles = str_split($networkPart);
         $reversed = implode('.', array_reverse($nibbles));
-        
+
         return $reversed . '.ip6.arpa';
     }
-    
 }

@@ -113,7 +113,7 @@ class MailService
         $greeting = empty($fullname) ? 'Hello' : "Hello $fullname";
         $emailTitle = $this->config->get('mail', 'email_title', 'Your DNS Account Information');
         $emailSignature = $this->config->get('mail', 'email_signature', 'DNS Admin');
-        
+
         return '<!DOCTYPE html>
 <html>
 <head>

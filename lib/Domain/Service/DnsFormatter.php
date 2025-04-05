@@ -24,7 +24,8 @@ namespace Poweradmin\Domain\Service;
 
 use Poweradmin\AppConfiguration;
 
-class DnsFormatter {
+class DnsFormatter
+{
     private AppConfiguration $config;
 
     public function __construct(AppConfiguration $config)

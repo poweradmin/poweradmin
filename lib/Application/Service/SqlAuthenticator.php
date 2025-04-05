@@ -176,4 +176,3 @@ class SqlAuthenticator extends LoggingService
         $this->logInfo('Failed authentication handled.');
     }
 }
-

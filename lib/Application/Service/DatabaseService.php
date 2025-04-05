@@ -42,12 +42,12 @@ class DatabaseService
             return $this->databaseConnection->connect($credentials);
         } catch (Exception $e) {
             $errorMsg = "Database connection failed: " . $e->getMessage();
-            
+
             // Provide more helpful error messages for configuration issues
             if (empty($credentials['db_type'])) {
                 $errorMsg .= " Check that your config/settings.php file has the correct database configuration.";
             }
-            
+
             throw new RuntimeException($errorMsg);
         }
     }

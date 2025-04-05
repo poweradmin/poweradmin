@@ -434,7 +434,7 @@ class DnsRecord
         if ($type == 'SOA' && $perm_edit == "own_as_client") {
             throw new \Exception(_("You do not have the permission to add SOA record."));
         }
-        
+
         if ($type == 'NS' && $perm_edit == "own_as_client") {
             throw new \Exception(_("You do not have the permission to add NS record."));
         }
@@ -1836,7 +1836,7 @@ class DnsRecord
         ]);
         return (bool)$stmt->fetchColumn();
     }
-    
+
     /**
      * Check if a record with the given parameters already exists
      *
@@ -1856,7 +1856,7 @@ class DnsRecord
                   AND name = " . $this->db->quote($name, 'text') . " 
                   AND type = " . $this->db->quote($type, 'text') . " 
                   AND content = " . $this->db->quote($content, 'text');
-                  
+
         $response = $this->db->query($query);
         return (int)$response->fetchColumn() > 0;
     }

@@ -68,16 +68,18 @@ class BatchPtrRecordController extends BaseController
         // Check if batch PTR records are enabled
         $isReverseRecordAllowed = $this->config('interface', 'add_reverse_record', true);
         $this->checkCondition(!$isReverseRecordAllowed, _("Batch PTR record creation is not enabled."));
-        
+
         // Check if user has permission to use this feature
         $perm_edit_own = UserManager::verify_permission($this->db, 'zone_content_edit_own');
         $perm_edit_others = UserManager::verify_permission($this->db, 'zone_content_edit_others');
-        $this->checkCondition(!$perm_edit_own && !$perm_edit_others, 
-            _("You do not have permission to edit DNS records."));
-        
+        $this->checkCondition(
+            !$perm_edit_own && !$perm_edit_others,
+            _("You do not have permission to edit DNS records.")
+        );
+
         // Check if we have a specific zone_id
         $hasZoneId = isset($_GET['id']) && !empty($_GET['id']);
-        
+
         if ($hasZoneId) {
             $this->checkId();
             $zone_id = htmlspecialchars($_GET['id']);
@@ -107,7 +109,7 @@ class BatchPtrRecordController extends BaseController
                 // Keep form data in case of error
             }
         }
-        
+
         $this->showForm($formData);
     }
 
@@ -123,7 +125,7 @@ class BatchPtrRecordController extends BaseController
             $this->showFirstError($v->errors());
             return false;
         }
-        
+
         $networkType = $_POST['network_type'] ?? '';
         $networkPrefix = $_POST['network_prefix'] ?? '';
         $hostPrefix = $_POST['host_prefix'] ?? '';
@@ -133,7 +135,7 @@ class BatchPtrRecordController extends BaseController
         $comment = $_POST['comment'] ?? '';
         $zone_id = isset($_GET['id']) ? (int)$_GET['id'] : 0; // Use 0 when no zone_id is provided
         $ipv6_count = isset($_POST['ipv6_count']) ? (int)$_POST['ipv6_count'] : 256;
-        
+
         try {
             if ($networkType === 'ipv4') {
                 $result = $this->batchReverseRecordCreator->createIPv4Network(
@@ -178,7 +180,7 @@ class BatchPtrRecordController extends BaseController
         $hasZoneId = isset($_GET['id']) && !empty($_GET['id']);
         $ttl = $this->config('dns', 'ttl', 86400);
         $file_version = time();
-        
+
         if ($hasZoneId) {
             $zone_id = htmlspecialchars($_GET['id']);
             $zone_name = $this->dnsRecord->get_domain_name_by_id($zone_id);

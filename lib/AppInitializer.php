@@ -124,7 +124,7 @@ class AppInitializer
     {
         // Get database configuration from the database section
         $dbConfig = $this->configManager->getGroup('database');
-        
+
         // Map database configuration to the credentials expected by PDODatabaseConnection
         $credentials = [
             'db_host' => $dbConfig['host'] ?? '',

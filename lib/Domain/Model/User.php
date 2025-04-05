@@ -28,7 +28,8 @@ class User
         private readonly int $id,
         private readonly string $password,
         private readonly bool $useLdap
-    ) {}
+    ) {
+    }
 
     public function getId(): int
     {

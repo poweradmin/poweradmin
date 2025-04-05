@@ -60,7 +60,7 @@ class PDODatabaseConnection implements DatabaseConnection
         if (empty($db_type)) {
             $this->showErrorAndExit('No database type has been set. Please check your configuration file.');
         }
-        
+
         if (!in_array($db_type, ['mysql', 'mysqli', 'pgsql', 'sqlite'])) {
             $this->showErrorAndExit('Unknown database type: "' . $db_type . '". Supported types are: mysql, mysqli, pgsql, and sqlite.');
         }
