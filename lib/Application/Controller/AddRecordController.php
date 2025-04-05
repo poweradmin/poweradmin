@@ -44,7 +44,7 @@ use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
-use Valitron;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class AddRecordController extends BaseController
 {
@@ -58,6 +58,7 @@ class AddRecordController extends BaseController
     {
         parent::__construct($request);
 
+        // ConfigurationManager is now handled by the BaseController
         $this->logger = new LegacyLogger($this->db);
         $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
@@ -111,21 +112,29 @@ class AddRecordController extends BaseController
 
     private function addRecord(): void
     {
-        $v = new Valitron\Validator($_POST);
-        $v->rules([
-            'required' => ['content', 'type', 'ttl'],
-            'integer' => ['priority', 'ttl'],
-        ]);
+        // These are required fields
+        $constraints = [
+            'content' => [
+                new Assert\NotBlank()
+            ],
+            'type' => [
+                new Assert\NotBlank()
+            ]
+        ];
 
-        if (!$v->validate()) {
-            $this->showFirstError($v->errors());
+        // Optional fields won't be validated if they're empty due to the filter in BaseController
+
+        $this->setValidationConstraints($constraints);
+
+        if (!$this->doValidateRequest($_POST)) {
+            $this->showFirstValidationError($_POST);
         }
 
         $name = $_POST['name'] ?? '';
         $content = $_POST['content'];
         $type = $_POST['type'];
-        $prio = $_POST['prio'];
-        $ttl = $_POST['ttl'];
+        $prio = isset($_POST['prio']) && $_POST['prio'] !== '' ? (int)$_POST['prio'] : 0;
+        $ttl = isset($_POST['ttl']) && $_POST['ttl'] !== '' ? (int)$_POST['ttl'] : $this->config('dns_ttl');
         $comment = $_POST['comment'] ?? '';
         $zone_id = (int)$_GET['id'];
 
@@ -155,8 +164,8 @@ class AddRecordController extends BaseController
         $zone_name = $this->dnsRecord->get_domain_name_by_id($zone_id);
         $isReverseZone = DnsHelper::isReverseZone($zone_name);
 
-        $ttl = $this->config('dns_ttl');
-        $isDnsSecEnabled = $this->config('pdnssec_use');
+        $ttl = $this->configManager->get('dns', 'ttl', 3600);
+        $isDnsSecEnabled = $this->configManager->get('dnssec', 'enabled', false);
 
         if (str_starts_with($zone_name, "xn--")) {
             $idn_zone_name = idn_to_utf8($zone_name, IDNA_NONTRANSITIONAL_TO_ASCII);
@@ -175,21 +184,24 @@ class AddRecordController extends BaseController
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,
             'is_reverse_zone' => $isReverseZone,
-            'iface_add_reverse_record' => $this->config('iface_add_reverse_record'),
-            'iface_add_domain_record' => $this->config('iface_add_domain_record'),
-            'iface_record_comments' => $this->config('iface_record_comments'),
+            'iface_add_reverse_record' => $this->configManager->get('interface', 'add_reverse_record', false),
+            'iface_add_domain_record' => $this->configManager->get('interface', 'add_domain_record', false),
+            'iface_record_comments' => $this->configManager->get('interface', 'show_record_comments', true),
         ]);
     }
 
     public function checkId(): void
     {
-        $v = new Valitron\Validator($_GET);
-        $v->rules([
-            'required' => ['id'],
-            'integer' => ['id']
-        ]);
-        if (!$v->validate()) {
-            $this->showFirstError($v->errors());
+        $constraints = [
+            'id' => [
+                new Assert\NotBlank()
+            ]
+        ];
+
+        $this->setValidationConstraints($constraints);
+
+        if (!$this->doValidateRequest($_GET)) {
+            $this->showFirstValidationError($_GET);
         }
     }
 

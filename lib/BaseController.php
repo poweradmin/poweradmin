@@ -28,7 +28,9 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Service\ThemeManager;
-use Valitron;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Validation;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Abstract class BaseController
@@ -41,10 +43,11 @@ abstract class BaseController
     private AppInitializer $init;
     protected PDOLayer $db;
     private array $request;
-    private Valitron\Validator $validator;
+    private ValidatorInterface $validator;
+    private array $validationConstraints = [];
     private CsrfTokenService $csrfTokenService;
     private MessageService $messageService;
-    private ConfigurationManager $configManager;
+    protected ConfigurationManager $configManager;
 
     /**
      * Abstract method to be implemented by subclasses to run the controller logic.
@@ -65,11 +68,11 @@ abstract class BaseController
         $this->db = $this->init->getDb();
 
         $this->request = $request;
-        $this->validator = new Valitron\Validator($this->getRequest());
+        $this->validator = Validation::createValidator();
 
+        $this->configManager = ConfigurationManager::getInstance();
         $this->csrfTokenService = new CsrfTokenService();
         $this->messageService = new MessageService();
-        $this->configManager = ConfigurationManager::getInstance();
     }
 
     /**
@@ -407,31 +410,70 @@ abstract class BaseController
     }
 
     /**
-     * Sets validation rules for the request data.
+     * Sets validation constraints for the request data.
      *
-     * @param array $rules The validation rules.
+     * @param array $constraints The validation constraints.
      */
-    public function setRequestRules(array $rules): void
+    public function setValidationConstraints(array $constraints): void
     {
-        $this->validator->rules($rules);
+        $this->validationConstraints = $constraints;
     }
 
     /**
      * Validates the request data.
      *
+     * @param array|null $data Optional data to validate. If not provided, uses $this->request
      * @return bool True if the request data is valid, false otherwise.
      */
-    public function doValidateRequest(): bool
+    public function doValidateRequest(?array $data = null): bool
     {
-        return $this->validator->validate();
+        $dataToValidate = $data ?? $this->request;
+
+        // Filter input data to remove empty values to prevent type errors
+        foreach ($dataToValidate as $key => $value) {
+            if ($value === '') {
+                unset($dataToValidate[$key]);
+            }
+        }
+
+        $collectionConstraint = new Assert\Collection([
+            'fields' => $this->validationConstraints,
+            'allowExtraFields' => true,
+            'allowMissingFields' => true
+        ]);
+        $violations = $this->validator->validate($dataToValidate, $collectionConstraint);
+
+        return $violations->count() === 0;
     }
 
     /**
      * Displays the first validation error.
+     *
+     * @param array|null $data Optional data to validate. If not provided, uses $this->request
      */
-    public function showFirstValidationError(): void
+    public function showFirstValidationError(?array $data = null): void
     {
-        $this->showFirstError($this->validator->errors());
+        $dataToValidate = $data ?? $this->request;
+
+        // Filter input data to remove empty values to prevent type errors
+        foreach ($dataToValidate as $key => $value) {
+            if ($value === '') {
+                unset($dataToValidate[$key]);
+            }
+        }
+
+        $collectionConstraint = new Assert\Collection([
+            'fields' => $this->validationConstraints,
+            'allowExtraFields' => true,
+            'allowMissingFields' => true
+        ]);
+        $violations = $this->validator->validate($dataToValidate, $collectionConstraint);
+
+        if ($violations->count() > 0) {
+            $firstViolation = $violations->get(0);
+            $errorMessage = $firstViolation->getMessage();
+            $this->showError($errorMessage);
+        }
     }
 
     /**
