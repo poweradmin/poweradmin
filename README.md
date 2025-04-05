@@ -47,87 +47,12 @@ This project is licensed under the GNU General Public License v3.0. See the LICE
 
 ## Installation
 
-To install Poweradmin onto your system there are a few dependencies, they are listed below.
-
-On Debian-based systems and their derivatives (with sudo or as root, Debian 12 or later recommended):
-> **Note:** `php-fpm` is required only if you plan to use Nginx or choose not to use `mod_php` with Apache.
-
-```sh
-apt install php php-intl php-php-gettext php-tokenizer php-fpm
-
-#For MySQL/MariaDB
-apt install php-mysql
-
-#For PostgreSQL
-apt install php-pgsql
-
-#For SQLite
-apt install php-sqlite3
-```
-
-On Red Hat Enterprise Linux (RHEL) and its derivatives:
-
-```sh
-dnf install -y php php-intl php-gettext php-pdo php-fpm
-
-#For MySQL/MariaDB
-dnf install -y php-mysqlnd
-
-#For PostgreSQL
-dnf install -y php-pgsql
-```
-
-To get Poweradmin working on your preferred webserver (Apache/NGINX for example), download the source-code from GitHub.
-Note that Ubuntu has an Apache server by default, so the following NGINX configuration is only needed for Debian or
-custom installations:
+For detailed installation instructions, please visit [the official documentation](https://docs.poweradmin.org/installation/).
 
 * **Recommended method - via releases**:
     * Get the latest stable release from [releases](https://github.com/poweradmin/poweradmin/releases)
 * **For specific needs - via Git**:
-    * Clone the repository: ```git clone https://github.com/poweradmin/poweradmin.git```
-    * Change directory to the cloned repository: ```cd poweradmin```
-    * Select the latest stable tag (for example v3.9.0): ```git checkout tags/v3.9.0```
     * ⚠️ **Warning**: The master branch (4.0.x) is used for development and may be unstable. For production use, stick with the stable 3.9.x release.
-
-For NGINX create a configuration file that looks like this (done on Debian), of course adjust values to your liking:
-
-```
-server {
-    listen 80;
-    server_name localhost;
-
-    root /var/www/html;
-    index index.php index.html index.htm;
-
-    location / {
-        try_files $uri $uri/ /index.php?$args;
-    }
-
-    location ~ \.php$ {
-        include snippets/fastcgi-php.conf;
-        fastcgi_pass unix:/var/run/php/php-fpm.sock;
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        include fastcgi_params;
-    }
-
-    # Deny access to .htaccess and .htpasswd files for security reasons
-    location ~ /\.ht {
-        deny all;
-    }
-}
-```
-
-With the above NGINX configuration, make sure to also move all the files in the Poweradmin (repository) directory to the
-root declared in the configuration (in the example: `root /var/www/html;`). Once this is done, reload your NGINX
-installation and it should be applied.
-Then you can navigate to the installed system in your browser
-
-> **Note:** You can also safely remove the default index.html (or derivative).
-
-* Visit http(s)://HOSTNAME/install/ and follow the installation steps.
-* Once the installation is complete, remove the `install` folder.
-* Point your browser to: http(s)://URL
-* Log in using the default 'admin' username and the password created during setup (provided in step 3).
 
 ## Screenshots
 
