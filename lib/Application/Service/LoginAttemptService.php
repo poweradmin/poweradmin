@@ -67,19 +67,19 @@ class LoginAttemptService
     public function isAccountLocked(string $username, string $ipAddress): bool
     {
         // Use the updated ConfigurationManager with dot notation support
-        $lockoutEnabled = $this->configManager->get('security', 'account_lockout.enable_lockout');
+        $lockoutEnabled = $this->configManager->get('security', 'account_lockout.enable_lockout', false);
         if (!$lockoutEnabled) {
             return false;
         }
 
         // Check IP whitelist first (whitelist takes priority over blacklist)
-        $whitelistedIps = $this->configManager->get('security', 'account_lockout.whitelist_ip_addresses');
+        $whitelistedIps = $this->configManager->get('security', 'account_lockout.whitelist_ip_addresses', []);
         if (!empty($whitelistedIps) && $this->isIpInList($ipAddress, $whitelistedIps)) {
             return false; // This IP is whitelisted, never lock it
         }
 
-        // Check IP blacklist next
-        $blacklistedIps = $this->configManager->get('security', 'account_lockout.blacklist_ip_addresses');
+        // Check IP blacklist next - if blacklisted, ALWAYS return locked (true)
+        $blacklistedIps = $this->configManager->get('security', 'account_lockout.blacklist_ip_addresses', []);
         if (!empty($blacklistedIps) && $this->isIpInList($ipAddress, $blacklistedIps)) {
             return true; // This IP is blacklisted, consider it locked
         }
@@ -89,10 +89,10 @@ class LoginAttemptService
             return false;
         }
 
-        $lockoutDuration = $this->configManager->get('security', 'account_lockout.lockout_duration') * 60;
+        $lockoutDuration = $this->configManager->get('security', 'account_lockout.lockout_duration', 30) * 60;
         $cutoffTime = time() - $lockoutDuration;
-        $maxAttempts = $this->configManager->get('security', 'account_lockout.lockout_attempts');
-        $trackIpAddress = $this->configManager->get('security', 'account_lockout.track_ip_address');
+        $maxAttempts = $this->configManager->get('security', 'account_lockout.lockout_attempts', 5);
+        $trackIpAddress = $this->configManager->get('security', 'account_lockout.track_ip_address', true);
 
         $sql = "SELECT COUNT(*) as attempts
             FROM login_attempts
@@ -125,7 +125,7 @@ class LoginAttemptService
      * @param array $ipList List of IPs/CIDRs/wildcards to match against
      * @return bool True if the IP is in the list
      */
-    private function isIpInList(string $ipAddress, array $ipList): bool
+    protected function isIpInList(string $ipAddress, array $ipList): bool
     {
         if (empty($ipAddress) || empty($ipList)) {
             return false;

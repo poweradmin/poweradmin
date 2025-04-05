@@ -131,9 +131,10 @@ class AppConfiguration implements ConfigurationInterface
      * Gets a configuration value.
      *
      * @param string|null $key The name of the configuration setting.
-     * @return mixed The configuration value.
+     * @param mixed $default Default value to return if the key is not found.
+     * @return mixed The configuration value or the default value if the key is not found.
      */
-    public function get(?string $key = null): mixed
+    public function get(?string $key = null, mixed $default = null): mixed
     {
         // If no key is provided, return all config
         if ($key === null) {
@@ -145,8 +146,8 @@ class AppConfiguration implements ConfigurationInterface
             return $this->config[$key];
         }
         
-        // Otherwise return null
-        return null;
+        // Otherwise return the default value
+        return $default;
     }
 
     /**

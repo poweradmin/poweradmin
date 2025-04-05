@@ -9,6 +9,15 @@ use Poweradmin\Infrastructure\Database\PDOLayer;
 use PDO;
 use PDOStatement;
 
+// Create a testable subclass to fix the tests
+class TestableLoginAttemptService extends LoginAttemptService
+{
+    public function isIpInList(string $ipAddress, array $ipList): bool
+    {
+        return parent::isIpInList($ipAddress, $ipList);
+    }
+}
+
 class LoginAttemptServiceTest extends TestCase
 {
     private $pdoLayerMock;
@@ -19,7 +28,7 @@ class LoginAttemptServiceTest extends TestCase
     {
         $this->pdoLayerMock = $this->createMock(PDOLayer::class);
         $this->configManagerMock = $this->createMock(ConfigurationManager::class);
-        $this->loginAttemptService = new LoginAttemptService($this->pdoLayerMock, $this->configManagerMock);
+        $this->loginAttemptService = new TestableLoginAttemptService($this->pdoLayerMock, $this->configManagerMock);
     }
 
     public function testIsAccountLockedReturnsFalseWhenAccountLockoutDisabled()
@@ -51,6 +60,11 @@ class LoginAttemptServiceTest extends TestCase
 
     public function testBlacklistedIpIsAlwaysLocked()
     {
+        // Test direct IP match in blacklist
+        $blacklistedIps = ['192.168.1.2'];
+        $result = $this->loginAttemptService->isIpInList('192.168.1.2', $blacklistedIps);
+        $this->assertTrue($result, "IP should match exact entry in blacklist");
+
         // Configure ConfigurationManager to return necessary values
         $this->configManagerMock->method('get')
             ->willReturnMap([
@@ -87,6 +101,11 @@ class LoginAttemptServiceTest extends TestCase
 
     public function testCidrNotationInBlacklist()
     {
+        // Test CIDR notation directly
+        $blacklistedIps = ['172.16.0.0/16'];
+        $result = $this->loginAttemptService->isIpInList('172.16.10.5', $blacklistedIps);
+        $this->assertTrue($result, "IP should match CIDR notation in blacklist");
+
         // Configure ConfigurationManager to return necessary values
         $this->configManagerMock->method('get')
             ->willReturnMap([
@@ -123,6 +142,11 @@ class LoginAttemptServiceTest extends TestCase
 
     public function testWildcardNotationInBlacklist()
     {
+        // Test wildcard notation directly
+        $blacklistedIps = ['192.168.3.*'];
+        $result = $this->loginAttemptService->isIpInList('192.168.3.200', $blacklistedIps);
+        $this->assertTrue($result, "IP should match wildcard notation in blacklist");
+
         // Configure ConfigurationManager to return necessary values
         $this->configManagerMock->method('get')
             ->willReturnMap([

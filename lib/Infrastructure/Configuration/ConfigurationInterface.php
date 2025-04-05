@@ -28,7 +28,8 @@ interface ConfigurationInterface
      * Get a configuration value by key
      *
      * @param string|null $key Configuration key, or null to get all configuration
-     * @return mixed Configuration value or null if not found
+     * @param mixed $default Default value to return if the key is not found
+     * @return mixed Configuration value or the default value if the key is not found
      */
-    public function get(?string $key = null): mixed;
+    public function get(?string $key = null, mixed $default = null): mixed;
 }
