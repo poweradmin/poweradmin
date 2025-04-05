@@ -51,6 +51,8 @@ class IndexController extends BaseController
             'search',
             'zone_content_view_own',
             'zone_content_view_others',
+            'zone_content_edit_own',
+            'zone_content_edit_others',
             'supermaster_view',
             'zone_master_add',
             'zone_slave_add',

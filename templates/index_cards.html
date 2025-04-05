@@ -82,7 +82,7 @@
         </div>
     </div>
     {% endif %}
-    {% if iface_add_reverse_record and (permissions['zone_master_add'] or permissions['zone_slave_add']) %}
+    {% if iface_add_reverse_record and (permissions['zone_content_edit_own'] or permissions['zone_content_edit_others']) %}
     <div class="col-sm-3 mb-3">
         <div class="card">
             <div class="text-center"><i class="bi bi-arrow-repeat display-1"></i></div>

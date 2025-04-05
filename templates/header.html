@@ -55,7 +55,7 @@
                                href="index.php?page=bulk_registration">{% trans %}Bulk registration{% endtrans %}</a>
                         </li>
                         {% endif %}
-                        {% if iface_add_reverse_record and (perm_zone_master_add or perm_zone_slave_add) %}
+                        {% if iface_add_reverse_record and (perm_view_zone_own or perm_view_zone_other) %}
                         <li><a class="dropdown-item"
                                href="index.php?page=batch_ptr_record">{% trans %}Batch PTR Records{% endtrans %}</a>
                         </li>

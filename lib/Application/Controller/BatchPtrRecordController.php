@@ -70,10 +70,10 @@ class BatchPtrRecordController extends BaseController
         $this->checkCondition(!$isReverseRecordAllowed, _("Batch PTR record creation is not enabled."));
         
         // Check if user has permission to use this feature
-        $perm_zone_master_add = UserManager::verify_permission($this->db, 'zone_master_add');
-        $perm_zone_slave_add = UserManager::verify_permission($this->db, 'zone_slave_add');
-        $this->checkCondition(!$perm_zone_master_add && !$perm_zone_slave_add, 
-            _("You do not have permission to add zones."));
+        $perm_edit_own = UserManager::verify_permission($this->db, 'zone_content_edit_own');
+        $perm_edit_others = UserManager::verify_permission($this->db, 'zone_content_edit_others');
+        $this->checkCondition(!$perm_edit_own && !$perm_edit_others, 
+            _("You do not have permission to edit DNS records."));
         
         // Check if we have a specific zone_id
         $hasZoneId = isset($_GET['id']) && !empty($_GET['id']);
