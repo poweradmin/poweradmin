@@ -41,15 +41,9 @@ This project is licensed under the GNU General Public License v3.0. See the LICE
 
 ## Tested on
 
-| Poweradmin | PHP            | PowerDNS | MariaDB  | MySQL  | PostgreSQL | SQLite |
-|------------|----------------|----------|----------|--------|------------|--------|
-| 4.0.x      | 8.1.31         | 4.7.4    | 10.11.10 | 9.1.0  | 16.3       | 3.45.3 |
-| 3.9.x      | 8.1.31         | 4.7.4    | 10.11.10 | 9.1.0  | 16.3       | 3.45.3 |
-| 3.8.x      | 8.1.28         | 4.5.5    | 10.11.8  | -      | 16.3       | 3.45.3 |
-| 3.7.x      | 8.1.2          | 4.5.3    | 11.1.2   | 8.2.0  | 16.0       | 3.40.1 |
-| 3.6.x      | 8.1.2          | 4.5.3    | 11.1.2   | 8.1.0  | 16.0       | 3.40.1 |
-| 3.5.x      | 8.1.17         | 4.5.3    | 10.11.2  | 8.0.32 | 15.2       | 3.34.1 |
-| 3.4.x      | 7.4.3 / 8.1.12 | 4.2.1    | 10.10.2  | 8.0.31 | 15.1       | 3.34.1 |
+**Versions:**
+- **4.0.x (development)**: PHP 8.1.31, PowerDNS 4.7.4, MariaDB 10.11.10, MySQL 9.1.0, PostgreSQL 16.3, SQLite 3.45.3
+- **3.9.x (stable)**: PHP 8.1.31, PowerDNS 4.7.4, MariaDB 10.11.10, MySQL 9.1.0, PostgreSQL 16.3, SQLite 3.45.3
 
 ## Installation
 
@@ -87,14 +81,13 @@ To get Poweradmin working on your preferred webserver (Apache/NGINX for example)
 Note that Ubuntu has an Apache server by default, so the following NGINX configuration is only needed for Debian or
 custom installations:
 
-* Via Git:
+* **Recommended method - via releases**:
+    * Get the latest stable release from [releases](https://github.com/poweradmin/poweradmin/releases)
+* **For specific needs - via Git**:
     * Clone the repository: ```git clone https://github.com/poweradmin/poweradmin.git```
     * Change directory to the cloned repository: ```cd poweradmin```
-    * Select the latest stable tag (for example v3.8.1): ```git checkout tags/v3.8.1```
-    * ⚠️ **Warning**: The master branch is used for development and may be unstable at times. Use at your own risk:
-      ```git checkout master```
-* Via releases:
-    * Get the latest file from [releases](https://github.com/poweradmin/poweradmin/releases)
+    * Select the latest stable tag (for example v3.9.0): ```git checkout tags/v3.9.0```
+    * ⚠️ **Warning**: The master branch (4.0.x) is used for development and may be unstable. For production use, stick with the stable 3.9.x release.
 
 For NGINX create a configuration file that looks like this (done on Debian), of course adjust values to your liking:
 
