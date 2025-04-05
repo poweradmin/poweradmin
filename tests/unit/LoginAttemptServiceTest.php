@@ -6,17 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
-use PDO;
 use PDOStatement;
-
-// Create a testable subclass to fix the tests
-class TestableLoginAttemptService extends LoginAttemptService
-{
-    public function isIpInList(string $ipAddress, array $ipList): bool
-    {
-        return parent::isIpInList($ipAddress, $ipList);
-    }
-}
 
 class LoginAttemptServiceTest extends TestCase
 {
@@ -28,7 +18,7 @@ class LoginAttemptServiceTest extends TestCase
     {
         $this->pdoLayerMock = $this->createMock(PDOLayer::class);
         $this->configManagerMock = $this->createMock(ConfigurationManager::class);
-        $this->loginAttemptService = new TestableLoginAttemptService($this->pdoLayerMock, $this->configManagerMock);
+        $this->loginAttemptService = new LoginAttemptService($this->pdoLayerMock, $this->configManagerMock);
     }
 
     public function testIsAccountLockedReturnsFalseWhenAccountLockoutDisabled()
@@ -182,3 +172,4 @@ class LoginAttemptServiceTest extends TestCase
         $this->assertFalse($result);
     }
 }
+

@@ -125,7 +125,7 @@ class LoginAttemptService
      * @param array $ipList List of IPs/CIDRs/wildcards to match against
      * @return bool True if the IP is in the list
      */
-    protected function isIpInList(string $ipAddress, array $ipList): bool
+    public function isIpInList(string $ipAddress, array $ipList): bool
     {
         if (empty($ipAddress) || empty($ipList)) {
             return false;
