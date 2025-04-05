@@ -118,6 +118,14 @@ a:hover {
     color: #b7b7b8;
 }
 
+.card-title, .card-text {
+    color: #f8f9fa;
+}
+
+.card-text.text-muted {
+    color: #b7b7b8 !important;
+}
+
 .card a {
     color: #b7b7b8;
     background: #2c3031;
