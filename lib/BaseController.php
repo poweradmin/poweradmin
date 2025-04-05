@@ -95,28 +95,42 @@ abstract class BaseController
     /**
      * Gets a specific configuration value.
      *
-     * @param string $key The configuration key.
+     * @param string $group The configuration group or legacy key if only one parameter provided.
+     * @param string|null $key The configuration key within the group.
+     * @param mixed|null $default Default value if not found.
      * @return mixed The configuration value.
      */
-    public function config(string $key): mixed
+    public function config(string $group, ?string $key = null, mixed $default = null): mixed
     {
-        // Map legacy UI keys to interface settings
-        return match ($key) {
-            'index_display' => $this->configManager->get('interface', 'index_display'),
-            'iface_edit_show_id' => $this->configManager->get('interface', 'show_record_id'),
-            'iface_edit_add_record_top' => $this->configManager->get('interface', 'position_record_form_top'),
-            'iface_edit_save_changes_top' => $this->configManager->get('interface', 'position_save_button_top'),
-            'iface_lang' => $this->configManager->get('interface', 'language'),
-            'iface_style' => $this->configManager->get('interface', 'theme'),
-            'iface_rowamount' => $this->configManager->get('interface', 'rows_per_page'),
-            'iface_title' => $this->configManager->get('interface', 'title'),
-            'db_debug' => $this->configManager->get('database', 'debug'),
-            'dblog_use' => $this->configManager->get('logging', 'database_enabled'),
-            'session_key' => $this->configManager->get('security', 'session_key'),
-            'global_token_validation' => $this->configManager->get('security', 'global_token_validation', true),
-            'display_stats' => $this->configManager->get('misc', 'display_stats'),
-            default => $this->configManager->get('misc', $key),
-        };
+        // If only one parameter provided, assume it's a legacy key
+        if ($key === null) {
+            // Map legacy UI keys to interface settings
+            return match ($group) {
+                'index_display' => $this->configManager->get('interface', 'index_display'),
+                'iface_edit_show_id' => $this->configManager->get('interface', 'show_record_id'),
+                'iface_edit_add_record_top' => $this->configManager->get('interface', 'position_record_form_top'),
+                'iface_edit_save_changes_top' => $this->configManager->get('interface', 'position_save_button_top'),
+                'iface_lang' => $this->configManager->get('interface', 'language'),
+                'iface_style' => $this->configManager->get('interface', 'theme'),
+                'iface_rowamount' => $this->configManager->get('interface', 'rows_per_page'),
+                'iface_title' => $this->configManager->get('interface', 'title'),
+                'iface_record_comments' => $this->configManager->get('interface', 'show_record_comments'),
+                'iface_zone_comments' => $this->configManager->get('interface', 'show_zone_comments'),
+                'iface_add_reverse_record' => $this->configManager->get('interface', 'add_reverse_record'),
+                'iface_add_domain_record' => $this->configManager->get('interface', 'add_domain_record'),
+                'db_type' => $this->configManager->get('database', 'type', 'mysql'),
+                'db_debug' => $this->configManager->get('database', 'debug'),
+                'dblog_use' => $this->configManager->get('logging', 'database_enabled'),
+                'dns_ttl' => $this->configManager->get('dns', 'ttl'),
+                'session_key' => $this->configManager->get('security', 'session_key'),
+                'global_token_validation' => $this->configManager->get('security', 'global_token_validation', true),
+                'display_stats' => $this->configManager->get('misc', 'display_stats'),
+                default => $this->configManager->get('misc', $group, $default),
+            };
+        }
+
+        // Both group and key provided - use structured config
+        return $this->configManager->get($group, $key) ?? $default;
     }
 
     /**
