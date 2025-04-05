@@ -172,4 +172,3 @@ class LoginAttemptServiceTest extends TestCase
         $this->assertFalse($result);
     }
 }
-
