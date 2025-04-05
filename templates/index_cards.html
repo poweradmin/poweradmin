@@ -4,7 +4,7 @@
 <div class="row row-cols-3 row-cols-sm-4 row-cols-md-6 row-cols-lg-8 g-2">
     {% if permissions['search'] %}
     <div class="col mb-1 card-item">
-        <div class="card h-100 border-0 shadow-sm">
+        <div class="card h-100 shadow-sm">
             <div class="card-header text-center bg-transparent border-0 pt-2">
                 <i class="bi bi-search display-4"></i>
             </div>
@@ -21,7 +21,7 @@
     {% endif %}
     {% if permissions['zone_content_view_own'] or permissions['zone_content_view_others'] %}
     <div class="col mb-1 card-item">
-        <div class="card h-100 border-0 shadow-sm">
+        <div class="card h-100 shadow-sm">
             <div class="card-header text-center bg-transparent border-0 pt-2">
                 <i class="bi bi-diagram-3 display-4"></i>
             </div>
@@ -39,7 +39,7 @@
 
     {% if permissions['zone_master_add'] %}
     <div class="col mb-1 card-item">
-        <div class="card h-100 border-0 shadow-sm">
+        <div class="card h-100 shadow-sm">
             <div class="card-header text-center bg-transparent border-0 pt-2">
                 <i class="bi bi-files display-4"></i>
             </div>
@@ -56,7 +56,7 @@
     {% endif %}
     {% if permissions['supermaster_view'] %}
     <div class="col mb-1 card-item">
-        <div class="card h-100 border-0 shadow-sm">
+        <div class="card h-100 shadow-sm">
             <div class="card-header text-center bg-transparent border-0 pt-2">
                 <i class="bi bi-hdd-rack display-4"></i>
             </div>
@@ -73,7 +73,7 @@
     {% endif %}
     {% if permissions['zone_master_add'] %}
     <div class="col mb-1 card-item">
-        <div class="card h-100 border-0 shadow-sm">
+        <div class="card h-100 shadow-sm">
             <div class="card-header text-center bg-transparent border-0 pt-2">
                 <i class="bi bi-plus-circle display-4"></i>
             </div>
@@ -90,7 +90,7 @@
     {% endif %}
     {% if permissions['zone_slave_add'] %}
     <div class="col mb-1 card-item">
-        <div class="card h-100 border-0 shadow-sm">
+        <div class="card h-100 shadow-sm">
             <div class="card-header text-center bg-transparent border-0 pt-2">
                 <i class="bi bi-plus-circle-dotted display-4"></i>
             </div>
@@ -107,7 +107,7 @@
     {% endif %}
     {% if permissions['supermaster_add'] %}
     <div class="col mb-1 card-item">
-        <div class="card h-100 border-0 shadow-sm">
+        <div class="card h-100 shadow-sm">
             <div class="card-header text-center bg-transparent border-0 pt-2">
                 <i class="bi bi-hdd-network display-4"></i>
             </div>
@@ -124,7 +124,7 @@
     {% endif %}
     {% if permissions['zone_master_add'] %}
     <div class="col mb-1 card-item">
-        <div class="card h-100 border-0 shadow-sm">
+        <div class="card h-100 shadow-sm">
             <div class="card-header text-center bg-transparent border-0 pt-2">
                 <i class="bi bi-collection display-4"></i>
             </div>
@@ -141,7 +141,7 @@
     {% endif %}
     {% if iface_add_reverse_record and (permissions['zone_content_edit_own'] or permissions['zone_content_edit_others']) %}
     <div class="col mb-1 card-item">
-        <div class="card h-100 border-0 shadow-sm">
+        <div class="card h-100 shadow-sm">
             <div class="card-header text-center bg-transparent border-0 pt-2">
                 <i class="bi bi-arrow-repeat display-4"></i>
             </div>
@@ -158,7 +158,7 @@
     {% endif %}
     {% if permissions['user_is_ueberuser'] and dblog_use == true %}
     <div class="col mb-1 card-item">
-        <div class="card h-100 border-0 shadow-sm">
+        <div class="card h-100 shadow-sm">
             <div class="card-header text-center bg-transparent border-0 pt-2">
                 <i class="bi bi-list-ul display-4"></i>
             </div>
@@ -176,7 +176,7 @@
 
     {% if auth_used != "ldap" %}
     <div class="col mb-1 card-item">
-        <div class="card h-100 border-0 shadow-sm">
+        <div class="card h-100 shadow-sm">
             <div class="card-header text-center bg-transparent border-0 pt-2">
                 <i class="bi bi-key display-4"></i>
             </div>
@@ -192,7 +192,7 @@
     </div>
     {% endif %}
     <div class="col mb-1 card-item">
-        <div class="card h-100 border-0 shadow-sm">
+        <div class="card h-100 shadow-sm">
             <div class="card-header text-center bg-transparent border-0 pt-2">
                 <i class="bi bi-people display-4"></i>
             </div>
@@ -208,7 +208,7 @@
     </div>
     {% if permissions['templ_perm_edit'] %}
     <div class="col mb-1 card-item">
-        <div class="card h-100 border-0 shadow-sm">
+        <div class="card h-100 shadow-sm">
             <div class="card-header text-center bg-transparent border-0 pt-2">
                 <i class="bi bi-person-lock display-4"></i>
             </div>
@@ -224,7 +224,7 @@
     </div>
     {% endif %}
     <div class="col mb-1 card-item">
-        <div class="card h-100 border-0 shadow-sm">
+        <div class="card h-100 shadow-sm">
             <div class="card-header text-center bg-transparent border-0 pt-2">
                 <i class="bi bi-box-arrow-right display-4"></i>
             </div>
@@ -239,7 +239,7 @@
     </div>
     {% if permissions['user_is_ueberuser'] and migrations_show %}
     <div class="col mb-1 card-item">
-        <div class="card h-100 border-0 shadow-sm">
+        <div class="card h-100 shadow-sm">
             <div class="card-header text-center bg-transparent border-0 pt-2">
                 <i class="bi bi-database-up display-4"></i>
             </div>

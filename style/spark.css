@@ -112,6 +112,7 @@ a:hover {
 
 .card {
     background-color: #212529;
+    border: 1px solid #373b3e !important;
 }
 
 .card i {
