@@ -35,20 +35,36 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
-use Valitron;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class EditZoneTemplRecordController extends BaseController
 {
+    protected ValidatorInterface $validator;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+        $this->validator = $this->validator;
+    }
 
     public function run(): void
     {
-        $v = new Valitron\Validator($_GET);
-        $v->rules([
-            'required' => ['id', 'zone_templ_id'],
-            'integer' => ['id', 'zone_templ_id'],
-        ]);
-        if (!$v->validate()) {
-            $this->showFirstError($v->errors());
+        $constraints = [
+            'id' => [
+                new Assert\NotBlank(),
+                new Assert\Type('numeric')
+            ],
+            'zone_templ_id' => [
+                new Assert\NotBlank(),
+                new Assert\Type('numeric')
+            ]
+        ];
+
+        $this->setValidationConstraints($constraints);
+
+        if (!$this->doValidateRequest($_GET)) {
+            $this->showFirstValidationError($_GET);
         }
 
         $record_id = htmlspecialchars($_GET['id']);
@@ -82,6 +98,32 @@ class EditZoneTemplRecordController extends BaseController
 
     public function updateZoneTemplateRecord(string $zone_templ_id): void
     {
+        $constraints = [
+            'name' => [
+                new Assert\NotBlank()
+            ],
+            'type' => [
+                new Assert\NotBlank()
+            ],
+            'content' => [
+                new Assert\NotBlank()
+            ],
+            'ttl' => [
+                new Assert\NotBlank(),
+                new Assert\Type('numeric')
+            ],
+            'prio' => [
+                new Assert\Type('numeric')
+            ]
+        ];
+
+        $this->setValidationConstraints($constraints);
+
+        if (!$this->doValidateRequest($_POST)) {
+            $this->showFirstValidationError($_POST);
+            return;
+        }
+
         $template = new ZoneTemplate($this->db, $this->getConfig());
 
         if ($template->edit_zone_templ_record($_POST)) {

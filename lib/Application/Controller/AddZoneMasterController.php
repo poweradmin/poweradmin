@@ -38,18 +38,21 @@ use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\Dns;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Valitron;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class AddZoneMasterController extends BaseController
 {
 
     private LegacyLogger $logger;
+    protected ValidatorInterface $validator;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
         $this->logger = new LegacyLogger($this->db);
+        $this->validator = $this->validator;
     }
 
     public function run(): void
@@ -66,12 +69,25 @@ class AddZoneMasterController extends BaseController
 
     private function addZone(): void
     {
-        $v = new Valitron\Validator($_POST);
-        $v->rules([
-            'required' => ['domain', 'dom_type', 'owner', 'zone_template'],
-        ]);
-        if (!$v->validate()) {
-            $this->showFirstError($v->errors());
+        $constraints = [
+            'domain' => [
+                new Assert\NotBlank()
+            ],
+            'dom_type' => [
+                new Assert\NotBlank()
+            ],
+            'owner' => [
+                new Assert\NotBlank()
+            ],
+            'zone_template' => [
+                new Assert\NotBlank()
+            ]
+        ];
+
+        $this->setValidationConstraints($constraints);
+
+        if (!$this->doValidateRequest($_POST)) {
+            $this->showFirstValidationError($_POST);
         }
 
         $pdnssec_use = $this->config('pdnssec_use');

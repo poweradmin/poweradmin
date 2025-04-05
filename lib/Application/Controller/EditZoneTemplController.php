@@ -38,10 +38,18 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
-use Valitron;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class EditZoneTemplController extends BaseController
 {
+    protected ValidatorInterface $validator;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+        $this->validator = $this->validator;
+    }
 
     public function run(): void
     {
@@ -52,13 +60,17 @@ class EditZoneTemplController extends BaseController
 
         $this->checkCondition(!($perm_godlike || $perm_master_add && $owner), _("You do not have the permission to delete zone templates."));
 
-        $v = new Valitron\Validator($_GET);
-        $v->rules([
-            'required' => ['id'],
-            'integer' => ['id'],
-        ]);
-        if (!$v->validate()) {
-            $this->showFirstError($v->errors());
+        $constraints = [
+            'id' => [
+                new Assert\NotBlank(),
+                new Assert\Type('numeric')
+            ]
+        ];
+
+        $this->setValidationConstraints($constraints);
+
+        if (!$this->doValidateRequest($_GET)) {
+            $this->showFirstValidationError($_GET);
         }
 
         if (ZoneTemplate::zone_templ_id_exists($this->db, $zone_templ_id) == "0") {
@@ -157,9 +169,22 @@ class EditZoneTemplController extends BaseController
 
     public function updateZoneTemplateDetails(string $zone_templ_id): void
     {
-        if (!isset($_POST['templ_name']) || $_POST['templ_name'] == "") {
-            $this->showError(_('Invalid or unexpected input given.'));
+        $constraints = [
+            'templ_name' => [
+                new Assert\NotBlank()
+            ],
+            'templ_descr' => [
+                new Assert\Length(['max' => 1024])
+            ]
+        ];
+
+        $this->setValidationConstraints($constraints);
+
+        if (!$this->doValidateRequest($_POST)) {
+            $this->showFirstValidationError($_POST);
+            return;
         }
+
         ZoneTemplate::edit_zone_templ($this->db, $_POST, $zone_templ_id, $_SESSION['userid']);
         $this->setMessage('list_zone_templ', 'success', _('Zone template has been updated successfully.'));
         $this->redirect('index.php', ['page' => 'list_zone_templ']);

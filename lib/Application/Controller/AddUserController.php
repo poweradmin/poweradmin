@@ -38,7 +38,8 @@ use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Valitron\Validator;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class AddUserController extends BaseController
 {
@@ -47,18 +48,7 @@ class AddUserController extends BaseController
     private MailService $mailService;
     private Request $request;
 
-    private const VALIDATION_CONFIG = [
-        'rules' => [
-            'required' => [
-                ['username'],
-                ['email'],
-            ]
-        ],
-        'labels' => [
-            'username' => 'Username',
-            'email' => 'Email address'
-        ]
-    ];
+    protected ValidatorInterface $validator;
 
     public function __construct(array $request)
     {
@@ -71,6 +61,9 @@ class AddUserController extends BaseController
 
         // Initialize mail service
         $this->mailService = new MailService($configManager);
+
+        // Use validator from parent class
+        $this->validator = $this->validator;
     }
 
     public function run(): void
@@ -190,20 +183,28 @@ class AddUserController extends BaseController
 
     private function validateInput(): bool
     {
-        $validator = new Validator($this->request->getPostParams());
-        $validator->rules(self::VALIDATION_CONFIG['rules']);
-        $validator->labels(self::VALIDATION_CONFIG['labels']);
+        $constraints = [
+            'username' => [
+                new Assert\NotBlank()
+            ],
+            'email' => [
+                new Assert\NotBlank(),
+                new Assert\Email()
+            ]
+        ];
 
         // Add password validation for non-LDAP users (unless auto-generate is checked)
         if (!$this->request->getPostParam('use_ldap') && !$this->request->getPostParam('auto_generate_password')) {
-            $validator->rule('required', 'password');
+            $constraints['password'] = [
+                new Assert\NotBlank()
+            ];
         }
 
-        if (!$validator->validate()) {
-            $validationErrors = $validator->errors();
-            $firstError = reset($validationErrors);
-            $errorMessage = is_array($firstError) ? reset($firstError) : $firstError;
-            $this->setMessage('add_user', 'error', $errorMessage);
+        $this->setValidationConstraints($constraints);
+        $data = $this->request->getPostParams();
+
+        if (!$this->doValidateRequest($data)) {
+            $this->setMessage('add_user', 'error', _('Please fill in all required fields correctly.'));
             return false;
         }
 

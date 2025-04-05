@@ -24,10 +24,6 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
     );
 
     public static $prefixLengthsPsr4 = array (
-        'V' => 
-        array (
-            'Valitron\\' => 9,
-        ),
         'T' => 
         array (
             'Twig\\' => 5,
@@ -76,10 +72,6 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
     );
 
     public static $prefixDirsPsr4 = array (
-        'Valitron\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/vlucas/valitron/src/Valitron',
-        ),
         'Twig\\' => 
         array (
             0 => __DIR__ . '/..' . '/twig/twig/src',
@@ -1685,7 +1677,6 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
         'Twig\\Util\\DeprecationCollector' => __DIR__ . '/..' . '/twig/twig/src/Util/DeprecationCollector.php',
         'Twig\\Util\\ReflectionCallable' => __DIR__ . '/..' . '/twig/twig/src/Util/ReflectionCallable.php',
         'Twig\\Util\\TemplateDirIterator' => __DIR__ . '/..' . '/twig/twig/src/Util/TemplateDirIterator.php',
-        'Valitron\\Validator' => __DIR__ . '/..' . '/vlucas/valitron/src/Valitron/Validator.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

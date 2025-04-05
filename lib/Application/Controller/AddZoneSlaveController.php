@@ -36,18 +36,21 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\Dns;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Valitron;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class AddZoneSlaveController extends BaseController
 {
 
     private LegacyLogger $logger;
+    protected ValidatorInterface $validator;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
         $this->logger = new LegacyLogger($this->db);
+        $this->validator = $this->validator;
     }
 
     public function run(): void
@@ -64,13 +67,23 @@ class AddZoneSlaveController extends BaseController
 
     private function addZone(): void
     {
-        $v = new Valitron\Validator($_POST);
-        $v->rules([
-            'required' => ['owner', 'domain', 'slave_master'],
-            'integer' => ['owner'],
-        ]);
-        if (!$v->validate()) {
-            $this->showFirstError($v->errors());
+        $constraints = [
+            'owner' => [
+                new Assert\NotBlank(),
+                new Assert\Type('numeric')
+            ],
+            'domain' => [
+                new Assert\NotBlank()
+            ],
+            'slave_master' => [
+                new Assert\NotBlank()
+            ]
+        ];
+
+        $this->setValidationConstraints($constraints);
+
+        if (!$this->doValidateRequest($_POST)) {
+            $this->showFirstValidationError($_POST);
         }
 
         $dns_third_level_check = $this->config('dns_third_level_check');

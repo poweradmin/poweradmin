@@ -34,12 +34,33 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
-use Valitron;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class DeleteZoneTemplController extends BaseController
 {
+    protected ValidatorInterface $validator;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+        $this->validator = $this->validator;
+    }
     public function run(): void
     {
+        $constraints = [
+            'id' => [
+                new Assert\NotBlank(),
+                new Assert\Type('numeric')
+            ]
+        ];
+
+        $this->setValidationConstraints($constraints);
+
+        if (!$this->doValidateRequest($_GET)) {
+            $this->showFirstValidationError($_GET);
+        }
+
         $zone_templ_id = htmlspecialchars($_GET['id']);
         $owner = ZoneTemplate::get_zone_templ_is_owner($this->db, $zone_templ_id, $_SESSION['userid']);
         $perm_godlike = UserManager::verify_permission($this->db, 'user_is_ueberuser');
@@ -56,20 +77,23 @@ class DeleteZoneTemplController extends BaseController
 
     private function deleteZoneTempl(): void
     {
-        $v = new Valitron\Validator($_GET);
-        $v->rules([
-            'required' => ['id'],
-            'integer' => ['id'],
-        ]);
+        $constraints = [
+            'id' => [
+                new Assert\NotBlank(),
+                new Assert\Type('numeric')
+            ]
+        ];
 
-        if ($v->validate()) {
+        $this->setValidationConstraints($constraints);
+
+        if ($this->doValidateRequest($_GET)) {
             $zone_templ_id = htmlspecialchars($_GET['id']);
             ZoneTemplate::delete_zone_templ($this->db, $zone_templ_id);
 
             $this->setMessage('list_zone_templ', 'success', _('Zone template has been deleted successfully.'));
             $this->redirect('index.php', ['page' => 'list_zone_templ']);
         } else {
-            $this->showFirstError($v->errors());
+            $this->showFirstValidationError($_GET);
         }
     }
 

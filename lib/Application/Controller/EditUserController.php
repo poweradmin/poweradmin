@@ -37,26 +37,16 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\UserContextService;
-use Valitron\Validator;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class EditUserController extends BaseController
 {
     private Request $request;
     private PasswordPolicyService $policyService;
 
-    private const VALIDATION_CONFIG = [
-        'rules' => [
-            'required' => [
-                ['username'],
-                ['email'],
-            ]
-        ],
-        'labels' => [
-            'username' => 'Username',
-            'email' => 'Email address'
-        ]
-    ];
     private readonly UserContextService $userContextService;
+    protected ValidatorInterface $validator;
 
     public function __construct(
         array $request
@@ -66,6 +56,7 @@ class EditUserController extends BaseController
         $this->request = new Request();
         $this->policyService = new PasswordPolicyService();
         $this->userContextService = new UserContextService();
+        $this->validator = $this->validator;
     }
 
     public function run(): void
@@ -125,15 +116,21 @@ class EditUserController extends BaseController
 
     private function validateInput(): bool
     {
-        $validator = new Validator($this->request->getPostParams());
-        $validator->rules(self::VALIDATION_CONFIG['rules']);
-        $validator->labels(self::VALIDATION_CONFIG['labels']);
+        $constraints = [
+            'username' => [
+                new Assert\NotBlank()
+            ],
+            'email' => [
+                new Assert\NotBlank(),
+                new Assert\Email()
+            ]
+        ];
 
-        if (!$validator->validate()) {
-            $validationErrors = $validator->errors();
-            $firstError = reset($validationErrors);
-            $errorMessage = is_array($firstError) ? reset($firstError) : $firstError;
-            $this->setMessage('edit_user', 'error', $errorMessage);
+        $this->setValidationConstraints($constraints);
+        $data = $this->request->getPostParams();
+
+        if (!$this->doValidateRequest($data)) {
+            $this->setMessage('edit_user', 'error', _('Please fill in all required fields correctly.'));
             return false;
         }
 

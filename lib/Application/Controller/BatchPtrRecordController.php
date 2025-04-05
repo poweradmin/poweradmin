@@ -30,7 +30,8 @@ use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Valitron;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class BatchPtrRecordController extends BaseController
 {
@@ -38,6 +39,7 @@ class BatchPtrRecordController extends BaseController
     private DnsRecord $dnsRecord;
     private BatchReverseRecordCreator $batchReverseRecordCreator;
     private $csrfTokenService;
+    protected ValidatorInterface $validator;
 
     public function __construct(array $request)
     {
@@ -46,6 +48,7 @@ class BatchPtrRecordController extends BaseController
         $this->logger = new LegacyLogger($this->db);
         $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $this->csrfTokenService = new \Poweradmin\Application\Service\CsrfTokenService();
+        $this->validator = $this->validator;
 
         $reverseRecordCreator = new ReverseRecordCreator(
             $this->db,
@@ -115,14 +118,32 @@ class BatchPtrRecordController extends BaseController
 
     private function addBatchPtrRecords(): bool
     {
-        $v = new Valitron\Validator($_POST);
-        $v->rules([
-            'required' => ['network_type', 'network_prefix', 'host_prefix', 'domain', 'ttl'],
-            'integer' => ['priority', 'ttl'],
-        ]);
+        $constraints = [
+            'network_type' => [
+                new Assert\NotBlank()
+            ],
+            'network_prefix' => [
+                new Assert\NotBlank()
+            ],
+            'host_prefix' => [
+                new Assert\NotBlank()
+            ],
+            'domain' => [
+                new Assert\NotBlank()
+            ],
+            'ttl' => [
+                new Assert\NotBlank(),
+                new Assert\Type('numeric')
+            ],
+            'priority' => [
+                new Assert\Type('numeric')
+            ]
+        ];
 
-        if (!$v->validate()) {
-            $this->showFirstError($v->errors());
+        $this->setValidationConstraints($constraints);
+
+        if (!$this->doValidateRequest($_POST)) {
+            $this->showFirstValidationError($_POST);
             return false;
         }
 
@@ -219,13 +240,17 @@ class BatchPtrRecordController extends BaseController
 
     public function checkId(): void
     {
-        $v = new Valitron\Validator($_GET);
-        $v->rules([
-            'required' => ['id'],
-            'integer' => ['id']
-        ]);
-        if (!$v->validate()) {
-            $this->showFirstError($v->errors());
+        $constraints = [
+            'id' => [
+                new Assert\NotBlank(),
+                new Assert\Type('numeric')
+            ]
+        ];
+
+        $this->setValidationConstraints($constraints);
+
+        if (!$this->doValidateRequest($_GET)) {
+            $this->showFirstValidationError($_GET);
         }
     }
 }

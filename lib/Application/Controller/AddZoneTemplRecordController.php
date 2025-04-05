@@ -35,17 +35,31 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
-use Valitron;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class AddZoneTemplRecordController extends BaseController
 {
+    protected ValidatorInterface $validator;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+        $this->validator = $this->validator;
+    }
 
     public function run(): void
     {
-        $v = new Valitron\Validator($_GET);
-        $v->rule('required', ['id']);
-        if (!$v->validate()) {
-            $this->showFirstError($v->errors());
+        $constraints = [
+            'id' => [
+                new Assert\NotBlank()
+            ]
+        ];
+
+        $this->setValidationConstraints($constraints);
+
+        if (!$this->doValidateRequest($_GET)) {
+            $this->showFirstValidationError($_GET);
         }
 
         $zone_templ_id = htmlspecialchars($_GET['id']);
@@ -58,14 +72,30 @@ class AddZoneTemplRecordController extends BaseController
         if ($this->isPost()) {
             $this->validateCsrfToken();
 
-            $v = new Valitron\Validator($_POST);
-            $v->rules(['required' => [
-                'name', 'type', 'content', 'prio', 'ttl'
-            ]]);
-            if ($v->validate()) {
+            $constraints = [
+                'name' => [
+                    new Assert\NotBlank()
+                ],
+                'type' => [
+                    new Assert\NotBlank()
+                ],
+                'content' => [
+                    new Assert\NotBlank()
+                ],
+                'prio' => [
+                    new Assert\NotBlank()
+                ],
+                'ttl' => [
+                    new Assert\NotBlank()
+                ]
+            ];
+
+            $this->setValidationConstraints($constraints);
+
+            if ($this->doValidateRequest($_POST)) {
                 $this->addZoneTemplRecord();
             } else {
-                $this->showFirstError($v->errors());
+                $this->showFirstValidationError($_POST);
             }
         } else {
             $this->showAddZoneTemplRecord();

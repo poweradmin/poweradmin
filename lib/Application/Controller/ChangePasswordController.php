@@ -40,10 +40,10 @@ use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\SessionService;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\RedirectService;
-use Valitron\Validator;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ChangePasswordController extends BaseController
 {
@@ -51,25 +51,7 @@ class ChangePasswordController extends BaseController
     private PasswordPolicyService $policyService;
     private Request $request;
     private PasswordChangeService $passwordService;
-
-    private const VALIDATION_CONFIG = [
-        'rules' => [
-            'required' => [
-                ['old_password'],
-                ['new_password'],
-                ['new_password2'],
-            ],
-            'equals' => [
-                ['new_password2', 'new_password'],
-            ]
-        ],
-        'labels' => [
-            'old_password' => 'Current password',
-            'new_password' => 'New password',
-            'new_password2' => 'Repeat password'
-        ]
-    ];
-
+    protected ValidatorInterface $validator;
     public function __construct(array $request)
     {
         parent::__construct($request);
@@ -86,6 +68,7 @@ class ChangePasswordController extends BaseController
         $userRepository = new DbUserRepository($this->db);
         $userContextService = new UserContextService();
         $this->passwordService = new PasswordChangeService($userRepository, $userAuthService, $userContextService);
+        $this->validator = $this->validator;
     }
 
     public function run(): void
@@ -125,15 +108,27 @@ class ChangePasswordController extends BaseController
 
     private function validateInput(): bool
     {
-        $validator = new Validator($this->request->getPostParams());
-        $validator->rules(self::VALIDATION_CONFIG['rules']);
-        $validator->labels(self::VALIDATION_CONFIG['labels']);
+        $constraints = [
+            'old_password' => [
+                new Assert\NotBlank()
+            ],
+            'new_password' => [
+                new Assert\NotBlank()
+            ],
+            'new_password2' => [
+                new Assert\NotBlank(),
+                new Assert\EqualTo([
+                    'value' => $this->request->getPostParam('new_password'),
+                    'message' => 'Repeat password must match the new password.'
+                ])
+            ]
+        ];
 
-        if (!$validator->validate()) {
-            $validationErrors = $validator->errors();
-            $firstError = reset($validationErrors);
-            $errorMessage = is_array($firstError) ? reset($firstError) : $firstError;
-            $this->setMessage('change_password', 'error', $errorMessage);
+        $this->setValidationConstraints($constraints);
+        $data = $this->request->getPostParams();
+
+        if (!$this->doValidateRequest($data)) {
+            $this->setMessage('change_password', 'error', _('Please fill in all required fields correctly.'));
             return false;
         }
 

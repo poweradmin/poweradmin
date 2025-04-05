@@ -1488,5 +1488,4 @@ return array(
     'Twig\\Util\\DeprecationCollector' => $vendorDir . '/twig/twig/src/Util/DeprecationCollector.php',
     'Twig\\Util\\ReflectionCallable' => $vendorDir . '/twig/twig/src/Util/ReflectionCallable.php',
     'Twig\\Util\\TemplateDirIterator' => $vendorDir . '/twig/twig/src/Util/TemplateDirIterator.php',
-    'Valitron\\Validator' => $vendorDir . '/vlucas/valitron/src/Valitron/Validator.php',
 );

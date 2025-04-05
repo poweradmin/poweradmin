@@ -38,18 +38,21 @@ use Poweradmin\Domain\Service\Dns;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Utility\DomainHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Valitron;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class BulkRegistrationController extends BaseController
 {
 
     private LegacyLogger $logger;
+    protected ValidatorInterface $validator;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
         $this->logger = new LegacyLogger($this->db);
+        $this->validator = $this->validator;
     }
 
     public function run(): void
@@ -66,14 +69,26 @@ class BulkRegistrationController extends BaseController
 
     private function doBulkRegistration(): void
     {
-        $v = new Valitron\Validator($_POST);
-        $v->rules([
-            'required' => ['owner', 'dom_type', 'zone_template', 'domains'],
-            'integer' => ['owner'],
-        ]);
+        $constraints = [
+            'owner' => [
+                new Assert\NotBlank(),
+                new Assert\Type('numeric')
+            ],
+            'dom_type' => [
+                new Assert\NotBlank()
+            ],
+            'zone_template' => [
+                new Assert\NotBlank()
+            ],
+            'domains' => [
+                new Assert\NotBlank()
+            ]
+        ];
 
-        if (!$v->validate()) {
-            $this->showFirstError($v->errors());
+        $this->setValidationConstraints($constraints);
+
+        if (!$this->doValidateRequest($_POST)) {
+            $this->showFirstValidationError($_POST);
         }
 
         $domains = DomainHelper::getDomains($_POST['domains']);

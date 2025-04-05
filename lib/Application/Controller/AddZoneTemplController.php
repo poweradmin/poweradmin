@@ -34,10 +34,18 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
-use Valitron;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class AddZoneTemplController extends BaseController
 {
+    protected ValidatorInterface $validator;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+        $this->validator = $this->validator;
+    }
     public function run(): void
     {
         $this->checkPermission('zone_master_add', _("You do not have the permission to add a zone template."));
@@ -60,14 +68,21 @@ class AddZoneTemplController extends BaseController
 
     private function addZoneTemplate(): void
     {
-        $v = new Valitron\Validator($_POST);
-        $v->rules([
-            'required' => ['templ_name'],
-            'lengthMax' => [
-                ['templ_name', 128],
-                ['templ_descr', 1024],
+        $constraints = [
+            'templ_name' => [
+                new Assert\NotBlank(),
+                new Assert\Length(['max' => 128])
             ],
-        ]);
+            'templ_descr' => [
+                new Assert\Length(['max' => 1024])
+            ]
+        ];
+
+        $this->setValidationConstraints($constraints);
+
+        if (!$this->doValidateRequest($_POST)) {
+            $this->showFirstValidationError($_POST);
+        }
 
         $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig());
         if ($zoneTemplate->add_zone_templ($_POST, $_SESSION['userid'])) {

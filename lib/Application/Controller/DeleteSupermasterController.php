@@ -33,10 +33,18 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\DnsRecord;
-use Valitron;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class DeleteSupermasterController extends BaseController
 {
+    protected ValidatorInterface $validator;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+        $this->validator = $this->validator;
+    }
 
     public function run(): void
     {
@@ -51,14 +59,21 @@ class DeleteSupermasterController extends BaseController
 
     private function deleteSuperMaster(): void
     {
-        $v = new Valitron\Validator($_GET);
-        $v->rules([
-            'required' => ['master_ip', 'ns_name'],
-            'ip' => ['master_ip'],
-        ]);
+        $constraints = [
+            'master_ip' => [
+                new Assert\NotBlank(),
+                new Assert\Ip()
+            ],
+            'ns_name' => [
+                new Assert\NotBlank(),
+                new Assert\Hostname()
+            ]
+        ];
 
-        if (!$v->validate()) {
-            $this->showFirstError($v->errors());
+        $this->setValidationConstraints($constraints);
+
+        if (!$this->doValidateRequest($_GET)) {
+            $this->showFirstValidationError($_GET);
             return;
         }
 

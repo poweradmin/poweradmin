@@ -3,7 +3,7 @@
         'name' => 'poweradmin/poweradmin',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => 'f7deef801e76db2611dae6bf9d1f855b53a40361',
+        'reference' => 'bb7e1772318c0b2f5e1ccc558f6ea5834da009f2',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -82,7 +82,7 @@
         'poweradmin/poweradmin' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => 'f7deef801e76db2611dae6bf9d1f855b53a40361',
+            'reference' => 'bb7e1772318c0b2f5e1ccc558f6ea5834da009f2',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -294,9 +294,9 @@
             'dev_requirement' => false,
         ),
         'symfony/validator' => array(
-            'pretty_version' => 'v6.4.19',
-            'version' => '6.4.19.0',
-            'reference' => 'f3e853dffe7c5db675686b8216d6d890dad8c885',
+            'pretty_version' => 'v6.4.20',
+            'version' => '6.4.20.0',
+            'reference' => '9314555aceb8d8ce8abda81e1e47e439258d9309',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/validator',
             'aliases' => array(),
@@ -334,15 +334,6 @@
             'replaced' => array(
                 0 => 'v5.3.3',
             ),
-        ),
-        'vlucas/valitron' => array(
-            'pretty_version' => 'v1.4.11',
-            'version' => '1.4.11.0',
-            'reference' => 'fadce39f5f235755bb9794b2573af2d5bfcba85f',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../vlucas/valitron',
-            'aliases' => array(),
-            'dev_requirement' => false,
         ),
     ),
 );
