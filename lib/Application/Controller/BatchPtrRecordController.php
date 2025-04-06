@@ -187,7 +187,6 @@ class BatchPtrRecordController extends BaseController
     private function showForm(array $formData = []): void
     {
         $hasZoneId = isset($_GET['id']) && !empty($_GET['id']);
-        $ttl = $this->config('dns', 'ttl', 86400);
         $file_version = time();
 
         if ($hasZoneId) {
@@ -212,10 +211,9 @@ class BatchPtrRecordController extends BaseController
             'network_prefix' => $formData['network_prefix'] ?? '',
             'host_prefix' => $formData['host_prefix'] ?? '',
             'domain' => $formData['domain'] ?? '',
-            'ttl' => $ttl,
+            'ttl' => $this->config('dns', 'ttl', 86400),
             'ipv6_count' => $formData['ipv6_count'] ?? 256,
             'comment' => $formData['comment'] ?? '',
-            'default_ttl' => $ttl,
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,
