@@ -86,7 +86,7 @@ class CheckRequirementsValidator extends AbstractStepValidator
 
         return ValidationErrorHelper::formatErrors($violations);
     }
-    
+
     /**
      * @inheritDoc
      */
