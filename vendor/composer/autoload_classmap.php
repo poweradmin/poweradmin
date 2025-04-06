@@ -353,6 +353,7 @@ return array(
     'PoweradminInstall\\TwigEnvironmentInitializer' => $baseDir . '/install/helpers/TwigEnvironmentInitializer.php',
     'PoweradminInstall\\Validators\\AbstractStepValidator' => $baseDir . '/install/helpers/Validators/AbstractStepValidator.php',
     'PoweradminInstall\\Validators\\BaseValidator' => $baseDir . '/install/helpers/Validators/BaseValidator.php',
+    'PoweradminInstall\\Validators\\CheckRequirementsValidator' => $baseDir . '/install/helpers/Validators/CheckRequirementsValidator.php',
     'PoweradminInstall\\Validators\\ChooseLanguageValidator' => $baseDir . '/install/helpers/Validators/ChooseLanguageValidator.php',
     'PoweradminInstall\\Validators\\ConfiguringDatabaseValidator' => $baseDir . '/install/helpers/Validators/ConfiguringDatabaseValidator.php',
     'PoweradminInstall\\Validators\\CreateConfigurationFileValidator' => $baseDir . '/install/helpers/Validators/CreateConfigurationFileValidator.php',

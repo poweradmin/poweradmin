@@ -125,9 +125,6 @@ class BatchPtrRecordController extends BaseController
             'network_prefix' => [
                 new Assert\NotBlank()
             ],
-            'host_prefix' => [
-                new Assert\NotBlank()
-            ],
             'domain' => [
                 new Assert\NotBlank()
             ]
@@ -215,7 +212,7 @@ class BatchPtrRecordController extends BaseController
         $this->render('batch_ptr_record.html', [
             'network_type' => $formData['network_type'] ?? 'ipv4',
             'network_prefix' => $formData['network_prefix'] ?? '',
-            'host_prefix' => $formData['host_prefix'] ?? 'host',
+            'host_prefix' => $formData['host_prefix'] ?? '',
             'domain' => $formData['domain'] ?? '',
             'ttl' => $ttl,
             'ipv6_count' => $formData['ipv6_count'] ?? 256,

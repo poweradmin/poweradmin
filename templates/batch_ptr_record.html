@@ -34,7 +34,7 @@
                     <div class="form-group mb-2">
                         <label for="network_type" class="form-label small">{{ 'IP Version'|trans }}</label>
                         <select id="network_type" name="network_type" class="form-select form-select-sm">
-                            <option value="ipv4" {% if network_type == 'ipv4' %}selected{% endif %}>{{ 'IPv4 (/24 network)'|trans }}</option>
+                            <option value="ipv4" {% if network_type == 'ipv4' %}selected{% endif %}>{{ 'IPv4 network'|trans }}</option>
                             <option value="ipv6" {% if network_type == 'ipv6' %}selected{% endif %}>{{ 'IPv6 (/64 network)'|trans }}</option>
                         </select>
                     </div>
@@ -45,16 +45,16 @@
                         <label for="network_prefix" class="form-label small">{{ 'Network Prefix'|trans }}</label>
                         <input type="text" id="network_prefix" name="network_prefix" value="{{ network_prefix }}" class="form-control form-control-sm" required>
                         <div class="invalid-feedback small">{% trans %}Please provide a network prefix{% endtrans %}</div>
-                        <small class="form-text text-muted small ipv4-help">{{ 'e.g., "192.168.1"'|trans }}</small>
+                        <small class="form-text text-muted small ipv4-help">{{ 'e.g., "192.168.1.0/24" or "10.0.0.0/20"'|trans }}</small>
                         <small class="form-text text-muted small ipv6-help">{{ 'e.g., "2001:db8:1:1"'|trans }}</small>
                     </div>
                 </div>
 
                 <div class="col-md-2">
                     <div class="form-group mb-2">
-                        <label for="host_prefix" class="form-label small">{{ 'Host Prefix'|trans }}</label>
-                        <input type="text" id="host_prefix" name="host_prefix" value="{{ host_prefix }}" class="form-control form-control-sm" required>
-                        <div class="invalid-feedback small">{% trans %}Required{% endtrans %}</div>
+                        <label for="host_prefix" class="form-label small">{{ 'Host Prefix'|trans }} <span class="text-muted small">({{ 'Optional'|trans }})</span></label>
+                        <input type="text" id="host_prefix" name="host_prefix" value="{{ host_prefix }}" class="form-control form-control-sm">
+                        <small class="form-text text-muted small">{{ 'Leave empty to use just the domain for PTR records'|trans }}</small>
                     </div>
                 </div>
 
@@ -92,11 +92,11 @@
             <div class="row mt-3">
                 <div class="col-md-12">
                     <div class="alert alert-warning py-2 small">
-                        <strong>{{ 'Warning'|trans }}:</strong> {{ 'This will create multiple PTR records at once. For IPv4, a full /24 network (256 records) will be created.'|trans }}
+                        <strong>{{ 'Warning'|trans }}:</strong> {{ 'This will create multiple PTR records at once. For IPv4, supported networks are /24 (256 records), /23 (512 records), /22 (1024 records), /21 (2048 records), and /20 (4096 records).'|trans }}
                     </div>
                     
                     <div class="alert alert-info py-2 small">
-                        <strong>{{ 'Note'|trans }}:</strong> {{ 'You must have the appropriate reverse zone already created in PowerDNS before using this feature. For example, for the network 192.168.1.0/24, you need a reverse zone for 1.168.192.in-addr.arpa.'|trans }}
+                        <strong>{{ 'Note'|trans }}:</strong> {{ 'You must have the appropriate reverse zone already created in PowerDNS before using this feature. For example, for the network 192.168.1.0/24, you need a reverse zone for 1.168.192.in-addr.arpa. For larger networks, you will need the corresponding reverse zones (e.g., 168.192.in-addr.arpa for a /16 network).'|trans }}
                     </div>
                 </div>
             </div>

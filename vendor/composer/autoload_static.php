@@ -542,6 +542,7 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
         'PoweradminInstall\\TwigEnvironmentInitializer' => __DIR__ . '/../..' . '/install/helpers/TwigEnvironmentInitializer.php',
         'PoweradminInstall\\Validators\\AbstractStepValidator' => __DIR__ . '/../..' . '/install/helpers/Validators/AbstractStepValidator.php',
         'PoweradminInstall\\Validators\\BaseValidator' => __DIR__ . '/../..' . '/install/helpers/Validators/BaseValidator.php',
+        'PoweradminInstall\\Validators\\CheckRequirementsValidator' => __DIR__ . '/../..' . '/install/helpers/Validators/CheckRequirementsValidator.php',
         'PoweradminInstall\\Validators\\ChooseLanguageValidator' => __DIR__ . '/../..' . '/install/helpers/Validators/ChooseLanguageValidator.php',
         'PoweradminInstall\\Validators\\ConfiguringDatabaseValidator' => __DIR__ . '/../..' . '/install/helpers/Validators/ConfiguringDatabaseValidator.php',
         'PoweradminInstall\\Validators\\CreateConfigurationFileValidator' => __DIR__ . '/../..' . '/install/helpers/Validators/CreateConfigurationFileValidator.php',

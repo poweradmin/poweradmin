@@ -53,9 +53,9 @@ class BatchReverseRecordCreator
     }
 
     /**
-     * Create PTR records for an IPv4 /24 network
+     * Create PTR records for an IPv4 network
      *
-     * @param string $networkPrefix The first 3 octets of the IPv4 address (e.g., "192.168.1")
+     * @param string $networkPrefix The IPv4 network with CIDR (e.g., "192.168.1.0/24" or "10.0.0.0/20")
      * @param string $hostPrefix The hostname prefix to use for records (e.g., "host")
      * @param string $domain The domain suffix for PTR records (e.g., "example.com")
      * @param string $zone_id The ID of the reverse zone
@@ -82,32 +82,66 @@ class BatchReverseRecordCreator
             return $this->createErrorResponse('Reverse record creation is not allowed.');
         }
 
-        // Count the octets in the prefix
-        $octetCount = substr_count($networkPrefix, '.') + 1;
+        // Check if CIDR notation is used
+        $cidr = 24; // Default to /24
+        $network = $networkPrefix;
 
-        if ($octetCount !== 3) {
-            return $this->createErrorResponse('Network prefix must consist of 3 octets (e.g., "192.168.1").');
-        }
+        if (strpos($networkPrefix, '/') !== false) {
+            list($network, $cidrPart) = explode('/', $networkPrefix);
+            $cidr = (int)$cidrPart;
 
-        // Validate network prefix format
-        $octets = explode('.', $networkPrefix);
-
-        foreach ($octets as $octet) {
-            if (!is_numeric($octet) || $octet < 0 || $octet > 255) {
-                return $this->createErrorResponse('Invalid network prefix. Each octet must be between 0 and 255.');
+            // Only support /24, /23, /22, /21, and /20
+            if (!in_array($cidr, [24, 23, 22, 21, 20])) {
+                return $this->createErrorResponse('Only /24, /23, /22, /21, and /20 networks are supported.');
             }
         }
+
+        // Parse the IP address part
+        $ip = $network;
+
+        // Add .0 to the end if it's a 3-octet format
+        if (substr_count($ip, '.') === 2) {
+            $ip .= '.0';
+        }
+
+        // Validate IP format
+        if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+            return $this->createErrorResponse('Invalid IPv4 address format. Expected format: 192.168.1.0/24 or 10.0.0.0/20.');
+        }
+
+        // Calculate network details based on CIDR
+        $ipLong = ip2long($ip);
+        $netmask = ~(pow(2, (32 - $cidr)) - 1);
+        $networkAddress = $ipLong & $netmask;
+
+        // Get octets for the network address
+        $octets = [
+            ($networkAddress >> 24) & 255,
+            ($networkAddress >> 16) & 255,
+            ($networkAddress >> 8) & 255,
+            $networkAddress & 255
+        ];
 
         $successCount = 0;
         $skipCount = 0;
         $failCount = 0;
         $errors = [];
 
-        // Create 256 PTR records (0-255)
+        // Calculate number of hosts based on CIDR
+        $hostCount = pow(2, (32 - $cidr));
+
+        // Limit the number of records to prevent excessive processing
+        // /24 = 256, /23 = 512, /22 = 1024, /21 = 2048, /20 = 4096
+        $maxRecords = 4096;
+        if ($hostCount > $maxRecords) {
+            return $this->createErrorResponse("Network size too large. Maximum supported is $maxRecords records (/20 network).");
+        }
+
         try {
             // First check if we can create at least one record to validate zone existence
-            $testIp = $networkPrefix . '.0';
-            $testReverseDomain = DnsRecord::convert_ipv4addr_to_ptrrec($testIp);
+            // Use the first IP in the network range
+            $testIpOctets = $octets;
+            $testReverseDomain = $this->buildReverseIPv4Domain($testIpOctets, $cidr);
             $testFqdn = $hostPrefix . '-0.' . $domain;
 
             // Get the reverse zone ID
@@ -117,16 +151,41 @@ class BatchReverseRecordCreator
             }
 
             // If we get here, the reverse zone exists, so proceed with creating all records
-            for ($i = 0; $i < 256; $i++) {
-                $ip = $networkPrefix . '.' . $i;
-                $name = $hostPrefix . '-' . $i;
-                $fqdn = $name . '.' . $domain;
+            for ($i = 0; $i < $hostCount; $i++) {
+                // Calculate the IP for this host in the network
+                $hostIp = $networkAddress + $i;
+                $ipOctets = [
+                    ($hostIp >> 24) & 255,
+                    ($hostIp >> 16) & 255,
+                    ($hostIp >> 8) & 255,
+                    $hostIp & 255
+                ];
+
+                $ip = implode('.', $ipOctets);
+
+                // Generate hostname based on whether host prefix is provided
+                if (!empty($hostPrefix)) {
+                    $name = $hostPrefix . '-' . $i;
+                    $fqdn = $name . '.' . $domain;
+                } else {
+                    // If no host prefix, use just the IP address as the hostname
+                    $fqdn = $domain;
+                }
 
                 // Convert IP to reverse notation
                 $reverseDomain = DnsRecord::convert_ipv4addr_to_ptrrec($ip);
 
+                // For larger networks, we need to make sure we're using the right reverse zone ID
+                // because subnet boundaries can cross zone boundaries
+                $zone_rev_id = $this->dnsRecord->get_best_matching_zone_id_from_name($reverseDomain);
+                if ($zone_rev_id === -1) {
+                    $failCount++;
+                    $errors[] = "No matching reverse zone found for $reverseDomain";
+                    continue;
+                }
+
                 // Check if record already exists before trying to add it
-                $record_exists = $this->dnsRecord->record_exists($test_zone_rev_id, $reverseDomain, 'PTR', $fqdn);
+                $record_exists = $this->dnsRecord->record_exists($zone_rev_id, $reverseDomain, 'PTR', $fqdn);
 
                 if ($record_exists) {
                     $skipCount++;
@@ -281,8 +340,15 @@ class BatchReverseRecordCreator
                 // Generate a hex value for the last part
                 $hex = dechex($i);
                 $ip = $networkPrefix . '::' . $hex;
-                $name = $hostPrefix . '-' . $hex;
-                $fqdn = $name . '.' . $domain;
+
+                // Generate hostname based on whether host prefix is provided
+                if (!empty($hostPrefix)) {
+                    $name = $hostPrefix . '-' . $hex;
+                    $fqdn = $name . '.' . $domain;
+                } else {
+                    // If no host prefix, use just the domain
+                    $fqdn = $domain;
+                }
 
                 // Convert IP to reverse notation using the method that succeeded in finding the zone
                 switch ($useMethod) {
@@ -503,6 +569,33 @@ class BatchReverseRecordCreator
      * @param string $networkPrefix The IPv6 network prefix
      * @return string The reverse zone portion
      */
+
+    /**
+     * Build the reverse domain for an IPv4 address with appropriate CIDR handling
+     *
+     * @param array $octets The IP address octets
+     * @param int $cidr The CIDR mask length
+     * @return string The reverse domain name
+     */
+    private function buildReverseIPv4Domain(array $octets, int $cidr): string
+    {
+        // For different CIDR ranges, we need different reverse zones
+        // /24 = third octet
+        // /23-/17 = second octet
+        // /16-/9 = first octet
+        // /8-/1 = in-addr.arpa directly
+
+        if ($cidr >= 24) { // /24 or more specific
+            return $octets[3] . '.' . $octets[2] . '.' . $octets[1] . '.' . $octets[0] . '.in-addr.arpa';
+        } elseif ($cidr >= 16) { // /23 through /16
+            return $octets[2] . '.' . $octets[1] . '.' . $octets[0] . '.in-addr.arpa';
+        } elseif ($cidr >= 8) { // /15 through /8
+            return $octets[1] . '.' . $octets[0] . '.in-addr.arpa';
+        } else { // /7 through /0
+            return $octets[0] . '.in-addr.arpa';
+        }
+    }
+
     private function getIPv6ReverseZone(string $networkPrefix): string
     {
         // Add zeros to form a complete IPv6 address
