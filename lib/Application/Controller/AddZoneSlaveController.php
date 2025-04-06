@@ -37,20 +37,17 @@ use Poweradmin\Domain\Service\Dns;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class AddZoneSlaveController extends BaseController
 {
 
     private LegacyLogger $logger;
-    protected ValidatorInterface $validator;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
         $this->logger = new LegacyLogger($this->db);
-        $this->validator = $this->validator;
     }
 
     public function run(): void

@@ -43,7 +43,6 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ChangePasswordController extends BaseController
 {
@@ -51,7 +50,6 @@ class ChangePasswordController extends BaseController
     private PasswordPolicyService $policyService;
     private Request $request;
     private PasswordChangeService $passwordService;
-    protected ValidatorInterface $validator;
     public function __construct(array $request)
     {
         parent::__construct($request);
@@ -68,7 +66,6 @@ class ChangePasswordController extends BaseController
         $userRepository = new DbUserRepository($this->db);
         $userContextService = new UserContextService();
         $this->passwordService = new PasswordChangeService($userRepository, $userAuthService, $userContextService);
-        $this->validator = $this->validator;
     }
 
     public function run(): void

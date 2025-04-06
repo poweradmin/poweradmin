@@ -40,14 +40,12 @@ use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class DeleteDomainController extends BaseController
 {
 
     private LegacyLogger $logger;
     private RecordCommentService $recordCommentService;
-    protected ValidatorInterface $validator;
 
     public function __construct(array $request)
     {
@@ -56,7 +54,6 @@ class DeleteDomainController extends BaseController
         $this->logger = new LegacyLogger($this->db);
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
-        $this->validator = $this->validator;
     }
 
     public function run(): void

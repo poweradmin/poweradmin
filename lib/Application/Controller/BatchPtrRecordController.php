@@ -32,7 +32,6 @@ use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class BatchPtrRecordController extends BaseController
 {
@@ -40,7 +39,6 @@ class BatchPtrRecordController extends BaseController
     private DnsRecord $dnsRecord;
     private BatchReverseRecordCreator $batchReverseRecordCreator;
     private $csrfTokenService;
-    protected ValidatorInterface $validator;
 
     public function __construct(array $request)
     {

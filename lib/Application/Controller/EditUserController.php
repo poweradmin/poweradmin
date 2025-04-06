@@ -38,7 +38,6 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\UserContextService;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class EditUserController extends BaseController
 {
@@ -46,8 +45,6 @@ class EditUserController extends BaseController
     private PasswordPolicyService $policyService;
 
     private readonly UserContextService $userContextService;
-    protected ValidatorInterface $validator;
-
     public function __construct(
         array $request
     ) {
@@ -56,7 +53,6 @@ class EditUserController extends BaseController
         $this->request = new Request();
         $this->policyService = new PasswordPolicyService();
         $this->userContextService = new UserContextService();
-        $this->validator = $this->validator;
     }
 
     public function run(): void

@@ -39,16 +39,12 @@ use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class EditZoneTemplController extends BaseController
 {
-    protected ValidatorInterface $validator;
-
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->validator = $this->validator;
     }
 
     public function run(): void

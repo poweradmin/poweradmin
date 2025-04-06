@@ -39,7 +39,6 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class AddUserController extends BaseController
 {
@@ -48,7 +47,6 @@ class AddUserController extends BaseController
     private MailService $mailService;
     private Request $request;
 
-    protected ValidatorInterface $validator;
 
     public function __construct(array $request)
     {
@@ -62,8 +60,6 @@ class AddUserController extends BaseController
         // Initialize mail service
         $this->mailService = new MailService($configManager);
 
-        // Use validator from parent class
-        $this->validator = $this->validator;
     }
 
     public function run(): void

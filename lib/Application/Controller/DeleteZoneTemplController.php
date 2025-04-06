@@ -35,16 +35,12 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class DeleteZoneTemplController extends BaseController
 {
-    protected ValidatorInterface $validator;
-
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->validator = $this->validator;
     }
     public function run(): void
     {
