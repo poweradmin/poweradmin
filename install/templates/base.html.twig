@@ -28,6 +28,17 @@
                 <h5 class="text-secondary">{% trans %}Installation step{% endtrans %} {{ current_step }}</h5>
             </div>
         </div>
+        <div class="container mb-3 mt-2">
+            <div class="progress" style="height: 25px;">
+                <div class="progress-bar bg-primary" role="progressbar" 
+                     style="width: {{ (current_step / 7 * 100)|round }}%;" 
+                     aria-valuenow="{{ (current_step / 7 * 100)|round }}" 
+                     aria-valuemin="0" 
+                     aria-valuemax="100">
+                    {{ current_step }}/7: {% block step_description %}{% endblock %}
+                </div>
+            </div>
+        </div>
     </header>
     <main class="container pb-3 flex-shrink-0">
         {% block content %}{% endblock %}

@@ -1,9 +1,11 @@
 {% extends 'base.html.twig' %}
 
+{% block step_description %}{% trans %}Create limited rights user{% endtrans %}{% endblock %}
+
 {% block content %}
     <div class="card">
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">{% trans %}Step{% endtrans %} {{ current_step }}: {% trans %}Create limited-rights user{% endtrans %}</h5>
+        <div class="card-header bg-secondary text-white">
+            {% trans %}Step{% endtrans %} {{ current_step }}: {% trans %}Create limited-rights user{% endtrans %}
         </div>
         <div class="card-body">
             {% if db_type != 'sqlite' %}
@@ -52,7 +54,7 @@
                 <input type="hidden" name="step" value="{{ current_step }}">
                 <input type="hidden" name="language" value="{{ language }}">
                 <input type="hidden" name="step" value="{{ next_step }}">
-                <input type="submit" name="submit" class="btn btn-primary" value="{% trans %}Go to step{% endtrans %} {{ next_step }}">
+                <input type="submit" name="submit" class="btn btn-sm btn-primary" value="{% trans %}Go to step{% endtrans %} {{ next_step }}">
             </form>
         </div>
     </div>

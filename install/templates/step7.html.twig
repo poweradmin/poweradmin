@@ -1,9 +1,11 @@
 {% extends 'base.html.twig' %}
 
+{% block step_description %}{% trans %}Installation complete{% endtrans %}{% endblock %}
+
 {% block content %}
     <div class="card">
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">{% trans %}Step{% endtrans %} {{ current_step }}: {% trans %}Installation complete{% endtrans %}</h5>
+        <div class="card-header bg-secondary text-white">
+            {% trans %}Step{% endtrans %} {{ current_step }}: {% trans %}Installation complete{% endtrans %}
         </div>
         <div class="card-body">
             <div class="alert alert-success">
