@@ -15,8 +15,8 @@ class ChooseLanguageValidator extends BaseValidator
                 'step' => [
                     new Assert\NotBlank(),
                     new Assert\EqualTo([
-                        'value' => InstallationSteps::STEP_GETTING_READY,
-                        'message' => 'The step must be equal to ' . InstallationSteps::STEP_GETTING_READY
+                        'value' => InstallationSteps::STEP_CHECK_REQUIREMENTS,
+                        'message' => 'The step must be equal to ' . InstallationSteps::STEP_CHECK_REQUIREMENTS
                     ])
                 ],
             ]

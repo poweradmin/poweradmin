@@ -1,34 +1,58 @@
 {% extends 'base.html.twig' %}
 
-{% block step_description %}{% trans %}Installation complete{% endtrans %}{% endblock %}
+{% block step_description %}{% trans %}Create limited rights user{% endtrans %}{% endblock %}
 
 {% block content %}
     <div class="card">
         <div class="card-header bg-secondary text-white">
-            {% trans %}Step{% endtrans %} {{ current_step }}: {% trans %}Installation complete{% endtrans %}
+            {% trans %}Step{% endtrans %} {{ current_step }}: {% trans %}Create limited-rights user{% endtrans %}
         </div>
         <div class="card-body">
-            <div class="alert alert-success py-2 mb-3">
-                <strong>{% trans %}Installation Complete!{% endtrans %}</strong> {% trans %}Congratulations! Your Poweradmin installation is now configured.{% endtrans %}
-            </div>
-
-            <div class="alert alert-warning py-2 mb-3">
-                <strong>{% trans %}Important Security Notice:{% endtrans %}</strong> {% trans %}You must remove the "install/" directory from the Poweradmin root directory.{% endtrans %}
-                <p class="mb-0 mt-1 small">{% trans %}Poweradmin will not function if the install directory exists, as a security measure.{% endtrans %}</p>
-            </div>
-
-            <div class="card mt-3">
-                <div class="card-header">
-                    <strong>{% trans %}Next Steps{% endtrans %}</strong>
+            {% if db_type != 'sqlite' %}
+                <div class="alert alert-info py-2">
+                    <strong>{% trans %}Limited Database Rights:{% endtrans %}</strong> {% trans %}You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert, and update records in the PowerDNS database.{% endtrans %}
                 </div>
-                <div class="card-body py-2">
-                    <ol class="small mb-0">
-                        <li>{% trans %}Remove the "install/" directory from your server{% endtrans %}</li>
-                        <li>{% trans %}Login to <a href="../index.php">Poweradmin</a> using the default username "admin" and the password you set in step 3{% endtrans %}</li>
-                        <li>{% trans %}Begin configuring your DNS zones and records{% endtrans %}</li>
-                    </ol>
+
+                <div class="card mb-3 bg-light">
+                    <div class="card-header">
+                        <strong>{% trans %}Database Commands{% endtrans %}</strong>
+                    </div>
+                    <div class="card-body">
+                        <p class="small mb-2">{% trans %}Execute the following commands based on your database:{% endtrans %}</p>
+                        <pre class="bg-dark text-light p-2 rounded small">{{ instructions }}</pre>
+                    </div>
                 </div>
-            </div>
+
+                <p class="small mb-3">{% trans %}After you have added the new user, proceed with this installation procedure.{% endtrans %}</p>
+            {% else %}
+                <div class="alert alert-success py-2">
+                    <strong>{% trans %}Note:{% endtrans %}</strong> {% trans %}Since you are using SQLite, there is no need to create a new user with limited rights.{% endtrans %}
+                </div>
+            {% endif %}
+
+            <form method="post">
+                <input type="hidden" name="install_token" value="{{ install_token }}">
+                <input type="hidden" name="db_host" value="{{ db_host }}">
+                <input type="hidden" name="db_name" value="{{ db_name }}">
+                <input type="hidden" name="db_port" value="{{ db_port }}">
+                <input type="hidden" name="db_type" value="{{ db_type }}">
+                <input type="hidden" name="db_user" value="{{ db_user }}">
+                <input type="hidden" name="db_pass" value="{{ db_pass }}">
+                <input type="hidden" name="db_charset" value="{{ db_charset }}">
+                <input type="hidden" name="db_collation" value="{{ db_collation }}">
+                <input type="hidden" name="pa_db_user" value="{{ pa_db_user }}">
+                <input type="hidden" name="pa_db_pass" value="{{ pa_db_pass }}">
+                <input type="hidden" name="pa_pass" value="{{ pa_pass }}">
+                <input type="hidden" name="dns_hostmaster" value="{{ dns_hostmaster }}">
+                <input type="hidden" name="dns_ns1" value="{{ dns_ns1 }}">
+                <input type="hidden" name="dns_ns2" value="{{ dns_ns2 }}">
+                <input type="hidden" name="dns_ns3" value="{{ dns_ns3 }}">
+                <input type="hidden" name="dns_ns4" value="{{ dns_ns4 }}">
+                <input type="hidden" name="step" value="{{ current_step }}">
+                <input type="hidden" name="language" value="{{ language }}">
+                <input type="hidden" name="step" value="{{ next_step }}">
+                <input type="submit" name="submit" class="btn btn-sm btn-primary" value="{% trans %}Continue to step{% endtrans %} {{ next_step }}">
+            </form>
         </div>
     </div>
 {% endblock %}

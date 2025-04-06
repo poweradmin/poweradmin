@@ -69,16 +69,63 @@ class InstallStepHandler
         ));
     }
 
-    public function step2GettingReady(array $errors): void
+    public function step2CheckRequirements(array $errors): void
     {
+        // PHP version check
+        $phpVersion = PHP_VERSION;
+        $phpVersionOk = version_compare($phpVersion, '8.1.0', '>=');
+
+        // Required PHP extensions
+        $requiredExtensions = [
+            'intl' => extension_loaded('intl'),
+            'gettext' => extension_loaded('gettext'),
+            'openssl' => extension_loaded('openssl'),
+            'filter' => extension_loaded('filter'),
+            'tokenizer' => extension_loaded('tokenizer'),
+            'pdo' => extension_loaded('pdo'),
+        ];
+
+        // Database extensions
+        $databaseExtensions = [
+            'pdo-mysql' => extension_loaded('pdo_mysql'),
+            'pdo-pgsql' => extension_loaded('pdo_pgsql'),
+            'pdo-sqlite' => extension_loaded('pdo_sqlite'),
+        ];
+        $dbExtensionOk = in_array(true, $databaseExtensions, true);
+
+        // Optional extensions
+        $optionalExtensions = [
+            'ldap' => extension_loaded('ldap'),
+        ];
+
+        // Check if all required components are available
+        $requiredExtensionsOk = !in_array(false, $requiredExtensions, true);
+        $requirementsOk = $phpVersionOk && $requiredExtensionsOk && $dbExtensionOk;
+
         $this->renderTemplate('step2.html.twig', [
+            'current_step' => $this->currentStep,
+            'language' => $this->language,
+            'errors' => $errors,
+            'php_version' => $phpVersion,
+            'php_version_ok' => $phpVersionOk,
+            'required_extensions' => $requiredExtensions,
+            'database_extensions' => $databaseExtensions,
+            'db_extension_ok' => $dbExtensionOk,
+            'optional_extensions' => $optionalExtensions,
+            'requirements_ok' => $requirementsOk,
+        ]);
+    }
+
+    public function step3GettingReady(array $errors): void
+    {
+        $this->renderTemplate('step3.html.twig', [
             'current_step' => $this->currentStep,
             'language' => $this->language,
             'errors' => $errors,
         ]);
     }
 
-    public function step3ConfiguringDatabase(array $errors): void
+    public function step4ConfiguringDatabase(array $errors): void
     {
         $charsets = require __DIR__ . '/../charsets.php';
         $collations = require __DIR__ . '/../collations.php';
@@ -95,7 +142,7 @@ class InstallStepHandler
             'pa_pass' => $this->request->get('pa_pass'),
         ];
 
-        $this->renderTemplate('step3.html.twig', array_merge([
+        $this->renderTemplate('step4.html.twig', array_merge([
             'current_step' => $this->currentStep,
             'language' => $this->language,
             'errors' => $errors,
@@ -104,7 +151,7 @@ class InstallStepHandler
         ], $inputData));
     }
 
-    public function step4SetupAccountAndNameServers(array $errors, string $default_config_file): void
+    public function step5SetupAccountAndNameServers(array $errors, string $default_config_file): void
     {
         $credentials = $this->getCredentials();
 
@@ -157,7 +204,7 @@ class InstallStepHandler
             'dns_ns4' => $this->request->get('dns_ns4'),
         ];
 
-        $this->renderTemplate('step4.html.twig', array_merge([
+        $this->renderTemplate('step5.html.twig', array_merge([
             'current_step' => $this->currentStep,
             'language' => $this->request->get('language'),
             'pa_pass' => $pa_pass,
@@ -165,7 +212,7 @@ class InstallStepHandler
         ], $credentials, $inputData));
     }
 
-    public function step5CreateLimitedRightsUser(array $errors): void
+    public function step6CreateLimitedRightsUser(array $errors): void
     {
         $credentials = $this->getCredentials();
 
@@ -189,7 +236,7 @@ class InstallStepHandler
         $databaseHelper = new DatabaseHelper($db, $credentials);
         $instructions = $databaseHelper->generateDatabaseUserInstructions();
 
-        $this->renderTemplate('step5.html.twig', array(
+        $this->renderTemplate('step6.html.twig', array(
             'current_step' => $this->currentStep,
             'language' => $this->language,
             'db_host' => $credentials['db_host'],
@@ -213,7 +260,7 @@ class InstallStepHandler
         ));
     }
 
-    public function step6CreateConfigurationFile(array $errors, string $default_config_file, string $local_config_file, string $new_config_file): void
+    public function step7CreateConfigurationFile(array $errors, string $default_config_file, string $local_config_file, string $new_config_file): void
     {
         // No need to set database port if it's standard port for that db
         $db_port = ($this->request->get('db_type') == 'mysql' && $this->request->get('db_port') != 3306)
@@ -272,7 +319,7 @@ class InstallStepHandler
         ));
     }
 
-    public function step7InstallationComplete(): void
+    public function step8InstallationComplete(): void
     {
         $this->renderTemplate('step7.html.twig', array(
             'current_step' => InstallationSteps::STEP_INSTALLATION_COMPLETE,

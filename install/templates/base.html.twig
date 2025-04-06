@@ -31,11 +31,11 @@
         <div class="container mb-3 mt-2">
             <div class="progress" style="height: 25px;">
                 <div class="progress-bar bg-primary" role="progressbar" 
-                     style="width: {{ (current_step / 7 * 100)|round }}%;" 
-                     aria-valuenow="{{ (current_step / 7 * 100)|round }}" 
+                     style="width: {{ (current_step / 8 * 100)|round }}%;" 
+                     aria-valuenow="{{ (current_step / 8 * 100)|round }}" 
                      aria-valuemin="0" 
                      aria-valuemax="100">
-                    {{ current_step }}/7: {% block step_description %}{% endblock %}
+                    {{ current_step }}/8: {% block step_description %}{% endblock %}
                 </div>
             </div>
         </div>

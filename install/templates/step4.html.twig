@@ -1,137 +1,147 @@
 {% extends 'base.html.twig' %}
 
-{% block step_description %}{% trans %}Setup account and nameservers{% endtrans %}{% endblock %}
+{% block step_description %}{% trans %}System Requirements{% endtrans %}{% endblock %}
 
 {% block content %}
     <div class="card">
         <div class="card-header bg-secondary text-white">
-            {% trans %}Step{% endtrans %} {{ current_step }}: {% trans %}Setup account and name servers{% endtrans %}
+            {% trans %}Step{% endtrans %} {{ current_step }}: {% trans %}System Requirements Check{% endtrans %}
         </div>
         <div class="card-body">
             <div class="alert alert-info py-2 mb-3">
-                <strong>{% trans %}Configuration:{% endtrans %}</strong> {% trans %}Now we will gather all details for the configuration itself.{% endtrans %}
+                <strong>{% trans %}Requirements Check:{% endtrans %}</strong> {% trans %}Verifying that your server meets all requirements to run Poweradmin.{% endtrans %}
             </div>
 
-            <form class="needs-validation" method="post" novalidate>
-                <input type="hidden" name="install_token" value="{{ install_token }}">
-
-                {% if db_type != 'sqlite' %}
-                <div class="card mb-3">
-                    <div class="card-header">
-                        <strong>{% trans %}Database User{% endtrans %}</strong>
-                    </div>
-                    <div class="card-body">
-                        <div class="row mb-3">
-                            <label for="pa_db_user" class="col-md-2 col-form-label col-form-label-sm">{% trans %}Username{% endtrans %}</label>
-                            <div class="col-md-4">
-                                <input id="pa_db_user" class="form-control form-control-sm" type="text" name="pa_db_user" value="{{ pa_db_user }}" required>
-                                <div class="invalid-feedback">{% trans %}Provide the user name{% endtrans %}</div>
-                            </div>
-                            <div class="col-md-6">
-                                <span class="form-text small">{% trans %}Poweradmin database username with restricted access. Not for web UI login.{% endtrans %}</span>
-                            </div>
+            <!-- PHP Version Check -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <strong>{% trans %}PHP Version{% endtrans %}</strong>
+                </div>
+                <div class="card-body py-2">
+                    <p class="small mb-2">{% trans %}Poweradmin requires PHP 8.1.0 or higher.{% endtrans %}</p>
+                    
+                    {% if php_version_ok %}
+                        <div class="alert alert-success py-2 mb-0">
+                            <i class="bi bi-check-circle"></i> {% trans %}Success:{% endtrans %} 
+                            {% trans %}PHP Version{% endtrans %} {{ php_version }} {% trans %}detected.{% endtrans %}
                         </div>
+                    {% else %}
+                        <div class="alert alert-danger py-2 mb-0">
+                            <i class="bi bi-x-circle"></i> {% trans %}Error:{% endtrans %} 
+                            {% trans %}You are running PHP{% endtrans %} {{ php_version }}. 
+                            {% trans %}Poweradmin requires PHP 8.1.0 or higher.{% endtrans %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
 
-                        <div class="row mb-3">
-                            <label for="pa_db_pass" class="col-md-2 col-form-label col-form-label-sm">{% trans %}Password{% endtrans %}</label>
-                            <div class="col-md-4">
-                                <div class="input-group input-group-sm">
-                                    <input id="pa_db_pass" class="form-control form-control-sm" type="password" name="pa_db_pass" value="{{ pa_db_pass }}" autocomplete="off" required>
-                                    <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showPassword('pa_db_pass', 'eye1')"><i class="bi bi-eye-fill" id="eye1"></i></button>
-                                    <div class="invalid-feedback">{% trans %}Provide the user password{% endtrans %}</div>
+            <!-- Required PHP Extensions -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <strong>{% trans %}Required PHP Extensions{% endtrans %}</strong>
+                </div>
+                <div class="card-body py-2">
+                    <p class="small mb-2">{% trans %}The following PHP extensions are required for Poweradmin to function properly.{% endtrans %}</p>
+                    
+                    <div class="row g-2">
+                        {% for extension, status in required_extensions %}
+                            <div class="col-md-6">
+                                <div class="alert {% if status %}alert-success{% else %}alert-danger{% endif %} py-2 mb-2">
+                                    <i class="bi {% if status %}bi-check-circle{% else %}bi-x-circle{% endif %}"></i>
+                                    <strong>{{ extension }}</strong>: 
+                                    {% if status %}
+                                        {% trans %}Installed{% endtrans %}
+                                    {% else %}
+                                        {% trans %}Missing{% endtrans %}
+                                    {% endif %}
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <span class="form-text small">{% trans %}The password for this username.{% endtrans %}</span>
-                            </div>
-                        </div>
+                        {% endfor %}
                     </div>
                 </div>
+            </div>
+
+            <!-- Database Extensions -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <strong>{% trans %}Database Extensions{% endtrans %}</strong>
+                </div>
+                <div class="card-body py-2">
+                    <p class="small mb-2">{% trans %}At least one of the following database extensions must be installed.{% endtrans %}</p>
+                    
+                    <div class="row g-2">
+                        {% for extension, status in database_extensions %}
+                            <div class="col-md-4">
+                                <div class="alert {% if status %}alert-success{% else %}alert-warning{% endif %} py-2 mb-2">
+                                    <i class="bi {% if status %}bi-check-circle{% else %}bi-dash-circle{% endif %}"></i>
+                                    <strong>{{ extension }}</strong>: 
+                                    {% if status %}
+                                        {% trans %}Installed{% endtrans %}
+                                    {% else %}
+                                        {% trans %}Not installed{% endtrans %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                    {% if not db_extension_ok %}
+                        <div class="alert alert-danger py-2 mt-2 mb-0">
+                            <i class="bi bi-x-circle"></i> {% trans %}Error:{% endtrans %} 
+                            {% trans %}At least one database PDO extension (MySQL, PostgreSQL, or SQLite) must be installed.{% endtrans %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Optional Extensions -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <strong>{% trans %}Optional Extensions{% endtrans %}</strong>
+                </div>
+                <div class="card-body py-2">
+                    <p class="small mb-2">{% trans %}The following extensions are not required but provide additional functionality.{% endtrans %}</p>
+                    
+                    <div class="row g-2">
+                        {% for extension, status in optional_extensions %}
+                            <div class="col-md-6">
+                                <div class="alert {% if status %}alert-success{% else %}alert-warning{% endif %} py-2 mb-2">
+                                    <i class="bi {% if status %}bi-check-circle{% else %}bi-dash-circle{% endif %}"></i>
+                                    <strong>{{ extension }}</strong>: 
+                                    {% if status %}
+                                        {% trans %}Installed{% endtrans %}
+                                    {% else %}
+                                        {% trans %}Not installed{% endtrans %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form for continuing or stopping -->
+            <form method="post">
+                <input type="hidden" name="install_token" value="{{ install_token }}">
+                <input type="hidden" name="language" value="{{ language }}">
+                <input type="hidden" name="step" value="{{ next_step }}">
+                
+                {% if requirements_ok %}
+                    <div class="alert alert-success py-2 mb-3">
+                        <strong>{% trans %}All required components are available.{% endtrans %}</strong> 
+                        {% trans %}You can continue with the installation.{% endtrans %}
+                    </div>
+                    <input type="submit" name="submit" class="btn btn-sm btn-primary" 
+                           value="{% trans %}Continue to step{% endtrans %} {{ next_step }}">
+                {% else %}
+                    <div class="alert alert-danger py-2 mb-3">
+                        <strong>{% trans %}Some required components are missing.{% endtrans %}</strong> 
+                        {% trans %}Please install the missing components before continuing.{% endtrans %}
+                    </div>
+                    <input type="button" class="btn btn-sm btn-secondary" 
+                           onclick="window.location.reload();" 
+                           value="{% trans %}Check Again{% endtrans %}">
                 {% endif %}
-
-                <div class="card mb-3">
-                    <div class="card-header">
-                        <strong>{% trans %}DNS Settings{% endtrans %}</strong>
-                    </div>
-                    <div class="card-body">
-                        <div class="row mb-3">
-                            <label for="dns_hostmaster" class="col-md-2 col-form-label col-form-label-sm">{% trans %}Hostmaster{% endtrans %}</label>
-                            <div class="col-md-4">
-                                <input id="dns_hostmaster" class="form-control form-control-sm" type="text" name="dns_hostmaster" 
-                                       value="{{ dns_hostmaster }}" placeholder="hostmaster.example.net" required>
-                                <div class="invalid-feedback">{% trans %}Provide the DNS hostmaster{% endtrans %}</div>
-                            </div>
-                            <div class="col-md-6">
-                                <span class="form-text small">{% trans %}When creating SOA records and no hostmaster is provided, this value here will be used.{% endtrans %}</span>
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <label for="dns_ns1" class="col-md-2 col-form-label col-form-label-sm">{% trans %}Primary nameserver{% endtrans %}</label>
-                            <div class="col-md-4">
-                                <input id="dns_ns1" class="form-control form-control-sm" type="text" name="dns_ns1" value="{{ dns_ns1 }}"
-                                       placeholder="ns1.example.net" required>
-                                <div class="invalid-feedback">{% trans %}Provide the primary nameserver{% endtrans %}</div>
-                            </div>
-                            <div class="col-md-6">
-                                <span class="form-text small">{% trans %}When creating new zones using the template, this value will be used as primary nameserver.{% endtrans %}</span>
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <label for="dns_ns2" class="col-md-2 col-form-label col-form-label-sm">{% trans %}Secondary nameserver{% endtrans %}</label>
-                            <div class="col-md-4">
-                                <input id="dns_ns2" class="form-control form-control-sm" type="text" name="dns_ns2" value="{{ dns_ns2 }}"
-                                       placeholder="ns2.example.net" required>
-                                <div class="invalid-feedback">{% trans %}Provide the secondary nameserver{% endtrans %}</div>
-                            </div>
-                            <div class="col-md-6">
-                                <span class="form-text small">{% trans %}When creating new zones using the template, this value will be used as secondary nameserver.{% endtrans %}</span>
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <label for="dns_ns3" class="col-md-2 col-form-label col-form-label-sm">
-                                {% trans %}Tertiary Nameserver{% endtrans %} <span class="text-muted">({% trans %}optional{% endtrans %})</span>
-                            </label>
-                            <div class="col-md-4">
-                                <input id="dns_ns3" class="form-control form-control-sm" type="text" name="dns_ns3" value="{{ dns_ns3 }}"
-                                       placeholder="ns3.example.net">
-                            </div>
-                            <div class="col-md-6">
-                                <span class="form-text small">{% trans %}When creating new zones using the template, this optional value will be used as tertiary nameserver.{% endtrans %}</span>
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <label for="dns_ns4" class="col-md-2 col-form-label col-form-label-sm">
-                                {% trans %}Quaternary Nameserver{% endtrans %} <span class="text-muted">({% trans %}optional{% endtrans %})</span>
-                            </label>
-                            <div class="col-md-4">
-                                <input id="dns_ns4" class="form-control form-control-sm" type="text" name="dns_ns4" value="{{ dns_ns4 }}"
-                                       placeholder="ns4.example.net">
-                            </div>
-                            <div class="col-md-6">
-                                <span class="form-text small">{% trans %}When creating new zones using the template, this optional value will be used as quaternary nameserver.{% endtrans %}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mt-3">
-                    <input type="hidden" name="db_user" value="{{ db_user }}">
-                    <input type="hidden" name="db_pass" value="{{ db_pass }}">
-                    <input type="hidden" name="db_host" value="{{ db_host }}">
-                    <input type="hidden" name="db_port" value="{{ db_port }}">
-                    <input type="hidden" name="db_name" value="{{ db_name }}">
-                    <input type="hidden" name="db_type" value="{{ db_type }}">
-                    <input type="hidden" name="db_charset" value="{{ db_charset }}">
-                    <input type="hidden" name="db_collation" value="{{ db_collation }}">
-                    <input type="hidden" name="pa_pass" value="{{ pa_pass }}">
-                    <input type="hidden" name="step" value="{{ next_step }}">
-                    <input type="hidden" name="language" value="{{ language }}">
-                    <input type="submit" name="submit" class="btn btn-sm btn-primary" value="{% trans %}Continue to step{% endtrans %} {{ next_step }}">
-                </div>
             </form>
         </div>
     </div>

@@ -1,35 +1,148 @@
 {% extends 'base.html.twig' %}
 
-{% block step_description %}{% trans %}Getting ready{% endtrans %}{% endblock %}
+{% block step_description %}{% trans %}System Requirements{% endtrans %}{% endblock %}
 
 {% block content %}
     <div class="card">
         <div class="card-header bg-secondary text-white">
-            {% trans %}Step{% endtrans %} {{ current_step }}: {% trans %}Getting ready for installation{% endtrans %}
+            {% trans %}Step{% endtrans %} {{ current_step }}: {% trans %}System Requirements Check{% endtrans %}
         </div>
         <div class="card-body">
-            <div class="alert alert-info py-2">
-                <strong>{% trans %}Before you continue:{% endtrans %}</strong> {% trans %}This installer expects you to have a PowerDNS database accessible from this server. This installer also expects you to have never ran Poweradmin before, or that you want to overwrite the Poweradmin part of the database.{% endtrans %}
+            <div class="alert alert-info py-2 mb-3">
+                <strong>{% trans %}Requirements Check:{% endtrans %}</strong> {% trans %}Verifying that your server meets all requirements to run Poweradmin.{% endtrans %}
             </div>
 
-            <div class="alert alert-warning py-2">
-                <strong>{% trans %}Important:{% endtrans %}</strong> {% trans %}If you have had Poweradmin running before, any data in the following tables will be destroyed: perm_items, perm_templ, perm_templ_items, users and zones. This installer will, of course, not touch the data in the PowerDNS tables of the database.{% endtrans %}
-                <p class="mb-0 mt-1"><strong>{% trans %}It is recommended that you create a backup of your database before proceeding.{% endtrans %}</strong></p>
+            <!-- PHP Version Check -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <strong>{% trans %}PHP Version{% endtrans %}</strong>
+                </div>
+                <div class="card-body py-2">
+                    <p class="small mb-2">{% trans %}Poweradmin requires PHP 8.1.0 or higher.{% endtrans %}</p>
+                    
+                    {% if php_version_ok %}
+                        <div class="alert alert-success py-2 mb-0">
+                            <i class="bi bi-check-circle"></i> {% trans %}Success:{% endtrans %} 
+                            {% trans %}PHP Version{% endtrans %} {{ php_version }} {% trans %}detected.{% endtrans %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-danger py-2 mb-0">
+                            <i class="bi bi-x-circle"></i> {% trans %}Error:{% endtrans %} 
+                            {% trans %}You are running PHP{% endtrans %} {{ php_version }}. 
+                            {% trans %}Poweradmin requires PHP 8.1.0 or higher.{% endtrans %}
+                        </div>
+                    {% endif %}
+                </div>
             </div>
 
-            <p class="small">{% trans %}The alternative for this installer is a <a href="https://docs.poweradmin.org/installation/manual/" target="_blank">manual installation</a>. Refer to the documentation if you want to go down that road.{% endtrans %}</p>
-            <p class="small">{% trans %}Finally, if you see any errors during the installation process, a problem report would be appreciated. You can report problems (and ask for help) on the
-                    <a href="https://github.com/poweradmin/poweradmin/issues" target="_blank">poweradmin</a> issues.{% endtrans %}</p>
+            <!-- Required PHP Extensions -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <strong>{% trans %}Required PHP Extensions{% endtrans %}</strong>
+                </div>
+                <div class="card-body py-2">
+                    <p class="small mb-2">{% trans %}The following PHP extensions are required for Poweradmin to function properly.{% endtrans %}</p>
+                    
+                    <div class="row g-2">
+                        {% for extension, status in required_extensions %}
+                            <div class="col-md-6">
+                                <div class="alert {% if status %}alert-success{% else %}alert-danger{% endif %} py-2 mb-2">
+                                    <i class="bi {% if status %}bi-check-circle{% else %}bi-x-circle{% endif %}"></i>
+                                    <strong>{{ extension }}</strong>: 
+                                    {% if status %}
+                                        {% trans %}Installed{% endtrans %}
+                                    {% else %}
+                                        {% trans %}Missing{% endtrans %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
 
-            <div class="mt-3">
-                <form method="post">
-                    <input type="hidden" name="install_token" value="{{ install_token }}">
-                    <input type="hidden" name="language" value="{{ language }}">
-                    <input type="hidden" name="step" value="{{ next_step }}">
-                    <input type="submit" name="submit" class="btn btn-sm btn-primary"
+            <!-- Database Extensions -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <strong>{% trans %}Database Extensions{% endtrans %}</strong>
+                </div>
+                <div class="card-body py-2">
+                    <p class="small mb-2">{% trans %}At least one of the following database extensions must be installed.{% endtrans %}</p>
+                    
+                    <div class="row g-2">
+                        {% for extension, status in database_extensions %}
+                            <div class="col-md-4">
+                                <div class="alert {% if status %}alert-success{% else %}alert-warning{% endif %} py-2 mb-2">
+                                    <i class="bi {% if status %}bi-check-circle{% else %}bi-dash-circle{% endif %}"></i>
+                                    <strong>{{ extension }}</strong>: 
+                                    {% if status %}
+                                        {% trans %}Installed{% endtrans %}
+                                    {% else %}
+                                        {% trans %}Not installed{% endtrans %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                    {% if not db_extension_ok %}
+                        <div class="alert alert-danger py-2 mt-2 mb-0">
+                            <i class="bi bi-x-circle"></i> {% trans %}Error:{% endtrans %} 
+                            {% trans %}At least one database PDO extension (MySQL, PostgreSQL, or SQLite) must be installed.{% endtrans %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Optional Extensions -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <strong>{% trans %}Optional Extensions{% endtrans %}</strong>
+                </div>
+                <div class="card-body py-2">
+                    <p class="small mb-2">{% trans %}The following extensions are not required but provide additional functionality.{% endtrans %}</p>
+                    
+                    <div class="row g-2">
+                        {% for extension, status in optional_extensions %}
+                            <div class="col-md-6">
+                                <div class="alert {% if status %}alert-success{% else %}alert-warning{% endif %} py-2 mb-2">
+                                    <i class="bi {% if status %}bi-check-circle{% else %}bi-dash-circle{% endif %}"></i>
+                                    <strong>{{ extension }}</strong>: 
+                                    {% if status %}
+                                        {% trans %}Installed{% endtrans %}
+                                    {% else %}
+                                        {% trans %}Not installed{% endtrans %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form for continuing or stopping -->
+            <form method="post">
+                <input type="hidden" name="install_token" value="{{ install_token }}">
+                <input type="hidden" name="language" value="{{ language }}">
+                <input type="hidden" name="step" value="{{ next_step }}">
+                
+                {% if requirements_ok %}
+                    <div class="alert alert-success py-2 mb-3">
+                        <strong>{% trans %}All required components are available.{% endtrans %}</strong> 
+                        {% trans %}You can continue with the installation.{% endtrans %}
+                    </div>
+                    <input type="submit" name="submit" class="btn btn-sm btn-primary" 
                            value="{% trans %}Continue to step{% endtrans %} {{ next_step }}">
-                </form>
-            </div>
+                {% else %}
+                    <div class="alert alert-danger py-2 mb-3">
+                        <strong>{% trans %}Some required components are missing.{% endtrans %}</strong> 
+                        {% trans %}Please install the missing components before continuing.{% endtrans %}
+                    </div>
+                    <input type="button" class="btn btn-sm btn-secondary" 
+                           onclick="window.location.reload();" 
+                           value="{% trans %}Check Again{% endtrans %}">
+                {% endif %}
+            </form>
         </div>
     </div>
 {% endblock %}

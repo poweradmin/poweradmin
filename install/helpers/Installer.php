@@ -24,6 +24,7 @@ namespace PoweradminInstall;
 
 use Poweradmin\Application\Service\CsrfTokenService;
 use PoweradminInstall\Validators\AbstractStepValidator;
+use PoweradminInstall\Validators\CheckRequirementsValidator;
 use PoweradminInstall\Validators\ChooseLanguageValidator;
 use PoweradminInstall\Validators\ConfiguringDatabaseValidator;
 use PoweradminInstall\Validators\CreateConfigurationFileValidator;
@@ -133,24 +134,28 @@ class Installer
                 $this->installStepHandler->step1ChooseLanguage($errors);
                 break;
 
+            case InstallationSteps::STEP_CHECK_REQUIREMENTS:
+                $this->installStepHandler->step2CheckRequirements($errors);
+                break;
+
             case InstallationSteps::STEP_GETTING_READY:
-                $this->installStepHandler->step2GettingReady($errors);
+                $this->installStepHandler->step3GettingReady($errors);
                 break;
 
             case InstallationSteps::STEP_CONFIGURING_DATABASE:
-                $this->installStepHandler->step3ConfiguringDatabase($errors);
+                $this->installStepHandler->step4ConfiguringDatabase($errors);
                 break;
 
             case InstallationSteps::STEP_SETUP_ACCOUNT_AND_NAMESERVERS:
-                $this->installStepHandler->step4SetupAccountAndNameServers($errors, $this->defaultConfigFile);
+                $this->installStepHandler->step5SetupAccountAndNameServers($errors, $this->defaultConfigFile);
                 break;
 
             case InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER:
-                $this->installStepHandler->step5CreateLimitedRightsUser($errors);
+                $this->installStepHandler->step6CreateLimitedRightsUser($errors);
                 break;
 
             case InstallationSteps::STEP_CREATE_CONFIGURATION_FILE:
-                $this->installStepHandler->step6CreateConfigurationFile(
+                $this->installStepHandler->step7CreateConfigurationFile(
                     $errors,
                     $this->defaultConfigFile,
                     $this->localConfigFile,
@@ -159,7 +164,7 @@ class Installer
                 break;
 
             case InstallationSteps::STEP_INSTALLATION_COMPLETE:
-                $this->installStepHandler->step7InstallationComplete();
+                $this->installStepHandler->step8InstallationComplete();
                 break;
 
             default:
@@ -171,6 +176,7 @@ class Installer
     {
         return match ($step) {
             InstallationSteps::STEP_CHOOSE_LANGUAGE => new ChooseLanguageValidator($this->request, $this->config),
+            InstallationSteps::STEP_CHECK_REQUIREMENTS => new CheckRequirementsValidator($this->request, $this->config),
             InstallationSteps::STEP_GETTING_READY => new GettingReadyValidator($this->request, $this->config),
             InstallationSteps::STEP_CONFIGURING_DATABASE => new ConfiguringDatabaseValidator($this->request, $this->config),
             InstallationSteps::STEP_SETUP_ACCOUNT_AND_NAMESERVERS => new SetupAccountAndNameServersValidator($this->request, $this->config),
