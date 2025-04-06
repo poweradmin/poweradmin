@@ -75,18 +75,8 @@
                     </div>
                 </div>
 
-                <div class="col-md-2">
-                    <div class="form-group mb-2">
-                        <label for="ttl" class="form-label small">{{ 'TTL'|trans }}</label>
-                        <input type="number" id="ttl" name="ttl" value="{{ ttl }}" min="0" max="2147483647" pattern="[0-9]*" class="form-control form-control-sm" required>
-                    </div>
-                </div>
-
-                <div class="col-md-2">
-                    <div class="form-group mb-2">
-                        <label for="priority" class="form-label small">{{ 'Priority'|trans }}</label>
-                        <input type="number" id="priority" name="priority" value="{{ priority }}" min="0" max="65535" pattern="[0-9]*" class="form-control form-control-sm">
-                    </div>
+                <div class="col-md-4 small text-muted ps-2 py-2">
+                    {{ 'Using default TTL value from configuration'|trans }}
                 </div>
 
                 {% if iface_record_comments %}

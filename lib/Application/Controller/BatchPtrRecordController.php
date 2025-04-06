@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
@@ -47,8 +48,7 @@ class BatchPtrRecordController extends BaseController
 
         $this->logger = new LegacyLogger($this->db);
         $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $this->csrfTokenService = new \Poweradmin\Application\Service\CsrfTokenService();
-        $this->validator = $this->validator;
+        $this->csrfTokenService = new CsrfTokenService();
 
         $reverseRecordCreator = new ReverseRecordCreator(
             $this->db,
@@ -130,13 +130,6 @@ class BatchPtrRecordController extends BaseController
             ],
             'domain' => [
                 new Assert\NotBlank()
-            ],
-            'ttl' => [
-                new Assert\NotBlank(),
-                new Assert\Type('numeric')
-            ],
-            'priority' => [
-                new Assert\Type('numeric')
             ]
         ];
 
@@ -151,8 +144,8 @@ class BatchPtrRecordController extends BaseController
         $networkPrefix = $_POST['network_prefix'] ?? '';
         $hostPrefix = $_POST['host_prefix'] ?? '';
         $domain = $_POST['domain'] ?? '';
-        $ttl = isset($_POST['ttl']) ? (int)$_POST['ttl'] : 0;
-        $prio = (int)($_POST['priority'] ?? 0);
+        $ttl = $this->config('dns', 'ttl', 86400);
+        $prio = 0;
         $comment = $_POST['comment'] ?? '';
         $zone_id = isset($_GET['id']) ? (int)$_GET['id'] : 0; // Use 0 when no zone_id is provided
         $ipv6_count = isset($_POST['ipv6_count']) ? (int)$_POST['ipv6_count'] : 256;
@@ -224,10 +217,10 @@ class BatchPtrRecordController extends BaseController
             'network_prefix' => $formData['network_prefix'] ?? '',
             'host_prefix' => $formData['host_prefix'] ?? 'host',
             'domain' => $formData['domain'] ?? '',
-            'ttl' => $formData['ttl'] ?? $ttl,
-            'priority' => $formData['priority'] ?? 0,
+            'ttl' => $ttl,
             'ipv6_count' => $formData['ipv6_count'] ?? 256,
             'comment' => $formData['comment'] ?? '',
+            'default_ttl' => $ttl,
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,
