@@ -8,23 +8,21 @@
             {% trans %}Step{% endtrans %} {{ current_step }}: {% trans %}Installation complete{% endtrans %}
         </div>
         <div class="card-body">
-            <div class="alert alert-success">
-                <h4>{% trans %}Installation Complete!{% endtrans %}</h4>
-                <p>{% trans %}Congratulations! Your Poweradmin installation is now configured.{% endtrans %}</p>
+            <div class="alert alert-success py-2 mb-3">
+                <strong>{% trans %}Installation Complete!{% endtrans %}</strong> {% trans %}Congratulations! Your Poweradmin installation is now configured.{% endtrans %}
             </div>
 
-            <div class="alert alert-warning">
-                <h5>{% trans %}Important Security Notice{% endtrans %}</h5>
-                <p><strong>{% trans %}You must remove the "install/" directory from the Poweradmin root directory.{% endtrans %}</strong></p>
-                <p>{% trans %}Poweradmin will not function if the install directory exists, as a security measure.{% endtrans %}</p>
+            <div class="alert alert-warning py-2 mb-3">
+                <strong>{% trans %}Important Security Notice:{% endtrans %}</strong> {% trans %}You must remove the "install/" directory from the Poweradmin root directory.{% endtrans %}
+                <p class="mb-0 mt-1 small">{% trans %}Poweradmin will not function if the install directory exists, as a security measure.{% endtrans %}</p>
             </div>
 
-            <div class="card mt-4">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">{% trans %}Next Steps{% endtrans %}</h5>
+            <div class="card mt-3">
+                <div class="card-header">
+                    <strong>{% trans %}Next Steps{% endtrans %}</strong>
                 </div>
-                <div class="card-body">
-                    <ol>
+                <div class="card-body py-2">
+                    <ol class="small mb-0">
                         <li>{% trans %}Remove the "install/" directory from your server{% endtrans %}</li>
                         <li>{% trans %}Login to <a href="../index.php">Poweradmin</a> using the default username "admin" and the password you set in step 3{% endtrans %}</li>
                         <li>{% trans %}Begin configuring your DNS zones and records{% endtrans %}</li>

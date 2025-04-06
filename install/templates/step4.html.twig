@@ -8,117 +8,117 @@
             {% trans %}Step{% endtrans %} {{ current_step }}: {% trans %}Setup account and name servers{% endtrans %}
         </div>
         <div class="card-body">
-            <div class="alert alert-info mb-4">
-                {% trans %}Now we will gather all details for the configuration itself.{% endtrans %}
+            <div class="alert alert-info py-2 mb-3">
+                <strong>{% trans %}Configuration:{% endtrans %}</strong> {% trans %}Now we will gather all details for the configuration itself.{% endtrans %}
             </div>
 
             <form class="needs-validation" method="post" novalidate>
                 <input type="hidden" name="install_token" value="{{ install_token }}">
 
                 {% if db_type != 'sqlite' %}
-                <div class="card mb-4">
+                <div class="card mb-3">
                     <div class="card-header">
-                        <h5 class="mb-0">{% trans %}Database User{% endtrans %}</h5>
+                        <strong>{% trans %}Database User{% endtrans %}</strong>
                     </div>
                     <div class="card-body">
                         <div class="row mb-3">
-                            <label for="pa_db_user" class="col-md-3 col-form-label">{% trans %}Username{% endtrans %}</label>
+                            <label for="pa_db_user" class="col-md-2 col-form-label col-form-label-sm">{% trans %}Username{% endtrans %}</label>
                             <div class="col-md-4">
-                                <input id="pa_db_user" class="form-control" type="text" name="pa_db_user" value="{{ pa_db_user }}" required>
+                                <input id="pa_db_user" class="form-control form-control-sm" type="text" name="pa_db_user" value="{{ pa_db_user }}" required>
                                 <div class="invalid-feedback">{% trans %}Provide the user name{% endtrans %}</div>
                             </div>
-                            <div class="col-md-5">
-                                <span class="form-text">{% trans %}Poweradmin database username with restricted access. Not for web UI login.{% endtrans %}</span>
+                            <div class="col-md-6">
+                                <span class="form-text small">{% trans %}Poweradmin database username with restricted access. Not for web UI login.{% endtrans %}</span>
                             </div>
                         </div>
 
                         <div class="row mb-3">
-                            <label for="pa_db_pass" class="col-md-3 col-form-label">{% trans %}Password{% endtrans %}</label>
+                            <label for="pa_db_pass" class="col-md-2 col-form-label col-form-label-sm">{% trans %}Password{% endtrans %}</label>
                             <div class="col-md-4">
-                                <div class="input-group">
-                                    <input id="pa_db_pass" class="form-control" type="password" name="pa_db_pass" value="{{ pa_db_pass }}" autocomplete="off" required>
-                                    <button class="btn btn-outline-secondary" type="button" onclick="showPassword('pa_db_pass', 'eye1')"><i class="bi bi-eye-fill" id="eye1"></i></button>
+                                <div class="input-group input-group-sm">
+                                    <input id="pa_db_pass" class="form-control form-control-sm" type="password" name="pa_db_pass" value="{{ pa_db_pass }}" autocomplete="off" required>
+                                    <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showPassword('pa_db_pass', 'eye1')"><i class="bi bi-eye-fill" id="eye1"></i></button>
                                     <div class="invalid-feedback">{% trans %}Provide the user password{% endtrans %}</div>
                                 </div>
                             </div>
-                            <div class="col-md-5">
-                                <span class="form-text">{% trans %}The password for this username.{% endtrans %}</span>
+                            <div class="col-md-6">
+                                <span class="form-text small">{% trans %}The password for this username.{% endtrans %}</span>
                             </div>
                         </div>
                     </div>
                 </div>
                 {% endif %}
 
-                <div class="card mb-4">
+                <div class="card mb-3">
                     <div class="card-header">
-                        <h5 class="mb-0">{% trans %}DNS Settings{% endtrans %}</h5>
+                        <strong>{% trans %}DNS Settings{% endtrans %}</strong>
                     </div>
                     <div class="card-body">
                         <div class="row mb-3">
-                            <label for="dns_hostmaster" class="col-md-3 col-form-label">{% trans %}Hostmaster{% endtrans %}</label>
+                            <label for="dns_hostmaster" class="col-md-2 col-form-label col-form-label-sm">{% trans %}Hostmaster{% endtrans %}</label>
                             <div class="col-md-4">
-                                <input id="dns_hostmaster" class="form-control" type="text" name="dns_hostmaster" 
+                                <input id="dns_hostmaster" class="form-control form-control-sm" type="text" name="dns_hostmaster" 
                                        value="{{ dns_hostmaster }}" placeholder="hostmaster.example.net" required>
                                 <div class="invalid-feedback">{% trans %}Provide the DNS hostmaster{% endtrans %}</div>
                             </div>
-                            <div class="col-md-5">
-                                <span class="form-text">{% trans %}When creating SOA records and no hostmaster is provided, this value here will be used.{% endtrans %}</span>
+                            <div class="col-md-6">
+                                <span class="form-text small">{% trans %}When creating SOA records and no hostmaster is provided, this value here will be used.{% endtrans %}</span>
                             </div>
                         </div>
 
                         <div class="row mb-3">
-                            <label for="dns_ns1" class="col-md-3 col-form-label">{% trans %}Primary nameserver{% endtrans %}</label>
+                            <label for="dns_ns1" class="col-md-2 col-form-label col-form-label-sm">{% trans %}Primary nameserver{% endtrans %}</label>
                             <div class="col-md-4">
-                                <input id="dns_ns1" class="form-control" type="text" name="dns_ns1" value="{{ dns_ns1 }}"
+                                <input id="dns_ns1" class="form-control form-control-sm" type="text" name="dns_ns1" value="{{ dns_ns1 }}"
                                        placeholder="ns1.example.net" required>
                                 <div class="invalid-feedback">{% trans %}Provide the primary nameserver{% endtrans %}</div>
                             </div>
-                            <div class="col-md-5">
-                                <span class="form-text">{% trans %}When creating new zones using the template, this value will be used as primary nameserver.{% endtrans %}</span>
+                            <div class="col-md-6">
+                                <span class="form-text small">{% trans %}When creating new zones using the template, this value will be used as primary nameserver.{% endtrans %}</span>
                             </div>
                         </div>
 
                         <div class="row mb-3">
-                            <label for="dns_ns2" class="col-md-3 col-form-label">{% trans %}Secondary nameserver{% endtrans %}</label>
+                            <label for="dns_ns2" class="col-md-2 col-form-label col-form-label-sm">{% trans %}Secondary nameserver{% endtrans %}</label>
                             <div class="col-md-4">
-                                <input id="dns_ns2" class="form-control" type="text" name="dns_ns2" value="{{ dns_ns2 }}"
+                                <input id="dns_ns2" class="form-control form-control-sm" type="text" name="dns_ns2" value="{{ dns_ns2 }}"
                                        placeholder="ns2.example.net" required>
                                 <div class="invalid-feedback">{% trans %}Provide the secondary nameserver{% endtrans %}</div>
                             </div>
-                            <div class="col-md-5">
-                                <span class="form-text">{% trans %}When creating new zones using the template, this value will be used as secondary nameserver.{% endtrans %}</span>
+                            <div class="col-md-6">
+                                <span class="form-text small">{% trans %}When creating new zones using the template, this value will be used as secondary nameserver.{% endtrans %}</span>
                             </div>
                         </div>
 
                         <div class="row mb-3">
-                            <label for="dns_ns3" class="col-md-3 col-form-label">
+                            <label for="dns_ns3" class="col-md-2 col-form-label col-form-label-sm">
                                 {% trans %}Tertiary Nameserver{% endtrans %} <span class="text-muted">({% trans %}optional{% endtrans %})</span>
                             </label>
                             <div class="col-md-4">
-                                <input id="dns_ns3" class="form-control" type="text" name="dns_ns3" value="{{ dns_ns3 }}"
+                                <input id="dns_ns3" class="form-control form-control-sm" type="text" name="dns_ns3" value="{{ dns_ns3 }}"
                                        placeholder="ns3.example.net">
                             </div>
-                            <div class="col-md-5">
-                                <span class="form-text">{% trans %}When creating new zones using the template, this optional value will be used as tertiary nameserver.{% endtrans %}</span>
+                            <div class="col-md-6">
+                                <span class="form-text small">{% trans %}When creating new zones using the template, this optional value will be used as tertiary nameserver.{% endtrans %}</span>
                             </div>
                         </div>
 
                         <div class="row mb-3">
-                            <label for="dns_ns4" class="col-md-3 col-form-label">
+                            <label for="dns_ns4" class="col-md-2 col-form-label col-form-label-sm">
                                 {% trans %}Quaternary Nameserver{% endtrans %} <span class="text-muted">({% trans %}optional{% endtrans %})</span>
                             </label>
                             <div class="col-md-4">
-                                <input id="dns_ns4" class="form-control" type="text" name="dns_ns4" value="{{ dns_ns4 }}"
+                                <input id="dns_ns4" class="form-control form-control-sm" type="text" name="dns_ns4" value="{{ dns_ns4 }}"
                                        placeholder="ns4.example.net">
                             </div>
-                            <div class="col-md-5">
-                                <span class="form-text">{% trans %}When creating new zones using the template, this optional value will be used as quaternary nameserver.{% endtrans %}</span>
+                            <div class="col-md-6">
+                                <span class="form-text small">{% trans %}When creating new zones using the template, this optional value will be used as quaternary nameserver.{% endtrans %}</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="mt-4">
+                <div class="mt-3">
                     <input type="hidden" name="db_user" value="{{ db_user }}">
                     <input type="hidden" name="db_pass" value="{{ db_pass }}">
                     <input type="hidden" name="db_host" value="{{ db_host }}">
@@ -130,7 +130,7 @@
                     <input type="hidden" name="pa_pass" value="{{ pa_pass }}">
                     <input type="hidden" name="step" value="{{ next_step }}">
                     <input type="hidden" name="language" value="{{ language }}">
-                    <input type="submit" name="submit" class="btn btn-sm btn-primary" value="{% trans %}Go to step{% endtrans %} {{ next_step }}">
+                    <input type="submit" name="submit" class="btn btn-sm btn-primary" value="{% trans %}Continue to step{% endtrans %} {{ next_step }}">
                 </div>
             </form>
         </div>

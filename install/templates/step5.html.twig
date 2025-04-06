@@ -9,27 +9,24 @@
         </div>
         <div class="card-body">
             {% if db_type != 'sqlite' %}
-                <div class="alert alert-info">
-                    <h5>{% trans %}Limited Database Rights{% endtrans %}</h5>
-                    <p>{% trans %}You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you
-                        should create a new user and give it rights to select, delete, insert, and update records in the PowerDNS
-                        database.{% endtrans %}</p>
+                <div class="alert alert-info py-2">
+                    <strong>{% trans %}Limited Database Rights:{% endtrans %}</strong> {% trans %}You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert, and update records in the PowerDNS database.{% endtrans %}
                 </div>
 
-                <div class="card mb-4 bg-light">
+                <div class="card mb-3 bg-light">
                     <div class="card-header">
-                        <h5 class="mb-0">{% trans %}Database Commands{% endtrans %}</h5>
+                        <strong>{% trans %}Database Commands{% endtrans %}</strong>
                     </div>
                     <div class="card-body">
-                        <p>{% trans %}Execute the following commands based on your database:{% endtrans %}</p>
-                        <pre class="bg-dark text-light p-3 rounded">{{ instructions }}</pre>
+                        <p class="small mb-2">{% trans %}Execute the following commands based on your database:{% endtrans %}</p>
+                        <pre class="bg-dark text-light p-2 rounded small">{{ instructions }}</pre>
                     </div>
                 </div>
 
-                <p class="mb-4">{% trans %}After you have added the new user, proceed with this installation procedure.{% endtrans %}</p>
+                <p class="small mb-3">{% trans %}After you have added the new user, proceed with this installation procedure.{% endtrans %}</p>
             {% else %}
-                <div class="alert alert-success">
-                    <p>{% trans %}Since you are using SQLite, there is no need to create a new user with limited rights.{% endtrans %}</p>
+                <div class="alert alert-success py-2">
+                    <strong>{% trans %}Note:{% endtrans %}</strong> {% trans %}Since you are using SQLite, there is no need to create a new user with limited rights.{% endtrans %}
                 </div>
             {% endif %}
 
@@ -54,7 +51,7 @@
                 <input type="hidden" name="step" value="{{ current_step }}">
                 <input type="hidden" name="language" value="{{ language }}">
                 <input type="hidden" name="step" value="{{ next_step }}">
-                <input type="submit" name="submit" class="btn btn-sm btn-primary" value="{% trans %}Go to step{% endtrans %} {{ next_step }}">
+                <input type="submit" name="submit" class="btn btn-sm btn-primary" value="{% trans %}Continue to step{% endtrans %} {{ next_step }}">
             </form>
         </div>
     </div>
