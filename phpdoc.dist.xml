@@ -36,5 +36,6 @@
         <ignore>tests/*</ignore>
         <ignore>vendor/*</ignore>
         <ignore>inc/config.inc.php</ignore>
+        <ignore>config/settings.php</ignore>
     </files>
 </phpdoc>

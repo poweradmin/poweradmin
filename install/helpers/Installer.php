@@ -48,15 +48,15 @@ class Installer
     private string $newConfigFile;
     private string $defaultConfigFile;
     private string $installConfigFile;
-    private const LOCAL_CONFIG_FILE_PATH = '/inc/config.inc.php'; // Legacy format
-    private const NEW_CONFIG_FILE_PATH = '/config/settings.php'; // New format
+    private const OLD_CONFIG_FILE_PATH = '/inc/config.inc.php'; // Legacy format
     private const DEFAULT_CONFIG_FILE_PATH = '/inc/config-defaults.inc.php';
+    private const NEW_CONFIG_FILE_PATH = '/config/settings.php'; // New format
     private const INSTALL_CONFIG_PATH = '/config.php';
     private array $config;
 
     public function __construct(Request $request)
     {
-        $this->localConfigFile = dirname(__DIR__, 2) . self::LOCAL_CONFIG_FILE_PATH;
+        $this->localConfigFile = dirname(__DIR__, 2) . self::OLD_CONFIG_FILE_PATH;
         $this->newConfigFile = dirname(__DIR__, 2) . self::NEW_CONFIG_FILE_PATH;
         $this->defaultConfigFile = dirname(__DIR__, 2) . self::DEFAULT_CONFIG_FILE_PATH;
         $this->installConfigFile = dirname(__DIR__) . self::INSTALL_CONFIG_PATH;
@@ -158,8 +158,6 @@ class Installer
                 $this->installStepHandler->step7CreateConfigurationFile(
                     $errors,
                     $this->defaultConfigFile,
-                    $this->localConfigFile,
-                    $this->newConfigFile
                 );
                 break;
 

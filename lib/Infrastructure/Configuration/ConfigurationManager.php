@@ -103,7 +103,6 @@ class ConfigurationManager
 
         // Fall back to legacy config if new config doesn't exist
         if (!$newConfigExists) {
-            $legacyConfig = [];
             $legacyCustomConfigFile = __DIR__ . '/../../../inc/config.inc.php';
 
             if (file_exists($legacyCustomConfigFile)) {

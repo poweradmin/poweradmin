@@ -27,9 +27,11 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 /**
  * Class AppConfiguration
  *
- * This class handles the loading and parsing of configuration files for the Poweradmin application.
+ * This class is a legacy adapter for backward compatibility.
+ * It now delegates to the ConfigurationManager for all operations.
  *
  * @package Poweradmin
+ * @deprecated Use ConfigurationManager directly instead
  */
 class AppConfiguration implements ConfigurationInterface
 {
@@ -41,89 +43,149 @@ class AppConfiguration implements ConfigurationInterface
     /**
      * AppConfiguration constructor.
      *
-     * @param string $defaultConfigFile Path to the default configuration file.
-     * @param string $customConfigFile Path to the custom configuration file.
+     * @param string $defaultConfigFile Ignored, kept for backward compatibility
+     * @param string $customConfigFile Ignored, kept for backward compatibility
      */
     public function __construct(
-        string $defaultConfigFile = 'inc/config-defaults.inc.php',
-        string $customConfigFile = 'inc/config.inc.php'
+        string $defaultConfigFile = '',
+        string $customConfigFile = ''
     ) {
-        $defaultConfig = $this->loadAndParseConfig($defaultConfigFile);
-        $customConfig = $this->loadAndParseConfig($customConfigFile);
-        $this->config = array_merge($defaultConfig, $customConfig);
+        // Get configuration from the ConfigurationManager
+        $configManager = \Poweradmin\Infrastructure\Configuration\ConfigurationManager::getInstance();
+        $configManager->initialize();
+        $this->config = $this->convertToLegacyFormat($configManager->getAll());
     }
 
     /**
-     * Loads and parses a configuration file.
+     * Converts the new configuration format to the legacy format for backward compatibility
      *
-     * @param string $fileName Path to the configuration file.
-     * @return array The parsed configuration settings.
+     * @param array $newConfig The configuration in the new format
+     * @return array The configuration in the legacy format
      */
-    private function loadAndParseConfig(string $fileName): array
+    private function convertToLegacyFormat(array $newConfig): array
     {
-        if (!file_exists($fileName)) {
-            return [];
+        $legacyConfig = [];
+
+        // Database settings
+        if (isset($newConfig['database'])) {
+            $legacyConfig['db_host'] = $newConfig['database']['host'] ?? '';
+            $legacyConfig['db_port'] = $newConfig['database']['port'] ?? '';
+            $legacyConfig['db_user'] = $newConfig['database']['user'] ?? '';
+            $legacyConfig['db_pass'] = $newConfig['database']['password'] ?? '';
+            $legacyConfig['db_name'] = $newConfig['database']['name'] ?? '';
+            $legacyConfig['db_type'] = $newConfig['database']['type'] ?? '';
+            $legacyConfig['db_charset'] = $newConfig['database']['charset'] ?? '';
+            $legacyConfig['db_file'] = $newConfig['database']['file'] ?? '';
+            $legacyConfig['db_debug'] = $newConfig['database']['debug'] ?? false;
+            $legacyConfig['pdns_db_name'] = $newConfig['database']['pdns_name'] ?? '';
         }
 
-        if (!function_exists('token_get_all')) {
-            die("You have to install the PHP tokenizer extension!");
+        // Security settings
+        if (isset($newConfig['security'])) {
+            $legacyConfig['session_key'] = $newConfig['security']['session_key'] ?? '';
+            $legacyConfig['password_encryption'] = $newConfig['security']['password_encryption'] ?? 'bcrypt';
+            $legacyConfig['password_encryption_cost'] = $newConfig['security']['password_cost'] ?? 12;
+            $legacyConfig['login_token_validation'] = $newConfig['security']['login_token_validation'] ?? true;
+            $legacyConfig['global_token_validation'] = $newConfig['security']['global_token_validation'] ?? true;
         }
 
-        $configContent = file_get_contents($fileName);
-        $tokens = token_get_all($configContent);
-        $lastToken = null;
-        $configItems = [];
+        // Interface settings
+        if (isset($newConfig['interface'])) {
+            $legacyConfig['iface_lang'] = $newConfig['interface']['language'] ?? 'en_EN';
+            $legacyConfig['iface_enabled_languages'] = $newConfig['interface']['enabled_languages'] ?? 'en_EN';
+            $legacyConfig['iface_style'] = $newConfig['interface']['theme'] ?? 'ignite';
+            $legacyConfig['iface_templates'] = $newConfig['interface']['templates_path'] ?? 'templates';
+            $legacyConfig['iface_rowamount'] = $newConfig['interface']['rows_per_page'] ?? 10;
+            $legacyConfig['iface_expire'] = $newConfig['interface']['session_timeout'] ?? 1800;
+            $legacyConfig['iface_zonelist_serial'] = $newConfig['interface']['display_serial_in_zone_list'] ?? false;
+            $legacyConfig['iface_zonelist_template'] = $newConfig['interface']['display_template_in_zone_list'] ?? false;
+            $legacyConfig['iface_title'] = $newConfig['interface']['title'] ?? 'Poweradmin';
+            $legacyConfig['iface_add_reverse_record'] = $newConfig['interface']['add_reverse_record'] ?? true;
+            $legacyConfig['iface_add_domain_record'] = $newConfig['interface']['add_domain_record'] ?? true;
+            $legacyConfig['iface_zone_type_default'] = $newConfig['interface']['zone_type_default'] ?? 'MASTER';
+            $legacyConfig['iface_zone_comments'] = $newConfig['interface']['show_zone_comments'] ?? true;
+            $legacyConfig['iface_record_comments'] = $newConfig['interface']['show_record_comments'] ?? false;
+            $legacyConfig['iface_index'] = $newConfig['interface']['index_display'] ?? 'cards';
+            $legacyConfig['iface_search_group_records'] = $newConfig['interface']['search_group_records'] ?? false;
+            $legacyConfig['iface_migrations_show'] = $newConfig['interface']['show_migrations'] ?? false;
+        }
 
-        foreach ($tokens as $token) {
-            if (is_array($token)) {
-                [$tokenType, $tokenValue] = $token;
+        // DNS settings
+        if (isset($newConfig['dns'])) {
+            $legacyConfig['dns_hostmaster'] = $newConfig['dns']['hostmaster'] ?? '';
+            $legacyConfig['dns_ns1'] = $newConfig['dns']['ns1'] ?? '';
+            $legacyConfig['dns_ns2'] = $newConfig['dns']['ns2'] ?? '';
+            $legacyConfig['dns_ns3'] = $newConfig['dns']['ns3'] ?? '';
+            $legacyConfig['dns_ns4'] = $newConfig['dns']['ns4'] ?? '';
+            $legacyConfig['dns_ttl'] = $newConfig['dns']['ttl'] ?? 86400;
+            $legacyConfig['dns_strict_tld_check'] = $newConfig['dns']['strict_tld_check'] ?? false;
+            $legacyConfig['dns_top_level_tld_check'] = $newConfig['dns']['top_level_tld_check'] ?? false;
+            $legacyConfig['dns_third_level_check'] = $newConfig['dns']['third_level_check'] ?? false;
+            $legacyConfig['dns_txt_auto_quote'] = $newConfig['dns']['txt_auto_quote'] ?? false;
 
-                switch ($tokenType) {
-                    case T_VARIABLE:
-                        $lastToken = substr($tokenValue, 1);
-                        break;
-                    case T_STRING:
-                    case T_CONSTANT_ENCAPSED_STRING:
-                    case T_LNUMBER:
-                        if ($lastToken !== null) {
-                            $configItems[$lastToken] = $this->parseTokenValue($tokenValue);
-                            $lastToken = null;
-                        }
-                        break;
-                    default:
-                        break;
-                }
+            // Construct SOA string from individual values
+            if (
+                isset($newConfig['dns']['soa_refresh']) && isset($newConfig['dns']['soa_retry']) &&
+                isset($newConfig['dns']['soa_expire']) && isset($newConfig['dns']['soa_minimum'])
+            ) {
+                $legacyConfig['dns_soa'] = sprintf(
+                    '%d %d %d %d',
+                    $newConfig['dns']['soa_refresh'],
+                    $newConfig['dns']['soa_retry'],
+                    $newConfig['dns']['soa_expire'],
+                    $newConfig['dns']['soa_minimum']
+                );
+            } else {
+                $legacyConfig['dns_soa'] = '28800 7200 604800 86400';
             }
         }
 
-        return $configItems;
-    }
-
-    /**
-     * Parses a token value.
-     *
-     * @param string $tokenValue The token value to parse.
-     * @return mixed The parsed value.
-     */
-    public function parseTokenValue(string $tokenValue): mixed
-    {
-        if (strtolower($tokenValue) === 'true') {
-            return true;
+        // DNSSEC settings
+        if (isset($newConfig['dnssec'])) {
+            $legacyConfig['pdnssec_use'] = $newConfig['dnssec']['enabled'] ?? false;
+            $legacyConfig['pdnssec_debug'] = $newConfig['dnssec']['debug'] ?? false;
+            $legacyConfig['pdnssec_command'] = $newConfig['dnssec']['command'] ?? '';
         }
 
-        if (strtolower($tokenValue) === 'false') {
-            return false;
+        // PowerDNS API settings
+        if (isset($newConfig['pdns_api'])) {
+            $legacyConfig['pdns_api_url'] = $newConfig['pdns_api']['url'] ?? '';
+            $legacyConfig['pdns_api_key'] = $newConfig['pdns_api']['key'] ?? '';
         }
 
-        if (is_numeric($tokenValue)) {
-            return $tokenValue + 0; // Convert to int or float
+        // Logging settings
+        if (isset($newConfig['logging'])) {
+            $legacyConfig['logger_type'] = $newConfig['logging']['type'] ?? 'null';
+            $legacyConfig['logger_level'] = $newConfig['logging']['level'] ?? 'info';
+            $legacyConfig['dblog_use'] = $newConfig['logging']['database_enabled'] ?? false;
+            $legacyConfig['syslog_use'] = $newConfig['logging']['syslog_enabled'] ?? false;
+            $legacyConfig['syslog_ident'] = $newConfig['logging']['syslog_identity'] ?? 'poweradmin';
+            $legacyConfig['syslog_facility'] = $newConfig['logging']['syslog_facility'] ?? LOG_USER;
         }
 
-        if (defined($tokenValue)) {
-            return constant($tokenValue);
+        // LDAP settings
+        if (isset($newConfig['ldap'])) {
+            $legacyConfig['ldap_use'] = $newConfig['ldap']['enabled'] ?? false;
+            $legacyConfig['ldap_debug'] = $newConfig['ldap']['debug'] ?? false;
+            $legacyConfig['ldap_uri'] = $newConfig['ldap']['uri'] ?? '';
+            $legacyConfig['ldap_basedn'] = $newConfig['ldap']['base_dn'] ?? '';
+            $legacyConfig['ldap_binddn'] = $newConfig['ldap']['bind_dn'] ?? '';
+            $legacyConfig['ldap_bindpw'] = $newConfig['ldap']['bind_password'] ?? '';
+            $legacyConfig['ldap_user_attribute'] = $newConfig['ldap']['user_attribute'] ?? '';
+            $legacyConfig['ldap_proto'] = $newConfig['ldap']['protocol_version'] ?? 3;
+            $legacyConfig['ldap_search_filter'] = $newConfig['ldap']['search_filter'] ?? '';
         }
 
-        return trim($tokenValue, "'\"");
+        // Misc settings
+        if (isset($newConfig['misc'])) {
+            $legacyConfig['display_stats'] = $newConfig['misc']['display_stats'] ?? false;
+            $legacyConfig['timezone'] = $newConfig['misc']['timezone'] ?? '';
+            $legacyConfig['record_comments_sync'] = $newConfig['misc']['record_comments_sync'] ?? false;
+            $legacyConfig['experimental_edit_conflict_resolution'] = $newConfig['misc']['edit_conflict_resolution'] ?? 'last_writer_wins';
+            $legacyConfig['display_errors'] = $newConfig['misc']['display_errors'] ?? false;
+        }
+
+        return $legacyConfig;
     }
 
     /**
@@ -156,10 +218,6 @@ class AppConfiguration implements ConfigurationInterface
      */
     public function getAll(): array
     {
-        $items = $this->config;
-        foreach ($items as $key => $value) {
-            $items[$key] = $this->get($key);
-        }
-        return $items;
+        return $this->config;
     }
 }
