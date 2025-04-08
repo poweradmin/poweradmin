@@ -1986,8 +1986,6 @@ msgstr ""
 # files, but which are listed in the poweradmin database. Because of
 # this, tools like xgettext will not notice these strings.
 #
-# See also <https://www.poweradmin.org/wiki/TranslationContribution>.
-#
 #~ msgid "User is allowed to add new master zones."
 #~ msgstr "Uźytkownik moźe dodawać nowe strefy master."
 

@@ -7,11 +7,6 @@
 // and will be removed completely in the next major release. Please migrate to the
 // new configuration format in config/settings.php. You can use the migration script:
 // php scripts/migrate-config.php
-//
-// Instead, create the file "inc/config.inc.php" and set the variables you
-// want to set there. Your changes will override the defaults provided by us.
-// Better description of available configuration settings you can find here:
-// <https://github.com/poweradmin/poweradmin/wiki/Configuration-File>
 
 // Poweradmin database settings
 $db_host = '';
