@@ -112,7 +112,7 @@ return [
         'third_level_check' => false,              // Prevent creation of third-level domains (added in 2.1.7)
         'txt_auto_quote' => false,                 // Automatically quote TXT records (added in 3.9.2)
 
-        // Record Type Settings
+        // Record Type Settings (added in 4.0.0)
         // Set to null to use all default types, or provide an array of specific types to show
         // When editing zone templates, the system will automatically show the combined list
         // of both domain_record_types and reverse_record_types
