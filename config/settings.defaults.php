@@ -111,6 +111,23 @@ return [
         'top_level_tld_check' => false,            // Prevent creation of top-level domains (added in 2.1.7)
         'third_level_check' => false,              // Prevent creation of third-level domains (added in 2.1.7)
         'txt_auto_quote' => false,                 // Automatically quote TXT records (added in 3.9.2)
+
+        // Record Type Settings
+        // Set to null to use all default types, or provide an array of specific types to show
+        // When editing zone templates, the system will automatically show the combined list
+        // of both domain_record_types and reverse_record_types
+
+        // Common record types for domain zones (forward zones)
+        'domain_record_types' => null,              // Uses default domain zone record types
+
+        // Example to restrict domain types: uncomment and adjust as needed
+        //'domain_record_types' => ['A', 'AAAA', 'CNAME', 'MX', 'NS', 'SOA', 'TXT', 'SRV', 'CAA'],
+
+        // Common record types for reverse zones
+        'reverse_record_types' => null,             // Uses default reverse zone record types
+
+        // Example to restrict reverse types: uncomment and adjust as needed
+        //'reverse_record_types' => ['PTR', 'NS', 'SOA', 'TXT', 'CNAME'],
     ],
 
     /**

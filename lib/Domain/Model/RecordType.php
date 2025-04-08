@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Model;
 
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+
 class RecordType
 {
     // The following is a list of supported record types by PowerDNS
@@ -119,6 +121,35 @@ class RecordType
      */
     public static function getAllTypes(): array
     {
+        $configManager = ConfigurationManager::getInstance();
+        $configuredDomainTypes = $configManager->get('dns', 'domain_record_types');
+        $configuredReverseTypes = $configManager->get('dns', 'reverse_record_types');
+
+        // If both are configured, merge them
+        if ($configuredDomainTypes && $configuredReverseTypes) {
+            $types = array_merge($configuredDomainTypes, $configuredReverseTypes);
+            $types = array_unique($types);
+            sort($types);
+            return $types;
+        }
+
+        // If only domain types are configured, merge with default reverse types
+        if ($configuredDomainTypes) {
+            $types = array_merge($configuredDomainTypes, self::REVERSE_ZONE_COMMON_RECORDS);
+            $types = array_unique($types);
+            sort($types);
+            return $types;
+        }
+
+        // If only reverse types are configured, merge with default domain types
+        if ($configuredReverseTypes) {
+            $types = array_merge(self::DOMAIN_ZONE_COMMON_RECORDS, $configuredReverseTypes);
+            $types = array_unique($types);
+            sort($types);
+            return $types;
+        }
+
+        // If nothing is configured, use all defaults
         $types = array_merge(
             self::DOMAIN_ZONE_COMMON_RECORDS,
             self::REVERSE_ZONE_COMMON_RECORDS,
@@ -138,6 +169,15 @@ class RecordType
      */
     public static function getDomainZoneTypes(bool $isDnsSecEnabled): array
     {
+        $configManager = ConfigurationManager::getInstance();
+        $configuredDomainTypes = $configManager->get('dns', 'domain_record_types');
+
+        if ($configuredDomainTypes) {
+            return $isDnsSecEnabled ? 
+                self::mergeDnsSecTypes($configuredDomainTypes, true) : 
+                $configuredDomainTypes;
+        }
+
         $types = array_merge(self::DOMAIN_ZONE_COMMON_RECORDS, self::LESS_COMMON_RECORDS);
         return self::mergeDnsSecTypes($types, $isDnsSecEnabled);
     }
@@ -150,6 +190,15 @@ class RecordType
      */
     public static function getReverseZoneTypes(bool $isDnsSecEnabled): array
     {
+        $configManager = ConfigurationManager::getInstance();
+        $configuredReverseTypes = $configManager->get('dns', 'reverse_record_types');
+
+        if ($configuredReverseTypes) {
+            return $isDnsSecEnabled ? 
+                self::mergeDnsSecTypes($configuredReverseTypes, true) : 
+                $configuredReverseTypes;
+        }
+
         $types = self::REVERSE_ZONE_COMMON_RECORDS;
         return self::mergeDnsSecTypes($types, $isDnsSecEnabled);
     }
