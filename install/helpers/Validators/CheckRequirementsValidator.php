@@ -28,7 +28,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Validator for the system requirements check step
  */
-class CheckRequirementsValidator extends AbstractStepValidator
+class CheckRequirementsValidator extends BaseValidator
 {
     /**
      * Minimum PHP version required for Poweradmin
