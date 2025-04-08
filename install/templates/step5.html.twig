@@ -1,159 +1,133 @@
 {% extends 'base.html.twig' %}
 
-{% block step_description %}{% trans %}Configuring database{% endtrans %}{% endblock %}
+{% block step_description %}{% trans %}Setup account and nameservers{% endtrans %}{% endblock %}
 
 {% block content %}
     <div class="card">
         <div class="card-header bg-secondary text-white">
-            {% trans %}Step{% endtrans %} {{ current_step }}: {% trans %}Configuring Database Connection{% endtrans %}
+            {% trans %}Step{% endtrans %} {{ current_step }}: {% trans %}Setup account and name servers{% endtrans %}
         </div>
         <div class="card-body">
             <div class="alert alert-info py-2 mb-3">
-                <strong>{% trans %}Database Preparation:{% endtrans %}</strong> {% trans %}The installer needs to modify the PowerDNS database with tables for Poweradmin. Use an account with sufficient rights (like root) to proceed.{% endtrans %}
+                <strong>{% trans %}Configuration:{% endtrans %}</strong> {% trans %}Now we will gather all details for the configuration itself.{% endtrans %}
             </div>
 
             <form class="needs-validation" method="post" novalidate>
                 <input type="hidden" name="install_token" value="{{ install_token }}">
 
+                {% if db_type != 'sqlite' %}
                 <div class="card mb-3">
                     <div class="card-header">
-                        <strong>{% trans %}Database Settings{% endtrans %}</strong>
+                        <strong>{% trans %}Database User{% endtrans %}</strong>
                     </div>
                     <div class="card-body">
-                        <div class="row mb-2">
-                            <label for="db_type" class="col-md-2 col-form-label col-form-label-sm">{% trans %}Database type{% endtrans %}</label>
+                        <div class="row mb-3">
+                            <label for="pa_db_user" class="col-md-2 col-form-label col-form-label-sm">{% trans %}Username{% endtrans %}</label>
                             <div class="col-md-4">
-                                <select id="db_type" class="form-select form-select-sm" name="db_type" onChange="updateFormFields(this.value)">
-                                    <option value="mysql" {% if db_type == 'mysql' %}selected{% endif %}>MySQL</option>
-                                    <option value="pgsql" {% if db_type == 'pgsql' %}selected{% endif %}>PostgreSQL</option>
-                                    <option value="sqlite" {% if db_type == 'sqlite' %}selected{% endif %}>SQLite</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <span class="form-text small">{% trans %}The type of the PowerDNS database.{% endtrans %}</span>
-                            </div>
-                        </div>
-
-                        <div class="row mb-2" id="username_row">
-                            <label for="username" class="col-md-2 col-form-label col-form-label-sm">{% trans %}Username{% endtrans %}</label>
-                            <div class="col-md-4">
-                                <input id="username" class="form-control form-control-sm" type="text" name="db_user" value="{{ db_user }}" required>
+                                <input id="pa_db_user" class="form-control form-control-sm" type="text" name="pa_db_user" value="{{ pa_db_user }}" required>
                                 <div class="invalid-feedback">{% trans %}Provide the user name{% endtrans %}</div>
                             </div>
                             <div class="col-md-6">
-                                <span class="form-text small">{% trans %}Database username with administrative rights.{% endtrans %}</span>
+                                <span class="form-text small">{% trans %}Poweradmin database username with restricted access. Not for web UI login.{% endtrans %}</span>
                             </div>
                         </div>
 
-                        <div class="row mb-2" id="password_row">
-                            <label for="userpass" class="col-md-2 col-form-label col-form-label-sm">{% trans %}Password{% endtrans %}</label>
+                        <div class="row mb-3">
+                            <label for="pa_db_pass" class="col-md-2 col-form-label col-form-label-sm">{% trans %}Password{% endtrans %}</label>
                             <div class="col-md-4">
                                 <div class="input-group input-group-sm">
-                                    <input class="form-control form-control-sm" type="password" id="userpass" name="db_pass" value="{{ db_pass }}" autocomplete="off" required>
-                                    <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showPassword('userpass', 'eye1')"><i class="bi bi-eye-fill" id="eye1"></i></button>
-                                    <div class="invalid-feedback">{% trans %}Provide user password{% endtrans %}</div>
+                                    <input id="pa_db_pass" class="form-control form-control-sm" type="password" name="pa_db_pass" value="{{ pa_db_pass }}" autocomplete="off" required>
+                                    <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showPassword('pa_db_pass', 'eye1')"><i class="bi bi-eye-fill" id="eye1"></i></button>
+                                    <div class="invalid-feedback">{% trans %}Provide the user password{% endtrans %}</div>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <span class="form-text small">{% trans %}Password for this database user.{% endtrans %}</span>
-                            </div>
-                        </div>
-
-                        <div class="row mb-2" id="db_hostname_row">
-                            <label for="host" class="col-md-2 col-form-label col-form-label-sm">{% trans %}Hostname{% endtrans %}</label>
-                            <div class="col-md-4">
-                                <input class="form-control form-control-sm" type="text" id="host" name="db_host" value="{{ db_host|default('localhost') }}" required>
-                                <div class="invalid-feedback">{% trans %}Provide the hostname{% endtrans %}</div>
-                            </div>
-                            <div class="col-md-6">
-                                <span class="form-text small">{% trans %}Database server hostname (usually "localhost").{% endtrans %}</span>
-                            </div>
-                        </div>
-
-                        <div class="row mb-2" id="db_port_row">
-                            <label for="db_port" class="col-md-2 col-form-label col-form-label-sm">{% trans %}DB Port{% endtrans %}</label>
-                            <div class="col-md-4">
-                                <input class="form-control form-control-sm" type="text" id="db_port" name="db_port" value="{{ db_port|default('3306') }}" required>
-                                <div class="invalid-feedback">{% trans %}Provide database port{% endtrans %}</div>
-                            </div>
-                            <div class="col-md-6">
-                                <span class="form-text small">{% trans %}Database server port.{% endtrans %}</span>
-                            </div>
-                        </div>
-
-                        <div class="row mb-2">
-                            <label for="db_name" class="col-md-2 col-form-label col-form-label-sm">{% trans %}Database{% endtrans %}</label>
-                            <div class="col-md-4">
-                                <input class="form-control form-control-sm" type="text" id="db_name" name="db_name" value="{{ db_name }}" required>
-                                <div class="invalid-feedback">{% trans %}Provide the name of the database{% endtrans %}</div>
-                            </div>
-                            <div class="col-md-6">
-                                <span class="form-text small" id="db_name_title">{% trans %}PowerDNS database name.{% endtrans %}</span>
-                                <span class="form-text small" id="db_path_title" style="display: none;">
-                                    {% trans %}Full path to SQLite database file{% endtrans %}
-                                    <div class="alert alert-warning py-1 mt-1 mb-0">
-                                        <small>
-                                            <strong>{% trans %}Note:{% endtrans %}</strong> {% trans %}File must exist with web server read/write access. Use absolute path.{% endtrans %}
-                                        </small>
-                                    </div>
-                                </span>
-                            </div>
-                        </div>
-
-                        <div class="row mb-2" id="db_charset_row">
-                            <label for="db_charset" class="col-md-2 col-form-label col-form-label-sm">{% trans %}DB charset{% endtrans %}</label>
-                            <div class="col-md-4">
-                                <select class="form-select form-select-sm" id="db_charset" name="db_charset">
-                                    <option value="">{% trans %}Use default{% endtrans %}</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <span class="form-text small">{% trans %}Charset for new tables. Leave empty for database default.{% endtrans %}</span>
-                            </div>
-                        </div>
-
-                        <div class="row mb-2" id="db_collation_row">
-                            <label for="db_collation" class="col-md-2 col-form-label col-form-label-sm">{% trans %}DB collation{% endtrans %}</label>
-                            <div class="col-md-4">
-                                <select class="form-select form-select-sm" id="db_collation" name="db_collation">
-                                    <option value="">{% trans %}Use default{% endtrans %}</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <span class="form-text small">{% trans %}Collation rules for character comparison. Leave empty for database default.{% endtrans %}</span>
+                                <span class="form-text small">{% trans %}The password for this username.{% endtrans %}</span>
                             </div>
                         </div>
                     </div>
                 </div>
+                {% endif %}
 
                 <div class="card mb-3">
                     <div class="card-header">
-                        <strong>{% trans %}Administrator Account{% endtrans %}</strong>
+                        <strong>{% trans %}DNS Settings{% endtrans %}</strong>
                     </div>
                     <div class="card-body">
-                        <div class="row mb-2">
-                            <label for="pa_pass" class="col-md-2 col-form-label col-form-label-sm">{% trans %}Administrator password{% endtrans %}</label>
+                        <div class="row mb-3">
+                            <label for="dns_hostmaster" class="col-md-2 col-form-label col-form-label-sm">{% trans %}Hostmaster{% endtrans %}</label>
                             <div class="col-md-4">
-                                <div class="input-group input-group-sm">
-                                    <input class="form-control form-control-sm" type="password" id="pa_pass" name="pa_pass" value="{{ pa_pass }}" autocomplete="off" required>
-                                    <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showPassword('pa_pass', 'eye2')"><i class="bi bi-eye-fill" id="eye2"></i></button>
-                                    <div class="invalid-feedback">{% trans %}Provide a password{% endtrans %}</div>
-                                </div>
+                                <input id="dns_hostmaster" class="form-control form-control-sm" type="text" name="dns_hostmaster" 
+                                       value="{{ dns_hostmaster }}" placeholder="hostmaster.example.net" required>
+                                <div class="invalid-feedback">{% trans %}Provide the DNS hostmaster{% endtrans %}</div>
                             </div>
                             <div class="col-md-6">
-                                <div class="form-text small">
-                                    {% trans %}Password for "admin" username with full rights to the Poweradmin interface.{% endtrans %}
-                                    <span class="badge bg-info text-dark ms-1">6+ chars</span>
-                                    <span class="badge bg-info text-dark">1+ uppercase</span>
-                                    <span class="badge bg-info text-dark">1+ lowercase</span>
-                                    <span class="badge bg-info text-dark">1+ number</span>
-                                </div>
+                                <span class="form-text small">{% trans %}When creating SOA records and no hostmaster is provided, this value here will be used.{% endtrans %}</span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <label for="dns_ns1" class="col-md-2 col-form-label col-form-label-sm">{% trans %}Primary nameserver{% endtrans %}</label>
+                            <div class="col-md-4">
+                                <input id="dns_ns1" class="form-control form-control-sm" type="text" name="dns_ns1" value="{{ dns_ns1 }}"
+                                       placeholder="ns1.example.net" required>
+                                <div class="invalid-feedback">{% trans %}Provide the primary nameserver{% endtrans %}</div>
+                            </div>
+                            <div class="col-md-6">
+                                <span class="form-text small">{% trans %}When creating new zones using the template, this value will be used as primary nameserver.{% endtrans %}</span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <label for="dns_ns2" class="col-md-2 col-form-label col-form-label-sm">{% trans %}Secondary nameserver{% endtrans %}</label>
+                            <div class="col-md-4">
+                                <input id="dns_ns2" class="form-control form-control-sm" type="text" name="dns_ns2" value="{{ dns_ns2 }}"
+                                       placeholder="ns2.example.net" required>
+                                <div class="invalid-feedback">{% trans %}Provide the secondary nameserver{% endtrans %}</div>
+                            </div>
+                            <div class="col-md-6">
+                                <span class="form-text small">{% trans %}When creating new zones using the template, this value will be used as secondary nameserver.{% endtrans %}</span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <label for="dns_ns3" class="col-md-2 col-form-label col-form-label-sm">
+                                {% trans %}Tertiary Nameserver{% endtrans %} <span class="text-muted">({% trans %}optional{% endtrans %})</span>
+                            </label>
+                            <div class="col-md-4">
+                                <input id="dns_ns3" class="form-control form-control-sm" type="text" name="dns_ns3" value="{{ dns_ns3 }}"
+                                       placeholder="ns3.example.net">
+                            </div>
+                            <div class="col-md-6">
+                                <span class="form-text small">{% trans %}When creating new zones using the template, this optional value will be used as tertiary nameserver.{% endtrans %}</span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <label for="dns_ns4" class="col-md-2 col-form-label col-form-label-sm">
+                                {% trans %}Quaternary Nameserver{% endtrans %} <span class="text-muted">({% trans %}optional{% endtrans %})</span>
+                            </label>
+                            <div class="col-md-4">
+                                <input id="dns_ns4" class="form-control form-control-sm" type="text" name="dns_ns4" value="{{ dns_ns4 }}"
+                                       placeholder="ns4.example.net">
+                            </div>
+                            <div class="col-md-6">
+                                <span class="form-text small">{% trans %}When creating new zones using the template, this optional value will be used as quaternary nameserver.{% endtrans %}</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="mt-3">
+                    <input type="hidden" name="db_user" value="{{ db_user }}">
+                    <input type="hidden" name="db_pass" value="{{ db_pass }}">
+                    <input type="hidden" name="db_host" value="{{ db_host }}">
+                    <input type="hidden" name="db_port" value="{{ db_port }}">
+                    <input type="hidden" name="db_name" value="{{ db_name }}">
+                    <input type="hidden" name="db_type" value="{{ db_type }}">
+                    <input type="hidden" name="db_charset" value="{{ db_charset }}">
+                    <input type="hidden" name="db_collation" value="{{ db_collation }}">
+                    <input type="hidden" name="pa_pass" value="{{ pa_pass }}">
                     <input type="hidden" name="step" value="{{ next_step }}">
                     <input type="hidden" name="language" value="{{ language }}">
                     <input type="submit" name="submit" class="btn btn-sm btn-primary" value="{% trans %}Continue to step{% endtrans %} {{ next_step }}">
@@ -161,140 +135,4 @@
             </form>
         </div>
     </div>
-{% endblock %}
-
-{% block javascripts %}
-    <script>
-        const charsets = {{ charsets|json_encode|raw }};
-        const collations = {{ collations|json_encode|raw }};
-
-        function updateDatabaseFields(dbType) {
-            const charsetSelect = document.querySelector('select[name="db_charset"]');
-            const collationSelect = document.querySelector('select[name="db_collation"]');
-
-            const charsetOptions = charsets[dbType] || [];
-            const collationOptions = collations[dbType] || [];
-
-            charsetSelect.innerHTML = '<option value="">{% trans %}Use default{% endtrans %}</option>';
-            charsetOptions.forEach(charset => {
-                const option = document.createElement('option');
-                option.value = charset;
-                option.textContent = charset;
-                charsetSelect.appendChild(option);
-            });
-
-            collationSelect.innerHTML = '<option value="">{% trans %}Use default{% endtrans %}</option>';
-            collationOptions.forEach(collation => {
-                const option = document.createElement('option');
-                option.value = collation;
-                option.textContent = collation;
-                collationSelect.appendChild(option);
-            });
-        }
-
-        function updateFormFields(dbType) {
-            // Fields to show/hide based on DB type
-            const usernameRow = document.getElementById('username_row');
-            const passwordRow = document.getElementById('password_row');
-            const hostnameRow = document.getElementById('db_hostname_row');
-            const portRow = document.getElementById('db_port_row');
-            const charsetRow = document.getElementById('db_charset_row');
-            const collationRow = document.getElementById('db_collation_row');
-
-            // Input fields
-            const usernameInput = document.getElementById('username');
-            const passwordInput = document.getElementById('userpass');
-            const hostnameInput = document.getElementById('host');
-            const portInput = document.getElementById('db_port');
-
-            // Text labels for database field
-            const dbNameTitle = document.getElementById('db_name_title');
-            const dbPathTitle = document.getElementById('db_path_title');
-
-            // Database name/path input field
-            const dbNameInput = document.getElementById('db_name');
-
-            if (dbType === 'sqlite') {
-                // For SQLite, hide user/pass/host/port fields
-                usernameRow.style.display = 'none';
-                passwordRow.style.display = 'none';
-                hostnameRow.style.display = 'none';
-                portRow.style.display = 'none';
-                charsetRow.style.display = 'none';
-                collationRow.style.display = 'none';
-
-                // Remove 'required' attribute from hidden fields
-                usernameInput.removeAttribute('required');
-                passwordInput.removeAttribute('required');
-                hostnameInput.removeAttribute('required');
-                portInput.removeAttribute('required');
-
-                // Show SQLite-specific help text and hide MySQL/PostgreSQL help
-                dbNameTitle.style.display = 'none';
-                dbPathTitle.style.display = 'block';
-
-                // Update input placeholder for SQLite
-                dbNameInput.placeholder = '/path/to/database.sqlite';
-
-                // If the field is empty or doesn't look like a path, set the default SQLite path
-                if (!dbNameInput.value || !dbNameInput.value.includes('/')) {
-                    // Save the old value in case it's a real database name
-                    const oldValue = dbNameInput.value;
-                    // Set the default SQLite path
-                    dbNameInput.value = '/var/lib/powerdns/pdns.sqlite';
-                }
-            } else {
-                // For MySQL/PostgreSQL, show all fields
-                usernameRow.style.display = '';
-                passwordRow.style.display = '';
-                hostnameRow.style.display = '';
-                portRow.style.display = '';
-                charsetRow.style.display = '';
-                collationRow.style.display = '';
-
-                // Add 'required' attribute back to visible fields
-                usernameInput.setAttribute('required', '');
-                passwordInput.setAttribute('required', '');
-                hostnameInput.setAttribute('required', '');
-                portInput.setAttribute('required', '');
-
-                // Show MySQL/PostgreSQL-specific help text and hide SQLite help
-                dbNameTitle.style.display = 'block';
-                dbPathTitle.style.display = 'none';
-
-                // Update input placeholder for MySQL/PostgreSQL
-                dbNameInput.placeholder = 'powerdns';
-                
-                // Clear SQLite path if switching from SQLite to MySQL/PostgreSQL
-                if (dbNameInput.value && dbNameInput.value.includes('/')) {
-                    // Check if it looks like a file path (contains slash)
-                    dbNameInput.value = 'powerdns';
-                }
-
-                // Update port if it's one of the standard ports
-                if (dbType === 'mysql' && (!portInput.value || portInput.value === '5432')) {
-                    portInput.value = '3306';
-                } else if (dbType === 'pgsql' && (!portInput.value || portInput.value === '3306')) {
-                    portInput.value = '5432';
-                }
-            }
-
-            // Reset validation state when changing database type
-            const form = document.querySelector('form.needs-validation');
-            form.classList.remove('was-validated');
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const dbTypeElement = document.getElementById('db_type');
-            if (dbTypeElement) {
-                updateFormFields(dbTypeElement.value);
-                updateDatabaseFields(dbTypeElement.value);
-
-                dbTypeElement.addEventListener('change', function() {
-                    updateFormFields(this.value);
-                    updateDatabaseFields(this.value);
-                });
-            }
-        });
-    </script>
 {% endblock %}

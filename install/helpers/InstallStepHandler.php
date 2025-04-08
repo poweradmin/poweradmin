@@ -294,7 +294,7 @@ class InstallStepHandler
         // Format display paths for the UI (remove leading slashes)
         $displayNewConfigFile = 'config/settings.php';
 
-        $this->renderTemplate('step6.html.twig', array(
+        $this->renderTemplate('step7.html.twig', array(
             'current_step' => $this->currentStep,
             'language' => $this->language,
             'new_config_file' => $displayNewConfigFile,
@@ -319,7 +319,7 @@ class InstallStepHandler
 
     public function step8InstallationComplete(): void
     {
-        $this->renderTemplate('step7.html.twig', array(
+        $this->renderTemplate('step8.html.twig', array(
             'current_step' => InstallationSteps::STEP_INSTALLATION_COMPLETE,
         ));
     }
