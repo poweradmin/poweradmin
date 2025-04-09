@@ -10,13 +10,17 @@ class ConfigValidatorTest extends TestCase
     public function testValidConfig(): void
     {
         $config = [
-            'iface_index' => 'cards',
-            'iface_rowamount' => 10,
-            'iface_lang' => 'en_EN',
-            'iface_enabled_languages' => 'en_EN,de_DE',
-            'syslog_use' => false,
-            'syslog_ident' => 'poweradmin',
-            'syslog_facility' => LOG_USER,
+            'interface' => [
+                'index_display' => 'cards',
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+                'syslog_identity' => 'poweradmin',
+                'syslog_facility' => LOG_USER,
+            ],
         ];
 
         $validator = new ConfigValidator($config);
@@ -28,12 +32,16 @@ class ConfigValidatorTest extends TestCase
     public function testSyslogUseIsBoolean(): void
     {
         $config = [
-            'iface_rowamount' => 10,
-            'iface_lang' => 'en_EN',
-            'iface_enabled_languages' => 'en_EN,de_DE',
-            'syslog_use' => 'not_a_boolean',
-            'syslog_ident' => 'poweradmin',
-            'syslog_facility' => LOG_USER,
+            'interface' => [
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => 'not_a_boolean',
+                'syslog_identity' => 'poweradmin',
+                'syslog_facility' => LOG_USER,
+            ],
         ];
 
         $validator = new ConfigValidator($config);
@@ -45,12 +53,16 @@ class ConfigValidatorTest extends TestCase
     public function testSyslogIdentIsNotEmpty(): void
     {
         $config = [
-            'iface_rowamount' => 10,
-            'iface_lang' => 'en_EN',
-            'iface_enabled_languages' => 'en_EN,de_DE',
-            'syslog_use' => true,
-            'syslog_ident' => '',
-            'syslog_facility' => LOG_USER,
+            'interface' => [
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => true,
+                'syslog_identity' => '',
+                'syslog_facility' => LOG_USER,
+            ],
         ];
 
         $validator = new ConfigValidator($config);
@@ -62,12 +74,16 @@ class ConfigValidatorTest extends TestCase
     public function testSyslogFacilityIsValid(): void
     {
         $config = [
-            'iface_rowamount' => 10,
-            'iface_lang' => 'en_EN',
-            'iface_enabled_languages' => 'en_EN,de_DE',
-            'syslog_use' => true,
-            'syslog_ident' => 'poweradmin',
-            'syslog_facility' => 'invalid_facility',
+            'interface' => [
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => true,
+                'syslog_identity' => 'poweradmin',
+                'syslog_facility' => 'invalid_facility',
+            ],
         ];
 
         $validator = new ConfigValidator($config);
@@ -79,13 +95,17 @@ class ConfigValidatorTest extends TestCase
     public function testInterfaceLanguageIsNotEmpty(): void
     {
         $config = [
-            'iface_index' => 'cards',
-            'iface_rowamount' => 10,
-            'syslog_use' => false,
-            'syslog_ident' => 'poweradmin',
-            'syslog_facility' => LOG_USER,
-            'iface_lang' => '',
-            'iface_enabled_languages' => 'en_EN,de_DE',
+            'interface' => [
+                'index_display' => 'cards',
+                'rows_per_page' => 10,
+                'language' => '',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+                'syslog_identity' => 'poweradmin',
+                'syslog_facility' => LOG_USER,
+            ],
         ];
 
         $validator = new ConfigValidator($config);
@@ -97,13 +117,17 @@ class ConfigValidatorTest extends TestCase
     public function testInterfaceEnabledLanguagesAreValid(): void
     {
         $config = [
-            'iface_index' => 'cards',
-            'iface_rowamount' => 10,
-            'syslog_use' => false,
-            'syslog_ident' => 'poweradmin',
-            'syslog_facility' => LOG_USER,
-            'iface_lang' => 'en_EN',
-            'iface_enabled_languages' => 'en_EN,de_DE',
+            'interface' => [
+                'index_display' => 'cards',
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+                'syslog_identity' => 'poweradmin',
+                'syslog_facility' => LOG_USER,
+            ],
         ];
 
         $validator = new ConfigValidator($config);
@@ -115,31 +139,39 @@ class ConfigValidatorTest extends TestCase
     public function testInterfaceEnabledLanguagesAreNotEmpty(): void
     {
         $config = [
-            'iface_index' => 'cards',
-            'iface_rowamount' => 10,
-            'syslog_use' => false,
-            'syslog_ident' => 'poweradmin',
-            'syslog_facility' => LOG_USER,
-            'iface_lang' => 'en_EN',
-            'iface_enabled_languages' => '',
+            'interface' => [
+                'index_display' => 'cards',
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => '',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+                'syslog_identity' => 'poweradmin',
+                'syslog_facility' => LOG_USER,
+            ],
         ];
 
         $validator = new ConfigValidator($config);
 
         $this->assertFalse($validator->validate());
-        $this->assertArrayHasKey('iface_lang', $validator->getErrors());
+        $this->assertArrayHasKey('iface_enabled_languages', $validator->getErrors());
     }
 
     public function testInterfaceEnabledLanguagesDoNotContainEmptyItems(): void
     {
         $config = [
-            'iface_index' => 'cards',
-            'iface_rowamount' => 10,
-            'syslog_use' => false,
-            'syslog_ident' => 'poweradmin',
-            'syslog_facility' => LOG_USER,
-            'iface_lang' => 'en_EN',
-            'iface_enabled_languages' => 'en_EN,de_DE,',
+            'interface' => [
+                'index_display' => 'cards',
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE,',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+                'syslog_identity' => 'poweradmin',
+                'syslog_facility' => LOG_USER,
+            ],
         ];
 
         $validator = new ConfigValidator($config);
@@ -151,13 +183,17 @@ class ConfigValidatorTest extends TestCase
     public function testInterfaceLanguageIsIncludedInEnabledLanguages(): void
     {
         $config = [
-            'iface_index' => 'cards',
-            'iface_rowamount' => 10,
-            'syslog_use' => false,
-            'syslog_ident' => 'poweradmin',
-            'syslog_facility' => LOG_USER,
-            'iface_lang' => 'fr_FR',
-            'iface_enabled_languages' => 'en_EN,de_DE',
+            'interface' => [
+                'index_display' => 'cards',
+                'rows_per_page' => 10,
+                'language' => 'fr_FR',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+                'syslog_identity' => 'poweradmin',
+                'syslog_facility' => LOG_USER,
+            ],
         ];
 
         $validator = new ConfigValidator($config);
