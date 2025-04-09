@@ -33,27 +33,28 @@
 use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
-use Poweradmin\AppConfiguration;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-$config = new AppConfiguration();
-$db_type = $config->get('db_type');
+$config = ConfigurationManager::getInstance();
+$config->initialize();
 
-$pdns_db_name = $config->get('pdns_db_name');
+$db_type = $config->get('database', 'type');
+$pdns_db_name = $config->get('database', 'pdns_name');
 $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
 $credentials = [
-    'db_host' => $config->get('db_host'),
-    'db_port' => $config->get('db_port'),
-    'db_user' => $config->get('db_user'),
-    'db_pass' => $config->get('db_pass'),
-    'db_name' => $config->get('db_name'),
-    'db_charset' => $config->get('db_charset'),
-    'db_collation' => $config->get('db_collation'),
+    'db_host' => $config->get('database', 'host'),
+    'db_port' => $config->get('database', 'port'),
+    'db_user' => $config->get('database', 'user'),
+    'db_pass' => $config->get('database', 'password'),
+    'db_name' => $config->get('database', 'name'),
+    'db_charset' => $config->get('database', 'charset'),
+    'db_collation' => $config->get('database', 'collation'),
     'db_type' => $db_type,
-    'db_file' => $config->get('db_file'),
+    'db_file' => $config->get('database', 'file'),
 ];
 
 $databaseConnection = new PDODatabaseConnection();
@@ -266,8 +267,8 @@ $user = $db->queryRow("SELECT users.id, users.password FROM users, perm_templ, p
                         )");
 
 $userAuthService = new UserAuthenticationService(
-    $config->get('password_encryption'),
-    $config->get('password_encryption_cost')
+    $config->get('security', 'password_encryption'),
+    $config->get('security', 'password_cost')
 );
 
 if (!$user || !$userAuthService->verifyPassword($auth_password, $user['password'])) {
