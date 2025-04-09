@@ -38,12 +38,23 @@ RUN sqlite3 /db/pdns.db < /app/sql/pdns/47/schema.sqlite3.sql
 RUN sqlite3 /db/pdns.db < /app/sql/poweradmin-sqlite-db-structure.sql
 RUN rm -rf /app/sql
 
-RUN echo '<?php' > /app/inc/config.inc.php
-RUN echo '$db_type="sqlite";' >> /app/inc/config.inc.php
-RUN echo '$db_file="/db/pdns.db";' >> /app/inc/config.inc.php
+# Create config directory if it doesn't exist
+RUN mkdir -p /app/config
 
+# Create settings.php with SQLite configuration
+RUN echo '<?php' > /app/config/settings.php
+RUN echo 'return [' >> /app/config/settings.php
+RUN echo '    "database" => [' >> /app/config/settings.php
+RUN echo '        "type" => "sqlite",' >> /app/config/settings.php
+RUN echo '        "file" => "/db/pdns.db",' >> /app/config/settings.php
+RUN echo '    ],' >> /app/config/settings.php
+
+# Generate random session key
 RUN php -r 'echo bin2hex(random_bytes(32));' > /tmp/session_key.txt
-RUN echo "\$session_key=\"$(cat /tmp/session_key.txt)\";" >> /app/inc/config.inc.php
+RUN echo '    "security" => [' >> /app/config/settings.php
+RUN echo '        "session_key" => "'"$(cat /tmp/session_key.txt)"'",' >> /app/config/settings.php
+RUN echo '    ],' >> /app/config/settings.php
+RUN echo '];' >> /app/config/settings.php
 
 RUN chown -R www-data:www-data /db /app \
     && chmod -R 755 /db /app
