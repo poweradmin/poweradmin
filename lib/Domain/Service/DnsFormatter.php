@@ -22,13 +22,13 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\AppConfiguration;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 class DnsFormatter
 {
-    private AppConfiguration $config;
+    private ConfigurationManager $config;
 
-    public function __construct(AppConfiguration $config)
+    public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
     }
@@ -43,7 +43,7 @@ class DnsFormatter
 
     private function formatTxtContent(string $content): string
     {
-        if (!$this->config->get('dns_txt_auto_quote')) {
+        if (!$this->config->get('dns', 'txt_auto_quote')) {
             return $content;
         }
 
