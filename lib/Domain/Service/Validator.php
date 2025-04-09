@@ -22,15 +22,15 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\AppConfiguration;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 
 class Validator
 {
     private PDOLayer $db;
-    private AppConfiguration $config;
+    private ConfigurationManager $config;
 
-    public function __construct(PDOLayer $db, AppConfiguration $config)
+    public function __construct(PDOLayer $db, ConfigurationManager $config)
     {
         $this->db = $db;
         $this->config = $config;

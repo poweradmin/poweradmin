@@ -3,8 +3,8 @@
 namespace unit;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\AppConfiguration;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 
 class DnsRecordTest extends TestCase
@@ -15,7 +15,16 @@ class DnsRecordTest extends TestCase
     protected function setUp(): void
     {
         $dbMock = $this->createMock(PDOLayer::class);
-        $configMock = $this->createMock(AppConfiguration::class);
+        $configMock = $this->createMock(ConfigurationManager::class);
+
+        // Configure the mock to return expected values
+        $configMock->method('get')
+            ->willReturnCallback(function ($group, $key) {
+                if ($group === 'misc' && $key === 'timezone') {
+                    return 'UTC';
+                }
+                return null;
+            });
 
         $this->dnsRecord = new DnsRecord($dbMock, $configMock);
     }

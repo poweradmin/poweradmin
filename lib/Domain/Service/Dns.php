@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\AppConfiguration;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Model\TopLevelDomain;
 use Poweradmin\Infrastructure\Database\PDOLayer;
@@ -37,11 +37,11 @@ use Poweradmin\Infrastructure\Database\PDOLayer;
  */
 class Dns
 {
-    private AppConfiguration $config;
+    private ConfigurationManager $config;
     private PDOLayer $db;
     private MessageService $messageService;
 
-    public function __construct(PDOLayer $db, AppConfiguration $config)
+    public function __construct(PDOLayer $db, ConfigurationManager $config)
     {
         $this->db = $db;
         $this->config = $config;
@@ -302,8 +302,8 @@ class Dns
      */
     public function is_valid_hostname_fqdn(mixed &$hostname, string $wildcard): bool
     {
-        $dns_top_level_tld_check = $this->config->get('dns_top_level_tld_check');
-        $dns_strict_tld_check = $this->config->get('dns_strict_tld_check');
+        $dns_top_level_tld_check = $this->config->get('dns', 'top_level_tld_check');
+        $dns_strict_tld_check = $this->config->get('dns', 'strict_tld_check');
 
         if ($hostname == ".") {
             return true;
