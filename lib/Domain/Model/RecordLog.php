@@ -23,9 +23,9 @@
 namespace Poweradmin\Domain\Model;
 
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\AppConfiguration;
 
 class RecordLog
 {
@@ -37,7 +37,7 @@ class RecordLog
     private LegacyLogger $logger;
     private PDOLayer $db;
 
-    private AppConfiguration $config;
+    private ConfigurationManager $config;
 
     public function __construct($db, $config)
     {

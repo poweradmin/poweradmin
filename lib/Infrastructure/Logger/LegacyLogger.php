@@ -22,26 +22,27 @@
 
 namespace Poweradmin\Infrastructure\Logger;
 
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
-use Poweradmin\AppConfiguration;
 
 class LegacyLogger
 {
     private PDOLayer $db;
-    private AppConfiguration $config;
+    private ConfigurationManager $config;
 
     public function __construct($db)
     {
         $this->db = $db;
-        $this->config = new AppConfiguration();
+        $this->config = ConfigurationManager::getInstance();
+        $this->config->initialize();
     }
 
     private function do_log($message, $priority, $zone_id = null): void
     {
-        $syslog_use = $this->config->get('syslog_use');
-        $syslog_ident = $this->config->get('syslog_ident');
-        $syslog_facility = $this->config->get('syslog_facility');
-        $dblog_use = $this->config->get('dblog_use');
+        $syslog_use = $this->config->get('logging', 'syslog_enabled');
+        $syslog_ident = $this->config->get('logging', 'syslog_identity');
+        $syslog_facility = $this->config->get('logging', 'syslog_facility');
+        $dblog_use = $this->config->get('logging', 'database_enabled');
 
         if ($syslog_use) {
             openlog($syslog_ident, LOG_PERROR, $syslog_facility);

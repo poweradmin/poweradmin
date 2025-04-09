@@ -76,11 +76,11 @@ class RecordSearch extends BaseSearch
     {
         $offset = ($page - 1) * $iface_rowamount;
 
-        $pdns_db_name = $this->config->get('pdns_db_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
         $comments_table = $pdns_db_name ? $pdns_db_name . '.comments' : 'comments';
 
-        $db_type = $this->config->get('db_type');
+        $db_type = $this->config->get('database', 'type');
         $sort_records_by = $sort_records_by === 'name' ? SortHelper::getRecordSortOrder($records_table, $db_type, $record_sort_direction) : "$sort_records_by $record_sort_direction";
 
         $recordsQuery = "
@@ -156,7 +156,7 @@ class RecordSearch extends BaseSearch
      */
     public function getFoundRecords(array $parameters, mixed $search_string, mixed $reverse_search_string, string $permission_view, bool $iface_search_group_records): int
     {
-        $pdns_db_name = $this->config->get('pdns_db_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
         $comments_table = $pdns_db_name ? $pdns_db_name . '.comments' : 'comments';
         $groupByClause = $iface_search_group_records ? "GROUP BY $records_table.name, $records_table.content" : '';

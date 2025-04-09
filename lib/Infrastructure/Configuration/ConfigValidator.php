@@ -41,7 +41,7 @@ class ConfigValidator
         $this->validateIfaceRowAmount();
         $this->validateIfaceLang();
         $this->validateSyslogUse();
-        if ($this->config['syslog_use']) {
+        if ($this->getSetting('logging', 'syslog_enabled')) {
             $this->validateSyslogIdent();
             $this->validateSyslogFacility();
         }
@@ -54,17 +54,32 @@ class ConfigValidator
         return $this->errors;
     }
 
+    /**
+     * Helper method to get setting from hierarchical config
+     * 
+     * @param string $group Settings group
+     * @param string $key Setting key
+     * @param mixed $default Default value
+     * @return mixed
+     */
+    private function getSetting(string $group, string $key, mixed $default = null): mixed
+    {
+        return $this->config[$group][$key] ?? $default;
+    }
+
     private function validateSyslogUse(): void
     {
-        if (!is_bool($this->config['syslog_use'])) {
-            $this->errors['syslog_use'] = 'syslog_use must be a boolean value (unquoted true or false)';
+        $syslogEnabled = $this->getSetting('logging', 'syslog_enabled');
+        if (!is_bool($syslogEnabled)) {
+            $this->errors['syslog_use'] = 'syslog_enabled must be a boolean value (unquoted true or false)';
         }
     }
 
     private function validateSyslogIdent(): void
     {
-        if (!is_string($this->config['syslog_ident']) || empty($this->config['syslog_ident'])) {
-            $this->errors['syslog_ident'] = 'syslog_ident must be a non-empty string';
+        $syslogIdent = $this->getSetting('logging', 'syslog_identity');
+        if (!is_string($syslogIdent) || empty($syslogIdent)) {
+            $this->errors['syslog_ident'] = 'syslog_identity must be a non-empty string';
         }
     }
 
@@ -82,7 +97,8 @@ class ConfigValidator
             'LOG_LOCAL7' => LOG_LOCAL7,
         ];
 
-        if (!in_array($this->config['syslog_facility'], $validFacilities)) {
+        $syslogFacility = $this->getSetting('logging', 'syslog_facility');
+        if (!in_array($syslogFacility, $validFacilities)) {
             $validFacilitiesList = implode(', ', array_keys($validFacilities));
             $this->errors['syslog_facility'] = "syslog_facility must be an unquoted value and one of the following values: $validFacilitiesList";
         }
@@ -90,35 +106,43 @@ class ConfigValidator
 
     private function validateIfaceRowAmount(): void
     {
-        if (!is_int($this->config['iface_rowamount']) && $this->config['iface_rowamount'] <= 0) {
-            $this->errors['iface_rowamount'] = 'iface_rowamount must be a positive integer';
+        $rowsPerPage = $this->getSetting('interface', 'rows_per_page');
+        if (!is_int($rowsPerPage) || $rowsPerPage <= 0) {
+            $this->errors['iface_rowamount'] = 'rows_per_page must be a positive integer';
         }
     }
 
     private function validateIfaceIndex(): void
     {
         $validIndexes = ['cards', 'list'];
-        $ifaceIndex = $this->config['iface_index'] ?? null;
-        if (!in_array($ifaceIndex, $validIndexes)) {
+        $indexDisplay = $this->getSetting('interface', 'index_display');
+        if (!in_array($indexDisplay, $validIndexes)) {
             $validIndexesList = implode(', ', $validIndexes);
-            $this->errors['iface_index'] = "iface_index must be an string and one of the following values: $validIndexesList";
+            $this->errors['iface_index'] = "index_display must be a string and one of the following values: $validIndexesList";
         }
     }
 
     private function validateIfaceLang(): void
     {
-        if (!is_string($this->config['iface_lang']) || empty($this->config['iface_lang'])) {
-            $this->errors['iface_lang'] = 'iface_lang must be a non-empty string';
+        $language = $this->getSetting('interface', 'language');
+        if (!is_string($language) || empty($language)) {
+            $this->errors['iface_lang'] = 'language must be a non-empty string';
         }
 
-        $enabledLanguages = explode(',', $this->config['iface_enabled_languages']);
-        if (!in_array($this->config['iface_lang'], $enabledLanguages)) {
-            $this->errors['iface_lang'] = 'iface_lang must be one of the enabled languages';
+        $enabledLanguages = $this->getSetting('interface', 'enabled_languages');
+        if (empty($enabledLanguages)) {
+            $this->errors['iface_enabled_languages'] = 'enabled_languages must be a non-empty string and contain a list of languages separated by commas';
+            return;
+        }
+        
+        $enabledLanguagesArray = explode(',', $enabledLanguages);
+        if (!in_array($language, $enabledLanguagesArray)) {
+            $this->errors['iface_lang'] = 'language must be one of the enabled languages';
         }
 
-        foreach ($enabledLanguages as $language) {
-            if (!is_string($language) || empty($language)) {
-                $this->errors['iface_enabled_languages'] = 'iface_enabled_languages must be a non-empty string and contain a list of languages separated by commas';
+        foreach ($enabledLanguagesArray as $lang) {
+            if (!is_string($lang) || empty($lang)) {
+                $this->errors['iface_enabled_languages'] = 'enabled_languages must be a non-empty string and contain a list of languages separated by commas';
                 break;
             }
         }

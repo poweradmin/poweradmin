@@ -556,7 +556,6 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
         'PoweradminInstall\\Validators\\SetupAccountAndNameServersValidator' => __DIR__ . '/../..' . '/install/helpers/Validators/SetupAccountAndNameServersValidator.php',
         'PoweradminInstall\\Validators\\UserPasswordValidationTrait' => __DIR__ . '/../..' . '/install/helpers/Validators/UserPasswordValidationTrait.php',
         'PoweradminInstall\\Validators\\ValidationErrorHelper' => __DIR__ . '/../..' . '/install/helpers/Validators/ValidationErrorHelper.php',
-        'Poweradmin\\AppConfiguration' => __DIR__ . '/../..' . '/lib/AppConfiguration.php',
         'Poweradmin\\AppFactory' => __DIR__ . '/../..' . '/lib/AppFactory.php',
         'Poweradmin\\AppInitializer' => __DIR__ . '/../..' . '/lib/AppInitializer.php',
         'Poweradmin\\AppManager' => __DIR__ . '/../..' . '/lib/AppManager.php',

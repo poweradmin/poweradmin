@@ -22,30 +22,29 @@
 
 namespace Poweradmin\Infrastructure\Service;
 
-use Poweradmin\AppConfiguration;
 use Poweradmin\Domain\Service\DnssecProvider;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 class PdnsUtilProvider implements DnssecProvider
 {
     private LegacyLogger $logger;
-    private AppConfiguration $config;
+    private ConfigurationManager $config;
     private PDOLayer $db;
     private MessageService $messageService;
 
-    public function __construct($db)
+    public function __construct(PDOLayer $db, ConfigurationManager $config)
     {
         $this->db = $db;
         $this->logger = new LegacyLogger($db);
-        $this->config = new AppConfiguration();
+        $this->config = $config;
         $this->messageService = new MessageService();
     }
 
     private function dnssec_is_pdnssec_callable(): bool
     {
-        $pdnssec_command = $this->config->get('pdnssec_command');
+        $pdnssec_command = $this->config->get('dnssec', 'command');
 
         if (!function_exists('exec')) {
             $this->messageService->addError('system', _('Failed to call function exec. Make sure that exec is not listed in disable_functions at php.ini'));
@@ -64,8 +63,8 @@ class PdnsUtilProvider implements DnssecProvider
 
     private function dnssec_call_pdnssec($command, $domain, $args = array()): array
     {
-        $pdnssec_command = $this->config->get('pdnssec_command');
-        $pdnssec_debug = $this->config->get('pdnssec_debug');
+        $pdnssec_command = $this->config->get('dnssec', 'command');
+        $pdnssec_debug = $this->config->get('dnssec', 'debug');
 
         $output = '';
         $return_code = -1;
@@ -105,12 +104,12 @@ class PdnsUtilProvider implements DnssecProvider
 
     public function rectifyZone(string $zoneName): bool
     {
-        $pdnssec_command = $this->config->get('pdnssec_command');
-        $pdnssec_debug = $this->config->get('pdnssec_debug');
+        $pdnssec_command = $this->config->get('dnssec', 'command');
+        $pdnssec_debug = $this->config->get('dnssec', 'debug');
 
         $output = array();
 
-        if (isset($pdnssec_command)) {
+        if ($pdnssec_command) {
             $full_command = join(' ', array(
                 escapeshellcmd($pdnssec_command),
                 'rectify-zone',
@@ -186,7 +185,8 @@ class PdnsUtilProvider implements DnssecProvider
 
     public function isZoneSecured(string $zoneName, $config): bool
     {
-        $pdns_db_name = $config->get('pdns_db_name');
+        // Use our own configuration instance instead of the passed one
+        $pdns_db_name = $this->config->get('database', 'pdns_name');
         $cryptokeys_table = $pdns_db_name ? $pdns_db_name . '.cryptokeys' : 'cryptokeys';
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
         $domainmetadata_table = $pdns_db_name ? $pdns_db_name . '.domainmetadata' : 'domainmetadata';

@@ -88,11 +88,11 @@ abstract class BaseController
     /**
      * Gets the application configuration.
      *
-     * @return AppConfiguration The application configuration.
+     * @return ConfigurationManager The application configuration.
      */
-    public function getConfig(): AppConfiguration
+    public function getConfig(): ConfigurationManager
     {
-        return $this->app->getConfig();
+        return $this->configManager;
     }
 
     /**

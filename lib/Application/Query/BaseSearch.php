@@ -22,13 +22,13 @@
 
 namespace Poweradmin\Application\Query;
 
-use Poweradmin\AppConfiguration;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 abstract class BaseSearch
 {
     protected object $db;
     protected string $db_type;
-    protected AppConfiguration $config;
+    protected ConfigurationManager $config;
 
     public function __construct($db, $config, string $db_type)
     {

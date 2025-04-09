@@ -24,9 +24,9 @@ namespace Poweradmin\Domain\Model;
 
 use Poweradmin\Domain\Service\Dns;
 use Poweradmin\Domain\Service\DnsFormatter;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\Infrastructure\Service\MessageService;
-use Poweradmin\AppConfiguration;
 
 /**
  * Template functions
@@ -38,12 +38,12 @@ use Poweradmin\AppConfiguration;
  */
 class ZoneTemplate
 {
-    private AppConfiguration $config;
+    private ConfigurationManager $config;
     private PDOLayer $db;
     private DnsFormatter $dnsFormatter;
     private MessageService $messageService;
 
-    public function __construct(PDOLayer $db, AppConfiguration $config)
+    public function __construct(PDOLayer $db, ConfigurationManager $config)
     {
         $this->db = $db;
         $this->config = $config;
@@ -541,7 +541,7 @@ class ZoneTemplate
 
         $sql_add = '';
 
-        $pdns_db_name = $this->config->get('pdns_db_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_name');
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
@@ -657,11 +657,11 @@ class ZoneTemplate
      */
     public function parse_template_value(string $val, string $domain): string
     {
-        $dns_ns1 = $this->config->get('dns_ns1');
-        $dns_ns2 = $this->config->get('dns_ns2');
-        $dns_ns3 = $this->config->get('dns_ns3');
-        $dns_ns4 = $this->config->get('dns_ns4');
-        $dns_hostmaster = $this->config->get('dns_hostmaster');
+        $dns_ns1 = $this->config->get('dns', 'ns1');
+        $dns_ns2 = $this->config->get('dns', 'ns2');
+        $dns_ns3 = $this->config->get('dns', 'ns3');
+        $dns_ns4 = $this->config->get('dns', 'ns4');
+        $dns_hostmaster = $this->config->get('dns', 'hostmaster');
 
         $serial = date("Ymd");
         $serial .= "00";

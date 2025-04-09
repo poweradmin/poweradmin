@@ -24,7 +24,7 @@ namespace PoweradminInstall;
 
 use PDO;
 use Poweradmin\Application\Service\UserAuthenticationService;
-use Poweradmin\AppConfiguration;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 
 class DatabaseHelper
@@ -140,10 +140,11 @@ class DatabaseHelper
         $permTemplItemsQuery = $this->db->prepare("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (:perm_templ_id, :uber_admin_user_id)");
         $permTemplItemsQuery->execute([':perm_templ_id' => $permTemplId, ':uber_admin_user_id' => $uberAdminUserId]);
 
-        $config = new AppConfiguration($default_config_file);
+        $config = ConfigurationManager::getInstance();
+        $config->initialize($default_config_file);
         $userAuthService = new UserAuthenticationService(
-            $config->get('password_encryption'),
-            $config->get('password_encryption_cost')
+            $config->get('security', 'password_encryption'),
+            $config->get('security', 'password_cost')
         );
         $user_query = $this->db->prepare("INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('admin', ?, 'Administrator', 'admin@example.net', 'Administrator with full rights.', ?, 1, 0)");
         $user_query->execute(array($userAuthService->hashPassword($pa_pass), $permTemplId));

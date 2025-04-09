@@ -23,19 +23,19 @@
 namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
-use Poweradmin\AppConfiguration;
 use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 class DbRecordCommentRepository implements RecordCommentRepositoryInterface
 {
     private PDO $connection;
     private string $comments_table;
 
-    public function __construct(PDO $connection, AppConfiguration $config)
+    public function __construct(PDO $connection, ConfigurationManager $config)
     {
         $this->connection = $connection;
-        $pdns_db_name = $config->get('pdns_db_name');
+        $pdns_db_name = $config->get('database', 'pdns_name');
         $this->comments_table = $pdns_db_name ? $pdns_db_name . '.comments' : 'comments';
     }
 

@@ -20,11 +20,12 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use Poweradmin\AppConfiguration;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-$config = new AppConfiguration();
+$config = ConfigurationManager::getInstance();
+$config->initialize();
 
 return [
     'paths' => [
@@ -33,28 +34,28 @@ return [
     ],
     'environments' => [
         'default_migration_table' => 'migrations',
-        'default_environment' => $config->get('db_type'),
+        'default_environment' => $config->get('database', 'type'),
         'mysql'                   => [
             'adapter' => 'mysql',
-            'host'    => $config->get('db_host'),
-            'name'    => $config->get('db_name'),
-            'user'    => $config->get('db_user'),
-            'pass'    => $config->get('db_pass'),
-            'port'    => $config->get('db_port'),
-            'charset' => $config->get('db_charset'),
+            'host'    => $config->get('database', 'host'),
+            'name'    => $config->get('database', 'name'),
+            'user'    => $config->get('database', 'user'),
+            'pass'    => $config->get('database', 'password'),
+            'port'    => $config->get('database', 'port'),
+            'charset' => $config->get('database', 'charset'),
         ],
         'pgsql' => [
             'adapter' => 'pgsql',
-            'host'    => $config->get('db_host'),
-            'name'    => $config->get('db_name'),
-            'user'    => $config->get('db_user'),
-            'pass'    => $config->get('db_pass'),
-            'port'    => $config->get('db_port'),
-            'charset' => $config->get('db_charset'),
+            'host'    => $config->get('database', 'host'),
+            'name'    => $config->get('database', 'name'),
+            'user'    => $config->get('database', 'user'),
+            'pass'    => $config->get('database', 'password'),
+            'port'    => $config->get('database', 'port'),
+            'charset' => $config->get('database', 'charset'),
         ],
         'sqlite' => [
             'adapter' => 'sqlite',
-            'name'    => $config->get('db_file'),
+            'name'    => $config->get('database', 'file'),
         ],
 
     ],

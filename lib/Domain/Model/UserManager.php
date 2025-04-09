@@ -23,20 +23,20 @@
 namespace Poweradmin\Domain\Model;
 
 use PDO;
-use Poweradmin\AppConfiguration;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\Infrastructure\Service\MessageService;
 
 class UserManager
 {
     private PDOLayer $db;
-    private AppConfiguration $config;
+    private ConfigurationManager $config;
     private MessageService $messageService;
 
-    public function __construct(PDOLayer $db, AppConfiguration $config)
+    public function __construct(PDOLayer $db, ConfigurationManager $config)
     {
         $this->db = $db;
         $this->config = $config;
@@ -337,10 +337,11 @@ class UserManager
             $passwd_edit_others_perm = self::verify_permission($this->db, 'user_passwd_edit_others');
 
             if ($user_password != "" && ($edit_own_perm || $passwd_edit_others_perm)) {
-                $config = new AppConfiguration();
+                $config = ConfigurationManager::getInstance();
+                $config->initialize();
                 $userAuthService = new UserAuthenticationService(
-                    $config->get('password_encryption'),
-                    $config->get('password_encryption_cost')
+                    $config->get('security', 'password_encryption'),
+                    $config->get('security', 'password_cost')
                 );
 
                 $passwordHash = $i_use_ldap ? 'LDAP_USER' : $userAuthService->hashPassword($user_password);
@@ -385,10 +386,11 @@ class UserManager
      */
     public static function update_user_password($db, int $id, $user_pass): void
     {
-        $config = new AppConfiguration();
+        $config = ConfigurationManager::getInstance();
+        $config->initialize();
         $userAuthService = new UserAuthenticationService(
-            $config->get('password_encryption'),
-            $config->get('password_encryption_cost')
+            $config->get('security', 'password_encryption'),
+            $config->get('security', 'password_cost')
         );
         $query = "UPDATE users SET password = " . $db->quote($userAuthService->hashPassword($user_pass), 'text') . " WHERE id = " . $db->quote($id, 'integer');
         $db->query($query);
@@ -643,10 +645,11 @@ class UserManager
 
             $passwd_edit_others_perm = self::verify_permission($this->db, 'user_passwd_edit_others');
             if (isset($details['password']) && $details['password'] != "" && $passwd_edit_others_perm) {
-                $config = new AppConfiguration();
+                $config = ConfigurationManager::getInstance();
+                $config->initialize();
                 $userAuthService = new UserAuthenticationService(
-                    $config->get('password_encryption'),
-                    $config->get('password_encryption_cost')
+                    $config->get('security', 'password_encryption'),
+                    $config->get('security', 'password_cost')
                 );
                 $hashedPassword = $userAuthService->hashPassword($details['password']);
                 $query .= ", password = :password";
@@ -691,7 +694,7 @@ class UserManager
      */
     public function add_new_user(array $details): bool
     {
-        $ldap_use = $this->config->get('ldap_use');
+        $ldap_use = $this->config->get('ldap', 'enabled');
         $validation = new Validator($this->db, $this->config);
 
         if (!self::verify_permission($this->db, 'user_add_new')) {
@@ -720,10 +723,11 @@ class UserManager
             $password_hash = 'LDAP_USER';
         } else {
             $use_ldap = 0;
-            $config = new AppConfiguration();
+            $config = ConfigurationManager::getInstance();
+            $config->initialize();
             $userAuthService = new UserAuthenticationService(
-                $config->get('password_encryption'),
-                $config->get('password_encryption_cost')
+                $config->get('security', 'password_encryption'),
+                $config->get('security', 'password_cost')
             );
             $password_hash = $userAuthService->hashPassword($details['password']);
         }

@@ -37,19 +37,19 @@ class DnssecProviderFactory
 {
     public static function create(PDOLayer $db, ConfigurationInterface $config): DnssecProvider
     {
-        if (!$config->get('pdns_api_url') || !$config->get('pdns_api_key')) {
-            return new PdnsUtilProvider($db);
+        if (!$config->get('pdns_api', 'url') || !$config->get('pdns_api', 'key')) {
+            return new PdnsUtilProvider($db, $config);
         }
 
-        $httpClient = new HttpClient($config->get('pdns_api_url'), $config->get('pdns_api_key'));
+        $httpClient = new HttpClient($config->get('pdns_api', 'url'), $config->get('pdns_api', 'key'));
         $apiClient = new PowerdnsApiClient($httpClient, 'localhost');
 
         $logger = new CompositeLegacyLogger();
 
-        if ($config->get('syslog_use')) {
+        if ($config->get('logging', 'syslog_enabled')) {
             $syslogLogger = new SyslogLegacyLogger(
-                $config->get('syslog_ident'),
-                $config->get('syslog_facility')
+                $config->get('logging', 'syslog_identity'),
+                $config->get('logging', 'syslog_facility')
             );
             $logger->addLogger($syslogLogger);
         }

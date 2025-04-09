@@ -22,14 +22,14 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\AppConfiguration;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 
 class DomainRecordCreator
 {
-    private AppConfiguration $config;
+    private ConfigurationManager $config;
     private LegacyLogger $logger;
     private DnsRecord $dnsRecord;
 
@@ -37,7 +37,7 @@ class DomainRecordCreator
     private const IPV6_SUFFIX = '.ip6.arpa';
 
     public function __construct(
-        AppConfiguration $config,
+        ConfigurationManager $config,
         LegacyLogger $logger,
         DnsRecord $dnsRecord,
     ) {
@@ -48,7 +48,7 @@ class DomainRecordCreator
 
     public function addDomainRecord(string $name, string $type, string $content, string $zone_id, string $comment = '', string $account = ''): array
     {
-        $iface_add_domain_record = $this->config->get('iface_add_domain_record');
+        $iface_add_domain_record = $this->config->get('interface', 'add_domain_record');
 
         $registeredDomain = DnsHelper::getRegisteredDomain($content);
         $domainId = $this->dnsRecord->get_domain_id_by_name($registeredDomain);
@@ -94,7 +94,7 @@ class DomainRecordCreator
     private function addRecord(int $domainId, string $content, string $proposedIP, string $comment, string $account): array
     {
         $domainName = DnsHelper::getSubDomainName($content);
-        $result = $this->dnsRecord->add_record($domainId, $domainName, 'A', $proposedIP, $this->config->get('dns_ttl'), 0);
+        $result = $this->dnsRecord->add_record($domainId, $domainName, 'A', $proposedIP, $this->config->get('dns', 'ttl'), 0);
 
         if ($result) {
             return [

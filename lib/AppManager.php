@@ -26,6 +26,7 @@ use Poweradmin\Application\Service\StatsDisplayService;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Utility\MemoryUsage;
 use Poweradmin\Domain\Utility\Timer;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Configuration\ConfigValidator;
 use Poweradmin\Infrastructure\Utility\SimpleSizeFormatter;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
@@ -45,8 +46,8 @@ class AppManager
     /** @var Environment $templateRenderer The Twig template renderer */
     protected Environment $templateRenderer;
 
-    /** @var AppConfiguration $configuration The application configuration */
-    protected AppConfiguration $configuration;
+    /** @var ConfigurationManager $configuration The application configuration */
+    protected ConfigurationManager $configuration;
 
     /** @var StatsDisplayService|null $statsDisplayService The service for displaying statistics */
     protected ?StatsDisplayService $statsDisplayService = null;
@@ -57,13 +58,14 @@ class AppManager
      */
     public function __construct()
     {
-        $this->configuration = new AppConfiguration();
+        $this->configuration = ConfigurationManager::getInstance();
+        $this->configuration->initialize();
 
-        $templates = $this->config('iface_templates');
+        $templates = $this->config('interface', 'templates_path');
         $loader = new FilesystemLoader($templates);
         $this->templateRenderer = new Environment($loader, ['debug' => false]);
 
-        if ($this->config('display_stats')) {
+        if ($this->config('misc', 'display_stats')) {
             $memoryUsage = new MemoryUsage();
             $timer = new Timer();
             $sizeFormatter = new SimpleSizeFormatter();
@@ -73,7 +75,7 @@ class AppManager
         $validator = new ConfigValidator($this->configuration->getAll());
         $this->showValidationErrors($validator);
 
-        $iface_lang = $this->config('iface_lang');
+        $iface_lang = $this->config('interface', 'language');
         if (isset($_SESSION["userlang"])) {
             $iface_lang = $_SESSION["userlang"];
         }
@@ -105,23 +107,25 @@ class AppManager
     /**
      * Gets the application configuration.
      *
-     * @return AppConfiguration The application configuration
+     * @return ConfigurationManager The application configuration
      */
-    public function getConfig(): AppConfiguration
+    public function getConfig(): ConfigurationManager
     {
         return $this->configuration;
     }
 
     /**
-     * Gets a configuration value by name.
+     * Gets a configuration value.
      *
-     * @param string $name The name of the configuration value
+     * @param string $group The configuration group 
+     * @param string $key The name of the configuration value
      * @param mixed|null $default The default value if the configuration value is not found
      * @return mixed The configuration value
      */
-    public function config(string $name, mixed $default = null): mixed
+    public function config(string $group, string $key, mixed $default = null): mixed
     {
-        return $this->configuration->get($name, $default);
+        $value = $this->configuration->get($group, $key);
+        return $value === null ? $default : $value;
     }
 
     /**
@@ -132,7 +136,7 @@ class AppManager
      */
     public function getLocaleFile(string $iface_lang): string
     {
-        $supportedLocales = explode(',', $this->config('iface_enabled_languages'));
+        $supportedLocales = explode(',', $this->config('interface', 'enabled_languages'));
         if (in_array($iface_lang, $supportedLocales)) {
             return "locale/$iface_lang/LC_MESSAGES/messages.po";
         }

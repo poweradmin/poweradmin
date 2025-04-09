@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\AppConfiguration;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
@@ -31,15 +30,14 @@ use Poweradmin\Infrastructure\Logger\LegacyLogger;
 class BatchReverseRecordCreator
 {
     private PDOLayer $db;
-    private AppConfiguration $config;
+    private ConfigurationManager $config;
     private LegacyLogger $logger;
     private DnsRecord $dnsRecord;
     private ReverseRecordCreator $reverseRecordCreator;
-    private ConfigurationManager $configManager;
 
     public function __construct(
         PDOLayer $db,
-        AppConfiguration $config,
+        ConfigurationManager $config,
         LegacyLogger $logger,
         DnsRecord $dnsRecord,
         ReverseRecordCreator $reverseRecordCreator
@@ -49,7 +47,6 @@ class BatchReverseRecordCreator
         $this->logger = $logger;
         $this->dnsRecord = $dnsRecord;
         $this->reverseRecordCreator = $reverseRecordCreator;
-        $this->configManager = ConfigurationManager::getInstance();
     }
 
     /**
@@ -76,7 +73,7 @@ class BatchReverseRecordCreator
         string $comment = '',
         string $account = ''
     ): array {
-        $isReverseRecordAllowed = $this->configManager->get('interface', 'add_reverse_record');
+        $isReverseRecordAllowed = $this->config->get('interface', 'add_reverse_record');
 
         if (!$isReverseRecordAllowed) {
             return $this->createErrorResponse('Reverse record creation is not allowed.');
@@ -255,7 +252,7 @@ class BatchReverseRecordCreator
         string $account = '',
         int $count = 256
     ): array {
-        $isReverseRecordAllowed = $this->configManager->get('interface', 'add_reverse_record');
+        $isReverseRecordAllowed = $this->config->get('interface', 'add_reverse_record');
 
         if (!$isReverseRecordAllowed) {
             return $this->createErrorResponse('Reverse record creation is not allowed.');
@@ -470,7 +467,7 @@ class BatchReverseRecordCreator
                     $prio
                 ), $zone_id);
 
-                $isDnssecEnabled = $this->configManager->get('dnssec', 'enabled');
+                $isDnssecEnabled = $this->config->get('dnssec', 'enabled');
 
                 if ($isDnssecEnabled) {
                     $dnssecProvider = DnssecProviderFactory::create($this->db, $this->config);

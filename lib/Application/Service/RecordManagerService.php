@@ -22,9 +22,9 @@
 
 namespace Poweradmin\Application\Service;
 
-use Poweradmin\AppConfiguration;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Utility\DnsHelper;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 
@@ -35,7 +35,7 @@ class RecordManagerService
     private RecordCommentService $recordCommentService;
     private RecordCommentSyncService $commentSyncService;
     private LegacyLogger $logger;
-    private AppConfiguration $config;
+    private ConfigurationManager $config;
 
     public function __construct(
         PDOLayer $db,
@@ -43,7 +43,7 @@ class RecordManagerService
         RecordCommentService $recordCommentService,
         RecordCommentSyncService $commentSyncService,
         LegacyLogger $logger,
-        AppConfiguration $config
+        ConfigurationManager $config
     ) {
         $this->db = $db;
         $this->dnsRecord = $dnsRecord;
@@ -84,7 +84,7 @@ class RecordManagerService
 
     private function handleDnssec(string $zone_name): void
     {
-        if ($this->config->get('pdnssec_use')) {
+        if ($this->config->get('dnssec', 'enabled')) {
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->config);
             $dnssecProvider->rectifyZone($zone_name);
         }
@@ -94,7 +94,7 @@ class RecordManagerService
     {
         $fullZoneName = "$name.$zone_name";
 
-        if ($this->config->get('record_comments_sync')) {
+        if ($this->config->get('misc', 'record_comments_sync')) {
             $this->handleSyncedComments($zoneId, $name, $type, $content, $comment, $userLogin, $fullZoneName);
         } else {
             $this->recordCommentService->createComment(

@@ -25,7 +25,7 @@ namespace PoweradminInstall;
 use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
-use Poweradmin\AppConfiguration;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Symfony\Component\HttpFoundation\Request;
 use Twig\Environment;
 use Twig\Error\LoaderError;
@@ -269,7 +269,8 @@ class InstallStepHandler
         // For SQLite we should provide path to db file
         $db_file = $this->request->get('db_type') == 'sqlite' ? $this->request->get('db_name') : '';
 
-        $config = new AppConfiguration($default_config_file);
+        $config = ConfigurationManager::getInstance();
+        $config->initialize($default_config_file);
 
         $dns_hostmaster = $this->request->get('dns_hostmaster');
         $dns_ns1 = $this->request->get('dns_ns1');
@@ -285,8 +286,8 @@ class InstallStepHandler
         $db_collation = $this->request->get('db_collation');
 
         $userAuthService = new UserAuthenticationService(
-            $config->get('password_encryption'),
-            $config->get('password_encryption_cost')
+            $config->get('security', 'password_encryption'),
+            $config->get('security', 'password_cost')
         );
 
         $sessionKey = $userAuthService->generateSalt(self::SESSION_KEY_LENGTH);

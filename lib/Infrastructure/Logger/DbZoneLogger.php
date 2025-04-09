@@ -23,18 +23,19 @@
 namespace Poweradmin\Infrastructure\Logger;
 
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
-use Poweradmin\AppConfiguration;
 
 class DbZoneLogger
 {
     private PDOLayer $db;
-    private AppConfiguration $config;
+    private ConfigurationManager $config;
 
     public function __construct($db)
     {
         $this->db = $db;
-        $this->config = new AppConfiguration();
+        $this->config = ConfigurationManager::getInstance();
+        $this->config->initialize();
     }
 
     public function do_log($msg, $zone_id, $priority): void
@@ -55,7 +56,7 @@ class DbZoneLogger
 
     public function count_logs_by_domain($domain)
     {
-        $pdns_db_name = $this->config->get('pdns_db_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_name');
         $domains_table = $pdns_db_name ? "$pdns_db_name.domains" : "domains";
 
         $stmt = $this->db->prepare("
@@ -94,7 +95,7 @@ class DbZoneLogger
             return array();
         }
 
-        $pdns_db_name = $this->config->get('pdns_db_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_name');
         $domains_table = $pdns_db_name ? "$pdns_db_name.domains" : "domains";
 
         $stmt = $this->db->prepare("

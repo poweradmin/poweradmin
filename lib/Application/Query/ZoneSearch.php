@@ -98,11 +98,11 @@ class ZoneSearch extends BaseSearch
     {
         $offset = ($page - 1) * $iface_rowamount;
 
-        $pdns_db_name = $this->config->get('pdns_db_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_name');
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
-        $db_type = $this->config->get('db_type');
+        $db_type = $this->config->get('database', 'type');
         $sort_zones_by = $sort_zones_by === 'name' ? SortHelper::getZoneSortOrder($domains_table, $db_type, $zone_sort_direction) : "$sort_zones_by $zone_sort_direction";
 
         $comment_field = $iface_zone_comments ? ', z.comment' : '';
@@ -168,7 +168,7 @@ class ZoneSearch extends BaseSearch
      */
     public function getFoundZones(array $parameters, mixed $search_string, mixed $reverse_search_string, string $permission_view): int
     {
-        $pdns_db_name = $this->config->get('pdns_db_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_name');
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 

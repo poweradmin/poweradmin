@@ -25,11 +25,26 @@ namespace Poweradmin\Infrastructure\Configuration;
 interface ConfigurationInterface
 {
     /**
-     * Get a configuration value by key
+     * Get a configuration value
      *
-     * @param string|null $key Configuration key, or null to get all configuration
-     * @param mixed $default Default value to return if the key is not found
-     * @return mixed Configuration value or the default value if the key is not found
+     * @param string $group Configuration group
+     * @param string $key Configuration key
+     * @return mixed Configuration value or null if not found
      */
-    public function get(?string $key = null, mixed $default = null): mixed;
+    public function get(string $group, string $key): mixed;
+    
+    /**
+     * Get an entire configuration group
+     *
+     * @param string $group Configuration group
+     * @return array Configuration group values
+     */
+    public function getGroup(string $group): array;
+    
+    /**
+     * Get all configuration settings
+     *
+     * @return array All settings
+     */
+    public function getAll(): array;
 }

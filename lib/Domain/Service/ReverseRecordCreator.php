@@ -22,21 +22,21 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\AppConfiguration;
 use Poweradmin\Application\Service\DnssecProviderFactory;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 
 class ReverseRecordCreator
 {
     private PDOLayer $db;
-    private AppConfiguration $config;
+    private ConfigurationManager $config;
     private LegacyLogger $logger;
     private DnsRecord $dnsRecord;
 
     public function __construct(
         PDOLayer $db,
-        AppConfiguration $config,
+        ConfigurationManager $config,
         LegacyLogger $logger,
         DnsRecord $dnsRecord
     ) {
@@ -48,7 +48,7 @@ class ReverseRecordCreator
 
     public function createReverseRecord($name, $type, $content, string $zone_id, $ttl, $prio, string $comment = '', string $account = ''): array
     {
-        $isReverseRecordAllowed = $this->config->get('iface_add_reverse_record');
+        $isReverseRecordAllowed = $this->config->get('interface', 'add_reverse_record');
 
         if (!$name || !$isReverseRecordAllowed) {
             return $this->createErrorResponse('The name is missing or reverse record creation is not allowed.');
@@ -97,7 +97,7 @@ class ReverseRecordCreator
                 $prio
             ), $zone_id);
 
-            if ($this->config->get('pdnssec_use')) {
+            if ($this->config->get('dnssec', 'enabled')) {
                 $dnssecProvider = DnssecProviderFactory::create($this->db, $this->config);
                 $dnssecProvider->rectifyZone($zone_name);
             }

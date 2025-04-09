@@ -28,12 +28,44 @@ class FakeConfiguration implements ConfigurationInterface
 
     public function __construct(?string $pdnsApiUrl, ?string $pdnsApiKey)
     {
-        $this->config['pdns_api_url'] = $pdnsApiUrl;
-        $this->config['pdns_api_key'] = $pdnsApiKey;
+        $this->config = [
+            'pdns_api' => [
+                'url' => $pdnsApiUrl,
+                'key' => $pdnsApiKey
+            ]
+        ];
     }
 
-    public function get(string $key = null): mixed
+    /**
+     * Gets a configuration value.
+     *
+     * @param string $group Configuration group
+     * @param string $key Configuration key
+     * @return mixed Configuration value or null if not found
+     */
+    public function get(string $group, string $key): mixed
     {
-        return array_key_exists($key, $this->config) ? $this->config[$key] : null;
+        return $this->config[$group][$key] ?? null;
+    }
+    
+    /**
+     * Gets an entire configuration group.
+     *
+     * @param string $group Configuration group
+     * @return array Configuration group values
+     */
+    public function getGroup(string $group): array
+    {
+        return $this->config[$group] ?? [];
+    }
+    
+    /**
+     * Gets all configuration settings.
+     *
+     * @return array All settings
+     */
+    public function getAll(): array
+    {
+        return $this->config;
     }
 }
