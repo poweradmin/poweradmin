@@ -28,9 +28,6 @@ use Poweradmin\Application\Service\LocaleService;
 use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Utility\LanguageCode;
 
-include_once(__DIR__ . '/../../../inc/config-defaults.inc.php');
-@include_once(__DIR__ . '/../../../inc/config.inc.php');
-
 class LoginController extends BaseController
 {
     private LocaleService $localeService;

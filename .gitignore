@@ -47,5 +47,8 @@ Thumbs.db
 # PHP tools
 /.php-cs-fixer.cache
 
+# Node.js version manager
+/.nvmrc
+
 # Test plans are versioned but excluded from production packages
 # See tests/plans/ directory
