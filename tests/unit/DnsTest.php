@@ -73,17 +73,17 @@ class DnsTest extends TestCase
         $this->assertTrue(Dns::is_properly_quoted('"This is \"properly\" quoted"'));
     }
 
-    public function testIsValidRrSoaContentWithValidData()
-    {
-        // Skip these direct tests as they require more complex setup
-        $this->markTestSkipped('Direct SOA validation tests require more complex setup');
-    }
+//    public function testIsValidRrSoaContentWithValidData()
+//    {
+//        // Skip these direct tests as they require more complex setup
+//        $this->markTestSkipped('Direct SOA validation tests require more complex setup');
+//    }
 
-    public function testIsValidRrSoaContentWithValidNumber()
-    {
-        // Skip these direct tests as they require more complex setup
-        $this->markTestSkipped('Direct SOA validation tests require more complex setup');
-    }
+//    public function testIsValidRrSoaContentWithValidNumber()
+//    {
+//        // Skip these direct tests as they require more complex setup
+//        $this->markTestSkipped('Direct SOA validation tests require more complex setup');
+//    }
 
 //    public function testIsValidRrSoaContentWithEmptyContent()
 //    {
@@ -92,17 +92,17 @@ class DnsTest extends TestCase
 //        $this->assertFalse($this->dnsInstance->is_valid_rr_soa_content($content, $dns_hostmaster));
 //    }
 
-    public function testIsValidRrSoaContentWithMoreThanSevenFields()
-    {
-        // Skip these direct tests as they require more complex setup
-        $this->markTestSkipped('Direct SOA validation tests require more complex setup');
-    }
+//    public function testIsValidRrSoaContentWithMoreThanSevenFields()
+//    {
+//        // Skip these direct tests as they require more complex setup
+//        $this->markTestSkipped('Direct SOA validation tests require more complex setup');
+//    }
 
-    public function testIsValidRrSoaContentWithLessThanSevenFields()
-    {
-        // Skip these direct tests as they require more complex setup
-        $this->markTestSkipped('Direct SOA validation tests require more complex setup');
-    }
+//    public function testIsValidRrSoaContentWithLessThanSevenFields()
+//    {
+//        // Skip these direct tests as they require more complex setup
+//        $this->markTestSkipped('Direct SOA validation tests require more complex setup');
+//    }
 
 //    public function testIsValidRrSoaContentWithInvalidHostname()
 //    {
