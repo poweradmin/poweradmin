@@ -80,7 +80,7 @@ class ConfigurationManagerTest extends TestCase
         $this->assertEquals('localhost', $config->get('database', 'host'), 'Should return correct host value.');
         $this->assertEquals('test_key', $config->get('security', 'session_key'), 'Should return correct session key.');
         $this->assertTrue($config->get('misc', 'display_stats'), 'Should return correct boolean value.');
-        
+
         // Test non-existing values
         $this->assertNull($config->get('database', 'non_existing_key'), 'Should return null for non-existing database key.');
         $this->assertNull($config->get('non_existing_group', 'key'), 'Should return null for non-existing group.');
@@ -139,7 +139,7 @@ class ConfigurationManagerTest extends TestCase
         $this->assertArrayHasKey('database', $allSettings, 'Settings should contain database group.');
         $this->assertArrayHasKey('security', $allSettings, 'Settings should contain security group.');
         $this->assertArrayHasKey('misc', $allSettings, 'Settings should contain misc group.');
-        
+
         $this->assertEquals('test_db', $allSettings['database']['name'], 'Should contain correct database name.');
         $this->assertEquals('localhost', $allSettings['database']['host'], 'Should contain correct host.');
         $this->assertEquals('test_key', $allSettings['security']['session_key'], 'Should contain correct session key.');
@@ -164,11 +164,11 @@ class ConfigurationManagerTest extends TestCase
         // Test accessing nested key with dot notation
         $this->assertEquals('nested_value', $config->get('complex', 'nested.value'), 'Should access nested value with dot notation.');
         $this->assertEquals('simple_value', $config->get('complex', 'simple'), 'Should access simple value.');
-        
+
         // Try accessing non-existing nested paths
         $this->assertNull($config->get('complex', 'nested.non_existing'), 'Should return null for non-existing nested key.');
         $this->assertNull($config->get('complex', 'non_existing.value'), 'Should return null for non-existing nested path.');
-        
+
         // Access array values
         $this->assertEquals([1, 2, 3], $config->get('complex', 'array'), 'Should return array value correctly.');
     }
@@ -214,24 +214,24 @@ class ConfigurationManagerTest extends TestCase
         $this->assertEquals('testpass', $newConfig['database']['password']);
         $this->assertEquals('testdb', $newConfig['database']['name']);
         $this->assertEquals('pdnsdb', $newConfig['database']['pdns_name']);
-        
+
         $this->assertEquals('testsecret', $newConfig['security']['session_key']);
         $this->assertEquals('bcrypt', $newConfig['security']['password_encryption']);
         $this->assertEquals(10, $newConfig['security']['password_cost']);
-        
+
         $this->assertEquals('en_EN', $newConfig['interface']['language']);
         $this->assertEquals('ignite', $newConfig['interface']['theme']);
-        
+
         $this->assertEquals('hostmaster@example.com', $newConfig['dns']['hostmaster']);
         $this->assertEquals('ns1.example.com', $newConfig['dns']['ns1']);
         $this->assertEquals(86400, $newConfig['dns']['ttl']);
-        
+
         // Check that SOA values were properly parsed
         $this->assertEquals(28800, $newConfig['dns']['soa_refresh']);
         $this->assertEquals(7200, $newConfig['dns']['soa_retry']);
         $this->assertEquals(604800, $newConfig['dns']['soa_expire']);
         $this->assertEquals(86400, $newConfig['dns']['soa_minimum']);
-        
+
         $this->assertTrue($newConfig['dnssec']['enabled']);
         $this->assertTrue($newConfig['logging']['syslog_enabled']);
     }
