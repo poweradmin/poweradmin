@@ -19,48 +19,48 @@ msgid ""
 "The configuration file (config.inc.php) does not exist. Please use the <a "
 "href=\"install/\">installer</a> to create it."
 msgstr ""
-"The configuration file (config.inc.php) does not exist. Please use the <a "
-"href=\"install/\">installer</a> to create it."
+"Konfigūracijos failas (config.inc.php) neegzistuoja. Prašome naudoti <a "
+"href=\"install/\">diegimo programą</a>, kad jį sukurtumėte."
 
 #: lib/BaseController.php:128
 #: lib/Infrastructure/Service/SessionAuthenticator.php:105
 msgid "Invalid CSRF token."
-msgstr "Invalid CSRF token."
+msgstr "Neteisingas CSRF žetonas."
 
 #: lib/BaseController.php:299
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
 msgstr ""
-"The <a href=\"install/\">install/</a> directory exists, you must remove it "
-"first before proceeding."
+"<a href=\"install/\">install/</a> katalogas egzistuoja, turite jį pašalinti "
+"prieš tęsdami."
 
 #: lib/BaseController.php:320
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
 msgstr ""
-"Default session encryption key is used, please set it in your configuration "
-"file."
+"Naudojamas numatytasis sesijos šifravimo raktas, prašome nustatyti jį savo "
+"konfigūracijos faile."
 
 #: lib/Application/Presenter/PaginationPresenter.php:52
 #: templates/search.html:120 templates/search.html:229
 msgid "Previous"
-msgstr "Previous"
+msgstr "Ankstesnis"
 
 #: lib/Application/Presenter/PaginationPresenter.php:79
 #: templates/search.html:142 templates/search.html:251
 msgid "Next"
-msgstr "Next"
+msgstr "Kitas"
 
 #: lib/Application/Presenter/ZoneStartingLettersPresenter.php:27
 msgid "Show zones beginning with"
-msgstr "Show zones beginning with"
+msgstr "Rodyti zonas, prasidedančias"
 
 #: lib/Application/Presenter/ZoneStartingLettersPresenter.php:50
 #: lib/Application/Presenter/ZoneStartingLettersPresenter.php:52
 msgid "Show all"
-msgstr "Show all"
+msgstr "Rodyti visas"
 
 #: lib/Application/Controller/DeleteUserController.php:49
 #: lib/Application/Controller/EditCommentController.php:57
@@ -83,12 +83,12 @@ msgstr "Show all"
 #: lib/Application/Controller/DnssecAddKeyController.php:77
 #: lib/Application/Controller/DnssecAddKeyController.php:88
 msgid "Invalid or unexpected input given."
-msgstr "Invalid or unexpected input given."
+msgstr "Pateikti neteisingi arba netikėti duomenys."
 
 #: lib/Application/Controller/DeleteUserController.php:60
 #: lib/Domain/Model/UserManager.php:211
 msgid "You do not have the permission to delete this user."
-msgstr "You do not have the permission to delete this user."
+msgstr "Jūs neturite teisės ištrinti šio naudotojo."
 
 #: lib/Application/Controller/DeleteUserController.php:69
 #: lib/Application/Controller/EditUserController.php:135
