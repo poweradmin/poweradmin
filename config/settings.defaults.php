@@ -70,6 +70,7 @@ return [
         'session_timeout' => 1800,            // Session timeout in seconds (30 minutes)
         'rows_per_page' => 10,
         'index_display' => 'cards',           // Options: 'cards', 'list' (added in 3.2.0)
+        'templates_path' => __DIR__ . '/../templates', // Path to templates directory
         
         // UI Element Settings
         'show_record_id' => true,             // Show record ID column in edit mode (added in 3.9.0)
