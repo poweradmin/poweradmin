@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-04-11 19:26+0300\n"
+"POT-Creation-Date: 2025-04-11 19:36+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1892,7 +1892,7 @@ msgid ""
 "Please select your preferred language to continue with the installation:"
 msgstr "インストールを続行するために希望の言語を選択してください："
 
-#: install/templates/step1.html.twig:209
+#: install/templates/step1.html.twig:222
 msgid "Begin Installation"
 msgstr "Begin Installation"
 
@@ -2400,5 +2400,6 @@ msgid ""
 msgstr ""
 "設定ファイルが見つかりません。続行する前にconfig/settings.phpファイルを作成し"
 "てください。"
+
 
 
