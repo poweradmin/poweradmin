@@ -1813,7 +1813,7 @@ msgstr "Delete record in zone template"
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
-msgstr "Create limited rights user"
+msgstr "Benutzer mit eingeschränkten Rechten erstellen"
 
 #: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
 msgid "Step"
@@ -1821,11 +1821,11 @@ msgstr "Schritt"
 
 #: install/templates/step6.html.twig:8
 msgid "Create limited-rights user"
-msgstr "Create limited-rights user"
+msgstr "Benutzer mit eingeschränkten Rechten erstellen"
 
 #: install/templates/step6.html.twig:13
 msgid "Limited Database Rights:"
-msgstr "Limited Database Rights:"
+msgstr "Eingeschränkte Datenbankrechte:"
 
 #: install/templates/step6.html.twig:13
 msgid ""
@@ -1839,11 +1839,11 @@ msgstr ""
 
 #: install/templates/step6.html.twig:18
 msgid "Database Commands"
-msgstr "Database Commands"
+msgstr "Datenbankbefehle"
 
 #: install/templates/step6.html.twig:21
 msgid "Execute the following commands based on your database:"
-msgstr "Execute the following commands based on your database:"
+msgstr "Führen Sie die folgenden Befehle basierend auf Ihrer Datenbank aus:"
 
 #: install/templates/step6.html.twig:26
 msgid ""
