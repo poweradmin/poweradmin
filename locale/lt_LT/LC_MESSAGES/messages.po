@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-04-11 08:40+0300\n"
+"POT-Creation-Date: 2025-04-11 10:36+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1866,7 +1866,7 @@ msgstr "Tęsti į žingsnį"
 
 #: install/templates/base.html.twig:29
 msgid "Installation step"
-msgstr "Installation step"
+msgstr "Diegimo žingsnis"
 
 #: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
 msgid "Create configuration file"
@@ -1987,7 +1987,9 @@ msgstr "Pilnas kelias iki SQLite duomenų bazės failo"
 
 #: install/templates/step4.html.twig:96
 msgid "File must exist with web server read/write access. Use absolute path."
-msgstr "Failas turi egzistuoti su žiniatinklio serverio skaitymo/rašymo teisėmis. Naudokite absoliutų kelią."
+msgstr ""
+"Failas turi egzistuoti su žiniatinklio serverio skaitymo/rašymo teisėmis. "
+"Naudokite absoliutų kelią."
 
 #: install/templates/step4.html.twig:104
 msgid "DB charset"
@@ -1999,7 +2001,9 @@ msgstr "Naudoti numatytąjį"
 
 #: install/templates/step4.html.twig:111
 msgid "Charset for new tables. Leave empty for database default."
-msgstr "Simbolių rinkinys naujoms lentelėms. Palikite tuščią, jei norite naudoti duomenų bazės numatytąjį."
+msgstr ""
+"Simbolių rinkinys naujoms lentelėms. Palikite tuščią, jei norite naudoti "
+"duomenų bazės numatytąjį."
 
 #: install/templates/step4.html.twig:116
 msgid "DB collation"
@@ -2043,7 +2047,8 @@ msgstr "Reikalavimų Patikrinimas:"
 
 #: install/templates/step2.html.twig:12
 msgid "Verifying that your server meets all requirements to run Poweradmin."
-msgstr "Tikrinama, ar jūsų serveris atitinka visus Poweradmin paleidimo reikalavimus."
+msgstr ""
+"Tikrinama, ar jūsų serveris atitinka visus Poweradmin paleidimo reikalavimus."
 
 #: install/templates/step2.html.twig:20
 msgid "PHP Version"
@@ -2280,8 +2285,8 @@ msgid ""
 "PowerDNS is a DNS server that stores its data in an SQL database. Poweradmin "
 "will help you manage this database via a web interface."
 msgstr ""
-"PowerDNS is a DNS server that stores its data in an SQL database. Poweradmin "
-"will help you manage this database via a web interface."
+"PowerDNS yra DNS serveris, kuris saugo savo duomenis SQL duomenų bazėje. "
+"Poweradmin padės jums valdyti šią duomenų bazę per žiniatinės sąsają."
 
 #: install/templates/step3.html.twig:21
 msgid "Before proceeding, you should have:"
@@ -2293,7 +2298,9 @@ msgstr "Veikiančią PowerDNS instaliaciją"
 
 #: install/templates/step3.html.twig:24
 msgid "Database connectivity details (hostname, username, password)"
-msgstr "Database connectivity details (hostname, username, password)"
+msgstr ""
+"Duomenų bazės prisijungimo duomenys (serverio vardas, vartotojo vardas, "
+"slaptažodis)"
 
 #: install/templates/step3.html.twig:25
 msgid "Administrative access to your database"
@@ -2394,3 +2401,5 @@ msgid ""
 msgstr ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
+
+

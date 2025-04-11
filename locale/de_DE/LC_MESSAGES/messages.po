@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-04-11 08:40+0300\n"
+"POT-Creation-Date: 2025-04-11 10:36+0300\n"
 "PO-Revision-Date: 2025-04-11 07:48+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -1869,7 +1869,7 @@ msgstr "Weiter zu Schritt"
 
 #: install/templates/base.html.twig:29
 msgid "Installation step"
-msgstr "Installation step"
+msgstr "Installationsschritt"
 
 #: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
 msgid "Create configuration file"
@@ -1990,7 +1990,9 @@ msgstr "Vollständiger Pfad zur SQLite-Datenbankdatei"
 
 #: install/templates/step4.html.twig:96
 msgid "File must exist with web server read/write access. Use absolute path."
-msgstr "Die Datei muss mit Lese-/Schreibzugriff für den Webserver existieren. Verwenden Sie einen absoluten Pfad."
+msgstr ""
+"Die Datei muss mit Lese-/Schreibzugriff für den Webserver existieren. "
+"Verwenden Sie einen absoluten Pfad."
 
 #: install/templates/step4.html.twig:104
 msgid "DB charset"
@@ -2002,7 +2004,9 @@ msgstr "Standard verwenden"
 
 #: install/templates/step4.html.twig:111
 msgid "Charset for new tables. Leave empty for database default."
-msgstr "Zeichensatz für neue Tabellen. Lassen Sie das Feld leer für die Datenbankstandardeinstellung."
+msgstr ""
+"Zeichensatz für neue Tabellen. Lassen Sie das Feld leer für die "
+"Datenbankstandardeinstellung."
 
 #: install/templates/step4.html.twig:116
 msgid "DB collation"
@@ -2221,7 +2225,8 @@ msgstr "Installation abgeschlossen!"
 
 #: install/templates/step8.html.twig:12
 msgid "Congratulations! Your Poweradmin installation is now configured."
-msgstr "Herzlichen Glückwunsch! Ihre Poweradmin-Installation ist jetzt konfiguriert."
+msgstr ""
+"Herzlichen Glückwunsch! Ihre Poweradmin-Installation ist jetzt konfiguriert."
 
 #: install/templates/step8.html.twig:16
 msgid "Important Security Notice:"
@@ -2284,8 +2289,9 @@ msgid ""
 "PowerDNS is a DNS server that stores its data in an SQL database. Poweradmin "
 "will help you manage this database via a web interface."
 msgstr ""
-"PowerDNS is a DNS server that stores its data in an SQL database. Poweradmin "
-"will help you manage this database via a web interface."
+"PowerDNS ist ein DNS-Server, der seine Daten in einer SQL-Datenbank "
+"speichert. Poweradmin hilft Ihnen, diese Datenbank über eine Weboberfläche "
+"zu verwalten."
 
 #: install/templates/step3.html.twig:21
 msgid "Before proceeding, you should have:"
@@ -2297,7 +2303,7 @@ msgstr "Eine funktionsfähige PowerDNS-Installation"
 
 #: install/templates/step3.html.twig:24
 msgid "Database connectivity details (hostname, username, password)"
-msgstr "Database connectivity details (hostname, username, password)"
+msgstr "Datenbankverbindungsdetails (Hostname, Benutzername, Passwort)"
 
 #: install/templates/step3.html.twig:25
 msgid "Administrative access to your database"
@@ -2317,7 +2323,8 @@ msgstr "Verbindung zu Ihrer PowerDNS-Datenbank herstellen"
 
 #: install/templates/step3.html.twig:38
 msgid "Create tables needed for Poweradmin functionality"
-msgstr "Die für die Poweradmin-Funktionalität erforderlichen Tabellen erstellen"
+msgstr ""
+"Die für die Poweradmin-Funktionalität erforderlichen Tabellen erstellen"
 
 #: install/templates/step3.html.twig:39
 msgid "Set up an administrator account for web access"
@@ -2398,3 +2405,5 @@ msgid ""
 msgstr ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
+
+

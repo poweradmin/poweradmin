@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-04-11 08:40+0300\n"
+"POT-Creation-Date: 2025-04-11 10:36+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1866,7 +1866,7 @@ msgstr "Fortsett til trinn"
 
 #: install/templates/base.html.twig:29
 msgid "Installation step"
-msgstr "Installation step"
+msgstr "Installasjonstrinn"
 
 #: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
 msgid "Create configuration file"
@@ -1987,7 +1987,9 @@ msgstr "Full bane til SQLite-databasefil"
 
 #: install/templates/step4.html.twig:96
 msgid "File must exist with web server read/write access. Use absolute path."
-msgstr "Filen må eksistere med lese-/skrivetilgang for webserveren. Bruk absolutt bane."
+msgstr ""
+"Filen må eksistere med lese-/skrivetilgang for webserveren. Bruk absolutt "
+"bane."
 
 #: install/templates/step4.html.twig:104
 msgid "DB charset"
@@ -2280,8 +2282,9 @@ msgid ""
 "PowerDNS is a DNS server that stores its data in an SQL database. Poweradmin "
 "will help you manage this database via a web interface."
 msgstr ""
-"PowerDNS is a DNS server that stores its data in an SQL database. Poweradmin "
-"will help you manage this database via a web interface."
+"PowerDNS er en DNS-server som lagrer dataene sine i en SQL-database. "
+"Poweradmin vil hjelpe deg å administrere denne databasen via et "
+"webgrensesnitt."
 
 #: install/templates/step3.html.twig:21
 msgid "Before proceeding, you should have:"
@@ -2293,7 +2296,7 @@ msgstr "En fungerende PowerDNS-installasjon"
 
 #: install/templates/step3.html.twig:24
 msgid "Database connectivity details (hostname, username, password)"
-msgstr "Database connectivity details (hostname, username, password)"
+msgstr "Databasetilkoblingsdetaljer (vertsnavn, brukernavn, passord)"
 
 #: install/templates/step3.html.twig:25
 msgid "Administrative access to your database"
@@ -2394,3 +2397,5 @@ msgid ""
 msgstr ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
+
+

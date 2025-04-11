@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-04-11 08:40+0300\n"
+"POT-Creation-Date: 2025-04-11 10:36+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1866,7 +1866,7 @@ msgstr "Pokračovat na krok"
 
 #: install/templates/base.html.twig:29
 msgid "Installation step"
-msgstr "Installation step"
+msgstr "Instalační krok"
 
 #: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
 msgid "Create configuration file"
@@ -1987,7 +1987,9 @@ msgstr "Úplná cesta k souboru databáze SQLite"
 
 #: install/templates/step4.html.twig:96
 msgid "File must exist with web server read/write access. Use absolute path."
-msgstr "Soubor musí existovat s přístupem pro čtení/zápis pro webový server. Použijte absolutní cestu."
+msgstr ""
+"Soubor musí existovat s přístupem pro čtení/zápis pro webový server. "
+"Použijte absolutní cestu."
 
 #: install/templates/step4.html.twig:104
 msgid "DB charset"
@@ -1999,7 +2001,8 @@ msgstr "Použít výchozí"
 
 #: install/templates/step4.html.twig:111
 msgid "Charset for new tables. Leave empty for database default."
-msgstr "Znaková sada pro nové tabulky. Ponechte prázdné pro výchozí hodnotu databáze."
+msgstr ""
+"Znaková sada pro nové tabulky. Ponechte prázdné pro výchozí hodnotu databáze."
 
 #: install/templates/step4.html.twig:116
 msgid "DB collation"
@@ -2043,8 +2046,10 @@ msgstr "Kontrola požadavků:"
 
 #: install/templates/step2.html.twig:12
 msgid "Verifying that your server meets all requirements to run Poweradmin."
-msgstr "Ověřování, že váš server splňuje všechny požadavky pro spuštění Poweradmin."
-"Ověřování, že váš server splňuje všechny požadavky pro spuštění Poweradmin."
+msgstr ""
+"Ověřování, že váš server splňuje všechny požadavky pro spuštění "
+"Poweradmin.Ověřování, že váš server splňuje všechny požadavky pro spuštění "
+"Poweradmin."
 
 #: install/templates/step2.html.twig:20
 msgid "PHP Version"
@@ -2281,8 +2286,8 @@ msgid ""
 "PowerDNS is a DNS server that stores its data in an SQL database. Poweradmin "
 "will help you manage this database via a web interface."
 msgstr ""
-"PowerDNS is a DNS server that stores its data in an SQL database. Poweradmin "
-"will help you manage this database via a web interface."
+"PowerDNS je DNS server, který ukládá svá data v SQL databázi. Poweradmin vám "
+"pomůže spravovat tuto databázi prostřednictvím webového rozhraní."
 
 #: install/templates/step3.html.twig:21
 msgid "Before proceeding, you should have:"
@@ -2294,7 +2299,7 @@ msgstr "Funkční instalaci PowerDNS"
 
 #: install/templates/step3.html.twig:24
 msgid "Database connectivity details (hostname, username, password)"
-msgstr "Database connectivity details (hostname, username, password)"
+msgstr "Detaily připojení k databázi (hostname, uživatelské jméno, heslo)"
 
 #: install/templates/step3.html.twig:25
 msgid "Administrative access to your database"
@@ -2395,3 +2400,5 @@ msgid ""
 msgstr ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
+
+

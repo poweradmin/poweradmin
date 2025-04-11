@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-04-11 08:40+0300\n"
+"POT-Creation-Date: 2025-04-11 10:36+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1866,7 +1866,7 @@ msgstr "次のステップに進む"
 
 #: install/templates/base.html.twig:29
 msgid "Installation step"
-msgstr "Installation step"
+msgstr "インストールステップ"
 
 #: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
 msgid "Create configuration file"
@@ -1987,7 +1987,9 @@ msgstr "SQLiteデータベースファイルへの完全パス"
 
 #: install/templates/step4.html.twig:96
 msgid "File must exist with web server read/write access. Use absolute path."
-msgstr "ファイルはWebサーバーの読み書きアクセス権で存在する必要があります。絶対パスを使用してください。"
+msgstr ""
+"ファイルはWebサーバーの読み書きアクセス権で存在する必要があります。絶対パスを"
+"使用してください。"
 
 #: install/templates/step4.html.twig:104
 msgid "DB charset"
@@ -1999,7 +2001,9 @@ msgstr "デフォルトを使用"
 
 #: install/templates/step4.html.twig:111
 msgid "Charset for new tables. Leave empty for database default."
-msgstr "新しいテーブルの文字セット。データベースのデフォルトを使用する場合は空のままにしてください。"
+msgstr ""
+"新しいテーブルの文字セット。データベースのデフォルトを使用する場合は空のまま"
+"にしてください。"
 
 #: install/templates/step4.html.twig:116
 msgid "DB collation"
@@ -2043,7 +2047,9 @@ msgstr "要件チェック："
 
 #: install/templates/step2.html.twig:12
 msgid "Verifying that your server meets all requirements to run Poweradmin."
-msgstr "サーバーがPoweradminを実行するための全ての要件を満たしていることを確認しています。"
+msgstr ""
+"サーバーがPoweradminを実行するための全ての要件を満たしていることを確認してい"
+"ます。"
 
 #: install/templates/step2.html.twig:20
 msgid "PHP Version"
@@ -2280,8 +2286,8 @@ msgid ""
 "PowerDNS is a DNS server that stores its data in an SQL database. Poweradmin "
 "will help you manage this database via a web interface."
 msgstr ""
-"PowerDNS is a DNS server that stores its data in an SQL database. Poweradmin "
-"will help you manage this database via a web interface."
+"PowerDNSはSQLデータベースにデータを保存するDNSサーバーです。Poweradminはウェ"
+"ブインターフェースを通じてこのデータベースの管理を支援します。"
 
 #: install/templates/step3.html.twig:21
 msgid "Before proceeding, you should have:"
@@ -2293,7 +2299,7 @@ msgstr "動作するPowerDNSのインストール"
 
 #: install/templates/step3.html.twig:24
 msgid "Database connectivity details (hostname, username, password)"
-msgstr "Database connectivity details (hostname, username, password)"
+msgstr "データベース接続の詳細（ホスト名、ユーザー名、パスワード）"
 
 #: install/templates/step3.html.twig:25
 msgid "Administrative access to your database"
@@ -2394,3 +2400,5 @@ msgid ""
 msgstr ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
+
+
