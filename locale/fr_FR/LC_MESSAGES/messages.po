@@ -1862,7 +1862,7 @@ msgstr ""
 
 #: install/templates/step5.html.twig:133 install/templates/step3.html.twig:55
 msgid "Continue to step"
-msgstr "Continue to step"
+msgstr "Continuer vers l'étape"
 
 #: install/templates/base.html.twig:29
 msgid "Installation step"
@@ -2031,23 +2031,23 @@ msgstr ""
 
 #: install/templates/step2.html.twig:3
 msgid "System Requirements"
-msgstr "System Requirements"
+msgstr "Prérequis Système"
 
 #: install/templates/step2.html.twig:8
 msgid "System Requirements Check"
-msgstr "System Requirements Check"
+msgstr "Vérification des Prérequis Système"
 
 #: install/templates/step2.html.twig:12
 msgid "Requirements Check:"
-msgstr "Requirements Check:"
+msgstr "Vérification des Prérequis :"
 
 #: install/templates/step2.html.twig:12
 msgid "Verifying that your server meets all requirements to run Poweradmin."
-msgstr "Verifying that your server meets all requirements to run Poweradmin."
+msgstr "Vérification que votre serveur répond à toutes les conditions pour exécuter Poweradmin."
 
 #: install/templates/step2.html.twig:20
 msgid "PHP Version"
-msgstr "PHP Version"
+msgstr "Version PHP"
 
 #: install/templates/step2.html.twig:27
 msgid "OK"
@@ -2055,43 +2055,43 @@ msgstr "OK"
 
 #: install/templates/step2.html.twig:29
 msgid "Requires PHP 8.1.0+"
-msgstr "Requires PHP 8.1.0+"
+msgstr "Nécessite PHP 8.1.0+"
 
 #: install/templates/step2.html.twig:40
 msgid "Database Extensions"
-msgstr "Database Extensions"
+msgstr "Extensions de Base de Données"
 
 #: install/templates/step2.html.twig:40
 msgid "at least one required"
-msgstr "at least one required"
+msgstr "au moins une requise"
 
 #: install/templates/step2.html.twig:61
 msgid "Required PHP Extensions"
-msgstr "Required PHP Extensions"
+msgstr "Extensions PHP Requises"
 
 #: install/templates/step2.html.twig:80
 msgid "Optional Extensions"
-msgstr "Optional Extensions"
+msgstr "Extensions Optionnelles"
 
 #: install/templates/step2.html.twig:104
 msgid "All required components are available."
-msgstr "All required components are available."
+msgstr "Tous les composants requis sont disponibles."
 
 #: install/templates/step2.html.twig:105
 msgid "You can continue with the installation."
-msgstr "You can continue with the installation."
+msgstr "Vous pouvez continuer l'installation."
 
 #: install/templates/step2.html.twig:111
 msgid "Some required components are missing."
-msgstr "Some required components are missing."
+msgstr "Certains composants requis sont manquants."
 
 #: install/templates/step2.html.twig:112
 msgid "Please install the missing components before continuing."
-msgstr "Please install the missing components before continuing."
+msgstr "Veuillez installer les composants manquants avant de continuer."
 
 #: install/templates/step2.html.twig:116
 msgid "Check Again"
-msgstr "Check Again"
+msgstr "Vérifier à Nouveau"
 
 #: install/templates/step5.html.twig:3
 msgid "Setup account and nameservers"
