@@ -156,7 +156,9 @@
                 <div class="mt-3">
                     <input type="hidden" name="step" value="{{ next_step }}">
                     <input type="hidden" name="language" value="{{ language }}">
-                    <input type="submit" name="submit" class="btn btn-sm btn-primary" value="{% trans %}Continue to step{% endtrans %} {{ next_step }}">
+                    <div class="mt-4 text-center">
+                        <input type="submit" name="submit" class="btn btn-sm btn-primary" value="{% trans %}Continue to step{% endtrans %} {{ next_step }}">
+                    </div>
                 </div>
             </form>
         </div>

@@ -104,8 +104,10 @@
                         <strong>{% trans %}All required components are available.{% endtrans %}</strong> 
                         {% trans %}You can continue with the installation.{% endtrans %}
                     </div>
-                    <input type="submit" name="submit" class="btn btn-sm btn-primary" 
-                           value="{% trans %}Continue to step{% endtrans %} {{ next_step }}">
+                    <div class="mt-4 text-center">
+                        <input type="submit" name="submit" class="btn btn-sm btn-primary" 
+                               value="{% trans %}Continue to step{% endtrans %} {{ next_step }}">
+                    </div>
                 {% else %}
                     <div class="alert alert-danger py-1 mb-2 small">
                         <strong>{% trans %}Some required components are missing.{% endtrans %}</strong> 

@@ -51,8 +51,10 @@
                 <input type="hidden" name="install_token" value="{{ install_token }}">
                 <input type="hidden" name="language" value="{{ language }}">
                 <input type="hidden" name="step" value="{{ next_step }}">
-                <input type="submit" name="submit" class="btn btn-sm btn-primary" 
-                       value="{% trans %}Continue to step{% endtrans %} {{ next_step }}">
+                <div class="mt-4 text-center">
+                    <input type="submit" name="submit" class="btn btn-sm btn-primary" 
+                           value="{% trans %}Continue to step{% endtrans %} {{ next_step }}">
+                </div>
             </form>
         </div>
     </div>
