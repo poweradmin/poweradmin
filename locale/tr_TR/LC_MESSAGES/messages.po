@@ -1870,11 +1870,11 @@ msgstr "Installation step"
 
 #: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
 msgid "Create configuration file"
-msgstr "Create configuration file"
+msgstr "Yapılandırma dosyası oluştur"
 
 #: install/templates/step7.html.twig:12
 msgid "Configuration File:"
-msgstr "Configuration File:"
+msgstr "Yapılandırma Dosyası:"
 
 #: install/templates/step7.html.twig:12
 msgid "Create the file"

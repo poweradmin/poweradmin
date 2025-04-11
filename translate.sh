@@ -1460,4 +1460,93 @@ compile_po "zh_CN"
 compile_po "nl_NL"
 compile_po "de_DE"
 
+# Add translations for step7.html.twig
+echo "Adding translations for step7.html.twig..."
+
+# Czech translations for step7
+update_translation "cs_CZ" "Create configuration file" "Vytvoření konfiguračního souboru"
+update_translation "cs_CZ" "Configuration File:" "Konfigurační soubor:"
+update_translation "cs_CZ" "Create the file " "Vytvořte soubor "
+update_translation "cs_CZ" " with the following content:" " s následujícím obsahem:"
+
+# German translations for step7
+update_translation "de_DE" "Create configuration file" "Konfigurationsdatei erstellen"
+update_translation "de_DE" "Configuration File:" "Konfigurationsdatei:"
+update_translation "de_DE" "Create the file " "Erstellen Sie die Datei "
+update_translation "de_DE" " with the following content:" " mit dem folgenden Inhalt:"
+
+# French translations for step7
+update_translation "fr_FR" "Create configuration file" "Créer le fichier de configuration"
+update_translation "fr_FR" "Configuration File:" "Fichier de configuration :"
+update_translation "fr_FR" "Create the file " "Créez le fichier "
+update_translation "fr_FR" " with the following content:" " avec le contenu suivant :"
+
+# Italian translations for step7
+update_translation "it_IT" "Create configuration file" "Crea file di configurazione"
+update_translation "it_IT" "Configuration File:" "File di configurazione:"
+update_translation "it_IT" "Create the file " "Crea il file "
+update_translation "it_IT" " with the following content:" " con il seguente contenuto:"
+
+# Japanese translations for step7
+update_translation "ja_JP" "Create configuration file" "設定ファイルの作成"
+update_translation "ja_JP" "Configuration File:" "設定ファイル："
+update_translation "ja_JP" "Create the file " "ファイルを作成してください "
+update_translation "ja_JP" " with the following content:" " 以下の内容で："
+
+# Lithuanian translations for step7
+update_translation "lt_LT" "Create configuration file" "Sukurti konfigūracijos failą"
+update_translation "lt_LT" "Configuration File:" "Konfigūracijos failas:"
+update_translation "lt_LT" "Create the file " "Sukurkite failą "
+update_translation "lt_LT" " with the following content:" " su šiuo turiniu:"
+
+# Norwegian translations for step7
+update_translation "nb_NO" "Create configuration file" "Opprett konfigurasjonsfil"
+update_translation "nb_NO" "Configuration File:" "Konfigurasjonsfil:"
+update_translation "nb_NO" "Create the file " "Opprett filen "
+update_translation "nb_NO" " with the following content:" " med følgende innhold:"
+
+# Dutch translations for step7
+update_translation "nl_NL" "Create configuration file" "Configuratiebestand aanmaken"
+update_translation "nl_NL" "Configuration File:" "Configuratiebestand:"
+update_translation "nl_NL" "Create the file " "Maak het bestand "
+update_translation "nl_NL" " with the following content:" " aan met de volgende inhoud:"
+
+# Polish translations for step7
+update_translation "pl_PL" "Create configuration file" "Utwórz plik konfiguracyjny"
+update_translation "pl_PL" "Configuration File:" "Plik konfiguracyjny:"
+update_translation "pl_PL" "Create the file " "Utwórz plik "
+update_translation "pl_PL" " with the following content:" " z następującą zawartością:"
+
+# Russian translations for step7
+update_translation "ru_RU" "Create configuration file" "Создание конфигурационного файла"
+update_translation "ru_RU" "Configuration File:" "Конфигурационный файл:"
+update_translation "ru_RU" "Create the file " "Создайте файл "
+update_translation "ru_RU" " with the following content:" " со следующим содержимым:"
+
+# Turkish translations for step7
+update_translation "tr_TR" "Create configuration file" "Yapılandırma dosyası oluştur"
+update_translation "tr_TR" "Configuration File:" "Yapılandırma Dosyası:"
+update_translation "tr_TR" "Create the file " "Dosyayı oluşturun "
+update_translation "tr_TR" " with the following content:" " aşağıdaki içerikle:"
+
+# Chinese translations for step7
+update_translation "zh_CN" "Create configuration file" "创建配置文件"
+update_translation "zh_CN" "Configuration File:" "配置文件："
+update_translation "zh_CN" "Create the file " "创建文件 "
+update_translation "zh_CN" " with the following content:" " 内容如下："
+
+# Compile all updated files
+compile_po "fr_FR"
+compile_po "it_IT"
+compile_po "ja_JP"
+compile_po "lt_LT"
+compile_po "cs_CZ"
+compile_po "nb_NO"
+compile_po "pl_PL"
+compile_po "ru_RU"
+compile_po "tr_TR"
+compile_po "zh_CN"
+compile_po "nl_NL"
+compile_po "de_DE"
+
 echo "Translation updates completed\!"
