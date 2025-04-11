@@ -2095,23 +2095,23 @@ msgstr "Vérifier à Nouveau"
 
 #: install/templates/step5.html.twig:3
 msgid "Setup account and nameservers"
-msgstr "Setup account and nameservers"
+msgstr "Configuration du compte et des serveurs de noms"
 
 #: install/templates/step5.html.twig:8
 msgid "Setup account and name servers"
-msgstr "Setup account and name servers"
+msgstr "Configuration du compte et des serveurs de noms"
 
 #: install/templates/step5.html.twig:12
 msgid "Configuration:"
-msgstr "Configuration:"
+msgstr "Configuration :"
 
 #: install/templates/step5.html.twig:12
 msgid "Now we will gather all details for the configuration itself."
-msgstr "Now we will gather all details for the configuration itself."
+msgstr "Nous allons maintenant recueillir tous les détails pour la configuration elle-même."
 
 #: install/templates/step5.html.twig:21
 msgid "Database User"
-msgstr "Database User"
+msgstr "Utilisateur de la base de données"
 
 #: install/templates/step5.html.twig:31
 msgid ""
@@ -2121,15 +2121,15 @@ msgstr ""
 
 #: install/templates/step5.html.twig:41
 msgid "Provide the user password"
-msgstr "Provide the user password"
+msgstr "Fournir le mot de passe utilisateur"
 
 #: install/templates/step5.html.twig:45
 msgid "The password for this username."
-msgstr "The password for this username."
+msgstr "Le mot de passe pour ce nom d'utilisateur."
 
 #: install/templates/step5.html.twig:54
 msgid "DNS Settings"
-msgstr "DNS Settings"
+msgstr "Paramètres DNS"
 
 #: install/templates/step5.html.twig:58
 msgid "Hostmaster"
@@ -2137,7 +2137,7 @@ msgstr "Hostmaster"
 
 #: install/templates/step5.html.twig:62
 msgid "Provide the DNS hostmaster"
-msgstr "Provide the DNS hostmaster"
+msgstr "Fournir le hostmaster DNS"
 
 #: install/templates/step5.html.twig:65
 msgid ""
@@ -2149,11 +2149,11 @@ msgstr ""
 
 #: install/templates/step5.html.twig:70
 msgid "Primary nameserver"
-msgstr "Primary nameserver"
+msgstr "Serveur de noms primaire"
 
 #: install/templates/step5.html.twig:74
 msgid "Provide the primary nameserver"
-msgstr "Provide the primary nameserver"
+msgstr "Fournir le serveur de noms primaire"
 
 #: install/templates/step5.html.twig:77
 msgid ""
@@ -2165,11 +2165,11 @@ msgstr ""
 
 #: install/templates/step5.html.twig:82
 msgid "Secondary nameserver"
-msgstr "Secondary nameserver"
+msgstr "Serveur de noms secondaire"
 
 #: install/templates/step5.html.twig:86
 msgid "Provide the secondary nameserver"
-msgstr "Provide the secondary nameserver"
+msgstr "Fournir le serveur de noms secondaire"
 
 #: install/templates/step5.html.twig:89
 msgid ""
@@ -2181,11 +2181,11 @@ msgstr ""
 
 #: install/templates/step5.html.twig:95
 msgid "Tertiary Nameserver"
-msgstr "Tertiary Nameserver"
+msgstr "Serveur de noms tertiaire"
 
 #: install/templates/step5.html.twig:95 install/templates/step5.html.twig:108
 msgid "optional"
-msgstr "optional"
+msgstr "optionnel"
 
 #: install/templates/step5.html.twig:102
 msgid ""
@@ -2197,7 +2197,7 @@ msgstr ""
 
 #: install/templates/step5.html.twig:108
 msgid "Quaternary Nameserver"
-msgstr "Quaternary Nameserver"
+msgstr "Serveur de noms quaternaire"
 
 #: install/templates/step5.html.twig:115
 msgid ""

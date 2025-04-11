@@ -2096,23 +2096,23 @@ msgstr "Zkontrolovat znovu"
 
 #: install/templates/step5.html.twig:3
 msgid "Setup account and nameservers"
-msgstr "Setup account and nameservers"
+msgstr "Nastavení účtu a jmenných serverů"
 
 #: install/templates/step5.html.twig:8
 msgid "Setup account and name servers"
-msgstr "Setup account and name servers"
+msgstr "Nastavení účtu a jmenných serverů"
 
 #: install/templates/step5.html.twig:12
 msgid "Configuration:"
-msgstr "Configuration:"
+msgstr "Konfigurace:"
 
 #: install/templates/step5.html.twig:12
 msgid "Now we will gather all details for the configuration itself."
-msgstr "Now we will gather all details for the configuration itself."
+msgstr "Nyní shromáždíme všechny údaje pro samotnou konfiguraci."
 
 #: install/templates/step5.html.twig:21
 msgid "Database User"
-msgstr "Database User"
+msgstr "Uživatel databáze"
 
 #: install/templates/step5.html.twig:31
 msgid ""
@@ -2122,23 +2122,23 @@ msgstr ""
 
 #: install/templates/step5.html.twig:41
 msgid "Provide the user password"
-msgstr "Provide the user password"
+msgstr "Zadejte heslo uživatele"
 
 #: install/templates/step5.html.twig:45
 msgid "The password for this username."
-msgstr "The password for this username."
+msgstr "Heslo pro toto uživatelské jméno."
 
 #: install/templates/step5.html.twig:54
 msgid "DNS Settings"
-msgstr "DNS Settings"
+msgstr "Nastavení DNS"
 
 #: install/templates/step5.html.twig:58
 msgid "Hostmaster"
-msgstr "Hostmaster"
+msgstr "Správce"
 
 #: install/templates/step5.html.twig:62
 msgid "Provide the DNS hostmaster"
-msgstr "Provide the DNS hostmaster"
+msgstr "Zadejte správce DNS"
 
 #: install/templates/step5.html.twig:65
 msgid ""
@@ -2150,11 +2150,11 @@ msgstr ""
 
 #: install/templates/step5.html.twig:70
 msgid "Primary nameserver"
-msgstr "Primary nameserver"
+msgstr "Primární jmenný server"
 
 #: install/templates/step5.html.twig:74
 msgid "Provide the primary nameserver"
-msgstr "Provide the primary nameserver"
+msgstr "Zadejte primární jmenný server"
 
 #: install/templates/step5.html.twig:77
 msgid ""
@@ -2166,11 +2166,11 @@ msgstr ""
 
 #: install/templates/step5.html.twig:82
 msgid "Secondary nameserver"
-msgstr "Secondary nameserver"
+msgstr "Sekundární jmenný server"
 
 #: install/templates/step5.html.twig:86
 msgid "Provide the secondary nameserver"
-msgstr "Provide the secondary nameserver"
+msgstr "Zadejte sekundární jmenný server"
 
 #: install/templates/step5.html.twig:89
 msgid ""
@@ -2182,11 +2182,11 @@ msgstr ""
 
 #: install/templates/step5.html.twig:95
 msgid "Tertiary Nameserver"
-msgstr "Tertiary Nameserver"
+msgstr "Terciární jmenný server"
 
 #: install/templates/step5.html.twig:95 install/templates/step5.html.twig:108
 msgid "optional"
-msgstr "optional"
+msgstr "volitelné"
 
 #: install/templates/step5.html.twig:102
 msgid ""
@@ -2198,7 +2198,7 @@ msgstr ""
 
 #: install/templates/step5.html.twig:108
 msgid "Quaternary Nameserver"
-msgstr "Quaternary Nameserver"
+msgstr "Kvartární jmenný server"
 
 #: install/templates/step5.html.twig:115
 msgid ""

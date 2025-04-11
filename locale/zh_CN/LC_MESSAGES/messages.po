@@ -2095,23 +2095,23 @@ msgstr "再次检查"
 
 #: install/templates/step5.html.twig:3
 msgid "Setup account and nameservers"
-msgstr "Setup account and nameservers"
+msgstr "设置账户和名称服务器"
 
 #: install/templates/step5.html.twig:8
 msgid "Setup account and name servers"
-msgstr "Setup account and name servers"
+msgstr "设置账户和名称服务器"
 
 #: install/templates/step5.html.twig:12
 msgid "Configuration:"
-msgstr "Configuration:"
+msgstr "配置："
 
 #: install/templates/step5.html.twig:12
 msgid "Now we will gather all details for the configuration itself."
-msgstr "Now we will gather all details for the configuration itself."
+msgstr "现在我们将收集配置本身的所有详细信息。"
 
 #: install/templates/step5.html.twig:21
 msgid "Database User"
-msgstr "Database User"
+msgstr "数据库用户"
 
 #: install/templates/step5.html.twig:31
 msgid ""
@@ -2121,23 +2121,23 @@ msgstr ""
 
 #: install/templates/step5.html.twig:41
 msgid "Provide the user password"
-msgstr "Provide the user password"
+msgstr "提供用户密码"
 
 #: install/templates/step5.html.twig:45
 msgid "The password for this username."
-msgstr "The password for this username."
+msgstr "此用户名的密码。"
 
 #: install/templates/step5.html.twig:54
 msgid "DNS Settings"
-msgstr "DNS Settings"
+msgstr "DNS设置"
 
 #: install/templates/step5.html.twig:58
 msgid "Hostmaster"
-msgstr "Hostmaster"
+msgstr "主机管理员"
 
 #: install/templates/step5.html.twig:62
 msgid "Provide the DNS hostmaster"
-msgstr "Provide the DNS hostmaster"
+msgstr "提供DNS主机管理员"
 
 #: install/templates/step5.html.twig:65
 msgid ""
@@ -2149,11 +2149,11 @@ msgstr ""
 
 #: install/templates/step5.html.twig:70
 msgid "Primary nameserver"
-msgstr "Primary nameserver"
+msgstr "主要名称服务器"
 
 #: install/templates/step5.html.twig:74
 msgid "Provide the primary nameserver"
-msgstr "Provide the primary nameserver"
+msgstr "提供主要名称服务器"
 
 #: install/templates/step5.html.twig:77
 msgid ""
@@ -2165,11 +2165,11 @@ msgstr ""
 
 #: install/templates/step5.html.twig:82
 msgid "Secondary nameserver"
-msgstr "Secondary nameserver"
+msgstr "辅助名称服务器"
 
 #: install/templates/step5.html.twig:86
 msgid "Provide the secondary nameserver"
-msgstr "Provide the secondary nameserver"
+msgstr "提供辅助名称服务器"
 
 #: install/templates/step5.html.twig:89
 msgid ""
@@ -2181,11 +2181,11 @@ msgstr ""
 
 #: install/templates/step5.html.twig:95
 msgid "Tertiary Nameserver"
-msgstr "Tertiary Nameserver"
+msgstr "第三名称服务器"
 
 #: install/templates/step5.html.twig:95 install/templates/step5.html.twig:108
 msgid "optional"
-msgstr "optional"
+msgstr "可选"
 
 #: install/templates/step5.html.twig:102
 msgid ""
@@ -2197,7 +2197,7 @@ msgstr ""
 
 #: install/templates/step5.html.twig:108
 msgid "Quaternary Nameserver"
-msgstr "Quaternary Nameserver"
+msgstr "第四名称服务器"
 
 #: install/templates/step5.html.twig:115
 msgid ""
