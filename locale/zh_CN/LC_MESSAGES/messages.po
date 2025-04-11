@@ -1,587 +1,2858 @@
-# Poweradmin translation.
-# Copyright (C) 2022 Poweradmin Development Team
+# Poweradmin translation template.
+# Copyright (C) 2025 Poweradmin Development Team
 # This file is distributed under the same license as the Poweradmin package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-# Translators:
-#   <sh_yu2000@hotmail.com>, 2008.
-#   TechQI <techqi@126.com>, 2008.
-#   <linwood.pendleton@alumni.harvard.edu>, 2023.
 msgid ""
 msgstr ""
-"Project-Id-Version: Poweradmin 3.5.1\n"
+"Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-04-10 21:43+0300\n"
-"PO-Revision-Date: 2023-12-03 17:52+0200\n"
-"Last-Translator: TechQI <techqi@126.com>\n"
-"Language-Team: Chinese\n"
-"Language: cn\n"
+"POT-Creation-Date: 2025-04-11 07:36+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: en_EN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: templates/dnssec_edit_key.html:3 templates/edit_zone_templ_record.html:3
-#: templates/dnssec.html:3 templates/edit_record.html:3
-#: templates/migrations.html:3 templates/edit_comment.html:3
-#: templates/add_zone_templ.html:3 templates/list_log_zones.html:3
-#: templates/delete_user.html:3 templates/list_zones.html:3
-#: templates/dnssec_add_key.html:3 templates/edit_user.html:3
-#: templates/add_perm_templ.html:3 templates/add_supermaster.html:3
-#: templates/batch_ptr_record.html:3
+#: lib/AppInitializer.php:79
+msgid ""
+"No configuration file found. Please use the <a href=\"install/\">installer</"
+"a> to create one, or create a config/settings.php file manually. The legacy "
+"format (inc/config.inc.php) is also supported but deprecated and will be "
+"removed in a future version."
+msgstr ""
+"No configuration file found. Please use the <a href=\"install/\">installer</"
+"a> to create one, or create a config/settings.php file manually. The legacy "
+"format (inc/config.inc.php) is also supported but deprecated and will be "
+"removed in a future version."
+
+#: lib/Infrastructure/Service/SessionAuthenticator.php:127
+#, auto-english-fallback
+msgid "Invalid CSRF token."
+msgstr "Invalid CSRF token."
+
+#: lib/BaseController.php:327
+msgid ""
+"The <a href=\"install/\">install/</a> directory exists, you must remove it "
+"first before proceeding."
+msgstr ""
+"The <a href=\"install/\">install/</a> directory exists, you must remove it "
+"first before proceeding."
+
+#: lib/BaseController.php:348
+msgid ""
+"Default session encryption key is used, please set it in your configuration "
+"file."
+msgstr ""
+"Default session encryption key is used, please set it in your configuration "
+"file."
+
+#: lib/Application/Presenter/PaginationPresenter.php:52
+#: templates/search.html:135 templates/search.html:252
+#, auto-english-fallback
+msgid "Previous"
+msgstr "Previous"
+
+#: lib/Application/Presenter/PaginationPresenter.php:79
+#: templates/search.html:157 templates/search.html:274
+#, auto-english-fallback
+msgid "Next"
+msgstr "Next"
+
+#: lib/Application/Presenter/ZoneStartingLettersPresenter.php:29
+#, auto-english-fallback
+msgid "Show zones beginning with"
+msgstr "Show zones beginning with"
+
+#: lib/Application/Presenter/ZoneStartingLettersPresenter.php:54
+#, auto-english-fallback
+msgid "Show all"
+msgstr "Show all"
+
+#: lib/Application/Controller/DnssecAddKeyController.php:89
+#, auto-english-fallback
+msgid "Invalid or unexpected input given."
+msgstr "Invalid or unexpected input given."
+
+#: lib/Domain/Model/UserManager.php:212
+#, auto-english-fallback
+msgid "You do not have the permission to delete this user."
+msgstr "You do not have the permission to delete this user."
+
+#: lib/Application/Controller/EditUserController.php:217
+#, auto-english-fallback
+msgid "User does not exist."
+msgstr "User does not exist."
+
+#: lib/Application/Controller/DeleteUserController.php:79
+#, auto-english-fallback
+msgid "The user has been deleted successfully."
+msgstr "The user has been deleted successfully."
+
+#: lib/Domain/Service/DnsRecord.php:335
+#, auto-english-fallback
+msgid "You do not have the permission to edit this comment."
+msgstr "You do not have the permission to edit this comment."
+
+#: lib/Application/Controller/EditCommentController.php:62
+#, auto-english-fallback
+msgid "You do not have the permission to view this comment."
+msgstr "You do not have the permission to view this comment."
+
+#: lib/Application/Controller/EditCommentController.php:78
+#, auto-english-fallback
+msgid "The comment has been updated successfully."
+msgstr "The comment has been updated successfully."
+
+#: lib/Application/Controller/DnssecAddKeyController.php:60
+#, auto-english-fallback
+msgid "There is no zone with this ID."
+msgstr "There is no zone with this ID."
+
+#: lib/Application/Controller/DeleteZoneTemplRecordController.php:67
+#, auto-english-fallback
+msgid "The record has been deleted successfully."
+msgstr "The record has been deleted successfully."
+
+#: lib/Application/Controller/DeleteRecordController.php:115
+msgid ""
+"The record was deleted but the comment was preserved because similar records "
+"exist."
+msgstr ""
+"The record was deleted but the comment was preserved because similar records "
+"exist."
+
+#: lib/Domain/Model/ZoneTemplate.php:398 lib/Domain/Service/DnsRecord.php:393
+#, auto-english-fallback
+msgid "You do not have the permission to edit this record."
+msgstr "You do not have the permission to edit this record."
+
+#: lib/Application/Controller/ListSupermastersController.php:43
+#, auto-english-fallback
+msgid "You do not have the permission to view supermasters."
+msgstr "You do not have the permission to view supermasters."
+
+#: lib/Application/Controller/ListPermTemplController.php:42
+#, auto-english-fallback
+msgid "You do not have the permission to edit permission templates."
+msgstr "You do not have the permission to edit permission templates."
+
+#: lib/Application/Controller/EditPermTemplController.php:74
+#, auto-english-fallback
+msgid "The permission template has been updated successfully."
+msgstr "The permission template has been updated successfully."
+
+#: lib/Application/Controller/SearchController.php:43
+#, auto-english-fallback
+msgid "You do not have the permission to perform searches."
+msgstr "You do not have the permission to perform searches."
+
+#: lib/Domain/Model/UserManager.php:701
+#, auto-english-fallback
+msgid "You do not have the permission to add a new user."
+msgstr "You do not have the permission to add a new user."
+
+#: lib/Application/Controller/AddUserController.php:102
+#, auto-english-fallback
+msgid "The user has been created successfully."
+msgstr "The user has been created successfully."
+
+#: lib/Application/Controller/AddUserController.php:111
+#, auto-english-fallback
+#, php-format
+msgid "Generated password: %s"
+msgstr "Generated password: %s"
+
+#: lib/Application/Controller/AddUserController.php:127
+#, auto-english-fallback
+msgid "Login details have been sent to the user via email."
+msgstr "Login details have been sent to the user via email."
+
+#: lib/Application/Controller/AddUserController.php:129
+#, auto-english-fallback
+msgid "NOTE: Failed to send login details via email."
+msgstr "NOTE: Failed to send login details via email."
+
+#: lib/Application/Controller/AddUserController.php:135
+#, auto-english-fallback
+msgid "A password was generated but is not displayed for security reasons."
+msgstr "A password was generated but is not displayed for security reasons."
+
+#: lib/Application/Controller/ChangePasswordController.php:128
+#, auto-english-fallback
+msgid "Please fill in all required fields correctly."
+msgstr "Please fill in all required fields correctly."
+
+#: lib/Domain/Model/ZoneTemplate.php:446 lib/Domain/Service/DnsRecord.php:643
+#, auto-english-fallback
+msgid "You do not have the permission to delete this record."
+msgstr "You do not have the permission to delete this record."
+
+#: lib/Application/Controller/DeleteZoneTemplRecordController.php:69
+#, auto-english-fallback
+msgid "The record could not be deleted."
+msgstr "The record could not be deleted."
+
+#: lib/Application/Controller/UsersController.php:61
+#, auto-english-fallback
+msgid "User details updated"
+msgstr "User details updated"
+
+#: lib/Domain/Model/ZoneTemplate.php:186 lib/Domain/Model/ZoneTemplate.php:221
+#, auto-english-fallback
+msgid "You do not have the permission to delete zone templates."
+msgstr "You do not have the permission to delete zone templates."
+
+#: lib/Application/Controller/EditZoneTemplController.php:73
+#, auto-english-fallback
+msgid "There is no zone template with this ID."
+msgstr "There is no zone template with this ID."
+
+#: lib/Application/Controller/EditZoneTemplRecordController.php:126
+#, auto-english-fallback
+msgid "Zone template has been updated successfully."
+msgstr "Zone template has been updated successfully."
+
+#: lib/Application/Controller/EditZoneTemplController.php:197
+#, auto-english-fallback
+msgid "Zones have been updated successfully."
+msgstr "Zones have been updated successfully."
+
+#: lib/Domain/Service/DnsRecord.php:997 lib/Domain/Service/DnsRecord.php:1230
+#, auto-english-fallback
+msgid "You do not have the permission to view this zone."
+msgstr "You do not have the permission to view this zone."
+
+#: lib/Application/Controller/EditController.php:169
+#, auto-english-fallback
+msgid "Zone has been signed successfully."
+msgstr "Zone has been signed successfully."
+
+#: lib/Application/Controller/EditController.php:172
+#, auto-english-fallback
+msgid "DNSSEC is not enabled on the server."
+msgstr "DNSSEC is not enabled on the server."
+
+#: lib/Application/Controller/EditController.php:185
+#, auto-english-fallback
+msgid "Zone has been unsigned successfully."
+msgstr "Zone has been unsigned successfully."
+
+#: lib/Domain/Model/ZoneTemplate.php:138 lib/Domain/Model/ZoneTemplate.php:593
+msgid "Zone template with this name already exists, please choose another one."
+msgstr ""
+"Zone template with this name already exists, please choose another one."
+
+#: lib/Application/Controller/EditController.php:401
+#, auto-english-fallback
+msgid "Template name can't be an empty string."
+msgstr "Template name can't be an empty string."
+
+#: lib/Application/Controller/AddZoneTemplController.php:86
+#, auto-english-fallback
+msgid "Zone template has been added successfully."
+msgstr "Zone template has been added successfully."
+
+#: lib/Application/Controller/EditController.php:464
+#, auto-english-fallback
+msgid "Request has expired, please try again."
+msgstr "Request has expired, please try again."
+
+#: lib/Application/Controller/EditController.php:469
+#, auto-english-fallback
+msgid "Zone has been updated successfully."
+msgstr "Zone has been updated successfully."
+
+#: lib/Application/Controller/EditController.php:471
+#, auto-english-fallback
+msgid "Zone did not have any record changes."
+msgstr "Zone did not have any record changes."
+
+#: lib/Application/Controller/EditController.php:480
+#, auto-english-fallback
+msgid "Zone has not been updated successfully."
+msgstr "Zone has not been updated successfully."
+
+#: lib/Domain/Model/ZoneTemplate.php:337 lib/Domain/Service/DnsRecord.php:443
+#, auto-english-fallback
+msgid "You do not have the permission to add a record to this zone."
+msgstr "You do not have the permission to add a record to this zone."
+
+#: lib/Application/Controller/AddRecordController.php:142
+#, auto-english-fallback
+msgid "This record was not valid and could not be added."
+msgstr "This record was not valid and could not be added."
+
+#: lib/Application/Controller/AddRecordController.php:148
+#, auto-english-fallback
+msgid "Record successfully added. A matching PTR record was also created."
+msgstr "Record successfully added. A matching PTR record was also created."
+
+#: lib/Application/Controller/AddRecordController.php:155
+#, auto-english-fallback
+msgid "The record was successfully added."
+msgstr "The record was successfully added."
+
+#: lib/Application/Controller/AddRecordController.php:152
+#, auto-english-fallback
+msgid "Record successfully added. A matching A record was also created."
+msgstr "Record successfully added. A matching A record was also created."
+
+#: lib/Application/Controller/DeleteDomainsController.php:61
+#, auto-english-fallback
+msgid "No zone selected for deletion."
+msgstr "No zone selected for deletion."
+
+#: lib/Application/Controller/DeleteDomainController.php:113
+#, auto-english-fallback
+msgid "Zone has been deleted successfully."
+msgstr "Zone has been deleted successfully."
+
+#: lib/Application/Controller/DeleteDomainsController.php:97
+#, auto-english-fallback
+msgid "Zones have been deleted successfully."
+msgstr "Zones have been deleted successfully."
+
+#: lib/Domain/Service/DnsRecord.php:1758
+#, auto-english-fallback
+msgid "You do not have the permission to delete a zone."
+msgstr "You do not have the permission to delete a zone."
+
+#: lib/Application/Controller/MigrationsController.php:37
+#, auto-english-fallback
+msgid "You do not have the permission to access the migrations."
+msgstr "You do not have the permission to access the migrations."
+
+#: lib/Application/Controller/MigrationsController.php:42
+msgid ""
+"Old migrations table detected. Please remove the `migrations` table before "
+"proceeding."
+msgstr ""
+"Old migrations table detected. Please remove the `migrations` table before "
+"proceeding."
+
+#: lib/Application/Controller/MigrationsController.php:49
+msgid ""
+"Database access check failed. Please ensure the current database user has "
+"the necessary permissions to create and alter tables."
+msgstr ""
+"Database access check failed. Please ensure the current database user has "
+"the necessary permissions to create and alter tables."
+
+#: lib/Domain/Service/DnsRecord.php:795
+#, auto-english-fallback
+msgid "You do not have the permission to add a master zone."
+msgstr "You do not have the permission to add a master zone."
+
+#: lib/Domain/Service/Dns.php:393 lib/Domain/Service/DnsRecord.php:515
+#, auto-english-fallback
+msgid "Invalid hostname."
+msgstr "Invalid hostname."
+
+#: lib/Application/Controller/BulkRegistrationController.php:103
+#, auto-english-fallback
+msgid "There is already a zone with this name."
+msgstr "There is already a zone with this name."
+
+#: lib/Application/Controller/AddZoneSlaveController.php:119
+#, auto-english-fallback
+msgid "Zone has been added successfully."
+msgstr "Zone has been added successfully."
+
+#: lib/Application/Controller/BatchPtrRecordController.php:71
+#, auto-english-fallback
+msgid "Batch PTR record creation is not enabled."
+msgstr "Batch PTR record creation is not enabled."
+
+#: lib/Application/Controller/BatchPtrRecordController.php:78
+#, auto-english-fallback
+msgid "You do not have permission to edit DNS records."
+msgstr "You do not have permission to edit DNS records."
+
+#: lib/Application/Controller/BatchPtrRecordController.php:95
+#, auto-english-fallback
+msgid "You do not have the permission to add records to this zone."
+msgstr "You do not have the permission to add records to this zone."
+
+#: lib/Application/Controller/ListZonesController.php:56
+#, auto-english-fallback
+msgid "You do not have sufficient permissions to view this page."
+msgstr "You do not have sufficient permissions to view this page."
+
+#: lib/Application/Controller/ListZonesController.php:102
+#, auto-english-fallback
+msgid "You do not have the permission to see any zones."
+msgstr "You do not have the permission to see any zones."
+
+#: lib/Application/Controller/ListZoneTemplController.php:43
+#, auto-english-fallback
+msgid "You do not have the permission to edit zone templates."
+msgstr "You do not have the permission to edit zone templates."
+
+#: lib/Application/Controller/DnssecDeleteKeyController.php:81
+#, auto-english-fallback
+msgid "Failed to delete DNSSEC key."
+msgstr "Failed to delete DNSSEC key."
+
+#: lib/Application/Controller/DnssecEditKeyController.php:88
+#, auto-english-fallback
+msgid "Zone key has been successfully deactivated."
+msgstr "Zone key has been successfully deactivated."
+
+#: lib/Application/Controller/DnssecEditKeyController.php:93
+#, auto-english-fallback
+msgid "Zone key has been successfully activated."
+msgstr "Zone key has been successfully activated."
+
+#: lib/Application/Controller/DnssecDeleteKeyController.php:85
+#, auto-english-fallback
+msgid "Zone key has been deleted successfully."
+msgstr "Zone key has been deleted successfully."
+
+#: lib/Application/Controller/AddPermTemplController.php:50
+#, auto-english-fallback
+msgid "You do not have the permission to add permission templates."
+msgstr "You do not have the permission to add permission templates."
+
+#: lib/Application/Controller/AddPermTemplController.php:69
+#, auto-english-fallback
+msgid "The permission template has been added successfully."
+msgstr "The permission template has been added successfully."
+
+#: lib/Infrastructure/Service/SessionAuthenticator.php:112
+#, auto-english-fallback
+msgid "You have logged out."
+msgstr "You have logged out."
+
+#: lib/Domain/Model/ZoneTemplate.php:587
+#, auto-english-fallback
+msgid "You do not have the permission to add a zone template."
+msgstr "You do not have the permission to add a zone template."
+
+#: lib/Application/Controller/AddZoneSlaveController.php:55
+#, auto-english-fallback
+msgid "You do not have the permission to add a slave zone."
+msgstr "You do not have the permission to add a slave zone."
+
+#: lib/Domain/Service/DnsRecord.php:508
+#, auto-english-fallback
+msgid "This is not a valid IPv4 or IPv6 address."
+msgstr "This is not a valid IPv4 or IPv6 address."
+
+#: lib/Application/Controller/DeleteZoneTemplController.php:89
+#, auto-english-fallback
+msgid "Zone template has been deleted successfully."
+msgstr "Zone template has been deleted successfully."
+
+#: lib/Application/Controller/AddSupermasterController.php:43
+#, auto-english-fallback
+msgid "You do not have the permission to add a new supermaster."
+msgstr "You do not have the permission to add a new supermaster."
+
+#: lib/Application/Controller/AddSupermasterController.php:61
+#, auto-english-fallback
+msgid "The supermaster has been added successfully."
+msgstr "The supermaster has been added successfully."
+
+#: lib/Application/Controller/EditUserController.php:105
+#, auto-english-fallback
+msgid "The user has been updated successfully."
+msgstr "The user has been updated successfully."
+
+#: lib/Application/Controller/EditUserController.php:108
+#, auto-english-fallback
+msgid "The user could not be updated."
+msgstr "The user could not be updated."
+
+#: lib/Domain/Model/UserManager.php:373 lib/Domain/Model/UserManager.php:681
+#, auto-english-fallback
+msgid "You do not have the permission to edit this user."
+msgstr "You do not have the permission to edit this user."
+
+#: lib/Application/Controller/DeletePermTemplController.php:51
+#, auto-english-fallback
+msgid "You do not have the permission to delete permission templates."
+msgstr "You do not have the permission to delete permission templates."
+
+#: lib/Application/Controller/DeletePermTemplController.php:69
+#, auto-english-fallback
+msgid "The permission template has been deleted successfully."
+msgstr "The permission template has been deleted successfully."
+
+#: lib/Application/Controller/EditRecordController.php:78
+#, auto-english-fallback
+msgid "You do not have the permission to view this record."
+msgstr "You do not have the permission to view this record."
+
+#: lib/Application/Controller/EditRecordController.php:190
+#, auto-english-fallback
+msgid "The record has been updated successfully."
+msgstr "The record has been updated successfully."
+
+#: lib/Application/Controller/ChangePasswordController.php:73
+msgid ""
+"LDAP users cannot change their password here. Please contact your "
+"administrator."
+msgstr ""
+"LDAP users cannot change their password here. Please contact your "
+"administrator."
+
+#: lib/Application/Controller/DnssecAddKeyController.php:101
+#, auto-english-fallback
+msgid "Zone key has been added successfully."
+msgstr "Zone key has been added successfully."
+
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:346
+#, auto-english-fallback
+msgid "Failed to add new DNSSEC key."
+msgstr "Failed to add new DNSSEC key."
+
+#: lib/Application/Controller/DnssecAddKeyController.php:107
+#, auto-english-fallback
+msgid "An error occurred while adding the DNSSEC key: "
+msgstr "An error occurred while adding the DNSSEC key: "
+
+#: lib/Application/Controller/DeleteSupermasterController.php:47
+#, auto-english-fallback
+msgid "You do not have the permission to delete a supermaster."
+msgstr "You do not have the permission to delete a supermaster."
+
+#: lib/Application/Controller/DeleteSupermasterController.php:80
+#, auto-english-fallback
+msgid "Invalid IP address."
+msgstr "Invalid IP address."
+
+#: lib/Application/Controller/DeleteSupermasterController.php:85
+#, auto-english-fallback
+msgid "Invalid NS name."
+msgstr "Invalid NS name."
+
+#: lib/Application/Controller/DeleteSupermasterController.php:91
+#, auto-english-fallback
+msgid "Super master does not exist."
+msgstr "Super master does not exist."
+
+#: lib/Application/Controller/DeleteSupermasterController.php:95
+#, auto-english-fallback
+msgid "The supermaster has been deleted successfully."
+msgstr "The supermaster has been deleted successfully."
+
+#: lib/Application/Controller/BulkRegistrationController.php:118
+#, auto-english-fallback
+msgid "Zones has been added successfully."
+msgstr "Zones has been added successfully."
+
+#: lib/Application/Controller/BulkRegistrationController.php:121
+#, auto-english-fallback
+msgid "Some zone(s) could not be added."
+msgstr "Some zone(s) could not be added."
+
+#: lib/Application/Service/LdapAuthenticator.php:80
+#, auto-english-fallback
+msgid "Account is temporarily locked. Please try again later."
+msgstr "Account is temporarily locked. Please try again later."
+
+#: lib/Application/Service/SqlAuthenticator.php:128
+#, auto-english-fallback
+msgid "The user account is disabled."
+msgstr "The user account is disabled."
+
+#: lib/Application/Service/SqlAuthenticator.php:168
+#, auto-english-fallback
+msgid "Authentication failed!"
+msgstr "Authentication failed!"
+
+#: lib/Infrastructure/Service/SessionAuthenticator.php:165
+#, auto-english-fallback
+msgid "Session expired, please login again."
+msgstr "Session expired, please login again."
+
+#: lib/Application/Service/PasswordChangeService.php:66
+#, auto-english-fallback
+msgid "Failed to update password"
+msgstr "Failed to update password"
+
+#: lib/Application/Service/LdapAuthenticator.php:113
+#, auto-english-fallback
+msgid "Failed to connect to LDAP server!"
+msgstr "Failed to connect to LDAP server!"
+
+#: lib/Application/Service/LdapAuthenticator.php:129
+#, auto-english-fallback
+msgid "Failed to bind to LDAP server!"
+msgstr "Failed to bind to LDAP server!"
+
+#: lib/Application/Service/LdapAuthenticator.php:153
+#, auto-english-fallback
+msgid "Failed to search LDAP."
+msgstr "Failed to search LDAP."
+
+#: lib/Application/Service/LdapAuthenticator.php:169
+#, auto-english-fallback
+msgid "Failed to authenticate against LDAP."
+msgstr "Failed to authenticate against LDAP."
+
+#: lib/Application/Service/LdapAuthenticator.php:203
+#, auto-english-fallback
+msgid "LDAP Authentication failed!"
+msgstr "LDAP Authentication failed!"
+
+#: lib/Application/Query/RecordSearch.php:121
+#: templates/dnssec_delete_key.html:45
+#, auto-english-fallback
+msgid "Yes"
+msgstr "Yes"
+
+#: lib/Application/Query/RecordSearch.php:121
+#: templates/dnssec_delete_key.html:47
+#, auto-english-fallback
+msgid "No"
+msgstr "No"
+
+#: lib/Infrastructure/Database/PDOLayer.php:140
+#, auto-english-fallback
+msgid "Unknown database type."
+msgstr "Unknown database type."
+
+#: lib/Domain/Model/UserManager.php:251
+#, auto-english-fallback
+msgid "This template is assigned to at least one user."
+msgstr "This template is assigned to at least one user."
+
+#: lib/Infrastructure/Service/SessionAuthenticator.php:153
+#, auto-english-fallback
+msgid "An empty password is not allowed"
+msgstr "An empty password is not allowed"
+
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:50
+msgid ""
+"Failed to call function exec. Make sure that exec is not listed in "
+"disable_functions at php.ini"
+msgstr ""
+"Failed to call function exec. Make sure that exec is not listed in "
+"disable_functions at php.ini"
+
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:56
+#, auto-english-fallback
+msgid "Failed to call pdnssec utility."
+msgstr "Failed to call pdnssec utility."
+
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:150
+#, auto-english-fallback
+msgid "Failed to secure zone."
+msgstr "Failed to secure zone."
+
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:171
+#, auto-english-fallback
+msgid "Failed to disable DNSSEC."
+msgstr "Failed to disable DNSSEC."
+
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:314
+#, auto-english-fallback
+msgid "Failed to get DNSSEC key details."
+msgstr "Failed to get DNSSEC key details."
+
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:269
+#, auto-english-fallback
+msgid "Failed to active DNSSEC key."
+msgstr "Failed to active DNSSEC key."
+
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:291
+#, auto-english-fallback
+msgid "Failed to deactivate DNSSEC key."
+msgstr "Failed to deactivate DNSSEC key."
+
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:370
+#, auto-english-fallback
+msgid "Failed to remove DNSSEC key."
+msgstr "Failed to remove DNSSEC key."
+
+#: lib/Domain/Model/UserManager.php:713
+#, auto-english-fallback
+msgid "Enter a valid email address."
+msgstr "Enter a valid email address."
+
+#: lib/Domain/Model/UserManager.php:705
+#, auto-english-fallback
+msgid "Username exist already, please choose another one."
+msgstr "Username exist already, please choose another one."
+
+#: lib/Domain/Model/UserManager.php:709
+#, auto-english-fallback
+msgid "Enter a valid user name."
+msgstr "Enter a valid user name."
+
+#: lib/Domain/Model/ZoneTemplate.php:345 lib/Domain/Service/Dns.php:238
+#, auto-english-fallback
+msgid "Your content field doesnt have a legit value."
+msgstr "Your content field doesnt have a legit value."
+
+#: lib/Domain/Service/Dns.php:284
+#, auto-english-fallback
+msgid "Invalid value for prio field."
+msgstr "Invalid value for prio field."
+
+#: lib/Domain/Service/Dns.php:246
+#, auto-english-fallback
+msgid "The content of the SPF record is invalid"
+msgstr "The content of the SPF record is invalid"
+
+#: lib/Domain/Service/Dns.php:278
+#, auto-english-fallback
+msgid "Unknown record type."
+msgstr "Unknown record type."
+
+#: lib/Domain/Service/Dns.php:316 lib/Domain/Service/Dns.php:854
+#, auto-english-fallback
+msgid "The hostname is too long."
+msgstr "The hostname is too long."
+
+#: lib/Domain/Service/Dns.php:333 lib/Domain/Service/Dns.php:342
+#, auto-english-fallback
+msgid "You have invalid characters in your hostname."
+msgstr "You have invalid characters in your hostname."
+
+#: lib/Domain/Service/Dns.php:350 lib/Domain/Service/Dns.php:357
+#, auto-english-fallback
+msgid "A hostname can not start or end with a dash."
+msgstr "A hostname can not start or end with a dash."
+
+#: lib/Domain/Service/Dns.php:364
+#, auto-english-fallback
+msgid "Given hostname or one of the labels is too short or too long."
+msgstr "Given hostname or one of the labels is too short or too long."
+
+#: lib/Domain/Service/Dns.php:401
+#, auto-english-fallback
+msgid "Given hostname has too many slashes."
+msgstr "Given hostname has too many slashes."
+
+#: lib/Domain/Service/Dns.php:410
+#, auto-english-fallback
+msgid "You are using an invalid top level domain."
+msgstr "You are using an invalid top level domain."
+
+#: lib/Domain/Service/Dns.php:433
+#, auto-english-fallback
+msgid "This is not a valid IPv4 address."
+msgstr "This is not a valid IPv4 address."
+
+#: lib/Domain/Service/Dns.php:456
+#, auto-english-fallback
+msgid "This is not a valid IPv6 address."
+msgstr "This is not a valid IPv6 address."
+
+#: lib/Domain/Service/Dns.php:510
+#, auto-english-fallback
+msgid "Invalid characters have been used in this record."
+msgstr "Invalid characters have been used in this record."
+
+#: lib/Domain/Service/Dns.php:527
+#, auto-english-fallback
+msgid "You cannot use html tags for this type of record."
+msgstr "You cannot use html tags for this type of record."
+
+#: lib/Domain/Service/Dns.php:555
+msgid "Backslashes must precede all quotes (\") in TXT content"
+msgstr "Backslashes must precede all quotes (\") in TXT content"
+
+#: lib/Domain/Service/Dns.php:577
+#, auto-english-fallback
+msgid "Add quotes around TXT record content."
+msgstr "Add quotes around TXT record content."
+
+#: lib/Domain/Service/Dns.php:607
+msgid ""
+"This is not a valid CNAME. Did you assign an MX or NS record to the record?"
+msgstr ""
+"This is not a valid CNAME. Did you assign an MX or NS record to the record?"
+
+#: lib/Domain/Service/Dns.php:636
+msgid ""
+"This is not a valid record. There is already exists a CNAME with this name."
+msgstr ""
+"This is not a valid record. There is already exists a CNAME with this name."
+
+#: lib/Domain/Service/Dns.php:663
+msgid ""
+"This is not a valid CNAME. There already exists a record with this name."
+msgstr ""
+"This is not a valid CNAME. There already exists a record with this name."
+
+#: lib/Domain/Service/Dns.php:683
+#, auto-english-fallback
+msgid "Empty CNAME records are not allowed."
+msgstr "Empty CNAME records are not allowed."
+
+#: lib/Domain/Service/Dns.php:709
+msgid ""
+"You can not point a NS or MX record to a CNAME record. Remove or rename the "
+"CNAME record first, or take another name."
+msgstr ""
+"You can not point a NS or MX record to a CNAME record. Remove or rename the "
+"CNAME record first, or take another name."
+
+#: lib/Domain/Service/Dns.php:735
+#, auto-english-fallback
+msgid "Invalid value for content field of HINFO record."
+msgstr "Invalid value for content field of HINFO record."
+
+#: lib/Domain/Service/Dns.php:822
+msgid ""
+"Invalid value for name field of SOA record. It should be the name of the "
+"zone."
+msgstr ""
+"Invalid value for name field of SOA record. It should be the name of the "
+"zone."
+
+#: lib/Domain/Service/Dns.php:863
+#, auto-english-fallback
+msgid "Invalid service value in name field of SRV record."
+msgstr "Invalid service value in name field of SRV record."
+
+#: lib/Domain/Service/Dns.php:870
+#, auto-english-fallback
+msgid "Invalid protocol value in name field of SRV record."
+msgstr "Invalid protocol value in name field of SRV record."
+
+#: lib/Domain/Service/Dns.php:877
+#, auto-english-fallback
+msgid "Invalid FQDN value in name field of SRV record."
+msgstr "Invalid FQDN value in name field of SRV record."
+
+#: lib/Domain/Service/Dns.php:897
+#, auto-english-fallback
+msgid "Invalid value for the priority field of the SRV record."
+msgstr "Invalid value for the priority field of the SRV record."
+
+#: lib/Domain/Service/Dns.php:904
+#, auto-english-fallback
+msgid "Invalid value for the weight field of the SRV record."
+msgstr "Invalid value for the weight field of the SRV record."
+
+#: lib/Domain/Service/Dns.php:911
+#, auto-english-fallback
+msgid "Invalid SRV target."
+msgstr "Invalid SRV target."
+
+#: lib/Domain/Service/Dns.php:935
+#, auto-english-fallback
+msgid "Invalid value for TTL field. It should be numeric."
+msgstr "Invalid value for TTL field. It should be numeric."
+
+#: lib/Domain/Service/DomainRecordCreator.php:56
+#, auto-english-fallback
+#, php-format
+msgid "There is no managed zone for domain: %s."
+msgstr "There is no managed zone for domain: %s."
+
+#: lib/Domain/Service/DomainRecordCreator.php:69
+#, auto-english-fallback
+msgid "Adding IPv6 domain records from reverse zones is not supported yet."
+msgstr "Adding IPv6 domain records from reverse zones is not supported yet."
+
+#: lib/Domain/Service/DomainRecordCreator.php:107
+#, auto-english-fallback
+msgid "This domain record was not valid and could not be added."
+msgstr "This domain record was not valid and could not be added."
+
+#: lib/Domain/Service/DomainRecordCreator.php:103
+#, auto-english-fallback
+msgid "The domain record was successfully added."
+msgstr "The domain record was successfully added."
+
+#: lib/Domain/Service/DnsRecord.php:376
+#, auto-english-fallback
+msgid "You do not have the permission to edit this SOA record."
+msgstr "You do not have the permission to edit this SOA record."
+
+#: lib/Domain/Service/DnsRecord.php:381
+#, auto-english-fallback
+msgid "You do not have the permission to edit this NS record."
+msgstr "You do not have the permission to edit this NS record."
+
+#: lib/Domain/Service/DnsRecord.php:435
+#, auto-english-fallback
+msgid "You do not have the permission to add SOA record."
+msgstr "You do not have the permission to add SOA record."
+
+#: lib/Domain/Service/DnsRecord.php:439
+#, auto-english-fallback
+msgid "You do not have the permission to add NS record."
+msgstr "You do not have the permission to add NS record."
+
+#: lib/Domain/Service/DnsRecord.php:1753
+#, auto-english-fallback
+#, php-format
+msgid "Invalid argument(s) given to function %s %s"
+msgstr "Invalid argument(s) given to function %s %s"
+
+#: lib/Domain/Service/DnsRecord.php:526
+#, auto-english-fallback
+msgid "There is already a supermaster with this IP address and hostname."
+msgstr "There is already a supermaster with this IP address and hostname."
+
+#: lib/Domain/Service/DnsRecord.php:630
+msgid ""
+"You are trying to delete the SOA record. You are not allowed to remove it, "
+"unless you remove the entire zone."
+msgstr ""
+"You are trying to delete the SOA record. You are not allowed to remove it, "
+"unless you remove the entire zone."
+
+#: lib/Domain/Service/DnsRecord.php:790 lib/Domain/Service/DnsRecord.php:1404
+#, auto-english-fallback
+#, php-format
+msgid "Invalid argument(s) given to function %s"
+msgstr "Invalid argument(s) given to function %s"
+
+#: lib/Domain/Service/DnsRecord.php:874
+#, auto-english-fallback
+msgid "The selected user already owns the zone."
+msgstr "The selected user already owns the zone."
+
+#: lib/Domain/Service/DnsRecord.php:903
+#, auto-english-fallback
+msgid "There must be at least one owner for a zone."
+msgstr "There must be at least one owner for a zone."
+
+#: lib/Domain/Service/DnsRecord.php:1122
+#, auto-english-fallback
+msgid "This is an invalid zone name."
+msgstr "This is an invalid zone name."
+
+#: templates/dnssec_delete_key.html:3 templates/list_perm_templ.html:3
+#, auto-english-fallback
 msgid "Home"
-msgstr "主页"
+msgstr "Home"
 
-#: templates/dnssec_edit_key.html:4 templates/edit_zone_templ_record.html:4
-#: templates/dnssec.html:4 templates/edit_record.html:4
-#: templates/edit_comment.html:4 templates/add_zone_templ.html:4
-#: templates/list_log_zones.html:4 templates/list_zones.html:4
-#: templates/dnssec_add_key.html:4
+#: templates/delete_zone_templ_record.html:4 templates/dnssec_delete_key.html:4
+#, auto-english-fallback
 msgid "Zones"
-msgstr "区域"
+msgstr "Zones"
 
-#: templates/dnssec_edit_key.html:13 templates/dnssec.html:12
-#: templates/list_zones.html:62 templates/dnssec_add_key.html:13
+#: templates/dnssec_ds_dnskey.html:13 templates/dnssec_delete_key.html:13
+#, auto-english-fallback
 msgid "DNSSEC"
 msgstr "DNSSEC"
 
 #: templates/dnssec_edit_key.html:17
+#, auto-english-fallback
 msgid "Deactivate key"
-msgstr "停用密钥"
+msgstr "Deactivate key"
 
 #: templates/dnssec_edit_key.html:19
+#, auto-english-fallback
 msgid "Activate key"
-msgstr "激活密钥"
+msgstr "Activate key"
 
 #: templates/dnssec_edit_key.html:26
+#, auto-english-fallback
 msgid "Deactivate zone key"
-msgstr "停用区域密钥"
+msgstr "Deactivate zone key"
 
 #: templates/dnssec_edit_key.html:28
+#, auto-english-fallback
 msgid "Activate zone key"
-msgstr "激活区域密钥"
+msgstr "Activate zone key"
 
-#: templates/dnssec_edit_key.html:37
+#: templates/dnssec_edit_key.html:37 templates/dnssec_delete_key.html:28
+#, auto-english-fallback
 msgid "Domain"
-msgstr "域名"
+msgstr "Domain"
 
-#: templates/dnssec_edit_key.html:44 templates/list_log_zones.html:38
+#: templates/dnssec_delete_key.html:35
+#, auto-english-fallback
 msgid "Id"
-msgstr "标识符"
+msgstr "Id"
 
-#: templates/dnssec_edit_key.html:45 templates/edit_zone_templ_record.html:23
-#: templates/dnssec.html:25 templates/edit_record.html:29
-#: templates/list_zones.html:36
+#: templates/dnssec_delete_key.html:36
+#, auto-english-fallback
 msgid "Type"
-msgstr "类型"
+msgstr "Type"
 
-#: templates/dnssec_edit_key.html:46 templates/dnssec.html:26
+#: templates/dnssec_delete_key.html:37
+#, auto-english-fallback
 msgid "Tag"
-msgstr "标签"
+msgstr "Tag"
 
-#: templates/dnssec_edit_key.html:47 templates/dnssec.html:27
-#: templates/dnssec_add_key.html:54
+#: templates/dnssec_add_key.html:54 templates/dnssec_delete_key.html:38
+#, auto-english-fallback
 msgid "Algorithm"
-msgstr "算法"
+msgstr "Algorithm"
 
-#: templates/dnssec_edit_key.html:48 templates/dnssec.html:28
+#: templates/dnssec_delete_key.html:39
+#, auto-english-fallback
 msgid "Bits"
-msgstr "位数"
+msgstr "Bits"
 
-#: templates/dnssec_edit_key.html:49 templates/dnssec.html:29
+#: templates/dnssec_delete_key.html:40
+#, auto-english-fallback
 msgid "Active"
-msgstr "启用"
+msgstr "Active"
 
-#: templates/dnssec_edit_key.html:50 templates/delete_user.html:49
+#: templates/dnssec_delete_key.html:42
+#, auto-english-fallback
 msgid "Are you sure?"
-msgstr "确定吗？"
+msgstr "Are you sure?"
 
-#: templates/dnssec_edit_key.html:53 templates/delete_user.html:54
-msgid "Yes"
-msgstr "是"
-
-#: templates/dnssec_edit_key.html:54 templates/delete_user.html:55
-msgid "No"
-msgstr "否"
-
-#: templates/edit_zone_templ_record.html:5 templates/add_zone_templ.html:5
+#: templates/delete_zone_templ_record.html:5
+#, auto-english-fallback
 msgid "Zone templates"
-msgstr "区域模板"
+msgstr "Zone templates"
 
 #: templates/edit_zone_templ_record.html:8 templates/edit_record.html:12
+#, auto-english-fallback
 msgid "Edit record"
-msgstr "编辑记录"
+msgstr "Edit record"
 
 #: templates/edit_zone_templ_record.html:12
+#, auto-english-fallback
 msgid "Edit record in zone template"
-msgstr "编辑区域模板中的记录"
+msgstr "Edit record in zone template"
 
-#: templates/edit_zone_templ_record.html:21 templates/edit_record.html:27
-#: templates/add_zone_templ.html:15 templates/list_zones.html:30
-#: templates/add_perm_templ.html:15 templates/add_perm_templ.html:31
+#: templates/edit_perm_templ.html:33 templates/list_perm_templ.html:13
+#, auto-english-fallback
 msgid "Name"
-msgstr "名称"
+msgstr "Name"
 
-#: templates/edit_zone_templ_record.html:24 templates/edit_record.html:30
+#: templates/add_record.html:30
+#, auto-english-fallback
 msgid "Content"
-msgstr "内容"
+msgstr "Content"
 
-#: templates/edit_zone_templ_record.html:25 templates/edit_record.html:31
+#: templates/add_record.html:31
+#, auto-english-fallback
 msgid "Priority"
-msgstr "优先级"
+msgstr "Priority"
 
-#: templates/edit_zone_templ_record.html:26 templates/edit_record.html:32
+#: templates/add_record.html:32
+#, auto-english-fallback
 msgid "TTL"
 msgstr "TTL"
 
-#: templates/edit_zone_templ_record.html:51 templates/edit_record.html:82
+#: templates/edit.html:73 templates/edit.html:362 templates/add_record.html:59
+#, auto-english-fallback
 msgid "Provide content"
-msgstr "提供内容"
+msgstr "Provide content"
 
-#: templates/edit_zone_templ_record.html:60 templates/edit_record.html:99
-#: templates/edit_comment.html:31 templates/edit_user.html:108
-#: templates/add_perm_templ.html:47
+#: templates/edit_zone_templ.html:152 templates/edit_perm_templ.html:55
+#, auto-english-fallback
 msgid "Update"
-msgstr "更新"
+msgstr "Update"
 
-#: templates/edit_zone_templ_record.html:61 templates/edit_record.html:100
-#: templates/edit_comment.html:32 templates/edit_user.html:109
+#: templates/edit.html:132 templates/edit.html:301 templates/users.html:120
+#, auto-english-fallback
 msgid "Reset"
-msgstr "重置"
+msgstr "Reset"
 
 #: templates/dnssec.html:17 templates/dnssec.html:19
+#, auto-english-fallback
 msgid "DNSSEC keys for zone"
-msgstr "区域的DNSSEC密钥"
+msgstr "DNSSEC keys for zone"
 
 #: templates/dnssec.html:24
+#, auto-english-fallback
 msgid "ID"
 msgstr "ID"
 
-#: templates/dnssec.html:53
+#: templates/dnssec.html:53 templates/dnssec_delete_key.html:21
+#, auto-english-fallback
 msgid "Delete zone key"
-msgstr "删除区域密钥"
+msgstr "Delete zone key"
 
 #: templates/dnssec.html:60
+#, auto-english-fallback
 msgid "Add new key"
-msgstr "添加新密钥"
+msgstr "Add new key"
 
 #: templates/dnssec.html:62
+#, auto-english-fallback
 msgid "Show DS and DNSKEY"
-msgstr "显示DS和DNSKEY"
+msgstr "Show DS and DNSKEY"
 
 #: templates/edit_record.html:17 templates/edit_record.html:19
+#, auto-english-fallback
 msgid "Edit record in zone"
-msgstr "编辑区域内的记录"
+msgstr "Edit record in zone"
 
-#: templates/edit_record.html:34
+#: templates/add_record.html:34
+#, auto-english-fallback
 msgid "Comment"
-msgstr "评论"
+msgstr "Comment"
 
-#: templates/edit_record.html:36
+#: templates/search.html:203
+#, auto-english-fallback
 msgid "Disabled"
-msgstr "禁用"
+msgstr "Disabled"
 
-#: templates/migrations.html:4 templates/migrations.html:8
-#: templates/index_list.html:66
+#: templates/index_cards.html:251
+#, auto-english-fallback
 msgid "Migrations"
-msgstr "迁移"
+msgstr "Migrations"
 
-#: templates/edit_comment.html:12
+#: templates/edit_comment.html:12 templates/edit.html:292
+#, auto-english-fallback
 msgid "Edit comment"
-msgstr "编辑评论"
+msgstr "Edit comment"
 
 #: templates/edit_comment.html:17 templates/edit_comment.html:19
+#, auto-english-fallback
 msgid "Edit comment in zone"
-msgstr "在区域内编辑评论"
+msgstr "Edit comment in zone"
 
 #: templates/add_zone_templ.html:6
+#, auto-english-fallback
 msgid "Add template"
-msgstr "添加模板"
+msgstr "Add template"
 
 #: templates/add_zone_templ.html:10
+#, auto-english-fallback
 msgid "Add zone template for"
-msgstr "添加区域模板用于"
+msgstr "Add zone template for"
 
-#: templates/add_zone_templ.html:17 templates/add_perm_templ.html:17
+#: templates/edit_perm_templ.html:19
+#, auto-english-fallback
 msgid "Provide a name for your template"
-msgstr "为您的模板提供名称"
+msgstr "Provide a name for your template"
 
-#: templates/add_zone_templ.html:20 templates/edit_user.html:91
-#: templates/add_perm_templ.html:20 templates/add_perm_templ.html:32
+#: templates/edit_perm_templ.html:34 templates/list_perm_templ.html:14
+#, auto-english-fallback
 msgid "Description"
-msgstr "描述"
+msgstr "Description"
 
-#: templates/add_zone_templ.html:26
+#: templates/add_zone_templ.html:26 templates/edit_zone_templ.html:146
+#, auto-english-fallback
 msgid "Everyone could use it (global)?"
-msgstr "所有人都可以使用吗？（全局）"
+msgstr "Everyone could use it (global)?"
 
-#: templates/add_zone_templ.html:30
+#: templates/header.html:111
+#, auto-english-fallback
 msgid "Add zone template"
-msgstr "添加区域模板"
+msgstr "Add zone template"
 
-#: templates/list_log_zones.html:5 templates/list_log_zones.html:9
-#: templates/index_list.html:45
+#: templates/index_list.html:45 templates/header.html:67
+#, auto-english-fallback
 msgid "Zone logs"
-msgstr "区域日志"
+msgstr "Zone logs"
 
 #: templates/list_log_zones.html:17
+#, auto-english-fallback
 msgid "Search logs by domain"
-msgstr "按域名搜索日志"
+msgstr "Search logs by domain"
 
-#: templates/list_log_zones.html:20
+#: templates/header.html:32
+#, auto-english-fallback
 msgid "Search"
-msgstr "搜索"
+msgstr "Search"
 
-#: templates/list_log_zones.html:23
+#: templates/list_log_users.html:23
+#, auto-english-fallback
 msgid "Clear"
-msgstr "清除"
+msgstr "Clear"
 
-#: templates/list_log_zones.html:30
+#: templates/list_log_zones.html:30 templates/list_log_users.html:30
+#, auto-english-fallback
 msgid "Total number of logs:"
-msgstr "日志总数："
+msgstr "Total number of logs:"
 
-#: templates/list_log_zones.html:40
+#: templates/list_log_zones.html:40 templates/list_log_users.html:40
+#, auto-english-fallback
 msgid "Event"
-msgstr "事件"
+msgstr "Event"
 
-#: templates/list_log_zones.html:41
+#: templates/list_log_zones.html:41 templates/list_log_users.html:41
+#, auto-english-fallback
 msgid "Created at"
-msgstr "创建于"
+msgstr "Created at"
 
 #: templates/list_log_zones.html:55 templates/list_log_zones.html:68
+#, auto-english-fallback
 msgid "Details"
-msgstr "详情"
+msgstr "Details"
 
 #: templates/list_log_zones.html:73
+#, auto-english-fallback
 msgid "Close"
-msgstr "关闭"
+msgstr "Close"
 
-#: templates/list_log_zones.html:89
+#: templates/list_log_zones.html:89 templates/list_log_users.html:58
+#, auto-english-fallback
 msgid "No logs found"
-msgstr "未找到日志"
+msgstr "No logs found"
 
-#: templates/index_list.html:1
+#: templates/index_list.html:1 templates/index_cards.html:2
+#, auto-english-fallback
 msgid "Welcome"
-msgstr "欢迎"
+msgstr "Welcome"
 
-#: templates/index_list.html:5
+#: templates/index_list.html:5 templates/search.html:8
+#, auto-english-fallback
 msgid "Search zones and records"
-msgstr "搜索区域和记录"
+msgstr "Search zones and records"
 
-#: templates/index_list.html:10 templates/list_zones.html:8
+#: templates/index_cards.html:32 templates/header.html:43
+#, auto-english-fallback
 msgid "List zones"
-msgstr "区域列表"
+msgstr "List zones"
 
-#: templates/index_list.html:15
+#: templates/header.html:109
+#, auto-english-fallback
 msgid "List zone templates"
-msgstr "区域模板列表"
+msgstr "List zone templates"
 
-#: templates/index_list.html:20
+#: templates/index_cards.html:67
+#, auto-english-fallback
 msgid "List supermasters"
-msgstr "超级主机列表"
+msgstr "List supermasters"
 
-#: templates/index_list.html:25 templates/list_zones.html:141
+#: templates/index_cards.html:84 templates/header.html:47
+#, auto-english-fallback
 msgid "Add master zone"
-msgstr "添加主区域"
+msgstr "Add master zone"
 
-#: templates/index_list.html:30 templates/list_zones.html:145
+#: templates/index_cards.html:101 templates/header.html:51
+#, auto-english-fallback
 msgid "Add slave zone"
-msgstr "添加从区域"
+msgstr "Add slave zone"
 
-#: templates/index_list.html:35 templates/add_supermaster.html:5
-#: templates/add_supermaster.html:9 templates/add_supermaster.html:49
+#: templates/list_supermasters.html:48 templates/index_cards.html:118
+#, auto-english-fallback
 msgid "Add supermaster"
-msgstr "添加超级主机"
+msgstr "Add supermaster"
 
-#: templates/index_list.html:40
+#: templates/bulk_registration.html:9 templates/header.html:55
+#, auto-english-fallback
 msgid "Bulk registration"
-msgstr "批量注册"
+msgstr "Bulk registration"
 
-#: templates/index_list.html:50
+#: templates/index_cards.html:187 templates/header.html:123
+#, auto-english-fallback
 msgid "Change password"
-msgstr "更改密码"
+msgstr "Change password"
 
-#: templates/index_list.html:54
+#: templates/index_cards.html:203 templates/header.html:78
+#, auto-english-fallback
 msgid "User administration"
-msgstr "用户管理"
+msgstr "User administration"
 
-#: templates/index_list.html:58
+#: templates/index_list.html:58 templates/header.html:87
+#, auto-english-fallback
 msgid "List permission templates"
-msgstr "权限模板列表"
+msgstr "List permission templates"
 
-#: templates/index_list.html:62
+#: templates/index_cards.html:235 templates/header.html:126
+#, auto-english-fallback
 msgid "Logout"
-msgstr "登出"
+msgstr "Logout"
 
-#: templates/delete_user.html:4 templates/edit_user.html:4
-#: templates/add_perm_templ.html:4
+#: templates/edit_perm_templ.html:4 templates/list_perm_templ.html:4
+#, auto-english-fallback
 msgid "Users"
-msgstr "用户"
+msgstr "Users"
 
 #: templates/delete_user.html:5 templates/delete_user.html:9
+#, auto-english-fallback
 msgid "Delete user"
-msgstr "删除用户"
+msgstr "Delete user"
 
 #: templates/delete_user.html:17
 msgid ""
 "You are about to delete a user. This user is owner for a number of zones. "
 "Please decide what to do with these zones."
 msgstr ""
-"您即将删除一个用户。该用户是多个区域的所有者。"
-"请决定如何处理这些区域。"
+"You are about to delete a user. This user is owner for a number of zones. "
+"Please decide what to do with these zones."
 
 #: templates/delete_user.html:22
+#, auto-english-fallback
 msgid "Zone"
-msgstr "区域"
+msgstr "Zone"
 
-#: templates/delete_user.html:23 templates/list_zones.html:118
+#: templates/search.html:235 templates/list_perm_templ.html:25
+#, auto-english-fallback
 msgid "Delete"
-msgstr "删除"
+msgstr "Delete"
 
 #: templates/delete_user.html:24
+#, auto-english-fallback
 msgid "Leave"
-msgstr "离开"
+msgstr "Leave"
 
 #: templates/delete_user.html:25
+#, auto-english-fallback
 msgid "Add new owner"
-msgstr "添加新所有者"
+msgstr "Add new owner"
 
 #: templates/delete_user.html:26
+#, auto-english-fallback
 msgid "Owner to be added"
-msgstr "要添加的所有者"
+msgstr "Owner to be added"
 
-#: templates/list_zones.html:9
+#: templates/list_zones.html:9 templates/search.html:65
+#, auto-english-fallback
 msgid "Total number of zones:"
-msgstr "区域总数："
+msgstr "Total number of zones:"
 
 #: templates/list_zones.html:21
+#, auto-english-fallback
 msgid "There are no zones to show in this listing."
-msgstr "在此列表中没有可显示的区域。"
+msgstr "There are no zones to show in this listing."
 
-#: templates/list_zones.html:41
+#: templates/search.html:82
+#, auto-english-fallback
 msgid "Records"
-msgstr "记录"
+msgstr "Records"
 
-#: templates/list_zones.html:47
+#: templates/delete_domains.html:16 templates/add_zone_slave.html:28
+#, auto-english-fallback
 msgid "Owner"
-msgstr "所有者"
+msgstr "Owner"
 
 #: templates/list_zones.html:51
+#, auto-english-fallback
 msgid "Full name"
-msgstr "全名"
+msgstr "Full name"
 
 #: templates/list_zones.html:54
+#, auto-english-fallback
 msgid "Serial"
-msgstr "序列号"
+msgstr "Serial"
 
-#: templates/list_zones.html:58
+#: templates/add_zone_master.html:50 templates/bulk_registration.html:44
+#, auto-english-fallback
 msgid "Template"
-msgstr "模板"
+msgstr "Template"
 
-#: templates/list_zones.html:115
+#: templates/list_perm_templ.html:24
+#, auto-english-fallback
 msgid "Edit"
-msgstr "编辑"
+msgstr "Edit"
 
 #: templates/list_zones.html:135
+#, auto-english-fallback
 msgid "Delete zone(s)"
-msgstr "删除区域"
+msgstr "Delete zone(s)"
 
 #: templates/dnssec_add_key.html:15 templates/dnssec_add_key.html:69
+#, auto-english-fallback
 msgid "Add key"
-msgstr "添加密钥"
+msgstr "Add key"
 
 #: templates/dnssec_add_key.html:20 templates/dnssec_add_key.html:22
+#, auto-english-fallback
 msgid "Add key for zone"
-msgstr "为区域添加密钥"
+msgstr "Add key for zone"
 
 #: templates/dnssec_add_key.html:29
+#, auto-english-fallback
 msgid "Key type"
-msgstr "密钥类型"
+msgstr "Key type"
 
 #: templates/dnssec_add_key.html:36
+#, auto-english-fallback
 msgid "Select key type"
-msgstr "选择密钥类型"
+msgstr "Select key type"
 
 #: templates/dnssec_add_key.html:40
+#, auto-english-fallback
 msgid "Bits in length"
-msgstr "位长度"
+msgstr "Bits in length"
 
 #: templates/dnssec_add_key.html:50
+#, auto-english-fallback
 msgid "Select bits length"
-msgstr "选择位长度"
+msgstr "Select bits length"
 
 #: templates/dnssec_add_key.html:63
+#, auto-english-fallback
 msgid "Select algorithm"
-msgstr "选择算法"
+msgstr "Select algorithm"
 
 #: templates/edit_user.html:5 templates/edit_user.html:9
+#, auto-english-fallback
 msgid "Edit user"
-msgstr "编辑用户"
+msgstr "Edit user"
 
-#: templates/edit_user.html:13
+#: templates/change_password.html:12
+#, auto-english-fallback
 msgid "Password Requirements"
-msgstr "密码要求"
+msgstr "Password Requirements"
 
-#: templates/edit_user.html:17
+#: templates/change_password.html:16
+#, auto-english-fallback
 msgid "Minimum length"
-msgstr "最小长度"
+msgstr "Minimum length"
 
-#: templates/edit_user.html:17
+#: templates/change_password.html:16
+#, auto-english-fallback
 msgid "characters"
-msgstr "字符"
+msgstr "characters"
 
-#: templates/edit_user.html:20
+#: templates/change_password.html:19
+#, auto-english-fallback
 msgid "Must contain uppercase letters"
-msgstr "必须包含大写字母"
+msgstr "Must contain uppercase letters"
 
-#: templates/edit_user.html:23
+#: templates/change_password.html:22
+#, auto-english-fallback
 msgid "Must contain lowercase letters"
-msgstr "必须包含小写字母"
+msgstr "Must contain lowercase letters"
 
-#: templates/edit_user.html:26
+#: templates/change_password.html:25
+#, auto-english-fallback
 msgid "Must contain numbers"
-msgstr "必须包含数字"
+msgstr "Must contain numbers"
 
-#: templates/edit_user.html:30
+#: templates/change_password.html:29
+#, auto-english-fallback
 msgid "Must contain special characters"
-msgstr "必须包含特殊字符"
+msgstr "Must contain special characters"
 
-#: templates/edit_user.html:35
+#: templates/change_password.html:34
+#, auto-english-fallback
 msgid "No specific password requirements"
-msgstr "没有特定的密码要求"
+msgstr "No specific password requirements"
 
-#: templates/edit_user.html:46 templates/login.html:13
+#: templates/add_user.html:45 install/templates/step4.html.twig:38
+#: install/templates/step5.html.twig:25
+#, auto-english-fallback
 msgid "Username"
-msgstr "用户名"
+msgstr "Username"
 
-#: templates/edit_user.html:49
+#: templates/edit_user.html:49 templates/add_user.html:47
+#, auto-english-fallback
 msgid "Provide user name"
-msgstr "提供用户名"
+msgstr "Provide user name"
 
-#: templates/edit_user.html:53
+#: templates/add_user.html:51
+#, auto-english-fallback
 msgid "Fullname"
-msgstr "全名"
+msgstr "Fullname"
 
-#: templates/edit_user.html:58 templates/login.html:18
+#: templates/index_cards.html:188 install/templates/step4.html.twig:49
+#: install/templates/step5.html.twig:36
+#, auto-english-fallback
 msgid "Password"
-msgstr "密码"
+msgstr "Password"
 
-#: templates/edit_user.html:68
+#: templates/add_user.html:88
+#, auto-english-fallback
 msgid "Email address"
-msgstr "电子邮件地址"
+msgstr "Email address"
 
-#: templates/edit_user.html:71
+#: templates/edit_user.html:71 templates/add_user.html:90
+#, auto-english-fallback
 msgid "Provide email"
-msgstr "提供电子邮件"
+msgstr "Provide email"
 
-#: templates/edit_user.html:76
+#: templates/edit_user.html:76 templates/add_user.html:95
+#, auto-english-fallback
 msgid "Permission template"
-msgstr "权限模板"
+msgstr "Permission template"
 
-#: templates/edit_user.html:96
+#: templates/add_user.html:116
+#, auto-english-fallback
 msgid "Enabled"
-msgstr "启用"
+msgstr "Enabled"
 
-#: templates/edit_user.html:101
+#: templates/edit_user.html:101 templates/add_user.html:121
+#, auto-english-fallback
 msgid "LDAP Authentication"
-msgstr "LDAP认证"
+msgstr "LDAP Authentication"
 
 #: templates/edit_user.html:115
+#, auto-english-fallback
 msgid "This user has been assigned the permission template"
-msgstr "此用户已被分配权限模板"
+msgstr "This user has been assigned the permission template"
 
 #: templates/edit_user.html:117
+#, auto-english-fallback
 msgid "The description for this template is"
-msgstr "此模板的描述为"
+msgstr "The description for this template is"
 
 #: templates/edit_user.html:119
+#, auto-english-fallback
 msgid "Based on this template, this user has the following permissions"
-msgstr "基于此模板，此用户具有以下权限"
+msgstr "Based on this template, this user has the following permissions"
 
-#: templates/add_perm_templ.html:5
+#: templates/list_perm_templ.html:9
+#, auto-english-fallback
 msgid "Permission templates"
-msgstr "权限模板"
+msgstr "Permission templates"
 
-#: templates/add_perm_templ.html:6
+#: templates/add_user.html:128
+#, auto-english-fallback
 msgid "Add"
-msgstr "添加"
+msgstr "Add"
 
-#: templates/add_perm_templ.html:10
+#: templates/list_perm_templ.html:33
+#, auto-english-fallback
 msgid "Add permission template"
-msgstr "添加权限模板"
+msgstr "Add permission template"
 
-#: templates/add_supermaster.html:4
+#: templates/index_cards.html:68
+#, auto-english-fallback
 msgid "Supermasters"
-msgstr "超级主服务器"
+msgstr "Supermasters"
 
-#: templates/add_supermaster.html:14
+#: templates/add_supermaster.html:14 templates/list_supermasters.html:13
+#, auto-english-fallback
 msgid "IP address of supermaster"
-msgstr "超级主服务器的IP地址"
+msgstr "IP address of supermaster"
 
-#: templates/add_supermaster.html:17
+#: templates/add_supermaster.html:17 templates/add_zone_slave.html:24
+#, auto-english-fallback
 msgid "Provide ip address"
-msgstr "提供IP地址"
+msgstr "Provide ip address"
 
-#: templates/add_supermaster.html:20
+#: templates/delete_supermaster.html:11
+#, auto-english-fallback
 msgid "Hostname in NS record"
-msgstr "NS记录中的主机名"
+msgstr "Hostname in NS record"
 
 #: templates/add_supermaster.html:22
+#, auto-english-fallback
 msgid "Provide host name"
-msgstr "提供主机名"
+msgstr "Provide host name"
 
-#: templates/add_supermaster.html:25
+#: templates/delete_supermaster.html:12 templates/header.html:119
+#, auto-english-fallback
 msgid "Account"
-msgstr "账号"
+msgstr "Account"
 
 #: templates/login.html:7
+#, auto-english-fallback
 msgid "Log in"
-msgstr "登录"
+msgstr "Log in"
 
 #: templates/login.html:15
+#, auto-english-fallback
 msgid "Please provide a username"
-msgstr "请提供用户名"
+msgstr "Please provide a username"
 
 #: templates/login.html:22
+#, auto-english-fallback
 msgid "Please provide a password"
-msgstr "请提供密码"
+msgstr "Please provide a password"
 
 #: templates/login.html:27
+#, auto-english-fallback
 msgid "Language"
-msgstr "语言"
+msgstr "Language"
 
 #: templates/login.html:34
+#, auto-english-fallback
 msgid "Go"
-msgstr "前进"
+msgstr "Go"
+
+#: templates/header.html:60
+#, auto-english-fallback
+msgid "Batch PTR Records"
+msgstr "Batch PTR Records"
+
+#: templates/batch_ptr_record.html:46
+#, auto-english-fallback
+msgid "Please provide a network prefix"
+msgstr "Please provide a network prefix"
+
+#: templates/batch_ptr_record.html:60
+#, auto-english-fallback
+msgid "Required"
+msgstr "Required"
+
+#: templates/add_record.html:71
+#, auto-english-fallback
+msgid "Add record"
+msgstr "Add record"
+
+#: templates/add_zone_templ_record.html:11
+#, auto-english-fallback
+msgid "Add record to zone template"
+msgstr "Add record to zone template"
+
+#: templates/add_zone_templ_record.html:40
+#, auto-english-fallback
+msgid "Provide content for your zone record"
+msgstr "Provide content for your zone record"
+
+#: templates/add_zone_templ_record.html:57 templates/edit_zone_templ.html:71
+#, auto-english-fallback
+msgid "Hint:"
+msgstr "Hint:"
+
+#: templates/add_zone_templ_record.html:60 templates/edit_zone_templ.html:74
+#, auto-english-fallback
+msgid "The following placeholders can be used in template records"
+msgstr "The following placeholders can be used in template records"
+
+#: templates/add_zone_templ_record.html:63
+#, auto-english-fallback
+msgid "substituted with current zone name"
+msgstr "substituted with current zone name"
+
+#: templates/add_zone_templ_record.html:64
+#, auto-english-fallback
+msgid "substituted with current date and 2 numbers"
+msgstr "substituted with current date and 2 numbers"
+
+#: templates/add_zone_templ_record.html:66 templates/edit_zone_templ.html:82
+#, auto-english-fallback
+msgid "substituted with 1st name server"
+msgstr "substituted with 1st name server"
+
+#: templates/add_zone_templ_record.html:67 templates/edit_zone_templ.html:83
+#, auto-english-fallback
+msgid "substituted with 2nd name server"
+msgstr "substituted with 2nd name server"
+
+#: templates/add_zone_templ_record.html:68 templates/edit_zone_templ.html:84
+#, auto-english-fallback
+msgid "substituted with 3rd name server"
+msgstr "substituted with 3rd name server"
+
+#: templates/add_zone_templ_record.html:69 templates/edit_zone_templ.html:85
+#, auto-english-fallback
+msgid "substituted with 4th name server"
+msgstr "substituted with 4th name server"
+
+#: templates/add_zone_templ_record.html:70 templates/edit_zone_templ.html:86
+#, auto-english-fallback
+msgid "substituted with hostmaster"
+msgstr "substituted with hostmaster"
+
+#: templates/add_zone_templ_record.html:74 templates/edit_zone_templ.html:90
+#, auto-english-fallback
+msgid "Examples:"
+msgstr "Examples:"
+
+#: templates/add_zone_templ_record.html:77 templates/edit_zone_templ.html:93
+msgid ""
+"To add a subdomain foo in a zone template you would put foo.[ZONE] into the "
+"name field."
+msgstr ""
+"To add a subdomain foo in a zone template you would put foo.[ZONE] into the "
+"name field."
+
+#: templates/add_zone_templ_record.html:78 templates/edit_zone_templ.html:94
+#, auto-english-fallback
+msgid "To add a wildcard record put *.[ZONE] in the name field."
+msgstr "To add a wildcard record put *.[ZONE] in the name field."
+
+#: templates/add_zone_templ_record.html:79 templates/edit_zone_templ.html:95
+#, auto-english-fallback
+msgid "Use just [ZONE] to have the domain itself return a value."
+msgstr "Use just [ZONE] to have the domain itself return a value."
+
+#: templates/add_zone_templ_record.html:80 templates/edit_zone_templ.html:96
+msgid ""
+"For the SOA record, place [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 "
+"86400 in the content field."
+msgstr ""
+"For the SOA record, place [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 "
+"86400 in the content field."
+
+#: templates/delete_perm_templ.html:10
+#, auto-english-fallback
+msgid "Delete permission template"
+msgstr "Delete permission template"
+
+#: templates/edit.html:17
+#, auto-english-fallback
+msgid "Add new record"
+msgstr "Add new record"
+
+#: templates/edit.html:37
+#, auto-english-fallback
+msgid "Add PTR"
+msgstr "Add PTR"
+
+#: templates/edit.html:40
+#, auto-english-fallback
+msgid "Add A/AAAA"
+msgstr "Add A/AAAA"
+
+#: templates/edit.html:79 templates/edit.html:368
+#, auto-english-fallback
+msgid "Provide TTL"
+msgstr "Provide TTL"
+
+#: templates/edit.html:107 templates/edit.html:109
+#, auto-english-fallback
+msgid "Edit zone"
+msgstr "Edit zone"
+
+#: templates/edit.html:119
+#, auto-english-fallback
+msgid "This zone does not have any records."
+msgstr "This zone does not have any records."
+
+#: templates/edit.html:131 templates/edit.html:300
+#, auto-english-fallback
+msgid "Save changes"
+msgstr "Save changes"
+
+#: templates/edit.html:281 templates/search.html:55
+#, auto-english-fallback
+msgid "Comments"
+msgstr "Comments"
+
+#: templates/edit.html:309
+#, auto-english-fallback
+msgid "Unsign this zone"
+msgstr "Unsign this zone"
+
+#: templates/edit.html:312
+#, auto-english-fallback
+msgid "Sign this zone"
+msgstr "Sign this zone"
+
+#: templates/edit.html:382 templates/add_record.html:77
+#, auto-english-fallback
+msgid "Also add a PTR record in the matching zone"
+msgstr "Also add a PTR record in the matching zone"
+
+#: templates/edit.html:390 templates/add_record.html:84
+#, auto-english-fallback
+msgid "Also add an A/AAAA record in the matching zone"
+msgstr "Also add an A/AAAA record in the matching zone"
+
+#: templates/edit.html:405
+#, auto-english-fallback
+msgid "Save as new template"
+msgstr "Save as new template"
+
+#: templates/edit.html:408 templates/edit_zone_templ.html:109
+#, auto-english-fallback
+msgid "Template Name"
+msgstr "Template Name"
+
+#: templates/edit.html:411
+#, auto-english-fallback
+msgid "Provide template name"
+msgstr "Provide template name"
+
+#: templates/edit.html:415 templates/edit_zone_templ.html:116
+#, auto-english-fallback
+msgid "Template Description"
+msgstr "Template Description"
+
+#: templates/edit.html:421 templates/edit_zone_templ.html:120
+#, auto-english-fallback
+msgid "Save as template"
+msgstr "Save as template"
+
+#: templates/edit.html:430
+#, auto-english-fallback
+msgid "Owner of zone"
+msgstr "Owner of zone"
+
+#: templates/edit.html:435
+#, auto-english-fallback
+msgid "No owner set for this zone."
+msgstr "No owner set for this zone."
+
+#: templates/edit.html:528 templates/edit.html:555 templates/edit.html:590
+#, auto-english-fallback
+msgid "Change"
+msgstr "Change"
+
+#: templates/edit.html:541 templates/add_zone_slave.html:21
+#, auto-english-fallback
+msgid "IP address of master NS"
+msgstr "IP address of master NS"
+
+#: templates/users.html:21
+#, auto-english-fallback
+msgid "LDAP"
+msgstr "LDAP"
+
+#: templates/header.html:80
+#, auto-english-fallback
+msgid "Add user"
+msgstr "Add user"
+
+#: templates/delete_record.html:12
+#, auto-english-fallback
+msgid "Delete Record"
+msgstr "Delete Record"
+
+#: templates/delete_record.html:17 templates/delete_record.html:19
+#, auto-english-fallback
+msgid "Delete record in zone"
+msgstr "Delete record in zone"
+
+#: templates/delete_record.html:47
+msgid "You are trying to delete a record that is needed for this zone to work."
+msgstr ""
+"You are trying to delete a record that is needed for this zone to work."
+
+#: templates/add_user.html:60 install/templates/step4.html.twig:54
+#, auto-english-fallback
+msgid "Provide user password"
+msgstr "Provide user password"
+
+#: templates/add_user.html:65
+#, auto-english-fallback
+msgid "Auto-generate password"
+msgstr "Auto-generate password"
+
+#: templates/add_user.html:71
+#, auto-english-fallback
+msgid "Generate a secure password that meets all requirements"
+msgstr "Generate a secure password that meets all requirements"
+
+#: templates/add_user.html:77
+#, auto-english-fallback
+msgid "Send password by email"
+msgstr "Send password by email"
+
+#: templates/add_user.html:82
+#, auto-english-fallback
+msgid "Send login credentials to user's email address"
+msgstr "Send login credentials to user's email address"
+
+#: templates/add_zone_master.html:14 templates/add_zone_slave.html:14
+#, auto-english-fallback
+msgid "Zone name"
+msgstr "Zone name"
+
+#: templates/add_zone_master.html:17 templates/add_zone_slave.html:17
+#, auto-english-fallback
+msgid "Provide zone name"
+msgstr "Provide zone name"
+
+#: templates/add_zone_master.html:70 templates/add_zone_slave.html:56
+#, auto-english-fallback
+msgid "Add zone"
+msgstr "Add zone"
+
+#: templates/list_zone_templ.html:9
+#, auto-english-fallback
+msgid "Zone templates for"
+msgstr "Zone templates for"
+
+#: templates/list_zone_templ.html:13
+#, auto-english-fallback
+msgid "In use"
+msgstr "In use"
+
+#: templates/list_zone_templ.html:18
+#, auto-english-fallback
+msgid "Zones linked"
+msgstr "Zones linked"
+
+#: templates/list_zone_templ.html:26 templates/search.html:284
+#, auto-english-fallback
+msgid "No results found"
+msgstr "No results found"
+
+#: templates/list_zone_templ.html:51
+#, auto-english-fallback
+msgid "private"
+msgstr "private"
+
+#: templates/list_zone_templ.html:53
+#, auto-english-fallback
+msgid "global"
+msgstr "global"
+
+#: templates/change_password.html:44
+#, auto-english-fallback
+msgid "Current password"
+msgstr "Current password"
+
+#: templates/change_password.html:48
+#, auto-english-fallback
+msgid "Provide current password"
+msgstr "Provide current password"
+
+#: templates/change_password.html:52
+#, auto-english-fallback
+msgid "New password"
+msgstr "New password"
+
+#: templates/change_password.html:56 templates/change_password.html:64
+#, auto-english-fallback
+msgid "Provide new password"
+msgstr "Provide new password"
+
+#: templates/change_password.html:60
+#, auto-english-fallback
+msgid "Repeat password"
+msgstr "Repeat password"
+
+#: templates/edit_zone_templ.html:7
+#, auto-english-fallback
+msgid "Edit template"
+msgstr "Edit template"
+
+#: templates/edit_zone_templ.html:11
+#, auto-english-fallback
+msgid "Edit zone template"
+msgstr "Edit zone template"
+
+#: templates/edit_zone_templ.html:17
+#, auto-english-fallback
+msgid "This zone template does not have any records yet."
+msgstr "This zone template does not have any records yet."
+
+#: templates/edit_zone_templ.html:67
+#, auto-english-fallback
+msgid "Update zones"
+msgstr "Update zones"
+
+#: templates/list_supermasters.html:40
+#, auto-english-fallback
+msgid "There are no supermasters to show in this listing."
+msgstr "There are no supermasters to show in this listing."
+
+#: templates/bulk_registration.html:58
+#, auto-english-fallback
+msgid "Type one domain per line"
+msgstr "Type one domain per line"
+
+#: templates/bulk_registration.html:61
+#, auto-english-fallback
+msgid "Provide a domain name(s)"
+msgstr "Provide a domain name(s)"
+
+#: templates/bulk_registration.html:69
+#, auto-english-fallback
+msgid "Add zones"
+msgstr "Add zones"
+
+#: templates/delete_domain.html:12
+#, auto-english-fallback
+msgid "Delete Zone"
+msgstr "Delete Zone"
+
+#: templates/delete_domain.html:17 templates/delete_domain.html:19
+#, auto-english-fallback
+msgid "Delete zone"
+msgstr "Delete zone"
+
+#: templates/delete_domain.html:27 templates/delete_domains.html:42
+msgid ""
+"You are about to delete a slave zone of which the master nameserver is a "
+"supermaster. Deleting the zone now, will result in temporary removal only. "
+"Whenever the supermaster sends a notification for this zone, it will be "
+"added again!"
+msgstr ""
+"You are about to delete a slave zone of which the master nameserver is a "
+"supermaster. Deleting the zone now, will result in temporary removal only. "
+"Whenever the supermaster sends a notification for this zone, it will be "
+"added again!"
+
+#: templates/search.html:9
+msgid ""
+"Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) "
+"in pattern matches any single character, a percent sign (%) matches any "
+"string of zero or more characters."
+msgstr ""
+"Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) "
+"in pattern matches any single character, a percent sign (%) matches any "
+"string of zero or more characters."
+
+#: templates/search.html:27
+#, auto-english-fallback
+msgid "Provide a keyword for your search"
+msgstr "Provide a keyword for your search"
+
+#: templates/search.html:44
+#, auto-english-fallback
+msgid "Wildcard"
+msgstr "Wildcard"
+
+#: templates/search.html:49
+#, auto-english-fallback
+msgid "Reverse"
+msgstr "Reverse"
+
+#: templates/search.html:64
+#, auto-english-fallback
+msgid "Zones found"
+msgstr "Zones found"
+
+#: templates/search.html:167
+#, auto-english-fallback
+msgid "Records found"
+msgstr "Records found"
+
+#: templates/search.html:168
+#, auto-english-fallback
+msgid "Total number of records:"
+msgstr "Total number of records:"
+
+#: templates/delete_domains.html:5 templates/delete_domains.html:9
+#, auto-english-fallback
+msgid "Delete zones"
+msgstr "Delete zones"
+
+#: templates/delete_domains.html:18
+#, auto-english-fallback
+msgid "Note"
+msgstr "Note"
+
+#: templates/delete_supermaster.html:5 templates/delete_supermaster.html:9
+#, auto-english-fallback
+msgid "Delete supermaster"
+msgstr "Delete supermaster"
+
+#: templates/header.html:96
+#, auto-english-fallback
+msgid "User logs"
+msgstr "User logs"
+
+#: templates/list_log_users.html:17
+#, auto-english-fallback
+msgid "Search logs by user"
+msgstr "Search logs by user"
+
+#: templates/index_cards.html:13
+#, auto-english-fallback
+msgid "Find zones and records"
+msgstr "Find zones and records"
+
+#: templates/index_cards.html:15
+#, auto-english-fallback
+msgid "Search zones"
+msgstr "Search zones"
+
+#: templates/index_cards.html:30
+#, auto-english-fallback
+msgid "Manage DNS zones"
+msgstr "Manage DNS zones"
+
+#: templates/header.html:106
+#, auto-english-fallback
+msgid "Templates"
+msgstr "Templates"
+
+#: templates/index_cards.html:48
+#, auto-english-fallback
+msgid "Manage zone templates"
+msgstr "Manage zone templates"
+
+#: templates/index_cards.html:65
+#, auto-english-fallback
+msgid "Manage supermaster servers"
+msgstr "Manage supermaster servers"
+
+#: templates/index_cards.html:81
+#, auto-english-fallback
+msgid "Master Zone"
+msgstr "Master Zone"
+
+#: templates/index_cards.html:82
+#, auto-english-fallback
+msgid "Create new master zone"
+msgstr "Create new master zone"
+
+#: templates/index_cards.html:85
+#, auto-english-fallback
+msgid "Add Master"
+msgstr "Add Master"
+
+#: templates/index_cards.html:98
+#, auto-english-fallback
+msgid "Slave Zone"
+msgstr "Slave Zone"
+
+#: templates/index_cards.html:99
+#, auto-english-fallback
+msgid "Add new slave zone"
+msgstr "Add new slave zone"
+
+#: templates/index_cards.html:102
+#, auto-english-fallback
+msgid "Add Slave"
+msgstr "Add Slave"
+
+#: templates/index_cards.html:115 templates/index_cards.html:119
+#, auto-english-fallback
+msgid "Supermaster"
+msgstr "Supermaster"
+
+#: templates/index_cards.html:116
+#, auto-english-fallback
+msgid "Add new supermaster server"
+msgstr "Add new supermaster server"
+
+#: templates/index_cards.html:132
+#, auto-english-fallback
+msgid "Bulk Registration"
+msgstr "Bulk Registration"
+
+#: templates/index_cards.html:133
+#, auto-english-fallback
+msgid "Register multiple domains at once"
+msgstr "Register multiple domains at once"
+
+#: templates/index_cards.html:135
+#, auto-english-fallback
+msgid "Bulk domain registration"
+msgstr "Bulk domain registration"
+
+#: templates/index_cards.html:136
+#, auto-english-fallback
+msgid "Registration"
+msgstr "Registration"
+
+#: templates/index_cards.html:149 templates/index_cards.html:153
+#, auto-english-fallback
+msgid "PTR Records"
+msgstr "PTR Records"
+
+#: templates/index_cards.html:150
+#, auto-english-fallback
+msgid "Manage reverse DNS records"
+msgstr "Manage reverse DNS records"
+
+#: templates/index_cards.html:166 templates/index_cards.html:170
+#, auto-english-fallback
+msgid "Zone Logs"
+msgstr "Zone Logs"
+
+#: templates/index_cards.html:167
+#, auto-english-fallback
+msgid "View zone change history"
+msgstr "View zone change history"
+
+#: templates/index_cards.html:169
+#, auto-english-fallback
+msgid "View zone logs"
+msgstr "View zone logs"
+
+#: templates/index_cards.html:185
+#, auto-english-fallback
+msgid "Update your account password"
+msgstr "Update your account password"
+
+#: templates/index_cards.html:201
+#, auto-english-fallback
+msgid "Manage system users and access"
+msgstr "Manage system users and access"
+
+#: templates/index_cards.html:220
+#, auto-english-fallback
+msgid "Permissions"
+msgstr "Permissions"
+
+#: templates/index_cards.html:217
+#, auto-english-fallback
+msgid "Manage permission templates"
+msgstr "Manage permission templates"
+
+#: templates/index_cards.html:233
+#, auto-english-fallback
+msgid "End your session"
+msgstr "End your session"
+
+#: templates/index_cards.html:248
+#, auto-english-fallback
+msgid "Manage database migrations"
+msgstr "Manage database migrations"
+
+#: templates/index_cards.html:250
+#, auto-english-fallback
+msgid "Database Migrations"
+msgstr "Database Migrations"
+
+#: templates/delete_zone_templ.html:6
+#, auto-english-fallback
+msgid "Delete template"
+msgstr "Delete template"
+
+#: templates/delete_zone_templ.html:10
+#, auto-english-fallback
+msgid "Delete zone template"
+msgstr "Delete zone template"
+
+#: templates/dnssec_ds_dnskey.html:16
+#, auto-english-fallback
+msgid "DS and DNS keys"
+msgstr "DS and DNS keys"
+
+#: templates/dnssec_ds_dnskey.html:22 templates/dnssec_ds_dnskey.html:24
+#, auto-english-fallback
+msgid "DNSSEC public records for zone"
+msgstr "DNSSEC public records for zone"
+
+#: templates/dnssec_ds_dnskey.html:27
+#, auto-english-fallback
+msgid "DNSKEY"
+msgstr "DNSKEY"
+
+#: templates/dnssec_ds_dnskey.html:33
+#, auto-english-fallback
+msgid "DS record"
+msgstr "DS record"
+
+#: templates/add_record.html:17 templates/add_record.html:19
+#, auto-english-fallback
+msgid "Add record to zone"
+msgstr "Add record to zone"
+
+#: templates/edit_perm_templ.html:10
+#, auto-english-fallback
+msgid "Edit permission template"
+msgstr "Edit permission template"
+
+#: templates/delete_zone_templ_record.html:7
+#, auto-english-fallback
+msgid "Delete record"
+msgstr "Delete record"
+
+#: templates/delete_zone_templ_record.html:11
+#, auto-english-fallback
+msgid "Delete record in zone template"
+msgstr "Delete record in zone template"
+
+#: install/templates/step6.html.twig:3
+#, auto-english-fallback
+msgid "Create limited rights user"
+msgstr "Create limited rights user"
+
+#: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
+#, auto-english-fallback
+msgid "Step"
+msgstr "Step"
+
+#: install/templates/step6.html.twig:8
+#, auto-english-fallback
+msgid "Create limited-rights user"
+msgstr "Create limited-rights user"
+
+#: install/templates/step6.html.twig:13
+#, auto-english-fallback
+msgid "Limited Database Rights:"
+msgstr "Limited Database Rights:"
+
+#: install/templates/step6.html.twig:13
+msgid ""
+"You now want to give limited rights to Poweradmin so it can update the data "
+"in the tables. To do this, you should create a new user and give it rights "
+"to select, delete, insert, and update records in the PowerDNS database."
+msgstr ""
+"You now want to give limited rights to Poweradmin so it can update the data "
+"in the tables. To do this, you should create a new user and give it rights "
+"to select, delete, insert, and update records in the PowerDNS database."
+
+#: install/templates/step6.html.twig:18
+#, auto-english-fallback
+msgid "Database Commands"
+msgstr "Database Commands"
+
+#: install/templates/step6.html.twig:21
+#, auto-english-fallback
+msgid "Execute the following commands based on your database:"
+msgstr "Execute the following commands based on your database:"
+
+#: install/templates/step6.html.twig:26
+msgid ""
+"After you have added the new user, proceed with this installation procedure."
+msgstr ""
+"After you have added the new user, proceed with this installation procedure."
+
+#: install/templates/step3.html.twig:44
+#, auto-english-fallback
+msgid "Note:"
+msgstr "Note:"
+
+#: install/templates/step6.html.twig:29
+msgid ""
+"Since you are using SQLite, there is no need to create a new user with "
+"limited rights."
+msgstr ""
+"Since you are using SQLite, there is no need to create a new user with "
+"limited rights."
+
+#: install/templates/step5.html.twig:133 install/templates/step3.html.twig:55
+#, auto-english-fallback
+msgid "Continue to step"
+msgstr "Continue to step"
+
+#: install/templates/base.html.twig:28
+#, auto-english-fallback
+msgid "Installation step"
+msgstr "Installation step"
+
+#: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
+#, auto-english-fallback
+msgid "Create configuration file"
+msgstr "Create configuration file"
+
+#: install/templates/step7.html.twig:12
+#, auto-english-fallback
+msgid "Configuration File:"
+msgstr "Configuration File:"
+
+#: install/templates/step7.html.twig:12
+#, auto-english-fallback
+msgid "Create the file"
+msgstr "Create the file"
+
+#: install/templates/step7.html.twig:14
+#, auto-english-fallback
+msgid "with the following content:"
+msgstr "with the following content:"
+
+#: install/templates/step1.html.twig:3
+#, auto-english-fallback
+msgid "Choose a language"
+msgstr "Choose a language"
+
+#: install/templates/step1.html.twig:8
+#, auto-english-fallback
+msgid "Choose a language for installation"
+msgstr "Choose a language for installation"
+
+#: install/templates/step1.html.twig:57
+#, auto-english-fallback
+msgid "Go to step"
+msgstr "Go to step"
+
+#: install/templates/step4.html.twig:3
+#, auto-english-fallback
+msgid "Configuring database"
+msgstr "Configuring database"
+
+#: install/templates/step4.html.twig:8
+#, auto-english-fallback
+msgid "Configuring Database Connection"
+msgstr "Configuring Database Connection"
+
+#: install/templates/step4.html.twig:12
+#, auto-english-fallback
+msgid "Database Preparation:"
+msgstr "Database Preparation:"
+
+#: install/templates/step4.html.twig:12
+msgid ""
+"The installer needs to modify the PowerDNS database with tables for "
+"Poweradmin. Use an account with sufficient rights (like root) to proceed."
+msgstr ""
+"The installer needs to modify the PowerDNS database with tables for "
+"Poweradmin. Use an account with sufficient rights (like root) to proceed."
+
+#: install/templates/step4.html.twig:20
+#, auto-english-fallback
+msgid "Database Settings"
+msgstr "Database Settings"
+
+#: install/templates/step4.html.twig:24
+#, auto-english-fallback
+msgid "Database type"
+msgstr "Database type"
+
+#: install/templates/step4.html.twig:33
+#, auto-english-fallback
+msgid "The type of the PowerDNS database."
+msgstr "The type of the PowerDNS database."
+
+#: install/templates/step4.html.twig:41 install/templates/step5.html.twig:28
+#, auto-english-fallback
+msgid "Provide the user name"
+msgstr "Provide the user name"
+
+#: install/templates/step4.html.twig:44
+#, auto-english-fallback
+msgid "Database username with administrative rights."
+msgstr "Database username with administrative rights."
+
+#: install/templates/step4.html.twig:58
+#, auto-english-fallback
+msgid "Password for this database user."
+msgstr "Password for this database user."
+
+#: install/templates/step4.html.twig:63
+#, auto-english-fallback
+msgid "Hostname"
+msgstr "Hostname"
+
+#: install/templates/step4.html.twig:66
+#, auto-english-fallback
+msgid "Provide the hostname"
+msgstr "Provide the hostname"
+
+#: install/templates/step4.html.twig:69
+msgid "Database server hostname (usually \"localhost\")."
+msgstr "Database server hostname (usually \"localhost\")."
+
+#: install/templates/step4.html.twig:74
+#, auto-english-fallback
+msgid "DB Port"
+msgstr "DB Port"
+
+#: install/templates/step4.html.twig:77
+#, auto-english-fallback
+msgid "Provide database port"
+msgstr "Provide database port"
+
+#: install/templates/step4.html.twig:80
+#, auto-english-fallback
+msgid "Database server port."
+msgstr "Database server port."
+
+#: install/templates/step4.html.twig:85
+#, auto-english-fallback
+msgid "Database"
+msgstr "Database"
+
+#: install/templates/step4.html.twig:88
+#, auto-english-fallback
+msgid "Provide the name of the database"
+msgstr "Provide the name of the database"
+
+#: install/templates/step4.html.twig:91
+#, auto-english-fallback
+msgid "PowerDNS database name."
+msgstr "PowerDNS database name."
+
+#: install/templates/step4.html.twig:93
+#, auto-english-fallback
+msgid "Full path to SQLite database file"
+msgstr "Full path to SQLite database file"
+
+#: install/templates/step4.html.twig:96
+#, auto-english-fallback
+msgid "File must exist with web server read/write access. Use absolute path."
+msgstr "File must exist with web server read/write access. Use absolute path."
+
+#: install/templates/step4.html.twig:104
+#, auto-english-fallback
+msgid "DB charset"
+msgstr "DB charset"
+
+#: install/templates/step4.html.twig:178 install/templates/step4.html.twig:186
+#, auto-english-fallback
+msgid "Use default"
+msgstr "Use default"
+
+#: install/templates/step4.html.twig:111
+#, auto-english-fallback
+msgid "Charset for new tables. Leave empty for database default."
+msgstr "Charset for new tables. Leave empty for database default."
+
+#: install/templates/step4.html.twig:116
+#, auto-english-fallback
+msgid "DB collation"
+msgstr "DB collation"
+
+#: install/templates/step4.html.twig:123
+msgid ""
+"Collation rules for character comparison. Leave empty for database default."
+msgstr ""
+"Collation rules for character comparison. Leave empty for database default."
+
+#: install/templates/step4.html.twig:131
+#, auto-english-fallback
+msgid "Administrator Account"
+msgstr "Administrator Account"
+
+#: install/templates/step4.html.twig:135
+#, auto-english-fallback
+msgid "Administrator password"
+msgstr "Administrator password"
+
+#: install/templates/step4.html.twig:140
+#, auto-english-fallback
+msgid "Provide a password"
+msgstr "Provide a password"
+
+#: install/templates/step4.html.twig:145
+msgid ""
+"Password for \"admin\" username with full rights to the Poweradmin interface."
+msgstr ""
+"Password for \"admin\" username with full rights to the Poweradmin interface."
+
+#: install/templates/step2.html.twig:3
+#, auto-english-fallback
+msgid "System Requirements"
+msgstr "System Requirements"
+
+#: install/templates/step2.html.twig:8
+#, auto-english-fallback
+msgid "System Requirements Check"
+msgstr "System Requirements Check"
+
+#: install/templates/step2.html.twig:12
+#, auto-english-fallback
+msgid "Requirements Check:"
+msgstr "Requirements Check:"
+
+#: install/templates/step2.html.twig:12
+#, auto-english-fallback
+msgid "Verifying that your server meets all requirements to run Poweradmin."
+msgstr "Verifying that your server meets all requirements to run Poweradmin."
+
+#: install/templates/step2.html.twig:20
+#, auto-english-fallback
+msgid "PHP Version"
+msgstr "PHP Version"
+
+#: install/templates/step2.html.twig:27
+#, auto-english-fallback
+msgid "OK"
+msgstr "OK"
+
+#: install/templates/step2.html.twig:29
+#, auto-english-fallback
+msgid "Requires PHP 8.1.0+"
+msgstr "Requires PHP 8.1.0+"
+
+#: install/templates/step2.html.twig:40
+#, auto-english-fallback
+msgid "Database Extensions"
+msgstr "Database Extensions"
+
+#: install/templates/step2.html.twig:40
+#, auto-english-fallback
+msgid "at least one required"
+msgstr "at least one required"
+
+#: install/templates/step2.html.twig:61
+#, auto-english-fallback
+msgid "Required PHP Extensions"
+msgstr "Required PHP Extensions"
+
+#: install/templates/step2.html.twig:80
+#, auto-english-fallback
+msgid "Optional Extensions"
+msgstr "Optional Extensions"
+
+#: install/templates/step2.html.twig:104
+#, auto-english-fallback
+msgid "All required components are available."
+msgstr "All required components are available."
+
+#: install/templates/step2.html.twig:105
+#, auto-english-fallback
+msgid "You can continue with the installation."
+msgstr "You can continue with the installation."
+
+#: install/templates/step2.html.twig:111
+#, auto-english-fallback
+msgid "Some required components are missing."
+msgstr "Some required components are missing."
+
+#: install/templates/step2.html.twig:112
+#, auto-english-fallback
+msgid "Please install the missing components before continuing."
+msgstr "Please install the missing components before continuing."
+
+#: install/templates/step2.html.twig:116
+#, auto-english-fallback
+msgid "Check Again"
+msgstr "Check Again"
+
+#: install/templates/step5.html.twig:3
+#, auto-english-fallback
+msgid "Setup account and nameservers"
+msgstr "Setup account and nameservers"
+
+#: install/templates/step5.html.twig:8
+#, auto-english-fallback
+msgid "Setup account and name servers"
+msgstr "Setup account and name servers"
+
+#: install/templates/step5.html.twig:12
+#, auto-english-fallback
+msgid "Configuration:"
+msgstr "Configuration:"
+
+#: install/templates/step5.html.twig:12
+#, auto-english-fallback
+msgid "Now we will gather all details for the configuration itself."
+msgstr "Now we will gather all details for the configuration itself."
+
+#: install/templates/step5.html.twig:21
+#, auto-english-fallback
+msgid "Database User"
+msgstr "Database User"
+
+#: install/templates/step5.html.twig:31
+msgid ""
+"Poweradmin database username with restricted access. Not for web UI login."
+msgstr ""
+"Poweradmin database username with restricted access. Not for web UI login."
+
+#: install/templates/step5.html.twig:41
+#, auto-english-fallback
+msgid "Provide the user password"
+msgstr "Provide the user password"
+
+#: install/templates/step5.html.twig:45
+#, auto-english-fallback
+msgid "The password for this username."
+msgstr "The password for this username."
+
+#: install/templates/step5.html.twig:54
+#, auto-english-fallback
+msgid "DNS Settings"
+msgstr "DNS Settings"
+
+#: install/templates/step5.html.twig:58
+#, auto-english-fallback
+msgid "Hostmaster"
+msgstr "Hostmaster"
+
+#: install/templates/step5.html.twig:62
+#, auto-english-fallback
+msgid "Provide the DNS hostmaster"
+msgstr "Provide the DNS hostmaster"
+
+#: install/templates/step5.html.twig:65
+msgid ""
+"When creating SOA records and no hostmaster is provided, this value here "
+"will be used."
+msgstr ""
+"When creating SOA records and no hostmaster is provided, this value here "
+"will be used."
+
+#: install/templates/step5.html.twig:70
+#, auto-english-fallback
+msgid "Primary nameserver"
+msgstr "Primary nameserver"
+
+#: install/templates/step5.html.twig:74
+#, auto-english-fallback
+msgid "Provide the primary nameserver"
+msgstr "Provide the primary nameserver"
+
+#: install/templates/step5.html.twig:77
+msgid ""
+"When creating new zones using the template, this value will be used as "
+"primary nameserver."
+msgstr ""
+"When creating new zones using the template, this value will be used as "
+"primary nameserver."
+
+#: install/templates/step5.html.twig:82
+#, auto-english-fallback
+msgid "Secondary nameserver"
+msgstr "Secondary nameserver"
+
+#: install/templates/step5.html.twig:86
+#, auto-english-fallback
+msgid "Provide the secondary nameserver"
+msgstr "Provide the secondary nameserver"
+
+#: install/templates/step5.html.twig:89
+msgid ""
+"When creating new zones using the template, this value will be used as "
+"secondary nameserver."
+msgstr ""
+"When creating new zones using the template, this value will be used as "
+"secondary nameserver."
+
+#: install/templates/step5.html.twig:95
+#, auto-english-fallback
+msgid "Tertiary Nameserver"
+msgstr "Tertiary Nameserver"
+
+#: install/templates/step5.html.twig:95 install/templates/step5.html.twig:108
+#, auto-english-fallback
+msgid "optional"
+msgstr "optional"
+
+#: install/templates/step5.html.twig:102
+msgid ""
+"When creating new zones using the template, this optional value will be used "
+"as tertiary nameserver."
+msgstr ""
+"When creating new zones using the template, this optional value will be used "
+"as tertiary nameserver."
+
+#: install/templates/step5.html.twig:108
+#, auto-english-fallback
+msgid "Quaternary Nameserver"
+msgstr "Quaternary Nameserver"
+
+#: install/templates/step5.html.twig:115
+msgid ""
+"When creating new zones using the template, this optional value will be used "
+"as quaternary nameserver."
+msgstr ""
+"When creating new zones using the template, this optional value will be used "
+"as quaternary nameserver."
+
+#: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
+#, auto-english-fallback
+msgid "Installation complete"
+msgstr "Installation complete"
+
+#: install/templates/step8.html.twig:12
+#, auto-english-fallback
+msgid "Installation Complete!"
+msgstr "Installation Complete!"
+
+#: install/templates/step8.html.twig:12
+#, auto-english-fallback
+msgid "Congratulations! Your Poweradmin installation is now configured."
+msgstr "Congratulations! Your Poweradmin installation is now configured."
+
+#: install/templates/step8.html.twig:16
+#, auto-english-fallback
+msgid "Important Security Notice:"
+msgstr "Important Security Notice:"
+
+#: install/templates/step8.html.twig:16
+msgid ""
+"You must remove the \"install/\" directory from the Poweradmin root "
+"directory."
+msgstr ""
+"You must remove the \"install/\" directory from the Poweradmin root "
+"directory."
+
+#: install/templates/step8.html.twig:17
+msgid ""
+"Poweradmin will not function if the install directory exists, as a security "
+"measure."
+msgstr ""
+"Poweradmin will not function if the install directory exists, as a security "
+"measure."
+
+#: install/templates/step8.html.twig:22
+#, auto-english-fallback
+msgid "Next Steps"
+msgstr "Next Steps"
+
+#: install/templates/step8.html.twig:26
+msgid "Remove the \"install/\" directory from your server"
+msgstr "Remove the \"install/\" directory from your server"
+
+#: install/templates/step8.html.twig:27
+msgid ""
+"Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
+"\"admin\" and the password you set in step 3"
+msgstr ""
+"Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
+"\"admin\" and the password you set in step 3"
+
+#: install/templates/step8.html.twig:28
+#, auto-english-fallback
+msgid "Begin configuring your DNS zones and records"
+msgstr "Begin configuring your DNS zones and records"
+
+#: install/templates/step3.html.twig:3 install/templates/step3.html.twig:8
+#, auto-english-fallback
+msgid "Getting Ready"
+msgstr "Getting Ready"
+
+#: install/templates/step3.html.twig:12
+#, auto-english-fallback
+msgid "Preparation:"
+msgstr "Preparation:"
+
+#: install/templates/step3.html.twig:12
+#, auto-english-fallback
+msgid "Let's get your PowerDNS database ready for Poweradmin."
+msgstr "Let's get your PowerDNS database ready for Poweradmin."
+
+#: install/templates/step3.html.twig:17
+#, auto-english-fallback
+msgid "About PowerDNS"
+msgstr "About PowerDNS"
+
+#: install/templates/step3.html.twig:20
+msgid ""
+"PowerDNS is a DNS server that stores its data in an SQL database. Poweradmin "
+"will help you manage this database via a web interface."
+msgstr ""
+"PowerDNS is a DNS server that stores its data in an SQL database. Poweradmin "
+"will help you manage this database via a web interface."
+
+#: install/templates/step3.html.twig:21
+#, auto-english-fallback
+msgid "Before proceeding, you should have:"
+msgstr "Before proceeding, you should have:"
+
+#: install/templates/step3.html.twig:23
+#, auto-english-fallback
+msgid "An operational PowerDNS installation"
+msgstr "An operational PowerDNS installation"
+
+#: install/templates/step3.html.twig:24
+#, auto-english-fallback
+msgid "Database connectivity details (hostname, username, password)"
+msgstr "Database connectivity details (hostname, username, password)"
+
+#: install/templates/step3.html.twig:25
+#, auto-english-fallback
+msgid "Administrative access to your database"
+msgstr "Administrative access to your database"
+
+#: install/templates/step3.html.twig:32
+#, auto-english-fallback
+msgid "Database Preparations"
+msgstr "Database Preparations"
+
+#: install/templates/step3.html.twig:35
+#, auto-english-fallback
+msgid "In the next steps, Poweradmin will:"
+msgstr "In the next steps, Poweradmin will:"
+
+#: install/templates/step3.html.twig:37
+#, auto-english-fallback
+msgid "Connect to your PowerDNS database"
+msgstr "Connect to your PowerDNS database"
+
+#: install/templates/step3.html.twig:38
+#, auto-english-fallback
+msgid "Create tables needed for Poweradmin functionality"
+msgstr "Create tables needed for Poweradmin functionality"
+
+#: install/templates/step3.html.twig:39
+#, auto-english-fallback
+msgid "Set up an administrator account for web access"
+msgstr "Set up an administrator account for web access"
+
+#: install/templates/step3.html.twig:40
+#, auto-english-fallback
+msgid "Create a config file to store your settings"
+msgstr "Create a config file to store your settings"
 
 #: install/helpers/InstallStepHandler.php:169
+#, auto-english-fallback
 msgid "Updating database..."
-msgstr "正在更新数据库..."
+msgstr "Updating database..."
 
 #: install/helpers/InstallStepHandler.php:175
+#, auto-english-fallback
 msgid "done!"
-msgstr "完成！"
+msgstr "done!"
 
 #: install/helpers/InstallStepHandler.php:179
+#, auto-english-fallback
 msgid "Database Error"
-msgstr "数据库错误"
+msgstr "Database Error"
 
 #: install/helpers/InstallStepHandler.php:183
+#, auto-english-fallback
 msgid "Suggestions:"
-msgstr "建议："
+msgstr "Suggestions:"
 
 #: install/helpers/InstallStepHandler.php:185
+#, auto-english-fallback
 msgid "Make sure the SQLite database file exists"
-msgstr "确保 SQLite 数据库文件存在"
+msgstr "Make sure the SQLite database file exists"
 
 #: install/helpers/InstallStepHandler.php:186
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
 msgstr ""
-"检查Web服务器是否对数据库文件有读写权限"
+"Check that the web server has read and write permissions for the database "
+"file"
 
 #: install/helpers/InstallStepHandler.php:187
+#, auto-english-fallback
 msgid "Verify the full path to the database file is correct and accessible"
-msgstr "验证数据库文件的完整路径是否正确且可访问"
+msgstr "Verify the full path to the database file is correct and accessible"
 
 #: install/helpers/DatabaseHelper.php:88
 #, php-format
@@ -589,1271 +2860,41 @@ msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
 msgstr ""
-"SQLite 数据库文件 %s 不存在。请在继续之前创建数据库文件。"
+"The SQLite database file %s does not exist. Please create the database file "
+"before proceeding."
 
 #: install/helpers/DatabaseHelper.php:96
 #, php-format
 msgid ""
 "The SQLite database file %s is not readable. Please check file permissions."
 msgstr ""
-"SQLite 数据库文件 %s 不可读。请检查文件权限。"
+"The SQLite database file %s is not readable. Please check file permissions."
 
 #: install/helpers/DatabaseHelper.php:104
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
 msgstr ""
-"SQLite 数据库文件 %s 不可写。请检查文件权限。"
+"The SQLite database file %s is not writable. Please check file permissions."
 
 #: install/helpers/DatabaseHelper.php:116
+#, auto-english-fallback
 #, php-format
 msgid "Could not access the SQLite database file %s: %s"
-msgstr "无法访问 SQLite 数据库文件 %s: %s"
+msgstr "Could not access the SQLite database file %s: %s"
 
 #: install/helpers/DatabaseHelper.php:172
+#, auto-english-fallback
 msgid "or"
-msgstr "或"
+msgstr "or"
 
 #: install/helpers/Validators/CreateConfigurationFileValidator.php:55
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
 msgstr ""
-"未找到配置文件。请在继续之前创建 config/settings.php 文件。"
+"No configuration file found. Please create the config/settings.php file "
+"before proceeding."
 
-#: install/helpers/LocaleHandler.php:87
-msgid ""
-"Failed to set locale. Selected locale may be unsupported on this system. "
-"Please contact your administrator."
-msgstr ""
-"设置区域设置失败。在此系统上，所选区域设置可能不受支持。请联系您的管理员。"
 
-#~ msgid ""
-#~ "The configuration file (config.inc.php) does not exist. Please use the <a "
-#~ "href=\"install/\">installer</a> to create it."
-#~ msgstr ""
-#~ "The configuration file (config.inc.php) does not exist. Please use the <a "
-#~ "href=\"install/\">installer</a> to create it."
 
-#~ msgid "Invalid CSRF token."
-#~ msgstr "Invalid CSRF token."
-
-#~ msgid ""
-#~ "The <a href=\"install/\">install/</a> directory exists, you must remove "
-#~ "it first before proceeding."
-#~ msgstr ""
-#~ "存在< a href=\"install/\">install/</a>目录，请在继续之前先将其删除。"
-
-#~ msgid ""
-#~ "Default session encryption key is used, please set it in your "
-#~ "configuration file."
-#~ msgstr "正在使用默认会话加密密钥，请在配置文件中设置。"
-
-#~ msgid "Previous"
-#~ msgstr "上一页"
-
-#~ msgid "Next"
-#~ msgstr "下一页"
-
-#~ msgid "Show zones beginning with"
-#~ msgstr "显示以...开头的区域"
-
-#~ msgid "Show all"
-#~ msgstr "显示全部"
-
-#~ msgid "Invalid or unexpected input given."
-#~ msgstr "输入无效或不符合预期。"
-
-#~ msgid "You do not have the permission to delete this user."
-#~ msgstr "您没有权限删除此用户。"
-
-#~ msgid "User does not exist."
-#~ msgstr "用户不存在。"
-
-#~ msgid "The user has been deleted successfully."
-#~ msgstr "用户已成功删除。"
-
-#~ msgid "You do not have the permission to edit this comment."
-#~ msgstr "您没有权限编辑此评论。"
-
-#~ msgid "You do not have the permission to view this comment."
-#~ msgstr "您没有权限查看此评论。"
-
-#~ msgid "The comment has been updated successfully."
-#~ msgstr "评论已成功更新。"
-
-#~ msgid "There is no zone with this ID."
-#~ msgstr "没有此ID的区域。"
-
-#~ msgid "The record has been deleted successfully."
-#~ msgstr "记录已成功删除。"
-
-#~ msgid ""
-#~ "The record was deleted but the comment was preserved because similar "
-#~ "records exist."
-#~ msgstr ""
-#~ "The record was deleted but the comment was preserved because similar "
-#~ "records exist."
-
-#~ msgid "You do not have the permission to edit this record."
-#~ msgstr "您没有权限编辑此记录。"
-
-#~ msgid "You do not have the permission to view supermasters."
-#~ msgstr "You do not have the permission to view supermasters."
-
-#~ msgid "You do not have the permission to edit permission templates."
-#~ msgstr "您没有权限编辑权限模板。"
-
-#~ msgid "The permission template has been updated successfully."
-#~ msgstr "权限模板已成功更新。"
-
-#~ msgid "You do not have the permission to perform searches."
-#~ msgstr "您没有权限执行查询"
-
-#~ msgid "You do not have the permission to add a new user."
-#~ msgstr "您没有权限添加新用户。"
-
-#~ msgid "The user has been created successfully."
-#~ msgstr "用户已成功创建。"
-
-#~ msgid "You do not have the permission to delete this record."
-#~ msgstr "您没有权限删除此记录。"
-
-#~ msgid "The record could not be deleted."
-#~ msgstr "无法删除记录。"
-
-#~ msgid "User details updated"
-#~ msgstr "用户详情已更新"
-
-#~ msgid "You do not have the permission to delete zone templates."
-#~ msgstr "您没有权限删除区域模板。"
-
-#~ msgid "There is no zone template with this ID."
-#~ msgstr "没有该ID的区域模板。"
-
-#~ msgid "Zone template has been updated successfully."
-#~ msgstr "区域模板已成功更新。"
-
-#~ msgid "Zones have been updated successfully."
-#~ msgstr "区域已成功更新。"
-
-#~ msgid "You do not have the permission to view this zone."
-#~ msgstr "您没有权限查看此区域。"
-
-#~ msgid "Zone has been signed successfully."
-#~ msgstr "区域已成功签名。"
-
-#~ msgid "DNSSEC is not enabled on the server."
-#~ msgstr "DNSSEC is not enabled on the server."
-
-#~ msgid "Zone has been unsigned successfully."
-#~ msgstr "区域已成功取消签名。"
-
-#~ msgid "Request has expired, please try again."
-#~ msgstr "请求已过期，请重试。"
-
-#~ msgid "Zone has been updated successfully."
-#~ msgstr "区域已成功更新。"
-
-#~ msgid "Zone did not have any record changes."
-#~ msgstr "区域没有进行任何记录更改。"
-
-#~ msgid "Zone has not been updated successfully."
-#~ msgstr "区域更新未成功。"
-
-#~ msgid ""
-#~ "Zone template with this name already exists, please choose another one."
-#~ msgstr "具有此名称的区域模板已存在，请选择其他名称。"
-
-#~ msgid "Template name can't be an empty string."
-#~ msgstr "模板名称不能为空字符串。"
-
-#~ msgid "Zone template has been added successfully."
-#~ msgstr "区域模板已成功添加。"
-
-#~ msgid "You do not have the permission to add a record to this zone."
-#~ msgstr "您没有权限向此区域添加记录。"
-
-#~ msgid "The record was successfully added."
-#~ msgstr "记录已成功添加。"
-
-#~ msgid "This record was not valid and could not be added."
-#~ msgstr "此记录无效，无法添加。"
-
-#~ msgid "No zone selected for deletion."
-#~ msgstr "No zone selected for deletion."
-
-#~ msgid "Zone has been deleted successfully."
-#~ msgstr "区域已成功删除。"
-
-#~ msgid "Zones have been deleted successfully."
-#~ msgstr "区域已成功删除。"
-
-#~ msgid "You do not have the permission to delete a zone."
-#~ msgstr "您没有权限删除区域。"
-
-#~ msgid "You do not have the permission to access the migrations."
-#~ msgstr "You do not have the permission to access the migrations."
-
-#~ msgid ""
-#~ "Old migrations table detected. Please remove the `migrations` table "
-#~ "before proceeding."
-#~ msgstr ""
-#~ "Old migrations table detected. Please remove the `migrations` table "
-#~ "before proceeding."
-
-#~ msgid ""
-#~ "Database access check failed. Please ensure the current database user has "
-#~ "the necessary permissions to create and alter tables."
-#~ msgstr ""
-#~ "Database access check failed. Please ensure the current database user has "
-#~ "the necessary permissions to create and alter tables."
-
-#~ msgid "You do not have the permission to add a master zone."
-#~ msgstr "您没有权限添加主区域。"
-
-#~ msgid "Invalid hostname."
-#~ msgstr "无效的主机名。"
-
-#~ msgid "There is already a zone with this name."
-#~ msgstr "已经存在具有此名称的区域。"
-
-#~ msgid "Zone has been added successfully."
-#~ msgstr "区域已成功添加。"
-
-#~ msgid "You do not have sufficient permissions to view this page."
-#~ msgstr "您没有足够的权限查看此页面。"
-
-#~ msgid "You do not have the permission to see any zones."
-#~ msgstr "您没有权限查看任何区域。"
-
-#~ msgid "You do not have the permission to edit zone templates."
-#~ msgstr "您没有权限编辑域模板"
-
-#~ msgid "Failed to delete DNSSEC key."
-#~ msgstr "删除DNSSEC密钥失败。"
-
-#~ msgid "Zone key has been successfully deactivated."
-#~ msgstr "区域密钥已成功停用。"
-
-#~ msgid "Zone key has been successfully activated."
-#~ msgstr "区域密钥已成功激活。"
-
-#~ msgid "Zone key has been deleted successfully."
-#~ msgstr "区域密钥已成功删除。"
-
-#~ msgid "You do not have the permission to add permission templates."
-#~ msgstr "您没有权限添加权限模板。"
-
-#~ msgid "The permission template has been added successfully."
-#~ msgstr "权限模板已成功添加。"
-
-#~ msgid "You have logged out."
-#~ msgstr "您已退出登录。"
-
-#~ msgid "You do not have the permission to add a zone template."
-#~ msgstr "您没有权限添加区域模板。"
-
-#~ msgid "You do not have the permission to add a slave zone."
-#~ msgstr "您没有权限添加从区域。"
-
-#~ msgid "This is not a valid IPv4 or IPv6 address."
-#~ msgstr "这不是有效的IPv4或IPv6地址。"
-
-#~ msgid "Zone template has been deleted successfully."
-#~ msgstr "区域模板已成功删除。"
-
-#~ msgid "You do not have the permission to add a new supermaster."
-#~ msgstr "您没有权限添加新超级主服务器。"
-
-#~ msgid "The supermaster has been added successfully."
-#~ msgstr "超级主服务器已成功添加。"
-
-#~ msgid "You do not have the permission to edit this user."
-#~ msgstr "您没有权限编辑此用户。"
-
-#~ msgid "The user has been updated successfully."
-#~ msgstr "用户已成功更新。"
-
-#~ msgid "The user could not be updated."
-#~ msgstr "无法更新用户。"
-
-#~ msgid "You do not have the permission to delete permission templates."
-#~ msgstr "您没有删除权限模板的权限。"
-
-#~ msgid "The permission template has been deleted successfully."
-#~ msgstr "权限模板已成功删除。"
-
-#~ msgid "You do not have the permission to view this record."
-#~ msgstr "您没有查看此记录的权限。"
-
-#~ msgid "The record has been updated successfully."
-#~ msgstr "记录已成功更新。"
-
-#~ msgid "Password has been changed, please login."
-#~ msgstr "密码已更改，请登录。"
-
-#~ msgid "Zone key has been added successfully."
-#~ msgstr "区域密钥已成功添加。"
-
-#~ msgid "Failed to add new DNSSEC key."
-#~ msgstr "Failed to add new DNSSEC key."
-
-#~ msgid "You do not have the permission to delete a supermaster."
-#~ msgstr "您没有权限删除超级主服务器。"
-
-#~ msgid "Super master does not exist."
-#~ msgstr "Super master does not exist."
-
-#~ msgid "The supermaster has been deleted successfully."
-#~ msgstr "超级主服务器已成功删除。"
-
-#~ msgid "Zones has been added successfully."
-#~ msgstr "Zones has been added successfully."
-
-#~ msgid "Some zone(s) could not be added."
-#~ msgstr "部分区域未能成功添加。"
-
-#~ msgid "The user account is disabled."
-#~ msgstr "The user account is disabled."
-
-#~ msgid "Authentication failed!"
-#~ msgstr "认证失败！"
-
-#~ msgid "Session expired, please login again."
-#~ msgstr "会话已过期，请重新登录。"
-
-#~ msgid "Failed to connect to LDAP server!"
-#~ msgstr "Failed to connect to LDAP server!"
-
-#~ msgid "Failed to bind to LDAP server!"
-#~ msgstr "Failed to bind to LDAP server!"
-
-#~ msgid "Failed to search LDAP."
-#~ msgstr "搜索LDAP失败。"
-
-#~ msgid "Failed to authenticate against LDAP."
-#~ msgstr "LDAP身份验证失败。"
-
-#~ msgid "LDAP Authentication failed!"
-#~ msgstr "LDAP认证失败！"
-
-#~ msgid "Unknown database type."
-#~ msgstr "未知的数据库类型。"
-
-#~ msgid "This template is assigned to at least one user."
-#~ msgstr "此模板已分配给至少一个用户。"
-
-#~ msgid "An empty password is not allowed"
-#~ msgstr "An empty password is not allowed"
-
-#~ msgid ""
-#~ "Failed to call function exec. Make sure that exec is not listed in "
-#~ "disable_functions at php.ini"
-#~ msgstr ""
-#~ "调用exec函数失败。请确保php.ini中未将exec列入disable_functions列表。"
-
-#~ msgid "Failed to call pdnssec utility."
-#~ msgstr "调用pdnssec工具失败。"
-
-#~ msgid "Failed to secure zone."
-#~ msgstr "保护区域失败。"
-
-#~ msgid "Failed to disable DNSSEC."
-#~ msgstr "禁用DNSSEC失败。"
-
-#~ msgid "Failed to get DNSSEC key details."
-#~ msgstr "获取DNSSEC密钥详情失败。"
-
-#~ msgid "Failed to active DNSSEC key."
-#~ msgstr "Failed to active DNSSEC key."
-
-#~ msgid "Failed to deactivate DNSSEC key."
-#~ msgstr "停用DNSSEC密钥失败。"
-
-#~ msgid "Failed to remove DNSSEC key."
-#~ msgstr "删除DNSSEC密钥失败。"
-
-#~ msgid "Enter a valid email address."
-#~ msgstr "请输入有效的电子邮件地址。"
-
-#~ msgid "Username exist already, please choose another one."
-#~ msgstr "用户名已经存在，请另选一个"
-
-#~ msgid "The two new password fields do not match."
-#~ msgstr "两个新密码字段不匹配。"
-
-#~ msgid "Your content field doesnt have a legit value."
-#~ msgstr "您的内容字段没有合法值"
-
-#~ msgid "Invalid value for prio field."
-#~ msgstr "Invalid value for prio field."
-
-#~ msgid "The content of the SPF record is invalid"
-#~ msgstr "SPF记录的内容无效"
-
-#~ msgid "Unknown record type."
-#~ msgstr "未知的记录类型。"
-
-#~ msgid "The hostname is too long."
-#~ msgstr "主机名太长。"
-
-#~ msgid "You have invalid characters in your hostname."
-#~ msgstr "您的主机名包含无效字符。"
-
-#~ msgid "A hostname can not start or end with a dash."
-#~ msgstr "主机名不能以减号开头或结尾"
-
-#~ msgid "Given hostname or one of the labels is too short or too long."
-#~ msgstr "给定的主机名或其中一个标签过短或过长。"
-
-#~ msgid "Given hostname has too many slashes."
-#~ msgstr "给定的主机名包含太多斜杠。"
-
-#~ msgid "You are using an invalid top level domain."
-#~ msgstr "您正在使用无效的顶级域名。"
-
-#~ msgid "This is not a valid IPv4 address."
-#~ msgstr "这不是有效的IPv4地址。"
-
-#~ msgid "This is not a valid IPv6 address."
-#~ msgstr "这不是有效的IPv6地址。"
-
-#~ msgid "Invalid characters have been used in this record."
-#~ msgstr "此记录中使用了无效字符。"
-
-#~ msgid "You cannot use html tags for this type of record."
-#~ msgstr "You cannot use html tags for this type of record."
-
-#~ msgid "Backslashes must precede all quotes (\") in TXT content"
-#~ msgstr "Backslashes must precede all quotes (\") in TXT content"
-
-#~ msgid "Add quotes around TXT record content."
-#~ msgstr "在TXT记录内容周围添加引号。"
-
-#~ msgid ""
-#~ "This is not a valid CNAME. Did you assign an MX or NS record to the "
-#~ "record?"
-#~ msgstr "这不是有效的CNAME记录。您是否将MX或NS记录分配给了此记录？"
-
-#~ msgid ""
-#~ "This is not a valid record. There is already exists a CNAME with this "
-#~ "name."
-#~ msgstr ""
-#~ "This is not a valid record. There is already exists a CNAME with this "
-#~ "name."
-
-#~ msgid ""
-#~ "This is not a valid CNAME. There already exists a record with this name."
-#~ msgstr "这不是有效的CNAME记录。已经存在具有此名称的记录。"
-
-#~ msgid "Empty CNAME records are not allowed."
-#~ msgstr "不允许空的CNAME记录。"
-
-#~ msgid ""
-#~ "You can not point a NS or MX record to a CNAME record. Remove or rename "
-#~ "the CNAME record first, or take another name."
-#~ msgstr ""
-#~ "You can not point a NS or MX record to a CNAME record. Remove or rename "
-#~ "the CNAME record first, or take another name."
-
-#~ msgid "Invalid value for content field of HINFO record."
-#~ msgstr "HINFO记录的内容字段值无效。"
-
-#~ msgid ""
-#~ "Invalid value for name field of SOA record. It should be the name of the "
-#~ "zone."
-#~ msgstr "SOA记录的名称字段值无效。应为区域的名称。"
-
-#~ msgid "Invalid service value in name field of SRV record."
-#~ msgstr "SRV记录的名称字段中的服务值无效。"
-
-#~ msgid "Invalid protocol value in name field of SRV record."
-#~ msgstr "SRV记录的名称字段中的协议值无效。"
-
-#~ msgid "Invalid FQDN value in name field of SRV record."
-#~ msgstr "SRV记录的名称字段中的FQDN值无效。"
-
-#~ msgid "Invalid value for the priority field of the SRV record."
-#~ msgstr "SRV记录的优先级字段值无效。"
-
-#~ msgid "Invalid value for the weight field of the SRV record."
-#~ msgstr "SRV记录的权重字段值无效。"
-
-#~ msgid "Invalid SRV target."
-#~ msgstr "无效的SRV目标。"
-
-#~ msgid "Invalid value for TTL field. It should be numeric."
-#~ msgstr "TTL字段值无效。应为数字。"
-
-#, php-format
-#~ msgid "There is no managed zone for domain: %s."
-#~ msgstr "There is no managed zone for domain: %s."
-
-#~ msgid "Adding IPv6 domain records from reverse zones is not supported yet."
-#~ msgstr "Adding IPv6 domain records from reverse zones is not supported yet."
-
-#~ msgid "This domain record was not valid and could not be added."
-#~ msgstr "This domain record was not valid and could not be added."
-
-#~ msgid "The domain record was successfully added."
-#~ msgstr "The domain record was successfully added."
-
-#~ msgid "You do not have the permission to edit this SOA record."
-#~ msgstr "您没有权限编辑此SOA记录。"
-
-#~ msgid "You do not have the permission to edit this NS record."
-#~ msgstr "您没有权限编辑此NS记录。"
-
-#~ msgid "You do not have the permission to add SOA record."
-#~ msgstr "You do not have the permission to add SOA record."
-
-#~ msgid "You do not have the permission to add NS record."
-#~ msgstr "You do not have the permission to add NS record."
-
-#, php-format
-#~ msgid "Invalid argument(s) given to function %s %s"
-#~ msgstr "函数%s给定的参数无效 %s"
-
-#~ msgid "There is already a supermaster with this IP address and hostname."
-#~ msgstr "已经存在具有此IP地址和主机名的超级主服务器。"
-
-#~ msgid ""
-#~ "You are trying to delete the SOA record. You are not allowed to remove "
-#~ "it, unless you remove the entire zone."
-#~ msgstr "您正在尝试删除SOA记录。除非删除整个区域，否则不允许删除它。"
-
-#, php-format
-#~ msgid "Invalid argument(s) given to function %s"
-#~ msgstr "函数%s给定的参数无效"
-
-#~ msgid "The selected user already owns the zone."
-#~ msgstr "所选用户已拥有该区域。"
-
-#~ msgid "There must be at least one owner for a zone."
-#~ msgstr "区域必须至少有一个所有者。"
-
-#~ msgid "This is an invalid zone name."
-#~ msgstr "这是无效的区域名称。"
-
-#, php-format
-#~ msgid "There is no matching reverse-zone for: %s."
-#~ msgstr "没有与之匹配的反向区域：%s。"
-
-#~ msgid "Add record"
-#~ msgstr "添加记录"
-
-#~ msgid "Add record to zone template"
-#~ msgstr "向区域模板添加记录"
-
-#~ msgid "Provide content for your zone record"
-#~ msgstr "为您的区域记录提供内容"
-
-#~ msgid "Hint:"
-#~ msgstr "提示："
-
-#~ msgid "The following placeholders can be used in template records"
-#~ msgstr "模板记录中可以使用以下占位符"
-
-#~ msgid "substituted with current zone name"
-#~ msgstr "替换为当前域名称"
-
-#~ msgid "substituted with current date and 2 numbers"
-#~ msgstr "替换为当前日期以及2个数字"
-
-#~ msgid "substituted with 1st name server"
-#~ msgstr "用第一个名称服务器替换"
-
-#~ msgid "substituted with 2nd name server"
-#~ msgstr "用第二个名称服务器替换"
-
-#~ msgid "substituted with 3rd name server"
-#~ msgstr "用第三个名称服务器替换"
-
-#~ msgid "substituted with 4th name server"
-#~ msgstr "用第四个名称服务器替换"
-
-#~ msgid "substituted with hostmaster"
-#~ msgstr "用hostmaster替换"
-
-#~ msgid "Examples:"
-#~ msgstr "示例："
-
-#~ msgid ""
-#~ "To add a subdomain foo in a zone template you would put foo.[ZONE] into "
-#~ "the name field."
-#~ msgstr ""
-#~ "To add a subdomain foo in a zone template you would put foo.[ZONE] into "
-#~ "the name field."
-
-#~ msgid "To add a wildcard record put *.[ZONE] in the name field."
-#~ msgstr "要添加通配符记录，请在名称字段中输入*.[ZONE]。"
-
-#~ msgid "Use just [ZONE] to have the domain itself return a value."
-#~ msgstr "仅使用[ZONE]将使域名本身返回一个值。"
-
-#~ msgid ""
-#~ "For the SOA record, place [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 "
-#~ "86400 in the content field."
-#~ msgstr ""
-#~ "For the SOA record, place [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 "
-#~ "86400 in the content field."
-
-#~ msgid "Delete permission template"
-#~ msgstr "删除权限模板"
-
-#~ msgid "Add new record"
-#~ msgstr "Add new record"
-
-#~ msgid "Add PTR"
-#~ msgstr "Add PTR"
-
-#~ msgid "Add A/AAAA"
-#~ msgstr "Add A/AAAA"
-
-#~ msgid "Provide TTL"
-#~ msgstr "提供TTL"
-
-#~ msgid "Edit zone"
-#~ msgstr "编辑区域"
-
-#~ msgid "This zone does not have any records."
-#~ msgstr "该区域没有任何记录。"
-
-#~ msgid "Comments"
-#~ msgstr "评论"
-
-#~ msgid "Save changes"
-#~ msgstr "Save changes"
-
-#~ msgid "Unsign this zone"
-#~ msgstr "取消对该区域的签名"
-
-#~ msgid "Sign this zone"
-#~ msgstr "对该区域进行签名"
-
-#~ msgid "Also add a PTR record in the matching zone"
-#~ msgstr "Also add a PTR record in the matching zone"
-
-#~ msgid "Also add an A/AAAA record in the matching zone"
-#~ msgstr "Also add an A/AAAA record in the matching zone"
-
-#~ msgid "Save as new template"
-#~ msgstr "保存为新模板"
-
-#~ msgid "Template Name"
-#~ msgstr "模板名称"
-
-#~ msgid "Provide template name"
-#~ msgstr "Provide template name"
-
-#~ msgid "Template Description"
-#~ msgstr "模板描述"
-
-#~ msgid "Save as template"
-#~ msgstr "保存为模板"
-
-#~ msgid "Owner of zone"
-#~ msgstr "区域所有者"
-
-#~ msgid "No owner set for this zone."
-#~ msgstr "此区域未设置所有者。"
-
-#~ msgid "Change"
-#~ msgstr "更改"
-
-#~ msgid "IP address of master NS"
-#~ msgstr "主DNS服务器的IP地址"
-
-#~ msgid "LDAP"
-#~ msgstr "LDAP"
-
-#~ msgid "Add user"
-#~ msgstr "添加用户"
-
-#~ msgid "Delete Record"
-#~ msgstr "删除记录"
-
-#~ msgid "Delete record in zone"
-#~ msgstr "删除区域中的记录"
-
-#~ msgid ""
-#~ "You are trying to delete a record that is needed for this zone to work."
-#~ msgstr "您正试图删除此区域所需的记录。"
-
-#~ msgid "Provide user password"
-#~ msgstr "提供用户密码"
-
-#~ msgid "Zone name"
-#~ msgstr "区域名称"
-
-#~ msgid "Provide zone name"
-#~ msgstr "提供区域名称"
-
-#~ msgid "Add zone"
-#~ msgstr "添加区域"
-
-#~ msgid "Zone templates for"
-#~ msgstr "区域模板："
-
-#~ msgid "In use"
-#~ msgstr "已使用"
-
-#~ msgid "Zones linked"
-#~ msgstr "已关联区域"
-
-#~ msgid "No results found"
-#~ msgstr "未找到结果"
-
-#~ msgid "private"
-#~ msgstr "私有"
-
-#~ msgid "global"
-#~ msgstr "全局"
-
-#~ msgid "Current password"
-#~ msgstr "当前密码"
-
-#~ msgid "Provide current password"
-#~ msgstr "提供当前密码"
-
-#~ msgid "New password"
-#~ msgstr "新密码"
-
-#~ msgid "Provide new password"
-#~ msgstr "提供新密码"
-
-#~ msgid "Repeat password"
-#~ msgstr "重复密码"
-
-#~ msgid "Edit template"
-#~ msgstr "编辑模板"
-
-#~ msgid "Edit zone template"
-#~ msgstr "编辑区域模板"
-
-#~ msgid "This zone template does not have any records yet."
-#~ msgstr "该区域模板还没有任何记录。"
-
-#~ msgid "Update zones"
-#~ msgstr "更新区域"
-
-#~ msgid "There are no supermasters to show in this listing."
-#~ msgstr "此列表中没有超级主服务器可显示。"
-
-#~ msgid "Type one domain per line"
-#~ msgstr "每行输入一个域名"
-
-#~ msgid "Provide a domain name(s)"
-#~ msgstr "提供域名"
-
-#~ msgid "Add zones"
-#~ msgstr "添加区域"
-
-#~ msgid "Delete Zone"
-#~ msgstr "Delete Zone"
-
-#~ msgid "Delete zone"
-#~ msgstr "删除区域"
-
-#~ msgid ""
-#~ "You are about to delete a slave zone of which the master nameserver is a "
-#~ "supermaster. Deleting the zone now, will result in temporary removal "
-#~ "only. Whenever the supermaster sends a notification for this zone, it "
-#~ "will be added again!"
-#~ msgstr ""
-#~ "You are about to delete a slave zone of which the master nameserver is a "
-#~ "supermaster. Deleting the zone now, will result in temporary removal "
-#~ "only. Whenever the supermaster sends a notification for this zone, it "
-#~ "will be added again!"
-
-#~ msgid ""
-#~ "Enter a hostname or IP address. SQL LIKE syntax supported: an underscore "
-#~ "(_) in pattern matches any single character, a percent sign (%) matches "
-#~ "any string of zero or more characters."
-#~ msgstr ""
-#~ "输入主机名或IP地址。支持SQL LIKE语法：模式中的下划线(_)匹配任意单个字符，"
-#~ "百分号(%)匹配任意零个或多个字符。"
-
-#~ msgid "Provide a keyword for your search"
-#~ msgstr "为搜索提供关键词"
-
-#~ msgid "Wildcard"
-#~ msgstr "通配符"
-
-#~ msgid "Reverse"
-#~ msgstr "反向"
-
-#~ msgid "Zones found"
-#~ msgstr "找到区域"
-
-#~ msgid "Records found"
-#~ msgstr "找到记录"
-
-#~ msgid "Total number of records:"
-#~ msgstr "Total number of records:"
-
-#~ msgid "Delete zones"
-#~ msgstr "删除区域"
-
-#~ msgid "Note"
-#~ msgstr "注意"
-
-#~ msgid "Delete supermaster"
-#~ msgstr "删除超级主服务器"
-
-#~ msgid "User logs"
-#~ msgstr "用户日志"
-
-#~ msgid "Search logs by user"
-#~ msgstr "按用户搜索日志"
-
-#~ msgid "Delete template"
-#~ msgstr "删除模板"
-
-#~ msgid "Delete zone template"
-#~ msgstr "删除区域模板"
-
-#~ msgid "Templates"
-#~ msgstr "模板"
-
-#~ msgid "DS and DNS keys"
-#~ msgstr "DS和DNS密钥"
-
-#~ msgid "DNSSEC public records for zone"
-#~ msgstr "区域的DNSSEC公共记录"
-
-#~ msgid "DNSKEY"
-#~ msgstr "DNS密钥"
-
-#~ msgid "DS record"
-#~ msgstr "DS记录"
-
-#~ msgid "Add record to zone"
-#~ msgstr "添加记录到区域"
-
-#~ msgid "Edit permission template"
-#~ msgstr "编辑权限模板"
-
-#~ msgid "Delete record"
-#~ msgstr "删除记录"
-
-#~ msgid "Delete record in zone template"
-#~ msgstr "删除区域模板中的记录"
-
-#~ msgid "Delete key"
-#~ msgstr "删除密钥"
-
-#~ msgid ""
-#~ "There is already a configuration file in place, so the installation will "
-#~ "be skipped."
-#~ msgstr "已经存在配置文件，因此将跳过安装过程。"
-
-#~ msgid "Error rendering template"
-#~ msgstr "Error rendering template"
-
-#~ msgid "Please select a language to proceed with the installation."
-#~ msgstr "Please select a language to proceed with the installation."
-
-#~ msgid "You can not change your password as LDAP user."
-#~ msgstr "You can not change your password as LDAP user."
-
-#~ msgid "You did not enter the correct current password."
-#~ msgstr "您未输入正确的当前密码。"
-
-#~ msgid "Enter a valid user name."
-#~ msgstr "Enter a valid user name."
-
-#~ msgid "Commit changes"
-#~ msgstr "提交修改"
-
-#~ msgid "The record was succesfully added."
-#~ msgstr "记录已添加"
-
-#~ msgid "Add also reverse record"
-#~ msgstr "同时添加反向记录"
-
-#~ msgid "IP address of web- or mailserver is invalid."
-#~ msgstr "无效的web或邮件服务器IP地址"
-
-#~ msgid "IP address of webserver"
-#~ msgstr "web服务器的IP地址"
-
-#~ msgid "IP address of mailserver"
-#~ msgstr "邮件服务器的IP地址"
-
-#~ msgid "Create zone without applying records-template"
-#~ msgstr "创建不应用记录模板的域"
-
-#~ msgid "Really delete this user?"
-#~ msgstr "确定删除这个用户？"
-
-#~ msgid "Index"
-#~ msgstr "首页"
-
-#~ msgid "View zone"
-#~ msgstr "查看域名"
-
-#~ msgid "Master"
-#~ msgstr "主"
-
-#~ msgid "Query"
-#~ msgstr "输入"
-
-#~ msgid "Enter a hostname or IP address"
-#~ msgstr "输入一个主机或者IP地址"
-
-#~ msgid "Oops! An error occured!"
-#~ msgstr "哦豁！出错了……"
-
-#~ msgid "Unknown database type in inc/config.inc.php."
-#~ msgstr "在inc/config.inc.php文件中没有能识别的数据库类型"
-
-#~ msgid "If you specify an MX record it must be a hostname."
-#~ msgstr "指定的MX记录必须是一个主机"
-
-#~ msgid "There is already a supermaster with this IP address."
-#~ msgstr "已经有一个主解析服务器是这个ip地址了"
-
-#~ msgid "Unknown error."
-#~ msgstr "未知错误"
-
-#~ msgid "Invalid record type! You should not even been able to get that here."
-#~ msgstr "记录类型无效！您甚至不应该在这里看到它"
-
-#~ msgid "NS records must be a hostnames."
-#~ msgstr "NS记录必须是一个主机名"
-
-#~ msgid "A prio field should be numeric."
-#~ msgstr "PRIO字段应该是一个数字"
-
-#~ msgid "At least one of the five last SOA data fields is not numeric."
-#~ msgstr "SOA记录最后五个数据字段中至少有一个不是数字"
-
-#~ msgid "You can only have five numeric fields in the SOA record."
-#~ msgstr "SOA记录中只能有五个数字字段"
-
-#~ msgid "Zone has been added succesfully."
-#~ msgstr "域名已添加"
-
-#~ msgid "Zone has been deleted succesfully."
-#~ msgstr "域名已删除"
-
-#~ msgid "The user has been updated succesfully."
-#~ msgstr "用户已更新"
-
-#~ msgid "The user has been created succesfully."
-#~ msgstr "用户已创建"
-
-#~ msgid "The user has been deleted succesfully."
-#~ msgstr "用户已删除"
-
-#~ msgid "The record has been updated succesfully."
-#~ msgstr "记录已更新"
-
-#~ msgid "The record has been deleted succesfully."
-#~ msgstr "记录已删除"
-
-#~ msgid "The supermaster has been deleted succesfully."
-#~ msgstr "主解析服务器已删除"
-
-#~ msgid "The supermaster has been added succesfully."
-#~ msgstr "主解析服务器已添加"
-
-#~ msgid "The permission template has been deleted succesfully."
-#~ msgstr "权限模板已删除"
-
-#~ msgid "Function returned an error (multiple zones matching this zone ID)."
-#~ msgstr "函数返回一个错误（多个域匹配这个域的ID）"
-
-#~ msgid "You have to create a config.inc.php!"
-#~ msgstr "您必须创建一个config.inc.php文件！"
-
-#~ msgid "Success!"
-#~ msgstr "成功"
-
-#~ msgid "Successful!"
-#~ msgstr "成功的"
-
-#~ msgid "back"
-#~ msgstr "后退"
-
-#~ msgid "Inactive"
-#~ msgstr "无效"
-
-#~ msgid "Emailaddress"
-#~ msgstr "Email地址"
-
-#~ msgid "Reset changes"
-#~ msgstr "重置修改"
-
-#~ msgid "This template zone does not have any records yet."
-#~ msgstr "此域模板还没有任何解析记录"
-
-#~ msgid "No database name has been set in config.inc.php."
-#~ msgstr "在config.inc.php中没有设置数据库名称。"
-
-#~ msgid "No database host has been set in config.inc.php."
-#~ msgstr "在config.inc.php中没有设置数据库主机。"
-
-#~ msgid "No database username has been set in config.inc.php."
-#~ msgstr "在config.inc.php中没有设置数据库用户名。"
-
-#~ msgid "No database password has been set in config.inc.php."
-#~ msgstr "在config.inc.php中没有设置数据库密码。"
-
-#~ msgid "No or unknown database type has been set in config.inc.php."
-#~ msgstr "在config.inc.php中没有设置数据库类型或设置了未知的数据库类型。"
-
-#~ msgid "You have an error in the MNAME field of the SOA record."
-#~ msgstr "您SOA记录中的MNAME字段存在错误"
-
-#~ msgid "Invalid value for prio field. It should be numeric."
-#~ msgstr "无效的优先级，它应该是数字"
-
-#~ msgid "Invalid value for name field of SRV record."
-#~ msgstr "SRV记录的名称无效"
-
-#~ msgid "Installation step"
-#~ msgstr "安装步骤"
-
-#~ msgid "Go to step"
-#~ msgstr "进入步骤"
-
-#~ msgid "Do you want to proceed now?"
-#~ msgstr "您是否要立即继续？"
-
-#~ msgid "The password for this username."
-#~ msgstr "此用户名的密码。"
-
-#~ msgid "Hostname"
-#~ msgstr "主机名"
-
-#~ msgid "DB Port"
-#~ msgstr "数据库端口"
-
-#~ msgid "The port the database server is listening on."
-#~ msgstr "数据库服务器正在侦听的端口。"
-
-#~ msgid "Database"
-#~ msgstr "数据库"
-
-#~ msgid "The name of the PowerDNS database."
-#~ msgstr "PowerDNS数据库的名称。"
-
-#~ msgid "Database type"
-#~ msgstr "数据库类型"
-
-#~ msgid "The type of the PowerDNS database."
-#~ msgstr "PowerDNS数据库的类型。"
-
-#~ msgid "Poweradmin administrator password"
-#~ msgstr "Poweradmin管理员密码"
-
-#~ msgid "Now we will gather all details for the configuration itself."
-#~ msgstr "现在我们将收集有关配置本身的所有详细信息。"
-
-#~ msgid "Hostmaster"
-#~ msgstr "主域名服务器管理员"
-
-#~ msgid "Primary nameserver"
-#~ msgstr "主域名服务器"
-
-#~ msgid "Secondary nameserver"
-#~ msgstr "辅助域名服务器"
-
-#~ msgid "In MySQL you should now perform the following command:"
-#~ msgstr "在MySQL中，现在应执行以下命令："
-
-#~ msgid "On PgSQL you would use:"
-#~ msgstr "在PgSQL中，您将使用以下命令："
-
-#~ msgid "Reset Password"
-#~ msgstr "重置密码"
-
-#~ msgid "Registered Email Address"
-#~ msgstr "注册Email"
-
-#~ msgid ""
-#~ "You now want to give limited rights to Poweradmin so it can update the "
-#~ "data in the tables. To do this, you should create a new user and give it "
-#~ "rights to select, delete, insert, and update records in the PowerDNS "
-#~ "database."
-#~ msgstr ""
-#~ "现在您想为Poweradmin提供有限的权限，以便它可以更新表中的数据。为此，您应该"
-#~ "创建一个新用户，并为其授予在PowerDNS数据库中选择、删除、插入和更新记录的权"
-#~ "限。"
-
-#~ msgid ""
-#~ "After you have added the new user, proceed with this installation "
-#~ "procedure."
-#~ msgstr "添加新用户后，请继续进行此安装过程。"
-
-#~ msgid "Supermaster does not exist."
-#~ msgstr "超级主服务器不存在。"
-
-#~ msgid "Zones have been added successfully."
-#~ msgstr "区域已成功添加。"
-
-#~ msgid "Your content field doesn't have a legit value."
-#~ msgstr "您的内容字段没有合法值。"
-
-#~ msgid "Invalid value for the prio field."
-#~ msgstr "优先级字段的值无效。"
-
-#~ msgid "You do not have the permission to add an SOA record."
-#~ msgstr "您没有权限添加SOA记录。"
-
-#~ msgid "You do not have the permission to add an NS record."
-#~ msgstr "您没有权限添加NS记录。"
-
-#~ msgid "A hostname cannot start or end with a dash."
-#~ msgstr "主机名不能以破折号开头或结尾。"
-
-#~ msgid "You cannot use HTML tags for this type of record."
-#~ msgstr "您不能在此类型的记录中使用HTML标签。"
-
-#~ msgid ""
-#~ "This is not a valid record. There already exists a CNAME with this name."
-#~ msgstr "这不是有效的记录。已经存在具有此名称的CNAME记录。"
-
-#~ msgid ""
-#~ "You cannot point an NS or MX record to a CNAME record. Remove or rename "
-#~ "the CNAME record first, or take another name."
-#~ msgstr ""
-#~ "您不能将NS或MX记录指向CNAME记录。请先删除或重命名CNAME记录，或者选择另一个"
-#~ "名称。"
-
-#~ msgid "Failed to activate DNSSEC key."
-#~ msgstr "激活DNSSEC密钥失败。"
-
-#~ msgid "Failed to add a new DNSSEC key."
-#~ msgstr "添加新的DNSSEC密钥失败。"
-
-#~ msgid "No database file has been set in config.inc.php."
-#~ msgstr "在config.inc.php中没有设置数据库文件。"
-
-#~ msgid ""
-#~ "Something has been successfully performed. What exactly, however, will "
-#~ "remain a mystery."
-#~ msgstr "某些操作已成功完成。但是具体是什么，将仍然是个谜。"
-
-#~ msgid "An empty password is not allowed."
-#~ msgstr "不允许为空密码。"
-
-#~ msgid "Failed to connect to the LDAP server!"
-#~ msgstr "连接LDAP服务器失败！"
-
-#~ msgid "Failed to bind to the LDAP server!"
-#~ msgstr "绑定到LDAP服务器失败！"
-
-#~ msgid "Username already exists, please choose another one."
-#~ msgstr "用户名已存在，请选择另一个。"
-
-#~ msgid "Enter a valid username."
-#~ msgstr "请输入有效的用户名。"
-
-#~ msgid "You do not have permission to perform searches."
-#~ msgstr "您没有执行搜索的权限。"
-
-#~ msgid "You do not have permission to view supermasters."
-#~ msgstr "您没有查看超级主机的权限。"
-
-#~ msgid "You do not have permission to edit zone templates."
-#~ msgstr "您没有编辑区域模板的权限。"
-
-#~ msgid "Provide the name username"
-#~ msgstr "提供用户名"
-
-#~ msgid "Provide the hostname"
-#~ msgstr "提供主机名"
-
-#~ msgid ""
-#~ "The hostname on which the PowerDNS database resides. Frequently, this "
-#~ "will be \"localhost\"."
-#~ msgstr "PowerDNS数据库所在的主机名。通常为“localhost”。"
-
-#~ msgid "Provide database port"
-#~ msgstr "提供数据库端口"
-
-#~ msgid "Provide the name of the database"
-#~ msgstr "提供数据库名称"
-
-#~ msgid "The path and filename to the PowerDNS SQLite database."
-#~ msgstr "PowerDNS SQLite数据库的路径和文件名。"
-
-#~ msgid "DB charset"
-#~ msgstr "数据库字符集"
-
-#~ msgid "DB collation"
-#~ msgstr "数据库排序规则"
-
-#~ msgid "Provide a password"
-#~ msgstr "提供密码"
-
-#~ msgid "Now we have finished the configuration."
-#~ msgstr "现在我们已经完成了配置。"
-
-#~ msgid ""
-#~ "You should (must!) remove the directory \"install/\" from the Poweradmin "
-#~ "root directory. You will not be able to use Poweradmin if it exists. Do "
-#~ "it now."
-#~ msgstr ""
-#~ "您应该（必须！）从Poweradmin根目录中删除目录“install/”。如果存在该目录，您"
-#~ "将无法使用Poweradmin。现在就去做吧。"
-
-#~ msgid ""
-#~ "After you have removed the directory, you can login to <a href=\"../"
-#~ "index.php\">Poweradmin</a>."
-#~ msgstr "删除目录后，您可以登录到<a href=\"../index.php\">Poweradmin</a>。"
-
-#~ msgid "You should now create the file "
-#~ msgstr "现在您应该创建文件“"
-
-#~ msgid ""
-#~ "in the Poweradmin root directory yourself. It should contain the "
-#~ "following few lines:"
-#~ msgstr "在Poweradmin根目录中。文件应包含以下几行内容："
-
-#~ msgid ""
-#~ "This installer expects you to have a PowerDNS database accessible from "
-#~ "this server. This installer also expects you to have never run Poweradmin "
-#~ "before, or that you want to overwrite the Poweradmin part of the "
-#~ "database. If you have had Poweradmin running before, any data in the "
-#~ "following tables will be destroyed: perm_items, perm_templ, "
-#~ "perm_templ_items, users, and zones. This installer will, of course, not "
-#~ "touch the data in the PowerDNS tables of the database. However, it is "
-#~ "recommended that you create a backup of your database before proceeding."
-#~ msgstr ""
-#~ "此安装程序预期您可以从此服务器访问PowerDNS数据库。此安装程序还预期您以前从"
-#~ "未运行过Poweradmin，或者您希望覆盖数据库的Poweradmin部分。如果以前已经运行"
-#~ "过Poweradmin，则以下表中的任何数据都将被销毁：perm_items、perm_templ、"
-#~ "perm_templ_items、users和zones。当然，此安装程序不会触及数据库中PowerDNS表"
-#~ "的数据。但是，建议您在继续之前创建数据库备份。"
-
-#~ msgid ""
-#~ "The alternative for this installer is a manual installation. Refer to the "
-#~ "poweradmin.org website if you want to go down that road."
-#~ msgstr ""
-#~ "此安装程序的替代方案是手动安装。如果您想选择手动安装，请参阅poweradmin.org"
-#~ "网站。"
-
-#~ msgid ""
-#~ "Finally, if you see any errors during the installation process, a problem "
-#~ "report would be appreciated. You can report problems (and ask for help) "
-#~ "on the <a href=\"https://github.com/poweradmin/poweradmin/"
-#~ "issues\target=\"blank\">poweradmin</a> issues."
-#~ msgstr ""
-#~ "最后，如果在安装过程中遇到任何错误，我们将非常感谢您报告问题。您可以在<a "
-#~ "href=\"https://github.com/poweradmin/poweradmin/issues\" "
-#~ "target=\"blank\">poweradmin</a>问题页面上报告问题（并寻求帮助）。"
-
-#~ msgid ""
-#~ "The username for Poweradmin. This new user will have limited rights only."
-#~ msgstr "Poweradmin的用户名。此新用户将只有有限的权限。"
-
-#~ msgid "message"
-#~ msgstr "消息"
-
-#~ msgid "%active%"
-#~ msgstr "%active%"
