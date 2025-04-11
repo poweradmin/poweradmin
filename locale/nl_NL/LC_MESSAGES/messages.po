@@ -1166,7 +1166,7 @@ msgstr "No specific password requirements"
 #: templates/add_user.html:45 install/templates/step4.html.twig:38
 #: install/templates/step5.html.twig:25
 msgid "Username"
-msgstr "Username"
+msgstr "Gebruikersnaam"
 
 #: templates/edit_user.html:49 templates/add_user.html:47
 msgid "Provide user name"
@@ -1179,7 +1179,7 @@ msgstr "Fullname"
 #: templates/index_cards.html:188 install/templates/step4.html.twig:49
 #: install/templates/step5.html.twig:36
 msgid "Password"
-msgstr "Password"
+msgstr "Wachtwoord"
 
 #: templates/add_user.html:88
 msgid "Email address"
@@ -1468,7 +1468,7 @@ msgstr ""
 
 #: templates/add_user.html:60 install/templates/step4.html.twig:54
 msgid "Provide user password"
-msgstr "Provide user password"
+msgstr "Geef het gebruikerswachtwoord op"
 
 #: templates/add_user.html:65
 msgid "Auto-generate password"
@@ -1850,7 +1850,7 @@ msgstr ""
 
 #: install/templates/step3.html.twig:44
 msgid "Note:"
-msgstr "Note:"
+msgstr "Opmerking:"
 
 #: install/templates/step6.html.twig:29
 msgid ""
@@ -1903,15 +1903,15 @@ msgstr "Begin Installation"
 
 #: install/templates/step4.html.twig:3
 msgid "Configuring database"
-msgstr "Configuring database"
+msgstr "Database configureren"
 
 #: install/templates/step4.html.twig:8
 msgid "Configuring Database Connection"
-msgstr "Configuring Database Connection"
+msgstr "Databaseverbinding configureren"
 
 #: install/templates/step4.html.twig:12
 msgid "Database Preparation:"
-msgstr "Database Preparation:"
+msgstr "Databasevoorbereiding:"
 
 #: install/templates/step4.html.twig:12
 msgid ""
@@ -1923,35 +1923,35 @@ msgstr ""
 
 #: install/templates/step4.html.twig:20
 msgid "Database Settings"
-msgstr "Database Settings"
+msgstr "Database-instellingen"
 
 #: install/templates/step4.html.twig:24
 msgid "Database type"
-msgstr "Database type"
+msgstr "Databasetype"
 
 #: install/templates/step4.html.twig:33
 msgid "The type of the PowerDNS database."
-msgstr "The type of the PowerDNS database."
+msgstr "Het type van de PowerDNS-database."
 
 #: install/templates/step4.html.twig:41 install/templates/step5.html.twig:28
 msgid "Provide the user name"
-msgstr "Provide the user name"
+msgstr "Geef de gebruikersnaam op"
 
 #: install/templates/step4.html.twig:44
 msgid "Database username with administrative rights."
-msgstr "Database username with administrative rights."
+msgstr "Database-gebruikersnaam met administratieve rechten."
 
 #: install/templates/step4.html.twig:58
 msgid "Password for this database user."
-msgstr "Password for this database user."
+msgstr "Wachtwoord voor deze databasegebruiker."
 
 #: install/templates/step4.html.twig:63
 msgid "Hostname"
-msgstr "Hostname"
+msgstr "Hostnaam"
 
 #: install/templates/step4.html.twig:66
 msgid "Provide the hostname"
-msgstr "Provide the hostname"
+msgstr "Geef de hostnaam op"
 
 #: install/templates/step4.html.twig:69
 msgid "Database server hostname (usually \"localhost\")."
@@ -1959,15 +1959,15 @@ msgstr "Database server hostname (usually \"localhost\")."
 
 #: install/templates/step4.html.twig:74
 msgid "DB Port"
-msgstr "DB Port"
+msgstr "DB-poort"
 
 #: install/templates/step4.html.twig:77
 msgid "Provide database port"
-msgstr "Provide database port"
+msgstr "Geef de databasepoort op"
 
 #: install/templates/step4.html.twig:80
 msgid "Database server port."
-msgstr "Database server port."
+msgstr "Poort van de databaseserver."
 
 #: install/templates/step4.html.twig:85
 msgid "Database"
@@ -1975,35 +1975,35 @@ msgstr "Database"
 
 #: install/templates/step4.html.twig:88
 msgid "Provide the name of the database"
-msgstr "Provide the name of the database"
+msgstr "Geef de naam van de database op"
 
 #: install/templates/step4.html.twig:91
 msgid "PowerDNS database name."
-msgstr "PowerDNS database name."
+msgstr "PowerDNS-databasenaam."
 
 #: install/templates/step4.html.twig:93
 msgid "Full path to SQLite database file"
-msgstr "Full path to SQLite database file"
+msgstr "Volledig pad naar SQLite-databasebestand"
 
 #: install/templates/step4.html.twig:96
 msgid "File must exist with web server read/write access. Use absolute path."
-msgstr "File must exist with web server read/write access. Use absolute path."
+msgstr "Bestand moet bestaan met lees-/schrijftoegang voor de webserver. Gebruik een absoluut pad."
 
 #: install/templates/step4.html.twig:104
 msgid "DB charset"
-msgstr "DB charset"
+msgstr "DB-tekenset"
 
 #: install/templates/step4.html.twig:178 install/templates/step4.html.twig:186
 msgid "Use default"
-msgstr "Use default"
+msgstr "Gebruik standaard"
 
 #: install/templates/step4.html.twig:111
 msgid "Charset for new tables. Leave empty for database default."
-msgstr "Charset for new tables. Leave empty for database default."
+msgstr "Tekenset voor nieuwe tabellen. Laat leeg voor de standaard van de database."
 
 #: install/templates/step4.html.twig:116
 msgid "DB collation"
-msgstr "DB collation"
+msgstr "DB-sortering"
 
 #: install/templates/step4.html.twig:123
 msgid ""
@@ -2013,15 +2013,15 @@ msgstr ""
 
 #: install/templates/step4.html.twig:131
 msgid "Administrator Account"
-msgstr "Administrator Account"
+msgstr "Beheerdersaccount"
 
 #: install/templates/step4.html.twig:135
 msgid "Administrator password"
-msgstr "Administrator password"
+msgstr "Beheerderswachtwoord"
 
 #: install/templates/step4.html.twig:140
 msgid "Provide a password"
-msgstr "Provide a password"
+msgstr "Geef een wachtwoord op"
 
 #: install/templates/step4.html.twig:145
 msgid ""
@@ -2035,7 +2035,7 @@ msgstr "Systeemvereisten"
 
 #: install/templates/step2.html.twig:8
 msgid "System Requirements Check"
-msgstr "Controle systeemvereisten"
+msgstr "Controle Systeemvereisten"
 
 #: install/templates/step2.html.twig:12
 msgid "Requirements Check:"
@@ -2043,7 +2043,7 @@ msgstr "Vereistencontrole:"
 
 #: install/templates/step2.html.twig:12
 msgid "Verifying that your server meets all requirements to run Poweradmin."
-msgstr ""
+msgstr "Controleert of uw server aan alle vereisten voldoet om Poweradmin uit te voeren."
 "Controleren of uw server aan alle vereisten voldoet om Poweradmin te draaien."
 
 #: install/templates/step2.html.twig:20
@@ -2088,7 +2088,7 @@ msgstr "Sommige vereiste componenten ontbreken."
 
 #: install/templates/step2.html.twig:112
 msgid "Please install the missing components before continuing."
-msgstr "Installeer de ontbrekende componenten voordat u verder gaat."
+msgstr "Installeer de ontbrekende componenten voordat u doorgaat."
 
 #: install/templates/step2.html.twig:116
 msgid "Check Again"
@@ -2262,19 +2262,19 @@ msgstr "Begin configuring your DNS zones and records"
 
 #: install/templates/step3.html.twig:3 install/templates/step3.html.twig:8
 msgid "Getting Ready"
-msgstr "Getting Ready"
+msgstr "Voorbereiden"
 
 #: install/templates/step3.html.twig:12
 msgid "Preparation:"
-msgstr "Preparation:"
+msgstr "Voorbereiding:"
 
 #: install/templates/step3.html.twig:12
 msgid "Let's get your PowerDNS database ready for Poweradmin."
-msgstr "Let's get your PowerDNS database ready for Poweradmin."
+msgstr "Laten we uw PowerDNS-database klaarmaken voor Poweradmin."
 
 #: install/templates/step3.html.twig:17
 msgid "About PowerDNS"
-msgstr "About PowerDNS"
+msgstr "Over PowerDNS"
 
 #: install/templates/step3.html.twig:20
 msgid ""
@@ -2286,11 +2286,11 @@ msgstr ""
 
 #: install/templates/step3.html.twig:21
 msgid "Before proceeding, you should have:"
-msgstr "Before proceeding, you should have:"
+msgstr "Voordat u verder gaat, moet u beschikken over:"
 
 #: install/templates/step3.html.twig:23
 msgid "An operational PowerDNS installation"
-msgstr "An operational PowerDNS installation"
+msgstr "Een werkende PowerDNS-installatie"
 
 #: install/templates/step3.html.twig:24
 msgid "Database connectivity details (hostname, username, password)"
@@ -2298,31 +2298,31 @@ msgstr "Database connectivity details (hostname, username, password)"
 
 #: install/templates/step3.html.twig:25
 msgid "Administrative access to your database"
-msgstr "Administrative access to your database"
+msgstr "Administratieve toegang tot uw database"
 
 #: install/templates/step3.html.twig:32
 msgid "Database Preparations"
-msgstr "Database Preparations"
+msgstr "Database-voorbereidingen"
 
 #: install/templates/step3.html.twig:35
 msgid "In the next steps, Poweradmin will:"
-msgstr "In the next steps, Poweradmin will:"
+msgstr "In de volgende stappen zal Poweradmin:"
 
 #: install/templates/step3.html.twig:37
 msgid "Connect to your PowerDNS database"
-msgstr "Connect to your PowerDNS database"
+msgstr "Verbinding maken met uw PowerDNS-database"
 
 #: install/templates/step3.html.twig:38
 msgid "Create tables needed for Poweradmin functionality"
-msgstr "Create tables needed for Poweradmin functionality"
+msgstr "Tabellen aanmaken die nodig zijn voor Poweradmin-functionaliteit"
 
 #: install/templates/step3.html.twig:39
 msgid "Set up an administrator account for web access"
-msgstr "Set up an administrator account for web access"
+msgstr "Een beheerdersaccount instellen voor webtoegang"
 
 #: install/templates/step3.html.twig:40
 msgid "Create a config file to store your settings"
-msgstr "Create a config file to store your settings"
+msgstr "Een configuratiebestand aanmaken om uw instellingen op te slaan"
 
 #: install/helpers/InstallStepHandler.php:169
 msgid "Updating database..."

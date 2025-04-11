@@ -1169,7 +1169,7 @@ msgstr "No specific password requirements"
 #: templates/add_user.html:45 install/templates/step4.html.twig:38
 #: install/templates/step5.html.twig:25
 msgid "Username"
-msgstr "Username"
+msgstr "Benutzername"
 
 #: templates/edit_user.html:49 templates/add_user.html:47
 msgid "Provide user name"
@@ -1182,7 +1182,7 @@ msgstr "Fullname"
 #: templates/index_cards.html:188 install/templates/step4.html.twig:49
 #: install/templates/step5.html.twig:36
 msgid "Password"
-msgstr "Password"
+msgstr "Passwort"
 
 #: templates/add_user.html:88
 msgid "Email address"
@@ -1471,7 +1471,7 @@ msgstr ""
 
 #: templates/add_user.html:60 install/templates/step4.html.twig:54
 msgid "Provide user password"
-msgstr "Provide user password"
+msgstr "Geben Sie das Benutzerpasswort an"
 
 #: templates/add_user.html:65
 msgid "Auto-generate password"
@@ -1853,7 +1853,7 @@ msgstr ""
 
 #: install/templates/step3.html.twig:44
 msgid "Note:"
-msgstr "Note:"
+msgstr "Hinweis:"
 
 #: install/templates/step6.html.twig:29
 msgid ""
@@ -1906,15 +1906,15 @@ msgstr "Begin Installation"
 
 #: install/templates/step4.html.twig:3
 msgid "Configuring database"
-msgstr "Configuring database"
+msgstr "Datenbank konfigurieren"
 
 #: install/templates/step4.html.twig:8
 msgid "Configuring Database Connection"
-msgstr "Configuring Database Connection"
+msgstr "Datenbank-Verbindung konfigurieren"
 
 #: install/templates/step4.html.twig:12
 msgid "Database Preparation:"
-msgstr "Database Preparation:"
+msgstr "Datenbankvorbereitung:"
 
 #: install/templates/step4.html.twig:12
 msgid ""
@@ -1926,27 +1926,27 @@ msgstr ""
 
 #: install/templates/step4.html.twig:20
 msgid "Database Settings"
-msgstr "Database Settings"
+msgstr "Datenbankeinstellungen"
 
 #: install/templates/step4.html.twig:24
 msgid "Database type"
-msgstr "Database type"
+msgstr "Datenbanktyp"
 
 #: install/templates/step4.html.twig:33
 msgid "The type of the PowerDNS database."
-msgstr "The type of the PowerDNS database."
+msgstr "Der Typ der PowerDNS-Datenbank."
 
 #: install/templates/step4.html.twig:41 install/templates/step5.html.twig:28
 msgid "Provide the user name"
-msgstr "Provide the user name"
+msgstr "Geben Sie den Benutzernamen an"
 
 #: install/templates/step4.html.twig:44
 msgid "Database username with administrative rights."
-msgstr "Database username with administrative rights."
+msgstr "Datenbank-Benutzername mit Administratorrechten."
 
 #: install/templates/step4.html.twig:58
 msgid "Password for this database user."
-msgstr "Password for this database user."
+msgstr "Passwort für diesen Datenbankbenutzer."
 
 #: install/templates/step4.html.twig:63
 msgid "Hostname"
@@ -1954,7 +1954,7 @@ msgstr "Hostname"
 
 #: install/templates/step4.html.twig:66
 msgid "Provide the hostname"
-msgstr "Provide the hostname"
+msgstr "Geben Sie den Hostnamen an"
 
 #: install/templates/step4.html.twig:69
 msgid "Database server hostname (usually \"localhost\")."
@@ -1962,51 +1962,51 @@ msgstr "Database server hostname (usually \"localhost\")."
 
 #: install/templates/step4.html.twig:74
 msgid "DB Port"
-msgstr "DB Port"
+msgstr "DB-Port"
 
 #: install/templates/step4.html.twig:77
 msgid "Provide database port"
-msgstr "Provide database port"
+msgstr "Geben Sie den Datenbankport an"
 
 #: install/templates/step4.html.twig:80
 msgid "Database server port."
-msgstr "Database server port."
+msgstr "Port des Datenbankservers."
 
 #: install/templates/step4.html.twig:85
 msgid "Database"
-msgstr "Database"
+msgstr "Datenbank"
 
 #: install/templates/step4.html.twig:88
 msgid "Provide the name of the database"
-msgstr "Provide the name of the database"
+msgstr "Geben Sie den Namen der Datenbank an"
 
 #: install/templates/step4.html.twig:91
 msgid "PowerDNS database name."
-msgstr "PowerDNS database name."
+msgstr "Name der PowerDNS-Datenbank."
 
 #: install/templates/step4.html.twig:93
 msgid "Full path to SQLite database file"
-msgstr "Full path to SQLite database file"
+msgstr "Vollständiger Pfad zur SQLite-Datenbankdatei"
 
 #: install/templates/step4.html.twig:96
 msgid "File must exist with web server read/write access. Use absolute path."
-msgstr "File must exist with web server read/write access. Use absolute path."
+msgstr "Die Datei muss mit Lese-/Schreibzugriff für den Webserver existieren. Verwenden Sie einen absoluten Pfad."
 
 #: install/templates/step4.html.twig:104
 msgid "DB charset"
-msgstr "DB charset"
+msgstr "DB-Zeichensatz"
 
 #: install/templates/step4.html.twig:178 install/templates/step4.html.twig:186
 msgid "Use default"
-msgstr "Use default"
+msgstr "Standard verwenden"
 
 #: install/templates/step4.html.twig:111
 msgid "Charset for new tables. Leave empty for database default."
-msgstr "Charset for new tables. Leave empty for database default."
+msgstr "Zeichensatz für neue Tabellen. Lassen Sie das Feld leer für die Datenbankstandardeinstellung."
 
 #: install/templates/step4.html.twig:116
 msgid "DB collation"
-msgstr "DB collation"
+msgstr "DB-Kollation"
 
 #: install/templates/step4.html.twig:123
 msgid ""
@@ -2016,15 +2016,15 @@ msgstr ""
 
 #: install/templates/step4.html.twig:131
 msgid "Administrator Account"
-msgstr "Administrator Account"
+msgstr "Administrator-Konto"
 
 #: install/templates/step4.html.twig:135
 msgid "Administrator password"
-msgstr "Administrator password"
+msgstr "Administrator-Passwort"
 
 #: install/templates/step4.html.twig:140
 msgid "Provide a password"
-msgstr "Provide a password"
+msgstr "Geben Sie ein Passwort an"
 
 #: install/templates/step4.html.twig:145
 msgid ""
@@ -2265,19 +2265,19 @@ msgstr "Begin configuring your DNS zones and records"
 
 #: install/templates/step3.html.twig:3 install/templates/step3.html.twig:8
 msgid "Getting Ready"
-msgstr "Getting Ready"
+msgstr "Vorbereitung"
 
 #: install/templates/step3.html.twig:12
 msgid "Preparation:"
-msgstr "Preparation:"
+msgstr "Vorbereitung:"
 
 #: install/templates/step3.html.twig:12
 msgid "Let's get your PowerDNS database ready for Poweradmin."
-msgstr "Let's get your PowerDNS database ready for Poweradmin."
+msgstr "Lassen Sie uns Ihre PowerDNS-Datenbank für Poweradmin vorbereiten."
 
 #: install/templates/step3.html.twig:17
 msgid "About PowerDNS"
-msgstr "About PowerDNS"
+msgstr "Über PowerDNS"
 
 #: install/templates/step3.html.twig:20
 msgid ""
@@ -2289,11 +2289,11 @@ msgstr ""
 
 #: install/templates/step3.html.twig:21
 msgid "Before proceeding, you should have:"
-msgstr "Before proceeding, you should have:"
+msgstr "Bevor Sie fortfahren, sollten Sie Folgendes haben:"
 
 #: install/templates/step3.html.twig:23
 msgid "An operational PowerDNS installation"
-msgstr "An operational PowerDNS installation"
+msgstr "Eine funktionsfähige PowerDNS-Installation"
 
 #: install/templates/step3.html.twig:24
 msgid "Database connectivity details (hostname, username, password)"
@@ -2301,31 +2301,31 @@ msgstr "Database connectivity details (hostname, username, password)"
 
 #: install/templates/step3.html.twig:25
 msgid "Administrative access to your database"
-msgstr "Administrative access to your database"
+msgstr "Administrativen Zugriff auf Ihre Datenbank"
 
 #: install/templates/step3.html.twig:32
 msgid "Database Preparations"
-msgstr "Database Preparations"
+msgstr "Datenbankvorbereitungen"
 
 #: install/templates/step3.html.twig:35
 msgid "In the next steps, Poweradmin will:"
-msgstr "In the next steps, Poweradmin will:"
+msgstr "In den nächsten Schritten wird Poweradmin:"
 
 #: install/templates/step3.html.twig:37
 msgid "Connect to your PowerDNS database"
-msgstr "Connect to your PowerDNS database"
+msgstr "Verbindung zu Ihrer PowerDNS-Datenbank herstellen"
 
 #: install/templates/step3.html.twig:38
 msgid "Create tables needed for Poweradmin functionality"
-msgstr "Create tables needed for Poweradmin functionality"
+msgstr "Die für die Poweradmin-Funktionalität erforderlichen Tabellen erstellen"
 
 #: install/templates/step3.html.twig:39
 msgid "Set up an administrator account for web access"
-msgstr "Set up an administrator account for web access"
+msgstr "Ein Administratorkonto für den Webzugriff einrichten"
 
 #: install/templates/step3.html.twig:40
 msgid "Create a config file to store your settings"
-msgstr "Create a config file to store your settings"
+msgstr "Eine Konfigurationsdatei erstellen, um Ihre Einstellungen zu speichern"
 
 #: install/helpers/InstallStepHandler.php:169
 msgid "Updating database..."

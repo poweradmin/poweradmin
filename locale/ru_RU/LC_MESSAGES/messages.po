@@ -1166,7 +1166,7 @@ msgstr "No specific password requirements"
 #: templates/add_user.html:45 install/templates/step4.html.twig:38
 #: install/templates/step5.html.twig:25
 msgid "Username"
-msgstr "Username"
+msgstr "Имя пользователя"
 
 #: templates/edit_user.html:49 templates/add_user.html:47
 msgid "Provide user name"
@@ -1179,7 +1179,7 @@ msgstr "Fullname"
 #: templates/index_cards.html:188 install/templates/step4.html.twig:49
 #: install/templates/step5.html.twig:36
 msgid "Password"
-msgstr "Password"
+msgstr "Пароль"
 
 #: templates/add_user.html:88
 msgid "Email address"
@@ -1468,7 +1468,7 @@ msgstr ""
 
 #: templates/add_user.html:60 install/templates/step4.html.twig:54
 msgid "Provide user password"
-msgstr "Provide user password"
+msgstr "Укажите пароль пользователя"
 
 #: templates/add_user.html:65
 msgid "Auto-generate password"
@@ -1850,7 +1850,7 @@ msgstr ""
 
 #: install/templates/step3.html.twig:44
 msgid "Note:"
-msgstr "Note:"
+msgstr "Примечание:"
 
 #: install/templates/step6.html.twig:29
 msgid ""
@@ -1862,7 +1862,7 @@ msgstr ""
 
 #: install/templates/step5.html.twig:133 install/templates/step3.html.twig:55
 msgid "Continue to step"
-msgstr "Continue to step"
+msgstr "Продолжить к шагу"
 
 #: install/templates/base.html.twig:29
 msgid "Installation step"
@@ -1903,15 +1903,15 @@ msgstr "Begin Installation"
 
 #: install/templates/step4.html.twig:3
 msgid "Configuring database"
-msgstr "Configuring database"
+msgstr "Настройка базы данных"
 
 #: install/templates/step4.html.twig:8
 msgid "Configuring Database Connection"
-msgstr "Configuring Database Connection"
+msgstr "Настройка подключения к базе данных"
 
 #: install/templates/step4.html.twig:12
 msgid "Database Preparation:"
-msgstr "Database Preparation:"
+msgstr "Подготовка базы данных:"
 
 #: install/templates/step4.html.twig:12
 msgid ""
@@ -1923,35 +1923,35 @@ msgstr ""
 
 #: install/templates/step4.html.twig:20
 msgid "Database Settings"
-msgstr "Database Settings"
+msgstr "Настройки базы данных"
 
 #: install/templates/step4.html.twig:24
 msgid "Database type"
-msgstr "Database type"
+msgstr "Тип базы данных"
 
 #: install/templates/step4.html.twig:33
 msgid "The type of the PowerDNS database."
-msgstr "The type of the PowerDNS database."
+msgstr "Тип базы данных PowerDNS."
 
 #: install/templates/step4.html.twig:41 install/templates/step5.html.twig:28
 msgid "Provide the user name"
-msgstr "Provide the user name"
+msgstr "Укажите имя пользователя"
 
 #: install/templates/step4.html.twig:44
 msgid "Database username with administrative rights."
-msgstr "Database username with administrative rights."
+msgstr "Имя пользователя базы данных с административными правами."
 
 #: install/templates/step4.html.twig:58
 msgid "Password for this database user."
-msgstr "Password for this database user."
+msgstr "Пароль для этого пользователя базы данных."
 
 #: install/templates/step4.html.twig:63
 msgid "Hostname"
-msgstr "Hostname"
+msgstr "Имя хоста"
 
 #: install/templates/step4.html.twig:66
 msgid "Provide the hostname"
-msgstr "Provide the hostname"
+msgstr "Укажите имя хоста"
 
 #: install/templates/step4.html.twig:69
 msgid "Database server hostname (usually \"localhost\")."
@@ -1959,51 +1959,51 @@ msgstr "Database server hostname (usually \"localhost\")."
 
 #: install/templates/step4.html.twig:74
 msgid "DB Port"
-msgstr "DB Port"
+msgstr "Порт БД"
 
 #: install/templates/step4.html.twig:77
 msgid "Provide database port"
-msgstr "Provide database port"
+msgstr "Укажите порт базы данных"
 
 #: install/templates/step4.html.twig:80
 msgid "Database server port."
-msgstr "Database server port."
+msgstr "Порт сервера базы данных."
 
 #: install/templates/step4.html.twig:85
 msgid "Database"
-msgstr "Database"
+msgstr "База данных"
 
 #: install/templates/step4.html.twig:88
 msgid "Provide the name of the database"
-msgstr "Provide the name of the database"
+msgstr "Укажите имя базы данных"
 
 #: install/templates/step4.html.twig:91
 msgid "PowerDNS database name."
-msgstr "PowerDNS database name."
+msgstr "Имя базы данных PowerDNS."
 
 #: install/templates/step4.html.twig:93
 msgid "Full path to SQLite database file"
-msgstr "Full path to SQLite database file"
+msgstr "Полный путь к файлу базы данных SQLite"
 
 #: install/templates/step4.html.twig:96
 msgid "File must exist with web server read/write access. Use absolute path."
-msgstr "File must exist with web server read/write access. Use absolute path."
+msgstr "Файл должен существовать с доступом на чтение/запись для веб-сервера. Используйте абсолютный путь."
 
 #: install/templates/step4.html.twig:104
 msgid "DB charset"
-msgstr "DB charset"
+msgstr "Кодировка БД"
 
 #: install/templates/step4.html.twig:178 install/templates/step4.html.twig:186
 msgid "Use default"
-msgstr "Use default"
+msgstr "Использовать по умолчанию"
 
 #: install/templates/step4.html.twig:111
 msgid "Charset for new tables. Leave empty for database default."
-msgstr "Charset for new tables. Leave empty for database default."
+msgstr "Кодировка для новых таблиц. Оставьте пустым для значения по умолчанию базы данных."
 
 #: install/templates/step4.html.twig:116
 msgid "DB collation"
-msgstr "DB collation"
+msgstr "Сопоставление БД"
 
 #: install/templates/step4.html.twig:123
 msgid ""
@@ -2013,15 +2013,15 @@ msgstr ""
 
 #: install/templates/step4.html.twig:131
 msgid "Administrator Account"
-msgstr "Administrator Account"
+msgstr "Учетная запись администратора"
 
 #: install/templates/step4.html.twig:135
 msgid "Administrator password"
-msgstr "Administrator password"
+msgstr "Пароль администратора"
 
 #: install/templates/step4.html.twig:140
 msgid "Provide a password"
-msgstr "Provide a password"
+msgstr "Укажите пароль"
 
 #: install/templates/step4.html.twig:145
 msgid ""
@@ -2031,23 +2031,23 @@ msgstr ""
 
 #: install/templates/step2.html.twig:3
 msgid "System Requirements"
-msgstr "System Requirements"
+msgstr "Системные Требования"
 
 #: install/templates/step2.html.twig:8
 msgid "System Requirements Check"
-msgstr "System Requirements Check"
+msgstr "Проверка Системных Требований"
 
 #: install/templates/step2.html.twig:12
 msgid "Requirements Check:"
-msgstr "Requirements Check:"
+msgstr "Проверка Требований:"
 
 #: install/templates/step2.html.twig:12
 msgid "Verifying that your server meets all requirements to run Poweradmin."
-msgstr "Verifying that your server meets all requirements to run Poweradmin."
+msgstr "Проверка соответствия вашего сервера всем требованиям для запуска Poweradmin."
 
 #: install/templates/step2.html.twig:20
 msgid "PHP Version"
-msgstr "PHP Version"
+msgstr "Версия PHP"
 
 #: install/templates/step2.html.twig:27
 msgid "OK"
@@ -2059,39 +2059,39 @@ msgstr "Requires PHP 8.1.0+"
 
 #: install/templates/step2.html.twig:40
 msgid "Database Extensions"
-msgstr "Database Extensions"
+msgstr "Расширения базы данных"
 
 #: install/templates/step2.html.twig:40
 msgid "at least one required"
-msgstr "at least one required"
+msgstr "требуется как минимум одно"
 
 #: install/templates/step2.html.twig:61
 msgid "Required PHP Extensions"
-msgstr "Required PHP Extensions"
+msgstr "Необходимые расширения PHP"
 
 #: install/templates/step2.html.twig:80
 msgid "Optional Extensions"
-msgstr "Optional Extensions"
+msgstr "Дополнительные расширения"
 
 #: install/templates/step2.html.twig:104
 msgid "All required components are available."
-msgstr "All required components are available."
+msgstr "Все необходимые компоненты доступны."
 
 #: install/templates/step2.html.twig:105
 msgid "You can continue with the installation."
-msgstr "You can continue with the installation."
+msgstr "Вы можете продолжить установку."
 
 #: install/templates/step2.html.twig:111
 msgid "Some required components are missing."
-msgstr "Some required components are missing."
+msgstr "Некоторые необходимые компоненты отсутствуют."
 
 #: install/templates/step2.html.twig:112
 msgid "Please install the missing components before continuing."
-msgstr "Please install the missing components before continuing."
+msgstr "Пожалуйста, установите отсутствующие компоненты перед продолжением."
 
 #: install/templates/step2.html.twig:116
 msgid "Check Again"
-msgstr "Check Again"
+msgstr "Проверить снова"
 
 #: install/templates/step5.html.twig:3
 msgid "Setup account and nameservers"
@@ -2261,19 +2261,19 @@ msgstr "Begin configuring your DNS zones and records"
 
 #: install/templates/step3.html.twig:3 install/templates/step3.html.twig:8
 msgid "Getting Ready"
-msgstr "Getting Ready"
+msgstr "Подготовка"
 
 #: install/templates/step3.html.twig:12
 msgid "Preparation:"
-msgstr "Preparation:"
+msgstr "Подготовка:"
 
 #: install/templates/step3.html.twig:12
 msgid "Let's get your PowerDNS database ready for Poweradmin."
-msgstr "Let's get your PowerDNS database ready for Poweradmin."
+msgstr "Давайте подготовим вашу базу данных PowerDNS для Poweradmin."
 
 #: install/templates/step3.html.twig:17
 msgid "About PowerDNS"
-msgstr "About PowerDNS"
+msgstr "О PowerDNS"
 
 #: install/templates/step3.html.twig:20
 msgid ""
@@ -2285,11 +2285,11 @@ msgstr ""
 
 #: install/templates/step3.html.twig:21
 msgid "Before proceeding, you should have:"
-msgstr "Before proceeding, you should have:"
+msgstr "Прежде чем продолжить, у вас должно быть:"
 
 #: install/templates/step3.html.twig:23
 msgid "An operational PowerDNS installation"
-msgstr "An operational PowerDNS installation"
+msgstr "Рабочая установка PowerDNS"
 
 #: install/templates/step3.html.twig:24
 msgid "Database connectivity details (hostname, username, password)"
@@ -2297,31 +2297,31 @@ msgstr "Database connectivity details (hostname, username, password)"
 
 #: install/templates/step3.html.twig:25
 msgid "Administrative access to your database"
-msgstr "Administrative access to your database"
+msgstr "Административный доступ к вашей базе данных"
 
 #: install/templates/step3.html.twig:32
 msgid "Database Preparations"
-msgstr "Database Preparations"
+msgstr "Подготовка базы данных"
 
 #: install/templates/step3.html.twig:35
 msgid "In the next steps, Poweradmin will:"
-msgstr "In the next steps, Poweradmin will:"
+msgstr "На следующих этапах Poweradmin:"
 
 #: install/templates/step3.html.twig:37
 msgid "Connect to your PowerDNS database"
-msgstr "Connect to your PowerDNS database"
+msgstr "Подключится к вашей базе данных PowerDNS"
 
 #: install/templates/step3.html.twig:38
 msgid "Create tables needed for Poweradmin functionality"
-msgstr "Create tables needed for Poweradmin functionality"
+msgstr "Создаст таблицы, необходимые для функций Poweradmin"
 
 #: install/templates/step3.html.twig:39
 msgid "Set up an administrator account for web access"
-msgstr "Set up an administrator account for web access"
+msgstr "Настроит учетную запись администратора для веб-доступа"
 
 #: install/templates/step3.html.twig:40
 msgid "Create a config file to store your settings"
-msgstr "Create a config file to store your settings"
+msgstr "Создаст конфигурационный файл для хранения ваших настроек"
 
 #: install/helpers/InstallStepHandler.php:169
 msgid "Updating database..."
