@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-04-11 10:36+0300\n"
-"PO-Revision-Date: 2025-04-11 10:36+0300\n"
+"POT-Creation-Date: 2025-04-11 18:30+0300\n"
+"PO-Revision-Date: 2025-04-11 18:30+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: en_EN\n"
@@ -1861,7 +1861,7 @@ msgstr ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
 
-#: install/templates/step5.html.twig:133 install/templates/step3.html.twig:55
+#: install/templates/step5.html.twig:134 install/templates/step3.html.twig:56
 msgid "Continue to step"
 msgstr "Continue to step"
 
@@ -1995,7 +1995,7 @@ msgstr "File must exist with web server read/write access. Use absolute path."
 msgid "DB charset"
 msgstr "DB charset"
 
-#: install/templates/step4.html.twig:178 install/templates/step4.html.twig:186
+#: install/templates/step4.html.twig:180 install/templates/step4.html.twig:188
 msgid "Use default"
 msgstr "Use default"
 
@@ -2083,15 +2083,15 @@ msgstr "All required components are available."
 msgid "You can continue with the installation."
 msgstr "You can continue with the installation."
 
-#: install/templates/step2.html.twig:111
+#: install/templates/step2.html.twig:113
 msgid "Some required components are missing."
 msgstr "Some required components are missing."
 
-#: install/templates/step2.html.twig:112
+#: install/templates/step2.html.twig:114
 msgid "Please install the missing components before continuing."
 msgstr "Please install the missing components before continuing."
 
-#: install/templates/step2.html.twig:116
+#: install/templates/step2.html.twig:118
 msgid "Check Again"
 msgstr "Check Again"
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-04-11 10:36+0300\n"
+"POT-Creation-Date: 2025-04-11 18:23+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -44,9 +44,7 @@ msgstr ""
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
-msgstr ""
-"Default session encryption key is used, please set it in your configuration "
-"file."
+msgstr "Varsayılan oturum şifreleme anahtarı kullanılıyor, lütfen yapılandırma dosyanızda ayarlayın."
 
 #: lib/Application/Presenter/PaginationPresenter.php:52
 #: templates/search.html:135 templates/search.html:252
@@ -106,9 +104,7 @@ msgstr "The record has been deleted successfully."
 msgid ""
 "The record was deleted but the comment was preserved because similar records "
 "exist."
-msgstr ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
+msgstr "Kayıt silindi ancak benzer kayıtlar var olduğu için yorum korundu."
 
 #: lib/Domain/Model/ZoneTemplate.php:398 lib/Domain/Service/DnsRecord.php:393
 msgid "You do not have the permission to edit this record."
@@ -205,8 +201,7 @@ msgstr "Zone has been unsigned successfully."
 
 #: lib/Domain/Model/ZoneTemplate.php:138 lib/Domain/Model/ZoneTemplate.php:593
 msgid "Zone template with this name already exists, please choose another one."
-msgstr ""
-"Zone template with this name already exists, please choose another one."
+msgstr "Bu isimde bir bölge şablonu zaten var, lütfen başka bir tane seçin."
 
 #: lib/Application/Controller/EditController.php:401
 msgid "Template name can't be an empty string."
@@ -276,17 +271,13 @@ msgstr "You do not have the permission to access the migrations."
 msgid ""
 "Old migrations table detected. Please remove the `migrations` table before "
 "proceeding."
-msgstr ""
-"Old migrations table detected. Please remove the `migrations` table before "
-"proceeding."
+msgstr "Eski göç tablosu tespit edildi. Devam etmeden önce lütfen `migrations` tablosunu kaldırın."
 
 #: lib/Application/Controller/MigrationsController.php:49
 msgid ""
 "Database access check failed. Please ensure the current database user has "
 "the necessary permissions to create and alter tables."
-msgstr ""
-"Database access check failed. Please ensure the current database user has "
-"the necessary permissions to create and alter tables."
+msgstr "Veritabanı erişim kontrolü başarısız oldu. Lütfen mevcut veritabanı kullanıcısının tablo oluşturma ve değiştirme için gerekli izinlere sahip olduğundan emin olun."
 
 #: lib/Domain/Service/DnsRecord.php:795
 msgid "You do not have the permission to add a master zone."
@@ -412,9 +403,7 @@ msgstr "The record has been updated successfully."
 msgid ""
 "LDAP users cannot change their password here. Please contact your "
 "administrator."
-msgstr ""
-"LDAP users cannot change their password here. Please contact your "
-"administrator."
+msgstr "LDAP kullanıcıları şifrelerini burada değiştiremez. Lütfen yöneticinize başvurun."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:101
 msgid "Zone key has been added successfully."
@@ -522,9 +511,7 @@ msgstr "An empty password is not allowed"
 msgid ""
 "Failed to call function exec. Make sure that exec is not listed in "
 "disable_functions at php.ini"
-msgstr ""
-"Failed to call function exec. Make sure that exec is not listed in "
-"disable_functions at php.ini"
+msgstr "Exec fonksiyonunu çağırma başarısız oldu. Exec'in php.ini'deki disable_functions'da listelenmediğinden emin olun."
 
 #: lib/Infrastructure/Service/PdnsUtilProvider.php:56
 msgid "Failed to call pdnssec utility."
@@ -633,20 +620,17 @@ msgstr "Add quotes around TXT record content."
 #: lib/Domain/Service/Dns.php:607
 msgid ""
 "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
-msgstr ""
-"This is not a valid CNAME. Did you assign an MX or NS record to the record?"
+msgstr "Bu geçerli bir CNAME değil. Kayda bir MX veya NS kaydı atadınız mı?"
 
 #: lib/Domain/Service/Dns.php:636
 msgid ""
 "This is not a valid record. There is already exists a CNAME with this name."
-msgstr ""
-"This is not a valid record. There is already exists a CNAME with this name."
+msgstr "Bu geçerli bir kayıt değil. Bu isimde zaten bir CNAME var."
 
 #: lib/Domain/Service/Dns.php:663
 msgid ""
 "This is not a valid CNAME. There already exists a record with this name."
-msgstr ""
-"This is not a valid CNAME. There already exists a record with this name."
+msgstr "Bu geçerli bir CNAME değil. Bu isimde zaten bir kayıt var."
 
 #: lib/Domain/Service/Dns.php:683
 msgid "Empty CNAME records are not allowed."
@@ -656,9 +640,7 @@ msgstr "Empty CNAME records are not allowed."
 msgid ""
 "You can not point a NS or MX record to a CNAME record. Remove or rename the "
 "CNAME record first, or take another name."
-msgstr ""
-"You can not point a NS or MX record to a CNAME record. Remove or rename the "
-"CNAME record first, or take another name."
+msgstr "Bir NS veya MX kaydını bir CNAME kaydına yönlendiremezsiniz. Önce CNAME kaydını kaldırın veya yeniden adlandırın, ya da başka bir isim alın."
 
 #: lib/Domain/Service/Dns.php:735
 msgid "Invalid value for content field of HINFO record."
@@ -668,9 +650,7 @@ msgstr "Invalid value for content field of HINFO record."
 msgid ""
 "Invalid value for name field of SOA record. It should be the name of the "
 "zone."
-msgstr ""
-"Invalid value for name field of SOA record. It should be the name of the "
-"zone."
+msgstr "SOA kaydının ad alanı için geçersiz değer. Bölgenin adı olmalıdır."
 
 #: lib/Domain/Service/Dns.php:863
 msgid "Invalid service value in name field of SRV record."
@@ -746,9 +726,7 @@ msgstr "There is already a supermaster with this IP address and hostname."
 msgid ""
 "You are trying to delete the SOA record. You are not allowed to remove it, "
 "unless you remove the entire zone."
-msgstr ""
-"You are trying to delete the SOA record. You are not allowed to remove it, "
-"unless you remove the entire zone."
+msgstr "SOA kaydını silmeye çalışıyorsunuz. Tüm bölgeyi kaldırmadığınız sürece bunu kaldırmanıza izin verilmiyor."
 
 #: lib/Domain/Service/DnsRecord.php:790 lib/Domain/Service/DnsRecord.php:1404
 #, php-format
@@ -1039,9 +1017,7 @@ msgstr "Delete user"
 msgid ""
 "You are about to delete a user. This user is owner for a number of zones. "
 "Please decide what to do with these zones."
-msgstr ""
-"You are about to delete a user. This user is owner for a number of zones. "
-"Please decide what to do with these zones."
+msgstr "Bir kullanıcıyı silmek üzeresiniz. Bu kullanıcı bir dizi bölgenin sahibidir. Lütfen bu bölgelerle ne yapacağınıza karar verin."
 
 #: templates/delete_user.html:22
 msgid "Zone"
@@ -1166,7 +1142,7 @@ msgstr "No specific password requirements"
 #: templates/add_user.html:45 install/templates/step4.html.twig:38
 #: install/templates/step5.html.twig:25
 msgid "Username"
-msgstr "用户名"
+msgstr "Kullanıcı adı"
 
 #: templates/edit_user.html:49 templates/add_user.html:47
 msgid "Provide user name"
@@ -1179,7 +1155,7 @@ msgstr "Fullname"
 #: templates/index_cards.html:188 install/templates/step4.html.twig:49
 #: install/templates/step5.html.twig:36
 msgid "Password"
-msgstr "密码"
+msgstr "Şifre"
 
 #: templates/add_user.html:88
 msgid "Email address"
@@ -1337,9 +1313,7 @@ msgstr "Examples:"
 msgid ""
 "To add a subdomain foo in a zone template you would put foo.[ZONE] into the "
 "name field."
-msgstr ""
-"To add a subdomain foo in a zone template you would put foo.[ZONE] into the "
-"name field."
+msgstr "Bir bölge şablonuna foo alt alanı eklemek için ad alanına foo.[ZONE] koymanız gerekir."
 
 #: templates/add_zone_templ_record.html:78 templates/edit_zone_templ.html:94
 msgid "To add a wildcard record put *.[ZONE] in the name field."
@@ -1353,9 +1327,7 @@ msgstr "Use just [ZONE] to have the domain itself return a value."
 msgid ""
 "For the SOA record, place [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 "
 "86400 in the content field."
-msgstr ""
-"For the SOA record, place [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 "
-"86400 in the content field."
+msgstr "SOA kaydı için içerik alanına [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400 yerleştirin."
 
 #: templates/delete_perm_templ.html:10
 msgid "Delete permission template"
@@ -1463,12 +1435,11 @@ msgstr "Delete record in zone"
 
 #: templates/delete_record.html:47
 msgid "You are trying to delete a record that is needed for this zone to work."
-msgstr ""
-"You are trying to delete a record that is needed for this zone to work."
+msgstr "Bu bölgenin çalışması için gerekli olan bir kaydı silmeye çalışıyorsunuz."
 
 #: templates/add_user.html:60 install/templates/step4.html.twig:54
 msgid "Provide user password"
-msgstr "提供用户密码"
+msgstr "Kullanıcı şifresini girin"
 
 #: templates/add_user.html:65
 msgid "Auto-generate password"
@@ -1588,21 +1559,14 @@ msgid ""
 "supermaster. Deleting the zone now, will result in temporary removal only. "
 "Whenever the supermaster sends a notification for this zone, it will be "
 "added again!"
-msgstr ""
-"You are about to delete a slave zone of which the master nameserver is a "
-"supermaster. Deleting the zone now, will result in temporary removal only. "
-"Whenever the supermaster sends a notification for this zone, it will be "
-"added again!"
+msgstr "Ana ad sunucusunun bir supermaster olduğu bir slave bölgeyi silmek üzeresiniz. Bölgeyi şimdi silmek sadece geçici bir kaldırma ile sonuçlanacaktır. Supermaster bu bölge için bir bildirim gönderdiğinde, tekrar eklenecektir!"
 
 #: templates/search.html:9
 msgid ""
 "Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) "
 "in pattern matches any single character, a percent sign (%) matches any "
 "string of zero or more characters."
-msgstr ""
-"Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) "
-"in pattern matches any single character, a percent sign (%) matches any "
-"string of zero or more characters."
+msgstr "Bir ana bilgisayar adı veya IP adresi girin. SQL LIKE sözdizimi desteklenir: Desende bir alt çizgi (_) herhangi bir tek karaktere, bir yüzde işareti (%) sıfır veya daha fazla karakterden oluşan herhangi bir diziye eşleşir."
 
 #: templates/search.html:27
 msgid "Provide a keyword for your search"
@@ -1810,7 +1774,7 @@ msgstr "Delete record in zone template"
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
-msgstr "创建有限权限用户"
+msgstr "Sınırlı haklara sahip kullanıcı oluştur"
 
 #: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
 msgid "Step"
@@ -1818,63 +1782,57 @@ msgstr "Step"
 
 #: install/templates/step6.html.twig:8
 msgid "Create limited-rights user"
-msgstr "创建有限权限用户"
+msgstr "Sınırlı haklara sahip kullanıcı oluştur"
 
 #: install/templates/step6.html.twig:13
 msgid "Limited Database Rights:"
-msgstr "有限数据库权限："
+msgstr "Sınırlı Veritabanı Hakları:"
 
 #: install/templates/step6.html.twig:13
 msgid ""
 "You now want to give limited rights to Poweradmin so it can update the data "
 "in the tables. To do this, you should create a new user and give it rights "
 "to select, delete, insert, and update records in the PowerDNS database."
-msgstr ""
-"You now want to give limited rights to Poweradmin so it can update the data "
-"in the tables. To do this, you should create a new user and give it rights "
-"to select, delete, insert, and update records in the PowerDNS database."
+msgstr "Şimdi Poweradmin'e tablolardaki verileri güncelleyebilmesi için sınırlı haklar vermek istiyorsunuz. Bunun için, yeni bir kullanıcı oluşturmalı ve ona PowerDNS veritabanındaki kayıtları seçme, silme, ekleme ve güncelleme hakları vermelisiniz."
 
 #: install/templates/step6.html.twig:18
 msgid "Database Commands"
-msgstr "数据库命令"
+msgstr "Veritabanı Komutları"
 
 #: install/templates/step6.html.twig:21
 msgid "Execute the following commands based on your database:"
-msgstr "根据您的数据库执行以下命令："
+msgstr "Veritabanınıza göre aşağıdaki komutları çalıştırın:"
 
 #: install/templates/step6.html.twig:26
 msgid ""
 "After you have added the new user, proceed with this installation procedure."
-msgstr ""
-"After you have added the new user, proceed with this installation procedure."
+msgstr "Yeni kullanıcıyı ekledikten sonra, bu kurulum prosedürüne devam edin."
 
 #: install/templates/step3.html.twig:44
 msgid "Note:"
-msgstr "注意："
+msgstr "Not:"
 
 #: install/templates/step6.html.twig:29
 msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
-msgstr ""
-"Since you are using SQLite, there is no need to create a new user with "
-"limited rights."
+msgstr "SQLite kullandığınız için, sınırlı haklara sahip yeni bir kullanıcı oluşturmanıza gerek yoktur."
 
-#: install/templates/step5.html.twig:133 install/templates/step3.html.twig:55
+#: install/templates/step5.html.twig:134 install/templates/step3.html.twig:56
 msgid "Continue to step"
-msgstr "继续到步骤"
+msgstr "Adıma devam et"
 
 #: install/templates/base.html.twig:29
 msgid "Installation step"
-msgstr "安装步骤"
+msgstr "Kurulum adımı"
 
 #: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
 msgid "Create configuration file"
-msgstr "创建配置文件"
+msgstr "Yapılandırma dosyası oluştur"
 
 #: install/templates/step7.html.twig:12
 msgid "Configuration File:"
-msgstr "配置文件："
+msgstr "Yapılandırma Dosyası:"
 
 #: install/templates/step7.html.twig:12
 msgid "Create the file"
@@ -1895,7 +1853,7 @@ msgstr "Choose a language for installation"
 #: install/templates/step1.html.twig:12
 msgid ""
 "Please select your preferred language to continue with the installation:"
-msgstr ""
+msgstr "Kuruluma devam etmek için lütfen tercih ettiğiniz dili seçin:"
 
 #: install/templates/step1.html.twig:196
 msgid "Begin Installation"
@@ -1903,55 +1861,53 @@ msgstr "Begin Installation"
 
 #: install/templates/step4.html.twig:3
 msgid "Configuring database"
-msgstr "配置数据库"
+msgstr "Veritabanı yapılandırması"
 
 #: install/templates/step4.html.twig:8
 msgid "Configuring Database Connection"
-msgstr "配置数据库连接"
+msgstr "Veritabanı Bağlantısını Yapılandırma"
 
 #: install/templates/step4.html.twig:12
 msgid "Database Preparation:"
-msgstr "数据库准备："
+msgstr "Veritabanı Hazırlığı:"
 
 #: install/templates/step4.html.twig:12
 msgid ""
 "The installer needs to modify the PowerDNS database with tables for "
 "Poweradmin. Use an account with sufficient rights (like root) to proceed."
-msgstr ""
-"The installer needs to modify the PowerDNS database with tables for "
-"Poweradmin. Use an account with sufficient rights (like root) to proceed."
+msgstr "Yükleyici, Poweradmin için tablolarla PowerDNS veritabanını değiştirmesi gerekiyor. Devam etmek için yeterli haklara sahip bir hesap kullanın (root gibi)."
 
 #: install/templates/step4.html.twig:20
 msgid "Database Settings"
-msgstr "数据库设置"
+msgstr "Veritabanı Ayarları"
 
 #: install/templates/step4.html.twig:24
 msgid "Database type"
-msgstr "数据库类型"
+msgstr "Veritabanı türü"
 
 #: install/templates/step4.html.twig:33
 msgid "The type of the PowerDNS database."
-msgstr "PowerDNS数据库的类型。"
+msgstr "PowerDNS veritabanının türü."
 
 #: install/templates/step4.html.twig:41 install/templates/step5.html.twig:28
 msgid "Provide the user name"
-msgstr "提供用户名"
+msgstr "Kullanıcı adını girin"
 
 #: install/templates/step4.html.twig:44
 msgid "Database username with administrative rights."
-msgstr "具有管理权限的数据库用户名。"
+msgstr "Yönetici haklarına sahip veritabanı kullanıcı adı."
 
 #: install/templates/step4.html.twig:58
 msgid "Password for this database user."
-msgstr "此数据库用户的密码。"
+msgstr "Bu veritabanı kullanıcısı için şifre."
 
 #: install/templates/step4.html.twig:63
 msgid "Hostname"
-msgstr "主机名"
+msgstr "Sunucu adı"
 
 #: install/templates/step4.html.twig:66
 msgid "Provide the hostname"
-msgstr "提供主机名"
+msgstr "Sunucu adını girin"
 
 #: install/templates/step4.html.twig:69
 msgid "Database server hostname (usually \"localhost\")."
@@ -1959,95 +1915,93 @@ msgstr "Database server hostname (usually \"localhost\")."
 
 #: install/templates/step4.html.twig:74
 msgid "DB Port"
-msgstr "数据库端口"
+msgstr "DB Portu"
 
 #: install/templates/step4.html.twig:77
 msgid "Provide database port"
-msgstr "提供数据库端口"
+msgstr "Veritabanı portunu girin"
 
 #: install/templates/step4.html.twig:80
 msgid "Database server port."
-msgstr "数据库服务器端口。"
+msgstr "Veritabanı sunucusu portu."
 
 #: install/templates/step4.html.twig:85
 msgid "Database"
-msgstr "数据库"
+msgstr "Veritabanı"
 
 #: install/templates/step4.html.twig:88
 msgid "Provide the name of the database"
-msgstr "提供数据库名称"
+msgstr "Veritabanının adını girin"
 
 #: install/templates/step4.html.twig:91
 msgid "PowerDNS database name."
-msgstr "PowerDNS数据库名称。"
+msgstr "PowerDNS veritabanı adı."
 
 #: install/templates/step4.html.twig:93
 msgid "Full path to SQLite database file"
-msgstr "SQLite数据库文件的完整路径"
+msgstr "SQLite veritabanı dosyasının tam yolu"
 
 #: install/templates/step4.html.twig:96
 msgid "File must exist with web server read/write access. Use absolute path."
-msgstr "文件必须存在，并且Web服务器具有读/写访问权限。使用绝对路径。"
+msgstr "Dosya, web sunucusu okuma/yazma erişimiyle var olmalıdır. Mutlak yol kullanın."
 
 #: install/templates/step4.html.twig:104
 msgid "DB charset"
-msgstr "数据库字符集"
+msgstr "DB karakter seti"
 
-#: install/templates/step4.html.twig:178 install/templates/step4.html.twig:186
+#: install/templates/step4.html.twig:180 install/templates/step4.html.twig:188
 msgid "Use default"
-msgstr "使用默认值"
+msgstr "Varsayılanı kullan"
 
 #: install/templates/step4.html.twig:111
 msgid "Charset for new tables. Leave empty for database default."
-msgstr "新表的字符集。留空使用数据库默认值。"
+msgstr "Yeni tablolar için karakter seti. Veritabanı varsayılanı için boş bırakın."
 
 #: install/templates/step4.html.twig:116
 msgid "DB collation"
-msgstr "数据库排序规则"
+msgstr "DB karşılaştırması"
 
 #: install/templates/step4.html.twig:123
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
-msgstr ""
-"Collation rules for character comparison. Leave empty for database default."
+msgstr "Karakter karşılaştırması için harmanlama kuralları. Veritabanı varsayılanı için boş bırakın."
 
 #: install/templates/step4.html.twig:131
 msgid "Administrator Account"
-msgstr "管理员账户"
+msgstr "Yönetici Hesabı"
 
 #: install/templates/step4.html.twig:135
 msgid "Administrator password"
-msgstr "管理员密码"
+msgstr "Yönetici şifresi"
 
 #: install/templates/step4.html.twig:140
 msgid "Provide a password"
-msgstr "提供密码"
+msgstr "Bir şifre girin"
 
 #: install/templates/step4.html.twig:145
 msgid ""
 "Password for \"admin\" username with full rights to the Poweradmin interface."
-msgstr ""
-"Password for \"admin\" username with full rights to the Poweradmin interface."
+msgstr "Poweradmin arayüzüne tam erişim hakkına sahip \"admin\" kullanıcı adı için şifre."
 
 #: install/templates/step2.html.twig:3
 msgid "System Requirements"
-msgstr "系统要求"
+msgstr "Sistem Gereksinimleri"
 
 #: install/templates/step2.html.twig:8
 msgid "System Requirements Check"
-msgstr "系统要求检查"
+msgstr "Sistem Gereksinimleri Kontrolü"
 
 #: install/templates/step2.html.twig:12
 msgid "Requirements Check:"
-msgstr "需求检查："
+msgstr "Gereksinim Kontrolü:"
 
 #: install/templates/step2.html.twig:12
 msgid "Verifying that your server meets all requirements to run Poweradmin."
-msgstr "验证您的服务器是否满足运行Poweradmin的所有要求。"
+msgstr "Sunucunuzun Poweradmin'i çalıştırmak için tüm gereksinimleri karşıladığı doğrulanıyor."
 
 #: install/templates/step2.html.twig:20
 msgid "PHP Version"
-msgstr "PHP版本"
+msgstr "PHP Sürümü"
 
 #: install/templates/step2.html.twig:27
 msgid "OK"
@@ -2059,169 +2013,158 @@ msgstr "Requires PHP 8.1.0+"
 
 #: install/templates/step2.html.twig:40
 msgid "Database Extensions"
-msgstr "数据库扩展"
+msgstr "Veritabanı Uzantıları"
 
 #: install/templates/step2.html.twig:40
 msgid "at least one required"
-msgstr "至少需要一个"
+msgstr "en az bir tane gerekli"
 
 #: install/templates/step2.html.twig:61
 msgid "Required PHP Extensions"
-msgstr "必需的PHP扩展"
+msgstr "Gerekli PHP Uzantıları"
 
 #: install/templates/step2.html.twig:80
 msgid "Optional Extensions"
-msgstr "可选扩展"
+msgstr "İsteğe Bağlı Uzantılar"
 
 #: install/templates/step2.html.twig:104
 msgid "All required components are available."
-msgstr "所有必需组件都可用。"
+msgstr "Tüm gerekli bileşenler mevcut."
 
 #: install/templates/step2.html.twig:105
 msgid "You can continue with the installation."
-msgstr "您可以继续安装。"
+msgstr "Kuruluma devam edebilirsiniz."
 
-#: install/templates/step2.html.twig:111
+#: install/templates/step2.html.twig:113
 msgid "Some required components are missing."
-msgstr "缺少一些必需组件。"
+msgstr "Bazı gerekli bileşenler eksik."
 
-#: install/templates/step2.html.twig:112
+#: install/templates/step2.html.twig:114
 msgid "Please install the missing components before continuing."
-msgstr "请在继续之前安装缺少的组件。"
+msgstr "Devam etmeden önce lütfen eksik bileşenleri yükleyin."
 
-#: install/templates/step2.html.twig:116
+#: install/templates/step2.html.twig:118
 msgid "Check Again"
-msgstr "再次检查"
+msgstr "Tekrar Kontrol Et"
 
 #: install/templates/step5.html.twig:3
 msgid "Setup account and nameservers"
-msgstr "设置账户和名称服务器"
+msgstr "Hesap ve ad sunucularını ayarla"
 
 #: install/templates/step5.html.twig:8
 msgid "Setup account and name servers"
-msgstr "设置账户和名称服务器"
+msgstr "Hesap ve ad sunucularını ayarla"
 
 #: install/templates/step5.html.twig:12
 msgid "Configuration:"
-msgstr "配置："
+msgstr "Yapılandırma:"
 
 #: install/templates/step5.html.twig:12
 msgid "Now we will gather all details for the configuration itself."
-msgstr "现在我们将收集配置本身的所有详细信息。"
+msgstr "Şimdi yapılandırmanın kendisi için tüm ayrıntıları toplayacağız."
 
 #: install/templates/step5.html.twig:21
 msgid "Database User"
-msgstr "数据库用户"
+msgstr "Veritabanı Kullanıcısı"
 
 #: install/templates/step5.html.twig:31
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
-msgstr ""
-"Poweradmin database username with restricted access. Not for web UI login."
+msgstr "Sınırlı erişime sahip Poweradmin veritabanı kullanıcı adı. Web kullanıcı arayüzü girişi için değil."
 
 #: install/templates/step5.html.twig:41
 msgid "Provide the user password"
-msgstr "提供用户密码"
+msgstr "Kullanıcı şifresini girin"
 
 #: install/templates/step5.html.twig:45
 msgid "The password for this username."
-msgstr "此用户名的密码。"
+msgstr "Bu kullanıcı adı için şifre."
 
 #: install/templates/step5.html.twig:54
 msgid "DNS Settings"
-msgstr "DNS设置"
+msgstr "DNS Ayarları"
 
 #: install/templates/step5.html.twig:58
 msgid "Hostmaster"
-msgstr "主机管理员"
+msgstr "Hostmaster"
 
 #: install/templates/step5.html.twig:62
 msgid "Provide the DNS hostmaster"
-msgstr "提供DNS主机管理员"
+msgstr "DNS hostmaster'ı girin"
 
 #: install/templates/step5.html.twig:65
 msgid ""
 "When creating SOA records and no hostmaster is provided, this value here "
 "will be used."
-msgstr ""
-"When creating SOA records and no hostmaster is provided, this value here "
-"will be used."
+msgstr "SOA kayıtları oluşturulurken ve hostmaster sağlanmadığında, buradaki değer kullanılacaktır."
 
 #: install/templates/step5.html.twig:70
 msgid "Primary nameserver"
-msgstr "主要名称服务器"
+msgstr "Birincil ad sunucusu"
 
 #: install/templates/step5.html.twig:74
 msgid "Provide the primary nameserver"
-msgstr "提供主要名称服务器"
+msgstr "Birincil ad sunucusunu girin"
 
 #: install/templates/step5.html.twig:77
 msgid ""
 "When creating new zones using the template, this value will be used as "
 "primary nameserver."
-msgstr ""
-"When creating new zones using the template, this value will be used as "
-"primary nameserver."
+msgstr "Şablonu kullanarak yeni bölgeler oluşturulduğunda, bu değer birincil ad sunucusu olarak kullanılacaktır."
 
 #: install/templates/step5.html.twig:82
 msgid "Secondary nameserver"
-msgstr "辅助名称服务器"
+msgstr "İkincil ad sunucusu"
 
 #: install/templates/step5.html.twig:86
 msgid "Provide the secondary nameserver"
-msgstr "提供辅助名称服务器"
+msgstr "İkincil ad sunucusunu girin"
 
 #: install/templates/step5.html.twig:89
 msgid ""
 "When creating new zones using the template, this value will be used as "
 "secondary nameserver."
-msgstr ""
-"When creating new zones using the template, this value will be used as "
-"secondary nameserver."
+msgstr "Şablonu kullanarak yeni bölgeler oluşturulduğunda, bu değer ikincil ad sunucusu olarak kullanılacaktır."
 
 #: install/templates/step5.html.twig:95
 msgid "Tertiary Nameserver"
-msgstr "第三名称服务器"
+msgstr "Üçüncül Ad Sunucusu"
 
 #: install/templates/step5.html.twig:95 install/templates/step5.html.twig:108
 msgid "optional"
-msgstr "可选"
+msgstr "isteğe bağlı"
 
 #: install/templates/step5.html.twig:102
 msgid ""
 "When creating new zones using the template, this optional value will be used "
 "as tertiary nameserver."
-msgstr ""
-"When creating new zones using the template, this optional value will be used "
-"as tertiary nameserver."
+msgstr "Şablonu kullanarak yeni bölgeler oluşturulduğunda, bu isteğe bağlı değer üçüncü ad sunucusu olarak kullanılacaktır."
 
 #: install/templates/step5.html.twig:108
 msgid "Quaternary Nameserver"
-msgstr "第四名称服务器"
+msgstr "Dördüncül Ad Sunucusu"
 
 #: install/templates/step5.html.twig:115
 msgid ""
 "When creating new zones using the template, this optional value will be used "
 "as quaternary nameserver."
-msgstr ""
-"When creating new zones using the template, this optional value will be used "
-"as quaternary nameserver."
+msgstr "Şablonu kullanarak yeni bölgeler oluşturulduğunda, bu isteğe bağlı değer dördüncü ad sunucusu olarak kullanılacaktır."
 
 #: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
 msgid "Installation complete"
-msgstr "安装完成"
+msgstr "Kurulum tamamlandı"
 
 #: install/templates/step8.html.twig:12
 msgid "Installation Complete!"
-msgstr "安装完成！"
+msgstr "Kurulum Tamamlandı!"
 
 #: install/templates/step8.html.twig:12
 msgid "Congratulations! Your Poweradmin installation is now configured."
-msgstr "恭喜！您的Poweradmin安装现已配置完成。"
+msgstr "Tebrikler! Poweradmin kurulumunuz artık yapılandırıldı."
 
 #: install/templates/step8.html.twig:16
 msgid "Important Security Notice:"
-msgstr "重要安全提示："
+msgstr "Önemli Güvenlik Bildirimi:"
 
 #: install/templates/step8.html.twig:16
 msgid ""
@@ -2235,13 +2178,11 @@ msgstr ""
 msgid ""
 "Poweradmin will not function if the install directory exists, as a security "
 "measure."
-msgstr ""
-"Poweradmin will not function if the install directory exists, as a security "
-"measure."
+msgstr "Güvenlik önlemi olarak, kurulum dizini varsa Poweradmin çalışmayacaktır."
 
 #: install/templates/step8.html.twig:22
 msgid "Next Steps"
-msgstr "后续步骤"
+msgstr "Sonraki Adımlar"
 
 #: install/templates/step8.html.twig:26
 msgid "Remove the \"install/\" directory from your server"
@@ -2257,71 +2198,69 @@ msgstr ""
 
 #: install/templates/step8.html.twig:28
 msgid "Begin configuring your DNS zones and records"
-msgstr "开始配置您的DNS区域和记录"
+msgstr "DNS bölgelerinizi ve kayıtlarınızı yapılandırmaya başlayın"
 
 #: install/templates/step3.html.twig:3 install/templates/step3.html.twig:8
 msgid "Getting Ready"
-msgstr "准备就绪"
+msgstr "Hazırlanıyor"
 
 #: install/templates/step3.html.twig:12
 msgid "Preparation:"
-msgstr "准备："
+msgstr "Hazırlık:"
 
 #: install/templates/step3.html.twig:12
 msgid "Let's get your PowerDNS database ready for Poweradmin."
-msgstr "让我们为Poweradmin准备您的PowerDNS数据库。"
+msgstr "PowerDNS veritabanınızı Poweradmin için hazırlayalım."
 
 #: install/templates/step3.html.twig:17
 msgid "About PowerDNS"
-msgstr "关于PowerDNS"
+msgstr "PowerDNS Hakkında"
 
 #: install/templates/step3.html.twig:20
 msgid ""
 "PowerDNS is a DNS server that stores its data in an SQL database. Poweradmin "
 "will help you manage this database via a web interface."
-msgstr ""
-"PowerDNS是一个将数据存储在SQL数据库中的DNS服务器。Poweradmin将帮助您通过Web界"
-"面管理这个数据库。"
+msgstr "PowerDNS, verilerini bir SQL veritabanında saklayan bir DNS sunucusudur. Poweradmin, bu veritabanını bir web arayüzü üzerinden yönetmenize yardımcı olacaktır."
 
 #: install/templates/step3.html.twig:21
 msgid "Before proceeding, you should have:"
-msgstr "在继续之前，您应该具备："
+msgstr "Devam etmeden önce, şunlara sahip olmalısınız:"
 
 #: install/templates/step3.html.twig:23
 msgid "An operational PowerDNS installation"
-msgstr "一个可运行的PowerDNS安装"
+msgstr "Çalışan bir PowerDNS kurulumu"
 
 #: install/templates/step3.html.twig:24
 msgid "Database connectivity details (hostname, username, password)"
-msgstr "数据库连接详情（主机名，用户名，密码）"
+msgstr "Veritabanı bağlantı detayları (ana bilgisayar adı, kullanıcı adı, şifre)"
 
 #: install/templates/step3.html.twig:25
 msgid "Administrative access to your database"
-msgstr "对数据库的管理权限"
+msgstr "Veritabanınıza yönetici erişimi"
 
 #: install/templates/step3.html.twig:32
 msgid "Database Preparations"
-msgstr "数据库准备"
+msgstr "Veritabanı Hazırlıkları"
 
 #: install/templates/step3.html.twig:35
 msgid "In the next steps, Poweradmin will:"
-msgstr "在接下来的步骤中，Poweradmin将："
+msgstr "Sonraki adımlarda, Poweradmin:"
 
 #: install/templates/step3.html.twig:37
 msgid "Connect to your PowerDNS database"
-msgstr "连接到您的PowerDNS数据库"
+msgstr "PowerDNS veritabanınıza bağlanacak"
 
 #: install/templates/step3.html.twig:38
 msgid "Create tables needed for Poweradmin functionality"
-msgstr "创建Poweradmin功能所需的表"
+msgstr "Poweradmin işlevselliği için gereken tabloları oluşturacak"
 
 #: install/templates/step3.html.twig:39
 msgid "Set up an administrator account for web access"
-msgstr "设置用于Web访问的管理员帐户"
+msgstr "Web erişimi için bir yönetici hesabı oluşturacak"
 
 #: install/templates/step3.html.twig:40
 msgid "Create a config file to store your settings"
-msgstr "创建一个配置文件来存储您的设置"
+msgstr "Ayarlarınızı saklamak için bir yapılandırma dosyası oluşturacak"
 
 #: install/helpers/InstallStepHandler.php:169
 msgid "Updating database..."
@@ -2347,9 +2286,7 @@ msgstr "Make sure the SQLite database file exists"
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
-msgstr ""
-"Check that the web server has read and write permissions for the database "
-"file"
+msgstr "Web sunucusunun veritabanı dosyası için okuma ve yazma izinlerine sahip olduğunu kontrol edin"
 
 #: install/helpers/InstallStepHandler.php:187
 msgid "Verify the full path to the database file is correct and accessible"
@@ -2360,23 +2297,19 @@ msgstr "Verify the full path to the database file is correct and accessible"
 msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
-msgstr ""
-"The SQLite database file %s does not exist. Please create the database file "
-"before proceeding."
+msgstr "SQLite veritabanı dosyası %s mevcut değil. Devam etmeden önce lütfen veritabanı dosyasını oluşturun."
 
 #: install/helpers/DatabaseHelper.php:96
 #, php-format
 msgid ""
 "The SQLite database file %s is not readable. Please check file permissions."
-msgstr ""
-"The SQLite database file %s is not readable. Please check file permissions."
+msgstr "SQLite veritabanı dosyası %s okunamıyor. Lütfen dosya izinlerini kontrol edin."
 
 #: install/helpers/DatabaseHelper.php:104
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
-msgstr ""
-"The SQLite database file %s is not writable. Please check file permissions."
+msgstr "SQLite veritabanı dosyası %s yazılabilir değil. Lütfen dosya izinlerini kontrol edin."
 
 #: install/helpers/DatabaseHelper.php:116
 #, php-format
@@ -2391,8 +2324,5 @@ msgstr "or"
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
-msgstr ""
-"No configuration file found. Please create the config/settings.php file "
-"before proceeding."
-
+msgstr "Yapılandırma dosyası bulunamadı. Devam etmeden önce lütfen config/settings.php dosyasını oluşturun."
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-04-11 10:36+0300\n"
+"POT-Creation-Date: 2025-04-11 18:30+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1813,7 +1813,7 @@ msgid ""
 "limited rights."
 msgstr ""
 
-#: install/templates/step5.html.twig:133 install/templates/step3.html.twig:55
+#: install/templates/step5.html.twig:134 install/templates/step3.html.twig:56
 msgid "Continue to step"
 msgstr ""
 
@@ -1944,7 +1944,7 @@ msgstr ""
 msgid "DB charset"
 msgstr ""
 
-#: install/templates/step4.html.twig:178 install/templates/step4.html.twig:186
+#: install/templates/step4.html.twig:180 install/templates/step4.html.twig:188
 msgid "Use default"
 msgstr ""
 
@@ -2030,15 +2030,15 @@ msgstr ""
 msgid "You can continue with the installation."
 msgstr ""
 
-#: install/templates/step2.html.twig:111
+#: install/templates/step2.html.twig:113
 msgid "Some required components are missing."
 msgstr ""
 
-#: install/templates/step2.html.twig:112
+#: install/templates/step2.html.twig:114
 msgid "Please install the missing components before continuing."
 msgstr ""
 
-#: install/templates/step2.html.twig:116
+#: install/templates/step2.html.twig:118
 msgid "Check Again"
 msgstr ""
 
