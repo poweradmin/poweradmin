@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-04-11 07:57+0300\n"
+"POT-Creation-Date: 2025-04-11 08:40+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1817,7 +1817,7 @@ msgstr ""
 msgid "Continue to step"
 msgstr ""
 
-#: install/templates/base.html.twig:28
+#: install/templates/base.html.twig:29
 msgid "Installation step"
 msgstr ""
 
@@ -1845,8 +1845,13 @@ msgstr ""
 msgid "Choose a language for installation"
 msgstr ""
 
-#: install/templates/step1.html.twig:57
-msgid "Go to step"
+#: install/templates/step1.html.twig:12
+msgid ""
+"Please select your preferred language to continue with the installation:"
+msgstr ""
+
+#: install/templates/step1.html.twig:196
+msgid "Begin Installation"
 msgstr ""
 
 #: install/templates/step4.html.twig:3
