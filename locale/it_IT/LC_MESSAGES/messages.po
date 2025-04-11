@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-04-11 18:23+0300\n"
+"POT-Creation-Date: 2025-04-11 19:26+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -44,7 +44,9 @@ msgstr ""
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
-msgstr "Viene utilizzata la chiave di crittografia predefinita per la sessione, impostala nel tuo file di configurazione."
+msgstr ""
+"Viene utilizzata la chiave di crittografia predefinita per la sessione, "
+"impostala nel tuo file di configurazione."
 
 #: lib/Application/Presenter/PaginationPresenter.php:52
 #: templates/search.html:135 templates/search.html:252
@@ -104,7 +106,9 @@ msgstr "The record has been deleted successfully."
 msgid ""
 "The record was deleted but the comment was preserved because similar records "
 "exist."
-msgstr "Il record è stato eliminato ma il commento è stato conservato perché esistono record simili."
+msgstr ""
+"Il record è stato eliminato ma il commento è stato conservato perché "
+"esistono record simili."
 
 #: lib/Domain/Model/ZoneTemplate.php:398 lib/Domain/Service/DnsRecord.php:393
 msgid "You do not have the permission to edit this record."
@@ -271,13 +275,17 @@ msgstr "You do not have the permission to access the migrations."
 msgid ""
 "Old migrations table detected. Please remove the `migrations` table before "
 "proceeding."
-msgstr "Rilevata vecchia tabella delle migrazioni. Rimuovi la tabella `migrations` prima di procedere."
+msgstr ""
+"Rilevata vecchia tabella delle migrazioni. Rimuovi la tabella `migrations` "
+"prima di procedere."
 
 #: lib/Application/Controller/MigrationsController.php:49
 msgid ""
 "Database access check failed. Please ensure the current database user has "
 "the necessary permissions to create and alter tables."
-msgstr "Controllo di accesso al database fallito. Assicurati che l'utente attuale del database abbia i permessi necessari per creare e modificare le tabelle."
+msgstr ""
+"Controllo di accesso al database fallito. Assicurati che l'utente attuale "
+"del database abbia i permessi necessari per creare e modificare le tabelle."
 
 #: lib/Domain/Service/DnsRecord.php:795
 msgid "You do not have the permission to add a master zone."
@@ -403,7 +411,9 @@ msgstr "The record has been updated successfully."
 msgid ""
 "LDAP users cannot change their password here. Please contact your "
 "administrator."
-msgstr "Gli utenti LDAP non possono cambiare la password qui. Contatta il tuo amministratore."
+msgstr ""
+"Gli utenti LDAP non possono cambiare la password qui. Contatta il tuo "
+"amministratore."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:101
 msgid "Zone key has been added successfully."
@@ -511,7 +521,9 @@ msgstr "An empty password is not allowed"
 msgid ""
 "Failed to call function exec. Make sure that exec is not listed in "
 "disable_functions at php.ini"
-msgstr "Impossibile chiamare la funzione exec. Assicurati che exec non sia elencata in disable_functions nel file php.ini"
+msgstr ""
+"Impossibile chiamare la funzione exec. Assicurati che exec non sia elencata "
+"in disable_functions nel file php.ini"
 
 #: lib/Infrastructure/Service/PdnsUtilProvider.php:56
 msgid "Failed to call pdnssec utility."
@@ -620,7 +632,8 @@ msgstr "Add quotes around TXT record content."
 #: lib/Domain/Service/Dns.php:607
 msgid ""
 "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
-msgstr "Questo non è un CNAME valido. Hai assegnato un record MX o NS al record?"
+msgstr ""
+"Questo non è un CNAME valido. Hai assegnato un record MX o NS al record?"
 
 #: lib/Domain/Service/Dns.php:636
 msgid ""
@@ -640,7 +653,9 @@ msgstr "Empty CNAME records are not allowed."
 msgid ""
 "You can not point a NS or MX record to a CNAME record. Remove or rename the "
 "CNAME record first, or take another name."
-msgstr "Non puoi puntare un record NS o MX a un record CNAME. Rimuovi o rinomina prima il record CNAME, o usa un altro nome."
+msgstr ""
+"Non puoi puntare un record NS o MX a un record CNAME. Rimuovi o rinomina "
+"prima il record CNAME, o usa un altro nome."
 
 #: lib/Domain/Service/Dns.php:735
 msgid "Invalid value for content field of HINFO record."
@@ -650,7 +665,9 @@ msgstr "Invalid value for content field of HINFO record."
 msgid ""
 "Invalid value for name field of SOA record. It should be the name of the "
 "zone."
-msgstr "Valore non valido per il campo nome del record SOA. Dovrebbe essere il nome della zona."
+msgstr ""
+"Valore non valido per il campo nome del record SOA. Dovrebbe essere il nome "
+"della zona."
 
 #: lib/Domain/Service/Dns.php:863
 msgid "Invalid service value in name field of SRV record."
@@ -726,7 +743,9 @@ msgstr "There is already a supermaster with this IP address and hostname."
 msgid ""
 "You are trying to delete the SOA record. You are not allowed to remove it, "
 "unless you remove the entire zone."
-msgstr "Stai cercando di eliminare il record SOA. Non ti è permesso rimuoverlo, a meno che tu non rimuova l'intera zona."
+msgstr ""
+"Stai cercando di eliminare il record SOA. Non ti è permesso rimuoverlo, a "
+"meno che tu non rimuova l'intera zona."
 
 #: lib/Domain/Service/DnsRecord.php:790 lib/Domain/Service/DnsRecord.php:1404
 #, php-format
@@ -1017,7 +1036,9 @@ msgstr "Delete user"
 msgid ""
 "You are about to delete a user. This user is owner for a number of zones. "
 "Please decide what to do with these zones."
-msgstr "Stai per eliminare un utente. Questo utente è proprietario di diverse zone. Decidi cosa fare con queste zone."
+msgstr ""
+"Stai per eliminare un utente. Questo utente è proprietario di diverse zone. "
+"Decidi cosa fare con queste zone."
 
 #: templates/delete_user.html:22
 msgid "Zone"
@@ -1313,7 +1334,9 @@ msgstr "Examples:"
 msgid ""
 "To add a subdomain foo in a zone template you would put foo.[ZONE] into the "
 "name field."
-msgstr "Per aggiungere un sottodominio foo in un template di zona, dovresti inserire foo.[ZONE] nel campo del nome."
+msgstr ""
+"Per aggiungere un sottodominio foo in un template di zona, dovresti inserire "
+"foo.[ZONE] nel campo del nome."
 
 #: templates/add_zone_templ_record.html:78 templates/edit_zone_templ.html:94
 msgid "To add a wildcard record put *.[ZONE] in the name field."
@@ -1327,7 +1350,9 @@ msgstr "Use just [ZONE] to have the domain itself return a value."
 msgid ""
 "For the SOA record, place [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 "
 "86400 in the content field."
-msgstr "Per il record SOA, inserisci [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400 nel campo del contenuto."
+msgstr ""
+"Per il record SOA, inserisci [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 "
+"86400 nel campo del contenuto."
 
 #: templates/delete_perm_templ.html:10
 msgid "Delete permission template"
@@ -1435,7 +1460,9 @@ msgstr "Delete record in zone"
 
 #: templates/delete_record.html:47
 msgid "You are trying to delete a record that is needed for this zone to work."
-msgstr "Stai cercando di eliminare un record necessario per il funzionamento di questa zona."
+msgstr ""
+"Stai cercando di eliminare un record necessario per il funzionamento di "
+"questa zona."
 
 #: templates/add_user.html:60 install/templates/step4.html.twig:54
 msgid "Provide user password"
@@ -1559,14 +1586,22 @@ msgid ""
 "supermaster. Deleting the zone now, will result in temporary removal only. "
 "Whenever the supermaster sends a notification for this zone, it will be "
 "added again!"
-msgstr "Stai per eliminare una zona slave il cui nameserver master è un supermaster. L'eliminazione della zona ora comporterà solo una rimozione temporanea. Ogni volta che il supermaster invia una notifica per questa zona, sarà aggiunta di nuovo!"
+msgstr ""
+"Stai per eliminare una zona slave il cui nameserver master è un supermaster. "
+"L'eliminazione della zona ora comporterà solo una rimozione temporanea. Ogni "
+"volta che il supermaster invia una notifica per questa zona, sarà aggiunta "
+"di nuovo!"
 
 #: templates/search.html:9
 msgid ""
 "Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) "
 "in pattern matches any single character, a percent sign (%) matches any "
 "string of zero or more characters."
-msgstr "Inserisci un nome host o un indirizzo IP. Sintassi SQL LIKE supportata: un underscore (_) nel pattern corrisponde a qualsiasi carattere singolo, un segno di percentuale (%) corrisponde a qualsiasi stringa di zero o più caratteri."
+msgstr ""
+"Inserisci un nome host o un indirizzo IP. Sintassi SQL LIKE supportata: un "
+"underscore (_) nel pattern corrisponde a qualsiasi carattere singolo, un "
+"segno di percentuale (%) corrisponde a qualsiasi stringa di zero o più "
+"caratteri."
 
 #: templates/search.html:27
 msgid "Provide a keyword for your search"
@@ -1793,7 +1828,11 @@ msgid ""
 "You now want to give limited rights to Poweradmin so it can update the data "
 "in the tables. To do this, you should create a new user and give it rights "
 "to select, delete, insert, and update records in the PowerDNS database."
-msgstr "Ora vuoi dare diritti limitati a Poweradmin in modo che possa aggiornare i dati nelle tabelle. Per fare questo, dovresti creare un nuovo utente e dargli i diritti per selezionare, eliminare, inserire e aggiornare i record nel database PowerDNS."
+msgstr ""
+"Ora vuoi dare diritti limitati a Poweradmin in modo che possa aggiornare i "
+"dati nelle tabelle. Per fare questo, dovresti creare un nuovo utente e "
+"dargli i diritti per selezionare, eliminare, inserire e aggiornare i record "
+"nel database PowerDNS."
 
 #: install/templates/step6.html.twig:18
 msgid "Database Commands"
@@ -1806,7 +1845,9 @@ msgstr "Esegui i seguenti comandi in base al tuo database:"
 #: install/templates/step6.html.twig:26
 msgid ""
 "After you have added the new user, proceed with this installation procedure."
-msgstr "Dopo aver aggiunto il nuovo utente, procedi con questa procedura di installazione."
+msgstr ""
+"Dopo aver aggiunto il nuovo utente, procedi con questa procedura di "
+"installazione."
 
 #: install/templates/step3.html.twig:44
 msgid "Note:"
@@ -1816,7 +1857,9 @@ msgstr "Nota:"
 msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
-msgstr "Poiché stai utilizzando SQLite, non è necessario creare un nuovo utente con diritti limitati."
+msgstr ""
+"Poiché stai utilizzando SQLite, non è necessario creare un nuovo utente con "
+"diritti limitati."
 
 #: install/templates/step5.html.twig:134 install/templates/step3.html.twig:56
 msgid "Continue to step"
@@ -1855,7 +1898,7 @@ msgid ""
 "Please select your preferred language to continue with the installation:"
 msgstr "Seleziona la tua lingua preferita per continuare con l'installazione:"
 
-#: install/templates/step1.html.twig:196
+#: install/templates/step1.html.twig:209
 msgid "Begin Installation"
 msgstr "Begin Installation"
 
@@ -1875,7 +1918,9 @@ msgstr "Preparazione Database:"
 msgid ""
 "The installer needs to modify the PowerDNS database with tables for "
 "Poweradmin. Use an account with sufficient rights (like root) to proceed."
-msgstr "L'installer deve modificare il database PowerDNS con tabelle per Poweradmin. Utilizza un account con diritti sufficienti (come root) per procedere."
+msgstr ""
+"L'installer deve modificare il database PowerDNS con tabelle per Poweradmin. "
+"Utilizza un account con diritti sufficienti (come root) per procedere."
 
 #: install/templates/step4.html.twig:20
 msgid "Database Settings"
@@ -1943,7 +1988,9 @@ msgstr "Percorso completo al file database SQLite"
 
 #: install/templates/step4.html.twig:96
 msgid "File must exist with web server read/write access. Use absolute path."
-msgstr "Il file deve esistere con accesso in lettura/scrittura per il server web. Usa il percorso assoluto."
+msgstr ""
+"Il file deve esistere con accesso in lettura/scrittura per il server web. "
+"Usa il percorso assoluto."
 
 #: install/templates/step4.html.twig:104
 msgid "DB charset"
@@ -1955,7 +2002,9 @@ msgstr "Usa predefinito"
 
 #: install/templates/step4.html.twig:111
 msgid "Charset for new tables. Leave empty for database default."
-msgstr "Set di caratteri per le nuove tabelle. Lascia vuoto per il valore predefinito del database."
+msgstr ""
+"Set di caratteri per le nuove tabelle. Lascia vuoto per il valore "
+"predefinito del database."
 
 #: install/templates/step4.html.twig:116
 msgid "DB collation"
@@ -1964,7 +2013,9 @@ msgstr "Confronto DB"
 #: install/templates/step4.html.twig:123
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
-msgstr "Regole di confronto per il confronto dei caratteri. Lascia vuoto per il valore predefinito del database."
+msgstr ""
+"Regole di confronto per il confronto dei caratteri. Lascia vuoto per il "
+"valore predefinito del database."
 
 #: install/templates/step4.html.twig:131
 msgid "Administrator Account"
@@ -1981,7 +2032,9 @@ msgstr "Fornisci una password"
 #: install/templates/step4.html.twig:145
 msgid ""
 "Password for \"admin\" username with full rights to the Poweradmin interface."
-msgstr "Password per l'utente \"admin\" con diritti completi all'interfaccia di Poweradmin."
+msgstr ""
+"Password per l'utente \"admin\" con diritti completi all'interfaccia di "
+"Poweradmin."
 
 #: install/templates/step2.html.twig:3
 msgid "System Requirements"
@@ -1997,7 +2050,8 @@ msgstr "Verifica dei Requisiti:"
 
 #: install/templates/step2.html.twig:12
 msgid "Verifying that your server meets all requirements to run Poweradmin."
-msgstr "Verifica che il server soddisfi tutti i requisiti per eseguire Poweradmin."
+msgstr ""
+"Verifica che il server soddisfi tutti i requisiti per eseguire Poweradmin."
 
 #: install/templates/step2.html.twig:20
 msgid "PHP Version"
@@ -2070,7 +2124,9 @@ msgstr "Utente Database"
 #: install/templates/step5.html.twig:31
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
-msgstr "Nome utente del database Poweradmin con accesso limitato. Non per l'accesso all'interfaccia web."
+msgstr ""
+"Nome utente del database Poweradmin con accesso limitato. Non per l'accesso "
+"all'interfaccia web."
 
 #: install/templates/step5.html.twig:41
 msgid "Provide the user password"
@@ -2096,7 +2152,9 @@ msgstr "Fornisci l'hostmaster DNS"
 msgid ""
 "When creating SOA records and no hostmaster is provided, this value here "
 "will be used."
-msgstr "Quando si creano record SOA e non viene fornito un hostmaster, verrà utilizzato questo valore."
+msgstr ""
+"Quando si creano record SOA e non viene fornito un hostmaster, verrà "
+"utilizzato questo valore."
 
 #: install/templates/step5.html.twig:70
 msgid "Primary nameserver"
@@ -2110,7 +2168,9 @@ msgstr "Fornisci il server dei nomi primario"
 msgid ""
 "When creating new zones using the template, this value will be used as "
 "primary nameserver."
-msgstr "Quando si creano nuove zone utilizzando il template, questo valore verrà utilizzato come nameserver primario."
+msgstr ""
+"Quando si creano nuove zone utilizzando il template, questo valore verrà "
+"utilizzato come nameserver primario."
 
 #: install/templates/step5.html.twig:82
 msgid "Secondary nameserver"
@@ -2124,7 +2184,9 @@ msgstr "Fornisci il server dei nomi secondario"
 msgid ""
 "When creating new zones using the template, this value will be used as "
 "secondary nameserver."
-msgstr "Quando si creano nuove zone utilizzando il template, questo valore verrà utilizzato come nameserver secondario."
+msgstr ""
+"Quando si creano nuove zone utilizzando il template, questo valore verrà "
+"utilizzato come nameserver secondario."
 
 #: install/templates/step5.html.twig:95
 msgid "Tertiary Nameserver"
@@ -2138,7 +2200,9 @@ msgstr "opzionale"
 msgid ""
 "When creating new zones using the template, this optional value will be used "
 "as tertiary nameserver."
-msgstr "Quando si creano nuove zone utilizzando il template, questo valore opzionale verrà utilizzato come nameserver terziario."
+msgstr ""
+"Quando si creano nuove zone utilizzando il template, questo valore opzionale "
+"verrà utilizzato come nameserver terziario."
 
 #: install/templates/step5.html.twig:108
 msgid "Quaternary Nameserver"
@@ -2148,7 +2212,9 @@ msgstr "Server dei nomi quaternario"
 msgid ""
 "When creating new zones using the template, this optional value will be used "
 "as quaternary nameserver."
-msgstr "Quando si creano nuove zone utilizzando il template, questo valore opzionale verrà utilizzato come nameserver quaternario."
+msgstr ""
+"Quando si creano nuove zone utilizzando il template, questo valore opzionale "
+"verrà utilizzato come nameserver quaternario."
 
 #: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
 msgid "Installation complete"
@@ -2178,7 +2244,9 @@ msgstr ""
 msgid ""
 "Poweradmin will not function if the install directory exists, as a security "
 "measure."
-msgstr "Poweradmin non funzionerà se la directory di installazione esiste, come misura di sicurezza."
+msgstr ""
+"Poweradmin non funzionerà se la directory di installazione esiste, come "
+"misura di sicurezza."
 
 #: install/templates/step8.html.twig:22
 msgid "Next Steps"
@@ -2220,7 +2288,9 @@ msgstr "Informazioni su PowerDNS"
 msgid ""
 "PowerDNS is a DNS server that stores its data in an SQL database. Poweradmin "
 "will help you manage this database via a web interface."
-msgstr "PowerDNS è un server DNS che memorizza i suoi dati in un database SQL. Poweradmin ti aiuterà a gestire questo database tramite un'interfaccia web."
+msgstr ""
+"PowerDNS è un server DNS che memorizza i suoi dati in un database SQL. "
+"Poweradmin ti aiuterà a gestire questo database tramite un'interfaccia web."
 
 #: install/templates/step3.html.twig:21
 msgid "Before proceeding, you should have:"
@@ -2286,7 +2356,9 @@ msgstr "Make sure the SQLite database file exists"
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
-msgstr "Verifica che il server web abbia permessi di lettura e scrittura per il file di database"
+msgstr ""
+"Verifica che il server web abbia permessi di lettura e scrittura per il file "
+"di database"
 
 #: install/helpers/InstallStepHandler.php:187
 msgid "Verify the full path to the database file is correct and accessible"
@@ -2297,19 +2369,24 @@ msgstr "Verify the full path to the database file is correct and accessible"
 msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
-msgstr "Il file di database SQLite %s non esiste. Crea il file di database prima di procedere."
+msgstr ""
+"Il file di database SQLite %s non esiste. Crea il file di database prima di "
+"procedere."
 
 #: install/helpers/DatabaseHelper.php:96
 #, php-format
 msgid ""
 "The SQLite database file %s is not readable. Please check file permissions."
-msgstr "Il file di database SQLite %s non è leggibile. Controlla i permessi del file."
+msgstr ""
+"Il file di database SQLite %s non è leggibile. Controlla i permessi del file."
 
 #: install/helpers/DatabaseHelper.php:104
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
-msgstr "Il file di database SQLite %s non è scrivibile. Controlla i permessi del file."
+msgstr ""
+"Il file di database SQLite %s non è scrivibile. Controlla i permessi del "
+"file."
 
 #: install/helpers/DatabaseHelper.php:116
 #, php-format
@@ -2324,5 +2401,8 @@ msgstr "or"
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
-msgstr "Nessun file di configurazione trovato. Crea il file config/settings.php prima di procedere."
+msgstr ""
+"Nessun file di configurazione trovato. Crea il file config/settings.php "
+"prima di procedere."
+
 

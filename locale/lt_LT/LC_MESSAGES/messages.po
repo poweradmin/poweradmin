@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-04-11 18:23+0300\n"
+"POT-Creation-Date: 2025-04-11 19:26+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -44,7 +44,9 @@ msgstr ""
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
-msgstr "Naudojamas numatytasis sesijos šifravimo raktas, nustatykite jį savo konfigūracijos faile."
+msgstr ""
+"Naudojamas numatytasis sesijos šifravimo raktas, nustatykite jį savo "
+"konfigūracijos faile."
 
 #: lib/Application/Presenter/PaginationPresenter.php:52
 #: templates/search.html:135 templates/search.html:252
@@ -104,7 +106,9 @@ msgstr "The record has been deleted successfully."
 msgid ""
 "The record was deleted but the comment was preserved because similar records "
 "exist."
-msgstr "Įrašas buvo ištrintas, bet komentaras išsaugotas, nes egzistuoja panašūs įrašai."
+msgstr ""
+"Įrašas buvo ištrintas, bet komentaras išsaugotas, nes egzistuoja panašūs "
+"įrašai."
 
 #: lib/Domain/Model/ZoneTemplate.php:398 lib/Domain/Service/DnsRecord.php:393
 msgid "You do not have the permission to edit this record."
@@ -271,13 +275,17 @@ msgstr "You do not have the permission to access the migrations."
 msgid ""
 "Old migrations table detected. Please remove the `migrations` table before "
 "proceeding."
-msgstr "Aptikta sena migracijos lentelė. Prieš tęsdami pašalinkite `migrations` lentelę."
+msgstr ""
+"Aptikta sena migracijos lentelė. Prieš tęsdami pašalinkite `migrations` "
+"lentelę."
 
 #: lib/Application/Controller/MigrationsController.php:49
 msgid ""
 "Database access check failed. Please ensure the current database user has "
 "the necessary permissions to create and alter tables."
-msgstr "Duomenų bazės prieigos patikrinimas nepavyko. Įsitikinkite, kad dabartinis duomenų bazės vartotojas turi reikalingus leidimus kurti ir keisti lenteles."
+msgstr ""
+"Duomenų bazės prieigos patikrinimas nepavyko. Įsitikinkite, kad dabartinis "
+"duomenų bazės vartotojas turi reikalingus leidimus kurti ir keisti lenteles."
 
 #: lib/Domain/Service/DnsRecord.php:795
 msgid "You do not have the permission to add a master zone."
@@ -403,7 +411,9 @@ msgstr "The record has been updated successfully."
 msgid ""
 "LDAP users cannot change their password here. Please contact your "
 "administrator."
-msgstr "LDAP vartotojai negali čia keisti savo slaptažodžio. Susisiekite su savo administratoriumi."
+msgstr ""
+"LDAP vartotojai negali čia keisti savo slaptažodžio. Susisiekite su savo "
+"administratoriumi."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:101
 msgid "Zone key has been added successfully."
@@ -511,7 +521,9 @@ msgstr "An empty password is not allowed"
 msgid ""
 "Failed to call function exec. Make sure that exec is not listed in "
 "disable_functions at php.ini"
-msgstr "Nepavyko iškviesti funkcijos exec. Įsitikinkite, kad exec nėra įtrauktas į disable_functions php.ini faile."
+msgstr ""
+"Nepavyko iškviesti funkcijos exec. Įsitikinkite, kad exec nėra įtrauktas į "
+"disable_functions php.ini faile."
 
 #: lib/Infrastructure/Service/PdnsUtilProvider.php:56
 msgid "Failed to call pdnssec utility."
@@ -640,7 +652,9 @@ msgstr "Empty CNAME records are not allowed."
 msgid ""
 "You can not point a NS or MX record to a CNAME record. Remove or rename the "
 "CNAME record first, or take another name."
-msgstr "Negalite nukreipti NS arba MX įrašo į CNAME įrašą. Pirmiausia pašalinkite arba pervardinkite CNAME įrašą, arba naudokite kitą pavadinimą."
+msgstr ""
+"Negalite nukreipti NS arba MX įrašo į CNAME įrašą. Pirmiausia pašalinkite "
+"arba pervardinkite CNAME įrašą, arba naudokite kitą pavadinimą."
 
 #: lib/Domain/Service/Dns.php:735
 msgid "Invalid value for content field of HINFO record."
@@ -650,7 +664,8 @@ msgstr "Invalid value for content field of HINFO record."
 msgid ""
 "Invalid value for name field of SOA record. It should be the name of the "
 "zone."
-msgstr "Netinkama reikšmė SOA įrašo vardo laukui. Tai turėtų būti zonos pavadinimas."
+msgstr ""
+"Netinkama reikšmė SOA įrašo vardo laukui. Tai turėtų būti zonos pavadinimas."
 
 #: lib/Domain/Service/Dns.php:863
 msgid "Invalid service value in name field of SRV record."
@@ -726,7 +741,9 @@ msgstr "There is already a supermaster with this IP address and hostname."
 msgid ""
 "You are trying to delete the SOA record. You are not allowed to remove it, "
 "unless you remove the entire zone."
-msgstr "Bandote ištrinti SOA įrašą. Jums neleidžiama jo pašalinti, nebent pašalintumėte visą zoną."
+msgstr ""
+"Bandote ištrinti SOA įrašą. Jums neleidžiama jo pašalinti, nebent "
+"pašalintumėte visą zoną."
 
 #: lib/Domain/Service/DnsRecord.php:790 lib/Domain/Service/DnsRecord.php:1404
 #, php-format
@@ -1017,7 +1034,9 @@ msgstr "Delete user"
 msgid ""
 "You are about to delete a user. This user is owner for a number of zones. "
 "Please decide what to do with these zones."
-msgstr "Ketinate ištrinti vartotoją. Šis vartotojas yra kelių zonų savininkas. Nuspręskite, ką daryti su šiomis zonomis."
+msgstr ""
+"Ketinate ištrinti vartotoją. Šis vartotojas yra kelių zonų savininkas. "
+"Nuspręskite, ką daryti su šiomis zonomis."
 
 #: templates/delete_user.html:22
 msgid "Zone"
@@ -1313,7 +1332,9 @@ msgstr "Examples:"
 msgid ""
 "To add a subdomain foo in a zone template you would put foo.[ZONE] into the "
 "name field."
-msgstr "Norėdami pridėti subdomeno foo zonos šablone, į vardo lauką įveskite foo.[ZONE]."
+msgstr ""
+"Norėdami pridėti subdomeno foo zonos šablone, į vardo lauką įveskite foo."
+"[ZONE]."
 
 #: templates/add_zone_templ_record.html:78 templates/edit_zone_templ.html:94
 msgid "To add a wildcard record put *.[ZONE] in the name field."
@@ -1327,7 +1348,9 @@ msgstr "Use just [ZONE] to have the domain itself return a value."
 msgid ""
 "For the SOA record, place [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 "
 "86400 in the content field."
-msgstr "SOA įrašui, įdėkite [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400 į turinio lauką."
+msgstr ""
+"SOA įrašui, įdėkite [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400 į "
+"turinio lauką."
 
 #: templates/delete_perm_templ.html:10
 msgid "Delete permission template"
@@ -1559,14 +1582,20 @@ msgid ""
 "supermaster. Deleting the zone now, will result in temporary removal only. "
 "Whenever the supermaster sends a notification for this zone, it will be "
 "added again!"
-msgstr "Ketinate ištrinti antrinę zoną, kurios pagrindinis vardų serveris yra supermaster. Zonos ištrynimas dabar lems tik laikiną pašalinimą. Kai tik supermaster išsiųs pranešimą apie šią zoną, ji bus vėl pridėta!"
+msgstr ""
+"Ketinate ištrinti antrinę zoną, kurios pagrindinis vardų serveris yra "
+"supermaster. Zonos ištrynimas dabar lems tik laikiną pašalinimą. Kai tik "
+"supermaster išsiųs pranešimą apie šią zoną, ji bus vėl pridėta!"
 
 #: templates/search.html:9
 msgid ""
 "Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) "
 "in pattern matches any single character, a percent sign (%) matches any "
 "string of zero or more characters."
-msgstr "Įveskite serverio pavadinimą arba IP adresą. Palaikoma SQL LIKE sintaksė: pabraukimas (_) šablone atitinka bet kurį vieną simbolį, procento ženklas (%) atitinka bet kurią nulinės ar daugiau simbolių eilutę."
+msgstr ""
+"Įveskite serverio pavadinimą arba IP adresą. Palaikoma SQL LIKE sintaksė: "
+"pabraukimas (_) šablone atitinka bet kurį vieną simbolį, procento ženklas "
+"(%) atitinka bet kurią nulinės ar daugiau simbolių eilutę."
 
 #: templates/search.html:27
 msgid "Provide a keyword for your search"
@@ -1793,7 +1822,10 @@ msgid ""
 "You now want to give limited rights to Poweradmin so it can update the data "
 "in the tables. To do this, you should create a new user and give it rights "
 "to select, delete, insert, and update records in the PowerDNS database."
-msgstr "Dabar norite suteikti ribotas teises Poweradmin, kad jis galėtų atnaujinti duomenis lentelėse. Tam turite sukurti naują vartotoją ir suteikti jam teises rinktis, trinti, įterpti ir atnaujinti įrašus PowerDNS duomenų bazėje."
+msgstr ""
+"Dabar norite suteikti ribotas teises Poweradmin, kad jis galėtų atnaujinti "
+"duomenis lentelėse. Tam turite sukurti naują vartotoją ir suteikti jam "
+"teises rinktis, trinti, įterpti ir atnaujinti įrašus PowerDNS duomenų bazėje."
 
 #: install/templates/step6.html.twig:18
 msgid "Database Commands"
@@ -1816,7 +1848,9 @@ msgstr "Pastaba:"
 msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
-msgstr "Kadangi naudojate SQLite, nereikia kurti naujo vartotojo su ribotomis teisėmis."
+msgstr ""
+"Kadangi naudojate SQLite, nereikia kurti naujo vartotojo su ribotomis "
+"teisėmis."
 
 #: install/templates/step5.html.twig:134 install/templates/step3.html.twig:56
 msgid "Continue to step"
@@ -1855,7 +1889,7 @@ msgid ""
 "Please select your preferred language to continue with the installation:"
 msgstr "Pasirinkite norimą kalbą, kad galėtumėte tęsti diegimą:"
 
-#: install/templates/step1.html.twig:196
+#: install/templates/step1.html.twig:209
 msgid "Begin Installation"
 msgstr "Begin Installation"
 
@@ -1875,7 +1909,10 @@ msgstr "Duomenų bazės paruošimas:"
 msgid ""
 "The installer needs to modify the PowerDNS database with tables for "
 "Poweradmin. Use an account with sufficient rights (like root) to proceed."
-msgstr "Diegimo programa turi modifikuoti PowerDNS duomenų bazę su Poweradmin lentelėmis. Naudokite paskyrą su pakankamomis teisėmis (pvz., root) norėdami tęsti."
+msgstr ""
+"Diegimo programa turi modifikuoti PowerDNS duomenų bazę su Poweradmin "
+"lentelėmis. Naudokite paskyrą su pakankamomis teisėmis (pvz., root) norėdami "
+"tęsti."
 
 #: install/templates/step4.html.twig:20
 msgid "Database Settings"
@@ -1943,7 +1980,9 @@ msgstr "Pilnas kelias iki SQLite duomenų bazės failo"
 
 #: install/templates/step4.html.twig:96
 msgid "File must exist with web server read/write access. Use absolute path."
-msgstr "Failas turi egzistuoti su žiniatinklio serverio skaitymo/rašymo teisėmis. Naudokite absoliutų kelią."
+msgstr ""
+"Failas turi egzistuoti su žiniatinklio serverio skaitymo/rašymo teisėmis. "
+"Naudokite absoliutų kelią."
 
 #: install/templates/step4.html.twig:104
 msgid "DB charset"
@@ -1955,7 +1994,9 @@ msgstr "Naudoti numatytąjį"
 
 #: install/templates/step4.html.twig:111
 msgid "Charset for new tables. Leave empty for database default."
-msgstr "Simbolių rinkinys naujoms lentelėms. Palikite tuščią, jei norite naudoti duomenų bazės numatytąjį."
+msgstr ""
+"Simbolių rinkinys naujoms lentelėms. Palikite tuščią, jei norite naudoti "
+"duomenų bazės numatytąjį."
 
 #: install/templates/step4.html.twig:116
 msgid "DB collation"
@@ -1964,7 +2005,9 @@ msgstr "DB rikiavimas"
 #: install/templates/step4.html.twig:123
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
-msgstr "Rikiavimo taisyklės simbolių palyginimui. Palikite tuščią, jei norite naudoti duomenų bazės numatytąjį."
+msgstr ""
+"Rikiavimo taisyklės simbolių palyginimui. Palikite tuščią, jei norite "
+"naudoti duomenų bazės numatytąjį."
 
 #: install/templates/step4.html.twig:131
 msgid "Administrator Account"
@@ -1981,7 +2024,9 @@ msgstr "Nurodykite slaptažodį"
 #: install/templates/step4.html.twig:145
 msgid ""
 "Password for \"admin\" username with full rights to the Poweradmin interface."
-msgstr "Slaptažodis \"admin\" vartotojo vardui su visomis teisėmis Poweradmin sąsajoje."
+msgstr ""
+"Slaptažodis \"admin\" vartotojo vardui su visomis teisėmis Poweradmin "
+"sąsajoje."
 
 #: install/templates/step2.html.twig:3
 msgid "System Requirements"
@@ -1997,7 +2042,8 @@ msgstr "Reikalavimų Patikrinimas:"
 
 #: install/templates/step2.html.twig:12
 msgid "Verifying that your server meets all requirements to run Poweradmin."
-msgstr "Tikrinama, ar jūsų serveris atitinka visus Poweradmin paleidimo reikalavimus."
+msgstr ""
+"Tikrinama, ar jūsų serveris atitinka visus Poweradmin paleidimo reikalavimus."
 
 #: install/templates/step2.html.twig:20
 msgid "PHP Version"
@@ -2070,7 +2116,9 @@ msgstr "Duomenų bazės vartotojas"
 #: install/templates/step5.html.twig:31
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
-msgstr "Poweradmin duomenų bazės vartotojo vardas su apribota prieiga. Ne prisijungimui prie žiniatinklio sąsajos."
+msgstr ""
+"Poweradmin duomenų bazės vartotojo vardas su apribota prieiga. Ne "
+"prisijungimui prie žiniatinklio sąsajos."
 
 #: install/templates/step5.html.twig:41
 msgid "Provide the user password"
@@ -2110,7 +2158,9 @@ msgstr "Nurodykite pagrindinį vardų serverį"
 msgid ""
 "When creating new zones using the template, this value will be used as "
 "primary nameserver."
-msgstr "Kuriant naujas zonas naudojant šabloną, ši reikšmė bus naudojama kaip pagrindinis vardų serveris."
+msgstr ""
+"Kuriant naujas zonas naudojant šabloną, ši reikšmė bus naudojama kaip "
+"pagrindinis vardų serveris."
 
 #: install/templates/step5.html.twig:82
 msgid "Secondary nameserver"
@@ -2124,7 +2174,9 @@ msgstr "Nurodykite antrinį vardų serverį"
 msgid ""
 "When creating new zones using the template, this value will be used as "
 "secondary nameserver."
-msgstr "Kuriant naujas zonas naudojant šabloną, ši reikšmė bus naudojama kaip antrinis vardų serveris."
+msgstr ""
+"Kuriant naujas zonas naudojant šabloną, ši reikšmė bus naudojama kaip "
+"antrinis vardų serveris."
 
 #: install/templates/step5.html.twig:95
 msgid "Tertiary Nameserver"
@@ -2138,7 +2190,9 @@ msgstr "neprivalomas"
 msgid ""
 "When creating new zones using the template, this optional value will be used "
 "as tertiary nameserver."
-msgstr "Kuriant naujas zonas naudojant šabloną, ši pasirenkama reikšmė bus naudojama kaip tretinis vardų serveris."
+msgstr ""
+"Kuriant naujas zonas naudojant šabloną, ši pasirenkama reikšmė bus naudojama "
+"kaip tretinis vardų serveris."
 
 #: install/templates/step5.html.twig:108
 msgid "Quaternary Nameserver"
@@ -2148,7 +2202,9 @@ msgstr "Ketvirtinis vardų serveris"
 msgid ""
 "When creating new zones using the template, this optional value will be used "
 "as quaternary nameserver."
-msgstr "Kuriant naujas zonas naudojant šabloną, ši pasirenkama reikšmė bus naudojama kaip ketvirtinis vardų serveris."
+msgstr ""
+"Kuriant naujas zonas naudojant šabloną, ši pasirenkama reikšmė bus naudojama "
+"kaip ketvirtinis vardų serveris."
 
 #: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
 msgid "Installation complete"
@@ -2178,7 +2234,8 @@ msgstr ""
 msgid ""
 "Poweradmin will not function if the install directory exists, as a security "
 "measure."
-msgstr "Poweradmin neveiks, jei diegimo katalogas egzistuoja, kaip saugumo priemonė."
+msgstr ""
+"Poweradmin neveiks, jei diegimo katalogas egzistuoja, kaip saugumo priemonė."
 
 #: install/templates/step8.html.twig:22
 msgid "Next Steps"
@@ -2220,7 +2277,9 @@ msgstr "Apie PowerDNS"
 msgid ""
 "PowerDNS is a DNS server that stores its data in an SQL database. Poweradmin "
 "will help you manage this database via a web interface."
-msgstr "PowerDNS yra DNS serveris, kuris saugo savo duomenis SQL duomenų bazėje. Poweradmin padės jums valdyti šią duomenų bazę per žiniatinklio sąsają."
+msgstr ""
+"PowerDNS yra DNS serveris, kuris saugo savo duomenis SQL duomenų bazėje. "
+"Poweradmin padės jums valdyti šią duomenų bazę per žiniatinklio sąsają."
 
 #: install/templates/step3.html.twig:21
 msgid "Before proceeding, you should have:"
@@ -2232,7 +2291,9 @@ msgstr "Veikiančią PowerDNS instaliaciją"
 
 #: install/templates/step3.html.twig:24
 msgid "Database connectivity details (hostname, username, password)"
-msgstr "Duomenų bazės prisijungimo duomenys (serverio vardas, vartotojo vardas, slaptažodis)"
+msgstr ""
+"Duomenų bazės prisijungimo duomenys (serverio vardas, vartotojo vardas, "
+"slaptažodis)"
 
 #: install/templates/step3.html.twig:25
 msgid "Administrative access to your database"
@@ -2286,7 +2347,9 @@ msgstr "Make sure the SQLite database file exists"
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
-msgstr "Patikrinkite, ar žiniatinklio serveris turi skaitymo ir rašymo teises duomenų bazės failui"
+msgstr ""
+"Patikrinkite, ar žiniatinklio serveris turi skaitymo ir rašymo teises "
+"duomenų bazės failui"
 
 #: install/helpers/InstallStepHandler.php:187
 msgid "Verify the full path to the database file is correct and accessible"
@@ -2297,19 +2360,23 @@ msgstr "Verify the full path to the database file is correct and accessible"
 msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
-msgstr "SQLite duomenų bazės failas %s neegzistuoja. Prieš tęsdami sukurkite duomenų bazės failą."
+msgstr ""
+"SQLite duomenų bazės failas %s neegzistuoja. Prieš tęsdami sukurkite duomenų "
+"bazės failą."
 
 #: install/helpers/DatabaseHelper.php:96
 #, php-format
 msgid ""
 "The SQLite database file %s is not readable. Please check file permissions."
-msgstr "SQLite duomenų bazės failas %s nėra skaitomas. Patikrinkite failo teises."
+msgstr ""
+"SQLite duomenų bazės failas %s nėra skaitomas. Patikrinkite failo teises."
 
 #: install/helpers/DatabaseHelper.php:104
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
-msgstr "SQLite duomenų bazės failas %s nėra rašomas. Patikrinkite failo teises."
+msgstr ""
+"SQLite duomenų bazės failas %s nėra rašomas. Patikrinkite failo teises."
 
 #: install/helpers/DatabaseHelper.php:116
 #, php-format
@@ -2324,5 +2391,8 @@ msgstr "or"
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
-msgstr "Konfigūracijos failas nerastas. Prieš tęsdami sukurkite config/settings.php failą."
+msgstr ""
+"Konfigūracijos failas nerastas. Prieš tęsdami sukurkite config/settings.php "
+"failą."
+
 

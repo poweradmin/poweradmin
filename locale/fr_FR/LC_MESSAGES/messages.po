@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-04-11 10:36+0300\n"
+"POT-Creation-Date: 2025-04-11 19:26+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1861,7 +1861,7 @@ msgstr ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
 
-#: install/templates/step5.html.twig:133 install/templates/step3.html.twig:55
+#: install/templates/step5.html.twig:134 install/templates/step3.html.twig:56
 msgid "Continue to step"
 msgstr "Continuer vers l'étape"
 
@@ -1898,7 +1898,7 @@ msgid ""
 "Please select your preferred language to continue with the installation:"
 msgstr ""
 
-#: install/templates/step1.html.twig:196
+#: install/templates/step1.html.twig:209
 msgid "Begin Installation"
 msgstr "Begin Installation"
 
@@ -1997,7 +1997,7 @@ msgstr ""
 msgid "DB charset"
 msgstr "Jeu de caractères DB"
 
-#: install/templates/step4.html.twig:178 install/templates/step4.html.twig:186
+#: install/templates/step4.html.twig:180 install/templates/step4.html.twig:188
 msgid "Use default"
 msgstr "Utiliser la valeur par défaut"
 
@@ -2089,15 +2089,15 @@ msgstr "Tous les composants requis sont disponibles."
 msgid "You can continue with the installation."
 msgstr "Vous pouvez continuer l'installation."
 
-#: install/templates/step2.html.twig:111
+#: install/templates/step2.html.twig:113
 msgid "Some required components are missing."
 msgstr "Certains composants requis sont manquants."
 
-#: install/templates/step2.html.twig:112
+#: install/templates/step2.html.twig:114
 msgid "Please install the missing components before continuing."
 msgstr "Veuillez installer les composants manquants avant de continuer."
 
-#: install/templates/step2.html.twig:116
+#: install/templates/step2.html.twig:118
 msgid "Check Again"
 msgstr "Vérifier à Nouveau"
 
