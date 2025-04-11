@@ -2209,19 +2209,19 @@ msgstr ""
 
 #: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
 msgid "Installation complete"
-msgstr "Installation complete"
+msgstr "Diegimas baigtas"
 
 #: install/templates/step8.html.twig:12
 msgid "Installation Complete!"
-msgstr "Installation Complete!"
+msgstr "Diegimas baigtas!"
 
 #: install/templates/step8.html.twig:12
 msgid "Congratulations! Your Poweradmin installation is now configured."
-msgstr "Congratulations! Your Poweradmin installation is now configured."
+msgstr "Sveikiname! Jūsų Poweradmin diegimas dabar sukonfigūruotas."
 
 #: install/templates/step8.html.twig:16
 msgid "Important Security Notice:"
-msgstr "Important Security Notice:"
+msgstr "Svarbus saugumo pranešimas:"
 
 #: install/templates/step8.html.twig:16
 msgid ""
@@ -2241,7 +2241,7 @@ msgstr ""
 
 #: install/templates/step8.html.twig:22
 msgid "Next Steps"
-msgstr "Next Steps"
+msgstr "Kiti žingsniai"
 
 #: install/templates/step8.html.twig:26
 msgid "Remove the \"install/\" directory from your server"
@@ -2257,7 +2257,7 @@ msgstr ""
 
 #: install/templates/step8.html.twig:28
 msgid "Begin configuring your DNS zones and records"
-msgstr "Begin configuring your DNS zones and records"
+msgstr "Pradėkite konfigūruoti DNS zonas ir įrašus"
 
 #: install/templates/step3.html.twig:3 install/templates/step3.html.twig:8
 msgid "Getting Ready"
