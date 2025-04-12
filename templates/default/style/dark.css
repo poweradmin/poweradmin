@@ -95,10 +95,26 @@ label, .form-label {
 .table > thead > tr > th {
     color: var(--text-muted);
     background-color: var(--bg-dark-secondary);
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+}
+
+.table > thead > tr > th a {
+    color: var(--text-muted);
+    background-color: transparent;
+    border: none;
+}
+
+.table > thead > tr > th a:hover,
+.table > thead > tr > th a:focus {
+    color: var(--text-light);
+    background-color: transparent;
 }
 
 .table td {
     color: var(--text-muted) !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
 }
 
 .table-hover > tbody > tr:hover > * {
@@ -175,8 +191,13 @@ label, .form-label {
 }
 
 .btn-outline-primary:hover {
-    background-color: rgba(13, 110, 253, 0.1) !important;
-    color: #0d6efd !important;
+    background-color: #0d6efd !important;
+    color: #ffffff !important;
+}
+
+.btn-outline-primary:hover i,
+.btn-outline-primary:hover .text-primary {
+    color: #ffffff !important;
 }
 
 .btn-outline-danger {
@@ -185,8 +206,13 @@ label, .form-label {
 }
 
 .btn-outline-danger:hover {
-    background-color: rgba(220, 53, 69, 0.1) !important;
-    color: #dc3545 !important;
+    background-color: #dc3545 !important;
+    color: #ffffff !important;
+}
+
+.btn-outline-danger:hover i,
+.btn-outline-danger:hover .text-danger {
+    color: #ffffff !important;
 }
 
 .card-header {

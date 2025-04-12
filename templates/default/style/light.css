@@ -72,6 +72,29 @@ footer a, footer a:hover, footer a:focus {
     border-radius: 0.25rem;
 }
 
+/* Table styles */
+.table > thead > tr > th {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+}
+
+.table td {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+}
+
+.table > thead > tr > th a {
+    color: inherit;
+    background-color: transparent;
+    border: none;
+}
+
+.table > thead > tr > th a:hover,
+.table > thead > tr > th a:focus {
+    color: var(--primary-blue);
+    background-color: transparent;
+}
+
 /* Search results action buttons */
 .btn-outline-primary:hover .text-primary,
 .btn-outline-danger:hover .text-danger {
