@@ -72,9 +72,27 @@ footer a, footer a:hover, footer a:focus {
     border-radius: 0.25rem;
 }
 
+/* Search results action buttons */
+.btn-outline-primary:hover .text-primary,
+.btn-outline-danger:hover .text-danger {
+    color: #fff !important;
+}
+
 /* Input styling utilities */
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
+}
+
+.alert .btn-close {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 10px; /* Adjust as needed for spacing */
+}
+
+.alert-dismissible {
+    position: relative;
+    padding-right: 3rem; /* Provide enough space for the button */
 }

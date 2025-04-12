@@ -158,6 +158,37 @@ label, .form-label {
     color: var(--text-light);
 }
 
+/* Search icon in dark mode */
+.input-group-text {
+    background-color: var(--bg-dark-secondary) !important;
+    border-color: var(--border-dark) !important;
+}
+
+.input-group-text .bi-search {
+    color: var(--text-light) !important;
+}
+
+/* Button styles for dark mode */
+.btn-outline-primary {
+    border-color: #0d6efd !important;
+    color: #0d6efd !important;
+}
+
+.btn-outline-primary:hover {
+    background-color: rgba(13, 110, 253, 0.1) !important;
+    color: #0d6efd !important;
+}
+
+.btn-outline-danger {
+    border-color: #dc3545 !important;
+    color: #dc3545 !important;
+}
+
+.btn-outline-danger:hover {
+    background-color: rgba(220, 53, 69, 0.1) !important;
+    color: #dc3545 !important;
+}
+
 .card-header {
     background-color: var(--bg-dark-secondary) !important;
     border-color: var(--border-dark) !important;
@@ -259,4 +290,17 @@ input[type=number]::-webkit-outer-spin-button {
 
 .modal-body {
     background-color: var(--bg-dark);
+}
+
+/* Alert close button alignment */
+.alert .btn-close {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 10px; /* Adjust as needed for spacing */
+}
+
+.alert-dismissible {
+    position: relative;
+    padding-right: 3rem; /* Provide enough space for the button */
 }

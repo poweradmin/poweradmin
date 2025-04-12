@@ -9,12 +9,12 @@
 <div class="alert alert-{{ message.type }}">{{ message.content }}</div>
 {% endif %}
 
-<div class="card">
-    <div class="card-header py-2">
-        <strong>{% trans %}Search zones and records{% endtrans %}</strong>
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <strong><i class="bi bi-search me-2"></i>{% trans %}Search zones and records{% endtrans %}</strong>
     </div>
-    <div class="card-body py-2">
-        <p class="small text-muted mb-2">{% trans %}Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) in pattern matches any single character, a percent sign (%) matches any string of zero or more characters.{% endtrans %}</p>
+    <div class="card-body py-3">
+        <p class="small text-muted mb-3">{% trans %}Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) in pattern matches any single character, a percent sign (%) matches any string of zero or more characters.{% endtrans %}</p>
 
         <form class="needs-validation" name="search_form" action="index.php?page=search" method="POST" onsubmit="checkQueryChange(this);" novalidate>
             <input type="hidden" name="_token" value="{{ csrf_token }}">
@@ -28,11 +28,12 @@
             <div class="row">
                 <div class="col-md-12">
                     <!-- Form fields -->
-                    <div class="row g-2">
+                    <div class="row g-3">
                         <div class="col-md-5">
-                            <div class="mb-2">
+                            <div class="mb-3">
                                 <label for="query" class="form-label small">{% trans %}Search Query{% endtrans %}</label>
                                 <div class="input-group input-group-sm has-validation">
+                                    <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
                                     <input type="text" class="form-control form-control-sm" id="query" name="query" value="{{ query }}" required>
                                     <button type="submit" class="btn btn-primary btn-sm" name="do_search">{% trans %}Search{% endtrans %}</button>
                                     <a href="index.php?page=search" class="btn btn-secondary btn-sm" role="button">{% trans %}Clear{% endtrans %}</a>
@@ -42,7 +43,7 @@
                         </div>
                         
                         <div class="col-md-7">
-                            <div class="mb-2">
+                            <div class="mb-3">
                                 <label class="form-label small">{% trans %}Search In{% endtrans %}</label>
                                 <div class="d-flex flex-wrap gap-2">
                                     <div class="form-check form-check-inline m-0">
@@ -77,76 +78,91 @@
                         </div>
                     </div>
                 </div>
-                
-                <!-- Right column removed as requested -->
             </div>
         </form>
     </div>
 </div>
 
 {% if has_zones %}
-<div class="pb-3">
-    <h5 class="mb-3 pt-3 border-top">{% trans %}Zones found{% endtrans %}</h5>
-    <div class="pb-3 text-secondary">{% trans %}Total number of zones:{% endtrans %} {{ total_zones }}</div>
-    <table class="table table-striped table-hover table-sm">
-        <thead>
-        <tr>
-            <th>
-                <a href="javascript:zone_sort_by('name');">{% trans %}Name{% endtrans %}</a>
-                {% if zone_sort_by == 'name' %}
-                    <i class="bi bi-arrow-{{ zone_sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
-                {% endif %}
-            </th>
-            <th>
-                <a href="javascript:zone_sort_by('type');">{% trans %}Type{% endtrans %}</a>
-                {% if zone_sort_by == 'type' %}
-                    <i class="bi bi-arrow-{{ zone_sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
-                {% endif %}
-            </th>
-            <th>
-                <a href="javascript:zone_sort_by('count_records');">{% trans %}Records{% endtrans %}</a>
-                {% if zone_sort_by == 'count_records' %}
-                    <i class="bi bi-arrow-{{ zone_sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
-                {% endif %}
-            </th>
-            <th>
-                <a href="javascript:zone_sort_by('fullname');">{% trans %}Owner{% endtrans %}</a>
-                {% if zone_sort_by == 'fullname' %}
-                    <i class="bi bi-arrow-{{ zone_sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
-                {% endif %}
-            </th>
-            {% if iface_zone_comments %}
-            <th>
-                {% trans %}Comment{% endtrans %}
-            </th>
-            {% endif %}
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for zone in found_zones %}
-        <tr>
-            <td>{{ zone['name'] }}</td>
-            <td>{{ zone['type'] }}</td>
-            <td>{{ zone['count_records'] }}</td>
-            <td>{{ zone['fullname'] }}</td>
-            {% if iface_zone_comments %}
-                <td>{{ zone['comment'] }}</td>
-            {% endif %}
-            <td>
-                {% if edit_permission == 'all' or ((edit_permission == 'own' or edit_permission == 'own_as_client') and zone['user_id'] == user_id) %}
-                <a class="btn btn-outline-primary btn-sm"
-                   href="index.php?page=edit&id={{ zone['id'] }}">
-                    <i class="bi bi-pencil-square"></i> {% trans %}Edit{% endtrans %}</a>
-                <a class="btn btn-outline-danger btn-sm"
-                   href="index.php?page=delete_domain&id={{ zone['id'] }}">
-                    <i class="bi bi-trash"></i> {% trans %}Delete{% endtrans %}</a>
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-globe2 me-2"></i>{% trans %}Zones found{% endtrans %} <span class="badge bg-secondary ms-2">{{ total_zones }}</span></span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-sm mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th>
+                        <a href="javascript:zone_sort_by('name');" class="d-flex align-items-center text-decoration-none">
+                            <span class="me-2">{% trans %}Name{% endtrans %}</span>
+                            {% if zone_sort_by == 'name' %}
+                                <i class="bi bi-arrow-{{ zone_sort_direction == 'ASC' ? 'down' : 'up' }} text-primary"></i>
+                            {% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="javascript:zone_sort_by('type');" class="d-flex align-items-center text-decoration-none">
+                            <span class="me-2">{% trans %}Type{% endtrans %}</span>
+                            {% if zone_sort_by == 'type' %}
+                                <i class="bi bi-arrow-{{ zone_sort_direction == 'ASC' ? 'down' : 'up' }} text-primary"></i>
+                            {% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="javascript:zone_sort_by('count_records');" class="d-flex align-items-center text-decoration-none">
+                            <span class="me-2">{% trans %}Records{% endtrans %}</span>
+                            {% if zone_sort_by == 'count_records' %}
+                                <i class="bi bi-arrow-{{ zone_sort_direction == 'ASC' ? 'down' : 'up' }} text-primary"></i>
+                            {% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="javascript:zone_sort_by('fullname');" class="d-flex align-items-center text-decoration-none">
+                            <span class="me-2">{% trans %}Owner{% endtrans %}</span>
+                            {% if zone_sort_by == 'fullname' %}
+                                <i class="bi bi-arrow-{{ zone_sort_direction == 'ASC' ? 'down' : 'up' }} text-primary"></i>
+                            {% endif %}
+                        </a>
+                    </th>
+                    {% if iface_zone_comments %}
+                    <th>
+                        {% trans %}Comment{% endtrans %}
+                    </th>
+                    {% endif %}
+                    <th class="text-end">{% trans %}Actions{% endtrans %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for zone in found_zones %}
+                <tr>
+                    <td>{{ zone['name'] }}</td>
+                    <td><span class="badge bg-light text-dark">{{ zone['type'] }}</span></td>
+                    <td><span class="badge bg-secondary">{{ zone['count_records'] }}</span></td>
+                    <td>{{ zone['fullname'] }}</td>
+                    {% if iface_zone_comments %}
+                        <td>{{ zone['comment'] }}</td>
+                    {% endif %}
+                    <td class="text-end">
+                        {% if edit_permission == 'all' or ((edit_permission == 'own' or edit_permission == 'own_as_client') and zone['user_id'] == user_id) %}
+                        <div class="gap-2">
+                            <a class="btn btn-sm btn-outline-primary"
+                            href="index.php?page=edit&id={{ zone['id'] }}">
+                                <i class="bi bi-pencil-square text-primary"></i> <span class="d-none d-md-inline text-primary">{% trans %}Edit{% endtrans %}</span>
+                            </a>
+                            <a class="btn btn-sm btn-outline-danger"
+                            href="index.php?page=delete_domain&id={{ zone['id'] }}">
+                                <i class="bi bi-trash text-danger"></i> <span class="d-none d-md-inline text-danger">{% trans %}Delete{% endtrans %}</span>
+                            </a>
+                        </div>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 
     {% if total_zones > iface_rowamount %}
     {% set max_visible_pages = 9 %}
@@ -154,116 +170,147 @@
     {% set half_visible_pages = max_visible_pages // 2 %}
     {% set zones_start_page = (zones_page - half_visible_pages) > 0 ? (zones_page - half_visible_pages) : 1 %}
     {% set zones_end_page = min(zones_start_page + max_visible_pages - 1, total_zone_pages) %}
-    <nav>
-        <ul class="pagination">
-            {% if zones_page > 1 %}
-            <li class="page-item"><a class="page-link" href="javascript:do_search_with_zones_page({{ zones_page - 1 }})">{% trans %}Previous{% endtrans %}</a></li>
-            {% endif %}
+    <div class="card-footer py-2">
+        <nav aria-label="Page navigation">
+            <ul class="pagination pagination-sm justify-content-center mb-0">
+                {% if zones_page > 1 %}
+                <li class="page-item">
+                    <a class="page-link" href="javascript:do_search_with_zones_page({{ zones_page - 1 }})" aria-label="Previous">
+                        <span aria-hidden="true"><i class="bi bi-chevron-left"></i></span>
+                    </a>
+                </li>
+                {% endif %}
 
-            {% if zones_page > half_visible_pages + 1 %}
-            <li class="page-item"><a class="page-link" href="javascript:do_search_with_zones_page(1)">1</a></li>
-            <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">..</a></li>
-            {% endif %}
+                {% if zones_page > half_visible_pages + 1 %}
+                <li class="page-item"><a class="page-link" href="javascript:do_search_with_zones_page(1)">1</a></li>
+                <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">...</a></li>
+                {% endif %}
 
-            {% for i in zones_start_page..zones_end_page %}
-            {% if i == zones_page %}
-            <li class="page-item active"><span class="page-link">{{ i }}</span></li>
-            {% else %}
-            <li class="page-item"><a class="page-link" href="javascript:do_search_with_zones_page({{ i }})">{{ i }}</a></li>
-            {% endif %}
-            {% endfor %}
+                {% for i in zones_start_page..zones_end_page %}
+                {% if i == zones_page %}
+                <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                {% else %}
+                <li class="page-item"><a class="page-link" href="javascript:do_search_with_zones_page({{ i }})">{{ i }}</a></li>
+                {% endif %}
+                {% endfor %}
 
-            {% if total_zone_pages > zones_end_page %}
-            <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">..</a></li>
-            <li class="page-item"><a class="page-link" href="javascript:do_search_with_zones_page({{ total_zone_pages }})">{{ total_zone_pages }}</a></li>
-            {% endif %}
+                {% if total_zone_pages > zones_end_page %}
+                <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">...</a></li>
+                <li class="page-item"><a class="page-link" href="javascript:do_search_with_zones_page({{ total_zone_pages }})">{{ total_zone_pages }}</a></li>
+                {% endif %}
 
-            {% if zones_page < total_zone_pages %}
-            <li class="page-item"><a class="page-link" href="javascript:do_search_with_zones_page({{ zones_page + 1 }})">{% trans %}Next{% endtrans %}</a></li>
-            {% endif %}
-        </ul>
-    </nav>
+                {% if zones_page < total_zone_pages %}
+                <li class="page-item">
+                    <a class="page-link" href="javascript:do_search_with_zones_page({{ zones_page + 1 }})" aria-label="Next">
+                        <span aria-hidden="true"><i class="bi bi-chevron-right"></i></span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
     {% endif %}
 </div>
 {% endif %}
 
 {% if has_records %}
-<div class="pb-3">
-    <h5 class="mb-3 pt-3 border-top">{% trans %}Records found{% endtrans %}</h5>
-    <div class="pb-3 text-secondary">{% trans %}Total number of records:{% endtrans %} {{ total_records }}</div>
-    <table class="table table-striped table-hover table-sm">
-        <thead>
-        <tr>
-            <th>
-                <a href="javascript:record_sort_by('name');">{% trans %}Name{% endtrans %}</a>
-                {% if record_sort_by == 'name' %}
-                    <i class="bi bi-arrow-{{ record_sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
-                {% endif %}
-            </th>
-            <th>
-                <a href="javascript:record_sort_by('type');">{% trans %}Type{% endtrans %}</a>
-                {% if record_sort_by == 'type' %}
-                    <i class="bi bi-arrow-{{ record_sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
-                {% endif %}
-            </th>
-            <th>
-                <a href="javascript:record_sort_by('prio');">{% trans %}Priority{% endtrans %}</a>
-                {% if record_sort_by == 'prio' %}
-                    <i class="bi bi-arrow-{{ record_sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
-                {% endif %}
-            </th>
-            <th>
-                <a href="javascript:record_sort_by('content');">{% trans %}Content{% endtrans %}</a>
-                {% if record_sort_by == 'content' %}
-                    <i class="bi bi-arrow-{{ record_sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
-                {% endif %}
-            </th>
-            <th>
-                <a href="javascript:record_sort_by('ttl');">{% trans %}TTL{% endtrans %}</a>
-                {% if record_sort_by == 'ttl' %}
-                    <i class="bi bi-arrow-{{ record_sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
-                {% endif %}
-            </th>
-            <th>
-                <a href="javascript:record_sort_by('disabled');">{% trans %}Disabled{% endtrans %}</a>
-                {% if record_sort_by == 'disabled' %}
-                <i class="bi bi-arrow-{{ record_sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
-                {% endif %}
-            </th>
-            {% if iface_record_comments %}
-            <th>
-                {% trans %}Comment{% endtrans %}
-            </th>
-            {% endif %}
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for record in found_records %}
-        <tr>
-            <td>{{ record['name'] }}</td>
-            <td>{{ record['type'] }}</td>
-            <td>{{ record['prio'] }}</td>
-            <td>{{ record['content'] }}</td>
-            <td>{{ record['ttl'] }}</td>
-            <td>{{ record['disabled'] }}</td>
-            {% if iface_record_comments %}
-                <td>{{ record['comment'] }}</td>
-            {% endif %}
-            <td class="col-sm-1">
-                {% if edit_permission == 'all' or ((edit_permission == 'own' or edit_permission == 'own_as_client') and record['user_id'] == user_id) %}
-                <a class="btn btn-outline-primary btn-sm"
-                   href="index.php?page=edit_record&domain={{ record['domain_id'] }}&id={{ record['id'] }}">
-                    <i class="bi bi-pencil-square"></i> {% if not iface_record_comments %}{% trans %}Edit{% endtrans %}{% endif %}</a>
-                <a class="btn btn-outline-danger btn-sm"
-                   href="index.php?page=delete_record&domain={{ record['domain_id'] }}&id={{ record['id'] }}">
-                    <i class="bi bi-trash"></i> {% if not iface_record_comments %}{% trans %}Delete{% endtrans %}{% endif %}</a>
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-list-columns me-2"></i>{% trans %}Records found{% endtrans %} <span class="badge bg-secondary ms-2">{{ total_records }}</span></span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-sm mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th>
+                        <a href="javascript:record_sort_by('name');" class="d-flex align-items-center text-decoration-none">
+                            <span class="me-2">{% trans %}Name{% endtrans %}</span>
+                            {% if record_sort_by == 'name' %}
+                                <i class="bi bi-arrow-{{ record_sort_direction == 'ASC' ? 'down' : 'up' }} text-primary"></i>
+                            {% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="javascript:record_sort_by('type');" class="d-flex align-items-center text-decoration-none">
+                            <span class="me-2">{% trans %}Type{% endtrans %}</span>
+                            {% if record_sort_by == 'type' %}
+                                <i class="bi bi-arrow-{{ record_sort_direction == 'ASC' ? 'down' : 'up' }} text-primary"></i>
+                            {% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="javascript:record_sort_by('prio');" class="d-flex align-items-center text-decoration-none">
+                            <span class="me-2">{% trans %}Priority{% endtrans %}</span>
+                            {% if record_sort_by == 'prio' %}
+                                <i class="bi bi-arrow-{{ record_sort_direction == 'ASC' ? 'down' : 'up' }} text-primary"></i>
+                            {% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="javascript:record_sort_by('content');" class="d-flex align-items-center text-decoration-none">
+                            <span class="me-2">{% trans %}Content{% endtrans %}</span>
+                            {% if record_sort_by == 'content' %}
+                                <i class="bi bi-arrow-{{ record_sort_direction == 'ASC' ? 'down' : 'up' }} text-primary"></i>
+                            {% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="javascript:record_sort_by('ttl');" class="d-flex align-items-center text-decoration-none">
+                            <span class="me-2">{% trans %}TTL{% endtrans %}</span>
+                            {% if record_sort_by == 'ttl' %}
+                                <i class="bi bi-arrow-{{ record_sort_direction == 'ASC' ? 'down' : 'up' }} text-primary"></i>
+                            {% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="javascript:record_sort_by('disabled');" class="d-flex align-items-center text-decoration-none">
+                            <span class="me-2">{% trans %}Disabled{% endtrans %}</span>
+                            {% if record_sort_by == 'disabled' %}
+                                <i class="bi bi-arrow-{{ record_sort_direction == 'ASC' ? 'down' : 'up' }} text-primary"></i>
+                            {% endif %}
+                        </a>
+                    </th>
+                    {% if iface_record_comments %}
+                    <th>
+                        {% trans %}Comment{% endtrans %}
+                    </th>
+                    {% endif %}
+                    <th class="text-end">{% trans %}Actions{% endtrans %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for record in found_records %}
+                <tr>
+                    <td>{{ record['name'] }}</td>
+                    <td><span class="badge bg-light text-dark">{{ record['type'] }}</span></td>
+                    <td>{{ record['prio'] }}</td>
+                    <td><code class="text-break">{{ record['content'] }}</code></td>
+                    <td>{{ record['ttl'] }}</td>
+                    <td>{{ record['disabled'] }}</td>
+                    {% if iface_record_comments %}
+                        <td>{{ record['comment'] }}</td>
+                    {% endif %}
+                    <td class="text-end">
+                        {% if edit_permission == 'all' or ((edit_permission == 'own' or edit_permission == 'own_as_client') and record['user_id'] == user_id) %}
+                        <div class="gap-2">
+                            <a class="btn btn-sm btn-outline-primary"
+                            href="index.php?page=edit_record&domain={{ record['domain_id'] }}&id={{ record['id'] }}">
+                                <i class="bi bi-pencil-square text-primary"></i> <span class="d-none d-md-inline text-primary">{% if not iface_record_comments %}{% trans %}Edit{% endtrans %}{% endif %}</span>
+                            </a>
+                            <a class="btn btn-sm btn-outline-danger"
+                            href="index.php?page=delete_record&domain={{ record['domain_id'] }}&id={{ record['id'] }}">
+                                <i class="bi bi-trash text-danger"></i> <span class="d-none d-md-inline text-danger">{% if not iface_record_comments %}{% trans %}Delete{% endtrans %}{% endif %}</span>
+                            </a>
+                        </div>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 
     {% if total_records > iface_rowamount %}
     {% set max_visible_pages = 9 %}
@@ -271,42 +318,57 @@
     {% set half_visible_pages = max_visible_pages // 2 %}
     {% set records_start_page = (records_page - half_visible_pages) > 0 ? (records_page - half_visible_pages) : 1 %}
     {% set records_end_page = min(records_start_page + max_visible_pages - 1, total_records_pages) %}
-    <nav>
-        <ul class="pagination">
-            {% if records_page > 1 %}
-            <li class="page-item"><a class="page-link" href="javascript:do_search_with_records_page({{ records_page - 1 }})">{% trans %}Previous{% endtrans %}</a></li>
-            {% endif %}
+    <div class="card-footer py-2">
+        <nav aria-label="Page navigation">
+            <ul class="pagination pagination-sm justify-content-center mb-0">
+                {% if records_page > 1 %}
+                <li class="page-item">
+                    <a class="page-link" href="javascript:do_search_with_records_page({{ records_page - 1 }})" aria-label="Previous">
+                        <span aria-hidden="true"><i class="bi bi-chevron-left"></i></span>
+                    </a>
+                </li>
+                {% endif %}
 
-            {% if records_page > half_visible_pages + 1 %}
-            <li class="page-item"><a class="page-link" href="javascript:do_search_with_records_page(1)">1</a></li>
-            <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">..</a></li>
-            {% endif %}
+                {% if records_page > half_visible_pages + 1 %}
+                <li class="page-item"><a class="page-link" href="javascript:do_search_with_records_page(1)">1</a></li>
+                <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">...</a></li>
+                {% endif %}
 
-            {% for i in records_start_page..records_end_page %}
-            {% if i == records_page %}
-            <li class="page-item active"><span class="page-link">{{ i }}</span></li>
-            {% else %}
-            <li class="page-item"><a class="page-link" href="javascript:do_search_with_records_page({{ i }})">{{ i }}</a></li>
-            {% endif %}
-            {% endfor %}
+                {% for i in records_start_page..records_end_page %}
+                {% if i == records_page %}
+                <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                {% else %}
+                <li class="page-item"><a class="page-link" href="javascript:do_search_with_records_page({{ i }})">{{ i }}</a></li>
+                {% endif %}
+                {% endfor %}
 
-            {% if total_records_pages > records_end_page %}
-            <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">..</a></li>
-            <li class="page-item"><a class="page-link" href="javascript:do_search_with_records_page({{ total_records_pages }})">{{ total_records_pages }}</a></li>
-            {% endif %}
+                {% if total_records_pages > records_end_page %}
+                <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">...</a></li>
+                <li class="page-item"><a class="page-link" href="javascript:do_search_with_records_page({{ total_records_pages }})">{{ total_records_pages }}</a></li>
+                {% endif %}
 
-            {% if records_page < total_records_pages %}
-            <li class="page-item"><a class="page-link" href="javascript:do_search_with_records_page({{ records_page + 1 }})">{% trans %}Next{% endtrans %}</a></li>
-            {% endif %}
-        </ul>
-    </nav>
+                {% if records_page < total_records_pages %}
+                <li class="page-item">
+                    <a class="page-link" href="javascript:do_search_with_records_page({{ records_page + 1 }})" aria-label="Next">
+                        <span aria-hidden="true"><i class="bi bi-chevron-right"></i></span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
     {% endif %}
 </div>
 {% endif %}
 
 {% if query is not empty and (not has_records and not has_zones) %}
-<hr>
-{% trans %}No results found{% endtrans %}
+<div class="card shadow-sm mb-4">
+    <div class="card-body text-center py-5">
+        <i class="bi bi-search fs-1 text-muted mb-3"></i>
+        <h5>{% trans %}No results found{% endtrans %}</h5>
+        <p class="text-muted mb-0">{% trans %}Try different search terms or filters{% endtrans %}</p>
+    </div>
+</div>
 {% endif %}
 
 <script>
