@@ -14,9 +14,9 @@
                 {% endif %}
             </div>
             <div class="col-md-6 d-flex justify-content-end">
-                {% if show_theme_switcher %}
-                <button class="btn btn-outline-secondary btn-sm" id="theme-switcher">
-                    <i class="bi" id="theme-icon"></i>
+                {% if show_style_switcher %}
+                <button class="btn btn-outline-secondary btn-sm" id="style-switcher">
+                    <i class="bi" id="style-icon"></i>
                 </button>
                 {% endif %}
             </div>
@@ -64,32 +64,32 @@
     const alertList = document.querySelectorAll('.alert')
     const alerts = [...alertList].map(element => new bootstrap.Alert(element))
 
-    const themeSwitcher = document.getElementById('theme-switcher');
-    const themeIcon = document.getElementById('theme-icon');
-    const themeStylesheet = document.getElementById('theme-stylesheet');
+    const styleSwitcher = document.getElementById('style-switcher');
+    const styleIcon = document.getElementById('style-icon');
+    const styleStylesheet = document.getElementById('theme-stylesheet');
     const ifaceStyle = '{{ iface_style }}';
 
-    let currentTheme = localStorage.getItem('theme');
-    if (currentTheme !== 'ignite' && currentTheme !== 'spark') {
-        currentTheme = ifaceStyle || 'ignite';
+    let currentStyle = localStorage.getItem('style');
+    if (currentStyle !== 'light' && currentStyle !== 'dark') {
+        currentStyle = ifaceStyle || 'light';
     }
 
-    function initializeTheme() {
-        document.body.classList.add(currentTheme);
-        themeIcon.classList.add(currentTheme === 'ignite' ? 'bi-moon' : 'bi-sun');
-        themeStylesheet.href = `style/${currentTheme}.css?time={{ file_version }}`;
+    function initializeStyle() {
+        document.body.classList.add(currentStyle);
+        styleIcon.classList.add(currentStyle === 'light' ? 'bi-moon' : 'bi-sun');
+        styleStylesheet.href = `{{ theme_base_path }}/{{ theme }}/style/${currentStyle}.css?time={{ file_version }}`;
     }
 
-    themeSwitcher.addEventListener('click', () => {
-        const newTheme = currentTheme === 'ignite' ? 'spark' : 'ignite';
-        document.body.classList.replace(currentTheme, newTheme);
-        themeIcon.classList.replace(currentTheme === 'ignite' ? 'bi-moon' : 'bi-sun', newTheme === 'ignite' ? 'bi-moon' : 'bi-sun');
-        themeStylesheet.href = `style/${newTheme}.css?time={{ file_version }}`;
-        localStorage.setItem('theme', newTheme);
-        currentTheme = newTheme;
+    styleSwitcher.addEventListener('click', () => {
+        const newStyle = currentStyle === 'light' ? 'dark' : 'light';
+        document.body.classList.replace(currentStyle, newStyle);
+        styleIcon.classList.replace(currentStyle === 'light' ? 'bi-moon' : 'bi-sun', newStyle === 'light' ? 'bi-moon' : 'bi-sun');
+        styleStylesheet.href = `{{ theme_base_path }}/{{ theme }}/style/${newStyle}.css?time={{ file_version }}`;
+        localStorage.setItem('style', newStyle);
+        currentStyle = newStyle;
     });
 
-    initializeTheme();
+    initializeStyle();
 </script>
 </body>
 </html>

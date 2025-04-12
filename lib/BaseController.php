@@ -27,7 +27,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\Infrastructure\Service\MessageService;
-use Poweradmin\Infrastructure\Service\ThemeManager;
+use Poweradmin\Infrastructure\Service\StyleManager;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -316,14 +316,18 @@ abstract class BaseController
             header('Content-type: text/html; charset=utf-8');
         }
 
-        $style = $this->configManager->get('interface', 'theme', 'ignite');
-        $themeManager = new ThemeManager($style);
+        $style = $this->configManager->get('interface', 'style', 'light');
+        $themeBasePath = $this->configManager->get('interface', 'theme_base_path', 'templates');
+        $theme = $this->configManager->get('interface', 'theme', 'default');
+        $styleManager = new StyleManager($style, $themeBasePath, $theme);
 
         $vars = [
             'iface_title' => $this->configManager->get('interface', 'title'),
-            'iface_style' => $themeManager->getSelectedTheme(),
+            'iface_style' => $styleManager->getSelectedStyle(),
+            'theme' => $theme,
+            'theme_base_path' => $themeBasePath,
             'file_version' => time(),
-            'custom_header' => file_exists('templates/custom/header.html'),
+            'custom_header' => file_exists($this->configManager->get('interface', 'theme_base_path', 'templates') . '/custom/header.html'),
             'install_error' => file_exists('install') ? _('The <a href="install/">install/</a> directory exists, you must remove it first before proceeding.') : false,
         ];
 
@@ -365,20 +369,24 @@ abstract class BaseController
      */
     private function renderFooter(): void
     {
-        $style = $this->configManager->get('interface', 'theme', 'ignite');
-        $themeManager = new ThemeManager($style);
-        $selected_theme = $themeManager->getSelectedTheme();
+        $style = $this->configManager->get('interface', 'style', 'light');
+        $themeBasePath = $this->configManager->get('interface', 'theme_base_path', 'templates');
+        $theme = $this->configManager->get('interface', 'theme', 'default');
+        $styleManager = new StyleManager($style, $themeBasePath, $theme);
+        $selected_style = $styleManager->getSelectedStyle();
 
         $display_stats = $this->configManager->get('misc', 'display_stats');
         $db_debug = $this->configManager->get('database', 'debug');
 
         $this->app->render('footer.html', [
             'version' => isset($_SESSION["userid"]) ? Version::VERSION : false,
-            'custom_footer' => file_exists('templates/custom/footer.html'),
+            'custom_footer' => file_exists($this->configManager->get('interface', 'theme_base_path', 'templates') . '/custom/footer.html'),
             'display_stats' => $display_stats ? $this->app->displayStats() : false,
             'db_queries' => $db_debug ? $this->db->getQueries() : false,
-            'show_theme_switcher' => in_array($selected_theme, ['ignite', 'spark']),
-            'iface_style' => $selected_theme,
+            'show_style_switcher' => in_array($selected_style, ['light', 'dark']),
+            'iface_style' => $selected_style,
+            'theme' => $theme,
+            'theme_base_path' => $themeBasePath,
         ]);
 
         $this->db->disconnect();

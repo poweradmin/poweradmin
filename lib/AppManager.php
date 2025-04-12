@@ -61,8 +61,10 @@ class AppManager
         $this->configuration = ConfigurationManager::getInstance();
         $this->configuration->initialize();
 
-        $templates = $this->config('interface', 'templates_path');
-        $loader = new FilesystemLoader($templates);
+        $theme_base_path = $this->config('interface', 'theme_base_path', 'templates');
+        $theme = $this->config('interface', 'theme', 'default');
+        $theme_path = $theme_base_path . '/' . $theme;
+        $loader = new FilesystemLoader([$theme_path, $theme_base_path . '/default']);
         $this->templateRenderer = new Environment($loader, ['debug' => false]);
 
         if ($this->config('misc', 'display_stats')) {
