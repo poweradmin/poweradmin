@@ -68,10 +68,9 @@ return [
         'title' => 'Poweradmin',              // Title displayed in the browser (added in 2.1.5)
         'session_timeout' => 1800,            // Session timeout in seconds (30 minutes)
         'rows_per_page' => 10,
-        'index_display' => 'cards',           // Options: 'cards', 'list' (added in 3.2.0)
-        'theme' => 'default',                 // Theme name to use (default, custom, etc.)
-        'style' => 'light',                   // UI Style options: 'light', 'dark'
-        'theme_base_path' => 'templates',     // Base path for theme templates
+        'theme' => 'default',                 // Theme name to use (default, custom, etc.) (added in 4.0.0)
+        'style' => 'light',                   // UI Style options: 'light', 'dark' (added in 4.0.0)
+        'theme_base_path' => 'templates',     // Base path for theme templates (added in 4.0.0)
         
         // UI Element Settings
         'show_record_id' => true,             // Show record ID column in edit mode (added in 3.9.0)
