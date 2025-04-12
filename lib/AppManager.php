@@ -158,7 +158,8 @@ class AppManager
 
             // If there's only one error, display it directly
             if (count($errors) === 1) {
-                $messageService->displayDirectSystemError("Invalid configuration: " . $errors[0]);
+                $firstKey = array_key_first($errors);
+                $messageService->displayDirectSystemError("Invalid configuration: " . $errors[$firstKey]);
             }
             // If there are multiple errors, format them as a list
             elseif (count($errors) > 1) {

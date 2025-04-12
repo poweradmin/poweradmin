@@ -114,12 +114,8 @@ class ConfigValidator
 
     private function validateIfaceIndex(): void
     {
-        $validIndexes = ['cards', 'list'];
-        $indexDisplay = $this->getSetting('interface', 'index_display');
-        if (!in_array($indexDisplay, $validIndexes)) {
-            $validIndexesList = implode(', ', $validIndexes);
-            $this->errors['iface_index'] = "index_display must be a string and one of the following values: $validIndexesList";
-        }
+        // index_display setting removed, no longer needed
+        return;
     }
 
     private function validateIfaceLang(): void
