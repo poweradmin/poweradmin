@@ -11,7 +11,6 @@ class ConfigValidatorTest extends TestCase
     {
         $config = [
             'interface' => [
-                'index_display' => 'cards',
                 'rows_per_page' => 10,
                 'language' => 'en_EN',
                 'enabled_languages' => 'en_EN,de_DE',
@@ -96,7 +95,6 @@ class ConfigValidatorTest extends TestCase
     {
         $config = [
             'interface' => [
-                'index_display' => 'cards',
                 'rows_per_page' => 10,
                 'language' => '',
                 'enabled_languages' => 'en_EN,de_DE',
@@ -118,7 +116,6 @@ class ConfigValidatorTest extends TestCase
     {
         $config = [
             'interface' => [
-                'index_display' => 'cards',
                 'rows_per_page' => 10,
                 'language' => 'en_EN',
                 'enabled_languages' => 'en_EN,de_DE',
@@ -140,7 +137,6 @@ class ConfigValidatorTest extends TestCase
     {
         $config = [
             'interface' => [
-                'index_display' => 'cards',
                 'rows_per_page' => 10,
                 'language' => 'en_EN',
                 'enabled_languages' => '',
@@ -162,7 +158,6 @@ class ConfigValidatorTest extends TestCase
     {
         $config = [
             'interface' => [
-                'index_display' => 'cards',
                 'rows_per_page' => 10,
                 'language' => 'en_EN',
                 'enabled_languages' => 'en_EN,de_DE,',
@@ -184,7 +179,6 @@ class ConfigValidatorTest extends TestCase
     {
         $config = [
             'interface' => [
-                'index_display' => 'cards',
                 'rows_per_page' => 10,
                 'language' => 'fr_FR',
                 'enabled_languages' => 'en_EN,de_DE',

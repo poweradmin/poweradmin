@@ -109,7 +109,7 @@ abstract class BaseController
         if ($key === null) {
             // Map legacy UI keys to interface settings
             return match ($group) {
-                'index_display' => $this->configManager->get('interface', 'index_display'),
+                // 'index_display' reference removed - only cards layout is now used
                 'iface_edit_show_id' => $this->configManager->get('interface', 'show_record_id'),
                 'iface_edit_add_record_top' => $this->configManager->get('interface', 'position_record_form_top'),
                 'iface_edit_save_changes_top' => $this->configManager->get('interface', 'position_save_button_top'),

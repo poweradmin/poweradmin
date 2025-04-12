@@ -208,7 +208,7 @@ class ConfigurationManager
             'iface_title' => 'title',
             'iface_expire' => 'session_timeout',
             'iface_rowamount' => 'rows_per_page',
-            'iface_index' => 'index_display',
+            // 'iface_index' setting removed - only cards layout is now used
             'show_record_id_column' => 'show_record_id',
             'position_record_form_top' => 'position_record_form_top',
             'position_save_button_top' => 'position_save_button_top',

@@ -43,7 +43,7 @@ $iface_add_domain_record = true; // Enables a checkbox to add an A/AAAA record f
 $iface_zone_type_default = 'MASTER'; // or 'NATIVE'
 $iface_zone_comments = true; // Show or hide zone comments
 $iface_record_comments = false; // Show or hide record comments
-$iface_index = 'cards'; // or list
+// Legacy index_display setting removed - cards layout is now default
 $iface_search_group_records = false; // Group records by name and content in search results
 
 // The following settings have been moved to config/ui.php:
