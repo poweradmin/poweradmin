@@ -594,7 +594,7 @@ class Dns
      */
     public function is_valid_rr_cname_name(string $name): bool
     {
-        $pdns_db_name = $this->config->get('pdns_db_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         $query = "SELECT id FROM $records_table
@@ -623,7 +623,7 @@ class Dns
      */
     public function is_valid_rr_cname_exists(string $name, int $rid): bool
     {
-        $pdns_db_name = $this->config->get('pdns_db_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         $where = ($rid > 0 ? " AND id != " . $this->db->quote($rid, 'integer') : '');
@@ -651,7 +651,7 @@ class Dns
      */
     public function is_valid_rr_cname_unique(string $name, string $rid): bool
     {
-        $pdns_db_name = $this->config->get('pdns_db_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         $where = ($rid > 0 ? " AND id != " . $this->db->quote($rid, 'integer') : '');
@@ -697,7 +697,7 @@ class Dns
      */
     public function is_valid_non_alias_target(string $target): bool
     {
-        $pdns_db_name = $this->config->get('pdns_db_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         $query = "SELECT id FROM $records_table

@@ -1133,7 +1133,7 @@ class DnsRecord
      */
     public function get_supermasters(): array
     {
-        $pdns_db_name = $this->config->get('pdns_db_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_name');
         $supermasters_table = $pdns_db_name ? $pdns_db_name . ".supermasters" : "supermasters";
 
         $result = $this->db->query("SELECT ip, nameserver, account FROM $supermasters_table");
@@ -1322,7 +1322,7 @@ class DnsRecord
      */
     public static function zone_count_ng($db, $config, string $perm, string $letterstart = 'all'): int
     {
-        $pdns_db_name = $config->get('pdns_db_name');
+        $pdns_db_name = $config->get('database', 'pdns_name');
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
 
         $tables = $domains_table;
@@ -1716,7 +1716,7 @@ class DnsRecord
     public function delete_domains(array $domains): bool
     {
         $pdnssec_use = $this->config->get('dnssec', 'enabled');
-        $pdns_db_name = $this->config->get('pdns_db_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_name');
         $domains_table = $pdns_db_name ? "$pdns_db_name.domains" : "domains";
         $records_table = $pdns_db_name ? "$pdns_db_name.records" : "records";
 
@@ -1730,8 +1730,8 @@ class DnsRecord
                 if (is_numeric($id)) {
                     $zone_type = $this->get_domain_type($id);
                     if ($pdnssec_use && $zone_type == 'MASTER') {
-                        $pdns_api_url = $this->config->get('pdns_api_url');
-                        $pdns_api_key = $this->config->get('pdns_api_key');
+                        $pdns_api_url = $this->config->get('pdns_api', 'url');
+                        $pdns_api_key = $this->config->get('pdns_api', 'key');
 
                         $dnssecProvider = DnssecProviderFactory::create(
                             $this->db,

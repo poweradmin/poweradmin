@@ -35,8 +35,8 @@ class DbZoneRepository implements ZoneRepositoryInterface
     public function __construct($db, $config)
     {
         $this->db = $db;
-        $this->db_type = $config->get('db_type');
-        $this->pdns_db_name = $config->get('pdns_db_name');
+        $this->db_type = $config->get('database', 'type');
+        $this->pdns_db_name = $config->get('database', 'pdns_name');
     }
 
     public function getDistinctStartingLetters(int $userId, bool $viewOthers): array

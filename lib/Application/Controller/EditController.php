@@ -72,6 +72,7 @@ class EditController extends BaseController
         $iface_edit_add_record_top = $configManager->get('interface', 'position_record_form_top', false);
         $iface_edit_save_changes_top = $configManager->get('interface', 'position_save_button_top', false);
         $iface_record_comments = $configManager->get('interface', 'show_record_comments', false);
+        $iface_zone_comments = $configManager->get('interface', 'show_zone_comments', true);
 
         $row_start = 0;
         if (isset($_GET["start"])) {
@@ -256,11 +257,11 @@ class EditController extends BaseController
             'record_types' => $isReverseZone ? RecordType::getReverseZoneTypes($isDnsSecEnabled) : RecordType::getDomainZoneTypes($isDnsSecEnabled),
             'iface_add_reverse_record' => $this->config('iface_add_reverse_record'),
             'iface_add_domain_record' => $this->config('iface_add_domain_record'),
-            'iface_zone_comments' => $this->config('iface_zone_comments'),
             'iface_edit_show_id' => $iface_show_id,
             'iface_edit_add_record_top' => $iface_edit_add_record_top,
             'iface_edit_save_changes_top' => $iface_edit_save_changes_top,
             'iface_record_comments' => $iface_record_comments,
+            'iface_zone_comments' => $iface_zone_comments,
             'serial' => DnsRecord::get_soa_serial($soa_record),
             'file_version' => time()
         ]);

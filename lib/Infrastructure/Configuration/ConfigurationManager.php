@@ -28,7 +28,7 @@ namespace Poweradmin\Infrastructure\Configuration;
  * This class is responsible for loading and accessing configuration values.
  * It combines legacy configuration, defaults, and the new settings structure.
  */
-class ConfigurationManager
+class ConfigurationManager implements ConfigurationInterface
 {
     private static ?ConfigurationManager $instance = null;
     private array $settings = [];
