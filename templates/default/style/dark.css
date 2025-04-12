@@ -60,6 +60,17 @@ a:hover, a:focus {
     color: var(--text-light);
 }
 
+/* Make form labels visible */
+label, .form-label {
+    color: var(--text-light) !important;
+}
+
+/* Improve form text visibility in dark theme */
+.form-text, small.text-muted, .text-muted, span.text-muted, label span.text-muted, 
+.form-label .text-muted, .form-control-sm, small {
+    color: #a7acb1 !important;
+}
+
 /* List group components */
 .list-group-item {
     color: var(--text-muted);
@@ -144,18 +155,38 @@ a:hover, a:focus {
 .card {
     background-color: var(--bg-dark-accent);
     border: 1px solid var(--border-dark) !important;
-}
-
-.card i {
-    color: var(--text-secondary);
-}
-
-.card-title, .card-text {
     color: var(--text-light);
 }
 
-.card-text.text-muted {
-    color: var(--text-secondary) !important;
+.card-header {
+    background-color: var(--bg-dark-secondary) !important;
+    border-color: var(--border-dark) !important;
+}
+
+.card .small.text-muted,
+.card .small, 
+.card p.small, 
+.card-body p.small {
+    color: #a7acb1 !important;
+}
+
+.card i {
+    color: inherit;
+}
+
+.card-title, .card-text, .card-header, .card-header strong {
+    color: var(--text-light) !important;
+}
+
+/* Make all text in cards more visible */
+.card-text.text-muted,
+.card p, 
+.card li,
+.card small,
+.card .card-body p,
+.card .card-body li,
+.card .card-body small {
+    color: #a7acb1 !important;
 }
 
 .card a {
@@ -186,6 +217,17 @@ a:hover, a:focus {
 
 .form-select.is-valid, .was-validated .form-select:valid {
     border-color: var(--input-border);
+}
+
+/* Ensure feedback text is visible */
+.invalid-feedback {
+    color: #ea868f !important;
+}
+
+/* Ensure placeholder text is visible */
+::placeholder {
+    color: #8e959d !important;
+    opacity: 1;
 }
 
 /* Breadcrumb styles */

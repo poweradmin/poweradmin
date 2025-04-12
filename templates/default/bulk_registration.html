@@ -6,68 +6,100 @@
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans %}Bulk registration{% endtrans %}</h5>
+{% if message %}
+<div class="alert alert-{{ message.type }}">{{ message.content }}</div>
+{% endif %}
 
-<form class="needs-validation" method="post" action="index.php?page=bulk_registration" novalidate>
-    <input type="hidden" name="_token" value="{{ csrf_token }}">
-    <table class="table">
-        <tr>
-            <td>{% trans %}Owner{% endtrans %}:</td>
-            <td>
-                <select class="form-select form-select-sm" name="owner">
-                    {% for user in users %}
-                    {% if user['id'] == userid %}
-                    <option value="{{ user['id'] }}" selected>{{ user['fullname'] }}</option>
-                    {% elseif perm_view_others %}
-                    <option value="{{ user['id'] }}">{{ user['fullname'] }}</option>
-                    {% endif %}
-                    {% endfor %}
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td>{% trans %}Type{% endtrans %}:</td>
-            <td>
-                <select class="form-select form-select-sm" name="dom_type">
-                    {% for type in available_zone_types %}
-                    {% if type == iface_zone_type_default %}
-                    {% set selected = 'selected' %}
-                    {% else %}
-                    {% set selected = '' %}
-                    {% endif %}
-                    <option value="{{ type }}" {{ selected }}>{{ type | lower }}</option>
-                    {% endfor %}
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td>{% trans %}Template{% endtrans %}:</td>
-            <td>
-                <select class="form-select form-select-sm" name="zone_template">
-                    <option value="none">none</option>
-                    {% for zone_template in zone_templates %}
-                    <option value="{{ zone_template['id'] }}">{{ zone_template['name'] }}</option>
-                    {% endfor %}
-                </select>
-            </td>
-        </tr>
+<div class="card">
+    <div class="card-header">
+        <strong>{{ 'Bulk Registration'|trans }}</strong>
+    </div>
+    <div class="card-body">
+        <p class="small text-muted mb-3">{{ 'Create multiple DNS zones at once'|trans }}</p>
 
-        <tr>
-            <td>{% trans %}Zones{% endtrans %}:</td>
-            <td>
-                <div>{% trans %}Type one domain per line{% endtrans %}:</div>
-                <div>
-                    <textarea class="form-control form-control-sm" name="domains" rows="10" required>{% if failed_domains %}{{ failed_domains | join('\n') }}{% endif %}</textarea>
-                    <div class="invalid-feedback">{% trans %}Provide a domain name(s){% endtrans %}</div>
+        <form class="needs-validation" method="post" action="index.php?page=bulk_registration" novalidate>
+            <input type="hidden" name="_token" value="{{ csrf_token }}">
+
+            <div class="row">
+                <div class="col-md-5">
+                    <!-- Form fields on the left side -->
+                    <div class="mb-3">
+                        <label for="owner" class="form-label">{{ 'Owner'|trans }}</label>
+                        <select class="form-select" id="owner" name="owner" required>
+                            {% set default_user_set = false %}
+                            {% for user in users %}
+                                {% if user['id'] == userid %}
+                                    <option value="{{ user['id'] }}" selected>{{ user['fullname'] }}</option>
+                                    {% set default_user_set = true %}
+                                {% elseif perm_view_others %}
+                                    <option value="{{ user['id'] }}">{{ user['fullname'] }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                        <div class="invalid-feedback">{% trans %}Please select an owner{% endtrans %}</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="dom_type" class="form-label">{{ 'Zone Type'|trans }}</label>
+                        <select class="form-select" id="dom_type" name="dom_type">
+                            {% for type in available_zone_types %}
+                            {% if type == iface_zone_type_default %}
+                            {% set selected = 'selected' %}
+                            {% else %}
+                            {% set selected = '' %}
+                            {% endif %}
+                            <option value="{{ type }}" {{ selected }}>{{ type | lower }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="zone_template" class="form-label">{{ 'Template'|trans }}</label>
+                        <select class="form-select" id="zone_template" name="zone_template">
+                            <option value="none">none</option>
+                            {% for zone_template in zone_templates %}
+                            <option value="{{ zone_template['id'] }}">{{ zone_template['name'] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="domains" class="form-label">{{ 'Domains'|trans }}</label>
+                        <textarea class="form-control" id="domains" name="domains" rows="10" required>{% if failed_domains %}{{ failed_domains | join('\n') }}{% endif %}</textarea>
+                        <div class="invalid-feedback">{% trans %}Provide a domain name(s){% endtrans %}</div>
+                        <small class="form-text text-muted">{{ 'Type one domain per line'|trans }}</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary" name="submit">{{ 'Add Zones'|trans }}</button>
+                        <a href="index.php?page=list_zones" class="btn btn-secondary">{{ 'Cancel'|trans }}</a>
+                    </div>
                 </div>
-            </td>
-        </tr>
+                
+                <div class="col-md-7">
+                    <!-- Information panel on the right side -->
+                    <div class="card border-info">
+                        <div class="card-header bg-info bg-opacity-10 text-info border-info">
+                            <i class="bi bi-info-circle-fill me-2 text-info"></i>{{ 'Instructions'|trans }}
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">
+                                {{ 'This tool allows you to create multiple DNS zones at once.'|trans }}
+                            </p>
+                            <p class="card-text mb-0">
+                                {{ 'Guidelines:'|trans }}
+                            </p>
+                            <ul class="mb-0 ps-4">
+                                <li>{{ 'Enter one domain name per line in the Domains field'|trans }}</li>
+                                <li>{{ 'Select a zone template to apply standard records to all zones'|trans }}</li>
+                                <li>{{ 'The chosen owner will have full access to all created zones'|trans }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
-        <tr>
-            <td>&nbsp;</td>
-            <td>
-                <input type="submit" class="btn btn-primary btn-sm" name="submit" value="{% trans %}Add zones{% endtrans %}">
-            </td>
-        </tr>
-    </table>
-</form>
+<script src="assets/textareaAutoResize.js?time={{ file_version }}"></script>
