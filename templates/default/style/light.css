@@ -1,36 +1,45 @@
 /* Light theme */
+:root {
+    --border-color: rgb(222, 226, 230);
+    --text-muted: rgb(108, 117, 125);
+    --bg-light: rgb(248, 249, 250);
+    --primary-blue: #0d6efd;
+    --input-border: #ced4da;
+}
 
+/* Base layout */
 body {
     background-image: linear-gradient(180deg, #eee, #fff 100px, #fff);
 }
 
+/* Header styles */
 header {
-    border-bottom-color: rgb(222, 226, 230);
-    border-bottom-style: solid;
-    border-bottom-width: 1px;
+    border-bottom: 1px solid var(--border-color);
 }
 
-header a, a:hover {
+header a {
     color: #000000;
 }
 
-footer {
-    background-color: rgb(248, 249, 250);
-    border-top-color: rgb(222, 226, 230);
-    border-top-style: solid;
-    border-top-width: 1px;
-    border-bottom-color: rgb(222, 226, 230);
-    border-bottom-style: solid;
-    border-bottom-width: 1px;
+header a:hover, header a:focus {
+    color: #000000;
 }
 
-footer a, footer a:hover {
-    color: rgb(108, 117, 125);
+/* Footer styles */
+footer {
+    background-color: var(--bg-light);
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+footer a, footer a:hover, footer a:focus {
+    color: var(--text-muted);
     text-decoration: none;
 }
 
+/* Card components */
 .card i {
-    color: rgb(108, 117, 125);
+    color: var(--text-muted);
 }
 
 /* Form validation styles */
@@ -44,24 +53,26 @@ footer a, footer a:hover {
 }
 
 .form-check-input.is-valid:checked, .was-validated .form-check-input:valid:checked {
-    background-color: #0d6efd;
-    border-color: #0d6efd !important;
+    background-color: var(--primary-blue);
+    border-color: var(--primary-blue) !important;
 }
 
 .form-select.is-valid, .was-validated .form-select:valid {
-    border-color: #ced4da;
+    border-color: var(--input-border);
 }
 
+/* Navigation components */
 .breadcrumb {
     display: flex;
     flex-wrap: wrap;
     padding: 0.75rem 1rem;
     margin-bottom: 1rem;
     list-style: none;
-    background-color: rgb(248, 249, 250);
+    background-color: var(--bg-light);
     border-radius: 0.25rem;
 }
 
+/* Input styling utilities */
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
