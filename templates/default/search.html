@@ -5,59 +5,84 @@
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans %}Search zones and records{% endtrans %}</h5>
-<span class="text-secondary">{% trans %}Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) in pattern matches any single character, a percent sign (%) matches any string of zero or more characters.{% endtrans %}</span>
-<form class="needs-validation" name="search_form" action="index.php?page=search" method="POST" onsubmit="checkQueryChange(this);" novalidate>
-    <input type="hidden" name="_token" value="{{ csrf_token }}">
-    <input type="hidden" name="zone_sort_by" value="{{ zone_sort_by }}">
-    <input type="hidden" name="record_sort_by" value="{{ record_sort_by }}">
-    <input type="hidden" name="zones_page" value="{{ zones_page }}">
-    <input type="hidden" name="records_page" value="{{ records_page }}">
-    <input type="hidden" name="zone_sort_by_direction" value="{{ zone_sort_direction }}">
-    <input type="hidden" name="record_sort_by_direction" value="{{ record_sort_direction }}">
+{% if message %}
+<div class="alert alert-{{ message.type }}">{{ message.content }}</div>
+{% endif %}
 
-    <div class="row pt-3 pb-3">
-        <div class="col-sm-4">
-            <div class="input-group has-validation">
-                <input type="text" class="form-control form-control-sm" name="query" value="{{ query }}" required>
-                <input type="submit" class="btn btn-primary btn-sm" name="do_search" value="{% trans %}Search{% endtrans %}">
-                <div class="input-group-append">
-                    <a href="index.php?page=search" class="btn btn-secondary btn-sm" role="button"><i class="bi bi-eraser"></i> {% trans %}Clear{% endtrans %}</a>
-                </div>
-                <div class="invalid-feedback">{% trans %}Provide a keyword for your search{% endtrans %}</div>
-            </div>
-        </div>
-        <div class="col-sm-8 mt-1">
-            <div class="form-check form-check-inline">
-                <input type="checkbox" class="form-check-input" name="zones" id="inlineCheckbox1"
-                       value="true" {% if search_by_zones %}checked{% endif %}>
-                <label class="form-check-label" for="inlineCheckbox1">{% trans %}Zones{% endtrans %}</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input type="checkbox" class="form-check-input" name="records" id="inlineCheckbox2"
-                       value="true" {% if search_by_records %}checked{% endif %}>
-                <label class="form-check-label" for="inlineCheckbox2">{% trans %}Records{% endtrans %}</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input type="checkbox" class="form-check-input" name="wildcard" id="inlineCheckbox3"
-                       value="true" {% if search_by_wildcard %}checked{% endif %}>
-                <label class="form-check-label" for="inlineCheckbox3">{% trans %}Wildcard{% endtrans %}</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input type="checkbox" class="form-check-input" name="reverse" id="inlineCheckbox4"
-                       value="true" {% if search_by_reverse %}checked{% endif %}>
-                <label class="form-check-label" for="inlineCheckbox4">{% trans %}Reverse{% endtrans %}</label>
-            </div>
-            {% if iface_zone_comments or iface_record_comments %}
-            <div class="form-check form-check-inline">
-                <input type="checkbox" class="form-check-input" name="comments" id="inlineCheckbox5"
-                       value="true" {% if search_by_comments %}checked{% endif %}>
-                <label class="form-check-label" for="inlineCheckbox5">{% trans %}Comments{% endtrans %}</label>
-            </div>
-            {% endif %}
-        </div>
+<div class="card">
+    <div class="card-header py-2">
+        <strong>{% trans %}Search zones and records{% endtrans %}</strong>
     </div>
-</form>
+    <div class="card-body py-2">
+        <p class="small text-muted mb-2">{% trans %}Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) in pattern matches any single character, a percent sign (%) matches any string of zero or more characters.{% endtrans %}</p>
+
+        <form class="needs-validation" name="search_form" action="index.php?page=search" method="POST" onsubmit="checkQueryChange(this);" novalidate>
+            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            <input type="hidden" name="zone_sort_by" value="{{ zone_sort_by }}">
+            <input type="hidden" name="record_sort_by" value="{{ record_sort_by }}">
+            <input type="hidden" name="zones_page" value="{{ zones_page }}">
+            <input type="hidden" name="records_page" value="{{ records_page }}">
+            <input type="hidden" name="zone_sort_by_direction" value="{{ zone_sort_direction }}">
+            <input type="hidden" name="record_sort_by_direction" value="{{ record_sort_direction }}">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- Form fields -->
+                    <div class="row g-2">
+                        <div class="col-md-5">
+                            <div class="mb-2">
+                                <label for="query" class="form-label small">{% trans %}Search Query{% endtrans %}</label>
+                                <div class="input-group input-group-sm has-validation">
+                                    <input type="text" class="form-control form-control-sm" id="query" name="query" value="{{ query }}" required>
+                                    <button type="submit" class="btn btn-primary btn-sm" name="do_search">{% trans %}Search{% endtrans %}</button>
+                                    <a href="index.php?page=search" class="btn btn-secondary btn-sm" role="button">{% trans %}Clear{% endtrans %}</a>
+                                    <div class="invalid-feedback">{% trans %}Provide a keyword for your search{% endtrans %}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-7">
+                            <div class="mb-2">
+                                <label class="form-label small">{% trans %}Search In{% endtrans %}</label>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <div class="form-check form-check-inline m-0">
+                                        <input type="checkbox" class="form-check-input form-check-sm" name="zones" id="inlineCheckbox1"
+                                               value="true" {% if search_by_zones %}checked{% endif %}>
+                                        <label class="form-check-label small" for="inlineCheckbox1">{% trans %}Zones{% endtrans %}</label>
+                                    </div>
+                                    <div class="form-check form-check-inline m-0">
+                                        <input type="checkbox" class="form-check-input form-check-sm" name="records" id="inlineCheckbox2"
+                                               value="true" {% if search_by_records %}checked{% endif %}>
+                                        <label class="form-check-label small" for="inlineCheckbox2">{% trans %}Records{% endtrans %}</label>
+                                    </div>
+                                    <div class="form-check form-check-inline m-0">
+                                        <input type="checkbox" class="form-check-input form-check-sm" name="wildcard" id="inlineCheckbox3"
+                                               value="true" {% if search_by_wildcard %}checked{% endif %}>
+                                        <label class="form-check-label small" for="inlineCheckbox3">{% trans %}Wildcard{% endtrans %}</label>
+                                    </div>
+                                    <div class="form-check form-check-inline m-0">
+                                        <input type="checkbox" class="form-check-input form-check-sm" name="reverse" id="inlineCheckbox4"
+                                               value="true" {% if search_by_reverse %}checked{% endif %}>
+                                        <label class="form-check-label small" for="inlineCheckbox4">{% trans %}Reverse{% endtrans %}</label>
+                                    </div>
+                                    {% if iface_zone_comments or iface_record_comments %}
+                                    <div class="form-check form-check-inline m-0">
+                                        <input type="checkbox" class="form-check-input form-check-sm" name="comments" id="inlineCheckbox5"
+                                               value="true" {% if search_by_comments %}checked{% endif %}>
+                                        <label class="form-check-label small" for="inlineCheckbox5">{% trans %}Comments{% endtrans %}</label>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right column removed as requested -->
+            </div>
+        </form>
+    </div>
+</div>
 
 {% if has_zones %}
 <div class="pb-3">
