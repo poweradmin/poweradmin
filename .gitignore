@@ -2,7 +2,9 @@
 /inc/config.inc.php
 /config/settings.php
 /scripts
-/templates/custom
+/templates/*
+/templates/default/custom
+!/templates/default
 
 # OS generated files
 .DS_Store
@@ -31,6 +33,7 @@ Thumbs.db
 
 # Devcontainer
 /.devcontainer/scripts/pdns
+/.ddev
 
 # Dependency directories
 /node_modules/
