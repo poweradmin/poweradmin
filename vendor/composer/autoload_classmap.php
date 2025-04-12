@@ -523,7 +523,7 @@ return array(
     'Poweradmin\\Infrastructure\\Service\\PdnsUtilProvider' => $baseDir . '/lib/Infrastructure/Service/PdnsUtilProvider.php',
     'Poweradmin\\Infrastructure\\Service\\RedirectService' => $baseDir . '/lib/Infrastructure/Service/RedirectService.php',
     'Poweradmin\\Infrastructure\\Service\\SessionAuthenticator' => $baseDir . '/lib/Infrastructure/Service/SessionAuthenticator.php',
-    'Poweradmin\\Infrastructure\\Service\\ThemeManager' => $baseDir . '/lib/Infrastructure/Service/ThemeManager.php',
+    'Poweradmin\\Infrastructure\\Service\\StyleManager' => $baseDir . '/lib/Infrastructure/Service/StyleManager.php',
     'Poweradmin\\Infrastructure\\Utility\\DependencyCheck' => $baseDir . '/lib/Infrastructure/Utility/DependencyCheck.php',
     'Poweradmin\\Infrastructure\\Utility\\IpAddressRetriever' => $baseDir . '/lib/Infrastructure/Utility/IpAddressRetriever.php',
     'Poweradmin\\Infrastructure\\Utility\\LanguageCode' => $baseDir . '/lib/Infrastructure/Utility/LanguageCode.php',

@@ -712,7 +712,7 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
         'Poweradmin\\Infrastructure\\Service\\PdnsUtilProvider' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/PdnsUtilProvider.php',
         'Poweradmin\\Infrastructure\\Service\\RedirectService' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/RedirectService.php',
         'Poweradmin\\Infrastructure\\Service\\SessionAuthenticator' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/SessionAuthenticator.php',
-        'Poweradmin\\Infrastructure\\Service\\ThemeManager' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/ThemeManager.php',
+        'Poweradmin\\Infrastructure\\Service\\StyleManager' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/StyleManager.php',
         'Poweradmin\\Infrastructure\\Utility\\DependencyCheck' => __DIR__ . '/../..' . '/lib/Infrastructure/Utility/DependencyCheck.php',
         'Poweradmin\\Infrastructure\\Utility\\IpAddressRetriever' => __DIR__ . '/../..' . '/lib/Infrastructure/Utility/IpAddressRetriever.php',
         'Poweradmin\\Infrastructure\\Utility\\LanguageCode' => __DIR__ . '/../..' . '/lib/Infrastructure/Utility/LanguageCode.php',
