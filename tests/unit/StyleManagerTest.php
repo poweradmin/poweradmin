@@ -19,7 +19,7 @@ class StyleManagerTest extends TestCase
         // Create test theme directory structure and style files for testing
         $this->testStyleDir = dirname(__DIR__, 2) . '/templates/default/style/';
     }
-    
+
     protected function tearDown(): void
     {
         // Clean up cookies after each test
