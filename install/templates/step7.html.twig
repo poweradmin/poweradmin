@@ -14,8 +14,11 @@
                 {% trans %} with the following content:{% endtrans %}
             </div>
 
-            <div class="p-2 bg-light rounded">
-                <pre class="bg-dark text-light p-2 rounded small">
+            <div class="p-2 bg-light rounded position-relative">
+                <button id="copy-config" class="btn btn-sm btn-secondary position-absolute top-0 end-0 m-2">
+                    <i class="bi bi-clipboard"></i> Copy
+                </button>
+                <pre id="config-content" class="bg-dark text-light p-2 rounded small">
 &lt;?php
 
 /**
@@ -78,6 +81,19 @@ return [
 ];
 </pre>
             </div>
+            
+            <script>
+                document.getElementById('copy-config').addEventListener('click', function() {
+                    const content = document.getElementById('config-content').textContent;
+                    navigator.clipboard.writeText(content).then(function() {
+                        const btn = document.getElementById('copy-config');
+                        btn.innerHTML = '<i class="bi bi-check-lg"></i> Copied!';
+                        setTimeout(function() {
+                            btn.innerHTML = '<i class="bi bi-clipboard"></i> Copy';
+                        }, 2000);
+                    });
+                });
+            </script>
 
             <form method="post" class="mt-3">
                 <input type="hidden" name="install_token" value="{{ install_token }}">
