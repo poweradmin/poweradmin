@@ -56,7 +56,7 @@ class ConfigValidator
 
     /**
      * Helper method to get setting from hierarchical config
-     * 
+     *
      * @param string $group Settings group
      * @param string $key Setting key
      * @param mixed $default Default value
@@ -130,7 +130,7 @@ class ConfigValidator
             $this->errors['iface_enabled_languages'] = 'enabled_languages must be a non-empty string and contain a list of languages separated by commas';
             return;
         }
-        
+
         $enabledLanguagesArray = explode(',', $enabledLanguages);
         if (!in_array($language, $enabledLanguagesArray)) {
             $this->errors['iface_lang'] = 'language must be one of the enabled languages';

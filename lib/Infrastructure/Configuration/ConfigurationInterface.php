@@ -32,7 +32,7 @@ interface ConfigurationInterface
      * @return mixed Configuration value or null if not found
      */
     public function get(string $group, string $key): mixed;
-    
+
     /**
      * Get an entire configuration group
      *
@@ -40,7 +40,7 @@ interface ConfigurationInterface
      * @return array Configuration group values
      */
     public function getGroup(string $group): array;
-    
+
     /**
      * Get all configuration settings
      *

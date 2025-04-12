@@ -59,7 +59,6 @@ class AddUserController extends BaseController
 
         // Initialize mail service
         $this->mailService = new MailService($configManager);
-
     }
 
     public function run(): void

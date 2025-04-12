@@ -35,11 +35,10 @@ class StyleManager
     private string $styleDir;
 
     public function __construct(
-        string $style = self::DEFAULT_STYLE, 
-        string $themeBasePath = 'templates', 
+        string $style = self::DEFAULT_STYLE,
+        string $themeBasePath = 'templates',
         string $themeName = 'default'
-    )
-    {
+    ) {
         $this->themeBasePath = $themeBasePath;
         $this->themeName = $themeName;
         $this->styleDir = $themeBasePath . '/' . $themeName . '/style';

@@ -428,6 +428,34 @@ abstract class BaseController
     }
 
     /**
+     * Sets validation rules for the request data.
+     *
+     * @param array $rules The validation rules.
+     */
+    public function setRequestRules(array $rules): void
+    {
+        $constraints = [];
+
+        // Convert rules to Symfony validator constraints
+        if (isset($rules['required'])) {
+            foreach ($rules['required'] as $field) {
+                $constraints[$field] = new Assert\NotBlank(['message' => sprintf(_('The %s field is required.'), $field)]);
+            }
+        }
+
+        if (isset($rules['integer'])) {
+            foreach ($rules['integer'] as $field) {
+                $constraints[$field] = new Assert\Type([
+                    'type' => 'numeric',
+                    'message' => sprintf(_('The %s field must be a number.'), $field)
+                ]);
+            }
+        }
+
+        $this->validationConstraints = $constraints;
+    }
+
+    /**
      * Validates the request data.
      *
      * @param array|null $data Optional data to validate. If not provided, uses $this->request

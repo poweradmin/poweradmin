@@ -119,7 +119,7 @@ class AppManager
     /**
      * Gets a configuration value.
      *
-     * @param string $group The configuration group 
+     * @param string $group The configuration group
      * @param string $key The name of the configuration value
      * @param mixed|null $default The default value if the configuration value is not found
      * @return mixed The configuration value

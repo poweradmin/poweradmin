@@ -59,9 +59,14 @@ class ChangePasswordController extends BaseController
         $redirectService = new RedirectService();
         $this->authService = new AuthenticationService($sessionService, $redirectService);
         $this->policyService = new PasswordPolicyService();
+
+        // Get password encryption settings with fallback to defaults
+        $passwordEncryption = $this->config('security', 'password_encryption') ?? 'bcrypt';
+        $passwordEncryptionCost = (int)($this->config('security', 'password_cost') ?? 10);
+
         $userAuthService = new UserAuthenticationService(
-            $this->config('password_encryption'),
-            $this->config('password_encryption_cost')
+            $passwordEncryption,
+            $passwordEncryptionCost
         );
         $userRepository = new DbUserRepository($this->db);
         $userContextService = new UserContextService();

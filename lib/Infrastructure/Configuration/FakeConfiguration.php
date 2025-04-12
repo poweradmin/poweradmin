@@ -47,7 +47,7 @@ class FakeConfiguration implements ConfigurationInterface
     {
         return $this->config[$group][$key] ?? null;
     }
-    
+
     /**
      * Gets an entire configuration group.
      *
@@ -58,7 +58,7 @@ class FakeConfiguration implements ConfigurationInterface
     {
         return $this->config[$group] ?? [];
     }
-    
+
     /**
      * Gets all configuration settings.
      *

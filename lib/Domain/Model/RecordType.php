@@ -173,8 +173,8 @@ class RecordType
         $configuredDomainTypes = $configManager->get('dns', 'domain_record_types');
 
         if ($configuredDomainTypes) {
-            return $isDnsSecEnabled ? 
-                self::mergeDnsSecTypes($configuredDomainTypes, true) : 
+            return $isDnsSecEnabled ?
+                self::mergeDnsSecTypes($configuredDomainTypes, true) :
                 $configuredDomainTypes;
         }
 
@@ -194,8 +194,8 @@ class RecordType
         $configuredReverseTypes = $configManager->get('dns', 'reverse_record_types');
 
         if ($configuredReverseTypes) {
-            return $isDnsSecEnabled ? 
-                self::mergeDnsSecTypes($configuredReverseTypes, true) : 
+            return $isDnsSecEnabled ?
+                self::mergeDnsSecTypes($configuredReverseTypes, true) :
                 $configuredReverseTypes;
         }
 
