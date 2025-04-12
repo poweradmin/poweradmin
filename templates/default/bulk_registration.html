@@ -25,7 +25,7 @@
                     <!-- Form fields on the left side -->
                     <div class="mb-3">
                         <label for="owner" class="form-label">{{ 'Owner'|trans }}</label>
-                        <select class="form-select" id="owner" name="owner" required>
+                        <select class="form-select form-select-sm" id="owner" name="owner" required>
                             {% set default_user_set = false %}
                             {% for user in users %}
                                 {% if user['id'] == userid %}
@@ -41,7 +41,7 @@
 
                     <div class="mb-3">
                         <label for="dom_type" class="form-label">{{ 'Zone Type'|trans }}</label>
-                        <select class="form-select" id="dom_type" name="dom_type">
+                        <select class="form-select form-select-sm" id="dom_type" name="dom_type">
                             {% for type in available_zone_types %}
                             {% if type == iface_zone_type_default %}
                             {% set selected = 'selected' %}
@@ -55,7 +55,7 @@
 
                     <div class="mb-3">
                         <label for="zone_template" class="form-label">{{ 'Template'|trans }}</label>
-                        <select class="form-select" id="zone_template" name="zone_template">
+                        <select class="form-select form-select-sm" id="zone_template" name="zone_template">
                             <option value="none">none</option>
                             {% for zone_template in zone_templates %}
                             <option value="{{ zone_template['id'] }}">{{ zone_template['name'] }}</option>
@@ -65,14 +65,14 @@
 
                     <div class="mb-3">
                         <label for="domains" class="form-label">{{ 'Domains'|trans }}</label>
-                        <textarea class="form-control" id="domains" name="domains" rows="10" required>{% if failed_domains %}{{ failed_domains | join('\n') }}{% endif %}</textarea>
+                        <textarea class="form-control form-control-sm" id="domains" name="domains" rows="10" required>{% if failed_domains %}{{ failed_domains | join('\n') }}{% endif %}</textarea>
                         <div class="invalid-feedback">{% trans %}Provide a domain name(s){% endtrans %}</div>
                         <small class="form-text text-muted">{{ 'Type one domain per line'|trans }}</small>
                     </div>
 
                     <div class="mb-3">
-                        <button type="submit" class="btn btn-primary" name="submit">{{ 'Add Zones'|trans }}</button>
-                        <a href="index.php?page=list_zones" class="btn btn-secondary">{{ 'Cancel'|trans }}</a>
+                        <button type="submit" class="btn btn-sm btn-primary" name="submit">{{ 'Add Zones'|trans }}</button>
+                        <a href="index.php?page=list_zones" class="btn btn-sm btn-secondary">{{ 'Cancel'|trans }}</a>
                     </div>
                 </div>
                 

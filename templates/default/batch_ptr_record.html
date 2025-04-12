@@ -34,7 +34,7 @@
                     <!-- Form fields on the left side -->
                     <div class="mb-3">
                         <label for="network_type" class="form-label">{{ 'IP Version'|trans }}</label>
-                        <select id="network_type" name="network_type" class="form-select">
+                        <select id="network_type" name="network_type" class="form-select form-select-sm">
                             <option value="ipv4" {% if network_type == 'ipv4' %}selected{% endif %}>{{ 'IPv4 network'|trans }}</option>
                             <option value="ipv6" {% if network_type == 'ipv6' %}selected{% endif %}>{{ 'IPv6 (/64 network)'|trans }}</option>
                         </select>
@@ -42,7 +42,7 @@
                     
                     <div class="mb-3">
                         <label for="network_prefix" class="form-label">{{ 'Network Prefix'|trans }}</label>
-                        <input type="text" id="network_prefix" name="network_prefix" value="{{ network_prefix }}" class="form-control" required>
+                        <input type="text" id="network_prefix" name="network_prefix" value="{{ network_prefix }}" class="form-control form-control-sm" required>
                         <div class="invalid-feedback">{% trans %}Please provide a network prefix{% endtrans %}</div>
                         <small class="form-text text-muted ipv4-help">{{ 'e.g., "192.168.1.0/24" or "10.0.0.0/20"'|trans }}</small>
                         <small class="form-text text-muted ipv6-help">{{ 'e.g., "2001:db8:1:1"'|trans }}</small>
@@ -50,19 +50,19 @@
 
                     <div class="mb-3">
                         <label for="host_prefix" class="form-label">{{ 'Host Prefix'|trans }} <span class="text-muted">({{ 'Optional'|trans }})</span></label>
-                        <input type="text" id="host_prefix" name="host_prefix" value="{{ host_prefix }}" class="form-control">
+                        <input type="text" id="host_prefix" name="host_prefix" value="{{ host_prefix }}" class="form-control form-control-sm">
                         <small class="form-text text-muted">{{ 'Leave empty to use just the domain for PTR records'|trans }}</small>
                     </div>
 
                     <div class="mb-3">
                         <label for="domain" class="form-label">{{ 'Domain'|trans }}</label>
-                        <input type="text" id="domain" name="domain" value="{{ domain }}" class="form-control" required>
+                        <input type="text" id="domain" name="domain" value="{{ domain }}" class="form-control form-control-sm" required>
                         <div class="invalid-feedback">{% trans %}Required{% endtrans %}</div>
                     </div>
 
                     <div class="mb-3 ipv6-count">
                         <label for="ipv6_count" class="form-label">{{ 'IPv6 Count'|trans }}</label>
-                        <input type="number" id="ipv6_count" name="ipv6_count" value="{{ ipv6_count }}" min="1" max="1000" class="form-control" required>
+                        <input type="number" id="ipv6_count" name="ipv6_count" value="{{ ipv6_count }}" min="1" max="1000" class="form-control form-control-sm" required>
                     </div>
 
                     <div class="mb-3">
@@ -72,16 +72,16 @@
                     {% if iface_record_comments %}
                     <div class="mb-3">
                         <label for="comment" class="form-label">{{ 'Comment'|trans }}</label>
-                        <input type="text" id="comment" name="comment" value="{{ comment }}" class="form-control">
+                        <input type="text" id="comment" name="comment" value="{{ comment }}" class="form-control form-control-sm">
                     </div>
                     {% endif %}
 
                     <div class="mb-3">
-                        <button type="submit" class="btn btn-primary">{{ 'Create PTR Records'|trans }}</button>
+                        <button type="submit" class="btn btn-sm btn-primary">{{ 'Create PTR Records'|trans }}</button>
                         {% if has_zone_id %}
-                        <a href="index.php?page=edit&id={{ zone_id }}" class="btn btn-secondary">{{ 'Cancel'|trans }}</a>
+                        <a href="index.php?page=edit&id={{ zone_id }}" class="btn btn-sm btn-secondary">{{ 'Cancel'|trans }}</a>
                         {% else %}
-                        <a href="index.php" class="btn btn-secondary">{{ 'Cancel'|trans }}</a>
+                        <a href="index.php" class="btn btn-sm btn-secondary">{{ 'Cancel'|trans }}</a>
                         {% endif %}
                     </div>
                 </div>
