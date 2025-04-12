@@ -43,8 +43,6 @@ class IndexController extends BaseController
 
     private function showIndex(): void
     {
-        $template = "index_cards.html";
-
         $userlogin = $_SESSION["userlogin"] ?? '';
 
         $permissions = Permission::getPermissions($this->db, [
@@ -61,7 +59,7 @@ class IndexController extends BaseController
             'templ_perm_edit',
         ]);
 
-        $this->render($template, [
+        $this->render("index.html", [
             'user_name' => empty($_SESSION["name"]) ? $userlogin : $_SESSION["name"],
             'auth_used' => $_SESSION["auth_used"] ?? '',
             'permissions' => $permissions,
