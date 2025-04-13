@@ -66,7 +66,7 @@ class EditController extends BaseController
 
     public function run(): void
     {
-        $iface_rowamount = $this->config('iface_rowamount');
+        $iface_rowamount = $this->configManager->get('interface', 'rows_per_page', 10);
         $configManager = ConfigurationManager::getInstance();
         $iface_show_id = $configManager->get('interface', 'show_record_id', false);
         $iface_edit_add_record_top = $configManager->get('interface', 'position_record_form_top', false);
@@ -145,7 +145,7 @@ class EditController extends BaseController
                 $new_zone_template = $_POST['zone_template'];
             }
             if ($_POST['current_zone_template'] != $new_zone_template) {
-                $dnsRecord->update_zone_records($this->config('database', 'type', 'mysql'), $this->config('dns', 'ttl', 86400), $zone_id, $new_zone_template);
+                $dnsRecord->update_zone_records($this->configManager->get('database', 'type', 'mysql'), $this->configManager->get('dns', 'ttl', 86400), $zone_id, $new_zone_template);
             }
         }
 
@@ -210,13 +210,12 @@ class EditController extends BaseController
         } else {
             $idn_zone_name = "";
         }
-        $records = $dnsRecord->get_records_from_domain_id($this->config('database', 'type', 'mysql'), $zone_id, $row_start, $iface_rowamount, $record_sort_by, $sort_direction, $iface_record_comments);
+        $records = $dnsRecord->get_records_from_domain_id($this->configManager->get('database', 'type', 'mysql'), $zone_id, $row_start, $iface_rowamount, $record_sort_by, $sort_direction, $iface_record_comments);
         $owners = DnsRecord::get_users_from_domain_id($this->db, $zone_id);
 
         $soa_record = $dnsRecord->get_soa_record($zone_id);
 
-        // Access DNSSEC enabled setting from the new configuration path with a default value of false
-        $isDnsSecEnabled = $this->config('dnssec', 'enabled', false);
+        $isDnsSecEnabled = $this->configManager->get('dnssec', 'enabled', false);
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
         $isReverseZone = DnsHelper::isReverseZone($zone_name);
@@ -252,11 +251,11 @@ class EditController extends BaseController
             'pdnssec_use' => $isDnsSecEnabled,
             'is_secured' => $dnssecProvider->isZoneSecured($zone_name, $this->getConfig()),
             'session_userid' => $_SESSION["userid"],
-            'dns_ttl' => $this->config('dns_ttl'),
+            'dns_ttl' => $this->configManager->get('dns', 'ttl', 86400),
             'is_reverse_zone' => $isReverseZone,
             'record_types' => $isReverseZone ? RecordType::getReverseZoneTypes($isDnsSecEnabled) : RecordType::getDomainZoneTypes($isDnsSecEnabled),
-            'iface_add_reverse_record' => $this->config('iface_add_reverse_record'),
-            'iface_add_domain_record' => $this->config('iface_add_domain_record'),
+            'iface_add_reverse_record' => $this->configManager->get('interface', 'add_reverse_record', true),
+            'iface_add_domain_record' => $this->configManager->get('interface', 'add_domain_record', true),
             'iface_edit_show_id' => $iface_show_id,
             'iface_edit_add_record_top' => $iface_edit_add_record_top,
             'iface_edit_save_changes_top' => $iface_edit_save_changes_top,
@@ -336,7 +335,7 @@ class EditController extends BaseController
                     }
 
                     $comment = '';
-                    if ($this->config('iface_record_comments')) {
+                    if ($this->configManager->get('interface', 'show_record_comments', false)) {
                         $recordComment = $this->recordCommentService->findComment($zone_id, $record['name'], $record['type']);
                         $comment = $recordComment && $recordComment->getComment() ?? '';
                     }
@@ -356,7 +355,7 @@ class EditController extends BaseController
                         $log->log_after($record['rid']);
                         $log->write();
 
-                        if ($this->config('iface_record_comments')) {
+                        if ($this->configManager->get('interface', 'show_record_comments', false)) {
                             $recordCopy = $log->getRecordCopy();
                             $recordKey = $recordCopy['name'] . '|' . $recordCopy['type'];
 
@@ -386,7 +385,7 @@ class EditController extends BaseController
             }
         }
 
-        if ($this->config('iface_zone_comments')) {
+        if ($this->configManager->get('interface', 'show_zone_comments', true)) {
             $one_record_changed = $this->processZoneComment($zone_id, $dnsRecord, $one_record_changed);
         }
 
@@ -402,13 +401,13 @@ class EditController extends BaseController
             $this->showError(_("Template name can't be an empty string."));
         } else {
             $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-            $records = $dnsRecord->get_records_from_domain_id($this->config('db_type'), $zone_id);
+            $records = $dnsRecord->get_records_from_domain_id($this->configManager->get('database', 'type', 'mysql'), $zone_id);
 
             $description = htmlspecialchars($_POST['templ_descr']) ?? '';
 
             $options = [
-                'NS1' => $this->config('dns_ns1') ?? '',
-                'HOSTMASTER' => $this->config('dns_hostmaster') ?? '',
+                'NS1' => $this->configManager->get('dns', 'ns1', '') ?? '',
+                'HOSTMASTER' => $this->configManager->get('dns', 'hostmaster', '') ?? '',
             ];
 
             ZoneTemplate::add_zone_templ_save_as($this->db, $template_name, $description, $_SESSION['userid'], $records, $options, $dnsRecord->get_domain_name_by_id($zone_id));
@@ -460,7 +459,7 @@ class EditController extends BaseController
     public function finalizeSave(bool $error, bool $serial_mismatch, DnsRecord $dnsRecord, int $zone_id, bool $one_record_changed, string $zone_name): void
     {
         if ($error === false) {
-            $experimental_edit_conflict_resolution = $this->config('experimental_edit_conflict_resolution');
+            $experimental_edit_conflict_resolution = $this->configManager->get('misc', 'edit_conflict_resolution', 'last_writer_wins');
             if ($serial_mismatch && $experimental_edit_conflict_resolution == 'only_latest_version') {
                 $this->setMessage('edit', 'warn', (_('Request has expired, please try again.')));
             } else {
@@ -472,7 +471,7 @@ class EditController extends BaseController
                     $this->setMessage('edit', 'warn', (_('Zone did not have any record changes.')));
                 }
 
-                if ($this->config('pdnssec_use')) {
+                if ($this->configManager->get('dnssec', 'enabled', false)) {
                     $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
                     $dnssecProvider->rectifyZone($zone_name);
                 }

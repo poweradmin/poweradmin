@@ -87,7 +87,7 @@ class DnssecController extends BaseController
             'idn_zone_name' => $idn_zone_name,
             'domain_type' => $dnsRecord->get_domain_type($zone_id),
             'keys' => $dnssecProvider->getKeys($domain_name),
-            'pdnssec_use' => $this->config('pdnssec_use'),
+            'pdnssec_use' => $this->configManager->get('dnssec', 'enabled', false),
             'record_count' => $dnsRecord->count_zone_records($zone_id),
             'zone_id' => $zone_id,
             'zone_template_id' => DnsRecord::get_zone_template($this->db, $zone_id),

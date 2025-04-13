@@ -87,8 +87,8 @@ class AddZoneMasterController extends BaseController
             $this->showFirstValidationError($_POST);
         }
 
-        $pdnssec_use = $this->config('pdnssec_use');
-        $dns_third_level_check = $this->config('dns_third_level_check');
+        $pdnssec_use = $this->configManager->get('pdnssec', 'use', false);
+        $dns_third_level_check = $this->configManager->get('dns', 'third_level_check', false);
 
         $zone_name = idn_to_ascii(trim($_POST['domain']), IDNA_NONTRANSITIONAL_TO_ASCII);
         $dom_type = $_POST["dom_type"];
@@ -144,9 +144,9 @@ class AddZoneMasterController extends BaseController
             'available_zone_types' => array("MASTER", "NATIVE"),
             'users' => UserManager::show_users($this->db),
             'zone_templates' => $zone_templates->get_list_zone_templ($_SESSION['userid']),
-            'iface_zone_type_default' => $this->config('iface_zone_type_default'),
-            'iface_add_domain_record' => $this->config('iface_add_domain_record'),
-            'pdnssec_use' => $this->config('pdnssec_use'),
+            'iface_zone_type_default' => $this->configManager->get('interface', 'zone_type_default', 'NATIVE'),
+            'iface_add_domain_record' => $this->configManager->get('interface', 'add_domain_record', false),
+            'pdnssec_use' => $this->configManager->get('dnssec', 'enabled', false),
         ]);
     }
 }

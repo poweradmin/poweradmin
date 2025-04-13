@@ -78,8 +78,8 @@ class UsersController extends BaseController
         $this->render('users.html', [
             'permissions' => $permissions,
             'perm_templates' => UserManager::list_permission_templates($this->db),
-            'users' => UserManager::get_user_detail_list($this->db, $this->config('ldap_use')),
-            'ldap_use' => $this->config('ldap_use'),
+            'users' => UserManager::get_user_detail_list($this->db, $this->configManager->get('ldap', 'enabled', false)),
+            'ldap_use' => $this->configManager->get('ldap', 'enabled', false),
             'session_userid' => $_SESSION["userid"],
             'perm_add_new' => UserManager::verify_permission($this->db, 'user_add_new'),
         ]);

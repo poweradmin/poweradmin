@@ -44,7 +44,7 @@ class DnssecDsDnskeyController extends BaseController
 
     public function run(): void
     {
-        $pdnssec_use = $this->config('pdnssec_use');
+        $pdnssec_use = $this->configManager->get('dnssec', 'enabled', false);
 
         $zone_id = "-1";
         if (isset($_GET['id']) && Validator::is_number($_GET['id'])) {

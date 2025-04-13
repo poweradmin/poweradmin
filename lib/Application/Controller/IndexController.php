@@ -63,9 +63,9 @@ class IndexController extends BaseController
             'user_name' => empty($_SESSION["name"]) ? $userlogin : $_SESSION["name"],
             'auth_used' => $_SESSION["auth_used"] ?? '',
             'permissions' => $permissions,
-            'dblog_use' => $this->config('dblog_use'),
-            'migrations_show' => $this->config('iface_migrations_show'),
-            'iface_add_reverse_record' => $this->config('interface', 'add_reverse_record', true),
+            'dblog_use' => $this->configManager->get('logging', 'database_enabled', false),
+            'migrations_show' => $this->configManager->get('interface', 'show_migrations', false),
+            'iface_add_reverse_record' => $this->configManager->get('interface', 'add_reverse_record', true),
         ]);
     }
 }

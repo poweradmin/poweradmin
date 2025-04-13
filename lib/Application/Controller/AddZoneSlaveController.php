@@ -83,7 +83,7 @@ class AddZoneSlaveController extends BaseController
             $this->showFirstValidationError($_POST);
         }
 
-        $dns_third_level_check = $this->config('dns_third_level_check');
+        $dns_third_level_check = $this->configManager->get('dns', 'third_level_check', false);
 
         $type = "SLAVE";
         $owner = $_POST['owner'];

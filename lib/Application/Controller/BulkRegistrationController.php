@@ -130,7 +130,7 @@ class BulkRegistrationController extends BaseController
         $this->render('bulk_registration.html', [
             'userid' => $_SESSION['userid'],
             'perm_view_others' => UserManager::verify_permission($this->db, 'user_view_others'),
-            'iface_zone_type_default' => $this->config('iface_zone_type_default'),
+            'iface_zone_type_default' => $this->configManager->get('dns', 'zone_type_default', 'MASTER'),
             'available_zone_types' => array("MASTER", "NATIVE"),
             'users' => UserManager::show_users($this->db),
             'zone_templates' => $zone_templates->get_list_zone_templ($_SESSION['userid']),

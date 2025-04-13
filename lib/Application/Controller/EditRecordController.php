@@ -105,7 +105,7 @@ class EditRecordController extends BaseController
             $idn_zone_name = "";
         }
 
-        $iface_record_comments = $this->config('iface_record_comments');
+        $iface_record_comments = $this->configManager->get('interface', 'show_record_comments', false);
         $recordComment = $this->recordCommentService->findComment($zid, $record['name'], $record['type']);
 
         $this->render('edit_record.html', [
@@ -181,7 +181,7 @@ class EditRecordController extends BaseController
             $_SESSION['userlogin']
         );
 
-        if ($this->config('pdnssec_use')) {
+        if ($this->configManager->get('dnssec', 'enabled', false)) {
             $zone_name = $dnsRecord->get_domain_name_by_id($zid);
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
             $dnssecProvider->rectifyZone($zone_name);

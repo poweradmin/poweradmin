@@ -105,7 +105,7 @@ class AddZoneTemplRecordController extends BaseController
         $type = $_POST['type'] ?? "";
         $content = $_POST['content'] ?? "";
         $prio = $_POST['prio'] ?? 0;
-        $dns_ttl = $this->config('dns_ttl');
+        $dns_ttl = $this->configManager->get('dns', 'ttl', 3600);
         $ttl = $_POST['ttl'] ?? $dns_ttl;
 
         $template = new ZoneTemplate($this->db, $this->getConfig());
@@ -126,7 +126,7 @@ class AddZoneTemplRecordController extends BaseController
         $type = $_POST['type'] ?? "";
         $content = $_POST['content'] ?? "";
         $prio = $_POST['prio'] ?? 0;
-        $dns_ttl = $this->config('dns_ttl');
+        $dns_ttl = $this->configManager->get('dns', 'ttl', 3600);
         $ttl = $_POST['ttl'] ?? $dns_ttl;
 
         $this->render('add_zone_templ_record.html', [

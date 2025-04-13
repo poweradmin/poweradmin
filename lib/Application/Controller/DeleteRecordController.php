@@ -102,7 +102,7 @@ class DeleteRecordController extends BaseController
                 $dnsRecord = new DnsRecord($this->db, $this->getConfig());
                 $dnsRecord->update_soa_serial($zid);
 
-                if ($this->config('pdnssec_use')) {
+                if ($this->configManager->get('dnssec', 'enabled', false)) {
                     $zone_name = $dnsRecord->get_domain_name_by_id($zid);
                     $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
                     $dnssecProvider->rectifyZone($zone_name);
@@ -111,7 +111,7 @@ class DeleteRecordController extends BaseController
                 if (!$dnsRecord->has_similar_records($domain_id, $record_info['name'], $record_info['type'], $record_id)) {
                     $this->recordCommentService->deleteComment($domain_id, $record_info['name'], $record_info['type']);
                     $this->setMessage('edit', 'success', _('The record has been deleted successfully.'));
-                } elseif ($this->config('comments_enabled')) {
+                } elseif ($this->configManager->get('interface', 'show_record_comments', false)) {
                     $this->setMessage('edit', 'warn', _('The record was deleted but the comment was preserved because similar records exist.'));
                 }
 

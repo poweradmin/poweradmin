@@ -61,8 +61,8 @@ class ChangePasswordController extends BaseController
         $this->policyService = new PasswordPolicyService();
 
         // Get password encryption settings with fallback to defaults
-        $passwordEncryption = $this->config('security', 'password_encryption') ?? 'bcrypt';
-        $passwordEncryptionCost = (int)($this->config('security', 'password_cost') ?? 10);
+        $passwordEncryption = $this->configManager->get('security', 'password_encryption', 'bcrypt');
+        $passwordEncryptionCost = (int)$this->configManager->get('security', 'password_cost', 12);
 
         $userAuthService = new UserAuthenticationService(
             $passwordEncryption,

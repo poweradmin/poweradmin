@@ -134,7 +134,7 @@ class AddRecordController extends BaseController
         $content = $_POST['content'];
         $type = $_POST['type'];
         $prio = isset($_POST['prio']) && $_POST['prio'] !== '' ? (int)$_POST['prio'] : 0;
-        $ttl = isset($_POST['ttl']) && $_POST['ttl'] !== '' ? (int)$_POST['ttl'] : $this->config('dns_ttl');
+        $ttl = isset($_POST['ttl']) && $_POST['ttl'] !== '' ? (int)$_POST['ttl'] : $this->configManager->get('dns', 'ttl', 3600);
         $comment = $_POST['comment'] ?? '';
         $zone_id = (int)$_GET['id'];
 
