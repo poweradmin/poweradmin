@@ -134,7 +134,7 @@ class AddRecordController extends BaseController
         $content = $_POST['content'];
         $type = $_POST['type'];
         $prio = isset($_POST['prio']) && $_POST['prio'] !== '' ? (int)$_POST['prio'] : 0;
-        $ttl = isset($_POST['ttl']) && $_POST['ttl'] !== '' ? (int)$_POST['ttl'] : $this->configManager->get('dns', 'ttl', 3600);
+        $ttl = isset($_POST['ttl']) && $_POST['ttl'] !== '' ? (int)$_POST['ttl'] : $this->config->get('dns', 'ttl', 3600);
         $comment = $_POST['comment'] ?? '';
         $zone_id = (int)$_GET['id'];
 
@@ -164,8 +164,8 @@ class AddRecordController extends BaseController
         $zone_name = $this->dnsRecord->get_domain_name_by_id($zone_id);
         $isReverseZone = DnsHelper::isReverseZone($zone_name);
 
-        $ttl = $this->configManager->get('dns', 'ttl', 3600);
-        $isDnsSecEnabled = $this->configManager->get('dnssec', 'enabled', false);
+        $ttl = $this->config->get('dns', 'ttl', 3600);
+        $isDnsSecEnabled = $this->config->get('dnssec', 'enabled', false);
 
         if (str_starts_with($zone_name, "xn--")) {
             $idn_zone_name = idn_to_utf8($zone_name, IDNA_NONTRANSITIONAL_TO_ASCII);
@@ -184,9 +184,9 @@ class AddRecordController extends BaseController
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,
             'is_reverse_zone' => $isReverseZone,
-            'iface_add_reverse_record' => $this->configManager->get('interface', 'add_reverse_record', false),
-            'iface_add_domain_record' => $this->configManager->get('interface', 'add_domain_record', false),
-            'iface_record_comments' => $this->configManager->get('interface', 'show_record_comments', true),
+            'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', false),
+            'iface_add_domain_record' => $this->config->get('interface', 'add_domain_record', false),
+            'iface_record_comments' => $this->config->get('interface', 'show_record_comments', true),
         ]);
     }
 

@@ -109,7 +109,7 @@ class EditZoneTemplController extends BaseController
 
     private function showForm(string $zone_templ_id): void
     {
-        $iface_rowamount = $this->configManager->get('interface', 'rows_per_page', 10);
+        $iface_rowamount = $this->config->get('interface', 'rows_per_page', 10);
         $row_start = $this->getRowStart($iface_rowamount);
         $record_sort_by = $this->getSortBy('record_sort_by', ['name', 'type', 'content', 'ttl', 'prio']);
         $record_count = ZoneTemplate::count_zone_templ_records($this->db, $zone_templ_id);
@@ -192,7 +192,7 @@ class EditZoneTemplController extends BaseController
         $zones = $zoneTemplate->get_list_zone_use_templ($zone_templ_id, $_SESSION['userid']);
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         foreach ($zones as $zone_id) {
-            $dnsRecord->update_zone_records($this->configManager->get('database', 'type', 'mysql'), $this->configManager->get('dns', 'ttl', 86400), $zone_id, $zone_templ_id);
+            $dnsRecord->update_zone_records($this->config->get('database', 'type', 'mysql'), $this->config->get('dns', 'ttl', 86400), $zone_id, $zone_templ_id);
         }
         $this->setMessage('edit_zone_templ', 'success', _('Zones have been updated successfully.'));
     }

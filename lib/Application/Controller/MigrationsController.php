@@ -36,7 +36,7 @@ class MigrationsController extends BaseController
     {
         $this->checkPermission('user_is_ueberuser', _('You do not have the permission to access the migrations.'));
 
-        $db_type = $this->configManager->get('database', 'type', 'mysql');
+        $db_type = $this->config->get('database', 'type', 'mysql');
         if ($this->checkOldMigrationsTable($db_type)) {
             $this->render('migrations.html', [
                 'output' => _('Old migrations table detected. Please remove the `migrations` table before proceeding.'),

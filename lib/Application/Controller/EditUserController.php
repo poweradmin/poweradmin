@@ -190,7 +190,7 @@ class EditUserController extends BaseController
             'perm_passwd_edit_others' => $permissions['passwd_edit_others'],
             'permission_templates' => UserManager::list_permission_templates($this->db),
             'user_permissions' => UserManager::get_permissions_by_template_id($this->db, $user['tpl_id']),
-            'ldap_use' => $this->configManager->get('ldap', 'enabled', false) && !$permissions['is_admin'],
+            'ldap_use' => $this->config->get('ldap', 'enabled', false) && !$permissions['is_admin'],
             'use_ldap_checked' => $user['use_ldap'] ? "checked" : "",
             'password_policy' => $policyConfig,
         ]);
@@ -211,7 +211,7 @@ class EditUserController extends BaseController
 
     private function getUserDetails(int $editId): array
     {
-        $users = UserManager::get_user_detail_list($this->db, $this->configManager->get('ldap', 'enabled', false), $editId);
+        $users = UserManager::get_user_detail_list($this->db, $this->config->get('ldap', 'enabled', false), $editId);
 
         if (empty($users)) {
             $this->showError(_('User does not exist.'));

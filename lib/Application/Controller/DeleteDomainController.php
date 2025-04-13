@@ -88,13 +88,13 @@ class DeleteDomainController extends BaseController
     {
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $zone_info = $dnsRecord->get_zone_info_from_id($zone_id);
-        $pdnssec_use = $this->configManager->get('dnssec', 'enabled', false);
+        $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
 
         if ($pdnssec_use && $zone_info['type'] == 'MASTER') {
             $zone_name = $dnsRecord->get_domain_name_by_id($zone_id);
 
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
-            if ($dnssecProvider->isZoneSecured($zone_name, $this->configManager)) {
+            if ($dnssecProvider->isZoneSecured($zone_name, $this->config)) {
                 $dnssecProvider->unsecureZone($zone_name);
             }
         }

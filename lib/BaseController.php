@@ -47,7 +47,7 @@ abstract class BaseController
     private array $validationConstraints = [];
     private CsrfTokenService $csrfTokenService;
     private MessageService $messageService;
-    protected ConfigurationManager $configManager;
+    protected ConfigurationManager $config;
 
     /**
      * Abstract method to be implemented by subclasses to run the controller logic.
@@ -70,7 +70,7 @@ abstract class BaseController
         $this->request = $request;
         $this->validator = Validation::createValidator();
 
-        $this->configManager = ConfigurationManager::getInstance();
+        $this->config = ConfigurationManager::getInstance();
         $this->csrfTokenService = new CsrfTokenService();
         $this->messageService = new MessageService();
     }
@@ -92,7 +92,7 @@ abstract class BaseController
      */
     public function getConfig(): ConfigurationManager
     {
-        return $this->configManager;
+        return $this->config;
     }
 
 
@@ -124,7 +124,7 @@ abstract class BaseController
      */
     public function validateCsrfToken(): void
     {
-        if (!$this->configManager->get('security', 'global_token_validation', true)) {
+        if (!$this->config->get('security', 'global_token_validation', true)) {
             return;
         }
 
@@ -276,23 +276,23 @@ abstract class BaseController
             header('Content-type: text/html; charset=utf-8');
         }
 
-        $style = $this->configManager->get('interface', 'style', 'light');
-        $themeBasePath = $this->configManager->get('interface', 'theme_base_path', 'templates');
-        $theme = $this->configManager->get('interface', 'theme', 'default');
+        $style = $this->config->get('interface', 'style', 'light');
+        $themeBasePath = $this->config->get('interface', 'theme_base_path', 'templates');
+        $theme = $this->config->get('interface', 'theme', 'default');
         $styleManager = new StyleManager($style, $themeBasePath, $theme);
 
         $vars = [
-            'iface_title' => $this->configManager->get('interface', 'title'),
+            'iface_title' => $this->config->get('interface', 'title'),
             'iface_style' => $styleManager->getSelectedStyle(),
             'theme' => $theme,
             'theme_base_path' => $themeBasePath,
             'file_version' => time(),
-            'custom_header' => file_exists($this->configManager->get('interface', 'theme_base_path', 'templates') . '/custom/header.html'),
+            'custom_header' => file_exists($this->config->get('interface', 'theme_base_path', 'templates') . '/custom/header.html'),
             'install_error' => file_exists('install') ? _('The <a href="install/">install/</a> directory exists, you must remove it first before proceeding.') : false,
         ];
 
-        $dblog_use = $this->configManager->get('logging', 'database_enabled');
-        $session_key = $this->configManager->get('security', 'session_key');
+        $dblog_use = $this->config->get('logging', 'database_enabled');
+        $session_key = $this->config->get('security', 'session_key');
 
         if (isset($_SESSION["userid"])) {
             $perm_is_godlike = UserManager::verify_permission($this->db, 'user_is_ueberuser');
@@ -312,7 +312,7 @@ abstract class BaseController
                 'session_key_error' => $perm_is_godlike && $session_key == 'p0w3r4dm1n' ? _('Default session encryption key is used, please set it in your configuration file.') : false,
                 'auth_used' => $_SESSION["auth_used"] != "ldap",
                 'dblog_use' => $dblog_use,
-                'iface_add_reverse_record' => $this->configManager->get('interface', 'add_reverse_record', false)
+                'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', false)
             ]);
         }
 
@@ -329,18 +329,18 @@ abstract class BaseController
      */
     private function renderFooter(): void
     {
-        $style = $this->configManager->get('interface', 'style', 'light');
-        $themeBasePath = $this->configManager->get('interface', 'theme_base_path', 'templates');
-        $theme = $this->configManager->get('interface', 'theme', 'default');
+        $style = $this->config->get('interface', 'style', 'light');
+        $themeBasePath = $this->config->get('interface', 'theme_base_path', 'templates');
+        $theme = $this->config->get('interface', 'theme', 'default');
         $styleManager = new StyleManager($style, $themeBasePath, $theme);
         $selected_style = $styleManager->getSelectedStyle();
 
-        $display_stats = $this->configManager->get('misc', 'display_stats');
-        $db_debug = $this->configManager->get('database', 'debug');
+        $display_stats = $this->config->get('misc', 'display_stats');
+        $db_debug = $this->config->get('database', 'debug');
 
         $this->app->render('footer.html', [
             'version' => isset($_SESSION["userid"]) ? Version::VERSION : false,
-            'custom_footer' => file_exists($this->configManager->get('interface', 'theme_base_path', 'templates') . '/custom/footer.html'),
+            'custom_footer' => file_exists($this->config->get('interface', 'theme_base_path', 'templates') . '/custom/footer.html'),
             'display_stats' => $display_stats ? $this->app->displayStats() : false,
             'db_queries' => $db_debug ? $this->db->getQueries() : false,
             'show_style_switcher' => in_array($selected_style, ['light', 'dark']),

@@ -67,7 +67,7 @@ class BatchPtrRecordController extends BaseController
     public function run(): void
     {
         // Check if batch PTR records are enabled
-        $isReverseRecordAllowed = $this->configManager->get('interface', 'add_reverse_record', true);
+        $isReverseRecordAllowed = $this->config->get('interface', 'add_reverse_record', true);
         $this->checkCondition(!$isReverseRecordAllowed, _("Batch PTR record creation is not enabled."));
 
         // Check if user has permission to use this feature
@@ -139,7 +139,7 @@ class BatchPtrRecordController extends BaseController
         $networkPrefix = $_POST['network_prefix'] ?? '';
         $hostPrefix = $_POST['host_prefix'] ?? '';
         $domain = $_POST['domain'] ?? '';
-        $ttl = $this->configManager->get('dns', 'ttl', 86400);
+        $ttl = $this->config->get('dns', 'ttl', 86400);
         $prio = 0;
         $comment = $_POST['comment'] ?? '';
         $zone_id = isset($_GET['id']) ? (int)$_GET['id'] : 0; // Use 0 when no zone_id is provided
@@ -211,7 +211,7 @@ class BatchPtrRecordController extends BaseController
             'network_prefix' => $formData['network_prefix'] ?? '',
             'host_prefix' => $formData['host_prefix'] ?? '',
             'domain' => $formData['domain'] ?? '',
-            'ttl' => $this->configManager->get('dns', 'ttl', 86400),
+            'ttl' => $this->config->get('dns', 'ttl', 86400),
             'ipv6_count' => $formData['ipv6_count'] ?? 256,
             'comment' => $formData['comment'] ?? '',
             'zone_id' => $zone_id,
@@ -220,7 +220,7 @@ class BatchPtrRecordController extends BaseController
             'is_reverse_zone' => $isReverseZone,
             'has_zone_id' => $hasZoneId,
             'file_version' => $file_version,
-            'iface_record_comments' => $this->configManager->get('interface', 'show_record_comments', false),
+            'iface_record_comments' => $this->config->get('interface', 'show_record_comments', false),
         ]);
     }
 

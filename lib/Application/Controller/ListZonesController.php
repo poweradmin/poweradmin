@@ -60,10 +60,10 @@ class ListZonesController extends BaseController
 
     private function listZones(): void
     {
-        $pdnssec_use = $this->configManager->get('dnssec', 'enabled', false);
-        $iface_zonelist_serial = $this->configManager->get('interface', 'display_serial_in_zone_list', false);
-        $iface_zonelist_template = $this->configManager->get('interface', 'display_template_in_zone_list', false);
-        $iface_rowamount = $this->configManager->get('interface', 'rows_per_page', 10);
+        $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
+        $iface_zonelist_serial = $this->config->get('interface', 'display_serial_in_zone_list', false);
+        $iface_zonelist_template = $this->config->get('interface', 'display_template_in_zone_list', false);
+        $iface_rowamount = $this->config->get('interface', 'rows_per_page', 10);
 
         $row_start = 0;
         if (isset($_GET['start'])) {

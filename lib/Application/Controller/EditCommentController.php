@@ -43,7 +43,7 @@ class EditCommentController extends BaseController
 
     public function run(): void
     {
-        $iface_zone_comments = $this->configManager->get('interface', 'zone_comments', false);
+        $iface_zone_comments = $this->config->get('interface', 'zone_comments', false);
 
         if (!$iface_zone_comments) {
             $this->showError(_("You do not have the permission to edit this comment."));

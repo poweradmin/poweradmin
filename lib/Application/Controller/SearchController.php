@@ -66,9 +66,9 @@ class SearchController extends BaseController
         $_SESSION['record_sort_by'] = $record_sort_by;
         $_SESSION['record_sort_by_direction'] = $record_sort_direction;
 
-        $iface_rowamount = $this->configManager->get('interface', 'rows_per_page', 10);
-        $iface_zone_comments = $this->configManager->get('interface', 'show_zone_comments', true);
-        $iface_record_comments = $this->configManager->get('interface', 'show_record_comments', false);
+        $iface_rowamount = $this->config->get('interface', 'rows_per_page', 10);
+        $iface_zone_comments = $this->config->get('interface', 'show_zone_comments', true);
+        $iface_record_comments = $this->config->get('interface', 'show_record_comments', false);
 
         if ($this->isPost()) {
             $this->validateCsrfToken();
@@ -85,7 +85,7 @@ class SearchController extends BaseController
 
             $permission_view = Permission::getViewPermission($this->db);
 
-            $db_type = $this->configManager->get('database', 'type', 'mysql');
+            $db_type = $this->config->get('database', 'type', 'mysql');
 
             $zoneSearch = new ZoneSearch($this->db, $this->getConfig(), $db_type);
             $searchResultZones = $zoneSearch->searchZones(
@@ -102,7 +102,7 @@ class SearchController extends BaseController
 
             $records_page = isset($_POST['records_page']) ? (int)$_POST['records_page'] : 1;
 
-            $iface_search_group_records = $this->configManager->get('interface', 'search_group_records', false);
+            $iface_search_group_records = $this->config->get('interface', 'search_group_records', false);
             $recordSearch = new RecordSearch($this->db, $this->getConfig(), $db_type);
             $searchResultRecords = $recordSearch->searchRecords(
                 $parameters,

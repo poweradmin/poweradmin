@@ -46,7 +46,7 @@ class LoginController extends BaseController
     public function run(): void
     {
         $localesData = $this->getLocalesData();
-        $preparedLocales = $this->localeService->prepareLocales($localesData, $this->configManager->get('interface', 'language', 'en_EN'));
+        $preparedLocales = $this->localeService->prepareLocales($localesData, $this->config->get('interface', 'language', 'en_EN'));
 
         list($msg, $type) = $this->getSessionMessages();
 
@@ -67,7 +67,7 @@ class LoginController extends BaseController
 
     private function renderLogin(array $preparedLocales, string $msg, string $type): void
     {
-        $locales = explode(',', $this->configManager->get('interface', 'enabled_languages', 'en_EN') ?? 'en_EN');
+        $locales = explode(',', $this->config->get('interface', 'enabled_languages', 'en_EN') ?? 'en_EN');
         $showLanguageSelector = count($locales) > 1;
 
         $loginToken = $this->csrfTokenService->generateToken();
@@ -85,7 +85,7 @@ class LoginController extends BaseController
 
     private function getLocalesData(): array
     {
-        $enabledLanguages = $this->configManager->get('interface', 'enabled_languages', 'en_EN') ?? 'en_EN';
+        $enabledLanguages = $this->config->get('interface', 'enabled_languages', 'en_EN') ?? 'en_EN';
         $locales = explode(',', $enabledLanguages);
         $localesData = [];
         foreach ($locales as $locale) {
