@@ -385,6 +385,7 @@ return array(
     'Poweradmin\\Application\\Controller\\DeleteDomainsController' => $baseDir . '/lib/Application/Controller/DeleteDomainsController.php',
     'Poweradmin\\Application\\Controller\\DeletePermTemplController' => $baseDir . '/lib/Application/Controller/DeletePermTemplController.php',
     'Poweradmin\\Application\\Controller\\DeleteRecordController' => $baseDir . '/lib/Application/Controller/DeleteRecordController.php',
+    'Poweradmin\\Application\\Controller\\DeleteRecordsController' => $baseDir . '/lib/Application/Controller/DeleteRecordsController.php',
     'Poweradmin\\Application\\Controller\\DeleteSupermasterController' => $baseDir . '/lib/Application/Controller/DeleteSupermasterController.php',
     'Poweradmin\\Application\\Controller\\DeleteUserController' => $baseDir . '/lib/Application/Controller/DeleteUserController.php',
     'Poweradmin\\Application\\Controller\\DeleteZoneTemplController' => $baseDir . '/lib/Application/Controller/DeleteZoneTemplController.php',

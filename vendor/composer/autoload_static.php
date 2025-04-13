@@ -574,6 +574,7 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
         'Poweradmin\\Application\\Controller\\DeleteDomainsController' => __DIR__ . '/../..' . '/lib/Application/Controller/DeleteDomainsController.php',
         'Poweradmin\\Application\\Controller\\DeletePermTemplController' => __DIR__ . '/../..' . '/lib/Application/Controller/DeletePermTemplController.php',
         'Poweradmin\\Application\\Controller\\DeleteRecordController' => __DIR__ . '/../..' . '/lib/Application/Controller/DeleteRecordController.php',
+        'Poweradmin\\Application\\Controller\\DeleteRecordsController' => __DIR__ . '/../..' . '/lib/Application/Controller/DeleteRecordsController.php',
         'Poweradmin\\Application\\Controller\\DeleteSupermasterController' => __DIR__ . '/../..' . '/lib/Application/Controller/DeleteSupermasterController.php',
         'Poweradmin\\Application\\Controller\\DeleteUserController' => __DIR__ . '/../..' . '/lib/Application/Controller/DeleteUserController.php',
         'Poweradmin\\Application\\Controller\\DeleteZoneTemplController' => __DIR__ . '/../..' . '/lib/Application/Controller/DeleteZoneTemplController.php',

@@ -79,14 +79,14 @@ class DeleteRecordsController extends BaseController
         foreach ($record_ids as $record_id) {
             $record_info = $dnsRecord->get_record_from_id($record_id);
             $zid = $dnsRecord->get_zone_id_from_record_id($record_id);
-            
+
             if ($zid !== null) {
                 $domain_id = $dnsRecord->recid_to_domid($record_id);
-                
+
                 if ($dnsRecord->delete_record($record_id)) {
                     $deleted_count++;
                     $affected_zones[$zid] = true;
-                    
+
                     if (isset($record_info['prio'])) {
                         $this->logger->log_info(sprintf(
                             'client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s priority:%s',
@@ -111,7 +111,7 @@ class DeleteRecordsController extends BaseController
                     }
 
                     DnsRecord::delete_record_zone_templ($this->db, $record_id);
-                    
+
                     if (!$dnsRecord->has_similar_records($domain_id, $record_info['name'], $record_info['type'], $record_id)) {
                         $this->recordCommentService->deleteComment($domain_id, $record_info['name'], $record_info['type']);
                     }
@@ -122,7 +122,7 @@ class DeleteRecordsController extends BaseController
         // Update SOA serials and rectify zones
         foreach (array_keys($affected_zones) as $zone_id) {
             $dnsRecord->update_soa_serial($zone_id);
-            
+
             if ($this->config->get('dnssec', 'enabled', false)) {
                 $zone_name = $dnsRecord->get_domain_name_by_id($zone_id);
                 $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
@@ -139,7 +139,7 @@ class DeleteRecordsController extends BaseController
         } else {
             $this->setMessage('search', 'error', _('No records could be deleted. Please check permissions.'));
         }
-        
+
         $this->redirect('index.php', ['page' => 'search']);
     }
 
@@ -147,33 +147,35 @@ class DeleteRecordsController extends BaseController
     {
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $records = [];
-        
+
         foreach ($record_ids as $record_id) {
             $record_info = $dnsRecord->get_record_from_id($record_id);
             if ($record_info) {
                 $zid = $dnsRecord->get_zone_id_from_record_id($record_id);
                 $domain_id = $dnsRecord->recid_to_domid($record_id);
-                
+
                 $zone_info = $dnsRecord->get_zone_info_from_id($zid);
                 $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $domain_id);
-                
+
                 $perm_edit = Permission::getEditPermission($this->db);
-                if ($zone_info['type'] == "SLAVE" || $perm_edit == "none" || 
-                    (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
+                if (
+                    $zone_info['type'] == "SLAVE" || $perm_edit == "none" ||
+                    (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")
+                ) {
                     continue;
                 }
-                
+
                 $record_info['zone_name'] = $dnsRecord->get_domain_name_by_id($domain_id);
                 $records[] = $record_info;
             }
         }
-        
+
         if (empty($records)) {
             $this->setMessage('search', 'error', _('No valid records selected for deletion or you lack permission to delete them.'));
             $this->redirect('index.php', ['page' => 'search']);
             return;
         }
-        
+
         $this->render('delete_records.html', [
             'records' => $records,
             'total_records' => count($records)

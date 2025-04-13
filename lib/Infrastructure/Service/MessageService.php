@@ -154,7 +154,7 @@ class MessageService
                 $bgClass = str_replace('alert-', '', $alertClass);
                 $borderClass = str_replace('alert-', 'border-', $alertClass);
                 $textClass = str_replace('alert-', 'text-', $alertClass);
-                
+
                 $icon = match ($message['type']) {
                     self::TYPE_ERROR => 'exclamation-triangle',
                     self::TYPE_WARNING => 'exclamation-circle',
@@ -162,7 +162,7 @@ class MessageService
                     self::TYPE_INFO => 'info-circle',
                     default => 'info-circle',
                 };
-                
+
                 $title = match ($message['type']) {
                     self::TYPE_ERROR => 'Error:',
                     self::TYPE_WARNING => 'Warning:',
@@ -170,7 +170,7 @@ class MessageService
                     self::TYPE_INFO => 'Info:',
                     default => '',
                 };
-                
+
                 $output .= <<<EOF
 <div class="alert $alertClass bg-$bgClass bg-opacity-10 py-2 border $borderClass alert-dismissible small fade show" role="alert" data-testid="alert-message">
     <i class="bi bi-$icon-fill me-2 $textClass"></i>
