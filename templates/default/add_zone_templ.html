@@ -7,27 +7,75 @@
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans %}Add zone template for{% endtrans %} {{ user_name }}</h5>
-<form class="needs-validation" method="post" action="index.php?page=add_zone_templ" novalidate>
-    <input type="hidden" name="_token" value="{{ csrf_token }}">
-    <div class="col-sm-3">
-        <div class="mb-2">
-            <label for="templ_name" class="form-label">{% trans %}Name{% endtrans %}</label>
-            <input class="form-control form-control-sm" type="text" id="templ_name" name="templ_name" value="{{ templ_name }}" required>
-            <div class="invalid-feedback">{% trans %}Provide a name for your template{% endtrans %}</div>
-        </div>
-        <div class="mb-2">
-            <label for="templ_descr" class="form-label">{% trans %}Description{% endtrans %}</label>
-            <input class="form-control form-control-sm" type="text" id="templ_descr" name="templ_descr" value="{{ templ_descr }}">
-        </div>
-        {% if perm_is_godlike %}
-        <div class="mb-2">
-            <input class="form-check-input" type="checkbox" id="templ_global" name="templ_global">
-            <label for="templ_global" class="form-check-label">{% trans %}Everyone could use it (global)?{% endtrans %}</label>
-        </div>
-        {% endif %}
-        <div div class="mb-2">
-            <input type="submit" class="btn btn-primary btn-sm" name="commit" value="{% trans %}Add zone template{% endtrans %}">
-        </div>
+{% if message %}
+<div class="alert alert-{{ message.type }}">{{ message.content }}</div>
+{% endif %}
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <strong><i class="bi bi-file-earmark-plus me-2"></i>{% trans %}Add zone template for{% endtrans %} {{ user_name }}</strong>
     </div>
-</form>
+    <div class="card-body">
+        <p class="small text-muted mb-3">{% trans %}Create a zone template to quickly apply predefined DNS record configurations to new zones{% endtrans %}</p>
+
+        <form class="needs-validation" method="post" action="index.php?page=add_zone_templ" novalidate>
+            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <!-- Form fields on the left side -->
+                    <div class="mb-3">
+                        <label for="templ_name" class="form-label">{% trans %}Name{% endtrans %}</label>
+                        <input class="form-control form-control-sm" type="text" id="templ_name" name="templ_name" value="{{ templ_name }}" required>
+                        <div class="invalid-feedback">{% trans %}Provide a name for your template{% endtrans %}</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="templ_descr" class="form-label">{% trans %}Description{% endtrans %}</label>
+                        <input class="form-control form-control-sm" type="text" id="templ_descr" name="templ_descr" value="{{ templ_descr }}">
+                        <small class="form-text text-muted">{% trans %}Optional description to help identify this template{% endtrans %}</small>
+                    </div>
+                    {% if perm_is_godlike %}
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="templ_global" name="templ_global">
+                            <label for="templ_global" class="form-check-label">{% trans %}Everyone could use it (global)?{% endtrans %}</label>
+                        </div>
+                        <small class="form-text text-muted">{% trans %}Make this template available to all users{% endtrans %}</small>
+                    </div>
+                    {% endif %}
+                    <div div class="mb-3">
+                        <button type="submit" class="btn btn-primary btn-sm" name="commit">
+                            <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add zone template{% endtrans %}
+                        </button>
+                        <a href="index.php?page=list_zone_templ" class="btn btn-secondary btn-sm">
+                            <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <!-- Information panel on the right side -->
+                    <div class="card border-info">
+                        <div class="card-header bg-info bg-opacity-10 text-info border-info">
+                            <i class="bi bi-info-circle-fill me-2 text-info"></i>{% trans %}Template Usage{% endtrans %}
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">
+                                {% trans %}Zone templates allow you to:{% endtrans %}
+                            </p>
+                            <ul class="mb-0 ps-4">
+                                <li>{% trans %}Create predefined sets of DNS records{% endtrans %}</li>
+                                <li>{% trans %}Apply consistent configurations to multiple zones{% endtrans %}</li>
+                                <li>{% trans %}Save time when creating new domains{% endtrans %}</li>
+                                <li>{% trans %}Maintain standardized DNS setups{% endtrans %}</li>
+                            </ul>
+                            <p class="card-text mt-3 mb-0">
+                                {% trans %}After creating a template, you can add record templates to it.{% endtrans %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

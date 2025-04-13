@@ -5,46 +5,55 @@
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans %}List supermasters{% endtrans %}</h5>
-<table class="table table-striped table-hover table-sm">
-    {% if supermasters %}
-    <thead>
-    <tr>
-        <th>{% trans %}IP address of supermaster{% endtrans %}</th>
-        <th>{% trans %}Hostname in NS record{% endtrans %}</th>
-        <th>{% trans %}Account{% endtrans %}</th>
-        <th>&nbsp;</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for server in supermasters %}
-    <tr>
-        <td class="col-sm-3">{{ server['master_ip'] }}</td>
-        <td class="col-sm-3">{{ server['ns_name'] }}</td>
-        <td class="col-sm-2">{{ server['account'] }}</td>
-        {% if perm_sm_edit %}
-        <td>
-            <a class="btn btn-outline-danger btn-sm"
-               href="index.php?page=delete_supermaster&master_ip={{ server['master_ip'] }}&ns_name={{ server['ns_name'] }}">
-                <i class="bi bi-trash"></i> {% trans %}Delete{% endtrans %}
-            </a>
-        </td>
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <strong><i class="bi bi-server me-2"></i>{% trans %}Supermasters{% endtrans %}</strong>
+    </div>
+    <div class="card-body">
+        {% if supermasters %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-sm">
+                <thead class="table-light">
+                    <tr>
+                        <th>{% trans %}IP address of supermaster{% endtrans %}</th>
+                        <th>{% trans %}Hostname in NS record{% endtrans %}</th>
+                        <th>{% trans %}Account{% endtrans %}</th>
+                        {% if perm_sm_edit %}
+                        <th class="text-end">{% trans %}Actions{% endtrans %}</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                {% for server in supermasters %}
+                    <tr>
+                        <td><span class="badge bg-light text-dark">{{ server['master_ip'] }}</span></td>
+                        <td>{{ server['ns_name'] }}</td>
+                        <td>{{ server['account'] }}</td>
+                        {% if perm_sm_edit %}
+                        <td class="text-end">
+                            <a class="btn btn-outline-danger btn-sm" href="index.php?page=delete_supermaster&master_ip={{ server['master_ip'] }}&ns_name={{ server['ns_name'] }}">
+                                <i class="bi bi-trash me-1"></i>{% trans %}Delete{% endtrans %}
+                            </a>
+                        </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
         {% else %}
-        <td>&nbsp;</td>
+        <div class="text-center py-5">
+            <i class="bi bi-server display-4 text-muted mb-3"></i>
+            <p class="text-muted">{% trans %}There are no supermasters to show in this listing.{% endtrans %}</p>
+        </div>
         {% endif %}
-    </tr>
-    {% endfor %}
-    {% else %}
-    <tr>
-        <td colspan="3">
-            {% trans %}There are no supermasters to show in this listing.{% endtrans %}
-        </td>
-    </tr>
-    {% endif %}
-    </tbody>
-</table>
-{% if perm_sm_add %}
-<div>
-    <a class="btn btn-primary btn-sm" href="index.php?page=add_supermaster">{% trans %}Add supermaster{% endtrans %}</a>
+        
+        {% if perm_sm_add %}
+        <div class="mt-4">
+            <a class="btn btn-primary btn-sm" href="index.php?page=add_supermaster">
+                <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add supermaster{% endtrans %}
+            </a>
+        </div>
+        {% endif %}
+    </div>
 </div>
-{% endif %}

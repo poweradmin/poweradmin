@@ -6,69 +6,111 @@
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans %}Add master zone{% endtrans %}</h5>
-<form class="needs-validation" method="post" action="index.php?page=add_zone_master" novalidate>
-    <input type="hidden" name="_token" value="{{ csrf_token }}">
-    <table>
-        <tr>
-            <td style="vertical-align: top" class="pt-1">{% trans %}Zone name{% endtrans %}:</td>
-            <td>
-                <input data-testid="zone-name-input" class="form-control form-control-sm" type="text" name="domain" value="" required>
-                <div class="invalid-feedback">{% trans %}Provide zone name{% endtrans %}</div>
-            </td>
-        </tr>
-        <tr>
-            <td>{% trans %}Owner{% endtrans %}:</td>
-            <td>
-                <select data-testid="zone-owner-select" class="form-select form-select-sm" name="owner">
-                    {% for user in users %}
-                    {% if user['id'] == session_user_id %}
-                    <option value="{{ user['id'] }}" selected>{{ user['fullname'] }}</option>
-                    {% elseif perm_view_others %}
-                    <option value="{{ user['id'] }}">{{ user['fullname'] }}</option>
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Add Master Zone{% endtrans %}</strong>
+    </div>
+    <div class="card-body">
+        <p class="small text-muted mb-3">{% trans %}Create a new master DNS zone with optional template{% endtrans %}</p>
+        
+        <form class="needs-validation" method="post" action="index.php?page=add_zone_master" novalidate>
+            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="domain" class="form-label">{% trans %}Zone name{% endtrans %}</label>
+                        <input data-testid="zone-name-input" class="form-control form-control-sm" type="text" id="domain" name="domain" value="" required>
+                        <div class="invalid-feedback">{% trans %}Provide zone name{% endtrans %}</div>
+                        <small class="text-muted">{% trans %}Example: example.com{% endtrans %}</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="owner" class="form-label">{% trans %}Owner{% endtrans %}</label>
+                        <select data-testid="zone-owner-select" class="form-select form-select-sm" id="owner" name="owner">
+                            {% for user in users %}
+                            {% if user['id'] == session_user_id %}
+                            <option value="{{ user['id'] }}" selected>{{ user['fullname'] }}</option>
+                            {% elseif perm_view_others %}
+                            <option value="{{ user['id'] }}">{{ user['fullname'] }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                        <small class="text-muted">{% trans %}User responsible for this zone{% endtrans %}</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="dom_type" class="form-label">{% trans %}Type{% endtrans %}</label>
+                        <select data-testid="zone-type-select" class="form-select form-select-sm" id="dom_type" name="dom_type">
+                            {% for type in available_zone_types %}
+                            {% if type == iface_zone_type_default %}
+                            {% set selected = 'selected' %}
+                            {% else %}
+                            {% set selected = '' %}
+                            {% endif %}
+                            <option value="{{ type }}" {{ selected }}>{{type|lower}}</option>
+                            {% endfor %}
+                        </select>
+                        <small class="text-muted">{% trans %}Zone type (usually NATIVE){% endtrans %}</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="zone_template" class="form-label">{% trans %}Template{% endtrans %}</label>
+                        <select data-testid="zone-template-select" class="form-select form-select-sm" id="zone_template" name="zone_template">
+                            <option value="none">none</option>
+                            {% for zone_template in zone_templates %}
+                            <option value="{{ zone_template['id'] }}">{{ zone_template['name'] }}</option>
+                            {% endfor %}
+                        </select>
+                        <small class="text-muted">{% trans %}Optional: Apply predefined records from a template{% endtrans %}</small>
+                    </div>
+                    
+                    {% if pdnssec_use %}
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input data-testid="dnssec-checkbox" class="form-check-input" type="checkbox" id="dnssec" name="dnssec" value="1" checked>
+                            <label class="form-check-label" for="dnssec">{% trans %}Enable DNSSEC{% endtrans %}</label>
+                        </div>
+                        <small class="text-muted">{% trans %}Secure this zone with DNSSEC signing{% endtrans %}</small>
+                    </div>
                     {% endif %}
-                    {% endfor %}
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td>{% trans %}Type{% endtrans %}:</td>
-            <td>
-                <select data-testid="zone-type-select" class="form-select form-select-sm" name="dom_type">
-                    {% for type in available_zone_types %}
-                    {% if type == iface_zone_type_default %}
-                    {% set selected = 'selected' %}
-                    {% else %}
-                    {% set selected = '' %}
+                    
+                    <div class="mb-3">
+                        <button data-testid="add-zone-button" class="btn btn-primary btn-sm" type="submit" name="submit">
+                            <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add zone{% endtrans %}
+                        </button>
+                        <a href="index.php?page=list_zones" class="btn btn-secondary btn-sm">
+                            <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card border-info">
+                        <div class="card-header bg-info bg-opacity-10 text-info border-info">
+                            <i class="bi bi-info-circle-fill me-2 text-info"></i>{% trans %}About Master Zones{% endtrans %}
+                        </div>
+                        <div class="card-body">
+                            <p>{% trans %}A master zone is a zone for which this PowerDNS server is the primary authority. You can add, edit and delete records in master zones.{% endtrans %}</p>
+                            
+                            <p class="mb-0">{% trans %}After creating the zone, you will be redirected to add DNS records to it.{% endtrans %}</p>
+                        </div>
+                    </div>
+                    
+                    {% if pdnssec_use %}
+                    <div class="card border-warning mt-3">
+                        <div class="card-header bg-warning bg-opacity-10 text-warning border-warning">
+                            <i class="bi bi-shield-lock-fill me-2 text-warning"></i>{% trans %}DNSSEC Information{% endtrans %}
+                        </div>
+                        <div class="card-body">
+                            <p>{% trans %}DNSSEC (Domain Name System Security Extensions) adds cryptographic signatures to DNS records to protect against spoofing and cache poisoning attacks.{% endtrans %}</p>
+                            
+                            <p class="mb-0">{% trans %}When enabled, PowerDNS will automatically generate and manage the necessary keys and signatures for the zone.{% endtrans %}</p>
+                        </div>
+                    </div>
                     {% endif %}
-                    <option value="{{ type }}" {{ selected }}>{{type|lower}}</option>
-                    {% endfor %}
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td>{% trans %}Template{% endtrans %}:</td>
-            <td>
-                <select data-testid="zone-template-select" class="form-select form-select-sm" name="zone_template">
-                    <option value="none">none</option>
-                    {% for zone_template in zone_templates %}
-                    <option value="{{ zone_template['id'] }}">{{ zone_template['name'] }}</option>
-                    {% endfor %}
-                </select>
-            </td>
-        </tr>
-
-        {% if pdnssec_use %}
-        <tr>
-            <td>{% trans %}DNSSEC{% endtrans %}:</td>
-            <td><input data-testid="dnssec-checkbox" class="form-check-input" type="checkbox" name="dnssec" value="1" checked></td>
-        </tr>
-        {% endif %}
-        <tr>
-            <td>&nbsp;</td>
-            <td>
-                <input data-testid="add-zone-button" class="btn btn-primary btn-sm" type="submit" name="submit" value="{% trans %}Add zone{% endtrans  %}">
-            </td>
-        </tr>
-    </table>
-</form>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

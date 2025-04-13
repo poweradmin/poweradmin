@@ -6,129 +6,167 @@
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans %}Add user{% endtrans %}</h5>
-
-<div class="row g-2 col-sm-4 mb-3">
-    <div class="alert alert-info" role="alert">
-        <h6 class="alert-heading">{% trans %}Password Requirements{% endtrans %}:</h6>
-        <ul class="mb-0 small">
-            {% if password_policy.enabled %}
-            {% if password_policy.min_length %}
-            <li>{% trans %}Minimum length{% endtrans %}: {{ password_policy.min_length }} {% trans %}characters{% endtrans %}</li>
-            {% endif %}
-            {% if password_policy.require_uppercase %}
-            <li>{% trans %}Must contain uppercase letters{% endtrans %}</li>
-            {% endif %}
-            {% if password_policy.require_lowercase %}
-            <li>{% trans %}Must contain lowercase letters{% endtrans %}</li>
-            {% endif %}
-            {% if password_policy.require_numbers %}
-            <li>{% trans %}Must contain numbers{% endtrans %}</li>
-            {% endif %}
-            {% if password_policy.require_special %}
-            <li>
-                {% trans %}Must contain special characters{% endtrans %}
-                <br><span class="text-muted">({{ password_policy.special_characters }})</span>
-            </li>
-            {% endif %}
-            {% else %}
-            <li>{% trans %}No specific password requirements{% endtrans %}</li>
-            {% endif %}
-        </ul>
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <strong><i class="bi bi-person-plus me-2"></i>{% trans %}Add User{% endtrans %}</strong>
+    </div>
+    <div class="card-body">
+        <p class="small text-muted mb-3">{% trans %}Create a new user account with appropriate permissions{% endtrans %}</p>
+        
+        <form class="needs-validation" method="post" action="index.php?page=add_user" novalidate>
+            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <!-- Left Column: User Information -->
+                    <div class="mb-3">
+                        <label for="username" class="form-label">{% trans %}Username{% endtrans %}</label>
+                        <input class="form-control form-control-sm" type="text" id="username" name="username" value="{{ username }}" required>
+                        <div class="invalid-feedback">{% trans %}Provide user name{% endtrans %}</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="fullname" class="form-label">{% trans %}Fullname{% endtrans %}</label>
+                        <input class="form-control form-control-sm" type="text" id="fullname" name="fullname" value="{{ fullname }}">
+                        <small class="text-muted">{% trans %}Optional: User's full name for identification{% endtrans %}</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="email" class="form-label">{% trans %}Email address{% endtrans %}</label>
+                        <input class="form-control form-control-sm" type="email" id="email" name="email" value="{{ email }}" required>
+                        <div class="invalid-feedback">{% trans %}Provide email{% endtrans %}</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="password" class="form-label">{% trans %}Password{% endtrans %}</label>
+                        <div class="input-group input-group-sm">
+                            <input class="form-control form-control-sm" type="password" id="password" name="password" value="" {% if not ldap_use %}required{% endif %}>
+                            <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showPassword('password', 'eye')"><i class="bi bi-eye-fill" id="eye"></i></button>
+                            {% if not ldap_use %}<div class="invalid-feedback">{% trans %}Provide user password{% endtrans %}</div>{% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check d-flex align-items-center gap-2">
+                            <input class="form-check-input" id="auto_generate" type="checkbox" name="auto_generate_password" value="1" 
+                                   onclick="togglePasswordField(); disablePasswordField(); toggleEmailOption();">
+                            <label class="form-check-label" for="auto_generate">{% trans %}Auto-generate password{% endtrans %}</label>
+                            <i class="bi bi-info-circle text-primary" data-bs-toggle="tooltip" data-bs-placement="right" 
+                               title="{% trans %}Generate a secure password that meets all requirements{% endtrans %}"></i>
+                        </div>
+                    </div>
+                    
+                    {% if mail_enabled %}
+                    <div class="mb-3" id="send_email_row" style="display: none;">
+                        <div class="form-check d-flex align-items-center gap-2">
+                            <input class="form-check-input" id="send_email" type="checkbox" name="send_email" value="1" checked>
+                            <label class="form-check-label" for="send_email">{% trans %}Send password by email{% endtrans %}</label>
+                            <i class="bi bi-info-circle text-primary" data-bs-toggle="tooltip" data-bs-placement="right" 
+                               title="{% trans %}Send login credentials to user's email address{% endtrans %}"></i>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if user_edit_templ_perm %}
+                    <div class="mb-3">
+                        <label for="perm_templ" class="form-label">{% trans %}Permission template{% endtrans %}</label>
+                        <select class="form-select form-select-sm" id="perm_templ" name="perm_templ">
+                            {% for template in user_templates %}
+                            {% if perm_templ == template['id'] %}
+                            {% set selected = 'selected' %}
+                            {% else %}
+                            {% set selected = '' %}
+                            {% endif %}
+                            <option value="{{ template['id'] }}" {{ selected }}>{{ template['name'] }}</option>
+                            {% endfor %}
+                        </select>
+                        <small class="text-muted">{% trans %}Select permissions for this user{% endtrans %}</small>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">{% trans %}Description{% endtrans %}</label>
+                        <textarea class="form-control form-control-sm" id="description" rows="3" name="descr">{{ description }}</textarea>
+                        <small class="text-muted">{% trans %}Optional information about this user{% endtrans %}</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="active" name="active" value="1" {{ active_checked }}>
+                            <label class="form-check-label" for="active">{% trans %}Enabled{% endtrans %}</label>
+                        </div>
+                    </div>
+                    
+                    {% if ldap_use %}
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" id="ldap" type="checkbox" name="use_ldap" value="1"
+                                   onclick="disablePasswordField()" {{ use_ldap_checked }}>
+                            <label class="form-check-label" for="ldap">{% trans %}LDAP Authentication{% endtrans %}</label>
+                        </div>
+                        <small class="text-muted">{% trans %}Use external LDAP directory for authentication{% endtrans %}</small>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary btn-sm" name="commit">
+                            <i class="bi bi-person-plus-fill me-1 text-white"></i>{% trans %}Add User{% endtrans %}
+                        </button>
+                        <a href="index.php?page=users" class="btn btn-secondary btn-sm">
+                            <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <!-- Right Column: Password Requirements -->
+                    <div class="card border-info">
+                        <div class="card-header bg-info bg-opacity-10 text-info border-info">
+                            <i class="bi bi-shield-lock-fill me-2 text-info"></i>{% trans %}Password Requirements{% endtrans %}
+                        </div>
+                        <div class="card-body">
+                            <ul class="mb-0">
+                                {% if password_policy.enabled %}
+                                    {% if password_policy.min_length %}
+                                    <li>{% trans %}Minimum length{% endtrans %}: {{ password_policy.min_length }} {% trans %}characters{% endtrans %}</li>
+                                    {% endif %}
+                                    {% if password_policy.require_uppercase %}
+                                    <li>{% trans %}Must contain uppercase letters{% endtrans %}</li>
+                                    {% endif %}
+                                    {% if password_policy.require_lowercase %}
+                                    <li>{% trans %}Must contain lowercase letters{% endtrans %}</li>
+                                    {% endif %}
+                                    {% if password_policy.require_numbers %}
+                                    <li>{% trans %}Must contain numbers{% endtrans %}</li>
+                                    {% endif %}
+                                    {% if password_policy.require_special %}
+                                    <li>
+                                        {% trans %}Must contain special characters{% endtrans %}
+                                        <span class="text-muted">({{ password_policy.special_characters }})</span>
+                                    </li>
+                                    {% endif %}
+                                {% else %}
+                                    <li>{% trans %}No specific password requirements{% endtrans %}</li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="card border-warning mt-3">
+                        <div class="card-header bg-warning bg-opacity-10 text-warning border-warning">
+                            <i class="bi bi-info-circle-fill me-2 text-warning"></i>{% trans %}User Permissions{% endtrans %}
+                        </div>
+                        <div class="card-body">
+                            <p class="small mb-0">
+                                {% trans %}When creating a new user, they will receive permissions based on the selected template. You can modify these permissions later by editing the user.{% endtrans %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
-
-<form class="needs-validation" method="post" action="index.php?page=add_user" novalidate>
-    <input type="hidden" name="_token" value="{{ csrf_token }}">
-    <table>
-        <tr>
-            <td>{% trans %}Username{% endtrans %}</td>
-            <td><input class="form-control form-control-sm" type="text" name="username" value="{{ username }}" required>
-                <div class="invalid-feedback">{% trans %}Provide user name{% endtrans %}</div>
-            </td>
-        </tr>
-        <tr>
-            <td>{% trans %}Fullname{% endtrans %}</td>
-            <td><input class="form-control form-control-sm" type="text" name="fullname" value="{{ fullname }}"></td>
-        </tr>
-        <tr>
-            <td>{% trans %}Password{% endtrans %}</td>
-            <td>
-                <div class="input-group">
-                    <input class="form-control form-control-sm" type="password" id="password" name="password" value="" {% if not ldap_use %}required{% endif %}>
-                    <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showPassword('password', 'eye')"><i class="bi bi-eye-fill" id="eye"></i></button>
-                    {% if not ldap_use %}<div class="invalid-feedback">{% trans %}Provide user password{% endtrans %}</div>{% endif %}
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td>{% trans %}Auto-generate password{% endtrans %}</td>
-            <td>
-                <div class="d-flex align-items-center">
-                    <input class="form-check-input me-2" id="auto_generate" type="checkbox" name="auto_generate_password" value="1" 
-                           onclick="togglePasswordField(); disablePasswordField(); toggleEmailOption();">
-                    <i class="bi bi-info-circle text-primary" data-bs-toggle="tooltip" data-bs-placement="right" 
-                       title="{% trans %}Generate a secure password that meets all requirements{% endtrans %}"></i>
-                </div>
-            </td>
-        </tr>
-        {% if mail_enabled %}
-        <tr id="send_email_row" style="display: none;">
-            <td>{% trans %}Send password by email{% endtrans %}</td>
-            <td>
-                <div class="d-flex align-items-center">
-                    <input class="form-check-input me-2" id="send_email" type="checkbox" name="send_email" value="1" checked>
-                    <i class="bi bi-info-circle text-primary" data-bs-toggle="tooltip" data-bs-placement="right" 
-                       title="{% trans %}Send login credentials to user's email address{% endtrans %}"></i>
-                </div>
-            </td>
-        </tr>
-        {% endif %}
-        <tr>
-            <td>{% trans %}Email address{% endtrans %}</td>
-            <td><input class="form-control form-control-sm" type="text" name="email" value="{{ email }}" required>
-                <div class="invalid-feedback">{% trans %}Provide email{% endtrans %}</div>
-            </td>
-        </tr>
-        {% if user_edit_templ_perm %}
-        <tr>
-            <td>{% trans %}Permission template{% endtrans %}</td>
-            <td>
-                <select class="form-select form-select-sm" name="perm_templ">
-                    {% for template in user_templates %}
-                    {% if perm_templ == template['id'] %}
-                    {% set selected = 'selected' %}
-                    {% else %}
-                    {% set selected = '' %}
-                    {% endif %}
-                    <option value="{{ template['id'] }}" {{ selected }}>{{ template['name'] }}</option>
-                    {% endfor %}
-                </select>
-            </td>
-        </tr>
-        {% endif %}
-        <tr>
-            <td>{% trans %}Description{% endtrans %}</td>
-            <td><textarea class="form-control form-control-sm" rows="4" cols="30" name="descr">{{ description }}</textarea>
-            </td>
-        </tr>
-        <tr>
-            <td>{% trans %}Enabled{% endtrans %}</td>
-            <td><input class="form-check-input" type="checkbox" name="active" value="1" {{ active_checked }}></td>
-        </tr>
-        {% if ldap_use %}
-        <tr>
-            <td>{% trans %}LDAP Authentication{% endtrans %}</td>
-            <td><input class="form-check-input" id="ldap" type="checkbox" name="use_ldap" value="1"
-                       onclick="disablePasswordField()" {{ use_ldap_checked }}></td>
-        </tr>
-        {% endif %}
-        <tr>
-            <td>&nbsp;</td>
-            <td><input class="btn btn-primary btn-sm" type="submit" name="commit" value="{% trans %}Add{% endtrans %}">
-            </td>
-    </table>
-</form>
 
 <script>
 function togglePasswordField() {

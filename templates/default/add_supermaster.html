@@ -6,47 +6,79 @@
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans %}Add supermaster{% endtrans %}</h5>
-<form class="needs-validation" method="post" action="index.php?page=add_supermaster" novalidate>
-    <input type="hidden" name="_token" value="{{ csrf_token }}">
-    <div class="col-sm-3">
-        <div class="mb-2">
-            <label for="master_ip" class="form-label">{% trans %}IP address of supermaster{% endtrans %}</label>
-            <input class="form-control form-control-sm" type="text" id="master_ip" name="master_ip" value="{{ master_ip }}"
-                   required>
-            <div class="invalid-feedback">{% trans %}Provide ip address{% endtrans %}</div>
-        </div>
-        <div class="mb-2">
-            <label for="ns_name" class="form-label">{% trans %}Hostname in NS record{% endtrans %}</label>
-            <input class="form-control form-control-sm" type="text" id="ns_name" name="ns_name" value="{{ ns_name }}" required>
-            <div class="invalid-feedback">{% trans %}Provide host name{% endtrans %}</div>
-        </div>
-        <div class="mb-4">
-            <label for="account" class="form-label">{% trans %}Account{% endtrans %}</label>
-            <select class="form-select form-select-sm" id="account" name="account">
-                {% for user in users %}
-                {% if user['id'] == session_uid %}
-                <option value="{{ user['username'] }}" selected>
-                    {% if user['fullname'] %}
-                    {{ user['fullname'] }}
-                    {% else %}
-                    {{ user['username'] }}
-                    {% endif %}
-                </option>
-                {% elseif perm_view_others %}
-                <option value="{{ user['username'] }}">
-                    {% if user['fullname'] %}
-                    {{ user['fullname'] }}
-                    {% else %}
-                    {{ user['username'] }}
-                    {% endif %}
-                </option>
-                {% endif %}
-                {% endfor %}
-            </select>
-        </div>
-        <div class="mb-2">
-            <input class="btn btn-primary btn-sm" type="submit" name="submit" value="{% trans %}Add supermaster{% endtrans %}">
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Add Supermaster{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <form class="needs-validation" method="post" action="index.php?page=add_supermaster" novalidate>
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    
+                    <div class="mb-3">
+                        <label for="master_ip" class="form-label">{% trans %}IP address of supermaster{% endtrans %}</label>
+                        <input class="form-control form-control-sm" type="text" id="master_ip" name="master_ip" value="{{ master_ip }}" required>
+                        <small class="form-text text-muted">{% trans %}Enter the IP address of the master nameserver{% endtrans %}</small>
+                        <div class="invalid-feedback">{% trans %}Provide ip address{% endtrans %}</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="ns_name" class="form-label">{% trans %}Hostname in NS record{% endtrans %}</label>
+                        <input class="form-control form-control-sm" type="text" id="ns_name" name="ns_name" value="{{ ns_name }}" required>
+                        <small class="form-text text-muted">{% trans %}Enter the hostname as it appears in the NS record{% endtrans %}</small>
+                        <div class="invalid-feedback">{% trans %}Provide host name{% endtrans %}</div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="account" class="form-label">{% trans %}Account{% endtrans %}</label>
+                        <select class="form-select form-select-sm" id="account" name="account">
+                            {% for user in users %}
+                            {% if user['id'] == session_uid %}
+                            <option value="{{ user['username'] }}" selected>
+                                {% if user['fullname'] %}
+                                {{ user['fullname'] }}
+                                {% else %}
+                                {{ user['username'] }}
+                                {% endif %}
+                            </option>
+                            {% elseif perm_view_others %}
+                            <option value="{{ user['username'] }}">
+                                {% if user['fullname'] %}
+                                {{ user['fullname'] }}
+                                {% else %}
+                                {{ user['username'] }}
+                                {% endif %}
+                            </option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                        <small class="form-text text-muted">{% trans %}Select the account that will own this supermaster{% endtrans %}</small>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <button type="submit" name="submit" class="btn btn-sm btn-primary">
+                            <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add supermaster{% endtrans %}
+                        </button>
+                        <a href="index.php?page=list_supermasters" class="btn btn-sm btn-secondary">
+                            <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
+                        </a>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</form>
+    
+    <div class="col-md-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}Information{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <p>{% trans %}A supermaster is a PowerDNS authoritative server that automatically pushes new zones to its slaves.{% endtrans %}</p>
+                <p>{% trans %}When a slave receives a notification from a supermaster, it adds the domain and sets the supermaster's IP address as the master address.{% endtrans %}</p>
+                <p class="mb-0 small text-muted">{% trans %}Note: The hostname must match exactly what appears in the NS record of the zone.{% endtrans %}</p>
+            </div>
+        </div>
+    </div>
+</div>

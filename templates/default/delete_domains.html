@@ -6,49 +6,75 @@
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans %}Delete zones{% endtrans %}</h5>
-<form method="post" action="index.php?page=delete_domains">
-    <input type="hidden" name="_token" value="{{ csrf_token }}">
-    <table class="table table-striped table-hover table-sm">
-        <thead>
-            <tr>
-                <th>{% trans %}Name{% endtrans %}</th>
-                <th>{% trans %}Owner{% endtrans %}</th>
-                <th>{% trans %}Type{% endtrans %}</th>
-                <th>{% trans %}Note{% endtrans %}</th>
-            </tr>
-        </thead>
-        <tbody>
-
-        {% for zone in zones %}
-        <tr>
-            <input type="hidden" name="zone_id[]" value="{{ zone['id'] }}">
-            <td>
-                {% if zone['idn_zone_name'] %}
-                {{ zone['idn_zone_name'] }} ({{ zone['name'] }})
-                {% else %}
-                {{ zone['name'] }}
-                {% endif %}
-            </td>
-            <td>{{ zone['owner'] }}</td>
-            <td>{{ zone['type'] }}</td>
-
-            <td>
-                {% if perm_edit != "all" and (perm_edit != "own" or zone['is_owner'] != "1") %}
-                {{ error }}
-                {% endif %}
-
-                {% if zone['has_supermaster'] %}
-                {% trans %}You are about to delete a slave zone of which the master nameserver is a supermaster. Deleting the zone now, will result in temporary removal only. Whenever the supermaster sends a notification for this zone, it will be added again!{% endtrans %}
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-
-        </tbody>
-    </table>
-    <p>{% trans %}Are you sure?{% endtrans %}</p>
-    <input class="btn btn-primary btn-sm" type="submit" name="confirm" value="{% trans %}Yes{% endtrans %}">
-    <input class="btn btn-secondary btn-sm" type="button" onClick="location.href='index.php?page=list_zones'"
-           value="{% trans %}No{% endtrans %}">
-</form>
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <strong><i class="bi bi-trash me-2 text-danger"></i>{% trans %}Delete Multiple Zones{% endtrans %}</strong>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-danger bg-danger bg-opacity-10">
+            <h5 class="alert-heading text-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i>{% trans %}Warning{% endtrans %}</h5>
+            <p>{% trans %}You are about to delete multiple zones{% endtrans %}</p>
+            <p class="mb-0">{% trans %}This action cannot be undone. Are you sure you want to proceed?{% endtrans %}</p>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header py-2">
+                <strong>{% trans %}Zones to Delete{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <form method="post" action="index.php?page=delete_domains">
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover table-sm">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>{% trans %}Name{% endtrans %}</th>
+                                    <th>{% trans %}Owner{% endtrans %}</th>
+                                    <th>{% trans %}Type{% endtrans %}</th>
+                                    <th>{% trans %}Note{% endtrans %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for zone in zones %}
+                                <tr>
+                                    <input type="hidden" name="zone_id[]" value="{{ zone['id'] }}">
+                                    <td>
+                                        {% if zone['idn_zone_name'] %}
+                                        <strong>{{ zone['idn_zone_name'] }}</strong> <small class="text-muted">({{ zone['name'] }})</small>
+                                        {% else %}
+                                        <strong>{{ zone['name'] }}</strong>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ zone['owner'] }}</td>
+                                    <td><span class="badge bg-light text-dark">{{ zone['type'] }}</span></td>
+                                    <td>
+                                        {% if perm_edit != "all" and (perm_edit != "own" or zone['is_owner'] != "1") %}
+                                        <span class="text-danger"><i class="bi bi-exclamation-circle-fill me-1"></i>{{ error }}</span>
+                                        {% endif %}
+                                        
+                                        {% if zone['has_supermaster'] %}
+                                        <div class="text-warning small">
+                                            <i class="bi bi-info-circle-fill me-1"></i>{% trans %}You are about to delete a slave zone of which the master nameserver is a supermaster. Deleting the zone now, will result in temporary removal only. Whenever the supermaster sends a notification for this zone, it will be added again!{% endtrans %}
+                                        </div>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <button type="submit" name="confirm" class="btn btn-danger btn-sm">
+                            <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete these zones{% endtrans %}
+                        </button>
+                        <a href="index.php?page=list_zones" class="btn btn-secondary btn-sm">
+                            <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}No, keep these zones{% endtrans %}
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

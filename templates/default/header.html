@@ -134,14 +134,14 @@
 
 {% if install_error %}
 <div class="container">
-    <div class="alert alert-danger py-2 small" role="alert"><strong>Error:</strong> {{ install_error | raw }}</div>
+    <div class="alert alert-danger bg-danger bg-opacity-10 py-2 small" role="alert"><strong class="text-danger">Error:</strong> {{ install_error | raw }}</div>
 </div>
 {% endif %}
 
 {% if user_logged_in %}
 {% if session_key_error %}
 <div class="container">
-    <div data-testid="error-message" class="alert alert-danger"><strong>Error:</strong> {{ session_key_error | raw }}</div>
+    <div data-testid="error-message" class="alert alert-danger bg-danger bg-opacity-10"><strong class="text-danger">Error:</strong> {{ session_key_error | raw }}</div>
 </div>
 {% endif %}
 {% endif %}
@@ -149,8 +149,8 @@
 <main class="container pb-3 flex-shrink-0">
 {% if system_messages is defined and system_messages %}
     {% for message in system_messages %}
-    <div class="alert alert-{% if message.type == 'error' %}danger{% elseif message.type == 'warn' %}warning{% else %}{{ message.type }}{% endif %} alert-dismissible py-2 small fade show" role="alert" data-testid="system-message">
-        <strong>{% if message.type == 'error' %}Error:{% elseif message.type == 'warn' %}Warning:{% elseif message.type == 'success' %}Success:{% else %}Info:{% endif %}</strong> {{ message.content | raw }}
+    <div class="alert alert-{% if message.type == 'error' %}danger{% elseif message.type == 'warn' %}warning{% else %}{{ message.type }}{% endif %} bg-{% if message.type == 'error' %}danger{% elseif message.type == 'warn' %}warning{% else %}{{ message.type }}{% endif %} bg-opacity-10 alert-dismissible py-2 small fade show" role="alert" data-testid="system-message">
+        <strong class="text-{% if message.type == 'error' %}danger{% elseif message.type == 'warn' %}warning{% else %}{{ message.type }}{% endif %}">{% if message.type == 'error' %}Error:{% elseif message.type == 'warn' %}Warning:{% elseif message.type == 'success' %}Success:{% else %}Info:{% endif %}</strong> {{ message.content | raw }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     {% endfor %}

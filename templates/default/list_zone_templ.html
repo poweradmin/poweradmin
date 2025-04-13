@@ -6,67 +6,84 @@
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans %}Zone templates for{% endtrans %} "{{ user_name }}"</h5>
-<table class="table table-striped table-hover table-sm">
-    <thead>
-    <tr>
-        <th>{% trans %}In use{% endtrans%}</th>
-        <th>{% trans %}Name{% endtrans %}</th>
-        <th>{% trans %}Description{% endtrans %}</th>
-        <th>{% trans %}Owner{% endtrans %}</th>
-        <th>{% trans %}Type{% endtrans %}</th>
-        <th>{% trans %}Zones linked{% endtrans %}</th>
-        <th>&nbsp;</th>
-    </tr>
-    </thead>
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <strong><i class="bi bi-file-earmark-text me-2"></i>{% trans %}Zone templates for{% endtrans %} "{{ user_name }}"</strong>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-sm mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th>{% trans %}In use{% endtrans%}</th>
+                    <th>{% trans %}Name{% endtrans %}</th>
+                    <th>{% trans %}Description{% endtrans %}</th>
+                    <th>{% trans %}Owner{% endtrans %}</th>
+                    <th>{% trans %}Type{% endtrans %}</th>
+                    <th>{% trans %}Zones linked{% endtrans %}</th>
+                    <th class="text-end">{% trans %}Actions{% endtrans %}</th>
+                </tr>
+                </thead>
 
-    <tbody>
-    {% if not zone_templates %}
-    <tr>
-        <td colspan="7">{% trans %}No results found{% endtrans %}</td>
-    </tr>
-    {% endif %}
-    {% for template in zone_templates %}
-    <tr>
-        <td class="col-sm-1">
-            {% if template['zones_linked'] == '0' %}
-            <i class="bi bi-circle"></i>
-            {% else %}
-            <i class="bi bi-check-circle"></i>
-            {% endif %}
-        </td>
-        <td class="col-sm-2">{{ template['name'] }}</td>
-        <td class="col-sm-2">{{ template['descr'] }}</td>
-        <td class="col-sm-1">
-            {% if template['fullname'] %}
-            {{ template['fullname'] }}
-            {% elseif template['username'] %}
-            {{ template['username'] }}
-            {% else %}
-            -
-            {% endif %}
-        </td>
-        <td class="col-sm-1">
-            {% if template['username'] %}
-            {% trans %}private{% endtrans %}
-            {% else %}
-            {% trans %}global{% endtrans %}
-            {% endif %}
-        </td>
-        <td class="col-sm-1 {% if template['zones_linked'] == '0' %}table-warning{% endif %}">{{ template['zones_linked'] }}</td>
-        {% if (perm_zone_master_add and template['username']) or perm_is_godlike %}
-        <td class="col-sm-2">
-            <a class="btn btn-outline-primary btn-sm" href="index.php?page=edit_zone_templ&id={{ template['id'] }}"><i class="bi bi-pencil-square"></i> {% trans %}Edit{% endtrans %}</a>
-            <a class="btn btn-outline-danger btn-sm" href="index.php?page=delete_zone_templ&id={{ template['id'] }}"><i class="bi bi-trash"></i> {% trans %}Delete{% endtrans %}</a>
-        </td>
-        {% else %}
-        <td>&nbsp;</td>
-        {% endif %}
-    </tr>
-    {% endfor %}
-    </tbody>
-
-</table>
-<div>
-    <a class="btn btn-primary btn-sm" href="index.php?page=add_zone_templ">{% trans %}Add zone template{% endtrans %}</a>
+                <tbody>
+                {% if not zone_templates %}
+                <tr>
+                    <td colspan="7" class="text-center py-3">{% trans %}No results found{% endtrans %}</td>
+                </tr>
+                {% endif %}
+                {% for template in zone_templates %}
+                <tr>
+                    <td>
+                        {% if template['zones_linked'] == '0' %}
+                        <i class="bi bi-circle"></i>
+                        {% else %}
+                        <i class="bi bi-check-circle"></i>
+                        {% endif %}
+                    </td>
+                    <td>{{ template['name'] }}</td>
+                    <td>{{ template['descr'] }}</td>
+                    <td>
+                        {% if template['fullname'] %}
+                        {{ template['fullname'] }}
+                        {% elseif template['username'] %}
+                        {{ template['username'] }}
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                    <td><span class="badge bg-light text-dark">
+                        {% if template['username'] %}
+                        {% trans %}private{% endtrans %}
+                        {% else %}
+                        {% trans %}global{% endtrans %}
+                        {% endif %}
+                    </span></td>
+                    <td><span class="badge {% if template['zones_linked'] == '0' %}bg-warning{% else %}bg-secondary{% endif %}">{{ template['zones_linked'] }}</span></td>
+                    {% if (perm_zone_master_add and template['username']) or perm_is_godlike %}
+                    <td class="text-end">
+                        <div class="gap-2">
+                            <a class="btn btn-sm btn-outline-primary"
+                               href="index.php?page=edit_zone_templ&id={{ template['id'] }}">
+                                <i class="bi bi-pencil-square text-primary"></i> <span class="d-none d-md-inline text-primary">{% trans %}Edit{% endtrans %}</span>
+                            </a>
+                            <a class="btn btn-sm btn-outline-danger"
+                               href="index.php?page=delete_zone_templ&id={{ template['id'] }}">
+                                <i class="bi bi-trash text-danger"></i> <span class="d-none d-md-inline text-danger">{% trans %}Delete{% endtrans %}</span>
+                            </a>
+                        </div>
+                    </td>
+                    {% else %}
+                    <td class="text-end">&nbsp;</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer py-3">
+        <a class="btn btn-primary btn-sm" href="index.php?page=add_zone_templ">
+            <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add zone template{% endtrans %}
+        </a>
+    </div>
 </div>
