@@ -143,6 +143,16 @@
         </div>
         {% else %}
         
+        <div class="mb-3">
+            <form id="delete-records-form" method="post" action="index.php?page=delete_records" class="d-inline">
+                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                <button type="submit" class="btn btn-danger btn-sm" id="delete-selected-records" disabled>
+                    <i class="bi bi-trash me-1 text-white"></i>{% trans %}Delete record(s){% endtrans %}
+                </button>
+                <div id="selected-records-container"></div>
+            </form>
+        </div>
+        
         <form id="edit-zone-form" class="needs-validation" method="post" action="" novalidate>
             <input type="hidden" name="_token" value="{{ csrf_token }}">
             <input type="hidden" name="serial" value="{{ serial }}">
@@ -151,6 +161,9 @@
                 <table class="table table-striped table-hover table-sm">
                     <thead class="table-light">
                     <tr>
+                        <th class="text-center" style="width: 40px;">
+                            <input type="checkbox" class="form-check-input" id="select_edit_records" onClick="toggleEditRecordCheckboxes()">
+                        </th>
                         {% if iface_edit_show_id %}
                         <th>
                             <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=id&sort_direction={{ record_sort_by == 'id' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
@@ -223,6 +236,11 @@
         <input type="hidden" name="record[{{ r['id'] }}][zid]" value="{{ zone_id }}">
         {% endif %}
         <tr style="font-size: 14px;">
+            <td class="text-center">
+                {% if not(r['type'] == "SOA" or (r['type'] == "NS" and perm_edit == "own_as_client")) %}
+                <input class="form-check-input" type="checkbox" name="record_id[]" value="{{ r['id'] }}">
+                {% endif %}
+            </td>
             {% if iface_edit_show_id %}
             <td>{{ r['id'] }}</td>
             {% endif %}
@@ -634,7 +652,8 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('.form-check-input').forEach(checkbox => {
+        // Handle disabled checkboxes
+        document.querySelectorAll('input[type="checkbox"][name$="[disabled]"]').forEach(checkbox => {
             const row = checkbox.closest('tr');
             if (!row) return;
 
@@ -642,6 +661,40 @@
 
             checkbox.addEventListener('change', toggleOpacity);
             toggleOpacity();
+        });
+        
+        // Handle record selection checkboxes
+        const recordCheckboxes = document.getElementsByName('record_id[]');
+        for (let i = 0; i < recordCheckboxes.length; i++) {
+            recordCheckboxes[i].addEventListener('change', function() {
+                updateDeleteButtonState('delete-selected-records', recordCheckboxes);
+            });
+        }
+        
+        // Initialize delete button state
+        updateDeleteButtonState('delete-selected-records', recordCheckboxes);
+        
+        // Handle delete form submission
+        document.getElementById('delete-records-form').addEventListener('submit', function(e) {
+            // Get all checked checkboxes
+            const checkedBoxes = document.querySelectorAll('input[name="record_id[]"]:checked');
+            
+            if (checkedBoxes.length === 0) {
+                e.preventDefault();
+                return;
+            }
+            
+            const container = document.getElementById('selected-records-container');
+            container.innerHTML = '';
+            
+            // Clone checked checkboxes to the delete form
+            checkedBoxes.forEach(function(checkbox) {
+                const clone = document.createElement('input');
+                clone.type = 'hidden';
+                clone.name = 'record_id[]';
+                clone.value = checkbox.value;
+                container.appendChild(clone);
+            });
         });
     });
 </script>

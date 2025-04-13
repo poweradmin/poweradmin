@@ -36,6 +36,47 @@ function toggleZoneCheckboxes() {
     }
 }
 
+function toggleRecordCheckboxes() {
+    const select_state = document.getElementById("select_records");
+    const checkboxes = document.getElementsByName("record_id[]");
+    for (let index = 0; index < checkboxes.length; index++) {
+        checkboxes[index].checked = select_state.checked;
+    }
+    updateDeleteButtonState("delete-records-button", checkboxes);
+}
+
+function toggleEditRecordCheckboxes() {
+    const select_state = document.getElementById("select_edit_records");
+    const checkboxes = document.getElementsByName("record_id[]");
+    for (let index = 0; index < checkboxes.length; index++) {
+        checkboxes[index].checked = select_state.checked;
+    }
+    updateDeleteButtonState("delete-selected-records", checkboxes);
+}
+
+function updateDeleteButtonState(buttonId, checkboxes) {
+    const deleteButton = document.getElementById(buttonId);
+    if (!deleteButton) return;
+    
+    let hasChecked = false;
+    for (let i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i].checked) {
+            hasChecked = true;
+            break;
+        }
+    }
+    deleteButton.disabled = !hasChecked;
+}
+
+function toggleSearchZoneCheckboxes() {
+    const select_state = document.getElementById("select_search_zones");
+    const checkboxes = document.getElementsByName("zone_id[]");
+    for (let index = 0; index < checkboxes.length; index++) {
+        checkboxes[index].checked = select_state.checked;
+    }
+    updateDeleteButtonState("delete-zones-button", checkboxes);
+}
+
 function zone_sort_by(column) {
     const form = document.search_form;
     const currentSortBy = form.zone_sort_by.value;

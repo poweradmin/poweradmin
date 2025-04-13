@@ -57,6 +57,7 @@ class Pages
             'delete_domains',
             'delete_perm_templ',
             'delete_record',
+            'delete_records',
             'delete_supermaster',
             'delete_user',
             'delete_zone_templ',
