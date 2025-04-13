@@ -89,6 +89,11 @@ class EditController extends BaseController
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $zone_name = $dnsRecord->get_domain_name_by_id($zone_id);
 
+        if (isset($_GET['export_csv'])) {
+            $this->exportCsv($zone_id);
+            return;
+        }
+
         if (isset($_POST['commit'])) {
             $this->validateCsrfToken();
             $this->saveRecords($zone_id, $zone_name);
@@ -413,6 +418,98 @@ class EditController extends BaseController
             ZoneTemplate::add_zone_templ_save_as($this->db, $template_name, $description, $_SESSION['userid'], $records, $options, $dnsRecord->get_domain_name_by_id($zone_id));
             $this->setMessage('edit', 'success', _('Zone template has been added successfully.'));
         }
+    }
+
+    public function exportCsv(int $zone_id): void
+    {
+        // Check if user is logged in
+        if (!isset($_SESSION['userid'])) {
+            $this->showError(_('You need to be logged in to export zone data.'));
+            return;
+        }
+
+        // Check permissions - same as viewing zones
+        $perm_view = Permission::getViewPermission($this->db);
+        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
+
+        if ($perm_view == "none" || ($perm_view == "own" && $user_is_zone_owner == "0")) {
+            $this->showError(_("You do not have permission to export this zone."));
+            return;
+        }
+
+        // Validate CSRF token if using POST
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->validateCsrfToken();
+        }
+
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $zone_name = $dnsRecord->get_domain_name_by_id($zone_id);
+
+        if (!$zone_name) {
+            $this->showError(_('There is no zone with this ID.'));
+            return;
+        }
+
+        if ($dnsRecord->zone_id_exists($zone_id) == "0") {
+            $this->showError(_('There is no zone with this ID.'));
+            return;
+        }
+
+        $records = $dnsRecord->get_records_from_domain_id($this->config->get('database', 'type', 'mysql'), $zone_id);
+
+        if (empty($records)) {
+            $this->showError(_('This zone does not have any records to export.'));
+            return;
+        }
+
+        // Sanitize filename to prevent header injection
+        $sanitized_filename = preg_replace('/[^a-zA-Z0-9_.-]/', '_', $zone_name);
+
+        // Set headers for CSV download with security headers
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=' . $sanitized_filename . '_records.csv');
+        header('Pragma: no-cache');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Content-Transfer-Encoding: binary');
+
+        // Create output stream
+        $output = fopen('php://output', 'w');
+
+        // Add BOM for UTF-8
+        fputs($output, "\xEF\xBB\xBF");
+
+        // CSV header
+        $header = ['Name', 'Type', 'Content', 'Priority', 'TTL', 'Disabled'];
+
+        // Add comments column if enabled
+        if ($this->config->get('interface', 'show_record_comments', false)) {
+            $header[] = 'Comment';
+        }
+
+        fputcsv($output, $header);
+
+        // CSV data
+        foreach ($records as $record) {
+            $row = [
+                $record['name'],
+                $record['type'],
+                $record['content'],
+                $record['prio'],
+                $record['ttl'],
+                $record['disabled'] ? 'Yes' : 'No'
+            ];
+
+            // Add comment if enabled
+            if ($this->config->get('interface', 'show_record_comments', false)) {
+                $row[] = $record['comment'] ?? '';
+            }
+
+            fputcsv($output, $row);
+        }
+
+        fclose($output);
+        exit();
     }
 
     /**
