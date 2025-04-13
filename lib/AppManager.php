@@ -61,13 +61,13 @@ class AppManager
         $this->configuration = ConfigurationManager::getInstance();
         $this->configuration->initialize();
 
-        $theme_base_path = $this->config('interface', 'theme_base_path', 'templates');
-        $theme = $this->config('interface', 'theme', 'default');
+        $theme_base_path = $this->configuration->get('interface', 'theme_base_path', 'templates');
+        $theme = $this->configuration->get('interface', 'theme', 'default');
         $theme_path = $theme_base_path . '/' . $theme;
         $loader = new FilesystemLoader([$theme_path, $theme_base_path . '/default']);
         $this->templateRenderer = new Environment($loader, ['debug' => false]);
 
-        if ($this->config('misc', 'display_stats')) {
+        if ($this->configuration->get('misc', 'display_stats', false)) {
             $memoryUsage = new MemoryUsage();
             $timer = new Timer();
             $sizeFormatter = new SimpleSizeFormatter();
@@ -77,7 +77,7 @@ class AppManager
         $validator = new ConfigValidator($this->configuration->getAll());
         $this->showValidationErrors($validator);
 
-        $iface_lang = $this->config('interface', 'language');
+        $iface_lang = $this->configuration->get('interface', 'language', 'en_EN');
         if (isset($_SESSION["userlang"])) {
             $iface_lang = $_SESSION["userlang"];
         }
@@ -116,19 +116,6 @@ class AppManager
         return $this->configuration;
     }
 
-    /**
-     * Gets a configuration value.
-     *
-     * @param string $group The configuration group
-     * @param string $key The name of the configuration value
-     * @param mixed|null $default The default value if the configuration value is not found
-     * @return mixed The configuration value
-     */
-    public function config(string $group, string $key, mixed $default = null): mixed
-    {
-        $value = $this->configuration->get($group, $key);
-        return $value === null ? $default : $value;
-    }
 
     /**
      * Gets the locale file path for the given interface language.
@@ -138,7 +125,7 @@ class AppManager
      */
     public function getLocaleFile(string $iface_lang): string
     {
-        $supportedLocales = explode(',', $this->config('interface', 'enabled_languages'));
+        $supportedLocales = explode(',', $this->configuration->get('interface', 'enabled_languages', 'en_EN'));
         if (in_array($iface_lang, $supportedLocales)) {
             return "locale/$iface_lang/LC_MESSAGES/messages.po";
         }
